@@ -58,62 +58,80 @@ def commit_push(message, push=True):
 
 # --- planning ---------------------------------------------------------------
 
-def fill_next(cfg, sk, max_chars):
-    """Next missing unit to make this skeleton's matrix consistent with its
-    declared animations + dresses across `max_chars` characters. Each character
-    must have every animation undressed, and every dress (with every animation).
-    Returns an action tuple or None when the skeleton is fully filled."""
+def fill_next(cfg, sk, n_chars):
+    """Next missing unit to make this skeleton's matrix consistent across
+    `n_chars` characters: every character has every declared dress (undressed is
+    dress #1), and every dress has every declared animation. Returns an action
+    tuple or None when filled. Char-major order: each character is completed
+    before the next, so the roster fills out steadily."""
     sid = sk["id"]
     chars = factory.list_characters(sid)
     anims = sk.get("animations", [])
-    dresses = sk.get("dresses", [])
-    for i in range(max_chars):
+    dresses = sk.get("dresses", ["undressed"])
+    for i in range(n_chars):
         if i >= len(chars):
             return ("base", sid, sk, i)
         ch = chars[i]
-        for akey in anims:                       # undressed animations
-            if akey not in ch.get("animations", {}):
-                return ("animate", sid, sk, ch, None, factory.anim_def(cfg, akey))
-        for did in dresses:                      # each dress, with every animation
-            dress = ch.get("outfits", {}).get(did)
-            if not dress:
-                return ("dress", sid, sk, ch, factory.dress_def(cfg, did))
-            for akey in anims:
-                if akey not in dress.get("animations", {}):
-                    return ("animate", sid, sk, ch, did, factory.anim_def(cfg, akey))
+        for did in dresses:
+            if did == "undressed":
+                for akey in anims:
+                    if akey not in ch.get("animations", {}):
+                        return ("animate", sid, sk, ch, "undressed", factory.anim_def(cfg, akey))
+            else:
+                dress = ch.get("outfits", {}).get(did)
+                if not dress:
+                    return ("dress", sid, sk, ch, factory.dress_def(cfg, did))
+                for akey in anims:
+                    if akey not in dress.get("animations", {}):
+                        return ("animate", sid, sk, ch, did, factory.anim_def(cfg, akey))
     return None
 
 
+def _next_pool(items, have, key):
+    return next((it[key] for it in items if it[key] not in have), None)
+
+
 def next_action(cfg):
-    """Decide the next global unit. Phase A: bootstrap up to num_skeletons
-    skeletons (each filled for its base animations, no dresses). Phase B: once
-    that many skeletons exist, finish any pending fill, then append the next
-    animation/dress to the first under-cap skeleton (which fans out via fill)."""
+    """Decide the next global unit.
+
+    Phase A (< num_skeletons): build the current skeleton to its full target
+    (characters x animations x dresses), growing animations then dresses, then
+    open the next skeleton. Phase B (>= num_skeletons): append beyond the target
+    to existing skeletons (animation, then dress, then character), each fanned
+    out across the whole matrix."""
     t = cfg["targets"]
     skels = factory.list_skeletons()
     if not skels:
         return ("new_skeleton", 0)
 
-    if len(skels) < t["num_skeletons"]:          # Phase A: bootstrap
+    if len(skels) < t["num_skeletons"]:                      # ---- Phase A ----
         sk = skels[-1]
-        u = fill_next(cfg, sk, t["max_characters"])
-        return u or ("new_skeleton", len(skels))
-
-    for sk in skels:                             # Phase B: finish pending fills
-        u = fill_next(cfg, sk, t["max_characters"])
+        u = fill_next(cfg, sk, t["characters"])
         if u:
             return u
-    for sk in skels:                             # then append the next thing
-        if len(sk.get("animations", [])) < t["max_animations"]:
-            nxt = next((a["key"] for a in cfg["animations"]
-                        if a["key"] not in sk.get("animations", [])), None)
+        if len(sk.get("animations", [])) < t["animations"]:  # grow animations -> target
+            nxt = _next_pool(cfg["animations"], sk.get("animations", []), "key")
             if nxt:
                 return ("append_anim", sk, nxt)
-        if len(sk.get("dresses", [])) < t["max_dresses"]:
-            nxt = next((d["id"] for d in cfg["dress_pool"]
-                        if d["id"] not in sk.get("dresses", [])), None)
+        if len(sk.get("dresses", [])) < t["dresses"]:        # grow dresses -> target
+            nxt = _next_pool(cfg["dress_pool"], sk.get("dresses", []), "id")
             if nxt:
                 return ("append_dress", sk, nxt)
+        return ("new_skeleton", len(skels))                  # at full target -> next skeleton
+
+    for sk in skels:                                         # ---- Phase B ----
+        u = fill_next(cfg, sk, len(factory.list_characters(sk["id"])))
+        if u:
+            return u
+    for sk in skels:                                         # append beyond target
+        nxt = _next_pool(cfg["animations"], sk.get("animations", []), "key")
+        if nxt:
+            return ("append_anim", sk, nxt)
+        nxt = _next_pool(cfg["dress_pool"], sk.get("dresses", []), "id")
+        if nxt:
+            return ("append_dress", sk, nxt)
+        if len(factory.list_characters(sk["id"])) < len(factory.CHARACTER_LOOKS):
+            return ("base", sk["id"], sk, len(factory.list_characters(sk["id"])))
     return ("all_complete",)
 
 

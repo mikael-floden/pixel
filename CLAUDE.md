@@ -10,7 +10,7 @@ profiles) before picking a winner. Read `README.md` and `spec/FACTORY_SPEC.md`.
 
 - A **skeleton** = a parameter profile (`config/factory.json:skeleton_variations`):
   view (`side` / `low top-down` / …), `width`×`height`, `animation_directions`
-  (1 for side-view + mirror, 4/8 for top-down), outline/shading/detail, template.
+  (4 or 8, low/high top-down), resolution (32-256), outline/shading/detail, template.
 - A **character** = one `create-character-v3` call → 8 rotations (~3 generations).
   The base is **undressed** (neutral body in plain underclothes).
 - An **animation** = one `animate-character` call per direction (~1 gen each);

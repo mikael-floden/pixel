@@ -3,12 +3,14 @@
 
   "targets": {
     "num_skeletons": 5,
-    "max_characters": 5,
-    "max_animations": 5,
-    "max_dresses": 5
+    "characters": 5,
+    "animations": 5,
+    "dresses": 5,
+    "_comment": "Phase-A targets per skeleton (dresses count includes 'undressed'). Phase B appends beyond these from the pools."
   },
 
   "base_animations": ["idle", "walk"],
+  "base_dresses": ["undressed"],
 
   "budget": {
     "min_generations_remaining": 40,
@@ -22,33 +24,20 @@
     "8": ["south", "north", "east", "west", "south-east", "south-west", "north-east", "north-west"]
   },
 
-  "_animation_pool": "Ordered pool. First two (idle, walk) are the base every character starts with; the loop appends the next ones up to max_animations.",
+  "_animation_pool": "Ordered pool of simple animations. First two (idle, walk) are every character's base; the loop appends the next ones (run, jump, kick, ...) up to the target, then beyond in Phase B.",
   "animations": [
-    { "key": "idle",             "action": "standing still, idle breathing",                         "frames": 6 },
-    { "key": "walk",             "action": "walking",                                                "frames": 8 },
-    { "key": "run",              "action": "running fast",                                           "frames": 8 },
-    { "key": "jump",             "action": "jumping straight up, arms raised",                       "frames": 6 },
-    { "key": "crouch",           "action": "crouching down low, idle",                               "frames": 6 },
-    { "key": "fall",             "action": "falling downward through the air",                       "frames": 6 },
-    { "key": "kick_stand",       "action": "kicking forward with one leg while standing",            "frames": 6 },
-    { "key": "punch_stand",      "action": "throwing a forward punch while standing",                "frames": 6 },
-    { "key": "kick_crouch",      "action": "low sweeping kick while crouching",                      "frames": 6 },
-    { "key": "punch_crouch",     "action": "punching forward while crouching low",                   "frames": 6 },
-    { "key": "kick_air",         "action": "flying kick in mid air",                                 "frames": 6 },
-    { "key": "punch_air",        "action": "punching forward while airborne",                        "frames": 6 },
-    { "key": "punch_run",        "action": "punching forward while running",                         "frames": 6 },
-    { "key": "kick_run",         "action": "kicking forward while running",                          "frames": 6 },
-    { "key": "land_low",         "action": "landing softly from a short hop, slight knee bend",      "frames": 4 },
-    { "key": "land_med",         "action": "landing from a fall, knees bending to absorb impact",    "frames": 6 },
-    { "key": "land_high",        "action": "hard landing from a high fall, crouching low on impact", "frames": 6 },
-    { "key": "hit_front_high",   "action": "head snapping back, recoiling backward from a hit to the head",        "frames": 4 },
-    { "key": "hit_front_mid",    "action": "doubling over backward from a punch to the stomach",                   "frames": 4 },
-    { "key": "hit_front_low",    "action": "stumbling backward from a hit to the legs",                            "frames": 4 },
-    { "key": "hit_behind_high",  "action": "lurching forward from a blow to the back of the head",                 "frames": 4 },
-    { "key": "hit_behind_mid",   "action": "pitching forward from a hit to the back",                              "frames": 4 },
-    { "key": "hit_behind_low",   "action": "stumbling forward from a hit to the back of the legs",                 "frames": 4 },
-    { "key": "hit_crouch_front", "action": "flinching while crouching, struck from the front",                     "frames": 4 },
-    { "key": "hit_crouch_behind","action": "flinching forward while crouching, struck from behind",                "frames": 4 }
+    { "key": "idle",   "action": "standing still, idle breathing", "frames": 6 },
+    { "key": "walk",   "action": "walking",                        "frames": 8 },
+    { "key": "run",    "action": "running",                        "frames": 8 },
+    { "key": "jump",   "action": "jumping",                        "frames": 6 },
+    { "key": "kick",   "action": "kicking",                        "frames": 6 },
+    { "key": "punch",  "action": "punching",                       "frames": 6 },
+    { "key": "crouch", "action": "crouching down",                 "frames": 6 },
+    { "key": "fall",   "action": "falling",                        "frames": 6 },
+    { "key": "hurt",   "action": "getting hurt and recoiling",     "frames": 4 },
+    { "key": "die",    "action": "dying and collapsing",           "frames": 6 },
+    { "key": "wave",   "action": "waving hello",                   "frames": 6 },
+    { "key": "attack", "action": "swinging a melee attack",        "frames": 6 }
   ],
 
   "_dress_pool": "Ordered pool of dresses (outfits). The loop appends the next ones up to max_dresses. Every character in a skeleton gets every dress.",
@@ -63,16 +52,16 @@
   "style_base": "cozy farming-sim RPG pixel art, Grave Seasons / Stardew Valley inspired, warm earthy palette, clean readable shapes",
 
   "skeleton_variations": [
-    { "id": "00_td8_64",  "note": "Top-down, 64x64, 8 directions.",  "view": "low top-down", "width": 64, "height": 64, "directions": 8, "template_id": "mannequin", "outline": "single color black outline", "shading": "basic shading", "detail": "medium detail" },
-    { "id": "01_td4_64",  "note": "Top-down, 64x64, 4 directions.",  "view": "low top-down", "width": 64, "height": 64, "directions": 4, "template_id": "mannequin", "outline": "single color black outline", "shading": "basic shading", "detail": "medium detail" },
-    { "id": "02_side4_64","note": "Side view, 64x64, left/right.",   "view": "side",         "width": 64, "height": 64, "directions": 4, "template_id": "mannequin", "outline": "single color black outline", "shading": "basic shading", "detail": "medium detail" },
-    { "id": "03_td4_96",  "note": "Top-down, 96x96, 4 directions, more detail.", "view": "low top-down", "width": 96, "height": 96, "directions": 4, "template_id": "mannequin", "outline": "single color black outline", "shading": "detailed shading", "detail": "highly detailed" },
-    { "id": "04_td8_48",  "note": "Top-down, 48x48, 8 directions, chunky.", "view": "low top-down", "width": 48, "height": 48, "directions": 8, "template_id": "mannequin", "outline": "single color black outline", "shading": "basic shading", "detail": "low detail" }
+    { "id": "00_low4_64",  "note": "Low top-down, 64x64, 4 directions.",  "view": "low top-down",  "width": 64, "height": 64, "directions": 4, "template_id": "mannequin", "outline": "single color black outline", "shading": "basic shading", "detail": "medium detail" },
+    { "id": "01_low8_64",  "note": "Low top-down, 64x64, 8 directions.",  "view": "low top-down",  "width": 64, "height": 64, "directions": 8, "template_id": "mannequin", "outline": "single color black outline", "shading": "basic shading", "detail": "medium detail" },
+    { "id": "02_high4_64", "note": "High top-down, 64x64, 4 directions.", "view": "high top-down", "width": 64, "height": 64, "directions": 4, "template_id": "mannequin", "outline": "single color black outline", "shading": "basic shading", "detail": "medium detail" },
+    { "id": "03_low4_96",  "note": "Low top-down, 96x96, 4 directions, more detail.", "view": "low top-down", "width": 96, "height": 96, "directions": 4, "template_id": "mannequin", "outline": "single color black outline", "shading": "detailed shading", "detail": "highly detailed" },
+    { "id": "04_high8_48", "note": "High top-down, 48x48, 8 directions, chunky.", "view": "high top-down", "width": 48, "height": 48, "directions": 8, "template_id": "mannequin", "outline": "single color black outline", "shading": "basic shading", "detail": "low detail" }
   ],
 
   "procedural_variation": {
-    "_comment": "When skeleton_variations is exhausted, derive further skeletons by cycling these axes (all within PixelLab's 32-256 size range).",
-    "views": ["low top-down", "side", "high top-down"],
+    "_comment": "When skeleton_variations is exhausted, derive further skeletons by cycling these axes (all within PixelLab's 32-256 size range). A skeleton decides: view (low/high top-down), resolution, and 4/8 directions.",
+    "views": ["low top-down", "high top-down"],
     "sizes": [[64, 64], [96, 96], [48, 48]],
     "direction_choices": [4, 8],
     "details": ["low detail", "medium detail", "highly detailed"]

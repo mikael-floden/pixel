@@ -25,18 +25,17 @@ We deliberately limit clothing to **what PixelLab actually supports**. PixelLab
 has no per-slot gear or layer compositing; it changes a character's whole outfit
 by creating a **state** of the character. So:
 
-- The **base character is undressed** (a neutral body to dress).
-- An **outfit** = `create-character-state(character_id, edit_description="wearing
+- The **base character is undressed** — this counts as the first dress,
+  `undressed` (the base rotations + animations).
+- A **dress** = `create-character-state(character_id, edit_description="wearing
   X")` → a **sibling character** stored on PixelLab (shares the base's
-  `group_id`), visible/editable in the UI and syncable.
-- Each outfit **regenerates its own animations** wearing that clothing (via
-  `animate-character` on the state). There is **one outfit at a time** — no
-  combining pants + boots + hat.
-- Outfits are listed in `config.outfits.list`. Creating one is expensive (a full
-  state ≈ a character + its animations), so during exploration we generate
-  outfits only on the reference character and only for
-  `config.outfits.animations`. A winning skeleton can do the full set on every
-  character.
+  `group_id`), visible/editable in the UI and syncable. Real dresses come from
+  `config.dress_pool`.
+- Every dress **regenerates its own animations** (via `animate-character` on the
+  state). There is **one outfit at a time** — no combining pants + boots + hat.
+- **Every character gets every dress, and every dress has every animation.**
+  Adding a dress fans out to all characters; adding an animation fans out to all
+  characters and all dresses.
 
 ## Animation set (25)
 

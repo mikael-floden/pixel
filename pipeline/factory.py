@@ -163,7 +163,7 @@ def ensure_skeleton(cfg, index):
             "id": sid, "index": index, "params": params,
             "style": cfg["style_base"], "status": "in_progress",
             "animations": list(cfg["base_animations"]),
-            "dresses": [],
+            "dresses": list(cfg.get("base_dresses", ["undressed"])),
         }
         _write_json(meta_path, meta)
     return sid, meta
@@ -282,7 +282,7 @@ def animate_variant(client, cfg, sid, skel_meta, char_meta, dress_id, adef):
     in the right place. Returns the saved manifest dict."""
     cdir = os.path.join(skeleton_dir(sid), "characters", char_meta["local_id"])
     dirs = animation_directions(cfg, skel_meta, char_meta)
-    if dress_id is None:
+    if dress_id in (None, "undressed"):
         out_dir = os.path.join(cdir, "animations")
         pixellab_id = char_meta["pixellab_id"]
         target = char_meta.setdefault("animations", {})

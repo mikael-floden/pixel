@@ -2,90 +2,25 @@
   "title": "Modular Pixel Character Factory",
   "targets": {
     "num_skeletons": 5,
-    "max_characters": 5,
-    "max_animations": 5,
-    "max_dresses": 5
+    "characters": 5,
+    "animations": 5,
+    "dresses": 5,
+    "_comment": "Phase-A targets per skeleton (dresses count includes 'undressed'). Phase B appends beyond these from the pools."
   },
   "animation_order": [
     "idle",
     "walk",
     "run",
     "jump",
+    "kick",
+    "punch",
     "crouch",
     "fall",
-    "kick_stand",
-    "punch_stand",
-    "kick_crouch",
-    "punch_crouch",
-    "kick_air",
-    "punch_air",
-    "punch_run",
-    "kick_run",
-    "land_low",
-    "land_med",
-    "land_high",
-    "hit_front_high",
-    "hit_front_mid",
-    "hit_front_low",
-    "hit_behind_high",
-    "hit_behind_mid",
-    "hit_behind_low",
-    "hit_crouch_front",
-    "hit_crouch_behind"
+    "hurt",
+    "die",
+    "wave",
+    "attack"
   ],
-  "skeleton_count": 1,
-  "skeletons": [
-    {
-      "id": "00_td8_64",
-      "status": "in_progress",
-      "note": "Top-down, 64x64, 8 directions.",
-      "params": {
-        "id": "00_td8_64",
-        "note": "Top-down, 64x64, 8 directions.",
-        "view": "low top-down",
-        "width": 64,
-        "height": 64,
-        "directions": 8,
-        "template_id": "mannequin",
-        "outline": "single color black outline",
-        "shading": "basic shading",
-        "detail": "medium detail"
-      },
-      "character_count": 1,
-      "characters": [
-        {
-          "local_id": "char_00",
-          "look": "a young man with tousled red hair and freckles, lean build",
-          "portrait": "skeletons/00_td8_64/characters/char_00/portrait.png",
-          "rotations": [
-            "skeletons/00_td8_64/characters/char_00/rotations/east.png",
-            "skeletons/00_td8_64/characters/char_00/rotations/north.png",
-            "skeletons/00_td8_64/characters/char_00/rotations/north-east.png",
-            "skeletons/00_td8_64/characters/char_00/rotations/north-west.png",
-            "skeletons/00_td8_64/characters/char_00/rotations/south.png",
-            "skeletons/00_td8_64/characters/char_00/rotations/south-east.png",
-            "skeletons/00_td8_64/characters/char_00/rotations/south-west.png",
-            "skeletons/00_td8_64/characters/char_00/rotations/west.png"
-          ],
-          "animation_count": 1,
-          "animations": [
-            {
-              "key": "idle",
-              "directions": {
-                "south": "skeletons/00_td8_64/characters/char_00/animations/idle__south.gif",
-                "north": "skeletons/00_td8_64/characters/char_00/animations/idle__north.gif",
-                "east": "skeletons/00_td8_64/characters/char_00/animations/idle__east.gif",
-                "west": "skeletons/00_td8_64/characters/char_00/animations/idle__west.gif",
-                "south-east": "skeletons/00_td8_64/characters/char_00/animations/idle__south-east.gif",
-                "south-west": "skeletons/00_td8_64/characters/char_00/animations/idle__south-west.gif",
-                "north-east": "skeletons/00_td8_64/characters/char_00/animations/idle__north-east.gif",
-                "north-west": "skeletons/00_td8_64/characters/char_00/animations/idle__north-west.gif"
-              }
-            }
-          ],
-          "outfits": []
-        }
-      ]
-    }
-  ]
+  "skeleton_count": 0,
+  "skeletons": []
 }
