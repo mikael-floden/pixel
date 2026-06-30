@@ -39,8 +39,23 @@
         "shading": "basic shading",
         "detail": "medium detail"
       },
-      "character_count": 0,
-      "characters": []
+      "character_count": 1,
+      "characters": [
+        {
+          "local_id": "char_00",
+          "look": "a grizzled mercenary with a scarred face and a shaved head, muscular build",
+          "portrait": "skeletons/00_low4_64/characters/char_00/portrait.png",
+          "rotations": [
+            "skeletons/00_low4_64/characters/char_00/rotations/east.png",
+            "skeletons/00_low4_64/characters/char_00/rotations/north.png",
+            "skeletons/00_low4_64/characters/char_00/rotations/south.png",
+            "skeletons/00_low4_64/characters/char_00/rotations/west.png"
+          ],
+          "animation_count": 0,
+          "animations": [],
+          "outfits": []
+        }
+      ]
     }
   ]
 }
