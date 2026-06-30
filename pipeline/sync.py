@@ -76,14 +76,17 @@ def _entry_files_exist(entry):
 
 
 def _best_groups(detail):
-    """One animation group per type; for duplicates keep the most-directions one."""
+    """One merged dirmap per animation_type, UNIONED across all groups of that
+    type — for each direction keep the version with the most frames. This both
+    de-dupes (a regenerated full group wins) and recovers an animation PixelLab
+    split across partial groups (e.g. a 6-dir + 4-dir 'walk' -> 8 dirs)."""
     best = {}
     for a in detail.get("animations", []):
-        t = a["animation_type"]
-        dirmap = {x["direction"]: x.get("frames", [])
-                  for x in a.get("directions", []) if x.get("frames")}
-        if t not in best or len(dirmap) >= len(best[t]):
-            best[t] = dirmap
+        dm = best.setdefault(a["animation_type"], {})
+        for x in a.get("directions", []):
+            d, fr = x.get("direction"), x.get("frames", [])
+            if fr and len(fr) > len(dm.get(d, [])):
+                dm[d] = fr
     return best
 
 

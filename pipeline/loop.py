@@ -202,12 +202,26 @@ def main():
                     help="Stop when generations remaining drops below this.")
     ap.add_argument("--once", action="store_true", help="Do a single unit and exit.")
     ap.add_argument("--no-push", action="store_true")
+    ap.add_argument("--no-sync", action="store_true",
+                    help="Skip the pre-run mirror of PixelLab edits into the repo.")
     args = ap.parse_args()
 
     cfg = factory.load_config()
     min_balance = args.min_balance if args.min_balance is not None \
         else cfg["budget"]["min_generations_remaining"]
     client = PixelLabClient()
+
+    # Pull any PixelLab-side edits (hand-fixed angles, etc.) into the repo before
+    # generating. Efficient: unchanged frames are skipped via If-Modified-Since,
+    # so this is cheap to do on every run — which means each hourly Routine firing
+    # automatically mirrors your UI edits. Lazy import avoids a circular import.
+    if not args.no_sync:
+        try:
+            import sync
+            n = sync.sync_all(client, push=not args.no_push, quiet=True)
+            print(f"pre-run sync: checked {n} clip(s), unchanged skipped")
+        except Exception as e:
+            print(f"pre-run sync skipped ({e})")
 
     start = time.monotonic()
     units = 0
