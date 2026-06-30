@@ -75,9 +75,15 @@ def _mirror_rotations(client, detail, base_dir, canvas):
     return rotations
 
 
-def _mirror_animations(client, detail, anim_out_dir, canvas):
+def _mirror_animations(client, detail, anim_out_dir, canvas, type2key=None):
     anims = {}
-    for key, dirmap in _best_groups(detail).items():
+    type2key = type2key or {}
+    for anim_type, dirmap in _best_groups(detail).items():
+        # PixelLab's animation_type is the template id for template animations
+        # (e.g. 'breathing-idle'); map it back to our repo key (e.g. 'idle') so
+        # synced art lines up with what the loop creates. Unknown types pass
+        # through unchanged (e.g. an animation you made by hand in the UI).
+        key = type2key.get(anim_type, anim_type)
         saved = {}
         for direction, urls in dirmap.items():
             frames = _download_frames(client, urls)
@@ -101,7 +107,7 @@ def _mirror_animations(client, detail, anim_out_dir, canvas):
     return anims
 
 
-def sync_character(client, sid, char_meta):
+def sync_character(client, sid, char_meta, type2key=None):
     cid_local = char_meta["local_id"]
     cdir = os.path.join(factory.skeleton_dir(sid), "characters", cid_local)
     skmeta = factory._read_json(os.path.join(factory.skeleton_dir(sid), "skeleton.json")) or {}
@@ -109,7 +115,7 @@ def sync_character(client, sid, char_meta):
     detail = client.get_character(char_meta["pixellab_id"])
 
     rotations = _mirror_rotations(client, detail, cdir, canvas)
-    char_meta["animations"] = _mirror_animations(client, detail, os.path.join(cdir, "animations"), canvas)
+    char_meta["animations"] = _mirror_animations(client, detail, os.path.join(cdir, "animations"), canvas, type2key)
     if rotations:
         char_meta["rotations"] = sorted(rotations)
 
@@ -127,7 +133,7 @@ def sync_character(client, sid, char_meta):
             sdet = client.get_character(spx)
             odir = os.path.join(cdir, "outfits", outfit_id)
             srot = _mirror_rotations(client, sdet, odir, canvas)
-            sanims = _mirror_animations(client, sdet, os.path.join(odir, "animations"), canvas)
+            sanims = _mirror_animations(client, sdet, os.path.join(odir, "animations"), canvas, type2key)
             prev = char_meta.get("outfits", {}).get(outfit_id, {})
             new_outfits[outfit_id] = {
                 **prev, "id": outfit_id, "pixellab_id": spx,
@@ -152,6 +158,9 @@ def main():
     args = ap.parse_args()
 
     client = PixelLabClient()
+    cfg = factory.load_config()
+    # PixelLab animation_type -> our repo animation key (template id -> key).
+    type2key = {(a.get("template") or a["key"]): a["key"] for a in cfg["animations"]}
     skels = [s for s in factory.list_skeletons()
              if not args.skeleton or s["id"] == args.skeleton]
     total = 0
@@ -160,7 +169,7 @@ def main():
         for ch in factory.list_characters(sid):
             if args.character and ch["local_id"] != args.character:
                 continue
-            anims, outfits = sync_character(client, sid, ch)
+            anims, outfits = sync_character(client, sid, ch, type2key)
             n = sum(anims.values()) + sum(outfits.values())
             total += n
             print(f"synced {sid}/{ch['local_id']}: {len(anims)} base animations; "
