@@ -38,20 +38,21 @@ SKELETONS_DIR = os.path.join(ROOT, "skeletons")
 PREVIEW_BG = (32, 36, 43, 255)
 
 # Distinct PERSON looks (appearance only — no clothing; the base is undressed and
-# clothing comes from outfit states) so the roster doesn't clone.
+# clothing comes from dress states). Mature, gritty, badass adults — varied in
+# age, gender, build and ethnicity. No children / cutesy tropes.
 CHARACTER_LOOKS = [
-    "a young man with tousled red hair and freckles, lean build",
-    "a weathered old man with a long grey beard, wiry build",
-    "a sturdy woman with dark braided hair, strong build",
-    "a lanky scarecrow-thin youth with messy blond hair",
-    "a cheerful round-faced person with short brown hair",
-    "a stern person with a long dark ponytail, athletic build",
-    "a freckled girl with twin auburn ponytails",
-    "a bald burly man with a thick black beard",
-    "a tanned person with short curly hair and a stubble",
-    "a slight person with long silver hair and pale skin",
-    "a child with a round face and short tousled hair",
-    "a dignified elder with a neat white beard",
+    "a grizzled mercenary with a scarred face and a shaved head, muscular build",
+    "a brooding swordsman with long black hair and a stern jaw, broad shoulders",
+    "a battle-worn warrior woman with a long dark braid and war paint, athletic build",
+    "an older veteran with a grey beard and an eyepatch, heavy build",
+    "a bald monk with face tattoos and a hard stare, lean and muscular",
+    "a fierce huntress with cropped dark hair and a cold gaze, lithe build",
+    "a hulking barbarian with wild black hair and a thick beard, massive build",
+    "a gaunt pale man with sunken eyes and sharp cheekbones, wiry build",
+    "a scarred duelist with slicked-back dark hair and a goatee, athletic build",
+    "a hardened woman with a buzz cut and a broken nose, wiry build",
+    "a stern dark-skinned fighter with a shaved head and a strong jaw, muscular build",
+    "a grim older woman with grey-streaked hair tied back, gaunt weathered face",
 ]
 
 
