@@ -418,32 +418,32 @@ def _rel(p):
 
 
 def _download_existing_group(client, pixellab_id, anim_type, dirs):
-    """If the character already has an animation group of `anim_type` on PixelLab
-    (e.g. left over from a run that was killed after the job finished but before
-    it was saved locally), return its frames {dir: [PIL]} so we ADOPT it instead
-    of generating a duplicate group. PixelLab's animate endpoint only ever
-    *creates* groups (never replaces by name), so without this an interrupted
-    resume would leave a stray second 'walk'/'idle' on the character. Picks the
-    group covering the most directions if several already exist. {} if none."""
+    """Adopt whatever frames for `anim_type` already exist on PixelLab, UNIONED
+    across every group of that type: for each required direction, take frames
+    from whichever group has it (preferring the one with the most frames).
+
+    Two reasons: (1) PixelLab's animate endpoint only ever *creates* groups, so a
+    killed-and-resumed run can leave a stray group — adopting avoids regenerating
+    a duplicate; (2) a partial generation can split a single animation across
+    incomplete groups (e.g. a 6-direction 'walk' and a 4-direction 'walk') whose
+    UNION is complete — unioning recovers all directions with zero generations.
+    Returns {dir: [PIL]} for the directions we could recover ({} if none)."""
     try:
         detail = client.get_character(pixellab_id)
     except Exception:
         return {}
-    best = None
+    by_dir = {}
     for a in detail.get("animations", []):
         if a.get("animation_type") != anim_type:
             continue
-        dirmap = {x["direction"]: x.get("frames", [])
-                  for x in a.get("directions", []) if x.get("frames")}
-        if best is None or len(dirmap) > len(best):
-            best = dirmap
-    if not best:
-        return {}
+        for x in a.get("directions", []):
+            d, fr = x.get("direction"), x.get("frames", [])
+            if d in dirs and fr and len(fr) > len(by_dir.get(d, [])):
+                by_dir[d] = fr
     out = {}
     for d in dirs:
-        urls = best.get(d) or []
         frames = []
-        for u in urls:
+        for u in by_dir.get(d, []):
             img = None
             for _ in range(4):
                 img = client._try_download(u)
@@ -466,15 +466,24 @@ def _animate_into(client, adef, dirs, anim_out_dir, pixellab_id, canvas):
     key = adef["key"]
     anim_type = adef.get("template") or key
     frames_by_dir = _download_existing_group(client, pixellab_id, anim_type, dirs)
-    if frames_by_dir:
-        print(f"  ~ adopting existing '{key}' ({anim_type}) group from PixelLab "
-              f"(no regeneration, avoids a duplicate)")
+    missing = [d for d in dirs if d not in frames_by_dir]
+    if not missing:
+        print(f"  ~ adopting complete existing '{key}' ({anim_type}) from PixelLab "
+              f"(no regeneration)")
     else:
-        frames_by_dir = client.animate(
+        if frames_by_dir:
+            print(f"  ~ adopted {len(frames_by_dir)}/{len(dirs)} existing '{key}' "
+                  f"dir(s); generating missing {missing}")
+        gen = client.animate(
             character_id=pixellab_id, animation_name=key,
             action_description=adef["action"], frame_count=MAX_FRAMES,
-            directions=dirs, template_animation_id=adef.get("template"),
+            directions=missing, template_animation_id=adef.get("template"),
         )
+        frames_by_dir.update(gen)
+        missing = [d for d in dirs if d not in frames_by_dir]
+        if missing:
+            print(f"  !! '{key}' still missing directions after retry: {missing} "
+                  f"(animation incomplete)")
     saved = {}
     for direction, frames in frames_by_dir.items():
         frames = strip_kept_idle_frame(frames)

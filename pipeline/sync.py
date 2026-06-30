@@ -197,6 +197,34 @@ def sync_character(client, sid, char_meta, type2key=None):
     return {k: len(v) for k, v in char_meta["animations"].items()}, outfit_counts
 
 
+def sync_all(client, skeleton=None, character=None, push=True, quiet=False):
+    """Mirror every character (or a filtered subset) from PixelLab into the repo,
+    rebuild the viewer, and commit. Efficient (unchanged frames are skipped via
+    If-Modified-Since), so it's cheap to run on every loop pass. Returns the
+    number of direction-clips that were present. Reusable by the loop for
+    automatic syncing as well as the manual CLI."""
+    cfg = factory.load_config()
+    # PixelLab animation_type -> our repo animation key (template id -> key).
+    type2key = {(a.get("template") or a["key"]): a["key"] for a in cfg["animations"]}
+    total = 0
+    for skel in factory.list_skeletons():
+        if skeleton and skel["id"] != skeleton:
+            continue
+        for ch in factory.list_characters(skel["id"]):
+            if character and ch["local_id"] != character:
+                continue
+            anims, outfits = sync_character(client, skel["id"], ch, type2key)
+            total += sum(anims.values()) + sum(outfits.values())
+            if not quiet:
+                print(f"synced {skel['id']}/{ch['local_id']}: {len(anims)} base "
+                      f"animations; {len(outfits)} outfit(s)")
+    viewer_build.build()
+    # commit_push only commits if something actually changed on disk, so an
+    # all-unchanged sync is a no-op (no empty commits).
+    loop.commit_push("Sync characters + equipped states from PixelLab", push=push)
+    return total
+
+
 def main():
     ap = argparse.ArgumentParser(description="Mirror characters + states from PixelLab.")
     ap.add_argument("--skeleton")
@@ -205,27 +233,8 @@ def main():
     args = ap.parse_args()
 
     client = PixelLabClient()
-    cfg = factory.load_config()
-    # PixelLab animation_type -> our repo animation key (template id -> key).
-    type2key = {(a.get("template") or a["key"]): a["key"] for a in cfg["animations"]}
-    skels = [s for s in factory.list_skeletons()
-             if not args.skeleton or s["id"] == args.skeleton]
-    total = 0
-    for skel in skels:
-        sid = skel["id"]
-        for ch in factory.list_characters(sid):
-            if args.character and ch["local_id"] != args.character:
-                continue
-            anims, outfits = sync_character(client, sid, ch, type2key)
-            n = sum(anims.values()) + sum(outfits.values())
-            total += n
-            print(f"synced {sid}/{ch['local_id']}: {len(anims)} base animations; "
-                  f"{len(outfits)} outfit(s) [{', '.join(f'{k}:{v}anims' for k, v in outfits.items()) or '-'}]")
-
-    viewer_build.build()
-    if total:
-        loop.commit_push("Sync characters + equipped states from PixelLab",
-                         push=not args.no_push)
+    total = sync_all(client, skeleton=args.skeleton, character=args.character,
+                     push=not args.no_push)
     print(f"done — {total} direction-clips synced")
 
 

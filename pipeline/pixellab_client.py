@@ -262,19 +262,20 @@ class PixelLabClient:
         With `template_animation_id` the animation uses PixelLab's curated
         template motion (skeleton-driven) instead of free text generation.
 
-        Tries one batched call; if it fails (e.g. one unsupported direction
-        422s the whole request), retries each direction individually so a single
-        bad orientation can't lose the rest."""
+        Tries one batched call, then fills in any directions it didn't return
+        (a partial batch, or one orientation that 422'd) per-direction, so the
+        result always covers every requested direction when possible — an
+        incomplete animation (e.g. a 6-of-8 'walk') never silently ships."""
         dirs = list(directions)
+        out = {}
         try:
             out = self._animate_call(character_id, animation_name, action_description,
-                                     frame_count, dirs, job_timeout, template_animation_id)
-            if out:
-                return out
+                                     frame_count, dirs, job_timeout,
+                                     template_animation_id) or {}
         except PixelLabError as e:
-            print(f"  ! batched animate failed ({e}); retrying per-direction")
-        out = {}
-        for d in dirs:
+            print(f"  ! batched animate failed ({e}); filling in per-direction")
+        missing = [d for d in dirs if d not in out]
+        for d in missing:
             try:
                 out.update(self._animate_call(character_id, animation_name,
                                               action_description, frame_count, [d],
