@@ -142,29 +142,30 @@ class PixelLabClient:
 
     # -- characters ----------------------------------------------------------
 
-    def create_character(self, description, width, height, view="side",
-                         template_id="mannequin", outline=None, shading=None,
-                         detail=None, seed=None, reference_image=None,
-                         job_timeout=900):
-        """Create a character (8 rotations). Returns (character_id, {dir: PIL})."""
+    def create_character(self, description, width, height, view="low top-down",
+                         directions=8, template_id="mannequin", outline=None,
+                         shading=None, detail=None, seed=None, job_timeout=900):
+        """Create a character with exactly `directions` (4 or 8) rotations, so the
+        PixelLab character's direction count matches the skeleton's plan.
+        Returns (character_id, {dir: PIL})."""
         payload = {
             "description": description,
             "image_size": {"width": width, "height": height},
             "view": view,
             "template_id": template_id,
         }
-        # create-character-v3 does NOT accept `shading` (only outline/detail).
-        for k, v in (("outline", outline), ("detail", detail),
-                     ("seed", seed), ("reference_image", reference_image)):
+        for k, v in (("outline", outline), ("shading", shading), ("detail", detail),
+                     ("seed", seed)):
             if v is not None:
                 payload[k] = v
-        resp = self._post("/create-character-v3", payload)
+        endpoint = ("/create-character-with-4-directions" if directions == 4
+                    else "/create-character-with-8-directions")
+        resp = self._post(endpoint, payload)
         cid = resp["character_id"]
         job = resp.get("background_job_id")
         if job:
             self.wait_job(job, timeout=job_timeout)
-        rotations = self.fetch_rotations(cid)
-        return cid, rotations
+        return cid, self.fetch_rotations(cid)
 
     def create_state(self, character_id, edit_description,
                      use_color_palette_from_reference=True, no_background=True,

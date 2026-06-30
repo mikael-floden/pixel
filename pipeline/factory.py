@@ -243,6 +243,7 @@ def create_base_character(client, cfg, sid, skel_meta, char_index):
 
     character_id, rotations = client.create_character(
         description=desc, width=p["width"], height=p["height"], view=p["view"],
+        directions=p.get("directions", 8),
         template_id=p.get("template_id", "mannequin"), outline=p.get("outline"),
         shading=p.get("shading"), detail=p.get("detail"),
         seed=_seed(sid, char_index),
