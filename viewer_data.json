@@ -39,7 +39,7 @@
         "shading": "basic shading",
         "detail": "medium detail"
       },
-      "character_count": 1,
+      "character_count": 2,
       "characters": [
         {
           "local_id": "char_00",
@@ -72,6 +72,20 @@
               }
             }
           ],
+          "outfits": []
+        },
+        {
+          "local_id": "char_01",
+          "look": "a brooding swordsman with long black hair and a stern jaw, broad shoulders",
+          "portrait": "skeletons/00_low4_64/characters/char_01/portrait.png",
+          "rotations": [
+            "skeletons/00_low4_64/characters/char_01/rotations/east.png",
+            "skeletons/00_low4_64/characters/char_01/rotations/north.png",
+            "skeletons/00_low4_64/characters/char_01/rotations/south.png",
+            "skeletons/00_low4_64/characters/char_01/rotations/west.png"
+          ],
+          "animation_count": 0,
+          "animations": [],
           "outfits": []
         }
       ]
