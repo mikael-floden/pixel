@@ -11,6 +11,105 @@
     "south",
     "west"
   ],
-  "animations": {},
+  "animations": {
+    "idle": {
+      "south": {
+        "frames": 17,
+        "strip": "skeletons/00_low4_64/characters/char_03/animations/idle__south.png",
+        "gif": "skeletons/00_low4_64/characters/char_03/animations/idle__south.gif",
+        "frame_paths": [
+          "skeletons/00_low4_64/characters/char_03/animations/idle/south/00.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/south/01.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/south/02.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/south/03.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/south/04.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/south/05.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/south/06.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/south/07.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/south/08.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/south/09.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/south/10.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/south/11.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/south/12.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/south/13.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/south/14.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/south/15.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/south/16.png"
+        ]
+      },
+      "north": {
+        "frames": 17,
+        "strip": "skeletons/00_low4_64/characters/char_03/animations/idle__north.png",
+        "gif": "skeletons/00_low4_64/characters/char_03/animations/idle__north.gif",
+        "frame_paths": [
+          "skeletons/00_low4_64/characters/char_03/animations/idle/north/00.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/north/01.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/north/02.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/north/03.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/north/04.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/north/05.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/north/06.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/north/07.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/north/08.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/north/09.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/north/10.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/north/11.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/north/12.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/north/13.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/north/14.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/north/15.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/north/16.png"
+        ]
+      },
+      "east": {
+        "frames": 17,
+        "strip": "skeletons/00_low4_64/characters/char_03/animations/idle__east.png",
+        "gif": "skeletons/00_low4_64/characters/char_03/animations/idle__east.gif",
+        "frame_paths": [
+          "skeletons/00_low4_64/characters/char_03/animations/idle/east/00.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/east/01.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/east/02.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/east/03.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/east/04.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/east/05.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/east/06.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/east/07.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/east/08.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/east/09.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/east/10.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/east/11.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/east/12.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/east/13.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/east/14.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/east/15.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/east/16.png"
+        ]
+      },
+      "west": {
+        "frames": 17,
+        "strip": "skeletons/00_low4_64/characters/char_03/animations/idle__west.png",
+        "gif": "skeletons/00_low4_64/characters/char_03/animations/idle__west.gif",
+        "frame_paths": [
+          "skeletons/00_low4_64/characters/char_03/animations/idle/west/00.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/west/01.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/west/02.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/west/03.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/west/04.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/west/05.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/west/06.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/west/07.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/west/08.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/west/09.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/west/10.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/west/11.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/west/12.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/west/13.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/west/14.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/west/15.png",
+          "skeletons/00_low4_64/characters/char_03/animations/idle/west/16.png"
+        ]
+      }
+    }
+  },
   "base_done": true
 }
