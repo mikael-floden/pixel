@@ -38,18 +38,28 @@ def build():
                         if isinstance(v, dict) and v.get("gif")}
                 if dirs:
                     anims.append({"key": key, "directions": dirs})
-            # Equipped (worn) gear: {gear_id: {archetype, slot, animations:{key:{dir:gif}}}}.
-            equipped = []
-            for gid, by_anim in ch.get("equipped", {}).items():
-                ed = {"gear_id": gid, "animations": {}}
-                for key, by_dir in by_anim.items():
-                    g = {d: v.get("gif") for d, v in by_dir.items() if v.get("gif")}
-                    if g:
-                        ed["animations"][key] = g
-                        ed.setdefault("slot", next(iter(by_dir.values())).get("slot"))
-                        ed.setdefault("archetype", next(iter(by_dir.values())).get("archetype"))
-                if ed["animations"]:
-                    equipped.append(ed)
+            # Equipped states (stored on PixelLab): each is a worn variant with
+            # its own rotations + animations.
+            states = []
+            for gid, st in ch.get("states", {}).items():
+                sdir = f"{cdir}/states/{gid}"
+                sanims = []
+                for key in anim_order:
+                    a = st.get("animations", {}).get(key)
+                    if not a:
+                        continue
+                    dmap = {d: v.get("gif") for d, v in a.items()
+                            if isinstance(v, dict) and v.get("gif")}
+                    if dmap:
+                        sanims.append({"key": key, "directions": dmap})
+                states.append({
+                    "gear_id": gid,
+                    "slot": st.get("slot"),
+                    "archetype": st.get("archetype") or st.get("name"),
+                    "portrait": f"{sdir}/portrait.png",
+                    "rotations": [f"{sdir}/rotations/{d}.png" for d in st.get("rotations", [])],
+                    "animations": sanims,
+                })
             chars.append({
                 "local_id": ch["local_id"],
                 "look": ch.get("look", ch.get("description", "")),
@@ -57,7 +67,7 @@ def build():
                 "rotations": [f"{cdir}/rotations/{d}.png" for d in ch.get("rotations", [])],
                 "animation_count": len(anims),
                 "animations": anims,
-                "equipped": equipped,
+                "states": states,
             })
 
         gear = factory.gear_state(sid)

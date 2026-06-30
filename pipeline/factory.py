@@ -226,36 +226,43 @@ def animation_directions(skel_meta, char_meta):
     return have
 
 
-def animate_one(client, cfg, sid, skel_meta, char_meta, anim_def):
-    """Generate one animation for a character across all its orientations."""
-    p = skel_meta["params"]
-    dirs = animation_directions(skel_meta, char_meta)
-    cid_local = char_meta["local_id"]
-    cdir = os.path.join(skeleton_dir(sid), "characters", cid_local)
-    key = anim_def["key"]
+def _rel(p):
+    return os.path.relpath(p, ROOT)
 
+
+def _animate_into(client, pixellab_id, anim_def, dirs, anim_out_dir):
+    """Animate `pixellab_id` across `dirs`, saving frames/strips/gifs into
+    `anim_out_dir`. Works for both base characters and equipped states.
+    Returns {direction: {...}} for the manifest."""
+    key = anim_def["key"]
     frames_by_dir = client.animate(
-        character_id=char_meta["pixellab_id"], animation_name=key,
+        character_id=pixellab_id, animation_name=key,
         action_description=anim_def["action"], frame_count=anim_def.get("frames", 6),
         directions=dirs,
     )
     saved = {}
     for direction, frames in frames_by_dir.items():
-        # Individual frames (so gear can be applied to them) + a packed strip.
-        fdir = os.path.join(cdir, "animations", key, direction)
-        frame_paths = _save_frames(frames, fdir)
-        strip_path = os.path.join(cdir, "animations", f"{key}__{direction}.png")
-        _save_strip(frames, strip_path)
-        _save_gif(frames, os.path.join(cdir, "animations", f"{key}__{direction}.gif"))
+        fdir = os.path.join(anim_out_dir, key, direction)
+        _save_frames(frames, fdir)
+        strip = os.path.join(anim_out_dir, f"{key}__{direction}.png")
+        gif = os.path.join(anim_out_dir, f"{key}__{direction}.gif")
+        _save_strip(frames, strip)
+        _save_gif(frames, gif)
         saved[direction] = {
-            "frames": len(frames),
-            "strip": os.path.relpath(strip_path, ROOT),
-            "gif": os.path.relpath(os.path.join(cdir, "animations", f"{key}__{direction}.gif"), ROOT),
-            "frame_paths": [os.path.relpath(p, ROOT) for p in frame_paths],
+            "frames": len(frames), "strip": _rel(strip), "gif": _rel(gif),
+            "frame_paths": [_rel(os.path.join(fdir, f"{i:02d}.png")) for i in range(len(frames))],
         }
+    return saved
 
-    char_meta.setdefault("animations", {})[key] = saved
-    _write_json(character_meta_path(sid, cid_local), char_meta)
+
+def animate_one(client, cfg, sid, skel_meta, char_meta, anim_def):
+    """Animate a base character across all its orientations."""
+    cdir = os.path.join(skeleton_dir(sid), "characters", char_meta["local_id"])
+    dirs = animation_directions(skel_meta, char_meta)
+    saved = _animate_into(client, char_meta["pixellab_id"], anim_def, dirs,
+                          os.path.join(cdir, "animations"))
+    char_meta.setdefault("animations", {})[anim_def["key"]] = saved
+    _write_json(character_meta_path(sid, char_meta["local_id"]), char_meta)
     return saved
 
 
@@ -275,15 +282,7 @@ def _save_frames(frames, dir_path):
     return paths
 
 
-def load_anim_frames(char_meta, key, direction):
-    """Reload an animation's saved frames (PIL) for a direction, in order."""
-    entry = char_meta.get("animations", {}).get(key, {}).get(direction)
-    if not entry or "frame_paths" not in entry:
-        return []
-    return [Image.open(os.path.join(ROOT, p)).convert("RGBA") for p in entry["frame_paths"]]
-
-
-# --- gear (shared per skeleton) ---------------------------------------------
+# --- gear icons (inventory thumbnails, shared per skeleton) -----------------
 
 def gear_state(sid):
     return _read_json(os.path.join(skeleton_dir(sid), "gear", "gear.json"), default={}) or {}
@@ -326,53 +325,45 @@ def make_gear(client, cfg, sid, skel_meta, slot_def, archetype_index):
     return gear_id
 
 
-_SLOT_LABEL = {
-    "pants": "trousers", "boots": "footwear", "gloves": "gloves",
-    "armor_tunic": "torso garment", "helmet_hat": "headwear",
-}
+# --- equipment via character STATES (stored on PixelLab, source of truth) ---
+
+def list_states(char_meta):
+    return char_meta.get("states", {})
 
 
-def equip_gear_on_character(client, cfg, sid, skel_meta, char_meta, slot, gear_id,
-                            anim_keys, dirs=None):
-    """Make `gear_id` equipped on a character: render it worn across animations.
-
-    For each animation/direction, transfer the gear onto the base frames so the
-    gear is part of the motion (the inventory icon stays as-is). Worn frames are
-    saved per character under equipped/<gear_id>/<anim>__<dir>.* and recorded in
-    character.json. Returns the count of (anim,dir) variants produced."""
-    state = gear_state(sid)
-    entry = state.get(slot, {}).get(gear_id)
-    if not entry:
-        raise ValueError(f"gear {slot}/{gear_id} not found; generate the icon first")
-    icon = Image.open(os.path.join(ROOT, entry["icon"])).convert("RGBA")
-    archetype = entry["archetype"]
-    label = _SLOT_LABEL.get(slot, slot)
-    instr = f"dress the character in the {archetype} as their {label}; keep the pose, body and other clothing"
-
+def equip_state(client, cfg, sid, skel_meta, char_meta, slot_def, archetype_index,
+                animate_keys=None):
+    """Equip gear by creating a PixelLab character STATE — a sibling character
+    that wears the gear, stored on PixelLab (visible in the UI, syncable). We
+    save the state's rotations and animate the configured animations so the gear
+    is part of the motion. Returns the gear_id."""
+    slot = slot_def["slot"]
+    archetype = slot_def["archetypes"][archetype_index]
+    gear_id = f"{slot}_{archetype_index:02d}"
     cid_local = char_meta["local_id"]
-    base_dirs = dirs or animation_directions(skel_meta, char_meta)
-    made = 0
-    for key in anim_keys:
-        for direction in base_dirs:
-            base = load_anim_frames(char_meta, key, direction)
-            if not base:
-                continue
-            worn = client.transfer_outfit(icon, base, additional_instructions=instr,
-                                          seed=_seed(sid, cid_local, gear_id, key, direction))
-            if not worn:
-                continue
-            edir = os.path.join(skeleton_dir(sid), "characters", cid_local,
-                                "equipped", gear_id)
-            _save_frames(worn, os.path.join(edir, f"{key}__{direction}"))
-            strip = os.path.join(edir, f"{key}__{direction}.png")
-            _save_strip(worn, strip)
-            _save_gif(worn, os.path.join(edir, f"{key}__{direction}.gif"))
-            eq = char_meta.setdefault("equipped", {}).setdefault(gear_id, {}).setdefault(key, {})
-            eq[direction] = {
-                "slot": slot, "archetype": archetype,
-                "strip": os.path.relpath(strip, ROOT),
-                "gif": os.path.relpath(os.path.join(edir, f"{key}__{direction}.gif"), ROOT),
-            }
-            made += 1
-        _write_json(character_meta_path(sid, cid_local), char_meta)
-    return made
+    sdir = os.path.join(skeleton_dir(sid), "characters", cid_local, "states", gear_id)
+
+    edit = f"wearing {archetype}"
+    state_id, rotations = client.create_state(
+        char_meta["pixellab_id"], edit_description=edit,
+        seed=_seed(sid, cid_local, gear_id))
+    for d, img in rotations.items():
+        _save_png(img, os.path.join(sdir, "rotations", f"{d}.png"))
+    if "south" in rotations:
+        _save_png(rotations["south"], os.path.join(sdir, "portrait.png"))
+
+    state_meta = {
+        "gear_id": gear_id, "slot": slot, "archetype": archetype,
+        "pixellab_id": state_id, "edit_description": edit,
+        "rotations": sorted(rotations.keys()), "animations": {},
+    }
+    dirs = animation_directions(skel_meta, char_meta)
+    for key in (animate_keys or []):
+        adef = next((a for a in cfg["animations"] if a["key"] == key), None)
+        if adef:
+            state_meta["animations"][key] = _animate_into(
+                client, state_id, adef, dirs, os.path.join(sdir, "animations"))
+
+    char_meta.setdefault("states", {})[gear_id] = state_meta
+    _write_json(character_meta_path(sid, cid_local), char_meta)
+    return gear_id

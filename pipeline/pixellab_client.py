@@ -150,6 +150,34 @@ class PixelLabClient:
         rotations = self.fetch_rotations(cid)
         return cid, rotations
 
+    def create_state(self, character_id, edit_description,
+                     use_color_palette_from_reference=True, no_background=True,
+                     seed=None, job_timeout=900):
+        """Create an equipped/edited STATE of a character (e.g. 'wearing a hat').
+
+        The state is a sibling character stored on PixelLab (shares group_id),
+        visible in the UI and syncable. Returns (state_character_id, {dir: PIL})."""
+        payload = {
+            "character_id": character_id,
+            "edit_description": edit_description,
+            "use_color_palette_from_reference": use_color_palette_from_reference,
+            "no_background": no_background,
+        }
+        if seed is not None:
+            payload["seed"] = seed
+        resp = self._post("/create-character-state", payload)
+        sid = resp["character_id"]
+        job = resp.get("background_job_id")
+        if job:
+            self.wait_job(job, timeout=job_timeout)
+        return sid, self.fetch_rotations(sid)
+
+    def list_characters(self):
+        resp = self._get("/characters")
+        if isinstance(resp, list):
+            return resp
+        return resp.get("characters") or resp.get("items") or []
+
     def get_character(self, character_id):
         return self._get(f"/characters/{character_id}")
 

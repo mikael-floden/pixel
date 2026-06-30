@@ -89,14 +89,25 @@ def next_action(cfg, sid, skel_meta):
             if anim["key"] not in ch.get("animations", {}):
                 return ("animate", ch, anim)
 
-    # Phase 3: gear (shared per skeleton).
+    gear_slots = [s for s in cfg["gear_slots"] if s.get("kind") == "gear"]
+
+    # Phase 3: gear inventory icons (shared per skeleton).
     state = factory.gear_state(sid)
-    for slot_def in cfg["gear_slots"]:
-        if slot_def.get("kind") != "gear":
-            continue
-        have = len(state.get(slot_def["slot"], {}))
-        if have < per_slot:
-            return ("gear", slot_def, have)
+    for slot_def in gear_slots:
+        if len(state.get(slot_def["slot"], {})) < per_slot:
+            return ("gear", slot_def, len(state.get(slot_def["slot"], {})))
+
+    # Phase 4: equip — create a PixelLab character STATE per gear on the
+    # reference character(s), so gear is worn, stored on PixelLab and syncable.
+    ref_only = cfg.get("equip", {}).get("reference_character_only", True)
+    ref_chars = chars[:1] if ref_only else chars
+    for ch in ref_chars:
+        have_states = ch.get("states", {})
+        for slot_def in gear_slots:
+            for i in range(min(per_slot, len(slot_def["archetypes"]))):
+                gear_id = f"{slot_def['slot']}_{i:02d}"
+                if gear_id not in have_states:
+                    return ("equip", ch, slot_def, i)
 
     return ("complete",)
 
@@ -121,7 +132,13 @@ def advance(client, cfg, push=True):
     elif kind == "gear":
         slot_def, archetype_index = action[1], action[2]
         gid = factory.make_gear(client, cfg, sid, skel_meta, slot_def, archetype_index)
-        desc = f"[{sid}] gear {gid} ({slot_def['archetypes'][archetype_index]})"
+        desc = f"[{sid}] gear icon {gid} ({slot_def['archetypes'][archetype_index]})"
+    elif kind == "equip":
+        ch, slot_def, archetype_index = action[1], action[2], action[3]
+        anims = cfg.get("equip", {}).get("animations", [])
+        gid = factory.equip_state(client, cfg, sid, skel_meta, ch, slot_def,
+                                  archetype_index, animate_keys=anims)
+        desc = f"[{sid}] {ch['local_id']} equip state {gid} (worn, {len(anims)} anims)"
     elif kind == "complete":
         skel_meta["status"] = "complete"
         factory._write_json(os.path.join(factory.skeleton_dir(sid), "skeleton.json"),

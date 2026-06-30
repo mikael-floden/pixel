@@ -95,13 +95,16 @@ function renderChar(ch) {
     wrap.appendChild(el('div', 'cap', 'none yet'));
   }
 
-  if (ch.equipped && ch.equipped.length) {
-    wrap.appendChild(el('div', 'section-label', 'Equipped gear (worn, animated)'));
-    ch.equipped.forEach(eq => {
-      wrap.appendChild(el('div', 'cap', `${eq.slot || ''}: ${eq.archetype || eq.gear_id}`));
-      Object.entries(eq.animations).forEach(([key, dirs]) => {
+  if (ch.states && ch.states.length) {
+    wrap.appendChild(el('div', 'section-label', `Equipped states (${ch.states.length}) — stored on PixelLab`));
+    ch.states.forEach(st => {
+      wrap.appendChild(el('div', 'cap', `${st.slot ? st.slot + ': ' : ''}${st.archetype || st.gear_id}`));
+      const rrow = el('div', 'row');
+      (st.rotations || []).forEach(src => rrow.appendChild(cell(src, src.split('/').pop().replace('.png', ''))));
+      if (rrow.childNodes.length) wrap.appendChild(rrow);
+      (st.animations || []).forEach(an => {
         const row = el('div', 'row');
-        Object.entries(dirs).forEach(([d, gif]) => row.appendChild(cell(gif, `${key} ${d}`)));
+        Object.entries(an.directions).forEach(([d, gif]) => row.appendChild(cell(gif, `${an.key} ${d}`)));
         wrap.appendChild(row);
       });
     });
