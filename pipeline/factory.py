@@ -22,6 +22,7 @@ import base64
 import io
 import json
 import os
+import shutil
 import zlib
 
 from PIL import Image
@@ -259,7 +260,12 @@ def animate_one(client, cfg, sid, skel_meta, char_meta, anim_def):
 
 
 def _save_frames(frames, dir_path):
-    """Save individual frames as zero-padded PNGs; return their paths."""
+    """Save individual frames as zero-padded PNGs; return their paths.
+
+    The directory is cleared first so a regenerated animation with FEWER frames
+    can't leave stale higher-numbered frames behind (mixing two versions)."""
+    if os.path.isdir(dir_path):
+        shutil.rmtree(dir_path)
     os.makedirs(dir_path, exist_ok=True)
     paths = []
     for i, f in enumerate(frames):
