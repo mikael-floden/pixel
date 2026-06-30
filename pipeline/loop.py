@@ -46,6 +46,9 @@ def commit_push(message, push=True):
             r = _git("push", "origin", "main", check=False)
             if r.returncode == 0:
                 break
+            # Remote may have advanced (e.g. a concurrent run); rebase and retry.
+            _git("fetch", "origin", "main", check=False)
+            _git("rebase", "origin/main", check=False)
             time.sleep(2 ** (attempt + 1))
         else:
             print("  ! push failed after retries:", r.stderr[:200])
