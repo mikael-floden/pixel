@@ -18,11 +18,24 @@ can evaluate several **skeletons** and commit to a winner later.
 - **Gear** — modular item sprites per slot, generated once per skeleton and
   reused across its roster.
 
-## Gear slots
+## Gear / equipment (PixelLab-native)
 
-`base_body` and `head` come from character creation. The equippable, generated
-slots are **pants, boots, gloves, armor/tunic, helmet/hat** (3 items each),
-stored with a `z` order for overlay compositing in-game.
+We deliberately limit gear to **what PixelLab actually supports**: changing a
+character's outfit via **transfer-outfit** (the `transfer-outfit-v2` API, the
+same tool as Transfer Outfit Pro). There is **no per-layer / z-order
+compositing** — equipping a piece **bakes it onto the animation frames**.
+
+- Each gear piece is generated once as an **item icon** (via `create-image-pixflux`),
+  which doubles as the **outfit reference**.
+- "Equipping" = `transfer-outfit-v2(reference=icon, frames=animation frames)` →
+  a worn variant of that animation. Frames-per-call scale with size
+  (≤64px: 15, 65–80px: 8, 81–256px: 3), so we chunk and stitch.
+- Equippable slots: **pants, boots, gloves, armor/tunic, helmet/hat** (3 items
+  each). `base_body` and `head` come from character creation.
+- Equipping is expensive (one generation per ≤3-frame chunk per animation per
+  direction), so during exploration we only equip the animations in
+  `config.equip.animations` on the reference character. A winning skeleton can
+  be equipped fully.
 
 ## Animation set (25)
 
@@ -34,10 +47,22 @@ recoil backward, behind hits pitch forward, landings deepen with height.
 
 ## Loop algorithm
 
-Per skeleton, in order: create 10 base characters → animate each with all 25 →
-generate 3 gear per equippable slot → mark complete → next skeleton. The next
-unit of work is derived from the filesystem, so the loop is resumable and each
-unit commits + pushes to `main`. It stops cleanly when generations run low.
+Per skeleton, in order: create 10 base characters → animate each across **all of
+the character's orientations** → generate 3 gear icons per equippable slot →
+equip gear onto the reference character's configured animations → mark complete →
+next skeleton. The next unit of work is derived from the filesystem, so the loop
+is resumable and each unit commits + pushes to `main`. It stops cleanly when
+generations run low.
+
+## Manual edits & sync (PixelLab is source of truth)
+
+A character's art lives on PixelLab under its `character_id`. You can refine any
+animation/direction by hand in the PixelLab web app; then `pipeline/sync.py`
+mirrors the live state back into the repo (downloads frames, repackages strips +
+GIFs, updates the manifest, pushes to `main`). Sync costs **zero generations**.
+The loop only ever *creates missing* animations, so it never overwrites hand
+edits. If a type has duplicate animation groups, sync keeps the one covering the
+most directions.
 
 ## PixelLab integration (verified)
 

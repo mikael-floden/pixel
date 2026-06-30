@@ -31,8 +31,14 @@ For each skeleton, in order (all driven by `config/factory.json`):
    fall, kicks/punches standing/crouching/air/running, low/med/high landings,
    and front/back/crouch damage reactions),
 3. generate **3 gear items per equippable slot** (pants, boots, gloves,
-   armor/tunic, helmet/hat) — shared across the roster,
+   armor/tunic, helmet/hat), and **equip** them onto the reference character by
+   applying each as an outfit onto the animation frames (PixelLab
+   `transfer-outfit`), so gear is worn and part of the motion,
 4. mark the skeleton complete and open the next one with new parameters.
+
+> Gear uses **only PixelLab-native tech**: equipping = `transfer-outfit` baked
+> onto frames, not per-layer compositing. The gear icon doubles as the outfit
+> reference.
 
 Every unit of work commits and **pushes to `main`**, and the loop is **fully
 resumable** — it derives the next missing unit from the filesystem.
@@ -64,6 +70,19 @@ pushes each unit to `main` — fully manageable from a phone:
    **Disable workflow**.
 
 Without the secret the workflow no-ops with a warning, so it's safe to land first.
+
+## Refine art by hand, then sync
+
+PixelLab is the source of truth for a character's art. Refine any animation in
+the [PixelLab web app](https://www.pixellab.ai/), then mirror it into the repo:
+
+```bash
+python pipeline/sync.py --character char_00   # pulls live frames, pushes to main
+python pipeline/sync.py                        # sync every character
+```
+
+Sync costs **zero generations** (download only). The loop only creates *missing*
+animations, so it never overwrites your edits.
 
 ## Test on your phone
 
