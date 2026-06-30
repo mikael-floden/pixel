@@ -1,0 +1,34 @@
+{
+  "name": "modular-pixel-character-factory",
+  "_comment": "Top-level knobs for the factory. mode=redraw paints every gear-equipped variant as its own sprite (default, works today). mode=rig is the future amortized path: paint each layer once, then re-pose the SAME layer art with the skeleton (TODO).",
+
+  "mode": "redraw",
+
+  "canvas": { "w": 48, "h": 64 },
+
+  "supersample": 1,
+  "alpha_threshold": 128,
+  "palette_tolerance": 24,
+  "min_blob_px": 3,
+
+  "paths": {
+    "config": "config",
+    "assets": "assets",
+    "characters": "assets/characters",
+    "gear": "assets/gear",
+    "preview": "assets/preview"
+  },
+
+  "pixellab": {
+    "base_url": "https://api.pixellab.ai/v2",
+    "api_key_env": "PIXELLAB_API_KEY",
+    "style_ref": null,
+    "n_colors": 18
+  },
+
+  "rig_mode_todo": [
+    "Persist each painted layer (body part + gear) as a neutral-pose sprite keyed by skeleton bind pose.",
+    "Re-pose layers by warping/redrawing against target pose joints instead of re-prompting PixelLab per frame.",
+    "Fall back to redraw mode when a layer cannot be rigged cleanly."
+  ]
+}
