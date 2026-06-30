@@ -58,22 +58,39 @@ def strip_kept_idle_frame(frames):
         return frames[1:]
     return frames
 
-# Distinct PERSON looks (appearance only — no clothing; the base is undressed and
-# clothing comes from dress states). Mature, gritty, badass adults — varied in
-# age, gender, build and ethnicity. No children / cutesy tropes.
+# Distinct PERSON looks (appearance + feeling only — no clothing; the base is
+# undressed and clothing comes from dress states). A HUGE spread of real human
+# beings: every age, body, gender, ethnicity, mood and walk of life — happy,
+# in love, weary, joyful, hardened, gentle, addicted, sensual, grieving. Mature
+# art for a teen-and-up audience: never childish/cutesy, but not all dark or
+# "badass" either. The feeling lives in the face, posture and build, since the
+# base body is undressed.
 CHARACTER_LOOKS = [
+    # love, joy, warmth
+    "a radiant young woman glowing with new love, soft round cheeks, a wide happy smile and bright eyes, wavy auburn hair, gentle slender build",
+    "a beaming dark-skinned young man laughing with his whole face, short cropped hair, dimples, easy relaxed posture, lean athletic build",
+    "a contented pregnant woman with a soft round belly and a serene loving smile, dark hair loosely tied, warm full figure",
+    "a tender elderly man with a kind crinkled smile and gentle eyes, balding with wispy grey hair, slight stoop, soft slim build",
+    "a jovial heavyset older woman with rosy cheeks, laugh lines and a big warm grin, curly greying hair, plump build",
+    # ordinary, working, quiet dignity
+    "a confident broad-shouldered dock worker, dark-skinned, easy half-smile, close-cropped hair, strong heavyset build",
+    "a tired middle-aged man with a soft paunch and a thoughtful weary expression, salt-and-pepper hair, crow's feet, average build",
+    "a poised aging dancer with silver hair in a neat bun, graceful upright posture and a faint wistful smile, lean and slight",
+    "a sturdy weathered fisherman with sun-leathered skin, a toothy grin and squint lines, wiry old build",
+    "a proud strong mother figure with hair wrapped up, calm steady eyes and a faint smile, broad full hips and shoulders",
+    # struggle, edge, the street
+    "a weary streetwalker with striking tired eyes, smudged dark eyeliner and dyed platinum hair, slim figure, a guarded knowing look",
+    "a gaunt strung-out addict with hollow cheeks, restless sunken eyes and thin trembling arms, unkempt hair, frail wiry build",
+    "a nervous scrawny young pickpocket with darting eyes and a sly half-grin, messy hair, small wiry build",
+    "a burned-out soldier with a thousand-yard stare and a tight jaw, short scarred hair, lean hardened build",
+    # the hardened few (some really are thugs)
     "a grizzled mercenary with a scarred face and a shaved head, muscular build",
-    "a brooding swordsman with long black hair and a stern jaw, broad shoulders",
-    "a battle-worn warrior woman with a long dark braid and war paint, athletic build",
-    "an older veteran with a grey beard and an eyepatch, heavy build",
-    "a bald monk with face tattoos and a hard stare, lean and muscular",
-    "a fierce huntress with cropped dark hair and a cold gaze, lithe build",
-    "a hulking barbarian with wild black hair and a thick beard, massive build",
-    "a gaunt pale man with sunken eyes and sharp cheekbones, wiry build",
-    "a scarred duelist with slicked-back dark hair and a goatee, athletic build",
-    "a hardened woman with a buzz cut and a broken nose, wiry build",
-    "a stern dark-skinned fighter with a shaved head and a strong jaw, muscular build",
-    "a grim older woman with grey-streaked hair tied back, gaunt weathered face",
+    "a hulking tattooed bruiser with a thick neck, broken nose and a cold flat stare, massive build",
+    # serenity, age, inner life
+    "a serene tattooed woman with shaved sides and a calm half-smile, ink across her shoulders, athletic build",
+    "a blind elder with milky pale eyes and a weathered tranquil face, long thin white hair, frail build",
+    "a melancholic pale poet with sad downturned eyes and long unkempt dark hair, slight delicate build",
+    "a flirtatious curvy woman with tousled wavy hair, a knowing smirk and a raised brow, soft full figure",
 ]
 
 
