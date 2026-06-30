@@ -129,19 +129,24 @@ def _save_strip(frames, path):
 
 
 def _save_gif(frames, path, duration_ms=140):
-    """Dark-background GIF for quick mobile preview (true alpha lives in PNGs)."""
+    """Transparent animated GIF preview. GIF transparency is 1-bit, so alpha is
+    thresholded (>=128 opaque); the per-pixel alpha lives in the PNGs."""
     if not frames:
         return
     w = max(f.width for f in frames)
     h = max(f.height for f in frames)
-    flat = []
+    out = []
     for f in frames:
-        bg = Image.new("RGBA", (w, h), PREVIEW_BG)
-        bg.alpha_composite(f, ((w - f.width) // 2, (h - f.height) // 2))
-        flat.append(bg.convert("RGB"))
+        rgba = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+        rgba.alpha_composite(f.convert("RGBA"), ((w - f.width) // 2, (h - f.height) // 2))
+        # Quantize colors (reserve palette index 255 for transparency).
+        p = rgba.convert("RGB").quantize(colors=255, dither=Image.NONE)
+        transparent = rgba.getchannel("A").point(lambda a: 255 if a < 128 else 0)
+        p.paste(255, mask=transparent)
+        out.append(p)
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    flat[0].save(path, save_all=True, append_images=flat[1:], duration=duration_ms,
-                 loop=0, optimize=True)
+    out[0].save(path, save_all=True, append_images=out[1:], duration=duration_ms,
+                loop=0, transparency=255, disposal=2, optimize=False)
 
 
 def frame_canvas(params):
