@@ -21,6 +21,26 @@
     "wave",
     "attack"
   ],
-  "skeleton_count": 0,
-  "skeletons": []
+  "skeleton_count": 1,
+  "skeletons": [
+    {
+      "id": "00_low8_64",
+      "status": "in_progress",
+      "note": "Low top-down, 64x64, 8 directions.",
+      "params": {
+        "id": "00_low8_64",
+        "note": "Low top-down, 64x64, 8 directions.",
+        "view": "low top-down",
+        "width": 64,
+        "height": 64,
+        "directions": 8,
+        "template_id": "mannequin",
+        "outline": "single color black outline",
+        "shading": "basic shading",
+        "detail": "medium detail"
+      },
+      "character_count": 0,
+      "characters": []
+    }
+  ]
 }

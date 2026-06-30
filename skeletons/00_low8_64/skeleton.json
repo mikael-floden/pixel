@@ -1,0 +1,25 @@
+{
+  "id": "00_low8_64",
+  "index": 0,
+  "params": {
+    "id": "00_low8_64",
+    "note": "Low top-down, 64x64, 8 directions.",
+    "view": "low top-down",
+    "width": 64,
+    "height": 64,
+    "directions": 8,
+    "template_id": "mannequin",
+    "outline": "single color black outline",
+    "shading": "basic shading",
+    "detail": "medium detail"
+  },
+  "style": "detailed RPG pixel art inspired by Grave Seasons, realistic human proportions and expressive faces, naturalistic lighting and a varied lifelike color palette, soft dramatic shading, high detail, clean readable shapes; mature art for a teen-and-up audience, never childish or cutesy but not forced to be dark",
+  "status": "in_progress",
+  "animations": [
+    "idle",
+    "walk"
+  ],
+  "dresses": [
+    "undressed"
+  ]
+}
