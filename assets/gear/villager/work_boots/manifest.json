@@ -1,0 +1,17 @@
+{
+  "canvas": {
+    "w": 48,
+    "h": 64
+  },
+  "animations": {
+    "id": "work_boots",
+    "slot": "boots",
+    "archetype": "villager",
+    "desc": "muddy work boots",
+    "hides": [
+      "foot",
+      "shin"
+    ],
+    "mode": "placeholder"
+  }
+}
