@@ -33,6 +33,26 @@
     "hit_crouch_front",
     "hit_crouch_behind"
   ],
-  "skeleton_count": 0,
-  "skeletons": []
+  "skeleton_count": 1,
+  "skeletons": [
+    {
+      "id": "00_td8_64",
+      "status": "in_progress",
+      "note": "Top-down, 64x64, 8 directions.",
+      "params": {
+        "id": "00_td8_64",
+        "note": "Top-down, 64x64, 8 directions.",
+        "view": "low top-down",
+        "width": 64,
+        "height": 64,
+        "directions": 8,
+        "template_id": "mannequin",
+        "outline": "single color black outline",
+        "shading": "basic shading",
+        "detail": "medium detail"
+      },
+      "character_count": 0,
+      "characters": []
+    }
+  ]
 }
