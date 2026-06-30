@@ -39,86 +39,8 @@
         "shading": "basic shading",
         "detail": "medium detail"
       },
-      "character_count": 2,
-      "characters": [
-        {
-          "local_id": "char_00",
-          "look": "a radiant adult woman glowing with new love, a warm genuine smile and bright eyes, long dark wavy hair, soft feminine grown figure",
-          "portrait": "skeletons/00_low8_64/characters/char_00/portrait.png",
-          "rotations": [
-            "skeletons/00_low8_64/characters/char_00/rotations/east.png",
-            "skeletons/00_low8_64/characters/char_00/rotations/north.png",
-            "skeletons/00_low8_64/characters/char_00/rotations/north-east.png",
-            "skeletons/00_low8_64/characters/char_00/rotations/north-west.png",
-            "skeletons/00_low8_64/characters/char_00/rotations/south.png",
-            "skeletons/00_low8_64/characters/char_00/rotations/south-east.png",
-            "skeletons/00_low8_64/characters/char_00/rotations/south-west.png",
-            "skeletons/00_low8_64/characters/char_00/rotations/west.png"
-          ],
-          "animation_count": 2,
-          "animations": [
-            {
-              "key": "idle",
-              "directions": {
-                "south": "skeletons/00_low8_64/characters/char_00/animations/idle__south.gif",
-                "north": "skeletons/00_low8_64/characters/char_00/animations/idle__north.gif",
-                "east": "skeletons/00_low8_64/characters/char_00/animations/idle__east.gif",
-                "west": "skeletons/00_low8_64/characters/char_00/animations/idle__west.gif",
-                "south-east": "skeletons/00_low8_64/characters/char_00/animations/idle__south-east.gif",
-                "south-west": "skeletons/00_low8_64/characters/char_00/animations/idle__south-west.gif",
-                "north-east": "skeletons/00_low8_64/characters/char_00/animations/idle__north-east.gif",
-                "north-west": "skeletons/00_low8_64/characters/char_00/animations/idle__north-west.gif"
-              }
-            },
-            {
-              "key": "walk",
-              "directions": {
-                "south": "skeletons/00_low8_64/characters/char_00/animations/walk__south.gif",
-                "north": "skeletons/00_low8_64/characters/char_00/animations/walk__north.gif",
-                "east": "skeletons/00_low8_64/characters/char_00/animations/walk__east.gif",
-                "west": "skeletons/00_low8_64/characters/char_00/animations/walk__west.gif",
-                "south-east": "skeletons/00_low8_64/characters/char_00/animations/walk__south-east.gif",
-                "south-west": "skeletons/00_low8_64/characters/char_00/animations/walk__south-west.gif",
-                "north-east": "skeletons/00_low8_64/characters/char_00/animations/walk__north-east.gif",
-                "north-west": "skeletons/00_low8_64/characters/char_00/animations/walk__north-west.gif"
-              }
-            }
-          ],
-          "outfits": []
-        },
-        {
-          "local_id": "char_01",
-          "look": "a beaming dark-skinned young man laughing with his whole face, short cropped hair, dimples, easy relaxed posture, lean athletic build",
-          "portrait": "skeletons/00_low8_64/characters/char_01/portrait.png",
-          "rotations": [
-            "skeletons/00_low8_64/characters/char_01/rotations/east.png",
-            "skeletons/00_low8_64/characters/char_01/rotations/north.png",
-            "skeletons/00_low8_64/characters/char_01/rotations/north-east.png",
-            "skeletons/00_low8_64/characters/char_01/rotations/north-west.png",
-            "skeletons/00_low8_64/characters/char_01/rotations/south.png",
-            "skeletons/00_low8_64/characters/char_01/rotations/south-east.png",
-            "skeletons/00_low8_64/characters/char_01/rotations/south-west.png",
-            "skeletons/00_low8_64/characters/char_01/rotations/west.png"
-          ],
-          "animation_count": 1,
-          "animations": [
-            {
-              "key": "idle",
-              "directions": {
-                "south": "skeletons/00_low8_64/characters/char_01/animations/idle__south.gif",
-                "north": "skeletons/00_low8_64/characters/char_01/animations/idle__north.gif",
-                "east": "skeletons/00_low8_64/characters/char_01/animations/idle__east.gif",
-                "west": "skeletons/00_low8_64/characters/char_01/animations/idle__west.gif",
-                "south-east": "skeletons/00_low8_64/characters/char_01/animations/idle__south-east.gif",
-                "south-west": "skeletons/00_low8_64/characters/char_01/animations/idle__south-west.gif",
-                "north-east": "skeletons/00_low8_64/characters/char_01/animations/idle__north-east.gif",
-                "north-west": "skeletons/00_low8_64/characters/char_01/animations/idle__north-west.gif"
-              }
-            }
-          ],
-          "outfits": []
-        }
-      ]
+      "character_count": 0,
+      "characters": []
     }
   ]
 }

@@ -189,6 +189,10 @@ class PixelLabClient:
             self.wait_job(job, timeout=job_timeout)
         return sid, self.fetch_rotations(sid)
 
+    def delete_character(self, character_id):
+        """Delete a character (and its animations) from PixelLab."""
+        return self._request("DELETE", f"/characters/{character_id}")
+
     def list_characters(self):
         resp = self._get("/characters")
         if isinstance(resp, list):

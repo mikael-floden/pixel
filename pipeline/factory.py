@@ -211,6 +211,52 @@ def _normalize(img, target):
     return img
 
 
+# --- base-character QA ------------------------------------------------------
+
+# Views that face opposite ways and must never look alike. PixelLab's
+# 8-direction generation sometimes fails to turn a character around and emits a
+# back/diagonal view that is a near-duplicate of its front — which then poisons
+# every animation generated for that direction. We catch it before animating.
+OPPOSITE_DIRS = [
+    ("south", "north"), ("east", "west"),
+    ("south-east", "north-west"), ("south-west", "north-east"),
+]
+
+
+def validate_rotations(rotations, min_opposite_ratio=0.5):
+    """Sanity-check a freshly generated base character's rotations.
+
+    Returns (ok, problems). A correct character has opposite views (front/back,
+    left/right) that differ a lot; if an opposite pair is a near-duplicate
+    (its pixel difference is well below the median of all pairwise differences),
+    that direction collapsed onto its opposite and the base is broken. Using a
+    ratio of the per-character median makes this self-normalizing across palettes
+    and sizes (no magic absolute threshold)."""
+    import numpy as np
+    dirs = [d for d in rotations if rotations.get(d) is not None]
+    if len(dirs) < 2:
+        return True, []
+    arrs = {d: np.asarray(rotations[d].convert("RGBA"), dtype=np.int16) for d in dirs}
+
+    def dff(a, b):
+        return float(np.abs(arrs[a] - arrs[b]).mean())
+
+    pair = {}
+    for i, a in enumerate(dirs):
+        for b in dirs[i + 1:]:
+            pair[(a, b)] = dff(a, b)
+    vals = sorted(pair.values())
+    median = vals[len(vals) // 2]
+    problems = []
+    for a, b in OPPOSITE_DIRS:
+        d = pair.get((a, b), pair.get((b, a)))
+        if d is not None and median > 0 and d < min_opposite_ratio * median:
+            problems.append(
+                f"{a} and {b} look near-identical (diff {d:.2f} < "
+                f"{min_opposite_ratio:g}x median {median:.2f}) — one view didn't rotate")
+    return (not problems), problems
+
+
 # --- skeleton ---------------------------------------------------------------
 
 def skeleton_dir(sid):
@@ -270,24 +316,49 @@ def list_characters(sid):
     return out
 
 
-def create_base_character(client, cfg, sid, skel_meta, char_index):
-    """Create an UNDRESSED base character (neutral body, ready to be dressed)."""
+def create_base_character(client, cfg, sid, skel_meta, char_index, max_attempts=3):
+    """Create an UNDRESSED base character (neutral body, ready to be dressed).
+
+    Each attempt is validated (see validate_rotations) BEFORE we keep it, because
+    a base with a collapsed direction poisons every animation built on it. A
+    rejected attempt is deleted from PixelLab and retried with a fresh seed; if
+    all attempts fail we keep the last as best effort but flag it in the manifest
+    so it's visible rather than silently bad."""
     p = skel_meta["params"]
     look = CHARACTER_LOOKS[char_index % len(CHARACTER_LOOKS)]
     base_outfit = cfg.get("base_outfit", "wearing only plain underclothes, barefoot")
     desc = f"{look}, {base_outfit}, {cfg['style_base']}"
     cid_local = f"char_{char_index:02d}"
     cdir = os.path.join(skeleton_dir(sid), "characters", cid_local)
-
-    character_id, rotations = client.create_character(
-        description=desc, width=p["width"], height=p["height"], view=p["view"],
-        directions=p.get("directions", 8),
-        template_id=p.get("template_id", "mannequin"), outline=p.get("outline"),
-        shading=p.get("shading"), detail=p.get("detail"),
-        seed=_seed(sid, char_index),
-    )
     canvas = frame_canvas(p)
-    rotations = {d: _normalize(img, canvas) for d, img in rotations.items()}
+    base_seed = _seed(sid, char_index)
+
+    character_id = rotations = None
+    ok, problems = True, []
+    for attempt in range(max_attempts):
+        character_id, raw = client.create_character(
+            description=desc, width=p["width"], height=p["height"], view=p["view"],
+            directions=p.get("directions", 8),
+            template_id=p.get("template_id", "mannequin"), outline=p.get("outline"),
+            shading=p.get("shading"), detail=p.get("detail"),
+            seed=base_seed + attempt * 7919,
+        )
+        rotations = {d: _normalize(img, canvas) for d, img in raw.items()}
+        ok, problems = validate_rotations(rotations)
+        if ok:
+            break
+        last = attempt == max_attempts - 1
+        print(f"  ! base {cid_local} attempt {attempt + 1}/{max_attempts} rejected: "
+              f"{'; '.join(problems)}")
+        if not last:
+            try:
+                client.delete_character(character_id)  # drop the bad one, retry fresh
+            except Exception as e:
+                print(f"    (could not delete rejected character: {e})")
+    if not ok:
+        print(f"  !! base {cid_local} still flawed after {max_attempts} attempts; "
+              f"keeping flagged best effort")
+
     for direction, img in rotations.items():
         _save_png(img, os.path.join(cdir, "rotations", f"{direction}.png"))
     if "south" in rotations:
@@ -299,6 +370,7 @@ def create_base_character(client, cfg, sid, skel_meta, char_index):
         "local_id": cid_local, "pixellab_id": character_id, "index": char_index,
         "description": desc, "look": look, "skeleton": sid,
         "rotations": sorted(rotations.keys()), "animations": {}, "base_done": True,
+        "rotation_qa": {"ok": ok, "problems": problems},
     }
     _write_json(character_meta_path(sid, cid_local), meta)
     return meta
