@@ -39,7 +39,7 @@
         "shading": "basic shading",
         "detail": "medium detail"
       },
-      "character_count": 4,
+      "character_count": 5,
       "characters": [
         {
           "local_id": "char_00",
@@ -60,22 +60,25 @@
             {
               "key": "idle",
               "directions": {
-                "south": "skeletons/00_low8_64/characters/char_00/animations/idle__south.gif",
-                "north": "skeletons/00_low8_64/characters/char_00/animations/idle__north.gif",
                 "east": "skeletons/00_low8_64/characters/char_00/animations/idle__east.gif",
-                "west": "skeletons/00_low8_64/characters/char_00/animations/idle__west.gif",
-                "south-east": "skeletons/00_low8_64/characters/char_00/animations/idle__south-east.gif",
-                "south-west": "skeletons/00_low8_64/characters/char_00/animations/idle__south-west.gif",
                 "north-east": "skeletons/00_low8_64/characters/char_00/animations/idle__north-east.gif",
-                "north-west": "skeletons/00_low8_64/characters/char_00/animations/idle__north-west.gif"
+                "north": "skeletons/00_low8_64/characters/char_00/animations/idle__north.gif",
+                "west": "skeletons/00_low8_64/characters/char_00/animations/idle__west.gif",
+                "north-west": "skeletons/00_low8_64/characters/char_00/animations/idle__north-west.gif",
+                "south-west": "skeletons/00_low8_64/characters/char_00/animations/idle__south-west.gif",
+                "south-east": "skeletons/00_low8_64/characters/char_00/animations/idle__south-east.gif",
+                "south": "skeletons/00_low8_64/characters/char_00/animations/idle__south.gif"
               }
             },
             {
               "key": "walk",
               "directions": {
-                "south": "skeletons/00_low8_64/characters/char_00/animations/walk__south.gif",
                 "north": "skeletons/00_low8_64/characters/char_00/animations/walk__north.gif",
+                "south": "skeletons/00_low8_64/characters/char_00/animations/walk__south.gif",
+                "north-east": "skeletons/00_low8_64/characters/char_00/animations/walk__north-east.gif",
                 "east": "skeletons/00_low8_64/characters/char_00/animations/walk__east.gif",
+                "south-west": "skeletons/00_low8_64/characters/char_00/animations/walk__south-west.gif",
+                "north-west": "skeletons/00_low8_64/characters/char_00/animations/walk__north-west.gif",
                 "west": "skeletons/00_low8_64/characters/char_00/animations/walk__west.gif",
                 "south-east": "skeletons/00_low8_64/characters/char_00/animations/walk__south-east.gif"
               }
@@ -212,6 +215,24 @@
               }
             }
           ],
+          "outfits": []
+        },
+        {
+          "local_id": "char_04",
+          "look": "a jovial heavyset older woman with rosy cheeks, laugh lines and a big warm grin, curly greying hair, plump build",
+          "portrait": "skeletons/00_low8_64/characters/char_04/portrait.png",
+          "rotations": [
+            "skeletons/00_low8_64/characters/char_04/rotations/east.png",
+            "skeletons/00_low8_64/characters/char_04/rotations/north.png",
+            "skeletons/00_low8_64/characters/char_04/rotations/north-east.png",
+            "skeletons/00_low8_64/characters/char_04/rotations/north-west.png",
+            "skeletons/00_low8_64/characters/char_04/rotations/south.png",
+            "skeletons/00_low8_64/characters/char_04/rotations/south-east.png",
+            "skeletons/00_low8_64/characters/char_04/rotations/south-west.png",
+            "skeletons/00_low8_64/characters/char_04/rotations/west.png"
+          ],
+          "animation_count": 0,
+          "animations": [],
           "outfits": []
         }
       ]
