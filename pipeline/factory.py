@@ -67,7 +67,7 @@ def strip_kept_idle_frame(frames):
 # base body is undressed.
 CHARACTER_LOOKS = [
     # love, joy, warmth
-    "a radiant young woman glowing with new love, soft round cheeks, a wide happy smile and bright eyes, wavy auburn hair, gentle slender build",
+    "a radiant adult woman glowing with new love, a warm genuine smile and bright eyes, long dark wavy hair, soft feminine grown figure",
     "a beaming dark-skinned young man laughing with his whole face, short cropped hair, dimples, easy relaxed posture, lean athletic build",
     "a contented pregnant woman with a soft round belly and a serene loving smile, dark hair loosely tied, warm full figure",
     "a tender elderly man with a kind crinkled smile and gentle eyes, balding with wispy grey hair, slight stoop, soft slim build",
@@ -330,7 +330,7 @@ def _animate_into(client, adef, dirs, anim_out_dir, pixellab_id, canvas):
     frames_by_dir = client.animate(
         character_id=pixellab_id, animation_name=key,
         action_description=adef["action"], frame_count=MAX_FRAMES,
-        directions=dirs,
+        directions=dirs, template_animation_id=adef.get("template"),
     )
     saved = {}
     for direction, frames in frames_by_dir.items():

@@ -24,9 +24,9 @@
     "8": ["south", "north", "east", "west", "south-east", "south-west", "north-east", "north-west"]
   },
 
-  "_animation_pool": "Ordered pool. First two (idle, walk) are every character's base; the loop appends the next ones up to the target, then beyond in Phase B. Keep `action` to ONE simple word — extra words confuse PixelLab and produce weird / non-looping cycles. EVERY animation is always generated at MAX_FRAMES (see factory.py) for the smoothest motion; the per-animation `frames` below is informational only.",
+  "_animation_pool": "Ordered pool. First two (idle, walk) are every character's base; the loop appends the next ones up to the target, then beyond in Phase B. Keep `action` to ONE simple word — extra words confuse PixelLab and produce weird / non-looping cycles. EVERY text animation is generated at MAX_FRAMES (see factory.py) for the smoothest motion; the per-animation `frames` below is informational only. An optional `template` uses a PixelLab curated skeleton-driven motion instead of free-text generation (used for idle: a calm still breathing pose with no random hand gestures).",
   "animations": [
-    { "key": "idle",   "action": "idle",     "frames": 16 },
+    { "key": "idle",   "action": "idle",     "frames": 16, "template": "breathing-idle" },
     { "key": "walk",   "action": "walking",  "frames": 16 },
     { "key": "run",    "action": "running",  "frames": 16 },
     { "key": "jump",   "action": "jumping",  "frames": 16 },
@@ -52,7 +52,7 @@
   "style_base": "detailed RPG pixel art inspired by Grave Seasons, realistic human proportions and expressive faces, naturalistic lighting and a varied lifelike color palette, soft dramatic shading, high detail, clean readable shapes; mature art for a teen-and-up audience, never childish or cutesy but not forced to be dark",
 
   "skeleton_variations": [
-    { "id": "00_low4_64",  "note": "Low top-down, 64x64, 4 directions.",  "view": "low top-down",  "width": 64, "height": 64, "directions": 4, "template_id": "mannequin", "outline": "single color black outline", "shading": "basic shading", "detail": "medium detail" },
+    { "id": "00_low8_64",  "note": "Low top-down, 64x64, 8 directions.",  "view": "low top-down",  "width": 64, "height": 64, "directions": 8, "template_id": "mannequin", "outline": "single color black outline", "shading": "basic shading", "detail": "medium detail" },
     { "id": "01_low8_64",  "note": "Low top-down, 64x64, 8 directions.",  "view": "low top-down",  "width": 64, "height": 64, "directions": 8, "template_id": "mannequin", "outline": "single color black outline", "shading": "basic shading", "detail": "medium detail" },
     { "id": "02_high4_64", "note": "High top-down, 64x64, 4 directions.", "view": "high top-down", "width": 64, "height": 64, "directions": 4, "template_id": "mannequin", "outline": "single color black outline", "shading": "basic shading", "detail": "medium detail" },
     { "id": "03_low4_96",  "note": "Low top-down, 96x96, 4 directions, more detail.", "view": "low top-down", "width": 96, "height": 96, "directions": 4, "template_id": "mannequin", "outline": "single color black outline", "shading": "detailed shading", "detail": "highly detailed" },

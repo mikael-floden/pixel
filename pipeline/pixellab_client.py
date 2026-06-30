@@ -226,12 +226,19 @@ class PixelLabClient:
         return None
 
     def _animate_call(self, character_id, animation_name, action_description,
-                      frame_count, directions, job_timeout):
-        resp = self._post("/animate-character", {
+                      frame_count, directions, job_timeout, template_animation_id=None):
+        payload = {
             "character_id": character_id, "animation_name": animation_name,
-            "action_description": action_description, "frame_count": frame_count,
             "directions": list(directions),
-        })
+        }
+        if template_animation_id:
+            # Template mode: a curated skeleton-driven motion (e.g. a calm
+            # breathing idle). frame_count/action_description don't apply.
+            payload["template_animation_id"] = template_animation_id
+        else:
+            payload["action_description"] = action_description
+            payload["frame_count"] = frame_count
+        resp = self._post("/animate-character", payload)
         job_ids = resp.get("background_job_ids", [])
         dirs = resp.get("directions", list(directions))
         out = {}
@@ -244,8 +251,12 @@ class PixelLabClient:
         return out
 
     def animate(self, character_id, animation_name, action_description,
-                frame_count=6, directions=("east",), job_timeout=900):
+                frame_count=6, directions=("east",), job_timeout=900,
+                template_animation_id=None):
         """Animate a character across directions. Returns {direction: [PIL frames]}.
+
+        With `template_animation_id` the animation uses PixelLab's curated
+        template motion (skeleton-driven) instead of free text generation.
 
         Tries one batched call; if it fails (e.g. one unsupported direction
         422s the whole request), retries each direction individually so a single
@@ -253,7 +264,7 @@ class PixelLabClient:
         dirs = list(directions)
         try:
             out = self._animate_call(character_id, animation_name, action_description,
-                                     frame_count, dirs, job_timeout)
+                                     frame_count, dirs, job_timeout, template_animation_id)
             if out:
                 return out
         except PixelLabError as e:
@@ -262,7 +273,8 @@ class PixelLabClient:
         for d in dirs:
             try:
                 out.update(self._animate_call(character_id, animation_name,
-                                              action_description, frame_count, [d], job_timeout))
+                                              action_description, frame_count, [d],
+                                              job_timeout, template_animation_id))
             except PixelLabError as e:
                 print(f"  ! animate {animation_name} [{d}] failed: {e}")
         return out
