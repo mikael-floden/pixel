@@ -83,6 +83,7 @@ def _mirror_animations(client, detail, anim_out_dir, canvas):
             frames = _download_frames(client, urls)
             if not frames:
                 continue
+            frames = factory.strip_kept_idle_frame(frames)
             frames = [factory._normalize(f, canvas) for f in frames]
             fdir = os.path.join(anim_out_dir, key, direction)
             factory._save_frames(frames, fdir)

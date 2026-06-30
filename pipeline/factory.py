@@ -43,6 +43,21 @@ PREVIEW_BG = (32, 36, 43, 255)
 # per-animation `frames` value in config is informational only.
 MAX_FRAMES = 16
 
+
+def strip_kept_idle_frame(frames):
+    """Drop PixelLab's "Keep first frame (idle pose)" lead frame.
+
+    The animate-character v3 endpoint always prepends the character's idle/
+    rotation pose as frame 0 (the UI's "Keep first frame (idle pose)" option,
+    which has no API toggle). For a cyclic animation that idle pose is a
+    standing hitch in the middle of the loop, so we drop it and keep only the
+    motion frames. PixelLab caps motion at MAX_FRAMES, so any clip longer than
+    that has the idle lead; clips at/under MAX_FRAMES (e.g. made in the UI with
+    the box unchecked) are left untouched."""
+    if len(frames) > MAX_FRAMES:
+        return frames[1:]
+    return frames
+
 # Distinct PERSON looks (appearance only — no clothing; the base is undressed and
 # clothing comes from dress states). Mature, gritty, badass adults — varied in
 # age, gender, build and ethnicity. No children / cutesy tropes.
@@ -302,6 +317,7 @@ def _animate_into(client, adef, dirs, anim_out_dir, pixellab_id, canvas):
     )
     saved = {}
     for direction, frames in frames_by_dir.items():
+        frames = strip_kept_idle_frame(frames)
         frames = [_normalize(f, canvas) for f in frames]
         fdir = os.path.join(anim_out_dir, key, direction)
         _save_frames(frames, fdir)
