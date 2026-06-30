@@ -85,11 +85,26 @@ function renderChar(ch) {
 
   wrap.appendChild(el('div', 'section-label', `Animations (${ch.animation_count})`));
   if (ch.animations.length) {
-    const a = el('div', 'row');
-    ch.animations.forEach(an => a.appendChild(cell(an.gif, an.key)));
-    wrap.appendChild(a);
+    ch.animations.forEach(an => {
+      wrap.appendChild(el('div', 'cap', an.key));
+      const row = el('div', 'row');
+      Object.entries(an.directions).forEach(([d, gif]) => row.appendChild(cell(gif, d)));
+      wrap.appendChild(row);
+    });
   } else {
     wrap.appendChild(el('div', 'cap', 'none yet'));
+  }
+
+  if (ch.equipped && ch.equipped.length) {
+    wrap.appendChild(el('div', 'section-label', 'Equipped gear (worn, animated)'));
+    ch.equipped.forEach(eq => {
+      wrap.appendChild(el('div', 'cap', `${eq.slot || ''}: ${eq.archetype || eq.gear_id}`));
+      Object.entries(eq.animations).forEach(([key, dirs]) => {
+        const row = el('div', 'row');
+        Object.entries(dirs).forEach(([d, gif]) => row.appendChild(cell(gif, `${key} ${d}`)));
+        wrap.appendChild(row);
+      });
+    });
   }
   return wrap;
 }
@@ -102,7 +117,7 @@ function renderGear(gear) {
   const row = el('div', 'row');
   slots.forEach(slot => {
     Object.entries(gear[slot]).forEach(([gid, g]) =>
-      row.appendChild(cell(g.png, `${slot}: ${g.archetype}`)));
+      row.appendChild(cell(g.icon || g.png, `${slot}: ${g.archetype}`)));
   });
   box.appendChild(row);
   return box;

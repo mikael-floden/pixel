@@ -38,6 +38,15 @@ class BudgetExhausted(PixelLabError):
     pass
 
 
+def _img_to_b64obj(img):
+    """PIL image -> PixelLab Base64Image object ({type, base64, format})."""
+    import base64 as _b64
+    import io as _io
+    bio = _io.BytesIO()
+    img.save(bio, "PNG")
+    return {"type": "base64", "base64": _b64.b64encode(bio.getvalue()).decode(), "format": "png"}
+
+
 def _b64_to_image(b64, width=None, height=None):
     """Decode either a PNG/JPEG base64 or raw rgba_bytes base64 into RGBA."""
     raw = base64.b64decode(b64)
@@ -239,3 +248,36 @@ class PixelLabClient:
         img = resp["image"]
         b64 = img["base64"] if isinstance(img, dict) else img
         return _b64_to_image(b64)
+
+    def transfer_outfit(self, reference_image, frames, additional_instructions=None,
+                        no_background=True, seed=None, job_timeout=900, chunk=3):
+        """Apply an outfit/gear reference onto animation frames -> worn frames.
+
+        This is how gear becomes "equipped" and part of the animation. The API
+        is async and packs frames+reference into a grid, so at most `chunk` (3)
+        frames per call — we split, run each chunk, and stitch the results back
+        in order. `reference_image` and `frames` are PIL images; returns a list
+        of worn PIL frames aligned 1:1 with the input frames."""
+        ref_obj = _img_to_b64obj(reference_image)
+        ref_size = {"width": reference_image.width, "height": reference_image.height}
+        worn = []
+        for i in range(0, len(frames), chunk):
+            group = frames[i:i + chunk]
+            w, h = group[0].size
+            payload = {
+                "reference_image": {"image": ref_obj, "size": ref_size},
+                "frames": [{"image": _img_to_b64obj(f),
+                            "size": {"width": f.width, "height": f.height}} for f in group],
+                "image_size": {"width": w, "height": h},
+                "no_background": no_background,
+            }
+            if additional_instructions:
+                payload["additional_instructions"] = additional_instructions
+            if seed is not None:
+                payload["seed"] = seed
+            resp = self._post("/transfer-outfit-v2", payload)
+            job = resp.get("background_job_id") or (resp.get("background_job_ids") or [None])[0]
+            last = self.wait_job(job, timeout=job_timeout) if job else resp
+            got = self._frames_from_response(last)
+            worn.extend(got[:len(group)])
+        return worn

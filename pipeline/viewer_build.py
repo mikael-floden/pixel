@@ -28,17 +28,28 @@ def build():
         chars = []
         for ch in factory.list_characters(sid):
             cdir = os.path.join("skeletons", sid, "characters", ch["local_id"])
+            # Per-direction animations: {key: {direction: gif}}.
             anims = []
             for key in anim_order:
                 a = ch.get("animations", {}).get(key)
                 if not a:
                     continue
-                anims.append({
-                    "key": key,
-                    "gif": a.get("gif"),
-                    "strips": {d: v["strip"] for d, v in a.items()
-                               if isinstance(v, dict) and "strip" in v},
-                })
+                dirs = {d: v.get("gif") for d, v in a.items()
+                        if isinstance(v, dict) and v.get("gif")}
+                if dirs:
+                    anims.append({"key": key, "directions": dirs})
+            # Equipped (worn) gear: {gear_id: {archetype, slot, animations:{key:{dir:gif}}}}.
+            equipped = []
+            for gid, by_anim in ch.get("equipped", {}).items():
+                ed = {"gear_id": gid, "animations": {}}
+                for key, by_dir in by_anim.items():
+                    g = {d: v.get("gif") for d, v in by_dir.items() if v.get("gif")}
+                    if g:
+                        ed["animations"][key] = g
+                        ed.setdefault("slot", next(iter(by_dir.values())).get("slot"))
+                        ed.setdefault("archetype", next(iter(by_dir.values())).get("archetype"))
+                if ed["animations"]:
+                    equipped.append(ed)
             chars.append({
                 "local_id": ch["local_id"],
                 "look": ch.get("look", ch.get("description", "")),
@@ -46,6 +57,7 @@ def build():
                 "rotations": [f"{cdir}/rotations/{d}.png" for d in ch.get("rotations", [])],
                 "animation_count": len(anims),
                 "animations": anims,
+                "equipped": equipped,
             })
 
         gear = factory.gear_state(sid)

@@ -240,20 +240,41 @@ def animate_one(client, cfg, sid, skel_meta, char_meta, anim_def):
     )
     saved = {}
     for direction, frames in frames_by_dir.items():
+        # Individual frames (so gear can be applied to them) + a packed strip.
+        fdir = os.path.join(cdir, "animations", key, direction)
+        frame_paths = _save_frames(frames, fdir)
         strip_path = os.path.join(cdir, "animations", f"{key}__{direction}.png")
         _save_strip(frames, strip_path)
-        saved[direction] = {"frames": len(frames),
-                            "strip": os.path.relpath(strip_path, ROOT)}
-    # Preview GIF from the primary direction.
-    primary = dirs[0] if dirs and dirs[0] in frames_by_dir else next(iter(frames_by_dir), None)
-    if primary:
-        gif_path = os.path.join(cdir, "animations", f"{key}.gif")
-        _save_gif(frames_by_dir[primary], gif_path)
-        saved["gif"] = os.path.relpath(gif_path, ROOT)
+        _save_gif(frames, os.path.join(cdir, "animations", f"{key}__{direction}.gif"))
+        saved[direction] = {
+            "frames": len(frames),
+            "strip": os.path.relpath(strip_path, ROOT),
+            "gif": os.path.relpath(os.path.join(cdir, "animations", f"{key}__{direction}.gif"), ROOT),
+            "frame_paths": [os.path.relpath(p, ROOT) for p in frame_paths],
+        }
 
     char_meta.setdefault("animations", {})[key] = saved
     _write_json(character_meta_path(sid, cid_local), char_meta)
     return saved
+
+
+def _save_frames(frames, dir_path):
+    """Save individual frames as zero-padded PNGs; return their paths."""
+    os.makedirs(dir_path, exist_ok=True)
+    paths = []
+    for i, f in enumerate(frames):
+        p = os.path.join(dir_path, f"{i:02d}.png")
+        f.save(p)
+        paths.append(p)
+    return paths
+
+
+def load_anim_frames(char_meta, key, direction):
+    """Reload an animation's saved frames (PIL) for a direction, in order."""
+    entry = char_meta.get("animations", {}).get(key, {}).get(direction)
+    if not entry or "frame_paths" not in entry:
+        return []
+    return [Image.open(os.path.join(ROOT, p)).convert("RGBA") for p in entry["frame_paths"]]
 
 
 # --- gear (shared per skeleton) ---------------------------------------------
@@ -287,13 +308,65 @@ def make_gear(client, cfg, sid, skel_meta, slot_def, archetype_index):
         outline=p.get("outline"), shading=p.get("shading"), detail=p.get("detail"),
         color_image=color_ref, seed=_seed(sid, slot, archetype_index),
     )
-    png_path = os.path.join(gdir, f"{gear_id}.png")
-    _save_png(img, png_path)
+    icon_path = os.path.join(gdir, gear_id, "icon.png")
+    _save_png(img, icon_path)
 
     state = gear_state(sid)
     state.setdefault(slot, {})[gear_id] = {
-        "archetype": archetype, "z": slot_def.get("z", 0),
-        "png": os.path.relpath(png_path, ROOT),
+        "archetype": archetype, "z": slot_def.get("z", 0), "slot": slot,
+        "icon": os.path.relpath(icon_path, ROOT),
     }
     _write_json(os.path.join(skeleton_dir(sid), "gear", "gear.json"), state)
     return gear_id
+
+
+_SLOT_LABEL = {
+    "pants": "trousers", "boots": "footwear", "gloves": "gloves",
+    "armor_tunic": "torso garment", "helmet_hat": "headwear",
+}
+
+
+def equip_gear_on_character(client, cfg, sid, skel_meta, char_meta, slot, gear_id,
+                            anim_keys, dirs=None):
+    """Make `gear_id` equipped on a character: render it worn across animations.
+
+    For each animation/direction, transfer the gear onto the base frames so the
+    gear is part of the motion (the inventory icon stays as-is). Worn frames are
+    saved per character under equipped/<gear_id>/<anim>__<dir>.* and recorded in
+    character.json. Returns the count of (anim,dir) variants produced."""
+    state = gear_state(sid)
+    entry = state.get(slot, {}).get(gear_id)
+    if not entry:
+        raise ValueError(f"gear {slot}/{gear_id} not found; generate the icon first")
+    icon = Image.open(os.path.join(ROOT, entry["icon"])).convert("RGBA")
+    archetype = entry["archetype"]
+    label = _SLOT_LABEL.get(slot, slot)
+    instr = f"dress the character in the {archetype} as their {label}; keep the pose, body and other clothing"
+
+    cid_local = char_meta["local_id"]
+    base_dirs = dirs or animation_directions(skel_meta, char_meta)
+    made = 0
+    for key in anim_keys:
+        for direction in base_dirs:
+            base = load_anim_frames(char_meta, key, direction)
+            if not base:
+                continue
+            worn = client.transfer_outfit(icon, base, additional_instructions=instr,
+                                          seed=_seed(sid, cid_local, gear_id, key, direction))
+            if not worn:
+                continue
+            edir = os.path.join(skeleton_dir(sid), "characters", cid_local,
+                                "equipped", gear_id)
+            _save_frames(worn, os.path.join(edir, f"{key}__{direction}"))
+            strip = os.path.join(edir, f"{key}__{direction}.png")
+            _save_strip(worn, strip)
+            _save_gif(worn, os.path.join(edir, f"{key}__{direction}.gif"))
+            eq = char_meta.setdefault("equipped", {}).setdefault(gear_id, {}).setdefault(key, {})
+            eq[direction] = {
+                "slot": slot, "archetype": archetype,
+                "strip": os.path.relpath(strip, ROOT),
+                "gif": os.path.relpath(os.path.join(edir, f"{key}__{direction}.gif"), ROOT),
+            }
+            made += 1
+        _write_json(character_meta_path(sid, cid_local), char_meta)
+    return made

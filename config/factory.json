@@ -6,6 +6,12 @@
     "gear_per_slot": 3
   },
 
+  "equip": {
+    "_comment": "Gear is rendered worn onto the character's animation frames (transfer-outfit-v2) so it's part of the motion. This is expensive (async, max 3 frames/call), so during skeleton exploration we only equip a representative set of animations on the reference character (char_00). Set animations to 'all' for a finished/winning skeleton.",
+    "reference_character_only": true,
+    "animations": ["stand", "walk", "run"]
+  },
+
   "budget": {
     "min_generations_remaining": 40,
     "_comment": "Loop stops cleanly when the PixelLab balance drops below this, so it never hard-fails mid-job."
