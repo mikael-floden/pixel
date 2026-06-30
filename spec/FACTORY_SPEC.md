@@ -12,30 +12,31 @@ can evaluate several **skeletons** and commit to a winner later.
   style, camera `view`, number of directions, `width`×`height`, frames per
   animation, outline/shading/detail, body `template_id`. Each skeleton is a
   folder under `skeletons/`; all characters in it share that profile.
-- **Character** — a base figure created with `create-character-v3` (8 rotations).
+- **Character** — an **undressed** base figure created with `create-character-v3`
+  (8 rotations): a neutral body (plain underclothes) ready to be dressed.
 - **Animation** — a motion generated with `animate-character` (text action),
   per direction, at the skeleton's frame count.
-- **Gear** — modular item sprites per slot, generated once per skeleton and
-  reused across its roster.
+- **Outfit ("dress")** — one full clothing change (swim trunks → godly armor),
+  created as a PixelLab character **state** ("wearing X").
 
-## Gear / equipment (PixelLab-native)
+## Outfits / dressing (PixelLab-native, source of truth)
 
-We deliberately limit gear to **what PixelLab actually supports**: changing a
-character's outfit via **transfer-outfit** (the `transfer-outfit-v2` API, the
-same tool as Transfer Outfit Pro). There is **no per-layer / z-order
-compositing** — equipping a piece **bakes it onto the animation frames**.
+We deliberately limit clothing to **what PixelLab actually supports**. PixelLab
+has no per-slot gear or layer compositing; it changes a character's whole outfit
+by creating a **state** of the character. So:
 
-- Each gear piece is generated once as an **item icon** (via `create-image-pixflux`),
-  which doubles as the **outfit reference**.
-- "Equipping" = `transfer-outfit-v2(reference=icon, frames=animation frames)` →
-  a worn variant of that animation. Frames-per-call scale with size
-  (≤64px: 15, 65–80px: 8, 81–256px: 3), so we chunk and stitch.
-- Equippable slots: **pants, boots, gloves, armor/tunic, helmet/hat** (3 items
-  each). `base_body` and `head` come from character creation.
-- Equipping is expensive (one generation per ≤3-frame chunk per animation per
-  direction), so during exploration we only equip the animations in
-  `config.equip.animations` on the reference character. A winning skeleton can
-  be equipped fully.
+- The **base character is undressed** (a neutral body to dress).
+- An **outfit** = `create-character-state(character_id, edit_description="wearing
+  X")` → a **sibling character** stored on PixelLab (shares the base's
+  `group_id`), visible/editable in the UI and syncable.
+- Each outfit **regenerates its own animations** wearing that clothing (via
+  `animate-character` on the state). There is **one outfit at a time** — no
+  combining pants + boots + hat.
+- Outfits are listed in `config.outfits.list`. Creating one is expensive (a full
+  state ≈ a character + its animations), so during exploration we generate
+  outfits only on the reference character and only for
+  `config.outfits.animations`. A winning skeleton can do the full set on every
+  character.
 
 ## Animation set (25)
 
@@ -47,12 +48,12 @@ recoil backward, behind hits pitch forward, landings deepen with height.
 
 ## Loop algorithm
 
-Per skeleton, in order: create 10 base characters → animate each across **all of
-the character's orientations** → generate 3 gear icons per equippable slot →
-equip gear onto the reference character's configured animations → mark complete →
-next skeleton. The next unit of work is derived from the filesystem, so the loop
-is resumable and each unit commits + pushes to `main`. It stops cleanly when
-generations run low.
+Per skeleton, in order: create 10 **undressed** base characters → animate each
+across **all of the character's orientations** → create the configured **outfits**
+(dressed states) on the reference character, each with its own animations → mark
+complete → next skeleton. The next unit of work is derived from the filesystem,
+so the loop is resumable and each unit commits + pushes to `main`. It stops
+cleanly when generations run low.
 
 ## Manual edits & sync (PixelLab is source of truth)
 
@@ -62,7 +63,8 @@ mirrors the live state back into the repo (downloads frames, repackages strips +
 GIFs, updates the manifest, pushes to `main`). Sync costs **zero generations**.
 The loop only ever *creates missing* animations, so it never overwrites hand
 edits. If a type has duplicate animation groups, sync keeps the one covering the
-most directions.
+most directions. Sync also mirrors each character's **outfits** (sibling states
+by `group_id`) — rotations + animations — so UI-created outfits flow in too.
 
 ## PixelLab integration (verified)
 
@@ -71,8 +73,9 @@ most directions.
 - `animate-character` → `{background_job_ids:[per direction]}`; each job's
   `last_response.images` is a list of `{width, height?, base64 rgba_bytes}`.
   ~1 generation per direction.
-- `create-image-pixflux` → synchronous `{image: base64}`; used for gear with the
-  character portrait as `color_image` for palette consistency. 1 generation.
+- `create-character-state` → `{character_id, background_job_id}`; a dressed
+  sibling character (shared `group_id`). Poll, then animate it like any
+  character. ~3 generations for rotations + animations.
 - Auth: `Authorization: Bearer $PIXELLAB_API_KEY`.
 
 ## Packaging
@@ -89,5 +92,8 @@ enable GitHub Pages (`main` / root) and open `index.html`.
 
 ## Cost model
 
-~28 generations per side-view character (base + 25 east-only animations) + ~15
-per skeleton for gear ≈ ~295 per fully-built skeleton of 10. Budget-aware loop.
+A character ≈ 3 (base rotations) + (animations × directions) generations. Each
+outfit ≈ the same again (its own state rotations + animations). So cost scales
+with directions × animations × outfits — which is why exploration uses a reduced
+direction/animation/outfit scope and only the winning skeleton goes full. The
+loop is budget-aware and stops above `budget.min_generations_remaining`.

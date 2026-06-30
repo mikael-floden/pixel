@@ -1,14 +1,15 @@
 """The factory loop.
 
-Each "unit" of work is one PixelLab operation: create a base character, generate
-one animation, generate one gear item, or open a new skeleton. The loop figures
-out the next missing unit purely by reading the filesystem (so it's fully
-resumable), does it, rebuilds the mobile viewer, and commits + pushes to main.
+Each "unit" of work is one PixelLab operation: create an undressed base
+character, generate one animation, create one dressed outfit state, or open a new
+skeleton. The loop figures out the next missing unit purely by reading the
+filesystem (so it's fully resumable), does it, rebuilds the mobile viewer, and
+commits + pushes to main.
 
 Per skeleton, in order:
-  1. create `characters_per_skeleton` base characters,
+  1. create `characters_per_skeleton` UNDRESSED base characters,
   2. give every character the full animation set,
-  3. generate `gear_per_slot` items for each equippable gear slot,
+  3. create the configured outfits (dressed states) on the reference character,
   4. mark the skeleton complete and open the next one.
 
 Run a bounded chunk (intended for a scheduled Routine):
@@ -76,38 +77,28 @@ def char_fully_animated(cfg, char_meta):
 def next_action(cfg, sid, skel_meta):
     """Decide the next unit for this skeleton. Returns (kind, payload...)."""
     target_chars = cfg["targets"]["characters_per_skeleton"]
-    per_slot = cfg["targets"]["gear_per_slot"]
     chars = factory.list_characters(sid)
 
-    # Phase 1: bases.
+    # Phase 1: undressed base characters.
     if len(chars) < target_chars:
         return ("base", len(chars))
 
-    # Phase 2: animations.
+    # Phase 2: base animations.
     for ch in chars:
         for anim in cfg["animations"]:
             if anim["key"] not in ch.get("animations", {}):
                 return ("animate", ch, anim)
 
-    gear_slots = [s for s in cfg["gear_slots"] if s.get("kind") == "gear"]
-
-    # Phase 3: gear inventory icons (shared per skeleton).
-    state = factory.gear_state(sid)
-    for slot_def in gear_slots:
-        if len(state.get(slot_def["slot"], {})) < per_slot:
-            return ("gear", slot_def, len(state.get(slot_def["slot"], {})))
-
-    # Phase 4: equip — create a PixelLab character STATE per gear on the
-    # reference character(s), so gear is worn, stored on PixelLab and syncable.
-    ref_only = cfg.get("equip", {}).get("reference_character_only", True)
+    # Phase 3: outfits — create a dressed PixelLab STATE per outfit on the
+    # reference character(s), each with its own (re)generated animations.
+    outfits_cfg = cfg.get("outfits", {})
+    ref_only = outfits_cfg.get("reference_character_only", True)
     ref_chars = chars[:1] if ref_only else chars
     for ch in ref_chars:
-        have_states = ch.get("states", {})
-        for slot_def in gear_slots:
-            for i in range(min(per_slot, len(slot_def["archetypes"]))):
-                gear_id = f"{slot_def['slot']}_{i:02d}"
-                if gear_id not in have_states:
-                    return ("equip", ch, slot_def, i)
+        have = ch.get("outfits", {})
+        for outfit_def in outfits_cfg.get("list", []):
+            if outfit_def["id"] not in have:
+                return ("outfit", ch, outfit_def)
 
     return ("complete",)
 
@@ -129,16 +120,12 @@ def advance(client, cfg, push=True):
         ch, anim = action[1], action[2]
         factory.animate_one(client, cfg, sid, skel_meta, ch, anim)
         desc = f"[{sid}] {ch['local_id']} animation '{anim['key']}'"
-    elif kind == "gear":
-        slot_def, archetype_index = action[1], action[2]
-        gid = factory.make_gear(client, cfg, sid, skel_meta, slot_def, archetype_index)
-        desc = f"[{sid}] gear icon {gid} ({slot_def['archetypes'][archetype_index]})"
-    elif kind == "equip":
-        ch, slot_def, archetype_index = action[1], action[2], action[3]
-        anims = cfg.get("equip", {}).get("animations", [])
-        gid = factory.equip_state(client, cfg, sid, skel_meta, ch, slot_def,
-                                  archetype_index, animate_keys=anims)
-        desc = f"[{sid}] {ch['local_id']} equip state {gid} (worn, {len(anims)} anims)"
+    elif kind == "outfit":
+        ch, outfit_def = action[1], action[2]
+        anims = cfg.get("outfits", {}).get("animations", [])
+        oid = factory.add_outfit(client, cfg, sid, skel_meta, ch, outfit_def,
+                                 animate_keys=anims)
+        desc = f"[{sid}] {ch['local_id']} outfit '{oid}' ({len(anims)} anims worn)"
     elif kind == "complete":
         skel_meta["status"] = "complete"
         factory._write_json(os.path.join(factory.skeleton_dir(sid), "skeleton.json"),

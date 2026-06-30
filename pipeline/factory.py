@@ -1,4 +1,4 @@
-"""High-level factory operations: skeletons, characters, animations, gear.
+"""High-level factory operations: skeletons, characters, animations, outfits.
 
 Each operation is small and resumable: it writes its result to disk and updates a
 status field in JSON, so the loop can stop/restart at any point and pick up the
@@ -7,13 +7,16 @@ module decides what to ask for, where to store it, and how to package it
 (per-direction PNG strips for the game + a dark-background GIF for quick mobile
 preview).
 
+The base character is UNDRESSED; clothing is an "outfit" — a PixelLab character
+STATE ("wearing X") with its own (re)generated animations. No per-slot gear.
+
 Asset layout:
   skeletons/<sid>/skeleton.json
   skeletons/<sid>/characters/<cid>/character.json
   skeletons/<sid>/characters/<cid>/rotations/<dir>.png
-  skeletons/<sid>/characters/<cid>/animations/<key>__<dir>.png   (frame strip)
-  skeletons/<sid>/characters/<cid>/animations/<key>.gif          (preview)
-  skeletons/<sid>/gear/<slot>/<gear_id>.png                      (shared per skeleton)
+  skeletons/<sid>/characters/<cid>/animations/<key>__<dir>.png|.gif
+  skeletons/<sid>/characters/<cid>/outfits/<outfit_id>/rotations/<dir>.png
+  skeletons/<sid>/characters/<cid>/outfits/<outfit_id>/animations/<key>__<dir>.png|.gif
 """
 
 from __future__ import annotations
@@ -34,20 +37,21 @@ CONFIG = os.path.join(ROOT, "config", "factory.json")
 SKELETONS_DIR = os.path.join(ROOT, "skeletons")
 PREVIEW_BG = (32, 36, 43, 255)
 
-# A roster of distinct farmer/villager looks so the 10 characters don't clone.
+# Distinct PERSON looks (appearance only — no clothing; the base is undressed and
+# clothing comes from outfit states) so the roster doesn't clone.
 CHARACTER_LOOKS = [
-    "a young freckled farmhand with tousled red hair and a green shirt",
-    "a weathered old farmer with a long grey beard and a brown coat",
-    "a sturdy blacksmith woman with dark braided hair and a leather apron",
-    "a lanky scarecrow-thin youth in patched overalls and a straw hat",
-    "a cheerful round baker in a flour-dusted white tunic",
-    "a stern ranger with a hooded green cloak and a quiver",
-    "a freckled girl in a blue dress with twin ponytails",
-    "a bald burly woodcutter with a thick beard and suspenders",
-    "a tanned fisherman in a striped shirt and rubber boots",
-    "a quiet herbalist in earthy robes with a satchel of herbs",
-    "a mischievous kid in a oversized red poncho",
-    "a dignified elder in a long embroidered robe",
+    "a young man with tousled red hair and freckles, lean build",
+    "a weathered old man with a long grey beard, wiry build",
+    "a sturdy woman with dark braided hair, strong build",
+    "a lanky scarecrow-thin youth with messy blond hair",
+    "a cheerful round-faced person with short brown hair",
+    "a stern person with a long dark ponytail, athletic build",
+    "a freckled girl with twin auburn ponytails",
+    "a bald burly man with a thick black beard",
+    "a tanned person with short curly hair and a stubble",
+    "a slight person with long silver hair and pale skin",
+    "a child with a round face and short tousled hair",
+    "a dignified elder with a neat white beard",
 ]
 
 
@@ -181,10 +185,11 @@ def list_characters(sid):
 
 
 def create_base_character(client, cfg, sid, skel_meta, char_index):
-    """Create a base character (8 rotations) and save them."""
+    """Create an UNDRESSED base character (neutral body, ready to be dressed)."""
     p = skel_meta["params"]
     look = CHARACTER_LOOKS[char_index % len(CHARACTER_LOOKS)]
-    desc = f"{look}, {cfg['style_base']}"
+    base_outfit = cfg.get("base_outfit", "wearing only plain underclothes, barefoot")
+    desc = f"{look}, {base_outfit}, {cfg['style_base']}"
     cid_local = f"char_{char_index:02d}"
     cdir = os.path.join(skeleton_dir(sid), "characters", cid_local)
 
@@ -282,88 +287,48 @@ def _save_frames(frames, dir_path):
     return paths
 
 
-# --- gear icons (inventory thumbnails, shared per skeleton) -----------------
+# --- outfits ("dresses") via character STATES (stored on PixelLab) ----------
+#
+# An outfit is one full clothing change (swim trunks -> godly armor), created as
+# a PixelLab character STATE ("wearing X"). The state is a sibling character
+# stored on PixelLab (visible in the UI, syncable) with its OWN animations
+# regenerated wearing that clothing. There is no per-slot gear or layering —
+# this matches what PixelLab supports.
 
-def gear_state(sid):
-    return _read_json(os.path.join(skeleton_dir(sid), "gear", "gear.json"), default={}) or {}
-
-
-def make_gear(client, cfg, sid, skel_meta, slot_def, archetype_index):
-    """Generate one gear sprite for a slot; gear is shared across the skeleton."""
-    p = skel_meta["params"]
-    slot = slot_def["slot"]
-    archetype = slot_def["archetypes"][archetype_index]
-    gear_id = f"{slot}_{archetype_index:02d}"
-    gdir = os.path.join(skeleton_dir(sid), "gear", slot)
-
-    # Use a character portrait as a palette reference so gear matches the roster.
-    color_ref = None
-    chars = list_characters(sid)
-    if chars:
-        port = os.path.join(skeleton_dir(sid), "characters",
-                            chars[0]["local_id"], "portrait.png")
-        if os.path.exists(port):
-            with open(port, "rb") as fh:
-                color_ref = {"type": "base64", "base64": base64.b64encode(fh.read()).decode()}
-
-    desc = (f"a single {archetype}, isolated clothing item icon, centered, "
-            f"{cfg['style_base']}")
-    img = client.create_item_sprite(
-        description=desc, width=p["width"], height=p["height"], view=p["view"],
-        outline=p.get("outline"), shading=p.get("shading"), detail=p.get("detail"),
-        color_image=color_ref, seed=_seed(sid, slot, archetype_index),
-    )
-    icon_path = os.path.join(gdir, gear_id, "icon.png")
-    _save_png(img, icon_path)
-
-    state = gear_state(sid)
-    state.setdefault(slot, {})[gear_id] = {
-        "archetype": archetype, "z": slot_def.get("z", 0), "slot": slot,
-        "icon": os.path.relpath(icon_path, ROOT),
-    }
-    _write_json(os.path.join(skeleton_dir(sid), "gear", "gear.json"), state)
-    return gear_id
+def list_outfits(char_meta):
+    return char_meta.get("outfits", {})
 
 
-# --- equipment via character STATES (stored on PixelLab, source of truth) ---
-
-def list_states(char_meta):
-    return char_meta.get("states", {})
-
-
-def equip_state(client, cfg, sid, skel_meta, char_meta, slot_def, archetype_index,
-                animate_keys=None):
-    """Equip gear by creating a PixelLab character STATE — a sibling character
-    that wears the gear, stored on PixelLab (visible in the UI, syncable). We
-    save the state's rotations and animate the configured animations so the gear
-    is part of the motion. Returns the gear_id."""
-    slot = slot_def["slot"]
-    archetype = slot_def["archetypes"][archetype_index]
-    gear_id = f"{slot}_{archetype_index:02d}"
+def add_outfit(client, cfg, sid, skel_meta, char_meta, outfit_def, animate_keys=None):
+    """Create a dressed STATE of the (undressed) base character and regenerate
+    the configured animations wearing that outfit. Returns the outfit id."""
+    outfit_id = outfit_def["id"]
+    description = outfit_def["description"]
     cid_local = char_meta["local_id"]
-    sdir = os.path.join(skeleton_dir(sid), "characters", cid_local, "states", gear_id)
+    odir = os.path.join(skeleton_dir(sid), "characters", cid_local, "outfits", outfit_id)
 
-    edit = f"wearing {archetype}"
+    edit = f"wearing {description}"
     state_id, rotations = client.create_state(
         char_meta["pixellab_id"], edit_description=edit,
-        seed=_seed(sid, cid_local, gear_id))
+        seed=_seed(sid, cid_local, outfit_id))
     for d, img in rotations.items():
-        _save_png(img, os.path.join(sdir, "rotations", f"{d}.png"))
+        _save_png(img, os.path.join(odir, "rotations", f"{d}.png"))
     if "south" in rotations:
-        _save_png(rotations["south"], os.path.join(sdir, "portrait.png"))
+        _save_png(rotations["south"], os.path.join(odir, "portrait.png"))
+    elif rotations:
+        _save_png(next(iter(rotations.values())), os.path.join(odir, "portrait.png"))
 
-    state_meta = {
-        "gear_id": gear_id, "slot": slot, "archetype": archetype,
-        "pixellab_id": state_id, "edit_description": edit,
-        "rotations": sorted(rotations.keys()), "animations": {},
+    outfit_meta = {
+        "id": outfit_id, "description": description, "pixellab_id": state_id,
+        "edit_description": edit, "rotations": sorted(rotations.keys()), "animations": {},
     }
     dirs = animation_directions(skel_meta, char_meta)
     for key in (animate_keys or []):
         adef = next((a for a in cfg["animations"] if a["key"] == key), None)
         if adef:
-            state_meta["animations"][key] = _animate_into(
-                client, state_id, adef, dirs, os.path.join(sdir, "animations"))
+            outfit_meta["animations"][key] = _animate_into(
+                client, state_id, adef, dirs, os.path.join(odir, "animations"))
 
-    char_meta.setdefault("states", {})[gear_id] = state_meta
+    char_meta.setdefault("outfits", {})[outfit_id] = outfit_meta
     _write_json(character_meta_path(sid, cid_local), char_meta)
-    return gear_id
+    return outfit_id

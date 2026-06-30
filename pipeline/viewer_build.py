@@ -38,12 +38,12 @@ def build():
                         if isinstance(v, dict) and v.get("gif")}
                 if dirs:
                     anims.append({"key": key, "directions": dirs})
-            # Equipped states (stored on PixelLab): each is a worn variant with
-            # its own rotations + animations.
-            states = []
-            for gid, st in ch.get("states", {}).items():
-                sdir = f"{cdir}/states/{gid}"
-                sanims = []
+            # Outfits (dressed states stored on PixelLab): each has its own
+            # rotations + animations.
+            outfits = []
+            for oid, st in ch.get("outfits", {}).items():
+                odir = f"{cdir}/outfits/{oid}"
+                oanims = []
                 for key in anim_order:
                     a = st.get("animations", {}).get(key)
                     if not a:
@@ -51,14 +51,13 @@ def build():
                     dmap = {d: v.get("gif") for d, v in a.items()
                             if isinstance(v, dict) and v.get("gif")}
                     if dmap:
-                        sanims.append({"key": key, "directions": dmap})
-                states.append({
-                    "gear_id": gid,
-                    "slot": st.get("slot"),
-                    "archetype": st.get("archetype") or st.get("name"),
-                    "portrait": f"{sdir}/portrait.png",
-                    "rotations": [f"{sdir}/rotations/{d}.png" for d in st.get("rotations", [])],
-                    "animations": sanims,
+                        oanims.append({"key": key, "directions": dmap})
+                outfits.append({
+                    "id": oid,
+                    "description": st.get("description") or st.get("name"),
+                    "portrait": f"{odir}/portrait.png",
+                    "rotations": [f"{odir}/rotations/{d}.png" for d in st.get("rotations", [])],
+                    "animations": oanims,
                 })
             chars.append({
                 "local_id": ch["local_id"],
@@ -67,10 +66,9 @@ def build():
                 "rotations": [f"{cdir}/rotations/{d}.png" for d in ch.get("rotations", [])],
                 "animation_count": len(anims),
                 "animations": anims,
-                "states": states,
+                "outfits": outfits,
             })
 
-        gear = factory.gear_state(sid)
         skeletons.append({
             "id": sid,
             "status": skel.get("status"),
@@ -78,7 +76,6 @@ def build():
             "params": skel.get("params", {}),
             "character_count": len(chars),
             "characters": chars,
-            "gear": gear,
         })
 
     data = {

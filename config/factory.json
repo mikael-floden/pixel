@@ -1,20 +1,28 @@
 {
-  "_comment": "Global config for the modular pixel-character factory loop. A 'skeleton' is a generation-parameter profile we want to A/B before committing to a winner. For each skeleton the loop makes `characters_per_skeleton` base characters, gives each the full animation set, then generates `gear_per_slot` items for every equippable gear slot, then advances to the next skeleton.",
+  "_comment": "Global config for the modular pixel-character factory. A 'skeleton' is a generation-parameter profile we A/B before committing to a winner. Per skeleton: make `characters_per_skeleton` UNDRESSED base characters, animate each, then create OUTFIT states (a 'dress' = one full clothing change, e.g. swim trunks -> godly armor) that regenerate the animations with that clothing. This matches PixelLab: a character has one base + multiple states; there is no per-slot gear layering.",
 
   "targets": {
-    "characters_per_skeleton": 10,
-    "gear_per_slot": 3
-  },
-
-  "equip": {
-    "_comment": "Gear is rendered worn onto the character's animation frames (transfer-outfit-v2) so it's part of the motion. This is expensive (async, max 3 frames/call), so during skeleton exploration we only equip a representative set of animations on the reference character (char_00). Set animations to 'all' for a finished/winning skeleton.",
-    "reference_character_only": true,
-    "animations": ["stand", "walk", "run"]
+    "characters_per_skeleton": 10
   },
 
   "budget": {
     "min_generations_remaining": 40,
-    "_comment": "Loop stops cleanly when the PixelLab balance drops below this, so it never hard-fails mid-job."
+    "_comment": "Loop stops cleanly when the PixelLab balance drops below this."
+  },
+
+  "base_outfit": "wearing only plain underclothes (a plain sleeveless undershirt and simple shorts), barefoot, neutral undressed base body ready to be dressed",
+
+  "outfits": {
+    "_comment": "Each outfit is a PixelLab character STATE ('wearing X'), stored on the character (visible in the UI, syncable). It regenerates the listed animations with that clothing. `animations` is kept small during skeleton exploration to bound cost; set it to the full animation list for a winning skeleton. By default outfits are only generated on the reference character (char_00).",
+    "reference_character_only": true,
+    "animations": ["stand", "walk"],
+    "list": [
+      { "id": "adventurer",  "description": "a rugged brown leather adventurer tunic with a belt and boots" },
+      { "id": "swimsuit",    "description": "simple blue swimming trunks" },
+      { "id": "mage_robe",   "description": "a deep blue wizard robe with a pointed hat" },
+      { "id": "god_armor",   "description": "ornate glowing golden divine plate armor" },
+      { "id": "winter_coat", "description": "a thick fur-lined winter coat with a hood" }
+    ]
   },
 
   "animations": [
@@ -45,32 +53,20 @@
     { "key": "hit_crouch_behind","action": "flinching forward while crouching, struck from behind",                "frames": 4 }
   ],
 
-  "gear_slots": [
-    { "slot": "base_body",   "kind": "base", "_comment": "Torso/arms/legs — produced by character creation, not generated separately." },
-    { "slot": "head",        "kind": "base", "_comment": "Head/face/hair — produced by character creation." },
-    { "slot": "pants",       "kind": "gear", "z": 1, "archetypes": ["patched work trousers", "sturdy leather breeches", "thick woolen farm pants"] },
-    { "slot": "boots",       "kind": "gear", "z": 0, "archetypes": ["muddy leather work boots", "tall brown riding boots", "simple wooden clogs"] },
-    { "slot": "gloves",      "kind": "gear", "z": 4, "archetypes": ["worn leather work gloves", "fingerless wool mitts", "heavy gauntlets"] },
-    { "slot": "armor_tunic", "kind": "gear", "z": 2, "archetypes": ["rugged leather tunic", "quilted gambeson", "green woolen cloak"] },
-    { "slot": "helmet_hat",  "kind": "gear", "z": 5, "archetypes": ["wide straw sun hat", "leather hood", "iron half-helm"] }
-  ],
-
   "style_base": "cozy farming-sim RPG pixel art, Grave Seasons / Stardew Valley inspired, warm earthy palette, clean readable shapes",
 
   "skeleton_variations": [
-    { "id": "00_side_64",       "note": "Baseline: side view, 64x64, single east direction (mirror for west), mannequin.",
-      "view": "side",         "width": 64, "height": 64, "animation_directions": ["east"],            "template_id": "mannequin", "outline": "single color black outline", "shading": "basic shading",    "detail": "medium detail" },
-    { "id": "01_side_96",       "note": "Taller canvas for more detail at the same view.",
-      "view": "side",         "width": 96, "height": 96, "animation_directions": ["east"],            "template_id": "mannequin", "outline": "single color black outline", "shading": "detailed shading", "detail": "highly detailed" },
-    { "id": "02_lowtopdown_4dir","note": "Top-down RPG, 4 directions — classic farming-sim movement.",
-      "view": "low top-down", "width": 64, "height": 64, "animation_directions": ["south","north","east","west"], "template_id": "mannequin", "outline": "single color black outline", "shading": "basic shading", "detail": "medium detail" },
-    { "id": "03_side_softoutline","note": "Softer outline + selective shading for a gentler look.",
-      "view": "side",         "width": 64, "height": 80, "animation_directions": ["east"],            "template_id": "mannequin", "outline": "selective outline",          "shading": "detailed shading", "detail": "medium detail" }
+    { "id": "00_lowtopdown_4dir", "note": "Baseline: low top-down, 64x64, 4 cardinal directions (classic farming-sim movement).",
+      "view": "low top-down", "width": 64, "height": 64, "animation_directions": ["south", "north", "east", "west"], "template_id": "mannequin", "outline": "single color black outline", "shading": "basic shading", "detail": "medium detail" },
+    { "id": "01_side_64",       "note": "Side view, 64x64, left/right (east + mirror).",
+      "view": "side",         "width": 64, "height": 64, "animation_directions": ["east", "west"], "template_id": "mannequin", "outline": "single color black outline", "shading": "basic shading", "detail": "medium detail" },
+    { "id": "02_lowtopdown_96", "note": "Taller canvas for more detail, 4 directions.",
+      "view": "low top-down", "width": 96, "height": 96, "animation_directions": ["south", "north", "east", "west"], "template_id": "mannequin", "outline": "single color black outline", "shading": "detailed shading", "detail": "highly detailed" }
   ],
 
   "procedural_variation": {
-    "_comment": "When the explicit skeleton_variations list is exhausted, derive further skeletons by cycling these axes.",
-    "views": ["side", "low top-down", "high top-down"],
+    "_comment": "When skeleton_variations is exhausted, derive further skeletons by cycling these axes.",
+    "views": ["low top-down", "side", "high top-down"],
     "sizes": [[64, 64], [96, 96], [48, 64]],
     "details": ["low detail", "medium detail", "highly detailed"]
   }

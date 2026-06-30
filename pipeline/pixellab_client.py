@@ -12,7 +12,8 @@ Verified lifecycle (see spec):
     GET /characters/{id} for rotation_urls (one PNG per of 8 directions).
   - animate-character   -> {background_job_ids: [one per direction]}; each job's
     last_response.images is a list of {width, height?, base64 rgba_bytes} frames.
-  - create-image-pixflux-> synchronous {image: base64} (used for gear sprites).
+  - create-character-state -> a dressed sibling character ("wearing X"), stored
+    on PixelLab (shared group_id); used for outfits.
 """
 
 from __future__ import annotations
@@ -257,55 +258,3 @@ class PixelLabClient:
             frames.append(_b64_to_image(im["base64"], im.get("width"), im.get("height")))
         return frames
 
-    # -- gear / items --------------------------------------------------------
-
-    def create_item_sprite(self, description, width, height, view="side",
-                           outline=None, shading=None, detail=None,
-                           color_image=None, seed=None):
-        """Generate a single standalone item sprite (transparent bg). Synchronous."""
-        payload = {
-            "description": description,
-            "image_size": {"width": width, "height": height},
-            "no_background": True,
-        }
-        for k, v in (("view", view), ("outline", outline), ("shading", shading),
-                     ("detail", detail), ("color_image", color_image), ("seed", seed)):
-            if v is not None:
-                payload[k] = v
-        resp = self._post("/create-image-pixflux", payload)
-        img = resp["image"]
-        b64 = img["base64"] if isinstance(img, dict) else img
-        return _b64_to_image(b64)
-
-    def transfer_outfit(self, reference_image, frames, additional_instructions=None,
-                        no_background=True, seed=None, job_timeout=900, chunk=3):
-        """Apply an outfit/gear reference onto animation frames -> worn frames.
-
-        This is how gear becomes "equipped" and part of the animation. The API
-        is async and packs frames+reference into a grid, so at most `chunk` (3)
-        frames per call — we split, run each chunk, and stitch the results back
-        in order. `reference_image` and `frames` are PIL images; returns a list
-        of worn PIL frames aligned 1:1 with the input frames."""
-        ref_obj = _img_to_b64obj(reference_image)
-        ref_size = {"width": reference_image.width, "height": reference_image.height}
-        worn = []
-        for i in range(0, len(frames), chunk):
-            group = frames[i:i + chunk]
-            w, h = group[0].size
-            payload = {
-                "reference_image": {"image": ref_obj, "size": ref_size},
-                "frames": [{"image": _img_to_b64obj(f),
-                            "size": {"width": f.width, "height": f.height}} for f in group],
-                "image_size": {"width": w, "height": h},
-                "no_background": no_background,
-            }
-            if additional_instructions:
-                payload["additional_instructions"] = additional_instructions
-            if seed is not None:
-                payload["seed"] = seed
-            resp = self._post("/transfer-outfit-v2", payload)
-            job = resp.get("background_job_id") or (resp.get("background_job_ids") or [None])[0]
-            last = self.wait_job(job, timeout=job_timeout) if job else resp
-            got = self._frames_from_response(last)
-            worn.extend(got[:len(group)])
-        return worn

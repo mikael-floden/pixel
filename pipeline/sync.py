@@ -108,35 +108,35 @@ def sync_character(client, sid, char_meta):
     if rotations:
         char_meta["rotations"] = sorted(rotations)
 
-    # Equipped states: sibling characters sharing the base's group_id.
+    # Outfits: dressed sibling states sharing the base's group_id.
     group = detail.get("group_id")
-    state_counts = {}
+    outfit_counts = {}
     if group:
-        known = {m.get("pixellab_id"): gid for gid, m in char_meta.get("states", {}).items()}
+        known = {m.get("pixellab_id"): oid for oid, m in char_meta.get("outfits", {}).items()}
         siblings = [c for c in client.list_characters()
                     if c.get("group_id") == group and c.get("id") != char_meta["pixellab_id"]]
-        new_states = {}
+        new_outfits = {}
         for sib in siblings:
             spx = sib["id"]
-            gear_id = known.get(spx) or _slug(sib.get("name") or spx)
+            outfit_id = known.get(spx) or _slug(sib.get("name") or spx)
             sdet = client.get_character(spx)
-            sdir = os.path.join(cdir, "states", gear_id)
-            srot = _mirror_rotations(client, sdet, sdir)
-            sanims = _mirror_animations(client, sdet, os.path.join(sdir, "animations"))
-            prev = char_meta.get("states", {}).get(gear_id, {})
-            new_states[gear_id] = {
-                **prev, "gear_id": gear_id, "pixellab_id": spx,
-                "name": sib.get("name"), "edit_description": prev.get("edit_description"),
-                "slot": prev.get("slot"),
-                "archetype": prev.get("archetype") or sib.get("name"),
+            odir = os.path.join(cdir, "outfits", outfit_id)
+            srot = _mirror_rotations(client, sdet, odir)
+            sanims = _mirror_animations(client, sdet, os.path.join(odir, "animations"))
+            prev = char_meta.get("outfits", {}).get(outfit_id, {})
+            new_outfits[outfit_id] = {
+                **prev, "id": outfit_id, "pixellab_id": spx,
+                "name": sib.get("name"),
+                "description": prev.get("description") or sib.get("name"),
+                "edit_description": prev.get("edit_description"),
                 "rotations": sorted(srot), "animations": sanims,
             }
-            state_counts[gear_id] = len(sanims)
-        char_meta["states"] = new_states
+            outfit_counts[outfit_id] = len(sanims)
+        char_meta["outfits"] = new_outfits
 
     char_meta["synced_from_pixellab"] = True
     factory._write_json(factory.character_meta_path(sid, cid_local), char_meta)
-    return {k: len(v) for k, v in char_meta["animations"].items()}, state_counts
+    return {k: len(v) for k, v in char_meta["animations"].items()}, outfit_counts
 
 
 def main():
@@ -155,11 +155,11 @@ def main():
         for ch in factory.list_characters(sid):
             if args.character and ch["local_id"] != args.character:
                 continue
-            anims, states = sync_character(client, sid, ch)
-            n = sum(anims.values()) + sum(states.values())
+            anims, outfits = sync_character(client, sid, ch)
+            n = sum(anims.values()) + sum(outfits.values())
             total += n
-            print(f"synced {sid}/{ch['local_id']}: {len(anims)} animations; "
-                  f"{len(states)} state(s) [{', '.join(f'{k}:{v}anims' for k, v in states.items()) or '-'}]")
+            print(f"synced {sid}/{ch['local_id']}: {len(anims)} base animations; "
+                  f"{len(outfits)} outfit(s) [{', '.join(f'{k}:{v}anims' for k, v in outfits.items()) or '-'}]")
 
     viewer_build.build()
     if total:

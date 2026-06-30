@@ -95,14 +95,14 @@ function renderChar(ch) {
     wrap.appendChild(el('div', 'cap', 'none yet'));
   }
 
-  if (ch.states && ch.states.length) {
-    wrap.appendChild(el('div', 'section-label', `Equipped states (${ch.states.length}) — stored on PixelLab`));
-    ch.states.forEach(st => {
-      wrap.appendChild(el('div', 'cap', `${st.slot ? st.slot + ': ' : ''}${st.archetype || st.gear_id}`));
+  if (ch.outfits && ch.outfits.length) {
+    wrap.appendChild(el('div', 'section-label', `Outfits (${ch.outfits.length}) — dressed states on PixelLab`));
+    ch.outfits.forEach(o => {
+      wrap.appendChild(el('div', 'cap', o.description || o.id));
       const rrow = el('div', 'row');
-      (st.rotations || []).forEach(src => rrow.appendChild(cell(src, src.split('/').pop().replace('.png', ''))));
+      (o.rotations || []).forEach(src => rrow.appendChild(cell(src, src.split('/').pop().replace('.png', ''))));
       if (rrow.childNodes.length) wrap.appendChild(rrow);
-      (st.animations || []).forEach(an => {
+      (o.animations || []).forEach(an => {
         const row = el('div', 'row');
         Object.entries(an.directions).forEach(([d, gif]) => row.appendChild(cell(gif, `${an.key} ${d}`)));
         wrap.appendChild(row);
@@ -110,20 +110,6 @@ function renderChar(ch) {
     });
   }
   return wrap;
-}
-
-function renderGear(gear) {
-  const slots = Object.keys(gear || {});
-  if (!slots.length) return null;
-  const box = el('div');
-  box.appendChild(el('div', 'section-label', 'Gear (shared across this skeleton)'));
-  const row = el('div', 'row');
-  slots.forEach(slot => {
-    Object.entries(gear[slot]).forEach(([gid, g]) =>
-      row.appendChild(cell(g.icon || g.png, `${slot}: ${g.archetype}`)));
-  });
-  box.appendChild(row);
-  return box;
 }
 
 function renderSkeleton(sk, open) {
@@ -138,7 +124,6 @@ function renderSkeleton(sk, open) {
   const body = el('div', 'body');
   if (!sk.characters.length) body.appendChild(el('div', 'cap', 'no characters yet'));
   sk.characters.forEach(ch => body.appendChild(renderChar(ch)));
-  const g = renderGear(sk.gear); if (g) body.appendChild(g);
   d.appendChild(body);
   return d;
 }

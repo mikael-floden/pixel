@@ -12,18 +12,21 @@ profiles) before picking a winner. Read `README.md` and `spec/FACTORY_SPEC.md`.
   view (`side` / `low top-down` / …), `width`×`height`, `animation_directions`
   (1 for side-view + mirror, 4/8 for top-down), outline/shading/detail, template.
 - A **character** = one `create-character-v3` call → 8 rotations (~3 generations).
+  The base is **undressed** (neutral body in plain underclothes).
 - An **animation** = one `animate-character` call per direction (~1 gen each);
   frames return as raw `rgba_bytes` base64.
-- **Gear** = standalone item sprites via `create-image-pixflux` (1 gen each),
-  shared across a skeleton's roster, with a character portrait as `color_image`
-  so palettes match. Modular overlay layers per slot.
+- An **outfit** ("dress") = one `create-character-state` call ("wearing X") → a
+  sibling character stored on PixelLab (shared `group_id`), with its own
+  regenerated animations. One outfit at a time; **no per-slot gear/layering**
+  (PixelLab doesn't support it). PixelLab is the source of truth; `sync.py`
+  mirrors characters + outfits into the repo (zero generations).
 
 ## The loop (pipeline/loop.py)
 
 Each **unit** is one PixelLab op. `next_action` reads the filesystem to find the
-next missing unit (resumable): bases → animations → gear → complete → next
-skeleton. After every unit: rebuild `viewer_data.json`, `git add -A`, commit,
-**push to `main`**. Bounded by `--max-minutes` / `--max-units` / budget floor.
+next missing unit (resumable): undressed bases → animations → outfits → complete
+→ next skeleton. After every unit: rebuild `viewer_data.json`, `git add -A`,
+commit, **push to `main`**. Bounded by `--max-minutes` / `--max-units` / budget.
 
 ## Conventions
 

@@ -6,9 +6,8 @@ as the drawing backend.
 
 The repo explores **skeletons** — generation-parameter profiles (view, size,
 number of directions, frames/animation, style…) — so you can A/B several before
-committing to a winner. For each skeleton the loop builds a roster of characters,
-gives each the full animation set, and generates modular gear, then moves on to
-the next skeleton.
+committing to a winner. Each character has an **undressed base body** plus
+**outfits** ("dresses") — full clothing changes from swim trunks to godly armor.
 
 ## How the loop works
 
@@ -16,29 +15,28 @@ the next skeleton.
 skeletons/<id>/                     one skeleton = one parameter profile
   skeleton.json                     params + status
   characters/<char_xx>/
-    rotations/<dir>.png             8-direction base art
+    rotations/<dir>.png             undressed base art (per direction)
     portrait.png
-    animations/<key>__<dir>.png     per-direction frame strips (game-ready)
-    animations/<key>.gif            preview (mobile-viewable)
+    animations/<key>__<dir>.png|gif per-direction frames + preview gif
     character.json
-  gear/<slot>/<gear_id>.png         gear, shared across the skeleton's roster
-  gear/gear.json
+    outfits/<outfit_id>/            a "dress" (PixelLab state), e.g. god_armor
+      rotations/<dir>.png
+      animations/<key>__<dir>.png|gif
 ```
 
 For each skeleton, in order (all driven by `config/factory.json`):
-1. create **10 base characters** (8 rotations each),
+1. create **10 undressed base characters**,
 2. give every character the **25 animations** (idle, walk, run, jump, crouch,
    fall, kicks/punches standing/crouching/air/running, low/med/high landings,
-   and front/back/crouch damage reactions),
-3. generate **3 gear items per equippable slot** (pants, boots, gloves,
-   armor/tunic, helmet/hat), and **equip** them onto the reference character by
-   applying each as an outfit onto the animation frames (PixelLab
-   `transfer-outfit`), so gear is worn and part of the motion,
+   and front/back/crouch damage reactions) across the character's directions,
+3. create **outfits** (dressed states) on the reference character — each outfit
+   regenerates its own animations wearing that clothing,
 4. mark the skeleton complete and open the next one with new parameters.
 
-> Gear uses **only PixelLab-native tech**: equipping = `transfer-outfit` baked
-> onto frames, not per-layer compositing. The gear icon doubles as the outfit
-> reference.
+> **PixelLab-native, source of truth.** The base is undressed; an outfit is a
+> PixelLab **character state** ("wearing X") stored on PixelLab — visible in the
+> UI, animatable, and syncable. There is **no per-slot gear or layer
+> compositing** (PixelLab doesn't support it): one outfit at a time.
 
 Every unit of work commits and **pushes to `main`**, and the loop is **fully
 resumable** — it derives the next missing unit from the filesystem.
@@ -91,23 +89,24 @@ animations, so it never overwrites your edits.
 - **Nicer:** enable GitHub Pages (Settings → Pages → Deploy from `main`, `/root`)
   and open the repo's Pages URL. `index.html` is a phone-friendly viewer that
   loads `viewer_data.json` and lets you flip through every skeleton → character →
-  animation → gear. It also works locally: `python -m http.server` then open `/`.
+  animation → outfit. It also works locally: `python -m http.server` then open `/`.
 
 ## Cost
 
-On PixelLab a base character (8 rotations) ≈ 3 generations and each animation ≈ 1
-per direction, so a side-view (east-only) character with all 25 animations ≈ ~28
-generations. The loop is budget-aware; check remaining balance with the API's
-`/balance` endpoint.
+A base character (rotations) ≈ 3 generations; each animation ≈ 1 per direction;
+each outfit ≈ a full state (its own rotations + animations). Cost scales with
+directions × animations × outfits, so exploration uses a reduced scope and only a
+winning skeleton goes full. The loop is budget-aware (`/balance`).
 
 ## Layout
 
 ```
-config/factory.json     animations, gear slots, targets, skeleton variations
+config/factory.json     animations, outfits, targets, skeleton variations
 pipeline/
   pixellab_client.py    async PixelLab client (job polling, image decode, budget)
-  factory.py            skeleton/character/animation/gear operations + packaging
+  factory.py            skeleton/character/animation/outfit operations + packaging
   loop.py               orchestrator: next unit -> generate -> commit -> push
+  sync.py               mirror characters + outfits from PixelLab into the repo
   viewer_build.py       scans skeletons/ -> viewer_data.json
 index.html              mobile viewer (GitHub Pages / local)
 skeletons/              generated, committed art
