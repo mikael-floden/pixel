@@ -128,7 +128,8 @@ class PixelLabClient:
             "view": view,
             "template_id": template_id,
         }
-        for k, v in (("outline", outline), ("shading", shading), ("detail", detail),
+        # create-character-v3 does NOT accept `shading` (only outline/detail).
+        for k, v in (("outline", outline), ("detail", detail),
                      ("seed", seed), ("reference_image", reference_image)):
             if v is not None:
                 payload[k] = v
