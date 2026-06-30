@@ -32,17 +32,47 @@ def _slug(s):
     return re.sub(r"[^a-z0-9]+", "_", (s or "").lower()).strip("_") or "state"
 
 
+def _conditional_get(session, url, timeout, if_modified=None):
+    """GET an image, optionally conditional. Returns (status, PIL|None, last_mod).
+    A 304 (Not Modified) downloads no body — that's how we skip unchanged art."""
+    import io
+    from PIL import Image
+    headers = {"If-Modified-Since": if_modified} if if_modified else {}
+    try:
+        r = session.get(url, headers=headers, timeout=timeout)
+    except Exception:
+        return 0, None, if_modified
+    if r.status_code == 304:
+        return 304, None, if_modified
+    if r.status_code == 200 and r.headers.get("content-type", "").startswith("image"):
+        return 200, Image.open(io.BytesIO(r.content)).convert("RGBA"), r.headers.get("Last-Modified")
+    return r.status_code, None, if_modified
+
+
 def _download_frames(client, urls, retries=4):
-    frames = []
-    for u in urls:
-        img = None
+    """Download all frames; also return the first frame's Last-Modified so the
+    next sync can ask 'changed since?' and skip an unchanged direction."""
+    frames, first_lm = [], None
+    for i, u in enumerate(urls):
+        img, lm = None, None
         for _ in range(retries):
-            img = client._try_download(u)
+            status, img, lm = _conditional_get(client._session, u, client.timeout)
             if img is not None:
                 break
         if img is not None:
             frames.append(img)
-    return frames
+            if i == 0:
+                first_lm = lm
+    return frames, first_lm
+
+
+def _entry_files_exist(entry):
+    """True if the local frame files a manifest entry points to are still present
+    (so we never 'reuse' an entry whose art was deleted)."""
+    paths = entry.get("frame_paths") or []
+    if not paths:
+        return False
+    return all(os.path.exists(os.path.join(factory.ROOT, p)) for p in (paths[0], paths[-1]))
 
 
 def _best_groups(detail):
@@ -75,18 +105,31 @@ def _mirror_rotations(client, detail, base_dir, canvas):
     return rotations
 
 
-def _mirror_animations(client, detail, anim_out_dir, canvas, type2key=None):
+def _mirror_animations(client, detail, anim_out_dir, canvas, type2key=None, prev_anims=None):
     anims = {}
     type2key = type2key or {}
+    prev_anims = prev_anims or {}
     for anim_type, dirmap in _best_groups(detail).items():
         # PixelLab's animation_type is the template id for template animations
         # (e.g. 'breathing-idle'); map it back to our repo key (e.g. 'idle') so
         # synced art lines up with what the loop creates. Unknown types pass
         # through unchanged (e.g. an animation you made by hand in the UI).
         key = type2key.get(anim_type, anim_type)
+        prev_dirs = prev_anims.get(key, {})
         saved = {}
         for direction, urls in dirmap.items():
-            frames = _download_frames(client, urls)
+            prev = prev_dirs.get(direction)
+            # Skip-unchanged: if we synced this direction before (same source
+            # frame count, files still present) and the CDN says the first frame
+            # is Not Modified, reuse the existing entry — no download at all.
+            if (prev and prev.get("lm") and prev.get("src_frames") == len(urls)
+                    and _entry_files_exist(prev)):
+                status, _, _ = _conditional_get(client._session, urls[0],
+                                                client.timeout, prev["lm"])
+                if status == 304:
+                    saved[direction] = prev
+                    continue
+            frames, lm = _download_frames(client, urls)
             if not frames:
                 continue
             frames = factory.strip_kept_idle_frame(frames)
@@ -101,6 +144,7 @@ def _mirror_animations(client, detail, anim_out_dir, canvas, type2key=None):
                 "frames": len(frames), "strip": factory._rel(strip), "gif": factory._rel(gif),
                 "frame_paths": [factory._rel(os.path.join(fdir, f"{i:02d}.png"))
                                 for i in range(len(frames))],
+                "lm": lm, "src_frames": len(urls),
             }
         if saved:
             anims[key] = saved
@@ -115,7 +159,9 @@ def sync_character(client, sid, char_meta, type2key=None):
     detail = client.get_character(char_meta["pixellab_id"])
 
     rotations = _mirror_rotations(client, detail, cdir, canvas)
-    char_meta["animations"] = _mirror_animations(client, detail, os.path.join(cdir, "animations"), canvas, type2key)
+    prev_base = char_meta.get("animations", {})
+    char_meta["animations"] = _mirror_animations(
+        client, detail, os.path.join(cdir, "animations"), canvas, type2key, prev_base)
     if rotations:
         char_meta["rotations"] = sorted(rotations)
 
@@ -132,9 +178,10 @@ def sync_character(client, sid, char_meta, type2key=None):
             outfit_id = known.get(spx) or _slug(sib.get("name") or spx)
             sdet = client.get_character(spx)
             odir = os.path.join(cdir, "outfits", outfit_id)
-            srot = _mirror_rotations(client, sdet, odir, canvas)
-            sanims = _mirror_animations(client, sdet, os.path.join(odir, "animations"), canvas, type2key)
             prev = char_meta.get("outfits", {}).get(outfit_id, {})
+            srot = _mirror_rotations(client, sdet, odir, canvas)
+            sanims = _mirror_animations(client, sdet, os.path.join(odir, "animations"),
+                                        canvas, type2key, prev.get("animations"))
             new_outfits[outfit_id] = {
                 **prev, "id": outfit_id, "pixellab_id": spx,
                 "name": sib.get("name"),
