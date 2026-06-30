@@ -37,6 +37,12 @@ CONFIG = os.path.join(ROOT, "config", "factory.json")
 SKELETONS_DIR = os.path.join(ROOT, "skeletons")
 PREVIEW_BG = (32, 36, 43, 255)
 
+# Every animation is ALWAYS generated at the maximum frame count PixelLab
+# supports per cycle, for the smoothest possible motion. Enforced here in code
+# (not config) so any new/invented animation is automatically max-frames; the
+# per-animation `frames` value in config is informational only.
+MAX_FRAMES = 16
+
 # Distinct PERSON looks (appearance only — no clothing; the base is undressed and
 # clothing comes from dress states). Mature, gritty, badass adults — varied in
 # age, gender, build and ethnicity. No children / cutesy tropes.
@@ -291,7 +297,7 @@ def _animate_into(client, adef, dirs, anim_out_dir, pixellab_id, canvas):
     key = adef["key"]
     frames_by_dir = client.animate(
         character_id=pixellab_id, animation_name=key,
-        action_description=adef["action"], frame_count=adef.get("frames", 6),
+        action_description=adef["action"], frame_count=MAX_FRAMES,
         directions=dirs,
     )
     saved = {}
