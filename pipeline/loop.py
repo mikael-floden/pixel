@@ -58,32 +58,43 @@ def commit_push(message, push=True):
 
 # --- planning ---------------------------------------------------------------
 
+def _fill_character(cfg, sid, sk, ch, anims, dresses):
+    """Next missing unit for ONE character: every declared dress (undressed is
+    dress #1) present, and every dress carrying every declared animation."""
+    for did in dresses:
+        if did == "undressed":
+            for akey in anims:
+                if akey not in ch.get("animations", {}):
+                    return ("animate", sid, sk, ch, "undressed", factory.anim_def(cfg, akey))
+        else:
+            dress = ch.get("outfits", {}).get(did)
+            if not dress:
+                return ("dress", sid, sk, ch, factory.dress_def(cfg, did))
+            for akey in anims:
+                if akey not in dress.get("animations", {}):
+                    return ("animate", sid, sk, ch, did, factory.anim_def(cfg, akey))
+    return None
+
+
 def fill_next(cfg, sk, n_chars):
-    """Next missing unit to make this skeleton's matrix consistent across
-    `n_chars` characters: every character has every declared dress (undressed is
-    dress #1), and every dress has every declared animation. Returns an action
-    tuple or None when filled. Char-major order: each character is completed
-    before the next, so the roster fills out steadily."""
+    """Next missing unit to make this skeleton's matrix consistent across up to
+    `n_chars` characters: every character has every declared dress, and every
+    dress has every declared animation. Returns an action tuple or None.
+
+    Gap-tolerant: it completes whatever characters actually EXIST (by identity,
+    not position) and, only when they're all complete and we're under target,
+    adds a fresh character at the next free slot. So removing one bad character
+    never shifts or blocks the others — its empty slot is simply refilled."""
     sid = sk["id"]
     chars = factory.list_characters(sid)
     anims = sk.get("animations", [])
     dresses = sk.get("dresses", ["undressed"])
-    for i in range(n_chars):
-        if i >= len(chars):
-            return ("base", sid, sk, i)
-        ch = chars[i]
-        for did in dresses:
-            if did == "undressed":
-                for akey in anims:
-                    if akey not in ch.get("animations", {}):
-                        return ("animate", sid, sk, ch, "undressed", factory.anim_def(cfg, akey))
-            else:
-                dress = ch.get("outfits", {}).get(did)
-                if not dress:
-                    return ("dress", sid, sk, ch, factory.dress_def(cfg, did))
-                for akey in anims:
-                    if akey not in dress.get("animations", {}):
-                        return ("animate", sid, sk, ch, did, factory.anim_def(cfg, akey))
+    for ch in chars:                       # complete every existing character
+        u = _fill_character(cfg, sid, sk, ch, anims, dresses)
+        if u:
+            return u
+    if len(chars) < n_chars:               # under target -> fill the next free slot
+        return ("base", sid, sk, factory.next_char_index(sid))
     return None
 
 
@@ -131,7 +142,7 @@ def next_action(cfg):
         if nxt:
             return ("append_dress", sk, nxt)
         if len(factory.list_characters(sk["id"])) < len(factory.CHARACTER_LOOKS):
-            return ("base", sk["id"], sk, len(factory.list_characters(sk["id"])))
+            return ("base", sk["id"], sk, factory.next_char_index(sk["id"]))
     return ("all_complete",)
 
 
