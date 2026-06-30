@@ -316,6 +316,29 @@ def list_characters(sid):
     return out
 
 
+def char_local_id(index):
+    return f"char_{index:02d}"
+
+
+def next_char_index(sid):
+    """Lowest free character index for a skeleton. Fills a hole left by a removed
+    character (so its slot — and its look — is regenerated) before appending a
+    new one. This keeps single-character removal safe no matter how many good
+    characters already exist."""
+    used = set()
+    for ch in list_characters(sid):
+        lid = ch.get("local_id", "")
+        if lid.startswith("char_"):
+            try:
+                used.add(int(lid.split("_")[1]))
+            except ValueError:
+                pass
+    i = 0
+    while i in used:
+        i += 1
+    return i
+
+
 def create_base_character(client, cfg, sid, skel_meta, char_index, max_attempts=3):
     """Create an UNDRESSED base character (neutral body, ready to be dressed).
 
