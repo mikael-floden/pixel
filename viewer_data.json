@@ -39,7 +39,7 @@
         "shading": "basic shading",
         "detail": "medium detail"
       },
-      "character_count": 2,
+      "character_count": 3,
       "characters": [
         {
           "local_id": "char_00",
@@ -105,6 +105,20 @@
               }
             }
           ],
+          "outfits": []
+        },
+        {
+          "local_id": "char_02",
+          "look": "a battle-worn warrior woman with a long dark braid and war paint, athletic build",
+          "portrait": "skeletons/00_low4_64/characters/char_02/portrait.png",
+          "rotations": [
+            "skeletons/00_low4_64/characters/char_02/rotations/east.png",
+            "skeletons/00_low4_64/characters/char_02/rotations/north.png",
+            "skeletons/00_low4_64/characters/char_02/rotations/south.png",
+            "skeletons/00_low4_64/characters/char_02/rotations/west.png"
+          ],
+          "animation_count": 0,
+          "animations": [],
           "outfits": []
         }
       ]
