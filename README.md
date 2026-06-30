@@ -1,69 +1,86 @@
 # Modular Pixel Character Factory
 
-Side-view (Grave Seasons / Stardew-style) pixel characters built as **layered
-sprites that share ONE skeleton**, so animations and gear amortize across the
-whole roster. PixelLab paints the pixels; this repo owns the **skeleton, pose
-library, compositing, and QA**.
+An automated loop that generates **modular, game-ready pixel-art characters** in
+the style of *Grave Seasons* / Stardew Valley, using [PixelLab](https://pixellab.ai)
+as the drawing backend.
 
-> **The Rule:** every body part and gear piece is rendered on the same 48×64
-> canvas, posed by the same skeleton, transparent everywhere else. Compositing is
-> alpha-over in z-order. Gear equips by hiding the base layers it covers.
+The repo explores **skeletons** — generation-parameter profiles (view, size,
+number of directions, frames/animation, style…) — so you can A/B several before
+committing to a winner. For each skeleton the loop builds a roster of characters,
+gives each the full animation set, and generates modular gear, then moves on to
+the next skeleton.
 
-See [`spec/MODULAR_PIXEL_CHARACTER_SPEC.md`](spec/MODULAR_PIXEL_CHARACTER_SPEC.md)
-for the full design.
+## How the loop works
+
+```
+skeletons/<id>/                     one skeleton = one parameter profile
+  skeleton.json                     params + status
+  characters/<char_xx>/
+    rotations/<dir>.png             8-direction base art
+    portrait.png
+    animations/<key>__<dir>.png     per-direction frame strips (game-ready)
+    animations/<key>.gif            preview (mobile-viewable)
+    character.json
+  gear/<slot>/<gear_id>.png         gear, shared across the skeleton's roster
+  gear/gear.json
+```
+
+For each skeleton, in order (all driven by `config/factory.json`):
+1. create **10 base characters** (8 rotations each),
+2. give every character the **25 animations** (idle, walk, run, jump, crouch,
+   fall, kicks/punches standing/crouching/air/running, low/med/high landings,
+   and front/back/crouch damage reactions),
+3. generate **3 gear items per equippable slot** (pants, boots, gloves,
+   armor/tunic, helmet/hat) — shared across the roster,
+4. mark the skeleton complete and open the next one with new parameters.
+
+Every unit of work commits and **pushes to `main`**, and the loop is **fully
+resumable** — it derives the next missing unit from the filesystem.
+
+## Run it
+
+```bash
+pip install -r requirements.txt
+export PIXELLAB_API_KEY=...          # kept in a gitignored .env; never committed
+
+python pipeline/loop.py --max-minutes 50      # bounded chunk (for a Routine)
+python pipeline/loop.py --once                # one unit
+python pipeline/loop.py --max-units 5 --no-push
+```
+
+The loop stops cleanly when PixelLab generations run low
+(`budget.min_generations_remaining` in `config/factory.json`).
+
+## Test on your phone
+
+- **Zero setup:** browse the repo in the GitHub mobile app — every
+  `animations/*.gif` plays inline, and `viewer_data.json` lists everything.
+- **Nicer:** enable GitHub Pages (Settings → Pages → Deploy from `main`, `/root`)
+  and open the repo's Pages URL. `index.html` is a phone-friendly viewer that
+  loads `viewer_data.json` and lets you flip through every skeleton → character →
+  animation → gear. It also works locally: `python -m http.server` then open `/`.
+
+## Cost
+
+On PixelLab a base character (8 rotations) ≈ 3 generations and each animation ≈ 1
+per direction, so a side-view (east-only) character with all 25 animations ≈ ~28
+generations. The loop is budget-aware; check remaining balance with the API's
+`/balance` endpoint.
 
 ## Layout
 
 ```
-config/      skeleton.json, animations.json (25 starter anims), palette.json, project.json
-pipeline/    compositor.py, qa.py, pixellab_client.py, skeleton.py,
-             generate_character.py, generate_gear.py
-spec/        MODULAR_PIXEL_CHARACTER_SPEC.md
-assets/      committed sprite output (preview/, characters/, gear/)
+config/factory.json     animations, gear slots, targets, skeleton variations
+pipeline/
+  pixellab_client.py    async PixelLab client (job polling, image decode, budget)
+  factory.py            skeleton/character/animation/gear operations + packaging
+  loop.py               orchestrator: next unit -> generate -> commit -> push
+  viewer_build.py       scans skeletons/ -> viewer_data.json
+index.html              mobile viewer (GitHub Pages / local)
+skeletons/              generated, committed art
 ```
-
-## Setup
-
-```bash
-pip install -r requirements.txt          # Pillow, numpy, requests
-```
-
-## Prove the deterministic path (no PixelLab, no key needed)
-
-```bash
-python pipeline/compositor.py            # synthetic pixelate+QA, then a contact sheet
-```
-
-This writes `assets/preview/contact_sheet.png` (one row per animation, one column
-per frame), per-animation strips, a manifest, and QAs every frame.
-
-Render a character or gear with the procedural placeholder rig:
-
-```bash
-python pipeline/generate_character.py --id rowan --desc "freckled farmhand" \
-    --archetype villager --placeholder
-python pipeline/generate_gear.py --id straw_hat --slot helm \
-    --archetype villager --desc "wide straw sun hat" --placeholder
-```
-
-QA a single frame:
-
-```bash
-python pipeline/qa.py assets/preview/strip_walk.png
-```
-
-## Going live with PixelLab (Phase 0)
-
-1. `export PIXELLAB_API_KEY=...` (keep it in a **gitignored** `.env`; never commit it).
-2. Allow outbound egress to `api.pixellab.ai`.
-3. Implement the stubbed calls in `pipeline/pixellab_client.py` and
-   `_paint_base_layers` / `_paint_gear`, then drop `--placeholder`.
-4. Paint the pilot character and **lock the palette** from it
-   (`config/palette.json` → `"locked": true`).
 
 ## Guardrails
 
-- Never commit secrets.
-- Every committed frame must pass `pipeline/qa.py`.
-- Once the palette is locked, don't recolor mid-roster.
-- Keep PRs small.
+Never commit secrets (`PIXELLAB_API_KEY` lives in `.gitignore`d `.env`) · the
+loop pushes generated assets to `main` · keep PRs/changes scoped.

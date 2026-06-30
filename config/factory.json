@@ -1,0 +1,71 @@
+{
+  "_comment": "Global config for the modular pixel-character factory loop. A 'skeleton' is a generation-parameter profile we want to A/B before committing to a winner. For each skeleton the loop makes `characters_per_skeleton` base characters, gives each the full animation set, then generates `gear_per_slot` items for every equippable gear slot, then advances to the next skeleton.",
+
+  "targets": {
+    "characters_per_skeleton": 10,
+    "gear_per_slot": 3
+  },
+
+  "budget": {
+    "min_generations_remaining": 40,
+    "_comment": "Loop stops cleanly when the PixelLab balance drops below this, so it never hard-fails mid-job."
+  },
+
+  "animations": [
+    { "key": "stand",            "action": "standing still, idle breathing",                         "frames": 6 },
+    { "key": "walk",             "action": "walking",                                                "frames": 8 },
+    { "key": "run",              "action": "running fast",                                           "frames": 8 },
+    { "key": "jump",             "action": "jumping straight up, arms raised",                       "frames": 6 },
+    { "key": "crouch",           "action": "crouching down low, idle",                               "frames": 6 },
+    { "key": "fall",             "action": "falling downward through the air",                       "frames": 6 },
+    { "key": "kick_stand",       "action": "kicking forward with one leg while standing",            "frames": 6 },
+    { "key": "punch_stand",      "action": "throwing a forward punch while standing",                "frames": 6 },
+    { "key": "kick_crouch",      "action": "low sweeping kick while crouching",                      "frames": 6 },
+    { "key": "punch_crouch",     "action": "punching forward while crouching low",                   "frames": 6 },
+    { "key": "kick_air",         "action": "flying kick in mid air",                                 "frames": 6 },
+    { "key": "punch_air",        "action": "punching forward while airborne",                        "frames": 6 },
+    { "key": "punch_run",        "action": "punching forward while running",                         "frames": 6 },
+    { "key": "kick_run",         "action": "kicking forward while running",                          "frames": 6 },
+    { "key": "land_low",         "action": "landing softly from a short hop, slight knee bend",      "frames": 4 },
+    { "key": "land_med",         "action": "landing from a fall, knees bending to absorb impact",    "frames": 6 },
+    { "key": "land_high",        "action": "hard landing from a high fall, crouching low on impact", "frames": 6 },
+    { "key": "hit_front_high",   "action": "head snapping back, recoiling backward from a hit to the head",        "frames": 4 },
+    { "key": "hit_front_mid",    "action": "doubling over backward from a punch to the stomach",                   "frames": 4 },
+    { "key": "hit_front_low",    "action": "stumbling backward from a hit to the legs",                            "frames": 4 },
+    { "key": "hit_behind_high",  "action": "lurching forward from a blow to the back of the head",                 "frames": 4 },
+    { "key": "hit_behind_mid",   "action": "pitching forward from a hit to the back",                              "frames": 4 },
+    { "key": "hit_behind_low",   "action": "stumbling forward from a hit to the back of the legs",                 "frames": 4 },
+    { "key": "hit_crouch_front", "action": "flinching while crouching, struck from the front",                     "frames": 4 },
+    { "key": "hit_crouch_behind","action": "flinching forward while crouching, struck from behind",                "frames": 4 }
+  ],
+
+  "gear_slots": [
+    { "slot": "base_body",   "kind": "base", "_comment": "Torso/arms/legs — produced by character creation, not generated separately." },
+    { "slot": "head",        "kind": "base", "_comment": "Head/face/hair — produced by character creation." },
+    { "slot": "pants",       "kind": "gear", "z": 1, "archetypes": ["patched work trousers", "sturdy leather breeches", "thick woolen farm pants"] },
+    { "slot": "boots",       "kind": "gear", "z": 0, "archetypes": ["muddy leather work boots", "tall brown riding boots", "simple wooden clogs"] },
+    { "slot": "gloves",      "kind": "gear", "z": 4, "archetypes": ["worn leather work gloves", "fingerless wool mitts", "heavy gauntlets"] },
+    { "slot": "armor_tunic", "kind": "gear", "z": 2, "archetypes": ["rugged leather tunic", "quilted gambeson", "green woolen cloak"] },
+    { "slot": "helmet_hat",  "kind": "gear", "z": 5, "archetypes": ["wide straw sun hat", "leather hood", "iron half-helm"] }
+  ],
+
+  "style_base": "cozy farming-sim RPG pixel art, Grave Seasons / Stardew Valley inspired, warm earthy palette, clean readable shapes",
+
+  "skeleton_variations": [
+    { "id": "00_side_64",       "note": "Baseline: side view, 64x64, single east direction (mirror for west), mannequin.",
+      "view": "side",         "width": 64, "height": 64, "animation_directions": ["east"],            "template_id": "mannequin", "outline": "single color black outline", "shading": "basic shading",    "detail": "medium detail" },
+    { "id": "01_side_96",       "note": "Taller canvas for more detail at the same view.",
+      "view": "side",         "width": 96, "height": 96, "animation_directions": ["east"],            "template_id": "mannequin", "outline": "single color black outline", "shading": "detailed shading", "detail": "highly detailed" },
+    { "id": "02_lowtopdown_4dir","note": "Top-down RPG, 4 directions — classic farming-sim movement.",
+      "view": "low top-down", "width": 64, "height": 64, "animation_directions": ["south","north","east","west"], "template_id": "mannequin", "outline": "single color black outline", "shading": "basic shading", "detail": "medium detail" },
+    { "id": "03_side_softoutline","note": "Softer outline + selective shading for a gentler look.",
+      "view": "side",         "width": 64, "height": 80, "animation_directions": ["east"],            "template_id": "mannequin", "outline": "selective outline",          "shading": "detailed shading", "detail": "medium detail" }
+  ],
+
+  "procedural_variation": {
+    "_comment": "When the explicit skeleton_variations list is exhausted, derive further skeletons by cycling these axes.",
+    "views": ["side", "low top-down", "high top-down"],
+    "sizes": [[64, 64], [96, 96], [48, 64]],
+    "details": ["low detail", "medium detail", "highly detailed"]
+  }
+}

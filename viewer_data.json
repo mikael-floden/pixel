@@ -1,0 +1,36 @@
+{
+  "title": "Modular Pixel Character Factory",
+  "targets": {
+    "characters_per_skeleton": 10,
+    "gear_per_slot": 3
+  },
+  "animation_order": [
+    "stand",
+    "walk",
+    "run",
+    "jump",
+    "crouch",
+    "fall",
+    "kick_stand",
+    "punch_stand",
+    "kick_crouch",
+    "punch_crouch",
+    "kick_air",
+    "punch_air",
+    "punch_run",
+    "kick_run",
+    "land_low",
+    "land_med",
+    "land_high",
+    "hit_front_high",
+    "hit_front_mid",
+    "hit_front_low",
+    "hit_behind_high",
+    "hit_behind_mid",
+    "hit_behind_low",
+    "hit_crouch_front",
+    "hit_crouch_behind"
+  ],
+  "skeleton_count": 0,
+  "skeletons": []
+}

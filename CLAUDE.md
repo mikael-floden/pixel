@@ -1,54 +1,56 @@
-# CLAUDE.md — working notes for this repo
+# CLAUDE.md — working notes
 
 ## What this is
 
-A factory for side-view pixel characters built as **layered sprites sharing ONE
-skeleton**. PixelLab paints pixels; this repo owns the skeleton, pose library,
-compositing, and QA. Read `spec/MODULAR_PIXEL_CHARACTER_SPEC.md` first.
+An automated loop that generates modular *Grave Seasons*-style pixel characters
+via the PixelLab API. The repo tries many **skeletons** (generation-parameter
+profiles) before picking a winner. Read `README.md` and `spec/FACTORY_SPEC.md`.
 
-## The Rule (never break it)
+## Mental model
 
-Every body part and gear piece is rendered on the **same 48×64 canvas**, posed by
-the **same skeleton**, transparent everywhere else. Compositing is **alpha-over
-in z-order**. Gear equips by **hiding the base layers it covers**
-(`skeleton.slot_hides`). Any change that breaks layer parity (different canvas,
-different skeleton, baked-in backgrounds) is wrong.
+- A **skeleton** = a parameter profile (`config/factory.json:skeleton_variations`):
+  view (`side` / `low top-down` / …), `width`×`height`, `animation_directions`
+  (1 for side-view + mirror, 4/8 for top-down), outline/shading/detail, template.
+- A **character** = one `create-character-v3` call → 8 rotations (~3 generations).
+- An **animation** = one `animate-character` call per direction (~1 gen each);
+  frames return as raw `rgba_bytes` base64.
+- **Gear** = standalone item sprites via `create-image-pixflux` (1 gen each),
+  shared across a skeleton's roster, with a character portrait as `color_image`
+  so palettes match. Modular overlay layers per slot.
+
+## The loop (pipeline/loop.py)
+
+Each **unit** is one PixelLab op. `next_action` reads the filesystem to find the
+next missing unit (resumable): bases → animations → gear → complete → next
+skeleton. After every unit: rebuild `viewer_data.json`, `git add -A`, commit,
+**push to `main`**. Bounded by `--max-minutes` / `--max-units` / budget floor.
 
 ## Conventions
 
-- Coordinates: image **y grows downward**. Angles in degrees: `0=+x`, `90=down`,
-  `-90=up`. All pose bone angles are **absolute world angles**.
-- Poses are authored **facing right**; left is a final horizontal flip, so never
-  interpolate `facing`.
-- Keyframes list **only changed fields** vs `skeleton.json:bind_pose`.
-- The deterministic code must stay **pure/deterministic** — same input, same
-  pixels. No `Date.now()`/RNG in the pixel path; QA depends on it.
+- **Never commit secrets.** `PIXELLAB_API_KEY` is read from the environment /
+  gitignored `.env`.
+- All generated art is **committed** under `skeletons/` and pushed to `main`.
+- PixelLab calls are async; `pixellab_client.py` polls background jobs and returns
+  decoded Pillow images so callers are effectively synchronous.
+- Keep code deterministic where possible: seeds are derived (`factory._seed`) from
+  skeleton id + indices so re-runs are reproducible.
+- CDN rotation URLs can briefly 404 right after a job completes — the client
+  retries downloads.
 
-## Pipeline modules
+## Adding a skeleton variation
 
-- `pipeline/skeleton.py` — joint solve + procedural placeholder rasterizer
-  (`render_pose`). PixelLab replaces the rasterizer; joints stay the contract.
-- `pipeline/compositor.py` — `load_palette`, `composite`, `pixelate`,
-  `expand_animation`, `pack_strip`, `pack_grid`, `write_manifest`, `render_frame`.
-  `python pipeline/compositor.py` runs the synthetic QA + contact sheet.
-- `pipeline/qa.py` — the gate. Run before committing any asset.
-- `pipeline/pixellab_client.py` — STUBBED API wrapper; all calls are TODOs.
-- `pipeline/generate_character.py`, `pipeline/generate_gear.py` — generators;
-  `--placeholder` runs the deterministic rig with no network.
+Append to `config/factory.json:skeleton_variations` (or rely on
+`procedural_variation` once the explicit list is exhausted). Vary `view`, size,
+`animation_directions`, detail/outline/shading, `template_id`.
 
-## pixelate (exact order, applied identically to every frame)
+## Running the loop on a schedule
 
-downscale NEAREST → binary alpha → snap each opaque pixel to nearest palette
-color → 1px selective dark outline.
+A scheduled Routine wakes a session that runs
+`python pipeline/loop.py --max-minutes 50`, which advances + pushes, then exits;
+the next firing resumes from the filesystem.
 
-## Guardrails
+## Don't
 
-- **Never commit secrets.** `PIXELLAB_API_KEY` lives in a gitignored `.env`.
-- **Pass `qa.py` before committing assets.** Border clean, no stray blobs,
-  on-palette, correct size, non-empty.
-- **Keep the palette locked** once `config/palette.json:locked` is true.
-- **Commit assets** (they are intentionally NOT gitignored). Keep PRs small.
-
-## Don't call PixelLab without
-
-a key set AND `api.pixellab.ai` egress allowed. Until then, use `--placeholder`.
+- Don't call PixelLab without `PIXELLAB_API_KEY` set.
+- Don't re-pose art locally — PixelLab owns rigging/animation; this repo owns
+  orchestration, packaging, QA-of-output, and the viewer.

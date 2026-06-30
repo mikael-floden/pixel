@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pixel Character Factory</title>
+<style>
+  :root { --bg:#181b21; --panel:#20242b; --ink:#e8e2d4; --dim:#9aa0ab; --accent:#c8a04c; --line:#2f343d; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+         font:15px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+  header { position:sticky; top:0; background:var(--panel); padding:12px 16px;
+           border-bottom:1px solid var(--line); z-index:10; }
+  header h1 { margin:0; font-size:16px; }
+  header .sub { color:var(--dim); font-size:12px; margin-top:2px; }
+  .wrap { padding:12px; max-width:900px; margin:0 auto; }
+  .skel { background:var(--panel); border:1px solid var(--line); border-radius:10px;
+          margin-bottom:14px; overflow:hidden; }
+  .skel > summary { list-style:none; cursor:pointer; padding:12px 14px; font-weight:600; }
+  .skel > summary::-webkit-details-marker { display:none; }
+  .skel > summary .meta { color:var(--dim); font-weight:400; font-size:12px; margin-top:3px; }
+  .badge { display:inline-block; font-size:11px; color:#0c0c0c; background:var(--accent);
+           border-radius:4px; padding:1px 6px; margin-left:6px; vertical-align:middle; }
+  .body { padding:0 14px 14px; }
+  .char { border-top:1px solid var(--line); padding:12px 0; }
+  .char h3 { margin:0 0 8px; font-size:14px; display:flex; align-items:center; gap:10px; }
+  img.px { image-rendering:pixelated; image-rendering:crisp-edges; background:#15171c;
+           border-radius:6px; }
+  .port { width:64px; height:64px; object-fit:contain; }
+  .row { display:flex; flex-wrap:wrap; gap:8px; }
+  .cell { background:#15171c; border:1px solid var(--line); border-radius:8px; padding:6px;
+          text-align:center; width:104px; }
+  .cell img { width:88px; height:88px; object-fit:contain; }
+  .cell .cap { font-size:11px; color:var(--dim); margin-top:4px; word-break:break-word; }
+  .section-label { color:var(--accent); font-size:12px; text-transform:uppercase;
+                   letter-spacing:.06em; margin:12px 0 6px; }
+  .empty { color:var(--dim); padding:30px 12px; text-align:center; }
+  a { color:var(--accent); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Modular Pixel Character Factory</h1>
+  <div class="sub" id="sub">loading…</div>
+</header>
+<div class="wrap" id="app"><div class="empty">Loading viewer_data.json…</div></div>
+
+<script>
+const app = document.getElementById('app');
+const sub = document.getElementById('sub');
+
+function el(tag, cls, html) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (html != null) e.innerHTML = html;
+  return e;
+}
+
+function cell(src, caption) {
+  const c = el('div', 'cell');
+  if (src) {
+    const img = el('img', 'px');
+    img.loading = 'lazy'; img.src = src; img.alt = caption || '';
+    c.appendChild(img);
+  }
+  if (caption) c.appendChild(el('div', 'cap', caption));
+  return c;
+}
+
+function renderChar(ch) {
+  const wrap = el('div', 'char');
+  const h = el('h3');
+  if (ch.portrait) {
+    const p = el('img', 'px port'); p.loading = 'lazy'; p.src = ch.portrait; h.appendChild(p);
+  }
+  h.appendChild(el('span', null, `${ch.local_id} · <span style="color:var(--dim);font-weight:400">${ch.look}</span>`));
+  wrap.appendChild(h);
+
+  if (ch.rotations && ch.rotations.length) {
+    wrap.appendChild(el('div', 'section-label', 'Rotations'));
+    const r = el('div', 'row');
+    ch.rotations.forEach(src => r.appendChild(cell(src, src.split('/').pop().replace('.png',''))));
+    wrap.appendChild(r);
+  }
+
+  wrap.appendChild(el('div', 'section-label', `Animations (${ch.animation_count})`));
+  if (ch.animations.length) {
+    const a = el('div', 'row');
+    ch.animations.forEach(an => a.appendChild(cell(an.gif, an.key)));
+    wrap.appendChild(a);
+  } else {
+    wrap.appendChild(el('div', 'cap', 'none yet'));
+  }
+  return wrap;
+}
+
+function renderGear(gear) {
+  const slots = Object.keys(gear || {});
+  if (!slots.length) return null;
+  const box = el('div');
+  box.appendChild(el('div', 'section-label', 'Gear (shared across this skeleton)'));
+  const row = el('div', 'row');
+  slots.forEach(slot => {
+    Object.entries(gear[slot]).forEach(([gid, g]) =>
+      row.appendChild(cell(g.png, `${slot}: ${g.archetype}`)));
+  });
+  box.appendChild(row);
+  return box;
+}
+
+function renderSkeleton(sk, open) {
+  const d = el('details', 'skel'); if (open) d.open = true;
+  const s = el('summary');
+  const p = sk.params || {};
+  s.innerHTML = `${sk.id}` +
+    (sk.status === 'complete' ? '<span class="badge">complete</span>' : '') +
+    `<div class="meta">${sk.note || ''}<br>view: ${p.view} · ${p.width}×${p.height} · ` +
+    `dirs: ${(p.animation_directions||[]).join(', ')} · ${sk.character_count} chars</div>`;
+  d.appendChild(s);
+  const body = el('div', 'body');
+  if (!sk.characters.length) body.appendChild(el('div', 'cap', 'no characters yet'));
+  sk.characters.forEach(ch => body.appendChild(renderChar(ch)));
+  const g = renderGear(sk.gear); if (g) body.appendChild(g);
+  d.appendChild(body);
+  return d;
+}
+
+fetch('viewer_data.json?_=' + Date.now())
+  .then(r => r.json())
+  .then(data => {
+    app.innerHTML = '';
+    const totalChars = data.skeletons.reduce((n, s) => n + s.character_count, 0);
+    sub.textContent = `${data.skeleton_count} skeleton(s) · ${totalChars} character(s) · ` +
+      `target ${data.targets.characters_per_skeleton}/skeleton`;
+    if (!data.skeletons.length) { app.appendChild(el('div', 'empty', 'No skeletons yet.')); return; }
+    data.skeletons.slice().reverse().forEach((sk, i) => app.appendChild(renderSkeleton(sk, i === 0)));
+  })
+  .catch(e => { app.innerHTML = ''; app.appendChild(el('div', 'empty', 'Could not load viewer_data.json — run the loop first.<br>' + e)); });
+</script>
+</body>
+</html>
