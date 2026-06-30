@@ -39,7 +39,7 @@
         "shading": "basic shading",
         "detail": "medium detail"
       },
-      "character_count": 1,
+      "character_count": 2,
       "characters": [
         {
           "local_id": "char_00",
@@ -84,6 +84,24 @@
               }
             }
           ],
+          "outfits": []
+        },
+        {
+          "local_id": "char_01",
+          "look": "a beaming dark-skinned young man laughing with his whole face, short cropped hair, dimples, easy relaxed posture, lean athletic build",
+          "portrait": "skeletons/00_low8_64/characters/char_01/portrait.png",
+          "rotations": [
+            "skeletons/00_low8_64/characters/char_01/rotations/east.png",
+            "skeletons/00_low8_64/characters/char_01/rotations/north.png",
+            "skeletons/00_low8_64/characters/char_01/rotations/north-east.png",
+            "skeletons/00_low8_64/characters/char_01/rotations/north-west.png",
+            "skeletons/00_low8_64/characters/char_01/rotations/south.png",
+            "skeletons/00_low8_64/characters/char_01/rotations/south-east.png",
+            "skeletons/00_low8_64/characters/char_01/rotations/south-west.png",
+            "skeletons/00_low8_64/characters/char_01/rotations/west.png"
+          ],
+          "animation_count": 0,
+          "animations": [],
           "outfits": []
         }
       ]
