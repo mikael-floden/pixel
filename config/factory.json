@@ -26,9 +26,9 @@
 
   "_animation_pool": "Ordered pool. First two (idle, walk) are every character's base; the loop appends the next ones up to the target, then beyond in Phase B. Keep `action` to ONE simple word — extra words confuse PixelLab and produce weird / non-looping cycles.",
   "animations": [
-    { "key": "idle",   "action": "idle",     "frames": 6 },
-    { "key": "walk",   "action": "walking",  "frames": 8 },
-    { "key": "run",    "action": "running",  "frames": 8 },
+    { "key": "idle",   "action": "idle",     "frames": 16 },
+    { "key": "walk",   "action": "walking",  "frames": 16 },
+    { "key": "run",    "action": "running",  "frames": 16 },
     { "key": "jump",   "action": "jumping",  "frames": 6 },
     { "key": "kick",   "action": "kicking",  "frames": 6 },
     { "key": "punch",  "action": "punching", "frames": 6 },
