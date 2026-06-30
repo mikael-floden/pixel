@@ -15,6 +15,49 @@
     "south-west",
     "west"
   ],
-  "animations": {},
+  "animations": {
+    "walk": {
+      "east": {
+        "frames": 9,
+        "strip": "skeletons/00_side_64/characters/char_00/animations/walk__east.png"
+      },
+      "gif": "skeletons/00_side_64/characters/char_00/animations/walk.gif"
+    },
+    "run": {
+      "east": {
+        "frames": 9,
+        "strip": "skeletons/00_side_64/characters/char_00/animations/run__east.png"
+      },
+      "gif": "skeletons/00_side_64/characters/char_00/animations/run.gif"
+    },
+    "jump": {
+      "east": {
+        "frames": 7,
+        "strip": "skeletons/00_side_64/characters/char_00/animations/jump__east.png"
+      },
+      "gif": "skeletons/00_side_64/characters/char_00/animations/jump.gif"
+    },
+    "kick_stand": {
+      "east": {
+        "frames": 7,
+        "strip": "skeletons/00_side_64/characters/char_00/animations/kick_stand__east.png"
+      },
+      "gif": "skeletons/00_side_64/characters/char_00/animations/kick_stand.gif"
+    },
+    "punch_stand": {
+      "east": {
+        "frames": 7,
+        "strip": "skeletons/00_side_64/characters/char_00/animations/punch_stand__east.png"
+      },
+      "gif": "skeletons/00_side_64/characters/char_00/animations/punch_stand.gif"
+    },
+    "hit_front_high": {
+      "east": {
+        "frames": 5,
+        "strip": "skeletons/00_side_64/characters/char_00/animations/hit_front_high__east.png"
+      },
+      "gif": "skeletons/00_side_64/characters/char_00/animations/hit_front_high.gif"
+    }
+  },
   "base_done": true
 }
