@@ -209,10 +209,26 @@ def create_base_character(client, cfg, sid, skel_meta, char_index):
     return meta
 
 
+def animation_directions(skel_meta, char_meta):
+    """Directions to animate = every orientation the character actually has.
+
+    The character's `rotations` are the source of truth so animations always
+    match the character's orientation count. A skeleton may cap this with
+    `params.animation_directions` (e.g. to save generations during exploration);
+    we intersect, preserving the character's order.
+    """
+    have = char_meta.get("rotations") or ["south"]
+    cap = skel_meta.get("params", {}).get("animation_directions")
+    if cap:
+        capset = set(cap)
+        return [d for d in have if d in capset] or list(cap)
+    return have
+
+
 def animate_one(client, cfg, sid, skel_meta, char_meta, anim_def):
-    """Generate one animation for a character across the skeleton's directions."""
+    """Generate one animation for a character across all its orientations."""
     p = skel_meta["params"]
-    dirs = p.get("animation_directions", ["east"])
+    dirs = animation_directions(skel_meta, char_meta)
     cid_local = char_meta["local_id"]
     cdir = os.path.join(skeleton_dir(sid), "characters", cid_local)
     key = anim_def["key"]

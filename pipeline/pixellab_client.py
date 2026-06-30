@@ -171,23 +171,46 @@ class PixelLabClient:
             return Image.open(io.BytesIO(r.content)).convert("RGBA")
         return None
 
-    def animate(self, character_id, animation_name, action_description,
-                frame_count=6, directions=("east",), job_timeout=900):
-        """Animate a character. Returns {direction: [PIL frames]}."""
-        payload = {
-            "character_id": character_id,
-            "animation_name": animation_name,
-            "action_description": action_description,
-            "frame_count": frame_count,
+    def _animate_call(self, character_id, animation_name, action_description,
+                      frame_count, directions, job_timeout):
+        resp = self._post("/animate-character", {
+            "character_id": character_id, "animation_name": animation_name,
+            "action_description": action_description, "frame_count": frame_count,
             "directions": list(directions),
-        }
-        resp = self._post("/animate-character", payload)
+        })
         job_ids = resp.get("background_job_ids", [])
         dirs = resp.get("directions", list(directions))
         out = {}
         for direction, job_id in zip(dirs, job_ids):
-            last = self.wait_job(job_id, timeout=job_timeout)
-            out[direction] = self._frames_from_response(last)
+            try:
+                out[direction] = self._frames_from_response(
+                    self.wait_job(job_id, timeout=job_timeout))
+            except PixelLabError as e:
+                print(f"  ! animate {animation_name} [{direction}] failed: {e}")
+        return out
+
+    def animate(self, character_id, animation_name, action_description,
+                frame_count=6, directions=("east",), job_timeout=900):
+        """Animate a character across directions. Returns {direction: [PIL frames]}.
+
+        Tries one batched call; if it fails (e.g. one unsupported direction
+        422s the whole request), retries each direction individually so a single
+        bad orientation can't lose the rest."""
+        dirs = list(directions)
+        try:
+            out = self._animate_call(character_id, animation_name, action_description,
+                                     frame_count, dirs, job_timeout)
+            if out:
+                return out
+        except PixelLabError as e:
+            print(f"  ! batched animate failed ({e}); retrying per-direction")
+        out = {}
+        for d in dirs:
+            try:
+                out.update(self._animate_call(character_id, animation_name,
+                                              action_description, frame_count, [d], job_timeout))
+            except PixelLabError as e:
+                print(f"  ! animate {animation_name} [{d}] failed: {e}")
         return out
 
     @staticmethod
