@@ -1,10 +1,13 @@
 {
   "title": "Modular Pixel Character Factory",
   "targets": {
-    "characters_per_skeleton": 10
+    "num_skeletons": 5,
+    "max_characters": 5,
+    "max_animations": 5,
+    "max_dresses": 5
   },
   "animation_order": [
-    "stand",
+    "idle",
     "walk",
     "run",
     "jump",

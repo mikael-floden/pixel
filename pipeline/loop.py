@@ -58,87 +58,107 @@ def commit_push(message, push=True):
 
 # --- planning ---------------------------------------------------------------
 
-def current_skeleton(cfg):
-    """Return (sid, meta) for the skeleton to work on, creating one if needed."""
-    sks = factory.list_skeletons()
-    if not sks:
-        return factory.ensure_skeleton(cfg, 0)
-    last = sks[-1]
-    if last.get("status") == "complete":
-        return factory.ensure_skeleton(cfg, last["index"] + 1)
-    return last["id"], last
-
-
-def char_fully_animated(cfg, char_meta):
-    done = char_meta.get("animations", {})
-    return all(a["key"] in done for a in cfg["animations"])
-
-
-def next_action(cfg, sid, skel_meta):
-    """Decide the next unit for this skeleton. Returns (kind, payload...)."""
-    target_chars = cfg["targets"]["characters_per_skeleton"]
+def fill_next(cfg, sk, max_chars):
+    """Next missing unit to make this skeleton's matrix consistent with its
+    declared animations + dresses across `max_chars` characters. Each character
+    must have every animation undressed, and every dress (with every animation).
+    Returns an action tuple or None when the skeleton is fully filled."""
+    sid = sk["id"]
     chars = factory.list_characters(sid)
+    anims = sk.get("animations", [])
+    dresses = sk.get("dresses", [])
+    for i in range(max_chars):
+        if i >= len(chars):
+            return ("base", sid, sk, i)
+        ch = chars[i]
+        for akey in anims:                       # undressed animations
+            if akey not in ch.get("animations", {}):
+                return ("animate", sid, sk, ch, None, factory.anim_def(cfg, akey))
+        for did in dresses:                      # each dress, with every animation
+            dress = ch.get("outfits", {}).get(did)
+            if not dress:
+                return ("dress", sid, sk, ch, factory.dress_def(cfg, did))
+            for akey in anims:
+                if akey not in dress.get("animations", {}):
+                    return ("animate", sid, sk, ch, did, factory.anim_def(cfg, akey))
+    return None
 
-    # Phase 1: undressed base characters.
-    if len(chars) < target_chars:
-        return ("base", len(chars))
 
-    # Phase 2: base animations.
-    for ch in chars:
-        for anim in cfg["animations"]:
-            if anim["key"] not in ch.get("animations", {}):
-                return ("animate", ch, anim)
+def next_action(cfg):
+    """Decide the next global unit. Phase A: bootstrap up to num_skeletons
+    skeletons (each filled for its base animations, no dresses). Phase B: once
+    that many skeletons exist, finish any pending fill, then append the next
+    animation/dress to the first under-cap skeleton (which fans out via fill)."""
+    t = cfg["targets"]
+    skels = factory.list_skeletons()
+    if not skels:
+        return ("new_skeleton", 0)
 
-    # Phase 3: outfits — create a dressed PixelLab STATE per outfit on the
-    # reference character(s), each with its own (re)generated animations.
-    outfits_cfg = cfg.get("outfits", {})
-    ref_only = outfits_cfg.get("reference_character_only", True)
-    ref_chars = chars[:1] if ref_only else chars
-    for ch in ref_chars:
-        have = ch.get("outfits", {})
-        for outfit_def in outfits_cfg.get("list", []):
-            if outfit_def["id"] not in have:
-                return ("outfit", ch, outfit_def)
+    if len(skels) < t["num_skeletons"]:          # Phase A: bootstrap
+        sk = skels[-1]
+        u = fill_next(cfg, sk, t["max_characters"])
+        return u or ("new_skeleton", len(skels))
 
-    return ("complete",)
+    for sk in skels:                             # Phase B: finish pending fills
+        u = fill_next(cfg, sk, t["max_characters"])
+        if u:
+            return u
+    for sk in skels:                             # then append the next thing
+        if len(sk.get("animations", [])) < t["max_animations"]:
+            nxt = next((a["key"] for a in cfg["animations"]
+                        if a["key"] not in sk.get("animations", [])), None)
+            if nxt:
+                return ("append_anim", sk, nxt)
+        if len(sk.get("dresses", [])) < t["max_dresses"]:
+            nxt = next((d["id"] for d in cfg["dress_pool"]
+                        if d["id"] not in sk.get("dresses", [])), None)
+            if nxt:
+                return ("append_dress", sk, nxt)
+    return ("all_complete",)
 
 
 # --- one unit ---------------------------------------------------------------
 
 def advance(client, cfg, push=True):
-    """Do exactly one unit of work. Returns a short description, or None when
-    the current skeleton just completed (caller should loop again for the next)."""
-    sid, skel_meta = current_skeleton(cfg)
-    action = next_action(cfg, sid, skel_meta)
+    """Do exactly one unit of work; commit + push it. Returns a description, or
+    None when everything is complete."""
+    action = next_action(cfg)
     kind = action[0]
 
-    if kind == "base":
-        idx = action[1]
-        meta = factory.create_base_character(client, cfg, sid, skel_meta, idx)
-        desc = f"[{sid}] base character {meta['local_id']}: {meta['look']}"
+    if kind == "new_skeleton":
+        sid, sk = factory.ensure_skeleton(cfg, action[1])
+        p = sk["params"]
+        desc = f"open skeleton {sid} ({p['view']} {p['width']}x{p['height']} {p['directions']}-dir)"
+    elif kind == "base":
+        _, sid, sk, i = action
+        meta = factory.create_base_character(client, cfg, sid, sk, i)
+        desc = f"[{sid}] undressed base {meta['local_id']}: {meta['look']}"
+    elif kind == "dress":
+        _, sid, sk, ch, ddef = action
+        factory.create_dress_state(client, cfg, sid, sk, ch, ddef)
+        desc = f"[{sid}] {ch['local_id']} dress '{ddef['id']}' (state)"
     elif kind == "animate":
-        ch, anim = action[1], action[2]
-        factory.animate_one(client, cfg, sid, skel_meta, ch, anim)
-        desc = f"[{sid}] {ch['local_id']} animation '{anim['key']}'"
-    elif kind == "outfit":
-        ch, outfit_def = action[1], action[2]
-        anims = cfg.get("outfits", {}).get("animations", [])
-        oid = factory.add_outfit(client, cfg, sid, skel_meta, ch, outfit_def,
-                                 animate_keys=anims)
-        desc = f"[{sid}] {ch['local_id']} outfit '{oid}' ({len(anims)} anims worn)"
-    elif kind == "complete":
-        skel_meta["status"] = "complete"
-        factory._write_json(os.path.join(factory.skeleton_dir(sid), "skeleton.json"),
-                            skel_meta)
-        viewer_build.build()
-        commit_push(f"Complete skeleton {sid}", push=push)
-        print(f"== skeleton {sid} complete ==")
+        _, sid, sk, ch, did, adef = action
+        factory.animate_variant(client, cfg, sid, sk, ch, did, adef)
+        desc = f"[{sid}] {ch['local_id']}/{did or 'undressed'} animation '{adef['key']}'"
+    elif kind == "append_anim":
+        sk, akey = action[1], action[2]
+        sk.setdefault("animations", []).append(akey)
+        factory.save_skeleton(sk["id"], sk)
+        desc = f"[{sk['id']}] +animation '{akey}' (fans out to all characters & dresses)"
+    elif kind == "append_dress":
+        sk, did = action[1], action[2]
+        sk.setdefault("dresses", []).append(did)
+        factory.save_skeleton(sk["id"], sk)
+        desc = f"[{sk['id']}] +dress '{did}' (fans out to all characters)"
+    elif kind == "all_complete":
+        print("== all skeletons complete ==")
         return None
     else:
         raise RuntimeError(f"unknown action {kind}")
 
     viewer_build.build()
-    commit_push(f"Generate {desc}", push=push)
+    commit_push(desc, push=push)
     print("  +", desc)
     return desc
 
@@ -173,9 +193,12 @@ def main():
             print(f"stopping: {e}")
             break
         try:
-            advance(client, cfg, push=not args.no_push)
+            result = advance(client, cfg, push=not args.no_push)
         except BudgetExhausted as e:
             print(f"stopping: {e}")
+            break
+        if result is None:
+            print("stopping: nothing left to generate")
             break
         units += 1
         if args.once or (args.max_units and units >= args.max_units):

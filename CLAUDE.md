@@ -23,10 +23,13 @@ profiles) before picking a winner. Read `README.md` and `spec/FACTORY_SPEC.md`.
 
 ## The loop (pipeline/loop.py)
 
-Each **unit** is one PixelLab op. `next_action` reads the filesystem to find the
-next missing unit (resumable): undressed bases → animations → outfits → complete
-→ next skeleton. After every unit: rebuild `viewer_data.json`, `git add -A`,
-commit, **push to `main`**. Bounded by `--max-minutes` / `--max-units` / budget.
+Each **unit** is one PixelLab op. `next_action`/`fill_next` read the filesystem
+(resumable). Caps per skeleton: 5 characters, 5 animations (start idle+walk), 5
+dresses. Invariant: every character has every animation undressed, and every
+dress has every animation. Phase A bootstraps 5 skeletons (5 chars × idle+walk);
+Phase B appends animations/dresses/characters to existing skeletons, fanning out.
+After every unit: rebuild `viewer_data.json`, commit, **push to `main`**. Bounded
+by `--max-minutes` / `--max-units` / budget.
 
 ## Conventions
 

@@ -63,22 +63,32 @@ def load_config():
 
 
 def skeleton_params(cfg, index):
-    """Params for the Nth skeleton: explicit variations first, then procedural."""
+    """Params for the Nth skeleton: explicit variations first, then procedural.
+    Each picks a PixelLab-supported resolution (32-256) and 4 or 8 directions."""
     variations = cfg["skeleton_variations"]
     if index < len(variations):
         return dict(variations[index])
     pv = cfg["procedural_variation"]
     views, sizes, details = pv["views"], pv["sizes"], pv["details"]
+    choices = pv.get("direction_choices", [4, 8])
     v = views[index % len(views)]
     w, h = sizes[(index // len(views)) % len(sizes)]
     det = details[(index // (len(views) * len(sizes))) % len(details)]
-    dirs = ["south", "north", "east", "west"] if "top-down" in v else ["east"]
+    dirs = choices[index % len(choices)]
     return {
-        "id": f"{index:02d}_{v.replace(' ', '')}_{w}x{h}",
+        "id": f"{index:02d}_{v.replace(' ', '')}_{w}x{h}_d{dirs}",
         "note": f"Procedural variation #{index}", "view": v, "width": w, "height": h,
-        "animation_directions": dirs, "template_id": "mannequin",
+        "directions": dirs, "template_id": "mannequin",
         "outline": "single color black outline", "shading": "basic shading", "detail": det,
     }
+
+
+def anim_def(cfg, key):
+    return next((a for a in cfg["animations"] if a["key"] == key), None)
+
+
+def dress_def(cfg, dress_id):
+    return next((d for d in cfg["dress_pool"] if d["id"] == dress_id), None)
 
 
 def _seed(*parts):
@@ -140,7 +150,9 @@ def skeleton_dir(sid):
 
 
 def ensure_skeleton(cfg, index):
-    """Create skeletons/<sid>/skeleton.json for the Nth skeleton if absent."""
+    """Create skeletons/<sid>/skeleton.json for the Nth skeleton if absent.
+    A fresh skeleton starts with the base animations (idle, walk) and no dresses;
+    the loop appends more (up to the caps) in the append phase."""
     params = skeleton_params(cfg, index)
     sid = params["id"]
     sdir = skeleton_dir(sid)
@@ -150,9 +162,15 @@ def ensure_skeleton(cfg, index):
         meta = {
             "id": sid, "index": index, "params": params,
             "style": cfg["style_base"], "status": "in_progress",
+            "animations": list(cfg["base_animations"]),
+            "dresses": [],
         }
         _write_json(meta_path, meta)
     return sid, meta
+
+
+def save_skeleton(sid, meta):
+    _write_json(os.path.join(skeleton_dir(sid), "skeleton.json"), meta)
 
 
 def list_skeletons():
@@ -215,34 +233,32 @@ def create_base_character(client, cfg, sid, skel_meta, char_index):
     return meta
 
 
-def animation_directions(skel_meta, char_meta):
-    """Directions to animate = every orientation the character actually has.
-
-    The character's `rotations` are the source of truth so animations always
-    match the character's orientation count. A skeleton may cap this with
-    `params.animation_directions` (e.g. to save generations during exploration);
-    we intersect, preserving the character's order.
-    """
-    have = char_meta.get("rotations") or ["south"]
-    cap = skel_meta.get("params", {}).get("animation_directions")
-    if cap:
-        capset = set(cap)
-        return [d for d in have if d in capset] or list(cap)
-    return have
+def animation_directions(cfg, skel_meta, char_meta=None):
+    """The 4 or 8 directions this skeleton animates (from skeleton.params.directions).
+    Intersected with the base's actual rotations when a character is given."""
+    n = str(skel_meta.get("params", {}).get("directions", 8))
+    dirs = (cfg.get("directions", {}).get(n)
+            or (["south", "north", "east", "west"] if n == "4"
+                else ["south", "north", "east", "west",
+                      "south-east", "south-west", "north-east", "north-west"]))
+    if char_meta:
+        have = set(char_meta.get("rotations") or [])
+        dirs = [d for d in dirs if d in have] or dirs
+    return dirs
 
 
 def _rel(p):
     return os.path.relpath(p, ROOT)
 
 
-def _animate_into(client, pixellab_id, anim_def, dirs, anim_out_dir):
+def _animate_into(client, adef, dirs, anim_out_dir, pixellab_id):
     """Animate `pixellab_id` across `dirs`, saving frames/strips/gifs into
-    `anim_out_dir`. Works for both base characters and equipped states.
+    `anim_out_dir`. Works for both base characters and dressed states.
     Returns {direction: {...}} for the manifest."""
-    key = anim_def["key"]
+    key = adef["key"]
     frames_by_dir = client.animate(
         character_id=pixellab_id, animation_name=key,
-        action_description=anim_def["action"], frame_count=anim_def.get("frames", 6),
+        action_description=adef["action"], frame_count=adef.get("frames", 6),
         directions=dirs,
     )
     saved = {}
@@ -260,13 +276,23 @@ def _animate_into(client, pixellab_id, anim_def, dirs, anim_out_dir):
     return saved
 
 
-def animate_one(client, cfg, sid, skel_meta, char_meta, anim_def):
-    """Animate a base character across all its orientations."""
+def animate_variant(client, cfg, sid, skel_meta, char_meta, dress_id, adef):
+    """Animate one animation for one variant of a character: the undressed base
+    (dress_id=None) or one of its dresses. Saves frames and records the manifest
+    in the right place. Returns the saved manifest dict."""
     cdir = os.path.join(skeleton_dir(sid), "characters", char_meta["local_id"])
-    dirs = animation_directions(skel_meta, char_meta)
-    saved = _animate_into(client, char_meta["pixellab_id"], anim_def, dirs,
-                          os.path.join(cdir, "animations"))
-    char_meta.setdefault("animations", {})[anim_def["key"]] = saved
+    dirs = animation_directions(cfg, skel_meta, char_meta)
+    if dress_id is None:
+        out_dir = os.path.join(cdir, "animations")
+        pixellab_id = char_meta["pixellab_id"]
+        target = char_meta.setdefault("animations", {})
+    else:
+        dress = char_meta["outfits"][dress_id]
+        out_dir = os.path.join(cdir, "outfits", dress_id, "animations")
+        pixellab_id = dress["pixellab_id"]
+        target = dress.setdefault("animations", {})
+    saved = _animate_into(client, adef, dirs, out_dir, pixellab_id)
+    target[adef["key"]] = saved
     _write_json(character_meta_path(sid, char_meta["local_id"]), char_meta)
     return saved
 
@@ -299,18 +325,19 @@ def list_outfits(char_meta):
     return char_meta.get("outfits", {})
 
 
-def add_outfit(client, cfg, sid, skel_meta, char_meta, outfit_def, animate_keys=None):
-    """Create a dressed STATE of the (undressed) base character and regenerate
-    the configured animations wearing that outfit. Returns the outfit id."""
-    outfit_id = outfit_def["id"]
-    description = outfit_def["description"]
+def create_dress_state(client, cfg, sid, skel_meta, char_meta, dress_def):
+    """Create a dressed STATE (the dress's rotations) for a character. The dress's
+    animations are filled in afterwards by animate_variant (the matrix fill), so
+    every dress ends up with every animation. Returns the dress id."""
+    dress_id = dress_def["id"]
+    description = dress_def["description"]
     cid_local = char_meta["local_id"]
-    odir = os.path.join(skeleton_dir(sid), "characters", cid_local, "outfits", outfit_id)
+    odir = os.path.join(skeleton_dir(sid), "characters", cid_local, "outfits", dress_id)
 
     edit = f"wearing {description}"
     state_id, rotations = client.create_state(
         char_meta["pixellab_id"], edit_description=edit,
-        seed=_seed(sid, cid_local, outfit_id))
+        seed=_seed(sid, cid_local, dress_id))
     for d, img in rotations.items():
         _save_png(img, os.path.join(odir, "rotations", f"{d}.png"))
     if "south" in rotations:
@@ -318,17 +345,9 @@ def add_outfit(client, cfg, sid, skel_meta, char_meta, outfit_def, animate_keys=
     elif rotations:
         _save_png(next(iter(rotations.values())), os.path.join(odir, "portrait.png"))
 
-    outfit_meta = {
-        "id": outfit_id, "description": description, "pixellab_id": state_id,
+    char_meta.setdefault("outfits", {})[dress_id] = {
+        "id": dress_id, "description": description, "pixellab_id": state_id,
         "edit_description": edit, "rotations": sorted(rotations.keys()), "animations": {},
     }
-    dirs = animation_directions(skel_meta, char_meta)
-    for key in (animate_keys or []):
-        adef = next((a for a in cfg["animations"] if a["key"] == key), None)
-        if adef:
-            outfit_meta["animations"][key] = _animate_into(
-                client, state_id, adef, dirs, os.path.join(odir, "animations"))
-
-    char_meta.setdefault("outfits", {})[outfit_id] = outfit_meta
     _write_json(character_meta_path(sid, cid_local), char_meta)
-    return outfit_id
+    return dress_id

@@ -48,12 +48,20 @@ recoil backward, behind hits pitch forward, landings deepen with height.
 
 ## Loop algorithm
 
-Per skeleton, in order: create 10 **undressed** base characters → animate each
-across **all of the character's orientations** → create the configured **outfits**
-(dressed states) on the reference character, each with its own animations → mark
-complete → next skeleton. The next unit of work is derived from the filesystem,
-so the loop is resumable and each unit commits + pushes to `main`. It stops
-cleanly when generations run low.
+Caps per skeleton: 5 characters, 5 animations (start idle+walk), 5 dresses.
+Invariant: every character has every animation undressed, and every dress (all
+characters get every dress) has every animation.
+
+- **Phase A — bootstrap:** create 5 skeletons; each gets 5 undressed characters
+  animated with idle+walk across its 4/8 directions. A skeleton spawns the next
+  once it has 5 complete characters.
+- **Phase B — append:** once 5 skeletons exist, append to existing skeletons,
+  fanning out: +animation (all characters + all dresses), +dress (all
+  characters), +character (all animations + dresses) — up to the caps.
+
+The next unit is derived from the filesystem (`fill_next`), so the loop is
+resumable and each unit commits + pushes to `main`. It stops cleanly when
+generations run low.
 
 ## Manual edits & sync (PixelLab is source of truth)
 

@@ -24,19 +24,25 @@ skeletons/<id>/                     one skeleton = one parameter profile
       animations/<key>__<dir>.png|gif
 ```
 
-For each skeleton, in order (all driven by `config/factory.json`):
-1. create **10 undressed base characters**,
-2. give every character the **25 animations** (idle, walk, run, jump, crouch,
-   fall, kicks/punches standing/crouching/air/running, low/med/high landings,
-   and front/back/crouch damage reactions) across the character's directions,
-3. create **outfits** (dressed states) on the reference character — each outfit
-   regenerates its own animations wearing that clothing,
-4. mark the skeleton complete and open the next one with new parameters.
+A skeleton holds a growing set of **animations** (starts with `idle`+`walk`,
+cap 5) and **dresses** (starts empty, cap 5), and up to **5 characters**. The
+**invariant**: every character has every animation *undressed*, and every dress
+(all characters get every dress) has every animation.
 
-> **PixelLab-native, source of truth.** The base is undressed; an outfit is a
+The loop runs in two phases (all driven by `config/factory.json`):
+- **Phase A — bootstrap:** create **5 skeletons**. Each gets **5 undressed
+  characters** animated with **idle + walk** across its 4 or 8 directions. A
+  skeleton spawns the next once it has 5 complete characters.
+- **Phase B — append:** once 5 skeletons exist, append to them, fanning out:
+  - **+animation** → generated for every character *and* every dress,
+  - **+dress** → added to every character (with every animation),
+  - **+character** → generates all existing animations + dresses,
+  up to the caps (5 animations, 5 dresses, 5 characters per skeleton).
+
+> **PixelLab-native, source of truth.** The base is undressed; a dress is a
 > PixelLab **character state** ("wearing X") stored on PixelLab — visible in the
-> UI, animatable, and syncable. There is **no per-slot gear or layer
-> compositing** (PixelLab doesn't support it): one outfit at a time.
+> UI, animatable, and syncable. **One outfit at a time** — no per-slot gear or
+> layer compositing (PixelLab doesn't support it).
 
 Every unit of work commits and **pushes to `main`**, and the loop is **fully
 resumable** — it derives the next missing unit from the filesystem.
