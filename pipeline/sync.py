@@ -57,7 +57,7 @@ def _best_groups(detail):
     return best
 
 
-def _mirror_rotations(client, detail, base_dir):
+def _mirror_rotations(client, detail, base_dir, canvas):
     rotations = []
     urls = detail.get("rotation_urls") or {}
     for d, url in urls.items():
@@ -66,15 +66,16 @@ def _mirror_rotations(client, detail, base_dir):
         img = client._try_download(url)
         if img is None:
             continue
-        factory._save_png(img, os.path.join(base_dir, "rotations", f"{d}.png"))
+        factory._save_png(factory._normalize(img, canvas),
+                          os.path.join(base_dir, "rotations", f"{d}.png"))
         rotations.append(d)
     if "south" in rotations:
-        factory._save_png(client._try_download(urls["south"]),
+        factory._save_png(factory._normalize(client._try_download(urls["south"]), canvas),
                           os.path.join(base_dir, "portrait.png"))
     return rotations
 
 
-def _mirror_animations(client, detail, anim_out_dir):
+def _mirror_animations(client, detail, anim_out_dir, canvas):
     anims = {}
     for key, dirmap in _best_groups(detail).items():
         saved = {}
@@ -82,6 +83,7 @@ def _mirror_animations(client, detail, anim_out_dir):
             frames = _download_frames(client, urls)
             if not frames:
                 continue
+            frames = [factory._normalize(f, canvas) for f in frames]
             fdir = os.path.join(anim_out_dir, key, direction)
             factory._save_frames(frames, fdir)
             strip = os.path.join(anim_out_dir, f"{key}__{direction}.png")
@@ -101,10 +103,12 @@ def _mirror_animations(client, detail, anim_out_dir):
 def sync_character(client, sid, char_meta):
     cid_local = char_meta["local_id"]
     cdir = os.path.join(factory.skeleton_dir(sid), "characters", cid_local)
+    skmeta = factory._read_json(os.path.join(factory.skeleton_dir(sid), "skeleton.json")) or {}
+    canvas = factory.frame_canvas(skmeta.get("params", {"width": 64, "height": 64}))
     detail = client.get_character(char_meta["pixellab_id"])
 
-    rotations = _mirror_rotations(client, detail, cdir)
-    char_meta["animations"] = _mirror_animations(client, detail, os.path.join(cdir, "animations"))
+    rotations = _mirror_rotations(client, detail, cdir, canvas)
+    char_meta["animations"] = _mirror_animations(client, detail, os.path.join(cdir, "animations"), canvas)
     if rotations:
         char_meta["rotations"] = sorted(rotations)
 
@@ -121,8 +125,8 @@ def sync_character(client, sid, char_meta):
             outfit_id = known.get(spx) or _slug(sib.get("name") or spx)
             sdet = client.get_character(spx)
             odir = os.path.join(cdir, "outfits", outfit_id)
-            srot = _mirror_rotations(client, sdet, odir)
-            sanims = _mirror_animations(client, sdet, os.path.join(odir, "animations"))
+            srot = _mirror_rotations(client, sdet, odir, canvas)
+            sanims = _mirror_animations(client, sdet, os.path.join(odir, "animations"), canvas)
             prev = char_meta.get("outfits", {}).get(outfit_id, {})
             new_outfits[outfit_id] = {
                 **prev, "id": outfit_id, "pixellab_id": spx,

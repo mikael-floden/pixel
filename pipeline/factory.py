@@ -144,6 +144,30 @@ def _save_gif(frames, path, duration_ms=140):
                  loop=0, optimize=True)
 
 
+def frame_canvas(params):
+    """Fixed per-skeleton frame size = 2x the declared size. PixelLab returns
+    each character on its own ~2x content-fitted canvas (so sizes vary per
+    character), and we normalize everything to this uniform canvas."""
+    return (int(params["width"]) * 2, int(params["height"]) * 2)
+
+
+def _normalize(img, target):
+    """Transparent-center `img` onto a fixed `target` (w, h) canvas so every
+    character/dress/animation in a skeleton shares one frame size. Center-crops
+    if a frame is somehow larger than the target."""
+    img = img.convert("RGBA")
+    tw, th = target
+    if img.size != (tw, th):
+        if img.width > tw or img.height > th:
+            l = max(0, (img.width - tw) // 2)
+            t = max(0, (img.height - th) // 2)
+            img = img.crop((l, t, l + min(tw, img.width), t + min(th, img.height)))
+        canvas = Image.new("RGBA", (tw, th), (0, 0, 0, 0))
+        canvas.alpha_composite(img, ((tw - img.width) // 2, (th - img.height) // 2))
+        img = canvas
+    return img
+
+
 # --- skeleton ---------------------------------------------------------------
 
 def skeleton_dir(sid):
@@ -218,6 +242,8 @@ def create_base_character(client, cfg, sid, skel_meta, char_index):
         shading=p.get("shading"), detail=p.get("detail"),
         seed=_seed(sid, char_index),
     )
+    canvas = frame_canvas(p)
+    rotations = {d: _normalize(img, canvas) for d, img in rotations.items()}
     for direction, img in rotations.items():
         _save_png(img, os.path.join(cdir, "rotations", f"{direction}.png"))
     if "south" in rotations:
@@ -252,10 +278,10 @@ def _rel(p):
     return os.path.relpath(p, ROOT)
 
 
-def _animate_into(client, adef, dirs, anim_out_dir, pixellab_id):
+def _animate_into(client, adef, dirs, anim_out_dir, pixellab_id, canvas):
     """Animate `pixellab_id` across `dirs`, saving frames/strips/gifs into
-    `anim_out_dir`. Works for both base characters and dressed states.
-    Returns {direction: {...}} for the manifest."""
+    `anim_out_dir`, normalized to the skeleton's fixed `canvas`. Works for both
+    base characters and dressed states. Returns {direction: {...}}."""
     key = adef["key"]
     frames_by_dir = client.animate(
         character_id=pixellab_id, animation_name=key,
@@ -264,6 +290,7 @@ def _animate_into(client, adef, dirs, anim_out_dir, pixellab_id):
     )
     saved = {}
     for direction, frames in frames_by_dir.items():
+        frames = [_normalize(f, canvas) for f in frames]
         fdir = os.path.join(anim_out_dir, key, direction)
         _save_frames(frames, fdir)
         strip = os.path.join(anim_out_dir, f"{key}__{direction}.png")
@@ -292,7 +319,8 @@ def animate_variant(client, cfg, sid, skel_meta, char_meta, dress_id, adef):
         out_dir = os.path.join(cdir, "outfits", dress_id, "animations")
         pixellab_id = dress["pixellab_id"]
         target = dress.setdefault("animations", {})
-    saved = _animate_into(client, adef, dirs, out_dir, pixellab_id)
+    saved = _animate_into(client, adef, dirs, out_dir, pixellab_id,
+                          frame_canvas(skel_meta["params"]))
     target[adef["key"]] = saved
     _write_json(character_meta_path(sid, char_meta["local_id"]), char_meta)
     return saved
@@ -339,6 +367,8 @@ def create_dress_state(client, cfg, sid, skel_meta, char_meta, dress_def):
     state_id, rotations = client.create_state(
         char_meta["pixellab_id"], edit_description=edit,
         seed=_seed(sid, cid_local, dress_id))
+    canvas = frame_canvas(skel_meta["params"])
+    rotations = {d: _normalize(img, canvas) for d, img in rotations.items()}
     for d, img in rotations.items():
         _save_png(img, os.path.join(odir, "rotations", f"{d}.png"))
     if "south" in rotations:
