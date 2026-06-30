@@ -144,26 +144,31 @@ class PixelLabClient:
     def get_character(self, character_id):
         return self._get(f"/characters/{character_id}")
 
-    def fetch_rotations(self, character_id, retries=6):
-        """Download all available rotation PNGs -> {direction: PIL}."""
-        detail = self.get_character(character_id)
-        urls = detail.get("rotation_urls") or {}
-        out = {}
-        for direction, url in urls.items():
-            if not url:
-                continue
-            img = self._download_image(url, retries=retries)
-            if img is not None:
-                out[direction] = img
-        return out
+    def fetch_rotations(self, character_id, wait=120, poll=5):
+        """Download all rotation PNGs -> {direction: PIL}.
 
-    def _download_image(self, url, retries=6, backoff=4):
-        """Rotation CDN files may briefly 404 right after job completion."""
-        for attempt in range(retries):
+        Rotation CDN files can 404 for a few seconds after the job completes, so
+        we retry only the still-missing directions in short rounds (capped by
+        `wait`) instead of a long per-image backoff."""
+        urls = {d: u for d, u in (self.get_character(character_id).get("rotation_urls") or {}).items() if u}
+        out = {}
+        deadline = time.monotonic() + wait
+        while True:
+            for direction in [d for d in urls if d not in out]:
+                img = self._try_download(urls[direction])
+                if img is not None:
+                    out[direction] = img
+            if len(out) == len(urls) or time.monotonic() > deadline:
+                return out
+            time.sleep(poll)
+
+    def _try_download(self, url):
+        try:
             r = self._session.get(url, timeout=self.timeout)
-            if r.status_code == 200 and r.headers.get("content-type", "").startswith("image"):
-                return Image.open(io.BytesIO(r.content)).convert("RGBA")
-            time.sleep(backoff * (attempt + 1))
+        except requests.RequestException:
+            return None
+        if r.status_code == 200 and r.headers.get("content-type", "").startswith("image"):
+            return Image.open(io.BytesIO(r.content)).convert("RGBA")
         return None
 
     def animate(self, character_id, animation_name, action_description,
