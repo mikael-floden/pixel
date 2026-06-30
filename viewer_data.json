@@ -39,7 +39,7 @@
         "shading": "basic shading",
         "detail": "medium detail"
       },
-      "character_count": 4,
+      "character_count": 5,
       "characters": [
         {
           "local_id": "char_00",
@@ -171,6 +171,20 @@
               }
             }
           ],
+          "outfits": []
+        },
+        {
+          "local_id": "char_04",
+          "look": "a bald monk with face tattoos and a hard stare, lean and muscular",
+          "portrait": "skeletons/00_low4_64/characters/char_04/portrait.png",
+          "rotations": [
+            "skeletons/00_low4_64/characters/char_04/rotations/east.png",
+            "skeletons/00_low4_64/characters/char_04/rotations/north.png",
+            "skeletons/00_low4_64/characters/char_04/rotations/south.png",
+            "skeletons/00_low4_64/characters/char_04/rotations/west.png"
+          ],
+          "animation_count": 0,
+          "animations": [],
           "outfits": []
         }
       ]
