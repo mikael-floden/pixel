@@ -71,47 +71,45 @@
           "animations": [
             {
               "key": "walk",
-              "gif": "skeletons/00_side_64/characters/char_00/animations/walk.gif",
-              "strips": {
-                "east": "skeletons/00_side_64/characters/char_00/animations/walk__east.png"
+              "directions": {
+                "south": "skeletons/00_side_64/characters/char_00/animations/walk__south.gif",
+                "north": "skeletons/00_side_64/characters/char_00/animations/walk__north.gif",
+                "east": "skeletons/00_side_64/characters/char_00/animations/walk__east.gif",
+                "west": "skeletons/00_side_64/characters/char_00/animations/walk__west.gif"
               }
             },
             {
               "key": "run",
-              "gif": "skeletons/00_side_64/characters/char_00/animations/run.gif",
-              "strips": {
-                "east": "skeletons/00_side_64/characters/char_00/animations/run__east.png"
+              "directions": {
+                "east": "skeletons/00_side_64/characters/char_00/animations/run__east.gif"
               }
             },
             {
               "key": "jump",
-              "gif": "skeletons/00_side_64/characters/char_00/animations/jump.gif",
-              "strips": {
-                "east": "skeletons/00_side_64/characters/char_00/animations/jump__east.png"
+              "directions": {
+                "east": "skeletons/00_side_64/characters/char_00/animations/jump__east.gif"
               }
             },
             {
               "key": "kick_stand",
-              "gif": "skeletons/00_side_64/characters/char_00/animations/kick_stand.gif",
-              "strips": {
-                "east": "skeletons/00_side_64/characters/char_00/animations/kick_stand__east.png"
+              "directions": {
+                "east": "skeletons/00_side_64/characters/char_00/animations/kick_stand__east.gif"
               }
             },
             {
               "key": "punch_stand",
-              "gif": "skeletons/00_side_64/characters/char_00/animations/punch_stand.gif",
-              "strips": {
-                "east": "skeletons/00_side_64/characters/char_00/animations/punch_stand__east.png"
+              "directions": {
+                "east": "skeletons/00_side_64/characters/char_00/animations/punch_stand__east.gif"
               }
             },
             {
               "key": "hit_front_high",
-              "gif": "skeletons/00_side_64/characters/char_00/animations/hit_front_high.gif",
-              "strips": {
-                "east": "skeletons/00_side_64/characters/char_00/animations/hit_front_high__east.png"
+              "directions": {
+                "east": "skeletons/00_side_64/characters/char_00/animations/hit_front_high__east.gif"
               }
             }
-          ]
+          ],
+          "equipped": []
         },
         {
           "local_id": "char_01",
@@ -128,7 +126,8 @@
             "skeletons/00_side_64/characters/char_01/rotations/west.png"
           ],
           "animation_count": 0,
-          "animations": []
+          "animations": [],
+          "equipped": []
         }
       ],
       "gear": {
@@ -157,7 +156,8 @@
           "armor_tunic_00": {
             "archetype": "rugged leather tunic",
             "z": 2,
-            "png": "skeletons/00_side_64/gear/armor_tunic/armor_tunic_00.png"
+            "slot": "armor_tunic",
+            "icon": "skeletons/00_side_64/gear/armor_tunic/armor_tunic_00/icon.png"
           }
         },
         "helmet_hat": {

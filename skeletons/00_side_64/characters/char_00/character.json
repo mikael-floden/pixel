@@ -16,48 +16,150 @@
     "west"
   ],
   "animations": {
-    "walk": {
+    "hit_front_high": {
       "east": {
-        "frames": 9,
-        "strip": "skeletons/00_side_64/characters/char_00/animations/walk__east.png"
-      },
-      "gif": "skeletons/00_side_64/characters/char_00/animations/walk.gif"
-    },
-    "run": {
-      "east": {
-        "frames": 9,
-        "strip": "skeletons/00_side_64/characters/char_00/animations/run__east.png"
-      },
-      "gif": "skeletons/00_side_64/characters/char_00/animations/run.gif"
+        "frames": 5,
+        "strip": "skeletons/00_side_64/characters/char_00/animations/hit_front_high__east.png",
+        "gif": "skeletons/00_side_64/characters/char_00/animations/hit_front_high__east.gif",
+        "frame_paths": [
+          "skeletons/00_side_64/characters/char_00/animations/hit_front_high/east/00.png",
+          "skeletons/00_side_64/characters/char_00/animations/hit_front_high/east/01.png",
+          "skeletons/00_side_64/characters/char_00/animations/hit_front_high/east/02.png",
+          "skeletons/00_side_64/characters/char_00/animations/hit_front_high/east/03.png",
+          "skeletons/00_side_64/characters/char_00/animations/hit_front_high/east/04.png"
+        ]
+      }
     },
     "jump": {
       "east": {
         "frames": 7,
-        "strip": "skeletons/00_side_64/characters/char_00/animations/jump__east.png"
-      },
-      "gif": "skeletons/00_side_64/characters/char_00/animations/jump.gif"
+        "strip": "skeletons/00_side_64/characters/char_00/animations/jump__east.png",
+        "gif": "skeletons/00_side_64/characters/char_00/animations/jump__east.gif",
+        "frame_paths": [
+          "skeletons/00_side_64/characters/char_00/animations/jump/east/00.png",
+          "skeletons/00_side_64/characters/char_00/animations/jump/east/01.png",
+          "skeletons/00_side_64/characters/char_00/animations/jump/east/02.png",
+          "skeletons/00_side_64/characters/char_00/animations/jump/east/03.png",
+          "skeletons/00_side_64/characters/char_00/animations/jump/east/04.png",
+          "skeletons/00_side_64/characters/char_00/animations/jump/east/05.png",
+          "skeletons/00_side_64/characters/char_00/animations/jump/east/06.png"
+        ]
+      }
     },
     "kick_stand": {
       "east": {
         "frames": 7,
-        "strip": "skeletons/00_side_64/characters/char_00/animations/kick_stand__east.png"
-      },
-      "gif": "skeletons/00_side_64/characters/char_00/animations/kick_stand.gif"
+        "strip": "skeletons/00_side_64/characters/char_00/animations/kick_stand__east.png",
+        "gif": "skeletons/00_side_64/characters/char_00/animations/kick_stand__east.gif",
+        "frame_paths": [
+          "skeletons/00_side_64/characters/char_00/animations/kick_stand/east/00.png",
+          "skeletons/00_side_64/characters/char_00/animations/kick_stand/east/01.png",
+          "skeletons/00_side_64/characters/char_00/animations/kick_stand/east/02.png",
+          "skeletons/00_side_64/characters/char_00/animations/kick_stand/east/03.png",
+          "skeletons/00_side_64/characters/char_00/animations/kick_stand/east/04.png",
+          "skeletons/00_side_64/characters/char_00/animations/kick_stand/east/05.png",
+          "skeletons/00_side_64/characters/char_00/animations/kick_stand/east/06.png"
+        ]
+      }
     },
     "punch_stand": {
       "east": {
         "frames": 7,
-        "strip": "skeletons/00_side_64/characters/char_00/animations/punch_stand__east.png"
-      },
-      "gif": "skeletons/00_side_64/characters/char_00/animations/punch_stand.gif"
+        "strip": "skeletons/00_side_64/characters/char_00/animations/punch_stand__east.png",
+        "gif": "skeletons/00_side_64/characters/char_00/animations/punch_stand__east.gif",
+        "frame_paths": [
+          "skeletons/00_side_64/characters/char_00/animations/punch_stand/east/00.png",
+          "skeletons/00_side_64/characters/char_00/animations/punch_stand/east/01.png",
+          "skeletons/00_side_64/characters/char_00/animations/punch_stand/east/02.png",
+          "skeletons/00_side_64/characters/char_00/animations/punch_stand/east/03.png",
+          "skeletons/00_side_64/characters/char_00/animations/punch_stand/east/04.png",
+          "skeletons/00_side_64/characters/char_00/animations/punch_stand/east/05.png",
+          "skeletons/00_side_64/characters/char_00/animations/punch_stand/east/06.png"
+        ]
+      }
     },
-    "hit_front_high": {
+    "run": {
       "east": {
-        "frames": 5,
-        "strip": "skeletons/00_side_64/characters/char_00/animations/hit_front_high__east.png"
+        "frames": 9,
+        "strip": "skeletons/00_side_64/characters/char_00/animations/run__east.png",
+        "gif": "skeletons/00_side_64/characters/char_00/animations/run__east.gif",
+        "frame_paths": [
+          "skeletons/00_side_64/characters/char_00/animations/run/east/00.png",
+          "skeletons/00_side_64/characters/char_00/animations/run/east/01.png",
+          "skeletons/00_side_64/characters/char_00/animations/run/east/02.png",
+          "skeletons/00_side_64/characters/char_00/animations/run/east/03.png",
+          "skeletons/00_side_64/characters/char_00/animations/run/east/04.png",
+          "skeletons/00_side_64/characters/char_00/animations/run/east/05.png",
+          "skeletons/00_side_64/characters/char_00/animations/run/east/06.png",
+          "skeletons/00_side_64/characters/char_00/animations/run/east/07.png",
+          "skeletons/00_side_64/characters/char_00/animations/run/east/08.png"
+        ]
+      }
+    },
+    "walk": {
+      "south": {
+        "frames": 6,
+        "strip": "skeletons/00_side_64/characters/char_00/animations/walk__south.png",
+        "gif": "skeletons/00_side_64/characters/char_00/animations/walk__south.gif",
+        "frame_paths": [
+          "skeletons/00_side_64/characters/char_00/animations/walk/south/00.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/south/01.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/south/02.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/south/03.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/south/04.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/south/05.png"
+        ]
       },
-      "gif": "skeletons/00_side_64/characters/char_00/animations/hit_front_high.gif"
+      "north": {
+        "frames": 9,
+        "strip": "skeletons/00_side_64/characters/char_00/animations/walk__north.png",
+        "gif": "skeletons/00_side_64/characters/char_00/animations/walk__north.gif",
+        "frame_paths": [
+          "skeletons/00_side_64/characters/char_00/animations/walk/north/00.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/north/01.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/north/02.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/north/03.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/north/04.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/north/05.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/north/06.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/north/07.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/north/08.png"
+        ]
+      },
+      "east": {
+        "frames": 9,
+        "strip": "skeletons/00_side_64/characters/char_00/animations/walk__east.png",
+        "gif": "skeletons/00_side_64/characters/char_00/animations/walk__east.gif",
+        "frame_paths": [
+          "skeletons/00_side_64/characters/char_00/animations/walk/east/00.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/east/01.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/east/02.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/east/03.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/east/04.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/east/05.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/east/06.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/east/07.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/east/08.png"
+        ]
+      },
+      "west": {
+        "frames": 9,
+        "strip": "skeletons/00_side_64/characters/char_00/animations/walk__west.png",
+        "gif": "skeletons/00_side_64/characters/char_00/animations/walk__west.gif",
+        "frame_paths": [
+          "skeletons/00_side_64/characters/char_00/animations/walk/west/00.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/west/01.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/west/02.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/west/03.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/west/04.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/west/05.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/west/06.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/west/07.png",
+          "skeletons/00_side_64/characters/char_00/animations/walk/west/08.png"
+        ]
+      }
     }
   },
-  "base_done": true
+  "base_done": true,
+  "synced_from_pixellab": true
 }
