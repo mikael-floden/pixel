@@ -31,6 +31,47 @@
     "hit_crouch_front",
     "hit_crouch_behind"
   ],
-  "skeleton_count": 0,
-  "skeletons": []
+  "skeleton_count": 1,
+  "skeletons": [
+    {
+      "id": "00_side_64",
+      "status": "in_progress",
+      "note": "Baseline: side view, 64x64, single east direction (mirror for west), mannequin.",
+      "params": {
+        "id": "00_side_64",
+        "note": "Baseline: side view, 64x64, single east direction (mirror for west), mannequin.",
+        "view": "side",
+        "width": 64,
+        "height": 64,
+        "animation_directions": [
+          "east"
+        ],
+        "template_id": "mannequin",
+        "outline": "single color black outline",
+        "shading": "basic shading",
+        "detail": "medium detail"
+      },
+      "character_count": 1,
+      "characters": [
+        {
+          "local_id": "char_00",
+          "look": "a young freckled farmhand with tousled red hair and a green shirt",
+          "portrait": "skeletons/00_side_64/characters/char_00/portrait.png",
+          "rotations": [
+            "skeletons/00_side_64/characters/char_00/rotations/east.png",
+            "skeletons/00_side_64/characters/char_00/rotations/north.png",
+            "skeletons/00_side_64/characters/char_00/rotations/north-east.png",
+            "skeletons/00_side_64/characters/char_00/rotations/north-west.png",
+            "skeletons/00_side_64/characters/char_00/rotations/south.png",
+            "skeletons/00_side_64/characters/char_00/rotations/south-east.png",
+            "skeletons/00_side_64/characters/char_00/rotations/south-west.png",
+            "skeletons/00_side_64/characters/char_00/rotations/west.png"
+          ],
+          "animation_count": 0,
+          "animations": []
+        }
+      ],
+      "gear": {}
+    }
+  ]
 }
