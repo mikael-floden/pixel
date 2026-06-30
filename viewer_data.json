@@ -55,7 +55,7 @@
             "skeletons/00_low8_64/characters/char_00/rotations/south-west.png",
             "skeletons/00_low8_64/characters/char_00/rotations/west.png"
           ],
-          "animation_count": 3,
+          "animation_count": 4,
           "animations": [
             {
               "key": "idle",
@@ -87,6 +87,19 @@
               "key": "run",
               "directions": {
                 "south": "skeletons/00_low8_64/characters/char_00/animations/run__south.gif"
+              }
+            },
+            {
+              "key": "jump",
+              "directions": {
+                "south": "skeletons/00_low8_64/characters/char_00/animations/jump__south.gif",
+                "north": "skeletons/00_low8_64/characters/char_00/animations/jump__north.gif",
+                "east": "skeletons/00_low8_64/characters/char_00/animations/jump__east.gif",
+                "west": "skeletons/00_low8_64/characters/char_00/animations/jump__west.gif",
+                "south-east": "skeletons/00_low8_64/characters/char_00/animations/jump__south-east.gif",
+                "south-west": "skeletons/00_low8_64/characters/char_00/animations/jump__south-west.gif",
+                "north-east": "skeletons/00_low8_64/characters/char_00/animations/jump__north-east.gif",
+                "north-west": "skeletons/00_low8_64/characters/char_00/animations/jump__north-west.gif"
               }
             }
           ],
