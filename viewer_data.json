@@ -39,8 +39,23 @@
         "shading": "basic shading",
         "detail": "medium detail"
       },
-      "character_count": 0,
-      "characters": []
+      "character_count": 1,
+      "characters": [
+        {
+          "local_id": "char_00",
+          "look": "a radiant young woman glowing with new love, soft round cheeks, a wide happy smile and bright eyes, wavy auburn hair, gentle slender build",
+          "portrait": "skeletons/00_low4_64/characters/char_00/portrait.png",
+          "rotations": [
+            "skeletons/00_low4_64/characters/char_00/rotations/east.png",
+            "skeletons/00_low4_64/characters/char_00/rotations/north.png",
+            "skeletons/00_low4_64/characters/char_00/rotations/south.png",
+            "skeletons/00_low4_64/characters/char_00/rotations/west.png"
+          ],
+          "animation_count": 0,
+          "animations": [],
+          "outfits": []
+        }
+      ]
     }
   ]
 }
