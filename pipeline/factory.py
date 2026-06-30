@@ -417,16 +417,64 @@ def _rel(p):
     return os.path.relpath(p, ROOT)
 
 
+def _download_existing_group(client, pixellab_id, anim_type, dirs):
+    """If the character already has an animation group of `anim_type` on PixelLab
+    (e.g. left over from a run that was killed after the job finished but before
+    it was saved locally), return its frames {dir: [PIL]} so we ADOPT it instead
+    of generating a duplicate group. PixelLab's animate endpoint only ever
+    *creates* groups (never replaces by name), so without this an interrupted
+    resume would leave a stray second 'walk'/'idle' on the character. Picks the
+    group covering the most directions if several already exist. {} if none."""
+    try:
+        detail = client.get_character(pixellab_id)
+    except Exception:
+        return {}
+    best = None
+    for a in detail.get("animations", []):
+        if a.get("animation_type") != anim_type:
+            continue
+        dirmap = {x["direction"]: x.get("frames", [])
+                  for x in a.get("directions", []) if x.get("frames")}
+        if best is None or len(dirmap) > len(best):
+            best = dirmap
+    if not best:
+        return {}
+    out = {}
+    for d in dirs:
+        urls = best.get(d) or []
+        frames = []
+        for u in urls:
+            img = None
+            for _ in range(4):
+                img = client._try_download(u)
+                if img is not None:
+                    break
+            if img is not None:
+                frames.append(img)
+        if frames:
+            out[d] = frames
+    return out
+
+
 def _animate_into(client, adef, dirs, anim_out_dir, pixellab_id, canvas):
     """Animate `pixellab_id` across `dirs`, saving frames/strips/gifs into
     `anim_out_dir`, normalized to the skeleton's fixed `canvas`. Works for both
-    base characters and dressed states. Returns {direction: {...}}."""
+    base characters and dressed states. Returns {direction: {...}}.
+
+    Idempotent: if the target group already exists on PixelLab it is adopted
+    rather than regenerated, so a killed-and-resumed run never duplicates it."""
     key = adef["key"]
-    frames_by_dir = client.animate(
-        character_id=pixellab_id, animation_name=key,
-        action_description=adef["action"], frame_count=MAX_FRAMES,
-        directions=dirs, template_animation_id=adef.get("template"),
-    )
+    anim_type = adef.get("template") or key
+    frames_by_dir = _download_existing_group(client, pixellab_id, anim_type, dirs)
+    if frames_by_dir:
+        print(f"  ~ adopting existing '{key}' ({anim_type}) group from PixelLab "
+              f"(no regeneration, avoids a duplicate)")
+    else:
+        frames_by_dir = client.animate(
+            character_id=pixellab_id, animation_name=key,
+            action_description=adef["action"], frame_count=MAX_FRAMES,
+            directions=dirs, template_animation_id=adef.get("template"),
+        )
     saved = {}
     for direction, frames in frames_by_dir.items():
         frames = strip_kept_idle_frame(frames)
