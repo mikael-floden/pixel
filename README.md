@@ -51,6 +51,20 @@ python pipeline/loop.py --max-units 5 --no-push
 The loop stops cleanly when PixelLab generations run low
 (`budget.min_generations_remaining` in `config/factory.json`).
 
+## Run it on a schedule (phone-friendly)
+
+`.github/workflows/factory.yml` runs the loop every 2 hours (and on demand) and
+pushes each unit to `main` — fully manageable from a phone:
+
+1. Add your key as a repo secret: **Settings → Secrets and variables → Actions →
+   New repository secret**, name `PIXELLAB_API_KEY`. (On a phone, open
+   `github.com` in a browser; the GitHub app doesn't expose Actions secrets.)
+2. The schedule then runs automatically. To run now or pause it, use the
+   repo's **Actions** tab → *Pixel character factory loop* → **Run workflow** /
+   **Disable workflow**.
+
+Without the secret the workflow no-ops with a warning, so it's safe to land first.
+
 ## Test on your phone
 
 - **Zero setup:** browse the repo in the GitHub mobile app — every
