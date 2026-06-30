@@ -93,7 +93,7 @@
             "skeletons/00_low4_64/characters/char_01/rotations/south.png",
             "skeletons/00_low4_64/characters/char_01/rotations/west.png"
           ],
-          "animation_count": 2,
+          "animation_count": 3,
           "animations": [
             {
               "key": "idle",
@@ -111,6 +111,15 @@
                 "north": "skeletons/00_low4_64/characters/char_01/animations/walk__north.gif",
                 "east": "skeletons/00_low4_64/characters/char_01/animations/walk__east.gif",
                 "west": "skeletons/00_low4_64/characters/char_01/animations/walk__west.gif"
+              }
+            },
+            {
+              "key": "run",
+              "directions": {
+                "south": "skeletons/00_low4_64/characters/char_01/animations/run__south.gif",
+                "north": "skeletons/00_low4_64/characters/char_01/animations/run__north.gif",
+                "east": "skeletons/00_low4_64/characters/char_01/animations/run__east.gif",
+                "west": "skeletons/00_low4_64/characters/char_01/animations/run__west.gif"
               }
             }
           ],
