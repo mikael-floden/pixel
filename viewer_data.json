@@ -39,7 +39,7 @@
         "shading": "basic shading",
         "detail": "medium detail"
       },
-      "character_count": 3,
+      "character_count": 4,
       "characters": [
         {
           "local_id": "char_00",
@@ -167,6 +167,24 @@
               }
             }
           ],
+          "outfits": []
+        },
+        {
+          "local_id": "char_03",
+          "look": "a tender elderly man with a kind crinkled smile and gentle eyes, balding with wispy grey hair, slight stoop, soft slim build",
+          "portrait": "skeletons/00_low8_64/characters/char_03/portrait.png",
+          "rotations": [
+            "skeletons/00_low8_64/characters/char_03/rotations/east.png",
+            "skeletons/00_low8_64/characters/char_03/rotations/north.png",
+            "skeletons/00_low8_64/characters/char_03/rotations/north-east.png",
+            "skeletons/00_low8_64/characters/char_03/rotations/north-west.png",
+            "skeletons/00_low8_64/characters/char_03/rotations/south.png",
+            "skeletons/00_low8_64/characters/char_03/rotations/south-east.png",
+            "skeletons/00_low8_64/characters/char_03/rotations/south-west.png",
+            "skeletons/00_low8_64/characters/char_03/rotations/west.png"
+          ],
+          "animation_count": 0,
+          "animations": [],
           "outfits": []
         }
       ]

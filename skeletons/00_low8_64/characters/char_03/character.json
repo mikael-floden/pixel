@@ -1,0 +1,26 @@
+{
+  "local_id": "char_03",
+  "pixellab_id": "b00ce421-3429-4a37-9b2f-0c05426797a7",
+  "index": 3,
+  "description": "a tender elderly man with a kind crinkled smile and gentle eyes, balding with wispy grey hair, slight stoop, soft slim build, wearing only plain underclothes (a plain sleeveless undershirt and simple shorts), barefoot, neutral undressed base body ready to be dressed, detailed RPG pixel art inspired by Grave Seasons, realistic human proportions and expressive faces, naturalistic lighting and a varied lifelike color palette, soft dramatic shading, high detail, clean readable shapes; mature art for a teen-and-up audience, never childish or cutesy but not forced to be dark",
+  "look": "a tender elderly man with a kind crinkled smile and gentle eyes, balding with wispy grey hair, slight stoop, soft slim build",
+  "skeleton": "00_low8_64",
+  "rotations": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "animations": {},
+  "base_done": true,
+  "rotation_qa": {
+    "ok": false,
+    "problems": [
+      "south and north look near-identical (diff 1.97 < 0.5x median 4.77) \u2014 one view didn't rotate"
+    ]
+  }
+}
