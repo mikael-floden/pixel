@@ -24,20 +24,20 @@
     "8": ["south", "north", "east", "west", "south-east", "south-west", "north-east", "north-west"]
   },
 
-  "_animation_pool": "Ordered pool of simple animations. First two (idle, walk) are every character's base; the loop appends the next ones (run, jump, kick, ...) up to the target, then beyond in Phase B.",
+  "_animation_pool": "Ordered pool. First two (idle, walk) are every character's base; the loop appends the next ones up to the target, then beyond in Phase B. Keep `action` to ONE simple word — extra words confuse PixelLab and produce weird / non-looping cycles.",
   "animations": [
-    { "key": "idle",   "action": "standing still, idle breathing", "frames": 6 },
-    { "key": "walk",   "action": "walking",                        "frames": 8 },
-    { "key": "run",    "action": "running",                        "frames": 8 },
-    { "key": "jump",   "action": "jumping",                        "frames": 6 },
-    { "key": "kick",   "action": "kicking",                        "frames": 6 },
-    { "key": "punch",  "action": "punching",                       "frames": 6 },
-    { "key": "crouch", "action": "crouching down",                 "frames": 6 },
-    { "key": "fall",   "action": "falling",                        "frames": 6 },
-    { "key": "hurt",   "action": "getting hurt and recoiling",     "frames": 4 },
-    { "key": "die",    "action": "dying and collapsing",           "frames": 6 },
-    { "key": "wave",   "action": "waving hello",                   "frames": 6 },
-    { "key": "attack", "action": "swinging a melee attack",        "frames": 6 }
+    { "key": "idle",   "action": "idle",     "frames": 6 },
+    { "key": "walk",   "action": "walking",  "frames": 8 },
+    { "key": "run",    "action": "running",  "frames": 8 },
+    { "key": "jump",   "action": "jumping",  "frames": 6 },
+    { "key": "kick",   "action": "kicking",  "frames": 6 },
+    { "key": "punch",  "action": "punching", "frames": 6 },
+    { "key": "crouch", "action": "crouching","frames": 6 },
+    { "key": "fall",   "action": "falling",  "frames": 6 },
+    { "key": "hurt",   "action": "flinching","frames": 4 },
+    { "key": "die",    "action": "dying",    "frames": 6 },
+    { "key": "wave",   "action": "waving",   "frames": 6 },
+    { "key": "attack", "action": "attacking","frames": 6 }
   ],
 
   "_dress_pool": "Ordered pool of dresses (outfits). The loop appends the next ones up to max_dresses. Every character in a skeleton gets every dress.",

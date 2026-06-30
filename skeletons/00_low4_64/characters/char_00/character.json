@@ -69,6 +69,72 @@
           "skeletons/00_low4_64/characters/char_00/animations/idle/west/06.png"
         ]
       }
+    },
+    "walk": {
+      "south": {
+        "frames": 9,
+        "strip": "skeletons/00_low4_64/characters/char_00/animations/walk__south.png",
+        "gif": "skeletons/00_low4_64/characters/char_00/animations/walk__south.gif",
+        "frame_paths": [
+          "skeletons/00_low4_64/characters/char_00/animations/walk/south/00.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/south/01.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/south/02.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/south/03.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/south/04.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/south/05.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/south/06.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/south/07.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/south/08.png"
+        ]
+      },
+      "north": {
+        "frames": 9,
+        "strip": "skeletons/00_low4_64/characters/char_00/animations/walk__north.png",
+        "gif": "skeletons/00_low4_64/characters/char_00/animations/walk__north.gif",
+        "frame_paths": [
+          "skeletons/00_low4_64/characters/char_00/animations/walk/north/00.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/north/01.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/north/02.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/north/03.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/north/04.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/north/05.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/north/06.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/north/07.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/north/08.png"
+        ]
+      },
+      "east": {
+        "frames": 9,
+        "strip": "skeletons/00_low4_64/characters/char_00/animations/walk__east.png",
+        "gif": "skeletons/00_low4_64/characters/char_00/animations/walk__east.gif",
+        "frame_paths": [
+          "skeletons/00_low4_64/characters/char_00/animations/walk/east/00.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/east/01.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/east/02.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/east/03.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/east/04.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/east/05.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/east/06.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/east/07.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/east/08.png"
+        ]
+      },
+      "west": {
+        "frames": 9,
+        "strip": "skeletons/00_low4_64/characters/char_00/animations/walk__west.png",
+        "gif": "skeletons/00_low4_64/characters/char_00/animations/walk__west.gif",
+        "frame_paths": [
+          "skeletons/00_low4_64/characters/char_00/animations/walk/west/00.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/west/01.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/west/02.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/west/03.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/west/04.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/west/05.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/west/06.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/west/07.png",
+          "skeletons/00_low4_64/characters/char_00/animations/walk/west/08.png"
+        ]
+      }
     }
   },
   "base_done": true
