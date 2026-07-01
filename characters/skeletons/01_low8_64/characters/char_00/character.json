@@ -14,10 +14,91 @@
     "south-west",
     "west"
   ],
-  "animations": {},
+  "animations": {
+    "idle": {
+      "north": {
+        "frames": 4,
+        "strip": "skeletons/01_low8_64/characters/char_00/animations/idle__north.png",
+        "gif": "skeletons/01_low8_64/characters/char_00/animations/idle__north.gif",
+        "frame_paths": [
+          "skeletons/01_low8_64/characters/char_00/animations/idle/north/00.png",
+          "skeletons/01_low8_64/characters/char_00/animations/idle/north/01.png",
+          "skeletons/01_low8_64/characters/char_00/animations/idle/north/02.png",
+          "skeletons/01_low8_64/characters/char_00/animations/idle/north/03.png"
+        ]
+      },
+      "east": {
+        "frames": 4,
+        "strip": "skeletons/01_low8_64/characters/char_00/animations/idle__east.png",
+        "gif": "skeletons/01_low8_64/characters/char_00/animations/idle__east.gif",
+        "frame_paths": [
+          "skeletons/01_low8_64/characters/char_00/animations/idle/east/00.png",
+          "skeletons/01_low8_64/characters/char_00/animations/idle/east/01.png",
+          "skeletons/01_low8_64/characters/char_00/animations/idle/east/02.png",
+          "skeletons/01_low8_64/characters/char_00/animations/idle/east/03.png"
+        ]
+      },
+      "west": {
+        "frames": 4,
+        "strip": "skeletons/01_low8_64/characters/char_00/animations/idle__west.png",
+        "gif": "skeletons/01_low8_64/characters/char_00/animations/idle__west.gif",
+        "frame_paths": [
+          "skeletons/01_low8_64/characters/char_00/animations/idle/west/00.png",
+          "skeletons/01_low8_64/characters/char_00/animations/idle/west/01.png",
+          "skeletons/01_low8_64/characters/char_00/animations/idle/west/02.png",
+          "skeletons/01_low8_64/characters/char_00/animations/idle/west/03.png"
+        ]
+      },
+      "south-east": {
+        "frames": 4,
+        "strip": "skeletons/01_low8_64/characters/char_00/animations/idle__south-east.png",
+        "gif": "skeletons/01_low8_64/characters/char_00/animations/idle__south-east.gif",
+        "frame_paths": [
+          "skeletons/01_low8_64/characters/char_00/animations/idle/south-east/00.png",
+          "skeletons/01_low8_64/characters/char_00/animations/idle/south-east/01.png",
+          "skeletons/01_low8_64/characters/char_00/animations/idle/south-east/02.png",
+          "skeletons/01_low8_64/characters/char_00/animations/idle/south-east/03.png"
+        ]
+      },
+      "south-west": {
+        "frames": 4,
+        "strip": "skeletons/01_low8_64/characters/char_00/animations/idle__south-west.png",
+        "gif": "skeletons/01_low8_64/characters/char_00/animations/idle__south-west.gif",
+        "frame_paths": [
+          "skeletons/01_low8_64/characters/char_00/animations/idle/south-west/00.png",
+          "skeletons/01_low8_64/characters/char_00/animations/idle/south-west/01.png",
+          "skeletons/01_low8_64/characters/char_00/animations/idle/south-west/02.png",
+          "skeletons/01_low8_64/characters/char_00/animations/idle/south-west/03.png"
+        ]
+      },
+      "north-east": {
+        "frames": 4,
+        "strip": "skeletons/01_low8_64/characters/char_00/animations/idle__north-east.png",
+        "gif": "skeletons/01_low8_64/characters/char_00/animations/idle__north-east.gif",
+        "frame_paths": [
+          "skeletons/01_low8_64/characters/char_00/animations/idle/north-east/00.png",
+          "skeletons/01_low8_64/characters/char_00/animations/idle/north-east/01.png",
+          "skeletons/01_low8_64/characters/char_00/animations/idle/north-east/02.png",
+          "skeletons/01_low8_64/characters/char_00/animations/idle/north-east/03.png"
+        ]
+      },
+      "north-west": {
+        "frames": 4,
+        "strip": "skeletons/01_low8_64/characters/char_00/animations/idle__north-west.png",
+        "gif": "skeletons/01_low8_64/characters/char_00/animations/idle__north-west.gif",
+        "frame_paths": [
+          "skeletons/01_low8_64/characters/char_00/animations/idle/north-west/00.png",
+          "skeletons/01_low8_64/characters/char_00/animations/idle/north-west/01.png",
+          "skeletons/01_low8_64/characters/char_00/animations/idle/north-west/02.png",
+          "skeletons/01_low8_64/characters/char_00/animations/idle/north-west/03.png"
+        ]
+      }
+    }
+  },
   "base_done": true,
   "rotation_qa": {
     "ok": true,
     "problems": []
-  }
+  },
+  "anim_attempts": {}
 }
