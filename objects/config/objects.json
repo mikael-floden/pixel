@@ -1,15 +1,17 @@
 {
   "_comment": "Catalog-driven pixel-OBJECT factory. An 'object' is one prop/tool/item (chest, coin, rock, bird, sword, shovel, tree...). Each object is a self-contained folder under objects/<id>/. The loop reads the filesystem and, per object, generates: (1) a base sprite (generate-image-pixflux), (2) optional rotated views (rotate), (3) optional animations (animate-with-text). Every unit = one PixelLab generation; after each it rebuilds the viewer, commits and pushes. Fully resumable. Unlike characters, objects are stateless image tools with no server-side object to sync back \u2014 the repo is the source of truth.",
-  "style_base": "detailed RPG pixel art inspired by Grave Seasons and Stardew Valley, clean readable silhouette, naturalistic lighting and a warm lifelike palette, soft shading, crisp pixels, single centered game asset on a transparent background",
+  "style_base": "cozy painterly RPG pixel art in the exact style of Grave Seasons, a cohesive muted-but-warm seasonal palette, soft naturalistic lighting with strong ambient occlusion and gently rounded volumes, subtle selective darker-tone outlines (NOT a hard uniform black cartoon outline), rich high detail, crisp deliberate pixels, a single centered game prop on a transparent background",
+  "style_version": 2,
+  "_style_version": "Bump this when the look changes. Objects whose manifest records an older style_version are considered stale; run the loop with --restyle (or the workflow's restyle input) to delete and regenerate them in the new style.",
   "defaults": {
     "view": "low top-down",
     "direction": "south",
-    "outline": "single color black outline",
+    "outline": "selective outline",
     "shading": "detailed shading",
     "detail": "highly detailed",
     "no_background": true,
     "text_guidance_scale": 8.0,
-    "negative_description": "blurry, multiple objects, duplicated, cropped, text, watermark, drop shadow, background scenery, tiling",
+    "negative_description": "blurry, multiple objects, duplicated, cropped, text, watermark, drop shadow, background scenery, tiling, thick uniform black cartoon outline, sticker look, flat solid colors, low effort",
     "animation_image_guidance_scale": 3.0,
     "animation_text_guidance_scale": 6.0
   },

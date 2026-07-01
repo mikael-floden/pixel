@@ -16,6 +16,9 @@ on:
       min_balance:
         description: "Stop when generations remaining drops below this"
         default: "2000"
+      restyle:
+        description: "Regenerate objects made under an older style_version (true/false)"
+        default: "false"
 
 # Allow the job (and the loop's git push) to write to the repo.
 permissions:
@@ -59,4 +62,5 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           python objects/pipeline/loop.py \
             --max-minutes "${{ github.event.inputs.max_minutes || '50' }}" \
-            --min-balance "${{ github.event.inputs.min_balance || '2000' }}"
+            --min-balance "${{ github.event.inputs.min_balance || '2000' }}" \
+            ${{ github.event.inputs.restyle == 'true' && '--restyle' || '' }}

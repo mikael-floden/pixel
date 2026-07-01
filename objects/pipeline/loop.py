@@ -131,12 +131,25 @@ def main():
                     help="Stop when generations remaining drops below this.")
     ap.add_argument("--once", action="store_true", help="Do a single unit and exit.")
     ap.add_argument("--no-push", action="store_true")
+    ap.add_argument("--restyle", action="store_true",
+                    help="Delete objects made under an older style_version so they "
+                         "regenerate in the current style (re-spends generations).")
     args = ap.parse_args()
 
     cfg = factory.load_config()
     min_balance = args.min_balance if args.min_balance is not None \
         else cfg["budget"]["min_generations_remaining"]
     client = PixelLabClient()
+
+    # Restyle: drop objects made under an older style so they regenerate in the
+    # current look. Commit the removals up front, then the normal loop refills.
+    if args.restyle:
+        removed = factory.restyle_stale(cfg)
+        if removed:
+            viewer_build.build()
+            commit_push(f"objects: restyle — regenerating {len(removed)} object(s) "
+                        f"in style v{cfg.get('style_version', 1)}", push=not args.no_push)
+            print(f"restyle: cleared {len(removed)} stale object(s): {', '.join(removed)}")
 
     # Keep in-world sizing current: propagate any scale-rule / world-height change
     # to existing objects (zero PixelLab cost) so nothing is unrealistically sized.

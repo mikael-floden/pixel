@@ -366,6 +366,7 @@ def generate_base(client, cfg, spec):
 
     meta = read_manifest(oid) or {}
     meta.update(_base_meta(spec))
+    meta["style_version"] = cfg.get("style_version", 1)
     meta["sprite"] = _rel(os.path.join(object_dir(oid), "sprite.png"))
     meta.setdefault("rotations", {"count": spec["rotations"], "directions": []})
     meta.setdefault("animations", {})
@@ -447,6 +448,20 @@ def generate_animation(client, cfg, spec, adef, max_attempts=3):
     meta["generations_used"] = round(meta.get("generations_used", 0) + used_total, 3)
     write_manifest(oid, meta)
     return meta
+
+
+def restyle_stale(cfg):
+    """Delete objects generated under an older style_version so the loop
+    regenerates them fresh in the current style. Deliberate (loop --restyle only),
+    since it re-spends generations. Returns the ids removed."""
+    current = cfg.get("style_version", 1)
+    removed = []
+    for spec in object_specs(cfg):
+        meta = read_manifest(spec["id"])
+        if meta and meta.get("style_version", 1) < current:
+            shutil.rmtree(object_dir(spec["id"]), ignore_errors=True)
+            removed.append(spec["id"])
+    return removed
 
 
 def refresh_placement(cfg):
