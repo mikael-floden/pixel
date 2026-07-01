@@ -23,7 +23,7 @@ import coordination
 import roads
 import synth
 import tilegen
-from pixellab_client import BudgetExhausted, PixelLabClient
+from pixellab_client import BudgetExhausted, PixelLabClient, PixelLabError
 
 ROOT = os.path.dirname(os.path.dirname(__file__))       # tiles/
 CONFIG = os.path.join(ROOT, "config", "tiles.json")
@@ -58,27 +58,43 @@ def commit_push(message, push=True):
     return True
 
 
-def next_category(cfg):
+def _cleanup_partial(cid):
+    """Remove a half-written category dir (tiles saved but no manifest) so a
+    failed unit leaves no orphan files behind."""
+    d = tilegen.category_dir(cid)
+    if os.path.isdir(d) and not os.path.isfile(os.path.join(d, "tiles.json")):
+        for name in os.listdir(d):
+            os.remove(os.path.join(d, name))
+        os.rmdir(d)
+
+
+def next_category(cfg, skip=None):
+    skip = skip or set()
+
+    def avail(cat):
+        return cat["id"] not in skip and not tilegen.category_done(cat["id"])
+
     for cat in cfg.get("categories", []):
-        if not tilegen.category_done(cat["id"]):
+        if avail(cat):
             return cat
     # Roads/paths for each ground type (prioritised ahead of open-ended growth).
     for cat in roads.road_categories(cfg):
-        if not tilegen.category_done(cat["id"]):
+        if avail(cat):
             return cat
     for cat in (cfg.get("procedural", {}) or {}).get("categories", []):
-        if not tilegen.category_done(cat["id"]):
+        if avail(cat):
             return cat
     # Explicit + procedural lists exhausted: invent an endless focused category
-    # that holds the ~40/20/20/20 profile mix (see synth.py).
-    return synth.invent_category(cfg)
+    # that holds the ~40/20/20/20 profile mix (see synth.py). Retry a few times so
+    # a single skipped id doesn't stall growth.
+    for _ in range(8):
+        cat = synth.invent_category(cfg)
+        if cat["id"] not in skip:
+            return cat
+    return None
 
 
-def advance(client, cfg, budget=None, push=True):
-    cat = next_category(cfg)
-    if cat is None:
-        print("== all categories generated ==")
-        return None
+def advance(client, cfg, cat, budget=None, push=True):
     m = tilegen.generate_category(client, cfg, cat)
     desc = f"tiles: '{cat['id']}' — {m['count']} isometric tiles ({m['tile_size']}px, {m['view_angle']}deg, {int(m['depth_ratio']*100)}% depth)"
     coordination.publish(health="running", current=desc,
@@ -107,6 +123,7 @@ def main():
 
     start = time.monotonic()
     units = 0
+    skip = set()          # categories that failed this run (retried next pass)
     rem = client.generations_remaining()
     print(f"tiles loop starting — {rem:.0f} generations remaining (floor {min_balance})")
 
@@ -114,11 +131,23 @@ def main():
     while True:
         try:
             rem = client.ensure_budget(min_balance)
-            result = advance(client, cfg, budget=rem, push=not args.no_push)
         except BudgetExhausted as e:
             stop = str(e); print(f"stopping: {e}"); break
-        if result is None:
-            break
+        cat = next_category(cfg, skip)
+        if cat is None:
+            print("== all categories generated =="); break
+        try:
+            advance(client, cfg, cat, budget=rem, push=not args.no_push)
+        except BudgetExhausted as e:
+            stop = str(e); print(f"stopping: {e}"); break
+        except PixelLabError as e:
+            # A single flaky/timed-out job must not kill the loop. Skip this
+            # category for the run (its filesystem is still empty, so the next
+            # scheduled pass retries it fresh) and move on.
+            print(f"  ! {cat['id']} failed: {e}; skipping for this run")
+            _cleanup_partial(cat["id"])
+            skip.add(cat["id"])
+            continue
         units += 1
         if args.once or (args.max_units and units >= args.max_units):
             stop = "unit budget reached"; break
