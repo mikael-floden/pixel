@@ -121,6 +121,28 @@ class TileSet:
     def is_elevation(self, category: str) -> bool:
         return self.categories.get(category, {}).get("kind") == "elevation"
 
+    def tile_height(self, category: str) -> int:
+        return int(self.categories[category].get("tile_height") or 64)
+
+    @lru_cache(maxsize=128)
+    def top_ref(self, category: str) -> int:
+        """Y (within the tile's box) of the top-diamond's side corners — the
+        stable landmark for the tile's TOP SURFACE. Aligning this to the level
+        grid makes a tall tile land its surface exactly where stacked 64x64
+        tiles would. Measured from tile_00 (all variants share the format)."""
+        img = self.tile(category, 0)
+        a = np.asarray(img)
+        alpha = a[:, :, 3] > 16
+        cols = np.where(alpha.any(axis=0))[0]
+        xmin = int(cols.min())
+        return int(np.where(alpha[:, xmin])[0].min())
+
+    def surface_offset(self, category: str, ref_category: str = "grass") -> int:
+        """Pixels to add to paste-y so `category`'s top surface aligns with the
+        ground reference tile's surface at the same level (0 for ground tiles)."""
+        ref = ref_category if ref_category in self.categories else next(iter(self.categories))
+        return self.top_ref(ref) - self.top_ref(category)
+
     @lru_cache(maxsize=512)
     def tile(self, category: str, index: int) -> Image.Image:
         """Return the RGBA image for ``tiles/<category>/tile_NN.png``.

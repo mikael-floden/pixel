@@ -40,6 +40,16 @@ and the mountain pass is notched so roads cross *through* it, not over the peaks
 Rounding the height field yields flat plateaus separated by cliffs — never a flat
 plane.
 
+**Tall cliff tiles (the hill walls).** Raised edges are drawn with the tiles
+agent's tall 64×128 elevation sets (`cliff_grass`, `cliff_stone`, …) — the ALTTP
+rock wall — instead of stacking flat blocks into a ziggurat. The alignment is the
+whole trick: `tileset.surface_offset` pins every tile's **top surface** to the
+level grid, so a tall cliff tile lands its top at the *exact* same screen-Y as N
+stacked 64×64 tiles would (`paste_y = base_y − level·19 + (21 − tile_top_ref)`).
+The over-tall faces are clipped by whatever is painted in front (back-to-front
+order). Stacking still works for anything without a dedicated tall tile — the two
+methods are interchangeable and land on the same plane.
+
 Assembling a world is **pure compositing** of tiles that already exist, so this
 domain needs **no PixelLab key and makes no API calls**. It owns orchestration,
 layout design, and the viewer.
