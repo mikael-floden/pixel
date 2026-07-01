@@ -358,10 +358,18 @@
         "character_height_m": 1.7,
         "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall. Keeps objects realistically sized in a world with characters."
       },
-      "status": "in_progress",
+      "status": "complete",
       "sprite": "lantern/sprite.png",
       "rotation_files": {},
-      "animations": []
+      "animations": [
+        {
+          "key": "flicker",
+          "gif": "lantern/animations/flicker.gif",
+          "strip": "lantern/animations/flicker.png",
+          "frames": 4,
+          "action": "flame flickering"
+        }
+      ]
     },
     {
       "id": "mushroom",
