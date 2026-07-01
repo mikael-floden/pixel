@@ -28,394 +28,19 @@
     "west"
   ],
   "rotations": {
+    "south": "clay_pot/rotations/south.png",
+    "west": "clay_pot/rotations/west.png",
     "east": "clay_pot/rotations/east.png",
     "north": "clay_pot/rotations/north.png",
-    "north-east": "clay_pot/rotations/north-east.png",
-    "north-west": "clay_pot/rotations/north-west.png",
-    "south": "clay_pot/rotations/south.png",
     "south-east": "clay_pot/rotations/south-east.png",
     "south-west": "clay_pot/rotations/south-west.png",
-    "west": "clay_pot/rotations/west.png"
+    "north-east": "clay_pot/rotations/north-east.png",
+    "north-west": "clay_pot/rotations/north-west.png"
   },
   "animations": {
-    "wobble": {
-      "group_id": "aea3f4ac-aa5a-4036-8ca0-b0ab7f8cb389",
-      "description": "the pot wobbling",
-      "frame_count": 16,
-      "directions": {
-        "east": {
-          "frames": 17,
-          "strip": "clay_pot/animations/wobble__east.png",
-          "gif": "clay_pot/animations/wobble__east.gif",
-          "frame_paths": [
-            "clay_pot/animations/wobble/east/00.png",
-            "clay_pot/animations/wobble/east/01.png",
-            "clay_pot/animations/wobble/east/02.png",
-            "clay_pot/animations/wobble/east/03.png",
-            "clay_pot/animations/wobble/east/04.png",
-            "clay_pot/animations/wobble/east/05.png",
-            "clay_pot/animations/wobble/east/06.png",
-            "clay_pot/animations/wobble/east/07.png",
-            "clay_pot/animations/wobble/east/08.png",
-            "clay_pot/animations/wobble/east/09.png",
-            "clay_pot/animations/wobble/east/10.png",
-            "clay_pot/animations/wobble/east/11.png",
-            "clay_pot/animations/wobble/east/12.png",
-            "clay_pot/animations/wobble/east/13.png",
-            "clay_pot/animations/wobble/east/14.png",
-            "clay_pot/animations/wobble/east/15.png",
-            "clay_pot/animations/wobble/east/16.png"
-          ]
-        },
-        "north": {
-          "frames": 17,
-          "strip": "clay_pot/animations/wobble__north.png",
-          "gif": "clay_pot/animations/wobble__north.gif",
-          "frame_paths": [
-            "clay_pot/animations/wobble/north/00.png",
-            "clay_pot/animations/wobble/north/01.png",
-            "clay_pot/animations/wobble/north/02.png",
-            "clay_pot/animations/wobble/north/03.png",
-            "clay_pot/animations/wobble/north/04.png",
-            "clay_pot/animations/wobble/north/05.png",
-            "clay_pot/animations/wobble/north/06.png",
-            "clay_pot/animations/wobble/north/07.png",
-            "clay_pot/animations/wobble/north/08.png",
-            "clay_pot/animations/wobble/north/09.png",
-            "clay_pot/animations/wobble/north/10.png",
-            "clay_pot/animations/wobble/north/11.png",
-            "clay_pot/animations/wobble/north/12.png",
-            "clay_pot/animations/wobble/north/13.png",
-            "clay_pot/animations/wobble/north/14.png",
-            "clay_pot/animations/wobble/north/15.png",
-            "clay_pot/animations/wobble/north/16.png"
-          ]
-        },
-        "north-east": {
-          "frames": 17,
-          "strip": "clay_pot/animations/wobble__north-east.png",
-          "gif": "clay_pot/animations/wobble__north-east.gif",
-          "frame_paths": [
-            "clay_pot/animations/wobble/north-east/00.png",
-            "clay_pot/animations/wobble/north-east/01.png",
-            "clay_pot/animations/wobble/north-east/02.png",
-            "clay_pot/animations/wobble/north-east/03.png",
-            "clay_pot/animations/wobble/north-east/04.png",
-            "clay_pot/animations/wobble/north-east/05.png",
-            "clay_pot/animations/wobble/north-east/06.png",
-            "clay_pot/animations/wobble/north-east/07.png",
-            "clay_pot/animations/wobble/north-east/08.png",
-            "clay_pot/animations/wobble/north-east/09.png",
-            "clay_pot/animations/wobble/north-east/10.png",
-            "clay_pot/animations/wobble/north-east/11.png",
-            "clay_pot/animations/wobble/north-east/12.png",
-            "clay_pot/animations/wobble/north-east/13.png",
-            "clay_pot/animations/wobble/north-east/14.png",
-            "clay_pot/animations/wobble/north-east/15.png",
-            "clay_pot/animations/wobble/north-east/16.png"
-          ]
-        },
-        "north-west": {
-          "frames": 17,
-          "strip": "clay_pot/animations/wobble__north-west.png",
-          "gif": "clay_pot/animations/wobble__north-west.gif",
-          "frame_paths": [
-            "clay_pot/animations/wobble/north-west/00.png",
-            "clay_pot/animations/wobble/north-west/01.png",
-            "clay_pot/animations/wobble/north-west/02.png",
-            "clay_pot/animations/wobble/north-west/03.png",
-            "clay_pot/animations/wobble/north-west/04.png",
-            "clay_pot/animations/wobble/north-west/05.png",
-            "clay_pot/animations/wobble/north-west/06.png",
-            "clay_pot/animations/wobble/north-west/07.png",
-            "clay_pot/animations/wobble/north-west/08.png",
-            "clay_pot/animations/wobble/north-west/09.png",
-            "clay_pot/animations/wobble/north-west/10.png",
-            "clay_pot/animations/wobble/north-west/11.png",
-            "clay_pot/animations/wobble/north-west/12.png",
-            "clay_pot/animations/wobble/north-west/13.png",
-            "clay_pot/animations/wobble/north-west/14.png",
-            "clay_pot/animations/wobble/north-west/15.png",
-            "clay_pot/animations/wobble/north-west/16.png"
-          ]
-        },
-        "south": {
-          "frames": 17,
-          "strip": "clay_pot/animations/wobble__south.png",
-          "gif": "clay_pot/animations/wobble__south.gif",
-          "frame_paths": [
-            "clay_pot/animations/wobble/south/00.png",
-            "clay_pot/animations/wobble/south/01.png",
-            "clay_pot/animations/wobble/south/02.png",
-            "clay_pot/animations/wobble/south/03.png",
-            "clay_pot/animations/wobble/south/04.png",
-            "clay_pot/animations/wobble/south/05.png",
-            "clay_pot/animations/wobble/south/06.png",
-            "clay_pot/animations/wobble/south/07.png",
-            "clay_pot/animations/wobble/south/08.png",
-            "clay_pot/animations/wobble/south/09.png",
-            "clay_pot/animations/wobble/south/10.png",
-            "clay_pot/animations/wobble/south/11.png",
-            "clay_pot/animations/wobble/south/12.png",
-            "clay_pot/animations/wobble/south/13.png",
-            "clay_pot/animations/wobble/south/14.png",
-            "clay_pot/animations/wobble/south/15.png",
-            "clay_pot/animations/wobble/south/16.png"
-          ]
-        },
-        "south-east": {
-          "frames": 17,
-          "strip": "clay_pot/animations/wobble__south-east.png",
-          "gif": "clay_pot/animations/wobble__south-east.gif",
-          "frame_paths": [
-            "clay_pot/animations/wobble/south-east/00.png",
-            "clay_pot/animations/wobble/south-east/01.png",
-            "clay_pot/animations/wobble/south-east/02.png",
-            "clay_pot/animations/wobble/south-east/03.png",
-            "clay_pot/animations/wobble/south-east/04.png",
-            "clay_pot/animations/wobble/south-east/05.png",
-            "clay_pot/animations/wobble/south-east/06.png",
-            "clay_pot/animations/wobble/south-east/07.png",
-            "clay_pot/animations/wobble/south-east/08.png",
-            "clay_pot/animations/wobble/south-east/09.png",
-            "clay_pot/animations/wobble/south-east/10.png",
-            "clay_pot/animations/wobble/south-east/11.png",
-            "clay_pot/animations/wobble/south-east/12.png",
-            "clay_pot/animations/wobble/south-east/13.png",
-            "clay_pot/animations/wobble/south-east/14.png",
-            "clay_pot/animations/wobble/south-east/15.png",
-            "clay_pot/animations/wobble/south-east/16.png"
-          ]
-        },
-        "west": {
-          "frames": 17,
-          "strip": "clay_pot/animations/wobble__west.png",
-          "gif": "clay_pot/animations/wobble__west.gif",
-          "frame_paths": [
-            "clay_pot/animations/wobble/west/00.png",
-            "clay_pot/animations/wobble/west/01.png",
-            "clay_pot/animations/wobble/west/02.png",
-            "clay_pot/animations/wobble/west/03.png",
-            "clay_pot/animations/wobble/west/04.png",
-            "clay_pot/animations/wobble/west/05.png",
-            "clay_pot/animations/wobble/west/06.png",
-            "clay_pot/animations/wobble/west/07.png",
-            "clay_pot/animations/wobble/west/08.png",
-            "clay_pot/animations/wobble/west/09.png",
-            "clay_pot/animations/wobble/west/10.png",
-            "clay_pot/animations/wobble/west/11.png",
-            "clay_pot/animations/wobble/west/12.png",
-            "clay_pot/animations/wobble/west/13.png",
-            "clay_pot/animations/wobble/west/14.png",
-            "clay_pot/animations/wobble/west/15.png",
-            "clay_pot/animations/wobble/west/16.png"
-          ]
-        }
-      }
-    },
-    "tip": {
-      "group_id": "b466cf38-0ba1-4fb3-919f-1e34e13e1378",
-      "description": "the pot tipping over",
-      "frame_count": 16,
-      "directions": {
-        "east": {
-          "frames": 17,
-          "strip": "clay_pot/animations/tip__east.png",
-          "gif": "clay_pot/animations/tip__east.gif",
-          "frame_paths": [
-            "clay_pot/animations/tip/east/00.png",
-            "clay_pot/animations/tip/east/01.png",
-            "clay_pot/animations/tip/east/02.png",
-            "clay_pot/animations/tip/east/03.png",
-            "clay_pot/animations/tip/east/04.png",
-            "clay_pot/animations/tip/east/05.png",
-            "clay_pot/animations/tip/east/06.png",
-            "clay_pot/animations/tip/east/07.png",
-            "clay_pot/animations/tip/east/08.png",
-            "clay_pot/animations/tip/east/09.png",
-            "clay_pot/animations/tip/east/10.png",
-            "clay_pot/animations/tip/east/11.png",
-            "clay_pot/animations/tip/east/12.png",
-            "clay_pot/animations/tip/east/13.png",
-            "clay_pot/animations/tip/east/14.png",
-            "clay_pot/animations/tip/east/15.png",
-            "clay_pot/animations/tip/east/16.png"
-          ]
-        },
-        "north": {
-          "frames": 17,
-          "strip": "clay_pot/animations/tip__north.png",
-          "gif": "clay_pot/animations/tip__north.gif",
-          "frame_paths": [
-            "clay_pot/animations/tip/north/00.png",
-            "clay_pot/animations/tip/north/01.png",
-            "clay_pot/animations/tip/north/02.png",
-            "clay_pot/animations/tip/north/03.png",
-            "clay_pot/animations/tip/north/04.png",
-            "clay_pot/animations/tip/north/05.png",
-            "clay_pot/animations/tip/north/06.png",
-            "clay_pot/animations/tip/north/07.png",
-            "clay_pot/animations/tip/north/08.png",
-            "clay_pot/animations/tip/north/09.png",
-            "clay_pot/animations/tip/north/10.png",
-            "clay_pot/animations/tip/north/11.png",
-            "clay_pot/animations/tip/north/12.png",
-            "clay_pot/animations/tip/north/13.png",
-            "clay_pot/animations/tip/north/14.png",
-            "clay_pot/animations/tip/north/15.png",
-            "clay_pot/animations/tip/north/16.png"
-          ]
-        },
-        "north-east": {
-          "frames": 17,
-          "strip": "clay_pot/animations/tip__north-east.png",
-          "gif": "clay_pot/animations/tip__north-east.gif",
-          "frame_paths": [
-            "clay_pot/animations/tip/north-east/00.png",
-            "clay_pot/animations/tip/north-east/01.png",
-            "clay_pot/animations/tip/north-east/02.png",
-            "clay_pot/animations/tip/north-east/03.png",
-            "clay_pot/animations/tip/north-east/04.png",
-            "clay_pot/animations/tip/north-east/05.png",
-            "clay_pot/animations/tip/north-east/06.png",
-            "clay_pot/animations/tip/north-east/07.png",
-            "clay_pot/animations/tip/north-east/08.png",
-            "clay_pot/animations/tip/north-east/09.png",
-            "clay_pot/animations/tip/north-east/10.png",
-            "clay_pot/animations/tip/north-east/11.png",
-            "clay_pot/animations/tip/north-east/12.png",
-            "clay_pot/animations/tip/north-east/13.png",
-            "clay_pot/animations/tip/north-east/14.png",
-            "clay_pot/animations/tip/north-east/15.png",
-            "clay_pot/animations/tip/north-east/16.png"
-          ]
-        },
-        "north-west": {
-          "frames": 17,
-          "strip": "clay_pot/animations/tip__north-west.png",
-          "gif": "clay_pot/animations/tip__north-west.gif",
-          "frame_paths": [
-            "clay_pot/animations/tip/north-west/00.png",
-            "clay_pot/animations/tip/north-west/01.png",
-            "clay_pot/animations/tip/north-west/02.png",
-            "clay_pot/animations/tip/north-west/03.png",
-            "clay_pot/animations/tip/north-west/04.png",
-            "clay_pot/animations/tip/north-west/05.png",
-            "clay_pot/animations/tip/north-west/06.png",
-            "clay_pot/animations/tip/north-west/07.png",
-            "clay_pot/animations/tip/north-west/08.png",
-            "clay_pot/animations/tip/north-west/09.png",
-            "clay_pot/animations/tip/north-west/10.png",
-            "clay_pot/animations/tip/north-west/11.png",
-            "clay_pot/animations/tip/north-west/12.png",
-            "clay_pot/animations/tip/north-west/13.png",
-            "clay_pot/animations/tip/north-west/14.png",
-            "clay_pot/animations/tip/north-west/15.png",
-            "clay_pot/animations/tip/north-west/16.png"
-          ]
-        },
-        "south": {
-          "frames": 17,
-          "strip": "clay_pot/animations/tip__south.png",
-          "gif": "clay_pot/animations/tip__south.gif",
-          "frame_paths": [
-            "clay_pot/animations/tip/south/00.png",
-            "clay_pot/animations/tip/south/01.png",
-            "clay_pot/animations/tip/south/02.png",
-            "clay_pot/animations/tip/south/03.png",
-            "clay_pot/animations/tip/south/04.png",
-            "clay_pot/animations/tip/south/05.png",
-            "clay_pot/animations/tip/south/06.png",
-            "clay_pot/animations/tip/south/07.png",
-            "clay_pot/animations/tip/south/08.png",
-            "clay_pot/animations/tip/south/09.png",
-            "clay_pot/animations/tip/south/10.png",
-            "clay_pot/animations/tip/south/11.png",
-            "clay_pot/animations/tip/south/12.png",
-            "clay_pot/animations/tip/south/13.png",
-            "clay_pot/animations/tip/south/14.png",
-            "clay_pot/animations/tip/south/15.png",
-            "clay_pot/animations/tip/south/16.png"
-          ]
-        },
-        "south-east": {
-          "frames": 17,
-          "strip": "clay_pot/animations/tip__south-east.png",
-          "gif": "clay_pot/animations/tip__south-east.gif",
-          "frame_paths": [
-            "clay_pot/animations/tip/south-east/00.png",
-            "clay_pot/animations/tip/south-east/01.png",
-            "clay_pot/animations/tip/south-east/02.png",
-            "clay_pot/animations/tip/south-east/03.png",
-            "clay_pot/animations/tip/south-east/04.png",
-            "clay_pot/animations/tip/south-east/05.png",
-            "clay_pot/animations/tip/south-east/06.png",
-            "clay_pot/animations/tip/south-east/07.png",
-            "clay_pot/animations/tip/south-east/08.png",
-            "clay_pot/animations/tip/south-east/09.png",
-            "clay_pot/animations/tip/south-east/10.png",
-            "clay_pot/animations/tip/south-east/11.png",
-            "clay_pot/animations/tip/south-east/12.png",
-            "clay_pot/animations/tip/south-east/13.png",
-            "clay_pot/animations/tip/south-east/14.png",
-            "clay_pot/animations/tip/south-east/15.png",
-            "clay_pot/animations/tip/south-east/16.png"
-          ]
-        },
-        "south-west": {
-          "frames": 17,
-          "strip": "clay_pot/animations/tip__south-west.png",
-          "gif": "clay_pot/animations/tip__south-west.gif",
-          "frame_paths": [
-            "clay_pot/animations/tip/south-west/00.png",
-            "clay_pot/animations/tip/south-west/01.png",
-            "clay_pot/animations/tip/south-west/02.png",
-            "clay_pot/animations/tip/south-west/03.png",
-            "clay_pot/animations/tip/south-west/04.png",
-            "clay_pot/animations/tip/south-west/05.png",
-            "clay_pot/animations/tip/south-west/06.png",
-            "clay_pot/animations/tip/south-west/07.png",
-            "clay_pot/animations/tip/south-west/08.png",
-            "clay_pot/animations/tip/south-west/09.png",
-            "clay_pot/animations/tip/south-west/10.png",
-            "clay_pot/animations/tip/south-west/11.png",
-            "clay_pot/animations/tip/south-west/12.png",
-            "clay_pot/animations/tip/south-west/13.png",
-            "clay_pot/animations/tip/south-west/14.png",
-            "clay_pot/animations/tip/south-west/15.png",
-            "clay_pot/animations/tip/south-west/16.png"
-          ]
-        },
-        "west": {
-          "frames": 17,
-          "strip": "clay_pot/animations/tip__west.png",
-          "gif": "clay_pot/animations/tip__west.gif",
-          "frame_paths": [
-            "clay_pot/animations/tip/west/00.png",
-            "clay_pot/animations/tip/west/01.png",
-            "clay_pot/animations/tip/west/02.png",
-            "clay_pot/animations/tip/west/03.png",
-            "clay_pot/animations/tip/west/04.png",
-            "clay_pot/animations/tip/west/05.png",
-            "clay_pot/animations/tip/west/06.png",
-            "clay_pot/animations/tip/west/07.png",
-            "clay_pot/animations/tip/west/08.png",
-            "clay_pot/animations/tip/west/09.png",
-            "clay_pot/animations/tip/west/10.png",
-            "clay_pot/animations/tip/west/11.png",
-            "clay_pot/animations/tip/west/12.png",
-            "clay_pot/animations/tip/west/13.png",
-            "clay_pot/animations/tip/west/14.png",
-            "clay_pot/animations/tip/west/15.png",
-            "clay_pot/animations/tip/west/16.png"
-          ]
-        }
-      }
-    },
     "shatter": {
       "group_id": "28270e9f-da14-48c3-a550-87a5485f51bc",
       "description": "the pot shattering into shards",
-      "frame_count": 16,
       "directions": {
         "east": {
           "frames": 17,
@@ -439,7 +64,9 @@
             "clay_pot/animations/shatter/east/14.png",
             "clay_pot/animations/shatter/east/15.png",
             "clay_pot/animations/shatter/east/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 09:29:54 GMT",
+          "src_frames": 17
         },
         "north": {
           "frames": 17,
@@ -463,7 +90,9 @@
             "clay_pot/animations/shatter/north/14.png",
             "clay_pot/animations/shatter/north/15.png",
             "clay_pot/animations/shatter/north/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 09:30:01 GMT",
+          "src_frames": 17
         },
         "north-east": {
           "frames": 17,
@@ -487,7 +116,9 @@
             "clay_pot/animations/shatter/north-east/14.png",
             "clay_pot/animations/shatter/north-east/15.png",
             "clay_pot/animations/shatter/north-east/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 09:30:09 GMT",
+          "src_frames": 17
         },
         "north-west": {
           "frames": 17,
@@ -511,7 +142,9 @@
             "clay_pot/animations/shatter/north-west/14.png",
             "clay_pot/animations/shatter/north-west/15.png",
             "clay_pot/animations/shatter/north-west/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 09:30:16 GMT",
+          "src_frames": 17
         },
         "south": {
           "frames": 17,
@@ -535,7 +168,9 @@
             "clay_pot/animations/shatter/south/14.png",
             "clay_pot/animations/shatter/south/15.png",
             "clay_pot/animations/shatter/south/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 09:30:22 GMT",
+          "src_frames": 17
         },
         "south-east": {
           "frames": 17,
@@ -559,7 +194,9 @@
             "clay_pot/animations/shatter/south-east/14.png",
             "clay_pot/animations/shatter/south-east/15.png",
             "clay_pot/animations/shatter/south-east/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 09:30:30 GMT",
+          "src_frames": 17
         },
         "south-west": {
           "frames": 17,
@@ -583,7 +220,9 @@
             "clay_pot/animations/shatter/south-west/14.png",
             "clay_pot/animations/shatter/south-west/15.png",
             "clay_pot/animations/shatter/south-west/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 09:30:38 GMT",
+          "src_frames": 17
         },
         "west": {
           "frames": 17,
@@ -607,10 +246,415 @@
             "clay_pot/animations/shatter/west/14.png",
             "clay_pot/animations/shatter/west/15.png",
             "clay_pot/animations/shatter/west/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 09:30:45 GMT",
+          "src_frames": 17
+        }
+      }
+    },
+    "tip": {
+      "group_id": "b466cf38-0ba1-4fb3-919f-1e34e13e1378",
+      "description": "the pot tipping over",
+      "directions": {
+        "east": {
+          "frames": 17,
+          "strip": "clay_pot/animations/tip__east.png",
+          "gif": "clay_pot/animations/tip__east.gif",
+          "frame_paths": [
+            "clay_pot/animations/tip/east/00.png",
+            "clay_pot/animations/tip/east/01.png",
+            "clay_pot/animations/tip/east/02.png",
+            "clay_pot/animations/tip/east/03.png",
+            "clay_pot/animations/tip/east/04.png",
+            "clay_pot/animations/tip/east/05.png",
+            "clay_pot/animations/tip/east/06.png",
+            "clay_pot/animations/tip/east/07.png",
+            "clay_pot/animations/tip/east/08.png",
+            "clay_pot/animations/tip/east/09.png",
+            "clay_pot/animations/tip/east/10.png",
+            "clay_pot/animations/tip/east/11.png",
+            "clay_pot/animations/tip/east/12.png",
+            "clay_pot/animations/tip/east/13.png",
+            "clay_pot/animations/tip/east/14.png",
+            "clay_pot/animations/tip/east/15.png",
+            "clay_pot/animations/tip/east/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 09:30:52 GMT",
+          "src_frames": 17
+        },
+        "north": {
+          "frames": 17,
+          "strip": "clay_pot/animations/tip__north.png",
+          "gif": "clay_pot/animations/tip__north.gif",
+          "frame_paths": [
+            "clay_pot/animations/tip/north/00.png",
+            "clay_pot/animations/tip/north/01.png",
+            "clay_pot/animations/tip/north/02.png",
+            "clay_pot/animations/tip/north/03.png",
+            "clay_pot/animations/tip/north/04.png",
+            "clay_pot/animations/tip/north/05.png",
+            "clay_pot/animations/tip/north/06.png",
+            "clay_pot/animations/tip/north/07.png",
+            "clay_pot/animations/tip/north/08.png",
+            "clay_pot/animations/tip/north/09.png",
+            "clay_pot/animations/tip/north/10.png",
+            "clay_pot/animations/tip/north/11.png",
+            "clay_pot/animations/tip/north/12.png",
+            "clay_pot/animations/tip/north/13.png",
+            "clay_pot/animations/tip/north/14.png",
+            "clay_pot/animations/tip/north/15.png",
+            "clay_pot/animations/tip/north/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 09:31:00 GMT",
+          "src_frames": 17
+        },
+        "north-east": {
+          "frames": 17,
+          "strip": "clay_pot/animations/tip__north-east.png",
+          "gif": "clay_pot/animations/tip__north-east.gif",
+          "frame_paths": [
+            "clay_pot/animations/tip/north-east/00.png",
+            "clay_pot/animations/tip/north-east/01.png",
+            "clay_pot/animations/tip/north-east/02.png",
+            "clay_pot/animations/tip/north-east/03.png",
+            "clay_pot/animations/tip/north-east/04.png",
+            "clay_pot/animations/tip/north-east/05.png",
+            "clay_pot/animations/tip/north-east/06.png",
+            "clay_pot/animations/tip/north-east/07.png",
+            "clay_pot/animations/tip/north-east/08.png",
+            "clay_pot/animations/tip/north-east/09.png",
+            "clay_pot/animations/tip/north-east/10.png",
+            "clay_pot/animations/tip/north-east/11.png",
+            "clay_pot/animations/tip/north-east/12.png",
+            "clay_pot/animations/tip/north-east/13.png",
+            "clay_pot/animations/tip/north-east/14.png",
+            "clay_pot/animations/tip/north-east/15.png",
+            "clay_pot/animations/tip/north-east/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 09:31:08 GMT",
+          "src_frames": 17
+        },
+        "north-west": {
+          "frames": 17,
+          "strip": "clay_pot/animations/tip__north-west.png",
+          "gif": "clay_pot/animations/tip__north-west.gif",
+          "frame_paths": [
+            "clay_pot/animations/tip/north-west/00.png",
+            "clay_pot/animations/tip/north-west/01.png",
+            "clay_pot/animations/tip/north-west/02.png",
+            "clay_pot/animations/tip/north-west/03.png",
+            "clay_pot/animations/tip/north-west/04.png",
+            "clay_pot/animations/tip/north-west/05.png",
+            "clay_pot/animations/tip/north-west/06.png",
+            "clay_pot/animations/tip/north-west/07.png",
+            "clay_pot/animations/tip/north-west/08.png",
+            "clay_pot/animations/tip/north-west/09.png",
+            "clay_pot/animations/tip/north-west/10.png",
+            "clay_pot/animations/tip/north-west/11.png",
+            "clay_pot/animations/tip/north-west/12.png",
+            "clay_pot/animations/tip/north-west/13.png",
+            "clay_pot/animations/tip/north-west/14.png",
+            "clay_pot/animations/tip/north-west/15.png",
+            "clay_pot/animations/tip/north-west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 09:31:16 GMT",
+          "src_frames": 17
+        },
+        "south": {
+          "frames": 17,
+          "strip": "clay_pot/animations/tip__south.png",
+          "gif": "clay_pot/animations/tip__south.gif",
+          "frame_paths": [
+            "clay_pot/animations/tip/south/00.png",
+            "clay_pot/animations/tip/south/01.png",
+            "clay_pot/animations/tip/south/02.png",
+            "clay_pot/animations/tip/south/03.png",
+            "clay_pot/animations/tip/south/04.png",
+            "clay_pot/animations/tip/south/05.png",
+            "clay_pot/animations/tip/south/06.png",
+            "clay_pot/animations/tip/south/07.png",
+            "clay_pot/animations/tip/south/08.png",
+            "clay_pot/animations/tip/south/09.png",
+            "clay_pot/animations/tip/south/10.png",
+            "clay_pot/animations/tip/south/11.png",
+            "clay_pot/animations/tip/south/12.png",
+            "clay_pot/animations/tip/south/13.png",
+            "clay_pot/animations/tip/south/14.png",
+            "clay_pot/animations/tip/south/15.png",
+            "clay_pot/animations/tip/south/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 09:31:24 GMT",
+          "src_frames": 17
+        },
+        "south-east": {
+          "frames": 17,
+          "strip": "clay_pot/animations/tip__south-east.png",
+          "gif": "clay_pot/animations/tip__south-east.gif",
+          "frame_paths": [
+            "clay_pot/animations/tip/south-east/00.png",
+            "clay_pot/animations/tip/south-east/01.png",
+            "clay_pot/animations/tip/south-east/02.png",
+            "clay_pot/animations/tip/south-east/03.png",
+            "clay_pot/animations/tip/south-east/04.png",
+            "clay_pot/animations/tip/south-east/05.png",
+            "clay_pot/animations/tip/south-east/06.png",
+            "clay_pot/animations/tip/south-east/07.png",
+            "clay_pot/animations/tip/south-east/08.png",
+            "clay_pot/animations/tip/south-east/09.png",
+            "clay_pot/animations/tip/south-east/10.png",
+            "clay_pot/animations/tip/south-east/11.png",
+            "clay_pot/animations/tip/south-east/12.png",
+            "clay_pot/animations/tip/south-east/13.png",
+            "clay_pot/animations/tip/south-east/14.png",
+            "clay_pot/animations/tip/south-east/15.png",
+            "clay_pot/animations/tip/south-east/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 09:31:31 GMT",
+          "src_frames": 17
+        },
+        "south-west": {
+          "frames": 17,
+          "strip": "clay_pot/animations/tip__south-west.png",
+          "gif": "clay_pot/animations/tip__south-west.gif",
+          "frame_paths": [
+            "clay_pot/animations/tip/south-west/00.png",
+            "clay_pot/animations/tip/south-west/01.png",
+            "clay_pot/animations/tip/south-west/02.png",
+            "clay_pot/animations/tip/south-west/03.png",
+            "clay_pot/animations/tip/south-west/04.png",
+            "clay_pot/animations/tip/south-west/05.png",
+            "clay_pot/animations/tip/south-west/06.png",
+            "clay_pot/animations/tip/south-west/07.png",
+            "clay_pot/animations/tip/south-west/08.png",
+            "clay_pot/animations/tip/south-west/09.png",
+            "clay_pot/animations/tip/south-west/10.png",
+            "clay_pot/animations/tip/south-west/11.png",
+            "clay_pot/animations/tip/south-west/12.png",
+            "clay_pot/animations/tip/south-west/13.png",
+            "clay_pot/animations/tip/south-west/14.png",
+            "clay_pot/animations/tip/south-west/15.png",
+            "clay_pot/animations/tip/south-west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 09:31:39 GMT",
+          "src_frames": 17
+        },
+        "west": {
+          "frames": 17,
+          "strip": "clay_pot/animations/tip__west.png",
+          "gif": "clay_pot/animations/tip__west.gif",
+          "frame_paths": [
+            "clay_pot/animations/tip/west/00.png",
+            "clay_pot/animations/tip/west/01.png",
+            "clay_pot/animations/tip/west/02.png",
+            "clay_pot/animations/tip/west/03.png",
+            "clay_pot/animations/tip/west/04.png",
+            "clay_pot/animations/tip/west/05.png",
+            "clay_pot/animations/tip/west/06.png",
+            "clay_pot/animations/tip/west/07.png",
+            "clay_pot/animations/tip/west/08.png",
+            "clay_pot/animations/tip/west/09.png",
+            "clay_pot/animations/tip/west/10.png",
+            "clay_pot/animations/tip/west/11.png",
+            "clay_pot/animations/tip/west/12.png",
+            "clay_pot/animations/tip/west/13.png",
+            "clay_pot/animations/tip/west/14.png",
+            "clay_pot/animations/tip/west/15.png",
+            "clay_pot/animations/tip/west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 09:31:47 GMT",
+          "src_frames": 17
+        }
+      }
+    },
+    "wobble": {
+      "group_id": "aea3f4ac-aa5a-4036-8ca0-b0ab7f8cb389",
+      "description": "the pot wobbling",
+      "directions": {
+        "east": {
+          "frames": 17,
+          "strip": "clay_pot/animations/wobble__east.png",
+          "gif": "clay_pot/animations/wobble__east.gif",
+          "frame_paths": [
+            "clay_pot/animations/wobble/east/00.png",
+            "clay_pot/animations/wobble/east/01.png",
+            "clay_pot/animations/wobble/east/02.png",
+            "clay_pot/animations/wobble/east/03.png",
+            "clay_pot/animations/wobble/east/04.png",
+            "clay_pot/animations/wobble/east/05.png",
+            "clay_pot/animations/wobble/east/06.png",
+            "clay_pot/animations/wobble/east/07.png",
+            "clay_pot/animations/wobble/east/08.png",
+            "clay_pot/animations/wobble/east/09.png",
+            "clay_pot/animations/wobble/east/10.png",
+            "clay_pot/animations/wobble/east/11.png",
+            "clay_pot/animations/wobble/east/12.png",
+            "clay_pot/animations/wobble/east/13.png",
+            "clay_pot/animations/wobble/east/14.png",
+            "clay_pot/animations/wobble/east/15.png",
+            "clay_pot/animations/wobble/east/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 09:31:54 GMT",
+          "src_frames": 17
+        },
+        "north": {
+          "frames": 17,
+          "strip": "clay_pot/animations/wobble__north.png",
+          "gif": "clay_pot/animations/wobble__north.gif",
+          "frame_paths": [
+            "clay_pot/animations/wobble/north/00.png",
+            "clay_pot/animations/wobble/north/01.png",
+            "clay_pot/animations/wobble/north/02.png",
+            "clay_pot/animations/wobble/north/03.png",
+            "clay_pot/animations/wobble/north/04.png",
+            "clay_pot/animations/wobble/north/05.png",
+            "clay_pot/animations/wobble/north/06.png",
+            "clay_pot/animations/wobble/north/07.png",
+            "clay_pot/animations/wobble/north/08.png",
+            "clay_pot/animations/wobble/north/09.png",
+            "clay_pot/animations/wobble/north/10.png",
+            "clay_pot/animations/wobble/north/11.png",
+            "clay_pot/animations/wobble/north/12.png",
+            "clay_pot/animations/wobble/north/13.png",
+            "clay_pot/animations/wobble/north/14.png",
+            "clay_pot/animations/wobble/north/15.png",
+            "clay_pot/animations/wobble/north/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 09:32:02 GMT",
+          "src_frames": 17
+        },
+        "north-east": {
+          "frames": 17,
+          "strip": "clay_pot/animations/wobble__north-east.png",
+          "gif": "clay_pot/animations/wobble__north-east.gif",
+          "frame_paths": [
+            "clay_pot/animations/wobble/north-east/00.png",
+            "clay_pot/animations/wobble/north-east/01.png",
+            "clay_pot/animations/wobble/north-east/02.png",
+            "clay_pot/animations/wobble/north-east/03.png",
+            "clay_pot/animations/wobble/north-east/04.png",
+            "clay_pot/animations/wobble/north-east/05.png",
+            "clay_pot/animations/wobble/north-east/06.png",
+            "clay_pot/animations/wobble/north-east/07.png",
+            "clay_pot/animations/wobble/north-east/08.png",
+            "clay_pot/animations/wobble/north-east/09.png",
+            "clay_pot/animations/wobble/north-east/10.png",
+            "clay_pot/animations/wobble/north-east/11.png",
+            "clay_pot/animations/wobble/north-east/12.png",
+            "clay_pot/animations/wobble/north-east/13.png",
+            "clay_pot/animations/wobble/north-east/14.png",
+            "clay_pot/animations/wobble/north-east/15.png",
+            "clay_pot/animations/wobble/north-east/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 09:32:09 GMT",
+          "src_frames": 17
+        },
+        "north-west": {
+          "frames": 17,
+          "strip": "clay_pot/animations/wobble__north-west.png",
+          "gif": "clay_pot/animations/wobble__north-west.gif",
+          "frame_paths": [
+            "clay_pot/animations/wobble/north-west/00.png",
+            "clay_pot/animations/wobble/north-west/01.png",
+            "clay_pot/animations/wobble/north-west/02.png",
+            "clay_pot/animations/wobble/north-west/03.png",
+            "clay_pot/animations/wobble/north-west/04.png",
+            "clay_pot/animations/wobble/north-west/05.png",
+            "clay_pot/animations/wobble/north-west/06.png",
+            "clay_pot/animations/wobble/north-west/07.png",
+            "clay_pot/animations/wobble/north-west/08.png",
+            "clay_pot/animations/wobble/north-west/09.png",
+            "clay_pot/animations/wobble/north-west/10.png",
+            "clay_pot/animations/wobble/north-west/11.png",
+            "clay_pot/animations/wobble/north-west/12.png",
+            "clay_pot/animations/wobble/north-west/13.png",
+            "clay_pot/animations/wobble/north-west/14.png",
+            "clay_pot/animations/wobble/north-west/15.png",
+            "clay_pot/animations/wobble/north-west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 09:32:16 GMT",
+          "src_frames": 17
+        },
+        "south": {
+          "frames": 17,
+          "strip": "clay_pot/animations/wobble__south.png",
+          "gif": "clay_pot/animations/wobble__south.gif",
+          "frame_paths": [
+            "clay_pot/animations/wobble/south/00.png",
+            "clay_pot/animations/wobble/south/01.png",
+            "clay_pot/animations/wobble/south/02.png",
+            "clay_pot/animations/wobble/south/03.png",
+            "clay_pot/animations/wobble/south/04.png",
+            "clay_pot/animations/wobble/south/05.png",
+            "clay_pot/animations/wobble/south/06.png",
+            "clay_pot/animations/wobble/south/07.png",
+            "clay_pot/animations/wobble/south/08.png",
+            "clay_pot/animations/wobble/south/09.png",
+            "clay_pot/animations/wobble/south/10.png",
+            "clay_pot/animations/wobble/south/11.png",
+            "clay_pot/animations/wobble/south/12.png",
+            "clay_pot/animations/wobble/south/13.png",
+            "clay_pot/animations/wobble/south/14.png",
+            "clay_pot/animations/wobble/south/15.png",
+            "clay_pot/animations/wobble/south/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 09:32:24 GMT",
+          "src_frames": 17
+        },
+        "south-east": {
+          "frames": 17,
+          "strip": "clay_pot/animations/wobble__south-east.png",
+          "gif": "clay_pot/animations/wobble__south-east.gif",
+          "frame_paths": [
+            "clay_pot/animations/wobble/south-east/00.png",
+            "clay_pot/animations/wobble/south-east/01.png",
+            "clay_pot/animations/wobble/south-east/02.png",
+            "clay_pot/animations/wobble/south-east/03.png",
+            "clay_pot/animations/wobble/south-east/04.png",
+            "clay_pot/animations/wobble/south-east/05.png",
+            "clay_pot/animations/wobble/south-east/06.png",
+            "clay_pot/animations/wobble/south-east/07.png",
+            "clay_pot/animations/wobble/south-east/08.png",
+            "clay_pot/animations/wobble/south-east/09.png",
+            "clay_pot/animations/wobble/south-east/10.png",
+            "clay_pot/animations/wobble/south-east/11.png",
+            "clay_pot/animations/wobble/south-east/12.png",
+            "clay_pot/animations/wobble/south-east/13.png",
+            "clay_pot/animations/wobble/south-east/14.png",
+            "clay_pot/animations/wobble/south-east/15.png",
+            "clay_pot/animations/wobble/south-east/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 09:32:31 GMT",
+          "src_frames": 17
+        },
+        "west": {
+          "frames": 17,
+          "strip": "clay_pot/animations/wobble__west.png",
+          "gif": "clay_pot/animations/wobble__west.gif",
+          "frame_paths": [
+            "clay_pot/animations/wobble/west/00.png",
+            "clay_pot/animations/wobble/west/01.png",
+            "clay_pot/animations/wobble/west/02.png",
+            "clay_pot/animations/wobble/west/03.png",
+            "clay_pot/animations/wobble/west/04.png",
+            "clay_pot/animations/wobble/west/05.png",
+            "clay_pot/animations/wobble/west/06.png",
+            "clay_pot/animations/wobble/west/07.png",
+            "clay_pot/animations/wobble/west/08.png",
+            "clay_pot/animations/wobble/west/09.png",
+            "clay_pot/animations/wobble/west/10.png",
+            "clay_pot/animations/wobble/west/11.png",
+            "clay_pot/animations/wobble/west/12.png",
+            "clay_pot/animations/wobble/west/13.png",
+            "clay_pot/animations/wobble/west/14.png",
+            "clay_pot/animations/wobble/west/15.png",
+            "clay_pot/animations/wobble/west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 09:32:38 GMT",
+          "src_frames": 17
         }
       }
     }
   },
-  "status": "complete"
+  "status": "complete",
+  "synced_from_pixellab": true
 }

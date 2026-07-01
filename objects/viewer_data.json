@@ -119,29 +119,30 @@
       "pixellab_object_id": "668782d2-5ff7-4fab-b697-d5e7930229c8",
       "sprite": "clay_pot/sprite.png",
       "rotations": {
+        "south": "clay_pot/rotations/south.png",
+        "west": "clay_pot/rotations/west.png",
         "east": "clay_pot/rotations/east.png",
         "north": "clay_pot/rotations/north.png",
-        "north-east": "clay_pot/rotations/north-east.png",
-        "north-west": "clay_pot/rotations/north-west.png",
-        "south": "clay_pot/rotations/south.png",
         "south-east": "clay_pot/rotations/south-east.png",
         "south-west": "clay_pot/rotations/south-west.png",
-        "west": "clay_pot/rotations/west.png"
+        "north-east": "clay_pot/rotations/north-east.png",
+        "north-west": "clay_pot/rotations/north-west.png"
       },
       "animations": [
         {
-          "key": "wobble",
-          "description": "the pot wobbling",
+          "key": "shatter",
+          "description": "the pot shattering into shards",
           "frames": 17,
-          "preview_gif": "clay_pot/animations/wobble__south.gif",
+          "preview_gif": "clay_pot/animations/shatter__south.gif",
           "directions": {
-            "east": "clay_pot/animations/wobble__east.gif",
-            "north": "clay_pot/animations/wobble__north.gif",
-            "north-east": "clay_pot/animations/wobble__north-east.gif",
-            "north-west": "clay_pot/animations/wobble__north-west.gif",
-            "south": "clay_pot/animations/wobble__south.gif",
-            "south-east": "clay_pot/animations/wobble__south-east.gif",
-            "west": "clay_pot/animations/wobble__west.gif"
+            "east": "clay_pot/animations/shatter__east.gif",
+            "north": "clay_pot/animations/shatter__north.gif",
+            "north-east": "clay_pot/animations/shatter__north-east.gif",
+            "north-west": "clay_pot/animations/shatter__north-west.gif",
+            "south": "clay_pot/animations/shatter__south.gif",
+            "south-east": "clay_pot/animations/shatter__south-east.gif",
+            "south-west": "clay_pot/animations/shatter__south-west.gif",
+            "west": "clay_pot/animations/shatter__west.gif"
           }
         },
         {
@@ -161,19 +162,18 @@
           }
         },
         {
-          "key": "shatter",
-          "description": "the pot shattering into shards",
+          "key": "wobble",
+          "description": "the pot wobbling",
           "frames": 17,
-          "preview_gif": "clay_pot/animations/shatter__south.gif",
+          "preview_gif": "clay_pot/animations/wobble__south.gif",
           "directions": {
-            "east": "clay_pot/animations/shatter__east.gif",
-            "north": "clay_pot/animations/shatter__north.gif",
-            "north-east": "clay_pot/animations/shatter__north-east.gif",
-            "north-west": "clay_pot/animations/shatter__north-west.gif",
-            "south": "clay_pot/animations/shatter__south.gif",
-            "south-east": "clay_pot/animations/shatter__south-east.gif",
-            "south-west": "clay_pot/animations/shatter__south-west.gif",
-            "west": "clay_pot/animations/shatter__west.gif"
+            "east": "clay_pot/animations/wobble__east.gif",
+            "north": "clay_pot/animations/wobble__north.gif",
+            "north-east": "clay_pot/animations/wobble__north-east.gif",
+            "north-west": "clay_pot/animations/wobble__north-west.gif",
+            "south": "clay_pot/animations/wobble__south.gif",
+            "south-east": "clay_pot/animations/wobble__south-east.gif",
+            "west": "clay_pot/animations/wobble__west.gif"
           }
         }
       ]
@@ -196,16 +196,33 @@
       "pixellab_object_id": "49dda035-0eda-4efc-aeba-71d8b3458aba",
       "sprite": "gold_coin/sprite.png",
       "rotations": {
+        "south": "gold_coin/rotations/south.png",
+        "west": "gold_coin/rotations/west.png",
         "east": "gold_coin/rotations/east.png",
         "north": "gold_coin/rotations/north.png",
-        "north-east": "gold_coin/rotations/north-east.png",
-        "north-west": "gold_coin/rotations/north-west.png",
-        "south": "gold_coin/rotations/south.png",
         "south-east": "gold_coin/rotations/south-east.png",
         "south-west": "gold_coin/rotations/south-west.png",
-        "west": "gold_coin/rotations/west.png"
+        "north-east": "gold_coin/rotations/north-east.png",
+        "north-west": "gold_coin/rotations/north-west.png"
       },
-      "animations": []
+      "animations": [
+        {
+          "key": "spin",
+          "description": "the coin spinning around",
+          "frames": 17,
+          "preview_gif": "gold_coin/animations/spin__south.gif",
+          "directions": {
+            "east": "gold_coin/animations/spin__east.gif",
+            "north": "gold_coin/animations/spin__north.gif",
+            "north-east": "gold_coin/animations/spin__north-east.gif",
+            "north-west": "gold_coin/animations/spin__north-west.gif",
+            "south": "gold_coin/animations/spin__south.gif",
+            "south-east": "gold_coin/animations/spin__south-east.gif",
+            "south-west": "gold_coin/animations/spin__south-west.gif",
+            "west": "gold_coin/animations/spin__west.gif"
+          }
+        }
+      ]
     },
     {
       "id": "wooden_chest",
@@ -314,6 +331,22 @@
       },
       "animations": [
         {
+          "key": "break",
+          "description": "the crate smashing into pieces",
+          "frames": 17,
+          "preview_gif": "wooden_crate/animations/break__south.gif",
+          "directions": {
+            "east": "wooden_crate/animations/break__east.gif",
+            "north": "wooden_crate/animations/break__north.gif",
+            "north-east": "wooden_crate/animations/break__north-east.gif",
+            "north-west": "wooden_crate/animations/break__north-west.gif",
+            "south": "wooden_crate/animations/break__south.gif",
+            "south-east": "wooden_crate/animations/break__south-east.gif",
+            "south-west": "wooden_crate/animations/break__south-west.gif",
+            "west": "wooden_crate/animations/break__west.gif"
+          }
+        },
+        {
           "key": "shake",
           "description": "the crate shaking",
           "frames": 17,
@@ -342,22 +375,6 @@
             "south-east": "wooden_crate/animations/open__south-east.gif",
             "south-west": "wooden_crate/animations/open__south-west.gif",
             "west": "wooden_crate/animations/open__west.gif"
-          }
-        },
-        {
-          "key": "break",
-          "description": "the crate smashing into pieces",
-          "frames": 17,
-          "preview_gif": "wooden_crate/animations/break__south.gif",
-          "directions": {
-            "east": "wooden_crate/animations/break__east.gif",
-            "north": "wooden_crate/animations/break__north.gif",
-            "north-east": "wooden_crate/animations/break__north-east.gif",
-            "north-west": "wooden_crate/animations/break__north-west.gif",
-            "south": "wooden_crate/animations/break__south.gif",
-            "south-east": "wooden_crate/animations/break__south-east.gif",
-            "south-west": "wooden_crate/animations/break__south-west.gif",
-            "west": "wooden_crate/animations/break__west.gif"
           }
         }
       ]
