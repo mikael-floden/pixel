@@ -57,11 +57,16 @@ def generate_category(client, cfg, cat):
     """Generate + download one focused tile set. Returns the manifest dict."""
     cid = cat["id"]
     t = cfg["tile"]
+    # Elevation categories may override height/depth to make TALL tiles (cliffs,
+    # walls) on the same footprint; the format is otherwise fixed.
+    depth = cat.get("depth_ratio", t["depth_ratio"])
+    tile_height = cat.get("tile_height")
     tiles = client.create_tiles(
         description=cat["description"],
         tile_size=t["size"], view_angle=t["view_angle"],
-        depth_ratio=t["depth_ratio"], tile_type=t.get("type", "isometric"),
-        flat_top_px=t.get("flat_top_px", 4), seed=_seed(cid))
+        depth_ratio=depth, tile_type=t.get("type", "isometric"),
+        flat_top_px=t.get("flat_top_px", 4), tile_height=tile_height,
+        seed=_seed(cid))
     cdir = category_dir(cid)
     os.makedirs(cdir, exist_ok=True)
     tile_meta = []
@@ -75,7 +80,8 @@ def generate_category(client, cfg, cat):
         "category": cid, "description": cat["description"],
         "tile_type": t.get("type", "isometric"),
         "tile_size": t["size"], "view_angle": t["view_angle"],
-        "depth_ratio": t["depth_ratio"], "flat_top_px": t.get("flat_top_px", 4),
+        "depth_ratio": depth, "flat_top_px": t.get("flat_top_px", 4),
+        "tile_height": tile_height, "kind": cat.get("kind", "ground"),
         "count": len(tile_meta), "tiles": tile_meta,
         "preview": "preview.png",
         "provenance": "pixellab create-tiles-pro (isometric)",

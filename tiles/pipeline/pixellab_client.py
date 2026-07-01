@@ -123,9 +123,12 @@ class PixelLabClient:
 
     def create_tiles(self, description, tile_size=64, view_angle=28.0,
                      depth_ratio=0.5, tile_type="isometric", flat_top_px=4,
-                     seed=None, job_timeout=900):
+                     tile_height=None, seed=None, job_timeout=900):
         """Generate a focused isometric tile SET. Returns [PIL, ...] (one per tile
-        variation the endpoint produces). ~20 generations per call."""
+        variation the endpoint produces). ~20 generations per call.
+
+        `tile_height` (px) makes TALL tiles for elevation (walls/cliffs) — same
+        `tile_size` footprint but a taller sprite (e.g. 64 wide x 128 tall)."""
         payload = {
             "description": description,
             "tile_type": tile_type,
@@ -133,6 +136,8 @@ class PixelLabClient:
             "tile_view_angle": float(view_angle),
             "tile_depth_ratio": float(depth_ratio),
         }
+        if tile_height is not None:
+            payload["tile_height"] = int(tile_height)
         if flat_top_px is not None:
             payload["tile_flat_top_px"] = int(flat_top_px)
         if seed is not None:
