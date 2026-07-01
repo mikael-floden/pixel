@@ -46,6 +46,28 @@
       "manifest": "cave_hollow/zone.json"
     },
     {
+      "id": "isle2_dunes",
+      "title": "Sunward Dunes",
+      "kind": "island_screen",
+      "mood": "tropical beach (bright daytime)",
+      "pixel_size": {
+        "width": 960,
+        "height": 672
+      },
+      "props": 7,
+      "exits": [
+        {
+          "id": "north",
+          "kind": "path",
+          "to_zone": "isle2_jungle"
+        }
+      ],
+      "preview": "isle2_dunes/preview.png",
+      "scene": "isle2_dunes/scene.png",
+      "collision": "isle2_dunes/collision.png",
+      "manifest": "isle2_dunes/zone.json"
+    },
+    {
       "id": "isle_camp",
       "title": "Forest Camp",
       "kind": "island_screen",

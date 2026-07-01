@@ -409,5 +409,66 @@
         }
       ]
     }
-  ]
+  ],
+  "procedural": {
+    "prop_count": 10,
+    "templates": [
+      {
+        "title": "Wild Isle",
+        "kind": "island_screen",
+        "mood": "lush wild island (daytime)",
+        "prompt": "top-down RPG overworld map: a wild grassy island clearing ringed by trees, a winding dirt path, wildflowers, bushes and rocks, gentle daylight",
+        "props": [
+          "oak_tree",
+          "pine_tree",
+          "bush",
+          "rock",
+          "flower",
+          "mushroom",
+          "tree_stump"
+        ]
+      },
+      {
+        "title": "Windswept Shore",
+        "kind": "island_screen",
+        "mood": "windswept beach (daytime)",
+        "prompt": "top-down RPG overworld map: a windswept sandy shore meeting blue water, scattered boulders and driftwood, hardy grass tufts, bright daylight",
+        "props": [
+          "rock",
+          "bush",
+          "barrel",
+          "wooden_crate",
+          "oak_tree"
+        ]
+      },
+      {
+        "title": "Deep Grove",
+        "kind": "island_screen",
+        "mood": "shady grove (daytime)",
+        "prompt": "top-down RPG overworld map: a shady grove of dense trees with a mossy floor, ferns, mushrooms, fallen logs and a faint trail, dappled light",
+        "props": [
+          "oak_tree",
+          "pine_tree",
+          "tree_stump",
+          "bush",
+          "mushroom",
+          "rock"
+        ]
+      },
+      {
+        "title": "Quiet Meadow",
+        "kind": "island_screen",
+        "mood": "quiet flower meadow (daytime)",
+        "prompt": "top-down RPG overworld map: a quiet open meadow of soft grass and wildflowers, a lone tree, a low stone wall and a dirt path, warm daylight",
+        "props": [
+          "flower",
+          "bush",
+          "rock",
+          "oak_tree",
+          "sign_post",
+          "well"
+        ]
+      }
+    ]
+  }
 }
