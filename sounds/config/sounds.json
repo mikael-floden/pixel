@@ -1,0 +1,568 @@
+{
+  "style": "Retro 8-bit / chiptune procedural SFX (sfxr family) for a Grave-Seasons / Stardew-Valley-style pixel RPG. Short, punchy, game-ready one-shots plus a few loops.",
+  "engine": {
+    "default": "procedural",
+    "procedural": {
+      "family": "sfxr",
+      "note": "DrPetter's sfxr synth, ported to pure Python (pipeline/sfxr.py). Deterministic per (preset, seed). Free, offline, no API key."
+    },
+    "ai": {
+      "provider": "elevenlabs",
+      "endpoint": "https://api.elevenlabs.io/v1/sound-generation",
+      "model_id": "eleven_text_to_sound_v2",
+      "output_format": "mp3_44100_128",
+      "prompt_influence": 0.4,
+      "api_key_env": "ELEVENLABS_API_KEY",
+      "note": "Optional realistic/foley upgrade. Used automatically when ELEVENLABS_API_KEY is set (or --engine ai). Costs credits; gated by budget.min_ai_credits_remaining."
+    }
+  },
+  "audio": {
+    "sample_rate": 44100,
+    "peak_normalize": 0.9
+  },
+  "budget": {
+    "min_ai_credits_remaining": 1000
+  },
+  "defaults": {
+    "loop": false,
+    "prompt_influence": 0.4
+  },
+  "catalog": [
+    {
+      "id": "coin_pickup",
+      "name": "Coin Pickup",
+      "category": "ui",
+      "description": "a bright, short metallic jingle played when the player picks up a gold coin",
+      "tags": [
+        "coin",
+        "pickup",
+        "money",
+        "reward",
+        "collect"
+      ],
+      "preset": "pickupCoin",
+      "ai_prompt": "short bright metallic coin pickup chime, single coin, clean retro game UI sound",
+      "duration_hint": 0.5,
+      "usage": "Play on gold_coin / gold_ingot pickup and shop sales."
+    },
+    {
+      "id": "gem_pickup",
+      "name": "Gem Pickup",
+      "category": "ui",
+      "description": "a sparkly ascending chime for collecting a gem or valuable",
+      "tags": [
+        "gem",
+        "ruby",
+        "pickup",
+        "sparkle",
+        "valuable"
+      ],
+      "preset": "pickupCoin",
+      "ai_prompt": "sparkly crystalline pickup chime, ascending, collecting a shiny gem, retro game",
+      "duration_hint": 0.6,
+      "usage": "Play on gem_ruby and other high-value pickups."
+    },
+    {
+      "id": "item_get",
+      "name": "Item Get",
+      "category": "ui",
+      "description": "a cheerful little fanfare for receiving a new item into the inventory",
+      "tags": [
+        "item",
+        "get",
+        "inventory",
+        "reward",
+        "fanfare"
+      ],
+      "preset": "powerUp",
+      "ai_prompt": "short triumphant item-get jingle, receiving a new item, cheerful retro RPG",
+      "duration_hint": 0.9,
+      "usage": "Play when a tool or item enters the inventory."
+    },
+    {
+      "id": "menu_select",
+      "name": "Menu Select",
+      "category": "ui",
+      "description": "a soft neutral blip when moving the cursor between menu options",
+      "tags": [
+        "menu",
+        "cursor",
+        "navigate",
+        "blip",
+        "ui"
+      ],
+      "preset": "blipSelect",
+      "ai_prompt": "soft short UI blip, menu cursor move, neutral retro game interface",
+      "duration_hint": 0.12,
+      "usage": "Cursor movement in menus and dialogs."
+    },
+    {
+      "id": "menu_confirm",
+      "name": "Menu Confirm",
+      "category": "ui",
+      "description": "a bright positive blip confirming a menu choice",
+      "tags": [
+        "menu",
+        "confirm",
+        "accept",
+        "ok",
+        "ui"
+      ],
+      "preset": "blipSelect",
+      "ai_prompt": "bright positive confirmation blip, accept menu choice, retro game UI",
+      "duration_hint": 0.15,
+      "usage": "Confirming/accepting a selection."
+    },
+    {
+      "id": "menu_cancel",
+      "name": "Menu Cancel",
+      "category": "ui",
+      "description": "a low descending blip for backing out or cancelling",
+      "tags": [
+        "menu",
+        "cancel",
+        "back",
+        "close",
+        "ui"
+      ],
+      "preset": "blipSelect",
+      "ai_prompt": "low descending cancel blip, back out of menu, retro game UI",
+      "duration_hint": 0.15,
+      "usage": "Cancel / back / close a menu."
+    },
+    {
+      "id": "error_buzz",
+      "name": "Error Buzz",
+      "category": "ui",
+      "description": "a short harsh buzz signalling an invalid or blocked action",
+      "tags": [
+        "error",
+        "invalid",
+        "denied",
+        "buzz",
+        "ui"
+      ],
+      "preset": "hitHurt",
+      "ai_prompt": "short harsh error buzz, invalid action denied, retro game UI",
+      "duration_hint": 0.2,
+      "usage": "Invalid action, not enough money, blocked placement."
+    },
+    {
+      "id": "notification",
+      "name": "Notification",
+      "category": "ui",
+      "description": "a gentle two-note tone announcing a notification or new message",
+      "tags": [
+        "notify",
+        "message",
+        "alert",
+        "chat",
+        "ui"
+      ],
+      "preset": "tone",
+      "ai_prompt": "gentle pleasant notification tone, new message alert, soft retro game",
+      "duration_hint": 0.4,
+      "usage": "New chat message / quest notification."
+    },
+    {
+      "id": "chest_open",
+      "name": "Chest Open",
+      "category": "item",
+      "description": "a rising creak-and-clunk as a wooden chest is opened",
+      "tags": [
+        "chest",
+        "open",
+        "container",
+        "treasure",
+        "creak"
+      ],
+      "preset": "powerUp",
+      "ai_prompt": "wooden treasure chest opening, creak and latch clunk, then soft shimmer, retro game",
+      "duration_hint": 0.8,
+      "usage": "Opening wooden_chest / containers."
+    },
+    {
+      "id": "chest_close",
+      "name": "Chest Close",
+      "category": "item",
+      "description": "a short wooden thud as a chest lid closes",
+      "tags": [
+        "chest",
+        "close",
+        "container",
+        "thud",
+        "wood"
+      ],
+      "preset": "hitHurt",
+      "ai_prompt": "wooden chest lid closing, short muffled wooden thud, retro game",
+      "duration_hint": 0.3,
+      "usage": "Closing wooden_chest / containers."
+    },
+    {
+      "id": "key_unlock",
+      "name": "Key Unlock",
+      "category": "item",
+      "description": "a metallic click-clunk of a key turning in a lock",
+      "tags": [
+        "key",
+        "unlock",
+        "lock",
+        "door",
+        "metal"
+      ],
+      "preset": "blipSelect",
+      "ai_prompt": "metallic key turning in a lock, click and clunk, unlocking a door, retro game",
+      "duration_hint": 0.4,
+      "usage": "Using iron_key / unlocking a door or chest."
+    },
+    {
+      "id": "drink_potion",
+      "name": "Drink Potion",
+      "category": "item",
+      "description": "a bubbly gulp-and-sparkle of drinking a potion",
+      "tags": [
+        "potion",
+        "drink",
+        "heal",
+        "quaff",
+        "bubbly"
+      ],
+      "preset": "powerUp",
+      "ai_prompt": "drinking a magic potion, bubbly gulp then healing sparkle, retro game",
+      "duration_hint": 0.7,
+      "usage": "Consuming a potion / healing item."
+    },
+    {
+      "id": "eat_food",
+      "name": "Eat Food",
+      "category": "item",
+      "description": "a soft munch-and-satisfied blip of eating food",
+      "tags": [
+        "food",
+        "eat",
+        "munch",
+        "restore",
+        "bite"
+      ],
+      "preset": "blipSelect",
+      "ai_prompt": "eating food, soft munch and a small satisfied chime, retro game",
+      "duration_hint": 0.4,
+      "usage": "Eating a food item to restore energy."
+    },
+    {
+      "id": "sword_swing",
+      "name": "Sword Swing",
+      "category": "tool",
+      "description": "a quick whoosh of a sword swung through the air",
+      "tags": [
+        "sword",
+        "swing",
+        "whoosh",
+        "attack",
+        "weapon"
+      ],
+      "preset": "laserShoot",
+      "ai_prompt": "quick sword swing whoosh through the air, no impact, retro game combat",
+      "duration_hint": 0.3,
+      "usage": "Swinging the sword (miss / wind-up)."
+    },
+    {
+      "id": "sword_hit",
+      "name": "Sword Hit",
+      "category": "tool",
+      "description": "a sharp metallic clang of a sword striking a target",
+      "tags": [
+        "sword",
+        "hit",
+        "clang",
+        "impact",
+        "weapon"
+      ],
+      "preset": "hitHurt",
+      "ai_prompt": "sharp metallic sword impact, blade hitting armor, short clang, retro game",
+      "duration_hint": 0.25,
+      "usage": "Sword connecting with an enemy or object."
+    },
+    {
+      "id": "axe_chop",
+      "name": "Axe Chop",
+      "category": "tool",
+      "description": "a heavy wooden thock of an axe biting into a tree",
+      "tags": [
+        "axe",
+        "chop",
+        "wood",
+        "tree",
+        "impact"
+      ],
+      "preset": "hitHurt",
+      "ai_prompt": "axe chopping wood, heavy wooden thock, chopping a tree, retro game",
+      "duration_hint": 0.3,
+      "usage": "Chopping oak_tree / pine_tree with the axe."
+    },
+    {
+      "id": "pickaxe_hit",
+      "name": "Pickaxe Hit",
+      "category": "tool",
+      "description": "a sharp stony crack of a pickaxe striking rock",
+      "tags": [
+        "pickaxe",
+        "mine",
+        "rock",
+        "stone",
+        "impact"
+      ],
+      "preset": "hitHurt",
+      "ai_prompt": "pickaxe striking stone, sharp rocky crack and chip, mining ore, retro game",
+      "duration_hint": 0.3,
+      "usage": "Mining rock / ore with the pickaxe."
+    },
+    {
+      "id": "hoe_till",
+      "name": "Hoe Till",
+      "category": "tool",
+      "description": "a gritty dig of a hoe breaking soil",
+      "tags": [
+        "hoe",
+        "till",
+        "soil",
+        "dirt",
+        "farm"
+      ],
+      "preset": "explosion",
+      "ai_prompt": "hoe tilling soil, short gritty dirt dig, breaking ground on a farm, retro game",
+      "duration_hint": 0.35,
+      "usage": "Tilling a soil tile with the hoe."
+    },
+    {
+      "id": "watering_can",
+      "name": "Watering Can",
+      "category": "tool",
+      "description": "a soft splash of water poured from a watering can",
+      "tags": [
+        "water",
+        "watering",
+        "splash",
+        "farm",
+        "crops"
+      ],
+      "preset": "explosion",
+      "ai_prompt": "watering can pouring water onto soil, gentle sprinkling splash, retro farming game",
+      "duration_hint": 0.5,
+      "usage": "Watering crops with the watering can."
+    },
+    {
+      "id": "footstep_grass",
+      "name": "Footstep (Grass)",
+      "category": "movement",
+      "description": "a soft muffled step on grass",
+      "tags": [
+        "footstep",
+        "walk",
+        "grass",
+        "movement",
+        "soft"
+      ],
+      "preset": "hitHurt",
+      "params": {
+        "wave_type": 3,
+        "p_env_sustain": 0.0,
+        "p_env_decay": 0.12,
+        "p_base_freq": 0.25,
+        "p_lpf_freq": 0.35,
+        "sound_vol": 0.35
+      },
+      "ai_prompt": "single soft muffled footstep on grass, walking, retro game foley",
+      "duration_hint": 0.12,
+      "usage": "Per-step while walking on grass/foliage tiles.",
+      "min_duration": 0.03
+    },
+    {
+      "id": "footstep_stone",
+      "name": "Footstep (Stone)",
+      "category": "movement",
+      "description": "a crisp tap of a step on stone or pavement",
+      "tags": [
+        "footstep",
+        "walk",
+        "stone",
+        "movement",
+        "tap"
+      ],
+      "preset": "hitHurt",
+      "params": {
+        "wave_type": 3,
+        "p_env_sustain": 0.0,
+        "p_env_decay": 0.1,
+        "p_base_freq": 0.4,
+        "p_hpf_freq": 0.15,
+        "sound_vol": 0.35
+      },
+      "ai_prompt": "single crisp footstep on stone pavement, walking, retro game foley",
+      "duration_hint": 0.1,
+      "usage": "Per-step while walking on stone/path tiles.",
+      "min_duration": 0.03
+    },
+    {
+      "id": "footstep_wood",
+      "name": "Footstep (Wood)",
+      "category": "movement",
+      "description": "a hollow knock of a step on a wooden floor",
+      "tags": [
+        "footstep",
+        "walk",
+        "wood",
+        "movement",
+        "hollow"
+      ],
+      "preset": "hitHurt",
+      "params": {
+        "wave_type": 3,
+        "p_env_sustain": 0.0,
+        "p_env_decay": 0.13,
+        "p_base_freq": 0.3,
+        "p_lpf_freq": 0.5,
+        "sound_vol": 0.35
+      },
+      "ai_prompt": "single hollow footstep on a wooden floor, walking, retro game foley",
+      "duration_hint": 0.12,
+      "usage": "Per-step while walking on wood/bridge tiles.",
+      "min_duration": 0.03
+    },
+    {
+      "id": "jump",
+      "name": "Jump",
+      "category": "movement",
+      "description": "a short upward blip as the character hops",
+      "tags": [
+        "jump",
+        "hop",
+        "movement",
+        "blip"
+      ],
+      "preset": "jump",
+      "ai_prompt": "short upward jump hop blip, character jumping, retro platformer game",
+      "duration_hint": 0.25,
+      "usage": "Character jump / hop."
+    },
+    {
+      "id": "splash",
+      "name": "Water Splash",
+      "category": "movement",
+      "description": "a wet splash of stepping or falling into water",
+      "tags": [
+        "water",
+        "splash",
+        "swim",
+        "wet",
+        "movement"
+      ],
+      "preset": "explosion",
+      "ai_prompt": "water splash, stepping or falling into water, single wet splash, retro game",
+      "duration_hint": 0.5,
+      "usage": "Entering water / fishing bobber landing."
+    },
+    {
+      "id": "hit_hurt",
+      "name": "Take Damage",
+      "category": "combat",
+      "description": "a short pained grunt-blip when the player takes damage",
+      "tags": [
+        "damage",
+        "hurt",
+        "hit",
+        "pain",
+        "combat"
+      ],
+      "preset": "hitHurt",
+      "ai_prompt": "player takes damage, short pained hit blip, retro game combat",
+      "duration_hint": 0.25,
+      "usage": "Player / entity takes damage."
+    },
+    {
+      "id": "enemy_defeat",
+      "name": "Enemy Defeat",
+      "category": "combat",
+      "description": "a descending puff as an enemy is defeated and vanishes",
+      "tags": [
+        "enemy",
+        "defeat",
+        "die",
+        "poof",
+        "combat"
+      ],
+      "preset": "explosion",
+      "ai_prompt": "enemy defeated, short descending poof and vanish, retro game combat",
+      "duration_hint": 0.5,
+      "usage": "Enemy defeated / despawns."
+    },
+    {
+      "id": "explosion",
+      "name": "Explosion",
+      "category": "combat",
+      "description": "a punchy boom for bombs and destructible objects",
+      "tags": [
+        "explosion",
+        "boom",
+        "bomb",
+        "blast",
+        "destroy"
+      ],
+      "preset": "explosion",
+      "ai_prompt": "punchy retro game explosion, bomb blast, destroying an object, 8-bit boom",
+      "duration_hint": 0.7,
+      "usage": "Bombs, barrels, destructibles breaking."
+    },
+    {
+      "id": "magic_cast",
+      "name": "Magic Cast",
+      "category": "combat",
+      "description": "a shimmering rising sweep of casting a spell",
+      "tags": [
+        "magic",
+        "spell",
+        "cast",
+        "shimmer",
+        "sweep"
+      ],
+      "preset": "powerUp",
+      "ai_prompt": "casting a magic spell, shimmering rising energy sweep, retro fantasy game",
+      "duration_hint": 0.7,
+      "usage": "Casting a spell / using magic."
+    },
+    {
+      "id": "level_up",
+      "name": "Level Up",
+      "category": "feedback",
+      "description": "a bright ascending fanfare for gaining a level",
+      "tags": [
+        "level",
+        "up",
+        "fanfare",
+        "progress",
+        "reward"
+      ],
+      "preset": "powerUp",
+      "ai_prompt": "level up fanfare, bright ascending arpeggio, character progression, retro RPG",
+      "duration_hint": 1.0,
+      "usage": "Player gains a level / skill increases."
+    },
+    {
+      "id": "quest_complete",
+      "name": "Quest Complete",
+      "category": "feedback",
+      "description": "a triumphant little jingle marking a completed quest",
+      "tags": [
+        "quest",
+        "complete",
+        "success",
+        "jingle",
+        "reward"
+      ],
+      "preset": "powerUp",
+      "ai_prompt": "quest complete jingle, triumphant short success fanfare, retro RPG",
+      "duration_hint": 1.0,
+      "usage": "Completing a quest / objective."
+    }
+  ]
+}

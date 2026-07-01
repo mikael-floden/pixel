@@ -1,0 +1,58 @@
+name: Pixel sound-effects loop
+
+# Autonomous generation loop for the sounds/ domain. Runs on a schedule (and on
+# demand), advances the factory by a bounded chunk, and the loop itself commits +
+# pushes each unit. Unlike the art domains this needs NO secret: the default
+# engine is a free, offline procedural synth (sfxr). If an ELEVENLABS_API_KEY
+# secret is present the loop automatically upgrades to AI text-to-SFX foley.
+
+on:
+  schedule:
+    - cron: "40 * * * *"        # hourly, offset from the other domains
+  workflow_dispatch:
+    inputs:
+      max_minutes:
+        description: "Minutes to run this pass"
+        default: "50"
+      engine:
+        description: "auto | procedural | ai"
+        default: "auto"
+
+# Allow the job (and the loop's git push) to write to the repo.
+permissions:
+  contents: write
+
+# Never let two sound passes run at once (scheduled + manual). Distinct group
+# from the other domains, so everything runs in parallel (disjoint paths).
+concurrency:
+  group: sounds-loop
+  cancel-in-progress: false
+
+jobs:
+  loop:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run the sounds loop
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: |
+          git config user.name "pixel-sounds-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          python sounds/pipeline/loop.py \
+            --max-minutes "${{ github.event.inputs.max_minutes || '50' }}" \
+            --engine "${{ github.event.inputs.engine || 'auto' }}"
