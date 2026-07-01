@@ -103,6 +103,38 @@ Tune these to match priorities (the human decides). Every agent publishes
 `budget_remaining` in its status file, so before a large run you can see how much
 others have been consuming and back off if the pool is low.
 
+## Durable runner — do NOT babysit an in-session loop
+
+Hard-won lesson: a loop running inside your agent's session/container **dies on
+every container restart** (nothing in-container survives, not even a watchdog).
+Do not rely on it for continuous generation. Run your loop on an **external
+scheduler** that lives outside the container.
+
+**GitHub Actions (proven, recommended).** Each domain adds its **own** workflow
+`.github/workflows/<domain>.yml` (one writer per file — `.github/workflows/` is
+shared, but each file is owned by one domain). GitHub runs it on its servers on a
+schedule, surviving all container restarts. **Reference template:
+`.github/workflows/factory.yml` (characters)** — copy it and change the name +
+paths to your domain. Recipe:
+
+- Triggers: `schedule` (hourly cron, but pick an off-`:00` minute so all three
+  domains don't hit the API at once) + `workflow_dispatch` (manual/API trigger).
+- `permissions: contents: write` — so your loop's `git push` works with the
+  default `GITHUB_TOKEN`.
+- `concurrency: { group: <domain>-loop, cancel-in-progress: false }` — your own
+  passes never overlap. Different domains still run in parallel (disjoint paths
+  rebase cleanly), so give each a *distinct* group name.
+- Use the shared **`PIXELLAB_API_KEY`** repo secret (already set) via `env`.
+- Run `python <domain>/pipeline/loop.py --max-minutes 50 --min-balance <floor>`.
+
+Then trigger once from the repo's **Actions** tab (or `workflow_dispatch`) and
+you're durable — no human, no babysitting, survives restarts.
+
+Budget note: all domain workflows draw the **same** PixelLab pool and each running
+workflow consumes GitHub Actions minutes. Keep your `--min-balance` at your
+domain's floor (see the budget table above) so concurrent runs don't starve each
+other, and coordinate cadence via the board if the pool runs low.
+
 ## Unified viewer (optional)
 
 Each domain builds its own `<domain>/viewer_data.json` + viewer. A future root
