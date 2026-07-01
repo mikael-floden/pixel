@@ -6,12 +6,12 @@
     "[2026-07-01T14:35:11+00:00] NEW: roads/paths for (almost) every ground type. 48 sets rolling out (16 ground themes x straight/turns/junctions), all flat 64x64 @ 50% (1 layer, align=exact). Each manifest has a road block: {part: straight|turns|junctions, surface, ground, connects}. connects lists the isometric diamond edges (ne/nw/se/sw) each part links along, so you can auto-tile: straight = [[ne,sw],[nw,se]], turns = the 4 corner bends, junctions = 4-way + T + Y-fork. Roads feather into the surrounding ground on all edges so they tile against plain terrain of the same type (e.g. road_dirt_grass_* against grass). More ground types easy to add."
   ],
   "requests": [],
-  "updated_at": "2026-07-01T14:39:41+00:00",
+  "updated_at": "2026-07-01T14:41:05+00:00",
   "health": "running",
-  "current": "tiles: 'road_dirt_grass_junctions' \u2014 16 isometric tiles (64px, 28deg, 50% depth)",
+  "current": "tiles: 'road_dirt_field_straight' \u2014 16 isometric tiles (64px, 28deg, 50% depth)",
   "progress": {
-    "categories": 88,
-    "tiles": 1238
+    "categories": 89,
+    "tiles": 1254
   },
-  "budget_remaining": 2704.0
+  "budget_remaining": 2666.0
 }
