@@ -1,10 +1,10 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 7,
+  "object_count": 8,
   "target_count": 40,
   "categories": {
     "container": 4,
-    "valuable": 3
+    "valuable": 4
   },
   "objects": [
     {
@@ -100,6 +100,21 @@
       ],
       "status": "complete",
       "sprite": "gold_ingot/sprite.png",
+      "rotation_files": {},
+      "animations": []
+    },
+    {
+      "id": "iron_key",
+      "name": "Iron Key",
+      "category": "valuable",
+      "description": "an ornate old iron key with a looped bow",
+      "view": "low top-down",
+      "size": [
+        64,
+        64
+      ],
+      "status": "in_progress",
+      "sprite": "iron_key/sprite.png",
       "rotation_files": {},
       "animations": []
     },
