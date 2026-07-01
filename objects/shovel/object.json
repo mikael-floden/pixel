@@ -236,6 +236,205 @@
           ]
         }
       }
+    },
+    "bob": {
+      "group_id": "2ddfe618-ba72-4415-9668-e0945c90571d",
+      "description": "the shovel bobbing",
+      "frame_count": 16,
+      "directions": {
+        "east": {
+          "frames": 17,
+          "strip": "shovel/animations/bob__east.png",
+          "gif": "shovel/animations/bob__east.gif",
+          "frame_paths": [
+            "shovel/animations/bob/east/00.png",
+            "shovel/animations/bob/east/01.png",
+            "shovel/animations/bob/east/02.png",
+            "shovel/animations/bob/east/03.png",
+            "shovel/animations/bob/east/04.png",
+            "shovel/animations/bob/east/05.png",
+            "shovel/animations/bob/east/06.png",
+            "shovel/animations/bob/east/07.png",
+            "shovel/animations/bob/east/08.png",
+            "shovel/animations/bob/east/09.png",
+            "shovel/animations/bob/east/10.png",
+            "shovel/animations/bob/east/11.png",
+            "shovel/animations/bob/east/12.png",
+            "shovel/animations/bob/east/13.png",
+            "shovel/animations/bob/east/14.png",
+            "shovel/animations/bob/east/15.png",
+            "shovel/animations/bob/east/16.png"
+          ]
+        },
+        "north": {
+          "frames": 17,
+          "strip": "shovel/animations/bob__north.png",
+          "gif": "shovel/animations/bob__north.gif",
+          "frame_paths": [
+            "shovel/animations/bob/north/00.png",
+            "shovel/animations/bob/north/01.png",
+            "shovel/animations/bob/north/02.png",
+            "shovel/animations/bob/north/03.png",
+            "shovel/animations/bob/north/04.png",
+            "shovel/animations/bob/north/05.png",
+            "shovel/animations/bob/north/06.png",
+            "shovel/animations/bob/north/07.png",
+            "shovel/animations/bob/north/08.png",
+            "shovel/animations/bob/north/09.png",
+            "shovel/animations/bob/north/10.png",
+            "shovel/animations/bob/north/11.png",
+            "shovel/animations/bob/north/12.png",
+            "shovel/animations/bob/north/13.png",
+            "shovel/animations/bob/north/14.png",
+            "shovel/animations/bob/north/15.png",
+            "shovel/animations/bob/north/16.png"
+          ]
+        },
+        "north-east": {
+          "frames": 17,
+          "strip": "shovel/animations/bob__north-east.png",
+          "gif": "shovel/animations/bob__north-east.gif",
+          "frame_paths": [
+            "shovel/animations/bob/north-east/00.png",
+            "shovel/animations/bob/north-east/01.png",
+            "shovel/animations/bob/north-east/02.png",
+            "shovel/animations/bob/north-east/03.png",
+            "shovel/animations/bob/north-east/04.png",
+            "shovel/animations/bob/north-east/05.png",
+            "shovel/animations/bob/north-east/06.png",
+            "shovel/animations/bob/north-east/07.png",
+            "shovel/animations/bob/north-east/08.png",
+            "shovel/animations/bob/north-east/09.png",
+            "shovel/animations/bob/north-east/10.png",
+            "shovel/animations/bob/north-east/11.png",
+            "shovel/animations/bob/north-east/12.png",
+            "shovel/animations/bob/north-east/13.png",
+            "shovel/animations/bob/north-east/14.png",
+            "shovel/animations/bob/north-east/15.png",
+            "shovel/animations/bob/north-east/16.png"
+          ]
+        },
+        "north-west": {
+          "frames": 17,
+          "strip": "shovel/animations/bob__north-west.png",
+          "gif": "shovel/animations/bob__north-west.gif",
+          "frame_paths": [
+            "shovel/animations/bob/north-west/00.png",
+            "shovel/animations/bob/north-west/01.png",
+            "shovel/animations/bob/north-west/02.png",
+            "shovel/animations/bob/north-west/03.png",
+            "shovel/animations/bob/north-west/04.png",
+            "shovel/animations/bob/north-west/05.png",
+            "shovel/animations/bob/north-west/06.png",
+            "shovel/animations/bob/north-west/07.png",
+            "shovel/animations/bob/north-west/08.png",
+            "shovel/animations/bob/north-west/09.png",
+            "shovel/animations/bob/north-west/10.png",
+            "shovel/animations/bob/north-west/11.png",
+            "shovel/animations/bob/north-west/12.png",
+            "shovel/animations/bob/north-west/13.png",
+            "shovel/animations/bob/north-west/14.png",
+            "shovel/animations/bob/north-west/15.png",
+            "shovel/animations/bob/north-west/16.png"
+          ]
+        },
+        "south": {
+          "frames": 17,
+          "strip": "shovel/animations/bob__south.png",
+          "gif": "shovel/animations/bob__south.gif",
+          "frame_paths": [
+            "shovel/animations/bob/south/00.png",
+            "shovel/animations/bob/south/01.png",
+            "shovel/animations/bob/south/02.png",
+            "shovel/animations/bob/south/03.png",
+            "shovel/animations/bob/south/04.png",
+            "shovel/animations/bob/south/05.png",
+            "shovel/animations/bob/south/06.png",
+            "shovel/animations/bob/south/07.png",
+            "shovel/animations/bob/south/08.png",
+            "shovel/animations/bob/south/09.png",
+            "shovel/animations/bob/south/10.png",
+            "shovel/animations/bob/south/11.png",
+            "shovel/animations/bob/south/12.png",
+            "shovel/animations/bob/south/13.png",
+            "shovel/animations/bob/south/14.png",
+            "shovel/animations/bob/south/15.png",
+            "shovel/animations/bob/south/16.png"
+          ]
+        },
+        "south-east": {
+          "frames": 17,
+          "strip": "shovel/animations/bob__south-east.png",
+          "gif": "shovel/animations/bob__south-east.gif",
+          "frame_paths": [
+            "shovel/animations/bob/south-east/00.png",
+            "shovel/animations/bob/south-east/01.png",
+            "shovel/animations/bob/south-east/02.png",
+            "shovel/animations/bob/south-east/03.png",
+            "shovel/animations/bob/south-east/04.png",
+            "shovel/animations/bob/south-east/05.png",
+            "shovel/animations/bob/south-east/06.png",
+            "shovel/animations/bob/south-east/07.png",
+            "shovel/animations/bob/south-east/08.png",
+            "shovel/animations/bob/south-east/09.png",
+            "shovel/animations/bob/south-east/10.png",
+            "shovel/animations/bob/south-east/11.png",
+            "shovel/animations/bob/south-east/12.png",
+            "shovel/animations/bob/south-east/13.png",
+            "shovel/animations/bob/south-east/14.png",
+            "shovel/animations/bob/south-east/15.png",
+            "shovel/animations/bob/south-east/16.png"
+          ]
+        },
+        "south-west": {
+          "frames": 17,
+          "strip": "shovel/animations/bob__south-west.png",
+          "gif": "shovel/animations/bob__south-west.gif",
+          "frame_paths": [
+            "shovel/animations/bob/south-west/00.png",
+            "shovel/animations/bob/south-west/01.png",
+            "shovel/animations/bob/south-west/02.png",
+            "shovel/animations/bob/south-west/03.png",
+            "shovel/animations/bob/south-west/04.png",
+            "shovel/animations/bob/south-west/05.png",
+            "shovel/animations/bob/south-west/06.png",
+            "shovel/animations/bob/south-west/07.png",
+            "shovel/animations/bob/south-west/08.png",
+            "shovel/animations/bob/south-west/09.png",
+            "shovel/animations/bob/south-west/10.png",
+            "shovel/animations/bob/south-west/11.png",
+            "shovel/animations/bob/south-west/12.png",
+            "shovel/animations/bob/south-west/13.png",
+            "shovel/animations/bob/south-west/14.png",
+            "shovel/animations/bob/south-west/15.png",
+            "shovel/animations/bob/south-west/16.png"
+          ]
+        },
+        "west": {
+          "frames": 17,
+          "strip": "shovel/animations/bob__west.png",
+          "gif": "shovel/animations/bob__west.gif",
+          "frame_paths": [
+            "shovel/animations/bob/west/00.png",
+            "shovel/animations/bob/west/01.png",
+            "shovel/animations/bob/west/02.png",
+            "shovel/animations/bob/west/03.png",
+            "shovel/animations/bob/west/04.png",
+            "shovel/animations/bob/west/05.png",
+            "shovel/animations/bob/west/06.png",
+            "shovel/animations/bob/west/07.png",
+            "shovel/animations/bob/west/08.png",
+            "shovel/animations/bob/west/09.png",
+            "shovel/animations/bob/west/10.png",
+            "shovel/animations/bob/west/11.png",
+            "shovel/animations/bob/west/12.png",
+            "shovel/animations/bob/west/13.png",
+            "shovel/animations/bob/west/14.png",
+            "shovel/animations/bob/west/15.png",
+            "shovel/animations/bob/west/16.png"
+          ]
+        }
+      }
     }
   },
   "status": "in_progress"

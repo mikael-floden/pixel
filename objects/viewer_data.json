@@ -532,6 +532,22 @@
             "south-west": "shovel/animations/dig__south-west.gif",
             "west": "shovel/animations/dig__west.gif"
           }
+        },
+        {
+          "key": "bob",
+          "description": "the shovel bobbing",
+          "frames": 17,
+          "preview_gif": "shovel/animations/bob__south.gif",
+          "directions": {
+            "east": "shovel/animations/bob__east.gif",
+            "north": "shovel/animations/bob__north.gif",
+            "north-east": "shovel/animations/bob__north-east.gif",
+            "north-west": "shovel/animations/bob__north-west.gif",
+            "south": "shovel/animations/bob__south.gif",
+            "south-east": "shovel/animations/bob__south-east.gif",
+            "south-west": "shovel/animations/bob__south-west.gif",
+            "west": "shovel/animations/bob__west.gif"
+          }
         }
       ]
     },
