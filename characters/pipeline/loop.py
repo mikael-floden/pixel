@@ -128,10 +128,23 @@ def commit_push(message, push=True):
 
 # --- planning ---------------------------------------------------------------
 
-def _has_anim(ch, did, akey):
+def _anim_complete(cfg, sk, ch, did, akey):
+    """An animation is complete only if it covers every required direction with a
+    consistent, non-zero frame count. Missing/empty/uneven ones are treated as
+    NOT done, so the loop re-runs them (self-healing) instead of leaving a broken
+    animation forever just because its name exists in the manifest."""
     have = (ch.get("animations", {}) if did == "undressed"
             else ch.get("outfits", {}).get(did, {}).get("animations", {}))
-    return akey in have
+    saved = have.get(akey)
+    if not saved:
+        return False
+    required = set(factory.animation_directions(cfg, sk, ch))
+    if not required.issubset(saved.keys()):
+        return False
+    counts = [v.get("frames", 0) for v in saved.values()]
+    if not counts or min(counts) == 0 or max(counts) - min(counts) > 1:
+        return False
+    return True
 
 
 def fill_next(cfg, sk, n_chars):
@@ -165,7 +178,7 @@ def fill_next(cfg, sk, n_chars):
     for did in dresses:
         for akey in anims:
             for ch in chars:
-                if not _has_anim(ch, did, akey):
+                if not _anim_complete(cfg, sk, ch, did, akey):
                     return ("animate", sid, sk, ch,
                             None if did == "undressed" else did,
                             factory.anim_def(cfg, akey))

@@ -484,6 +484,26 @@ def _animate_into(client, adef, dirs, anim_out_dir, pixellab_id, canvas):
         if missing:
             print(f"  !! '{key}' still missing directions after retry: {missing} "
                   f"(animation incomplete)")
+
+    # Consistency repair: every direction must have the SAME frame count, else the
+    # animation plays at different lengths per facing (janky / "broken"). Adopt or
+    # generation can leave an odd direction (e.g. 9 frames vs 16); regenerate just
+    # those outliers to match the majority.
+    if len(frames_by_dir) >= 3:
+        counts = [len(f) for f in frames_by_dir.values()]
+        mode = max(set(counts), key=counts.count)
+        outliers = [d for d, f in frames_by_dir.items() if len(f) != mode]
+        if outliers and len(outliers) < len(frames_by_dir):
+            print(f"  ~ repairing '{key}' outlier direction(s) {outliers} "
+                  f"(frame count != {mode})")
+            regen = client.animate(
+                character_id=pixellab_id, animation_name=key,
+                action_description=adef["action"], frame_count=MAX_FRAMES,
+                directions=outliers, template_animation_id=adef.get("template"))
+            for d, f in regen.items():
+                if f:
+                    frames_by_dir[d] = f
+
     saved = {}
     for direction, frames in frames_by_dir.items():
         frames = strip_kept_idle_frame(frames)
