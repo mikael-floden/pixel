@@ -1,0 +1,63 @@
+{
+  "manifest_version": 1,
+  "id": "coin_pickup",
+  "name": "Coin Pickup",
+  "category": "ui",
+  "description": "a bright, short metallic jingle played when the player picks up a gold coin",
+  "tags": [
+    "coin",
+    "pickup",
+    "money",
+    "reward",
+    "collect"
+  ],
+  "usage": "Play on gold_coin / gold_ingot pickup and shop sales.",
+  "loop": false,
+  "engine": "procedural",
+  "license": "CC0-1.0",
+  "status": "complete",
+  "file": "ui/coin_pickup/coin_pickup.wav",
+  "format": "wav",
+  "audio": {
+    "samples": 16063,
+    "duration_seconds": 0.364,
+    "sample_rate": 44100,
+    "channels": 1,
+    "bit_depth": 16,
+    "peak_normalized_to": 0.9
+  },
+  "procedural": {
+    "family": "sfxr",
+    "preset": "pickupCoin",
+    "seed": 1251735654,
+    "params": {
+      "wave_type": 0,
+      "p_env_attack": 0.0,
+      "p_env_sustain": 0.07603261078294178,
+      "p_env_punch": 0.3048524106975251,
+      "p_env_decay": 0.3934808113196796,
+      "p_base_freq": 0.5268733774135155,
+      "p_freq_limit": 0.0,
+      "p_freq_ramp": 0.0,
+      "p_freq_dramp": 0.0,
+      "p_vib_strength": 0.0,
+      "p_vib_speed": 0.0,
+      "p_arp_mod": 0.0,
+      "p_arp_speed": 0.0,
+      "p_duty": 0.0,
+      "p_duty_ramp": 0.0,
+      "p_repeat_speed": 0.0,
+      "p_pha_offset": 0.0,
+      "p_pha_ramp": 0.0,
+      "p_lpf_freq": 1.0,
+      "p_lpf_ramp": 0.0,
+      "p_lpf_resonance": 0.0,
+      "p_hpf_freq": 0.0,
+      "p_hpf_ramp": 0.0,
+      "sound_vol": 0.5,
+      "wave_type_name": "square"
+    },
+    "reproduce": "python pipeline/regen.py coin_pickup"
+  },
+  "source": "procedural sfxr synth (pipeline/sfxr.py) \u2014 deterministic per (preset, seed)"
+}

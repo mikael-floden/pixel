@@ -13,6 +13,7 @@ generates art and pushes it to `main`.
 | [`characters/`](characters/) | Modular characters — undressed base bodies, outfits ("dresses"), per-direction animations | this file + [`characters/spec/FACTORY_SPEC.md`](characters/spec/FACTORY_SPEC.md) |
 | [`maps/`](maps/) | Map **zones** — islands (world maps) and interiors (caves, houses), as tilemaps + collision + exits | [`maps/README.md`](maps/README.md) |
 | [`objects/`](objects/) | Animated props / map objects | see `objects/` |
+| [`sounds/`](sounds/) | Game sound effects (UI, items, tools, movement, combat) — procedural sfxr by default, optional AI foley | [`sounds/README.md`](sounds/README.md) |
 
 Each domain is **independent**: its own config, pipeline, generated art and
 viewer, all inside its directory (the pipelines touch disjoint paths, so their

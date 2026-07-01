@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pixel Sound Library</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.4 system-ui, sans-serif; background: #14131a; color: #e9e7f0; }
+  header { padding: 16px 18px; background: #1d1b26; position: sticky; top: 0; z-index: 5;
+           border-bottom: 1px solid #2c2938; }
+  h1 { margin: 0 0 4px; font-size: 18px; }
+  .sub { color: #9c96b3; font-size: 13px; }
+  .filters { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .filters button { background: #2a2738; color: #cfcae0; border: 1px solid #3a3650;
+                    border-radius: 999px; padding: 5px 12px; font-size: 13px; cursor: pointer; }
+  .filters button.active { background: #6c5ce7; border-color: #6c5ce7; color: #fff; }
+  main { padding: 14px; display: grid; gap: 12px;
+         grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+  .card { background: #1d1b26; border: 1px solid #2c2938; border-radius: 12px; padding: 14px; }
+  .row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+  .name { font-weight: 600; }
+  .cat { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: #8f8aa8; }
+  .desc { color: #b9b4cc; font-size: 13px; margin: 6px 0 10px; }
+  audio { width: 100%; height: 34px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .tag { font-size: 11px; background: #262336; color: #a49edb; border-radius: 6px; padding: 2px 7px; }
+  .foot { margin-top: 8px; font-size: 11px; color: #6f6a86; }
+  .empty { grid-column: 1/-1; color: #8f8aa8; text-align: center; padding: 40px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🔊 Pixel Sound Library</h1>
+  <div class="sub" id="sub">loading…</div>
+  <div class="filters" id="filters"></div>
+</header>
+<main id="grid"><div class="empty">Loading viewer_data.json…</div></main>
+<script>
+const grid = document.getElementById('grid');
+const filtersEl = document.getElementById('filters');
+const sub = document.getElementById('sub');
+let data = null, active = 'all';
+
+function render() {
+  const items = data.sounds.filter(s => active === 'all' || s.category === active);
+  if (!items.length) { grid.innerHTML = '<div class="empty">No sounds yet.</div>'; return; }
+  grid.innerHTML = items.map(s => `
+    <div class="card">
+      <div class="row"><span class="name">${s.name}</span><span class="cat">${s.category}</span></div>
+      <div class="desc">${s.description}</div>
+      <audio controls preload="none" src="${s.file}"></audio>
+      <div class="meta">${(s.tags||[]).map(t => `<span class="tag">${t}</span>`).join('')}</div>
+      <div class="foot">${s.engine} · ${s.format}${s.duration_seconds ? ' · ' + s.duration_seconds + 's' : ''}${s.loop ? ' · loop' : ''}</div>
+    </div>`).join('');
+}
+
+function buildFilters() {
+  const cats = ['all', ...Object.keys(data.by_category)];
+  filtersEl.innerHTML = cats.map(c =>
+    `<button data-c="${c}" class="${c===active?'active':''}">${c}${c!=='all'?' ('+data.by_category[c]+')':''}</button>`
+  ).join('');
+  filtersEl.querySelectorAll('button').forEach(b =>
+    b.onclick = () => { active = b.dataset.c; buildFilters(); render(); });
+}
+
+fetch('viewer_data.json').then(r => r.json()).then(d => {
+  data = d;
+  sub.textContent = `${d.count} sounds · ${Object.keys(d.by_category).length} categories · ${d.style || ''}`;
+  buildFilters(); render();
+}).catch(e => { grid.innerHTML = `<div class="empty">Could not load viewer_data.json (${e}).<br>Serve this folder over HTTP.</div>`; });
+</script>
+</body>
+</html>

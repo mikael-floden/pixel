@@ -1,0 +1,63 @@
+{
+  "manifest_version": 1,
+  "id": "watering_can",
+  "name": "Watering Can",
+  "category": "tool",
+  "description": "a soft splash of water poured from a watering can",
+  "tags": [
+    "water",
+    "watering",
+    "splash",
+    "farm",
+    "crops"
+  ],
+  "usage": "Watering crops with the watering can.",
+  "loop": false,
+  "engine": "procedural",
+  "license": "CC0-1.0",
+  "status": "complete",
+  "file": "tool/watering_can/watering_can.wav",
+  "format": "wav",
+  "audio": {
+    "samples": 12399,
+    "duration_seconds": 0.281,
+    "sample_rate": 44100,
+    "channels": 1,
+    "bit_depth": 16,
+    "peak_normalized_to": 0.9
+  },
+  "procedural": {
+    "family": "sfxr",
+    "preset": "explosion",
+    "seed": 1889339081,
+    "params": {
+      "wave_type": 3,
+      "p_env_attack": 0.0,
+      "p_env_sustain": 0.345696476474192,
+      "p_env_punch": 0.3200718035943125,
+      "p_env_decay": 0.06679542120359255,
+      "p_base_freq": 0.4055500740076338,
+      "p_freq_limit": 0.0,
+      "p_freq_ramp": -0.21093906203054144,
+      "p_freq_dramp": 0.0,
+      "p_vib_strength": 0.33372353318415454,
+      "p_vib_speed": 0.08115022126480394,
+      "p_arp_mod": -0.08206150825596392,
+      "p_arp_speed": 0.6535516975423319,
+      "p_duty": 0.0,
+      "p_duty_ramp": 0.0,
+      "p_repeat_speed": 0.6329006026931481,
+      "p_pha_offset": -0.1908824145905928,
+      "p_pha_ramp": -0.12466368494372401,
+      "p_lpf_freq": 1.0,
+      "p_lpf_ramp": 0.0,
+      "p_lpf_resonance": 0.0,
+      "p_hpf_freq": 0.0,
+      "p_hpf_ramp": 0.0,
+      "sound_vol": 0.5,
+      "wave_type_name": "noise"
+    },
+    "reproduce": "python pipeline/regen.py watering_can"
+  },
+  "source": "procedural sfxr synth (pipeline/sfxr.py) \u2014 deterministic per (preset, seed)"
+}
