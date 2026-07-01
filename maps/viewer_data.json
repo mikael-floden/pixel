@@ -2,6 +2,28 @@
   "schema": "pixel-maps/viewer@2",
   "zones": [
     {
+      "id": "isle_camp",
+      "title": "Forest Camp",
+      "kind": "island_screen",
+      "mood": "small woodland camp (daytime)",
+      "pixel_size": {
+        "width": 960,
+        "height": 672
+      },
+      "props": 11,
+      "exits": [
+        {
+          "id": "south",
+          "kind": "path",
+          "to_zone": "isle_meadow"
+        }
+      ],
+      "preview": "isle_camp/preview.png",
+      "scene": "isle_camp/scene.png",
+      "collision": "isle_camp/collision.png",
+      "manifest": "isle_camp/zone.json"
+    },
+    {
       "id": "isle_glade",
       "title": "Forest Glade",
       "kind": "island_screen",
