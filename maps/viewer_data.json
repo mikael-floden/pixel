@@ -18,6 +18,22 @@
       "manifest": "isle_dawn/zone.json"
     },
     {
+      "id": "isle_stone",
+      "title": "Stonewatch Isle",
+      "kind": "island",
+      "mood": "rocky island with ruins",
+      "pixel_size": {
+        "width": 1200,
+        "height": 864
+      },
+      "props": 0,
+      "exits": [],
+      "preview": "isle_stone/preview.png",
+      "scene": "isle_stone/scene.png",
+      "collision": "isle_stone/collision.png",
+      "manifest": "isle_stone/zone.json"
+    },
+    {
       "id": "isle_sunny",
       "title": "Sunny Atoll",
       "kind": "island",
