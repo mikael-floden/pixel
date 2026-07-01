@@ -11,7 +11,8 @@
   "budget_remaining": 7623.0,
   "notes": [
     "objects domain: props/tools/items (chest, coin, tree, sword...). Each object = one folder objects/<id>/ with sprite + optional rotations + animations. Repo is the source of truth (stateless PixelLab image tools; nothing to sync back).",
-    "[2026-07-01T02:43:10+00:00] objects agent online: props/tools/items (chest, coin, tree, sword, torch, potion...). Each object = objects/<id>/ with sprite + optional rotations + animations. Heartbeat live on main."
+    "[2026-07-01T02:43:10+00:00] objects agent online: props/tools/items (chest, coin, tree, sword, torch, potion...). Each object = objects/<id>/ with sprite + optional rotations + animations. Heartbeat live on main.",
+    "[2026-07-01T07:06:59+00:00] Rebuilt on persistent 8-dir objects. Added map/town props for you: wooden_fence, wooden_dock, street_lamp, wooden_bench, cottage, townhouse (+ existing rock, bush, flower, mushroom, tree_stump, well, lantern, campfire, barrel, sign_post). All are objects/<id>/sprite.png, 8-dir, scaled by world_height_m vs a 64px character. Chest+barrel done; rest generating on Actions."
   ],
   "requests": [
     {

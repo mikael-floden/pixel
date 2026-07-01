@@ -26,7 +26,9 @@
       "nature": 1.0,
       "light": 1.0,
       "creature": 0.25,
-      "misc": 0.8
+      "misc": 0.8,
+      "building": 4.0,
+      "structure": 1.0
     }
   },
   "budget": {
@@ -34,7 +36,7 @@
     "_comment": "Shared PixelLab pool floor (see coordination/PROTOCOL.md). The loop stops cleanly when the balance drops below this, leaving headroom for the characters and maps domains that draw from the same pool."
   },
   "targets": {
-    "num_objects": 40,
+    "num_objects": 46,
     "_comment": "How many objects the loop aims to produce. It builds the explicit `catalog` first, then synthesizes further ones from `procedural` until this count is reached. Raise it to keep the loop generating open-endedly."
   },
   "catalog": [
@@ -797,6 +799,156 @@
         }
       ],
       "world_height_m": 1.4
+    },
+    {
+      "id": "wooden_fence",
+      "name": "Wooden Fence",
+      "category": "structure",
+      "description": "a rustic wooden fence section with posts and rails",
+      "size": 64,
+      "world_height_m": 1.0,
+      "animations": [
+        {
+          "key": "creak",
+          "description": "the fence creaking",
+          "frames": 16
+        },
+        {
+          "key": "shake",
+          "description": "the fence shaking",
+          "frames": 16
+        },
+        {
+          "key": "break",
+          "description": "the fence breaking apart",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "wooden_dock",
+      "name": "Wooden Dock",
+      "category": "structure",
+      "description": "a wooden dock pier of planks over water",
+      "size": 128,
+      "world_height_m": 0.4,
+      "animations": [
+        {
+          "key": "creak",
+          "description": "the planks creaking",
+          "frames": 16
+        },
+        {
+          "key": "sway",
+          "description": "the dock swaying on the water",
+          "frames": 16
+        },
+        {
+          "key": "splash",
+          "description": "water splashing against the dock",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "street_lamp",
+      "name": "Street Lamp",
+      "category": "light",
+      "description": "a wrought iron street lamp post with a glowing lantern",
+      "size": 96,
+      "world_height_m": 3.0,
+      "animations": [
+        {
+          "key": "flicker",
+          "description": "the lamp flame flickering",
+          "frames": 16
+        },
+        {
+          "key": "sway",
+          "description": "the lamp swaying",
+          "frames": 16
+        },
+        {
+          "key": "glow",
+          "description": "the lamp glowing brighter and dimmer",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "wooden_bench",
+      "name": "Wooden Bench",
+      "category": "structure",
+      "description": "a simple wooden park bench",
+      "size": 64,
+      "world_height_m": 0.9,
+      "animations": [
+        {
+          "key": "creak",
+          "description": "the bench creaking",
+          "frames": 16
+        },
+        {
+          "key": "wobble",
+          "description": "the bench wobbling",
+          "frames": 16
+        },
+        {
+          "key": "break",
+          "description": "the bench breaking",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "cottage",
+      "name": "Cottage",
+      "category": "building",
+      "description": "a cozy small cottage house with a thatched roof and a chimney",
+      "size": 128,
+      "world_height_m": 4.0,
+      "animations": [
+        {
+          "key": "door",
+          "description": "the front door opening",
+          "frames": 16
+        },
+        {
+          "key": "smoke",
+          "description": "chimney smoke rising",
+          "frames": 16
+        },
+        {
+          "key": "glow",
+          "description": "the windows glowing warmly",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "townhouse",
+      "name": "Townhouse",
+      "category": "building",
+      "description": "a two-story timber-framed townhouse with a tiled roof",
+      "size": 160,
+      "world_height_m": 6.0,
+      "animations": [
+        {
+          "key": "door",
+          "description": "the front door opening",
+          "frames": 16
+        },
+        {
+          "key": "smoke",
+          "description": "chimney smoke rising",
+          "frames": 16
+        },
+        {
+          "key": "glow",
+          "description": "the windows glowing warmly",
+          "frames": 16
+        }
+      ]
     }
   ],
   "_procedural": "When the explicit catalog is exhausted but targets.num_objects is not yet reached, the loop synthesizes more objects by combining these axes. Deterministic (seeded by index) so re-runs are reproducible. These are best-effort, un-curated extras.",
