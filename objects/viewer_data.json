@@ -1,7 +1,7 @@
 {
   "title": "Pixel Object Factory",
   "object_count": 10,
-  "target_count": 46,
+  "target_count": 61,
   "scale": {
     "_comment": "REALISM RULE: objects are scaled to the world by real height, so they sit correctly next to characters. A character is ~character_height_px tall (the 64px skeleton) representing character_height_m. The loop turns each object's world_height_m into world_px_height = round(world_height_m * character_height_px / character_height_m); a game renders the sprite scaled to that pixel height. So a coin (~0.22m) is tiny next to a character and an oak (~6m) towers. Every object MUST have a world_height_m (per-object, else category_height_m fallback).",
     "character_height_px": 64,
@@ -503,7 +503,7 @@
         "character_height_m": 1.7,
         "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
       },
-      "status": "in_progress",
+      "status": "complete",
       "pixellab_object_id": "52c50b63-e854-43fa-a0f0-3948c60d9fd5",
       "sprite": "shovel/sprite.png",
       "rotations": {
@@ -547,6 +547,22 @@
             "south-east": "shovel/animations/bob__south-east.gif",
             "south-west": "shovel/animations/bob__south-west.gif",
             "west": "shovel/animations/bob__west.gif"
+          }
+        },
+        {
+          "key": "glint",
+          "description": "a glint on the metal blade",
+          "frames": 17,
+          "preview_gif": "shovel/animations/glint__south.gif",
+          "directions": {
+            "east": "shovel/animations/glint__east.gif",
+            "north": "shovel/animations/glint__north.gif",
+            "north-east": "shovel/animations/glint__north-east.gif",
+            "north-west": "shovel/animations/glint__north-west.gif",
+            "south": "shovel/animations/glint__south.gif",
+            "south-east": "shovel/animations/glint__south-east.gif",
+            "south-west": "shovel/animations/glint__south-west.gif",
+            "west": "shovel/animations/glint__west.gif"
           }
         }
       ]
