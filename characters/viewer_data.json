@@ -476,66 +476,66 @@
                 {
                   "key": "idle",
                   "directions": {
-                    "south-west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/idle__south-west.gif",
-                    "south-east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/idle__south-east.gif",
                     "north": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/idle__north.gif",
-                    "north-east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/idle__north-east.gif",
+                    "south-east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/idle__south-east.gif",
                     "north-west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/idle__north-west.gif",
                     "east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/idle__east.gif",
                     "west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/idle__west.gif",
+                    "south-west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/idle__south-west.gif",
+                    "north-east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/idle__north-east.gif",
                     "south": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/idle__south.gif"
                   }
                 },
                 {
                   "key": "walk",
                   "directions": {
-                    "north-east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/walk__north-east.gif",
+                    "south": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/walk__south.gif",
+                    "south-east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/walk__south-east.gif",
+                    "north-west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/walk__north-west.gif",
+                    "east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/walk__east.gif",
+                    "north": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/walk__north.gif",
                     "west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/walk__west.gif",
                     "south-west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/walk__south-west.gif",
-                    "north": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/walk__north.gif",
-                    "east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/walk__east.gif",
-                    "north-west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/walk__north-west.gif",
-                    "south-east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/walk__south-east.gif",
-                    "south": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/walk__south.gif"
+                    "north-east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/walk__north-east.gif"
                   }
                 },
                 {
                   "key": "run",
                   "directions": {
+                    "south-east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/run__south-east.gif",
                     "south": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/run__south.gif",
-                    "north": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/run__north.gif",
                     "west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/run__west.gif",
                     "north-west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/run__north-west.gif",
-                    "south-west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/run__south-west.gif",
+                    "north": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/run__north.gif",
                     "east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/run__east.gif",
-                    "north-east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/run__north-east.gif",
-                    "south-east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/run__south-east.gif"
+                    "south-west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/run__south-west.gif",
+                    "north-east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/run__north-east.gif"
                   }
                 },
                 {
                   "key": "jump",
                   "directions": {
-                    "north-east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/jump__north-east.gif",
-                    "north-west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/jump__north-west.gif",
-                    "west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/jump__west.gif",
-                    "east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/jump__east.gif",
-                    "north": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/jump__north.gif",
-                    "south-west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/jump__south-west.gif",
                     "south-east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/jump__south-east.gif",
-                    "south": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/jump__south.gif"
+                    "north": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/jump__north.gif",
+                    "east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/jump__east.gif",
+                    "west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/jump__west.gif",
+                    "north-west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/jump__north-west.gif",
+                    "north-east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/jump__north-east.gif",
+                    "south": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/jump__south.gif",
+                    "south-west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/jump__south-west.gif"
                   }
                 },
                 {
                   "key": "kick",
                   "directions": {
-                    "south": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/kick__south.gif",
-                    "north": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/kick__north.gif",
+                    "north-west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/kick__north-west.gif",
                     "east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/kick__east.gif",
                     "west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/kick__west.gif",
-                    "south-east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/kick__south-east.gif",
-                    "south-west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/kick__south-west.gif",
                     "north-east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/kick__north-east.gif",
-                    "north-west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/kick__north-west.gif"
+                    "south": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/kick__south.gif",
+                    "north": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/kick__north.gif",
+                    "south-west": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/kick__south-west.gif",
+                    "south-east": "skeletons/00_low8_64/characters/char_02/outfits/adventurer/animations/kick__south-east.gif"
                   }
                 }
               ]
