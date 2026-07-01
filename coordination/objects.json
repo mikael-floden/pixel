@@ -1,14 +1,14 @@
 {
   "domain": "objects",
-  "updated_at": "2026-07-01T05:10:47+00:00",
+  "updated_at": "2026-07-01T05:11:13+00:00",
   "health": "running",
-  "current": "mushroom: base sprite (32x32 low top-down) \u2014 Mushroom",
+  "current": "rock: base sprite (48x48 low top-down) \u2014 Rock",
   "progress": {
-    "objects_complete": 19,
-    "objects_started": 19,
+    "objects_complete": 20,
+    "objects_started": 20,
     "objects_target": 40
   },
-  "budget_remaining": 7915.0,
+  "budget_remaining": 7914.0,
   "notes": [
     "objects domain: props/tools/items (chest, coin, tree, sword...). Each object = one folder objects/<id>/ with sprite + optional rotations + animations. Repo is the source of truth (stateless PixelLab image tools; nothing to sync back).",
     "[2026-07-01T02:43:10+00:00] objects agent online: props/tools/items (chest, coin, tree, sword, torch, potion...). Each object = objects/<id>/ with sprite + optional rotations + animations. Heartbeat live on main."
