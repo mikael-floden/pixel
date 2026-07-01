@@ -1,0 +1,30 @@
+{
+  "id": "gold_coin",
+  "name": "Gold Coin",
+  "category": "valuable",
+  "description": "a single shiny round gold coin stamped with a crest",
+  "view": "low top-down",
+  "direction": "south",
+  "size": [
+    64,
+    64
+  ],
+  "procedural": false,
+  "source": "pixellab.ai (generate-image-pixflux / rotate / animate-with-text)",
+  "params": {
+    "outline": "single color black outline",
+    "shading": "detailed shading",
+    "detail": "highly detailed",
+    "no_background": true,
+    "isometric": false,
+    "seed": 61325403
+  },
+  "sprite": "gold_coin/sprite.png",
+  "rotations": {
+    "count": 0,
+    "directions": []
+  },
+  "animations": {},
+  "generations_used": 1.0,
+  "status": "in_progress"
+}
