@@ -192,7 +192,7 @@
         "character_height_m": 1.7,
         "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
       },
-      "status": "in_progress",
+      "status": "complete",
       "pixellab_object_id": "22f0eabe-016e-4388-9072-44814d7168d0",
       "sprite": "gem_ruby/sprite.png",
       "rotations": {
@@ -236,6 +236,22 @@
             "south-east": "gem_ruby/animations/pulse__south-east.gif",
             "south-west": "gem_ruby/animations/pulse__south-west.gif",
             "west": "gem_ruby/animations/pulse__west.gif"
+          }
+        },
+        {
+          "key": "spin",
+          "description": "the gem slowly rotating",
+          "frames": 17,
+          "preview_gif": "gem_ruby/animations/spin__south.gif",
+          "directions": {
+            "east": "gem_ruby/animations/spin__east.gif",
+            "north": "gem_ruby/animations/spin__north.gif",
+            "north-east": "gem_ruby/animations/spin__north-east.gif",
+            "north-west": "gem_ruby/animations/spin__north-west.gif",
+            "south": "gem_ruby/animations/spin__south.gif",
+            "south-east": "gem_ruby/animations/spin__south-east.gif",
+            "south-west": "gem_ruby/animations/spin__south-west.gif",
+            "west": "gem_ruby/animations/spin__west.gif"
           }
         }
       ]
