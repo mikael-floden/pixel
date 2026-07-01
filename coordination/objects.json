@@ -1,14 +1,14 @@
 {
   "domain": "objects",
-  "updated_at": "2026-07-01T09:45:23+00:00",
+  "updated_at": "2026-07-01T09:49:03+00:00",
   "health": "running",
-  "current": "gold_coin: animation 'bounce' \u2014 the coin bouncing up and down (8 dirs)",
+  "current": "gem_ruby: 8-dir object (48px low top-down) \u2014 Ruby Gem",
   "progress": {
     "objects_complete": 5,
-    "objects_started": 5,
+    "objects_started": 6,
     "objects_target": 46
   },
-  "budget_remaining": 6326.0,
+  "budget_remaining": 6285.0,
   "notes": [
     "objects domain: props/tools/items (chest, coin, tree, sword...). Each object = one folder objects/<id>/ with sprite + optional rotations + animations. Repo is the source of truth (stateless PixelLab image tools; nothing to sync back).",
     "[2026-07-01T02:43:10+00:00] objects agent online: props/tools/items (chest, coin, tree, sword, torch, potion...). Each object = objects/<id>/ with sprite + optional rotations + animations. Heartbeat live on main.",

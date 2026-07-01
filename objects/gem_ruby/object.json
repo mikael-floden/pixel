@@ -1,0 +1,42 @@
+{
+  "id": "gem_ruby",
+  "name": "Ruby Gem",
+  "category": "valuable",
+  "description": "a faceted red ruby gemstone sparkling",
+  "view": "low top-down",
+  "size": 48,
+  "placement": {
+    "world_height_m": 0.28,
+    "world_px_height": 11,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "procedural": false,
+  "source": "pixellab.ai create-8-direction-object (persistent, syncable)",
+  "pixellab_object_id": "22f0eabe-016e-4388-9072-44814d7168d0",
+  "style_version": 2,
+  "sprite": "gem_ruby/sprite.png",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "east": "gem_ruby/rotations/east.png",
+    "north": "gem_ruby/rotations/north.png",
+    "north-east": "gem_ruby/rotations/north-east.png",
+    "north-west": "gem_ruby/rotations/north-west.png",
+    "south": "gem_ruby/rotations/south.png",
+    "south-east": "gem_ruby/rotations/south-east.png",
+    "south-west": "gem_ruby/rotations/south-west.png",
+    "west": "gem_ruby/rotations/west.png"
+  },
+  "animations": {},
+  "status": "in_progress"
+}
