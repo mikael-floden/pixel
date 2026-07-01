@@ -18,6 +18,22 @@
       "manifest": "isle_dawn/zone.json"
     },
     {
+      "id": "isle_sunny",
+      "title": "Sunny Atoll",
+      "kind": "island",
+      "mood": "tropical sandy island",
+      "pixel_size": {
+        "width": 1200,
+        "height": 864
+      },
+      "props": 0,
+      "exits": [],
+      "preview": "isle_sunny/preview.png",
+      "scene": "isle_sunny/scene.png",
+      "collision": "isle_sunny/collision.png",
+      "manifest": "isle_sunny/zone.json"
+    },
+    {
       "id": "isle_verdant",
       "title": "Verdant Isle",
       "kind": "island",
