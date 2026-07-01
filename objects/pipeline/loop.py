@@ -20,6 +20,7 @@ import argparse
 import subprocess
 import time
 
+import coordination
 import factory
 import viewer_build
 from pixellab_client import BudgetExhausted, PixelLabClient
@@ -40,9 +41,11 @@ def commit_push(message, push=True):
     """Commit only the objects/ domain (disjoint from characters/ and maps/, so
     concurrent pushes to the same branch rebase cleanly) and push to the current
     branch with backoff. Git runs with cwd=factory.ROOT (the objects/ dir), so
-    scoping to '.' stages just this domain's subtree."""
+    '.' stages this domain's subtree and '../coordination/objects.json' stages
+    our own heartbeat — the one file we may write outside the domain dir."""
     _git("add", "-A", ".")
-    status = _git("status", "--porcelain", "--", ".").stdout.strip()
+    _git("add", "--", "../coordination/objects.json", check=False)
+    status = _git("status", "--porcelain", "--", ".", "../coordination/objects.json").stdout.strip()
     if not status:
         return False
     _git("commit", "-m", message)
@@ -109,6 +112,10 @@ def advance(client, cfg, push=True):
 
     factory.mark_complete_if_done(cfg, action[1])
     viewer_build.build()
+    # Refresh our coordination heartbeat so the other agents can see objects'
+    # health, progress, and how much of the shared budget we've drawn.
+    coordination.publish(current=desc, progress=coordination.progress_snapshot(cfg),
+                         budget_remaining=client.generations_remaining())
     commit_push(desc, push=push)
     print("  +", desc)
     return desc
@@ -131,10 +138,21 @@ def main():
         else cfg["budget"]["min_generations_remaining"]
     client = PixelLabClient()
 
+    # Fleet awareness: read the other domains' heartbeats and honour any request
+    # addressed to us (per the protocol), then publish our own starting status.
+    peers = coordination.read_peers()
+    print("peers:", coordination.peer_summary(peers))
+    for dom, s in peers.items():
+        for req in s.get("requests", []):
+            if req.get("to") == coordination.DOMAIN:
+                print(f"  » request from {dom}: {req.get('text')}")
+
     start = time.monotonic()
     units = 0
     rem = client.generations_remaining()
     print(f"objects loop starting — {rem:.0f} generations remaining (floor {min_balance})")
+    coordination.publish(current="startup", progress=coordination.progress_snapshot(cfg),
+                         budget_remaining=rem, health="running")
 
     while True:
         try:
@@ -157,7 +175,13 @@ def main():
             print("stopping: time budget reached")
             break
 
-    print(f"done — {units} unit(s), {client.generations_remaining():.0f} generations left")
+    rem = client.generations_remaining()
+    health = "idle" if rem >= min_balance else "stopped"
+    coordination.publish(current=f"idle after {units} unit(s) this pass",
+                         progress=coordination.progress_snapshot(cfg),
+                         budget_remaining=rem, health=health)
+    commit_push(f"objects heartbeat: {health} ({units} unit(s) this pass)", push=not args.no_push)
+    print(f"done — {units} unit(s), {rem:.0f} generations left")
 
 
 if __name__ == "__main__":

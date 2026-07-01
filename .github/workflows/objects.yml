@@ -15,7 +15,7 @@ on:
         default: "50"
       min_balance:
         description: "Stop when generations remaining drops below this"
-        default: "20"
+        default: "2000"
 
 # Allow the job (and the loop's git push) to write to the repo.
 permissions:

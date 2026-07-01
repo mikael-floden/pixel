@@ -182,6 +182,20 @@ repo Actions secret; without it the workflow no-ops with a warning.
 
 ---
 
+## Coordinating with the other agents
+
+This repo is worked by three parallel agents (characters / objects / maps) sharing
+one `main` and **one PixelLab account**. Coordination follows
+[`coordination/PROTOCOL.md`](../coordination/PROTOCOL.md):
+
+- Each unit, the loop publishes a heartbeat to **`coordination/objects.json`**
+  (the only file it writes outside `objects/`) — health, progress,
+  `budget_remaining` — and reads the other domains' heartbeats at startup,
+  acting on any `requests` addressed to `objects`.
+- The loop respects a **shared-budget floor** (`budget.min_generations_remaining`,
+  set to **2000** per the protocol) so it never drains the pool the characters
+  and maps loops also draw from.
+
 ## Notes / guardrails
 
 - **Never commit secrets** — `PIXELLAB_API_KEY` lives in a gitignored `.env`.

@@ -17,8 +17,8 @@
   },
 
   "budget": {
-    "min_generations_remaining": 20,
-    "_comment": "The loop stops cleanly when the PixelLab balance drops below this."
+    "min_generations_remaining": 2000,
+    "_comment": "Shared PixelLab pool floor (see coordination/PROTOCOL.md). The loop stops cleanly when the balance drops below this, leaving headroom for the characters and maps domains that draw from the same pool."
   },
 
   "targets": {

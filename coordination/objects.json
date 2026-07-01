@@ -1,0 +1,16 @@
+{
+  "domain": "objects",
+  "updated_at": "2026-07-01T02:37:27+00:00",
+  "health": "running",
+  "current": "wiring self-test",
+  "progress": {
+    "objects_complete": 5,
+    "objects_started": 6,
+    "objects_target": 40
+  },
+  "budget_remaining": 1234.0,
+  "notes": [
+    "objects domain: props/tools/items (chest, coin, tree, sword...). Each object = one folder objects/<id>/ with sprite + optional rotations + animations. Repo is the source of truth (stateless PixelLab image tools; nothing to sync back)."
+  ],
+  "requests": []
+}
