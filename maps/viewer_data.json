@@ -99,6 +99,13 @@
   ],
   "tilesets": [
     {
+      "id": "cave_floor_wall",
+      "lower": "damp grey rocky cave floor",
+      "upper": "dark jagged rocky cave wall",
+      "tiles": 16,
+      "atlas": "assets/tilesets/cave_floor_wall/tiles"
+    },
+    {
       "id": "grass_forest",
       "lower": "lush green grass",
       "upper": "dense dark green forest floor with ferns",
