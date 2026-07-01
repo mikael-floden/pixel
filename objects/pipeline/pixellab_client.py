@@ -242,13 +242,18 @@ class PixelLabClient:
                 print(f"  ! animation job failed: {e}")
         return resp.get("animation_group_id")
 
-    def download_object_animation(self, object_id, group_id, expected=8, wait=600, poll=8):
+    def download_object_animation(self, object_id, group_id, expected=8, wait=600,
+                                  poll=8, stall=120):
         """Poll until the animation group has frames for all `expected` directions
         (they land asynchronously, one direction at a time), THEN download them ->
-        {direction: [PIL frames]}. Waiting for completeness is what makes every
-        animation cover all 8 directions instead of just the first one ready.
-        Falls back to whatever is present at the timeout."""
+        {direction: [PIL frames]}.
+
+        Returns as soon as all 8 are ready. If new directions STOP arriving for
+        `stall` seconds (the animation stalled short of 8), it accepts whatever is
+        present rather than waiting out the full `wait` — otherwise a partial
+        animation burns ~10 minutes of the pass for nothing."""
         deadline = time.monotonic() + wait
+        last_n, stall_since = -1, time.monotonic()
         while True:
             group = None
             for a in (self.get_object(object_id).get("animations") or []):
@@ -259,7 +264,12 @@ class PixelLabClient:
             if group:
                 ready = [d for d in (group.get("directions") or [])
                          if (d.get("storage_urls") or {}).get("frames")]
-            if ready and (len(ready) >= expected or time.monotonic() > deadline):
+            n = len(ready)
+            if n != last_n:
+                last_n, stall_since = n, time.monotonic()
+            stalled = (time.monotonic() - stall_since) >= stall
+            done = n >= expected or time.monotonic() > deadline or (n >= 1 and stalled)
+            if ready and done:
                 out = {}
                 for d in ready:
                     urls = (d.get("storage_urls") or {}).get("frames") or []
