@@ -469,6 +469,21 @@
             "south-west": "iron_key/animations/jingle__south-west.gif",
             "west": "iron_key/animations/jingle__west.gif"
           }
+        },
+        {
+          "key": "glint",
+          "description": "a glint of light on the key",
+          "frames": 17,
+          "preview_gif": "iron_key/animations/glint__east.gif",
+          "directions": {
+            "east": "iron_key/animations/glint__east.gif",
+            "north": "iron_key/animations/glint__north.gif",
+            "north-east": "iron_key/animations/glint__north-east.gif",
+            "north-west": "iron_key/animations/glint__north-west.gif",
+            "south-east": "iron_key/animations/glint__south-east.gif",
+            "south-west": "iron_key/animations/glint__south-west.gif",
+            "west": "iron_key/animations/glint__west.gif"
+          }
         }
       ]
     },
