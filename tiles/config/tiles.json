@@ -1,5 +1,5 @@
 {
-  "_comment": "Tiles agent config. Generates FOCUSED isometric terrain tile sets via PixelLab create-tiles-pro. Every tile: 64px, 28-degree view angle, 50% thickness (depth_ratio 0.5), isometric. Each category is one create-tiles-pro call (~16 tile variations, ~20 generations) and stays on-theme (snow=snow, town=town) \u2014 no mixed do-everything tiles. Output downloaded to tiles/<category>/. A separate Maps agent assembles these into worlds. See tiles/README.md.",
+  "_comment": "Tiles agent. FOCUSED isometric tile sets via create-tiles-pro. Base format: 64px, 28deg, isometric, flat_top 4. Each category is one on-theme set (~16 tiles, ~20 gens). Four HEIGHT PROFILES (per elevation math in tiles/README.md): flat=64x64@50%(0.5 layer, ground), raised=64x64@100%(1 layer), cliff=64x128@75%(2 layers), tall=64x128@100%(~2.7 layers). One elevation level=38px. Target mix ~40/20/20/20. Output tiles/<category>/ with tiles.json (incl. stacking metadata).",
   "tile": {
     "size": 64,
     "view_angle": 28,
@@ -16,152 +16,280 @@
   "categories": [
     {
       "id": "grass",
-      "description": "isometric grass terrain tiles, all grass only: 1) lush green grass 2) grass with small yellow flowers 3) grass with white daisies 4) tall grass tufts 5) dry yellow grass 6) mossy grass"
+      "profile": "flat",
+      "description": "isometric grass terrain tiles, all grass only: 1) lush green grass 2) grass with yellow flowers 3) grass with white daisies 4) tall grass tufts 5) dry grass 6) mossy grass"
     },
     {
       "id": "dirt",
-      "description": "isometric dirt terrain tiles, all dirt/soil only: 1) packed brown dirt 2) dry cracked dirt 3) dirt with small pebbles 4) muddy dirt 5) tilled soil 6) dark rich soil"
+      "profile": "flat",
+      "description": "isometric dirt/soil terrain tiles, dirt only: 1) packed brown dirt 2) dry cracked dirt 3) dirt with pebbles 4) muddy dirt 5) tilled soil 6) dark soil"
     },
     {
       "id": "sand",
-      "description": "isometric sand terrain tiles, all sand only: 1) pale desert sand 2) rippled sand dunes 3) sand with small rocks 4) wet beach sand 5) golden sand 6) coarse sandy gravel"
+      "profile": "flat",
+      "description": "isometric sand terrain tiles, sand only: 1) pale desert sand 2) rippled dunes 3) sand with rocks 4) wet beach sand 5) golden sand 6) coarse sand"
     },
     {
       "id": "snow",
-      "description": "isometric snow terrain tiles, all snow only: 1) fresh white snow 2) packed snow 3) snow with footprints 4) icy crusted snow 5) snow drift 6) snow over small rocks"
+      "profile": "flat",
+      "description": "isometric snow terrain tiles, snow only: 1) fresh snow 2) packed snow 3) snow footprints 4) icy crust snow 5) snow drift 6) snow over rocks"
     },
     {
       "id": "ice",
-      "description": "isometric ice terrain tiles, all ice only: 1) smooth blue ice 2) cracked ice 3) frozen lake ice 4) frosty ice 5) glacial ice 6) icy slush"
+      "profile": "flat",
+      "description": "isometric ice terrain tiles, ice only: 1) smooth blue ice 2) cracked ice 3) frozen lake 4) frosty ice 5) glacial ice 6) icy slush"
     },
     {
       "id": "water",
-      "description": "isometric water terrain tiles, all water only: 1) calm blue water 2) rippling water 3) deep ocean water 4) shallow clear water 5) sparkling water 6) dark water"
+      "profile": "flat",
+      "description": "isometric water terrain tiles, water only: 1) calm blue water 2) rippling water 3) deep ocean 4) shallow water 5) sparkling water 6) dark water"
     },
     {
       "id": "stone",
-      "description": "isometric stone terrain tiles, all natural stone only: 1) grey rock 2) mossy stone 3) cracked stone 4) smooth boulder stone 5) dark slate 6) pebbled stone"
+      "profile": "flat",
+      "description": "isometric natural stone tiles, stone only: 1) grey rock 2) mossy stone 3) cracked stone 4) smooth boulder 5) dark slate 6) pebbled stone"
     },
     {
       "id": "cobblestone",
-      "description": "isometric town cobblestone tiles, all paving only: 1) grey cobblestone 2) round cobble path 3) worn cobblestone 4) mossy cobblestone 5) neat cobble pavement 6) dark cobblestone"
+      "profile": "flat",
+      "description": "isometric cobblestone paving tiles, paving only: 1) grey cobblestone 2) round cobble 3) worn cobble 4) mossy cobble 5) neat pavement 6) dark cobble"
     },
     {
       "id": "brick_road",
-      "description": "isometric brick road tiles, all brick paving only: 1) red brick road 2) worn brick 3) herringbone brick 4) grey brick pavement 5) mossy brick 6) cracked brick"
+      "profile": "flat",
+      "description": "isometric brick road tiles, brick paving only: 1) red brick 2) worn brick 3) herringbone brick 4) grey brick 5) mossy brick 6) cracked brick"
     },
     {
       "id": "castle",
-      "description": "isometric castle stone floor tiles, all castle interior stone only: 1) grey castle flagstone 2) polished marble floor 3) stone brick floor 4) cracked dungeon stone 5) royal red carpet on stone 6) dark stone tile"
+      "profile": "flat",
+      "description": "isometric castle stone floor tiles, castle floor only: 1) grey flagstone 2) marble floor 3) stone brick floor 4) dungeon stone 5) red carpet on stone 6) dark stone tile"
     },
     {
       "id": "wood_floor",
-      "description": "isometric wooden floor tiles, all wood planks only: 1) warm wood planks 2) worn wood floor 3) dark oak planks 4) light pine planks 5) wide plank floor 6) creaky old wood"
+      "profile": "flat",
+      "description": "isometric wooden floor tiles, wood planks only: 1) warm planks 2) worn wood 3) dark oak 4) light pine 5) wide planks 6) old creaky wood"
     },
     {
       "id": "forest",
-      "description": "isometric forest floor tiles, all forest ground only: 1) leafy forest floor 2) mossy ground with ferns 3) pine needle ground 4) forest dirt with roots 5) grass with fallen leaves 6) dark woodland floor"
+      "profile": "flat",
+      "description": "isometric forest floor tiles, forest ground only: 1) leafy floor 2) mossy ferns 3) pine needles 4) forest dirt roots 5) fallen leaves 6) dark woodland"
     },
     {
       "id": "farm",
-      "description": "isometric farmland tiles, all farm ground only: 1) tilled soil rows 2) watered soil 3) soil with sprouts 4) hay covered ground 5) dry field 6) furrowed farmland"
-    },
-    {
-      "id": "mountain",
-      "description": "isometric mountain rock tiles, all rocky mountain only: 1) grey mountain rock 2) craggy stone 3) snow-capped rock 4) layered rock strata 5) dark basalt 6) rocky scree"
-    },
-    {
-      "id": "swamp",
-      "description": "isometric swamp terrain tiles, all swamp/marsh only: 1) murky swamp water 2) muddy marsh 3) mossy bog 4) reedy wetland 5) algae water 6) soggy peat"
-    },
-    {
-      "id": "lava",
-      "description": "isometric volcanic terrain tiles, all volcanic only: 1) glowing lava 2) cooled black basalt 3) cracked magma crust 4) obsidian rock 5) ashen ground 6) ember-flecked rock"
-    },
-    {
-      "id": "cave",
-      "description": "isometric cave floor tiles, all cave interior only: 1) damp grey cave floor 2) rocky cave ground 3) cave floor with pebbles 4) crystal-flecked stone 5) dark cavern floor 6) wet cave rock"
+      "profile": "flat",
+      "description": "isometric farmland tiles, farm ground only: 1) tilled rows 2) watered soil 3) soil with sprouts 4) hay ground 5) dry field 6) furrowed farmland"
     },
     {
       "id": "desert",
-      "description": "isometric desert terrain tiles, all arid desert only: 1) cracked desert clay 2) rocky desert ground 3) reddish sand 4) dry hardpan 5) desert gravel 6) sun-baked earth"
-    },
-    {
-      "id": "cliff_grass",
-      "kind": "elevation",
-      "tile_height": 128,
-      "depth_ratio": 1.0,
-      "description": "isometric grassy cliff and hillside edge tiles, tall vertical rock face topped with grass, for raised terrain edges: 1) grass cliff front face 2) grass cliff left corner 3) grass cliff right corner 4) grass slope 5) grassy ledge 6) rocky grass drop"
-    },
-    {
-      "id": "cliff_stone",
-      "kind": "elevation",
-      "tile_height": 128,
-      "depth_ratio": 1.0,
-      "description": "isometric grey stone cliff and rock wall tiles, tall vertical rock face for plateaus and canyons: 1) stone cliff front face 2) stone cliff corner 3) layered rock strata face 4) cracked cliff 5) mossy cliff 6) tall boulder wall"
-    },
-    {
-      "id": "cliff_snow",
-      "kind": "elevation",
-      "tile_height": 128,
-      "depth_ratio": 1.0,
-      "description": "isometric snowy cliff tiles, tall rock face topped with snow for snowy highlands: 1) snowy cliff face 2) snowy cliff corner 3) icy rock face 4) snow ledge 5) frosty drop 6) snow-capped stone wall"
-    },
-    {
-      "id": "castle_wall",
-      "kind": "elevation",
-      "tile_height": 128,
-      "depth_ratio": 1.0,
-      "description": "isometric castle stone wall tiles, tall grey battlement wall segments: 1) castle wall segment 2) wall with crenellations 3) wall corner tower base 4) arched gate wall 5) buttressed wall 6) mossy castle wall"
-    },
-    {
-      "id": "town_wall",
-      "kind": "elevation",
-      "tile_height": 128,
-      "depth_ratio": 1.0,
-      "description": "isometric town wall and fence tiles, tall boundary walls: 1) stone town wall 2) wooden palisade 3) brick wall 4) wall with wooden gate 5) low garden wall 6) stone wall corner"
+      "profile": "flat",
+      "description": "isometric desert terrain tiles, arid desert only: 1) cracked clay 2) rocky desert 3) reddish sand 4) dry hardpan 5) desert gravel 6) sun-baked earth"
     },
     {
       "id": "stairs",
-      "kind": "elevation",
-      "tile_height": 96,
-      "depth_ratio": 1.0,
-      "description": "isometric stone stairs and ramp tiles to connect elevation levels: 1) stone staircase up 2) stone ramp 3) grassy earthen ramp 4) wide steps 5) stair corner 6) short step ledge"
+      "profile": "raised",
+      "description": "isometric stone staircase and ramp tiles, one level up, stairs only: 1) stone steps up 2) stone ramp 3) grassy ramp 4) wide steps 5) stair corner 6) short step",
+      "depth_ratio": 1.0
+    },
+    {
+      "id": "grass_ledge",
+      "profile": "raised",
+      "description": "isometric low grassy ledge tiles, one-level raised grass edges only: 1) grass ledge front 2) grass ledge left 3) grass ledge right 4) grass step 5) low grass bank 6) grass rim",
+      "depth_ratio": 1.0
+    },
+    {
+      "id": "stone_step",
+      "profile": "raised",
+      "description": "isometric low stone step tiles, one-level stone edges only: 1) stone step front 2) stone step corner 3) low stone bank 4) worn step 5) mossy step 6) stone rim",
+      "depth_ratio": 1.0
+    },
+    {
+      "id": "garden_wall",
+      "profile": "raised",
+      "description": "isometric low garden wall tiles, one-level walls only: 1) low stone wall 2) brick garden wall 3) wall corner 4) mossy low wall 5) wall with gate 6) capped wall",
+      "depth_ratio": 1.0
+    },
+    {
+      "id": "wooden_fence",
+      "profile": "raised",
+      "description": "isometric wooden fence tiles, one-level fences only: 1) plank fence 2) fence post 3) fence corner 4) fence gate 5) rustic fence 6) broken fence",
+      "depth_ratio": 1.0
+    },
+    {
+      "id": "hedge",
+      "profile": "raised",
+      "description": "isometric hedge and bush-wall tiles, one-level green walls only: 1) trimmed hedge 2) hedge corner 3) flowering hedge 4) tall bush wall 5) hedge gap 6) wild hedge",
+      "depth_ratio": 1.0
+    },
+    {
+      "id": "cliff_grass",
+      "profile": "cliff",
+      "description": "isometric grassy cliff tiles, two-level tall rock face topped with grass, cliffs only: 1) grass cliff front 2) grass cliff left corner 3) grass cliff right corner 4) grass cliff inner corner 5) grassy ledge drop 6) rocky grass cliff",
+      "tile_height": 128,
+      "depth_ratio": 0.75
+    },
+    {
+      "id": "cliff_stone",
+      "profile": "cliff",
+      "description": "isometric grey stone cliff tiles, two-level tall rock face, cliffs only: 1) stone cliff front 2) stone cliff corner 3) layered strata cliff 4) cracked cliff 5) mossy cliff 6) stone cliff inner corner",
+      "tile_height": 128,
+      "depth_ratio": 0.75
+    },
+    {
+      "id": "cliff_snow",
+      "profile": "cliff",
+      "description": "isometric snowy cliff tiles, two-level rock face topped with snow, cliffs only: 1) snow cliff front 2) snow cliff corner 3) icy cliff 4) snow ledge drop 5) frosty cliff 6) snow cliff inner corner",
+      "tile_height": 128,
+      "depth_ratio": 0.75
+    },
+    {
+      "id": "cliff_sand",
+      "profile": "cliff",
+      "description": "isometric sandy cliff tiles, two-level sandstone face, cliffs only: 1) sand cliff front 2) sand cliff corner 3) layered sandstone 4) eroded sand cliff 5) dusty ledge 6) sand cliff inner corner",
+      "tile_height": 128,
+      "depth_ratio": 0.75
+    },
+    {
+      "id": "cliff_dirt",
+      "profile": "cliff",
+      "description": "isometric earthen cliff tiles, two-level dirt bank face, cliffs only: 1) dirt cliff front 2) dirt cliff corner 3) rooted dirt bank 4) muddy cliff 5) crumbling dirt drop 6) dirt cliff inner corner",
+      "tile_height": 128,
+      "depth_ratio": 0.75
+    },
+    {
+      "id": "cliff_desert",
+      "profile": "cliff",
+      "description": "isometric desert mesa cliff tiles, two-level red-rock canyon face, cliffs only: 1) red mesa front 2) mesa corner 3) sandstone layers 4) eroded mesa 5) canyon drop 6) mesa inner corner",
+      "tile_height": 128,
+      "depth_ratio": 0.75
+    },
+    {
+      "id": "cliff_forest",
+      "profile": "cliff",
+      "description": "isometric mossy forest cliff tiles, two-level rock face with moss and roots, cliffs only: 1) mossy cliff front 2) rooty cliff corner 3) ferny cliff 4) fallen-log cliff 5) shaded ledge 6) forest cliff inner corner",
+      "tile_height": 128,
+      "depth_ratio": 0.75
+    },
+    {
+      "id": "castle_wall",
+      "profile": "tall",
+      "description": "isometric tall castle wall tiles, battlement walls only: 1) castle wall 2) crenellated wall 3) tower base 4) arched gate 5) buttressed wall 6) mossy castle wall",
+      "tile_height": 128,
+      "depth_ratio": 1.0
+    },
+    {
+      "id": "town_wall",
+      "profile": "tall",
+      "description": "isometric tall town wall tiles, boundary walls only: 1) stone town wall 2) wooden palisade 3) brick wall 4) wall with gate 5) wall corner 6) capped town wall",
+      "tile_height": 128,
+      "depth_ratio": 1.0
     },
     {
       "id": "mountain_peak",
-      "kind": "elevation",
+      "profile": "tall",
+      "description": "isometric tall mountain tiles, high peaks only: 1) tall grey peak 2) snow-capped peak 3) craggy summit 4) steep rock face 5) dark spire 6) layered mountain",
       "tile_height": 128,
-      "depth_ratio": 1.0,
-      "description": "isometric tall mountain rock tiles for high peaks: 1) tall grey mountain block 2) snow-capped peak 3) craggy summit 4) steep rock face 5) dark basalt spire 6) layered mountain strata"
+      "depth_ratio": 1.0
+    },
+    {
+      "id": "watchtower",
+      "profile": "tall",
+      "description": "isometric tall stone tower tiles, towers only: 1) round tower body 2) tower top 3) tower with window 4) ruined tower 5) tower base 6) tower doorway",
+      "tile_height": 128,
+      "depth_ratio": 1.0
+    },
+    {
+      "id": "big_boulder",
+      "profile": "tall",
+      "description": "isometric tall boulder and rock-stack tiles, large rocks only: 1) huge boulder 2) stacked rocks 3) mossy boulder 4) split boulder 5) craggy pillar 6) balanced rock",
+      "tile_height": 128,
+      "depth_ratio": 1.0
+    },
+    {
+      "id": "cliff_lava",
+      "profile": "tall",
+      "description": "isometric tall volcanic cliff tiles, obsidian and lava rock face only: 1) obsidian cliff 2) glowing-crack cliff 3) basalt columns 4) ashen cliff 5) ember cliff 6) lava cliff corner",
+      "tile_height": 128,
+      "depth_ratio": 1.0
     }
   ],
   "procedural": {
-    "_comment": "When the explicit list is exhausted, keep inventing focused categories to grow the library forever.",
+    "_comment": "Endless growth; cycles profiles to hold the ~40/20/20/20 mix.",
     "categories": [
       {
         "id": "flowers",
-        "description": "isometric flower meadow tiles, all flowering grass only: 1) red poppies in grass 2) blue flowers 3) purple lavender 4) mixed wildflowers 5) daisy field 6) yellow buttercups"
+        "profile": "flat",
+        "description": "isometric flower meadow tiles, flowering grass only: 1) red poppies 2) blue flowers 3) purple lavender 4) mixed wildflowers 5) daisy field 6) buttercups"
       },
       {
         "id": "jungle",
-        "description": "isometric jungle floor tiles, all jungle ground only: 1) dense green undergrowth 2) muddy jungle path 3) mossy jungle rock 4) fern-covered ground 5) vines on soil 6) dark rainforest floor"
+        "profile": "flat",
+        "description": "isometric jungle floor tiles, jungle ground only: 1) dense undergrowth 2) muddy path 3) mossy rock 4) ferns 5) vines on soil 6) dark rainforest floor"
       },
       {
         "id": "tundra",
-        "description": "isometric tundra tiles, all cold tundra only: 1) frosty grass 2) lichen-covered rock 3) patchy snow on grass 4) frozen mud 5) hardy moss 6) icy gravel"
+        "profile": "flat",
+        "description": "isometric tundra tiles, cold tundra only: 1) frosty grass 2) lichen rock 3) patchy snow grass 4) frozen mud 5) hardy moss 6) icy gravel"
       },
       {
-        "id": "gravel",
-        "description": "isometric gravel/path tiles, all loose stone only: 1) grey gravel 2) fine crushed stone 3) mixed pebbles 4) dark gravel 5) sandy gravel 6) rocky path"
+        "id": "swamp",
+        "profile": "flat",
+        "description": "isometric swamp tiles, swamp only: 1) murky water 2) muddy marsh 3) mossy bog 4) reedy wetland 5) algae water 6) soggy peat"
       },
       {
-        "id": "cliff_desert",
-        "kind": "elevation",
+        "id": "lava",
+        "profile": "flat",
+        "description": "isometric volcanic ground tiles, volcanic only: 1) glowing lava 2) cooled basalt 3) magma crust 4) obsidian ground 5) ashen ground 6) ember rock"
+      },
+      {
+        "id": "cliff_ice",
+        "profile": "cliff",
+        "description": "isometric glacial ice cliff tiles, two-level ice face only: 1) ice cliff front 2) ice cliff corner 3) glacial wall 4) frozen drop 5) blue ice cliff 6) ice inner corner",
         "tile_height": 128,
-        "depth_ratio": 1.0,
-        "description": "isometric desert mesa cliff tiles, tall red-rock canyon walls: 1) red mesa cliff face 2) sandstone layers 3) desert cliff corner 4) eroded rock wall 5) dusty ledge 6) canyon drop"
+        "depth_ratio": 0.75
+      },
+      {
+        "id": "brick_wall",
+        "profile": "tall",
+        "description": "isometric tall brick wall tiles, walls only: 1) red brick wall 2) wall corner 3) wall window 4) archway 5) worn brick wall 6) capped brick wall",
+        "tile_height": 128,
+        "depth_ratio": 1.0
+      },
+      {
+        "id": "wood_ramp",
+        "profile": "raised",
+        "description": "isometric wooden ramp and dock-step tiles, one-level wood only: 1) wood ramp 2) wood steps 3) dock edge 4) plank slope 5) ramp corner 6) low wood platform",
+        "depth_ratio": 1.0
       }
     ]
+  },
+  "profiles": {
+    "flat": {
+      "tile_size": 64,
+      "tile_height": 64,
+      "depth_ratio": 0.5,
+      "layers": 0.5,
+      "use": "ground plane"
+    },
+    "raised": {
+      "tile_size": 64,
+      "tile_height": 64,
+      "depth_ratio": 1.0,
+      "layers": 1,
+      "use": "1-level steps/low walls/fences"
+    },
+    "cliff": {
+      "tile_size": 64,
+      "tile_height": 128,
+      "depth_ratio": 0.75,
+      "layers": 2,
+      "use": "2-level cliffs/banks"
+    },
+    "tall": {
+      "tile_size": 64,
+      "tile_height": 128,
+      "depth_ratio": 1.0,
+      "layers": 2.7,
+      "use": "tall walls/towers/peaks"
+    }
   }
 }

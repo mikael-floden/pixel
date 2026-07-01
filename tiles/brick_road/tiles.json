@@ -107,5 +107,25 @@
     }
   ],
   "preview": "preview.png",
-  "provenance": "pixellab create-tiles-pro (isometric)"
+  "provenance": "pixellab create-tiles-pro (isometric)",
+  "profile": "flat",
+  "kind": "ground",
+  "geometry": {
+    "grid_dx": 32,
+    "grid_dy": 13,
+    "diamond_top_height": 26,
+    "level_height": 19,
+    "note": "screen_x=ox+(col-row)*grid_dx; screen_y=oy+(col+row)*grid_dy; raise one level by subtracting level_height from screen_y; draw back-to-front by (col+row) then by level."
+  },
+  "stacking": {
+    "face_height_px": 19,
+    "one_layer_px": 38,
+    "layers": 0.5,
+    "diamond_top_height_px": 26,
+    "grid_dx": 32,
+    "grid_dy": 13,
+    "formula": "face_px = depth_ratio*(tile_height-26). One elevation level = 38px (a 64x64 @ 100% tile). To place a tile N levels up, subtract N*38 from screen_y. This set's face spans `layers` levels. Stack flush by offsetting the upper tile up by its own face_height_px. Draw back-to-front by (col+row), then level."
+  },
+  "generated_at": null,
+  "metadata_backfilled_at": "2026-07-01T10:10:11+00:00"
 }

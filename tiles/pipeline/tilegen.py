@@ -19,6 +19,31 @@ from PIL import Image
 ROOT = os.path.dirname(os.path.dirname(__file__))  # tiles/
 ENDPOINT = "/create-tiles-pro"
 
+# Elevation model (verified on real tiles): the vertical side-face height is
+#   face_px ~= depth_ratio * (tile_height - DIAMOND_TOP_H)
+# One elevation LEVEL is defined as a 64x64 @ 100% face = ONE_LAYER_PX. The Maps
+# agent raises a tile N levels by subtracting N*ONE_LAYER_PX from its screen-Y.
+DIAMOND_TOP_H = 26          # diamond top height at tile_size 64, 28 deg, flat_top 4
+ONE_LAYER_PX = 38          # 64x64 @ 100% face = one elevation level
+
+
+def stacking_info(geometry):
+    """Elevation/stacking guidance for one set, from its measured geometry."""
+    face = geometry.get("level_height")
+    return {
+        "face_height_px": face,
+        "one_layer_px": ONE_LAYER_PX,
+        "layers": round(face / ONE_LAYER_PX, 2) if face else None,
+        "diamond_top_height_px": geometry.get("diamond_top_height"),
+        "grid_dx": geometry.get("grid_dx"),
+        "grid_dy": geometry.get("grid_dy"),
+        "formula": ("face_px = depth_ratio*(tile_height-26). One elevation level = "
+                    "38px (a 64x64 @ 100% tile). To place a tile N levels up, "
+                    "subtract N*38 from screen_y. This set's face spans `layers` "
+                    "levels. Stack flush by offsetting the upper tile up by its "
+                    "own face_height_px. Draw back-to-front by (col+row), then level."),
+    }
+
 
 def _seed(*parts):
     return zlib.crc32("::".join(str(p) for p in parts).encode()) % (2 ** 31)
@@ -122,7 +147,9 @@ def generate_category(client, cfg, cat):
         "tile_size": t["size"], "view_angle": t["view_angle"],
         "depth_ratio": depth, "flat_top_px": t.get("flat_top_px", 4),
         "tile_height": tile_height,
+        "profile": cat.get("profile"),
         "geometry": geometry,
+        "stacking": stacking_info(geometry),
         "count": len(tile_meta), "tiles": tile_meta,
         "preview": "preview.png",
         "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
