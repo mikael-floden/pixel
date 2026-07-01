@@ -238,7 +238,7 @@
       }
     },
     "spin": {
-      "group_id": "3aba6aa8-4fa5-49f3-90b2-7a03fab4af0b",
+      "group_id": "eada8c56-cba8-49e9-9760-bfa171371b9f",
       "description": "the sword spinning",
       "frame_count": 16,
       "directions": {
@@ -336,6 +336,30 @@
             "sword/animations/spin/north-west/14.png",
             "sword/animations/spin/north-west/15.png",
             "sword/animations/spin/north-west/16.png"
+          ]
+        },
+        "south": {
+          "frames": 17,
+          "strip": "sword/animations/spin__south.png",
+          "gif": "sword/animations/spin__south.gif",
+          "frame_paths": [
+            "sword/animations/spin/south/00.png",
+            "sword/animations/spin/south/01.png",
+            "sword/animations/spin/south/02.png",
+            "sword/animations/spin/south/03.png",
+            "sword/animations/spin/south/04.png",
+            "sword/animations/spin/south/05.png",
+            "sword/animations/spin/south/06.png",
+            "sword/animations/spin/south/07.png",
+            "sword/animations/spin/south/08.png",
+            "sword/animations/spin/south/09.png",
+            "sword/animations/spin/south/10.png",
+            "sword/animations/spin/south/11.png",
+            "sword/animations/spin/south/12.png",
+            "sword/animations/spin/south/13.png",
+            "sword/animations/spin/south/14.png",
+            "sword/animations/spin/south/15.png",
+            "sword/animations/spin/south/16.png"
           ]
         },
         "south-east": {
