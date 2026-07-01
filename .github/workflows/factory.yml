@@ -56,6 +56,6 @@ jobs:
           fi
           git config user.name "pixel-factory-bot"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          python pipeline/loop.py \
+          python characters/pipeline/loop.py \
             --max-minutes "${{ github.event.inputs.max_minutes || '50' }}" \
             --min-balance "${{ github.event.inputs.min_balance || '40' }}"

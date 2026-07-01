@@ -4,7 +4,30 @@
 
 An automated loop that generates modular *Grave Seasons*-style pixel characters
 via the PixelLab API. The repo tries many **skeletons** (generation-parameter
-profiles) before picking a winner. Read `README.md` and `spec/FACTORY_SPEC.md`.
+profiles) before picking a winner. Read `README.md` and
+`characters/spec/FACTORY_SPEC.md`.
+
+## Repository layout (multi-domain, one repo for ALL game graphics)
+
+Each art domain is a **self-contained top-level directory** and is owned by its
+own agent/loop/Routine. Keep everything for a domain **inside its directory** —
+do not add domain-specific files to the repo root.
+
+- `characters/` — this agent's domain (undressed base characters + dresses +
+  animations). Everything lives here: `characters/config/factory.json`,
+  `characters/pipeline/*.py`, `characters/skeletons/` (generated art),
+  `characters/index.html` + `characters/viewer_data.json` (viewer),
+  `characters/spec/`.
+- `objects/` — animated props / map objects (a separate agent).
+- `maps/` — tilesets / environments (a separate agent).
+- Repo root holds only shared/repo-level files: `README.md`, `CLAUDE.md`,
+  `requirements.txt`, `.gitignore`, `.env` (gitignored).
+
+The pipelines touch **disjoint paths**, so concurrent pushes to `main` rebase
+cleanly. The only real cross-domain hazard is editing a *shared* file at once;
+each domain currently keeps its own copy of `pixellab_client.py` (full
+isolation) — if that's ever centralized, treat it as a deliberately shared lib.
+All paths below are relative to `characters/`.
 
 ## Mental model
 
@@ -52,8 +75,10 @@ Append to `config/factory.json:skeleton_variations` (or rely on
 ## Running the loop on a schedule
 
 A scheduled Routine wakes a session that runs
-`python pipeline/loop.py --max-minutes 50`, which advances + pushes, then exits;
-the next firing resumes from the filesystem.
+`python characters/pipeline/loop.py --max-minutes 50`, which advances + pushes,
+then exits; the next firing resumes from the filesystem. The loop also runs an
+efficient sync at startup (mirrors PixelLab/UI edits in, unchanged frames skipped
+via If-Modified-Since).
 
 ## Don't
 
