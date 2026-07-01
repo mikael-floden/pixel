@@ -1,0 +1,48 @@
+{
+  "_comment": "Tiles agent config. Generates FOCUSED isometric terrain tile sets via PixelLab create-tiles-pro. Every tile: 64px, 28-degree view angle, 50% thickness (depth_ratio 0.5), isometric. Each category is one create-tiles-pro call (~16 tile variations, ~20 generations) and stays on-theme (snow=snow, town=town) — no mixed do-everything tiles. Output downloaded to tiles/<category>/. A separate Maps agent assembles these into worlds. See tiles/README.md.",
+
+  "tile": {
+    "size": 64,
+    "view_angle": 28,
+    "depth_ratio": 0.5,
+    "type": "isometric",
+    "flat_top_px": 4
+  },
+
+  "style_base": "cohesive readable pixel art, clean isometric terrain tiles, Grave Seasons / Stardew Valley palette",
+
+  "budget": { "min_generations_remaining": 500,
+    "_comment": "Shared PixelLab pool (coordination/PROTOCOL.md). Each category ~20 generations." },
+
+  "_categories": "Focused tile sets covering the whole world. `id` = folder under tiles/. `description` numbers on-theme variations only.",
+  "categories": [
+    { "id": "grass",       "description": "isometric grass terrain tiles, all grass only: 1) lush green grass 2) grass with small yellow flowers 3) grass with white daisies 4) tall grass tufts 5) dry yellow grass 6) mossy grass" },
+    { "id": "dirt",        "description": "isometric dirt terrain tiles, all dirt/soil only: 1) packed brown dirt 2) dry cracked dirt 3) dirt with small pebbles 4) muddy dirt 5) tilled soil 6) dark rich soil" },
+    { "id": "sand",        "description": "isometric sand terrain tiles, all sand only: 1) pale desert sand 2) rippled sand dunes 3) sand with small rocks 4) wet beach sand 5) golden sand 6) coarse sandy gravel" },
+    { "id": "snow",        "description": "isometric snow terrain tiles, all snow only: 1) fresh white snow 2) packed snow 3) snow with footprints 4) icy crusted snow 5) snow drift 6) snow over small rocks" },
+    { "id": "ice",         "description": "isometric ice terrain tiles, all ice only: 1) smooth blue ice 2) cracked ice 3) frozen lake ice 4) frosty ice 5) glacial ice 6) icy slush" },
+    { "id": "water",       "description": "isometric water terrain tiles, all water only: 1) calm blue water 2) rippling water 3) deep ocean water 4) shallow clear water 5) sparkling water 6) dark water" },
+    { "id": "stone",       "description": "isometric stone terrain tiles, all natural stone only: 1) grey rock 2) mossy stone 3) cracked stone 4) smooth boulder stone 5) dark slate 6) pebbled stone" },
+    { "id": "cobblestone", "description": "isometric town cobblestone tiles, all paving only: 1) grey cobblestone 2) round cobble path 3) worn cobblestone 4) mossy cobblestone 5) neat cobble pavement 6) dark cobblestone" },
+    { "id": "brick_road",  "description": "isometric brick road tiles, all brick paving only: 1) red brick road 2) worn brick 3) herringbone brick 4) grey brick pavement 5) mossy brick 6) cracked brick" },
+    { "id": "castle",      "description": "isometric castle stone floor tiles, all castle interior stone only: 1) grey castle flagstone 2) polished marble floor 3) stone brick floor 4) cracked dungeon stone 5) royal red carpet on stone 6) dark stone tile" },
+    { "id": "wood_floor",  "description": "isometric wooden floor tiles, all wood planks only: 1) warm wood planks 2) worn wood floor 3) dark oak planks 4) light pine planks 5) wide plank floor 6) creaky old wood" },
+    { "id": "forest",      "description": "isometric forest floor tiles, all forest ground only: 1) leafy forest floor 2) mossy ground with ferns 3) pine needle ground 4) forest dirt with roots 5) grass with fallen leaves 6) dark woodland floor" },
+    { "id": "farm",        "description": "isometric farmland tiles, all farm ground only: 1) tilled soil rows 2) watered soil 3) soil with sprouts 4) hay covered ground 5) dry field 6) furrowed farmland" },
+    { "id": "mountain",    "description": "isometric mountain rock tiles, all rocky mountain only: 1) grey mountain rock 2) craggy stone 3) snow-capped rock 4) layered rock strata 5) dark basalt 6) rocky scree" },
+    { "id": "swamp",       "description": "isometric swamp terrain tiles, all swamp/marsh only: 1) murky swamp water 2) muddy marsh 3) mossy bog 4) reedy wetland 5) algae water 6) soggy peat" },
+    { "id": "lava",        "description": "isometric volcanic terrain tiles, all volcanic only: 1) glowing lava 2) cooled black basalt 3) cracked magma crust 4) obsidian rock 5) ashen ground 6) ember-flecked rock" },
+    { "id": "cave",        "description": "isometric cave floor tiles, all cave interior only: 1) damp grey cave floor 2) rocky cave ground 3) cave floor with pebbles 4) crystal-flecked stone 5) dark cavern floor 6) wet cave rock" },
+    { "id": "desert",      "description": "isometric desert terrain tiles, all arid desert only: 1) cracked desert clay 2) rocky desert ground 3) reddish sand 4) dry hardpan 5) desert gravel 6) sun-baked earth" }
+  ],
+
+  "procedural": {
+    "_comment": "When the explicit list is exhausted, keep inventing focused categories to grow the library forever.",
+    "categories": [
+      { "id": "flowers",   "description": "isometric flower meadow tiles, all flowering grass only: 1) red poppies in grass 2) blue flowers 3) purple lavender 4) mixed wildflowers 5) daisy field 6) yellow buttercups" },
+      { "id": "jungle",    "description": "isometric jungle floor tiles, all jungle ground only: 1) dense green undergrowth 2) muddy jungle path 3) mossy jungle rock 4) fern-covered ground 5) vines on soil 6) dark rainforest floor" },
+      { "id": "tundra",    "description": "isometric tundra tiles, all cold tundra only: 1) frosty grass 2) lichen-covered rock 3) patchy snow on grass 4) frozen mud 5) hardy moss 6) icy gravel" },
+      { "id": "gravel",    "description": "isometric gravel/path tiles, all loose stone only: 1) grey gravel 2) fine crushed stone 3) mixed pebbles 4) dark gravel 5) sandy gravel 6) rocky path" }
+    ]
+  }
+}
