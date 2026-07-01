@@ -1,6 +1,6 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 7,
+  "object_count": 8,
   "target_count": 46,
   "scale": {
     "_comment": "REALISM RULE: objects are scaled to the world by real height, so they sit correctly next to characters. A character is ~character_height_px tall (the 64px skeleton) representing character_height_m. The loop turns each object's world_height_m into world_px_height = round(world_height_m * character_height_px / character_height_m); a game renders the sprite scaled to that pixel height. So a coin (~0.22m) is tiny next to a character and an oak (~6m) towers. Every object MUST have a world_height_m (per-object, else category_height_m fallback).",
@@ -20,7 +20,7 @@
   },
   "categories": {
     "container": 4,
-    "valuable": 3
+    "valuable": 4
   },
   "objects": [
     {
@@ -409,6 +409,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "iron_key",
+      "name": "Iron Key",
+      "category": "valuable",
+      "description": "an ornate old iron key with a looped bow",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.3,
+        "world_px_height": 11,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "in_progress",
+      "pixellab_object_id": "6a4dff6a-58a7-4c8d-a0a2-3863bac05728",
+      "sprite": "iron_key/sprite.png",
+      "rotations": {
+        "east": "iron_key/rotations/east.png",
+        "north": "iron_key/rotations/north.png",
+        "north-east": "iron_key/rotations/north-east.png",
+        "north-west": "iron_key/rotations/north-west.png",
+        "south": "iron_key/rotations/south.png",
+        "south-east": "iron_key/rotations/south-east.png",
+        "south-west": "iron_key/rotations/south-west.png",
+        "west": "iron_key/rotations/west.png"
+      },
+      "animations": []
     },
     {
       "id": "wooden_chest",

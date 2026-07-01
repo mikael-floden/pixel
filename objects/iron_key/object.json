@@ -1,0 +1,42 @@
+{
+  "id": "iron_key",
+  "name": "Iron Key",
+  "category": "valuable",
+  "description": "an ornate old iron key with a looped bow",
+  "view": "low top-down",
+  "size": 48,
+  "placement": {
+    "world_height_m": 0.3,
+    "world_px_height": 11,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "procedural": false,
+  "source": "pixellab.ai create-8-direction-object (persistent, syncable)",
+  "pixellab_object_id": "6a4dff6a-58a7-4c8d-a0a2-3863bac05728",
+  "style_version": 2,
+  "sprite": "iron_key/sprite.png",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "east": "iron_key/rotations/east.png",
+    "north": "iron_key/rotations/north.png",
+    "north-east": "iron_key/rotations/north-east.png",
+    "north-west": "iron_key/rotations/north-west.png",
+    "south": "iron_key/rotations/south.png",
+    "south-east": "iron_key/rotations/south-east.png",
+    "south-west": "iron_key/rotations/south-west.png",
+    "west": "iron_key/rotations/west.png"
+  },
+  "animations": {},
+  "status": "in_progress"
+}
