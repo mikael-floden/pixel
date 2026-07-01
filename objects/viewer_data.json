@@ -34,7 +34,7 @@
         "character_height_m": 1.7,
         "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
       },
-      "status": "in_progress",
+      "status": "complete",
       "pixellab_object_id": "e95365bb-b2e4-4c99-a1ad-5bb7d57417ec",
       "sprite": "wooden_chest/sprite.png",
       "rotations": {
@@ -78,6 +78,22 @@
             "south-east": "wooden_chest/animations/close__south-east.gif",
             "south-west": "wooden_chest/animations/close__south-west.gif",
             "west": "wooden_chest/animations/close__west.gif"
+          }
+        },
+        {
+          "key": "rattle",
+          "description": "the closed chest shaking and rattling",
+          "frames": 17,
+          "preview_gif": "wooden_chest/animations/rattle__south.gif",
+          "directions": {
+            "east": "wooden_chest/animations/rattle__east.gif",
+            "north": "wooden_chest/animations/rattle__north.gif",
+            "north-east": "wooden_chest/animations/rattle__north-east.gif",
+            "north-west": "wooden_chest/animations/rattle__north-west.gif",
+            "south": "wooden_chest/animations/rattle__south.gif",
+            "south-east": "wooden_chest/animations/rattle__south-east.gif",
+            "south-west": "wooden_chest/animations/rattle__south-west.gif",
+            "west": "wooden_chest/animations/rattle__west.gif"
           }
         }
       ]
