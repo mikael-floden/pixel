@@ -31,6 +31,39 @@
       ],
       "preview": "isle_of_dawn/preview.png",
       "manifest": "isle_of_dawn/zone.json"
+    },
+    {
+      "id": "whispering_isle",
+      "title": "Whispering Isle",
+      "kind": "island",
+      "archetype": "small_island",
+      "description": "A small wooded island ringed by beach; a forest crowns its centre.",
+      "grid": {
+        "width": 24,
+        "height": 20
+      },
+      "tile_size": 16,
+      "levels": [
+        "water",
+        "sand",
+        "grass",
+        "forest"
+      ],
+      "bands": [
+        "ocean_sand",
+        "sand_grass",
+        "grass_forest"
+      ],
+      "objects": 4,
+      "exits": [
+        {
+          "id": "dock",
+          "kind": "dock",
+          "to_zone": null
+        }
+      ],
+      "preview": "whispering_isle/preview.png",
+      "manifest": "whispering_isle/zone.json"
     }
   ],
   "tilesets": [
