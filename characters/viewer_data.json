@@ -2123,7 +2123,7 @@
         "shading": "basic shading",
         "detail": "medium detail"
       },
-      "character_count": 4,
+      "character_count": 5,
       "characters": [
         {
           "local_id": "char_00",
@@ -2297,6 +2297,23 @@
               }
             }
           ],
+          "outfits": []
+        },
+        {
+          "local_id": "char_04",
+          "look": "a jovial heavyset older woman with rosy cheeks, laugh lines and a big warm grin, curly greying hair, plump build",
+          "portrait": "skeletons/01_low8_64/characters/char_04/portrait.png",
+          "rotations": [
+            "skeletons/01_low8_64/characters/char_04/rotations/east.png",
+            "skeletons/01_low8_64/characters/char_04/rotations/north.png",
+            "skeletons/01_low8_64/characters/char_04/rotations/north-east.png",
+            "skeletons/01_low8_64/characters/char_04/rotations/north-west.png",
+            "skeletons/01_low8_64/characters/char_04/rotations/south-east.png",
+            "skeletons/01_low8_64/characters/char_04/rotations/south-west.png",
+            "skeletons/01_low8_64/characters/char_04/rotations/west.png"
+          ],
+          "animation_count": 0,
+          "animations": [],
           "outfits": []
         }
       ]
