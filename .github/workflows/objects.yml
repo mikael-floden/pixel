@@ -33,7 +33,11 @@ concurrency:
 jobs:
   loop:
     runs-on: ubuntu-latest
-    timeout-minutes: 55
+    # Generous headroom over the loop's --max-minutes clean exit: a single
+    # 8-direction/16-frame animation unit can take ~8 min, so the last unit must
+    # be able to finish and COMMIT well before the job is killed. (A 55-min cap
+    # was cancelling passes mid-unit and losing that object.)
+    timeout-minutes: 90
     steps:
       - name: Checkout main
         uses: actions/checkout@v4
