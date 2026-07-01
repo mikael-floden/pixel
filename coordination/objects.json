@@ -1,14 +1,14 @@
 {
   "domain": "objects",
-  "updated_at": "2026-07-01T15:21:46+00:00",
+  "updated_at": "2026-07-01T15:33:01+00:00",
   "health": "running",
-  "current": "pine_tree: 8-dir object (128px low top-down) \u2014 Pine Tree",
+  "current": "pine_tree: animation 'sway' \u2014 the branches swaying in the wind (8 dirs)",
   "progress": {
-    "objects_complete": 12,
+    "objects_complete": 13,
     "objects_started": 16,
     "objects_target": 61
   },
-  "budget_remaining": 2073.0,
+  "budget_remaining": 1802.0,
   "notes": [
     "objects domain: props/tools/items (chest, coin, tree, sword...). Each object = one folder objects/<id>/ with sprite + optional rotations + animations. Repo is the source of truth (stateless PixelLab image tools; nothing to sync back).",
     "[2026-07-01T02:43:10+00:00] objects agent online: props/tools/items (chest, coin, tree, sword, torch, potion...). Each object = objects/<id>/ with sprite + optional rotations + animations. Heartbeat live on main.",

@@ -37,6 +37,206 @@
     "south-west": "pine_tree/rotations/south-west.png",
     "west": "pine_tree/rotations/west.png"
   },
-  "animations": {},
-  "status": "in_progress"
+  "animations": {
+    "sway": {
+      "group_id": "31b9eeac-4b0e-42df-ac5e-42e5744428f5",
+      "description": "the branches swaying in the wind",
+      "frame_count": 16,
+      "directions": {
+        "east": {
+          "frames": 17,
+          "strip": "pine_tree/animations/sway__east.png",
+          "gif": "pine_tree/animations/sway__east.gif",
+          "frame_paths": [
+            "pine_tree/animations/sway/east/00.png",
+            "pine_tree/animations/sway/east/01.png",
+            "pine_tree/animations/sway/east/02.png",
+            "pine_tree/animations/sway/east/03.png",
+            "pine_tree/animations/sway/east/04.png",
+            "pine_tree/animations/sway/east/05.png",
+            "pine_tree/animations/sway/east/06.png",
+            "pine_tree/animations/sway/east/07.png",
+            "pine_tree/animations/sway/east/08.png",
+            "pine_tree/animations/sway/east/09.png",
+            "pine_tree/animations/sway/east/10.png",
+            "pine_tree/animations/sway/east/11.png",
+            "pine_tree/animations/sway/east/12.png",
+            "pine_tree/animations/sway/east/13.png",
+            "pine_tree/animations/sway/east/14.png",
+            "pine_tree/animations/sway/east/15.png",
+            "pine_tree/animations/sway/east/16.png"
+          ]
+        },
+        "north": {
+          "frames": 17,
+          "strip": "pine_tree/animations/sway__north.png",
+          "gif": "pine_tree/animations/sway__north.gif",
+          "frame_paths": [
+            "pine_tree/animations/sway/north/00.png",
+            "pine_tree/animations/sway/north/01.png",
+            "pine_tree/animations/sway/north/02.png",
+            "pine_tree/animations/sway/north/03.png",
+            "pine_tree/animations/sway/north/04.png",
+            "pine_tree/animations/sway/north/05.png",
+            "pine_tree/animations/sway/north/06.png",
+            "pine_tree/animations/sway/north/07.png",
+            "pine_tree/animations/sway/north/08.png",
+            "pine_tree/animations/sway/north/09.png",
+            "pine_tree/animations/sway/north/10.png",
+            "pine_tree/animations/sway/north/11.png",
+            "pine_tree/animations/sway/north/12.png",
+            "pine_tree/animations/sway/north/13.png",
+            "pine_tree/animations/sway/north/14.png",
+            "pine_tree/animations/sway/north/15.png",
+            "pine_tree/animations/sway/north/16.png"
+          ]
+        },
+        "north-east": {
+          "frames": 17,
+          "strip": "pine_tree/animations/sway__north-east.png",
+          "gif": "pine_tree/animations/sway__north-east.gif",
+          "frame_paths": [
+            "pine_tree/animations/sway/north-east/00.png",
+            "pine_tree/animations/sway/north-east/01.png",
+            "pine_tree/animations/sway/north-east/02.png",
+            "pine_tree/animations/sway/north-east/03.png",
+            "pine_tree/animations/sway/north-east/04.png",
+            "pine_tree/animations/sway/north-east/05.png",
+            "pine_tree/animations/sway/north-east/06.png",
+            "pine_tree/animations/sway/north-east/07.png",
+            "pine_tree/animations/sway/north-east/08.png",
+            "pine_tree/animations/sway/north-east/09.png",
+            "pine_tree/animations/sway/north-east/10.png",
+            "pine_tree/animations/sway/north-east/11.png",
+            "pine_tree/animations/sway/north-east/12.png",
+            "pine_tree/animations/sway/north-east/13.png",
+            "pine_tree/animations/sway/north-east/14.png",
+            "pine_tree/animations/sway/north-east/15.png",
+            "pine_tree/animations/sway/north-east/16.png"
+          ]
+        },
+        "north-west": {
+          "frames": 17,
+          "strip": "pine_tree/animations/sway__north-west.png",
+          "gif": "pine_tree/animations/sway__north-west.gif",
+          "frame_paths": [
+            "pine_tree/animations/sway/north-west/00.png",
+            "pine_tree/animations/sway/north-west/01.png",
+            "pine_tree/animations/sway/north-west/02.png",
+            "pine_tree/animations/sway/north-west/03.png",
+            "pine_tree/animations/sway/north-west/04.png",
+            "pine_tree/animations/sway/north-west/05.png",
+            "pine_tree/animations/sway/north-west/06.png",
+            "pine_tree/animations/sway/north-west/07.png",
+            "pine_tree/animations/sway/north-west/08.png",
+            "pine_tree/animations/sway/north-west/09.png",
+            "pine_tree/animations/sway/north-west/10.png",
+            "pine_tree/animations/sway/north-west/11.png",
+            "pine_tree/animations/sway/north-west/12.png",
+            "pine_tree/animations/sway/north-west/13.png",
+            "pine_tree/animations/sway/north-west/14.png",
+            "pine_tree/animations/sway/north-west/15.png",
+            "pine_tree/animations/sway/north-west/16.png"
+          ]
+        },
+        "south": {
+          "frames": 17,
+          "strip": "pine_tree/animations/sway__south.png",
+          "gif": "pine_tree/animations/sway__south.gif",
+          "frame_paths": [
+            "pine_tree/animations/sway/south/00.png",
+            "pine_tree/animations/sway/south/01.png",
+            "pine_tree/animations/sway/south/02.png",
+            "pine_tree/animations/sway/south/03.png",
+            "pine_tree/animations/sway/south/04.png",
+            "pine_tree/animations/sway/south/05.png",
+            "pine_tree/animations/sway/south/06.png",
+            "pine_tree/animations/sway/south/07.png",
+            "pine_tree/animations/sway/south/08.png",
+            "pine_tree/animations/sway/south/09.png",
+            "pine_tree/animations/sway/south/10.png",
+            "pine_tree/animations/sway/south/11.png",
+            "pine_tree/animations/sway/south/12.png",
+            "pine_tree/animations/sway/south/13.png",
+            "pine_tree/animations/sway/south/14.png",
+            "pine_tree/animations/sway/south/15.png",
+            "pine_tree/animations/sway/south/16.png"
+          ]
+        },
+        "south-east": {
+          "frames": 17,
+          "strip": "pine_tree/animations/sway__south-east.png",
+          "gif": "pine_tree/animations/sway__south-east.gif",
+          "frame_paths": [
+            "pine_tree/animations/sway/south-east/00.png",
+            "pine_tree/animations/sway/south-east/01.png",
+            "pine_tree/animations/sway/south-east/02.png",
+            "pine_tree/animations/sway/south-east/03.png",
+            "pine_tree/animations/sway/south-east/04.png",
+            "pine_tree/animations/sway/south-east/05.png",
+            "pine_tree/animations/sway/south-east/06.png",
+            "pine_tree/animations/sway/south-east/07.png",
+            "pine_tree/animations/sway/south-east/08.png",
+            "pine_tree/animations/sway/south-east/09.png",
+            "pine_tree/animations/sway/south-east/10.png",
+            "pine_tree/animations/sway/south-east/11.png",
+            "pine_tree/animations/sway/south-east/12.png",
+            "pine_tree/animations/sway/south-east/13.png",
+            "pine_tree/animations/sway/south-east/14.png",
+            "pine_tree/animations/sway/south-east/15.png",
+            "pine_tree/animations/sway/south-east/16.png"
+          ]
+        },
+        "south-west": {
+          "frames": 17,
+          "strip": "pine_tree/animations/sway__south-west.png",
+          "gif": "pine_tree/animations/sway__south-west.gif",
+          "frame_paths": [
+            "pine_tree/animations/sway/south-west/00.png",
+            "pine_tree/animations/sway/south-west/01.png",
+            "pine_tree/animations/sway/south-west/02.png",
+            "pine_tree/animations/sway/south-west/03.png",
+            "pine_tree/animations/sway/south-west/04.png",
+            "pine_tree/animations/sway/south-west/05.png",
+            "pine_tree/animations/sway/south-west/06.png",
+            "pine_tree/animations/sway/south-west/07.png",
+            "pine_tree/animations/sway/south-west/08.png",
+            "pine_tree/animations/sway/south-west/09.png",
+            "pine_tree/animations/sway/south-west/10.png",
+            "pine_tree/animations/sway/south-west/11.png",
+            "pine_tree/animations/sway/south-west/12.png",
+            "pine_tree/animations/sway/south-west/13.png",
+            "pine_tree/animations/sway/south-west/14.png",
+            "pine_tree/animations/sway/south-west/15.png",
+            "pine_tree/animations/sway/south-west/16.png"
+          ]
+        },
+        "west": {
+          "frames": 17,
+          "strip": "pine_tree/animations/sway__west.png",
+          "gif": "pine_tree/animations/sway__west.gif",
+          "frame_paths": [
+            "pine_tree/animations/sway/west/00.png",
+            "pine_tree/animations/sway/west/01.png",
+            "pine_tree/animations/sway/west/02.png",
+            "pine_tree/animations/sway/west/03.png",
+            "pine_tree/animations/sway/west/04.png",
+            "pine_tree/animations/sway/west/05.png",
+            "pine_tree/animations/sway/west/06.png",
+            "pine_tree/animations/sway/west/07.png",
+            "pine_tree/animations/sway/west/08.png",
+            "pine_tree/animations/sway/west/09.png",
+            "pine_tree/animations/sway/west/10.png",
+            "pine_tree/animations/sway/west/11.png",
+            "pine_tree/animations/sway/west/12.png",
+            "pine_tree/animations/sway/west/13.png",
+            "pine_tree/animations/sway/west/14.png",
+            "pine_tree/animations/sway/west/15.png",
+            "pine_tree/animations/sway/west/16.png"
+          ]
+        }
+      }
+    }
+  },
+  "status": "complete"
 }
