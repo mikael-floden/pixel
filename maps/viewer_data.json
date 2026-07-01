@@ -348,6 +348,22 @@
       "scene": "wild_003/scene.png",
       "collision": "wild_003/collision.png",
       "manifest": "wild_003/zone.json"
+    },
+    {
+      "id": "wild_004",
+      "title": "Wild Isle 4",
+      "kind": "island_screen",
+      "mood": "lush wild island (daytime)",
+      "pixel_size": {
+        "width": 960,
+        "height": 672
+      },
+      "props": 10,
+      "exits": [],
+      "preview": "wild_004/preview.png",
+      "scene": "wild_004/scene.png",
+      "collision": "wild_004/collision.png",
+      "manifest": "wild_004/zone.json"
     }
   ]
 }
