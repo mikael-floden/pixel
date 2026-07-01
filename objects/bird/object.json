@@ -32,7 +32,24 @@
     "count": 0,
     "directions": []
   },
-  "animations": {},
-  "generations_used": 1.0,
-  "status": "in_progress"
+  "animations": {
+    "flap": {
+      "action": "flapping its wings",
+      "view": "side",
+      "frames": 4,
+      "n_frames_requested": 6,
+      "ok": true,
+      "note": "",
+      "strip": "bird/animations/flap.png",
+      "gif": "bird/animations/flap.gif",
+      "frame_paths": [
+        "bird/animations/flap/00.png",
+        "bird/animations/flap/01.png",
+        "bird/animations/flap/02.png",
+        "bird/animations/flap/03.png"
+      ]
+    }
+  },
+  "generations_used": 2.0,
+  "status": "complete"
 }
