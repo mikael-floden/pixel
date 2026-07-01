@@ -591,7 +591,7 @@
         "character_height_m": 1.7,
         "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
       },
-      "status": "in_progress",
+      "status": "complete",
       "pixellab_object_id": "8d5ea848-b266-4366-84dc-e15a7f50d6bf",
       "sprite": "oak_tree/sprite.png",
       "rotations": {
@@ -604,7 +604,24 @@
         "south-west": "oak_tree/rotations/south-west.png",
         "west": "oak_tree/rotations/west.png"
       },
-      "animations": []
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the leaves and branches swaying in the wind",
+          "frames": 17,
+          "preview_gif": "oak_tree/animations/sway__south.gif",
+          "directions": {
+            "east": "oak_tree/animations/sway__east.gif",
+            "north": "oak_tree/animations/sway__north.gif",
+            "north-east": "oak_tree/animations/sway__north-east.gif",
+            "north-west": "oak_tree/animations/sway__north-west.gif",
+            "south": "oak_tree/animations/sway__south.gif",
+            "south-east": "oak_tree/animations/sway__south-east.gif",
+            "south-west": "oak_tree/animations/sway__south-west.gif",
+            "west": "oak_tree/animations/sway__west.gif"
+          }
+        }
+      ]
     },
     {
       "id": "pickaxe",
