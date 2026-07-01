@@ -33,15 +33,17 @@
     "directions": [
       "east",
       "north",
-      "south"
+      "south",
+      "west"
     ],
     "files": {
       "east": "sign_post/rotations/east.png",
       "north": "sign_post/rotations/north.png",
-      "south": "sign_post/rotations/south.png"
+      "south": "sign_post/rotations/south.png",
+      "west": "sign_post/rotations/west.png"
     }
   },
   "animations": {},
-  "generations_used": 3.0,
-  "status": "in_progress"
+  "generations_used": 4.0,
+  "status": "complete"
 }
