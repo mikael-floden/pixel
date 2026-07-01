@@ -63,6 +63,22 @@
             "south-west": "wooden_chest/animations/open__south-west.gif",
             "west": "wooden_chest/animations/open__west.gif"
           }
+        },
+        {
+          "key": "close",
+          "description": "the lid closing shut",
+          "frames": 17,
+          "preview_gif": "wooden_chest/animations/close__south.gif",
+          "directions": {
+            "east": "wooden_chest/animations/close__east.gif",
+            "north": "wooden_chest/animations/close__north.gif",
+            "north-east": "wooden_chest/animations/close__north-east.gif",
+            "north-west": "wooden_chest/animations/close__north-west.gif",
+            "south": "wooden_chest/animations/close__south.gif",
+            "south-east": "wooden_chest/animations/close__south-east.gif",
+            "south-west": "wooden_chest/animations/close__south-west.gif",
+            "west": "wooden_chest/animations/close__west.gif"
+          }
         }
       ]
     }

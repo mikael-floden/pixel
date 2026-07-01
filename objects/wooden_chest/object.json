@@ -251,6 +251,205 @@
           "src_frames": 17
         }
       }
+    },
+    "close": {
+      "group_id": "d388c942-b72c-4f78-8691-3dcffc4d67b0",
+      "description": "the lid closing shut",
+      "frame_count": 16,
+      "directions": {
+        "east": {
+          "frames": 17,
+          "strip": "wooden_chest/animations/close__east.png",
+          "gif": "wooden_chest/animations/close__east.gif",
+          "frame_paths": [
+            "wooden_chest/animations/close/east/00.png",
+            "wooden_chest/animations/close/east/01.png",
+            "wooden_chest/animations/close/east/02.png",
+            "wooden_chest/animations/close/east/03.png",
+            "wooden_chest/animations/close/east/04.png",
+            "wooden_chest/animations/close/east/05.png",
+            "wooden_chest/animations/close/east/06.png",
+            "wooden_chest/animations/close/east/07.png",
+            "wooden_chest/animations/close/east/08.png",
+            "wooden_chest/animations/close/east/09.png",
+            "wooden_chest/animations/close/east/10.png",
+            "wooden_chest/animations/close/east/11.png",
+            "wooden_chest/animations/close/east/12.png",
+            "wooden_chest/animations/close/east/13.png",
+            "wooden_chest/animations/close/east/14.png",
+            "wooden_chest/animations/close/east/15.png",
+            "wooden_chest/animations/close/east/16.png"
+          ]
+        },
+        "north": {
+          "frames": 17,
+          "strip": "wooden_chest/animations/close__north.png",
+          "gif": "wooden_chest/animations/close__north.gif",
+          "frame_paths": [
+            "wooden_chest/animations/close/north/00.png",
+            "wooden_chest/animations/close/north/01.png",
+            "wooden_chest/animations/close/north/02.png",
+            "wooden_chest/animations/close/north/03.png",
+            "wooden_chest/animations/close/north/04.png",
+            "wooden_chest/animations/close/north/05.png",
+            "wooden_chest/animations/close/north/06.png",
+            "wooden_chest/animations/close/north/07.png",
+            "wooden_chest/animations/close/north/08.png",
+            "wooden_chest/animations/close/north/09.png",
+            "wooden_chest/animations/close/north/10.png",
+            "wooden_chest/animations/close/north/11.png",
+            "wooden_chest/animations/close/north/12.png",
+            "wooden_chest/animations/close/north/13.png",
+            "wooden_chest/animations/close/north/14.png",
+            "wooden_chest/animations/close/north/15.png",
+            "wooden_chest/animations/close/north/16.png"
+          ]
+        },
+        "north-east": {
+          "frames": 17,
+          "strip": "wooden_chest/animations/close__north-east.png",
+          "gif": "wooden_chest/animations/close__north-east.gif",
+          "frame_paths": [
+            "wooden_chest/animations/close/north-east/00.png",
+            "wooden_chest/animations/close/north-east/01.png",
+            "wooden_chest/animations/close/north-east/02.png",
+            "wooden_chest/animations/close/north-east/03.png",
+            "wooden_chest/animations/close/north-east/04.png",
+            "wooden_chest/animations/close/north-east/05.png",
+            "wooden_chest/animations/close/north-east/06.png",
+            "wooden_chest/animations/close/north-east/07.png",
+            "wooden_chest/animations/close/north-east/08.png",
+            "wooden_chest/animations/close/north-east/09.png",
+            "wooden_chest/animations/close/north-east/10.png",
+            "wooden_chest/animations/close/north-east/11.png",
+            "wooden_chest/animations/close/north-east/12.png",
+            "wooden_chest/animations/close/north-east/13.png",
+            "wooden_chest/animations/close/north-east/14.png",
+            "wooden_chest/animations/close/north-east/15.png",
+            "wooden_chest/animations/close/north-east/16.png"
+          ]
+        },
+        "north-west": {
+          "frames": 17,
+          "strip": "wooden_chest/animations/close__north-west.png",
+          "gif": "wooden_chest/animations/close__north-west.gif",
+          "frame_paths": [
+            "wooden_chest/animations/close/north-west/00.png",
+            "wooden_chest/animations/close/north-west/01.png",
+            "wooden_chest/animations/close/north-west/02.png",
+            "wooden_chest/animations/close/north-west/03.png",
+            "wooden_chest/animations/close/north-west/04.png",
+            "wooden_chest/animations/close/north-west/05.png",
+            "wooden_chest/animations/close/north-west/06.png",
+            "wooden_chest/animations/close/north-west/07.png",
+            "wooden_chest/animations/close/north-west/08.png",
+            "wooden_chest/animations/close/north-west/09.png",
+            "wooden_chest/animations/close/north-west/10.png",
+            "wooden_chest/animations/close/north-west/11.png",
+            "wooden_chest/animations/close/north-west/12.png",
+            "wooden_chest/animations/close/north-west/13.png",
+            "wooden_chest/animations/close/north-west/14.png",
+            "wooden_chest/animations/close/north-west/15.png",
+            "wooden_chest/animations/close/north-west/16.png"
+          ]
+        },
+        "south": {
+          "frames": 17,
+          "strip": "wooden_chest/animations/close__south.png",
+          "gif": "wooden_chest/animations/close__south.gif",
+          "frame_paths": [
+            "wooden_chest/animations/close/south/00.png",
+            "wooden_chest/animations/close/south/01.png",
+            "wooden_chest/animations/close/south/02.png",
+            "wooden_chest/animations/close/south/03.png",
+            "wooden_chest/animations/close/south/04.png",
+            "wooden_chest/animations/close/south/05.png",
+            "wooden_chest/animations/close/south/06.png",
+            "wooden_chest/animations/close/south/07.png",
+            "wooden_chest/animations/close/south/08.png",
+            "wooden_chest/animations/close/south/09.png",
+            "wooden_chest/animations/close/south/10.png",
+            "wooden_chest/animations/close/south/11.png",
+            "wooden_chest/animations/close/south/12.png",
+            "wooden_chest/animations/close/south/13.png",
+            "wooden_chest/animations/close/south/14.png",
+            "wooden_chest/animations/close/south/15.png",
+            "wooden_chest/animations/close/south/16.png"
+          ]
+        },
+        "south-east": {
+          "frames": 17,
+          "strip": "wooden_chest/animations/close__south-east.png",
+          "gif": "wooden_chest/animations/close__south-east.gif",
+          "frame_paths": [
+            "wooden_chest/animations/close/south-east/00.png",
+            "wooden_chest/animations/close/south-east/01.png",
+            "wooden_chest/animations/close/south-east/02.png",
+            "wooden_chest/animations/close/south-east/03.png",
+            "wooden_chest/animations/close/south-east/04.png",
+            "wooden_chest/animations/close/south-east/05.png",
+            "wooden_chest/animations/close/south-east/06.png",
+            "wooden_chest/animations/close/south-east/07.png",
+            "wooden_chest/animations/close/south-east/08.png",
+            "wooden_chest/animations/close/south-east/09.png",
+            "wooden_chest/animations/close/south-east/10.png",
+            "wooden_chest/animations/close/south-east/11.png",
+            "wooden_chest/animations/close/south-east/12.png",
+            "wooden_chest/animations/close/south-east/13.png",
+            "wooden_chest/animations/close/south-east/14.png",
+            "wooden_chest/animations/close/south-east/15.png",
+            "wooden_chest/animations/close/south-east/16.png"
+          ]
+        },
+        "south-west": {
+          "frames": 17,
+          "strip": "wooden_chest/animations/close__south-west.png",
+          "gif": "wooden_chest/animations/close__south-west.gif",
+          "frame_paths": [
+            "wooden_chest/animations/close/south-west/00.png",
+            "wooden_chest/animations/close/south-west/01.png",
+            "wooden_chest/animations/close/south-west/02.png",
+            "wooden_chest/animations/close/south-west/03.png",
+            "wooden_chest/animations/close/south-west/04.png",
+            "wooden_chest/animations/close/south-west/05.png",
+            "wooden_chest/animations/close/south-west/06.png",
+            "wooden_chest/animations/close/south-west/07.png",
+            "wooden_chest/animations/close/south-west/08.png",
+            "wooden_chest/animations/close/south-west/09.png",
+            "wooden_chest/animations/close/south-west/10.png",
+            "wooden_chest/animations/close/south-west/11.png",
+            "wooden_chest/animations/close/south-west/12.png",
+            "wooden_chest/animations/close/south-west/13.png",
+            "wooden_chest/animations/close/south-west/14.png",
+            "wooden_chest/animations/close/south-west/15.png",
+            "wooden_chest/animations/close/south-west/16.png"
+          ]
+        },
+        "west": {
+          "frames": 17,
+          "strip": "wooden_chest/animations/close__west.png",
+          "gif": "wooden_chest/animations/close__west.gif",
+          "frame_paths": [
+            "wooden_chest/animations/close/west/00.png",
+            "wooden_chest/animations/close/west/01.png",
+            "wooden_chest/animations/close/west/02.png",
+            "wooden_chest/animations/close/west/03.png",
+            "wooden_chest/animations/close/west/04.png",
+            "wooden_chest/animations/close/west/05.png",
+            "wooden_chest/animations/close/west/06.png",
+            "wooden_chest/animations/close/west/07.png",
+            "wooden_chest/animations/close/west/08.png",
+            "wooden_chest/animations/close/west/09.png",
+            "wooden_chest/animations/close/west/10.png",
+            "wooden_chest/animations/close/west/11.png",
+            "wooden_chest/animations/close/west/12.png",
+            "wooden_chest/animations/close/west/13.png",
+            "wooden_chest/animations/close/west/14.png",
+            "wooden_chest/animations/close/west/15.png",
+            "wooden_chest/animations/close/west/16.png"
+          ]
+        }
+      }
     }
   },
   "status": "in_progress",
