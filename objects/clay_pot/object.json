@@ -411,7 +411,206 @@
           ]
         }
       }
+    },
+    "shatter": {
+      "group_id": "28270e9f-da14-48c3-a550-87a5485f51bc",
+      "description": "the pot shattering into shards",
+      "frame_count": 16,
+      "directions": {
+        "east": {
+          "frames": 17,
+          "strip": "clay_pot/animations/shatter__east.png",
+          "gif": "clay_pot/animations/shatter__east.gif",
+          "frame_paths": [
+            "clay_pot/animations/shatter/east/00.png",
+            "clay_pot/animations/shatter/east/01.png",
+            "clay_pot/animations/shatter/east/02.png",
+            "clay_pot/animations/shatter/east/03.png",
+            "clay_pot/animations/shatter/east/04.png",
+            "clay_pot/animations/shatter/east/05.png",
+            "clay_pot/animations/shatter/east/06.png",
+            "clay_pot/animations/shatter/east/07.png",
+            "clay_pot/animations/shatter/east/08.png",
+            "clay_pot/animations/shatter/east/09.png",
+            "clay_pot/animations/shatter/east/10.png",
+            "clay_pot/animations/shatter/east/11.png",
+            "clay_pot/animations/shatter/east/12.png",
+            "clay_pot/animations/shatter/east/13.png",
+            "clay_pot/animations/shatter/east/14.png",
+            "clay_pot/animations/shatter/east/15.png",
+            "clay_pot/animations/shatter/east/16.png"
+          ]
+        },
+        "north": {
+          "frames": 17,
+          "strip": "clay_pot/animations/shatter__north.png",
+          "gif": "clay_pot/animations/shatter__north.gif",
+          "frame_paths": [
+            "clay_pot/animations/shatter/north/00.png",
+            "clay_pot/animations/shatter/north/01.png",
+            "clay_pot/animations/shatter/north/02.png",
+            "clay_pot/animations/shatter/north/03.png",
+            "clay_pot/animations/shatter/north/04.png",
+            "clay_pot/animations/shatter/north/05.png",
+            "clay_pot/animations/shatter/north/06.png",
+            "clay_pot/animations/shatter/north/07.png",
+            "clay_pot/animations/shatter/north/08.png",
+            "clay_pot/animations/shatter/north/09.png",
+            "clay_pot/animations/shatter/north/10.png",
+            "clay_pot/animations/shatter/north/11.png",
+            "clay_pot/animations/shatter/north/12.png",
+            "clay_pot/animations/shatter/north/13.png",
+            "clay_pot/animations/shatter/north/14.png",
+            "clay_pot/animations/shatter/north/15.png",
+            "clay_pot/animations/shatter/north/16.png"
+          ]
+        },
+        "north-east": {
+          "frames": 17,
+          "strip": "clay_pot/animations/shatter__north-east.png",
+          "gif": "clay_pot/animations/shatter__north-east.gif",
+          "frame_paths": [
+            "clay_pot/animations/shatter/north-east/00.png",
+            "clay_pot/animations/shatter/north-east/01.png",
+            "clay_pot/animations/shatter/north-east/02.png",
+            "clay_pot/animations/shatter/north-east/03.png",
+            "clay_pot/animations/shatter/north-east/04.png",
+            "clay_pot/animations/shatter/north-east/05.png",
+            "clay_pot/animations/shatter/north-east/06.png",
+            "clay_pot/animations/shatter/north-east/07.png",
+            "clay_pot/animations/shatter/north-east/08.png",
+            "clay_pot/animations/shatter/north-east/09.png",
+            "clay_pot/animations/shatter/north-east/10.png",
+            "clay_pot/animations/shatter/north-east/11.png",
+            "clay_pot/animations/shatter/north-east/12.png",
+            "clay_pot/animations/shatter/north-east/13.png",
+            "clay_pot/animations/shatter/north-east/14.png",
+            "clay_pot/animations/shatter/north-east/15.png",
+            "clay_pot/animations/shatter/north-east/16.png"
+          ]
+        },
+        "north-west": {
+          "frames": 17,
+          "strip": "clay_pot/animations/shatter__north-west.png",
+          "gif": "clay_pot/animations/shatter__north-west.gif",
+          "frame_paths": [
+            "clay_pot/animations/shatter/north-west/00.png",
+            "clay_pot/animations/shatter/north-west/01.png",
+            "clay_pot/animations/shatter/north-west/02.png",
+            "clay_pot/animations/shatter/north-west/03.png",
+            "clay_pot/animations/shatter/north-west/04.png",
+            "clay_pot/animations/shatter/north-west/05.png",
+            "clay_pot/animations/shatter/north-west/06.png",
+            "clay_pot/animations/shatter/north-west/07.png",
+            "clay_pot/animations/shatter/north-west/08.png",
+            "clay_pot/animations/shatter/north-west/09.png",
+            "clay_pot/animations/shatter/north-west/10.png",
+            "clay_pot/animations/shatter/north-west/11.png",
+            "clay_pot/animations/shatter/north-west/12.png",
+            "clay_pot/animations/shatter/north-west/13.png",
+            "clay_pot/animations/shatter/north-west/14.png",
+            "clay_pot/animations/shatter/north-west/15.png",
+            "clay_pot/animations/shatter/north-west/16.png"
+          ]
+        },
+        "south": {
+          "frames": 17,
+          "strip": "clay_pot/animations/shatter__south.png",
+          "gif": "clay_pot/animations/shatter__south.gif",
+          "frame_paths": [
+            "clay_pot/animations/shatter/south/00.png",
+            "clay_pot/animations/shatter/south/01.png",
+            "clay_pot/animations/shatter/south/02.png",
+            "clay_pot/animations/shatter/south/03.png",
+            "clay_pot/animations/shatter/south/04.png",
+            "clay_pot/animations/shatter/south/05.png",
+            "clay_pot/animations/shatter/south/06.png",
+            "clay_pot/animations/shatter/south/07.png",
+            "clay_pot/animations/shatter/south/08.png",
+            "clay_pot/animations/shatter/south/09.png",
+            "clay_pot/animations/shatter/south/10.png",
+            "clay_pot/animations/shatter/south/11.png",
+            "clay_pot/animations/shatter/south/12.png",
+            "clay_pot/animations/shatter/south/13.png",
+            "clay_pot/animations/shatter/south/14.png",
+            "clay_pot/animations/shatter/south/15.png",
+            "clay_pot/animations/shatter/south/16.png"
+          ]
+        },
+        "south-east": {
+          "frames": 17,
+          "strip": "clay_pot/animations/shatter__south-east.png",
+          "gif": "clay_pot/animations/shatter__south-east.gif",
+          "frame_paths": [
+            "clay_pot/animations/shatter/south-east/00.png",
+            "clay_pot/animations/shatter/south-east/01.png",
+            "clay_pot/animations/shatter/south-east/02.png",
+            "clay_pot/animations/shatter/south-east/03.png",
+            "clay_pot/animations/shatter/south-east/04.png",
+            "clay_pot/animations/shatter/south-east/05.png",
+            "clay_pot/animations/shatter/south-east/06.png",
+            "clay_pot/animations/shatter/south-east/07.png",
+            "clay_pot/animations/shatter/south-east/08.png",
+            "clay_pot/animations/shatter/south-east/09.png",
+            "clay_pot/animations/shatter/south-east/10.png",
+            "clay_pot/animations/shatter/south-east/11.png",
+            "clay_pot/animations/shatter/south-east/12.png",
+            "clay_pot/animations/shatter/south-east/13.png",
+            "clay_pot/animations/shatter/south-east/14.png",
+            "clay_pot/animations/shatter/south-east/15.png",
+            "clay_pot/animations/shatter/south-east/16.png"
+          ]
+        },
+        "south-west": {
+          "frames": 17,
+          "strip": "clay_pot/animations/shatter__south-west.png",
+          "gif": "clay_pot/animations/shatter__south-west.gif",
+          "frame_paths": [
+            "clay_pot/animations/shatter/south-west/00.png",
+            "clay_pot/animations/shatter/south-west/01.png",
+            "clay_pot/animations/shatter/south-west/02.png",
+            "clay_pot/animations/shatter/south-west/03.png",
+            "clay_pot/animations/shatter/south-west/04.png",
+            "clay_pot/animations/shatter/south-west/05.png",
+            "clay_pot/animations/shatter/south-west/06.png",
+            "clay_pot/animations/shatter/south-west/07.png",
+            "clay_pot/animations/shatter/south-west/08.png",
+            "clay_pot/animations/shatter/south-west/09.png",
+            "clay_pot/animations/shatter/south-west/10.png",
+            "clay_pot/animations/shatter/south-west/11.png",
+            "clay_pot/animations/shatter/south-west/12.png",
+            "clay_pot/animations/shatter/south-west/13.png",
+            "clay_pot/animations/shatter/south-west/14.png",
+            "clay_pot/animations/shatter/south-west/15.png",
+            "clay_pot/animations/shatter/south-west/16.png"
+          ]
+        },
+        "west": {
+          "frames": 17,
+          "strip": "clay_pot/animations/shatter__west.png",
+          "gif": "clay_pot/animations/shatter__west.gif",
+          "frame_paths": [
+            "clay_pot/animations/shatter/west/00.png",
+            "clay_pot/animations/shatter/west/01.png",
+            "clay_pot/animations/shatter/west/02.png",
+            "clay_pot/animations/shatter/west/03.png",
+            "clay_pot/animations/shatter/west/04.png",
+            "clay_pot/animations/shatter/west/05.png",
+            "clay_pot/animations/shatter/west/06.png",
+            "clay_pot/animations/shatter/west/07.png",
+            "clay_pot/animations/shatter/west/08.png",
+            "clay_pot/animations/shatter/west/09.png",
+            "clay_pot/animations/shatter/west/10.png",
+            "clay_pot/animations/shatter/west/11.png",
+            "clay_pot/animations/shatter/west/12.png",
+            "clay_pot/animations/shatter/west/13.png",
+            "clay_pot/animations/shatter/west/14.png",
+            "clay_pot/animations/shatter/west/15.png",
+            "clay_pot/animations/shatter/west/16.png"
+          ]
+        }
+      }
     }
   },
-  "status": "in_progress"
+  "status": "complete"
 }

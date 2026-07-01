@@ -114,7 +114,7 @@
         "character_height_m": 1.7,
         "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
       },
-      "status": "in_progress",
+      "status": "complete",
       "pixellab_object_id": "668782d2-5ff7-4fab-b697-d5e7930229c8",
       "sprite": "clay_pot/sprite.png",
       "rotations": {
@@ -157,6 +157,22 @@
             "south-east": "clay_pot/animations/tip__south-east.gif",
             "south-west": "clay_pot/animations/tip__south-west.gif",
             "west": "clay_pot/animations/tip__west.gif"
+          }
+        },
+        {
+          "key": "shatter",
+          "description": "the pot shattering into shards",
+          "frames": 17,
+          "preview_gif": "clay_pot/animations/shatter__south.gif",
+          "directions": {
+            "east": "clay_pot/animations/shatter__east.gif",
+            "north": "clay_pot/animations/shatter__north.gif",
+            "north-east": "clay_pot/animations/shatter__north-east.gif",
+            "north-west": "clay_pot/animations/shatter__north-west.gif",
+            "south": "clay_pot/animations/shatter__south.gif",
+            "south-east": "clay_pot/animations/shatter__south-east.gif",
+            "south-west": "clay_pot/animations/shatter__south-west.gif",
+            "west": "clay_pot/animations/shatter__west.gif"
           }
         }
       ]
