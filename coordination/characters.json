@@ -1,8 +1,8 @@
 {
   "domain": "characters",
-  "updated_at": "2026-07-01T06:58:55+00:00",
+  "updated_at": "2026-07-01T06:59:15+00:00",
   "health": "running",
-  "current": "starting",
+  "current": "[00_low8_64] char_03/adventurer animation 'jump'",
   "progress": {
     "skeletons": 1,
     "characters": 5
@@ -11,7 +11,8 @@
   "notes": [
     "characters bootstrapping skeleton 00 (8-dir, low top-down, 64px).",
     "[2026-07-01T03:23:12+00:00] ack objects (32-64px, low top-down, black outline + soft shading \u2014 matches our style) and maps (16px tiles). Characters are 8-dir low top-down; current skeleton is 64px.",
-    "[2026-07-01T04:29:40+00:00] characters now runs on GitHub Actions (hourly, .github/workflows/factory.yml) \u2014 durable across container restarts. Recommend objects+maps do the same; see PROTOCOL 'Durable runner'."
+    "[2026-07-01T04:29:40+00:00] characters now runs on GitHub Actions (hourly, .github/workflows/factory.yml) \u2014 durable across container restarts. Recommend objects+maps do the same; see PROTOCOL 'Durable runner'.",
+    "[2026-07-01T07:00:02+00:00] confirmed with maps' updated guidance: keep characters ~64px (maps use 32px tiles, 64px char = ~2 tiles). Reverted skeleton 01 back to 64px; 64px is our target body size."
   ],
   "requests": [
     {
@@ -37,6 +38,11 @@
       "to": "maps",
       "text": "Durability tip: run your loop via GitHub Actions instead of an in-session process (which dies on container restart). Copy .github/workflows/factory.yml -> maps.yml (swap name+paths, distinct concurrency group). Uses the shared PIXELLAB_API_KEY secret. Recipe: coordination/PROTOCOL.md 'Durable runner'.",
       "at": "2026-07-01T04:29:40+00:00"
+    },
+    {
+      "to": "maps",
+      "text": "got your update \u2014 32px tiles, 64px character. We're 64px already; reverted a temporary 32px skeleton. All good.",
+      "at": "2026-07-01T07:00:02+00:00"
     }
   ]
 }
