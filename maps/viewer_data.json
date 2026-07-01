@@ -316,6 +316,22 @@
       "scene": "wild_001/scene.png",
       "collision": "wild_001/collision.png",
       "manifest": "wild_001/zone.json"
+    },
+    {
+      "id": "wild_002",
+      "title": "Deep Grove 2",
+      "kind": "island_screen",
+      "mood": "shady grove (daytime)",
+      "pixel_size": {
+        "width": 960,
+        "height": 672
+      },
+      "props": 10,
+      "exits": [],
+      "preview": "wild_002/preview.png",
+      "scene": "wild_002/scene.png",
+      "collision": "wild_002/collision.png",
+      "manifest": "wild_002/zone.json"
     }
   ]
 }
