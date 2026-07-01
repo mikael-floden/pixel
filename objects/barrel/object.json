@@ -22,7 +22,12 @@
   "sprite": "barrel/sprite.png",
   "rotations": {
     "count": 4,
-    "directions": []
+    "directions": [
+      "south"
+    ],
+    "files": {
+      "south": "barrel/rotations/south.png"
+    }
   },
   "animations": {},
   "generations_used": 1.0,
