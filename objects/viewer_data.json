@@ -113,10 +113,18 @@
         64,
         64
       ],
-      "status": "in_progress",
+      "status": "complete",
       "sprite": "iron_key/sprite.png",
       "rotation_files": {},
-      "animations": []
+      "animations": [
+        {
+          "key": "spin",
+          "gif": "iron_key/animations/spin.gif",
+          "strip": "iron_key/animations/spin.png",
+          "frames": 4,
+          "action": "spinning around"
+        }
+      ]
     },
     {
       "id": "wooden_chest",
