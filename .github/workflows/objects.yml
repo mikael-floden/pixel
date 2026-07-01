@@ -7,7 +7,7 @@ name: Pixel object factory loop
 
 on:
   schedule:
-    - cron: "30 */2 * * *"      # every 2 hours (offset from the character loop)
+    - cron: "25 * * * *"        # hourly (offset), near-continuous with the 50-min pass
   workflow_dispatch:
     inputs:
       max_minutes:
