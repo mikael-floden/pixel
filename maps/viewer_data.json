@@ -1,6 +1,38 @@
 {
   "schema": "pixel-maps/viewer@1",
-  "zones": [],
+  "zones": [
+    {
+      "id": "isle_of_dawn",
+      "title": "Isle of Dawn",
+      "kind": "island",
+      "archetype": "small_island",
+      "description": "A small quiet starter island of beach and meadow, no settlement.",
+      "grid": {
+        "width": 22,
+        "height": 18
+      },
+      "tile_size": 16,
+      "levels": [
+        "water",
+        "sand",
+        "grass"
+      ],
+      "bands": [
+        "ocean_sand",
+        "sand_grass"
+      ],
+      "objects": 5,
+      "exits": [
+        {
+          "id": "dock",
+          "kind": "dock",
+          "to_zone": "harbor_town"
+        }
+      ],
+      "preview": "isle_of_dawn/preview.png",
+      "manifest": "isle_of_dawn/zone.json"
+    }
+  ],
   "tilesets": [
     {
       "id": "ocean_sand",
