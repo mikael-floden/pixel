@@ -5,10 +5,17 @@
 
   "defaults": {
     "view": "high top-down",
-    "tile_size": 16,
+    "tile_size": 32,
     "outline": "single color outline",
     "shading": "basic shading",
     "detail": "medium detail"
+  },
+
+  "scale": {
+    "_comment": "Proportion contract enforced by pipeline/proportions.py so characters walk at a believable size. A person is ~1x2 tiles (Grave Seasons/Stardew look). The characters domain draws bodies ~67px tall, so 32px tiles put a character at ~2.1 tiles tall (correct); 16px would make it ~4 tiles (too big). Every object's px size = tiles x tile_size, so props are always in scale.",
+    "tile_px": 32,
+    "meters_per_tile": 1,
+    "character_tiles": { "width": 1, "height": 2 }
   },
 
   "budget": {
@@ -26,29 +33,29 @@
     { "id": "wood_floor_wall", "lower": "warm wooden plank floor",                      "upper": "plastered interior wall with wooden beams" }
   ],
 
-  "_objects": "Transparent props placed on the map. `on` lists which terrain levels they may scatter onto; `blocks` marks them impassable (added to the collision grid). `size` is the sprite's px box.",
+  "_objects": "Transparent props. `on` lists terrain levels they may scatter onto; `blocks` marks them impassable (added to collision). `tiles` is the object's REAL footprint in tiles — pixel size is derived as tiles x tile_size (proportions.py), so every prop is in scale with a ~1x2-tile character (a barrel ~1 tile, an oak ~3, a cottage ~4).",
   "objects": [
-    { "id": "tree_oak",   "description": "a lush round-canopy oak tree seen from above",        "size": 48, "blocks": true,  "on": ["grass", "forest"] },
-    { "id": "tree_pine",  "description": "a tall pointed pine tree seen from above",             "size": 48, "blocks": true,  "on": ["grass", "forest"] },
-    { "id": "bush",       "description": "a small round green leafy bush",                       "size": 24, "blocks": true,  "on": ["grass"] },
-    { "id": "flowers",    "description": "a small cluster of colorful wildflowers",              "size": 16, "blocks": false, "on": ["grass"] },
-    { "id": "rock",       "description": "a mossy grey boulder",                                 "size": 24, "blocks": true,  "on": ["grass", "sand"] },
-    { "id": "palm",       "description": "a leaning tropical palm tree seen from above",         "size": 48, "blocks": true,  "on": ["sand"] },
-    { "id": "dock",       "description": "a short wooden pier dock",                             "size": 48, "blocks": false, "on": ["sand"] },
-    { "id": "house_small","description": "a small cozy cottage with a thatched roof seen from above", "size": 64, "blocks": true, "on": ["grass"] },
-    { "id": "house_large","description": "a large two-story house with a red tiled roof seen from above", "size": 80, "blocks": true, "on": ["grass"] },
-    { "id": "well",       "description": "a round grey stone water well",                        "size": 32, "blocks": true,  "on": ["grass"] },
-    { "id": "campfire",   "description": "a small stone campfire with burning logs",            "size": 24, "blocks": true,  "on": ["grass", "sand"] },
-    { "id": "signpost",   "description": "a small wooden signpost",                             "size": 24, "blocks": true,  "on": ["grass", "sand"] },
-    { "id": "barrel",     "description": "a wooden barrel",                                     "size": 24, "blocks": true,  "on": ["floor", "grass"] },
-    { "id": "crate",      "description": "a wooden storage crate",                              "size": 24, "blocks": true,  "on": ["floor"] },
-    { "id": "chest",      "description": "a closed wooden treasure chest with iron bands",      "size": 24, "blocks": true,  "on": ["floor"] },
-    { "id": "stalagmite", "description": "a pointed grey rock stalagmite",                       "size": 32, "blocks": true,  "on": ["floor"] },
-    { "id": "crystal",    "description": "a glowing blue crystal cluster",                      "size": 24, "blocks": true,  "on": ["floor"] },
-    { "id": "bed",        "description": "a small wooden bed with a quilt seen from above",     "size": 32, "blocks": true,  "on": ["floor"] },
-    { "id": "table",      "description": "a round wooden table seen from above",               "size": 32, "blocks": true,  "on": ["floor"] },
-    { "id": "bookshelf",  "description": "a tall wooden bookshelf full of books",              "size": 32, "blocks": true,  "on": ["floor"] },
-    { "id": "rug",        "description": "a woven decorative rug seen from above",             "size": 32, "blocks": false, "on": ["floor"] }
+    { "id": "tree_oak",   "description": "a lush round-canopy oak tree seen from above",        "tiles": 3,   "blocks": true,  "on": ["grass", "forest"] },
+    { "id": "tree_pine",  "description": "a tall pointed pine tree seen from above",             "tiles": 3,   "blocks": true,  "on": ["grass", "forest"] },
+    { "id": "bush",       "description": "a small round green leafy bush",                       "tiles": 1,   "blocks": true,  "on": ["grass"] },
+    { "id": "flowers",    "description": "a small cluster of colorful wildflowers",              "tiles": 1,   "blocks": false, "on": ["grass"] },
+    { "id": "rock",       "description": "a mossy grey boulder",                                 "tiles": 1.5, "blocks": true,  "on": ["grass", "sand"] },
+    { "id": "palm",       "description": "a leaning tropical palm tree seen from above",         "tiles": 3,   "blocks": true,  "on": ["sand"] },
+    { "id": "dock",       "description": "a short wooden pier dock",                             "tiles": 3,   "blocks": false, "on": ["sand"] },
+    { "id": "house_small","description": "a small cozy cottage with a thatched roof seen from above", "tiles": 4, "blocks": true, "on": ["grass"] },
+    { "id": "house_large","description": "a large two-story house with a red tiled roof seen from above", "tiles": 5, "blocks": true, "on": ["grass"] },
+    { "id": "well",       "description": "a round grey stone water well",                        "tiles": 2,   "blocks": true,  "on": ["grass"] },
+    { "id": "campfire",   "description": "a small stone campfire with burning logs",            "tiles": 1.5, "blocks": true,  "on": ["grass", "sand"] },
+    { "id": "signpost",   "description": "a small wooden signpost",                             "tiles": 1,   "blocks": true,  "on": ["grass", "sand"] },
+    { "id": "barrel",     "description": "a wooden barrel",                                     "tiles": 1,   "blocks": true,  "on": ["floor", "grass"] },
+    { "id": "crate",      "description": "a wooden storage crate",                              "tiles": 1,   "blocks": true,  "on": ["floor"] },
+    { "id": "chest",      "description": "a closed wooden treasure chest with iron bands",      "tiles": 1.5, "blocks": true,  "on": ["floor"] },
+    { "id": "stalagmite", "description": "a pointed grey rock stalagmite",                       "tiles": 1.5, "blocks": true,  "on": ["floor"] },
+    { "id": "crystal",    "description": "a glowing blue crystal cluster",                      "tiles": 1.5, "blocks": true,  "on": ["floor"] },
+    { "id": "bed",        "description": "a wooden bed with a quilt seen from above",           "tiles": 2,   "blocks": true,  "on": ["floor"] },
+    { "id": "table",      "description": "a round wooden table seen from above",               "tiles": 2,   "blocks": true,  "on": ["floor"] },
+    { "id": "bookshelf",  "description": "a tall wooden bookshelf full of books",              "tiles": 1.5, "blocks": true,  "on": ["floor"] },
+    { "id": "rug",        "description": "a woven decorative rug seen from above",             "tiles": 2,   "blocks": false, "on": ["floor"] }
   ],
 
   "_zone_plan": "Built in order; small islands first (as requested). Each zone references tilesets by id in `bands` (band[k] draws the boundary between levels[k] and levels[k+1]) and picks objects from the pool. `links` wire an exit to another zone (loading zone).",

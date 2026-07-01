@@ -109,7 +109,7 @@ def _build_atlas(used, tile_size, columns=16):
 
 # --- main assembly ----------------------------------------------------------
 
-def build_zone(cfg, zone_def, layout, preview_scale=3):
+def build_zone(cfg, zone_def, layout, preview_scale=2):
     """Bake a zone folder from a zone definition + a worldgen layout.
 
     layout = {"H": corner grid, "objects":[(id,col,row)], "exits":[{...}]}

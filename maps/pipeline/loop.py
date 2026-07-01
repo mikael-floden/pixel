@@ -29,6 +29,7 @@ import time
 import assets
 import coordination
 import layouts
+import proportions
 import viewer_build
 import zone as zonemod
 from pixellab_client import BudgetExhausted, PixelLabClient
@@ -174,6 +175,16 @@ def main():
     cfg = load_config()
     min_balance = args.min_balance if args.min_balance is not None \
         else cfg["budget"]["min_generations_remaining"]
+
+    # Proportion criterion: refuse to generate art at a scale that would make
+    # characters walk at an unrealistic size (see pipeline/proportions.py).
+    ok, issues = proportions.validate_config(cfg)
+    print(proportions.summary(cfg))
+    if not ok:
+        for i in issues:
+            print(f"  !! proportion issue: {i}")
+        raise SystemExit("aborting: fix proportion issues in config/maps.json first")
+
     client = PixelLabClient()
 
     # Fleet coordination (see coordination/PROTOCOL.md): read the other domains'

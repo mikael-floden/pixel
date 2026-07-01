@@ -24,6 +24,8 @@ import zlib
 
 from PIL import Image
 
+import proportions
+
 ROOT = os.path.dirname(os.path.dirname(__file__))
 TILESETS_DIR = os.path.join(ROOT, "assets", "tilesets")
 OBJECTS_DIR = os.path.join(ROOT, "assets", "objects")
@@ -105,7 +107,10 @@ def generate_tileset(client, cfg, spec):
     tile_meta = []
     for t in tiles:
         fname = os.path.join("tiles", f"{t['name']}.png")
-        _save_png(t["image"], os.path.join(tdir, fname))
+        # Proportion criterion: tiles must be exactly tile_size square so the
+        # map grid is pixel-perfect and terrain abuts with no drift.
+        img = proportions.normalize_tile(t["image"], tile_size)
+        _save_png(img, os.path.join(tdir, fname))
         tile_meta.append({"name": t["name"], "corners": t["corners"], "file": fname})
     meta = {
         "id": tid, "pixellab_tileset_id": tset_id, "kind": "wang",
@@ -152,8 +157,10 @@ def generate_object(client, cfg, spec):
     """Generate one transparent map object and store it. One PixelLab op."""
     oid = spec["id"]
     d = cfg.get("defaults", {})
-    # PixelLab's map-objects endpoint requires image_size >= 32px.
-    size = max(32, int(spec.get("size", 64)))
+    tile_size = int(d.get("tile_size", 32))
+    # Proportion criterion: pixel size derives from the object's tile footprint
+    # (tiles x tile_size), so every prop is in scale with the map & character.
+    size = proportions.object_px(spec, tile_size)
     view = spec.get("view", d.get("view", "high top-down"))
     outline, shading, detail = _style(cfg, spec)
     img = client.create_map_object(

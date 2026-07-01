@@ -169,6 +169,24 @@ This is how zones chain into a world: island `dock` ↔ harbour `dock`, cabin `d
 
 ---
 
+## Scale & proportions (walkability)
+
+Realism depends on one shared scale so a character walks at a believable size.
+The rule (enforced by `pipeline/proportions.py`, checked at loop startup):
+
+- **A person is ~1 tile wide × 2 tiles tall** (the Grave Seasons / Stardew look).
+- The characters domain draws bodies **~67px tall** (measured from its sprites),
+  so tiles are **32px** → a character reads as **~2.1 tiles tall**. (At 16px a
+  character would be ~4 tiles — as tall as a house — so 16px is rejected.)
+- **1 tile ≈ 1 metre.** Every object's pixel size is `tiles × tile_size`, where
+  `tiles` is its real footprint (barrel ≈ 1, oak ≈ 3, cottage ≈ 4, large house
+  ≈ 5). So props are always in scale with each other and with the character.
+
+This is a loop **criterion**: the loop won't generate art at a scale that breaks
+walkability, tiles are normalised to an exact square, and object sizes are
+derived from footprints rather than hand-set. The scale is published on the
+coordination board so the characters/objects agents match it.
+
 ## Using a zone in a game (minimal recipe)
 
 ```

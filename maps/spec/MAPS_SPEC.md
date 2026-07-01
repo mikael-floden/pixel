@@ -41,6 +41,18 @@ design deliberately stays inside what PixelLab can actually draw.
 - Auth: `Authorization: Bearer $PIXELLAB_API_KEY`. `GET /balance` →
   `subscription.generations` for budget.
 
+## Scale / proportion criterion
+
+Walkability realism requires one shared pixels-per-tile scale across the repo. A
+person is ~**1×2 tiles** (Grave Seasons / Stardew). The characters domain draws
+bodies ~67px tall (measured), so maps use **32px tiles** → a character reads at
+~2.1 tiles tall; 16px would make it ~4 tiles (as tall as a house) and is
+rejected by `pipeline/proportions.py`. Object pixel size is derived as
+`tiles × tile_size` from each prop's real footprint, so everything stays in
+scale. The loop validates this at startup, normalises every tile to an exact
+square, and publishes the tile size on the coordination board so the
+characters/objects agents align to it.
+
 ## Terrain model — dual-grid Wang
 
 Terrain is defined on tile **corners** (a *dual grid*), not tile centres, because
