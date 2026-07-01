@@ -1,13 +1,42 @@
-# Modular Pixel Character Factory
+# Pixel Art Factory
 
-An automated loop that generates **modular, game-ready pixel-art characters** in
-the style of *Grave Seasons* / Stardew Valley, using [PixelLab](https://pixellab.ai)
-as the drawing backend.
+Automated loops that generate **game-ready pixel art** in the style of *Grave
+Seasons* / Stardew Valley, using [PixelLab](https://pixellab.ai) as the drawing
+backend. This repo holds **all** graphics for the game, split into self-contained
+**domains** — each is its own directory with its own automated loop that
+generates art and pushes it to `main`.
 
-The repo explores **skeletons** — generation-parameter profiles (view, size,
-number of directions, frames/animation, style…) — so you can A/B several before
-committing to a winner. Each character has an **undressed base body** plus
-**outfits** ("dresses") — full clothing changes from swim trunks to godly armor.
+## Domains
+
+| Domain | What it makes | Docs |
+|---|---|---|
+| [`characters/`](characters/) | Modular characters — undressed base bodies, outfits ("dresses"), per-direction animations | this file + [`characters/spec/FACTORY_SPEC.md`](characters/spec/FACTORY_SPEC.md) |
+| [`maps/`](maps/) | Map **zones** — islands (world maps) and interiors (caves, houses), as tilemaps + collision + exits | [`maps/README.md`](maps/README.md) |
+| [`objects/`](objects/) | Animated props / map objects | see `objects/` |
+
+Each domain is **independent**: its own config, pipeline, generated art and
+viewer, all inside its directory (the pipelines touch disjoint paths, so their
+concurrent pushes to `main` rebase cleanly). Shared repo-level files are just
+`README.md`, `CLAUDE.md`, `requirements.txt`, `.gitignore`, and a gitignored
+`.env`. See [`CLAUDE.md`](CLAUDE.md) for the multi-domain layout.
+
+All domains share the same conventions: a [PixelLab](https://pixellab.ai)
+backend keyed by `PIXELLAB_API_KEY` (kept in a gitignored `.env`, **never
+committed**), fully **resumable** loops that derive the next unit from the
+filesystem, budget-awareness via `/balance`, one commit + push per unit, and a
+phone-friendly `index.html` viewer.
+
+---
+
+# Characters domain
+
+> Paths in this section are relative to [`characters/`](characters/).
+
+An automated loop that generates **modular, game-ready pixel-art characters**.
+It explores **skeletons** — generation-parameter profiles (view, size, number of
+directions, frames/animation, style…) — so you can A/B several before committing
+to a winner. Each character has an **undressed base body** plus **outfits**
+("dresses") — full clothing changes from swim trunks to godly armor.
 
 ## How the loop works
 

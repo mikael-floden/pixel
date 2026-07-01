@@ -1,0 +1,121 @@
+{
+  "_comment": "Automated maps loop. Generates islands (world maps) and indoor zones (caves, houses) via the PixelLab API. A 'zone' is one loading zone = one subfolder under maps/. TILESETS (Wang, two seamlessly-connecting terrain levels) and OBJECTS (transparent props) are shared assets generated at most once under assets/; a zone references them and copies the tiles/props it uses so each zone folder is self-contained. worldgen builds a corner-height grid; zone.py bakes it into a tile-index grid + collision + preview. See maps/README.md and maps/spec/MAPS_SPEC.md.",
+
+  "style_base": "cohesive top-down RPG pixel-art overworld in the style of Grave Seasons / Stardew Valley, warm naturalistic palette, soft readable shapes, gentle shading",
+
+  "defaults": {
+    "view": "high top-down",
+    "tile_size": 16,
+    "outline": "single color outline",
+    "shading": "basic shading",
+    "detail": "medium detail"
+  },
+
+  "budget": {
+    "min_generations_remaining": 2000,
+    "_comment": "Shared PixelLab pool across characters/objects/maps agents (see coordination/PROTOCOL.md). Maps reserves a 2000-generation floor so it never starves the other domains; the loop stops cleanly below it."
+  },
+
+  "_tilesets": "Wang tilesets: lower/upper are two terrain levels that connect seamlessly; the loop generates each once and reuses it across zones. transition_size 0 = 16 tiles (plain boundary); 0.25/0.5/1.0 add a raised transition band (more tiles).",
+  "tilesets": [
+    { "id": "ocean_sand",      "lower": "deep blue ocean water with gentle ripples",   "upper": "pale golden sandy beach" },
+    { "id": "sand_grass",      "lower": "pale golden sand",                             "upper": "lush green grass" },
+    { "id": "grass_forest",    "lower": "lush green grass",                             "upper": "dense dark green forest floor with ferns" },
+    { "id": "grass_dirt",      "lower": "lush green grass",                             "upper": "packed brown dirt path" },
+    { "id": "cave_floor_wall", "lower": "damp grey rocky cave floor",                   "upper": "dark jagged rocky cave wall" },
+    { "id": "wood_floor_wall", "lower": "warm wooden plank floor",                      "upper": "plastered interior wall with wooden beams" }
+  ],
+
+  "_objects": "Transparent props placed on the map. `on` lists which terrain levels they may scatter onto; `blocks` marks them impassable (added to the collision grid). `size` is the sprite's px box.",
+  "objects": [
+    { "id": "tree_oak",   "description": "a lush round-canopy oak tree seen from above",        "size": 48, "blocks": true,  "on": ["grass", "forest"] },
+    { "id": "tree_pine",  "description": "a tall pointed pine tree seen from above",             "size": 48, "blocks": true,  "on": ["grass", "forest"] },
+    { "id": "bush",       "description": "a small round green leafy bush",                       "size": 24, "blocks": true,  "on": ["grass"] },
+    { "id": "flowers",    "description": "a small cluster of colorful wildflowers",              "size": 16, "blocks": false, "on": ["grass"] },
+    { "id": "rock",       "description": "a mossy grey boulder",                                 "size": 24, "blocks": true,  "on": ["grass", "sand"] },
+    { "id": "palm",       "description": "a leaning tropical palm tree seen from above",         "size": 48, "blocks": true,  "on": ["sand"] },
+    { "id": "dock",       "description": "a short wooden pier dock",                             "size": 48, "blocks": false, "on": ["sand"] },
+    { "id": "house_small","description": "a small cozy cottage with a thatched roof seen from above", "size": 64, "blocks": true, "on": ["grass"] },
+    { "id": "house_large","description": "a large two-story house with a red tiled roof seen from above", "size": 80, "blocks": true, "on": ["grass"] },
+    { "id": "well",       "description": "a round grey stone water well",                        "size": 32, "blocks": true,  "on": ["grass"] },
+    { "id": "campfire",   "description": "a small stone campfire with burning logs",            "size": 24, "blocks": true,  "on": ["grass", "sand"] },
+    { "id": "signpost",   "description": "a small wooden signpost",                             "size": 24, "blocks": true,  "on": ["grass", "sand"] },
+    { "id": "barrel",     "description": "a wooden barrel",                                     "size": 24, "blocks": true,  "on": ["floor", "grass"] },
+    { "id": "crate",      "description": "a wooden storage crate",                              "size": 24, "blocks": true,  "on": ["floor"] },
+    { "id": "chest",      "description": "a closed wooden treasure chest with iron bands",      "size": 24, "blocks": true,  "on": ["floor"] },
+    { "id": "stalagmite", "description": "a pointed grey rock stalagmite",                       "size": 32, "blocks": true,  "on": ["floor"] },
+    { "id": "crystal",    "description": "a glowing blue crystal cluster",                      "size": 24, "blocks": true,  "on": ["floor"] },
+    { "id": "bed",        "description": "a small wooden bed with a quilt seen from above",     "size": 32, "blocks": true,  "on": ["floor"] },
+    { "id": "table",      "description": "a round wooden table seen from above",               "size": 32, "blocks": true,  "on": ["floor"] },
+    { "id": "bookshelf",  "description": "a tall wooden bookshelf full of books",              "size": 32, "blocks": true,  "on": ["floor"] },
+    { "id": "rug",        "description": "a woven decorative rug seen from above",             "size": 32, "blocks": false, "on": ["floor"] }
+  ],
+
+  "_zone_plan": "Built in order; small islands first (as requested). Each zone references tilesets by id in `bands` (band[k] draws the boundary between levels[k] and levels[k+1]) and picks objects from the pool. `links` wire an exit to another zone (loading zone).",
+  "zone_plan": [
+    {
+      "id": "isle_of_dawn", "kind": "island", "archetype": "small_island",
+      "title": "Isle of Dawn", "description": "A small quiet starter island of beach and meadow, no settlement.",
+      "grid": { "width": 22, "height": 18 }, "seed": 101,
+      "levels": ["water", "sand", "grass"], "bands": ["ocean_sand", "sand_grass"],
+      "block_levels": ["water"],
+      "objects": ["tree_oak", "bush", "flowers", "rock", "palm", "dock"],
+      "density": 0.09,
+      "links": [{ "kind": "dock", "id": "dock", "to_zone": "harbor_town", "to_exit": "dock" }]
+    },
+    {
+      "id": "whispering_isle", "kind": "island", "archetype": "small_island",
+      "title": "Whispering Isle", "description": "A small wooded island ringed by beach; a forest crowns its centre.",
+      "grid": { "width": 24, "height": 20 }, "seed": 202,
+      "levels": ["water", "sand", "grass", "forest"], "bands": ["ocean_sand", "sand_grass", "grass_forest"],
+      "block_levels": ["water"],
+      "objects": ["tree_oak", "tree_pine", "bush", "flowers", "rock", "palm", "campfire"],
+      "density": 0.11,
+      "links": [{ "kind": "dock", "id": "dock", "to_zone": null, "to_exit": null }]
+    },
+    {
+      "id": "harbor_town", "kind": "island", "archetype": "island_town",
+      "title": "Harbor Town", "description": "A larger island with a small harbour town of cottages.",
+      "grid": { "width": 30, "height": 24 }, "seed": 303, "land_bias": 0.06,
+      "levels": ["water", "sand", "grass"], "bands": ["ocean_sand", "sand_grass"],
+      "block_levels": ["water"],
+      "town_size": 6, "houses": ["house_small", "house_large"],
+      "objects": ["tree_oak", "bush", "flowers", "rock", "well", "signpost", "dock"],
+      "density": 0.05,
+      "links": [{ "kind": "dock", "id": "dock", "to_zone": "isle_of_dawn", "to_exit": "dock" }]
+    },
+    {
+      "id": "hollow_cave", "kind": "interior", "archetype": "cave",
+      "title": "Hollow Cave", "description": "A small rocky cave interior, one exit.",
+      "grid": { "width": 18, "height": 14 }, "seed": 404, "door_side": "south",
+      "levels": ["floor", "wall"], "bands": ["cave_floor_wall"],
+      "block_levels": ["wall"],
+      "objects": ["stalagmite", "crystal", "rock", "chest", "barrel"],
+      "density": 0.12,
+      "links": [{ "kind": "door", "id": "door", "to_zone": "whispering_isle", "to_exit": "dock" }]
+    },
+    {
+      "id": "fishers_cabin", "kind": "interior", "archetype": "house",
+      "title": "Fisher's Cabin", "description": "A cozy one-room cabin interior.",
+      "grid": { "width": 14, "height": 11 }, "seed": 505, "door_side": "south",
+      "levels": ["floor", "wall"], "bands": ["wood_floor_wall"],
+      "block_levels": ["wall"],
+      "objects": ["bed", "table", "bookshelf", "rug", "chest", "barrel", "crate"],
+      "density": 0.14,
+      "links": [{ "kind": "door", "id": "door", "to_zone": "harbor_town", "to_exit": "dock" }]
+    }
+  ],
+
+  "procedural_zones": {
+    "_comment": "When zone_plan is exhausted, the loop invents more small islands by cycling these axes (seed derived from index). Keeps producing fresh world maps forever.",
+    "archetype": "small_island",
+    "grids": [[20, 16], [22, 18], [24, 20], [26, 20]],
+    "biomes": [
+      { "levels": ["water", "sand", "grass"], "bands": ["ocean_sand", "sand_grass"] },
+      { "levels": ["water", "sand", "grass", "forest"], "bands": ["ocean_sand", "sand_grass", "grass_forest"] }
+    ],
+    "objects": ["tree_oak", "tree_pine", "bush", "flowers", "rock", "palm", "campfire"],
+    "block_levels": ["water"],
+    "density": 0.10
+  }
+}
