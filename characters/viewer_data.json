@@ -2123,7 +2123,7 @@
         "shading": "basic shading",
         "detail": "medium detail"
       },
-      "character_count": 2,
+      "character_count": 3,
       "characters": [
         {
           "local_id": "char_00",
@@ -2207,6 +2207,24 @@
               }
             }
           ],
+          "outfits": []
+        },
+        {
+          "local_id": "char_02",
+          "look": "a contented pregnant woman with a soft round belly and a serene loving smile, dark hair loosely tied, warm full figure",
+          "portrait": "skeletons/01_low8_64/characters/char_02/portrait.png",
+          "rotations": [
+            "skeletons/01_low8_64/characters/char_02/rotations/east.png",
+            "skeletons/01_low8_64/characters/char_02/rotations/north.png",
+            "skeletons/01_low8_64/characters/char_02/rotations/north-east.png",
+            "skeletons/01_low8_64/characters/char_02/rotations/north-west.png",
+            "skeletons/01_low8_64/characters/char_02/rotations/south.png",
+            "skeletons/01_low8_64/characters/char_02/rotations/south-east.png",
+            "skeletons/01_low8_64/characters/char_02/rotations/south-west.png",
+            "skeletons/01_low8_64/characters/char_02/rotations/west.png"
+          ],
+          "animation_count": 0,
+          "animations": [],
           "outfits": []
         }
       ]
