@@ -205,7 +205,24 @@
         "south-west": "gem_ruby/rotations/south-west.png",
         "west": "gem_ruby/rotations/west.png"
       },
-      "animations": []
+      "animations": [
+        {
+          "key": "sparkle",
+          "description": "the gem sparkling with light",
+          "frames": 17,
+          "preview_gif": "gem_ruby/animations/sparkle__south.gif",
+          "directions": {
+            "east": "gem_ruby/animations/sparkle__east.gif",
+            "north": "gem_ruby/animations/sparkle__north.gif",
+            "north-east": "gem_ruby/animations/sparkle__north-east.gif",
+            "north-west": "gem_ruby/animations/sparkle__north-west.gif",
+            "south": "gem_ruby/animations/sparkle__south.gif",
+            "south-east": "gem_ruby/animations/sparkle__south-east.gif",
+            "south-west": "gem_ruby/animations/sparkle__south-west.gif",
+            "west": "gem_ruby/animations/sparkle__west.gif"
+          }
+        }
+      ]
     },
     {
       "id": "gold_coin",

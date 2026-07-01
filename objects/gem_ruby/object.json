@@ -37,6 +37,206 @@
     "south-west": "gem_ruby/rotations/south-west.png",
     "west": "gem_ruby/rotations/west.png"
   },
-  "animations": {},
+  "animations": {
+    "sparkle": {
+      "group_id": "aa733f45-09ef-42d6-ad99-21327ce31d2f",
+      "description": "the gem sparkling with light",
+      "frame_count": 16,
+      "directions": {
+        "east": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/sparkle__east.png",
+          "gif": "gem_ruby/animations/sparkle__east.gif",
+          "frame_paths": [
+            "gem_ruby/animations/sparkle/east/00.png",
+            "gem_ruby/animations/sparkle/east/01.png",
+            "gem_ruby/animations/sparkle/east/02.png",
+            "gem_ruby/animations/sparkle/east/03.png",
+            "gem_ruby/animations/sparkle/east/04.png",
+            "gem_ruby/animations/sparkle/east/05.png",
+            "gem_ruby/animations/sparkle/east/06.png",
+            "gem_ruby/animations/sparkle/east/07.png",
+            "gem_ruby/animations/sparkle/east/08.png",
+            "gem_ruby/animations/sparkle/east/09.png",
+            "gem_ruby/animations/sparkle/east/10.png",
+            "gem_ruby/animations/sparkle/east/11.png",
+            "gem_ruby/animations/sparkle/east/12.png",
+            "gem_ruby/animations/sparkle/east/13.png",
+            "gem_ruby/animations/sparkle/east/14.png",
+            "gem_ruby/animations/sparkle/east/15.png",
+            "gem_ruby/animations/sparkle/east/16.png"
+          ]
+        },
+        "north": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/sparkle__north.png",
+          "gif": "gem_ruby/animations/sparkle__north.gif",
+          "frame_paths": [
+            "gem_ruby/animations/sparkle/north/00.png",
+            "gem_ruby/animations/sparkle/north/01.png",
+            "gem_ruby/animations/sparkle/north/02.png",
+            "gem_ruby/animations/sparkle/north/03.png",
+            "gem_ruby/animations/sparkle/north/04.png",
+            "gem_ruby/animations/sparkle/north/05.png",
+            "gem_ruby/animations/sparkle/north/06.png",
+            "gem_ruby/animations/sparkle/north/07.png",
+            "gem_ruby/animations/sparkle/north/08.png",
+            "gem_ruby/animations/sparkle/north/09.png",
+            "gem_ruby/animations/sparkle/north/10.png",
+            "gem_ruby/animations/sparkle/north/11.png",
+            "gem_ruby/animations/sparkle/north/12.png",
+            "gem_ruby/animations/sparkle/north/13.png",
+            "gem_ruby/animations/sparkle/north/14.png",
+            "gem_ruby/animations/sparkle/north/15.png",
+            "gem_ruby/animations/sparkle/north/16.png"
+          ]
+        },
+        "north-east": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/sparkle__north-east.png",
+          "gif": "gem_ruby/animations/sparkle__north-east.gif",
+          "frame_paths": [
+            "gem_ruby/animations/sparkle/north-east/00.png",
+            "gem_ruby/animations/sparkle/north-east/01.png",
+            "gem_ruby/animations/sparkle/north-east/02.png",
+            "gem_ruby/animations/sparkle/north-east/03.png",
+            "gem_ruby/animations/sparkle/north-east/04.png",
+            "gem_ruby/animations/sparkle/north-east/05.png",
+            "gem_ruby/animations/sparkle/north-east/06.png",
+            "gem_ruby/animations/sparkle/north-east/07.png",
+            "gem_ruby/animations/sparkle/north-east/08.png",
+            "gem_ruby/animations/sparkle/north-east/09.png",
+            "gem_ruby/animations/sparkle/north-east/10.png",
+            "gem_ruby/animations/sparkle/north-east/11.png",
+            "gem_ruby/animations/sparkle/north-east/12.png",
+            "gem_ruby/animations/sparkle/north-east/13.png",
+            "gem_ruby/animations/sparkle/north-east/14.png",
+            "gem_ruby/animations/sparkle/north-east/15.png",
+            "gem_ruby/animations/sparkle/north-east/16.png"
+          ]
+        },
+        "north-west": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/sparkle__north-west.png",
+          "gif": "gem_ruby/animations/sparkle__north-west.gif",
+          "frame_paths": [
+            "gem_ruby/animations/sparkle/north-west/00.png",
+            "gem_ruby/animations/sparkle/north-west/01.png",
+            "gem_ruby/animations/sparkle/north-west/02.png",
+            "gem_ruby/animations/sparkle/north-west/03.png",
+            "gem_ruby/animations/sparkle/north-west/04.png",
+            "gem_ruby/animations/sparkle/north-west/05.png",
+            "gem_ruby/animations/sparkle/north-west/06.png",
+            "gem_ruby/animations/sparkle/north-west/07.png",
+            "gem_ruby/animations/sparkle/north-west/08.png",
+            "gem_ruby/animations/sparkle/north-west/09.png",
+            "gem_ruby/animations/sparkle/north-west/10.png",
+            "gem_ruby/animations/sparkle/north-west/11.png",
+            "gem_ruby/animations/sparkle/north-west/12.png",
+            "gem_ruby/animations/sparkle/north-west/13.png",
+            "gem_ruby/animations/sparkle/north-west/14.png",
+            "gem_ruby/animations/sparkle/north-west/15.png",
+            "gem_ruby/animations/sparkle/north-west/16.png"
+          ]
+        },
+        "south": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/sparkle__south.png",
+          "gif": "gem_ruby/animations/sparkle__south.gif",
+          "frame_paths": [
+            "gem_ruby/animations/sparkle/south/00.png",
+            "gem_ruby/animations/sparkle/south/01.png",
+            "gem_ruby/animations/sparkle/south/02.png",
+            "gem_ruby/animations/sparkle/south/03.png",
+            "gem_ruby/animations/sparkle/south/04.png",
+            "gem_ruby/animations/sparkle/south/05.png",
+            "gem_ruby/animations/sparkle/south/06.png",
+            "gem_ruby/animations/sparkle/south/07.png",
+            "gem_ruby/animations/sparkle/south/08.png",
+            "gem_ruby/animations/sparkle/south/09.png",
+            "gem_ruby/animations/sparkle/south/10.png",
+            "gem_ruby/animations/sparkle/south/11.png",
+            "gem_ruby/animations/sparkle/south/12.png",
+            "gem_ruby/animations/sparkle/south/13.png",
+            "gem_ruby/animations/sparkle/south/14.png",
+            "gem_ruby/animations/sparkle/south/15.png",
+            "gem_ruby/animations/sparkle/south/16.png"
+          ]
+        },
+        "south-east": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/sparkle__south-east.png",
+          "gif": "gem_ruby/animations/sparkle__south-east.gif",
+          "frame_paths": [
+            "gem_ruby/animations/sparkle/south-east/00.png",
+            "gem_ruby/animations/sparkle/south-east/01.png",
+            "gem_ruby/animations/sparkle/south-east/02.png",
+            "gem_ruby/animations/sparkle/south-east/03.png",
+            "gem_ruby/animations/sparkle/south-east/04.png",
+            "gem_ruby/animations/sparkle/south-east/05.png",
+            "gem_ruby/animations/sparkle/south-east/06.png",
+            "gem_ruby/animations/sparkle/south-east/07.png",
+            "gem_ruby/animations/sparkle/south-east/08.png",
+            "gem_ruby/animations/sparkle/south-east/09.png",
+            "gem_ruby/animations/sparkle/south-east/10.png",
+            "gem_ruby/animations/sparkle/south-east/11.png",
+            "gem_ruby/animations/sparkle/south-east/12.png",
+            "gem_ruby/animations/sparkle/south-east/13.png",
+            "gem_ruby/animations/sparkle/south-east/14.png",
+            "gem_ruby/animations/sparkle/south-east/15.png",
+            "gem_ruby/animations/sparkle/south-east/16.png"
+          ]
+        },
+        "south-west": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/sparkle__south-west.png",
+          "gif": "gem_ruby/animations/sparkle__south-west.gif",
+          "frame_paths": [
+            "gem_ruby/animations/sparkle/south-west/00.png",
+            "gem_ruby/animations/sparkle/south-west/01.png",
+            "gem_ruby/animations/sparkle/south-west/02.png",
+            "gem_ruby/animations/sparkle/south-west/03.png",
+            "gem_ruby/animations/sparkle/south-west/04.png",
+            "gem_ruby/animations/sparkle/south-west/05.png",
+            "gem_ruby/animations/sparkle/south-west/06.png",
+            "gem_ruby/animations/sparkle/south-west/07.png",
+            "gem_ruby/animations/sparkle/south-west/08.png",
+            "gem_ruby/animations/sparkle/south-west/09.png",
+            "gem_ruby/animations/sparkle/south-west/10.png",
+            "gem_ruby/animations/sparkle/south-west/11.png",
+            "gem_ruby/animations/sparkle/south-west/12.png",
+            "gem_ruby/animations/sparkle/south-west/13.png",
+            "gem_ruby/animations/sparkle/south-west/14.png",
+            "gem_ruby/animations/sparkle/south-west/15.png",
+            "gem_ruby/animations/sparkle/south-west/16.png"
+          ]
+        },
+        "west": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/sparkle__west.png",
+          "gif": "gem_ruby/animations/sparkle__west.gif",
+          "frame_paths": [
+            "gem_ruby/animations/sparkle/west/00.png",
+            "gem_ruby/animations/sparkle/west/01.png",
+            "gem_ruby/animations/sparkle/west/02.png",
+            "gem_ruby/animations/sparkle/west/03.png",
+            "gem_ruby/animations/sparkle/west/04.png",
+            "gem_ruby/animations/sparkle/west/05.png",
+            "gem_ruby/animations/sparkle/west/06.png",
+            "gem_ruby/animations/sparkle/west/07.png",
+            "gem_ruby/animations/sparkle/west/08.png",
+            "gem_ruby/animations/sparkle/west/09.png",
+            "gem_ruby/animations/sparkle/west/10.png",
+            "gem_ruby/animations/sparkle/west/11.png",
+            "gem_ruby/animations/sparkle/west/12.png",
+            "gem_ruby/animations/sparkle/west/13.png",
+            "gem_ruby/animations/sparkle/west/14.png",
+            "gem_ruby/animations/sparkle/west/15.png",
+            "gem_ruby/animations/sparkle/west/16.png"
+          ]
+        }
+      }
+    }
+  },
   "status": "in_progress"
 }
