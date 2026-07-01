@@ -32,14 +32,16 @@
     "count": 4,
     "directions": [
       "east",
+      "north",
       "south"
     ],
     "files": {
       "east": "barrel/rotations/east.png",
+      "north": "barrel/rotations/north.png",
       "south": "barrel/rotations/south.png"
     }
   },
   "animations": {},
-  "generations_used": 2.0,
+  "generations_used": 3.0,
   "status": "in_progress"
 }
