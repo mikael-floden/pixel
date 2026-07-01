@@ -855,5 +855,24 @@
   "rotation_qa": {
     "ok": true,
     "problems": []
+  },
+  "outfits": {
+    "adventurer": {
+      "id": "adventurer",
+      "description": "a rugged brown leather adventurer tunic with a belt and boots",
+      "pixellab_id": "44baf406-bc71-4627-853d-03e695795124",
+      "edit_description": "wearing a rugged brown leather adventurer tunic with a belt and boots",
+      "rotations": [
+        "east",
+        "north",
+        "north-east",
+        "north-west",
+        "south",
+        "south-east",
+        "south-west",
+        "west"
+      ],
+      "animations": {}
+    }
   }
 }

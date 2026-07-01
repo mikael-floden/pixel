@@ -283,7 +283,24 @@
               }
             }
           ],
-          "outfits": []
+          "outfits": [
+            {
+              "id": "adventurer",
+              "description": "a rugged brown leather adventurer tunic with a belt and boots",
+              "portrait": "skeletons/00_low8_64/characters/char_01/outfits/adventurer/portrait.png",
+              "rotations": [
+                "skeletons/00_low8_64/characters/char_01/outfits/adventurer/rotations/east.png",
+                "skeletons/00_low8_64/characters/char_01/outfits/adventurer/rotations/north.png",
+                "skeletons/00_low8_64/characters/char_01/outfits/adventurer/rotations/north-east.png",
+                "skeletons/00_low8_64/characters/char_01/outfits/adventurer/rotations/north-west.png",
+                "skeletons/00_low8_64/characters/char_01/outfits/adventurer/rotations/south.png",
+                "skeletons/00_low8_64/characters/char_01/outfits/adventurer/rotations/south-east.png",
+                "skeletons/00_low8_64/characters/char_01/outfits/adventurer/rotations/south-west.png",
+                "skeletons/00_low8_64/characters/char_01/outfits/adventurer/rotations/west.png"
+              ],
+              "animations": []
+            }
+          ]
         },
         {
           "local_id": "char_02",
