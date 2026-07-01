@@ -1,0 +1,9 @@
+# Keeps the games/nangijala Docker build context lean (build from repo root).
+.git
+**/node_modules
+games/nangijala/client/dist
+games/nangijala/**/*.tsbuildinfo
+games/nangijala/.data
+**/__pycache__
+**/.venv
+*.log

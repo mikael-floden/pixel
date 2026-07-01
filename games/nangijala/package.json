@@ -1,0 +1,28 @@
+{
+  "name": "nangijala",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "shared",
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "manifest": "node scripts/build-manifest.mjs",
+    "dev": "npm run manifest && concurrently -n server,client -c cyan,magenta \"npm:dev -w server\" \"npm:dev -w client\"",
+    "dev:server": "npm run dev -w server",
+    "dev:client": "npm run manifest && npm run dev -w client",
+    "build": "npm run manifest && npm run build -w shared && npm run build -w server && npm run build -w client",
+    "build:client": "npm run manifest && npm run build -w client",
+    "serve": "cross-env SERVE_CLIENT=1 NODE_ENV=production npm run start -w server",
+    "start": "npm run build:client && npm run serve",
+    "test": "npm run manifest && npm run test -w server",
+    "typecheck": "tsc --noEmit -p shared/tsconfig.json && tsc --noEmit -p server/tsconfig.json && tsc --noEmit -p client/tsconfig.json"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "cross-env": "^7.0.3",
+    "playwright-core": "^1.61.1",
+    "typescript": "^5.6.3"
+  }
+}

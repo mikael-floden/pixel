@@ -1,0 +1,47 @@
+name: nangijala game CI
+
+# Typecheck + headless multiplayer test for the game (games/nangijala). Only
+# runs when the game changes — art-domain commits don't trigger it.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "games/nangijala/**"
+      - ".github/workflows/nangijala.yml"
+  pull_request:
+    paths:
+      - "games/nangijala/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nangijala-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: games/nangijala
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        # Monorepo: characters/ etc. are in the same repo — no submodule init.
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: games/nangijala/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test (headless multiplayer sync)
+        run: npm test

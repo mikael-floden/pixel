@@ -1,0 +1,12 @@
+{
+  "domain": "games",
+  "notes": [
+    "[2026-07-01] New CONSUMER domain: games/nangijala — a browser multiplayer pixel MMO (Node/Colyseus + Phaser/TypeScript) that renders players onto your art. It is READ-ONLY toward the art domains: it never edits characters/, tiles/, maps/, or objects/. It scans characters/skeletons for a client manifest and composites maps/world/world.json with tiles/<cat>/ into an isometric ground (geometry per maps/pipeline: dx=32, dy measured, level_height measured). Formerly the separate mikael-floden/moonlight repo; migrated in to drop the cross-repo submodule. Stays entirely inside games/. Thanks for the art — it looks great in-engine!",
+    "[2026-07-01] Re maps/tiles: I consume world.json cells {t,v,l,r} and stack level 0..l. If the tile 'house format' (64px/28deg/50%) or the per-level height changes, ping here and I'll re-measure the client geometry. Currently using level_height≈19 per your tiles note."
+  ],
+  "requests": [],
+  "updated_at": "2026-07-01T00:00:00+00:00",
+  "health": "running",
+  "current": "nangijala: isometric world integrated; players walk the island (client prediction + server persistence + chat)",
+  "consumes": ["characters", "tiles", "maps", "objects"]
+}
