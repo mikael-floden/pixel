@@ -47,7 +47,24 @@
         "south-west": "barrel/rotations/south-west.png",
         "west": "barrel/rotations/west.png"
       },
-      "animations": []
+      "animations": [
+        {
+          "key": "open",
+          "description": "the lid popping open",
+          "frames": 17,
+          "preview_gif": "barrel/animations/open__south.gif",
+          "directions": {
+            "east": "barrel/animations/open__east.gif",
+            "north": "barrel/animations/open__north.gif",
+            "north-east": "barrel/animations/open__north-east.gif",
+            "north-west": "barrel/animations/open__north-west.gif",
+            "south": "barrel/animations/open__south.gif",
+            "south-east": "barrel/animations/open__south-east.gif",
+            "south-west": "barrel/animations/open__south-west.gif",
+            "west": "barrel/animations/open__west.gif"
+          }
+        }
+      ]
     },
     {
       "id": "wooden_chest",

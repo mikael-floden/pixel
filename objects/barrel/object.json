@@ -37,6 +37,206 @@
     "south-west": "barrel/rotations/south-west.png",
     "west": "barrel/rotations/west.png"
   },
-  "animations": {},
+  "animations": {
+    "open": {
+      "group_id": "d8135831-eb9c-41a0-9542-492170e14cdb",
+      "description": "the lid popping open",
+      "frame_count": 16,
+      "directions": {
+        "east": {
+          "frames": 17,
+          "strip": "barrel/animations/open__east.png",
+          "gif": "barrel/animations/open__east.gif",
+          "frame_paths": [
+            "barrel/animations/open/east/00.png",
+            "barrel/animations/open/east/01.png",
+            "barrel/animations/open/east/02.png",
+            "barrel/animations/open/east/03.png",
+            "barrel/animations/open/east/04.png",
+            "barrel/animations/open/east/05.png",
+            "barrel/animations/open/east/06.png",
+            "barrel/animations/open/east/07.png",
+            "barrel/animations/open/east/08.png",
+            "barrel/animations/open/east/09.png",
+            "barrel/animations/open/east/10.png",
+            "barrel/animations/open/east/11.png",
+            "barrel/animations/open/east/12.png",
+            "barrel/animations/open/east/13.png",
+            "barrel/animations/open/east/14.png",
+            "barrel/animations/open/east/15.png",
+            "barrel/animations/open/east/16.png"
+          ]
+        },
+        "north": {
+          "frames": 17,
+          "strip": "barrel/animations/open__north.png",
+          "gif": "barrel/animations/open__north.gif",
+          "frame_paths": [
+            "barrel/animations/open/north/00.png",
+            "barrel/animations/open/north/01.png",
+            "barrel/animations/open/north/02.png",
+            "barrel/animations/open/north/03.png",
+            "barrel/animations/open/north/04.png",
+            "barrel/animations/open/north/05.png",
+            "barrel/animations/open/north/06.png",
+            "barrel/animations/open/north/07.png",
+            "barrel/animations/open/north/08.png",
+            "barrel/animations/open/north/09.png",
+            "barrel/animations/open/north/10.png",
+            "barrel/animations/open/north/11.png",
+            "barrel/animations/open/north/12.png",
+            "barrel/animations/open/north/13.png",
+            "barrel/animations/open/north/14.png",
+            "barrel/animations/open/north/15.png",
+            "barrel/animations/open/north/16.png"
+          ]
+        },
+        "north-east": {
+          "frames": 17,
+          "strip": "barrel/animations/open__north-east.png",
+          "gif": "barrel/animations/open__north-east.gif",
+          "frame_paths": [
+            "barrel/animations/open/north-east/00.png",
+            "barrel/animations/open/north-east/01.png",
+            "barrel/animations/open/north-east/02.png",
+            "barrel/animations/open/north-east/03.png",
+            "barrel/animations/open/north-east/04.png",
+            "barrel/animations/open/north-east/05.png",
+            "barrel/animations/open/north-east/06.png",
+            "barrel/animations/open/north-east/07.png",
+            "barrel/animations/open/north-east/08.png",
+            "barrel/animations/open/north-east/09.png",
+            "barrel/animations/open/north-east/10.png",
+            "barrel/animations/open/north-east/11.png",
+            "barrel/animations/open/north-east/12.png",
+            "barrel/animations/open/north-east/13.png",
+            "barrel/animations/open/north-east/14.png",
+            "barrel/animations/open/north-east/15.png",
+            "barrel/animations/open/north-east/16.png"
+          ]
+        },
+        "north-west": {
+          "frames": 17,
+          "strip": "barrel/animations/open__north-west.png",
+          "gif": "barrel/animations/open__north-west.gif",
+          "frame_paths": [
+            "barrel/animations/open/north-west/00.png",
+            "barrel/animations/open/north-west/01.png",
+            "barrel/animations/open/north-west/02.png",
+            "barrel/animations/open/north-west/03.png",
+            "barrel/animations/open/north-west/04.png",
+            "barrel/animations/open/north-west/05.png",
+            "barrel/animations/open/north-west/06.png",
+            "barrel/animations/open/north-west/07.png",
+            "barrel/animations/open/north-west/08.png",
+            "barrel/animations/open/north-west/09.png",
+            "barrel/animations/open/north-west/10.png",
+            "barrel/animations/open/north-west/11.png",
+            "barrel/animations/open/north-west/12.png",
+            "barrel/animations/open/north-west/13.png",
+            "barrel/animations/open/north-west/14.png",
+            "barrel/animations/open/north-west/15.png",
+            "barrel/animations/open/north-west/16.png"
+          ]
+        },
+        "south": {
+          "frames": 17,
+          "strip": "barrel/animations/open__south.png",
+          "gif": "barrel/animations/open__south.gif",
+          "frame_paths": [
+            "barrel/animations/open/south/00.png",
+            "barrel/animations/open/south/01.png",
+            "barrel/animations/open/south/02.png",
+            "barrel/animations/open/south/03.png",
+            "barrel/animations/open/south/04.png",
+            "barrel/animations/open/south/05.png",
+            "barrel/animations/open/south/06.png",
+            "barrel/animations/open/south/07.png",
+            "barrel/animations/open/south/08.png",
+            "barrel/animations/open/south/09.png",
+            "barrel/animations/open/south/10.png",
+            "barrel/animations/open/south/11.png",
+            "barrel/animations/open/south/12.png",
+            "barrel/animations/open/south/13.png",
+            "barrel/animations/open/south/14.png",
+            "barrel/animations/open/south/15.png",
+            "barrel/animations/open/south/16.png"
+          ]
+        },
+        "south-east": {
+          "frames": 17,
+          "strip": "barrel/animations/open__south-east.png",
+          "gif": "barrel/animations/open__south-east.gif",
+          "frame_paths": [
+            "barrel/animations/open/south-east/00.png",
+            "barrel/animations/open/south-east/01.png",
+            "barrel/animations/open/south-east/02.png",
+            "barrel/animations/open/south-east/03.png",
+            "barrel/animations/open/south-east/04.png",
+            "barrel/animations/open/south-east/05.png",
+            "barrel/animations/open/south-east/06.png",
+            "barrel/animations/open/south-east/07.png",
+            "barrel/animations/open/south-east/08.png",
+            "barrel/animations/open/south-east/09.png",
+            "barrel/animations/open/south-east/10.png",
+            "barrel/animations/open/south-east/11.png",
+            "barrel/animations/open/south-east/12.png",
+            "barrel/animations/open/south-east/13.png",
+            "barrel/animations/open/south-east/14.png",
+            "barrel/animations/open/south-east/15.png",
+            "barrel/animations/open/south-east/16.png"
+          ]
+        },
+        "south-west": {
+          "frames": 17,
+          "strip": "barrel/animations/open__south-west.png",
+          "gif": "barrel/animations/open__south-west.gif",
+          "frame_paths": [
+            "barrel/animations/open/south-west/00.png",
+            "barrel/animations/open/south-west/01.png",
+            "barrel/animations/open/south-west/02.png",
+            "barrel/animations/open/south-west/03.png",
+            "barrel/animations/open/south-west/04.png",
+            "barrel/animations/open/south-west/05.png",
+            "barrel/animations/open/south-west/06.png",
+            "barrel/animations/open/south-west/07.png",
+            "barrel/animations/open/south-west/08.png",
+            "barrel/animations/open/south-west/09.png",
+            "barrel/animations/open/south-west/10.png",
+            "barrel/animations/open/south-west/11.png",
+            "barrel/animations/open/south-west/12.png",
+            "barrel/animations/open/south-west/13.png",
+            "barrel/animations/open/south-west/14.png",
+            "barrel/animations/open/south-west/15.png",
+            "barrel/animations/open/south-west/16.png"
+          ]
+        },
+        "west": {
+          "frames": 17,
+          "strip": "barrel/animations/open__west.png",
+          "gif": "barrel/animations/open__west.gif",
+          "frame_paths": [
+            "barrel/animations/open/west/00.png",
+            "barrel/animations/open/west/01.png",
+            "barrel/animations/open/west/02.png",
+            "barrel/animations/open/west/03.png",
+            "barrel/animations/open/west/04.png",
+            "barrel/animations/open/west/05.png",
+            "barrel/animations/open/west/06.png",
+            "barrel/animations/open/west/07.png",
+            "barrel/animations/open/west/08.png",
+            "barrel/animations/open/west/09.png",
+            "barrel/animations/open/west/10.png",
+            "barrel/animations/open/west/11.png",
+            "barrel/animations/open/west/12.png",
+            "barrel/animations/open/west/13.png",
+            "barrel/animations/open/west/14.png",
+            "barrel/animations/open/west/15.png",
+            "barrel/animations/open/west/16.png"
+          ]
+        }
+      }
+    }
+  },
   "status": "in_progress"
 }
