@@ -332,6 +332,22 @@
       "scene": "wild_002/scene.png",
       "collision": "wild_002/collision.png",
       "manifest": "wild_002/zone.json"
+    },
+    {
+      "id": "wild_003",
+      "title": "Quiet Meadow 3",
+      "kind": "island_screen",
+      "mood": "quiet flower meadow (daytime)",
+      "pixel_size": {
+        "width": 960,
+        "height": 672
+      },
+      "props": 3,
+      "exits": [],
+      "preview": "wild_003/preview.png",
+      "scene": "wild_003/scene.png",
+      "collision": "wild_003/collision.png",
+      "manifest": "wild_003/zone.json"
     }
   ]
 }
