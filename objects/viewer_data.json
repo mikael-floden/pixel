@@ -1,9 +1,9 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 13,
+  "object_count": 14,
   "target_count": 40,
   "categories": {
-    "tool": 5,
+    "tool": 6,
     "container": 4,
     "valuable": 4
   },
@@ -55,6 +55,21 @@
       ],
       "status": "complete",
       "sprite": "clay_pot/sprite.png",
+      "rotation_files": {},
+      "animations": []
+    },
+    {
+      "id": "fishing_rod",
+      "name": "Fishing Rod",
+      "category": "tool",
+      "description": "a bamboo fishing rod with a line and hook",
+      "view": "side",
+      "size": [
+        64,
+        64
+      ],
+      "status": "complete",
+      "sprite": "fishing_rod/sprite.png",
       "rotation_files": {},
       "animations": []
     },
