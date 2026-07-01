@@ -9,6 +9,10 @@ import {
   ChatBroadcast,
   stepMovement,
   vectorToDirection,
+  BlockedFn,
+  buildTerrainGrid,
+  makeBlocked,
+  isWalkableTerrain,
 } from "@nangijala/shared";
 import { CharacterDef, Manifest, stripUrl } from "../manifest";
 import { colorForName } from "../placeholder";
@@ -56,6 +60,9 @@ export class WorldScene extends Phaser.Scene {
   // Isometric tile world (null → fall back to a plain ground).
   private world: World | null = null;
   private iso = { ox: 0, oy: 0, w: WORLD_WIDTH, h: WORLD_HEIGHT };
+  // Terrain collision — same grid the server uses, so prediction matches.
+  private blocked: BlockedFn | undefined;
+  private collisionOverlay?: Phaser.GameObjects.Graphics;
 
   constructor() {
     super("world");
@@ -66,6 +73,10 @@ export class WorldScene extends Phaser.Scene {
     this.myCharacter = this.registry.get("character") as CharacterDef;
     this.myName = this.registry.get("name") as string;
     this.world = (this.registry.get("world") as World | null) ?? null;
+    if (this.world) {
+      const grid = buildTerrainGrid(this.world.width, this.world.height, this.world.rows);
+      this.blocked = makeBlocked(grid);
+    }
   }
 
   preload() {
@@ -110,6 +121,8 @@ export class WorldScene extends Phaser.Scene {
         this.chat.openInput();
       }
     });
+    // Debug: press C to visualize blocked (non-walkable) terrain cells.
+    this.input.keyboard!.on("keydown-C", () => this.toggleCollisionOverlay());
 
     const cam = this.cameras.main;
     cam.setBounds(0, 0, this.iso.w, this.iso.h);
@@ -165,6 +178,7 @@ export class WorldScene extends Phaser.Scene {
       },
       say: (text: string) => this.room?.send("chat", { text }),
       bubbles: () => [...this.avatars.values()].filter((a) => a.bubble).map((a) => a.bubble!.text),
+      blockedAt: (x: number, y: number) => (this.blocked ? this.blocked(x, y) : false),
     };
   }
 
@@ -257,7 +271,7 @@ export class WorldScene extends Phaser.Scene {
         let rx = player.x;
         let ry = player.y;
         for (const p of this.pending) {
-          const r = stepMovement(rx, ry, p.ax, p.ay, p.running, p.dt);
+          const r = stepMovement(rx, ry, p.ax, p.ay, p.running, p.dt, this.blocked);
           rx = r.x;
           ry = r.y;
         }
@@ -371,6 +385,38 @@ export class WorldScene extends Phaser.Scene {
       for (let lvl = 0; lvl <= cell.l; lvl++) rt.batchDraw(key, bx, by - lvl * lh);
     }
     rt.endDraw();
+  }
+
+  /** Toggle a debug overlay marking blocked (non-walkable) cells in red iso
+   * diamonds. Built lazily on first use. */
+  private toggleCollisionOverlay() {
+    if (this.collisionOverlay) {
+      this.collisionOverlay.setVisible(!this.collisionOverlay.visible);
+      return;
+    }
+    if (!this.world) return;
+    const { dx, dy, lh } = MAP_GEOMETRY;
+    const g = this.add.graphics().setDepth(1_000_000);
+    g.fillStyle(0xff3b3b, 0.35);
+    for (let row = 0; row < this.world.height; row++) {
+      for (let col = 0; col < this.world.width; col++) {
+        const cell = this.world.rows[row]?.[col];
+        if (!cell || isWalkableTerrain(cell.t)) continue;
+        const bx = this.iso.ox + (col - row) * dx;
+        const by = this.iso.oy + (col + row) * dy - cell.l * lh;
+        // The top diamond of a 64-wide iso tile (half-width dx, half-height dy).
+        g.fillPoints(
+          [
+            new Phaser.Geom.Point(bx + dx, by),
+            new Phaser.Geom.Point(bx + dx * 2, by + dy),
+            new Phaser.Geom.Point(bx + dx, by + dy * 2),
+            new Phaser.Geom.Point(bx, by + dy),
+          ],
+          true,
+        );
+      }
+    }
+    this.collisionOverlay = g;
   }
 
   /** Project an authoritative world position (flat x,y) onto the iso ground —

@@ -40,8 +40,17 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
   back-to-front by `(col+row,row)`, stack level 0..l). `MapPreviewScene` (`/#map`)
   composites the whole world; the live `WorldScene` uses it as the ground and
   `project()`s each player's flat `(x,y)` onto the grid (feet lifted by elevation).
-- Open follow-ups (#28): occlusion behind tall tiles, terrain walkability/collision,
-  iso input feel. If the tile "house format" changes, re-measure `MAP_GEOMETRY`.
+- Terrain collision (#17) is server-authoritative: `buildTerrainGrid`/`makeBlocked`
+  in `shared/` derive a blocked grid from the world cells (category-based —
+  `BLOCKED_TERRAIN` = water + castle; unknown categories default walkable). Both
+  `stepMovement` (server tick + client prediction) resolve movement axis-separated
+  so players slide along walls, and spawns use `findSpawn` (open walkable land).
+  Press **C** in-world to visualize blocked cells. Tune walkability via
+  `BLOCKED_TERRAIN`.
+- Open follow-ups (#28): occlusion behind tall tiles, elevation-step traversal
+  (stairs / blocking sheer cliff faces so you can't walk up a 2-level stone
+  face), iso input feel. If the tile "house format" changes, re-measure
+  `MAP_GEOMETRY`.
 
 ## Conventions
 

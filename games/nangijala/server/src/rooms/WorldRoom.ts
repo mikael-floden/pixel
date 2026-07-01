@@ -10,10 +10,18 @@ import {
   WORLD_HEIGHT,
   TICK_RATE,
   stepMovement,
+  BlockedFn,
+  TerrainGrid,
+  buildTerrainGrid,
+  makeBlocked,
+  isBlockedAtWorld,
+  findSpawn,
 } from "@nangijala/shared";
 import { WorldState, Player } from "../schema/WorldState.js";
 import { JsonPlayerStore, PlayerStore } from "../store.js";
-import { join } from "path";
+import { existsSync, readFileSync } from "fs";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 
 /**
  * The single shared world. Every client that connects joins this same room, so
@@ -26,6 +34,10 @@ export class WorldRoom extends Room<WorldState> {
 
   // Persistence: swap JsonPlayerStore for a DB-backed store later.
   private store: PlayerStore = new JsonPlayerStore(join(process.cwd(), ".data", "players.json"));
+
+  // Terrain collision derived from the maps agent's world (null → open world).
+  private terrain: TerrainGrid | null = loadTerrain();
+  private blocked: BlockedFn | undefined = this.terrain ? makeBlocked(this.terrain) : undefined;
 
   onCreate() {
     this.setState(new WorldState());
@@ -61,13 +73,19 @@ export class WorldRoom extends Room<WorldState> {
     player.name = (options.name || `wanderer-${client.sessionId.slice(0, 4)}`).slice(0, 24);
     player.character = options.character || "";
 
-    // Returning player? Restore their last position (server-authoritative).
+    // Returning player? Restore their last position (server-authoritative),
+    // but rescue anyone whose saved spot is now blocked (terrain can change).
     const saved = player.token ? this.store.load(player.token) : undefined;
-    if (saved) {
+    if (saved && !(this.terrain && isBlockedAtWorld(this.terrain, saved.x, saved.y))) {
       player.x = saved.x;
       player.y = saved.y;
+    } else if (this.terrain) {
+      // Spawn on open walkable land near the world centre.
+      const s = findSpawn(this.terrain, WORLD_WIDTH / 2 + rand(-120, 120), WORLD_HEIGHT / 2 + rand(-120, 120));
+      player.x = s.x;
+      player.y = s.y;
     } else {
-      // Spawn near the world centre so newcomers meet quickly.
+      // No map loaded → open world; spawn near centre so newcomers meet quickly.
       player.x = WORLD_WIDTH / 2 + rand(-120, 120);
       player.y = WORLD_HEIGHT / 2 + rand(-120, 120);
     }
@@ -89,7 +107,15 @@ export class WorldRoom extends Room<WorldState> {
 
   private update(dt: number) {
     this.state.players.forEach((player) => {
-      const r = stepMovement(player.x, player.y, player.inputAx, player.inputAy, player.inputRunning, dt);
+      const r = stepMovement(
+        player.x,
+        player.y,
+        player.inputAx,
+        player.inputAy,
+        player.inputRunning,
+        dt,
+        this.blocked,
+      );
       player.x = r.x;
       player.y = r.y;
       player.moving = r.moving;
@@ -105,4 +131,25 @@ function clamp(v: number, lo: number, hi: number): number {
 
 function rand(lo: number, hi: number): number {
   return lo + Math.random() * (hi - lo);
+}
+
+/** Load the maps agent's world grid and build a collision grid, or null if the
+ * map isn't present (then the world is open and players move unobstructed). */
+function loadTerrain(): TerrainGrid | null {
+  try {
+    const srcDir = dirname(fileURLToPath(import.meta.url)); // server/src/rooms
+    const gameRoot = join(srcDir, "..", "..", ".."); // games/nangijala
+    const assetsRoot = process.env.ASSETS_ROOT || join(gameRoot, "..", ".."); // repo root
+    const path = join(assetsRoot, "maps", "world", "world.json");
+    if (!existsSync(path)) return null;
+    const world = JSON.parse(readFileSync(path, "utf8")) as {
+      width: number;
+      height: number;
+      rows: { t: string }[][];
+    };
+    if (!world?.rows?.length) return null;
+    return buildTerrainGrid(world.width, world.height, world.rows);
+  } catch {
+    return null;
+  }
 }

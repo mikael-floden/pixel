@@ -78,8 +78,13 @@ export interface MoveResult {
   moving: boolean;
 }
 
+/** A test for whether a world position is impassable (e.g. water, a wall). */
+export type BlockedFn = (x: number, y: number) => boolean;
+
 /** Integrate one movement step. The SAME function runs on the server (each tick)
- * and on the client (prediction), so they stay in lockstep. */
+ * and on the client (prediction), so they stay in lockstep. When `blocked` is
+ * given, movement is resolved axis-separated so players slide along walls
+ * instead of sticking to them. */
 export function stepMovement(
   x: number,
   y: number,
@@ -87,19 +92,122 @@ export function stepMovement(
   ay: number,
   running: boolean,
   dt: number,
+  blocked?: BlockedFn,
 ): MoveResult {
   const len = Math.hypot(ax, ay);
   if (len < 1e-6) return { x, y, dir: null, moving: false };
   const nx = ax / len;
   const ny = ay / len;
   const speed = running ? RUN_SPEED : WALK_SPEED;
-  const cx = clamp(x + nx * speed * dt, SPAWN_MARGIN, WORLD_WIDTH - SPAWN_MARGIN);
-  const cy = clamp(y + ny * speed * dt, SPAWN_MARGIN, WORLD_HEIGHT - SPAWN_MARGIN);
-  return { x: cx, y: cy, dir: vectorToDirection(nx, ny), moving: true };
+  const tx = clamp(x + nx * speed * dt, SPAWN_MARGIN, WORLD_WIDTH - SPAWN_MARGIN);
+  const ty = clamp(y + ny * speed * dt, SPAWN_MARGIN, WORLD_HEIGHT - SPAWN_MARGIN);
+  let rx = x;
+  let ry = y;
+  // Resolve each axis independently: keep the X move if its destination is free,
+  // then the Y move from the (possibly advanced) X — this yields wall-sliding.
+  if (!blocked || !blocked(tx, ry)) rx = tx;
+  if (!blocked || !blocked(rx, ty)) ry = ty;
+  return { x: rx, y: ry, dir: vectorToDirection(nx, ny), moving: true };
 }
 
 function clamp(v: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, v));
+}
+
+// --- Terrain / collision -----------------------------------------------------
+// Walkability comes from the maps agent's world grid (maps/world/world.json).
+// We block by tile CATEGORY, defaulting unknown categories to walkable so new
+// ground tiles the maps/tiles agents add don't accidentally wall players in.
+export const BLOCKED_TERRAIN: ReadonlySet<string> = new Set(["water", "castle"]);
+
+export function isWalkableTerrain(t: string): boolean {
+  return !BLOCKED_TERRAIN.has(t);
+}
+
+/** A row-major blocked/free grid over the world, one flag per map cell. */
+export interface TerrainGrid {
+  width: number;
+  height: number;
+  blocked: boolean[];
+}
+
+/** Build a collision grid from the maps agent's world rows (cells carry `t`). */
+export function buildTerrainGrid(
+  width: number,
+  height: number,
+  rows: { t: string }[][],
+): TerrainGrid {
+  const blocked: boolean[] = new Array(width * height);
+  for (let r = 0; r < height; r++) {
+    for (let c = 0; c < width; c++) {
+      const cell = rows[r]?.[c];
+      blocked[r * width + c] = cell ? !isWalkableTerrain(cell.t) : true;
+    }
+  }
+  return { width, height, blocked };
+}
+
+/** True if the world position falls on a blocked cell (or outside the map). */
+export function isBlockedAtWorld(grid: TerrainGrid, x: number, y: number): boolean {
+  const col = Math.floor((x / WORLD_WIDTH) * grid.width);
+  const row = Math.floor((y / WORLD_HEIGHT) * grid.height);
+  if (col < 0 || row < 0 || col >= grid.width || row >= grid.height) return true;
+  return grid.blocked[row * grid.width + col];
+}
+
+export function makeBlocked(grid: TerrainGrid): BlockedFn {
+  return (x, y) => isBlockedAtWorld(grid, x, y);
+}
+
+/** World coordinates of a map cell's centre. */
+export function cellCenterWorld(grid: TerrainGrid, col: number, row: number): { x: number; y: number } {
+  return {
+    x: ((col + 0.5) / grid.width) * WORLD_WIDTH,
+    y: ((row + 0.5) / grid.height) * WORLD_HEIGHT,
+  };
+}
+
+function neighborhoodOpen(grid: TerrainGrid, col: number, row: number): boolean {
+  for (let dr = -1; dr <= 1; dr++) {
+    for (let dc = -1; dc <= 1; dc++) {
+      const c = col + dc;
+      const r = row + dr;
+      if (c < 0 || r < 0 || c >= grid.width || r >= grid.height) return false;
+      if (grid.blocked[r * grid.width + c]) return false;
+    }
+  }
+  return true;
+}
+
+/**
+ * Pick a spawn point: the walkable cell nearest a preferred spot (world centre
+ * by default) whose 3×3 neighbourhood is also walkable, so newcomers have room
+ * to move in any direction. Falls back to any walkable cell, then the pref.
+ */
+export function findSpawn(
+  grid: TerrainGrid,
+  prefX: number = WORLD_WIDTH / 2,
+  prefY: number = WORLD_HEIGHT / 2,
+): { x: number; y: number } {
+  const c0 = clamp(Math.floor((prefX / WORLD_WIDTH) * grid.width), 0, grid.width - 1);
+  const r0 = clamp(Math.floor((prefY / WORLD_HEIGHT) * grid.height), 0, grid.height - 1);
+  const maxRad = grid.width + grid.height;
+  let firstWalkable: { col: number; row: number } | null = null;
+  for (let rad = 0; rad <= maxRad; rad++) {
+    for (let dr = -rad; dr <= rad; dr++) {
+      for (let dc = -rad; dc <= rad; dc++) {
+        if (Math.max(Math.abs(dr), Math.abs(dc)) !== rad) continue; // ring only
+        const c = c0 + dc;
+        const r = r0 + dr;
+        if (c < 0 || r < 0 || c >= grid.width || r >= grid.height) continue;
+        if (grid.blocked[r * grid.width + c]) continue;
+        if (!firstWalkable) firstWalkable = { col: c, row: r };
+        if (neighborhoodOpen(grid, c, r)) return cellCenterWorld(grid, c, r);
+      }
+    }
+  }
+  if (firstWalkable) return cellCenterWorld(grid, firstWalkable.col, firstWalkable.row);
+  return { x: prefX, y: prefY };
 }
 
 /** Options sent by the client when joining the world room. */
