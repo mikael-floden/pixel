@@ -22,6 +22,7 @@ _HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, _HERE)  # so sibling modules import cleanly under any cwd
 
 from designer import init_world, iterate      # noqa: E402
+from plan import default_plan, render_schematic  # noqa: E402
 from render import render                      # noqa: E402
 from tileset import TileSet                    # noqa: E402
 from world import World                        # noqa: E402
@@ -29,7 +30,18 @@ from world import World                        # noqa: E402
 MAPS_DIR = os.path.dirname(_HERE)
 WORLD_JSON = os.path.join(MAPS_DIR, "world", "world.json")
 WORLD_PNG = os.path.join(MAPS_DIR, "world", "world.png")
+PLAN_PNG = os.path.join(MAPS_DIR, "world", "plan.png")
 CONFIG = os.path.join(MAPS_DIR, "config", "world.json")
+
+
+def _render_plan(seed: int) -> None:
+    plan = default_plan(seed=seed)
+    img = render_schematic(plan)
+    os.makedirs(os.path.dirname(PLAN_PNG), exist_ok=True)
+    img.save(PLAN_PNG)
+    print(f"plan: {plan.title}  {plan.width}x{plan.height}  "
+          f"{len(plan.districts)} districts, {len(plan.nodes)} landmarks")
+    print(f"wrote {PLAN_PNG}  ({img.width}x{img.height})")
 
 
 def _config_defaults() -> dict:
@@ -53,6 +65,8 @@ def main() -> None:
     ap.add_argument("--iterate", action="store_true", help="apply one improvement")
     ap.add_argument("--steps", type=int, default=0, help="apply N improvements")
     ap.add_argument("--render-only", action="store_true", help="only re-render")
+    ap.add_argument("--plan", action="store_true",
+                    help="render the bird's-eye world plan (schematic) and exit")
     ap.add_argument("--seed", type=int, default=None)
     ap.add_argument("--scale", type=int, default=1)
     args = ap.parse_args()
@@ -61,6 +75,12 @@ def main() -> None:
     seed = args.seed if args.seed is not None else cfg.get("seed", 7)
     w = cfg.get("init_width", 44)
     h = cfg.get("init_height", 44)
+
+    # The master plan (the bigger picture) always renders; the detailed world is
+    # built into that plan.
+    _render_plan(seed)
+    if args.plan:
+        return
 
     tiles = TileSet()
 

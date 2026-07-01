@@ -11,11 +11,34 @@ Part of the multi-domain `pixel` repo (alongside `characters/`, `objects/`,
 ## The idea
 
 Not scattered tiles — a **designed** world. The goal is an *A Link to the Past*
-overworld feel: a coherent island with an organic coastline, biome regions that
+overworld feel: a coherent landmass with an organic coastline, biome regions that
 each have a *place and a reason* (highlands to the north, forest to the east,
-fertile plains in the centre), terraced elevation, a river from the peaks to the
-sea, and real landmarks — a walled **castle** on a plateau and a **harbor town**
-on the coast — tied together by **logical roads**.
+fertile plains in the centre), heavily **terraced elevation**, a river from the
+peaks to the sea, and real landmarks — a walled **castle** on a plateau and a
+**harbor town** on the coast — tied together by **logical roads**.
+
+### Plan first, then build the details (the bigger picture)
+
+Like ALTTP, the **whole world is planned before any detail is placed.**
+`pipeline/plan.py` authors a top-down **master plan** — *The Kingdom of
+Aldermoor*: where every region sits and why, an elevation field, the river
+courses, the King's Road network, and the landmarks. `build.py --plan` renders it
+as the bird's-eye **schematic** (`world/plan.png`) a human reviews.
+
+Crucially the plan is **data, not a picture**: the detail builder samples the
+*same* plan (`biome_at`, `elevation_at`, rivers, roads), so the sketch and the
+built world can never drift apart. We nail the plan, then build the detailed
+isometric world into it **slowly, region by region** — details before breadth.
+
+### Elevation is used hard
+
+The world is deliberately **vertical** — the level/stacking system carries a lot
+of the design. `plan.elevation_at` gives a terraced height field up to
+`MAX_LEVEL` (6): peaks tower over the coast, regions each have their own base
+height and roughness, river valleys cut down, the castle sits on a raised mesa,
+and the mountain pass is notched so roads cross *through* it, not over the peaks.
+Rounding the height field yields flat plateaus separated by cliffs — never a flat
+plane.
 
 Assembling a world is **pure compositing** of tiles that already exist, so this
 domain needs **no PixelLab key and makes no API calls**. It owns orchestration,
@@ -28,15 +51,19 @@ maps/
   README.md
   config/world.json          design intent + default seed/size knobs
   pipeline/
+    noise.py                 deterministic hash noise (shared by plan + builder)
+    plan.py                  the MASTER PLAN: authored layout + elevation +
+                             bird's-eye schematic render (the bigger picture)
     tileset.py               loads tiles/, measures the shared iso geometry
     world.py                 the World data model (grid of cells) + JSON persistence
     render.py                composites a World into one isometric PNG
     designer.py              the "designer brain": init + iterative improvements
-    build.py                 CLI entrypoint (grow / edit / render)
+    build.py                 CLI entrypoint (plan / grow / edit / render)
   world/
+    plan.png                 the bird's-eye world plan (schematic overview)
     world.json               the persistent world (source of truth, human-readable)
-    world.png                the rendered isometric world
-  index.html                 viewer (shows world.png + region list)
+    world.png                the rendered isometric world (detail prototype)
+  index.html                 viewer (shows the plan + the detailed world)
 ```
 
 ## How the tiles fit together
