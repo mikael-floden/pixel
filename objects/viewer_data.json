@@ -120,10 +120,18 @@
         "character_height_m": 1.7,
         "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall. Keeps objects realistically sized in a world with characters."
       },
-      "status": "in_progress",
+      "status": "complete",
       "sprite": "campfire/sprite.png",
       "rotation_files": {},
-      "animations": []
+      "animations": [
+        {
+          "key": "burn",
+          "gif": "campfire/animations/burn.gif",
+          "strip": "campfire/animations/burn.png",
+          "frames": 4,
+          "action": "fire burning"
+        }
+      ]
     },
     {
       "id": "clay_pot",
