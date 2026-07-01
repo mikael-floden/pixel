@@ -1,6 +1,6 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 29,
+  "object_count": 30,
   "target_count": 40,
   "scale": {
     "_comment": "REALISM RULE: objects are scaled to the world by real height, so they sit correctly next to characters. A character is ~character_height_px tall (the 64px skeleton) representing character_height_m. The loop turns each object's world_height_m into world_px_height = round(world_height_m * character_height_px / character_height_m); a game renders the sprite scaled to that pixel height. So a coin (~0.22m) is tiny next to a character and an oak (~6m) towers. Every object MUST have a world_height_m (per-object, else category_height_m fallback).",
@@ -23,7 +23,7 @@
     "nature": 7,
     "light": 3,
     "valuable": 4,
-    "misc": 2
+    "misc": 3
   },
   "objects": [
     {
@@ -747,6 +747,28 @@
       },
       "status": "complete",
       "sprite": "tree_stump/sprite.png",
+      "rotation_files": {},
+      "animations": []
+    },
+    {
+      "id": "well",
+      "name": "Stone Well",
+      "category": "misc",
+      "description": "a round stone water well with a wooden roof and bucket",
+      "view": "low top-down",
+      "size": [
+        64,
+        64
+      ],
+      "placement": {
+        "world_height_m": 1.4,
+        "world_px_height": 53,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall. Keeps objects realistically sized in a world with characters."
+      },
+      "status": "in_progress",
+      "sprite": "well/sprite.png",
       "rotation_files": {},
       "animations": []
     },
