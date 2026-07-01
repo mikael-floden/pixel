@@ -32,7 +32,24 @@
     "count": 0,
     "directions": []
   },
-  "animations": {},
-  "generations_used": 1.0,
-  "status": "in_progress"
+  "animations": {
+    "bob": {
+      "action": "floating up and down",
+      "view": "low top-down",
+      "frames": 4,
+      "n_frames_requested": 6,
+      "ok": true,
+      "note": "",
+      "strip": "ancient_potion_bottle_39/animations/bob.png",
+      "gif": "ancient_potion_bottle_39/animations/bob.gif",
+      "frame_paths": [
+        "ancient_potion_bottle_39/animations/bob/00.png",
+        "ancient_potion_bottle_39/animations/bob/01.png",
+        "ancient_potion_bottle_39/animations/bob/02.png",
+        "ancient_potion_bottle_39/animations/bob/03.png"
+      ]
+    }
+  },
+  "generations_used": 2.0,
+  "status": "complete"
 }

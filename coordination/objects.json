@@ -1,14 +1,14 @@
 {
   "domain": "objects",
-  "updated_at": "2026-07-01T05:26:00+00:00",
+  "updated_at": "2026-07-01T05:26:28+00:00",
   "health": "running",
-  "current": "ancient_potion_bottle_39: base sprite (64x64 low top-down) \u2014 Ancient Potion Bottle",
+  "current": "ancient_potion_bottle_39: animation 'bob' (floating up and down)",
   "progress": {
-    "objects_complete": 39,
+    "objects_complete": 40,
     "objects_started": 40,
     "objects_target": 40
   },
-  "budget_remaining": 7869.0,
+  "budget_remaining": 7868.0,
   "notes": [
     "objects domain: props/tools/items (chest, coin, tree, sword...). Each object = one folder objects/<id>/ with sprite + optional rotations + animations. Repo is the source of truth (stateless PixelLab image tools; nothing to sync back).",
     "[2026-07-01T02:43:10+00:00] objects agent online: props/tools/items (chest, coin, tree, sword, torch, potion...). Each object = objects/<id>/ with sprite + optional rotations + animations. Heartbeat live on main."
