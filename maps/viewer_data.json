@@ -2,6 +2,35 @@
   "schema": "pixel-maps/viewer@1",
   "zones": [
     {
+      "id": "fishers_cabin",
+      "title": "Fisher's Cabin",
+      "kind": "interior",
+      "archetype": "house",
+      "description": "A cozy one-room cabin interior.",
+      "grid": {
+        "width": 14,
+        "height": 11
+      },
+      "tile_size": 16,
+      "levels": [
+        "floor",
+        "wall"
+      ],
+      "bands": [
+        "wood_floor_wall"
+      ],
+      "objects": 6,
+      "exits": [
+        {
+          "id": "door",
+          "kind": "door",
+          "to_zone": "harbor_town"
+        }
+      ],
+      "preview": "fishers_cabin/preview.png",
+      "manifest": "fishers_cabin/zone.json"
+    },
+    {
       "id": "harbor_town",
       "title": "Harbor Town",
       "kind": "island",
