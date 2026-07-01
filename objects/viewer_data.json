@@ -532,6 +532,21 @@
             "south-west": "sword/animations/glint__south-west.gif",
             "west": "sword/animations/glint__west.gif"
           }
+        },
+        {
+          "key": "spin",
+          "description": "the sword spinning",
+          "frames": 17,
+          "preview_gif": "sword/animations/spin__east.gif",
+          "directions": {
+            "east": "sword/animations/spin__east.gif",
+            "north": "sword/animations/spin__north.gif",
+            "north-east": "sword/animations/spin__north-east.gif",
+            "north-west": "sword/animations/spin__north-west.gif",
+            "south-east": "sword/animations/spin__south-east.gif",
+            "south-west": "sword/animations/spin__south-west.gif",
+            "west": "sword/animations/spin__west.gif"
+          }
         }
       ]
     },
