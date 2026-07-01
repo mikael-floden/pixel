@@ -2,11 +2,11 @@
   "_comment": "Lightweight modular pixel-character factory. A 'skeleton' is a generation-parameter profile (resolution + 4/8 directions). Each skeleton holds a growing set of animations (starts idle+walk, cap 5) and dresses (starts empty, cap 5) and up to 5 characters. Invariant: every character has every animation undressed, and every dress (all characters get every dress) has every animation. Phase A bootstraps 5 skeletons (5 chars x idle+walk, undressed); Phase B appends animations/dresses/characters to existing skeletons, fanning out across the matrix. PixelLab is the source of truth; sync.py mirrors edits back.",
 
   "targets": {
-    "num_skeletons": 5,
-    "characters": 5,
+    "num_skeletons": 1,
+    "characters": 24,
     "animations": 5,
     "dresses": 5,
-    "_comment": "Phase-A targets per skeleton (dresses count includes 'undressed'). Phase B appends beyond these from the pools."
+    "_comment": "Focus on ONE skeleton with the full varied 24-character cast (character variety matters more right now than testing 5 size/view profiles). Raise num_skeletons later to render the same cast at other resolutions."
   },
 
   "base_animations": ["idle", "walk"],

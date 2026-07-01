@@ -59,38 +59,37 @@ def strip_kept_idle_frame(frames):
     return frames
 
 # Distinct PERSON looks (appearance + feeling only — no clothing; the base is
-# undressed and clothing comes from dress states). A HUGE spread of real human
-# beings: every age, body, gender, ethnicity, mood and walk of life — happy,
-# in love, weary, joyful, hardened, gentle, addicted, sensual, grieving. Mature
-# art for a teen-and-up audience: never childish/cutesy, but not all dark or
-# "badass" either. The feeling lives in the face, posture and build, since the
-# base body is undressed.
+# undressed and clothing comes from dress states). A big, deliberately WILD spread
+# of dark-fantasy-village folk: fighters, workers, outcasts, mystics, drunks,
+# nobles, the broken and the kind — every age, body, gender, ethnicity and vibe.
+# INTERLEAVED so any handful of consecutive characters is varied (never a run of
+# one vibe). Mature, characterful, teen-and-up; never childish, no red-hair-and-
+# freckles clichés. The character lives in the face, build and bearing.
 CHARACTER_LOOKS = [
-    # love, joy, warmth
-    "a radiant adult woman glowing with new love, a warm genuine smile and bright eyes, long dark wavy hair, soft feminine grown figure",
-    "a beaming dark-skinned young man laughing with his whole face, short cropped hair, dimples, easy relaxed posture, lean athletic build",
-    "a contented pregnant woman with a soft round belly and a serene loving smile, dark hair loosely tied, warm full figure",
-    "a tender elderly man with a kind crinkled smile and gentle eyes, balding with wispy grey hair, slight stoop, soft slim build",
-    "a jovial heavyset older woman with rosy cheeks, laugh lines and a big warm grin, curly greying hair, plump build",
-    # ordinary, working, quiet dignity
-    "a confident broad-shouldered dock worker, dark-skinned, easy half-smile, close-cropped hair, strong heavyset build",
-    "a tired middle-aged man with a soft paunch and a thoughtful weary expression, salt-and-pepper hair, crow's feet, average build",
-    "a poised aging dancer with silver hair in a neat bun, graceful upright posture and a faint wistful smile, lean and slight",
-    "a sturdy weathered fisherman with sun-leathered skin, a toothy grin and squint lines, wiry old build",
-    "a proud strong mother figure with hair wrapped up, calm steady eyes and a faint smile, broad full hips and shoulders",
-    # struggle, edge, the street
-    "a weary streetwalker with striking tired eyes, smudged dark eyeliner and dyed platinum hair, slim figure, a guarded knowing look",
-    "a gaunt strung-out addict with hollow cheeks, restless sunken eyes and thin trembling arms, unkempt hair, frail wiry build",
-    "a nervous scrawny young pickpocket with darting eyes and a sly half-grin, messy hair, small wiry build",
-    "a burned-out soldier with a thousand-yard stare and a tight jaw, short scarred hair, lean hardened build",
-    # the hardened few (some really are thugs)
-    "a grizzled mercenary with a scarred face and a shaved head, muscular build",
-    "a hulking tattooed bruiser with a thick neck, broken nose and a cold flat stare, massive build",
-    # serenity, age, inner life
-    "a serene tattooed woman with shaved sides and a calm half-smile, ink across her shoulders, athletic build",
-    "a blind elder with milky pale eyes and a weathered tranquil face, long thin white hair, frail build",
-    "a melancholic pale poet with sad downturned eyes and long unkempt dark hair, slight delicate build",
-    "a flirtatious curvy woman with tousled wavy hair, a knowing smirk and a raised brow, soft full figure",
+    "a lean one-eyed sellsword with a jagged scar across an empty socket, cropped ash-grey hair and a hard flat stare, wiry and battle-worn",
+    "a plump jovial baker-woman with flour-dusted forearms, round ruddy cheeks and a wide gap-toothed grin, hair in a messy bun",
+    "a gaunt ashen grave-digger with deep-sunken eyes, lank black hair and long spidery fingers, tall and stooped",
+    "a voluptuous tavern-singer with tumbling dark curls, painted lips, a beauty mark and a sly confident smile, soft curvy figure",
+    "an ancient stooped hermit with a long yellow-white beard, milk-blind clouded eyes and skeletal knotted hands, frail and slow",
+    "a statuesque warrior-priestess with a shaved head, ritual scars carved across her scalp and a serene fierce gaze, athletic dark-skinned build",
+    "a barrel-chested old drunkard with a ruddy bulbous nose, a wild grey beard and a bleary lopsided grin, heavyset and swaying",
+    "a willowy silver-haired fortune-teller with kohl-rimmed eyes, a distant knowing smile and jangling brass ear-cuffs, slender and strange",
+    "a towering bald pit-fighter with cauliflower ears, a flattened nose and slabs of scarred muscle, massive and dark-skinned",
+    "a severe hollow-cheeked widow with pale mourning skin, a tight iron-grey bun and sharp grieving eyes, thin and rigid",
+    "a soot-streaked young blacksmith with singed eyebrows, sweat-sheened muscular arms and dark hair tied back, broad and grounded",
+    "a feral wild-haired herbalist with twigs knotted in matted locks, bright wary eyes and mud-stained brown skin, lean and coiled",
+    "a crook-backed old shepherd with a kind gap-toothed smile, sun-spotted skin and gnarled knotted hands, frail and warm",
+    "a trembling hollow addict with sunken cheeks, greasy hair, restless bloodshot eyes and thin shaking arms, frail and strung-out",
+    "a regal aging duelist with a white streak through black hair, a proud jaw and a thin scar over one brow, lean and poised",
+    "a stocky dark-skinned miner with a coal-grimed face, powerful shoulders and a calm steady gaze, thickset",
+    "a wiry twitchy cutpurse with darting eyes, a crooked grin and quick nervous hands, small and lean",
+    "a soft warm midwife with tired kind eyes, greying curls and gentle plump hands, motherly and stout",
+    "a haunted shaven-headed deserter with a missing ear, a thousand-yard stare and tense wiry limbs, gaunt and jumpy",
+    "a lithe androgynous acrobat with bleached close-cropped hair, an easy coiled posture and a faint smirk, slim and limber",
+    "a paunchy balding tax-collector with a pinched sour mouth, soft uncalloused hands and small beady eyes, smug and middle-aged",
+    "a broad sun-leathered fisherwoman with salt-stiff braids, thick calloused forearms and a weathered squint, sturdy",
+    "a scarred restless arsonist with wild pale eyes, burn-mottled forearms and a jittery grin, wiry and unsettling",
+    "a heavyset commanding innkeeper with strong bare arms, a booming presence and a shrewd warm face, broad and imposing",
 ]
 
 
