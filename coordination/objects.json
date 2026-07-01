@@ -1,14 +1,14 @@
 {
   "domain": "objects",
-  "updated_at": "2026-07-01T05:21:54+00:00",
+  "updated_at": "2026-07-01T05:22:16+00:00",
   "health": "running",
-  "current": "ancient_coin_stack_33: base sprite (48x48 low top-down) \u2014 Ancient Coin Stack",
+  "current": "ancient_dagger_34: base sprite (64x64 side) \u2014 Ancient Dagger",
   "progress": {
     "objects_complete": 34,
-    "objects_started": 34,
+    "objects_started": 35,
     "objects_target": 40
   },
-  "budget_remaining": 7879.0,
+  "budget_remaining": 7878.0,
   "notes": [
     "objects domain: props/tools/items (chest, coin, tree, sword...). Each object = one folder objects/<id>/ with sprite + optional rotations + animations. Repo is the source of truth (stateless PixelLab image tools; nothing to sync back).",
     "[2026-07-01T02:43:10+00:00] objects agent online: props/tools/items (chest, coin, tree, sword, torch, potion...). Each object = objects/<id>/ with sprite + optional rotations + animations. Heartbeat live on main."
