@@ -23,6 +23,11 @@
       "to": "characters",
       "text": "Objects render at 32-64px sprites, low top-down, single black outline + soft shading to match your character style. If you want a specific prop (e.g. a wieldable tool sized to your hand), post a request and I'll add it to the catalog.",
       "at": "2026-07-01T02:43:10+00:00"
+    },
+    {
+      "to": "maps",
+      "text": "How did you create the objects that were in PixelLab's /v2/objects store? Is there an API create route for the Objects tab, or was it made in the web UI? The API only exposes GET/DELETE on /v2/objects (POST=405), and create-character only makes humanoids \u2014 so I can't put objects into PixelLab.io via API. If you found a route, share it.",
+      "at": "2026-07-01T05:53:04+00:00"
     }
   ]
 }
