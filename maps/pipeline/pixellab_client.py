@@ -48,6 +48,14 @@ def _b64_to_image(b64):
     return Image.open(io.BytesIO(base64.b64decode(b64))).convert("RGBA")
 
 
+def _img_to_b64obj(img):
+    """PIL image -> PixelLab Base64Image object ({type, base64, format})."""
+    bio = io.BytesIO()
+    img.convert("RGBA").save(bio, "PNG")
+    return {"type": "base64", "base64": base64.b64encode(bio.getvalue()).decode(),
+            "format": "png"}
+
+
 class PixelLabClient:
     def __init__(self, api_key=None, base_url=BASE_URL, timeout=120):
         self.api_key = api_key or os.environ.get(API_KEY_ENV)
@@ -142,7 +150,8 @@ class PixelLabClient:
     def create_tileset(self, lower_description, upper_description,
                        transition_description="", tile_size=16, view="high top-down",
                        transition_size=0.0, outline=None, shading=None, detail=None,
-                       seed=None, job_timeout=900):
+                       seed=None, job_timeout=900, color_image=None,
+                       lower_reference_image=None, upper_reference_image=None):
         """Create a Wang tileset (two seamlessly-connecting terrain levels).
 
         Returns (tileset_id, terrain_types, [tile,...]) where each tile is a dict
@@ -161,6 +170,15 @@ class PixelLabClient:
             payload["transition_description"] = transition_description
         if seed is not None:
             payload["seed"] = int(seed)
+        # Style/palette guidance: pass a reference image (e.g. an art screenshot)
+        # so PixelLab imitates its palette & rendering — the closest lever to an
+        # art director for cohesion.
+        if color_image is not None:
+            payload["color_image"] = _img_to_b64obj(color_image)
+        if lower_reference_image is not None:
+            payload["lower_reference_image"] = _img_to_b64obj(lower_reference_image)
+        if upper_reference_image is not None:
+            payload["upper_reference_image"] = _img_to_b64obj(upper_reference_image)
         self._add_style(payload, outline, shading, detail)
         resp = self._post("/create-tileset", payload)
         tileset_id = resp["tileset_id"]
@@ -205,11 +223,12 @@ class PixelLabClient:
 
     def create_scene(self, description, width, height, view="high top-down",
                      no_background=False, outline=None, shading=None, detail=None,
-                     seed=None):
+                     seed=None, color_image=None, init_image=None, init_image_strength=300):
         """Generate a whole pixel-art image (pixflux). Synchronous. Returns PIL.
 
         Useful for establishing / backdrop art (e.g. a painted cave interior) —
-        not a tilemap, just a picture. width/height 32-400."""
+        not a tilemap, just a picture. width/height 32-400. `color_image` guides
+        the palette (e.g. an art screenshot); `init_image` seeds composition."""
         payload = {
             "description": description,
             "image_size": {"width": int(width), "height": int(height)},
@@ -219,6 +238,11 @@ class PixelLabClient:
             payload["view"] = view
         if seed is not None:
             payload["seed"] = int(seed)
+        if color_image is not None:
+            payload["color_image"] = _img_to_b64obj(color_image)
+        if init_image is not None:
+            payload["init_image"] = _img_to_b64obj(init_image)
+            payload["init_image_strength"] = int(init_image_strength)
         self._add_style(payload, outline, shading, detail)
         resp = self._post("/create-image-pixflux", payload)
         return _b64_to_image(resp["image"]["base64"])
