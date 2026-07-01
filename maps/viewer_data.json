@@ -24,6 +24,28 @@
       "manifest": "isle_camp/zone.json"
     },
     {
+      "id": "isle_cove",
+      "title": "Rocky Cove",
+      "kind": "island_screen",
+      "mood": "rocky coastal cove (daytime)",
+      "pixel_size": {
+        "width": 960,
+        "height": 672
+      },
+      "props": 0,
+      "exits": [
+        {
+          "id": "east",
+          "kind": "path",
+          "to_zone": "isle_meadow"
+        }
+      ],
+      "preview": "isle_cove/preview.png",
+      "scene": "isle_cove/scene.png",
+      "collision": "isle_cove/collision.png",
+      "manifest": "isle_cove/zone.json"
+    },
+    {
       "id": "isle_glade",
       "title": "Forest Glade",
       "kind": "island_screen",
