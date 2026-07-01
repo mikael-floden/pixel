@@ -1,9 +1,9 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 3,
+  "object_count": 4,
   "target_count": 40,
   "categories": {
-    "container": 3
+    "container": 4
   },
   "objects": [
     {
@@ -24,6 +24,21 @@
         "south": "barrel/rotations/south.png",
         "west": "barrel/rotations/west.png"
       },
+      "animations": []
+    },
+    {
+      "id": "clay_pot",
+      "name": "Clay Pot",
+      "category": "container",
+      "description": "a small round terracotta clay pot",
+      "view": "low top-down",
+      "size": [
+        32,
+        32
+      ],
+      "status": "complete",
+      "sprite": "clay_pot/sprite.png",
+      "rotation_files": {},
       "animations": []
     },
     {
