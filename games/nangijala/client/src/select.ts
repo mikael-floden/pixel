@@ -19,7 +19,7 @@ export function chooseCharacter(manifest: Manifest): Promise<JoinChoice> {
     const overlay = el("div", "ml-overlay");
     overlay.innerHTML = `
       <div class="ml-panel">
-        <h1 class="ml-title">Moonlight</h1>
+        <h1 class="ml-title">Nangijala</h1>
         <p class="ml-sub">Choose your character and step into the shared world.</p>
         <div class="ml-grid" id="ml-grid"></div>
         <div class="ml-row">
@@ -36,10 +36,16 @@ export function chooseCharacter(manifest: Manifest): Promise<JoinChoice> {
     const nameInput = overlay.querySelector("#ml-name") as HTMLInputElement;
     const cells: HTMLElement[] = [];
 
+    // Different skeletons can reuse the same look prompt, so display names
+    // collide (same label, distinct art/uid). Number the repeats so every
+    // character reads as unique in the grid.
+    const displayNames = disambiguate(chars.map((c) => c.name));
+
     chars.forEach((c, i) => {
+      const label = displayNames[i];
       const cell = el("button", "ml-cell");
       cell.dataset.index = String(i);
-      cell.innerHTML = `<img src="${c.portrait}" alt="${c.name}" /><span>${c.name}</span>`;
+      cell.innerHTML = `<img src="${c.portrait}" alt="${label}" /><span>${label}</span>`;
       cell.addEventListener("click", () => select(i));
       grid.appendChild(cell);
       cells.push(cell);
@@ -73,6 +79,23 @@ export function chooseCharacter(manifest: Manifest): Promise<JoinChoice> {
       selected: () => selected,
       commit,
     };
+  });
+}
+
+/**
+ * Append " (2)", " (3)", … to names that appear more than once, so repeated
+ * look prompts across skeletons don't render as identical grid entries. Names
+ * that are already unique are left untouched.
+ */
+function disambiguate(names: string[]): string[] {
+  const total = new Map<string, number>();
+  for (const n of names) total.set(n, (total.get(n) ?? 0) + 1);
+  const seen = new Map<string, number>();
+  return names.map((n) => {
+    if ((total.get(n) ?? 0) <= 1) return n;
+    const k = (seen.get(n) ?? 0) + 1;
+    seen.set(n, k);
+    return `${n} (${k})`;
   });
 }
 
