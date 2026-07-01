@@ -28,418 +28,19 @@
     "west"
   ],
   "rotations": {
+    "south": "gem_ruby/rotations/south.png",
+    "west": "gem_ruby/rotations/west.png",
     "east": "gem_ruby/rotations/east.png",
     "north": "gem_ruby/rotations/north.png",
-    "north-east": "gem_ruby/rotations/north-east.png",
-    "north-west": "gem_ruby/rotations/north-west.png",
-    "south": "gem_ruby/rotations/south.png",
     "south-east": "gem_ruby/rotations/south-east.png",
     "south-west": "gem_ruby/rotations/south-west.png",
-    "west": "gem_ruby/rotations/west.png"
+    "north-east": "gem_ruby/rotations/north-east.png",
+    "north-west": "gem_ruby/rotations/north-west.png"
   },
   "animations": {
-    "sparkle": {
-      "group_id": "aa733f45-09ef-42d6-ad99-21327ce31d2f",
-      "description": "the gem sparkling with light",
-      "frame_count": 16,
-      "directions": {
-        "east": {
-          "frames": 17,
-          "strip": "gem_ruby/animations/sparkle__east.png",
-          "gif": "gem_ruby/animations/sparkle__east.gif",
-          "frame_paths": [
-            "gem_ruby/animations/sparkle/east/00.png",
-            "gem_ruby/animations/sparkle/east/01.png",
-            "gem_ruby/animations/sparkle/east/02.png",
-            "gem_ruby/animations/sparkle/east/03.png",
-            "gem_ruby/animations/sparkle/east/04.png",
-            "gem_ruby/animations/sparkle/east/05.png",
-            "gem_ruby/animations/sparkle/east/06.png",
-            "gem_ruby/animations/sparkle/east/07.png",
-            "gem_ruby/animations/sparkle/east/08.png",
-            "gem_ruby/animations/sparkle/east/09.png",
-            "gem_ruby/animations/sparkle/east/10.png",
-            "gem_ruby/animations/sparkle/east/11.png",
-            "gem_ruby/animations/sparkle/east/12.png",
-            "gem_ruby/animations/sparkle/east/13.png",
-            "gem_ruby/animations/sparkle/east/14.png",
-            "gem_ruby/animations/sparkle/east/15.png",
-            "gem_ruby/animations/sparkle/east/16.png"
-          ]
-        },
-        "north": {
-          "frames": 17,
-          "strip": "gem_ruby/animations/sparkle__north.png",
-          "gif": "gem_ruby/animations/sparkle__north.gif",
-          "frame_paths": [
-            "gem_ruby/animations/sparkle/north/00.png",
-            "gem_ruby/animations/sparkle/north/01.png",
-            "gem_ruby/animations/sparkle/north/02.png",
-            "gem_ruby/animations/sparkle/north/03.png",
-            "gem_ruby/animations/sparkle/north/04.png",
-            "gem_ruby/animations/sparkle/north/05.png",
-            "gem_ruby/animations/sparkle/north/06.png",
-            "gem_ruby/animations/sparkle/north/07.png",
-            "gem_ruby/animations/sparkle/north/08.png",
-            "gem_ruby/animations/sparkle/north/09.png",
-            "gem_ruby/animations/sparkle/north/10.png",
-            "gem_ruby/animations/sparkle/north/11.png",
-            "gem_ruby/animations/sparkle/north/12.png",
-            "gem_ruby/animations/sparkle/north/13.png",
-            "gem_ruby/animations/sparkle/north/14.png",
-            "gem_ruby/animations/sparkle/north/15.png",
-            "gem_ruby/animations/sparkle/north/16.png"
-          ]
-        },
-        "north-east": {
-          "frames": 17,
-          "strip": "gem_ruby/animations/sparkle__north-east.png",
-          "gif": "gem_ruby/animations/sparkle__north-east.gif",
-          "frame_paths": [
-            "gem_ruby/animations/sparkle/north-east/00.png",
-            "gem_ruby/animations/sparkle/north-east/01.png",
-            "gem_ruby/animations/sparkle/north-east/02.png",
-            "gem_ruby/animations/sparkle/north-east/03.png",
-            "gem_ruby/animations/sparkle/north-east/04.png",
-            "gem_ruby/animations/sparkle/north-east/05.png",
-            "gem_ruby/animations/sparkle/north-east/06.png",
-            "gem_ruby/animations/sparkle/north-east/07.png",
-            "gem_ruby/animations/sparkle/north-east/08.png",
-            "gem_ruby/animations/sparkle/north-east/09.png",
-            "gem_ruby/animations/sparkle/north-east/10.png",
-            "gem_ruby/animations/sparkle/north-east/11.png",
-            "gem_ruby/animations/sparkle/north-east/12.png",
-            "gem_ruby/animations/sparkle/north-east/13.png",
-            "gem_ruby/animations/sparkle/north-east/14.png",
-            "gem_ruby/animations/sparkle/north-east/15.png",
-            "gem_ruby/animations/sparkle/north-east/16.png"
-          ]
-        },
-        "north-west": {
-          "frames": 17,
-          "strip": "gem_ruby/animations/sparkle__north-west.png",
-          "gif": "gem_ruby/animations/sparkle__north-west.gif",
-          "frame_paths": [
-            "gem_ruby/animations/sparkle/north-west/00.png",
-            "gem_ruby/animations/sparkle/north-west/01.png",
-            "gem_ruby/animations/sparkle/north-west/02.png",
-            "gem_ruby/animations/sparkle/north-west/03.png",
-            "gem_ruby/animations/sparkle/north-west/04.png",
-            "gem_ruby/animations/sparkle/north-west/05.png",
-            "gem_ruby/animations/sparkle/north-west/06.png",
-            "gem_ruby/animations/sparkle/north-west/07.png",
-            "gem_ruby/animations/sparkle/north-west/08.png",
-            "gem_ruby/animations/sparkle/north-west/09.png",
-            "gem_ruby/animations/sparkle/north-west/10.png",
-            "gem_ruby/animations/sparkle/north-west/11.png",
-            "gem_ruby/animations/sparkle/north-west/12.png",
-            "gem_ruby/animations/sparkle/north-west/13.png",
-            "gem_ruby/animations/sparkle/north-west/14.png",
-            "gem_ruby/animations/sparkle/north-west/15.png",
-            "gem_ruby/animations/sparkle/north-west/16.png"
-          ]
-        },
-        "south": {
-          "frames": 17,
-          "strip": "gem_ruby/animations/sparkle__south.png",
-          "gif": "gem_ruby/animations/sparkle__south.gif",
-          "frame_paths": [
-            "gem_ruby/animations/sparkle/south/00.png",
-            "gem_ruby/animations/sparkle/south/01.png",
-            "gem_ruby/animations/sparkle/south/02.png",
-            "gem_ruby/animations/sparkle/south/03.png",
-            "gem_ruby/animations/sparkle/south/04.png",
-            "gem_ruby/animations/sparkle/south/05.png",
-            "gem_ruby/animations/sparkle/south/06.png",
-            "gem_ruby/animations/sparkle/south/07.png",
-            "gem_ruby/animations/sparkle/south/08.png",
-            "gem_ruby/animations/sparkle/south/09.png",
-            "gem_ruby/animations/sparkle/south/10.png",
-            "gem_ruby/animations/sparkle/south/11.png",
-            "gem_ruby/animations/sparkle/south/12.png",
-            "gem_ruby/animations/sparkle/south/13.png",
-            "gem_ruby/animations/sparkle/south/14.png",
-            "gem_ruby/animations/sparkle/south/15.png",
-            "gem_ruby/animations/sparkle/south/16.png"
-          ]
-        },
-        "south-east": {
-          "frames": 17,
-          "strip": "gem_ruby/animations/sparkle__south-east.png",
-          "gif": "gem_ruby/animations/sparkle__south-east.gif",
-          "frame_paths": [
-            "gem_ruby/animations/sparkle/south-east/00.png",
-            "gem_ruby/animations/sparkle/south-east/01.png",
-            "gem_ruby/animations/sparkle/south-east/02.png",
-            "gem_ruby/animations/sparkle/south-east/03.png",
-            "gem_ruby/animations/sparkle/south-east/04.png",
-            "gem_ruby/animations/sparkle/south-east/05.png",
-            "gem_ruby/animations/sparkle/south-east/06.png",
-            "gem_ruby/animations/sparkle/south-east/07.png",
-            "gem_ruby/animations/sparkle/south-east/08.png",
-            "gem_ruby/animations/sparkle/south-east/09.png",
-            "gem_ruby/animations/sparkle/south-east/10.png",
-            "gem_ruby/animations/sparkle/south-east/11.png",
-            "gem_ruby/animations/sparkle/south-east/12.png",
-            "gem_ruby/animations/sparkle/south-east/13.png",
-            "gem_ruby/animations/sparkle/south-east/14.png",
-            "gem_ruby/animations/sparkle/south-east/15.png",
-            "gem_ruby/animations/sparkle/south-east/16.png"
-          ]
-        },
-        "south-west": {
-          "frames": 17,
-          "strip": "gem_ruby/animations/sparkle__south-west.png",
-          "gif": "gem_ruby/animations/sparkle__south-west.gif",
-          "frame_paths": [
-            "gem_ruby/animations/sparkle/south-west/00.png",
-            "gem_ruby/animations/sparkle/south-west/01.png",
-            "gem_ruby/animations/sparkle/south-west/02.png",
-            "gem_ruby/animations/sparkle/south-west/03.png",
-            "gem_ruby/animations/sparkle/south-west/04.png",
-            "gem_ruby/animations/sparkle/south-west/05.png",
-            "gem_ruby/animations/sparkle/south-west/06.png",
-            "gem_ruby/animations/sparkle/south-west/07.png",
-            "gem_ruby/animations/sparkle/south-west/08.png",
-            "gem_ruby/animations/sparkle/south-west/09.png",
-            "gem_ruby/animations/sparkle/south-west/10.png",
-            "gem_ruby/animations/sparkle/south-west/11.png",
-            "gem_ruby/animations/sparkle/south-west/12.png",
-            "gem_ruby/animations/sparkle/south-west/13.png",
-            "gem_ruby/animations/sparkle/south-west/14.png",
-            "gem_ruby/animations/sparkle/south-west/15.png",
-            "gem_ruby/animations/sparkle/south-west/16.png"
-          ]
-        },
-        "west": {
-          "frames": 17,
-          "strip": "gem_ruby/animations/sparkle__west.png",
-          "gif": "gem_ruby/animations/sparkle__west.gif",
-          "frame_paths": [
-            "gem_ruby/animations/sparkle/west/00.png",
-            "gem_ruby/animations/sparkle/west/01.png",
-            "gem_ruby/animations/sparkle/west/02.png",
-            "gem_ruby/animations/sparkle/west/03.png",
-            "gem_ruby/animations/sparkle/west/04.png",
-            "gem_ruby/animations/sparkle/west/05.png",
-            "gem_ruby/animations/sparkle/west/06.png",
-            "gem_ruby/animations/sparkle/west/07.png",
-            "gem_ruby/animations/sparkle/west/08.png",
-            "gem_ruby/animations/sparkle/west/09.png",
-            "gem_ruby/animations/sparkle/west/10.png",
-            "gem_ruby/animations/sparkle/west/11.png",
-            "gem_ruby/animations/sparkle/west/12.png",
-            "gem_ruby/animations/sparkle/west/13.png",
-            "gem_ruby/animations/sparkle/west/14.png",
-            "gem_ruby/animations/sparkle/west/15.png",
-            "gem_ruby/animations/sparkle/west/16.png"
-          ]
-        }
-      }
-    },
-    "pulse": {
-      "group_id": "a55ad57a-ad0f-4ee1-9f54-5c7e4b28d61c",
-      "description": "the gem glowing brighter and dimmer",
-      "frame_count": 16,
-      "directions": {
-        "east": {
-          "frames": 17,
-          "strip": "gem_ruby/animations/pulse__east.png",
-          "gif": "gem_ruby/animations/pulse__east.gif",
-          "frame_paths": [
-            "gem_ruby/animations/pulse/east/00.png",
-            "gem_ruby/animations/pulse/east/01.png",
-            "gem_ruby/animations/pulse/east/02.png",
-            "gem_ruby/animations/pulse/east/03.png",
-            "gem_ruby/animations/pulse/east/04.png",
-            "gem_ruby/animations/pulse/east/05.png",
-            "gem_ruby/animations/pulse/east/06.png",
-            "gem_ruby/animations/pulse/east/07.png",
-            "gem_ruby/animations/pulse/east/08.png",
-            "gem_ruby/animations/pulse/east/09.png",
-            "gem_ruby/animations/pulse/east/10.png",
-            "gem_ruby/animations/pulse/east/11.png",
-            "gem_ruby/animations/pulse/east/12.png",
-            "gem_ruby/animations/pulse/east/13.png",
-            "gem_ruby/animations/pulse/east/14.png",
-            "gem_ruby/animations/pulse/east/15.png",
-            "gem_ruby/animations/pulse/east/16.png"
-          ]
-        },
-        "north": {
-          "frames": 17,
-          "strip": "gem_ruby/animations/pulse__north.png",
-          "gif": "gem_ruby/animations/pulse__north.gif",
-          "frame_paths": [
-            "gem_ruby/animations/pulse/north/00.png",
-            "gem_ruby/animations/pulse/north/01.png",
-            "gem_ruby/animations/pulse/north/02.png",
-            "gem_ruby/animations/pulse/north/03.png",
-            "gem_ruby/animations/pulse/north/04.png",
-            "gem_ruby/animations/pulse/north/05.png",
-            "gem_ruby/animations/pulse/north/06.png",
-            "gem_ruby/animations/pulse/north/07.png",
-            "gem_ruby/animations/pulse/north/08.png",
-            "gem_ruby/animations/pulse/north/09.png",
-            "gem_ruby/animations/pulse/north/10.png",
-            "gem_ruby/animations/pulse/north/11.png",
-            "gem_ruby/animations/pulse/north/12.png",
-            "gem_ruby/animations/pulse/north/13.png",
-            "gem_ruby/animations/pulse/north/14.png",
-            "gem_ruby/animations/pulse/north/15.png",
-            "gem_ruby/animations/pulse/north/16.png"
-          ]
-        },
-        "north-east": {
-          "frames": 17,
-          "strip": "gem_ruby/animations/pulse__north-east.png",
-          "gif": "gem_ruby/animations/pulse__north-east.gif",
-          "frame_paths": [
-            "gem_ruby/animations/pulse/north-east/00.png",
-            "gem_ruby/animations/pulse/north-east/01.png",
-            "gem_ruby/animations/pulse/north-east/02.png",
-            "gem_ruby/animations/pulse/north-east/03.png",
-            "gem_ruby/animations/pulse/north-east/04.png",
-            "gem_ruby/animations/pulse/north-east/05.png",
-            "gem_ruby/animations/pulse/north-east/06.png",
-            "gem_ruby/animations/pulse/north-east/07.png",
-            "gem_ruby/animations/pulse/north-east/08.png",
-            "gem_ruby/animations/pulse/north-east/09.png",
-            "gem_ruby/animations/pulse/north-east/10.png",
-            "gem_ruby/animations/pulse/north-east/11.png",
-            "gem_ruby/animations/pulse/north-east/12.png",
-            "gem_ruby/animations/pulse/north-east/13.png",
-            "gem_ruby/animations/pulse/north-east/14.png",
-            "gem_ruby/animations/pulse/north-east/15.png",
-            "gem_ruby/animations/pulse/north-east/16.png"
-          ]
-        },
-        "north-west": {
-          "frames": 17,
-          "strip": "gem_ruby/animations/pulse__north-west.png",
-          "gif": "gem_ruby/animations/pulse__north-west.gif",
-          "frame_paths": [
-            "gem_ruby/animations/pulse/north-west/00.png",
-            "gem_ruby/animations/pulse/north-west/01.png",
-            "gem_ruby/animations/pulse/north-west/02.png",
-            "gem_ruby/animations/pulse/north-west/03.png",
-            "gem_ruby/animations/pulse/north-west/04.png",
-            "gem_ruby/animations/pulse/north-west/05.png",
-            "gem_ruby/animations/pulse/north-west/06.png",
-            "gem_ruby/animations/pulse/north-west/07.png",
-            "gem_ruby/animations/pulse/north-west/08.png",
-            "gem_ruby/animations/pulse/north-west/09.png",
-            "gem_ruby/animations/pulse/north-west/10.png",
-            "gem_ruby/animations/pulse/north-west/11.png",
-            "gem_ruby/animations/pulse/north-west/12.png",
-            "gem_ruby/animations/pulse/north-west/13.png",
-            "gem_ruby/animations/pulse/north-west/14.png",
-            "gem_ruby/animations/pulse/north-west/15.png",
-            "gem_ruby/animations/pulse/north-west/16.png"
-          ]
-        },
-        "south": {
-          "frames": 17,
-          "strip": "gem_ruby/animations/pulse__south.png",
-          "gif": "gem_ruby/animations/pulse__south.gif",
-          "frame_paths": [
-            "gem_ruby/animations/pulse/south/00.png",
-            "gem_ruby/animations/pulse/south/01.png",
-            "gem_ruby/animations/pulse/south/02.png",
-            "gem_ruby/animations/pulse/south/03.png",
-            "gem_ruby/animations/pulse/south/04.png",
-            "gem_ruby/animations/pulse/south/05.png",
-            "gem_ruby/animations/pulse/south/06.png",
-            "gem_ruby/animations/pulse/south/07.png",
-            "gem_ruby/animations/pulse/south/08.png",
-            "gem_ruby/animations/pulse/south/09.png",
-            "gem_ruby/animations/pulse/south/10.png",
-            "gem_ruby/animations/pulse/south/11.png",
-            "gem_ruby/animations/pulse/south/12.png",
-            "gem_ruby/animations/pulse/south/13.png",
-            "gem_ruby/animations/pulse/south/14.png",
-            "gem_ruby/animations/pulse/south/15.png",
-            "gem_ruby/animations/pulse/south/16.png"
-          ]
-        },
-        "south-east": {
-          "frames": 17,
-          "strip": "gem_ruby/animations/pulse__south-east.png",
-          "gif": "gem_ruby/animations/pulse__south-east.gif",
-          "frame_paths": [
-            "gem_ruby/animations/pulse/south-east/00.png",
-            "gem_ruby/animations/pulse/south-east/01.png",
-            "gem_ruby/animations/pulse/south-east/02.png",
-            "gem_ruby/animations/pulse/south-east/03.png",
-            "gem_ruby/animations/pulse/south-east/04.png",
-            "gem_ruby/animations/pulse/south-east/05.png",
-            "gem_ruby/animations/pulse/south-east/06.png",
-            "gem_ruby/animations/pulse/south-east/07.png",
-            "gem_ruby/animations/pulse/south-east/08.png",
-            "gem_ruby/animations/pulse/south-east/09.png",
-            "gem_ruby/animations/pulse/south-east/10.png",
-            "gem_ruby/animations/pulse/south-east/11.png",
-            "gem_ruby/animations/pulse/south-east/12.png",
-            "gem_ruby/animations/pulse/south-east/13.png",
-            "gem_ruby/animations/pulse/south-east/14.png",
-            "gem_ruby/animations/pulse/south-east/15.png",
-            "gem_ruby/animations/pulse/south-east/16.png"
-          ]
-        },
-        "south-west": {
-          "frames": 17,
-          "strip": "gem_ruby/animations/pulse__south-west.png",
-          "gif": "gem_ruby/animations/pulse__south-west.gif",
-          "frame_paths": [
-            "gem_ruby/animations/pulse/south-west/00.png",
-            "gem_ruby/animations/pulse/south-west/01.png",
-            "gem_ruby/animations/pulse/south-west/02.png",
-            "gem_ruby/animations/pulse/south-west/03.png",
-            "gem_ruby/animations/pulse/south-west/04.png",
-            "gem_ruby/animations/pulse/south-west/05.png",
-            "gem_ruby/animations/pulse/south-west/06.png",
-            "gem_ruby/animations/pulse/south-west/07.png",
-            "gem_ruby/animations/pulse/south-west/08.png",
-            "gem_ruby/animations/pulse/south-west/09.png",
-            "gem_ruby/animations/pulse/south-west/10.png",
-            "gem_ruby/animations/pulse/south-west/11.png",
-            "gem_ruby/animations/pulse/south-west/12.png",
-            "gem_ruby/animations/pulse/south-west/13.png",
-            "gem_ruby/animations/pulse/south-west/14.png",
-            "gem_ruby/animations/pulse/south-west/15.png",
-            "gem_ruby/animations/pulse/south-west/16.png"
-          ]
-        },
-        "west": {
-          "frames": 17,
-          "strip": "gem_ruby/animations/pulse__west.png",
-          "gif": "gem_ruby/animations/pulse__west.gif",
-          "frame_paths": [
-            "gem_ruby/animations/pulse/west/00.png",
-            "gem_ruby/animations/pulse/west/01.png",
-            "gem_ruby/animations/pulse/west/02.png",
-            "gem_ruby/animations/pulse/west/03.png",
-            "gem_ruby/animations/pulse/west/04.png",
-            "gem_ruby/animations/pulse/west/05.png",
-            "gem_ruby/animations/pulse/west/06.png",
-            "gem_ruby/animations/pulse/west/07.png",
-            "gem_ruby/animations/pulse/west/08.png",
-            "gem_ruby/animations/pulse/west/09.png",
-            "gem_ruby/animations/pulse/west/10.png",
-            "gem_ruby/animations/pulse/west/11.png",
-            "gem_ruby/animations/pulse/west/12.png",
-            "gem_ruby/animations/pulse/west/13.png",
-            "gem_ruby/animations/pulse/west/14.png",
-            "gem_ruby/animations/pulse/west/15.png",
-            "gem_ruby/animations/pulse/west/16.png"
-          ]
-        }
-      }
-    },
     "spin": {
       "group_id": "4bbcef8a-61bd-4027-889d-b8a87814278f",
       "description": "the gem slowly rotating",
-      "frame_count": 16,
       "directions": {
         "east": {
           "frames": 17,
@@ -463,7 +64,9 @@
             "gem_ruby/animations/spin/east/14.png",
             "gem_ruby/animations/spin/east/15.png",
             "gem_ruby/animations/spin/east/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 12:18:34 GMT",
+          "src_frames": 17
         },
         "north": {
           "frames": 17,
@@ -487,7 +90,9 @@
             "gem_ruby/animations/spin/north/14.png",
             "gem_ruby/animations/spin/north/15.png",
             "gem_ruby/animations/spin/north/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 12:18:46 GMT",
+          "src_frames": 17
         },
         "north-east": {
           "frames": 17,
@@ -511,7 +116,9 @@
             "gem_ruby/animations/spin/north-east/14.png",
             "gem_ruby/animations/spin/north-east/15.png",
             "gem_ruby/animations/spin/north-east/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 12:18:59 GMT",
+          "src_frames": 17
         },
         "north-west": {
           "frames": 17,
@@ -535,7 +142,9 @@
             "gem_ruby/animations/spin/north-west/14.png",
             "gem_ruby/animations/spin/north-west/15.png",
             "gem_ruby/animations/spin/north-west/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 12:19:10 GMT",
+          "src_frames": 17
         },
         "south": {
           "frames": 17,
@@ -559,7 +168,9 @@
             "gem_ruby/animations/spin/south/14.png",
             "gem_ruby/animations/spin/south/15.png",
             "gem_ruby/animations/spin/south/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 12:19:22 GMT",
+          "src_frames": 17
         },
         "south-east": {
           "frames": 17,
@@ -583,7 +194,9 @@
             "gem_ruby/animations/spin/south-east/14.png",
             "gem_ruby/animations/spin/south-east/15.png",
             "gem_ruby/animations/spin/south-east/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 12:19:36 GMT",
+          "src_frames": 17
         },
         "south-west": {
           "frames": 17,
@@ -607,7 +220,9 @@
             "gem_ruby/animations/spin/south-west/14.png",
             "gem_ruby/animations/spin/south-west/15.png",
             "gem_ruby/animations/spin/south-west/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 12:19:47 GMT",
+          "src_frames": 17
         },
         "west": {
           "frames": 17,
@@ -631,10 +246,441 @@
             "gem_ruby/animations/spin/west/14.png",
             "gem_ruby/animations/spin/west/15.png",
             "gem_ruby/animations/spin/west/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 12:19:59 GMT",
+          "src_frames": 17
+        }
+      }
+    },
+    "pulse": {
+      "group_id": "a55ad57a-ad0f-4ee1-9f54-5c7e4b28d61c",
+      "description": "the gem glowing brighter and dimmer",
+      "directions": {
+        "east": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/pulse__east.png",
+          "gif": "gem_ruby/animations/pulse__east.gif",
+          "frame_paths": [
+            "gem_ruby/animations/pulse/east/00.png",
+            "gem_ruby/animations/pulse/east/01.png",
+            "gem_ruby/animations/pulse/east/02.png",
+            "gem_ruby/animations/pulse/east/03.png",
+            "gem_ruby/animations/pulse/east/04.png",
+            "gem_ruby/animations/pulse/east/05.png",
+            "gem_ruby/animations/pulse/east/06.png",
+            "gem_ruby/animations/pulse/east/07.png",
+            "gem_ruby/animations/pulse/east/08.png",
+            "gem_ruby/animations/pulse/east/09.png",
+            "gem_ruby/animations/pulse/east/10.png",
+            "gem_ruby/animations/pulse/east/11.png",
+            "gem_ruby/animations/pulse/east/12.png",
+            "gem_ruby/animations/pulse/east/13.png",
+            "gem_ruby/animations/pulse/east/14.png",
+            "gem_ruby/animations/pulse/east/15.png",
+            "gem_ruby/animations/pulse/east/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:20:10 GMT",
+          "src_frames": 17
+        },
+        "north": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/pulse__north.png",
+          "gif": "gem_ruby/animations/pulse__north.gif",
+          "frame_paths": [
+            "gem_ruby/animations/pulse/north/00.png",
+            "gem_ruby/animations/pulse/north/01.png",
+            "gem_ruby/animations/pulse/north/02.png",
+            "gem_ruby/animations/pulse/north/03.png",
+            "gem_ruby/animations/pulse/north/04.png",
+            "gem_ruby/animations/pulse/north/05.png",
+            "gem_ruby/animations/pulse/north/06.png",
+            "gem_ruby/animations/pulse/north/07.png",
+            "gem_ruby/animations/pulse/north/08.png",
+            "gem_ruby/animations/pulse/north/09.png",
+            "gem_ruby/animations/pulse/north/10.png",
+            "gem_ruby/animations/pulse/north/11.png",
+            "gem_ruby/animations/pulse/north/12.png",
+            "gem_ruby/animations/pulse/north/13.png",
+            "gem_ruby/animations/pulse/north/14.png",
+            "gem_ruby/animations/pulse/north/15.png",
+            "gem_ruby/animations/pulse/north/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:20:23 GMT",
+          "src_frames": 17
+        },
+        "north-east": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/pulse__north-east.png",
+          "gif": "gem_ruby/animations/pulse__north-east.gif",
+          "frame_paths": [
+            "gem_ruby/animations/pulse/north-east/00.png",
+            "gem_ruby/animations/pulse/north-east/01.png",
+            "gem_ruby/animations/pulse/north-east/02.png",
+            "gem_ruby/animations/pulse/north-east/03.png",
+            "gem_ruby/animations/pulse/north-east/04.png",
+            "gem_ruby/animations/pulse/north-east/05.png",
+            "gem_ruby/animations/pulse/north-east/06.png",
+            "gem_ruby/animations/pulse/north-east/07.png",
+            "gem_ruby/animations/pulse/north-east/08.png",
+            "gem_ruby/animations/pulse/north-east/09.png",
+            "gem_ruby/animations/pulse/north-east/10.png",
+            "gem_ruby/animations/pulse/north-east/11.png",
+            "gem_ruby/animations/pulse/north-east/12.png",
+            "gem_ruby/animations/pulse/north-east/13.png",
+            "gem_ruby/animations/pulse/north-east/14.png",
+            "gem_ruby/animations/pulse/north-east/15.png",
+            "gem_ruby/animations/pulse/north-east/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:20:35 GMT",
+          "src_frames": 17
+        },
+        "north-west": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/pulse__north-west.png",
+          "gif": "gem_ruby/animations/pulse__north-west.gif",
+          "frame_paths": [
+            "gem_ruby/animations/pulse/north-west/00.png",
+            "gem_ruby/animations/pulse/north-west/01.png",
+            "gem_ruby/animations/pulse/north-west/02.png",
+            "gem_ruby/animations/pulse/north-west/03.png",
+            "gem_ruby/animations/pulse/north-west/04.png",
+            "gem_ruby/animations/pulse/north-west/05.png",
+            "gem_ruby/animations/pulse/north-west/06.png",
+            "gem_ruby/animations/pulse/north-west/07.png",
+            "gem_ruby/animations/pulse/north-west/08.png",
+            "gem_ruby/animations/pulse/north-west/09.png",
+            "gem_ruby/animations/pulse/north-west/10.png",
+            "gem_ruby/animations/pulse/north-west/11.png",
+            "gem_ruby/animations/pulse/north-west/12.png",
+            "gem_ruby/animations/pulse/north-west/13.png",
+            "gem_ruby/animations/pulse/north-west/14.png",
+            "gem_ruby/animations/pulse/north-west/15.png",
+            "gem_ruby/animations/pulse/north-west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:20:47 GMT",
+          "src_frames": 17
+        },
+        "south": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/pulse__south.png",
+          "gif": "gem_ruby/animations/pulse__south.gif",
+          "frame_paths": [
+            "gem_ruby/animations/pulse/south/00.png",
+            "gem_ruby/animations/pulse/south/01.png",
+            "gem_ruby/animations/pulse/south/02.png",
+            "gem_ruby/animations/pulse/south/03.png",
+            "gem_ruby/animations/pulse/south/04.png",
+            "gem_ruby/animations/pulse/south/05.png",
+            "gem_ruby/animations/pulse/south/06.png",
+            "gem_ruby/animations/pulse/south/07.png",
+            "gem_ruby/animations/pulse/south/08.png",
+            "gem_ruby/animations/pulse/south/09.png",
+            "gem_ruby/animations/pulse/south/10.png",
+            "gem_ruby/animations/pulse/south/11.png",
+            "gem_ruby/animations/pulse/south/12.png",
+            "gem_ruby/animations/pulse/south/13.png",
+            "gem_ruby/animations/pulse/south/14.png",
+            "gem_ruby/animations/pulse/south/15.png",
+            "gem_ruby/animations/pulse/south/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:20:59 GMT",
+          "src_frames": 17
+        },
+        "south-east": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/pulse__south-east.png",
+          "gif": "gem_ruby/animations/pulse__south-east.gif",
+          "frame_paths": [
+            "gem_ruby/animations/pulse/south-east/00.png",
+            "gem_ruby/animations/pulse/south-east/01.png",
+            "gem_ruby/animations/pulse/south-east/02.png",
+            "gem_ruby/animations/pulse/south-east/03.png",
+            "gem_ruby/animations/pulse/south-east/04.png",
+            "gem_ruby/animations/pulse/south-east/05.png",
+            "gem_ruby/animations/pulse/south-east/06.png",
+            "gem_ruby/animations/pulse/south-east/07.png",
+            "gem_ruby/animations/pulse/south-east/08.png",
+            "gem_ruby/animations/pulse/south-east/09.png",
+            "gem_ruby/animations/pulse/south-east/10.png",
+            "gem_ruby/animations/pulse/south-east/11.png",
+            "gem_ruby/animations/pulse/south-east/12.png",
+            "gem_ruby/animations/pulse/south-east/13.png",
+            "gem_ruby/animations/pulse/south-east/14.png",
+            "gem_ruby/animations/pulse/south-east/15.png",
+            "gem_ruby/animations/pulse/south-east/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:21:13 GMT",
+          "src_frames": 17
+        },
+        "south-west": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/pulse__south-west.png",
+          "gif": "gem_ruby/animations/pulse__south-west.gif",
+          "frame_paths": [
+            "gem_ruby/animations/pulse/south-west/00.png",
+            "gem_ruby/animations/pulse/south-west/01.png",
+            "gem_ruby/animations/pulse/south-west/02.png",
+            "gem_ruby/animations/pulse/south-west/03.png",
+            "gem_ruby/animations/pulse/south-west/04.png",
+            "gem_ruby/animations/pulse/south-west/05.png",
+            "gem_ruby/animations/pulse/south-west/06.png",
+            "gem_ruby/animations/pulse/south-west/07.png",
+            "gem_ruby/animations/pulse/south-west/08.png",
+            "gem_ruby/animations/pulse/south-west/09.png",
+            "gem_ruby/animations/pulse/south-west/10.png",
+            "gem_ruby/animations/pulse/south-west/11.png",
+            "gem_ruby/animations/pulse/south-west/12.png",
+            "gem_ruby/animations/pulse/south-west/13.png",
+            "gem_ruby/animations/pulse/south-west/14.png",
+            "gem_ruby/animations/pulse/south-west/15.png",
+            "gem_ruby/animations/pulse/south-west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:21:26 GMT",
+          "src_frames": 17
+        },
+        "west": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/pulse__west.png",
+          "gif": "gem_ruby/animations/pulse__west.gif",
+          "frame_paths": [
+            "gem_ruby/animations/pulse/west/00.png",
+            "gem_ruby/animations/pulse/west/01.png",
+            "gem_ruby/animations/pulse/west/02.png",
+            "gem_ruby/animations/pulse/west/03.png",
+            "gem_ruby/animations/pulse/west/04.png",
+            "gem_ruby/animations/pulse/west/05.png",
+            "gem_ruby/animations/pulse/west/06.png",
+            "gem_ruby/animations/pulse/west/07.png",
+            "gem_ruby/animations/pulse/west/08.png",
+            "gem_ruby/animations/pulse/west/09.png",
+            "gem_ruby/animations/pulse/west/10.png",
+            "gem_ruby/animations/pulse/west/11.png",
+            "gem_ruby/animations/pulse/west/12.png",
+            "gem_ruby/animations/pulse/west/13.png",
+            "gem_ruby/animations/pulse/west/14.png",
+            "gem_ruby/animations/pulse/west/15.png",
+            "gem_ruby/animations/pulse/west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:21:38 GMT",
+          "src_frames": 17
+        }
+      }
+    },
+    "sparkle": {
+      "group_id": "aa733f45-09ef-42d6-ad99-21327ce31d2f",
+      "description": "the gem sparkling with light",
+      "directions": {
+        "east": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/sparkle__east.png",
+          "gif": "gem_ruby/animations/sparkle__east.gif",
+          "frame_paths": [
+            "gem_ruby/animations/sparkle/east/00.png",
+            "gem_ruby/animations/sparkle/east/01.png",
+            "gem_ruby/animations/sparkle/east/02.png",
+            "gem_ruby/animations/sparkle/east/03.png",
+            "gem_ruby/animations/sparkle/east/04.png",
+            "gem_ruby/animations/sparkle/east/05.png",
+            "gem_ruby/animations/sparkle/east/06.png",
+            "gem_ruby/animations/sparkle/east/07.png",
+            "gem_ruby/animations/sparkle/east/08.png",
+            "gem_ruby/animations/sparkle/east/09.png",
+            "gem_ruby/animations/sparkle/east/10.png",
+            "gem_ruby/animations/sparkle/east/11.png",
+            "gem_ruby/animations/sparkle/east/12.png",
+            "gem_ruby/animations/sparkle/east/13.png",
+            "gem_ruby/animations/sparkle/east/14.png",
+            "gem_ruby/animations/sparkle/east/15.png",
+            "gem_ruby/animations/sparkle/east/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:21:50 GMT",
+          "src_frames": 17
+        },
+        "north": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/sparkle__north.png",
+          "gif": "gem_ruby/animations/sparkle__north.gif",
+          "frame_paths": [
+            "gem_ruby/animations/sparkle/north/00.png",
+            "gem_ruby/animations/sparkle/north/01.png",
+            "gem_ruby/animations/sparkle/north/02.png",
+            "gem_ruby/animations/sparkle/north/03.png",
+            "gem_ruby/animations/sparkle/north/04.png",
+            "gem_ruby/animations/sparkle/north/05.png",
+            "gem_ruby/animations/sparkle/north/06.png",
+            "gem_ruby/animations/sparkle/north/07.png",
+            "gem_ruby/animations/sparkle/north/08.png",
+            "gem_ruby/animations/sparkle/north/09.png",
+            "gem_ruby/animations/sparkle/north/10.png",
+            "gem_ruby/animations/sparkle/north/11.png",
+            "gem_ruby/animations/sparkle/north/12.png",
+            "gem_ruby/animations/sparkle/north/13.png",
+            "gem_ruby/animations/sparkle/north/14.png",
+            "gem_ruby/animations/sparkle/north/15.png",
+            "gem_ruby/animations/sparkle/north/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:22:03 GMT",
+          "src_frames": 17
+        },
+        "north-east": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/sparkle__north-east.png",
+          "gif": "gem_ruby/animations/sparkle__north-east.gif",
+          "frame_paths": [
+            "gem_ruby/animations/sparkle/north-east/00.png",
+            "gem_ruby/animations/sparkle/north-east/01.png",
+            "gem_ruby/animations/sparkle/north-east/02.png",
+            "gem_ruby/animations/sparkle/north-east/03.png",
+            "gem_ruby/animations/sparkle/north-east/04.png",
+            "gem_ruby/animations/sparkle/north-east/05.png",
+            "gem_ruby/animations/sparkle/north-east/06.png",
+            "gem_ruby/animations/sparkle/north-east/07.png",
+            "gem_ruby/animations/sparkle/north-east/08.png",
+            "gem_ruby/animations/sparkle/north-east/09.png",
+            "gem_ruby/animations/sparkle/north-east/10.png",
+            "gem_ruby/animations/sparkle/north-east/11.png",
+            "gem_ruby/animations/sparkle/north-east/12.png",
+            "gem_ruby/animations/sparkle/north-east/13.png",
+            "gem_ruby/animations/sparkle/north-east/14.png",
+            "gem_ruby/animations/sparkle/north-east/15.png",
+            "gem_ruby/animations/sparkle/north-east/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:22:15 GMT",
+          "src_frames": 17
+        },
+        "north-west": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/sparkle__north-west.png",
+          "gif": "gem_ruby/animations/sparkle__north-west.gif",
+          "frame_paths": [
+            "gem_ruby/animations/sparkle/north-west/00.png",
+            "gem_ruby/animations/sparkle/north-west/01.png",
+            "gem_ruby/animations/sparkle/north-west/02.png",
+            "gem_ruby/animations/sparkle/north-west/03.png",
+            "gem_ruby/animations/sparkle/north-west/04.png",
+            "gem_ruby/animations/sparkle/north-west/05.png",
+            "gem_ruby/animations/sparkle/north-west/06.png",
+            "gem_ruby/animations/sparkle/north-west/07.png",
+            "gem_ruby/animations/sparkle/north-west/08.png",
+            "gem_ruby/animations/sparkle/north-west/09.png",
+            "gem_ruby/animations/sparkle/north-west/10.png",
+            "gem_ruby/animations/sparkle/north-west/11.png",
+            "gem_ruby/animations/sparkle/north-west/12.png",
+            "gem_ruby/animations/sparkle/north-west/13.png",
+            "gem_ruby/animations/sparkle/north-west/14.png",
+            "gem_ruby/animations/sparkle/north-west/15.png",
+            "gem_ruby/animations/sparkle/north-west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:22:28 GMT",
+          "src_frames": 17
+        },
+        "south": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/sparkle__south.png",
+          "gif": "gem_ruby/animations/sparkle__south.gif",
+          "frame_paths": [
+            "gem_ruby/animations/sparkle/south/00.png",
+            "gem_ruby/animations/sparkle/south/01.png",
+            "gem_ruby/animations/sparkle/south/02.png",
+            "gem_ruby/animations/sparkle/south/03.png",
+            "gem_ruby/animations/sparkle/south/04.png",
+            "gem_ruby/animations/sparkle/south/05.png",
+            "gem_ruby/animations/sparkle/south/06.png",
+            "gem_ruby/animations/sparkle/south/07.png",
+            "gem_ruby/animations/sparkle/south/08.png",
+            "gem_ruby/animations/sparkle/south/09.png",
+            "gem_ruby/animations/sparkle/south/10.png",
+            "gem_ruby/animations/sparkle/south/11.png",
+            "gem_ruby/animations/sparkle/south/12.png",
+            "gem_ruby/animations/sparkle/south/13.png",
+            "gem_ruby/animations/sparkle/south/14.png",
+            "gem_ruby/animations/sparkle/south/15.png",
+            "gem_ruby/animations/sparkle/south/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:22:42 GMT",
+          "src_frames": 17
+        },
+        "south-east": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/sparkle__south-east.png",
+          "gif": "gem_ruby/animations/sparkle__south-east.gif",
+          "frame_paths": [
+            "gem_ruby/animations/sparkle/south-east/00.png",
+            "gem_ruby/animations/sparkle/south-east/01.png",
+            "gem_ruby/animations/sparkle/south-east/02.png",
+            "gem_ruby/animations/sparkle/south-east/03.png",
+            "gem_ruby/animations/sparkle/south-east/04.png",
+            "gem_ruby/animations/sparkle/south-east/05.png",
+            "gem_ruby/animations/sparkle/south-east/06.png",
+            "gem_ruby/animations/sparkle/south-east/07.png",
+            "gem_ruby/animations/sparkle/south-east/08.png",
+            "gem_ruby/animations/sparkle/south-east/09.png",
+            "gem_ruby/animations/sparkle/south-east/10.png",
+            "gem_ruby/animations/sparkle/south-east/11.png",
+            "gem_ruby/animations/sparkle/south-east/12.png",
+            "gem_ruby/animations/sparkle/south-east/13.png",
+            "gem_ruby/animations/sparkle/south-east/14.png",
+            "gem_ruby/animations/sparkle/south-east/15.png",
+            "gem_ruby/animations/sparkle/south-east/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:22:54 GMT",
+          "src_frames": 17
+        },
+        "south-west": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/sparkle__south-west.png",
+          "gif": "gem_ruby/animations/sparkle__south-west.gif",
+          "frame_paths": [
+            "gem_ruby/animations/sparkle/south-west/00.png",
+            "gem_ruby/animations/sparkle/south-west/01.png",
+            "gem_ruby/animations/sparkle/south-west/02.png",
+            "gem_ruby/animations/sparkle/south-west/03.png",
+            "gem_ruby/animations/sparkle/south-west/04.png",
+            "gem_ruby/animations/sparkle/south-west/05.png",
+            "gem_ruby/animations/sparkle/south-west/06.png",
+            "gem_ruby/animations/sparkle/south-west/07.png",
+            "gem_ruby/animations/sparkle/south-west/08.png",
+            "gem_ruby/animations/sparkle/south-west/09.png",
+            "gem_ruby/animations/sparkle/south-west/10.png",
+            "gem_ruby/animations/sparkle/south-west/11.png",
+            "gem_ruby/animations/sparkle/south-west/12.png",
+            "gem_ruby/animations/sparkle/south-west/13.png",
+            "gem_ruby/animations/sparkle/south-west/14.png",
+            "gem_ruby/animations/sparkle/south-west/15.png",
+            "gem_ruby/animations/sparkle/south-west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:23:07 GMT",
+          "src_frames": 17
+        },
+        "west": {
+          "frames": 17,
+          "strip": "gem_ruby/animations/sparkle__west.png",
+          "gif": "gem_ruby/animations/sparkle__west.gif",
+          "frame_paths": [
+            "gem_ruby/animations/sparkle/west/00.png",
+            "gem_ruby/animations/sparkle/west/01.png",
+            "gem_ruby/animations/sparkle/west/02.png",
+            "gem_ruby/animations/sparkle/west/03.png",
+            "gem_ruby/animations/sparkle/west/04.png",
+            "gem_ruby/animations/sparkle/west/05.png",
+            "gem_ruby/animations/sparkle/west/06.png",
+            "gem_ruby/animations/sparkle/west/07.png",
+            "gem_ruby/animations/sparkle/west/08.png",
+            "gem_ruby/animations/sparkle/west/09.png",
+            "gem_ruby/animations/sparkle/west/10.png",
+            "gem_ruby/animations/sparkle/west/11.png",
+            "gem_ruby/animations/sparkle/west/12.png",
+            "gem_ruby/animations/sparkle/west/13.png",
+            "gem_ruby/animations/sparkle/west/14.png",
+            "gem_ruby/animations/sparkle/west/15.png",
+            "gem_ruby/animations/sparkle/west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:23:18 GMT",
+          "src_frames": 17
         }
       }
     }
   },
-  "status": "complete"
+  "status": "complete",
+  "synced_from_pixellab": true
 }
