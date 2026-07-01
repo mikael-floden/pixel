@@ -127,7 +127,23 @@
         "south-west": "clay_pot/rotations/south-west.png",
         "west": "clay_pot/rotations/west.png"
       },
-      "animations": []
+      "animations": [
+        {
+          "key": "wobble",
+          "description": "the pot wobbling",
+          "frames": 17,
+          "preview_gif": "clay_pot/animations/wobble__south.gif",
+          "directions": {
+            "east": "clay_pot/animations/wobble__east.gif",
+            "north": "clay_pot/animations/wobble__north.gif",
+            "north-east": "clay_pot/animations/wobble__north-east.gif",
+            "north-west": "clay_pot/animations/wobble__north-west.gif",
+            "south": "clay_pot/animations/wobble__south.gif",
+            "south-east": "clay_pot/animations/wobble__south-east.gif",
+            "west": "clay_pot/animations/wobble__west.gif"
+          }
+        }
+      ]
     },
     {
       "id": "wooden_chest",
