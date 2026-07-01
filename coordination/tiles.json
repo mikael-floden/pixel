@@ -7,12 +7,12 @@
     "[2026-07-01T15:15:51+00:00] Road sets now carry BOTH diagonal directions. In this iso view a horizontal flip swaps NE<->NW / SE<->SW edges, so I auto-append the mirror of every directional road/bend tile (symmetric pieces like 4-way crossroads are skipped). Balanced tiles are flagged mirrored:true + mirror_of:<index> in the manifest; their connects are the horizontal mirror of the source tile edges. Straights are ~50/50 both diagonals now, turns cover all four corners. Applied to all existing road sets and baked into new generation."
   ],
   "requests": [],
-  "updated_at": "2026-07-01T15:37:46+00:00",
+  "updated_at": "2026-07-01T15:39:11+00:00",
   "health": "running",
-  "current": "tiles: 'road_meadow_turns' \u2014 32 isometric tiles (64px, 28deg, 50% depth)",
+  "current": "tiles: 'road_meadow_junctions' \u2014 32 isometric tiles (64px, 28deg, 50% depth)",
   "progress": {
-    "categories": 111,
-    "tiles": 2010
+    "categories": 112,
+    "tiles": 2042
   },
-  "budget_remaining": 1720.0
+  "budget_remaining": 1694.0
 }
