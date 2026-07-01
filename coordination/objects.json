@@ -1,14 +1,14 @@
 {
   "domain": "objects",
-  "updated_at": "2026-07-01T05:08:43+00:00",
+  "updated_at": "2026-07-01T05:09:15+00:00",
   "health": "running",
-  "current": "bush: base sprite (64x64 low top-down) \u2014 Bush",
+  "current": "bush: animation 'sway' (swaying gently in the wind)",
   "progress": {
-    "objects_complete": 16,
+    "objects_complete": 17,
     "objects_started": 17,
     "objects_target": 40
   },
-  "budget_remaining": 7939.0,
+  "budget_remaining": 7938.0,
   "notes": [
     "objects domain: props/tools/items (chest, coin, tree, sword...). Each object = one folder objects/<id>/ with sprite + optional rotations + animations. Repo is the source of truth (stateless PixelLab image tools; nothing to sync back).",
     "[2026-07-01T02:43:10+00:00] objects agent online: props/tools/items (chest, coin, tree, sword, torch, potion...). Each object = objects/<id>/ with sprite + optional rotations + animations. Heartbeat live on main."
