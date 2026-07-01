@@ -1,156 +1,86 @@
-# Objects Spec — Pixel Object Factory
+# Objects Spec — Pixel Object Factory (persistent 8-direction objects)
 
 ## Goal
 
-An automated, resumable loop that produces good-looking, **game-ready pixel-art
-objects** (props / tools / items) via the PixelLab API, in the *Grave Seasons* /
-Stardew Valley style. It is a sibling domain to `characters/` and `maps/` and
-stays entirely inside `objects/`.
+An automated, resumable loop that produces **game-ready pixel-art objects** —
+props, tools and items that make a *Grave Seasons*-style map come alive (trees,
+chests, coins, torches, wells, mushrooms, barrels…). Every object is a **real,
+persistent PixelLab object**: it shows in the PixelLab **create-object** web tool
+(so a human can regenerate it if it looks bad), it animates, and it **syncs back**
+into this repo. This is the object analogue of the character system.
 
-## Definitions
+## What every object is
 
-- **Object** — one prop/tool/item, stored as a self-contained folder
-  `objects/<id>/`. Examples: chest, gold coin, rock, bird, sword, shovel, tree,
-  torch, potion, well.
-- **Base sprite** — the object's single canonical image, generated from text with
-  `generate-image-pixflux`, transparent (`no_background`), facing `south`.
-- **Rotation** — the same object turned to another direction with `rotate`
-  (4- or 8-direction sets). Optional, per object.
-- **Animation** — a short looping clip generated with `animate-with-text` from a
-  text *action* (spin, open, sway, flicker, flap…). Optional, per object.
+- A **persistent 8-direction object** created with `create-8-direction-object`
+  (returns a `pixellab_object_id`; 8 rotations). **Always 8 directions.**
+- Sized for its **type**: `size` (32–256, a single square int) scales with the
+  object — a coin ~48px, a chest ~64px, an oak ~128px.
+- Carries exactly **3 animations chosen to fit it** (chest → open/close/rattle,
+  coin → spin/flip/bounce, tree → sway/rustle/shake…), each generated across
+  **all 8 directions** at **max frames (16, mode v3)**.
+- Drawn in the shared **Grave Seasons** style (`style_base`, selective outline,
+  painterly shading).
 
-## Why these three tools
+## Realism rule — world scale
 
-PixelLab exposes different capabilities for characters vs. arbitrary art. Objects
-aren't bipedal, so the character rig/`animate-character` path doesn't apply. The
-**image tools** do:
+Art size ≠ world size. Each object declares a real-world height `world_height_m`
+(or a `scale.category_height_m` fallback); the loop derives
+`world_px_height = round(world_height_m * character_height_px / character_height_m)`
+(reference: 64px = 1.7m) into each manifest's `placement`. A game renders the
+sprite scaled to `world_px_height` beside a 64px character, so a coin (~8px) is
+tiny and an oak (~226px) towers. Nothing ships without a `placement`.
 
-| Need              | Endpoint (`/v1`)              | Cost   | Notes |
-|-------------------|-------------------------------|--------|-------|
-| Base sprite       | `generate-image-pixflux`      | 1 gen  | text → one sprite; `no_background`, `view`, `outline/shading/detail`, `isometric` |
-| Rotated views     | `rotate`                      | 1 gen  | one sprite → one target direction/view |
-| Animation         | `animate-with-text`           | 1 gen  | one sprite → a few frames from a text action |
+## PixelLab integration (verified, v2)
 
-We deliberately **only** build what these support, and we lean into what they do
-well:
-
-- **Transparent single-asset sprites** (`no_background=true`) — drop-in game art.
-- **`view`** per object: `low top-down` for world props, `side` for held tools /
-  side-scroller items (sword, torch, bird).
-- **`isometric`** and **`outline`/`shading`/`detail`** knobs for style control.
-- **Rotation** for directional props (a barrel, a sign post) via the same
-  direction vocabulary characters use.
-- **Text animation** for the motions objects actually need — no skeleton required.
-
-We **don't** attempt things PixelLab objects can't do: no per-part rigging, no
-layered/compositing objects, no multi-object scenes in one sprite (that's the
-`maps/` domain's job).
-
-## Verified PixelLab integration
-
-All three endpoints are **synchronous** on the `/v1` API (base
-`https://api.pixellab.ai/v1`, `Authorization: Bearer $PIXELLAB_API_KEY`) — the
-POST returns the finished art inline; there is no background job to poll (that's a
-`/v2` character-endpoint concern).
-
-- `POST /generate-image-pixflux` → `{ "image": {"type":"base64","base64": <PNG>}, "usage": {"generations": 1} }`.
-  Params used: `description`, `image_size {width,height}`, `no_background`, `view`,
-  `direction`, `outline`, `shading`, `detail`, `isometric`, `negative_description`,
-  `text_guidance_scale`, `seed`.
-- `POST /rotate` → `{ "image": {...}, "usage": {...} }`. Params: `from_image`
-  (Base64Image), `image_size`, `from_view`/`to_view`, `from_direction`/`to_direction`,
-  `isometric`, `seed`.
-- `POST /animate-with-text` → `{ "images": [ {...}, ... ], "usage": {...} }`.
-  Params: `reference_image`, `description`, `action`, `image_size`, `view`,
-  `direction`, `n_frames`, `seed`. **Requires `image_size` ≥ 64×64** (smaller
-  422s), so any animated object is generated at ≥ 64×64. Frame 0 is the reference
-  pose; the endpoint may return fewer frames than requested — we keep what comes
-  back.
-
-Response images are PNG-encoded base64 (decoded straight to Pillow), unlike the
-character animate endpoint's raw `rgba_bytes`.
-
-## Object model (`config/objects.json`)
-
-- `defaults` — view/outline/shading/detail/no_background/guidance/negative applied
-  to every object unless overridden.
-- `catalog` — the curated objects. Each: `id`, `name`, `category`, `description`,
-  `size [w,h]`, optional `view`/`direction`, `rotations` (0/4/8), `animations`
-  (a list of `animation_library` keys or inline `{key, action, n_frames, view}`).
-- `animation_library` — reusable motions (spin, open, glint, flicker, burn, sway,
-  flap, flutter, swim, bob, pulse, ripple, bubble). `action` is kept to one short
-  phrase — extra words confuse the model.
-- `procedural` — `kinds` × `adjectives` used to synthesize further objects once
-  the catalog is exhausted, up to `targets.num_objects`. Deterministic in the
-  object index (seeded), so re-runs are reproducible.
-
-## Realism rule — world scale (objects must fit beside characters)
-
-An object's **art resolution is not its world size.** Every object declares a
-real-world height `world_height_m` (per-object, or a `scale.category_height_m`
-fallback), and the loop derives the pixel height it should occupy in-world:
-
-```
-world_px_height = round(world_height_m * character_height_px / character_height_m)
-```
-
-with the character reference in `config/objects.json → scale`
-(`character_height_px = 64`, `character_height_m = 1.7`). This lands in every
-manifest's `placement`, and the game renders each sprite scaled to
-`world_px_height` beside a 64px character — so a coin (~0.22m → ~8px) is tiny and
-an oak (~6m → ~226px) towers. It's a **rule, not a suggestion**: nothing ships
-without a `placement`, and `factory.refresh_placement` re-derives it for every
-existing object at loop startup (zero PixelLab cost) whenever the scale rule or a
-world height changes. The viewer shows each object to scale against a character
-silhouette.
+- `POST /create-8-direction-object` `{description, size, view}` →
+  `{object_id, background_job_id}`; poll the job, then `GET /objects/{id}` for
+  `rotation_urls` (8 PNGs).
+- `POST /objects/{id}/animations` `{animation_description, frame_count,
+  directions}` → `{animation_group_id}`; frames land **asynchronously per
+  direction** — poll `GET /objects/{id}` until all 8 directions of the group have
+  `storage_urls.frames`, then download. `frame_count`: even 4–16 (v3), max **16**.
+  **Pass all 8 directions** — omitting it animates a single direction (the bug we
+  hit first).
+- `GET /objects` (list), `GET /objects/{id}` (detail), `DELETE /objects/{id}`.
+- There is **no** object *create* on `/objects` itself (`POST /objects` → 405)
+  and the character endpoints only make humanoids — `create-8-direction-object`
+  is the one true object-create path.
+- Auth: `Authorization: Bearer $PIXELLAB_API_KEY`. Balance/generations on
+  `/v2/balance`.
 
 ## Loop algorithm
 
-The next unit is derived purely from the filesystem, so the loop is resumable and
-each unit commits + pushes:
+The next unit is derived from the filesystem (resumable); each unit commits +
+pushes:
 
 ```
 for object in (catalog then procedural up to targets.num_objects):
-    if no sprite.png            -> generate base           (pixflux)
-    else for each rotation dir  -> if missing, generate it (rotate)
-    else for each animation     -> if missing, generate it (animate-with-text)
+    if no sprite.png                 -> create the 8-direction object   (1 unit)
+    else for each of its 3 anims     -> if missing, animate all 8 dirs  (1 unit each)
 -> all objects complete
 ```
 
-One unit = one generation. After each: repackage, rebuild `viewer_data.json`,
-commit, push. Order (base → rotations → animations) guarantees an animation always
-has its base sprite as a reference.
+Every pass also (zero-cost): `sync` mirrors any PixelLab-side regenerations /
+deletions in, and `refresh_placement` re-derives world scale.
 
-## QA
+## Sync (PixelLab is the source of truth)
 
-- **Animations** are validated before shipping: every frame must be non-blank and
-  the clip must actually move (frames differ from frame 0). `animate-with-text`
-  occasionally returns a transparent or frozen clip; we retry with a fresh seed
-  (up to 3 attempts) and, if still bad, keep the best effort but set
-  `animations.<key>.ok = false` and a `note`, so it's visible rather than
-  silently broken.
-- **Sizes** are normalized: every rotation/frame of an object is centered on the
-  object's declared `size`, so all of an object's art shares one canvas.
+`sync.py` mirrors each tracked object (`pixellab_object_id`) from PixelLab into
+the repo — rotations + animations — only re-downloading frames whose
+`Last-Modified` changed (`If-Modified-Since` → 304 skip), exactly like the
+characters agent. **Regenerate an object in the create-object web tool → sync
+pulls it down.** Deletion parity: an object removed on PixelLab is removed from
+the repo (and vice-versa via `--restyle`), so there are never loose pointers.
 
 ## Packaging
 
-Per object: `sprite.png`; `rotations/<dir>.png` (incl. `south` = base);
-`animations/<key>/NN.png` frames + `animations/<key>.png` horizontal sprite-sheet
-strip (game-ready) + `animations/<key>.gif` (transparent looping preview).
-`object.json` indexes it all; `viewer_build.py` rolls every object into
-`viewer_data.json` for `index.html`.
-
-## Source of truth
-
-Unlike characters (where PixelLab stores the character and `sync.py` mirrors UI
-edits back), the object image tools are **stateless** — there is no server-side
-object to fetch. The **repo is authoritative**; regenerating is a fresh draw. The
-loop only ever creates *missing* assets, so committed hand-edits are never
-overwritten.
+Per object: `sprite.png` (south) + `rotations/<dir>.png` (8). Per animation, per
+direction: `animations/<key>/<dir>/NN.png` frames + `animations/<key>__<dir>.png`
+strip + `animations/<key>__<dir>.gif` preview. `object.json` indexes it all;
+`viewer_build.py` rolls everything into `viewer_data.json` for `index.html`.
 
 ## Cost model
 
-base (1) + rotations (0/3/7 — `south` is a free copy) + animations (1 each). A
-plain prop ≈ 1 gen; a 4-dir prop ≈ 4; an animated prop ≈ 2; a fully-featured
-object (8-dir + a couple of animations) ≈ 10. The loop is budget-aware and stops
-above `budget.min_generations_remaining`.
+base (8 rotations) + 3 animations × 8 directions × up to 16 frames. This is the
+heaviest domain per object, so the loop is budget-aware (floor **2000**, shared
+pool — see `coordination/PROTOCOL.md`) and runs durably on GitHub Actions.

@@ -1,13 +1,14 @@
 """The objects loop.
 
-Each "unit" of work is one PixelLab generation: create an object's base sprite,
-one rotated view, or one animation. The loop figures out the next missing unit
-purely by reading the filesystem (so it's fully resumable), does it, rebuilds the
-viewer manifest, and commits + pushes to main.
+Each "unit" of work is one PixelLab generation: create a persistent
+8-direction object, or generate one of its animations (all 8 directions). The
+loop figures out the next missing unit purely by reading the filesystem (so it's
+fully resumable), does it, rebuilds the viewer manifest, and commits + pushes.
 
-Per object, in order: base sprite -> each rotation -> each animation. Then the
-next object. The object list is the curated catalog followed by procedural fill
-up to targets.num_objects.
+Per object, in order: create the 8-dir object -> each of its 3 animations. Then
+the next object. The object list is the curated catalog followed by procedural
+fill up to targets.num_objects. Each pass first syncs PixelLab-side regenerations
+/ deletions into the repo (zero generations).
 
 Run a bounded chunk (intended for a scheduled Routine / GitHub Action):
   python objects/pipeline/loop.py --max-minutes 50 --min-balance 20
@@ -69,15 +70,13 @@ def commit_push(message, push=True):
 def next_action(cfg):
     """The next missing unit across all objects, derived from the filesystem.
 
-    For each object in order: ensure the base sprite, then each rotation, then
-    each animation exist. Returns an action tuple or ('all_complete',)."""
+    For each object in order: create the persistent 8-direction object (base),
+    then generate each of its 3 animations (all 8 directions). Returns an action
+    tuple or ('all_complete',)."""
     for spec in factory.object_specs(cfg):
         oid = spec["id"]
         if not factory.has_base(oid):
             return ("base", spec)
-        for d in factory.rotation_dirs(cfg, spec):
-            if not factory.has_rotation(oid, d):
-                return ("rotate", spec, d)
         for adef in spec["animations"]:
             if not factory.has_animation(oid, adef["key"]):
                 return ("animate", spec, adef)
@@ -95,15 +94,11 @@ def advance(client, cfg, push=True):
     if kind == "base":
         spec = action[1]
         factory.generate_base(client, cfg, spec)
-        desc = f"{spec['id']}: base sprite ({spec['width']}x{spec['height']} {spec['view']}) — {spec['name']}"
-    elif kind == "rotate":
-        spec, d = action[1], action[2]
-        factory.generate_rotation(client, cfg, spec, d)
-        desc = f"{spec['id']}: rotation '{d}'"
+        desc = f"{spec['id']}: 8-dir object ({spec['size']}px {spec['view']}) — {spec['name']}"
     elif kind == "animate":
         spec, adef = action[1], action[2]
         factory.generate_animation(client, cfg, spec, adef)
-        desc = f"{spec['id']}: animation '{adef['key']}' ({adef['action']})"
+        desc = f"{spec['id']}: animation '{adef['key']}' — {adef['description']} (8 dirs)"
     elif kind == "all_complete":
         print("== all objects complete ==")
         return None
@@ -158,7 +153,7 @@ def main():
     # Restyle: drop objects made under an older style so they regenerate in the
     # current look. Commit the removals up front, then the normal loop refills.
     if args.restyle:
-        removed = factory.restyle_stale(cfg)
+        removed = factory.restyle_stale(cfg, client)
         if removed:
             viewer_build.build()
             commit_push(f"objects: restyle — regenerating {len(removed)} object(s) "

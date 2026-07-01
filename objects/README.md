@@ -17,20 +17,26 @@ under `maps/` — each is owned by its own loop and this loop never touches them
 ## What is an "object"?
 
 An **object** is a single, self-contained sprite asset: a chest, a coin, a tree,
-a bird, a sword. **Each object is one folder** — `objects/<id>/` — and nothing
-else. If you see a folder under `objects/` with an `object.json` in it, that's an
-object; the only non-object folders are the tooling (`pipeline/`, `config/`,
-`spec/`).
+a bird, a sword. **Each object is one folder** — `objects/<id>/`. If you see a
+folder under `objects/` with an `object.json` in it, that's an object; the only
+non-object folders are the tooling (`pipeline/`, `config/`, `spec/`).
 
-Every object has:
+Every object is a **persistent PixelLab object** (created with
+`create-8-direction-object`), which means it also lives in your PixelLab
+**create-object** web tool — so you can open it and press **regenerate** if it
+looks bad, and [`sync.py`](#staying-in-sync-no-loose-pointers) pulls the new art
+back into the repo. Each object has:
 
-1. a **base sprite** — one transparent PNG, always;
-2. optional **rotations** — the same object seen from 4 or 8 directions;
-3. optional **animations** — short looping clips (coin spin, chest open, tree
-   sway, torch flicker, bird flap…), packaged as per-frame PNGs, a horizontal
-   **sprite-sheet strip**, and a preview **GIF**.
+1. **8 rotations** — always 8 directions (`rotations/<dir>.png`, `sprite.png` =
+   south);
+2. **3 animations** chosen to fit the object (chest → open/close/rattle, coin →
+   spin/flip/bounce, tree → sway/rustle/shake…), each generated across **all 8
+   directions** at **max frames (16)**, packaged as per-frame PNGs + a
+   **sprite-sheet strip** + a preview **GIF** per direction;
+3. a **type-appropriate size** (a coin is small, an oak is large) and a
+   **`placement`** that keeps it to scale next to a character.
 
-What an object gets is decided per object in [`config/objects.json`](config/objects.json).
+What each object gets is defined in [`config/objects.json`](config/objects.json).
 
 ---
 

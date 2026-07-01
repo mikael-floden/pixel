@@ -1,5 +1,5 @@
 {
-  "_comment": "Catalog-driven pixel-OBJECT factory. An 'object' is one prop/tool/item (chest, coin, rock, bird, sword, shovel, tree...). Each object is a self-contained folder under objects/<id>/. The loop reads the filesystem and, per object, generates: (1) a base sprite (generate-image-pixflux), (2) optional rotated views (rotate), (3) optional animations (animate-with-text). Every unit = one PixelLab generation; after each it rebuilds the viewer, commits and pushes. Fully resumable. Unlike characters, objects are stateless image tools with no server-side object to sync back \u2014 the repo is the source of truth.",
+  "_comment": "Persistent-object factory. Every object is a PixelLab 8-direction object (create-8-direction-object) sized for its type (32-256), with EXACTLY 3 fitting animations at max frames (16, v3) across all 8 directions, in the Grave Seasons style. Objects show in the PixelLab create-object tool and sync back (sync.py). world_height_m keeps them to scale vs a 64px character.",
   "style_base": "cozy painterly RPG pixel art in the exact style of Grave Seasons, a cohesive muted-but-warm seasonal palette, soft naturalistic lighting with strong ambient occlusion and gently rounded volumes, subtle selective darker-tone outlines (NOT a hard uniform black cartoon outline), rich high detail, crisp deliberate pixels, a single centered game prop on a transparent background",
   "style_version": 2,
   "_style_version": "Bump this when the look changes. Objects whose manifest records an older style_version are considered stale; run the loop with --restyle (or the workflow's restyle input) to delete and regenerate them in the new style.",
@@ -37,93 +37,29 @@
     "num_objects": 40,
     "_comment": "How many objects the loop aims to produce. It builds the explicit `catalog` first, then synthesizes further ones from `procedural` until this count is reached. Raise it to keep the loop generating open-endedly."
   },
-  "rotation_directions": {
-    "4": [
-      "south",
-      "east",
-      "north",
-      "west"
-    ],
-    "8": [
-      "south",
-      "south-east",
-      "east",
-      "north-east",
-      "north",
-      "north-west",
-      "west",
-      "south-west"
-    ],
-    "_comment": "A rotated object keeps its base sprite as `south` and rotates into the rest. Base is always generated at `defaults.direction` (south)."
-  },
-  "_animation_library": "Reusable animation definitions, referenced by key from an object's `animations` list (a bare string uses the library entry as-is; an object {key, action, n_frames, view} overrides fields). `action` is kept to ONE simple verb/phrase \u2014 extra words confuse PixelLab. animate-with-text needs a canvas >= 64, so any animated object is generated at >= 64x64.",
-  "animation_library": {
-    "spin": {
-      "action": "spinning around",
-      "n_frames": 8
-    },
-    "open": {
-      "action": "opening",
-      "n_frames": 6
-    },
-    "glint": {
-      "action": "glinting with a shine of light",
-      "n_frames": 6
-    },
-    "flicker": {
-      "action": "flame flickering",
-      "n_frames": 6
-    },
-    "burn": {
-      "action": "fire burning",
-      "n_frames": 8
-    },
-    "sway": {
-      "action": "swaying gently in the wind",
-      "n_frames": 8
-    },
-    "flap": {
-      "action": "flapping its wings",
-      "n_frames": 6
-    },
-    "flutter": {
-      "action": "fluttering its wings",
-      "n_frames": 6
-    },
-    "swim": {
-      "action": "swimming",
-      "n_frames": 6
-    },
-    "bob": {
-      "action": "floating up and down",
-      "n_frames": 6
-    },
-    "pulse": {
-      "action": "glowing brighter and dimmer",
-      "n_frames": 6
-    },
-    "ripple": {
-      "action": "water rippling",
-      "n_frames": 6
-    },
-    "bubble": {
-      "action": "liquid bubbling",
-      "n_frames": 6
-    }
-  },
-  "_catalog": "Explicit, curated objects. Each is one unique folder objects/<id>/. `size` is [w,h]; `rotations` is 0 (none), 4, or 8; `animations` lists animation_library keys (or inline overrides). Objects with animations are auto-bumped to >= 64x64.",
   "catalog": [
     {
       "id": "wooden_chest",
       "name": "Wooden Chest",
       "category": "container",
       "description": "a closed wooden treasure chest with iron bands and a rounded lid",
-      "size": [
-        64,
-        64
-      ],
+      "size": 64,
       "animations": [
-        "open"
+        {
+          "key": "open",
+          "description": "the lid opening",
+          "frames": 16
+        },
+        {
+          "key": "close",
+          "description": "the lid closing shut",
+          "frames": 16
+        },
+        {
+          "key": "rattle",
+          "description": "the closed chest shaking and rattling",
+          "frames": 16
+        }
       ],
       "world_height_m": 0.7
     },
@@ -132,46 +68,98 @@
       "name": "Barrel",
       "category": "container",
       "description": "a sturdy wooden barrel bound with metal hoops",
-      "size": [
-        64,
-        64
-      ],
-      "rotations": 4,
-      "world_height_m": 0.9
+      "size": 64,
+      "world_height_m": 0.9,
+      "animations": [
+        {
+          "key": "open",
+          "description": "the lid popping open",
+          "frames": 16
+        },
+        {
+          "key": "shake",
+          "description": "the barrel wobbling side to side",
+          "frames": 16
+        },
+        {
+          "key": "break",
+          "description": "the barrel bursting apart into wooden pieces",
+          "frames": 16
+        }
+      ]
     },
     {
       "id": "wooden_crate",
       "name": "Wooden Crate",
       "category": "container",
       "description": "a wooden shipping crate with plank sides and nailed corners",
-      "size": [
-        48,
-        48
-      ],
-      "world_height_m": 0.7
+      "size": 64,
+      "world_height_m": 0.7,
+      "animations": [
+        {
+          "key": "open",
+          "description": "the crate lid prying open",
+          "frames": 16
+        },
+        {
+          "key": "shake",
+          "description": "the crate shaking",
+          "frames": 16
+        },
+        {
+          "key": "break",
+          "description": "the crate smashing into pieces",
+          "frames": 16
+        }
+      ]
     },
     {
       "id": "clay_pot",
       "name": "Clay Pot",
       "category": "container",
       "description": "a small round terracotta clay pot",
-      "size": [
-        32,
-        32
-      ],
-      "world_height_m": 0.35
+      "size": 48,
+      "world_height_m": 0.35,
+      "animations": [
+        {
+          "key": "wobble",
+          "description": "the pot wobbling",
+          "frames": 16
+        },
+        {
+          "key": "tip",
+          "description": "the pot tipping over",
+          "frames": 16
+        },
+        {
+          "key": "shatter",
+          "description": "the pot shattering into shards",
+          "frames": 16
+        }
+      ]
     },
     {
       "id": "gold_coin",
       "name": "Gold Coin",
       "category": "valuable",
       "description": "a single shiny round gold coin stamped with a crest",
-      "size": [
-        64,
-        64
-      ],
+      "size": 48,
       "animations": [
-        "spin"
+        {
+          "key": "spin",
+          "description": "the coin spinning around",
+          "frames": 16
+        },
+        {
+          "key": "flip",
+          "description": "the coin flipping over",
+          "frames": 16
+        },
+        {
+          "key": "bounce",
+          "description": "the coin bouncing up and down",
+          "frames": 16
+        }
       ],
       "world_height_m": 0.22
     },
@@ -180,12 +168,23 @@
       "name": "Ruby Gem",
       "category": "valuable",
       "description": "a faceted red ruby gemstone sparkling",
-      "size": [
-        64,
-        64
-      ],
+      "size": 48,
       "animations": [
-        "pulse"
+        {
+          "key": "sparkle",
+          "description": "the gem sparkling with light",
+          "frames": 16
+        },
+        {
+          "key": "pulse",
+          "description": "the gem glowing brighter and dimmer",
+          "frames": 16
+        },
+        {
+          "key": "spin",
+          "description": "the gem slowly rotating",
+          "frames": 16
+        }
       ],
       "world_height_m": 0.28
     },
@@ -194,23 +193,48 @@
       "name": "Gold Ingot",
       "category": "valuable",
       "description": "a stacked bar of solid gold ingots",
-      "size": [
-        48,
-        32
-      ],
-      "world_height_m": 0.18
+      "size": 48,
+      "world_height_m": 0.18,
+      "animations": [
+        {
+          "key": "shine",
+          "description": "a shine of light sweeping across the gold",
+          "frames": 16
+        },
+        {
+          "key": "wobble",
+          "description": "the gold bars wobbling",
+          "frames": 16
+        },
+        {
+          "key": "bounce",
+          "description": "the gold bars bouncing",
+          "frames": 16
+        }
+      ]
     },
     {
       "id": "iron_key",
       "name": "Iron Key",
       "category": "valuable",
       "description": "an ornate old iron key with a looped bow",
-      "size": [
-        64,
-        64
-      ],
+      "size": 48,
       "animations": [
-        "spin"
+        {
+          "key": "spin",
+          "description": "the key spinning around",
+          "frames": 16
+        },
+        {
+          "key": "jingle",
+          "description": "the key jingling and shaking",
+          "frames": 16
+        },
+        {
+          "key": "glint",
+          "description": "a glint of light on the key",
+          "frames": 16
+        }
       ],
       "world_height_m": 0.3
     },
@@ -219,15 +243,23 @@
       "name": "Sword",
       "category": "tool",
       "description": "a steel knight's sword with a leather-wrapped hilt and crossguard, blade pointing up",
-      "size": [
-        64,
-        64
-      ],
+      "size": 64,
       "view": "side",
       "animations": [
         {
           "key": "glint",
-          "view": "side"
+          "description": "a glint of light sweeping along the blade",
+          "frames": 16
+        },
+        {
+          "key": "spin",
+          "description": "the sword spinning",
+          "frames": 16
+        },
+        {
+          "key": "bounce",
+          "description": "the sword bouncing",
+          "frames": 16
         }
       ],
       "world_height_m": 1.0
@@ -237,72 +269,153 @@
       "name": "Shovel",
       "category": "tool",
       "description": "a wooden-handled digging shovel with a metal blade",
-      "size": [
-        64,
-        64
-      ],
+      "size": 64,
       "view": "side",
-      "world_height_m": 1.3
+      "world_height_m": 1.3,
+      "animations": [
+        {
+          "key": "dig",
+          "description": "the shovel scooping and digging",
+          "frames": 16
+        },
+        {
+          "key": "bob",
+          "description": "the shovel bobbing",
+          "frames": 16
+        },
+        {
+          "key": "glint",
+          "description": "a glint on the metal blade",
+          "frames": 16
+        }
+      ]
     },
     {
       "id": "pickaxe",
       "name": "Pickaxe",
       "category": "tool",
       "description": "a miner's pickaxe with a wooden handle and iron head",
-      "size": [
-        64,
-        64
-      ],
+      "size": 64,
       "view": "side",
-      "world_height_m": 1.2
+      "world_height_m": 1.2,
+      "animations": [
+        {
+          "key": "swing",
+          "description": "the pickaxe swinging down",
+          "frames": 16
+        },
+        {
+          "key": "bob",
+          "description": "the pickaxe bobbing",
+          "frames": 16
+        },
+        {
+          "key": "glint",
+          "description": "a glint on the iron head",
+          "frames": 16
+        }
+      ]
     },
     {
       "id": "axe",
       "name": "Axe",
       "category": "tool",
       "description": "a woodcutter's axe with a broad steel head and wooden haft",
-      "size": [
-        64,
-        64
-      ],
+      "size": 64,
       "view": "side",
-      "world_height_m": 0.9
+      "world_height_m": 0.9,
+      "animations": [
+        {
+          "key": "chop",
+          "description": "the axe chopping down",
+          "frames": 16
+        },
+        {
+          "key": "bob",
+          "description": "the axe bobbing",
+          "frames": 16
+        },
+        {
+          "key": "glint",
+          "description": "a glint on the blade",
+          "frames": 16
+        }
+      ]
     },
     {
       "id": "hammer",
       "name": "Hammer",
       "category": "tool",
       "description": "a blacksmith's hammer with a heavy iron head",
-      "size": [
-        48,
-        48
-      ],
+      "size": 64,
       "view": "side",
-      "world_height_m": 0.65
+      "world_height_m": 0.65,
+      "animations": [
+        {
+          "key": "swing",
+          "description": "the hammer swinging down",
+          "frames": 16
+        },
+        {
+          "key": "bob",
+          "description": "the hammer bobbing",
+          "frames": 16
+        },
+        {
+          "key": "glint",
+          "description": "a glint on the iron head",
+          "frames": 16
+        }
+      ]
     },
     {
       "id": "fishing_rod",
       "name": "Fishing Rod",
       "category": "tool",
       "description": "a bamboo fishing rod with a line and hook",
-      "size": [
-        64,
-        64
-      ],
+      "size": 64,
       "view": "side",
-      "world_height_m": 1.7
+      "world_height_m": 1.7,
+      "animations": [
+        {
+          "key": "cast",
+          "description": "the rod casting the line",
+          "frames": 16
+        },
+        {
+          "key": "bob",
+          "description": "the float bobbing",
+          "frames": 16
+        },
+        {
+          "key": "reel",
+          "description": "reeling in the line",
+          "frames": 16
+        }
+      ]
     },
     {
       "id": "oak_tree",
       "name": "Oak Tree",
       "category": "nature",
       "description": "a lush round-canopy oak tree with a thick brown trunk",
-      "size": [
-        64,
-        64
-      ],
+      "size": 128,
       "animations": [
-        "sway"
+        {
+          "key": "sway",
+          "description": "the leaves swaying in the wind",
+          "frames": 16
+        },
+        {
+          "key": "rustle",
+          "description": "the foliage rustling",
+          "frames": 16
+        },
+        {
+          "key": "shake",
+          "description": "the whole tree shaking",
+          "frames": 16
+        }
       ],
       "world_height_m": 6.0
     },
@@ -311,12 +424,23 @@
       "name": "Pine Tree",
       "category": "nature",
       "description": "a tall green conifer pine tree",
-      "size": [
-        64,
-        64
-      ],
+      "size": 128,
       "animations": [
-        "sway"
+        {
+          "key": "sway",
+          "description": "the branches swaying in the wind",
+          "frames": 16
+        },
+        {
+          "key": "rustle",
+          "description": "the needles rustling",
+          "frames": 16
+        },
+        {
+          "key": "shake",
+          "description": "the whole tree shaking",
+          "frames": 16
+        }
       ],
       "world_height_m": 7.0
     },
@@ -325,12 +449,23 @@
       "name": "Bush",
       "category": "nature",
       "description": "a small round leafy green bush",
-      "size": [
-        64,
-        64
-      ],
+      "size": 64,
       "animations": [
-        "sway"
+        {
+          "key": "sway",
+          "description": "the bush swaying in the wind",
+          "frames": 16
+        },
+        {
+          "key": "rustle",
+          "description": "the leaves rustling",
+          "frames": 16
+        },
+        {
+          "key": "shake",
+          "description": "the bush shaking",
+          "frames": 16
+        }
       ],
       "world_height_m": 1.0
     },
@@ -339,12 +474,23 @@
       "name": "Flower",
       "category": "nature",
       "description": "a single red tulip flower with a green stem",
-      "size": [
-        64,
-        64
-      ],
+      "size": 48,
       "animations": [
-        "sway"
+        {
+          "key": "sway",
+          "description": "the flower swaying gently",
+          "frames": 16
+        },
+        {
+          "key": "bloom",
+          "description": "the petals opening and blooming",
+          "frames": 16
+        },
+        {
+          "key": "wilt",
+          "description": "the flower wilting and drooping",
+          "frames": 16
+        }
       ],
       "world_height_m": 0.4
     },
@@ -353,48 +499,98 @@
       "name": "Mushroom",
       "category": "nature",
       "description": "a plump red toadstool mushroom with white spots",
-      "size": [
-        32,
-        32
-      ],
-      "world_height_m": 0.28
+      "size": 48,
+      "world_height_m": 0.28,
+      "animations": [
+        {
+          "key": "bounce",
+          "description": "the mushroom bouncing",
+          "frames": 16
+        },
+        {
+          "key": "wobble",
+          "description": "the mushroom cap wobbling",
+          "frames": 16
+        },
+        {
+          "key": "sway",
+          "description": "the mushroom swaying",
+          "frames": 16
+        }
+      ]
     },
     {
       "id": "rock",
       "name": "Rock",
       "category": "nature",
       "description": "a grey mossy boulder rock",
-      "size": [
-        48,
-        48
-      ],
-      "world_height_m": 0.6
+      "size": 64,
+      "world_height_m": 0.6,
+      "animations": [
+        {
+          "key": "wobble",
+          "description": "the rock wobbling",
+          "frames": 16
+        },
+        {
+          "key": "shake",
+          "description": "the rock shaking",
+          "frames": 16
+        },
+        {
+          "key": "crumble",
+          "description": "the rock crumbling apart",
+          "frames": 16
+        }
+      ]
     },
     {
       "id": "tree_stump",
       "name": "Tree Stump",
       "category": "nature",
       "description": "a cut tree stump with visible growth rings",
-      "size": [
-        48,
-        48
-      ],
-      "world_height_m": 0.6
+      "size": 64,
+      "world_height_m": 0.6,
+      "animations": [
+        {
+          "key": "rustle",
+          "description": "moss on the stump rustling",
+          "frames": 16
+        },
+        {
+          "key": "wobble",
+          "description": "the stump wobbling",
+          "frames": 16
+        },
+        {
+          "key": "sprout",
+          "description": "a small sprout growing from the stump",
+          "frames": 16
+        }
+      ]
     },
     {
       "id": "torch",
       "name": "Torch",
       "category": "light",
       "description": "a wooden wall torch with an orange flame",
-      "size": [
-        64,
-        64
-      ],
+      "size": 64,
       "view": "side",
       "animations": [
         {
           "key": "flicker",
-          "view": "side"
+          "description": "the flame flickering",
+          "frames": 16
+        },
+        {
+          "key": "flare",
+          "description": "the flame flaring up brightly",
+          "frames": 16
+        },
+        {
+          "key": "extinguish",
+          "description": "the flame going out to smoke",
+          "frames": 16
         }
       ],
       "world_height_m": 1.4
@@ -404,12 +600,23 @@
       "name": "Campfire",
       "category": "light",
       "description": "a campfire of logs with dancing flames",
-      "size": [
-        64,
-        64
-      ],
+      "size": 96,
       "animations": [
-        "burn"
+        {
+          "key": "burn",
+          "description": "the fire burning and dancing",
+          "frames": 16
+        },
+        {
+          "key": "flare",
+          "description": "the fire flaring up",
+          "frames": 16
+        },
+        {
+          "key": "crackle",
+          "description": "embers crackling and rising",
+          "frames": 16
+        }
       ],
       "world_height_m": 0.6
     },
@@ -418,15 +625,23 @@
       "name": "Lantern",
       "category": "light",
       "description": "a metal-framed glass lantern with a warm glowing candle",
-      "size": [
-        64,
-        64
-      ],
+      "size": 64,
       "view": "side",
       "animations": [
         {
           "key": "flicker",
-          "view": "side"
+          "description": "the candle flame flickering",
+          "frames": 16
+        },
+        {
+          "key": "sway",
+          "description": "the hanging lantern swaying",
+          "frames": 16
+        },
+        {
+          "key": "glow",
+          "description": "the lantern glowing brighter and dimmer",
+          "frames": 16
         }
       ],
       "world_height_m": 0.5
@@ -436,15 +651,23 @@
       "name": "Bird",
       "category": "creature",
       "description": "a small plump blue songbird perched",
-      "size": [
-        64,
-        64
-      ],
+      "size": 64,
       "view": "side",
       "animations": [
         {
           "key": "flap",
-          "view": "side"
+          "description": "the bird flapping its wings",
+          "frames": 16
+        },
+        {
+          "key": "peck",
+          "description": "the bird pecking at the ground",
+          "frames": 16
+        },
+        {
+          "key": "hop",
+          "description": "the bird hopping",
+          "frames": 16
         }
       ],
       "world_height_m": 0.22
@@ -454,12 +677,23 @@
       "name": "Butterfly",
       "category": "creature",
       "description": "a delicate orange monarch butterfly",
-      "size": [
-        64,
-        64
-      ],
+      "size": 48,
       "animations": [
-        "flutter"
+        {
+          "key": "flutter",
+          "description": "the butterfly fluttering its wings",
+          "frames": 16
+        },
+        {
+          "key": "fly",
+          "description": "the butterfly flying upward",
+          "frames": 16
+        },
+        {
+          "key": "land",
+          "description": "the butterfly landing",
+          "frames": 16
+        }
       ],
       "world_height_m": 0.12
     },
@@ -468,15 +702,23 @@
       "name": "Fish",
       "category": "creature",
       "description": "a plump orange river fish",
-      "size": [
-        64,
-        64
-      ],
+      "size": 64,
       "view": "side",
       "animations": [
         {
           "key": "swim",
-          "view": "side"
+          "description": "the fish swimming, tail moving",
+          "frames": 16
+        },
+        {
+          "key": "flop",
+          "description": "the fish flopping",
+          "frames": 16
+        },
+        {
+          "key": "splash",
+          "description": "the fish splashing",
+          "frames": 16
         }
       ],
       "world_height_m": 0.4
@@ -486,12 +728,23 @@
       "name": "Red Potion",
       "category": "misc",
       "description": "a round glass potion bottle full of glowing red liquid with a cork",
-      "size": [
-        64,
-        64
-      ],
+      "size": 64,
       "animations": [
-        "bob"
+        {
+          "key": "bob",
+          "description": "the potion floating up and down",
+          "frames": 16
+        },
+        {
+          "key": "bubble",
+          "description": "the red liquid bubbling",
+          "frames": 16
+        },
+        {
+          "key": "glow",
+          "description": "the potion glowing brighter and dimmer",
+          "frames": 16
+        }
       ],
       "world_height_m": 0.35
     },
@@ -500,24 +753,48 @@
       "name": "Sign Post",
       "category": "misc",
       "description": "a wooden directional sign post with a blank board on a stake",
-      "size": [
-        64,
-        64
-      ],
-      "rotations": 4,
-      "world_height_m": 1.7
+      "size": 64,
+      "world_height_m": 1.7,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the sign swinging on its post",
+          "frames": 16
+        },
+        {
+          "key": "creak",
+          "description": "the sign creaking side to side",
+          "frames": 16
+        },
+        {
+          "key": "glint",
+          "description": "a glint of light across the wood",
+          "frames": 16
+        }
+      ]
     },
     {
       "id": "well",
       "name": "Stone Well",
       "category": "misc",
       "description": "a round stone water well with a wooden roof and bucket",
-      "size": [
-        64,
-        64
-      ],
+      "size": 128,
       "animations": [
-        "ripple"
+        {
+          "key": "ripple",
+          "description": "the water rippling",
+          "frames": 16
+        },
+        {
+          "key": "bucket",
+          "description": "the bucket lowering into the well",
+          "frames": 16
+        },
+        {
+          "key": "splash",
+          "description": "water splashing up",
+          "frames": 16
+        }
       ],
       "world_height_m": 1.4
     }
@@ -528,57 +805,115 @@
       {
         "noun": "treasure chest",
         "category": "container",
-        "size": [
-          64,
-          64
-        ],
+        "size": 64,
         "animations": [
-          "open"
+          {
+            "key": "open",
+            "description": "the lid opening",
+            "frames": 16
+          },
+          {
+            "key": "close",
+            "description": "the lid closing shut",
+            "frames": 16
+          },
+          {
+            "key": "rattle",
+            "description": "the chest rattling",
+            "frames": 16
+          }
         ],
         "world_height_m": 0.7
       },
       {
         "noun": "clay urn",
         "category": "container",
-        "size": [
-          48,
-          48
-        ],
-        "world_height_m": 0.5
+        "size": 48,
+        "world_height_m": 0.5,
+        "animations": [
+          {
+            "key": "wobble",
+            "description": "the urn wobbling",
+            "frames": 16
+          },
+          {
+            "key": "tip",
+            "description": "the urn tipping over",
+            "frames": 16
+          },
+          {
+            "key": "shatter",
+            "description": "the urn shattering",
+            "frames": 16
+          }
+        ]
       },
       {
         "noun": "gemstone",
         "category": "valuable",
-        "size": [
-          64,
-          64
-        ],
+        "size": 48,
         "animations": [
-          "pulse"
+          {
+            "key": "sparkle",
+            "description": "the gem sparkling",
+            "frames": 16
+          },
+          {
+            "key": "pulse",
+            "description": "the gem glowing brighter and dimmer",
+            "frames": 16
+          },
+          {
+            "key": "spin",
+            "description": "the gem rotating",
+            "frames": 16
+          }
         ],
         "world_height_m": 0.28
       },
       {
         "noun": "coin stack",
         "category": "valuable",
-        "size": [
-          48,
-          48
-        ],
-        "world_height_m": 0.2
+        "size": 48,
+        "world_height_m": 0.2,
+        "animations": [
+          {
+            "key": "shine",
+            "description": "a shine sweeping across the coins",
+            "frames": 16
+          },
+          {
+            "key": "wobble",
+            "description": "the stack wobbling",
+            "frames": 16
+          },
+          {
+            "key": "topple",
+            "description": "the stack toppling over",
+            "frames": 16
+          }
+        ]
       },
       {
         "noun": "dagger",
         "category": "tool",
-        "size": [
-          64,
-          64
-        ],
+        "size": 64,
         "view": "side",
         "animations": [
           {
             "key": "glint",
-            "view": "side"
+            "description": "a glint along the blade",
+            "frames": 16
+          },
+          {
+            "key": "spin",
+            "description": "the dagger spinning",
+            "frames": 16
+          },
+          {
+            "key": "bounce",
+            "description": "the dagger bouncing",
+            "frames": 16
           }
         ],
         "world_height_m": 0.4
@@ -586,46 +921,93 @@
       {
         "noun": "staff",
         "category": "tool",
-        "size": [
-          64,
-          64
-        ],
+        "size": 96,
         "view": "side",
-        "world_height_m": 1.5
+        "world_height_m": 1.5,
+        "animations": [
+          {
+            "key": "glow",
+            "description": "the staff glowing brighter and dimmer",
+            "frames": 16
+          },
+          {
+            "key": "spin",
+            "description": "the staff spinning",
+            "frames": 16
+          },
+          {
+            "key": "bob",
+            "description": "the staff bobbing",
+            "frames": 16
+          }
+        ]
       },
       {
         "noun": "shrub",
         "category": "nature",
-        "size": [
-          64,
-          64
-        ],
+        "size": 64,
         "animations": [
-          "sway"
+          {
+            "key": "sway",
+            "description": "the shrub swaying",
+            "frames": 16
+          },
+          {
+            "key": "rustle",
+            "description": "the leaves rustling",
+            "frames": 16
+          },
+          {
+            "key": "shake",
+            "description": "the shrub shaking",
+            "frames": 16
+          }
         ],
         "world_height_m": 0.9
       },
       {
         "noun": "boulder",
         "category": "nature",
-        "size": [
-          48,
-          48
-        ],
-        "world_height_m": 0.7
+        "size": 64,
+        "world_height_m": 0.7,
+        "animations": [
+          {
+            "key": "wobble",
+            "description": "the boulder wobbling",
+            "frames": 16
+          },
+          {
+            "key": "shake",
+            "description": "the boulder shaking",
+            "frames": 16
+          },
+          {
+            "key": "crumble",
+            "description": "the boulder crumbling",
+            "frames": 16
+          }
+        ]
       },
       {
         "noun": "candle",
         "category": "light",
-        "size": [
-          48,
-          48
-        ],
+        "size": 48,
         "view": "side",
         "animations": [
           {
             "key": "flicker",
-            "view": "side"
+            "description": "the flame flickering",
+            "frames": 16
+          },
+          {
+            "key": "flare",
+            "description": "the flame flaring up",
+            "frames": 16
+          },
+          {
+            "key": "extinguish",
+            "description": "the flame going out",
+            "frames": 16
           }
         ],
         "world_height_m": 0.3
@@ -633,12 +1015,23 @@
       {
         "noun": "potion bottle",
         "category": "misc",
-        "size": [
-          64,
-          64
-        ],
+        "size": 64,
         "animations": [
-          "bob"
+          {
+            "key": "bob",
+            "description": "the potion bobbing",
+            "frames": 16
+          },
+          {
+            "key": "bubble",
+            "description": "the liquid bubbling",
+            "frames": 16
+          },
+          {
+            "key": "glow",
+            "description": "the potion glowing",
+            "frames": 16
+          }
         ],
         "world_height_m": 0.35
       }
@@ -655,5 +1048,6 @@
       "polished",
       "runed"
     ]
-  }
+  },
+  "_animations": "Every object is a persistent 8-direction PixelLab object (create-8-direction-object) with EXACTLY 3 animations chosen to fit it, each animated across all 8 directions."
 }

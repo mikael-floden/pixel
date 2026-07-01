@@ -1,19 +1,23 @@
-"""Object factory: resolve the catalog, generate art, package it, track status.
+"""Object factory: persistent 8-direction PixelLab objects + fitting animations.
+
+Every object is a real PixelLab **object** (create-8-direction-object): it shows
+in the PixelLab "create-object" web tool, can be regenerated/edited there, is
+animatable, and is syncable back into this repo (see sync.py). This is the object
+analogue of the character system — the repo mirrors PixelLab, which is the live
+source of truth for an object's `pixellab_object_id`.
 
 Each operation is small and resumable: it writes its result to disk and updates
-`object.json`, so the loop can stop/restart at any point and pick up the next
-missing unit by reading the filesystem. PixelLab paints the pixels; this module
-decides what to ask for, where to store it, and how to package it (per-frame
-PNGs + a horizontal sprite-sheet strip for the game + a transparent GIF for quick
-preview).
+`object.json`, so the loop can stop/restart and pick up the next missing unit by
+reading the filesystem.
 
 One OBJECT = one self-contained folder `objects/<id>/`:
-  objects/<id>/object.json                 manifest (params + asset index)
-  objects/<id>/sprite.png                  the base sprite (transparent)
-  objects/<id>/rotations/<dir>.png         optional rotated views (incl. south)
-  objects/<id>/animations/<key>/NN.png     per-frame PNGs
-  objects/<id>/animations/<key>.png        sprite-sheet strip (game-ready)
-  objects/<id>/animations/<key>.gif        looping preview (mobile / GitHub)
+  objects/<id>/object.json                       manifest (params + asset index)
+  objects/<id>/sprite.png                        the canonical sprite (south view)
+  objects/<id>/rotations/<dir>.png               all 8 rotations
+  objects/<id>/animations/<key>/<dir>/NN.png     per-direction animation frames
+  objects/<id>/animations/<key>__<dir>.png       per-direction sprite-sheet strip
+  objects/<id>/animations/<key>__<dir>.gif       per-direction looping preview
+Every object has 8 directions; every animation is generated for all 8 directions.
 """
 
 from __future__ import annotations
@@ -27,7 +31,7 @@ import zlib
 import numpy as np
 from PIL import Image
 
-from pixellab_client import ANIMATE_SIZE, ROTATE_SIZES, PixelLabClient
+from pixellab_client import DIRECTIONS_8, PixelLabClient
 
 ROOT = os.path.dirname(os.path.dirname(__file__))
 CONFIG = os.path.join(ROOT, "config", "objects.json")
@@ -52,89 +56,65 @@ def _seed(*parts):
     return zlib.crc32(("::".join(str(p) for p in parts)).encode()) % (2 ** 31)
 
 
-def _resolve_animations(cfg, spec):
-    """Turn an object's `animations` list (library keys and/or inline overrides)
-    into full defs: {key, action, n_frames, view}. `view` defaults to the
-    object's view."""
-    lib = cfg.get("animation_library", {})
+def world_height_m(cfg, category, override=None):
+    """The realistic real-world height (metres): explicit `world_height_m` or the
+    category default. Enforces the realism rule so nothing is sized arbitrarily."""
+    if override is not None:
+        return float(override)
+    return float(cfg["scale"]["category_height_m"].get(category, 1.0))
+
+
+def placement(cfg, category, override=None):
+    """Turn a real-world height into the in-world PIXEL height an object should
+    occupy beside a character, so props compose at a believable scale."""
+    sc = cfg["scale"]
+    wh = world_height_m(cfg, category, override)
+    ppm = sc["character_height_px"] / sc["character_height_m"]
+    return {
+        "world_height_m": round(wh, 3),
+        "world_px_height": max(1, round(wh * ppm)),
+        "character_height_px": sc["character_height_px"],
+        "character_height_m": sc["character_height_m"],
+        "note": "Render the sprite scaled so its height == world_px_height; a "
+                "character is character_height_px tall.",
+    }
+
+
+def _resolve_animations(spec):
+    """The object's 3 animations as [{key, description, frames}]."""
     out = []
-    for item in spec.get("animations", []) or []:
-        if isinstance(item, str):
-            key, override = item, {}
-        else:
-            key, override = item["key"], dict(item)
-            override.pop("key", None)
-        base = dict(lib.get(key, {}))
-        base.update(override)
-        d = cfg.get("defaults", {})
-        out.append({
-            "key": key,
-            "action": base.get("action", key),
-            "n_frames": int(base.get("n_frames", 4)),
-            "view": base.get("view", spec.get("view")),
-            # Higher image guidance keeps frames close to the reference sprite, so
-            # the object doesn't "melt" over the clip; text guidance drives the
-            # motion. Tunable per animation, with a sensible default.
-            "image_guidance_scale": float(base.get("image_guidance_scale",
-                                                   d.get("animation_image_guidance_scale", 3.0))),
-            "text_guidance_scale": float(base.get("text_guidance_scale",
-                                                  d.get("animation_text_guidance_scale", 6.0))),
-        })
+    for a in spec.get("animations", []) or []:
+        out.append({"key": a["key"], "description": a["description"],
+                    "frames": int(a.get("frames", 8))})
     return out
 
 
-def _snap_rotate_size(n):
-    """Smallest allowed square rotate canvas >= n (rotate only accepts these)."""
-    for s in ROTATE_SIZES:
-        if s >= n:
-            return s
-    return ROTATE_SIZES[-1]
-
-
 def _finalize_spec(cfg, raw, index, procedural=False):
-    """Merge defaults into one object spec and normalize its canvas to what the
-    PixelLab endpoints accept:
-      - animated objects -> exactly ANIMATE_SIZE x ANIMATE_SIZE (animate-with-text
-        only accepts a 64x64 canvas), base sprite generated at that same size;
-      - rotated objects  -> a square canvas snapped to ROTATE_SIZES;
-      - plain sprites    -> their declared size (pixflux is flexible)."""
+    """Merge defaults into one object spec. `size` is a single int (32-256) for
+    create-8-direction-object; every object is 8-direction with its 3 animations."""
     d = cfg["defaults"]
     spec = dict(raw)
-    spec["view"] = spec.get("view", d["view"])  # resolve before animations read it
-    w, h = spec.get("size", [48, 48])
-    anims = _resolve_animations(cfg, spec)
-    if anims:
-        w = h = ANIMATE_SIZE
-    elif int(spec.get("rotations", 0)):
-        w = h = _snap_rotate_size(max(int(w), int(h)))
+    sz = spec.get("size", 64)
+    if isinstance(sz, (list, tuple)):      # tolerate legacy [w, h]
+        sz = max(sz)
+    size = max(32, min(256, int(sz)))
     return {
         "id": spec["id"],
         "name": spec.get("name", spec["id"].replace("_", " ").title()),
         "category": spec.get("category", "misc"),
         "description": spec["description"],
-        "width": int(w),
-        "height": int(h),
         "view": spec.get("view", d["view"]),
-        "direction": spec.get("direction", d["direction"]),
-        "outline": spec.get("outline", d["outline"]),
-        "shading": spec.get("shading", d["shading"]),
-        "detail": spec.get("detail", d["detail"]),
-        "no_background": spec.get("no_background", d["no_background"]),
-        "isometric": spec.get("isometric", False),
-        "text_guidance_scale": spec.get("text_guidance_scale", d["text_guidance_scale"]),
-        "negative_description": spec.get("negative_description", d["negative_description"]),
-        "rotations": int(spec.get("rotations", 0)),
-        "animations": anims,
+        "size": size,
+        "animations": _resolve_animations(spec),
         "placement": placement(cfg, spec.get("category", "misc"), spec.get("world_height_m")),
         "index": index,
         "procedural": procedural,
-        "seed": _seed(spec["id"], index),
+        "style_version": cfg.get("style_version", 1),
     }
 
 
 def _procedural_spec(cfg, index):
-    """Synthesize the (index)th object once the explicit catalog is exhausted, by
-    combining a `kind` with an `adjective`. Deterministic in `index`."""
+    """Synthesize the (index)th object once the explicit catalog is exhausted."""
     pv = cfg["procedural"]
     kinds, adjs = pv["kinds"], pv["adjectives"]
     j = index - len(cfg["catalog"])
@@ -150,8 +130,7 @@ def _procedural_spec(cfg, index):
 
 
 def object_specs(cfg):
-    """The full ordered list of objects to build: the explicit catalog first,
-    then procedural fill up to targets.num_objects."""
+    """The full ordered list of objects: explicit catalog then procedural fill."""
     specs = [_finalize_spec(cfg, o, i) for i, o in enumerate(cfg["catalog"])]
     target = cfg["targets"]["num_objects"]
     for i in range(len(specs), max(target, len(specs))):
@@ -161,36 +140,6 @@ def object_specs(cfg):
 
 def full_description(cfg, spec):
     return f"{spec['description']}, {cfg['style_base']}"
-
-
-def world_height_m(cfg, category, override=None):
-    """The realistic real-world height (metres) for an object: its explicit
-    `world_height_m` if given, else the category default. Enforces the realism
-    rule so nothing is sized arbitrarily."""
-    if override is not None:
-        return float(override)
-    return float(cfg["scale"]["category_height_m"].get(category, 1.0))
-
-
-def placement(cfg, category, override=None):
-    """Turn a real-world height into the in-world PIXEL height an object should
-    occupy next to a character, so props compose at a believable scale. Returns a
-    dict stored in the manifest and read by the game/viewer.
-
-    world_px_height = world_height_m * character_height_px / character_height_m
-    (a coin ~0.22m -> ~8px beside a 64px character; an oak ~6m -> ~226px)."""
-    sc = cfg["scale"]
-    wh = world_height_m(cfg, category, override)
-    ppm = sc["character_height_px"] / sc["character_height_m"]
-    return {
-        "world_height_m": round(wh, 3),
-        "world_px_height": max(1, round(wh * ppm)),
-        "character_height_px": sc["character_height_px"],
-        "character_height_m": sc["character_height_m"],
-        "note": "Render the sprite scaled so its height == world_px_height; a "
-                "character is character_height_px tall. Keeps objects realistically "
-                "sized in a world with characters.",
-    }
 
 
 # --- io / packaging helpers -------------------------------------------------
@@ -227,11 +176,10 @@ def _save_png(img, path):
 
 
 def _normalize(img, size):
-    """Transparent-center `img` onto a fixed (w, h) canvas. The API already
-    returns art at the requested size; this just guards against off-by-one
-    frames so every asset of an object shares one canvas."""
+    """Transparent-center `img` onto a fixed (size, size) canvas so every asset of
+    an object shares one square canvas."""
     img = img.convert("RGBA")
-    tw, th = size
+    tw = th = int(size)
     if img.size == (tw, th):
         return img
     if img.width > tw or img.height > th:
@@ -244,8 +192,6 @@ def _normalize(img, size):
 
 
 def _save_strip(frames, path):
-    """Horizontal sprite-sheet strip (game-ready): frames laid left-to-right on a
-    uniform cell so a game can slice it by cell width."""
     if not frames:
         return
     w = max(f.width for f in frames)
@@ -257,8 +203,6 @@ def _save_strip(frames, path):
 
 
 def _save_gif(frames, path, duration_ms=PREVIEW_MS):
-    """Transparent looping GIF preview. GIF transparency is 1-bit, so alpha is
-    thresholded (>=128 opaque); per-pixel alpha lives in the PNGs."""
     if not frames:
         return
     w = max(f.width for f in frames)
@@ -277,9 +221,6 @@ def _save_gif(frames, path, duration_ms=PREVIEW_MS):
 
 
 def _save_frames(frames, dir_path):
-    """Save individual frames as zero-padded PNGs. The directory is cleared first
-    so a regenerated (shorter) animation can't leave stale higher-numbered frames
-    behind."""
     if os.path.isdir(dir_path):
         shutil.rmtree(dir_path)
     os.makedirs(dir_path, exist_ok=True)
@@ -287,206 +228,95 @@ def _save_frames(frames, dir_path):
         f.save(os.path.join(dir_path, f"{i:02d}.png"))
 
 
-# --- QA ---------------------------------------------------------------------
-
-def _opaque_px(img):
-    return int((np.asarray(img.convert("RGBA"))[:, :, 3] > 10).sum())
-
-
-def frames_ok(frames):
-    """A good animation is non-blank AND actually moves. animate-with-text
-    occasionally returns all-transparent or frozen frames; we reject those and
-    retry with a fresh seed. Returns (ok, reason)."""
-    if len(frames) < 2:
-        return False, "too few frames"
-    opq = [_opaque_px(f) for f in frames]
-    if min(opq) <= 5:
-        return False, "a frame is blank"
-    a0 = np.asarray(frames[0].convert("RGBA"), dtype=np.int16)
-    moved = any(float(np.abs(np.asarray(f.convert("RGBA"), dtype=np.int16) - a0).mean()) > 1.0
-                for f in frames[1:])
-    if not moved:
-        return False, "frames are static (no motion)"
-    return True, ""
-
-
 # --- object status (filesystem-derived) -------------------------------------
-
-def rotation_dirs(cfg, spec):
-    """Directions a rotated object should have (empty if rotations == 0). The base
-    (`south`) is included so rotations/ is a complete set."""
-    n = str(spec.get("rotations", 0))
-    if n in ("0", ""):
-        return []
-    return cfg["rotation_directions"].get(n, [])
-
 
 def has_base(oid):
     return os.path.exists(os.path.join(object_dir(oid), "sprite.png"))
 
 
-def has_rotation(oid, direction):
-    return os.path.exists(os.path.join(object_dir(oid), "rotations", f"{direction}.png"))
-
-
 def has_animation(oid, key):
-    return os.path.exists(os.path.join(object_dir(oid), "animations", f"{key}.gif"))
+    # south is always present; its gif is the completion marker for the animation.
+    return os.path.exists(os.path.join(object_dir(oid), "animations", f"{key}__south.gif"))
 
 
-# --- generation ops ---------------------------------------------------------
+# --- generation: base 8-direction object ------------------------------------
 
 def _base_meta(spec):
     return {
         "id": spec["id"], "name": spec["name"], "category": spec["category"],
-        "description": spec["description"], "view": spec["view"],
-        "direction": spec["direction"], "size": [spec["width"], spec["height"]],
-        "placement": spec["placement"],
-        "procedural": spec["procedural"],
-        "source": "pixellab.ai (generate-image-pixflux / rotate / animate-with-text)",
-        "params": {
-            "outline": spec["outline"], "shading": spec["shading"],
-            "detail": spec["detail"], "no_background": spec["no_background"],
-            "isometric": spec["isometric"], "seed": spec["seed"],
-        },
+        "description": spec["description"], "view": spec["view"], "size": spec["size"],
+        "placement": spec["placement"], "procedural": spec["procedural"],
+        "source": "pixellab.ai create-8-direction-object (persistent, syncable)",
     }
 
 
 def generate_base(client, cfg, spec):
-    """Generate the base sprite (generate-image-pixflux) and start the manifest."""
+    """Create the persistent 8-direction object and mirror its rotations."""
     oid = spec["id"]
-    img, used = client.generate_image(
-        description=full_description(cfg, spec), width=spec["width"], height=spec["height"],
-        view=spec["view"], direction=spec["direction"], outline=spec["outline"],
-        shading=spec["shading"], detail=spec["detail"], no_background=spec["no_background"],
-        isometric=spec["isometric"], negative_description=spec["negative_description"],
-        text_guidance_scale=spec["text_guidance_scale"], seed=spec["seed"],
-    )
-    img = _normalize(img, (spec["width"], spec["height"]))
-    _save_png(img, os.path.join(object_dir(oid), "sprite.png"))
+    object_id = client.create_object(
+        description=full_description(cfg, spec), size=spec["size"], view=spec["view"])
+    rotations = client.download_object_rotations(object_id)
+    rotations = {d: _normalize(img, spec["size"]) for d, img in rotations.items()}
+    for d, img in rotations.items():
+        _save_png(img, os.path.join(object_dir(oid), "rotations", f"{d}.png"))
+    south = rotations.get("south") or (next(iter(rotations.values())) if rotations else None)
+    if south is not None:
+        _save_png(south, os.path.join(object_dir(oid), "sprite.png"))
 
     meta = read_manifest(oid) or {}
     meta.update(_base_meta(spec))
+    meta["pixellab_object_id"] = object_id
     meta["style_version"] = cfg.get("style_version", 1)
     meta["sprite"] = _rel(os.path.join(object_dir(oid), "sprite.png"))
-    meta.setdefault("rotations", {"count": spec["rotations"], "directions": []})
+    meta["directions"] = sorted(rotations.keys())
+    meta["rotations"] = {d: _rel(os.path.join(object_dir(oid), "rotations", f"{d}.png"))
+                         for d in sorted(rotations.keys())}
     meta.setdefault("animations", {})
-    meta["generations_used"] = round(meta.get("generations_used", 0) + used, 3)
     meta["status"] = "in_progress"
     write_manifest(oid, meta)
     return meta
 
 
-def generate_rotation(client, cfg, spec, direction):
-    """Produce one rotated view. `south` is just a copy of the base sprite (no
-    generation); other directions are rotated from it."""
-    oid = spec["id"]
-    base = Image.open(os.path.join(object_dir(oid), "sprite.png")).convert("RGBA")
-    used = 0.0
-    if direction == spec["direction"]:
-        img = base
-    else:
-        img, used = client.rotate(
-            from_image=base, width=spec["width"], height=spec["height"],
-            from_view=spec["view"], to_view=spec["view"],
-            from_direction=spec["direction"], to_direction=direction,
-            isometric=spec["isometric"], seed=_seed(oid, "rot", direction),
-        )
-    img = _normalize(img, (spec["width"], spec["height"]))
-    _save_png(img, os.path.join(object_dir(oid), "rotations", f"{direction}.png"))
+# --- generation: one animation across all 8 directions ----------------------
 
+def generate_animation(client, cfg, spec, adef):
+    """Animate the object (all 8 directions) and package per-direction frames."""
+    oid = spec["id"]
     meta = read_manifest(oid)
-    dirs = sorted(set(meta.get("rotations", {}).get("directions", [])) | {direction})
-    meta["rotations"] = {"count": spec["rotations"], "directions": dirs,
-                         "files": {d: _rel(os.path.join(object_dir(oid), "rotations", f"{d}.png"))
-                                   for d in dirs}}
-    meta["generations_used"] = round(meta.get("generations_used", 0) + used, 3)
-    write_manifest(oid, meta)
-    return meta
-
-
-def generate_animation(client, cfg, spec, adef, max_attempts=3):
-    """Generate one animation (animate-with-text), validate it isn't blank/static,
-    retry with a fresh seed if so, then package frames + strip + gif."""
-    oid = spec["id"]
-    base = Image.open(os.path.join(object_dir(oid), "sprite.png")).convert("RGBA")
+    object_id = meta["pixellab_object_id"]
     key = adef["key"]
-    frames, used_total, ok, reason = [], 0.0, False, ""
-    for attempt in range(max_attempts):
-        raw, used = client.animate(
-            reference_image=base, description=spec["description"], action=adef["action"],
-            width=spec["width"], height=spec["height"], view=adef["view"],
-            direction=spec["direction"] if adef["view"] != "side" else "east",
-            n_frames=adef["n_frames"], negative_description=spec["negative_description"],
-            image_guidance_scale=adef.get("image_guidance_scale", 1.5),
-            text_guidance_scale=adef.get("text_guidance_scale", 7.5),
-            seed=_seed(oid, key, attempt),
-        )
-        used_total += used
-        raw = [_normalize(f, (spec["width"], spec["height"])) for f in raw]
-        ok, reason = frames_ok(raw)
-        if ok:
-            frames = raw
-            break
-        print(f"  ! anim {oid}/{key} attempt {attempt + 1}/{max_attempts}: {reason}")
-        if raw and not frames:
-            frames = raw  # keep best effort in case all attempts fail
+
+    group_id = client.animate_object(
+        object_id, animation_description=adef["description"],
+        frame_count=adef["frames"], display_name=key)
+    by_dir = client.download_object_animation(object_id, group_id, expected=len(DIRECTIONS_8))
 
     adir = os.path.join(object_dir(oid), "animations")
-    _save_frames(frames, os.path.join(adir, key))
-    strip = os.path.join(adir, f"{key}.png")
-    gif = os.path.join(adir, f"{key}.gif")
-    _save_strip(frames, strip)
-    _save_gif(frames, gif)
-
+    saved = {}
+    for direction, frames in by_dir.items():
+        frames = [_normalize(f, spec["size"]) for f in frames]
+        fdir = os.path.join(adir, key, direction)
+        _save_frames(frames, fdir)
+        strip = os.path.join(adir, f"{key}__{direction}.png")
+        gif = os.path.join(adir, f"{key}__{direction}.gif")
+        _save_strip(frames, strip)
+        _save_gif(frames, gif)
+        saved[direction] = {
+            "frames": len(frames), "strip": _rel(strip), "gif": _rel(gif),
+            "frame_paths": [_rel(os.path.join(fdir, f"{i:02d}.png")) for i in range(len(frames))],
+        }
     meta = read_manifest(oid)
     meta.setdefault("animations", {})[key] = {
-        "action": adef["action"], "view": adef["view"], "frames": len(frames),
-        "n_frames_requested": adef["n_frames"], "ok": ok, "note": reason,
-        "strip": _rel(strip), "gif": _rel(gif),
-        "frame_paths": [_rel(os.path.join(adir, key, f"{i:02d}.png")) for i in range(len(frames))],
+        "group_id": group_id, "description": adef["description"],
+        "frame_count": adef["frames"], "directions": saved,
     }
-    meta["generations_used"] = round(meta.get("generations_used", 0) + used_total, 3)
     write_manifest(oid, meta)
     return meta
-
-
-def restyle_stale(cfg):
-    """Delete objects generated under an older style_version so the loop
-    regenerates them fresh in the current style. Deliberate (loop --restyle only),
-    since it re-spends generations. Returns the ids removed."""
-    current = cfg.get("style_version", 1)
-    removed = []
-    for spec in object_specs(cfg):
-        meta = read_manifest(spec["id"])
-        if meta and meta.get("style_version", 1) < current:
-            shutil.rmtree(object_dir(spec["id"]), ignore_errors=True)
-            removed.append(spec["id"])
-    return removed
-
-
-def refresh_placement(cfg):
-    """Recompute and write `placement` for every existing object manifest, so a
-    change to the scale rule (or a newly added world_height_m) propagates to
-    already-generated objects with zero PixelLab cost. Returns how many changed."""
-    by_id = {s["id"]: s for s in object_specs(cfg)}
-    changed = 0
-    for oid, spec in by_id.items():
-        meta = read_manifest(oid)
-        if not meta:
-            continue
-        if meta.get("placement") != spec["placement"]:
-            meta["placement"] = spec["placement"]
-            write_manifest(oid, meta)
-            changed += 1
-    return changed
 
 
 def mark_complete_if_done(cfg, spec):
-    """Flip status to 'complete' once base + all rotations + all animations exist."""
     oid = spec["id"]
     if not has_base(oid):
-        return
-    if any(not has_rotation(oid, d) for d in rotation_dirs(cfg, spec)):
         return
     if any(not has_animation(oid, a["key"]) for a in spec["animations"]):
         return
@@ -494,3 +324,38 @@ def mark_complete_if_done(cfg, spec):
     if meta and meta.get("status") != "complete":
         meta["status"] = "complete"
         write_manifest(oid, meta)
+
+
+# --- maintenance: scale + restyle -------------------------------------------
+
+def refresh_placement(cfg):
+    """Recompute `placement` for every existing manifest (zero PixelLab cost)."""
+    by_id = {s["id"]: s for s in object_specs(cfg)}
+    changed = 0
+    for oid, spec in by_id.items():
+        meta = read_manifest(oid)
+        if meta and meta.get("placement") != spec["placement"]:
+            meta["placement"] = spec["placement"]
+            write_manifest(oid, meta)
+            changed += 1
+    return changed
+
+
+def restyle_stale(cfg, client=None):
+    """Delete objects made under an older style_version so the loop regenerates
+    them. Also deletes the live PixelLab object (deletion parity) when a client is
+    given, so the store doesn't accumulate orphans. Returns the ids removed."""
+    current = cfg.get("style_version", 1)
+    removed = []
+    for spec in object_specs(cfg):
+        meta = read_manifest(spec["id"])
+        if meta and meta.get("style_version", 1) < current:
+            pid = meta.get("pixellab_object_id")
+            if pid and client is not None:
+                try:
+                    client.delete_object(pid)
+                except Exception:
+                    pass
+            shutil.rmtree(object_dir(spec["id"]), ignore_errors=True)
+            removed.append(spec["id"])
+    return removed

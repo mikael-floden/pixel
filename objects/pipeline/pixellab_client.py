@@ -37,8 +37,11 @@ BASE_URL = "https://api.pixellab.ai/v1"
 # The subscription generation balance is only exposed on the v2 balance endpoint
 # (v1 /balance reports the usd credit pool, which is 0 on a generations plan).
 BALANCE_URL = "https://api.pixellab.ai/v2/balance"
-# Server-side object store (read + delete only for the API; created via the UI).
-OBJECTS_URL = "https://api.pixellab.ai/v2/objects"
+# Server-side object store lives on v2. create-8-direction-object persists a real
+# object (8 rotations) that shows in the PixelLab "create-object" UI, is
+# animatable, and is syncable — the object analogue of the character system.
+V2_BASE = "https://api.pixellab.ai/v2"
+OBJECTS_URL = f"{V2_BASE}/objects"
 API_KEY_ENV = "PIXELLAB_API_KEY"
 
 # animate-with-text only accepts an exactly 64x64 canvas (min 64 AND max 64), so
@@ -46,6 +49,10 @@ API_KEY_ENV = "PIXELLAB_API_KEY"
 # from this set. Static pixflux sprites are free to be other sizes.
 ANIMATE_SIZE = 64
 ROTATE_SIZES = (16, 32, 64, 128)
+# Every object is 8-direction, and every animation must cover all 8 (the API
+# animates only the directions you pass — omitting it does a single direction).
+DIRECTIONS_8 = ("south", "south-east", "east", "north-east",
+                "north", "north-west", "west", "south-west")
 
 
 class PixelLabError(RuntimeError):
@@ -154,6 +161,115 @@ class PixelLabClient:
         if r.status_code == 200 and r.headers.get("content-type", "").startswith("image"):
             return 200, Image.open(io.BytesIO(r.content)).convert("RGBA"), r.headers.get("Last-Modified")
         return r.status_code, None, if_modified
+
+    # -- persistent 8-direction objects (create-object UI + animations) ------
+
+    def wait_job(self, job_id, timeout=900, interval=6):
+        """Block until a background job completes; return its payload."""
+        deadline = time.monotonic() + timeout
+        while True:
+            j = self._request("GET", f"{V2_BASE}/background-jobs/{job_id}")
+            st = j.get("status")
+            if st == "completed":
+                return j
+            if st == "failed":
+                raise PixelLabError(f"job {job_id} failed: {str(j.get('last_response'))[:200]}")
+            if time.monotonic() > deadline:
+                raise PixelLabError(f"job {job_id} timed out after {timeout}s")
+            time.sleep(interval)
+
+    def create_object(self, description, size=64, view="low top-down",
+                      style_image=None, reference_image=None, job_timeout=900):
+        """Create a persistent 8-direction object (shows in the create-object UI,
+        animatable, syncable). Returns its object_id."""
+        payload = {"description": description, "size": int(size), "view": view}
+        if style_image is not None:
+            payload["style_image"] = _image_to_b64obj(style_image)
+        if reference_image is not None:
+            payload["reference_image"] = _image_to_b64obj(reference_image)
+        resp = self._request("POST", f"{V2_BASE}/create-8-direction-object", json=payload)
+        oid = resp.get("object_id") or resp.get("id")
+        job = resp.get("background_job_id")
+        if job:
+            self.wait_job(job, timeout=job_timeout)
+        return oid
+
+    def _download(self, url, retries=4):
+        for _ in range(retries):
+            try:
+                r = self._session.get(url, timeout=self.timeout)
+            except requests.RequestException:
+                r = None
+            if r is not None and r.status_code == 200 \
+                    and r.headers.get("content-type", "").startswith("image"):
+                return Image.open(io.BytesIO(r.content)).convert("RGBA")
+            time.sleep(2)
+        return None
+
+    def download_object_rotations(self, object_id, wait=180, poll=5):
+        """All 8 rotation PNGs -> {direction: PIL}. Retries directions whose CDN
+        file 404s briefly right after generation."""
+        deadline = time.monotonic() + wait
+        out = {}
+        while True:
+            urls = {d: u for d, u in (self.get_object(object_id).get("rotation_urls") or {}).items() if u}
+            for d in [d for d in urls if d not in out]:
+                img = self._download(urls[d])
+                if img is not None:
+                    out[d] = img
+            if urls and len(out) == len(urls):
+                return out
+            if time.monotonic() > deadline:
+                return out
+            time.sleep(poll)
+
+    def animate_object(self, object_id, animation_description, frame_count=4,
+                       directions=None, display_name=None, replace_existing=True,
+                       job_timeout=900):
+        """Add an animation to an object across `directions` (default ALL 8 —
+        the API animates only the directions you pass). Returns the
+        animation_group_id; frames are fetched via download_object_animation."""
+        payload = {"animation_description": animation_description,
+                   "frame_count": int(frame_count), "replace_existing": replace_existing,
+                   "directions": list(directions) if directions else list(DIRECTIONS_8)}
+        if display_name:
+            payload["display_name"] = display_name
+        resp = self._request("POST", f"{OBJECTS_URL}/{object_id}/animations", json=payload)
+        for job in (resp.get("background_job_ids") or []):
+            try:
+                self.wait_job(job, timeout=job_timeout)
+            except PixelLabError as e:
+                print(f"  ! animation job failed: {e}")
+        return resp.get("animation_group_id")
+
+    def download_object_animation(self, object_id, group_id, expected=8, wait=600, poll=8):
+        """Poll until the animation group has frames for all `expected` directions
+        (they land asynchronously, one direction at a time), THEN download them ->
+        {direction: [PIL frames]}. Waiting for completeness is what makes every
+        animation cover all 8 directions instead of just the first one ready.
+        Falls back to whatever is present at the timeout."""
+        deadline = time.monotonic() + wait
+        while True:
+            group = None
+            for a in (self.get_object(object_id).get("animations") or []):
+                if a.get("animation_group_id") == group_id:
+                    group = a
+                    break
+            ready = []
+            if group:
+                ready = [d for d in (group.get("directions") or [])
+                         if (d.get("storage_urls") or {}).get("frames")]
+            if ready and (len(ready) >= expected or time.monotonic() > deadline):
+                out = {}
+                for d in ready:
+                    urls = (d.get("storage_urls") or {}).get("frames") or []
+                    imgs = [im for im in (self._download(u) for u in urls) if im is not None]
+                    if imgs:
+                        out[d.get("direction")] = imgs
+                return out
+            if time.monotonic() > deadline:
+                return {}
+            time.sleep(poll)
 
     # -- balance / budget ----------------------------------------------------
 

@@ -1,63 +1,40 @@
-"""Keep the objects repo and PixelLab consistent — no loose pointers.
+"""Mirror PixelLab objects into the repo — the object analogue of the characters
+agent's sync, now that objects genuinely persist (create-8-direction-object).
 
-How this differs from the characters agent's sync (and why):
+PixelLab is the live source of truth for an object's `pixellab_object_id`. You can
+open any object in the create-object web tool and press **regenerate**; this
+pulls the new art down into the repo — and, like the characters agent, it only
+re-downloads frames whose `Last-Modified` changed (`If-Modified-Since` -> 304
+skip), so an unchanged object costs almost nothing.
 
-  characters/ persist on PixelLab under a character_id — you can edit them in the
-  web app and `characters/pipeline/sync.py` mirrors those edits back down, only
-  re-downloading frames whose Last-Modified changed (If-Modified-Since -> 304
-  skip). That works because there is a live server-side copy to pull from.
+It also keeps the two ends consistent:
+  - **Deletion parity:** an object deleted on PixelLab (or gone 404) is removed
+    from the repo; a tracked object missing locally is re-mirrored.
+  - **No loose pointers:** manifest/viewer references to missing files are pruned.
 
-  objects/ do NOT persist on PixelLab: the loop uses the *stateless* image
-  endpoints (pixflux / rotate / animate-with-text), and the object store has no
-  create endpoint (POST /v2/objects -> 405). So there is nothing server-side to
-  "download again" for a generated object — the repo is the source of truth.
-
-What this module therefore keeps in sync, automatically (run each loop pass):
-
-  1. Repo integrity ("no loose pointers"): every path a manifest / the viewer
-     points at must exist. Missing frames/strips/gifs are pruned from the
-     manifest; an object whose sprite is gone is removed entirely. The viewer is
-     rebuilt from the cleaned manifests, so it can never reference a dead file.
-
-  2. PixelLab -> repo deletion parity: if an object the repo mirrored from the
-     PixelLab UI (tagged with `pixellab_object_id`) is deleted on PixelLab, its
-     repo folder is removed too — the "removed on one end -> removed on the other"
-     rule. Generated objects (no `pixellab_object_id`) are never touched by this.
-
-  3. UI-authored objects: anything a human makes in the PixelLab Object creator is
-     mirrored into the repo (best-effort, with the same Last-Modified change
-     detection), so hand-made objects flow in. Objects it can't fully import are
-     reported rather than left as a silent gap.
-
-Costs ZERO generations (read/delete + downloads only).
+Costs ZERO generations (download only).
 
 Usage:
-  python objects/pipeline/sync.py                 # reconcile everything, push
+  python objects/pipeline/sync.py                 # mirror everything, push
   python objects/pipeline/sync.py --no-push
-  python objects/pipeline/sync.py --dry-run       # report only, change nothing
+  python objects/pipeline/sync.py --dry-run       # report only
 """
 
 from __future__ import annotations
 
 import argparse
 import os
-import re
 import shutil
 
 import factory
 import viewer_build
 import loop
-from pixellab_client import PixelLabClient
+from pixellab_client import DIRECTIONS_8, PixelLabClient, PixelLabError
 
 ROOT = factory.ROOT
 
 
-def _slug(s):
-    return re.sub(r"[^a-z0-9]+", "_", (s or "").lower()).strip("_") or "object"
-
-
 def _iter_manifests():
-    """(oid, meta) for every object folder that has an object.json."""
     out = []
     for name in sorted(os.listdir(ROOT)):
         if name in factory.RESERVED_DIRS or name.startswith("."):
@@ -72,191 +49,187 @@ def _exists(rel):
     return bool(rel) and os.path.exists(os.path.join(ROOT, rel))
 
 
-# --- 1. repo integrity: prune loose pointers --------------------------------
+# --- change-detecting frame download ----------------------------------------
+
+def _download_series(client, urls, prev=None):
+    """Download a list of frame URLs -> ([PIL], last_modified). Skips the whole
+    series (returns None) when it's unchanged: same source count and the first
+    frame reports 304 Not Modified since we last synced it."""
+    prev = prev or {}
+    if prev.get("lm") and prev.get("src_frames") == len(urls):
+        status, _, _ = client.conditional_download(urls[0], prev["lm"])
+        if status == 304:
+            return None, prev.get("lm")
+    frames, lm = [], None
+    for i, u in enumerate(urls):
+        img = None
+        for _ in range(4):
+            status, img, got = client.conditional_download(u)
+            if img is not None:
+                if i == 0:
+                    lm = got
+                break
+        if img is not None:
+            frames.append(img)
+    return frames, lm
+
+
+def _best_groups(detail):
+    """One merged group per display_name/description, unioned across duplicate
+    groups — for each direction keep the version with the most frames. De-dupes
+    the duplicate groups PixelLab creates and recovers split animations."""
+    best = {}
+    for a in detail.get("animations", []):
+        key = a.get("display_name") or factory._slug(a.get("description")) or a.get("animation_group_id")
+        g = best.setdefault(key, {"group_id": a.get("animation_group_id"),
+                                  "description": a.get("description"), "dirs": {}})
+        for x in a.get("directions", []):
+            d = x.get("direction")
+            fr = (x.get("storage_urls") or {}).get("frames") or []
+            if d and fr and len(fr) > len(g["dirs"].get(d, [])):
+                g["dirs"][d] = fr
+    return best
+
+
+# --- mirror one object ------------------------------------------------------
+
+def mirror_object(client, oid, meta, dry_run=False):
+    """Pull rotations + animations for one tracked object from PixelLab into the
+    repo, skipping unchanged art. Returns 'deleted' if it vanished on PixelLab."""
+    pid = meta.get("pixellab_object_id")
+    if not pid:
+        return "untracked"
+    try:
+        detail = client.get_object(pid)
+    except PixelLabError as e:
+        if "404" in str(e):
+            return "deleted"
+        raise
+    size = meta.get("size", 64)
+    odir = factory.object_dir(oid)
+
+    # rotations
+    rots = {}
+    for d, url in (detail.get("rotation_urls") or {}).items():
+        if not url:
+            continue
+        img = client._download(url)
+        if img is None:
+            continue
+        if not dry_run:
+            factory._save_png(factory._normalize(img, size), os.path.join(odir, "rotations", f"{d}.png"))
+        rots[d] = factory._rel(os.path.join(odir, "rotations", f"{d}.png"))
+    if "south" in rots and not dry_run:
+        south = client._download(detail["rotation_urls"]["south"])
+        if south is not None:
+            factory._save_png(factory._normalize(south, size), os.path.join(odir, "sprite.png"))
+
+    # animations (change-detected)
+    prev_anims = meta.get("animations") or {}
+    anims = {}
+    for key, g in _best_groups(detail).items():
+        prev_dirs = (prev_anims.get(key) or {}).get("directions") or {}
+        saved = {}
+        for direction, urls in g["dirs"].items():
+            frames, lm = _download_series(client, urls, prev_dirs.get(direction))
+            if frames is None and _exists((prev_dirs.get(direction) or {}).get("gif")):
+                saved[direction] = prev_dirs[direction]      # unchanged -> reuse
+                continue
+            if not frames:
+                continue
+            frames = [factory._normalize(f, size) for f in frames]
+            if not dry_run:
+                fdir = os.path.join(odir, "animations", key, direction)
+                factory._save_frames(frames, fdir)
+                strip = os.path.join(odir, "animations", f"{key}__{direction}.png")
+                gif = os.path.join(odir, "animations", f"{key}__{direction}.gif")
+                factory._save_strip(frames, strip)
+                factory._save_gif(frames, gif)
+            saved[direction] = {
+                "frames": len(frames),
+                "strip": factory._rel(os.path.join(odir, "animations", f"{key}__{direction}.png")),
+                "gif": factory._rel(os.path.join(odir, "animations", f"{key}__{direction}.gif")),
+                "frame_paths": [factory._rel(os.path.join(odir, "animations", key, direction, f"{i:02d}.png"))
+                                for i in range(len(frames))],
+                "lm": lm, "src_frames": len(urls),
+            }
+        if saved:
+            anims[key] = {"group_id": g["group_id"], "description": g["description"],
+                          "directions": saved}
+
+    if not dry_run:
+        meta["rotations"] = rots
+        meta["directions"] = sorted(rots)
+        meta["animations"] = anims
+        meta["synced_from_pixellab"] = True
+        factory.write_manifest(oid, meta)
+    return "synced"
+
+
+# --- repo integrity ---------------------------------------------------------
 
 def prune_loose_pointers(dry_run=False):
-    """Make every manifest reference only files that exist on disk, and drop any
-    object whose sprite is gone. Returns (removed_objects, pruned_entries)."""
     removed, pruned = [], []
     for oid, meta in _iter_manifests():
-        odir = factory.object_dir(oid)
-
-        # Core art gone -> the object is a dead pointer; remove it wholesale.
-        if not os.path.exists(os.path.join(odir, "sprite.png")):
+        if not os.path.exists(os.path.join(factory.object_dir(oid), "sprite.png")):
             removed.append(oid)
             if not dry_run:
-                shutil.rmtree(odir, ignore_errors=True)
+                shutil.rmtree(factory.object_dir(oid), ignore_errors=True)
             continue
-
         changed = False
-        # Rotations: keep only directions whose PNG is present.
-        rot = meta.get("rotations") or {}
-        files = rot.get("files") or {}
-        live_files = {d: p for d, p in files.items() if _exists(p)}
-        if live_files != files:
-            for d in [d for d in files if d not in live_files]:
-                pruned.append(f"{oid}: rotation '{d}' (missing file)")
-            rot["files"] = live_files
-            rot["directions"] = sorted(live_files)
-            meta["rotations"] = rot
-            changed = True
-
-        # Animations: an entry is valid only if its gif, strip and frames exist.
-        anims = meta.get("animations") or {}
-        for key in list(anims.keys()):
-            a = anims[key]
-            frames = a.get("frame_paths") or []
-            ok = _exists(a.get("gif")) and _exists(a.get("strip")) \
-                and frames and _exists(frames[0]) and _exists(frames[-1])
-            if not ok:
-                pruned.append(f"{oid}: animation '{key}' (missing files)")
-                del anims[key]
+        for key, a in list((meta.get("animations") or {}).items()):
+            dirs = a.get("directions") or {}
+            live = {d: v for d, v in dirs.items() if _exists(v.get("gif"))}
+            if live != dirs:
+                pruned.append(f"{oid}: animation '{key}' pruned to {len(live)} dir(s)")
+                if live:
+                    a["directions"] = live
+                else:
+                    del meta["animations"][key]
                 changed = True
-        meta["animations"] = anims
-
         if changed and not dry_run:
             factory.write_manifest(oid, meta)
     return removed, pruned
 
 
-# --- 2. PixelLab <-> repo reconciliation ------------------------------------
-
-def _repo_by_pixellab_id():
-    """{pixellab_object_id: oid} for repo objects mirrored from the PixelLab UI."""
-    out = {}
-    for oid, meta in _iter_manifests():
-        pid = meta.get("pixellab_object_id")
-        if pid:
-            out[pid] = oid
-    return out
-
-
-def reconcile_deletions(live_ids, dry_run=False):
-    """Deletion parity: remove any repo object that was mirrored from PixelLab
-    (`pixellab_object_id`) but no longer exists there. Generated objects have no
-    such id and are never affected. Returns the oids removed."""
-    removed = []
-    for pid, oid in _repo_by_pixellab_id().items():
-        if pid not in live_ids:
-            removed.append(oid)
-            if not dry_run:
-                shutil.rmtree(factory.object_dir(oid), ignore_errors=True)
-    return removed
-
-
-def _find_image_urls(detail):
-    """Defensively pull downloadable image URL(s) out of an object detail, whose
-    exact schema we don't control. Looks for obvious url/image fields and any
-    frame lists. Returns an ordered list of (label, url)."""
-    urls = []
-
-    def walk(obj, label):
-        if isinstance(obj, str) and obj.startswith("http"):
-            urls.append((label, obj))
-        elif isinstance(obj, dict):
-            for k, v in obj.items():
-                if any(t in k.lower() for t in ("url", "image", "frame", "sprite")):
-                    walk(v, k)
-        elif isinstance(obj, list):
-            for i, v in enumerate(obj):
-                walk(v, f"{label}_{i}")
-
-    walk(detail, "object")
-    # de-dup, preserve order
-    seen, out = set(), []
-    for label, u in urls:
-        if u not in seen:
-            seen.add(u)
-            out.append((label, u))
-    return out
-
-
-def mirror_ui_object(client, obj, dry_run=False):
-    """Best-effort import of a UI-authored PixelLab object into the repo, with
-    Last-Modified change detection. Saves the first image as sprite.png and tags
-    the manifest with its pixellab_object_id + source. Returns the oid, or None if
-    nothing importable was found (the caller reports those)."""
-    pid = obj.get("id")
-    name = obj.get("name") or pid
-    oid = f"ui_{_slug(name)}"[:48]
-    detail = client.get_object(pid)
-    urls = _find_image_urls(detail)
-    if not urls:
-        return None
-    prev = factory.read_manifest(oid) or {}
-    prev_lm = prev.get("_lm")
-    status, img, lm = client.conditional_download(urls[0][1], prev_lm)
-    if status == 304 and factory.has_base(oid):
-        return oid  # unchanged, already mirrored
-    if img is None:
-        return None
-    if not dry_run:
-        factory._save_png(img, os.path.join(factory.object_dir(oid), "sprite.png"))
-        meta = {
-            "id": oid, "name": name, "category": "misc",
-            "description": f"authored in the PixelLab Object creator ({name})",
-            "size": [img.width, img.height],
-            "sprite": factory._rel(os.path.join(factory.object_dir(oid), "sprite.png")),
-            "rotations": {"count": 0, "directions": []}, "animations": {},
-            "source": "pixellab.ai Object creator (synced)",
-            "pixellab_object_id": pid, "_lm": lm, "status": "complete",
-        }
-        factory.write_manifest(oid, meta)
-    return oid
-
-
 # --- orchestration ----------------------------------------------------------
 
-def sync_all(client, push=True, quiet=False, dry_run=False, mirror=True):
-    """Reconcile the repo with PixelLab and with itself, rebuild the viewer, and
-    commit. Zero generations. Returns a summary dict."""
-    removed_missing, pruned = prune_loose_pointers(dry_run)
-
-    live = client.list_objects()
-    live_ids = {o.get("id") for o in live}
-    removed_deleted = reconcile_deletions(live_ids, dry_run)
-
-    mirrored, unimportable = [], []
-    tracked = set(_repo_by_pixellab_id())
-    if mirror:
-        for obj in live:
-            if obj.get("id") in tracked:
+def sync_all(client, push=True, quiet=False, dry_run=False):
+    live_ids = {o.get("id") for o in client.list_objects()}
+    synced, deleted = [], []
+    for oid, meta in _iter_manifests():
+        pid = meta.get("pixellab_object_id")
+        if not pid:
+            continue
+        # deletion parity: gone from the store -> drop the repo folder
+        if pid not in live_ids:
+            result = mirror_object(client, oid, meta, dry_run=True)  # confirm via 404
+            if result == "deleted" or pid not in live_ids:
+                deleted.append(oid)
+                if not dry_run:
+                    shutil.rmtree(factory.object_dir(oid), ignore_errors=True)
                 continue
-            oid = mirror_ui_object(client, obj, dry_run)
-            (mirrored if oid else unimportable).append(obj.get("name") or obj.get("id"))
+        if mirror_object(client, oid, meta, dry_run) == "synced":
+            synced.append(oid)
 
-    summary = {
-        "removed_missing_sprite": removed_missing,
-        "pruned_entries": pruned,
-        "removed_deleted_on_pixellab": removed_deleted,
-        "mirrored_ui_objects": mirrored,
-        "unimportable_ui_objects": unimportable,
-        "pixellab_object_count": len(live),
-    }
+    removed, pruned = prune_loose_pointers(dry_run)
     if not quiet:
-        print(f"sync: {len(live)} object(s) on PixelLab; "
-              f"repo pruned {len(pruned)} dead ref(s), removed "
-              f"{len(removed_missing) + len(removed_deleted)} object(s), "
-              f"mirrored {len(mirrored)} UI object(s)")
-        for u in unimportable:
-            print(f"  ! UI object not auto-importable (reported): {u}")
-
+        print(f"sync: {len(live_ids)} object(s) on PixelLab; synced {len(synced)}, "
+              f"deleted {len(deleted)} (removed on PixelLab), pruned {len(pruned)} dead ref(s)")
     if not dry_run:
         viewer_build.build()
-        loop.commit_push("objects sync: reconcile repo <-> PixelLab (no loose pointers)",
+        loop.commit_push("objects sync: mirror PixelLab objects (regenerations + deletions)",
                          push=push)
-    return summary
+    return {"synced": synced, "deleted": deleted, "pruned": pruned, "live": len(live_ids)}
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Reconcile the objects repo with PixelLab.")
+    ap = argparse.ArgumentParser(description="Mirror PixelLab objects into the repo.")
     ap.add_argument("--no-push", action="store_true")
-    ap.add_argument("--dry-run", action="store_true", help="Report only; change nothing.")
-    ap.add_argument("--no-mirror", action="store_true",
-                    help="Don't import UI-authored objects, only reconcile/prune.")
+    ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
     client = PixelLabClient()
-    s = sync_all(client, push=not args.no_push, dry_run=args.dry_run, mirror=not args.no_mirror)
+    s = sync_all(client, push=not args.no_push, dry_run=args.dry_run)
     print("done:", {k: (len(v) if isinstance(v, list) else v) for k, v in s.items()})
 
 
