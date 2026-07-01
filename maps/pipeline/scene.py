@@ -108,17 +108,14 @@ def build_zone(client, cfg, zone_def, push_log=print):
     scales = cfg.get("prop_scale", {})
     pool = [p for p in zone_def.get("props", []) if p in set(props_mod.available())]
     walk = _walkable_cells(grid)
-    # prefer cells adjacent to a blocked cell (edge of the clearing) for a natural look
-    def near_edge(c, r):
-        return any(0 <= r + dr < gh and 0 <= c + dc < gw and grid[r + dr][c + dc] == 1
-                   for dc, dr in ((1, 0), (-1, 0), (0, 1), (0, -1)))
-    edge_cells = [cell for cell in walk if near_edge(*cell)]
-    rng.shuffle(edge_cells)
+    # scatter interactive props across walkable land (trees etc. are baked into
+    # the painted scene now; these are the placeable/interactive items on top)
+    rng.shuffle(walk)
     taken = set()
     entities = []
     sprites = {}
     want = int(zone_def.get("prop_count", 6))
-    for (c, r) in edge_cells:
+    for (c, r) in walk:
         if len(entities) >= want or not pool:
             break
         if (c, r) in taken:
