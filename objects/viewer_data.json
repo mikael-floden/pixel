@@ -1,9 +1,9 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 12,
+  "object_count": 13,
   "target_count": 40,
   "categories": {
-    "tool": 4,
+    "tool": 5,
     "container": 4,
     "valuable": 4
   },
@@ -116,6 +116,21 @@
       ],
       "status": "complete",
       "sprite": "gold_ingot/sprite.png",
+      "rotation_files": {},
+      "animations": []
+    },
+    {
+      "id": "hammer",
+      "name": "Hammer",
+      "category": "tool",
+      "description": "a blacksmith's hammer with a heavy iron head",
+      "view": "side",
+      "size": [
+        48,
+        48
+      ],
+      "status": "complete",
+      "sprite": "hammer/sprite.png",
       "rotation_files": {},
       "animations": []
     },
