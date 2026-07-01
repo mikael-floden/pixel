@@ -52,10 +52,18 @@
         64,
         64
       ],
-      "status": "in_progress",
+      "status": "complete",
       "sprite": "gold_coin/sprite.png",
       "rotation_files": {},
-      "animations": []
+      "animations": [
+        {
+          "key": "spin",
+          "gif": "gold_coin/animations/spin.gif",
+          "strip": "gold_coin/animations/spin.png",
+          "frames": 4,
+          "action": "spinning around"
+        }
+      ]
     },
     {
       "id": "wooden_chest",
