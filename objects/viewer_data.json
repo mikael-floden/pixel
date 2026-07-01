@@ -1,6 +1,6 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 11,
+  "object_count": 12,
   "target_count": 61,
   "scale": {
     "_comment": "REALISM RULE: objects are scaled to the world by real height, so they sit correctly next to characters. A character is ~character_height_px tall (the 64px skeleton) representing character_height_m. The loop turns each object's world_height_m into world_px_height = round(world_height_m * character_height_px / character_height_m); a game renders the sprite scaled to that pixel height. So a coin (~0.22m) is tiny next to a character and an oak (~6m) towers. Every object MUST have a world_height_m (per-object, else category_height_m fallback).",
@@ -19,11 +19,40 @@
     }
   },
   "categories": {
+    "tool": 4,
     "container": 4,
-    "valuable": 4,
-    "tool": 3
+    "valuable": 4
   },
   "objects": [
+    {
+      "id": "axe",
+      "name": "Axe",
+      "category": "tool",
+      "description": "a woodcutter's axe with a broad steel head and wooden haft",
+      "view": "side",
+      "size": 64,
+      "placement": {
+        "world_height_m": 0.9,
+        "world_px_height": 34,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "complete",
+      "pixellab_object_id": "77e25059-cb57-4739-ab83-58a6b6ee35ec",
+      "sprite": "axe/sprite.png",
+      "rotations": {
+        "east": "axe/rotations/east.png",
+        "north": "axe/rotations/north.png",
+        "north-east": "axe/rotations/north-east.png",
+        "north-west": "axe/rotations/north-west.png",
+        "south": "axe/rotations/south.png",
+        "south-east": "axe/rotations/south-east.png",
+        "south-west": "axe/rotations/south-west.png",
+        "west": "axe/rotations/west.png"
+      },
+      "animations": []
+    },
     {
       "id": "barrel",
       "name": "Barrel",
