@@ -437,7 +437,24 @@
         "south-west": "iron_key/rotations/south-west.png",
         "west": "iron_key/rotations/west.png"
       },
-      "animations": []
+      "animations": [
+        {
+          "key": "spin",
+          "description": "the key spinning around",
+          "frames": 17,
+          "preview_gif": "iron_key/animations/spin__south.gif",
+          "directions": {
+            "east": "iron_key/animations/spin__east.gif",
+            "north": "iron_key/animations/spin__north.gif",
+            "north-east": "iron_key/animations/spin__north-east.gif",
+            "north-west": "iron_key/animations/spin__north-west.gif",
+            "south": "iron_key/animations/spin__south.gif",
+            "south-east": "iron_key/animations/spin__south-east.gif",
+            "south-west": "iron_key/animations/spin__south-west.gif",
+            "west": "iron_key/animations/spin__west.gif"
+          }
+        }
+      ]
     },
     {
       "id": "wooden_chest",
