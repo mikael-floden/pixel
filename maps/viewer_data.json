@@ -95,6 +95,28 @@
       "manifest": "isle2_jungle/zone.json"
     },
     {
+      "id": "isle2_ruins",
+      "title": "Ancient Ruins",
+      "kind": "island_screen",
+      "mood": "overgrown stone ruins (daytime)",
+      "pixel_size": {
+        "width": 960,
+        "height": 672
+      },
+      "props": 10,
+      "exits": [
+        {
+          "id": "south",
+          "kind": "path",
+          "to_zone": "isle2_jungle"
+        }
+      ],
+      "preview": "isle2_ruins/preview.png",
+      "scene": "isle2_ruins/scene.png",
+      "collision": "isle2_ruins/collision.png",
+      "manifest": "isle2_ruins/zone.json"
+    },
+    {
       "id": "isle_camp",
       "title": "Forest Camp",
       "kind": "island_screen",
