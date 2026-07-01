@@ -1,0 +1,42 @@
+{
+  "id": "gold_ingot",
+  "name": "Gold Ingot",
+  "category": "valuable",
+  "description": "a stacked bar of solid gold ingots",
+  "view": "low top-down",
+  "size": 48,
+  "placement": {
+    "world_height_m": 0.18,
+    "world_px_height": 7,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "procedural": false,
+  "source": "pixellab.ai create-8-direction-object (persistent, syncable)",
+  "pixellab_object_id": "503a15c6-245e-4ce1-9f37-a1ad01b2a5e8",
+  "style_version": 2,
+  "sprite": "gold_ingot/sprite.png",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "east": "gold_ingot/rotations/east.png",
+    "north": "gold_ingot/rotations/north.png",
+    "north-east": "gold_ingot/rotations/north-east.png",
+    "north-west": "gold_ingot/rotations/north-west.png",
+    "south": "gold_ingot/rotations/south.png",
+    "south-east": "gold_ingot/rotations/south-east.png",
+    "south-west": "gold_ingot/rotations/south-west.png",
+    "west": "gold_ingot/rotations/west.png"
+  },
+  "animations": {},
+  "status": "in_progress"
+}
