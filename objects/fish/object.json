@@ -1,0 +1,37 @@
+{
+  "id": "fish",
+  "name": "Fish",
+  "category": "creature",
+  "description": "a plump orange river fish",
+  "view": "side",
+  "direction": "south",
+  "size": [
+    64,
+    64
+  ],
+  "placement": {
+    "world_height_m": 0.4,
+    "world_px_height": 15,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall. Keeps objects realistically sized in a world with characters."
+  },
+  "procedural": false,
+  "source": "pixellab.ai (generate-image-pixflux / rotate / animate-with-text)",
+  "params": {
+    "outline": "single color black outline",
+    "shading": "detailed shading",
+    "detail": "highly detailed",
+    "no_background": true,
+    "isometric": false,
+    "seed": 1574733291
+  },
+  "sprite": "fish/sprite.png",
+  "rotations": {
+    "count": 0,
+    "directions": []
+  },
+  "animations": {},
+  "generations_used": 1.0,
+  "status": "in_progress"
+}
