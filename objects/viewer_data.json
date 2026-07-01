@@ -363,6 +363,21 @@
       },
       "animations": [
         {
+          "key": "bounce",
+          "description": "the gold bars bouncing",
+          "frames": 17,
+          "preview_gif": "gold_ingot/animations/bounce__south.gif",
+          "directions": {
+            "east": "gold_ingot/animations/bounce__east.gif",
+            "north": "gold_ingot/animations/bounce__north.gif",
+            "north-east": "gold_ingot/animations/bounce__north-east.gif",
+            "north-west": "gold_ingot/animations/bounce__north-west.gif",
+            "south": "gold_ingot/animations/bounce__south.gif",
+            "south-west": "gold_ingot/animations/bounce__south-west.gif",
+            "west": "gold_ingot/animations/bounce__west.gif"
+          }
+        },
+        {
           "key": "wobble",
           "description": "the gold bars wobbling",
           "frames": 17,
@@ -392,21 +407,6 @@
             "south-west": "gold_ingot/animations/shine__south-west.gif",
             "west": "gold_ingot/animations/shine__west.gif"
           }
-        },
-        {
-          "key": "bounce",
-          "description": "the gold bars bouncing",
-          "frames": 17,
-          "preview_gif": "gold_ingot/animations/bounce__south.gif",
-          "directions": {
-            "east": "gold_ingot/animations/bounce__east.gif",
-            "north": "gold_ingot/animations/bounce__north.gif",
-            "north-east": "gold_ingot/animations/bounce__north-east.gif",
-            "north-west": "gold_ingot/animations/bounce__north-west.gif",
-            "south": "gold_ingot/animations/bounce__south.gif",
-            "south-west": "gold_ingot/animations/bounce__south-west.gif",
-            "west": "gold_ingot/animations/bounce__west.gif"
-          }
         }
       ]
     },
@@ -428,30 +428,30 @@
       "pixellab_object_id": "6a4dff6a-58a7-4c8d-a0a2-3863bac05728",
       "sprite": "iron_key/sprite.png",
       "rotations": {
+        "south": "iron_key/rotations/south.png",
+        "west": "iron_key/rotations/west.png",
         "east": "iron_key/rotations/east.png",
         "north": "iron_key/rotations/north.png",
-        "north-east": "iron_key/rotations/north-east.png",
-        "north-west": "iron_key/rotations/north-west.png",
-        "south": "iron_key/rotations/south.png",
         "south-east": "iron_key/rotations/south-east.png",
         "south-west": "iron_key/rotations/south-west.png",
-        "west": "iron_key/rotations/west.png"
+        "north-east": "iron_key/rotations/north-east.png",
+        "north-west": "iron_key/rotations/north-west.png"
       },
       "animations": [
         {
-          "key": "spin",
-          "description": "the key spinning around",
+          "key": "glint",
+          "description": "a glint of light on the key",
           "frames": 17,
-          "preview_gif": "iron_key/animations/spin__south.gif",
+          "preview_gif": "iron_key/animations/glint__south.gif",
           "directions": {
-            "east": "iron_key/animations/spin__east.gif",
-            "north": "iron_key/animations/spin__north.gif",
-            "north-east": "iron_key/animations/spin__north-east.gif",
-            "north-west": "iron_key/animations/spin__north-west.gif",
-            "south": "iron_key/animations/spin__south.gif",
-            "south-east": "iron_key/animations/spin__south-east.gif",
-            "south-west": "iron_key/animations/spin__south-west.gif",
-            "west": "iron_key/animations/spin__west.gif"
+            "east": "iron_key/animations/glint__east.gif",
+            "north": "iron_key/animations/glint__north.gif",
+            "north-east": "iron_key/animations/glint__north-east.gif",
+            "north-west": "iron_key/animations/glint__north-west.gif",
+            "south": "iron_key/animations/glint__south.gif",
+            "south-east": "iron_key/animations/glint__south-east.gif",
+            "south-west": "iron_key/animations/glint__south-west.gif",
+            "west": "iron_key/animations/glint__west.gif"
           }
         },
         {
@@ -471,18 +471,19 @@
           }
         },
         {
-          "key": "glint",
-          "description": "a glint of light on the key",
+          "key": "spin",
+          "description": "the key spinning around",
           "frames": 17,
-          "preview_gif": "iron_key/animations/glint__east.gif",
+          "preview_gif": "iron_key/animations/spin__south.gif",
           "directions": {
-            "east": "iron_key/animations/glint__east.gif",
-            "north": "iron_key/animations/glint__north.gif",
-            "north-east": "iron_key/animations/glint__north-east.gif",
-            "north-west": "iron_key/animations/glint__north-west.gif",
-            "south-east": "iron_key/animations/glint__south-east.gif",
-            "south-west": "iron_key/animations/glint__south-west.gif",
-            "west": "iron_key/animations/glint__west.gif"
+            "east": "iron_key/animations/spin__east.gif",
+            "north": "iron_key/animations/spin__north.gif",
+            "north-east": "iron_key/animations/spin__north-east.gif",
+            "north-west": "iron_key/animations/spin__north-west.gif",
+            "south": "iron_key/animations/spin__south.gif",
+            "south-east": "iron_key/animations/spin__south-east.gif",
+            "south-west": "iron_key/animations/spin__south-west.gif",
+            "west": "iron_key/animations/spin__west.gif"
           }
         }
       ]

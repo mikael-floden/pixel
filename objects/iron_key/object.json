@@ -28,418 +28,19 @@
     "west"
   ],
   "rotations": {
+    "south": "iron_key/rotations/south.png",
+    "west": "iron_key/rotations/west.png",
     "east": "iron_key/rotations/east.png",
     "north": "iron_key/rotations/north.png",
-    "north-east": "iron_key/rotations/north-east.png",
-    "north-west": "iron_key/rotations/north-west.png",
-    "south": "iron_key/rotations/south.png",
     "south-east": "iron_key/rotations/south-east.png",
     "south-west": "iron_key/rotations/south-west.png",
-    "west": "iron_key/rotations/west.png"
+    "north-east": "iron_key/rotations/north-east.png",
+    "north-west": "iron_key/rotations/north-west.png"
   },
   "animations": {
-    "spin": {
-      "group_id": "e2a519cb-9ed4-4436-9257-71080f3ee502",
-      "description": "the key spinning around",
-      "frame_count": 16,
-      "directions": {
-        "east": {
-          "frames": 17,
-          "strip": "iron_key/animations/spin__east.png",
-          "gif": "iron_key/animations/spin__east.gif",
-          "frame_paths": [
-            "iron_key/animations/spin/east/00.png",
-            "iron_key/animations/spin/east/01.png",
-            "iron_key/animations/spin/east/02.png",
-            "iron_key/animations/spin/east/03.png",
-            "iron_key/animations/spin/east/04.png",
-            "iron_key/animations/spin/east/05.png",
-            "iron_key/animations/spin/east/06.png",
-            "iron_key/animations/spin/east/07.png",
-            "iron_key/animations/spin/east/08.png",
-            "iron_key/animations/spin/east/09.png",
-            "iron_key/animations/spin/east/10.png",
-            "iron_key/animations/spin/east/11.png",
-            "iron_key/animations/spin/east/12.png",
-            "iron_key/animations/spin/east/13.png",
-            "iron_key/animations/spin/east/14.png",
-            "iron_key/animations/spin/east/15.png",
-            "iron_key/animations/spin/east/16.png"
-          ]
-        },
-        "north": {
-          "frames": 17,
-          "strip": "iron_key/animations/spin__north.png",
-          "gif": "iron_key/animations/spin__north.gif",
-          "frame_paths": [
-            "iron_key/animations/spin/north/00.png",
-            "iron_key/animations/spin/north/01.png",
-            "iron_key/animations/spin/north/02.png",
-            "iron_key/animations/spin/north/03.png",
-            "iron_key/animations/spin/north/04.png",
-            "iron_key/animations/spin/north/05.png",
-            "iron_key/animations/spin/north/06.png",
-            "iron_key/animations/spin/north/07.png",
-            "iron_key/animations/spin/north/08.png",
-            "iron_key/animations/spin/north/09.png",
-            "iron_key/animations/spin/north/10.png",
-            "iron_key/animations/spin/north/11.png",
-            "iron_key/animations/spin/north/12.png",
-            "iron_key/animations/spin/north/13.png",
-            "iron_key/animations/spin/north/14.png",
-            "iron_key/animations/spin/north/15.png",
-            "iron_key/animations/spin/north/16.png"
-          ]
-        },
-        "north-east": {
-          "frames": 17,
-          "strip": "iron_key/animations/spin__north-east.png",
-          "gif": "iron_key/animations/spin__north-east.gif",
-          "frame_paths": [
-            "iron_key/animations/spin/north-east/00.png",
-            "iron_key/animations/spin/north-east/01.png",
-            "iron_key/animations/spin/north-east/02.png",
-            "iron_key/animations/spin/north-east/03.png",
-            "iron_key/animations/spin/north-east/04.png",
-            "iron_key/animations/spin/north-east/05.png",
-            "iron_key/animations/spin/north-east/06.png",
-            "iron_key/animations/spin/north-east/07.png",
-            "iron_key/animations/spin/north-east/08.png",
-            "iron_key/animations/spin/north-east/09.png",
-            "iron_key/animations/spin/north-east/10.png",
-            "iron_key/animations/spin/north-east/11.png",
-            "iron_key/animations/spin/north-east/12.png",
-            "iron_key/animations/spin/north-east/13.png",
-            "iron_key/animations/spin/north-east/14.png",
-            "iron_key/animations/spin/north-east/15.png",
-            "iron_key/animations/spin/north-east/16.png"
-          ]
-        },
-        "north-west": {
-          "frames": 17,
-          "strip": "iron_key/animations/spin__north-west.png",
-          "gif": "iron_key/animations/spin__north-west.gif",
-          "frame_paths": [
-            "iron_key/animations/spin/north-west/00.png",
-            "iron_key/animations/spin/north-west/01.png",
-            "iron_key/animations/spin/north-west/02.png",
-            "iron_key/animations/spin/north-west/03.png",
-            "iron_key/animations/spin/north-west/04.png",
-            "iron_key/animations/spin/north-west/05.png",
-            "iron_key/animations/spin/north-west/06.png",
-            "iron_key/animations/spin/north-west/07.png",
-            "iron_key/animations/spin/north-west/08.png",
-            "iron_key/animations/spin/north-west/09.png",
-            "iron_key/animations/spin/north-west/10.png",
-            "iron_key/animations/spin/north-west/11.png",
-            "iron_key/animations/spin/north-west/12.png",
-            "iron_key/animations/spin/north-west/13.png",
-            "iron_key/animations/spin/north-west/14.png",
-            "iron_key/animations/spin/north-west/15.png",
-            "iron_key/animations/spin/north-west/16.png"
-          ]
-        },
-        "south": {
-          "frames": 17,
-          "strip": "iron_key/animations/spin__south.png",
-          "gif": "iron_key/animations/spin__south.gif",
-          "frame_paths": [
-            "iron_key/animations/spin/south/00.png",
-            "iron_key/animations/spin/south/01.png",
-            "iron_key/animations/spin/south/02.png",
-            "iron_key/animations/spin/south/03.png",
-            "iron_key/animations/spin/south/04.png",
-            "iron_key/animations/spin/south/05.png",
-            "iron_key/animations/spin/south/06.png",
-            "iron_key/animations/spin/south/07.png",
-            "iron_key/animations/spin/south/08.png",
-            "iron_key/animations/spin/south/09.png",
-            "iron_key/animations/spin/south/10.png",
-            "iron_key/animations/spin/south/11.png",
-            "iron_key/animations/spin/south/12.png",
-            "iron_key/animations/spin/south/13.png",
-            "iron_key/animations/spin/south/14.png",
-            "iron_key/animations/spin/south/15.png",
-            "iron_key/animations/spin/south/16.png"
-          ]
-        },
-        "south-east": {
-          "frames": 17,
-          "strip": "iron_key/animations/spin__south-east.png",
-          "gif": "iron_key/animations/spin__south-east.gif",
-          "frame_paths": [
-            "iron_key/animations/spin/south-east/00.png",
-            "iron_key/animations/spin/south-east/01.png",
-            "iron_key/animations/spin/south-east/02.png",
-            "iron_key/animations/spin/south-east/03.png",
-            "iron_key/animations/spin/south-east/04.png",
-            "iron_key/animations/spin/south-east/05.png",
-            "iron_key/animations/spin/south-east/06.png",
-            "iron_key/animations/spin/south-east/07.png",
-            "iron_key/animations/spin/south-east/08.png",
-            "iron_key/animations/spin/south-east/09.png",
-            "iron_key/animations/spin/south-east/10.png",
-            "iron_key/animations/spin/south-east/11.png",
-            "iron_key/animations/spin/south-east/12.png",
-            "iron_key/animations/spin/south-east/13.png",
-            "iron_key/animations/spin/south-east/14.png",
-            "iron_key/animations/spin/south-east/15.png",
-            "iron_key/animations/spin/south-east/16.png"
-          ]
-        },
-        "south-west": {
-          "frames": 17,
-          "strip": "iron_key/animations/spin__south-west.png",
-          "gif": "iron_key/animations/spin__south-west.gif",
-          "frame_paths": [
-            "iron_key/animations/spin/south-west/00.png",
-            "iron_key/animations/spin/south-west/01.png",
-            "iron_key/animations/spin/south-west/02.png",
-            "iron_key/animations/spin/south-west/03.png",
-            "iron_key/animations/spin/south-west/04.png",
-            "iron_key/animations/spin/south-west/05.png",
-            "iron_key/animations/spin/south-west/06.png",
-            "iron_key/animations/spin/south-west/07.png",
-            "iron_key/animations/spin/south-west/08.png",
-            "iron_key/animations/spin/south-west/09.png",
-            "iron_key/animations/spin/south-west/10.png",
-            "iron_key/animations/spin/south-west/11.png",
-            "iron_key/animations/spin/south-west/12.png",
-            "iron_key/animations/spin/south-west/13.png",
-            "iron_key/animations/spin/south-west/14.png",
-            "iron_key/animations/spin/south-west/15.png",
-            "iron_key/animations/spin/south-west/16.png"
-          ]
-        },
-        "west": {
-          "frames": 17,
-          "strip": "iron_key/animations/spin__west.png",
-          "gif": "iron_key/animations/spin__west.gif",
-          "frame_paths": [
-            "iron_key/animations/spin/west/00.png",
-            "iron_key/animations/spin/west/01.png",
-            "iron_key/animations/spin/west/02.png",
-            "iron_key/animations/spin/west/03.png",
-            "iron_key/animations/spin/west/04.png",
-            "iron_key/animations/spin/west/05.png",
-            "iron_key/animations/spin/west/06.png",
-            "iron_key/animations/spin/west/07.png",
-            "iron_key/animations/spin/west/08.png",
-            "iron_key/animations/spin/west/09.png",
-            "iron_key/animations/spin/west/10.png",
-            "iron_key/animations/spin/west/11.png",
-            "iron_key/animations/spin/west/12.png",
-            "iron_key/animations/spin/west/13.png",
-            "iron_key/animations/spin/west/14.png",
-            "iron_key/animations/spin/west/15.png",
-            "iron_key/animations/spin/west/16.png"
-          ]
-        }
-      }
-    },
-    "jingle": {
-      "group_id": "8d8b3e78-7887-4e08-88e5-9971b4336bd3",
-      "description": "the key jingling and shaking",
-      "frame_count": 16,
-      "directions": {
-        "east": {
-          "frames": 17,
-          "strip": "iron_key/animations/jingle__east.png",
-          "gif": "iron_key/animations/jingle__east.gif",
-          "frame_paths": [
-            "iron_key/animations/jingle/east/00.png",
-            "iron_key/animations/jingle/east/01.png",
-            "iron_key/animations/jingle/east/02.png",
-            "iron_key/animations/jingle/east/03.png",
-            "iron_key/animations/jingle/east/04.png",
-            "iron_key/animations/jingle/east/05.png",
-            "iron_key/animations/jingle/east/06.png",
-            "iron_key/animations/jingle/east/07.png",
-            "iron_key/animations/jingle/east/08.png",
-            "iron_key/animations/jingle/east/09.png",
-            "iron_key/animations/jingle/east/10.png",
-            "iron_key/animations/jingle/east/11.png",
-            "iron_key/animations/jingle/east/12.png",
-            "iron_key/animations/jingle/east/13.png",
-            "iron_key/animations/jingle/east/14.png",
-            "iron_key/animations/jingle/east/15.png",
-            "iron_key/animations/jingle/east/16.png"
-          ]
-        },
-        "north": {
-          "frames": 17,
-          "strip": "iron_key/animations/jingle__north.png",
-          "gif": "iron_key/animations/jingle__north.gif",
-          "frame_paths": [
-            "iron_key/animations/jingle/north/00.png",
-            "iron_key/animations/jingle/north/01.png",
-            "iron_key/animations/jingle/north/02.png",
-            "iron_key/animations/jingle/north/03.png",
-            "iron_key/animations/jingle/north/04.png",
-            "iron_key/animations/jingle/north/05.png",
-            "iron_key/animations/jingle/north/06.png",
-            "iron_key/animations/jingle/north/07.png",
-            "iron_key/animations/jingle/north/08.png",
-            "iron_key/animations/jingle/north/09.png",
-            "iron_key/animations/jingle/north/10.png",
-            "iron_key/animations/jingle/north/11.png",
-            "iron_key/animations/jingle/north/12.png",
-            "iron_key/animations/jingle/north/13.png",
-            "iron_key/animations/jingle/north/14.png",
-            "iron_key/animations/jingle/north/15.png",
-            "iron_key/animations/jingle/north/16.png"
-          ]
-        },
-        "north-east": {
-          "frames": 17,
-          "strip": "iron_key/animations/jingle__north-east.png",
-          "gif": "iron_key/animations/jingle__north-east.gif",
-          "frame_paths": [
-            "iron_key/animations/jingle/north-east/00.png",
-            "iron_key/animations/jingle/north-east/01.png",
-            "iron_key/animations/jingle/north-east/02.png",
-            "iron_key/animations/jingle/north-east/03.png",
-            "iron_key/animations/jingle/north-east/04.png",
-            "iron_key/animations/jingle/north-east/05.png",
-            "iron_key/animations/jingle/north-east/06.png",
-            "iron_key/animations/jingle/north-east/07.png",
-            "iron_key/animations/jingle/north-east/08.png",
-            "iron_key/animations/jingle/north-east/09.png",
-            "iron_key/animations/jingle/north-east/10.png",
-            "iron_key/animations/jingle/north-east/11.png",
-            "iron_key/animations/jingle/north-east/12.png",
-            "iron_key/animations/jingle/north-east/13.png",
-            "iron_key/animations/jingle/north-east/14.png",
-            "iron_key/animations/jingle/north-east/15.png",
-            "iron_key/animations/jingle/north-east/16.png"
-          ]
-        },
-        "north-west": {
-          "frames": 17,
-          "strip": "iron_key/animations/jingle__north-west.png",
-          "gif": "iron_key/animations/jingle__north-west.gif",
-          "frame_paths": [
-            "iron_key/animations/jingle/north-west/00.png",
-            "iron_key/animations/jingle/north-west/01.png",
-            "iron_key/animations/jingle/north-west/02.png",
-            "iron_key/animations/jingle/north-west/03.png",
-            "iron_key/animations/jingle/north-west/04.png",
-            "iron_key/animations/jingle/north-west/05.png",
-            "iron_key/animations/jingle/north-west/06.png",
-            "iron_key/animations/jingle/north-west/07.png",
-            "iron_key/animations/jingle/north-west/08.png",
-            "iron_key/animations/jingle/north-west/09.png",
-            "iron_key/animations/jingle/north-west/10.png",
-            "iron_key/animations/jingle/north-west/11.png",
-            "iron_key/animations/jingle/north-west/12.png",
-            "iron_key/animations/jingle/north-west/13.png",
-            "iron_key/animations/jingle/north-west/14.png",
-            "iron_key/animations/jingle/north-west/15.png",
-            "iron_key/animations/jingle/north-west/16.png"
-          ]
-        },
-        "south": {
-          "frames": 17,
-          "strip": "iron_key/animations/jingle__south.png",
-          "gif": "iron_key/animations/jingle__south.gif",
-          "frame_paths": [
-            "iron_key/animations/jingle/south/00.png",
-            "iron_key/animations/jingle/south/01.png",
-            "iron_key/animations/jingle/south/02.png",
-            "iron_key/animations/jingle/south/03.png",
-            "iron_key/animations/jingle/south/04.png",
-            "iron_key/animations/jingle/south/05.png",
-            "iron_key/animations/jingle/south/06.png",
-            "iron_key/animations/jingle/south/07.png",
-            "iron_key/animations/jingle/south/08.png",
-            "iron_key/animations/jingle/south/09.png",
-            "iron_key/animations/jingle/south/10.png",
-            "iron_key/animations/jingle/south/11.png",
-            "iron_key/animations/jingle/south/12.png",
-            "iron_key/animations/jingle/south/13.png",
-            "iron_key/animations/jingle/south/14.png",
-            "iron_key/animations/jingle/south/15.png",
-            "iron_key/animations/jingle/south/16.png"
-          ]
-        },
-        "south-east": {
-          "frames": 17,
-          "strip": "iron_key/animations/jingle__south-east.png",
-          "gif": "iron_key/animations/jingle__south-east.gif",
-          "frame_paths": [
-            "iron_key/animations/jingle/south-east/00.png",
-            "iron_key/animations/jingle/south-east/01.png",
-            "iron_key/animations/jingle/south-east/02.png",
-            "iron_key/animations/jingle/south-east/03.png",
-            "iron_key/animations/jingle/south-east/04.png",
-            "iron_key/animations/jingle/south-east/05.png",
-            "iron_key/animations/jingle/south-east/06.png",
-            "iron_key/animations/jingle/south-east/07.png",
-            "iron_key/animations/jingle/south-east/08.png",
-            "iron_key/animations/jingle/south-east/09.png",
-            "iron_key/animations/jingle/south-east/10.png",
-            "iron_key/animations/jingle/south-east/11.png",
-            "iron_key/animations/jingle/south-east/12.png",
-            "iron_key/animations/jingle/south-east/13.png",
-            "iron_key/animations/jingle/south-east/14.png",
-            "iron_key/animations/jingle/south-east/15.png",
-            "iron_key/animations/jingle/south-east/16.png"
-          ]
-        },
-        "south-west": {
-          "frames": 17,
-          "strip": "iron_key/animations/jingle__south-west.png",
-          "gif": "iron_key/animations/jingle__south-west.gif",
-          "frame_paths": [
-            "iron_key/animations/jingle/south-west/00.png",
-            "iron_key/animations/jingle/south-west/01.png",
-            "iron_key/animations/jingle/south-west/02.png",
-            "iron_key/animations/jingle/south-west/03.png",
-            "iron_key/animations/jingle/south-west/04.png",
-            "iron_key/animations/jingle/south-west/05.png",
-            "iron_key/animations/jingle/south-west/06.png",
-            "iron_key/animations/jingle/south-west/07.png",
-            "iron_key/animations/jingle/south-west/08.png",
-            "iron_key/animations/jingle/south-west/09.png",
-            "iron_key/animations/jingle/south-west/10.png",
-            "iron_key/animations/jingle/south-west/11.png",
-            "iron_key/animations/jingle/south-west/12.png",
-            "iron_key/animations/jingle/south-west/13.png",
-            "iron_key/animations/jingle/south-west/14.png",
-            "iron_key/animations/jingle/south-west/15.png",
-            "iron_key/animations/jingle/south-west/16.png"
-          ]
-        },
-        "west": {
-          "frames": 17,
-          "strip": "iron_key/animations/jingle__west.png",
-          "gif": "iron_key/animations/jingle__west.gif",
-          "frame_paths": [
-            "iron_key/animations/jingle/west/00.png",
-            "iron_key/animations/jingle/west/01.png",
-            "iron_key/animations/jingle/west/02.png",
-            "iron_key/animations/jingle/west/03.png",
-            "iron_key/animations/jingle/west/04.png",
-            "iron_key/animations/jingle/west/05.png",
-            "iron_key/animations/jingle/west/06.png",
-            "iron_key/animations/jingle/west/07.png",
-            "iron_key/animations/jingle/west/08.png",
-            "iron_key/animations/jingle/west/09.png",
-            "iron_key/animations/jingle/west/10.png",
-            "iron_key/animations/jingle/west/11.png",
-            "iron_key/animations/jingle/west/12.png",
-            "iron_key/animations/jingle/west/13.png",
-            "iron_key/animations/jingle/west/14.png",
-            "iron_key/animations/jingle/west/15.png",
-            "iron_key/animations/jingle/west/16.png"
-          ]
-        }
-      }
-    },
     "glint": {
-      "group_id": "d7d999ae-a5c6-4485-9711-4965dc9631fe",
+      "group_id": "4a53a913-55be-4738-b98a-91fa04c34d22",
       "description": "a glint of light on the key",
-      "frame_count": 16,
       "directions": {
         "east": {
           "frames": 17,
@@ -463,7 +64,9 @@
             "iron_key/animations/glint/east/14.png",
             "iron_key/animations/glint/east/15.png",
             "iron_key/animations/glint/east/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 13:15:18 GMT",
+          "src_frames": 17
         },
         "north": {
           "frames": 17,
@@ -487,7 +90,9 @@
             "iron_key/animations/glint/north/14.png",
             "iron_key/animations/glint/north/15.png",
             "iron_key/animations/glint/north/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 13:15:28 GMT",
+          "src_frames": 17
         },
         "north-east": {
           "frames": 17,
@@ -511,7 +116,9 @@
             "iron_key/animations/glint/north-east/14.png",
             "iron_key/animations/glint/north-east/15.png",
             "iron_key/animations/glint/north-east/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 13:15:37 GMT",
+          "src_frames": 17
         },
         "north-west": {
           "frames": 17,
@@ -535,7 +142,35 @@
             "iron_key/animations/glint/north-west/14.png",
             "iron_key/animations/glint/north-west/15.png",
             "iron_key/animations/glint/north-west/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 13:15:47 GMT",
+          "src_frames": 17
+        },
+        "south": {
+          "frames": 17,
+          "strip": "iron_key/animations/glint__south.png",
+          "gif": "iron_key/animations/glint__south.gif",
+          "frame_paths": [
+            "iron_key/animations/glint/south/00.png",
+            "iron_key/animations/glint/south/01.png",
+            "iron_key/animations/glint/south/02.png",
+            "iron_key/animations/glint/south/03.png",
+            "iron_key/animations/glint/south/04.png",
+            "iron_key/animations/glint/south/05.png",
+            "iron_key/animations/glint/south/06.png",
+            "iron_key/animations/glint/south/07.png",
+            "iron_key/animations/glint/south/08.png",
+            "iron_key/animations/glint/south/09.png",
+            "iron_key/animations/glint/south/10.png",
+            "iron_key/animations/glint/south/11.png",
+            "iron_key/animations/glint/south/12.png",
+            "iron_key/animations/glint/south/13.png",
+            "iron_key/animations/glint/south/14.png",
+            "iron_key/animations/glint/south/15.png",
+            "iron_key/animations/glint/south/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 13:15:56 GMT",
+          "src_frames": 17
         },
         "south-east": {
           "frames": 17,
@@ -559,7 +194,9 @@
             "iron_key/animations/glint/south-east/14.png",
             "iron_key/animations/glint/south-east/15.png",
             "iron_key/animations/glint/south-east/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 13:16:07 GMT",
+          "src_frames": 17
         },
         "south-west": {
           "frames": 17,
@@ -583,7 +220,9 @@
             "iron_key/animations/glint/south-west/14.png",
             "iron_key/animations/glint/south-west/15.png",
             "iron_key/animations/glint/south-west/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 13:16:16 GMT",
+          "src_frames": 17
         },
         "west": {
           "frames": 17,
@@ -607,10 +246,441 @@
             "iron_key/animations/glint/west/14.png",
             "iron_key/animations/glint/west/15.png",
             "iron_key/animations/glint/west/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 13:16:26 GMT",
+          "src_frames": 17
+        }
+      }
+    },
+    "jingle": {
+      "group_id": "8d8b3e78-7887-4e08-88e5-9971b4336bd3",
+      "description": "the key jingling and shaking",
+      "directions": {
+        "east": {
+          "frames": 17,
+          "strip": "iron_key/animations/jingle__east.png",
+          "gif": "iron_key/animations/jingle__east.gif",
+          "frame_paths": [
+            "iron_key/animations/jingle/east/00.png",
+            "iron_key/animations/jingle/east/01.png",
+            "iron_key/animations/jingle/east/02.png",
+            "iron_key/animations/jingle/east/03.png",
+            "iron_key/animations/jingle/east/04.png",
+            "iron_key/animations/jingle/east/05.png",
+            "iron_key/animations/jingle/east/06.png",
+            "iron_key/animations/jingle/east/07.png",
+            "iron_key/animations/jingle/east/08.png",
+            "iron_key/animations/jingle/east/09.png",
+            "iron_key/animations/jingle/east/10.png",
+            "iron_key/animations/jingle/east/11.png",
+            "iron_key/animations/jingle/east/12.png",
+            "iron_key/animations/jingle/east/13.png",
+            "iron_key/animations/jingle/east/14.png",
+            "iron_key/animations/jingle/east/15.png",
+            "iron_key/animations/jingle/east/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:55:14 GMT",
+          "src_frames": 17
+        },
+        "north": {
+          "frames": 17,
+          "strip": "iron_key/animations/jingle__north.png",
+          "gif": "iron_key/animations/jingle__north.gif",
+          "frame_paths": [
+            "iron_key/animations/jingle/north/00.png",
+            "iron_key/animations/jingle/north/01.png",
+            "iron_key/animations/jingle/north/02.png",
+            "iron_key/animations/jingle/north/03.png",
+            "iron_key/animations/jingle/north/04.png",
+            "iron_key/animations/jingle/north/05.png",
+            "iron_key/animations/jingle/north/06.png",
+            "iron_key/animations/jingle/north/07.png",
+            "iron_key/animations/jingle/north/08.png",
+            "iron_key/animations/jingle/north/09.png",
+            "iron_key/animations/jingle/north/10.png",
+            "iron_key/animations/jingle/north/11.png",
+            "iron_key/animations/jingle/north/12.png",
+            "iron_key/animations/jingle/north/13.png",
+            "iron_key/animations/jingle/north/14.png",
+            "iron_key/animations/jingle/north/15.png",
+            "iron_key/animations/jingle/north/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:55:22 GMT",
+          "src_frames": 17
+        },
+        "north-east": {
+          "frames": 17,
+          "strip": "iron_key/animations/jingle__north-east.png",
+          "gif": "iron_key/animations/jingle__north-east.gif",
+          "frame_paths": [
+            "iron_key/animations/jingle/north-east/00.png",
+            "iron_key/animations/jingle/north-east/01.png",
+            "iron_key/animations/jingle/north-east/02.png",
+            "iron_key/animations/jingle/north-east/03.png",
+            "iron_key/animations/jingle/north-east/04.png",
+            "iron_key/animations/jingle/north-east/05.png",
+            "iron_key/animations/jingle/north-east/06.png",
+            "iron_key/animations/jingle/north-east/07.png",
+            "iron_key/animations/jingle/north-east/08.png",
+            "iron_key/animations/jingle/north-east/09.png",
+            "iron_key/animations/jingle/north-east/10.png",
+            "iron_key/animations/jingle/north-east/11.png",
+            "iron_key/animations/jingle/north-east/12.png",
+            "iron_key/animations/jingle/north-east/13.png",
+            "iron_key/animations/jingle/north-east/14.png",
+            "iron_key/animations/jingle/north-east/15.png",
+            "iron_key/animations/jingle/north-east/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:55:30 GMT",
+          "src_frames": 17
+        },
+        "north-west": {
+          "frames": 17,
+          "strip": "iron_key/animations/jingle__north-west.png",
+          "gif": "iron_key/animations/jingle__north-west.gif",
+          "frame_paths": [
+            "iron_key/animations/jingle/north-west/00.png",
+            "iron_key/animations/jingle/north-west/01.png",
+            "iron_key/animations/jingle/north-west/02.png",
+            "iron_key/animations/jingle/north-west/03.png",
+            "iron_key/animations/jingle/north-west/04.png",
+            "iron_key/animations/jingle/north-west/05.png",
+            "iron_key/animations/jingle/north-west/06.png",
+            "iron_key/animations/jingle/north-west/07.png",
+            "iron_key/animations/jingle/north-west/08.png",
+            "iron_key/animations/jingle/north-west/09.png",
+            "iron_key/animations/jingle/north-west/10.png",
+            "iron_key/animations/jingle/north-west/11.png",
+            "iron_key/animations/jingle/north-west/12.png",
+            "iron_key/animations/jingle/north-west/13.png",
+            "iron_key/animations/jingle/north-west/14.png",
+            "iron_key/animations/jingle/north-west/15.png",
+            "iron_key/animations/jingle/north-west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:55:41 GMT",
+          "src_frames": 17
+        },
+        "south": {
+          "frames": 17,
+          "strip": "iron_key/animations/jingle__south.png",
+          "gif": "iron_key/animations/jingle__south.gif",
+          "frame_paths": [
+            "iron_key/animations/jingle/south/00.png",
+            "iron_key/animations/jingle/south/01.png",
+            "iron_key/animations/jingle/south/02.png",
+            "iron_key/animations/jingle/south/03.png",
+            "iron_key/animations/jingle/south/04.png",
+            "iron_key/animations/jingle/south/05.png",
+            "iron_key/animations/jingle/south/06.png",
+            "iron_key/animations/jingle/south/07.png",
+            "iron_key/animations/jingle/south/08.png",
+            "iron_key/animations/jingle/south/09.png",
+            "iron_key/animations/jingle/south/10.png",
+            "iron_key/animations/jingle/south/11.png",
+            "iron_key/animations/jingle/south/12.png",
+            "iron_key/animations/jingle/south/13.png",
+            "iron_key/animations/jingle/south/14.png",
+            "iron_key/animations/jingle/south/15.png",
+            "iron_key/animations/jingle/south/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:55:51 GMT",
+          "src_frames": 17
+        },
+        "south-east": {
+          "frames": 17,
+          "strip": "iron_key/animations/jingle__south-east.png",
+          "gif": "iron_key/animations/jingle__south-east.gif",
+          "frame_paths": [
+            "iron_key/animations/jingle/south-east/00.png",
+            "iron_key/animations/jingle/south-east/01.png",
+            "iron_key/animations/jingle/south-east/02.png",
+            "iron_key/animations/jingle/south-east/03.png",
+            "iron_key/animations/jingle/south-east/04.png",
+            "iron_key/animations/jingle/south-east/05.png",
+            "iron_key/animations/jingle/south-east/06.png",
+            "iron_key/animations/jingle/south-east/07.png",
+            "iron_key/animations/jingle/south-east/08.png",
+            "iron_key/animations/jingle/south-east/09.png",
+            "iron_key/animations/jingle/south-east/10.png",
+            "iron_key/animations/jingle/south-east/11.png",
+            "iron_key/animations/jingle/south-east/12.png",
+            "iron_key/animations/jingle/south-east/13.png",
+            "iron_key/animations/jingle/south-east/14.png",
+            "iron_key/animations/jingle/south-east/15.png",
+            "iron_key/animations/jingle/south-east/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:56:01 GMT",
+          "src_frames": 17
+        },
+        "south-west": {
+          "frames": 17,
+          "strip": "iron_key/animations/jingle__south-west.png",
+          "gif": "iron_key/animations/jingle__south-west.gif",
+          "frame_paths": [
+            "iron_key/animations/jingle/south-west/00.png",
+            "iron_key/animations/jingle/south-west/01.png",
+            "iron_key/animations/jingle/south-west/02.png",
+            "iron_key/animations/jingle/south-west/03.png",
+            "iron_key/animations/jingle/south-west/04.png",
+            "iron_key/animations/jingle/south-west/05.png",
+            "iron_key/animations/jingle/south-west/06.png",
+            "iron_key/animations/jingle/south-west/07.png",
+            "iron_key/animations/jingle/south-west/08.png",
+            "iron_key/animations/jingle/south-west/09.png",
+            "iron_key/animations/jingle/south-west/10.png",
+            "iron_key/animations/jingle/south-west/11.png",
+            "iron_key/animations/jingle/south-west/12.png",
+            "iron_key/animations/jingle/south-west/13.png",
+            "iron_key/animations/jingle/south-west/14.png",
+            "iron_key/animations/jingle/south-west/15.png",
+            "iron_key/animations/jingle/south-west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:56:10 GMT",
+          "src_frames": 17
+        },
+        "west": {
+          "frames": 17,
+          "strip": "iron_key/animations/jingle__west.png",
+          "gif": "iron_key/animations/jingle__west.gif",
+          "frame_paths": [
+            "iron_key/animations/jingle/west/00.png",
+            "iron_key/animations/jingle/west/01.png",
+            "iron_key/animations/jingle/west/02.png",
+            "iron_key/animations/jingle/west/03.png",
+            "iron_key/animations/jingle/west/04.png",
+            "iron_key/animations/jingle/west/05.png",
+            "iron_key/animations/jingle/west/06.png",
+            "iron_key/animations/jingle/west/07.png",
+            "iron_key/animations/jingle/west/08.png",
+            "iron_key/animations/jingle/west/09.png",
+            "iron_key/animations/jingle/west/10.png",
+            "iron_key/animations/jingle/west/11.png",
+            "iron_key/animations/jingle/west/12.png",
+            "iron_key/animations/jingle/west/13.png",
+            "iron_key/animations/jingle/west/14.png",
+            "iron_key/animations/jingle/west/15.png",
+            "iron_key/animations/jingle/west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:56:20 GMT",
+          "src_frames": 17
+        }
+      }
+    },
+    "spin": {
+      "group_id": "e2a519cb-9ed4-4436-9257-71080f3ee502",
+      "description": "the key spinning around",
+      "directions": {
+        "east": {
+          "frames": 17,
+          "strip": "iron_key/animations/spin__east.png",
+          "gif": "iron_key/animations/spin__east.gif",
+          "frame_paths": [
+            "iron_key/animations/spin/east/00.png",
+            "iron_key/animations/spin/east/01.png",
+            "iron_key/animations/spin/east/02.png",
+            "iron_key/animations/spin/east/03.png",
+            "iron_key/animations/spin/east/04.png",
+            "iron_key/animations/spin/east/05.png",
+            "iron_key/animations/spin/east/06.png",
+            "iron_key/animations/spin/east/07.png",
+            "iron_key/animations/spin/east/08.png",
+            "iron_key/animations/spin/east/09.png",
+            "iron_key/animations/spin/east/10.png",
+            "iron_key/animations/spin/east/11.png",
+            "iron_key/animations/spin/east/12.png",
+            "iron_key/animations/spin/east/13.png",
+            "iron_key/animations/spin/east/14.png",
+            "iron_key/animations/spin/east/15.png",
+            "iron_key/animations/spin/east/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:48:34 GMT",
+          "src_frames": 17
+        },
+        "north": {
+          "frames": 17,
+          "strip": "iron_key/animations/spin__north.png",
+          "gif": "iron_key/animations/spin__north.gif",
+          "frame_paths": [
+            "iron_key/animations/spin/north/00.png",
+            "iron_key/animations/spin/north/01.png",
+            "iron_key/animations/spin/north/02.png",
+            "iron_key/animations/spin/north/03.png",
+            "iron_key/animations/spin/north/04.png",
+            "iron_key/animations/spin/north/05.png",
+            "iron_key/animations/spin/north/06.png",
+            "iron_key/animations/spin/north/07.png",
+            "iron_key/animations/spin/north/08.png",
+            "iron_key/animations/spin/north/09.png",
+            "iron_key/animations/spin/north/10.png",
+            "iron_key/animations/spin/north/11.png",
+            "iron_key/animations/spin/north/12.png",
+            "iron_key/animations/spin/north/13.png",
+            "iron_key/animations/spin/north/14.png",
+            "iron_key/animations/spin/north/15.png",
+            "iron_key/animations/spin/north/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:48:43 GMT",
+          "src_frames": 17
+        },
+        "north-east": {
+          "frames": 17,
+          "strip": "iron_key/animations/spin__north-east.png",
+          "gif": "iron_key/animations/spin__north-east.gif",
+          "frame_paths": [
+            "iron_key/animations/spin/north-east/00.png",
+            "iron_key/animations/spin/north-east/01.png",
+            "iron_key/animations/spin/north-east/02.png",
+            "iron_key/animations/spin/north-east/03.png",
+            "iron_key/animations/spin/north-east/04.png",
+            "iron_key/animations/spin/north-east/05.png",
+            "iron_key/animations/spin/north-east/06.png",
+            "iron_key/animations/spin/north-east/07.png",
+            "iron_key/animations/spin/north-east/08.png",
+            "iron_key/animations/spin/north-east/09.png",
+            "iron_key/animations/spin/north-east/10.png",
+            "iron_key/animations/spin/north-east/11.png",
+            "iron_key/animations/spin/north-east/12.png",
+            "iron_key/animations/spin/north-east/13.png",
+            "iron_key/animations/spin/north-east/14.png",
+            "iron_key/animations/spin/north-east/15.png",
+            "iron_key/animations/spin/north-east/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:48:53 GMT",
+          "src_frames": 17
+        },
+        "north-west": {
+          "frames": 17,
+          "strip": "iron_key/animations/spin__north-west.png",
+          "gif": "iron_key/animations/spin__north-west.gif",
+          "frame_paths": [
+            "iron_key/animations/spin/north-west/00.png",
+            "iron_key/animations/spin/north-west/01.png",
+            "iron_key/animations/spin/north-west/02.png",
+            "iron_key/animations/spin/north-west/03.png",
+            "iron_key/animations/spin/north-west/04.png",
+            "iron_key/animations/spin/north-west/05.png",
+            "iron_key/animations/spin/north-west/06.png",
+            "iron_key/animations/spin/north-west/07.png",
+            "iron_key/animations/spin/north-west/08.png",
+            "iron_key/animations/spin/north-west/09.png",
+            "iron_key/animations/spin/north-west/10.png",
+            "iron_key/animations/spin/north-west/11.png",
+            "iron_key/animations/spin/north-west/12.png",
+            "iron_key/animations/spin/north-west/13.png",
+            "iron_key/animations/spin/north-west/14.png",
+            "iron_key/animations/spin/north-west/15.png",
+            "iron_key/animations/spin/north-west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:49:03 GMT",
+          "src_frames": 17
+        },
+        "south": {
+          "frames": 17,
+          "strip": "iron_key/animations/spin__south.png",
+          "gif": "iron_key/animations/spin__south.gif",
+          "frame_paths": [
+            "iron_key/animations/spin/south/00.png",
+            "iron_key/animations/spin/south/01.png",
+            "iron_key/animations/spin/south/02.png",
+            "iron_key/animations/spin/south/03.png",
+            "iron_key/animations/spin/south/04.png",
+            "iron_key/animations/spin/south/05.png",
+            "iron_key/animations/spin/south/06.png",
+            "iron_key/animations/spin/south/07.png",
+            "iron_key/animations/spin/south/08.png",
+            "iron_key/animations/spin/south/09.png",
+            "iron_key/animations/spin/south/10.png",
+            "iron_key/animations/spin/south/11.png",
+            "iron_key/animations/spin/south/12.png",
+            "iron_key/animations/spin/south/13.png",
+            "iron_key/animations/spin/south/14.png",
+            "iron_key/animations/spin/south/15.png",
+            "iron_key/animations/spin/south/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:49:12 GMT",
+          "src_frames": 17
+        },
+        "south-east": {
+          "frames": 17,
+          "strip": "iron_key/animations/spin__south-east.png",
+          "gif": "iron_key/animations/spin__south-east.gif",
+          "frame_paths": [
+            "iron_key/animations/spin/south-east/00.png",
+            "iron_key/animations/spin/south-east/01.png",
+            "iron_key/animations/spin/south-east/02.png",
+            "iron_key/animations/spin/south-east/03.png",
+            "iron_key/animations/spin/south-east/04.png",
+            "iron_key/animations/spin/south-east/05.png",
+            "iron_key/animations/spin/south-east/06.png",
+            "iron_key/animations/spin/south-east/07.png",
+            "iron_key/animations/spin/south-east/08.png",
+            "iron_key/animations/spin/south-east/09.png",
+            "iron_key/animations/spin/south-east/10.png",
+            "iron_key/animations/spin/south-east/11.png",
+            "iron_key/animations/spin/south-east/12.png",
+            "iron_key/animations/spin/south-east/13.png",
+            "iron_key/animations/spin/south-east/14.png",
+            "iron_key/animations/spin/south-east/15.png",
+            "iron_key/animations/spin/south-east/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:49:22 GMT",
+          "src_frames": 17
+        },
+        "south-west": {
+          "frames": 17,
+          "strip": "iron_key/animations/spin__south-west.png",
+          "gif": "iron_key/animations/spin__south-west.gif",
+          "frame_paths": [
+            "iron_key/animations/spin/south-west/00.png",
+            "iron_key/animations/spin/south-west/01.png",
+            "iron_key/animations/spin/south-west/02.png",
+            "iron_key/animations/spin/south-west/03.png",
+            "iron_key/animations/spin/south-west/04.png",
+            "iron_key/animations/spin/south-west/05.png",
+            "iron_key/animations/spin/south-west/06.png",
+            "iron_key/animations/spin/south-west/07.png",
+            "iron_key/animations/spin/south-west/08.png",
+            "iron_key/animations/spin/south-west/09.png",
+            "iron_key/animations/spin/south-west/10.png",
+            "iron_key/animations/spin/south-west/11.png",
+            "iron_key/animations/spin/south-west/12.png",
+            "iron_key/animations/spin/south-west/13.png",
+            "iron_key/animations/spin/south-west/14.png",
+            "iron_key/animations/spin/south-west/15.png",
+            "iron_key/animations/spin/south-west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:49:31 GMT",
+          "src_frames": 17
+        },
+        "west": {
+          "frames": 17,
+          "strip": "iron_key/animations/spin__west.png",
+          "gif": "iron_key/animations/spin__west.gif",
+          "frame_paths": [
+            "iron_key/animations/spin/west/00.png",
+            "iron_key/animations/spin/west/01.png",
+            "iron_key/animations/spin/west/02.png",
+            "iron_key/animations/spin/west/03.png",
+            "iron_key/animations/spin/west/04.png",
+            "iron_key/animations/spin/west/05.png",
+            "iron_key/animations/spin/west/06.png",
+            "iron_key/animations/spin/west/07.png",
+            "iron_key/animations/spin/west/08.png",
+            "iron_key/animations/spin/west/09.png",
+            "iron_key/animations/spin/west/10.png",
+            "iron_key/animations/spin/west/11.png",
+            "iron_key/animations/spin/west/12.png",
+            "iron_key/animations/spin/west/13.png",
+            "iron_key/animations/spin/west/14.png",
+            "iron_key/animations/spin/west/15.png",
+            "iron_key/animations/spin/west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:49:40 GMT",
+          "src_frames": 17
         }
       }
     }
   },
-  "status": "in_progress"
+  "status": "in_progress",
+  "synced_from_pixellab": true
 }

@@ -38,6 +38,194 @@
     "north-west": "gold_ingot/rotations/north-west.png"
   },
   "animations": {
+    "bounce": {
+      "group_id": "ea3f21e5-1d70-4a6d-9695-41f8a17df4f5",
+      "description": "the gold bars bouncing",
+      "directions": {
+        "east": {
+          "frames": 17,
+          "strip": "gold_ingot/animations/bounce__east.png",
+          "gif": "gold_ingot/animations/bounce__east.gif",
+          "frame_paths": [
+            "gold_ingot/animations/bounce/east/00.png",
+            "gold_ingot/animations/bounce/east/01.png",
+            "gold_ingot/animations/bounce/east/02.png",
+            "gold_ingot/animations/bounce/east/03.png",
+            "gold_ingot/animations/bounce/east/04.png",
+            "gold_ingot/animations/bounce/east/05.png",
+            "gold_ingot/animations/bounce/east/06.png",
+            "gold_ingot/animations/bounce/east/07.png",
+            "gold_ingot/animations/bounce/east/08.png",
+            "gold_ingot/animations/bounce/east/09.png",
+            "gold_ingot/animations/bounce/east/10.png",
+            "gold_ingot/animations/bounce/east/11.png",
+            "gold_ingot/animations/bounce/east/12.png",
+            "gold_ingot/animations/bounce/east/13.png",
+            "gold_ingot/animations/bounce/east/14.png",
+            "gold_ingot/animations/bounce/east/15.png",
+            "gold_ingot/animations/bounce/east/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:41:13 GMT",
+          "src_frames": 17
+        },
+        "north": {
+          "frames": 17,
+          "strip": "gold_ingot/animations/bounce__north.png",
+          "gif": "gold_ingot/animations/bounce__north.gif",
+          "frame_paths": [
+            "gold_ingot/animations/bounce/north/00.png",
+            "gold_ingot/animations/bounce/north/01.png",
+            "gold_ingot/animations/bounce/north/02.png",
+            "gold_ingot/animations/bounce/north/03.png",
+            "gold_ingot/animations/bounce/north/04.png",
+            "gold_ingot/animations/bounce/north/05.png",
+            "gold_ingot/animations/bounce/north/06.png",
+            "gold_ingot/animations/bounce/north/07.png",
+            "gold_ingot/animations/bounce/north/08.png",
+            "gold_ingot/animations/bounce/north/09.png",
+            "gold_ingot/animations/bounce/north/10.png",
+            "gold_ingot/animations/bounce/north/11.png",
+            "gold_ingot/animations/bounce/north/12.png",
+            "gold_ingot/animations/bounce/north/13.png",
+            "gold_ingot/animations/bounce/north/14.png",
+            "gold_ingot/animations/bounce/north/15.png",
+            "gold_ingot/animations/bounce/north/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:41:24 GMT",
+          "src_frames": 17
+        },
+        "north-east": {
+          "frames": 17,
+          "strip": "gold_ingot/animations/bounce__north-east.png",
+          "gif": "gold_ingot/animations/bounce__north-east.gif",
+          "frame_paths": [
+            "gold_ingot/animations/bounce/north-east/00.png",
+            "gold_ingot/animations/bounce/north-east/01.png",
+            "gold_ingot/animations/bounce/north-east/02.png",
+            "gold_ingot/animations/bounce/north-east/03.png",
+            "gold_ingot/animations/bounce/north-east/04.png",
+            "gold_ingot/animations/bounce/north-east/05.png",
+            "gold_ingot/animations/bounce/north-east/06.png",
+            "gold_ingot/animations/bounce/north-east/07.png",
+            "gold_ingot/animations/bounce/north-east/08.png",
+            "gold_ingot/animations/bounce/north-east/09.png",
+            "gold_ingot/animations/bounce/north-east/10.png",
+            "gold_ingot/animations/bounce/north-east/11.png",
+            "gold_ingot/animations/bounce/north-east/12.png",
+            "gold_ingot/animations/bounce/north-east/13.png",
+            "gold_ingot/animations/bounce/north-east/14.png",
+            "gold_ingot/animations/bounce/north-east/15.png",
+            "gold_ingot/animations/bounce/north-east/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:41:33 GMT",
+          "src_frames": 17
+        },
+        "north-west": {
+          "frames": 17,
+          "strip": "gold_ingot/animations/bounce__north-west.png",
+          "gif": "gold_ingot/animations/bounce__north-west.gif",
+          "frame_paths": [
+            "gold_ingot/animations/bounce/north-west/00.png",
+            "gold_ingot/animations/bounce/north-west/01.png",
+            "gold_ingot/animations/bounce/north-west/02.png",
+            "gold_ingot/animations/bounce/north-west/03.png",
+            "gold_ingot/animations/bounce/north-west/04.png",
+            "gold_ingot/animations/bounce/north-west/05.png",
+            "gold_ingot/animations/bounce/north-west/06.png",
+            "gold_ingot/animations/bounce/north-west/07.png",
+            "gold_ingot/animations/bounce/north-west/08.png",
+            "gold_ingot/animations/bounce/north-west/09.png",
+            "gold_ingot/animations/bounce/north-west/10.png",
+            "gold_ingot/animations/bounce/north-west/11.png",
+            "gold_ingot/animations/bounce/north-west/12.png",
+            "gold_ingot/animations/bounce/north-west/13.png",
+            "gold_ingot/animations/bounce/north-west/14.png",
+            "gold_ingot/animations/bounce/north-west/15.png",
+            "gold_ingot/animations/bounce/north-west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:41:45 GMT",
+          "src_frames": 17
+        },
+        "south": {
+          "frames": 17,
+          "strip": "gold_ingot/animations/bounce__south.png",
+          "gif": "gold_ingot/animations/bounce__south.gif",
+          "frame_paths": [
+            "gold_ingot/animations/bounce/south/00.png",
+            "gold_ingot/animations/bounce/south/01.png",
+            "gold_ingot/animations/bounce/south/02.png",
+            "gold_ingot/animations/bounce/south/03.png",
+            "gold_ingot/animations/bounce/south/04.png",
+            "gold_ingot/animations/bounce/south/05.png",
+            "gold_ingot/animations/bounce/south/06.png",
+            "gold_ingot/animations/bounce/south/07.png",
+            "gold_ingot/animations/bounce/south/08.png",
+            "gold_ingot/animations/bounce/south/09.png",
+            "gold_ingot/animations/bounce/south/10.png",
+            "gold_ingot/animations/bounce/south/11.png",
+            "gold_ingot/animations/bounce/south/12.png",
+            "gold_ingot/animations/bounce/south/13.png",
+            "gold_ingot/animations/bounce/south/14.png",
+            "gold_ingot/animations/bounce/south/15.png",
+            "gold_ingot/animations/bounce/south/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 13:15:15 GMT",
+          "src_frames": 17
+        },
+        "south-west": {
+          "frames": 17,
+          "strip": "gold_ingot/animations/bounce__south-west.png",
+          "gif": "gold_ingot/animations/bounce__south-west.gif",
+          "frame_paths": [
+            "gold_ingot/animations/bounce/south-west/00.png",
+            "gold_ingot/animations/bounce/south-west/01.png",
+            "gold_ingot/animations/bounce/south-west/02.png",
+            "gold_ingot/animations/bounce/south-west/03.png",
+            "gold_ingot/animations/bounce/south-west/04.png",
+            "gold_ingot/animations/bounce/south-west/05.png",
+            "gold_ingot/animations/bounce/south-west/06.png",
+            "gold_ingot/animations/bounce/south-west/07.png",
+            "gold_ingot/animations/bounce/south-west/08.png",
+            "gold_ingot/animations/bounce/south-west/09.png",
+            "gold_ingot/animations/bounce/south-west/10.png",
+            "gold_ingot/animations/bounce/south-west/11.png",
+            "gold_ingot/animations/bounce/south-west/12.png",
+            "gold_ingot/animations/bounce/south-west/13.png",
+            "gold_ingot/animations/bounce/south-west/14.png",
+            "gold_ingot/animations/bounce/south-west/15.png",
+            "gold_ingot/animations/bounce/south-west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:42:06 GMT",
+          "src_frames": 17
+        },
+        "west": {
+          "frames": 17,
+          "strip": "gold_ingot/animations/bounce__west.png",
+          "gif": "gold_ingot/animations/bounce__west.gif",
+          "frame_paths": [
+            "gold_ingot/animations/bounce/west/00.png",
+            "gold_ingot/animations/bounce/west/01.png",
+            "gold_ingot/animations/bounce/west/02.png",
+            "gold_ingot/animations/bounce/west/03.png",
+            "gold_ingot/animations/bounce/west/04.png",
+            "gold_ingot/animations/bounce/west/05.png",
+            "gold_ingot/animations/bounce/west/06.png",
+            "gold_ingot/animations/bounce/west/07.png",
+            "gold_ingot/animations/bounce/west/08.png",
+            "gold_ingot/animations/bounce/west/09.png",
+            "gold_ingot/animations/bounce/west/10.png",
+            "gold_ingot/animations/bounce/west/11.png",
+            "gold_ingot/animations/bounce/west/12.png",
+            "gold_ingot/animations/bounce/west/13.png",
+            "gold_ingot/animations/bounce/west/14.png",
+            "gold_ingot/animations/bounce/west/15.png",
+            "gold_ingot/animations/bounce/west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 12:42:16 GMT",
+          "src_frames": 17
+        }
+      }
+    },
     "wobble": {
       "group_id": "b4c7af90-93c6-4709-a514-173cf1c43eea",
       "description": "the gold bars wobbling",
@@ -331,7 +519,7 @@
             "gold_ingot/animations/shine/north-west/15.png",
             "gold_ingot/animations/shine/north-west/16.png"
           ],
-          "lm": "Wed, 01 Jul 2026 12:29:53 GMT",
+          "lm": "Wed, 01 Jul 2026 13:15:17 GMT",
           "src_frames": 17
         },
         "south": {
@@ -437,181 +625,6 @@
           ],
           "lm": "Wed, 01 Jul 2026 12:30:44 GMT",
           "src_frames": 17
-        }
-      }
-    },
-    "bounce": {
-      "group_id": "ea3f21e5-1d70-4a6d-9695-41f8a17df4f5",
-      "description": "the gold bars bouncing",
-      "frame_count": 16,
-      "directions": {
-        "east": {
-          "frames": 17,
-          "strip": "gold_ingot/animations/bounce__east.png",
-          "gif": "gold_ingot/animations/bounce__east.gif",
-          "frame_paths": [
-            "gold_ingot/animations/bounce/east/00.png",
-            "gold_ingot/animations/bounce/east/01.png",
-            "gold_ingot/animations/bounce/east/02.png",
-            "gold_ingot/animations/bounce/east/03.png",
-            "gold_ingot/animations/bounce/east/04.png",
-            "gold_ingot/animations/bounce/east/05.png",
-            "gold_ingot/animations/bounce/east/06.png",
-            "gold_ingot/animations/bounce/east/07.png",
-            "gold_ingot/animations/bounce/east/08.png",
-            "gold_ingot/animations/bounce/east/09.png",
-            "gold_ingot/animations/bounce/east/10.png",
-            "gold_ingot/animations/bounce/east/11.png",
-            "gold_ingot/animations/bounce/east/12.png",
-            "gold_ingot/animations/bounce/east/13.png",
-            "gold_ingot/animations/bounce/east/14.png",
-            "gold_ingot/animations/bounce/east/15.png",
-            "gold_ingot/animations/bounce/east/16.png"
-          ]
-        },
-        "north": {
-          "frames": 17,
-          "strip": "gold_ingot/animations/bounce__north.png",
-          "gif": "gold_ingot/animations/bounce__north.gif",
-          "frame_paths": [
-            "gold_ingot/animations/bounce/north/00.png",
-            "gold_ingot/animations/bounce/north/01.png",
-            "gold_ingot/animations/bounce/north/02.png",
-            "gold_ingot/animations/bounce/north/03.png",
-            "gold_ingot/animations/bounce/north/04.png",
-            "gold_ingot/animations/bounce/north/05.png",
-            "gold_ingot/animations/bounce/north/06.png",
-            "gold_ingot/animations/bounce/north/07.png",
-            "gold_ingot/animations/bounce/north/08.png",
-            "gold_ingot/animations/bounce/north/09.png",
-            "gold_ingot/animations/bounce/north/10.png",
-            "gold_ingot/animations/bounce/north/11.png",
-            "gold_ingot/animations/bounce/north/12.png",
-            "gold_ingot/animations/bounce/north/13.png",
-            "gold_ingot/animations/bounce/north/14.png",
-            "gold_ingot/animations/bounce/north/15.png",
-            "gold_ingot/animations/bounce/north/16.png"
-          ]
-        },
-        "north-east": {
-          "frames": 17,
-          "strip": "gold_ingot/animations/bounce__north-east.png",
-          "gif": "gold_ingot/animations/bounce__north-east.gif",
-          "frame_paths": [
-            "gold_ingot/animations/bounce/north-east/00.png",
-            "gold_ingot/animations/bounce/north-east/01.png",
-            "gold_ingot/animations/bounce/north-east/02.png",
-            "gold_ingot/animations/bounce/north-east/03.png",
-            "gold_ingot/animations/bounce/north-east/04.png",
-            "gold_ingot/animations/bounce/north-east/05.png",
-            "gold_ingot/animations/bounce/north-east/06.png",
-            "gold_ingot/animations/bounce/north-east/07.png",
-            "gold_ingot/animations/bounce/north-east/08.png",
-            "gold_ingot/animations/bounce/north-east/09.png",
-            "gold_ingot/animations/bounce/north-east/10.png",
-            "gold_ingot/animations/bounce/north-east/11.png",
-            "gold_ingot/animations/bounce/north-east/12.png",
-            "gold_ingot/animations/bounce/north-east/13.png",
-            "gold_ingot/animations/bounce/north-east/14.png",
-            "gold_ingot/animations/bounce/north-east/15.png",
-            "gold_ingot/animations/bounce/north-east/16.png"
-          ]
-        },
-        "north-west": {
-          "frames": 17,
-          "strip": "gold_ingot/animations/bounce__north-west.png",
-          "gif": "gold_ingot/animations/bounce__north-west.gif",
-          "frame_paths": [
-            "gold_ingot/animations/bounce/north-west/00.png",
-            "gold_ingot/animations/bounce/north-west/01.png",
-            "gold_ingot/animations/bounce/north-west/02.png",
-            "gold_ingot/animations/bounce/north-west/03.png",
-            "gold_ingot/animations/bounce/north-west/04.png",
-            "gold_ingot/animations/bounce/north-west/05.png",
-            "gold_ingot/animations/bounce/north-west/06.png",
-            "gold_ingot/animations/bounce/north-west/07.png",
-            "gold_ingot/animations/bounce/north-west/08.png",
-            "gold_ingot/animations/bounce/north-west/09.png",
-            "gold_ingot/animations/bounce/north-west/10.png",
-            "gold_ingot/animations/bounce/north-west/11.png",
-            "gold_ingot/animations/bounce/north-west/12.png",
-            "gold_ingot/animations/bounce/north-west/13.png",
-            "gold_ingot/animations/bounce/north-west/14.png",
-            "gold_ingot/animations/bounce/north-west/15.png",
-            "gold_ingot/animations/bounce/north-west/16.png"
-          ]
-        },
-        "south": {
-          "frames": 17,
-          "strip": "gold_ingot/animations/bounce__south.png",
-          "gif": "gold_ingot/animations/bounce__south.gif",
-          "frame_paths": [
-            "gold_ingot/animations/bounce/south/00.png",
-            "gold_ingot/animations/bounce/south/01.png",
-            "gold_ingot/animations/bounce/south/02.png",
-            "gold_ingot/animations/bounce/south/03.png",
-            "gold_ingot/animations/bounce/south/04.png",
-            "gold_ingot/animations/bounce/south/05.png",
-            "gold_ingot/animations/bounce/south/06.png",
-            "gold_ingot/animations/bounce/south/07.png",
-            "gold_ingot/animations/bounce/south/08.png",
-            "gold_ingot/animations/bounce/south/09.png",
-            "gold_ingot/animations/bounce/south/10.png",
-            "gold_ingot/animations/bounce/south/11.png",
-            "gold_ingot/animations/bounce/south/12.png",
-            "gold_ingot/animations/bounce/south/13.png",
-            "gold_ingot/animations/bounce/south/14.png",
-            "gold_ingot/animations/bounce/south/15.png",
-            "gold_ingot/animations/bounce/south/16.png"
-          ]
-        },
-        "south-west": {
-          "frames": 17,
-          "strip": "gold_ingot/animations/bounce__south-west.png",
-          "gif": "gold_ingot/animations/bounce__south-west.gif",
-          "frame_paths": [
-            "gold_ingot/animations/bounce/south-west/00.png",
-            "gold_ingot/animations/bounce/south-west/01.png",
-            "gold_ingot/animations/bounce/south-west/02.png",
-            "gold_ingot/animations/bounce/south-west/03.png",
-            "gold_ingot/animations/bounce/south-west/04.png",
-            "gold_ingot/animations/bounce/south-west/05.png",
-            "gold_ingot/animations/bounce/south-west/06.png",
-            "gold_ingot/animations/bounce/south-west/07.png",
-            "gold_ingot/animations/bounce/south-west/08.png",
-            "gold_ingot/animations/bounce/south-west/09.png",
-            "gold_ingot/animations/bounce/south-west/10.png",
-            "gold_ingot/animations/bounce/south-west/11.png",
-            "gold_ingot/animations/bounce/south-west/12.png",
-            "gold_ingot/animations/bounce/south-west/13.png",
-            "gold_ingot/animations/bounce/south-west/14.png",
-            "gold_ingot/animations/bounce/south-west/15.png",
-            "gold_ingot/animations/bounce/south-west/16.png"
-          ]
-        },
-        "west": {
-          "frames": 17,
-          "strip": "gold_ingot/animations/bounce__west.png",
-          "gif": "gold_ingot/animations/bounce__west.gif",
-          "frame_paths": [
-            "gold_ingot/animations/bounce/west/00.png",
-            "gold_ingot/animations/bounce/west/01.png",
-            "gold_ingot/animations/bounce/west/02.png",
-            "gold_ingot/animations/bounce/west/03.png",
-            "gold_ingot/animations/bounce/west/04.png",
-            "gold_ingot/animations/bounce/west/05.png",
-            "gold_ingot/animations/bounce/west/06.png",
-            "gold_ingot/animations/bounce/west/07.png",
-            "gold_ingot/animations/bounce/west/08.png",
-            "gold_ingot/animations/bounce/west/09.png",
-            "gold_ingot/animations/bounce/west/10.png",
-            "gold_ingot/animations/bounce/west/11.png",
-            "gold_ingot/animations/bounce/west/12.png",
-            "gold_ingot/animations/bounce/west/13.png",
-            "gold_ingot/animations/bounce/west/14.png",
-            "gold_ingot/animations/bounce/west/15.png",
-            "gold_ingot/animations/bounce/west/16.png"
-          ]
         }
       }
     }
