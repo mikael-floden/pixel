@@ -1,0 +1,110 @@
+{
+  "schema": "pixel-tiles/set@1",
+  "category": "town_wall",
+  "description": "isometric tall town wall tiles, boundary walls only: 1) stone town wall 2) wooden palisade 3) brick wall 4) wall with gate 5) wall corner 6) capped town wall",
+  "kind": "ground",
+  "tile_type": "isometric",
+  "tile_size": 64,
+  "view_angle": 28,
+  "depth_ratio": 1.0,
+  "flat_top_px": 4,
+  "tile_height": 128,
+  "profile": "tall",
+  "geometry": {
+    "grid_dx": 32,
+    "grid_dy": 13,
+    "diamond_top_height": 26,
+    "level_height": 100,
+    "note": "screen_x=ox+(col-row)*grid_dx; screen_y=oy+(col+row)*grid_dy; raise one level by subtracting level_height from screen_y; draw back-to-front by (col+row) then by level."
+  },
+  "stacking": {
+    "face_height_px": 100,
+    "one_layer_px": 38,
+    "layers": 2.63,
+    "diamond_top_height_px": 26,
+    "grid_dx": 32,
+    "grid_dy": 13,
+    "formula": "face_px = depth_ratio*(tile_height-26). One elevation level = 38px (a 64x64 @ 100% tile). To place a tile N levels up, subtract N*38 from screen_y. This set's face spans `layers` levels. Stack flush by offsetting the upper tile up by its own face_height_px. Draw back-to-front by (col+row), then level."
+  },
+  "count": 10,
+  "tiles": [
+    {
+      "index": 0,
+      "file": "tile_00.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 1,
+      "file": "tile_01.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 2,
+      "file": "tile_02.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 3,
+      "file": "tile_03.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 4,
+      "file": "tile_04.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 5,
+      "file": "tile_05.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 6,
+      "file": "tile_06.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 7,
+      "file": "tile_07.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 8,
+      "file": "tile_08.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 9,
+      "file": "tile_09.png",
+      "width": 64,
+      "height": 128
+    }
+  ],
+  "preview": "preview.png",
+  "generated_at": "2026-07-01T10:48:07+00:00",
+  "provenance": {
+    "tool": "pixellab",
+    "endpoint": "/create-tiles-pro",
+    "seed": 1364122655,
+    "request": {
+      "endpoint": "/create-tiles-pro",
+      "tile_type": "isometric",
+      "tile_size": 64,
+      "tile_view_angle": 28,
+      "tile_depth_ratio": 1.0,
+      "tile_flat_top_px": 4,
+      "tile_height": 128,
+      "seed": 1364122655,
+      "description": "isometric tall town wall tiles, boundary walls only: 1) stone town wall 2) wooden palisade 3) brick wall 4) wall with gate 5) wall corner 6) capped town wall"
+    }
+  }
+}
