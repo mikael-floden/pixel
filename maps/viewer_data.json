@@ -33,6 +33,35 @@
       "manifest": "harbor_town/zone.json"
     },
     {
+      "id": "hollow_cave",
+      "title": "Hollow Cave",
+      "kind": "interior",
+      "archetype": "cave",
+      "description": "A small rocky cave interior, one exit.",
+      "grid": {
+        "width": 18,
+        "height": 14
+      },
+      "tile_size": 16,
+      "levels": [
+        "floor",
+        "wall"
+      ],
+      "bands": [
+        "cave_floor_wall"
+      ],
+      "objects": 12,
+      "exits": [
+        {
+          "id": "door",
+          "kind": "door",
+          "to_zone": "whispering_isle"
+        }
+      ],
+      "preview": "hollow_cave/preview.png",
+      "manifest": "hollow_cave/zone.json"
+    },
+    {
       "id": "isle_of_dawn",
       "title": "Isle of Dawn",
       "kind": "island",
