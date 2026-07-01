@@ -8,17 +8,48 @@ sheet, so the Maps agent can consume them directly.
 
 from __future__ import annotations
 
+import datetime
 import json
 import os
 import zlib
 
+import numpy as np
 from PIL import Image
 
 ROOT = os.path.dirname(os.path.dirname(__file__))  # tiles/
+ENDPOINT = "/create-tiles-pro"
 
 
 def _seed(*parts):
     return zlib.crc32("::".join(str(p) for p in parts).encode()) % (2 ** 31)
+
+
+def measure_geometry(img, tile_size):
+    """Measure isometric alignment geometry from a rendered tile so the Maps
+    agent can place/stack tiles exactly. Returns dict with the diamond-top
+    height, the per-level vertical step (block side-face height), and the grid
+    step (dx, dy). Same format params -> same geometry across all categories."""
+    a = np.asarray(img.convert("RGBA"))
+    alpha = a[:, :, 3] > 16
+    cols = np.where(alpha.any(axis=0))[0]
+    if len(cols) == 0:
+        return {}
+    xmin, xmax = int(cols.min()), int(cols.max())
+    cx = (xmin + xmax) // 2
+    apex_y = int(np.where(alpha[:, cx])[0].min())
+    leftcol = np.where(alpha[:, xmin])[0]
+    left_corner_y = int(leftcol.min())
+    level_height = int(leftcol.max() - leftcol.min() + 1)   # side-face height
+    dy = left_corner_y - apex_y                             # half diamond-top height
+    return {
+        "grid_dx": tile_size // 2,          # screen x step per (col-row)
+        "grid_dy": dy,                       # screen y step per (col+row)
+        "diamond_top_height": dy * 2,
+        "level_height": level_height,        # offset up by this per elevation level
+        "note": "screen_x=ox+(col-row)*grid_dx; screen_y=oy+(col+row)*grid_dy; "
+                "raise one level by subtracting level_height from screen_y; "
+                "draw back-to-front by (col+row) then by level.",
+    }
 
 
 def category_dir(cid):
