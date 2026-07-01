@@ -48,6 +48,7 @@ def build():
             "description": meta.get("description", ""),
             "view": meta.get("view"),
             "size": meta.get("size"),
+            "placement": meta.get("placement"),
             "status": meta.get("status"),
             "sprite": meta.get("sprite", f"{oid}/sprite.png"),
             "rotation_files": rots.get("files", {}),
@@ -59,6 +60,7 @@ def build():
         "title": "Pixel Object Factory",
         "object_count": len(objects),
         "target_count": cfg["targets"]["num_objects"],
+        "scale": cfg.get("scale"),
         "categories": categories,
         "objects": objects,
     }

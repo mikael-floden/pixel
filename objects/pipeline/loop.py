@@ -138,6 +138,15 @@ def main():
         else cfg["budget"]["min_generations_remaining"]
     client = PixelLabClient()
 
+    # Keep in-world sizing current: propagate any scale-rule / world-height change
+    # to existing objects (zero PixelLab cost) so nothing is unrealistically sized.
+    moved = factory.refresh_placement(cfg)
+    if moved:
+        viewer_build.build()
+        commit_push(f"objects: refresh world-scale placement on {moved} object(s)",
+                    push=not args.no_push)
+        print(f"refreshed placement on {moved} object(s)")
+
     # Fleet awareness: read the other domains' heartbeats and honour any request
     # addressed to us (per the protocol), then publish our own starting status.
     peers = coordination.read_peers()

@@ -105,17 +105,37 @@ art — just read the JSON and load the PNGs.
     }
   },
 
+  "placement": {                        // REALISM RULE — how big this is in the world
+    "world_height_m": 0.7,              // the object's real-world height (metres)
+    "world_px_height": 26,              // => render the sprite scaled to THIS pixel height
+    "character_height_px": 64,          // ...next to a character drawn 64px tall
+    "character_height_m": 1.7           // (so 64px == 1.7m; a coin ~8px, an oak ~226px)
+  },
+
   "status": "complete",                 // "in_progress" while the loop is still filling this object
   "generations_used": 5.0,
   "source": "pixellab.ai (generate-image-pixflux / rotate / animate-with-text)"
 }
 ```
 
+### Sizing objects in the world (important)
+
+Sprites are generated at whatever **art** resolution looks best (`size`), which is
+**not** how big the object is in the world. Use **`placement.world_px_height`** for
+that: render each sprite scaled so its on-screen height equals `world_px_height`,
+and draw characters at `placement.character_height_px` (64px). Then everything is
+to scale — a gold coin is ~8px beside a 64px character, an oak tree towers at
+~226px. This is a hard rule the loop enforces: every object carries a real
+`world_height_m` and the derived `world_px_height`, so nothing lands
+unrealistically sized. (Change the reference or an object's height in
+`config/objects.json → scale`, and the loop rewrites every manifest's `placement`
+on its next run, no re-generation.)
+
 ### How to load it
 
-- **Static prop** (rock, crate, coin): draw `sprite.png`. Every frame/rotation of
-  the object shares the `size` given in the manifest, so you can atlas-pack by
-  `size` with no surprises.
+- **Static prop** (rock, crate, coin): draw `sprite.png`, scaled to
+  `placement.world_px_height`. The object's frames/rotations all share the art
+  `size`, so you can atlas-pack by `size` with no surprises.
 - **Directional prop** (barrel, sign post): pick `rotations.files[direction]` for
   the facing you need. `south` is the same image as `sprite.png`.
 - **Animated prop** (chest, coin, torch, tree):

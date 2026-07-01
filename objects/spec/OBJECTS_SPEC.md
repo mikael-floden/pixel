@@ -84,6 +84,26 @@ character animate endpoint's raw `rgba_bytes`.
   the catalog is exhausted, up to `targets.num_objects`. Deterministic in the
   object index (seeded), so re-runs are reproducible.
 
+## Realism rule — world scale (objects must fit beside characters)
+
+An object's **art resolution is not its world size.** Every object declares a
+real-world height `world_height_m` (per-object, or a `scale.category_height_m`
+fallback), and the loop derives the pixel height it should occupy in-world:
+
+```
+world_px_height = round(world_height_m * character_height_px / character_height_m)
+```
+
+with the character reference in `config/objects.json → scale`
+(`character_height_px = 64`, `character_height_m = 1.7`). This lands in every
+manifest's `placement`, and the game renders each sprite scaled to
+`world_px_height` beside a 64px character — so a coin (~0.22m → ~8px) is tiny and
+an oak (~6m → ~226px) towers. It's a **rule, not a suggestion**: nothing ships
+without a `placement`, and `factory.refresh_placement` re-derives it for every
+existing object at loop startup (zero PixelLab cost) whenever the scale rule or a
+world height changes. The viewer shows each object to scale against a character
+silhouette.
+
 ## Loop algorithm
 
 The next unit is derived purely from the filesystem, so the loop is resumable and

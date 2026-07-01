@@ -125,6 +125,7 @@ def _finalize_spec(cfg, raw, index, procedural=False):
         "negative_description": spec.get("negative_description", d["negative_description"]),
         "rotations": int(spec.get("rotations", 0)),
         "animations": anims,
+        "placement": placement(cfg, spec.get("category", "misc"), spec.get("world_height_m")),
         "index": index,
         "procedural": procedural,
         "seed": _seed(spec["id"], index),
@@ -160,6 +161,36 @@ def object_specs(cfg):
 
 def full_description(cfg, spec):
     return f"{spec['description']}, {cfg['style_base']}"
+
+
+def world_height_m(cfg, category, override=None):
+    """The realistic real-world height (metres) for an object: its explicit
+    `world_height_m` if given, else the category default. Enforces the realism
+    rule so nothing is sized arbitrarily."""
+    if override is not None:
+        return float(override)
+    return float(cfg["scale"]["category_height_m"].get(category, 1.0))
+
+
+def placement(cfg, category, override=None):
+    """Turn a real-world height into the in-world PIXEL height an object should
+    occupy next to a character, so props compose at a believable scale. Returns a
+    dict stored in the manifest and read by the game/viewer.
+
+    world_px_height = world_height_m * character_height_px / character_height_m
+    (a coin ~0.22m -> ~8px beside a 64px character; an oak ~6m -> ~226px)."""
+    sc = cfg["scale"]
+    wh = world_height_m(cfg, category, override)
+    ppm = sc["character_height_px"] / sc["character_height_m"]
+    return {
+        "world_height_m": round(wh, 3),
+        "world_px_height": max(1, round(wh * ppm)),
+        "character_height_px": sc["character_height_px"],
+        "character_height_m": sc["character_height_m"],
+        "note": "Render the sprite scaled so its height == world_px_height; a "
+                "character is character_height_px tall. Keeps objects realistically "
+                "sized in a world with characters.",
+    }
 
 
 # --- io / packaging helpers -------------------------------------------------
@@ -309,6 +340,7 @@ def _base_meta(spec):
         "id": spec["id"], "name": spec["name"], "category": spec["category"],
         "description": spec["description"], "view": spec["view"],
         "direction": spec["direction"], "size": [spec["width"], spec["height"]],
+        "placement": spec["placement"],
         "procedural": spec["procedural"],
         "source": "pixellab.ai (generate-image-pixflux / rotate / animate-with-text)",
         "params": {
@@ -415,6 +447,23 @@ def generate_animation(client, cfg, spec, adef, max_attempts=3):
     meta["generations_used"] = round(meta.get("generations_used", 0) + used_total, 3)
     write_manifest(oid, meta)
     return meta
+
+
+def refresh_placement(cfg):
+    """Recompute and write `placement` for every existing object manifest, so a
+    change to the scale rule (or a newly added world_height_m) propagates to
+    already-generated objects with zero PixelLab cost. Returns how many changed."""
+    by_id = {s["id"]: s for s in object_specs(cfg)}
+    changed = 0
+    for oid, spec in by_id.items():
+        meta = read_manifest(oid)
+        if not meta:
+            continue
+        if meta.get("placement") != spec["placement"]:
+            meta["placement"] = spec["placement"]
+            write_manifest(oid, meta)
+            changed += 1
+    return changed
 
 
 def mark_complete_if_done(cfg, spec):
