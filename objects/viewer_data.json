@@ -1,11 +1,12 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 14,
+  "object_count": 15,
   "target_count": 40,
   "categories": {
     "tool": 6,
     "container": 4,
-    "valuable": 4
+    "valuable": 4,
+    "nature": 1
   },
   "objects": [
     {
@@ -171,6 +172,21 @@
           "action": "spinning around"
         }
       ]
+    },
+    {
+      "id": "oak_tree",
+      "name": "Oak Tree",
+      "category": "nature",
+      "description": "a lush round-canopy oak tree with a thick brown trunk",
+      "view": "low top-down",
+      "size": [
+        64,
+        64
+      ],
+      "status": "in_progress",
+      "sprite": "oak_tree/sprite.png",
+      "rotation_files": {},
+      "animations": []
     },
     {
       "id": "pickaxe",
