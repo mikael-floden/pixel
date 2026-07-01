@@ -34,7 +34,7 @@
     "grid_dy": 13,
     "formula": "One elevation level = 19px (a 64x64 @ 50% flat tile's face). Raise a tile N levels by subtracting N*19 from screen_y; draw back-to-front by (col+row), then by level. EXACT tiles (64x64: flat=1 level, raised=2 levels) terrace perfectly. SCENERY tiles (64x128 cliff/tall) have fractional faces (`layers`) \u2014 do NOT use them as exact steps; anchor them by `base_y` (the footprint's front tip is at image row base_y, identical across thicknesses, so bottom-anchoring needs no per-tile correction)."
   },
-  "count": 16,
+  "count": 32,
   "tiles": [
     {
       "index": 0,
@@ -179,6 +179,182 @@
       "apex_y": 8,
       "base_y": 54,
       "face_px": 19
+    },
+    {
+      "index": 16,
+      "file": "tile_16.png",
+      "width": 64,
+      "height": 64,
+      "apex_y": 8,
+      "base_y": 54,
+      "face_px": 18,
+      "mirrored": true,
+      "mirror_of": 0
+    },
+    {
+      "index": 17,
+      "file": "tile_17.png",
+      "width": 64,
+      "height": 64,
+      "apex_y": 8,
+      "base_y": 54,
+      "face_px": 18,
+      "mirrored": true,
+      "mirror_of": 1
+    },
+    {
+      "index": 18,
+      "file": "tile_18.png",
+      "width": 64,
+      "height": 64,
+      "apex_y": 8,
+      "base_y": 54,
+      "face_px": 18,
+      "mirrored": true,
+      "mirror_of": 2
+    },
+    {
+      "index": 19,
+      "file": "tile_19.png",
+      "width": 64,
+      "height": 64,
+      "apex_y": 8,
+      "base_y": 54,
+      "face_px": 18,
+      "mirrored": true,
+      "mirror_of": 3
+    },
+    {
+      "index": 20,
+      "file": "tile_20.png",
+      "width": 64,
+      "height": 64,
+      "apex_y": 8,
+      "base_y": 54,
+      "face_px": 19,
+      "mirrored": true,
+      "mirror_of": 4
+    },
+    {
+      "index": 21,
+      "file": "tile_21.png",
+      "width": 64,
+      "height": 64,
+      "apex_y": 8,
+      "base_y": 54,
+      "face_px": 19,
+      "mirrored": true,
+      "mirror_of": 5
+    },
+    {
+      "index": 22,
+      "file": "tile_22.png",
+      "width": 64,
+      "height": 64,
+      "apex_y": 8,
+      "base_y": 54,
+      "face_px": 19,
+      "mirrored": true,
+      "mirror_of": 6
+    },
+    {
+      "index": 23,
+      "file": "tile_23.png",
+      "width": 64,
+      "height": 64,
+      "apex_y": 8,
+      "base_y": 54,
+      "face_px": 19,
+      "mirrored": true,
+      "mirror_of": 7
+    },
+    {
+      "index": 24,
+      "file": "tile_24.png",
+      "width": 64,
+      "height": 64,
+      "apex_y": 8,
+      "base_y": 54,
+      "face_px": 19,
+      "mirrored": true,
+      "mirror_of": 8
+    },
+    {
+      "index": 25,
+      "file": "tile_25.png",
+      "width": 64,
+      "height": 64,
+      "apex_y": 8,
+      "base_y": 54,
+      "face_px": 19,
+      "mirrored": true,
+      "mirror_of": 9
+    },
+    {
+      "index": 26,
+      "file": "tile_26.png",
+      "width": 64,
+      "height": 64,
+      "apex_y": 8,
+      "base_y": 54,
+      "face_px": 19,
+      "mirrored": true,
+      "mirror_of": 10
+    },
+    {
+      "index": 27,
+      "file": "tile_27.png",
+      "width": 64,
+      "height": 64,
+      "apex_y": 8,
+      "base_y": 54,
+      "face_px": 19,
+      "mirrored": true,
+      "mirror_of": 11
+    },
+    {
+      "index": 28,
+      "file": "tile_28.png",
+      "width": 64,
+      "height": 64,
+      "apex_y": 8,
+      "base_y": 54,
+      "face_px": 19,
+      "mirrored": true,
+      "mirror_of": 12
+    },
+    {
+      "index": 29,
+      "file": "tile_29.png",
+      "width": 64,
+      "height": 64,
+      "apex_y": 8,
+      "base_y": 54,
+      "face_px": 19,
+      "mirrored": true,
+      "mirror_of": 13
+    },
+    {
+      "index": 30,
+      "file": "tile_30.png",
+      "width": 64,
+      "height": 64,
+      "apex_y": 8,
+      "base_y": 54,
+      "face_px": 19,
+      "mirrored": true,
+      "mirror_of": 14
+    },
+    {
+      "index": 31,
+      "file": "tile_31.png",
+      "width": 64,
+      "height": 64,
+      "apex_y": 8,
+      "base_y": 54,
+      "face_px": 19,
+      "mirrored": true,
+      "mirror_of": 15
     }
   ],
   "preview": "preview.png",
@@ -203,7 +379,8 @@
         "se",
         "sw"
       ]
-    ]
+    ],
+    "mirror_balanced": true
   },
   "generated_at": "2026-07-01T14:43:10+00:00",
   "provenance": {

@@ -16,6 +16,8 @@ import zlib
 import numpy as np
 from PIL import Image
 
+import roads
+
 ROOT = os.path.dirname(os.path.dirname(__file__))  # tiles/
 ENDPOINT = "/create-tiles-pro"
 
@@ -200,6 +202,12 @@ def generate_category(client, cfg, cat):
         depth_ratio=depth, tile_type=t.get("type", "isometric"),
         flat_top_px=t.get("flat_top_px", 4), tile_height=tile_height,
         seed=seed)
+    # Roads: guarantee BOTH diagonal directions (and more corner variety) by
+    # appending horizontal mirrors — a left-right flip swaps the road's diagonal.
+    n_orig = len(tiles)
+    mirror_src = []
+    if cat.get("road"):
+        tiles, mirror_src = roads.mirror_balance(tiles)
     cdir = category_dir(cid)
     os.makedirs(cdir, exist_ok=True)
     geometry, per_tile = set_geometry(tiles, t["size"])
@@ -207,8 +215,12 @@ def generate_category(client, cfg, cat):
     for i, im in enumerate(tiles):
         fname = f"tile_{i:02d}.png"
         im.save(os.path.join(cdir, fname))
-        tile_meta.append({"index": i, "file": fname, "width": im.width,
-                          "height": im.height, **per_tile[i]})
+        meta = {"index": i, "file": fname, "width": im.width,
+                "height": im.height, **per_tile[i]}
+        if i >= n_orig:                       # an appended mirror
+            meta["mirrored"] = True
+            meta["mirror_of"] = mirror_src[i - n_orig]
+        tile_meta.append(meta)
     _preview(tiles, os.path.join(cdir, "preview.png"))
     manifest = {
         "schema": "pixel-tiles/set@1",
