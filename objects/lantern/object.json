@@ -1,0 +1,37 @@
+{
+  "id": "lantern",
+  "name": "Lantern",
+  "category": "light",
+  "description": "a metal-framed glass lantern with a warm glowing candle",
+  "view": "side",
+  "direction": "south",
+  "size": [
+    64,
+    64
+  ],
+  "placement": {
+    "world_height_m": 0.5,
+    "world_px_height": 19,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall. Keeps objects realistically sized in a world with characters."
+  },
+  "procedural": false,
+  "source": "pixellab.ai (generate-image-pixflux / rotate / animate-with-text)",
+  "params": {
+    "outline": "single color black outline",
+    "shading": "detailed shading",
+    "detail": "highly detailed",
+    "no_background": true,
+    "isometric": false,
+    "seed": 1853576257
+  },
+  "sprite": "lantern/sprite.png",
+  "rotations": {
+    "count": 0,
+    "directions": []
+  },
+  "animations": {},
+  "generations_used": 1.0,
+  "status": "in_progress"
+}
