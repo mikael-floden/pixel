@@ -1,6 +1,6 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 1,
+  "object_count": 2,
   "target_count": 40,
   "scale": {
     "_comment": "REALISM RULE: objects are scaled to the world by real height, so they sit correctly next to characters. A character is ~character_height_px tall (the 64px skeleton) representing character_height_m. The loop turns each object's world_height_m into world_px_height = round(world_height_m * character_height_px / character_height_m); a game renders the sprite scaled to that pixel height. So a coin (~0.22m) is tiny next to a character and an oak (~6m) towers. Every object MUST have a world_height_m (per-object, else category_height_m fallback).",
@@ -17,9 +17,31 @@
     }
   },
   "categories": {
-    "container": 1
+    "container": 2
   },
   "objects": [
+    {
+      "id": "barrel",
+      "name": "Barrel",
+      "category": "container",
+      "description": "a sturdy wooden barrel bound with metal hoops",
+      "view": "low top-down",
+      "size": [
+        64,
+        64
+      ],
+      "placement": {
+        "world_height_m": 0.9,
+        "world_px_height": 34,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall. Keeps objects realistically sized in a world with characters."
+      },
+      "status": "in_progress",
+      "sprite": "barrel/sprite.png",
+      "rotation_files": {},
+      "animations": []
+    },
     {
       "id": "wooden_chest",
       "name": "Wooden Chest",
