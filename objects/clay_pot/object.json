@@ -1,0 +1,38 @@
+{
+  "id": "clay_pot",
+  "name": "Clay Pot",
+  "category": "container",
+  "description": "a small round terracotta clay pot",
+  "view": "low top-down",
+  "direction": "south",
+  "size": [
+    32,
+    32
+  ],
+  "placement": {
+    "world_height_m": 0.35,
+    "world_px_height": 13,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall. Keeps objects realistically sized in a world with characters."
+  },
+  "procedural": false,
+  "source": "pixellab.ai (generate-image-pixflux / rotate / animate-with-text)",
+  "params": {
+    "outline": "selective outline",
+    "shading": "detailed shading",
+    "detail": "highly detailed",
+    "no_background": true,
+    "isometric": false,
+    "seed": 57157270
+  },
+  "style_version": 2,
+  "sprite": "clay_pot/sprite.png",
+  "rotations": {
+    "count": 0,
+    "directions": []
+  },
+  "animations": {},
+  "generations_used": 1.0,
+  "status": "complete"
+}
