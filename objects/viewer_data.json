@@ -1,9 +1,9 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 2,
+  "object_count": 3,
   "target_count": 40,
   "categories": {
-    "container": 2
+    "container": 3
   },
   "objects": [
     {
@@ -48,6 +48,21 @@
           "action": "opening"
         }
       ]
+    },
+    {
+      "id": "wooden_crate",
+      "name": "Wooden Crate",
+      "category": "container",
+      "description": "a wooden shipping crate with plank sides and nailed corners",
+      "view": "low top-down",
+      "size": [
+        48,
+        48
+      ],
+      "status": "complete",
+      "sprite": "wooden_crate/sprite.png",
+      "rotation_files": {},
+      "animations": []
     }
   ]
 }

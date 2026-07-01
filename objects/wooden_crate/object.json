@@ -1,0 +1,30 @@
+{
+  "id": "wooden_crate",
+  "name": "Wooden Crate",
+  "category": "container",
+  "description": "a wooden shipping crate with plank sides and nailed corners",
+  "view": "low top-down",
+  "direction": "south",
+  "size": [
+    48,
+    48
+  ],
+  "procedural": false,
+  "source": "pixellab.ai (generate-image-pixflux / rotate / animate-with-text)",
+  "params": {
+    "outline": "single color black outline",
+    "shading": "detailed shading",
+    "detail": "highly detailed",
+    "no_background": true,
+    "isometric": false,
+    "seed": 1933910440
+  },
+  "sprite": "wooden_crate/sprite.png",
+  "rotations": {
+    "count": 0,
+    "directions": []
+  },
+  "animations": {},
+  "generations_used": 1.0,
+  "status": "complete"
+}
