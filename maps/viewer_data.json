@@ -16,6 +16,22 @@
       "scene": "isle_dawn/scene.png",
       "collision": "isle_dawn/collision.png",
       "manifest": "isle_dawn/zone.json"
+    },
+    {
+      "id": "isle_verdant",
+      "title": "Verdant Isle",
+      "kind": "island",
+      "mood": "forested island",
+      "pixel_size": {
+        "width": 1200,
+        "height": 864
+      },
+      "props": 5,
+      "exits": [],
+      "preview": "isle_verdant/preview.png",
+      "scene": "isle_verdant/scene.png",
+      "collision": "isle_verdant/collision.png",
+      "manifest": "isle_verdant/zone.json"
     }
   ]
 }
