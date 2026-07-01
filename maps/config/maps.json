@@ -69,35 +69,6 @@
       ]
     },
     {
-      "id": "isle_shore",
-      "title": "Sandy Shore",
-      "kind": "island_screen",
-      "mood": "sunny beach meeting grass (daytime)",
-      "prompt": "top-down RPG overworld map: a warm golden sand beach along calm blue water at the bottom, grassy dunes with a few palms and rocks at the top, gentle daylight",
-      "scene_size": [
-        320,
-        224
-      ],
-      "seed": 322,
-      "props": [
-        "oak_tree",
-        "rock",
-        "bush",
-        "flower",
-        "barrel",
-        "wooden_crate"
-      ],
-      "prop_count": 7,
-      "exits": [
-        {
-          "kind": "path",
-          "edge": "south",
-          "to_zone": "isle_glade",
-          "to_exit": "north"
-        }
-      ]
-    },
-    {
       "id": "isle_meadow",
       "title": "Sunlit Meadow",
       "kind": "island_screen",
@@ -177,33 +148,6 @@
       ]
     },
     {
-      "id": "isle_cove",
-      "title": "Rocky Cove",
-      "kind": "island_screen",
-      "mood": "rocky coastal cove (daytime)",
-      "prompt": "top-down RPG overworld map: a rocky coastal cove, calm blue water with scattered grey boulders and a pebbly shore, a few hardy bushes, gentle daylight",
-      "scene_size": [
-        320,
-        224
-      ],
-      "seed": 403,
-      "props": [
-        "rock",
-        "bush",
-        "barrel",
-        "wooden_crate"
-      ],
-      "prop_count": 7,
-      "exits": [
-        {
-          "kind": "path",
-          "edge": "east",
-          "to_zone": "isle_meadow",
-          "to_exit": "west"
-        }
-      ]
-    },
-    {
       "id": "isle_forest",
       "title": "Deep Woods",
       "kind": "island_screen",
@@ -256,6 +200,212 @@
           "edge": "south",
           "to_zone": "isle_forest",
           "to_exit": "north"
+        }
+      ]
+    },
+    {
+      "id": "cave_hollow",
+      "title": "Hollow Cave",
+      "kind": "interior",
+      "mood": "rocky cave interior (torchlit)",
+      "prompt": "top-down RPG interior map: a rocky cave chamber with a stone floor, jagged rock walls around the edges, scattered boulders, a torchlit mood",
+      "scene_size": [
+        288,
+        208
+      ],
+      "seed": 501,
+      "props": [
+        "rock",
+        "wooden_chest",
+        "barrel",
+        "lantern",
+        "mushroom"
+      ],
+      "prop_count": 8,
+      "exits": [
+        {
+          "kind": "door",
+          "edge": "south",
+          "to_zone": "isle_forest",
+          "to_exit": "north"
+        }
+      ]
+    },
+    {
+      "id": "cabin_room",
+      "title": "Fisher's Cabin",
+      "kind": "interior",
+      "mood": "cozy wooden cabin interior (daytime)",
+      "prompt": "top-down RPG interior map: a cozy one-room wooden cabin, warm plank floor, wooden walls around the edges, a rug in the middle, homely",
+      "scene_size": [
+        256,
+        192
+      ],
+      "seed": 502,
+      "props": [
+        "barrel",
+        "wooden_crate",
+        "wooden_chest",
+        "clay_pot",
+        "lantern"
+      ],
+      "prop_count": 7,
+      "exits": [
+        {
+          "kind": "door",
+          "edge": "south",
+          "to_zone": "isle_camp",
+          "to_exit": "north"
+        }
+      ]
+    },
+    {
+      "id": "isle2_dunes",
+      "title": "Sunward Dunes",
+      "kind": "island_screen",
+      "mood": "tropical beach (bright daytime)",
+      "prompt": "top-down RPG overworld map: a bright tropical beach of pale sand meeting turquoise water, scattered rocks and driftwood, a couple of palms, sunny daylight",
+      "scene_size": [
+        320,
+        224
+      ],
+      "seed": 601,
+      "props": [
+        "rock",
+        "oak_tree",
+        "barrel",
+        "wooden_crate",
+        "bush"
+      ],
+      "prop_count": 7,
+      "exits": [
+        {
+          "kind": "path",
+          "edge": "north",
+          "to_zone": "isle2_jungle",
+          "to_exit": "south"
+        }
+      ]
+    },
+    {
+      "id": "isle2_jungle",
+      "title": "Verdant Jungle",
+      "kind": "island_screen",
+      "mood": "lush jungle (daytime)",
+      "prompt": "top-down RPG overworld map: a lush dense jungle with broad-leaf foliage, a muddy trail, ferns, mushrooms and vines, humid daylight",
+      "scene_size": [
+        320,
+        224
+      ],
+      "seed": 602,
+      "props": [
+        "oak_tree",
+        "pine_tree",
+        "bush",
+        "mushroom",
+        "tree_stump",
+        "rock"
+      ],
+      "prop_count": 12,
+      "exits": [
+        {
+          "kind": "path",
+          "edge": "south",
+          "to_zone": "isle2_dunes",
+          "to_exit": "north"
+        },
+        {
+          "kind": "path",
+          "edge": "north",
+          "to_zone": "isle2_ruins",
+          "to_exit": "south"
+        }
+      ]
+    },
+    {
+      "id": "isle2_ruins",
+      "title": "Ancient Ruins",
+      "kind": "island_screen",
+      "mood": "overgrown stone ruins (daytime)",
+      "prompt": "top-down RPG overworld map: overgrown ancient stone ruins, cracked flagstone ground, broken pillars and mossy walls, grass growing through, mysterious daylight",
+      "scene_size": [
+        320,
+        224
+      ],
+      "seed": 603,
+      "props": [
+        "ancient_boulder_37",
+        "ancient_treasure_chest_30",
+        "ancient_clay_urn_31",
+        "ancient_shrub_36",
+        "ancient_candle_38",
+        "rock",
+        "bush"
+      ],
+      "prop_count": 10,
+      "exits": [
+        {
+          "kind": "path",
+          "edge": "south",
+          "to_zone": "isle2_jungle",
+          "to_exit": "north"
+        }
+      ]
+    },
+    {
+      "id": "isle_shore",
+      "title": "Sandy Shore",
+      "kind": "island_screen",
+      "mood": "sunny beach meeting grass (daytime)",
+      "prompt": "top-down RPG overworld map: a warm golden sand beach along calm blue water at the bottom, grassy dunes with a few trees and rocks at the top, gentle daylight",
+      "scene_size": [
+        320,
+        224
+      ],
+      "seed": 322,
+      "props": [
+        "oak_tree",
+        "rock",
+        "bush",
+        "flower",
+        "barrel",
+        "wooden_crate"
+      ],
+      "prop_count": 8,
+      "exits": [
+        {
+          "kind": "path",
+          "edge": "north",
+          "to_zone": "isle_meadow",
+          "to_exit": "south"
+        }
+      ]
+    },
+    {
+      "id": "isle_cove",
+      "title": "Rocky Cove",
+      "kind": "island_screen",
+      "mood": "rocky coastal cove (daytime)",
+      "prompt": "top-down RPG overworld map: a sandy rocky cove with pale beach sand in the middle, calm blue water at the edges, scattered grey boulders and hardy bushes, gentle daylight",
+      "scene_size": [
+        320,
+        224
+      ],
+      "seed": 403,
+      "props": [
+        "rock",
+        "bush",
+        "barrel",
+        "wooden_crate",
+        "oak_tree"
+      ],
+      "prop_count": 8,
+      "exits": [
+        {
+          "kind": "path",
+          "edge": "east",
+          "to_zone": "isle_meadow",
+          "to_exit": "west"
         }
       ]
     }

@@ -63,7 +63,11 @@ def _derive_collision(scene, cell_native, world_scale):
             gg = sum(p[1] for p in px) / n
             bb = sum(p[2] for p in px) / n
             lum = 0.3 * rr + 0.6 * gg + 0.1 * bb
-            walkable = lum > 95 and gg > bb + 8 and gg > 70
+            is_water = bb > rr + 10 and bb > gg - 10        # blue-dominant = water
+            is_dark = lum < 95                               # dark foliage / shadow
+            # Walkable = bright ground that isn't water: grass clearings AND sandy
+            # beaches / dirt (warm, not blue-dominant) both count.
+            walkable = (not is_water) and (not is_dark) and gg > 60
             grid[r][c] = 0 if walkable else 1
     return grid, gw, gh
 
