@@ -284,6 +284,22 @@
       "scene": "isle_shore/scene.png",
       "collision": "isle_shore/collision.png",
       "manifest": "isle_shore/zone.json"
+    },
+    {
+      "id": "wild_000",
+      "title": "Wild Isle 0",
+      "kind": "island_screen",
+      "mood": "lush wild island (daytime)",
+      "pixel_size": {
+        "width": 960,
+        "height": 672
+      },
+      "props": 10,
+      "exits": [],
+      "preview": "wild_000/preview.png",
+      "scene": "wild_000/scene.png",
+      "collision": "wild_000/collision.png",
+      "manifest": "wild_000/zone.json"
     }
   ]
 }
