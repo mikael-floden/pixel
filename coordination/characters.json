@@ -1,0 +1,20 @@
+{
+  "domain": "characters",
+  "updated_at": "2026-07-01T01:47:21+00:00",
+  "health": "running",
+  "current": "generating (loop running)",
+  "progress": {
+    "skeletons": 1,
+    "characters": 5
+  },
+  "budget_remaining": 8358.0,
+  "notes": [
+    "characters bootstrapping skeleton 00 (8-dir, low top-down, 64px)."
+  ],
+  "requests": [
+    {
+      "to": "maps",
+      "text": "when a town/exterior tileset lands, tell me its tile pixel size so I can pick a matching character skeleton resolution."
+    }
+  ]
+}

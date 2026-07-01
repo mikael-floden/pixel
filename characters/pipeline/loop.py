@@ -20,6 +20,8 @@ Other flags: --max-units N, --once, --no-push.
 from __future__ import annotations
 
 import argparse
+import datetime
+import json
 import os
 import subprocess
 import time
@@ -27,6 +29,50 @@ import time
 import factory
 import viewer_build
 from pixellab_client import BudgetExhausted, PixelLabClient
+
+DOMAIN = "characters"
+
+
+# --- coordination heartbeat (see coordination/PROTOCOL.md) ------------------
+
+def write_status(client, current, health="running"):
+    """Publish this domain's heartbeat to coordination/<domain>.json so the other
+    agents (objects, maps) can see what characters is doing, how much shared
+    PixelLab budget is left, and any cross-domain requests. We own this file;
+    nobody else writes it, so it never conflicts. `notes`/`requests` are
+    preserved across heartbeats; the live fields refresh each unit."""
+    repo_root = os.path.dirname(factory.ROOT)
+    path = os.path.join(repo_root, "coordination", f"{DOMAIN}.json")
+    prev = {}
+    try:
+        with open(path) as f:
+            prev = json.load(f)
+    except (OSError, ValueError):
+        pass
+    skels = factory.list_skeletons()
+    try:
+        budget = client.generations_remaining()
+    except Exception:
+        budget = prev.get("budget_remaining")
+    status = {
+        "domain": DOMAIN,
+        "updated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
+        "health": health,
+        "current": current,
+        "progress": {
+            "skeletons": len(skels),
+            "characters": sum(len(factory.list_characters(s["id"])) for s in skels),
+        },
+        "budget_remaining": budget,
+        "notes": prev.get("notes", []),        # human/agent-authored, preserved
+        "requests": prev.get("requests", []),  # cross-domain asks, preserved
+    }
+    try:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w") as f:
+            json.dump(status, f, indent=2)
+    except OSError as e:
+        print(f"  (status write skipped: {e})")
 
 
 # --- git --------------------------------------------------------------------
@@ -229,6 +275,7 @@ def main():
     print(f"factory loop starting — {rem:.0f} generations remaining "
           f"(floor {min_balance})")
 
+    write_status(client, "starting")
     fails = 0
     while True:
         try:
@@ -237,6 +284,7 @@ def main():
             fails = 0
         except BudgetExhausted as e:
             print(f"stopping: {e}")
+            write_status(client, str(e), health="idle")
             break
         except Exception as e:
             # A transient blip (proxy/network drop, PixelLab 5xx, a container
@@ -252,8 +300,10 @@ def main():
             continue
         if result is None:
             print("stopping: nothing left to generate")
+            write_status(client, "all targets complete", health="idle")
             break
         units += 1
+        write_status(client, result)
         if args.once or (args.max_units and units >= args.max_units):
             break
         if args.max_minutes and (time.monotonic() - start) / 60 >= args.max_minutes:
