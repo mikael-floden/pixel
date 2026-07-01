@@ -66,11 +66,19 @@ def _resolve_animations(cfg, spec):
             override.pop("key", None)
         base = dict(lib.get(key, {}))
         base.update(override)
+        d = cfg.get("defaults", {})
         out.append({
             "key": key,
             "action": base.get("action", key),
             "n_frames": int(base.get("n_frames", 4)),
             "view": base.get("view", spec.get("view")),
+            # Higher image guidance keeps frames close to the reference sprite, so
+            # the object doesn't "melt" over the clip; text guidance drives the
+            # motion. Tunable per animation, with a sensible default.
+            "image_guidance_scale": float(base.get("image_guidance_scale",
+                                                   d.get("animation_image_guidance_scale", 3.0))),
+            "text_guidance_scale": float(base.get("text_guidance_scale",
+                                                  d.get("animation_text_guidance_scale", 6.0))),
         })
     return out
 
@@ -376,6 +384,8 @@ def generate_animation(client, cfg, spec, adef, max_attempts=3):
             width=spec["width"], height=spec["height"], view=adef["view"],
             direction=spec["direction"] if adef["view"] != "side" else "east",
             n_frames=adef["n_frames"], negative_description=spec["negative_description"],
+            image_guidance_scale=adef.get("image_guidance_scale", 1.5),
+            text_guidance_scale=adef.get("text_guidance_scale", 7.5),
             seed=_seed(oid, key, attempt),
         )
         used_total += used

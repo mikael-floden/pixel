@@ -1,0 +1,30 @@
+{
+  "id": "gem_ruby",
+  "name": "Ruby Gem",
+  "category": "valuable",
+  "description": "a faceted red ruby gemstone sparkling",
+  "view": "low top-down",
+  "direction": "south",
+  "size": [
+    64,
+    64
+  ],
+  "procedural": false,
+  "source": "pixellab.ai (generate-image-pixflux / rotate / animate-with-text)",
+  "params": {
+    "outline": "single color black outline",
+    "shading": "detailed shading",
+    "detail": "highly detailed",
+    "no_background": true,
+    "isometric": false,
+    "seed": 196581037
+  },
+  "sprite": "gem_ruby/sprite.png",
+  "rotations": {
+    "count": 0,
+    "directions": []
+  },
+  "animations": {},
+  "generations_used": 1.0,
+  "status": "in_progress"
+}

@@ -11,7 +11,9 @@
     "detail": "highly detailed",
     "no_background": true,
     "text_guidance_scale": 8.0,
-    "negative_description": "blurry, multiple objects, duplicated, cropped, text, watermark, drop shadow, background scenery, tiling"
+    "negative_description": "blurry, multiple objects, duplicated, cropped, text, watermark, drop shadow, background scenery, tiling",
+    "animation_image_guidance_scale": 3.0,
+    "animation_text_guidance_scale": 6.0
   },
 
   "budget": {
