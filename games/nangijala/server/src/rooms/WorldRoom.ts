@@ -10,12 +10,18 @@ import {
   WORLD_HEIGHT,
   TICK_RATE,
   stepMovement,
-  BlockedFn,
   TerrainGrid,
   buildTerrainGrid,
   makeBlocked,
-  isBlockedAtWorld,
+  surfaceAtWorld,
+  isStandableAtWorld,
   findSpawn,
+  stepStamina,
+  WALK_CLIMB,
+  JUMP_CLIMB,
+  JUMP_MS,
+  JUMP_COOLDOWN_MS,
+  MAX_STAMINA,
 } from "@nangijala/shared";
 import { WorldState, Player } from "../schema/WorldState.js";
 import { JsonPlayerStore, PlayerStore } from "../store.js";
@@ -35,9 +41,8 @@ export class WorldRoom extends Room<WorldState> {
   // Persistence: swap JsonPlayerStore for a DB-backed store later.
   private store: PlayerStore = new JsonPlayerStore(join(process.cwd(), ".data", "players.json"));
 
-  // Terrain collision derived from the maps agent's world (null → open world).
+  // Terrain (elevation + surface) from the maps agent's world (null → open).
   private terrain: TerrainGrid | null = loadTerrain();
-  private blocked: BlockedFn | undefined = this.terrain ? makeBlocked(this.terrain) : undefined;
 
   onCreate() {
     this.setState(new WorldState());
@@ -49,6 +54,15 @@ export class WorldRoom extends Room<WorldState> {
       player.inputAy = clamp(message.ay ?? 0, -1, 1);
       player.inputRunning = !!message.running;
       if (typeof message.seq === "number") player.seq = message.seq; // ack for reconciliation
+      // Jump is edge-triggered: only start a fresh jump when grounded and off
+      // cooldown (guards ignore repeats if the client re-sends jump held).
+      if (message.jump) {
+        const now = Date.now();
+        if (now >= player.jumpUntil && now >= player.jumpReadyAt) {
+          player.jumpUntil = now + JUMP_MS;
+          player.jumpReadyAt = now + JUMP_MS + JUMP_COOLDOWN_MS;
+        }
+      }
     });
 
     this.onMessage("chat", (client, message: ChatInput) => {
@@ -76,7 +90,7 @@ export class WorldRoom extends Room<WorldState> {
     // Returning player? Restore their last position (server-authoritative),
     // but rescue anyone whose saved spot is now blocked (terrain can change).
     const saved = player.token ? this.store.load(player.token) : undefined;
-    if (saved && !(this.terrain && isBlockedAtWorld(this.terrain, saved.x, saved.y))) {
+    if (saved && !(this.terrain && !isStandableAtWorld(this.terrain, saved.x, saved.y))) {
       player.x = saved.x;
       player.y = saved.y;
     } else if (this.terrain) {
@@ -106,21 +120,53 @@ export class WorldRoom extends Room<WorldState> {
   }
 
   private update(dt: number) {
-    this.state.players.forEach((player) => {
-      const r = stepMovement(
-        player.x,
-        player.y,
-        player.inputAx,
-        player.inputAy,
-        player.inputRunning,
-        dt,
-        this.blocked,
-      );
+    const now = Date.now();
+    this.state.players.forEach((player, id) => {
+      const jumping = now < player.jumpUntil;
+      player.jumping = jumping;
+
+      const terrain = this.terrain;
+      let r;
+      if (terrain) {
+        // Surface under the player's feet drives walk speed; a jump raises how
+        // high you can step so you can cross a 1-level ledge.
+        const surf = surfaceAtWorld(terrain, player.x, player.y);
+        const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
+        r = stepMovement(
+          player.x,
+          player.y,
+          player.inputAx,
+          player.inputAy,
+          player.inputRunning,
+          dt,
+          makeBlocked(terrain, ctx),
+          surf.speed,
+        );
+      } else {
+        r = stepMovement(player.x, player.y, player.inputAx, player.inputAy, player.inputRunning, dt);
+      }
       player.x = r.x;
       player.y = r.y;
       player.moving = r.moving;
       player.running = r.moving && player.inputRunning;
       if (r.dir) player.dir = r.dir;
+
+      // Swimming + stamina: draining in water, recovering on land. Run out and
+      // you drown — respawn on the nearest solid ground with stamina restored.
+      if (terrain) {
+        const swimming = surfaceAtWorld(terrain, player.x, player.y).swimmable;
+        player.swimming = swimming;
+        const s = stepStamina(player.stamina, swimming, dt);
+        player.stamina = s.stamina;
+        if (s.drowned) {
+          const spot = findSpawn(terrain, player.x, player.y);
+          player.x = spot.x;
+          player.y = spot.y;
+          player.stamina = MAX_STAMINA;
+          player.swimming = false;
+          this.broadcast("drown", { id, name: player.name });
+        }
+      }
     });
   }
 }
@@ -145,7 +191,7 @@ function loadTerrain(): TerrainGrid | null {
     const world = JSON.parse(readFileSync(path, "utf8")) as {
       width: number;
       height: number;
-      rows: { t: string }[][];
+      rows: { t: string; l?: number }[][];
     };
     if (!world?.rows?.length) return null;
     return buildTerrainGrid(world.width, world.height, world.rows);

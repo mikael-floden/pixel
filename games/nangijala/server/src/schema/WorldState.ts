@@ -1,5 +1,5 @@
 import { Schema, MapSchema, defineTypes } from "@colyseus/schema";
-import { DEFAULT_DIRECTION } from "@nangijala/shared";
+import { DEFAULT_DIRECTION, MAX_STAMINA } from "@nangijala/shared";
 
 /**
  * One connected player. Synced fields are declared with `declare` (so no class
@@ -17,11 +17,16 @@ export class Player extends Schema {
   declare name: string;
   declare character: string;
   declare seq: number; // last input sequence the server has applied (ack)
+  declare jumping: boolean; // in a jump window (for the hop visual + climb)
+  declare swimming: boolean; // currently in water
+  declare stamina: number; // swim stamina 0..MAX_STAMINA
 
   // Server-only (not synced): latest input + rate-limit bookkeeping.
   inputAx = 0;
   inputAy = 0;
   inputRunning = false;
+  jumpUntil = 0; // ms timestamp: jump window ends
+  jumpReadyAt = 0; // ms timestamp: earliest next jump (cooldown)
   lastChatAt = 0;
   token = ""; // persistence key (server-only)
 
@@ -35,6 +40,9 @@ export class Player extends Schema {
     this.name = "";
     this.character = "";
     this.seq = 0;
+    this.jumping = false;
+    this.swimming = false;
+    this.stamina = MAX_STAMINA;
   }
 }
 
@@ -47,6 +55,9 @@ defineTypes(Player, {
   name: "string",
   character: "string",
   seq: "number",
+  jumping: "boolean",
+  swimming: "boolean",
+  stamina: "number",
 });
 
 /** The whole shared world. Everyone connected is in this one state. */

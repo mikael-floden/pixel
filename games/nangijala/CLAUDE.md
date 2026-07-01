@@ -40,17 +40,25 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
   back-to-front by `(col+row,row)`, stack level 0..l). `MapPreviewScene` (`/#map`)
   composites the whole world; the live `WorldScene` uses it as the ground and
   `project()`s each player's flat `(x,y)` onto the grid (feet lifted by elevation).
-- Terrain collision (#17) is server-authoritative: `buildTerrainGrid`/`makeBlocked`
-  in `shared/` derive a blocked grid from the world cells (category-based —
-  `BLOCKED_TERRAIN` = water + castle; unknown categories default walkable). Both
-  `stepMovement` (server tick + client prediction) resolve movement axis-separated
-  so players slide along walls, and spawns use `findSpawn` (open walkable land).
-  Press **C** in-world to visualize blocked cells. Tune walkability via
-  `BLOCKED_TERRAIN`.
-- Open follow-ups (#28): occlusion behind tall tiles, elevation-step traversal
-  (stairs / blocking sheer cliff faces so you can't walk up a 2-level stone
-  face), iso input feel. If the tile "house format" changes, re-measure
-  `MAP_GEOMETRY`.
+- Movement system (#17) is server-authoritative and governed by **elevation**,
+  not tile category (`shared/`): `buildTerrainGrid` reads each cell's `l` +
+  category; `canEnter` allows a move only if the destination is enterable and the
+  elevation step is within the climb allowance. Design **"Option 2B"**:
+  `WALK_CLIMB = 0.5` (you can't walk up a full 1-level ledge), but a **timed
+  jump** (`JUMP_CLIMB = 1`, Space) crosses it. `stepMovement` resolves axis-
+  separated (wall-slide) and scales by the current **surface** speed.
+- **Surfaces** (`SURFACES` in `shared/`) are the *other* axis: per-category
+  `{ standable, swimmable, speed, sound }` — roads faster, sand/snow slower,
+  water swimmable. Unknown categories default to plain walkable ground.
+- **Swimming/stamina** (`stepStamina`): entering water drains stamina (~20/s),
+  land regenerates it; at 0 you **drown** → respawn on nearest land (`findSpawn`),
+  server broadcasts `drown`. Client shows a swim tint, sink, and a stamina HUD.
+- Client rebuilds the SAME grid and predicts jump/swim/speed so nothing rubber-
+  bands. Press **C** to visualize water cells. Tune feel via the `*_CLIMB`,
+  `*_STAMINA`/`SWIM_*` constants and the `SURFACES` table.
+- Open follow-ups (#28): occlusion behind tall tiles; half-level (0.5) stair/ramp
+  tiles from the maps agent so players can ascend without jumping; iso input feel.
+  If the tile "house format" changes, re-measure `MAP_GEOMETRY`.
 
 ## Conventions
 

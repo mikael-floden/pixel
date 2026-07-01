@@ -68,6 +68,7 @@ export interface InputMessage {
   ax: number; // -1..1 horizontal
   ay: number; // -1..1 vertical
   running: boolean;
+  jump?: boolean; // edge-triggered: request a jump this input
   seq?: number; // client input sequence, for prediction/reconciliation
 }
 
@@ -78,13 +79,15 @@ export interface MoveResult {
   moving: boolean;
 }
 
-/** A test for whether a world position is impassable (e.g. water, a wall). */
-export type BlockedFn = (x: number, y: number) => boolean;
+/** Blocked test for a *move*: is entering (toX,toY) from (fromX,fromY) disallowed?
+ * It takes the source too because traversal depends on the elevation step, not
+ * just the destination cell. */
+export type BlockedFn = (toX: number, toY: number, fromX: number, fromY: number) => boolean;
 
 /** Integrate one movement step. The SAME function runs on the server (each tick)
- * and on the client (prediction), so they stay in lockstep. When `blocked` is
- * given, movement is resolved axis-separated so players slide along walls
- * instead of sticking to them. */
+ * and on the client (prediction), so they stay in lockstep. `blocked` rejects a
+ * move (resolved axis-separated so players slide along walls); `speedScale`
+ * applies the current surface's walk-speed multiplier. */
 export function stepMovement(
   x: number,
   y: number,
@@ -93,20 +96,21 @@ export function stepMovement(
   running: boolean,
   dt: number,
   blocked?: BlockedFn,
+  speedScale = 1,
 ): MoveResult {
   const len = Math.hypot(ax, ay);
   if (len < 1e-6) return { x, y, dir: null, moving: false };
   const nx = ax / len;
   const ny = ay / len;
-  const speed = running ? RUN_SPEED : WALK_SPEED;
+  const speed = (running ? RUN_SPEED : WALK_SPEED) * speedScale;
   const tx = clamp(x + nx * speed * dt, SPAWN_MARGIN, WORLD_WIDTH - SPAWN_MARGIN);
   const ty = clamp(y + ny * speed * dt, SPAWN_MARGIN, WORLD_HEIGHT - SPAWN_MARGIN);
   let rx = x;
   let ry = y;
-  // Resolve each axis independently: keep the X move if its destination is free,
-  // then the Y move from the (possibly advanced) X — this yields wall-sliding.
-  if (!blocked || !blocked(tx, ry)) rx = tx;
-  if (!blocked || !blocked(rx, ty)) ry = ty;
+  // Resolve each axis independently: keep the X move if its destination is
+  // enterable, then the Y move from the (possibly advanced) X — wall-sliding.
+  if (!blocked || !blocked(tx, y, x, y)) rx = tx;
+  if (!blocked || !blocked(rx, ty, rx, y)) ry = ty;
   return { x: rx, y: ry, dir: vectorToDirection(nx, ny), moving: true };
 }
 
@@ -114,49 +118,144 @@ function clamp(v: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, v));
 }
 
-// --- Terrain / collision -----------------------------------------------------
-// Walkability comes from the maps agent's world grid (maps/world/world.json).
-// We block by tile CATEGORY, defaulting unknown categories to walkable so new
-// ground tiles the maps/tiles agents add don't accidentally wall players in.
-export const BLOCKED_TERRAIN: ReadonlySet<string> = new Set(["water", "castle"]);
+// --- Terrain: surfaces + elevation -------------------------------------------
+// Walkability is governed by ELEVATION (how big a step you can take), not tile
+// category. A tile's category is a separate axis: its SURFACE controls walk
+// speed, footstep sound, and whether it's solid ground or swimmable water.
 
-export function isWalkableTerrain(t: string): boolean {
-  return !BLOCKED_TERRAIN.has(t);
+export interface Surface {
+  standable: boolean; // solid ground you can walk/stand on
+  swimmable: boolean; // water you can swim across (costs stamina — see stepStamina)
+  speed: number; // walk-speed multiplier on this surface
+  sound: string; // footstep sound id (for the future audio system, #9)
 }
 
-/** A row-major blocked/free grid over the world, one flag per map cell. */
+/** Per-category surface properties. Unknown categories fall back to DEFAULT
+ * (plain walkable ground) so new tiles the maps/tiles agents add never wall
+ * players in or crash — they just walk normally until tuned here. */
+export const SURFACES: Record<string, Surface> = {
+  grass: { standable: true, swimmable: false, speed: 1.0, sound: "grass" },
+  sand: { standable: true, swimmable: false, speed: 0.8, sound: "sand" },
+  stone: { standable: true, swimmable: false, speed: 1.0, sound: "stone" },
+  cobblestone: { standable: true, swimmable: false, speed: 1.05, sound: "stone" },
+  brick_road: { standable: true, swimmable: false, speed: 1.2, sound: "stone" },
+  castle: { standable: true, swimmable: false, speed: 1.0, sound: "stone" },
+  snow: { standable: true, swimmable: false, speed: 0.65, sound: "snow" },
+  water: { standable: false, swimmable: true, speed: 0.55, sound: "water" },
+};
+export const DEFAULT_SURFACE: Surface = { standable: true, swimmable: false, speed: 1.0, sound: "grass" };
+const VOID_SURFACE: Surface = { standable: false, swimmable: false, speed: 1.0, sound: "" };
+
+export function surfaceFor(t: string): Surface {
+  return SURFACES[t] ?? DEFAULT_SURFACE;
+}
+
+// Elevation traversal (design "Option 2B"): you can walk between cells within
+// WALK_CLIMB of each other; crossing a full 1-level ledge needs a timed JUMP.
+export const WALK_CLIMB = 0.5; // step you can walk up/down passively
+export const JUMP_CLIMB = 1; // step you can cross while jumping
+export const JUMP_MS = 420; // active jump window (climb allowance + hop visual)
+export const JUMP_COOLDOWN_MS = 180; // after landing, before you can jump again
+
+// Swimming: entering water starts a stamina drain; at zero you drown.
+export const MAX_STAMINA = 100;
+export const SWIM_DRAIN = 20; // stamina per second while swimming
+export const STAMINA_REGEN = 30; // stamina per second recovered on land
+
+/** Per-cell elevation + tile category over the world grid (row-major). */
 export interface TerrainGrid {
   width: number;
   height: number;
-  blocked: boolean[];
+  level: number[];
+  type: string[];
 }
 
-/** Build a collision grid from the maps agent's world rows (cells carry `t`). */
 export function buildTerrainGrid(
   width: number,
   height: number,
-  rows: { t: string }[][],
+  rows: { t: string; l?: number }[][],
 ): TerrainGrid {
-  const blocked: boolean[] = new Array(width * height);
+  const level: number[] = new Array(width * height).fill(0);
+  const type: string[] = new Array(width * height).fill("");
   for (let r = 0; r < height; r++) {
     for (let c = 0; c < width; c++) {
       const cell = rows[r]?.[c];
-      blocked[r * width + c] = cell ? !isWalkableTerrain(cell.t) : true;
+      const i = r * width + c;
+      level[i] = cell?.l ?? 0;
+      type[i] = cell?.t ?? "";
     }
   }
-  return { width, height, blocked };
+  return { width, height, level, type };
 }
 
-/** True if the world position falls on a blocked cell (or outside the map). */
-export function isBlockedAtWorld(grid: TerrainGrid, x: number, y: number): boolean {
+function cellIndex(grid: TerrainGrid, x: number, y: number): number {
   const col = Math.floor((x / WORLD_WIDTH) * grid.width);
   const row = Math.floor((y / WORLD_HEIGHT) * grid.height);
-  if (col < 0 || row < 0 || col >= grid.width || row >= grid.height) return true;
-  return grid.blocked[row * grid.width + col];
+  if (col < 0 || row < 0 || col >= grid.width || row >= grid.height) return -1;
+  return row * grid.width + col;
 }
 
-export function makeBlocked(grid: TerrainGrid): BlockedFn {
-  return (x, y) => isBlockedAtWorld(grid, x, y);
+export function surfaceAtWorld(grid: TerrainGrid, x: number, y: number): Surface {
+  const i = cellIndex(grid, x, y);
+  if (i < 0) return VOID_SURFACE;
+  const t = grid.type[i];
+  return t ? surfaceFor(t) : VOID_SURFACE;
+}
+
+export function levelAtWorld(grid: TerrainGrid, x: number, y: number): number {
+  const i = cellIndex(grid, x, y);
+  return i < 0 ? 0 : grid.level[i];
+}
+
+export function isStandableAtWorld(grid: TerrainGrid, x: number, y: number): boolean {
+  return surfaceAtWorld(grid, x, y).standable;
+}
+
+/** State that gates a move: how high the player may step, and whether they may
+ * enter water (i.e. start swimming). */
+export interface MoveContext {
+  maxClimb: number; // WALK_CLIMB normally, JUMP_CLIMB while jumping
+  canSwim: boolean; // may enter swimmable water
+}
+
+/** Can the player move from (fromX,fromY) onto (toX,toY)? The destination must
+ * be enterable (solid ground, or water when swimming is allowed) and the
+ * elevation step must be within `maxClimb`. */
+export function canEnter(
+  grid: TerrainGrid,
+  fromX: number,
+  fromY: number,
+  toX: number,
+  toY: number,
+  ctx: MoveContext,
+): boolean {
+  const to = surfaceAtWorld(grid, toX, toY);
+  const enterable = to.standable || (to.swimmable && ctx.canSwim);
+  if (!enterable) return false;
+  const dl = levelAtWorld(grid, toX, toY) - levelAtWorld(grid, fromX, fromY);
+  return Math.abs(dl) <= ctx.maxClimb + 1e-9;
+}
+
+/** Adapt canEnter into stepMovement's blocked() predicate for a given context. */
+export function makeBlocked(grid: TerrainGrid, ctx: MoveContext): BlockedFn {
+  return (toX, toY, fromX, fromY) => !canEnter(grid, fromX, fromY, toX, toY, ctx);
+}
+
+/**
+ * Advance a player's swim stamina one tick. Draining while swimming; recovering
+ * on land. `drowned` is true the moment it hits zero in water.
+ */
+export function stepStamina(
+  stamina: number,
+  swimming: boolean,
+  dt: number,
+): { stamina: number; drowned: boolean } {
+  if (swimming) {
+    const s = stamina - SWIM_DRAIN * dt;
+    if (s <= 0) return { stamina: 0, drowned: true };
+    return { stamina: s, drowned: false };
+  }
+  return { stamina: Math.min(MAX_STAMINA, stamina + STAMINA_REGEN * dt), drowned: false };
 }
 
 /** World coordinates of a map cell's centre. */
@@ -167,22 +266,32 @@ export function cellCenterWorld(grid: TerrainGrid, col: number, row: number): { 
   };
 }
 
-function neighborhoodOpen(grid: TerrainGrid, col: number, row: number): boolean {
+function cellStandable(grid: TerrainGrid, col: number, row: number): boolean {
+  if (col < 0 || row < 0 || col >= grid.width || row >= grid.height) return false;
+  const t = grid.type[row * grid.width + col];
+  return t ? surfaceFor(t).standable : false;
+}
+
+/** A spawn cell is good if it and its whole 3×3 neighbourhood are standable and
+ * walkably close in elevation (so a newcomer can actually move off it). */
+function spawnCellOk(grid: TerrainGrid, col: number, row: number): boolean {
+  if (!cellStandable(grid, col, row)) return false;
+  const l0 = grid.level[row * grid.width + col];
   for (let dr = -1; dr <= 1; dr++) {
     for (let dc = -1; dc <= 1; dc++) {
       const c = col + dc;
       const r = row + dr;
-      if (c < 0 || r < 0 || c >= grid.width || r >= grid.height) return false;
-      if (grid.blocked[r * grid.width + c]) return false;
+      if (!cellStandable(grid, c, r)) return false;
+      if (Math.abs(grid.level[r * grid.width + c] - l0) > WALK_CLIMB) return false;
     }
   }
   return true;
 }
 
 /**
- * Pick a spawn point: the walkable cell nearest a preferred spot (world centre
- * by default) whose 3×3 neighbourhood is also walkable, so newcomers have room
- * to move in any direction. Falls back to any walkable cell, then the pref.
+ * Pick a spawn point: the standable cell nearest a preferred spot (world centre
+ * by default) with an open, walkable 3×3 around it. Falls back to any standable
+ * cell, then the preferred point.
  */
 export function findSpawn(
   grid: TerrainGrid,
@@ -192,21 +301,20 @@ export function findSpawn(
   const c0 = clamp(Math.floor((prefX / WORLD_WIDTH) * grid.width), 0, grid.width - 1);
   const r0 = clamp(Math.floor((prefY / WORLD_HEIGHT) * grid.height), 0, grid.height - 1);
   const maxRad = grid.width + grid.height;
-  let firstWalkable: { col: number; row: number } | null = null;
+  let firstStandable: { col: number; row: number } | null = null;
   for (let rad = 0; rad <= maxRad; rad++) {
     for (let dr = -rad; dr <= rad; dr++) {
       for (let dc = -rad; dc <= rad; dc++) {
         if (Math.max(Math.abs(dr), Math.abs(dc)) !== rad) continue; // ring only
         const c = c0 + dc;
         const r = r0 + dr;
-        if (c < 0 || r < 0 || c >= grid.width || r >= grid.height) continue;
-        if (grid.blocked[r * grid.width + c]) continue;
-        if (!firstWalkable) firstWalkable = { col: c, row: r };
-        if (neighborhoodOpen(grid, c, r)) return cellCenterWorld(grid, c, r);
+        if (!cellStandable(grid, c, r)) continue;
+        if (!firstStandable) firstStandable = { col: c, row: r };
+        if (spawnCellOk(grid, c, r)) return cellCenterWorld(grid, c, r);
       }
     }
   }
-  if (firstWalkable) return cellCenterWorld(grid, firstWalkable.col, firstWalkable.row);
+  if (firstStandable) return cellCenterWorld(grid, firstStandable.col, firstStandable.row);
   return { x: prefX, y: prefY };
 }
 

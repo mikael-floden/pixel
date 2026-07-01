@@ -29,7 +29,9 @@ npm install
 npm run dev          # server :2567 + client :5173
 ```
 Open `http://localhost:5173` in two tabs → pick a character → walk the island.
-WASD/arrows move, Shift runs, Enter chats. Map preview at `/#map`.
+WASD/arrows move, Shift runs, **Space jumps** (time it to hop a 1-level ledge),
+Enter chats, C shows the water/terrain debug overlay. You can swim across water
+but your stamina drains — get out before you drown. Map preview at `/#map`.
 
 ## Layout
 

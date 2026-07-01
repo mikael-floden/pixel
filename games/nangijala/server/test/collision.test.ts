@@ -4,77 +4,107 @@ import {
   stepMovement,
   buildTerrainGrid,
   makeBlocked,
-  isWalkableTerrain,
-  isBlockedAtWorld,
+  canEnter,
+  surfaceFor,
+  surfaceAtWorld,
+  levelAtWorld,
+  isStandableAtWorld,
   findSpawn,
+  stepStamina,
+  WALK_CLIMB,
+  JUMP_CLIMB,
+  MAX_STAMINA,
+  SWIM_DRAIN,
   WORLD_WIDTH,
   WORLD_HEIGHT,
   WALK_SPEED,
 } from "@nangijala/shared";
 
-// A tiny 3×3 world: walkable centre column, water on the left/right columns.
-//   W . W
-//   W . W
-//   W . W
+// A 3×3 world. Centre column is grass; left column water; the right column is a
+// raised grass wall (elevation 1) — a 1-level ledge you can't walk up.
+//   W  g   G1
+//   W  g   G1
+//   W  g   G1
 function grid3x3() {
+  const g = (l = 0) => ({ t: "grass", l });
+  const w = { t: "water", l: 0 };
   const rows = [
-    [{ t: "water" }, { t: "grass" }, { t: "water" }],
-    [{ t: "water" }, { t: "grass" }, { t: "water" }],
-    [{ t: "water" }, { t: "grass" }, { t: "water" }],
+    [w, g(0), g(1)],
+    [w, g(0), g(1)],
+    [w, g(0), g(1)],
   ];
   return buildTerrainGrid(3, 3, rows);
 }
 
 const CELL_W = WORLD_WIDTH / 3;
 const CELL_H = WORLD_HEIGHT / 3;
-const centreX = CELL_W * 1.5; // middle column centre
-const centreY = CELL_H * 1.5;
+const midX = CELL_W * 1.5; // centre (grass, l0)
+const midY = CELL_H * 1.5;
+const rightX = CELL_W * 2.5; // raised grass wall (l1)
 
-test("terrain categories: water/castle block, ground walks, unknown walks", () => {
-  assert.equal(isWalkableTerrain("water"), false);
-  assert.equal(isWalkableTerrain("castle"), false);
-  assert.equal(isWalkableTerrain("grass"), true);
-  assert.equal(isWalkableTerrain("brick_road"), true);
-  assert.equal(isWalkableTerrain("some_new_tile"), true); // default walkable
+test("surface table: speeds, swimmable water, unknown defaults to walkable", () => {
+  assert.equal(surfaceFor("water").swimmable, true);
+  assert.equal(surfaceFor("water").standable, false);
+  assert.equal(surfaceFor("brick_road").speed > surfaceFor("sand").speed, true);
+  assert.equal(surfaceFor("totally_new_tile").standable, true); // default walkable
 });
 
-test("isBlockedAtWorld maps world coords to cells and treats outside as blocked", () => {
+test("surfaceAtWorld / levelAtWorld map world coords to cells", () => {
   const g = grid3x3();
-  assert.equal(isBlockedAtWorld(g, centreX, centreY), false); // centre column
-  assert.equal(isBlockedAtWorld(g, CELL_W * 0.5, centreY), true); // left water column
-  assert.equal(isBlockedAtWorld(g, -10, centreY), true); // outside the map
+  assert.equal(surfaceAtWorld(g, midX, midY).standable, true);
+  assert.equal(surfaceAtWorld(g, CELL_W * 0.5, midY).swimmable, true); // water column
+  assert.equal(levelAtWorld(g, rightX, midY), 1); // raised column
+  assert.equal(isStandableAtWorld(g, CELL_W * 0.5, midY), false); // water not standable
 });
 
-test("stepMovement without a blocker is unchanged (open world)", () => {
-  const r = stepMovement(100, 100, 1, 0, false, 0.5);
-  assert.equal(r.x, 100 + WALK_SPEED * 0.5);
-  assert.equal(r.y, 100);
-});
-
-test("stepMovement stops at a wall instead of entering it", () => {
+test("walking cannot climb a 1-level ledge (Option 2B)", () => {
   const g = grid3x3();
-  const blocked = makeBlocked(g);
-  // Stand at the centre column, walk east toward the water column with a big dt.
-  const r = stepMovement(centreX, centreY, 1, 0, true, 5, blocked);
-  assert.equal(r.y, centreY, "no vertical drift");
-  assert.ok(!isBlockedAtWorld(g, r.x, r.y), "never ends inside a blocked cell");
-  assert.ok(r.x < CELL_W * 2, "did not cross into the water column");
+  const walk = { maxClimb: WALK_CLIMB, canSwim: false };
+  assert.equal(canEnter(g, midX, midY, rightX, midY, walk), false); // l0 -> l1 blocked
+  const jump = { maxClimb: JUMP_CLIMB, canSwim: false };
+  assert.equal(canEnter(g, midX, midY, rightX, midY, jump), true); // jump crosses it
 });
 
-test("stepMovement slides along a wall (blocked axis drops, free axis moves)", () => {
+test("water is enterable only when swimming is allowed", () => {
   const g = grid3x3();
-  const blocked = makeBlocked(g);
-  // Push diagonally into the east wall: X is blocked, Y should still advance.
-  const y0 = CELL_H * 1.2;
-  const r = stepMovement(centreX, y0, 1, 1, false, 0.5, blocked);
-  assert.ok(r.y > y0, "slides downward along the wall");
-  assert.ok(!isBlockedAtWorld(g, r.x, r.y), "stays on walkable ground");
+  const noSwim = { maxClimb: WALK_CLIMB, canSwim: false };
+  const swim = { maxClimb: WALK_CLIMB, canSwim: true };
+  const waterX = CELL_W * 0.5;
+  assert.equal(canEnter(g, midX, midY, waterX, midY, noSwim), false);
+  assert.equal(canEnter(g, midX, midY, waterX, midY, swim), true);
 });
 
-test("findSpawn returns an open walkable cell, never water", () => {
+test("stepMovement stops at the ledge when walking, slides along it", () => {
+  const g = grid3x3();
+  const blocked = makeBlocked(g, { maxClimb: WALK_CLIMB, canSwim: false });
+  // Walk east into the raised wall with a big dt: X blocked, stays in mid column.
+  const r = stepMovement(midX, midY, 1, 0, true, 5, blocked);
+  assert.ok(r.x < CELL_W * 2, "did not climb onto the l1 wall");
+});
+
+test("surface speed multiplier scales distance", () => {
+  const slow = stepMovement(100, 100, 1, 0, false, 1, undefined, 0.5).x - 100;
+  const full = stepMovement(100, 100, 1, 0, false, 1, undefined, 1).x - 100;
+  assert.equal(full, WALK_SPEED);
+  assert.equal(slow, WALK_SPEED * 0.5);
+});
+
+test("findSpawn returns standable open land, never water", () => {
   const g = grid3x3();
   const s = findSpawn(g);
-  assert.equal(isBlockedAtWorld(g, s.x, s.y), false);
-  // Only the centre column has walkable cells here.
-  assert.ok(s.x > CELL_W && s.x < CELL_W * 2, "spawns in the walkable centre column");
+  assert.equal(isStandableAtWorld(g, s.x, s.y), true);
+});
+
+test("stepStamina drains in water, drowns at zero, regenerates on land", () => {
+  const drain = stepStamina(MAX_STAMINA, true, 1);
+  assert.equal(drain.stamina, MAX_STAMINA - SWIM_DRAIN);
+  assert.equal(drain.drowned, false);
+
+  const drowned = stepStamina(5, true, 1); // 5 - 20*1 <= 0
+  assert.equal(drowned.stamina, 0);
+  assert.equal(drowned.drowned, true);
+
+  const regen = stepStamina(50, false, 1);
+  assert.ok(regen.stamina > 50 && regen.stamina <= MAX_STAMINA);
+  assert.equal(regen.drowned, false);
 });

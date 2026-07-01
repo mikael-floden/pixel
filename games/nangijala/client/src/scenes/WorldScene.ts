@@ -9,10 +9,17 @@ import {
   ChatBroadcast,
   stepMovement,
   vectorToDirection,
-  BlockedFn,
+  TerrainGrid,
   buildTerrainGrid,
   makeBlocked,
-  isWalkableTerrain,
+  surfaceAtWorld,
+  levelAtWorld,
+  surfaceFor,
+  WALK_CLIMB,
+  JUMP_CLIMB,
+  JUMP_MS,
+  JUMP_COOLDOWN_MS,
+  MAX_STAMINA,
 } from "@nangijala/shared";
 import { CharacterDef, Manifest, stripUrl } from "../manifest";
 import { colorForName } from "../placeholder";
@@ -33,11 +40,20 @@ const ANIM_FPS: Record<string, number> = { idle: 6, walk: 12, run: 14 };
 const INPUT_HZ = 20;
 const BUBBLE_MS = 5000;
 const PLACEHOLDER_TEX = "placeholder:wanderer";
+const JUMP_HEIGHT = 16; // px peak of the jump hop
+const SWIM_SINK = 6; // px the sprite sinks while swimming
 
 interface Avatar {
   sprite: Phaser.GameObjects.Sprite;
   label: Phaser.GameObjects.Text;
   character: string;
+  // Logical (eased) ground position; the sprite is drawn at this minus the jump
+  // hop so the hop offset never feeds back into the easing.
+  lx: number;
+  ly: number;
+  hopUntil: number;
+  swimming: boolean;
+  baseTint: number;
   bubble?: Phaser.GameObjects.Text;
   bubbleUntil?: number;
 }
@@ -60,9 +76,14 @@ export class WorldScene extends Phaser.Scene {
   // Isometric tile world (null → fall back to a plain ground).
   private world: World | null = null;
   private iso = { ox: 0, oy: 0, w: WORLD_WIDTH, h: WORLD_HEIGHT };
-  // Terrain collision — same grid the server uses, so prediction matches.
-  private blocked: BlockedFn | undefined;
+  // Terrain (elevation + surface) — same grid the server uses, so prediction matches.
+  private terrain: TerrainGrid | null = null;
   private collisionOverlay?: Phaser.GameObjects.Graphics;
+  // Local jump prediction (client owns its jump timing).
+  private jumpUntil = 0;
+  private jumpReadyAt = 0;
+  private jumpQueued = false;
+  private staminaBar?: Phaser.GameObjects.Graphics;
 
   constructor() {
     super("world");
@@ -74,8 +95,7 @@ export class WorldScene extends Phaser.Scene {
     this.myName = this.registry.get("name") as string;
     this.world = (this.registry.get("world") as World | null) ?? null;
     if (this.world) {
-      const grid = buildTerrainGrid(this.world.width, this.world.height, this.world.rows);
-      this.blocked = makeBlocked(grid);
+      this.terrain = buildTerrainGrid(this.world.width, this.world.height, this.world.rows);
     }
   }
 
@@ -121,7 +141,9 @@ export class WorldScene extends Phaser.Scene {
         this.chat.openInput();
       }
     });
-    // Debug: press C to visualize blocked (non-walkable) terrain cells.
+    // Jump (Space): edge-triggered, lets you cross a 1-level ledge if timed.
+    this.input.keyboard!.on("keydown-SPACE", () => this.tryJump());
+    // Debug: press C to visualize water (swimmable) terrain cells.
     this.input.keyboard!.on("keydown-C", () => this.toggleCollisionOverlay());
 
     const cam = this.cameras.main;
@@ -162,6 +184,11 @@ export class WorldScene extends Phaser.Scene {
       this.showBubble(msg.id, msg.text);
     });
 
+    this.room.onMessage("drown", (msg: { id: string; name: string }) => {
+      this.showBubble(msg.id, "blub… 🫧");
+      this.chat.addLog("—", `${msg.name} nearly drowned and washed ashore.`);
+    });
+
     // Debug hooks for headless end-to-end verification.
     (window as any).__ml = {
       players: () => this.avatars.size,
@@ -178,7 +205,12 @@ export class WorldScene extends Phaser.Scene {
       },
       say: (text: string) => this.room?.send("chat", { text }),
       bubbles: () => [...this.avatars.values()].filter((a) => a.bubble).map((a) => a.bubble!.text),
-      blockedAt: (x: number, y: number) => (this.blocked ? this.blocked(x, y) : false),
+      jump: () => this.tryJump(),
+      me: () => this.room?.state.players.get(this.room!.sessionId),
+      stamina: () => this.room?.state.players.get(this.room!.sessionId)?.stamina ?? null,
+      swimming: () => !!this.room?.state.players.get(this.room!.sessionId)?.swimming,
+      surfaceAt: (x: number, y: number) => (this.terrain ? surfaceAtWorld(this.terrain, x, y) : null),
+      levelAt: (x: number, y: number) => (this.terrain ? levelAtWorld(this.terrain, x, y) : 0),
     };
   }
 
@@ -237,12 +269,22 @@ export class WorldScene extends Phaser.Scene {
     // name so same-named wanderers stay distinguishable.
     const hasArt = this.textures.exists(key);
     const sprite = this.add.sprite(p0.x, p0.y, hasArt ? key : PLACEHOLDER_TEX);
-    if (!hasArt) sprite.setTint(colorForName(player.name || id));
+    const baseTint = hasArt ? 0xffffff : colorForName(player.name || id);
+    sprite.setTint(baseTint);
     sprite.setOrigin(0.5, 0.9);
     const label = this.add
       .text(p0.x, p0.y, player.name, { fontFamily: "monospace", fontSize: "12px", color: "#eef" })
       .setOrigin(0.5, 1);
-    this.avatars.set(id, { sprite, label, character: uid });
+    this.avatars.set(id, {
+      sprite,
+      label,
+      character: uid,
+      lx: p0.x,
+      ly: p0.y,
+      hopUntil: 0,
+      swimming: false,
+      baseTint,
+    });
     this.applyAnimState(this.avatars.get(id)!, player.moving, player.running, player.dir);
   }
 
@@ -253,6 +295,7 @@ export class WorldScene extends Phaser.Scene {
     this.predictAndSend(dt);
 
     const state = this.room.state as any;
+    if (!state?.players) return; // first frame after join, before the state syncs
     this.avatars.forEach((av, id) => {
       const player = state.players.get(id);
       if (!player) return;
@@ -270,8 +313,16 @@ export class WorldScene extends Phaser.Scene {
         this.pending = this.pending.filter((p) => p.seq > player.seq);
         let rx = player.x;
         let ry = player.y;
+        const jumping = this.time.now < this.jumpUntil;
         for (const p of this.pending) {
-          const r = stepMovement(rx, ry, p.ax, p.ay, p.running, p.dt, this.blocked);
+          let blocked;
+          let speed = 1;
+          if (this.terrain) {
+            const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
+            blocked = makeBlocked(this.terrain, ctx);
+            speed = surfaceAtWorld(this.terrain, rx, ry).speed;
+          }
+          const r = stepMovement(rx, ry, p.ax, p.ay, p.running, p.dt, blocked, speed);
           rx = r.x;
           ry = r.y;
         }
@@ -291,16 +342,29 @@ export class WorldScene extends Phaser.Scene {
       }
 
       // Project the authoritative world position onto the iso ground, then ease
-      // the sprite toward it (snappier for the local player).
+      // the logical position toward it (snappier for the local player).
       const target = this.project(tx, ty);
       const k = Math.min(1, dt * (id === myId ? 30 : 12));
-      av.sprite.x += (target.x - av.sprite.x) * k;
-      av.sprite.y += (target.y - av.sprite.y) * k;
-      av.sprite.setDepth(av.sprite.y);
+      av.lx += (target.x - av.lx) * k;
+      av.ly += (target.y - av.ly) * k;
+
+      // Jump hop: a short parabola driven by the synced `jumping` flag.
+      if (player.jumping && av.hopUntil <= this.time.now) av.hopUntil = this.time.now + JUMP_MS;
+      const hopLeft = av.hopUntil - this.time.now;
+      const hop = hopLeft > 0 ? Math.sin((1 - hopLeft / JUMP_MS) * Math.PI) * JUMP_HEIGHT : 0;
+
+      // Swimming: sink slightly and tint blue so it reads as being in water.
+      av.swimming = !!player.swimming;
+      const sink = av.swimming ? SWIM_SINK : 0;
+      av.sprite.setTint(av.swimming ? 0x6fb3ff : av.baseTint);
+
+      av.sprite.x = av.lx;
+      av.sprite.y = av.ly - hop + sink;
+      av.sprite.setDepth(av.ly);
       const topY = av.sprite.y - av.sprite.displayHeight * 0.9;
-      av.label.setPosition(av.sprite.x, topY - 4);
+      av.label.setPosition(av.lx, topY - 4);
       if (av.bubble) {
-        av.bubble.setPosition(av.sprite.x, topY - 18);
+        av.bubble.setPosition(av.lx, topY - 18);
         if (this.time.now > (av.bubbleUntil ?? 0)) {
           av.bubble.destroy();
           av.bubble = undefined;
@@ -308,6 +372,10 @@ export class WorldScene extends Phaser.Scene {
       }
       this.applyAnimState(av, moving, running, dir);
     });
+
+    // Local player's swim-stamina HUD.
+    const me = state.players.get(myId);
+    if (me) this.drawStaminaBar(me.stamina ?? MAX_STAMINA, !!me.swimming);
   }
 
   private predictAndSend(dt: number) {
@@ -318,12 +386,16 @@ export class WorldScene extends Phaser.Scene {
     this.lastInput = { ax, ay, running };
     const sig = `${ax},${ay},${running ? 1 : 0}`;
     this.sendAccum += dt;
-    // Send on change, or at the input tick, tagging each with a sequence number
-    // so the server can ack it and the client can reconcile.
-    if (sig !== this.lastSent || this.sendAccum >= 1 / INPUT_HZ) {
+    // Send on change, a queued jump, or at the input tick, tagging each with a
+    // sequence number so the server can ack it and the client can reconcile.
+    if (sig !== this.lastSent || this.jumpQueued || this.sendAccum >= 1 / INPUT_HZ) {
       this.inputSeq += 1;
       this.pending.push({ seq: this.inputSeq, ax, ay, running, dt: this.sendAccum });
       const msg: InputMessage = { ax, ay, running, seq: this.inputSeq };
+      if (this.jumpQueued) {
+        msg.jump = true;
+        this.jumpQueued = false;
+      }
       this.room!.send("input", msg);
       this.lastSent = sig;
       this.sendAccum = 0;
@@ -387,8 +459,18 @@ export class WorldScene extends Phaser.Scene {
     rt.endDraw();
   }
 
-  /** Toggle a debug overlay marking blocked (non-walkable) cells in red iso
-   * diamonds. Built lazily on first use. */
+  /** Start a jump if grounded and off cooldown (client-side prediction; the
+   * server independently validates from the jump input). */
+  private tryJump() {
+    const now = this.time.now;
+    if (now < this.jumpUntil || now < this.jumpReadyAt) return;
+    this.jumpUntil = now + JUMP_MS;
+    this.jumpReadyAt = now + JUMP_MS + JUMP_COOLDOWN_MS;
+    this.jumpQueued = true;
+  }
+
+  /** Toggle a debug overlay marking water (swimmable) cells in iso diamonds.
+   * Built lazily on first use. */
   private toggleCollisionOverlay() {
     if (this.collisionOverlay) {
       this.collisionOverlay.setVisible(!this.collisionOverlay.visible);
@@ -397,11 +479,11 @@ export class WorldScene extends Phaser.Scene {
     if (!this.world) return;
     const { dx, dy, lh } = MAP_GEOMETRY;
     const g = this.add.graphics().setDepth(1_000_000);
-    g.fillStyle(0xff3b3b, 0.35);
+    g.fillStyle(0x3bb0ff, 0.3);
     for (let row = 0; row < this.world.height; row++) {
       for (let col = 0; col < this.world.width; col++) {
         const cell = this.world.rows[row]?.[col];
-        if (!cell || isWalkableTerrain(cell.t)) continue;
+        if (!cell || !surfaceFor(cell.t).swimmable) continue;
         const bx = this.iso.ox + (col - row) * dx;
         const by = this.iso.oy + (col + row) * dy - cell.l * lh;
         // The top diamond of a 64-wide iso tile (half-width dx, half-height dy).
@@ -417,6 +499,24 @@ export class WorldScene extends Phaser.Scene {
       }
     }
     this.collisionOverlay = g;
+  }
+
+  /** Draw the local player's swim-stamina bar (bottom-centre HUD), shown only
+   * while swimming or recovering. */
+  private drawStaminaBar(stamina: number, swimming: boolean) {
+    if (!this.staminaBar) this.staminaBar = this.add.graphics().setScrollFactor(0).setDepth(2_000_000);
+    const g = this.staminaBar;
+    g.clear();
+    const frac = Math.max(0, Math.min(1, stamina / MAX_STAMINA));
+    if (!swimming && frac >= 1) return; // hide when full and on land
+    const w = 220;
+    const h = 12;
+    const x = this.scale.width / 2 - w / 2;
+    const y = this.scale.height - 34;
+    g.fillStyle(0x0d0d18, 0.75).fillRoundedRect(x - 3, y - 3, w + 6, h + 6, 5);
+    g.fillStyle(0x2a2f45, 1).fillRoundedRect(x, y, w, h, 4);
+    const col = frac > 0.5 ? 0x57c7ff : frac > 0.25 ? 0xffcf4a : 0xff5a5a;
+    g.fillStyle(col, 1).fillRoundedRect(x, y, w * frac, h, 4);
   }
 
   /** Project an authoritative world position (flat x,y) onto the iso ground —
