@@ -1,14 +1,14 @@
 {
   "domain": "objects",
-  "updated_at": "2026-07-01T05:05:16+00:00",
+  "updated_at": "2026-07-01T05:05:42+00:00",
   "health": "running",
-  "current": "shovel: base sprite (64x64 side) \u2014 Shovel",
+  "current": "pickaxe: base sprite (64x64 side) \u2014 Pickaxe",
   "progress": {
-    "objects_complete": 10,
-    "objects_started": 10,
+    "objects_complete": 11,
+    "objects_started": 11,
     "objects_target": 40
   },
-  "budget_remaining": 7951.0,
+  "budget_remaining": 7950.0,
   "notes": [
     "objects domain: props/tools/items (chest, coin, tree, sword...). Each object = one folder objects/<id>/ with sprite + optional rotations + animations. Repo is the source of truth (stateless PixelLab image tools; nothing to sync back).",
     "[2026-07-01T02:43:10+00:00] objects agent online: props/tools/items (chest, coin, tree, sword, torch, potion...). Each object = objects/<id>/ with sprite + optional rotations + animations. Heartbeat live on main."
