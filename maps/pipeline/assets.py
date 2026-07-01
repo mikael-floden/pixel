@@ -152,7 +152,8 @@ def generate_object(client, cfg, spec):
     """Generate one transparent map object and store it. One PixelLab op."""
     oid = spec["id"]
     d = cfg.get("defaults", {})
-    size = int(spec.get("size", 64))
+    # PixelLab's map-objects endpoint requires image_size >= 32px.
+    size = max(32, int(spec.get("size", 64)))
     view = spec.get("view", d.get("view", "high top-down"))
     outline, shading, detail = _style(cfg, spec)
     img = client.create_map_object(
