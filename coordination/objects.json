@@ -1,14 +1,14 @@
 {
   "domain": "objects",
-  "updated_at": "2026-07-01T09:54:40+00:00",
+  "updated_at": "2026-07-01T10:00:03+00:00",
   "health": "running",
-  "current": "gem_ruby: animation 'sparkle' \u2014 the gem sparkling with light (8 dirs)",
+  "current": "gem_ruby: animation 'pulse' \u2014 the gem glowing brighter and dimmer (8 dirs)",
   "progress": {
     "objects_complete": 5,
     "objects_started": 6,
     "objects_target": 46
   },
-  "budget_remaining": 6274.0,
+  "budget_remaining": 6266.0,
   "notes": [
     "objects domain: props/tools/items (chest, coin, tree, sword...). Each object = one folder objects/<id>/ with sprite + optional rotations + animations. Repo is the source of truth (stateless PixelLab image tools; nothing to sync back).",
     "[2026-07-01T02:43:10+00:00] objects agent online: props/tools/items (chest, coin, tree, sword, torch, potion...). Each object = objects/<id>/ with sprite + optional rotations + animations. Heartbeat live on main.",

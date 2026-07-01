@@ -221,6 +221,22 @@
             "south-west": "gem_ruby/animations/sparkle__south-west.gif",
             "west": "gem_ruby/animations/sparkle__west.gif"
           }
+        },
+        {
+          "key": "pulse",
+          "description": "the gem glowing brighter and dimmer",
+          "frames": 17,
+          "preview_gif": "gem_ruby/animations/pulse__south.gif",
+          "directions": {
+            "east": "gem_ruby/animations/pulse__east.gif",
+            "north": "gem_ruby/animations/pulse__north.gif",
+            "north-east": "gem_ruby/animations/pulse__north-east.gif",
+            "north-west": "gem_ruby/animations/pulse__north-west.gif",
+            "south": "gem_ruby/animations/pulse__south.gif",
+            "south-east": "gem_ruby/animations/pulse__south-east.gif",
+            "south-west": "gem_ruby/animations/pulse__south-west.gif",
+            "west": "gem_ruby/animations/pulse__west.gif"
+          }
         }
       ]
     },
