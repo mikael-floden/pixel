@@ -31,6 +31,7 @@ import viewer_build
 from pixellab_client import BudgetExhausted, PixelLabClient
 
 DOMAIN = "characters"
+MAX_ANIM_ATTEMPTS = 3   # stop retrying an animation that keeps failing (anti-livelock)
 
 
 # --- coordination heartbeat (see coordination/PROTOCOL.md) ------------------
@@ -178,10 +179,16 @@ def fill_next(cfg, sk, n_chars):
     for did in dresses:
         for akey in anims:
             for ch in chars:
-                if not _anim_complete(cfg, sk, ch, did, akey):
-                    return ("animate", sid, sk, ch,
-                            None if did == "undressed" else did,
-                            factory.anim_def(cfg, akey))
+                if _anim_complete(cfg, sk, ch, did, akey):
+                    continue
+                # Give up after a few failed attempts so a persistently-failing
+                # animation can't livelock the loop (it moves on to other work).
+                attempts = ch.get("anim_attempts", {}).get(f"{did}:{akey}", 0)
+                if attempts >= MAX_ANIM_ATTEMPTS:
+                    continue
+                return ("animate", sid, sk, ch,
+                        None if did == "undressed" else did,
+                        factory.anim_def(cfg, akey))
 
     # 3. grow the roster ONLY when every existing character is fully leveled
     if len(chars) < n_chars:

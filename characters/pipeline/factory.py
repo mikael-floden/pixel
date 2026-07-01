@@ -521,10 +521,23 @@ def _animate_into(client, adef, dirs, anim_out_dir, pixellab_id, canvas):
     return saved
 
 
+def anim_is_complete(saved, req_dirs):
+    """True if an animation covers every required direction with a consistent,
+    non-zero frame count."""
+    if not saved or not set(req_dirs).issubset(saved.keys()):
+        return False
+    counts = [v.get("frames", 0) for v in saved.values()]
+    return bool(counts) and min(counts) > 0 and max(counts) - min(counts) <= 1
+
+
 def animate_variant(client, cfg, sid, skel_meta, char_meta, dress_id, adef):
     """Animate one animation for one variant of a character: the undressed base
     (dress_id=None) or one of its dresses. Saves frames and records the manifest
-    in the right place. Returns the saved manifest dict."""
+    in the right place. Returns the saved manifest dict.
+
+    Tracks a per-animation attempt counter (cleared on success) so the loop can
+    stop retrying an animation that keeps failing — e.g. a state whose PixelLab
+    id is gone — instead of livelocking on it."""
     cdir = os.path.join(skeleton_dir(sid), "characters", char_meta["local_id"])
     dirs = animation_directions(cfg, skel_meta, char_meta)
     if dress_id in (None, "undressed"):
@@ -539,6 +552,14 @@ def animate_variant(client, cfg, sid, skel_meta, char_meta, dress_id, adef):
     saved = _animate_into(client, adef, dirs, out_dir, pixellab_id,
                           frame_canvas(skel_meta["params"]))
     target[adef["key"]] = saved
+
+    attempts = char_meta.setdefault("anim_attempts", {})
+    akey = f"{dress_id or 'undressed'}:{adef['key']}"
+    if anim_is_complete(saved, dirs):
+        attempts.pop(akey, None)
+    else:
+        attempts[akey] = attempts.get(akey, 0) + 1
+        print(f"  !! '{akey}' incomplete (attempt {attempts[akey]})")
     _write_json(character_meta_path(sid, char_meta["local_id"]), char_meta)
     return saved
 
