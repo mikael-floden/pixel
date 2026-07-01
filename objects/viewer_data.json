@@ -1,6 +1,6 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 4,
+  "object_count": 5,
   "target_count": 46,
   "scale": {
     "_comment": "REALISM RULE: objects are scaled to the world by real height, so they sit correctly next to characters. A character is ~character_height_px tall (the 64px skeleton) representing character_height_m. The loop turns each object's world_height_m into world_px_height = round(world_height_m * character_height_px / character_height_m); a game renders the sprite scaled to that pixel height. So a coin (~0.22m) is tiny next to a character and an oak (~6m) towers. Every object MUST have a world_height_m (per-object, else category_height_m fallback).",
@@ -19,7 +19,8 @@
     }
   },
   "categories": {
-    "container": 4
+    "container": 4,
+    "valuable": 1
   },
   "objects": [
     {
@@ -176,6 +177,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "gold_coin",
+      "name": "Gold Coin",
+      "category": "valuable",
+      "description": "a single shiny round gold coin stamped with a crest",
+      "view": "low top-down",
+      "size": 48,
+      "placement": {
+        "world_height_m": 0.22,
+        "world_px_height": 8,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "in_progress",
+      "pixellab_object_id": "49dda035-0eda-4efc-aeba-71d8b3458aba",
+      "sprite": "gold_coin/sprite.png",
+      "rotations": {
+        "east": "gold_coin/rotations/east.png",
+        "north": "gold_coin/rotations/north.png",
+        "north-east": "gold_coin/rotations/north-east.png",
+        "north-west": "gold_coin/rotations/north-west.png",
+        "south": "gold_coin/rotations/south.png",
+        "south-east": "gold_coin/rotations/south-east.png",
+        "south-west": "gold_coin/rotations/south-west.png",
+        "west": "gold_coin/rotations/west.png"
+      },
+      "animations": []
     },
     {
       "id": "wooden_chest",

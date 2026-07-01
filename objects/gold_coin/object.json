@@ -1,0 +1,42 @@
+{
+  "id": "gold_coin",
+  "name": "Gold Coin",
+  "category": "valuable",
+  "description": "a single shiny round gold coin stamped with a crest",
+  "view": "low top-down",
+  "size": 48,
+  "placement": {
+    "world_height_m": 0.22,
+    "world_px_height": 8,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "procedural": false,
+  "source": "pixellab.ai create-8-direction-object (persistent, syncable)",
+  "pixellab_object_id": "49dda035-0eda-4efc-aeba-71d8b3458aba",
+  "style_version": 2,
+  "sprite": "gold_coin/sprite.png",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "east": "gold_coin/rotations/east.png",
+    "north": "gold_coin/rotations/north.png",
+    "north-east": "gold_coin/rotations/north-east.png",
+    "north-west": "gold_coin/rotations/north-west.png",
+    "south": "gold_coin/rotations/south.png",
+    "south-east": "gold_coin/rotations/south-east.png",
+    "south-west": "gold_coin/rotations/south-west.png",
+    "west": "gold_coin/rotations/west.png"
+  },
+  "animations": {},
+  "status": "in_progress"
+}
