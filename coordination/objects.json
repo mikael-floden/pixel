@@ -1,14 +1,14 @@
 {
   "domain": "objects",
-  "updated_at": "2026-07-01T05:20:23+00:00",
+  "updated_at": "2026-07-01T05:20:44+00:00",
   "health": "running",
-  "current": "ancient_treasure_chest_30: animation 'open' (opening)",
+  "current": "ancient_clay_urn_31: base sprite (48x48 low top-down) \u2014 Ancient Clay Urn",
   "progress": {
-    "objects_complete": 31,
-    "objects_started": 31,
+    "objects_complete": 32,
+    "objects_started": 32,
     "objects_target": 40
   },
-  "budget_remaining": 7883.0,
+  "budget_remaining": 7882.0,
   "notes": [
     "objects domain: props/tools/items (chest, coin, tree, sword...). Each object = one folder objects/<id>/ with sprite + optional rotations + animations. Repo is the source of truth (stateless PixelLab image tools; nothing to sync back).",
     "[2026-07-01T02:43:10+00:00] objects agent online: props/tools/items (chest, coin, tree, sword, torch, potion...). Each object = objects/<id>/ with sprite + optional rotations + animations. Heartbeat live on main."
