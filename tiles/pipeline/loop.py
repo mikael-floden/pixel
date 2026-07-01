@@ -20,6 +20,7 @@ import subprocess
 import time
 
 import coordination
+import synth
 import tilegen
 from pixellab_client import BudgetExhausted, PixelLabClient
 
@@ -63,7 +64,9 @@ def next_category(cfg):
     for cat in (cfg.get("procedural", {}) or {}).get("categories", []):
         if not tilegen.category_done(cat["id"]):
             return cat
-    return None
+    # Explicit + procedural lists exhausted: invent an endless focused category
+    # that holds the ~40/20/20/20 profile mix (see synth.py).
+    return synth.invent_category(cfg)
 
 
 def advance(client, cfg, budget=None, push=True):

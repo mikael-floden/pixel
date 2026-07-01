@@ -85,13 +85,21 @@ def category_done(cid):
     return os.path.isfile(os.path.join(category_dir(cid), "tiles.json"))
 
 
+RESERVED_DIRS = {"config", "pipeline"}
+
+
 def list_categories():
     out = []
     for name in sorted(os.listdir(ROOT)):
+        if name in RESERVED_DIRS:
+            continue
         p = os.path.join(ROOT, name, "tiles.json")
         if os.path.isfile(p):
             with open(p) as f:
-                out.append(json.load(f))
+                m = json.load(f)
+            # Only real tile-set manifests (guards against stray config files).
+            if m.get("schema") == "pixel-tiles/set@1":
+                out.append(m)
     return out
 
 
