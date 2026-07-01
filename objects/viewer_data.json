@@ -516,7 +516,24 @@
         "south-west": "sword/rotations/south-west.png",
         "west": "sword/rotations/west.png"
       },
-      "animations": []
+      "animations": [
+        {
+          "key": "glint",
+          "description": "a glint of light sweeping along the blade",
+          "frames": 17,
+          "preview_gif": "sword/animations/glint__south.gif",
+          "directions": {
+            "east": "sword/animations/glint__east.gif",
+            "north": "sword/animations/glint__north.gif",
+            "north-east": "sword/animations/glint__north-east.gif",
+            "north-west": "sword/animations/glint__north-west.gif",
+            "south": "sword/animations/glint__south.gif",
+            "south-east": "sword/animations/glint__south-east.gif",
+            "south-west": "sword/animations/glint__south-west.gif",
+            "west": "sword/animations/glint__west.gif"
+          }
+        }
+      ]
     },
     {
       "id": "wooden_chest",

@@ -37,6 +37,206 @@
     "south-west": "sword/rotations/south-west.png",
     "west": "sword/rotations/west.png"
   },
-  "animations": {},
+  "animations": {
+    "glint": {
+      "group_id": "9a0445d1-1a47-4921-967f-af4e8a6ea155",
+      "description": "a glint of light sweeping along the blade",
+      "frame_count": 16,
+      "directions": {
+        "east": {
+          "frames": 17,
+          "strip": "sword/animations/glint__east.png",
+          "gif": "sword/animations/glint__east.gif",
+          "frame_paths": [
+            "sword/animations/glint/east/00.png",
+            "sword/animations/glint/east/01.png",
+            "sword/animations/glint/east/02.png",
+            "sword/animations/glint/east/03.png",
+            "sword/animations/glint/east/04.png",
+            "sword/animations/glint/east/05.png",
+            "sword/animations/glint/east/06.png",
+            "sword/animations/glint/east/07.png",
+            "sword/animations/glint/east/08.png",
+            "sword/animations/glint/east/09.png",
+            "sword/animations/glint/east/10.png",
+            "sword/animations/glint/east/11.png",
+            "sword/animations/glint/east/12.png",
+            "sword/animations/glint/east/13.png",
+            "sword/animations/glint/east/14.png",
+            "sword/animations/glint/east/15.png",
+            "sword/animations/glint/east/16.png"
+          ]
+        },
+        "north": {
+          "frames": 17,
+          "strip": "sword/animations/glint__north.png",
+          "gif": "sword/animations/glint__north.gif",
+          "frame_paths": [
+            "sword/animations/glint/north/00.png",
+            "sword/animations/glint/north/01.png",
+            "sword/animations/glint/north/02.png",
+            "sword/animations/glint/north/03.png",
+            "sword/animations/glint/north/04.png",
+            "sword/animations/glint/north/05.png",
+            "sword/animations/glint/north/06.png",
+            "sword/animations/glint/north/07.png",
+            "sword/animations/glint/north/08.png",
+            "sword/animations/glint/north/09.png",
+            "sword/animations/glint/north/10.png",
+            "sword/animations/glint/north/11.png",
+            "sword/animations/glint/north/12.png",
+            "sword/animations/glint/north/13.png",
+            "sword/animations/glint/north/14.png",
+            "sword/animations/glint/north/15.png",
+            "sword/animations/glint/north/16.png"
+          ]
+        },
+        "north-east": {
+          "frames": 17,
+          "strip": "sword/animations/glint__north-east.png",
+          "gif": "sword/animations/glint__north-east.gif",
+          "frame_paths": [
+            "sword/animations/glint/north-east/00.png",
+            "sword/animations/glint/north-east/01.png",
+            "sword/animations/glint/north-east/02.png",
+            "sword/animations/glint/north-east/03.png",
+            "sword/animations/glint/north-east/04.png",
+            "sword/animations/glint/north-east/05.png",
+            "sword/animations/glint/north-east/06.png",
+            "sword/animations/glint/north-east/07.png",
+            "sword/animations/glint/north-east/08.png",
+            "sword/animations/glint/north-east/09.png",
+            "sword/animations/glint/north-east/10.png",
+            "sword/animations/glint/north-east/11.png",
+            "sword/animations/glint/north-east/12.png",
+            "sword/animations/glint/north-east/13.png",
+            "sword/animations/glint/north-east/14.png",
+            "sword/animations/glint/north-east/15.png",
+            "sword/animations/glint/north-east/16.png"
+          ]
+        },
+        "north-west": {
+          "frames": 17,
+          "strip": "sword/animations/glint__north-west.png",
+          "gif": "sword/animations/glint__north-west.gif",
+          "frame_paths": [
+            "sword/animations/glint/north-west/00.png",
+            "sword/animations/glint/north-west/01.png",
+            "sword/animations/glint/north-west/02.png",
+            "sword/animations/glint/north-west/03.png",
+            "sword/animations/glint/north-west/04.png",
+            "sword/animations/glint/north-west/05.png",
+            "sword/animations/glint/north-west/06.png",
+            "sword/animations/glint/north-west/07.png",
+            "sword/animations/glint/north-west/08.png",
+            "sword/animations/glint/north-west/09.png",
+            "sword/animations/glint/north-west/10.png",
+            "sword/animations/glint/north-west/11.png",
+            "sword/animations/glint/north-west/12.png",
+            "sword/animations/glint/north-west/13.png",
+            "sword/animations/glint/north-west/14.png",
+            "sword/animations/glint/north-west/15.png",
+            "sword/animations/glint/north-west/16.png"
+          ]
+        },
+        "south": {
+          "frames": 17,
+          "strip": "sword/animations/glint__south.png",
+          "gif": "sword/animations/glint__south.gif",
+          "frame_paths": [
+            "sword/animations/glint/south/00.png",
+            "sword/animations/glint/south/01.png",
+            "sword/animations/glint/south/02.png",
+            "sword/animations/glint/south/03.png",
+            "sword/animations/glint/south/04.png",
+            "sword/animations/glint/south/05.png",
+            "sword/animations/glint/south/06.png",
+            "sword/animations/glint/south/07.png",
+            "sword/animations/glint/south/08.png",
+            "sword/animations/glint/south/09.png",
+            "sword/animations/glint/south/10.png",
+            "sword/animations/glint/south/11.png",
+            "sword/animations/glint/south/12.png",
+            "sword/animations/glint/south/13.png",
+            "sword/animations/glint/south/14.png",
+            "sword/animations/glint/south/15.png",
+            "sword/animations/glint/south/16.png"
+          ]
+        },
+        "south-east": {
+          "frames": 17,
+          "strip": "sword/animations/glint__south-east.png",
+          "gif": "sword/animations/glint__south-east.gif",
+          "frame_paths": [
+            "sword/animations/glint/south-east/00.png",
+            "sword/animations/glint/south-east/01.png",
+            "sword/animations/glint/south-east/02.png",
+            "sword/animations/glint/south-east/03.png",
+            "sword/animations/glint/south-east/04.png",
+            "sword/animations/glint/south-east/05.png",
+            "sword/animations/glint/south-east/06.png",
+            "sword/animations/glint/south-east/07.png",
+            "sword/animations/glint/south-east/08.png",
+            "sword/animations/glint/south-east/09.png",
+            "sword/animations/glint/south-east/10.png",
+            "sword/animations/glint/south-east/11.png",
+            "sword/animations/glint/south-east/12.png",
+            "sword/animations/glint/south-east/13.png",
+            "sword/animations/glint/south-east/14.png",
+            "sword/animations/glint/south-east/15.png",
+            "sword/animations/glint/south-east/16.png"
+          ]
+        },
+        "south-west": {
+          "frames": 17,
+          "strip": "sword/animations/glint__south-west.png",
+          "gif": "sword/animations/glint__south-west.gif",
+          "frame_paths": [
+            "sword/animations/glint/south-west/00.png",
+            "sword/animations/glint/south-west/01.png",
+            "sword/animations/glint/south-west/02.png",
+            "sword/animations/glint/south-west/03.png",
+            "sword/animations/glint/south-west/04.png",
+            "sword/animations/glint/south-west/05.png",
+            "sword/animations/glint/south-west/06.png",
+            "sword/animations/glint/south-west/07.png",
+            "sword/animations/glint/south-west/08.png",
+            "sword/animations/glint/south-west/09.png",
+            "sword/animations/glint/south-west/10.png",
+            "sword/animations/glint/south-west/11.png",
+            "sword/animations/glint/south-west/12.png",
+            "sword/animations/glint/south-west/13.png",
+            "sword/animations/glint/south-west/14.png",
+            "sword/animations/glint/south-west/15.png",
+            "sword/animations/glint/south-west/16.png"
+          ]
+        },
+        "west": {
+          "frames": 17,
+          "strip": "sword/animations/glint__west.png",
+          "gif": "sword/animations/glint__west.gif",
+          "frame_paths": [
+            "sword/animations/glint/west/00.png",
+            "sword/animations/glint/west/01.png",
+            "sword/animations/glint/west/02.png",
+            "sword/animations/glint/west/03.png",
+            "sword/animations/glint/west/04.png",
+            "sword/animations/glint/west/05.png",
+            "sword/animations/glint/west/06.png",
+            "sword/animations/glint/west/07.png",
+            "sword/animations/glint/west/08.png",
+            "sword/animations/glint/west/09.png",
+            "sword/animations/glint/west/10.png",
+            "sword/animations/glint/west/11.png",
+            "sword/animations/glint/west/12.png",
+            "sword/animations/glint/west/13.png",
+            "sword/animations/glint/west/14.png",
+            "sword/animations/glint/west/15.png",
+            "sword/animations/glint/west/16.png"
+          ]
+        }
+      }
+    }
+  },
   "status": "in_progress"
 }
