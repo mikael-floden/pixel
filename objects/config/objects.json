@@ -36,7 +36,7 @@
     "_comment": "Shared PixelLab pool floor (see coordination/PROTOCOL.md). The loop stops cleanly when the balance drops below this, leaving headroom for the characters and maps domains that draw from the same pool."
   },
   "targets": {
-    "num_objects": 61,
+    "num_objects": 75,
     "_comment": "How many objects the loop aims to produce. It builds the explicit `catalog` first, then synthesizes further ones from `procedural` until this count is reached. Raise it to keep the loop generating open-endedly."
   },
   "catalog": [
@@ -692,6 +692,216 @@
       "size": 48,
       "world_height_m": 0.15,
       "animations": []
+    },
+    {
+      "id": "cherry_blossom_tree",
+      "name": "Cherry Blossom Tree",
+      "category": "nature",
+      "description": "a cherry blossom tree in full bloom with soft pink flowers",
+      "size": 128,
+      "world_height_m": 6.0,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the blossom canopy swaying in the wind, petals drifting",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "apple_tree",
+      "name": "Apple Tree",
+      "category": "nature",
+      "description": "an apple tree with lush green leaves and ripe red apples",
+      "size": 128,
+      "world_height_m": 5.0,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the leaves and branches swaying in the wind",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "blossom_bush",
+      "name": "Blossom Bush",
+      "category": "nature",
+      "description": "a small round bush covered in soft pink spring blossoms",
+      "size": 64,
+      "world_height_m": 0.9,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the flowering bush swaying gently in the breeze",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "spruce_tree",
+      "name": "Spruce Tree",
+      "category": "nature",
+      "description": "a tall dark green spruce evergreen tree",
+      "size": 128,
+      "world_height_m": 6.5,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the evergreen branches swaying in the wind",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "fir_tree",
+      "name": "Fir Tree",
+      "category": "nature",
+      "description": "a classic triangular green fir conifer tree",
+      "size": 128,
+      "world_height_m": 6.0,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the fir branches swaying in the wind",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "poplar_tree",
+      "name": "Poplar Tree",
+      "category": "nature",
+      "description": "a very tall slender columnar poplar tree",
+      "size": 128,
+      "world_height_m": 7.0,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the tall narrow crown swaying in the wind",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "young_oak",
+      "name": "Young Oak",
+      "category": "nature",
+      "description": "a medium-sized young oak tree with a slim trunk",
+      "size": 96,
+      "world_height_m": 3.5,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the young canopy swaying in the wind",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "bamboo",
+      "name": "Bamboo",
+      "category": "nature",
+      "description": "a cluster of tall green bamboo stalks with narrow leaves",
+      "size": 96,
+      "world_height_m": 4.0,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the bamboo stalks and leaves swaying in the wind",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "autumn_oak",
+      "name": "Autumn Oak",
+      "category": "nature",
+      "description": "a broad oak tree with fiery red and orange autumn leaves",
+      "size": 128,
+      "world_height_m": 6.0,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the autumn foliage swaying in the wind, leaves drifting",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "golden_birch",
+      "name": "Golden Birch",
+      "category": "nature",
+      "description": "a white birch tree with golden-yellow autumn leaves",
+      "size": 128,
+      "world_height_m": 6.0,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the golden leaves fluttering in the wind",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "snowy_pine",
+      "name": "Snowy Pine",
+      "category": "nature",
+      "description": "a pine tree with branches laden with fresh white snow",
+      "size": 128,
+      "world_height_m": 6.0,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the snow-dusted branches swaying gently in the wind",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "snowy_fir",
+      "name": "Snowy Fir",
+      "category": "nature",
+      "description": "a fir tree blanketed in thick fresh snow",
+      "size": 128,
+      "world_height_m": 6.0,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the snow-laden branches swaying gently in the wind",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "snowy_bush",
+      "name": "Snowy Bush",
+      "category": "nature",
+      "description": "a small round bush topped with a cap of snow",
+      "size": 64,
+      "world_height_m": 0.9,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the snowy bush swaying gently in the breeze",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "hedge",
+      "name": "Hedge",
+      "category": "nature",
+      "description": "a neatly trimmed rectangular green garden hedge",
+      "size": 64,
+      "world_height_m": 1.2,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the hedge leaves rustling gently in the breeze",
+          "frames": 16
+        }
+      ]
     }
   ],
   "_procedural": "When the explicit catalog is exhausted but targets.num_objects is not yet reached, the loop synthesizes more objects by combining these axes. Deterministic (seeded by index) so re-runs are reproducible. These are best-effort, un-curated extras.",
