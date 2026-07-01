@@ -551,19 +551,58 @@ def list_outfits(char_meta):
     return char_meta.get("outfits", {})
 
 
+def _norm(s):
+    return "".join(ch for ch in (s or "").lower() if ch.isalnum())
+
+
+def _find_existing_state(client, base_pixellab_id, edit):
+    """If the character already has a dressed sibling STATE for this edit (same
+    group_id, matching name), return (state_id, rotations) so we adopt it instead
+    of creating a DUPLICATE state. create-character-state only ever *creates* (no
+    replace-by-name), so without this an interrupted/overlapping run leaves two
+    identical dresses (e.g. two 'adventurer' states). Prefix-match handles
+    PixelLab truncating the state name."""
+    try:
+        base = client.get_character(base_pixellab_id)
+    except Exception:
+        return None
+    group = base.get("group_id")
+    if not group:
+        return None
+    target = _norm(edit)
+    for sib in client.list_characters():
+        if sib.get("group_id") != group or sib.get("id") == base_pixellab_id:
+            continue
+        s = _norm(sib.get("name"))
+        if s and (target.startswith(s[:24]) or s.startswith(target[:24])):
+            rots = client.fetch_rotations(sib["id"])
+            if rots:
+                return sib["id"], rots
+    return None
+
+
 def create_dress_state(client, cfg, sid, skel_meta, char_meta, dress_def):
     """Create a dressed STATE (the dress's rotations) for a character. The dress's
     animations are filled in afterwards by animate_variant (the matrix fill), so
-    every dress ends up with every animation. Returns the dress id."""
+    every dress ends up with every animation. Returns the dress id.
+
+    Idempotent: if a matching state already exists on PixelLab it is adopted
+    rather than regenerated, so a killed/overlapping run can't create a duplicate
+    dress."""
     dress_id = dress_def["id"]
     description = dress_def["description"]
     cid_local = char_meta["local_id"]
     odir = os.path.join(skeleton_dir(sid), "characters", cid_local, "outfits", dress_id)
 
     edit = f"wearing {description}"
-    state_id, rotations = client.create_state(
-        char_meta["pixellab_id"], edit_description=edit,
-        seed=_seed(sid, cid_local, dress_id))
+    existing = _find_existing_state(client, char_meta["pixellab_id"], edit)
+    if existing:
+        state_id, rotations = existing
+        print(f"  ~ adopting existing '{dress_id}' state for {cid_local} (no duplicate)")
+    else:
+        state_id, rotations = client.create_state(
+            char_meta["pixellab_id"], edit_description=edit,
+            seed=_seed(sid, cid_local, dress_id))
     canvas = frame_canvas(skel_meta["params"])
     rotations = {d: _normalize(img, canvas) for d, img in rotations.items()}
     for d, img in rotations.items():
