@@ -91,6 +91,37 @@
       "manifest": "hollow_cave/zone.json"
     },
     {
+      "id": "isle_000",
+      "title": "Uncharted Isle 0",
+      "kind": "island",
+      "archetype": "small_island",
+      "description": "A procedurally generated small island.",
+      "grid": {
+        "width": 20,
+        "height": 16
+      },
+      "tile_size": 16,
+      "levels": [
+        "water",
+        "sand",
+        "grass"
+      ],
+      "bands": [
+        "ocean_sand",
+        "sand_grass"
+      ],
+      "objects": 3,
+      "exits": [
+        {
+          "id": "dock",
+          "kind": "dock",
+          "to_zone": null
+        }
+      ],
+      "preview": "isle_000/preview.png",
+      "manifest": "isle_000/zone.json"
+    },
+    {
       "id": "isle_of_dawn",
       "title": "Isle of Dawn",
       "kind": "island",
