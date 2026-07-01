@@ -27,6 +27,20 @@ _BIOME_CLIFF = {
 }
 
 
+def _sea_color(tiles: TileSet) -> tuple:
+    """Average opaque colour of the deep-water tile, so the flat sea background
+    matches the coastal water tiles seamlessly."""
+    import numpy as np
+    if not tiles.has("water"):
+        return (40, 90, 150, 255)
+    a = np.asarray(tiles.tile("water", 0))
+    m = a[:, :, 3] > 200
+    if not m.any():
+        return (40, 90, 150, 255)
+    r, g, b = (int(a[:, :, i][m].mean()) for i in range(3))
+    return (r, g, b, 255)
+
+
 def _cliff_for(cell, tiles: TileSet) -> str | None:
     for key in (cell.role, cell.terrain):
         cat = _BIOME_CLIFF.get(key)
@@ -52,7 +66,22 @@ def render(world: World, tiles: TileSet, *, scale: int = 1,
     # tall cliff tiles hang ~64px below a plain tile's box; pad the bottom
     canvas_h = (world.width + world.height) * dy + th + max_level * lh + margin * 2 + 72
 
-    canvas = Image.new("RGBA", (canvas_w, canvas_h), background)
+    # Deep open ocean is ~half the map and all identical, so instead of pasting
+    # thousands of duplicate water tiles we fill the sea as one flat background
+    # and only draw water tiles in the coastal band (near land). Big speedup.
+    import numpy as np
+    land = np.zeros((world.height, world.width), dtype=bool)
+    for x, y, c in world.cells():
+        if c.terrain != "water":
+            land[y, x] = True
+    coast = land.copy()
+    for _ in range(2):  # dilate land by 2 cells -> the band that still draws water
+        c = coast.copy()
+        c[:-1] |= coast[1:]; c[1:] |= coast[:-1]
+        c[:, :-1] |= coast[:, 1:]; c[:, 1:] |= coast[:, :-1]
+        coast = c
+    sea = _sea_color(tiles)
+    canvas = Image.new("RGBA", (canvas_w, canvas_h), sea)
 
     order = sorted(
         ((x, y) for y in range(world.height) for x in range(world.width)),
@@ -75,6 +104,8 @@ def render(world: World, tiles: TileSet, *, scale: int = 1,
         cell = world.at(x, y)
         if not tiles.has(cell.terrain):
             continue
+        if cell.terrain == "water" and not coast[y, x]:
+            continue  # deep ocean: the flat sea background already covers it
         L = cell.level
         base_x = ox + (x - y) * dx
         base_y = oy + (x + y) * dy

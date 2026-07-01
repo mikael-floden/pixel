@@ -34,6 +34,7 @@ WORLD_JSON = os.path.join(MAPS_DIR, "world", "world.json")
 WORLD_PNG = os.path.join(MAPS_DIR, "world", "world.png")
 PLAN_PNG = os.path.join(MAPS_DIR, "world", "plan.png")
 CONFIG = os.path.join(MAPS_DIR, "config", "world.json")
+MAX_PNG_WIDTH = 4000        # committed preview width; --full for native res
 
 
 def _render_plan(plan) -> None:
@@ -64,15 +65,19 @@ def main() -> None:
                     help="render the bird's-eye world plan (schematic) and exit")
     ap.add_argument("--seed", type=int, default=None)
     ap.add_argument("--scale", type=int, default=1)
+    ap.add_argument("--full", action="store_true",
+                    help="save world.png at native resolution (no downscale)")
     args = ap.parse_args()
 
     cfg = _config_defaults()
     seed = args.seed if args.seed is not None else cfg.get("seed", 7)
 
-    # The master plan (the bigger picture) always renders; the detailed world is
-    # built into that plan.
+    # The detailed world is built into the master plan. Only (re)render the plan
+    # schematic when it could have changed (--plan / --init) — not on every
+    # --render-only, which keeps the iteration loop fast.
     plan = default_plan(seed=seed)
-    _render_plan(plan)
+    if args.plan or args.init or not os.path.isfile(PLAN_PNG):
+        _render_plan(plan)
     if args.plan:
         return
 
@@ -93,6 +98,12 @@ def main() -> None:
 
     world.save(WORLD_JSON)
     img = render(world, tiles, scale=args.scale)
+    # Cap the committed PNG so the iteration loop stays fast and git stays lean;
+    # world.json is the full-fidelity source of truth. --full keeps native res.
+    if not args.full and img.width > MAX_PNG_WIDTH:
+        from PIL import Image
+        h = round(img.height * MAX_PNG_WIDTH / img.width)
+        img = img.resize((MAX_PNG_WIDTH, h), Image.LANCZOS)
     os.makedirs(os.path.dirname(WORLD_PNG), exist_ok=True)
     img.save(WORLD_PNG)
     print(f"world: {world.width}x{world.height}  iteration={world.iteration}  "
