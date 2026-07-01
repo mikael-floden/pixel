@@ -63,6 +63,22 @@
             "south-west": "barrel/animations/open__south-west.gif",
             "west": "barrel/animations/open__west.gif"
           }
+        },
+        {
+          "key": "shake",
+          "description": "the barrel wobbling side to side",
+          "frames": 17,
+          "preview_gif": "barrel/animations/shake__south.gif",
+          "directions": {
+            "east": "barrel/animations/shake__east.gif",
+            "north": "barrel/animations/shake__north.gif",
+            "north-east": "barrel/animations/shake__north-east.gif",
+            "north-west": "barrel/animations/shake__north-west.gif",
+            "south": "barrel/animations/shake__south.gif",
+            "south-east": "barrel/animations/shake__south-east.gif",
+            "south-west": "barrel/animations/shake__south-west.gif",
+            "west": "barrel/animations/shake__west.gif"
+          }
         }
       ]
     },
