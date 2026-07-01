@@ -1,0 +1,38 @@
+{
+  "id": "flower",
+  "name": "Flower",
+  "category": "nature",
+  "description": "a single red tulip flower with a green stem",
+  "view": "low top-down",
+  "direction": "south",
+  "size": [
+    64,
+    64
+  ],
+  "placement": {
+    "world_height_m": 0.4,
+    "world_px_height": 15,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall. Keeps objects realistically sized in a world with characters."
+  },
+  "procedural": false,
+  "source": "pixellab.ai (generate-image-pixflux / rotate / animate-with-text)",
+  "params": {
+    "outline": "selective outline",
+    "shading": "detailed shading",
+    "detail": "highly detailed",
+    "no_background": true,
+    "isometric": false,
+    "seed": 914474299
+  },
+  "style_version": 2,
+  "sprite": "flower/sprite.png",
+  "rotations": {
+    "count": 0,
+    "directions": []
+  },
+  "animations": {},
+  "generations_used": 1.0,
+  "status": "in_progress"
+}
