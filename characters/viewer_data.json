@@ -1466,7 +1466,21 @@
                 "skeletons/00_low8_64/characters/char_03/outfits/god_armor/rotations/south-west.png",
                 "skeletons/00_low8_64/characters/char_03/outfits/god_armor/rotations/west.png"
               ],
-              "animations": []
+              "animations": [
+                {
+                  "key": "idle",
+                  "directions": {
+                    "south": "skeletons/00_low8_64/characters/char_03/outfits/god_armor/animations/idle__south.gif",
+                    "north": "skeletons/00_low8_64/characters/char_03/outfits/god_armor/animations/idle__north.gif",
+                    "east": "skeletons/00_low8_64/characters/char_03/outfits/god_armor/animations/idle__east.gif",
+                    "south-east": "skeletons/00_low8_64/characters/char_03/outfits/god_armor/animations/idle__south-east.gif",
+                    "south-west": "skeletons/00_low8_64/characters/char_03/outfits/god_armor/animations/idle__south-west.gif",
+                    "north-east": "skeletons/00_low8_64/characters/char_03/outfits/god_armor/animations/idle__north-east.gif",
+                    "north-west": "skeletons/00_low8_64/characters/char_03/outfits/god_armor/animations/idle__north-west.gif",
+                    "west": "skeletons/00_low8_64/characters/char_03/outfits/god_armor/animations/idle__west.gif"
+                  }
+                }
+              ]
             }
           ]
         },
