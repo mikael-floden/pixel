@@ -39,6 +39,7 @@ if (serveClient) {
 }
 
 const gameServer = new Server({
+  greet: false, // suppress the big Colyseus ASCII banner on start
   transport: new WebSocketTransport({ server: createServer(app) }),
 });
 
