@@ -11,6 +11,7 @@ import {
   vectorToDirection,
 } from "@nangijala/shared";
 import { CharacterDef, Manifest, stripUrl } from "../manifest";
+import { colorForName } from "../placeholder";
 import { joinWorld } from "../net";
 import { ChatUI } from "../chat";
 import { RosterUI } from "../roster";
@@ -27,6 +28,7 @@ import {
 const ANIM_FPS: Record<string, number> = { idle: 6, walk: 12, run: 14 };
 const INPUT_HZ = 20;
 const BUBBLE_MS = 5000;
+const PLACEHOLDER_TEX = "placeholder:wanderer";
 
 interface Avatar {
   sprite: Phaser.GameObjects.Sprite;
@@ -87,6 +89,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   async create() {
+    this.ensurePlaceholderTexture();
     this.buildAnimations();
     if (this.world) this.buildIsoGround();
     else this.drawGround();
@@ -212,10 +215,15 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private addAvatar(id: string, player: any) {
-    const uid: string = player.character || this.manifest.characters[0]?.uid;
+    const uid: string = player.character || this.manifest.characters[0]?.uid || PLACEHOLDER_TEX;
     const key = sheetKey(uid, "idle", DEFAULT_DIRECTION);
     const p0 = this.project(player.x, player.y);
-    const sprite = this.add.sprite(p0.x, p0.y, this.textures.exists(key) ? key : "");
+    // Fall back to the built-in wanderer whenever the character's art is absent
+    // (empty roster, a deleted character, or art still loading). Tint it per
+    // name so same-named wanderers stay distinguishable.
+    const hasArt = this.textures.exists(key);
+    const sprite = this.add.sprite(p0.x, p0.y, hasArt ? key : PLACEHOLDER_TEX);
+    if (!hasArt) sprite.setTint(colorForName(player.name || id));
     sprite.setOrigin(0.5, 0.9);
     const label = this.add
       .text(p0.x, p0.y, player.name, { fontFamily: "monospace", fontSize: "12px", color: "#eef" })
@@ -379,6 +387,21 @@ export class WorldScene extends Phaser.Scene {
       x: this.iso.ox + (col - row) * dx + tile / 2,
       y: this.iso.oy + (col + row) * dy + dy - lvl * lh,
     };
+  }
+
+  /** Draw the art-free "Wanderer" fallback sprite into a texture once. A small
+   * hooded figure with feet near the bottom (origin 0.5,0.9 matches real art).
+   * White base so per-player tint (setTint) reads cleanly. */
+  private ensurePlaceholderTexture() {
+    if (this.textures.exists(PLACEHOLDER_TEX)) return;
+    const g = this.make.graphics({ x: 0, y: 0 }, false);
+    g.fillStyle(0xf1c9a5, 1).fillRect(11, 6, 10, 9); // head
+    g.fillStyle(0x3b3b57, 1).fillRect(10, 4, 12, 4); // hood
+    g.fillStyle(0xffffff, 1).fillRect(10, 14, 12, 12); // body (tinted per player)
+    g.fillStyle(0xe0e0ea, 1).fillRect(9, 15, 2, 8).fillRect(21, 15, 2, 8); // arms
+    g.fillStyle(0x2a2a44, 1).fillRect(11, 26, 4, 6).fillRect(17, 26, 4, 6); // legs
+    g.generateTexture(PLACEHOLDER_TEX, 32, 34);
+    g.destroy();
   }
 
   private drawGround() {

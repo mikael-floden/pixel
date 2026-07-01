@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { loadManifest } from "./manifest";
+import { withFallback } from "./placeholder";
 import { chooseCharacter } from "./select";
 import { WorldScene } from "./scenes/WorldScene";
 import { loadWorld } from "./maps";
@@ -29,12 +30,10 @@ async function bootMapPreview(): Promise<boolean> {
 async function boot() {
   if (await bootMapPreview()) return;
   const manifest = await loadManifest();
-  if (!manifest.characters.length) {
-    document.body.innerHTML =
-      '<p style="color:#eef;font-family:monospace;padding:2rem">No characters found. ' +
-      "Run <code>npm run manifest</code> and ensure the pixel submodule is initialised.</p>";
-    return;
-  }
+  // The art agents periodically reset/regenerate the roster, so it can be empty.
+  // Never dead-end the player: fall back to a built-in "Wanderer" so the shared
+  // world is always joinable (the world scene draws it procedurally).
+  manifest.characters = withFallback(manifest.characters);
 
   // The isometric tile world (may be null if the maps submodule isn't present;
   // the world scene falls back to a plain ground in that case).
