@@ -1,0 +1,30 @@
+{
+  "id": "gold_ingot",
+  "name": "Gold Ingot",
+  "category": "valuable",
+  "description": "a stacked bar of solid gold ingots",
+  "view": "low top-down",
+  "direction": "south",
+  "size": [
+    48,
+    32
+  ],
+  "procedural": false,
+  "source": "pixellab.ai (generate-image-pixflux / rotate / animate-with-text)",
+  "params": {
+    "outline": "single color black outline",
+    "shading": "detailed shading",
+    "detail": "highly detailed",
+    "no_background": true,
+    "isometric": false,
+    "seed": 873924756
+  },
+  "sprite": "gold_ingot/sprite.png",
+  "rotations": {
+    "count": 0,
+    "directions": []
+  },
+  "animations": {},
+  "generations_used": 1.0,
+  "status": "complete"
+}

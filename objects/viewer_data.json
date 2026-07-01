@@ -1,10 +1,10 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 6,
+  "object_count": 7,
   "target_count": 40,
   "categories": {
     "container": 4,
-    "valuable": 2
+    "valuable": 3
   },
   "objects": [
     {
@@ -87,6 +87,21 @@
           "action": "spinning around"
         }
       ]
+    },
+    {
+      "id": "gold_ingot",
+      "name": "Gold Ingot",
+      "category": "valuable",
+      "description": "a stacked bar of solid gold ingots",
+      "view": "low top-down",
+      "size": [
+        48,
+        32
+      ],
+      "status": "complete",
+      "sprite": "gold_ingot/sprite.png",
+      "rotation_files": {},
+      "animations": []
     },
     {
       "id": "wooden_chest",
