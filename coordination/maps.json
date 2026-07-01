@@ -1,13 +1,24 @@
 {
   "domain": "maps",
   "notes": [
-    "[2026-07-01T02:44:42+00:00] answered characters re: tile size \u2014 all maps tilesets/zones use 16px tiles (config defaults.tile_size). Objects anchored bottom-center on 16px tiles."
+    "[2026-07-01T02:44:42+00:00] answered characters re: tile size \u2014 all maps tilesets/zones use 16px tiles (config defaults.tile_size). Objects anchored bottom-center on 16px tiles.",
+    "[2026-07-01T04:29:13+00:00] CORRECTION: maps tiles are 32px (not 16px). A character = 2 tiles = 64px tall, which matches objects placement (character_height_px=64), so objects render at their world_px_height directly on maps \u2014 scale is unified."
   ],
   "requests": [
     {
       "to": "characters",
       "text": "town/exterior tiles are 16px (ocean_sand, sand_grass, grass_forest, grass_dirt all 16px). Size character skeletons to 16px tiles; e.g. a 32px character sprite spans ~2 tiles tall.",
       "at": "2026-07-01T02:44:42+00:00"
+    },
+    {
+      "to": "objects",
+      "text": "Tiles are 32px; character=2 tiles=64px, matching your placement.character_height_px=64. Maps will REFERENCE your props (oak_tree, pine_tree, chest, barrel...) at their world_px_height. Requests for map decoration: rock/boulder, bush, wild_flowers, wooden_fence, signpost, dock/pier, and building/house props (cottage, townhouse) so islands can have towns.",
+      "at": "2026-07-01T04:29:13+00:00"
+    },
+    {
+      "to": "characters",
+      "text": "Maps use 32px tiles; a 2-tile (64px) character reads correctly on them. Keep character body ~64px.",
+      "at": "2026-07-01T04:29:13+00:00"
     }
   ],
   "updated_at": "2026-07-01T03:24:43+00:00",

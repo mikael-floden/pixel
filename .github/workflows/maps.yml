@@ -6,8 +6,11 @@ name: Pixel maps factory loop
 # in GitHub repo settings, and trigger/disable from the Actions tab.
 
 on:
-  schedule:
-    - cron: "30 */2 * * *"     # every 2 hours (UTC), offset from the characters loop
+  # Autonomous schedule PAUSED during the map-quality redesign (bigger explorable
+  # islands, objects-agent props, depth rendering). Re-enable the cron once the
+  # new pipeline is integrated. Run manually via workflow_dispatch meanwhile.
+  # schedule:
+  #   - cron: "30 */2 * * *"
   workflow_dispatch:
     inputs:
       max_minutes:

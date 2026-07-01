@@ -101,9 +101,8 @@ def _zone_unit(cfg, zdef):
     for tid in zdef["bands"]:
         if not assets.tileset_exists(tid):
             return ("tileset", tid)
-    for oid in list(zdef.get("objects", [])) + list(zdef.get("houses", [])):
-        if not assets.object_exists(oid):
-            return ("object", oid)
+    # NOTE: maps does NOT generate objects — props are owned by the objects agent
+    # and referenced from /objects (see coordination/PROTOCOL.md). Terrain only.
     return ("zone", zdef)
 
 
