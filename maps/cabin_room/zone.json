@@ -1,0 +1,327 @@
+{
+  "schema": "pixel-maps/zone@2-scene",
+  "id": "cabin_room",
+  "title": "Fisher's Cabin",
+  "kind": "interior",
+  "mood": "cozy wooden cabin interior (daytime)",
+  "view": "high top-down",
+  "background": "scene.png",
+  "pixel_size": {
+    "width": 768,
+    "height": 576
+  },
+  "camera": {
+    "viewport": {
+      "width": 480,
+      "height": 336
+    },
+    "note": "world is larger than the viewport; scroll to follow the player"
+  },
+  "layers": [
+    "background",
+    "entities",
+    "overhead"
+  ],
+  "collision": {
+    "encoding": "walkable-grid",
+    "cell": 48,
+    "width": 16,
+    "height": 12,
+    "legend": {
+      "0": "walkable",
+      "1": "blocked"
+    },
+    "derived_from": "scene.png",
+    "data": [
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      [
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1
+      ]
+    ]
+  },
+  "spawn": {
+    "x": 408,
+    "y": 336
+  },
+  "entities": [
+    {
+      "id": "wooden_chest",
+      "file": "objects/wooden_chest.png",
+      "x": 120,
+      "base_y": 480,
+      "layer": "entity"
+    },
+    {
+      "id": "barrel",
+      "file": "objects/barrel.png",
+      "x": 216,
+      "base_y": 192,
+      "layer": "entity"
+    },
+    {
+      "id": "wooden_crate",
+      "file": "objects/wooden_crate.png",
+      "x": 552,
+      "base_y": 144,
+      "layer": "entity"
+    },
+    {
+      "id": "wooden_crate",
+      "file": "objects/wooden_crate.png",
+      "x": 648,
+      "base_y": 192,
+      "layer": "entity"
+    },
+    {
+      "id": "wooden_chest",
+      "file": "objects/wooden_chest.png",
+      "x": 312,
+      "base_y": 48,
+      "layer": "entity"
+    },
+    {
+      "id": "wooden_chest",
+      "file": "objects/wooden_chest.png",
+      "x": 312,
+      "base_y": 528,
+      "layer": "entity"
+    },
+    {
+      "id": "lantern",
+      "file": "objects/lantern.png",
+      "x": 312,
+      "base_y": 144,
+      "layer": "entity"
+    }
+  ],
+  "overhead": [],
+  "exits": [
+    {
+      "id": "south",
+      "kind": "door",
+      "edge": "south",
+      "x": 384,
+      "y": 576,
+      "to_zone": "isle_camp",
+      "to_exit": "north"
+    }
+  ],
+  "preview": "preview.png",
+  "collision_preview": "collision.png",
+  "provenance": {
+    "background": "pixellab create-image-pixflux (palette-guided)",
+    "props": "objects agent (/objects)"
+  }
+}

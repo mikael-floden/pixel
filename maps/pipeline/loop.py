@@ -58,10 +58,37 @@ def commit_push(message, push=True):
     return True
 
 
+def _procedural_zone(cfg, idx):
+    """Invent a fresh screen beyond the explicit list — the loop never runs dry.
+    Cycles biome templates with an index-derived seed."""
+    pz = cfg.get("procedural")
+    if not pz:
+        return None
+    tpls = pz["templates"]
+    t = tpls[idx % len(tpls)]
+    import props as props_mod
+    have = set(props_mod.available())
+    return {
+        "id": f"wild_{idx:03d}", "title": f"{t['title']} {idx}",
+        "kind": t.get("kind", "island_screen"), "mood": t.get("mood", ""),
+        "prompt": t["prompt"], "scene_size": t.get("scene_size", [320, 224]),
+        "seed": 7000 + idx * 13,
+        "props": [p for p in t.get("props", []) if p in have],
+        "prop_count": t.get("prop_count", pz.get("prop_count", 9)),
+        "exits": [],
+    }
+
+
 def next_zone(cfg):
     for z in cfg.get("zones", []):
         if not scenemod.zone_exists(z["id"]):
             return z
+    # explicit list done -> keep inventing screens (bounded by budget/time)
+    if cfg.get("procedural"):
+        idx = 0
+        while scenemod.zone_exists(_procedural_zone(cfg, idx)["id"]):
+            idx += 1
+        return _procedural_zone(cfg, idx)
     return None
 
 

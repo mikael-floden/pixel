@@ -2,6 +2,28 @@
   "schema": "pixel-maps/viewer@2",
   "zones": [
     {
+      "id": "cabin_room",
+      "title": "Fisher's Cabin",
+      "kind": "interior",
+      "mood": "cozy wooden cabin interior (daytime)",
+      "pixel_size": {
+        "width": 768,
+        "height": 576
+      },
+      "props": 7,
+      "exits": [
+        {
+          "id": "south",
+          "kind": "door",
+          "to_zone": "isle_camp"
+        }
+      ],
+      "preview": "cabin_room/preview.png",
+      "scene": "cabin_room/scene.png",
+      "collision": "cabin_room/collision.png",
+      "manifest": "cabin_room/zone.json"
+    },
+    {
       "id": "cave_hollow",
       "title": "Hollow Cave",
       "kind": "interior",
