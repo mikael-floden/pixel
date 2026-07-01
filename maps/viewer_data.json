@@ -22,6 +22,28 @@
       "scene": "isle_glade/scene.png",
       "collision": "isle_glade/collision.png",
       "manifest": "isle_glade/zone.json"
+    },
+    {
+      "id": "isle_shore",
+      "title": "Sandy Shore",
+      "kind": "island_screen",
+      "mood": "sunny beach meeting grass (daytime)",
+      "pixel_size": {
+        "width": 960,
+        "height": 672
+      },
+      "props": 7,
+      "exits": [
+        {
+          "id": "south",
+          "kind": "path",
+          "to_zone": "isle_glade"
+        }
+      ],
+      "preview": "isle_shore/preview.png",
+      "scene": "isle_shore/scene.png",
+      "collision": "isle_shore/collision.png",
+      "manifest": "isle_shore/zone.json"
     }
   ]
 }
