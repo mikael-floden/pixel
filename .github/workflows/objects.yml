@@ -59,4 +59,4 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           python objects/pipeline/loop.py \
             --max-minutes "${{ github.event.inputs.max_minutes || '50' }}" \
-            --min-balance "${{ github.event.inputs.min_balance || '20' }}"
+            --min-balance "${{ github.event.inputs.min_balance || '2000' }}"
