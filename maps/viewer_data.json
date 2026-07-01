@@ -35,6 +35,13 @@
   ],
   "tilesets": [
     {
+      "id": "grass_forest",
+      "lower": "lush green grass",
+      "upper": "dense dark green forest floor with ferns",
+      "tiles": 16,
+      "atlas": "assets/tilesets/grass_forest/tiles"
+    },
+    {
       "id": "ocean_sand",
       "lower": "deep blue ocean water with gentle ripples",
       "upper": "pale golden sandy beach",
