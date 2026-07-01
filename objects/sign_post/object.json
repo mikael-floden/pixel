@@ -32,14 +32,16 @@
     "count": 4,
     "directions": [
       "east",
+      "north",
       "south"
     ],
     "files": {
       "east": "sign_post/rotations/east.png",
+      "north": "sign_post/rotations/north.png",
       "south": "sign_post/rotations/south.png"
     }
   },
   "animations": {},
-  "generations_used": 2.0,
+  "generations_used": 3.0,
   "status": "in_progress"
 }
