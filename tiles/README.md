@@ -66,6 +66,26 @@ align on the same grid — mix them freely. Anchor each tile by its full 64×64 
 Because the format is identical for every category, autotiling/edge blending and
 object placement work uniformly.
 
+## Elevation (walls, cliffs, mountains, valleys)
+
+The flat ground sets are the **ground plane**; for ALTTP-style multi-level
+terrain there are also **elevation** categories (`kind: "elevation"`). These use
+the **same 64-wide footprint** (so they snap to the same iso grid) but are
+**taller** (`tile_height` 96–128) and full-thickness (`depth_ratio` 1.0), showing
+the vertical face of a raised area:
+
+- `cliff_grass` / `cliff_stone` / `cliff_snow` / `cliff_desert` — cliff faces +
+  corners for plateaus, hills, canyons.
+- `castle_wall` / `town_wall` — tall boundary walls.
+- `stairs` — ramps/steps to move between levels.
+- `mountain_peak` — tall summit blocks.
+
+The Maps agent renders elevation by placing a raised region one level up (offset
+the tile's screen-Y by the level height) and using these cliff/wall tiles for the
+exposed vertical face, back-to-front sorted. `tiles.json` records `kind`,
+`tile_height`, and `depth_ratio` so the assembler knows a tile is tall. Same grid,
+same 28° angle — mix ground and elevation freely.
+
 ## Running the loop
 
 ```bash
