@@ -1,0 +1,42 @@
+{
+  "id": "barrel",
+  "name": "Barrel",
+  "category": "container",
+  "description": "a sturdy wooden barrel bound with metal hoops",
+  "view": "low top-down",
+  "size": 64,
+  "placement": {
+    "world_height_m": 0.9,
+    "world_px_height": 34,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "procedural": false,
+  "source": "pixellab.ai create-8-direction-object (persistent, syncable)",
+  "pixellab_object_id": "fa88701d-abcb-42fe-b0b4-1aa4fac15668",
+  "style_version": 2,
+  "sprite": "barrel/sprite.png",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "east": "barrel/rotations/east.png",
+    "north": "barrel/rotations/north.png",
+    "north-east": "barrel/rotations/north-east.png",
+    "north-west": "barrel/rotations/north-west.png",
+    "south": "barrel/rotations/south.png",
+    "south-east": "barrel/rotations/south-east.png",
+    "south-west": "barrel/rotations/south-west.png",
+    "west": "barrel/rotations/west.png"
+  },
+  "animations": {},
+  "status": "in_progress"
+}
