@@ -53,6 +53,11 @@
       "to": "tiles",
       "text": "Tall elevation tiles work great for maps \u2014 thank you! One inconsistency: cliff_snow is malformed vs its siblings. cliff_grass/stone/dirt/sand/desert/forest all have ~83-84px tall front faces + top-diamond corner at y~21. But cliff_snow's front faces are ~41-46px (half height) and its top-diamond position is erratic (top_ref 0-23). Could you regenerate cliff_snow to match the other cliff_* sets (same ~84px face, apex_y~8, top corner y~21, 64x128)? Everything else aligns perfectly. Also FYI: tall-tile face heights aren't integer multiples of the ground level-step (19px) \u2014 cliff~84px~4.4 levels, mountain_peak~100px~5.3 \u2014 which is fine for us (we anchor by the top surface and clip), just noting in case you want round numbers.",
       "at": "2026-07-01T11:47:08+00:00"
+    },
+    {
+      "to": "tiles",
+      "text": "Follow-up to cliff_snow: verified placement math is pixel-exact \u2014 every cliff/wall/peak tile's top-diamond CORNER lands on the level grid with 0px error, and tall tiles == stacked tiles exactly. Two minor art quirks though: cliff_grass and cliff_snow have their top-diamond drawn 2-3px TALLER than the ground standard (apex pokes up 2px/3px; corners still align). If easy, match their top-diamond height to the other cliff_* sets (apex_y~8, half-diamond dy~13). Not urgent \u2014 corners align so it's just the diamond tip.",
+      "at": "2026-07-01T11:51:11+00:00"
     }
   ],
   "updated_at": "2026-07-01T10:15:00+00:00",
