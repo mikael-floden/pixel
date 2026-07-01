@@ -1,6 +1,6 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 8,
+  "object_count": 9,
   "target_count": 46,
   "scale": {
     "_comment": "REALISM RULE: objects are scaled to the world by real height, so they sit correctly next to characters. A character is ~character_height_px tall (the 64px skeleton) representing character_height_m. The loop turns each object's world_height_m into world_px_height = round(world_height_m * character_height_px / character_height_m); a game renders the sprite scaled to that pixel height. So a coin (~0.22m) is tiny next to a character and an oak (~6m) towers. Every object MUST have a world_height_m (per-object, else category_height_m fallback).",
@@ -20,7 +20,8 @@
   },
   "categories": {
     "container": 4,
-    "valuable": 4
+    "valuable": 4,
+    "tool": 1
   },
   "objects": [
     {
@@ -487,6 +488,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "sword",
+      "name": "Sword",
+      "category": "tool",
+      "description": "a steel knight's sword with a leather-wrapped hilt and crossguard, blade pointing up",
+      "view": "side",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.0,
+        "world_px_height": 38,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "in_progress",
+      "pixellab_object_id": "2a8a0b3e-3eb9-47c9-a649-28388b3c9cc5",
+      "sprite": "sword/sprite.png",
+      "rotations": {
+        "east": "sword/rotations/east.png",
+        "north": "sword/rotations/north.png",
+        "north-east": "sword/rotations/north-east.png",
+        "north-west": "sword/rotations/north-west.png",
+        "south": "sword/rotations/south.png",
+        "south-east": "sword/rotations/south-east.png",
+        "south-west": "sword/rotations/south-west.png",
+        "west": "sword/rotations/west.png"
+      },
+      "animations": []
     },
     {
       "id": "wooden_chest",
