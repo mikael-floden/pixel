@@ -2676,6 +2676,23 @@
           }
         }
       }
+    },
+    "mage_robe": {
+      "id": "mage_robe",
+      "description": "a deep blue wizard robe with a pointed hat",
+      "pixellab_id": "15a9b72f-418e-4a33-9f3b-2eab79e9ba20",
+      "edit_description": "wearing a deep blue wizard robe with a pointed hat",
+      "rotations": [
+        "east",
+        "north",
+        "north-east",
+        "north-west",
+        "south",
+        "south-east",
+        "south-west",
+        "west"
+      ],
+      "animations": {}
     }
   }
 }
