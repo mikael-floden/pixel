@@ -128,42 +128,50 @@ def commit_push(message, push=True):
 
 # --- planning ---------------------------------------------------------------
 
-def _fill_character(cfg, sid, sk, ch, anims, dresses):
-    """Next missing unit for ONE character: every declared dress (undressed is
-    dress #1) present, and every dress carrying every declared animation."""
-    for did in dresses:
-        if did == "undressed":
-            for akey in anims:
-                if akey not in ch.get("animations", {}):
-                    return ("animate", sid, sk, ch, "undressed", factory.anim_def(cfg, akey))
-        else:
-            dress = ch.get("outfits", {}).get(did)
-            if not dress:
-                return ("dress", sid, sk, ch, factory.dress_def(cfg, did))
-            for akey in anims:
-                if akey not in dress.get("animations", {}):
-                    return ("animate", sid, sk, ch, did, factory.anim_def(cfg, akey))
-    return None
+def _has_anim(ch, did, akey):
+    have = (ch.get("animations", {}) if did == "undressed"
+            else ch.get("outfits", {}).get(did, {}).get("animations", {}))
+    return akey in have
 
 
 def fill_next(cfg, sk, n_chars):
-    """Next missing unit to make this skeleton's matrix consistent across up to
-    `n_chars` characters: every character has every declared dress, and every
-    dress has every declared animation. Returns an action tuple or None.
+    """Next missing unit — BREADTH-FIRST so the roster stays level and no single
+    character races a whole dress/animation ahead of the others. Order:
 
-    Gap-tolerant: it completes whatever characters actually EXIST (by identity,
-    not position) and, only when they're all complete and we're under target,
-    adds a fresh character at the next free slot. So removing one bad character
-    never shifts or blocks the others — its empty slot is simply refilled."""
+      1. every existing character gets every dress STATE (all chars get dress #3
+         before anyone animates it),
+      2. every character gets every animation on every dress (character is the
+         INNERMOST loop, so a given (dress, animation) is filled across the whole
+         roster before moving on),
+      3. only when all existing characters are fully leveled do we add a NEW
+         character — never start a new character while the roster is out of sync.
+
+    Gap-tolerant: operates on whichever characters EXIST (by identity), so a
+    removed character's slot is simply refilled at the next free index."""
     sid = sk["id"]
     chars = factory.list_characters(sid)
     anims = sk.get("animations", [])
     dresses = sk.get("dresses", ["undressed"])
-    for ch in chars:                       # complete every existing character
-        u = _fill_character(cfg, sid, sk, ch, anims, dresses)
-        if u:
-            return u
-    if len(chars) < n_chars:               # under target -> fill the next free slot
+
+    # 1. dress STATES across ALL characters first
+    for did in dresses:
+        if did == "undressed":
+            continue
+        for ch in chars:
+            if did not in ch.get("outfits", {}):
+                return ("dress", sid, sk, ch, factory.dress_def(cfg, did))
+
+    # 2. animations, character innermost so everyone advances together
+    for did in dresses:
+        for akey in anims:
+            for ch in chars:
+                if not _has_anim(ch, did, akey):
+                    return ("animate", sid, sk, ch,
+                            None if did == "undressed" else did,
+                            factory.anim_def(cfg, akey))
+
+    # 3. grow the roster ONLY when every existing character is fully leveled
+    if len(chars) < n_chars:
         return ("base", sid, sk, factory.next_char_index(sid))
     return None
 
