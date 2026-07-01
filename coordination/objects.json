@@ -1,14 +1,14 @@
 {
   "domain": "objects",
-  "updated_at": "2026-07-01T10:10:34+00:00",
+  "updated_at": "2026-07-01T10:21:31+00:00",
   "health": "running",
-  "current": "gold_ingot: 8-dir object (48px low top-down) \u2014 Gold Ingot",
+  "current": "gold_ingot: animation 'shine' \u2014 a shine of light sweeping across the gold (8 dirs)",
   "progress": {
     "objects_complete": 6,
     "objects_started": 7,
     "objects_target": 46
   },
-  "budget_remaining": 6238.0,
+  "budget_remaining": 6101.0,
   "notes": [
     "objects domain: props/tools/items (chest, coin, tree, sword...). Each object = one folder objects/<id>/ with sprite + optional rotations + animations. Repo is the source of truth (stateless PixelLab image tools; nothing to sync back).",
     "[2026-07-01T02:43:10+00:00] objects agent online: props/tools/items (chest, coin, tree, sword, torch, potion...). Each object = objects/<id>/ with sprite + optional rotations + animations. Heartbeat live on main.",

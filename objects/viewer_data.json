@@ -361,7 +361,23 @@
         "south-west": "gold_ingot/rotations/south-west.png",
         "west": "gold_ingot/rotations/west.png"
       },
-      "animations": []
+      "animations": [
+        {
+          "key": "shine",
+          "description": "a shine of light sweeping across the gold",
+          "frames": 17,
+          "preview_gif": "gold_ingot/animations/shine__south.gif",
+          "directions": {
+            "north": "gold_ingot/animations/shine__north.gif",
+            "north-east": "gold_ingot/animations/shine__north-east.gif",
+            "north-west": "gold_ingot/animations/shine__north-west.gif",
+            "south": "gold_ingot/animations/shine__south.gif",
+            "south-east": "gold_ingot/animations/shine__south-east.gif",
+            "south-west": "gold_ingot/animations/shine__south-west.gif",
+            "west": "gold_ingot/animations/shine__west.gif"
+          }
+        }
+      ]
     },
     {
       "id": "wooden_chest",
