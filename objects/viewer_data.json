@@ -52,10 +52,18 @@
         64,
         64
       ],
-      "status": "in_progress",
+      "status": "complete",
       "sprite": "gem_ruby/sprite.png",
       "rotation_files": {},
-      "animations": []
+      "animations": [
+        {
+          "key": "pulse",
+          "gif": "gem_ruby/animations/pulse.gif",
+          "strip": "gem_ruby/animations/pulse.png",
+          "frames": 4,
+          "action": "glowing brighter and dimmer"
+        }
+      ]
     },
     {
       "id": "gold_coin",
