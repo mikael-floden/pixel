@@ -1,21 +1,23 @@
 """Fleet coordination for the maps agent (see coordination/PROTOCOL.md).
 
 Three agents (characters / objects / maps) share one repo, one `main`, and one
-PixelLab account. The contract that keeps them conflict-free: **one writer per
-file**. This agent may write only `coordination/maps.json`; it *reads* the other
-domains' files. This module handles both halves:
+PixelLab account. They talk through the repo itself: each agent OWNS
+`coordination/<domain>.json` (writes only its own, reads everyone's) — one writer
+per file, so pushes to `main` never conflict.
 
-  - `publish(...)`  — refresh our heartbeat (preserving our own notes/requests).
-  - `read_fleet()`  — load every domain's status.
-  - `inbox()`       — requests addressed to "maps" from the other domains.
-
-`notes` and `requests` in maps.json persist across heartbeats (the human or this
-code edits them deliberately); the live fields refresh every unit.
+The shared front end is `coordination/board.py` (built by the characters agent):
+`inbox` / `post` / `note`. This module **delegates to that shared CLI when it is
+present** (so all agents use one implementation), and falls back to an equivalent
+local reader when it isn't (e.g. on a feature branch before board.py is merged
+in). On top of board's messaging it adds the per-unit **heartbeat** — the live
+`updated_at/health/current/progress/budget_remaining` fields — written so that
+board's `notes`/`requests` are always preserved.
 """
 
 from __future__ import annotations
 
 import datetime
+import importlib.util
 import json
 import os
 
@@ -23,6 +25,20 @@ DOMAIN = "maps"
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))  # repo root
 COORD_DIR = os.path.join(ROOT, "coordination")
 OUR_FILE = os.path.join(COORD_DIR, f"{DOMAIN}.json")
+BOARD_PY = os.path.join(COORD_DIR, "board.py")
+
+
+def _board():
+    """Import coordination/board.py as a module, or None if it isn't there yet."""
+    if not os.path.isfile(BOARD_PY):
+        return None
+    try:
+        spec = importlib.util.spec_from_file_location("coordination_board", BOARD_PY)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod
+    except Exception:
+        return None
 
 
 def _now():
@@ -37,17 +53,20 @@ def _read(path):
         return None
 
 
+# --- reading the fleet ------------------------------------------------------
+
 def read_fleet():
     """{domain: status_dict} for every coordination/<domain>.json present."""
+    b = _board()
+    if b:
+        return {d.get("domain"): d for d in b._all_boards() if d.get("domain")}
     out = {}
-    if not os.path.isdir(COORD_DIR):
-        return out
-    for name in sorted(os.listdir(COORD_DIR)):
-        if not name.endswith(".json"):
-            continue
-        data = _read(os.path.join(COORD_DIR, name))
-        if isinstance(data, dict):
-            out[name[:-5]] = data
+    if os.path.isdir(COORD_DIR):
+        for name in sorted(os.listdir(COORD_DIR)):
+            if name.endswith(".json"):
+                data = _read(os.path.join(COORD_DIR, name))
+                if isinstance(data, dict):
+                    out[name[:-5]] = data
     return out
 
 
@@ -63,35 +82,68 @@ def inbox():
     return msgs
 
 
-def publish(health="running", current="", progress=None, budget_remaining=None,
-            notes=None, requests=None):
-    """Write our heartbeat, preserving existing notes/requests unless overridden."""
+# --- sending messages (delegates to board.py) -------------------------------
+
+def post(to, text):
+    """Ask another domain for something (append to our own requests)."""
+    b = _board()
+    if b:
+        b.cmd_post(DOMAIN, to, text)
+        return
+    d = _read(OUR_FILE) or {"domain": DOMAIN, "notes": [], "requests": []}
+    d.setdefault("requests", []).append({"to": to, "text": text, "at": _now()})
+    _write(d)
+
+
+def note(text):
+    """Leave a note / acknowledge an incoming request (board format: '[ts] text')."""
+    b = _board()
+    if b:
+        b.cmd_note(DOMAIN, text)
+        return
+    d = _read(OUR_FILE) or {"domain": DOMAIN, "notes": [], "requests": []}
+    d.setdefault("notes", []).append(f"[{_now()}] {text}")
+    _write(d)
+
+
+# --- heartbeat (our live status fields; preserves notes/requests) -----------
+
+def _write(data):
     os.makedirs(COORD_DIR, exist_ok=True)
-    prev = _read(OUR_FILE) or {}
-    status = {
-        "domain": DOMAIN,
-        "updated_at": _now(),
-        "health": health,
-        "current": current,
-        "progress": progress if progress is not None else prev.get("progress", {}),
-        "budget_remaining": budget_remaining if budget_remaining is not None
-        else prev.get("budget_remaining"),
-        "notes": notes if notes is not None else prev.get("notes", []),
-        "requests": requests if requests is not None else prev.get("requests", []),
-    }
     with open(OUR_FILE, "w") as f:
-        json.dump(status, f, indent=2)
-    return status
+        json.dump(data, f, indent=2)
+
+
+def publish(health="running", current="", progress=None, budget_remaining=None):
+    """Refresh our heartbeat. Loads the current file first so board-written
+    notes/requests are preserved; only the live fields change."""
+    b = _board()
+    d = (b._load(DOMAIN) if b else _read(OUR_FILE)) or {"domain": DOMAIN}
+    d["domain"] = DOMAIN
+    d["updated_at"] = _now()
+    d["health"] = health
+    d["current"] = current
+    if progress is not None:
+        d["progress"] = progress
+    if budget_remaining is not None:
+        d["budget_remaining"] = budget_remaining
+    d.setdefault("notes", [])
+    d.setdefault("requests", [])
+    if b:
+        b._save(DOMAIN, d)
+    else:
+        _write(d)
+    return d
 
 
 def snapshot_progress():
     """Current maps progress for the heartbeat, read from the filesystem."""
     import zone as zonemod  # local import to avoid a cycle at module load
-    zones = zonemod.list_zones()
-    tdir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets", "tilesets")
-    odir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets", "objects")
+    base = os.path.dirname(os.path.dirname(__file__))
+    tdir = os.path.join(base, "assets", "tilesets")
+    odir = os.path.join(base, "assets", "objects")
     return {
-        "zones": len(zones),
+        "zones": len(zonemod.list_zones()),
         "tilesets": len(os.listdir(tdir)) if os.path.isdir(tdir) else 0,
         "objects": len(os.listdir(odir)) if os.path.isdir(odir) else 0,
     }

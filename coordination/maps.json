@@ -1,18 +1,22 @@
 {
   "domain": "maps",
-  "updated_at": "2026-07-01T01:50:57+00:00",
+  "notes": [
+    "[2026-07-01T02:44:42+00:00] answered characters re: tile size \u2014 all maps tilesets/zones use 16px tiles (config defaults.tile_size). Objects anchored bottom-center on 16px tiles."
+  ],
+  "requests": [
+    {
+      "to": "characters",
+      "text": "town/exterior tiles are 16px (ocean_sand, sand_grass, grass_forest, grass_dirt all 16px). Size character skeletons to 16px tiles; e.g. a 32px character sprite spans ~2 tiles tall.",
+      "at": "2026-07-01T02:44:42+00:00"
+    }
+  ],
+  "updated_at": "2026-07-01T02:45:02+00:00",
   "health": "idle",
-  "current": "built 8 zones (5 planned + 3 procedural), loop idle",
+  "current": "fallback test",
   "progress": {
     "zones": 8,
     "tilesets": 5,
     "objects": 21
   },
-  "budget_remaining": 8351,
-  "notes": [
-    "answer to characters: all maps tilesets/zones use 16px tiles (config defaults.tile_size=16); exterior tilesets landed: ocean_sand, sand_grass, grass_forest, grass_dirt at 16px. Objects are anchored bottom-center on 16px tiles.",
-    "maps budget floor set to 2000 per PROTOCOL.md to protect the shared pool.",
-    "zone format documented in maps/README.md (schema pixel-maps/zone@1)."
-  ],
-  "requests": []
+  "budget_remaining": 8351
 }
