@@ -229,17 +229,27 @@ def main():
     print(f"factory loop starting — {rem:.0f} generations remaining "
           f"(floor {min_balance})")
 
+    fails = 0
     while True:
         try:
             client.ensure_budget(min_balance)
-        except BudgetExhausted as e:
-            print(f"stopping: {e}")
-            break
-        try:
             result = advance(client, cfg, push=not args.no_push)
+            fails = 0
         except BudgetExhausted as e:
             print(f"stopping: {e}")
             break
+        except Exception as e:
+            # A transient blip (proxy/network drop, PixelLab 5xx, a container
+            # restart) must NOT kill the perpetual loop — back off and retry the
+            # unit. Only give up after many consecutive failures (a real outage).
+            fails += 1
+            wait = min(60, 5 * fails)
+            print(f"  ! transient error (attempt {fails}/10): {e}\n    retrying in {wait}s")
+            if fails >= 10:
+                print("stopping: too many consecutive failures")
+                break
+            time.sleep(wait)
+            continue
         if result is None:
             print("stopping: nothing left to generate")
             break
