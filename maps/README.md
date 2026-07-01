@@ -1,18 +1,20 @@
 # Pixel Maps
 
 Automated, PixelLab-backed **map** generator — the map counterpart to the
-character factory in [`../characters/`](../characters/). It produces **islands**
-(overworld maps) and **indoor zones** (caves, houses), each as a self-contained
-**loading zone** you can drop into a top-down 2D game.
+[characters](../characters/) and [objects](../objects/) domains. It builds
+**explorable loading-zone screens** for a top-down 2D game in the *Grave Seasons*
+/ Stardew Valley look.
 
-- **Islands** — a landmass surrounded by water. Small ones have no settlement;
-  larger ones can carry a small town.
-- **Interiors** — a single room (cave, cabin) with walls, furniture and a door.
+**Approach (v2 — scene-based):** PixelLab **draws** each screen as a cohesive
+painted scene (`create-image-pixflux`), art-directed with a palette reference —
+*not* flat Wang tiles (those looked amateur; a drawn scene matches the character
+art). On top of the painted ground we derive a walkable **collision** grid, place
+**props from the objects agent** on a y-sorted **entity layer** (so the character
+passes in front of / behind them), add **exits**, and write a self-contained
+`zone.json`. Big islands are several screens linked by exits.
 
-Everything is drawn by [PixelLab](https://pixellab.ai) using features it actually
-supports (Wang **tilesets** for terrain, **map objects** for props). The loop
-never asks PixelLab for something it can't make — layout, collision and
-composition are done locally from those pieces.
+> Maps are **not** visible on pixellab.io — that only shows the raw generated
+> images. The maps are assembled here in the repo.
 
 ---
 
@@ -20,191 +22,73 @@ composition are done locally from those pieces.
 
 ```
 maps/
-  README.md                 ← you are here
-  spec/MAPS_SPEC.md         design + loop algorithm
-  config/maps.json          tileset profiles, object pool, zone plan
-  pipeline/                 the loop (pixellab_client, assets, worldgen, layouts, zone, loop, viewer_build)
-  assets/                   SHARED art, generated at most once, reused by every zone
-    tilesets/<id>/          a Wang tileset  (tileset.json + tiles/*.png)
-    objects/<id>/           a prop          (object.json + object.png)
-  index.html                phone-friendly zone viewer
-  viewer_data.json          generated index for the viewer
-  <zone_id>/                ← EACH such subfolder is one loading zone (has a zone.json)
+  README.md            you are here
+  spec/MAPS_SPEC.md    design + loop
+  config/maps.json     style, palette ref, prop scales, zone list
+  style/palette.png    palette reference fed to PixelLab for cohesion
+  pipeline/            pixellab_client, props, scene, proportions, coordination, loop, viewer_build
+  index.html           phone viewer
+  <zone_id>/           EACH such folder is one loading zone (has zone.json)
+    scene.png          the PixelLab-drawn painted background (the world canvas)
+    zone.json          the map data (below)
+    objects/*.png      the prop sprites this zone uses (copied from the objects agent)
+    preview.png        background + placed props, depth-sorted (for humans)
+    collision.png      walkable-grid visual (red = blocked)
 ```
 
-> **A zone is any top-level `maps/` subfolder that contains a `zone.json`.**
-> `pipeline/`, `config/`, `spec/` and `assets/` are infrastructure (no
-> `zone.json`) — everything else is a playable loading zone.
-
-Each zone folder is self-contained: it ships its own terrain atlas and the object
-sprites it uses, so you can load a zone without reading anything outside its
-folder (`assets/` is kept only as the shared master / provenance).
-
-```
-maps/isle_of_dawn/
-  zone.json        the manifest (everything below is referenced from here)
-  tiles.png        terrain tile atlas for THIS zone
-  tiles.json       atlas index → {tileset, tile, corners, position}
-  objects/*.png    the prop sprites this zone places
-  preview.png      a full rendered picture of the zone (for humans / GitHub)
-```
+A **zone** = any top-level `maps/` subfolder containing a `zone.json`.
+`pipeline/`, `config/`, `spec/`, `style/` are infrastructure.
 
 ---
 
-## The map data format (`zone.json`)
-
-`zone.json` is the single source of truth for a zone. Schema id
-`pixel-maps/zone@1`. Fields:
-
-| field | meaning |
-|---|---|
-| `id`, `title`, `description` | identity |
-| `kind` | `island` or `interior` |
-| `archetype` | `small_island`, `island_town`, `cave`, `house`, … |
-| `view` | PixelLab camera, e.g. `high top-down` |
-| `tile_size` | pixels per tile (e.g. `16`) |
-| `grid` | `{width, height}` in **tiles** |
-| `pixel_size` | `{width, height}` in pixels (`grid × tile_size`) |
-| `levels` | ordered terrain names, low→high (e.g. `["water","sand","grass"]`) |
-| `bands` | tileset ids; `bands[k]` draws the boundary between `levels[k]` and `levels[k+1]` |
-| `layers` | render layers (currently one `terrain` tile layer) |
-| `tileset` | the per-zone atlas descriptor (`tiles.png` / `tiles.json`) |
-| `corner_heights` | the dual-grid source data (terrain level per tile *corner*) |
-| `objects` | placed props |
-| `collision` | walkable grid |
-| `exits` | doors/docks linking to other zones |
-| `preview` / `preview_scale` | rendered picture + its upscale factor |
-| `provenance` | which PixelLab tilesets produced this |
-
-### Terrain layer
+## The map data format (`zone.json`, schema `pixel-maps/zone@2-scene`)
 
 ```jsonc
-"layers": [{
-  "name": "terrain", "type": "tilelayer",
-  "width": 22, "height": 18,
-  "encoding": "tile-index-grid",   // data[row][col] = index into tiles.json (−1 = empty)
-  "empty": -1,
-  "data": [[0,0,1, ...], ...]
-}]
+{
+  "id": "isle_glade", "title": "Forest Glade", "kind": "island_screen",
+  "background": "scene.png",                 // the painted world image
+  "pixel_size": { "width": 960, "height": 672 },
+  "camera": { "viewport": {"width":480,"height":336},
+              "note": "world > viewport; scroll to follow the player" },
+  "layers": ["background", "entities", "overhead"],
+  "collision": {                             // walkable grid derived from the scene
+    "encoding": "walkable-grid", "cell": 48, "width": 20, "height": 14,
+    "legend": {"0":"walkable","1":"blocked"}, "data": [[1,1,0,...], ...] },
+  "spawn": { "x": 470, "y": 360 },           // where to place the player
+  "entities": [                              // props on the y-sorted layer
+    { "id":"oak_tree", "file":"objects/oak_tree.png",
+      "x":220, "base_y":540, "layer":"entity" } ],
+  "overhead": [],                            // tops that always draw over the player
+  "exits": [ { "id":"north", "kind":"path", "edge":"north",
+               "x":480, "y":0, "to_zone":"isle_shore", "to_exit":"south" } ]
+}
 ```
 
-To draw the terrain: for each `data[row][col]` index `i`, look up
-`tiles.json.tiles[i]`, take its region `px:[x,y]` out of `tiles.png` (each tile
-is `tile_size × tile_size`), and blit it at pixel `(col·tile_size, row·tile_size)`.
-That's the whole renderer.
+### How a game renders it (recipe)
 
-`tiles.json`:
+1. **Background** — draw `scene.png`. It's larger than the screen; the **camera**
+   draws the sub-rectangle around the player and scrolls to follow → bigger world.
+2. **Entities** — draw props **and the player** as one list sorted by `base_y`
+   (feet Y), back-to-front. Lower feet draw last ⇒ the player is *occluded by*
+   props in front and *draws over* props behind. That's front/behind depth.
+   Each prop's `x`,`base_y` is its base (bottom-centre); the sprite is `file`.
+3. **Overhead** — draw any `overhead` sprites (tall canopy/roof tops) last, over
+   the player, so they can walk "under" them (each with its own collision).
+4. **Collision** — `collision.data[row][col]` (0 walkable / 1 blocked), cell size
+   `collision.cell` px. Use for movement/pathfinding. Derived from the painted
+   ground (clearing walkable; foliage/water blocked).
+5. **Exits** — when the player reaches an exit's edge/tile, load `to_zone` and
+   spawn them at that zone's `to_exit`. Screens chain into an explorable island.
 
-```jsonc
-{ "atlas":"tiles.png", "tile_size":16, "columns":16, "count":28,
-  "tiles":[
-    { "index":0, "tileset":"ocean_sand", "tile":"wang_0",
-      "corners":{"NW":"lower","NE":"lower","SW":"lower","SE":"lower"},
-      "atlas":[0,0], "px":[0,0] },
-    ...
-  ] }
-```
+Nothing outside the zone folder is needed to render it (props are copied in).
 
-### Why Wang tiles / corners (dual-grid)
+### Scale / proportions
 
-PixelLab's tileset endpoint returns a **Wang set**: for two terrains (`lower`,
-`upper`) it gives every tile for the 16 combinations of the four **corners** being
-lower or upper, and neighbouring tiles connect seamlessly. So terrain is defined
-on tile **corners**, not tile centres — the classic *dual grid*.
-
-`corner_heights.data` is a `(height+1) × (width+1)` grid of terrain **level
-indices**. A tile cell reads its four corners `NW=(r,c) NE=(r,c+1) SW=(r+1,c)
-SE=(r+1,c+1)`; the tile whose `corners` match is the one to draw. The generator
-guarantees adjacent corners differ by at most one level, so each cell spans a
-single terrain boundary and always has a matching Wang tile. `data` in the
-terrain layer is this lookup already baked to atlas indices — you don't have to
-recompute it, but `corner_heights` documents the intent and lets you rebuild.
-
-Multi-band terrain (water → sand → grass → forest) is handled by using one Wang
-tileset **per adjacent pair** (`bands`) and choosing, per cell, the band matching
-that cell's two levels. One opaque tile per cell, no layer blending.
-
-### Objects
-
-```jsonc
-"objects": [
-  { "id":"tree_oak", "file":"objects/tree_oak.png",
-    "tile":[7,5],                // tile column,row
-    "x":118, "y":72,            // top-left pixel to blit the sprite
-    "anchor":"bottom-center",   // the sprite's base sits at the bottom-centre of the tile
-    "blocks":true }             // contributes to the collision grid
-]
-```
-
-Draw objects **after** terrain, ideally sorted by `y` so lower sprites overlap
-higher ones (top-down depth). Sprites are transparent PNGs and may be taller than
-one tile (a tree spans several tiles but is anchored to one).
-
-### Collision
-
-```jsonc
-"collision": { "encoding":"walkable-grid", "width":22, "height":18,
-               "legend":{"0":"walkable","1":"blocked"},
-               "data":[[1,1,0, ...], ...] }
-```
-
-`data[row][col]` — `0` walkable, `1` blocked. Water and walls are blocked from the
-terrain; blocking objects add their footprint. Use this directly for movement /
-pathfinding.
-
-### Exits (loading zones)
-
-```jsonc
-"exits": [
-  { "id":"dock", "kind":"dock", "tile":[10,17], "x":160, "y":272,
-    "to_zone":"harbor_town", "to_exit":"dock" }
-]
-```
-
-Each exit is a point in this zone that leads to another zone. When the player
-steps on `tile`, load `to_zone` and place them at that zone's exit named
-`to_exit`. `to_zone: null` means an unconnected edge you can wire up in your game.
-This is how zones chain into a world: island `dock` ↔ harbour `dock`, cabin `door`
-↔ the island it sits on.
-
----
-
-## Scale & proportions (walkability)
-
-Realism depends on one shared scale so a character walks at a believable size.
-The rule (enforced by `pipeline/proportions.py`, checked at loop startup):
-
-- **A person is ~1 tile wide × 2 tiles tall** (the Grave Seasons / Stardew look).
-- The characters domain draws bodies **~67px tall** (measured from its sprites),
-  so tiles are **32px** → a character reads as **~2.1 tiles tall**. (At 16px a
-  character would be ~4 tiles — as tall as a house — so 16px is rejected.)
-- **1 tile ≈ 1 metre.** Every object's pixel size is `tiles × tile_size`, where
-  `tiles` is its real footprint (barrel ≈ 1, oak ≈ 3, cottage ≈ 4, large house
-  ≈ 5). So props are always in scale with each other and with the character.
-
-This is a loop **criterion**: the loop won't generate art at a scale that breaks
-walkability, tiles are normalised to an exact square, and object sizes are
-derived from footprints rather than hand-set. The scale is published on the
-coordination board so the characters/objects agents match it.
-
-## Using a zone in a game (minimal recipe)
-
-```
-load zone.json
-atlas   = load(tiles.png)                      # or the per-tile PNGs in the source tileset
-tiles   = zone.tileset via tiles.json
-for row,col in grid:
-    i = layers[terrain].data[row][col]
-    if i >= 0: blit(atlas, tiles[i].px, at=(col*ts, row*ts))
-for obj in sorted(objects, by y):
-    blit(load(obj.file), at=(obj.x, obj.y))
-collision = zone.collision.data                # 0 walkable / 1 blocked
-on player entering an exit.tile: goto exit.to_zone @ exit.to_exit
-```
-
-Nothing outside the zone folder is required. The format is deliberately close to
-[Tiled](https://www.mapeditor.org/)'s model (tile layers + tilesets + object
-layer + a collision grid), so it maps cleanly onto most engines.
+One shared scale keeps it believable: the on-map **character ≈ 20 % of screen
+height** (~2 "character-heights" fit vertically per screen region), and props are
+sized as a multiple of the character (a tree ≈ 1.3×, a chest ≈ 0.45×) — see
+`pipeline/proportions.py`. Props come from the **objects agent**; maps never
+generate props.
 
 ---
 
@@ -212,42 +96,27 @@ layer + a collision grid), so it maps cleanly onto most engines.
 
 ```bash
 pip install -r ../requirements.txt
-export PIXELLAB_API_KEY=...            # kept in a gitignored .env; never committed
-
-python pipeline/loop.py --max-minutes 50    # bounded chunk (for a Routine)
-python pipeline/loop.py --once              # one unit
-python pipeline/loop.py --max-units 5 --no-push
+export PIXELLAB_API_KEY=...        # gitignored .env; never committed
+python pipeline/loop.py --once           # build the next un-built zone
+python pipeline/loop.py --max-minutes 50 # a scheduled chunk
 ```
 
-Each **unit** is one PixelLab op (generate a tileset or an object) or one zone
-assembly (free — pure local composition). The loop reads the filesystem to find
-the next missing unit, so it's fully **resumable**; after each unit it rebuilds
-`viewer_data.json`, commits, and pushes. It stops cleanly when the PixelLab
-balance drops below `budget.min_generations_remaining`.
+Each unit = one drawn scene + assembly (one PixelLab op). The loop finds the next
+zone in `config/maps.json:zones` without a `zone.json`, builds it, rebuilds the
+viewer, publishes a coordination heartbeat, commits and pushes. Resumable and
+budget-aware (stops below `budget.min_generations_remaining`).
 
-Order: build the explicit `zone_plan` first (small islands first, as intended),
-then keep inventing fresh islands from `config/maps.json:procedural_zones`.
+### Adding zones / changing the look
 
-### Adding your own zones / terrain / props
+- **New screen:** add a `zones` entry (`prompt`, `mood`, `props`, `exits`).
+- **Cohesion / mood:** the look is driven by `style/palette.png` + `style_base` +
+  each zone's `prompt`. Swap the palette for a different season/mood.
+- **Props:** reference ids from the objects agent's catalog (`/objects`); request
+  new ones from that agent via the coordination board.
 
-- **New terrain**: add a Wang tileset to `config/maps.json:tilesets`
-  (`lower`/`upper` descriptions).
-- **New prop**: add to `objects` (`description`, `size`, `on`, `blocks`).
-- **New zone**: append to `zone_plan` (`archetype`, `grid`, `levels`, `bands`,
-  which `objects`, optional `town_size`/`houses`, and `links` to other zones).
+## Fleet coordination
 
-## Viewer
-
-Browse `*/preview.png` directly in the GitHub mobile app, or enable GitHub Pages
-and open `index.html` for a zone gallery that reads `viewer_data.json`. Works
-locally too: `python -m http.server` then open `/maps/`.
-
-## PixelLab features used
-
-- **`create-tileset`** — Wang terrain tilesets (seamless, corner-classified).
-- **`map-objects`** — transparent props (trees, houses, furniture).
-- **`create-image-pixflux`** — available in the client for whole-scene backdrops.
-
-Style knobs (`view`, `outline`, `shading`, `detail`, `tile_size`, seeds for
-reproducibility) are passed through from `config/maps.json`. See
-[`spec/MAPS_SPEC.md`](spec/MAPS_SPEC.md) for the full design.
+Three agents (characters / objects / maps) share one repo, `main`, and one
+PixelLab account — see [`../coordination/PROTOCOL.md`](../coordination/PROTOCOL.md).
+Maps writes only `coordination/maps.json`, reads the others, references the
+objects agent's props, and reserves a 2000-generation budget floor.

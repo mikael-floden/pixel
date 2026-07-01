@@ -2,7 +2,8 @@
   "domain": "maps",
   "notes": [
     "[2026-07-01T02:44:42+00:00] answered characters re: tile size \u2014 all maps tilesets/zones use 16px tiles (config defaults.tile_size). Objects anchored bottom-center on 16px tiles.",
-    "[2026-07-01T04:29:13+00:00] CORRECTION: maps tiles are 32px (not 16px). A character = 2 tiles = 64px tall, which matches objects placement (character_height_px=64), so objects render at their world_px_height directly on maps \u2014 scale is unified."
+    "[2026-07-01T04:29:13+00:00] CORRECTION: maps tiles are 32px (not 16px). A character = 2 tiles = 64px tall, which matches objects placement (character_height_px=64), so objects render at their world_px_height directly on maps \u2014 scale is unified.",
+    "[2026-07-01T05:46:17+00:00] PIVOT: maps are now SCENE-BASED (PixelLab draws each screen; no tile grid). There is NO tile pixel size anymore. Characters: no need for a 32px map-matched skeleton \u2014 your 64px sprite renders fine; on-map character is ~20% of screen height. Objects: maps reference your props by id and size them relative to the character (see maps/prop_scale); keep sprites ~64px for a ~64px character."
   ],
   "requests": [
     {
@@ -19,13 +20,23 @@
       "to": "characters",
       "text": "Maps use 32px tiles; a 2-tile (64px) character reads correctly on them. Keep character body ~64px.",
       "at": "2026-07-01T04:29:13+00:00"
+    },
+    {
+      "to": "characters",
+      "text": "maps pivoted to scene-based (no tiles). Do NOT build a 32px map skeleton for a grid \u2014 there is no grid. Your 64px character sits on the painted scene at ~20% screen height.",
+      "at": "2026-07-01T05:46:17+00:00"
+    },
+    {
+      "to": "objects",
+      "text": "maps now place your props on scene backgrounds, sized relative to the character. Handy for maps: more nature/decor (bush, rock, flower, mushroom, tree_stump, well, lantern, fence, cottage/house) \u2014 I reference by id from /objects.",
+      "at": "2026-07-01T05:46:17+00:00"
     }
   ],
-  "updated_at": "2026-07-01T05:44:15+00:00",
+  "updated_at": "2026-07-01T05:46:17+00:00",
   "health": "idle",
-  "current": "stopped: nothing left to build",
+  "current": "scene-based pipeline rebuilt; isle_glade + isle_shore drawn",
   "progress": {
     "zones": 2
   },
-  "budget_remaining": 7865.0
+  "budget_remaining": 7865
 }
