@@ -21,7 +21,7 @@
     "wave",
     "attack"
   ],
-  "skeleton_count": 1,
+  "skeleton_count": 2,
   "skeletons": [
     {
       "id": "00_low8_64",
@@ -2106,6 +2106,25 @@
           ]
         }
       ]
+    },
+    {
+      "id": "01_low8_64",
+      "status": "in_progress",
+      "note": "Low top-down, 64x64, 8 directions \u2014 maps use 32px tiles and a 64px character reads as ~2 tiles (per coordination/maps.json). 64px is the target body size.",
+      "params": {
+        "id": "01_low8_64",
+        "note": "Low top-down, 64x64, 8 directions \u2014 maps use 32px tiles and a 64px character reads as ~2 tiles (per coordination/maps.json). 64px is the target body size.",
+        "view": "low top-down",
+        "width": 64,
+        "height": 64,
+        "directions": 8,
+        "template_id": "mannequin",
+        "outline": "single color black outline",
+        "shading": "basic shading",
+        "detail": "medium detail"
+      },
+      "character_count": 0,
+      "characters": []
     }
   ]
 }
