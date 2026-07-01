@@ -531,6 +531,22 @@
             "south-west": "pickaxe/animations/swing__south-west.gif",
             "west": "pickaxe/animations/swing__west.gif"
           }
+        },
+        {
+          "key": "bob",
+          "description": "the pickaxe bobbing",
+          "frames": 17,
+          "preview_gif": "pickaxe/animations/bob__south.gif",
+          "directions": {
+            "east": "pickaxe/animations/bob__east.gif",
+            "north": "pickaxe/animations/bob__north.gif",
+            "north-east": "pickaxe/animations/bob__north-east.gif",
+            "north-west": "pickaxe/animations/bob__north-west.gif",
+            "south": "pickaxe/animations/bob__south.gif",
+            "south-east": "pickaxe/animations/bob__south-east.gif",
+            "south-west": "pickaxe/animations/bob__south-west.gif",
+            "west": "pickaxe/animations/bob__west.gif"
+          }
         }
       ]
     },
