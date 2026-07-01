@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pixel Maps — the world</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; background: #12151f; color: #e8ecf4;
+         font: 15px/1.5 system-ui, sans-serif; }
+  header { padding: 16px 20px; border-bottom: 1px solid #263049; }
+  h1 { margin: 0; font-size: 18px; }
+  .sub { color: #9aa6c0; font-size: 13px; margin-top: 4px; }
+  .wrap { display: flex; gap: 20px; padding: 20px; flex-wrap: wrap; }
+  .map { flex: 1 1 640px; min-width: 320px; }
+  .map img { width: 100%; height: auto; image-rendering: pixelated;
+             border: 1px solid #263049; border-radius: 6px; background: #0c0f17; }
+  aside { flex: 0 1 300px; }
+  .card { background: #1a2033; border: 1px solid #263049; border-radius: 6px;
+          padding: 12px 14px; margin-bottom: 12px; }
+  .card h2 { margin: 0 0 8px; font-size: 14px; color: #cbd5f0; }
+  .region { display: flex; justify-content: space-between; padding: 3px 0;
+            border-bottom: 1px dashed #263049; }
+  .region:last-child { border-bottom: 0; }
+  .kind { color: #8fb4ff; font-size: 12px; }
+  ol { margin: 6px 0 0; padding-left: 18px; }
+  li { margin: 2px 0; color: #b8c2dc; font-size: 13px; }
+  code { color: #9fe6c0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Pixel Maps — the world</h1>
+  <div class="sub">Isometric world assembled from <code>tiles/</code>. Rebuild with
+    <code>python maps/pipeline/build.py --iterate</code>.</div>
+</header>
+<div class="wrap">
+  <div class="map"><img src="world/world.png" alt="the world" /></div>
+  <aside>
+    <div class="card"><h2>World</h2><div id="meta">loading…</div></div>
+    <div class="card"><h2>Regions</h2><div id="regions"></div></div>
+    <div class="card"><h2>Design log</h2><ol id="log"></ol></div>
+  </aside>
+</div>
+<script>
+fetch('world/world.json').then(r => r.json()).then(w => {
+  document.getElementById('meta').innerHTML =
+    `${w.width}×${w.height} cells · iteration ${w.iteration} · seed ${w.seed}`;
+  document.getElementById('regions').innerHTML = (w.regions || [])
+    .map(r => `<div class="region"><span>${r.name}</span>` +
+              `<span class="kind">${r.kind}</span></div>`).join('') || '—';
+  document.getElementById('log').innerHTML = (w.log || [])
+    .map(l => `<li>${l}</li>`).join('');
+}).catch(() => { document.getElementById('meta').textContent =
+  'run build.py to generate world.json'; });
+</script>
+</body>
+</html>
