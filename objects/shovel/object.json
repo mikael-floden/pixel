@@ -1,0 +1,42 @@
+{
+  "id": "shovel",
+  "name": "Shovel",
+  "category": "tool",
+  "description": "a wooden-handled digging shovel with a metal blade",
+  "view": "side",
+  "size": 64,
+  "placement": {
+    "world_height_m": 1.3,
+    "world_px_height": 49,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "procedural": false,
+  "source": "pixellab.ai create-8-direction-object (persistent, syncable)",
+  "pixellab_object_id": "52c50b63-e854-43fa-a0f0-3948c60d9fd5",
+  "style_version": 2,
+  "sprite": "shovel/sprite.png",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "east": "shovel/rotations/east.png",
+    "north": "shovel/rotations/north.png",
+    "north-east": "shovel/rotations/north-east.png",
+    "north-west": "shovel/rotations/north-west.png",
+    "south": "shovel/rotations/south.png",
+    "south-east": "shovel/rotations/south-east.png",
+    "south-west": "shovel/rotations/south-west.png",
+    "west": "shovel/rotations/west.png"
+  },
+  "animations": {},
+  "status": "in_progress"
+}

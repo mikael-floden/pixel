@@ -1,6 +1,6 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 9,
+  "object_count": 10,
   "target_count": 46,
   "scale": {
     "_comment": "REALISM RULE: objects are scaled to the world by real height, so they sit correctly next to characters. A character is ~character_height_px tall (the 64px skeleton) representing character_height_m. The loop turns each object's world_height_m into world_px_height = round(world_height_m * character_height_px / character_height_m); a game renders the sprite scaled to that pixel height. So a coin (~0.22m) is tiny next to a character and an oak (~6m) towers. Every object MUST have a world_height_m (per-object, else category_height_m fallback).",
@@ -21,7 +21,7 @@
   "categories": {
     "container": 4,
     "valuable": 4,
-    "tool": 1
+    "tool": 2
   },
   "objects": [
     {
@@ -488,6 +488,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "shovel",
+      "name": "Shovel",
+      "category": "tool",
+      "description": "a wooden-handled digging shovel with a metal blade",
+      "view": "side",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.3,
+        "world_px_height": 49,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "in_progress",
+      "pixellab_object_id": "52c50b63-e854-43fa-a0f0-3948c60d9fd5",
+      "sprite": "shovel/sprite.png",
+      "rotations": {
+        "east": "shovel/rotations/east.png",
+        "north": "shovel/rotations/north.png",
+        "north-east": "shovel/rotations/north-east.png",
+        "north-west": "shovel/rotations/north-west.png",
+        "south": "shovel/rotations/south.png",
+        "south-east": "shovel/rotations/south-east.png",
+        "south-west": "shovel/rotations/south-west.png",
+        "west": "shovel/rotations/west.png"
+      },
+      "animations": []
     },
     {
       "id": "sword",
