@@ -68,6 +68,33 @@
       "manifest": "isle2_dunes/zone.json"
     },
     {
+      "id": "isle2_jungle",
+      "title": "Verdant Jungle",
+      "kind": "island_screen",
+      "mood": "lush jungle (daytime)",
+      "pixel_size": {
+        "width": 960,
+        "height": 672
+      },
+      "props": 12,
+      "exits": [
+        {
+          "id": "south",
+          "kind": "path",
+          "to_zone": "isle2_dunes"
+        },
+        {
+          "id": "north",
+          "kind": "path",
+          "to_zone": "isle2_ruins"
+        }
+      ],
+      "preview": "isle2_jungle/preview.png",
+      "scene": "isle2_jungle/scene.png",
+      "collision": "isle2_jungle/collision.png",
+      "manifest": "isle2_jungle/zone.json"
+    },
+    {
       "id": "isle_camp",
       "title": "Forest Camp",
       "kind": "island_screen",
