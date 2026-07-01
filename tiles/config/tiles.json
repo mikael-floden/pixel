@@ -139,7 +139,9 @@
       "profile": "cliff",
       "description": "isometric snowy cliff tiles, two-level rock face topped with snow, cliffs only: 1) snow cliff front 2) snow cliff corner 3) icy cliff 4) snow ledge drop 5) frosty cliff 6) snow cliff inner corner",
       "tile_height": 128,
-      "depth_ratio": 0.75
+      "depth_ratio": 0.75,
+      "seed": 101,
+      "_seed_note": "rerolled: default seed produced half-height (~46px) faces; 101 matches sibling cliffs (~84px, apex_y~8)"
     },
     {
       "id": "cliff_sand",

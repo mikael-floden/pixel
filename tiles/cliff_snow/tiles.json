@@ -14,20 +14,20 @@
     "grid_dx": 32,
     "grid_dy": 13,
     "diamond_top_height": 26,
-    "level_height": 46,
-    "apex_y": 0,
+    "level_height": 84,
+    "apex_y": 8,
     "base_y": 119,
     "image_height": 128,
     "note": "screen_x=ox+(col-row)*grid_dx; screen_y=oy+(col+row)*grid_dy; one level = 19px (subtract N*19 from screen_y to raise N levels); bottom-anchor by base_y (footprint front tip) so tiles of any thickness line up without per-tile correction; draw back-to-front by (col+row) then by level."
   },
   "stacking": {
-    "face_height_px": 46,
+    "face_height_px": 84,
     "one_layer_px": 19,
-    "layers": 2.42,
-    "levels": 2,
+    "layers": 4.42,
+    "levels": 4,
     "align": "scenery",
     "diamond_top_height_px": 26,
-    "apex_y": 0,
+    "apex_y": 8,
     "base_y": 119,
     "image_height": 128,
     "grid_dx": 32,
@@ -41,72 +41,72 @@
       "file": "tile_00.png",
       "width": 64,
       "height": 128,
-      "apex_y": 0,
+      "apex_y": 8,
       "base_y": 119,
-      "face_px": 46
+      "face_px": 84
     },
     {
       "index": 1,
       "file": "tile_01.png",
       "width": 64,
       "height": 128,
-      "apex_y": 0,
+      "apex_y": 8,
       "base_y": 119,
-      "face_px": 46
+      "face_px": 83
     },
     {
       "index": 2,
       "file": "tile_02.png",
       "width": 64,
       "height": 128,
-      "apex_y": 0,
+      "apex_y": 8,
       "base_y": 119,
-      "face_px": 47
+      "face_px": 84
     },
     {
       "index": 3,
       "file": "tile_03.png",
       "width": 64,
       "height": 128,
-      "apex_y": 0,
+      "apex_y": 8,
       "base_y": 119,
-      "face_px": 46
+      "face_px": 84
     },
     {
       "index": 4,
       "file": "tile_04.png",
       "width": 64,
       "height": 128,
-      "apex_y": 0,
-      "base_y": 59,
-      "face_px": 44
+      "apex_y": 8,
+      "base_y": 119,
+      "face_px": 84
     },
     {
       "index": 5,
       "file": "tile_05.png",
       "width": 64,
       "height": 128,
-      "apex_y": 0,
-      "base_y": 56,
-      "face_px": 41
+      "apex_y": 8,
+      "base_y": 119,
+      "face_px": 84
     },
     {
       "index": 6,
       "file": "tile_06.png",
       "width": 64,
       "height": 128,
-      "apex_y": 0,
-      "base_y": 59,
-      "face_px": 44
+      "apex_y": 8,
+      "base_y": 119,
+      "face_px": 82
     },
     {
       "index": 7,
       "file": "tile_07.png",
       "width": 64,
       "height": 128,
-      "apex_y": 0,
-      "base_y": 59,
-      "face_px": 44
+      "apex_y": 8,
+      "base_y": 119,
+      "face_px": 83
     },
     {
       "index": 8,
@@ -124,7 +124,7 @@
       "height": 128,
       "apex_y": 8,
       "base_y": 119,
-      "face_px": 84
+      "face_px": 82
     },
     {
       "index": 10,
@@ -142,15 +142,15 @@
       "height": 128,
       "apex_y": 8,
       "base_y": 119,
-      "face_px": 82
+      "face_px": 84
     }
   ],
   "preview": "preview.png",
-  "generated_at": "2026-07-01T10:39:20+00:00",
+  "generated_at": "2026-07-01T12:08:54+00:00",
   "provenance": {
     "tool": "pixellab",
     "endpoint": "/create-tiles-pro",
-    "seed": 937863432,
+    "seed": 101,
     "request": {
       "endpoint": "/create-tiles-pro",
       "tile_type": "isometric",
@@ -159,7 +159,7 @@
       "tile_depth_ratio": 0.75,
       "tile_flat_top_px": 4,
       "tile_height": 128,
-      "seed": 937863432,
+      "seed": 101,
       "description": "isometric snowy cliff tiles, two-level rock face topped with snow, cliffs only: 1) snow cliff front 2) snow cliff corner 3) icy cliff 4) snow ledge drop 5) frosty cliff 6) snow cliff inner corner"
     }
   }

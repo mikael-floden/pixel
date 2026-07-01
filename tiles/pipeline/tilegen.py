@@ -185,7 +185,9 @@ def generate_category(client, cfg, cat):
     # walls) on the same footprint; the format is otherwise fixed.
     depth = cat.get("depth_ratio", t["depth_ratio"])
     tile_height = cat.get("tile_height")
-    seed = _seed(cid)
+    # `seed` override lets us reroll a category that generated malformed (same id
+    # otherwise derives the same deterministic seed and reproduces the fault).
+    seed = cat.get("seed") if cat.get("seed") is not None else _seed(cid)
     request = {
         "endpoint": ENDPOINT, "tile_type": t.get("type", "isometric"),
         "tile_size": t["size"], "tile_view_angle": t["view_angle"],
