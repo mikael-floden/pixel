@@ -183,10 +183,18 @@
         64,
         64
       ],
-      "status": "in_progress",
+      "status": "complete",
       "sprite": "oak_tree/sprite.png",
       "rotation_files": {},
-      "animations": []
+      "animations": [
+        {
+          "key": "sway",
+          "gif": "oak_tree/animations/sway.gif",
+          "strip": "oak_tree/animations/sway.png",
+          "frames": 4,
+          "action": "swaying gently in the wind"
+        }
+      ]
     },
     {
       "id": "pickaxe",
