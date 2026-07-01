@@ -144,5 +144,10 @@
       "seed": 1389131560,
       "description": "isometric tall stone tower tiles, towers only: 1) round tower body 2) tower top 3) tower with window 4) ruined tower 5) tower base 6) tower doorway"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

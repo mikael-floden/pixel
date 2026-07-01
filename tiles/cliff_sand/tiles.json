@@ -162,5 +162,10 @@
       "seed": 555720362,
       "description": "isometric sandy cliff tiles, two-level sandstone face, cliffs only: 1) sand cliff front 2) sand cliff corner 3) layered sandstone 4) eroded sand cliff 5) dusty ledge 6) sand cliff inner corner"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

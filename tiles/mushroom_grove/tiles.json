@@ -198,5 +198,10 @@
       "seed": 1988253547,
       "description": "isometric mushroom grove tiles, fungal forest floor only: 1) mossy floor with red toadstools 2) brown mushroom cluster 3) glowing blue mushrooms 4) fungal roots 5) damp leaf floor with fungi 6) tiny mushroom ring"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

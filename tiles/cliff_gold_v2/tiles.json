@@ -162,5 +162,10 @@
       "seed": 1282262996,
       "description": "isometric gold-ore cliff tiles, two-level mining rock face, cliffs only: 1) ore cliff front 2) ore cliff corner 3) golden vein cliff 4) blasted rock drop 5) timber-braced ledge 6) ore cliff inner corner"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

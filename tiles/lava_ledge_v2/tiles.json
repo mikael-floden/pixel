@@ -198,5 +198,10 @@
       "seed": 293907954,
       "description": "isometric low volcanic ledge tiles, one-level basalt edges only: 1) basalt ledge front 2) ledge corner 3) glowing-crack ledge 4) ashen step 5) obsidian rim 6) cooled lava step"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

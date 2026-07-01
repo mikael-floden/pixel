@@ -183,5 +183,10 @@
     "formula": "One elevation level = 19px (a 64x64 @ 50% flat tile's face). Raise a tile N levels by subtracting N*19 from screen_y; draw back-to-front by (col+row), then by level. EXACT tiles (64x64: flat=1 level, raised=2 levels) terrace perfectly. SCENERY tiles (64x128 cliff/tall) have fractional faces (`layers`) \u2014 do NOT use them as exact steps; anchor them by `base_y` (the footprint's front tip is at image row base_y, identical across thicknesses, so bottom-anchoring needs no per-tile correction)."
   },
   "generated_at": null,
-  "metadata_backfilled_at": "2026-07-01T10:10:11+00:00"
+  "metadata_backfilled_at": "2026-07-01T10:10:11+00:00",
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
+  }
 }

@@ -12,6 +12,15 @@
     "min_generations_remaining": 500,
     "_comment": "Shared PixelLab pool (coordination/PROTOCOL.md). Each category ~20 generations."
   },
+  "postprocess": {
+    "_comment": "Softens the hard black tile silhouette outline so tiles blend at their seams (postprocess.py). Applied on download; raw art is kept in each tiles/<cat>/original/ so this can be re-tuned and re-run over everything via postprocess_tiles.py.",
+    "enabled": true,
+    "border": {
+      "darkness_thresh": 70,
+      "edge_alpha": 0.5,
+      "lighten": 0.4
+    }
+  },
   "_categories": "Focused tile sets covering the whole world. `id` = folder under tiles/. `description` numbers on-theme variations only.",
   "categories": [
     {

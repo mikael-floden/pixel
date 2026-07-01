@@ -198,5 +198,10 @@
       "seed": 243448890,
       "description": "isometric desert terrain tiles, arid desert only: 1) cracked clay 2) rocky desert 3) reddish sand 4) dry hardpan 5) desert gravel 6) sun-baked earth"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

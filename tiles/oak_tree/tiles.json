@@ -144,5 +144,10 @@
       "seed": 253889644,
       "description": "isometric tall oak tree tiles, broadleaf trees only: 1) full oak canopy 2) autumn oak 3) gnarled old oak 4) young oak 5) split-trunk oak 6) mossy oak"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

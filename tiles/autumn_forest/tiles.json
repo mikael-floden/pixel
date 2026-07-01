@@ -198,5 +198,10 @@
       "seed": 439116579,
       "description": "isometric autumn forest floor tiles, autumn woodland ground only: 1) fallen orange leaves 2) red maple leaves 3) brown leaf litter 4) mossy roots with leaves 5) bare autumn soil 6) acorns and twigs"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

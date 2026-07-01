@@ -198,5 +198,10 @@
       "seed": 1517402382,
       "description": "isometric volcanic ground tiles, volcanic only: 1) glowing lava 2) cooled basalt 3) magma crust 4) obsidian ground 5) ashen ground 6) ember rock"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

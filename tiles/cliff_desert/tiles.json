@@ -162,5 +162,10 @@
       "seed": 361991,
       "description": "isometric desert mesa cliff tiles, two-level red-rock canyon face, cliffs only: 1) red mesa front 2) mesa corner 3) sandstone layers 4) eroded mesa 5) canyon drop 6) mesa inner corner"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

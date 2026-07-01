@@ -198,5 +198,10 @@
       "seed": 1976483315,
       "description": "isometric savanna tiles, dry grassland only: 1) golden dry grass 2) cracked savanna soil 3) sparse tufts on dust 4) reddish earth 5) trampled savanna 6) grass with dry shrubs"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

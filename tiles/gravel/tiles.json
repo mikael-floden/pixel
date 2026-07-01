@@ -198,5 +198,10 @@
       "seed": 675879931,
       "description": "isometric gravel tiles, loose stone only: 1) grey gravel 2) fine gravel path 3) coarse crushed rock 4) gravel with weeds 5) reddish gravel 6) packed gravel"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

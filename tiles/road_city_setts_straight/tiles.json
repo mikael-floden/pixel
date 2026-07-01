@@ -378,5 +378,10 @@
       "seed": 1289010058,
       "description": "isometric rectangular stone-sett city road (brick-laid setts) on packed earth verge, straight road pieces only, one flat 64x64 layer, seamlessly tileable. IMPORTANT: include BOTH diagonal directions in equal numbers \u2014 some pieces run from the bottom-left up to the top-right (the north-east to south-west diagonal) and some run from the bottom-right up to the top-left (the north-west to south-east diagonal): 1) straight road going from bottom-left to top-right 2) straight road going from bottom-right to top-left 3) wide straight road bottom-left to top-right 4) narrow footpath bottom-right to top-left 5) rutted road bottom-left to top-right 6) worn road bottom-right to top-left \u2014 every piece centered and feathering smoothly into the surrounding packed earth verge on all four sides so it tiles against plain packed earth verge."
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

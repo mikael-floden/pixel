@@ -198,5 +198,10 @@
       "seed": 566985412,
       "description": "isometric low grassy ledge tiles, one-level raised grass edges only: 1) grass ledge front 2) grass ledge left 3) grass ledge right 4) grass step 5) low grass bank 6) grass rim"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

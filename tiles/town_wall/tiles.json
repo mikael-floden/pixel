@@ -144,5 +144,10 @@
       "seed": 1364122655,
       "description": "isometric tall town wall tiles, boundary walls only: 1) stone town wall 2) wooden palisade 3) brick wall 4) wall with gate 5) wall corner 6) capped town wall"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

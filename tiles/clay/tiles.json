@@ -198,5 +198,10 @@
       "seed": 472196811,
       "description": "isometric clay ground tiles, clay only: 1) smooth red clay 2) cracked dry clay 3) wet clay 4) grey clay 5) clay with pebbles 6) baked clay flats"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

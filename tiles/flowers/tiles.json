@@ -198,5 +198,10 @@
       "seed": 2108629760,
       "description": "isometric flower meadow tiles, flowering grass only: 1) red poppies 2) blue flowers 3) purple lavender 4) mixed wildflowers 5) daisy field 6) buttercups"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

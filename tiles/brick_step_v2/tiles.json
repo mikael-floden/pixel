@@ -198,5 +198,10 @@
       "seed": 1264575644,
       "description": "isometric low brick step tiles, one-level brick edges only: 1) brick step front 2) brick step corner 3) worn brick riser 4) mossy brick step 5) brick ramp 6) capped brick step"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

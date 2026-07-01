@@ -144,5 +144,10 @@
       "seed": 2061481982,
       "description": "isometric tall cactus and desert-spire tiles, desert verticals only: 1) saguaro cactus 2) branching cactus 3) rock spire 4) hoodoo pillar 5) dead cactus 6) flowering cactus"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

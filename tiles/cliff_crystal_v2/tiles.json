@@ -162,5 +162,10 @@
       "seed": 1108647942,
       "description": "isometric crystal cliff tiles, two-level gem-studded rock face, cliffs only: 1) crystal cliff front 2) crystal cliff corner 3) glowing vein cliff 4) shard-studded drop 5) quartz ledge 6) crystal cliff inner corner"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

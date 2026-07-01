@@ -16,6 +16,7 @@ import zlib
 import numpy as np
 from PIL import Image
 
+import postprocess
 import roads
 
 ROOT = os.path.dirname(os.path.dirname(__file__))  # tiles/
@@ -209,19 +210,25 @@ def generate_category(client, cfg, cat):
     if cat.get("road"):
         tiles, mirror_src = roads.mirror_balance(tiles)
     cdir = category_dir(cid)
-    os.makedirs(cdir, exist_ok=True)
+    odir = os.path.join(cdir, "original")
+    os.makedirs(odir, exist_ok=True)
+    # Geometry from the raw silhouette (post-process only touches edge colour/alpha).
     geometry, per_tile = set_geometry(tiles, t["size"])
     tile_meta = []
+    processed = []
     for i, im in enumerate(tiles):
         fname = f"tile_{i:02d}.png"
-        im.save(os.path.join(cdir, fname))
+        im.save(os.path.join(odir, fname))                    # raw original
+        out = postprocess.process(im, cfg)
+        out.save(os.path.join(cdir, fname))                   # post-processed
+        processed.append(out)
         meta = {"index": i, "file": fname, "width": im.width,
                 "height": im.height, **per_tile[i]}
         if i >= n_orig:                       # an appended mirror
             meta["mirrored"] = True
             meta["mirror_of"] = mirror_src[i - n_orig]
         tile_meta.append(meta)
-    _preview(tiles, os.path.join(cdir, "preview.png"))
+    _preview(processed, os.path.join(cdir, "preview.png"))
     manifest = {
         "schema": "pixel-tiles/set@1",
         "category": cid, "description": cat["description"],
@@ -235,6 +242,10 @@ def generate_category(client, cfg, cat):
         "stacking": stacking_info(geometry, t["size"], tile_height),
         "count": len(tile_meta), "tiles": tile_meta,
         "preview": "preview.png",
+        "postprocess": {"applied": bool((cfg.get("postprocess") or {}).get("enabled", True)),
+                        "originals": "original/",
+                        "note": "tile_NN.png are post-processed (softened silhouette "
+                                "outline); raw art in original/ can be re-processed."},
         **({"road": cat["road"]} if cat.get("road") else {}),
         "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
         "provenance": {"tool": "pixellab", "endpoint": ENDPOINT, "seed": seed,

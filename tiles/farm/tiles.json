@@ -198,5 +198,10 @@
       "seed": 1477890117,
       "description": "isometric farmland tiles, farm ground only: 1) tilled rows 2) watered soil 3) soil with sprouts 4) hay ground 5) dry field 6) furrowed farmland"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

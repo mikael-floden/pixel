@@ -198,5 +198,10 @@
       "seed": 122222866,
       "description": "isometric wooden floor tiles, wood planks only: 1) warm planks 2) worn wood 3) dark oak 4) light pine 5) wide planks 6) old creaky wood"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

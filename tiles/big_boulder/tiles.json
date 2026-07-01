@@ -144,5 +144,10 @@
       "seed": 920623073,
       "description": "isometric tall boulder and rock-stack tiles, large rocks only: 1) huge boulder 2) stacked rocks 3) mossy boulder 4) split boulder 5) craggy pillar 6) balanced rock"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

@@ -198,5 +198,10 @@
       "seed": 204679817,
       "description": "isometric wheat field tiles, ripe grain only: 1) golden wheat rows 2) short wheat stubble 3) wind-bent wheat 4) barley field 5) harvested field 6) wheat with poppies"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

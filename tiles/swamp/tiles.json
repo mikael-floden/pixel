@@ -198,5 +198,10 @@
       "seed": 1207644390,
       "description": "isometric swamp tiles, swamp only: 1) murky water 2) muddy marsh 3) mossy bog 4) reedy wetland 5) algae water 6) soggy peat"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

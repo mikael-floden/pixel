@@ -162,5 +162,10 @@
       "seed": 419622157,
       "description": "isometric earthen cliff tiles, two-level dirt bank face, cliffs only: 1) dirt cliff front 2) dirt cliff corner 3) rooted dirt bank 4) muddy cliff 5) crumbling dirt drop 6) dirt cliff inner corner"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

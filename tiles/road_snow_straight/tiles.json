@@ -357,5 +357,10 @@
       "seed": 629238686,
       "description": "isometric cleared packed-snow path on deep white snow, straight road pieces only, one flat 64x64 layer, seamlessly tileable: 1) straight road running along the north-east to south-west diagonal 2) straight road running along the north-west to south-east diagonal 3) wide straight road 4) narrow worn footpath 5) straight road with wheel ruts and scattered stones 6) straight road with a frayed end \u2014 every piece centered and feathering smoothly into the surrounding deep white snow on all four sides so it tiles against plain deep white snow."
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

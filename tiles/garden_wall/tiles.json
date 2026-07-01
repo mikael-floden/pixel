@@ -198,5 +198,10 @@
       "seed": 1161526675,
       "description": "isometric low garden wall tiles, one-level walls only: 1) low stone wall 2) brick garden wall 3) wall corner 4) mossy low wall 5) wall with gate 6) capped wall"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

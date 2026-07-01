@@ -144,5 +144,10 @@
       "seed": 2012622313,
       "description": "isometric tall brick wall tiles, walls only: 1) red brick wall 2) wall corner 3) wall window 4) archway 5) worn brick wall 6) capped brick wall"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

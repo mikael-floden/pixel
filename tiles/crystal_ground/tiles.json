@@ -198,5 +198,10 @@
       "seed": 1439836937,
       "description": "isometric crystal cavern floor tiles, crystalline ground only: 1) purple crystal shards 2) blue crystal cluster 3) rocky floor with gems 4) glowing crystal vein 5) quartz gravel 6) dark stone with crystals"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

@@ -144,5 +144,10 @@
       "seed": 1309819925,
       "description": "isometric tall stone monument tiles, standing stones only: 1) carved obelisk 2) weathered menhir 3) rune stone 4) broken pillar 5) twin standing stones 6) mossy monolith"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

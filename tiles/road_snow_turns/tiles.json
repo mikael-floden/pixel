@@ -398,5 +398,10 @@
       "seed": 1367367750,
       "description": "isometric cleared packed-snow path on deep white snow, road bend and corner pieces only, one flat 64x64 layer, seamlessly tileable: 1) bend connecting the north-east and south-east edges 2) bend connecting the north-west and south-west edges 3) bend connecting the north-east and north-west edges 4) bend connecting the south-east and south-west edges 5) gentle sweeping curve 6) tight hairpin corner \u2014 every piece feathering smoothly into the surrounding deep white snow so it tiles against plain deep white snow."
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

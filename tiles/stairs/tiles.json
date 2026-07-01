@@ -198,5 +198,10 @@
       "seed": 549438456,
       "description": "isometric stone staircase and ramp tiles, one level up, stairs only: 1) stone steps up 2) stone ramp 3) grassy ramp 4) wide steps 5) stair corner 6) short step"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

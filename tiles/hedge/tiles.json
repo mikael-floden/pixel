@@ -198,5 +198,10 @@
       "seed": 992135147,
       "description": "isometric hedge and bush-wall tiles, one-level green walls only: 1) trimmed hedge 2) hedge corner 3) flowering hedge 4) tall bush wall 5) hedge gap 6) wild hedge"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

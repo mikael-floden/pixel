@@ -162,5 +162,10 @@
       "seed": 1683348122,
       "description": "isometric red-clay cliff tiles, two-level badland face, cliffs only: 1) clay cliff front 2) clay cliff corner 3) banded clay strata 4) eroded clay gully 5) crumbling clay drop 6) clay cliff inner corner"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

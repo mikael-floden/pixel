@@ -397,5 +397,10 @@
       "seed": 1714510342,
       "description": "isometric rectangular stone-sett city road (brick-laid setts) on packed earth verge, road bend and corner pieces only, one flat 64x64 layer, seamlessly tileable. Make every piece a DIFFERENT corner \u2014 cover all four ways a road can turn, do not repeat the same bend: 1) bend joining the north-east and south-east edges 2) bend joining the north-west and south-west edges 3) bend joining the north-east and north-west edges 4) bend joining the south-east and south-west edges 5) a gentle sweeping curve turning the opposite way to #1 6) a tight hairpin corner turning the opposite way to #2 \u2014 each a distinct direction, feathering smoothly into the surrounding packed earth verge so it tiles against plain packed earth verge."
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

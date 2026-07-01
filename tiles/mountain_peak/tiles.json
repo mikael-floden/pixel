@@ -144,5 +144,10 @@
       "seed": 2014217010,
       "description": "isometric tall mountain tiles, high peaks only: 1) tall grey peak 2) snow-capped peak 3) craggy summit 4) steep rock face 5) dark spire 6) layered mountain"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

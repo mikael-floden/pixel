@@ -198,5 +198,10 @@
       "seed": 665685033,
       "description": "isometric wooden ramp and dock-step tiles, one-level wood only: 1) wood ramp 2) wood steps 3) dock edge 4) plank slope 5) ramp corner 6) low wood platform"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

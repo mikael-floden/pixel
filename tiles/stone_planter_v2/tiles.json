@@ -198,5 +198,10 @@
       "seed": 1041069455,
       "description": "isometric raised stone planter tiles, one-level garden borders only: 1) stone planter front 2) planter corner 3) flowering planter 4) hedge-topped planter 5) mossy planter 6) planter with vines"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

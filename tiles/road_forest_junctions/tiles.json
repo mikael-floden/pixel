@@ -392,5 +392,10 @@
       "seed": 1880419807,
       "description": "isometric muddy forest trail with roots on leafy green forest floor, road junction pieces only, one flat 64x64 layer, seamlessly tileable: 1) four-way crossroads 2) T-junction opening to the north-east 3) T-junction opening to the north-west 4) T-junction opening to the south-east 5) T-junction opening to the south-west 6) three-way Y-fork \u2014 every piece feathering smoothly into the surrounding leafy green forest floor so it tiles against plain leafy green forest floor."
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

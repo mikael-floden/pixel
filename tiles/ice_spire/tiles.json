@@ -144,5 +144,10 @@
       "seed": 1583421926,
       "description": "isometric tall ice spire tiles, glacial pillars only: 1) blue ice spire 2) jagged ice tower 3) frosted crag 4) icicle-hung pillar 5) cracked ice column 6) snow-capped ice spire"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

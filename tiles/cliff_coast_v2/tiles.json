@@ -162,5 +162,10 @@
       "seed": 629755104,
       "description": "isometric sea-cliff tiles, two-level coastal rock face, cliffs only: 1) wet sea cliff front 2) barnacled cliff corner 3) chalk cliff 4) wave-cut ledge 5) rocky shore drop 6) sea cliff inner corner"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

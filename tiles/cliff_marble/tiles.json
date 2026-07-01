@@ -162,5 +162,10 @@
       "seed": 1367875522,
       "description": "isometric marble quarry cliff tiles, two-level cut-stone face, cliffs only: 1) marble cliff front 2) marble cliff corner 3) chiseled block face 4) stepped quarry drop 5) veined marble ledge 6) marble cliff inner corner"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

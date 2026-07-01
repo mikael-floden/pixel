@@ -144,5 +144,10 @@
       "seed": 1842348450,
       "description": "isometric tall waterfall tiles, falling water on rock only: 1) waterfall face 2) waterfall top lip 3) misty cascade 4) rocky falls edge 5) plunge pool base 6) frozen waterfall"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

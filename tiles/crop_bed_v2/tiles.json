@@ -198,5 +198,10 @@
       "seed": 1558348430,
       "description": "isometric raised crop bed tiles, one-level farm beds only: 1) planted raised bed 2) bed corner 3) watered bed 4) sprouting bed 5) strawed bed 6) empty raised bed"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

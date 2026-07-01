@@ -162,5 +162,10 @@
       "seed": 1197733871,
       "description": "isometric mossy cliff tiles, two-level overgrown rock face, cliffs only: 1) moss cliff front 2) moss cliff corner 3) dripping mossy cliff 4) ferny cliff drop 5) lichen-streaked cliff 6) moss cliff inner corner"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

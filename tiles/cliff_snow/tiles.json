@@ -162,5 +162,10 @@
       "seed": 101,
       "description": "isometric snowy cliff tiles, two-level rock face topped with snow, cliffs only: 1) snow cliff front 2) snow cliff corner 3) icy cliff 4) snow ledge drop 5) frosty cliff 6) snow cliff inner corner"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

@@ -198,5 +198,10 @@
       "seed": 25077320,
       "description": "isometric low stone step tiles, one-level stone edges only: 1) stone step front 2) stone step corner 3) low stone bank 4) worn step 5) mossy step 6) stone rim"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

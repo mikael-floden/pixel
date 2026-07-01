@@ -392,5 +392,10 @@
       "seed": 196117500,
       "description": "isometric grey cobblestone road on packed brown dirt, road junction pieces only, one flat 64x64 layer, seamlessly tileable: 1) four-way crossroads 2) T-junction opening to the north-east 3) T-junction opening to the north-west 4) T-junction opening to the south-east 5) T-junction opening to the south-west 6) three-way Y-fork \u2014 every piece feathering smoothly into the surrounding packed brown dirt so it tiles against plain packed brown dirt."
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

@@ -198,5 +198,10 @@
       "seed": 876225911,
       "description": "isometric meadow tiles, flowering grassland only: 1) clover meadow 2) buttercup meadow 3) tall swaying grass 4) grass with dandelions 5) trampled meadow path 6) meadow with small stones"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

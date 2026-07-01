@@ -198,5 +198,10 @@
       "seed": 120476497,
       "description": "isometric marble floor tiles, polished marble only: 1) white marble 2) veined grey marble 3) black marble 4) checkered marble 5) marble with gold inlay 6) cracked marble"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

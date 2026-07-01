@@ -382,5 +382,10 @@
       "seed": 399127319,
       "description": "isometric worn brown dirt path on lush green grass, road junction pieces only, one flat 64x64 layer, seamlessly tileable: 1) four-way crossroads 2) T-junction opening to the north-east 3) T-junction opening to the north-west 4) T-junction opening to the south-east 5) T-junction opening to the south-west 6) three-way Y-fork \u2014 every piece feathering smoothly into the surrounding lush green grass so it tiles against plain lush green grass."
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

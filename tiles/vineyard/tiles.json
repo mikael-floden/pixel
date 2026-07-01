@@ -198,5 +198,10 @@
       "seed": 2062231659,
       "description": "isometric vineyard ground tiles, cultivated rows only: 1) trellised vine rows 2) grassy vine lanes 3) tilled vineyard soil 4) vines with grapes 5) autumn vineyard 6) bare vine stumps"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

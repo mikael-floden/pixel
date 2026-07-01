@@ -392,5 +392,10 @@
       "seed": 1382313508,
       "description": "isometric dusty dirt track on dry golden savanna grass, road junction pieces only, one flat 64x64 layer, seamlessly tileable: 1) four-way crossroads 2) T-junction opening to the north-east 3) T-junction opening to the north-west 4) T-junction opening to the south-east 5) T-junction opening to the south-west 6) three-way Y-fork \u2014 every piece feathering smoothly into the surrounding dry golden savanna grass so it tiles against plain dry golden savanna grass."
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

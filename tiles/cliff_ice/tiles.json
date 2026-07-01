@@ -162,5 +162,10 @@
       "seed": 1966225743,
       "description": "isometric glacial ice cliff tiles, two-level ice face only: 1) ice cliff front 2) ice cliff corner 3) glacial wall 4) frozen drop 5) blue ice cliff 6) ice inner corner"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

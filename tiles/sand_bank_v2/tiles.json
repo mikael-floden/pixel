@@ -198,5 +198,10 @@
       "seed": 940181490,
       "description": "isometric low sand bank tiles, one-level sandy edges only: 1) sand bank front 2) sand bank corner 3) grassy dune edge 4) eroded sand step 5) beach berm 6) sand rim"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

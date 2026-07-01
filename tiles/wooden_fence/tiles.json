@@ -198,5 +198,10 @@
       "seed": 1557769919,
       "description": "isometric wooden fence tiles, one-level fences only: 1) plank fence 2) fence post 3) fence corner 4) fence gate 5) rustic fence 6) broken fence"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

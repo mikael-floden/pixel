@@ -144,5 +144,10 @@
       "seed": 1528083893,
       "description": "isometric tall volcanic cliff tiles, obsidian and lava rock face only: 1) obsidian cliff 2) glowing-crack cliff 3) basalt columns 4) ashen cliff 5) ember cliff 6) lava cliff corner"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

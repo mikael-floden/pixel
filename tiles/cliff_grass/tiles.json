@@ -162,5 +162,10 @@
       "seed": 1958711547,
       "description": "isometric grassy cliff tiles, two-level tall rock face topped with grass, cliffs only: 1) grass cliff front 2) grass cliff left corner 3) grass cliff right corner 4) grass cliff inner corner 5) grassy ledge drop 6) rocky grass cliff"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

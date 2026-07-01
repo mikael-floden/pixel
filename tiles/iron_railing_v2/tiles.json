@@ -198,5 +198,10 @@
       "seed": 678714406,
       "description": "isometric low iron railing tiles, one-level fences only: 1) wrought-iron rail 2) rail corner 3) rail gate 4) spear-top rail 5) rusted rail 6) rail with stone post"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

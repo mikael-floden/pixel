@@ -198,5 +198,10 @@
       "seed": 94455247,
       "description": "isometric bog tiles, peat wetland only: 1) dark peat 2) mossy bog 3) waterlogged peat 4) reedy bog pool 5) sphagnum moss 6) muddy bog path"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

@@ -144,5 +144,10 @@
       "seed": 1635622505,
       "description": "isometric tall castle wall tiles, battlement walls only: 1) castle wall 2) crenellated wall 3) tower base 4) arched gate 5) buttressed wall 6) mossy castle wall"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

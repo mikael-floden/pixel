@@ -198,5 +198,10 @@
       "seed": 54441925,
       "description": "isometric permafrost tiles, frozen ground only: 1) frost-cracked soil 2) ice-crusted moss 3) frozen gravel 4) snow-dusted tundra 5) frozen puddle 6) hard frost earth"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

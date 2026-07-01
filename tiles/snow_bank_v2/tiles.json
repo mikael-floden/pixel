@@ -198,5 +198,10 @@
       "seed": 1367205566,
       "description": "isometric low snow bank tiles, one-level snowy edges only: 1) snow bank front 2) snow bank corner 3) plowed snow edge 4) icy snow step 5) drifted snow rim 6) snow over low wall"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

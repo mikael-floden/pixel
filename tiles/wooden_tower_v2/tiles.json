@@ -144,5 +144,10 @@
       "seed": 1411636676,
       "description": "isometric tall wooden tower tiles, timber structures only: 1) log watchtower 2) tower top platform 3) tower with ladder 4) ruined wood tower 5) tower base 6) tower doorway"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

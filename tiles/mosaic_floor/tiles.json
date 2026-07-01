@@ -198,5 +198,10 @@
       "seed": 673649906,
       "description": "isometric mosaic floor tiles, decorative tilework only: 1) blue geometric mosaic 2) sunburst mosaic 3) terracotta mosaic 4) worn temple mosaic 5) star-pattern mosaic 6) mossy old mosaic"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

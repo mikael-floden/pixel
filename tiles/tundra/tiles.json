@@ -198,5 +198,10 @@
       "seed": 601368765,
       "description": "isometric tundra tiles, cold tundra only: 1) frosty grass 2) lichen rock 3) patchy snow grass 4) frozen mud 5) hardy moss 6) icy gravel"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

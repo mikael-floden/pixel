@@ -162,5 +162,10 @@
       "seed": 1167198754,
       "description": "isometric grey stone cliff tiles, two-level tall rock face, cliffs only: 1) stone cliff front 2) stone cliff corner 3) layered strata cliff 4) cracked cliff 5) mossy cliff 6) stone cliff inner corner"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

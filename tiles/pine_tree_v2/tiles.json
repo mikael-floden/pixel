@@ -144,5 +144,10 @@
       "seed": 1953480679,
       "description": "isometric tall pine tree tiles, conifers only: 1) tall pine 2) snow-dusted pine 3) narrow fir 4) twin pines 5) bare dead pine 6) young pine"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

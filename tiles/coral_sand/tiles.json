@@ -198,5 +198,10 @@
       "seed": 1568641786,
       "description": "isometric coral beach tiles, tropical shore only: 1) pale coral sand 2) sand with pink coral 3) shell-strewn sand 4) wet reef flat 5) sand with starfish 6) tide-rippled coral sand"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

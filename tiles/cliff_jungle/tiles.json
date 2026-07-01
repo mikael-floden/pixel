@@ -162,5 +162,10 @@
       "seed": 1172911348,
       "description": "isometric jungle cliff tiles, two-level vine-draped rock face, cliffs only: 1) vined cliff front 2) leafy cliff corner 3) mossy jungle cliff 4) rooty overhang 5) fern ledge drop 6) jungle cliff inner corner"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

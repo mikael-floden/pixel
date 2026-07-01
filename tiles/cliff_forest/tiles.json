@@ -162,5 +162,10 @@
       "seed": 651848073,
       "description": "isometric mossy forest cliff tiles, two-level rock face with moss and roots, cliffs only: 1) mossy cliff front 2) rooty cliff corner 3) ferny cliff 4) fallen-log cliff 5) shaded ledge 6) forest cliff inner corner"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

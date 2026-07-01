@@ -198,5 +198,10 @@
       "seed": 677204916,
       "description": "isometric forest floor tiles, forest ground only: 1) leafy floor 2) mossy ferns 3) pine needles 4) forest dirt roots 5) fallen leaves 6) dark woodland"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

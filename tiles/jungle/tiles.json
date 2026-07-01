@@ -198,5 +198,10 @@
       "seed": 1265503945,
       "description": "isometric jungle floor tiles, jungle ground only: 1) dense undergrowth 2) muddy path 3) mossy rock 4) ferns 5) vines on soil 6) dark rainforest floor"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

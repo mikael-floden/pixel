@@ -144,5 +144,10 @@
       "seed": 2034079313,
       "description": "isometric tall crystal spire tiles, giant gems only: 1) purple crystal spire 2) blue crystal cluster tower 3) glowing shard pillar 4) fractured crystal 5) quartz spire 6) dark gem tower"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }

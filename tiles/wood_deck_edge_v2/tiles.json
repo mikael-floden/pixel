@@ -198,5 +198,10 @@
       "seed": 1312523586,
       "description": "isometric raised wooden deck edge tiles, one-level wood only: 1) plank deck edge 2) deck corner 3) deck step down 4) railing edge 5) worn deck rim 6) deck with post"
     }
+  },
+  "postprocess": {
+    "applied": true,
+    "originals": "original/",
+    "note": "tile_NN.png are post-processed (softened silhouette outline); raw art in original/ can be re-processed."
   }
 }
