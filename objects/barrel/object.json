@@ -435,7 +435,206 @@
           ]
         }
       }
+    },
+    "break": {
+      "group_id": "cbf775fd-8a65-4cab-aed6-5b5a6b9f6f57",
+      "description": "the barrel bursting apart into wooden pieces",
+      "frame_count": 16,
+      "directions": {
+        "east": {
+          "frames": 17,
+          "strip": "barrel/animations/break__east.png",
+          "gif": "barrel/animations/break__east.gif",
+          "frame_paths": [
+            "barrel/animations/break/east/00.png",
+            "barrel/animations/break/east/01.png",
+            "barrel/animations/break/east/02.png",
+            "barrel/animations/break/east/03.png",
+            "barrel/animations/break/east/04.png",
+            "barrel/animations/break/east/05.png",
+            "barrel/animations/break/east/06.png",
+            "barrel/animations/break/east/07.png",
+            "barrel/animations/break/east/08.png",
+            "barrel/animations/break/east/09.png",
+            "barrel/animations/break/east/10.png",
+            "barrel/animations/break/east/11.png",
+            "barrel/animations/break/east/12.png",
+            "barrel/animations/break/east/13.png",
+            "barrel/animations/break/east/14.png",
+            "barrel/animations/break/east/15.png",
+            "barrel/animations/break/east/16.png"
+          ]
+        },
+        "north": {
+          "frames": 17,
+          "strip": "barrel/animations/break__north.png",
+          "gif": "barrel/animations/break__north.gif",
+          "frame_paths": [
+            "barrel/animations/break/north/00.png",
+            "barrel/animations/break/north/01.png",
+            "barrel/animations/break/north/02.png",
+            "barrel/animations/break/north/03.png",
+            "barrel/animations/break/north/04.png",
+            "barrel/animations/break/north/05.png",
+            "barrel/animations/break/north/06.png",
+            "barrel/animations/break/north/07.png",
+            "barrel/animations/break/north/08.png",
+            "barrel/animations/break/north/09.png",
+            "barrel/animations/break/north/10.png",
+            "barrel/animations/break/north/11.png",
+            "barrel/animations/break/north/12.png",
+            "barrel/animations/break/north/13.png",
+            "barrel/animations/break/north/14.png",
+            "barrel/animations/break/north/15.png",
+            "barrel/animations/break/north/16.png"
+          ]
+        },
+        "north-east": {
+          "frames": 17,
+          "strip": "barrel/animations/break__north-east.png",
+          "gif": "barrel/animations/break__north-east.gif",
+          "frame_paths": [
+            "barrel/animations/break/north-east/00.png",
+            "barrel/animations/break/north-east/01.png",
+            "barrel/animations/break/north-east/02.png",
+            "barrel/animations/break/north-east/03.png",
+            "barrel/animations/break/north-east/04.png",
+            "barrel/animations/break/north-east/05.png",
+            "barrel/animations/break/north-east/06.png",
+            "barrel/animations/break/north-east/07.png",
+            "barrel/animations/break/north-east/08.png",
+            "barrel/animations/break/north-east/09.png",
+            "barrel/animations/break/north-east/10.png",
+            "barrel/animations/break/north-east/11.png",
+            "barrel/animations/break/north-east/12.png",
+            "barrel/animations/break/north-east/13.png",
+            "barrel/animations/break/north-east/14.png",
+            "barrel/animations/break/north-east/15.png",
+            "barrel/animations/break/north-east/16.png"
+          ]
+        },
+        "north-west": {
+          "frames": 17,
+          "strip": "barrel/animations/break__north-west.png",
+          "gif": "barrel/animations/break__north-west.gif",
+          "frame_paths": [
+            "barrel/animations/break/north-west/00.png",
+            "barrel/animations/break/north-west/01.png",
+            "barrel/animations/break/north-west/02.png",
+            "barrel/animations/break/north-west/03.png",
+            "barrel/animations/break/north-west/04.png",
+            "barrel/animations/break/north-west/05.png",
+            "barrel/animations/break/north-west/06.png",
+            "barrel/animations/break/north-west/07.png",
+            "barrel/animations/break/north-west/08.png",
+            "barrel/animations/break/north-west/09.png",
+            "barrel/animations/break/north-west/10.png",
+            "barrel/animations/break/north-west/11.png",
+            "barrel/animations/break/north-west/12.png",
+            "barrel/animations/break/north-west/13.png",
+            "barrel/animations/break/north-west/14.png",
+            "barrel/animations/break/north-west/15.png",
+            "barrel/animations/break/north-west/16.png"
+          ]
+        },
+        "south": {
+          "frames": 17,
+          "strip": "barrel/animations/break__south.png",
+          "gif": "barrel/animations/break__south.gif",
+          "frame_paths": [
+            "barrel/animations/break/south/00.png",
+            "barrel/animations/break/south/01.png",
+            "barrel/animations/break/south/02.png",
+            "barrel/animations/break/south/03.png",
+            "barrel/animations/break/south/04.png",
+            "barrel/animations/break/south/05.png",
+            "barrel/animations/break/south/06.png",
+            "barrel/animations/break/south/07.png",
+            "barrel/animations/break/south/08.png",
+            "barrel/animations/break/south/09.png",
+            "barrel/animations/break/south/10.png",
+            "barrel/animations/break/south/11.png",
+            "barrel/animations/break/south/12.png",
+            "barrel/animations/break/south/13.png",
+            "barrel/animations/break/south/14.png",
+            "barrel/animations/break/south/15.png",
+            "barrel/animations/break/south/16.png"
+          ]
+        },
+        "south-east": {
+          "frames": 17,
+          "strip": "barrel/animations/break__south-east.png",
+          "gif": "barrel/animations/break__south-east.gif",
+          "frame_paths": [
+            "barrel/animations/break/south-east/00.png",
+            "barrel/animations/break/south-east/01.png",
+            "barrel/animations/break/south-east/02.png",
+            "barrel/animations/break/south-east/03.png",
+            "barrel/animations/break/south-east/04.png",
+            "barrel/animations/break/south-east/05.png",
+            "barrel/animations/break/south-east/06.png",
+            "barrel/animations/break/south-east/07.png",
+            "barrel/animations/break/south-east/08.png",
+            "barrel/animations/break/south-east/09.png",
+            "barrel/animations/break/south-east/10.png",
+            "barrel/animations/break/south-east/11.png",
+            "barrel/animations/break/south-east/12.png",
+            "barrel/animations/break/south-east/13.png",
+            "barrel/animations/break/south-east/14.png",
+            "barrel/animations/break/south-east/15.png",
+            "barrel/animations/break/south-east/16.png"
+          ]
+        },
+        "south-west": {
+          "frames": 17,
+          "strip": "barrel/animations/break__south-west.png",
+          "gif": "barrel/animations/break__south-west.gif",
+          "frame_paths": [
+            "barrel/animations/break/south-west/00.png",
+            "barrel/animations/break/south-west/01.png",
+            "barrel/animations/break/south-west/02.png",
+            "barrel/animations/break/south-west/03.png",
+            "barrel/animations/break/south-west/04.png",
+            "barrel/animations/break/south-west/05.png",
+            "barrel/animations/break/south-west/06.png",
+            "barrel/animations/break/south-west/07.png",
+            "barrel/animations/break/south-west/08.png",
+            "barrel/animations/break/south-west/09.png",
+            "barrel/animations/break/south-west/10.png",
+            "barrel/animations/break/south-west/11.png",
+            "barrel/animations/break/south-west/12.png",
+            "barrel/animations/break/south-west/13.png",
+            "barrel/animations/break/south-west/14.png",
+            "barrel/animations/break/south-west/15.png",
+            "barrel/animations/break/south-west/16.png"
+          ]
+        },
+        "west": {
+          "frames": 17,
+          "strip": "barrel/animations/break__west.png",
+          "gif": "barrel/animations/break__west.gif",
+          "frame_paths": [
+            "barrel/animations/break/west/00.png",
+            "barrel/animations/break/west/01.png",
+            "barrel/animations/break/west/02.png",
+            "barrel/animations/break/west/03.png",
+            "barrel/animations/break/west/04.png",
+            "barrel/animations/break/west/05.png",
+            "barrel/animations/break/west/06.png",
+            "barrel/animations/break/west/07.png",
+            "barrel/animations/break/west/08.png",
+            "barrel/animations/break/west/09.png",
+            "barrel/animations/break/west/10.png",
+            "barrel/animations/break/west/11.png",
+            "barrel/animations/break/west/12.png",
+            "barrel/animations/break/west/13.png",
+            "barrel/animations/break/west/14.png",
+            "barrel/animations/break/west/15.png",
+            "barrel/animations/break/west/16.png"
+          ]
+        }
+      }
     }
   },
-  "status": "in_progress"
+  "status": "complete"
 }

@@ -1,14 +1,14 @@
 {
   "domain": "objects",
-  "updated_at": "2026-07-01T06:50:36+00:00",
+  "updated_at": "2026-07-01T07:04:42+00:00",
   "health": "running",
-  "current": "barrel: animation 'shake' \u2014 the barrel wobbling side to side (8 dirs)",
+  "current": "barrel: animation 'break' \u2014 the barrel bursting apart into wooden pieces (8 dirs)",
   "progress": {
-    "objects_complete": 1,
+    "objects_complete": 2,
     "objects_started": 2,
     "objects_target": 40
   },
-  "budget_remaining": 7659.0,
+  "budget_remaining": 7643.0,
   "notes": [
     "objects domain: props/tools/items (chest, coin, tree, sword...). Each object = one folder objects/<id>/ with sprite + optional rotations + animations. Repo is the source of truth (stateless PixelLab image tools; nothing to sync back).",
     "[2026-07-01T02:43:10+00:00] objects agent online: props/tools/items (chest, coin, tree, sword, torch, potion...). Each object = objects/<id>/ with sprite + optional rotations + animations. Heartbeat live on main."
