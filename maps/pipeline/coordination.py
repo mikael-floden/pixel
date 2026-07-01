@@ -138,12 +138,5 @@ def publish(health="running", current="", progress=None, budget_remaining=None):
 
 def snapshot_progress():
     """Current maps progress for the heartbeat, read from the filesystem."""
-    import zone as zonemod  # local import to avoid a cycle at module load
-    base = os.path.dirname(os.path.dirname(__file__))
-    tdir = os.path.join(base, "assets", "tilesets")
-    odir = os.path.join(base, "assets", "objects")
-    return {
-        "zones": len(zonemod.list_zones()),
-        "tilesets": len(os.listdir(tdir)) if os.path.isdir(tdir) else 0,
-        "objects": len(os.listdir(odir)) if os.path.isdir(odir) else 0,
-    }
+    import scene as scenemod  # local import to avoid a cycle at module load
+    return {"zones": len(scenemod.list_zones())}

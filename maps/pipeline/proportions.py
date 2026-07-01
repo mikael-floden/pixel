@@ -1,79 +1,48 @@
-"""Scale / proportion criterion for the maps loop.
+"""Scale / proportion contract for scene-based maps.
 
-Realism rule: a **character must read at a believable size when standing on the
-map**. The whole repo targets the Grave Seasons / Stardew look, where a person is
-about **1 tile wide x 2 tiles tall**. That fixes one number for the whole domain:
-
-    tile_px x CHARACTER_HEIGHT_TILES  ==  the character sprite's drawn body height
-
-The characters domain draws bodies ~67px tall (measured from its rotation PNGs),
-so a **32px tile** puts a character at ~2.1 tiles tall — correct. A 16px tile
-would make the same character ~4 tiles tall (as tall as a house) — wrong. Hence
-`tile_size: 32` in config, and this module enforces the contract so a future
-config edit can't silently break walkability.
-
-Everything on a map shares ONE pixels-per-tile scale: tiles are exactly
-`tile_px` square, and every object's pixel size is `footprint_tiles x tile_px`,
-so a tree/house/barrel is always the right size next to a character.
+A believable map keeps one shared scale: a character stands ~`CHAR_FRAC` of the
+screen height, props are sized as a multiple of the character (a tree ~1.3x, a
+chest ~0.45x), and props sit on a y-sorted layer so depth reads correctly. This
+module centralises those numbers and validates the config against the objects
+agent's actual catalog so the loop never places a prop that doesn't exist.
 """
 
 from __future__ import annotations
 
-# The genre contract. A person is ~1x2 tiles; tiles are square.
-CHARACTER_HEIGHT_TILES = 2.0
-CHARACTER_WIDTH_TILES = 1.0
-PIXELLAB_TILE_SIZES = (16, 32)          # sizes create-tileset accepts
-MIN_OBJECT_PX = 32                      # map-objects requires image_size >= 32
-FOOTPRINT_MIN_TILES = 0.5
-FOOTPRINT_MAX_TILES = 8.0
+import props as props_mod
+
+# On the rendered world canvas, the character body is this fraction of height.
+CHAR_FRAC = 0.20
+# Default prop size as a multiple of the character height, when a zone/prop
+# doesn't specify one.
+DEFAULT_PROP_SCALE = 1.2
 
 
-def object_px(spec, tile_size):
-    """An object's pixel size from its real footprint in tiles (proportion by
-    construction). Falls back to an explicit `size` for legacy specs."""
-    tiles = spec.get("tiles")
-    if tiles is None:
-        return max(MIN_OBJECT_PX, int(spec.get("size", tile_size * 2)))
-    return max(MIN_OBJECT_PX, int(round(float(tiles) * tile_size)))
+def character_px(world_height):
+    return max(24, round(world_height * CHAR_FRAC))
 
 
-def expected_tile_size_for(body_px, character_height_tiles=CHARACTER_HEIGHT_TILES):
-    """The tile_px that makes a character of `body_px` drawn height read as
-    `character_height_tiles` tall — the number we align the whole domain to."""
-    return body_px / character_height_tiles
+def prop_height(prop_scale, world_height):
+    return max(8, round(character_px(world_height) * prop_scale))
 
 
 def validate_config(cfg):
-    """Check the scale contract. Returns (ok, issues[])."""
+    """Returns (ok, issues[]). Checks every zone references props that exist in
+    the objects agent's catalog and that scales are sane."""
     issues = []
-    ts = int(cfg.get("defaults", {}).get("tile_size", 16))
-    if ts not in PIXELLAB_TILE_SIZES:
-        issues.append(f"tile_size {ts} not supported by create-tileset "
-                      f"(must be one of {PIXELLAB_TILE_SIZES})")
-    for o in cfg.get("objects", []):
-        tiles = o.get("tiles")
-        if tiles is None:
-            issues.append(f"object '{o['id']}' has no `tiles` footprint "
-                          f"(proportion can't be guaranteed)")
-            continue
-        if not (FOOTPRINT_MIN_TILES <= float(tiles) <= FOOTPRINT_MAX_TILES):
-            issues.append(f"object '{o['id']}' footprint {tiles} tiles out of "
-                          f"[{FOOTPRINT_MIN_TILES}, {FOOTPRINT_MAX_TILES}]")
-        if object_px(o, ts) < MIN_OBJECT_PX:
-            issues.append(f"object '{o['id']}' px < {MIN_OBJECT_PX} (PixelLab min)")
+    have = set(props_mod.available())
+    scales = cfg.get("prop_scale", {})
+    for z in cfg.get("zones", []):
+        for pid in z.get("props", []):
+            if pid not in have:
+                issues.append(f"zone '{z['id']}' references prop '{pid}' not in "
+                              f"/objects (available: {sorted(have)})")
+            s = scales.get(pid, DEFAULT_PROP_SCALE)
+            if not (0.2 <= s <= 4.0):
+                issues.append(f"prop '{pid}' scale {s} out of [0.2, 4.0]")
     return (not issues), issues
 
 
-def normalize_tile(img, tile_size):
-    """Guarantee a tile is exactly tile_size x tile_size so the map grid is
-    pixel-perfect (tiles must abut with no drift). Resizes only if PixelLab
-    returned an off-by-rounding size; nearest-neighbour keeps it crisp."""
-    if img.size != (tile_size, tile_size):
-        img = img.resize((tile_size, tile_size))
-    return img
-
-
 def summary(cfg):
-    ts = int(cfg.get("defaults", {}).get("tile_size", 16))
-    return (f"scale: {ts}px tiles; character ~= {CHARACTER_WIDTH_TILES:g}x"
-            f"{CHARACTER_HEIGHT_TILES:g} tiles ({int(ts*CHARACTER_HEIGHT_TILES)}px tall body)")
+    return (f"scene scale: character ~= {int(CHAR_FRAC*100)}% of screen height; "
+            f"props sized relative to character; y-sorted for depth")

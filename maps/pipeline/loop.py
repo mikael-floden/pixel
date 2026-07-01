@@ -1,21 +1,13 @@
-"""The maps loop.
+"""The maps loop (scene-based).
 
-Each "unit" of work is one PixelLab operation OR one zone assembly:
-  - generate a shared Wang tileset (assets/tilesets/<id>),
-  - generate a shared map object (assets/objects/<id>),
-  - assemble a zone (maps/<zone_id>/) from already-generated assets (free).
+Each unit builds one loading-zone screen: PixelLab draws the palette-guided
+ground scene, we derive collision, place objects-agent props on a y-sorted
+layer, and write a self-contained zone folder. The next unit is derived from the
+filesystem (a zone with no zone.json), so the loop is resumable; after each unit
+it rebuilds the viewer, publishes a coordination heartbeat, commits and pushes.
 
-The loop derives the next missing unit purely by reading the filesystem, so it is
-fully resumable. After each unit it rebuilds the mobile viewer and commits +
-pushes to `main`. Bounded by --max-minutes / --max-units / budget.
-
-Order: build the zone_plan in sequence (small islands first). For the first
-un-built zone, generate any tilesets/objects it needs, then assemble it. Once the
-plan is done, invent further islands from config.procedural_zones.
-
-Run a bounded chunk (intended for a scheduled Routine):
   python maps/pipeline/loop.py --max-minutes 50
-Other flags: --max-units N, --once, --no-push.
+  python maps/pipeline/loop.py --once --no-push
 """
 
 from __future__ import annotations
@@ -26,12 +18,10 @@ import os
 import subprocess
 import time
 
-import assets
 import coordination
-import layouts
 import proportions
+import scene as scenemod
 import viewer_build
-import zone as zonemod
 from pixellab_client import BudgetExhausted, PixelLabClient
 
 ROOT = os.path.dirname(os.path.dirname(__file__))
@@ -43,8 +33,6 @@ def load_config():
     with open(CONFIG) as f:
         return json.load(f)
 
-
-# --- git --------------------------------------------------------------------
 
 def _git(*args, check=True):
     return subprocess.run(["git", *args], cwd=REPO_ROOT, capture_output=True, text=True,
@@ -59,115 +47,45 @@ def commit_push(message, push=True):
     if push:
         r = None
         for attempt in range(4):
-            r = _git("push", "origin", "HEAD", check=False)
+            r = _git("push", "origin", "HEAD:main", check=False)
             if r.returncode == 0:
                 break
-            # Remote may have advanced (a concurrent domain loop); rebase + retry.
-            _git("fetch", "origin", check=False)
-            branch = _git("rev-parse", "--abbrev-ref", "HEAD").stdout.strip()
-            _git("rebase", f"origin/{branch}", check=False)
+            _git("fetch", "origin", "main", check=False)
+            _git("rebase", "origin/main", check=False)
             time.sleep(2 ** (attempt + 1))
         if r is not None and r.returncode != 0:
             print("  ! push failed after retries:", r.stderr[:200])
     return True
 
 
-# --- planning ---------------------------------------------------------------
+def next_zone(cfg):
+    for z in cfg.get("zones", []):
+        if not scenemod.zone_exists(z["id"]):
+            return z
+    return None
 
-def _procedural_zone_def(cfg, index):
-    """Invent a zone_def beyond the explicit plan (Phase B: endless islands)."""
-    pz = cfg["procedural_zones"]
-    grids = pz["grids"]
-    biomes = pz["biomes"]
-    g = grids[index % len(grids)]
-    biome = biomes[index % len(biomes)]
-    zid = f"isle_{index:03d}"
-    return {
-        "id": zid, "kind": "island", "archetype": pz.get("archetype", "small_island"),
-        "title": f"Uncharted Isle {index}", "description": "A procedurally generated small island.",
-        "grid": {"width": g[0], "height": g[1]}, "seed": 1000 + index * 37,
-        "levels": biome["levels"], "bands": biome["bands"],
-        "block_levels": pz.get("block_levels", ["water"]),
-        "objects": pz.get("objects", []), "density": pz.get("density", 0.1),
-        "links": [{"kind": "dock", "id": "dock", "to_zone": None, "to_exit": None}],
-    }
-
-
-def _zone_unit(cfg, zdef):
-    """Next missing unit for one zone: a tileset, then an object, then assembly.
-    Returns an action tuple, or None if the zone is already built."""
-    if zonemod.zone_exists(zdef["id"]):
-        return None
-    for tid in zdef["bands"]:
-        if not assets.tileset_exists(tid):
-            return ("tileset", tid)
-    # NOTE: maps does NOT generate objects — props are owned by the objects agent
-    # and referenced from /objects (see coordination/PROTOCOL.md). Terrain only.
-    return ("zone", zdef)
-
-
-def next_action(cfg):
-    """Decide the next unit by reading the filesystem.
-
-    Build the explicit zone_plan first (small islands first). Once every planned
-    zone exists, invent further islands from config.procedural_zones — an endless
-    Phase B, bounded only by budget/time/units."""
-    for zdef in cfg["zone_plan"]:
-        act = _zone_unit(cfg, zdef)
-        if act:
-            return act
-    idx = 0
-    while zonemod.zone_exists(_procedural_zone_def(cfg, idx)["id"]):
-        idx += 1
-    return _zone_unit(cfg, _procedural_zone_def(cfg, idx)) or ("all_complete",)
-
-
-# --- one unit ---------------------------------------------------------------
 
 def advance(client, cfg, budget=None, push=True):
-    action = next_action(cfg)
-    kind = action[0]
-
-    if kind == "tileset":
-        spec = assets.tileset_spec(cfg, action[1])
-        assets.generate_tileset(client, cfg, spec)
-        desc = f"maps: tileset '{spec['id']}' ({spec['lower']} / {spec['upper']})"
-    elif kind == "object":
-        spec = assets.object_spec(cfg, action[1])
-        assets.generate_object(client, cfg, spec)
-        desc = f"maps: object '{spec['id']}' ({spec['description']})"
-    elif kind == "zone":
-        zdef = action[1]
-        layout = layouts.build(cfg, zdef)
-        m = zonemod.build_zone(cfg, zdef, layout)
-        g = m["grid"]
-        desc = (f"maps: zone '{zdef['id']}' ({zdef['kind']}/{zdef.get('archetype')}, "
-                f"{g['width']}x{g['height']} tiles, {len(m['objects'])} objects)")
-    elif kind == "all_complete":
-        print("== all planned zones built ==")
+    z = next_zone(cfg)
+    if z is None:
+        print("== all zones built ==")
         return None
-    else:
-        raise RuntimeError(f"unknown action {kind}")
-
+    m = scenemod.build_zone(client, cfg, z)
+    desc = f"maps: scene zone '{z['id']}' — {m['pixel_size']['width']}x{m['pixel_size']['height']}, {len(m['entities'])} props"
     viewer_build.build()
-    # Publish our heartbeat in the SAME commit as the unit (one writer: maps.json).
     coordination.publish(health="running", current=desc,
-                         progress=coordination.snapshot_progress(),
-                         budget_remaining=budget)
+                         progress=coordination.snapshot_progress(), budget_remaining=budget)
     commit_push(desc, push=push)
     print("  +", desc)
     return desc
 
 
-# --- main -------------------------------------------------------------------
-
 def main():
-    ap = argparse.ArgumentParser(description="Run the pixel maps factory loop.")
-    ap.add_argument("--max-units", type=int, default=0, help="0 = unlimited")
-    ap.add_argument("--max-minutes", type=float, default=0, help="0 = unlimited")
-    ap.add_argument("--min-balance", type=int, default=None,
-                    help="Stop when generations remaining drops below this.")
-    ap.add_argument("--once", action="store_true", help="Do a single unit and exit.")
+    ap = argparse.ArgumentParser(description="Run the scene-based maps loop.")
+    ap.add_argument("--max-units", type=int, default=0)
+    ap.add_argument("--max-minutes", type=float, default=0)
+    ap.add_argument("--min-balance", type=int, default=None)
+    ap.add_argument("--once", action="store_true")
     ap.add_argument("--no-push", action="store_true")
     args = ap.parse_args()
 
@@ -175,56 +93,39 @@ def main():
     min_balance = args.min_balance if args.min_balance is not None \
         else cfg["budget"]["min_generations_remaining"]
 
-    # Proportion criterion: refuse to generate art at a scale that would make
-    # characters walk at an unrealistic size (see pipeline/proportions.py).
     ok, issues = proportions.validate_config(cfg)
     print(proportions.summary(cfg))
     if not ok:
         for i in issues:
-            print(f"  !! proportion issue: {i}")
-        raise SystemExit("aborting: fix proportion issues in config/maps.json first")
+            print(f"  !! {i}")
+        raise SystemExit("aborting: fix config issues first")
 
     client = PixelLabClient()
-
-    # Fleet coordination (see coordination/PROTOCOL.md): read the other domains'
-    # status at startup and surface any requests addressed to us.
     for dom, req in coordination.inbox():
         print(f"  * request from {dom}: {req.get('text', req)}")
-    fleet = coordination.read_fleet()
-    if fleet:
-        print("fleet:", ", ".join(
-            f"{d}={s.get('health','?')}({s.get('budget_remaining','?')})"
-            for d, s in fleet.items() if d != coordination.DOMAIN))
 
     start = time.monotonic()
     units = 0
     rem = client.generations_remaining()
     print(f"maps loop starting — {rem:.0f} generations remaining (floor {min_balance})")
-    coordination.publish(health="running", current="startup",
-                         progress=coordination.snapshot_progress(), budget_remaining=rem)
 
-    stop_reason = "nothing left to generate"
+    stop = "nothing left to build"
     while True:
         try:
             rem = client.ensure_budget(min_balance)
             result = advance(client, cfg, budget=rem, push=not args.no_push)
         except BudgetExhausted as e:
-            stop_reason = str(e)
-            print(f"stopping: {e}")
-            break
+            stop = str(e); print(f"stopping: {e}"); break
         if result is None:
             break
         units += 1
         if args.once or (args.max_units and units >= args.max_units):
-            stop_reason = "unit budget reached"
-            break
+            stop = "unit budget reached"; break
         if args.max_minutes and (time.monotonic() - start) / 60 >= args.max_minutes:
-            stop_reason = "time budget reached"
-            print("stopping: time budget reached")
-            break
+            stop = "time budget reached"; break
 
     rem = client.generations_remaining()
-    coordination.publish(health="idle", current=f"stopped: {stop_reason}",
+    coordination.publish(health="idle", current=f"stopped: {stop}",
                          progress=coordination.snapshot_progress(), budget_remaining=rem)
     commit_push("maps: heartbeat (loop idle)", push=not args.no_push)
     print(f"done — {units} unit(s), {rem:.0f} generations left")

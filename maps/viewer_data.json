@@ -1,42 +1,27 @@
 {
-  "schema": "pixel-maps/viewer@1",
-  "zones": [],
-  "tilesets": [
+  "schema": "pixel-maps/viewer@2",
+  "zones": [
     {
-      "id": "ocean_sand",
-      "lower": "deep blue ocean water with gentle ripples",
-      "upper": "pale golden sandy beach",
-      "tiles": 16,
-      "atlas": "assets/tilesets/ocean_sand/tiles"
-    },
-    {
-      "id": "sand_grass",
-      "lower": "pale golden sand",
-      "upper": "lush green grass",
-      "tiles": 16,
-      "atlas": "assets/tilesets/sand_grass/tiles"
-    }
-  ],
-  "objects": [
-    {
-      "id": "bush",
-      "description": "a small round green leafy bush",
-      "preview": "assets/objects/bush/object.png"
-    },
-    {
-      "id": "flowers",
-      "description": "a small cluster of colorful wildflowers",
-      "preview": "assets/objects/flowers/object.png"
-    },
-    {
-      "id": "rock",
-      "description": "a mossy grey boulder",
-      "preview": "assets/objects/rock/object.png"
-    },
-    {
-      "id": "tree_oak",
-      "description": "a lush round-canopy oak tree seen from above",
-      "preview": "assets/objects/tree_oak/object.png"
+      "id": "isle_glade",
+      "title": "Forest Glade",
+      "kind": "island_screen",
+      "mood": "lush green forest clearing (daytime)",
+      "pixel_size": {
+        "width": 960,
+        "height": 672
+      },
+      "props": 11,
+      "exits": [
+        {
+          "id": "north",
+          "kind": "path",
+          "to_zone": "isle_shore"
+        }
+      ],
+      "preview": "isle_glade/preview.png",
+      "scene": "isle_glade/scene.png",
+      "collision": "isle_glade/collision.png",
+      "manifest": "isle_glade/zone.json"
     }
   ]
 }
