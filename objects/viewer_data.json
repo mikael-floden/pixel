@@ -516,7 +516,24 @@
         "south-west": "shovel/rotations/south-west.png",
         "west": "shovel/rotations/west.png"
       },
-      "animations": []
+      "animations": [
+        {
+          "key": "dig",
+          "description": "the shovel scooping and digging",
+          "frames": 17,
+          "preview_gif": "shovel/animations/dig__south.gif",
+          "directions": {
+            "east": "shovel/animations/dig__east.gif",
+            "north": "shovel/animations/dig__north.gif",
+            "north-east": "shovel/animations/dig__north-east.gif",
+            "north-west": "shovel/animations/dig__north-west.gif",
+            "south": "shovel/animations/dig__south.gif",
+            "south-east": "shovel/animations/dig__south-east.gif",
+            "south-west": "shovel/animations/dig__south-west.gif",
+            "west": "shovel/animations/dig__west.gif"
+          }
+        }
+      ]
     },
     {
       "id": "sword",

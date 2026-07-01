@@ -37,6 +37,206 @@
     "south-west": "shovel/rotations/south-west.png",
     "west": "shovel/rotations/west.png"
   },
-  "animations": {},
+  "animations": {
+    "dig": {
+      "group_id": "18b7e824-558c-4e7d-bc5e-4700c559076b",
+      "description": "the shovel scooping and digging",
+      "frame_count": 16,
+      "directions": {
+        "east": {
+          "frames": 17,
+          "strip": "shovel/animations/dig__east.png",
+          "gif": "shovel/animations/dig__east.gif",
+          "frame_paths": [
+            "shovel/animations/dig/east/00.png",
+            "shovel/animations/dig/east/01.png",
+            "shovel/animations/dig/east/02.png",
+            "shovel/animations/dig/east/03.png",
+            "shovel/animations/dig/east/04.png",
+            "shovel/animations/dig/east/05.png",
+            "shovel/animations/dig/east/06.png",
+            "shovel/animations/dig/east/07.png",
+            "shovel/animations/dig/east/08.png",
+            "shovel/animations/dig/east/09.png",
+            "shovel/animations/dig/east/10.png",
+            "shovel/animations/dig/east/11.png",
+            "shovel/animations/dig/east/12.png",
+            "shovel/animations/dig/east/13.png",
+            "shovel/animations/dig/east/14.png",
+            "shovel/animations/dig/east/15.png",
+            "shovel/animations/dig/east/16.png"
+          ]
+        },
+        "north": {
+          "frames": 17,
+          "strip": "shovel/animations/dig__north.png",
+          "gif": "shovel/animations/dig__north.gif",
+          "frame_paths": [
+            "shovel/animations/dig/north/00.png",
+            "shovel/animations/dig/north/01.png",
+            "shovel/animations/dig/north/02.png",
+            "shovel/animations/dig/north/03.png",
+            "shovel/animations/dig/north/04.png",
+            "shovel/animations/dig/north/05.png",
+            "shovel/animations/dig/north/06.png",
+            "shovel/animations/dig/north/07.png",
+            "shovel/animations/dig/north/08.png",
+            "shovel/animations/dig/north/09.png",
+            "shovel/animations/dig/north/10.png",
+            "shovel/animations/dig/north/11.png",
+            "shovel/animations/dig/north/12.png",
+            "shovel/animations/dig/north/13.png",
+            "shovel/animations/dig/north/14.png",
+            "shovel/animations/dig/north/15.png",
+            "shovel/animations/dig/north/16.png"
+          ]
+        },
+        "north-east": {
+          "frames": 17,
+          "strip": "shovel/animations/dig__north-east.png",
+          "gif": "shovel/animations/dig__north-east.gif",
+          "frame_paths": [
+            "shovel/animations/dig/north-east/00.png",
+            "shovel/animations/dig/north-east/01.png",
+            "shovel/animations/dig/north-east/02.png",
+            "shovel/animations/dig/north-east/03.png",
+            "shovel/animations/dig/north-east/04.png",
+            "shovel/animations/dig/north-east/05.png",
+            "shovel/animations/dig/north-east/06.png",
+            "shovel/animations/dig/north-east/07.png",
+            "shovel/animations/dig/north-east/08.png",
+            "shovel/animations/dig/north-east/09.png",
+            "shovel/animations/dig/north-east/10.png",
+            "shovel/animations/dig/north-east/11.png",
+            "shovel/animations/dig/north-east/12.png",
+            "shovel/animations/dig/north-east/13.png",
+            "shovel/animations/dig/north-east/14.png",
+            "shovel/animations/dig/north-east/15.png",
+            "shovel/animations/dig/north-east/16.png"
+          ]
+        },
+        "north-west": {
+          "frames": 17,
+          "strip": "shovel/animations/dig__north-west.png",
+          "gif": "shovel/animations/dig__north-west.gif",
+          "frame_paths": [
+            "shovel/animations/dig/north-west/00.png",
+            "shovel/animations/dig/north-west/01.png",
+            "shovel/animations/dig/north-west/02.png",
+            "shovel/animations/dig/north-west/03.png",
+            "shovel/animations/dig/north-west/04.png",
+            "shovel/animations/dig/north-west/05.png",
+            "shovel/animations/dig/north-west/06.png",
+            "shovel/animations/dig/north-west/07.png",
+            "shovel/animations/dig/north-west/08.png",
+            "shovel/animations/dig/north-west/09.png",
+            "shovel/animations/dig/north-west/10.png",
+            "shovel/animations/dig/north-west/11.png",
+            "shovel/animations/dig/north-west/12.png",
+            "shovel/animations/dig/north-west/13.png",
+            "shovel/animations/dig/north-west/14.png",
+            "shovel/animations/dig/north-west/15.png",
+            "shovel/animations/dig/north-west/16.png"
+          ]
+        },
+        "south": {
+          "frames": 17,
+          "strip": "shovel/animations/dig__south.png",
+          "gif": "shovel/animations/dig__south.gif",
+          "frame_paths": [
+            "shovel/animations/dig/south/00.png",
+            "shovel/animations/dig/south/01.png",
+            "shovel/animations/dig/south/02.png",
+            "shovel/animations/dig/south/03.png",
+            "shovel/animations/dig/south/04.png",
+            "shovel/animations/dig/south/05.png",
+            "shovel/animations/dig/south/06.png",
+            "shovel/animations/dig/south/07.png",
+            "shovel/animations/dig/south/08.png",
+            "shovel/animations/dig/south/09.png",
+            "shovel/animations/dig/south/10.png",
+            "shovel/animations/dig/south/11.png",
+            "shovel/animations/dig/south/12.png",
+            "shovel/animations/dig/south/13.png",
+            "shovel/animations/dig/south/14.png",
+            "shovel/animations/dig/south/15.png",
+            "shovel/animations/dig/south/16.png"
+          ]
+        },
+        "south-east": {
+          "frames": 17,
+          "strip": "shovel/animations/dig__south-east.png",
+          "gif": "shovel/animations/dig__south-east.gif",
+          "frame_paths": [
+            "shovel/animations/dig/south-east/00.png",
+            "shovel/animations/dig/south-east/01.png",
+            "shovel/animations/dig/south-east/02.png",
+            "shovel/animations/dig/south-east/03.png",
+            "shovel/animations/dig/south-east/04.png",
+            "shovel/animations/dig/south-east/05.png",
+            "shovel/animations/dig/south-east/06.png",
+            "shovel/animations/dig/south-east/07.png",
+            "shovel/animations/dig/south-east/08.png",
+            "shovel/animations/dig/south-east/09.png",
+            "shovel/animations/dig/south-east/10.png",
+            "shovel/animations/dig/south-east/11.png",
+            "shovel/animations/dig/south-east/12.png",
+            "shovel/animations/dig/south-east/13.png",
+            "shovel/animations/dig/south-east/14.png",
+            "shovel/animations/dig/south-east/15.png",
+            "shovel/animations/dig/south-east/16.png"
+          ]
+        },
+        "south-west": {
+          "frames": 17,
+          "strip": "shovel/animations/dig__south-west.png",
+          "gif": "shovel/animations/dig__south-west.gif",
+          "frame_paths": [
+            "shovel/animations/dig/south-west/00.png",
+            "shovel/animations/dig/south-west/01.png",
+            "shovel/animations/dig/south-west/02.png",
+            "shovel/animations/dig/south-west/03.png",
+            "shovel/animations/dig/south-west/04.png",
+            "shovel/animations/dig/south-west/05.png",
+            "shovel/animations/dig/south-west/06.png",
+            "shovel/animations/dig/south-west/07.png",
+            "shovel/animations/dig/south-west/08.png",
+            "shovel/animations/dig/south-west/09.png",
+            "shovel/animations/dig/south-west/10.png",
+            "shovel/animations/dig/south-west/11.png",
+            "shovel/animations/dig/south-west/12.png",
+            "shovel/animations/dig/south-west/13.png",
+            "shovel/animations/dig/south-west/14.png",
+            "shovel/animations/dig/south-west/15.png",
+            "shovel/animations/dig/south-west/16.png"
+          ]
+        },
+        "west": {
+          "frames": 17,
+          "strip": "shovel/animations/dig__west.png",
+          "gif": "shovel/animations/dig__west.gif",
+          "frame_paths": [
+            "shovel/animations/dig/west/00.png",
+            "shovel/animations/dig/west/01.png",
+            "shovel/animations/dig/west/02.png",
+            "shovel/animations/dig/west/03.png",
+            "shovel/animations/dig/west/04.png",
+            "shovel/animations/dig/west/05.png",
+            "shovel/animations/dig/west/06.png",
+            "shovel/animations/dig/west/07.png",
+            "shovel/animations/dig/west/08.png",
+            "shovel/animations/dig/west/09.png",
+            "shovel/animations/dig/west/10.png",
+            "shovel/animations/dig/west/11.png",
+            "shovel/animations/dig/west/12.png",
+            "shovel/animations/dig/west/13.png",
+            "shovel/animations/dig/west/14.png",
+            "shovel/animations/dig/west/15.png",
+            "shovel/animations/dig/west/16.png"
+          ]
+        }
+      }
+    }
+  },
   "status": "in_progress"
 }
