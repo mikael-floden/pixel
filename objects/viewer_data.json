@@ -1,6 +1,6 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 14,
+  "object_count": 15,
   "target_count": 61,
   "scale": {
     "_comment": "REALISM RULE: objects are scaled to the world by real height, so they sit correctly next to characters. A character is ~character_height_px tall (the 64px skeleton) representing character_height_m. The loop turns each object's world_height_m into world_px_height = round(world_height_m * character_height_px / character_height_m); a game renders the sprite scaled to that pixel height. So a coin (~0.22m) is tiny next to a character and an oak (~6m) towers. Every object MUST have a world_height_m (per-object, else category_height_m fallback).",
@@ -21,7 +21,8 @@
   "categories": {
     "tool": 6,
     "container": 4,
-    "valuable": 4
+    "valuable": 4,
+    "nature": 1
   },
   "objects": [
     {
@@ -575,6 +576,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "oak_tree",
+      "name": "Oak Tree",
+      "category": "nature",
+      "description": "a lush round-canopy oak tree with a thick brown trunk",
+      "view": "low top-down",
+      "size": 128,
+      "placement": {
+        "world_height_m": 6.0,
+        "world_px_height": 226,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "in_progress",
+      "pixellab_object_id": "8d5ea848-b266-4366-84dc-e15a7f50d6bf",
+      "sprite": "oak_tree/sprite.png",
+      "rotations": {
+        "east": "oak_tree/rotations/east.png",
+        "north": "oak_tree/rotations/north.png",
+        "north-east": "oak_tree/rotations/north-east.png",
+        "north-west": "oak_tree/rotations/north-west.png",
+        "south": "oak_tree/rotations/south.png",
+        "south-east": "oak_tree/rotations/south-east.png",
+        "south-west": "oak_tree/rotations/south-west.png",
+        "west": "oak_tree/rotations/west.png"
+      },
+      "animations": []
     },
     {
       "id": "pickaxe",
