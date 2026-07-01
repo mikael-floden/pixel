@@ -32,7 +32,24 @@
     "count": 0,
     "directions": []
   },
-  "animations": {},
-  "generations_used": 1.0,
-  "status": "in_progress"
+  "animations": {
+    "swim": {
+      "action": "swimming",
+      "view": "side",
+      "frames": 4,
+      "n_frames_requested": 6,
+      "ok": true,
+      "note": "",
+      "strip": "fish/animations/swim.png",
+      "gif": "fish/animations/swim.gif",
+      "frame_paths": [
+        "fish/animations/swim/00.png",
+        "fish/animations/swim/01.png",
+        "fish/animations/swim/02.png",
+        "fish/animations/swim/03.png"
+      ]
+    }
+  },
+  "generations_used": 2.0,
+  "status": "complete"
 }
