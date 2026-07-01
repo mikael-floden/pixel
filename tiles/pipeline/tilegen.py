@@ -21,27 +21,46 @@ ENDPOINT = "/create-tiles-pro"
 
 # Elevation model (verified on real tiles): the vertical side-face height is
 #   face_px ~= depth_ratio * (tile_height - DIAMOND_TOP_H)
-# One elevation LEVEL is defined as a 64x64 @ 100% face = ONE_LAYER_PX. The Maps
-# agent raises a tile N levels by subtracting N*ONE_LAYER_PX from its screen-Y.
+# ONE ELEVATION LEVEL is the flat ground tile's own face — a 64x64 @ 50% tile,
+# measured at exactly 19px. This matches the unit the Maps agent terraces by. To
+# raise a tile N levels, subtract N*ONE_LAYER_PX from its screen-Y.
+#   flat   64x64  @ 50%  -> 19px  = 1 level   (exact; the base slab)
+#   raised 64x64  @ 100% -> 38px  = 2 levels  (exact; same box, 2x depth)
+#   cliff  64x128 @ 75%  -> ~76px ~ 4 levels  (SCENERY: fractional, top/bottom-anchored)
+#   tall   64x128 @ 100% -> ~102px ~ 5 levels (SCENERY: fractional, top/bottom-anchored)
+# Only the 64x64 tiles land on exact levels; the 64x128 tiles are scenery whose
+# faces are NOT exact multiples — place them by the measured `base_y` anchor.
 DIAMOND_TOP_H = 26          # diamond top height at tile_size 64, 28 deg, flat_top 4
-ONE_LAYER_PX = 38          # 64x64 @ 100% face = one elevation level
+ONE_LAYER_PX = 19          # 64x64 @ 50% face = one elevation level (measured, exact)
 
 
-def stacking_info(geometry):
+def stacking_info(geometry, tile_size=64, tile_height=None):
     """Elevation/stacking guidance for one set, from its measured geometry."""
     face = geometry.get("level_height")
+    layers = round(face / ONE_LAYER_PX, 2) if face else None
+    # 64x64 tiles align to exact levels; 64x128 scenery tiles do not.
+    box_h = tile_height or tile_size
+    exact = box_h <= tile_size
     return {
         "face_height_px": face,
         "one_layer_px": ONE_LAYER_PX,
-        "layers": round(face / ONE_LAYER_PX, 2) if face else None,
+        "layers": layers,
+        "levels": round(layers) if layers is not None else None,
+        "align": "exact" if exact else "scenery",
         "diamond_top_height_px": geometry.get("diamond_top_height"),
+        "apex_y": geometry.get("apex_y"),
+        "base_y": geometry.get("base_y"),
+        "image_height": geometry.get("image_height"),
         "grid_dx": geometry.get("grid_dx"),
         "grid_dy": geometry.get("grid_dy"),
-        "formula": ("face_px = depth_ratio*(tile_height-26). One elevation level = "
-                    "38px (a 64x64 @ 100% tile). To place a tile N levels up, "
-                    "subtract N*38 from screen_y. This set's face spans `layers` "
-                    "levels. Stack flush by offsetting the upper tile up by its "
-                    "own face_height_px. Draw back-to-front by (col+row), then level."),
+        "formula": ("One elevation level = 19px (a 64x64 @ 50% flat tile's face). "
+                    "Raise a tile N levels by subtracting N*19 from screen_y; draw "
+                    "back-to-front by (col+row), then by level. EXACT tiles (64x64: "
+                    "flat=1 level, raised=2 levels) terrace perfectly. SCENERY tiles "
+                    "(64x128 cliff/tall) have fractional faces (`layers`) — do NOT use "
+                    "them as exact steps; anchor them by `base_y` (the footprint's "
+                    "front tip is at image row base_y, identical across thicknesses, "
+                    "so bottom-anchoring needs no per-tile correction)."),
     }
 
 
@@ -61,7 +80,9 @@ def measure_geometry(img, tile_size):
         return {}
     xmin, xmax = int(cols.min()), int(cols.max())
     cx = (xmin + xmax) // 2
-    apex_y = int(np.where(alpha[:, cx])[0].min())
+    centre = np.where(alpha[:, cx])[0]
+    apex_y = int(centre.min())              # topmost solid pixel at centre column
+    base_y = int(centre.max())              # front tip of the footprint diamond
     leftcol = np.where(alpha[:, xmin])[0]
     left_corner_y = int(leftcol.min())
     level_height = int(leftcol.max() - leftcol.min() + 1)   # side-face height
@@ -70,11 +91,50 @@ def measure_geometry(img, tile_size):
         "grid_dx": tile_size // 2,          # screen x step per (col-row)
         "grid_dy": dy,                       # screen y step per (col+row)
         "diamond_top_height": dy * 2,
-        "level_height": level_height,        # offset up by this per elevation level
+        "level_height": level_height,        # side-face height of THIS tile
+        "apex_y": apex_y,                    # top of the sprite in the image
+        "base_y": base_y,                    # footprint front tip (bottom anchor)
+        "image_height": int(a.shape[0]),
         "note": "screen_x=ox+(col-row)*grid_dx; screen_y=oy+(col+row)*grid_dy; "
-                "raise one level by subtracting level_height from screen_y; "
-                "draw back-to-front by (col+row) then by level.",
+                "one level = 19px (subtract N*19 from screen_y to raise N levels); "
+                "bottom-anchor by base_y (footprint front tip) so tiles of any "
+                "thickness line up without per-tile correction; draw back-to-front "
+                "by (col+row) then by level.",
     }
+
+
+def set_geometry(images, tile_size):
+    """Measure every tile and return (set_geometry, per_tile). The set geometry
+    is the MEDIAN across tiles (robust to odd pieces like inner corners); per_tile
+    carries each tile's own apex_y/base_y/face_px so the Maps agent can anchor
+    each sprite exactly, with no per-tile pixel hunting."""
+    per_tile, geoms = [], []
+    for im in images:
+        g = measure_geometry(im, tile_size)
+        geoms.append(g)
+        per_tile.append({
+            "apex_y": g.get("apex_y"), "base_y": g.get("base_y"),
+            "face_px": g.get("level_height"),
+        })
+    if not geoms:
+        return {}, per_tile
+
+    def med(key):
+        vals = [g[key] for g in geoms if g.get(key) is not None]
+        return int(np.median(vals)) if vals else None
+
+    dy = med("grid_dy")
+    geometry = {
+        "grid_dx": tile_size // 2,
+        "grid_dy": dy,
+        "diamond_top_height": dy * 2 if dy is not None else None,
+        "level_height": med("level_height"),
+        "apex_y": med("apex_y"),
+        "base_y": med("base_y"),
+        "image_height": med("image_height"),
+        "note": geoms[0].get("note"),
+    }
+    return geometry, per_tile
 
 
 def category_dir(cid):
@@ -140,13 +200,14 @@ def generate_category(client, cfg, cat):
         seed=seed)
     cdir = category_dir(cid)
     os.makedirs(cdir, exist_ok=True)
+    geometry, per_tile = set_geometry(tiles, t["size"])
     tile_meta = []
     for i, im in enumerate(tiles):
         fname = f"tile_{i:02d}.png"
         im.save(os.path.join(cdir, fname))
-        tile_meta.append({"index": i, "file": fname, "width": im.width, "height": im.height})
+        tile_meta.append({"index": i, "file": fname, "width": im.width,
+                          "height": im.height, **per_tile[i]})
     _preview(tiles, os.path.join(cdir, "preview.png"))
-    geometry = measure_geometry(tiles[0], t["size"]) if tiles else {}
     manifest = {
         "schema": "pixel-tiles/set@1",
         "category": cid, "description": cat["description"],
@@ -157,7 +218,7 @@ def generate_category(client, cfg, cat):
         "tile_height": tile_height,
         "profile": cat.get("profile"),
         "geometry": geometry,
-        "stacking": stacking_info(geometry),
+        "stacking": stacking_info(geometry, t["size"], tile_height),
         "count": len(tile_meta), "tiles": tile_meta,
         "preview": "preview.png",
         "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),

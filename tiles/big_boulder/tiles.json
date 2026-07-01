@@ -15,16 +15,24 @@
     "grid_dy": 13,
     "diamond_top_height": 26,
     "level_height": 100,
-    "note": "screen_x=ox+(col-row)*grid_dx; screen_y=oy+(col+row)*grid_dy; raise one level by subtracting level_height from screen_y; draw back-to-front by (col+row) then by level."
+    "apex_y": 0,
+    "base_y": 127,
+    "image_height": 128,
+    "note": "screen_x=ox+(col-row)*grid_dx; screen_y=oy+(col+row)*grid_dy; one level = 19px (subtract N*19 from screen_y to raise N levels); bottom-anchor by base_y (footprint front tip) so tiles of any thickness line up without per-tile correction; draw back-to-front by (col+row) then by level."
   },
   "stacking": {
     "face_height_px": 100,
-    "one_layer_px": 38,
-    "layers": 2.63,
+    "one_layer_px": 19,
+    "layers": 5.26,
+    "levels": 5,
+    "align": "scenery",
     "diamond_top_height_px": 26,
+    "apex_y": 0,
+    "base_y": 127,
+    "image_height": 128,
     "grid_dx": 32,
     "grid_dy": 13,
-    "formula": "face_px = depth_ratio*(tile_height-26). One elevation level = 38px (a 64x64 @ 100% tile). To place a tile N levels up, subtract N*38 from screen_y. This set's face spans `layers` levels. Stack flush by offsetting the upper tile up by its own face_height_px. Draw back-to-front by (col+row), then level."
+    "formula": "One elevation level = 19px (a 64x64 @ 50% flat tile's face). Raise a tile N levels by subtracting N*19 from screen_y; draw back-to-front by (col+row), then by level. EXACT tiles (64x64: flat=1 level, raised=2 levels) terrace perfectly. SCENERY tiles (64x128 cliff/tall) have fractional faces (`layers`) \u2014 do NOT use them as exact steps; anchor them by `base_y` (the footprint's front tip is at image row base_y, identical across thicknesses, so bottom-anchoring needs no per-tile correction)."
   },
   "count": 10,
   "tiles": [
@@ -32,61 +40,91 @@
       "index": 0,
       "file": "tile_00.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "apex_y": 0,
+      "base_y": 127,
+      "face_px": 100
     },
     {
       "index": 1,
       "file": "tile_01.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "apex_y": 0,
+      "base_y": 127,
+      "face_px": 100
     },
     {
       "index": 2,
       "file": "tile_02.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "apex_y": 0,
+      "base_y": 127,
+      "face_px": 100
     },
     {
       "index": 3,
       "file": "tile_03.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "apex_y": 0,
+      "base_y": 127,
+      "face_px": 100
     },
     {
       "index": 4,
       "file": "tile_04.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "apex_y": 0,
+      "base_y": 127,
+      "face_px": 98
     },
     {
       "index": 5,
       "file": "tile_05.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "apex_y": 0,
+      "base_y": 127,
+      "face_px": 100
     },
     {
       "index": 6,
       "file": "tile_06.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "apex_y": 0,
+      "base_y": 127,
+      "face_px": 100
     },
     {
       "index": 7,
       "file": "tile_07.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "apex_y": 0,
+      "base_y": 127,
+      "face_px": 100
     },
     {
       "index": 8,
       "file": "tile_08.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "apex_y": 0,
+      "base_y": 127,
+      "face_px": 100
     },
     {
       "index": 9,
       "file": "tile_09.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "apex_y": 0,
+      "base_y": 127,
+      "face_px": 100
     }
   ],
   "preview": "preview.png",

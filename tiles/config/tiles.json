@@ -1,5 +1,5 @@
 {
-  "_comment": "Tiles agent. FOCUSED isometric tile sets via create-tiles-pro. Base format: 64px, 28deg, isometric, flat_top 4. Each category is one on-theme set (~16 tiles, ~20 gens). Four HEIGHT PROFILES (per elevation math in tiles/README.md): flat=64x64@50%(0.5 layer, ground), raised=64x64@100%(1 layer), cliff=64x128@75%(2 layers), tall=64x128@100%(~2.7 layers). One elevation level=38px. Target mix ~40/20/20/20. Output tiles/<category>/ with tiles.json (incl. stacking metadata).",
+  "_comment": "Tiles agent. FOCUSED isometric tile sets via create-tiles-pro. Base format: 64px, 28deg, isometric, flat_top 4. Each category is one on-theme set (~16 tiles, ~20 gens). One elevation level=19px (a 64x64@50% flat tile's face, measured exact). Four HEIGHT PROFILES: flat=64x64@50%(1 level, EXACT ground), raised=64x64@100%(2 levels, EXACT steps/walls), cliff=64x128@75%(~4 levels, SCENERY), tall=64x128@100%(~5 levels, SCENERY). Only the 64x64 tiles land on exact levels; 64x128 are top/bottom-anchored scenery (see tiles/README.md). Target mix ~40/20/20/20. Output tiles/<category>/ with tiles.json (incl. stacking metadata + per-tile base_y anchors).",
   "tile": {
     "size": 64,
     "view_angle": 28,
@@ -262,34 +262,39 @@
       }
     ]
   },
+  "_profiles_comment": "One level = 19px (flat 64x64@50% face). Only 64x64 tiles (flat/raised) align to exact whole levels; 64x128 (cliff/tall) are scenery, bottom-anchored by base_y, faces are approximate.",
   "profiles": {
     "flat": {
       "tile_size": 64,
       "tile_height": 64,
       "depth_ratio": 0.5,
-      "layers": 0.5,
-      "use": "ground plane"
+      "levels": 1,
+      "align": "exact",
+      "use": "ground plane / base slab"
     },
     "raised": {
       "tile_size": 64,
       "tile_height": 64,
       "depth_ratio": 1.0,
-      "layers": 1,
-      "use": "1-level steps/low walls/fences"
+      "levels": 2,
+      "align": "exact",
+      "use": "1-2 level steps/low walls/fences/ramps"
     },
     "cliff": {
       "tile_size": 64,
       "tile_height": 128,
       "depth_ratio": 0.75,
-      "layers": 2,
-      "use": "2-level cliffs/banks"
+      "levels": 4,
+      "align": "scenery",
+      "use": "tall cliff/bank faces (bottom-anchored, approximate)"
     },
     "tall": {
       "tile_size": 64,
       "tile_height": 128,
       "depth_ratio": 1.0,
-      "layers": 2.7,
-      "use": "tall walls/towers/peaks"
+      "levels": 5,
+      "align": "scenery",
+      "use": "tall walls/towers/peaks/trees (bottom-anchored, approximate)"
     }
   }
 }

@@ -22,16 +22,25 @@ never a mix of unrelated materials in one sprite.
 
 The world is multi-level, so tiles come in four **height profiles**. They all use
 the same 64-wide footprint (so they snap to the same iso grid) but differ in image
-height + thickness, giving different vertical **face** heights for elevation:
+height + thickness, giving different vertical **face** heights for elevation.
 
-| profile | image | thickness | face px | layers | use |
-|---|---|---|---|---|---|
-| `flat`   | 64×64  | 50%  | ~19px  | **0.5** | ground plane |
-| `raised` | 64×64  | 100% | ~38px  | **1**   | 1-level steps, low walls, fences, ramps |
-| `cliff`  | 64×128 | 75%  | ~76px  | **2**   | 2-level cliffs / banks |
-| `tall`   | 64×128 | 100% | ~102px | **~2.7**| tall walls, towers, peaks |
+**One elevation level = 19px** (the flat ground tile's own side-face, measured
+exact). Everything is expressed in that unit:
 
-Each tile set's `tiles.json` records its `profile`, and per-set measured
+| profile | image | thickness | face px | levels | align | use |
+|---|---|---|---|---|---|---|
+| `flat`   | 64×64  | 50%  | **19px**  | **1** | **exact** | ground plane / base slab |
+| `raised` | 64×64  | 100% | **38px**  | **2** | **exact** | 1–2-level steps, low walls, fences, ramps |
+| `cliff`  | 64×128 | 75%  | ~84px | ~4 | *scenery* | tall cliff / bank faces |
+| `tall`   | 64×128 | 100% | ~100px | ~5 | *scenery* | tall walls, towers, peaks, trees |
+
+**Only the 64×64 tiles (`flat`, `raised`) land on exact whole levels** — they're
+the building blocks for terraced terrain. The 64×128 tiles (`cliff`, `tall`) are
+**scenery**: their faces are *not* exact level multiples, so don't stack them as
+precise steps — place them by their measured `base_y` anchor (below). Build any
+exact N-level cliff by stacking 64×64 tiles (`raised`=2 + `flat`=1 …) instead.
+
+Each tile set's `tiles.json` records its `profile`, `align`, and per-set measured
 `stacking` numbers (see below) — always trust those, not this table, for exact px.
 
 ## How stacking / elevation works (the important part)
@@ -44,26 +53,31 @@ screen_y = origin_y + (col + row) * grid_dy        # grid_dy = diamond_top_heigh
 draw back-to-front by increasing (col + row)        # so tiles overlap correctly
 ```
 
-**Elevation:** one level = **`one_layer_px` = 38px** (a 64×64 @ 100% tile's face).
-To place a tile `N` levels up, **subtract `N * 38` from its `screen_y`** and draw
-higher levels after lower ones. The verified geometry:
+**Elevation:** one level = **`one_layer_px` = 19px** (a 64×64 @ 50% flat tile's
+face — measured exact). To place a tile `N` levels up, **subtract `N * 19` from its
+`screen_y`** and draw higher levels after lower ones.
 
-```
-face_px = depth_ratio * (tile_height - 26)     # 26 = diamond top height
-```
+- **Exact terracing uses only the 64×64 tiles.** `flat` = 1 level, `raised` = 2
+  levels — both measured on the fixed 64-box, so they stack into any whole height
+  with no drift. Want a 5-level cliff? Stack `raised`(2)+`raised`(2)+`flat`(1).
+- **`cliff` / `tall` are scenery**, not exact steps. Their `stacking.layers` is
+  fractional (~4.4, ~5.3) because the 64×128 box renders the face slightly off a
+  whole multiple. Place them by the **bottom anchor** (next section), letting the
+  front tiles clip any overhang — never rely on their face for an exact level.
 
-- A **cliff/wall** tile's own `face_height_px` (in metadata) is how much vertical
-  drop it covers — e.g. a `cliff` set (~76px = 2 layers) is the face for a plateau
-  raised 2 levels. Place it at the plateau edge; its top aligns with the raised
-  ground, its bottom with the lower ground.
-- To stack blocks flush, offset the upper tile up by its own `face_height_px`.
-- For clean multi-level terrain, keep elevation in whole `one_layer_px` steps and
-  use `raised`(1) / `cliff`(2) tiles for the faces. `tall` (~2.7) is for scenery
-  (towers, peaks) rather than exact-step terrain.
+### Bottom-anchoring (no per-tile correction needed)
 
-> Note: a 64×128 image caps the face at ~102px (128 − 26 diamond), so **no tile
-> exceeds ~2.7 layers**; taller cliffs are built by stacking levels, not by one
-> giant tile.
+Thicker tiles sit their footprint lower in the image, so you can't paste every
+tile at the same top offset. Instead **anchor by `base_y`** — the image row of the
+footprint's front tip, which is the tile's actual ground-contact point and is
+recorded per set (`stacking.base_y` / `geometry.base_y`) *and per tile*
+(`tiles[i].base_y`). Paste each tile so its `base_y` lands on the cell's front-tip
+screen row; tiles of any thickness then line up automatically. Each `tiles[i]`
+entry also carries `apex_y` (top of the sprite) and `face_px` (its own face
+height), so no pixel-hunting is required.
+
+> A 64×128 image caps the face near ~100px, so **no single tile exceeds ~5
+> levels**; taller cliffs are built by stacking 64×64 levels, not one giant tile.
 
 ## Metadata (`tiles/<category>/tiles.json`, schema `pixel-tiles/set@1`)
 
@@ -77,12 +91,15 @@ face_px = depth_ratio * (tile_height - 26)     # 26 = diamond top height
   "tile_size": 64, "view_angle": 28, "depth_ratio": 0.75,
   "tile_height": 128, "flat_top_px": 4,
   "geometry": { "grid_dx": 32, "grid_dy": 13, "diamond_top_height": 26,
-                "level_height": 76, "note": "…placement math…" },
-  "stacking": { "face_height_px": 76, "one_layer_px": 38, "layers": 2.0,
-                "diamond_top_height_px": 26, "grid_dx": 32, "grid_dy": 13,
-                "formula": "…" },
+                "level_height": 84, "apex_y": 5, "base_y": 119,
+                "image_height": 128, "note": "…placement math…" },
+  "stacking": { "face_height_px": 84, "one_layer_px": 19, "layers": 4.42,
+                "levels": 4, "align": "scenery", "apex_y": 5, "base_y": 119,
+                "image_height": 128, "diamond_top_height_px": 26,
+                "grid_dx": 32, "grid_dy": 13, "formula": "…" },
   "count": 16,
-  "tiles": [ { "index": 0, "file": "tile_00.png", "width": 64, "height": 128 }, … ],
+  "tiles": [ { "index": 0, "file": "tile_00.png", "width": 64, "height": 128,
+               "apex_y": 5, "base_y": 119, "face_px": 84 }, … ],
   "preview": "preview.png",
   "generated_at": "…UTC…",
   "provenance": { "tool": "pixellab", "endpoint": "/create-tiles-pro",
