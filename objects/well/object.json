@@ -32,7 +32,24 @@
     "count": 0,
     "directions": []
   },
-  "animations": {},
-  "generations_used": 1.0,
-  "status": "in_progress"
+  "animations": {
+    "ripple": {
+      "action": "water rippling",
+      "view": "low top-down",
+      "frames": 4,
+      "n_frames_requested": 6,
+      "ok": true,
+      "note": "",
+      "strip": "well/animations/ripple.png",
+      "gif": "well/animations/ripple.gif",
+      "frame_paths": [
+        "well/animations/ripple/00.png",
+        "well/animations/ripple/01.png",
+        "well/animations/ripple/02.png",
+        "well/animations/ripple/03.png"
+      ]
+    }
+  },
+  "generations_used": 2.0,
+  "status": "complete"
 }

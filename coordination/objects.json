@@ -1,14 +1,14 @@
 {
   "domain": "objects",
-  "updated_at": "2026-07-01T05:19:32+00:00",
+  "updated_at": "2026-07-01T05:19:48+00:00",
   "health": "running",
-  "current": "well: base sprite (64x64 low top-down) \u2014 Stone Well",
+  "current": "well: animation 'ripple' (water rippling)",
   "progress": {
-    "objects_complete": 29,
+    "objects_complete": 30,
     "objects_started": 30,
     "objects_target": 40
   },
-  "budget_remaining": 7886.0,
+  "budget_remaining": 7885.0,
   "notes": [
     "objects domain: props/tools/items (chest, coin, tree, sword...). Each object = one folder objects/<id>/ with sprite + optional rotations + animations. Repo is the source of truth (stateless PixelLab image tools; nothing to sync back).",
     "[2026-07-01T02:43:10+00:00] objects agent online: props/tools/items (chest, coin, tree, sword, torch, potion...). Each object = objects/<id>/ with sprite + optional rotations + animations. Heartbeat live on main."
