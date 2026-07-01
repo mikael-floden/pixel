@@ -137,6 +137,19 @@ class TileSet:
         xmin = int(cols.min())
         return int(np.where(alpha[:, xmin])[0].min())
 
+    @lru_cache(maxsize=128)
+    def face_height(self, category: str) -> int:
+        """Height in px of the tile's exposed vertical face at a corner (how far
+        down its rock wall reaches). Lets the renderer know when a short cliff
+        tile won't cover a deep drop and needs fill beneath it."""
+        img = self.tile(category, 0)
+        a = np.asarray(img)
+        alpha = a[:, :, 3] > 16
+        cols = np.where(alpha.any(axis=0))[0]
+        xmin = int(cols.min())
+        col = np.where(alpha[:, xmin])[0]
+        return int(col.max() - col.min() + 1)
+
     def surface_offset(self, category: str, ref_category: str = "grass") -> int:
         """Pixels to add to paste-y so `category`'s top surface aligns with the
         ground reference tile's surface at the same level (0 for ground tiles)."""

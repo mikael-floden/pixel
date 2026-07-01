@@ -191,9 +191,9 @@ class WorldPlan:
         # coherent raised shelves with clean cliff edges — low frequency so they
         # read as deliberate mesas you route around, not a speckle of 1-cell bumps.
         # Quantize the hill mass itself so each hill is a flat shelf, not a dome.
-        hill = fbm(x, y, self.seed + 31, self.width * 0.11, 2)
-        if hill > 0.56:
-            shelf = 1 if hill < 0.70 else 2                    # 1- or 2-level mesa
+        hill = fbm(x, y, self.seed + 31, self.width * 0.15, 2)
+        if hill > 0.58:
+            shelf = 1 if hill < 0.72 else 2                    # 1- or 2-level mesa
             h += shelf * (1.0 / MAX_LEVEL) * (1.0 - base * 0.6)
 
         # sink to sea level along the coast so beaches sit at level 0

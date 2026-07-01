@@ -79,17 +79,26 @@ def render(world: World, tiles: TileSet, *, scale: int = 1,
         base_x = ox + (x - y) * dx
         base_y = oy + (x + y) * dy
 
-        cat, variant = cell.terrain, cell.variant
-        # a raised cell whose front drops away shows a rock wall: use the cliff
-        if L > 0 and (L - front_min_level(x, y)) > 0:
-            cliff = _cliff_for(cell, tiles)
-            if cliff:
-                cat = cliff
-                variant = 0  # front-face variant (corner selection: future work)
+        drop = L - front_min_level(x, y) if L > 0 else 0
+        cliff = _cliff_for(cell, tiles) if drop > 0 else None
 
-        img = tiles.tile(cat, variant)
-        paste_y = base_y - L * lh + tiles.surface_offset(cat)
-        canvas.paste(img, (base_x, paste_y), img)
+        if cliff:
+            # If the cliff's face can't reach the whole drop (e.g. short
+            # cliff_snow on a deep step), fill the lower, uncovered levels with
+            # stacked ground blocks first so no transparent gap shows; then cap
+            # with the cliff for the rock wall + top surface.
+            cover = tiles.face_height(cliff) // lh
+            if cover < drop:
+                ground = tiles.tile(cell.terrain, cell.variant)
+                goff = tiles.surface_offset(cell.terrain)
+                for fl in range(max(0, L - drop + 1), L - cover + 1):
+                    canvas.paste(ground, (base_x, base_y - fl * lh + goff), ground)
+            img = tiles.tile(cliff, 0)
+            canvas.paste(img, (base_x, base_y - L * lh + tiles.surface_offset(cliff)), img)
+        else:
+            img = tiles.tile(cell.terrain, cell.variant)
+            off = tiles.surface_offset(cell.terrain)
+            canvas.paste(img, (base_x, base_y - L * lh + off), img)
 
     if scale != 1:
         canvas = canvas.resize((canvas_w * scale, canvas_h * scale), Image.NEAREST)
