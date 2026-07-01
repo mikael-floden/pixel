@@ -251,6 +251,205 @@
           "src_frames": 17
         }
       }
+    },
+    "flip": {
+      "group_id": "b0055127-2afc-40b0-be46-a091d61bea6c",
+      "description": "the coin flipping over",
+      "frame_count": 16,
+      "directions": {
+        "east": {
+          "frames": 17,
+          "strip": "gold_coin/animations/flip__east.png",
+          "gif": "gold_coin/animations/flip__east.gif",
+          "frame_paths": [
+            "gold_coin/animations/flip/east/00.png",
+            "gold_coin/animations/flip/east/01.png",
+            "gold_coin/animations/flip/east/02.png",
+            "gold_coin/animations/flip/east/03.png",
+            "gold_coin/animations/flip/east/04.png",
+            "gold_coin/animations/flip/east/05.png",
+            "gold_coin/animations/flip/east/06.png",
+            "gold_coin/animations/flip/east/07.png",
+            "gold_coin/animations/flip/east/08.png",
+            "gold_coin/animations/flip/east/09.png",
+            "gold_coin/animations/flip/east/10.png",
+            "gold_coin/animations/flip/east/11.png",
+            "gold_coin/animations/flip/east/12.png",
+            "gold_coin/animations/flip/east/13.png",
+            "gold_coin/animations/flip/east/14.png",
+            "gold_coin/animations/flip/east/15.png",
+            "gold_coin/animations/flip/east/16.png"
+          ]
+        },
+        "north": {
+          "frames": 17,
+          "strip": "gold_coin/animations/flip__north.png",
+          "gif": "gold_coin/animations/flip__north.gif",
+          "frame_paths": [
+            "gold_coin/animations/flip/north/00.png",
+            "gold_coin/animations/flip/north/01.png",
+            "gold_coin/animations/flip/north/02.png",
+            "gold_coin/animations/flip/north/03.png",
+            "gold_coin/animations/flip/north/04.png",
+            "gold_coin/animations/flip/north/05.png",
+            "gold_coin/animations/flip/north/06.png",
+            "gold_coin/animations/flip/north/07.png",
+            "gold_coin/animations/flip/north/08.png",
+            "gold_coin/animations/flip/north/09.png",
+            "gold_coin/animations/flip/north/10.png",
+            "gold_coin/animations/flip/north/11.png",
+            "gold_coin/animations/flip/north/12.png",
+            "gold_coin/animations/flip/north/13.png",
+            "gold_coin/animations/flip/north/14.png",
+            "gold_coin/animations/flip/north/15.png",
+            "gold_coin/animations/flip/north/16.png"
+          ]
+        },
+        "north-east": {
+          "frames": 17,
+          "strip": "gold_coin/animations/flip__north-east.png",
+          "gif": "gold_coin/animations/flip__north-east.gif",
+          "frame_paths": [
+            "gold_coin/animations/flip/north-east/00.png",
+            "gold_coin/animations/flip/north-east/01.png",
+            "gold_coin/animations/flip/north-east/02.png",
+            "gold_coin/animations/flip/north-east/03.png",
+            "gold_coin/animations/flip/north-east/04.png",
+            "gold_coin/animations/flip/north-east/05.png",
+            "gold_coin/animations/flip/north-east/06.png",
+            "gold_coin/animations/flip/north-east/07.png",
+            "gold_coin/animations/flip/north-east/08.png",
+            "gold_coin/animations/flip/north-east/09.png",
+            "gold_coin/animations/flip/north-east/10.png",
+            "gold_coin/animations/flip/north-east/11.png",
+            "gold_coin/animations/flip/north-east/12.png",
+            "gold_coin/animations/flip/north-east/13.png",
+            "gold_coin/animations/flip/north-east/14.png",
+            "gold_coin/animations/flip/north-east/15.png",
+            "gold_coin/animations/flip/north-east/16.png"
+          ]
+        },
+        "north-west": {
+          "frames": 17,
+          "strip": "gold_coin/animations/flip__north-west.png",
+          "gif": "gold_coin/animations/flip__north-west.gif",
+          "frame_paths": [
+            "gold_coin/animations/flip/north-west/00.png",
+            "gold_coin/animations/flip/north-west/01.png",
+            "gold_coin/animations/flip/north-west/02.png",
+            "gold_coin/animations/flip/north-west/03.png",
+            "gold_coin/animations/flip/north-west/04.png",
+            "gold_coin/animations/flip/north-west/05.png",
+            "gold_coin/animations/flip/north-west/06.png",
+            "gold_coin/animations/flip/north-west/07.png",
+            "gold_coin/animations/flip/north-west/08.png",
+            "gold_coin/animations/flip/north-west/09.png",
+            "gold_coin/animations/flip/north-west/10.png",
+            "gold_coin/animations/flip/north-west/11.png",
+            "gold_coin/animations/flip/north-west/12.png",
+            "gold_coin/animations/flip/north-west/13.png",
+            "gold_coin/animations/flip/north-west/14.png",
+            "gold_coin/animations/flip/north-west/15.png",
+            "gold_coin/animations/flip/north-west/16.png"
+          ]
+        },
+        "south": {
+          "frames": 17,
+          "strip": "gold_coin/animations/flip__south.png",
+          "gif": "gold_coin/animations/flip__south.gif",
+          "frame_paths": [
+            "gold_coin/animations/flip/south/00.png",
+            "gold_coin/animations/flip/south/01.png",
+            "gold_coin/animations/flip/south/02.png",
+            "gold_coin/animations/flip/south/03.png",
+            "gold_coin/animations/flip/south/04.png",
+            "gold_coin/animations/flip/south/05.png",
+            "gold_coin/animations/flip/south/06.png",
+            "gold_coin/animations/flip/south/07.png",
+            "gold_coin/animations/flip/south/08.png",
+            "gold_coin/animations/flip/south/09.png",
+            "gold_coin/animations/flip/south/10.png",
+            "gold_coin/animations/flip/south/11.png",
+            "gold_coin/animations/flip/south/12.png",
+            "gold_coin/animations/flip/south/13.png",
+            "gold_coin/animations/flip/south/14.png",
+            "gold_coin/animations/flip/south/15.png",
+            "gold_coin/animations/flip/south/16.png"
+          ]
+        },
+        "south-east": {
+          "frames": 17,
+          "strip": "gold_coin/animations/flip__south-east.png",
+          "gif": "gold_coin/animations/flip__south-east.gif",
+          "frame_paths": [
+            "gold_coin/animations/flip/south-east/00.png",
+            "gold_coin/animations/flip/south-east/01.png",
+            "gold_coin/animations/flip/south-east/02.png",
+            "gold_coin/animations/flip/south-east/03.png",
+            "gold_coin/animations/flip/south-east/04.png",
+            "gold_coin/animations/flip/south-east/05.png",
+            "gold_coin/animations/flip/south-east/06.png",
+            "gold_coin/animations/flip/south-east/07.png",
+            "gold_coin/animations/flip/south-east/08.png",
+            "gold_coin/animations/flip/south-east/09.png",
+            "gold_coin/animations/flip/south-east/10.png",
+            "gold_coin/animations/flip/south-east/11.png",
+            "gold_coin/animations/flip/south-east/12.png",
+            "gold_coin/animations/flip/south-east/13.png",
+            "gold_coin/animations/flip/south-east/14.png",
+            "gold_coin/animations/flip/south-east/15.png",
+            "gold_coin/animations/flip/south-east/16.png"
+          ]
+        },
+        "south-west": {
+          "frames": 17,
+          "strip": "gold_coin/animations/flip__south-west.png",
+          "gif": "gold_coin/animations/flip__south-west.gif",
+          "frame_paths": [
+            "gold_coin/animations/flip/south-west/00.png",
+            "gold_coin/animations/flip/south-west/01.png",
+            "gold_coin/animations/flip/south-west/02.png",
+            "gold_coin/animations/flip/south-west/03.png",
+            "gold_coin/animations/flip/south-west/04.png",
+            "gold_coin/animations/flip/south-west/05.png",
+            "gold_coin/animations/flip/south-west/06.png",
+            "gold_coin/animations/flip/south-west/07.png",
+            "gold_coin/animations/flip/south-west/08.png",
+            "gold_coin/animations/flip/south-west/09.png",
+            "gold_coin/animations/flip/south-west/10.png",
+            "gold_coin/animations/flip/south-west/11.png",
+            "gold_coin/animations/flip/south-west/12.png",
+            "gold_coin/animations/flip/south-west/13.png",
+            "gold_coin/animations/flip/south-west/14.png",
+            "gold_coin/animations/flip/south-west/15.png",
+            "gold_coin/animations/flip/south-west/16.png"
+          ]
+        },
+        "west": {
+          "frames": 17,
+          "strip": "gold_coin/animations/flip__west.png",
+          "gif": "gold_coin/animations/flip__west.gif",
+          "frame_paths": [
+            "gold_coin/animations/flip/west/00.png",
+            "gold_coin/animations/flip/west/01.png",
+            "gold_coin/animations/flip/west/02.png",
+            "gold_coin/animations/flip/west/03.png",
+            "gold_coin/animations/flip/west/04.png",
+            "gold_coin/animations/flip/west/05.png",
+            "gold_coin/animations/flip/west/06.png",
+            "gold_coin/animations/flip/west/07.png",
+            "gold_coin/animations/flip/west/08.png",
+            "gold_coin/animations/flip/west/09.png",
+            "gold_coin/animations/flip/west/10.png",
+            "gold_coin/animations/flip/west/11.png",
+            "gold_coin/animations/flip/west/12.png",
+            "gold_coin/animations/flip/west/13.png",
+            "gold_coin/animations/flip/west/14.png",
+            "gold_coin/animations/flip/west/15.png",
+            "gold_coin/animations/flip/west/16.png"
+          ]
+        }
+      }
     }
   },
   "status": "in_progress",

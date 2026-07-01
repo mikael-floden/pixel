@@ -221,6 +221,22 @@
             "south-west": "gold_coin/animations/spin__south-west.gif",
             "west": "gold_coin/animations/spin__west.gif"
           }
+        },
+        {
+          "key": "flip",
+          "description": "the coin flipping over",
+          "frames": 17,
+          "preview_gif": "gold_coin/animations/flip__south.gif",
+          "directions": {
+            "east": "gold_coin/animations/flip__east.gif",
+            "north": "gold_coin/animations/flip__north.gif",
+            "north-east": "gold_coin/animations/flip__north-east.gif",
+            "north-west": "gold_coin/animations/flip__north-west.gif",
+            "south": "gold_coin/animations/flip__south.gif",
+            "south-east": "gold_coin/animations/flip__south-east.gif",
+            "south-west": "gold_coin/animations/flip__south-west.gif",
+            "west": "gold_coin/animations/flip__west.gif"
+          }
         }
       ]
     },
