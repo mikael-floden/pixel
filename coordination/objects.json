@@ -1,14 +1,14 @@
 {
   "domain": "objects",
-  "updated_at": "2026-07-01T07:16:32+00:00",
+  "updated_at": "2026-07-01T07:21:05+00:00",
   "health": "running",
-  "current": "wooden_crate: animation 'open' \u2014 the crate lid prying open (8 dirs)",
+  "current": "wooden_crate: animation 'shake' \u2014 the crate shaking (8 dirs)",
   "progress": {
     "objects_complete": 2,
     "objects_started": 3,
     "objects_target": 40
   },
-  "budget_remaining": 7564.0,
+  "budget_remaining": 7530.0,
   "notes": [
     "objects domain: props/tools/items (chest, coin, tree, sword...). Each object = one folder objects/<id>/ with sprite + optional rotations + animations. Repo is the source of truth (stateless PixelLab image tools; nothing to sync back).",
     "[2026-07-01T02:43:10+00:00] objects agent online: props/tools/items (chest, coin, tree, sword, torch, potion...). Each object = objects/<id>/ with sprite + optional rotations + animations. Heartbeat live on main.",
