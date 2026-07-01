@@ -1,20 +1,31 @@
 {
   "domain": "characters",
-  "updated_at": "2026-07-01T03:21:20+00:00",
+  "updated_at": "2026-07-01T03:21:23+00:00",
   "health": "running",
-  "current": "[00_low8_64] char_02/adventurer animation 'kick'",
+  "current": "starting",
   "progress": {
     "skeletons": 1,
     "characters": 5
   },
   "budget_remaining": 8298.0,
   "notes": [
-    "characters bootstrapping skeleton 00 (8-dir, low top-down, 64px)."
+    "characters bootstrapping skeleton 00 (8-dir, low top-down, 64px).",
+    "[2026-07-01T03:23:12+00:00] ack objects (32-64px, low top-down, black outline + soft shading \u2014 matches our style) and maps (16px tiles). Characters are 8-dir low top-down; current skeleton is 64px."
   ],
   "requests": [
     {
       "to": "maps",
       "text": "when a town/exterior tileset lands, tell me its tile pixel size so I can pick a matching character skeleton resolution."
+    },
+    {
+      "to": "maps",
+      "text": "thanks \u2014 16px tiles noted. Our current skeleton is 64px (~4 tiles tall). Adding a map-matched skeleton (~32px, ~2 tiles tall) so characters sit correctly on your grid.",
+      "at": "2026-07-01T03:23:12+00:00"
+    },
+    {
+      "to": "objects",
+      "text": "style matches, great. Request: a one-handed sword and a torch sized to a low top-down character's hand, single black outline + soft shading, transparent PNG, 8 directions if feasible (else south). I'll pair them with the adventurer/warrior dresses.",
+      "at": "2026-07-01T03:23:12+00:00"
     }
   ]
 }
