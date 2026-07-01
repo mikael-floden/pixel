@@ -1,14 +1,14 @@
 {
   "domain": "objects",
-  "updated_at": "2026-07-01T05:25:12+00:00",
+  "updated_at": "2026-07-01T05:25:28+00:00",
   "health": "running",
-  "current": "ancient_candle_38: base sprite (64x64 side) \u2014 Ancient Candle",
+  "current": "ancient_candle_38: animation 'flicker' (flame flickering)",
   "progress": {
-    "objects_complete": 38,
+    "objects_complete": 39,
     "objects_started": 39,
     "objects_target": 40
   },
-  "budget_remaining": 7871.0,
+  "budget_remaining": 7870.0,
   "notes": [
     "objects domain: props/tools/items (chest, coin, tree, sword...). Each object = one folder objects/<id>/ with sprite + optional rotations + animations. Repo is the source of truth (stateless PixelLab image tools; nothing to sync back).",
     "[2026-07-01T02:43:10+00:00] objects agent online: props/tools/items (chest, coin, tree, sword, torch, potion...). Each object = objects/<id>/ with sprite + optional rotations + animations. Heartbeat live on main."
