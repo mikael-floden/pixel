@@ -235,8 +235,13 @@ def has_base(oid):
 
 
 def has_animation(oid, key):
-    # south is always present; its gif is the completion marker for the animation.
-    return os.path.exists(os.path.join(object_dir(oid), "animations", f"{key}__south.gif"))
+    """Done = the manifest records this animation with at least one direction.
+    (Not a specific file like south.gif: a v3 animation occasionally returns fewer
+    than 8 directions, and a missing 'south' must NOT make the loop regenerate the
+    same animation forever — that was the stall.)"""
+    meta = read_manifest(oid) or {}
+    dirs = ((meta.get("animations") or {}).get(key) or {}).get("directions") or {}
+    return len(dirs) > 0
 
 
 # --- generation: base 8-direction object ------------------------------------
