@@ -1,11 +1,11 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 9,
+  "object_count": 10,
   "target_count": 40,
   "categories": {
     "container": 4,
     "valuable": 4,
-    "tool": 1
+    "tool": 2
   },
   "objects": [
     {
@@ -126,6 +126,21 @@
           "action": "spinning around"
         }
       ]
+    },
+    {
+      "id": "shovel",
+      "name": "Shovel",
+      "category": "tool",
+      "description": "a wooden-handled digging shovel with a metal blade",
+      "view": "side",
+      "size": [
+        64,
+        64
+      ],
+      "status": "complete",
+      "sprite": "shovel/sprite.png",
+      "rotation_files": {},
+      "animations": []
     },
     {
       "id": "sword",
