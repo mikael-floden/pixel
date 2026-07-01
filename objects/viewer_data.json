@@ -1,11 +1,26 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 1,
+  "object_count": 2,
   "target_count": 40,
   "categories": {
-    "container": 1
+    "container": 2
   },
   "objects": [
+    {
+      "id": "barrel",
+      "name": "Barrel",
+      "category": "container",
+      "description": "a sturdy wooden barrel bound with metal hoops",
+      "view": "low top-down",
+      "size": [
+        48,
+        64
+      ],
+      "status": "in_progress",
+      "sprite": "barrel/sprite.png",
+      "rotation_files": {},
+      "animations": []
+    },
     {
       "id": "wooden_chest",
       "name": "Wooden Chest",

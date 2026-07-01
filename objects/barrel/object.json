@@ -1,0 +1,30 @@
+{
+  "id": "barrel",
+  "name": "Barrel",
+  "category": "container",
+  "description": "a sturdy wooden barrel bound with metal hoops",
+  "view": "low top-down",
+  "direction": "south",
+  "size": [
+    48,
+    64
+  ],
+  "procedural": false,
+  "source": "pixellab.ai (generate-image-pixflux / rotate / animate-with-text)",
+  "params": {
+    "outline": "single color black outline",
+    "shading": "detailed shading",
+    "detail": "highly detailed",
+    "no_background": true,
+    "isometric": false,
+    "seed": 1214873314
+  },
+  "sprite": "barrel/sprite.png",
+  "rotations": {
+    "count": 4,
+    "directions": []
+  },
+  "animations": {},
+  "generations_used": 1.0,
+  "status": "in_progress"
+}
