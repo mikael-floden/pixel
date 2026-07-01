@@ -28,195 +28,19 @@
     "west"
   ],
   "rotations": {
+    "south": "wooden_crate/rotations/south.png",
+    "west": "wooden_crate/rotations/west.png",
     "east": "wooden_crate/rotations/east.png",
     "north": "wooden_crate/rotations/north.png",
-    "north-east": "wooden_crate/rotations/north-east.png",
-    "north-west": "wooden_crate/rotations/north-west.png",
-    "south": "wooden_crate/rotations/south.png",
     "south-east": "wooden_crate/rotations/south-east.png",
     "south-west": "wooden_crate/rotations/south-west.png",
-    "west": "wooden_crate/rotations/west.png"
+    "north-east": "wooden_crate/rotations/north-east.png",
+    "north-west": "wooden_crate/rotations/north-west.png"
   },
   "animations": {
-    "open": {
-      "group_id": "f914b116-f575-479b-a6da-c06220833d16",
-      "description": "the crate lid prying open",
-      "frame_count": 16,
-      "directions": {
-        "east": {
-          "frames": 17,
-          "strip": "wooden_crate/animations/open__east.png",
-          "gif": "wooden_crate/animations/open__east.gif",
-          "frame_paths": [
-            "wooden_crate/animations/open/east/00.png",
-            "wooden_crate/animations/open/east/01.png",
-            "wooden_crate/animations/open/east/02.png",
-            "wooden_crate/animations/open/east/03.png",
-            "wooden_crate/animations/open/east/04.png",
-            "wooden_crate/animations/open/east/05.png",
-            "wooden_crate/animations/open/east/06.png",
-            "wooden_crate/animations/open/east/07.png",
-            "wooden_crate/animations/open/east/08.png",
-            "wooden_crate/animations/open/east/09.png",
-            "wooden_crate/animations/open/east/10.png",
-            "wooden_crate/animations/open/east/11.png",
-            "wooden_crate/animations/open/east/12.png",
-            "wooden_crate/animations/open/east/13.png",
-            "wooden_crate/animations/open/east/14.png",
-            "wooden_crate/animations/open/east/15.png",
-            "wooden_crate/animations/open/east/16.png"
-          ]
-        },
-        "north": {
-          "frames": 17,
-          "strip": "wooden_crate/animations/open__north.png",
-          "gif": "wooden_crate/animations/open__north.gif",
-          "frame_paths": [
-            "wooden_crate/animations/open/north/00.png",
-            "wooden_crate/animations/open/north/01.png",
-            "wooden_crate/animations/open/north/02.png",
-            "wooden_crate/animations/open/north/03.png",
-            "wooden_crate/animations/open/north/04.png",
-            "wooden_crate/animations/open/north/05.png",
-            "wooden_crate/animations/open/north/06.png",
-            "wooden_crate/animations/open/north/07.png",
-            "wooden_crate/animations/open/north/08.png",
-            "wooden_crate/animations/open/north/09.png",
-            "wooden_crate/animations/open/north/10.png",
-            "wooden_crate/animations/open/north/11.png",
-            "wooden_crate/animations/open/north/12.png",
-            "wooden_crate/animations/open/north/13.png",
-            "wooden_crate/animations/open/north/14.png",
-            "wooden_crate/animations/open/north/15.png",
-            "wooden_crate/animations/open/north/16.png"
-          ]
-        },
-        "north-west": {
-          "frames": 17,
-          "strip": "wooden_crate/animations/open__north-west.png",
-          "gif": "wooden_crate/animations/open__north-west.gif",
-          "frame_paths": [
-            "wooden_crate/animations/open/north-west/00.png",
-            "wooden_crate/animations/open/north-west/01.png",
-            "wooden_crate/animations/open/north-west/02.png",
-            "wooden_crate/animations/open/north-west/03.png",
-            "wooden_crate/animations/open/north-west/04.png",
-            "wooden_crate/animations/open/north-west/05.png",
-            "wooden_crate/animations/open/north-west/06.png",
-            "wooden_crate/animations/open/north-west/07.png",
-            "wooden_crate/animations/open/north-west/08.png",
-            "wooden_crate/animations/open/north-west/09.png",
-            "wooden_crate/animations/open/north-west/10.png",
-            "wooden_crate/animations/open/north-west/11.png",
-            "wooden_crate/animations/open/north-west/12.png",
-            "wooden_crate/animations/open/north-west/13.png",
-            "wooden_crate/animations/open/north-west/14.png",
-            "wooden_crate/animations/open/north-west/15.png",
-            "wooden_crate/animations/open/north-west/16.png"
-          ]
-        },
-        "south": {
-          "frames": 17,
-          "strip": "wooden_crate/animations/open__south.png",
-          "gif": "wooden_crate/animations/open__south.gif",
-          "frame_paths": [
-            "wooden_crate/animations/open/south/00.png",
-            "wooden_crate/animations/open/south/01.png",
-            "wooden_crate/animations/open/south/02.png",
-            "wooden_crate/animations/open/south/03.png",
-            "wooden_crate/animations/open/south/04.png",
-            "wooden_crate/animations/open/south/05.png",
-            "wooden_crate/animations/open/south/06.png",
-            "wooden_crate/animations/open/south/07.png",
-            "wooden_crate/animations/open/south/08.png",
-            "wooden_crate/animations/open/south/09.png",
-            "wooden_crate/animations/open/south/10.png",
-            "wooden_crate/animations/open/south/11.png",
-            "wooden_crate/animations/open/south/12.png",
-            "wooden_crate/animations/open/south/13.png",
-            "wooden_crate/animations/open/south/14.png",
-            "wooden_crate/animations/open/south/15.png",
-            "wooden_crate/animations/open/south/16.png"
-          ]
-        },
-        "south-east": {
-          "frames": 17,
-          "strip": "wooden_crate/animations/open__south-east.png",
-          "gif": "wooden_crate/animations/open__south-east.gif",
-          "frame_paths": [
-            "wooden_crate/animations/open/south-east/00.png",
-            "wooden_crate/animations/open/south-east/01.png",
-            "wooden_crate/animations/open/south-east/02.png",
-            "wooden_crate/animations/open/south-east/03.png",
-            "wooden_crate/animations/open/south-east/04.png",
-            "wooden_crate/animations/open/south-east/05.png",
-            "wooden_crate/animations/open/south-east/06.png",
-            "wooden_crate/animations/open/south-east/07.png",
-            "wooden_crate/animations/open/south-east/08.png",
-            "wooden_crate/animations/open/south-east/09.png",
-            "wooden_crate/animations/open/south-east/10.png",
-            "wooden_crate/animations/open/south-east/11.png",
-            "wooden_crate/animations/open/south-east/12.png",
-            "wooden_crate/animations/open/south-east/13.png",
-            "wooden_crate/animations/open/south-east/14.png",
-            "wooden_crate/animations/open/south-east/15.png",
-            "wooden_crate/animations/open/south-east/16.png"
-          ]
-        },
-        "south-west": {
-          "frames": 17,
-          "strip": "wooden_crate/animations/open__south-west.png",
-          "gif": "wooden_crate/animations/open__south-west.gif",
-          "frame_paths": [
-            "wooden_crate/animations/open/south-west/00.png",
-            "wooden_crate/animations/open/south-west/01.png",
-            "wooden_crate/animations/open/south-west/02.png",
-            "wooden_crate/animations/open/south-west/03.png",
-            "wooden_crate/animations/open/south-west/04.png",
-            "wooden_crate/animations/open/south-west/05.png",
-            "wooden_crate/animations/open/south-west/06.png",
-            "wooden_crate/animations/open/south-west/07.png",
-            "wooden_crate/animations/open/south-west/08.png",
-            "wooden_crate/animations/open/south-west/09.png",
-            "wooden_crate/animations/open/south-west/10.png",
-            "wooden_crate/animations/open/south-west/11.png",
-            "wooden_crate/animations/open/south-west/12.png",
-            "wooden_crate/animations/open/south-west/13.png",
-            "wooden_crate/animations/open/south-west/14.png",
-            "wooden_crate/animations/open/south-west/15.png",
-            "wooden_crate/animations/open/south-west/16.png"
-          ]
-        },
-        "west": {
-          "frames": 17,
-          "strip": "wooden_crate/animations/open__west.png",
-          "gif": "wooden_crate/animations/open__west.gif",
-          "frame_paths": [
-            "wooden_crate/animations/open/west/00.png",
-            "wooden_crate/animations/open/west/01.png",
-            "wooden_crate/animations/open/west/02.png",
-            "wooden_crate/animations/open/west/03.png",
-            "wooden_crate/animations/open/west/04.png",
-            "wooden_crate/animations/open/west/05.png",
-            "wooden_crate/animations/open/west/06.png",
-            "wooden_crate/animations/open/west/07.png",
-            "wooden_crate/animations/open/west/08.png",
-            "wooden_crate/animations/open/west/09.png",
-            "wooden_crate/animations/open/west/10.png",
-            "wooden_crate/animations/open/west/11.png",
-            "wooden_crate/animations/open/west/12.png",
-            "wooden_crate/animations/open/west/13.png",
-            "wooden_crate/animations/open/west/14.png",
-            "wooden_crate/animations/open/west/15.png",
-            "wooden_crate/animations/open/west/16.png"
-          ]
-        }
-      }
-    },
     "shake": {
       "group_id": "29aa6ed9-b0e1-44b3-8a16-140d4553d85d",
       "description": "the crate shaking",
-      "frame_count": 16,
       "directions": {
         "east": {
           "frames": 17,
@@ -240,7 +64,9 @@
             "wooden_crate/animations/shake/east/14.png",
             "wooden_crate/animations/shake/east/15.png",
             "wooden_crate/animations/shake/east/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 08:43:57 GMT",
+          "src_frames": 17
         },
         "north": {
           "frames": 17,
@@ -264,7 +90,9 @@
             "wooden_crate/animations/shake/north/14.png",
             "wooden_crate/animations/shake/north/15.png",
             "wooden_crate/animations/shake/north/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 08:44:08 GMT",
+          "src_frames": 17
         },
         "north-east": {
           "frames": 17,
@@ -288,7 +116,9 @@
             "wooden_crate/animations/shake/north-east/14.png",
             "wooden_crate/animations/shake/north-east/15.png",
             "wooden_crate/animations/shake/north-east/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 08:44:19 GMT",
+          "src_frames": 17
         },
         "north-west": {
           "frames": 17,
@@ -312,7 +142,9 @@
             "wooden_crate/animations/shake/north-west/14.png",
             "wooden_crate/animations/shake/north-west/15.png",
             "wooden_crate/animations/shake/north-west/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 08:44:30 GMT",
+          "src_frames": 17
         },
         "south": {
           "frames": 17,
@@ -336,7 +168,9 @@
             "wooden_crate/animations/shake/south/14.png",
             "wooden_crate/animations/shake/south/15.png",
             "wooden_crate/animations/shake/south/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 08:44:41 GMT",
+          "src_frames": 17
         },
         "south-east": {
           "frames": 17,
@@ -360,7 +194,9 @@
             "wooden_crate/animations/shake/south-east/14.png",
             "wooden_crate/animations/shake/south-east/15.png",
             "wooden_crate/animations/shake/south-east/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 08:44:52 GMT",
+          "src_frames": 17
         },
         "south-west": {
           "frames": 17,
@@ -384,7 +220,9 @@
             "wooden_crate/animations/shake/south-west/14.png",
             "wooden_crate/animations/shake/south-west/15.png",
             "wooden_crate/animations/shake/south-west/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 08:45:03 GMT",
+          "src_frames": 17
         },
         "west": {
           "frames": 17,
@@ -408,10 +246,201 @@
             "wooden_crate/animations/shake/west/14.png",
             "wooden_crate/animations/shake/west/15.png",
             "wooden_crate/animations/shake/west/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 08:45:14 GMT",
+          "src_frames": 17
+        }
+      }
+    },
+    "open": {
+      "group_id": "f914b116-f575-479b-a6da-c06220833d16",
+      "description": "the crate lid prying open",
+      "directions": {
+        "east": {
+          "frames": 17,
+          "strip": "wooden_crate/animations/open__east.png",
+          "gif": "wooden_crate/animations/open__east.gif",
+          "frame_paths": [
+            "wooden_crate/animations/open/east/00.png",
+            "wooden_crate/animations/open/east/01.png",
+            "wooden_crate/animations/open/east/02.png",
+            "wooden_crate/animations/open/east/03.png",
+            "wooden_crate/animations/open/east/04.png",
+            "wooden_crate/animations/open/east/05.png",
+            "wooden_crate/animations/open/east/06.png",
+            "wooden_crate/animations/open/east/07.png",
+            "wooden_crate/animations/open/east/08.png",
+            "wooden_crate/animations/open/east/09.png",
+            "wooden_crate/animations/open/east/10.png",
+            "wooden_crate/animations/open/east/11.png",
+            "wooden_crate/animations/open/east/12.png",
+            "wooden_crate/animations/open/east/13.png",
+            "wooden_crate/animations/open/east/14.png",
+            "wooden_crate/animations/open/east/15.png",
+            "wooden_crate/animations/open/east/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 08:45:24 GMT",
+          "src_frames": 17
+        },
+        "north": {
+          "frames": 17,
+          "strip": "wooden_crate/animations/open__north.png",
+          "gif": "wooden_crate/animations/open__north.gif",
+          "frame_paths": [
+            "wooden_crate/animations/open/north/00.png",
+            "wooden_crate/animations/open/north/01.png",
+            "wooden_crate/animations/open/north/02.png",
+            "wooden_crate/animations/open/north/03.png",
+            "wooden_crate/animations/open/north/04.png",
+            "wooden_crate/animations/open/north/05.png",
+            "wooden_crate/animations/open/north/06.png",
+            "wooden_crate/animations/open/north/07.png",
+            "wooden_crate/animations/open/north/08.png",
+            "wooden_crate/animations/open/north/09.png",
+            "wooden_crate/animations/open/north/10.png",
+            "wooden_crate/animations/open/north/11.png",
+            "wooden_crate/animations/open/north/12.png",
+            "wooden_crate/animations/open/north/13.png",
+            "wooden_crate/animations/open/north/14.png",
+            "wooden_crate/animations/open/north/15.png",
+            "wooden_crate/animations/open/north/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 08:45:35 GMT",
+          "src_frames": 17
+        },
+        "north-west": {
+          "frames": 17,
+          "strip": "wooden_crate/animations/open__north-west.png",
+          "gif": "wooden_crate/animations/open__north-west.gif",
+          "frame_paths": [
+            "wooden_crate/animations/open/north-west/00.png",
+            "wooden_crate/animations/open/north-west/01.png",
+            "wooden_crate/animations/open/north-west/02.png",
+            "wooden_crate/animations/open/north-west/03.png",
+            "wooden_crate/animations/open/north-west/04.png",
+            "wooden_crate/animations/open/north-west/05.png",
+            "wooden_crate/animations/open/north-west/06.png",
+            "wooden_crate/animations/open/north-west/07.png",
+            "wooden_crate/animations/open/north-west/08.png",
+            "wooden_crate/animations/open/north-west/09.png",
+            "wooden_crate/animations/open/north-west/10.png",
+            "wooden_crate/animations/open/north-west/11.png",
+            "wooden_crate/animations/open/north-west/12.png",
+            "wooden_crate/animations/open/north-west/13.png",
+            "wooden_crate/animations/open/north-west/14.png",
+            "wooden_crate/animations/open/north-west/15.png",
+            "wooden_crate/animations/open/north-west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 08:45:46 GMT",
+          "src_frames": 17
+        },
+        "south": {
+          "frames": 17,
+          "strip": "wooden_crate/animations/open__south.png",
+          "gif": "wooden_crate/animations/open__south.gif",
+          "frame_paths": [
+            "wooden_crate/animations/open/south/00.png",
+            "wooden_crate/animations/open/south/01.png",
+            "wooden_crate/animations/open/south/02.png",
+            "wooden_crate/animations/open/south/03.png",
+            "wooden_crate/animations/open/south/04.png",
+            "wooden_crate/animations/open/south/05.png",
+            "wooden_crate/animations/open/south/06.png",
+            "wooden_crate/animations/open/south/07.png",
+            "wooden_crate/animations/open/south/08.png",
+            "wooden_crate/animations/open/south/09.png",
+            "wooden_crate/animations/open/south/10.png",
+            "wooden_crate/animations/open/south/11.png",
+            "wooden_crate/animations/open/south/12.png",
+            "wooden_crate/animations/open/south/13.png",
+            "wooden_crate/animations/open/south/14.png",
+            "wooden_crate/animations/open/south/15.png",
+            "wooden_crate/animations/open/south/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 08:45:58 GMT",
+          "src_frames": 17
+        },
+        "south-east": {
+          "frames": 17,
+          "strip": "wooden_crate/animations/open__south-east.png",
+          "gif": "wooden_crate/animations/open__south-east.gif",
+          "frame_paths": [
+            "wooden_crate/animations/open/south-east/00.png",
+            "wooden_crate/animations/open/south-east/01.png",
+            "wooden_crate/animations/open/south-east/02.png",
+            "wooden_crate/animations/open/south-east/03.png",
+            "wooden_crate/animations/open/south-east/04.png",
+            "wooden_crate/animations/open/south-east/05.png",
+            "wooden_crate/animations/open/south-east/06.png",
+            "wooden_crate/animations/open/south-east/07.png",
+            "wooden_crate/animations/open/south-east/08.png",
+            "wooden_crate/animations/open/south-east/09.png",
+            "wooden_crate/animations/open/south-east/10.png",
+            "wooden_crate/animations/open/south-east/11.png",
+            "wooden_crate/animations/open/south-east/12.png",
+            "wooden_crate/animations/open/south-east/13.png",
+            "wooden_crate/animations/open/south-east/14.png",
+            "wooden_crate/animations/open/south-east/15.png",
+            "wooden_crate/animations/open/south-east/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 08:46:09 GMT",
+          "src_frames": 17
+        },
+        "south-west": {
+          "frames": 17,
+          "strip": "wooden_crate/animations/open__south-west.png",
+          "gif": "wooden_crate/animations/open__south-west.gif",
+          "frame_paths": [
+            "wooden_crate/animations/open/south-west/00.png",
+            "wooden_crate/animations/open/south-west/01.png",
+            "wooden_crate/animations/open/south-west/02.png",
+            "wooden_crate/animations/open/south-west/03.png",
+            "wooden_crate/animations/open/south-west/04.png",
+            "wooden_crate/animations/open/south-west/05.png",
+            "wooden_crate/animations/open/south-west/06.png",
+            "wooden_crate/animations/open/south-west/07.png",
+            "wooden_crate/animations/open/south-west/08.png",
+            "wooden_crate/animations/open/south-west/09.png",
+            "wooden_crate/animations/open/south-west/10.png",
+            "wooden_crate/animations/open/south-west/11.png",
+            "wooden_crate/animations/open/south-west/12.png",
+            "wooden_crate/animations/open/south-west/13.png",
+            "wooden_crate/animations/open/south-west/14.png",
+            "wooden_crate/animations/open/south-west/15.png",
+            "wooden_crate/animations/open/south-west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 08:46:20 GMT",
+          "src_frames": 17
+        },
+        "west": {
+          "frames": 17,
+          "strip": "wooden_crate/animations/open__west.png",
+          "gif": "wooden_crate/animations/open__west.gif",
+          "frame_paths": [
+            "wooden_crate/animations/open/west/00.png",
+            "wooden_crate/animations/open/west/01.png",
+            "wooden_crate/animations/open/west/02.png",
+            "wooden_crate/animations/open/west/03.png",
+            "wooden_crate/animations/open/west/04.png",
+            "wooden_crate/animations/open/west/05.png",
+            "wooden_crate/animations/open/west/06.png",
+            "wooden_crate/animations/open/west/07.png",
+            "wooden_crate/animations/open/west/08.png",
+            "wooden_crate/animations/open/west/09.png",
+            "wooden_crate/animations/open/west/10.png",
+            "wooden_crate/animations/open/west/11.png",
+            "wooden_crate/animations/open/west/12.png",
+            "wooden_crate/animations/open/west/13.png",
+            "wooden_crate/animations/open/west/14.png",
+            "wooden_crate/animations/open/west/15.png",
+            "wooden_crate/animations/open/west/16.png"
+          ],
+          "lm": "Wed, 01 Jul 2026 08:46:32 GMT",
+          "src_frames": 17
         }
       }
     }
   },
-  "status": "in_progress"
+  "status": "in_progress",
+  "synced_from_pixellab": true
 }
