@@ -155,6 +155,37 @@
       "manifest": "isle_001/zone.json"
     },
     {
+      "id": "isle_002",
+      "title": "Uncharted Isle 2",
+      "kind": "island",
+      "archetype": "small_island",
+      "description": "A procedurally generated small island.",
+      "grid": {
+        "width": 24,
+        "height": 20
+      },
+      "tile_size": 16,
+      "levels": [
+        "water",
+        "sand",
+        "grass"
+      ],
+      "bands": [
+        "ocean_sand",
+        "sand_grass"
+      ],
+      "objects": 7,
+      "exits": [
+        {
+          "id": "dock",
+          "kind": "dock",
+          "to_zone": null
+        }
+      ],
+      "preview": "isle_002/preview.png",
+      "manifest": "isle_002/zone.json"
+    },
+    {
       "id": "isle_of_dawn",
       "title": "Isle of Dawn",
       "kind": "island",
