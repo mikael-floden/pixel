@@ -27,6 +27,7 @@ import subprocess
 import time
 
 import assets
+import coordination
 import layouts
 import viewer_build
 import zone as zonemod
@@ -123,7 +124,7 @@ def next_action(cfg):
 
 # --- one unit ---------------------------------------------------------------
 
-def advance(client, cfg, push=True):
+def advance(client, cfg, budget=None, push=True):
     action = next_action(cfg)
     kind = action[0]
 
@@ -149,6 +150,10 @@ def advance(client, cfg, push=True):
         raise RuntimeError(f"unknown action {kind}")
 
     viewer_build.build()
+    # Publish our heartbeat in the SAME commit as the unit (one writer: maps.json).
+    coordination.publish(health="running", current=desc,
+                         progress=coordination.snapshot_progress(),
+                         budget_remaining=budget)
     commit_push(desc, push=push)
     print("  +", desc)
     return desc
@@ -171,29 +176,48 @@ def main():
         else cfg["budget"]["min_generations_remaining"]
     client = PixelLabClient()
 
+    # Fleet coordination (see coordination/PROTOCOL.md): read the other domains'
+    # status at startup and surface any requests addressed to us.
+    for dom, req in coordination.inbox():
+        print(f"  * request from {dom}: {req.get('text', req)}")
+    fleet = coordination.read_fleet()
+    if fleet:
+        print("fleet:", ", ".join(
+            f"{d}={s.get('health','?')}({s.get('budget_remaining','?')})"
+            for d, s in fleet.items() if d != coordination.DOMAIN))
+
     start = time.monotonic()
     units = 0
     rem = client.generations_remaining()
     print(f"maps loop starting — {rem:.0f} generations remaining (floor {min_balance})")
+    coordination.publish(health="running", current="startup",
+                         progress=coordination.snapshot_progress(), budget_remaining=rem)
 
+    stop_reason = "nothing left to generate"
     while True:
         try:
-            client.ensure_budget(min_balance)
-            result = advance(client, cfg, push=not args.no_push)
+            rem = client.ensure_budget(min_balance)
+            result = advance(client, cfg, budget=rem, push=not args.no_push)
         except BudgetExhausted as e:
+            stop_reason = str(e)
             print(f"stopping: {e}")
             break
         if result is None:
-            print("stopping: nothing left to generate")
             break
         units += 1
         if args.once or (args.max_units and units >= args.max_units):
+            stop_reason = "unit budget reached"
             break
         if args.max_minutes and (time.monotonic() - start) / 60 >= args.max_minutes:
+            stop_reason = "time budget reached"
             print("stopping: time budget reached")
             break
 
-    print(f"done — {units} unit(s), {client.generations_remaining():.0f} generations left")
+    rem = client.generations_remaining()
+    coordination.publish(health="idle", current=f"stopped: {stop_reason}",
+                         progress=coordination.snapshot_progress(), budget_remaining=rem)
+    commit_push("maps: heartbeat (loop idle)", push=not args.no_push)
+    print(f"done — {units} unit(s), {rem:.0f} generations left")
 
 
 if __name__ == "__main__":

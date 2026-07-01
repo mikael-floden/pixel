@@ -109,9 +109,22 @@ exits; the next firing resumes from the filesystem. `.github/workflows/maps.yml`
 does the same on a timer and on demand. Without `PIXELLAB_API_KEY` the workflow
 no-ops with a warning.
 
-## Boundaries with the characters domain
+## Boundaries & fleet coordination
 
 Disjoint paths: this domain owns **only** `maps/`. It keeps its own isolated
 `pixellab_client.py` (per the repo CLAUDE.md convention). It never touches
-`characters/`. Concurrent pushes to `main` rebase cleanly because the domains edit
-different files.
+`characters/` or `objects/`. Concurrent pushes to `main` rebase cleanly because
+the domains edit different files.
+
+Three agents (characters / objects / maps) share one repo, one `main`, and one
+PixelLab account, coordinated by [`../../coordination/PROTOCOL.md`](../../coordination/PROTOCOL.md):
+
+- **One writer per file** — this loop writes only `coordination/maps.json` (its
+  heartbeat, refreshed each unit via `pipeline/coordination.py`) and reads the
+  other domains' status files at startup.
+- **Shared budget floor** — `budget.min_generations_remaining` is **2000** (not
+  the characters domain's 40) so maps never drains the shared generation pool.
+- **Cross-domain requests** — the loop scans other domains' `requests` for
+  `"to": "maps"` at startup and answers via its own `notes`.
+- **Key contention** — concurrent calls on the one account are absorbed by the
+  client's 429/5xx retry-with-backoff.

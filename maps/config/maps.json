@@ -12,8 +12,8 @@
   },
 
   "budget": {
-    "min_generations_remaining": 40,
-    "_comment": "Loop stops cleanly when the PixelLab balance drops below this."
+    "min_generations_remaining": 2000,
+    "_comment": "Shared PixelLab pool across characters/objects/maps agents (see coordination/PROTOCOL.md). Maps reserves a 2000-generation floor so it never starves the other domains; the loop stops cleanly below it."
   },
 
   "_tilesets": "Wang tilesets: lower/upper are two terrain levels that connect seamlessly; the loop generates each once and reuses it across zones. transition_size 0 = 16 tiles (plain boundary); 0.25/0.5/1.0 add a raised transition band (more tiles).",
