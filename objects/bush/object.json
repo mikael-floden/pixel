@@ -31,7 +31,24 @@
     "count": 0,
     "directions": []
   },
-  "animations": {},
-  "generations_used": 1.0,
-  "status": "in_progress"
+  "animations": {
+    "sway": {
+      "action": "swaying gently in the wind",
+      "view": "low top-down",
+      "frames": 4,
+      "n_frames_requested": 8,
+      "ok": true,
+      "note": "",
+      "strip": "bush/animations/sway.png",
+      "gif": "bush/animations/sway.gif",
+      "frame_paths": [
+        "bush/animations/sway/00.png",
+        "bush/animations/sway/01.png",
+        "bush/animations/sway/02.png",
+        "bush/animations/sway/03.png"
+      ]
+    }
+  },
+  "generations_used": 2.0,
+  "status": "complete"
 }
