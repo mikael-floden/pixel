@@ -2123,8 +2123,26 @@
         "shading": "basic shading",
         "detail": "medium detail"
       },
-      "character_count": 0,
-      "characters": []
+      "character_count": 1,
+      "characters": [
+        {
+          "local_id": "char_00",
+          "look": "a radiant adult woman glowing with new love, a warm genuine smile and bright eyes, long dark wavy hair, soft feminine grown figure",
+          "portrait": "skeletons/01_low8_64/characters/char_00/portrait.png",
+          "rotations": [
+            "skeletons/01_low8_64/characters/char_00/rotations/east.png",
+            "skeletons/01_low8_64/characters/char_00/rotations/north.png",
+            "skeletons/01_low8_64/characters/char_00/rotations/north-east.png",
+            "skeletons/01_low8_64/characters/char_00/rotations/north-west.png",
+            "skeletons/01_low8_64/characters/char_00/rotations/south-east.png",
+            "skeletons/01_low8_64/characters/char_00/rotations/south-west.png",
+            "skeletons/01_low8_64/characters/char_00/rotations/west.png"
+          ],
+          "animation_count": 0,
+          "animations": [],
+          "outfits": []
+        }
+      ]
     }
   ]
 }
