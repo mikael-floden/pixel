@@ -953,7 +953,98 @@
         "south-west",
         "west"
       ],
-      "animations": {}
+      "animations": {
+        "idle": {
+          "south": {
+            "frames": 4,
+            "strip": "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle__south.png",
+            "gif": "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle__south.gif",
+            "frame_paths": [
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/south/00.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/south/01.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/south/02.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/south/03.png"
+            ]
+          },
+          "north": {
+            "frames": 4,
+            "strip": "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle__north.png",
+            "gif": "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle__north.gif",
+            "frame_paths": [
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/north/00.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/north/01.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/north/02.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/north/03.png"
+            ]
+          },
+          "east": {
+            "frames": 4,
+            "strip": "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle__east.png",
+            "gif": "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle__east.gif",
+            "frame_paths": [
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/east/00.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/east/01.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/east/02.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/east/03.png"
+            ]
+          },
+          "west": {
+            "frames": 4,
+            "strip": "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle__west.png",
+            "gif": "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle__west.gif",
+            "frame_paths": [
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/west/00.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/west/01.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/west/02.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/west/03.png"
+            ]
+          },
+          "south-east": {
+            "frames": 4,
+            "strip": "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle__south-east.png",
+            "gif": "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle__south-east.gif",
+            "frame_paths": [
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/south-east/00.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/south-east/01.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/south-east/02.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/south-east/03.png"
+            ]
+          },
+          "south-west": {
+            "frames": 4,
+            "strip": "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle__south-west.png",
+            "gif": "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle__south-west.gif",
+            "frame_paths": [
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/south-west/00.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/south-west/01.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/south-west/02.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/south-west/03.png"
+            ]
+          },
+          "north-east": {
+            "frames": 4,
+            "strip": "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle__north-east.png",
+            "gif": "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle__north-east.gif",
+            "frame_paths": [
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/north-east/00.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/north-east/01.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/north-east/02.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/north-east/03.png"
+            ]
+          },
+          "north-west": {
+            "frames": 4,
+            "strip": "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle__north-west.png",
+            "gif": "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle__north-west.gif",
+            "frame_paths": [
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/north-west/00.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/north-west/01.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/north-west/02.png",
+              "skeletons/00_low8_64/characters/char_04/outfits/adventurer/animations/idle/north-west/03.png"
+            ]
+          }
+        }
+      }
     }
   }
 }
