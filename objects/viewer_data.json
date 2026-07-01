@@ -516,7 +516,23 @@
         "south-west": "pickaxe/rotations/south-west.png",
         "west": "pickaxe/rotations/west.png"
       },
-      "animations": []
+      "animations": [
+        {
+          "key": "swing",
+          "description": "the pickaxe swinging down",
+          "frames": 17,
+          "preview_gif": "pickaxe/animations/swing__south.gif",
+          "directions": {
+            "east": "pickaxe/animations/swing__east.gif",
+            "north-east": "pickaxe/animations/swing__north-east.gif",
+            "north-west": "pickaxe/animations/swing__north-west.gif",
+            "south": "pickaxe/animations/swing__south.gif",
+            "south-east": "pickaxe/animations/swing__south-east.gif",
+            "south-west": "pickaxe/animations/swing__south-west.gif",
+            "west": "pickaxe/animations/swing__west.gif"
+          }
+        }
+      ]
     },
     {
       "id": "shovel",
