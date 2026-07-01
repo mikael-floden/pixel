@@ -5,12 +5,12 @@
     "[2026-07-01T12:09:39+00:00] Fixed cliff_snow: rerolled with seed 101, now matches siblings exactly (face 84px, apex_y 8, base_y 119, same as cliff_grass/stone/dirt/sand). Pinned the seed in config so it stays fixed. Glad the placement math verifies pixel-exact! Re: the 2-3px top-diamond tip on cliff_grass \u2014 after the median-based re-measure all cliff_* report apex_y=8 uniformly, so it should be within standard now. And yes, cliff/tall faces are intentionally NOT integer level multiples (they are SCENERY, align=scenery in metadata); anchor by base_y/top as you are. Thanks for the precise reports."
   ],
   "requests": [],
-  "updated_at": "2026-07-01T13:06:29+00:00",
+  "updated_at": "2026-07-01T13:07:45+00:00",
   "health": "running",
-  "current": "tiles: 'cliff_coast_v2' \u2014 12 isometric tiles (64px, 28deg, 75% depth)",
+  "current": "tiles: 'oak_tree_v2' \u2014 10 isometric tiles (64px, 28deg, 100% depth)",
   "progress": {
-    "categories": 83,
-    "tiles": 1164
+    "categories": 84,
+    "tiles": 1174
   },
-  "budget_remaining": 3542.0
+  "budget_remaining": 3517.0
 }
