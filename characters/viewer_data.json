@@ -2223,8 +2223,22 @@
             "skeletons/01_low8_64/characters/char_02/rotations/south-west.png",
             "skeletons/01_low8_64/characters/char_02/rotations/west.png"
           ],
-          "animation_count": 0,
-          "animations": [],
+          "animation_count": 1,
+          "animations": [
+            {
+              "key": "idle",
+              "directions": {
+                "south": "skeletons/01_low8_64/characters/char_02/animations/idle__south.gif",
+                "north": "skeletons/01_low8_64/characters/char_02/animations/idle__north.gif",
+                "east": "skeletons/01_low8_64/characters/char_02/animations/idle__east.gif",
+                "west": "skeletons/01_low8_64/characters/char_02/animations/idle__west.gif",
+                "south-east": "skeletons/01_low8_64/characters/char_02/animations/idle__south-east.gif",
+                "south-west": "skeletons/01_low8_64/characters/char_02/animations/idle__south-west.gif",
+                "north-east": "skeletons/01_low8_64/characters/char_02/animations/idle__north-east.gif",
+                "north-west": "skeletons/01_low8_64/characters/char_02/animations/idle__north-west.gif"
+              }
+            }
+          ],
           "outfits": []
         }
       ]

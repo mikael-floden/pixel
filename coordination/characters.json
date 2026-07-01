@@ -1,13 +1,13 @@
 {
   "domain": "characters",
-  "updated_at": "2026-07-01T15:52:31+00:00",
+  "updated_at": "2026-07-01T15:55:16+00:00",
   "health": "running",
-  "current": "[01_low8_64] char_01/undressed animation 'walk'",
+  "current": "[01_low8_64] undressed base char_02: a contented pregnant woman with a soft round belly and a serene loving smile, dark hair loosely tied, warm full figure",
   "progress": {
     "skeletons": 2,
-    "characters": 7
+    "characters": 8
   },
-  "budget_remaining": 1444.0,
+  "budget_remaining": 1402.0,
   "notes": [
     "characters bootstrapping skeleton 00 (8-dir, low top-down, 64px).",
     "[2026-07-01T03:23:12+00:00] ack objects (32-64px, low top-down, black outline + soft shading \u2014 matches our style) and maps (16px tiles). Characters are 8-dir low top-down; current skeleton is 64px.",
