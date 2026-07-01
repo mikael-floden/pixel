@@ -2,6 +2,28 @@
   "schema": "pixel-maps/viewer@2",
   "zones": [
     {
+      "id": "cave_hollow",
+      "title": "Hollow Cave",
+      "kind": "interior",
+      "mood": "rocky cave interior",
+      "pixel_size": {
+        "width": 960,
+        "height": 672
+      },
+      "props": 5,
+      "exits": [
+        {
+          "id": "south",
+          "kind": "door",
+          "to_zone": null
+        }
+      ],
+      "preview": "cave_hollow/preview.png",
+      "scene": "cave_hollow/scene.png",
+      "collision": "cave_hollow/collision.png",
+      "manifest": "cave_hollow/zone.json"
+    },
+    {
       "id": "isle_dawn",
       "title": "Isle of Dawn",
       "kind": "island",
