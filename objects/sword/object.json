@@ -435,6 +435,109 @@
           ]
         }
       }
+    },
+    "bounce": {
+      "group_id": "2e28c5c8-d496-4785-bf14-2394e4acfa48",
+      "description": "the sword bouncing",
+      "frame_count": 16,
+      "directions": {
+        "east": {
+          "frames": 17,
+          "strip": "sword/animations/bounce__east.png",
+          "gif": "sword/animations/bounce__east.gif",
+          "frame_paths": [
+            "sword/animations/bounce/east/00.png",
+            "sword/animations/bounce/east/01.png",
+            "sword/animations/bounce/east/02.png",
+            "sword/animations/bounce/east/03.png",
+            "sword/animations/bounce/east/04.png",
+            "sword/animations/bounce/east/05.png",
+            "sword/animations/bounce/east/06.png",
+            "sword/animations/bounce/east/07.png",
+            "sword/animations/bounce/east/08.png",
+            "sword/animations/bounce/east/09.png",
+            "sword/animations/bounce/east/10.png",
+            "sword/animations/bounce/east/11.png",
+            "sword/animations/bounce/east/12.png",
+            "sword/animations/bounce/east/13.png",
+            "sword/animations/bounce/east/14.png",
+            "sword/animations/bounce/east/15.png",
+            "sword/animations/bounce/east/16.png"
+          ]
+        },
+        "north": {
+          "frames": 17,
+          "strip": "sword/animations/bounce__north.png",
+          "gif": "sword/animations/bounce__north.gif",
+          "frame_paths": [
+            "sword/animations/bounce/north/00.png",
+            "sword/animations/bounce/north/01.png",
+            "sword/animations/bounce/north/02.png",
+            "sword/animations/bounce/north/03.png",
+            "sword/animations/bounce/north/04.png",
+            "sword/animations/bounce/north/05.png",
+            "sword/animations/bounce/north/06.png",
+            "sword/animations/bounce/north/07.png",
+            "sword/animations/bounce/north/08.png",
+            "sword/animations/bounce/north/09.png",
+            "sword/animations/bounce/north/10.png",
+            "sword/animations/bounce/north/11.png",
+            "sword/animations/bounce/north/12.png",
+            "sword/animations/bounce/north/13.png",
+            "sword/animations/bounce/north/14.png",
+            "sword/animations/bounce/north/15.png",
+            "sword/animations/bounce/north/16.png"
+          ]
+        },
+        "north-east": {
+          "frames": 17,
+          "strip": "sword/animations/bounce__north-east.png",
+          "gif": "sword/animations/bounce__north-east.gif",
+          "frame_paths": [
+            "sword/animations/bounce/north-east/00.png",
+            "sword/animations/bounce/north-east/01.png",
+            "sword/animations/bounce/north-east/02.png",
+            "sword/animations/bounce/north-east/03.png",
+            "sword/animations/bounce/north-east/04.png",
+            "sword/animations/bounce/north-east/05.png",
+            "sword/animations/bounce/north-east/06.png",
+            "sword/animations/bounce/north-east/07.png",
+            "sword/animations/bounce/north-east/08.png",
+            "sword/animations/bounce/north-east/09.png",
+            "sword/animations/bounce/north-east/10.png",
+            "sword/animations/bounce/north-east/11.png",
+            "sword/animations/bounce/north-east/12.png",
+            "sword/animations/bounce/north-east/13.png",
+            "sword/animations/bounce/north-east/14.png",
+            "sword/animations/bounce/north-east/15.png",
+            "sword/animations/bounce/north-east/16.png"
+          ]
+        },
+        "south-east": {
+          "frames": 17,
+          "strip": "sword/animations/bounce__south-east.png",
+          "gif": "sword/animations/bounce__south-east.gif",
+          "frame_paths": [
+            "sword/animations/bounce/south-east/00.png",
+            "sword/animations/bounce/south-east/01.png",
+            "sword/animations/bounce/south-east/02.png",
+            "sword/animations/bounce/south-east/03.png",
+            "sword/animations/bounce/south-east/04.png",
+            "sword/animations/bounce/south-east/05.png",
+            "sword/animations/bounce/south-east/06.png",
+            "sword/animations/bounce/south-east/07.png",
+            "sword/animations/bounce/south-east/08.png",
+            "sword/animations/bounce/south-east/09.png",
+            "sword/animations/bounce/south-east/10.png",
+            "sword/animations/bounce/south-east/11.png",
+            "sword/animations/bounce/south-east/12.png",
+            "sword/animations/bounce/south-east/13.png",
+            "sword/animations/bounce/south-east/14.png",
+            "sword/animations/bounce/south-east/15.png",
+            "sword/animations/bounce/south-east/16.png"
+          ]
+        }
+      }
     }
   },
   "status": "in_progress"

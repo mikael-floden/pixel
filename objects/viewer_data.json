@@ -548,6 +548,18 @@
             "south-west": "sword/animations/spin__south-west.gif",
             "west": "sword/animations/spin__west.gif"
           }
+        },
+        {
+          "key": "bounce",
+          "description": "the sword bouncing",
+          "frames": 17,
+          "preview_gif": "sword/animations/bounce__east.gif",
+          "directions": {
+            "east": "sword/animations/bounce__east.gif",
+            "north": "sword/animations/bounce__north.gif",
+            "north-east": "sword/animations/bounce__north-east.gif",
+            "south-east": "sword/animations/bounce__south-east.gif"
+          }
         }
       ]
     },
