@@ -2223,7 +2223,7 @@
             "skeletons/01_low8_64/characters/char_02/rotations/south-west.png",
             "skeletons/01_low8_64/characters/char_02/rotations/west.png"
           ],
-          "animation_count": 1,
+          "animation_count": 2,
           "animations": [
             {
               "key": "idle",
@@ -2236,6 +2236,19 @@
                 "south-west": "skeletons/01_low8_64/characters/char_02/animations/idle__south-west.gif",
                 "north-east": "skeletons/01_low8_64/characters/char_02/animations/idle__north-east.gif",
                 "north-west": "skeletons/01_low8_64/characters/char_02/animations/idle__north-west.gif"
+              }
+            },
+            {
+              "key": "walk",
+              "directions": {
+                "south": "skeletons/01_low8_64/characters/char_02/animations/walk__south.gif",
+                "north": "skeletons/01_low8_64/characters/char_02/animations/walk__north.gif",
+                "east": "skeletons/01_low8_64/characters/char_02/animations/walk__east.gif",
+                "west": "skeletons/01_low8_64/characters/char_02/animations/walk__west.gif",
+                "south-east": "skeletons/01_low8_64/characters/char_02/animations/walk__south-east.gif",
+                "north-east": "skeletons/01_low8_64/characters/char_02/animations/walk__north-east.gif",
+                "north-west": "skeletons/01_low8_64/characters/char_02/animations/walk__north-west.gif",
+                "south-west": "skeletons/01_low8_64/characters/char_02/animations/walk__south-west.gif"
               }
             }
           ],
