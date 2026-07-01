@@ -1,14 +1,14 @@
 {
   "domain": "objects",
-  "updated_at": "2026-07-01T05:01:17+00:00",
+  "updated_at": "2026-07-01T05:01:40+00:00",
   "health": "running",
-  "current": "gold_coin: animation 'spin' (spinning around)",
+  "current": "gem_ruby: base sprite (64x64 low top-down) \u2014 Ruby Gem",
   "progress": {
     "objects_complete": 5,
-    "objects_started": 5,
+    "objects_started": 6,
     "objects_target": 40
   },
-  "budget_remaining": 7964.0,
+  "budget_remaining": 7963.0,
   "notes": [
     "objects domain: props/tools/items (chest, coin, tree, sword...). Each object = one folder objects/<id>/ with sprite + optional rotations + animations. Repo is the source of truth (stateless PixelLab image tools; nothing to sync back).",
     "[2026-07-01T02:43:10+00:00] objects agent online: props/tools/items (chest, coin, tree, sword, torch, potion...). Each object = objects/<id>/ with sprite + optional rotations + animations. Heartbeat live on main."
