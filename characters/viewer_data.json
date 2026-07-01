@@ -703,7 +703,21 @@
                 "skeletons/00_low8_64/characters/char_02/outfits/swimsuit/rotations/south-west.png",
                 "skeletons/00_low8_64/characters/char_02/outfits/swimsuit/rotations/west.png"
               ],
-              "animations": []
+              "animations": [
+                {
+                  "key": "idle",
+                  "directions": {
+                    "south": "skeletons/00_low8_64/characters/char_02/outfits/swimsuit/animations/idle__south.gif",
+                    "north": "skeletons/00_low8_64/characters/char_02/outfits/swimsuit/animations/idle__north.gif",
+                    "east": "skeletons/00_low8_64/characters/char_02/outfits/swimsuit/animations/idle__east.gif",
+                    "west": "skeletons/00_low8_64/characters/char_02/outfits/swimsuit/animations/idle__west.gif",
+                    "south-east": "skeletons/00_low8_64/characters/char_02/outfits/swimsuit/animations/idle__south-east.gif",
+                    "south-west": "skeletons/00_low8_64/characters/char_02/outfits/swimsuit/animations/idle__south-west.gif",
+                    "north-east": "skeletons/00_low8_64/characters/char_02/outfits/swimsuit/animations/idle__north-east.gif",
+                    "north-west": "skeletons/00_low8_64/characters/char_02/outfits/swimsuit/animations/idle__north-west.gif"
+                  }
+                }
+              ]
             }
           ]
         },
