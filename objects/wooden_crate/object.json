@@ -1,0 +1,42 @@
+{
+  "id": "wooden_crate",
+  "name": "Wooden Crate",
+  "category": "container",
+  "description": "a wooden shipping crate with plank sides and nailed corners",
+  "view": "low top-down",
+  "size": 64,
+  "placement": {
+    "world_height_m": 0.7,
+    "world_px_height": 26,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "procedural": false,
+  "source": "pixellab.ai create-8-direction-object (persistent, syncable)",
+  "pixellab_object_id": "45d12fe1-0d1a-439c-9fe7-af78fc07a729",
+  "style_version": 2,
+  "sprite": "wooden_crate/sprite.png",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "east": "wooden_crate/rotations/east.png",
+    "north": "wooden_crate/rotations/north.png",
+    "north-east": "wooden_crate/rotations/north-east.png",
+    "north-west": "wooden_crate/rotations/north-west.png",
+    "south": "wooden_crate/rotations/south.png",
+    "south-east": "wooden_crate/rotations/south-east.png",
+    "south-west": "wooden_crate/rotations/south-west.png",
+    "west": "wooden_crate/rotations/west.png"
+  },
+  "animations": {},
+  "status": "in_progress"
+}
