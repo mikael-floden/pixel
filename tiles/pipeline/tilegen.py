@@ -92,12 +92,19 @@ def generate_category(client, cfg, cat):
     # walls) on the same footprint; the format is otherwise fixed.
     depth = cat.get("depth_ratio", t["depth_ratio"])
     tile_height = cat.get("tile_height")
+    seed = _seed(cid)
+    request = {
+        "endpoint": ENDPOINT, "tile_type": t.get("type", "isometric"),
+        "tile_size": t["size"], "tile_view_angle": t["view_angle"],
+        "tile_depth_ratio": depth, "tile_flat_top_px": t.get("flat_top_px", 4),
+        "tile_height": tile_height, "seed": seed, "description": cat["description"],
+    }
     tiles = client.create_tiles(
         description=cat["description"],
         tile_size=t["size"], view_angle=t["view_angle"],
         depth_ratio=depth, tile_type=t.get("type", "isometric"),
         flat_top_px=t.get("flat_top_px", 4), tile_height=tile_height,
-        seed=_seed(cid))
+        seed=seed)
     cdir = category_dir(cid)
     os.makedirs(cdir, exist_ok=True)
     tile_meta = []
@@ -106,16 +113,21 @@ def generate_category(client, cfg, cat):
         im.save(os.path.join(cdir, fname))
         tile_meta.append({"index": i, "file": fname, "width": im.width, "height": im.height})
     _preview(tiles, os.path.join(cdir, "preview.png"))
+    geometry = measure_geometry(tiles[0], t["size"]) if tiles else {}
     manifest = {
         "schema": "pixel-tiles/set@1",
         "category": cid, "description": cat["description"],
+        "kind": cat.get("kind", "ground"),
         "tile_type": t.get("type", "isometric"),
         "tile_size": t["size"], "view_angle": t["view_angle"],
         "depth_ratio": depth, "flat_top_px": t.get("flat_top_px", 4),
-        "tile_height": tile_height, "kind": cat.get("kind", "ground"),
+        "tile_height": tile_height,
+        "geometry": geometry,
         "count": len(tile_meta), "tiles": tile_meta,
         "preview": "preview.png",
-        "provenance": "pixellab create-tiles-pro (isometric)",
+        "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
+        "provenance": {"tool": "pixellab", "endpoint": ENDPOINT, "seed": seed,
+                       "request": request},
     }
     with open(os.path.join(cdir, "tiles.json"), "w") as f:
         json.dump(manifest, f, indent=2)
