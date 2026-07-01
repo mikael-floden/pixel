@@ -125,6 +125,36 @@
           ],
           "outfits": [
             {
+              "id": "wearing_simple_blue",
+              "description": "wearing simple blue",
+              "portrait": "skeletons/00_low8_64/characters/char_00/outfits/wearing_simple_blue/portrait.png",
+              "rotations": [
+                "skeletons/00_low8_64/characters/char_00/outfits/wearing_simple_blue/rotations/east.png",
+                "skeletons/00_low8_64/characters/char_00/outfits/wearing_simple_blue/rotations/north.png",
+                "skeletons/00_low8_64/characters/char_00/outfits/wearing_simple_blue/rotations/north-east.png",
+                "skeletons/00_low8_64/characters/char_00/outfits/wearing_simple_blue/rotations/north-west.png",
+                "skeletons/00_low8_64/characters/char_00/outfits/wearing_simple_blue/rotations/south.png",
+                "skeletons/00_low8_64/characters/char_00/outfits/wearing_simple_blue/rotations/south-east.png",
+                "skeletons/00_low8_64/characters/char_00/outfits/wearing_simple_blue/rotations/south-west.png",
+                "skeletons/00_low8_64/characters/char_00/outfits/wearing_simple_blue/rotations/west.png"
+              ],
+              "animations": [
+                {
+                  "key": "idle",
+                  "directions": {
+                    "west": "skeletons/00_low8_64/characters/char_00/outfits/wearing_simple_blue/animations/idle__west.gif",
+                    "north-west": "skeletons/00_low8_64/characters/char_00/outfits/wearing_simple_blue/animations/idle__north-west.gif",
+                    "east": "skeletons/00_low8_64/characters/char_00/outfits/wearing_simple_blue/animations/idle__east.gif",
+                    "north-east": "skeletons/00_low8_64/characters/char_00/outfits/wearing_simple_blue/animations/idle__north-east.gif",
+                    "south-east": "skeletons/00_low8_64/characters/char_00/outfits/wearing_simple_blue/animations/idle__south-east.gif",
+                    "north": "skeletons/00_low8_64/characters/char_00/outfits/wearing_simple_blue/animations/idle__north.gif",
+                    "south-west": "skeletons/00_low8_64/characters/char_00/outfits/wearing_simple_blue/animations/idle__south-west.gif",
+                    "south": "skeletons/00_low8_64/characters/char_00/outfits/wearing_simple_blue/animations/idle__south.gif"
+                  }
+                }
+              ]
+            },
+            {
               "id": "adventurer",
               "description": "a rugged brown leather adventurer tunic with a belt and boots",
               "portrait": "skeletons/00_low8_64/characters/char_00/outfits/adventurer/portrait.png",
@@ -677,6 +707,19 @@
                     "south-east": "skeletons/00_low8_64/characters/char_03/outfits/adventurer/animations/run__south-east.gif",
                     "south": "skeletons/00_low8_64/characters/char_03/outfits/adventurer/animations/run__south.gif",
                     "north-west": "skeletons/00_low8_64/characters/char_03/outfits/adventurer/animations/run__north-west.gif"
+                  }
+                },
+                {
+                  "key": "jump",
+                  "directions": {
+                    "south": "skeletons/00_low8_64/characters/char_03/outfits/adventurer/animations/jump__south.gif",
+                    "north": "skeletons/00_low8_64/characters/char_03/outfits/adventurer/animations/jump__north.gif",
+                    "east": "skeletons/00_low8_64/characters/char_03/outfits/adventurer/animations/jump__east.gif",
+                    "west": "skeletons/00_low8_64/characters/char_03/outfits/adventurer/animations/jump__west.gif",
+                    "south-east": "skeletons/00_low8_64/characters/char_03/outfits/adventurer/animations/jump__south-east.gif",
+                    "south-west": "skeletons/00_low8_64/characters/char_03/outfits/adventurer/animations/jump__south-west.gif",
+                    "north-east": "skeletons/00_low8_64/characters/char_03/outfits/adventurer/animations/jump__north-east.gif",
+                    "north-west": "skeletons/00_low8_64/characters/char_03/outfits/adventurer/animations/jump__north-west.gif"
                   }
                 }
               ]
