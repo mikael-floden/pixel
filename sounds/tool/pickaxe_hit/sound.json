@@ -1,0 +1,63 @@
+{
+  "manifest_version": 1,
+  "id": "pickaxe_hit",
+  "name": "Pickaxe Hit",
+  "category": "tool",
+  "description": "a sharp stony crack of a pickaxe striking rock",
+  "tags": [
+    "pickaxe",
+    "mine",
+    "rock",
+    "stone",
+    "impact"
+  ],
+  "usage": "Mining rock / ore with the pickaxe.",
+  "loop": false,
+  "engine": "procedural",
+  "license": "CC0-1.0",
+  "status": "complete",
+  "file": "tool/pickaxe_hit/pickaxe_hit.wav",
+  "format": "wav",
+  "audio": {
+    "samples": 6191,
+    "duration_seconds": 0.14,
+    "sample_rate": 44100,
+    "channels": 1,
+    "bit_depth": 16,
+    "peak_normalized_to": 0.9
+  },
+  "procedural": {
+    "family": "sfxr",
+    "preset": "hitHurt",
+    "seed": 3957830788,
+    "params": {
+      "wave_type": 0,
+      "p_env_attack": 0.0,
+      "p_env_sustain": 0.07380561952936705,
+      "p_env_punch": 0.0,
+      "p_env_decay": 0.23757516094093817,
+      "p_base_freq": 0.2155960084597972,
+      "p_freq_limit": 0.0,
+      "p_freq_ramp": -0.5357001431093881,
+      "p_freq_dramp": 0.0,
+      "p_vib_strength": 0.0,
+      "p_vib_speed": 0.0,
+      "p_arp_mod": 0.0,
+      "p_arp_speed": 0.0,
+      "p_duty": 0.0929781827814266,
+      "p_duty_ramp": 0.0,
+      "p_repeat_speed": 0.0,
+      "p_pha_offset": 0.0,
+      "p_pha_ramp": 0.0,
+      "p_lpf_freq": 1.0,
+      "p_lpf_ramp": 0.0,
+      "p_lpf_resonance": 0.0,
+      "p_hpf_freq": 0.04740342720994118,
+      "p_hpf_ramp": 0.0,
+      "sound_vol": 0.5,
+      "wave_type_name": "square"
+    },
+    "reproduce": "python pipeline/regen.py pickaxe_hit"
+  },
+  "source": "procedural sfxr synth (pipeline/sfxr.py) \u2014 deterministic per (preset, seed)"
+}

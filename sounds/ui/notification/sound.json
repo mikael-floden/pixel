@@ -1,0 +1,63 @@
+{
+  "manifest_version": 1,
+  "id": "notification",
+  "name": "Notification",
+  "category": "ui",
+  "description": "a gentle two-note tone announcing a notification or new message",
+  "tags": [
+    "notify",
+    "message",
+    "alert",
+    "chat",
+    "ui"
+  ],
+  "usage": "New chat message / quest notification.",
+  "loop": false,
+  "engine": "procedural",
+  "license": "CC0-1.0",
+  "status": "complete",
+  "file": "ui/notification/notification.wav",
+  "format": "wav",
+  "audio": {
+    "samples": 9421,
+    "duration_seconds": 0.214,
+    "sample_rate": 44100,
+    "channels": 1,
+    "bit_depth": 16,
+    "peak_normalized_to": 0.9
+  },
+  "procedural": {
+    "family": "sfxr",
+    "preset": "tone",
+    "seed": 306359193,
+    "params": {
+      "wave_type": 2,
+      "p_env_attack": 0.0,
+      "p_env_sustain": 0.20569734249012533,
+      "p_env_punch": 0.0,
+      "p_env_decay": 0.22775601180915905,
+      "p_base_freq": 0.43558860439409447,
+      "p_freq_limit": 0.0,
+      "p_freq_ramp": 0.0,
+      "p_freq_dramp": 0.0,
+      "p_vib_strength": 0.0,
+      "p_vib_speed": 0.0,
+      "p_arp_mod": 0.0,
+      "p_arp_speed": 0.0,
+      "p_duty": 0.0,
+      "p_duty_ramp": 0.0,
+      "p_repeat_speed": 0.0,
+      "p_pha_offset": 0.0,
+      "p_pha_ramp": 0.0,
+      "p_lpf_freq": 1.0,
+      "p_lpf_ramp": 0.0,
+      "p_lpf_resonance": 0.0,
+      "p_hpf_freq": 0.0,
+      "p_hpf_ramp": 0.0,
+      "sound_vol": 0.5,
+      "wave_type_name": "sine"
+    },
+    "reproduce": "python pipeline/regen.py notification"
+  },
+  "source": "procedural sfxr synth (pipeline/sfxr.py) \u2014 deterministic per (preset, seed)"
+}

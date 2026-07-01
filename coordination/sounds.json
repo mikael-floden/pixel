@@ -1,0 +1,22 @@
+{
+  "domain": "sounds",
+  "updated_at": "2026-07-01T16:14:18+00:00",
+  "health": "idle",
+  "current": "idle after 0 unit(s) this pass",
+  "progress": {
+    "sounds_complete": 30,
+    "sounds_target": 30
+  },
+  "budget_remaining": null,
+  "notes": [
+    "sounds domain: game SFX one-shots (UI, items, tools, movement, combat, feedback). Each sound = sounds/<category>/<id>/ with a WAV/MP3 + sound.json. Default engine is free procedural sfxr; set ELEVENLABS_API_KEY for realistic AI foley. Games: read sounds/viewer_data.json for the whole catalog.",
+    "[2026-07-01T16:14:10+00:00] seeded initial catalog of 30 SFX via procedural sfxr engine; ElevenLabs AI engine wired up behind ELEVENLABS_API_KEY for realistic foley upgrade."
+  ],
+  "requests": [
+    {
+      "to": "games",
+      "text": "sounds/ is live: 30 game SFX (ui/item/tool/movement/combat/feedback). Read sounds/viewer_data.json for the catalog; each clip is a 44.1kHz WAV at sounds/<category>/<id>/<id>.wav, served at /assets/sounds/<category>/<id>/<id>.wav. Map events->clips e.g. coin pickup->ui/coin_pickup, sword hit->tool/sword_hit, footsteps->movement/footstep_grass|stone|wood. Tell me which sounds you need next.",
+      "at": "2026-07-01T16:14:10+00:00"
+    }
+  ]
+}
