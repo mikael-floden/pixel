@@ -1,6 +1,6 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 10,
+  "object_count": 11,
   "target_count": 61,
   "scale": {
     "_comment": "REALISM RULE: objects are scaled to the world by real height, so they sit correctly next to characters. A character is ~character_height_px tall (the 64px skeleton) representing character_height_m. The loop turns each object's world_height_m into world_px_height = round(world_height_m * character_height_px / character_height_m); a game renders the sprite scaled to that pixel height. So a coin (~0.22m) is tiny next to a character and an oak (~6m) towers. Every object MUST have a world_height_m (per-object, else category_height_m fallback).",
@@ -21,7 +21,7 @@
   "categories": {
     "container": 4,
     "valuable": 4,
-    "tool": 2
+    "tool": 3
   },
   "objects": [
     {
@@ -488,6 +488,35 @@
           }
         }
       ]
+    },
+    {
+      "id": "pickaxe",
+      "name": "Pickaxe",
+      "category": "tool",
+      "description": "a miner's pickaxe with a wooden handle and iron head",
+      "view": "side",
+      "size": 64,
+      "placement": {
+        "world_height_m": 1.2,
+        "world_px_height": 45,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "in_progress",
+      "pixellab_object_id": "40182180-b717-49fa-a75a-c751d1ea6629",
+      "sprite": "pickaxe/sprite.png",
+      "rotations": {
+        "east": "pickaxe/rotations/east.png",
+        "north": "pickaxe/rotations/north.png",
+        "north-east": "pickaxe/rotations/north-east.png",
+        "north-west": "pickaxe/rotations/north-west.png",
+        "south": "pickaxe/rotations/south.png",
+        "south-east": "pickaxe/rotations/south-east.png",
+        "south-west": "pickaxe/rotations/south-west.png",
+        "west": "pickaxe/rotations/west.png"
+      },
+      "animations": []
     },
     {
       "id": "shovel",
