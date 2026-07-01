@@ -527,80 +527,28 @@
       }
     },
     "run": {
-      "west": {
+      "south": {
         "frames": 16,
-        "strip": "skeletons/00_low8_64/characters/char_03/animations/run__west.png",
-        "gif": "skeletons/00_low8_64/characters/char_03/animations/run__west.gif",
+        "strip": "skeletons/00_low8_64/characters/char_03/animations/run__south.png",
+        "gif": "skeletons/00_low8_64/characters/char_03/animations/run__south.gif",
         "frame_paths": [
-          "skeletons/00_low8_64/characters/char_03/animations/run/west/00.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/west/01.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/west/02.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/west/03.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/west/04.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/west/05.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/west/06.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/west/07.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/west/08.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/west/09.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/west/10.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/west/11.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/west/12.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/west/13.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/west/14.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/west/15.png"
-        ],
-        "lm": "Wed, 01 Jul 2026 02:36:38 GMT",
-        "src_frames": 17
-      },
-      "north-west": {
-        "frames": 16,
-        "strip": "skeletons/00_low8_64/characters/char_03/animations/run__north-west.png",
-        "gif": "skeletons/00_low8_64/characters/char_03/animations/run__north-west.gif",
-        "frame_paths": [
-          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/00.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/01.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/02.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/03.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/04.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/05.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/06.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/07.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/08.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/09.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/10.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/11.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/12.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/13.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/14.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/15.png"
-        ],
-        "lm": "Wed, 01 Jul 2026 02:36:47 GMT",
-        "src_frames": 17
-      },
-      "south-west": {
-        "frames": 16,
-        "strip": "skeletons/00_low8_64/characters/char_03/animations/run__south-west.png",
-        "gif": "skeletons/00_low8_64/characters/char_03/animations/run__south-west.gif",
-        "frame_paths": [
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/00.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/01.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/02.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/03.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/04.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/05.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/06.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/07.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/08.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/09.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/10.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/11.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/12.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/13.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/14.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/15.png"
-        ],
-        "lm": "Wed, 01 Jul 2026 02:36:57 GMT",
-        "src_frames": 17
+          "skeletons/00_low8_64/characters/char_03/animations/run/south/00.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south/01.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south/02.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south/03.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south/04.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south/05.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south/06.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south/07.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south/08.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south/09.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south/10.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south/11.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south/12.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south/13.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south/14.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south/15.png"
+        ]
       },
       "north": {
         "frames": 16,
@@ -623,57 +571,7 @@
           "skeletons/00_low8_64/characters/char_03/animations/run/north/13.png",
           "skeletons/00_low8_64/characters/char_03/animations/run/north/14.png",
           "skeletons/00_low8_64/characters/char_03/animations/run/north/15.png"
-        ],
-        "lm": "Wed, 01 Jul 2026 02:45:21 GMT",
-        "src_frames": 17
-      },
-      "south": {
-        "frames": 16,
-        "strip": "skeletons/00_low8_64/characters/char_03/animations/run__south.png",
-        "gif": "skeletons/00_low8_64/characters/char_03/animations/run__south.gif",
-        "frame_paths": [
-          "skeletons/00_low8_64/characters/char_03/animations/run/south/00.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south/01.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south/02.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south/03.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south/04.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south/05.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south/06.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south/07.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south/08.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south/09.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south/10.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south/11.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south/12.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south/13.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south/14.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south/15.png"
-        ],
-        "lm": "Wed, 01 Jul 2026 02:37:16 GMT",
-        "src_frames": 17
-      },
-      "south-east": {
-        "frames": 14,
-        "strip": "skeletons/00_low8_64/characters/char_03/animations/run__south-east.png",
-        "gif": "skeletons/00_low8_64/characters/char_03/animations/run__south-east.gif",
-        "frame_paths": [
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/00.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/01.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/02.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/03.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/04.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/05.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/06.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/07.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/08.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/09.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/10.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/11.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/12.png",
-          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/13.png"
-        ],
-        "lm": "Wed, 01 Jul 2026 02:37:27 GMT",
-        "src_frames": 17
+        ]
       },
       "east": {
         "frames": 16,
@@ -696,9 +594,76 @@
           "skeletons/00_low8_64/characters/char_03/animations/run/east/13.png",
           "skeletons/00_low8_64/characters/char_03/animations/run/east/14.png",
           "skeletons/00_low8_64/characters/char_03/animations/run/east/15.png"
-        ],
-        "lm": "Wed, 01 Jul 2026 02:45:23 GMT",
-        "src_frames": 17
+        ]
+      },
+      "west": {
+        "frames": 16,
+        "strip": "skeletons/00_low8_64/characters/char_03/animations/run__west.png",
+        "gif": "skeletons/00_low8_64/characters/char_03/animations/run__west.gif",
+        "frame_paths": [
+          "skeletons/00_low8_64/characters/char_03/animations/run/west/00.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/west/01.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/west/02.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/west/03.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/west/04.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/west/05.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/west/06.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/west/07.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/west/08.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/west/09.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/west/10.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/west/11.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/west/12.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/west/13.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/west/14.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/west/15.png"
+        ]
+      },
+      "south-east": {
+        "frames": 16,
+        "strip": "skeletons/00_low8_64/characters/char_03/animations/run__south-east.png",
+        "gif": "skeletons/00_low8_64/characters/char_03/animations/run__south-east.gif",
+        "frame_paths": [
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/00.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/01.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/02.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/03.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/04.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/05.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/06.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/07.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/08.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/09.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/10.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/11.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/12.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/13.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/14.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-east/15.png"
+        ]
+      },
+      "south-west": {
+        "frames": 16,
+        "strip": "skeletons/00_low8_64/characters/char_03/animations/run__south-west.png",
+        "gif": "skeletons/00_low8_64/characters/char_03/animations/run__south-west.gif",
+        "frame_paths": [
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/00.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/01.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/02.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/03.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/04.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/05.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/06.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/07.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/08.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/09.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/10.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/11.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/12.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/13.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/14.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/south-west/15.png"
+        ]
       },
       "north-east": {
         "frames": 16,
@@ -721,9 +686,30 @@
           "skeletons/00_low8_64/characters/char_03/animations/run/north-east/13.png",
           "skeletons/00_low8_64/characters/char_03/animations/run/north-east/14.png",
           "skeletons/00_low8_64/characters/char_03/animations/run/north-east/15.png"
-        ],
-        "lm": "Wed, 01 Jul 2026 02:45:33 GMT",
-        "src_frames": 17
+        ]
+      },
+      "north-west": {
+        "frames": 16,
+        "strip": "skeletons/00_low8_64/characters/char_03/animations/run__north-west.png",
+        "gif": "skeletons/00_low8_64/characters/char_03/animations/run__north-west.gif",
+        "frame_paths": [
+          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/00.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/01.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/02.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/03.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/04.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/05.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/06.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/07.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/08.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/09.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/10.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/11.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/12.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/13.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/14.png",
+          "skeletons/00_low8_64/characters/char_03/animations/run/north-west/15.png"
+        ]
       }
     },
     "walk": {
