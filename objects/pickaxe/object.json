@@ -1,0 +1,30 @@
+{
+  "id": "pickaxe",
+  "name": "Pickaxe",
+  "category": "tool",
+  "description": "a miner's pickaxe with a wooden handle and iron head",
+  "view": "side",
+  "direction": "south",
+  "size": [
+    64,
+    64
+  ],
+  "procedural": false,
+  "source": "pixellab.ai (generate-image-pixflux / rotate / animate-with-text)",
+  "params": {
+    "outline": "single color black outline",
+    "shading": "detailed shading",
+    "detail": "highly detailed",
+    "no_background": true,
+    "isometric": false,
+    "seed": 498381428
+  },
+  "sprite": "pickaxe/sprite.png",
+  "rotations": {
+    "count": 0,
+    "directions": []
+  },
+  "animations": {},
+  "generations_used": 1.0,
+  "status": "complete"
+}

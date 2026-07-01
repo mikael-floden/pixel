@@ -1,11 +1,11 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 10,
+  "object_count": 11,
   "target_count": 40,
   "categories": {
     "container": 4,
     "valuable": 4,
-    "tool": 2
+    "tool": 3
   },
   "objects": [
     {
@@ -126,6 +126,21 @@
           "action": "spinning around"
         }
       ]
+    },
+    {
+      "id": "pickaxe",
+      "name": "Pickaxe",
+      "category": "tool",
+      "description": "a miner's pickaxe with a wooden handle and iron head",
+      "view": "side",
+      "size": [
+        64,
+        64
+      ],
+      "status": "complete",
+      "sprite": "pickaxe/sprite.png",
+      "rotation_files": {},
+      "animations": []
     },
     {
       "id": "shovel",
