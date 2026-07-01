@@ -936,5 +936,24 @@
       "south and north look near-identical (diff 1.97 < 0.5x median 4.77) \u2014 one view didn't rotate"
     ]
   },
-  "synced_from_pixellab": true
+  "synced_from_pixellab": true,
+  "outfits": {
+    "adventurer": {
+      "id": "adventurer",
+      "description": "a rugged brown leather adventurer tunic with a belt and boots",
+      "pixellab_id": "e1b3a983-c74b-41cd-bc0a-89dfc3c0ea47",
+      "edit_description": "wearing a rugged brown leather adventurer tunic with a belt and boots",
+      "rotations": [
+        "east",
+        "north",
+        "north-east",
+        "north-west",
+        "south",
+        "south-east",
+        "south-west",
+        "west"
+      ],
+      "animations": {}
+    }
+  }
 }
