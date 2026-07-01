@@ -194,6 +194,32 @@ def prune_loose_pointers(dry_run=False):
 
 # --- orchestration ----------------------------------------------------------
 
+def reconcile_light(client, push=True, quiet=False):
+    """Cheap per-pass reconcile for the loop startup: deletion parity + loose-
+    pointer prune only — NO re-download of unchanged art. (The full mirror is
+    download-heavy and belongs in an explicit `sync.py` run; doing it every pass
+    starved generation.) Commits only if something changed."""
+    live_ids = {o.get("id") for o in client.list_objects()}
+    deleted = []
+    # Safety: only apply deletion parity when the store actually returned objects,
+    # so a transient empty/failed list never wipes the whole repo.
+    if live_ids:
+        for oid, meta in _iter_manifests():
+            pid = meta.get("pixellab_object_id")
+            if pid and pid not in live_ids:
+                deleted.append(oid)
+                shutil.rmtree(factory.object_dir(oid), ignore_errors=True)
+    removed, pruned = prune_loose_pointers(dry_run=False)
+    if deleted or removed or pruned:
+        viewer_build.build()
+        loop.commit_push(f"objects reconcile: -{len(deleted)} deleted, "
+                         f"-{len(removed)} missing, {len(pruned)} pruned", push=push)
+    if not quiet:
+        print(f"reconcile: {len(live_ids)} on PixelLab; deleted {len(deleted)}, "
+              f"pruned {len(pruned)} (no re-download)")
+    return {"deleted": deleted, "pruned": pruned}
+
+
 def sync_all(client, push=True, quiet=False, dry_run=False):
     live_ids = {o.get("id") for o in client.list_objects()}
     synced, deleted = [], []

@@ -146,9 +146,12 @@ def main():
     if not args.no_sync:
         try:
             import sync
-            sync.sync_all(client, push=not args.no_push, quiet=True)
+            # Cheap reconcile only (deletions + loose-pointer prune). The full
+            # re-download mirror is `python sync.py` — running it every pass
+            # starved generation. UI regenerations are pulled on demand.
+            sync.reconcile_light(client, push=not args.no_push, quiet=True)
         except Exception as e:
-            print(f"pre-run sync skipped ({e})")
+            print(f"pre-run reconcile skipped ({e})")
 
     # Restyle: drop objects made under an older style so they regenerate in the
     # current look. Commit the removals up front, then the normal loop refills.
