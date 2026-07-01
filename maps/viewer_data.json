@@ -2,6 +2,37 @@
   "schema": "pixel-maps/viewer@1",
   "zones": [
     {
+      "id": "harbor_town",
+      "title": "Harbor Town",
+      "kind": "island",
+      "archetype": "island_town",
+      "description": "A larger island with a small harbour town of cottages.",
+      "grid": {
+        "width": 30,
+        "height": 24
+      },
+      "tile_size": 16,
+      "levels": [
+        "water",
+        "sand",
+        "grass"
+      ],
+      "bands": [
+        "ocean_sand",
+        "sand_grass"
+      ],
+      "objects": 16,
+      "exits": [
+        {
+          "id": "dock",
+          "kind": "dock",
+          "to_zone": "isle_of_dawn"
+        }
+      ],
+      "preview": "harbor_town/preview.png",
+      "manifest": "harbor_town/zone.json"
+    },
+    {
       "id": "isle_of_dawn",
       "title": "Isle of Dawn",
       "kind": "island",
