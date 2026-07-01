@@ -96,6 +96,168 @@
           "to_exit": "north"
         }
       ]
+    },
+    {
+      "id": "isle_meadow",
+      "title": "Sunlit Meadow",
+      "kind": "island_screen",
+      "mood": "open flowery meadow (daytime)",
+      "prompt": "top-down RPG overworld map: a wide open sunlit grassy meadow dotted with wildflowers and a few bushes, a dirt path crossing it, distant trees at the edges, gentle daylight",
+      "scene_size": [
+        320,
+        224
+      ],
+      "seed": 401,
+      "props": [
+        "bush",
+        "flower",
+        "mushroom",
+        "rock",
+        "oak_tree",
+        "sign_post"
+      ],
+      "prop_count": 10,
+      "exits": [
+        {
+          "kind": "path",
+          "edge": "south",
+          "to_zone": "isle_shore",
+          "to_exit": "north"
+        },
+        {
+          "kind": "path",
+          "edge": "north",
+          "to_zone": "isle_camp",
+          "to_exit": "south"
+        },
+        {
+          "kind": "path",
+          "edge": "east",
+          "to_zone": "isle_glade",
+          "to_exit": "west"
+        },
+        {
+          "kind": "path",
+          "edge": "west",
+          "to_zone": "isle_cove",
+          "to_exit": "east"
+        }
+      ]
+    },
+    {
+      "id": "isle_camp",
+      "title": "Forest Camp",
+      "kind": "island_screen",
+      "mood": "small woodland camp (daytime)",
+      "prompt": "top-down RPG overworld map: a small woodland camp clearing with packed dirt ground ringed by trees, a cozy settlement feel, gentle daylight",
+      "scene_size": [
+        320,
+        224
+      ],
+      "seed": 402,
+      "props": [
+        "well",
+        "campfire",
+        "lantern",
+        "sign_post",
+        "barrel",
+        "wooden_crate",
+        "wooden_chest",
+        "bush",
+        "oak_tree"
+      ],
+      "prop_count": 11,
+      "exits": [
+        {
+          "kind": "path",
+          "edge": "south",
+          "to_zone": "isle_meadow",
+          "to_exit": "north"
+        }
+      ]
+    },
+    {
+      "id": "isle_cove",
+      "title": "Rocky Cove",
+      "kind": "island_screen",
+      "mood": "rocky coastal cove (daytime)",
+      "prompt": "top-down RPG overworld map: a rocky coastal cove, calm blue water with scattered grey boulders and a pebbly shore, a few hardy bushes, gentle daylight",
+      "scene_size": [
+        320,
+        224
+      ],
+      "seed": 403,
+      "props": [
+        "rock",
+        "bush",
+        "barrel",
+        "wooden_crate"
+      ],
+      "prop_count": 7,
+      "exits": [
+        {
+          "kind": "path",
+          "edge": "east",
+          "to_zone": "isle_meadow",
+          "to_exit": "west"
+        }
+      ]
+    },
+    {
+      "id": "isle_forest",
+      "title": "Deep Woods",
+      "kind": "island_screen",
+      "mood": "dense forest (daytime)",
+      "prompt": "top-down RPG overworld map: a dense forest of tall trees with a narrow winding dirt trail, ferns, mushrooms and fallen logs, dappled daylight",
+      "scene_size": [
+        320,
+        224
+      ],
+      "seed": 404,
+      "props": [
+        "oak_tree",
+        "pine_tree",
+        "tree_stump",
+        "bush",
+        "mushroom",
+        "rock"
+      ],
+      "prop_count": 12,
+      "exits": [
+        {
+          "kind": "path",
+          "edge": "west",
+          "to_zone": "isle_glade",
+          "to_exit": "east"
+        }
+      ]
+    },
+    {
+      "id": "isle_ridge",
+      "title": "Stony Ridge",
+      "kind": "island_screen",
+      "mood": "rocky highland (daytime)",
+      "prompt": "top-down RPG overworld map: a rocky highland ridge with grey stone outcrops, sparse grass and hardy shrubs, a winding path, gentle daylight",
+      "scene_size": [
+        320,
+        224
+      ],
+      "seed": 405,
+      "props": [
+        "rock",
+        "bush",
+        "tree_stump",
+        "sign_post"
+      ],
+      "prop_count": 8,
+      "exits": [
+        {
+          "kind": "path",
+          "edge": "south",
+          "to_zone": "isle_forest",
+          "to_exit": "north"
+        }
+      ]
     }
   ]
 }

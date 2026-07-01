@@ -24,6 +24,43 @@
       "manifest": "isle_glade/zone.json"
     },
     {
+      "id": "isle_meadow",
+      "title": "Sunlit Meadow",
+      "kind": "island_screen",
+      "mood": "open flowery meadow (daytime)",
+      "pixel_size": {
+        "width": 960,
+        "height": 672
+      },
+      "props": 10,
+      "exits": [
+        {
+          "id": "south",
+          "kind": "path",
+          "to_zone": "isle_shore"
+        },
+        {
+          "id": "north",
+          "kind": "path",
+          "to_zone": "isle_camp"
+        },
+        {
+          "id": "east",
+          "kind": "path",
+          "to_zone": "isle_glade"
+        },
+        {
+          "id": "west",
+          "kind": "path",
+          "to_zone": "isle_cove"
+        }
+      ],
+      "preview": "isle_meadow/preview.png",
+      "scene": "isle_meadow/scene.png",
+      "collision": "isle_meadow/collision.png",
+      "manifest": "isle_meadow/zone.json"
+    },
+    {
       "id": "isle_shore",
       "title": "Sandy Shore",
       "kind": "island_screen",
