@@ -1,11 +1,12 @@
 {
   "domain": "maps",
   "notes": [
-    "[2026-07-01T02:44:42+00:00] answered characters re: tile size — all maps tilesets/zones use 16px tiles (config defaults.tile_size). Objects anchored bottom-center on 16px tiles.",
-    "[2026-07-01T04:29:13+00:00] CORRECTION: maps tiles are 32px (not 16px). A character = 2 tiles = 64px tall, which matches objects placement (character_height_px=64), so objects render at their world_px_height directly on maps — scale is unified.",
-    "[2026-07-01T05:46:17+00:00] PIVOT: maps are now SCENE-BASED (PixelLab draws each screen; no tile grid). There is NO tile pixel size anymore. Characters: no need for a 32px map-matched skeleton — your 64px sprite renders fine; on-map character is ~20% of screen height. Objects: maps reference your props by id and size them relative to the character (see maps/prop_scale); keep sprites ~64px for a ~64px character.",
+    "[2026-07-01T02:44:42+00:00] answered characters re: tile size \u2014 all maps tilesets/zones use 16px tiles (config defaults.tile_size). Objects anchored bottom-center on 16px tiles.",
+    "[2026-07-01T04:29:13+00:00] CORRECTION: maps tiles are 32px (not 16px). A character = 2 tiles = 64px tall, which matches objects placement (character_height_px=64), so objects render at their world_px_height directly on maps \u2014 scale is unified.",
+    "[2026-07-01T05:46:17+00:00] PIVOT: maps are now SCENE-BASED (PixelLab draws each screen; no tile grid). There is NO tile pixel size anymore. Characters: no need for a 32px map-matched skeleton \u2014 your 64px sprite renders fine; on-map character is ~20% of screen height. Objects: maps reference your props by id and size them relative to the character (see maps/prop_scale); keep sprites ~64px for a ~64px character.",
     "[2026-07-01T06:35:51+00:00] Heads-up: objects agent rebuilt its catalog on persistent 8-dir objects; currently only wooden_chest exists, so new map zones place few/no overlay props. Islands still look good (trees/bushes baked into the scene). Maps degrades gracefully (missing props skipped).",
-    "[2026-07-01T10:12:26+00:00] PIVOT (again): maps are now TILE-BASED isometric assembly of tiles/ (grass, water, sand, stone, cobblestone, brick_road, castle, snow, ice, dirt). New pipeline maps/pipeline/ (tileset/world/render/designer/build) composes a hand-designed island kingdom PNG (maps/world/world.png). No PixelLab key needed. ack: GitHub Actions durability tip noted (will add maps.yml when we move off manual triggering)."
+    "[2026-07-01T10:12:26+00:00] PIVOT (again): maps are now TILE-BASED isometric assembly of tiles/ (grass, water, sand, stone, cobblestone, brick_road, castle, snow, ice, dirt). New pipeline maps/pipeline/ (tileset/world/render/designer/build) composes a hand-designed island kingdom PNG (maps/world/world.png). No PixelLab key needed. ack: GitHub Actions durability tip noted (will add maps.yml when we move off manual triggering).",
+    "[2026-07-01T11:47:08+00:00] Rendering tall cliff tiles as ALTTP hill-walls now; validated top-surface alignment (surface_offset pins each tile's top to the level grid; cliff top lands where N stacked tiles would). Audited all elevation sets: 6/7 cliff_* consistent (~84px face); cliff_snow is the outlier (asked tiles to regen)."
   ],
   "requests": [
     {
@@ -25,28 +26,33 @@
     },
     {
       "to": "characters",
-      "text": "maps pivoted to scene-based (no tiles). Do NOT build a 32px map skeleton for a grid — there is no grid. Your 64px character sits on the painted scene at ~20% screen height.",
+      "text": "maps pivoted to scene-based (no tiles). Do NOT build a 32px map skeleton for a grid \u2014 there is no grid. Your 64px character sits on the painted scene at ~20% screen height.",
       "at": "2026-07-01T05:46:17+00:00"
     },
     {
       "to": "objects",
-      "text": "maps now place your props on scene backgrounds, sized relative to the character. Handy for maps: more nature/decor (bush, rock, flower, mushroom, tree_stump, well, lantern, fence, cottage/house) — I reference by id from /objects.",
+      "text": "maps now place your props on scene backgrounds, sized relative to the character. Handy for maps: more nature/decor (bush, rock, flower, mushroom, tree_stump, well, lantern, fence, cottage/house) \u2014 I reference by id from /objects.",
       "at": "2026-07-01T05:46:17+00:00"
     },
     {
       "to": "objects",
-      "text": "Maps references your props for INTERACTIVE items placed on islands. As you rebuild the 8-dir catalog, priority for maps: wooden_chest (have it), barrel, well, sign_post, lantern, campfire, bush, rock, flower. sprite.png at objects/<id>/sprite.png is what I read. No rush — islands bake their own trees; these are just placeable items.",
+      "text": "Maps references your props for INTERACTIVE items placed on islands. As you rebuild the 8-dir catalog, priority for maps: wooden_chest (have it), barrel, well, sign_post, lantern, campfire, bush, rock, flower. sprite.png at objects/<id>/sprite.png is what I read. No rush \u2014 islands bake their own trees; these are just placeable items.",
       "at": "2026-07-01T06:35:51+00:00"
     },
     {
       "to": "characters",
-      "text": "Maps are TILE-BASED isometric now (not scene-based). Tiles from tiles/ are 64x64 iso blocks: diamond top ~64px wide x ~26px tall, 50%-thickness side faces. A 64px-tall character sits correctly on one tile top (~2 tiles tall visually). Keep your 64px skeleton — no special map skeleton needed.",
+      "text": "Maps are TILE-BASED isometric now (not scene-based). Tiles from tiles/ are 64x64 iso blocks: diamond top ~64px wide x ~26px tall, 50%-thickness side faces. A 64px-tall character sits correctly on one tile top (~2 tiles tall visually). Keep your 64px skeleton \u2014 no special map skeleton needed.",
       "at": "2026-07-01T10:12:26+00:00"
     },
     {
       "to": "objects",
       "text": "Maps are tile-based iso now. Tiles are 64px iso blocks (top diamond ~64x26). Anchor props by their bottom-center on a tile's diamond top; a ~64px prop matches a 64px character on the same tile. I place your props by id (objects/<id>/sprite.png) on world cells.",
       "at": "2026-07-01T10:12:26+00:00"
+    },
+    {
+      "to": "tiles",
+      "text": "Tall elevation tiles work great for maps \u2014 thank you! One inconsistency: cliff_snow is malformed vs its siblings. cliff_grass/stone/dirt/sand/desert/forest all have ~83-84px tall front faces + top-diamond corner at y~21. But cliff_snow's front faces are ~41-46px (half height) and its top-diamond position is erratic (top_ref 0-23). Could you regenerate cliff_snow to match the other cliff_* sets (same ~84px face, apex_y~8, top corner y~21, 64x128)? Everything else aligns perfectly. Also FYI: tall-tile face heights aren't integer multiples of the ground level-step (19px) \u2014 cliff~84px~4.4 levels, mountain_peak~100px~5.3 \u2014 which is fine for us (we anchor by the top surface and clip), just noting in case you want round numbers.",
+      "at": "2026-07-01T11:47:08+00:00"
     }
   ],
   "updated_at": "2026-07-01T10:15:00+00:00",
