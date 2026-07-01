@@ -1,12 +1,12 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 15,
+  "object_count": 16,
   "target_count": 40,
   "categories": {
     "tool": 6,
     "container": 4,
     "valuable": 4,
-    "nature": 1
+    "nature": 2
   },
   "objects": [
     {
@@ -208,6 +208,21 @@
       ],
       "status": "complete",
       "sprite": "pickaxe/sprite.png",
+      "rotation_files": {},
+      "animations": []
+    },
+    {
+      "id": "pine_tree",
+      "name": "Pine Tree",
+      "category": "nature",
+      "description": "a tall green conifer pine tree",
+      "view": "low top-down",
+      "size": [
+        64,
+        64
+      ],
+      "status": "in_progress",
+      "sprite": "pine_tree/sprite.png",
       "rotation_files": {},
       "animations": []
     },
