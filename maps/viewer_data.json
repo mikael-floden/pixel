@@ -300,6 +300,22 @@
       "scene": "wild_000/scene.png",
       "collision": "wild_000/collision.png",
       "manifest": "wild_000/zone.json"
+    },
+    {
+      "id": "wild_001",
+      "title": "Windswept Shore 1",
+      "kind": "island_screen",
+      "mood": "windswept beach (daytime)",
+      "pixel_size": {
+        "width": 960,
+        "height": 672
+      },
+      "props": 10,
+      "exits": [],
+      "preview": "wild_001/preview.png",
+      "scene": "wild_001/scene.png",
+      "collision": "wild_001/collision.png",
+      "manifest": "wild_001/zone.json"
     }
   ]
 }
