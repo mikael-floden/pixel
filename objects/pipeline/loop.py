@@ -134,12 +134,26 @@ def main():
     ap.add_argument("--restyle", action="store_true",
                     help="Delete objects made under an older style_version so they "
                          "regenerate in the current style (re-spends generations).")
+    ap.add_argument("--no-sync", action="store_true",
+                    help="Skip the pre-run repo<->PixelLab reconcile (loose-pointer "
+                         "prune, deletion parity, UI-object mirror).")
     args = ap.parse_args()
 
     cfg = factory.load_config()
     min_balance = args.min_balance if args.min_balance is not None \
         else cfg["budget"]["min_generations_remaining"]
     client = PixelLabClient()
+
+    # Reconcile the repo with PixelLab first (zero generations): prune loose
+    # pointers, mirror UI-authored objects, and honour PixelLab-side deletions, so
+    # the repo and account stay in sync automatically each pass. Lazy import
+    # avoids a circular import (sync imports loop for commit_push).
+    if not args.no_sync:
+        try:
+            import sync
+            sync.sync_all(client, push=not args.no_push, quiet=True)
+        except Exception as e:
+            print(f"pre-run sync skipped ({e})")
 
     # Restyle: drop objects made under an older style so they regenerate in the
     # current look. Commit the removals up front, then the normal loop refills.

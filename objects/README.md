@@ -216,6 +216,29 @@ one `main` and **one PixelLab account**. Coordination follows
   set to **2000** per the protocol) so it never drains the pool the characters
   and maps loops also draw from.
 
+## Staying in sync (no loose pointers)
+
+`pipeline/sync.py` keeps the repo and PixelLab consistent, and runs automatically
+at the start of every loop pass (zero generations). Unlike characters — which
+persist on PixelLab and are edited/synced there — **objects are generated
+statelessly and don't live on PixelLab** (`POST /v2/objects` → 405), so the repo
+is the source of truth. Sync therefore:
+
+1. **Prunes loose pointers** — any manifest/viewer reference to a file that no
+   longer exists is dropped; an object whose `sprite.png` is gone is removed
+   entirely, so the viewer can never point at a dead file.
+2. **Mirrors PixelLab-side deletions** — if an object the repo mirrored from the
+   PixelLab UI (tagged `pixellab_object_id`) is deleted there, its repo folder is
+   removed too. Generated objects (no such id) are never touched.
+3. **Imports UI-authored objects** — anything made in the PixelLab Object creator
+   is mirrored in (best-effort, with `If-Modified-Since` change detection like the
+   characters agent); anything it can't import is reported, not silently dropped.
+
+```bash
+python pipeline/sync.py            # reconcile + push
+python pipeline/sync.py --dry-run  # report only, change nothing
+```
+
 ## Notes / guardrails
 
 - **Never commit secrets** — `PIXELLAB_API_KEY` lives in a gitignored `.env`.

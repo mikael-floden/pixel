@@ -37,6 +37,8 @@ BASE_URL = "https://api.pixellab.ai/v1"
 # The subscription generation balance is only exposed on the v2 balance endpoint
 # (v1 /balance reports the usd credit pool, which is 0 on a generations plan).
 BALANCE_URL = "https://api.pixellab.ai/v2/balance"
+# Server-side object store (read + delete only for the API; created via the UI).
+OBJECTS_URL = "https://api.pixellab.ai/v2/objects"
 API_KEY_ENV = "PIXELLAB_API_KEY"
 
 # animate-with-text only accepts an exactly 64x64 canvas (min 64 AND max 64), so
@@ -117,6 +119,41 @@ class PixelLabClient:
 
     def _get(self, path):
         return self._request("GET", path)
+
+    # -- server-side object store (v2/objects) -------------------------------
+    #
+    # PixelLab keeps a server-side "Object creator" store at v2/objects. Our loop
+    # does NOT create these (it uses the stateless image endpoints), and the store
+    # has no create endpoint (POST -> 405), so it's effectively read + delete for
+    # us. Sync uses these to (a) mirror any object a human authored in the UI and
+    # (b) keep repo/PixelLab deletions in lockstep (no loose pointers).
+
+    def list_objects(self):
+        resp = self._request("GET", OBJECTS_URL)
+        if isinstance(resp, list):
+            return resp
+        return resp.get("objects") or resp.get("items") or []
+
+    def get_object(self, object_id):
+        return self._request("GET", f"{OBJECTS_URL}/{object_id}")
+
+    def delete_object(self, object_id):
+        return self._request("DELETE", f"{OBJECTS_URL}/{object_id}")
+
+    def conditional_download(self, url, if_modified=None):
+        """GET an image, optionally conditional on If-Modified-Since. Returns
+        (status, PIL|None, last_modified). A 304 downloads no body — that's how
+        sync skips unchanged art (mirrors the characters agent's approach)."""
+        headers = {"If-Modified-Since": if_modified} if if_modified else {}
+        try:
+            r = self._session.get(url, headers=headers, timeout=self.timeout)
+        except requests.RequestException:
+            return 0, None, if_modified
+        if r.status_code == 304:
+            return 304, None, if_modified
+        if r.status_code == 200 and r.headers.get("content-type", "").startswith("image"):
+            return 200, Image.open(io.BytesIO(r.content)).convert("RGBA"), r.headers.get("Last-Modified")
+        return r.status_code, None, if_modified
 
     # -- balance / budget ----------------------------------------------------
 
