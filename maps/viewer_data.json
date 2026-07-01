@@ -127,6 +127,28 @@
       "manifest": "isle_meadow/zone.json"
     },
     {
+      "id": "isle_ridge",
+      "title": "Stony Ridge",
+      "kind": "island_screen",
+      "mood": "rocky highland (daytime)",
+      "pixel_size": {
+        "width": 960,
+        "height": 672
+      },
+      "props": 8,
+      "exits": [
+        {
+          "id": "south",
+          "kind": "path",
+          "to_zone": "isle_forest"
+        }
+      ],
+      "preview": "isle_ridge/preview.png",
+      "scene": "isle_ridge/scene.png",
+      "collision": "isle_ridge/collision.png",
+      "manifest": "isle_ridge/zone.json"
+    },
+    {
       "id": "isle_shore",
       "title": "Sandy Shore",
       "kind": "island_screen",
