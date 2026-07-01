@@ -1,0 +1,106 @@
+{
+  "_comment": "Catalog-driven pixel-OBJECT factory. An 'object' is one prop/tool/item (chest, coin, rock, bird, sword, shovel, tree...). Each object is a self-contained folder under objects/<id>/. The loop reads the filesystem and, per object, generates: (1) a base sprite (generate-image-pixflux), (2) optional rotated views (rotate), (3) optional animations (animate-with-text). Every unit = one PixelLab generation; after each it rebuilds the viewer, commits and pushes. Fully resumable. Unlike characters, objects are stateless image tools with no server-side object to sync back — the repo is the source of truth.",
+
+  "style_base": "detailed RPG pixel art inspired by Grave Seasons and Stardew Valley, clean readable silhouette, naturalistic lighting and a warm lifelike palette, soft shading, crisp pixels, single centered game asset on a transparent background",
+
+  "defaults": {
+    "view": "low top-down",
+    "direction": "south",
+    "outline": "single color black outline",
+    "shading": "detailed shading",
+    "detail": "highly detailed",
+    "no_background": true,
+    "text_guidance_scale": 8.0,
+    "negative_description": "blurry, multiple objects, duplicated, cropped, text, watermark, drop shadow, background scenery, tiling"
+  },
+
+  "budget": {
+    "min_generations_remaining": 20,
+    "_comment": "The loop stops cleanly when the PixelLab balance drops below this."
+  },
+
+  "targets": {
+    "num_objects": 40,
+    "_comment": "How many objects the loop aims to produce. It builds the explicit `catalog` first, then synthesizes further ones from `procedural` until this count is reached. Raise it to keep the loop generating open-endedly."
+  },
+
+  "rotation_directions": {
+    "4": ["south", "east", "north", "west"],
+    "8": ["south", "south-east", "east", "north-east", "north", "north-west", "west", "south-west"],
+    "_comment": "A rotated object keeps its base sprite as `south` and rotates into the rest. Base is always generated at `defaults.direction` (south)."
+  },
+
+  "_animation_library": "Reusable animation definitions, referenced by key from an object's `animations` list (a bare string uses the library entry as-is; an object {key, action, n_frames, view} overrides fields). `action` is kept to ONE simple verb/phrase — extra words confuse PixelLab. animate-with-text needs a canvas >= 64, so any animated object is generated at >= 64x64.",
+  "animation_library": {
+    "spin":    { "action": "spinning around",              "n_frames": 8 },
+    "open":    { "action": "opening",                       "n_frames": 6 },
+    "glint":   { "action": "glinting with a shine of light","n_frames": 6 },
+    "flicker": { "action": "flame flickering",              "n_frames": 6 },
+    "burn":    { "action": "fire burning",                  "n_frames": 8 },
+    "sway":    { "action": "swaying gently in the wind",    "n_frames": 8 },
+    "flap":    { "action": "flapping its wings",            "n_frames": 6 },
+    "flutter": { "action": "fluttering its wings",          "n_frames": 6 },
+    "swim":    { "action": "swimming",                      "n_frames": 6 },
+    "bob":     { "action": "floating up and down",          "n_frames": 6 },
+    "pulse":   { "action": "glowing brighter and dimmer",   "n_frames": 6 },
+    "ripple":  { "action": "water rippling",                "n_frames": 6 },
+    "bubble":  { "action": "liquid bubbling",               "n_frames": 6 }
+  },
+
+  "_catalog": "Explicit, curated objects. Each is one unique folder objects/<id>/. `size` is [w,h]; `rotations` is 0 (none), 4, or 8; `animations` lists animation_library keys (or inline overrides). Objects with animations are auto-bumped to >= 64x64.",
+  "catalog": [
+    { "id": "wooden_chest",  "name": "Wooden Chest",  "category": "container", "description": "a closed wooden treasure chest with iron bands and a rounded lid",           "size": [64, 64], "animations": ["open"] },
+    { "id": "barrel",        "name": "Barrel",        "category": "container", "description": "a sturdy wooden barrel bound with metal hoops",                              "size": [48, 64], "rotations": 4 },
+    { "id": "wooden_crate",  "name": "Wooden Crate",  "category": "container", "description": "a wooden shipping crate with plank sides and nailed corners",               "size": [48, 48] },
+    { "id": "clay_pot",      "name": "Clay Pot",      "category": "container", "description": "a small round terracotta clay pot",                                         "size": [32, 32] },
+
+    { "id": "gold_coin",     "name": "Gold Coin",     "category": "valuable",  "description": "a single shiny round gold coin stamped with a crest",                      "size": [64, 64], "animations": ["spin"] },
+    { "id": "gem_ruby",      "name": "Ruby Gem",      "category": "valuable",  "description": "a faceted red ruby gemstone sparkling",                                    "size": [64, 64], "animations": ["pulse"] },
+    { "id": "gold_ingot",    "name": "Gold Ingot",    "category": "valuable",  "description": "a stacked bar of solid gold ingots",                                       "size": [48, 32] },
+    { "id": "iron_key",      "name": "Iron Key",      "category": "valuable",  "description": "an ornate old iron key with a looped bow",                                 "size": [64, 64], "animations": ["spin"] },
+
+    { "id": "sword",         "name": "Sword",         "category": "tool",      "description": "a steel knight's sword with a leather-wrapped hilt and crossguard, blade pointing up", "size": [64, 64], "view": "side", "animations": [{ "key": "glint", "view": "side" }] },
+    { "id": "shovel",        "name": "Shovel",        "category": "tool",      "description": "a wooden-handled digging shovel with a metal blade",                       "size": [64, 64], "view": "side" },
+    { "id": "pickaxe",       "name": "Pickaxe",       "category": "tool",      "description": "a miner's pickaxe with a wooden handle and iron head",                     "size": [64, 64], "view": "side" },
+    { "id": "axe",           "name": "Axe",           "category": "tool",      "description": "a woodcutter's axe with a broad steel head and wooden haft",               "size": [64, 64], "view": "side" },
+    { "id": "hammer",        "name": "Hammer",        "category": "tool",      "description": "a blacksmith's hammer with a heavy iron head",                             "size": [48, 48], "view": "side" },
+    { "id": "fishing_rod",   "name": "Fishing Rod",   "category": "tool",      "description": "a bamboo fishing rod with a line and hook",                                "size": [64, 64], "view": "side" },
+
+    { "id": "oak_tree",      "name": "Oak Tree",      "category": "nature",    "description": "a lush round-canopy oak tree with a thick brown trunk",                    "size": [96, 96], "animations": ["sway"] },
+    { "id": "pine_tree",     "name": "Pine Tree",     "category": "nature",    "description": "a tall green conifer pine tree",                                           "size": [96, 96], "animations": ["sway"] },
+    { "id": "bush",          "name": "Bush",          "category": "nature",    "description": "a small round leafy green bush",                                           "size": [64, 64], "animations": ["sway"] },
+    { "id": "flower",        "name": "Flower",        "category": "nature",    "description": "a single red tulip flower with a green stem",                              "size": [64, 64], "animations": ["sway"] },
+    { "id": "mushroom",      "name": "Mushroom",      "category": "nature",    "description": "a plump red toadstool mushroom with white spots",                          "size": [32, 32] },
+    { "id": "rock",          "name": "Rock",          "category": "nature",    "description": "a grey mossy boulder rock",                                                "size": [48, 48] },
+    { "id": "tree_stump",    "name": "Tree Stump",    "category": "nature",    "description": "a cut tree stump with visible growth rings",                               "size": [48, 48] },
+
+    { "id": "torch",         "name": "Torch",         "category": "light",     "description": "a wooden wall torch with an orange flame",                                 "size": [64, 64], "view": "side", "animations": [{ "key": "flicker", "view": "side" }] },
+    { "id": "campfire",      "name": "Campfire",      "category": "light",     "description": "a campfire of logs with dancing flames",                                   "size": [64, 64], "animations": ["burn"] },
+    { "id": "lantern",       "name": "Lantern",       "category": "light",     "description": "a metal-framed glass lantern with a warm glowing candle",                  "size": [64, 64], "view": "side", "animations": [{ "key": "flicker", "view": "side" }] },
+
+    { "id": "bird",          "name": "Bird",          "category": "creature",  "description": "a small plump blue songbird perched",                                      "size": [64, 64], "view": "side", "animations": [{ "key": "flap", "view": "side" }] },
+    { "id": "butterfly",     "name": "Butterfly",     "category": "creature",  "description": "a delicate orange monarch butterfly",                                      "size": [64, 64], "animations": ["flutter"] },
+    { "id": "fish",          "name": "Fish",          "category": "creature",  "description": "a plump orange river fish",                                                "size": [64, 64], "view": "side", "animations": [{ "key": "swim", "view": "side" }] },
+
+    { "id": "potion_red",    "name": "Red Potion",    "category": "misc",      "description": "a round glass potion bottle full of glowing red liquid with a cork",        "size": [64, 64], "animations": ["bob"] },
+    { "id": "sign_post",     "name": "Sign Post",     "category": "misc",      "description": "a wooden directional sign post with a blank board on a stake",              "size": [48, 64], "rotations": 4 },
+    { "id": "well",          "name": "Stone Well",    "category": "misc",      "description": "a round stone water well with a wooden roof and bucket",                    "size": [96, 96], "animations": ["ripple"] }
+  ],
+
+  "_procedural": "When the explicit catalog is exhausted but targets.num_objects is not yet reached, the loop synthesizes more objects by combining these axes. Deterministic (seeded by index) so re-runs are reproducible. These are best-effort, un-curated extras.",
+  "procedural": {
+    "kinds": [
+      { "noun": "treasure chest",   "category": "container", "size": [64, 64], "animations": ["open"] },
+      { "noun": "clay urn",         "category": "container", "size": [48, 48] },
+      { "noun": "gemstone",         "category": "valuable",  "size": [64, 64], "animations": ["pulse"] },
+      { "noun": "coin stack",       "category": "valuable",  "size": [48, 48] },
+      { "noun": "dagger",           "category": "tool",      "size": [64, 64], "view": "side", "animations": [{ "key": "glint", "view": "side" }] },
+      { "noun": "staff",            "category": "tool",      "size": [64, 64], "view": "side" },
+      { "noun": "shrub",            "category": "nature",    "size": [64, 64], "animations": ["sway"] },
+      { "noun": "boulder",          "category": "nature",    "size": [48, 48] },
+      { "noun": "candle",           "category": "light",     "size": [48, 48], "view": "side", "animations": [{ "key": "flicker", "view": "side" }] },
+      { "noun": "potion bottle",    "category": "misc",      "size": [64, 64], "animations": ["bob"] }
+    ],
+    "adjectives": ["ancient", "ornate", "rusty", "enchanted", "weathered", "gilded", "mossy", "cracked", "polished", "runed"]
+  }
+}

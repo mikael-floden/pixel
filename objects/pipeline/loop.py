@@ -1,0 +1,164 @@
+"""The objects loop.
+
+Each "unit" of work is one PixelLab generation: create an object's base sprite,
+one rotated view, or one animation. The loop figures out the next missing unit
+purely by reading the filesystem (so it's fully resumable), does it, rebuilds the
+viewer manifest, and commits + pushes to main.
+
+Per object, in order: base sprite -> each rotation -> each animation. Then the
+next object. The object list is the curated catalog followed by procedural fill
+up to targets.num_objects.
+
+Run a bounded chunk (intended for a scheduled Routine / GitHub Action):
+  python objects/pipeline/loop.py --max-minutes 50 --min-balance 20
+Other flags: --max-units N, --once, --no-push.
+"""
+
+from __future__ import annotations
+
+import argparse
+import subprocess
+import time
+
+import factory
+import viewer_build
+from pixellab_client import BudgetExhausted, PixelLabClient
+
+
+# --- git --------------------------------------------------------------------
+
+def _git(*args, check=True):
+    return subprocess.run(["git", *args], cwd=factory.ROOT, capture_output=True, text=True,
+                          check=check)
+
+
+def _current_branch():
+    return _git("rev-parse", "--abbrev-ref", "HEAD").stdout.strip() or "main"
+
+
+def commit_push(message, push=True):
+    """Commit only the objects/ domain (disjoint from characters/ and maps/, so
+    concurrent pushes to the same branch rebase cleanly) and push to the current
+    branch with backoff. Git runs with cwd=factory.ROOT (the objects/ dir), so
+    scoping to '.' stages just this domain's subtree."""
+    _git("add", "-A", ".")
+    status = _git("status", "--porcelain", "--", ".").stdout.strip()
+    if not status:
+        return False
+    _git("commit", "-m", message)
+    if push:
+        branch = _current_branch()
+        for attempt in range(4):
+            r = _git("push", "-u", "origin", branch, check=False)
+            if r.returncode == 0:
+                break
+            # Remote may have advanced (a concurrent domain's push); rebase + retry.
+            _git("fetch", "origin", branch, check=False)
+            _git("rebase", f"origin/{branch}", check=False)
+            time.sleep(2 ** (attempt + 1))
+        else:
+            print("  ! push failed after retries:", r.stderr[:200])
+    return True
+
+
+# --- planning ---------------------------------------------------------------
+
+def next_action(cfg):
+    """The next missing unit across all objects, derived from the filesystem.
+
+    For each object in order: ensure the base sprite, then each rotation, then
+    each animation exist. Returns an action tuple or ('all_complete',)."""
+    for spec in factory.object_specs(cfg):
+        oid = spec["id"]
+        if not factory.has_base(oid):
+            return ("base", spec)
+        for d in factory.rotation_dirs(cfg, spec):
+            if not factory.has_rotation(oid, d):
+                return ("rotate", spec, d)
+        for adef in spec["animations"]:
+            if not factory.has_animation(oid, adef["key"]):
+                return ("animate", spec, adef)
+    return ("all_complete",)
+
+
+# --- one unit ---------------------------------------------------------------
+
+def advance(client, cfg, push=True):
+    """Do exactly one unit of work; commit + push it. Returns a description, or
+    None when everything is complete."""
+    action = next_action(cfg)
+    kind = action[0]
+
+    if kind == "base":
+        spec = action[1]
+        factory.generate_base(client, cfg, spec)
+        desc = f"{spec['id']}: base sprite ({spec['width']}x{spec['height']} {spec['view']}) — {spec['name']}"
+    elif kind == "rotate":
+        spec, d = action[1], action[2]
+        factory.generate_rotation(client, cfg, spec, d)
+        desc = f"{spec['id']}: rotation '{d}'"
+    elif kind == "animate":
+        spec, adef = action[1], action[2]
+        factory.generate_animation(client, cfg, spec, adef)
+        desc = f"{spec['id']}: animation '{adef['key']}' ({adef['action']})"
+    elif kind == "all_complete":
+        print("== all objects complete ==")
+        return None
+    else:
+        raise RuntimeError(f"unknown action {kind}")
+
+    factory.mark_complete_if_done(cfg, action[1])
+    viewer_build.build()
+    commit_push(desc, push=push)
+    print("  +", desc)
+    return desc
+
+
+# --- main -------------------------------------------------------------------
+
+def main():
+    ap = argparse.ArgumentParser(description="Run the pixel-objects factory loop.")
+    ap.add_argument("--max-units", type=int, default=0, help="0 = unlimited")
+    ap.add_argument("--max-minutes", type=float, default=0, help="0 = unlimited")
+    ap.add_argument("--min-balance", type=int, default=None,
+                    help="Stop when generations remaining drops below this.")
+    ap.add_argument("--once", action="store_true", help="Do a single unit and exit.")
+    ap.add_argument("--no-push", action="store_true")
+    args = ap.parse_args()
+
+    cfg = factory.load_config()
+    min_balance = args.min_balance if args.min_balance is not None \
+        else cfg["budget"]["min_generations_remaining"]
+    client = PixelLabClient()
+
+    start = time.monotonic()
+    units = 0
+    rem = client.generations_remaining()
+    print(f"objects loop starting — {rem:.0f} generations remaining (floor {min_balance})")
+
+    while True:
+        try:
+            client.ensure_budget(min_balance)
+        except BudgetExhausted as e:
+            print(f"stopping: {e}")
+            break
+        try:
+            result = advance(client, cfg, push=not args.no_push)
+        except BudgetExhausted as e:
+            print(f"stopping: {e}")
+            break
+        if result is None:
+            print("stopping: nothing left to generate")
+            break
+        units += 1
+        if args.once or (args.max_units and units >= args.max_units):
+            break
+        if args.max_minutes and (time.monotonic() - start) / 60 >= args.max_minutes:
+            print("stopping: time budget reached")
+            break
+
+    print(f"done — {units} unit(s), {client.generations_remaining():.0f} generations left")
+
+
+if __name__ == "__main__":
+    main()

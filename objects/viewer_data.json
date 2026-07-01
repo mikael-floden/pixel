@@ -1,0 +1,33 @@
+{
+  "title": "Pixel Object Factory",
+  "object_count": 1,
+  "target_count": 40,
+  "categories": {
+    "container": 1
+  },
+  "objects": [
+    {
+      "id": "wooden_chest",
+      "name": "Wooden Chest",
+      "category": "container",
+      "description": "a closed wooden treasure chest with iron bands and a rounded lid",
+      "view": "low top-down",
+      "size": [
+        64,
+        64
+      ],
+      "status": "complete",
+      "sprite": "wooden_chest/sprite.png",
+      "rotation_files": {},
+      "animations": [
+        {
+          "key": "open",
+          "gif": "wooden_chest/animations/open.gif",
+          "strip": "wooden_chest/animations/open.png",
+          "frames": 4,
+          "action": "opening"
+        }
+      ]
+    }
+  ]
+}
