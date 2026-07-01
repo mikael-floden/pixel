@@ -1,10 +1,11 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 8,
+  "object_count": 9,
   "target_count": 40,
   "categories": {
     "container": 4,
-    "valuable": 4
+    "valuable": 4,
+    "tool": 1
   },
   "objects": [
     {
@@ -125,6 +126,21 @@
           "action": "spinning around"
         }
       ]
+    },
+    {
+      "id": "sword",
+      "name": "Sword",
+      "category": "tool",
+      "description": "a steel knight's sword with a leather-wrapped hilt and crossguard, blade pointing up",
+      "view": "side",
+      "size": [
+        64,
+        64
+      ],
+      "status": "in_progress",
+      "sprite": "sword/sprite.png",
+      "rotation_files": {},
+      "animations": []
     },
     {
       "id": "wooden_chest",

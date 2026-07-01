@@ -1,0 +1,30 @@
+{
+  "id": "sword",
+  "name": "Sword",
+  "category": "tool",
+  "description": "a steel knight's sword with a leather-wrapped hilt and crossguard, blade pointing up",
+  "view": "side",
+  "direction": "south",
+  "size": [
+    64,
+    64
+  ],
+  "procedural": false,
+  "source": "pixellab.ai (generate-image-pixflux / rotate / animate-with-text)",
+  "params": {
+    "outline": "single color black outline",
+    "shading": "detailed shading",
+    "detail": "highly detailed",
+    "no_background": true,
+    "isometric": false,
+    "seed": 76664682
+  },
+  "sprite": "sword/sprite.png",
+  "rotations": {
+    "count": 0,
+    "directions": []
+  },
+  "animations": {},
+  "generations_used": 1.0,
+  "status": "in_progress"
+}
