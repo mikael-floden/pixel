@@ -75,6 +75,30 @@ def write_status(client, current, health="running"):
         print(f"  (status write skipped: {e})")
 
 
+def print_inbox():
+    """Surface cross-domain requests addressed to this domain at startup, so the
+    agent session running the loop notices and can act on them (see
+    coordination/PROTOCOL.md). Purely informational — the loop only generates."""
+    cdir = os.path.join(os.path.dirname(factory.ROOT), "coordination")
+    found = 0
+    for name in sorted(os.listdir(cdir)) if os.path.isdir(cdir) else []:
+        if not name.endswith(".json"):
+            continue
+        try:
+            with open(os.path.join(cdir, name)) as f:
+                board = json.load(f)
+        except (OSError, ValueError):
+            continue
+        if board.get("domain") == DOMAIN:
+            continue
+        for r in board.get("requests", []):
+            if r.get("to") == DOMAIN:
+                found += 1
+                print(f"  >> INBOX from {board.get('domain')}: {r.get('text')}")
+    if found:
+        print(f"  ({found} cross-domain request(s) for {DOMAIN} — handle before/after this run)")
+
+
 # --- git --------------------------------------------------------------------
 
 def _git(*args, check=True):
@@ -275,6 +299,7 @@ def main():
     print(f"factory loop starting — {rem:.0f} generations remaining "
           f"(floor {min_balance})")
 
+    print_inbox()
     write_status(client, "starting")
     fails = 0
     while True:

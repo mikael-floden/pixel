@@ -59,18 +59,33 @@ whole fleet. Schema:
 `updated_at`/`health`/`current`/`progress`/`budget_remaining` refresh each unit.
 A stale `updated_at` (say > 2h) means that agent is down.
 
-## Messaging (cross-domain requests)
+## Messaging (agents talk to each other DIRECTLY — no human relay)
 
-There's no shared inbox (that would be a multi-writer file). Instead:
+The git repo IS the message bus: async and durable, so it works even though each
+agent is only awake when its Routine fires. There's no shared inbox file (that
+would be multi-writer); instead each agent writes only its **own** file and reads
+everyone's. Use the `coordination/board.py` CLI:
 
-- To ask another domain for something, append an entry to **your own**
-  `requests` array with `"to": "<their-domain>"`.
-- At the start of each run, read the other domains' JSON and scan their
-  `requests` for `"to": "<you>"`. Act on them, then note the outcome in your own
-  `notes` (e.g. `"done: sized chars to maps town tileset (32px)"`). The asker
-  reads your notes to see it was handled.
+```bash
+# 1. START of EVERY run — MANDATORY: read messages addressed to you + fleet health
+python coordination/board.py inbox <you>
 
-One writer per file, everyone reads all — conflict-free by construction.
+# 2. Ask another domain for something (async; they see it on their next run)
+python coordination/board.py post <you> --to <them> --text "town tiles are 32px"
+
+# 3. After acting on an incoming request, acknowledge it so the asker knows
+python coordination/board.py note <you> --text "ack: added a 32px skeleton for maps"
+```
+
+Round trip, fully autonomous:
+1. `maps` → `post maps --to characters --text "town tiles are 32px"`
+2. `characters` next run → `inbox characters` sees it → acts → `note characters --text "ack: ..."`
+3. `maps` next run → `inbox maps` sees the ack in characters' notes.
+
+**Every agent MUST run `inbox <you>` at the start of each run** and handle any
+request addressed to it before generating. That's what makes the human unneeded.
+Latency is one Routine cycle (~1h) — fine for async coordination. One writer per
+file, everyone reads all → conflict-free by construction.
 
 ## Shared PixelLab budget
 
