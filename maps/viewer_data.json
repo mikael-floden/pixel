@@ -364,6 +364,22 @@
       "scene": "wild_004/scene.png",
       "collision": "wild_004/collision.png",
       "manifest": "wild_004/zone.json"
+    },
+    {
+      "id": "wild_005",
+      "title": "Windswept Shore 5",
+      "kind": "island_screen",
+      "mood": "windswept beach (daytime)",
+      "pixel_size": {
+        "width": 960,
+        "height": 672
+      },
+      "props": 10,
+      "exits": [],
+      "preview": "wild_005/preview.png",
+      "scene": "wild_005/scene.png",
+      "collision": "wild_005/collision.png",
+      "manifest": "wild_005/zone.json"
     }
   ]
 }
