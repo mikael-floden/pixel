@@ -30,7 +30,12 @@
   "sprite": "sign_post/sprite.png",
   "rotations": {
     "count": 4,
-    "directions": []
+    "directions": [
+      "south"
+    ],
+    "files": {
+      "south": "sign_post/rotations/south.png"
+    }
   },
   "animations": {},
   "generations_used": 1.0,
