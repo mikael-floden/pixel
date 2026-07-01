@@ -115,6 +115,23 @@ def build_hamlet(world: World, plan: WorldPlan, node_name: str) -> tuple[int, in
     return (hx, hy)
 
 
+def build_farms(world: World, centers: list[tuple[int, int]]) -> int:
+    """Ring settlements with tilled farm fields on nearby flat, low plains — the
+    lived-in look of a working kingdom."""
+    changed = 0
+    for tx, ty in centers:
+        for y in range(ty - 8, ty + 9):
+            for x in range(tx - 8, tx + 9):
+                if not world.in_bounds(x, y):
+                    continue
+                c = world.at(x, y)
+                d = math.hypot(x - tx, y - ty)
+                if 4 <= d <= 8 and c.role in ("plains", "farm") and c.level <= 1:
+                    c.terrain, c.variant, c.role = "farm", (x + y) % 6, "farm"
+                    changed += 1
+    return changed
+
+
 def build_roads(world: World, plan: WorldPlan, hooks: dict) -> int:
     """Lay the King's Road along the plan's node graph via A*."""
     laid = 0
@@ -141,5 +158,9 @@ def stamp_all(world: World, plan: WorldPlan) -> None:
         if h:
             hooks[name] = h
     n = build_roads(world, plan, hooks)
+    # farms ring the town + the villages (not the castle)
+    settle = [hooks[k] for k in ("port", "westvillage", "easthamlet", "desertpost")
+              if k in hooks]
+    f = build_farms(world, settle)
     world.log.append(f"stamped landmarks: castle, town, {len(hooks) - 2} hamlets, "
-                     f"{n} King's Road segments")
+                     f"{n} King's Road segments, {f} farm fields")
