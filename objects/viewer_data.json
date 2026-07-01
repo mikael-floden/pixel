@@ -137,10 +137,18 @@
         64,
         64
       ],
-      "status": "in_progress",
+      "status": "complete",
       "sprite": "sword/sprite.png",
       "rotation_files": {},
-      "animations": []
+      "animations": [
+        {
+          "key": "glint",
+          "gif": "sword/animations/glint.gif",
+          "strip": "sword/animations/glint.png",
+          "frames": 4,
+          "action": "glinting with a shine of light"
+        }
+      ]
     },
     {
       "id": "wooden_chest",
