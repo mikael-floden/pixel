@@ -584,10 +584,18 @@
         "character_height_m": 1.7,
         "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall. Keeps objects realistically sized in a world with characters."
       },
-      "status": "in_progress",
+      "status": "complete",
       "sprite": "potion_red/sprite.png",
       "rotation_files": {},
-      "animations": []
+      "animations": [
+        {
+          "key": "bob",
+          "gif": "potion_red/animations/bob.gif",
+          "strip": "potion_red/animations/bob.png",
+          "frames": 4,
+          "action": "floating up and down"
+        }
+      ]
     },
     {
       "id": "rock",
