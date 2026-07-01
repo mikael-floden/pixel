@@ -1,0 +1,166 @@
+{
+  "schema": "pixel-tiles/set@1",
+  "category": "cliff_clay",
+  "description": "isometric red-clay cliff tiles, two-level badland face, cliffs only: 1) clay cliff front 2) clay cliff corner 3) banded clay strata 4) eroded clay gully 5) crumbling clay drop 6) clay cliff inner corner",
+  "kind": "ground",
+  "tile_type": "isometric",
+  "tile_size": 64,
+  "view_angle": 28,
+  "depth_ratio": 0.75,
+  "flat_top_px": 4,
+  "tile_height": 128,
+  "profile": "cliff",
+  "geometry": {
+    "grid_dx": 32,
+    "grid_dy": 15,
+    "diamond_top_height": 30,
+    "level_height": 83,
+    "apex_y": 5,
+    "base_y": 114,
+    "image_height": 128,
+    "note": "screen_x=ox+(col-row)*grid_dx; screen_y=oy+(col+row)*grid_dy; one level = 19px (subtract N*19 from screen_y to raise N levels); bottom-anchor by base_y (footprint front tip) so tiles of any thickness line up without per-tile correction; draw back-to-front by (col+row) then by level."
+  },
+  "stacking": {
+    "face_height_px": 83,
+    "one_layer_px": 19,
+    "layers": 4.37,
+    "levels": 4,
+    "align": "scenery",
+    "diamond_top_height_px": 30,
+    "apex_y": 5,
+    "base_y": 114,
+    "image_height": 128,
+    "grid_dx": 32,
+    "grid_dy": 15,
+    "formula": "One elevation level = 19px (a 64x64 @ 50% flat tile's face). Raise a tile N levels by subtracting N*19 from screen_y; draw back-to-front by (col+row), then by level. EXACT tiles (64x64: flat=1 level, raised=2 levels) terrace perfectly. SCENERY tiles (64x128 cliff/tall) have fractional faces (`layers`) \u2014 do NOT use them as exact steps; anchor them by `base_y` (the footprint's front tip is at image row base_y, identical across thicknesses, so bottom-anchoring needs no per-tile correction)."
+  },
+  "count": 12,
+  "tiles": [
+    {
+      "index": 0,
+      "file": "tile_00.png",
+      "width": 64,
+      "height": 128,
+      "apex_y": 2,
+      "base_y": 114,
+      "face_px": 83
+    },
+    {
+      "index": 1,
+      "file": "tile_01.png",
+      "width": 64,
+      "height": 128,
+      "apex_y": 2,
+      "base_y": 114,
+      "face_px": 83
+    },
+    {
+      "index": 2,
+      "file": "tile_02.png",
+      "width": 64,
+      "height": 128,
+      "apex_y": 2,
+      "base_y": 114,
+      "face_px": 83
+    },
+    {
+      "index": 3,
+      "file": "tile_03.png",
+      "width": 64,
+      "height": 128,
+      "apex_y": 2,
+      "base_y": 114,
+      "face_px": 83
+    },
+    {
+      "index": 4,
+      "file": "tile_04.png",
+      "width": 64,
+      "height": 128,
+      "apex_y": 7,
+      "base_y": 100,
+      "face_px": 31
+    },
+    {
+      "index": 5,
+      "file": "tile_05.png",
+      "width": 64,
+      "height": 128,
+      "apex_y": 2,
+      "base_y": 106,
+      "face_px": 73
+    },
+    {
+      "index": 6,
+      "file": "tile_06.png",
+      "width": 64,
+      "height": 128,
+      "apex_y": 3,
+      "base_y": 106,
+      "face_px": 12
+    },
+    {
+      "index": 7,
+      "file": "tile_07.png",
+      "width": 64,
+      "height": 128,
+      "apex_y": 7,
+      "base_y": 44,
+      "face_px": 67
+    },
+    {
+      "index": 8,
+      "file": "tile_08.png",
+      "width": 64,
+      "height": 128,
+      "apex_y": 8,
+      "base_y": 119,
+      "face_px": 13
+    },
+    {
+      "index": 9,
+      "file": "tile_09.png",
+      "width": 64,
+      "height": 128,
+      "apex_y": 8,
+      "base_y": 119,
+      "face_px": 84
+    },
+    {
+      "index": 10,
+      "file": "tile_10.png",
+      "width": 64,
+      "height": 128,
+      "apex_y": 8,
+      "base_y": 119,
+      "face_px": 83
+    },
+    {
+      "index": 11,
+      "file": "tile_11.png",
+      "width": 64,
+      "height": 128,
+      "apex_y": 8,
+      "base_y": 119,
+      "face_px": 84
+    }
+  ],
+  "preview": "preview.png",
+  "generated_at": "2026-07-01T12:11:15+00:00",
+  "provenance": {
+    "tool": "pixellab",
+    "endpoint": "/create-tiles-pro",
+    "seed": 490744432,
+    "request": {
+      "endpoint": "/create-tiles-pro",
+      "tile_type": "isometric",
+      "tile_size": 64,
+      "tile_view_angle": 28,
+      "tile_depth_ratio": 0.75,
+      "tile_flat_top_px": 4,
+      "tile_height": 128,
+      "seed": 490744432,
+      "description": "isometric red-clay cliff tiles, two-level badland face, cliffs only: 1) clay cliff front 2) clay cliff corner 3) banded clay strata 4) eroded clay gully 5) crumbling clay drop 6) clay cliff inner corner"
+    }
+  }
+}
