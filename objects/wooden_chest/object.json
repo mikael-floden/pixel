@@ -28,20 +28,19 @@
     "west"
   ],
   "rotations": {
+    "south": "wooden_chest/rotations/south.png",
+    "west": "wooden_chest/rotations/west.png",
     "east": "wooden_chest/rotations/east.png",
     "north": "wooden_chest/rotations/north.png",
-    "north-east": "wooden_chest/rotations/north-east.png",
-    "north-west": "wooden_chest/rotations/north-west.png",
-    "south": "wooden_chest/rotations/south.png",
     "south-east": "wooden_chest/rotations/south-east.png",
     "south-west": "wooden_chest/rotations/south-west.png",
-    "west": "wooden_chest/rotations/west.png"
+    "north-east": "wooden_chest/rotations/north-east.png",
+    "north-west": "wooden_chest/rotations/north-west.png"
   },
   "animations": {
     "open": {
       "group_id": "5999495e-d88e-451f-b859-78e37100ba3c",
       "description": "the lid opening",
-      "frame_count": 16,
       "directions": {
         "east": {
           "frames": 17,
@@ -65,7 +64,9 @@
             "wooden_chest/animations/open/east/14.png",
             "wooden_chest/animations/open/east/15.png",
             "wooden_chest/animations/open/east/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 06:28:08 GMT",
+          "src_frames": 17
         },
         "north": {
           "frames": 17,
@@ -89,7 +90,9 @@
             "wooden_chest/animations/open/north/14.png",
             "wooden_chest/animations/open/north/15.png",
             "wooden_chest/animations/open/north/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 06:28:17 GMT",
+          "src_frames": 17
         },
         "north-east": {
           "frames": 17,
@@ -113,7 +116,9 @@
             "wooden_chest/animations/open/north-east/14.png",
             "wooden_chest/animations/open/north-east/15.png",
             "wooden_chest/animations/open/north-east/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 06:28:23 GMT",
+          "src_frames": 17
         },
         "north-west": {
           "frames": 17,
@@ -137,7 +142,9 @@
             "wooden_chest/animations/open/north-west/14.png",
             "wooden_chest/animations/open/north-west/15.png",
             "wooden_chest/animations/open/north-west/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 06:28:31 GMT",
+          "src_frames": 17
         },
         "south": {
           "frames": 17,
@@ -161,7 +168,9 @@
             "wooden_chest/animations/open/south/14.png",
             "wooden_chest/animations/open/south/15.png",
             "wooden_chest/animations/open/south/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 06:28:38 GMT",
+          "src_frames": 17
         },
         "south-east": {
           "frames": 17,
@@ -185,7 +194,9 @@
             "wooden_chest/animations/open/south-east/14.png",
             "wooden_chest/animations/open/south-east/15.png",
             "wooden_chest/animations/open/south-east/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 06:30:48 GMT",
+          "src_frames": 17
         },
         "south-west": {
           "frames": 17,
@@ -209,7 +220,9 @@
             "wooden_chest/animations/open/south-west/14.png",
             "wooden_chest/animations/open/south-west/15.png",
             "wooden_chest/animations/open/south-west/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 06:28:53 GMT",
+          "src_frames": 17
         },
         "west": {
           "frames": 17,
@@ -233,10 +246,13 @@
             "wooden_chest/animations/open/west/14.png",
             "wooden_chest/animations/open/west/15.png",
             "wooden_chest/animations/open/west/16.png"
-          ]
+          ],
+          "lm": "Wed, 01 Jul 2026 06:29:00 GMT",
+          "src_frames": 17
         }
       }
     }
   },
-  "status": "in_progress"
+  "status": "in_progress",
+  "synced_from_pixellab": true
 }

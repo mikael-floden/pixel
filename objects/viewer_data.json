@@ -38,14 +38,14 @@
       "pixellab_object_id": "e95365bb-b2e4-4c99-a1ad-5bb7d57417ec",
       "sprite": "wooden_chest/sprite.png",
       "rotations": {
+        "south": "wooden_chest/rotations/south.png",
+        "west": "wooden_chest/rotations/west.png",
         "east": "wooden_chest/rotations/east.png",
         "north": "wooden_chest/rotations/north.png",
-        "north-east": "wooden_chest/rotations/north-east.png",
-        "north-west": "wooden_chest/rotations/north-west.png",
-        "south": "wooden_chest/rotations/south.png",
         "south-east": "wooden_chest/rotations/south-east.png",
         "south-west": "wooden_chest/rotations/south-west.png",
-        "west": "wooden_chest/rotations/west.png"
+        "north-east": "wooden_chest/rotations/north-east.png",
+        "north-west": "wooden_chest/rotations/north-west.png"
       },
       "animations": [
         {
