@@ -27,7 +27,7 @@ import zlib
 import numpy as np
 from PIL import Image
 
-from pixellab_client import MIN_ANIMATE_SIZE, PixelLabClient
+from pixellab_client import ANIMATE_SIZE, ROTATE_SIZES, PixelLabClient
 
 ROOT = os.path.dirname(os.path.dirname(__file__))
 CONFIG = os.path.join(ROOT, "config", "objects.json")
@@ -75,17 +75,30 @@ def _resolve_animations(cfg, spec):
     return out
 
 
+def _snap_rotate_size(n):
+    """Smallest allowed square rotate canvas >= n (rotate only accepts these)."""
+    for s in ROTATE_SIZES:
+        if s >= n:
+            return s
+    return ROTATE_SIZES[-1]
+
+
 def _finalize_spec(cfg, raw, index, procedural=False):
-    """Merge defaults into one object spec and normalize it. Animated objects are
-    bumped to >= MIN_ANIMATE_SIZE (animate-with-text refuses smaller canvases),
-    with the base sprite generated at the same size so it matches its frames."""
+    """Merge defaults into one object spec and normalize its canvas to what the
+    PixelLab endpoints accept:
+      - animated objects -> exactly ANIMATE_SIZE x ANIMATE_SIZE (animate-with-text
+        only accepts a 64x64 canvas), base sprite generated at that same size;
+      - rotated objects  -> a square canvas snapped to ROTATE_SIZES;
+      - plain sprites    -> their declared size (pixflux is flexible)."""
     d = cfg["defaults"]
     spec = dict(raw)
     spec["view"] = spec.get("view", d["view"])  # resolve before animations read it
     w, h = spec.get("size", [48, 48])
     anims = _resolve_animations(cfg, spec)
     if anims:
-        w, h = max(int(w), MIN_ANIMATE_SIZE), max(int(h), MIN_ANIMATE_SIZE)
+        w = h = ANIMATE_SIZE
+    elif int(spec.get("rotations", 0)):
+        w = h = _snap_rotate_size(max(int(w), int(h)))
     return {
         "id": spec["id"],
         "name": spec.get("name", spec["id"].replace("_", " ").title()),

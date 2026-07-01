@@ -6,7 +6,7 @@
   "view": "low top-down",
   "direction": "south",
   "size": [
-    48,
+    64,
     64
   ],
   "procedural": false,
@@ -22,12 +22,7 @@
   "sprite": "barrel/sprite.png",
   "rotations": {
     "count": 4,
-    "directions": [
-      "south"
-    ],
-    "files": {
-      "south": "barrel/rotations/south.png"
-    }
+    "directions": []
   },
   "animations": {},
   "generations_used": 1.0,

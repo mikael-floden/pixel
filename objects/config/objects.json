@@ -50,7 +50,7 @@
   "_catalog": "Explicit, curated objects. Each is one unique folder objects/<id>/. `size` is [w,h]; `rotations` is 0 (none), 4, or 8; `animations` lists animation_library keys (or inline overrides). Objects with animations are auto-bumped to >= 64x64.",
   "catalog": [
     { "id": "wooden_chest",  "name": "Wooden Chest",  "category": "container", "description": "a closed wooden treasure chest with iron bands and a rounded lid",           "size": [64, 64], "animations": ["open"] },
-    { "id": "barrel",        "name": "Barrel",        "category": "container", "description": "a sturdy wooden barrel bound with metal hoops",                              "size": [48, 64], "rotations": 4 },
+    { "id": "barrel",        "name": "Barrel",        "category": "container", "description": "a sturdy wooden barrel bound with metal hoops",                              "size": [64, 64], "rotations": 4 },
     { "id": "wooden_crate",  "name": "Wooden Crate",  "category": "container", "description": "a wooden shipping crate with plank sides and nailed corners",               "size": [48, 48] },
     { "id": "clay_pot",      "name": "Clay Pot",      "category": "container", "description": "a small round terracotta clay pot",                                         "size": [32, 32] },
 
@@ -66,8 +66,8 @@
     { "id": "hammer",        "name": "Hammer",        "category": "tool",      "description": "a blacksmith's hammer with a heavy iron head",                             "size": [48, 48], "view": "side" },
     { "id": "fishing_rod",   "name": "Fishing Rod",   "category": "tool",      "description": "a bamboo fishing rod with a line and hook",                                "size": [64, 64], "view": "side" },
 
-    { "id": "oak_tree",      "name": "Oak Tree",      "category": "nature",    "description": "a lush round-canopy oak tree with a thick brown trunk",                    "size": [96, 96], "animations": ["sway"] },
-    { "id": "pine_tree",     "name": "Pine Tree",     "category": "nature",    "description": "a tall green conifer pine tree",                                           "size": [96, 96], "animations": ["sway"] },
+    { "id": "oak_tree",      "name": "Oak Tree",      "category": "nature",    "description": "a lush round-canopy oak tree with a thick brown trunk",                    "size": [64, 64], "animations": ["sway"] },
+    { "id": "pine_tree",     "name": "Pine Tree",     "category": "nature",    "description": "a tall green conifer pine tree",                                           "size": [64, 64], "animations": ["sway"] },
     { "id": "bush",          "name": "Bush",          "category": "nature",    "description": "a small round leafy green bush",                                           "size": [64, 64], "animations": ["sway"] },
     { "id": "flower",        "name": "Flower",        "category": "nature",    "description": "a single red tulip flower with a green stem",                              "size": [64, 64], "animations": ["sway"] },
     { "id": "mushroom",      "name": "Mushroom",      "category": "nature",    "description": "a plump red toadstool mushroom with white spots",                          "size": [32, 32] },
@@ -83,8 +83,8 @@
     { "id": "fish",          "name": "Fish",          "category": "creature",  "description": "a plump orange river fish",                                                "size": [64, 64], "view": "side", "animations": [{ "key": "swim", "view": "side" }] },
 
     { "id": "potion_red",    "name": "Red Potion",    "category": "misc",      "description": "a round glass potion bottle full of glowing red liquid with a cork",        "size": [64, 64], "animations": ["bob"] },
-    { "id": "sign_post",     "name": "Sign Post",     "category": "misc",      "description": "a wooden directional sign post with a blank board on a stake",              "size": [48, 64], "rotations": 4 },
-    { "id": "well",          "name": "Stone Well",    "category": "misc",      "description": "a round stone water well with a wooden roof and bucket",                    "size": [96, 96], "animations": ["ripple"] }
+    { "id": "sign_post",     "name": "Sign Post",     "category": "misc",      "description": "a wooden directional sign post with a blank board on a stake",              "size": [64, 64], "rotations": 4 },
+    { "id": "well",          "name": "Stone Well",    "category": "misc",      "description": "a round stone water well with a wooden roof and bucket",                    "size": [64, 64], "animations": ["ripple"] }
   ],
 
   "_procedural": "When the explicit catalog is exhausted but targets.num_objects is not yet reached, the loop synthesizes more objects by combining these axes. Deterministic (seeded by index) so re-runs are reproducible. These are best-effort, un-curated extras.",

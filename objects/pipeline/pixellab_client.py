@@ -39,9 +39,11 @@ BASE_URL = "https://api.pixellab.ai/v1"
 BALANCE_URL = "https://api.pixellab.ai/v2/balance"
 API_KEY_ENV = "PIXELLAB_API_KEY"
 
-# animate-with-text refuses canvases smaller than this (422). Objects that carry
-# animations are bumped up to it; static sprites can be smaller.
-MIN_ANIMATE_SIZE = 64
+# animate-with-text only accepts an exactly 64x64 canvas (min 64 AND max 64), so
+# any animated object is generated at 64x64. rotate only accepts a square canvas
+# from this set. Static pixflux sprites are free to be other sizes.
+ANIMATE_SIZE = 64
+ROTATE_SIZES = (16, 32, 64, 128)
 
 
 class PixelLabError(RuntimeError):
