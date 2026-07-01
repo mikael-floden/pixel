@@ -25,15 +25,17 @@
     "directions": [
       "east",
       "north",
-      "south"
+      "south",
+      "west"
     ],
     "files": {
       "east": "barrel/rotations/east.png",
       "north": "barrel/rotations/north.png",
-      "south": "barrel/rotations/south.png"
+      "south": "barrel/rotations/south.png",
+      "west": "barrel/rotations/west.png"
     }
   },
   "animations": {},
-  "generations_used": 3.0,
-  "status": "in_progress"
+  "generations_used": 4.0,
+  "status": "complete"
 }
