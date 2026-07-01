@@ -36,7 +36,7 @@
     "_comment": "Shared PixelLab pool floor (see coordination/PROTOCOL.md). The loop stops cleanly when the balance drops below this, leaving headroom for the characters and maps domains that draw from the same pool."
   },
   "targets": {
-    "num_objects": 46,
+    "num_objects": 61,
     "_comment": "How many objects the loop aims to produce. It builds the explicit `catalog` first, then synthesizes further ones from `procedural` until this count is reached. Raise it to keep the loop generating open-endedly."
   },
   "catalog": [
@@ -473,6 +473,225 @@
           "frames": 16
         }
       ]
+    },
+    {
+      "id": "great_oak",
+      "name": "Great Oak",
+      "category": "nature",
+      "description": "a huge ancient oak tree with a massive spreading canopy and gnarled trunk",
+      "size": 160,
+      "world_height_m": 8.0,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the huge canopy and branches swaying in the wind",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "willow_tree",
+      "name": "Willow Tree",
+      "category": "nature",
+      "description": "a large weeping willow tree with long drooping trailing branches",
+      "size": 128,
+      "world_height_m": 6.0,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the long drooping branches swaying in the wind",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "birch_tree",
+      "name": "Birch Tree",
+      "category": "nature",
+      "description": "a tall slender white birch tree with delicate fluttering leaves",
+      "size": 128,
+      "world_height_m": 6.5,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the delicate leaves fluttering in the wind",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "maple_tree",
+      "name": "Maple Tree",
+      "category": "nature",
+      "description": "a broad maple tree with warm autumn-red and orange foliage",
+      "size": 128,
+      "world_height_m": 6.0,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the autumn foliage swaying in the wind",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "dead_tree",
+      "name": "Dead Tree",
+      "category": "nature",
+      "description": "a bare gnarled leafless dead tree with twisted branches",
+      "size": 128,
+      "world_height_m": 5.5,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the twisted bare branches creaking in the wind",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "sapling",
+      "name": "Sapling",
+      "category": "nature",
+      "description": "a small young tree sapling with a thin trunk and few leaves",
+      "size": 64,
+      "world_height_m": 1.5,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the sapling swaying gently in the breeze",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "small_pine",
+      "name": "Small Pine",
+      "category": "nature",
+      "description": "a small young pine tree",
+      "size": 96,
+      "world_height_m": 2.5,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the small pine swaying gently in the breeze",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "berry_bush",
+      "name": "Berry Bush",
+      "category": "nature",
+      "description": "a round leafy bush laden with red berries",
+      "size": 64,
+      "world_height_m": 0.9,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the bush swaying gently in the breeze",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "flowering_bush",
+      "name": "Flowering Bush",
+      "category": "nature",
+      "description": "a round green bush covered in small white and pink flowers",
+      "size": 64,
+      "world_height_m": 1.0,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the flowering bush swaying gently in the breeze",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "fern",
+      "name": "Fern",
+      "category": "nature",
+      "description": "a leafy green fern plant with arching fronds",
+      "size": 48,
+      "world_height_m": 0.6,
+      "animations": [
+        {
+          "key": "sway",
+          "description": "the fern fronds swaying gently in the breeze",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "fireplace",
+      "name": "Fireplace",
+      "category": "light",
+      "description": "a stone fireplace hearth with a warm crackling fire and burning logs",
+      "size": 96,
+      "world_height_m": 1.2,
+      "animations": [
+        {
+          "key": "burn",
+          "description": "the fire burning and dancing",
+          "frames": 16
+        }
+      ]
+    },
+    {
+      "id": "fireplace_out",
+      "name": "Extinguished Fireplace",
+      "category": "structure",
+      "description": "a cold stone fireplace hearth with grey ashes and charred burnt-out logs, no fire",
+      "size": 96,
+      "world_height_m": 1.2,
+      "animations": []
+    },
+    {
+      "id": "boulder",
+      "name": "Boulder",
+      "category": "nature",
+      "description": "a large grey moss-flecked boulder",
+      "size": 96,
+      "world_height_m": 1.4,
+      "animations": []
+    },
+    {
+      "id": "mossy_boulder",
+      "name": "Mossy Boulder",
+      "category": "nature",
+      "description": "a big rounded boulder blanketed in green moss",
+      "size": 96,
+      "world_height_m": 1.5,
+      "animations": []
+    },
+    {
+      "id": "rock_pile",
+      "name": "Rock Pile",
+      "category": "nature",
+      "description": "a small pile of stacked grey rocks and stones",
+      "size": 64,
+      "world_height_m": 0.8,
+      "animations": []
+    },
+    {
+      "id": "small_rock",
+      "name": "Small Rock",
+      "category": "nature",
+      "description": "a single small grey rock",
+      "size": 32,
+      "world_height_m": 0.3,
+      "animations": []
+    },
+    {
+      "id": "pebbles",
+      "name": "Pebbles",
+      "category": "nature",
+      "description": "a small scattering of pebbles and little stones",
+      "size": 48,
+      "world_height_m": 0.15,
+      "animations": []
     }
   ],
   "_procedural": "When the explicit catalog is exhausted but targets.num_objects is not yet reached, the loop synthesizes more objects by combining these axes. Deterministic (seeded by index) so re-runs are reproducible. These are best-effort, un-curated extras.",
