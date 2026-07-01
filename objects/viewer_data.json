@@ -348,7 +348,7 @@
         "character_height_m": 1.7,
         "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
       },
-      "status": "in_progress",
+      "status": "complete",
       "pixellab_object_id": "503a15c6-245e-4ce1-9f37-a1ad01b2a5e8",
       "sprite": "gold_ingot/sprite.png",
       "rotations": {
@@ -391,6 +391,21 @@
             "south-east": "gold_ingot/animations/shine__south-east.gif",
             "south-west": "gold_ingot/animations/shine__south-west.gif",
             "west": "gold_ingot/animations/shine__west.gif"
+          }
+        },
+        {
+          "key": "bounce",
+          "description": "the gold bars bouncing",
+          "frames": 17,
+          "preview_gif": "gold_ingot/animations/bounce__south.gif",
+          "directions": {
+            "east": "gold_ingot/animations/bounce__east.gif",
+            "north": "gold_ingot/animations/bounce__north.gif",
+            "north-east": "gold_ingot/animations/bounce__north-east.gif",
+            "north-west": "gold_ingot/animations/bounce__north-west.gif",
+            "south": "gold_ingot/animations/bounce__south.gif",
+            "south-west": "gold_ingot/animations/bounce__south-west.gif",
+            "west": "gold_ingot/animations/bounce__west.gif"
           }
         }
       ]
