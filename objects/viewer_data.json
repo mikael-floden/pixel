@@ -1,13 +1,28 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 11,
+  "object_count": 12,
   "target_count": 40,
   "categories": {
+    "tool": 4,
     "container": 4,
-    "valuable": 4,
-    "tool": 3
+    "valuable": 4
   },
   "objects": [
+    {
+      "id": "axe",
+      "name": "Axe",
+      "category": "tool",
+      "description": "a woodcutter's axe with a broad steel head and wooden haft",
+      "view": "side",
+      "size": [
+        64,
+        64
+      ],
+      "status": "complete",
+      "sprite": "axe/sprite.png",
+      "rotation_files": {},
+      "animations": []
+    },
     {
       "id": "barrel",
       "name": "Barrel",
