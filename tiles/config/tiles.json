@@ -264,6 +264,27 @@
       }
     ]
   },
+  "_roads_comment": "Roads/paths per ground type (roads.py expands each theme x {straight,turns,junctions}). Every road is flat 64x64 @ 50% (1 layer, exact). `surface` = road material, `blend` = the ground it must feather into at the edges. City roads use 3 stone surfaces. Add a theme -> 3 new road sets are generated automatically.",
+  "roads": {
+    "themes": [
+      { "id": "road_dirt_grass",   "ground": "grass",    "surface": "worn brown dirt path",            "blend": "lush green grass" },
+      { "id": "road_dirt_field",   "ground": "farm",     "surface": "dirt farm cart track",            "blend": "tilled brown farm field" },
+      { "id": "road_snow",         "ground": "snow",     "surface": "cleared packed-snow path",        "blend": "deep white snow" },
+      { "id": "road_sand",         "ground": "sand",     "surface": "packed sandy track",              "blend": "pale beach sand" },
+      { "id": "road_desert",       "ground": "desert",   "surface": "dusty desert wagon track",        "blend": "cracked reddish desert earth" },
+      { "id": "road_forest",       "ground": "forest",   "surface": "muddy forest trail with roots",   "blend": "leafy green forest floor" },
+      { "id": "road_flag_stone",   "ground": "stone",    "surface": "flagstone paved path",            "blend": "grey mossy stone ground" },
+      { "id": "road_cobble_dirt",  "ground": "dirt",     "surface": "grey cobblestone road",           "blend": "packed brown dirt" },
+      { "id": "road_meadow",       "ground": "meadow",   "surface": "worn dirt path",                  "blend": "flowering green meadow" },
+      { "id": "road_tundra",       "ground": "tundra",   "surface": "grey gravel path",                "blend": "frosty lichen tundra" },
+      { "id": "road_savanna",      "ground": "savanna",  "surface": "dusty dirt track",                "blend": "dry golden savanna grass" },
+      { "id": "road_jungle",       "ground": "jungle",   "surface": "muddy jungle trail",              "blend": "dense jungle undergrowth" },
+      { "id": "road_swamp",        "ground": "swamp",    "surface": "raised wooden plank boardwalk",   "blend": "murky swamp water and mud" },
+      { "id": "road_city_cobble",  "ground": "city",     "surface": "rounded grey cobblestone city road", "blend": "packed earth with a grassy verge" },
+      { "id": "road_city_flagstone","ground": "city",    "surface": "large cut flagstone city road",   "blend": "gravel and paved edging" },
+      { "id": "road_city_setts",   "ground": "city",     "surface": "rectangular stone-sett city road (brick-laid setts)", "blend": "packed earth verge" }
+    ]
+  },
   "_profiles_comment": "One level = 19px (flat 64x64@50% face). Only 64x64 tiles (flat/raised) align to exact whole levels; 64x128 (cliff/tall) are scenery, bottom-anchored by base_y, faces are approximate.",
   "profiles": {
     "flat": {

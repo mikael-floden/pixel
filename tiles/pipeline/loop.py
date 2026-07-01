@@ -20,6 +20,7 @@ import subprocess
 import time
 
 import coordination
+import roads
 import synth
 import tilegen
 from pixellab_client import BudgetExhausted, PixelLabClient
@@ -59,6 +60,10 @@ def commit_push(message, push=True):
 
 def next_category(cfg):
     for cat in cfg.get("categories", []):
+        if not tilegen.category_done(cat["id"]):
+            return cat
+    # Roads/paths for each ground type (prioritised ahead of open-ended growth).
+    for cat in roads.road_categories(cfg):
         if not tilegen.category_done(cat["id"]):
             return cat
     for cat in (cfg.get("procedural", {}) or {}).get("categories", []):

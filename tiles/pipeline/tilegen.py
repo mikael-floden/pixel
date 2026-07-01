@@ -223,6 +223,7 @@ def generate_category(client, cfg, cat):
         "stacking": stacking_info(geometry, t["size"], tile_height),
         "count": len(tile_meta), "tiles": tile_meta,
         "preview": "preview.png",
+        **({"road": cat["road"]} if cat.get("road") else {}),
         "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
         "provenance": {"tool": "pixellab", "endpoint": ENDPOINT, "seed": seed,
                        "request": request},
