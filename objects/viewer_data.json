@@ -453,6 +453,22 @@
             "south-west": "iron_key/animations/spin__south-west.gif",
             "west": "iron_key/animations/spin__west.gif"
           }
+        },
+        {
+          "key": "jingle",
+          "description": "the key jingling and shaking",
+          "frames": 17,
+          "preview_gif": "iron_key/animations/jingle__south.gif",
+          "directions": {
+            "east": "iron_key/animations/jingle__east.gif",
+            "north": "iron_key/animations/jingle__north.gif",
+            "north-east": "iron_key/animations/jingle__north-east.gif",
+            "north-west": "iron_key/animations/jingle__north-west.gif",
+            "south": "iron_key/animations/jingle__south.gif",
+            "south-east": "iron_key/animations/jingle__south-east.gif",
+            "south-west": "iron_key/animations/jingle__south-west.gif",
+            "west": "iron_key/animations/jingle__west.gif"
+          }
         }
       ]
     },
