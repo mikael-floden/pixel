@@ -1,0 +1,42 @@
+{
+  "id": "pine_tree",
+  "name": "Pine Tree",
+  "category": "nature",
+  "description": "a tall green conifer pine tree",
+  "view": "low top-down",
+  "size": 128,
+  "placement": {
+    "world_height_m": 7.0,
+    "world_px_height": 264,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "procedural": false,
+  "source": "pixellab.ai create-8-direction-object (persistent, syncable)",
+  "pixellab_object_id": "7d10aba0-16ce-42ce-89dd-b1342b091e43",
+  "style_version": 2,
+  "sprite": "pine_tree/sprite.png",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "east": "pine_tree/rotations/east.png",
+    "north": "pine_tree/rotations/north.png",
+    "north-east": "pine_tree/rotations/north-east.png",
+    "north-west": "pine_tree/rotations/north-west.png",
+    "south": "pine_tree/rotations/south.png",
+    "south-east": "pine_tree/rotations/south-east.png",
+    "south-west": "pine_tree/rotations/south-west.png",
+    "west": "pine_tree/rotations/west.png"
+  },
+  "animations": {},
+  "status": "in_progress"
+}
