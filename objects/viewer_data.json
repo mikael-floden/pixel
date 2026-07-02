@@ -1,7 +1,7 @@
 {
   "title": "Pixel Object Factory",
-  "object_count": 16,
-  "target_count": 61,
+  "object_count": 17,
+  "target_count": 75,
   "scale": {
     "_comment": "REALISM RULE: objects are scaled to the world by real height, so they sit correctly next to characters. A character is ~character_height_px tall (the 64px skeleton) representing character_height_m. The loop turns each object's world_height_m into world_px_height = round(world_height_m * character_height_px / character_height_m); a game renders the sprite scaled to that pixel height. So a coin (~0.22m) is tiny next to a character and an oak (~6m) towers. Every object MUST have a world_height_m (per-object, else category_height_m fallback).",
     "character_height_px": 64,
@@ -21,6 +21,7 @@
   "categories": {
     "tool": 6,
     "container": 4,
+    "light": 1,
     "valuable": 4,
     "nature": 2
   },
@@ -128,6 +129,52 @@
             "south-east": "barrel/animations/open__south-east.gif",
             "south-west": "barrel/animations/open__south-west.gif",
             "west": "barrel/animations/open__west.gif"
+          }
+        }
+      ]
+    },
+    {
+      "id": "campfire",
+      "name": "Campfire",
+      "category": "light",
+      "description": "a campfire of logs with dancing flames",
+      "view": "low top-down",
+      "size": 96,
+      "placement": {
+        "world_height_m": 0.6,
+        "world_px_height": 23,
+        "character_height_px": 64,
+        "character_height_m": 1.7,
+        "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+      },
+      "status": "in_progress",
+      "pixellab_object_id": "0295e9c7-0e97-4ef3-8510-41d49630b6b6",
+      "sprite": "campfire/sprite.png",
+      "rotations": {
+        "east": "campfire/rotations/east.png",
+        "north": "campfire/rotations/north.png",
+        "north-east": "campfire/rotations/north-east.png",
+        "north-west": "campfire/rotations/north-west.png",
+        "south": "campfire/rotations/south.png",
+        "south-east": "campfire/rotations/south-east.png",
+        "south-west": "campfire/rotations/south-west.png",
+        "west": "campfire/rotations/west.png"
+      },
+      "animations": [
+        {
+          "key": "burn",
+          "description": "the fire burning and dancing",
+          "frames": 17,
+          "preview_gif": "campfire/animations/burn__south.gif",
+          "directions": {
+            "east": "campfire/animations/burn__east.gif",
+            "north": "campfire/animations/burn__north.gif",
+            "north-east": "campfire/animations/burn__north-east.gif",
+            "north-west": "campfire/animations/burn__north-west.gif",
+            "south": "campfire/animations/burn__south.gif",
+            "south-east": "campfire/animations/burn__south-east.gif",
+            "south-west": "campfire/animations/burn__south-west.gif",
+            "west": "campfire/animations/burn__west.gif"
           }
         }
       ]

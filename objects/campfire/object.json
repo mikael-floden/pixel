@@ -1,0 +1,242 @@
+{
+  "id": "campfire",
+  "name": "Campfire",
+  "category": "light",
+  "description": "a campfire of logs with dancing flames",
+  "view": "low top-down",
+  "size": 96,
+  "placement": {
+    "world_height_m": 0.6,
+    "world_px_height": 23,
+    "character_height_px": 64,
+    "character_height_m": 1.7,
+    "note": "Render the sprite scaled so its height == world_px_height; a character is character_height_px tall."
+  },
+  "procedural": false,
+  "source": "pixellab.ai create-8-direction-object (persistent, syncable)",
+  "pixellab_object_id": "0295e9c7-0e97-4ef3-8510-41d49630b6b6",
+  "style_version": 2,
+  "sprite": "campfire/sprite.png",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "east": "campfire/rotations/east.png",
+    "north": "campfire/rotations/north.png",
+    "north-east": "campfire/rotations/north-east.png",
+    "north-west": "campfire/rotations/north-west.png",
+    "south": "campfire/rotations/south.png",
+    "south-east": "campfire/rotations/south-east.png",
+    "south-west": "campfire/rotations/south-west.png",
+    "west": "campfire/rotations/west.png"
+  },
+  "animations": {
+    "burn": {
+      "group_id": "427f6ee9-e0f2-44e3-a6f9-5407f7819d6e",
+      "description": "the fire burning and dancing",
+      "frame_count": 16,
+      "directions": {
+        "east": {
+          "frames": 17,
+          "strip": "campfire/animations/burn__east.png",
+          "gif": "campfire/animations/burn__east.gif",
+          "frame_paths": [
+            "campfire/animations/burn/east/00.png",
+            "campfire/animations/burn/east/01.png",
+            "campfire/animations/burn/east/02.png",
+            "campfire/animations/burn/east/03.png",
+            "campfire/animations/burn/east/04.png",
+            "campfire/animations/burn/east/05.png",
+            "campfire/animations/burn/east/06.png",
+            "campfire/animations/burn/east/07.png",
+            "campfire/animations/burn/east/08.png",
+            "campfire/animations/burn/east/09.png",
+            "campfire/animations/burn/east/10.png",
+            "campfire/animations/burn/east/11.png",
+            "campfire/animations/burn/east/12.png",
+            "campfire/animations/burn/east/13.png",
+            "campfire/animations/burn/east/14.png",
+            "campfire/animations/burn/east/15.png",
+            "campfire/animations/burn/east/16.png"
+          ]
+        },
+        "north": {
+          "frames": 17,
+          "strip": "campfire/animations/burn__north.png",
+          "gif": "campfire/animations/burn__north.gif",
+          "frame_paths": [
+            "campfire/animations/burn/north/00.png",
+            "campfire/animations/burn/north/01.png",
+            "campfire/animations/burn/north/02.png",
+            "campfire/animations/burn/north/03.png",
+            "campfire/animations/burn/north/04.png",
+            "campfire/animations/burn/north/05.png",
+            "campfire/animations/burn/north/06.png",
+            "campfire/animations/burn/north/07.png",
+            "campfire/animations/burn/north/08.png",
+            "campfire/animations/burn/north/09.png",
+            "campfire/animations/burn/north/10.png",
+            "campfire/animations/burn/north/11.png",
+            "campfire/animations/burn/north/12.png",
+            "campfire/animations/burn/north/13.png",
+            "campfire/animations/burn/north/14.png",
+            "campfire/animations/burn/north/15.png",
+            "campfire/animations/burn/north/16.png"
+          ]
+        },
+        "north-east": {
+          "frames": 17,
+          "strip": "campfire/animations/burn__north-east.png",
+          "gif": "campfire/animations/burn__north-east.gif",
+          "frame_paths": [
+            "campfire/animations/burn/north-east/00.png",
+            "campfire/animations/burn/north-east/01.png",
+            "campfire/animations/burn/north-east/02.png",
+            "campfire/animations/burn/north-east/03.png",
+            "campfire/animations/burn/north-east/04.png",
+            "campfire/animations/burn/north-east/05.png",
+            "campfire/animations/burn/north-east/06.png",
+            "campfire/animations/burn/north-east/07.png",
+            "campfire/animations/burn/north-east/08.png",
+            "campfire/animations/burn/north-east/09.png",
+            "campfire/animations/burn/north-east/10.png",
+            "campfire/animations/burn/north-east/11.png",
+            "campfire/animations/burn/north-east/12.png",
+            "campfire/animations/burn/north-east/13.png",
+            "campfire/animations/burn/north-east/14.png",
+            "campfire/animations/burn/north-east/15.png",
+            "campfire/animations/burn/north-east/16.png"
+          ]
+        },
+        "north-west": {
+          "frames": 17,
+          "strip": "campfire/animations/burn__north-west.png",
+          "gif": "campfire/animations/burn__north-west.gif",
+          "frame_paths": [
+            "campfire/animations/burn/north-west/00.png",
+            "campfire/animations/burn/north-west/01.png",
+            "campfire/animations/burn/north-west/02.png",
+            "campfire/animations/burn/north-west/03.png",
+            "campfire/animations/burn/north-west/04.png",
+            "campfire/animations/burn/north-west/05.png",
+            "campfire/animations/burn/north-west/06.png",
+            "campfire/animations/burn/north-west/07.png",
+            "campfire/animations/burn/north-west/08.png",
+            "campfire/animations/burn/north-west/09.png",
+            "campfire/animations/burn/north-west/10.png",
+            "campfire/animations/burn/north-west/11.png",
+            "campfire/animations/burn/north-west/12.png",
+            "campfire/animations/burn/north-west/13.png",
+            "campfire/animations/burn/north-west/14.png",
+            "campfire/animations/burn/north-west/15.png",
+            "campfire/animations/burn/north-west/16.png"
+          ]
+        },
+        "south": {
+          "frames": 17,
+          "strip": "campfire/animations/burn__south.png",
+          "gif": "campfire/animations/burn__south.gif",
+          "frame_paths": [
+            "campfire/animations/burn/south/00.png",
+            "campfire/animations/burn/south/01.png",
+            "campfire/animations/burn/south/02.png",
+            "campfire/animations/burn/south/03.png",
+            "campfire/animations/burn/south/04.png",
+            "campfire/animations/burn/south/05.png",
+            "campfire/animations/burn/south/06.png",
+            "campfire/animations/burn/south/07.png",
+            "campfire/animations/burn/south/08.png",
+            "campfire/animations/burn/south/09.png",
+            "campfire/animations/burn/south/10.png",
+            "campfire/animations/burn/south/11.png",
+            "campfire/animations/burn/south/12.png",
+            "campfire/animations/burn/south/13.png",
+            "campfire/animations/burn/south/14.png",
+            "campfire/animations/burn/south/15.png",
+            "campfire/animations/burn/south/16.png"
+          ]
+        },
+        "south-east": {
+          "frames": 17,
+          "strip": "campfire/animations/burn__south-east.png",
+          "gif": "campfire/animations/burn__south-east.gif",
+          "frame_paths": [
+            "campfire/animations/burn/south-east/00.png",
+            "campfire/animations/burn/south-east/01.png",
+            "campfire/animations/burn/south-east/02.png",
+            "campfire/animations/burn/south-east/03.png",
+            "campfire/animations/burn/south-east/04.png",
+            "campfire/animations/burn/south-east/05.png",
+            "campfire/animations/burn/south-east/06.png",
+            "campfire/animations/burn/south-east/07.png",
+            "campfire/animations/burn/south-east/08.png",
+            "campfire/animations/burn/south-east/09.png",
+            "campfire/animations/burn/south-east/10.png",
+            "campfire/animations/burn/south-east/11.png",
+            "campfire/animations/burn/south-east/12.png",
+            "campfire/animations/burn/south-east/13.png",
+            "campfire/animations/burn/south-east/14.png",
+            "campfire/animations/burn/south-east/15.png",
+            "campfire/animations/burn/south-east/16.png"
+          ]
+        },
+        "south-west": {
+          "frames": 17,
+          "strip": "campfire/animations/burn__south-west.png",
+          "gif": "campfire/animations/burn__south-west.gif",
+          "frame_paths": [
+            "campfire/animations/burn/south-west/00.png",
+            "campfire/animations/burn/south-west/01.png",
+            "campfire/animations/burn/south-west/02.png",
+            "campfire/animations/burn/south-west/03.png",
+            "campfire/animations/burn/south-west/04.png",
+            "campfire/animations/burn/south-west/05.png",
+            "campfire/animations/burn/south-west/06.png",
+            "campfire/animations/burn/south-west/07.png",
+            "campfire/animations/burn/south-west/08.png",
+            "campfire/animations/burn/south-west/09.png",
+            "campfire/animations/burn/south-west/10.png",
+            "campfire/animations/burn/south-west/11.png",
+            "campfire/animations/burn/south-west/12.png",
+            "campfire/animations/burn/south-west/13.png",
+            "campfire/animations/burn/south-west/14.png",
+            "campfire/animations/burn/south-west/15.png",
+            "campfire/animations/burn/south-west/16.png"
+          ]
+        },
+        "west": {
+          "frames": 17,
+          "strip": "campfire/animations/burn__west.png",
+          "gif": "campfire/animations/burn__west.gif",
+          "frame_paths": [
+            "campfire/animations/burn/west/00.png",
+            "campfire/animations/burn/west/01.png",
+            "campfire/animations/burn/west/02.png",
+            "campfire/animations/burn/west/03.png",
+            "campfire/animations/burn/west/04.png",
+            "campfire/animations/burn/west/05.png",
+            "campfire/animations/burn/west/06.png",
+            "campfire/animations/burn/west/07.png",
+            "campfire/animations/burn/west/08.png",
+            "campfire/animations/burn/west/09.png",
+            "campfire/animations/burn/west/10.png",
+            "campfire/animations/burn/west/11.png",
+            "campfire/animations/burn/west/12.png",
+            "campfire/animations/burn/west/13.png",
+            "campfire/animations/burn/west/14.png",
+            "campfire/animations/burn/west/15.png",
+            "campfire/animations/burn/west/16.png"
+          ]
+        }
+      }
+    }
+  },
+  "status": "in_progress"
+}
