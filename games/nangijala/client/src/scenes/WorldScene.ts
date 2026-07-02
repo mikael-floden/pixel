@@ -88,6 +88,10 @@ export class WorldScene extends Phaser.Scene {
   private groundRT?: Phaser.GameObjects.RenderTexture;
   private lastGround = { x: NaN, y: NaN };
   private maxLevel = 0;
+  // Occlusion: raised/solid tiles near the camera drawn as depth-sorted images
+  // so they cover characters standing BEHIND them (the ground RT is flat).
+  private occluders: Phaser.GameObjects.Image[] = [];
+  private lastOccl = { x: NaN, y: NaN };
   // Local jump prediction (client owns its jump timing).
   private jumpUntil = 0;
   private jumpReadyAt = 0;
@@ -297,7 +301,8 @@ export class WorldScene extends Phaser.Scene {
     this.applyAnchor(sprite, uid, DEFAULT_DIRECTION, hasArt);
     const label = this.add
       .text(p0.x, p0.y, player.name, { fontFamily: "monospace", fontSize: "12px", color: "#eef" })
-      .setOrigin(0.5, 1);
+      .setOrigin(0.5, 1)
+      .setDepth(890_000); // names stay readable above occluding tiles
     // Drop shadow at the collision anchor — marks the exact ground position.
     const shadow = this.add.image(p0.x, p0.y, SHADOW_TEX).setOrigin(0.5, 0.5).setDisplaySize(30, 12);
     this.avatars.set(id, {
@@ -316,6 +321,7 @@ export class WorldScene extends Phaser.Scene {
 
   update(_time: number, delta: number) {
     this.redrawGround();
+    this.rebuildOccluders();
     if (!this.room) return;
     const dt = delta / 1000;
     const myId = this.room.sessionId;
@@ -395,7 +401,10 @@ export class WorldScene extends Phaser.Scene {
 
       av.sprite.x = av.lx;
       av.sprite.y = av.ly - hop + sink;
-      av.sprite.setDepth(av.ly);
+      // Depth = UNLIFTED ground y (add the elevation back), so standing ON a
+      // raised tile you render above its column, standing BEHIND it you don't.
+      const lvl = this.terrain ? levelAtWorld(this.terrain, tx, ty) : 0;
+      av.sprite.setDepth(av.ly + lvl * MAP_GEOMETRY.lh + 1);
       // Shadow: always at the GROUND point (the collision anchor) — it stays
       // put while the sprite hops, shrinking a little at the jump's peak.
       const hopFrac = hop / JUMP_HEIGHT;
@@ -404,7 +413,7 @@ export class WorldScene extends Phaser.Scene {
         .setVisible(!av.swimming)
         .setAlpha(1 - hopFrac * 0.35)
         .setDisplaySize(34 - hopFrac * 9, 14 - hopFrac * 4)
-        .setDepth(av.ly - 0.5);
+        .setDepth(av.sprite.depth - 0.5);
       const topY = av.sprite.y - av.sprite.displayHeight * av.sprite.originY;
       av.label.setPosition(av.lx, topY - 4);
       if (av.bubble) {
@@ -653,6 +662,58 @@ export class WorldScene extends Phaser.Scene {
     g.fillStyle(0x2a2f45, 1).fillRoundedRect(x, y, w, h, 4);
     const col = frac > 0.5 ? 0x57c7ff : frac > 0.25 ? 0xffcf4a : 0xff5a5a;
     g.fillStyle(col, 1).fillRoundedRect(x, y, w * frac, h, 4);
+  }
+
+  /**
+   * Rebuild the occluder set: every raised (l>0) or solid non-water tile near
+   * the camera gets real depth-sorted images (depth = its footprint's TOP
+   * vertex y), so sprites standing behind it are covered while sprites in
+   * front draw over it. The ground RT stays as the flat base underneath.
+   */
+  private rebuildOccluders() {
+    if (!this.world) return;
+    const cam = this.cameras.main;
+    const ccx = cam.worldView.centerX;
+    const ccy = cam.worldView.centerY;
+    if (
+      !Number.isNaN(this.lastOccl.x) &&
+      Math.abs(ccx - this.lastOccl.x) < 96 &&
+      Math.abs(ccy - this.lastOccl.y) < 96
+    )
+      return;
+    this.lastOccl = { x: ccx, y: ccy };
+    for (const im of this.occluders) im.destroy();
+    this.occluders = [];
+
+    const { dx, dy, lh } = MAP_GEOMETRY;
+    const pad = 200;
+    const x0 = cam.worldView.x - pad;
+    const x1 = cam.worldView.right + pad;
+    const y0 = cam.worldView.y - pad;
+    const y1 = cam.worldView.bottom + pad + this.maxLevel * lh;
+    const u0 = Math.floor((x0 - this.iso.ox) / dx) - 1;
+    const u1 = Math.ceil((x1 - this.iso.ox) / dx) + 1;
+    const v0 = Math.max(0, Math.floor((y0 - this.iso.oy) / dy) - 1);
+    const v1 = Math.ceil((y1 - this.iso.oy) / dy) + 1;
+    for (let v = v0; v <= v1; v++) {
+      for (let u = u0; u <= u1; u++) {
+        if ((u + v) & 1) continue;
+        const col = (u + v) / 2;
+        const row = (v - u) / 2;
+        const cell = this.world.rows[row]?.[col];
+        if (!cell) continue;
+        const s = surfaceFor(cell.t);
+        const tall = cell.l > 0 || (!s.standable && !s.swimmable);
+        if (!tall) continue;
+        const key = tileKey(cell.t, cell.v);
+        if (!this.textures.exists(key)) continue;
+        const bx = this.iso.ox + u * dx;
+        const by = this.iso.oy + v * dy;
+        for (let lvl = 0; lvl <= cell.l; lvl++) {
+          this.occluders.push(this.add.image(bx, by - lvl * lh, key).setOrigin(0, 0).setDepth(by));
+        }
+      }
+    }
   }
 
   /** Project an authoritative world position (flat x,y) onto the iso ground —

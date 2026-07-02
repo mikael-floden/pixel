@@ -39,8 +39,38 @@ function showVersion() {
   document.body.appendChild(el);
 }
 
+/** Poll /version and offer a one-click reload when a newer deploy is live. */
+function watchForUpdates() {
+  const mine = (import.meta.env.VITE_GIT_SHA as string | undefined) || "dev";
+  if (mine === "dev") return; // local dev: vite HMR handles it
+  const check = async () => {
+    try {
+      const res = await fetch("/version", { cache: "no-store" });
+      if (!res.ok) return;
+      const { sha } = (await res.json()) as { sha: string };
+      if (sha && sha !== "dev" && sha !== mine) showUpdateBanner(sha);
+    } catch {}
+  };
+  setInterval(check, 60_000);
+}
+
+let updateBannerShown = false;
+function showUpdateBanner(sha: string) {
+  if (updateBannerShown) return;
+  updateBannerShown = true;
+  const el = document.createElement("div");
+  el.textContent = `⬆ New version ${sha.slice(0, 7)} — click to reload`;
+  el.style.cssText =
+    "position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:100;cursor:pointer;" +
+    "padding:8px 16px;border-radius:8px;background:#5a7bd6;color:#fff;font:14px system-ui,sans-serif;" +
+    "box-shadow:0 4px 16px #0007";
+  el.addEventListener("click", () => location.reload());
+  document.body.appendChild(el);
+}
+
 async function boot() {
   showVersion();
+  watchForUpdates();
   if (await bootMapPreview()) return;
   const manifest = await loadManifest();
   // The art agents periodically reset/regenerate the roster, so it can be empty.

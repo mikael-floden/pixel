@@ -18,6 +18,11 @@ const ASSET_DOMAINS = ["characters", "tiles", "maps", "objects"];
 
 const app = express();
 app.get("/health", (_req, res) => res.json({ ok: true }));
+// Deployed build id — clients poll this to detect a newer deploy and prompt a
+// refresh (see client/src/main.ts).
+app.get("/version", (_req, res) =>
+  res.setHeader("Cache-Control", "no-store").json({ sha: process.env.GIT_SHA || "dev" }),
+);
 
 // Production single-origin serving: built client + art assets on one host/port
 // as the WebSocket world server (see client/src/net.ts).
