@@ -617,11 +617,15 @@ export class WorldScene extends Phaser.Scene {
       const avs = [];
       for (const a of this.avatars.values()) {
         if (avs.length >= 8) break;
+        // Body-only bounds: frames are mostly transparent padding, so use a
+        // slim torso band and the measured head-top instead of the frame rect.
+        const topFrac = (a.sprite.getData("topFrac") as number) ?? 0.1;
+        const topY = a.sprite.y - a.sprite.displayHeight * (a.sprite.originY - topFrac);
         avs.push({
           x: a.lx,
           y: a.ly,
-          halfW: a.sprite.displayWidth * 0.42,
-          height: a.sprite.displayHeight * 0.95,
+          halfW: Math.max(8, a.sprite.displayWidth * 0.17),
+          height: Math.max(20, a.ly - topY),
           col: a.fx / CELL_WU,
           row: a.fy / CELL_WU,
           z: this.terrain ? levelAtWorld(this.terrain, a.fx, a.fy) : 0,

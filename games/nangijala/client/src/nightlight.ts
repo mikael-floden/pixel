@@ -151,9 +151,9 @@ void main() {
   for (int i = 0; i < ${MAX_AVATARS}; i++) {
     if (float(i) >= uNumAvatars) continue;
     vec4 A = uAvA[i];
-    float ax = clamp((A.z - abs(wx - A.x)) / 6.0, 0.0, 1.0);
-    float ayTop = clamp((wy - (A.y - A.w)) / 6.0, 0.0, 1.0);
-    float ayBot = clamp(((A.y + 6.0) - wy) / 6.0, 0.0, 1.0);
+    float ax = clamp((A.z - abs(wx - A.x)) / 4.0, 0.0, 1.0);
+    float ayTop = clamp((wy - (A.y - A.w)) / 4.0, 0.0, 1.0);
+    float ayBot = clamp(((A.y + 6.0) - wy) / 4.0, 0.0, 1.0);
     float a = min(ax, min(ayTop, ayBot));
     if (a > aBest) { aBest = a; avCR = uAvB[i].xyz; }
   }
@@ -221,10 +221,12 @@ void main() {
       if (hD < 90.0 && hD > z + 0.01) pickR = 1.0; // +row face buried
       float front = mix(frontL, frontR, pickR);
       float lat = mix(latL, latR, pickR);
-      // Lit only when the light is meaningfully IN FRONT of the face AND
-      // roughly within its lateral extent — a torch beside the wall's edge
-      // (past the corner) leaves the face dark instead of grazing it bright.
-      occ *= smoothstep(0.15, 0.6, front) * (1.0 - smoothstep(0.15, 0.6, lat));
+      // Lambert from the NEAREST point of the face to the light: a torch in
+      // front of a long wall lights the whole run (cosine taper + the normal
+      // distance attenuation) instead of only the single facing cell, while
+      // a light behind the plane still leaves the face dark.
+      float cosF = front / max(sqrt(front * front + lat * lat), 0.001);
+      occ *= smoothstep(0.0, 0.25, front) * smoothstep(0.2, 0.6, cosF);
     }
 
     // Fire flicker: slow cozy breathing + a mild shimmer (fast large-swing
