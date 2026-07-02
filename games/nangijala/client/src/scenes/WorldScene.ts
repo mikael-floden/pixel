@@ -456,12 +456,24 @@ export class WorldScene extends Phaser.Scene {
         const sy1 = av.sprite.y + 8;
         let above = -Infinity;
         let below = Infinity;
+        const feetY = av.ly;
         for (const o of this.occluderMeta) {
           if (o.x1 < sx0 || o.x0 > sx1 || o.y1 < sy0 || o.y0 > sy1) continue;
+          const higher = o.top > lvl;
+          // (a) Wall genuinely between the camera and the feet point.
           const t0 = Math.max(o.col - colf, o.row - rowf);
           const t1 = Math.min(o.col + 1 - colf, o.row + 1 - rowf);
-          const blocks = o.top > lvl && t1 > Math.max(t0, 0);
-          if (blocks) below = Math.min(below, o.depth);
+          const rayBlocked = higher && t1 > Math.max(t0, 0);
+          // (b) A higher column whose LIFTED TOP FACE overlaps the feet band
+          // (the sprite is a billboard — raised corners of side/front
+          // neighbours pass in front of its lower pixels even when the feet
+          // point itself is visible) and whose face is camera-closer.
+          const faceOverFeet =
+            higher &&
+            o.y0 <= feetY + 6 &&
+            o.y0 >= feetY - 26 &&
+            o.col + o.row + 1.2 > colf + rowf;
+          if (rayBlocked || faceOverFeet) below = Math.min(below, o.depth);
           else above = Math.max(above, o.depth);
         }
         if (above > -Infinity) depth = Math.max(depth, above + 0.6);
@@ -476,7 +488,7 @@ export class WorldScene extends Phaser.Scene {
         .setVisible(!av.swimming)
         .setAlpha(1 - hopFrac * 0.35)
         .setDisplaySize(34 - hopFrac * 9, 14 - hopFrac * 4)
-        .setDepth(av.sprite.depth - 0.5);
+        .setDepth(av.sprite.depth - 0.1);
       // Head top (measured from the art), not the frame top — labels hug the
       // character instead of floating over transparent padding.
       const topFrac = (av.sprite.getData("topFrac") as number) ?? 0;
@@ -514,7 +526,7 @@ export class WorldScene extends Phaser.Scene {
         radius: 44 + pulse * 4,
         alpha: 0.16 + pulse * 0.05,
         ground: true,
-        depth: a.sprite.depth - 0.6,
+        depth: a.sprite.depth - 0.05,
       });
     }
     lights.push(...this.emissiveLights);
