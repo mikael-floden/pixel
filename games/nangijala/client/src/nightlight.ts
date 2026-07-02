@@ -43,8 +43,17 @@ uniform float uNumLights;
 uniform vec4 uLightPos[${MAX_SHADER_LIGHTS}];  // col, row, z, radius(cells)
 uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
 uniform sampler2D uHeight;
+uniform sampler2D uHeightL; // same heightmap, LINEAR-filtered (LOS penumbra)
 uniform sampler2D uProf;  // baked DRAWN-lip profiles: one row per tile, x = art column
 uniform float uProfRows;  // rows in uProf (0 = no profiles -> pure analytic)
+
+// Bilinear height for the LOS march ONLY: blockers ramp in over ~a cell, so
+// cast-shadow edges get a natural penumbra instead of cell-quantized 1px
+// cliffs. The surface resolve keeps exact nearest-cell reads (uHeight).
+float heightAtSoft(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
+  return texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).r * 255.0 / 16.0;
+}
 
 // Baked lip offset for cr's tile at art column tx (0..63), in screen px:
 // + = the artist drew the top/wall boundary LOWER than the analytic diamond
@@ -55,7 +64,9 @@ float lipAt(vec2 cr, float tx) {
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
   float row = texture2D(uHeight, uv).b * 255.0;
   if (row > 254.5) return 0.0;
-  return texture2D(uProf, vec2((tx + 0.5) / 64.0, (row + 0.5) / uProfRows)).r * 255.0 - 14.0;
+  // floor(tx): sample the owning column's texel CENTRE — a fractional tx
+  // read the neighbouring column's lip on half of every art column.
+  return texture2D(uProf, vec2((floor(tx) + 0.5) / 64.0, (row + 0.5) / uProfRows)).r * 255.0 - 14.0;
 }
 
 float heightAt(vec2 cr) {
@@ -248,10 +259,19 @@ void main() {
         // path than the ground pixel beside it — a light step at every base.
         vec2 p = mix(pos, lp.xy, t);
         if (floor(p.x) == floor(pos.x) && floor(p.y) == floor(pos.y)) continue;
+        // Near-field skip: with the march anchored at the exact surface
+        // point, a ground pixel AT a wall base gets its first sample inside
+        // the wall cell — a false dark notch along every base line.
+        vec2 dp = p - pos;
+        if (dot(dp, dp) < 0.56) continue;
         float hRay = mix(z, lp.z, t) + 0.2;
-        float H = heightAt(p);
+        float H = heightAtSoft(p);
         if (H < 90.0 && H > hRay) occ *= mix(0.8, 0.45, clamp((H - hRay) * 1.5, 0.0, 1.0));
       }
+      // Bounce floor: firelight scatters — shadowed ground near a light keeps
+      // a faint glow instead of dropping to pitch ambient. Faces still gate
+      // to dark below (the Lambert gate multiplies AFTER this floor).
+      occ = max(occ, 0.22);
     }
 
     // Side-face pixels (below their column's top): a column shows TWO faces —
@@ -348,6 +368,7 @@ export class NightLights {
       uLightPos: { type: "4fv", value: this.posArr },
       uLightCol: { type: "4fv", value: this.colArr },
       uHeight: { type: "sampler2D", value: null },
+      uHeightL: { type: "sampler2D", value: null },
       uProf: { type: "sampler2D", value: null },
       uProfRows: { type: "1f", value: 0 },
     });
@@ -381,8 +402,10 @@ export class NightLights {
       .setOrigin(0, 0)
       .setVisible(this.active);
     s.setSampler2D("uHeight", "world-heightmap");
+    if (this.scene.textures.exists("world-heightmap-linear"))
+      s.setSampler2D("uHeightL", "world-heightmap-linear", 1);
     if (this.profRows > 0) {
-      s.setSampler2D("uProf", "tile-profiles-compact", 1);
+      s.setSampler2D("uProf", "tile-profiles-compact", 2);
       s.setUniform("uProfRows.value", this.profRows);
     }
     s.setRenderToTexture(key);
@@ -448,6 +471,7 @@ export class NightLights {
     });
     ctx.putImageData(img, 0, 0);
     tex.refresh();
+    tex.setFilter(Phaser.Textures.FilterMode.NEAREST); // exact texel reads
     this.profRows = scored.length;
   }
 
@@ -484,6 +508,15 @@ export class NightLights {
     }
     ctx.putImageData(img, 0, 0);
     tex!.refresh();
+    // Second copy of the same pixels, LINEAR-filtered: the LOS march samples
+    // it for soft cast-shadow edges (heightAtSoft). Kept separate because the
+    // exact resolve must stay nearest-cell.
+    const texL = this.scene.textures.createCanvas("world-heightmap-linear", w, h);
+    if (texL) {
+      texL.getContext().putImageData(img, 0, 0);
+      texL.refresh();
+      texL.setFilter(Phaser.Textures.FilterMode.LINEAR);
+    }
   }
 
   /** CPU twin of the shader's lighting for a surface at (col,row,z): used to
@@ -496,6 +529,17 @@ export class NightLights {
     const hAt = (c: number, r: number) => {
       const ci = Math.floor(c), ri = Math.floor(r);
       return ci < 0 || ri < 0 || ci >= W || ri >= H ? 99 : this.hArr[ri * W + ci];
+    };
+    // Bilinear twin of the shader's heightAtSoft (LOS penumbra).
+    const hAtSoft = (c: number, r: number) => {
+      const cf = c - 0.5, rf = r - 0.5;
+      const c0 = Math.floor(cf), r0 = Math.floor(rf);
+      const fx = cf - c0, fy = rf - r0;
+      const v = (ci: number, ri: number) =>
+        ci < 0 || ri < 0 || ci >= W || ri >= H ? 99 : this.hArr[ri * W + ci];
+      const a = v(c0, r0), b = v(c0 + 1, r0), d = v(c0, r0 + 1), e = v(c0 + 1, r0 + 1);
+      if (a > 90 || b > 90 || d > 90 || e > 90) return hAt(c, r);
+      return (a * (1 - fx) + b * fx) * (1 - fy) + (d * (1 - fx) + e * fx) * fy;
     };
     const t = this.scene.game.loop.getDuration();
     const out: [number, number, number] = [...this.curAmbient] as [number, number, number];
@@ -514,10 +558,12 @@ export class NightLights {
           const px = col + dx * tt;
           const py = row + dy * tt;
           if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
+          if ((px - col) * (px - col) + (py - row) * (py - row) < 0.56) continue; // near-field
           const hRay = z + (L.z - z) * tt + 0.2;
-          const hh = hAt(px, py);
+          const hh = hAtSoft(px, py);
           if (hh < 90 && hh > hRay) occ *= 0.8 + (0.45 - 0.8) * Math.min(1, (hh - hRay) * 1.5);
         }
+        occ = Math.max(occ, 0.22); // bounce floor — same as the shader
       }
       const fl = L.flicker;
       const flick = 1 - fl * 0.1 * (0.5 + 0.5 * Math.sin(t * 2.9 + i * 5.3)) - fl * 0.05 * Math.sin(t * 7.1 + i * 11.1);
