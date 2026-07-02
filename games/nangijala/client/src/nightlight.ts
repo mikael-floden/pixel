@@ -353,7 +353,7 @@ export class NightLights {
    * tint STANDING objects (characters, wall columns, props) so they carry the
    * light of their own cell — the screen-space field only shades the flat
    * ground. Same ambient/attenuation/LOS/ember/flicker, same clock. */
-  lightAt(col: number, row: number, z: number, isObj: boolean): [number, number, number] {
+  lightAt(col: number, row: number, z: number, isObj: boolean, emberScale = 1): [number, number, number] {
     const W = this.world.width;
     const H = this.world.height;
     const hAt = (c: number, r: number) => {
@@ -386,7 +386,7 @@ export class NightLights {
       const flick = 1 - fl * 0.1 * (0.5 + 0.5 * Math.sin(t * 2.9 + i * 5.3)) - fl * 0.05 * Math.sin(t * 7.1 + i * 11.1);
       const d01 = Math.min(1, dist / L.radius);
       const sst = Math.min(1, Math.max(0, (d01 - 0.35) / 0.6));
-      const emberK = sst * sst * (3 - 2 * sst) * Math.min(1, fl * 1.2);
+      const emberK = sst * sst * (3 - 2 * sst) * Math.min(1, fl * 1.2) * emberScale;
       const eb = [0.95, 0.3, 0.12];
       for (let ch = 0; ch < 3; ch++) {
         const lc = L.color[ch];

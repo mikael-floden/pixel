@@ -669,7 +669,9 @@ export class WorldScene extends Phaser.Scene {
         continue;
       }
       const lvl = this.terrain ? levelAtWorld(this.terrain, a.fx, a.fy) : 0;
-      const l = night!.lightAt(a.fx / CELL_WU, a.fy / CELL_WU, lvl, false);
+      // Bodies sample light at TORSO height (they see fires over low rocks)
+      // and take little of the ember rim (skin is not ground paint).
+      const l = night!.lightAt(a.fx / CELL_WU, a.fy / CELL_WU, lvl + 0.9, false, 0.3);
       const base = a.swimming ? 0x6fb3ff : a.baseTint;
       const r = Math.min(255, Math.round(((base >> 16) & 0xff) * Math.min(1, l[0])));
       const g = Math.min(255, Math.round(((base >> 8) & 0xff) * Math.min(1, l[1])));
