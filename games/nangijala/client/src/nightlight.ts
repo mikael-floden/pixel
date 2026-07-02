@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { ISO_DX, ISO_DY } from "@nangijala/shared";
+import { ISO_DX, ISO_DY, surfaceFor } from "@nangijala/shared";
 import { World, MAP_GEOMETRY } from "./maps";
 
 /**
@@ -97,16 +97,17 @@ void main() {
 
     // Line of sight: march the heightmap toward the light. Occlusion scales
     // with HOW FAR the blocker pokes above the ray — grazing edges dim gently
-    // instead of stamping hard cell-shaped shadow blocks. Samples inside the
-    // pixel's OWN column are skipped so a wall never shadows its own face.
+    // instead of stamping hard cell-shaped shadow blocks. Only samples in the
+    // pixel's OWN column are skipped (a wall must not shadow its own face,
+    // but it MUST still block light for the ground right at its base).
     float occ = 1.0;
-    for (int s = 1; s <= 8; s++) {
-      float t = float(s) / 9.0;
+    for (int s = 1; s <= 12; s++) {
+      float t = float(s) / 13.0;
       vec2 p = mix(cell, lp.xy, t);
-      if (max(abs(p.x - cell.x), abs(p.y - cell.y)) < 0.75) continue;
-      float hRay = mix(z, lp.z, t) + 0.3;
+      if (floor(p.x) == floor(cell.x) && floor(p.y) == floor(cell.y)) continue;
+      float hRay = mix(z, lp.z, t) + 0.2;
       float H = heightAt(p);
-      if (H < 90.0 && H > hRay) occ *= mix(0.85, 0.55, clamp(H - hRay, 0.0, 1.0));
+      if (H < 90.0 && H > hRay) occ *= mix(0.8, 0.45, clamp((H - hRay) * 1.5, 0.0, 1.0));
     }
 
     // Fire flicker: slow cozy breathing + a mild shimmer (fast large-swing
@@ -204,7 +205,9 @@ export class NightLights {
     }
   }
 
-  /** Grid heightmap texture: R = level*16 (levels 0..9 → 0..144). */
+  /** Grid heightmap texture: R = level*16 (levels 0..9 → 0..144). Solid
+   * structures (trees, boulders…) count one level above their ground, same
+   * as the occlusion renderer — they must block light, not just players. */
   private buildHeightmap() {
     if (this.scene.textures.exists("world-heightmap")) return;
     const w = this.world.width;
@@ -215,7 +218,10 @@ export class NightLights {
     for (let r = 0; r < h; r++) {
       for (let c = 0; c < w; c++) {
         const i = (r * w + c) * 4;
-        img.data[i] = Math.min(255, this.world.rows[r][c].l * 16);
+        const cell = this.world.rows[r][c];
+        const s = surfaceFor(cell.t);
+        const lvl = cell.l + (s.standable || s.swimmable ? 0 : 1);
+        img.data[i] = Math.min(255, lvl * 16);
         img.data[i + 3] = 255;
       }
     }
