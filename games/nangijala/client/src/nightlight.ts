@@ -48,11 +48,23 @@ float heightAt(vec2 cr) {
   return texture2D(uHeight, uv).r * 255.0 / 16.0;
 }
 
+// Solid-object flag (bush, boulder, tree...): G channel of the heightmap.
+float objAt(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  return texture2D(uHeight, uv).g;
+}
+
 void main() {
   vec2 suv = gl_FragCoord.xy / resolution;
   float wx = uCam.x + suv.x * uCam.z;
-  // Rendered into a texture that Phaser composites y-flipped — sample top-down.
-  float wy = uCam.y + suv.y * uCam.w;
+  // GL fragments count from the BOTTOM of the target; screen y counts from
+  // the top. Sampling without inverting produced a field VERTICALLY MIRRORED
+  // about the screen centre — torch pools still centred on the (camera-
+  // centred) player, masking it, while every asymmetric feature (shadows,
+  // ridges) slid with the camera. World-fixed lights must give world-fixed
+  // shadows: invert.
+  float wy = uCam.y + (1.0 - suv.y) * uCam.w;
   float u = (wx - uIsoA.x) / uIsoA.z;
   float v0 = (wy - uIsoA.y) / uIsoA.w; // grid diagonal at height 0
   float kk = uIsoB.x / uIsoA.w;        // diagonal shift per height level
@@ -121,7 +133,7 @@ void main() {
     // received from above or level (cliff bases, object shadows, faces)
     // keeps full occlusion.
     float occ = 1.0;
-    if (z < lp.z + 0.05) {
+    if (z < lp.z + 0.05 || objAt(cell) > 0.5) {
       for (int s = 1; s <= 12; s++) {
         float t = float(s) / 13.0;
         vec2 p = mix(cell, lp.xy, t);
@@ -142,6 +154,9 @@ void main() {
       vec2 base = floor(cell);
       float frontL = lp.y - (base.y + 1.0); // beyond the +row (left) face
       float frontR = lp.x - (base.x + 1.0); // beyond the +col (right) face
+      // Lateral: how far the light sits OUTSIDE the face's own 1-cell span.
+      float latL = abs(lp.x - clamp(lp.x, base.x, base.x + 1.0));
+      float latR = abs(lp.y - clamp(lp.y, base.y, base.y + 1.0));
       float uf = u - (base.x - base.y);     // pixel left/right of front corner
       float pickR = smoothstep(-0.2, 0.2, uf);
       // On a CONTINUOUS wall the resolve can own a band as either of two
@@ -153,12 +168,11 @@ void main() {
       if (hR < 90.0 && hR > z + 0.01) pickR = 0.0; // +col face buried
       if (hD < 90.0 && hD > z + 0.01) pickR = 1.0; // +row face buried
       float front = mix(frontL, frontR, pickR);
-      // Lambert: `front` IS the normal component of the light offset, so
-      // front/|d2| is cos(angle off the face normal). A light sliding along
-      // the wall (grazing) must not light it — only lights meaningfully IN
-      // FRONT of the face do.
-      float cosF = front / max(length(d2), 0.001);
-      occ *= smoothstep(0.5, 0.85, cosF);
+      float lat = mix(latL, latR, pickR);
+      // Lit only when the light is meaningfully IN FRONT of the face AND
+      // roughly within its lateral extent — a torch beside the wall's edge
+      // (past the corner) leaves the face dark instead of grazing it bright.
+      occ *= smoothstep(0.15, 0.6, front) * (1.0 - smoothstep(0.15, 0.6, lat));
     }
 
     // Fire flicker: slow cozy breathing + a mild shimmer (fast large-swing
@@ -271,8 +285,13 @@ export class NightLights {
         const i = (r * w + c) * 4;
         const cell = this.world.rows[r][c];
         const s = surfaceFor(cell.t);
-        const lvl = cell.l + (s.standable || s.swimmable ? 0 : 1);
+        const solid = !s.standable && !s.swimmable;
+        const lvl = cell.l + (solid ? 1 : 0);
         img.data[i] = Math.min(255, lvl * 16);
+        // G flags solid OBJECTS (bush, boulder, tree…): they take full LOS
+        // occlusion + face rules — the billboard compromise is for players,
+        // who can never stand on these cells.
+        img.data[i + 1] = solid ? 255 : 0;
         img.data[i + 3] = 255;
       }
     }
@@ -284,6 +303,28 @@ export class NightLights {
     this.active = on;
     this.shader?.setVisible(on);
     this.overlay?.setVisible(on);
+  }
+
+  /** Headless-debug: real dimensions of the render target vs the screen. */
+  debugInfo() {
+    const key = this.overlay?.texture.key ?? "?";
+    const tex = this.scene.textures.get(key);
+    const src = tex?.getSourceImage() as { width?: number; height?: number } | undefined;
+    const frame = tex?.get();
+    return {
+      key,
+      srcW: src?.width,
+      srcH: src?.height,
+      frameW: frame?.width,
+      frameH: frame?.height,
+      shaderW: this.shader?.width,
+      shaderH: this.shader?.height,
+      canvasW: this.scene.scale.width,
+      canvasH: this.scene.scale.height,
+      overlayW: this.overlay?.displayWidth,
+      overlayH: this.overlay?.displayHeight,
+      flipY: this.overlay?.flipY,
+    };
   }
 
   update(cam: Phaser.Cameras.Scene2D.Camera, lights: ShaderLight[], ambient: [number, number, number]) {
