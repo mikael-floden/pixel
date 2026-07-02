@@ -117,6 +117,8 @@ export class WorldScene extends Phaser.Scene {
   // Occlusion: raised/solid tiles near the camera drawn as depth-sorted images
   // so they cover characters standing BEHIND them (the ground RT is flat).
   private occluders: Phaser.GameObjects.Image[] = [];
+  // Standing world columns lit per-cell by the CPU twin of the night shader.
+  private occLit: { img: Phaser.GameObjects.Image; col: number; row: number; z: number; obj: boolean }[] = [];
   private occluderMeta: {
     col: number;
     row: number;
@@ -141,6 +143,7 @@ export class WorldScene extends Phaser.Scene {
   private shaderLights: ShaderLight[] = [];
   // The spawn campfire: an animated world object with its own fire light.
   private campfire?: { col: number; row: number; z: number; x: number; y: number; depth: number };
+  private campfireSprite?: Phaser.GameObjects.Sprite;
   // [5] toggles the LOCAL player's hand torch (handy for judging fixed lights).
   private torchOn = true;
 
@@ -500,7 +503,7 @@ export class WorldScene extends Phaser.Scene {
       // Swimming: sink slightly and tint blue so it reads as being in water.
       av.swimming = !!player.swimming;
       const sink = av.swimming ? SWIM_SINK : 0;
-      av.sprite.setTint(av.swimming ? 0x6fb3ff : av.baseTint);
+      if (!this.night?.active) av.sprite.setTint(av.swimming ? 0x6fb3ff : av.baseTint);
 
       av.sprite.x = av.lx;
       av.sprite.y = av.ly - hop + sink;
@@ -612,26 +615,8 @@ export class WorldScene extends Phaser.Scene {
       }
       // Ambient calibrated against the Sea of Stars night reference: dark,
       // desaturated, only a MILD blue tilt (B/R ~1.6, not saturated blue).
-      // Billboard carve-outs: each avatar's sprite area is lit by its ground
-      // cell, not by the terrain behind it.
-      const avs = [];
-      for (const a of this.avatars.values()) {
-        if (avs.length >= 8) break;
-        // Body-only bounds: frames are mostly transparent padding, so use a
-        // slim torso band and the measured head-top instead of the frame rect.
-        const topFrac = (a.sprite.getData("topFrac") as number) ?? 0.1;
-        const topY = a.sprite.y - a.sprite.displayHeight * (a.sprite.originY - topFrac);
-        avs.push({
-          x: a.lx,
-          y: a.ly,
-          halfW: Math.max(8, a.sprite.displayWidth * 0.17),
-          height: Math.max(20, a.ly - topY),
-          col: a.fx / CELL_WU,
-          row: a.fy / CELL_WU,
-          z: this.terrain ? levelAtWorld(this.terrain, a.fx, a.fy) : 0,
-        });
-      }
-      this.night!.update(this.cameras.main, sl, [0.075, 0.09, 0.14], avs);
+      this.night!.update(this.cameras.main, sl, [0.075, 0.09, 0.14]);
+      this.applyObjectLights();
     }
 
     const lights: LightSource[] = [];
@@ -661,6 +646,27 @@ export class WorldScene extends Phaser.Scene {
       lights.push(...this.emissiveLights);
     }
     this.atmo.update(lights, this.cameras.main, dt);
+  }
+
+  /** Light every STANDING object by its own cell (CPU twin of the shader):
+   * a sprite's tint follows its texture alpha, so silhouettes are exact. */
+  private applyObjectLights() {
+    const night = this.night;
+    if (!night || !night.active) return;
+    for (const e of this.occLit) {
+      e.img.setTint(night.tintAt(e.col + 0.5, e.row + 0.5, e.z, e.obj));
+    }
+    // The fire lights itself (its bloom carries the glow).
+    this.campfireSprite?.setTint(0xffffff);
+    for (const a of this.avatars.values()) {
+      const lvl = this.terrain ? levelAtWorld(this.terrain, a.fx, a.fy) : 0;
+      const light = night.lightAt(a.fx / CELL_WU, a.fy / CELL_WU, lvl, false);
+      const base = a.swimming ? 0x6fb3ff : a.baseTint;
+      const r = Math.min(255, Math.round(((base >> 16) & 0xff) * Math.min(1, light[0])));
+      const g = Math.min(255, Math.round(((base >> 8) & 0xff) * Math.min(1, light[1])));
+      const b = Math.min(255, Math.round((base & 0xff) * Math.min(1, light[2])));
+      a.sprite.setTint((r << 16) | (g << 8) | b);
+    }
   }
 
   private predictAndSend(dt: number) {
@@ -936,6 +942,7 @@ export class WorldScene extends Phaser.Scene {
     this.lastOccl = { x: ccx, y: ccy };
     for (const im of this.occluders) im.destroy();
     this.occluders = [];
+    this.occLit = [];
     this.occluderMeta = [];
     this.emissiveLights = [];
     this.shaderLights = [];
@@ -988,7 +995,9 @@ export class WorldScene extends Phaser.Scene {
         // depth against these per frame (see update) since a single scalar
         // can't resolve every sprite-vs-column case exactly.
         for (let lvl = 0; lvl <= cell.l; lvl++) {
-          this.occluders.push(this.add.image(bx, by - lvl * lh, key).setOrigin(0, 0).setDepth(by + dy));
+          const img = this.add.image(bx, by - lvl * lh, key).setOrigin(0, 0).setDepth(by + dy);
+          this.occluders.push(img);
+          this.occLit.push({ img, col, row, z: Math.min(lvl + 0.5, cell.l), obj: !s.standable && !s.swimmable });
         }
         this.occluderMeta.push({
           col,
@@ -1061,7 +1070,7 @@ export class WorldScene extends Phaser.Scene {
         repeat: -1,
       });
     }
-    this.add
+    this.campfireSprite = this.add
       .sprite(p.x, p.y, CAMPFIRE_KEY)
       .setOrigin(0.5, CAMPFIRE_BASE)
       .setScale(CAMPFIRE_SCALE)

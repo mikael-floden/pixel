@@ -27,7 +27,6 @@ export interface ShaderLight {
 }
 
 export const MAX_SHADER_LIGHTS = 6;
-export const MAX_AVATARS = 8;
 
 const FRAG = `
 precision highp float;
@@ -43,9 +42,6 @@ uniform float uTest;      // 1 = output a raw world-y gradient (calibration)
 uniform float uNumLights;
 uniform vec4 uLightPos[${MAX_SHADER_LIGHTS}];  // col, row, z, radius(cells)
 uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
-uniform float uNumAvatars;
-uniform vec4 uAvA[${MAX_AVATARS}];  // billboard: feet x, feet y, halfW, height
-uniform vec4 uAvB[${MAX_AVATARS}];  // ground: col, row, z, -
 uniform sampler2D uHeight;
 
 float heightAt(vec2 cr) {
@@ -140,26 +136,6 @@ void main() {
     // Off-map / unresolved: plain ambient.
     gl_FragColor = vec4(uAmbient, 1.0);
     return;
-  }
-
-  // Characters are vertical BILLBOARDS: their upper pixels would sample the
-  // terrain behind them (a shadowed backdrop blacked out heads/torsos).
-  // Inside an avatar's billboard the lighting is taken from the avatar's own
-  // GROUND cell instead, blended softly at the edges so no seam shows.
-  float aBest = 0.0;
-  vec3 avCR = vec3(0.0);
-  for (int i = 0; i < ${MAX_AVATARS}; i++) {
-    if (float(i) >= uNumAvatars) continue;
-    vec4 A = uAvA[i];
-    float ax = clamp((A.z - abs(wx - A.x)) / 4.0, 0.0, 1.0);
-    float ayTop = clamp((wy - (A.y - A.w)) / 4.0, 0.0, 1.0);
-    float ayBot = clamp(((A.y + 6.0) - wy) / 4.0, 0.0, 1.0);
-    float a = min(ax, min(ayTop, ayBot));
-    if (a > aBest) { aBest = a; avCR = uAvB[i].xyz; }
-  }
-  if (aBest > 0.0) {
-    cell = mix(cell, avCR.xy, aBest);
-    z = mix(z, avCR.z, aBest);
   }
 
   vec3 light = uAmbient;
@@ -263,9 +239,11 @@ export class NightLights {
   private overlay?: Phaser.GameObjects.Image;
   private posArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private colArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
-  private avAArr = new Float32Array(MAX_AVATARS * 4);
-  private avBArr = new Float32Array(MAX_AVATARS * 4);
   private fieldCount = 0;
+  private hArr!: Float32Array; // CPU heightmap (levels, objects +1)
+  private oArr!: Uint8Array;   // CPU solid-object flags
+  private curLights: ShaderLight[] = [];
+  private curAmbient: [number, number, number] = [0.075, 0.09, 0.14];
   active = false;
   // Live calibration (debug keys): rendering-path differences between GPUs
   // showed up as flipped/scaled fields that headless verification could not
@@ -294,9 +272,6 @@ export class NightLights {
       uNumLights: { type: "1f", value: 0 },
       uLightPos: { type: "4fv", value: this.posArr },
       uLightCol: { type: "4fv", value: this.colArr },
-      uNumAvatars: { type: "1f", value: 0 },
-      uAvA: { type: "4fv", value: this.avAArr },
-      uAvB: { type: "4fv", value: this.avBArr },
       uHeight: { type: "sampler2D", value: null },
     });
     // Shader GameObjects can't blend directly — render the light field to a
@@ -305,7 +280,7 @@ export class NightLights {
       .image(0, 0, "__WHITE")
       .setOrigin(0.5, 0.5)
       .setScrollFactor(0)
-      .setDepth(900_000)
+      .setDepth(1) // above the flat ground RT, BELOW all standing objects
       .setBlendMode(Phaser.BlendModes.MULTIPLY)
       .setVisible(false);
     this.buildShader(this.scene.scale.width, this.scene.scale.height);
@@ -351,6 +326,8 @@ export class NightLights {
     const tex = this.scene.textures.createCanvas("world-heightmap", w, h);
     const ctx = tex!.getContext();
     const img = ctx.createImageData(w, h);
+    this.hArr = new Float32Array(w * h);
+    this.oArr = new Uint8Array(w * h);
     for (let r = 0; r < h; r++) {
       for (let c = 0; c < w; c++) {
         const i = (r * w + c) * 4;
@@ -358,6 +335,8 @@ export class NightLights {
         const s = surfaceFor(cell.t);
         const solid = !s.standable && !s.swimmable;
         const lvl = cell.l + (solid ? 1 : 0);
+        this.hArr[r * w + c] = lvl;
+        this.oArr[r * w + c] = solid ? 1 : 0;
         img.data[i] = Math.min(255, lvl * 16);
         // G flags solid OBJECTS (bush, boulder, tree…): they take full LOS
         // occlusion + face rules — the billboard compromise is for players,
@@ -368,6 +347,63 @@ export class NightLights {
     }
     ctx.putImageData(img, 0, 0);
     tex!.refresh();
+  }
+
+  /** CPU twin of the shader's lighting for a surface at (col,row,z): used to
+   * tint STANDING objects (characters, wall columns, props) so they carry the
+   * light of their own cell — the screen-space field only shades the flat
+   * ground. Same ambient/attenuation/LOS/ember/flicker, same clock. */
+  lightAt(col: number, row: number, z: number, isObj: boolean): [number, number, number] {
+    const W = this.world.width;
+    const H = this.world.height;
+    const hAt = (c: number, r: number) => {
+      const ci = Math.floor(c), ri = Math.floor(r);
+      return ci < 0 || ri < 0 || ci >= W || ri >= H ? 99 : this.hArr[ri * W + ci];
+    };
+    const t = this.scene.game.loop.getDuration();
+    const out: [number, number, number] = [...this.curAmbient] as [number, number, number];
+    for (let i = 0; i < this.curLights.length && i < MAX_SHADER_LIGHTS; i++) {
+      const L = this.curLights[i];
+      const dx = L.col - col;
+      const dy = L.row - row;
+      const dist = Math.sqrt(dx * dx + dy * dy + Math.pow((L.z - z) * 0.6, 2));
+      let att = Math.max(0, 1 - dist / L.radius);
+      att *= att;
+      if (att <= 0.001) continue;
+      let occ = 1;
+      if (z < L.z + 0.05 || isObj) {
+        for (let sN = 1; sN <= 12; sN++) {
+          const tt = sN / 13;
+          const px = col + dx * tt;
+          const py = row + dy * tt;
+          if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
+          const hRay = z + (L.z - z) * tt + 0.2;
+          const hh = hAt(px, py);
+          if (hh < 90 && hh > hRay) occ *= 0.8 + (0.45 - 0.8) * Math.min(1, (hh - hRay) * 1.5);
+        }
+      }
+      const fl = L.flicker;
+      const flick = 1 - fl * 0.1 * (0.5 + 0.5 * Math.sin(t * 2.9 + i * 5.3)) - fl * 0.05 * Math.sin(t * 7.1 + i * 11.1);
+      const d01 = Math.min(1, dist / L.radius);
+      const sst = Math.min(1, Math.max(0, (d01 - 0.35) / 0.6));
+      const emberK = sst * sst * (3 - 2 * sst) * Math.min(1, fl * 1.2);
+      const eb = [0.95, 0.3, 0.12];
+      for (let ch = 0; ch < 3; ch++) {
+        const lc = L.color[ch];
+        const colr = lc * (1 - emberK) + lc * eb[ch] * emberK;
+        out[ch] += colr * att * occ * flick;
+      }
+    }
+    return out;
+  }
+
+  /** lightAt packed as a Phaser tint (multiplier clamped to 1). */
+  tintAt(col: number, row: number, z: number, isObj: boolean): number {
+    const l = this.lightAt(col, row, z, isObj);
+    const r = Math.min(255, Math.round(Math.min(1, l[0]) * 255));
+    const g = Math.min(255, Math.round(Math.min(1, l[1]) * 255));
+    const b = Math.min(255, Math.round(Math.min(1, l[2]) * 255));
+    return (r << 16) | (g << 8) | b;
   }
 
   setActive(on: boolean) {
@@ -398,12 +434,9 @@ export class NightLights {
     };
   }
 
-  update(
-    cam: Phaser.Cameras.Scene2D.Camera,
-    lights: ShaderLight[],
-    ambient: [number, number, number],
-    avatars: { x: number; y: number; halfW: number; height: number; col: number; row: number; z: number }[] = [],
-  ) {
+  update(cam: Phaser.Cameras.Scene2D.Camera, lights: ShaderLight[], ambient: [number, number, number]) {
+    this.curLights = lights;
+    this.curAmbient = ambient;
     if (!this.shader || !this.active) return;
     const s = this.shader;
     // Ground-truth calibrated by raw suv readback: the zoomed overlay shows
@@ -449,20 +482,5 @@ export class NightLights {
     s.setUniform("uNumLights.value", n);
     s.setUniform("uLightPos.value", this.posArr);
     s.setUniform("uLightCol.value", this.colArr);
-    const m = Math.min(avatars.length, MAX_AVATARS);
-    for (let i = 0; i < m; i++) {
-      const a = avatars[i];
-      this.avAArr[i * 4] = a.x;
-      this.avAArr[i * 4 + 1] = a.y;
-      this.avAArr[i * 4 + 2] = a.halfW;
-      this.avAArr[i * 4 + 3] = a.height;
-      this.avBArr[i * 4] = a.col;
-      this.avBArr[i * 4 + 1] = a.row;
-      this.avBArr[i * 4 + 2] = a.z;
-      this.avBArr[i * 4 + 3] = 0;
-    }
-    s.setUniform("uNumAvatars.value", m);
-    s.setUniform("uAvA.value", this.avAArr);
-    s.setUniform("uAvB.value", this.avBArr);
   }
 }
