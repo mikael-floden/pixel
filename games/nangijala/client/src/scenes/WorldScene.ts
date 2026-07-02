@@ -190,6 +190,10 @@ export class WorldScene extends Phaser.Scene {
         frameWidth: CAMPFIRE_FRAME,
         frameHeight: CAMPFIRE_FRAME,
       });
+      // Baked drawn-lip profiles (art-aware shadows) — optional; the night
+      // shader falls back to pure analytic edges when absent.
+      this.load.image("tile-profiles", "/tile-profiles.png");
+      this.load.json("tile-profiles-index", "/tile-profiles.json");
     }
   }
 
@@ -264,8 +268,14 @@ export class WorldScene extends Phaser.Scene {
     });
     this.input.keyboard!.on("keydown-NINE", () => {
       if (!this.night) return;
-      this.night.testPattern = (this.night.testPattern + 1) % 3;
-      const names = ["off", "gradient (dark = TOP if correct)", "cell grid (must match tile edges)"];
+      this.night.testPattern = (this.night.testPattern + 1) % 5;
+      const names = [
+        "off",
+        "gradient (dark = TOP if correct)",
+        "cell grid (must match tile edges)",
+        "raw fragment uv",
+        "surface class (face RED / top GREEN)",
+      ];
       this.chat.addLog("—", `[9] Field test: ${names[this.night.testPattern]}`);
     });
     this.chat.addLog("—", "Toggles: [4] collision · [5] torch · [6][7][8][9] light-field calibration");
@@ -339,6 +349,25 @@ export class WorldScene extends Phaser.Scene {
       surfaceAt: (x: number, y: number) => (this.terrain ? surfaceAtWorld(this.terrain, x, y) : null),
       levelAt: (x: number, y: number) => (this.terrain ? levelAtWorld(this.terrain, x, y) : 0),
       nightShader: () => !!this.night && this.night.active,
+      // Screen-space anchor of a cell's tile image (its 64px art box top-left)
+      // + camera zoom — lets probes locate baked-lip rows in screenshots.
+      cellScreen: (col: number, row: number) => {
+        if (!this.world) return null;
+        const { dx, dy, lh } = MAP_GEOMETRY;
+        const cam = this.cameras.main;
+        const cell = this.world.rows[row]?.[col];
+        if (!cell) return null;
+        const wx = this.iso.ox + (col - row) * dx;
+        const wy = this.iso.oy + (col + row) * dy - cell.l * lh;
+        return {
+          x: (wx - cam.worldView.x) * cam.zoom,
+          y: (wy - cam.worldView.y) * cam.zoom,
+          zoom: cam.zoom,
+          level: cell.l,
+          t: cell.t,
+          v: cell.v ?? 0,
+        };
+      },
       // Draw-order probe: base + lit-copy depths for me and the campfire, so
       // the lit layer's ordering can be asserted numerically (no screenshots).
       litOrder: () => {
