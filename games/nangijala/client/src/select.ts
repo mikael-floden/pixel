@@ -1,4 +1,4 @@
-import { CharacterDef, Manifest } from "./manifest";
+import { CharacterDef, Manifest, stripUrl } from "./manifest";
 
 const NAMES = ["Ari", "Bex", "Cyl", "Dax", "Eir", "Fen", "Gio", "Hana", "Ivo", "Juno", "Kira", "Lio"];
 
@@ -45,7 +45,10 @@ export function chooseCharacter(manifest: Manifest): Promise<JoinChoice> {
       const label = displayNames[i];
       const cell = el("button", "ml-cell");
       cell.dataset.index = String(i);
-      cell.innerHTML = `<img src="${c.portrait}" alt="${label}" /><span>${label}</span>`;
+      cell.appendChild(spritePreview(c, label));
+      const span = el("span", "");
+      span.textContent = label;
+      cell.appendChild(span);
       cell.addEventListener("click", () => select(i));
       grid.appendChild(cell);
       cells.push(cell);
@@ -105,6 +108,36 @@ function el(tag: string, cls: string): HTMLElement {
   return e;
 }
 
+const IDLE_FPS = 6; // matches the in-game idle frame rate (WorldScene ANIM_FPS)
+
+/**
+ * A preview showing the character exactly as in game: the idle-south strip at
+ * native 1:1 pixel scale, animated by stepping background-position (same FPS
+ * as in-game idle). Falls back to the portrait (e.g. the built-in Wanderer,
+ * whose art is procedural and has no strips).
+ */
+function spritePreview(c: CharacterDef, label: string): HTMLElement {
+  const frames = c.animations.idle?.south ?? 0;
+  if (!frames) {
+    const img = el("img", "ml-portrait") as HTMLImageElement;
+    img.src = c.portrait;
+    img.alt = label;
+    return img;
+  }
+  const sprite = el("div", "ml-sprite");
+  sprite.setAttribute("role", "img");
+  sprite.setAttribute("aria-label", label);
+  sprite.style.width = `${c.frameW}px`;
+  sprite.style.height = `${c.frameH}px`;
+  sprite.style.backgroundImage = `url("${stripUrl(c, "idle", "south")}")`;
+  // Step through the strip; steps(N) holds each frame like the game does.
+  sprite.animate(
+    [{ backgroundPosition: "0px 0px" }, { backgroundPosition: `-${frames * c.frameW}px 0px` }],
+    { duration: (frames / IDLE_FPS) * 1000, iterations: Infinity, easing: `steps(${frames}, end)` },
+  );
+  return sprite;
+}
+
 let stylesInjected = false;
 function injectStyles() {
   if (stylesInjected) return;
@@ -116,12 +149,13 @@ function injectStyles() {
     background:#12121ccc;box-shadow:0 10px 40px #0008;text-align:center}
   .ml-title{margin:0;font-size:44px;letter-spacing:2px;color:#cfe0ff}
   .ml-sub{margin:6px 0 20px;color:#9aa0bf}
-  .ml-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:12px;
-    max-height:46vh;overflow:auto;padding:4px}
+  .ml-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px;
+    max-height:52vh;overflow:auto;padding:4px}
   .ml-cell{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;cursor:pointer;
     background:#1e1e30;border:2px solid transparent;border-radius:10px;color:#c7cbe6;font-size:12px}
-  .ml-cell img{width:72px;height:72px;object-fit:contain;image-rendering:pixelated}
-  .ml-cell span{max-width:96px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ml-sprite{image-rendering:pixelated;background-repeat:no-repeat;flex:none}
+  .ml-portrait{width:72px;height:72px;object-fit:contain;image-rendering:pixelated;margin:28px 0}
+  .ml-cell span{max-width:136px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .ml-cell.sel{border-color:#ffd678;background:#2a2a44}
   .ml-row{display:flex;gap:10px;margin-top:20px;justify-content:center;align-items:stretch}
   .ml-name{flex:1;max-width:280px;padding:10px 14px;border-radius:8px;border:1px solid #3a3a58;
