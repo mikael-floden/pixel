@@ -117,15 +117,19 @@ void main() {
       if (H < 90.0 && H > hRay) occ *= mix(0.8, 0.45, clamp((H - hRay) * 1.5, 0.0, 1.0));
     }
 
-    // Side-face pixels (below their column's top) face the camera (+col+row).
-    // They only catch light that stands far enough IN FRONT of the wall —
-    // measured in CELLS along the face normal, not as a direction, so a
-    // torch on top of the column (offset ~0) leaves the face dark instead
-    // of flickering through a noisy normalized angle.
+    // Side-face pixels (below their column's top): a column shows TWO faces —
+    // left of its front corner faces +row, right of it faces +col. Each face
+    // only catches light that stands beyond ITS OWN plane (in cells), so a
+    // torch on the right lights the right face but never wraps onto the
+    // left one, and a torch on top (behind both planes) lights neither.
     float Hown = heightAt(cell);
     if (Hown < 90.0 && Hown - z > 0.05) {
-      float front = (d2.x + d2.y) * 0.7071;
-      occ *= smoothstep(0.35, 0.9, front);
+      vec2 base = floor(cell);
+      float frontL = lp.y - (base.y + 1.0); // beyond the +row (left) face
+      float frontR = lp.x - (base.x + 1.0); // beyond the +col (right) face
+      float uf = u - (base.x - base.y);     // pixel left/right of front corner
+      float front = mix(frontL, frontR, smoothstep(-0.2, 0.2, uf));
+      occ *= smoothstep(0.05, 0.6, front);
     }
 
     // Fire flicker: slow cozy breathing + a mild shimmer (fast large-swing
