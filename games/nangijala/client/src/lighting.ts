@@ -42,11 +42,14 @@ export interface Preset {
 
 // Cycle order. "day" is the default and fully disables the layer, so normal
 // play is untouched until you press L to explore the moodier times.
+// tint = the multiply GRADE colour (what pure white becomes); darkness > 0
+// simply enables the grade. Saturated grade colours keep the scene rich —
+// night goes deep blue (Sea of Stars-style), not translucent gray.
 export const PRESETS: Preset[] = [
-  { name: "day", tint: 0x000000, darkness: 0.0, light: 0xffffff, radius: 200, vignette: 0.0 },
-  { name: "dusk", tint: 0x3a2140, darkness: 0.4, light: 0xffcf94, radius: 210, vignette: 0.22 },
-  { name: "night", tint: 0x0a1230, darkness: 0.66, light: 0xffe4ad, radius: 170, vignette: 0.34 },
-  { name: "dawn", tint: 0x243450, darkness: 0.32, light: 0xfff1d6, radius: 210, vignette: 0.18 },
+  { name: "day", tint: 0xffffff, darkness: 0.0, light: 0xffffff, radius: 200, vignette: 0.0 },
+  { name: "dusk", tint: 0xd18f70, darkness: 0.5, light: 0xffcf94, radius: 210, vignette: 0.18 },
+  { name: "night", tint: 0x4a63b8, darkness: 1.0, light: 0xffe4ad, radius: 170, vignette: 0.3 },
+  { name: "dawn", tint: 0xc9a4c4, darkness: 0.4, light: 0xfff1d6, radius: 210, vignette: 0.14 },
 ];
 
 const LIGHT_TEX = "atmo-light";
@@ -80,10 +83,13 @@ export class Atmosphere {
     this.buildFogTexture();
 
     const { width, height } = this.scene.scale;
+    // MULTIPLY blend: the layer GRADES the scene (shadows stay saturated,
+    // contrast survives) instead of washing it flat like an alpha overlay.
     this.dark = this.scene.add
       .renderTexture(0, 0, width, height)
       .setOrigin(0, 0)
       .setScrollFactor(0)
+      .setBlendMode(Phaser.BlendModes.MULTIPLY)
       .setDepth(DARK_DEPTH);
 
     this.eraser = this.scene.make.image({ key: LIGHT_TEX }, false).setVisible(false);
@@ -147,7 +153,7 @@ export class Atmosphere {
     } else {
       this.dark.setVisible(true);
       this.dark.clear();
-      this.dark.fill(p.tint, p.darkness);
+      this.dark.fill(p.tint, 1);
       // Erase a soft pool through the darkness at each light (screen space).
       for (const l of lights) {
         const r = l.radius ?? p.radius;
