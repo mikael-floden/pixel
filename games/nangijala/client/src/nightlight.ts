@@ -107,14 +107,22 @@ void main() {
     // instead of stamping hard cell-shaped shadow blocks. Only samples in the
     // pixel's OWN column are skipped (a wall must not shadow its own face,
     // but it MUST still block light for the ground right at its base).
+    // Surfaces ABOVE the light skip the LOS shadow and fade by distance only:
+    // characters are billboards, and a body's upper pixels sample the terrain
+    // BEHIND them — if a higher backdrop rim-shadows itself against a low
+    // torch, the character standing lit in front turns black with it. Light
+    // received from above or level (cliff bases, object shadows, faces)
+    // keeps full occlusion.
     float occ = 1.0;
-    for (int s = 1; s <= 12; s++) {
-      float t = float(s) / 13.0;
-      vec2 p = mix(cell, lp.xy, t);
-      if (floor(p.x) == floor(cell.x) && floor(p.y) == floor(cell.y)) continue;
-      float hRay = mix(z, lp.z, t) + 0.2;
-      float H = heightAt(p);
-      if (H < 90.0 && H > hRay) occ *= mix(0.8, 0.45, clamp((H - hRay) * 1.5, 0.0, 1.0));
+    if (z < lp.z + 0.05) {
+      for (int s = 1; s <= 12; s++) {
+        float t = float(s) / 13.0;
+        vec2 p = mix(cell, lp.xy, t);
+        if (floor(p.x) == floor(cell.x) && floor(p.y) == floor(cell.y)) continue;
+        float hRay = mix(z, lp.z, t) + 0.2;
+        float H = heightAt(p);
+        if (H < 90.0 && H > hRay) occ *= mix(0.8, 0.45, clamp((H - hRay) * 1.5, 0.0, 1.0));
+      }
     }
 
     // Side-face pixels (below their column's top): a column shows TWO faces —
