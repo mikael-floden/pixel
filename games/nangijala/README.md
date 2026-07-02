@@ -30,8 +30,9 @@ npm run dev          # server :2567 + client :5173
 ```
 Open `http://localhost:5173` in two tabs → pick a character → walk the island.
 WASD/arrows move, Shift runs, **Space jumps** (time it to hop a 1-level ledge),
-Enter chats. Feature toggles live on the top-row digits: **1** time-of-day,
-**2** fog, **3** character aura, **4** collision overlay. You can swim across
+Enter chats. It is always night: per-pixel point lights (torch on each player,
+emissive tiles) with heightmap line-of-sight shadows. Debug toggles live on the
+top-row digits: **4** collision overlay. You can swim across
 water but your stamina drains — get out before you drown. Map preview at `/#map`.
 
 ## Layout

@@ -69,7 +69,6 @@ interface Avatar {
   hopUntil: number;
   swimming: boolean;
   baseTint: number;
-  pulse: number; // aura pulse phase (per player, so auras don't sync)
   bubble?: Phaser.GameObjects.Text;
   bubbleUntil?: number;
 }
@@ -119,10 +118,10 @@ export class WorldScene extends Phaser.Scene {
   private jumpReadyAt = 0;
   private jumpQueued = false;
   private staminaBar?: Phaser.GameObjects.Graphics;
+  // It is ALWAYS night in Nangijala (for now): the per-pixel shader when
+  // WebGL is available, the multiply grade as the canvas fallback.
   private atmo!: Atmosphere;
-  private auraOn = true;
   private night?: NightLights;
-  private nightOn = true; // [5] toggles the shader night vs the simple grade
   private shaderLights: ShaderLight[] = [];
 
   constructor() {
@@ -169,6 +168,7 @@ export class WorldScene extends Phaser.Scene {
 
     this.atmo = new Atmosphere(this);
     this.atmo.create();
+    this.atmo.setPreset("night");
     // Shader night needs WebGL; on canvas renderers the multiply grade
     // remains the night fallback.
     if (this.world && this.game.renderer.type === Phaser.WEBGL) {
@@ -199,27 +199,12 @@ export class WorldScene extends Phaser.Scene {
     });
     // Jump (Space): edge-triggered, lets you cross a 1-level ledge if timed.
     this.input.keyboard!.on("keydown-SPACE", () => this.tryJump());
-    // All feature/debug toggles live on the TOP-ROW digits (1-9):
-    //   1 time-of-day · 2 fog · 3 character aura · 4 collision overlay
-    this.input.keyboard!.on("keydown-ONE", () =>
-      this.chat.addLog("—", `[1] Time of day: ${this.atmo.cyclePreset()}`),
-    );
-    this.input.keyboard!.on("keydown-TWO", () =>
-      this.chat.addLog("—", `[2] Fog: ${this.atmo.toggleFog() ? "on" : "off"}`),
-    );
-    this.input.keyboard!.on("keydown-THREE", () => {
-      this.auraOn = !this.auraOn;
-      this.chat.addLog("—", `[3] Character aura: ${this.auraOn ? "on" : "off"}`);
-    });
+    // Feature/debug toggles live on the TOP-ROW digits (1-9).
     this.input.keyboard!.on("keydown-FOUR", () => {
       this.toggleCollisionOverlay();
       this.chat.addLog("—", `[4] Collision overlay: ${this.collisionOverlay ? "on" : "off"}`);
     });
-    this.input.keyboard!.on("keydown-FIVE", () => {
-      this.nightOn = !this.nightOn;
-      this.chat.addLog("—", `[5] Shader night lighting: ${this.nightOn ? "on" : "off"}`);
-    });
-    this.chat.addLog("—", "Toggles: [1] time · [2] fog · [3] aura · [4] collision · [5] night shader");
+    this.chat.addLog("—", "Toggles: [4] collision overlay");
 
     const cam = this.cameras.main;
     cam.setBounds(0, 0, this.iso.w, this.iso.h);
@@ -288,9 +273,7 @@ export class WorldScene extends Phaser.Scene {
       swimming: () => !!this.room?.state.players.get(this.room!.sessionId)?.swimming,
       surfaceAt: (x: number, y: number) => (this.terrain ? surfaceAtWorld(this.terrain, x, y) : null),
       levelAt: (x: number, y: number) => (this.terrain ? levelAtWorld(this.terrain, x, y) : 0),
-      timeOfDay: (name: string) => this.atmo.setPreset(name),
       nightShader: () => !!this.night && this.night.active,
-      toggleFog: () => this.atmo.toggleFog(),
     };
   }
 
@@ -370,7 +353,6 @@ export class WorldScene extends Phaser.Scene {
       hopUntil: 0,
       swimming: false,
       baseTint,
-      pulse: [...id].reduce((h, ch) => h + ch.charCodeAt(0), 0) % 63,
     });
     this.applyAnimState(this.avatars.get(id)!, player.moving, player.running, player.dir);
   }
@@ -528,11 +510,9 @@ export class WorldScene extends Phaser.Scene {
     const me = state.players.get(myId);
     if (me) this.drawStaminaBar(me.stamina ?? MAX_STAMINA, !!me.swimming);
 
-    // Atmosphere: each player is a light source (lantern at the torso).
-    // Shader night: per-pixel point lights with heightmap line-of-sight.
-    // Fallback / other times of day: the multiply grade + glow images.
-    const tsec = this.time.now / 1000;
-    const shaderNight = !!this.night && this.nightOn && this.atmo.preset.name === "night";
+    // Night lighting (always on): per-pixel point lights with heightmap
+    // line-of-sight when WebGL is available; the multiply grade otherwise.
+    const shaderNight = !!this.night;
     this.night?.setActive(shaderNight);
     this.atmo.suppressGrade = shaderNight;
     if (shaderNight && this.world) {
@@ -558,20 +538,7 @@ export class WorldScene extends Phaser.Scene {
     const lights: LightSource[] = [];
     if (!shaderNight) {
       for (const a of this.avatars.values()) {
-        const pulse = Math.sin(tsec * 1.3 + a.pulse) * 0.5 + Math.sin(tsec * 4.7 + a.pulse * 2) * 0.2;
-        lights.push({ x: a.lx, y: a.ly - 20 }); // lantern pool (night)
-        if (!this.auraOn) continue;
-        // Ground-hugging pool at the feet, depth-sorted just below the sprite —
-        // the character stands IN the light, and walls in front occlude it.
-        lights.push({
-          x: a.lx,
-          y: a.ly - 1,
-          color: 0xffe3b3,
-          radius: 44 + pulse * 4,
-          alpha: 0.16 + pulse * 0.05,
-          ground: true,
-          depth: a.sprite.depth - 0.05,
-        });
+        lights.push({ x: a.lx, y: a.ly - 20 }); // lantern pool
       }
       lights.push(...this.emissiveLights);
     }

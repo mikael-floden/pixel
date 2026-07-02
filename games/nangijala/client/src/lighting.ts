@@ -3,8 +3,9 @@ import { ISO_DX, ISO_DY } from "@nangijala/shared";
 
 /**
  * Atmosphere layer: a screen-space darkness overlay that light sources punch
- * soft pools through, warm additive glows on each light, a vignette, and
- * optional drifting fog. Gives the flat pixel world depth and mood.
+ * soft pools through, warm additive glows on each light, and a vignette.
+ * Fallback night lighting for canvas renderers — when WebGL is available the
+ * per-pixel shader (nightlight.ts) owns the screen and this grade stands down.
  *
  * Technique (classic 2D lighting, no normal maps): each frame fill a
  * screen-sized RenderTexture with the time-of-day tint, then ERASE a soft
@@ -20,9 +21,9 @@ export interface LightSource {
   // even in full daylight; uncoloured ones (player lanterns) only at night.
   color?: number;
   // Explicit glow strength: a light with `alpha` set is ALWAYS drawn at that
-  // alpha (used for the dim pulsing character aura, day and night).
+  // alpha.
   alpha?: number;
-  // Scene depth for the glow. Lights that belong IN the world (auras, lava)
+  // Scene depth for the glow. Lights that belong IN the world (e.g. lava)
   // pass the emitter's depth so walls in front genuinely occlude them —
   // light must never shine through solid objects. Default: top overlay.
   depth?: number;
@@ -40,8 +41,8 @@ export interface Preset {
   vignette: number; // edge-darkening alpha
 }
 
-// Cycle order. "day" is the default and fully disables the layer, so normal
-// play is untouched until you press L to explore the moodier times.
+// It is always NIGHT for now (WorldScene calls setPreset("night")); the other
+// presets are kept for when a day/night cycle lands.
 // tint = the multiply GRADE colour (what pure white becomes); darkness > 0
 // simply enables the grade. Saturated grade colours keep the scene rich —
 // night goes deep blue (Sea of Stars-style), not translucent gray.
@@ -53,24 +54,20 @@ export const PRESETS: Preset[] = [
 ];
 
 const LIGHT_TEX = "atmo-light";
-const FOG_TEX = "atmo-fog";
 const DARK_DEPTH = 900_000; // above players, below the DOM/HUD
 const GLOW_DEPTH = 900_001;
 const VIGNETTE_DEPTH = 900_002;
-const FOG_DEPTH = 899_999;
 
 export class Atmosphere {
   /** When the shader night owns the screen, the grade layer stands down. */
   suppressGrade = false;
   private scene: Phaser.Scene;
   private presetIdx = 0;
-  private fogOn = false;
 
   private dark!: Phaser.GameObjects.RenderTexture;
   private eraser!: Phaser.GameObjects.Image; // reusable brush for ERASE
   private glows: Phaser.GameObjects.Image[] = []; // additive warm pool (world space)
   private vignette!: Phaser.GameObjects.Image;
-  private fog!: Phaser.GameObjects.TileSprite;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -82,7 +79,6 @@ export class Atmosphere {
 
   create() {
     this.buildBrush();
-    this.buildFogTexture();
 
     const { width, height } = this.scene.scale;
     // MULTIPLY blend: the layer GRADES the scene (shadows stay saturated,
@@ -102,15 +98,6 @@ export class Atmosphere {
       .setDepth(VIGNETTE_DEPTH)
       .setVisible(false);
 
-    this.fog = this.scene.add
-      .tileSprite(0, 0, width, height, FOG_TEX)
-      .setOrigin(0, 0)
-      .setScrollFactor(0)
-      .setDepth(FOG_DEPTH)
-      .setBlendMode(Phaser.BlendModes.SCREEN)
-      .setAlpha(0.16)
-      .setVisible(false);
-
     this.scene.scale.on("resize", this.onResize, this);
   }
 
@@ -118,12 +105,6 @@ export class Atmosphere {
     const { width, height } = gameSize;
     this.dark.setSize(width, height);
     this.vignette.setTexture(buildVignette(this.scene, width, height)).setPosition(width / 2, height / 2);
-    this.fog.setSize(width, height);
-  }
-
-  cyclePreset(): string {
-    this.presetIdx = (this.presetIdx + 1) % PRESETS.length;
-    return this.preset.name;
   }
 
   setPreset(name: string): string {
@@ -132,21 +113,9 @@ export class Atmosphere {
     return this.preset.name;
   }
 
-  toggleFog(): boolean {
-    this.fogOn = !this.fogOn;
-    return this.fogOn;
-  }
-
   /** Redraw the atmosphere for this frame given the lights (world coords). */
-  update(lights: LightSource[], cam: Phaser.Cameras.Scene2D.Camera, dt: number) {
+  update(lights: LightSource[], cam: Phaser.Cameras.Scene2D.Camera, _dt: number) {
     const p = this.preset;
-
-    // Drifting fog is independent of time-of-day.
-    this.fog.setVisible(this.fogOn);
-    if (this.fogOn) {
-      this.fog.tilePositionX += dt * 6;
-      this.fog.tilePositionY += dt * 2.5;
-    }
 
     const dark = p.darkness > 0 && !this.suppressGrade;
     if (!dark) {
@@ -211,34 +180,6 @@ export class Atmosphere {
     grd.addColorStop(1, "rgba(255,255,255,0)");
     ctx.fillStyle = grd;
     ctx.fillRect(0, 0, size, size);
-    tex!.refresh();
-  }
-
-  private buildFogTexture() {
-    if (this.scene.textures.exists(FOG_TEX)) return;
-    const size = 256;
-    const tex = this.scene.textures.createCanvas(FOG_TEX, size, size);
-    const ctx = tex!.getContext();
-    ctx.clearRect(0, 0, size, size);
-    // Soft overlapping blobs → cloudy fog that tiles seamlessly (wrap draw).
-    for (let i = 0; i < 26; i++) {
-      const x = Math.random() * size;
-      const y = Math.random() * size;
-      const r = 24 + Math.random() * 48;
-      for (const [ox, oy] of [
-        [0, 0],
-        [size, 0],
-        [-size, 0],
-        [0, size],
-        [0, -size],
-      ]) {
-        const grd = ctx.createRadialGradient(x + ox, y + oy, 0, x + ox, y + oy, r);
-        grd.addColorStop(0, "rgba(210,220,235,0.5)");
-        grd.addColorStop(1, "rgba(210,220,235,0)");
-        ctx.fillStyle = grd;
-        ctx.fillRect(0, 0, size, size);
-      }
-    }
     tex!.refresh();
   }
 
