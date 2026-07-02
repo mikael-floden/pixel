@@ -9,6 +9,10 @@ export interface CharacterDef {
   frameW: number;
   frameH: number;
   animations: Record<string, Record<string, number>>; // anim -> dir -> frameCount
+  // Foot anchor per direction: where the sole line (centre point between the
+  // feet) sits inside the frame, as origin fractions. Pinning the sprite there
+  // makes the drawn feet meet the collision position exactly.
+  anchors?: Record<string, { x: number; y: number }>;
 }
 
 export interface Manifest {

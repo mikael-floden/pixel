@@ -288,7 +288,9 @@ export class WorldScene extends Phaser.Scene {
     const sprite = this.add.sprite(p0.x, p0.y, hasArt ? key : PLACEHOLDER_TEX);
     const baseTint = hasArt ? 0xffffff : colorForName(player.name || id);
     sprite.setTint(baseTint);
-    sprite.setOrigin(0.5, 0.9);
+    // Pin the sprite at the measured foot anchor (sole line) so the drawn feet
+    // sit exactly on the collision position; fall back to a sane default.
+    this.applyAnchor(sprite, uid, DEFAULT_DIRECTION, hasArt);
     const label = this.add
       .text(p0.x, p0.y, player.name, { fontFamily: "monospace", fontSize: "12px", color: "#eef" })
       .setOrigin(0.5, 1);
@@ -387,7 +389,7 @@ export class WorldScene extends Phaser.Scene {
       av.sprite.x = av.lx;
       av.sprite.y = av.ly - hop + sink;
       av.sprite.setDepth(av.ly);
-      const topY = av.sprite.y - av.sprite.displayHeight * 0.9;
+      const topY = av.sprite.y - av.sprite.displayHeight * av.sprite.originY;
       av.label.setPosition(av.lx, topY - 4);
       if (av.bubble) {
         av.bubble.setPosition(av.lx, topY - 18);
@@ -436,7 +438,23 @@ export class WorldScene extends Phaser.Scene {
     const state = moving ? (running ? "run" : "walk") : "idle";
     const d = DIRECTIONS.includes(dir as never) ? dir : DEFAULT_DIRECTION;
     const key = this.resolveAnim(av.character, state, d);
-    if (key && av.sprite.anims.getName() !== key) av.sprite.play(key, true);
+    if (key && av.sprite.anims.getName() !== key) {
+      av.sprite.play(key, true);
+      // The foot position shifts slightly between directions — re-pin.
+      this.applyAnchor(av.sprite, av.character, d, av.sprite.texture.key !== PLACEHOLDER_TEX);
+    }
+  }
+
+  /** Set the sprite origin to the measured foot anchor for this direction. */
+  private applyAnchor(sprite: Phaser.GameObjects.Sprite, uid: string, dir: string, hasArt: boolean) {
+    if (!hasArt) {
+      sprite.setOrigin(0.5, 0.94); // placeholder wanderer: feet at 32/34
+      return;
+    }
+    const def = this.manifest.characters.find((c) => c.uid === uid);
+    const a = def?.anchors?.[dir] ?? def?.anchors?.[DEFAULT_DIRECTION];
+    if (a) sprite.setOrigin(a.x, a.y);
+    else sprite.setOrigin(0.5, 0.9);
   }
 
   /** Pick an existing animation, falling back run→walk→idle then default dir. */
