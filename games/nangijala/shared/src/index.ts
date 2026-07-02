@@ -12,8 +12,8 @@ export const WORLD_HEIGHT = 448 * CELL_WU;
 
 // Movement speeds in world units per second.
 // Retuned for CELL_WU=32 (screen px/wu grew ~13% vs the old 44×44 world).
-export const WALK_SPEED = 28;
-export const RUN_SPEED = 72;
+export const WALK_SPEED = 70;
+export const RUN_SPEED = 108;
 
 // Authoritative simulation tick (updates per second).
 export const TICK_RATE = 20;
