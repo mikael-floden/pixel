@@ -233,9 +233,6 @@ export class NightLights {
     });
     // Shader GameObjects can't blend directly — render the light field to a
     // texture and composite it with a MULTIPLY image on top of the scene.
-    // scrollFactor(0) objects are STILL scaled by camera zoom in Phaser, so
-    // the overlay counter-scales by 1/zoom around the screen centre — else
-    // the whole light field displays magnified (shadows "twice as big").
     this.overlay = this.scene.add
       .image(0, 0, "__WHITE")
       .setOrigin(0.5, 0.5)
@@ -267,11 +264,10 @@ export class NightLights {
     s.setRenderToTexture(key);
     this.shader = s;
     const old = this.overlay!.texture.key;
-    const zoom = this.scene.cameras.main.zoom || 1;
     this.overlay!
       .setTexture(key)
       .setPosition(width / 2, height / 2)
-      .setScale(1 / zoom);
+      .setScale(1);
     if (old.startsWith(FIELD_KEY) && this.scene.textures.exists(old)) {
       this.scene.textures.remove(old);
     }
