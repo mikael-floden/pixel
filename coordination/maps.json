@@ -75,14 +75,15 @@
       "at": "2026-07-02T04:20:00+00:00"
     }
   ],
-  "updated_at": "2026-07-02T10:30:00+00:00",
+  "updated_at": "2026-07-02T12:40:00+00:00",
   "health": "running",
-  "current": "tile census complete (152 cats / 2949 tiles ranked+annotated); climates.json palette layer authored; next: giant chunked world build",
+  "current": "GIANT world shipped: 512x448 Aldenmoor continent, 15 climates, autotiled roads, terraced rivers+waterfalls, volcano isle; census-driven palette",
   "progress": {
-    "census_tiles": 2949,
-    "census_categories": 152,
+    "world": "512x448",
+    "cells": 229376,
     "climates": 15,
-    "transitions": 19
+    "roads_cells": 1313,
+    "tile_cats_used": 58
   },
   "budget_remaining": 7739.0
 }
