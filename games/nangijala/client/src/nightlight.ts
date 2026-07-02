@@ -79,7 +79,10 @@ void main() {
     gl_FragColor = vec4(suv.x, suv.y, 0.0, 1.0);
     return;
   }
-  float u = (wx - uIsoA.x) / uIsoA.z;
+  // -1: tiles are drawn anchored at their diamond's LEFT corner (the art is
+  // tile/2 wider than the dx step) — without it the inverse projection lands
+  // one cell off diagonally: centre of cell (c,r) must invert to (c+.5,r+.5).
+  float u = (wx - uIsoA.x) / uIsoA.z - 1.0;
   if (uTest > 1.5) {
     // Calibration 2: paint the shader's own cell grid. The bright diamond
     // lines MUST coincide with the artwork's tile edges — any span, offset
