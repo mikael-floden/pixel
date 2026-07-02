@@ -118,12 +118,14 @@ void main() {
     }
 
     // Side-face pixels (below their column's top) face the camera (+col+row).
-    // They can only catch light from THAT side — a torch on top of or behind
-    // the wall must not wrap around onto the front face.
+    // They only catch light that stands far enough IN FRONT of the wall —
+    // measured in CELLS along the face normal, not as a direction, so a
+    // torch on top of the column (offset ~0) leaves the face dark instead
+    // of flickering through a noisy normalized angle.
     float Hown = heightAt(cell);
     if (Hown < 90.0 && Hown - z > 0.05) {
-      float facing = (d2.x + d2.y) * 0.7071 / max(length(d2), 0.001);
-      occ *= smoothstep(-0.1, 0.4, facing);
+      float front = (d2.x + d2.y) * 0.7071;
+      occ *= smoothstep(0.35, 0.9, front);
     }
 
     // Fire flicker: slow cozy breathing + a mild shimmer (fast large-swing
