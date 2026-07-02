@@ -8,8 +8,8 @@ export const WORLD_WIDTH = 1600;
 export const WORLD_HEIGHT = 1600;
 
 // Movement speeds in world units per second.
-export const WALK_SPEED = 140;
-export const RUN_SPEED = 250;
+export const WALK_SPEED = 112;
+export const RUN_SPEED = 200;
 
 // Authoritative simulation tick (updates per second).
 export const TICK_RATE = 20;
