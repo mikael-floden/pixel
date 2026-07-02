@@ -25,7 +25,7 @@ import {
 } from "@nangijala/shared";
 import { CharacterDef, Manifest, stripUrl } from "../manifest";
 import { colorForName } from "../placeholder";
-import { Atmosphere } from "../lighting";
+import { Atmosphere, LightSource } from "../lighting";
 import { joinWorld } from "../net";
 import { ChatUI } from "../chat";
 import { RosterUI } from "../roster";
@@ -44,6 +44,14 @@ const INPUT_HZ = 20;
 const BUBBLE_MS = 5000;
 const PLACEHOLDER_TEX = "placeholder:wanderer";
 const SHADOW_TEX = "avatar:shadow";
+// Emissive tile categories → coloured spot lights (glow day and night).
+const EMISSIVE: Record<string, { color: number; radius: number }> = {
+  lava: { color: 0xff7433, radius: 110 },
+  crystal_ground: { color: 0x86d9ff, radius: 75 },
+  crystal_spire: { color: 0x9db8ff, radius: 110 },
+  mushroom_grove: { color: 0x5fc4ff, radius: 65 },
+};
+const MAX_EMISSIVE = 48; // cap per view (perf)
 const JUMP_HEIGHT = 28; // px peak of the jump hop (a tall, floaty arc)
 const SWIM_SINK = 6; // px the sprite sinks while swimming
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
@@ -103,6 +111,7 @@ export class WorldScene extends Phaser.Scene {
     y1: number;
   }[] = [];
   private lastOccl = { x: NaN, y: NaN };
+  private emissiveLights: LightSource[] = [];
   // Local jump prediction (client owns its jump timing).
   private jumpUntil = 0;
   private jumpReadyAt = 0;
@@ -147,6 +156,7 @@ export class WorldScene extends Phaser.Scene {
   async create() {
     this.ensurePlaceholderTexture();
     this.ensureShadowTexture();
+    this.ensureShadeTextures();
     this.buildAnimations();
     if (this.world) this.setupStreamingGround();
     else this.drawGround();
@@ -472,7 +482,8 @@ export class WorldScene extends Phaser.Scene {
     if (me) this.drawStaminaBar(me.stamina ?? MAX_STAMINA, !!me.swimming);
 
     // Atmosphere: each player is a light source (lantern at the torso).
-    const lights = [...this.avatars.values()].map((a) => ({ x: a.lx, y: a.ly - 20 }));
+    const lights: LightSource[] = [...this.avatars.values()].map((a) => ({ x: a.lx, y: a.ly - 20 }));
+    lights.push(...this.emissiveLights);
     this.atmo.update(lights, this.cameras.main, dt);
   }
 
@@ -642,6 +653,15 @@ export class WorldScene extends Phaser.Scene {
         const bx = this.iso.ox + u * dx - ax;
         const by = this.iso.oy + v * dy - ay;
         for (let lvl = 0; lvl <= cell.l; lvl++) rt.batchDraw(key, bx, by - lvl * lh);
+        // Contact shadows from higher sun-side neighbours (elevation contrast).
+        const own = cell.l;
+        const topY = by - cell.l * lh;
+        const dW = Math.min(3, this.effHeight(col - 1, row, own) - own);
+        const dN = Math.min(3, this.effHeight(col, row - 1, own) - own);
+        const dNW = Math.min(3, this.effHeight(col - 1, row - 1, own) - own);
+        if (dW > 0) rt.batchDraw("shade-w", bx, topY, 0.22 + dW * 0.14);
+        if (dN > 0) rt.batchDraw("shade-n", bx, topY, 0.18 + dN * 0.12);
+        if (dNW > 0 && dW <= 0 && dN <= 0) rt.batchDraw("shade-nw", bx, topY, 0.3);
       }
     }
     rt.endDraw();
@@ -741,6 +761,7 @@ export class WorldScene extends Phaser.Scene {
     for (const im of this.occluders) im.destroy();
     this.occluders = [];
     this.occluderMeta = [];
+    this.emissiveLights = [];
 
     const { dx, dy, lh, tile: tileSize } = MAP_GEOMETRY;
     const pad = 200;
@@ -760,6 +781,16 @@ export class WorldScene extends Phaser.Scene {
         const cell = this.world.rows[row]?.[col];
         if (!cell) continue;
         const s = surfaceFor(cell.t);
+        // Emissive tiles become coloured spot lights (fed to the atmosphere).
+        const em = EMISSIVE[cell.t];
+        if (em && this.emissiveLights.length < MAX_EMISSIVE) {
+          this.emissiveLights.push({
+            x: this.iso.ox + u * dx + dx,
+            y: this.iso.oy + v * dy + dy - cell.l * lh,
+            color: em.color,
+            radius: em.radius,
+          });
+        }
         const tall = cell.l > 0 || (!s.standable && !s.swimmable);
         if (!tall) continue;
         const key = tileKey(cell.t, cell.v);
@@ -783,6 +814,19 @@ export class WorldScene extends Phaser.Scene {
           y0: by - cell.l * lh,
           y1: by + tileSize,
         });
+        // Match the ground pass's contact shadows on redrawn column tops.
+        const own = cell.l;
+        const topY = by - cell.l * lh;
+        const dW = Math.min(3, this.effHeight(col - 1, row, own) - own);
+        const dN = Math.min(3, this.effHeight(col, row - 1, own) - own);
+        if (dW > 0)
+          this.occluders.push(
+            this.add.image(bx, topY, "shade-w").setOrigin(0, 0).setAlpha(0.22 + dW * 0.14).setDepth(by + dy + 0.05),
+          );
+        if (dN > 0)
+          this.occluders.push(
+            this.add.image(bx, topY, "shade-n").setOrigin(0, 0).setAlpha(0.18 + dN * 0.12).setDepth(by + dy + 0.05),
+          );
       }
     }
   }
@@ -801,6 +845,60 @@ export class WorldScene extends Phaser.Scene {
       x: this.iso.ox + (col - row) * dx + tile / 2,
       y: this.iso.oy + (col + row) * dy + dy - lvl * lh,
     };
+  }
+
+  /**
+   * Contact-shadow overlays for elevation readability: a tile with HIGHER
+   * ground on its sun-side (screen-left → grid west/north) gets a soft dark
+   * gradient along that edge, scaled by the height difference. Baked into the
+   * ground pass — the classic "just works" iso AO trick.
+   */
+  private ensureShadeTextures() {
+    const { dy, tile } = MAP_GEOMETRY;
+    const w = tile;
+    const h = dy * 2;
+    const make = (key: string, draw: (ctx: CanvasRenderingContext2D) => void) => {
+      if (this.textures.exists(key)) return;
+      const tex = this.textures.createCanvas(key, w, h);
+      const ctx = tex!.getContext();
+      // Clip to the tile's top diamond.
+      ctx.beginPath();
+      ctx.moveTo(w / 2, 0);
+      ctx.lineTo(w, h / 2);
+      ctx.lineTo(w / 2, h);
+      ctx.lineTo(0, h / 2);
+      ctx.closePath();
+      ctx.clip();
+      draw(ctx);
+      tex!.refresh();
+    };
+    const grad = (ctx: CanvasRenderingContext2D, x0: number, y0: number, x1: number, y1: number) => {
+      const g = ctx.createLinearGradient(x0, y0, x1, y1);
+      g.addColorStop(0, "rgba(8,12,26,0.85)");
+      g.addColorStop(1, "rgba(8,12,26,0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+    };
+    // Shadow cast from a higher WEST neighbour (shared NW edge).
+    make("shade-w", (ctx) => grad(ctx, 10, 7, 42, 21));
+    // From a higher NORTH neighbour (shared NE edge).
+    make("shade-n", (ctx) => grad(ctx, w - 10, 7, w - 42, 21));
+    // From a higher NW-diagonal neighbour (top corner).
+    make("shade-nw", (ctx) => {
+      const g = ctx.createRadialGradient(w / 2, 0, 0, w / 2, 0, 20);
+      g.addColorStop(0, "rgba(8,12,26,0.7)");
+      g.addColorStop(1, "rgba(8,12,26,0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+    });
+  }
+
+  /** Effective blocking height of a cell for shadow casting (solid structures
+   * like trees count one level above their ground). */
+  private effHeight(col: number, row: number, own: number): number {
+    const cell = this.world?.rows[row]?.[col];
+    if (!cell) return own; // off-map: no shade
+    return cell.l + (surfaceFor(cell.t).standable ? 0 : 1);
   }
 
   /** Soft elliptical drop shadow (Mario 64 style): drawn once, reused by every

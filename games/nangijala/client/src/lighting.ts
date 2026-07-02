@@ -15,6 +15,9 @@ export interface LightSource {
   x: number; // world coords
   y: number;
   radius?: number; // override the preset radius
+  // Emissive colour (e.g. lava orange, crystal cyan). Coloured lights glow
+  // even in full daylight; uncoloured ones (player lanterns) only at night.
+  color?: number;
 }
 
 export interface Preset {
@@ -126,40 +129,41 @@ export class Atmosphere {
       this.fog.tilePositionY += dt * 2.5;
     }
 
-    if (p.darkness <= 0) {
-      // Full day: nothing to draw — keep it free.
+    const dark = p.darkness > 0;
+    if (!dark) {
       this.dark.setVisible(false);
       this.vignette.setVisible(false);
-      for (const g of this.glows) g.setVisible(false);
-      return;
+    } else {
+      this.dark.setVisible(true);
+      this.dark.clear();
+      this.dark.fill(p.tint, p.darkness);
+      // Erase a soft pool through the darkness at each light (screen space).
+      for (const l of lights) {
+        const r = l.radius ?? p.radius;
+        const sx = (l.x - cam.worldView.x) * cam.zoom;
+        const sy = (l.y - cam.worldView.y) * cam.zoom;
+        this.eraser.setDisplaySize(r * 2, r * 2);
+        this.dark.erase(this.eraser, sx, sy);
+      }
+      this.vignette.setVisible(p.vignette > 0).setAlpha(p.vignette);
     }
 
-    this.dark.setVisible(true);
-    this.dark.clear();
-    this.dark.fill(p.tint, p.darkness);
-
-    // Erase a soft pool through the darkness at each light (screen space).
-    for (const l of lights) {
-      const r = l.radius ?? p.radius;
-      const sx = (l.x - cam.worldView.x) * cam.zoom;
-      const sy = (l.y - cam.worldView.y) * cam.zoom;
-      this.eraser.setDisplaySize(r * 2, r * 2);
-      this.dark.erase(this.eraser, sx, sy);
-    }
-
-    // Warm additive glow cores (world space, above the darkness).
+    // Additive glow cores (world space). Coloured (emissive) lights glow even
+    // in daylight — lava should read hot at noon; lanterns only at night.
     this.syncGlowPool(lights.length);
     this.glows.forEach((g, i) => {
       const l = lights[i];
-      if (!l) {
+      if (!l || (!dark && !l.color)) {
         g.setVisible(false);
         return;
       }
-      const r = (l.radius ?? p.radius) * 1.15;
-      g.setVisible(true).setPosition(l.x, l.y).setDisplaySize(r * 2, r * 2).setTint(p.light);
+      const r = (l.radius ?? p.radius) * (dark ? 1.15 : 0.8);
+      g.setVisible(true)
+        .setPosition(l.x, l.y)
+        .setDisplaySize(r * 2, r * 2)
+        .setTint(l.color ?? p.light)
+        .setAlpha(l.color ? (dark ? 0.6 : 0.3) : 0.5);
     });
-
-    this.vignette.setVisible(p.vignette > 0).setAlpha(p.vignette);
   }
 
   private syncGlowPool(n: number) {
