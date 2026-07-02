@@ -370,6 +370,11 @@ export function parseWorld(json: any): ParsedWorld | null {
  * Runs inside parseWorld → server terrain and client render stay identical.
  */
 const ROAD_STUB_MAX = 4;
+// Ground categories whose tile art has path-like edging: scattered as 1-3
+// cell noise specks by the generator they read as broken road fragments.
+// Tiny isolated patches dissolve into surrounding ground; large regions stay.
+const PATH_LOOK = new Set(["gravel", "clay", "dirt"]);
+const PATCH_MAX = 3;
 
 export function cleanupRoads(width: number, height: number, rows: WorldCell[][]): void {
   const isRoad = (t: string) => t.startsWith("road_");
@@ -443,6 +448,48 @@ export function cleanupRoads(width: number, height: number, rows: WorldCell[][])
         if (!variants || variants.size === 0) continue; // style lacks tiles: keep as-is
         cell.t = targetCat;
         if (!variants.has(cell.v)) cell.v = variants.values().next().value!;
+      }
+    }
+  }
+
+  // Second pass: dissolve tiny isolated PATH_LOOK specks (gravel/clay/dirt
+  // noise the generator scatters) into the surrounding ground — they read as
+  // broken road fragments. Large regions (fields, shores) are kept.
+  const pseen = new Set<number>();
+  for (let r0 = 0; r0 < height; r0++) {
+    for (let c0 = 0; c0 < width; c0++) {
+      if (!PATH_LOOK.has(rows[r0][c0].t) || pseen.has(idx(c0, r0))) continue;
+      const comp: [number, number][] = [];
+      const stack: [number, number][] = [[c0, r0]];
+      pseen.add(idx(c0, r0));
+      while (stack.length) {
+        const [c, r] = stack.pop()!;
+        comp.push([c, r]);
+        for (let dc = -1; dc <= 1; dc++) {
+          for (let dr = -1; dr <= 1; dr++) {
+            const nc = c + dc;
+            const nr = r + dr;
+            if (nc < 0 || nr < 0 || nc >= width || nr >= height) continue;
+            if (pseen.has(idx(nc, nr)) || !PATH_LOOK.has(rows[nr][nc].t)) continue;
+            pseen.add(idx(nc, nr));
+            stack.push([nc, nr]);
+          }
+        }
+      }
+      if (comp.length > PATCH_MAX) continue;
+      for (const [c, r] of comp) {
+        let filler: WorldCell | null = null;
+        for (const [dc, dr] of [[0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [-1, -1]] as const) {
+          const nb = rows[r + dr]?.[c + dc];
+          if (nb && !PATH_LOOK.has(nb.t) && !nb.t.startsWith("road_") && surfaceFor(nb.t).standable) {
+            filler = nb;
+            break;
+          }
+        }
+        if (filler) {
+          rows[r][c].t = filler.t;
+          rows[r][c].v = filler.v;
+        }
       }
     }
   }

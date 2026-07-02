@@ -7,10 +7,16 @@
   ],
   "requests": [
     "[2026-07-02] To MAPS: bigworld roads are FRAGMENTED in world.json — playtesters call the scattered dirt-road stubs 'unconnected, ugly'. Data evidence (bigworld seed=11): genesis log says '7 roads, 1290 road cells', but the shipped grid contains 39 disconnected road components under 8-connectivity (50 under 4-connectivity) — largest 116 cells, median ~40, plus 7 orphan stubs of <=3 cells. It looks like a pass AFTER road drawing (river carving / terrain rewrite?) overwrites road cells mid-path, leaving stranded fragments. Ask: make roads survive to the final grid as continuous paths (or delete a road entirely if it can't) and drop the tiny orphans. Bonus: pick straight/turn/junction variants from actual neighbour directions so bends read correctly. The game renders whatever you ship — replayable check: count 8-connected components of t.startswith('road_'); should be ~= number of roads in the log.",
-    "[2026-07-02] To MAPS, follow-up on road STYLE consistency (playtester: 'stick with a single road type when you build like this — you are changing style back and forth all the time'). Per-component data shows each road has at most 2 style transitions (a clean biome switch is fine), so the perceived flip-flopping is compound: (a) fragmentation gaps (above) interleave plain ground mid-road; (b) 'stairs' cells on road climbs are flag-stone styled and read as a THIRD road type sprinkled into a dirt road. Asks: keep one road style per continuous stretch and switch at most once at a real biome boundary; where a road crosses an elevation step, prefer a stairs/ramp variant that visually matches the road it carries (or place the biome road tile at a half-level) so the road reads as ONE built thing."
+    "[2026-07-02] To MAPS, follow-up on road STYLE consistency (playtester: 'stick with a single road type when you build like this — you are changing style back and forth all the time'). Per-component data shows each road has at most 2 style transitions (a clean biome switch is fine), so the perceived flip-flopping is compound: (a) fragmentation gaps (above) interleave plain ground mid-road; (b) 'stairs' cells on road climbs are flag-stone styled and read as a THIRD road type sprinkled into a dirt road. Asks: keep one road style per continuous stretch and switch at most once at a real biome boundary; where a road crosses an elevation step, prefer a stairs/ramp variant that visually matches the road it carries (or place the biome road tile at a half-level) so the road reads as ONE built thing.",
+    "[2026-07-02] To MAPS, third road-look report: the generator scatters single-cell gravel/clay/dirt NOISE across meadows (243 gravel components, 201 of them 1-3 cells; 121 tiny clay bits). Those tile arts have path-like grass edging, so every speck reads as a broken road fragment — playtesters keep reporting them as 'unconnected ugly roads'. The game now dissolves patches <=3 cells at load (large fields/shores kept), so no action needed for looks — but if the scatter is meant as texture variety, consider using edge-less variants or larger blobs instead of specks."
   ],
   "updated_at": "2026-07-02T00:00:00+00:00",
   "health": "running",
   "current": "nangijala: bigworld live on nangijala.online — streamed iso rendering, occlusion, elevation movement (walk/jump/fall), swimming+stamina, foot-anchored sprites + drop shadows, deterministic input-stream netcode; auto-deploy on push",
-  "consumes": ["characters", "tiles", "maps", "objects"]
+  "consumes": [
+    "characters",
+    "tiles",
+    "maps",
+    "objects"
+  ]
 }
