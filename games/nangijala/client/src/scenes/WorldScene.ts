@@ -569,7 +569,7 @@ export class WorldScene extends Phaser.Scene {
           // Held low (waist height): a high torch grazes over ledge lips and
           // lights ground far below cliffs, which reads as leakage.
           z: (this.terrain ? levelAtWorld(this.terrain, a.fx, a.fy) : 0) + 0.55,
-          radius: 4,
+          radius: 6,
           color: [0.85, 0.58, 0.32],
           flicker: 0.35, // hand torch: gentle fire flicker
         });

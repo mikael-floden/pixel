@@ -49,7 +49,7 @@ export interface Preset {
 export const PRESETS: Preset[] = [
   { name: "day", tint: 0xffffff, darkness: 0.0, light: 0xffffff, radius: 200, vignette: 0.0 },
   { name: "dusk", tint: 0xd18f70, darkness: 0.5, light: 0xffcf94, radius: 210, vignette: 0.18 },
-  { name: "night", tint: 0x38445e, darkness: 1.0, light: 0xffe4ad, radius: 170, vignette: 0.28 },
+  { name: "night", tint: 0x38445e, darkness: 1.0, light: 0xffe4ad, radius: 170, vignette: 0.2 },
   { name: "dawn", tint: 0xc9a4c4, darkness: 0.4, light: 0xfff1d6, radius: 210, vignette: 0.14 },
 ];
 
@@ -81,12 +81,17 @@ export class Atmosphere {
     this.buildBrush();
 
     const { width, height } = this.scene.scale;
+    // Screen-space layers still get scaled by camera ZOOM (Phaser applies
+    // zoom to scrollFactor-0 objects too) — counter-scale by 1/zoom around
+    // the screen centre so 1 layer pixel == 1 screen pixel.
+    const zoom = this.scene.cameras.main.zoom || 1;
     // MULTIPLY blend: the layer GRADES the scene (shadows stay saturated,
     // contrast survives) instead of washing it flat like an alpha overlay.
     this.dark = this.scene.add
-      .renderTexture(0, 0, width, height)
-      .setOrigin(0, 0)
+      .renderTexture(width / 2, height / 2, width, height)
+      .setOrigin(0.5, 0.5)
       .setScrollFactor(0)
+      .setScale(1 / zoom)
       .setBlendMode(Phaser.BlendModes.MULTIPLY)
       .setDepth(DARK_DEPTH);
 
@@ -95,6 +100,7 @@ export class Atmosphere {
     this.vignette = this.scene.add
       .image(width / 2, height / 2, buildVignette(this.scene, width, height))
       .setScrollFactor(0)
+      .setScale(1 / zoom)
       .setDepth(VIGNETTE_DEPTH)
       .setVisible(false);
 
@@ -103,8 +109,12 @@ export class Atmosphere {
 
   private onResize(gameSize: Phaser.Structs.Size) {
     const { width, height } = gameSize;
-    this.dark.setSize(width, height);
-    this.vignette.setTexture(buildVignette(this.scene, width, height)).setPosition(width / 2, height / 2);
+    const zoom = this.scene.cameras.main.zoom || 1;
+    this.dark.setSize(width, height).setPosition(width / 2, height / 2).setScale(1 / zoom);
+    this.vignette
+      .setTexture(buildVignette(this.scene, width, height))
+      .setPosition(width / 2, height / 2)
+      .setScale(1 / zoom);
   }
 
   setPreset(name: string): string {
