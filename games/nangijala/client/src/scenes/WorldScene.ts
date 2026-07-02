@@ -92,6 +92,16 @@ export class WorldScene extends Phaser.Scene {
   // Occlusion: raised/solid tiles near the camera drawn as depth-sorted images
   // so they cover characters standing BEHIND them (the ground RT is flat).
   private occluders: Phaser.GameObjects.Image[] = [];
+  private occluderMeta: {
+    col: number;
+    row: number;
+    top: number; // column's top level
+    depth: number;
+    x0: number;
+    x1: number;
+    y0: number;
+    y1: number;
+  }[] = [];
   private lastOccl = { x: NaN, y: NaN };
   // Local jump prediction (client owns its jump timing).
   private jumpUntil = 0;
@@ -402,17 +412,33 @@ export class WorldScene extends Phaser.Scene {
 
       av.sprite.x = av.lx;
       av.sprite.y = av.ly - hop + sink;
-      // Depth = UNLIFTED ground y (add the elevation back), clamped to at
-      // least the centre line of the cell under the feet — so standing ON a
-      // raised column you always render above it, while columns in FRONT
-      // (whose centre line is deeper) still cover you.
+      // Depth vs occluding columns: a single painter scalar can't resolve
+      // every sprite-vs-column case (diagonals, same-level, lower columns),
+      // so refine per frame with the EXACT test — a column truly hides the
+      // sprite only if its top is strictly higher than the sprite's ground
+      // AND it lies on the camera ray (grid interval test). Place the sprite
+      // above every falsely-deeper column and below every true occluder.
       const lvl = this.terrain ? levelAtWorld(this.terrain, tx, ty) : 0;
-      let depth = av.ly + lvl * MAP_GEOMETRY.lh + 1;
+      let depth = av.ly + lvl * MAP_GEOMETRY.lh + 0.5; // unlifted ground y
       if (this.world) {
-        const col = Math.floor((tx / WORLD_WIDTH) * this.world.width);
-        const row = Math.floor((ty / WORLD_HEIGHT) * this.world.height);
-        const ownCenter = this.iso.oy + (col + row + 1) * MAP_GEOMETRY.dy + 0.5;
-        depth = Math.max(depth, ownCenter);
+        const colf = (tx / WORLD_WIDTH) * this.world.width;
+        const rowf = (ty / WORLD_HEIGHT) * this.world.height;
+        const sx0 = av.lx - av.sprite.displayWidth / 2;
+        const sx1 = av.lx + av.sprite.displayWidth / 2;
+        const sy0 = av.sprite.y - av.sprite.displayHeight;
+        const sy1 = av.sprite.y;
+        let above = -Infinity;
+        let below = Infinity;
+        for (const o of this.occluderMeta) {
+          if (o.x1 < sx0 || o.x0 > sx1 || o.y1 < sy0 || o.y0 > sy1) continue;
+          const t0 = Math.max(o.col - colf, o.row - rowf);
+          const t1 = Math.min(o.col + 1 - colf, o.row + 1 - rowf);
+          const blocks = o.top > lvl && t1 > Math.max(t0, 0);
+          if (blocks) below = Math.min(below, o.depth);
+          else above = Math.max(above, o.depth);
+        }
+        if (above > -Infinity) depth = Math.max(depth, above + 0.6);
+        if (below < Infinity) depth = Math.min(depth, below - 0.3); // walls win conflicts
       }
       av.sprite.setDepth(depth);
       // Shadow: always at the GROUND point (the collision anchor) — it stays
@@ -712,8 +738,9 @@ export class WorldScene extends Phaser.Scene {
     this.lastOccl = { x: ccx, y: ccy };
     for (const im of this.occluders) im.destroy();
     this.occluders = [];
+    this.occluderMeta = [];
 
-    const { dx, dy, lh } = MAP_GEOMETRY;
+    const { dx, dy, lh, tile: tileSize } = MAP_GEOMETRY;
     const pad = 200;
     const x0 = cam.worldView.x - pad;
     const x1 = cam.worldView.right + pad;
@@ -737,13 +764,23 @@ export class WorldScene extends Phaser.Scene {
         if (!this.textures.exists(key)) continue;
         const bx = this.iso.ox + u * dx;
         const by = this.iso.oy + v * dy;
-        // Depth = the column's CENTRE line (by + dy). Comparing sprites against
-        // the top vertex is ambiguous for diagonal neighbours — a tall wall SE
-        // of the player would lose the depth fight and the player rendered on
-        // top of it.
+        // Depth = the column's CENTRE line (by + dy); avatars refine their own
+        // depth against these per frame (see update) since a single scalar
+        // can't resolve every sprite-vs-column case exactly.
         for (let lvl = 0; lvl <= cell.l; lvl++) {
           this.occluders.push(this.add.image(bx, by - lvl * lh, key).setOrigin(0, 0).setDepth(by + dy));
         }
+        this.occluderMeta.push({
+          col,
+          row,
+          // Solid structures (trees, boulders…) visually stand ~1 level tall.
+          top: cell.l + (s.standable ? 0 : 1),
+          depth: by + dy,
+          x0: bx,
+          x1: bx + tileSize,
+          y0: by - cell.l * lh,
+          y1: by + tileSize,
+        });
       }
     }
   }
