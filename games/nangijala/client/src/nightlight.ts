@@ -72,6 +72,13 @@ void main() {
     gl_FragColor = vec4(vec3(0.15 + 0.85 * g), 1.0);
     return;
   }
+  if (uTest > 2.5) {
+    // Calibration 3: emit the raw fragment coordinate as colour. Corner
+    // pixel readback reveals the TRUE fragment range and orientation —
+    // R = suv.x, G = suv.y, no interpretation involved.
+    gl_FragColor = vec4(suv.x, suv.y, 0.0, 1.0);
+    return;
+  }
   float u = (wx - uIsoA.x) / uIsoA.z;
   if (uTest > 1.5) {
     // Calibration 2: paint the shader's own cell grid. The bright diamond
@@ -360,17 +367,23 @@ export class NightLights {
   update(cam: Phaser.Cameras.Scene2D.Camera, lights: ShaderLight[], ambient: [number, number, number]) {
     if (!this.shader || !this.active) return;
     const s = this.shader;
-    // Ground-truth calibrated (grid test vs art tiles): the fragment range
-    // maps to the view CORNER-anchored with a span of worldView * ZOOM —
-    // fragments address canvas pixels, each worth 1/zoom world units.
+    // Ground-truth calibrated by raw suv readback: the zoomed overlay shows
+    // the CENTRED 1/zoom portion of the fragment range (measured: screen ↔
+    // suv [0.25, 0.75] at zoom 2, window-size independent). The world window
+    // is therefore the camera view inflated by zoom AROUND ITS CENTRE.
     const k = this.spanScale * (cam.zoom || 1);
-    s.setUniform("uCam.value.x", cam.worldView.x);
-    s.setUniform("uCam.value.y", cam.worldView.y);
-    s.setUniform("uCam.value.z", cam.worldView.width * k);
-    s.setUniform("uCam.value.w", cam.worldView.height * k);
+    const wv = cam.worldView;
+    s.setUniform("uCam.value.x", wv.x - (wv.width * (k - 1)) / 2);
+    s.setUniform("uCam.value.y", wv.y - (wv.height * (k - 1)) / 2);
+    s.setUniform("uCam.value.z", wv.width * k);
+    s.setUniform("uCam.value.w", wv.height * k);
     s.setUniform("uFlip.value", this.fieldFlip);
     s.setUniform("uTest.value", this.testPattern);
     this.overlay?.setFlipY(this.overlayFlip);
+    // Raw-readback test mode draws opaque (multiply would mix in the art).
+    this.overlay?.setBlendMode(
+      this.testPattern >= 3 ? Phaser.BlendModes.NORMAL : Phaser.BlendModes.MULTIPLY,
+    );
     s.setUniform("uIsoA.value.x", this.iso.ox);
     s.setUniform("uIsoA.value.y", this.iso.oy);
     s.setUniform("uIsoB.value.y", this.world.width);
