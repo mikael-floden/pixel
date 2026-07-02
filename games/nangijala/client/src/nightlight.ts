@@ -37,6 +37,8 @@ uniform vec4 uCam;        // worldView x, y, w, h (world-render px)
 uniform vec4 uIsoA;       // ox, oy, dx, dy
 uniform vec4 uIsoB;       // lh, gridW, gridH, maxLevel
 uniform vec3 uAmbient;    // night grade (what unlit white becomes)
+uniform float uFlip;      // 1 = invert fragment y (GL bottom-up), 0 = direct
+uniform float uTest;      // 1 = output a raw world-y gradient (calibration)
 uniform float uNumLights;
 uniform vec4 uLightPos[${MAX_SHADER_LIGHTS}];  // col, row, z, radius(cells)
 uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
@@ -58,14 +60,30 @@ float objAt(vec2 cr) {
 void main() {
   vec2 suv = gl_FragCoord.xy / resolution;
   float wx = uCam.x + suv.x * uCam.z;
-  // GL fragments count from the BOTTOM of the target; screen y counts from
-  // the top. Sampling without inverting produced a field VERTICALLY MIRRORED
-  // about the screen centre — torch pools still centred on the (camera-
-  // centred) player, masking it, while every asymmetric feature (shadows,
-  // ridges) slid with the camera. World-fixed lights must give world-fixed
-  // shadows: invert.
-  float wy = uCam.y + (1.0 - suv.y) * uCam.w;
+  // Orientation + span are GROUND-TRUTH calibrated via the built-in test
+  // patterns ([9]: gradient must be dark at top, grid must match tile art):
+  // this stack needs NO y-inversion and a zoom-scaled, corner-anchored span.
+  float wy = uCam.y + mix(suv.y, 1.0 - suv.y, uFlip) * uCam.w;
+  if (uTest > 0.5 && uTest < 1.5) {
+    // Calibration 1: brightness = position within the world view, dark at the
+    // view's TOP edge. If the gradient on screen is dark at the BOTTOM, the
+    // field is upside down.
+    float g = (wy - uCam.y) / uCam.w;
+    gl_FragColor = vec4(vec3(0.15 + 0.85 * g), 1.0);
+    return;
+  }
   float u = (wx - uIsoA.x) / uIsoA.z;
+  if (uTest > 1.5) {
+    // Calibration 2: paint the shader's own cell grid. The bright diamond
+    // lines MUST coincide with the artwork's tile edges — any span, offset
+    // or orientation error in the screen->world mapping shows immediately.
+    float v = (wy - uIsoA.y) / uIsoA.w;
+    float gc = fract((u + v) * 0.5);
+    float gr = fract((v - u) * 0.5);
+    float line = (min(gc, 1.0 - gc) < 0.03 || min(gr, 1.0 - gr) < 0.03) ? 1.0 : 0.35;
+    gl_FragColor = vec4(vec3(line), 1.0);
+    return;
+  }
   float v0 = (wy - uIsoA.y) / uIsoA.w; // grid diagonal at height 0
   float kk = uIsoB.x / uIsoA.w;        // diagonal shift per height level
 
@@ -211,6 +229,13 @@ export class NightLights {
   private colArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private fieldCount = 0;
   active = false;
+  // Live calibration (debug keys): rendering-path differences between GPUs
+  // showed up as flipped/scaled fields that headless verification could not
+  // reproduce — let the tester find the correct combo on THEIR machine.
+  fieldFlip = 0; // gradient ground-truth: this stack needs NO y-inversion
+  overlayFlip = false; // additionally mirror the composited image
+  spanScale = 1; // field world-span multiplier around the view centre
+  testPattern = 0; // 1 = world-y gradient, 2 = cell grid vs art tiles
 
   constructor(scene: Phaser.Scene, world: World, iso: { ox: number; oy: number }, maxLevel: number) {
     this.scene = scene;
@@ -226,6 +251,8 @@ export class NightLights {
       uIsoA: { type: "4f", value: { x: 0, y: 0, z: ISO_DX, w: ISO_DY } },
       uIsoB: { type: "4f", value: { x: MAP_GEOMETRY.lh, y: 1, z: 1, w: 0 } },
       uAmbient: { type: "3f", value: { x: 0.16, y: 0.2, z: 0.36 } },
+      uFlip: { type: "1f", value: 1 },
+      uTest: { type: "1f", value: 0 },
       uNumLights: { type: "1f", value: 0 },
       uLightPos: { type: "4fv", value: this.posArr },
       uLightCol: { type: "4fv", value: this.colArr },
@@ -333,10 +360,17 @@ export class NightLights {
   update(cam: Phaser.Cameras.Scene2D.Camera, lights: ShaderLight[], ambient: [number, number, number]) {
     if (!this.shader || !this.active) return;
     const s = this.shader;
+    // Ground-truth calibrated (grid test vs art tiles): the fragment range
+    // maps to the view CORNER-anchored with a span of worldView * ZOOM —
+    // fragments address canvas pixels, each worth 1/zoom world units.
+    const k = this.spanScale * (cam.zoom || 1);
     s.setUniform("uCam.value.x", cam.worldView.x);
     s.setUniform("uCam.value.y", cam.worldView.y);
-    s.setUniform("uCam.value.z", cam.worldView.width);
-    s.setUniform("uCam.value.w", cam.worldView.height);
+    s.setUniform("uCam.value.z", cam.worldView.width * k);
+    s.setUniform("uCam.value.w", cam.worldView.height * k);
+    s.setUniform("uFlip.value", this.fieldFlip);
+    s.setUniform("uTest.value", this.testPattern);
+    this.overlay?.setFlipY(this.overlayFlip);
     s.setUniform("uIsoA.value.x", this.iso.ox);
     s.setUniform("uIsoA.value.y", this.iso.oy);
     s.setUniform("uIsoB.value.y", this.world.width);

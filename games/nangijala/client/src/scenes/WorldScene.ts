@@ -233,7 +233,31 @@ export class WorldScene extends Phaser.Scene {
       this.torchOn = !this.torchOn;
       this.chat.addLog("—", `[5] My torch: ${this.torchOn ? "on" : "off"}`);
     });
-    this.chat.addLog("—", "Toggles: [4] collision overlay · [5] my torch");
+    // Light-field calibration keys: flip/scale the field live and a raw
+    // gradient test pattern — ground truth beats screenshot interpretation.
+    this.input.keyboard!.on("keydown-SIX", () => {
+      if (!this.night) return;
+      this.night.fieldFlip = this.night.fieldFlip ? 0 : 1;
+      this.chat.addLog("—", `[6] Field y-invert: ${this.night.fieldFlip}`);
+    });
+    this.input.keyboard!.on("keydown-SEVEN", () => {
+      if (!this.night) return;
+      this.night.overlayFlip = !this.night.overlayFlip;
+      this.chat.addLog("—", `[7] Overlay mirror: ${this.night.overlayFlip ? "on" : "off"}`);
+    });
+    this.input.keyboard!.on("keydown-EIGHT", () => {
+      if (!this.night) return;
+      const order = [1, 0.5, 2, 4];
+      this.night.spanScale = order[(order.indexOf(this.night.spanScale) + 1) % order.length];
+      this.chat.addLog("—", `[8] Field span x${this.night.spanScale}`);
+    });
+    this.input.keyboard!.on("keydown-NINE", () => {
+      if (!this.night) return;
+      this.night.testPattern = (this.night.testPattern + 1) % 3;
+      const names = ["off", "gradient (dark = TOP if correct)", "cell grid (must match tile edges)"];
+      this.chat.addLog("—", `[9] Field test: ${names[this.night.testPattern]}`);
+    });
+    this.chat.addLog("—", "Toggles: [4] collision · [5] torch · [6][7][8][9] light-field calibration");
 
     const cam = this.cameras.main;
     cam.setBounds(0, 0, this.iso.w, this.iso.h);
@@ -304,6 +328,13 @@ export class WorldScene extends Phaser.Scene {
       levelAt: (x: number, y: number) => (this.terrain ? levelAtWorld(this.terrain, x, y) : 0),
       nightShader: () => !!this.night && this.night.active,
       nightInfo: () => this.night?.debugInfo(),
+      nightCal: (flip: number, span: number, test: number) => {
+        if (!this.night) return null;
+        this.night.fieldFlip = flip;
+        this.night.spanScale = span;
+        this.night.testPattern = test;
+        return { flip, span, test };
+      },
     };
   }
 
@@ -569,7 +600,7 @@ export class WorldScene extends Phaser.Scene {
           // Held low (waist height): a high torch grazes over ledge lips and
           // lights ground far below cliffs, which reads as leakage.
           z: (this.terrain ? levelAtWorld(this.terrain, a.fx, a.fy) : 0) + 0.55,
-          radius: 4.2,
+          radius: 6,
           color: [0.85, 0.58, 0.32],
           flicker: 0.35, // hand torch: gentle fire flicker
         });
