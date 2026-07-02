@@ -388,7 +388,10 @@ export class NightLights {
       this.testPattern >= 3 ? Phaser.BlendModes.NORMAL : Phaser.BlendModes.MULTIPLY,
     );
     s.setUniform("uIsoA.value.x", this.iso.ox);
-    s.setUniform("uIsoA.value.y", this.iso.oy);
+    // +8: the tile art's diamond top vertex sits at image row 8 (measured
+    // across grass/water/sand) — the visible grid is 8 world px below the
+    // geometric origin, and the light field must match the ART.
+    s.setUniform("uIsoA.value.y", this.iso.oy + 8);
     s.setUniform("uIsoB.value.y", this.world.width);
     s.setUniform("uIsoB.value.z", this.world.height);
     s.setUniform("uIsoB.value.w", this.maxLevel);
