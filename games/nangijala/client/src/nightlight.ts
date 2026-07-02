@@ -75,27 +75,6 @@ float heightAt(vec2 cr) {
   return texture2D(uHeight, uv).r * 255.0 / 16.0;
 }
 
-// "Respect the tile's shadow projection": per-pixel shadow weight baked from
-// the tile ART (how much shading the artist drew there). uTileMap holds each
-// cell's atlas slot (R + G*256, 65535 = none); uShadow is the 64px-grid atlas.
-// (tx, ty) = the pixel's position inside the owning tile stamp image.
-uniform sampler2D uTileMap;
-uniform sampler2D uShadow;
-uniform vec4 uAtlas; // cols, atlasW, atlasH, enabled(>0)
-
-float artWeightAt(vec2 cr, float tx, float ty) {
-  if (uAtlas.w < 0.5) return 1.0; // no atlas -> analytic shadows
-  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 1.0;
-  if (ty < 0.0 || ty > 63.0) return 1.0;
-  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
-  vec4 tm = texture2D(uTileMap, uv);
-  float slot = tm.r * 255.0 + tm.g * 255.0 * 256.0;
-  if (slot > 65000.0) return 1.0;
-  float sx = mod(slot, uAtlas.x) * 64.0 + clamp(floor(tx) + 0.5, 0.5, 63.5);
-  float sy = floor(slot / uAtlas.x) * 64.0 + clamp(floor(ty) + 0.5, 0.5, 63.5);
-  return texture2D(uShadow, vec2(sx / uAtlas.y, sy / uAtlas.z)).r;
-}
-
 // Solid-object flag (bush, boulder, tree...): G channel of the heightmap.
 float objAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
@@ -211,7 +190,7 @@ void main() {
       }
     }
   }
-  if (uTest > 3.5 && uTest < 4.5) {
+  if (uTest > 3.5) {
     // Calibration 4: final surface classification — wall-face pixels RED,
     // top pixels GREEN. Probed numerically to verify the baked lips are
     // honoured (the red/green boundary must equal analytic + profile).
@@ -244,40 +223,9 @@ void main() {
   // fronting ground — at the base a face takes the same plain light as the
   // grass beside it (continuous whether the face is lit or gated dark).
   float gateFade = 1.0;
-  // Art weight: how strongly the ARTIST shaded this exact pixel of the tile
-  // (baked atlas). The wall-shadow gate applies at THIS strength, so the
-  // shadow's shape is the drawn shape — crevices go dark, bright overhangs
-  // keep their light, and the geometric V dissolves into the art.
-  float wArt = 1.0;
   if (isFace) {
     float hFront = mix(hD, hR, pickR);
     if (hFront < 90.0) gateFade = smoothstep(0.0, 7.0, max((z - hFront) * uIsoB.x, 0.0));
-    float txA = clamp((u - (baseF.x - baseF.y) + 1.0) * 32.0, 0.0, 63.0);
-    // The pixel's row inside the owning STAMP image: stamp k = ceil(z) sits
-    // at screen y = oy + (col+row)*dy - k*lh.
-    float kSt = max(ceil(z - 0.001), 1.0);
-    float tyA = wy - (uIsoA.y - 8.0 + (baseF.x + baseF.y) * uIsoA.w - kSt * uIsoB.x); // uIsoA.y carries the +8 art-pad; image top is 8px above it
-    wArt = artWeightAt(cell, txA, tyA);
-  }
-  if (uTest > 6.5) {
-    // Calibration 7: the raw slot-map read for this pixel's cell — R/G are
-    // the slot bytes, B=1 when the atlas is enabled. Isolates uTileMap.
-    vec2 uvT = (floor(cell) + 0.5) / vec2(uIsoB.y, uIsoB.z);
-    vec4 tmD = texture2D(uTileMap, uvT);
-    gl_FragColor = vec4(tmD.r, tmD.g, uAtlas.w > 0.5 ? 1.0 : 0.0, 1.0);
-    return;
-  }
-  if (uTest > 5.5) {
-    // Calibration 6: on faces emit R = art weight, G = tx/64, B = ty/64 (the
-    // shader's own tile-local coords) — probed against the baked atlas AT
-    // THOSE COORDS, no screen-alignment guessing. Non-face: dark green.
-    if (isFace) {
-      float txD = clamp((u - (baseF.x - baseF.y) + 1.0) * 32.0, 0.0, 63.0);
-      float kD = max(ceil(z - 0.001), 1.0);
-      float tyD = wy - (uIsoA.y - 8.0 + (baseF.x + baseF.y) * uIsoA.w - kD * uIsoB.x);
-      gl_FragColor = vec4(wArt, txD / 64.0, tyD / 64.0, 1.0);
-    } else gl_FragColor = vec4(0.0, 0.3, 0.0, 1.0);
-    return;
   }
 
   vec3 light = uAmbient;
@@ -345,9 +293,8 @@ void main() {
       // a light behind the plane still leaves the face dark.
       float cosF = front / max(sqrt(front * front + lat * lat), 0.001);
       float gate = smoothstep(0.0, 0.25, front) * smoothstep(0.2, 0.6, cosF);
-      // Penumbra up the face (gateFade) x the ARTIST's per-pixel shading
-      // strength (wArt): the shadow lands where the art says it lands.
-      occ *= mix(1.0, gate, gateFade * wArt);
+      // Penumbra: the gate fades in up the face (see gateFade above).
+      occ *= mix(1.0, gate, gateFade);
     }
 
     // Fire flicker: slow cozy breathing + a mild shimmer (fast large-swing
@@ -391,7 +338,6 @@ export class NightLights {
   private curAmbient: [number, number, number] = [0.075, 0.09, 0.14];
   private profRows = 0; // compact lip-profile rows uploaded (0 = analytic)
   private rowMap = new Map<string, number>(); // "t/v" -> compact profile row
-  private atlasMeta: { cols: number; w: number; h: number } | null = null; // art shadow atlas
   active = false;
   // Live calibration (debug keys): rendering-path differences between GPUs
   // showed up as flipped/scaled fields that headless verification could not
@@ -410,7 +356,6 @@ export class NightLights {
 
   create() {
     this.buildProfiles();
-    this.buildTileMap();
     this.buildHeightmap();
     this.base = new Phaser.Display.BaseShader("night-lights", FRAG, undefined, {
       uCam: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
@@ -426,9 +371,6 @@ export class NightLights {
       uHeightL: { type: "sampler2D", value: null },
       uProf: { type: "sampler2D", value: null },
       uProfRows: { type: "1f", value: 0 },
-      uTileMap: { type: "sampler2D", value: null },
-      uShadow: { type: "sampler2D", value: null },
-      uAtlas: { type: "4f", value: { x: 0, y: 1, z: 1, w: 0 } },
     });
     // Shader GameObjects can't blend directly — render the light field to a
     // texture and composite it with a MULTIPLY image on top of the scene.
@@ -465,14 +407,6 @@ export class NightLights {
     if (this.profRows > 0) {
       s.setSampler2D("uProf", "tile-profiles-compact", 2);
       s.setUniform("uProfRows.value", this.profRows);
-    }
-    if (this.atlasMeta) {
-      s.setSampler2D("uTileMap", "world-tilemap", 3);
-      s.setSampler2D("uShadow", "tile-shadows", 4);
-      s.setUniform("uAtlas.value.x", this.atlasMeta.cols);
-      s.setUniform("uAtlas.value.y", this.atlasMeta.w);
-      s.setUniform("uAtlas.value.z", this.atlasMeta.h);
-      s.setUniform("uAtlas.value.w", 1);
     }
     s.setRenderToTexture(key);
     this.shader = s;
@@ -539,39 +473,6 @@ export class NightLights {
     tex.refresh();
     tex.setFilter(Phaser.Textures.FilterMode.NEAREST); // exact texel reads
     this.profRows = scored.length;
-  }
-
-  /** Per-cell atlas-slot map for the baked ART shadow weights: a world-sized
-   * texture (R + G*256 = slot into the tile-shadows atlas, 65535 = none).
-   * Missing assets → uAtlas.w stays 0 → analytic shadows, exactly as before. */
-  private buildTileMap() {
-    const scene = this.scene;
-    const idx = scene.cache.json.get("tile-shadows-index") as
-      | { cols: number; index: Record<string, number> }
-      | undefined;
-    if (!idx?.index || !scene.textures.exists("tile-shadows")) return;
-    const w = this.world.width;
-    const h = this.world.height;
-    const tex = scene.textures.createCanvas("world-tilemap", w, h);
-    if (!tex) return;
-    const ctx = tex.getContext();
-    const img = ctx.createImageData(w, h);
-    for (let r = 0; r < h; r++)
-      for (let c = 0; c < w; c++) {
-        const cell = this.world.rows[r][c];
-        const slot = idx.index[`${cell.t}/${cell.v ?? 0}`] ?? 65535;
-        const i = (r * w + c) * 4;
-        img.data[i] = slot & 255;
-        img.data[i + 1] = slot >> 8;
-        img.data[i + 3] = 255;
-      }
-    ctx.putImageData(img, 0, 0);
-    tex.refresh();
-    tex.setFilter(Phaser.Textures.FilterMode.NEAREST);
-    const atlas = scene.textures.get("tile-shadows");
-    atlas.setFilter(Phaser.Textures.FilterMode.NEAREST);
-    const src = atlas.getSourceImage() as { width: number; height: number };
-    this.atlasMeta = { cols: idx.cols, w: src.width, h: src.height };
   }
 
   /** Grid heightmap texture: R = level*16 (levels 0..9 → 0..144). Solid
@@ -701,13 +602,6 @@ export class NightLights {
     const src = tex?.getSourceImage() as { width?: number; height?: number } | undefined;
     const frame = tex?.get();
     return {
-      profRows: this.profRows,
-      atlas: this.atlasMeta,
-      uAtlasCpu: (this.shader as any)?.uniforms?.uAtlas?.value ?? null,
-      uTileMapSet: !!(this.shader as any)?.uniforms?.uTileMap?.value,
-      uShadowSet: !!(this.shader as any)?.uniforms?.uShadow?.value,
-      shadowJson: !!this.scene.cache.json.get("tile-shadows-index"),
-      shadowTex: this.scene.textures.exists("tile-shadows"),
       key,
       srcW: src?.width,
       srcH: src?.height,

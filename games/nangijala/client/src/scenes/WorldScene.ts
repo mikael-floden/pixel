@@ -192,12 +192,10 @@ export class WorldScene extends Phaser.Scene {
         frameWidth: CAMPFIRE_FRAME,
         frameHeight: CAMPFIRE_FRAME,
       });
-      // Baked drawn-lip profiles + per-pixel art shadow weights (art-aware
-      // shadows) — optional; the night shader falls back to analytic edges.
+      // Baked drawn-lip profiles (art-aware shadows) — optional; the night
+      // shader falls back to pure analytic edges when absent.
       this.load.image("tile-profiles", "/tile-profiles.png");
       this.load.json("tile-profiles-index", "/tile-profiles.json");
-      this.load.image("tile-shadows", "/tile-shadows.png");
-      this.load.json("tile-shadows-index", "/tile-shadows.json");
     }
   }
 

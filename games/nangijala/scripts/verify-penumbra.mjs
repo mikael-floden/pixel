@@ -75,12 +75,8 @@ async function measure() {
       for (let dy = -span; dy <= span; dy++) prof.push(lum(sx, yB + dy));
       const total = Math.abs(prof[prof.length - 1] - prof[0]);
       if (total < 12) continue;
-      // Smoothness is asserted from just above the base line DOWN: the face
-      // side above it is art-shaped by design (weights follow the tile's
-      // drawn texture), so steps there are intentional.
       let maxStep = 0;
-      for (let k = Math.floor(prof.length / 2) - 2; k < prof.length; k++)
-        if (k > 0) maxStep = Math.max(maxStep, Math.abs(prof[k] - prof[k - 1]));
+      for (let k = 1; k < prof.length; k++) maxStep = Math.max(maxStep, Math.abs(prof[k] - prof[k - 1]));
       results.push({
         cell: `${c.col},${c.row}`, t: c.t, x,
         total: +total.toFixed(1), maxStep: +maxStep.toFixed(1), ratio: +(maxStep / total).toFixed(2),
