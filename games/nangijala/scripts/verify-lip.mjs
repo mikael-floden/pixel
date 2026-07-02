@@ -19,7 +19,7 @@ const lipOf = (key, x) => {
 
 const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox"] });
 const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
-await page.goto("http://localhost:5173/", { waitUntil: "load" });
+await page.goto(process.env.PROBE_URL || "http://localhost:5173/", { waitUntil: "load" });
 await page.waitForSelector("input", { timeout: 20000 });
 await page.fill("input", "lipprobe");
 await page.keyboard.press("Enter");
