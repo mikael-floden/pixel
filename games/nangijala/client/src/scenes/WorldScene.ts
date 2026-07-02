@@ -415,7 +415,10 @@ export class WorldScene extends Phaser.Scene {
         .setAlpha(1 - hopFrac * 0.35)
         .setDisplaySize(34 - hopFrac * 9, 14 - hopFrac * 4)
         .setDepth(av.sprite.depth - 0.5);
-      const topY = av.sprite.y - av.sprite.displayHeight * av.sprite.originY;
+      // Head top (measured from the art), not the frame top — labels hug the
+      // character instead of floating over transparent padding.
+      const topFrac = (av.sprite.getData("topFrac") as number) ?? 0;
+      const topY = av.sprite.y - av.sprite.displayHeight * (av.sprite.originY - topFrac);
       av.label.setPosition(av.lx, topY - 4);
       if (av.bubble) {
         av.bubble.setPosition(av.lx, topY - 18);
@@ -479,16 +482,23 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
-  /** Set the sprite origin to the measured foot anchor for this direction. */
+  /** Set the sprite origin to the measured foot anchor for this direction and
+   * remember the head-top fraction for label placement. */
   private applyAnchor(sprite: Phaser.GameObjects.Sprite, uid: string, dir: string, hasArt: boolean) {
     if (!hasArt) {
       sprite.setOrigin(0.5, 0.94); // placeholder wanderer: feet at 32/34
+      sprite.setData("topFrac", 0.1);
       return;
     }
     const def = this.manifest.characters.find((c) => c.uid === uid);
     const a = def?.anchors?.[dir] ?? def?.anchors?.[DEFAULT_DIRECTION];
-    if (a) sprite.setOrigin(a.x, a.y);
-    else sprite.setOrigin(0.5, 0.9);
+    if (a) {
+      sprite.setOrigin(a.x, a.y);
+      sprite.setData("topFrac", a.top ?? Math.max(0, a.y - 0.55));
+    } else {
+      sprite.setOrigin(0.5, 0.9);
+      sprite.setData("topFrac", 0.25);
+    }
   }
 
   /** Pick an existing animation, falling back run→walk→idle then default dir. */

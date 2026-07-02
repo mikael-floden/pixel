@@ -91,10 +91,19 @@ function footAnchor(framePath) {
   if (!png) return null;
   const { w, h, opaque } = png;
   let bottom = -1;
+  let top = -1;
   for (let y = h - 1; y >= 0 && bottom < 0; y--) {
     for (let x = 0; x < w; x++) {
       if (opaque(x, y)) {
         bottom = y;
+        break;
+      }
+    }
+  }
+  for (let y = 0; y < h && top < 0; y++) {
+    for (let x = 0; x < w; x++) {
+      if (opaque(x, y)) {
+        top = y;
         break;
       }
     }
@@ -117,8 +126,14 @@ function footAnchor(framePath) {
     }
   }
   if (!n) return null;
-  // Fractions of the frame so the client can use them as sprite origin.
-  return { x: +(sum / n / w).toFixed(4), y: +((bottom + 1) / h).toFixed(4) };
+  // Fractions of the frame: (x,y) = foot anchor for the sprite origin;
+  // top = crown of the head, so labels can hug the character instead of
+  // floating at the (mostly transparent) frame top.
+  return {
+    x: +(sum / n / w).toFixed(4),
+    y: +((bottom + 1) / h).toFixed(4),
+    top: +(Math.max(0, top) / h).toFixed(4),
+  };
 }
 
 function displayName(look, fallback) {
