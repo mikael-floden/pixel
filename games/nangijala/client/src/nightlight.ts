@@ -51,7 +51,8 @@ float heightAt(vec2 cr) {
 void main() {
   vec2 suv = gl_FragCoord.xy / resolution;
   float wx = uCam.x + suv.x * uCam.z;
-  float wy = uCam.y + (1.0 - suv.y) * uCam.w;
+  // Rendered into a texture that Phaser composites y-flipped — sample top-down.
+  float wy = uCam.y + suv.y * uCam.w;
   float u = (wx - uIsoA.x) / uIsoA.z;
 
   // Resolve which surface (cell + height) this pixel shows: highest level
@@ -139,6 +140,7 @@ export class NightLights {
       uNumLights: { type: "1f", value: 0 },
       uLightPos: { type: "4fv", value: this.posArr },
       uLightCol: { type: "4fv", value: this.colArr },
+      uHeight: { type: "sampler2D", value: null },
     });
     // Shader GameObjects can't blend directly — render the light field to a
     // texture and composite it with a MULTIPLY image on top of the scene.

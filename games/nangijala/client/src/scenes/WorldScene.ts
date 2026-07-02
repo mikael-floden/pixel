@@ -289,6 +289,7 @@ export class WorldScene extends Phaser.Scene {
       surfaceAt: (x: number, y: number) => (this.terrain ? surfaceAtWorld(this.terrain, x, y) : null),
       levelAt: (x: number, y: number) => (this.terrain ? levelAtWorld(this.terrain, x, y) : 0),
       timeOfDay: (name: string) => this.atmo.setPreset(name),
+      nightShader: () => !!this.night && this.night.active,
       toggleFog: () => this.atmo.toggleFog(),
     };
   }
