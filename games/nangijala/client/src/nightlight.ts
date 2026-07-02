@@ -136,7 +136,16 @@ void main() {
       float frontL = lp.y - (base.y + 1.0); // beyond the +row (left) face
       float frontR = lp.x - (base.x + 1.0); // beyond the +col (right) face
       float uf = u - (base.x - base.y);     // pixel left/right of front corner
-      float front = mix(frontL, frontR, smoothstep(-0.2, 0.2, uf));
+      float pickR = smoothstep(-0.2, 0.2, uf);
+      // On a CONTINUOUS wall the resolve can own a band as either of two
+      // same-height cells; a face is only exposed where its neighbour is
+      // lower than the pixel. If the nominal face is buried, the visible
+      // surface is the neighbour's PERPENDICULAR face — gate on that plane.
+      float hR = heightAt(base + vec2(1.5, 0.5));
+      float hD = heightAt(base + vec2(0.5, 1.5));
+      if (hR < 90.0 && hR >= z - 0.01) pickR = 0.0; // +col face buried
+      if (hD < 90.0 && hD >= z - 0.01) pickR = 1.0; // +row face buried
+      float front = mix(frontL, frontR, pickR);
       occ *= smoothstep(0.05, 0.6, front);
     }
 
