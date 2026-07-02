@@ -79,6 +79,24 @@ export interface MoveResult {
   moving: boolean;
 }
 
+// --- Screen-relative input on the isometric world ----------------------------
+// The iso projection maps world (x,y) to screen ((x−y)·ISO_DX, (x+y)·ISO_DY),
+// so a raw world-axis input renders as a diagonal slide. Controls should be
+// SCREEN-relative: pressing Up moves the character straight up on screen.
+// These constants are the projection ratio (client MAP_GEOMETRY uses the same).
+export const ISO_DX = 32;
+export const ISO_DY = 13;
+
+/** Convert a screen-space input vector (arrows as the player sees them) into
+ * the world-space direction that produces that on-screen movement. */
+export function screenToWorldVector(ix: number, iy: number): { x: number; y: number } {
+  const wx = ix / ISO_DX + iy / ISO_DY;
+  const wy = iy / ISO_DY - ix / ISO_DX;
+  const len = Math.hypot(wx, wy);
+  if (len < 1e-9) return { x: 0, y: 0 };
+  return { x: wx / len, y: wy / len };
+}
+
 /** Blocked test for a *move*: is entering (toX,toY) from (fromX,fromY) disallowed?
  * It takes the source too because traversal depends on the elevation step, not
  * just the destination cell. */
@@ -87,7 +105,10 @@ export type BlockedFn = (toX: number, toY: number, fromX: number, fromY: number)
 /** Integrate one movement step. The SAME function runs on the server (each tick)
  * and on the client (prediction), so they stay in lockstep. `blocked` rejects a
  * move (resolved axis-separated so players slide along walls); `speedScale`
- * applies the current surface's walk-speed multiplier. */
+ * applies the current surface's walk-speed multiplier. With `screenInput` the
+ * (ax,ay) vector is SCREEN-relative (what the player sees): facing comes from
+ * the raw vector, physics from the iso-rotated world vector — pressing Up walks
+ * straight up on screen. */
 export function stepMovement(
   x: number,
   y: number,
@@ -97,11 +118,21 @@ export function stepMovement(
   dt: number,
   blocked?: BlockedFn,
   speedScale = 1,
+  screenInput = false,
 ): MoveResult {
   const len = Math.hypot(ax, ay);
   if (len < 1e-6) return { x, y, dir: null, moving: false };
-  const nx = ax / len;
-  const ny = ay / len;
+  const dir = vectorToDirection(ax / len, ay / len); // facing = what the player sees
+  let nx: number;
+  let ny: number;
+  if (screenInput) {
+    const w = screenToWorldVector(ax, ay);
+    nx = w.x;
+    ny = w.y;
+  } else {
+    nx = ax / len;
+    ny = ay / len;
+  }
   const speed = (running ? RUN_SPEED : WALK_SPEED) * speedScale;
   const tx = clamp(x + nx * speed * dt, SPAWN_MARGIN, WORLD_WIDTH - SPAWN_MARGIN);
   const ty = clamp(y + ny * speed * dt, SPAWN_MARGIN, WORLD_HEIGHT - SPAWN_MARGIN);
@@ -111,7 +142,7 @@ export function stepMovement(
   // enterable, then the Y move from the (possibly advanced) X — wall-sliding.
   if (!blocked || !blocked(tx, y, x, y)) rx = tx;
   if (!blocked || !blocked(rx, ty, rx, y)) ry = ty;
-  return { x: rx, y: ry, dir: vectorToDirection(nx, ny), moving: true };
+  return { x: rx, y: ry, dir, moving: true };
 }
 
 function clamp(v: number, lo: number, hi: number): number {

@@ -332,7 +332,8 @@ export class WorldScene extends Phaser.Scene {
             blocked = makeBlocked(this.terrain, ctx);
             speed = surfaceAtWorld(this.terrain, rx, ry).speed;
           }
-          const r = stepMovement(rx, ry, p.ax, p.ay, p.running, p.dt, blocked, speed);
+          // screenInput matches the server: on the iso world, input is screen-relative.
+          const r = stepMovement(rx, ry, p.ax, p.ay, p.running, p.dt, blocked, speed, !!this.terrain);
           rx = r.x;
           ry = r.y;
         }

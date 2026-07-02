@@ -56,9 +56,13 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
 - Client rebuilds the SAME grid and predicts jump/swim/speed so nothing rubber-
   bands. Press **C** to visualize water cells. Tune feel via the `*_CLIMB`,
   `*_STAMINA`/`SWIM_*` constants and the `SURFACES` table.
+- **Controls are screen-relative** on the iso world: `stepMovement(..., screenInput)`
+  rotates the input by the projection ratio (`ISO_DX`/`ISO_DY` in `shared/` — the
+  client's `MAP_GEOMETRY` imports them so they can't drift) so pressing Up walks
+  straight up on screen; facing uses the raw screen vector.
 - Open follow-ups (#28): occlusion behind tall tiles; half-level (0.5) stair/ramp
-  tiles from the maps agent so players can ascend without jumping; iso input feel.
-  If the tile "house format" changes, re-measure `MAP_GEOMETRY`.
+  tiles from the maps agent so players can ascend without jumping. If the tile
+  "house format" changes, re-measure `MAP_GEOMETRY` and update `ISO_DX/ISO_DY`.
 
 ## Conventions
 

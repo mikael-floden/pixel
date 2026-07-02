@@ -95,6 +95,29 @@ test("findSpawn returns standable open land, never water", () => {
   assert.equal(isStandableAtWorld(g, s.x, s.y), true);
 });
 
+test("screen-relative input: Up moves straight up on screen (world x,y both decrease)", () => {
+  // Screen up = decrease (col+row) with (col−row) constant → world x,y equal −.
+  const r = stepMovement(800, 800, 0, -1, false, 1, undefined, 1, true);
+  const dx = r.x - 800;
+  const dy = r.y - 800;
+  assert.ok(dx < 0 && dy < 0, "moves toward −x,−y in world space");
+  assert.ok(Math.abs(dx - dy) < 1e-6, "equal components → vertical on screen");
+  assert.equal(r.dir, "north", "faces the direction the player sees");
+  // Screen-projected movement: sx ∝ (dx−dy) = 0 (no sideways drift), sy < 0.
+  assert.ok(Math.abs(dx - dy) < 1e-6);
+});
+
+test("screen-relative input: Right moves straight right on screen", () => {
+  const r = stepMovement(800, 800, 1, 0, false, 1, undefined, 1, true);
+  const dx = r.x - 800;
+  const dy = r.y - 800;
+  assert.ok(dx > 0 && dy < 0, "world +x,−y");
+  assert.ok(Math.abs(dx + dy) < 1e-6, "opposite components → horizontal on screen");
+  assert.equal(r.dir, "east");
+  // World-space speed stays normalized (fair movement rate in tiles/sec).
+  assert.ok(Math.abs(Math.hypot(dx, dy) - WALK_SPEED) < 1e-6);
+});
+
 test("stepStamina drains in water, drowns at zero, regenerates on land", () => {
   const drain = stepStamina(MAX_STAMINA, true, 1);
   assert.equal(drain.stamina, MAX_STAMINA - SWIM_DRAIN);

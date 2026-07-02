@@ -27,9 +27,13 @@ export interface World {
   rows: Cell[][];
 }
 
+import { ISO_DX, ISO_DY } from "@nangijala/shared";
+
 // Measured from the tile "house format" (64px / 28deg / 50% side faces).
 // If the tiles agent changes that format, re-measure (tileset.measure_geometry).
-export const MAP_GEOMETRY = { tile: 64, dx: 32, dy: 13, lh: 19, margin: 8 };
+// dx/dy live in shared/ (ISO_DX/ISO_DY) because screen-relative input math on
+// the server must use the exact same projection ratio.
+export const MAP_GEOMETRY = { tile: 64, dx: ISO_DX, dy: ISO_DY, lh: 19, margin: 8 };
 
 export async function loadWorld(): Promise<World | null> {
   try {

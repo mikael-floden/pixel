@@ -141,6 +141,7 @@ export class WorldRoom extends Room<WorldState> {
           dt,
           makeBlocked(terrain, ctx),
           surf.speed,
+          true, // iso world → input is screen-relative (Up walks up on screen)
         );
       } else {
         r = stepMovement(player.x, player.y, player.inputAx, player.inputAy, player.inputRunning, dt);
