@@ -171,12 +171,20 @@ export function stepMovement(
   const px = tx + Math.sign(tx - x) * PLAYER_RADIUS;
   if (!blocked || !blocked(px, y, x, y)) {
     rx = tx;
-    if (drops && drops(px, y, tx, y)) rx = px; // feet touched the edge → step off
+    if (drops && drops(px, y, tx, y)) {
+      // Feet touched a drop edge → step off, landing a full foot-radius clear
+      // of the cliff base so the sprite doesn't stand "in" the slope face.
+      const fx = px + Math.sign(tx - x) * PLAYER_RADIUS;
+      rx = !blocked || !blocked(fx, y, x, y) ? fx : px;
+    }
   }
   const py = ty + Math.sign(ty - y) * PLAYER_RADIUS;
   if (!blocked || !blocked(rx, py, rx, y)) {
     ry = ty;
-    if (drops && drops(rx, py, rx, ty)) ry = py;
+    if (drops && drops(rx, py, rx, ty)) {
+      const fy = py + Math.sign(ty - y) * PLAYER_RADIUS;
+      ry = !blocked || !blocked(rx, fy, rx, ty) ? fy : py;
+    }
   }
   return { x: rx, y: ry, dir, moving: true };
 }
