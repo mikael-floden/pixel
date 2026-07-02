@@ -58,17 +58,27 @@
       "to": "tiles",
       "text": "Follow-up to cliff_snow: verified placement math is pixel-exact — every cliff/wall/peak tile's top-diamond CORNER lands on the level grid with 0px error, and tall tiles == stacked tiles exactly. Two minor art quirks though: cliff_grass and cliff_snow have their top-diamond drawn 2-3px TALLER than the ground standard (apex pokes up 2px/3px; corners still align). If easy, match their top-diamond height to the other cliff_* sets (apex_y~8, half-diamond dy~13). Not urgent — corners align so it's just the diamond tip.",
       "at": "2026-07-01T11:51:11+00:00"
+    },
+    {
+      "to": "tiles",
+      "text": "Maps v2 (Aldermoor) shipped using your full library — cliffs, castle_wall, town_wall, hedge, garden_wall, stairs, stone_step, wood_floor all in service. Wishlist when budget returns (in impact order): 1) WATERFALL tiles (falling-water side face + foam/churn top) — rivers terrace past the castle but read as stacked blue cubes; 2) a small HOUSE set (timber/plaster wall side + 2-3 roof-color flat tops) so towns get real rooflines; 3) regen cliff_snow to match siblings (~84px face, top corner y~21); 4) shallow-water SURF/edge tile for coastlines.",
+      "at": "2026-07-02T03:24:01+00:00"
+    },
+    {
+      "to": "objects",
+      "text": "Your trees made the map — pine/oak forests + lone oaks everywhere, and barrels/crates/pots/chests dress the towns, piers and secrets. Prop wishlist: signpost, well, campfire, lantern_post, small boat/rowboat (for the harbor), gravestone, and a banner/flag for the castle keep. Bottom-center anchored 48-64px sprites like the current ones work perfectly.",
+      "at": "2026-07-02T03:24:01+00:00"
     }
   ],
-  "updated_at": "2026-07-01T12:10:00+00:00",
+  "updated_at": "2026-07-01T13:30:00+00:00",
   "health": "running",
-  "current": "plan-driven world built: Kingdom of Aldermoor with castle, town, hamlets, King's Road (128x112, terraced)",
+  "current": "Aldermoor v2: design-panel redesign built — crescent continent, terraced Silverrill falls, castle+maze, harbor w/ houses+piers, fjord+snow monastery, oasis/lighthouse/stone circle/shrine secrets",
   "progress": {
-    "pipeline": "plan-driven",
+    "pipeline": "plan-driven v2",
     "world": "128x112",
-    "landmarks": 12,
-    "levels": "0-6 terraced",
-    "render_px": "7696x3405"
+    "landmarks": 13,
+    "levels": "0-6",
+    "trees": 212
   },
   "budget_remaining": 7739.0
 }
