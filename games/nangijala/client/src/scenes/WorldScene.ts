@@ -184,16 +184,23 @@ export class WorldScene extends Phaser.Scene {
     });
     // Jump (Space): edge-triggered, lets you cross a 1-level ledge if timed.
     this.input.keyboard!.on("keydown-SPACE", () => this.tryJump());
-    // Debug: press C to visualize water (swimmable) terrain cells.
-    this.input.keyboard!.on("keydown-C", () => this.toggleCollisionOverlay());
-    // V toggles the character aura (A/B the Sea-of-Stars-style glow live).
-    this.input.keyboard!.on("keydown-V", () => {
+    // All feature/debug toggles live on the TOP-ROW digits (1-9):
+    //   1 time-of-day · 2 fog · 3 character aura · 4 collision overlay
+    this.input.keyboard!.on("keydown-ONE", () =>
+      this.chat.addLog("—", `[1] Time of day: ${this.atmo.cyclePreset()}`),
+    );
+    this.input.keyboard!.on("keydown-TWO", () =>
+      this.chat.addLog("—", `[2] Fog: ${this.atmo.toggleFog() ? "on" : "off"}`),
+    );
+    this.input.keyboard!.on("keydown-THREE", () => {
       this.auraOn = !this.auraOn;
-      this.chat.addLog("—", `Character aura: ${this.auraOn ? "on" : "off"}`);
+      this.chat.addLog("—", `[3] Character aura: ${this.auraOn ? "on" : "off"}`);
     });
-    // Atmosphere: L cycles time-of-day (day/dusk/night/dawn), G toggles fog.
-    this.input.keyboard!.on("keydown-L", () => this.chat.addLog("—", `Time of day: ${this.atmo.cyclePreset()}`));
-    this.input.keyboard!.on("keydown-G", () => this.chat.addLog("—", `Fog: ${this.atmo.toggleFog() ? "on" : "off"}`));
+    this.input.keyboard!.on("keydown-FOUR", () => {
+      this.toggleCollisionOverlay();
+      this.chat.addLog("—", `[4] Collision overlay: ${this.collisionOverlay ? "on" : "off"}`);
+    });
+    this.chat.addLog("—", "Toggles: [1] time of day · [2] fog · [3] aura · [4] collision");
 
     const cam = this.cameras.main;
     cam.setBounds(0, 0, this.iso.w, this.iso.h);
