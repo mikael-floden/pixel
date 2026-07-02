@@ -294,8 +294,9 @@ export function surfaceFor(t: string): Surface {
 // WALK_CLIMB of each other; crossing a full 1-level ledge needs a timed JUMP.
 export const WALK_CLIMB = 0.5; // step you can walk up/down passively
 export const JUMP_CLIMB = 1; // step you can cross while jumping
-export const JUMP_MS = 420; // active jump window (climb allowance + hop visual)
+export const JUMP_MS = 500; // active jump window (climb allowance + hop visual)
 export const JUMP_COOLDOWN_MS = 180; // after landing, before you can jump again
+export const JUMP_SPEED_FACTOR = 0.6; // slower ground travel while airborne (taller, not farther)
 
 // Swimming: entering water starts a stamina drain; at zero you drown.
 export const MAX_STAMINA = 100;

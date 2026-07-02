@@ -23,6 +23,7 @@ import {
   stepStamina,
   WALK_CLIMB,
   JUMP_CLIMB,
+  JUMP_SPEED_FACTOR,
   JUMP_MS,
   JUMP_COOLDOWN_MS,
   MAX_STAMINA,
@@ -153,7 +154,7 @@ export class WorldRoom extends Room<WorldState> {
         let r;
         if (terrain) {
           // Surface under the feet drives walk speed; a jump raises how high
-          // you can step so you can cross a 1-level ledge.
+          // you can step (crossing a 1-level ledge) but slows ground travel.
           const surf = surfaceAtWorld(terrain, player.x, player.y);
           const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
           r = stepMovement(
@@ -164,7 +165,7 @@ export class WorldRoom extends Room<WorldState> {
             inp.running,
             eff,
             makeBlocked(terrain, ctx),
-            surf.speed,
+            surf.speed * (jumping ? JUMP_SPEED_FACTOR : 1),
             true, // iso world → input is screen-relative (Up walks up on screen)
             makeDrops(terrain),
           );

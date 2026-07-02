@@ -18,6 +18,7 @@ import {
   surfaceFor,
   WALK_CLIMB,
   JUMP_CLIMB,
+  JUMP_SPEED_FACTOR,
   JUMP_MS,
   JUMP_COOLDOWN_MS,
   MAX_STAMINA,
@@ -43,7 +44,7 @@ const INPUT_HZ = 20;
 const BUBBLE_MS = 5000;
 const PLACEHOLDER_TEX = "placeholder:wanderer";
 const SHADOW_TEX = "avatar:shadow";
-const JUMP_HEIGHT = 16; // px peak of the jump hop
+const JUMP_HEIGHT = 28; // px peak of the jump hop (a tall, floaty arc)
 const SWIM_SINK = 6; // px the sprite sinks while swimming
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
 
@@ -355,7 +356,7 @@ export class WorldScene extends Phaser.Scene {
             const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
             blocked = makeBlocked(this.terrain, ctx);
             drops = makeDrops(this.terrain);
-            speed = surfaceAtWorld(this.terrain, rx, ry).speed;
+            speed = surfaceAtWorld(this.terrain, rx, ry).speed * (jumping ? JUMP_SPEED_FACTOR : 1);
           }
           // screenInput matches the server: on the iso world, input is screen-relative.
           const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain, drops);
@@ -440,25 +441,31 @@ export class WorldScene extends Phaser.Scene {
     const ax = (down(k.D) || down(k.RIGHT) ? 1 : 0) - (down(k.A) || down(k.LEFT) ? 1 : 0);
     const ay = (down(k.S) || down(k.DOWN) ? 1 : 0) - (down(k.W) || down(k.UP) ? 1 : 0);
     const running = down(k.SHIFT);
-    this.lastInput = { ax, ay, running };
     const sig = `${ax},${ay},${running ? 1 : 0}`;
+    // If the input CHANGED, flush the elapsed window under the PREVIOUS input
+    // first. Otherwise a quick tap gets re-attributed to the new vector (e.g.
+    // idle) — the tap's movement evaporates and the player pops back.
+    if (sig !== this.lastSent && this.sendAccum > 0) this.flushInput();
+    this.lastInput = { ax, ay, running };
+    this.lastSent = sig;
     this.sendAccum += dt;
-    // Send on change, a queued jump, or at the input tick, tagging each with a
-    // sequence number so the server can ack it and the client can reconcile.
-    if (sig !== this.lastSent || this.jumpQueued || this.sendAccum >= 1 / INPUT_HZ) {
-      this.inputSeq += 1;
-      this.pending.push({ seq: this.inputSeq, ax, ay, running, dt: this.sendAccum });
-      // dt rides along so the server integrates the EXACT same durations the
-      // prediction did — identical math on both sides, no reconciliation snap.
-      const msg: InputMessage = { ax, ay, running, seq: this.inputSeq, dt: this.sendAccum };
-      if (this.jumpQueued) {
-        msg.jump = true;
-        this.jumpQueued = false;
-      }
-      this.room!.send("input", msg);
-      this.lastSent = sig;
-      this.sendAccum = 0;
+    // Regular cadence, and jumps flush immediately so the edge isn't delayed.
+    if (this.jumpQueued || this.sendAccum >= 1 / INPUT_HZ) this.flushInput();
+  }
+
+  /** Persist + send the accumulated input window (prediction and server get
+   * the exact same vector and duration). */
+  private flushInput() {
+    const li = this.lastInput;
+    this.inputSeq += 1;
+    this.pending.push({ seq: this.inputSeq, ax: li.ax, ay: li.ay, running: li.running, dt: this.sendAccum });
+    const msg: InputMessage = { ax: li.ax, ay: li.ay, running: li.running, seq: this.inputSeq, dt: this.sendAccum };
+    if (this.jumpQueued) {
+      msg.jump = true;
+      this.jumpQueued = false;
     }
+    this.room!.send("input", msg);
+    this.sendAccum = 0;
   }
 
   private applyAnimState(av: Avatar, moving: boolean, running: boolean, dir: string) {
