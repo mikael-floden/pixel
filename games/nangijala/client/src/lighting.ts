@@ -49,7 +49,7 @@ export interface Preset {
 export const PRESETS: Preset[] = [
   { name: "day", tint: 0xffffff, darkness: 0.0, light: 0xffffff, radius: 200, vignette: 0.0 },
   { name: "dusk", tint: 0xd18f70, darkness: 0.5, light: 0xffcf94, radius: 210, vignette: 0.18 },
-  { name: "night", tint: 0x38445e, darkness: 1.0, light: 0xffe4ad, radius: 170, vignette: 0.38 },
+  { name: "night", tint: 0x38445e, darkness: 1.0, light: 0xffe4ad, radius: 170, vignette: 0.28 },
   { name: "dawn", tint: 0xc9a4c4, darkness: 0.4, light: 0xfff1d6, radius: 210, vignette: 0.14 },
 ];
 

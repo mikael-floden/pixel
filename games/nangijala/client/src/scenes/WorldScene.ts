@@ -589,6 +589,10 @@ export class WorldScene extends Phaser.Scene {
       // Slow breathing, not a strobe: ~4s and ~1.4s periods, small swing.
       const flick = 0.52 + Math.sin(this.time.now / 640) * 0.05 + Math.sin(this.time.now / 225) * 0.03;
       lights.push({ x: c.x, y: c.y - 9, color: 0xff8830, radius: 72, alpha: flick, depth: c.depth + 0.2 });
+      // Flame-core bloom ABOVE the night grade + vignette: the fire is a
+      // light EMITTER — it must read bright from any distance and any screen
+      // position, never dimmed by its own darkness overlays.
+      lights.push({ x: c.x, y: c.y - 10, color: 0xffb75a, radius: 24, alpha: flick + 0.25, depth: 900_005 });
       if (!shaderNight)
         lights.push({ x: c.x, y: c.y, color: 0xff9e4a, radius: 120, ground: true, depth: c.depth + 0.1 });
     }

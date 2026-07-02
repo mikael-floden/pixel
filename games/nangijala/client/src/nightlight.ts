@@ -54,19 +54,26 @@ void main() {
   // Rendered into a texture that Phaser composites y-flipped — sample top-down.
   float wy = uCam.y + suv.y * uCam.w;
   float u = (wx - uIsoA.x) / uIsoA.z;
+  float v0 = (wy - uIsoA.y) / uIsoA.w; // grid diagonal at height 0
+  float kk = uIsoB.x / uIsoA.w;        // diagonal shift per height level
 
-  // Resolve which surface (cell + height) this pixel shows: highest level
-  // whose cell is at least that tall.
+  // Resolve the surface this pixel shows by marching HEIGHT continuously
+  // from the world's max level down: a point at height h projects onto
+  // diagonal v0 + h*kk, and the first h where the terrain is at least that
+  // tall is the visible surface. Integer-only levels snapped CLIFF-FACE
+  // pixels to arbitrary floor cells (striped walls, blocky shadows); the
+  // fractional hit makes light fall down a wall as a smooth gradient.
   float z = 0.0;
   vec2 cell = vec2(0.0);
   bool found = false;
-  for (int L = 12; L >= 0; L--) {
-    if (found || float(L) > uIsoB.w) continue;
-    float v = (wy - uIsoA.y + float(L) * uIsoB.x) / uIsoA.w;
+  for (int s = 0; s <= 36; s++) {
+    if (found) continue;
+    float zc = uIsoB.w * (1.0 - float(s) / 36.0);
+    float v = v0 + zc * kk;
     vec2 cr = vec2((u + v) * 0.5, (v - u) * 0.5);
     float H = heightAt(cr);
-    if (H < 90.0 && H >= float(L) - 0.01) {
-      z = float(L);
+    if (H < 90.0 && H >= zc - 0.001) {
+      z = min(zc, H);
       cell = cr;
       found = true;
     }
@@ -90,11 +97,13 @@ void main() {
 
     // Line of sight: march the heightmap toward the light. Occlusion scales
     // with HOW FAR the blocker pokes above the ray — grazing edges dim gently
-    // instead of stamping hard cell-shaped shadow blocks.
+    // instead of stamping hard cell-shaped shadow blocks. Samples inside the
+    // pixel's OWN column are skipped so a wall never shadows its own face.
     float occ = 1.0;
     for (int s = 1; s <= 8; s++) {
       float t = float(s) / 9.0;
       vec2 p = mix(cell, lp.xy, t);
+      if (max(abs(p.x - cell.x), abs(p.y - cell.y)) < 0.75) continue;
       float hRay = mix(z, lp.z, t) + 0.3;
       float H = heightAt(p);
       if (H < 90.0 && H > hRay) occ *= mix(0.85, 0.55, clamp(H - hRay, 0.0, 1.0));
