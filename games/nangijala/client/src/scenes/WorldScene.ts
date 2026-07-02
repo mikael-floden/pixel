@@ -43,6 +43,7 @@ const BUBBLE_MS = 5000;
 const PLACEHOLDER_TEX = "placeholder:wanderer";
 const JUMP_HEIGHT = 16; // px peak of the jump hop
 const SWIM_SINK = 6; // px the sprite sinks while swimming
+const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
 
 interface Avatar {
   sprite: Phaser.GameObjects.Sprite;
@@ -80,6 +81,10 @@ export class WorldScene extends Phaser.Scene {
   // Terrain (elevation + surface) — same grid the server uses, so prediction matches.
   private terrain: TerrainGrid | null = null;
   private collisionOverlay?: Phaser.GameObjects.Graphics;
+  // Streaming ground renderer state.
+  private groundRT?: Phaser.GameObjects.RenderTexture;
+  private lastGround = { x: NaN, y: NaN };
+  private maxLevel = 0;
   // Local jump prediction (client owns its jump timing).
   private jumpUntil = 0;
   private jumpReadyAt = 0;
@@ -124,7 +129,7 @@ export class WorldScene extends Phaser.Scene {
   async create() {
     this.ensurePlaceholderTexture();
     this.buildAnimations();
-    if (this.world) this.buildIsoGround();
+    if (this.world) this.setupStreamingGround();
     else this.drawGround();
 
     this.atmo = new Atmosphere(this);
@@ -299,6 +304,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   update(_time: number, delta: number) {
+    this.redrawGround();
     if (!this.room) return;
     const dt = delta / 1000;
     const myId = this.room.sessionId;
@@ -459,22 +465,81 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
-  /** Composite the isometric world (with elevation) into a static ground texture. */
-  private buildIsoGround() {
+  /**
+   * Streaming ground: the world is far too large to bake into one texture
+   * (512×448 cells ≈ 30k px wide). Instead a world-anchored RenderTexture
+   * covering the screen plus GROUND_MARGIN on every side is redrawn only when
+   * the camera wanders near its edge — scrolling between redraws costs nothing.
+   * Painter order comes free from iterating v = col+row back-to-front.
+   */
+  private setupStreamingGround() {
     const world = this.world!;
-    const { dx, dy, lh } = MAP_GEOMETRY;
-    const { w, h, ox, oy } = canvasSize(world);
-    this.iso = { ox, oy, w, h };
+    const cs = canvasSize(world);
+    this.iso = { ox: cs.ox, oy: cs.oy, w: cs.w, h: cs.h };
+    this.maxLevel = cs.maxLevel;
+    this.makeGroundRT();
+    this.scale.on("resize", () => this.makeGroundRT());
+  }
 
-    const rt = this.add.renderTexture(0, 0, w, h).setOrigin(0, 0).setDepth(-1_000_000);
+  private makeGroundRT() {
+    this.groundRT?.destroy();
+    this.groundRT = this.add
+      .renderTexture(0, 0, this.scale.width + GROUND_MARGIN * 2, this.scale.height + GROUND_MARGIN * 2)
+      .setOrigin(0, 0)
+      .setDepth(-1_000_000);
+    this.lastGround = { x: NaN, y: NaN };
+  }
+
+  private redrawGround() {
+    if (!this.world || !this.groundRT) return;
+    const cam = this.cameras.main;
+    const ccx = cam.scrollX + cam.width / 2;
+    const ccy = cam.scrollY + cam.height / 2;
+    // Only redraw when the camera centre strays GROUND_MARGIN/2 from the last
+    // anchor — everything in between scrolls the already-drawn texture.
+    if (
+      !Number.isNaN(this.lastGround.x) &&
+      Math.abs(ccx - this.lastGround.x) < GROUND_MARGIN / 2 &&
+      Math.abs(ccy - this.lastGround.y) < GROUND_MARGIN / 2
+    )
+      return;
+    this.lastGround = { x: ccx, y: ccy };
+
+    const world = this.world;
+    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    const rt = this.groundRT;
+    // Anchor the texture in world space around the camera centre.
+    const ax = Math.round(ccx - rt.width / 2);
+    const ay = Math.round(ccy - rt.height / 2);
+    rt.setPosition(ax, ay);
+    rt.clear();
     rt.fill(0x181c28, 1);
+
+    // Covered rect in virtual-canvas coords, padded for tile size + max lift.
+    const x0 = ax - tile;
+    const x1 = ax + rt.width + tile;
+    const y0 = ay - tile;
+    const y1 = ay + rt.height + tile + this.maxLevel * lh;
+    // u = col−row indexes screen-x; v = col+row indexes screen-y.
+    const u0 = Math.floor((x0 - this.iso.ox) / dx) - 1;
+    const u1 = Math.ceil((x1 - this.iso.ox) / dx) + 1;
+    const v0 = Math.max(0, Math.floor((y0 - this.iso.oy) / dy) - 1);
+    const v1 = Math.ceil((y1 - this.iso.oy) / dy) + 1;
+
     rt.beginDraw();
-    for (const { x, y, cell } of drawOrder(world)) {
-      const key = tileKey(cell.t, cell.v);
-      if (!this.textures.exists(key)) continue;
-      const bx = ox + (x - y) * dx;
-      const by = oy + (x + y) * dy;
-      for (let lvl = 0; lvl <= cell.l; lvl++) rt.batchDraw(key, bx, by - lvl * lh);
+    for (let v = v0; v <= v1; v++) {
+      for (let u = u0; u <= u1; u++) {
+        if ((u + v) & 1) continue; // col/row must be integers
+        const col = (u + v) / 2;
+        const row = (v - u) / 2;
+        if (col < 0 || row < 0 || col >= world.width || row >= world.height) continue;
+        const cell = world.rows[row][col];
+        const key = tileKey(cell.t, cell.v);
+        if (!this.textures.exists(key)) continue;
+        const bx = this.iso.ox + u * dx - ax;
+        const by = this.iso.oy + v * dy - ay;
+        for (let lvl = 0; lvl <= cell.l; lvl++) rt.batchDraw(key, bx, by - lvl * lh);
+      }
     }
     rt.endDraw();
   }
@@ -489,24 +554,35 @@ export class WorldScene extends Phaser.Scene {
     this.jumpQueued = true;
   }
 
-  /** Toggle a debug overlay marking water (swimmable) cells in iso diamonds.
-   * Built lazily on first use. */
+  /** Toggle a debug overlay marking non-standable cells around the camera
+   * (blue = swimmable water, red = solid). Redrawn for the CURRENT view each
+   * time it's toggled on — the world is far too large to mark everywhere. */
   private toggleCollisionOverlay() {
     if (this.collisionOverlay) {
-      this.collisionOverlay.setVisible(!this.collisionOverlay.visible);
+      this.collisionOverlay.destroy();
+      this.collisionOverlay = undefined;
       return;
     }
     if (!this.world) return;
     const { dx, dy, lh } = MAP_GEOMETRY;
+    const cam = this.cameras.main;
     const g = this.add.graphics().setDepth(1_000_000);
-    g.fillStyle(0x3bb0ff, 0.3);
-    for (let row = 0; row < this.world.height; row++) {
-      for (let col = 0; col < this.world.width; col++) {
+    const u0 = Math.floor((cam.worldView.x - this.iso.ox) / dx) - 2;
+    const u1 = Math.ceil((cam.worldView.right - this.iso.ox) / dx) + 2;
+    const v0 = Math.max(0, Math.floor((cam.worldView.y - this.iso.oy) / dy) - 2);
+    const v1 = Math.ceil((cam.worldView.bottom - this.iso.oy + this.maxLevel * lh) / dy) + 2;
+    for (let v = v0; v <= v1; v++) {
+      for (let u = u0; u <= u1; u++) {
+        if ((u + v) & 1) continue;
+        const col = (u + v) / 2;
+        const row = (v - u) / 2;
         const cell = this.world.rows[row]?.[col];
-        if (!cell || !surfaceFor(cell.t).swimmable) continue;
-        const bx = this.iso.ox + (col - row) * dx;
-        const by = this.iso.oy + (col + row) * dy - cell.l * lh;
-        // The top diamond of a 64-wide iso tile (half-width dx, half-height dy).
+        if (!cell) continue;
+        const s = surfaceFor(cell.t);
+        if (s.standable) continue;
+        g.fillStyle(s.swimmable ? 0x3bb0ff : 0xff5a5a, 0.3);
+        const bx = this.iso.ox + u * dx;
+        const by = this.iso.oy + v * dy - cell.l * lh;
         g.fillPoints(
           [
             new Phaser.Geom.Point(bx + dx, by),

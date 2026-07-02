@@ -1,18 +1,11 @@
 import Phaser from "phaser";
-import {
-  World,
-  MAP_GEOMETRY,
-  tileKey,
-  tileUrl,
-  distinctTiles,
-  drawOrder,
-  canvasSize,
-} from "../maps";
+import { World } from "../maps";
 
 /**
- * Renders the maps agent's isometric world with elevation, as a foundation for
- * the eventual in-game tile world. Reached at `#map` so it doesn't disturb the
- * live game. Drag to pan, wheel to zoom.
+ * World overview reached at `#map`. The bigworld is far too large to composite
+ * tile-by-tile in the browser (512×448 cells ≈ 30k px), so this shows the maps
+ * agent's pre-rendered minimap (maps/world/minimap.png). Drag to pan, wheel to
+ * zoom.
  */
 export class MapPreviewScene extends Phaser.Scene {
   private world!: World;
@@ -26,39 +19,22 @@ export class MapPreviewScene extends Phaser.Scene {
   }
 
   preload() {
-    for (const { t, v } of distinctTiles(this.world)) {
-      this.load.image(tileKey(t, v), tileUrl(t, v));
-    }
+    this.load.image("world-minimap", "/assets/maps/world/minimap.png");
   }
 
   create() {
-    const { dx, dy, lh } = MAP_GEOMETRY;
-    const { w, h, ox, oy } = canvasSize(this.world);
-
-    const rt = this.add.renderTexture(0, 0, w, h).setOrigin(0, 0);
-    rt.fill(0x181c28, 1);
-
-    // Batch all stamps into one GPU pass (per-draw readback stalls otherwise).
-    let drawn = 0;
-    let missing = 0;
-    rt.beginDraw();
-    for (const { x, y, cell } of drawOrder(this.world)) {
-      const key = tileKey(cell.t, cell.v);
-      if (!this.textures.exists(key)) {
-        missing++;
-        continue;
-      }
-      const baseX = ox + (x - y) * dx;
-      const baseY = oy + (x + y) * dy;
-      // Stack ground..level so side faces build a solid raised block.
-      for (let lvl = 0; lvl <= cell.l; lvl++) {
-        rt.batchDraw(key, baseX, baseY - lvl * lh);
-      }
-      drawn++;
+    if (!this.textures.exists("world-minimap")) {
+      this.add.text(20, 20, "No minimap available (maps/world/minimap.png).", {
+        fontFamily: "monospace",
+        fontSize: "14px",
+        color: "#eef",
+      });
+      return;
     }
-    rt.endDraw();
+    const img = this.add.image(0, 0, "world-minimap").setOrigin(0, 0);
+    const w = img.width;
+    const h = img.height;
 
-    // Fit the whole world in view, then allow drag-pan + wheel-zoom.
     const cam = this.cameras.main;
     cam.setBounds(0, 0, w, h);
     const fit = Math.min(this.scale.width / w, this.scale.height / h) * 0.98;
@@ -71,18 +47,31 @@ export class MapPreviewScene extends Phaser.Scene {
       cam.scrollY -= p.velocity.y / cam.zoom;
     });
     this.input.on("wheel", (_p: unknown, _o: unknown, _dx: number, dyw: number) => {
-      cam.setZoom(Phaser.Math.Clamp(cam.zoom * (dyw > 0 ? 0.9 : 1.1), 0.1, 6));
+      cam.setZoom(Phaser.Math.Clamp(cam.zoom * (dyw > 0 ? 0.9 : 1.1), 0.05, 8));
     });
 
-    const info =
-      `Map preview · ${this.world.width}×${this.world.height} · iter ${this.world.iteration ?? "?"}` +
-      ` · ${drawn} cells drawn${missing ? ` · ${missing} missing tiles` : ""}`;
+    // Mark the points of interest on the minimap (scaled cell → pixel).
+    const sx = w / this.world.width;
+    const sy = h / this.world.height;
+    for (const poi of this.world.pois ?? []) {
+      this.add.circle(poi.x * sx, poi.y * sy, 4, 0xffd678).setStrokeStyle(1, 0x000000);
+      this.add
+        .text(poi.x * sx + 6, poi.y * sy - 6, poi.label, {
+          fontFamily: "monospace",
+          fontSize: "11px",
+          color: "#ffe9b0",
+          backgroundColor: "#000a",
+        })
+        .setPadding(3, 2, 3, 2);
+    }
+
+    const info = `World map · ${this.world.width}×${this.world.height} cells · ${this.world.pois?.length ?? 0} places`;
     this.add
       .text(10, 10, info, { fontFamily: "monospace", fontSize: "13px", color: "#dfe3f5", backgroundColor: "#000a" })
       .setScrollFactor(0)
       .setPadding(6, 4, 6, 4);
 
     // Debug hook for headless verification.
-    (window as any).__mlmap = { drawn, missing, w, h };
+    (window as any).__mlmap = { w, h, pois: this.world.pois?.length ?? 0 };
   }
 }

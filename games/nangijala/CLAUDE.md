@@ -34,12 +34,20 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
 
 ## Isometric world
 
-- `client/src/maps.ts` loads `maps/world/world.json` (a `w×h` grid of cells
-  `{t: tile category, v: variant, l: elevation, r: region}`) and the geometry
-  from `maps/pipeline` (`x=(col-row)*32`, `y=(col+row)*dy − level*lh`; draw
-  back-to-front by `(col+row,row)`, stack level 0..l). `MapPreviewScene` (`/#map`)
-  composites the whole world; the live `WorldScene` uses it as the ground and
-  `project()`s each player's flat `(x,y)` onto the grid (feet lifted by elevation).
+- `shared/parseWorld` reads `maps/world/world.json` — the **bigworld@1** schema
+  (512×448; `categories`/`climates` string tables + `terr`/`variant`/`level`/
+  `climate` index arrays + named `pois`) and the legacy `rows` schema. Geometry
+  unchanged (`x=(col-row)*32`, `y=(col+row)*dy − level*lh`, painter order by
+  `(col+row,row)`). World units: **32 per cell** (`CELL_WU`); WORLD_WIDTH/HEIGHT
+  are sized to the current grid — update them if the map dimensions change.
+- The world is far too large to bake into one texture, so `WorldScene` streams
+  it: a world-anchored RenderTexture covering the screen + `GROUND_MARGIN` px is
+  redrawn only when the camera nears its edge. `MapPreviewScene` (`/#map`) shows
+  the maps agent's pre-rendered `minimap.png` with POI markers. `project()`s each
+  player's flat `(x,y)` onto the grid (feet lifted by elevation).
+- `stairs` tiles act as ramps (crossing one allows a full 1-level step without
+  jumping); solid structure tiles (trees, boulders, obelisks, watchtower, cactus,
+  lava) are impassable — see `SURFACES`/`surfaceFor` (road_* matched by prefix).
 - Movement system (#17) is server-authoritative and governed by **elevation**,
   not tile category (`shared/`): `buildTerrainGrid` reads each cell's `l` +
   category; `canEnter` allows a move only if the destination is enterable and the

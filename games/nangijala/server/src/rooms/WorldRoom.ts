@@ -12,6 +12,7 @@ import {
   stepMovement,
   TerrainGrid,
   buildTerrainGrid,
+  parseWorld,
   makeBlocked,
   surfaceAtWorld,
   isStandableAtWorld,
@@ -189,12 +190,8 @@ function loadTerrain(): TerrainGrid | null {
     const assetsRoot = process.env.ASSETS_ROOT || join(gameRoot, "..", ".."); // repo root
     const path = join(assetsRoot, "maps", "world", "world.json");
     if (!existsSync(path)) return null;
-    const world = JSON.parse(readFileSync(path, "utf8")) as {
-      width: number;
-      height: number;
-      rows: { t: string; l?: number }[][];
-    };
-    if (!world?.rows?.length) return null;
+    const world = parseWorld(JSON.parse(readFileSync(path, "utf8")));
+    if (!world) return null;
     return buildTerrainGrid(world.width, world.height, world.rows);
   } catch {
     return null;

@@ -4,12 +4,16 @@
  */
 
 // --- World -------------------------------------------------------------------
-export const WORLD_WIDTH = 1600;
-export const WORLD_HEIGHT = 1600;
+// World units: 32 per map cell, sized to the current bigworld grid (512×448).
+// If the maps agent changes the world dimensions, update these to w*32 / h*32.
+export const CELL_WU = 32;
+export const WORLD_WIDTH = 512 * CELL_WU;
+export const WORLD_HEIGHT = 448 * CELL_WU;
 
 // Movement speeds in world units per second.
-export const WALK_SPEED = 31;
-export const RUN_SPEED = 80;
+// Retuned for CELL_WU=32 (screen px/wu grew ~13% vs the old 44×44 world).
+export const WALK_SPEED = 28;
+export const RUN_SPEED = 72;
 
 // Authoritative simulation tick (updates per second).
 export const TICK_RATE = 20;
@@ -181,26 +185,77 @@ export interface Surface {
   swimmable: boolean; // water you can swim across (costs stamina — see stepStamina)
   speed: number; // walk-speed multiplier on this surface
   sound: string; // footstep sound id (for the future audio system, #9)
+  stairs?: boolean; // transition tile: crossing it lets you walk a full 1-level step
 }
+
+const ground = (speed: number, sound: string): Surface => ({
+  standable: true,
+  swimmable: false,
+  speed,
+  sound,
+});
+const solid: Surface = { standable: false, swimmable: false, speed: 1, sound: "" }; // structures
 
 /** Per-category surface properties. Unknown categories fall back to DEFAULT
  * (plain walkable ground) so new tiles the maps/tiles agents add never wall
- * players in or crash — they just walk normally until tuned here. */
+ * players in or crash — they just walk normally until tuned here.
+ * Road categories are matched by prefix (road_*) — see surfaceFor. */
 export const SURFACES: Record<string, Surface> = {
-  grass: { standable: true, swimmable: false, speed: 1.0, sound: "grass" },
-  sand: { standable: true, swimmable: false, speed: 0.8, sound: "sand" },
-  stone: { standable: true, swimmable: false, speed: 1.0, sound: "stone" },
-  cobblestone: { standable: true, swimmable: false, speed: 1.05, sound: "stone" },
-  brick_road: { standable: true, swimmable: false, speed: 1.2, sound: "stone" },
-  castle: { standable: true, swimmable: false, speed: 1.0, sound: "stone" },
-  snow: { standable: true, swimmable: false, speed: 0.65, sound: "snow" },
+  // liquids / hazards
   water: { standable: false, swimmable: true, speed: 0.55, sound: "water" },
+  lava: solid, // deadly later; impassable for now
+  // ground by feel
+  grass: ground(1.0, "grass"),
+  meadow: ground(1.0, "grass"),
+  flowers: ground(0.95, "grass"),
+  forest: ground(0.8, "grass"),
+  jungle: ground(0.75, "grass"),
+  mushroom_grove: ground(0.9, "grass"),
+  savanna: ground(0.95, "grass"),
+  wheat_field: ground(0.85, "grass"),
+  farm: ground(0.95, "dirt"),
+  vineyard: ground(0.9, "dirt"),
+  dirt: ground(0.95, "dirt"),
+  clay: ground(0.9, "dirt"),
+  gravel: ground(0.95, "stone"),
+  stone: ground(1.0, "stone"),
+  mosaic_floor: ground(1.1, "stone"),
+  sand: ground(0.8, "sand"),
+  sand_bank: ground(0.8, "sand"),
+  coral_sand: ground(0.8, "sand"),
+  desert: ground(0.75, "sand"),
+  snow: ground(0.7, "snow"),
+  cliff_snow: ground(0.7, "snow"),
+  tundra: ground(0.8, "snow"),
+  permafrost: ground(0.9, "snow"),
+  ice: ground(1.15, "ice"),
+  crystal_ground: ground(1.0, "stone"),
+  bog: ground(0.55, "swamp"),
+  swamp: ground(0.5, "swamp"),
+  // transitions
+  stairs: { ...ground(0.9, "stone"), stairs: true },
+  // solid structures (trees, monuments, towers) — you walk around them
+  pine_tree: solid,
+  pine_tree_v2: solid,
+  oak_tree: solid,
+  oak_tree_v2: solid,
+  autumn_forest: ground(0.8, "grass"),
+  big_boulder: solid,
+  crystal_spire: solid,
+  obelisk: solid,
+  obelisk_v2: solid,
+  watchtower: solid,
+  cactus: solid,
 };
-export const DEFAULT_SURFACE: Surface = { standable: true, swimmable: false, speed: 1.0, sound: "grass" };
+export const DEFAULT_SURFACE: Surface = ground(1.0, "grass");
+const ROAD_SURFACE: Surface = ground(1.2, "stone");
 const VOID_SURFACE: Surface = { standable: false, swimmable: false, speed: 1.0, sound: "" };
 
 export function surfaceFor(t: string): Surface {
-  return SURFACES[t] ?? DEFAULT_SURFACE;
+  const s = SURFACES[t];
+  if (s) return s;
+  if (t.startsWith("road_")) return ROAD_SURFACE; // road_snow_turns, road_sand_… etc.
+  return DEFAULT_SURFACE;
 }
 
 // Elevation traversal (design "Option 2B"): you can walk between cells within
@@ -214,6 +269,59 @@ export const JUMP_COOLDOWN_MS = 180; // after landing, before you can jump again
 export const MAX_STAMINA = 100;
 export const SWIM_DRAIN = 20; // stamina per second while swimming
 export const STAMINA_REGEN = 30; // stamina per second recovered on land
+
+/** One map cell as the game consumes it (t = tile category, v = variant,
+ * l = elevation level, r = region/climate tag). */
+export interface WorldCell {
+  t: string;
+  v: number;
+  l: number;
+  r?: string;
+}
+
+export interface ParsedWorld {
+  width: number;
+  height: number;
+  rows: WorldCell[][];
+  pois: { x: number; y: number; label: string; tile?: string }[];
+}
+
+/**
+ * Parse the maps agent's world.json into rows of cells. Supports both schemas:
+ * - legacy: { width, height, rows: [[{t,v,l,r}, …], …] }
+ * - pixel-maps/bigworld@1: { w, h, categories[], climates[], terr/variant/
+ *   level/climate as h×w index arrays, pois[] }
+ * Returns null for anything unrecognisable.
+ */
+export function parseWorld(json: any): ParsedWorld | null {
+  if (!json) return null;
+  if (Array.isArray(json.rows) && typeof json.width === "number") {
+    return { width: json.width, height: json.height, rows: json.rows, pois: json.pois ?? [] };
+  }
+  if (typeof json.w === "number" && Array.isArray(json.terr) && Array.isArray(json.categories)) {
+    const cats: string[] = json.categories;
+    const climates: string[] = json.climates ?? [];
+    const rows: WorldCell[][] = [];
+    for (let r = 0; r < json.h; r++) {
+      const tr = json.terr[r];
+      const vr = json.variant?.[r];
+      const lr = json.level?.[r];
+      const cr = json.climate?.[r];
+      const row: WorldCell[] = [];
+      for (let c = 0; c < json.w; c++) {
+        row.push({
+          t: cats[tr[c]] ?? "",
+          v: vr?.[c] ?? 0,
+          l: lr?.[c] ?? 0,
+          r: climates[cr?.[c]] ?? undefined,
+        });
+      }
+      rows.push(row);
+    }
+    return { width: json.w, height: json.h, rows, pois: json.pois ?? [] };
+  }
+  return null;
+}
 
 /** Per-cell elevation + tile category over the world grid (row-major). */
 export interface TerrainGrid {
@@ -287,7 +395,11 @@ export function canEnter(
   const enterable = to.standable || (to.swimmable && ctx.canSwim);
   if (!enterable) return false;
   const dl = levelAtWorld(grid, toX, toY) - levelAtWorld(grid, fromX, fromY);
-  return dl <= ctx.maxClimb + 1e-9;
+  // Stairs act as ramps: stepping onto or off a stairs tile allows a full
+  // 1-level climb without jumping.
+  const from = surfaceAtWorld(grid, fromX, fromY);
+  const maxClimb = from.stairs || to.stairs ? Math.max(ctx.maxClimb, 1) : ctx.maxClimb;
+  return dl <= maxClimb + 1e-9;
 }
 
 /** Adapt canEnter into stepMovement's blocked() predicate for a given context. */

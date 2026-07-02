@@ -10,24 +10,16 @@
  * up so the side faces build a solid block and the top shows its diamond.
  */
 
-export interface Cell {
-  t: string; // terrain / tile category (folder under pixel/tiles/)
-  v: number; // tile variant index -> tile_0V.png
-  l: number; // elevation level (stacked)
-  r?: string; // region kind
-}
+export type Cell = WorldCell;
 
 export interface World {
-  schema?: string;
   width: number;
   height: number;
-  iteration?: number;
-  seed?: number;
-  regions?: { name: string; kind: string }[];
   rows: Cell[][];
+  pois: { x: number; y: number; label: string; tile?: string }[];
 }
 
-import { ISO_DX, ISO_DY } from "@nangijala/shared";
+import { ISO_DX, ISO_DY, WorldCell, parseWorld } from "@nangijala/shared";
 
 // Measured from the tile "house format" (64px / 28deg / 50% side faces).
 // If the tiles agent changes that format, re-measure (tileset.measure_geometry).
@@ -39,8 +31,7 @@ export async function loadWorld(): Promise<World | null> {
   try {
     const res = await fetch("/assets/maps/world/world.json");
     if (!res.ok) return null;
-    const w = (await res.json()) as World;
-    return w && Array.isArray(w.rows) ? w : null;
+    return parseWorld(await res.json());
   } catch {
     return null;
   }

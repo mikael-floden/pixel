@@ -14,6 +14,7 @@ import {
   WALK_CLIMB,
   JUMP_CLIMB,
   PLAYER_RADIUS,
+  parseWorld,
   MAX_STAMINA,
   SWIM_DRAIN,
   WORLD_WIDTH,
@@ -99,15 +100,16 @@ test("stepMovement stops at the ledge when walking, slides along it", () => {
 test("collision probes the leading edge: feet stop PLAYER_RADIUS before a wall", () => {
   const g = grid3x3();
   const blocked = makeBlocked(g, { maxClimb: WALK_CLIMB, canSwim: false });
-  // Creep toward the wall in many small steps (like real ticks) until stopped.
-  let x = midX;
-  for (let i = 0; i < 400; i++) {
-    const r = stepMovement(x, midY, 1, 0, false, 0.05, blocked);
+  // Start near the wall and creep in ~5-unit ticks until stopped.
+  let x = CELL_W * 2 - 60;
+  const dt = 5 / WALK_SPEED; // ≈5 world units per step
+  for (let i = 0; i < 100; i++) {
+    const r = stepMovement(x, midY, 1, 0, false, dt, blocked);
     if (r.x === x) break;
     x = r.x;
   }
   assert.ok(x <= CELL_W * 2 - PLAYER_RADIUS + 1e-6, `stopped at ${x}, wall at ${CELL_W * 2}`);
-  assert.ok(x > CELL_W * 2 - PLAYER_RADIUS - 15, "but close to the wall, not far away");
+  assert.ok(x > CELL_W * 2 - PLAYER_RADIUS - 6, "but close to the wall, not far away");
 });
 
 test("surface speed multiplier scales distance", () => {
@@ -158,6 +160,53 @@ test("screen speed is uniform: Up, Right and diagonals all move equally fast on 
   assert.ok(Math.abs(up - right) < 1e-6, `up ${up} == right ${right}`);
   assert.ok(Math.abs(diag - right) < 1e-6, `diag ${diag} == right ${right}`);
   assert.ok(up > 0);
+});
+
+test("parseWorld reads the bigworld@1 index-array schema", () => {
+  const json = {
+    schema: "pixel-maps/bigworld@1",
+    w: 2,
+    h: 2,
+    categories: ["water", "grass", "stairs"],
+    climates: ["sea", "plain"],
+    terr: [
+      [0, 1],
+      [1, 2],
+    ],
+    variant: [
+      [3, 0],
+      [1, 0],
+    ],
+    level: [
+      [0, 0],
+      [1, 1],
+    ],
+    climate: [
+      [0, 1],
+      [1, 1],
+    ],
+    pois: [{ x: 1, y: 1, label: "Somewhere", tile: "obelisk" }],
+  };
+  const w = parseWorld(json)!;
+  assert.equal(w.width, 2);
+  assert.deepEqual(w.rows[0][0], { t: "water", v: 3, l: 0, r: "sea" });
+  assert.deepEqual(w.rows[1][1], { t: "stairs", v: 0, l: 1, r: "plain" });
+  assert.equal(w.pois[0].label, "Somewhere");
+  // Legacy rows schema still parses.
+  const legacy = parseWorld({ width: 1, height: 1, rows: [[{ t: "grass", v: 0, l: 0 }]] })!;
+  assert.equal(legacy.rows[0][0].t, "grass");
+});
+
+test("stairs allow walking a full 1-level step without a jump", () => {
+  const rows = [[{ t: "grass", l: 0 }, { t: "stairs", l: 1 }, { t: "grass", l: 1 }]];
+  const g = buildTerrainGrid(3, 1, rows);
+  const walk = { maxClimb: WALK_CLIMB, canSwim: false };
+  const cw = WORLD_WIDTH / 3;
+  const ch = WORLD_HEIGHT / 1;
+  // grass l0 -> stairs l1: allowed while walking (the stairs are the ramp).
+  assert.equal(canEnter(g, cw * 0.5, ch * 0.5, cw * 1.5, ch * 0.5, walk), true);
+  // stairs l1 -> grass l1: flat, fine.
+  assert.equal(canEnter(g, cw * 1.5, ch * 0.5, cw * 2.5, ch * 0.5, walk), true);
 });
 
 test("stepStamina drains in water, drowns at zero, regenerates on land", () => {
