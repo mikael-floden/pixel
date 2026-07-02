@@ -16,6 +16,8 @@ import {
   makeDrops,
   surfaceAtWorld,
   levelAtWorld,
+  isStandableAtWorld,
+  findSpawn,
   surfaceFor,
   WALK_CLIMB,
   JUMP_CLIMB,
@@ -42,6 +44,15 @@ import {
 } from "../maps";
 
 const ANIM_FPS: Record<string, number> = { idle: 6, walk: 12, run: 14 };
+// Spawn campfire (objects/campfire, burn/south): 96px frames; per its
+// placement metadata the fire is 0.6m ≈ 23px tall vs a 64px character, and
+// the drawn logs span rows 15..83 of the frame → scale + base anchor below.
+const CAMPFIRE_KEY = "campfire-burn";
+const CAMPFIRE_URL = "/assets/objects/campfire/animations/burn__south.png";
+const CAMPFIRE_FRAME = 96;
+const CAMPFIRE_FRAMES = 17;
+const CAMPFIRE_SCALE = 23 / 68;
+const CAMPFIRE_BASE = 83 / 96;
 const INPUT_HZ = 20;
 const BUBBLE_MS = 5000;
 const PLACEHOLDER_TEX = "placeholder:wanderer";
@@ -128,6 +139,8 @@ export class WorldScene extends Phaser.Scene {
   private atmo!: Atmosphere;
   private night?: NightLights;
   private shaderLights: ShaderLight[] = [];
+  // The spawn campfire: an animated world object with its own fire light.
+  private campfire?: { col: number; row: number; z: number; x: number; y: number; depth: number };
 
   constructor() {
     super("world");
@@ -160,6 +173,10 @@ export class WorldScene extends Phaser.Scene {
       for (const { t, v } of distinctTiles(this.world)) {
         this.load.image(tileKey(t, v), tileUrl(t, v));
       }
+      this.load.spritesheet(CAMPFIRE_KEY, CAMPFIRE_URL, {
+        frameWidth: CAMPFIRE_FRAME,
+        frameHeight: CAMPFIRE_FRAME,
+      });
     }
   }
 
@@ -170,6 +187,7 @@ export class WorldScene extends Phaser.Scene {
     this.buildAnimations();
     if (this.world) this.setupStreamingGround();
     else this.drawGround();
+    this.placeCampfire();
 
     this.atmo = new Atmosphere(this);
     this.atmo.create();
@@ -526,6 +544,10 @@ export class WorldScene extends Phaser.Scene {
     this.atmo.suppressGrade = shaderNight;
     if (shaderNight && this.world) {
       const sl: ShaderLight[] = [];
+      if (this.campfire) {
+        const c = this.campfire;
+        sl.push({ col: c.col, row: c.row, z: c.z, radius: 7.5, color: [1.0, 0.62, 0.28], flicker: 1 });
+      }
       for (const a of this.avatars.values()) {
         // Grid position from the FLAT authoritative coords (1 cell = CELL_WU
         // world units) — the projected lx/ly live in screen space and put the
@@ -551,6 +573,10 @@ export class WorldScene extends Phaser.Scene {
     if (!shaderNight) {
       for (const a of this.avatars.values()) {
         lights.push({ x: a.lx, y: a.ly - 20 }); // lantern pool
+      }
+      if (this.campfire) {
+        const c = this.campfire;
+        lights.push({ x: c.x, y: c.y, color: 0xff9e4a, radius: 120, ground: true, depth: c.depth + 0.1 });
       }
       lights.push(...this.emissiveLights);
     }
@@ -910,6 +936,54 @@ export class WorldScene extends Phaser.Scene {
           );
       }
     }
+  }
+
+  /** A burning campfire beside the spawn point — the gathering spot. The
+   * server spawns newcomers around findSpawn(world centre), which is a pure
+   * function of the terrain, so the client can find the same cell and dress
+   * it without any server round-trip. Its fire feeds the night shader. */
+  private placeCampfire() {
+    if (!this.world || !this.terrain || !this.textures.exists(CAMPFIRE_KEY)) return;
+    const spawn = findSpawn(this.terrain, WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
+    const sc = Math.floor(spawn.x / CELL_WU);
+    const sr = Math.floor(spawn.y / CELL_WU);
+    const sLvl = levelAtWorld(this.terrain, spawn.x, spawn.y);
+    // A couple of cells away from the exact spawn cell so players don't pop
+    // into existence standing in the flames. First standable same-level
+    // neighbour in a fixed order keeps it deterministic for everyone.
+    let cell = { col: sc, row: sr };
+    for (const [dc, dr] of [[2, 0], [0, 2], [2, 2], [-2, 0], [0, -2], [-2, -2], [1, 1], [0, 0]]) {
+      const cx = (sc + dc + 0.5) * CELL_WU;
+      const cy = (sr + dr + 0.5) * CELL_WU;
+      if (isStandableAtWorld(this.terrain, cx, cy) && levelAtWorld(this.terrain, cx, cy) === sLvl) {
+        cell = { col: sc + dc, row: sr + dr };
+        break;
+      }
+    }
+    const fx = (cell.col + 0.5) * CELL_WU;
+    const fy = (cell.row + 0.5) * CELL_WU;
+    const lvl = levelAtWorld(this.terrain, fx, fy);
+    const p = this.project(fx, fy);
+    // Same depth formula as players (unlifted ground y), nudged behind a
+    // player standing on the very same cell.
+    const depth = p.y + lvl * MAP_GEOMETRY.lh + 0.4;
+    if (!this.anims.exists(CAMPFIRE_KEY)) {
+      this.anims.create({
+        key: CAMPFIRE_KEY,
+        frames: this.anims.generateFrameNumbers(CAMPFIRE_KEY, { start: 0, end: CAMPFIRE_FRAMES - 1 }),
+        frameRate: 12,
+        repeat: -1,
+      });
+    }
+    this.add
+      .sprite(p.x, p.y, CAMPFIRE_KEY)
+      .setOrigin(0.5, CAMPFIRE_BASE)
+      .setScale(CAMPFIRE_SCALE)
+      .setDepth(depth)
+      .play(CAMPFIRE_KEY);
+    // Light at flame height: full fire flicker for the shader; a warm glow
+    // for the canvas fallback (drawn in update()).
+    this.campfire = { col: cell.col + 0.5, row: cell.row + 0.5, z: lvl + 0.5, x: p.x, y: p.y - 4, depth };
   }
 
   /** Project an authoritative world position (flat x,y) onto the iso ground —
