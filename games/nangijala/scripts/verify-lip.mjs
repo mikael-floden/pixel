@@ -18,7 +18,7 @@ const lipOf = (key, x) => {
 };
 
 const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox"] });
-const page = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+const page = await browser.newPage({ viewport: { width: 2400, height: 1300 } });
 await page.goto(process.env.PROBE_URL || "http://localhost:5173/", { waitUntil: "load" });
 await page.waitForSelector("input", { timeout: 20000 });
 await page.fill("input", "lipprobe");
@@ -28,22 +28,31 @@ await page.waitForTimeout(1200); // let ground + occluders settle
 
 // Find on-screen ledge cells whose tile has a non-zero baked lip and whose
 // BOTH front neighbours are lower (a clean protruding corner: full V exposed).
-const cand = await page.evaluate(() => {
+const scan = () => page.evaluate(() => {
   const me = window.__ml.me();
   const col0 = Math.floor(me.x / 32), row0 = Math.floor(me.y / 32);
   const out = [];
-  for (let row = row0 - 16; row < row0 + 16; row++)
-    for (let col = col0 - 14; col < col0 + 14; col++) {
+  for (let row = row0 - 22; row < row0 + 22; row++)
+    for (let col = col0 - 20; col < col0 + 20; col++) {
       const c = window.__ml.cellScreen(col, row);
       const fr = window.__ml.cellScreen(col + 1, row);
       const fd = window.__ml.cellScreen(col, row + 1);
       if (!c || !fr || !fd) continue;
-      if (fr.level >= c.level || fd.level >= c.level) continue; // no drop in front
-      if (c.x < 40 || c.x > 1140 || c.y < 70 || c.y > 580) continue; // off-screen
-      out.push({ ...c, col, row, both: fr.level < c.level && fd.level < c.level });
+      if (fr.level >= c.level && fd.level >= c.level) continue; // no drop in front
+      if (c.x < 40 || c.x > 2260 || c.y < 70 || c.y > 1180) continue; // off-screen
+      out.push({
+        ...c, col, row,
+        frLower: fr.level < c.level, fdLower: fd.level < c.level,
+        both: fr.level < c.level && fd.level < c.level,
+      });
     }
   return out;
 });
+let cand = await scan();
+for (let tries = 0; !cand.length && tries < 6; tries++) {
+  await page.waitForTimeout(1200);
+  cand = await scan();
+}
 const usable = cand.filter((c) => {
   const key = `${c.t}/${c.v}`;
   return prof.index[key] !== undefined && [16, 24, 32, 40, 48].some((x) => lipOf(key, x) !== 0);
@@ -60,10 +69,17 @@ const shotBuf = await page.screenshot();
 const shot = PNG.sync.read(shotBuf);
 
 // Device pixel ratio guard: screenshot px per page px.
-const dpr = shot.width / 1280;
+const dpr = shot.width / 2400;
 const key = `${cell.t}/${cell.v}`;
 let pass = 0, fail = 0;
-for (const x of [12, 20, 28, 36, 44, 52]) {
+// Probe only columns whose face is actually exposed: right half fronts the
+// +col neighbour, left half the +row neighbour.
+const cols = cell.both
+  ? [12, 20, 28, 36, 44, 52]
+  : cell.frLower
+    ? [36, 44, 52]
+    : [12, 20, 28];
+for (const x of cols) {
   const expected = analyticLip(x) + lipOf(key, x); // art px from tile top
   const sx = Math.round((cell.x + (x + 0.5) * cell.zoom) * dpr);
   // Scan down the tile's art column for the top->face (green->red) flip.

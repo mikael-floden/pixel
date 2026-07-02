@@ -154,6 +154,8 @@ export class WorldScene extends Phaser.Scene {
   private campfireLit?: Phaser.GameObjects.Sprite;
   // [5] toggles the LOCAL player's hand torch (handy for judging fixed lights).
   private torchOn = true;
+  // Debug-only extra light, set from __ml.probeLight for headless probes.
+  private probeLight: ShaderLight | null = null;
 
   constructor() {
     super("world");
@@ -349,6 +351,14 @@ export class WorldScene extends Phaser.Scene {
       surfaceAt: (x: number, y: number) => (this.terrain ? surfaceAtWorld(this.terrain, x, y) : null),
       levelAt: (x: number, y: number) => (this.terrain ? levelAtWorld(this.terrain, x, y) : 0),
       nightShader: () => !!this.night && this.night.active,
+      // Place/clear a debug light at a grid position (headless probes).
+      probeLight: (col?: number, row?: number, z = 0.55, radius = 8) => {
+        this.probeLight =
+          col === undefined || row === undefined
+            ? null
+            : { col, row, z, radius, color: [1.5, 1.15, 0.85], flicker: 0 };
+        return this.probeLight;
+      },
       // Screen-space anchor of a cell's tile image (its 64px art box top-left)
       // + camera zoom — lets probes locate baked-lip rows in screenshots.
       cellScreen: (col: number, row: number) => {
@@ -649,6 +659,10 @@ export class WorldScene extends Phaser.Scene {
     this.atmo.suppressGrade = shaderNight;
     if (shaderNight && this.world) {
       const sl: ShaderLight[] = [];
+      // Debug-only probe light (set via __ml.probeLight) — lets headless
+      // verification place a light at an exact grid position, since walking
+      // there is dt-clamped to a crawl on slow headless clients.
+      if (this.probeLight) sl.push(this.probeLight);
       if (this.campfire) {
         const c = this.campfire;
         // Overbright core: the shader clamps the multiplier at 1.25, so values

@@ -188,12 +188,41 @@ void main() {
     return;
   }
 
+  // Face geometry, light-independent — hoisted out of the light loop.
+  // The face's attenuation anchor is its EXACT point on the wall plane
+  // (0.99 keeps floor() in the owning cell): the old per-cell centroid made
+  // brightness jump at every face/ground boundary (knife edges at wall bases).
+  bool isFace = (Ha < 90.0 && Ha - z > 0.05);
+  vec2 baseF = floor(cell);
+  float uf = u - (baseF.x - baseF.y);   // pixel left/right of front corner
+  float pickR = smoothstep(-0.2, 0.2, uf);
+  float hR = heightAt(baseF + vec2(1.5, 0.5));
+  float hD = heightAt(baseF + vec2(0.5, 1.5));
+  // On a CONTINUOUS wall the resolve can own a band as either of two
+  // same-height cells; a face is only exposed where its neighbour is lower
+  // than the pixel. If the nominal face is buried, the visible surface is
+  // the neighbour's PERPENDICULAR face — gate on that plane.
+  if (hR < 90.0 && hR > z + 0.01) pickR = 0.0; // +col face buried
+  if (hD < 90.0 && hD > z + 0.01) pickR = 1.0; // +row face buried
+  float vS = v0 + z * kk;
+  vec2 pos = isFace
+    ? mix(vec2(u + baseF.y + 0.99, baseF.y + 0.99), vec2(baseF.x + 0.99, baseF.x + 0.99 - u), pickR)
+    : vec2((u + vS) * 0.5, (vS - u) * 0.5);
+  // Penumbra: the face gate fades IN over the face's last ~7px above its
+  // fronting ground — at the base a face takes the same plain light as the
+  // grass beside it (continuous whether the face is lit or gated dark).
+  float gateFade = 1.0;
+  if (isFace) {
+    float hFront = mix(hD, hR, pickR);
+    if (hFront < 90.0) gateFade = smoothstep(0.0, 7.0, max((z - hFront) * uIsoB.x, 0.0));
+  }
+
   vec3 light = uAmbient;
   for (int i = 0; i < ${MAX_SHADER_LIGHTS}; i++) {
     if (float(i) >= uNumLights) continue;
     vec3 lp = uLightPos[i].xyz;
     float radius = uLightPos[i].w;
-    vec2 d2 = lp.xy - cell;
+    vec2 d2 = lp.xy - pos;
     float dist = sqrt(dot(d2, d2) + pow((lp.z - z) * 0.6, 2.0));
     float att = clamp(1.0 - dist / radius, 0.0, 1.0);
     att *= att;
@@ -214,8 +243,11 @@ void main() {
     if (z < lp.z + 0.05 || objAt(cell) > 0.5) {
       for (int s = 1; s <= 12; s++) {
         float t = float(s) / 13.0;
-        vec2 p = mix(cell, lp.xy, t);
-        if (floor(p.x) == floor(cell.x) && floor(p.y) == floor(cell.y)) continue;
+        // March from the EXACT surface point (same as attenuation): marching
+        // from the cell centroid gave a face pixel a different occlusion
+        // path than the ground pixel beside it — a light step at every base.
+        vec2 p = mix(pos, lp.xy, t);
+        if (floor(p.x) == floor(pos.x) && floor(p.y) == floor(pos.y)) continue;
         float hRay = mix(z, lp.z, t) + 0.2;
         float H = heightAt(p);
         if (H < 90.0 && H > hRay) occ *= mix(0.8, 0.45, clamp((H - hRay) * 1.5, 0.0, 1.0));
@@ -227,24 +259,12 @@ void main() {
     // only catches light that stands beyond ITS OWN plane (in cells), so a
     // torch on the right lights the right face but never wraps onto the
     // left one, and a torch on top (behind both planes) lights neither.
-    float Hown = heightAt(cell);
-    if (Hown < 90.0 && Hown - z > 0.05) {
-      vec2 base = floor(cell);
-      float frontL = lp.y - (base.y + 1.0); // beyond the +row (left) face
-      float frontR = lp.x - (base.x + 1.0); // beyond the +col (right) face
+    if (isFace) {
+      float frontL = lp.y - (baseF.y + 1.0); // beyond the +row (left) face
+      float frontR = lp.x - (baseF.x + 1.0); // beyond the +col (right) face
       // Lateral: how far the light sits OUTSIDE the face's own 1-cell span.
-      float latL = abs(lp.x - clamp(lp.x, base.x, base.x + 1.0));
-      float latR = abs(lp.y - clamp(lp.y, base.y, base.y + 1.0));
-      float uf = u - (base.x - base.y);     // pixel left/right of front corner
-      float pickR = smoothstep(-0.2, 0.2, uf);
-      // On a CONTINUOUS wall the resolve can own a band as either of two
-      // same-height cells; a face is only exposed where its neighbour is
-      // lower than the pixel. If the nominal face is buried, the visible
-      // surface is the neighbour's PERPENDICULAR face — gate on that plane.
-      float hR = heightAt(base + vec2(1.5, 0.5));
-      float hD = heightAt(base + vec2(0.5, 1.5));
-      if (hR < 90.0 && hR > z + 0.01) pickR = 0.0; // +col face buried
-      if (hD < 90.0 && hD > z + 0.01) pickR = 1.0; // +row face buried
+      float latL = abs(lp.x - clamp(lp.x, baseF.x, baseF.x + 1.0));
+      float latR = abs(lp.y - clamp(lp.y, baseF.y, baseF.y + 1.0));
       float front = mix(frontL, frontR, pickR);
       float lat = mix(latL, latR, pickR);
       // Lambert from the NEAREST point of the face to the light: a torch in
@@ -252,7 +272,9 @@ void main() {
       // distance attenuation) instead of only the single facing cell, while
       // a light behind the plane still leaves the face dark.
       float cosF = front / max(sqrt(front * front + lat * lat), 0.001);
-      occ *= smoothstep(0.0, 0.25, front) * smoothstep(0.2, 0.6, cosF);
+      float gate = smoothstep(0.0, 0.25, front) * smoothstep(0.2, 0.6, cosF);
+      // Penumbra: the gate fades in up the face (see gateFade above).
+      occ *= mix(1.0, gate, gateFade);
     }
 
     // Fire flicker: slow cozy breathing + a mild shimmer (fast large-swing
@@ -565,7 +587,10 @@ export class NightLights {
     s.setUniform("uCam.value.z", wv.width * k);
     s.setUniform("uCam.value.w", wv.height * k);
     s.setUniform("uFlip.value", this.fieldFlip);
-    s.setUniform("uTest.value", this.testPattern);
+    // Pattern 5 (probe-only): NORMAL lighting maths but composited opaque
+    // (blend rule below keys off >= 3) — a screenshot then reads the RAW
+    // light field, free of the art underneath.
+    s.setUniform("uTest.value", this.testPattern === 5 ? 0 : this.testPattern);
     this.overlay?.setFlipY(this.overlayFlip);
     // Raw-readback test mode draws opaque (multiply would mix in the art).
     this.overlay?.setBlendMode(
