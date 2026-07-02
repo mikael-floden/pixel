@@ -3,6 +3,7 @@ import { Room, getStateCallbacks } from "colyseus.js";
 import {
   WORLD_WIDTH,
   WORLD_HEIGHT,
+  CELL_WU,
   DIRECTIONS,
   DEFAULT_DIRECTION,
   InputMessage,
@@ -66,6 +67,10 @@ interface Avatar {
   // hop so the hop offset never feeds back into the easing.
   lx: number;
   ly: number;
+  // Flat authoritative world position (pre-projection) — terrain queries and
+  // the night-shader lights need THIS space, never the projected lx/ly.
+  fx: number;
+  fy: number;
   hopUntil: number;
   swimming: boolean;
   baseTint: number;
@@ -350,6 +355,8 @@ export class WorldScene extends Phaser.Scene {
       character: uid,
       lx: p0.x,
       ly: p0.y,
+      fx: player.x,
+      fy: player.y,
       hopUntil: 0,
       swimming: false,
       baseTint,
@@ -422,6 +429,8 @@ export class WorldScene extends Phaser.Scene {
 
       // Project the authoritative world position onto the iso ground, then ease
       // the logical position toward it (snappier for the local player).
+      av.fx = tx;
+      av.fy = ty;
       const target = this.project(tx, ty);
       const k = Math.min(1, dt * (id === myId ? 45 : 12));
       av.lx += (target.x - av.lx) * k;
@@ -518,10 +527,13 @@ export class WorldScene extends Phaser.Scene {
     if (shaderNight && this.world) {
       const sl: ShaderLight[] = [];
       for (const a of this.avatars.values()) {
+        // Grid position from the FLAT authoritative coords (1 cell = CELL_WU
+        // world units) — the projected lx/ly live in screen space and put the
+        // torch underground, so the terrain shadowed its own light.
         sl.push({
-          col: ((a.lx - this.iso.ox) / MAP_GEOMETRY.dx + (a.ly - this.iso.oy) / MAP_GEOMETRY.dy) / 2,
-          row: ((a.ly - this.iso.oy) / MAP_GEOMETRY.dy - (a.lx - this.iso.ox) / MAP_GEOMETRY.dx) / 2,
-          z: (this.terrain ? levelAtWorld(this.terrain, a.lx, a.ly) : 0) + 0.8,
+          col: a.fx / CELL_WU,
+          row: a.fy / CELL_WU,
+          z: (this.terrain ? levelAtWorld(this.terrain, a.fx, a.fy) : 0) + 0.8,
           radius: 5.0,
           color: [0.95, 0.8, 0.55],
           flicker: 0.35, // hand torch: gentle fire flicker
