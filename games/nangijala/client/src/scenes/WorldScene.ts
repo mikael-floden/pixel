@@ -83,6 +83,7 @@ interface Avatar {
   fx: number;
   fy: number;
   lit?: Phaser.GameObjects.Sprite; // lit copy above the night overlay
+  covered?: boolean; // a wall truly overlaps (exact per-frame test)
   hopUntil: number;
   swimming: boolean;
   baseTint: number;
@@ -549,6 +550,9 @@ export class WorldScene extends Phaser.Scene {
         }
         if (above > -Infinity) depth = Math.max(depth, above + 0.6);
         if (below < Infinity) depth = Math.min(depth, below - 0.3); // walls win conflicts
+        av.covered = below < Infinity; // a wall GENUINELY draws over the sprite
+      } else {
+        av.covered = false;
       }
       av.sprite.setDepth(depth);
       // Shadow: always at the GROUND point (the collision anchor) — it stays
@@ -660,15 +664,7 @@ export class WorldScene extends Phaser.Scene {
       if (!a.lit) {
         a.lit = this.add.sprite(a.sprite.x, a.sprite.y, a.sprite.texture.key).setDepth(900_001);
       }
-      const covered = this.occluderMeta.some(
-        (o) =>
-          o.depth > a.sprite.depth &&
-          o.x0 < a.sprite.x + a.sprite.displayWidth / 2 &&
-          o.x1 > a.sprite.x - a.sprite.displayWidth / 2 &&
-          o.y0 < a.sprite.y + 8 &&
-          o.y1 > a.sprite.y - a.sprite.displayHeight,
-      );
-      if (!on || covered || !a.sprite.visible) {
+      if (!on || a.covered || !a.sprite.visible) {
         a.lit.setVisible(false);
         continue;
       }
