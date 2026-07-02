@@ -57,23 +57,30 @@ void main() {
   float v0 = (wy - uIsoA.y) / uIsoA.w; // grid diagonal at height 0
   float kk = uIsoB.x / uIsoA.w;        // diagonal shift per height level
 
-  // Resolve the surface this pixel shows by marching HEIGHT continuously
-  // from the world's max level down: a point at height h projects onto
-  // diagonal v0 + h*kk, and the first h where the terrain is at least that
-  // tall is the visible surface. Integer-only levels snapped CLIFF-FACE
-  // pixels to arbitrary floor cells (striped walls, blocky shadows); the
-  // fractional hit makes light fall down a wall as a smooth gradient.
+  // Resolve the surface this pixel shows. A point at height h projects onto
+  // diagonal v = v0 + h*kk, so this pixel's candidates lie on a ray through
+  // (v, h) space; walking it front-to-back the ray crosses ONE grid cell per
+  // unit of v. For each cell the hit height is solved EXACTLY (the column's
+  // top, or the ray's own height on that segment = a wall-face pixel), so
+  // faces get precise fractional heights — fixed-step marching aliased into
+  // sawtooth teeth on tall walls.
+  float vTop = v0 + uIsoB.w * kk;
   float z = 0.0;
   vec2 cell = vec2(0.0);
   bool found = false;
-  for (int s = 0; s <= 36; s++) {
+  for (int s = 0; s < 20; s++) {
     if (found) continue;
-    float zc = uIsoB.w * (1.0 - float(s) / 36.0);
-    float v = v0 + zc * kk;
-    vec2 cr = vec2((u + v) * 0.5, (v - u) * 0.5);
+    float vb = vTop - float(s);
+    if (vb <= v0 - 1.0) continue;
+    float va = max(vb - 1.0, v0);
+    float vm = max((va + vb) * 0.5, v0);
+    vec2 cr = vec2((u + vm) * 0.5, (vm - u) * 0.5);
     float H = heightAt(cr);
-    if (H < 90.0 && H >= zc - 0.001) {
-      z = min(zc, H);
+    if (H >= 90.0) continue;
+    // Highest ray point covered by this column within the segment.
+    float vHit = min(vb, v0 + H * kk);
+    if (vHit >= va - 0.0001) {
+      z = (vHit - v0) / kk;
       cell = cr;
       found = true;
     }
