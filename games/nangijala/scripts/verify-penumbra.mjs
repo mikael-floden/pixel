@@ -117,8 +117,6 @@ for (const p of placements) {
   const t = res.filter(
     (r) =>
       r.prof[0] < 110 &&
-      r.prof[r.prof.length - 1] > 80 && // genuinely LIT ground below (a ~3x-ambient
-      // plateau is a boosted face meeting a shadowed top — intentional design)
       r.prof[r.prof.length - 1] > r.prof[0] + 18 &&
       Math.abs(+r.cell.split(",")[0] - L.col) <= 3,
   );

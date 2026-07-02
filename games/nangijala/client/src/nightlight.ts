@@ -228,13 +228,7 @@ void main() {
     if (hFront < 90.0) gateFade = smoothstep(0.0, 7.0, max((z - hFront) * uIsoB.x, 0.0));
   }
 
-  // Faces are drawn PRE-SHADED by the artist (wall pixels ~2/3 the luminance
-  // of tops) and the gate darkens them again — double shading that turns
-  // away-facing walls into voids beside lit grass. Compensate: face pixels
-  // get a stronger ambient response (fading to the ground's at the base so
-  // the penumbra stays continuous). Dark walls read as dark SURFACES.
-  float ambBoost = isFace ? mix(1.0, 3.0, gateFade) : 1.0;
-  vec3 light = uAmbient * ambBoost;
+  vec3 light = uAmbient;
   for (int i = 0; i < ${MAX_SHADER_LIGHTS}; i++) {
     if (float(i) >= uNumLights) continue;
     vec3 lp = uLightPos[i].xyz;
