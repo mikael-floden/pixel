@@ -111,7 +111,7 @@ void main() {
     vec3 lc = uLightCol[i].rgb;
     vec3 ember = lc * vec3(0.95, 0.30, 0.12);
     float d01 = clamp(dist / radius, 0.0, 1.0);
-    vec3 col = mix(lc, ember, smoothstep(0.45, 1.0, d01) * clamp(fl * 1.2, 0.0, 1.0));
+    vec3 col = mix(lc, ember, smoothstep(0.35, 0.95, d01) * clamp(fl * 1.2, 0.0, 1.0));
 
     light += col * att * occ * flick;
   }
