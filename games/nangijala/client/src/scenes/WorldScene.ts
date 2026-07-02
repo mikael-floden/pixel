@@ -586,7 +586,8 @@ export class WorldScene extends Phaser.Scene {
       const c = this.campfire;
       // Additive bloom hugging the flames (both render paths) — the shader
       // lights the WORLD but the fire itself must also glow, like the ref.
-      const flick = 0.55 + Math.sin(this.time.now / 105) * 0.07 + Math.sin(this.time.now / 41) * 0.04;
+      // Slow breathing, not a strobe: ~4s and ~1.4s periods, small swing.
+      const flick = 0.52 + Math.sin(this.time.now / 640) * 0.05 + Math.sin(this.time.now / 225) * 0.03;
       lights.push({ x: c.x, y: c.y - 9, color: 0xff8830, radius: 72, alpha: flick, depth: c.depth + 0.2 });
       if (!shaderNight)
         lights.push({ x: c.x, y: c.y, color: 0xff9e4a, radius: 120, ground: true, depth: c.depth + 0.1 });

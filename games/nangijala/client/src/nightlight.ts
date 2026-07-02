@@ -88,22 +88,24 @@ void main() {
     att *= att;
     if (att <= 0.001) continue;
 
-    // Line of sight: march the heightmap toward the light; terrain above the
-    // ray softly shadows (each blocking sample dims, not a hard cutoff).
+    // Line of sight: march the heightmap toward the light. Occlusion scales
+    // with HOW FAR the blocker pokes above the ray — grazing edges dim gently
+    // instead of stamping hard cell-shaped shadow blocks.
     float occ = 1.0;
     for (int s = 1; s <= 8; s++) {
       float t = float(s) / 9.0;
       vec2 p = mix(cell, lp.xy, t);
       float hRay = mix(z, lp.z, t) + 0.3;
       float H = heightAt(p);
-      if (H < 90.0 && H > hRay) occ *= 0.5;
+      if (H < 90.0 && H > hRay) occ *= mix(0.85, 0.55, clamp(H - hRay, 0.0, 1.0));
     }
 
-    // Fire flicker: two unsynced sines + a fast shimmer.
+    // Fire flicker: slow cozy breathing + a mild shimmer (fast large-swing
+    // flicker reads as a strobe when it drives a whole light pool).
     float fl = uLightCol[i].w;
     float flick = 1.0
-      - fl * 0.22 * (0.5 + 0.5 * sin(time * 8.7 + float(i) * 5.3))
-      - fl * 0.10 * sin(time * 21.0 + float(i) * 11.1);
+      - fl * 0.10 * (0.5 + 0.5 * sin(time * 2.9 + float(i) * 5.3))
+      - fl * 0.05 * sin(time * 7.1 + float(i) * 11.1);
 
     // Fire cools at the rim: fire-type lights (flicker > 0) shift from their
     // hot core colour toward deep ember red as they attenuate, so the pool
@@ -120,15 +122,19 @@ void main() {
 }
 `;
 
+const FIELD_KEY = "night-light-field";
+
 export class NightLights {
   private scene: Phaser.Scene;
   private world: World;
   private iso: { ox: number; oy: number };
   private maxLevel: number;
+  private base?: Phaser.Display.BaseShader;
   private shader?: Phaser.GameObjects.Shader;
   private overlay?: Phaser.GameObjects.Image;
   private posArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private colArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
+  private fieldCount = 0;
   active = false;
 
   constructor(scene: Phaser.Scene, world: World, iso: { ox: number; oy: number }, maxLevel: number) {
@@ -140,7 +146,7 @@ export class NightLights {
 
   create() {
     this.buildHeightmap();
-    const base = new Phaser.Display.BaseShader("night-lights", FRAG, undefined, {
+    this.base = new Phaser.Display.BaseShader("night-lights", FRAG, undefined, {
       uCam: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
       uIsoA: { type: "4f", value: { x: 0, y: 0, z: ISO_DX, w: ISO_DY } },
       uIsoB: { type: "4f", value: { x: MAP_GEOMETRY.lh, y: 1, z: 1, w: 0 } },
@@ -152,24 +158,41 @@ export class NightLights {
     });
     // Shader GameObjects can't blend directly — render the light field to a
     // texture and composite it with a MULTIPLY image on top of the scene.
-    const s = this.scene.add
-      .shader(base, 0, 0, this.scene.scale.width, this.scene.scale.height)
-      .setOrigin(0, 0)
-      .setVisible(false);
-    s.setSampler2D("uHeight", "world-heightmap");
-    s.setRenderToTexture("night-light-field");
     this.overlay = this.scene.add
-      .image(0, 0, "night-light-field")
+      .image(0, 0, "__WHITE")
       .setOrigin(0, 0)
       .setScrollFactor(0)
       .setDepth(900_000)
       .setBlendMode(Phaser.BlendModes.MULTIPLY)
       .setVisible(false);
-    this.shader = s;
+    this.buildShader(this.scene.scale.width, this.scene.scale.height);
+    // The render target does NOT follow setSize — a resized window left a
+    // stale wrong-scale light field (bright rectangles, pools that ignore
+    // zoom). Rebuild the shader + target at the new size instead.
     this.scene.scale.on("resize", (sz: Phaser.Structs.Size) => {
-      s.setSize(sz.width, sz.height);
-      this.overlay?.setDisplaySize(sz.width, sz.height);
+      this.buildShader(sz.width, sz.height);
     });
+  }
+
+  /** (Re)create the shader + its render target at the given size. */
+  private buildShader(width: number, height: number) {
+    if (!this.base || width <= 0 || height <= 0) return;
+    this.shader?.destroy();
+    // A fresh texture key per size: destroying a shader doesn't unregister
+    // its render target, and re-binding an existing key throws.
+    const key = `${FIELD_KEY}-${this.fieldCount++}`;
+    const s = this.scene.add
+      .shader(this.base, 0, 0, width, height)
+      .setOrigin(0, 0)
+      .setVisible(this.active);
+    s.setSampler2D("uHeight", "world-heightmap");
+    s.setRenderToTexture(key);
+    this.shader = s;
+    const old = this.overlay!.texture.key;
+    this.overlay!.setTexture(key).setDisplaySize(width, height);
+    if (old.startsWith(FIELD_KEY) && this.scene.textures.exists(old)) {
+      this.scene.textures.remove(old);
+    }
   }
 
   /** Grid heightmap texture: R = level*16 (levels 0..9 → 0..144). */
