@@ -12,6 +12,7 @@ import {
   TerrainGrid,
   buildTerrainGrid,
   makeBlocked,
+  makeDrops,
   surfaceAtWorld,
   levelAtWorld,
   surfaceFor,
@@ -333,14 +334,16 @@ export class WorldScene extends Phaser.Scene {
         const jumping = this.time.now < this.jumpUntil;
         const stepLocal = (ax: number, ay: number, running: boolean, sdt: number) => {
           let blocked;
+          let drops;
           let speed = 1;
           if (this.terrain) {
             const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
             blocked = makeBlocked(this.terrain, ctx);
+            drops = makeDrops(this.terrain);
             speed = surfaceAtWorld(this.terrain, rx, ry).speed;
           }
           // screenInput matches the server: on the iso world, input is screen-relative.
-          const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain);
+          const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain, drops);
           rx = r.x;
           ry = r.y;
         };
@@ -581,7 +584,9 @@ export class WorldScene extends Phaser.Scene {
         if (!cell) continue;
         const s = surfaceFor(cell.t);
         if (s.standable) continue;
-        g.fillStyle(s.swimmable ? 0x3bb0ff : 0xff5a5a, 0.3);
+        // Water reads soft blue; solid blockers pop in strong red.
+        if (s.swimmable) g.fillStyle(0x3bb0ff, 0.3);
+        else g.fillStyle(0xff0000, 0.55);
         const bx = this.iso.ox + u * dx;
         const by = this.iso.oy + v * dy - cell.l * lh;
         g.fillPoints(

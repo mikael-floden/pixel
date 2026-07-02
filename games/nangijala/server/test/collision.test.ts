@@ -4,6 +4,7 @@ import {
   stepMovement,
   buildTerrainGrid,
   makeBlocked,
+  makeDrops,
   canEnter,
   surfaceFor,
   surfaceAtWorld,
@@ -207,6 +208,28 @@ test("stairs allow walking a full 1-level step without a jump", () => {
   assert.equal(canEnter(g, cw * 0.5, ch * 0.5, cw * 1.5, ch * 0.5, walk), true);
   // stairs l1 -> grass l1: flat, fine.
   assert.equal(canEnter(g, cw * 1.5, ch * 0.5, cw * 2.5, ch * 0.5, walk), true);
+});
+
+test("feet touching a drop edge commits the fall (no resting overhang)", () => {
+  // grass l1 | grass l1 | grass l0  — walking east off the ledge.
+  const rows = [[{ t: "grass", l: 1 }, { t: "grass", l: 1 }, { t: "grass", l: 0 }]];
+  const g = buildTerrainGrid(3, 1, rows);
+  const blocked = makeBlocked(g, { maxClimb: WALK_CLIMB, canSwim: true });
+  const drops = makeDrops(g);
+  const edge = (WORLD_WIDTH / 3) * 2; // boundary between cell 1 (l1) and cell 2 (l0)
+  const midY = WORLD_HEIGHT / 2;
+  // Creep east from inside cell 1; the anchor must never REST in the overhang
+  // band (closer than PLAYER_RADIUS to the edge while still on the upper cell).
+  let x = edge - 40;
+  for (let i = 0; i < 60; i++) {
+    const r = stepMovement(x, midY, 1, 0, false, 2 / WALK_SPEED, blocked, 1, false, drops);
+    if (r.x === x) break;
+    x = r.x;
+    const onUpper = x < edge;
+    assert.ok(!(onUpper && x > edge - PLAYER_RADIUS + 1e-6), `rested overhanging at ${x} (edge ${edge})`);
+    if (!onUpper) break; // fell off — done
+  }
+  assert.ok(x >= edge, "walked off the ledge (falling still works without a jump)");
 });
 
 test("stepStamina drains in water, drowns at zero, regenerates on land", () => {

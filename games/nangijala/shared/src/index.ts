@@ -120,6 +120,11 @@ export function screenToWorldVector(ix: number, iy: number): { x: number; y: num
  * just the destination cell. */
 export type BlockedFn = (toX: number, toY: number, fromX: number, fromY: number) => boolean;
 
+/** Drop test: is moving from (fromX,fromY) onto (toX,toY) a FALL (a downward
+ * step too big to walk smoothly)? Used to commit the fall the moment the feet
+ * touch a ledge edge, so sprites never rest overhanging the rim. */
+export type DropFn = (toX: number, toY: number, fromX: number, fromY: number) => boolean;
+
 /** Integrate one movement step. The SAME function runs on the server (each tick)
  * and on the client (prediction), so they stay in lockstep. `blocked` rejects a
  * move (resolved axis-separated so players slide along walls); `speedScale`
@@ -137,6 +142,7 @@ export function stepMovement(
   blocked?: BlockedFn,
   speedScale = 1,
   screenInput = false,
+  drops?: DropFn,
 ): MoveResult {
   const len = Math.hypot(ax, ay);
   if (len < 1e-6) return { x, y, dir: null, moving: false };
@@ -160,10 +166,18 @@ export function stepMovement(
   // enterable, then the Y move from the (possibly advanced) X — wall-sliding.
   // Collision probes the LEADING EDGE of the feet (PLAYER_RADIUS ahead), not
   // the centre point, so sprites stop before visually entering a tile block.
+  // Symmetrically, when the leading edge reaches a DROP the fall is committed
+  // (the anchor snaps past the rim) so feet never rest overhanging a ledge.
   const px = tx + Math.sign(tx - x) * PLAYER_RADIUS;
-  if (!blocked || !blocked(px, y, x, y)) rx = tx;
+  if (!blocked || !blocked(px, y, x, y)) {
+    rx = tx;
+    if (drops && drops(px, y, tx, y)) rx = px; // feet touched the edge → step off
+  }
   const py = ty + Math.sign(ty - y) * PLAYER_RADIUS;
-  if (!blocked || !blocked(rx, py, rx, y)) ry = ty;
+  if (!blocked || !blocked(rx, py, rx, y)) {
+    ry = ty;
+    if (drops && drops(rx, py, rx, ty)) ry = py;
+  }
   return { x: rx, y: ry, dir, moving: true };
 }
 
@@ -405,6 +419,19 @@ export function canEnter(
 /** Adapt canEnter into stepMovement's blocked() predicate for a given context. */
 export function makeBlocked(grid: TerrainGrid, ctx: MoveContext): BlockedFn {
   return (toX, toY, fromX, fromY) => !canEnter(grid, fromX, fromY, toX, toY, ctx);
+}
+
+/** Drop predicate for stepMovement: a downward step bigger than what walking
+ * handles smoothly (stairs make a 1-level descent a normal walk, not a fall). */
+export function makeDrops(grid: TerrainGrid): DropFn {
+  return (toX, toY, fromX, fromY) => {
+    const to = surfaceAtWorld(grid, toX, toY);
+    if (!to.standable && !to.swimmable) return false; // solid: not a fall, a wall
+    const from = surfaceAtWorld(grid, fromX, fromY);
+    const smooth = from.stairs || to.stairs ? 1 : WALK_CLIMB;
+    const dl = levelAtWorld(grid, toX, toY) - levelAtWorld(grid, fromX, fromY);
+    return dl < -(smooth + 1e-9);
+  };
 }
 
 /**

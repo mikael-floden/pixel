@@ -14,6 +14,7 @@ import {
   buildTerrainGrid,
   parseWorld,
   makeBlocked,
+  makeDrops,
   surfaceAtWorld,
   isStandableAtWorld,
   findSpawn,
@@ -143,6 +144,7 @@ export class WorldRoom extends Room<WorldState> {
           makeBlocked(terrain, ctx),
           surf.speed,
           true, // iso world → input is screen-relative (Up walks up on screen)
+          makeDrops(terrain),
         );
       } else {
         r = stepMovement(player.x, player.y, player.inputAx, player.inputAy, player.inputRunning, dt);
