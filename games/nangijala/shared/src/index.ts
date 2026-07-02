@@ -74,7 +74,17 @@ export interface InputMessage {
   running: boolean;
   jump?: boolean; // edge-triggered: request a jump this input
   seq?: number; // client input sequence, for prediction/reconciliation
+  // Duration this input was held (seconds). The server integrates EXACTLY
+  // these durations (bounded by a real-time budget), so server and client run
+  // identical math and stay in perfect agreement — no reconciliation jitter.
+  dt?: number;
 }
+
+// Anti-cheat bounds for input-stream integration: a single input may not claim
+// more than MAX_INPUT_DT, and a client can never accumulate more integration
+// time than real time elapsed (+ a small burst allowance, INPUT_TIME_SLACK).
+export const MAX_INPUT_DT = 0.1; // seconds
+export const INPUT_TIME_SLACK = 0.25; // seconds of burst credit
 
 export interface MoveResult {
   x: number;

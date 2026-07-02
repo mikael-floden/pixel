@@ -39,16 +39,21 @@ test("two clients share one authoritative world and see each other move", async 
 
     const startX = r2.state.players.get(aId)!.x;
 
-    // Client 1 walks east; the authoritative server integrates and syncs.
-    r1.send("input", { ax: 1, ay: 0, running: false });
-    await waitFor(() => r2.state.players.get(aId)!.x > startX + 5);
+    // Client 1 walks east, streaming inputs with their durations like the
+    // real client does (the server integrates each input's dt).
+    const stream = setInterval(() => r1.send("input", { ax: 1, ay: 0, running: false, dt: 0.05 }), 40);
+    try {
+      await waitFor(() => r2.state.players.get(aId)!.x > startX + 5);
+    } finally {
+      clearInterval(stream);
+    }
 
     const p = r2.state.players.get(aId)!;
     assert.ok(p.x > startX, "client 2 sees client 1 move east");
     assert.equal(p.dir, "east", "direction synced from authoritative server");
     assert.equal(p.moving, true);
 
-    r1.send("input", { ax: 0, ay: 0, running: false });
+    r1.send("input", { ax: 0, ay: 0, running: false, dt: 0.05 });
     await r1.leave();
     // Leaving removes the player from the shared world for everyone.
     await waitFor(() => r2.state.players.size === 1);

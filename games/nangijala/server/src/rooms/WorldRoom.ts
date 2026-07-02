@@ -9,6 +9,8 @@ import {
   WORLD_WIDTH,
   WORLD_HEIGHT,
   TICK_RATE,
+  MAX_INPUT_DT,
+  INPUT_TIME_SLACK,
   stepMovement,
   TerrainGrid,
   buildTerrainGrid,
@@ -52,10 +54,19 @@ export class WorldRoom extends Room<WorldState> {
     this.onMessage("input", (client, message: InputMessage) => {
       const player = this.state.players.get(client.sessionId);
       if (!player) return;
-      player.inputAx = clamp(message.ax ?? 0, -1, 1);
-      player.inputAy = clamp(message.ay ?? 0, -1, 1);
-      player.inputRunning = !!message.running;
-      if (typeof message.seq === "number") player.seq = message.seq; // ack for reconciliation
+      // Queue the input with its (bounded) duration; update() integrates the
+      // stream so server math matches client prediction exactly.
+      if (player.inputQueue.length < 60) {
+        player.inputQueue.push({
+          ax: clamp(message.ax ?? 0, -1, 1),
+          ay: clamp(message.ay ?? 0, -1, 1),
+          running: !!message.running,
+          seq: typeof message.seq === "number" ? message.seq : undefined,
+          dt: clamp(message.dt ?? 1 / TICK_RATE, 0, MAX_INPUT_DT),
+        });
+      } else if (typeof message.seq === "number") {
+        player.seq = message.seq; // overloaded queue: drop but still ack
+      }
       // Jump is edge-triggered: only start a fresh jump when grounded and off
       // cooldown (guards ignore repeats if the client re-sends jump held).
       if (message.jump) {
@@ -127,33 +138,49 @@ export class WorldRoom extends Room<WorldState> {
       const jumping = now < player.jumpUntil;
       player.jumping = jumping;
 
+      // Integrate the queued input stream with each input's own duration —
+      // the same (input, dt) sequence the client predicted with, so both
+      // sides compute identical positions. A real-time budget stops clients
+      // claiming more integration time than actually elapsed.
       const terrain = this.terrain;
-      let r;
-      if (terrain) {
-        // Surface under the player's feet drives walk speed; a jump raises how
-        // high you can step so you can cross a 1-level ledge.
-        const surf = surfaceAtWorld(terrain, player.x, player.y);
-        const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
-        r = stepMovement(
-          player.x,
-          player.y,
-          player.inputAx,
-          player.inputAy,
-          player.inputRunning,
-          dt,
-          makeBlocked(terrain, ctx),
-          surf.speed,
-          true, // iso world → input is screen-relative (Up walks up on screen)
-          makeDrops(terrain),
-        );
-      } else {
-        r = stepMovement(player.x, player.y, player.inputAx, player.inputAy, player.inputRunning, dt);
+      player.timeCredit = Math.min(player.timeCredit + dt, INPUT_TIME_SLACK);
+      let moving = player.lastMoving;
+      let running = player.running;
+      while (player.inputQueue.length) {
+        const inp = player.inputQueue.shift()!;
+        const eff = Math.min(inp.dt, player.timeCredit);
+        player.timeCredit -= eff;
+        let r;
+        if (terrain) {
+          // Surface under the feet drives walk speed; a jump raises how high
+          // you can step so you can cross a 1-level ledge.
+          const surf = surfaceAtWorld(terrain, player.x, player.y);
+          const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
+          r = stepMovement(
+            player.x,
+            player.y,
+            inp.ax,
+            inp.ay,
+            inp.running,
+            eff,
+            makeBlocked(terrain, ctx),
+            surf.speed,
+            true, // iso world → input is screen-relative (Up walks up on screen)
+            makeDrops(terrain),
+          );
+        } else {
+          r = stepMovement(player.x, player.y, inp.ax, inp.ay, inp.running, eff);
+        }
+        player.x = r.x;
+        player.y = r.y;
+        moving = r.moving;
+        running = r.moving && inp.running;
+        if (r.dir) player.dir = r.dir;
+        if (typeof inp.seq === "number") player.seq = inp.seq; // ack after applying
       }
-      player.x = r.x;
-      player.y = r.y;
-      player.moving = r.moving;
-      player.running = r.moving && player.inputRunning;
-      if (r.dir) player.dir = r.dir;
+      player.moving = moving;
+      player.running = running;
+      player.lastMoving = moving;
 
       // Swimming + stamina: draining in water, recovering on land. Run out and
       // you drown — respawn on the nearest solid ground with stamina restored.

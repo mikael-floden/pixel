@@ -21,10 +21,12 @@ export class Player extends Schema {
   declare swimming: boolean; // currently in water
   declare stamina: number; // swim stamina 0..MAX_STAMINA
 
-  // Server-only (not synced): latest input + rate-limit bookkeeping.
-  inputAx = 0;
-  inputAy = 0;
-  inputRunning = false;
+  // Server-only (not synced): queued inputs + rate-limit bookkeeping. The
+  // server integrates each input's dt (client-reported, budget-bounded) so
+  // both sides run identical movement math.
+  inputQueue: { ax: number; ay: number; running: boolean; seq?: number; dt: number }[] = [];
+  timeCredit = 0; // seconds of integration budget (accrues with real time)
+  lastMoving = false;
   jumpUntil = 0; // ms timestamp: jump window ends
   jumpReadyAt = 0; // ms timestamp: earliest next jump (cooldown)
   lastChatAt = 0;

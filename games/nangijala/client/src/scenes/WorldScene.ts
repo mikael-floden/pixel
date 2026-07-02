@@ -448,7 +448,9 @@ export class WorldScene extends Phaser.Scene {
     if (sig !== this.lastSent || this.jumpQueued || this.sendAccum >= 1 / INPUT_HZ) {
       this.inputSeq += 1;
       this.pending.push({ seq: this.inputSeq, ax, ay, running, dt: this.sendAccum });
-      const msg: InputMessage = { ax, ay, running, seq: this.inputSeq };
+      // dt rides along so the server integrates the EXACT same durations the
+      // prediction did — identical math on both sides, no reconciliation snap.
+      const msg: InputMessage = { ax, ay, running, seq: this.inputSeq, dt: this.sendAccum };
       if (this.jumpQueued) {
         msg.jump = true;
         this.jumpQueued = false;
