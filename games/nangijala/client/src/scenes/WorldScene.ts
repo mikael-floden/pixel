@@ -26,6 +26,7 @@ import {
 import { CharacterDef, Manifest, stripUrl } from "../manifest";
 import { colorForName } from "../placeholder";
 import { Atmosphere, LightSource } from "../lighting";
+import { NightLights, ShaderLight, MAX_SHADER_LIGHTS } from "../nightlight";
 import { joinWorld } from "../net";
 import { ChatUI } from "../chat";
 import { RosterUI } from "../roster";
@@ -120,6 +121,9 @@ export class WorldScene extends Phaser.Scene {
   private staminaBar?: Phaser.GameObjects.Graphics;
   private atmo!: Atmosphere;
   private auraOn = true;
+  private night?: NightLights;
+  private nightOn = true; // [5] toggles the shader night vs the simple grade
+  private shaderLights: ShaderLight[] = [];
 
   constructor() {
     super("world");
@@ -165,6 +169,17 @@ export class WorldScene extends Phaser.Scene {
 
     this.atmo = new Atmosphere(this);
     this.atmo.create();
+    // Shader night needs WebGL; on canvas renderers the multiply grade
+    // remains the night fallback.
+    if (this.world && this.game.renderer.type === Phaser.WEBGL) {
+      try {
+        this.night = new NightLights(this, this.world, this.iso, this.maxLevel);
+        this.night.create();
+      } catch (err) {
+        console.warn("[nangijala] shader night unavailable:", err);
+        this.night = undefined;
+      }
+    }
 
     this.keys = this.input.keyboard!.addKeys(
       "W,A,S,D,UP,DOWN,LEFT,RIGHT,SHIFT",
@@ -200,7 +215,11 @@ export class WorldScene extends Phaser.Scene {
       this.toggleCollisionOverlay();
       this.chat.addLog("—", `[4] Collision overlay: ${this.collisionOverlay ? "on" : "off"}`);
     });
-    this.chat.addLog("—", "Toggles: [1] time of day · [2] fog · [3] aura · [4] collision");
+    this.input.keyboard!.on("keydown-FIVE", () => {
+      this.nightOn = !this.nightOn;
+      this.chat.addLog("—", `[5] Shader night lighting: ${this.nightOn ? "on" : "off"}`);
+    });
+    this.chat.addLog("—", "Toggles: [1] time · [2] fog · [3] aura · [4] collision · [5] night shader");
 
     const cam = this.cameras.main;
     cam.setBounds(0, 0, this.iso.w, this.iso.h);
@@ -509,27 +528,52 @@ export class WorldScene extends Phaser.Scene {
     if (me) this.drawStaminaBar(me.stamina ?? MAX_STAMINA, !!me.swimming);
 
     // Atmosphere: each player is a light source (lantern at the torso).
-    // Each player contributes a night lantern pool + a dim, slowly pulsing
-    // aura (Sea of Stars-style) that grounds the character in the scene.
+    // Shader night: per-pixel point lights with heightmap line-of-sight.
+    // Fallback / other times of day: the multiply grade + glow images.
     const tsec = this.time.now / 1000;
-    const lights: LightSource[] = [];
-    for (const a of this.avatars.values()) {
-      const pulse = Math.sin(tsec * 1.3 + a.pulse) * 0.5 + Math.sin(tsec * 4.7 + a.pulse * 2) * 0.2;
-      lights.push({ x: a.lx, y: a.ly - 20 }); // lantern pool (night)
-      if (!this.auraOn) continue;
-      // Ground-hugging pool at the feet, depth-sorted just below the sprite —
-      // the character stands IN the light, and walls in front occlude it.
-      lights.push({
-        x: a.lx,
-        y: a.ly - 1,
-        color: 0xffe3b3,
-        radius: 44 + pulse * 4,
-        alpha: 0.16 + pulse * 0.05,
-        ground: true,
-        depth: a.sprite.depth - 0.05,
-      });
+    const shaderNight = !!this.night && this.nightOn && this.atmo.preset.name === "night";
+    this.night?.setActive(shaderNight);
+    this.atmo.suppressGrade = shaderNight;
+    if (shaderNight && this.world) {
+      const sl: ShaderLight[] = [];
+      for (const a of this.avatars.values()) {
+        sl.push({
+          col: ((a.lx - this.iso.ox) / MAP_GEOMETRY.dx + (a.ly - this.iso.oy) / MAP_GEOMETRY.dy) / 2,
+          row: ((a.ly - this.iso.oy) / MAP_GEOMETRY.dy - (a.lx - this.iso.ox) / MAP_GEOMETRY.dx) / 2,
+          z: (this.terrain ? levelAtWorld(this.terrain, a.lx, a.ly) : 0) + 0.8,
+          radius: 5.0,
+          color: [0.95, 0.8, 0.55],
+          flicker: 0.35, // hand torch: gentle fire flicker
+        });
+        if (sl.length >= MAX_SHADER_LIGHTS) break;
+      }
+      for (const l of this.shaderLights) {
+        if (sl.length >= MAX_SHADER_LIGHTS) break;
+        sl.push(l);
+      }
+      this.night!.update(this.cameras.main, sl, [0.11, 0.14, 0.27]);
     }
-    lights.push(...this.emissiveLights);
+
+    const lights: LightSource[] = [];
+    if (!shaderNight) {
+      for (const a of this.avatars.values()) {
+        const pulse = Math.sin(tsec * 1.3 + a.pulse) * 0.5 + Math.sin(tsec * 4.7 + a.pulse * 2) * 0.2;
+        lights.push({ x: a.lx, y: a.ly - 20 }); // lantern pool (night)
+        if (!this.auraOn) continue;
+        // Ground-hugging pool at the feet, depth-sorted just below the sprite —
+        // the character stands IN the light, and walls in front occlude it.
+        lights.push({
+          x: a.lx,
+          y: a.ly - 1,
+          color: 0xffe3b3,
+          radius: 44 + pulse * 4,
+          alpha: 0.16 + pulse * 0.05,
+          ground: true,
+          depth: a.sprite.depth - 0.05,
+        });
+      }
+      lights.push(...this.emissiveLights);
+    }
     this.atmo.update(lights, this.cameras.main, dt);
   }
 
@@ -808,6 +852,7 @@ export class WorldScene extends Phaser.Scene {
     this.occluders = [];
     this.occluderMeta = [];
     this.emissiveLights = [];
+    this.shaderLights = [];
 
     const { dx, dy, lh, tile: tileSize } = MAP_GEOMETRY;
     const pad = 200;
@@ -837,6 +882,14 @@ export class WorldScene extends Phaser.Scene {
             radius: em.radius,
             ground: true,
             depth: this.iso.oy + v * dy + dy + 0.2, // occluded by fronting walls
+          });
+          this.shaderLights.push({
+            col: col + 0.5,
+            row: row + 0.5,
+            z: cell.l + 0.5,
+            radius: em.radius / 16, // px → cells-ish
+            color: [((em.color >> 16) & 0xff) / 255, ((em.color >> 8) & 0xff) / 255, (em.color & 0xff) / 255],
+            flicker: cell.t === "lava" ? 1 : 0.25,
           });
         }
         const tall = cell.l > 0 || (!s.standable && !s.swimmable);

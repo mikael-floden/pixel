@@ -60,6 +60,8 @@ const VIGNETTE_DEPTH = 900_002;
 const FOG_DEPTH = 899_999;
 
 export class Atmosphere {
+  /** When the shader night owns the screen, the grade layer stands down. */
+  suppressGrade = false;
   private scene: Phaser.Scene;
   private presetIdx = 0;
   private fogOn = false;
@@ -146,7 +148,7 @@ export class Atmosphere {
       this.fog.tilePositionY += dt * 2.5;
     }
 
-    const dark = p.darkness > 0;
+    const dark = p.darkness > 0 && !this.suppressGrade;
     if (!dark) {
       this.dark.setVisible(false);
       this.vignette.setVisible(false);
