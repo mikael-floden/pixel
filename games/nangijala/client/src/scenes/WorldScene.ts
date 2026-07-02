@@ -88,7 +88,9 @@ interface Avatar {
   fx: number;
   fy: number;
   lit?: Phaser.GameObjects.Sprite; // lit copy above the night overlay
-  covered?: boolean; // a wall truly overlaps (exact per-frame test)
+  // Screen y of the highest wall top drawn over the sprite this frame, or
+  // undefined when nothing covers it — the lit copy is cropped BELOW this line.
+  coverY?: number;
   hopUntil: number;
   swimming: boolean;
   baseTint: number;
@@ -540,14 +542,20 @@ export class WorldScene extends Phaser.Scene {
       if (this.world) {
         const colf = (tx / WORLD_WIDTH) * this.world.width;
         const rowf = (ty / WORLD_HEIGHT) * this.world.height;
-        // Sprite bounds with margin: walk frames can dip feet a few px below
-        // the measured idle anchor, so pad the box or edge stamps get missed.
-        const sx0 = av.lx - av.sprite.displayWidth / 2 - 4;
-        const sx1 = av.lx + av.sprite.displayWidth / 2 + 4;
-        const sy0 = av.sprite.y - av.sprite.displayHeight - 4;
-        const sy1 = av.sprite.y + 8;
+        // Sprite bounds = the MEASURED opaque art box (+4px margin for walk
+        // frames dipping past the idle anchor). The drawn figure is ~30x68px
+        // inside a 128px frame — testing the whole frame let raised cells 2-3
+        // tiles away "cover" the sprite via its transparent padding.
+        const ab = this.artBounds(av.sprite);
+        const aLeft = av.sprite.x - av.sprite.displayWidth * av.sprite.originX;
+        const aTop = av.sprite.y - av.sprite.displayHeight * av.sprite.originY;
+        const sx0 = aLeft + ab.x0 * av.sprite.scaleX - 4;
+        const sx1 = aLeft + ab.x1 * av.sprite.scaleX + 4;
+        const sy0 = aTop + ab.y0 * av.sprite.scaleY - 4;
+        const sy1 = aTop + ab.y1 * av.sprite.scaleY + 4;
         let above = -Infinity;
         let below = Infinity;
+        let coverY = Infinity;
         const feetY = av.ly;
         for (const o of this.occluderMeta) {
           if (o.x1 < sx0 || o.x0 > sx1 || o.y1 < sy0 || o.y0 > sy1) continue;
@@ -565,14 +573,16 @@ export class WorldScene extends Phaser.Scene {
             o.y0 <= feetY + 6 &&
             o.y0 >= feetY - 26 &&
             o.col + o.row + 1.2 > colf + rowf;
-          if (rayBlocked || faceOverFeet) below = Math.min(below, o.depth);
-          else above = Math.max(above, o.depth);
+          if (rayBlocked || faceOverFeet) {
+            below = Math.min(below, o.depth);
+            coverY = Math.min(coverY, o.y0);
+          } else above = Math.max(above, o.depth);
         }
         if (above > -Infinity) depth = Math.max(depth, above + 0.6);
         if (below < Infinity) depth = Math.min(depth, below - 0.3); // walls win conflicts
-        av.covered = below < Infinity; // a wall GENUINELY draws over the sprite
+        av.coverY = below < Infinity ? coverY : undefined;
       } else {
-        av.covered = false;
+        av.coverY = undefined;
       }
       av.sprite.setDepth(depth);
       // Shadow: always at the GROUND point (the collision anchor) — it stays
@@ -675,8 +685,9 @@ export class WorldScene extends Phaser.Scene {
 
   /** Lit copies: a pixel-identical duplicate of each character drawn ABOVE
    * the darkness overlay, tinted by its ground-cell light — exact silhouette
-   * with zero shader plumbing. Hidden while a wall overlaps the sprite (the
-   * darkened under-copy shows instead, keeping occlusion honest). */
+   * with zero shader plumbing. When a wall draws over the sprite the copy is
+   * CROPPED below the wall's top line (not hidden): the covered part defers
+   * to the depth-sorted under-sprite, everything above it stays lit. */
   private applyObjectLights() {
     const night = this.night;
     const on = !!night && night.active;
@@ -684,7 +695,7 @@ export class WorldScene extends Phaser.Scene {
       if (!a.lit) {
         a.lit = this.add.sprite(a.sprite.x, a.sprite.y, a.sprite.texture.key).setDepth(900_001);
       }
-      if (!on || a.covered || !a.sprite.visible) {
+      if (!on || !a.sprite.visible) {
         a.lit.setVisible(false);
         continue;
       }
@@ -702,6 +713,14 @@ export class WorldScene extends Phaser.Scene {
         .setScale(a.sprite.scaleX, a.sprite.scaleY)
         .setDepth(litDepth(a.sprite.depth))
         .setTint((r << 16) | (g << 8) | bl);
+      if (a.coverY !== undefined) {
+        // Frame-space y of the occluding wall's top line.
+        const frameTop = a.sprite.y - a.sprite.displayHeight * a.sprite.originY;
+        const cropH = (a.coverY - frameTop) / a.sprite.scaleY;
+        const ab = this.artBounds(a.sprite);
+        if (cropH <= ab.y0 + 2) a.lit.setVisible(false); // wall covers the whole figure
+        else a.lit.setCrop(0, 0, a.sprite.frame.cutWidth, cropH);
+      } else if (a.lit.isCropped) a.lit.setCrop();
     }
     if (this.campfireSprite) {
       if (!this.campfireLit) {
@@ -759,6 +778,45 @@ export class WorldScene extends Phaser.Scene {
       // The foot position shifts slightly between directions — re-pin.
       this.applyAnchor(av.sprite, av.character, d, av.sprite.texture.key !== PLACEHOLDER_TEX);
     }
+  }
+
+  /** Opaque art bounds inside the sprite's current frame (frame px), measured
+   * once per texture+frame from the alpha channel and cached. The drawn figure
+   * occupies a small box in the middle of a mostly-transparent frame; occlusion
+   * tests against the full frame hit walls tiles away from the body. */
+  private artBoundsCache = new Map<string, { x0: number; y0: number; x1: number; y1: number }>();
+
+  private artBounds(sprite: Phaser.GameObjects.Sprite) {
+    const frame = sprite.frame;
+    const key = `${frame.texture.key}#${frame.name}`;
+    let b = this.artBoundsCache.get(key);
+    if (b) return b;
+    b = { x0: 0, y0: 0, x1: frame.cutWidth, y1: frame.cutHeight }; // fallback: whole frame
+    try {
+      const src = frame.source.image as CanvasImageSource;
+      const cnv = document.createElement("canvas");
+      cnv.width = frame.cutWidth;
+      cnv.height = frame.cutHeight;
+      const ctx = cnv.getContext("2d", { willReadFrequently: true });
+      if (src && ctx) {
+        ctx.drawImage(src, frame.cutX, frame.cutY, frame.cutWidth, frame.cutHeight, 0, 0, cnv.width, cnv.height);
+        const d = ctx.getImageData(0, 0, cnv.width, cnv.height).data;
+        let x0 = cnv.width, y0 = cnv.height, x1 = -1, y1 = -1;
+        for (let y = 0; y < cnv.height; y++)
+          for (let x = 0; x < cnv.width; x++)
+            if (d[(y * cnv.width + x) * 4 + 3] > 16) {
+              if (x < x0) x0 = x;
+              if (x > x1) x1 = x;
+              if (y < y0) y0 = y;
+              if (y > y1) y1 = y;
+            }
+        if (x1 >= x0) b = { x0, y0, x1: x1 + 1, y1: y1 + 1 };
+      }
+    } catch {
+      // Unreadable source (shouldn't happen same-origin) — keep the fallback.
+    }
+    this.artBoundsCache.set(key, b);
+    return b;
   }
 
   /** Set the sprite origin to the measured foot anchor for this direction and
