@@ -565,7 +565,9 @@ export class WorldScene extends Phaser.Scene {
         sl.push({
           col: a.fx / CELL_WU,
           row: a.fy / CELL_WU,
-          z: (this.terrain ? levelAtWorld(this.terrain, a.fx, a.fy) : 0) + 0.8,
+          // Held low (waist height): a high torch grazes over ledge lips and
+          // lights ground far below cliffs, which reads as leakage.
+          z: (this.terrain ? levelAtWorld(this.terrain, a.fx, a.fy) : 0) + 0.55,
           radius: 4,
           color: [0.85, 0.58, 0.32],
           flicker: 0.35, // hand torch: gentle fire flicker
@@ -589,10 +591,14 @@ export class WorldScene extends Phaser.Scene {
       // Slow breathing, not a strobe: ~4s and ~1.4s periods, small swing.
       const flick = 0.52 + Math.sin(this.time.now / 640) * 0.05 + Math.sin(this.time.now / 225) * 0.03;
       lights.push({ x: c.x, y: c.y - 9, color: 0xff8830, radius: 72, alpha: flick, depth: c.depth + 0.2 });
-      // Flame-core bloom ABOVE the night grade + vignette: the fire is a
-      // light EMITTER — it must read bright from any distance and any screen
-      // position, never dimmed by its own darkness overlays.
-      lights.push({ x: c.x, y: c.y - 10, color: 0xffb75a, radius: 24, alpha: flick + 0.25, depth: 900_005 });
+      // Flame-core bloom ABOVE the night grade + vignette so the flame never
+      // goes dull at screen edges — but sized to HUG the flame (a big fixed
+      // disc read as a floating ball from afar) and scaled by proximity, so
+      // the fire joins the brightens-as-you-approach effect.
+      const camMid = this.cameras.main.midPoint;
+      const camDist = Math.hypot(c.x - camMid.x, c.y - camMid.y);
+      const near = Math.max(0.45, Math.min(1, 1.15 - camDist / 1400));
+      lights.push({ x: c.x, y: c.y - 12, color: 0xffb75a, radius: 12, alpha: (flick + 0.2) * near, depth: 900_005 });
       if (!shaderNight)
         lights.push({ x: c.x, y: c.y, color: 0xff9e4a, radius: 120, ground: true, depth: c.depth + 0.1 });
     }

@@ -110,6 +110,15 @@ void main() {
       if (H < 90.0 && H > hRay) occ *= mix(0.8, 0.45, clamp((H - hRay) * 1.5, 0.0, 1.0));
     }
 
+    // Side-face pixels (below their column's top) face the camera (+col+row).
+    // They can only catch light from THAT side — a torch on top of or behind
+    // the wall must not wrap around onto the front face.
+    float Hown = heightAt(cell);
+    if (Hown < 90.0 && Hown - z > 0.05) {
+      float facing = (d2.x + d2.y) * 0.7071 / max(length(d2), 0.001);
+      occ *= smoothstep(-0.1, 0.4, facing);
+    }
+
     // Fire flicker: slow cozy breathing + a mild shimmer (fast large-swing
     // flicker reads as a strobe when it drives a whole light pool).
     float fl = uLightCol[i].w;
