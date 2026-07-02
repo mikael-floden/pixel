@@ -23,6 +23,7 @@ import {
 } from "@nangijala/shared";
 import { CharacterDef, Manifest, stripUrl } from "../manifest";
 import { colorForName } from "../placeholder";
+import { Atmosphere } from "../lighting";
 import { joinWorld } from "../net";
 import { ChatUI } from "../chat";
 import { RosterUI } from "../roster";
@@ -84,6 +85,7 @@ export class WorldScene extends Phaser.Scene {
   private jumpReadyAt = 0;
   private jumpQueued = false;
   private staminaBar?: Phaser.GameObjects.Graphics;
+  private atmo!: Atmosphere;
 
   constructor() {
     super("world");
@@ -125,6 +127,9 @@ export class WorldScene extends Phaser.Scene {
     if (this.world) this.buildIsoGround();
     else this.drawGround();
 
+    this.atmo = new Atmosphere(this);
+    this.atmo.create();
+
     this.keys = this.input.keyboard!.addKeys(
       "W,A,S,D,UP,DOWN,LEFT,RIGHT,SHIFT",
     ) as Record<string, Phaser.Input.Keyboard.Key>;
@@ -145,6 +150,9 @@ export class WorldScene extends Phaser.Scene {
     this.input.keyboard!.on("keydown-SPACE", () => this.tryJump());
     // Debug: press C to visualize water (swimmable) terrain cells.
     this.input.keyboard!.on("keydown-C", () => this.toggleCollisionOverlay());
+    // Atmosphere: L cycles time-of-day (day/dusk/night/dawn), G toggles fog.
+    this.input.keyboard!.on("keydown-L", () => this.chat.addLog("—", `Time of day: ${this.atmo.cyclePreset()}`));
+    this.input.keyboard!.on("keydown-G", () => this.chat.addLog("—", `Fog: ${this.atmo.toggleFog() ? "on" : "off"}`));
 
     const cam = this.cameras.main;
     cam.setBounds(0, 0, this.iso.w, this.iso.h);
@@ -211,6 +219,8 @@ export class WorldScene extends Phaser.Scene {
       swimming: () => !!this.room?.state.players.get(this.room!.sessionId)?.swimming,
       surfaceAt: (x: number, y: number) => (this.terrain ? surfaceAtWorld(this.terrain, x, y) : null),
       levelAt: (x: number, y: number) => (this.terrain ? levelAtWorld(this.terrain, x, y) : 0),
+      timeOfDay: (name: string) => this.atmo.setPreset(name),
+      toggleFog: () => this.atmo.toggleFog(),
     };
   }
 
@@ -376,6 +386,10 @@ export class WorldScene extends Phaser.Scene {
     // Local player's swim-stamina HUD.
     const me = state.players.get(myId);
     if (me) this.drawStaminaBar(me.stamina ?? MAX_STAMINA, !!me.swimming);
+
+    // Atmosphere: each player is a light source (lantern at the torso).
+    const lights = [...this.avatars.values()].map((a) => ({ x: a.lx, y: a.ly - 20 }));
+    this.atmo.update(lights, this.cameras.main, dt);
   }
 
   private predictAndSend(dt: number) {
