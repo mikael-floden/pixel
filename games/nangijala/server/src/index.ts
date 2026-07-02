@@ -24,15 +24,33 @@ app.get("/health", (_req, res) => res.json({ ok: true }));
 const clientDist = join(GAME_ROOT, "client", "dist");
 const serveClient = process.env.SERVE_CLIENT === "1" || existsSync(clientDist);
 
+// Cache policy so a PLAIN refresh (F5) always picks up a new deploy:
+// - anything unhashed that changes across deploys (html, json manifests like
+//   characters.json / world.json) → no-cache: the browser revalidates on every
+//   load and gets fresh content the moment a deploy changes it (cheap 304s
+//   otherwise);
+// - Vite's content-hashed bundles → immutable, cache for a year;
+// - art PNGs → 1h (new art usually arrives as NEW files, so staleness is rare).
+function setCacheHeaders(res: express.Response, path: string) {
+  if (path.endsWith(".html") || path.endsWith(".json")) {
+    res.setHeader("Cache-Control", "no-cache");
+  } else if (/-[A-Za-z0-9_-]{8,}\.(js|css)$/.test(path)) {
+    res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+  }
+}
+
 if (serveClient) {
   for (const domain of ASSET_DOMAINS) {
-    app.use(`/assets/${domain}`, express.static(join(ASSETS_ROOT, domain), { maxAge: "1h" }));
+    app.use(
+      `/assets/${domain}`,
+      express.static(join(ASSETS_ROOT, domain), { maxAge: "1h", setHeaders: setCacheHeaders }),
+    );
   }
   if (existsSync(clientDist)) {
-    app.use(express.static(clientDist));
+    app.use(express.static(clientDist, { setHeaders: setCacheHeaders }));
     // SPA fallback for any non-API, non-asset route.
     app.get(/^(?!\/(assets|health|matchmake)).*/, (_req, res) =>
-      res.sendFile(join(clientDist, "index.html")),
+      res.sendFile(join(clientDist, "index.html"), { headers: { "Cache-Control": "no-cache" } }),
     );
     console.log(`[nangijala] serving built client from ${clientDist}, assets from ${ASSETS_ROOT}`);
   }
