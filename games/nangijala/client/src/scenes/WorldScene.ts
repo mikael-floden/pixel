@@ -65,6 +65,11 @@ const EMISSIVE: Record<string, { color: number; radius: number }> = {
   mushroom_grove: { color: 0x5fc4ff, radius: 65 },
 };
 const MAX_EMISSIVE = 48; // cap per view (perf)
+// Lit copies (see applyObjectLights) live in a thin band ABOVE the darkness
+// overlay (depth 900_000) but must keep the world's relative draw order among
+// themselves — a character in front of the fire must cover the fire's lit copy
+// too. Base depths are screen-y scalars (< ~20k px), compressed into the band.
+const litDepth = (baseDepth: number) => 900_001 + baseDepth * 1e-5;
 const JUMP_HEIGHT = 28; // px peak of the jump hop (a tall, floaty arc)
 const SWIM_SINK = 6; // px the sprite sinks while swimming
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
@@ -332,6 +337,21 @@ export class WorldScene extends Phaser.Scene {
       surfaceAt: (x: number, y: number) => (this.terrain ? surfaceAtWorld(this.terrain, x, y) : null),
       levelAt: (x: number, y: number) => (this.terrain ? levelAtWorld(this.terrain, x, y) : 0),
       nightShader: () => !!this.night && this.night.active,
+      // Draw-order probe: base + lit-copy depths for me and the campfire, so
+      // the lit layer's ordering can be asserted numerically (no screenshots).
+      litOrder: () => {
+        const id = this.room?.sessionId;
+        const av = id ? this.avatars.get(id) : undefined;
+        return {
+          me: av ? { base: av.sprite.depth, lit: av.lit?.visible ? av.lit.depth : null } : null,
+          fire: this.campfireSprite
+            ? {
+                base: this.campfireSprite.depth,
+                lit: this.campfireLit?.visible ? this.campfireLit.depth : null,
+              }
+            : null,
+        };
+      },
       nightInfo: () => this.night?.debugInfo(),
       nightCal: (flip: number, span: number, test: number) => {
         if (!this.night) return null;
@@ -680,6 +700,7 @@ export class WorldScene extends Phaser.Scene {
         .setPosition(a.sprite.x, a.sprite.y)
         .setOrigin(a.sprite.originX, a.sprite.originY)
         .setScale(a.sprite.scaleX, a.sprite.scaleY)
+        .setDepth(litDepth(a.sprite.depth))
         .setTint((r << 16) | (g << 8) | bl);
     }
     if (this.campfireSprite) {
@@ -687,13 +708,13 @@ export class WorldScene extends Phaser.Scene {
         this.campfireLit = this.add
           .sprite(this.campfireSprite.x, this.campfireSprite.y, CAMPFIRE_KEY)
           .setOrigin(0.5, CAMPFIRE_BASE)
-          .setScale(CAMPFIRE_SCALE)
-          .setDepth(900_001);
+          .setScale(CAMPFIRE_SCALE);
       }
       this.campfireLit
         .setVisible(on)
         .setFrame(this.campfireSprite.frame.name)
-        .setPosition(this.campfireSprite.x, this.campfireSprite.y);
+        .setPosition(this.campfireSprite.x, this.campfireSprite.y)
+        .setDepth(litDepth(this.campfireSprite.depth));
     }
   }
 
