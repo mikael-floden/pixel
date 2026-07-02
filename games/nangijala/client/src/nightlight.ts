@@ -40,9 +40,6 @@ uniform vec3 uAmbient;    // night grade (what unlit white becomes)
 uniform float uFlip;      // 1 = invert fragment y (GL bottom-up), 0 = direct
 uniform float uTest;      // 1 = output a raw world-y gradient (calibration)
 uniform float uNumLights;
-uniform vec4 uView;       // ACTUAL camera worldView (x, y, w, h)
-uniform float uMaskOn;
-uniform sampler2D uMask;  // avatar silhouettes, rgb = their ground light
 uniform vec4 uLightPos[${MAX_SHADER_LIGHTS}];  // col, row, z, radius(cells)
 uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
 uniform sampler2D uHeight;
@@ -96,21 +93,6 @@ void main() {
     float line = (min(gc, 1.0 - gc) < 0.03 || min(gr, 1.0 - gr) < 0.03) ? 1.0 : 0.35;
     gl_FragColor = vec4(vec3(line), 1.0);
     return;
-  }
-  // Character override: avatars are drawn into a world-view-sized mask
-  // FILLED with the light colour of their own ground cell. Where the mask
-  // has alpha, that colour IS the multiplier — silhouette-exact, and walls
-  // in front punch holes so occlusion still shades correctly.
-  if (uMaskOn > 0.5) {
-    // RenderTextures are FBO-backed: rows are GPU-bottom-up when sampled raw.
-    vec2 mUV = vec2((wx - uView.x) / uView.z, 1.0 - (wy - uView.y) / uView.w);
-    if (mUV.x >= 0.0 && mUV.x <= 1.0 && mUV.y >= 0.0 && mUV.y <= 1.0) {
-      vec4 m = texture2D(uMask, mUV);
-      if (m.a > 0.5) {
-        gl_FragColor = vec4(m.rgb, 1.0);
-        return;
-      }
-    }
   }
   float v0 = (wy - uIsoA.y) / uIsoA.w; // grid diagonal at height 0
   float kk = uIsoB.x / uIsoA.w;        // diagonal shift per height level
@@ -261,9 +243,6 @@ export class NightLights {
   private hArr!: Float32Array; // CPU heightmap (levels, objects +1)
   private oArr!: Uint8Array;   // CPU solid-object flags
   private curLights: ShaderLight[] = [];
-  private maskRT?: Phaser.GameObjects.RenderTexture;
-  private maskKey = "";
-  private maskCount = 0;
   private curAmbient: [number, number, number] = [0.075, 0.09, 0.14];
   active = false;
   // Live calibration (debug keys): rendering-path differences between GPUs
@@ -293,10 +272,7 @@ export class NightLights {
       uNumLights: { type: "1f", value: 0 },
       uLightPos: { type: "4fv", value: this.posArr },
       uLightCol: { type: "4fv", value: this.colArr },
-      uView: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
-      uMaskOn: { type: "1f", value: 0 },
       uHeight: { type: "sampler2D", value: null },
-      uMask: { type: "sampler2D", value: null },
     });
     // Shader GameObjects can't blend directly — render the light field to a
     // texture and composite it with a MULTIPLY image on top of the scene.
@@ -328,8 +304,6 @@ export class NightLights {
       .setOrigin(0, 0)
       .setVisible(this.active);
     s.setSampler2D("uHeight", "world-heightmap");
-    this.buildMask(width, height);
-    s.setSampler2D("uMask", this.maskKey);
     s.setRenderToTexture(key);
     this.shader = s;
     const old = this.overlay!.texture.key;
@@ -340,26 +314,6 @@ export class NightLights {
     if (old.startsWith(FIELD_KEY) && this.scene.textures.exists(old)) {
       this.scene.textures.remove(old);
     }
-  }
-
-  /** World-view-sized offscreen target for avatar light silhouettes. */
-  private buildMask(width: number, height: number) {
-    const zoom = this.scene.cameras.main.zoom || 1;
-    const w = Math.max(2, Math.ceil(width / zoom));
-    const h = Math.max(2, Math.ceil(height / zoom));
-    const oldKey = this.maskKey;
-    this.maskRT?.destroy();
-    this.maskKey = `night-mask-${this.maskCount++}`;
-    this.maskRT = this.scene.add.renderTexture(0, 0, w, h).setVisible(false);
-    this.maskRT.saveTexture(this.maskKey);
-    if (oldKey && this.scene.textures.exists(oldKey)) this.scene.textures.remove(oldKey);
-  }
-
-  /** Begin the per-frame mask pass; returns the RT (or null when inactive). */
-  maskBegin(): Phaser.GameObjects.RenderTexture | null {
-    if (!this.active || !this.maskRT) return null;
-    this.maskRT.clear();
-    return this.maskRT;
   }
 
   /** Grid heightmap texture: R = level*16 (levels 0..9 → 0..144). Solid
@@ -495,11 +449,6 @@ export class NightLights {
     s.setUniform("uCam.value.y", wv.y - (wv.height * (k - 1)) / 2);
     s.setUniform("uCam.value.z", wv.width * k);
     s.setUniform("uCam.value.w", wv.height * k);
-    s.setUniform("uView.value.x", wv.x);
-    s.setUniform("uView.value.y", wv.y);
-    s.setUniform("uView.value.z", wv.width);
-    s.setUniform("uView.value.w", wv.height);
-    s.setUniform("uMaskOn.value", this.maskRT ? 1 : 0);
     s.setUniform("uFlip.value", this.fieldFlip);
     s.setUniform("uTest.value", this.testPattern);
     this.overlay?.setFlipY(this.overlayFlip);

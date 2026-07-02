@@ -82,6 +82,7 @@ interface Avatar {
   // the night-shader lights need THIS space, never the projected lx/ly.
   fx: number;
   fy: number;
+  lit?: Phaser.GameObjects.Sprite; // lit copy above the night overlay
   hopUntil: number;
   swimming: boolean;
   baseTint: number;
@@ -142,6 +143,7 @@ export class WorldScene extends Phaser.Scene {
   // The spawn campfire: an animated world object with its own fire light.
   private campfire?: { col: number; row: number; z: number; x: number; y: number; depth: number };
   private campfireSprite?: Phaser.GameObjects.Sprite;
+  private campfireLit?: Phaser.GameObjects.Sprite;
   // [5] toggles the LOCAL player's hand torch (handy for judging fixed lights).
   private torchOn = true;
 
@@ -287,6 +289,7 @@ export class WorldScene extends Phaser.Scene {
       const av = this.avatars.get(id);
       if (av) {
         av.sprite.destroy();
+      av.lit?.destroy();
         av.shadow.destroy();
         av.label.destroy();
         av.bubble?.destroy();
@@ -614,7 +617,6 @@ export class WorldScene extends Phaser.Scene {
       // Ambient calibrated against the Sea of Stars night reference: dark,
       // desaturated, only a MILD blue tilt (B/R ~1.6, not saturated blue).
       this.night!.update(this.cameras.main, sl, [0.075, 0.09, 0.14]);
-      this.applyObjectLights();
     }
 
     const lights: LightSource[] = [];
@@ -643,55 +645,59 @@ export class WorldScene extends Phaser.Scene {
       }
       lights.push(...this.emissiveLights);
     }
+    this.applyObjectLights();
     this.atmo.update(lights, this.cameras.main, dt);
   }
 
-  /** Per-frame avatar light mask: draw each avatar's silhouette FILLED with
-   * the light colour of its ground cell into the shader's mask, then punch
-   * out any wall drawn in front so occlusion still shades correctly. */
+  /** Lit copies: a pixel-identical duplicate of each character drawn ABOVE
+   * the darkness overlay, tinted by its ground-cell light — exact silhouette
+   * with zero shader plumbing. Hidden while a wall overlaps the sprite (the
+   * darkened under-copy shows instead, keeping occlusion honest). */
   private applyObjectLights() {
     const night = this.night;
-    if (!night || !night.active) return;
-    const rt = night.maskBegin();
-    if (!rt) return;
-    const wv = this.cameras.main.worldView;
-    let minDepth = Infinity;
+    const on = !!night && night.active;
     for (const a of this.avatars.values()) {
+      if (!a.lit) {
+        a.lit = this.add.sprite(a.sprite.x, a.sprite.y, a.sprite.texture.key).setDepth(900_001);
+      }
+      const covered = this.occluderMeta.some(
+        (o) =>
+          o.depth > a.sprite.depth &&
+          o.x0 < a.sprite.x + a.sprite.displayWidth / 2 &&
+          o.x1 > a.sprite.x - a.sprite.displayWidth / 2 &&
+          o.y0 < a.sprite.y + 8 &&
+          o.y1 > a.sprite.y - a.sprite.displayHeight,
+      );
+      if (!on || covered || !a.sprite.visible) {
+        a.lit.setVisible(false);
+        continue;
+      }
       const lvl = this.terrain ? levelAtWorld(this.terrain, a.fx, a.fy) : 0;
-      const l = night.lightAt(a.fx / CELL_WU, a.fy / CELL_WU, lvl, false);
-      const r = Math.min(255, Math.round(Math.min(1, l[0]) * 255));
-      const g = Math.min(255, Math.round(Math.min(1, l[1]) * 255));
-      const b = Math.min(255, Math.round(Math.min(1, l[2]) * 255));
-      a.sprite.setTintFill((r << 16) | (g << 8) | b);
-      rt.draw(a.sprite, a.sprite.x - wv.x, a.sprite.y - wv.y);
-      a.sprite.setTint(a.swimming ? 0x6fb3ff : a.baseTint);
-      minDepth = Math.min(minDepth, a.sprite.depth);
+      const l = night!.lightAt(a.fx / CELL_WU, a.fy / CELL_WU, lvl, false);
+      const base = a.swimming ? 0x6fb3ff : a.baseTint;
+      const r = Math.min(255, Math.round(((base >> 16) & 0xff) * Math.min(1, l[0])));
+      const g = Math.min(255, Math.round(((base >> 8) & 0xff) * Math.min(1, l[1])));
+      const bl = Math.min(255, Math.round((base & 0xff) * Math.min(1, l[2])));
+      a.lit
+        .setVisible(true)
+        .setTexture(a.sprite.texture.key, a.sprite.frame.name)
+        .setPosition(a.sprite.x, a.sprite.y)
+        .setOrigin(a.sprite.originX, a.sprite.originY)
+        .setScale(a.sprite.scaleX, a.sprite.scaleY)
+        .setTint((r << 16) | (g << 8) | bl);
     }
     if (this.campfireSprite) {
-      // The fire is self-luminous: full-bright silhouette.
-      this.campfireSprite.setTintFill(0xffffff);
-      rt.draw(this.campfireSprite, this.campfireSprite.x - wv.x, this.campfireSprite.y - wv.y);
-      this.campfireSprite.clearTint();
-    }
-    // Walls drawn IN FRONT of an avatar must keep their own (field) lighting.
-    // Only erase the handful that actually overlap an avatar's sprite box.
-    const boxes: { x0: number; x1: number; y0: number; y1: number; d: number }[] = [];
-    for (const a of this.avatars.values()) {
-      boxes.push({
-        x0: a.sprite.x - a.sprite.displayWidth / 2,
-        x1: a.sprite.x + a.sprite.displayWidth / 2,
-        y0: a.sprite.y - a.sprite.displayHeight,
-        y1: a.sprite.y + 8,
-        d: a.sprite.depth,
-      });
-    }
-    for (const o of this.occluders) {
-      for (const b of boxes) {
-        if (o.depth > b.d && o.x < b.x1 && o.x + 64 > b.x0 && o.y < b.y1 && o.y + 64 > b.y0) {
-          rt.erase(o, o.x - wv.x, o.y - wv.y);
-          break;
-        }
+      if (!this.campfireLit) {
+        this.campfireLit = this.add
+          .sprite(this.campfireSprite.x, this.campfireSprite.y, CAMPFIRE_KEY)
+          .setOrigin(0.5, CAMPFIRE_BASE)
+          .setScale(CAMPFIRE_SCALE)
+          .setDepth(900_001);
       }
+      this.campfireLit
+        .setVisible(on)
+        .setFrame(this.campfireSprite.frame.name)
+        .setPosition(this.campfireSprite.x, this.campfireSprite.y);
     }
   }
 
