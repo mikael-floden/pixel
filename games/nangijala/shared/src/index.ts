@@ -154,10 +154,18 @@ export function stepMovement(
   let ry = y;
   // Resolve each axis independently: keep the X move if its destination is
   // enterable, then the Y move from the (possibly advanced) X — wall-sliding.
-  if (!blocked || !blocked(tx, y, x, y)) rx = tx;
-  if (!blocked || !blocked(rx, ty, rx, y)) ry = ty;
+  // Collision probes the LEADING EDGE of the feet (PLAYER_RADIUS ahead), not
+  // the centre point, so sprites stop before visually entering a tile block.
+  const px = tx + Math.sign(tx - x) * PLAYER_RADIUS;
+  if (!blocked || !blocked(px, y, x, y)) rx = tx;
+  const py = ty + Math.sign(ty - y) * PLAYER_RADIUS;
+  if (!blocked || !blocked(rx, py, rx, y)) ry = ty;
   return { x: rx, y: ry, dir, moving: true };
 }
+
+// How far ahead of the feet the collision probe reaches (world units; a map
+// cell is ~36). Bigger = stop further from walls; too big blocks 1-cell gaps.
+export const PLAYER_RADIUS = 12;
 
 function clamp(v: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, v));

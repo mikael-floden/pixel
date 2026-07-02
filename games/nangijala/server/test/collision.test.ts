@@ -13,6 +13,7 @@ import {
   stepStamina,
   WALK_CLIMB,
   JUMP_CLIMB,
+  PLAYER_RADIUS,
   MAX_STAMINA,
   SWIM_DRAIN,
   WORLD_WIDTH,
@@ -93,6 +94,20 @@ test("stepMovement stops at the ledge when walking, slides along it", () => {
   // Walk east into the raised wall with a big dt: X blocked, stays in mid column.
   const r = stepMovement(midX, midY, 1, 0, true, 5, blocked);
   assert.ok(r.x < CELL_W * 2, "did not climb onto the l1 wall");
+});
+
+test("collision probes the leading edge: feet stop PLAYER_RADIUS before a wall", () => {
+  const g = grid3x3();
+  const blocked = makeBlocked(g, { maxClimb: WALK_CLIMB, canSwim: false });
+  // Creep toward the wall in many small steps (like real ticks) until stopped.
+  let x = midX;
+  for (let i = 0; i < 400; i++) {
+    const r = stepMovement(x, midY, 1, 0, false, 0.05, blocked);
+    if (r.x === x) break;
+    x = r.x;
+  }
+  assert.ok(x <= CELL_W * 2 - PLAYER_RADIUS + 1e-6, `stopped at ${x}, wall at ${CELL_W * 2}`);
+  assert.ok(x > CELL_W * 2 - PLAYER_RADIUS - 15, "but close to the wall, not far away");
 });
 
 test("surface speed multiplier scales distance", () => {
