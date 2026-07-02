@@ -250,8 +250,9 @@ export interface MoveContext {
 }
 
 /** Can the player move from (fromX,fromY) onto (toX,toY)? The destination must
- * be enterable (solid ground, or water when swimming is allowed) and the
- * elevation step must be within `maxClimb`. */
+ * be enterable (solid ground, or water when swimming is allowed) and an UPWARD
+ * elevation step must be within `maxClimb`. Dropping down is always allowed —
+ * gravity is free; only climbing needs a jump. */
 export function canEnter(
   grid: TerrainGrid,
   fromX: number,
@@ -264,7 +265,7 @@ export function canEnter(
   const enterable = to.standable || (to.swimmable && ctx.canSwim);
   if (!enterable) return false;
   const dl = levelAtWorld(grid, toX, toY) - levelAtWorld(grid, fromX, fromY);
-  return Math.abs(dl) <= ctx.maxClimb + 1e-9;
+  return dl <= ctx.maxClimb + 1e-9;
 }
 
 /** Adapt canEnter into stepMovement's blocked() predicate for a given context. */

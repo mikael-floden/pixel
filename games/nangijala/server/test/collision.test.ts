@@ -65,6 +65,19 @@ test("walking cannot climb a 1-level ledge (Option 2B)", () => {
   assert.equal(canEnter(g, midX, midY, rightX, midY, jump), true); // jump crosses it
 });
 
+test("falling down is always allowed — only climbing needs the jump", () => {
+  const g = grid3x3();
+  const walk = { maxClimb: WALK_CLIMB, canSwim: false };
+  // Standing on the l1 wall, walking off the edge down to l0 just works.
+  assert.equal(canEnter(g, rightX, midY, midX, midY, walk), true);
+  // Even a big drop is fine (raise the wall to l3 and step down).
+  g.level[g.width * 1 + 2] = 3; // middle-right cell -> l3
+  assert.equal(canEnter(g, rightX, midY, midX, midY, walk), true);
+  // But the reverse (l0 -> l3) is unclimbable even while jumping.
+  const jump = { maxClimb: JUMP_CLIMB, canSwim: false };
+  assert.equal(canEnter(g, midX, midY, rightX, midY, jump), false);
+});
+
 test("water is enterable only when swimming is allowed", () => {
   const g = grid3x3();
   const noSwim = { maxClimb: WALK_CLIMB, canSwim: false };

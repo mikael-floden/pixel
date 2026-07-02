@@ -43,9 +43,10 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
 - Movement system (#17) is server-authoritative and governed by **elevation**,
   not tile category (`shared/`): `buildTerrainGrid` reads each cell's `l` +
   category; `canEnter` allows a move only if the destination is enterable and the
-  elevation step is within the climb allowance. Design **"Option 2B"**:
+  UPWARD elevation step is within the climb allowance — dropping down any
+  height is always allowed (gravity is free). Design **"Option 2B"**:
   `WALK_CLIMB = 0.5` (you can't walk up a full 1-level ledge), but a **timed
-  jump** (`JUMP_CLIMB = 1`, Space) crosses it. `stepMovement` resolves axis-
+  jump** (`JUMP_CLIMB = 1`, Space) climbs it. `stepMovement` resolves axis-
   separated (wall-slide) and scales by the current **surface** speed.
 - **Surfaces** (`SURFACES` in `shared/`) are the *other* axis: per-category
   `{ standable, swimmable, speed, sound }` — roads faster, sand/snow slower,
