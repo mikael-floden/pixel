@@ -68,22 +68,29 @@ void main() {
   float z = 0.0;
   vec2 cell = vec2(0.0);
   bool found = false;
-  for (int s = 0; s < 20; s++) {
-    if (found) continue;
-    float vb = vTop - float(s);
-    if (vb <= v0 - 1.0) continue;
-    float va = max(vb - 1.0, v0);
-    float vm = max((va + vb) * 0.5, v0);
-    vec2 cr = vec2((u + vm) * 0.5, (vm - u) * 0.5);
+  // Walk the ray over EXACT cell-boundary crossings (col crosses integers at
+  // v = 2m - u, row at v = 2n + u) so every interval lies inside exactly one
+  // cell. Fixed-width segments straddled cells, attributing wall pixels to
+  // the wrong column — every face rule downstream then judged the wrong wall.
+  float vHi = vTop;
+  for (int s = 0; s < 36; s++) {
+    if (found || vHi <= v0 - 1.5) continue;
+    float vColB = 2.0 * floor((vHi + u) * 0.5 - 0.0001) - u;
+    float vRowB = 2.0 * floor((vHi - u) * 0.5 - 0.0001) + u;
+    float vLo = max(vColB, vRowB);
+    float vMid = (vHi + vLo) * 0.5;
+    vec2 cr = vec2((u + vMid) * 0.5, (vMid - u) * 0.5);
     float H = heightAt(cr);
-    if (H >= 90.0) continue;
-    // Highest ray point covered by this column within the segment.
-    float vHit = min(vb, v0 + H * kk);
-    if (vHit >= va - 0.0001) {
-      z = (vHit - v0) / kk;
-      cell = cr;
-      found = true;
+    if (H < 90.0) {
+      float vSurf = v0 + H * kk; // this column's top along the ray
+      if (vSurf >= vLo - 0.0001) {
+        float vHit = min(vHi, vSurf);
+        z = max((vHit - v0) / kk, 0.0);
+        cell = cr;
+        found = true;
+      }
     }
+    vHi = vLo;
   }
   if (!found) {
     // Off-map / unresolved: plain ambient.
@@ -143,10 +150,15 @@ void main() {
       // surface is the neighbour's PERPENDICULAR face — gate on that plane.
       float hR = heightAt(base + vec2(1.5, 0.5));
       float hD = heightAt(base + vec2(0.5, 1.5));
-      if (hR < 90.0 && hR >= z - 0.01) pickR = 0.0; // +col face buried
-      if (hD < 90.0 && hD >= z - 0.01) pickR = 1.0; // +row face buried
+      if (hR < 90.0 && hR > z + 0.01) pickR = 0.0; // +col face buried
+      if (hD < 90.0 && hD > z + 0.01) pickR = 1.0; // +row face buried
       float front = mix(frontL, frontR, pickR);
-      occ *= smoothstep(0.05, 0.6, front);
+      // Lambert: `front` IS the normal component of the light offset, so
+      // front/|d2| is cos(angle off the face normal). A light sliding along
+      // the wall (grazing) must not light it — only lights meaningfully IN
+      // FRONT of the face do.
+      float cosF = front / max(length(d2), 0.001);
+      occ *= smoothstep(0.5, 0.85, cosF);
     }
 
     // Fire flicker: slow cozy breathing + a mild shimmer (fast large-swing
