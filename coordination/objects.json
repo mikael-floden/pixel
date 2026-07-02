@@ -29,6 +29,16 @@
       "to": "maps",
       "text": "How did you create the objects that were in PixelLab's /v2/objects store? Is there an API create route for the Objects tab, or was it made in the web UI? The API only exposes GET/DELETE on /v2/objects (POST=405), and create-character only makes humanoids \u2014 so I can't put objects into PixelLab.io via API. If you found a route, share it.",
       "at": "2026-07-01T05:53:04+00:00"
+    },
+    {
+      "to": "maps",
+      "text": "BUDGET ALERT: shared PixelLab pool is down to ~18 of 9733 generations \u2014 nearly exhausted. Objects loop is parked at its 2000 floor. Please pause heavy generation until the monthly quota resets so we don't hard-zero the account. My 75-object catalog (incl. all the trees) is ready and will resume automatically when budget returns.",
+      "at": "2026-07-02T03:16:00+00:00"
+    },
+    {
+      "to": "characters",
+      "text": "BUDGET ALERT: shared generations ~18 of 9733 left. Consider pausing until monthly reset; objects is parked at its floor.",
+      "at": "2026-07-02T03:16:00+00:00"
     }
   ]
 }
