@@ -372,23 +372,31 @@ def _road_cost(world: World, x: int, y: int, prev_level: int) -> float | None:
     base = {
         "river": 10.0,          # bridge the river rather than absurd detours
         "shallows": None,
+        "marsh": None,          # the Lantern Delta is impassable — real funnel
+        "tarn": None,           # nobody roads across the ice
+        "oasis": 2.0,
     }.get(c.role, None)
     if c.role == "water" or (c.terrain == "water" and base is None):
-        base = 26.0             # open sea/lake: costly, only crossed if short
+        base = 60.0             # open sea/lake/fjord: geography gates the road —
+                                # climb the pass, don't plank across the strait
     is_water = base is not None and c.role in ("river", "water") or c.terrain == "water"
     if base is None:
         base = {
             "beach": 3.0, "plains": 1.0, "forest": 2.5, "mountains": 6.0,
-            "peak": 20.0, "snowfield": 4.0, "town": 0.5, "road": 0.4,
-            "town_road": 0.4, "castle_floor": 0.5, "gate": 0.4,
+            "peak": 20.0, "snow": 5.0, "snowfield": 4.0, "town": 0.5,
+            "road": 0.4, "town_road": 0.4, "castle_floor": 0.5, "gate": 0.4,
+            "dock": 0.4, "stairs": 0.4, "bridge": 0.4, "hamlet": 0.5,
+            "ruins": 8.0, "stones": 12.0, "glade": 3.0, "ford": 0.6,
+            "shrine": 12.0, "garden": 6.0, "outpost": 0.5, "lighthouse": 0.6,
+            "castle_ground": 1.0,
         }.get(c.role, 2.0)
     # discourage climbing: each level change adds cost (roads hug the grade).
     # A bridge spans water flat, so water crossings skip the climb penalty —
     # otherwise roads detour absurdly around every carved river valley.
     if not is_water:
         base += abs(c.level - prev_level) * 4.0
-    if c.role in ("wall", "keep"):
-        return None  # never route through walls
+    if c.role in ("wall", "keep", "fence", "house"):
+        return None  # never route through walls, hedges, fences or houses
     return base
 
 
@@ -427,15 +435,22 @@ def route_road(world: World, start, goal) -> list[tuple[int, int]] | None:
 def lay_road(world: World, path) -> None:
     if not path:
         return
+    prev_level = None
     for x, y in path:
         c = world.at(x, y)
-        if c.role in ("town", "town_road", "gate", "castle_floor"):
+        if c.role in ("town", "town_road", "gate", "castle_floor", "dock", "house"):
+            prev_level = c.level
             continue  # already paved
         if c.terrain == "water":
-            # a wooden plank bridge over the water (reads as a real crossing)
+            # a plank bridge DECK carried at the bank's grade (water passes
+            # beneath); the renderer gives it stone piers via the cliff fill
             c.terrain, c.variant, c.role = "wood_floor", 0, "bridge"
+            if prev_level is not None:
+                c.level = prev_level
         else:
             _paint(world, x, y, "road", level=c.level, role="road")
+            prev_level = c.level
+        c.object = None
 
 
 # ---------------------------------------------------------------------------

@@ -27,7 +27,7 @@ from plan import default_plan, render_schematic  # noqa: E402
 from render import render                      # noqa: E402
 from tileset import TileSet                    # noqa: E402
 from world import World                        # noqa: E402
-from worldgen import build_from_plan           # noqa: E402
+from worldgen import build_from_plan, vegetate  # noqa: E402
 
 MAPS_DIR = os.path.dirname(_HERE)
 WORLD_JSON = os.path.join(MAPS_DIR, "world", "world.json")
@@ -86,6 +86,8 @@ def main() -> None:
     if args.init or not os.path.isfile(WORLD_JSON):
         world = build_from_plan(plan)
         stamp_all(world, plan)
+        trees = vegetate(world, plan)
+        world.log.append(f"vegetated: {trees} trees")
         print("init:", world.log[-1])
     else:
         world = World.load(WORLD_JSON)

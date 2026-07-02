@@ -42,11 +42,34 @@ def _sea_color(tiles: TileSet) -> tuple:
 
 
 def _cliff_for(cell, tiles: TileSet) -> str | None:
+    if cell.terrain == "water":
+        return None  # water drops stack water tiles -> blue waterfall faces
+    if cell.role == "house":
+        return None  # houses stack their own wood_floor -> timber cottages
     for key in (cell.role, cell.terrain):
         cat = _BIOME_CLIFF.get(key)
         if cat and tiles.has(cat):
             return cat
     return "cliff_stone" if tiles.has("cliff_stone") else None
+
+
+class _Props:
+    """Object sprites (trees, barrels, ...) from the objects/ domain, pasted
+    bottom-center on a cell's top diamond. Read-only consumption of a sibling
+    domain, same as tiles/."""
+
+    def __init__(self, repo_root: str):
+        import os
+        self.root = os.path.join(repo_root, "objects")
+        self.cache: dict = {}
+
+    def get(self, name: str):
+        import os
+        from PIL import Image
+        if name not in self.cache:
+            p = os.path.join(self.root, name, "sprite.png")
+            self.cache[name] = Image.open(p).convert("RGBA") if os.path.isfile(p) else None
+        return self.cache[name]
 
 
 def render(world: World, tiles: TileSet, *, scale: int = 1,
@@ -66,22 +89,49 @@ def render(world: World, tiles: TileSet, *, scale: int = 1,
     # tall cliff tiles hang ~64px below a plain tile's box; pad the bottom
     canvas_h = (world.width + world.height) * dy + th + max_level * lh + margin * 2 + 72
 
-    # Deep open ocean is ~half the map and all identical, so instead of pasting
+    # Deep open OCEAN is ~half the map and all identical, so instead of pasting
     # thousands of duplicate water tiles we fill the sea as one flat background
-    # and only draw water tiles in the coastal band (near land). Big speedup.
+    # and only draw water tiles in the coastal band. Crucially this applies ONLY
+    # to border-connected sea — lakes, rivers and fjord interiors always draw
+    # real tiles (a flood fill from the map border finds the true ocean).
     import numpy as np
+    from collections import deque
     land = np.zeros((world.height, world.width), dtype=bool)
     for x, y, c in world.cells():
         if c.terrain != "water":
             land[y, x] = True
+    sea = np.zeros_like(land)
+    dq = deque()
+    for x in range(world.width):
+        for y in (0, world.height - 1):
+            if not land[y, x] and not sea[y, x]:
+                sea[y, x] = True
+                dq.append((x, y))
+    for y in range(world.height):
+        for x in (0, world.width - 1):
+            if not land[y, x] and not sea[y, x]:
+                sea[y, x] = True
+                dq.append((x, y))
+    while dq:
+        x, y = dq.popleft()
+        for nx, ny in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+            if 0 <= nx < world.width and 0 <= ny < world.height \
+                    and not land[ny, nx] and not sea[ny, nx]:
+                sea[ny, nx] = True
+                dq.append((nx, ny))
     coast = land.copy()
-    for _ in range(2):  # dilate land by 2 cells -> the band that still draws water
+    for _ in range(2):  # coastal band still draws real water tiles
         c = coast.copy()
         c[:-1] |= coast[1:]; c[1:] |= coast[:-1]
         c[:, :-1] |= coast[:, 1:]; c[:, 1:] |= coast[:, :-1]
         coast = c
+    draw_water = ~sea | coast   # everything except deep border-connected ocean
     sea = _sea_color(tiles)
     canvas = Image.new("RGBA", (canvas_w, canvas_h), sea)
+
+    import os as _os
+    props = _Props(_os.path.dirname(_os.path.dirname(_os.path.dirname(
+        _os.path.abspath(__file__)))))
 
     order = sorted(
         ((x, y) for y in range(world.height) for x in range(world.width)),
@@ -104,7 +154,7 @@ def render(world: World, tiles: TileSet, *, scale: int = 1,
         cell = world.at(x, y)
         if not tiles.has(cell.terrain):
             continue
-        if cell.terrain == "water" and not coast[y, x]:
+        if cell.terrain == "water" and not draw_water[y, x]:
             continue  # deep ocean: the flat sea background already covers it
         L = cell.level
         base_x = ox + (x - y) * dx
@@ -118,18 +168,39 @@ def render(world: World, tiles: TileSet, *, scale: int = 1,
             # cliff_snow on a deep step), fill the lower, uncovered levels with
             # stacked ground blocks first so no transparent gap shows; then cap
             # with the cliff for the rock wall + top surface.
-            cover = tiles.face_height(cliff) // lh
-            if cover < drop:
-                ground = tiles.tile(cell.terrain, cell.variant)
-                goff = tiles.surface_offset(cell.terrain)
-                for fl in range(max(0, L - drop + 1), L - cover + 1):
-                    canvas.paste(ground, (base_x, base_y - fl * lh + goff), ground)
+            cover = max(1, tiles.face_height(cliff) // lh)
             img = tiles.tile(cliff, 0)
-            canvas.paste(img, (base_x, base_y - L * lh + tiles.surface_offset(cliff)), img)
+            coff = tiles.surface_offset(cliff)
+            if cover < drop:
+                # repeat the cliff face itself down the drop (bottom-up) so deep
+                # walls keep the rock texture instead of plain stacked cubes
+                fl = L - cover
+                fills = []
+                while fl > L - drop - 1 and fl >= 0:
+                    fills.append(fl)
+                    fl -= cover
+                for f in reversed(fills):
+                    canvas.paste(img, (base_x, base_y - f * lh + coff), img)
+            canvas.paste(img, (base_x, base_y - L * lh + coff), img)
+        elif drop > 0:
+            # no cliff set (water): stack the cell's own tile down the drop —
+            # stacked water faces read as a waterfall / cascading river terrace
+            img = tiles.tile(cell.terrain, cell.variant)
+            off = tiles.surface_offset(cell.terrain)
+            for fl in range(max(0, L - drop), L + 1):
+                canvas.paste(img, (base_x, base_y - fl * lh + off), img)
         else:
             img = tiles.tile(cell.terrain, cell.variant)
             off = tiles.surface_offset(cell.terrain)
             canvas.paste(img, (base_x, base_y - L * lh + off), img)
+
+        # prop sprite (tree, barrel, ...) anchored bottom-center on the diamond
+        if cell.object:
+            spr = props.get(cell.object)
+            if spr is not None:
+                px = base_x + 32 - spr.width // 2
+                py = base_y - L * lh + 21 - spr.height + 8
+                canvas.paste(spr, (px, py), spr)
 
     if scale != 1:
         canvas = canvas.resize((canvas_w * scale, canvas_h * scale), Image.NEAREST)
