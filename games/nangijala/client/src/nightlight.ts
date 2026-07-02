@@ -105,7 +105,14 @@ void main() {
       - fl * 0.22 * (0.5 + 0.5 * sin(time * 8.7 + float(i) * 5.3))
       - fl * 0.10 * sin(time * 21.0 + float(i) * 11.1);
 
-    light += uLightCol[i].rgb * att * occ * flick;
+    // Fire cools at the rim: fire-type lights (flicker > 0) shift from their
+    // hot core colour toward deep ember red as they attenuate, so the pool
+    // ends in a warm red ring instead of dimming uniformly.
+    vec3 lc = uLightCol[i].rgb;
+    vec3 ember = lc * vec3(0.95, 0.30, 0.12);
+    vec3 col = mix(lc, ember, (1.0 - att) * clamp(fl * 1.4, 0.0, 1.0));
+
+    light += col * att * occ * flick;
   }
 
   gl_FragColor = vec4(min(light, vec3(1.25)), 1.0);

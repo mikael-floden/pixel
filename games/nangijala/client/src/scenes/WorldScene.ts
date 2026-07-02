@@ -141,6 +141,8 @@ export class WorldScene extends Phaser.Scene {
   private shaderLights: ShaderLight[] = [];
   // The spawn campfire: an animated world object with its own fire light.
   private campfire?: { col: number; row: number; z: number; x: number; y: number; depth: number };
+  // [5] toggles the LOCAL player's hand torch (handy for judging fixed lights).
+  private torchOn = true;
 
   constructor() {
     super("world");
@@ -227,7 +229,11 @@ export class WorldScene extends Phaser.Scene {
       this.toggleCollisionOverlay();
       this.chat.addLog("—", `[4] Collision overlay: ${this.collisionOverlay ? "on" : "off"}`);
     });
-    this.chat.addLog("—", "Toggles: [4] collision overlay");
+    this.input.keyboard!.on("keydown-FIVE", () => {
+      this.torchOn = !this.torchOn;
+      this.chat.addLog("—", `[5] My torch: ${this.torchOn ? "on" : "off"}`);
+    });
+    this.chat.addLog("—", "Toggles: [4] collision overlay · [5] my torch");
 
     const cam = this.cameras.main;
     cam.setBounds(0, 0, this.iso.w, this.iso.h);
@@ -546,9 +552,13 @@ export class WorldScene extends Phaser.Scene {
       const sl: ShaderLight[] = [];
       if (this.campfire) {
         const c = this.campfire;
-        sl.push({ col: c.col, row: c.row, z: c.z, radius: 7.5, color: [1.0, 0.62, 0.28], flicker: 1 });
+        // Overbright core: the shader clamps the multiplier at 1.25, so values
+        // >1 widen the hot plateau around the fire (ref: bright ~2 cells, then
+        // a fast falloff into the ember-red rim).
+        sl.push({ col: c.col, row: c.row, z: c.z, radius: 6.5, color: [1.9, 1.0, 0.42], flicker: 1 });
       }
-      for (const a of this.avatars.values()) {
+      for (const [id, a] of this.avatars.entries()) {
+        if (id === myId && !this.torchOn) continue;
         // Grid position from the FLAT authoritative coords (1 cell = CELL_WU
         // world units) — the projected lx/ly live in screen space and put the
         // torch underground, so the terrain shadowed its own light.
@@ -556,8 +566,8 @@ export class WorldScene extends Phaser.Scene {
           col: a.fx / CELL_WU,
           row: a.fy / CELL_WU,
           z: (this.terrain ? levelAtWorld(this.terrain, a.fx, a.fy) : 0) + 0.8,
-          radius: 5.0,
-          color: [0.95, 0.8, 0.55],
+          radius: 4.2,
+          color: [0.9, 0.72, 0.46],
           flicker: 0.35, // hand torch: gentle fire flicker
         });
         if (sl.length >= MAX_SHADER_LIGHTS) break;
@@ -566,17 +576,25 @@ export class WorldScene extends Phaser.Scene {
         if (sl.length >= MAX_SHADER_LIGHTS) break;
         sl.push(l);
       }
-      this.night!.update(this.cameras.main, sl, [0.11, 0.14, 0.27]);
+      // Ambient calibrated against the Sea of Stars night reference: dark,
+      // desaturated, only a MILD blue tilt (B/R ~1.6, not saturated blue).
+      this.night!.update(this.cameras.main, sl, [0.105, 0.125, 0.175]);
     }
 
     const lights: LightSource[] = [];
-    if (!shaderNight) {
-      for (const a of this.avatars.values()) {
-        lights.push({ x: a.lx, y: a.ly - 20 }); // lantern pool
-      }
-      if (this.campfire) {
-        const c = this.campfire;
+    if (this.campfire) {
+      const c = this.campfire;
+      // Additive bloom hugging the flames (both render paths) — the shader
+      // lights the WORLD but the fire itself must also glow, like the ref.
+      const flick = 0.42 + Math.sin(this.time.now / 105) * 0.07 + Math.sin(this.time.now / 41) * 0.04;
+      lights.push({ x: c.x, y: c.y - 7, color: 0xffa64f, radius: 44, alpha: flick, depth: c.depth + 0.2 });
+      if (!shaderNight)
         lights.push({ x: c.x, y: c.y, color: 0xff9e4a, radius: 120, ground: true, depth: c.depth + 0.1 });
+    }
+    if (!shaderNight) {
+      for (const [id, a] of this.avatars.entries()) {
+        if (id === myId && !this.torchOn) continue;
+        lights.push({ x: a.lx, y: a.ly - 20 }); // lantern pool
       }
       lights.push(...this.emissiveLights);
     }

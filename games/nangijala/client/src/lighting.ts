@@ -49,7 +49,7 @@ export interface Preset {
 export const PRESETS: Preset[] = [
   { name: "day", tint: 0xffffff, darkness: 0.0, light: 0xffffff, radius: 200, vignette: 0.0 },
   { name: "dusk", tint: 0xd18f70, darkness: 0.5, light: 0xffcf94, radius: 210, vignette: 0.18 },
-  { name: "night", tint: 0x4a63b8, darkness: 1.0, light: 0xffe4ad, radius: 170, vignette: 0.3 },
+  { name: "night", tint: 0x38445e, darkness: 1.0, light: 0xffe4ad, radius: 170, vignette: 0.3 },
   { name: "dawn", tint: 0xc9a4c4, darkness: 0.4, light: 0xfff1d6, radius: 210, vignette: 0.14 },
 ];
 
@@ -120,7 +120,6 @@ export class Atmosphere {
     const dark = p.darkness > 0 && !this.suppressGrade;
     if (!dark) {
       this.dark.setVisible(false);
-      this.vignette.setVisible(false);
     } else {
       this.dark.setVisible(true);
       this.dark.clear();
@@ -133,8 +132,10 @@ export class Atmosphere {
         this.eraser.setDisplaySize(r * 2, r * 2);
         this.dark.erase(this.eraser, sx, sy);
       }
-      this.vignette.setVisible(p.vignette > 0).setAlpha(p.vignette);
     }
+    // The vignette belongs to the time of day, not the grade — the shader
+    // night keeps it (the reference look has strongly darkened corners).
+    this.vignette.setVisible(p.darkness > 0 && p.vignette > 0).setAlpha(p.vignette);
 
     // Additive glow cores (world space). Coloured (emissive) lights glow even
     // in daylight — lava should read hot at noon; lanterns only at night.
