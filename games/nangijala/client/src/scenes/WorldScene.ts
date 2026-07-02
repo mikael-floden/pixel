@@ -423,10 +423,12 @@ export class WorldScene extends Phaser.Scene {
       if (this.world) {
         const colf = (tx / WORLD_WIDTH) * this.world.width;
         const rowf = (ty / WORLD_HEIGHT) * this.world.height;
-        const sx0 = av.lx - av.sprite.displayWidth / 2;
-        const sx1 = av.lx + av.sprite.displayWidth / 2;
-        const sy0 = av.sprite.y - av.sprite.displayHeight;
-        const sy1 = av.sprite.y;
+        // Sprite bounds with margin: walk frames can dip feet a few px below
+        // the measured idle anchor, so pad the box or edge stamps get missed.
+        const sx0 = av.lx - av.sprite.displayWidth / 2 - 4;
+        const sx1 = av.lx + av.sprite.displayWidth / 2 + 4;
+        const sy0 = av.sprite.y - av.sprite.displayHeight - 4;
+        const sy1 = av.sprite.y + 8;
         let above = -Infinity;
         let below = Infinity;
         for (const o of this.occluderMeta) {
