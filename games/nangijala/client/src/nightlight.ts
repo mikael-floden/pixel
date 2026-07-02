@@ -110,7 +110,8 @@ void main() {
     // ends in a warm red ring instead of dimming uniformly.
     vec3 lc = uLightCol[i].rgb;
     vec3 ember = lc * vec3(0.95, 0.30, 0.12);
-    vec3 col = mix(lc, ember, (1.0 - att) * clamp(fl * 1.4, 0.0, 1.0));
+    float d01 = clamp(dist / radius, 0.0, 1.0);
+    vec3 col = mix(lc, ember, smoothstep(0.45, 1.0, d01) * clamp(fl * 1.2, 0.0, 1.0));
 
     light += col * att * occ * flick;
   }

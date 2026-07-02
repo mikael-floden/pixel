@@ -51,7 +51,7 @@ const CAMPFIRE_KEY = "campfire-burn";
 const CAMPFIRE_URL = "/assets/objects/campfire/animations/burn__south.png";
 const CAMPFIRE_FRAME = 96;
 const CAMPFIRE_FRAMES = 17;
-const CAMPFIRE_SCALE = 23 / 68;
+const CAMPFIRE_SCALE = 30 / 68;
 const CAMPFIRE_BASE = 83 / 96;
 const INPUT_HZ = 20;
 const BUBBLE_MS = 5000;
@@ -555,7 +555,7 @@ export class WorldScene extends Phaser.Scene {
         // Overbright core: the shader clamps the multiplier at 1.25, so values
         // >1 widen the hot plateau around the fire (ref: bright ~2 cells, then
         // a fast falloff into the ember-red rim).
-        sl.push({ col: c.col, row: c.row, z: c.z, radius: 6.5, color: [1.9, 1.0, 0.42], flicker: 1 });
+        sl.push({ col: c.col, row: c.row, z: c.z, radius: 7, color: [1.9, 1.0, 0.42], flicker: 1 });
       }
       for (const [id, a] of this.avatars.entries()) {
         if (id === myId && !this.torchOn) continue;
@@ -578,7 +578,7 @@ export class WorldScene extends Phaser.Scene {
       }
       // Ambient calibrated against the Sea of Stars night reference: dark,
       // desaturated, only a MILD blue tilt (B/R ~1.6, not saturated blue).
-      this.night!.update(this.cameras.main, sl, [0.105, 0.125, 0.175]);
+      this.night!.update(this.cameras.main, sl, [0.085, 0.1, 0.15]);
     }
 
     const lights: LightSource[] = [];
@@ -586,8 +586,8 @@ export class WorldScene extends Phaser.Scene {
       const c = this.campfire;
       // Additive bloom hugging the flames (both render paths) — the shader
       // lights the WORLD but the fire itself must also glow, like the ref.
-      const flick = 0.42 + Math.sin(this.time.now / 105) * 0.07 + Math.sin(this.time.now / 41) * 0.04;
-      lights.push({ x: c.x, y: c.y - 7, color: 0xffa64f, radius: 44, alpha: flick, depth: c.depth + 0.2 });
+      const flick = 0.5 + Math.sin(this.time.now / 105) * 0.07 + Math.sin(this.time.now / 41) * 0.04;
+      lights.push({ x: c.x, y: c.y - 7, color: 0xffa64f, radius: 62, alpha: flick, depth: c.depth + 0.2 });
       if (!shaderNight)
         lights.push({ x: c.x, y: c.y, color: 0xff9e4a, radius: 120, ground: true, depth: c.depth + 0.1 });
     }
@@ -961,7 +961,13 @@ export class WorldScene extends Phaser.Scene {
    * function of the terrain, so the client can find the same cell and dress
    * it without any server round-trip. Its fire feeds the night shader. */
   private placeCampfire() {
-    if (!this.world || !this.terrain || !this.textures.exists(CAMPFIRE_KEY)) return;
+    if (!this.world || !this.terrain) return;
+    if (!this.textures.exists(CAMPFIRE_KEY)) {
+      // Never fail silently: a missing strip (e.g. asset domain absent from
+      // the deploy image) must be visible in the console, not just "no fire".
+      console.warn(`[nangijala] campfire strip missing (${CAMPFIRE_URL}) — fire not placed`);
+      return;
+    }
     const spawn = findSpawn(this.terrain, WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
     const sc = Math.floor(spawn.x / CELL_WU);
     const sr = Math.floor(spawn.y / CELL_WU);

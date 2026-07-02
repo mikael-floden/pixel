@@ -22,6 +22,7 @@ COPY games/nangijala/ ./
 COPY characters/ /assets/characters/
 COPY tiles/ /assets/tiles/
 COPY maps/ /assets/maps/
+COPY objects/ /assets/objects/
 ENV ASSETS_ROOT=/assets
 
 # Generate the character manifest + build the client bundle.
