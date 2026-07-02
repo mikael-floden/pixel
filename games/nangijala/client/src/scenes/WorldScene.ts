@@ -505,12 +505,16 @@ export class WorldScene extends Phaser.Scene {
       const pulse = Math.sin(tsec * 1.3 + a.pulse) * 0.5 + Math.sin(tsec * 4.7 + a.pulse * 2) * 0.2;
       lights.push({ x: a.lx, y: a.ly - 20 }); // lantern pool (night)
       if (!this.auraOn) continue;
+      // Ground-hugging pool at the feet, depth-sorted just below the sprite —
+      // the character stands IN the light, and walls in front occlude it.
       lights.push({
         x: a.lx,
-        y: a.ly - 16,
+        y: a.ly - 1,
         color: 0xffe3b3,
-        radius: 46 + pulse * 5,
-        alpha: 0.15 + pulse * 0.05,
+        radius: 44 + pulse * 4,
+        alpha: 0.16 + pulse * 0.05,
+        ground: true,
+        depth: a.sprite.depth - 0.6,
       });
     }
     lights.push(...this.emissiveLights);
@@ -819,6 +823,8 @@ export class WorldScene extends Phaser.Scene {
             y: this.iso.oy + v * dy + dy - cell.l * lh,
             color: em.color,
             radius: em.radius,
+            ground: true,
+            depth: this.iso.oy + v * dy + dy + 0.2, // occluded by fronting walls
           });
         }
         const tall = cell.l > 0 || (!s.standable && !s.swimmable);

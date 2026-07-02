@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { ISO_DX, ISO_DY } from "@nangijala/shared";
 
 /**
  * Atmosphere layer: a screen-space darkness overlay that light sources punch
@@ -21,6 +22,13 @@ export interface LightSource {
   // Explicit glow strength: a light with `alpha` set is ALWAYS drawn at that
   // alpha (used for the dim pulsing character aura, day and night).
   alpha?: number;
+  // Scene depth for the glow. Lights that belong IN the world (auras, lava)
+  // pass the emitter's depth so walls in front genuinely occlude them —
+  // light must never shine through solid objects. Default: top overlay.
+  depth?: number;
+  // Ground-pool light: squash the glow to the iso ground ratio so it reads
+  // as light LYING ON the ground, not a flat disc pasted over the scene.
+  ground?: boolean;
 }
 
 export interface Preset {
@@ -162,9 +170,11 @@ export class Atmosphere {
         return;
       }
       const r = (l.radius ?? p.radius) * (dark ? 1.15 : 0.8);
+      const h = l.ground ? r * 2 * ((ISO_DY / ISO_DX) * 1.6) : r * 2;
       g.setVisible(true)
         .setPosition(l.x, l.y)
-        .setDisplaySize(r * 2, r * 2)
+        .setDisplaySize(r * 2, h)
+        .setDepth(l.depth ?? GLOW_DEPTH)
         .setTint(l.color ?? p.light)
         .setAlpha(l.alpha ?? (l.color ? (dark ? 0.6 : 0.3) : 0.5));
     });
