@@ -232,6 +232,33 @@ test("feet touching a drop edge commits the fall (no resting overhang)", () => {
   assert.ok(x >= edge, "walked off the ledge (falling still works without a jump)");
 });
 
+test("cleanupRoads: stubs dissolve, roads unify to their majority style", () => {
+  // One long road (5 cells) with a minority style in the middle, plus a
+  // 2-cell orphan stub elsewhere.
+  const g = (t: string, v = 0) => ({ t, v, l: 0 });
+  const rows = [
+    [
+      g("road_dirt_grass_straight", 1),
+      g("road_dirt_grass_straight", 1),
+      g("road_sand_straight", 2),
+      g("road_dirt_grass_turns", 3),
+      g("road_dirt_grass_straight", 1),
+    ],
+    [g("grass"), g("grass"), g("grass"), g("grass"), g("grass")],
+    [g("road_sand_straight", 2), g("road_sand_straight", 2), g("grass"), g("grass"), g("grass")],
+  ];
+  const w = parseWorld({ width: 5, height: 3, rows })!;
+  // Majority style wins along the long road…
+  assert.equal(w.rows[0][2].t, "road_dirt_grass_straight");
+  // …reusing only variants that exist in the map for that category.
+  assert.ok([1].includes(w.rows[0][2].v));
+  // Turns keep their suffix.
+  assert.equal(w.rows[0][3].t, "road_dirt_grass_turns");
+  // The 2-cell stub dissolves into surrounding ground.
+  assert.equal(w.rows[2][0].t, "grass");
+  assert.equal(w.rows[2][1].t, "grass");
+});
+
 test("stepStamina drains in water, drowns at zero, regenerates on land", () => {
   const drain = stepStamina(MAX_STAMINA, true, 1);
   assert.equal(drain.stamina, MAX_STAMINA - SWIM_DRAIN);

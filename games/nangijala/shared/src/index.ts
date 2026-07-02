@@ -329,6 +329,7 @@ export interface ParsedWorld {
 export function parseWorld(json: any): ParsedWorld | null {
   if (!json) return null;
   if (Array.isArray(json.rows) && typeof json.width === "number") {
+    cleanupRoads(json.width, json.height, json.rows);
     return { width: json.width, height: json.height, rows: json.rows, pois: json.pois ?? [] };
   }
   if (typeof json.w === "number" && Array.isArray(json.terr) && Array.isArray(json.categories)) {
@@ -351,9 +352,100 @@ export function parseWorld(json: any): ParsedWorld | null {
       }
       rows.push(row);
     }
+    cleanupRoads(json.w, json.h, rows);
     return { width: json.w, height: json.h, rows, pois: json.pois ?? [] };
   }
   return null;
+}
+
+/**
+ * Cosmetic repair for the generator's road defects (also reported upstream to
+ * the maps agent — this pass becomes a no-op once they ship clean roads):
+ * 1. Orphan stubs (road components of ≤ STUB_MAX cells) are replaced with
+ *    neighbouring ground so the map isn't littered with disconnected bits.
+ * 2. Each road component is restyled to its MAJORITY style (e.g. all
+ *    road_dirt_grass), so a single road doesn't flip styles back and forth.
+ *    Restyles only use (category, variant) pairs that exist elsewhere in the
+ *    map, so every referenced tile file is guaranteed to exist.
+ * Runs inside parseWorld → server terrain and client render stay identical.
+ */
+const ROAD_STUB_MAX = 4;
+
+export function cleanupRoads(width: number, height: number, rows: WorldCell[][]): void {
+  const isRoad = (t: string) => t.startsWith("road_");
+  const styleOf = (t: string) => t.replace(/_(straight|turns|junctions)$/, "");
+  const suffixOf = (t: string) => t.match(/_(straight|turns|junctions)$/)?.[1] ?? "straight";
+
+  // Variants actually used per category anywhere in the map (=> files exist).
+  const usedVariants = new Map<string, Set<number>>();
+  for (const row of rows) {
+    for (const cell of row) {
+      let set = usedVariants.get(cell.t);
+      if (!set) usedVariants.set(cell.t, (set = new Set()));
+      set.add(cell.v);
+    }
+  }
+
+  const seen = new Set<number>();
+  const idx = (c: number, r: number) => r * width + c;
+  for (let r0 = 0; r0 < height; r0++) {
+    for (let c0 = 0; c0 < width; c0++) {
+      if (!isRoad(rows[r0][c0].t) || seen.has(idx(c0, r0))) continue;
+      // Flood-fill this road component (8-connected).
+      const comp: [number, number][] = [];
+      const stack: [number, number][] = [[c0, r0]];
+      seen.add(idx(c0, r0));
+      while (stack.length) {
+        const [c, r] = stack.pop()!;
+        comp.push([c, r]);
+        for (let dc = -1; dc <= 1; dc++) {
+          for (let dr = -1; dr <= 1; dr++) {
+            const nc = c + dc;
+            const nr = r + dr;
+            if (nc < 0 || nr < 0 || nc >= width || nr >= height) continue;
+            if (seen.has(idx(nc, nr)) || !isRoad(rows[nr][nc].t)) continue;
+            seen.add(idx(nc, nr));
+            stack.push([nc, nr]);
+          }
+        }
+      }
+      if (comp.length <= ROAD_STUB_MAX) {
+        // Orphan stub: dissolve into the surrounding ground.
+        for (const [c, r] of comp) {
+          let filler: WorldCell | null = null;
+          for (const [dc, dr] of [[0, 1], [0, -1], [1, 0], [-1, 0]] as const) {
+            const nb = rows[r + dr]?.[c + dc];
+            if (nb && !isRoad(nb.t) && surfaceFor(nb.t).standable) {
+              filler = nb;
+              break;
+            }
+          }
+          const cell = rows[r][c];
+          cell.t = filler?.t ?? "grass";
+          cell.v = filler?.v ?? 0;
+        }
+        continue;
+      }
+      // Majority style for the component; restyle minority cells where the
+      // target (category, variant) demonstrably exists in the map.
+      const tally = new Map<string, number>();
+      for (const [c, r] of comp) {
+        const s = styleOf(rows[r][c].t);
+        tally.set(s, (tally.get(s) ?? 0) + 1);
+      }
+      const major = [...tally.entries()].sort((a, b) => b[1] - a[1])[0][0];
+      for (const [c, r] of comp) {
+        const cell = rows[r][c];
+        if (styleOf(cell.t) === major) continue;
+        const target = `${major}_${suffixOf(cell.t)}`;
+        const variants = usedVariants.get(target) ?? usedVariants.get(`${major}_straight`);
+        const targetCat = usedVariants.has(target) ? target : `${major}_straight`;
+        if (!variants || variants.size === 0) continue; // style lacks tiles: keep as-is
+        cell.t = targetCat;
+        if (!variants.has(cell.v)) cell.v = variants.values().next().value!;
+      }
+    }
+  }
 }
 
 /** Per-cell elevation + tile category over the world grid (row-major). */
