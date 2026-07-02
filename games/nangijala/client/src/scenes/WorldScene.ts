@@ -42,12 +42,14 @@ const ANIM_FPS: Record<string, number> = { idle: 6, walk: 12, run: 14 };
 const INPUT_HZ = 20;
 const BUBBLE_MS = 5000;
 const PLACEHOLDER_TEX = "placeholder:wanderer";
+const SHADOW_TEX = "avatar:shadow";
 const JUMP_HEIGHT = 16; // px peak of the jump hop
 const SWIM_SINK = 6; // px the sprite sinks while swimming
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
 
 interface Avatar {
   sprite: Phaser.GameObjects.Sprite;
+  shadow: Phaser.GameObjects.Image;
   label: Phaser.GameObjects.Text;
   character: string;
   // Logical (eased) ground position; the sprite is drawn at this minus the jump
@@ -129,6 +131,7 @@ export class WorldScene extends Phaser.Scene {
 
   async create() {
     this.ensurePlaceholderTexture();
+    this.ensureShadowTexture();
     this.buildAnimations();
     if (this.world) this.setupStreamingGround();
     else this.drawGround();
@@ -187,6 +190,7 @@ export class WorldScene extends Phaser.Scene {
       const av = this.avatars.get(id);
       if (av) {
         av.sprite.destroy();
+        av.shadow.destroy();
         av.label.destroy();
         av.bubble?.destroy();
         this.avatars.delete(id);
@@ -294,8 +298,11 @@ export class WorldScene extends Phaser.Scene {
     const label = this.add
       .text(p0.x, p0.y, player.name, { fontFamily: "monospace", fontSize: "12px", color: "#eef" })
       .setOrigin(0.5, 1);
+    // Drop shadow at the collision anchor — marks the exact ground position.
+    const shadow = this.add.image(p0.x, p0.y, SHADOW_TEX).setOrigin(0.5, 0.5).setDisplaySize(30, 12);
     this.avatars.set(id, {
       sprite,
+      shadow,
       label,
       character: uid,
       lx: p0.x,
@@ -389,6 +396,15 @@ export class WorldScene extends Phaser.Scene {
       av.sprite.x = av.lx;
       av.sprite.y = av.ly - hop + sink;
       av.sprite.setDepth(av.ly);
+      // Shadow: always at the GROUND point (the collision anchor) — it stays
+      // put while the sprite hops, shrinking a little at the jump's peak.
+      const hopFrac = hop / JUMP_HEIGHT;
+      av.shadow
+        .setPosition(av.lx, av.ly)
+        .setVisible(!av.swimming)
+        .setAlpha(1 - hopFrac * 0.35)
+        .setDisplaySize(34 - hopFrac * 9, 14 - hopFrac * 4)
+        .setDepth(av.ly - 0.5);
       const topY = av.sprite.y - av.sprite.displayHeight * av.sprite.originY;
       av.label.setPosition(av.lx, topY - 4);
       if (av.bubble) {
@@ -653,6 +669,26 @@ export class WorldScene extends Phaser.Scene {
       x: this.iso.ox + (col - row) * dx + tile / 2,
       y: this.iso.oy + (col + row) * dy + dy - lvl * lh,
     };
+  }
+
+  /** Soft elliptical drop shadow (Mario 64 style): drawn once, reused by every
+   * avatar. Squashed to the iso ground ratio so it reads as lying on the tile. */
+  private ensureShadowTexture() {
+    if (this.textures.exists(SHADOW_TEX)) return;
+    const w = 64;
+    const h = 26; // ISO_DY/ISO_DX ground squash
+    const tex = this.textures.createCanvas(SHADOW_TEX, w, h);
+    const ctx = tex!.getContext();
+    ctx.save();
+    ctx.scale(1, h / w); // draw a circle in a squashed space → ellipse on canvas
+    const grd = ctx.createRadialGradient(w / 2, w / 2, 0, w / 2, w / 2, w / 2);
+    grd.addColorStop(0, "rgba(0,0,0,0.62)");
+    grd.addColorStop(0.65, "rgba(0,0,0,0.42)");
+    grd.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, w, w);
+    ctx.restore();
+    tex!.refresh();
   }
 
   /** Draw the art-free "Wanderer" fallback sprite into a texture once. A small
