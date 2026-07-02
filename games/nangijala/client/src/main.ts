@@ -27,7 +27,20 @@ async function bootMapPreview(): Promise<boolean> {
   return true;
 }
 
+/** Tiny build-version badge so testers can tell which deploy they're running. */
+function showVersion() {
+  const sha = (import.meta.env.VITE_GIT_SHA as string | undefined) || "dev";
+  console.log(`[nangijala] build ${sha}`);
+  const el = document.createElement("div");
+  el.textContent = sha.slice(0, 7);
+  el.style.cssText =
+    "position:fixed;left:6px;bottom:4px;z-index:50;font:11px monospace;color:#8890b3;" +
+    "opacity:.7;pointer-events:none;user-select:none";
+  document.body.appendChild(el);
+}
+
 async function boot() {
+  showVersion();
   if (await bootMapPreview()) return;
   const manifest = await loadManifest();
   // The art agents periodically reset/regenerate the roster, so it can be empty.

@@ -25,6 +25,10 @@ COPY maps/ /assets/maps/
 ENV ASSETS_ROOT=/assets
 
 # Generate the character manifest + build the client bundle.
+# Bake the deployed commit into the bundle so testers can see which version
+# they're running (bottom-left in-game + console).
+ARG GIT_SHA=dev
+ENV VITE_GIT_SHA=$GIT_SHA
 RUN npm run build:client
 
 ENV NODE_ENV=production
