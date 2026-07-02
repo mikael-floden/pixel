@@ -127,8 +127,22 @@ test("screen-relative input: Right moves straight right on screen", () => {
   assert.ok(dx > 0 && dy < 0, "world +x,−y");
   assert.ok(Math.abs(dx + dy) < 1e-6, "opposite components → horizontal on screen");
   assert.equal(r.dir, "east");
-  // World-space speed stays normalized (fair movement rate in tiles/sec).
-  assert.ok(Math.abs(Math.hypot(dx, dy) - WALK_SPEED) < 1e-6);
+});
+
+test("screen speed is uniform: Up, Right and diagonals all move equally fast on screen", () => {
+  const screenSpeed = (ax: number, ay: number) => {
+    const r = stepMovement(800, 800, ax, ay, false, 1, undefined, 1, true);
+    const dx = r.x - 800;
+    const dy = r.y - 800;
+    // Project the world displacement back to screen pixels (per iso geometry).
+    return Math.hypot((dx - dy) * 32, (dx + dy) * 13);
+  };
+  const up = screenSpeed(0, -1);
+  const right = screenSpeed(1, 0);
+  const diag = screenSpeed(1, 1);
+  assert.ok(Math.abs(up - right) < 1e-6, `up ${up} == right ${right}`);
+  assert.ok(Math.abs(diag - right) < 1e-6, `diag ${diag} == right ${right}`);
+  assert.ok(up > 0);
 });
 
 test("stepStamina drains in water, drowns at zero, regenerates on land", () => {

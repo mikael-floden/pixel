@@ -87,14 +87,28 @@ export interface MoveResult {
 export const ISO_DX = 32;
 export const ISO_DY = 13;
 
-/** Convert a screen-space input vector (arrows as the player sees them) into
- * the world-space direction that produces that on-screen movement. */
+// Screen-speed calibration: the returned world vector is scaled so the
+// PROJECTED on-screen speed is identical in every direction (the projection
+// compresses vertical by ISO_DY/ISO_DX ≈ 2.5×, so equal world speeds would
+// look much faster horizontally). REF picks the overall feel: at REF = ISO_DX
+// a walk covers ~ISO_DX·WALK_SPEED/…px/s in ANY screen direction — between the
+// old horizontal (faster) and old vertical (slower) speeds.
+const SCREEN_SPEED_REF = ISO_DX;
+
+/** Convert a screen-space input vector (arrows as the player sees them) into a
+ * world-space velocity direction, scaled for uniform on-screen speed. The
+ * result's magnitude is the speed multiplier (not normalized to 1). */
 export function screenToWorldVector(ix: number, iy: number): { x: number; y: number } {
   const wx = ix / ISO_DX + iy / ISO_DY;
   const wy = iy / ISO_DY - ix / ISO_DX;
   const len = Math.hypot(wx, wy);
   if (len < 1e-9) return { x: 0, y: 0 };
-  return { x: wx / len, y: wy / len };
+  const ux = wx / len;
+  const uy = wy / len;
+  // Projected screen-speed factor of this unit world vector.
+  const screenLen = Math.hypot((ux - uy) * ISO_DX, (ux + uy) * ISO_DY);
+  const k = SCREEN_SPEED_REF / screenLen;
+  return { x: ux * k, y: uy * k };
 }
 
 /** Blocked test for a *move*: is entering (toX,toY) from (fromX,fromY) disallowed?

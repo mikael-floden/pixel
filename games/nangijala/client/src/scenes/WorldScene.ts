@@ -324,7 +324,7 @@ export class WorldScene extends Phaser.Scene {
         let rx = player.x;
         let ry = player.y;
         const jumping = this.time.now < this.jumpUntil;
-        for (const p of this.pending) {
+        const stepLocal = (ax: number, ay: number, running: boolean, sdt: number) => {
           let blocked;
           let speed = 1;
           if (this.terrain) {
@@ -333,10 +333,15 @@ export class WorldScene extends Phaser.Scene {
             speed = surfaceAtWorld(this.terrain, rx, ry).speed;
           }
           // screenInput matches the server: on the iso world, input is screen-relative.
-          const r = stepMovement(rx, ry, p.ax, p.ay, p.running, p.dt, blocked, speed, !!this.terrain);
+          const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain);
           rx = r.x;
           ry = r.y;
-        }
+        };
+        for (const p of this.pending) stepLocal(p.ax, p.ay, p.running, p.dt);
+        // Integrate the not-yet-sent input tail too, so the local player moves
+        // every FRAME (60fps-smooth) instead of only at the 20Hz send tick.
+        if (this.sendAccum > 0)
+          stepLocal(this.lastInput.ax, this.lastInput.ay, this.lastInput.running, this.sendAccum);
         tx = rx;
         ty = ry;
         // Animate from live input for instant turn/walk feedback.
@@ -355,7 +360,7 @@ export class WorldScene extends Phaser.Scene {
       // Project the authoritative world position onto the iso ground, then ease
       // the logical position toward it (snappier for the local player).
       const target = this.project(tx, ty);
-      const k = Math.min(1, dt * (id === myId ? 30 : 12));
+      const k = Math.min(1, dt * (id === myId ? 45 : 12));
       av.lx += (target.x - av.lx) * k;
       av.ly += (target.y - av.ly) * k;
 
