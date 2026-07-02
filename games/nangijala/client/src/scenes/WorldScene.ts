@@ -612,7 +612,22 @@ export class WorldScene extends Phaser.Scene {
       }
       // Ambient calibrated against the Sea of Stars night reference: dark,
       // desaturated, only a MILD blue tilt (B/R ~1.6, not saturated blue).
-      this.night!.update(this.cameras.main, sl, [0.075, 0.09, 0.14]);
+      // Billboard carve-outs: each avatar's sprite area is lit by its ground
+      // cell, not by the terrain behind it.
+      const avs = [];
+      for (const a of this.avatars.values()) {
+        if (avs.length >= 8) break;
+        avs.push({
+          x: a.lx,
+          y: a.ly,
+          halfW: a.sprite.displayWidth * 0.42,
+          height: a.sprite.displayHeight * 0.95,
+          col: a.fx / CELL_WU,
+          row: a.fy / CELL_WU,
+          z: this.terrain ? levelAtWorld(this.terrain, a.fx, a.fy) : 0,
+        });
+      }
+      this.night!.update(this.cameras.main, sl, [0.075, 0.09, 0.14], avs);
     }
 
     const lights: LightSource[] = [];

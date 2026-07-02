@@ -27,6 +27,7 @@ export interface ShaderLight {
 }
 
 export const MAX_SHADER_LIGHTS = 6;
+export const MAX_AVATARS = 8;
 
 const FRAG = `
 precision highp float;
@@ -42,6 +43,9 @@ uniform float uTest;      // 1 = output a raw world-y gradient (calibration)
 uniform float uNumLights;
 uniform vec4 uLightPos[${MAX_SHADER_LIGHTS}];  // col, row, z, radius(cells)
 uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
+uniform float uNumAvatars;
+uniform vec4 uAvA[${MAX_AVATARS}];  // billboard: feet x, feet y, halfW, height
+uniform vec4 uAvB[${MAX_AVATARS}];  // ground: col, row, z, -
 uniform sampler2D uHeight;
 
 float heightAt(vec2 cr) {
@@ -136,6 +140,26 @@ void main() {
     // Off-map / unresolved: plain ambient.
     gl_FragColor = vec4(uAmbient, 1.0);
     return;
+  }
+
+  // Characters are vertical BILLBOARDS: their upper pixels would sample the
+  // terrain behind them (a shadowed backdrop blacked out heads/torsos).
+  // Inside an avatar's billboard the lighting is taken from the avatar's own
+  // GROUND cell instead, blended softly at the edges so no seam shows.
+  float aBest = 0.0;
+  vec3 avCR = vec3(0.0);
+  for (int i = 0; i < ${MAX_AVATARS}; i++) {
+    if (float(i) >= uNumAvatars) continue;
+    vec4 A = uAvA[i];
+    float ax = clamp((A.z - abs(wx - A.x)) / 6.0, 0.0, 1.0);
+    float ayTop = clamp((wy - (A.y - A.w)) / 6.0, 0.0, 1.0);
+    float ayBot = clamp(((A.y + 6.0) - wy) / 6.0, 0.0, 1.0);
+    float a = min(ax, min(ayTop, ayBot));
+    if (a > aBest) { aBest = a; avCR = uAvB[i].xyz; }
+  }
+  if (aBest > 0.0) {
+    cell = mix(cell, avCR.xy, aBest);
+    z = mix(z, avCR.z, aBest);
   }
 
   vec3 light = uAmbient;
@@ -237,6 +261,8 @@ export class NightLights {
   private overlay?: Phaser.GameObjects.Image;
   private posArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private colArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
+  private avAArr = new Float32Array(MAX_AVATARS * 4);
+  private avBArr = new Float32Array(MAX_AVATARS * 4);
   private fieldCount = 0;
   active = false;
   // Live calibration (debug keys): rendering-path differences between GPUs
@@ -266,6 +292,9 @@ export class NightLights {
       uNumLights: { type: "1f", value: 0 },
       uLightPos: { type: "4fv", value: this.posArr },
       uLightCol: { type: "4fv", value: this.colArr },
+      uNumAvatars: { type: "1f", value: 0 },
+      uAvA: { type: "4fv", value: this.avAArr },
+      uAvB: { type: "4fv", value: this.avBArr },
       uHeight: { type: "sampler2D", value: null },
     });
     // Shader GameObjects can't blend directly — render the light field to a
@@ -367,7 +396,12 @@ export class NightLights {
     };
   }
 
-  update(cam: Phaser.Cameras.Scene2D.Camera, lights: ShaderLight[], ambient: [number, number, number]) {
+  update(
+    cam: Phaser.Cameras.Scene2D.Camera,
+    lights: ShaderLight[],
+    ambient: [number, number, number],
+    avatars: { x: number; y: number; halfW: number; height: number; col: number; row: number; z: number }[] = [],
+  ) {
     if (!this.shader || !this.active) return;
     const s = this.shader;
     // Ground-truth calibrated by raw suv readback: the zoomed overlay shows
@@ -413,5 +447,20 @@ export class NightLights {
     s.setUniform("uNumLights.value", n);
     s.setUniform("uLightPos.value", this.posArr);
     s.setUniform("uLightCol.value", this.colArr);
+    const m = Math.min(avatars.length, MAX_AVATARS);
+    for (let i = 0; i < m; i++) {
+      const a = avatars[i];
+      this.avAArr[i * 4] = a.x;
+      this.avAArr[i * 4 + 1] = a.y;
+      this.avAArr[i * 4 + 2] = a.halfW;
+      this.avAArr[i * 4 + 3] = a.height;
+      this.avBArr[i * 4] = a.col;
+      this.avBArr[i * 4 + 1] = a.row;
+      this.avBArr[i * 4 + 2] = a.z;
+      this.avBArr[i * 4 + 3] = 0;
+    }
+    s.setUniform("uNumAvatars.value", m);
+    s.setUniform("uAvA.value", this.avAArr);
+    s.setUniform("uAvB.value", this.avBArr);
   }
 }
