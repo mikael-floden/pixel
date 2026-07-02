@@ -402,10 +402,19 @@ export class WorldScene extends Phaser.Scene {
 
       av.sprite.x = av.lx;
       av.sprite.y = av.ly - hop + sink;
-      // Depth = UNLIFTED ground y (add the elevation back), so standing ON a
-      // raised tile you render above its column, standing BEHIND it you don't.
+      // Depth = UNLIFTED ground y (add the elevation back), clamped to at
+      // least the centre line of the cell under the feet — so standing ON a
+      // raised column you always render above it, while columns in FRONT
+      // (whose centre line is deeper) still cover you.
       const lvl = this.terrain ? levelAtWorld(this.terrain, tx, ty) : 0;
-      av.sprite.setDepth(av.ly + lvl * MAP_GEOMETRY.lh + 1);
+      let depth = av.ly + lvl * MAP_GEOMETRY.lh + 1;
+      if (this.world) {
+        const col = Math.floor((tx / WORLD_WIDTH) * this.world.width);
+        const row = Math.floor((ty / WORLD_HEIGHT) * this.world.height);
+        const ownCenter = this.iso.oy + (col + row + 1) * MAP_GEOMETRY.dy + 0.5;
+        depth = Math.max(depth, ownCenter);
+      }
+      av.sprite.setDepth(depth);
       // Shadow: always at the GROUND point (the collision anchor) — it stays
       // put while the sprite hops, shrinking a little at the jump's peak.
       const hopFrac = hop / JUMP_HEIGHT;
@@ -728,8 +737,12 @@ export class WorldScene extends Phaser.Scene {
         if (!this.textures.exists(key)) continue;
         const bx = this.iso.ox + u * dx;
         const by = this.iso.oy + v * dy;
+        // Depth = the column's CENTRE line (by + dy). Comparing sprites against
+        // the top vertex is ambiguous for diagonal neighbours — a tall wall SE
+        // of the player would lose the depth fight and the player rendered on
+        // top of it.
         for (let lvl = 0; lvl <= cell.l; lvl++) {
-          this.occluders.push(this.add.image(bx, by - lvl * lh, key).setOrigin(0, 0).setDepth(by));
+          this.occluders.push(this.add.image(bx, by - lvl * lh, key).setOrigin(0, 0).setDepth(by + dy));
         }
       }
     }
