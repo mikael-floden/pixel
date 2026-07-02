@@ -117,8 +117,6 @@ export class WorldScene extends Phaser.Scene {
   // Occlusion: raised/solid tiles near the camera drawn as depth-sorted images
   // so they cover characters standing BEHIND them (the ground RT is flat).
   private occluders: Phaser.GameObjects.Image[] = [];
-  // Standing world columns lit per-cell by the CPU twin of the night shader.
-  private occLit: { img: Phaser.GameObjects.Image; col: number; row: number; z: number; obj: boolean }[] = [];
   private occluderMeta: {
     col: number;
     row: number;
@@ -503,7 +501,7 @@ export class WorldScene extends Phaser.Scene {
       // Swimming: sink slightly and tint blue so it reads as being in water.
       av.swimming = !!player.swimming;
       const sink = av.swimming ? SWIM_SINK : 0;
-      if (!this.night?.active) av.sprite.setTint(av.swimming ? 0x6fb3ff : av.baseTint);
+      av.sprite.setTint(av.swimming ? 0x6fb3ff : av.baseTint);
 
       av.sprite.x = av.lx;
       av.sprite.y = av.ly - hop + sink;
@@ -648,24 +646,52 @@ export class WorldScene extends Phaser.Scene {
     this.atmo.update(lights, this.cameras.main, dt);
   }
 
-  /** Light every STANDING object by its own cell (CPU twin of the shader):
-   * a sprite's tint follows its texture alpha, so silhouettes are exact. */
+  /** Per-frame avatar light mask: draw each avatar's silhouette FILLED with
+   * the light colour of its ground cell into the shader's mask, then punch
+   * out any wall drawn in front so occlusion still shades correctly. */
   private applyObjectLights() {
     const night = this.night;
     if (!night || !night.active) return;
-    for (const e of this.occLit) {
-      e.img.setTint(night.tintAt(e.col + 0.5, e.row + 0.5, e.z, e.obj));
-    }
-    // The fire lights itself (its bloom carries the glow).
-    this.campfireSprite?.setTint(0xffffff);
+    const rt = night.maskBegin();
+    if (!rt) return;
+    const wv = this.cameras.main.worldView;
+    let minDepth = Infinity;
     for (const a of this.avatars.values()) {
       const lvl = this.terrain ? levelAtWorld(this.terrain, a.fx, a.fy) : 0;
-      const light = night.lightAt(a.fx / CELL_WU, a.fy / CELL_WU, lvl, false);
-      const base = a.swimming ? 0x6fb3ff : a.baseTint;
-      const r = Math.min(255, Math.round(((base >> 16) & 0xff) * Math.min(1, light[0])));
-      const g = Math.min(255, Math.round(((base >> 8) & 0xff) * Math.min(1, light[1])));
-      const b = Math.min(255, Math.round((base & 0xff) * Math.min(1, light[2])));
-      a.sprite.setTint((r << 16) | (g << 8) | b);
+      const l = night.lightAt(a.fx / CELL_WU, a.fy / CELL_WU, lvl, false);
+      const r = Math.min(255, Math.round(Math.min(1, l[0]) * 255));
+      const g = Math.min(255, Math.round(Math.min(1, l[1]) * 255));
+      const b = Math.min(255, Math.round(Math.min(1, l[2]) * 255));
+      a.sprite.setTintFill((r << 16) | (g << 8) | b);
+      rt.draw(a.sprite, a.sprite.x - wv.x, a.sprite.y - wv.y);
+      a.sprite.setTint(a.swimming ? 0x6fb3ff : a.baseTint);
+      minDepth = Math.min(minDepth, a.sprite.depth);
+    }
+    if (this.campfireSprite) {
+      // The fire is self-luminous: full-bright silhouette.
+      this.campfireSprite.setTintFill(0xffffff);
+      rt.draw(this.campfireSprite, this.campfireSprite.x - wv.x, this.campfireSprite.y - wv.y);
+      this.campfireSprite.clearTint();
+    }
+    // Walls drawn IN FRONT of an avatar must keep their own (field) lighting.
+    // Only erase the handful that actually overlap an avatar's sprite box.
+    const boxes: { x0: number; x1: number; y0: number; y1: number; d: number }[] = [];
+    for (const a of this.avatars.values()) {
+      boxes.push({
+        x0: a.sprite.x - a.sprite.displayWidth / 2,
+        x1: a.sprite.x + a.sprite.displayWidth / 2,
+        y0: a.sprite.y - a.sprite.displayHeight,
+        y1: a.sprite.y + 8,
+        d: a.sprite.depth,
+      });
+    }
+    for (const o of this.occluders) {
+      for (const b of boxes) {
+        if (o.depth > b.d && o.x < b.x1 && o.x + 64 > b.x0 && o.y < b.y1 && o.y + 64 > b.y0) {
+          rt.erase(o, o.x - wv.x, o.y - wv.y);
+          break;
+        }
+      }
     }
   }
 
@@ -942,7 +968,6 @@ export class WorldScene extends Phaser.Scene {
     this.lastOccl = { x: ccx, y: ccy };
     for (const im of this.occluders) im.destroy();
     this.occluders = [];
-    this.occLit = [];
     this.occluderMeta = [];
     this.emissiveLights = [];
     this.shaderLights = [];
@@ -995,9 +1020,7 @@ export class WorldScene extends Phaser.Scene {
         // depth against these per frame (see update) since a single scalar
         // can't resolve every sprite-vs-column case exactly.
         for (let lvl = 0; lvl <= cell.l; lvl++) {
-          const img = this.add.image(bx, by - lvl * lh, key).setOrigin(0, 0).setDepth(by + dy);
-          this.occluders.push(img);
-          this.occLit.push({ img, col, row, z: Math.min(lvl + 0.5, cell.l), obj: !s.standable && !s.swimmable });
+          this.occluders.push(this.add.image(bx, by - lvl * lh, key).setOrigin(0, 0).setDepth(by + dy));
         }
         this.occluderMeta.push({
           col,
