@@ -102,7 +102,8 @@ void main() {
   // has alpha, that colour IS the multiplier — silhouette-exact, and walls
   // in front punch holes so occlusion still shades correctly.
   if (uMaskOn > 0.5) {
-    vec2 mUV = vec2((wx - uView.x) / uView.z, (wy - uView.y) / uView.w);
+    // RenderTextures are FBO-backed: rows are GPU-bottom-up when sampled raw.
+    vec2 mUV = vec2((wx - uView.x) / uView.z, 1.0 - (wy - uView.y) / uView.w);
     if (mUV.x >= 0.0 && mUV.x <= 1.0 && mUV.y >= 0.0 && mUV.y <= 1.0) {
       vec4 m = texture2D(uMask, mUV);
       if (m.a > 0.5) {
