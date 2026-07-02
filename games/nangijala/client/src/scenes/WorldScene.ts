@@ -161,8 +161,9 @@ export class WorldScene extends Phaser.Scene {
 
     const cam = this.cameras.main;
     cam.setBounds(0, 0, this.iso.w, this.iso.h);
-    // Native 1:1 — pixel art is never scaled up.
-    cam.setZoom(1);
+    // 2× integer zoom: closer view, still crisp (nearest-neighbour, no
+    // fractional scaling of the pixel art).
+    cam.setZoom(2);
     cam.setBackgroundColor(this.world ? "#181c28" : "#1b3327");
 
     try {
