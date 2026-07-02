@@ -18,6 +18,9 @@ export interface LightSource {
   // Emissive colour (e.g. lava orange, crystal cyan). Coloured lights glow
   // even in full daylight; uncoloured ones (player lanterns) only at night.
   color?: number;
+  // Explicit glow strength: a light with `alpha` set is ALWAYS drawn at that
+  // alpha (used for the dim pulsing character aura, day and night).
+  alpha?: number;
 }
 
 export interface Preset {
@@ -153,7 +156,8 @@ export class Atmosphere {
     this.syncGlowPool(lights.length);
     this.glows.forEach((g, i) => {
       const l = lights[i];
-      if (!l || (!dark && !l.color)) {
+      const always = l && l.alpha !== undefined;
+      if (!l || (!dark && !l.color && !always)) {
         g.setVisible(false);
         return;
       }
@@ -162,7 +166,7 @@ export class Atmosphere {
         .setPosition(l.x, l.y)
         .setDisplaySize(r * 2, r * 2)
         .setTint(l.color ?? p.light)
-        .setAlpha(l.color ? (dark ? 0.6 : 0.3) : 0.5);
+        .setAlpha(l.alpha ?? (l.color ? (dark ? 0.6 : 0.3) : 0.5));
     });
   }
 

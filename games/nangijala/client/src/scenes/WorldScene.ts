@@ -68,6 +68,7 @@ interface Avatar {
   hopUntil: number;
   swimming: boolean;
   baseTint: number;
+  pulse: number; // aura pulse phase (per player, so auras don't sync)
   bubble?: Phaser.GameObjects.Text;
   bubbleUntil?: number;
 }
@@ -118,6 +119,7 @@ export class WorldScene extends Phaser.Scene {
   private jumpQueued = false;
   private staminaBar?: Phaser.GameObjects.Graphics;
   private atmo!: Atmosphere;
+  private auraOn = true;
 
   constructor() {
     super("world");
@@ -184,6 +186,11 @@ export class WorldScene extends Phaser.Scene {
     this.input.keyboard!.on("keydown-SPACE", () => this.tryJump());
     // Debug: press C to visualize water (swimmable) terrain cells.
     this.input.keyboard!.on("keydown-C", () => this.toggleCollisionOverlay());
+    // V toggles the character aura (A/B the Sea-of-Stars-style glow live).
+    this.input.keyboard!.on("keydown-V", () => {
+      this.auraOn = !this.auraOn;
+      this.chat.addLog("—", `Character aura: ${this.auraOn ? "on" : "off"}`);
+    });
     // Atmosphere: L cycles time-of-day (day/dusk/night/dawn), G toggles fog.
     this.input.keyboard!.on("keydown-L", () => this.chat.addLog("—", `Time of day: ${this.atmo.cyclePreset()}`));
     this.input.keyboard!.on("keydown-G", () => this.chat.addLog("—", `Fog: ${this.atmo.toggleFog() ? "on" : "off"}`));
@@ -336,6 +343,7 @@ export class WorldScene extends Phaser.Scene {
       hopUntil: 0,
       swimming: false,
       baseTint,
+      pulse: [...id].reduce((h, ch) => h + ch.charCodeAt(0), 0) % 63,
     });
     this.applyAnimState(this.avatars.get(id)!, player.moving, player.running, player.dir);
   }
@@ -482,7 +490,22 @@ export class WorldScene extends Phaser.Scene {
     if (me) this.drawStaminaBar(me.stamina ?? MAX_STAMINA, !!me.swimming);
 
     // Atmosphere: each player is a light source (lantern at the torso).
-    const lights: LightSource[] = [...this.avatars.values()].map((a) => ({ x: a.lx, y: a.ly - 20 }));
+    // Each player contributes a night lantern pool + a dim, slowly pulsing
+    // aura (Sea of Stars-style) that grounds the character in the scene.
+    const tsec = this.time.now / 1000;
+    const lights: LightSource[] = [];
+    for (const a of this.avatars.values()) {
+      const pulse = Math.sin(tsec * 1.3 + a.pulse) * 0.5 + Math.sin(tsec * 4.7 + a.pulse * 2) * 0.2;
+      lights.push({ x: a.lx, y: a.ly - 20 }); // lantern pool (night)
+      if (!this.auraOn) continue;
+      lights.push({
+        x: a.lx,
+        y: a.ly - 16,
+        color: 0xffe3b3,
+        radius: 46 + pulse * 5,
+        alpha: 0.15 + pulse * 0.05,
+      });
+    }
     lights.push(...this.emissiveLights);
     this.atmo.update(lights, this.cameras.main, dt);
   }
