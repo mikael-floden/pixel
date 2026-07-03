@@ -475,16 +475,29 @@ export class NightLights {
     this.profRows = scored.length;
   }
 
-  /** Grid heightmap texture: R = level*16 (levels 0..9 → 0..144). Solid
-   * structures (trees, boulders…) count one level above their ground, same
-   * as the occlusion renderer — they must block light, not just players. */
+  /** TWO heightmaps — surface geometry vs occlusion geometry.
+   *
+   * world-heightmap (NEAREST, drives the resolve + face classification):
+   * R = TERRAIN level*16 only. Solid objects (trees, boulders…) are NOT
+   * terrain: modelling them as full-cell blocks made the shader paint their
+   * phantom block's Lambert-gated wall band as a knife-edged near-black
+   * wedge on the flat ground BESIDE the drawn art (measured: the wedge
+   * matched the analytic l+1 band ±1.8px on all 64 columns while the art is
+   * a floating canopy). An object's visual mass is its ART; the ground at
+   * its cell is ground.
+   *
+   * world-heightmap-linear (LINEAR, drives the LOS march only):
+   * R = (terrain + solid)*16 — objects still BLOCK light and cast their
+   * soft, bounce-floored shadow. The bilinear read rounds the block into a
+   * plausible blob. */
   private buildHeightmap() {
     if (this.scene.textures.exists("world-heightmap")) return;
     const w = this.world.width;
     const h = this.world.height;
     const tex = this.scene.textures.createCanvas("world-heightmap", w, h);
     const ctx = tex!.getContext();
-    const img = ctx.createImageData(w, h);
+    const img = ctx.createImageData(w, h); // surface (terrain-only heights)
+    const imgL = ctx.createImageData(w, h); // occlusion (terrain + solids)
     this.hArr = new Float32Array(w * h);
     this.oArr = new Uint8Array(w * h);
     for (let r = 0; r < h; r++) {
@@ -493,27 +506,26 @@ export class NightLights {
         const cell = this.world.rows[r][c];
         const s = surfaceFor(cell.t);
         const solid = !s.standable && !s.swimmable;
-        const lvl = cell.l + (solid ? 1 : 0);
-        this.hArr[r * w + c] = lvl;
+        // CPU twin marches LOS only → occlusion heights (with the solid +1).
+        this.hArr[r * w + c] = cell.l + (solid ? 1 : 0);
         this.oArr[r * w + c] = solid ? 1 : 0;
-        img.data[i] = Math.min(255, lvl * 16);
-        // G flags solid OBJECTS (bush, boulder, tree…): they take full LOS
-        // occlusion + face rules — the billboard compromise is for players,
-        // who can never stand on these cells.
+        img.data[i] = Math.min(255, cell.l * 16);
+        imgL.data[i] = Math.min(255, (cell.l + (solid ? 1 : 0)) * 16);
+        // G flags solid OBJECTS (bush, boulder, tree…): they keep full LOS
+        // occlusion — the billboard compromise is for players, who can never
+        // stand on these cells.
         img.data[i + 1] = solid ? 255 : 0;
         // B: row into the compact lip-profile texture (255 = no profile).
         img.data[i + 2] = this.rowMap.get(`${cell.t}/${cell.v ?? 0}`) ?? 255;
         img.data[i + 3] = 255;
+        imgL.data[i + 3] = 255;
       }
     }
     ctx.putImageData(img, 0, 0);
     tex!.refresh();
-    // Second copy of the same pixels, LINEAR-filtered: the LOS march samples
-    // it for soft cast-shadow edges (heightAtSoft). Kept separate because the
-    // exact resolve must stay nearest-cell.
     const texL = this.scene.textures.createCanvas("world-heightmap-linear", w, h);
     if (texL) {
-      texL.getContext().putImageData(img, 0, 0);
+      texL.getContext().putImageData(imgL, 0, 0);
       texL.refresh();
       texL.setFilter(Phaser.Textures.FilterMode.LINEAR);
     }
