@@ -78,11 +78,11 @@ const TIME_PHASES: { name: string; ambient: [number, number, number] }[] = [
   { name: "Night", ambient: [0.075, 0.09, 0.14] },
   // Rosy dawn: as dark as evening but PINK-red (B stays up) — vs evening's
   // orange-amber. Playtester: "the famous reddish tint we all love".
-  { name: "Morning", ambient: [0.85, 0.6, 0.56] },
+  { name: "Morning", ambient: [0.61, 0.43, 0.4] },
   // Ref: the art as authored — neutral, full brightness.
   { name: "Day", ambient: [1.0, 1.0, 1.0] },
-  // Ref: bright but strongly amber — a warm tint, not a darkening.
-  { name: "Evening", ambient: [0.95, 0.7, 0.47] },
+  // Amber sunset, dimmed — same hue as before, ~78% the brightness.
+  { name: "Evening", ambient: [0.74, 0.55, 0.37] },
 ];
 const TIME_TRANSITION_S = 2.5;
 

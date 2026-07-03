@@ -9,9 +9,9 @@ import { chromium } from "playwright-core";
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const PHASES = {
   Night: [0.075, 0.09, 0.14],
-  Morning: [0.85, 0.6, 0.56],
+  Morning: [0.61, 0.43, 0.4],
   Day: [1.0, 1.0, 1.0],
-  Evening: [0.95, 0.7, 0.47],
+  Evening: [0.74, 0.55, 0.37],
 };
 
 const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox"] });
