@@ -6,8 +6,10 @@ name: Pixel object factory loop
 # GitHub repo settings, and trigger/disable from the Actions tab.
 
 on:
-  schedule:
-    - cron: "25 * * * *"        # hourly (offset), near-continuous with the 50-min pass
+  # Scheduled loop is DISABLED (stopped on request). Re-enable by uncommenting the
+  # cron below; the loop still runs on demand via the Actions "Run workflow" button.
+  # schedule:
+  #   - cron: "25 * * * *"
   workflow_dispatch:
     inputs:
       max_minutes:
