@@ -278,7 +278,7 @@ void main() {
       // ground pool spread 4+ cells (light must extend along the wall about
       // as far as along the ground). pow keeps a gentle cosine-ish falloff
       // along the run; the front gate still keeps back faces dark.
-      float gate = smoothstep(0.0, 0.25, front) * pow(clamp(cosF, 0.0, 1.0), 0.75);
+      float gate = smoothstep(0.0, 0.25, front) * pow(clamp(cosF, 0.0, 1.0), 0.45);
       // Penumbra: the gate fades in up the face (see gateFade above).
       occ *= mix(1.0, gate, gateFade);
     }
