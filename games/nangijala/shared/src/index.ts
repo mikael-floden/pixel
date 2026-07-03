@@ -290,6 +290,16 @@ export function surfaceFor(t: string): Surface {
   return DEFAULT_SURFACE;
 }
 
+/** True when the category has an explicit SURFACES entry (or is a road_*).
+ * Unknown categories silently default to plain walkable ground — which also
+ * makes the night shader treat them as TERRAIN (walls, face shadows) instead
+ * of a solid OBJECT (art + soft cast shadow only). New tree/boulder-like
+ * categories from the tiles agent MUST be added to SURFACES or their block
+ * shadow will stick out past their art again. */
+export function isKnownSurface(t: string): boolean {
+  return t in SURFACES || t.startsWith("road_");
+}
+
 // Elevation traversal (design "Option 2B"): you can walk between cells within
 // WALK_CLIMB of each other; crossing a full 1-level ledge needs a timed JUMP.
 export const WALK_CLIMB = 0.5; // step you can walk up/down passively

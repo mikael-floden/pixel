@@ -19,6 +19,7 @@ import {
   isStandableAtWorld,
   findSpawn,
   surfaceFor,
+  isKnownSurface,
   WALK_CLIMB,
   JUMP_CLIMB,
   JUMP_SPEED_FACTOR,
@@ -168,6 +169,17 @@ export class WorldScene extends Phaser.Scene {
     this.world = (this.registry.get("world") as World | null) ?? null;
     if (this.world) {
       this.terrain = buildTerrainGrid(this.world.width, this.world.height, this.world.rows);
+      // Surface-contract watchdog: categories missing from SURFACES default
+      // to walkable ground, which ALSO makes the night lighting treat them
+      // as terrain (walls + face shadows) instead of solid objects (art +
+      // soft cast shadow). Surface it loudly so the loop adds new categories.
+      const unknown = new Set<string>();
+      for (const row of this.world.rows) for (const c of row) if (!isKnownSurface(c.t)) unknown.add(c.t);
+      if (unknown.size)
+        console.warn(
+          `[nangijala] ${unknown.size} tile categories missing from SURFACES (defaulting to plain ground — night shadows may misclassify them):`,
+          [...unknown].sort().join(", "),
+        );
     }
   }
 
@@ -192,10 +204,6 @@ export class WorldScene extends Phaser.Scene {
         frameWidth: CAMPFIRE_FRAME,
         frameHeight: CAMPFIRE_FRAME,
       });
-      // Baked drawn-lip profiles (art-aware shadows) — optional; the night
-      // shader falls back to pure analytic edges when absent.
-      this.load.image("tile-profiles", "/tile-profiles.png");
-      this.load.json("tile-profiles-index", "/tile-profiles.json");
     }
   }
 

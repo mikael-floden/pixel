@@ -73,6 +73,30 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
   tiles from the maps agent so players can ascend without jumping. If the tile
   "house format" changes, re-measure `MAP_GEOMETRY` and update `ISO_DX/ISO_DY`.
 
+## Night lighting (client/src/nightlight.ts)
+
+- Always-night per-pixel shader: MULTIPLY overlay; per-pixel surface resolve
+  (cell + height) → point lights with attenuation, LOS cast shadows, Lambert
+  face gating with penumbras at both ends of every wall band.
+- **Two geometries, never merge them**: `world-heightmap` (NEAREST) holds
+  TERRAIN levels only and drives the resolve + wall-face classification;
+  `world-heightmap-linear` (LINEAR) holds terrain + solid objects and drives
+  ONLY the LOS march. Solid objects (trees, boulders… `!standable &&
+  !swimmable` in SURFACES) are ART, not walls: they block light and cast a
+  soft shadow but must NEVER get a wall-face band — modelling them as blocks
+  painted knife-edged phantom shadows outside their drawn art (the
+  long-standing "shadow sticks out" bug).
+- **Contract for new tile categories**: unknown categories default to plain
+  walkable ground AND therefore to terrain lighting. Every new solid/decor
+  category from the tiles agent must get a SURFACES entry (shared/) or its
+  block shadow returns. `WorldScene` warns at boot (`isKnownSurface`) —
+  treat that console warning as a work item.
+- Debug: `[9]` cycles field test patterns (gradient/grid/uv/classification/
+  raw field); `__ml.probeLight(col,row,z,radius)` places a light headlessly;
+  numeric probes live in `scripts/verify-solidband.mjs` (no phantom bands),
+  `verify-penumbra.mjs` (soft wall bases), `verify-lit-order.mjs` (lit-copy
+  draw order). Run them against a dev stack before touching the shader.
+
 ## Conventions
 
 - `npm run dev` runs server + client. `npm test` = headless two-client sync test.

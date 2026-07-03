@@ -43,9 +43,7 @@ uniform float uNumLights;
 uniform vec4 uLightPos[${MAX_SHADER_LIGHTS}];  // col, row, z, radius(cells)
 uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
 uniform sampler2D uHeight;
-uniform sampler2D uHeightL; // same heightmap, LINEAR-filtered (LOS penumbra)
-uniform sampler2D uProf;  // baked DRAWN-lip profiles: one row per tile, x = art column
-uniform float uProfRows;  // rows in uProf (0 = no profiles -> pure analytic)
+uniform sampler2D uHeightL; // occlusion heightmap, LINEAR-filtered (LOS march)
 
 // Bilinear height for the LOS march ONLY: blockers ramp in over ~a cell, so
 // cast-shadow edges get a natural penumbra instead of cell-quantized 1px
@@ -53,20 +51,6 @@ uniform float uProfRows;  // rows in uProf (0 = no profiles -> pure analytic)
 float heightAtSoft(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
   return texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).r * 255.0 / 16.0;
-}
-
-// Baked lip offset for cr's tile at art column tx (0..63), in screen px:
-// + = the artist drew the top/wall boundary LOWER than the analytic diamond
-// edge. Row index lives in the heightmap's B channel (255 = no profile).
-float lipAt(vec2 cr, float tx) {
-  if (uProfRows < 0.5) return 0.0;
-  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
-  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
-  float row = texture2D(uHeight, uv).b * 255.0;
-  if (row > 254.5) return 0.0;
-  // floor(tx): sample the owning column's texel CENTRE — a fractional tx
-  // read the neighbouring column's lip on half of every art column.
-  return texture2D(uProf, vec2((floor(tx) + 0.5) / 64.0, (row + 0.5) / uProfRows)).r * 255.0 - 14.0;
 }
 
 float heightAt(vec2 cr) {
@@ -163,37 +147,10 @@ void main() {
     return;
   }
 
-  // Art-aware lip: the artist rarely draws the top/wall boundary exactly on
-  // the analytic diamond edge (grass overhangs, ragged organic lips — up to
-  // 14px off). The baked profile says where the DRAWN lip sits per art
-  // column; reclassify pixels in the disputed band so the shadow hugs the
-  // drawn edge instead of stamping a perfect V beside it.
   float Ha = heightAt(cell);
-  if (Ha < 90.0 && uProfRows > 0.5) {
-    vec2 ba = floor(cell);
-    float tx = clamp((u - (ba.x - ba.y) + 1.0) * 32.0, 0.0, 63.0);
-    float lipPx = lipAt(cell, tx);
-    if (lipPx > 0.5 && Ha - z > 0.05) {
-      // Drawn lip LOWER: the top surface reaches into the analytic wall
-      // band. Face pixels within the offset become top (their depth below
-      // the analytic lip is (Ha - z) * lh px by construction).
-      if ((Ha - z) * uIsoB.x <= lipPx) z = Ha;
-    } else if (lipPx < -0.5 && Ha - z <= 0.05) {
-      // Drawn lip HIGHER: the wall face starts above the analytic edge —
-      // but only where the cell truly drops in front of it (on flat ground
-      // every tile seam would otherwise sprout a phantom face).
-      float vHiC = min(2.0 * (ba.x + 1.0) - u, 2.0 * (ba.y + 1.0) + u);
-      float dvPx = (v0 + Ha * kk - vHiC) * uIsoA.w; // signed px below analytic lip
-      float hFront = min(heightAt(ba + vec2(1.5, 0.5)), heightAt(ba + vec2(0.5, 1.5)));
-      if (dvPx > lipPx && dvPx <= 0.5 && hFront < Ha - 0.5) {
-        z = Ha - max(0.06, (dvPx - lipPx) / uIsoB.x);
-      }
-    }
-  }
   if (uTest > 3.5) {
     // Calibration 4: final surface classification — wall-face pixels RED,
-    // top pixels GREEN. Probed numerically to verify the baked lips are
-    // honoured (the red/green boundary must equal analytic + profile).
+    // top pixels GREEN (probed numerically by the verify scripts).
     float isFace = (Ha < 90.0 && Ha - z > 0.05) ? 1.0 : 0.0;
     gl_FragColor = vec4(isFace, 1.0 - isFace, 0.0, 1.0);
     return;
@@ -219,13 +176,18 @@ void main() {
   vec2 pos = isFace
     ? mix(vec2(u + baseF.y + 0.99, baseF.y + 0.99), vec2(baseF.x + 0.99, baseF.x + 0.99 - u), pickR)
     : vec2((u + vS) * 0.5, (vS - u) * 0.5);
-  // Penumbra: the face gate fades IN over the face's last ~7px above its
-  // fronting ground — at the base a face takes the same plain light as the
-  // grass beside it (continuous whether the face is lit or gated dark).
+  // Penumbra at BOTH ends of the face band. Bottom: the gate fades in over
+  // the face's last ~7px above its fronting ground, so a face takes the same
+  // plain light as the grass beside it at the base. Top: the gate also fades
+  // in over the first ~6px below the analytic lip — the drawn lip (grass
+  // overhangs, ragged organic edges) never sits exactly on the analytic
+  // line, and a soft start admits that uncertainty instead of stamping a
+  // fully-confident hard shadow edge along a guessed line.
   float gateFade = 1.0;
   if (isFace) {
     float hFront = mix(hD, hR, pickR);
     if (hFront < 90.0) gateFade = smoothstep(0.0, 7.0, max((z - hFront) * uIsoB.x, 0.0));
+    gateFade *= smoothstep(0.0, 6.0, max((Ha - z) * uIsoB.x, 0.0));
   }
 
   vec3 light = uAmbient;
@@ -336,8 +298,6 @@ export class NightLights {
   private oArr!: Uint8Array;   // CPU solid-object flags
   private curLights: ShaderLight[] = [];
   private curAmbient: [number, number, number] = [0.075, 0.09, 0.14];
-  private profRows = 0; // compact lip-profile rows uploaded (0 = analytic)
-  private rowMap = new Map<string, number>(); // "t/v" -> compact profile row
   active = false;
   // Live calibration (debug keys): rendering-path differences between GPUs
   // showed up as flipped/scaled fields that headless verification could not
@@ -355,7 +315,6 @@ export class NightLights {
   }
 
   create() {
-    this.buildProfiles();
     this.buildHeightmap();
     this.base = new Phaser.Display.BaseShader("night-lights", FRAG, undefined, {
       uCam: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
@@ -369,8 +328,6 @@ export class NightLights {
       uLightCol: { type: "4fv", value: this.colArr },
       uHeight: { type: "sampler2D", value: null },
       uHeightL: { type: "sampler2D", value: null },
-      uProf: { type: "sampler2D", value: null },
-      uProfRows: { type: "1f", value: 0 },
     });
     // Shader GameObjects can't blend directly — render the light field to a
     // texture and composite it with a MULTIPLY image on top of the scene.
@@ -404,10 +361,6 @@ export class NightLights {
     s.setSampler2D("uHeight", "world-heightmap");
     if (this.scene.textures.exists("world-heightmap-linear"))
       s.setSampler2D("uHeightL", "world-heightmap-linear", 1);
-    if (this.profRows > 0) {
-      s.setSampler2D("uProf", "tile-profiles-compact", 2);
-      s.setUniform("uProfRows.value", this.profRows);
-    }
     s.setRenderToTexture(key);
     this.shader = s;
     const old = this.overlay!.texture.key;
@@ -418,61 +371,6 @@ export class NightLights {
     if (old.startsWith(FIELD_KEY) && this.scene.textures.exists(old)) {
       this.scene.textures.remove(old);
     }
-  }
-
-  /** Compact lip-profile texture: from the baked tile-profiles (all 2443
-   * tiles), keep only the tiles THIS world uses that have a non-zero drawn
-   * lip, biggest corrections first (row index must fit the heightmap's B
-   * byte; 255 = none). Missing assets → profRows 0 → pure analytic. */
-  private buildProfiles() {
-    const scene = this.scene;
-    const idx = scene.cache.json.get("tile-profiles-index") as
-      | { clamp: number; index: Record<string, number> }
-      | undefined;
-    if (!idx?.index || !scene.textures.exists("tile-profiles")) return;
-    const src = scene.textures.get("tile-profiles").getSourceImage() as HTMLImageElement;
-    const cnv = document.createElement("canvas");
-    cnv.width = src.width;
-    cnv.height = src.height;
-    const cctx = cnv.getContext("2d", { willReadFrequently: true });
-    if (!cctx) return;
-    cctx.drawImage(src, 0, 0);
-    const data = cctx.getImageData(0, 0, cnv.width, cnv.height).data;
-    const lipOf = (row: number, x: number) => data[(row * 64 + x) * 4] - idx.clamp;
-    const seen = new Map<string, number>(); // "t/v" -> baked row
-    for (const r of this.world.rows)
-      for (const c of r) {
-        const key = `${c.t}/${c.v ?? 0}`;
-        if (seen.has(key)) continue;
-        const row = idx.index[key];
-        if (row !== undefined) seen.set(key, row);
-      }
-    const scored = [...seen]
-      .map(([key, row]) => {
-        let s = 0;
-        for (let x = 0; x < 64; x++) s += Math.abs(lipOf(row, x));
-        return { key, row, s };
-      })
-      .filter((e) => e.s > 0)
-      .sort((a, b) => b.s - a.s)
-      .slice(0, 254);
-    if (!scored.length) return;
-    const tex = scene.textures.createCanvas("tile-profiles-compact", 64, scored.length);
-    if (!tex) return;
-    const ctx = tex.getContext();
-    const img = ctx.createImageData(64, scored.length);
-    scored.forEach((e, i) => {
-      this.rowMap.set(e.key, i);
-      for (let x = 0; x < 64; x++) {
-        const o = (i * 64 + x) * 4;
-        img.data[o] = Math.max(0, Math.min(255, lipOf(e.row, x) + 14)); // shader decodes r*255-14
-        img.data[o + 3] = 255;
-      }
-    });
-    ctx.putImageData(img, 0, 0);
-    tex.refresh();
-    tex.setFilter(Phaser.Textures.FilterMode.NEAREST); // exact texel reads
-    this.profRows = scored.length;
   }
 
   /** TWO heightmaps — surface geometry vs occlusion geometry.
@@ -515,8 +413,6 @@ export class NightLights {
         // occlusion — the billboard compromise is for players, who can never
         // stand on these cells.
         img.data[i + 1] = solid ? 255 : 0;
-        // B: row into the compact lip-profile texture (255 = no profile).
-        img.data[i + 2] = this.rowMap.get(`${cell.t}/${cell.v ?? 0}`) ?? 255;
         img.data[i + 3] = 255;
         imgL.data[i + 3] = 255;
       }
