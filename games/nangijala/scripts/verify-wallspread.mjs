@@ -19,11 +19,16 @@ await page.keyboard.press("Enter");
 await page.waitForFunction(() => window.__ml?.nightShader?.() === true, null, { timeout: 20000 });
 await page.waitForTimeout(1500);
 
+// Aim the camera at a known wall-run area first — searching around the
+// avatar made the probe hostage to spawn-slot luck (runs exist near spawn
+// but drifted off-screen for some slots). lookAt detaches the camera.
+await page.evaluate(() => window.__ml.lookAt(274, 202));
+await page.waitForTimeout(700);
+
 // Find a WALL RUN: >=5 consecutive cells along a row, same level, all with a
 // lower +row (south/down-screen) neighbour, fully on screen.
 const run = await page.evaluate(() => {
-  const me = window.__ml.me();
-  const col0 = Math.floor(me.x / 32), row0 = Math.floor(me.y / 32);
+  const col0 = 274, row0 = 202; // camera target (see lookAt above)
   // Horizontal runs (drop to +row/south) and vertical runs (drop to +col/east).
   for (const dir of ["row", "col"]) {
     for (let row = row0 - 20; row < row0 + 20; row++) {

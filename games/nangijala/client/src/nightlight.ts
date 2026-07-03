@@ -343,7 +343,13 @@ void main() {
     } else if (m > 50.0) {
       f = 0.85 + 0.15 * sin(time * 1.3 + ph);
     }
-    light = max(light, eCol * ePar.g * f);
+    // Side faces: the tile ART bakes its faces ~0.70x darker than the top
+    // (measured across lava/crystal/mushroom sets), so a uniform floor left
+    // wall crystals dim while the cap glowed. Boost the face floor by the
+    // inverse — glowing substance then reads the SAME on wall and top, and
+    // the boost exactly cancels the baked shading (no visible seam).
+    float eBoost = isFace ? 1.4 : 1.0;
+    light = max(light, eCol * ePar.g * f * eBoost);
   }
 
   gl_FragColor = vec4(min(light, vec3(1.25)), 1.0);

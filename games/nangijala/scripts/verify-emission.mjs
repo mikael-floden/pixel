@@ -72,9 +72,9 @@ if (ctlErr > 0.05) fail++;
 await page.evaluate(({ col, row }) => window.__ml.lookAt(col, row), SITES[0]);
 await page.waitForTimeout(700);
 const seq = [];
-for (let k = 0; k < 4; k++) {
+for (let k = 0; k < 6; k++) {
   seq.push((await sampleCenter())[1]);
-  await page.waitForTimeout(450);
+  await page.waitForTimeout(700); // spread over ~2 flicker periods (freq 3.1)
 }
 const swing = Math.max(...seq) - Math.min(...seq);
 console.log(
