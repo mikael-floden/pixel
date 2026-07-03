@@ -76,8 +76,9 @@ const MAX_EMISSIVE = 48; // cap per view (perf)
 const TIME_PHASES: { name: string; ambient: [number, number, number] }[] = [
   // Calibrated night: dark, desaturated, mild blue tilt.
   { name: "Night", ambient: [0.075, 0.09, 0.14] },
-  // Ref: soft, dim, slightly cool — the world before sunrise warms it.
-  { name: "Morning", ambient: [0.66, 0.68, 0.72] },
+  // Rosy dawn: as dark as evening but PINK-red (B stays up) — vs evening's
+  // orange-amber. Playtester: "the famous reddish tint we all love".
+  { name: "Morning", ambient: [0.85, 0.6, 0.56] },
   // Ref: the art as authored — neutral, full brightness.
   { name: "Day", ambient: [1.0, 1.0, 1.0] },
   // Ref: bright but strongly amber — a warm tint, not a darkening.

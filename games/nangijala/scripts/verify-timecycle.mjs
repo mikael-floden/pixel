@@ -9,7 +9,7 @@ import { chromium } from "playwright-core";
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const PHASES = {
   Night: [0.075, 0.09, 0.14],
-  Morning: [0.66, 0.68, 0.72],
+  Morning: [0.85, 0.6, 0.56],
   Day: [1.0, 1.0, 1.0],
   Evening: [0.95, 0.7, 0.47],
 };
