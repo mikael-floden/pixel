@@ -67,7 +67,7 @@ const SHADOW_TEX = "avatar:shadow";
 // clusters feed the shader (the rest still glow via the self floor).
 const MAX_EMISSIVE = 48; // atmosphere blooms per view (canvas fallback, perf)
 const EMISSION_BUCKET = 3; // cells per cluster bucket side
-const EMISSION_POOL_MAX = 6; // shader glow pools per view
+const EMISSION_POOL_MAX = 8; // shader glow pools per view (top + face pools)
 // Time-of-day cycle ([1] cycles, ~2.5s smooth interpolation between phases).
 // Each phase is ONLY an ambient grade (what unlit art is multiplied by) —
 // point lights are never phase-tuned (a light is a light; daylight drowns
@@ -1253,25 +1253,41 @@ export class WorldScene extends Phaser.Scene {
               depth: this.iso.oy + v * dy + dy + 0.2, // occluded by fronting walls
             });
           }
-          const bk = `${cell.t}:${Math.floor(col / EMISSION_BUCKET)}:${Math.floor(row / EMISSION_BUCKET)}`;
-          let b = buckets.get(bk);
-          if (!b) {
-            b = {
-              color: em.color,
-              strength: em.strength,
-              radius: em.radius,
-              flicker: em.anim === "flicker" ? 0.6 : 0,
-              n: 0,
-              sc: 0,
-              sr: 0,
-              z: 0,
-            };
-            buckets.set(bk, b);
-          }
-          b.n++;
-          b.sc += col + 0.5;
-          b.sr += row + 0.5;
-          b.z = Math.max(b.z, cell.l);
+          const sample = (kind: string, sc: number, sr: number, sz: number) => {
+            const bk = `${cell.t}:${kind}:${Math.floor(col / EMISSION_BUCKET)}:${Math.floor(row / EMISSION_BUCKET)}`;
+            let b = buckets.get(bk);
+            if (!b) {
+              b = {
+                color: em.color,
+                strength: em.strength,
+                radius: em.radius,
+                flicker: em.anim === "flicker" ? 0.6 : 0,
+                n: 0,
+                sc: 0,
+                sr: 0,
+                z: 0,
+              };
+              buckets.set(bk, b);
+            }
+            b.n++;
+            b.sc += sc;
+            b.sr += sr;
+            b.z += sz;
+          };
+          // Top glow pool: lights the surface around the tile.
+          sample("t", col + 0.5, row + 0.5, cell.l + 0.6);
+          // Exposed SIDE FACES are area lights of their own: a pool floating
+          // in FRONT of the face at mid-face height. The top pool can't do
+          // this job — for a tall column it sits levels above the ground at
+          // the base (the vertical falloff eats it), and it stands BEHIND
+          // the neighbouring wall's plane so the Lambert gate zeroes it —
+          // the playtester's "glowing wall next to a pitch-dark one" seam.
+          const lS = this.world.rows[row + 1]?.[col]?.l;
+          const lE = this.world.rows[row]?.[col + 1]?.l;
+          if (lS !== undefined && cell.l - lS >= 1)
+            sample("s", col + 0.5, row + 1.35, (cell.l + lS) / 2 + 0.3);
+          if (lE !== undefined && cell.l - lE >= 1)
+            sample("e", col + 1.35, row + 0.5, (cell.l + lE) / 2 + 0.3);
         }
         const tall = cell.l > 0 || (!s.standable && !s.swimmable);
         if (!tall) continue;
@@ -1336,7 +1352,7 @@ export class WorldScene extends Phaser.Scene {
         this.shaderLights.push({
           col,
           row,
-          z: b.z + 0.6,
+          z: b.z / b.n, // mean sample height (tops carry their own +0.6)
           radius: -(b.radius * (1 + 0.35 * Math.sqrt(b.n - 1))),
           color: [b.color[0] * b.strength, b.color[1] * b.strength, b.color[2] * b.strength],
           flicker: b.flicker,
