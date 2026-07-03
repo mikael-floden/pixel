@@ -66,6 +66,25 @@ const EMISSIVE: Record<string, { color: number; radius: number }> = {
   mushroom_grove: { color: 0x5fc4ff, radius: 65 },
 };
 const MAX_EMISSIVE = 48; // cap per view (perf)
+// Time-of-day cycle ([1] cycles, ~2.5s smooth interpolation between phases).
+// Each phase is ONLY an ambient grade (what unlit art is multiplied by) —
+// point lights are never phase-tuned (a light is a light; daylight drowns
+// fire pools naturally because the multiply clamps near full brightness).
+// NIGHT is the calibrated reference — its values must never drift. The other
+// grades are first passes from the Sea of Stars reference stills, tuned one
+// phase at a time with the playtester (morning next).
+const TIME_PHASES: { name: string; ambient: [number, number, number] }[] = [
+  // Calibrated night: dark, desaturated, mild blue tilt.
+  { name: "Night", ambient: [0.075, 0.09, 0.14] },
+  // Ref: soft, dim, slightly cool — the world before sunrise warms it.
+  { name: "Morning", ambient: [0.66, 0.68, 0.72] },
+  // Ref: the art as authored — neutral, full brightness.
+  { name: "Day", ambient: [1.0, 1.0, 1.0] },
+  // Ref: bright but strongly amber — a warm tint, not a darkening.
+  { name: "Evening", ambient: [0.95, 0.7, 0.47] },
+];
+const TIME_TRANSITION_S = 2.5;
+
 // Lit copies (see applyObjectLights) live in a thin band ABOVE the darkness
 // overlay (depth 900_000) but must keep the world's relative draw order among
 // themselves — a character in front of the fire must cover the fire's lit copy
@@ -157,6 +176,13 @@ export class WorldScene extends Phaser.Scene {
   private torchOn = true;
   // Debug-only extra light, set from __ml.probeLight for headless probes.
   private probeLight: ShaderLight | null = null;
+  // Time-of-day state: target phase index + eased interpolation FROM whatever
+  // grade is currently on screen (mid-transition retargets stay smooth).
+  private timeIdx = 0;
+  private timeT = 1; // 0..1 progress toward TIME_PHASES[timeIdx]
+  private timeStart = 0; // wall-clock ms when the transition began
+  private timeFromAmbient: [number, number, number] = [...TIME_PHASES[0].ambient];
+  private curAmbient: [number, number, number] = [...TIME_PHASES[0].ambient];
 
   constructor() {
     super("world");
@@ -257,6 +283,10 @@ export class WorldScene extends Phaser.Scene {
     // Jump (Space): edge-triggered, lets you cross a 1-level ledge if timed.
     this.input.keyboard!.on("keydown-SPACE", () => this.tryJump());
     // Feature/debug toggles live on the TOP-ROW digits (1-9).
+    this.input.keyboard!.on("keydown-ONE", () => {
+      this.setTimeOfDay((this.timeIdx + 1) % TIME_PHASES.length);
+      this.chat.addLog("—", `[1] Time of day: ${TIME_PHASES[this.timeIdx].name}`);
+    });
     this.input.keyboard!.on("keydown-FOUR", () => {
       this.toggleCollisionOverlay();
       this.chat.addLog("—", `[4] Collision overlay: ${this.collisionOverlay ? "on" : "off"}`);
@@ -295,7 +325,7 @@ export class WorldScene extends Phaser.Scene {
       ];
       this.chat.addLog("—", `[9] Field test: ${names[this.night.testPattern]}`);
     });
-    this.chat.addLog("—", "Toggles: [4] collision · [5] torch · [6][7][8][9] light-field calibration");
+    this.chat.addLog("—", "Toggles: [1] time of day · [4] collision · [5] torch · [6][7][8][9] light-field calibration");
 
     const cam = this.cameras.main;
     cam.setBounds(0, 0, this.iso.w, this.iso.h);
@@ -366,6 +396,18 @@ export class WorldScene extends Phaser.Scene {
       surfaceAt: (x: number, y: number) => (this.terrain ? surfaceAtWorld(this.terrain, x, y) : null),
       levelAt: (x: number, y: number) => (this.terrain ? levelAtWorld(this.terrain, x, y) : 0),
       nightShader: () => !!this.night && this.night.active,
+      // Get/set the time-of-day phase (by index or name); instant when set —
+      // headless probes sample grades without waiting out the transition.
+      timeOfDay: (which?: number | string, instant = true) => {
+        if (which !== undefined) {
+          const idx =
+            typeof which === "number"
+              ? which % TIME_PHASES.length
+              : TIME_PHASES.findIndex((p) => p.name.toLowerCase() === String(which).toLowerCase());
+          if (idx >= 0) this.setTimeOfDay(idx, instant);
+        }
+        return { name: TIME_PHASES[this.timeIdx].name, t: this.timeT, ambient: [...this.curAmbient] };
+      },
       // Place/clear a debug light at a grid position (headless probes).
       probeLight: (col?: number, row?: number, z = 0.55, radius = 8) => {
         this.probeLight =
@@ -706,9 +748,16 @@ export class WorldScene extends Phaser.Scene {
         if (sl.length >= MAX_SHADER_LIGHTS) break;
         sl.push(l);
       }
-      // Ambient calibrated against the Sea of Stars night reference: dark,
-      // desaturated, only a MILD blue tilt (B/R ~1.6, not saturated blue).
-      this.night!.update(this.cameras.main, sl, [0.075, 0.09, 0.14]);
+      // Time-of-day: ease the on-screen grade toward the target phase.
+      // Wall-clock driven — the physics dt is clamped per frame and would
+      // crawl on slow clients. Night's values are the calibrated reference.
+      if (this.timeT < 1)
+        this.timeT = Math.min(1, (this.time.now - this.timeStart) / (TIME_TRANSITION_S * 1000));
+      const e = this.timeT * this.timeT * (3 - 2 * this.timeT); // smoothstep
+      const target = TIME_PHASES[this.timeIdx];
+      for (let ch = 0; ch < 3; ch++)
+        this.curAmbient[ch] = this.timeFromAmbient[ch] + (target.ambient[ch] - this.timeFromAmbient[ch]) * e;
+      this.night!.update(this.cameras.main, sl, this.curAmbient);
     }
 
     const lights: LightSource[] = [];
@@ -739,6 +788,16 @@ export class WorldScene extends Phaser.Scene {
     }
     this.applyObjectLights();
     this.atmo.update(lights, this.cameras.main, dt);
+  }
+
+  /** Start easing toward a time-of-day phase FROM the grade currently on
+   * screen — pressing [1] mid-transition retargets without a jump. */
+  private setTimeOfDay(idx: number, instant = false) {
+    this.timeFromAmbient = [...this.curAmbient];
+    this.timeIdx = idx;
+    this.timeT = instant ? 1 : 0;
+    this.timeStart = this.time.now;
+    if (instant) this.curAmbient = [...TIME_PHASES[idx].ambient];
   }
 
   /** Lit copies: a pixel-identical duplicate of each character drawn ABOVE
