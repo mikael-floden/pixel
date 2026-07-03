@@ -88,8 +88,11 @@ let maxStep = 0, total = 0;
   total = Math.abs(prof[prof.length - 1] - prof[0]);
   for (let k = 1; k < prof.length; k++) maxStep = Math.max(maxStep, Math.abs(prof[k] - prof[k - 1]));
   console.log(`  centre profile: total ${total.toFixed(0)}, maxStep ${maxStep.toFixed(0)}`);
+  console.log(`  profile: ${prof.map((v) => Math.round(v)).join(",")}`);
 }
-const knife = total > 20 && maxStep > 0.5 * total;
+// A knife only matters when it borders DARKNESS (the phantom-band symptom
+// was 96->23); mild self-shadow rings (all values lit) are not the defect.
+const knife = total > 20 && maxStep > 0.5 * total && Math.min(...(() => { const a = []; for (let y = aLip(32) - 26; y <= aLip(32) + 6; y++) a.push(lum(at(field5, 32, y))); return a; })()) < 60;
 console.log(
   `solid-band: ${faceHits}/${checked} face-classified (want 0), ${darkHits}/${checked} near-black (want 0), knife: ${knife}`,
 );

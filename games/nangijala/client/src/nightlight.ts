@@ -176,18 +176,37 @@ void main() {
   vec2 pos = isFace
     ? mix(vec2(u + baseF.y + 0.99, baseF.y + 0.99), vec2(baseF.x + 0.99, baseF.x + 0.99 - u), pickR)
     : vec2((u + vS) * 0.5, (vS - u) * 0.5);
-  // Penumbra at BOTH ends of the face band. Bottom: the gate fades in over
-  // the face's last ~7px above its fronting ground, so a face takes the same
-  // plain light as the grass beside it at the base. Top: the gate also fades
-  // in over the first ~6px below the analytic lip — the drawn lip (grass
-  // overhangs, ragged organic edges) never sits exactly on the analytic
-  // line, and a soft start admits that uncertainty instead of stamping a
-  // fully-confident hard shadow edge along a guessed line.
+  // Top penumbra: the gate eases in over the first ~6px below the analytic
+  // lip — the drawn lip (grass overhangs, organic edges) never sits exactly
+  // on the analytic line, and a soft start admits that uncertainty instead
+  // of stamping a fully-confident hard edge along it. The BOTTOM runs at
+  // full strength to the ground: wall shadows must REACH the seam (an
+  // earlier base fade-out lifted the last 7px — the opposite of how light
+  // behaves in a concave corner).
   float gateFade = 1.0;
+  // Ambient occlusion at the wall/ground seam: concave corners trap light,
+  // so BOTH sides darken toward the seam — the face's last ~5px and the
+  // ground tucked within ~6px of a HIGHER wall behind it. Geometric, always
+  // on (subtle on lit corners, invisible on already-dark faces).
+  float ao = 1.0;
   if (isFace) {
+    gateFade = smoothstep(0.0, 6.0, max((Ha - z) * uIsoB.x, 0.0));
     float hFront = mix(hD, hR, pickR);
-    if (hFront < 90.0) gateFade = smoothstep(0.0, 7.0, max((z - hFront) * uIsoB.x, 0.0));
-    gateFade *= smoothstep(0.0, 6.0, max((Ha - z) * uIsoB.x, 0.0));
+    if (hFront < 90.0) {
+      float dAbove = max((z - hFront) * uIsoB.x, 0.0);
+      ao = mix(0.75, 1.0, smoothstep(0.0, 5.0, dAbove));
+    }
+  } else {
+    vec2 bg = floor(cell);
+    float vColLo = 2.0 * bg.x - u;
+    float vRowLo = 2.0 * bg.y + u;
+    // Neighbour across the pixel's up-screen cell boundary (terrain heights
+    // only — solid objects are art, they don't create corner seams).
+    float hb = (vColLo >= vRowLo) ? heightAt(bg + vec2(-0.5, 0.5)) : heightAt(bg + vec2(0.5, -0.5));
+    if (hb < 90.0 && hb > z + 0.5) {
+      float dBase = max((v0 + z * kk - max(vColLo, vRowLo)) * uIsoA.w, 0.0);
+      ao = mix(0.72, 1.0, smoothstep(0.0, 6.0, dBase));
+    }
   }
 
   vec3 light = uAmbient;
@@ -277,6 +296,8 @@ void main() {
     light += col * att * occ * flick;
   }
 
+  light *= ao;
+
   gl_FragColor = vec4(min(light, vec3(1.25)), 1.0);
 }
 `;
@@ -294,7 +315,8 @@ export class NightLights {
   private posArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private colArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private fieldCount = 0;
-  private hArr!: Float32Array; // CPU heightmap (levels, objects +1)
+  private hArr!: Float32Array; // CPU occlusion heights (terrain + solid objects)
+  private tArr!: Float32Array; // CPU terrain-only heights (walls/AO seams)
   private oArr!: Uint8Array;   // CPU solid-object flags
   private curLights: ShaderLight[] = [];
   private curAmbient: [number, number, number] = [0.075, 0.09, 0.14];
@@ -397,6 +419,7 @@ export class NightLights {
     const img = ctx.createImageData(w, h); // surface (terrain-only heights)
     const imgL = ctx.createImageData(w, h); // occlusion (terrain + solids)
     this.hArr = new Float32Array(w * h);
+    this.tArr = new Float32Array(w * h);
     this.oArr = new Uint8Array(w * h);
     for (let r = 0; r < h; r++) {
       for (let c = 0; c < w; c++) {
@@ -406,6 +429,7 @@ export class NightLights {
         const solid = !s.standable && !s.swimmable;
         // CPU twin marches LOS only → occlusion heights (with the solid +1).
         this.hArr[r * w + c] = cell.l + (solid ? 1 : 0);
+        this.tArr[r * w + c] = cell.l;
         this.oArr[r * w + c] = solid ? 1 : 0;
         img.data[i] = Math.min(255, cell.l * 16);
         imgL.data[i] = Math.min(255, (cell.l + (solid ? 1 : 0)) * 16);
@@ -483,6 +507,25 @@ export class NightLights {
         const lc = L.color[ch];
         const colr = lc * (1 - emberK) + lc * eb[ch] * emberK;
         out[ch] += colr * att * occ * flick;
+      }
+    }
+    // Ambient occlusion twin (ground side): a body tucked against a HIGHER
+    // terrain wall darkens toward the seam with the ground it stands on.
+    {
+      const W2 = this.world.width;
+      const H2 = this.world.height;
+      const tAt = (ci: number, ri: number) =>
+        ci < 0 || ri < 0 || ci >= W2 || ri >= H2 ? 99 : this.tArr[ri * W2 + ci];
+      const ci = Math.floor(col);
+      const ri = Math.floor(row);
+      const vColLo = 2 * ci - (col - row);
+      const vRowLo = 2 * ri + (col - row);
+      const hb = vColLo >= vRowLo ? tAt(ci - 1, ri) : tAt(ci, ri - 1);
+      if (hb < 90 && hb > z + 0.5) {
+        const dBase = Math.max(0, (col + row - Math.max(vColLo, vRowLo)) * 13);
+        const t2 = Math.min(1, dBase / 6);
+        const ao = 0.72 + 0.28 * (t2 * t2 * (3 - 2 * t2));
+        for (let ch = 0; ch < 3; ch++) out[ch] *= ao;
       }
     }
     return out;

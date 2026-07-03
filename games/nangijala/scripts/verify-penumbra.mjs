@@ -75,11 +75,27 @@ async function measure() {
       for (let dy = -span; dy <= span; dy++) prof.push(lum(sx, yB + dy));
       const total = Math.abs(prof[prof.length - 1] - prof[0]);
       if (total < 12) continue;
-      let maxStep = 0;
-      for (let k = 1; k < prof.length; k++) maxStep = Math.max(maxStep, Math.abs(prof[k] - prof[k - 1]));
+      // Base-corner invariants (the seam step itself is INTENTIONAL — walls
+      // stay dark to the ground and AO darkens the corner):
+      //  gap:   the face's last px above the seam must not be brighter than
+      //         the face just above them (the old lit-strip regression);
+      //  aoDip: ground right below the seam darker than ground farther out;
+      //  ramp:  the ground-side AO ramp has no internal knife.
+      const mid = Math.floor(prof.length / 2);
+      const mean = (a, b) => {
+        let s = 0, n = 0;
+        for (let k = Math.max(0, a); k <= Math.min(prof.length - 1, b); k++) { s += prof[k]; n++; }
+        return n ? s / n : 0;
+      };
+      const gap = mean(mid - 4, mid - 1) - mean(mid - 10, mid - 6);
+      const aoDip = mean(mid + 8, mid + 12) - mean(mid + 1, mid + 3);
+      let rampStep = 0;
+      for (let k = mid + 3; k < prof.length; k++)
+        rampStep = Math.max(rampStep, Math.abs(prof[k] - prof[k - 1]));
       results.push({
         cell: `${c.col},${c.row}`, t: c.t, x,
-        total: +total.toFixed(1), maxStep: +maxStep.toFixed(1), ratio: +(maxStep / total).toFixed(2),
+        total: +total.toFixed(1), gap: +gap.toFixed(1), aoDip: +aoDip.toFixed(1),
+        rampRatio: +(rampStep / total).toFixed(2),
         prof: prof.map((v) => Math.round(v)),
       });
     }
@@ -123,12 +139,15 @@ for (const p of placements) {
   console.log(`placement ${p.name} @(${p.col},${p.row}): ${res.length} edges, ${t.length} dark-face->lit-ground`);
   for (const r of t.slice(0, 4))
     console.log(
-      `  ${r.cell} ${r.t} x=${r.x}: total ${r.total}, maxStep ${r.maxStep} (ratio ${r.ratio})\n    profile: ${r.prof.join(",")}`,
+      `  ${r.cell} ${r.t} x=${r.x}: total ${r.total}, litGap ${r.gap}, aoDip ${r.aoDip}, rampRatio ${r.rampRatio}\n    profile: ${r.prof.join(",")}`,
     );
   targets.push(...t);
-  sharp.push(...t.filter((r) => r.ratio > 0.35));
+  // Failures: a lit strip at the wall base (gap), or a knife inside the
+  // ground-side AO ramp. (aoDip is reported; small/negative dips can be
+  // legitimate when the base sits in another cast shadow.)
+  sharp.push(...t.filter((r) => r.gap > 8 || r.rampRatio > 0.45));
   if (targets.length >= 3) break;
 }
-console.log(`target boundaries: ${targets.length}, knife-sharp: ${sharp.length}`);
+console.log(`target boundaries: ${targets.length}, base defects (lit gap / ramp knife): ${sharp.length}`);
 await browser.close();
 process.exit(targets.length > 0 && sharp.length === 0 ? 0 : 1);
