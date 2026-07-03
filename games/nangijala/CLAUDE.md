@@ -95,11 +95,24 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
   (art-decisive cases are auto-classified; stand-on-it-or-not is a gameplay
   call the tool hedges with name hints). `WorldScene` also warns at boot.
   Expanding the tileset = add art, run tests, paste the proposed line.
+- **Tile self-emission** is data-driven from `tiles/emission.json`
+  (`tile-emission@1`, owned by the tiles agent; every category has an entry,
+  `null` = does not glow). Runtime: each glowing category gets a per-pixel
+  self-glow FLOOR on its own cell (`max(light, color*self*anim)` — daylight
+  swallows it, night reveals it; per-cell hash phase so lava shimmers out of
+  sync) + clustered SHADOW-FREE glow pools (ShaderLight with **negative
+  radius** = no LOS march, no wall gating shadows; nearest EMISSION_POOL_MAX
+  buckets win the slots). `check-surfaces.mjs` also FAILS when a world-used
+  category is missing from the registry, and the tiles pipeline auto-appends
+  `null` for new categories (`tilegen.register_emission`).
 - Debug: `[9]` cycles field test patterns (gradient/grid/uv/classification/
   raw field); `__ml.probeLight(col,row,z,radius)` places a light headlessly;
+  `__ml.lookAt(col,row)` detaches the camera to any cell (no args re-follows);
   numeric probes live in `scripts/verify-solidband.mjs` (no phantom bands),
-  `verify-penumbra.mjs` (soft wall bases), `verify-lit-order.mjs` (lit-copy
-  draw order). Run them against a dev stack before touching the shader.
+  `verify-penumbra.mjs` (soft wall bases), `verify-wallspread.mjs` (lateral
+  falloff parity), `verify-timecycle.mjs` (phase grades), `verify-emission.mjs`
+  (glow floors/pools/animation), `verify-lit-order.mjs` (lit-copy draw
+  order). Run them against a dev stack before touching the shader.
 
 ## Conventions
 

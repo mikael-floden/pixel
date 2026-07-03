@@ -100,8 +100,51 @@ if (unknownUnused.length)
     `check-surfaces: ${unknownUnused.length} tile categories exist but are unused and unclassified (fine for now): ${unknownUnused.join(", ")}`,
   );
 
+// Emission-contract gate: every world-used category must ALSO have an entry
+// in tiles/emission.json (null = audited, does not glow). Without one the
+// tile silently never glows — the "did anyone look at this tile?" audit trail
+// is the point. Non-null entries are shape-checked so a typo can't ship a
+// black light or a NaN radius into the shader palette.
+const EMISSION = join(TILES, "emission.json");
+let emissionFail = 0;
+if (!existsSync(EMISSION)) {
+  console.error("check-surfaces: FAIL — tiles/emission.json is missing (self-emission registry).");
+  emissionFail++;
+} else {
+  const em = JSON.parse(readFileSync(EMISSION, "utf8"));
+  const cats = em.categories ?? {};
+  const missing = [...used].filter((t) => !(t in cats)).sort();
+  if (missing.length) {
+    console.error(
+      `check-surfaces: FAIL — ${missing.length} world-used categories have no tiles/emission.json entry` +
+        ` (add "cat": null if the tile does not glow):`,
+    );
+    for (const t of missing) console.error(`    "${t}": null,`);
+    emissionFail++;
+  }
+  for (const [cat, e] of Object.entries(cats)) {
+    if (e === null) continue;
+    const bad =
+      !Array.isArray(e.color) ||
+      e.color.length !== 3 ||
+      e.color.some((v) => typeof v !== "number" || v < 0 || v > 1) ||
+      typeof e.strength !== "number" || e.strength < 0 || e.strength > 1 ||
+      typeof e.radius !== "number" || !(e.radius > 0) ||
+      !["static", "flicker", "pulse"].includes(e.anim) ||
+      typeof e.self !== "number" || e.self < 0 || e.self > 1;
+    if (bad) {
+      console.error(`check-surfaces: FAIL — malformed emission entry for "${cat}": ${JSON.stringify(e)}`);
+      console.error(`    expected { color: [0..1 ×3], strength: 0..1, radius: >0, anim: static|flicker|pulse, self: 0..1 }`);
+      emissionFail++;
+    }
+  }
+}
+
 if (!unknownUsed.length) {
-  console.log(`check-surfaces: OK — all ${used.size} world categories have SURFACES entries.`);
+  if (emissionFail) process.exit(1);
+  console.log(
+    `check-surfaces: OK — all ${used.size} world categories have SURFACES + emission entries.`,
+  );
   process.exit(0);
 }
 

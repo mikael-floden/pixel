@@ -30,7 +30,7 @@ import {
 import { CharacterDef, Manifest, stripUrl } from "../manifest";
 import { colorForName } from "../placeholder";
 import { Atmosphere, LightSource } from "../lighting";
-import { NightLights, ShaderLight, MAX_SHADER_LIGHTS } from "../nightlight";
+import { NightLights, ShaderLight, MAX_SHADER_LIGHTS, EmissionMap } from "../nightlight";
 import { joinWorld } from "../net";
 import { ChatUI } from "../chat";
 import { RosterUI } from "../roster";
@@ -58,14 +58,16 @@ const INPUT_HZ = 20;
 const BUBBLE_MS = 5000;
 const PLACEHOLDER_TEX = "placeholder:wanderer";
 const SHADOW_TEX = "avatar:shadow";
-// Emissive tile categories → coloured spot lights (glow day and night).
-const EMISSIVE: Record<string, { color: number; radius: number }> = {
-  lava: { color: 0xff7433, radius: 110 },
-  crystal_ground: { color: 0x86d9ff, radius: 75 },
-  crystal_spire: { color: 0x9db8ff, radius: 110 },
-  mushroom_grove: { color: 0x5fc4ff, radius: 65 },
-};
-const MAX_EMISSIVE = 48; // cap per view (perf)
+// Tile self-emission is data-driven: tiles/emission.json (owned by the tiles
+// agent — every category has an entry, null = does not glow). Each glowing
+// category gets (a) a self-glow FLOOR on its own pixels (shader, nightlight.ts)
+// and (b) a small SHADOW-FREE glow pool around it. Pools are clustered per
+// EMISSION_BUCKET-cell bucket so a whole lava lake becomes a few soft pools
+// instead of hundreds of point lights, and only the nearest EMISSION_POOL_MAX
+// clusters feed the shader (the rest still glow via the self floor).
+const MAX_EMISSIVE = 48; // atmosphere blooms per view (canvas fallback, perf)
+const EMISSION_BUCKET = 3; // cells per cluster bucket side
+const EMISSION_POOL_MAX = 6; // shader glow pools per view
 // Time-of-day cycle ([1] cycles, ~2.5s smooth interpolation between phases).
 // Each phase is ONLY an ambient grade (what unlit art is multiplied by) —
 // point lights are never phase-tuned (a light is a light; daylight drowns
@@ -169,6 +171,8 @@ export class WorldScene extends Phaser.Scene {
   private atmo!: Atmosphere;
   private night?: NightLights;
   private shaderLights: ShaderLight[] = [];
+  // tiles/emission.json categories (empty when the registry failed to load).
+  private emission: EmissionMap = {};
   // The spawn campfire: an animated world object with its own fire light.
   private campfire?: { col: number; row: number; z: number; x: number; y: number; depth: number };
   private campfireSprite?: Phaser.GameObjects.Sprite;
@@ -227,6 +231,8 @@ export class WorldScene extends Phaser.Scene {
       for (const { t, v } of distinctTiles(this.world)) {
         this.load.image(tileKey(t, v), tileUrl(t, v));
       }
+      // Self-emission registry (which categories glow, how) — tiles agent's.
+      this.load.json("tile-emission", "/assets/tiles/emission.json");
       this.load.spritesheet(CAMPFIRE_KEY, CAMPFIRE_URL, {
         frameWidth: CAMPFIRE_FRAME,
         frameHeight: CAMPFIRE_FRAME,
@@ -248,9 +254,15 @@ export class WorldScene extends Phaser.Scene {
     this.atmo.setPreset("night");
     // Shader night needs WebGL; on canvas renderers the multiply grade
     // remains the night fallback.
+    const emissionData = this.cache.json.get("tile-emission") as
+      | { categories?: EmissionMap }
+      | undefined;
+    this.emission = emissionData?.categories ?? {};
+    if (!emissionData)
+      console.warn("[nangijala] tiles/emission.json missing — tile self-emission disabled");
     if (this.world && this.game.renderer.type === Phaser.WEBGL) {
       try {
-        this.night = new NightLights(this, this.world, this.iso, this.maxLevel);
+        this.night = new NightLights(this, this.world, this.iso, this.maxLevel, this.emission);
         this.night.create();
       } catch (err) {
         console.warn("[nangijala] shader night unavailable:", err);
@@ -450,6 +462,25 @@ export class WorldScene extends Phaser.Scene {
               }
             : null,
         };
+      },
+      // Detach the camera and centre it on a cell (headless probes: emissive
+      // sites sit far outside walking range on dt-clamped clients). No args
+      // re-attaches the camera to the local player.
+      lookAt: (col?: number, row?: number) => {
+        const cam = this.cameras.main;
+        if (col === undefined || row === undefined) {
+          const id = this.room?.sessionId;
+          const av = id ? this.avatars.get(id) : undefined;
+          if (av) cam.startFollow(av.sprite, true, 0.15, 0.15);
+          return null;
+        }
+        cam.stopFollow();
+        const { dx, dy, lh } = MAP_GEOMETRY;
+        const cell = this.world?.rows[row]?.[col];
+        const wx = this.iso.ox + (col - row) * dx + dx;
+        const wy = this.iso.oy + (col + row) * dy + dy - (cell?.l ?? 0) * lh;
+        cam.centerOn(wx, wy);
+        return { x: wx, y: wy, t: cell?.t ?? null, l: cell?.l ?? 0 };
       },
       nightInfo: () => this.night?.debugInfo(),
       nightCal: (flip: number, span: number, test: number) => {
@@ -728,8 +759,12 @@ export class WorldScene extends Phaser.Scene {
         // a fast falloff into the ember-red rim).
         sl.push({ col: c.col, row: c.row, z: c.z, radius: 7, color: [1.9, 0.88, 0.3], flicker: 1 });
       }
+      // Torches fill up to the cap MINUS a few slots reserved for emission
+      // glow pools — a crowded camp must not un-light the lava beside it.
+      const reserve = Math.min(3, this.shaderLights.length);
       for (const [id, a] of this.avatars.entries()) {
         if (id === myId && !this.torchOn) continue;
+        if (sl.length >= MAX_SHADER_LIGHTS - reserve) break;
         // Grid position from the FLAT authoritative coords (1 cell = CELL_WU
         // world units) — the projected lx/ly live in screen space and put the
         // torch underground, so the terrain shadowed its own light.
@@ -743,7 +778,6 @@ export class WorldScene extends Phaser.Scene {
           color: [0.85, 0.58, 0.32],
           flicker: 0.35, // hand torch: gentle fire flicker
         });
-        if (sl.length >= MAX_SHADER_LIGHTS) break;
       }
       for (const l of this.shaderLights) {
         if (sl.length >= MAX_SHADER_LIGHTS) break;
@@ -1178,6 +1212,12 @@ export class WorldScene extends Phaser.Scene {
     this.shaderLights = [];
 
     const { dx, dy, lh, tile: tileSize } = MAP_GEOMETRY;
+    // Emission pool clustering: one glow light per bucket of nearby glowing
+    // cells of the same category (a lava lake = a few soft pools).
+    const buckets = new Map<
+      string,
+      { color: [number, number, number]; strength: number; radius: number; flicker: number; n: number; sc: number; sr: number; z: number }
+    >();
     const pad = 200;
     const x0 = cam.worldView.x - pad;
     const x1 = cam.worldView.right + pad;
@@ -1195,25 +1235,43 @@ export class WorldScene extends Phaser.Scene {
         const cell = this.world.rows[row]?.[col];
         if (!cell) continue;
         const s = surfaceFor(cell.t);
-        // Emissive tiles become coloured spot lights (fed to the atmosphere).
-        const em = EMISSIVE[cell.t];
-        if (em && this.emissiveLights.length < MAX_EMISSIVE) {
-          this.emissiveLights.push({
-            x: this.iso.ox + u * dx + dx,
-            y: this.iso.oy + v * dy + dy - cell.l * lh,
-            color: em.color,
-            radius: em.radius,
-            ground: true,
-            depth: this.iso.oy + v * dy + dy + 0.2, // occluded by fronting walls
-          });
-          this.shaderLights.push({
-            col: col + 0.5,
-            row: row + 0.5,
-            z: cell.l + 0.5,
-            radius: em.radius / 16, // px → cells-ish
-            color: [((em.color >> 16) & 0xff) / 255, ((em.color >> 8) & 0xff) / 255, (em.color & 0xff) / 255],
-            flicker: cell.t === "lava" ? 1 : 0.25,
-          });
+        // Emissive tiles (tiles/emission.json): atmosphere bloom for the
+        // canvas fallback + a cluster-bucket sample for the shader pools.
+        const em = this.emission[cell.t];
+        if (em) {
+          if (!this.night && this.emissiveLights.length < MAX_EMISSIVE) {
+            const hex =
+              (Math.round(em.color[0] * 255) << 16) |
+              (Math.round(em.color[1] * 255) << 8) |
+              Math.round(em.color[2] * 255);
+            this.emissiveLights.push({
+              x: this.iso.ox + u * dx + dx,
+              y: this.iso.oy + v * dy + dy - cell.l * lh,
+              color: hex,
+              radius: em.radius * 32,
+              ground: true,
+              depth: this.iso.oy + v * dy + dy + 0.2, // occluded by fronting walls
+            });
+          }
+          const bk = `${cell.t}:${Math.floor(col / EMISSION_BUCKET)}:${Math.floor(row / EMISSION_BUCKET)}`;
+          let b = buckets.get(bk);
+          if (!b) {
+            b = {
+              color: em.color,
+              strength: em.strength,
+              radius: em.radius,
+              flicker: em.anim === "flicker" ? 0.6 : 0,
+              n: 0,
+              sc: 0,
+              sr: 0,
+              z: 0,
+            };
+            buckets.set(bk, b);
+          }
+          b.n++;
+          b.sc += col + 0.5;
+          b.sr += row + 0.5;
+          b.z = Math.max(b.z, cell.l);
         }
         const tall = cell.l > 0 || (!s.standable && !s.swimmable);
         if (!tall) continue;
@@ -1254,6 +1312,35 @@ export class WorldScene extends Phaser.Scene {
               this.add.image(bx, topY, "shade-n").setOrigin(0, 0).setAlpha(0.18 + dN * 0.12).setDepth(by + dy + 0.05),
             );
         }
+      }
+    }
+
+    // Shader glow pools: nearest clusters win the limited light slots. Pool
+    // radius grows gently with cluster size (a lake glows wider than a vein);
+    // NEGATIVE radius marks them shadow-free in the shader. Ember-rim flicker
+    // only for fire-like anims — a pulsing crystal must not turn red at its
+    // rim (the pulse itself lives in the per-pixel self floor).
+    if (buckets.size) {
+      const uC = (ccx - this.iso.ox) / dx;
+      const vC = (ccy - this.iso.oy) / dy;
+      const cCol = (uC + vC) / 2;
+      const cRow = (vC - uC) / 2;
+      const pools = [...buckets.values()]
+        .map((b) => ({ b, col: b.sc / b.n, row: b.sr / b.n }))
+        .sort(
+          (a, z) =>
+            (a.col - cCol) ** 2 + (a.row - cRow) ** 2 - ((z.col - cCol) ** 2 + (z.row - cRow) ** 2),
+        )
+        .slice(0, EMISSION_POOL_MAX);
+      for (const { b, col, row } of pools) {
+        this.shaderLights.push({
+          col,
+          row,
+          z: b.z + 0.6,
+          radius: -(b.radius * (1 + 0.35 * Math.sqrt(b.n - 1))),
+          color: [b.color[0] * b.strength, b.color[1] * b.strength, b.color[2] * b.strength],
+          flicker: b.flicker,
+        });
       }
     }
   }

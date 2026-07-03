@@ -21,12 +21,22 @@ export interface ShaderLight {
   col: number; // grid coords (fractional ok)
   row: number;
   z: number; // height in levels
-  radius: number; // in cells
+  radius: number; // in cells; NEGATIVE = shadow-free GLOW pool (tile emission)
   color: [number, number, number];
   flicker: number; // 0 = steady, 1 = full fire flicker
 }
 
-export const MAX_SHADER_LIGHTS = 6;
+/** One entry of tiles/emission.json — a tile category that glows by itself. */
+export interface EmissionEntry {
+  color: [number, number, number]; // 0..1, measured from the art
+  strength: number; // 0..1 — intensity of the light POOL around the tile
+  radius: number; // pool size in cells
+  anim: "static" | "flicker" | "pulse";
+  self: number; // 0..1 — how much the tile's OWN pixels resist darkness
+}
+export type EmissionMap = Record<string, EmissionEntry | null>;
+
+export const MAX_SHADER_LIGHTS = 12;
 
 const FRAG = `
 precision highp float;
@@ -44,6 +54,8 @@ uniform vec4 uLightPos[${MAX_SHADER_LIGHTS}];  // col, row, z, radius(cells)
 uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
 uniform sampler2D uHeight;
 uniform sampler2D uHeightL; // occlusion heightmap, LINEAR-filtered (LOS march)
+uniform sampler2D uEmit;    // emission palette: 2 texels/entry (colour; params)
+uniform float uEmitN;       // number of palette entries (0 = no emission)
 
 // Bilinear height for the LOS march ONLY: blockers ramp in over ~a cell, so
 // cast-shadow edges get a natural penumbra instead of cell-quantized 1px
@@ -64,6 +76,13 @@ float objAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
   return texture2D(uHeight, uv).g;
+}
+
+// Emission palette index + 1 (0 = the cell does not glow): B channel.
+float emitAt(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  return texture2D(uHeight, uv).b * 255.0;
 }
 
 void main() {
@@ -213,7 +232,10 @@ void main() {
   for (int i = 0; i < ${MAX_SHADER_LIGHTS}; i++) {
     if (float(i) >= uNumLights) continue;
     vec3 lp = uLightPos[i].xyz;
-    float radius = uLightPos[i].w;
+    // Sign of w: positive = a real light (casts LOS shadows); NEGATIVE = a
+    // GLOW pool from tile emission — soft ambience with no shadow geometry,
+    // like Sea of Stars' environment point lights.
+    float radius = abs(uLightPos[i].w);
     vec2 d2 = lp.xy - pos;
     float dist = sqrt(dot(d2, d2) + pow((lp.z - z) * 0.6, 2.0));
     float att = clamp(1.0 - dist / radius, 0.0, 1.0);
@@ -232,7 +254,7 @@ void main() {
     // received from above or level (cliff bases, object shadows, faces)
     // keeps full occlusion.
     float occ = 1.0;
-    if (z < lp.z + 0.05 || objAt(cell) > 0.5) {
+    if (uLightPos[i].w > 0.0 && (z < lp.z + 0.05 || objAt(cell) > 0.5)) {
       for (int s = 1; s <= 12; s++) {
         float t = float(s) / 13.0;
         // March from the EXACT surface point (same as attenuation): marching
@@ -303,6 +325,27 @@ void main() {
 
   light *= ao;
 
+  // Self-emission floor (tiles/emission.json): a glowing tile's OWN pixels
+  // never drop below colour*self — lava stays molten, crystals stay lit.
+  // max() makes it a FLOOR, not an add: daylight (ambient 1.0) swallows it,
+  // night reveals it, and the art's own contrast survives the multiply.
+  // Per-cell hash phase so a lava lake shimmers instead of blinking in sync.
+  float eIdx = emitAt(cell) - 1.0;
+  if (uEmitN > 0.5 && eIdx > -0.5) {
+    float tw = 0.5 / uEmitN; // one palette texel
+    vec3 eCol = texture2D(uEmit, vec2((eIdx * 2.0 + 0.5) * tw, 0.5)).rgb;
+    vec4 ePar = texture2D(uEmit, vec2((eIdx * 2.0 + 1.5) * tw, 0.5));
+    float ph = fract(sin(dot(floor(cell), vec2(12.9898, 78.233))) * 43758.5453) * 6.2831;
+    float m = ePar.b * 255.0; // anim mode: 0 static, ~100 pulse, ~200 flicker
+    float f = 1.0;
+    if (m > 150.0) {
+      f = 1.0 - 0.12 * (0.5 + 0.5 * sin(time * 3.1 + ph)) - 0.06 * sin(time * 8.3 + ph * 1.7);
+    } else if (m > 50.0) {
+      f = 0.85 + 0.15 * sin(time * 1.3 + ph);
+    }
+    light = max(light, eCol * ePar.g * f);
+  }
+
   gl_FragColor = vec4(min(light, vec3(1.25)), 1.0);
 }
 `;
@@ -325,6 +368,8 @@ export class NightLights {
   private oArr!: Uint8Array;   // CPU solid-object flags
   private curLights: ShaderLight[] = [];
   private curAmbient: [number, number, number] = [0.075, 0.09, 0.14];
+  private emission: EmissionMap;
+  private emitList: EmissionEntry[] = []; // palette order (index = shader eIdx)
   active = false;
   // Live calibration (debug keys): rendering-path differences between GPUs
   // showed up as flipped/scaled fields that headless verification could not
@@ -334,11 +379,18 @@ export class NightLights {
   spanScale = 1; // field world-span multiplier around the view centre
   testPattern = 0; // 1 = world-y gradient, 2 = cell grid vs art tiles
 
-  constructor(scene: Phaser.Scene, world: World, iso: { ox: number; oy: number }, maxLevel: number) {
+  constructor(
+    scene: Phaser.Scene,
+    world: World,
+    iso: { ox: number; oy: number },
+    maxLevel: number,
+    emission: EmissionMap = {},
+  ) {
     this.scene = scene;
     this.world = world;
     this.iso = iso;
     this.maxLevel = maxLevel;
+    this.emission = emission;
   }
 
   create() {
@@ -353,8 +405,10 @@ export class NightLights {
       uNumLights: { type: "1f", value: 0 },
       uLightPos: { type: "4fv", value: this.posArr },
       uLightCol: { type: "4fv", value: this.colArr },
+      uEmitN: { type: "1f", value: 0 },
       uHeight: { type: "sampler2D", value: null },
       uHeightL: { type: "sampler2D", value: null },
+      uEmit: { type: "sampler2D", value: null },
     });
     // Shader GameObjects can't blend directly — render the light field to a
     // texture and composite it with a MULTIPLY image on top of the scene.
@@ -388,6 +442,8 @@ export class NightLights {
     s.setSampler2D("uHeight", "world-heightmap");
     if (this.scene.textures.exists("world-heightmap-linear"))
       s.setSampler2D("uHeightL", "world-heightmap-linear", 1);
+    if (this.scene.textures.exists("emission-palette"))
+      s.setSampler2D("uEmit", "emission-palette", 2);
     s.setRenderToTexture(key);
     this.shader = s;
     const old = this.overlay!.texture.key;
@@ -419,6 +475,16 @@ export class NightLights {
     if (this.scene.textures.exists("world-heightmap")) return;
     const w = this.world.width;
     const h = this.world.height;
+    // Emission palette indices: category → position in emitList (+1 in the
+    // texture's B channel; 0 = does not glow). Only categories the registry
+    // marks emissive get an index.
+    const emitIdx = new Map<string, number>();
+    for (const [cat, entry] of Object.entries(this.emission)) {
+      if (entry) {
+        emitIdx.set(cat, this.emitList.length);
+        this.emitList.push(entry);
+      }
+    }
     const tex = this.scene.textures.createCanvas("world-heightmap", w, h);
     const ctx = tex!.getContext();
     const img = ctx.createImageData(w, h); // surface (terrain-only heights)
@@ -442,6 +508,9 @@ export class NightLights {
         // occlusion — the billboard compromise is for players, who can never
         // stand on these cells.
         img.data[i + 1] = solid ? 255 : 0;
+        // B = self-emission palette index + 1 (see the shader's emitAt).
+        const ei = emitIdx.get(cell.t);
+        img.data[i + 2] = ei === undefined ? 0 : Math.min(255, ei + 1);
         img.data[i + 3] = 255;
         imgL.data[i + 3] = 255;
       }
@@ -453,6 +522,30 @@ export class NightLights {
       texL.getContext().putImageData(imgL, 0, 0);
       texL.refresh();
       texL.setFilter(Phaser.Textures.FilterMode.LINEAR);
+    }
+    // Palette texture: 2 texels per entry — texel 0 = colour, texel 1 =
+    // (strength, self, anim mode 0/100/200). NEAREST so indices read exact.
+    if (this.emitList.length) {
+      const pw = this.emitList.length * 2;
+      const ptex = this.scene.textures.createCanvas("emission-palette", pw, 1);
+      if (ptex) {
+        const pctx = ptex.getContext();
+        const pimg = pctx.createImageData(pw, 1);
+        this.emitList.forEach((e, k) => {
+          const i = k * 8;
+          pimg.data[i] = Math.round(e.color[0] * 255);
+          pimg.data[i + 1] = Math.round(e.color[1] * 255);
+          pimg.data[i + 2] = Math.round(e.color[2] * 255);
+          pimg.data[i + 3] = 255;
+          pimg.data[i + 4] = Math.round(e.strength * 255);
+          pimg.data[i + 5] = Math.round(e.self * 255);
+          pimg.data[i + 6] = e.anim === "flicker" ? 200 : e.anim === "pulse" ? 100 : 0;
+          pimg.data[i + 7] = 255;
+        });
+        pctx.putImageData(pimg, 0, 0);
+        ptex.refresh();
+        ptex.setFilter(Phaser.Textures.FilterMode.NEAREST);
+      }
     }
   }
 
@@ -484,12 +577,13 @@ export class NightLights {
       const L = this.curLights[i];
       const dx = L.col - col;
       const dy = L.row - row;
+      const radius = Math.abs(L.radius); // negative = shadow-free glow pool
       const dist = Math.sqrt(dx * dx + dy * dy + Math.pow((L.z - z) * 0.6, 2));
-      let att = Math.max(0, 1 - dist / L.radius);
+      let att = Math.max(0, 1 - dist / radius);
       att *= att;
       if (att <= 0.001) continue;
       let occ = 1;
-      if (z < L.z + 0.05 || isObj) {
+      if (L.radius > 0 && (z < L.z + 0.05 || isObj)) {
         for (let sN = 1; sN <= 12; sN++) {
           const tt = sN / 13;
           const px = col + dx * tt;
@@ -504,7 +598,7 @@ export class NightLights {
       }
       const fl = L.flicker;
       const flick = 1 - fl * 0.1 * (0.5 + 0.5 * Math.sin(t * 2.9 + i * 5.3)) - fl * 0.05 * Math.sin(t * 7.1 + i * 11.1);
-      const d01 = Math.min(1, dist / L.radius);
+      const d01 = Math.min(1, dist / radius);
       const sst = Math.min(1, Math.max(0, (d01 - 0.35) / 0.6));
       const emberK = sst * sst * (3 - 2 * sst) * Math.min(1, fl * 1.2);
       const eb = [0.95, 0.3, 0.12];
@@ -624,5 +718,6 @@ export class NightLights {
     s.setUniform("uNumLights.value", n);
     s.setUniform("uLightPos.value", this.posArr);
     s.setUniform("uLightCol.value", this.colArr);
+    s.setUniform("uEmitN.value", this.emitList.length);
   }
 }
