@@ -89,8 +89,12 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
 - **Contract for new tile categories**: unknown categories default to plain
   walkable ground AND therefore to terrain lighting. Every new solid/decor
   category from the tiles agent must get a SURFACES entry (shared/) or its
-  block shadow returns. `WorldScene` warns at boot (`isKnownSurface`) —
-  treat that console warning as a work item.
+  block shadow returns. This is ENFORCED: `npm test` runs
+  `scripts/check-surfaces.mjs`, which FAILS when the world uses an
+  unclassified category and prints a measured, ready-to-paste proposal
+  (art-decisive cases are auto-classified; stand-on-it-or-not is a gameplay
+  call the tool hedges with name hints). `WorldScene` also warns at boot.
+  Expanding the tileset = add art, run tests, paste the proposed line.
 - Debug: `[9]` cycles field test patterns (gradient/grid/uv/classification/
   raw field); `__ml.probeLight(col,row,z,radius)` places a light headlessly;
   numeric probes live in `scripts/verify-solidband.mjs` (no phantom bands),

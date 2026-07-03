@@ -16,7 +16,7 @@
     "build:client": "npm run manifest && npm run build -w client",
     "serve": "cross-env SERVE_CLIENT=1 NODE_ENV=production npm run start -w server",
     "start": "npm run build:client && npm run serve",
-    "test": "npm run manifest && npm run test -w server",
+    "test": "npm run manifest && npm run test -w server && npx tsx scripts/check-surfaces.mjs",
     "typecheck": "tsc --noEmit -p shared/tsconfig.json && tsc --noEmit -p server/tsconfig.json && tsc --noEmit -p client/tsconfig.json"
   },
   "devDependencies": {
