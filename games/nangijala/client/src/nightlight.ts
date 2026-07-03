@@ -273,7 +273,12 @@ void main() {
       // distance attenuation) instead of only the single facing cell, while
       // a light behind the plane still leaves the face dark.
       float cosF = front / max(sqrt(front * front + lat * lat), 0.001);
-      float gate = smoothstep(0.0, 0.25, front) * smoothstep(0.2, 0.6, cosF);
+      // Lambert-like lateral taper. The old smoothstep(0.2,0.6,cosF) crushed
+      // grazing light: a torch CLOSE to a wall lit ~1 cell of it while its
+      // ground pool spread 4+ cells (light must extend along the wall about
+      // as far as along the ground). pow keeps a gentle cosine-ish falloff
+      // along the run; the front gate still keeps back faces dark.
+      float gate = smoothstep(0.0, 0.25, front) * pow(clamp(cosF, 0.0, 1.0), 0.75);
       // Penumbra: the gate fades in up the face (see gateFade above).
       occ *= mix(1.0, gate, gateFade);
     }
