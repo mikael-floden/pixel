@@ -253,4 +253,29 @@ def generate_category(client, cfg, cat):
     }
     with open(os.path.join(cdir, "tiles.json"), "w") as f:
         json.dump(manifest, f, indent=2)
+    register_emission(cat["id"])
     return manifest
+
+
+def register_emission(cid):
+    """Ensure the new category exists in tiles/emission.json (tile-emission@1).
+
+    Every category MUST have an entry there; ``null`` = "audited, does not
+    glow" and is the right default for generated art (games consume the
+    registry for night lighting; a human/game-agent upgrades an entry to a
+    real glow when the art warrants it). Existing entries are never touched.
+    """
+    path = os.path.join(ROOT, "emission.json")
+    try:
+        with open(path) as f:
+            reg = json.load(f)
+    except (OSError, ValueError):
+        reg = {"format": "tile-emission@1", "categories": {}}
+    cats = reg.setdefault("categories", {})
+    if cid in cats:
+        return
+    cats[cid] = None
+    reg["categories"] = dict(sorted(cats.items()))
+    with open(path, "w") as f:
+        json.dump(reg, f, indent=2)
+        f.write("\n")

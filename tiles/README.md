@@ -111,11 +111,43 @@ So for any tile the Maps agent knows: **what it is** (`category`, `description`,
 `profile`, `kind`), **how it was generated** (`provenance.request`, `seed`), and
 **how to place/stack it** (`geometry` + `stacking`, in exact pixels).
 
+## Self-emission registry (`tiles/emission.json`, schema `tile-emission@1`)
+
+Some tiles GLOW with their own light (lava, magic crystals, shining gold…).
+`tiles/emission.json` is the registry the games consume for night lighting
+(nangijala: a self-glow floor on the tile's own pixels + a small shadow-free
+light pool around it — Sea of Stars-style environment point lights).
+
+**Every category must have an entry — `null` means "audited, does not glow".**
+That null is the audit trail: it proves someone looked at the art. Most tiles
+do NOT glow; emission is a spice, not a default.
+
+```jsonc
+"lava": {
+  "color": [1.0, 0.35, 0.13],   // 0..1 RGB, measured from the art
+  "strength": 0.9,              // 0..1 — intensity of the pool around it
+  "radius": 3.5,                // pool size in grid cells
+  "anim": "flicker",            // static | flicker | pulse
+  "self": 0.85                  // 0..1 — how much its OWN pixels resist night
+},
+"meadow": null                   // audited: does not glow
+```
+
+`anim` by material: fire/lava **flicker**, magic (crystals, mushrooms)
+**pulse**, steady shine (gold, ice) **static**.
+
+**TILES AGENT: when generating a NEW category, add its entry here in the same
+commit** (usually `null`). `games/nangijala/scripts/audit-emission.mjs`
+measures the art and proposes colors; the game's CI gate
+(`games/nangijala/scripts/check-surfaces.mjs`, run by its `npm test`) FAILS
+when a world-used category is missing from the registry and shape-checks every
+non-null entry.
+
 ## Layout
 
 ```
 tiles/
-  README.md · config/tiles.json · pipeline/
+  README.md · emission.json · config/tiles.json · pipeline/
   <category>/  tile_00.png … tile_NN.png · tiles.json · preview.png
 ```
 A **category** = any `tiles/` subfolder with a `tiles.json`.

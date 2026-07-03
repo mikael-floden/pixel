@@ -1,0 +1,298 @@
+{
+  "format": "tile-emission@1",
+  "doc": "Self-emission registry: which tile categories GLOW with their own light, and how. Consumed by games (nangijala night shader: self-glow floor on the tile pixels + a small shadow-free light pool around them). EVERY category must have an entry: null = audited, does not glow. Fields: color [r,g,b] 0..1 (measure the art: scripts/audit-emission.mjs in games/nangijala proposes colors); strength 0..1 (pool intensity); radius (pool size in cells); anim static|flicker|pulse (lava flickers, magic pulses, gold/ice shine steadily); self 0..1 (how much the tile OWN pixels resist darkness at night: 0.85 = lava stays molten). TILES AGENT: when generating a NEW category, add its entry here in the same commit. Most tiles do NOT glow (keep null) - emission is a spice.",
+  "categories": {
+    "autumn_forest": null,
+    "big_boulder": null,
+    "bog": null,
+    "brick_road": null,
+    "brick_step": null,
+    "brick_step_v2": null,
+    "brick_step_v3": null,
+    "brick_wall": null,
+    "cactus": null,
+    "cactus_v2": null,
+    "castle": null,
+    "castle_wall": null,
+    "clay": null,
+    "cliff_clay": null,
+    "cliff_clay_v2": null,
+    "cliff_coast": null,
+    "cliff_coast_v2": null,
+    "cliff_crystal": {
+      "color": [
+        0.5,
+        0.7,
+        0.95
+      ],
+      "strength": 0.35,
+      "radius": 2,
+      "anim": "pulse",
+      "self": 0.5
+    },
+    "cliff_crystal_v2": {
+      "color": [
+        0.95,
+        0.6,
+        0.55
+      ],
+      "strength": 0.35,
+      "radius": 2,
+      "anim": "pulse",
+      "self": 0.5
+    },
+    "cliff_desert": null,
+    "cliff_dirt": null,
+    "cliff_forest": null,
+    "cliff_gold": {
+      "color": [
+        1,
+        0.8,
+        0.35
+      ],
+      "strength": 0.35,
+      "radius": 1.6,
+      "anim": "static",
+      "self": 0.5
+    },
+    "cliff_gold_v2": {
+      "color": [
+        1,
+        0.82,
+        0.35
+      ],
+      "strength": 0.35,
+      "radius": 1.6,
+      "anim": "static",
+      "self": 0.5
+    },
+    "cliff_grass": null,
+    "cliff_ice": null,
+    "cliff_jungle": null,
+    "cliff_jungle_v2": null,
+    "cliff_jungle_v3": null,
+    "cliff_lava": {
+      "color": [
+        1,
+        0.32,
+        0.14
+      ],
+      "strength": 0.45,
+      "radius": 2,
+      "anim": "flicker",
+      "self": 0.55
+    },
+    "cliff_marble": null,
+    "cliff_marble_v2": null,
+    "cliff_moss": null,
+    "cliff_moss_v2": null,
+    "cliff_sand": null,
+    "cliff_snow": null,
+    "cliff_stone": null,
+    "cobblestone": null,
+    "coral_sand": null,
+    "crop_bed": null,
+    "crop_bed_v2": null,
+    "crystal_ground": {
+      "color": [
+        0.55,
+        0.55,
+        1
+      ],
+      "strength": 0.6,
+      "radius": 2.8,
+      "anim": "pulse",
+      "self": 0.7
+    },
+    "crystal_spire": {
+      "color": [
+        0.6,
+        0.55,
+        1
+      ],
+      "strength": 0.75,
+      "radius": 3.5,
+      "anim": "pulse",
+      "self": 0.75
+    },
+    "crystal_spire_v2": {
+      "color": [
+        0.75,
+        0.6,
+        0.9
+      ],
+      "strength": 0.6,
+      "radius": 3,
+      "anim": "pulse",
+      "self": 0.65
+    },
+    "desert": null,
+    "dirt": null,
+    "farm": null,
+    "flowers": null,
+    "forest": null,
+    "garden_wall": null,
+    "grass": null,
+    "grass_ledge": null,
+    "gravel": null,
+    "hedge": null,
+    "ice": null,
+    "ice_spire": {
+      "color": [
+        0.35,
+        0.8,
+        0.95
+      ],
+      "strength": 0.3,
+      "radius": 2.2,
+      "anim": "static",
+      "self": 0.45
+    },
+    "ice_spire_v2": {
+      "color": [
+        0.35,
+        0.82,
+        0.95
+      ],
+      "strength": 0.3,
+      "radius": 2.2,
+      "anim": "static",
+      "self": 0.45
+    },
+    "iron_railing": null,
+    "iron_railing_v2": null,
+    "jungle": null,
+    "lava": {
+      "color": [
+        1,
+        0.35,
+        0.13
+      ],
+      "strength": 0.9,
+      "radius": 3.5,
+      "anim": "flicker",
+      "self": 0.85
+    },
+    "lava_ledge": {
+      "color": [
+        1,
+        0.4,
+        0.18
+      ],
+      "strength": 0.5,
+      "radius": 2.2,
+      "anim": "flicker",
+      "self": 0.6
+    },
+    "lava_ledge_v2": {
+      "color": [
+        1,
+        0.4,
+        0.18
+      ],
+      "strength": 0.5,
+      "radius": 2.2,
+      "anim": "flicker",
+      "self": 0.6
+    },
+    "marble_floor": null,
+    "meadow": null,
+    "meadow_v2": null,
+    "mosaic_floor": null,
+    "mountain_peak": null,
+    "mushroom_grove": {
+      "color": [
+        0.95,
+        0.42,
+        0.3
+      ],
+      "strength": 0.4,
+      "radius": 1.8,
+      "anim": "pulse",
+      "self": 0.55
+    },
+    "oak_tree": null,
+    "oak_tree_v2": null,
+    "obelisk": null,
+    "obelisk_v2": null,
+    "permafrost": null,
+    "pine_tree": null,
+    "pine_tree_v2": null,
+    "road_city_cobble_junctions": null,
+    "road_city_cobble_straight": null,
+    "road_city_cobble_turns": null,
+    "road_city_flagstone_junctions": null,
+    "road_city_flagstone_straight": null,
+    "road_city_flagstone_turns": null,
+    "road_city_setts_junctions": null,
+    "road_city_setts_straight": null,
+    "road_city_setts_turns": null,
+    "road_cobble_dirt_junctions": null,
+    "road_cobble_dirt_straight": null,
+    "road_cobble_dirt_turns": null,
+    "road_desert_junctions": null,
+    "road_desert_straight": null,
+    "road_desert_turns": null,
+    "road_dirt_field_junctions": null,
+    "road_dirt_field_straight": null,
+    "road_dirt_field_turns": null,
+    "road_dirt_grass_junctions": null,
+    "road_dirt_grass_straight": null,
+    "road_dirt_grass_turns": null,
+    "road_flag_stone_junctions": null,
+    "road_flag_stone_straight": null,
+    "road_flag_stone_turns": null,
+    "road_forest_junctions": null,
+    "road_forest_straight": null,
+    "road_forest_turns": null,
+    "road_jungle_junctions": null,
+    "road_jungle_straight": null,
+    "road_jungle_turns": null,
+    "road_meadow_junctions": null,
+    "road_meadow_straight": null,
+    "road_meadow_turns": null,
+    "road_sand_junctions": null,
+    "road_sand_straight": null,
+    "road_sand_turns": null,
+    "road_savanna_junctions": null,
+    "road_savanna_straight": null,
+    "road_savanna_turns": null,
+    "road_snow_junctions": null,
+    "road_snow_straight": null,
+    "road_snow_turns": null,
+    "road_swamp_junctions": null,
+    "road_swamp_straight": null,
+    "road_swamp_turns": null,
+    "road_tundra_junctions": null,
+    "road_tundra_straight": null,
+    "road_tundra_turns": null,
+    "sand": null,
+    "sand_bank": null,
+    "sand_bank_v2": null,
+    "savanna": null,
+    "snow": null,
+    "snow_bank": null,
+    "snow_bank_v2": null,
+    "stairs": null,
+    "stone": null,
+    "stone_planter": null,
+    "stone_planter_v2": null,
+    "stone_step": null,
+    "swamp": null,
+    "town_wall": null,
+    "tundra": null,
+    "vineyard": null,
+    "watchtower": null,
+    "water": null,
+    "waterfall": null,
+    "waterfall_v2": null,
+    "wheat_field": null,
+    "wood_deck_edge": null,
+    "wood_deck_edge_v2": null,
+    "wood_floor": null,
+    "wood_ramp": null,
+    "wooden_fence": null,
+    "wooden_tower": null,
+    "wooden_tower_v2": null
+  }
+}
