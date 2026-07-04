@@ -417,6 +417,8 @@ export function buildGlowStamps(
   maxLevel: number,
   maxStamps = 500, // one RT sprite-draw per stamp per frame — hundreds are cheap
   artYOff?: (t: string, v: number) => number, // bottom-anchor shift for 64x128 art
+  anchorOnce = false, // demo: art is drawn ONCE at ground level — every source
+  // stamps at its art position instead of repeating down a stacked column
 ): GlowStamp[] {
   const { dx, dy, lh } = MAP_GEOMETRY;
   const ANIM: Record<string, number> = { static: 0, pulse: 1, flicker: 2 };
@@ -452,7 +454,7 @@ export function buildGlowStamps(
         const off = 2 + g.r * 0.6;
         const push = (k: number, ox2: number, oy2: number) =>
           out.push({ x: bx + g.x + ox2, y: by - k * lh + g.y + oy2, radius, color: g.color, alpha, anim, phase });
-        if (solid || g.dir === "up") {
+        if (anchorOnce || solid || g.dir === "up") {
           const ox2 = g.dir === "sw" ? -off : g.dir === "se" ? off : 0;
           push(cell.l, ox2, g.dir === "up" ? 0 : off * 0.5);
         } else if (g.dir === "sw") {

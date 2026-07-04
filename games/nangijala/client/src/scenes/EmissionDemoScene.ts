@@ -32,6 +32,7 @@ interface Station {
   row: number;
   solid: boolean;
   lvl: number; // station cell level (set in create; tall art sits flat)
+  shaderLvl?: number; // cliff/wall face art: column height in the SHADER world
 }
 
 export class EmissionDemoScene extends Phaser.Scene {
@@ -119,13 +120,32 @@ export class EmissionDemoScene extends Phaser.Scene {
     // their side faces show (the column is BUILT by stacking the tile per
     // level). Tall art already contains its own faces — stacking it drew
     // 2-3 overlapping copies ("two long tiles on top of each other",
-    // cliff_gold 04) — so it sits flat and is drawn exactly once.
+    // cliff_gold 04) — so it sits flat (lvl 0) and is drawn exactly once.
     for (const st of this.stations) {
       st.lvl = st.solid || this.aOff(st.cat, st.v) > 0 ? 0 : STATION_LEVEL;
       rows[st.row][st.col] = { t: st.cat, v: st.v, l: st.lvl };
     }
+    // CLIFF/WALL-role tall art is a solid box FACE: the night shader must
+    // treat the cell as a COLUMN of matching height, or the per-pixel
+    // resolve lights the flat cell diamond behind the billboard instead of
+    // the art ("the ground layer lit up ignoring the shape of the tile",
+    // #28 cliff_gold 03). The column lives ONLY in the shader's world —
+    // drawing, labels and halo stamps stay ground-anchored. Tapered art
+    // (spires/trees) stays flat: an analytic box around it would paint a
+    // phantom glowing box on the meadow beside the art.
+    const rowsShader = rows.map((r) => r.map((c) => ({ ...c })));
+    for (const st of this.stations) {
+      const role = this.tileBases?.roles?.[st.cat];
+      if ((role === "cliff" || role === "wall") && this.aOff(st.cat, st.v) > 0) {
+        const base = this.tileBases?.categories[st.cat]?.[st.v] ?? 64;
+        st.shaderLvl = Math.max(1, Math.min(8, Math.round((base - 34) / MAP_GEOMETRY.lh)));
+        rowsShader[st.row][st.col].l = st.shaderLvl;
+      }
+    }
     this.world = { width: cols, height: rowsN, rows, pois: [] };
-    const cs = canvasSize(this.world);
+    // The shader's view of the world: cliff/wall stations become columns.
+    const shaderWorld: World = { width: cols, height: rowsN, rows: rowsShader, pois: [] };
+    const cs = canvasSize(shaderWorld);
     this.iso = { ox: cs.ox, oy: cs.oy };
     this.maxLevel = cs.maxLevel;
 
@@ -176,7 +196,7 @@ export class EmissionDemoScene extends Phaser.Scene {
     // Night lighting with the full emission pipeline (no torches, no fire).
     if (this.game.renderer.type === Phaser.WEBGL) {
       try {
-        this.night = new NightLights(this, this.world, this.iso, this.maxLevel, this.emission);
+        this.night = new NightLights(this, shaderWorld, this.iso, this.maxLevel, this.emission);
         this.night.create();
         this.night.setActive(true);
       } catch (err) {
@@ -289,6 +309,7 @@ export class EmissionDemoScene extends Phaser.Scene {
         this.maxLevel,
         undefined,
         (t, v) => this.aOff(t, v),
+        true, // art drawn once at ground — anchor every source to it
       );
       // Glow pools (layer 2, same convention as the game: negative radius =
       // shadow-free): one pool per glowing station, nearest 8 win the slots.
@@ -307,7 +328,9 @@ export class EmissionDemoScene extends Phaser.Scene {
           return {
             col: st.col + 0.5,
             row: st.row + 0.5,
-            z: st.lvl + 0.6,
+            // Column-face stations glow from mid-face height; flat ones from
+            // just above their surface.
+            z: st.shaderLvl ? st.shaderLvl / 2 + 0.3 : st.lvl + 0.6,
             radius: -e.radius,
             color: [e.color[0] * e.strength, e.color[1] * e.strength, e.color[2] * e.strength] as [
               number,

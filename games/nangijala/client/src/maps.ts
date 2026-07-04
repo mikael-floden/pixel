@@ -50,6 +50,9 @@ export interface TileBases {
   groundBase: number;
   groundTop?: number;
   categories: Record<string, number[]>;
+  // Census roles (cliff/wall/spire/…) for categories that have one — cliff
+  // and wall art is a solid FACE the night shader may treat as a column.
+  roles?: Record<string, string>;
 }
 
 /** Lift for tall tile art. Tall sets are NOT uniform — "extra long" variants

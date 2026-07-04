@@ -28,11 +28,16 @@ const lum = (x, y) => {
   return shot.data[i] * 0.4 + shot.data[i + 1] * 0.4 + shot.data[i + 2] * 0.2;
 };
 // A seam = a LONG straight run of strong same-direction luminance steps at
-// a fixed x (vertical) or fixed y (horizontal) in the field. Threshold 130px:
-// legitimate wall-face floor bands end in vertical edges up to ~2 levels
-// (76px at zoom 2) and big saturated halos have flat-ish clamp boundaries
-// up to ~130px; the broken-blend quad edges ran 200-360px.
+// a fixed x (vertical) or fixed y (horizontal) in the field. Horizontal
+// threshold 170px: legitimate halo clamp boundaries stay under ~130px; the
+// broken-blend quad edges ran 200-360px. VERTICAL legit edges got taller:
+// cliff/wall stations are analytic COLUMNS in the demo's shader world (up
+// to 8 levels), whose per-cell emission floor ends in a straight vertical
+// edge of (8*19+26)*zoom ≈ 356px — so the vertical threshold sits above
+// that. A blend regression still trips the horizontal scan (quad artifacts
+// have all four edges).
 const RUN = 170;
+const RUN_V = 380;
 let vSeams = 0;
 for (let x = 200; x < 1400; x++) {
   let run = 0, worst = 0;
@@ -42,7 +47,7 @@ for (let x = 200; x < 1400; x++) {
     else run = 0;
     if (run > worst) worst = run;
   }
-  if (worst >= RUN) vSeams++;
+  if (worst >= RUN_V) vSeams++;
 }
 let hSeams = 0;
 for (let y = 120; y < 800; y++) {
@@ -55,6 +60,6 @@ for (let y = 120; y < 800; y++) {
   }
   if (worst >= RUN) hSeams++;
 }
-console.log(`raw-field straight seams (run>=${RUN}px): vertical ${vSeams}, horizontal ${hSeams} (want 0/0)`);
+console.log(`raw-field straight seams (v>=${RUN_V}/h>=${RUN}px): vertical ${vSeams}, horizontal ${hSeams} (want 0/0)`);
 await browser.close();
 process.exit(vSeams + hSeams === 0 ? 0 : 1);

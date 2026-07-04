@@ -94,6 +94,19 @@ for (const cat of readdirSync(TILES).sort()) {
   categories[cat] = files.map((f) => baseOf(join(dir, f)));
 }
 
+// Category roles from the maps agent's census (ground/edge/road/spire/wall/
+// cliff): cliff- and wall-role art is a solid FACE the night shader should
+// treat as a column (the emission demo builds its heightmap from this —
+// billboarding a cliff face on flat ground lit the flat cell diamond instead
+// of the art, "ignoring the shape of the tile").
+let roles = {};
+const censusPath = join(ASSETS_ROOT, "maps", "config", "tile_census.json");
+if (existsSync(censusPath)) {
+  const census = JSON.parse(readFileSync(censusPath, "utf8"));
+  for (const [cat, m] of Object.entries(census.categories ?? {}))
+    if (m.role && categories[cat]) roles[cat] = m.role;
+}
+
 const groundBase = categories.grass?.[0] ?? 55;
 // Top vertex of the ground diamond (first opaque row of grass): solid
 // structures anchor their bottom V to the surface diamond's BOTTOM vertex
@@ -112,7 +125,7 @@ function topOf(file) {
 const groundTop = topOf(join(TILES, "grass", "tile_00.png"));
 writeFileSync(
   OUT,
-  JSON.stringify({ format: "tile-bases@1", groundBase, groundTop, categories }) + "\n",
+  JSON.stringify({ format: "tile-bases@1", groundBase, groundTop, categories, roles }) + "\n",
 );
 const tall = Object.entries(categories).filter(([, b]) => Math.max(...b) > 64);
 console.log(
