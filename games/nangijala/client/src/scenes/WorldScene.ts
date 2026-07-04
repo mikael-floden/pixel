@@ -1169,7 +1169,16 @@ export class WorldScene extends Phaser.Scene {
         if (!this.textures.exists(key)) continue;
         const bx = this.iso.ox + u * dx - ax;
         const by = this.iso.oy + v * dy - ay;
-        for (let lvl = 0; lvl <= cell.l; lvl++) rt.batchDraw(key, bx, by - lvl * lh - this.artYOff(key));
+        // Per-level stacking builds raised TERRAIN columns out of flat tiles.
+        // SOLID structures (trees, pillars, towers) are one object: stacking
+        // their tall art drew 2-3 overlapping copies ("two long tiles on top
+        // of each other" — trees on earth columns, scalloped pillar bases).
+        // They draw exactly once, grounded at their cell's level, like the
+        // maps agent's own renderer.
+        const sSolid = surfaceFor(cell.t);
+        const fromLvl = !sSolid.standable && !sSolid.swimmable ? cell.l : 0;
+        for (let lvl = fromLvl; lvl <= cell.l; lvl++)
+          rt.batchDraw(key, bx, by - lvl * lh - this.artYOff(key));
         // Baked contact shadows from higher sun-side neighbours: a DAYLIGHT
         // elevation cue. Under the per-pixel night shader they double-darken
         // every ledge with hard-edged black gradients the light multiplies
@@ -1388,27 +1397,41 @@ export class WorldScene extends Phaser.Scene {
         if (!this.textures.exists(key)) continue;
         const bx = this.iso.ox + u * dx;
         const by = this.iso.oy + v * dy;
-        // Depth = the column's CENTRE line (by + dy); avatars refine their own
-        // depth against these per frame (see update) since a single scalar
-        // can't resolve every sprite-vs-column case exactly.
-        const aOff = this.artYOff(key);
-        for (let lvl = 0; lvl <= cell.l; lvl++) {
-          this.occluders.push(
-            this.add.image(bx, by - lvl * lh - aOff, key).setOrigin(0, 0).setDepth(by + dy),
-          );
+        // Flat terrain with NO camera-facing exposure never covers a sprite:
+        // its pixels already sit in the ground RT, below every character. A
+        // redundant occluder copy shares its painter depth with tall solids
+        // on the same diagonal — clamping a sprite behind the lava pillar
+        // dragged it below the NEIGHBOURING grass copy too, which then
+        // painted over the feet (playtester report). Only cells whose face
+        // actually shows (terrace edges) and solid structures get copies.
+        const solidHere = !s.standable && !s.swimmable;
+        const lE = this.world.rows[row]?.[col + 1]?.l ?? -1;
+        const lS = this.world.rows[row + 1]?.[col]?.l ?? -1;
+        const exposed = solidHere || cell.l > Math.min(lE, lS);
+        if (exposed) {
+          // Depth = the column's CENTRE line (by + dy); avatars refine their
+          // own depth against these per frame (see update) since a single
+          // scalar can't resolve every sprite-vs-column case exactly.
+          // Solid structures draw ONCE (same rule as the ground RT).
+          const aOff = this.artYOff(key);
+          for (let lvl = solidHere ? cell.l : 0; lvl <= cell.l; lvl++) {
+            this.occluders.push(
+              this.add.image(bx, by - lvl * lh - aOff, key).setOrigin(0, 0).setDepth(by + dy),
+            );
+          }
+          this.occluderMeta.push({
+            col,
+            row,
+            // Solid structures (trees, boulders…) visually stand ~1 level tall.
+            top: cell.l + (s.standable ? 0 : 1),
+            solid: solidHere,
+            depth: by + dy,
+            x0: bx,
+            x1: bx + tileSize,
+            y0: by - cell.l * lh - this.artYOff(key),
+            y1: by + tileSize,
+          });
         }
-        this.occluderMeta.push({
-          col,
-          row,
-          // Solid structures (trees, boulders…) visually stand ~1 level tall.
-          top: cell.l + (s.standable ? 0 : 1),
-          solid: !s.standable && !s.swimmable,
-          depth: by + dy,
-          x0: bx,
-          x1: bx + tileSize,
-          y0: by - cell.l * lh - this.artYOff(key),
-          y1: by + tileSize,
-        });
         // Match the ground pass's contact shadows on redrawn column tops —
         // daylight/canvas fallback only (see drawGroundWindow).
         if (!this.night) {
