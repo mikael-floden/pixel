@@ -277,6 +277,7 @@ export const SURFACES: Record<string, Surface> = {
   crystal_spire_v2: solid, // world-unused today; classified for night lighting
   ice_spire: solid,
   ice_spire_v2: solid,
+  cliff_lava: solid, // freestanding maintainer test placement near spawn
   obelisk: solid,
   obelisk_v2: solid,
   watchtower: solid,

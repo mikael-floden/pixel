@@ -180,6 +180,10 @@ export class WorldScene extends Phaser.Scene {
   private shaderLights: ShaderLight[] = [];
   // tiles/emission.json categories (empty when the registry failed to load).
   private emission: EmissionMap = {};
+  // Bottom-anchor offset for tall (64x128 cliff/tall profile) tile art: drawn
+  // with the same top-left anchor as 64px tiles it sinks 64px into the ground
+  // (only the crystal tip peeked out — playtester report). Offset = imgH - 64.
+  private artOffCache = new Map<string, number>();
   // Per-pixel glow halos for the visible window (rebuilt with the occluders).
   private glowStamps: GlowStamp[] = [];
   // The spawn campfire: an animated world object with its own fire light.
@@ -1119,7 +1123,7 @@ export class WorldScene extends Phaser.Scene {
         if (!this.textures.exists(key)) continue;
         const bx = this.iso.ox + u * dx - ax;
         const by = this.iso.oy + v * dy - ay;
-        for (let lvl = 0; lvl <= cell.l; lvl++) rt.batchDraw(key, bx, by - lvl * lh);
+        for (let lvl = 0; lvl <= cell.l; lvl++) rt.batchDraw(key, bx, by - lvl * lh - this.artYOff(key));
         // Baked contact shadows from higher sun-side neighbours: a DAYLIGHT
         // elevation cue. Under the per-pixel night shader they double-darken
         // every ledge with hard-edged black gradients the light multiplies
@@ -1211,6 +1215,16 @@ export class WorldScene extends Phaser.Scene {
     g.fillStyle(0x2a2f45, 1).fillRoundedRect(x, y, w, h, 4);
     const col = frac > 0.5 ? 0x57c7ff : frac > 0.25 ? 0xffcf4a : 0xff5a5a;
     g.fillStyle(col, 1).fillRoundedRect(x, y, w * frac, h, 4);
+  }
+
+  private artYOff(key: string): number {
+    let off = this.artOffCache.get(key);
+    if (off === undefined) {
+      const src = this.textures.get(key)?.getSourceImage() as { height?: number } | undefined;
+      off = Math.max(0, (src?.height ?? 64) - 64);
+      this.artOffCache.set(key, off);
+    }
+    return off;
   }
 
   /**
@@ -1327,8 +1341,11 @@ export class WorldScene extends Phaser.Scene {
         // Depth = the column's CENTRE line (by + dy); avatars refine their own
         // depth against these per frame (see update) since a single scalar
         // can't resolve every sprite-vs-column case exactly.
+        const aOff = this.artYOff(key);
         for (let lvl = 0; lvl <= cell.l; lvl++) {
-          this.occluders.push(this.add.image(bx, by - lvl * lh, key).setOrigin(0, 0).setDepth(by + dy));
+          this.occluders.push(
+            this.add.image(bx, by - lvl * lh - aOff, key).setOrigin(0, 0).setDepth(by + dy),
+          );
         }
         this.occluderMeta.push({
           col,
@@ -1338,7 +1355,7 @@ export class WorldScene extends Phaser.Scene {
           depth: by + dy,
           x0: bx,
           x1: bx + tileSize,
-          y0: by - cell.l * lh,
+          y0: by - cell.l * lh - this.artYOff(key),
           y1: by + tileSize,
         });
         // Match the ground pass's contact shadows on redrawn column tops —
@@ -1396,6 +1413,8 @@ export class WorldScene extends Phaser.Scene {
       this.iso,
       { x0, y0, x1, y1 },
       this.maxLevel,
+      undefined,
+      (t, v) => this.artYOff(tileKey(t, v)),
     );
   }
 

@@ -114,8 +114,10 @@ export class EmissionDemoScene extends Phaser.Scene {
         const by = this.iso.oy + (c + r) * dy;
         const key = tileKey(cell.t, cell.v);
         if (!this.textures.exists(key)) continue;
+        // Bottom-anchor tall (64x128) art — same rule as the game world.
+        const aOff = Math.max(0, ((this.textures.get(key).getSourceImage() as { height?: number })?.height ?? 64) - 64);
         for (let k = 0; k <= cell.l; k++) {
-          this.add.image(bx, by - k * lh, key).setOrigin(0, 0).setDepth(by + dy);
+          this.add.image(bx, by - k * lh - aOff, key).setOrigin(0, 0).setDepth(by + dy);
         }
       }
     }
@@ -123,7 +125,11 @@ export class EmissionDemoScene extends Phaser.Scene {
     // Station numbers — ABOVE the darkness overlay so they stay readable.
     for (const st of this.stations) {
       const bx = this.iso.ox + (st.col - st.row) * dx + dx;
-      const topY = this.iso.oy + (st.col + st.row) * dy - (st.solid ? 0 : STATION_LEVEL) * lh;
+      const key = tileKey(st.cat, st.v);
+      const aOff = this.textures.exists(key)
+        ? Math.max(0, ((this.textures.get(key).getSourceImage() as { height?: number })?.height ?? 64) - 64)
+        : 0;
+      const topY = this.iso.oy + (st.col + st.row) * dy - (st.solid ? 0 : STATION_LEVEL) * lh - aOff;
       this.add
         .text(bx, topY - 26, String(st.n), {
           fontFamily: "monospace",
@@ -260,6 +266,12 @@ export class EmissionDemoScene extends Phaser.Scene {
           y1: cam.worldView.bottom + pad,
         },
         this.maxLevel,
+        undefined,
+        (t, v) => {
+          const k = tileKey(t, v);
+          if (!this.textures.exists(k)) return 0;
+          return Math.max(0, ((this.textures.get(k).getSourceImage() as { height?: number })?.height ?? 64) - 64);
+        },
       );
       // Glow pools (layer 2, same convention as the game: negative radius =
       // shadow-free): one pool per glowing station, nearest 8 win the slots.
