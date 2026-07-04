@@ -1326,7 +1326,13 @@ export class WorldScene extends Phaser.Scene {
         if (s.swimmable) g.fillStyle(0x3bb0ff, 0.3);
         else g.fillStyle(0xff0000, 0.55);
         const bx = this.iso.ox + u * dx;
-        const by = this.iso.oy + v * dy - cell.l * lh;
+        // The tile ART paints its surface diamond groundTop px below its
+        // canvas top — without the shift the overlay hovered 8px above the
+        // drawn ground (playtester: "why is the collision box not at ground
+        // level where the wall begins?"). Pure visualization; the collision
+        // math itself is grid-space and has no such offset.
+        const by =
+          this.iso.oy + v * dy - cell.l * lh + (this.tileBases?.groundTop ?? 8);
         g.fillPoints(
           [
             new Phaser.Geom.Point(bx + dx, by),
