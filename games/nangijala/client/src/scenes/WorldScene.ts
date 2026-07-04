@@ -156,6 +156,13 @@ export class WorldScene extends Phaser.Scene {
   // Occlusion: raised/solid tiles near the camera drawn as depth-sorted images
   // so they cover characters standing BEHIND them (the ground RT is flat).
   private occluders: Phaser.GameObjects.Image[] = [];
+  // Lit copies of NON-EMISSIVE solid structures (trees, boulders): billboard
+  // art samples the light field of the terrain BEHIND it, so a tree at a
+  // plateau rim had its canopy multiplied by the level-0 ocean's night —
+  // pitch black. Like characters, they get a copy above the overlay tinted
+  // by their own cell's light. Emissive solids (spires, lava pillars) glow
+  // via the emission pipeline and keep their per-pixel field look.
+  private litOccluders: { img: Phaser.GameObjects.Image; col: number; row: number; z: number }[] = [];
   private occluderMeta: {
     col: number;
     row: number;
@@ -914,6 +921,10 @@ export class WorldScene extends Phaser.Scene {
   private applyObjectLights() {
     const night = this.night;
     const on = !!night && night.active;
+    for (const lo of this.litOccluders) {
+      lo.img.setVisible(on);
+      if (on) lo.img.setTint(night!.tintAt(lo.col, lo.row, lo.z, true));
+    }
     for (const a of this.avatars.values()) {
       if (!a.lit) {
         a.lit = this.add.sprite(a.sprite.x, a.sprite.y, a.sprite.texture.key).setDepth(900_001);
@@ -1287,7 +1298,9 @@ export class WorldScene extends Phaser.Scene {
       return;
     this.lastOccl = { x: ccx, y: ccy };
     for (const im of this.occluders) im.destroy();
+    for (const lo of this.litOccluders) lo.img.destroy();
     this.occluders = [];
+    this.litOccluders = [];
     this.occluderMeta = [];
     this.emissiveLights = [];
     this.shaderLights = [];
@@ -1387,6 +1400,19 @@ export class WorldScene extends Phaser.Scene {
           this.occluders.push(
             this.add.image(bx, by - lvl * lh - aOff, key).setOrigin(0, 0).setDepth(by + dy),
           );
+        }
+        const solidHere = !s.standable && !s.swimmable;
+        const emitsHere = em && (em.sources?.[String(cell.v)]?.length ?? 0) > 0;
+        if (this.night && solidHere && !emitsHere) {
+          this.litOccluders.push({
+            img: this.add
+              .image(bx, by - cell.l * lh - aOff, key)
+              .setOrigin(0, 0)
+              .setDepth(litDepth(by + dy)),
+            col: col + 0.5,
+            row: row + 0.5,
+            z: cell.l + 0.5,
+          });
         }
         this.occluderMeta.push({
           col,
