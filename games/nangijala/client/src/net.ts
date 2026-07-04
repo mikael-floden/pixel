@@ -27,7 +27,7 @@ export function getPlayerToken(): string {
   return token;
 }
 
-export async function joinWorld(options: JoinOptions): Promise<Room> {
+export async function joinWorld(options: JoinOptions, room: string = ROOM_NAME): Promise<Room> {
   const client = new Client(serverEndpoint());
-  return client.joinOrCreate(ROOM_NAME, { token: getPlayerToken(), ...options });
+  return client.joinOrCreate(room, { token: getPlayerToken(), ...options });
 }

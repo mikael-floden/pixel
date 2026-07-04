@@ -115,13 +115,18 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
   `check-surfaces.mjs` FAILS on missing/malformed entries or sources, and
   the tiles pipeline auto-appends `null` for new categories
   (`tilegen.register_emission`).
-- **Emission demo world**: press [0] in game (or `/#emission`) to load an
-  offline scene with EVERY variant of every glowing category on a numbered
-  station at night — glide with WASD/drag, report odd tiles by number.
-  `scripts/demo-shots.mjs` batch-captures every station headlessly;
-  `__ml.lookStation(n)` jumps the camera.
-- Debug: `[9]` cycles field test patterns (gradient/grid/uv/classification/
-  raw field); `__ml.probeLight(col,row,z,radius)` places a light headlessly;
+- **Emission demo world**: press [0] in game (or `/#emission`) to join the
+  REAL game on a generated station world (shared `buildDemoWorld`, served by
+  the second Colyseus room `demo`): every variant of every glowing category
+  on a numbered station, walkable with your character — movement, z-order,
+  lighting and time-of-day are the game's own code, so what you test there
+  IS what the game does. [6] douses the spawn bonfire (its firelight drowns
+  self-emission QA). `scripts/demo-shots.mjs` batch-captures every station
+  headlessly; `__ml.lookStation(n)` jumps the camera.
+- Debug: `__ml.nightCal(flip,span,test)` drives the field test patterns
+  (gradient/grid/uv/classification/raw field — headless probes only; the
+  old [6]-[9] calibration keys are retired);
+  `__ml.probeLight(col,row,z,radius)` places a light headlessly;
   `__ml.lookAt(col,row)` detaches the camera to any cell (no args re-follows);
   numeric probes live in `scripts/verify-solidband.mjs` (no phantom bands),
   `verify-penumbra.mjs` (soft wall bases), `verify-wallspread.mjs` (lateral

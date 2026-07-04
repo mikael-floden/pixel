@@ -11,14 +11,16 @@ const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox"] });
 const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
 await page.goto((process.env.PROBE_URL || "http://localhost:5173/") + "#emission", { waitUntil: "load" });
-await page.waitForFunction(() => window.__ml?.demo === true && window.__ml.nightShader() === true, null, {
-  timeout: 30000,
-});
+// The demo is the REAL game on the generated station world: join like a player.
+await page.waitForSelector("input", { timeout: 20000 });
+await page.fill("input", "seamprobe");
+await page.keyboard.press("Enter");
+await page.waitForFunction(() => window.__ml?.nightShader?.() === true, null, { timeout: 30000 });
 await page.waitForTimeout(2500);
 const st = await page.evaluate(() =>
-  window.__ml.stations().find((s) => s.cat === "cliff_gold_v2" && s.v === 5),
+  window.__ml.stations().find((p) => p.label.includes("cliff_gold_v2 05")),
 );
-await page.evaluate((n) => window.__ml.lookStation(n), st.n);
+await page.evaluate((n) => window.__ml.lookStation(n), parseInt(st.label, 10));
 await page.waitForTimeout(1500);
 await page.evaluate(() => window.__ml.nightCal(0, 1, 5)); // raw field, opaque
 await page.waitForTimeout(1200);

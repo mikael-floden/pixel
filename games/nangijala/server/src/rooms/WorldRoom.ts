@@ -15,6 +15,7 @@ import {
   TerrainGrid,
   buildTerrainGrid,
   parseWorld,
+  buildDemoWorld,
   makeBlocked,
   makeDrops,
   surfaceAtWorld,
@@ -49,7 +50,14 @@ export class WorldRoom extends Room<WorldState> {
   // Terrain (elevation + surface) from the maps agent's world (null → open).
   private terrain: TerrainGrid | null = loadTerrain();
 
-  onCreate() {
+  onCreate(options?: { demo?: boolean }) {
+    // Demo room: the generated emission-station world (same size as the main
+    // world, so every coordinate constant holds) with its own persistence
+    // file — positions there mean nothing on the main map.
+    if (options?.demo) {
+      this.terrain = loadDemoTerrain();
+      this.store = new JsonPlayerStore(join(process.cwd(), ".data", "demo-players.json"));
+    }
     this.setState(new WorldState());
 
     this.onMessage("input", (client, message: InputMessage) => {
@@ -209,6 +217,27 @@ function clamp(v: number, lo: number, hi: number): number {
 
 function rand(lo: number, hi: number): number {
   return lo + Math.random() * (hi - lo);
+}
+
+/** Terrain for the demo room: the generated station world (see shared
+ * buildDemoWorld). Reads the same two registries the client builds it from,
+ * so both sides hold the identical grid. */
+function loadDemoTerrain(): TerrainGrid | null {
+  try {
+    const srcDir = dirname(fileURLToPath(import.meta.url)); // server/src/rooms
+    const gameRoot = join(srcDir, "..", "..", ".."); // games/nangijala
+    const assetsRoot = process.env.ASSETS_ROOT || join(gameRoot, "..", ".."); // repo root
+    const emissionPath = join(assetsRoot, "tiles", "emission.json");
+    const basesPath = join(gameRoot, "client", "public", "tile-bases.json");
+    const emission = existsSync(emissionPath)
+      ? (JSON.parse(readFileSync(emissionPath, "utf8")).categories ?? {})
+      : {};
+    const bases = existsSync(basesPath) ? JSON.parse(readFileSync(basesPath, "utf8")) : null;
+    const world = buildDemoWorld(emission, bases);
+    return buildTerrainGrid(world.width, world.height, world.rows);
+  } catch {
+    return null;
+  }
 }
 
 /** Load the maps agent's world grid and build a collision grid, or null if the

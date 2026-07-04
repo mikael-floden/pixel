@@ -4,6 +4,7 @@ import { withFallback } from "./placeholder";
 import { chooseCharacter } from "./select";
 import { WorldScene } from "./scenes/WorldScene";
 import { loadWorld } from "./maps";
+import { buildDemoWorld } from "@nangijala/shared";
 import { MapPreviewScene } from "./scenes/MapPreviewScene";
 
 async function bootMapPreview(): Promise<boolean> {
@@ -80,34 +81,9 @@ async function loadTileBases(): Promise<unknown> {
   return null;
 }
 
-/** The emission demo world ([0] in game / #emission): every glowing
- * tile variant on a numbered station under the full night pipeline. */
-async function bootEmissionDemo(): Promise<boolean> {
-  if (location.hash !== "#emission") return false;
-  const { EmissionDemoScene } = await import("./scenes/EmissionDemoScene");
-  let emission = {};
-  try {
-    const res = await fetch("/assets/tiles/emission.json");
-    if (res.ok) emission = ((await res.json()) as { categories?: object }).categories ?? {};
-  } catch {}
-  const tileBases = await loadTileBases();
-  const game = new Phaser.Game({
-    type: Phaser.AUTO,
-    parent: "game",
-    backgroundColor: "#090911",
-    pixelArt: true,
-    scale: { mode: Phaser.Scale.RESIZE, width: window.innerWidth, height: window.innerHeight },
-    scene: [EmissionDemoScene],
-  });
-  game.registry.set("emission", emission);
-  game.registry.set("tileBases", tileBases);
-  return true;
-}
-
 async function boot() {
   showVersion();
   watchForUpdates();
-  if (await bootEmissionDemo()) return;
   if (await bootMapPreview()) return;
   const manifest = await loadManifest();
   // The art agents periodically reset/regenerate the roster, so it can be empty.
@@ -115,10 +91,26 @@ async function boot() {
   // world is always joinable (the world scene draws it procedurally).
   manifest.characters = withFallback(manifest.characters);
 
-  // The isometric tile world (may be null if the maps submodule isn't present;
-  // the world scene falls back to a plain ground in that case).
-  const world = await loadWorld();
+  // The EMISSION DEMO (/#emission or [0] in game) is the REAL game on a
+  // generated station world: same renderer, same server-authoritative
+  // movement, same night pipeline — what you test there is what the game
+  // does. The world is built deterministically from the same registries the
+  // server reads, so client and server hold the identical grid.
+  const demoMode = location.hash === "#emission";
   const tileBases = await loadTileBases();
+  let world: Awaited<ReturnType<typeof loadWorld>>;
+  if (demoMode) {
+    let emission: Record<string, never> = {};
+    try {
+      const res = await fetch("/assets/tiles/emission.json");
+      if (res.ok) emission = ((await res.json()) as { categories?: never }).categories ?? {};
+    } catch {}
+    world = buildDemoWorld(emission, tileBases as Parameters<typeof buildDemoWorld>[1]);
+  } else {
+    // The isometric tile world (may be null if the maps submodule isn't
+    // present; the world scene falls back to a plain ground in that case).
+    world = await loadWorld();
+  }
 
   // Pre-join screen: pick any generated character + a name, then enter the world.
   const { character, name } = await chooseCharacter(manifest);
@@ -141,6 +133,7 @@ async function boot() {
   game.registry.set("name", name);
   game.registry.set("world", world);
   game.registry.set("tileBases", tileBases);
+  game.registry.set("demoMode", demoMode);
 }
 
 boot();

@@ -4,6 +4,7 @@ import {
   WORLD_WIDTH,
   WORLD_HEIGHT,
   CELL_WU,
+  DEMO_ROOM_NAME,
   DIRECTIONS,
   DEFAULT_DIRECTION,
   InputMessage,
@@ -204,6 +205,8 @@ export class WorldScene extends Phaser.Scene {
   // variant's measured art base (tile-bases.json), see artYOff.
   private artOffCache = new Map<string, number>();
   private tileBases: TileBases | null = null;
+  // /#emission: this SAME scene on the generated station world (demo room).
+  private demoMode = false;
   // Per-pixel glow halos for the visible window (rebuilt with the occluders).
   private glowStamps: GlowStamp[] = [];
   // The spawn campfire: an animated world object with its own fire light.
@@ -212,6 +215,8 @@ export class WorldScene extends Phaser.Scene {
   private campfireLit?: Phaser.GameObjects.Sprite;
   // [5] toggles the LOCAL player's hand torch (handy for judging fixed lights).
   private torchOn = true;
+  // [6] toggles the spawn bonfire — firelight drowns self-emission QA nearby.
+  private fireOn = true;
   // Debug-only extra light, set from __ml.probeLight for headless probes.
   private probeLight: ShaderLight | null = null;
   // Time-of-day state: target phase index + eased interpolation FROM whatever
@@ -232,6 +237,7 @@ export class WorldScene extends Phaser.Scene {
     this.myName = this.registry.get("name") as string;
     this.world = (this.registry.get("world") as World | null) ?? null;
     this.tileBases = (this.registry.get("tileBases") as TileBases | null) ?? null;
+    this.demoMode = (this.registry.get("demoMode") as boolean | undefined) ?? false;
     if (this.world) {
       this.terrain = buildTerrainGrid(this.world.width, this.world.height, this.world.rows);
       // Surface-contract watchdog: categories missing from SURFACES default
@@ -282,6 +288,7 @@ export class WorldScene extends Phaser.Scene {
     if (this.world) this.setupStreamingGround();
     else this.drawGround();
     this.placeCampfire();
+    this.placeDemoLabels();
 
     this.atmo = new Atmosphere(this);
     this.atmo.create();
@@ -336,9 +343,10 @@ export class WorldScene extends Phaser.Scene {
     });
     // Jump (Space): edge-triggered, lets you cross a 1-level ledge if timed.
     this.input.keyboard!.on("keydown-SPACE", () => this.tryJump());
-    // [0]: the emission demo world — every glowing tile, numbered.
+    // [0]: toggle between the main world and the emission demo world (the
+    // real game on a generated station map — every glowing tile, numbered).
     this.input.keyboard!.on("keydown-ZERO", () => {
-      location.hash = "#emission";
+      location.hash = this.demoMode ? "" : "#emission";
       location.reload();
     });
     // Feature/debug toggles live on the TOP-ROW digits (1-9).
@@ -354,37 +362,17 @@ export class WorldScene extends Phaser.Scene {
       this.torchOn = !this.torchOn;
       this.chat.addLog("—", `[5] My torch: ${this.torchOn ? "on" : "off"}`);
     });
-    // Light-field calibration keys: flip/scale the field live and a raw
-    // gradient test pattern — ground truth beats screenshot interpretation.
+    // [6]: the spawn bonfire on/off — its firelight drowns nearby tiles'
+    // self-emission, so QA next to it needs the fire quiet. (The old
+    // [6][7][8][9] light-field calibration keys are retired; headless probes
+    // keep the same controls via __ml.nightCal.)
     this.input.keyboard!.on("keydown-SIX", () => {
-      if (!this.night) return;
-      this.night.fieldFlip = this.night.fieldFlip ? 0 : 1;
-      this.chat.addLog("—", `[6] Field y-invert: ${this.night.fieldFlip}`);
+      this.fireOn = !this.fireOn;
+      this.campfireSprite?.setVisible(this.fireOn);
+      this.campfireLit?.setVisible(this.fireOn && !!this.night?.active);
+      this.chat.addLog("—", `[6] Bonfire: ${this.fireOn ? "lit" : "out"}`);
     });
-    this.input.keyboard!.on("keydown-SEVEN", () => {
-      if (!this.night) return;
-      this.night.overlayFlip = !this.night.overlayFlip;
-      this.chat.addLog("—", `[7] Overlay mirror: ${this.night.overlayFlip ? "on" : "off"}`);
-    });
-    this.input.keyboard!.on("keydown-EIGHT", () => {
-      if (!this.night) return;
-      const order = [1, 0.5, 2, 4];
-      this.night.spanScale = order[(order.indexOf(this.night.spanScale) + 1) % order.length];
-      this.chat.addLog("—", `[8] Field span x${this.night.spanScale}`);
-    });
-    this.input.keyboard!.on("keydown-NINE", () => {
-      if (!this.night) return;
-      this.night.testPattern = (this.night.testPattern + 1) % 5;
-      const names = [
-        "off",
-        "gradient (dark = TOP if correct)",
-        "cell grid (must match tile edges)",
-        "raw fragment uv",
-        "surface class (face RED / top GREEN)",
-      ];
-      this.chat.addLog("—", `[9] Field test: ${names[this.night.testPattern]}`);
-    });
-    this.chat.addLog("—", "Toggles: [1] time of day · [4] collision · [5] torch · [0] emission demo · [6][7][8][9] light-field calibration");
+    this.chat.addLog("—", "Toggles: [1] time of day · [4] collision · [5] torch · [6] bonfire · [0] emission demo");
 
     const cam = this.cameras.main;
     cam.setBounds(0, 0, this.iso.w, this.iso.h);
@@ -394,7 +382,10 @@ export class WorldScene extends Phaser.Scene {
     cam.setBackgroundColor(this.world ? "#181c28" : "#1b3327");
 
     try {
-      this.room = await joinWorld({ name: this.myName, character: this.myCharacter.uid });
+      this.room = await joinWorld(
+        { name: this.myName, character: this.myCharacter.uid },
+        this.demoMode ? DEMO_ROOM_NAME : undefined,
+      );
     } catch (err) {
       this.showConnectionError(err);
       return;
@@ -512,6 +503,15 @@ export class WorldScene extends Phaser.Scene {
       // Detach the camera and centre it on a cell (headless probes: emissive
       // sites sit far outside walking range on dt-clamped clients). No args
       // re-attaches the camera to the local player.
+      // Demo mode: the station pois of the generated world.
+      stations: () => this.world?.pois ?? [],
+      // Demo mode: centre the camera on station n (from the world's pois).
+      lookStation: (n: number) => {
+        const poi = this.world?.pois.find((p) => parseInt(p.label, 10) === n);
+        if (!poi) return null;
+        (window as any).__ml.lookAt(poi.x, poi.y);
+        return poi;
+      },
       lookAt: (col?: number, row?: number) => {
         const cam = this.cameras.main;
         if (col === undefined || row === undefined) {
@@ -843,7 +843,7 @@ export class WorldScene extends Phaser.Scene {
       // verification place a light at an exact grid position, since walking
       // there is dt-clamped to a crawl on slow headless clients.
       if (this.probeLight) sl.push(this.probeLight);
-      if (this.campfire) {
+      if (this.campfire && this.fireOn) {
         const c = this.campfire;
         // Overbright core: the shader clamps the multiplier at 1.25, so values
         // >1 widen the hot plateau around the fire (ref: bright ~2 cells, then
@@ -887,7 +887,7 @@ export class WorldScene extends Phaser.Scene {
     }
 
     const lights: LightSource[] = [];
-    if (this.campfire) {
+    if (this.campfire && this.fireOn) {
       const c = this.campfire;
       // Additive bloom hugging the flames (both render paths) — the shader
       // lights the WORLD but the fire itself must also glow, like the ref.
@@ -998,7 +998,7 @@ export class WorldScene extends Phaser.Scene {
           .setScale(CAMPFIRE_SCALE);
       }
       this.campfireLit
-        .setVisible(on)
+        .setVisible(on && this.fireOn)
         .setFrame(this.campfireSprite.frame.name)
         .setPosition(this.campfireSprite.x, this.campfireSprite.y)
         .setDepth(litDepth(this.campfireSprite.depth));
@@ -1568,7 +1568,9 @@ export class WorldScene extends Phaser.Scene {
       }
     }
 
-    // Per-pixel glow halos (tile-emission@2 sources) for this window.
+    // Per-pixel glow halos (tile-emission@2 sources) for this window. Demo
+    // stations draw tall art ONCE at ground level, so every source anchors
+    // to the drawn art instead of repeating down a stacked column.
     this.glowStamps = buildGlowStamps(
       this.world,
       this.emission,
@@ -1577,7 +1579,47 @@ export class WorldScene extends Phaser.Scene {
       this.maxLevel,
       undefined,
       (t, v) => this.artYOff(tileKey(t, v)),
+      this.demoMode,
     );
+  }
+
+  /** Demo mode: a floating number + name label above every station (from the
+   * generated world's pois) so odd tiles can be reported by number. Drawn
+   * above the darkness overlay so they stay readable at night. */
+  private placeDemoLabels() {
+    if (!this.demoMode || !this.world) return;
+    const { dx, dy, lh } = MAP_GEOMETRY;
+    for (const poi of this.world.pois) {
+      const cell = this.world.rows[poi.y]?.[poi.x];
+      const bx = this.iso.ox + (poi.x - poi.y) * dx + dx;
+      const key = tileKey(cell?.t ?? "meadow", cell?.v ?? 0);
+      const topY =
+        this.iso.oy + (poi.x + poi.y) * dy - (cell?.l ?? 0) * lh - this.artYOff(key);
+      const sp = poi.label.indexOf(" ");
+      const num = sp > 0 ? poi.label.slice(0, sp) : poi.label;
+      const name = sp > 0 ? poi.label.slice(sp + 1) : "";
+      this.add
+        .text(bx, topY - 26, num, {
+          fontFamily: "monospace",
+          fontSize: "16px",
+          color: "#ffffff",
+          stroke: "#000000",
+          strokeThickness: 3,
+        })
+        .setOrigin(0.5, 1)
+        .setDepth(900_100);
+      if (name)
+        this.add
+          .text(bx, topY - 24, name, {
+            fontFamily: "monospace",
+            fontSize: "9px",
+            color: "#9aa3c8",
+            stroke: "#000000",
+            strokeThickness: 2,
+          })
+          .setOrigin(0.5, 0)
+          .setDepth(900_100);
+    }
   }
 
   /** A burning campfire beside the spawn point — the gathering spot. The

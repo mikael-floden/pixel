@@ -66,6 +66,56 @@ export function vectorToDirection(dx: number, dy: number): Direction | null {
 
 // --- Networking --------------------------------------------------------------
 export const ROOM_NAME = "world";
+// The EMISSION DEMO room: a real Colyseus room on a generated station world —
+// the demo runs the full game (renderer, movement, night pipeline) so what
+// the maintainer tests there IS what the game does.
+export const DEMO_ROOM_NAME = "demo";
+
+/**
+ * Generate the emission demo world: every variant of every GLOWING tile
+ * category (tiles/emission.json) on a numbered station, centered on a plain
+ * meadow the same size as the main world (512x448 — every coordinate
+ * constant, spawn rule and grid mapping stays untouched). Stations sit in
+ * rows of 20, four cells apart; station labels ride in pois. Flat 64px tiles
+ * stand on a 2-level column so their side faces show; tall art (per-variant
+ * base metadata) sits flat and is drawn once. Deterministic: server and
+ * client build the identical world from the same two registries.
+ */
+export function buildDemoWorld(
+  emission: Record<string, { sources?: Record<string, unknown[]>; variants?: number } | null>,
+  bases: { categories: Record<string, number[]> } | null,
+): ParsedWorld {
+  const W = 512;
+  const H = 448;
+  const PER_ROW = 20;
+  const SPACING = 4;
+  const ROW_PITCH = 7;
+  const rows: WorldCell[][] = Array.from({ length: H }, (_, r) =>
+    Array.from({ length: W }, (_, c) => ({ t: "meadow", v: (c * 7 + r * 13) % 3, l: 0 })),
+  );
+  const pois: ParsedWorld["pois"] = [];
+  const cats = Object.entries(emission)
+    .filter(([, e]) => e)
+    .sort(([a], [b]) => a.localeCompare(b));
+  let n = 1;
+  for (const [cat, entry] of cats) {
+    const srcKeys = Object.keys(entry!.sources ?? {}).map(Number);
+    const count = entry!.variants ?? (srcKeys.length ? Math.max(...srcKeys) + 1 : 0);
+    for (let v = 0; v < count; v++) {
+      const i = n - 1;
+      // Centre the station grid on the world centre (players spawn there).
+      const col = 256 - Math.floor((PER_ROW * SPACING) / 2) + (i % PER_ROW) * SPACING;
+      const row = 224 - 24 + Math.floor(i / PER_ROW) * ROW_PITCH;
+      const s = surfaceFor(cat);
+      const solid = !s.standable && !s.swimmable;
+      const tall = (bases?.categories[cat]?.[v] ?? 64) > 64;
+      rows[row][col] = { t: cat, v, l: solid || tall ? 0 : 2 };
+      pois.push({ x: col, y: row, label: `${n} ${cat} ${String(v).padStart(2, "0")}`, tile: cat });
+      n++;
+    }
+  }
+  return { width: W, height: H, rows, pois };
+}
 
 /** Client → server: the player's desired movement for this frame. */
 export interface InputMessage {
