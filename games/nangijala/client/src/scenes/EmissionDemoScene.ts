@@ -48,13 +48,15 @@ export class EmissionDemoScene extends Phaser.Scene {
   private tileBases: TileBases | null = null;
 
   /** Lift so this variant's measured art base sits at ground level ("extra
-   * long" 128px art needs more than "long" — see tile-bases.json). */
+   * long" 128px art needs more than "long" — see tile-bases.json). Solid
+   * structures anchor their bottom V to the surface diamond, as in-game. */
   private aOff(t: string, v: number): number {
     const k = tileKey(t, v);
     const imgH = this.textures.exists(k)
       ? (((this.textures.get(k).getSourceImage() as { height?: number })?.height ?? 64) as number)
       : 64;
-    return artLift(this.tileBases, t, v, imgH);
+    const sf = surfaceFor(t);
+    return artLift(this.tileBases, t, v, imgH, !sf.standable && !sf.swimmable);
   }
 
   constructor() {

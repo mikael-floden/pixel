@@ -95,7 +95,21 @@ for (const cat of readdirSync(TILES).sort()) {
 }
 
 const groundBase = categories.grass?.[0] ?? 55;
-writeFileSync(OUT, JSON.stringify({ format: "tile-bases@1", groundBase, categories }) + "\n");
+// Top vertex of the ground diamond (first opaque row of grass): solid
+// structures anchor their bottom V to the surface diamond's BOTTOM vertex
+// (groundTop + diamond height), aligning art footprint with collision.
+function topOf(file) {
+  const png = pngAlpha(file);
+  for (let y = 0; y < png.h; y++)
+    for (let x = 0; x < png.w; x++)
+      if (png.opaque(x, y)) return y;
+  return 0;
+}
+const groundTop = topOf(join(TILES, "grass", "tile_00.png"));
+writeFileSync(
+  OUT,
+  JSON.stringify({ format: "tile-bases@1", groundBase, groundTop, categories }) + "\n",
+);
 const tall = Object.entries(categories).filter(([, b]) => Math.max(...b) > 64);
 console.log(
   `tile-bases: ${Object.keys(categories).length} categories (${tall.length} tall), ` +

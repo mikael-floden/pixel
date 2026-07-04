@@ -962,6 +962,29 @@ export class WorldScene extends Phaser.Scene {
         .setFrame(this.campfireSprite.frame.name)
         .setPosition(this.campfireSprite.x, this.campfireSprite.y)
         .setDepth(litDepth(this.campfireSprite.depth));
+      // Like the avatar lit copies: a camera-forward SOLID structure whose
+      // art overlaps the fire must cover its lit copy too — otherwise the
+      // flames float on top of the pillar in front (playtester report).
+      if (on && this.campfire) {
+        let coverY = Infinity;
+        for (const o of this.occluderMeta) {
+          if (
+            o.solid &&
+            o.col + o.row + 1.2 > this.campfire.col + 0.5 + this.campfire.row + 0.5 &&
+            this.campfire.x >= o.x0 - 6 &&
+            this.campfire.x <= o.x1 + 6 &&
+            o.y0 < this.campfire.y
+          )
+            coverY = Math.min(coverY, o.y0);
+        }
+        const s = this.campfireLit;
+        if (coverY < Infinity) {
+          const frameTop = s.y - s.displayHeight * s.originY;
+          const cropH = (coverY - frameTop) / s.scaleY;
+          if (cropH <= 2) s.setVisible(false);
+          else s.setCrop(0, 0, s.frame.cutWidth, cropH);
+        } else if (s.isCropped) s.setCrop();
+      }
     }
   }
 
@@ -1277,10 +1300,13 @@ export class WorldScene extends Phaser.Scene {
     if (off === undefined) {
       // Per-variant measured base (tile-bases.json) when available — "extra
       // long" art (content to the canvas bottom) gets a deeper lift than
-      // "long" art, so nothing sinks. Fallback: the old constant imgH - 64.
+      // "long" art, so nothing sinks. Solid structures anchor their bottom V
+      // to the surface diamond (footprint = collision diamond). Fallback:
+      // the old constant imgH - 64.
       const [, t, v] = key.split(":");
+      const sf = surfaceFor(t);
       const src = this.textures.get(key)?.getSourceImage() as { height?: number } | undefined;
-      off = artLift(this.tileBases, t, Number(v), src?.height ?? 64);
+      off = artLift(this.tileBases, t, Number(v), src?.height ?? 64, !sf.standable && !sf.swimmable);
       this.artOffCache.set(key, off);
     }
     return off;
@@ -1397,41 +1423,38 @@ export class WorldScene extends Phaser.Scene {
         if (!this.textures.exists(key)) continue;
         const bx = this.iso.ox + u * dx;
         const by = this.iso.oy + v * dy;
-        // Flat terrain with NO camera-facing exposure never covers a sprite:
-        // its pixels already sit in the ground RT, below every character. A
-        // redundant occluder copy shares its painter depth with tall solids
-        // on the same diagonal — clamping a sprite behind the lava pillar
-        // dragged it below the NEIGHBOURING grass copy too, which then
-        // painted over the feet (playtester report). Only cells whose face
-        // actually shows (terrace edges) and solid structures get copies.
+        // Depth = the column's CENTRE line (by + dy); avatars refine their
+        // own depth against these per frame (see update) since a single
+        // scalar can't resolve every sprite-vs-column case exactly. SOLID
+        // structures draw ONCE (same rule as the ground RT) and get a +0.5
+        // depth bias: they STAND ON their cell, in front of every terrain
+        // copy on the same diagonal — so a sprite clamped behind a pillar
+        // (below - 0.3) still stays ABOVE the neighbouring grass copies
+        // (playtester: "my foot is drawn behind the grass to the left").
+        // Every raised terrain cell keeps its copies: the occluder layer is
+        // a complete painter re-render of the raised world, and each rim's
+        // buried stack layers are covered by the cells in front of it —
+        // culling "interior" cells re-exposed them ("tiles drawn 3 times").
         const solidHere = !s.standable && !s.swimmable;
-        const lE = this.world.rows[row]?.[col + 1]?.l ?? -1;
-        const lS = this.world.rows[row + 1]?.[col]?.l ?? -1;
-        const exposed = solidHere || cell.l > Math.min(lE, lS);
-        if (exposed) {
-          // Depth = the column's CENTRE line (by + dy); avatars refine their
-          // own depth against these per frame (see update) since a single
-          // scalar can't resolve every sprite-vs-column case exactly.
-          // Solid structures draw ONCE (same rule as the ground RT).
-          const aOff = this.artYOff(key);
-          for (let lvl = solidHere ? cell.l : 0; lvl <= cell.l; lvl++) {
-            this.occluders.push(
-              this.add.image(bx, by - lvl * lh - aOff, key).setOrigin(0, 0).setDepth(by + dy),
-            );
-          }
-          this.occluderMeta.push({
-            col,
-            row,
-            // Solid structures (trees, boulders…) visually stand ~1 level tall.
-            top: cell.l + (s.standable ? 0 : 1),
-            solid: solidHere,
-            depth: by + dy,
-            x0: bx,
-            x1: bx + tileSize,
-            y0: by - cell.l * lh - this.artYOff(key),
-            y1: by + tileSize,
-          });
+        const oDepth = by + dy + (solidHere ? 0.5 : 0);
+        const aOff = this.artYOff(key);
+        for (let lvl = solidHere ? cell.l : 0; lvl <= cell.l; lvl++) {
+          this.occluders.push(
+            this.add.image(bx, by - lvl * lh - aOff, key).setOrigin(0, 0).setDepth(oDepth),
+          );
         }
+        this.occluderMeta.push({
+          col,
+          row,
+          // Solid structures (trees, boulders…) visually stand ~1 level tall.
+          top: cell.l + (s.standable ? 0 : 1),
+          solid: solidHere,
+          depth: oDepth,
+          x0: bx,
+          x1: bx + tileSize,
+          y0: by - cell.l * lh - aOff,
+          y1: by + tileSize,
+        });
         // Match the ground pass's contact shadows on redrawn column tops —
         // daylight/canvas fallback only (see drawGroundWindow).
         if (!this.night) {

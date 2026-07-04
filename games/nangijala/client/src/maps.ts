@@ -43,22 +43,38 @@ export function tileKey(t: string, v: number): string {
 
 /** client/public/tile-bases.json — per-variant lowest opaque row of each tile
  * art, measured at build time (scripts/build-tile-bases.mjs). groundBase is
- * the same measure for plain grass (how deep a flat tile's skirt reaches). */
+ * the same measure for plain grass (how deep a flat tile's skirt reaches);
+ * groundTop is grass's top vertex row (the surface diamond starts there). */
 export interface TileBases {
   format: string;
   groundBase: number;
+  groundTop?: number;
   categories: Record<string, number[]>;
 }
 
-/** Lift for tall tile art so its measured base sits exactly where a flat
- * ground tile's own bottom sits. Tall sets are NOT uniform — "extra long"
- * variants fill the 128px canvas (cliff_lava, spires, trees, waterfalls)
- * while "long" ones stop ~8px short (cliff_gold) — so a constant lift
- * (imgH-64, the fallback when metadata is missing) buried the full-canvas
- * kind while the short kind sat right. */
-export function artLift(bases: TileBases | null, t: string, v: number, imgH: number): number {
+/** Lift for tall tile art. Tall sets are NOT uniform — "extra long" variants
+ * fill the 128px canvas (cliff_lava, spires, trees, waterfalls) while "long"
+ * ones stop ~8px short (cliff_gold) — so a constant lift (imgH-64, the
+ * fallback when metadata is missing) buried the full-canvas kind.
+ *
+ * SOLID structures stand ON their cell: their bottom V is anchored to the
+ * surface diamond's BOTTOM VERTEX, so the drawn footprint aligns with the
+ * collision diamond exactly (playtester overlay check). Terrain art instead
+ * aligns its base with a flat ground tile's skirt (it IS ground). */
+export function artLift(
+  bases: TileBases | null,
+  t: string,
+  v: number,
+  imgH: number,
+  solid = false,
+): number {
   const base = bases?.categories[t]?.[v];
-  if (base !== undefined && bases) return Math.max(0, base - bases.groundBase);
+  if (base !== undefined && bases) {
+    const anchor = solid
+      ? (bases.groundTop ?? bases.groundBase - 8) + 2 * MAP_GEOMETRY.dy
+      : bases.groundBase;
+    return Math.max(0, base - anchor);
+  }
   return Math.max(0, imgH - 64);
 }
 
