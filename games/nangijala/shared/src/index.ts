@@ -109,7 +109,16 @@ export function buildDemoWorld(
       const s = surfaceFor(cat);
       const solid = !s.standable && !s.swimmable;
       const tall = (bases?.categories[cat]?.[v] ?? 64) > 64;
-      rows[row][col] = { t: cat, v, l: solid || tall ? 0 : 2 };
+      // Solid FLAT art (64px block format, e.g. lava) paints a one-level
+      // block whose ground contact is the bottom V of the standard tile
+      // skirt — at l:0 the drawn block lands ~20px south-below its collision
+      // cell (an isolated cell has no southern neighbour covering the skirt,
+      // unlike the flush pools of the main world). Standing it on l:1 puts
+      // the drawn footprint exactly on the cell; collision is untouched
+      // (solid cells are never enterable at any level) and the lighting
+      // heightmap sees the same one-level step the art depicts.
+      const level = solid ? (tall ? 0 : 1) : tall ? 0 : 2;
+      rows[row][col] = { t: cat, v, l: level };
       pois.push({ x: col, y: row, label: `${n} ${cat} ${String(v).padStart(2, "0")}`, tile: cat });
       n++;
     }
