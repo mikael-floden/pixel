@@ -756,13 +756,15 @@ export class WorldScene extends Phaser.Scene {
           if (rayBlocked || faceOverFeet || solidArtOver) {
             below = Math.min(below, o.depth);
             coverY = Math.min(coverY, o.y0);
-          } else if (colf + rowf > o.col + o.row + 1) {
-            // Lift above an overlapping column ONLY when the feet are
-            // camera-forward of its front corner. Overlap alone used to
-            // imply "in front" — true for 64px art, but bottom-anchored
-            // tall art (128px spires) reaches ~5 levels up-screen and
-            // overlaps characters standing well BEHIND it; the blanket
-            // lift drew them on top of the pillar (playtester report).
+          } else if (!o.solid || colf + rowf > o.col + o.row + 1) {
+            // Overlapping, not covering → lift the sprite above it. For
+            // STANDABLE terrain this must stay unconditional: the flat tile
+            // in FRONT of the feet has a higher painter depth and would
+            // otherwise draw over the drop shadow/feet (playtester report).
+            // SOLID structures are gated on the feet being camera-forward
+            // of their front corner — their bottom-anchored tall art
+            // (128px spires) overlaps characters standing well BEHIND
+            // them, and the blanket lift drew those on top of the pillar.
             above = Math.max(above, o.depth);
           }
         }
