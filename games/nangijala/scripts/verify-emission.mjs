@@ -15,7 +15,7 @@ const NIGHT = [0.075, 0.09, 0.14];
 // col,row → the dominant channel, its floor (colour*self*minAnim, minus
 // slack for the multiply pipeline), and the channel it must dominate.
 const SITES = [
-  { name: "lava", col: 453, row: 386, ch: 0, floor: 0.4, weak: 2 },
+  { name: "lava", col: 459, row: 392, ch: 0, floor: 0.4, weak: 2 }, // variant 9 (molten; tile-emission@2 is per-variant)
   { name: "crystal_ground", col: 316, row: 106, ch: 2, floor: 0.3, weak: 0 },
   { name: "mushroom_grove", col: 330, row: 249, ch: 0, floor: 0.22, weak: 2 },
 ];

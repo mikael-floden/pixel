@@ -274,6 +274,9 @@ export const SURFACES: Record<string, Surface> = {
   autumn_forest: ground(0.8, "grass"),
   big_boulder: solid,
   crystal_spire: solid,
+  crystal_spire_v2: solid, // world-unused today; classified for night lighting
+  ice_spire: solid,
+  ice_spire_v2: solid,
   obelisk: solid,
   obelisk_v2: solid,
   watchtower: solid,

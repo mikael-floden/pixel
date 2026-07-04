@@ -30,7 +30,14 @@ import {
 import { CharacterDef, Manifest, stripUrl } from "../manifest";
 import { colorForName } from "../placeholder";
 import { Atmosphere, LightSource } from "../lighting";
-import { NightLights, ShaderLight, MAX_SHADER_LIGHTS, EmissionMap } from "../nightlight";
+import {
+  NightLights,
+  ShaderLight,
+  MAX_SHADER_LIGHTS,
+  EmissionMap,
+  GlowStamp,
+  buildGlowStamps,
+} from "../nightlight";
 import { joinWorld } from "../net";
 import { ChatUI } from "../chat";
 import { RosterUI } from "../roster";
@@ -173,6 +180,8 @@ export class WorldScene extends Phaser.Scene {
   private shaderLights: ShaderLight[] = [];
   // tiles/emission.json categories (empty when the registry failed to load).
   private emission: EmissionMap = {};
+  // Per-pixel glow halos for the visible window (rebuilt with the occluders).
+  private glowStamps: GlowStamp[] = [];
   // The spawn campfire: an animated world object with its own fire light.
   private campfire?: { col: number; row: number; z: number; x: number; y: number; depth: number };
   private campfireSprite?: Phaser.GameObjects.Sprite;
@@ -277,6 +286,13 @@ export class WorldScene extends Phaser.Scene {
       }
     }
 
+    // A resize grows the visible window: force the streamed ground,
+    // occluders and glow stamps to rebuild for the new extent.
+    this.scale.on("resize", () => {
+      this.lastGround = { x: NaN, y: NaN };
+      this.lastOccl = { x: NaN, y: NaN };
+    });
+
     this.keys = this.input.keyboard!.addKeys(
       "W,A,S,D,UP,DOWN,LEFT,RIGHT,SHIFT",
     ) as Record<string, Phaser.Input.Keyboard.Key>;
@@ -295,6 +311,11 @@ export class WorldScene extends Phaser.Scene {
     });
     // Jump (Space): edge-triggered, lets you cross a 1-level ledge if timed.
     this.input.keyboard!.on("keydown-SPACE", () => this.tryJump());
+    // Numpad 9: the emission demo world — every glowing tile, numbered.
+    this.input.keyboard!.on("keydown-NUMPAD_NINE", () => {
+      location.hash = "#emission";
+      location.reload();
+    });
     // Feature/debug toggles live on the TOP-ROW digits (1-9).
     this.input.keyboard!.on("keydown-ONE", () => {
       this.setTimeOfDay((this.timeIdx + 1) % TIME_PHASES.length);
@@ -483,6 +504,11 @@ export class WorldScene extends Phaser.Scene {
         return { x: wx, y: wy, t: cell?.t ?? null, l: cell?.l ?? 0 };
       },
       nightInfo: () => this.night?.debugInfo(),
+      // Glow-field RT orientation calibration (headless probes flip + verify).
+      glowFlip: (v?: number) => {
+        if (this.night && v !== undefined) this.night.glowFlip = v;
+        return { flip: this.night?.glowFlip, stamps: this.glowStamps.length };
+      },
       nightCal: (flip: number, span: number, test: number) => {
         if (!this.night) return null;
         this.night.fieldFlip = flip;
@@ -792,7 +818,7 @@ export class WorldScene extends Phaser.Scene {
       const target = TIME_PHASES[this.timeIdx];
       for (let ch = 0; ch < 3; ch++)
         this.curAmbient[ch] = this.timeFromAmbient[ch] + (target.ambient[ch] - this.timeFromAmbient[ch]) * e;
-      this.night!.update(this.cameras.main, sl, this.curAmbient);
+      this.night!.update(this.cameras.main, sl, this.curAmbient, this.glowStamps);
     }
 
     const lights: LightSource[] = [];
@@ -1237,8 +1263,11 @@ export class WorldScene extends Phaser.Scene {
         const s = surfaceFor(cell.t);
         // Emissive tiles (tiles/emission.json): atmosphere bloom for the
         // canvas fallback + a cluster-bucket sample for the shader pools.
+        // Per-VARIANT: plain variants of a glowing category stay dark (only
+        // variants with detected glow sources emit; v1 entries emit always).
         const em = this.emission[cell.t];
-        if (em) {
+        const variantGlows = em && (!em.sources || (em.sources[String(cell.v)]?.length ?? 0) > 0);
+        if (em && variantGlows) {
           if (!this.night && this.emissiveLights.length < MAX_EMISSIVE) {
             const hex =
               (Math.round(em.color[0] * 255) << 16) |
@@ -1359,6 +1388,15 @@ export class WorldScene extends Phaser.Scene {
         });
       }
     }
+
+    // Per-pixel glow halos (tile-emission@2 sources) for this window.
+    this.glowStamps = buildGlowStamps(
+      this.world,
+      this.emission,
+      this.iso,
+      { x0, y0, x1, y1 },
+      this.maxLevel,
+    );
   }
 
   /** A burning campfire beside the spawn point — the gathering spot. The

@@ -68,9 +68,32 @@ function showUpdateBanner(sha: string) {
   document.body.appendChild(el);
 }
 
+/** The emission demo world (numpad-9 in game / #emission): every glowing
+ * tile variant on a numbered station under the full night pipeline. */
+async function bootEmissionDemo(): Promise<boolean> {
+  if (location.hash !== "#emission") return false;
+  const { EmissionDemoScene } = await import("./scenes/EmissionDemoScene");
+  let emission = {};
+  try {
+    const res = await fetch("/assets/tiles/emission.json");
+    if (res.ok) emission = ((await res.json()) as { categories?: object }).categories ?? {};
+  } catch {}
+  const game = new Phaser.Game({
+    type: Phaser.AUTO,
+    parent: "game",
+    backgroundColor: "#090911",
+    pixelArt: true,
+    scale: { mode: Phaser.Scale.RESIZE, width: window.innerWidth, height: window.innerHeight },
+    scene: [EmissionDemoScene],
+  });
+  game.registry.set("emission", emission);
+  return true;
+}
+
 async function boot() {
   showVersion();
   watchForUpdates();
+  if (await bootEmissionDemo()) return;
   if (await bootMapPreview()) return;
   const manifest = await loadManifest();
   // The art agents periodically reset/regenerate the roster, so it can be empty.

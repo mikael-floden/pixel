@@ -26,6 +26,16 @@ export interface ShaderLight {
   flicker: number; // 0 = steady, 1 = full fire flicker
 }
 
+/** One glowing pixel cluster inside a tile variant (tile-emission@2). */
+export interface EmissionSource {
+  x: number; // cluster centroid, tile-image px
+  y: number;
+  r: number; // cluster radius, px
+  color: [number, number, number]; // the cluster's OWN colour
+  s: number; // 0..1 strength
+  dir: "up" | "sw" | "se"; // top diamond / left face / right face
+}
+
 /** One entry of tiles/emission.json — a tile category that glows by itself. */
 export interface EmissionEntry {
   color: [number, number, number]; // 0..1, measured from the art
@@ -33,8 +43,25 @@ export interface EmissionEntry {
   radius: number; // pool size in cells
   anim: "static" | "flicker" | "pulse";
   self: number; // 0..1 — how much the tile's OWN pixels resist darkness
+  sources?: Record<string, EmissionSource[]>; // per variant ("0".."15")
+  variants?: number; // total variant count (sourceless ones included)
 }
 export type EmissionMap = Record<string, EmissionEntry | null>;
+
+/** A glow-halo stamp in WORLD px — one per visible emission source instance.
+ * Stamped into a world-anchored RenderTexture each frame; the night shader
+ * ADDS the sampled halo to the light field, so glow is perfectly localized
+ * (a mushroom lights its patch, the forest stays dark) and needs no light
+ * slots — a world full of light sources costs sprite draws, not uniforms. */
+export interface GlowStamp {
+  x: number; // world px (halo centre)
+  y: number;
+  radius: number; // halo radius, world px
+  color: [number, number, number];
+  alpha: number; // 0..1 peak intensity
+  anim: number; // 0 static, 1 pulse, 2 flicker
+  phase: number; // per-source hash phase
+}
 
 export const MAX_SHADER_LIGHTS = 12;
 
@@ -56,6 +83,9 @@ uniform sampler2D uHeight;
 uniform sampler2D uHeightL; // occlusion heightmap, LINEAR-filtered (LOS march)
 uniform sampler2D uEmit;    // emission palette: 2 texels/entry (colour; params)
 uniform float uEmitN;       // number of palette entries (0 = no emission)
+uniform sampler2D uGlow;    // world-anchored glow-halo field (same window as uCam)
+uniform float uGlowOn;      // 1 when the glow field is bound (unbound sampler = unit 0!)
+uniform float uGlowFlip;    // render-target y orientation (calibrated numerically)
 
 // Bilinear height for the LOS march ONLY: blockers ramp in over ~a cell, so
 // cast-shadow edges get a natural penumbra instead of cell-quantized 1px
@@ -352,11 +382,92 @@ void main() {
     light = max(light, eCol * ePar.g * f * eBoost);
   }
 
+  // Per-source glow halos (tile-emission@2 sources): a world-anchored field
+  // stamped each frame with one radial halo per visible glowing pixel
+  // cluster. ADDED after floor/AO — emission is not subject to corner
+  // occlusion, and adding (not max) lets halos ride on top of pools/floors.
+  // The field shares uCam's window exactly (1 world px = 1 texel).
+  if (uGlowOn > 0.5) {
+    vec2 guv = vec2((wx - uCam.x) / uCam.z, (wy - uCam.y) / uCam.w);
+    if (guv.x > 0.0 && guv.x < 1.0 && guv.y > 0.0 && guv.y < 1.0) {
+      light += texture2D(uGlow, vec2(guv.x, mix(guv.y, 1.0 - guv.y, uGlowFlip))).rgb;
+    }
+  }
+
   gl_FragColor = vec4(min(light, vec3(1.25)), 1.0);
 }
 `;
 
 const FIELD_KEY = "night-light-field";
+
+/** Glow stamps for every visible emission source (tile-emission@2).
+ *
+ * For each cell whose category+variant has per-pixel sources: `up` sources
+ * sit on the TOP drawn tile instance (lower instances' tops are buried in
+ * the column); `sw`/`se` face sources repeat on every stacked instance whose
+ * face is actually exposed (above the s/e neighbour's terrain), biased a few
+ * px outward so the halo lands on the ground/walls beside the emitter, not
+ * inside the block. Solid objects (spires…) are billboard art — all their
+ * sources stamp once on the drawn art. Capped to the nearest `maxStamps`. */
+export function buildGlowStamps(
+  world: World,
+  emission: EmissionMap,
+  iso: { ox: number; oy: number },
+  win: { x0: number; y0: number; x1: number; y1: number },
+  maxLevel: number,
+  maxStamps = 500, // one RT sprite-draw per stamp per frame — hundreds are cheap
+): GlowStamp[] {
+  const { dx, dy, lh } = MAP_GEOMETRY;
+  const ANIM: Record<string, number> = { static: 0, pulse: 1, flicker: 2 };
+  const out: GlowStamp[] = [];
+  const u0 = Math.floor((win.x0 - iso.ox) / dx) - 1;
+  const u1 = Math.ceil((win.x1 - iso.ox) / dx) + 1;
+  const v0 = Math.max(0, Math.floor((win.y0 - iso.oy) / dy) - 1);
+  const v1 = Math.ceil((win.y1 - iso.oy + maxLevel * lh) / dy) + 1;
+  for (let v = v0; v <= v1; v++) {
+    for (let u = u0; u <= u1; u++) {
+      if ((u + v) & 1) continue;
+      const col = (u + v) / 2;
+      const row = (v - u) / 2;
+      const cell = world.rows[row]?.[col];
+      if (!cell) continue;
+      const em = emission[cell.t];
+      const srcs = em?.sources?.[String(cell.v)];
+      if (!srcs?.length) continue;
+      const sf = surfaceFor(cell.t);
+      const solid = !sf.standable && !sf.swimmable;
+      const bx = iso.ox + u * dx;
+      const by = iso.oy + v * dy;
+      const anim = ANIM[em!.anim] ?? 0;
+      const lS = world.rows[row + 1]?.[col]?.l ?? cell.l;
+      const lE = world.rows[row]?.[col + 1]?.l ?? cell.l;
+      for (let i = 0; i < srcs.length; i++) {
+        const g = srcs[i];
+        const phase = ((((col * 73856093) ^ (row * 19349663) ^ (i * 83492791)) >>> 0) % 628) / 100;
+        const radius = Math.min(90, 10 + g.r * 4.5);
+        const alpha = Math.min(1, Math.max(0.35, g.s * 0.85));
+        const off = 2 + g.r * 0.6;
+        const push = (k: number, ox2: number, oy2: number) =>
+          out.push({ x: bx + g.x + ox2, y: by - k * lh + g.y + oy2, radius, color: g.color, alpha, anim, phase });
+        if (solid || g.dir === "up") {
+          const ox2 = g.dir === "sw" ? -off : g.dir === "se" ? off : 0;
+          push(cell.l, ox2, g.dir === "up" ? 0 : off * 0.5);
+        } else if (g.dir === "sw") {
+          for (let k2 = Math.max(lS + 1, cell.l - 2); k2 <= cell.l; k2++) push(k2, -off, off * 0.5);
+        } else {
+          for (let k2 = Math.max(lE + 1, cell.l - 2); k2 <= cell.l; k2++) push(k2, off, off * 0.5);
+        }
+      }
+    }
+  }
+  if (out.length > maxStamps) {
+    const cx = (win.x0 + win.x1) / 2;
+    const cy = (win.y0 + win.y1) / 2;
+    out.sort((a, b) => (a.x - cx) ** 2 + (a.y - cy) ** 2 - ((b.x - cx) ** 2 + (b.y - cy) ** 2));
+    out.length = maxStamps;
+  }
+  return out;
+}
 
 export class NightLights {
   private scene: Phaser.Scene;
@@ -373,9 +484,17 @@ export class NightLights {
   private tArr!: Float32Array; // CPU terrain-only heights (walls/AO seams)
   private oArr!: Uint8Array;   // CPU solid-object flags
   private curLights: ShaderLight[] = [];
+  private curStamps: GlowStamp[] = [];
   private curAmbient: [number, number, number] = [0.075, 0.09, 0.14];
   private emission: EmissionMap;
   private emitList: EmissionEntry[] = []; // palette order (index = shader eIdx)
+  // Glow-halo field: world-anchored RT sharing the shader's exact window.
+  private glowRT?: Phaser.GameObjects.RenderTexture;
+  private glowKey = "";
+  private stampImg?: Phaser.GameObjects.Image;
+  // Measured (off-centre stamp probe): this stack's RT samples straight, no
+  // y-flip — same family of ground truth as fieldFlip above.
+  glowFlip = 0;
   active = false;
   // Live calibration (debug keys): rendering-path differences between GPUs
   // showed up as flipped/scaled fields that headless verification could not
@@ -412,10 +531,14 @@ export class NightLights {
       uLightPos: { type: "4fv", value: this.posArr },
       uLightCol: { type: "4fv", value: this.colArr },
       uEmitN: { type: "1f", value: 0 },
+      uGlowOn: { type: "1f", value: 0 },
+      uGlowFlip: { type: "1f", value: 1 },
       uHeight: { type: "sampler2D", value: null },
       uHeightL: { type: "sampler2D", value: null },
       uEmit: { type: "sampler2D", value: null },
+      uGlow: { type: "sampler2D", value: null },
     });
+    this.buildStampTexture();
     // Shader GameObjects can't blend directly — render the light field to a
     // texture and composite it with a MULTIPLY image on top of the scene.
     this.overlay = this.scene.add
@@ -434,6 +557,30 @@ export class NightLights {
     });
   }
 
+  /** White radial gradient — the halo brush, tinted per stamp. */
+  private buildStampTexture() {
+    if (this.scene.textures.exists("glow-stamp")) return;
+    const S = 128;
+    const tex = this.scene.textures.createCanvas("glow-stamp", S, S);
+    if (!tex) return;
+    const ctx = tex.getContext();
+    const g = ctx.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
+    // Bright core hugging the source, fast falloff into nothing — the
+    // "intense mushroom, pitch-dark forest" profile.
+    g.addColorStop(0, "rgba(255,255,255,1)");
+    g.addColorStop(0.2, "rgba(255,255,255,0.75)");
+    g.addColorStop(0.5, "rgba(255,255,255,0.28)");
+    g.addColorStop(0.8, "rgba(255,255,255,0.07)");
+    g.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, S, S);
+    tex.refresh();
+    this.stampImg = this.scene.make
+      .image({ key: "glow-stamp", add: false })
+      .setOrigin(0.5, 0.5)
+      .setBlendMode(Phaser.BlendModes.ADD);
+  }
+
   /** (Re)create the shader + its render target at the given size. */
   private buildShader(width: number, height: number) {
     if (!this.base || width <= 0 || height <= 0) return;
@@ -450,6 +597,14 @@ export class NightLights {
       s.setSampler2D("uHeightL", "world-heightmap-linear", 1);
     if (this.scene.textures.exists("emission-palette"))
       s.setSampler2D("uEmit", "emission-palette", 2);
+    // Glow field RT: the shader's world window is ALWAYS screen-sized in
+    // world px (view * zoom = screen), so 1 RT texel = 1 world px.
+    this.glowRT?.destroy();
+    if (this.glowKey && this.scene.textures.exists(this.glowKey)) this.scene.textures.remove(this.glowKey);
+    this.glowRT = this.scene.make.renderTexture({ width, height }, false);
+    this.glowKey = `night-glow-${this.fieldCount}`;
+    this.glowRT.saveTexture(this.glowKey);
+    s.setSampler2D("uGlow", this.glowKey, 3);
     s.setRenderToTexture(key);
     this.shader = s;
     const old = this.overlay!.texture.key;
@@ -515,7 +670,14 @@ export class NightLights {
         // stand on these cells.
         img.data[i + 1] = solid ? 255 : 0;
         // B = self-emission palette index + 1 (see the shader's emitAt).
-        const ei = emitIdx.get(cell.t);
+        // tile-emission@2 is per-VARIANT: a category's plain variants (grey
+        // basalt in the lava set…) must NOT inherit the molten floor — the
+        // demo sweep caught every such variant rendering rust-tinted with
+        // phantom ember rims. Entries without sources data (v1) keep the
+        // whole-category behaviour.
+        const em2 = this.emission[cell.t];
+        const glows = em2 && (!em2.sources || (em2.sources[String(cell.v)]?.length ?? 0) > 0);
+        const ei = glows ? emitIdx.get(cell.t) : undefined;
         img.data[i + 2] = ei === undefined ? 0 : Math.min(255, ei + 1);
         img.data[i + 3] = 255;
         imgL.data[i + 3] = 255;
@@ -633,6 +795,20 @@ export class NightLights {
         for (let ch = 0; ch < 3; ch++) out[ch] *= ao;
       }
     }
+    // Glow-halo twin (added after AO, like the shader): a character standing
+    // in a mushroom/crystal halo must carry its glow — the field lights the
+    // ground but the lit copy is tinted by THIS function only.
+    if (this.curStamps.length) {
+      const { dx, dy, lh } = MAP_GEOMETRY;
+      const wx = this.iso.ox + (col - row) * dx + dx;
+      const wy = this.iso.oy + (col + row) * dy + dy - z * lh;
+      for (const g of this.curStamps) {
+        const d = Math.hypot(g.x - wx, g.y - wy) / g.radius;
+        if (d >= 1) continue;
+        const f = (1 - d) * (1 - d); // ≈ the stamp texture's falloff
+        for (let ch = 0; ch < 3; ch++) out[ch] += g.color[ch] * g.alpha * f;
+      }
+    }
     return out;
   }
 
@@ -673,8 +849,14 @@ export class NightLights {
     };
   }
 
-  update(cam: Phaser.Cameras.Scene2D.Camera, lights: ShaderLight[], ambient: [number, number, number]) {
+  update(
+    cam: Phaser.Cameras.Scene2D.Camera,
+    lights: ShaderLight[],
+    ambient: [number, number, number],
+    stamps: GlowStamp[] = [],
+  ) {
     this.curLights = lights;
+    this.curStamps = stamps;
     this.curAmbient = ambient;
     if (!this.shader || !this.active) return;
     const s = this.shader;
@@ -684,10 +866,42 @@ export class NightLights {
     // is therefore the camera view inflated by zoom AROUND ITS CENTRE.
     const k = this.spanScale * (cam.zoom || 1);
     const wv = cam.worldView;
-    s.setUniform("uCam.value.x", wv.x - (wv.width * (k - 1)) / 2);
-    s.setUniform("uCam.value.y", wv.y - (wv.height * (k - 1)) / 2);
+    const camX = wv.x - (wv.width * (k - 1)) / 2;
+    const camY = wv.y - (wv.height * (k - 1)) / 2;
+    s.setUniform("uCam.value.x", camX);
+    s.setUniform("uCam.value.y", camY);
     s.setUniform("uCam.value.z", wv.width * k);
     s.setUniform("uCam.value.w", wv.height * k);
+    // Redraw the glow-halo field for this frame's window: one tinted radial
+    // stamp per visible emission source, animated by per-source phase.
+    if (this.glowRT && this.stampImg) {
+      const rt = this.glowRT;
+      rt.clear();
+      if (stamps.length) {
+        const t = this.scene.time.now / 1000;
+        const img = this.stampImg;
+        rt.beginDraw();
+        for (const g of stamps) {
+          let f = 1;
+          if (g.anim === 1) f = 0.85 + 0.15 * Math.sin(t * 1.3 + g.phase);
+          else if (g.anim === 2)
+            f = 1 - 0.12 * (0.5 + 0.5 * Math.sin(t * 3.1 + g.phase)) - 0.06 * Math.sin(t * 8.3 + g.phase * 1.7);
+          img.setTint(
+            (Math.round(g.color[0] * 255) << 16) |
+              (Math.round(g.color[1] * 255) << 8) |
+              Math.round(g.color[2] * 255),
+          );
+          img.setAlpha(Math.min(1, Math.max(0, g.alpha * f)));
+          img.setDisplaySize(g.radius * 2, g.radius * 2);
+          rt.batchDraw(img, g.x - camX, g.y - camY);
+        }
+        rt.endDraw();
+      }
+      s.setUniform("uGlowOn.value", 1);
+      s.setUniform("uGlowFlip.value", this.glowFlip);
+    } else {
+      s.setUniform("uGlowOn.value", 0);
+    }
     s.setUniform("uFlip.value", this.fieldFlip);
     // Pattern 5 (probe-only): NORMAL lighting maths but composited opaque
     // (blend rule below keys off >= 3) — a screenshot then reads the RAW
