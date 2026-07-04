@@ -279,6 +279,7 @@ export const SURFACES: Record<string, Surface> = {
   ice_spire_v2: solid,
   cliff_lava: solid, // freestanding maintainer test placement near spawn
   cliff_crystal_v2: solid, // dito — the "long" (base 120) tall profile
+  cliff_gold: solid, // dito — emissive tall solid (glow-copy QA)
   obelisk: solid,
   obelisk_v2: solid,
   watchtower: solid,

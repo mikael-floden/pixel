@@ -32,7 +32,6 @@ interface Station {
   row: number;
   solid: boolean;
   lvl: number; // station cell level (set in create; tall art sits flat)
-  shaderLvl?: number; // cliff/wall face art: column height in the SHADER world
 }
 
 export class EmissionDemoScene extends Phaser.Scene {
@@ -47,6 +46,9 @@ export class EmissionDemoScene extends Phaser.Scene {
   private lastStamp = { x: NaN, y: NaN, zoom: NaN };
   private keys!: Record<string, Phaser.Input.Keyboard.Key>;
   private tileBases: TileBases | null = null;
+  // Tall emissive stations' self-glow: the art re-drawn above the darkness,
+  // tinted per frame by its emission floor colour (anim included).
+  private glowCopies: { img: Phaser.GameObjects.Image; entry: NonNullable<EmissionMap[string]>; phase: number }[] = [];
 
   /** Lift so this variant's measured art base sits at ground level ("extra
    * long" 128px art needs more than "long" — see tile-bases.json). Solid
@@ -125,25 +127,24 @@ export class EmissionDemoScene extends Phaser.Scene {
       st.lvl = st.solid || this.aOff(st.cat, st.v) > 0 ? 0 : STATION_LEVEL;
       rows[st.row][st.col] = { t: st.cat, v: st.v, l: st.lvl };
     }
-    // CLIFF/WALL-role tall art is a solid box FACE: the night shader must
-    // treat the cell as a COLUMN of matching height, or the per-pixel
-    // resolve lights the flat cell diamond behind the billboard instead of
-    // the art ("the ground layer lit up ignoring the shape of the tile",
-    // #28 cliff_gold 03). The column lives ONLY in the shader's world —
-    // drawing, labels and halo stamps stay ground-anchored. Tapered art
-    // (spires/trees) stays flat: an analytic box around it would paint a
-    // phantom glowing box on the meadow beside the art.
+    // TALL emissive art can't get its self-glow from the shader: the shader
+    // works in WORLD space (cells + heights) and can't know the billboard
+    // art's silhouette — the per-cell floor lit the flat diamond behind the
+    // art (#28 round 1) and an analytic column lit a box around it (#28
+    // round 2, "brightens pixels that are not part of this tile"). So the
+    // shader sees plain dark meadow at these cells (no floor at all), and
+    // the tile's self-emission is a GLOW COPY: the art drawn again ABOVE
+    // the darkness overlay, tinted by its emission colour — the art's own
+    // alpha IS the shape. Surroundings are lit by halo stamps + glow pools.
     const rowsShader = rows.map((r) => r.map((c) => ({ ...c })));
     for (const st of this.stations) {
-      const role = this.tileBases?.roles?.[st.cat];
-      if ((role === "cliff" || role === "wall") && this.aOff(st.cat, st.v) > 0) {
-        const base = this.tileBases?.categories[st.cat]?.[st.v] ?? 64;
-        st.shaderLvl = Math.max(1, Math.min(8, Math.round((base - 34) / MAP_GEOMETRY.lh)));
-        rowsShader[st.row][st.col].l = st.shaderLvl;
+      const glows = (this.emission[st.cat]?.sources?.[String(st.v)]?.length ?? 0) > 0;
+      if (this.aOff(st.cat, st.v) > 0 && glows) {
+        rowsShader[st.row][st.col] = { t: "meadow", v: 0, l: 0 };
       }
     }
     this.world = { width: cols, height: rowsN, rows, pois: [] };
-    // The shader's view of the world: cliff/wall stations become columns.
+    // The shader's view of the world (tall emissive stations = plain ground).
     const shaderWorld: World = { width: cols, height: rowsN, rows: rowsShader, pois: [] };
     const cs = canvasSize(shaderWorld);
     this.iso = { ox: cs.ox, oy: cs.oy };
@@ -162,6 +163,18 @@ export class EmissionDemoScene extends Phaser.Scene {
         const aOff = this.aOff(cell.t, cell.v);
         for (let k = 0; k <= cell.l; k++) {
           this.add.image(bx, by - k * lh - aOff, key).setOrigin(0, 0).setDepth(by + dy);
+        }
+        // Glow copy for tall emissive art (see the rowsShader note above).
+        const srcs = this.emission[cell.t]?.sources?.[String(cell.v)];
+        if (aOff > 0 && (srcs?.length ?? 0) > 0) {
+          this.glowCopies.push({
+            img: this.add
+              .image(bx, by - cell.l * lh - aOff, key)
+              .setOrigin(0, 0)
+              .setDepth(900_050),
+            entry: this.emission[cell.t]!,
+            phase: ((c * 73856093) ^ (r * 19349663)) % 628 / 100,
+          });
         }
       }
     }
@@ -328,9 +341,7 @@ export class EmissionDemoScene extends Phaser.Scene {
           return {
             col: st.col + 0.5,
             row: st.row + 0.5,
-            // Column-face stations glow from mid-face height; flat ones from
-            // just above their surface.
-            z: st.shaderLvl ? st.shaderLvl / 2 + 0.3 : st.lvl + 0.6,
+            z: st.lvl + 0.6,
             radius: -e.radius,
             color: [e.color[0] * e.strength, e.color[1] * e.strength, e.color[2] * e.strength] as [
               number,
@@ -342,5 +353,19 @@ export class EmissionDemoScene extends Phaser.Scene {
         });
     }
     this.night.update(cam, this.pools, NIGHT, this.stamps);
+
+    // Glow copies: emission-floor tint (never below the night ambient so the
+    // copy always at least matches the darkened base under it), animated per
+    // the entry like the shader's own floor.
+    const t = this.time.now / 1000;
+    for (const gc of this.glowCopies) {
+      const e = gc.entry;
+      let f = 1;
+      if (e.anim === "flicker")
+        f = 1 - 0.12 * (0.5 + 0.5 * Math.sin(t * 3.1 + gc.phase)) - 0.06 * Math.sin(t * 8.3 + gc.phase * 1.7);
+      else if (e.anim === "pulse") f = 0.85 + 0.15 * Math.sin(t * 1.3 + gc.phase);
+      const ch = (i: number) => Math.round(Math.min(1, Math.max(NIGHT[i], e.color[i] * e.self * f)) * 255);
+      gc.img.setTint((ch(0) << 16) | (ch(1) << 8) | ch(2));
+    }
   }
 }

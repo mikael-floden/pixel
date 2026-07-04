@@ -35,6 +35,7 @@ import {
   ShaderLight,
   MAX_SHADER_LIGHTS,
   EmissionMap,
+  EmissionEntry,
   GlowStamp,
   buildGlowStamps,
 } from "../nightlight";
@@ -164,7 +165,14 @@ export class WorldScene extends Phaser.Scene {
   // (playtester report). Like characters, they get a copy above the darkness
   // overlay tinted by their OWN cell's light. Emissive solids (lava pillars,
   // glowing spires) keep their per-pixel field look.
-  private litOccluders: { img: Phaser.GameObjects.Image; col: number; row: number; z: number }[] = [];
+  private litOccluders: {
+    img: Phaser.GameObjects.Image;
+    col: number;
+    row: number;
+    z: number;
+    emission?: EmissionEntry; // emissive variant: tint gets the self-glow floor
+    phase?: number;
+  }[] = [];
   private occluderMeta: {
     col: number;
     row: number;
@@ -928,9 +936,28 @@ export class WorldScene extends Phaser.Scene {
     // Test patterns ([9]/headless probes) read the RAW field off the screen —
     // lit copies drawn above the overlay would pollute the samples.
     const on = !!night && night.active && night.testPattern < 3;
+    const tNow = this.time.now / 1000;
     for (const lo of this.litOccluders) {
       lo.img.setVisible(on);
-      if (on) lo.img.setTint(night!.tintAt(lo.col, lo.row, lo.z, true));
+      if (!on) continue;
+      let tint = night!.tintAt(lo.col, lo.row, lo.z, true);
+      if (lo.emission) {
+        // Self-glow floor on the copy's tint — same semantics as the
+        // shader's per-cell floor (max(light, colour*self*anim)) but applied
+        // to the ART's own pixels, so the glow follows the tile's shape.
+        const e = lo.emission;
+        const ph = lo.phase ?? 0;
+        let f = 1;
+        if (e.anim === "flicker")
+          f = 1 - 0.12 * (0.5 + 0.5 * Math.sin(tNow * 3.1 + ph)) - 0.06 * Math.sin(tNow * 8.3 + ph * 1.7);
+        else if (e.anim === "pulse") f = 0.85 + 0.15 * Math.sin(tNow * 1.3 + ph);
+        const floor = (i: number) => Math.round(Math.min(1, e.color[i] * e.self * f) * 255);
+        tint =
+          (Math.max((tint >> 16) & 0xff, floor(0)) << 16) |
+          (Math.max((tint >> 8) & 0xff, floor(1)) << 8) |
+          Math.max(tint & 0xff, floor(2));
+      }
+      lo.img.setTint(tint);
     }
     for (const a of this.avatars.values()) {
       if (!a.lit) {
@@ -1459,10 +1486,16 @@ export class WorldScene extends Phaser.Scene {
             this.add.image(bx, by - lvl * lh - aOff, key).setOrigin(0, 0).setDepth(oDepth),
           );
         }
-        // Tall non-emissive solids get a LIT COPY above the darkness overlay
-        // (see the litOccluders field note): billboard art must be lit by its
-        // OWN cell, not by whatever terrain lies behind its upper pixels.
-        if (this.night && solidHere && aOff > 0 && !(em && variantGlows)) {
+        // Tall solids get a LIT COPY above the darkness overlay (see the
+        // litOccluders field note): billboard art must be lit by its OWN
+        // cell, not by whatever terrain lies behind its upper pixels.
+        // EMISSIVE variants additionally carry their emission entry — the
+        // copy's tint gets the self-glow FLOOR (max per channel), so the
+        // glow follows the ART'S OWN SHAPE instead of the shader's world
+        // geometry (which lit the flat cell diamond / an analytic box
+        // around the art — playtester, demo #28). Same depth band as every
+        // other lit copy; no new ordering rules.
+        if (this.night && solidHere && aOff > 0) {
           this.litOccluders.push({
             img: this.add
               .image(bx, by - cell.l * lh - aOff, key)
@@ -1471,6 +1504,8 @@ export class WorldScene extends Phaser.Scene {
             col: col + 0.5,
             row: row + 0.5,
             z: cell.l + 0.5,
+            emission: em && variantGlows ? em : undefined,
+            phase: ((((col * 73856093) ^ (row * 19349663)) >>> 0) % 628) / 100,
           });
         }
         this.occluderMeta.push({
