@@ -444,8 +444,10 @@ export function buildGlowStamps(
       for (let i = 0; i < srcs.length; i++) {
         const g = srcs[i];
         const phase = ((((col * 73856093) ^ (row * 19349663) ^ (i * 83492791)) >>> 0) % 628) / 100;
-        const radius = Math.min(90, 10 + g.r * 4.5);
-        const alpha = Math.min(1, Math.max(0.35, g.s * 0.85));
+        // Tuned for TRUE additive blending: overlapping halos sum, so a
+        // dense cluster must not blow out to white (colour dies at clamp).
+        const radius = Math.min(90, 8 + g.r * 4);
+        const alpha = Math.min(1, g.s * 0.45);
         const off = 2 + g.r * 0.6;
         const push = (k: number, ox2: number, oy2: number) =>
           out.push({ x: bx + g.x + ox2, y: by - k * lh + g.y + oy2, radius, color: g.color, alpha, anim, phase });
@@ -575,10 +577,20 @@ export class NightLights {
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, S, S);
     tex.refresh();
-    this.stampImg = this.scene.make
-      .image({ key: "glow-stamp", add: false })
-      .setOrigin(0.5, 0.5)
-      .setBlendMode(Phaser.BlendModes.ADD);
+    this.stampImg = this.scene.make.image({ key: "glow-stamp", add: false }).setOrigin(0.5, 0.5);
+    // TRUE additive blend: Phaser's built-in ADD is (ONE, DST_ALPHA), which
+    // multiplies existing content by the destination ALPHA — on a render
+    // texture that made every stamped quad erase/replace the glow beneath it
+    // (hard black rectangles all over dense glow, playtester report).
+    // (ONE, ONE) is pure out = src + dst: overlap order can't matter.
+    const renderer = this.scene.game.renderer;
+    if (renderer.type === Phaser.WEBGL) {
+      const wr = renderer as Phaser.Renderer.WebGL.WebGLRenderer;
+      const gl = wr.gl;
+      this.stampImg.setBlendMode(wr.addBlendMode([gl.ONE, gl.ONE], gl.FUNC_ADD));
+    } else {
+      this.stampImg.setBlendMode(Phaser.BlendModes.ADD);
+    }
   }
 
   /** (Re)create the shader + its render target at the given size. */
@@ -877,12 +889,6 @@ export class NightLights {
     if (this.glowRT && this.stampImg) {
       const rt = this.glowRT;
       rt.clear();
-      // OPAQUE black base: Phaser's ADD blend is (ONE, DST_ALPHA), built for
-      // opaque destinations. On a transparent RT (alpha 0) every stamped quad
-      // multiplies the glow beneath it by ~0 — each stamp ERASED a rectangle
-      // of earlier glow, leaving hard black quad edges/corners (playtester
-      // report). With dst alpha 1 the blend is true addition.
-      rt.fill(0x000000, 1);
       if (stamps.length) {
         const t = this.scene.time.now / 1000;
         const img = this.stampImg;

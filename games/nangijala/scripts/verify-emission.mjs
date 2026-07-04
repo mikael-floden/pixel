@@ -67,13 +67,13 @@ console.log(
 if (ctlErr > 0.05) fail++;
 
 // Animation: the lava floor flickers — consecutive samples must differ.
-// Sample the GREEN channel: red saturates at 1.0 (floor + glow pool clamp),
-// which would hide the swing entirely.
+// Sample the BLUE channel: red AND green saturate at 1.0 at a molten centre
+// (floor + pool + additive halos clamp), which would hide the swing.
 await page.evaluate(({ col, row }) => window.__ml.lookAt(col, row), SITES[0]);
 await page.waitForTimeout(700);
 const seq = [];
 for (let k = 0; k < 6; k++) {
-  seq.push((await sampleCenter())[1]);
+  seq.push((await sampleCenter())[2]);
   await page.waitForTimeout(700); // spread over ~2 flicker periods (freq 3.1)
 }
 const swing = Math.max(...seq) - Math.min(...seq);
