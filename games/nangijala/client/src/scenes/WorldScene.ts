@@ -752,7 +752,16 @@ export class WorldScene extends Phaser.Scene {
           // its diagonal regardless of how far its top rises above the feet
           // — the faceOverFeet band was tuned for 1-level ledges and never
           // fired for a 100px pillar, so the LIT COPY floated over it.
-          const solidArtOver = higher && o.solid && o.col + o.row + 1.2 > colf + rowf;
+          // BEHIND also requires the feet anchor inside the art's x-span:
+          // standing BESIDE the pillar at a smaller diagonal is not behind
+          // it, and forcing the base below the pillar dragged it below the
+          // equal-depth grass tiles too (clipped legs, playtester report).
+          const solidArtOver =
+            higher &&
+            o.solid &&
+            o.col + o.row + 1.2 > colf + rowf &&
+            av.lx >= o.x0 - 6 &&
+            av.lx <= o.x1 + 6;
           if (rayBlocked || faceOverFeet || solidArtOver) {
             below = Math.min(below, o.depth);
             coverY = Math.min(coverY, o.y0);
