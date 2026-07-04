@@ -1505,6 +1505,26 @@ export class WorldScene extends Phaser.Scene {
             this.add.image(bx, by - lvl * lh - aOff, key).setOrigin(0, 0).setDepth(oDepth),
           );
         }
+        // DEMO stations: a raised EMISSIVE terrain column (flat glowing tile
+        // stacked to expose its faces) gets floor-tinted glow copies of the
+        // whole stack — the wall's lowest band falls into the diamond
+        // interlock wedge where the shader resolves pixels to the dark
+        // meadow IN FRONT, leaving an unlit "step" at the base (#64).
+        if (this.demoMode && this.night && !solidHere && cell.l > 0 && em && variantGlows) {
+          for (let lvl = 0; lvl <= cell.l; lvl++) {
+            this.litOccluders.push({
+              img: this.add
+                .image(bx, by - lvl * lh - aOff, key)
+                .setOrigin(0, 0)
+                .setDepth(litDepth(oDepth)),
+              col: col + 0.5,
+              row: row + 0.5,
+              z: cell.l + 0.5,
+              emission: em,
+              phase: ((((col * 73856093) ^ (row * 19349663)) >>> 0) % 628) / 100,
+            });
+          }
+        }
         // Tall solids get a LIT COPY above the darkness overlay (see the
         // litOccluders field note): billboard art must be lit by its OWN
         // cell, not by whatever terrain lies behind its upper pixels.
