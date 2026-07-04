@@ -217,6 +217,9 @@ export class WorldScene extends Phaser.Scene {
   private torchOn = true;
   // [6] toggles the spawn bonfire — firelight drowns self-emission QA nearby.
   private fireOn = true;
+  // Position readout pinned under the local player (cell coords, chat-style
+  // UI text above the darkness overlay) — every screenshot self-locates.
+  private posLabel?: Phaser.GameObjects.Text;
   // Debug-only extra light, set from __ml.probeLight for headless probes.
   private probeLight: ShaderLight | null = null;
   // Time-of-day state: target phase index + eased interpolation FROM whatever
@@ -818,6 +821,22 @@ export class WorldScene extends Phaser.Scene {
       const topFrac = (av.sprite.getData("topFrac") as number) ?? 0;
       const topY = av.sprite.y - av.sprite.displayHeight * (av.sprite.originY - topFrac);
       av.label.setPosition(av.lx, topY - 4);
+      if (id === myId) {
+        if (!this.posLabel)
+          this.posLabel = this.add
+            .text(0, 0, "", {
+              fontFamily: "monospace",
+              fontSize: "10px",
+              color: "#cfd6ff",
+              stroke: "#000000",
+              strokeThickness: 3,
+            })
+            .setOrigin(0.5, 0)
+            .setDepth(900_100);
+        this.posLabel
+          .setPosition(av.lx, av.ly + 4)
+          .setText(`${(av.fx / CELL_WU).toFixed(1)}, ${(av.fy / CELL_WU).toFixed(1)}`);
+      }
       if (av.bubble) {
         av.bubble.setPosition(av.lx, topY - 18);
         if (this.time.now > (av.bubbleUntil ?? 0)) {
