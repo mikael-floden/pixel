@@ -507,6 +507,21 @@ export class WorldScene extends Phaser.Scene {
         cam.centerOn(wx, wy);
         return { x: wx, y: wy, t: cell?.t ?? null, l: cell?.l ?? 0 };
       },
+      // My sprite depth vs every occluder column near it — z-order probes.
+      depthProbe: () => {
+        const id = this.room?.sessionId;
+        const av = id ? this.avatars.get(id) : undefined;
+        if (!av) return null;
+        const s = av.sprite;
+        const x0 = s.x - s.displayWidth / 2, x1 = s.x + s.displayWidth / 2;
+        const y0 = s.y - s.displayHeight, y1 = s.y;
+        return {
+          me: { depth: s.depth, fx: av.fx, fy: av.fy },
+          near: this.occluderMeta
+            .filter((o) => !(o.x1 < x0 || o.x0 > x1 || o.y1 < y0 || o.y0 > y1))
+            .map((o) => ({ col: o.col, row: o.row, depth: o.depth, top: o.top })),
+        };
+      },
       nightInfo: () => this.night?.debugInfo(),
       // Glow-field RT orientation calibration (headless probes flip + verify).
       glowFlip: (v?: number) => {
@@ -734,7 +749,15 @@ export class WorldScene extends Phaser.Scene {
           if (rayBlocked || faceOverFeet) {
             below = Math.min(below, o.depth);
             coverY = Math.min(coverY, o.y0);
-          } else above = Math.max(above, o.depth);
+          } else if (colf + rowf > o.col + o.row + 1) {
+            // Lift above an overlapping column ONLY when the feet are
+            // camera-forward of its front corner. Overlap alone used to
+            // imply "in front" — true for 64px art, but bottom-anchored
+            // tall art (128px spires) reaches ~5 levels up-screen and
+            // overlaps characters standing well BEHIND it; the blanket
+            // lift drew them on top of the pillar (playtester report).
+            above = Math.max(above, o.depth);
+          }
         }
         if (above > -Infinity) depth = Math.max(depth, above + 0.6);
         if (below < Infinity) depth = Math.min(depth, below - 0.3); // walls win conflicts
