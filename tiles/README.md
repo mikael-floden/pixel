@@ -111,12 +111,13 @@ So for any tile the Maps agent knows: **what it is** (`category`, `description`,
 `profile`, `kind`), **how it was generated** (`provenance.request`, `seed`), and
 **how to place/stack it** (`geometry` + `stacking`, in exact pixels).
 
-## Self-emission registry (`tiles/emission.json`, schema `tile-emission@1`)
+## Self-emission registry (`tiles/emission.json`, schema `tile-emission@2`)
 
 Some tiles GLOW with their own light (lava, magic crystals, shining gold…).
 `tiles/emission.json` is the registry the games consume for night lighting
-(nangijala: a self-glow floor on the tile's own pixels + a small shadow-free
-light pool around it — Sea of Stars-style environment point lights).
+(nangijala: a self-glow floor on the tile's own pixels, shadow-free light
+pools, and a localized halo per glowing pixel cluster — Sea of Stars-style
+environment lights).
 
 **Every category must have an entry — `null` means "audited, does not glow".**
 That null is the audit trail: it proves someone looked at the art. Most tiles
@@ -128,7 +129,17 @@ do NOT glow; emission is a spice, not a default.
   "strength": 0.9,              // 0..1 — intensity of the pool around it
   "radius": 3.5,                // pool size in grid cells
   "anim": "flicker",            // static | flicker | pulse
-  "self": 0.85                  // 0..1 — how much its OWN pixels resist night
+  "self": 0.85,                 // 0..1 — how much its OWN pixels resist night
+  "variants": 16,               // (generated) total tile_NN count
+  "sources": {                  // (generated) per-pixel glow sources
+    "0": [                      //   variant index (tile_00)
+      { "x": 31.2, "y": 20.4,   //   cluster centroid, image px
+        "r": 4.1,               //   cluster radius, px
+        "color": [1, 0.42, 0.1],//   the cluster's OWN colour
+        "s": 0.8,               //   strength 0..1
+        "dir": "up" }           //   up | sw (left face) | se (right face)
+    ]
+  }
 },
 "meadow": null                   // audited: does not glow
 ```
@@ -136,12 +147,20 @@ do NOT glow; emission is a spice, not a default.
 `anim` by material: fire/lava **flicker**, magic (crystals, mushrooms)
 **pulse**, steady shine (gold, ice) **static**.
 
+The `sources`/`variants` blocks are **GENERATED** — run
+`node games/nangijala/scripts/analyze-emission.mjs` after art changes; it
+detects the exact glowing pixel clusters per variant and their facing
+(top-diamond pixels glow up, face pixels glow toward their side). Hand-edit
+only the category-level fields. Inspect any tile in the game's emission demo
+world (`/#emission`, or numpad-9 in game): every glowing variant on a
+numbered station.
+
 **TILES AGENT: when generating a NEW category, add its entry here in the same
-commit** (usually `null`). `games/nangijala/scripts/audit-emission.mjs`
-measures the art and proposes colors; the game's CI gate
-(`games/nangijala/scripts/check-surfaces.mjs`, run by its `npm test`) FAILS
-when a world-used category is missing from the registry and shape-checks every
-non-null entry.
+commit** (usually `null` — the pipeline's `register_emission` does this
+automatically), and if you mark one emissive, run the analyzer above. The
+game's CI gate (`games/nangijala/scripts/check-surfaces.mjs`, run by its
+`npm test`) FAILS when a world-used category is missing from the registry and
+shape-checks every non-null entry including its sources.
 
 ## Layout
 
