@@ -920,7 +920,10 @@ export class WorldScene extends Phaser.Scene {
    * to the depth-sorted under-sprite, everything above it stays lit. */
   private applyObjectLights() {
     const night = this.night;
-    const on = !!night && night.active;
+    // Test patterns ([9]/probes) read the RAW field off the screen — every
+    // lit copy drawn above the overlay would pollute the samples, so they
+    // all hide while a pattern is active.
+    const on = !!night && night.active && night.testPattern < 3;
     for (const lo of this.litOccluders) {
       lo.img.setVisible(on);
       if (on) lo.img.setTint(night!.tintAt(lo.col, lo.row, lo.z, true));
@@ -1273,7 +1276,12 @@ export class WorldScene extends Phaser.Scene {
     let off = this.artOffCache.get(key);
     if (off === undefined) {
       const src = this.textures.get(key)?.getSourceImage() as { height?: number } | undefined;
-      off = Math.max(0, (src?.height ?? 64) - 64);
+      const h = src?.height ?? 64;
+      // Anchor by base_y: flat tiles touch ground at image row 54; every
+      // tall/cliff tile in the library measures base_y = 127 (art to the
+      // last row), so tall art draws 127-54 = h-55 px higher. A plain h-64
+      // shift left trees 9px underground (measured, playtester report).
+      off = h > 64 ? h - 55 : 0;
       this.artOffCache.set(key, off);
     }
     return off;
@@ -1403,7 +1411,9 @@ export class WorldScene extends Phaser.Scene {
         }
         const solidHere = !s.standable && !s.swimmable;
         const emitsHere = em && (em.sources?.[String(cell.v)]?.length ?? 0) > 0;
-        if (this.night && solidHere && !emitsHere) {
+        // Only TALL billboards (128px art) need the copy — flat solid ground
+        // fillers (plain lava rock) keep the richer per-pixel field look.
+        if (this.night && solidHere && !emitsHere && aOff > 0) {
           this.litOccluders.push({
             img: this.add
               .image(bx, by - cell.l * lh - aOff, key)

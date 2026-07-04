@@ -115,7 +115,8 @@ export class EmissionDemoScene extends Phaser.Scene {
         const key = tileKey(cell.t, cell.v);
         if (!this.textures.exists(key)) continue;
         // Bottom-anchor tall (64x128) art — same rule as the game world.
-        const aOff = Math.max(0, ((this.textures.get(key).getSourceImage() as { height?: number })?.height ?? 64) - 64);
+        const h0 = (this.textures.get(key).getSourceImage() as { height?: number })?.height ?? 64;
+        const aOff = h0 > 64 ? h0 - 55 : 0; // base_y anchoring, see WorldScene.artYOff
         for (let k = 0; k <= cell.l; k++) {
           this.add.image(bx, by - k * lh - aOff, key).setOrigin(0, 0).setDepth(by + dy);
         }
@@ -126,9 +127,10 @@ export class EmissionDemoScene extends Phaser.Scene {
     for (const st of this.stations) {
       const bx = this.iso.ox + (st.col - st.row) * dx + dx;
       const key = tileKey(st.cat, st.v);
-      const aOff = this.textures.exists(key)
-        ? Math.max(0, ((this.textures.get(key).getSourceImage() as { height?: number })?.height ?? 64) - 64)
-        : 0;
+      const h1 = this.textures.exists(key)
+        ? ((this.textures.get(key).getSourceImage() as { height?: number })?.height ?? 64)
+        : 64;
+      const aOff = h1 > 64 ? h1 - 55 : 0;
       const topY = this.iso.oy + (st.col + st.row) * dy - (st.solid ? 0 : STATION_LEVEL) * lh - aOff;
       this.add
         .text(bx, topY - 26, String(st.n), {
@@ -270,7 +272,8 @@ export class EmissionDemoScene extends Phaser.Scene {
         (t, v) => {
           const k = tileKey(t, v);
           if (!this.textures.exists(k)) return 0;
-          return Math.max(0, ((this.textures.get(k).getSourceImage() as { height?: number })?.height ?? 64) - 64);
+          const h2 = (this.textures.get(k).getSourceImage() as { height?: number })?.height ?? 64;
+          return h2 > 64 ? h2 - 55 : 0;
         },
       );
       // Glow pools (layer 2, same convention as the game: negative radius =
