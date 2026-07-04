@@ -49,6 +49,8 @@ import {
   distinctTiles,
   drawOrder,
   canvasSize,
+  TileBases,
+  artLift,
 } from "../maps";
 
 const ANIM_FPS: Record<string, number> = { idle: 6, walk: 12, run: 14 };
@@ -183,8 +185,10 @@ export class WorldScene extends Phaser.Scene {
   private emission: EmissionMap = {};
   // Bottom-anchor offset for tall (64x128 cliff/tall profile) tile art: drawn
   // with the same top-left anchor as 64px tiles it sinks 64px into the ground
-  // (only the crystal tip peeked out — playtester report). Offset = imgH - 64.
+  // (only the crystal tip peeked out — playtester report). Lift comes from the
+  // variant's measured art base (tile-bases.json), see artYOff.
   private artOffCache = new Map<string, number>();
+  private tileBases: TileBases | null = null;
   // Per-pixel glow halos for the visible window (rebuilt with the occluders).
   private glowStamps: GlowStamp[] = [];
   // The spawn campfire: an animated world object with its own fire light.
@@ -212,6 +216,7 @@ export class WorldScene extends Phaser.Scene {
     this.myCharacter = this.registry.get("character") as CharacterDef;
     this.myName = this.registry.get("name") as string;
     this.world = (this.registry.get("world") as World | null) ?? null;
+    this.tileBases = (this.registry.get("tileBases") as TileBases | null) ?? null;
     if (this.world) {
       this.terrain = buildTerrainGrid(this.world.width, this.world.height, this.world.rows);
       // Surface-contract watchdog: categories missing from SURFACES default
@@ -1261,8 +1266,12 @@ export class WorldScene extends Phaser.Scene {
   private artYOff(key: string): number {
     let off = this.artOffCache.get(key);
     if (off === undefined) {
+      // Per-variant measured base (tile-bases.json) when available — "extra
+      // long" art (content to the canvas bottom) gets a deeper lift than
+      // "long" art, so nothing sinks. Fallback: the old constant imgH - 64.
+      const [, t, v] = key.split(":");
       const src = this.textures.get(key)?.getSourceImage() as { height?: number } | undefined;
-      off = Math.max(0, (src?.height ?? 64) - 64);
+      off = artLift(this.tileBases, t, Number(v), src?.height ?? 64);
       this.artOffCache.set(key, off);
     }
     return off;

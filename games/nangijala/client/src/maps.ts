@@ -41,6 +41,27 @@ export function tileKey(t: string, v: number): string {
   return `tile:${t}:${v}`;
 }
 
+/** client/public/tile-bases.json — per-variant lowest opaque row of each tile
+ * art, measured at build time (scripts/build-tile-bases.mjs). groundBase is
+ * the same measure for plain grass (how deep a flat tile's skirt reaches). */
+export interface TileBases {
+  format: string;
+  groundBase: number;
+  categories: Record<string, number[]>;
+}
+
+/** Lift for tall tile art so its measured base sits exactly where a flat
+ * ground tile's own bottom sits. Tall sets are NOT uniform — "extra long"
+ * variants fill the 128px canvas (cliff_lava, spires, trees, waterfalls)
+ * while "long" ones stop ~8px short (cliff_gold) — so a constant lift
+ * (imgH-64, the fallback when metadata is missing) buried the full-canvas
+ * kind while the short kind sat right. */
+export function artLift(bases: TileBases | null, t: string, v: number, imgH: number): number {
+  const base = bases?.categories[t]?.[v];
+  if (base !== undefined && bases) return Math.max(0, base - bases.groundBase);
+  return Math.max(0, imgH - 64);
+}
+
 export function tileUrl(t: string, v: number): string {
   return `/assets/tiles/${t}/tile_${String(v).padStart(2, "0")}.png`;
 }

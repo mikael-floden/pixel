@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { surfaceFor } from "@nangijala/shared";
-import { World, MAP_GEOMETRY, tileKey, tileUrl, canvasSize } from "../maps";
+import { World, MAP_GEOMETRY, tileKey, tileUrl, canvasSize, TileBases, artLift } from "../maps";
 import { NightLights, EmissionMap, GlowStamp, ShaderLight, buildGlowStamps } from "../nightlight";
 
 /**
@@ -31,6 +31,7 @@ interface Station {
   col: number;
   row: number;
   solid: boolean;
+  lvl: number; // station cell level (set in create; tall art sits flat)
 }
 
 export class EmissionDemoScene extends Phaser.Scene {
@@ -44,6 +45,17 @@ export class EmissionDemoScene extends Phaser.Scene {
   private pools: ShaderLight[] = [];
   private lastStamp = { x: NaN, y: NaN, zoom: NaN };
   private keys!: Record<string, Phaser.Input.Keyboard.Key>;
+  private tileBases: TileBases | null = null;
+
+  /** Lift so this variant's measured art base sits at ground level ("extra
+   * long" 128px art needs more than "long" — see tile-bases.json). */
+  private aOff(t: string, v: number): number {
+    const k = tileKey(t, v);
+    const imgH = this.textures.exists(k)
+      ? (((this.textures.get(k).getSourceImage() as { height?: number })?.height ?? 64) as number)
+      : 64;
+    return artLift(this.tileBases, t, v, imgH);
+  }
 
   constructor() {
     super("emission-demo");
@@ -51,6 +63,7 @@ export class EmissionDemoScene extends Phaser.Scene {
 
   init() {
     this.emission = (this.registry.get("emission") as EmissionMap | undefined) ?? {};
+    this.tileBases = (this.registry.get("tileBases") as TileBases | null) ?? null;
     // Stations: every variant of every emissive category, sorted for stable
     // numbering (report "tile 37" and it means the same tile next run).
     const cats = Object.entries(this.emission)
@@ -74,6 +87,7 @@ export class EmissionDemoScene extends Phaser.Scene {
           col: MARGIN + (i % PER_ROW) * SPACING,
           row: MARGIN + Math.floor(i / PER_ROW) * ROW_PITCH,
           solid,
+          lvl: 0,
         });
         n++;
       }
@@ -99,7 +113,15 @@ export class EmissionDemoScene extends Phaser.Scene {
     const rows = Array.from({ length: rowsN }, (_, r) =>
       Array.from({ length: cols }, (_, c) => ({ t: "meadow", v: (c * 7 + r * 13) % 3, l: 0 })),
     );
-    for (const st of this.stations) rows[st.row][st.col] = { t: st.cat, v: st.v, l: st.solid ? 0 : STATION_LEVEL };
+    // Station level: flat 64px ground tiles stand on a 2-level column so
+    // their side faces show (the column is BUILT by stacking the tile per
+    // level). Tall art already contains its own faces — stacking it drew
+    // 2-3 overlapping copies ("two long tiles on top of each other",
+    // cliff_gold 04) — so it sits flat and is drawn exactly once.
+    for (const st of this.stations) {
+      st.lvl = st.solid || this.aOff(st.cat, st.v) > 0 ? 0 : STATION_LEVEL;
+      rows[st.row][st.col] = { t: st.cat, v: st.v, l: st.lvl };
+    }
     this.world = { width: cols, height: rowsN, rows, pois: [] };
     const cs = canvasSize(this.world);
     this.iso = { ox: cs.ox, oy: cs.oy };
@@ -114,8 +136,8 @@ export class EmissionDemoScene extends Phaser.Scene {
         const by = this.iso.oy + (c + r) * dy;
         const key = tileKey(cell.t, cell.v);
         if (!this.textures.exists(key)) continue;
-        // Bottom-anchor tall (64x128) art — same rule as the game world.
-        const aOff = Math.max(0, ((this.textures.get(key).getSourceImage() as { height?: number })?.height ?? 64) - 64);
+        // Ground tall art by its measured base — same rule as the game world.
+        const aOff = this.aOff(cell.t, cell.v);
         for (let k = 0; k <= cell.l; k++) {
           this.add.image(bx, by - k * lh - aOff, key).setOrigin(0, 0).setDepth(by + dy);
         }
@@ -125,11 +147,8 @@ export class EmissionDemoScene extends Phaser.Scene {
     // Station numbers — ABOVE the darkness overlay so they stay readable.
     for (const st of this.stations) {
       const bx = this.iso.ox + (st.col - st.row) * dx + dx;
-      const key = tileKey(st.cat, st.v);
-      const aOff = this.textures.exists(key)
-        ? Math.max(0, ((this.textures.get(key).getSourceImage() as { height?: number })?.height ?? 64) - 64)
-        : 0;
-      const topY = this.iso.oy + (st.col + st.row) * dy - (st.solid ? 0 : STATION_LEVEL) * lh - aOff;
+      const aOff = this.aOff(st.cat, st.v);
+      const topY = this.iso.oy + (st.col + st.row) * dy - st.lvl * lh - aOff;
       this.add
         .text(bx, topY - 26, String(st.n), {
           fontFamily: "monospace",
@@ -267,11 +286,7 @@ export class EmissionDemoScene extends Phaser.Scene {
         },
         this.maxLevel,
         undefined,
-        (t, v) => {
-          const k = tileKey(t, v);
-          if (!this.textures.exists(k)) return 0;
-          return Math.max(0, ((this.textures.get(k).getSourceImage() as { height?: number })?.height ?? 64) - 64);
-        },
+        (t, v) => this.aOff(t, v),
       );
       // Glow pools (layer 2, same convention as the game: negative radius =
       // shadow-free): one pool per glowing station, nearest 8 win the slots.
@@ -290,7 +305,7 @@ export class EmissionDemoScene extends Phaser.Scene {
           return {
             col: st.col + 0.5,
             row: st.row + 0.5,
-            z: (st.solid ? 0 : STATION_LEVEL) + 0.6,
+            z: st.lvl + 0.6,
             radius: -e.radius,
             color: [e.color[0] * e.strength, e.color[1] * e.strength, e.color[2] * e.strength] as [
               number,
