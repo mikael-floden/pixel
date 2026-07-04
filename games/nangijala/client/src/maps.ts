@@ -70,8 +70,13 @@ export function artLift(
 ): number {
   const base = bases?.categories[t]?.[v];
   if (base !== undefined && bases) {
+    // +3 seat: tile edges are drawn slightly inside their geometric diamond,
+    // so a mathematically exact V-on-vertex placement leaves a 1-3px grass
+    // seam along the base edges — the pillar reads as HOVERING (measured
+    // live; playtester report). Sinking the V a hair into the fronting art
+    // reads as standing on it.
     const anchor = solid
-      ? (bases.groundTop ?? bases.groundBase - 8) + 2 * MAP_GEOMETRY.dy
+      ? (bases.groundTop ?? bases.groundBase - 8) + 2 * MAP_GEOMETRY.dy + 3
       : bases.groundBase;
     return Math.max(0, base - anchor);
   }
