@@ -115,7 +115,7 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
   `check-surfaces.mjs` FAILS on missing/malformed entries or sources, and
   the tiles pipeline auto-appends `null` for new categories
   (`tilegen.register_emission`).
-- **Emission demo world**: numpad-9 in game (or `/#emission`) loads an
+- **Emission demo world**: press [0] in game (or `/#emission`) to load an
   offline scene with EVERY variant of every glowing category on a numbered
   station at night — glide with WASD/drag, report odd tiles by number.
   `scripts/demo-shots.mjs` batch-captures every station headlessly;

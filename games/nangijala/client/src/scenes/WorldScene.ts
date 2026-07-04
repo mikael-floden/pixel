@@ -311,8 +311,8 @@ export class WorldScene extends Phaser.Scene {
     });
     // Jump (Space): edge-triggered, lets you cross a 1-level ledge if timed.
     this.input.keyboard!.on("keydown-SPACE", () => this.tryJump());
-    // Numpad 9: the emission demo world — every glowing tile, numbered.
-    this.input.keyboard!.on("keydown-NUMPAD_NINE", () => {
+    // [0]: the emission demo world — every glowing tile, numbered.
+    this.input.keyboard!.on("keydown-ZERO", () => {
       location.hash = "#emission";
       location.reload();
     });
@@ -359,7 +359,7 @@ export class WorldScene extends Phaser.Scene {
       ];
       this.chat.addLog("—", `[9] Field test: ${names[this.night.testPattern]}`);
     });
-    this.chat.addLog("—", "Toggles: [1] time of day · [4] collision · [5] torch · [6][7][8][9] light-field calibration");
+    this.chat.addLog("—", "Toggles: [1] time of day · [4] collision · [5] torch · [0] emission demo · [6][7][8][9] light-field calibration");
 
     const cam = this.cameras.main;
     cam.setBounds(0, 0, this.iso.w, this.iso.h);

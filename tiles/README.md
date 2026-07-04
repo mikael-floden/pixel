@@ -152,7 +152,7 @@ The `sources`/`variants` blocks are **GENERATED** — run
 detects the exact glowing pixel clusters per variant and their facing
 (top-diamond pixels glow up, face pixels glow toward their side). Hand-edit
 only the category-level fields. Inspect any tile in the game's emission demo
-world (`/#emission`, or numpad-9 in game): every glowing variant on a
+world (`/#emission`, or press [0] in game): every glowing variant on a
 numbered station.
 
 **TILES AGENT: when generating a NEW category, add its entry here in the same

@@ -68,7 +68,7 @@ function showUpdateBanner(sha: string) {
   document.body.appendChild(el);
 }
 
-/** The emission demo world (numpad-9 in game / #emission): every glowing
+/** The emission demo world ([0] in game / #emission): every glowing
  * tile variant on a numbered station under the full night pipeline. */
 async function bootEmissionDemo(): Promise<boolean> {
   if (location.hash !== "#emission") return false;

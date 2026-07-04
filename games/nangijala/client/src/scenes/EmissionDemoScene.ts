@@ -4,7 +4,7 @@ import { World, MAP_GEOMETRY, tileKey, tileUrl, canvasSize } from "../maps";
 import { NightLights, EmissionMap, GlowStamp, ShaderLight, buildGlowStamps } from "../nightlight";
 
 /**
- * Emission demo world (reach it with numpad-9 in game, or /#emission): every
+ * Emission demo world (reach it with [0] in game, or /#emission): every
  * variant of every GLOWING tile category (tiles/emission.json) on a numbered
  * station, at night, with the full emission pipeline running — self floor,
  * glow pools and per-pixel halos. Stations sit in rows of 20, four cells
@@ -178,14 +178,14 @@ export class EmissionDemoScene extends Phaser.Scene {
       location.hash = "";
       location.reload();
     };
-    this.input.keyboard!.on("keydown-NUMPAD_NINE", leave);
+    this.input.keyboard!.on("keydown-ZERO", leave);
     this.input.keyboard!.on("keydown-ESC", leave);
 
     this.add
       .text(
         10,
         10,
-        "EMISSION DEMO — every glowing tile, numbered. WASD/drag to glide, wheel zoom, numpad-9/Esc to leave.\nRaised tiles show face glow (sw/se sources), flat objects glow as drawn. Report odd tiles by number.",
+        "EMISSION DEMO — every glowing tile, numbered. WASD/drag to glide, wheel zoom, [0]/Esc to leave.\nRaised tiles show face glow (sw/se sources), flat objects glow as drawn. Report odd tiles by number.",
         { fontFamily: "monospace", fontSize: "12px", color: "#cfd6ff", stroke: "#000", strokeThickness: 3 },
       )
       .setScrollFactor(0)
