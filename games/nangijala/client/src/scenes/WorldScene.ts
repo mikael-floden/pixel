@@ -158,6 +158,13 @@ export class WorldScene extends Phaser.Scene {
   // Occlusion: raised/solid tiles near the camera drawn as depth-sorted images
   // so they cover characters standing BEHIND them (the ground RT is flat).
   private occluders: Phaser.GameObjects.Image[] = [];
+  // Lit copies of TALL NON-EMISSIVE solid structures: billboard art samples
+  // the light field of the terrain BEHIND it, so a shore tree's canopy was
+  // multiplied by the level-0 ocean's night — pitch black above the horizon
+  // (playtester report). Like characters, they get a copy above the darkness
+  // overlay tinted by their OWN cell's light. Emissive solids (lava pillars,
+  // glowing spires) keep their per-pixel field look.
+  private litOccluders: { img: Phaser.GameObjects.Image; col: number; row: number; z: number }[] = [];
   private occluderMeta: {
     col: number;
     row: number;
@@ -918,7 +925,13 @@ export class WorldScene extends Phaser.Scene {
    * to the depth-sorted under-sprite, everything above it stays lit. */
   private applyObjectLights() {
     const night = this.night;
-    const on = !!night && night.active;
+    // Test patterns ([9]/headless probes) read the RAW field off the screen —
+    // lit copies drawn above the overlay would pollute the samples.
+    const on = !!night && night.active && night.testPattern < 3;
+    for (const lo of this.litOccluders) {
+      lo.img.setVisible(on);
+      if (on) lo.img.setTint(night!.tintAt(lo.col, lo.row, lo.z, true));
+    }
     for (const a of this.avatars.values()) {
       if (!a.lit) {
         a.lit = this.add.sprite(a.sprite.x, a.sprite.y, a.sprite.texture.key).setDepth(900_001);
@@ -970,7 +983,8 @@ export class WorldScene extends Phaser.Scene {
         for (const o of this.occluderMeta) {
           if (
             o.solid &&
-            o.col + o.row + 1.2 > this.campfire.col + 0.5 + this.campfire.row + 0.5 &&
+            // campfire.col/row already carry the +0.5 cell-centre offset.
+            o.col + o.row + 1.2 > this.campfire.col + this.campfire.row &&
             this.campfire.x >= o.x0 - 6 &&
             this.campfire.x <= o.x1 + 6 &&
             o.y0 < this.campfire.y
@@ -1331,6 +1345,8 @@ export class WorldScene extends Phaser.Scene {
       return;
     this.lastOccl = { x: ccx, y: ccy };
     for (const im of this.occluders) im.destroy();
+    for (const lo of this.litOccluders) lo.img.destroy();
+    this.litOccluders = [];
     this.occluders = [];
     this.occluderMeta = [];
     this.emissiveLights = [];
@@ -1442,6 +1458,20 @@ export class WorldScene extends Phaser.Scene {
           this.occluders.push(
             this.add.image(bx, by - lvl * lh - aOff, key).setOrigin(0, 0).setDepth(oDepth),
           );
+        }
+        // Tall non-emissive solids get a LIT COPY above the darkness overlay
+        // (see the litOccluders field note): billboard art must be lit by its
+        // OWN cell, not by whatever terrain lies behind its upper pixels.
+        if (this.night && solidHere && aOff > 0 && !(em && variantGlows)) {
+          this.litOccluders.push({
+            img: this.add
+              .image(bx, by - cell.l * lh - aOff, key)
+              .setOrigin(0, 0)
+              .setDepth(litDepth(oDepth)),
+            col: col + 0.5,
+            row: row + 0.5,
+            z: cell.l + 0.5,
+          });
         }
         this.occluderMeta.push({
           col,

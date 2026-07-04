@@ -75,7 +75,13 @@ export function artLift(
     // seam along the base edges — the pillar reads as HOVERING (measured
     // live; playtester report). Sinking the V a hair into the fronting art
     // reads as standing on it.
-    const anchor = solid
+    //
+    // The V-anchor is for TALL structure art only (imgH > 64). A solid
+    // category with flat ground-format art — lava lakes are solid because
+    // they're impassable — IS ground and must sit in the grid like ground:
+    // V-anchoring lava lifted 1,155 lake cells 18px off the world (review
+    // finding).
+    const anchor = solid && imgH > 64
       ? (bases.groundTop ?? bases.groundBase - 8) + 2 * MAP_GEOMETRY.dy + 3
       : bases.groundBase;
     return Math.max(0, base - anchor);

@@ -99,12 +99,16 @@ const groundBase = categories.grass?.[0] ?? 55;
 // structures anchor their bottom V to the surface diamond's BOTTOM vertex
 // (groundTop + diamond height), aligning art footprint with collision.
 function topOf(file) {
+  if (!existsSync(file)) return undefined;
   const png = pngAlpha(file);
+  if (!png) return undefined;
   for (let y = 0; y < png.h; y++)
     for (let x = 0; x < png.w; x++)
       if (png.opaque(x, y)) return y;
   return 0;
 }
+// May be undefined when grass art is absent/exotic — the client falls back
+// (groundBase - 8); never crash the manifest chain over it.
 const groundTop = topOf(join(TILES, "grass", "tile_00.png"));
 writeFileSync(
   OUT,
