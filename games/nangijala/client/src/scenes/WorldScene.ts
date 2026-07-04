@@ -160,6 +160,7 @@ export class WorldScene extends Phaser.Scene {
     col: number;
     row: number;
     top: number; // column's top level
+    solid: boolean; // impassable structure — its tall art is a billboard
     depth: number;
     x0: number;
     x1: number;
@@ -516,7 +517,7 @@ export class WorldScene extends Phaser.Scene {
         const x0 = s.x - s.displayWidth / 2, x1 = s.x + s.displayWidth / 2;
         const y0 = s.y - s.displayHeight, y1 = s.y;
         return {
-          me: { depth: s.depth, fx: av.fx, fy: av.fy },
+          me: { depth: s.depth, fx: av.fx, fy: av.fy, coverY: av.coverY ?? null },
           near: this.occluderMeta
             .filter((o) => !(o.x1 < x0 || o.x0 > x1 || o.y1 < y0 || o.y0 > y1))
             .map((o) => ({ col: o.col, row: o.row, depth: o.depth, top: o.top })),
@@ -746,7 +747,13 @@ export class WorldScene extends Phaser.Scene {
             o.y0 <= feetY + 6 &&
             o.y0 >= feetY - 26 &&
             o.col + o.row + 1.2 > colf + rowf;
-          if (rayBlocked || faceOverFeet) {
+          // (c) A camera-closer SOLID structure whose (tall, bottom-anchored)
+          // art overlaps the sprite: billboard art covers anything behind
+          // its diagonal regardless of how far its top rises above the feet
+          // — the faceOverFeet band was tuned for 1-level ledges and never
+          // fired for a 100px pillar, so the LIT COPY floated over it.
+          const solidArtOver = higher && o.solid && o.col + o.row + 1.2 > colf + rowf;
+          if (rayBlocked || faceOverFeet || solidArtOver) {
             below = Math.min(below, o.depth);
             coverY = Math.min(coverY, o.y0);
           } else if (colf + rowf > o.col + o.row + 1) {
@@ -1375,6 +1382,7 @@ export class WorldScene extends Phaser.Scene {
           row,
           // Solid structures (trees, boulders…) visually stand ~1 level tall.
           top: cell.l + (s.standable ? 0 : 1),
+          solid: !s.standable && !s.swimmable,
           depth: by + dy,
           x0: bx,
           x1: bx + tileSize,
