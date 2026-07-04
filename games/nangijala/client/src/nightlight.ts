@@ -877,6 +877,12 @@ export class NightLights {
     if (this.glowRT && this.stampImg) {
       const rt = this.glowRT;
       rt.clear();
+      // OPAQUE black base: Phaser's ADD blend is (ONE, DST_ALPHA), built for
+      // opaque destinations. On a transparent RT (alpha 0) every stamped quad
+      // multiplies the glow beneath it by ~0 — each stamp ERASED a rectangle
+      // of earlier glow, leaving hard black quad edges/corners (playtester
+      // report). With dst alpha 1 the blend is true addition.
+      rt.fill(0x000000, 1);
       if (stamps.length) {
         const t = this.scene.time.now / 1000;
         const img = this.stampImg;
