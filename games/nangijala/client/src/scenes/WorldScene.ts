@@ -1259,7 +1259,11 @@ export class WorldScene extends Phaser.Scene {
         // They draw exactly once, grounded at their cell's level, like the
         // maps agent's own renderer.
         const sSolid = surfaceFor(cell.t);
-        const fromLvl = !sSolid.standable && !sSolid.swimmable ? cell.l : 0;
+        const fromLvl = !sSolid.standable && !sSolid.swimmable
+          ? cell.l
+          : this.demoMode
+            ? this.stackFrom(col, row, cell.l, false)
+            : 0;
         for (let lvl = fromLvl; lvl <= cell.l; lvl++)
           rt.batchDraw(key, bx, by - lvl * lh - this.artYOff(key));
         // Baked contact shadows from higher sun-side neighbours: a DAYLIGHT
@@ -1353,6 +1357,18 @@ export class WorldScene extends Phaser.Scene {
     g.fillStyle(0x2a2f45, 1).fillRoundedRect(x, y, w, h, 4);
     const col = frac > 0.5 ? 0x57c7ff : frac > 0.25 ? 0xffcf4a : 0xff5a5a;
     g.fillStyle(col, 1).fillRoundedRect(x, y, w * frac, h, 4);
+  }
+
+  /** First stack level to DRAW for a DEMO station column: the lvl-0 copy is
+   * underground — drawing it pushed the column's base one full block below
+   * its grid diamond (and past its hitbox; playtester overlay check).
+   * MAIN-WORLD terraces keep their full stacks: a global cut left floating
+   * wall fragments at partially-exposed cells (measured). */
+  private stackFrom(col: number, row: number, l: number, solid: boolean): number {
+    if (solid) return l;
+    const lE = this.world?.rows[row]?.[col + 1]?.l ?? -1;
+    const lS = this.world?.rows[row + 1]?.[col]?.l ?? -1;
+    return Math.max(0, Math.min(l, Math.min(lE, lS) + 1));
   }
 
   private artYOff(key: string): number {
@@ -1500,7 +1516,12 @@ export class WorldScene extends Phaser.Scene {
         const solidHere = !s.standable && !s.swimmable;
         const oDepth = by + dy + (solidHere ? 0.5 : 0);
         const aOff = this.artYOff(key);
-        for (let lvl = solidHere ? cell.l : 0; lvl <= cell.l; lvl++) {
+        const fromLvl = solidHere
+          ? cell.l
+          : this.demoMode
+            ? this.stackFrom(col, row, cell.l, false)
+            : 0;
+        for (let lvl = fromLvl; lvl <= cell.l; lvl++) {
           this.occluders.push(
             this.add.image(bx, by - lvl * lh - aOff, key).setOrigin(0, 0).setDepth(oDepth),
           );
@@ -1511,7 +1532,7 @@ export class WorldScene extends Phaser.Scene {
         // interlock wedge where the shader resolves pixels to the dark
         // meadow IN FRONT, leaving an unlit "step" at the base (#64).
         if (this.demoMode && this.night && !solidHere && cell.l > 0 && em && variantGlows) {
-          for (let lvl = 0; lvl <= cell.l; lvl++) {
+          for (let lvl = this.stackFrom(col, row, cell.l, false); lvl <= cell.l; lvl++) {
             this.litOccluders.push({
               img: this.add
                 .image(bx, by - lvl * lh - aOff, key)

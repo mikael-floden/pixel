@@ -228,8 +228,15 @@ export function stepMovement(
   // the centre point, so sprites stop before visually entering a tile block.
   // Symmetrically, when the leading edge reaches a DROP the fall is committed
   // (the anchor snaps past the rim) so feet never rest overhanging a ledge.
+  // Each axis probes its leading edge at BOTH lateral corners: a single
+  // centre probe let the mover slide ALONG a block's boundary and park with
+  // its centre exactly on the edge — half the sprite visually inside the
+  // block ("the bottom layer has no collision", playtester at a demo column).
+  const SIDE = PLAYER_RADIUS * 0.75;
   const px = tx + Math.sign(tx - x) * PLAYER_RADIUS;
-  if (!blocked || !blocked(px, y, x, y)) {
+  const blockedX =
+    blocked && (blocked(px, y - SIDE, x, y) || blocked(px, y + SIDE, x, y));
+  if (!blockedX) {
     rx = tx;
     if (drops && drops(px, y, tx, y)) {
       // Feet touched a drop edge → step off, landing a full foot-radius clear
@@ -239,7 +246,9 @@ export function stepMovement(
     }
   }
   const py = ty + Math.sign(ty - y) * PLAYER_RADIUS;
-  if (!blocked || !blocked(rx, py, rx, y)) {
+  const blockedY =
+    blocked && (blocked(rx - SIDE, py, rx, y) || blocked(rx + SIDE, py, rx, y));
+  if (!blockedY) {
     ry = ty;
     if (drops && drops(rx, py, rx, ty)) {
       const fy = py + Math.sign(ty - y) * PLAYER_RADIUS;
