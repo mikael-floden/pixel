@@ -156,13 +156,6 @@ export class WorldScene extends Phaser.Scene {
   // Occlusion: raised/solid tiles near the camera drawn as depth-sorted images
   // so they cover characters standing BEHIND them (the ground RT is flat).
   private occluders: Phaser.GameObjects.Image[] = [];
-  // Lit copies of NON-EMISSIVE solid structures (trees, boulders): billboard
-  // art samples the light field of the terrain BEHIND it, so a tree at a
-  // plateau rim had its canopy multiplied by the level-0 ocean's night —
-  // pitch black. Like characters, they get a copy above the overlay tinted
-  // by their own cell's light. Emissive solids (spires, lava pillars) glow
-  // via the emission pipeline and keep their per-pixel field look.
-  private litOccluders: { img: Phaser.GameObjects.Image; col: number; row: number; z: number }[] = [];
   private occluderMeta: {
     col: number;
     row: number;
@@ -920,14 +913,7 @@ export class WorldScene extends Phaser.Scene {
    * to the depth-sorted under-sprite, everything above it stays lit. */
   private applyObjectLights() {
     const night = this.night;
-    // Test patterns ([9]/probes) read the RAW field off the screen — every
-    // lit copy drawn above the overlay would pollute the samples, so they
-    // all hide while a pattern is active.
-    const on = !!night && night.active && night.testPattern < 3;
-    for (const lo of this.litOccluders) {
-      lo.img.setVisible(on);
-      if (on) lo.img.setTint(night!.tintAt(lo.col, lo.row, lo.z, true));
-    }
+    const on = !!night && night.active;
     for (const a of this.avatars.values()) {
       if (!a.lit) {
         a.lit = this.add.sprite(a.sprite.x, a.sprite.y, a.sprite.texture.key).setDepth(900_001);
@@ -1276,12 +1262,7 @@ export class WorldScene extends Phaser.Scene {
     let off = this.artOffCache.get(key);
     if (off === undefined) {
       const src = this.textures.get(key)?.getSourceImage() as { height?: number } | undefined;
-      const h = src?.height ?? 64;
-      // Anchor by base_y: flat tiles touch ground at image row 54; every
-      // tall/cliff tile in the library measures base_y = 127 (art to the
-      // last row), so tall art draws 127-54 = h-55 px higher. A plain h-64
-      // shift left trees 9px underground (measured, playtester report).
-      off = h > 64 ? h - 55 : 0;
+      off = Math.max(0, (src?.height ?? 64) - 64);
       this.artOffCache.set(key, off);
     }
     return off;
@@ -1306,9 +1287,7 @@ export class WorldScene extends Phaser.Scene {
       return;
     this.lastOccl = { x: ccx, y: ccy };
     for (const im of this.occluders) im.destroy();
-    for (const lo of this.litOccluders) lo.img.destroy();
     this.occluders = [];
-    this.litOccluders = [];
     this.occluderMeta = [];
     this.emissiveLights = [];
     this.shaderLights = [];
@@ -1408,21 +1387,6 @@ export class WorldScene extends Phaser.Scene {
           this.occluders.push(
             this.add.image(bx, by - lvl * lh - aOff, key).setOrigin(0, 0).setDepth(by + dy),
           );
-        }
-        const solidHere = !s.standable && !s.swimmable;
-        const emitsHere = em && (em.sources?.[String(cell.v)]?.length ?? 0) > 0;
-        // Only TALL billboards (128px art) need the copy — flat solid ground
-        // fillers (plain lava rock) keep the richer per-pixel field look.
-        if (this.night && solidHere && !emitsHere && aOff > 0) {
-          this.litOccluders.push({
-            img: this.add
-              .image(bx, by - cell.l * lh - aOff, key)
-              .setOrigin(0, 0)
-              .setDepth(litDepth(by + dy)),
-            col: col + 0.5,
-            row: row + 0.5,
-            z: cell.l + 0.5,
-          });
         }
         this.occluderMeta.push({
           col,
