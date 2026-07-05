@@ -71,19 +71,44 @@ class PixelLabClient:
         self.require_key()
         return {"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}
 
-    def _request(self, method, path, retries=5, **kw):
+    def _request(self, method, path, retries=5, max_429_wait=1200, **kw):
+        """429 handling is special: the account has a hard cap on CONCURRENT
+        background jobs (shared across domains), and abandoned/stalled jobs keep
+        occupying slots until they drain server-side (there is no cancel API). So
+        on 429 we do NOT count it against `retries` and burn the request — we poll
+        (every 30s) up to `max_429_wait` seconds for a slot to free, then give up.
+        A rejected 429 costs no generation, so waiting is free."""
         url = f"{self.base_url}/{path.lstrip('/')}"
         last = None
-        for attempt in range(retries):
+        attempt = 0
+        wait_429_start = None
+        while True:
             try:
                 r = self._session.request(method, url, headers=self._headers(),
                                           timeout=self.timeout, **kw)
             except requests.RequestException as e:
                 last = e
+                attempt += 1
+                if attempt >= retries:
+                    break
                 time.sleep(min(2 ** attempt, 30))
                 continue
-            if r.status_code in (429, 500, 502, 503, 504):
+            if r.status_code == 429:
+                last = PixelLabError(f"{method} {path} -> 429: {r.text[:200]}")
+                now = time.monotonic()
+                if wait_429_start is None:
+                    wait_429_start = now
+                elif now - wait_429_start > max_429_wait:
+                    raise PixelLabError(
+                        f"{method} {path} -> 429 for >{max_429_wait}s (concurrent-job "
+                        f"cap not clearing): {r.text[:200]}")
+                time.sleep(30)
+                continue                       # does NOT consume the retry budget
+            if r.status_code in (500, 502, 503, 504):
                 last = PixelLabError(f"{method} {path} -> {r.status_code}: {r.text[:200]}")
+                attempt += 1
+                if attempt >= retries:
+                    break
                 time.sleep(min(2 ** attempt, 30))
                 continue
             if r.status_code >= 400:
