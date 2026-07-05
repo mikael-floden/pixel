@@ -1,0 +1,31 @@
+{
+  "id": "default_girl",
+  "version": 2,
+  "pixellab_character_id": "70fcf0bb-3ac3-4dfc-8a35-eefc7d33b8e4",
+  "description": "A young female adventurer at the very start of her journey, before she has found any gear, weapons or armor \u2014 this is the bare starting character, exactly how she looks before any equipment is picked up. Confident, fearless and genuinely badass with a cool rebellious edge, a tough determined expression, sharp intense eyes, windswept dark brown hair, and a lean athletic build. Her stance is relaxed but ready and self-assured. She wears ONLY plain, simple, unremarkable starting clothes in muted natural colors \u2014 a plain worn shirt or tunic and simple trousers with basic boots \u2014 strictly in browns, blacks, greys and off-white, nothing colorful. She has NO gear of any kind: no armor, no jacket, no shoulder guard, no cloak, no utility belt, no gloves, no weapon, no sword, no dagger, no bags or pouches \u2014 completely unequipped. Not sexualized, not cute, not a princess, not a dress. She must still look cool, memorable, capable and badass through her face, hair and posture alone. High-quality RPG pixel-art character, clean readable silhouette, strong shape language, expressive face, restrained muted earth-tone palette, full-body character, single centered figure, transparent background.",
+  "params": {
+    "view": "low top-down",
+    "width": 80,
+    "height": 80,
+    "detail": "low detail",
+    "outline": "default",
+    "shading": "basic shading",
+    "text_guidance_scale": 8.0
+  },
+  "size": [
+    112,
+    112
+  ],
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "seed": 946058857,
+  "source": "pixellab.ai create-character-with-8-directions (8-dir static, native canvas)"
+}
