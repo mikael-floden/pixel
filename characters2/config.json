@@ -1,0 +1,26 @@
+{
+  "_comment": "The REAL game's main characters. Not exploring skeletons anymore — the human skeleton is fixed. Exactly two characters: default_boy and default_girl, each generated as a persistent 8-direction static PixelLab character (create-character-with-8-directions). No animations, no outfits — just the awesome 8-direction base model. If a character folder is deleted, the loop regenerates it as a fresh, slightly different variation (a new seed), so you can reroll until happy.",
+
+  "skeleton": "humans",
+  "params": {
+    "view": "low top-down",
+    "width": 80,
+    "height": 80,
+    "detail": "low detail",
+    "outline": "default",
+    "shading": "basic shading",
+    "text_guidance_scale": 8.0
+  },
+
+  "style_base": "beautiful appealing RPG pixel-art hero character in the exact style of Grave Seasons and Stardew Valley, charming expressive face, clean readable low-detail pixels, warm cohesive palette, a single centered full-body character on a transparent background",
+
+  "budget": {
+    "min_generations_remaining": 5,
+    "_comment": "Low floor — this is only two cheap characters; it can run on the last of the shared pool / usd credits."
+  },
+
+  "characters": {
+    "default_boy": "a handsome young man, the male hero of the game, a warm friendly determined face and kind eyes, tousled brown hair, athletic build, wearing a rugged adventurer's outfit — a green tunic, brown trousers and sturdy leather boots",
+    "default_girl": "a beautiful young woman, the female hero of the game, a warm confident smile and bright eyes, long flowing auburn hair, graceful build, wearing a charming adventurer's outfit — a blue blouse, a practical skirt and leather boots"
+  }
+}
