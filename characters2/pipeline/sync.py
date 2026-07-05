@@ -269,12 +269,19 @@ def commit_push(message, push=True):
     if push:
         import time
         branch = _git("rev-parse", "--abbrev-ref", "HEAD").stdout.strip() or "main"
-        for attempt in range(4):
+        for attempt in range(5):
             if _git("push", "origin", branch, check=False).returncode == 0:
-                break
+                return True
+            # Contention (e.g. the scheduled sync pushed meanwhile). Integrate the
+            # remote WITHOUT a rebase that can stall on the auto-generated manifest:
+            # clear any half-finished op, then MERGE favouring our fresh sync. The
+            # mirror is eventually-consistent, so 'ours' is safe and never conflicts.
+            _git("rebase", "--abort", check=False)
+            _git("merge", "--abort", check=False)
             _git("fetch", "origin", branch, check=False)
-            _git("rebase", f"origin/{branch}", check=False)
-            time.sleep(2 ** (attempt + 1))
+            _git("merge", "-X", "ours", f"origin/{branch}",
+                 "-m", f"characters2: merge origin/{branch} (auto-sync)", check=False)
+            time.sleep(2 ** attempt)
     return True
 
 
