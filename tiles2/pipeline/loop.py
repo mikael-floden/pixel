@@ -38,40 +38,36 @@ def _by_id(cfg):
     return {g["id"]: g for g in cfg["ground_types"]}
 
 
-def neighbors(cfg, gid):
-    """Types this one needs a transition to (config transitions are unordered)."""
-    out = []
-    for a, b in cfg.get("transitions", []):
-        if a == gid and b not in out:
-            out.append(b)
-        elif b == gid and a not in out:
-            out.append(a)
-    return out
-
-
 def base_complete(cfg, gid):
     return len(common.list_raw_sheets(gid, kind="base")) >= cfg["targets"]["base_sheets_per_type"]
 
 
+def pair_count(a, b):
+    """Transition sheets covering the {a,b} border, counting EITHER direction."""
+    return (len(common.list_raw_sheets(a, kind="transition", other=b))
+            + len(common.list_raw_sheets(b, kind="transition", other=a)))
+
+
 def next_unit(cfg, bases_only=False):
     """Complete each type before the next: its base sheets, then a transition to
-    each configured neighbour that ALREADY has its bases (so a transition is only
-    made once BOTH types exist). Returns ('base', gt) / ('transition', frm, to) /
-    None. `bases_only` defers all transitions."""
-    by = _by_id(cfg)
+    EVERY earlier type — so map builders always have every border (full pairwise
+    mesh). Each new type owns the transitions toward all types before it; a pair
+    is skipped if already covered in either direction. `bases_only` defers all
+    transitions. Returns ('base', gt) / ('transition', frm, to) / None."""
     tgt = cfg["targets"]
-    for gt in cfg["ground_types"]:
+    order = cfg["ground_types"]
+    for i, gt in enumerate(order):
         gid = gt["id"]
         if len(common.list_raw_sheets(gid, kind="base")) < tgt["base_sheets_per_type"]:
             return ("base", gt)
         if bases_only:
             continue
-        for nb in neighbors(cfg, gid):
-            if nb not in by or not base_complete(cfg, nb):
-                continue                       # only transition to an existing type
-            have = len(common.list_raw_sheets(gid, kind="transition", other=nb))
-            if have < tgt["transition_sheets_per_pair"]:
-                return ("transition", gt, by[nb])
+        for u in order[:i]:                    # every EARLIER type (this type's job)
+            if not base_complete(cfg, u["id"]):
+                continue
+            if pair_count(gid, u["id"]) >= tgt["transition_sheets_per_pair"]:
+                continue
+            return ("transition", gt, u)
     return None
 
 
@@ -129,15 +125,16 @@ def main():
     if args.dry_run:
         # Show what the loop WOULD do, without generating (safe to run anytime).
         tgt = cfg["targets"]
-        print("tiles2 plan — each type completed fully (bases, then its transitions):")
-        for gt in cfg["ground_types"]:
+        order = cfg["ground_types"]
+        print("tiles2 plan — each type: base sheets, then a transition to EVERY earlier type:")
+        for i, gt in enumerate(order):
             gid = gt["id"]
             b = len(common.list_raw_sheets(gid, kind="base"))
-            print(f"  {gid}")
-            print(f"      base {b}/{tgt['base_sheets_per_type']}")
-            for nb in neighbors(cfg, gid):
-                h = len(common.list_raw_sheets(gid, kind="transition", other=nb))
-                print(f"      -> {nb}: {h}/{tgt['transition_sheets_per_pair']}")
+            print(f"  {gid}  base {b}/{tgt['base_sheets_per_type']}")
+            for u in order[:i]:
+                cov = pair_count(gid, u["id"])
+                print(f"      -> {u['id']}: {cov}/{tgt['transition_sheets_per_pair']}"
+                      + ("" if base_complete(cfg, u["id"]) else "  (waiting on its base)"))
         nxt = next_unit(cfg, args.bases_only)
         print("next unit:", _describe(nxt) if nxt else "== all targets met ==")
         return

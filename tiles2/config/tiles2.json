@@ -48,25 +48,9 @@
     { "id": "light_sand",      "name": "light sand",          "description": "pale light sandy beach" },
     { "id": "crystal_ice",     "name": "crystal ice",         "description": "crystalline translucent pale-blue ice" }
   ],
-  "_transitions_comment": "Unordered NEEDED borders. The loop completes each type fully (bases, then a transition FROM this type TO every listed neighbour, stored under <type>/transitions/<neighbour>) before starting the next type. Each border is thus generated from both sides across the run; the neighbour side is normalised once that neighbour has a ref-sprite (re-run postprocess).",
-  "transitions": [
-    ["saturated_grass", "lightdark_dirt"],
-    ["saturated_grass", "light_sand"],
-    ["saturated_grass", "clear_water"],
-    ["saturated_grass", "regular_snow"],
-    ["lightdark_dirt", "stone_mountain"],
-    ["lightdark_dirt", "light_sand"],
-    ["lightdark_dirt", "clear_water"],
-    ["stone_mountain", "black_mountain"],
-    ["stone_mountain", "regular_snow"],
-    ["regular_snow", "crystal_ice"],
-    ["clear_water", "light_sand"],
-    ["clear_water", "crystal_ice"],
-    ["wooden_balcony", "saturated_grass"],
-    ["wooden_balcony", "clear_water"]
-  ],
+  "_transitions_comment": "FULL MESH — no adjacency list. Map builders must have every border, so each type gets a transition to EVERY other type. The loop completes a type's bases, then generates its transition to every EARLIER type (the new type owns transitions toward all existing ones); a pair is skipped if already covered either direction. Stored under <type>/transitions/<earlier-type>.",
   "targets": {
-    "_comment": "base_sheets_per_type raw BASE sheets accumulate first, THEN this type's transitions, before the next type. Each sheet = one create-tiles-pro item (~16 tiles). Sync (git<-PixelLab) drops sheets you delete in the UI, so the loop tops back up to target.",
+    "_comment": "base_sheets_per_type raw BASE sheets first, THEN this type's transitions to every earlier type, before the next type. Each sheet = one create-tiles-pro item (~16 tiles). Sync (git<-PixelLab) drops sheets you delete in the UI, so the loop tops back up to target.",
     "base_sheets_per_type": 5,
     "transition_sheets_per_pair": 1
   },
