@@ -125,10 +125,20 @@ def main():
     ap.add_argument("--once", action="store_true")
     ap.add_argument("--no-push", action="store_true")
     ap.add_argument("--bases-only", action="store_true", help="generate base sheets only; defer all transitions")
+    ap.add_argument("--through", metavar="TYPE_ID", default=None,
+                    help="only generate up to and including this ground type (its base "
+                         "plus its transitions to earlier types); skip every type after it")
     ap.add_argument("--dry-run", action="store_true", help="print the next units; no API calls")
     args = ap.parse_args()
 
     cfg = common.load_config()
+    if args.through:
+        ids = [g["id"] for g in cfg["ground_types"]]
+        if args.through not in ids:
+            ap.error(f"--through '{args.through}' is not a ground type; choose from {ids}")
+        cfg["ground_types"] = cfg["ground_types"][:ids.index(args.through) + 1]
+        print(f"limiting to types through '{args.through}': "
+              f"{[g['id'] for g in cfg['ground_types']]}")
 
     if args.dry_run:
         # Show what the loop WOULD do, without generating (safe to run anytime).
