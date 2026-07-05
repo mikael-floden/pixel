@@ -68,10 +68,13 @@ Recalibrate with `scratchpad` scripts `calib_elev.py` (fit) / `verify_elev.py`
 
 ## Content, colour, and re-rolls
 
-* **Decorations** — each `(terrain, height)` fills a fixed list of decoration
-  slots (`config.elevation.terrains[].decorations[height]`), one sheet per slot:
-  grass gets trees/bushes/mushrooms/boulders, stone gets spires/fortress/cliffs,
-  crystal_ice gets crystal spires, snow gets peaks/drifts.
+* **Variety** — a sheet is NOT 16 clones. Each sheet numbers a seed-shuffled
+  subset (`objects_per_sheet`, default 14) of that `(terrain, height)` pool in
+  `config/elevation_objects.json`, so one call returns many *different* objects
+  (statues, dead trees, giant mushrooms, runestones, cairns, crystals, snowmen …).
+  The `target_sheets_per_elev` (3) sheets per `(terrain, height)` each draw a
+  different subset. Pools are broad and meant to grow — add ideas freely; height
+  tiers scale the objects (x2 low props → x5 towering/monumental).
 * **Harmonisation** — each tile is pulled toward its terrain's own palette
   (`terrain.harmonize_refs`): greens → grass, greys → stone, blues → ice. This is
   hue-band targeted, so distinct accents (mushroom red, wood brown) are left alone
@@ -80,10 +83,10 @@ Recalibrate with `scratchpad` scripts `calib_elev.py` (fit) / `verify_elev.py`
   it exists (raw is always kept, so this is free).
 * **Delete-in-UI → re-roll** — `sync()` runs at the start of every
   `elevation.py` run and removes any sheet whose PixelLab `tile_id` 404s (raw +
-  the processed `base_x_N/` copy), reopening that decoration slot. The next run
-  regenerates *the same decoration* with a **fresh seed** — a per-slot attempt
-  counter in `elevation_state.json` bumps each try — so you get a new attempt at
-  the tile you didn't like, not a duplicate of a different one.
+  the processed `base_x_N/` copy), reopening that slot. The next run regenerates
+  that slot with a **fresh seed** — a per-slot attempt counter in
+  `elevation_state.json` bumps each try — so you get a brand-new shuffled set of
+  objects, not the same tiles again.
 
 ## Running
 

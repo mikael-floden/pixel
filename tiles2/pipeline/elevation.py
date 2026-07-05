@@ -1,36 +1,36 @@
-"""Generate base_x_2 / base_x_3 / base_x_4 ELEVATION tiles per terrain.
+"""Generate base_x_2 … base_x_5 ELEVATION tiles per terrain.
 
 Elevation tiles are TALLER variants of an existing terrain, stored as SIBLINGS of
 that terrain's base/ folder:
 
     saturated_grass/
       base/        <- base_x_1 (height 1)
-      base_x_2/    <- height 2   ┐ this module
+      base_x_2/    <- height 2   ┐ this module (all on a 64x128 canvas)
       base_x_3/    <- height 3   │ (raw stays in ../raw, kind=elevation)
-      base_x_4/    <- height 4   ┘
+      base_x_4/    <- height 4   │
+      base_x_5/    <- height 5   ┘
 
 They stack pixel-perfectly on base_x_1: identical 30px diamond top (tile_size 64,
 view_angle 28, flat_top 2) — only the side face grows to N*16px. The per-height
-tile_height / depth_ratio in config.elevation.heights were calibrated so the
-measured face is exactly N levels tall (see docs/ELEVATION.md).
+depth_ratio in config.elevation.heights was calibrated so the measured face is
+N levels tall (see docs/ELEVATION.md).
 
-Each (terrain, height) fills a fixed set of DECORATION SLOTS (config
-terrain.decorations[height]); one sheet per slot. Postprocess softens the outline
-and HARMONISES each tile toward the terrain's own palette (terrain.harmonize_refs)
-so greens/greys/blues snap to the existing ground colours and the block blends in;
-distinct accents (mushroom red, wood brown) fall outside the target hue bands and
-stay. No transitions.
+VARIETY: a sheet is NOT 16 clones of one object. For each sheet we take a
+seed-shuffled subset (elevation.objects_per_sheet items) of that (terrain, height)
+pool in config.elevation.objects_file and number them into one create-tiles-pro
+call, so the returned tiles are many DIFFERENT objects (statues, dead trees,
+mushrooms, runestones, cairns, crystals …). The target_sheets_per_elev sheets per
+(terrain, height) each draw a different subset. Every tile is harmonised toward the
+terrain's palette (terrain.harmonize_refs); distinct accents (mushroom red, wood
+brown) fall outside the target hue bands and stay. No transitions.
 
 Delete-in-UI -> re-roll: sync() runs at startup and drops any sheet whose PixelLab
-tile_id 404s (raw + the processed base_x_N/ copy). That REOPENS its decoration
-slot, and the next run regenerates *that same decoration* with a FRESH seed (a
-per-slot attempt counter in elevation_state.json bumps each try), so you get a new
-attempt at the tile you didn't like — not a duplicate of a different one. Raw is
-kept, so postprocess is re-runnable for free (e.g. to harmonise once a terrain
-that lacked a base sheet gets one).
+tile_id 404s (raw + the processed base_x_N/ copy), reopening that slot. The next
+run regenerates that slot with a FRESH seed (per-slot attempt counter in
+elevation_state.json), so you get a brand-new shuffled set — not the same tiles.
 
   python tiles2/pipeline/elevation.py --dry-run
-  python tiles2/pipeline/elevation.py              # sync, then generate missing + push
+  python tiles2/pipeline/elevation.py              # sync, then fill open slots + push
   python tiles2/pipeline/elevation.py --reprocess  # re-run postprocess from raw
   python tiles2/pipeline/elevation.py --max-units 4
 """
@@ -41,6 +41,7 @@ import argparse
 import datetime
 import json
 import os
+import random
 
 from PIL import Image
 
@@ -53,6 +54,7 @@ from pixellab_client import BudgetExhausted, PixelLabClient, PixelLabError
 
 LEVEL_PX = 16          # one elevation level = base_x_1's face height
 STATE_PATH = os.path.join(common.ROOT, "elevation_state.json")
+_OBJECTS = None
 
 
 def _now():
@@ -71,18 +73,31 @@ def terrains(cfg):
     return _elev(cfg)["terrains"]
 
 
+def target_per_elev(cfg):
+    return _elev(cfg).get("target_sheets_per_elev", 3)
+
+
+def objects_per_sheet(cfg):
+    return _elev(cfg).get("objects_per_sheet", 14)
+
+
 def _height(cfg, height_id):
     return next(h for h in heights(cfg) if h["id"] == height_id)
 
 
-def slots(cfg, terrain, height_id):
-    """The decoration list for a (terrain, height), capped at the sheet target."""
-    decos = terrain["decorations"][height_id]
-    tgt = _elev(cfg).get("target_sheets_per_elev", 5)
-    return decos[:tgt]
+def _objects(cfg):
+    global _OBJECTS
+    if _OBJECTS is None:
+        with open(os.path.join(common.ROOT, "config", _elev(cfg)["objects_file"])) as f:
+            _OBJECTS = json.load(f)
+    return _OBJECTS
 
 
-# -- per-slot attempt counter (survives sheet deletion -> fresh re-roll seed) ---
+def pool(cfg, gid, height_id):
+    return _objects(cfg).get(gid, {}).get(height_id, [])
+
+
+# -- per-slot attempt counter (survives sheet deletion -> fresh re-roll) --------
 
 def _load_state():
     if os.path.isfile(STATE_PATH):
@@ -96,8 +111,8 @@ def _save_state(state):
         json.dump(state, f, indent=2, sort_keys=True)
 
 
-def _slot_key(gid, height_id, deco_idx):
-    return f"{gid}:{height_id}:{deco_idx}"
+def _slot_key(gid, height_id, slot):
+    return f"{gid}:{height_id}:{slot}"
 
 
 # -- filesystem state --------------------------------------------------------
@@ -107,22 +122,14 @@ def elev_raw_sheets(gid, height_id):
             if m.get("height") == height_id]
 
 
-def present_slots(cfg, terrain, height_id):
-    """Set of decoration indices already generated for a (terrain, height)."""
-    decos = terrain["decorations"][height_id]
-    present = set()
-    for _, _, m in elev_raw_sheets(terrain["id"], height_id):
-        idx = m.get("decoration_index")
-        if idx is None and m.get("decoration") in decos:
-            idx = decos.index(m["decoration"])          # infer for pre-index sheets
-        if idx is not None:
-            present.add(idx)
-    return present
+def present_slots(gid, height_id):
+    return {m.get("slot") for _, _, m in elev_raw_sheets(gid, height_id)
+            if m.get("slot") is not None}
 
 
-def missing_slot(cfg, terrain, height_id):
-    have = present_slots(cfg, terrain, height_id)
-    for i in range(len(slots(cfg, terrain, height_id))):
+def missing_slot(cfg, gid, height_id):
+    have = present_slots(gid, height_id)
+    for i in range(target_per_elev(cfg)):
         if i not in have:
             return i
     return None
@@ -139,28 +146,32 @@ def _settings(cfg, h):
     }
 
 
-def build_prompt(cfg, terrain, height_id, deco_idx):
+def build_prompt(cfg, terrain, height_id, seed):
+    """Number a seed-shuffled subset of the (terrain, height) object pool."""
     e = _elev(cfg)
     h = _height(cfg, height_id)
-    deco = terrain["decorations"][height_id][deco_idx]
+    p = pool(cfg, terrain["id"], height_id)
+    k = min(objects_per_sheet(cfg), len(p))
+    picks = random.Random(seed).sample(p, k) if p else []
+    objects = " ".join(f"{i + 1}) {o}" for i, o in enumerate(picks))
     prompt = e["template"].format(
-        decoration=deco, height_word=h["height_word"], style=e["style"],
-        variations=e["variations"])
-    return prompt, deco
+        height_word=h["height_word"], flavor=terrain["flavor"],
+        objects=objects, style=e["style"])
+    return prompt, picks
 
 
-def generate_sheet(client, cfg, terrain, height_id, deco_idx):
+def generate_sheet(client, cfg, terrain, height_id, slot):
     gid = terrain["id"]
     h = _height(cfg, height_id)
-    prompt, deco = build_prompt(cfg, terrain, height_id, deco_idx)
 
     state = _load_state()
-    key = _slot_key(gid, height_id, deco_idx)
+    key = _slot_key(gid, height_id, slot)
     attempt = int(state.get(key, 0))
-    seed = common._seed(gid, height_id, deco_idx, attempt)   # attempt salts the re-roll
+    seed = common._seed(gid, height_id, slot, attempt)   # salts shuffle + generation
     state[key] = attempt + 1
     _save_state(state)
 
+    prompt, picks = build_prompt(cfg, terrain, height_id, seed)
     slug = f"{height_id}_{seed}"
     t = cfg["tile"]
     tiles, tile_id = client.create_tiles(
@@ -179,10 +190,10 @@ def generate_sheet(client, cfg, terrain, height_id, deco_idx):
     req = {
         "schema": common.RAW_SCHEMA, "sheet": slug, "ground_type": gid,
         "kind": "elevation", "height": height_id, "levels": h["levels"],
-        "transition_to": None, "tile_id": tile_id, "decoration": deco,
-        "decoration_index": deco_idx, "attempt": attempt, "prompt": prompt,
-        "settings": _settings(cfg, h), "seed": seed, "count": len(tile_meta),
-        "tiles": tile_meta, "generated_at": _now(), "processed": False,
+        "transition_to": None, "tile_id": tile_id, "slot": slot, "attempt": attempt,
+        "objects": picks, "prompt": prompt, "settings": _settings(cfg, h), "seed": seed,
+        "count": len(tile_meta), "tiles": tile_meta, "generated_at": _now(),
+        "processed": False,
     }
     with open(os.path.join(sdir, "request.json"), "w") as f:
         json.dump(req, f, indent=2)
@@ -210,17 +221,15 @@ def process_sheet(gid, terrain, sheet, sdir, req, cfg, cache):
         for tgt in ref_targets:
             im = normalize.harmonize(im, tgt, hs["hue_strength"], hs["sat_strength"], hs["v_strength"])
         im.save(os.path.join(dest, fn))
-        entry = dict(raw_by_file.get(fn, {"file": fn}))
-        entry["description"] = req.get("decoration")
-        tiles_meta.append(entry)
+        tiles_meta.append(dict(raw_by_file.get(fn, {"file": fn})))
 
     dest_meta = {
         "schema": "tiles2/sheet@1", "sheet": sheet, "ground_type": gid,
         "kind": "elevation", "height": height_id, "levels": req.get("levels"),
-        "face_px": (req.get("levels") or 0) * LEVEL_PX,
-        "decoration": req.get("decoration"), "decoration_index": req.get("decoration_index"),
-        "tile_id": req.get("tile_id"), "settings": req.get("settings"),
-        "count": len(tiles_meta), "tiles": tiles_meta, "generated_at": req.get("generated_at"),
+        "face_px": (req.get("levels") or 0) * LEVEL_PX, "slot": req.get("slot"),
+        "objects": req.get("objects"), "tile_id": req.get("tile_id"),
+        "settings": req.get("settings"), "count": len(tiles_meta), "tiles": tiles_meta,
+        "generated_at": req.get("generated_at"),
         "processing": {"neutralize_outline": pp["neutralize_outline"],
                        "harmonize": hs, "harmonize_refs": refs,
                        "harmonized": len(ref_targets)},
@@ -246,11 +255,11 @@ def process_terrain(cfg, terrain, cache=None):
 
 
 def next_unit(cfg):
-    """(terrain, height_id, deco_idx) for the first open decoration slot — heights
-    inner so a terrain fills x2 then x3 then x4 before moving on."""
+    """(terrain, height_id, slot) for the first open sheet slot — heights inner so
+    a terrain fills x2 then x3/x4/x5 before moving on."""
     for terrain in terrains(cfg):
         for h in heights(cfg):
-            i = missing_slot(cfg, terrain, h["id"])
+            i = missing_slot(cfg, terrain["id"], h["id"])
             if i is not None:
                 return terrain, h["id"], i
     return None
@@ -266,7 +275,7 @@ def _run_sync(cfg, client, push):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Generate tiles2 elevation tiles (base_x_2/3/4 per terrain).")
+    ap = argparse.ArgumentParser(description="Generate tiles2 elevation tiles (base_x_2…5 per terrain).")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--reprocess", action="store_true", help="re-run postprocess from raw; no API calls")
     ap.add_argument("--no-sync", action="store_true", help="skip the startup UI-deletion sync")
@@ -284,13 +293,13 @@ def main():
         return
 
     if args.dry_run:
+        tgt = target_per_elev(cfg)
         for terrain in terrains(cfg):
             print(f"{terrain['id']}  (harmonize -> {', '.join(terrain.get('harmonize_refs') or [terrain['id']])})")
             for h in heights(cfg):
-                have = present_slots(cfg, terrain, h["id"])
-                tot = len(slots(cfg, terrain, h["id"]))
-                print(f"    {h['id']}  {len(have)}/{tot}  levels {h['levels']} face {h['levels']*LEVEL_PX}px "
-                      f"depth {h['depth_ratio']} h {h.get('tile_height')}")
+                have = present_slots(terrain["id"], h["id"])
+                print(f"    {h['id']}  {len(have)}/{tgt}  levels {h['levels']} face {h['levels']*LEVEL_PX}px "
+                      f"depth {h['depth_ratio']} pool {len(pool(cfg, terrain['id'], h['id']))}")
         nxt = next_unit(cfg)
         print("next:", f"{nxt[0]['id']} {nxt[1]} slot {nxt[2]}" if nxt else "== all elevation targets met ==")
         return
@@ -298,6 +307,7 @@ def main():
     client = PixelLabClient()
     min_gen = cfg["budget"]["min_generations_remaining"]
     min_usd = cfg["budget"].get("min_usd", 0.5)
+    tgt = target_per_elev(cfg)
     b = client.budget()
     print(f"elevation run — {b['generations']:.0f} generations, ${b['usd']:.2f} credits")
     if not args.no_sync:
@@ -312,15 +322,14 @@ def main():
         unit = next_unit(cfg)
         if unit is None:
             print("== all elevation targets met =="); break
-        terrain, height_id, deco_idx = unit
+        terrain, height_id, slot = unit
         try:
-            req = generate_sheet(client, cfg, terrain, height_id, deco_idx)
+            req = generate_sheet(client, cfg, terrain, height_id, slot)
             process_terrain(cfg, terrain, cache)
         except PixelLabError as e:
-            print(f"  ! {terrain['id']} {height_id} slot {deco_idx} failed: {e}; stopping"); break
-        tot = len(slots(cfg, terrain, height_id))
-        desc = (f"tiles2: elevation {terrain['id']}/{height_id} slot {deco_idx + 1}/{tot} — "
-                f"{req['decoration']} ({req['count']} tiles)")
+            print(f"  ! {terrain['id']} {height_id} slot {slot} failed: {e}; stopping"); break
+        desc = (f"tiles2: elevation {terrain['id']}/{height_id} sheet {slot + 1}/{tgt} — "
+                f"{req['count']} tiles, {len(req['objects'])} varied objects")
         loop.commit_push(desc, push=not args.no_push)
         print("  +", desc)
         units += 1
