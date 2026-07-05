@@ -20,16 +20,19 @@ grass".
 
 | setting | value |
 |---|---|
-| Tile size | **64×64 px** |
+| Endpoint | **`/v2/create-isometric-tile`** (one tile per call) |
+| Tile size | **64×64 px** (`image_size`) |
 | Tile type | **isometric** |
-| View preset | **high top-down** |
-| Angle | **28.0°** |
-| Thickness | **0.50** |
-| Top/bottom pixels | **2 px (classic)** |
-| Outline | **none** |
+| Thickness | **`isometric_tile_shape: "thick tile"`** (~50%; no numeric depth on this endpoint) |
+| Outline | **`"lineless"` — no outline** |
+| Shading / detail | **basic shading / medium detail** |
 
-`create-tiles-pro` has no outline parameter, so "no outline" is asked for in the
-prompt and any residual dark rim is removed in post-process (see below).
+Why this endpoint: `create-tiles-pro` (16-variation sets) **bakes in a dark
+outline** and has no way to disable it. `/create-isometric-tile` is the only
+public endpoint with a real `outline: "lineless"` at 64×64 — genuinely no outline,
+so tiles blend seamlessly with no grid lines. Trade-off: one tile per call, so a
+**sheet = `tiles_per_sheet` calls** (~$0.017 each). The web UI's `/tiles/create`
+(`outline_mode: segmentation`) needs a web session token, so it's not used here.
 
 ## Folder layout (per ground type `<gid>`)
 
@@ -52,10 +55,11 @@ A **sheet** = one `create-tiles-pro` request (~16 tiles).
 
 ## The pipeline
 
-1. **generate** (`pipeline/generate.py`) — one request → `raw/<sheet>/` with a
-   `request.json` recording the exact prompt, settings, seed, and whether it was a
-   **base** sheet (this ground type) or a **transition** sheet (this type → other).
-   Raw is *always* kept.
+1. **generate** (`pipeline/generate.py`) — a sheet = `tiles_per_sheet` individual
+   `create-isometric-tile` calls (cycling the config variation list for variety) →
+   `raw/<sheet>/` with a `request.json` recording each tile's exact prompt + the
+   shared settings + whether it was a **base** sheet (this ground type) or a
+   **transition** sheet (this type → other). Raw is *always* kept.
 2. **postprocess** (`pipeline/postprocess.py`) — copies each raw sheet into
    `base/` or `transitions/<other>/`, and:
    - **neutralises the outline** — recolours any dark silhouette rim toward the

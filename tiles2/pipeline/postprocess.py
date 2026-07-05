@@ -87,8 +87,7 @@ def process_sheet(gid, sheet, sdir, req, cfg, ref_cache):
     dest_meta = {
         "schema": "tiles2/sheet@1",
         "sheet": sheet, "ground_type": gid, "kind": kind, "transition_to": other,
-        "prompt": req.get("prompt"), "settings": req.get("settings"),
-        "seed": req.get("seed"), "count": n, "tiles": req.get("tiles"),
+        "settings": req.get("settings"), "count": n, "tiles": req.get("tiles"),
         "generated_at": req.get("generated_at"),
         "processing": processing,
     }

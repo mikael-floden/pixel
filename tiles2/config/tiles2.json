@@ -1,21 +1,39 @@
 {
   "_comment": "tiles2 — breaking change from tiles v1. Each ground type is a SPECIFICALLY named subfolder (saturated_grass, not 'grass') so more variants can be added later. Flow: generate -> raw/ (+ per-sheet metadata, kind=base|transition) -> postprocess copies into base/ or transitions/<other>/, normalizing brightness/hue/saturation to the ref-sprite(s). Raw is always kept so postprocess can be re-tuned and re-run.",
   "tile": {
-    "type": "isometric",
+    "_comment": "create-isometric-tile settings. No numeric depth; 'thick tile' ~= the 50% thickness used for the reference. outline 'lineless' = no outline.",
+    "endpoint": "/create-isometric-tile",
     "size": 64,
-    "view": "high top-down",
-    "view_angle": 28.0,
-    "depth_ratio": 0.5,
-    "flat_top_px": 2,
-    "outline": "none"
+    "shape": "thick tile",
+    "outline": "lineless",
+    "shading": "basic shading",
+    "detail": "medium detail"
   },
   "prompt": {
-    "_comment": "Prepended/appended to every prompt to push the no-outline, cohesive look (create-tiles-pro has no outline param, so we ask for it here and strip residue in postprocess).",
-    "style": "clean lineless pixel art, NO black outline, no dark tile borders, seamless isometric terrain tile, soft matte shading, cohesive muted palette",
-    "base_template": "isometric {description} terrain tiles, every tile is {name} only, {style}: {variations}",
-    "transition_template": "isometric terrain transition tiles from {from_desc} to {to_desc}, {style}: {variations}",
-    "base_variations": "1) even ground 2) subtle texture variation 3) faint detail 4) slightly darker patch 5) slightly lighter patch 6) minimal specks",
-    "transition_variations": "1) mostly {from_name} with {to_name} entering from the north-east 2) mostly {from_name} with {to_name} entering from the north-west 3) even diagonal split {from_name} to {to_name} 4) mostly {to_name} with {from_name} entering from the south-east 5) a patch of {to_name} within {from_name} 6) a soft ragged border between {from_name} and {to_name}"
+    "_comment": "One tile per call. `style` is appended to every prompt; base/transition variation LISTS give per-tile variety (one entry used per tile in a sheet, cycled).",
+    "style": "clean lineless isometric pixel-art terrain tile, cohesive muted palette, seamless, no black outline",
+    "base_template": "isometric tile of {desc}, {variation}, {style}",
+    "transition_template": "isometric terrain tile transitioning from {from_desc} to {to_desc}, {variation}, {style}",
+    "base_variations": [
+      "even flat ground",
+      "subtle texture",
+      "a few fine details",
+      "a slightly darker patch",
+      "a slightly lighter patch",
+      "sparse small specks",
+      "gentle natural variation",
+      "minimal detail"
+    ],
+    "transition_variations": [
+      "mostly {from_name} with {to_name} entering from one corner",
+      "an even diagonal split between {from_name} and {to_name}",
+      "mostly {to_name} with a patch of {from_name}",
+      "a soft ragged border between {from_name} and {to_name}",
+      "{to_name} creeping into {from_name}",
+      "a clean edge from {from_name} to {to_name}",
+      "scattered {to_name} over {from_name}",
+      "a wide blend of {from_name} and {to_name}"
+    ]
   },
   "ground_types": [
     { "id": "saturated_grass", "name": "saturated grass",     "description": "lush saturated deep green grass" },
@@ -46,7 +64,8 @@
     ["wooden_balcony", "clear_water"]
   ],
   "targets": {
-    "_comment": "base_sheets_per_type raw BASE sheets accumulate first, THEN this type's transitions, before the next type. Each sheet ~16 tiles / ~20 generations.",
+    "_comment": "Each sheet = tiles_per_sheet individual create-isometric-tile calls (~$0.017 each). base_sheets_per_type sheets accumulate first, THEN this type's transitions, before the next type.",
+    "tiles_per_sheet": 8,
     "base_sheets_per_type": 3,
     "transition_sheets_per_pair": 1
   },
@@ -56,8 +75,8 @@
     "_comment": "Proceed if the subscription pool is above min_generations_remaining OR there are >= min_usd credits (PixelLab bills USD credits once subscription generations hit 0; tiles are cheap)."
   },
   "postprocess": {
-    "_comment": "raw -> base/transitions. neutralize_outline removes any residual dark rim (tiles2 = no outline). strength (0..1) scales colour-normalisation toward the ref-sprite(s).",
-    "neutralize_outline": true,
+    "_comment": "raw -> base/transitions. Tiles are natively lineless now, so neutralize_outline is OFF by default. strength (0..1) scales colour-normalisation toward the ref-sprite(s).",
+    "neutralize_outline": false,
     "darkness_thresh": 60,
     "strength": 1.0
   }
