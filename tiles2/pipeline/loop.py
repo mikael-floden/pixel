@@ -48,18 +48,24 @@ def pair_count(a, b):
             + len(common.list_raw_sheets(b, kind="transition", other=a)))
 
 
-def next_unit(cfg, bases_only=False):
+def next_unit(cfg, bases_only=False, skip=None):
     """Complete each type before the next: its base sheets, then a transition to
     EVERY earlier type — so map builders always have every border (full pairwise
     mesh). Each new type owns the transitions toward all types before it; a pair
     is skipped if already covered in either direction. `bases_only` defers all
-    transitions. Returns ('base', gt) / ('transition', frm, to) / None."""
+    transitions. `skip` holds unit descriptions that failed this run — they're
+    passed over so one flaky job doesn't stall everything else. Returns
+    ('base', gt) / ('transition', frm, to) / None."""
+    skip = skip or set()
     tgt = cfg["targets"]
     order = cfg["ground_types"]
     for i, gt in enumerate(order):
         gid = gt["id"]
         if len(common.list_raw_sheets(gid, kind="base")) < tgt["base_sheets_per_type"]:
-            return ("base", gt)
+            unit = ("base", gt)
+            if _describe(unit) not in skip:
+                return unit
+            continue                           # base skipped -> skip this type's transitions too
         if bases_only:
             continue
         for u in order[:i]:                    # every EARLIER type (this type's job)
@@ -67,7 +73,9 @@ def next_unit(cfg, bases_only=False):
                 continue
             if pair_count(gid, u["id"]) >= tgt["transition_sheets_per_pair"]:
                 continue
-            return ("transition", gt, u)
+            unit = ("transition", gt, u)
+            if _describe(unit) not in skip:
+                return unit
     return None
 
 
@@ -164,9 +172,10 @@ def main():
             client.ensure_budget(min_balance, min_usd)
         except BudgetExhausted as e:
             print(f"stopping: {e}"); break
-        unit = next_unit(cfg, args.bases_only)
-        if unit is None or _describe(unit) in skip:
-            print("== all targets met =="); break
+        unit = next_unit(cfg, args.bases_only, skip)
+        if unit is None:
+            print("== all targets met ==" if not skip else
+                  f"== nothing left except {len(skip)} skipped/failed unit(s) =="); break
         try:
             advance(client, cfg, unit, push=not args.no_push)
         except BudgetExhausted as e:
