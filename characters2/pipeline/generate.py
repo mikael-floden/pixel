@@ -98,7 +98,8 @@ def generate_character(client, cfg, name):
     state = _read_json(STATE, {}) or {}
     regen = int(state.get(name, 0))
     seed = _seed(name, regen)
-    desc = f"{cfg['characters'][name]}, {cfg['style_base']}"
+    style = (cfg.get("style_base") or "").strip()
+    desc = cfg["characters"][name] + (f", {style}" if style else "")
 
     cid = client.create_character(
         description=desc, width=p["width"], height=p["height"], view=p["view"],
