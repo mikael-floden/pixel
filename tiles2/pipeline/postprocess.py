@@ -73,10 +73,32 @@ def process_sheet(gid, sheet, sdir, req, cfg, ref_cache):
         im.save(os.path.join(dest, fn))
         n += 1
 
-    # Mark the raw request processed (+ where it went, + whether normalised).
+    normalized = bool(ref_from) if kind == "base" else bool(ref_from and ref_to)
+    processing = {
+        "source_raw": os.path.relpath(sdir, common.type_dir(gid)),
+        "normalized": normalized,
+        "neutralize_outline": pp["neutralize_outline"],
+        "strength": pp["strength"],
+        "ref_from": (common.load_type_meta(gid) or {}).get("ref_sprite"),
+        "ref_to": (common.load_type_meta(other) or {}).get("ref_sprite") if other else None,
+    }
+    # Self-describing metadata IN the destination folder: full creation info copied
+    # from raw + how it was post-processed, so consumers never read raw/.
+    dest_meta = {
+        "schema": "tiles2/sheet@1",
+        "sheet": sheet, "ground_type": gid, "kind": kind, "transition_to": other,
+        "prompt": req.get("prompt"), "settings": req.get("settings"),
+        "seed": req.get("seed"), "count": n, "tiles": req.get("tiles"),
+        "generated_at": req.get("generated_at"),
+        "processing": processing,
+    }
+    with open(os.path.join(dest, "metadata.json"), "w") as f:
+        json.dump(dest_meta, f, indent=2)
+
+    # Also mark the raw request processed (+ where it went).
     req["processed"] = True
     req["processed_to"] = os.path.relpath(dest, common.type_dir(gid))
-    req["normalized"] = bool(ref_from) if kind == "base" else bool(ref_from and ref_to)
+    req["normalized"] = normalized
     with open(os.path.join(sdir, "request.json"), "w") as f:
         json.dump(req, f, indent=2)
     return n

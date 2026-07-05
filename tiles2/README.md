@@ -39,10 +39,14 @@ tiles2/<gid>/
   raw/<sheet>/                   raw download — SOURCE OF TRUTH, never edited
     tile_00.png … request.json   (exact prompt + settings + kind: base|transition)
   base/<sheet>/                  post-processed base tiles (normalised)
-    tile_00.png …
+    tile_00.png … metadata.json  (self-describing: creation info + how processed)
   transitions/<other>/<sheet>/   post-processed transition tiles  (gid → other)
-    tile_00.png …
+    tile_00.png … metadata.json
 ```
+
+Each destination sheet carries its **own** `metadata.json` (prompt, settings,
+seed, tiles, and how it was post-processed), copied from raw — so a consumer never
+has to read `raw/` to know how a tile was made.
 
 A **sheet** = one `create-tiles-pro` request (~16 tiles).
 
@@ -62,10 +66,14 @@ A **sheet** = one `create-tiles-pro` request (~16 tiles).
        material, the "to" type's ref normalises the other).
    - If a needed **ref-sprite isn't declared yet**, tiles are copied as-is (outline
      still neutralised).
-3. **loop** (`pipeline/loop.py`) — each unit picks the next thing to make from the
-   filesystem (resumable): **base tiles first** (round-robin across types up to
-   `targets.base_sheets_per_type`), then the configured **transitions**. Generates,
-   post-processes, commits, pushes. *Not scheduled yet — run manually while we tune.*
+3. **loop** (`pipeline/loop.py`) — completes **one type fully before the next**
+   (resumable, filesystem-driven): first its `base_sheets_per_type` base sheets,
+   then a transition **from this type to each configured neighbour**
+   (`<gid>/transitions/<neighbour>`). Generates, post-processes, commits, pushes.
+   Because each border is listed on both types, it's generated from both sides
+   across the run; the neighbour side normalises once that neighbour has a
+   ref-sprite (just re-run `postprocess.py`). *Not scheduled yet — run manually
+   while we tune.*
 
 ### The ref-sprite (how "looks like it belongs" is enforced)
 

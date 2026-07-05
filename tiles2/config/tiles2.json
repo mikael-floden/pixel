@@ -18,25 +18,35 @@
     "transition_variations": "1) mostly {from_name} with {to_name} entering from the north-east 2) mostly {from_name} with {to_name} entering from the north-west 3) even diagonal split {from_name} to {to_name} 4) mostly {to_name} with {from_name} entering from the south-east 5) a patch of {to_name} within {from_name} 6) a soft ragged border between {from_name} and {to_name}"
   },
   "ground_types": [
-    { "id": "saturated_grass", "name": "saturated grass", "description": "lush saturated deep green grass" },
-    { "id": "regular_snow",    "name": "snow",            "description": "clean fresh white snow" },
-    { "id": "normal_dirt",     "name": "dirt",            "description": "plain packed brown dirt / bare earth" },
+    { "id": "saturated_grass", "name": "saturated grass",     "description": "lush saturated deep green grass" },
+    { "id": "regular_snow",    "name": "snow",                "description": "clean fresh white snow" },
+    { "id": "lightdark_dirt",  "name": "dirt",                "description": "packed brown dirt with mixed light and dark patches" },
     { "id": "stone_mountain",  "name": "grey mountain stone", "description": "rugged grey mountain rock and stone" },
     { "id": "black_mountain",  "name": "black volcanic rock", "description": "dark near-black volcanic mountain rock" },
-    { "id": "clear_water",     "name": "clear water",     "description": "clear calm blue water" }
+    { "id": "clear_water",     "name": "clear water",         "description": "clear calm blue water" },
+    { "id": "wooden_balcony",  "name": "wooden balcony",      "description": "warm wooden plank balcony floor / deck boards" },
+    { "id": "light_sand",      "name": "light sand",          "description": "pale light sandy beach" },
+    { "id": "crystal_ice",     "name": "crystal ice",         "description": "crystalline translucent pale-blue ice" }
   ],
+  "_transitions_comment": "Unordered NEEDED borders. The loop completes each type fully (bases, then a transition FROM this type TO every listed neighbour, stored under <type>/transitions/<neighbour>) before starting the next type. Each border is thus generated from both sides across the run; the neighbour side is normalised once that neighbour has a ref-sprite (re-run postprocess).",
   "transitions": [
-    ["saturated_grass", "normal_dirt"],
+    ["saturated_grass", "lightdark_dirt"],
+    ["saturated_grass", "light_sand"],
     ["saturated_grass", "clear_water"],
     ["saturated_grass", "regular_snow"],
-    ["normal_dirt", "stone_mountain"],
+    ["lightdark_dirt", "stone_mountain"],
+    ["lightdark_dirt", "light_sand"],
+    ["lightdark_dirt", "clear_water"],
     ["stone_mountain", "black_mountain"],
     ["stone_mountain", "regular_snow"],
-    ["normal_dirt", "clear_water"],
-    ["regular_snow", "clear_water"]
+    ["regular_snow", "crystal_ice"],
+    ["clear_water", "light_sand"],
+    ["clear_water", "crystal_ice"],
+    ["wooden_balcony", "saturated_grass"],
+    ["wooden_balcony", "clear_water"]
   ],
   "targets": {
-    "_comment": "How many raw BASE tile-sheets to accumulate per ground type before the loop moves on to transitions. Each sheet ~16 tiles / ~20 generations.",
+    "_comment": "base_sheets_per_type raw BASE sheets accumulate first, THEN this type's transitions, before the next type. Each sheet ~16 tiles / ~20 generations.",
     "base_sheets_per_type": 3,
     "transition_sheets_per_pair": 1
   },

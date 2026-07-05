@@ -37,27 +37,33 @@ def _by_id(cfg):
     return {g["id"]: g for g in cfg["ground_types"]}
 
 
-def next_unit(cfg):
-    """Return ('base', gt) or ('transition', frm, to) or None."""
-    gts = cfg["ground_types"]
-    tgt = cfg["targets"]
-    # BASE first — pick the type furthest from its base target (fewest sheets).
-    base_need = []
-    for gt in gts:
-        have = len(common.list_raw_sheets(gt["id"], kind="base"))
-        if have < tgt["base_sheets_per_type"]:
-            base_need.append((have, gts.index(gt), gt))
-    if base_need:
-        base_need.sort(key=lambda x: (x[0], x[1]))
-        return ("base", base_need[0][2])
-    # TRANSITIONS next.
-    by = _by_id(cfg)
+def neighbors(cfg, gid):
+    """Types this one needs a transition to (config transitions are unordered)."""
+    out = []
     for a, b in cfg.get("transitions", []):
-        if a not in by or b not in by:
-            continue
-        have = len(common.list_raw_sheets(a, kind="transition", other=b))
-        if have < tgt["transition_sheets_per_pair"]:
-            return ("transition", by[a], by[b])
+        if a == gid and b not in out:
+            out.append(b)
+        elif b == gid and a not in out:
+            out.append(a)
+    return out
+
+
+def next_unit(cfg):
+    """Complete each type FULLY before the next: its base sheets, then a
+    transition to each configured neighbour. Returns ('base', gt) /
+    ('transition', frm, to) / None."""
+    by = _by_id(cfg)
+    tgt = cfg["targets"]
+    for gt in cfg["ground_types"]:
+        gid = gt["id"]
+        if len(common.list_raw_sheets(gid, kind="base")) < tgt["base_sheets_per_type"]:
+            return ("base", gt)
+        for nb in neighbors(cfg, gid):
+            if nb not in by:
+                continue
+            have = len(common.list_raw_sheets(gid, kind="transition", other=nb))
+            if have < tgt["transition_sheets_per_pair"]:
+                return ("transition", gt, by[nb])
     return None
 
 
@@ -113,13 +119,16 @@ def main():
 
     if args.dry_run:
         # Show what the loop WOULD do, without generating (safe to run anytime).
-        print("tiles2 plan (base-first, then transitions):")
+        tgt = cfg["targets"]
+        print("tiles2 plan — each type completed fully (bases, then its transitions):")
         for gt in cfg["ground_types"]:
-            have = len(common.list_raw_sheets(gt["id"], kind="base"))
-            print(f"  base {gt['id']:18s} {have}/{cfg['targets']['base_sheets_per_type']}")
-        for a, b in cfg.get("transitions", []):
-            have = len(common.list_raw_sheets(a, kind="transition", other=b))
-            print(f"  trans {a} -> {b}: {have}/{cfg['targets']['transition_sheets_per_pair']}")
+            gid = gt["id"]
+            b = len(common.list_raw_sheets(gid, kind="base"))
+            print(f"  {gid}")
+            print(f"      base {b}/{tgt['base_sheets_per_type']}")
+            for nb in neighbors(cfg, gid):
+                h = len(common.list_raw_sheets(gid, kind="transition", other=nb))
+                print(f"      -> {nb}: {h}/{tgt['transition_sheets_per_pair']}")
         nxt = next_unit(cfg)
         print("next unit:", _describe(nxt) if nxt else "== all targets met ==")
         return
