@@ -254,14 +254,19 @@ def process_terrain(cfg, terrain, cache=None):
     return total
 
 
-def next_unit(cfg):
+def next_unit(cfg, skip=None):
     """(terrain, height_id, slot) for the first open sheet slot — heights inner so
-    a terrain fills x2 then x3/x4/x5 before moving on."""
+    a terrain fills x2 then x3/x4/x5 before moving on. `skip` holds
+    (gid, height, slot) tuples that failed this run, so one flaky/stalled job
+    doesn't get retried forever and doesn't stall the rest of the fleet."""
+    skip = skip or set()
+    tgt = target_per_elev(cfg)
     for terrain in terrains(cfg):
         for h in heights(cfg):
-            i = missing_slot(cfg, terrain["id"], h["id"])
-            if i is not None:
-                return terrain, h["id"], i
+            have = present_slots(terrain["id"], h["id"])
+            for i in range(tgt):
+                if i not in have and (terrain["id"], h["id"], i) not in skip:
+                    return terrain, h["id"], i
     return None
 
 
@@ -314,20 +319,26 @@ def main():
         _run_sync(cfg, client, push=not args.no_push)
 
     units = 0
+    skip = set()
     while True:
         try:
             client.ensure_budget(min_gen, min_usd)
         except BudgetExhausted as e:
             print("stopping:", e); break
-        unit = next_unit(cfg)
+        unit = next_unit(cfg, skip)
         if unit is None:
-            print("== all elevation targets met =="); break
+            print("== all elevation targets met ==" if not skip else
+                  f"== nothing left except {len(skip)} skipped/failed slot(s) =="); break
         terrain, height_id, slot = unit
         try:
             req = generate_sheet(client, cfg, terrain, height_id, slot)
             process_terrain(cfg, terrain, cache)
+        except BudgetExhausted as e:
+            print("stopping:", e); break
         except PixelLabError as e:
-            print(f"  ! {terrain['id']} {height_id} slot {slot} failed: {e}; stopping"); break
+            print(f"  ! {terrain['id']} {height_id} slot {slot} failed: {e}; skipping for this run")
+            skip.add((terrain["id"], height_id, slot))
+            continue
         desc = (f"tiles2: elevation {terrain['id']}/{height_id} sheet {slot + 1}/{tgt} — "
                 f"{req['count']} tiles, {len(req['objects'])} varied objects")
         loop.commit_push(desc, push=not args.no_push)
