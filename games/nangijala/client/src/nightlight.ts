@@ -99,8 +99,12 @@ export function emissionWave(anim: number, t: number, ph: number): [number, numb
       0.09 * Math.sin(t * 1.1 + ph) +
       0.05 * Math.sin(t * 0.43 + ph * 1.9) +
       0.03 * Math.sin(t * 0.11 + ph * 0.7);
+    // Slight warm<->cool drift. Kept small (±3%): the dominant channel of a
+    // saturated emitter is pinned at the 1.0 ceiling, so a bigger swing only
+    // lifts the OTHER channels and erodes the tile's colour identity (crystal
+    // stops reading blue — verify-emission's hue-dominance gate).
     const w = Math.sin(t * 0.23 + ph * 2.3);
-    return [f * (1 + 0.06 * w), f, f * (1 - 0.06 * w)];
+    return [f * (1 + 0.03 * w), f, f * (1 - 0.03 * w)];
   }
   let f = 0.98 + 0.02 * Math.sin(t * 0.31 + ph);
   f += (0.12 * Math.max(0, Math.sin(t * 0.29 + ph * 2.1) * Math.sin(t * 0.53 + ph * 0.8) - 0.93)) / 0.07;
@@ -426,7 +430,7 @@ void main() {
         + 0.05 * sin(time * 0.43 + ph * 1.9)
         + 0.03 * sin(time * 0.11 + ph * 0.7);
       float w = sin(time * 0.23 + ph * 2.3);
-      fv = vec3(f * (1.0 + 0.06 * w), f, f * (1.0 - 0.06 * w));
+      fv = vec3(f * (1.0 + 0.03 * w), f, f * (1.0 - 0.03 * w));
     } else {
       float f = 0.98 + 0.02 * sin(time * 0.31 + ph);
       f += 0.12 * max(0.0, sin(time * 0.29 + ph * 2.1) * sin(time * 0.53 + ph * 0.8) - 0.93) / 0.07;
@@ -591,6 +595,12 @@ export class NightLights {
       uAmbient: { type: "3f", value: { x: 0.16, y: 0.2, z: 0.36 } },
       uFlip: { type: "1f", value: 1 },
       uTest: { type: "1f", value: 0 },
+      // Animation clock (seconds). MUST be driven every frame from the SAME
+      // clock as the JS emission layers (stamps/lit copies, scene.time.now/
+      // 1000) or the shader floor/fire flicker either freezes (the long-
+      // standing "nothing moves" bug: this uniform was declared+used but
+      // never set, so it sat at 0) or drifts out of phase with them.
+      time: { type: "1f", value: 0 },
       uNumLights: { type: "1f", value: 0 },
       uLightPos: { type: "4fv", value: this.posArr },
       uLightCol: { type: "4fv", value: this.colArr },
@@ -942,6 +952,10 @@ export class NightLights {
     const wv = cam.worldView;
     const camX = wv.x - (wv.width * (k - 1)) / 2;
     const camY = wv.y - (wv.height * (k - 1)) / 2;
+    // Drive the shader animation clock from the SAME source as the JS
+    // emission layers (glow stamps below, lit-copy tints) so the shader
+    // floor + fire flicker move and stay phase-locked with them.
+    s.setUniform("time.value", this.scene.time.now / 1000);
     s.setUniform("uCam.value.x", camX);
     s.setUniform("uCam.value.y", camY);
     s.setUniform("uCam.value.z", wv.width * k);
