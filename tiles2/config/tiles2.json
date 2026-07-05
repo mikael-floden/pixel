@@ -15,28 +15,29 @@
     "transition_template": "isometric terrain tiles blending from {from_desc} to {to_desc}: {variations}. {style}",
     "base_variations": "1) plain even ground 2) soft surface texture 3) a few natural details 4) a slightly darker weathered patch 5) a slightly lighter sunlit patch 6) small scattered specks",
     "base_angles": [
-      "each tile has dark earthy soil sides",
-      "each tile has rough rocky stone sides",
-      "a dense richly textured surface",
-      "a sparse weathered surface with a few bare spots",
+      "plain and even",
+      "a slightly richer, denser texture",
       "fine scattered detail and small flecks",
-      "vibrant and sunlit with soft shadows",
-      "a cooler shaded, deeper-toned variant",
+      "a few tiny surface accents",
+      "a touch lighter and sunlit",
+      "a touch darker and cooler in tone",
+      "with natural sides",
       "clean, even and minimal"
     ],
     "transition_variations": "1) mostly {from_name} with {to_name} entering from one corner 2) an even diagonal split from {from_name} to {to_name} 3) mostly {to_name} with a patch of {from_name} 4) a soft natural border between {from_name} and {to_name} 5) {to_name} scattered across {from_name} 6) a gradual blend from {from_name} into {to_name}"
   },
   "ground_types": [
     { "id": "saturated_grass", "name": "saturated grass",     "description": "lush saturated deep green grass",
+      "_angles_note": "Keep it PLAIN saturated grass — angles are SMALL variations only (soil sides, slight tone/density, a few tiny accents). No dramatic re-themes (no tall overgrowth, no cliff sides, no dry/bare fields) so the whole type keeps one look & feel.",
       "base_angles": [
-        "each tile has dark earthy soil sides beneath the grass",
-        "each tile has rough grey rocky sides beneath the grass",
-        "thick lush overgrown grass with tall tufts and blades",
-        "grass dotted with tiny wildflowers and clover",
-        "short dry patchy grass with a few bare earth spots",
-        "mossy grass with small scattered pebbles",
-        "vibrant sunlit grass with soft directional shadows",
-        "cool shaded grass in a deeper richer green"
+        "each tile has natural dark soil sides",
+        "a slightly denser, richer grass texture",
+        "a few tiny scattered flower specks",
+        "a couple of small bare earth spots",
+        "faint moss and a few tiny pebbles",
+        "soil sides with a few small embedded stones",
+        "a touch lighter and sunlit",
+        "a touch darker and cooler in tone"
       ] },
     { "id": "regular_snow",    "name": "snow",                "description": "clean fresh white snow" },
     { "id": "lightdark_dirt",  "name": "dirt",                "description": "packed brown dirt with mixed light and dark patches" },
