@@ -1,6 +1,6 @@
 {
   "id": "default_boy",
-  "skeleton": "humans",
+  "version": 1,
   "pixellab_character_id": "ed5b0660-3048-4aa4-ac8a-4aafedf2b22d",
   "description": "A young male adventurer at the beginning of his heroic journey, confident and naturally charismatic, with a slightly rebellious edge. He has sharp expressive eyes, tousled dark brown hair, and a lean athletic build. His stance should feel relaxed but ready, as if he has courage and hidden potential even though he is not yet an experienced hero. He wears a practical fantasy adventurer outfit: a fitted dark teal tunic, a short weathered leather jacket or shoulder guard, a utility belt, dark fitted trousers, fingerless gloves, and sturdy travel boots. Add a small sword or dagger at his side, but avoid heavy armor, royal clothing, farming clothes, overdecorated fantasy gear, or a generic medieval peasant appearance. The character should look cool, memorable, capable, and slightly mysterious \u2014 someone destined to become a legendary hero, but still early in his story. Attractive without looking overly perfect, youthful without looking childish, heroic without looking like an established knight. High-quality RPG pixel-art character, clean readable silhouette, strong shape language, expressive face, detailed but controlled pixel work, cohesive fantasy color palette, full-body character, single centered figure, transparent background.",
   "params": {
@@ -12,6 +12,10 @@
     "shading": "basic shading",
     "text_guidance_scale": 8.0
   },
+  "size": [
+    112,
+    112
+  ],
   "directions": [
     "east",
     "north",
@@ -23,6 +27,5 @@
     "west"
   ],
   "seed": 1517872276,
-  "variation": 2,
-  "source": "pixellab.ai create-character-with-8-directions (8-dir static)"
+  "source": "pixellab.ai create-character-with-8-directions (8-dir static, native canvas)"
 }

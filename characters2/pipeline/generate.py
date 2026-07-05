@@ -1,18 +1,23 @@
-"""characters2 generator — the game's two main heroes.
+"""characters2 generator — the game's two heroes, versioned.
 
-Ensures exactly two characters exist: humans/default_boy and humans/default_girl,
-each a persistent 8-direction static PixelLab character (create-character-with-8-
-directions) at the fixed human skeleton (low top-down, 80x80, low detail, default
-outline). No animations, no outfits — just the awesome 8-direction base model.
+Two characters: humans/default_boy and humans/default_girl. Each is a persistent
+8-direction static PixelLab character (create-character-with-8-directions) at the
+fixed human skeleton (low top-down, low detail, default outline). The sprites are
+kept at PixelLab's **native** canvas (112x112) — no cropping.
 
-Resumable + reroll-friendly: it (re)generates any character whose folder is
-missing. Each regeneration uses a fresh seed (tracked in humans/.state.json), so a
-deleted character comes back as a new, slightly different variation — delete until
-you're happy with the boy and the girl.
+VERSIONED: we never delete/replace. Each generation writes a new numbered
+version:
 
-  python characters2/pipeline/generate.py            # ensure both exist, push
-  python characters2/pipeline/generate.py --no-push
-  python characters2/pipeline/generate.py --force default_boy   # reroll one now
+  characters2/humans/default_boy/
+    v001/  south.png … character.json preview.png
+    v002/  …
+    LATEST                                # text file: the newest version id
+
+so you can accumulate takes and keep the ones you like.
+
+  python characters2/pipeline/generate.py                 # ensure each has a v001
+  python characters2/pipeline/generate.py --new           # add a new version to both
+  python characters2/pipeline/generate.py --new default_girl   # new version of the girl only
 """
 
 from __future__ import annotations
@@ -31,7 +36,6 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # character
 REPO_ROOT = os.path.dirname(ROOT)
 HUMANS = os.path.join(ROOT, "humans")
 CONFIG = os.path.join(ROOT, "config.json")
-STATE = os.path.join(HUMANS, ".state.json")
 
 
 def load_config():
@@ -56,64 +60,86 @@ def _write_json(path, data):
         json.dump(data, f, indent=2)
 
 
-def char_dir(name):
+# --- versions ---------------------------------------------------------------
+
+def char_root(name):
     return os.path.join(HUMANS, name)
 
 
-def has_character(name):
-    return os.path.exists(os.path.join(char_dir(name), "south.png"))
+def version_dir(name, v):
+    return os.path.join(char_root(name), f"v{v:03d}")
 
 
-def _fit_to_square(rotations, size):
-    """Fit every rotation into an exact `size`×`size` sprite. PixelLab content-fits
-    the character onto a padded canvas (e.g. 112px for an 80px request), so we trim
-    each frame's transparent margin, apply ONE shared scale (from the largest frame,
-    downscale-only) so the character stays a consistent size across all 8
-    directions, and center it on the size×size canvas. Result: true 80×80 sprites."""
-    boxes = {d: im.convert("RGBA").getbbox() for d, im in rotations.items()}
-    valid = [b for b in boxes.values() if b]
-    if not valid:
-        return {d: im.convert("RGBA").resize((size, size)) for d, im in rotations.items()}
-    max_w = max(b[2] - b[0] for b in valid)
-    max_h = max(b[3] - b[1] for b in valid)
-    scale = min(size / max_w, size / max_h, 1.0)      # only shrink, never upscale
+def existing_versions(name):
+    d = char_root(name)
+    if not os.path.isdir(d):
+        return []
+    out = []
+    for n in os.listdir(d):
+        if n.startswith("v") and n[1:].isdigit() and os.path.isdir(os.path.join(d, n)):
+            out.append(int(n[1:]))
+    return sorted(out)
+
+
+def next_version(name):
+    vs = existing_versions(name)
+    return (vs[-1] + 1) if vs else 1
+
+
+# --- packaging (keep native canvas, no crop) --------------------------------
+
+def _uniform_native(rotations):
+    """Pad every rotation onto one square canvas = the largest native frame, so
+    all 8 directions share a size. No cropping/scaling — PixelLab's 112x112 look
+    is preserved. Returns (dict, size)."""
+    s = max(max(im.width, im.height) for im in rotations.values())
     out = {}
     for d, im in rotations.items():
         im = im.convert("RGBA")
-        b = boxes[d]
-        crop = im.crop(b) if b else im
-        if scale < 1.0:
-            crop = crop.resize((max(1, round(crop.width * scale)),
-                                max(1, round(crop.height * scale))), Image.NEAREST)
-        canvas = Image.new("RGBA", (size, size), (0, 0, 0, 0))
-        canvas.alpha_composite(crop, ((size - crop.width) // 2, (size - crop.height) // 2))
-        out[d] = canvas
-    return out
+        if im.size == (s, s):
+            out[d] = im
+        else:
+            c = Image.new("RGBA", (s, s), (0, 0, 0, 0))
+            c.alpha_composite(im, ((s - im.width) // 2, (s - im.height) // 2))
+            out[d] = c
+    return out, s
 
 
 def _save_preview(rotations, path):
-    """A single row of the 8 directions for a quick look."""
     order = [d for d in DIRECTIONS_8 if d in rotations]
-    if not order:
-        return
     w = max(rotations[d].width for d in order)
     h = max(rotations[d].height for d in order)
     strip = Image.new("RGBA", (w * len(order), h), (0, 0, 0, 0))
     for i, d in enumerate(order):
-        f = rotations[d]
-        strip.alpha_composite(f, (i * w + (w - f.width) // 2, (h - f.height) // 2))
+        strip.alpha_composite(rotations[d], (i * w, 0))
     strip.save(path)
 
 
-def generate_character(client, cfg, name):
-    """(Re)generate one hero as a fresh, slightly different variation."""
+def save_version(name, v, cid, rotations, size, seed, description, params):
+    """Write one version's 8 sprites + portrait + preview + manifest."""
+    vdir = version_dir(name, v)
+    os.makedirs(vdir, exist_ok=True)
+    for d, im in rotations.items():
+        im.save(os.path.join(vdir, f"{d}.png"))
+    if "south" in rotations:
+        rotations["south"].save(os.path.join(vdir, "portrait.png"))
+    _save_preview(rotations, os.path.join(vdir, "preview.png"))
+    _write_json(os.path.join(vdir, "character.json"), {
+        "id": name, "version": v, "pixellab_character_id": cid,
+        "description": description, "params": params, "size": [size, size],
+        "directions": sorted(rotations.keys()), "seed": seed,
+        "source": "pixellab.ai create-character-with-8-directions (8-dir static, native canvas)",
+    })
+    with open(os.path.join(char_root(name), "LATEST"), "w") as f:
+        f.write(f"v{v:03d}\n")
+
+
+def generate_version(client, cfg, name, v):
+    """Create a new persistent character and save it as version v of `name`."""
     p = cfg["params"]
-    state = _read_json(STATE, {}) or {}
-    regen = int(state.get(name, 0))
-    seed = _seed(name, regen)
+    seed = _seed(name, v)
     style = (cfg.get("style_base") or "").strip()
     desc = cfg["characters"][name] + (f", {style}" if style else "")
-
     cid = client.create_character(
         description=desc, width=p["width"], height=p["height"], view=p["view"],
         outline=p.get("outline"), shading=p.get("shading"), detail=p.get("detail"),
@@ -121,25 +147,9 @@ def generate_character(client, cfg, name):
     raw = client.character_rotations(cid)
     if not raw:
         raise RuntimeError(f"{name}: no rotations returned")
-    rotations = _fit_to_square(raw, int(p["width"]))     # true 80×80 sprites
-
-    cdir = char_dir(name)
-    os.makedirs(cdir, exist_ok=True)
-    for d, im in rotations.items():
-        im.save(os.path.join(cdir, f"{d}.png"))
-    if "south" in rotations:
-        rotations["south"].save(os.path.join(cdir, "portrait.png"))
-    _save_preview(rotations, os.path.join(cdir, "preview.png"))
-
-    _write_json(os.path.join(cdir, "character.json"), {
-        "id": name, "skeleton": cfg["skeleton"], "pixellab_character_id": cid,
-        "description": cfg["characters"][name], "params": p,
-        "directions": sorted(rotations.keys()), "seed": seed, "variation": regen,
-        "source": "pixellab.ai create-character-with-8-directions (8-dir static)",
-    })
-    state[name] = regen + 1          # next reroll gets a new seed -> new look
-    _write_json(STATE, state)
-    return cid, sorted(rotations.keys())
+    rotations, size = _uniform_native(raw)
+    save_version(name, v, cid, rotations, size, seed, cfg["characters"][name], p)
+    return cid, size, sorted(rotations.keys())
 
 
 # --- git --------------------------------------------------------------------
@@ -155,56 +165,53 @@ def commit_push(message, push=True):
     _git("commit", "-m", message)
     if push:
         branch = _git("rev-parse", "--abbrev-ref", "HEAD").stdout.strip() or "main"
+        import time
         for attempt in range(4):
             if _git("push", "origin", branch, check=False).returncode == 0:
                 break
             _git("fetch", "origin", branch, check=False)
             _git("rebase", f"origin/{branch}", check=False)
-            import time; time.sleep(2 ** (attempt + 1))
+            time.sleep(2 ** (attempt + 1))
     return True
 
 
 # --- main -------------------------------------------------------------------
 
 def main():
-    ap = argparse.ArgumentParser(description="Generate the two game heroes.")
+    ap = argparse.ArgumentParser(description="Generate/ version the two game heroes.")
     ap.add_argument("--no-push", action="store_true")
-    ap.add_argument("--force", nargs="*", default=[],
-                    help="Reroll these character(s) now even if present.")
+    ap.add_argument("--new", nargs="*", default=None,
+                    help="Add a NEW version to these character(s) (default: both).")
     args = ap.parse_args()
 
     cfg = load_config()
     client = PixelLabClient()
     floor = cfg["budget"]["min_generations_remaining"]
-    names = list(cfg["characters"].keys())
+    all_names = list(cfg["characters"].keys())
 
-    for name in names:
-        if name not in cfg["characters"]:
-            continue
-        if has_character(name) and name not in args.force:
-            print(f"= {name}: present, skipping")
-            continue
+    if args.new is not None:
+        targets = args.new or all_names          # --new [names]: add a version
+    else:
+        targets = [n for n in all_names if not existing_versions(n)]  # ensure a v001 exists
+        if not targets:
+            print("both heroes already have at least one version; use --new to add another.")
+            return
+
+    for name in targets:
         try:
             client.ensure_budget(floor)
         except BudgetExhausted as e:
             print(f"stopping: {e}")
             break
-        if name in args.force:
-            import shutil
-            old = (_read_json(os.path.join(char_dir(name), "character.json"), {}) or {})
-            if old.get("pixellab_character_id"):
-                try:
-                    client.delete_character(old["pixellab_character_id"])  # no orphan on PixelLab
-                except Exception:
-                    pass
-            shutil.rmtree(char_dir(name), ignore_errors=True)
-        print(f"+ generating {name} …")
-        cid, dirs = generate_character(client, cfg, name)
-        print(f"  {name}: {len(dirs)} directions ({cid})")
-        commit_push(f"characters2: {name} — 8-direction hero (low top-down 80x80, low detail)",
+        v = next_version(name)
+        print(f"+ {name}: generating v{v:03d} …")
+        cid, size, dirs = generate_version(client, cfg, name, v)
+        print(f"  {name} v{v:03d}: {len(dirs)} directions, {size}x{size} ({cid})")
+        commit_push(f"characters2: {name} v{v:03d} — 8-direction hero ({size}x{size}, low top-down)",
                     push=not args.no_push)
 
-    print("done —", ", ".join(f"{n}:{'ok' if has_character(n) else 'missing'}" for n in names))
+    for n in all_names:
+        print(f"= {n}: versions {['v%03d' % v for v in existing_versions(n)] or 'none'}")
 
 
 if __name__ == "__main__":
