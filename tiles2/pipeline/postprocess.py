@@ -26,6 +26,7 @@ from PIL import Image
 
 import common
 import normalize
+import tilemeta
 
 DEFAULTS = {"neutralize_outline": True, "darkness_thresh": 60,
             "harmonize": {"hue_strength": 0.9, "sat_strength": 0.6, "v_strength": 0.65}}
@@ -77,7 +78,16 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
     t_from = type_target(gid, cfg, cache)
     t_to = type_target(other, cfg, cache) if kind == "transition" else None
 
-    n = 0
+    # Material colour targets for per-tile classification (edges/composition/features).
+    mtargets = {}
+    if t_from:
+        mtargets[gid] = tilemeta.target_abL(t_from)
+    if t_to:
+        mtargets[other] = tilemeta.target_abL(t_to)
+    ctx = {"ground_type": gid, "transition_to": other}
+    raw_by_file = {t["file"]: t for t in (req.get("tiles") or [])}
+
+    tiles_meta = []
     for fn in common.tile_files(sdir):
         im = Image.open(os.path.join(sdir, fn)).convert("RGBA")
         if pp["neutralize_outline"]:
@@ -86,13 +96,17 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
         if t_to:
             im = normalize.harmonize(im, t_to, hs["hue_strength"], hs["sat_strength"], hs["v_strength"])
         im.save(os.path.join(dest, fn))
-        n += 1
+        # Per-tile map-builder metadata computed on the FINAL (harmonised) image.
+        entry = dict(raw_by_file.get(fn, {"file": fn}))
+        entry.update(tilemeta.tile_metadata(im, mtargets, ctx))
+        tiles_meta.append(entry)
+    n = len(tiles_meta)
 
     dest_meta = {
         "schema": "tiles2/sheet@1",
         "sheet": sheet, "ground_type": gid, "kind": kind, "transition_to": other,
         "tile_id": req.get("tile_id"), "settings": req.get("settings"),
-        "count": n, "tiles": req.get("tiles"), "generated_at": req.get("generated_at"),
+        "count": n, "tiles": tiles_meta, "generated_at": req.get("generated_at"),
         "processing": {
             "source_raw": os.path.relpath(sdir, common.type_dir(gid)),
             "neutralize_outline": pp["neutralize_outline"],
