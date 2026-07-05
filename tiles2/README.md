@@ -8,6 +8,11 @@ type looks like it belongs, and first-class **transitions** between types.
 Part of the multi-domain `pixel` repo (alongside `characters/`, `objects/`,
 `maps/`). Everything for this domain lives under `tiles2/`.
 
+> **Map / game designers:** start with **[`docs/DESIGNER_GUIDE.md`](docs/DESIGNER_GUIDE.md)**
+> — what `base`/`base_x_2…5` give you, colour normalization, the fixed render
+> perspective, why transitions exist, and the per-tile metadata you can read
+> without opening a PNG. **Elevation calibration:** [`docs/ELEVATION.md`](docs/ELEVATION.md).
+
 ## Why specific names
 
 Each subfolder under `tiles2/` is **one ground type** with a deliberately
