@@ -20,11 +20,15 @@ def _now():
     return datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
 
 
-def build_base_prompt(cfg, gt):
+def build_base_prompt(cfg, gt, idx=0):
+    """Each base sheet uses a DIFFERENT creative angle (cycled by sheet index) so
+    a type's many base sheets explore the space (earthy sides, rocky, flowery …)."""
     p = cfg["prompt"]
+    angles = gt.get("base_angles") or p["base_angles"]
+    angle = angles[idx % len(angles)]
     return p["base_template"].format(
         description=gt["description"], name=gt.get("name", gt["id"]),
-        style=p["style"], variations=p["base_variations"])
+        angle=angle, style=p["style"], variations=p["base_variations"])
 
 
 def build_transition_prompt(cfg, frm, to):
@@ -45,10 +49,11 @@ def _settings(cfg):
     }
 
 
-def _generate(client, cfg, gt, kind, prompt, other=None):
+def _generate(client, cfg, gt, kind, prompt_fn, other=None):
     gid = gt["id"]
     common.ensure_type_meta(gt, cfg)
     idx = len(common.list_raw_sheets(gid, kind=kind, other=other))
+    prompt = prompt_fn(idx)
     seed = common._seed(gid, kind, other or "", idx)
     slug = common.sheet_slug(kind, seed, other=other)
     t = cfg["tile"]
@@ -85,9 +90,9 @@ def _generate(client, cfg, gt, kind, prompt, other=None):
 
 
 def generate_base(client, cfg, gt):
-    return _generate(client, cfg, gt, "base", build_base_prompt(cfg, gt))
+    return _generate(client, cfg, gt, "base", lambda idx: build_base_prompt(cfg, gt, idx))
 
 
 def generate_transition(client, cfg, frm, to):
     return _generate(client, cfg, frm, "transition",
-                     build_transition_prompt(cfg, frm, to), other=to["id"])
+                     lambda idx: build_transition_prompt(cfg, frm, to), other=to["id"])

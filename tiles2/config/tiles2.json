@@ -9,15 +9,35 @@
     "flat_top_px": 2
   },
   "prompt": {
-    "_comment": "Quality-focused terrain prompts. We do NOT ask for lineless / no-outline — create-tiles-pro bakes an outline in regardless, and demanding it only degrades the art. tiles-pro reads a NUMBERED description as the tile-set variations; `style` sets the overall art direction.",
+    "_comment": "Quality-focused prompts. NO lineless/no-outline (create-tiles-pro bakes an outline in regardless). We deliberately generate MANY base sheets per type, EACH with a different creative `angle` (sheet idx cycles the angle list) to explore the space — earthy sides on one, rocky on the next, flowery, dry, etc. A type may override `base_angles`; otherwise the generic list is used. `variations` gives per-tile micro-variety WITHIN a sheet.",
     "style": "cozy hand-crafted top-down RPG pixel art, rich natural texture, cohesive harmonious palette, soft directional shading, high quality game terrain tile",
-    "base_template": "isometric {description} terrain tiles, every tile is {name}: {variations}. {style}",
+    "base_template": "isometric {description} terrain tiles, {angle}, every tile is {name}: {variations}. {style}",
     "transition_template": "isometric terrain tiles blending from {from_desc} to {to_desc}: {variations}. {style}",
     "base_variations": "1) plain even ground 2) soft surface texture 3) a few natural details 4) a slightly darker weathered patch 5) a slightly lighter sunlit patch 6) small scattered specks",
+    "base_angles": [
+      "each tile has dark earthy soil sides",
+      "each tile has rough rocky stone sides",
+      "a dense richly textured surface",
+      "a sparse weathered surface with a few bare spots",
+      "fine scattered detail and small flecks",
+      "vibrant and sunlit with soft shadows",
+      "a cooler shaded, deeper-toned variant",
+      "clean, even and minimal"
+    ],
     "transition_variations": "1) mostly {from_name} with {to_name} entering from one corner 2) an even diagonal split from {from_name} to {to_name} 3) mostly {to_name} with a patch of {from_name} 4) a soft natural border between {from_name} and {to_name} 5) {to_name} scattered across {from_name} 6) a gradual blend from {from_name} into {to_name}"
   },
   "ground_types": [
-    { "id": "saturated_grass", "name": "saturated grass",     "description": "lush saturated deep green grass" },
+    { "id": "saturated_grass", "name": "saturated grass",     "description": "lush saturated deep green grass",
+      "base_angles": [
+        "each tile has dark earthy soil sides beneath the grass",
+        "each tile has rough grey rocky sides beneath the grass",
+        "thick lush overgrown grass with tall tufts and blades",
+        "grass dotted with tiny wildflowers and clover",
+        "short dry patchy grass with a few bare earth spots",
+        "mossy grass with small scattered pebbles",
+        "vibrant sunlit grass with soft directional shadows",
+        "cool shaded grass in a deeper richer green"
+      ] },
     { "id": "regular_snow",    "name": "snow",                "description": "clean fresh white snow" },
     { "id": "lightdark_dirt",  "name": "dirt",                "description": "packed brown dirt with mixed light and dark patches" },
     { "id": "stone_mountain",  "name": "grey mountain stone", "description": "rugged grey mountain rock and stone" },
