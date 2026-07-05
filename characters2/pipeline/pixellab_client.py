@@ -145,5 +145,13 @@ class PixelLabClient:
                 return out
             time.sleep(poll)
 
+    def get_character(self, character_id):
+        """Full character record: rotation_urls + animations (frame URLs) + meta."""
+        return self._request("GET", f"{V2}/characters/{character_id}")
+
+    def download_image(self, url):
+        """Download one CDN image -> PIL (RGBA), retrying brief post-generation 404s."""
+        return self._download(url)
+
     def delete_character(self, character_id):
         return self._request("DELETE", f"{V2}/characters/{character_id}")

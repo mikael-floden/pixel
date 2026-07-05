@@ -10,6 +10,11 @@
     "shading": "basic shading",
     "text_guidance_scale": 8.0
   },
+  "_final": "The two heroes are now DECIDED and locked to specific PixelLab characters (chosen in the UI). sync.py mirrors these characters + their animations (and later outfits) into humans/<name>/. PixelLab is the source of truth; re-running sync.py picks up any animations/outfits added in the UI. The `characters`/`params` blocks below are only used by the legacy generate.py explorer that produced the vNNN experiments (now archived under humans/_experiments/).",
+  "pixellab_characters": {
+    "default_boy": "af374339-7e4e-4266-a8be-79296b81938d",
+    "default_girl": "bc21eab2-4f08-47ac-b58f-65ee1b98a935"
+  },
   "style_base": "",
   "_style_base": "Empty on purpose \u2014 the character prompts below are self-contained (they carry their own style direction). Do NOT append a 'Grave Seasons / Stardew Valley' style here: it pushed the heroes toward generic farmers.",
   "budget": {
