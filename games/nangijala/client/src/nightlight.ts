@@ -68,6 +68,45 @@ export interface GlowStamp {
 
 export const MAX_SHADER_LIGHTS = 12;
 
+/** Per-channel emission animation — the "alive" waveform shared by every
+ * emission layer (shader self-floor, glow stamps, lit-copy tints). Returns
+ * [r,g,b] factors around 1. The GLSL block in FRAG mirrors this EXACTLY
+ * (same constants, same shapes) — change BOTH or the floors, halos and lit
+ * copies drift out of sync.
+ *
+ * flicker: a mild shimmer under a slow ~37s "gust" envelope (sometimes
+ *   restless, sometimes near-calm), a rare short surge when two slow sines
+ *   align, and warm colour coupling — dimmer reads deep red, brighter reads
+ *   yellow-white, like real embers.
+ * pulse: three incommensurate slow sines (≈6s/15s/57s) breathing between
+ *   0.73 and 1.07, plus a very slow ±6% red↔blue hue drift.
+ * static: near-steady with a soft occasional glint (gold catching light).
+ * All terms are phase-decorrelated per cell/source. */
+export function emissionWave(anim: number, t: number, ph: number): [number, number, number] {
+  if (anim >= 2) {
+    const env = 0.55 + 0.45 * Math.sin(t * 0.17 + ph * 3.1);
+    let f =
+      1 -
+      env * (0.1 * (0.5 + 0.5 * Math.sin(t * 3.1 + ph)) + 0.05 * Math.sin(t * 8.3 + ph * 1.7)) -
+      0.05 * Math.sin(t * 0.71 + ph * 1.3);
+    f += (0.18 * Math.max(0, Math.sin(t * 0.41 + ph) * Math.sin(t * 0.67 + ph * 1.7) - 0.86)) / 0.14;
+    const warm = f - 1;
+    return [f, f * (1 + 0.35 * warm), f * (1 + 0.6 * warm)];
+  }
+  if (anim >= 1) {
+    const f =
+      0.9 +
+      0.09 * Math.sin(t * 1.1 + ph) +
+      0.05 * Math.sin(t * 0.43 + ph * 1.9) +
+      0.03 * Math.sin(t * 0.11 + ph * 0.7);
+    const w = Math.sin(t * 0.23 + ph * 2.3);
+    return [f * (1 + 0.06 * w), f, f * (1 - 0.06 * w)];
+  }
+  let f = 0.98 + 0.02 * Math.sin(t * 0.31 + ph);
+  f += (0.12 * Math.max(0, Math.sin(t * 0.29 + ph * 2.1) * Math.sin(t * 0.53 + ph * 0.8) - 0.93)) / 0.07;
+  return [f, f, f];
+}
+
 const FRAG = `
 precision highp float;
 
@@ -370,11 +409,28 @@ void main() {
     vec4 ePar = texture2D(uEmit, vec2((eIdx * 2.0 + 1.5) * tw, 0.5));
     float ph = fract(sin(dot(floor(cell), vec2(12.9898, 78.233))) * 43758.5453) * 6.2831;
     float m = ePar.b * 255.0; // anim mode: 0 static, ~100 pulse, ~200 flicker
-    float f = 1.0;
+    // "Alive" emission waveform — EXACT mirror of emissionWave() (JS): gusty
+    // warm-coupled flicker / slow breathing pulse with hue drift / near-
+    // steady glinting static. Change BOTH or the layers drift out of sync.
+    vec3 fv;
     if (m > 150.0) {
-      f = 1.0 - 0.12 * (0.5 + 0.5 * sin(time * 3.1 + ph)) - 0.06 * sin(time * 8.3 + ph * 1.7);
+      float env = 0.55 + 0.45 * sin(time * 0.17 + ph * 3.1);
+      float f = 1.0
+        - env * (0.10 * (0.5 + 0.5 * sin(time * 3.1 + ph)) + 0.05 * sin(time * 8.3 + ph * 1.7))
+        - 0.05 * sin(time * 0.71 + ph * 1.3);
+      f += 0.18 * max(0.0, sin(time * 0.41 + ph) * sin(time * 0.67 + ph * 1.7) - 0.86) / 0.14;
+      float warm = f - 1.0;
+      fv = vec3(f, f * (1.0 + 0.35 * warm), f * (1.0 + 0.6 * warm));
     } else if (m > 50.0) {
-      f = 0.85 + 0.15 * sin(time * 1.3 + ph);
+      float f = 0.90 + 0.09 * sin(time * 1.1 + ph)
+        + 0.05 * sin(time * 0.43 + ph * 1.9)
+        + 0.03 * sin(time * 0.11 + ph * 0.7);
+      float w = sin(time * 0.23 + ph * 2.3);
+      fv = vec3(f * (1.0 + 0.06 * w), f, f * (1.0 - 0.06 * w));
+    } else {
+      float f = 0.98 + 0.02 * sin(time * 0.31 + ph);
+      f += 0.12 * max(0.0, sin(time * 0.29 + ph * 2.1) * sin(time * 0.53 + ph * 0.8) - 0.93) / 0.07;
+      fv = vec3(f);
     }
     // Side faces: the tile ART bakes its faces ~0.70x darker than the top
     // (measured across lava/crystal/mushroom sets), so a uniform floor left
@@ -382,7 +438,7 @@ void main() {
     // inverse — glowing substance then reads the SAME on wall and top, and
     // the boost exactly cancels the baked shading (no visible seam).
     float eBoost = isFace ? 1.4 : 1.0;
-    light = max(light, eCol * ePar.g * f * eBoost);
+    light = max(light, eCol * ePar.g * fv * eBoost);
   }
 
   // Per-source glow halos (tile-emission@2 sources): a world-anchored field
@@ -900,16 +956,13 @@ export class NightLights {
         const img = this.stampImg;
         rt.beginDraw();
         for (const g of stamps) {
-          let f = 1;
-          if (g.anim === 1) f = 0.85 + 0.15 * Math.sin(t * 1.3 + g.phase);
-          else if (g.anim === 2)
-            f = 1 - 0.12 * (0.5 + 0.5 * Math.sin(t * 3.1 + g.phase)) - 0.06 * Math.sin(t * 8.3 + g.phase * 1.7);
-          img.setTint(
-            (Math.round(g.color[0] * 255) << 16) |
-              (Math.round(g.color[1] * 255) << 8) |
-              Math.round(g.color[2] * 255),
-          );
-          img.setAlpha(Math.min(1, Math.max(0, g.alpha * f)));
+          // Shared "alive" waveform (see emissionWave): overall amplitude
+          // rides in alpha, the colour-shift ratio rides in the tint.
+          const fv = emissionWave(g.anim, t, g.phase);
+          const fm = (fv[0] + fv[1] + fv[2]) / 3;
+          const ch = (i: number) => Math.min(255, Math.round(g.color[i] * (fv[i] / fm) * 255));
+          img.setTint((ch(0) << 16) | (ch(1) << 8) | ch(2));
+          img.setAlpha(Math.min(1, Math.max(0, g.alpha * fm)));
           img.setDisplaySize(g.radius * 2, (g.ry ?? g.radius) * 2);
           rt.batchDraw(img, g.x - camX, g.y - camY);
         }

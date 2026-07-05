@@ -35,6 +35,7 @@ import {
   NightLights,
   ShaderLight,
   MAX_SHADER_LIGHTS,
+  emissionWave,
   EmissionMap,
   EmissionEntry,
   GlowStamp,
@@ -968,11 +969,10 @@ export class WorldScene extends Phaser.Scene {
         // to the ART's own pixels, so the glow follows the tile's shape.
         const e = lo.emission;
         const ph = lo.phase ?? 0;
-        let f = 1;
-        if (e.anim === "flicker")
-          f = 1 - 0.12 * (0.5 + 0.5 * Math.sin(tNow * 3.1 + ph)) - 0.06 * Math.sin(tNow * 8.3 + ph * 1.7);
-        else if (e.anim === "pulse") f = 0.85 + 0.15 * Math.sin(tNow * 1.3 + ph);
-        const floor = (i: number) => Math.round(Math.min(1, e.color[i] * e.self * f) * 255);
+        // Shared "alive" waveform (emissionWave) — same maths as the shader
+        // floor, so the copy's glow moves in step with the world's.
+        const fv = emissionWave(e.anim === "flicker" ? 2 : e.anim === "pulse" ? 1 : 0, tNow, ph);
+        const floor = (i: number) => Math.round(Math.min(1, e.color[i] * e.self * fv[i]) * 255);
         tint =
           (Math.max((tint >> 16) & 0xff, floor(0)) << 16) |
           (Math.max((tint >> 8) & 0xff, floor(1)) << 8) |
@@ -1610,14 +1610,15 @@ export class WorldScene extends Phaser.Scene {
    * The pool's grid-circular falloff maps through the iso projection to an
    * axis-aligned screen ellipse (1 cell of grid distance = √2·dx horizontal,
    * √2·dy vertical at the extremes), so pool stamps carry ry = radius·dy/dx.
-   * Only fire-like anims flicker; a pulsing crystal must not throb at its
-   * rim (the pulse itself lives in the per-pixel self floor). */
+   * Pools carry their category's anim mode: fire pools flicker with the
+   * gust envelope, crystal pools breathe with the slow pulse (see
+   * emissionWave — the calm "alive" waveform the maintainer asked for). */
   private buildPoolStamps(cam: Phaser.Cameras.Scene2D.Camera): GlowStamp[] {
     if (!this.world || !this.night) return [];
     const { dx, dy, lh } = MAP_GEOMETRY;
     const buckets = new Map<
       string,
-      { color: [number, number, number]; strength: number; radius: number; flicker: number; n: number; sc: number; sr: number; z: number }
+      { color: [number, number, number]; strength: number; radius: number; anim: number; n: number; sc: number; sr: number; z: number }
     >();
     const x0 = cam.worldView.x - EMISSION_PAD;
     const x1 = cam.worldView.right + EMISSION_PAD;
@@ -1645,7 +1646,7 @@ export class WorldScene extends Phaser.Scene {
               color: em.color,
               strength: em.strength,
               radius: em.radius,
-              flicker: em.anim === "flicker" ? 0.6 : 0,
+              anim: em.anim === "flicker" ? 2 : em.anim === "pulse" ? 1 : 0,
               n: 0,
               sc: 0,
               sr: 0,
@@ -1692,7 +1693,7 @@ export class WorldScene extends Phaser.Scene {
         // pool present the per-pool weight must sit lower (0.7 washed the
         // crystal lake's field to near-white and broke its hue dominance).
         alpha: Math.min(1, b.strength * 0.42),
-        anim: b.flicker > 0 ? 2 : 0,
+        anim: b.anim,
         phase,
       });
     }
