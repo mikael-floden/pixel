@@ -1,17 +1,16 @@
 """PixelLab API client for the TILES2 domain — isometric tile generation.
 
-tiles2 generates NO-OUTLINE 64x64 isometric terrain tiles via the async
-`/create-isometric-tile` endpoint — the only public endpoint that supports
-`outline="lineless"` (create-tiles-pro bakes in a dark outline and rejects any
-outline field). One call = one tile; `create_isometric_tile` polls the job and
-returns a decoded Pillow image. A "sheet" is N such tiles generated together.
+tiles2 generates isometric terrain tiles via the async `create-tiles-pro`
+endpoint. POST returns {tile_id, background_job_id}; poll the job, then the
+completed job's `last_response.images` holds the tiles as RAW RGBA bytes (base64)
+with width/height (NOT PNG). `create_tiles` hides all that and returns decoded
+Pillow images.
 
-House style: image_size 64x64, isometric_tile_shape "thick tile" (~50% thickness;
-this endpoint has no numeric depth), outline "lineless", basic shading, medium
-detail.
-
-`create_tiles` (create-tiles-pro, 16-variation sets WITH a baked outline) is kept
-for reference but is no longer the tiles2 generation path.
+House format (tiles2 is a breaking change from tiles v1):
+    tile_type=isometric, tile_size=64, tile_view="high top-down",
+    tile_view_angle=28.0, tile_depth_ratio=0.50, tile_flat_top_px=2.
+There is deliberately NO outline (create-tiles-pro has no outline param; we ask
+for lineless in the prompt and remove any residual outline in post-process).
 
 Base URL https://api.pixellab.ai/v2, Bearer auth from PIXELLAB_API_KEY.
 Isolated per-domain copy (see repo CLAUDE.md / coordination/PROTOCOL.md).
@@ -140,31 +139,7 @@ class PixelLabClient:
                 raise PixelLabError(f"job {job_id} timed out after {timeout}s")
             time.sleep(interval)
 
-    # -- single isometric tiles (no-outline, 64px) ---------------------------
-
-    def create_isometric_tile(self, description, image_size=64, tile_shape="thick tile",
-                              outline="lineless", shading="basic shading",
-                              detail="medium detail", seed=None, job_timeout=900):
-        """Generate ONE 64x64 isometric tile via /create-isometric-tile. Unlike
-        create-tiles-pro this endpoint supports `outline="lineless"` (no outline)
-        — the look the tiles2 house style wants. Returns a single PIL image."""
-        payload = {
-            "description": description,
-            "image_size": {"width": int(image_size), "height": int(image_size)},
-            "isometric_tile_shape": tile_shape,
-            "outline": outline,
-            "shading": shading,
-            "detail": detail,
-        }
-        if seed is not None:
-            payload["seed"] = int(seed)
-        resp = self._post("/create-isometric-tile", payload)
-        job = resp.get("background_job_id")
-        last = self.wait_job(job, timeout=job_timeout) if job else resp
-        img = last.get("image")
-        return _decode_tile(img) if img else None
-
-    # -- isometric tile sets (create-tiles-pro; has a baked outline) ----------
+    # -- isometric tile sets -------------------------------------------------
 
     def create_tiles(self, description, tile_size=64, tile_view="high top-down",
                      view_angle=28.0, depth_ratio=0.50, tile_type="isometric",
