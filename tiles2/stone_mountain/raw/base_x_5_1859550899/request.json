@@ -1,0 +1,116 @@
+{
+  "schema": "tiles2/raw-sheet@1",
+  "sheet": "base_x_5_1859550899",
+  "ground_type": "stone_mountain",
+  "kind": "elevation",
+  "height": "base_x_5",
+  "levels": 5,
+  "transition_to": null,
+  "tile_id": "d1784096-9a70-4039-8a76-a6da8f887924",
+  "slot": 0,
+  "attempt": 1,
+  "objects": [
+    "a ruined castle turret",
+    "a colossal seated stone guardian",
+    "a ruined stone gate arch",
+    "a giant upright standing stone",
+    "a tall crumbling bell tower",
+    "a massive basalt organ-pipe column",
+    "a massive ore-laced rock column",
+    "a grand fortress tower with battlements",
+    "a giant fallen statue head propped upright",
+    "a towering hoodoo rock pillar"
+  ],
+  "prompt": "isometric pixel-art game tiles for a top-down RPG map. Each tile shows a DIFFERENT huge towering object as the clear MAIN SUBJECT \u2014 prominent, detailed and standing tall, on only a small low patch of grey mountain stone. The object dominates and fills the tile; keep the ground base minimal and thin \u2014 NOT a tall dirt pedestal or block with a small object on top. Go for maximum variety \u2014 different shapes, species, ages and conditions, no two tiles alike. The set: 1) a ruined castle turret 2) a colossal seated stone guardian 3) a ruined stone gate arch 4) a giant upright standing stone 5) a tall crumbling bell tower 6) a massive basalt organ-pipe column 7) a massive ore-laced rock column 8) a grand fortress tower with battlements 9) a giant fallen statue head propped upright 10) a towering hoodoo rock pillar. cozy hand-crafted top-down RPG pixel art, rich natural texture, cohesive harmonious palette, soft directional shading, high quality game asset, transparent background",
+  "settings": {
+    "endpoint": "/create-tiles-pro",
+    "tile_type": "isometric",
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "tile_view_angle": 28.0,
+    "tile_depth_ratio": 0.7346,
+    "tile_height": 128,
+    "tile_flat_top_px": 2,
+    "levels": 5,
+    "face_px": 80
+  },
+  "seed": 1859550899,
+  "count": 12,
+  "tiles": [
+    {
+      "index": 0,
+      "file": "tile_00.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 1,
+      "file": "tile_01.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 2,
+      "file": "tile_02.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 3,
+      "file": "tile_03.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 4,
+      "file": "tile_04.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 5,
+      "file": "tile_05.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 6,
+      "file": "tile_06.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 7,
+      "file": "tile_07.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 8,
+      "file": "tile_08.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 9,
+      "file": "tile_09.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 10,
+      "file": "tile_10.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 11,
+      "file": "tile_11.png",
+      "width": 64,
+      "height": 128
+    }
+  ],
+  "generated_at": "2026-07-05T18:27:09+00:00",
+  "processed": true,
+  "processed_to": "base_x_5/base_x_5_1859550899"
+}
