@@ -1,0 +1,140 @@
+{
+  "schema": "tiles2/raw-sheet@1",
+  "sheet": "base_x_4_784518109",
+  "ground_type": "regular_snow",
+  "kind": "elevation",
+  "height": "base_x_4",
+  "levels": 4,
+  "transition_to": null,
+  "tile_id": "b08b094d-409b-4713-9ccb-9bf0a89c7ef9",
+  "slot": 2,
+  "attempt": 2,
+  "objects": [
+    "a snow-laden tall pine",
+    "a snow-covered watchtower",
+    "a white snowy peak",
+    "a snow-covered ruined arch",
+    "a snow-buried ruined fortress",
+    "a snow-buried leaning menhir",
+    "a tall column of packed snow",
+    "a snowy rock spire hung with icicles",
+    "a wind-sculpted tall drift",
+    "a tall snow-laden fir"
+  ],
+  "prompt": "isometric pixel-art game tiles for a top-down RPG map. Each tile shows a DIFFERENT large object as the clear MAIN SUBJECT \u2014 prominent, detailed and standing tall, on only a small low patch of white snow. The object dominates and fills the tile; keep the ground base minimal and thin \u2014 NOT a tall dirt pedestal or block with a small object on top. Go for maximum variety \u2014 different shapes, species, ages and conditions, no two tiles alike. The set: 1) a snow-laden tall pine 2) a snow-covered watchtower 3) a white snowy peak 4) a snow-covered ruined arch 5) a snow-buried ruined fortress 6) a snow-buried leaning menhir 7) a tall column of packed snow 8) a snowy rock spire hung with icicles 9) a wind-sculpted tall drift 10) a tall snow-laden fir. cozy hand-crafted top-down RPG pixel art, rich natural texture, cohesive harmonious palette, soft directional shading, high quality game asset, transparent background",
+  "settings": {
+    "endpoint": "/create-tiles-pro",
+    "tile_type": "isometric",
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "tile_view_angle": 28.0,
+    "tile_depth_ratio": 0.4885,
+    "tile_height": 128,
+    "tile_flat_top_px": 2,
+    "levels": 4,
+    "face_px": 64
+  },
+  "seed": 784518109,
+  "count": 16,
+  "tiles": [
+    {
+      "index": 0,
+      "file": "tile_00.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 1,
+      "file": "tile_01.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 2,
+      "file": "tile_02.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 3,
+      "file": "tile_03.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 4,
+      "file": "tile_04.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 5,
+      "file": "tile_05.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 6,
+      "file": "tile_06.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 7,
+      "file": "tile_07.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 8,
+      "file": "tile_08.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 9,
+      "file": "tile_09.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 10,
+      "file": "tile_10.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 11,
+      "file": "tile_11.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 12,
+      "file": "tile_12.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 13,
+      "file": "tile_13.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 14,
+      "file": "tile_14.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 15,
+      "file": "tile_15.png",
+      "width": 64,
+      "height": 128
+    }
+  ],
+  "generated_at": "2026-07-05T19:06:07+00:00",
+  "processed": true,
+  "processed_to": "base_x_4/base_x_4_784518109"
+}
