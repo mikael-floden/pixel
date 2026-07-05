@@ -66,6 +66,11 @@ def main():
     ap.add_argument("--no-borders", action="store_true")
     args = ap.parse_args()
 
+    if args.name == "prop_demo":
+        import propdemo
+        propdemo.build(os.path.join(MAPS2, "worlds", "prop_demo"))
+        return
+
     out = os.path.join(MAPS2, "worlds", args.name)
     os.makedirs(out, exist_ok=True)
     wpath = os.path.join(out, "world.json")
