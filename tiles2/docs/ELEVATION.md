@@ -32,14 +32,17 @@ base_x_1 (the ground tile) stays 64×64.
 | base_x_2 |   2    |    32px     |    64     |   **128**   |   **0.0**   | 33 (+1px¹)    | ~65px          |
 | base_x_3 |   3    |    48px     |    64     |   **128**   | **0.2423**  | 48 (median)   | ~50px          |
 | base_x_4 |   4    |    64px     |    64     |   **128**   | **0.4885**  | 64 (tight)    | ~34px          |
+| base_x_5 |   5    |    80px     |    64     |   **128**   | **0.7346**  | 80            | ~18px          |
 
 ¹ 64×128 has a face **floor of ~33px** (measured at depth 0.0), so base_x_2 lands
 1px over a true 2-level (32px) stack. The diamond top stays 30px, so stacking still
 anchors correctly; the extra pixel is occluded in-engine. Hitting exactly 32px
 requires the 64×64 canvas — but that leaves no headroom and clips tall objects, so
-we accept +1px to keep every height on one canvas. base_x_5 (face 80px, depth
-~0.735) fits a 64×128 block (110px) but leaves only ~18px above — fine for
-column-filling decorations, but a 64×160 canvas is needed for tall objects on it.
+we accept +1px to keep every height on one canvas. base_x_5 (face 80px) fills a
+110px block on the 128 canvas with ~18px headroom — enough for its decorations.
+
+Each `(terrain, height)` gets **3** sheets (`target_sheets_per_elev`): 4 terrains ×
+4 heights × 3 = 48 sheets.
 
 ## How the depths were calibrated
 
