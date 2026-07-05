@@ -6,16 +6,15 @@
     "view": "high top-down",
     "view_angle": 28.0,
     "depth_ratio": 0.5,
-    "flat_top_px": 2,
-    "outline": "none"
+    "flat_top_px": 2
   },
   "prompt": {
-    "_comment": "Prepended/appended to every prompt to push the no-outline, cohesive look (create-tiles-pro has no outline param, so we ask for it here and strip residue in postprocess).",
-    "style": "clean lineless pixel art, NO black outline, no dark tile borders, seamless isometric terrain tile, soft matte shading, cohesive muted palette",
-    "base_template": "isometric {description} terrain tiles, every tile is {name} only, {style}: {variations}",
-    "transition_template": "isometric terrain transition tiles from {from_desc} to {to_desc}, {style}: {variations}",
-    "base_variations": "1) even ground 2) subtle texture variation 3) faint detail 4) slightly darker patch 5) slightly lighter patch 6) minimal specks",
-    "transition_variations": "1) mostly {from_name} with {to_name} entering from the north-east 2) mostly {from_name} with {to_name} entering from the north-west 3) even diagonal split {from_name} to {to_name} 4) mostly {to_name} with {from_name} entering from the south-east 5) a patch of {to_name} within {from_name} 6) a soft ragged border between {from_name} and {to_name}"
+    "_comment": "Quality-focused terrain prompts. We do NOT ask for lineless / no-outline — create-tiles-pro bakes an outline in regardless, and demanding it only degrades the art. tiles-pro reads a NUMBERED description as the tile-set variations; `style` sets the overall art direction.",
+    "style": "cozy hand-crafted top-down RPG pixel art, rich natural texture, cohesive harmonious palette, soft directional shading, high quality game terrain tile",
+    "base_template": "isometric {description} terrain tiles, every tile is {name}: {variations}. {style}",
+    "transition_template": "isometric terrain tiles blending from {from_desc} to {to_desc}: {variations}. {style}",
+    "base_variations": "1) plain even ground 2) soft surface texture 3) a few natural details 4) a slightly darker weathered patch 5) a slightly lighter sunlit patch 6) small scattered specks",
+    "transition_variations": "1) mostly {from_name} with {to_name} entering from one corner 2) an even diagonal split from {from_name} to {to_name} 3) mostly {to_name} with a patch of {from_name} 4) a soft natural border between {from_name} and {to_name} 5) {to_name} scattered across {from_name} 6) a gradual blend from {from_name} into {to_name}"
   },
   "ground_types": [
     { "id": "saturated_grass", "name": "saturated grass",     "description": "lush saturated deep green grass" },

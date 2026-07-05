@@ -20,16 +20,19 @@ grass".
 
 | setting | value |
 |---|---|
+| Endpoint | **`/v2/create-tiles-pro`** (16-variation sets; shows in the pixellab.ai/maps UI) |
 | Tile size | **64×64 px** |
 | Tile type | **isometric** |
 | View preset | **high top-down** |
 | Angle | **28.0°** |
 | Thickness | **0.50** |
 | Top/bottom pixels | **2 px (classic)** |
-| Outline | **none** |
 
-`create-tiles-pro` has no outline parameter, so "no outline" is asked for in the
-prompt and any residual dark rim is removed in post-process (see below).
+**On outlines:** `create-tiles-pro` bakes a dark edge outline into its output and
+has no way to disable it. We do **not** chase "lineless" in the prompt (it can't be
+achieved that way and only degrades the art). Prompts are quality-focused instead;
+post-process still softens the outer *silhouette* rim, but the interior edge lines
+are accepted as part of the look.
 
 ## Folder layout (per ground type `<gid>`)
 

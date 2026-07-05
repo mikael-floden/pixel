@@ -42,7 +42,6 @@ def _settings(cfg):
         "endpoint": ENDPOINT, "tile_type": t["type"], "tile_size": t["size"],
         "tile_view": t["view"], "tile_view_angle": t["view_angle"],
         "tile_depth_ratio": t["depth_ratio"], "tile_flat_top_px": t["flat_top_px"],
-        "outline": t.get("outline", "none"),
     }
 
 
