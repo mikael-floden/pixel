@@ -73,12 +73,19 @@ const SHADOW_TEX = "avatar:shadow";
 // agent — every category has an entry, null = does not glow). Each glowing
 // category gets (a) a self-glow FLOOR on its own pixels (shader, nightlight.ts)
 // and (b) a small SHADOW-FREE glow pool around it. Pools are clustered per
-// EMISSION_BUCKET-cell bucket so a whole lava lake becomes a few soft pools
-// instead of hundreds of point lights, and only the nearest EMISSION_POOL_MAX
-// clusters feed the shader (the rest still glow via the self floor).
+// EMISSION_BUCKET-cell bucket (a whole lava lake becomes a few soft pools)
+// and rendered as big elliptical stamps in the additive glow field — NOT as
+// shader light slots. Slots are capped at 12 and were handed to the nearest
+// pools only, so walking a few steps re-ranked the winners and pools popped
+// on/off deep inside the viewport (playtester). The stamp field has no slot
+// limit, and EMISSION_PAD keeps every pool whose light could reach the view
+// inside the rebuild window: culling only ever drops light that is entirely
+// off-screen.
 const MAX_EMISSIVE = 48; // atmosphere blooms per view (canvas fallback, perf)
 const EMISSION_BUCKET = 3; // cells per cluster bucket side
-const EMISSION_POOL_MAX = 8; // shader glow pools per view (top + face pools)
+// Pool reach ≈ radius(≤3.5 cells) × cluster growth(≤2) × 45.3 px/cell ≈ 316px,
+// plus the 96px camera drift allowed between occluder rebuilds.
+const EMISSION_PAD = 448;
 // Time-of-day cycle ([1] cycles, ~2.5s smooth interpolation between phases).
 // Each phase is ONLY an ambient grade (what unlit art is multiplied by) —
 // point lights are never phase-tuned (a light is a light; daylight drowns
@@ -196,7 +203,7 @@ export class WorldScene extends Phaser.Scene {
   // WebGL is available, the multiply grade as the canvas fallback.
   private atmo!: Atmosphere;
   private night?: NightLights;
-  private shaderLights: ShaderLight[] = [];
+
   // tiles/emission.json categories (empty when the registry failed to load).
   private emission: EmissionMap = {};
   // Bottom-anchor offset for tall (64x128 cliff/tall profile) tile art: drawn
@@ -869,12 +876,11 @@ export class WorldScene extends Phaser.Scene {
         // a fast falloff into the ember-red rim).
         sl.push({ col: c.col, row: c.row, z: c.z, radius: 7, color: [1.9, 0.88, 0.3], flicker: 1 });
       }
-      // Torches fill up to the cap MINUS a few slots reserved for emission
-      // glow pools — a crowded camp must not un-light the lava beside it.
-      const reserve = Math.min(3, this.shaderLights.length);
+      // Torches fill the remaining slots (emission glow pools live in the
+      // additive glow field, not in light slots — they can't be crowded out).
       for (const [id, a] of this.avatars.entries()) {
         if (id === myId && !this.torchOn) continue;
-        if (sl.length >= MAX_SHADER_LIGHTS - reserve) break;
+        if (sl.length >= MAX_SHADER_LIGHTS) break;
         // Grid position from the FLAT authoritative coords (1 cell = CELL_WU
         // world units) — the projected lx/ly live in screen space and put the
         // torch underground, so the terrain shadowed its own light.
@@ -888,10 +894,6 @@ export class WorldScene extends Phaser.Scene {
           color: [0.85, 0.58, 0.32],
           flicker: 0.35, // hand torch: gentle fire flicker
         });
-      }
-      for (const l of this.shaderLights) {
-        if (sl.length >= MAX_SHADER_LIGHTS) break;
-        sl.push(l);
       }
       // Time-of-day: ease the on-screen grade toward the target phase.
       // Wall-clock driven — the physics dt is clamped per frame and would
@@ -1435,15 +1437,8 @@ export class WorldScene extends Phaser.Scene {
     this.occluders = [];
     this.occluderMeta = [];
     this.emissiveLights = [];
-    this.shaderLights = [];
 
     const { dx, dy, lh, tile: tileSize } = MAP_GEOMETRY;
-    // Emission pool clustering: one glow light per bucket of nearby glowing
-    // cells of the same category (a lava lake = a few soft pools).
-    const buckets = new Map<
-      string,
-      { color: [number, number, number]; strength: number; radius: number; flicker: number; n: number; sc: number; sr: number; z: number }
-    >();
     const pad = 200;
     const x0 = cam.worldView.x - pad;
     const x1 = cam.worldView.right + pad;
@@ -1462,61 +1457,25 @@ export class WorldScene extends Phaser.Scene {
         if (!cell) continue;
         const s = surfaceFor(cell.t);
         // Emissive tiles (tiles/emission.json): atmosphere bloom for the
-        // canvas fallback + a cluster-bucket sample for the shader pools.
-        // Per-VARIANT: plain variants of a glowing category stay dark (only
-        // variants with detected glow sources emit; v1 entries emit always).
+        // canvas fallback (glow POOLS are collected in their own wider pass
+        // below). Per-VARIANT: plain variants of a glowing category stay
+        // dark (only variants with detected glow sources emit; v1 entries
+        // emit always).
         const em = this.emission[cell.t];
         const variantGlows = em && (!em.sources || (em.sources[String(cell.v)]?.length ?? 0) > 0);
-        if (em && variantGlows) {
-          if (!this.night && this.emissiveLights.length < MAX_EMISSIVE) {
-            const hex =
-              (Math.round(em.color[0] * 255) << 16) |
-              (Math.round(em.color[1] * 255) << 8) |
-              Math.round(em.color[2] * 255);
-            this.emissiveLights.push({
-              x: this.iso.ox + u * dx + dx,
-              y: this.iso.oy + v * dy + dy - cell.l * lh,
-              color: hex,
-              radius: em.radius * 32,
-              ground: true,
-              depth: this.iso.oy + v * dy + dy + 0.2, // occluded by fronting walls
-            });
-          }
-          const sample = (kind: string, sc: number, sr: number, sz: number) => {
-            const bk = `${cell.t}:${kind}:${Math.floor(col / EMISSION_BUCKET)}:${Math.floor(row / EMISSION_BUCKET)}`;
-            let b = buckets.get(bk);
-            if (!b) {
-              b = {
-                color: em.color,
-                strength: em.strength,
-                radius: em.radius,
-                flicker: em.anim === "flicker" ? 0.6 : 0,
-                n: 0,
-                sc: 0,
-                sr: 0,
-                z: 0,
-              };
-              buckets.set(bk, b);
-            }
-            b.n++;
-            b.sc += sc;
-            b.sr += sr;
-            b.z += sz;
-          };
-          // Top glow pool: lights the surface around the tile.
-          sample("t", col + 0.5, row + 0.5, cell.l + 0.6);
-          // Exposed SIDE FACES are area lights of their own: a pool floating
-          // in FRONT of the face at mid-face height. The top pool can't do
-          // this job — for a tall column it sits levels above the ground at
-          // the base (the vertical falloff eats it), and it stands BEHIND
-          // the neighbouring wall's plane so the Lambert gate zeroes it —
-          // the playtester's "glowing wall next to a pitch-dark one" seam.
-          const lS = this.world.rows[row + 1]?.[col]?.l;
-          const lE = this.world.rows[row]?.[col + 1]?.l;
-          if (lS !== undefined && cell.l - lS >= 1)
-            sample("s", col + 0.5, row + 1.35, (cell.l + lS) / 2 + 0.3);
-          if (lE !== undefined && cell.l - lE >= 1)
-            sample("e", col + 1.35, row + 0.5, (cell.l + lE) / 2 + 0.3);
+        if (em && variantGlows && !this.night && this.emissiveLights.length < MAX_EMISSIVE) {
+          const hex =
+            (Math.round(em.color[0] * 255) << 16) |
+            (Math.round(em.color[1] * 255) << 8) |
+            Math.round(em.color[2] * 255);
+          this.emissiveLights.push({
+            x: this.iso.ox + u * dx + dx,
+            y: this.iso.oy + v * dy + dy - cell.l * lh,
+            color: hex,
+            radius: em.radius * 32,
+            ground: true,
+            depth: this.iso.oy + v * dy + dy + 0.2, // occluded by fronting walls
+          });
         }
         const tall = cell.l > 0 || (!s.standable && !s.swimmable);
         if (!tall) continue;
@@ -1622,35 +1581,6 @@ export class WorldScene extends Phaser.Scene {
       }
     }
 
-    // Shader glow pools: nearest clusters win the limited light slots. Pool
-    // radius grows gently with cluster size (a lake glows wider than a vein);
-    // NEGATIVE radius marks them shadow-free in the shader. Ember-rim flicker
-    // only for fire-like anims — a pulsing crystal must not turn red at its
-    // rim (the pulse itself lives in the per-pixel self floor).
-    if (buckets.size) {
-      const uC = (ccx - this.iso.ox) / dx;
-      const vC = (ccy - this.iso.oy) / dy;
-      const cCol = (uC + vC) / 2;
-      const cRow = (vC - uC) / 2;
-      const pools = [...buckets.values()]
-        .map((b) => ({ b, col: b.sc / b.n, row: b.sr / b.n }))
-        .sort(
-          (a, z) =>
-            (a.col - cCol) ** 2 + (a.row - cRow) ** 2 - ((z.col - cCol) ** 2 + (z.row - cRow) ** 2),
-        )
-        .slice(0, EMISSION_POOL_MAX);
-      for (const { b, col, row } of pools) {
-        this.shaderLights.push({
-          col,
-          row,
-          z: b.z / b.n, // mean sample height (tops carry their own +0.6)
-          radius: -(b.radius * (1 + 0.35 * Math.sqrt(b.n - 1))),
-          color: [b.color[0] * b.strength, b.color[1] * b.strength, b.color[2] * b.strength],
-          flicker: b.flicker,
-        });
-      }
-    }
-
     // Per-pixel glow halos (tile-emission@2 sources) for this window. Demo
     // stations draw tall art ONCE at ground level, so every source anchors
     // to the drawn art instead of repeating down a stacked column.
@@ -1663,7 +1593,110 @@ export class WorldScene extends Phaser.Scene {
       undefined,
       (t, v) => this.artYOff(tileKey(t, v)),
       this.demoMode,
-    );
+    ).concat(this.buildPoolStamps(cam));
+  }
+
+  /** Emission glow POOLS as elliptical stamps in the additive glow field.
+   *
+   * One cluster bucket per EMISSION_BUCKET cells of glowing same-category
+   * cells (top pool + a floating pool in front of each exposed s/e face —
+   * the top pool alone left a tall column's base wall pitch dark). Formerly
+   * these were shader light slots and only the nearest few
+   * won one, so walking re-ranked the winners and pools popped on/off deep
+   * inside the viewport. The stamp field is unlimited, and the EMISSION_PAD
+   * walk window exceeds the largest pool's reach plus the 96px rebuild
+   * drift — a culled pool's entire influence is off-screen, always.
+   *
+   * The pool's grid-circular falloff maps through the iso projection to an
+   * axis-aligned screen ellipse (1 cell of grid distance = √2·dx horizontal,
+   * √2·dy vertical at the extremes), so pool stamps carry ry = radius·dy/dx.
+   * Only fire-like anims flicker; a pulsing crystal must not throb at its
+   * rim (the pulse itself lives in the per-pixel self floor). */
+  private buildPoolStamps(cam: Phaser.Cameras.Scene2D.Camera): GlowStamp[] {
+    if (!this.world || !this.night) return [];
+    const { dx, dy, lh } = MAP_GEOMETRY;
+    const buckets = new Map<
+      string,
+      { color: [number, number, number]; strength: number; radius: number; flicker: number; n: number; sc: number; sr: number; z: number }
+    >();
+    const x0 = cam.worldView.x - EMISSION_PAD;
+    const x1 = cam.worldView.right + EMISSION_PAD;
+    const y0 = cam.worldView.y - EMISSION_PAD;
+    const y1 = cam.worldView.bottom + EMISSION_PAD + this.maxLevel * lh;
+    const u0 = Math.floor((x0 - this.iso.ox) / dx) - 1;
+    const u1 = Math.ceil((x1 - this.iso.ox) / dx) + 1;
+    const v0 = Math.max(0, Math.floor((y0 - this.iso.oy) / dy) - 1);
+    const v1 = Math.ceil((y1 - this.iso.oy) / dy) + 1;
+    for (let v = v0; v <= v1; v++) {
+      for (let u = u0; u <= u1; u++) {
+        if ((u + v) & 1) continue;
+        const col = (u + v) / 2;
+        const row = (v - u) / 2;
+        const cell = this.world.rows[row]?.[col];
+        if (!cell) continue;
+        const em = this.emission[cell.t];
+        if (!em) continue;
+        if (em.sources && !(em.sources[String(cell.v)]?.length ?? 0)) continue;
+        const sample = (kind: string, sc: number, sr: number, sz: number) => {
+          const bk = `${cell.t}:${kind}:${Math.floor(col / EMISSION_BUCKET)}:${Math.floor(row / EMISSION_BUCKET)}`;
+          let b = buckets.get(bk);
+          if (!b) {
+            b = {
+              color: em.color,
+              strength: em.strength,
+              radius: em.radius,
+              flicker: em.anim === "flicker" ? 0.6 : 0,
+              n: 0,
+              sc: 0,
+              sr: 0,
+              z: 0,
+            };
+            buckets.set(bk, b);
+          }
+          b.n++;
+          b.sc += sc;
+          b.sr += sr;
+          b.z += sz;
+        };
+        // Top glow pool: lights the surface around the tile.
+        sample("t", col + 0.5, row + 0.5, cell.l + 0.6);
+        // Exposed SIDE FACES are area lights of their own: a pool floating
+        // in FRONT of the face at mid-face height.
+        const lS = this.world.rows[row + 1]?.[col]?.l;
+        const lE = this.world.rows[row]?.[col + 1]?.l;
+        if (lS !== undefined && cell.l - lS >= 1)
+          sample("s", col + 0.5, row + 1.35, (cell.l + lS) / 2 + 0.3);
+        if (lE !== undefined && cell.l - lE >= 1)
+          sample("e", col + 1.35, row + 0.5, (cell.l + lE) / 2 + 0.3);
+      }
+    }
+    const out: GlowStamp[] = [];
+    for (const b of buckets.values()) {
+      const col = b.sc / b.n;
+      const row = b.sr / b.n;
+      const z = b.z / b.n; // mean sample height (tops carry their own +0.6)
+      // Pool radius grows gently with cluster size (a lake glows wider than
+      // a vein). √2·dx per cell: the widest point of the grid circle's
+      // screen ellipse (cells at ±45° to the axes project the farthest).
+      const rCells = b.radius * (1 + 0.35 * Math.sqrt(b.n - 1));
+      const phase = ((((Math.round(col * 8) * 73856093) ^ (Math.round(row * 8) * 19349663)) >>> 0) % 628) / 100;
+      out.push({
+        x: this.iso.ox + (col - row) * dx + dx,
+        y: this.iso.oy + 8 + (col + row) * dy - z * lh,
+        radius: rCells * Math.SQRT2 * dx,
+        ry: rCells * Math.SQRT2 * dy,
+        color: b.color,
+        // Calibrated against the former shader pools by the verify-emission
+        // field probes: the old path CULLED to the 8 nearest pools, so in a
+        // dense lake only part of the cluster ever lit at once — with every
+        // pool present the per-pool weight must sit lower (0.7 washed the
+        // crystal lake's field to near-white and broke its hue dominance).
+        alpha: Math.min(1, b.strength * 0.42),
+        anim: b.flicker > 0 ? 2 : 0,
+        phase,
+      });
+    }
+    return out;
   }
 
   /** Demo mode: a floating number + name label above every station (from the

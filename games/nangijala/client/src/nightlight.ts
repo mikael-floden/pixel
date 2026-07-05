@@ -56,7 +56,10 @@ export type EmissionMap = Record<string, EmissionEntry | null>;
 export interface GlowStamp {
   x: number; // world px (halo centre)
   y: number;
-  radius: number; // halo radius, world px
+  radius: number; // halo radius, world px (horizontal semi-axis)
+  ry?: number; // vertical semi-axis — emission POOLS are circles in grid
+  // space, which the iso projection maps to a flat screen ellipse (dy/dx);
+  // per-pixel halos stay round (ry omitted).
   color: [number, number, number];
   alpha: number; // 0..1 peak intensity
   anim: number; // 0 static, 1 pulse, 2 flicker
@@ -907,7 +910,7 @@ export class NightLights {
               Math.round(g.color[2] * 255),
           );
           img.setAlpha(Math.min(1, Math.max(0, g.alpha * f)));
-          img.setDisplaySize(g.radius * 2, g.radius * 2);
+          img.setDisplaySize(g.radius * 2, (g.ry ?? g.radius) * 2);
           rt.batchDraw(img, g.x - camX, g.y - camY);
         }
         rt.endDraw();
