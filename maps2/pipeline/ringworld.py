@@ -40,8 +40,9 @@ WATER = "clear_water"
 PRIORITY = {"saturated_grass": 0, "lightdark_dirt": 1, "regular_snow": 2,
             "stone_mountain": 3, "black_mountain": 4, "clear_water": 5}
 
-# fraction of pure-ground cells that use a "special" (accent) base tile; the
-# rest use the standard clean ground colour. Keep it low so accents stay rare.
+# fill mix for pure ground: PLAIN_PROB use the ONE canonical plain tile (so the
+# field reads flat/uniform); of the remainder, SPECIAL_PROB are accent tiles.
+PLAIN_PROB = 0.90
 SPECIAL_PROB = 0.15
 
 
@@ -186,8 +187,10 @@ def generate(n: int = 160, seed: int = 7, lib: Tiles2 | None = None) -> RingWorl
         else:
             # pure material: ~75% standard clean ground, ~25% special accents,
             # so flowers/mushrooms/bare patches stay rare and special
-            top[y, x] = lib.pick_base(m, _hash01(x, y, seed + 2),
+            top[y, x] = lib.pick_base(m, _hash01(x, y, seed + 4),
+                                      _hash01(x, y, seed + 2),
                                       _hash01(x, y, seed + 1),
+                                      plain_prob=PLAIN_PROB,
                                       special_prob=SPECIAL_PROB)
 
     # intern tile paths into a compact table + per-cell index

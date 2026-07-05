@@ -150,10 +150,20 @@ class Tiles2:
         self._pools[gid] = (clean, special)
         return clean, special
 
-    def pick_base(self, gid: str, r_pool: float, r_tile: float,
-                  special_prob: float = 0.25) -> str:
-        """Deterministic weighted pick: mostly clean ground, occasional accent."""
+    def plain_tile(self, gid: str) -> str:
+        """The single cleanest, most single-colour tile of a type — the canonical
+        plain ground used for the bulk of the fill so a field reads as ONE flat
+        material, not a patchwork of near-identical variants ("salami")."""
+        return self.base_pools(gid)[0][0]
+
+    def pick_base(self, gid: str, r_plain: float, r_pool: float, r_tile: float,
+                  plain_prob: float = 0.90, special_prob: float = 0.15) -> str:
+        """Deterministic pick. `plain_prob` of cells get the ONE canonical plain
+        tile; the rest add a little life — mostly other clean variants, rarely a
+        special accent."""
         clean, special = self.base_pools(gid)
+        if r_plain < plain_prob:
+            return clean[0]
         pool = special if r_pool < special_prob else clean
         return pool[int(r_tile * len(pool)) % len(pool)]
 
