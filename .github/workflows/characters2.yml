@@ -1,16 +1,18 @@
-name: characters2 heroes
+name: characters2 sync
 
-# Keeps the two game heroes (humans/default_boy, humans/default_girl) present.
-# Delete a hero's folder and the next run regenerates it as a slightly different
-# variation. No-ops (no PixelLab cost) when both are already present.
+# Mirrors the two DECIDED game heroes (humans/default_boy, humans/default_girl)
+# from PixelLab into the repo: base 8-direction model + every animation the user
+# adds in the PixelLab UI (and later outfits). PixelLab is the source of truth.
+# Cheap + idempotent: it only downloads assets whose source URL / animation group
+# changed, so a run with nothing new costs nothing and commits nothing.
 
 on:
   schedule:
-    - cron: "40 */3 * * *"      # every 3 hours — cheap: only acts if a hero is missing
+    - cron: "*/30 * * * *"      # every 30 min — picks up newly-added animations
   workflow_dispatch:
     inputs:
-      force:
-        description: "Reroll these now (space-separated: default_boy default_girl)"
+      names:
+        description: "Only sync these heroes (space-separated: default_boy default_girl). Empty = both."
         default: ""
 
 permissions:
@@ -21,7 +23,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  heroes:
+  sync:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -39,7 +41,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Ensure both heroes exist
+      - name: Sync heroes from PixelLab
         env:
           PIXELLAB_API_KEY: ${{ secrets.PIXELLAB_API_KEY }}
         run: |
@@ -49,4 +51,4 @@ jobs:
           fi
           git config user.name "pixel-characters2-bot"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          python characters2/pipeline/generate.py ${{ github.event.inputs.force && format('--force {0}', github.event.inputs.force) || '' }}
+          python characters2/pipeline/sync.py ${{ github.event.inputs.names }}
