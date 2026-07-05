@@ -76,9 +76,9 @@
     "_comment": "Proceed if the subscription pool is above min_generations_remaining OR there are >= min_usd credits (PixelLab bills USD credits once subscription generations hit 0; tiles are cheap)."
   },
   "postprocess": {
-    "_comment": "raw -> base/transitions. neutralize_outline removes any residual dark rim (tiles2 = no outline). strength (0..1) scales colour-normalisation toward the ref-sprite(s).",
+    "_comment": "raw -> base/transitions. neutralize_outline softens the outer silhouette rim. harmonize pulls each tile's dominant MATERIAL colour (auto-detected per type from its first base sheet) to a common target — greens together for grass, whites for snow — keeping texture; dirt/rock/flowers untouched. ab_strength = hue+saturation pull, v_strength = mean-brightness leveling (0..1).",
     "neutralize_outline": true,
     "darkness_thresh": 60,
-    "strength": 1.0
+    "harmonize": { "ab_strength": 0.8, "v_strength": 0.65 }
   }
 }

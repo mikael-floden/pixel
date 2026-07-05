@@ -4,7 +4,7 @@
   "ground_type": "saturated_grass",
   "kind": "base",
   "transition_to": null,
-  "prompt": "isometric lush saturated deep green grass terrain tiles, grass dotted with tiny wildflowers and clover, every tile is saturated grass: 1) plain even ground 2) soft surface texture 3) a few natural details 4) a slightly darker weathered patch 5) a slightly lighter sunlit patch 6) small scattered specks. cozy hand-crafted top-down RPG pixel art, rich natural texture, cohesive harmonious palette, soft directional shading, high quality game terrain tile",
+  "tile_id": "de8acc46-de55-441a-92dc-7a70a6b9bf72",
   "settings": {
     "endpoint": "/create-tiles-pro",
     "tile_type": "isometric",
@@ -14,7 +14,6 @@
     "tile_depth_ratio": 0.5,
     "tile_flat_top_px": 2
   },
-  "seed": 2055209406,
   "count": 16,
   "tiles": [
     {
@@ -117,10 +116,12 @@
   "generated_at": "2026-07-05T08:29:54+00:00",
   "processing": {
     "source_raw": "raw/base_2055209406",
-    "normalized": false,
     "neutralize_outline": true,
-    "strength": 1.0,
-    "ref_from": null,
-    "ref_to": null
+    "harmonize": {
+      "ab_strength": 0.8,
+      "v_strength": 0.65
+    },
+    "harmonized_from": true,
+    "harmonized_to": false
   }
 }
