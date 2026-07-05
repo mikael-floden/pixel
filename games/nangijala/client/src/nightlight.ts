@@ -74,30 +74,34 @@ export const MAX_SHADER_LIGHTS = 12;
  * (same constants, same shapes) — change BOTH or the floors, halos and lit
  * copies drift out of sync.
  *
- * flicker: a mild shimmer under a slow ~37s "gust" envelope (sometimes
- *   restless, sometimes near-calm), a rare short surge when two slow sines
- *   align, and warm colour coupling — dimmer reads deep red, brighter reads
- *   yellow-white, like real embers.
+ * flicker: an ever-present shimmer under a slow ~37s "gust" envelope
+ *   (restless then calmer, but never fully still), a rare short surge when
+ *   two slow sines align, and warm colour coupling — dimmer reads deep red,
+ *   brighter reads yellow-white, like real embers.
  * pulse: three incommensurate slow sines (≈6s/15s/57s) breathing between
- *   0.73 and 1.07, plus a very slow ±6% red↔blue hue drift.
+ *   ~0.64 and ~1.08, plus a very slow ±3% red↔blue hue drift.
  * static: near-steady with a soft occasional glint (gold catching light).
- * All terms are phase-decorrelated per cell/source. */
+ * All terms are phase-decorrelated per cell/source. NB: the shader animation
+ * clock is uAnimTime (NOT `time` — Phaser reserves `time` and overwrites it
+ * every frame with the frame delta, which froze all shader animation). */
 export function emissionWave(anim: number, t: number, ph: number): [number, number, number] {
   if (anim >= 2) {
-    const env = 0.55 + 0.45 * Math.sin(t * 0.17 + ph * 3.1);
+    // Envelope floor kept high (0.45) so the shimmer is ALWAYS present — a
+    // low floor let the gust damp flicker to invisibility between gusts.
+    const env = 0.72 + 0.28 * Math.sin(t * 0.17 + ph * 3.1);
     let f =
       1 -
-      env * (0.1 * (0.5 + 0.5 * Math.sin(t * 3.1 + ph)) + 0.05 * Math.sin(t * 8.3 + ph * 1.7)) -
-      0.05 * Math.sin(t * 0.71 + ph * 1.3);
-    f += (0.18 * Math.max(0, Math.sin(t * 0.41 + ph) * Math.sin(t * 0.67 + ph * 1.7) - 0.86)) / 0.14;
+      env * (0.15 * (0.5 + 0.5 * Math.sin(t * 3.1 + ph)) + 0.07 * Math.sin(t * 8.3 + ph * 1.7)) -
+      0.06 * Math.sin(t * 0.71 + ph * 1.3);
+    f += (0.2 * Math.max(0, Math.sin(t * 0.41 + ph) * Math.sin(t * 0.67 + ph * 1.7) - 0.86)) / 0.14;
     const warm = f - 1;
     return [f, f * (1 + 0.35 * warm), f * (1 + 0.6 * warm)];
   }
   if (anim >= 1) {
     const f =
-      0.9 +
-      0.09 * Math.sin(t * 1.1 + ph) +
-      0.05 * Math.sin(t * 0.43 + ph * 1.9) +
+      0.86 +
+      0.13 * Math.sin(t * 1.1 + ph) +
+      0.06 * Math.sin(t * 0.43 + ph * 1.9) +
       0.03 * Math.sin(t * 0.11 + ph * 0.7);
     // Slight warm<->cool drift. Kept small (±3%): the dominant channel of a
     // saturated emitter is pinned at the 1.0 ceiling, so a bigger swing only
@@ -115,7 +119,7 @@ const FRAG = `
 precision highp float;
 
 uniform vec2 resolution;
-uniform float time;
+uniform float uAnimTime;
 uniform vec4 uCam;        // worldView x, y, w, h (world-render px)
 uniform vec4 uIsoA;       // ox, oy, dx, dy
 uniform vec4 uIsoB;       // lh, gridW, gridH, maxLevel
@@ -385,8 +389,8 @@ void main() {
     // flicker reads as a strobe when it drives a whole light pool).
     float fl = uLightCol[i].w;
     float flick = 1.0
-      - fl * 0.10 * (0.5 + 0.5 * sin(time * 2.9 + float(i) * 5.3))
-      - fl * 0.05 * sin(time * 7.1 + float(i) * 11.1);
+      - fl * 0.10 * (0.5 + 0.5 * sin(uAnimTime * 2.9 + float(i) * 5.3))
+      - fl * 0.05 * sin(uAnimTime * 7.1 + float(i) * 11.1);
 
     // Fire cools at the rim: fire-type lights (flicker > 0) shift from their
     // hot core colour toward deep ember red as they attenuate, so the pool
@@ -418,22 +422,22 @@ void main() {
     // steady glinting static. Change BOTH or the layers drift out of sync.
     vec3 fv;
     if (m > 150.0) {
-      float env = 0.55 + 0.45 * sin(time * 0.17 + ph * 3.1);
+      float env = 0.72 + 0.28 * sin(uAnimTime * 0.17 + ph * 3.1);
       float f = 1.0
-        - env * (0.10 * (0.5 + 0.5 * sin(time * 3.1 + ph)) + 0.05 * sin(time * 8.3 + ph * 1.7))
-        - 0.05 * sin(time * 0.71 + ph * 1.3);
-      f += 0.18 * max(0.0, sin(time * 0.41 + ph) * sin(time * 0.67 + ph * 1.7) - 0.86) / 0.14;
+        - env * (0.15 * (0.5 + 0.5 * sin(uAnimTime * 3.1 + ph)) + 0.07 * sin(uAnimTime * 8.3 + ph * 1.7))
+        - 0.06 * sin(uAnimTime * 0.71 + ph * 1.3);
+      f += 0.20 * max(0.0, sin(uAnimTime * 0.41 + ph) * sin(uAnimTime * 0.67 + ph * 1.7) - 0.86) / 0.14;
       float warm = f - 1.0;
       fv = vec3(f, f * (1.0 + 0.35 * warm), f * (1.0 + 0.6 * warm));
     } else if (m > 50.0) {
-      float f = 0.90 + 0.09 * sin(time * 1.1 + ph)
-        + 0.05 * sin(time * 0.43 + ph * 1.9)
-        + 0.03 * sin(time * 0.11 + ph * 0.7);
-      float w = sin(time * 0.23 + ph * 2.3);
+      float f = 0.86 + 0.13 * sin(uAnimTime * 1.1 + ph)
+        + 0.06 * sin(uAnimTime * 0.43 + ph * 1.9)
+        + 0.03 * sin(uAnimTime * 0.11 + ph * 0.7);
+      float w = sin(uAnimTime * 0.23 + ph * 2.3);
       fv = vec3(f * (1.0 + 0.03 * w), f, f * (1.0 - 0.03 * w));
     } else {
-      float f = 0.98 + 0.02 * sin(time * 0.31 + ph);
-      f += 0.12 * max(0.0, sin(time * 0.29 + ph * 2.1) * sin(time * 0.53 + ph * 0.8) - 0.93) / 0.07;
+      float f = 0.98 + 0.02 * sin(uAnimTime * 0.31 + ph);
+      f += 0.12 * max(0.0, sin(uAnimTime * 0.29 + ph * 2.1) * sin(uAnimTime * 0.53 + ph * 0.8) - 0.93) / 0.07;
       fv = vec3(f);
     }
     // Side faces: the tile ART bakes its faces ~0.70x darker than the top
@@ -600,7 +604,7 @@ export class NightLights {
       // 1000) or the shader floor/fire flicker either freezes (the long-
       // standing "nothing moves" bug: this uniform was declared+used but
       // never set, so it sat at 0) or drifts out of phase with them.
-      time: { type: "1f", value: 0 },
+      uAnimTime: { type: "1f", value: 0 },
       uNumLights: { type: "1f", value: 0 },
       uLightPos: { type: "4fv", value: this.posArr },
       uLightCol: { type: "4fv", value: this.colArr },
@@ -955,7 +959,7 @@ export class NightLights {
     // Drive the shader animation clock from the SAME source as the JS
     // emission layers (glow stamps below, lit-copy tints) so the shader
     // floor + fire flicker move and stay phase-locked with them.
-    s.setUniform("time.value", this.scene.time.now / 1000);
+    s.setUniform("uAnimTime.value", this.scene.time.now / 1000);
     s.setUniform("uCam.value.x", camX);
     s.setUniform("uCam.value.y", camY);
     s.setUniform("uCam.value.z", wv.width * k);
