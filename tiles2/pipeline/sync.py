@@ -26,8 +26,11 @@ from pixellab_client import PixelLabClient
 
 
 def _dest_dir(gid, req):
-    if req.get("kind") == "transition":
+    kind = req.get("kind")
+    if kind == "transition":
         return common.trans_dir(gid, req.get("transition_to"))
+    if kind == "elevation":
+        return common.elev_dir(gid, req.get("height"))     # <terrain>/base_x_N/
     return common.base_dir(gid)
 
 
