@@ -55,6 +55,12 @@ def trans_dir(gid, other):
     return os.path.join(type_dir(gid), "transitions", other)
 
 
+def elev_dir(gid, height_id):
+    """Processed elevation tiles for a terrain, as a SIBLING of base/ (e.g.
+    saturated_grass/base_x_2). x1 lives in base/; taller variants beside it."""
+    return os.path.join(type_dir(gid), height_id)
+
+
 def sheet_slug(kind, seed, other=None):
     """Stable id for one request's folder: base_<seed> / trans_<other>_<seed>."""
     return f"trans_{other}_{seed}" if kind == "transition" else f"base_{seed}"

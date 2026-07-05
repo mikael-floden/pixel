@@ -58,38 +58,100 @@
     { "id": "crystal_ice",     "name": "crystal ice",         "description": "crystalline translucent pale-blue ice" }
   ],
   "elevation": {
-    "_comment": "base_x_N = themed TALL blocks that stack PIXEL-PERFECTLY on base_x_1: identical 30px diamond top (tile_size 64, view_angle 28, flat_top 2) so the walkable top surface lands in the same place; only the face grows to N*16px (calibrated depth_ratio/tile_height per type — see docs/ELEVATION.md). 5 sheets per type, one per DECORATION. These get NO transitions and are NOT colour-harmonised (multi-coloured props). One 'level' = base_x_1's 16px face.",
+    "_comment": "base_x_N = TALLER variants of a terrain, stored as SIBLINGS of base/ inside each terrain folder (saturated_grass/base_x_2, /base_x_3, /base_x_4). They stack PIXEL-PERFECTLY on base_x_1: identical 30px diamond top (tile_size 64, view_angle 28, flat_top 2) so the walkable top surface lands in the same place; only the face grows to N*16px (calibrated depth_ratio/tile_height per height — see docs/ELEVATION.md). One 'level' = base_x_1's 16px face. Each (terrain, height) gets target_sheets_per_elev sheets, one per DECORATION. Raw lives in <terrain>/raw/ (kind=elevation, height=base_x_N); postprocess softens the outline and HARMONISES each tile toward the terrain's own palette (harmonize_refs) so greens/greys/blues snap to the existing ground colours and blend in — genuinely distinct accents (mushroom red, wood brown) fall outside the target hue bands and stay. No transitions.",
+    "target_sheets_per_elev": 5,
     "style": "cozy hand-crafted top-down RPG pixel art, rich natural texture, cohesive harmonious palette, soft directional shading, high quality game asset, transparent background",
     "template": "isometric pixel-art game tile: {decoration}, drawn as {height_word} that fills the tile's full height, with a flat diamond top surface and solid vertical sides, sitting on the ground. {style}. {variations}",
-    "variations": "The sheet holds slight natural variations of the same subject — some a touch fuller, some sparser, some lighter, some a little darker, a couple gently turned — but every tile is clearly the same {name}.",
-    "types": [
-      { "id": "base_x_2", "name": "2-level block", "levels": 2, "height_word": "a low two-level raised block",
-        "tile_size": 64, "tile_height": null, "depth_ratio": 0.985,
-        "decorations": [
-          "a mossy grey granite boulder with a little grass on top",
-          "a small round leafy bush-tree on a grassy mound",
-          "a cluster of glowing pale-blue crystals growing from rock",
-          "a cluster of red-capped white-spotted magic mushrooms on a grassy mound",
-          "a grassy earth step with exposed soil and small embedded stones on its sides"
-        ] },
-      { "id": "base_x_3", "name": "3-level block", "levels": 3, "height_word": "a tall three-level pillar",
-        "tile_size": 64, "tile_height": 128, "depth_ratio": 0.2423,
-        "decorations": [
-          "a big leafy green tree with a thick sturdy trunk",
-          "a tall glowing pale-blue crystal spire",
-          "an ancient weathered carved standing-stone menhir",
-          "a balanced stack of mossy grey boulders forming a cairn",
-          "a giant red-capped white-spotted mushroom with a thick pale stalk"
-        ] },
-      { "id": "base_x_4", "name": "4-level block", "levels": 4, "height_word": "a very tall four-level column",
-        "tile_size": 64, "tile_height": 128, "depth_ratio": 0.4885,
-        "decorations": [
-          "a huge ancient oak tree with a broad leafy canopy and gnarled trunk",
-          "a grey stone fortress watchtower with battlements and a small window",
-          "a giant faceted glowing pale-blue crystal spire",
-          "a steep grassy clifftop with layered exposed rock and soil sides",
-          "a jagged rocky mountain spire with a dusting of snow on top"
-        ] }
+    "variations": "The sheet holds slight natural variations of the same subject — some a touch fuller, some sparser, some lighter, some a little darker, a couple gently turned — but every tile is clearly the same subject.",
+    "heights": [
+      { "id": "base_x_2", "levels": 2, "height_word": "a low two-level raised block",
+        "tile_size": 64, "tile_height": null, "depth_ratio": 0.985 },
+      { "id": "base_x_3", "levels": 3, "height_word": "a tall three-level pillar",
+        "tile_size": 64, "tile_height": 128, "depth_ratio": 0.2423 },
+      { "id": "base_x_4", "levels": 4, "height_word": "a very tall four-level column",
+        "tile_size": 64, "tile_height": 128, "depth_ratio": 0.4885 }
+    ],
+    "terrains": [
+      { "id": "saturated_grass", "harmonize_refs": ["saturated_grass", "stone_mountain"],
+        "decorations": {
+          "base_x_2": [
+            "a mossy grassy boulder mound with grass on top",
+            "a small round leafy bush on a grassy mound",
+            "a cluster of red-capped white-spotted mushrooms on a grassy mound",
+            "a grassy earth step with exposed soil and small stones on its sides",
+            "a low grassy rock with tiny wildflowers on top" ],
+          "base_x_3": [
+            "a big leafy green tree with a thick sturdy trunk",
+            "a tall grassy earth pillar with rocky soil sides",
+            "a small round leafy tree on a grassy column",
+            "a giant red-capped white-spotted mushroom with a thick pale stalk",
+            "a mossy grey standing stone rising from grass" ],
+          "base_x_4": [
+            "a huge ancient oak tree with a broad leafy canopy and gnarled trunk",
+            "a tall grassy clifftop with layered exposed rock and soil sides",
+            "a very tall dark-green pine tree",
+            "a towering ancient tree with a thick trunk and hanging vines",
+            "a steep grassy bluff with exposed roots and rock" ] } },
+      { "id": "stone_mountain", "harmonize_refs": ["stone_mountain"],
+        "decorations": {
+          "base_x_2": [
+            "a rounded grey mossy boulder",
+            "a low stack of grey rocks",
+            "a chunk of cracked grey mountain stone",
+            "a weathered grey stone block",
+            "a grey rock with small loose pebbles around the top" ],
+          "base_x_3": [
+            "a tall rugged grey rock spire",
+            "a balanced cairn of stacked grey boulders",
+            "an ancient carved grey standing-stone menhir",
+            "a rugged grey stone column with a flat top",
+            "a tall grey rock pillar with cracks" ],
+          "base_x_4": [
+            "a grey stone fortress watchtower with battlements and a small window",
+            "a tall jagged grey mountain spire",
+            "a massive grey rock column",
+            "a ruined grey stone tower",
+            "a steep grey cliff face with layered rock" ] } },
+      { "id": "crystal_ice", "harmonize_refs": ["crystal_ice"],
+        "decorations": {
+          "base_x_2": [
+            "a cluster of pale-blue ice crystals on a block",
+            "a chunky translucent pale-blue ice block",
+            "a low mound of pale-blue crystal shards",
+            "a frosted pale-blue ice boulder",
+            "a small pale-blue crystal formation" ],
+          "base_x_3": [
+            "a tall glowing pale-blue crystal spire",
+            "a jagged translucent pale-blue ice pillar",
+            "a cluster of tall thin pale-blue ice crystals",
+            "a faceted pale-blue crystal column",
+            "a frozen pale-blue crystal tower" ],
+          "base_x_4": [
+            "a giant faceted glowing pale-blue crystal spire",
+            "a towering translucent pale-blue ice pillar",
+            "a massive cluster of tall pale-blue ice crystals",
+            "a huge angular pale-blue crystal monolith",
+            "a soaring frozen pale-blue crystal tower" ] } },
+      { "id": "regular_snow", "harmonize_refs": ["regular_snow", "stone_mountain"],
+        "decorations": {
+          "base_x_2": [
+            "a rounded snowy white mound",
+            "a snow-capped grey boulder",
+            "a low block of packed white snow",
+            "a snowdrift with a smooth rounded top",
+            "a snowy rock with grey stone sides" ],
+          "base_x_3": [
+            "a tall snow-capped grey rock spire",
+            "a snowy white pillar with icy sides",
+            "a snow-covered grey standing stone",
+            "a tall drift of packed white snow",
+            "a snowy rock column with a white cap" ],
+          "base_x_4": [
+            "a tall snow-capped grey mountain spire",
+            "a towering white snowy peak",
+            "a snow-covered ruined grey fortress",
+            "a massive column of packed white snow",
+            "a steep snowy cliff with grey rock and a white cap" ] } }
     ]
   },
   "_transitions_comment": "FULL MESH — no adjacency list. Map builders must have every border, so each type gets a transition to EVERY other type. The loop completes a type's bases, then generates its transition to every EARLIER type (the new type owns transitions toward all existing ones); a pair is skipped if already covered either direction. Stored under <type>/transitions/<earlier-type>.",
