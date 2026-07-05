@@ -40,17 +40,20 @@ def _pp_cfg(cfg):
 
 
 def _first_base_sheet(gid):
-    """Raw dir of the earliest base sheet for a type (the harmonise reference)."""
-    sheets = common.list_raw_sheets(gid, kind="base")
-    if not sheets:
-        return None
-    sheets.sort(key=lambda s: s[2].get("generated_at", ""))
-    return sheets[0][1]
+    """Raw dir of the harmonise reference: the earliest BASE sheet, or — for
+    elevation-only types with no base tiles (e.g. crystal_ice) — the earliest
+    ELEVATION sheet, so they still get a canonical colour and get normalised."""
+    for kind in ("base", "elevation"):
+        sheets = common.list_raw_sheets(gid, kind=kind)
+        if sheets:
+            sheets.sort(key=lambda s: s[2].get("generated_at", ""))
+            return sheets[0][1]
+    return None
 
 
 def type_target(gid, cfg, cache):
-    """Material target for a type (cached). Auto-detected from its first base
-    sheet; also recorded in the type metadata for transparency."""
+    """Material target for a type (cached). Auto-detected from its first base (or,
+    for base-less elevation types, elevation) sheet; recorded in the type metadata."""
     if gid in cache:
         return cache[gid]
     sdir = _first_base_sheet(gid)
@@ -129,6 +132,8 @@ def process_type(gid, cfg, cache=None):
     cache = {} if cache is None else cache
     total = 0
     for sheet, sdir, req in common.list_raw_sheets(gid):
+        if req.get("kind") == "elevation":
+            continue                       # elevation sheets are handled by elevation.py
         total += process_sheet(gid, sheet, sdir, req, cfg, cache)
     return total
 
