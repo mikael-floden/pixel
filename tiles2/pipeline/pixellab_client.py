@@ -105,11 +105,26 @@ class PixelLabClient:
     def generations_remaining(self):
         return float(self.balance().get("subscription", {}).get("generations", 0) or 0)
 
-    def ensure_budget(self, minimum):
-        rem = self.generations_remaining()
-        if rem < minimum:
-            raise BudgetExhausted(f"only {rem:.0f} generations left (need >= {minimum})")
-        return rem
+    def credits_usd(self):
+        return float(self.balance().get("credits", {}).get("usd", 0) or 0)
+
+    def budget(self):
+        b = self.balance()
+        return {
+            "generations": float(b.get("subscription", {}).get("generations", 0) or 0),
+            "usd": float(b.get("credits", {}).get("usd", 0) or 0),
+        }
+
+    def ensure_budget(self, min_generations, min_usd=0.5):
+        """OK if the subscription pool is above its floor OR there are USD credits
+        to fall back on (PixelLab bills credits once subscription generations hit 0;
+        tiles are cheap, so a small USD floor is enough)."""
+        b = self.budget()
+        if b["generations"] >= min_generations or b["usd"] >= min_usd:
+            return b
+        raise BudgetExhausted(
+            f"subscription generations {b['generations']:.0f} < {min_generations} "
+            f"and only ${b['usd']:.2f} credits (need >= ${min_usd:.2f})")
 
     def wait_job(self, job_id, timeout=900, interval=6):
         deadline = time.monotonic() + timeout

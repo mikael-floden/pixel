@@ -135,16 +135,18 @@ def main():
 
     min_balance = args.min_balance if args.min_balance is not None \
         else cfg["budget"]["min_generations_remaining"]
+    min_usd = cfg["budget"].get("min_usd", 0.5)
     client = PixelLabClient()
     start = time.monotonic()
     units = 0
     skip = set()
-    rem = client.generations_remaining()
-    print(f"tiles2 loop starting — {rem:.0f} generations remaining (floor {min_balance})")
+    b = client.budget()
+    print(f"tiles2 loop starting — {b['generations']:.0f} subscription generations, "
+          f"${b['usd']:.2f} credits (floors: {min_balance} gens / ${min_usd:.2f})")
 
     while True:
         try:
-            client.ensure_budget(min_balance)
+            client.ensure_budget(min_balance, min_usd)
         except BudgetExhausted as e:
             print(f"stopping: {e}"); break
         unit = next_unit(cfg)

@@ -52,7 +52,8 @@
   },
   "budget": {
     "min_generations_remaining": 500,
-    "_comment": "Shared PixelLab pool (coordination/PROTOCOL.md). Keep a floor for the other agents."
+    "min_usd": 1.0,
+    "_comment": "Proceed if the subscription pool is above min_generations_remaining OR there are >= min_usd credits (PixelLab bills USD credits once subscription generations hit 0; tiles are cheap)."
   },
   "postprocess": {
     "_comment": "raw -> base/transitions. neutralize_outline removes any residual dark rim (tiles2 = no outline). strength (0..1) scales colour-normalisation toward the ref-sprite(s).",
