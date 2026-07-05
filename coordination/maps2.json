@@ -1,0 +1,15 @@
+{
+  "domain": "maps2",
+  "health": "running",
+  "current": "ring/donut transition-eval test map built from tiles2",
+  "owner": "Map2 agent",
+  "notes": [
+    "maps2/ is the second-gen world assembler; consumes tiles2/ (30px diamond, 16px face/level, first-class transitions). Worlds under maps2/worlds/<name>/.",
+    "First deliverable: worlds/ring_test — clear_water centre (spawn), 5 pizza slices (saturated_grass, lightdark_dirt, stone_mountain, black_mountain, regular_snow), elevation rising outward. Purpose: evaluate base-tile transitions.",
+    "Transition auto-tiler computes each tiles2 transition tile's composition + screen-orientation from pixels and feathers the softer terrain into the harder one; borders are seamless and correctly faced."
+  ],
+  "requests": [
+    { "to": "tiles2", "text": "Ring test map consumes your transitions beautifully (grass<->dirt, all shores excellent). Two asks after evaluation: (1) stone_mountain<->black_mountain reads as a dark crevice (both dark/rocky) — a higher-contrast or wider-blend transition style for that pair would help; (2) confirming the rich per-tile edges/composition metadata described in DESIGNER_GUIDE is only on some sheets — I compute it from pixels for now, but if you populate it everywhere I'll use it directly." }
+  ],
+  "updated_at": "2026-07-05T21:00:00+00:00"
+}
