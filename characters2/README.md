@@ -1,57 +1,78 @@
 # characters2 — the game's two heroes
 
 The **real** game's main characters (the earlier `characters/` and `objects/`
-work was exploration). Not exploring skeletons anymore: the human skeleton is
-**fixed**, and there are exactly **two** characters — a boy and a girl — each
-meant to look awesome, as if the game shipped with just these two options.
+work was exploration). The two heroes — a boy and a girl — are now **DECIDED**:
+each is locked to a specific PixelLab character that was picked in the UI. This
+domain now **mirrors** those two characters (base model + animations +, later,
+outfits) into the repo. **PixelLab is the source of truth.**
 
-## The human skeleton (fixed)
+## The two heroes (locked)
 
-| Param | Value |
-|-------|-------|
-| Camera view | **low top-down** |
-| Sprite size | **80 × 80** |
-| Detail | **low detail** |
-| Outline | **default** (PixelLab default) |
+| Hero | PixelLab character |
+|------|--------------------|
+| `default_boy`  | `af374339-7e4e-4266-a8be-79296b81938d` |
+| `default_girl` | `bc21eab2-4f08-47ac-b58f-65ee1b98a935` |
 
-Each hero is a persistent PixelLab **character** (`create-character-with-8-directions`)
-— it shows in the PixelLab UI and renders the **8-direction static model only**.
-No animations, no outfits yet (those come later, on request).
+They live on the fixed human skeleton: **low top-down**, **low detail**, default
+outline, native **112 × 112** canvas. The IDs are pinned in
+`config.json:pixellab_characters`.
+
+## Staying in sync
+
+The user keeps adding **animations** in the PixelLab UI (and later outfits /
+extra models). `sync.py` pulls the current state down with **zero generations** —
+it only downloads what actually changed:
+
+- base rotations are re-fetched only when their source URL changes;
+- an animation is skipped entirely when its `animation_group_id` is unchanged and
+  all its frames are already on disk (so newly-added *directions* of an existing
+  animation are still picked up);
+- it is a true mirror — animations / directions / stray frames deleted in the UI
+  are removed locally too.
+
+```bash
+export PIXELLAB_API_KEY=...
+python characters2/pipeline/sync.py                # mirror both, commit + push
+python characters2/pipeline/sync.py default_girl   # just one
+python characters2/pipeline/sync.py --no-push      # local only
+```
+
+A scheduled GitHub Action (`.github/workflows/characters2.yml`) runs the sync
+every 30 minutes, so anything added in the UI lands in the repo automatically. It
+commits/pushes only when something changed.
 
 ## Layout
 
 ```
 characters2/
-  config.json                     the fixed skeleton params + the two hero descriptions
+  config.json                    pinned hero IDs (+ legacy explorer params)
   humans/
     default_boy/
-      south.png north.png east.png … (8 direction sprites, 80×80-based)
-      portrait.png                 the south view
-      preview.png                  all 8 directions in a row
-      character.json               manifest (pixellab_character_id, seed, variation, params)
+      character.json             manifest: pixellab id, prompt, style, per-file source URLs
+      base/
+        south.png … south-west.png   the static 8-direction model (native 112×112)
+        preview.png                  all 8 directions in a row
+      animations/
+        walking/
+          south/ 0.png 1.png …       frames per direction
+          north/ …
+          preview.gif                animated preview (first available direction)
+        breathing-idle/  running-8-frames/  running-jump/  …
     default_girl/  (same shape)
-    .state.json                    reroll counter per character (drives "slightly different")
+    _experiments/                archived vNNN reroll experiments (pre-decision history)
   pipeline/
-    pixellab_client.py             character client
-    generate.py                    ensure both exist; regenerate missing ones
+    pixellab_client.py           character client (get_character, rotations, download)
+    sync.py                      mirror the pinned heroes from PixelLab (the main tool)
+    generate.py                  legacy explorer that produced the _experiments/ vNNN takes
 ```
 
-To use a hero in the game: load `characters2/humans/<id>/<direction>.png` for the
-facing you need (`south` is the default / portrait).
+To use a hero in the game: load `humans/<id>/base/<direction>.png` for the static
+facing, or `humans/<id>/animations/<anim>/<direction>/<frame>.png` for animation
+frames. Each animation folder also has a `preview.gif` for quick eyeballing.
 
-## Reroll until you're happy
+## Outfits / extra models (coming)
 
-The generator ensures both heroes exist. **Delete a character's folder and it is
-regenerated as a fresh, slightly different variation** (a new seed, tracked in
-`humans/.state.json`) — so you can delete the boy or girl repeatedly until each
-one looks great. Nothing else is touched.
-
-```bash
-export PIXELLAB_API_KEY=...
-python characters2/pipeline/generate.py              # create any missing hero
-python characters2/pipeline/generate.py --force default_girl   # reroll the girl now
-```
-
-A scheduled GitHub Action (`.github/workflows/characters2.yml`) also watches for a
-deleted hero and regenerates it, so you can reroll just by deleting the folder on
-GitHub. It no-ops (no cost) when both heroes are present.
+Once animations are settled, the user will add outfits and extra models in the
+UI. PixelLab groups a character's outfits via a shared `group_id` (recorded in
+each `character.json`). When those exist, `sync.py` will be extended to mirror
+them under `humans/<id>/outfits/<name>/` alongside the base model.
