@@ -122,6 +122,28 @@ export function emissionWave(anim: number, t: number, ph: number): [number, numb
   return [f, f, f];
 }
 
+/** Multiplicative "self pulse" for an emitter's OWN pixels. emissionWave
+ * modulates the FLOOR and the additive spill, but at the emitter's centre the
+ * floor + its own halo saturate against the brightness clamp, so that wave gets
+ * clipped there — the tile looks static while only the spill onto neighbours
+ * moves (playtester). This factor is applied to the emissive cell's final light
+ * BEFORE the clamp (and to solid billboards' lit-copy tint), so the tile dims
+ * below saturation and visibly breathes. Peaks at 1.0 (never brighter than the
+ * steady look), dips per anim. Flicker dips deep & fast (fire); pulse is a calm
+ * ~4.6s breath; even 'static' gets a gentle ~11s life so nothing is truly dead.
+ * Mirrored EXACTLY by emSelfPulse() in FRAG — change BOTH. */
+export function emissionSelfPulse(anim: number, t: number, ph: number): number {
+  if (anim >= 2) {
+    const env = 0.7 + 0.3 * Math.sin(t * 0.17 + ph * 3.1);
+    const d =
+      env * (0.3 * (0.5 + 0.5 * Math.sin(t * 3.1 + ph)) + 0.12 * Math.sin(t * 8.3 + ph * 1.7)) +
+      0.08 * (0.5 + 0.5 * Math.sin(t * 0.71 + ph * 1.3));
+    return Math.max(0.45, 1 - d);
+  }
+  if (anim >= 1) return 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(t * 1.35 + ph));
+  return 0.72 + 0.28 * (0.5 + 0.5 * Math.sin(t * 0.55 + ph));
+}
+
 const FRAG = `
 precision highp float;
 
@@ -170,6 +192,22 @@ float emitAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
   return texture2D(uHeight, uv).b * 255.0;
+}
+
+// Multiplicative "self pulse" for an emitter's own pixels — EXACT mirror of
+// emissionSelfPulse() (JS). Applied to the emissive cell's final light before
+// the clamp so the tile itself visibly breathes (not just the spill). Peaks
+// at 1.0; flicker dips deep/fast, pulse is a calm breath, static a gentle life.
+float emSelfPulse(float m, float ph) {
+  if (m > 150.0) {
+    float env = 0.7 + 0.3 * sin(uAnimTime * 0.17 + ph * 3.1);
+    float d = env * (0.30 * (0.5 + 0.5 * sin(uAnimTime * 3.1 + ph)) + 0.12 * sin(uAnimTime * 8.3 + ph * 1.7))
+      + 0.08 * (0.5 + 0.5 * sin(uAnimTime * 0.71 + ph * 1.3));
+    return max(0.45, 1.0 - d);
+  } else if (m > 50.0) {
+    return 0.55 + 0.45 * (0.5 + 0.5 * sin(uAnimTime * 1.35 + ph));
+  }
+  return 0.72 + 0.28 * (0.5 + 0.5 * sin(uAnimTime * 0.55 + ph));
 }
 
 void main() {
@@ -417,6 +455,7 @@ void main() {
   // max() makes it a FLOOR, not an add: daylight (ambient 1.0) swallows it,
   // night reveals it, and the art's own contrast survives the multiply.
   // Per-cell hash phase so a lava lake shimmers instead of blinking in sync.
+  float emSelf = 1.0; // tile self-pulse (1.0 for non-emitters — a no-op)
   float eIdx = emitAt(cell) - 1.0;
   if (uEmitN > 0.5 && eIdx > -0.5) {
     float tw = 0.5 / uEmitN; // one palette texel
@@ -424,6 +463,7 @@ void main() {
     vec4 ePar = texture2D(uEmit, vec2((eIdx * 2.0 + 1.5) * tw, 0.5));
     float ph = fract(sin(dot(floor(cell), vec2(12.9898, 78.233))) * 43758.5453) * 6.2831;
     float m = ePar.b * 255.0; // anim mode: 0 static, ~100 pulse, ~200 flicker
+    emSelf = emSelfPulse(m, ph);
     // "Alive" emission waveform — EXACT mirror of emissionWave() (JS): gusty
     // warm-coupled flicker / slow breathing pulse with hue drift / near-
     // steady glinting static. Change BOTH or the layers drift out of sync.
@@ -467,6 +507,11 @@ void main() {
       light += texture2D(uGlow, vec2(guv.x, mix(guv.y, 1.0 - guv.y, uGlowFlip))).rgb;
     }
   }
+
+  // Emitter self-pulse: dim the emissive cell's whole light (floor + its own
+  // halo) BEFORE the clamp, so the tile itself visibly breathes instead of
+  // sitting pinned at the saturation ceiling. No-op (1.0) for non-emitters.
+  light *= emSelf;
 
   gl_FragColor = vec4(min(light, vec3(1.25)), 1.0);
 }

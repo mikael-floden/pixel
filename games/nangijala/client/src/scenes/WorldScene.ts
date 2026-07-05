@@ -36,6 +36,7 @@ import {
   ShaderLight,
   MAX_SHADER_LIGHTS,
   emissionWave,
+  emissionSelfPulse,
   EmissionMap,
   EmissionEntry,
   GlowStamp,
@@ -969,14 +970,24 @@ export class WorldScene extends Phaser.Scene {
         // to the ART's own pixels, so the glow follows the tile's shape.
         const e = lo.emission;
         const ph = lo.phase ?? 0;
+        const animN = e.anim === "flicker" ? 2 : e.anim === "pulse" ? 1 : 0;
         // Shared "alive" waveform (emissionWave) — same maths as the shader
         // floor, so the copy's glow moves in step with the world's.
-        const fv = emissionWave(e.anim === "flicker" ? 2 : e.anim === "pulse" ? 1 : 0, tNow, ph);
+        const fv = emissionWave(animN, tNow, ph);
         const floor = (i: number) => Math.round(Math.min(1, e.color[i] * e.self * fv[i]) * 255);
         tint =
           (Math.max((tint >> 16) & 0xff, floor(0)) << 16) |
           (Math.max((tint >> 8) & 0xff, floor(1)) << 8) |
           Math.max(tint & 0xff, floor(2));
+        // Emitter self-pulse: dim the whole billboard so the OBJECT itself
+        // breathes (the shader does this for terrain emitters; solid emissive
+        // art — spires, mushroom stacks, cliff pillars — is drawn as these lit
+        // copies, so mirror it here or those objects sit static).
+        const sp = emissionSelfPulse(animN, tNow, ph);
+        tint =
+          (Math.round(((tint >> 16) & 0xff) * sp) << 16) |
+          (Math.round(((tint >> 8) & 0xff) * sp) << 8) |
+          Math.round((tint & 0xff) * sp);
       }
       lo.img.setTint(tint);
     }
