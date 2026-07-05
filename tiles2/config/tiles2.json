@@ -63,15 +63,15 @@
     "objects_per_sheet": 14,
     "objects_file": "elevation_objects.json",
     "style": "cozy hand-crafted top-down RPG pixel art, rich natural texture, cohesive harmonious palette, soft directional shading, high quality game asset, transparent background",
-    "template": "isometric pixel-art game tiles for a top-down RPG map. Each tile is a {height_word} block of {flavor} with a flat diamond top surface and solid vertical sides, topped with a DIFFERENT object standing on it. Go for maximum variety — different shapes, species, ages and conditions, no two tiles alike. The set: {objects}. {style}",
+    "template": "isometric pixel-art game tiles for a top-down RPG map. Each tile shows a DIFFERENT {height_word} object as the clear MAIN SUBJECT — prominent, detailed and standing tall, on only a small low patch of {flavor}. The object dominates and fills the tile; keep the ground base minimal and thin — NOT a tall dirt pedestal or block with a small object on top. Go for maximum variety — different shapes, species, ages and conditions, no two tiles alike. The set: {objects}. {style}",
     "heights": [
-      { "id": "base_x_2", "levels": 2, "height_word": "short two-level",
+      { "id": "base_x_2", "levels": 2, "height_word": "small",
         "tile_size": 64, "tile_height": 128, "depth_ratio": 0.0 },
-      { "id": "base_x_3", "levels": 3, "height_word": "tall three-level",
+      { "id": "base_x_3", "levels": 3, "height_word": "medium-sized",
         "tile_size": 64, "tile_height": 128, "depth_ratio": 0.2423 },
-      { "id": "base_x_4", "levels": 4, "height_word": "very tall four-level",
+      { "id": "base_x_4", "levels": 4, "height_word": "large",
         "tile_size": 64, "tile_height": 128, "depth_ratio": 0.4885 },
-      { "id": "base_x_5", "levels": 5, "height_word": "towering five-level",
+      { "id": "base_x_5", "levels": 5, "height_word": "huge towering",
         "tile_size": 64, "tile_height": 128, "depth_ratio": 0.7346 }
     ],
     "terrains": [
