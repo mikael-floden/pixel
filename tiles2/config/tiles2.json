@@ -78,7 +78,10 @@
       { "id": "saturated_grass", "flavor": "lush green grass", "harmonize_refs": ["saturated_grass", "stone_mountain"] },
       { "id": "stone_mountain",  "flavor": "grey mountain stone", "harmonize_refs": ["stone_mountain"] },
       { "id": "crystal_ice",     "flavor": "pale-blue crystalline ice", "harmonize_refs": ["crystal_ice"] },
-      { "id": "regular_snow",    "flavor": "white snow", "harmonize_refs": ["regular_snow", "stone_mountain"] }
+      { "id": "regular_snow",    "flavor": "white snow", "harmonize_refs": ["regular_snow", "stone_mountain"] },
+      { "id": "lightdark_dirt",  "flavor": "packed brown dirt", "harmonize_refs": ["lightdark_dirt", "stone_mountain"] },
+      { "id": "black_mountain",  "flavor": "dark near-black volcanic rock", "harmonize_refs": ["black_mountain"] },
+      { "id": "clear_water",     "flavor": "clear blue water", "harmonize_refs": ["clear_water", "saturated_grass"] }
     ]
   },
   "_transitions_comment": "FULL MESH — no adjacency list. Map builders must have every border, so each type gets a transition to EVERY other type. The loop completes a type's bases, then generates its transition to every EARLIER type (the new type owns transitions toward all existing ones); a pair is skipped if already covered either direction. Stored under <type>/transitions/<earlier-type>.",
