@@ -68,6 +68,13 @@ export interface GlowStamp {
 
 export const MAX_SHADER_LIGHTS = 12;
 
+// How hard the additive glow halos breathe: the emission wave swings ±10-20%
+// around its steady value, which is imperceptible once composited. The halos
+// are additive (they survive on top of even a lit scene), so we amplify their
+// deviation this much to get a visible "alive" pulse without touching the
+// steady brightness. 2.6 → a mushroom's halo swells/ebbs ~±40%.
+const GLOW_ANIM_GAIN = 2.6;
+
 /** Per-channel emission animation — the "alive" waveform shared by every
  * emission layer (shader self-floor, glow stamps, lit-copy tints). Returns
  * [r,g,b] factors around 1. The GLSL block in FRAG mirrors this EXACTLY
@@ -976,11 +983,24 @@ export class NightLights {
         for (const g of stamps) {
           // Shared "alive" waveform (see emissionWave): overall amplitude
           // rides in alpha, the colour-shift ratio rides in the tint.
+          // The glow halos/pools are ADDITIVE — they ride on top of the whole
+          // scene (even next to the bonfire), so this is the layer the eye
+          // actually reads as "alive". The floor/lit-copy layers are max()-
+          // based and get masked by any brighter light, so the wave's small
+          // ±10-20% barely shows there; here we AMPLIFY the deviation from the
+          // steady value (×GLOW_ANIM_GAIN) so the halo visibly breathes — a
+          // pulsing glow, not a blink (the tile art underneath never goes
+          // dark; only its added halo swells and ebbs).
           const fv = emissionWave(g.anim, t, g.phase);
           const fm = (fv[0] + fv[1] + fv[2]) / 3;
           const ch = (i: number) => Math.min(255, Math.round(g.color[i] * (fv[i] / fm) * 255));
           img.setTint((ch(0) << 16) | (ch(1) << 8) | ch(2));
-          img.setAlpha(Math.min(1, Math.max(0, g.alpha * fm)));
+          // Amplify around each anim's STEADY mean (not 1.0) so the halo
+          // breathes symmetrically about its base instead of biasing dark
+          // (pulse's wave averages ~0.86, flicker ~0.93, static ~0.99).
+          const mean = g.anim >= 2 ? 0.93 : g.anim >= 1 ? 0.86 : 0.99;
+          const gain = Math.max(0.2, 1 + (fm - mean) * GLOW_ANIM_GAIN);
+          img.setAlpha(Math.min(1, g.alpha * gain));
           img.setDisplaySize(g.radius * 2, (g.ry ?? g.radius) * 2);
           rt.batchDraw(img, g.x - camX, g.y - camY);
         }
