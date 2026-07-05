@@ -60,6 +60,6 @@
   "Decouple material seams from elevation terrace steps \u2014 offset the colour border from any cliff face.",
   "Keep the harder/darker material on the up-slope side so the one-sided feather stays valid.",
   "Default feather width +1 cell vs this test; jitter tile density along the iso diagonal to avoid picket-fence rows.",
-  "Fill each terrain with ONE canonical plain tile for ~90% of cells (the single cleanest single-colour tile), ~8% other clean variants, ~2% special accents. Using a pool of near-identical 'clean' variants still reads as a mottled 'salami' patchwork; one repeated plain tile reads as flat uniform ground. Cliff faces use the plain tile only."
+  "Fill each terrain with ONE canonical plain tile for ~80% of cells (the single cleanest single-colour tile), ~8% other clean variants, ~2% special accents. Using a pool of near-identical 'clean' variants still reads as a mottled 'salami' patchwork; one repeated plain tile reads as flat uniform ground. Cliff faces use the plain tile only."
  ]
 }

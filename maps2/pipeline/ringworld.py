@@ -42,7 +42,7 @@ PRIORITY = {"saturated_grass": 0, "lightdark_dirt": 1, "regular_snow": 2,
 
 # fill mix for pure ground: PLAIN_PROB use the ONE canonical plain tile (so the
 # field reads flat/uniform); of the remainder, SPECIAL_PROB are accent tiles.
-PLAIN_PROB = 0.90
+PLAIN_PROB = 0.80
 SPECIAL_PROB = 0.15
 
 
