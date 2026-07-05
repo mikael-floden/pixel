@@ -82,10 +82,13 @@
   "generated_at": "2026-07-05T07:45:24+00:00",
   "processing": {
     "source_raw": "raw/base_1669943300",
-    "normalized": false,
+    "normalized": true,
     "neutralize_outline": false,
     "strength": 1.0,
-    "ref_from": null,
+    "ref_from": {
+      "sheet": "base_1669943300",
+      "tile": "tile_03.png"
+    },
     "ref_to": null
   }
 }

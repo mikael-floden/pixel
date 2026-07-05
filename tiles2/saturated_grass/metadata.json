@@ -12,7 +12,10 @@
     "flat_top_px": 2,
     "outline": "none"
   },
-  "ref_sprite": null,
+  "ref_sprite": {
+    "sheet": "base_1669943300",
+    "tile": "tile_03.png"
+  },
   "_ref_hint": "Declare the tile that defines this type's target brightness/hue/saturation, e.g. {\"sheet\": \"base_123\", \"tile\": \"tile_03.png\"}. Until set, postprocess copies raw->base unchanged. After setting, re-run postprocess to normalise.",
   "transitions": []
 }
