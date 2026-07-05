@@ -126,15 +126,20 @@ export function emissionWave(anim: number, t: number, ph: number): [number, numb
  * ~4.6s breath; even 'static' gets a gentle ~11s life so nothing is truly dead.
  * Mirrored EXACTLY by emSelfPulse() in FRAG — change BOTH. */
 export function emissionSelfPulse(anim: number, t: number, ph: number): number {
+  // An ever-present quick twinkle on EVERY emitter so nothing ever reads as
+  // frozen (light catching a facet / an ember breathing), on top of each
+  // anim's characteristic motion. Pulse/static were slow enough (~5-11s) to
+  // look dead at a glance — sped up here too.
+  const tw = 0.08 * Math.sin(t * 2.3 + ph * 1.7);
   if (anim >= 2) {
     const env = 0.7 + 0.3 * Math.sin(t * 0.17 + ph * 3.1);
     const d =
-      env * (0.3 * (0.5 + 0.5 * Math.sin(t * 3.1 + ph)) + 0.12 * Math.sin(t * 8.3 + ph * 1.7)) +
-      0.08 * (0.5 + 0.5 * Math.sin(t * 0.71 + ph * 1.3));
-    return Math.max(0.45, 1 - d);
+      env * (0.3 * (0.5 + 0.5 * Math.sin(t * 3.3 + ph)) + 0.13 * Math.sin(t * 8.3 + ph * 1.7)) +
+      0.07 * (0.5 + 0.5 * Math.sin(t * 0.71 + ph * 1.3));
+    return Math.max(0.42, Math.min(1, 1 - d + tw));
   }
-  if (anim >= 1) return 0.55 + 0.45 * (0.5 + 0.5 * Math.sin(t * 1.35 + ph));
-  return 0.72 + 0.28 * (0.5 + 0.5 * Math.sin(t * 0.55 + ph));
+  if (anim >= 1) return Math.max(0.42, Math.min(1, 0.6 + 0.4 * (0.5 + 0.5 * Math.sin(t * 1.9 + ph)) + tw));
+  return Math.max(0.5, Math.min(1, 0.66 + 0.34 * (0.5 + 0.5 * Math.sin(t * 1.2 + ph)) + tw));
 }
 
 const FRAG = `
@@ -192,23 +197,24 @@ float emitAt(vec2 cr) {
 // the clamp so the tile itself visibly breathes (not just the spill). Peaks
 // at 1.0; flicker dips deep/fast, pulse is a calm breath, static a gentle life.
 float emSelfPulse(float m, float ph) {
+  float tw = 0.08 * sin(uAnimTime * 2.3 + ph * 1.7);
   if (m > 150.0) {
     float env = 0.7 + 0.3 * sin(uAnimTime * 0.17 + ph * 3.1);
-    float d = env * (0.30 * (0.5 + 0.5 * sin(uAnimTime * 3.1 + ph)) + 0.12 * sin(uAnimTime * 8.3 + ph * 1.7))
-      + 0.08 * (0.5 + 0.5 * sin(uAnimTime * 0.71 + ph * 1.3));
-    return max(0.45, 1.0 - d);
+    float d = env * (0.30 * (0.5 + 0.5 * sin(uAnimTime * 3.3 + ph)) + 0.13 * sin(uAnimTime * 8.3 + ph * 1.7))
+      + 0.07 * (0.5 + 0.5 * sin(uAnimTime * 0.71 + ph * 1.3));
+    return clamp(1.0 - d + tw, 0.42, 1.0);
   } else if (m > 50.0) {
-    return 0.55 + 0.45 * (0.5 + 0.5 * sin(uAnimTime * 1.35 + ph));
+    return clamp(0.6 + 0.4 * (0.5 + 0.5 * sin(uAnimTime * 1.9 + ph)) + tw, 0.42, 1.0);
   }
-  return 0.72 + 0.28 * (0.5 + 0.5 * sin(uAnimTime * 0.55 + ph));
+  return clamp(0.66 + 0.34 * (0.5 + 0.5 * sin(uAnimTime * 1.2 + ph)) + tw, 0.5, 1.0);
 }
 
-// Gentle whole-cell support pulse (mix toward 1.0 of emSelfPulse): the strong,
+// Whole-cell support pulse (mix toward 1.0 of emSelfPulse): the STRONGEST,
 // eye-catching animation lives in the per-cluster glow halos on the actual
-// glowing pixels; the tile base only breathes SUBTLY so it reads as "lit BY
-// the glowing detail", not as a slab that pulses on its own.
+// glowing pixels; the tile base breathes at ~half that depth so it reads as
+// "lit BY the glowing detail" while still clearly having life of its own.
 float emCellSupport(float m, float ph) {
-  return mix(1.0, emSelfPulse(m, ph), 0.35);
+  return mix(1.0, emSelfPulse(m, ph), 0.5);
 }
 
 void main() {
@@ -1043,7 +1049,7 @@ export class NightLights {
           const ch = (i: number) => Math.min(255, Math.round(g.color[i] * (fv[i] / fm) * 255));
           img.setTint((ch(0) << 16) | (ch(1) << 8) | ch(2));
           const pulse = emissionSelfPulse(g.anim, t, g.phase);
-          const amp = isPool ? 0.68 + 0.32 * pulse : pulse;
+          const amp = isPool ? 0.6 + 0.4 * pulse : pulse;
           img.setAlpha(Math.min(1, g.alpha * amp));
           img.setDisplaySize(g.radius * 2, (g.ry ?? g.radius) * 2);
           rt.batchDraw(img, g.x - camX, g.y - camY);
