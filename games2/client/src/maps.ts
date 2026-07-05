@@ -19,17 +19,22 @@ export interface World {
   pois: { x: number; y: number; label: string; tile?: string }[];
 }
 
-import { ISO_DX, ISO_DY, WorldCell, parseWorld } from "@nangijala/shared";
+import { ISO_DX, ISO_DY, LEVEL_PX, WorldCell, parseWorld } from "@nangijala/shared";
 
-// Measured from the tile "house format" (64px / 28deg / 50% side faces).
-// If the tiles agent changes that format, re-measure (tileset.measure_geometry).
-// dx/dy live in shared/ (ISO_DX/ISO_DY) because screen-relative input math on
-// the server must use the exact same projection ratio.
-export const MAP_GEOMETRY = { tile: 64, dx: ISO_DX, dy: ISO_DY, lh: 19, margin: 8 };
+// maps2/tiles2 geometry: top diamond 30px×64px, grid steps dx=32/dy=15, one
+// elevation level = 16px face (LEVEL_PX). dx/dy live in shared/ (ISO_DX/ISO_DY)
+// because screen-relative input math on the server must use the same ratio.
+export const MAP_GEOMETRY = { tile: 64, dx: ISO_DX, dy: ISO_DY, lh: LEVEL_PX, margin: 8 };
+
+// Which maps2 world the game loads. prop_demo (the real demo level) has no
+// world.json yet — the maps agent is authoring it; ring_test uses the same
+// ringworld@1 schema, so we develop against it and flip this to prop_demo the
+// moment its world.json lands.
+export const WORLD_URL = "/assets/maps2/worlds/ring_test/world.json";
 
 export async function loadWorld(): Promise<World | null> {
   try {
-    const res = await fetch("/assets/maps/world/world.json");
+    const res = await fetch(WORLD_URL);
     if (!res.ok) return null;
     return parseWorld(await res.json());
   } catch {
@@ -37,8 +42,21 @@ export async function loadWorld(): Promise<World | null> {
   }
 }
 
+/** Texture key for a cell's tile. maps2 bakes an explicit PNG path per cell, so
+ * the key is derived from that path; the legacy (t,v) form is kept for the
+ * emission demo world which still uses category+variant tiles. */
 export function tileKey(t: string, v: number): string {
   return `tile:${t}:${v}`;
+}
+
+/** Texture key for a maps2 explicit tile path ("tiles2/mat/base/…/tile_NN.png"). */
+export function pathTileKey(path: string): string {
+  return "t2:" + path;
+}
+
+/** Repo-relative asset path ("tiles2/…") → served URL ("/assets/tiles2/…"). */
+export function assetUrl(path: string): string {
+  return "/assets/" + path.replace(/^\/+/, "");
 }
 
 /** client/public/tile-bases.json — per-variant lowest opaque row of each tile

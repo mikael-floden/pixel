@@ -164,8 +164,14 @@ export interface MoveResult {
 // so a raw world-axis input renders as a diagonal slide. Controls should be
 // SCREEN-relative: pressing Up moves the character straight up on screen.
 // These constants are the projection ratio (client MAP_GEOMETRY uses the same).
+// maps2/tiles2 geometry: top diamond 30px tall × 64px wide, grid steps DX=32,
+// DY=15; one elevation level = 16px of vertical face (tiles2/docs/ELEVATION.md).
 export const ISO_DX = 32;
-export const ISO_DY = 13;
+export const ISO_DY = 15;
+// Vertical face pixels per elevation level (maps2 LEVEL_PX).
+export const LEVEL_PX = 16;
+// Top-diamond height in px (apex→bottom); tiles2 top is 30px on a 64px tile.
+export const DIAMOND_H = 30;
 
 // Screen-speed calibration: the returned world vector is scaled so the
 // PROJECTED on-screen speed is identical in every direction (the projection
@@ -402,13 +408,18 @@ export const MAX_STAMINA = 100;
 export const SWIM_DRAIN = 20; // stamina per second while swimming
 export const STAMINA_REGEN = 30; // stamina per second recovered on land
 
-/** One map cell as the game consumes it (t = tile category, v = variant,
- * l = elevation level, r = region/climate tag). */
+/** One map cell as the game consumes it (t = tile category/material,
+ * v = variant, l = elevation level, r = region/climate tag).
+ * `path` (maps2/ringworld@1) is the EXACT top-surface tile PNG for this cell
+ * (repo-relative, e.g. "tiles2/saturated_grass/base/base_123/tile_04.png") —
+ * the maps2 world bakes the chosen tile per cell instead of a category+variant
+ * the game looks up. When present the renderer uses it directly. */
 export interface WorldCell {
   t: string;
   v: number;
   l: number;
   r?: string;
+  path?: string;
 }
 
 export interface ParsedWorld {
@@ -416,6 +427,13 @@ export interface ParsedWorld {
   height: number;
   rows: WorldCell[][];
   pois: { x: number; y: number; label: string; tile?: string }[];
+  /** Player spawn cell (col,row), if the world specifies one (maps2). */
+  spawn?: [number, number];
+  /** maps2: per-material canonical PLAIN base tile PNG, used for cliff faces
+   * (the stacked part below a cell's top surface) — matches maps2 render2.py
+   * which draws faces with the material's plain tile so terraces read as one
+   * wall, not a patchwork of the top's transition tiles. */
+  faceTiles?: Record<string, string>;
 }
 
 /**
@@ -427,6 +445,13 @@ export interface ParsedWorld {
  */
 export function parseWorld(json: any): ParsedWorld | null {
   if (!json) return null;
+  // maps2 / ringworld@1: 2D `top` (index into `paths`, -1 = void), `level`
+  // and `mat` (index into `matids`) grids; the world bakes the exact top tile
+  // per cell. Faces use the material's plain base tile (see faceTiles).
+  if (typeof json.schema === "string" && json.schema.startsWith("pixel-maps2/") &&
+      Array.isArray(json.top) && Array.isArray(json.paths)) {
+    return parseRingworld(json);
+  }
   if (Array.isArray(json.rows) && typeof json.width === "number") {
     cleanupRoads(json.width, json.height, json.rows);
     return { width: json.width, height: json.height, rows: json.rows, pois: json.pois ?? [] };
@@ -455,6 +480,38 @@ export function parseWorld(json: any): ParsedWorld | null {
     return { width: json.w, height: json.h, rows, pois: json.pois ?? [] };
   }
   return null;
+}
+
+/** Parse maps2 / ringworld@1 into the shared ParsedWorld model. */
+function parseRingworld(json: any): ParsedWorld {
+  const top: number[][] = json.top;
+  const level: number[][] = json.level ?? [];
+  const mat: number[][] = json.mat ?? [];
+  const paths: string[] = json.paths ?? [];
+  const n = top.length;
+  const idToMat: string[] = [];
+  for (const [name, id] of Object.entries(json.matids ?? {})) idToMat[id as number] = name;
+  const rows: WorldCell[][] = [];
+  const faceTiles: Record<string, string> = {};
+  for (let r = 0; r < n; r++) {
+    const row: WorldCell[] = [];
+    const w = top[r]?.length ?? n;
+    for (let c = 0; c < w; c++) {
+      const m = idToMat[mat[r]?.[c] ?? 0] ?? "";
+      const ti = top[r][c];
+      const path = ti >= 0 ? paths[ti] : undefined;
+      row.push({ t: m, v: 0, l: level[r]?.[c] ?? 0, path });
+      // Canonical PLAIN base tile per material for cliff faces: a pure cell's
+      // top tile lives under .../base/ (only borders use .../transitions/), so
+      // the first base-folder tile we see for a material is a plain face tile.
+      if (m && path && !faceTiles[m] && path.includes("/base/") && !path.includes("/transitions/")) {
+        faceTiles[m] = path;
+      }
+    }
+    rows.push(row);
+  }
+  const spawn = Array.isArray(json.meta?.spawn) ? (json.meta.spawn as [number, number]) : undefined;
+  return { width: n, height: n, rows, pois: [], spawn, faceTiles };
 }
 
 /**
