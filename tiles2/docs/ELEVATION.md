@@ -22,12 +22,24 @@ sizes). Because the top never moves, the walkable surface of a base_x_N tile lan
 in exactly the same place as N stacked base_x_1 tiles — only the side **face**
 grows. One "level" = base_x_1's 16px face, so:
 
-| height   | levels | target face | tile_size | tile_height | depth_ratio | measured face |
-|----------|:------:|:-----------:|:---------:|:-----------:|:-----------:|:-------------:|
-| base_x_1 |   1    |    16px     |    64     |   — (64)    |   0.50      | 16 (exact)    |
-| base_x_2 |   2    |    32px     |    64     |   — (64)    |   **0.985** | 32 (median)   |
-| base_x_3 |   3    |    48px     |    64     |   **128**   | **0.2423**  | 48 (median)   |
-| base_x_4 |   4    |    64px     |    64     |   **128**   | **0.4885**  | 64 (tight)    |
+All elevation heights render on a **64×128** canvas (uniform sprite size) so tall
+decorations — trees, spires — have headroom above the block and never clip. Only
+base_x_1 (the ground tile) stays 64×64.
+
+| height   | levels | target face | tile_size | tile_height | depth_ratio | measured face | headroom above |
+|----------|:------:|:-----------:|:---------:|:-----------:|:-----------:|:-------------:|:--------------:|
+| base_x_1 |   1    |    16px     |    64     |   — (64)    |   0.50      | 16 (exact)    | n/a (ground)   |
+| base_x_2 |   2    |    32px     |    64     |   **128**   |   **0.0**   | 33 (+1px¹)    | ~65px          |
+| base_x_3 |   3    |    48px     |    64     |   **128**   | **0.2423**  | 48 (median)   | ~50px          |
+| base_x_4 |   4    |    64px     |    64     |   **128**   | **0.4885**  | 64 (tight)    | ~34px          |
+
+¹ 64×128 has a face **floor of ~33px** (measured at depth 0.0), so base_x_2 lands
+1px over a true 2-level (32px) stack. The diamond top stays 30px, so stacking still
+anchors correctly; the extra pixel is occluded in-engine. Hitting exactly 32px
+requires the 64×64 canvas — but that leaves no headroom and clips tall objects, so
+we accept +1px to keep every height on one canvas. base_x_5 (face 80px, depth
+~0.735) fits a 64×128 block (110px) but leaves only ~18px above — fine for
+column-filling decorations, but a 64×160 canvas is needed for tall objects on it.
 
 ## How the depths were calibrated
 
@@ -36,9 +48,11 @@ grows. One "level" = base_x_1's 16px face, so:
 * **64×64** canvas: `face ≈ 34·depth − 1` → depth 0.50 gives 16 (=base_x_1),
   depth 0.985 gives 32. (The generator quantises to even values near the top, so
   32 is as centred as it gets; depth 1.0 overshoots to 33.)
-* **64×128** canvas: `face = 65·depth + 32.25` (measured at depths 0.35/0.55/0.75,
-  R²≈1). The +32px intercept is a real floor the taller canvas reserves — which is
-  why x3/x4 use depths *below* 0.5. Solving: face 48 → 0.2423, face 64 → 0.4885.
+* **64×128** canvas: `face ≈ 65·depth + 32` (high range 0.35–0.75; slightly
+  shallower, ≈59·depth+33, below 0.2). The +32px intercept is a real **floor** the
+  taller canvas reserves: at depth 0.0 the face is already ~33px, so you cannot get
+  a 16px (x1) or 32px (x2) face here — x2 sits at the floor (33px). x3/x4 use depths
+  *below* 0.5: face 48 → 0.2423, face 64 → 0.4885 (both verified by regeneration).
 
 Both fits were confirmed by generating grass tiles at the solved depths and
 re-measuring (x3 → 48 median, x4 → 64 tight). The diamond top stayed 30px in every
