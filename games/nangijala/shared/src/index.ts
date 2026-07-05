@@ -348,6 +348,14 @@ export const SURFACES: Record<string, Surface> = {
   cliff_lava: solid, // freestanding maintainer test placement near spawn
   cliff_crystal_v2: solid, // dito — the "long" (base 120) tall profile
   cliff_gold: solid, // dito — emissive tall solid (glow-copy QA)
+  // World-unused but EMISSIVE, so the demo world instantiates them (an
+  // unclassified category defaults to walkable ground: no collision and the
+  // player renders on top — demo stations 1-12/37-48). Same art profiles as
+  // their classified siblings: tall pillars / one-level basalt-lava blocks.
+  cliff_crystal: solid,
+  cliff_gold_v2: solid,
+  lava_ledge: solid,
+  lava_ledge_v2: solid,
   obelisk: solid,
   obelisk_v2: solid,
   watchtower: solid,

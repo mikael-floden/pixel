@@ -92,8 +92,24 @@ const used = new Set();
 for (const row of world.rows) for (const c of row) if (c) used.add(c.t);
 
 const unknownUsed = [...used].filter((t) => !isKnownSurface(t)).sort();
+// The emission demo world (shared buildDemoWorld) instantiates EVERY glowing
+// category, so an emissive category without a SURFACES entry ships the
+// default-ground bug straight into the demo: no collision and the player is
+// drawn on top of the tile (demo stations 1-12/37-48, cliff_crystal /
+// cliff_gold_v2). Emissive categories are therefore "used" even when the
+// main world map doesn't reference them.
+const EMISSION = join(TILES, "emission.json");
+let unknownDemo = [];
+if (existsSync(EMISSION)) {
+  const demoCats = JSON.parse(readFileSync(EMISSION, "utf8")).categories ?? {};
+  unknownDemo = Object.keys(demoCats)
+    .filter((t) => demoCats[t] && !isKnownSurface(t) && !used.has(t))
+    .sort();
+}
 const allCats = readdirSync(TILES).filter((d) => existsSync(`${TILES}/${d}/tile_00.png`));
-const unknownUnused = allCats.filter((t) => !isKnownSurface(t) && !used.has(t)).sort();
+const unknownUnused = allCats
+  .filter((t) => !isKnownSurface(t) && !used.has(t) && !unknownDemo.includes(t))
+  .sort();
 
 if (unknownUnused.length)
   console.warn(
@@ -105,7 +121,6 @@ if (unknownUnused.length)
 // tile silently never glows — the "did anyone look at this tile?" audit trail
 // is the point. Non-null entries are shape-checked so a typo can't ship a
 // black light or a NaN radius into the shader palette.
-const EMISSION = join(TILES, "emission.json");
 let emissionFail = 0;
 if (!existsSync(EMISSION)) {
   console.error("check-surfaces: FAIL — tiles/emission.json is missing (self-emission registry).");
@@ -164,19 +179,26 @@ if (!existsSync(EMISSION)) {
   }
 }
 
-if (!unknownUsed.length) {
+if (!unknownUsed.length && !unknownDemo.length) {
   if (emissionFail) process.exit(1);
   console.log(
-    `check-surfaces: OK — all ${used.size} world categories have SURFACES + emission entries.`,
+    `check-surfaces: OK — all ${used.size} world + all emissive (demo) categories have SURFACES + emission entries.`,
   );
   process.exit(0);
 }
 
-console.error(`\ncheck-surfaces: FAIL — the world uses ${unknownUsed.length} categories with NO SURFACES entry.`);
-console.error(`They default to walkable ground: players walk through them AND the night shader`);
-console.error(`gives them phantom block shadows outside their art. Add entries to SURFACES in`);
-console.error(`games/nangijala/shared/src/index.ts. Measured proposals:\n`);
-for (const cat of unknownUsed) {
+if (unknownUsed.length) {
+  console.error(`\ncheck-surfaces: FAIL — the world uses ${unknownUsed.length} categories with NO SURFACES entry.`);
+  console.error(`They default to walkable ground: players walk through them AND the night shader`);
+  console.error(`gives them phantom block shadows outside their art.`);
+}
+if (unknownDemo.length) {
+  console.error(`\ncheck-surfaces: FAIL — ${unknownDemo.length} EMISSIVE categories have no SURFACES entry.`);
+  console.error(`The emission demo world instantiates every glowing category, so these ship the`);
+  console.error(`default-ground bug into the demo (no collision, player drawn on top of the tile).`);
+}
+console.error(`Add entries to SURFACES in games/nangijala/shared/src/index.ts. Measured proposals:\n`);
+for (const cat of [...unknownUsed, ...unknownDemo]) {
   const p = proposalFor(cat);
   console.error(`  ${cat}: ${p.verdict}`);
   for (const line of p.lines) console.error(`    ${line}`);
