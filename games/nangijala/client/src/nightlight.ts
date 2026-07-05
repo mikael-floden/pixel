@@ -68,13 +68,6 @@ export interface GlowStamp {
 
 export const MAX_SHADER_LIGHTS = 12;
 
-// How hard the additive glow halos breathe: the emission wave swings ±10-20%
-// around its steady value, which is imperceptible once composited. The halos
-// are additive (they survive on top of even a lit scene), so we amplify their
-// deviation this much to get a visible "alive" pulse without touching the
-// steady brightness. 2.6 → a mushroom's halo swells/ebbs ~±40%.
-const GLOW_ANIM_GAIN = 2.6;
-
 /** Per-channel emission animation — the "alive" waveform shared by every
  * emission layer (shader self-floor, glow stamps, lit-copy tints). Returns
  * [r,g,b] factors around 1. The GLSL block in FRAG mirrors this EXACTLY
@@ -208,6 +201,14 @@ float emSelfPulse(float m, float ph) {
     return 0.55 + 0.45 * (0.5 + 0.5 * sin(uAnimTime * 1.35 + ph));
   }
   return 0.72 + 0.28 * (0.5 + 0.5 * sin(uAnimTime * 0.55 + ph));
+}
+
+// Gentle whole-cell support pulse (mix toward 1.0 of emSelfPulse): the strong,
+// eye-catching animation lives in the per-cluster glow halos on the actual
+// glowing pixels; the tile base only breathes SUBTLY so it reads as "lit BY
+// the glowing detail", not as a slab that pulses on its own.
+float emCellSupport(float m, float ph) {
+  return mix(1.0, emSelfPulse(m, ph), 0.35);
 }
 
 void main() {
@@ -463,7 +464,7 @@ void main() {
     vec4 ePar = texture2D(uEmit, vec2((eIdx * 2.0 + 1.5) * tw, 0.5));
     float ph = fract(sin(dot(floor(cell), vec2(12.9898, 78.233))) * 43758.5453) * 6.2831;
     float m = ePar.b * 255.0; // anim mode: 0 static, ~100 pulse, ~200 flicker
-    emSelf = emSelfPulse(m, ph);
+    emSelf = emCellSupport(m, ph);
     // "Alive" emission waveform — EXACT mirror of emissionWave() (JS): gusty
     // warm-coupled flicker / slow breathing pulse with hue drift / near-
     // steady glinting static. Change BOTH or the layers drift out of sync.
@@ -1026,26 +1027,24 @@ export class NightLights {
         const img = this.stampImg;
         rt.beginDraw();
         for (const g of stamps) {
-          // Shared "alive" waveform (see emissionWave): overall amplitude
-          // rides in alpha, the colour-shift ratio rides in the tint.
-          // The glow halos/pools are ADDITIVE — they ride on top of the whole
-          // scene (even next to the bonfire), so this is the layer the eye
-          // actually reads as "alive". The floor/lit-copy layers are max()-
-          // based and get masked by any brighter light, so the wave's small
-          // ±10-20% barely shows there; here we AMPLIFY the deviation from the
-          // steady value (×GLOW_ANIM_GAIN) so the halo visibly breathes — a
-          // pulsing glow, not a blink (the tile art underneath never goes
-          // dark; only its added halo swells and ebbs).
+          // Two kinds of stamp share this loop, and they play different roles
+          // in "the glowing DETAIL comes alive, and THAT lights the tile":
+          //   • per-cluster HALOS (no ry) sit exactly on each glowing crystal/
+          //     cap/crack, each on its OWN phase — they carry the STRONG pulse
+          //     (emissionSelfPulse, ~0.45..1.0) so individual details visibly
+          //     breathe independently, the focus of the effect;
+          //   • broad POOLS (ry set) light the whole tile + surroundings — they
+          //     only GENTLY breathe (remap into ~0.8..1.0) so the emphasis
+          //     stays on the detail, not the tile as a slab.
+          // Colour-shift (warm/cool) rides in the tint via emissionWave.
+          const isPool = g.ry !== undefined;
           const fv = emissionWave(g.anim, t, g.phase);
           const fm = (fv[0] + fv[1] + fv[2]) / 3;
           const ch = (i: number) => Math.min(255, Math.round(g.color[i] * (fv[i] / fm) * 255));
           img.setTint((ch(0) << 16) | (ch(1) << 8) | ch(2));
-          // Amplify around each anim's STEADY mean (not 1.0) so the halo
-          // breathes symmetrically about its base instead of biasing dark
-          // (pulse's wave averages ~0.86, flicker ~0.93, static ~0.99).
-          const mean = g.anim >= 2 ? 0.93 : g.anim >= 1 ? 0.86 : 0.99;
-          const gain = Math.max(0.2, 1 + (fm - mean) * GLOW_ANIM_GAIN);
-          img.setAlpha(Math.min(1, g.alpha * gain));
+          const pulse = emissionSelfPulse(g.anim, t, g.phase);
+          const amp = isPool ? 0.68 + 0.32 * pulse : pulse;
+          img.setAlpha(Math.min(1, g.alpha * amp));
           img.setDisplaySize(g.radius * 2, (g.ry ?? g.radius) * 2);
           rt.batchDraw(img, g.x - camX, g.y - camY);
         }

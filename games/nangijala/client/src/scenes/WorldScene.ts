@@ -982,8 +982,11 @@ export class WorldScene extends Phaser.Scene {
         // Emitter self-pulse: dim the whole billboard so the OBJECT itself
         // breathes (the shader does this for terrain emitters; solid emissive
         // art — spires, mushroom stacks, cliff pillars — is drawn as these lit
-        // copies, so mirror it here or those objects sit static).
-        const sp = emissionSelfPulse(animN, tNow, ph);
+        // copies which can't be lit per-pixel by the glow field, so the pulse
+        // has to ride the whole sprite). GENTLE (mix 0.45 toward 1.0): the
+        // strong per-detail pulse lives in the glow halos for terrain tiles;
+        // here we keep solids alive without turning them into pulsing slabs.
+        const sp = 1 - 0.45 * (1 - emissionSelfPulse(animN, tNow, ph));
         tint =
           (Math.round(((tint >> 16) & 0xff) * sp) << 16) |
           (Math.round(((tint >> 8) & 0xff) * sp) << 8) |
