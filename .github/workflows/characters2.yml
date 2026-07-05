@@ -1,0 +1,52 @@
+name: characters2 heroes
+
+# Keeps the two game heroes (humans/default_boy, humans/default_girl) present.
+# Delete a hero's folder and the next run regenerates it as a slightly different
+# variation. No-ops (no PixelLab cost) when both are already present.
+
+on:
+  schedule:
+    - cron: "40 */3 * * *"      # every 3 hours — cheap: only acts if a hero is missing
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Reroll these now (space-separated: default_boy default_girl)"
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: characters2
+  cancel-in-progress: false
+
+jobs:
+  heroes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Ensure both heroes exist
+        env:
+          PIXELLAB_API_KEY: ${{ secrets.PIXELLAB_API_KEY }}
+        run: |
+          if [ -z "$PIXELLAB_API_KEY" ]; then
+            echo "::warning::PIXELLAB_API_KEY secret is not set. Skipping."
+            exit 0
+          fi
+          git config user.name "pixel-characters2-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          python characters2/pipeline/generate.py ${{ github.event.inputs.force && format('--force {0}', github.event.inputs.force) || '' }}
