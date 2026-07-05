@@ -49,19 +49,26 @@ def neighbors(cfg, gid):
     return out
 
 
-def next_unit(cfg):
-    """Complete each type FULLY before the next: its base sheets, then a
-    transition to each configured neighbour. Returns ('base', gt) /
-    ('transition', frm, to) / None."""
+def base_complete(cfg, gid):
+    return len(common.list_raw_sheets(gid, kind="base")) >= cfg["targets"]["base_sheets_per_type"]
+
+
+def next_unit(cfg, bases_only=False):
+    """Complete each type before the next: its base sheets, then a transition to
+    each configured neighbour that ALREADY has its bases (so a transition is only
+    made once BOTH types exist). Returns ('base', gt) / ('transition', frm, to) /
+    None. `bases_only` defers all transitions."""
     by = _by_id(cfg)
     tgt = cfg["targets"]
     for gt in cfg["ground_types"]:
         gid = gt["id"]
         if len(common.list_raw_sheets(gid, kind="base")) < tgt["base_sheets_per_type"]:
             return ("base", gt)
+        if bases_only:
+            continue
         for nb in neighbors(cfg, gid):
-            if nb not in by:
-                continue
+            if nb not in by or not base_complete(cfg, nb):
+                continue                       # only transition to an existing type
             have = len(common.list_raw_sheets(gid, kind="transition", other=nb))
             if have < tgt["transition_sheets_per_pair"]:
                 return ("transition", gt, by[nb])
@@ -113,6 +120,7 @@ def main():
     ap.add_argument("--min-balance", type=int, default=None)
     ap.add_argument("--once", action="store_true")
     ap.add_argument("--no-push", action="store_true")
+    ap.add_argument("--bases-only", action="store_true", help="generate base sheets only; defer all transitions")
     ap.add_argument("--dry-run", action="store_true", help="print the next units; no API calls")
     args = ap.parse_args()
 
@@ -130,7 +138,7 @@ def main():
             for nb in neighbors(cfg, gid):
                 h = len(common.list_raw_sheets(gid, kind="transition", other=nb))
                 print(f"      -> {nb}: {h}/{tgt['transition_sheets_per_pair']}")
-        nxt = next_unit(cfg)
+        nxt = next_unit(cfg, args.bases_only)
         print("next unit:", _describe(nxt) if nxt else "== all targets met ==")
         return
 
@@ -159,7 +167,7 @@ def main():
             client.ensure_budget(min_balance, min_usd)
         except BudgetExhausted as e:
             print(f"stopping: {e}"); break
-        unit = next_unit(cfg)
+        unit = next_unit(cfg, args.bases_only)
         if unit is None or _describe(unit) in skip:
             print("== all targets met =="); break
         try:
