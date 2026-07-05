@@ -64,18 +64,31 @@ def has_character(name):
     return os.path.exists(os.path.join(char_dir(name), "south.png"))
 
 
-def _uniform_canvas(rotations):
-    w = max(im.width for im in rotations.values())
-    h = max(im.height for im in rotations.values())
-    s = max(w, h)
-    return s, s
-
-
-def _center(img, size):
-    tw, th = size
-    canvas = Image.new("RGBA", (tw, th), (0, 0, 0, 0))
-    canvas.alpha_composite(img.convert("RGBA"), ((tw - img.width) // 2, (th - img.height) // 2))
-    return canvas
+def _fit_to_square(rotations, size):
+    """Fit every rotation into an exact `size`×`size` sprite. PixelLab content-fits
+    the character onto a padded canvas (e.g. 112px for an 80px request), so we trim
+    each frame's transparent margin, apply ONE shared scale (from the largest frame,
+    downscale-only) so the character stays a consistent size across all 8
+    directions, and center it on the size×size canvas. Result: true 80×80 sprites."""
+    boxes = {d: im.convert("RGBA").getbbox() for d, im in rotations.items()}
+    valid = [b for b in boxes.values() if b]
+    if not valid:
+        return {d: im.convert("RGBA").resize((size, size)) for d, im in rotations.items()}
+    max_w = max(b[2] - b[0] for b in valid)
+    max_h = max(b[3] - b[1] for b in valid)
+    scale = min(size / max_w, size / max_h, 1.0)      # only shrink, never upscale
+    out = {}
+    for d, im in rotations.items():
+        im = im.convert("RGBA")
+        b = boxes[d]
+        crop = im.crop(b) if b else im
+        if scale < 1.0:
+            crop = crop.resize((max(1, round(crop.width * scale)),
+                                max(1, round(crop.height * scale))), Image.NEAREST)
+        canvas = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+        canvas.alpha_composite(crop, ((size - crop.width) // 2, (size - crop.height) // 2))
+        out[d] = canvas
+    return out
 
 
 def _save_preview(rotations, path):
@@ -108,8 +121,7 @@ def generate_character(client, cfg, name):
     raw = client.character_rotations(cid)
     if not raw:
         raise RuntimeError(f"{name}: no rotations returned")
-    size = _uniform_canvas(raw)
-    rotations = {d: _center(im, size) for d, im in raw.items()}
+    rotations = _fit_to_square(raw, int(p["width"]))     # true 80×80 sprites
 
     cdir = char_dir(name)
     os.makedirs(cdir, exist_ok=True)
@@ -179,6 +191,12 @@ def main():
             break
         if name in args.force:
             import shutil
+            old = (_read_json(os.path.join(char_dir(name), "character.json"), {}) or {})
+            if old.get("pixellab_character_id"):
+                try:
+                    client.delete_character(old["pixellab_character_id"])  # no orphan on PixelLab
+                except Exception:
+                    pass
             shutil.rmtree(char_dir(name), ignore_errors=True)
         print(f"+ generating {name} …")
         cid, dirs = generate_character(client, cfg, name)
