@@ -38,47 +38,67 @@ def _abL(hsv):
     return s * np.cos(h), s * np.sin(h), v
 
 
+def _circ_mean(h):
+    r = h * (2 * np.pi / 256.0)
+    return float((np.arctan2(np.sin(r).mean(), np.cos(r).mean()) % (2 * np.pi)) * (256.0 / (2 * np.pi)))
+
+
 def material_target(images):
-    """Dominant material colour of a set of tiles, as {'c': [a,b,L], 'radius': R}.
-    Found as the mode of a coarse (a,b,L) histogram, refined to the local mean."""
-    A, B, L = [], [], []
+    """Dominant material colour of a set of tiles, as target hue/sat/value.
+
+    Found as the mode of a coarse (a,b,L) histogram (separates materials by hue
+    AND brightness — green vs brown vs white-vs-grey), refined to the local mean,
+    then summarised as circular-mean hue + median saturation + median value.
+    `chroma` (mean saturation) flags chromatic (grass, dirt, water) vs achromatic
+    (snow, stone) materials, which the mask handles differently."""
+    A, B, L, H, S, V = [], [], [], [], [], []
     for im in images:
         hsv = np.asarray(im.convert("HSV"), dtype=np.float32)
         al = np.asarray(im.convert("RGBA"))[:, :, 3] > 16
         a, b, l = _abL(hsv)
         A.append(a[al]); B.append(b[al]); L.append(l[al])
+        H.append(hsv[:, :, 0][al]); S.append(hsv[:, :, 1][al]); V.append(hsv[:, :, 2][al])
     if not A or sum(len(x) for x in A) == 0:
         return None
-    pts = np.stack([np.concatenate(A), np.concatenate(B), np.concatenate(L)], axis=1)
+    a = np.concatenate(A); b = np.concatenate(B); l = np.concatenate(L)
+    h = np.concatenate(H); s = np.concatenate(S); v = np.concatenate(V)
+    pts = np.stack([a, b, l], axis=1)
     keys = np.round(pts / 16.0).astype(int)
     uniq, counts = np.unique(keys, axis=0, return_counts=True)
     peak = uniq[counts.argmax()] * 16.0
-    sel = np.linalg.norm(pts - peak, axis=1) < 40.0
-    c = pts[sel].mean(axis=0)
-    rad = float(np.percentile(np.linalg.norm(pts[sel] - c, axis=1), 90)) * 1.7
-    return {"c": [float(x) for x in c], "radius": max(rad, 35.0)}
+    sel = np.linalg.norm(pts - peak, axis=1) < 45.0
+    return {
+        "hue": _circ_mean(h[sel]),
+        "sat": float(np.median(s[sel])),
+        "value": float(np.median(v[sel])),
+        "chroma": float(np.median(s[sel])),
+    }
 
 
-def harmonize(im, target, ab_strength=0.8, v_strength=0.65):
-    """Pull `im`'s material pixels (those near `target`'s centroid) toward it in
-    hue/saturation, and level their mean brightness. Non-material pixels untouched."""
+def harmonize(im, target, hue_strength=0.9, sat_strength=0.6, v_strength=0.65):
+    """Pull `im`'s MATERIAL pixels toward the target hue/saturation and level their
+    mean brightness, keeping texture. The material is selected by a generous
+    HUE BAND for chromatic materials (grass/dirt/water — catches every tone of
+    that hue), or by low-saturation + brightness for achromatic ones (snow/stone).
+    Everything else (dirt sides on grass, flowers, rock) is left untouched."""
     if not target:
         return im.copy()
     hsv = np.asarray(im.convert("HSV"), dtype=np.float32)
     al = np.asarray(im.convert("RGBA"))[:, :, 3]
-    a, b, l = _abL(hsv)
-    ca, cb, cl = target["c"]
-    R = target["radius"]
-    m = (al > 16) & (np.sqrt((a - ca) ** 2 + (b - cb) ** 2 + (l - cl) ** 2) < R)
+    h, s, v = hsv[:, :, 0], hsv[:, :, 1], hsv[:, :, 2]
+    op = al > 16
+    hue_t, sat_t, val_t = target["hue"], target["sat"], target["value"]
+    if target.get("chroma", sat_t) > 55:                 # chromatic: hue band
+        dh = np.abs(((h - hue_t + 128) % 256) - 128)
+        m = op & (s > 45) & (dh < 42)
+    else:                                                # achromatic: bright + desaturated
+        m = op & (s < 70) & (v > val_t - 45)
     if m.any():
-        na = a + (ca - a) * ab_strength
-        nb = b + (cb - b) * ab_strength
-        sat = np.sqrt(na ** 2 + nb ** 2)
-        hue = (np.arctan2(nb, na) % (2 * np.pi)) * (256.0 / (2 * np.pi))
-        dL = (cl - l[m].mean()) * v_strength
-        hsv[:, :, 0] = np.where(m, hue, hsv[:, :, 0])
-        hsv[:, :, 1] = np.where(m, np.clip(sat, 0, 255), hsv[:, :, 1])
-        hsv[:, :, 2] = np.where(m, np.clip(l + dL, 0, 255), hsv[:, :, 2])
+        dh = (((hue_t - h + 128) % 256) - 128) * hue_strength
+        hsv[:, :, 0] = np.where(m, (h + dh) % 256, h)
+        hsv[:, :, 1] = np.where(m, np.clip(s + (sat_t - s) * sat_strength, 0, 255), s)
+        dv = (val_t - v[m].mean()) * v_strength
+        hsv[:, :, 2] = np.where(m, np.clip(v + dv, 0, 255), v)
     out = np.asarray(Image.fromarray(hsv.clip(0, 255).astype(np.uint8), "HSV").convert("RGBA")).copy()
     out[:, :, 3] = al
     return Image.fromarray(out, "RGBA")

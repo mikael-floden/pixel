@@ -28,7 +28,7 @@ import common
 import normalize
 
 DEFAULTS = {"neutralize_outline": True, "darkness_thresh": 60,
-            "harmonize": {"ab_strength": 0.8, "v_strength": 0.65}}
+            "harmonize": {"hue_strength": 0.9, "sat_strength": 0.6, "v_strength": 0.65}}
 
 
 def _pp_cfg(cfg):
@@ -82,9 +82,9 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
         im = Image.open(os.path.join(sdir, fn)).convert("RGBA")
         if pp["neutralize_outline"]:
             im = normalize.neutralize_outline(im, darkness_thresh=pp["darkness_thresh"])
-        im = normalize.harmonize(im, t_from, hs["ab_strength"], hs["v_strength"])
+        im = normalize.harmonize(im, t_from, hs["hue_strength"], hs["sat_strength"], hs["v_strength"])
         if t_to:
-            im = normalize.harmonize(im, t_to, hs["ab_strength"], hs["v_strength"])
+            im = normalize.harmonize(im, t_to, hs["hue_strength"], hs["sat_strength"], hs["v_strength"])
         im.save(os.path.join(dest, fn))
         n += 1
 
