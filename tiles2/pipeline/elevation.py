@@ -146,13 +146,26 @@ def _settings(cfg, h):
     }
 
 
-def build_prompt(cfg, terrain, height_id, seed):
-    """Number a seed-shuffled subset of the (terrain, height) object pool."""
+def build_prompt(cfg, terrain, height_id, slot, attempt):
+    """Number a ROTATING window of the (terrain, height) object pool.
+
+    The pool is shuffled ONCE with a stable per-(terrain,height) seed, then the
+    window start advances by k for every (slot + attempt) step. So the 3 slots —
+    and every re-roll of a slot (attempt bumps) — get a DIFFERENT slice of the
+    pool, cycling through it before repeating, instead of the old behaviour where
+    a pool <= k meant every sheet listed the whole pool reshuffled (which read as
+    'the same sheet over and over')."""
     e = _elev(cfg)
     h = _height(cfg, height_id)
-    p = pool(cfg, terrain["id"], height_id)
-    k = min(objects_per_sheet(cfg), len(p))
-    picks = random.Random(seed).sample(p, k) if p else []
+    gid = terrain["id"]
+    p = pool(cfg, gid, height_id)
+    picks = []
+    if p:
+        k = min(objects_per_sheet(cfg), len(p))
+        order = list(p)                                  # each SLOT gets its own shuffle,
+        random.Random(common._seed(gid, height_id, "order", slot)).shuffle(order)
+        start = (attempt * k) % len(p)                   # so slots never alias each other;
+        picks = [order[(start + i) % len(p)] for i in range(k)]   # re-rolls rotate within the slot
     objects = " ".join(f"{i + 1}) {o}" for i, o in enumerate(picks))
     prompt = e["template"].format(
         height_word=h["height_word"], flavor=terrain["flavor"],
@@ -167,11 +180,11 @@ def generate_sheet(client, cfg, terrain, height_id, slot):
     state = _load_state()
     key = _slot_key(gid, height_id, slot)
     attempt = int(state.get(key, 0))
-    seed = common._seed(gid, height_id, slot, attempt)   # salts shuffle + generation
+    seed = common._seed(gid, height_id, slot, attempt)   # salts the generation
     state[key] = attempt + 1
     _save_state(state)
 
-    prompt, picks = build_prompt(cfg, terrain, height_id, seed)
+    prompt, picks = build_prompt(cfg, terrain, height_id, slot, attempt)
     slug = f"{height_id}_{seed}"
     t = cfg["tile"]
     tiles, tile_id = client.create_tiles(

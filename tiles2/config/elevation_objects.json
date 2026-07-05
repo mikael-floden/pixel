@@ -1,5 +1,5 @@
 {
-  "_comment": "Object pools for elevation tiles, per terrain and height. Each generated sheet numbers a SHUFFLED subset of its pool (elevation.objects_per_sheet items) so one create-tiles-pro call yields many DIFFERENT objects, and the 3 sheets per (terrain,height) cover different subsets. Pools are deliberately broad and are meant to grow — add more ideas freely. Height tiers: base_x_2 low/ground props, base_x_3 medium, base_x_4 tall, base_x_5 towering/monumental. Keep entries terrain-appropriate (they get harmonised toward that terrain's palette).",
+  "_comment": "Object pools for elevation tiles, per terrain and height. Each generated sheet numbers a ROTATING window (elevation.objects_per_sheet items) of its pool — the pool is shuffled once per (terrain,height) then the window advances for each slot and each re-roll, so different sheets/re-rolls list DIFFERENT objects (not the whole pool reshuffled). Keep pools comfortably larger than objects_per_sheet (aim >= ~18) so rotation stays fresh across the 3 slots and any re-rolls. Pools are meant to grow — add more ideas freely. Height tiers: base_x_2 low/ground props, base_x_3 medium, base_x_4 tall, base_x_5 towering/monumental. Keep entries terrain-appropriate (they get harmonised toward that terrain's palette).",
   "saturated_grass": {
     "base_x_2": [
       "a mossy grey boulder", "a weathered tree stump", "a cluster of red-capped mushrooms",
@@ -10,7 +10,11 @@
       "a fairy ring of toadstools", "a wild berry shrub", "a small bed of tulips",
       "a clump of marsh reeds", "a low stone with animal tracks", "a broken mossy branch",
       "a neatly clipped hedge", "a lavender bush", "a rotting log sprouting fungi",
-      "a patch of clover with a mushroom", "a pile of pinecones and acorns"
+      "a patch of clover with a mushroom", "a pile of pinecones and acorns",
+      "a patch of white daisies", "a fresh molehill of dark earth", "a mossy animal skull",
+      "a cluster of foxglove flowers", "a tangle of blackberry brambles",
+      "a small nest of speckled eggs", "a patch of dandelions gone to seed",
+      "a snail on a spotted mushroom"
     ],
     "base_x_3": [
       "a leafy green oak tree", "a bare twisted dead tree", "a slender birch tree",
@@ -20,7 +24,9 @@
       "an old stump with a beehive", "a small fruit tree heavy with apples",
       "a boulder overgrown with vines", "a mound bristling with ferns",
       "an iron streetlamp on a post", "a straw scarecrow", "a cluster of cattails and reeds",
-      "a young pine tree", "a mossy stone well", "a moss-draped rock arch"
+      "a young pine tree", "a mossy stone well", "a moss-draped rock arch",
+      "a wooden beehive on a stand", "a small shrine of stacked stones",
+      "a topiary trimmed into a ball", "a leaning mossy fence post with a lantern"
     ],
     "base_x_4": [
       "a broad old oak tree", "a towering twisted ancient tree", "a tall slender pine",
@@ -29,7 +35,9 @@
       "a cherry blossom tree in full bloom", "a cluster of white birch trees",
       "a tall iron street lamp", "a sculpted hedge topiary", "a giant glowing toadstool",
       "a vine-draped stone pillar", "a carved wooden totem pole", "a tall bamboo cluster",
-      "a ruined ivy-covered archway", "a tall dead snag full of hollows"
+      "a ruined ivy-covered archway", "a tall dead snag full of hollows",
+      "a tall poplar tree", "a stone obelisk wrapped in ivy", "a great oak with a tree-house",
+      "a tall flowering magnolia tree", "a spiral-trimmed cypress topiary"
     ],
     "base_x_5": [
       "a colossal ancient oak world-tree", "an enormous twisted elder tree",
@@ -37,7 +45,10 @@
       "a towering carved totem", "a majestic weeping willow",
       "an enormous glowing mushroom tower", "a tall vine-wrapped obelisk",
       "a soaring ancient redwood", "a crumbling overgrown watchtower",
-      "a giant blossoming cherry tree"
+      "a giant blossoming cherry tree", "a colossal redwood with a massive trunk",
+      "a bleached towering dead elder tree", "an enormous many-trunked banyan tree",
+      "a towering totem crowned with a carved eagle", "a giant fantasy mushroom tower with a glowing cap",
+      "a grand ivy-draped stone column"
     ]
   },
   "stone_mountain": {
@@ -49,7 +60,9 @@
       "a flat rock marked with tracks", "a shallow rocky crater",
       "a rock with a glinting ore vein", "a lichen-crusted stone",
       "a broken statue fragment", "a mud patch strewn with pebbles",
-      "a small sinkhole rimmed with rock", "a stack of flat slate slabs"
+      "a small sinkhole rimmed with rock", "a stack of flat slate slabs",
+      "a mossy stone with a curled lizard", "a cracked geode half", "a small rockslide pile",
+      "a weathered boundary marker stone"
     ],
     "base_x_3": [
       "a rugged rock spire", "a balanced cairn of boulders", "a carved grey runestone",
@@ -57,20 +70,30 @@
       "a jagged obsidian outcrop", "a moss-streaked stone pillar",
       "an ancient boundary marker", "a rock studded with raw crystals",
       "a fossil-laden stone column", "a stone lamppost", "a broken fluted column",
-      "a weathered gargoyle on a plinth"
+      "a weathered gargoyle on a plinth", "a leaning cracked monolith",
+      "a rune-carved dolmen", "a mossy broken archway", "a spiral of stacked flat stones",
+      "a wind-carved hoodoo rock", "a small ruined stone shrine"
     ],
     "base_x_4": [
       "a tall rugged rock spire", "a grey stone statue of a warrior",
       "a squat fortress watchtower", "a tall standing menhir", "a jagged obsidian tower",
       "a weathered rock arch", "a ruined stone tower", "a tall precarious cairn",
       "a weathered obelisk", "a craggy cliff outcrop", "a tall ore-veined rock column",
-      "a shattered stone archway"
+      "a shattered stone archway", "a tall crumbling watchtower", "a rune-etched obelisk",
+      "a fragment of a natural stone bridge", "a tall wind-carved hoodoo",
+      "a statue of a robed figure", "a cluster of basalt columns",
+      "a tall balanced logan stone", "a broken triumphal arch"
     ],
     "base_x_5": [
       "a towering rock spire", "a colossal stone statue", "a grand fortress tower with battlements",
       "a soaring obsidian monolith", "a giant upright standing stone",
       "a ruined castle turret", "a towering natural stone arch",
-      "a massive ore-laced rock column", "a crumbling ancient ziggurat"
+      "a massive ore-laced rock column", "a crumbling ancient ziggurat",
+      "a colossal seated stone guardian", "a towering hoodoo rock pillar",
+      "a grand rune-covered obelisk", "a ruined stone gate arch",
+      "a massive basalt organ-pipe column", "a tall crumbling bell tower",
+      "a giant fallen statue head propped upright", "a towering broken aqueduct pillar",
+      "a colossal cliff pinnacle"
     ]
   },
   "crystal_ice": {
@@ -79,25 +102,41 @@
       "a frost-rimed boulder", "a mound of crystal shards", "a creature frozen in ice",
       "a rock encased in clear ice", "a small radiant crystal formation",
       "a snow-dusted crystal cluster", "a glowing blue crystal geode",
-      "a heaved mound of frozen ground", "a spray of icicle shards"
+      "a heaved mound of frozen ground", "a spray of icicle shards",
+      "a geode split open with violet crystals", "a ring of blue crystal shards",
+      "an icy rock streaked with frost", "a frozen flower in clear ice",
+      "a cluster of teal crystal points", "a stub of a frozen waterfall",
+      "a small cairn of ice-blocks", "a frost-covered fern in ice"
     ],
     "base_x_3": [
       "a tall crystal spire", "a jagged ice pillar", "a fan of sharp ice needles",
       "a faceted crystal column", "a small tree sheathed in ice",
       "a statue encased in blue ice", "a rock crowned with glowing crystals",
-      "a radiant crystal formation", "a frozen fountain", "a spiral of clustered icicles"
+      "a radiant crystal formation", "a frozen fountain", "a spiral of clustered icicles",
+      "a twisted spire of blue ice", "a cluster of hexagonal crystal columns",
+      "a frozen tree encased in glassy ice", "a tall shard of aquamarine crystal",
+      "a frost-covered standing stone", "an ice pillar with trapped bubbles",
+      "a crystalline mushroom cluster", "a glowing geode split open"
     ],
     "base_x_4": [
       "a giant glowing crystal spire", "a towering translucent ice pillar",
       "a tall cluster of ice blades", "an angular crystal monolith",
       "a frozen waterfall column", "an ice-encased ruined tower",
-      "a soaring luminous crystal tower", "a jagged iceberg shard"
+      "a soaring luminous crystal tower", "a jagged iceberg shard",
+      "a tall spiral ice horn", "a glowing crystal obelisk",
+      "a great geode split with glowing crystals", "a tall shard of violet crystal",
+      "an ice-encased dead tree", "a towering aquamarine crystal cluster",
+      "a tall frozen fountain of ice", "a leaning berg of blue glacier ice"
     ],
     "base_x_5": [
       "a colossal glowing crystal spire", "a soaring translucent ice pillar",
       "a towering angular crystal monolith", "a giant frozen spire",
       "a grand luminous crystal tower", "a massive ice obelisk",
-      "an enormous cluster of crystal blades"
+      "an enormous cluster of crystal blades", "a colossal aquamarine crystal spire",
+      "a towering iceberg pinnacle", "a giant frozen waterfall column",
+      "a massive twisted ice horn", "an enormous split geode tower",
+      "a towering ice-encased ancient tree", "a soaring frozen fountain",
+      "a grand crystal cathedral spire"
     ]
   },
   "regular_snow": {
@@ -106,23 +145,34 @@
       "a wind-sculpted snowdrift", "a snow-covered rock", "a snow-buried tree stump",
       "a snow-laden round bush", "a small rounded igloo", "a cheerful snowman",
       "a snow-covered pile of logs", "a frost-killed fern",
-      "a snowy rock crossed with animal tracks", "a heap of snowballs"
+      "a snowy rock crossed with animal tracks", "a heap of snowballs",
+      "a snow-covered mushroom cluster", "two stacked snowballs", "a snow-laden fern",
+      "a snow-covered berry bush", "a rimmed ice-fishing hole", "a snow-mounded log pile"
     ],
     "base_x_3": [
       "a snow-capped rock spire", "a drifted snow pillar", "a snow-cloaked standing stone",
       "a tall wind-carved snowdrift", "a snow-laden young pine", "a snow-covered statue",
       "a frozen bare dead tree", "a snow-topped signpost", "a snow-capped cairn",
-      "a snow-mounded well"
+      "a snow-mounded well", "a snow-laden fir sapling", "a frost-covered dead shrub",
+      "a snowy tree stump", "a snow-mounded boulder", "a snow-covered signboard",
+      "a heaved-up frozen pond", "a snow-draped bramble", "a snow-covered lamppost"
     ],
     "base_x_4": [
       "a tall snow-capped rock spire", "a white snowy peak", "a snow-buried ruined fortress",
       "a tall column of packed snow", "a snow-laden tall pine", "a snow-draped obelisk",
-      "a tall frozen dead tree", "a snow-cloaked statue", "a drifted snow tower"
+      "a tall frozen dead tree", "a snow-cloaked statue", "a drifted snow tower",
+      "a tall snow-laden fir", "a snow-covered ruined arch", "a snow-draped standing stone",
+      "a wind-sculpted tall drift", "a snow-covered watchtower", "a snowy rock spire hung with icicles",
+      "a snow-buried leaning menhir"
     ],
     "base_x_5": [
       "a towering snow-capped spire", "a soaring white snowy peak",
       "a colossal column of packed snow", "a snow-buried tower", "a giant snow-laden pine",
-      "a grand frozen monument", "a massive glacier serac"
+      "a grand frozen monument", "a massive glacier serac", "a towering snow-laden fir",
+      "a colossal wind-carved drift", "a grand frozen dead tree",
+      "a soaring snowy rock spire", "a snow-buried ruined tower",
+      "a giant serac of blue glacier ice", "a towering snow-cloaked statue",
+      "a massive snow-covered ancient pine"
     ]
   }
 }
