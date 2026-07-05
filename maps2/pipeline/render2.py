@@ -38,10 +38,11 @@ class Ctx:
         self.skip = ~solid   # void cells: don't draw, show background
 
     def face_tile(self, y, x) -> Image.Image:
-        m = self.mat[y, x]
-        bt = self.lib.base(m)
+        # cliff faces use only CLEAN base tiles — accents (flowers/mushrooms)
+        # on a vertical rock/earth face read as artefacts
+        clean, _ = self.lib.base_pools(self.mat[y, x])
         h = (x * 374761393 ^ y * 668265263) & 0x7FFFFFFF
-        return self.lib.img(bt[h % len(bt)])
+        return self.lib.img(clean[h % len(clean)])
 
     def top_tile(self, y, x) -> Image.Image:
         i = int(self.top[y, x])

@@ -62,6 +62,7 @@ class Tiles2:
         self.types = self._discover()
         self._targets: dict[str, list] = {}
         self._img: dict[str, Image.Image] = {}
+        self._pools: dict = {}
         self._analysis = self._load_or_build_analysis()
 
     # -- discovery -------------------------------------------------------------
@@ -120,6 +121,37 @@ class Tiles2:
             self._targets[gid] = (np.mean(cols, 0) if cols
                                   else np.array([128, 128, 128.])).tolist()
         return np.array(self._targets[gid], np.float32)
+
+    # -- clean vs special base tiles ------------------------------------------
+
+    def base_pools(self, gid: str, clean_pct: float = 0.55):
+        """Split a type's base tiles into (clean, special) by how much off-
+        material detail they carry on the top diamond. "Clean" = the standard
+        ground colour with minimal accents; "special" = the flower/mushroom/
+        bare-earth/pebble tiles. Keeping specials scarce is what keeps them
+        special — the map fills ~75% clean."""
+        if gid in self._pools:
+            return self._pools[gid]
+        t = self.target_color(gid)
+        scored = []
+        for p in self.base(gid):
+            a = np.asarray(self.img(p)).astype(np.float32)
+            sel = DM & (a[:, :, 3] > 40)
+            d = np.linalg.norm(a[:, :, :3][sel] - t, axis=1)
+            scored.append((float((d > 55).mean()), p))
+        scored.sort()
+        k = max(1, int(round(len(scored) * clean_pct)))
+        clean = [p for _, p in scored[:k]]
+        special = [p for _, p in scored[k:]] or clean
+        self._pools[gid] = (clean, special)
+        return clean, special
+
+    def pick_base(self, gid: str, r_pool: float, r_tile: float,
+                  special_prob: float = 0.25) -> str:
+        """Deterministic weighted pick: mostly clean ground, occasional accent."""
+        clean, special = self.base_pools(gid)
+        pool = special if r_pool < special_prob else clean
+        return pool[int(r_tile * len(pool)) % len(pool)]
 
     # -- transition analysis --------------------------------------------------
 

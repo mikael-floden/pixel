@@ -59,6 +59,7 @@
   "Never place stone_mountain directly beside black_mountain; separate with a mid-grey scorched-rock / ash / dark-gravel terrain.",
   "Decouple material seams from elevation terrace steps \u2014 offset the colour border from any cliff face.",
   "Keep the harder/darker material on the up-slope side so the one-sided feather stays valid.",
-  "Default feather width +1 cell vs this test; jitter tile density along the iso diagonal to avoid picket-fence rows."
+  "Default feather width +1 cell vs this test; jitter tile density along the iso diagonal to avoid picket-fence rows.",
+  "Fill each terrain ~75% CLEAN standard ground and ~25% special/accent tiles (flowers, mushrooms, bare patches, pebbles). Overusing accents makes them cheap. Classify base tiles by off-material fraction; cliff faces use clean tiles only."
  ]
 }
