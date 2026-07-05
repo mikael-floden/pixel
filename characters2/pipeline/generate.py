@@ -182,7 +182,14 @@ def main():
     ap.add_argument("--no-push", action="store_true")
     ap.add_argument("--new", nargs="*", default=None,
                     help="Add a NEW version to these character(s) (default: both).")
+    ap.add_argument("--version", type=int, default=None,
+                    help="Pin the new version number (for one target only). Lets several "
+                         "processes generate distinct versions in parallel without racing on "
+                         "next_version(). Use with --no-push and commit once afterwards.")
     args = ap.parse_args()
+
+    if args.version is not None and (not args.new or len(args.new) != 1):
+        ap.error("--version requires exactly one character named via --new")
 
     cfg = load_config()
     client = PixelLabClient()
@@ -203,7 +210,7 @@ def main():
         except BudgetExhausted as e:
             print(f"stopping: {e}")
             break
-        v = next_version(name)
+        v = args.version if args.version is not None else next_version(name)
         print(f"+ {name}: generating v{v:03d} …")
         cid, size, dirs = generate_version(client, cfg, name, v)
         print(f"  {name} v{v:03d}: {len(dirs)} directions, {size}x{size} ({cid})")
