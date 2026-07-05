@@ -299,6 +299,9 @@ def main():
     ap.add_argument("--no-sync", action="store_true", help="skip the startup UI-deletion sync")
     ap.add_argument("--no-push", action="store_true")
     ap.add_argument("--max-units", type=int, default=0)
+    ap.add_argument("--min-usd", type=float, default=None,
+                    help="override the USD credit floor (default from config); use to "
+                         "spend down remaining credits")
     args = ap.parse_args()
     cfg = common.load_config()
     cache = {}
@@ -324,7 +327,7 @@ def main():
 
     client = PixelLabClient()
     min_gen = cfg["budget"]["min_generations_remaining"]
-    min_usd = cfg["budget"].get("min_usd", 0.5)
+    min_usd = args.min_usd if args.min_usd is not None else cfg["budget"].get("min_usd", 0.5)
     tgt = target_per_elev(cfg)
     b = client.budget()
     print(f"elevation run — {b['generations']:.0f} generations, ${b['usd']:.2f} credits")

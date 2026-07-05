@@ -1,0 +1,116 @@
+{
+  "schema": "tiles2/raw-sheet@1",
+  "sheet": "base_x_5_1231199704",
+  "ground_type": "clear_water",
+  "kind": "elevation",
+  "height": "base_x_5",
+  "levels": 5,
+  "transition_to": null,
+  "tile_id": "47e25775-0a57-4b4b-a691-33f9cefe7fee",
+  "slot": 1,
+  "attempt": 0,
+  "objects": [
+    "a towering rock pillar carved by a waterfall",
+    "a towering reed-and-driftwood spire",
+    "a towering dead tree rising from the water",
+    "a tall stilted lighthouse",
+    "a giant standing stone in the lake",
+    "a colossal rock islet crowned with a tree",
+    "a grand stone obelisk rising from water",
+    "a ruined temple pillar in the water",
+    "a tall sunken ship's mast with a crow's nest",
+    "a colossal willow over the water"
+  ],
+  "prompt": "isometric pixel-art game tiles for a top-down RPG map. Each tile shows a DIFFERENT huge towering object as the clear MAIN SUBJECT \u2014 prominent, detailed and standing tall, on only a small low patch of clear blue water. The object dominates and fills the tile; keep the ground base minimal and thin \u2014 NOT a tall dirt pedestal or block with a small object on top. Go for maximum variety \u2014 different shapes, species, ages and conditions, no two tiles alike. The set: 1) a towering rock pillar carved by a waterfall 2) a towering reed-and-driftwood spire 3) a towering dead tree rising from the water 4) a tall stilted lighthouse 5) a giant standing stone in the lake 6) a colossal rock islet crowned with a tree 7) a grand stone obelisk rising from water 8) a ruined temple pillar in the water 9) a tall sunken ship's mast with a crow's nest 10) a colossal willow over the water. cozy hand-crafted top-down RPG pixel art, rich natural texture, cohesive harmonious palette, soft directional shading, high quality game asset, transparent background",
+  "settings": {
+    "endpoint": "/create-tiles-pro",
+    "tile_type": "isometric",
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "tile_view_angle": 28.0,
+    "tile_depth_ratio": 0.7346,
+    "tile_height": 128,
+    "tile_flat_top_px": 2,
+    "levels": 5,
+    "face_px": 80
+  },
+  "seed": 1231199704,
+  "count": 12,
+  "tiles": [
+    {
+      "index": 0,
+      "file": "tile_00.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 1,
+      "file": "tile_01.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 2,
+      "file": "tile_02.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 3,
+      "file": "tile_03.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 4,
+      "file": "tile_04.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 5,
+      "file": "tile_05.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 6,
+      "file": "tile_06.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 7,
+      "file": "tile_07.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 8,
+      "file": "tile_08.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 9,
+      "file": "tile_09.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 10,
+      "file": "tile_10.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 11,
+      "file": "tile_11.png",
+      "width": 64,
+      "height": 128
+    }
+  ],
+  "generated_at": "2026-07-05T20:39:27+00:00",
+  "processed": true,
+  "processed_to": "base_x_5/base_x_5_1231199704"
+}

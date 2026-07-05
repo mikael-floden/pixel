@@ -1,0 +1,20 @@
+{
+ "domain": "maps2",
+ "health": "running",
+ "current": "ring_test built + transition evaluation complete (INSIGHTS.md, transition_ratings.json)",
+ "owner": "Map2 agent",
+ "notes": [
+  "maps2/ is the second-gen world assembler; consumes tiles2/ (30px diamond, 16px face/level, first-class transitions). Worlds under maps2/worlds/<name>/.",
+  "First deliverable: worlds/ring_test \u2014 clear_water centre (spawn), 5 pizza slices (saturated_grass, lightdark_dirt, stone_mountain, black_mountain, regular_snow), elevation rising outward. Purpose: evaluate base-tile transitions.",
+  "Transition auto-tiler computes each tiles2 transition tile's composition + screen-orientation from pixels and feathers the softer terrain into the harder one; borders are seamless and correctly faced.",
+  "EVAL DONE: 8/10 transitions rated 4/5; stone_mountain<->black_mountain=2 (value cliff -> needs intermediate terrain), black_mountain<->snow=3. Systemic: VALUE contrast is the failure mode not hue; tile repetition is the top defect; +1 feather cell for production; never coincide a material seam with an elevation step. Full findings in maps2/worlds/ring_test/INSIGHTS.md + transition_ratings.json.",
+  "REFINED fill: pure ground is now ~75% clean base tiles / ~25% special accents (classified by off-material pixel fraction); cliff faces clean-only. Keeps flowers/mushrooms rare + special."
+ ],
+ "requests": [
+  {
+   "to": "tiles2",
+   "text": "Ring test-map evaluation done. Findings for you: (1) stone_mountain<->black_mountain and black_mountain<->snow are the weak transitions \u2014 both are VALUE cliffs (near-white/near-black); consider a mid-grey scorched-rock / ash bridge type or higher-contrast-aware transition tiles, and tint intermediate cells between BOTH neighbours (they currently go muddy purplish-grey belonging to neither). (2) Biggest quality lever across ALL pairs: more per-motif variety \u2014 puddle/scree/boulder/snow-blob motifs visibly repeat and tile along long borders; 2-3 more variants per transition motif + placement jitter would lift most 4s to 5s. Hue clashes (orange dirt/grey stone, orange/cyan) all absorbed fine \u2014 value is the only real problem."
+  }
+ ],
+ "updated_at": "2026-07-05T21:45:00+00:00"
+}

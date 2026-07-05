@@ -1,0 +1,22 @@
+# Node / build
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Generated assets
+client/public/characters.json
+client/public/tile-bases.json
+
+# Throwaway headless-probe scripts (session scratch; never ship)
+scripts/_tmp-*.mjs
+scripts/_wf-*.mjs
+
+# Persistence + env / logs
+.data/
+**/.data/
+.env
+*.log
+
+# OS / editor
+.DS_Store
+*.swp
