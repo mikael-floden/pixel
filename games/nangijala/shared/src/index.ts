@@ -99,9 +99,16 @@ export function buildDemoWorld(
     .sort(([a], [b]) => a.localeCompare(b));
   let n = 1;
   for (const [cat, entry] of cats) {
-    const srcKeys = Object.keys(entry!.sources ?? {}).map(Number);
-    const count = entry!.variants ?? (srcKeys.length ? Math.max(...srcKeys) + 1 : 0);
-    for (let v = 0; v < count; v++) {
+    // Only variants that actually GLOW get a station: the tile generator
+    // mixes glowing and plain variants inside each category (dark basalt
+    // among molten lava, plain towers beside the lit brazier), and a
+    // station with no glow sources QAs nothing — 77 of 178 stations were
+    // dead rock before this filter.
+    const variants = Object.entries(entry!.sources ?? {})
+      .filter(([, arr]) => Array.isArray(arr) && arr.length > 0)
+      .map(([k]) => Number(k))
+      .sort((a, b) => a - b);
+    for (const v of variants) {
       const i = n - 1;
       // Centre the station grid on the world centre (players spawn there).
       const col = 256 - Math.floor((PER_ROW * SPACING) / 2) + (i % PER_ROW) * SPACING;

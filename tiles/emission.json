@@ -9082,7 +9082,34 @@
     "town_wall": null,
     "tundra": null,
     "vineyard": null,
-    "watchtower": null,
+    "watchtower": {
+      "color": [
+        1,
+        0.55,
+        0.2
+      ],
+      "strength": 0.45,
+      "radius": 2.5,
+      "anim": "flicker",
+      "self": 0.12,
+      "sources": {
+        "1": [
+          {
+            "x": 32.1,
+            "y": 17,
+            "r": 5.7,
+            "color": [
+              1,
+              0.64,
+              0.3
+            ],
+            "s": 0.84,
+            "dir": "up"
+          }
+        ]
+      },
+      "variants": 10
+    },
     "water": null,
     "waterfall": null,
     "waterfall_v2": null,
