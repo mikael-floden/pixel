@@ -1,0 +1,28 @@
+{
+  "id": "default_girl",
+  "skeleton": "humans",
+  "pixellab_character_id": "a5cfde83-6032-4d27-94db-5e6fd80ca5a6",
+  "description": "a beautiful young woman, the female hero of the game, a warm confident smile and bright eyes, long flowing auburn hair, graceful build, wearing a charming adventurer's outfit \u2014 a blue blouse, a practical skirt and leather boots",
+  "params": {
+    "view": "low top-down",
+    "width": 80,
+    "height": 80,
+    "detail": "low detail",
+    "outline": "default",
+    "shading": "basic shading",
+    "text_guidance_scale": 8.0
+  },
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "seed": 1450039109,
+  "variation": 0,
+  "source": "pixellab.ai create-character-with-8-directions (8-dir static)"
+}
