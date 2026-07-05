@@ -31,13 +31,17 @@ def build_base_prompt(cfg, gt, idx=0):
         angle=angle, style=p["style"], variations=p["base_variations"])
 
 
-def build_transition_prompt(cfg, frm, to):
+def build_transition_prompt(cfg, frm, to, idx=0):
+    """Each of the N sheets per pair cycles a different BORDER STYLE, so together
+    they cover every kind of edge a map builder might need."""
     p = cfg["prompt"]
     variations = p["transition_variations"].format(
         from_name=frm.get("name", frm["id"]), to_name=to.get("name", to["id"]))
+    angles = p.get("transition_angles") or ["with a natural border"]
+    angle = angles[idx % len(angles)]
     return p["transition_template"].format(
         from_desc=frm["description"], to_desc=to["description"],
-        style=p["style"], variations=variations)
+        angle=angle, style=p["style"], variations=variations)
 
 
 def _settings(cfg):
@@ -95,4 +99,4 @@ def generate_base(client, cfg, gt):
 
 def generate_transition(client, cfg, frm, to):
     return _generate(client, cfg, frm, "transition",
-                     lambda idx: build_transition_prompt(cfg, frm, to), other=to["id"])
+                     lambda idx: build_transition_prompt(cfg, frm, to, idx), other=to["id"])
