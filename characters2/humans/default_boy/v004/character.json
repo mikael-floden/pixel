@@ -1,0 +1,31 @@
+{
+  "id": "default_boy",
+  "version": 4,
+  "pixellab_character_id": "2be145a4-6f44-49f9-8f98-1d1bd166e163",
+  "description": "A young male adventurer at the very start of his journey, clearly inspired by a young Nathan Drake / Indiana Jones type paired to match a young Lara Croft \u2014 this is the bare starting character, exactly how he looks before any equipment is picked up. He has a strikingly athletic and toned build with broad strong shoulders, defined arms, and a lean powerful frame. Confident, fearless, and intensely badass with a cool rebellious edge. He has sharp, handsome facial features \u2014 a strong jaw, piercing intelligent eyes, a determined and slightly smirking expression that shows both wit and toughness. Short-to-medium tousled dark brown hair, windswept and slightly messy. His stance is self-assured and ready \u2014 weight on one leg, shoulders back, exuding natural charisma and adventurous spirit. He wears ONLY plain, simple, unremarkable starting clothes in muted natural colors: a fitted but worn plain shirt or tunic (slightly form-fitting to show his athletic physique) and simple trousers with basic boots \u2014 strictly in browns, blacks, greys and off-white, nothing colorful or modern. He has NO gear of any kind: no armor, no jacket, no weapons, no holsters, no utility belt, no gloves, no bags \u2014 completely unequipped. Not a costume, not a prince. He must look cool, memorable, capable and badass through his face, hair, athletic body, and powerful posture alone. High-quality RPG pixel-art character, clean readable silhouette, strong shape language, expressive face, restrained muted earth-tone palette, full-body character, single centered figure, transparent background.",
+  "params": {
+    "view": "low top-down",
+    "width": 80,
+    "height": 80,
+    "detail": "low detail",
+    "outline": "default",
+    "shading": "basic shading",
+    "text_guidance_scale": 8.0
+  },
+  "size": [
+    112,
+    112
+  ],
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "seed": 857424289,
+  "source": "pixellab.ai create-character-with-8-directions (8-dir static, native canvas)"
+}
