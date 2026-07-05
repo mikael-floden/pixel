@@ -42,7 +42,7 @@ PRIORITY = {"saturated_grass": 0, "lightdark_dirt": 1, "regular_snow": 2,
 
 # fraction of pure-ground cells that use a "special" (accent) base tile; the
 # rest use the standard clean ground colour. Keep it low so accents stay rare.
-SPECIAL_PROB = 0.25
+SPECIAL_PROB = 0.15
 
 
 class RingWorld:

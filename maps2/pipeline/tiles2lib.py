@@ -124,12 +124,13 @@ class Tiles2:
 
     # -- clean vs special base tiles ------------------------------------------
 
-    def base_pools(self, gid: str, clean_pct: float = 0.55):
-        """Split a type's base tiles into (clean, special) by how much off-
-        material detail they carry on the top diamond. "Clean" = the standard
-        ground colour with minimal accents; "special" = the flower/mushroom/
-        bare-earth/pebble tiles. Keeping specials scarce is what keeps them
-        special — the map fills ~75% clean."""
+    def base_pools(self, gid: str, clean_pct: float = 0.30):
+        """Split a type's base tiles into (clean, special). "Clean" = the flat,
+        near-single-colour standard ground; "special" = the flower/mushroom/
+        bare-earth/pebble/textured tiles. Ranked by a combined cleanness score:
+        off-material pixel fraction (colour specks/patches) PLUS internal
+        luminance texture (busyness), so only the genuinely uniform tiles land
+        in the clean pool. Keeping specials scarce keeps them special."""
         if gid in self._pools:
             return self._pools[gid]
         t = self.target_color(gid)
@@ -137,10 +138,13 @@ class Tiles2:
         for p in self.base(gid):
             a = np.asarray(self.img(p)).astype(np.float32)
             sel = DM & (a[:, :, 3] > 40)
-            d = np.linalg.norm(a[:, :, :3][sel] - t, axis=1)
-            scored.append((float((d > 55).mean()), p))
+            px = a[:, :, :3][sel]
+            accent = float((np.linalg.norm(px - t, axis=1) > 55).mean())
+            lum = 0.3 * px[:, 0] + 0.59 * px[:, 1] + 0.11 * px[:, 2]
+            tex = float(lum.std()) / 40.0
+            scored.append((accent + 0.6 * tex, p))
         scored.sort()
-        k = max(1, int(round(len(scored) * clean_pct)))
+        k = max(3, int(round(len(scored) * clean_pct)))
         clean = [p for _, p in scored[:k]]
         special = [p for _, p in scored[k:]] or clean
         self._pools[gid] = (clean, special)
