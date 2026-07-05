@@ -45,8 +45,8 @@
     ["wooden_balcony", "clear_water"]
   ],
   "targets": {
-    "_comment": "base_sheets_per_type raw BASE sheets accumulate first, THEN this type's transitions, before the next type. Each sheet ~16 tiles / ~20 generations.",
-    "base_sheets_per_type": 3,
+    "_comment": "base_sheets_per_type raw BASE sheets accumulate first, THEN this type's transitions, before the next type. Each sheet = one create-tiles-pro item (~16 tiles). Sync (git<-PixelLab) drops sheets you delete in the UI, so the loop tops back up to target.",
+    "base_sheets_per_type": 5,
     "transition_sheets_per_pair": 1
   },
   "budget": {

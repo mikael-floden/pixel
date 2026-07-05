@@ -55,10 +55,16 @@ A **sheet** = one `create-tiles-pro` request (~16 tiles).
 
 ## The pipeline
 
+0. **sync** (`pipeline/sync.py`, runs at loop startup) — **PixelLab is the source
+   of truth.** Every sheet records its PixelLab `tile_id`; if you delete a tile-set
+   in the pixellab.ai/maps UI, sync sees its `tile_id` 404 and removes that sheet
+   from git (raw + processed). The base count drops, so the loop regenerates up to
+   target. (Granularity: a create-tiles-pro generation is ONE PixelLab item ≈ 16
+   tiles, so the deletable unit is a whole **sheet**, not a single tile.)
 1. **generate** (`pipeline/generate.py`) — one request → `raw/<sheet>/` with a
-   `request.json` recording the exact prompt, settings, seed, and whether it was a
-   **base** sheet (this ground type) or a **transition** sheet (this type → other).
-   Raw is *always* kept.
+   `request.json` recording the exact prompt, settings, seed, PixelLab `tile_id`,
+   and whether it was a **base** sheet (this ground type) or a **transition** sheet
+   (this type → other). Raw is *always* kept.
 2. **postprocess** (`pipeline/postprocess.py`) — copies each raw sheet into
    `base/` or `transitions/<other>/`, and:
    - **neutralises the outline** — recolours any dark silhouette rim toward the

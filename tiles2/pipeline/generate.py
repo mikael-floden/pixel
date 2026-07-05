@@ -52,7 +52,7 @@ def _generate(client, cfg, gt, kind, prompt, other=None):
     seed = common._seed(gid, kind, other or "", idx)
     slug = common.sheet_slug(kind, seed, other=other)
     t = cfg["tile"]
-    tiles = client.create_tiles(
+    tiles, tile_id = client.create_tiles(
         description=prompt, tile_size=t["size"], tile_view=t["view"],
         view_angle=t["view_angle"], depth_ratio=t["depth_ratio"],
         tile_type=t["type"], flat_top_px=t["flat_top_px"], seed=seed)
@@ -70,6 +70,7 @@ def _generate(client, cfg, gt, kind, prompt, other=None):
         "ground_type": gid,
         "kind": kind,                       # base | transition
         "transition_to": other,             # None for base
+        "tile_id": tile_id,                 # PixelLab id (sync: gone in UI -> drop from git)
         "prompt": prompt,
         "settings": _settings(cfg),
         "seed": seed,

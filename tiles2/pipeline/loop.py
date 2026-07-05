@@ -28,6 +28,7 @@ import time
 import common
 import generate
 import postprocess
+import sync
 from pixellab_client import BudgetExhausted, PixelLabClient, PixelLabError
 
 REPO_ROOT = os.path.dirname(common.ROOT)
@@ -143,6 +144,15 @@ def main():
     b = client.budget()
     print(f"tiles2 loop starting — {b['generations']:.0f} subscription generations, "
           f"${b['usd']:.2f} credits (floors: {min_balance} gens / ${min_usd:.2f})")
+
+    # Sync git to PixelLab first: drop any sheets the user deleted in the UI, so
+    # the counts reflect what's actually kept (and we regenerate up to target).
+    removed = sync.sync(cfg, client)
+    for gid, sheet in removed:
+        print(f"  - synced out {gid}/{sheet} (deleted in PixelLab)")
+    if removed:
+        commit_push(f"tiles2: sync — drop {len(removed)} sheet(s) deleted in PixelLab",
+                    push=not args.no_push)
 
     while True:
         try:

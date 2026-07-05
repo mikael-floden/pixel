@@ -165,7 +165,20 @@ class PixelLabClient:
         if seed is not None:
             payload["seed"] = int(seed)
         resp = self._post("/create-tiles-pro", payload)
+        tile_id = resp.get("tile_id")
         job = resp.get("background_job_id")
         last = self.wait_job(job, timeout=job_timeout) if job else resp
+        tile_id = tile_id or last.get("tile_id")
         images = last.get("images") or []
-        return [_decode_tile(im) for im in images]
+        return [_decode_tile(im) for im in images], tile_id
+
+    def tiles_pro_exists(self, tile_id):
+        """True if this tiles-pro item still exists in the account (used by sync
+        to detect tiles the user deleted in the PixelLab UI). 404 -> deleted."""
+        try:
+            self._get(f"/tiles-pro/{tile_id}")
+            return True
+        except PixelLabError as e:
+            if " 404:" in str(e) or " 404 " in str(e):
+                return False
+            raise
