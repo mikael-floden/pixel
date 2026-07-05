@@ -126,8 +126,12 @@ class PixelLabClient:
             f"subscription generations {b['generations']:.0f} < {min_generations} "
             f"and only ${b['usd']:.2f} credits (need >= ${min_usd:.2f})")
 
-    def wait_job(self, job_id, timeout=900, interval=6):
-        deadline = time.monotonic() + timeout
+    def wait_job(self, job_id, timeout=420, interval=6, stall=180):
+        """Poll a background job. Give up if it runs past `timeout` OR if its
+        reported progress hasn't advanced for `stall` seconds (a PixelLab-side
+        stall — the '3% forever' case) — so one hung job doesn't block the loop."""
+        start = last_change = time.monotonic()
+        last_prog = None
         while True:
             j = self._get(f"/background-jobs/{job_id}")
             st = j.get("status")
@@ -135,15 +139,24 @@ class PixelLabClient:
                 return j.get("last_response") or {}
             if st == "failed":
                 raise PixelLabError(f"job {job_id} failed: {str(j.get('last_response'))[:200]}")
-            if time.monotonic() > deadline:
-                raise PixelLabError(f"job {job_id} timed out after {timeout}s")
+            lr = j.get("last_response") or {}
+            prog = next((j.get(k) if isinstance(j.get(k), (int, float)) else lr.get(k)
+                         for k in ("progress", "percent")
+                         if isinstance(j.get(k), (int, float)) or isinstance(lr.get(k), (int, float))), None)
+            now = time.monotonic()
+            if prog is not None and prog != last_prog:
+                last_prog, last_change = prog, now
+            if now - start > timeout:
+                raise PixelLabError(f"job {job_id} timed out after {timeout}s (progress={prog})")
+            if prog is not None and now - last_change > stall:
+                raise PixelLabError(f"job {job_id} stalled at progress={prog} for {stall}s")
             time.sleep(interval)
 
     # -- isometric tile sets -------------------------------------------------
 
     def create_tiles(self, description, tile_size=64, tile_view="high top-down",
                      view_angle=28.0, depth_ratio=0.50, tile_type="isometric",
-                     flat_top_px=2, tile_height=None, seed=None, job_timeout=900):
+                     flat_top_px=2, tile_height=None, seed=None, job_timeout=420):
         """Generate one isometric tile SET (variations from the numbered
         `description`). Returns [PIL, ...]. ~20 generations per call.
 
