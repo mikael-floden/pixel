@@ -61,6 +61,7 @@ import {
   canvasSize,
   TileBases,
   artLift,
+  DEFAULT_WORLD,
 } from "../maps";
 
 const ANIM_FPS: Record<string, number> = { idle: 6, walk: 12, run: 14 };
@@ -164,6 +165,9 @@ export class WorldScene extends Phaser.Scene {
   private lastInput: { ax: number; ay: number; running: boolean } = { ax: 0, ay: 0, running: false };
   // Isometric tile world (null → fall back to a plain ground).
   private world: World | null = null;
+  private worldName: string = DEFAULT_WORLD; // which maps2 world (room + assets)
+  private worldW = WORLD_WIDTH; // this world's extent in world units (grid×CELL_WU)
+  private worldH = WORLD_HEIGHT;
   private maps2 = false; // true when the world uses maps2 explicit tile paths
   private iso = { ox: 0, oy: 0, w: WORLD_WIDTH, h: WORLD_HEIGHT };
   // Terrain (elevation + surface) — same grid the server uses, so prediction matches.
@@ -255,10 +259,15 @@ export class WorldScene extends Phaser.Scene {
     this.myCharacter = this.registry.get("character") as CharacterDef;
     this.myName = this.registry.get("name") as string;
     this.world = (this.registry.get("world") as World | null) ?? null;
+    this.worldName = (this.registry.get("worldName") as string | undefined) ?? DEFAULT_WORLD;
     this.maps2 = !!this.world && isMaps2World(this.world);
     this.tileBases = (this.registry.get("tileBases") as TileBases | null) ?? null;
     this.demoMode = (this.registry.get("demoMode") as boolean | undefined) ?? false;
     if (this.world) {
+      // The world's extent in world units (grid×CELL_WU) — per-world, so any
+      // size renders/collides right (see shared: WORLD_WIDTH is only a default).
+      this.worldW = this.world.width * CELL_WU;
+      this.worldH = this.world.height * CELL_WU;
       this.terrain = buildTerrainGrid(this.world.width, this.world.height, this.world.rows);
       // Surface-contract watchdog: categories missing from SURFACES default
       // to walkable ground, which ALSO makes the night lighting treat them
@@ -412,7 +421,7 @@ export class WorldScene extends Phaser.Scene {
 
     try {
       this.room = await joinWorld(
-        { name: this.myName, character: this.myCharacter.uid },
+        { name: this.myName, character: this.myCharacter.uid, world: this.worldName },
         this.demoMode ? DEMO_ROOM_NAME : undefined,
       );
     } catch (err) {
@@ -711,7 +720,7 @@ export class WorldScene extends Phaser.Scene {
             speed = surfaceAtWorld(this.terrain, rx, ry).speed * (jumping ? JUMP_SPEED_FACTOR : 1);
           }
           // screenInput matches the server: on the iso world, input is screen-relative.
-          const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain, drops);
+          const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain, drops, this.worldW, this.worldH);
           rx = r.x;
           ry = r.y;
         };
@@ -765,8 +774,8 @@ export class WorldScene extends Phaser.Scene {
       const lvl = this.terrain ? levelAtWorld(this.terrain, tx, ty) : 0;
       let depth = av.ly + lvl * MAP_GEOMETRY.lh + 0.5; // unlifted ground y
       if (this.world) {
-        const colf = (tx / WORLD_WIDTH) * this.world.width;
-        const rowf = (ty / WORLD_HEIGHT) * this.world.height;
+        const colf = tx / CELL_WU; // 1 cell = CELL_WU world units (any world size)
+        const rowf = ty / CELL_WU;
         // Sprite bounds = the MEASURED opaque art box (+4px margin for walk
         // frames dipping past the idle anchor). The drawn figure is ~30x68px
         // inside a 128px frame — testing the whole frame let raised cells 2-3
@@ -1849,7 +1858,7 @@ export class WorldScene extends Phaser.Scene {
       console.warn(`[nangijala] campfire strip missing (${CAMPFIRE_URL}) — fire not placed`);
       return;
     }
-    const spawn = findSpawn(this.terrain, WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
+    const spawn = findSpawn(this.terrain, this.worldW / 2, this.worldH / 2);
     const sc = Math.floor(spawn.x / CELL_WU);
     const sr = Math.floor(spawn.y / CELL_WU);
     const sLvl = levelAtWorld(this.terrain, spawn.x, spawn.y);
@@ -1898,8 +1907,8 @@ export class WorldScene extends Phaser.Scene {
     const { dx, dy, lh, tile } = MAP_GEOMETRY;
     const W = this.world.width;
     const H = this.world.height;
-    const col = Math.max(0, Math.min(W - 0.001, (px / WORLD_WIDTH) * W));
-    const row = Math.max(0, Math.min(H - 0.001, (py / WORLD_HEIGHT) * H));
+    const col = Math.max(0, Math.min(W - 0.001, px / CELL_WU)); // 1 cell = CELL_WU wu
+    const row = Math.max(0, Math.min(H - 0.001, py / CELL_WU));
     const lvl = this.world.rows[Math.floor(row)]?.[Math.floor(col)]?.l ?? 0;
     return {
       x: this.iso.ox + (col - row) * dx + tile / 2,

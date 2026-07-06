@@ -18,8 +18,7 @@ import {
   parseWorld,
   MAX_STAMINA,
   SWIM_DRAIN,
-  WORLD_WIDTH,
-  WORLD_HEIGHT,
+  CELL_WU,
   WALK_SPEED,
   ISO_DX,
   ISO_DY,
@@ -41,8 +40,10 @@ function grid3x3() {
   return buildTerrainGrid(3, 3, rows);
 }
 
-const CELL_W = WORLD_WIDTH / 3;
-const CELL_H = WORLD_HEIGHT / 3;
+// A cell is exactly CELL_WU world units wide/tall (independent of grid size),
+// so cell N's centre is (N+0.5)*CELL_WU.
+const CELL_W = CELL_WU;
+const CELL_H = CELL_WU;
 const midX = CELL_W * 1.5; // centre (grass, l0)
 const midY = CELL_H * 1.5;
 const rightX = CELL_W * 2.5; // raised grass wall (l1)
@@ -204,8 +205,8 @@ test("stairs allow walking a full 1-level step without a jump", () => {
   const rows = [[{ t: "grass", l: 0 }, { t: "stairs", l: 1 }, { t: "grass", l: 1 }]];
   const g = buildTerrainGrid(3, 1, rows);
   const walk = { maxClimb: WALK_CLIMB, canSwim: false };
-  const cw = WORLD_WIDTH / 3;
-  const ch = WORLD_HEIGHT / 1;
+  const cw = CELL_WU;
+  const ch = CELL_WU;
   // grass l0 -> stairs l1: allowed while walking (the stairs are the ramp).
   assert.equal(canEnter(g, cw * 0.5, ch * 0.5, cw * 1.5, ch * 0.5, walk), true);
   // stairs l1 -> grass l1: flat, fine.
@@ -218,8 +219,8 @@ test("feet touching a drop edge commits the fall (no resting overhang)", () => {
   const g = buildTerrainGrid(3, 1, rows);
   const blocked = makeBlocked(g, { maxClimb: WALK_CLIMB, canSwim: true });
   const drops = makeDrops(g);
-  const edge = (WORLD_WIDTH / 3) * 2; // boundary between cell 1 (l1) and cell 2 (l0)
-  const midY = WORLD_HEIGHT / 2;
+  const edge = CELL_WU * 2; // boundary between cell 1 (l1) and cell 2 (l0)
+  const midY = CELL_WU / 2;
   // Creep east from inside cell 1; the anchor must never REST in the overhang
   // band (closer than PLAYER_RADIUS to the edge while still on the upper cell).
   let x = edge - 40;

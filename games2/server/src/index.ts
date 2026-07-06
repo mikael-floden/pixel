@@ -66,7 +66,10 @@ const gameServer = new Server({
   transport: new WebSocketTransport({ server: createServer(app) }),
 });
 
-gameServer.define(ROOM_NAME, WorldRoom);
+// One WorldRoom per maps2 world: filterBy 'world' so joinOrCreate matches
+// players who picked the SAME world into one shared room, and spins up a
+// separate room (with that world's own grid) for each different selection.
+gameServer.define(ROOM_NAME, WorldRoom).filterBy(["world"]);
 // The emission demo: the SAME room class on a generated station world — the
 // demo is the real game (renderer, movement, night pipeline), just elsewhere.
 gameServer.define(DEMO_ROOM_NAME, WorldRoom, { demo: true });

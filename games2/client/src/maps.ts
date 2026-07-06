@@ -30,20 +30,47 @@ import { ISO_DX, ISO_DY, LEVEL_PX, WorldCell, parseWorld } from "@nangijala/shar
 // because screen-relative input math on the server must use the same ratio.
 export const MAP_GEOMETRY = { tile: 64, dx: ISO_DX, dy: ISO_DY, lh: LEVEL_PX, margin: 8 };
 
-// Which maps2 world the game loads. prop_demo (the real demo level) has no
-// world.json yet — the maps agent is authoring it; ring_test uses the same
-// ringworld@1 schema, so we develop against it and flip this to prop_demo the
-// moment its world.json lands.
-export const WORLD_URL = "/assets/maps2/worlds/ring_test/world.json";
+// The default world when the player hasn't picked one (matches the server's
+// DEFAULT_WORLD). The maps agent adds worlds under maps2/worlds/<name>/; a world
+// becomes playable + selectable once it has a world.json (see worlds.json,
+// built by scripts/build-worlds.mjs).
+export const DEFAULT_WORLD = "ring_test";
 
-export async function loadWorld(): Promise<World | null> {
+export function worldUrl(name: string): string {
+  return `/assets/maps2/worlds/${name.replace(/[^a-z0-9_-]/gi, "")}/world.json`;
+}
+
+export async function loadWorld(name: string = DEFAULT_WORLD): Promise<World | null> {
   try {
-    const res = await fetch(WORLD_URL);
+    const res = await fetch(worldUrl(name));
     if (!res.ok) return null;
     return parseWorld(await res.json());
   } catch {
     return null;
   }
+}
+
+/** One selectable world (client/public/worlds.json, built by build-worlds.mjs). */
+export interface WorldInfo {
+  name: string;
+  label: string;
+  n?: number | null;
+  schema?: string | null;
+  spawn?: [number, number] | null;
+  preview?: string | null;
+}
+
+/** The list of playable worlds for the selector. Falls back to just the default
+ * when the manifest is missing (older build / maps agent hasn't run yet). */
+export async function loadWorldsList(): Promise<WorldInfo[]> {
+  try {
+    const res = await fetch("/worlds.json", { cache: "no-cache" });
+    if (res.ok) {
+      const list = (await res.json()) as WorldInfo[];
+      if (Array.isArray(list) && list.length) return list;
+    }
+  } catch {}
+  return [{ name: DEFAULT_WORLD, label: "Ring Test" }];
 }
 
 /** Texture key for a cell's tile. maps2 bakes an explicit PNG path per cell, so

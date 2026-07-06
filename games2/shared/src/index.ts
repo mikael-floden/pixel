@@ -4,14 +4,15 @@
  */
 
 // --- World -------------------------------------------------------------------
-// World units: 32 per map cell (CELL_WU), sized to the served maps2 world grid
-// (ring_test: 160×160). WORLD_WIDTH MUST equal gridW*CELL_WU: the flat world→grid
-// mapping in project()/surfaceAtWorld divides by WORLD_WIDTH*gridW while light &
-// spawn positions divide by CELL_WU, so if these disagree the two scales diverge
-// (lights land dozens of cells off the ground — night goes black). When the maps
-// agent ships a different-sized world (e.g. prop_demo), update these to w*32/h*32.
+// World units: a FIXED 32 per map cell (CELL_WU). A world's extent is therefore
+// grid×CELL_WU — derived per-world (worldWidthOf/worldHeightOf), NOT a global
+// constant. Every grid↔world conversion (surfaceAtWorld, findSpawn, the client's
+// project()) divides by CELL_WU, so worlds of any dimensions render + collide
+// correctly and the server can host several differently-sized worlds at once.
+// WORLD_WIDTH/HEIGHT survive only as the DEFAULT extent for the open-world
+// fallback (no map loaded) and the movement tests — a nominal 160×160.
 export const CELL_WU = 32;
-export const WORLD_GRID = 160; // ring_test is square 160×160
+export const WORLD_GRID = 160;
 export const WORLD_WIDTH = WORLD_GRID * CELL_WU;
 export const WORLD_HEIGHT = WORLD_GRID * CELL_WU;
 
@@ -230,6 +231,11 @@ export function stepMovement(
   speedScale = 1,
   screenInput = false,
   drops?: DropFn,
+  // The world's extent in world units (grid×CELL_WU). Defaults to the legacy
+  // constant so tests + the open-world fallback keep working; the server and
+  // client pass the LOADED world's size so any-sized worlds stay in bounds.
+  worldW: number = WORLD_WIDTH,
+  worldH: number = WORLD_HEIGHT,
 ): MoveResult {
   const len = Math.hypot(ax, ay);
   if (len < 1e-6) return { x, y, dir: null, moving: false };
@@ -245,8 +251,8 @@ export function stepMovement(
     ny = ay / len;
   }
   const speed = (running ? RUN_SPEED : WALK_SPEED) * speedScale;
-  const tx = clamp(x + nx * speed * dt, SPAWN_MARGIN, WORLD_WIDTH - SPAWN_MARGIN);
-  const ty = clamp(y + ny * speed * dt, SPAWN_MARGIN, WORLD_HEIGHT - SPAWN_MARGIN);
+  const tx = clamp(x + nx * speed * dt, SPAWN_MARGIN, worldW - SPAWN_MARGIN);
+  const ty = clamp(y + ny * speed * dt, SPAWN_MARGIN, worldH - SPAWN_MARGIN);
   let rx = x;
   let ry = y;
   // Resolve each axis independently: keep the X move if its destination is
@@ -693,9 +699,20 @@ export function buildTerrainGrid(
   return { width, height, level, type };
 }
 
+// World units per cell is a FIXED constant (CELL_WU), so a world's extent is
+// simply grid×CELL_WU — no global WORLD_WIDTH needed. This keeps every grid↔
+// world conversion size-agnostic, so worlds of ANY dimensions render + collide
+// correctly (the server can host several differently-sized worlds at once).
+export function worldWidthOf(grid: TerrainGrid): number {
+  return grid.width * CELL_WU;
+}
+export function worldHeightOf(grid: TerrainGrid): number {
+  return grid.height * CELL_WU;
+}
+
 function cellIndex(grid: TerrainGrid, x: number, y: number): number {
-  const col = Math.floor((x / WORLD_WIDTH) * grid.width);
-  const row = Math.floor((y / WORLD_HEIGHT) * grid.height);
+  const col = Math.floor(x / CELL_WU);
+  const row = Math.floor(y / CELL_WU);
   if (col < 0 || row < 0 || col >= grid.width || row >= grid.height) return -1;
   return row * grid.width + col;
 }
@@ -783,10 +800,7 @@ export function stepStamina(
 
 /** World coordinates of a map cell's centre. */
 export function cellCenterWorld(grid: TerrainGrid, col: number, row: number): { x: number; y: number } {
-  return {
-    x: ((col + 0.5) / grid.width) * WORLD_WIDTH,
-    y: ((row + 0.5) / grid.height) * WORLD_HEIGHT,
-  };
+  return { x: (col + 0.5) * CELL_WU, y: (row + 0.5) * CELL_WU };
 }
 
 function cellStandable(grid: TerrainGrid, col: number, row: number): boolean {
@@ -818,11 +832,11 @@ function spawnCellOk(grid: TerrainGrid, col: number, row: number): boolean {
  */
 export function findSpawn(
   grid: TerrainGrid,
-  prefX: number = WORLD_WIDTH / 2,
-  prefY: number = WORLD_HEIGHT / 2,
+  prefX: number = (grid.width * CELL_WU) / 2,
+  prefY: number = (grid.height * CELL_WU) / 2,
 ): { x: number; y: number } {
-  const c0 = clamp(Math.floor((prefX / WORLD_WIDTH) * grid.width), 0, grid.width - 1);
-  const r0 = clamp(Math.floor((prefY / WORLD_HEIGHT) * grid.height), 0, grid.height - 1);
+  const c0 = clamp(Math.floor(prefX / CELL_WU), 0, grid.width - 1);
+  const r0 = clamp(Math.floor(prefY / CELL_WU), 0, grid.height - 1);
   const maxRad = grid.width + grid.height;
   let firstStandable: { col: number; row: number } | null = null;
   for (let rad = 0; rad <= maxRad; rad++) {
@@ -846,6 +860,7 @@ export interface JoinOptions {
   name?: string;
   character?: string; // character uid from the pixel catalog
   token?: string; // opaque per-player id for persistence (from localStorage)
+  world?: string; // maps2 world name to load/join (rooms are filtered by it)
 }
 
 // --- Chat --------------------------------------------------------------------
