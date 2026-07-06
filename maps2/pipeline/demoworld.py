@@ -133,6 +133,7 @@ class Demo:
 
     def _paint(self):
         at = AutoTiler(self.mat, self.lib, self.seed, priority=PRIORITY,
+                       level=self.level,
                        plain_prob=PLAIN_PROB, special_prob=SPECIAL_PROB)
         self.top, self.mirror = at.top, at.mirror
 

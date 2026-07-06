@@ -123,7 +123,8 @@ def generate(n: int = 160, seed: int = 7, lib: Tiles2 | None = None) -> RingWorl
     W.level = level
 
     # --- seamless corner+edge Wang top-tile assignment + sparse fade ------------
-    at = AutoTiler(mat, lib, seed, plain_prob=PLAIN_PROB, special_prob=SPECIAL_PROB)
+    at = AutoTiler(mat, lib, seed, level=level,
+                   plain_prob=PLAIN_PROB, special_prob=SPECIAL_PROB)
     W.mirror = at.mirror
     # intern tile paths into a compact table + per-cell index
     idx = np.full((n, n), -1, np.int32)

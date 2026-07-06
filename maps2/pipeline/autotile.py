@@ -44,14 +44,19 @@ def _h01(x, y, s):
 
 
 class AutoTiler:
-    def __init__(self, mat, lib: Tiles2, seed: int, *, priority=None,
-                 fade_width: int = 5, fade_density: float = 0.22,
-                 other_max: float = 0.30, plain_prob: float = 0.82,
-                 special_prob: float = 0.12):
+    def __init__(self, mat, lib: Tiles2, seed: int, *, priority=None, level=None,
+                 water=("clear_water",), fade_width: int = 5,
+                 fade_density: float = 0.22, other_max: float = 0.30,
+                 plain_prob: float = 0.82, special_prob: float = 0.12):
         self.mat = mat
         self.lib = lib
         self.seed = seed
         self.prio = priority or PRIORITY
+        # Water sits at its own (low) level and land rises to cliffs above it, so a
+        # tile containing water must never be raised onto elevated land. `level`
+        # lets the tiler drop the water blend wherever the land is above the water.
+        self.level = level if level is not None else np.zeros(mat.shape, np.int16)
+        self.water = set(water)
         self.fw = fade_width
         self.fd = fade_density
         self.om = other_max
@@ -76,15 +81,26 @@ class AutoTiler:
         PRIORITY among the four cells meeting there. Shared by neighbours."""
         H, W = self.H, self.W
         corner = np.full((H + 1, W + 1), "", object)
-        m = self.mat
+        m, lvl = self.mat, self.level
         for b in range(H + 1):
             for a in range(W + 1):
+                quad = [(ox, oy) for ox, oy in
+                        ((a - 1, b - 1), (a, b - 1), (a - 1, b), (a, b))
+                        if 0 <= ox < W and 0 <= oy < H and m[oy, ox] != ""]
+                # a corner sitting where land rises ABOVE the water is a cliff edge,
+                # not a shore: water may not claim it (else its tile lifts onto the
+                # cliff). Exclude water there so the land owns the top surface.
+                land = [(x, y) for x, y in quad if m[y, x] not in self.water]
+                wat = [(x, y) for x, y in quad if m[y, x] in self.water]
+                drop_water = (land and wat
+                              and max(lvl[y, x] for x, y in land)
+                              > max(lvl[y, x] for x, y in wat))
                 best, bp = "", -2
-                for ox, oy in ((a - 1, b - 1), (a, b - 1), (a - 1, b), (a, b)):
-                    if 0 <= ox < W and 0 <= oy < H:
-                        mm = m[oy, ox]
-                        if mm != "" and self._p(mm) > bp:
-                            bp, best = self._p(mm), mm
+                for x, y in quad:
+                    if drop_water and m[y, x] in self.water:
+                        continue
+                    if self._p(m[y, x]) > bp:
+                        bp, best = self._p(m[y, x]), m[y, x]
                 corner[b, a] = best
         self.corner = corner
 
@@ -170,8 +186,10 @@ class AutoTiler:
     def _interior(self, mm, x, y, near):
         pure = {e: (mm,) * EDGE_K for e in EDGES}
         if near:
-            o, dd = self._nearest_other(mm, x, y)
-            if o is not None and dd <= self.fw:
+            o, dd, olvl = self._nearest_other(mm, x, y)
+            # never fade water UP onto higher ground — that raises the water
+            water_uphill = o in self.water and self.level[y, x] > olvl
+            if o is not None and dd <= self.fw and not water_uphill:
                 f = dd / self.fw                               # 0 at seam .. 1 out
                 if _h01(x, y, self.seed + 7) <= self.fd * (1.0 - f):
                     band, omax = self._fade_band(mm, o)
@@ -188,7 +206,7 @@ class AutoTiler:
         return p, False, pure
 
     def _nearest_other(self, mm, x, y):
-        best_d, best_o = 1e9, None
+        best_d, best_o, best_l = 1e9, None, 0
         r = self.fw
         for j in range(-r, r + 1):
             yy = y + j
@@ -203,5 +221,5 @@ class AutoTiler:
                     continue
                 d = (i * i + j * j) ** 0.5
                 if d < best_d:
-                    best_d, best_o = d, o
-        return best_o, best_d
+                    best_d, best_o, best_l = d, o, int(self.level[yy, xx])
+        return best_o, best_d, best_l
