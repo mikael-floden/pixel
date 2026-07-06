@@ -3,8 +3,9 @@
   "health": "running",
   "current": "light_sand complete (base+transitions+elevation); library re-normalized (stronger brightness leveling)",
   "owner": "Tiles2 agent",
-  "updated_at": "2026-07-06T13:30:00+00:00",
+  "updated_at": "2026-07-06T15:10:00+00:00",
   "notes": [
+    "RE-PULL (2026-07-06): fixed the harmonizer DESTROYING transitions against dark terrain. The achromatic material mask used a lower value-bound only (v > val_t-45) — fine for bright snow, but degenerate for near-black black_mountain (value~56): it selected ~86% of a black<->snow tile incl. the snow half, then brightness-leveling crushed the snow (243 -> 165), giving a muddy dark transition band in-game. Now a two-sided value window (|v-val_t|<70): a dark target claims only dark pixels, a bright one only bright. Reprocessed the whole library from raw (2880 base+transition + ~1832 elevation tiles); grass/dirt/water hue path unchanged, 0 metadata gaps. 2337 files changed on main — maps2/games2 git pull. Most affected: all black_mountain transitions (snow/stone/dirt/grass/water/sand/ice) + black elevation.",
     "tiles2/ = second-gen isometric tiles. 7 ground types with base + full pairwise transition mesh (5 sheets/pair), 8 elevation terrains (base_x_2..5, 3 sheets/height), each harmonized to a canonical material colour. Geometry: 30px diamond top, 16px/level. Contract: tiles2/docs/METADATA.md; designer guide: tiles2/docs/DESIGNER_GUIDE.md.",
     "OWNERSHIP: per-tile edges + composition metadata is tiles2's job and part of DONE (postprocess records metadata_complete + warns on gaps). Base+transition coverage is 100% (2240/2240). Consume it; don't re-derive from pixels.",
     "RE-PULL: fixed in-game tile PATCHINESS — the harmonizer was under-leveling brightness (v_strength 0.65), so grass spanned brightness 96-123 and looked patchy. Bumped to v_strength 0.9 / sat 0.7 and REPROCESSED the whole library (grass now 107-115, std 1.6). 4020 tiles changed on main — maps2/games2 should git pull to get the consistent tiles.",
