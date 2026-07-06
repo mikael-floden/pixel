@@ -18,7 +18,7 @@ import os
 import numpy as np
 from PIL import Image
 
-from autotile import PRIORITY, AutoTiler
+from autotile import PRIORITY, AutoTiler, flatten_shores
 from tiles2lib import DX, DY, LEVEL_PX, Tiles2
 
 GROUND_BOTTOM = 54
@@ -114,6 +114,8 @@ class Demo:
         # winding dirt PATH from the beach up toward the mountain foot
         self._carve_path([(0.50, 0.70), (0.47, 0.60), (0.52, 0.50),
                            (0.49, 0.40), (0.50, 0.33)])
+        # bring the coast down to the waterline so shores transition, not cliff
+        flatten_shores(self.mat, self.level)
 
     def _carve_path(self, pts):
         n = self.n

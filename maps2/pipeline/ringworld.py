@@ -29,7 +29,7 @@ import os
 
 import numpy as np
 
-from autotile import AutoTiler
+from autotile import AutoTiler, flatten_shores
 from tiles2lib import DX, DY, Tiles2
 
 # slice order around the ring (green -> brown -> grey -> black -> white)
@@ -122,6 +122,9 @@ def generate(n: int = 160, seed: int = 7, lib: Tiles2 | None = None) -> RingWorl
     level[~land] = 0
     W.level = level
 
+    # bring the coast down to the waterline so shores transition, not cliff
+    flatten_shores(mat, level)
+    W.level = level
     # --- seamless corner+edge Wang top-tile assignment + sparse fade ------------
     at = AutoTiler(mat, lib, seed, level=level,
                    plain_prob=PLAIN_PROB, special_prob=SPECIAL_PROB)

@@ -43,6 +43,50 @@ def _h01(x, y, s):
     return ((h ^ (h >> 16)) & 0xFFFFFFFF) / 0xFFFFFFFF
 
 
+def flatten_shores(mat, level, water=("clear_water",), band=3, ramp=1):
+    """Bring the coast down to the waterline so land can *transition* into water
+    instead of dropping a cliff into it. Water sits at level 0; a bare sea-cliff
+    happens when the land touching it stands a level or more above. So we cap land
+    height by distance to the nearest water: the first land ring (dist 1) is pulled
+    to water level, the next to <=ramp, and so on for `band` cells — a beach that
+    ramps up into the terrain. Only coastal cells are touched (inland is farther
+    than `band` and untouched). Mutates and returns `level`.
+
+    Do this BEFORE auto-tiling so the shore reads flat and a beach tile is placed;
+    render from the same, lowered levels so it actually sits at the waterline."""
+    from collections import deque
+    H, W = mat.shape
+    ws = set(water)
+    INF = 1 << 30
+    dist = np.full((H, W), INF, np.int32)
+    dq = deque()
+    for y in range(H):
+        for x in range(W):
+            if mat[y, x] in ws:
+                dist[y, x] = 0
+                dq.append((x, y))
+    while dq:
+        x, y = dq.popleft()
+        if dist[y, x] >= band:            # only need the coastal band
+            continue
+        for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            xx, yy = x + i, y + j
+            if 0 <= xx < W and 0 <= yy < H and dist[yy, xx] > dist[y, x] + 1:
+                dist[yy, xx] = dist[y, x] + 1
+                dq.append((xx, yy))
+    for y in range(H):
+        for x in range(W):
+            m = mat[y, x]
+            if m == "" or m in ws:
+                continue
+            d = int(dist[y, x])
+            if 1 <= d <= band:
+                cap = (d - 1) * ramp
+                if level[y, x] > cap:
+                    level[y, x] = cap
+    return level
+
+
 class AutoTiler:
     def __init__(self, mat, lib: Tiles2, seed: int, *, priority=None, level=None,
                  water=("clear_water",), fade_width: int = 5,
