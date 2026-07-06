@@ -168,9 +168,10 @@
         }
       },
       "features": [
-        "water"
+        "water",
+        "accent"
       ],
-      "description": "black volcanic rock blending to snow with a small puddle"
+      "description": "black volcanic rock blending to snow with a small puddle, a small detail"
     },
     {
       "index": 2,
@@ -178,8 +179,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.529,
-        "black_mountain": 0.471
+        "regular_snow": 0.532,
+        "black_mountain": 0.468
       },
       "edges": {
         "NE": {
@@ -249,9 +250,9 @@
       },
       "features": [
         "water",
-        "pebbles"
+        "accent"
       ],
-      "description": "snow blending to black volcanic rock with a small puddle, pebbles"
+      "description": "snow blending to black volcanic rock with a small puddle, a small detail"
     },
     {
       "index": 3,
@@ -259,8 +260,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.601,
-        "black_mountain": 0.399
+        "regular_snow": 0.651,
+        "black_mountain": 0.349
       },
       "edges": {
         "NE": {
@@ -327,11 +328,10 @@
         }
       },
       "features": [
-        "pebbles",
         "water",
         "accent"
       ],
-      "description": "snow blending to black volcanic rock with pebbles, a small puddle, a small detail"
+      "description": "snow blending to black volcanic rock with a small puddle, a small detail"
     },
     {
       "index": 4,
@@ -339,8 +339,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.654,
-        "black_mountain": 0.346
+        "regular_snow": 0.792,
+        "black_mountain": 0.208
       },
       "edges": {
         "NE": {
@@ -360,19 +360,20 @@
         },
         "SE": {
           "samples": [
-            "black_mountain",
             "regular_snow",
             "regular_snow",
-            "black_mountain",
+            "regular_snow",
+            "regular_snow",
             "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.75,
-            "regular_snow": 0.25
-          }
+            "regular_snow": 0.5,
+            "black_mountain": 0.5
+          },
+          "divider": 0.5
         },
         "SW": {
           "samples": [
@@ -408,11 +409,10 @@
         }
       },
       "features": [
-        "pebbles",
         "water",
         "accent"
       ],
-      "description": "snow blending to black volcanic rock with pebbles, a small puddle, a small detail"
+      "description": "snow blending to black volcanic rock with a small puddle, a small detail"
     },
     {
       "index": 5,
@@ -420,8 +420,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.524,
-        "black_mountain": 0.476
+        "regular_snow": 0.528,
+        "black_mountain": 0.472
       },
       "edges": {
         "NE": {
@@ -491,9 +491,9 @@
       },
       "features": [
         "water",
-        "pebbles"
+        "accent"
       ],
-      "description": "snow blending to black volcanic rock with a small puddle, pebbles"
+      "description": "snow blending to black volcanic rock with a small puddle, a small detail"
     },
     {
       "index": 6,
@@ -501,8 +501,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.622,
-        "black_mountain": 0.378
+        "regular_snow": 0.741,
+        "black_mountain": 0.259
       },
       "edges": {
         "NE": {
@@ -522,75 +522,6 @@
         },
         "SE": {
           "samples": [
-            "black_mountain",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow"
-          ],
-          "ratio": {
-            "black_mountain": 0.125,
-            "regular_snow": 0.875
-          },
-          "divider": 0.125
-        },
-        "SW": {
-          "samples": [
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "regular_snow": 0.5,
-            "black_mountain": 0.5
-          },
-          "divider": 0.5
-        },
-        "NW": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "regular_snow",
-            "regular_snow"
-          ],
-          "ratio": {
-            "black_mountain": 0.75,
-            "regular_snow": 0.25
-          },
-          "divider": 0.75
-        }
-      },
-      "features": [
-        "pebbles",
-        "water",
-        "accent"
-      ],
-      "description": "snow blending to black volcanic rock with pebbles, a small puddle, a small detail"
-    },
-    {
-      "index": 7,
-      "file": "tile_07.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "regular_snow": 0.626,
-        "black_mountain": 0.374
-      },
-      "edges": {
-        "NE": {
-          "samples": [
             "regular_snow",
             "regular_snow",
             "regular_snow",
@@ -603,106 +534,6 @@
           "ratio": {
             "regular_snow": 1.0
           }
-        },
-        "SE": {
-          "samples": [
-            "black_mountain",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow"
-          ],
-          "ratio": {
-            "black_mountain": 0.125,
-            "regular_snow": 0.875
-          },
-          "divider": 0.125
-        },
-        "SW": {
-          "samples": [
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "regular_snow": 0.5,
-            "black_mountain": 0.5
-          },
-          "divider": 0.5
-        },
-        "NW": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow"
-          ],
-          "ratio": {
-            "black_mountain": 0.5,
-            "regular_snow": 0.5
-          },
-          "divider": 0.5
-        }
-      },
-      "features": [
-        "pebbles",
-        "water"
-      ],
-      "description": "snow blending to black volcanic rock with pebbles, a small puddle"
-    },
-    {
-      "index": 8,
-      "file": "tile_08.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "regular_snow": 0.639,
-        "black_mountain": 0.361
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow"
-          ],
-          "ratio": {
-            "regular_snow": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "black_mountain",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow"
-          ],
-          "ratio": {
-            "black_mountain": 0.125,
-            "regular_snow": 0.875
-          },
-          "divider": 0.125
         },
         "SW": {
           "samples": [
@@ -740,11 +571,173 @@
         }
       },
       "features": [
-        "pebbles",
+        "accent",
+        "water",
+        "pebbles"
+      ],
+      "description": "snow blending to black volcanic rock with a small detail, a small puddle, pebbles"
+    },
+    {
+      "index": 7,
+      "file": "tile_07.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "regular_snow": 0.766,
+        "black_mountain": 0.234
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "regular_snow": 0.5,
+            "black_mountain": 0.5
+          },
+          "divider": 0.5
+        },
+        "NW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "black_mountain": 0.5,
+            "regular_snow": 0.5
+          },
+          "divider": 0.5
+        }
+      },
+      "features": [
         "water",
         "accent"
       ],
-      "description": "snow blending to black volcanic rock with pebbles, a small puddle, a small detail"
+      "description": "snow blending to black volcanic rock with a small puddle, a small detail"
+    },
+    {
+      "index": 8,
+      "file": "tile_08.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "regular_snow": 0.743,
+        "black_mountain": 0.257
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "regular_snow": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "regular_snow": 0.5,
+            "black_mountain": 0.5
+          },
+          "divider": 0.5
+        },
+        "NW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
+          ],
+          "ratio": {
+            "black_mountain": 0.625,
+            "regular_snow": 0.375
+          },
+          "divider": 0.625
+        }
+      },
+      "features": [
+        "accent",
+        "water"
+      ],
+      "description": "snow blending to black volcanic rock with a small detail, a small puddle"
     },
     {
       "index": 9,
@@ -752,77 +745,77 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.975,
-        "regular_snow": 0.025
+        "regular_snow": 0.956,
+        "black_mountain": 0.044
       },
       "edges": {
         "NE": {
           "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
           ],
           "ratio": {
-            "black_mountain": 1.0
+            "regular_snow": 1.0
           }
         },
         "SE": {
           "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
           ],
           "ratio": {
-            "black_mountain": 1.0
+            "regular_snow": 1.0
           }
         },
         "SW": {
           "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
           ],
           "ratio": {
-            "black_mountain": 1.0
+            "regular_snow": 1.0
           }
         },
         "NW": {
           "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
           ],
           "ratio": {
-            "black_mountain": 1.0
+            "regular_snow": 1.0
           }
         }
       },
       "features": [
-        "pebbles",
+        "accent",
         "water",
-        "accent"
+        "pebbles"
       ],
-      "description": "black volcanic rock with pebbles, a small puddle, a small detail"
+      "description": "snow with a small detail, a small puddle, pebbles"
     },
     {
       "index": 10,
@@ -830,8 +823,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.864,
-        "regular_snow": 0.136
+        "black_mountain": 0.144,
+        "regular_snow": 0.856
       },
       "edges": {
         "NE": {
@@ -839,75 +832,71 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "black_mountain": 0.875,
-            "regular_snow": 0.125
+            "black_mountain": 0.375,
+            "regular_snow": 0.625
           },
-          "divider": 0.875
+          "divider": 0.375
         },
         "SE": {
           "samples": [
-            "black_mountain",
             "regular_snow",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "black_mountain": 0.75,
-            "regular_snow": 0.25
+            "regular_snow": 1.0
           }
         },
         "SW": {
           "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "black_mountain": 0.875,
-            "regular_snow": 0.125
-          },
-          "divider": 0.875
+            "regular_snow": 1.0
+          }
         },
         "NW": {
           "samples": [
             "regular_snow",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
             "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "regular_snow": 0.125,
-            "black_mountain": 0.875
+            "regular_snow": 0.625,
+            "black_mountain": 0.375
           },
-          "divider": 0.125
+          "divider": 0.625
         }
       },
       "features": [
-        "pebbles",
-        "water",
-        "accent"
+        "accent",
+        "water"
       ],
-      "description": "black volcanic rock blending to snow with pebbles, a small puddle, a small detail"
+      "description": "snow blending to black volcanic rock with a small detail, a small puddle"
     },
     {
       "index": 11,
@@ -915,8 +904,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.705,
-        "black_mountain": 0.295
+        "regular_snow": 0.834,
+        "black_mountain": 0.166
       },
       "edges": {
         "NE": {
@@ -925,16 +914,16 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "black_mountain",
+            "regular_snow",
             "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "regular_snow": 0.5,
-            "black_mountain": 0.5
+            "regular_snow": 0.625,
+            "black_mountain": 0.375
           },
-          "divider": 0.5
+          "divider": 0.625
         },
         "SE": {
           "samples": [
@@ -985,10 +974,10 @@
         }
       },
       "features": [
-        "pebbles",
-        "water"
+        "water",
+        "accent"
       ],
-      "description": "snow blending to black volcanic rock with pebbles, a small puddle"
+      "description": "snow blending to black volcanic rock with a small puddle, a small detail"
     },
     {
       "index": 12,
@@ -996,8 +985,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.485,
-        "black_mountain": 0.515
+        "regular_snow": 0.498,
+        "black_mountain": 0.502
       },
       "edges": {
         "NE": {
@@ -1067,9 +1056,9 @@
       },
       "features": [
         "water",
-        "pebbles"
+        "accent"
       ],
-      "description": "black volcanic rock blending to snow with a small puddle, pebbles"
+      "description": "black volcanic rock blending to snow with a small puddle, a small detail"
     },
     {
       "index": 13,
@@ -1077,8 +1066,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.645,
-        "black_mountain": 0.355
+        "regular_snow": 0.789,
+        "black_mountain": 0.211
       },
       "edges": {
         "NE": {
@@ -1098,7 +1087,7 @@
         },
         "SE": {
           "samples": [
-            "black_mountain",
+            "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow",
@@ -1108,27 +1097,25 @@
             "regular_snow"
           ],
           "ratio": {
-            "black_mountain": 0.125,
-            "regular_snow": 0.875
-          },
-          "divider": 0.125
+            "regular_snow": 1.0
+          }
         },
         "SW": {
           "samples": [
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "black_mountain",
+            "regular_snow",
             "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "regular_snow": 0.375,
-            "black_mountain": 0.625
+            "regular_snow": 0.5,
+            "black_mountain": 0.5
           },
-          "divider": 0.375
+          "divider": 0.5
         },
         "NW": {
           "samples": [
@@ -1149,10 +1136,11 @@
         }
       },
       "features": [
-        "pebbles",
-        "water"
+        "accent",
+        "water",
+        "pebbles"
       ],
-      "description": "snow blending to black volcanic rock with pebbles, a small puddle"
+      "description": "snow blending to black volcanic rock with a small detail, a small puddle, pebbles"
     },
     {
       "index": 14,
@@ -1160,8 +1148,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.659,
-        "black_mountain": 0.341
+        "regular_snow": 0.814,
+        "black_mountain": 0.186
       },
       "edges": {
         "NE": {
@@ -1181,7 +1169,7 @@
         },
         "SE": {
           "samples": [
-            "black_mountain",
+            "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow",
@@ -1191,52 +1179,50 @@
             "regular_snow"
           ],
           "ratio": {
-            "black_mountain": 0.125,
-            "regular_snow": 0.875
-          },
-          "divider": 0.125
+            "regular_snow": 1.0
+          }
         },
         "SW": {
           "samples": [
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "black_mountain",
+            "regular_snow",
             "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "regular_snow": 0.375,
-            "black_mountain": 0.625
+            "regular_snow": 0.5,
+            "black_mountain": 0.5
           },
-          "divider": 0.375
+          "divider": 0.5
         },
         "NW": {
           "samples": [
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "black_mountain",
+            "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "black_mountain": 0.5,
-            "regular_snow": 0.5
+            "black_mountain": 0.375,
+            "regular_snow": 0.625
           },
-          "divider": 0.5
+          "divider": 0.375
         }
       },
       "features": [
-        "pebbles",
+        "accent",
         "water",
-        "accent"
+        "pebbles"
       ],
-      "description": "snow blending to black volcanic rock with pebbles, a small puddle, a small detail"
+      "description": "snow blending to black volcanic rock with a small detail, a small puddle, pebbles"
     },
     {
       "index": 15,
@@ -1244,75 +1230,76 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.996,
-        "regular_snow": 0.004
+        "regular_snow": 0.996,
+        "black_mountain": 0.004
       },
       "edges": {
         "NE": {
           "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
           ],
           "ratio": {
-            "black_mountain": 1.0
+            "regular_snow": 1.0
           }
         },
         "SE": {
           "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
           ],
           "ratio": {
-            "black_mountain": 1.0
+            "regular_snow": 1.0
           }
         },
         "SW": {
           "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
           ],
           "ratio": {
-            "black_mountain": 1.0
+            "regular_snow": 1.0
           }
         },
         "NW": {
           "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
           ],
           "ratio": {
-            "black_mountain": 1.0
+            "regular_snow": 1.0
           }
         }
       },
       "features": [
+        "accent",
         "pebbles"
       ],
-      "description": "black volcanic rock with pebbles"
+      "description": "snow with a small detail, pebbles"
     }
   ],
   "generated_at": "2026-07-05T10:52:41+00:00",

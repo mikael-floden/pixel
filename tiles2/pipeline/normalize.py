@@ -91,8 +91,13 @@ def harmonize(im, target, hue_strength=0.9, sat_strength=0.6, v_strength=0.65):
     if target.get("chroma", sat_t) > 55:                 # chromatic: hue band
         dh = np.abs(((h - hue_t + 128) % 256) - 128)
         m = op & (s > 45) & (dh < 42)
-    else:                                                # achromatic: bright + desaturated
-        m = op & (s < 70) & (v > val_t - 45)
+    else:                                                # achromatic: desaturated + value BAND
+        # Two-sided value window around the target: a DARK material (black rock,
+        # value~56) claims only dark pixels, a BRIGHT one (snow, value~243) only
+        # bright pixels. A lower bound alone was degenerate for dark targets —
+        # `v > val_t-45` selected the whole tile (incl. the snow half of a
+        # black<->snow transition), then mean-leveling crushed it all to near-black.
+        m = op & (s < 70) & (np.abs(v - val_t) < 70)
     if m.any():
         dh = (((hue_t - h + 128) % 256) - 128) * hue_strength
         hsv[:, :, 0] = np.where(m, (h + dh) % 256, h)

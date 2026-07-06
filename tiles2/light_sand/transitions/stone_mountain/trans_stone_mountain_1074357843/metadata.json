@@ -414,10 +414,10 @@
       "features": [
         "pebbles",
         "accent",
-        "bare_soil",
-        "shiny"
+        "shiny",
+        "bare_soil"
       ],
-      "description": "light sand blending to grey mountain stone with pebbles, a small detail, a bare soil patch, a shiny speck"
+      "description": "light sand blending to grey mountain stone with pebbles, a small detail, a shiny speck, a bare soil patch"
     },
     {
       "index": 5,
@@ -726,10 +726,9 @@
       },
       "features": [
         "pebbles",
-        "accent",
-        "shiny"
+        "accent"
       ],
-      "description": "light sand blending to grey mountain stone with pebbles, a small detail, a shiny speck"
+      "description": "light sand blending to grey mountain stone with pebbles, a small detail"
     },
     {
       "index": 9,
@@ -896,8 +895,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.819,
-        "light_sand": 0.181
+        "stone_mountain": 0.818,
+        "light_sand": 0.182
       },
       "edges": {
         "NE": {
@@ -977,8 +976,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.215,
-        "light_sand": 0.785
+        "stone_mountain": 0.212,
+        "light_sand": 0.788
       },
       "edges": {
         "NE": {
@@ -1047,9 +1046,10 @@
       },
       "features": [
         "accent",
-        "pebbles"
+        "pebbles",
+        "shiny"
       ],
-      "description": "light sand blending to grey mountain stone with a small detail, pebbles"
+      "description": "light sand blending to grey mountain stone with a small detail, pebbles, a shiny speck"
     },
     {
       "index": 13,
@@ -1217,10 +1217,9 @@
       },
       "features": [
         "pebbles",
-        "accent",
-        "shiny"
+        "accent"
       ],
-      "description": "grey mountain stone blending to light sand with pebbles, a small detail, a shiny speck"
+      "description": "grey mountain stone blending to light sand with pebbles, a small detail"
     },
     {
       "index": 15,
