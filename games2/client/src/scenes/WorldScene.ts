@@ -67,7 +67,9 @@ import {
   DEFAULT_WORLD,
 } from "../maps";
 
-const ANIM_FPS: Record<string, number> = { idle: 6, walk: 12, run: 14 };
+// jump/runjump play ONCE, timed to span the ~500ms hop (JUMP_MS): 9 frames→18fps,
+// 8 frames→16fps land the character on its feet just as the arc completes.
+const ANIM_FPS: Record<string, number> = { idle: 6, walk: 12, run: 14, jump: 18, runjump: 16 };
 // Spawn campfire (objects/campfire, burn/south): 96px frames; per its
 // placement metadata the fire is 0.6m ≈ 23px tall vs a 64px character, and
 // the drawn logs span rows 15..83 of the frame → scale + base anchor below.
@@ -511,6 +513,13 @@ export class WorldScene extends Phaser.Scene {
       occCount: () => ({ maps2: this.maps2, occluders: this.occluders.length, meta: this.occluderMeta.length }),
       bubbles: () => [...this.avatars.values()].filter((a) => a.bubble).map((a) => a.bubble!.text),
       jump: () => this.tryJump(),
+      // Current animation key of the local avatar's sprite — headless probe for
+      // verifying jump/runjump selection.
+      anim: () => {
+        const id = this.room?.sessionId;
+        const av = id ? this.avatars.get(id) : undefined;
+        return av ? av.sprite.anims.getName() : null;
+      },
       me: () => this.room?.state.players.get(this.room!.sessionId),
       stamina: () => this.room?.state.players.get(this.room!.sessionId)?.stamina ?? null,
       swimming: () => !!this.room?.state.players.get(this.room!.sessionId)?.swimming,
@@ -715,7 +724,7 @@ export class WorldScene extends Phaser.Scene {
       swimming: false,
       baseTint,
     });
-    this.applyAnimState(this.avatars.get(id)!, player.moving, player.running, player.dir);
+    this.applyAnimState(this.avatars.get(id)!, player.moving, player.running, player.dir, false);
   }
 
   update(_time: number, delta: number) {
@@ -923,7 +932,7 @@ export class WorldScene extends Phaser.Scene {
           av.bubble = undefined;
         }
       }
-      this.applyAnimState(av, moving, running, dir);
+      this.applyAnimState(av, moving, running, dir, hopLeft > 0);
     });
 
     // Local player's swim-stamina HUD.
@@ -1166,8 +1175,19 @@ export class WorldScene extends Phaser.Scene {
     this.sendAccum = 0;
   }
 
-  private applyAnimState(av: Avatar, moving: boolean, running: boolean, dir: string) {
-    const state = moving ? (running ? "run" : "walk") : "idle";
+  private applyAnimState(av: Avatar, moving: boolean, running: boolean, dir: string, jumping: boolean) {
+    // Airborne overrides ground gait: a moving-fast leap uses running-jump, any
+    // other hop (standing or walking) uses the plain jump. Timed to the hop so
+    // the leap/land poses line up with the visual arc.
+    const state = jumping
+      ? running && moving
+        ? "runjump"
+        : "jump"
+      : moving
+        ? running
+          ? "run"
+          : "walk"
+        : "idle";
     const d = DIRECTIONS.includes(dir as never) ? dir : DEFAULT_DIRECTION;
     const key = this.resolveAnim(av.character, state, d);
     if (key && av.sprite.anims.getName() !== key) {
@@ -1237,7 +1257,16 @@ export class WorldScene extends Phaser.Scene {
 
   /** Pick an existing animation, falling back run→walk→idle then default dir. */
   private resolveAnim(uid: string, state: string, dir: string): string | null {
-    const order = state === "run" ? ["run", "walk", "idle"] : state === "walk" ? ["walk", "idle"] : ["idle"];
+    const order =
+      state === "runjump"
+        ? ["runjump", "jump", "run", "walk", "idle"]
+        : state === "jump"
+          ? ["jump", "walk", "idle"]
+          : state === "run"
+            ? ["run", "walk", "idle"]
+            : state === "walk"
+              ? ["walk", "idle"]
+              : ["idle"];
     for (const s of order) {
       for (const d of [dir, DEFAULT_DIRECTION]) {
         const key = animKey(uid, s, d);
@@ -1259,8 +1288,8 @@ export class WorldScene extends Phaser.Scene {
             if (this.textures.exists(fk)) frames.push({ key: fk });
           }
           if (!frames.length) continue;
-          // idle/walk/run loop; jump/kick play once.
-          const once = state === "jump" || state === "kick";
+          // idle/walk/run loop; jump/runjump/kick play once.
+          const once = state === "jump" || state === "runjump" || state === "kick";
           this.anims.create({
             key,
             frames,

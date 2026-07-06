@@ -23,6 +23,7 @@ const ANIM_MAP = {
   walk: "walking",
   run: "running-8-frames",
   jump: "jumping-1",
+  runjump: "running-jump",
   kick: "high-kick",
 };
 // Friendly display name per character id (character.json names are prompt junk).
