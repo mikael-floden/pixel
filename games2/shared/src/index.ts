@@ -4,11 +4,16 @@
  */
 
 // --- World -------------------------------------------------------------------
-// World units: 32 per map cell, sized to the current bigworld grid (512×448).
-// If the maps agent changes the world dimensions, update these to w*32 / h*32.
+// World units: 32 per map cell (CELL_WU), sized to the served maps2 world grid
+// (ring_test: 160×160). WORLD_WIDTH MUST equal gridW*CELL_WU: the flat world→grid
+// mapping in project()/surfaceAtWorld divides by WORLD_WIDTH*gridW while light &
+// spawn positions divide by CELL_WU, so if these disagree the two scales diverge
+// (lights land dozens of cells off the ground — night goes black). When the maps
+// agent ships a different-sized world (e.g. prop_demo), update these to w*32/h*32.
 export const CELL_WU = 32;
-export const WORLD_WIDTH = 512 * CELL_WU;
-export const WORLD_HEIGHT = 448 * CELL_WU;
+export const WORLD_GRID = 160; // ring_test is square 160×160
+export const WORLD_WIDTH = WORLD_GRID * CELL_WU;
+export const WORLD_HEIGHT = WORLD_GRID * CELL_WU;
 
 // Movement speeds in world units per second.
 // Retuned for CELL_WU=32 (screen px/wu grew ~13% vs the old 44×44 world).
