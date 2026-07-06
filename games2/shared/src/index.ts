@@ -512,7 +512,13 @@ export function parseWorld(json: any): ParsedWorld | null {
  * into the shared ParsedWorld model. world@1 changed a few things: it carries a
  * `size` {w,h} so worlds can be NON-SQUARE, ships materials as an id→name ARRAY
  * (was a `matids` name→id map), and puts `spawn` at the top level (was
- * `meta.spawn`). Cells still bake explicit tile PNG paths in `top`. */
+ * `meta.spawn`). Cells still bake explicit tile PNG paths in `top`.
+ *
+ * We read `mat`/`level`/`top`/`mirror`/`spawn`/`size`. We deliberately IGNORE
+ * the world's `collision` field: walkability is the GAME ENGINE's job, derived
+ * from elevation (level steps) + SURFACES (per-material standable/swimmable) —
+ * see buildTerrainGrid/canEnter. The maps agent owns world DATA; the engine owns
+ * what it MEANS for movement. `props`/`geometry`/`water` aren't consumed yet. */
 function parseRingworld(json: any): ParsedWorld {
   const top: number[][] = json.top;
   const level: number[][] = json.level ?? [];
