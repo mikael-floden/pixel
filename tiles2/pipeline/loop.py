@@ -109,11 +109,11 @@ def commit_push(message, push=True):
     return True
 
 
-def advance(client, cfg, unit, push=True):
+def advance(client, cfg, unit, push=True, attempt=0):
     if unit[0] == "base":
-        req = generate.generate_base(client, cfg, unit[1])
+        req = generate.generate_base(client, cfg, unit[1], attempt=attempt)
     else:
-        req = generate.generate_transition(client, cfg, unit[1], unit[2])
+        req = generate.generate_transition(client, cfg, unit[1], unit[2], attempt=attempt)
     postprocess.process_type(req["ground_type"], cfg)
     desc = f"tiles2: {_describe(unit)} — {req['count']} tiles ({req['sheet']})"
     commit_push(desc, push=push)
@@ -124,6 +124,9 @@ def advance(client, cfg, unit, push=True):
 def main():
     ap = argparse.ArgumentParser(description="Run the tiles2 loop.")
     ap.add_argument("--max-units", type=int, default=0)
+    ap.add_argument("--max-retries", type=int, default=3,
+                    help="retry a unit that hits a PixelLab stall (0.49 hang) with a "
+                         "fresh seed this many times before giving up (default 3)")
     ap.add_argument("--max-minutes", type=float, default=0)
     ap.add_argument("--min-balance", type=int, default=None)
     ap.add_argument("--once", action="store_true")
@@ -186,6 +189,7 @@ def main():
         commit_push(f"tiles2: sync — drop {len(removed)} sheet(s) deleted in PixelLab",
                     push=not args.no_push)
 
+    fails = {}                     # unit description -> failures so far this run
     while True:
         try:
             client.ensure_budget(min_balance, min_usd)
@@ -194,14 +198,23 @@ def main():
         unit = next_unit(cfg, args.bases_only, skip, only=args.only)
         if unit is None:
             print("== all targets met ==" if not skip else
-                  f"== nothing left except {len(skip)} skipped/failed unit(s) =="); break
+                  f"== gave up on {len(skip)} unit(s) after {args.max_retries} tries each =="); break
+        desc = _describe(unit)
         try:
-            advance(client, cfg, unit, push=not args.no_push)
+            advance(client, cfg, unit, push=not args.no_push, attempt=fails.get(desc, 0))
         except BudgetExhausted as e:
             print(f"stopping: {e}"); break
         except PixelLabError as e:
-            print(f"  ! {_describe(unit)} failed: {e}; skipping for this run")
-            skip.add(_describe(unit))
+            # PixelLab jobs sometimes stall at progress~0.49 server-side (transient).
+            # Re-queue the unit (a fresh seed is derived per attempt) up to
+            # --max-retries before giving up, so one run fills the gaps.
+            fails[desc] = fails.get(desc, 0) + 1
+            if fails[desc] >= args.max_retries:
+                print(f"  ! {desc} failed {fails[desc]}x ({e}); giving up for this run")
+                skip.add(desc)
+            else:
+                print(f"  ~ {desc} stalled (try {fails[desc]}/{args.max_retries}); "
+                      f"retrying with a fresh seed")
             continue
         units += 1
         if args.once or (args.max_units and units >= args.max_units):

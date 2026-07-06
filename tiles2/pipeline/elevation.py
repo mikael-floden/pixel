@@ -319,6 +319,9 @@ def main():
     ap.add_argument("--no-sync", action="store_true", help="skip the startup UI-deletion sync")
     ap.add_argument("--no-push", action="store_true")
     ap.add_argument("--max-units", type=int, default=0)
+    ap.add_argument("--max-retries", type=int, default=3,
+                    help="how many times to retry a slot that hits a PixelLab stall "
+                         "(0.49 hang) with a fresh seed before giving up (default 3)")
     ap.add_argument("--min-usd", type=float, default=None,
                     help="override the USD credit floor (default from config); use to "
                          "spend down remaining credits")
@@ -358,6 +361,7 @@ def main():
 
     units = 0
     skip = set()
+    fails = {}                     # (gid,height,slot) -> failures so far this run
     while True:
         try:
             client.ensure_budget(min_gen, min_usd)
@@ -366,16 +370,28 @@ def main():
         unit = next_unit(cfg, skip, only=args.only)
         if unit is None:
             print("== all elevation targets met ==" if not skip else
-                  f"== nothing left except {len(skip)} skipped/failed slot(s) =="); break
+                  f"== gave up on {len(skip)} slot(s) after {args.max_retries} tries each =="); break
         terrain, height_id, slot = unit
+        key = (terrain["id"], height_id, slot)
         try:
             req = generate_sheet(client, cfg, terrain, height_id, slot)
             process_terrain(cfg, terrain, cache)
         except BudgetExhausted as e:
             print("stopping:", e); break
         except PixelLabError as e:
-            print(f"  ! {terrain['id']} {height_id} slot {slot} failed: {e}; skipping for this run")
-            skip.add((terrain["id"], height_id, slot))
+            # PixelLab jobs sometimes stall at progress~0.49 server-side. That's
+            # transient, so RE-QUEUE the slot (generate_sheet already bumps the
+            # attempt counter -> a fresh seed next try) up to --max-retries before
+            # giving up, so one run fills the gaps instead of leaving them for a
+            # manual re-run.
+            fails[key] = fails.get(key, 0) + 1
+            if fails[key] >= args.max_retries:
+                print(f"  ! {terrain['id']} {height_id} slot {slot} failed "
+                      f"{fails[key]}x ({e}); giving up for this run")
+                skip.add(key)
+            else:
+                print(f"  ~ {terrain['id']} {height_id} slot {slot} stalled "
+                      f"(try {fails[key]}/{args.max_retries}); retrying with a fresh seed")
             continue
         desc = (f"tiles2: elevation {terrain['id']}/{height_id} sheet {slot + 1}/{tgt} — "
                 f"{req['count']} tiles, {len(req['objects'])} varied objects")
