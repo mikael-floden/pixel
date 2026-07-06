@@ -23,7 +23,7 @@ import os
 import numpy as np
 from PIL import Image
 
-from tiles2lib import DX, DY, Tiles2
+from tiles2lib import DX, DY, EDGE_K, Tiles2
 
 TYPES = ["saturated_grass", "lightdark_dirt", "stone_mountain",
          "black_mountain", "regular_snow", "clear_water"]
@@ -56,6 +56,7 @@ class TransDemo:
         self.W = 5 * PLOT
         self.H = len(TYPES) * PLOT
         self.top = np.full((self.H, self.W), None, object)   # (path, mirror) | None
+        self.edges = np.full((self.H, self.W), None, object)  # chosen edge profiles
         self.circles = []                                    # (A,B,cx,cy)
         self.fallbacks = 0                                   # cells with no exact code
         self._layout()
@@ -77,28 +78,53 @@ class TransDemo:
 
     def _paint(self):
         lib = self.lib
+        pureA = [1] * EDGE_K
+        pureB = [0] * EDGE_K
         for (A, B, cx, cy) in self.circles:
             table = lib.wang(A, B)               # code(N,E,S,W; 1=A) -> candidates
             plainA = (lib.plain_tile(A), False)
             plainB = (lib.plain_tile(B), False)
             x0, y0 = int(cx - R - MARGIN), int(cy - R - MARGIN)
             x1, y1 = int(cx + R + MARGIN) + 1, int(cy + R + MARGIN) + 1
-            for y in range(max(0, y0), min(self.H, y1)):
-                for x in range(max(0, x0), min(self.W, x1)):
-                    # 4 corner lattice points of this cell (N, E, S, W)
-                    code = (
-                        int(self._inside(x - 0.5, y - 0.5, cx, cy)),
-                        int(self._inside(x + 0.5, y - 0.5, cx, cy)),
-                        int(self._inside(x + 0.5, y + 0.5, cx, cy)),
-                        int(self._inside(x - 0.5, y + 0.5, cx, cy)),
-                    )
-                    if code == (1, 1, 1, 1):
-                        self.top[y, x] = plainA
-                        continue
-                    if code == (0, 0, 0, 0):
-                        self.top[y, x] = plainB
-                        continue
-                    self.top[y, x] = self._pick(table, code, x, y)
+            # scanline order (increasing x+y, then x) so a cell's NE neighbour
+            # (x,y-1) and NW neighbour (x-1,y) are already placed and can be matched.
+            cells = [(x, y)
+                     for y in range(max(0, y0), min(self.H, y1))
+                     for x in range(max(0, x0), min(self.W, x1))]
+            cells.sort(key=lambda p: (p[0] + p[1], p[0]))
+            for x, y in cells:
+                code = (
+                    int(self._inside(x - 0.5, y - 0.5, cx, cy)),
+                    int(self._inside(x + 0.5, y - 0.5, cx, cy)),
+                    int(self._inside(x + 0.5, y + 0.5, cx, cy)),
+                    int(self._inside(x - 0.5, y + 0.5, cx, cy)),
+                )
+                if code == (1, 1, 1, 1):
+                    self.top[y, x] = plainA
+                    self.edges[y, x] = {"NE": pureA, "SE": pureA,
+                                        "SW": pureA, "NW": pureA}
+                    continue
+                if code == (0, 0, 0, 0):
+                    self.top[y, x] = plainB
+                    self.edges[y, x] = {"NE": pureB, "SE": pureB,
+                                        "SW": pureB, "NW": pureB}
+                    continue
+                self.top[y, x], self.edges[y, x] = self._pick(table, code, x, y)
+
+    def _seam_cost(self, cand, x, y):
+        """How badly this candidate's shared edges disagree with already-placed
+        NE and NW neighbours (0 = perfect). A tile's NE edge must equal its NE
+        neighbour's SW edge reversed; its NW edge, the NW neighbour's SE reversed."""
+        cost = 0
+        nb = self.edges[y - 1, x] if y - 1 >= 0 else None   # NE neighbour (x, y-1)
+        if nb is not None:
+            cost += sum(a != b for a, b in
+                        zip(cand["edges"]["NE"], reversed(nb["SW"])))
+        nb = self.edges[y, x - 1] if x - 1 >= 0 else None   # NW neighbour (x-1, y)
+        if nb is not None:
+            cost += sum(a != b for a, b in
+                        zip(cand["edges"]["NW"], reversed(nb["SE"])))
+        return cost
 
     def _pick(self, table, code, x, y):
         cands = table.get(code)
@@ -108,11 +134,12 @@ class TransDemo:
             best = min(table.keys(), key=lambda k: (_hamming(k, code),
                                                     -table[k][0]["conf"]))
             cands = table[best]
-        # among the confidently-matching tiles, vary by position for a natural look
-        top = cands[0]["conf"]
-        good = [c for c in cands if c["conf"] >= top - 0.12] or cands
-        c = good[int(_h01(x, y, self.seed + 3) * len(good)) % len(good)]
-        return (c["file"], c["mirror"])
+        jit = _h01(x, y, self.seed + 3)
+        # pick the corner-matching tile whose seams best fit the placed neighbours;
+        # break ties toward high corner-confidence, then a little positional jitter
+        c = min(cands, key=lambda cd: (self._seam_cost(cd, x, y),
+                                       -cd["conf"], jit))
+        return (c["file"], c["mirror"]), c["edges"]
 
     # -- render ----------------------------------------------------------------
 

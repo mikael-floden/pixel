@@ -63,6 +63,31 @@ CORNER_MASK = {k: (DM & ((_XX - cx) ** 2 + (_YY - cy) ** 2 < 9 ** 2))
                for k, (cx, cy) in CORNERS.items()}
 CORNER_ORDER = ("N", "E", "S", "W")   # cyclic order around the diamond
 
+# The four diamond EDGES, each sampled at EDGE_K points from one corner to the
+# next in cyclic order (NE: N->E, SE: E->S, SW: S->W, NW: W->N). Matching a tile's
+# edge profile against its neighbour's shared edge (reversed) pins not just the
+# corners but WHERE along the edge the materials swap (the divider) — which is
+# what removes the sub-edge "notch". Samples are nudged toward the diamond centre
+# so they read interior art, not the outline rim.
+EDGE_K = 6
+_EDGE_CORNERS = {"NE": ("N", "E"), "SE": ("E", "S"),
+                 "SW": ("S", "W"), "NW": ("W", "N")}
+_ECENTER = (32, 23)
+
+
+def _edge_mask(p0, p1, t):
+    x = p0[0] + (p1[0] - p0[0]) * t
+    y = p0[1] + (p1[1] - p0[1]) * t
+    x += (_ECENTER[0] - x) * 0.18
+    y += (_ECENTER[1] - y) * 0.18
+    return DM & ((_XX - x) ** 2 + (_YY - y) ** 2 < 3.5 ** 2)
+
+
+EDGE_MASK = {e: [_edge_mask(CORNERS[c0], CORNERS[c1], (i + 1) / (EDGE_K + 1))
+                 for i in range(EDGE_K)]
+             for e, (c0, c1) in _EDGE_CORNERS.items()}
+EDGE_ORDER = ("NE", "SE", "SW", "NW")
+
 
 class Tiles2:
     def __init__(self, tiles_root: str = TILES2):
@@ -215,9 +240,24 @@ class Tiles2:
                         < np.linalg.norm(cpx - cb, axis=1)).mean())
             corners.append(1 if fa > 0.5 else 0)
             conf.append(round(abs(fa - 0.5) * 2, 3))
+        # edge profiles: EDGE_K samples along each edge (1 = A), for seam matching
+        edges = {}
+        for e in EDGE_ORDER:
+            prof = []
+            for m in EDGE_MASK[e]:
+                sel = m & alpha
+                epx = a[:, :, :3][sel]
+                if len(epx) == 0:
+                    prof.append(1 if compA >= 0.5 else 0)
+                else:
+                    prof.append(1 if float((np.linalg.norm(epx - ca, axis=1)
+                                < np.linalg.norm(epx - cb, axis=1)).mean()) > 0.5
+                                else 0)
+            edges[e] = prof
         return {"file": path, "compA": round(compA, 3),
                 "grad": [round(float(g[0]), 3), round(float(g[1]), 3)],
-                "corners": corners, "conf": round(float(np.mean(conf)), 3)}
+                "corners": corners, "conf": round(float(np.mean(conf)), 3),
+                "edges": edges}
 
     def _load_or_build_analysis(self) -> dict:
         sig = self._signature()
@@ -234,7 +274,7 @@ class Tiles2:
         return pairs
 
     def _signature(self) -> str:
-        parts = ["v2-corners"]   # bump when the analysis schema changes
+        parts = ["v3-edges"]   # bump when the analysis schema changes
         for gid, d in self.types.items():
             for other, tt in d["transitions"].items():
                 parts.append(f"{gid}>{other}:{len(tt)}")
@@ -287,15 +327,22 @@ class Tiles2:
         table: dict = {}
         for t in tiles:
             c = list(t.get("corners") or [])
-            if len(c) != 4:
+            eg = t.get("edges") or {}
+            if len(c) != 4 or len(eg) != 4:
                 continue
-            # analysis stores corners as 1==first-material; re-express as 1==hi
+            # analysis stores 1==first-material; re-express as 1==hi
             if not hi_first:
                 c = [1 - v for v in c]
+                eg = {k: [1 - v for v in prof] for k, prof in eg.items()}
             n, e, s, w = c
-            for mirror, code in ((False, (n, e, s, w)), (True, (n, w, s, e))):
+            # unmirrored, then horizontal mirror (E<->W corners; edges remap+reverse)
+            emir = {"NE": list(reversed(eg["NW"])), "SE": list(reversed(eg["SW"])),
+                    "SW": list(reversed(eg["SE"])), "NW": list(reversed(eg["NE"]))}
+            for mirror, code, edges in ((False, (n, e, s, w), eg),
+                                        (True, (n, w, s, e), emir)):
                 table.setdefault(code, []).append(
-                    {"file": t["file"], "mirror": mirror, "conf": t.get("conf", 0)})
+                    {"file": t["file"], "mirror": mirror,
+                     "conf": t.get("conf", 0), "edges": edges})
         for code in table:
             table[code].sort(key=lambda r: -r["conf"])
         return table
