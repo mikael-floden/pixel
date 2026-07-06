@@ -1812,7 +1812,27 @@ export class WorldScene extends Phaser.Scene {
       const srcs = this.night ? this.tiles2Src[p.path] : undefined;
       if (srcs?.length) {
         const mat = p.path.split("/")[1]; // tiles2/<material>/…
-        const anim = ANIM[this.tiles2Mat[mat]?.anim ?? "static"] ?? 0;
+        const em = this.tiles2Mat[mat];
+        const anim = ANIM[em?.anim ?? "static"] ?? 0;
+        // (a) A broad GLOW POOL cast onto the surrounding ground — the wide
+        // ambient wash like the bonfire, sized by the material's `radius`
+        // (cells) and `strength`. A grid-circular pool projects to a screen
+        // ellipse (√2·dx wide, √2·dy tall). Centred at the prop's feet.
+        if (em) {
+          const rCells = em.radius;
+          this.propStamps.push({
+            x: bx + dx,
+            y: byGround + dy,
+            radius: rCells * Math.SQRT2 * dx,
+            ry: rCells * Math.SQRT2 * dy,
+            color: em.color,
+            alpha: Math.min(1, em.strength * 0.6),
+            anim,
+            phase: ((((p.col * 40503) ^ (p.row * 12289)) >>> 0) % 628) / 100,
+          });
+        }
+        // (b) Sharp per-pixel HALOS on each glowing cluster (the glow ON the
+        // object itself), stamped at the source's drawn pixel.
         for (let i = 0; i < srcs.length; i++) {
           const g = srcs[i];
           const phase = ((((p.col * 73856093) ^ (p.row * 19349663) ^ (i * 83492791)) >>> 0) % 628) / 100;
