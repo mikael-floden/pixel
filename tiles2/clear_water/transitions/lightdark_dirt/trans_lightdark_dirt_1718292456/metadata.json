@@ -478,10 +478,8 @@
           }
         }
       },
-      "features": [
-        "flowers"
-      ],
-      "description": "dirt blending to clear water with small flowers"
+      "features": [],
+      "description": "dirt blending to clear water"
     },
     {
       "index": 6,
@@ -635,10 +633,8 @@
           }
         }
       },
-      "features": [
-        "flowers"
-      ],
-      "description": "dirt with small flowers"
+      "features": [],
+      "description": "plain dirt"
     },
     {
       "index": 8,
@@ -879,10 +875,9 @@
       "features": [
         "accent",
         "flowers",
-        "pebbles",
-        "water"
+        "pebbles"
       ],
-      "description": "dirt blending to clear water with a small detail, small flowers, pebbles, a small puddle"
+      "description": "dirt blending to clear water with a small detail, small flowers, pebbles"
     },
     {
       "index": 11,
@@ -1034,10 +1029,9 @@
         }
       },
       "features": [
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "clear water blending to dirt with a small detail, small flowers"
+      "description": "clear water blending to dirt with a small detail"
     },
     {
       "index": 13,
@@ -1191,10 +1185,9 @@
         }
       },
       "features": [
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "dirt blending to clear water with a small detail, small flowers"
+      "description": "dirt blending to clear water with a small detail"
     },
     {
       "index": 15,
@@ -1276,8 +1269,8 @@
     "neutralize_outline": true,
     "harmonize": {
       "hue_strength": 0.9,
-      "sat_strength": 0.6,
-      "v_strength": 0.65
+      "sat_strength": 0.7,
+      "v_strength": 0.9
     },
     "harmonized_from": true,
     "harmonized_to": true

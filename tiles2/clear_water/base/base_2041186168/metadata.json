@@ -755,10 +755,9 @@
         }
       },
       "features": [
-        "accent",
         "shiny"
       ],
-      "description": "clear water with a small detail, a shiny speck"
+      "description": "clear water with a shiny speck"
     },
     {
       "index": 10,
@@ -982,11 +981,8 @@
           }
         }
       },
-      "features": [
-        "accent",
-        "water"
-      ],
-      "description": "clear water with a small detail, a small puddle"
+      "features": [],
+      "description": "plain clear water"
     },
     {
       "index": 13,
@@ -1131,10 +1127,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "clear water with a small detail"
+      "features": [],
+      "description": "plain clear water"
     },
     {
       "index": 15,
@@ -1216,8 +1210,8 @@
     "neutralize_outline": true,
     "harmonize": {
       "hue_strength": 0.9,
-      "sat_strength": 0.6,
-      "v_strength": 0.65
+      "sat_strength": 0.7,
+      "v_strength": 0.9
     },
     "harmonized_from": true,
     "harmonized_to": false

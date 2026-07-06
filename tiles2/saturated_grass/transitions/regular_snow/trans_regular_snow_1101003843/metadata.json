@@ -179,8 +179,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.337,
-        "saturated_grass": 0.663
+        "regular_snow": 0.336,
+        "saturated_grass": 0.664
       },
       "edges": {
         "NE": {
@@ -582,8 +582,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.602,
-        "saturated_grass": 0.398
+        "regular_snow": 0.601,
+        "saturated_grass": 0.399
       },
       "edges": {
         "NE": {
@@ -1122,10 +1122,9 @@
         }
       },
       "features": [
-        "accent",
         "pebbles"
       ],
-      "description": "snow blending to saturated grass with a small detail, pebbles"
+      "description": "snow blending to saturated grass with pebbles"
     },
     {
       "index": 14,
@@ -1291,8 +1290,8 @@
     "neutralize_outline": true,
     "harmonize": {
       "hue_strength": 0.9,
-      "sat_strength": 0.6,
-      "v_strength": 0.65
+      "sat_strength": 0.7,
+      "v_strength": 0.9
     },
     "harmonized_from": true,
     "harmonized_to": true

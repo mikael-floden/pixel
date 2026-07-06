@@ -23,24 +23,22 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.454,
-        "light_sand": 0.546
+        "light_sand": 1.0
       },
       "edges": {
         "NE": {
           "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
             "light_sand",
             "light_sand",
-            "black_mountain"
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
           ],
           "ratio": {
-            "black_mountain": 0.75,
-            "light_sand": 0.25
+            "light_sand": 1.0
           }
         },
         "SE": {
@@ -48,7 +46,111 @@
             "light_sand",
             "light_sand",
             "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "light_sand": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "light_sand": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "light_sand": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "plain light sand"
+    },
+    {
+      "index": 1,
+      "file": "tile_01.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "light_sand": 0.962,
+        "black_mountain": 0.038
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "light_sand": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "light_sand": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "light_sand": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "light_sand",
             "black_mountain",
+            "light_sand",
+            "light_sand",
             "light_sand",
             "light_sand",
             "light_sand",
@@ -58,124 +160,12 @@
             "light_sand": 0.875,
             "black_mountain": 0.125
           }
-        },
-        "SW": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "black_mountain",
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 0.75,
-            "black_mountain": 0.25
-          }
-        },
-        "NW": {
-          "samples": [
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "black_mountain": 0.5,
-            "light_sand": 0.5
-          }
-        }
-      },
-      "features": [],
-      "description": "light sand blending to black volcanic rock"
-    },
-    {
-      "index": 1,
-      "file": "tile_01.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "black_mountain": 0.608,
-        "light_sand": 0.392
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "black_mountain"
-          ],
-          "ratio": {
-            "black_mountain": 0.75,
-            "light_sand": 0.25
-          }
-        },
-        "SE": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "light_sand": 0.5,
-            "black_mountain": 0.5
-          },
-          "divider": 0.5
-        },
-        "SW": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "black_mountain": 0.5,
-            "light_sand": 0.5
-          },
-          "divider": 0.5
-        },
-        "NW": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "black_mountain": 0.625,
-            "light_sand": 0.375
-          }
         }
       },
       "features": [
         "flowers"
       ],
-      "description": "black volcanic rock blending to light sand with small flowers"
+      "description": "light sand with small flowers"
     },
     {
       "index": 2,
@@ -183,80 +173,80 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.725,
-        "light_sand": 0.275
+        "light_sand": 0.823,
+        "black_mountain": 0.177
       },
       "edges": {
         "NE": {
           "samples": [
-            "black_mountain",
-            "black_mountain",
             "light_sand",
             "light_sand",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
           ],
           "ratio": {
-            "black_mountain": 0.75,
-            "light_sand": 0.25
+            "light_sand": 1.0
           }
         },
         "SE": {
           "samples": [
-            "black_mountain",
-            "black_mountain",
             "light_sand",
-            "black_mountain",
-            "black_mountain",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
             "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.875,
-            "light_sand": 0.125
-          }
+            "light_sand": 0.625,
+            "black_mountain": 0.375
+          },
+          "divider": 0.625
         },
         "SW": {
           "samples": [
             "black_mountain",
             "black_mountain",
-            "black_mountain",
-            "black_mountain",
+            "light_sand",
+            "light_sand",
             "light_sand",
             "light_sand",
             "light_sand",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.625,
-            "light_sand": 0.375
+            "black_mountain": 0.375,
+            "light_sand": 0.625
           }
         },
         "NW": {
           "samples": [
             "black_mountain",
             "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
           ],
           "ratio": {
-            "black_mountain": 1.0
-          }
+            "black_mountain": 0.25,
+            "light_sand": 0.75
+          },
+          "divider": 0.25
         }
       },
       "features": [
-        "pebbles",
-        "water",
-        "flowers"
+        "water"
       ],
-      "description": "black volcanic rock blending to light sand with pebbles, a small puddle, small flowers"
+      "description": "light sand blending to black volcanic rock with a small puddle"
     },
     {
       "index": 3,
@@ -264,8 +254,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.702,
-        "black_mountain": 0.298
+        "light_sand": 0.704,
+        "black_mountain": 0.296
       },
       "edges": {
         "NE": {
@@ -335,12 +325,11 @@
         }
       },
       "features": [
-        "accent",
         "water",
         "flowers",
         "bare_soil"
       ],
-      "description": "light sand blending to black volcanic rock with a small detail, a small puddle, small flowers, a bare soil patch"
+      "description": "light sand blending to black volcanic rock with a small puddle, small flowers, a bare soil patch"
     },
     {
       "index": 4,
@@ -418,10 +407,9 @@
         }
       },
       "features": [
-        "accent",
         "water"
       ],
-      "description": "light sand blending to black volcanic rock with a small detail, a small puddle"
+      "description": "light sand blending to black volcanic rock with a small puddle"
     },
     {
       "index": 5,
@@ -499,11 +487,10 @@
         }
       },
       "features": [
-        "accent",
         "water",
         "flowers"
       ],
-      "description": "black volcanic rock blending to light sand with a small detail, a small puddle, small flowers"
+      "description": "black volcanic rock blending to light sand with a small puddle, small flowers"
     },
     {
       "index": 6,
@@ -511,8 +498,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.525,
-        "light_sand": 0.475
+        "black_mountain": 0.513,
+        "light_sand": 0.487
       },
       "edges": {
         "NE": {
@@ -582,11 +569,9 @@
       },
       "features": [
         "water",
-        "accent",
-        "pebbles",
         "flowers"
       ],
-      "description": "black volcanic rock blending to light sand with a small puddle, a small detail, pebbles, small flowers"
+      "description": "black volcanic rock blending to light sand with a small puddle, small flowers"
     },
     {
       "index": 7,
@@ -594,8 +579,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.627,
-        "light_sand": 0.373
+        "black_mountain": 0.626,
+        "light_sand": 0.374
       },
       "edges": {
         "NE": {
@@ -664,11 +649,10 @@
         }
       },
       "features": [
-        "accent",
         "water",
         "bare_soil"
       ],
-      "description": "black volcanic rock blending to light sand with a small detail, a small puddle, a bare soil patch"
+      "description": "black volcanic rock blending to light sand with a small puddle, a bare soil patch"
     },
     {
       "index": 8,
@@ -744,9 +728,10 @@
       "features": [
         "water",
         "accent",
-        "flowers"
+        "flowers",
+        "shiny"
       ],
-      "description": "black volcanic rock with a small puddle, a small detail, small flowers"
+      "description": "black volcanic rock with a small puddle, a small detail, small flowers, a shiny speck"
     },
     {
       "index": 9,
@@ -823,10 +808,9 @@
       },
       "features": [
         "water",
-        "accent",
         "flowers"
       ],
-      "description": "black volcanic rock blending to light sand with a small puddle, a small detail, small flowers"
+      "description": "black volcanic rock blending to light sand with a small puddle, small flowers"
     },
     {
       "index": 10,
@@ -905,9 +889,9 @@
       },
       "features": [
         "water",
-        "accent"
+        "shiny"
       ],
-      "description": "black volcanic rock blending to light sand with a small puddle, a small detail"
+      "description": "black volcanic rock blending to light sand with a small puddle, a shiny speck"
     },
     {
       "index": 11,
@@ -990,8 +974,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.459,
-        "light_sand": 0.541
+        "black_mountain": 0.361,
+        "light_sand": 0.639
       },
       "edges": {
         "NE": {
@@ -1003,11 +987,11 @@
             "light_sand",
             "black_mountain",
             "light_sand",
-            "black_mountain"
+            "light_sand"
           ],
           "ratio": {
-            "black_mountain": 0.75,
-            "light_sand": 0.25
+            "black_mountain": 0.625,
+            "light_sand": 0.375
           }
         },
         "SE": {
@@ -1058,12 +1042,13 @@
         }
       },
       "features": [
-        "pebbles",
         "water",
-        "flowers",
-        "accent"
+        "shiny",
+        "accent",
+        "pebbles",
+        "flowers"
       ],
-      "description": "light sand blending to black volcanic rock with pebbles, a small puddle, small flowers, a small detail"
+      "description": "light sand blending to black volcanic rock with a small puddle, a shiny speck, a small detail, pebbles, small flowers"
     },
     {
       "index": 13,
@@ -1071,8 +1056,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.525,
-        "light_sand": 0.475
+        "black_mountain": 0.513,
+        "light_sand": 0.487
       },
       "edges": {
         "NE": {
@@ -1142,12 +1127,12 @@
         }
       },
       "features": [
-        "accent",
         "water",
-        "pebbles",
-        "flowers"
+        "shiny",
+        "flowers",
+        "accent"
       ],
-      "description": "black volcanic rock blending to light sand with a small detail, a small puddle, pebbles, small flowers"
+      "description": "black volcanic rock blending to light sand with a small puddle, a shiny speck, small flowers, a small detail"
     },
     {
       "index": 14,
@@ -1155,8 +1140,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.883,
-        "light_sand": 0.117
+        "black_mountain": 0.88,
+        "light_sand": 0.12
       },
       "edges": {
         "NE": {
@@ -1225,10 +1210,9 @@
       "features": [
         "water",
         "accent",
-        "pebbles",
-        "flowers"
+        "shiny"
       ],
-      "description": "black volcanic rock blending to light sand with a small puddle, a small detail, pebbles, small flowers"
+      "description": "black volcanic rock blending to light sand with a small puddle, a small detail, a shiny speck"
     },
     {
       "index": 15,
@@ -1236,8 +1220,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.795,
-        "black_mountain": 0.205
+        "light_sand": 0.796,
+        "black_mountain": 0.204
       },
       "edges": {
         "NE": {
@@ -1306,10 +1290,9 @@
         }
       },
       "features": [
-        "accent",
         "water"
       ],
-      "description": "light sand blending to black volcanic rock with a small detail, a small puddle"
+      "description": "light sand blending to black volcanic rock with a small puddle"
     }
   ],
   "generated_at": "2026-07-06T14:06:04+00:00",
@@ -1318,8 +1301,8 @@
     "neutralize_outline": true,
     "harmonize": {
       "hue_strength": 0.9,
-      "sat_strength": 0.6,
-      "v_strength": 0.65
+      "sat_strength": 0.7,
+      "v_strength": 0.9
     },
     "harmonized_from": true,
     "harmonized_to": true

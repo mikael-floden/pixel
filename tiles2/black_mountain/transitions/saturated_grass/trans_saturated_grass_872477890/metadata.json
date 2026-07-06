@@ -92,10 +92,9 @@
         }
       },
       "features": [
-        "water",
-        "pebbles"
+        "water"
       ],
-      "description": "black volcanic rock blending to saturated grass with a small puddle, pebbles"
+      "description": "black volcanic rock blending to saturated grass with a small puddle"
     },
     {
       "index": 1,
@@ -172,10 +171,9 @@
         }
       },
       "features": [
-        "water",
-        "pebbles"
+        "water"
       ],
-      "description": "black volcanic rock blending to saturated grass with a small puddle, pebbles"
+      "description": "black volcanic rock blending to saturated grass with a small puddle"
     },
     {
       "index": 2,
@@ -252,10 +250,9 @@
         }
       },
       "features": [
-        "water",
-        "pebbles"
+        "water"
       ],
-      "description": "black volcanic rock blending to saturated grass with a small puddle, pebbles"
+      "description": "black volcanic rock blending to saturated grass with a small puddle"
     },
     {
       "index": 3,
@@ -332,10 +329,9 @@
         }
       },
       "features": [
-        "water",
-        "pebbles"
+        "water"
       ],
-      "description": "black volcanic rock blending to saturated grass with a small puddle, pebbles"
+      "description": "black volcanic rock blending to saturated grass with a small puddle"
     },
     {
       "index": 4,
@@ -662,9 +658,10 @@
         }
       },
       "features": [
-        "water"
+        "water",
+        "accent"
       ],
-      "description": "saturated grass blending to black volcanic rock with a small puddle"
+      "description": "saturated grass blending to black volcanic rock with a small puddle, a small detail"
     },
     {
       "index": 8,
@@ -1312,8 +1309,8 @@
     "neutralize_outline": true,
     "harmonize": {
       "hue_strength": 0.9,
-      "sat_strength": 0.6,
-      "v_strength": 0.65
+      "sat_strength": 0.7,
+      "v_strength": 0.9
     },
     "harmonized_from": true,
     "harmonized_to": true

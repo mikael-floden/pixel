@@ -325,10 +325,8 @@
           }
         }
       },
-      "features": [
-        "bare_soil"
-      ],
-      "description": "light sand blending to saturated grass with a bare soil patch"
+      "features": [],
+      "description": "light sand blending to saturated grass"
     },
     {
       "index": 4,
@@ -480,10 +478,8 @@
           }
         }
       },
-      "features": [
-        "bare_soil"
-      ],
-      "description": "light sand blending to saturated grass with a bare soil patch"
+      "features": [],
+      "description": "light sand blending to saturated grass"
     },
     {
       "index": 6,
@@ -559,11 +555,8 @@
           }
         }
       },
-      "features": [
-        "bare_soil",
-        "flowers"
-      ],
-      "description": "light sand blending to saturated grass with a bare soil patch, small flowers"
+      "features": [],
+      "description": "light sand blending to saturated grass"
     },
     {
       "index": 7,
@@ -948,10 +941,8 @@
           }
         }
       },
-      "features": [
-        "bare_soil"
-      ],
-      "description": "saturated grass blending to light sand with a bare soil patch"
+      "features": [],
+      "description": "saturated grass blending to light sand"
     },
     {
       "index": 12,
@@ -1027,11 +1018,9 @@
         }
       },
       "features": [
-        "bare_soil",
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "light sand blending to saturated grass with a bare soil patch, a small detail, small flowers"
+      "description": "light sand blending to saturated grass with a small detail"
     },
     {
       "index": 13,
@@ -1273,8 +1262,8 @@
     "neutralize_outline": true,
     "harmonize": {
       "hue_strength": 0.9,
-      "sat_strength": 0.6,
-      "v_strength": 0.65
+      "sat_strength": 0.7,
+      "v_strength": 0.9
     },
     "harmonized_from": true,
     "harmonized_to": true

@@ -406,10 +406,8 @@
           }
         }
       },
-      "features": [
-        "flowers"
-      ],
-      "description": "dirt with small flowers"
+      "features": [],
+      "description": "plain dirt"
     },
     {
       "index": 5,
@@ -1295,8 +1293,8 @@
     "neutralize_outline": true,
     "harmonize": {
       "hue_strength": 0.9,
-      "sat_strength": 0.6,
-      "v_strength": 0.65
+      "sat_strength": 0.7,
+      "v_strength": 0.9
     },
     "harmonized_from": true,
     "harmonized_to": true

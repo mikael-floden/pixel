@@ -557,10 +557,9 @@
         }
       },
       "features": [
-        "accent",
-        "water"
+        "accent"
       ],
-      "description": "clear water blending to snow with a small detail, a small puddle"
+      "description": "clear water blending to snow with a small detail"
     },
     {
       "index": 7,
@@ -1169,10 +1168,9 @@
         }
       },
       "features": [
-        "pebbles",
-        "water"
+        "pebbles"
       ],
-      "description": "snow blending to clear water with pebbles, a small puddle"
+      "description": "snow blending to clear water with pebbles"
     },
     {
       "index": 15,
@@ -1261,8 +1259,8 @@
     "neutralize_outline": true,
     "harmonize": {
       "hue_strength": 0.9,
-      "sat_strength": 0.6,
-      "v_strength": 0.65
+      "sat_strength": 0.7,
+      "v_strength": 0.9
     },
     "harmonized_from": true,
     "harmonized_to": true

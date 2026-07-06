@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.989,
-        "black_mountain": 0.011
+        "clear_water": 0.99,
+        "black_mountain": 0.01
       },
       "edges": {
         "NE": {
@@ -91,10 +91,9 @@
         }
       },
       "features": [
-        "water",
         "flowers"
       ],
-      "description": "clear water with a small puddle, small flowers"
+      "description": "clear water with small flowers"
     },
     {
       "index": 1,
@@ -102,8 +101,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.976,
-        "black_mountain": 0.024
+        "clear_water": 0.978,
+        "black_mountain": 0.022
       },
       "edges": {
         "NE": {
@@ -168,11 +167,11 @@
         }
       },
       "features": [
-        "accent",
         "water",
+        "accent",
         "flowers"
       ],
-      "description": "clear water with a small detail, a small puddle, small flowers"
+      "description": "clear water with a small puddle, a small detail, small flowers"
     },
     {
       "index": 2,
@@ -180,8 +179,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.543,
-        "black_mountain": 0.457
+        "clear_water": 0.58,
+        "black_mountain": 0.42
       },
       "edges": {
         "NE": {
@@ -190,16 +189,16 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "black_mountain",
+            "clear_water",
             "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "clear_water": 0.5,
-            "black_mountain": 0.5
+            "clear_water": 0.625,
+            "black_mountain": 0.375
           },
-          "divider": 0.5
+          "divider": 0.625
         },
         "SE": {
           "samples": [
@@ -408,10 +407,8 @@
           "divider": 0.625
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock blending to clear water with a small puddle"
+      "features": [],
+      "description": "black volcanic rock blending to clear water"
     },
     {
       "index": 5,
@@ -419,8 +416,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.87,
-        "black_mountain": 0.13
+        "clear_water": 0.915,
+        "black_mountain": 0.085
       },
       "edges": {
         "NE": {
@@ -442,7 +439,7 @@
         },
         "SE": {
           "samples": [
-            "black_mountain",
+            "clear_water",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -452,10 +449,8 @@
             "clear_water"
           ],
           "ratio": {
-            "black_mountain": 0.125,
-            "clear_water": 0.875
-          },
-          "divider": 0.125
+            "clear_water": 1.0
+          }
         },
         "SW": {
           "samples": [
@@ -465,12 +460,11 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "black_mountain",
+            "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.875,
-            "black_mountain": 0.125
+            "clear_water": 1.0
           }
         },
         "NW": {
@@ -501,8 +495,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.497,
-        "clear_water": 0.503
+        "black_mountain": 0.266,
+        "clear_water": 0.734
       },
       "edges": {
         "NE": {
@@ -510,42 +504,8 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "clear_water",
-            "clear_water",
-            "clear_water"
-          ],
-          "ratio": {
-            "black_mountain": 0.625,
-            "clear_water": 0.375
-          },
-          "divider": 0.625
-        },
-        "SE": {
-          "samples": [
-            "clear_water",
-            "clear_water",
             "clear_water",
             "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "clear_water": 0.375,
-            "black_mountain": 0.625
-          },
-          "divider": 0.375
-        },
-        "SW": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "clear_water",
             "clear_water",
             "clear_water",
             "clear_water"
@@ -553,8 +513,41 @@
           "ratio": {
             "black_mountain": 0.5,
             "clear_water": 0.5
+          }
+        },
+        "SE": {
+          "samples": [
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "black_mountain"
+          ],
+          "ratio": {
+            "clear_water": 0.875,
+            "black_mountain": 0.125
           },
-          "divider": 0.5
+          "divider": 0.875
+        },
+        "SW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water"
+          ],
+          "ratio": {
+            "black_mountain": 0.25,
+            "clear_water": 0.75
+          },
+          "divider": 0.25
         },
         "NW": {
           "samples": [
@@ -586,8 +579,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.975,
-        "black_mountain": 0.025
+        "clear_water": 0.99,
+        "black_mountain": 0.01
       },
       "edges": {
         "NE": {
@@ -663,8 +656,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.4,
-        "clear_water": 0.6
+        "black_mountain": 0.328,
+        "clear_water": 0.672
       },
       "edges": {
         "NE": {
@@ -721,14 +714,15 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "black_mountain",
+            "clear_water",
             "clear_water",
             "black_mountain"
           ],
           "ratio": {
-            "clear_water": 0.75,
-            "black_mountain": 0.25
-          }
+            "clear_water": 0.875,
+            "black_mountain": 0.125
+          },
+          "divider": 0.875
         }
       },
       "features": [
@@ -812,10 +806,9 @@
         }
       },
       "features": [
-        "water",
-        "accent"
+        "water"
       ],
-      "description": "black volcanic rock blending to clear water with a small puddle, a small detail"
+      "description": "black volcanic rock blending to clear water with a small puddle"
     },
     {
       "index": 10,
@@ -904,8 +897,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.994,
-        "black_mountain": 0.006
+        "clear_water": 0.999,
+        "black_mountain": 0.001
       },
       "edges": {
         "NE": {
@@ -1048,10 +1041,9 @@
         }
       },
       "features": [
-        "pebbles",
-        "water"
+        "pebbles"
       ],
-      "description": "black volcanic rock blending to clear water with pebbles, a small puddle"
+      "description": "black volcanic rock blending to clear water with pebbles"
     },
     {
       "index": 13,
@@ -1125,10 +1117,9 @@
         }
       },
       "features": [
-        "water",
-        "accent"
+        "water"
       ],
-      "description": "black volcanic rock blending to clear water with a small puddle, a small detail"
+      "description": "black volcanic rock blending to clear water with a small puddle"
     },
     {
       "index": 14,
@@ -1297,8 +1288,8 @@
     "neutralize_outline": true,
     "harmonize": {
       "hue_strength": 0.9,
-      "sat_strength": 0.6,
-      "v_strength": 0.65
+      "sat_strength": 0.7,
+      "v_strength": 0.9
     },
     "harmonized_from": true,
     "harmonized_to": true

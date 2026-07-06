@@ -96,8 +96,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.792,
-        "saturated_grass": 0.208
+        "crystal_ice": 0.798,
+        "saturated_grass": 0.202
       },
       "edges": {
         "NE": {
@@ -258,8 +258,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.807,
-        "saturated_grass": 0.193
+        "crystal_ice": 0.808,
+        "saturated_grass": 0.192
       },
       "edges": {
         "NE": {
@@ -404,10 +404,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "saturated grass blending to crystal ice with a small detail"
+      "features": [],
+      "description": "saturated grass blending to crystal ice"
     },
     {
       "index": 5,
@@ -415,8 +413,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.533,
-        "saturated_grass": 0.467
+        "crystal_ice": 0.557,
+        "saturated_grass": 0.443
       },
       "edges": {
         "NE": {
@@ -495,8 +493,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.545,
-        "saturated_grass": 0.455
+        "crystal_ice": 0.55,
+        "saturated_grass": 0.45
       },
       "edges": {
         "NE": {
@@ -575,8 +573,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.517,
-        "crystal_ice": 0.483
+        "saturated_grass": 0.488,
+        "crystal_ice": 0.512
       },
       "edges": {
         "NE": {
@@ -617,16 +615,15 @@
             "crystal_ice",
             "crystal_ice",
             "saturated_grass",
-            "saturated_grass",
+            "crystal_ice",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "crystal_ice": 0.375,
-            "saturated_grass": 0.625
-          },
-          "divider": 0.375
+            "crystal_ice": 0.5,
+            "saturated_grass": 0.5
+          }
         },
         "NW": {
           "samples": [
@@ -647,7 +644,7 @@
       "features": [
         "accent"
       ],
-      "description": "saturated grass blending to crystal ice with a small detail"
+      "description": "crystal ice blending to saturated grass with a small detail"
     },
     {
       "index": 8,
@@ -798,10 +795,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "saturated grass blending to crystal ice with a small detail"
+      "features": [],
+      "description": "saturated grass blending to crystal ice"
     },
     {
       "index": 10,
@@ -809,8 +804,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.674,
-        "crystal_ice": 0.326
+        "saturated_grass": 0.671,
+        "crystal_ice": 0.329
       },
       "edges": {
         "NE": {
@@ -1125,8 +1120,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.277,
-        "crystal_ice": 0.723
+        "saturated_grass": 0.219,
+        "crystal_ice": 0.781
       },
       "edges": {
         "NE": {
@@ -1137,12 +1132,12 @@
             "crystal_ice",
             "crystal_ice",
             "saturated_grass",
-            "saturated_grass",
+            "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "saturated_grass": 0.5,
-            "crystal_ice": 0.5
+            "saturated_grass": 0.375,
+            "crystal_ice": 0.625
           }
         },
         "SE": {
@@ -1183,12 +1178,12 @@
             "saturated_grass",
             "crystal_ice",
             "crystal_ice",
-            "saturated_grass",
+            "crystal_ice",
             "saturated_grass"
           ],
           "ratio": {
-            "crystal_ice": 0.5,
-            "saturated_grass": 0.5
+            "crystal_ice": 0.625,
+            "saturated_grass": 0.375
           }
         }
       },
@@ -1284,8 +1279,8 @@
     "neutralize_outline": true,
     "harmonize": {
       "hue_strength": 0.9,
-      "sat_strength": 0.6,
-      "v_strength": 0.65
+      "sat_strength": 0.7,
+      "v_strength": 0.9
     },
     "harmonized_from": true,
     "harmonized_to": true

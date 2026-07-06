@@ -340,9 +340,10 @@
       },
       "features": [
         "accent",
-        "pebbles"
+        "pebbles",
+        "flowers"
       ],
-      "description": "grey mountain stone blending to dirt with a small detail, pebbles"
+      "description": "grey mountain stone blending to dirt with a small detail, pebbles, small flowers"
     },
     {
       "index": 4,
@@ -907,10 +908,9 @@
       "features": [
         "accent",
         "pebbles",
-        "flowers",
         "water"
       ],
-      "description": "dirt blending to grey mountain stone with a small detail, pebbles, small flowers, a small puddle"
+      "description": "dirt blending to grey mountain stone with a small detail, pebbles, a small puddle"
     },
     {
       "index": 11,
@@ -1234,10 +1234,9 @@
       "features": [
         "accent",
         "pebbles",
-        "water",
-        "flowers"
+        "water"
       ],
-      "description": "grey mountain stone blending to dirt with a small detail, pebbles, a small puddle, small flowers"
+      "description": "grey mountain stone blending to dirt with a small detail, pebbles, a small puddle"
     },
     {
       "index": 15,
@@ -1318,10 +1317,9 @@
       },
       "features": [
         "accent",
-        "pebbles",
-        "flowers"
+        "pebbles"
       ],
-      "description": "grey mountain stone blending to dirt with a small detail, pebbles, small flowers"
+      "description": "grey mountain stone blending to dirt with a small detail, pebbles"
     }
   ],
   "generated_at": "2026-07-05T10:04:06+00:00",
@@ -1330,8 +1328,8 @@
     "neutralize_outline": true,
     "harmonize": {
       "hue_strength": 0.9,
-      "sat_strength": 0.6,
-      "v_strength": 0.65
+      "sat_strength": 0.7,
+      "v_strength": 0.9
     },
     "harmonized_from": true,
     "harmonized_to": true

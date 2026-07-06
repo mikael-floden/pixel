@@ -167,10 +167,9 @@
       },
       "features": [
         "accent",
-        "water",
         "flowers"
       ],
-      "description": "clear water blending to saturated grass with a small detail, a small puddle, small flowers"
+      "description": "clear water blending to saturated grass with a small detail, small flowers"
     },
     {
       "index": 2,
@@ -178,8 +177,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.326,
-        "clear_water": 0.674
+        "saturated_grass": 0.325,
+        "clear_water": 0.675
       },
       "edges": {
         "NE": {
@@ -248,12 +247,11 @@
         }
       },
       "features": [
-        "accent",
         "flowers",
-        "water",
+        "accent",
         "bare_soil"
       ],
-      "description": "clear water blending to saturated grass with a small detail, small flowers, a small puddle, a bare soil patch"
+      "description": "clear water blending to saturated grass with small flowers, a small detail, a bare soil patch"
     },
     {
       "index": 3,
@@ -1281,8 +1279,8 @@
     "neutralize_outline": true,
     "harmonize": {
       "hue_strength": 0.9,
-      "sat_strength": 0.6,
-      "v_strength": 0.65
+      "sat_strength": 0.7,
+      "v_strength": 0.9
     },
     "harmonized_from": true,
     "harmonized_to": true

@@ -883,10 +883,9 @@
       },
       "features": [
         "flowers",
-        "accent",
-        "water"
+        "accent"
       ],
-      "description": "saturated grass blending to clear water with small flowers, a small detail, a small puddle"
+      "description": "saturated grass blending to clear water with small flowers, a small detail"
     },
     {
       "index": 11,
@@ -1123,10 +1122,10 @@
       },
       "features": [
         "accent",
-        "water",
-        "pebbles"
+        "pebbles",
+        "water"
       ],
-      "description": "saturated grass blending to clear water with a small detail, a small puddle, pebbles"
+      "description": "saturated grass blending to clear water with a small detail, pebbles, a small puddle"
     },
     {
       "index": 14,
@@ -1284,8 +1283,8 @@
     "neutralize_outline": true,
     "harmonize": {
       "hue_strength": 0.9,
-      "sat_strength": 0.6,
-      "v_strength": 0.65
+      "sat_strength": 0.7,
+      "v_strength": 0.9
     },
     "harmonized_from": true,
     "harmonized_to": true

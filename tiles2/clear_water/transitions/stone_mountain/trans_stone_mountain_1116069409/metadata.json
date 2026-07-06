@@ -160,11 +160,8 @@
           }
         }
       },
-      "features": [
-        "water",
-        "accent"
-      ],
-      "description": "clear water with a small puddle, a small detail"
+      "features": [],
+      "description": "plain clear water"
     },
     {
       "index": 2,
@@ -309,10 +306,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "clear water with a small detail"
+      "features": [],
+      "description": "plain clear water"
     },
     {
       "index": 4,
@@ -881,10 +876,9 @@
       },
       "features": [
         "pebbles",
-        "accent",
-        "water"
+        "accent"
       ],
-      "description": "grey mountain stone blending to clear water with pebbles, a small detail, a small puddle"
+      "description": "grey mountain stone blending to clear water with pebbles, a small detail"
     },
     {
       "index": 11,
@@ -1042,10 +1036,9 @@
       },
       "features": [
         "pebbles",
-        "accent",
-        "water"
+        "accent"
       ],
-      "description": "grey mountain stone blending to clear water with pebbles, a small detail, a small puddle"
+      "description": "grey mountain stone blending to clear water with pebbles, a small detail"
     },
     {
       "index": 13,
@@ -1122,10 +1115,9 @@
       },
       "features": [
         "pebbles",
-        "accent",
-        "water"
+        "accent"
       ],
-      "description": "grey mountain stone blending to clear water with pebbles, a small detail, a small puddle"
+      "description": "grey mountain stone blending to clear water with pebbles, a small detail"
     },
     {
       "index": 14,
@@ -1288,8 +1280,8 @@
     "neutralize_outline": true,
     "harmonize": {
       "hue_strength": 0.9,
-      "sat_strength": 0.6,
-      "v_strength": 0.65
+      "sat_strength": 0.7,
+      "v_strength": 0.9
     },
     "harmonized_from": true,
     "harmonized_to": true

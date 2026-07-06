@@ -235,10 +235,9 @@
       },
       "features": [
         "pebbles",
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "dirt with pebbles, a small detail, small flowers"
+      "description": "dirt with pebbles, a small detail"
     },
     {
       "index": 3,
@@ -535,10 +534,10 @@
         }
       },
       "features": [
-        "flowers",
-        "accent"
+        "accent",
+        "flowers"
       ],
-      "description": "dirt with small flowers, a small detail"
+      "description": "dirt with a small detail, small flowers"
     },
     {
       "index": 7,
@@ -1064,10 +1063,9 @@
       },
       "features": [
         "accent",
-        "flowers",
         "water"
       ],
-      "description": "dirt with a small detail, small flowers, a small puddle"
+      "description": "dirt with a small detail, a small puddle"
     },
     {
       "index": 14,
@@ -1219,10 +1217,9 @@
       },
       "features": [
         "pebbles",
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "dirt with pebbles, a small detail, small flowers"
+      "description": "dirt with pebbles, a small detail"
     }
   ],
   "generated_at": "2026-07-05T09:21:41+00:00",
@@ -1231,8 +1228,8 @@
     "neutralize_outline": true,
     "harmonize": {
       "hue_strength": 0.9,
-      "sat_strength": 0.6,
-      "v_strength": 0.65
+      "sat_strength": 0.7,
+      "v_strength": 0.9
     },
     "harmonized_from": true,
     "harmonized_to": false
