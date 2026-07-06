@@ -122,6 +122,8 @@ def _load(path, lib):
     w.meta = d["meta"]
     w.paths = [os.path.join(REPO, p) for p in d["paths"]]
     w.top = np.array(d["top"], np.int32)
+    w.mirror = np.array(d.get("mirror",
+                              np.zeros_like(w.top)), bool)
     w.level = np.array(d["level"], np.int16)
     inv = {v: k for k, v in d["matids"].items()}
     matarr = np.array(d["mat"], np.uint8)

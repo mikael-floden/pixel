@@ -28,6 +28,7 @@ class Ctx:
         self.mat = world.mat
         self.level = world.level
         self.top = world.top
+        self.mirror = getattr(world, "mirror", None)
         self.paths = world.paths
         self.n = world.n
         # background = mean water color
@@ -44,7 +45,10 @@ class Ctx:
 
     def top_tile(self, y, x) -> Image.Image:
         i = int(self.top[y, x])
-        return self.lib.img(self.paths[i])
+        im = self.lib.img(self.paths[i])
+        if self.mirror is not None and self.mirror[y, x]:
+            im = im.transpose(Image.FLIP_LEFT_RIGHT)
+        return im
 
 
 def _origin(world):

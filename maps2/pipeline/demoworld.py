@@ -18,14 +18,12 @@ import os
 import numpy as np
 from PIL import Image
 
+from autotile import PRIORITY, AutoTiler
 from tiles2lib import DX, DY, LEVEL_PX, Tiles2
 
 GROUND_BOTTOM = 54
-PRIORITY = {"saturated_grass": 0, "lightdark_dirt": 1, "regular_snow": 2,
-            "stone_mountain": 3, "black_mountain": 4, "clear_water": 5}
 PLAIN_PROB = 0.82
 SPECIAL_PROB = 0.12
-BAND = 3.5
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 MAPS2 = os.path.dirname(_HERE)
@@ -66,6 +64,7 @@ class Demo:
         self.mat = np.full((n, n), "", object)
         self.level = np.zeros((n, n), np.int16)
         self.top = np.full((n, n), None, object)
+        self.mirror = np.zeros((n, n), bool)
         self.props = {}                     # (x,y) -> prop path
         self.spawn = (n // 2, int(n * 0.72))
         self._terrain()
@@ -130,61 +129,12 @@ class Demo:
                         if 0 <= xx < n and 0 <= yy < n and self.mat[yy, xx] == "saturated_grass":
                             self.mat[yy, xx] = "lightdark_dirt"
 
-    # -- transition auto-tiler (one-sided feather) -----------------------------
+    # -- transition auto-tiler (seamless corner+edge Wang + sparse fade) --------
 
     def _paint(self):
-        n, lib = self.n, self.lib
-        mat, level = self.mat, self.level
-        cand_cache = {}
-
-        def candidates(m, other):
-            k = (m, other)
-            if k not in cand_cache:
-                tiles, first = lib.transition(m, other)
-                comp = np.array([t["compA"] if first else 1-t["compA"] for t in tiles])
-                grad = np.array([t["grad"] if first else [-t["grad"][0], -t["grad"][1]]
-                                 for t in tiles], float)
-                cand_cache[k] = (comp, grad, [t["file"] for t in tiles])
-            return cand_cache[k]
-
-        B = int(math.ceil(BAND)) + 1
-        ny, nx = np.where(mat != "")
-        for y, x in zip(ny.tolist(), nx.tolist()):
-            m = mat[y, x]
-            pm = PRIORITY[m]
-            best_d, best_n, best_dir = 1e9, None, None
-            for j in range(-B, B+1):
-                yy = y+j
-                if yy < 0 or yy >= n:
-                    continue
-                for i in range(-B, B+1):
-                    xx = x+i
-                    if xx < 0 or xx >= n:
-                        continue
-                    mo = mat[yy, xx]
-                    if mo == "" or PRIORITY.get(mo, -1) <= pm:
-                        continue
-                    dd = math.hypot(i, j)
-                    if dd < best_d:
-                        best_d, best_n, best_dir = dd, mo, (i, j)
-            if best_n is not None and best_d <= BAND + 0.5 and (m, best_n):
-                if not (lib.transition(m, best_n)[0]):
-                    pass
-                f = (best_d-1)/max(1e-3, BAND-1)
-                want = float(np.clip(0.12 + 0.80*f, 0.05, 0.95))
-                di, dj = best_dir
-                sg = np.array([(di-dj)*DX, (di+dj)*DY], float)
-                sn = np.linalg.norm(sg)
-                sg = sg/sn if sn > 1e-6 else np.array([0, -1.0])
-                comp, grad, files = candidates(m, best_n)
-                score = 2.0*np.abs(comp-want) + (1 - grad @ sg) + _h01(x, y, self.seed+3)*0.05
-                self.top[y, x] = files[int(np.argmin(score))]
-            else:
-                self.top[y, x] = lib.pick_base(m, _h01(x, y, self.seed+4),
-                                               _h01(x, y, self.seed+2),
-                                               _h01(x, y, self.seed+1),
-                                               plain_prob=PLAIN_PROB,
-                                               special_prob=SPECIAL_PROB)
+        at = AutoTiler(self.mat, self.lib, self.seed, priority=PRIORITY,
+                       plain_prob=PLAIN_PROB, special_prob=SPECIAL_PROB)
+        self.top, self.mirror = at.top, at.mirror
 
     # -- deliberate landmark props --------------------------------------------
 
@@ -293,6 +243,8 @@ class Demo:
             for lvl in range(L):
                 canvas.alpha_composite(face, (bx, by - lvl*LEVEL_PX))
             timg = self.lib.img(self.top[y, x])
+            if self.mirror[y, x]:
+                timg = timg.transpose(Image.FLIP_LEFT_RIGHT)
             canvas.alpha_composite(timg, (bx, by - L*LEVEL_PX - (timg.height-64)))
             p = self.props.get((x, y))
             if p is not None:
