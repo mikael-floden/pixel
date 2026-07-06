@@ -34,8 +34,12 @@ the surface; props draw last, anchored by content-bottom.
 - `spawn` `[x,y]` — a guaranteed **walkable** start cell (snapped off water/void).
 - `water` — material ids treated as water (default `["clear_water"]`).
 - `materials` — id→name legend; index 0 is `""` (void).
-- `paths` — de-duplicated list of tile PNG paths, **repo-relative**. Both ground
-  tiles and prop tiles live here.
+- `paths` — de-duplicated list of tile PNG paths, relative to the **pixel repo
+  root** (the submodule root in moonlight — the existing `client/public/pixel`
+  symlink already serves them, so a path `tiles2/…/tile_00.png` loads from
+  `/pixel/tiles2/…/tile_00.png`). Both ground tiles and prop tiles live here.
+  **Dimensions are fixed by kind, so you don't need to probe them:** every `top`
+  tile is **64×64**; every `props` tile is **64×128**.
 - `mat[y][x]` — index into `materials` (0 = void).
 - `level[y][x]` — elevation in levels (water is 0).
 - `top[y][x]` — index into `paths` for the surface tile (−1 = void).
@@ -54,3 +58,12 @@ the surface; props draw last, anchored by content-bottom.
   between neighbours) are for the client to gate if it wants step limits.
 - All four current worlds validate: `ring_test`, `trans_demo`, `prop_demo`,
   `demo_isle`.
+
+## Stability
+
+`world@1` is **stable** — this replaced the old ring-only `ringworld@1`
+(which used `matids` + everything under `meta`). New info will be added only as
+**optional** fields under a bumped schema (`world@2`), never by changing or
+removing an existing `world@1` field, so a parser written against this doc keeps
+working. `worldio.load_world()` in `maps2/pipeline/worldio.py` is the reference
+decoder if you want to diff behaviour.
