@@ -125,10 +125,6 @@ const litDepth = (baseDepth: number) => 900_001 + baseDepth * 1e-5;
 const JUMP_HEIGHT = 28; // px peak of the jump hop (a tall, floaty arc)
 const SWIM_SINK = 6; // px the sprite sinks while swimming
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
-// Content-bottom row of a maps2 64px ground tile — a prop is anchored so its
-// own opaque bottom lands here, i.e. its object base sits on the ground exactly
-// as the maps agent's renderer plants it (maps2/pipeline/propdemo.py:GROUND_BOTTOM).
-const PROP_GROUND_BOTTOM = 54;
 
 interface Avatar {
   sprite: Phaser.GameObjects.Sprite;
@@ -1739,10 +1735,11 @@ export class WorldScene extends Phaser.Scene {
    *
    * ANCHOR: a prop's canvas is NOT bottom-full — the object's ground-contact row
    * varies (a short bush ends high in the canvas, a tall tower nearly fills it).
-   * maps2's own renderer (maps2/pipeline/propdemo.py) plants a prop by aligning
-   * its content BOTTOM (lowest opaque row) to the ground cell's own content-
-   * bottom line (PROP_GROUND_BOTTOM). Bottom-of-CANVAS aligning (the old
-   * imgH−64) only happened to match full-height props, so shorter props floated.
+   * So we measure each prop's opaque BOTTOM (its base V) and plant it on the
+   * cell's grid diamond FRONT vertex (groundTop + 2·dy), so the base sits IN the
+   * grid cell. Two earlier tries were wrong: bottom-of-CANVAS (imgH−64) only
+   * matched full-height props; content-bottom-to-skirt (row 54, as propdemo.py
+   * does) dropped every prop one elevation level below the grid V (playtester).
    */
   private rebuildProps(cam: Phaser.Cameras.Scene2D.Camera) {
     for (const im of this.propImgs) im.destroy();
@@ -1758,6 +1755,14 @@ export class WorldScene extends Phaser.Scene {
     const x1 = cam.worldView.right + pad;
     const y0 = cam.worldView.y - pad - 128;
     const y1 = cam.worldView.bottom + pad + this.maxLevel * lh;
+    // Anchor row: the cell's grid diamond FRONT vertex — groundTop (the surface
+    // diamond's top row) + the diamond's full height (2·dy). A prop's opaque
+    // BOTTOM (its base V) is planted here so it sits IN the grid cell, not one
+    // level below it. maps2's propdemo aligns to the tile's SKIRT bottom (row
+    // 54) instead, which drops every prop a full elevation level — the base V
+    // ended up under the grid V (playtester). The skirt is the flat tile's own
+    // front face; a prop is not part of that face.
+    const anchorRow = (this.tileBases?.groundTop ?? 8) + 2 * dy;
     for (const p of props) {
       const cell = this.world.rows[p.row]?.[p.col];
       const key = pathTileKey(p.path);
@@ -1768,7 +1773,7 @@ export class WorldScene extends Phaser.Scene {
       const bx = this.iso.ox + u * dx;
       const byGround = this.iso.oy + v * dy - lvl * lh; // ground tile top-left
       const b = this.propBounds(key); // opaque {top,bottom} rows in the art
-      const py = byGround + PROP_GROUND_BOTTOM - b.bottom; // content-bottom on the ground line
+      const py = byGround + anchorRow - b.bottom; // base V on the grid diamond vertex
       if (bx + tileSize < x0 || bx > x1 || py + b.bottom < y0 || py + b.top > y1) continue;
       // Unlifted ground line (matches occluders + character depth), so painter
       // order by (col+row) puts characters correctly in front / behind.
