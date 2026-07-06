@@ -467,6 +467,8 @@ export class WorldScene extends Phaser.Scene {
         return av ? av.character : null;
       },
       say: (text: string) => this.room?.send("chat", { text }),
+      // Debug: occluder build state (maps2 z-order verification).
+      occCount: () => ({ maps2: this.maps2, occluders: this.occluders.length, meta: this.occluderMeta.length }),
       bubbles: () => [...this.avatars.values()].filter((a) => a.bubble).map((a) => a.bubble!.text),
       jump: () => this.tryJump(),
       me: () => this.room?.state.players.get(this.room!.sessionId),
@@ -1506,6 +1508,41 @@ export class WorldScene extends Phaser.Scene {
         const cell = this.world.rows[row]?.[col];
         if (!cell) continue;
         const s = surfaceFor(cell.t);
+        if (this.maps2) {
+          // maps2 cells bake an explicit tile PNG path (loaded under
+          // pathTileKey), NOT the legacy tile:(t,v) key — so the legacy branch
+          // below finds no texture and builds ZERO occluders, leaving every
+          // sprite drawn ON TOP of raised terraces. Build the occluder column
+          // here instead, mirroring the ground pass's stacking (faces 0..l-1,
+          // then the baked top at l). Flat (l=0) and void cells never occlude.
+          if (cell.l <= 0) continue;
+          const topKey = topKeyFor(cell);
+          if (!topKey || !this.textures.exists(topKey)) continue;
+          const faceKey = faceKeyFor(this.world, cell);
+          const fk = faceKey && this.textures.exists(faceKey) ? faceKey : topKey;
+          const bx = this.iso.ox + u * dx;
+          const by = this.iso.oy + v * dy;
+          const oDepth = by + dy;
+          for (let lvl = 0; lvl < cell.l; lvl++)
+            this.occluders.push(
+              this.add.image(bx, by - lvl * lh, fk).setOrigin(0, 0).setDepth(oDepth),
+            );
+          this.occluders.push(
+            this.add.image(bx, by - cell.l * lh, topKey).setOrigin(0, 0).setDepth(oDepth),
+          );
+          this.occluderMeta.push({
+            col,
+            row,
+            top: cell.l, // maps2 terrain is all standable ground: visual top = level
+            solid: false,
+            depth: oDepth,
+            x0: bx,
+            x1: bx + tileSize,
+            y0: by - cell.l * lh,
+            y1: by + tileSize,
+          });
+          continue;
+        }
         // Emissive tiles (tiles/emission.json): atmosphere bloom for the
         // canvas fallback (glow POOLS are collected in their own wider pass
         // below). Per-VARIANT: plain variants of a glowing category stay
