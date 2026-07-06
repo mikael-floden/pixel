@@ -517,6 +517,10 @@ export class WorldScene extends Phaser.Scene {
       surfaceAt: (x: number, y: number) => (this.terrain ? surfaceAtWorld(this.terrain, x, y) : null),
       blockedAt: (x: number, y: number) => (this.terrain ? isBlockedAtWorld(this.terrain, x, y) : null),
       propCount: () => this.propImgs.length,
+      // Sample the CPU light (what a character's lit copy is tinted by) at a
+      // grid cell — headless probe for emission monotonicity/colour.
+      lightAtCell: (col: number, row: number, z = 0) =>
+        this.night ? this.night.lightAt(col, row, z, false) : null,
       levelAt: (x: number, y: number) => (this.terrain ? levelAtWorld(this.terrain, x, y) : 0),
       nightShader: () => !!this.night && this.night.active,
       // Get/set the time-of-day phase (by index or name); instant when set —
@@ -1804,35 +1808,54 @@ export class WorldScene extends Phaser.Scene {
       // order by (col+row) puts characters correctly in front / behind.
       const depth = this.iso.oy + v * dy + dy;
       this.propImgs.push(this.add.image(bx, py, key).setOrigin(0, 0).setDepth(depth));
-      // Self-emission: an emissive prop (a tiles2 tile with glow `sources`)
-      // stamps one glow halo per source at the source's DRAWN pixel — the
-      // shader adds this world-anchored field, so the prop art itself lights up
-      // AND the glow spills onto the ground around it. All emissive maps2 tiles
-      // are props (never terrain), so this is the only emission entry point.
+      // Self-emission: an emissive prop (a tiles2 tile with glow `sources`).
+      // Two SEPARATE jobs, mirroring how the bonfire works vs how it looked
+      // buggy before (root-caused with the playtester):
+      //   • light ON THE GROUND + CHARACTER: a strong pool at GROUND level in
+      //     the prop's real glow colour. Ground-anchored ⇒ the base lights up
+      //     AND a character brightens monotonically as it walks in (litChar).
+      //   • glow ON THE ART: the sharp per-source halos stamped high on the
+      //     tall tile so the runes/crystals bloom — cosmetic only (litChar
+      //     false), because sampling a HIGH point from the character's feet
+      //     made it brighter-then-darker as you approached.
       const srcs = this.night ? this.tiles2Src[p.path] : undefined;
       if (srcs?.length) {
         const mat = p.path.split("/")[1]; // tiles2/<material>/…
         const em = this.tiles2Mat[mat];
         const anim = ANIM[em?.anim ?? "static"] ?? 0;
-        // (a) A broad GLOW POOL cast onto the surrounding ground — the wide
-        // ambient wash like the bonfire, sized by the material's `radius`
-        // (cells) and `strength`. A grid-circular pool projects to a screen
-        // ellipse (√2·dx wide, √2·dy tall). Centred at the prop's feet.
-        if (em) {
-          const rCells = em.radius;
-          this.propStamps.push({
-            x: bx + dx,
-            y: byGround + dy,
-            radius: rCells * Math.SQRT2 * dx,
-            ry: rCells * Math.SQRT2 * dy,
-            color: em.color,
-            alpha: Math.min(1, em.strength * 0.6),
-            anim,
-            phase: ((((p.col * 40503) ^ (p.row * 12289)) >>> 0) % 628) / 100,
-          });
+        // The prop's ACTUAL glow colour = strength-weighted mean of its source
+        // colours (a stone obelisk's material hue is blue, but its runes glow
+        // GREEN — the character was green, so the ground must be too), plus a
+        // representative strength for the pool intensity.
+        let cr = 0, cg = 0, cb = 0, sw = 0;
+        for (const g of srcs) {
+          cr += g.color[0] * g.s;
+          cg += g.color[1] * g.s;
+          cb += g.color[2] * g.s;
+          sw += g.s;
         }
-        // (b) Sharp per-pixel HALOS on each glowing cluster (the glow ON the
-        // object itself), stamped at the source's drawn pixel.
+        const glowColor: [number, number, number] =
+          sw > 0 ? [cr / sw, cg / sw, cb / sw] : em?.color ?? [1, 1, 1];
+        const avgS = srcs.length ? sw / srcs.length : 0;
+        // (a) GROUND POOL — the bonfire-like wash at ground level, in the real
+        // glow colour. The ONLY stamp that tints characters (litChar). Nudged a
+        // few px toward the camera-front so the standing sprite doesn't sit on
+        // the brightest core.
+        const rCells = (em?.radius ?? 2) + 0.5;
+        this.propStamps.push({
+          x: bx + dx,
+          y: byGround + dy + 4,
+          radius: rCells * Math.SQRT2 * dx,
+          ry: rCells * Math.SQRT2 * dy,
+          color: glowColor,
+          alpha: Math.min(0.85, avgS * 0.7),
+          anim,
+          phase: ((((p.col * 40503) ^ (p.row * 12289)) >>> 0) % 628) / 100,
+          litChar: true,
+        });
+        // (b) HIGH HALOS — cosmetic bloom on the glowing pixels of the art
+        // itself (rendered into the glow field over the prop body). NOT used to
+        // tint characters (litChar:false) — see the field note in nightlight.ts.
         for (let i = 0; i < srcs.length; i++) {
           const g = srcs[i];
           const phase = ((((p.col * 73856093) ^ (p.row * 19349663) ^ (i * 83492791)) >>> 0) % 628) / 100;
@@ -1841,9 +1864,10 @@ export class WorldScene extends Phaser.Scene {
             y: py + g.y,
             radius: Math.min(90, 8 + g.r * 4),
             color: g.color,
-            alpha: Math.min(1, g.s * 0.45),
+            alpha: Math.min(1, g.s * 0.4),
             anim,
             phase,
+            litChar: false,
           });
         }
       }
