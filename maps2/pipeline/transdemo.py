@@ -26,10 +26,10 @@ from PIL import Image
 from tiles2lib import DX, DY, EDGE_K, Tiles2
 
 TYPES = ["saturated_grass", "lightdark_dirt", "stone_mountain",
-         "black_mountain", "regular_snow", "clear_water"]
+         "black_mountain", "regular_snow", "clear_water", "crystal_ice"]
 LABEL = {"saturated_grass": "grass", "lightdark_dirt": "dirt",
          "stone_mountain": "stone", "black_mountain": "black",
-         "regular_snow": "snow", "clear_water": "water"}
+         "regular_snow": "snow", "clear_water": "water", "crystal_ice": "ice"}
 
 R = 16          # circle radius (big, so the loop is clearly visible)
 MARGIN = 7      # surround thickness of B around the circle
@@ -53,7 +53,7 @@ class TransDemo:
     def __init__(self, seed=4):
         self.seed = seed
         self.lib = Tiles2()
-        self.W = 5 * PLOT
+        self.W = (len(TYPES) - 1) * PLOT   # each row is A vs the other N-1 types
         self.H = len(TYPES) * PLOT
         self.top = np.full((self.H, self.W), None, object)   # (path, mirror) | None
         self.edges = np.full((self.H, self.W), None, object)  # chosen edge profiles
@@ -181,6 +181,10 @@ def _cap(img, w):
 
 
 def build(out=None, seed=4):
+    gaps = Tiles2().audit_transition_metadata()
+    if gaps:
+        raise SystemExit("tiles2 transition metadata incomplete (missing "
+                         f"edges/composition): {gaps}")
     d = TransDemo(seed=seed)
     out = out or os.path.join(MAPS2, "worlds", "trans_demo")
     os.makedirs(out, exist_ok=True)

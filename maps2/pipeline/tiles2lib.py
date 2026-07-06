@@ -126,6 +126,29 @@ class Tiles2:
     def has(self, gid: str) -> bool:
         return gid in self.types
 
+    def audit_transition_metadata(self) -> list[str]:
+        """List every transition sheet whose metadata.json is missing the
+        `edges`/`composition` fields the DESIGNER_GUIDE guarantees. tiles2 owns
+        this data; maps2 relies on it being complete, so builds call this and
+        fail loudly rather than silently working around a gap."""
+        import json
+        missing = []
+        for gid, d in self.types.items():
+            for other, tt in d["transitions"].items():
+                for p in tt:
+                    meta = os.path.join(os.path.dirname(p), "metadata.json")
+                    ok = False
+                    if os.path.isfile(meta):
+                        try:
+                            t0 = json.load(open(meta))["tiles"][0]
+                            ok = "edges" in t0 and "composition" in t0
+                        except Exception:
+                            ok = False
+                    if not ok:
+                        missing.append(os.path.relpath(os.path.dirname(p), self.root))
+                        break   # one report per sheet is enough
+        return sorted(set(missing))
+
     def base(self, gid: str) -> list[str]:
         return self.types[gid]["base"]
 
