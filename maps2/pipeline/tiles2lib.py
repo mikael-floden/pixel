@@ -182,11 +182,19 @@ class Tiles2:
 
     def base_pools(self, gid: str, clean_pct: float = 0.30):
         """Split a type's base tiles into (clean, special). "Clean" = the flat,
-        near-single-colour standard ground; "special" = the flower/mushroom/
-        bare-earth/pebble/textured tiles. Ranked by a combined cleanness score:
-        off-material pixel fraction (colour specks/patches) PLUS internal
-        luminance texture (busyness), so only the genuinely uniform tiles land
-        in the clean pool. Keeping specials scarce keeps them special."""
+        ON-TARGET standard ground; "special" = flower/mushroom/bare-earth/pebble/
+        textured tiles. Ranked by a cleanness score with THREE terms:
+
+          * meanDist  — how far the tile's MEAN colour is from the material's
+            normalized target. This is the important one: tiles2 pulls every tile
+            to a canonical colour so tiles mix seamlessly, but only if the base we
+            fill with actually sits ON that colour. A uniform-but-off-hue tile
+            used as the field makes every properly-normalized tile "pop".
+          * rgbStd    — internal colour variance (flatness / lack of pattern).
+          * accent    — fraction of off-material specks (flowers/pebbles/bare soil).
+
+        so the canonical plain tile is the flattest tile that is genuinely the
+        target colour, not merely the least-speckled one."""
         if gid in self._pools:
             return self._pools[gid]
         t = self.target_color(gid)
@@ -195,10 +203,11 @@ class Tiles2:
             a = np.asarray(self.img(p)).astype(np.float32)
             sel = DM & (a[:, :, 3] > 40)
             px = a[:, :, :3][sel]
+            mean_dist = float(np.linalg.norm(px.mean(0) - t))
+            rgb_std = float(px.std(0).mean())
             accent = float((np.linalg.norm(px - t, axis=1) > 55).mean())
-            lum = 0.3 * px[:, 0] + 0.59 * px[:, 1] + 0.11 * px[:, 2]
-            tex = float(lum.std()) / 40.0
-            scored.append((accent + 0.6 * tex, p))
+            score = mean_dist + 1.5 * rgb_std + 30.0 * accent
+            scored.append((score, p))
         scored.sort()
         k = max(3, int(round(len(scored) * clean_pct)))
         clean = [p for _, p in scored[:k]]
@@ -207,19 +216,28 @@ class Tiles2:
         return clean, special
 
     def plain_tile(self, gid: str) -> str:
-        """The single cleanest, most single-colour tile of a type — the canonical
-        plain ground used for the bulk of the fill so a field reads as ONE flat
-        material, not a patchwork of near-identical variants ("salami")."""
+        """The single flattest, most on-target tile of a type — used where ONE
+        uniform tile is wanted (e.g. stacked cliff faces read as a clean wall)."""
         return self.base_pools(gid)[0][0]
+
+    def plain_set(self, gid: str, k: int = 5) -> list[str]:
+        """The `k` flattest, most on-target tiles. Filling the bulk of a field by
+        mixing THESE (rather than repeating one tile) keeps the colour uniform and
+        on-target — they're all normalized to the same target, so no cell pops —
+        while breaking up the visible single-tile repeat. Excludes the textured /
+        bushy / speckled tiles (those live in `special`)."""
+        return self.base_pools(gid)[0][:k]
 
     def pick_base(self, gid: str, r_plain: float, r_pool: float, r_tile: float,
                   plain_prob: float = 0.90, special_prob: float = 0.15) -> str:
-        """Deterministic pick. `plain_prob` of cells get the ONE canonical plain
-        tile; the rest add a little life — mostly other clean variants, rarely a
+        """Deterministic pick. `plain_prob` of cells get a flat ON-TARGET plain
+        tile (mixed from the small plain set so the field reads uniform but not
+        stamped); the rest add a little life — other clean variants, rarely a
         special accent."""
         clean, special = self.base_pools(gid)
         if r_plain < plain_prob:
-            return clean[0]
+            pset = self.plain_set(gid)
+            return pset[int(r_tile * len(pset)) % len(pset)]
         pool = special if r_pool < special_prob else clean
         return pool[int(r_tile * len(pool)) % len(pool)]
 
