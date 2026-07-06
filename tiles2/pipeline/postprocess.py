@@ -105,11 +105,21 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
         tiles_meta.append(entry)
     n = len(tiles_meta)
 
+    # Metadata is part of DONE: a base/transition tile isn't finished without its
+    # per-tile edges + composition (maps2's auto-tiler consumes these; if they're
+    # missing it has to re-derive from pixels). Surface any gap loudly rather than
+    # committing a half-described sheet.
+    complete = sum(1 for t in tiles_meta if "edges" in t and "composition" in t)
+    if complete < n:
+        print(f"  ! INCOMPLETE metadata {gid}/{sheet}: {complete}/{n} tiles have "
+              f"edges+composition (mtargets={list(mtargets)}) — not done without it")
+
     dest_meta = {
         "schema": "tiles2/sheet@1",
         "sheet": sheet, "ground_type": gid, "kind": kind, "transition_to": other,
         "tile_id": req.get("tile_id"), "settings": req.get("settings"),
-        "count": n, "tiles": tiles_meta, "generated_at": req.get("generated_at"),
+        "count": n, "metadata_complete": complete == n,
+        "tiles": tiles_meta, "generated_at": req.get("generated_at"),
         "processing": {
             "source_raw": os.path.relpath(sdir, common.type_dir(gid)),
             "neutralize_outline": pp["neutralize_outline"],
