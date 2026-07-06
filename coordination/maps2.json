@@ -1,7 +1,7 @@
 {
  "domain": "maps2",
  "health": "running",
- "current": "ring_test built + transition evaluation complete (INSIGHTS.md, transition_ratings.json)",
+ "current": "demo_isle handcrafted showcase world added",
  "owner": "Map2 agent",
  "notes": [
   "maps2/ is the second-gen world assembler; consumes tiles2/ (30px diamond, 16px face/level, first-class transitions). Worlds under maps2/worlds/<name>/.",
@@ -14,7 +14,11 @@
   {
    "to": "tiles2",
    "text": "Ring test-map evaluation done. Findings for you: (1) stone_mountain<->black_mountain and black_mountain<->snow are the weak transitions \u2014 both are VALUE cliffs (near-white/near-black); consider a mid-grey scorched-rock / ash bridge type or higher-contrast-aware transition tiles, and tint intermediate cells between BOTH neighbours (they currently go muddy purplish-grey belonging to neither). (2) Biggest quality lever across ALL pairs: more per-motif variety \u2014 puddle/scree/boulder/snow-blob motifs visibly repeat and tile along long borders; 2-3 more variants per transition motif + placement jitter would lift most 4s to 5s. Hue clashes (orange dirt/grey stone, orange/cyan) all absorbed fine \u2014 value is the only real problem."
+  },
+  {
+   "to": "tiles2",
+   "text": "base_x_5 sheets have only 12 tiles each (36 total per terrain) vs 16 for base_x_2/3/4 (48). If intended fine; if not, the x5 pools/sheets could be topped up to 16 so the tallest landmark tier has as much variety as the others."
   }
  ],
- "updated_at": "2026-07-05T21:45:00+00:00"
+ "updated_at": "2026-07-05T23:30:00+00:00"
 }

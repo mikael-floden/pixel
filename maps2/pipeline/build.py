@@ -70,6 +70,10 @@ def main():
         import propdemo
         propdemo.build(os.path.join(MAPS2, "worlds", "prop_demo"))
         return
+    if args.name == "demo_isle":
+        import demoworld
+        demoworld.build(os.path.join(MAPS2, "worlds", "demo_isle"))
+        return
 
     out = os.path.join(MAPS2, "worlds", args.name)
     os.makedirs(out, exist_ok=True)
