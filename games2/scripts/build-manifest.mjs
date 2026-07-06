@@ -95,10 +95,20 @@ function pngAlpha(p) {
 }
 
 /**
- * Measure the FOOT ANCHOR of a frame: the centre pixel between the two feet at
- * sole level — the point where the character contacts the ground. This is what
- * the game pins to the collision position, so drawn feet meet edges/walls
- * exactly. Measured over the bottom 4 opaque rows (the soles).
+ * Measure the FOOT ANCHOR of a frame: the point BETWEEN the two feet at sole
+ * level — where the character contacts the ground. The game pins this to the
+ * collision position, so the drop-shadow (which marks the true world position)
+ * sits centred between the drawn feet, and the feet meet edges/walls exactly.
+ *
+ * We look at a SOLE BAND (the bottom ~9% of the frame — tall enough to catch
+ * BOTH feet even when a 3/4-view pose sets one sole a few px higher than the
+ * other), collapse it to a per-column "is there a sole pixel here" mask, split
+ * that into contiguous runs = the feet, and take the MIDPOINT BETWEEN the outer
+ * two feet's centres. This is robust to unequal foot size and to a centred
+ * ponytail/dress hem (a middle run never moves the outermost centres). The old
+ * method — bounding-box midpoint of only the bottom 4 rows — saw just the lower
+ * foot in angled poses and skewed the anchor up to ±5px sideways per direction,
+ * so the shadow drifted out from between the feet as the character turned.
  */
 function footAnchor(framePath) {
   const png = pngAlpha(framePath);
@@ -123,28 +133,35 @@ function footAnchor(framePath) {
     }
   }
   if (bottom < 0) return null;
-  let sum = 0;
-  let n = 0;
-  for (let y = Math.max(0, bottom - 3); y <= bottom; y++) {
-    let lo = -1;
-    let hi = -1;
-    for (let x = 0; x < w; x++) {
+  const band = Math.max(6, Math.round(h * 0.09)); // ≈10px at 112
+  const y0 = Math.max(0, bottom - band + 1);
+  const colHit = new Array(w).fill(false);
+  for (let x = 0; x < w; x++) {
+    for (let y = y0; y <= bottom; y++) {
       if (opaque(x, y)) {
-        if (lo < 0) lo = x;
-        hi = x;
+        colHit[x] = true;
+        break;
       }
     }
-    if (lo >= 0) {
-      sum += (lo + hi) / 2;
-      n++;
+  }
+  // Contiguous runs of sole columns → feet (drop 1px specks / stray pixels).
+  const feet = [];
+  let s = -1;
+  for (let x = 0; x < w; x++) {
+    if (colHit[x] && s < 0) s = x;
+    else if (!colHit[x] && s >= 0) {
+      if (x - 1 - s >= 1) feet.push((s + x - 1) / 2);
+      s = -1;
     }
   }
-  if (!n) return null;
+  if (s >= 0 && w - 1 - s >= 1) feet.push((s + w - 1) / 2);
+  if (!feet.length) return null;
+  const ax = (Math.min(...feet) + Math.max(...feet)) / 2; // between the outer feet
   // Fractions of the frame: (x,y) = foot anchor for the sprite origin;
   // top = crown of the head, so labels can hug the character instead of
   // floating at the (mostly transparent) frame top.
   return {
-    x: +(sum / n / w).toFixed(4),
+    x: +(ax / w).toFixed(4),
     y: +((bottom + 1) / h).toFixed(4),
     top: +(Math.max(0, top) / h).toFixed(4),
   };
