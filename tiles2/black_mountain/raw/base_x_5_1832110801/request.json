@@ -1,0 +1,140 @@
+{
+  "schema": "tiles2/raw-sheet@1",
+  "sheet": "base_x_5_1832110801",
+  "ground_type": "black_mountain",
+  "kind": "elevation",
+  "height": "base_x_5",
+  "levels": 5,
+  "transition_to": null,
+  "tile_id": "5d567e0c-2b2b-4531-950f-51c344511af2",
+  "slot": 1,
+  "attempt": 4,
+  "objects": [
+    "a colossal jagged obsidian blade",
+    "a towering black basalt column",
+    "a towering lava-rock pillar",
+    "a towering charred ancient tree",
+    "a colossal obsidian spire",
+    "a towering scorched dead giant tree",
+    "a giant volcanic chimney venting smoke",
+    "a massive smoking fumarole tower",
+    "a massive dark monolith with glowing seams",
+    "a colossal cluster of basalt organ pipes"
+  ],
+  "prompt": "isometric pixel-art game tiles for a top-down RPG map. Each tile is a DIFFERENT huge towering object standing FREE in empty space, resting on a small flat patch of dark near-black volcanic rock; the object rises straight up and IS the sprite. CRITICAL: the entire background is FULLY TRANSPARENT and there is NO black outline, NO dark border, NO frame, NO box, NO rectangle, NO square, NO cube edges and NO wireframe anywhere around the tile or the object \u2014 the object's silhouette is soft and organic against empty transparency, with no containing lines or hard straight edges enclosing it. Do NOT stand it on a raised block, cube, column, box, crate or pedestal, and do NOT draw the ground as a raised cube: just a small low patch at its base. Go for maximum variety \u2014 different shapes, species, ages and conditions, no two tiles alike. The set: 1) a colossal jagged obsidian blade 2) a towering black basalt column 3) a towering lava-rock pillar 4) a towering charred ancient tree 5) a colossal obsidian spire 6) a towering scorched dead giant tree 7) a giant volcanic chimney venting smoke 8) a massive smoking fumarole tower 9) a massive dark monolith with glowing seams 10) a colossal cluster of basalt organ pipes. cozy hand-crafted top-down RPG pixel art, rich natural texture, cohesive harmonious palette, soft directional shading, high quality game asset, transparent background",
+  "settings": {
+    "endpoint": "/create-tiles-pro",
+    "tile_type": "isometric",
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "tile_view_angle": 28.0,
+    "tile_depth_ratio": 0.0,
+    "tile_height": 128,
+    "tile_flat_top_px": 2,
+    "levels": 5,
+    "face_px": 80
+  },
+  "seed": 1832110801,
+  "count": 16,
+  "tiles": [
+    {
+      "index": 0,
+      "file": "tile_00.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 1,
+      "file": "tile_01.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 2,
+      "file": "tile_02.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 3,
+      "file": "tile_03.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 4,
+      "file": "tile_04.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 5,
+      "file": "tile_05.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 6,
+      "file": "tile_06.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 7,
+      "file": "tile_07.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 8,
+      "file": "tile_08.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 9,
+      "file": "tile_09.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 10,
+      "file": "tile_10.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 11,
+      "file": "tile_11.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 12,
+      "file": "tile_12.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 13,
+      "file": "tile_13.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 14,
+      "file": "tile_14.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 15,
+      "file": "tile_15.png",
+      "width": 64,
+      "height": 128
+    }
+  ],
+  "generated_at": "2026-07-06T22:30:02+00:00",
+  "processed": true,
+  "processed_to": "base_x_5/base_x_5_1832110801"
+}
