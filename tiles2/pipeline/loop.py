@@ -48,12 +48,14 @@ def pair_count(a, b):
             + len(common.list_raw_sheets(b, kind="transition", other=a)))
 
 
-def next_unit(cfg, bases_only=False, skip=None):
+def next_unit(cfg, bases_only=False, skip=None, only=None):
     """Complete each type before the next: its base sheets, then a transition to
     EVERY earlier type — so map builders always have every border (full pairwise
     mesh). Each new type owns the transitions toward all types before it; a pair
     is skipped if already covered in either direction. `bases_only` defers all
-    transitions. `skip` holds unit descriptions that failed this run — they're
+    transitions. `only` restricts generation to a single type's OWN units (its
+    base + its transitions to earlier base-complete types), leaving every other
+    type untouched. `skip` holds unit descriptions that failed this run — they're
     passed over so one flaky job doesn't stall everything else. Returns
     ('base', gt) / ('transition', frm, to) / None."""
     skip = skip or set()
@@ -61,6 +63,8 @@ def next_unit(cfg, bases_only=False, skip=None):
     order = cfg["ground_types"]
     for i, gt in enumerate(order):
         gid = gt["id"]
+        if only and gid != only:
+            continue                           # only generate the target type's units
         if len(common.list_raw_sheets(gid, kind="base")) < tgt["base_sheets_per_type"]:
             unit = ("base", gt)
             if _describe(unit) not in skip:
@@ -128,17 +132,22 @@ def main():
     ap.add_argument("--through", metavar="TYPE_ID", default=None,
                     help="only generate up to and including this ground type (its base "
                          "plus its transitions to earlier types); skip every type after it")
+    ap.add_argument("--only", metavar="TYPE_ID", default=None,
+                    help="generate ONLY this type's base + its transitions to earlier "
+                         "base-complete types; leave every other type untouched")
     ap.add_argument("--dry-run", action="store_true", help="print the next units; no API calls")
     args = ap.parse_args()
 
     cfg = common.load_config()
+    ids = [g["id"] for g in cfg["ground_types"]]
     if args.through:
-        ids = [g["id"] for g in cfg["ground_types"]]
         if args.through not in ids:
             ap.error(f"--through '{args.through}' is not a ground type; choose from {ids}")
         cfg["ground_types"] = cfg["ground_types"][:ids.index(args.through) + 1]
         print(f"limiting to types through '{args.through}': "
               f"{[g['id'] for g in cfg['ground_types']]}")
+    if args.only and args.only not in ids:
+        ap.error(f"--only '{args.only}' is not a ground type; choose from {ids}")
 
     if args.dry_run:
         # Show what the loop WOULD do, without generating (safe to run anytime).
@@ -153,7 +162,7 @@ def main():
                 cov = pair_count(gid, u["id"])
                 print(f"      -> {u['id']}: {cov}/{tgt['transition_sheets_per_pair']}"
                       + ("" if base_complete(cfg, u["id"]) else "  (waiting on its base)"))
-        nxt = next_unit(cfg, args.bases_only)
+        nxt = next_unit(cfg, args.bases_only, only=args.only)
         print("next unit:", _describe(nxt) if nxt else "== all targets met ==")
         return
 
@@ -182,7 +191,7 @@ def main():
             client.ensure_budget(min_balance, min_usd)
         except BudgetExhausted as e:
             print(f"stopping: {e}"); break
-        unit = next_unit(cfg, args.bases_only, skip)
+        unit = next_unit(cfg, args.bases_only, skip, only=args.only)
         if unit is None:
             print("== all targets met ==" if not skip else
                   f"== nothing left except {len(skip)} skipped/failed unit(s) =="); break
