@@ -442,6 +442,10 @@ export interface WorldCell {
   l: number;
   r?: string;
   path?: string;
+  // maps2 world@1: draw this cell's tile HORIZONTALLY FLIPPED. The auto-tiler
+  // places some transition tiles as mirrors; without honouring it, those tiles
+  // face the wrong way at material borders.
+  flip?: boolean;
 }
 
 export interface ParsedWorld {
@@ -504,25 +508,37 @@ export function parseWorld(json: any): ParsedWorld | null {
   return null;
 }
 
-/** Parse maps2 / ringworld@1 into the shared ParsedWorld model. */
+/** Parse a maps2 world (schema pixel-maps2/world@1, and the older ringworld@1)
+ * into the shared ParsedWorld model. world@1 changed a few things: it carries a
+ * `size` {w,h} so worlds can be NON-SQUARE, ships materials as an id→name ARRAY
+ * (was a `matids` name→id map), and puts `spawn` at the top level (was
+ * `meta.spawn`). Cells still bake explicit tile PNG paths in `top`. */
 function parseRingworld(json: any): ParsedWorld {
   const top: number[][] = json.top;
   const level: number[][] = json.level ?? [];
   const mat: number[][] = json.mat ?? [];
   const paths: string[] = json.paths ?? [];
-  const n = top.length;
-  const idToMat: string[] = [];
-  for (const [name, id] of Object.entries(json.matids ?? {})) idToMat[id as number] = name;
+  const mirror: number[][] = json.mirror ?? [];
+  // Non-square worlds: prefer the explicit size; fall back to the grid shape.
+  const height = json.size?.h ?? top.length;
+  const width = json.size?.w ?? top[0]?.length ?? height;
+  // Material id → name. world@1 = `materials` array (index is the id);
+  // ringworld@1 = `matids` name→id map.
+  let idToMat: string[] = [];
+  if (Array.isArray(json.materials)) {
+    idToMat = json.materials as string[];
+  } else {
+    for (const [name, id] of Object.entries(json.matids ?? {})) idToMat[id as number] = name;
+  }
   const rows: WorldCell[][] = [];
   const faceTiles: Record<string, string> = {};
-  for (let r = 0; r < n; r++) {
+  for (let r = 0; r < height; r++) {
     const row: WorldCell[] = [];
-    const w = top[r]?.length ?? n;
-    for (let c = 0; c < w; c++) {
+    for (let c = 0; c < width; c++) {
       const m = idToMat[mat[r]?.[c] ?? 0] ?? "";
-      const ti = top[r][c];
+      const ti = top[r]?.[c] ?? -1;
       const path = ti >= 0 ? paths[ti] : undefined;
-      row.push({ t: m, v: 0, l: level[r]?.[c] ?? 0, path });
+      row.push({ t: m, v: 0, l: level[r]?.[c] ?? 0, path, flip: !!mirror[r]?.[c] });
       // Canonical PLAIN base tile per material for cliff faces: a pure cell's
       // top tile lives under .../base/ (only borders use .../transitions/), so
       // the first base-folder tile we see for a material is a plain face tile.
@@ -532,8 +548,9 @@ function parseRingworld(json: any): ParsedWorld {
     }
     rows.push(row);
   }
-  const spawn = Array.isArray(json.meta?.spawn) ? (json.meta.spawn as [number, number]) : undefined;
-  return { width: n, height: n, rows, pois: [], spawn, faceTiles };
+  const sp = json.spawn ?? json.meta?.spawn;
+  const spawn = Array.isArray(sp) ? (sp as [number, number]) : undefined;
+  return { width, height, rows, pois: [], spawn, faceTiles };
 }
 
 /**

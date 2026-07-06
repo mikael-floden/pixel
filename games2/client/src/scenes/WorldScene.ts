@@ -1310,10 +1310,14 @@ export class WorldScene extends Phaser.Scene {
           // maps2: the world bakes the exact TOP tile per cell; terraces are
           // built by stacking the material's plain FACE tile 16px per level
           // (LEVEL_PX), with the cell's top tile last (like maps2 render2.py).
-          const topKey = topKeyFor(cell);
-          if (!topKey || !this.textures.exists(topKey)) continue; // void cell
+          const topKey0 = topKeyFor(cell);
+          if (!topKey0 || !this.textures.exists(topKey0)) continue; // void cell
+          // world@1 mirror: some transition tiles are placed flipped; honour it
+          // or borders face the wrong way. RT batchDraw can't flip, so draw a
+          // lazily-mirrored texture copy for flipped cells.
+          const topKey = cell.flip ? this.flippedKey(topKey0) : topKey0;
           const faceKey = faceKeyFor(world, cell);
-          const fk = faceKey && this.textures.exists(faceKey) ? faceKey : topKey;
+          const fk = faceKey && this.textures.exists(faceKey) ? faceKey : topKey0;
           for (let lvl = 0; lvl < cell.l; lvl++) rt.batchDraw(fk, bx, by - lvl * lh);
           rt.batchDraw(topKey, bx, by - cell.l * lh);
           continue;
@@ -1548,7 +1552,9 @@ export class WorldScene extends Phaser.Scene {
               this.add.image(bx, by - lvl * lh, fk).setOrigin(0, 0).setDepth(oDepth),
             );
           this.occluders.push(
-            this.add.image(bx, by - cell.l * lh, topKey).setOrigin(0, 0).setDepth(oDepth),
+            // Occluder images CAN flip directly (setFlipX) — matches the RT's
+            // mirrored top so the two layers stay pixel-aligned for flipped cells.
+            this.add.image(bx, by - cell.l * lh, topKey).setOrigin(0, 0).setFlipX(!!cell.flip).setDepth(oDepth),
           );
           this.occluderMeta.push({
             col,
@@ -1988,6 +1994,30 @@ export class WorldScene extends Phaser.Scene {
     ctx.fillRect(0, 0, w, w);
     ctx.restore();
     tex!.refresh();
+  }
+
+  private flipCache = new Set<string>();
+  /** A horizontally-mirrored copy of a tile texture, generated + cached on first
+   * use — the RenderTexture's batchDraw can't flip, so world@1 `mirror` cells
+   * (auto-tiler-flipped transition tiles) draw this instead. Cheap: only the few
+   * distinct tiles that appear flipped (~1-4% of cells) ever get a copy. */
+  private flippedKey(key: string): string {
+    const fk = key + "#flip";
+    if (!this.flipCache.has(fk)) {
+      const src = this.textures.get(key).getSourceImage() as CanvasImageSource & { width: number; height: number };
+      const w = src.width, h = src.height;
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d")!;
+      ctx.translate(w, 0);
+      ctx.scale(-1, 1);
+      ctx.drawImage(src, 0, 0);
+      if (this.textures.exists(fk)) this.textures.remove(fk);
+      this.textures.addCanvas(fk, canvas);
+      this.flipCache.add(fk);
+    }
+    return fk;
   }
 
   /** Draw the art-free "Wanderer" fallback sprite into a texture once. A small

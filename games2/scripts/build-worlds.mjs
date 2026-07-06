@@ -34,8 +34,11 @@ function scan() {
     let meta = {};
     try {
       const w = JSON.parse(readFileSync(worldJson, "utf8"));
-      const n = w.meta?.n ?? w.top?.length ?? w.width ?? null;
-      meta = { n, schema: w.schema ?? null, spawn: w.meta?.spawn ?? w.spawn ?? null };
+      // world@1 carries size {w,h} (worlds can be non-square); ringworld@1 used
+      // meta.n. Record both dimensions for the picker.
+      const width = w.size?.w ?? w.top?.[0]?.length ?? w.meta?.n ?? null;
+      const height = w.size?.h ?? w.top?.length ?? w.meta?.n ?? null;
+      meta = { w: width, h: height, schema: w.schema ?? null, spawn: w.spawn ?? w.meta?.spawn ?? null };
     } catch {
       continue; // unparseable → skip
     }
