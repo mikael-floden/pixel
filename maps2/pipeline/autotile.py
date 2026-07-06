@@ -29,10 +29,11 @@ import numpy as np
 
 from tiles2lib import EDGE_K, Tiles2
 
-# hardness order: higher wins the seam (claims corners); void is -1
-PRIORITY = {"saturated_grass": 0, "lightdark_dirt": 1, "regular_snow": 2,
-            "stone_mountain": 3, "black_mountain": 4, "clear_water": 5,
-            "crystal_ice": 6}
+# hardness order: higher wins the seam (claims corners); void is -1. light_sand
+# sits just above grass (a beach claims its edge over the grass it fringes).
+PRIORITY = {"saturated_grass": 0, "light_sand": 0.5, "lightdark_dirt": 1,
+            "regular_snow": 2, "stone_mountain": 3, "black_mountain": 4,
+            "clear_water": 5, "crystal_ice": 6}
 
 EDGES = ("NE", "SE", "SW", "NW")
 
