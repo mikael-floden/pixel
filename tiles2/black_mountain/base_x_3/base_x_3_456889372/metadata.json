@@ -38,7 +38,57 @@
       "index": 0,
       "file": "tile_00.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "black_mountain",
+        "color": [
+          1.0,
+          0.45,
+          0.15
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 41.0,
+            "y": 72.4,
+            "r": 2.9,
+            "color": [
+              0.603,
+              0.111,
+              0.036
+            ],
+            "s": 0.476,
+            "dir": "up"
+          },
+          {
+            "x": 23.0,
+            "y": 65.3,
+            "r": 2.9,
+            "color": [
+              0.608,
+              0.087,
+              0.029
+            ],
+            "s": 0.447,
+            "dir": "up"
+          },
+          {
+            "x": 31.1,
+            "y": 47.6,
+            "r": 2.2,
+            "color": [
+              0.854,
+              0.215,
+              0.034
+            ],
+            "s": 0.578,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 1,
@@ -80,7 +130,45 @@
       "index": 7,
       "file": "tile_07.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "black_mountain",
+        "color": [
+          1.0,
+          0.45,
+          0.15
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 33.9,
+            "y": 47.9,
+            "r": 5.0,
+            "color": [
+              0.41,
+              0.089,
+              0.025
+            ],
+            "s": 0.413,
+            "dir": "up"
+          },
+          {
+            "x": 31.5,
+            "y": 37.5,
+            "r": 2.0,
+            "color": [
+              0.269,
+              0.096,
+              0.034
+            ],
+            "s": 0.39,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 8,
@@ -131,6 +219,7 @@
       "height": 128
     }
   ],
+  "emissive_tiles": 2,
   "generated_at": "2026-07-05T20:00:48+00:00",
   "processing": {
     "neutralize_outline": true,

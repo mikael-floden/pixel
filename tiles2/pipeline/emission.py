@@ -177,9 +177,9 @@ def _cluster_source(pts, rgb, lum, h):
             "color": col, "s": s, "dir": _dir_of(cx, cy, h)}
 
 
-def extract_tile(path, det):
-    im = Image.open(path).convert("RGBA")
-    a = np.asarray(im).astype(np.float32)
+def extract_image(im, det):
+    """Glow-source clusters for a single RGBA tile image (see extract_tile)."""
+    a = np.asarray(im.convert("RGBA")).astype(np.float32)
     rgb, al = a[:, :, :3], a[:, :, 3]
     op = al > 16
     if not op.any():
@@ -197,6 +197,26 @@ def extract_tile(path, det):
     comps = _components(glow, det["min_area"])
     comps.sort(key=len, reverse=True)
     return [_cluster_source(c, rgb, lum, h) for c in comps[:det["max_src"]]]
+
+
+def extract_tile(path, det):
+    return extract_image(Image.open(path).convert("RGBA"), det)
+
+
+def tile_emission(gid, im, objects):
+    """Per-tile emission RECORD for a tile whose material may emit — or None.
+    Gated exactly like the emission.json sources: the material must emit and the
+    tile's SHEET objects must name a glow source (so a plain ground tile in a glow
+    sheet still only emits if its own pixels glow). Returns
+    {material, color, anim, sources:[...]} suitable to drop into tile metadata."""
+    mat = MATERIALS.get(gid)
+    det = DETECT.get(gid)
+    if not mat or not det or not GLOW_RE.search(" ".join(objects or [])):
+        return None
+    srcs = extract_image(im, det)
+    if not srcs:
+        return None
+    return {"material": gid, "color": mat["color"], "anim": mat["anim"], "sources": srcs}
 
 
 def tile_paths(gid):

@@ -126,7 +126,45 @@
       "index": 14,
       "file": "tile_14.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "stone_mountain",
+        "color": [
+          0.6,
+          0.75,
+          0.95
+        ],
+        "anim": "pulse",
+        "sources": [
+          {
+            "x": 38.2,
+            "y": 68.7,
+            "r": 2.0,
+            "color": [
+              0.153,
+              0.504,
+              0.836
+            ],
+            "s": 0.666,
+            "dir": "up"
+          },
+          {
+            "x": 55.9,
+            "y": 61.7,
+            "r": 2.0,
+            "color": [
+              0.171,
+              0.453,
+              0.831
+            ],
+            "s": 0.652,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 15,
@@ -135,6 +173,7 @@
       "height": 128
     }
   ],
+  "emissive_tiles": 1,
   "generated_at": "2026-07-05T14:00:22+00:00",
   "processing": {
     "neutralize_outline": true,

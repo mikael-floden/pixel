@@ -50,7 +50,45 @@
       "index": 2,
       "file": "tile_02.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 41.1,
+            "y": 49.1,
+            "r": 2.0,
+            "color": [
+              0.935,
+              0.666,
+              0.239
+            ],
+            "s": 0.839,
+            "dir": "up"
+          },
+          {
+            "x": 45.4,
+            "y": 48.8,
+            "r": 2.0,
+            "color": [
+              0.847,
+              0.571,
+              0.16
+            ],
+            "s": 0.785,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 3,
@@ -131,6 +169,7 @@
       "height": 128
     }
   ],
+  "emissive_tiles": 1,
   "generated_at": "2026-07-06T17:48:15+00:00",
   "processing": {
     "neutralize_outline": true,

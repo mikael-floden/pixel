@@ -86,7 +86,33 @@
       "index": 8,
       "file": "tile_08.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 23.3,
+            "y": 63.8,
+            "r": 2.0,
+            "color": [
+              0.945,
+              0.566,
+              0.161
+            ],
+            "s": 0.797,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 9,
@@ -104,7 +130,33 @@
       "index": 11,
       "file": "tile_11.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 34.3,
+            "y": 70.1,
+            "r": 2.0,
+            "color": [
+              0.911,
+              0.532,
+              0.191
+            ],
+            "s": 0.784,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 12,
@@ -128,9 +180,36 @@
       "index": 15,
       "file": "tile_15.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 39.5,
+            "y": 69.5,
+            "r": 2.0,
+            "color": [
+              0.755,
+              0.562,
+              0.112
+            ],
+            "s": 0.761,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     }
   ],
+  "emissive_tiles": 3,
   "generated_at": "2026-07-05T20:28:36+00:00",
   "processing": {
     "neutralize_outline": true,

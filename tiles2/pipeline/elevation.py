@@ -46,6 +46,7 @@ import random
 from PIL import Image
 
 import common
+import emission        # per-tile prop emission marking (night-glow metadata)
 import loop            # reuse commit_push (add/commit/push to main, with retries)
 import normalize
 import postprocess     # reuse type_target (per-terrain material colour)
@@ -226,7 +227,9 @@ def process_sheet(gid, terrain, sheet, sdir, req, cfg, cache):
     ref_targets = [t for t in (postprocess.type_target(r, cfg, cache) for r in refs) if t]
 
     raw_by_file = {t["file"]: t for t in (req.get("tiles") or [])}
+    objects = req.get("objects") or []
     tiles_meta = []
+    n_emit = 0
     for fn in common.tile_files(sdir):
         im = Image.open(os.path.join(sdir, fn)).convert("RGBA")
         if pp["neutralize_outline"]:
@@ -234,7 +237,20 @@ def process_sheet(gid, terrain, sheet, sdir, req, cfg, cache):
         for tgt in ref_targets:
             im = normalize.harmonize(im, tgt, hs["hue_strength"], hs["sat_strength"], hs["v_strength"])
         im.save(os.path.join(dest, fn))
-        tiles_meta.append(dict(raw_by_file.get(fn, {"file": fn})))
+        entry = dict(raw_by_file.get(fn, {"file": fn}))
+        # Per-tile emission so the glowing PROPS (crystals, lava, mushrooms) are
+        # tile-indexed in the SAME metadata maps2 already reads — computed on the
+        # FINAL harmonised image. Mark features:["shiny"] (the tag maps2's emissive
+        # gate keys on) plus a structured `emission` block for precise night halos.
+        emis = emission.tile_emission(gid, im, objects)
+        if emis:
+            entry["emission"] = emis
+            feats = list(entry.get("features") or [])
+            if "shiny" not in feats:
+                feats.append("shiny")
+            entry["features"] = feats
+            n_emit += 1
+        tiles_meta.append(entry)
 
     dest_meta = {
         "schema": "tiles2/sheet@1", "sheet": sheet, "ground_type": gid,
@@ -242,6 +258,7 @@ def process_sheet(gid, terrain, sheet, sdir, req, cfg, cache):
         "face_px": (req.get("levels") or 0) * LEVEL_PX, "slot": req.get("slot"),
         "objects": req.get("objects"), "tile_id": req.get("tile_id"),
         "settings": req.get("settings"), "count": len(tiles_meta), "tiles": tiles_meta,
+        "emissive_tiles": n_emit,
         "generated_at": req.get("generated_at"),
         "processing": {"neutralize_outline": pp["neutralize_outline"],
                        "harmonize": hs, "harmonize_refs": refs,

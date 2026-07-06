@@ -38,7 +38,33 @@
       "index": 0,
       "file": "tile_00.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "light_sand",
+        "color": [
+          1.0,
+          0.6,
+          0.25
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 31.9,
+            "y": 38.8,
+            "r": 3.2,
+            "color": [
+              0.871,
+              0.647,
+              0.25
+            ],
+            "s": 0.825,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 1,
@@ -131,6 +157,7 @@
       "height": 128
     }
   ],
+  "emissive_tiles": 1,
   "generated_at": "2026-07-06T15:51:50+00:00",
   "processing": {
     "neutralize_outline": true,

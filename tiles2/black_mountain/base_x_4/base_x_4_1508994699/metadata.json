@@ -128,9 +128,60 @@
       "index": 15,
       "file": "tile_15.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "black_mountain",
+        "color": [
+          1.0,
+          0.45,
+          0.15
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 38.3,
+            "y": 65.2,
+            "r": 2.0,
+            "color": [
+              0.489,
+              0.163,
+              0.023
+            ],
+            "s": 0.485,
+            "dir": "up"
+          },
+          {
+            "x": 35.4,
+            "y": 47.0,
+            "r": 2.0,
+            "color": [
+              0.372,
+              0.095,
+              0.015
+            ],
+            "s": 0.405,
+            "dir": "up"
+          },
+          {
+            "x": 29.2,
+            "y": 73.5,
+            "r": 2.0,
+            "color": [
+              0.473,
+              0.131,
+              0.031
+            ],
+            "s": 0.465,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     }
   ],
+  "emissive_tiles": 1,
   "generated_at": "2026-07-06T18:12:25+00:00",
   "processing": {
     "neutralize_outline": true,
