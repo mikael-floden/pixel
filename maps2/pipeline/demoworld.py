@@ -23,8 +23,8 @@ from autotile import PRIORITY, AutoTiler, flatten_shores
 from tiles2lib import DX, DY, LEVEL_PX, Tiles2
 
 GROUND_BOTTOM = 54
-PLAIN_PROB = 0.82
-SPECIAL_PROB = 0.12
+PLAIN_PROB = 0.90
+SPECIAL_PROB = 0.10
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 MAPS2 = os.path.dirname(_HERE)
