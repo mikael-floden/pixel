@@ -793,10 +793,15 @@ export class WorldScene extends Phaser.Scene {
           // (the sprite is a billboard — raised corners of side/front
           // neighbours pass in front of its lower pixels even when the feet
           // point itself is visible) and whose face is camera-closer.
+          // The upper reach must clear a DIAGONALLY adjacent ledge: a step to
+          // the E/S (same-row/col neighbour) sits one grid diagonal AND one
+          // level up, so its top lands ~lh+dy above the feet — a tighter band
+          // (the old −26) let that ledge's corner poke between the legs with
+          // the foot drawn over it (playtester, standing at a step edge).
           const faceOverFeet =
             higher &&
             o.y0 <= feetY + 6 &&
-            o.y0 >= feetY - 26 &&
+            o.y0 >= feetY - (MAP_GEOMETRY.lh + MAP_GEOMETRY.dy + 9) &&
             o.col + o.row + 1.2 > colf + rowf;
           // (c) A camera-closer SOLID structure whose (tall, bottom-anchored)
           // art overlaps the sprite: billboard art covers anything behind
