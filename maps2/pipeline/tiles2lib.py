@@ -282,17 +282,17 @@ class Tiles2:
 
     def pick_base(self, gid: str, r_plain: float, r_pool: float, r_tile: float,
                   plain_prob: float = 0.90, special_prob: float = 0.15) -> str:
-        """Deterministic pick. `plain_prob` of cells get THE single flattest,
-        on-target plain tile — so the field reads as one SOLID colour, not a
-        patchwork of near-identical variants (the tile-to-tile texture wobble is
-        what reads as "salami"). The small remainder adds a whisper of life:
-        rarely a special accent, otherwise another flat on-target tile."""
-        clean, special = self.base_pools(gid)
-        pset = self.plain_set(gid)
-        if r_plain < plain_prob:
-            return pset[0]
-        pool = special if r_pool < special_prob else pset
-        return pool[int(r_tile * len(pool)) % len(pool)]
+        """Deterministic pick. THE single solid base tile (`plain_tile`) is used
+        almost everywhere: it gives one uniform SOLID colour on top AND — since it
+        renders the cliff faces too — a COHERENT wall. Solid tiles from different
+        sheets share the same flat top but have different wall styles, so swapping
+        between them per-cell would make cliffs look patchy; we deliberately don't.
+        Only a rare cell (~`(1-plain_prob)*special_prob`) breaks to a special
+        accent (flower/pebble/bare patch) for a touch of life."""
+        if r_plain >= plain_prob and r_pool < special_prob:
+            special = self.base_pools(gid)[1]
+            return special[int(r_tile * len(special)) % len(special)]
+        return self.plain_tile(gid)
 
     # -- transition analysis --------------------------------------------------
 
