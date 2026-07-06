@@ -267,14 +267,17 @@ def process_terrain(cfg, terrain, cache=None):
     return total
 
 
-def next_unit(cfg, skip=None):
+def next_unit(cfg, skip=None, only=None):
     """(terrain, height_id, slot) for the first open sheet slot — heights inner so
     a terrain fills x2 then x3/x4/x5 before moving on. `skip` holds
     (gid, height, slot) tuples that failed this run, so one flaky/stalled job
-    doesn't get retried forever and doesn't stall the rest of the fleet."""
+    doesn't get retried forever and doesn't stall the rest of the fleet. `only`
+    restricts filling to a single terrain."""
     skip = skip or set()
     tgt = target_per_elev(cfg)
     for terrain in terrains(cfg):
+        if only and terrain["id"] != only:
+            continue
         for h in heights(cfg):
             have = present_slots(terrain["id"], h["id"])
             for i in range(tgt):
@@ -302,6 +305,8 @@ def main():
     ap.add_argument("--min-usd", type=float, default=None,
                     help="override the USD credit floor (default from config); use to "
                          "spend down remaining credits")
+    ap.add_argument("--only", metavar="TERRAIN", default=None,
+                    help="fill only this terrain's elevation slots; leave others untouched")
     args = ap.parse_args()
     cfg = common.load_config()
     cache = {}
@@ -321,7 +326,7 @@ def main():
                 have = present_slots(terrain["id"], h["id"])
                 print(f"    {h['id']}  {len(have)}/{tgt}  levels {h['levels']} face {h['levels']*LEVEL_PX}px "
                       f"depth {h['depth_ratio']} pool {len(pool(cfg, terrain['id'], h['id']))}")
-        nxt = next_unit(cfg)
+        nxt = next_unit(cfg, only=args.only)
         print("next:", f"{nxt[0]['id']} {nxt[1]} slot {nxt[2]}" if nxt else "== all elevation targets met ==")
         return
 
@@ -341,7 +346,7 @@ def main():
             client.ensure_budget(min_gen, min_usd)
         except BudgetExhausted as e:
             print("stopping:", e); break
-        unit = next_unit(cfg, skip)
+        unit = next_unit(cfg, skip, only=args.only)
         if unit is None:
             print("== all elevation targets met ==" if not skip else
                   f"== nothing left except {len(skip)} skipped/failed slot(s) =="); break
