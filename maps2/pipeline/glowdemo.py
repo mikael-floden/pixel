@@ -59,18 +59,30 @@ class GlowDemo:
         self.n_x = MARGIN * 2 + COLS * SX
         self.n_y = MARGIN * 2 + sum(r * SY for r in rows_per.values()) \
             + GAP * (len(mats) - 1)
-        self.mat = np.full((self.n_y, self.n_x), DARK, object)
-        self.top = np.full((self.n_y, self.n_x), self.lib.plain_tile(DARK), object)
+        # each material's props sit on a patch of THAT material's own plain ground
+        # (not one dark floor) so you can see how the light falls on each surface
+        self.mat = np.full((self.n_y, self.n_x), "", object)
+        self.top = np.full((self.n_y, self.n_x), None, object)
         self.props = {}
+        self.spawn = (MARGIN, MARGIN)
         y = MARGIN
         for m in mats:
             tiles = self.by_mat[m]
+            ground = self.lib.plain_tile(m)
+            rows = rows_per[m]
+            # fill this block's rectangle with the material's ground
+            for cy in range(y - 1, y + rows * SY):
+                for cx in range(MARGIN - 1, MARGIN + COLS * SX):
+                    if 0 <= cy < self.n_y and 0 <= cx < self.n_x:
+                        self.mat[cy, cx] = m
+                        self.top[cy, cx] = ground
             for i, p in enumerate(tiles):
                 cx = MARGIN + (i % COLS) * SX
                 cy = y + (i // COLS) * SY
                 self.props[(cx, cy)] = p
-            y += rows_per[m] * SY + GAP
-        self.spawn = (1, 1)
+            if m not in ("clear_water",):
+                self.spawn = (MARGIN, y)     # a walkable block for the start
+            y += rows * SY + GAP
 
     # -- render (flat, iso, dark) ----------------------------------------------
 
@@ -84,6 +96,8 @@ class GlowDemo:
         order = sorted(((x, y) for y in range(ny) for x in range(nx)),
                        key=lambda p: (p[0] + p[1], p[1]))
         for x, y in order:
+            if self.top[y, x] is None:
+                continue
             bx = ox + (x - y) * DX
             by = oy + (x + y) * DY
             canvas.alpha_composite(self.lib.img(self.top[y, x]), (bx, by))
