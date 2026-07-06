@@ -333,6 +333,48 @@ class Tiles2:
         tiles = self._analysis.get(f"{key[0]}|{key[1]}", [])
         return tiles, (a == key[0])
 
+    def fade_tiles(self, hi: str, lo: str):
+        """Tiles for the graded band either side of the hard boundary line.
+
+        Returns (hi_border, lo_border). `hi_border` = tiles whose entire BORDER
+        (all four corners and every edge sample) is `hi`, but whose interior
+        carries some `lo` — an island of the other material that does NOT touch
+        any edge, so the tile still tessellates seamlessly against pure `hi`.
+        Dropped a little denser near the seam and thinning out, they read as a
+        fade-in before the hard line (and the mirror image fades out after it).
+
+        Each entry: {"file", "mirror", "other"} where `other` is the interior
+        fraction of the OTHER material (0 = pure). Sorted ascending by `other`,
+        with the pure plain tile first."""
+        key = tuple(sorted((hi, lo)))
+        tiles = self._analysis.get(f"{key[0]}|{key[1]}", [])
+        hi_first = (hi == key[0])
+        hi_border, lo_border = [{"file": self.plain_tile(hi), "mirror": False,
+                                 "other": 0.0}], \
+                               [{"file": self.plain_tile(lo), "mirror": False,
+                                 "other": 0.0}]
+        for t in tiles:
+            c = t.get("corners") or []
+            eg = t.get("edges") or {}
+            if len(c) != 4 or len(eg) != 4:
+                continue
+            comp_hi = t["compA"] if hi_first else 1 - t["compA"]
+            allhi = all(v == 1 for v in c) if hi_first else all(v == 0 for v in c)
+            alllo = all(v == 0 for v in c) if hi_first else all(v == 1 for v in c)
+            edge_hi = all((v == 1) == hi_first for pr in eg.values() for v in pr)
+            edge_lo = all((v == 0) == hi_first for pr in eg.values() for v in pr)
+            if allhi and edge_hi and comp_hi < 0.999:
+                for m in (False, True):
+                    hi_border.append({"file": t["file"], "mirror": m,
+                                      "other": round(1 - comp_hi, 3)})
+            if alllo and edge_lo and comp_hi > 0.001:
+                for m in (False, True):
+                    lo_border.append({"file": t["file"], "mirror": m,
+                                      "other": round(comp_hi, 3)})
+        hi_border.sort(key=lambda r: r["other"])
+        lo_border.sort(key=lambda r: r["other"])
+        return hi_border, lo_border
+
     def wang(self, hi: str, lo: str):
         """Corner-code Wang table for placing `hi` material dissolving into `lo`.
 

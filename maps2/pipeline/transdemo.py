@@ -32,7 +32,8 @@ LABEL = {"saturated_grass": "grass", "lightdark_dirt": "dirt",
          "regular_snow": "snow", "clear_water": "water", "crystal_ice": "ice"}
 
 R = 16          # circle radius (big, so the loop is clearly visible)
-MARGIN = 7      # surround thickness of B around the circle
+MARGIN = 9      # surround thickness of B around the circle
+FADE = 5        # width (cells) of the graded fade band on EACH side of the seam
 PLOT = 2 * R + 2 * MARGIN
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
@@ -80,10 +81,13 @@ class TransDemo:
         lib = self.lib
         pureA = [1] * EDGE_K
         pureB = [0] * EDGE_K
+        edgesA = {e: pureA for e in ("NE", "SE", "SW", "NW")}
+        edgesB = {e: pureB for e in ("NE", "SE", "SW", "NW")}
         for (A, B, cx, cy) in self.circles:
             table = lib.wang(A, B)               # code(N,E,S,W; 1=A) -> candidates
-            plainA = (lib.plain_tile(A), False)
-            plainB = (lib.plain_tile(B), False)
+            faceA, faceB = lib.fade_tiles(A, B)  # border-pure/interior-mixed islands
+            maxA = min(0.30, max((t["other"] for t in faceA), default=0.0))
+            maxB = min(0.30, max((t["other"] for t in faceB), default=0.0))
             x0, y0 = int(cx - R - MARGIN), int(cy - R - MARGIN)
             x1, y1 = int(cx + R + MARGIN) + 1, int(cy + R + MARGIN) + 1
             # scanline order (increasing x+y, then x) so a cell's NE neighbour
@@ -100,16 +104,32 @@ class TransDemo:
                     int(self._inside(x - 0.5, y + 0.5, cx, cy)),
                 )
                 if code == (1, 1, 1, 1):
-                    self.top[y, x] = plainA
-                    self.edges[y, x] = {"NE": pureA, "SE": pureA,
-                                        "SW": pureA, "NW": pureA}
+                    # inside grass: fade IN — dirt islands, denser toward the seam
+                    d = math.hypot(x - cx, y - cy)
+                    f = min(1.0, max(0.0, (R - d) / FADE))   # 0 at seam .. 1 deep
+                    self.top[y, x] = self._fade(faceA, f, maxA, x, y)
+                    self.edges[y, x] = edgesA
                     continue
                 if code == (0, 0, 0, 0):
-                    self.top[y, x] = plainB
-                    self.edges[y, x] = {"NE": pureB, "SE": pureB,
-                                        "SW": pureB, "NW": pureB}
+                    # outside in dirt: fade OUT — grass islands, thinning outward
+                    d = math.hypot(x - cx, y - cy)
+                    f = min(1.0, max(0.0, (d - R) / FADE))
+                    self.top[y, x] = self._fade(faceB, f, maxB, x, y)
+                    self.edges[y, x] = edgesB
                     continue
                 self.top[y, x], self.edges[y, x] = self._pick(table, code, x, y)
+
+    def _fade(self, band, f, othermax, x, y):
+        """Pick an interior-island tile whose OTHER-material fraction tracks the
+        target for this depth (max near the seam -> 0 deep in), with a little
+        positional jitter so equal-depth cells don't all show the same island."""
+        t = othermax * (1.0 - f) + (_h01(x, y, self.seed + 5) - 0.5) * 0.05
+        if t <= 0.02:
+            return (band[0]["file"], band[0]["mirror"])   # pure plain
+        near = min(abs(c["other"] - t) for c in band)
+        pool = [c for c in band if abs(c["other"] - t) <= near + 0.04]
+        c = pool[int(_h01(x, y, self.seed + 6) * len(pool)) % len(pool)]
+        return (c["file"], c["mirror"])
 
     def _seam_cost(self, cand, x, y):
         """How badly this candidate's shared edges disagree with already-placed
