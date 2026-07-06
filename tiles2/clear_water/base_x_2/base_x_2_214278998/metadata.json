@@ -38,37 +38,325 @@
       "index": 0,
       "file": "tile_00.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 41.5,
+            "y": 67.0,
+            "r": 2.0,
+            "color": [
+              0.195,
+              0.347,
+              0.101
+            ],
+            "s": 0.544,
+            "dir": "up"
+          },
+          {
+            "x": 47.5,
+            "y": 30.7,
+            "r": 2.0,
+            "color": [
+              0.719,
+              0.461,
+              0.19
+            ],
+            "s": 0.723,
+            "dir": "up"
+          },
+          {
+            "x": 46.5,
+            "y": 63.5,
+            "r": 2.0,
+            "color": [
+              0.356,
+              0.295,
+              0.137
+            ],
+            "s": 0.575,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 1,
       "file": "tile_01.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 28.8,
+            "y": 66.4,
+            "r": 3.1,
+            "color": [
+              0.381,
+              0.266,
+              0.084
+            ],
+            "s": 0.555,
+            "dir": "up"
+          },
+          {
+            "x": 39.1,
+            "y": 60.6,
+            "r": 3.0,
+            "color": [
+              0.249,
+              0.357,
+              0.096
+            ],
+            "s": 0.563,
+            "dir": "up"
+          },
+          {
+            "x": 32.6,
+            "y": 56.6,
+            "r": 2.6,
+            "color": [
+              0.216,
+              0.377,
+              0.086
+            ],
+            "s": 0.56,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 2,
       "file": "tile_02.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 31.2,
+            "y": 47.8,
+            "r": 2.1,
+            "color": [
+              0.408,
+              0.293,
+              0.145
+            ],
+            "s": 0.587,
+            "dir": "up"
+          },
+          {
+            "x": 36.2,
+            "y": 47.2,
+            "r": 2.0,
+            "color": [
+              0.418,
+              0.31,
+              0.15
+            ],
+            "s": 0.599,
+            "dir": "up"
+          },
+          {
+            "x": 21.5,
+            "y": 50.2,
+            "r": 2.0,
+            "color": [
+              0.373,
+              0.452,
+              0.128
+            ],
+            "s": 0.644,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 3,
       "file": "tile_03.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 40.5,
+            "y": 58.4,
+            "r": 2.0,
+            "color": [
+              0.134,
+              0.491,
+              0.105
+            ],
+            "s": 0.588,
+            "dir": "up"
+          },
+          {
+            "x": 35.4,
+            "y": 70.3,
+            "r": 2.0,
+            "color": [
+              0.111,
+              0.4,
+              0.088
+            ],
+            "s": 0.537,
+            "dir": "up"
+          },
+          {
+            "x": 22.4,
+            "y": 74.6,
+            "r": 2.0,
+            "color": [
+              0.103,
+              0.404,
+              0.079
+            ],
+            "s": 0.534,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 4,
       "file": "tile_04.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 27.1,
+            "y": 40.6,
+            "r": 3.1,
+            "color": [
+              0.507,
+              0.454,
+              0.161
+            ],
+            "s": 0.675,
+            "dir": "up"
+          },
+          {
+            "x": 8.3,
+            "y": 75.5,
+            "r": 2.0,
+            "color": [
+              0.363,
+              0.199,
+              0.087
+            ],
+            "s": 0.511,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 5,
       "file": "tile_05.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 29.4,
+            "y": 58.2,
+            "r": 14.2,
+            "color": [
+              0.82,
+              0.581,
+              0.271
+            ],
+            "s": 0.794,
+            "dir": "up"
+          },
+          {
+            "x": 28.6,
+            "y": 78.5,
+            "r": 3.9,
+            "color": [
+              0.607,
+              0.368,
+              0.171
+            ],
+            "s": 0.664,
+            "dir": "up"
+          },
+          {
+            "x": 24.8,
+            "y": 51.7,
+            "r": 2.2,
+            "color": [
+              0.779,
+              0.463,
+              0.265
+            ],
+            "s": 0.747,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 6,
@@ -86,13 +374,101 @@
       "index": 8,
       "file": "tile_08.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 32.7,
+            "y": 45.9,
+            "r": 2.0,
+            "color": [
+              0.99,
+              0.592,
+              0.146
+            ],
+            "s": 0.81,
+            "dir": "up"
+          },
+          {
+            "x": 31.8,
+            "y": 53.4,
+            "r": 2.0,
+            "color": [
+              0.612,
+              0.236,
+              0.315
+            ],
+            "s": 0.616,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 9,
       "file": "tile_09.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 28.1,
+            "y": 49.4,
+            "r": 4.3,
+            "color": [
+              0.856,
+              0.38,
+              0.212
+            ],
+            "s": 0.708,
+            "dir": "up"
+          },
+          {
+            "x": 39.5,
+            "y": 39.3,
+            "r": 3.7,
+            "color": [
+              0.921,
+              0.676,
+              0.208
+            ],
+            "s": 0.835,
+            "dir": "up"
+          },
+          {
+            "x": 46.9,
+            "y": 45.1,
+            "r": 2.3,
+            "color": [
+              0.888,
+              0.471,
+              0.231
+            ],
+            "s": 0.754,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 10,
@@ -116,13 +492,89 @@
       "index": 13,
       "file": "tile_13.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 15.2,
+            "y": 67.1,
+            "r": 2.4,
+            "color": [
+              0.374,
+              0.272,
+              0.125
+            ],
+            "s": 0.564,
+            "dir": "up"
+          },
+          {
+            "x": 49.1,
+            "y": 36.7,
+            "r": 2.3,
+            "color": [
+              0.291,
+              0.261,
+              0.102
+            ],
+            "s": 0.534,
+            "dir": "up"
+          },
+          {
+            "x": 25.6,
+            "y": 64.9,
+            "r": 2.3,
+            "color": [
+              0.339,
+              0.271,
+              0.119
+            ],
+            "s": 0.554,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 14,
       "file": "tile_14.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "clear_water",
+        "color": [
+          1.0,
+          0.8,
+          0.45
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 34.9,
+            "y": 61.5,
+            "r": 2.0,
+            "color": [
+              0.598,
+              0.342,
+              0.103
+            ],
+            "s": 0.64,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 15,
@@ -131,7 +583,7 @@
       "height": 128
     }
   ],
-  "emissive_tiles": 0,
+  "emissive_tiles": 10,
   "generated_at": "2026-07-05T20:12:07+00:00",
   "processing": {
     "neutralize_outline": true,

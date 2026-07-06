@@ -33,23 +33,15 @@ import argparse
 import glob
 import json
 import os
-import re
 
 import numpy as np
 from PIL import Image
 
 import common
+import postprocess          # per-material colour target (to subtract the ground's own hue)
 
 OUT_PATH = os.path.join(common.ROOT, "emission.json")
 DIAMOND_H = 30                      # games2 geometry: top diamond height, faces below
-
-# Which SHEETS to even look at: the art's own object descriptions are the emitter
-# inventory (games2's point). Only tiles from a sheet whose objects mention a glow
-# source are scanned — so a flat ground sheet never sprouts a halo, and a "driftwood
-# + lantern" sheet is scanned but only the lantern's bright pixels survive the gate.
-GLOW_RE = re.compile(
-    r"glow|radiant|lumin|lava|ember|molten|magma|torch|lantern|lamp|firefl|"
-    r"crystal|geode|glint|beacon|shining|luminescen", re.I)
 
 # -- P0: curated per-material glow. null = never emits (keeps games2's load gate
 #    green — every world material must resolve here). Colors are linear RGB. ------
@@ -64,24 +56,57 @@ MATERIALS = {
     "lightdark_dirt":  None,
 }
 
-# -- P1: per-material pixel-detection params for the `sources` extraction. --------
-# abs_min : a glow pixel must be at least this bright (sRGB luminance 0..255).
-# resid   : ...and this much brighter than its LOCAL neighbourhood (unsharp
-#           residual) — this is what isolates a crystal from the surrounding bright
-#           ice, or lava from rock, regardless of the tile's overall brightness.
-# hue     : None | "warm" (orange/red embers, lava, torches, lanterns) |
-#           "cool" (blue/teal crystals, glowing mushrooms) — filters false hits.
-# sat_min : minimum saturation (0..1) for the hue gate (skips e.g. pale sand).
-# molten  : if this fraction of the opaque tile qualifies, the whole surface is one
-#           source (lava fields / geodes filling the tile).
+# -- P1: hue-AGNOSTIC glow detection. A glow is a saturated, colourful accent that
+#    stands out locally and ISN'T the tile's own material — lamps, fire, lava, gold
+#    veins, blue/green runes, multicolour gems, mushrooms all qualify, regardless of
+#    hue or of what the object description happens to say. Per material we only vary:
+#    abs_min : brightness floor (low for near-black volcanic rock, high for bright ice)
+#    molten  : fraction of the tile that, if glowing, means the whole surface is light
+#    max_src : cap on separate halos per tile
+# The shared gate (RESID/SAT_MIN) plus subtracting a SATURATED ground's own pale hue
+# (grass green, water blue — never a pale ground like sand) does the discrimination.
+RESID_MIN = 16          # how much brighter than the local neighbourhood
+SAT_MIN = 0.34          # colourfulness floor (pale ground sits below this)
+HUE_BAND = 34           # ± hue window counted as "the ground's own colour"
+GROUND_SAT = 0.45       # only grounds this saturated get their hue subtracted
 DETECT = {
-    "crystal_ice":     {"abs_min": 214, "resid": 30, "hue": None,   "sat_min": 0.0,  "molten": 0.45, "min_area": 6, "max_src": 3},
-    "black_mountain":  {"abs_min": 90,  "resid": 16, "hue": "warm", "sat_min": 0.30, "molten": 0.40, "min_area": 4, "max_src": 3},
-    "saturated_grass": {"abs_min": 150, "resid": 22, "hue": "cool", "sat_min": 0.22, "molten": 0.35, "min_area": 4, "max_src": 3},
-    "clear_water":     {"abs_min": 185, "resid": 30, "hue": "warm", "sat_min": 0.35, "molten": 0.30, "min_area": 4, "max_src": 2},
-    "light_sand":      {"abs_min": 185, "resid": 26, "hue": "warm", "sat_min": 0.40, "molten": 0.30, "min_area": 4, "max_src": 2},
-    "stone_mountain":  {"abs_min": 150, "resid": 24, "hue": "cool", "sat_min": 0.18, "molten": 0.30, "min_area": 4, "max_src": 2},
+    "crystal_ice":     {"abs_min": 210, "resid": 26, "molten": 0.55, "min_area": 5, "max_src": 3, "core": True},
+    "black_mountain":  {"abs_min": 78,  "molten": 0.45, "min_area": 4, "max_src": 3},
+    "saturated_grass": {"abs_min": 120, "molten": 0.40, "min_area": 4, "max_src": 3},
+    "clear_water":     {"abs_min": 130, "molten": 0.40, "min_area": 4, "max_src": 3},
+    "light_sand":      {"abs_min": 150, "molten": 0.40, "min_area": 4, "max_src": 2},
+    "stone_mountain":  {"abs_min": 120, "molten": 0.40, "min_area": 4, "max_src": 3},
 }
+
+_cfg = None
+_target_cache = {}
+
+
+def _material_target(gid):
+    """Cached per-material colour target (hue/sat/chroma) — used to subtract a
+    saturated ground's own colour so foliage/water aren't mistaken for glow."""
+    global _cfg
+    if gid not in _target_cache:
+        if _cfg is None:
+            _cfg = common.load_config()
+        _target_cache[gid] = postprocess.type_target(gid, _cfg, {})
+    return _target_cache[gid]
+
+
+def glow_mask(rgb, op, lum, hsv, gid, target):
+    """Boolean mask of glowing pixels for tile material `gid` (see DETECT)."""
+    det = DETECT[gid]
+    resid = lum - _box_blur(lum, op, radius=6)
+    if det.get("core"):                              # crystal_ice: bright near-white cores
+        return op & (lum >= det["abs_min"]) & (resid >= det["resid"])
+    sat = hsv[:, :, 1] / 255.0
+    m = op & (lum >= det["abs_min"]) & (resid >= RESID_MIN) & (sat >= SAT_MIN)
+    if target and target.get("chroma", 0) > 55 and target["sat"] / 255.0 > GROUND_SAT:
+        # saturated ground (grass green, water blue): drop its own PALE hue, but keep
+        # vividly-saturated same-hue accents (a bright flame, a glowing crystal)
+        dh = np.abs(((hsv[:, :, 0] - target["hue"] + 128) % 256) - 128)
+        m = m & ~((dh <= HUE_BAND) & (sat < target["sat"] / 255.0 + 0.12))
+    return m
 
 
 def _srgb_to_linear(c):
@@ -111,22 +136,6 @@ def _sep_mean(a, k):
     a = (c[k:, :] - c[:-k, :]) / k
     c = np.cumsum(np.pad(a, ((0, 0), (pad + 1, pad)), mode="edge"), axis=1)
     return (c[:, k:] - c[:, :-k]) / k
-
-
-def _hue_ok(rgb, kind, sat_min):
-    r, g, b = rgb[:, :, 0], rgb[:, :, 1], rgb[:, :, 2]
-    mx = np.maximum(np.maximum(r, g), b)
-    mn = np.minimum(np.minimum(r, g), b)
-    sat = np.where(mx > 0, (mx - mn) / np.maximum(mx, 1), 0)
-    if kind is None:
-        return np.ones(r.shape, bool)
-    if kind == "warm":                       # embers/lava/torches: strong red/orange,
-        # g>=b drops pink/magenta blooms (which have b>g); r-b gap keeps it molten
-        return (sat >= sat_min) & (r >= g) & (g >= b) & (r - g > 22) & (r - b > 55)
-    # cool: BLUE/TEAL glow only. b must lead red, AND green must be present (g not far
-    # below r) — that keeps cyan/teal mushroom caps but drops magenta/purple FLOWERS
-    # (lavender, wisteria, lilies), whose red rivals their blue with little green.
-    return (sat >= sat_min) & (b - r > 20) & (g - r > -10)
 
 
 def _components(mask, min_area):
@@ -177,8 +186,13 @@ def _cluster_source(pts, rgb, lum, h):
             "color": col, "s": s, "dir": _dir_of(cx, cy, h)}
 
 
-def extract_image(im, det):
-    """Glow-source clusters for a single RGBA tile image (see extract_tile)."""
+def extract_image(im, gid, target=None):
+    """Glow-source clusters for a single RGBA tile of material `gid`."""
+    det = DETECT.get(gid)
+    if det is None:
+        return []
+    if target is None:
+        target = _material_target(gid)
     a = np.asarray(im.convert("RGBA")).astype(np.float32)
     rgb, al = a[:, :, :3], a[:, :, 3]
     op = al > 16
@@ -186,8 +200,8 @@ def extract_image(im, det):
         return []
     h = a.shape[0]
     lum = _lum(rgb)
-    resid = lum - _box_blur(lum, op, radius=6)
-    glow = op & (lum >= det["abs_min"]) & (resid >= det["resid"]) & _hue_ok(rgb, det["hue"], det["sat_min"])
+    hsv = np.asarray(im.convert("HSV"), dtype=np.float32)
+    glow = glow_mask(rgb, op, lum, hsv, gid, target)
     if not glow.any():
         return []
     frac = glow.sum() / max(op.sum(), 1)
@@ -199,38 +213,30 @@ def extract_image(im, det):
     return [_cluster_source(c, rgb, lum, h) for c in comps[:det["max_src"]]]
 
 
-def extract_tile(path, det):
-    return extract_image(Image.open(path).convert("RGBA"), det)
+def extract_tile(path, gid, target=None):
+    return extract_image(Image.open(path).convert("RGBA"), gid, target)
 
 
-def tile_emission(gid, im, objects):
-    """Per-tile emission RECORD for a tile whose material may emit — or None.
-    Gated exactly like the emission.json sources: the material must emit and the
-    tile's SHEET objects must name a glow source (so a plain ground tile in a glow
-    sheet still only emits if its own pixels glow). Returns
-    {material, color, anim, sources:[...]} suitable to drop into tile metadata."""
+def tile_emission(gid, im, target=None):
+    """Per-tile emission RECORD for a tile — or None if it doesn't glow. The
+    material must be an emitter (in DETECT) and the tile's own pixels must contain
+    a glow cluster. Returns {material, color, anim, sources:[...]} for tile metadata."""
     mat = MATERIALS.get(gid)
-    det = DETECT.get(gid)
-    if not mat or not det or not GLOW_RE.search(" ".join(objects or [])):
+    if not mat or gid not in DETECT:
         return None
-    srcs = extract_image(im, det)
+    srcs = extract_image(im, gid, target)
     if not srcs:
         return None
     return {"material": gid, "color": mat["color"], "anim": mat["anim"], "sources": srcs}
 
 
 def tile_paths(gid):
-    """Served tiles worth scanning: base/ + base_x_N tiles that belong to a sheet
-    whose `objects` inventory names a glow source. Ground-only sheets (no glow
-    objects) are skipped — they rely on the material self-glow floor, not halos."""
+    """All served base/ + base_x_N tiles of a material. No description keyword gate:
+    the pixel detection decides, so a glowing prop is found even when the object text
+    doesn't say 'glow' (watchtower braziers, lighthouses)."""
     out = []
     for sub in ("base", "base_x_2", "base_x_3", "base_x_4", "base_x_5"):
-        for md in sorted(glob.glob(os.path.join(common.type_dir(gid), sub, "*", "metadata.json"))):
-            meta = json.load(open(md))
-            objs = " ".join(meta.get("objects") or [])
-            if not GLOW_RE.search(objs):
-                continue
-            out += sorted(glob.glob(os.path.join(os.path.dirname(md), "tile_*.png")))
+        out += sorted(glob.glob(os.path.join(common.type_dir(gid), sub, "*", "tile_*.png")))
     return out
 
 
@@ -240,10 +246,10 @@ def build(dry_run=False):
     for gid, mat in MATERIALS.items():
         if mat is None or gid not in DETECT:
             continue
-        det = DETECT[gid]
+        target = _material_target(gid)
         n_tiles = n_src = 0
         for p in tile_paths(gid):
-            srcs = extract_tile(p, det)
+            srcs = extract_tile(p, gid, target)
             if srcs:
                 rel = os.path.relpath(p, common.ROOT)
                 rel = os.path.join("tiles2", rel) if not rel.startswith("tiles2") else rel

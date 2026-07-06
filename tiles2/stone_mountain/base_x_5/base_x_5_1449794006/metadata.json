@@ -50,13 +50,113 @@
       "index": 2,
       "file": "tile_02.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "stone_mountain",
+        "color": [
+          0.6,
+          0.75,
+          0.95
+        ],
+        "anim": "pulse",
+        "sources": [
+          {
+            "x": 17.7,
+            "y": 31.1,
+            "r": 2.5,
+            "color": [
+              0.182,
+              0.685,
+              0.157
+            ],
+            "s": 0.662,
+            "dir": "up"
+          },
+          {
+            "x": 32.7,
+            "y": 97.9,
+            "r": 2.5,
+            "color": [
+              0.631,
+              0.384,
+              0.113
+            ],
+            "s": 0.653,
+            "dir": "up"
+          },
+          {
+            "x": 32.8,
+            "y": 57.4,
+            "r": 2.3,
+            "color": [
+              0.32,
+              0.721,
+              0.185
+            ],
+            "s": 0.726,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 3,
       "file": "tile_03.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "stone_mountain",
+        "color": [
+          0.6,
+          0.75,
+          0.95
+        ],
+        "anim": "pulse",
+        "sources": [
+          {
+            "x": 54.9,
+            "y": 30.8,
+            "r": 2.0,
+            "color": [
+              0.326,
+              0.219,
+              0.127
+            ],
+            "s": 0.521,
+            "dir": "up"
+          },
+          {
+            "x": 50.4,
+            "y": 27.8,
+            "r": 2.0,
+            "color": [
+              0.441,
+              0.305,
+              0.175
+            ],
+            "s": 0.604,
+            "dir": "up"
+          },
+          {
+            "x": 43.5,
+            "y": 74.5,
+            "r": 2.0,
+            "color": [
+              0.275,
+              0.18,
+              0.112
+            ],
+            "s": 0.481,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 4,
@@ -92,7 +192,45 @@
       "index": 9,
       "file": "tile_09.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "stone_mountain",
+        "color": [
+          0.6,
+          0.75,
+          0.95
+        ],
+        "anim": "pulse",
+        "sources": [
+          {
+            "x": 41.5,
+            "y": 51.6,
+            "r": 2.5,
+            "color": [
+              0.562,
+              0.299,
+              0.079
+            ],
+            "s": 0.599,
+            "dir": "up"
+          },
+          {
+            "x": 32.0,
+            "y": 12.5,
+            "r": 2.0,
+            "color": [
+              0.361,
+              0.164,
+              0.096
+            ],
+            "s": 0.488,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 10,
@@ -104,10 +242,60 @@
       "index": 11,
       "file": "tile_11.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "stone_mountain",
+        "color": [
+          0.6,
+          0.75,
+          0.95
+        ],
+        "anim": "pulse",
+        "sources": [
+          {
+            "x": 29.5,
+            "y": 96.8,
+            "r": 2.0,
+            "color": [
+              0.488,
+              0.351,
+              0.184
+            ],
+            "s": 0.636,
+            "dir": "up"
+          },
+          {
+            "x": 49.8,
+            "y": 86.1,
+            "r": 2.0,
+            "color": [
+              0.318,
+              0.209,
+              0.123
+            ],
+            "s": 0.513,
+            "dir": "up"
+          },
+          {
+            "x": 30.5,
+            "y": 50.5,
+            "r": 2.0,
+            "color": [
+              0.306,
+              0.21,
+              0.123
+            ],
+            "s": 0.511,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     }
   ],
-  "emissive_tiles": 0,
+  "emissive_tiles": 4,
   "generated_at": "2026-07-05T18:29:06+00:00",
   "processing": {
     "neutralize_outline": true,

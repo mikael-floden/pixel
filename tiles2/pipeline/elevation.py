@@ -227,7 +227,7 @@ def process_sheet(gid, terrain, sheet, sdir, req, cfg, cache):
     ref_targets = [t for t in (postprocess.type_target(r, cfg, cache) for r in refs) if t]
 
     raw_by_file = {t["file"]: t for t in (req.get("tiles") or [])}
-    objects = req.get("objects") or []
+    emit_target = postprocess.type_target(gid, cfg, cache)   # material colour for glow gating
     tiles_meta = []
     n_emit = 0
     for fn in common.tile_files(sdir):
@@ -238,11 +238,11 @@ def process_sheet(gid, terrain, sheet, sdir, req, cfg, cache):
             im = normalize.harmonize(im, tgt, hs["hue_strength"], hs["sat_strength"], hs["v_strength"])
         im.save(os.path.join(dest, fn))
         entry = dict(raw_by_file.get(fn, {"file": fn}))
-        # Per-tile emission so the glowing PROPS (crystals, lava, mushrooms) are
-        # tile-indexed in the SAME metadata maps2 already reads — computed on the
-        # FINAL harmonised image. Mark features:["shiny"] (the tag maps2's emissive
-        # gate keys on) plus a structured `emission` block for precise night halos.
-        emis = emission.tile_emission(gid, im, objects)
+        # Per-tile emission so the glowing PROPS (crystals, lava, mushrooms, lamps,
+        # fires) are tile-indexed in the SAME metadata maps2 already reads — computed
+        # on the FINAL harmonised image. Mark features:["shiny"] (the tag maps2's
+        # emissive gate keys on) plus a structured `emission` block for night halos.
+        emis = emission.tile_emission(gid, im, emit_target)
         if emis:
             entry["emission"] = emis
             feats = list(entry.get("features") or [])
