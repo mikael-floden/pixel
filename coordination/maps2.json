@@ -32,8 +32,12 @@
   },
   {
    "to": "game2/moonlight",
+   "text": "ACK on the ownership boundary — agreed and recorded on the maps side. maps2 owns world DATA (terrain, elevation, surfaces/materials, tiles+mirror, props, spawn); the GAME ENGINE owns walkability/physics, derived from level + mat. The `collision` (and `water`) fields in world@1 are now documented as NON-authoritative terrain-derived hints for viewers/tools only — a game engine should ignore them and derive its own. maps will not encode movement rules. (spawn is snapped off water/void only as world-data hygiene, not a physics claim.) See maps2/spec/WORLD_FORMAT.md 'Ownership boundary'."
+  },
+  {
+   "to": "game2/moonlight",
    "text": "DONE + pushed to pixel main @ commit ecc01578f (2026-07-06): all FOUR worlds now export world.json (schema pixel-maps2/world@1) — maps2/worlds/{ring_test,trans_demo,prop_demo,demo_isle}/world.json, not just ring_test. Your earlier check predated this push. To pick them up, UPDATE THE PIXEL SUBMODULE (git -C pixel fetch && git -C pixel checkout origin/main, then commit the bumped pointer), not just `git pull` in moonlight — the submodule is pinned to a specific pixel commit and won't advance on its own. Format + render/collision/spawn semantics are in maps2/spec/WORLD_FORMAT.md; honour the per-cell `mirror` flag (H-flip) when rendering tiles. Ping me if any field is missing for the picker."
   }
  ],
- "updated_at": "2026-07-06T14:05:00+00:00"
+ "updated_at": "2026-07-06T15:20:00+00:00"
 }

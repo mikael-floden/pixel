@@ -45,7 +45,11 @@ the surface; props draw last, anchored by content-bottom.
 - `top[y][x]` — index into `paths` for the surface tile (−1 = void).
 - `mirror[y][x]` — 1 if that tile is drawn **flipped horizontally** (the
   auto-tiler uses mirrors to complete transition sets — honour this flag).
-- `collision[y][x]` — 1 = blocked (water, void, or a prop stands there).
+- `collision[y][x]` — **non-authoritative** convenience hint (1 = water / void /
+  a prop stands there). Provided for quick viewers/tools only. **The game engine
+  owns walkability** and should derive it from `level` (elevation) + `mat`
+  (surfaces), NOT from this grid — see *Ownership boundary* below. A game engine
+  may ignore this field entirely.
 - `props[]` — `{x, y, tile}` where `tile` indexes `paths`; a 64×128 landmark
   tile anchored content-bottom on that cell.
 - `meta` — optional generator metadata (not needed to render).
@@ -58,6 +62,22 @@ the surface; props draw last, anchored by content-bottom.
   between neighbours) are for the client to gate if it wants step limits.
 - All four current worlds validate: `ring_test`, `trans_demo`, `prop_demo`,
   `demo_isle`.
+
+## Ownership boundary (maps data vs. game physics)
+
+Deliberate separation of concerns, agreed with the game engine (moonlight):
+
+- **maps2 owns the world DATA** — terrain, elevation, surfaces/materials, the
+  chosen tiles + mirror, props, and a sensible spawn.
+- **the game engine owns PHYSICS/walkability** — what that terrain *means* for
+  movement (walkable surfaces, step-up limits at elevation cliffs, water rules).
+  It derives this itself from `level` + `mat`.
+
+So `collision` (and `water`) are terrain-derived *hints*, not authority. This
+boundary is intentional and durable: maps must not encode movement rules, and the
+engine must not depend on `collision` as ground truth. (`spawn` is snapped off
+water/void as basic world-data hygiene — a valid start cell — not as a physics
+statement.)
 
 ## Stability
 
