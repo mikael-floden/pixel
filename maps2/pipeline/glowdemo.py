@@ -59,10 +59,11 @@ class GlowDemo:
         self.n_x = MARGIN * 2 + COLS * SX
         self.n_y = MARGIN * 2 + sum(r * SY for r in rows_per.values()) \
             + GAP * (len(mats) - 1)
-        # each material's props sit on a patch of THAT material's own plain ground
-        # (not one dark floor) so you can see how the light falls on each surface
-        self.mat = np.full((self.n_y, self.n_x), "", object)
-        self.top = np.full((self.n_y, self.n_x), None, object)
+        # a walkable dark floor everywhere (so you can walk BETWEEN sections),
+        # with each material's props sitting on a patch of THAT material's own
+        # plain ground so you can see how the light falls on each surface
+        self.mat = np.full((self.n_y, self.n_x), DARK, object)
+        self.top = np.full((self.n_y, self.n_x), self.lib.plain_tile(DARK), object)
         self.props = {}
         self.spawn = (MARGIN, MARGIN)
         y = MARGIN
