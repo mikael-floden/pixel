@@ -33,6 +33,7 @@ import argparse
 import glob
 import json
 import os
+import re
 
 import numpy as np
 from PIL import Image
@@ -41,6 +42,14 @@ import common
 
 OUT_PATH = os.path.join(common.ROOT, "emission.json")
 DIAMOND_H = 30                      # games2 geometry: top diamond height, faces below
+
+# Which SHEETS to even look at: the art's own object descriptions are the emitter
+# inventory (games2's point). Only tiles from a sheet whose objects mention a glow
+# source are scanned — so a flat ground sheet never sprouts a halo, and a "driftwood
+# + lantern" sheet is scanned but only the lantern's bright pixels survive the gate.
+GLOW_RE = re.compile(
+    r"glow|radiant|lumin|lava|ember|molten|magma|torch|lantern|lamp|firefl|"
+    r"crystal|geode|glint|beacon|shining|luminescen", re.I)
 
 # -- P0: curated per-material glow. null = never emits (keeps games2's load gate
 #    green — every world material must resolve here). Colors are linear RGB. ------
@@ -66,10 +75,10 @@ MATERIALS = {
 # molten  : if this fraction of the opaque tile qualifies, the whole surface is one
 #           source (lava fields / geodes filling the tile).
 DETECT = {
-    "crystal_ice":     {"abs_min": 205, "resid": 20, "hue": None,   "sat_min": 0.0,  "molten": 0.45, "min_area": 5, "max_src": 3},
+    "crystal_ice":     {"abs_min": 214, "resid": 30, "hue": None,   "sat_min": 0.0,  "molten": 0.45, "min_area": 6, "max_src": 3},
     "black_mountain":  {"abs_min": 90,  "resid": 16, "hue": "warm", "sat_min": 0.30, "molten": 0.40, "min_area": 4, "max_src": 3},
     "saturated_grass": {"abs_min": 150, "resid": 22, "hue": "cool", "sat_min": 0.22, "molten": 0.35, "min_area": 4, "max_src": 3},
-    "clear_water":     {"abs_min": 165, "resid": 22, "hue": "warm", "sat_min": 0.28, "molten": 0.30, "min_area": 4, "max_src": 2},
+    "clear_water":     {"abs_min": 185, "resid": 30, "hue": "warm", "sat_min": 0.35, "molten": 0.30, "min_area": 4, "max_src": 2},
     "light_sand":      {"abs_min": 185, "resid": 26, "hue": "warm", "sat_min": 0.40, "molten": 0.30, "min_area": 4, "max_src": 2},
     "stone_mountain":  {"abs_min": 150, "resid": 24, "hue": "cool", "sat_min": 0.18, "molten": 0.30, "min_area": 4, "max_src": 2},
 }
@@ -111,10 +120,13 @@ def _hue_ok(rgb, kind, sat_min):
     sat = np.where(mx > 0, (mx - mn) / np.maximum(mx, 1), 0)
     if kind is None:
         return np.ones(r.shape, bool)
-    if kind == "warm":                       # embers/lava/torches: red>=green>blue
-        return (sat >= sat_min) & (r >= g) & (g >= b) & (r - b > 20)
-    # cool: blue/teal glow — blue or green leads red
-    return (sat >= sat_min) & (np.maximum(g, b) - r > 15)
+    if kind == "warm":                       # embers/lava/torches: strong red/orange,
+        # g>=b drops pink/magenta blooms (which have b>g); r-b gap keeps it molten
+        return (sat >= sat_min) & (r >= g) & (g >= b) & (r - g > 22) & (r - b > 55)
+    # cool: BLUE/TEAL glow only. b must lead red, AND green must be present (g not far
+    # below r) — that keeps cyan/teal mushroom caps but drops magenta/purple FLOWERS
+    # (lavender, wisteria, lilies), whose red rivals their blue with little green.
+    return (sat >= sat_min) & (b - r > 20) & (g - r > -10)
 
 
 def _components(mask, min_area):
@@ -188,10 +200,17 @@ def extract_tile(path, det):
 
 
 def tile_paths(gid):
-    """Served processed tiles for a material: base/ + base_x_N (not raw/transitions)."""
+    """Served tiles worth scanning: base/ + base_x_N tiles that belong to a sheet
+    whose `objects` inventory names a glow source. Ground-only sheets (no glow
+    objects) are skipped — they rely on the material self-glow floor, not halos."""
     out = []
     for sub in ("base", "base_x_2", "base_x_3", "base_x_4", "base_x_5"):
-        out += sorted(glob.glob(os.path.join(common.type_dir(gid), sub, "*", "tile_*.png")))
+        for md in sorted(glob.glob(os.path.join(common.type_dir(gid), sub, "*", "metadata.json"))):
+            meta = json.load(open(md))
+            objs = " ".join(meta.get("objects") or [])
+            if not GLOW_RE.search(objs):
+                continue
+            out += sorted(glob.glob(os.path.join(os.path.dirname(md), "tile_*.png")))
     return out
 
 
