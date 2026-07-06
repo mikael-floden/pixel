@@ -312,6 +312,16 @@ def _run_sync(cfg, client, push):
     return removed
 
 
+def refresh_emission(push=True):
+    """Rebuild tiles2/emission.json from the current tree and commit if it changed.
+    Runs after any reroll so the game-facing glow file never drifts from the art
+    (world.json bakes exact hashed paths, so a stale emission.json points at sheets
+    that no longer exist). commit_push is a no-op when nothing changed."""
+    emission.build()
+    if loop.commit_push("tiles2: auto-refresh emission.json after reroll", push=push):
+        print("  + refreshed emission.json")
+
+
 def main():
     ap = argparse.ArgumentParser(description="Generate tiles2 elevation tiles (base_x_2…5 per terrain).")
     ap.add_argument("--dry-run", action="store_true")
@@ -336,6 +346,7 @@ def main():
             n = process_terrain(cfg, terrain, cache)
             if n:
                 print(f"  {terrain['id']:16s} reprocessed {n} tile(s)")
+        refresh_emission(push=not args.no_push)   # detection/harmonization may have changed glow
         return
 
     if args.dry_run:
@@ -357,7 +368,9 @@ def main():
     b = client.budget()
     print(f"elevation run — {b['generations']:.0f} generations, ${b['usd']:.2f} credits")
     if not args.no_sync:
-        _run_sync(cfg, client, push=not args.no_push)
+        removed = _run_sync(cfg, client, push=not args.no_push)
+    else:
+        removed = []
 
     units = 0
     skip = set()
@@ -401,6 +414,8 @@ def main():
         if args.max_units and units >= args.max_units:
             break
     print(f"done — {units} sheet(s)")
+    if units or removed:                          # art changed -> keep emission.json in sync
+        refresh_emission(push=not args.no_push)
 
 
 if __name__ == "__main__":

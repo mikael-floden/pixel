@@ -26,6 +26,7 @@ import subprocess
 import time
 
 import common
+import emission
 import generate
 import postprocess
 import sync
@@ -222,6 +223,11 @@ def main():
         if args.max_minutes and (time.monotonic() - start) / 60 >= args.max_minutes:
             break
     print(f"done — {units} unit(s)")
+    if units or removed:                          # art changed -> keep emission.json in sync
+        emission.build()
+        if commit_push("tiles2: auto-refresh emission.json after reroll",
+                       push=not args.no_push):
+            print("  + refreshed emission.json")
 
 
 if __name__ == "__main__":
