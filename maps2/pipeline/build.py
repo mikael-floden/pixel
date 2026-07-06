@@ -74,6 +74,10 @@ def main():
         import demoworld
         demoworld.build(os.path.join(MAPS2, "worlds", "demo_isle"))
         return
+    if args.name == "trans_demo":
+        import transdemo
+        transdemo.build(os.path.join(MAPS2, "worlds", "trans_demo"))
+        return
 
     out = os.path.join(MAPS2, "worlds", args.name)
     os.makedirs(out, exist_ok=True)
