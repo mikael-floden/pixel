@@ -55,6 +55,14 @@ def diamond_mask() -> np.ndarray:
 DM = diamond_mask()
 _YS, _XS = np.where(DM)
 
+# The four diamond CORNER points (N apex, E, S, W) and a small sampling patch at
+# each — used to read a tile's Wang corner-code (which material owns each corner).
+CORNERS = {"N": (32, 9), "E": (61, 23), "S": (32, 37), "W": (3, 23)}
+_YY, _XX = np.mgrid[0:64, 0:64]
+CORNER_MASK = {k: (DM & ((_XX - cx) ** 2 + (_YY - cy) ** 2 < 9 ** 2))
+               for k, (cx, cy) in CORNERS.items()}
+CORNER_ORDER = ("N", "E", "S", "W")   # cyclic order around the diamond
+
 
 class Tiles2:
     def __init__(self, tiles_root: str = TILES2):
@@ -191,8 +199,25 @@ class Tiles2:
         g = np.array([bx - ax, by - ay], np.float32)
         n = np.linalg.norm(g)
         g = (g / n) if n > 1e-3 else np.array([0, 0], np.float32)
+        # Wang corner-code: for each diamond corner, which material owns it (1=A)
+        # plus how confidently (1 = pure, 0 = 50/50), so the auto-tiler can prefer
+        # tiles whose corners are unambiguous.
+        corners, conf = [], []
+        alpha = a[:, :, 3] > 40
+        for k in CORNER_ORDER:
+            sel = CORNER_MASK[k] & alpha
+            cpx = a[:, :, :3][sel]
+            if len(cpx) == 0:
+                corners.append(1 if compA >= 0.5 else 0)
+                conf.append(0.0)
+                continue
+            fa = float((np.linalg.norm(cpx - ca, axis=1)
+                        < np.linalg.norm(cpx - cb, axis=1)).mean())
+            corners.append(1 if fa > 0.5 else 0)
+            conf.append(round(abs(fa - 0.5) * 2, 3))
         return {"file": path, "compA": round(compA, 3),
-                "grad": [round(float(g[0]), 3), round(float(g[1]), 3)]}
+                "grad": [round(float(g[0]), 3), round(float(g[1]), 3)],
+                "corners": corners, "conf": round(float(np.mean(conf)), 3)}
 
     def _load_or_build_analysis(self) -> dict:
         sig = self._signature()
@@ -209,7 +234,7 @@ class Tiles2:
         return pairs
 
     def _signature(self) -> str:
-        parts = []
+        parts = ["v2-corners"]   # bump when the analysis schema changes
         for gid, d in self.types.items():
             for other, tt in d["transitions"].items():
                 parts.append(f"{gid}>{other}:{len(tt)}")
@@ -244,6 +269,36 @@ class Tiles2:
         key = tuple(sorted((a, b)))
         tiles = self._analysis.get(f"{key[0]}|{key[1]}", [])
         return tiles, (a == key[0])
+
+    def wang(self, hi: str, lo: str):
+        """Corner-code Wang table for placing `hi` material dissolving into `lo`.
+
+        Returns dict: code -> list of {"file", "mirror", "conf"} sorted best-first,
+        where `code` is a 4-tuple of corner materials in cyclic order (N, E, S, W),
+        each 1 if that corner is `hi` else 0 (`lo`). Placement is seamless *by
+        construction*: neighbours share corner lattice points, so if every cell
+        gets a tile whose corners equal its corner-code, all borders agree.
+
+        Horizontal MIRRORS are included (image flipped left-right → the E and W
+        corners swap), which fills codes the raw sheets happen to miss."""
+        key = tuple(sorted((hi, lo)))
+        tiles = self._analysis.get(f"{key[0]}|{key[1]}", [])
+        hi_first = (hi == key[0])
+        table: dict = {}
+        for t in tiles:
+            c = list(t.get("corners") or [])
+            if len(c) != 4:
+                continue
+            # analysis stores corners as 1==first-material; re-express as 1==hi
+            if not hi_first:
+                c = [1 - v for v in c]
+            n, e, s, w = c
+            for mirror, code in ((False, (n, e, s, w)), (True, (n, w, s, e))):
+                table.setdefault(code, []).append(
+                    {"file": t["file"], "mirror": mirror, "conf": t.get("conf", 0)})
+        for code in table:
+            table[code].sort(key=lambda r: -r["conf"])
+        return table
 
 
 if __name__ == "__main__":
