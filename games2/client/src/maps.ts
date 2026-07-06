@@ -21,9 +21,13 @@ export interface World {
   spawn?: [number, number];
   /** maps2: per-material canonical plain base tile PNG for cliff faces. */
   faceTiles?: Record<string, string>;
+  /** maps2 world@1: decorative objects (tall 64×128 tiles) placed on cells. */
+  props?: WorldProp[];
 }
 
-import { ISO_DX, ISO_DY, LEVEL_PX, WorldCell, parseWorld } from "@nangijala/shared";
+import { ISO_DX, ISO_DY, LEVEL_PX, WorldCell, WorldProp, parseWorld } from "@nangijala/shared";
+
+export type { WorldProp };
 
 // maps2/tiles2 geometry: top diamond 30px×64px, grid steps dx=32/dy=15, one
 // elevation level = 16px face (LEVEL_PX). dx/dy live in shared/ (ISO_DX/ISO_DY)
@@ -111,6 +115,14 @@ export function distinctTilePaths(world: World): string[] {
   for (const row of world.rows)
     for (const c of row) if (c?.path) set.add(c.path);
   for (const p of Object.values(world.faceTiles ?? {})) set.add(p);
+  return [...set];
+}
+
+/** Every unique PROP tile PNG path the world places — the set to preload
+ * alongside the ground tiles (props are tall 64×128 tiles keyed by path too). */
+export function distinctPropPaths(world: World): string[] {
+  const set = new Set<string>();
+  for (const p of world.props ?? []) set.add(p.path);
   return [...set];
 }
 

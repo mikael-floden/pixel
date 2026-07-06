@@ -52,6 +52,7 @@ import {
   tileUrl,
   distinctTiles,
   distinctTilePaths,
+  distinctPropPaths,
   pathTileKey,
   assetUrl,
   faceKeyFor,
@@ -180,6 +181,9 @@ export class WorldScene extends Phaser.Scene {
   // Occlusion: raised/solid tiles near the camera drawn as depth-sorted images
   // so they cover characters standing BEHIND them (the ground RT is flat).
   private occluders: Phaser.GameObjects.Image[] = [];
+  // Placed decorations (maps2 world@1 props): depth-sorted so characters pass
+  // in front of / behind them; rebuilt with the occluders as the camera moves.
+  private propImgs: Phaser.GameObjects.Image[] = [];
   // Lit copies of TALL NON-EMISSIVE solid structures: billboard art samples
   // the light field of the terrain BEHIND it, so a shore tree's canopy was
   // multiplied by the level-0 ocean's night — pitch black above the horizon
@@ -206,6 +210,7 @@ export class WorldScene extends Phaser.Scene {
     y1: number;
   }[] = [];
   private lastOccl = { x: NaN, y: NaN };
+  private lastProp = { x: NaN, y: NaN };
   private emissiveLights: LightSource[] = [];
   // Local jump prediction (client owns its jump timing).
   private jumpUntil = 0;
@@ -299,8 +304,11 @@ export class WorldScene extends Phaser.Scene {
     if (this.world) {
       if (this.maps2) {
         // maps2 world bakes an explicit tile PNG per cell + per-material face
-        // tiles — load that unique set.
+        // tiles + placed props — load that unique set.
         for (const path of distinctTilePaths(this.world)) {
+          this.load.image(pathTileKey(path), assetUrl(path));
+        }
+        for (const path of distinctPropPaths(this.world)) {
           this.load.image(pathTileKey(path), assetUrl(path));
         }
       } else {
@@ -684,6 +692,7 @@ export class WorldScene extends Phaser.Scene {
   update(_time: number, delta: number) {
     this.redrawGround();
     this.rebuildOccluders();
+    this.rebuildProps();
     if (!this.room) return;
     const dt = delta / 1000;
     const myId = this.room.sessionId;
@@ -1707,6 +1716,61 @@ export class WorldScene extends Phaser.Scene {
       (t, v) => this.artYOff(tileKey(t, v)),
       this.demoMode,
     ).concat(this.buildPoolStamps(cam));
+  }
+
+  /**
+   * Rebuild the placed-decoration set (maps2 world@1 `props`): each prop is a
+   * TALL 64×128 tile standing on its cell, drawn as a depth-sorted image so
+   * characters pass in front of / behind it. Culled to the camera window (+pad)
+   * and rebuilt only when the camera moves — same cadence as the occluders, but
+   * with its OWN guard: rebuildOccluders has already advanced lastOccl by the
+   * time this runs, so sharing it would skip every prop rebuild.
+   */
+  private rebuildProps() {
+    if (!this.world || !this.maps2) return;
+    const props = this.world.props;
+    if (!props || !props.length) return;
+    const cam = this.cameras.main;
+    const ccx = cam.worldView.centerX;
+    const ccy = cam.worldView.centerY;
+    if (
+      !Number.isNaN(this.lastProp.x) &&
+      Math.abs(ccx - this.lastProp.x) < 96 &&
+      Math.abs(ccy - this.lastProp.y) < 96
+    )
+      return;
+    this.lastProp = { x: ccx, y: ccy };
+    for (const im of this.propImgs) im.destroy();
+    this.propImgs = [];
+
+    const { dx, dy, lh, tile: tileSize } = MAP_GEOMETRY;
+    const pad = 200;
+    // A tall prop rises up to (imgH − tile) px above its ground box, so pad the
+    // top of the cull rect generously; the bottom is the ground diamond.
+    const x0 = cam.worldView.x - pad;
+    const x1 = cam.worldView.right + pad;
+    const y0 = cam.worldView.y - pad - 128;
+    const y1 = cam.worldView.bottom + pad + this.maxLevel * lh;
+    for (const p of props) {
+      const cell = this.world.rows[p.row]?.[p.col];
+      const key = pathTileKey(p.path);
+      if (!this.textures.exists(key)) continue;
+      const lvl = cell?.l ?? 0;
+      // Unlifted ground depth (matches occluders + character depth), so painter
+      // order by (col+row) puts characters correctly in front / behind.
+      const u = p.col - p.row;
+      const v = p.col + p.row;
+      const bx = this.iso.ox + u * dx;
+      const byGround = this.iso.oy + v * dy - lvl * lh; // ground tile top-left
+      const src = this.textures.get(key).getSourceImage() as { height?: number };
+      const imgH = src?.height ?? 128;
+      const py = byGround - (imgH - tileSize); // bottom tile-box aligns with ground
+      if (bx + tileSize < x0 || bx > x1 || py + imgH < y0 || py > y1) continue;
+      const depth = this.iso.oy + v * dy + dy; // unlifted ground line for this cell
+      this.propImgs.push(
+        this.add.image(bx, py, key).setOrigin(0, 0).setDepth(depth),
+      );
+    }
   }
 
   /** Emission glow POOLS as elliptical stamps in the additive glow field.

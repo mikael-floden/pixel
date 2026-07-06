@@ -460,6 +460,16 @@ export interface ParsedWorld {
    * which draws faces with the material's plain tile so terraces read as one
    * wall, not a patchwork of the top's transition tiles. */
   faceTiles?: Record<string, string>;
+  /** maps2 world@1: decorative objects placed on cells (grass tufts, rocks,
+   * …). Each is a TALL 64×128 tile PNG standing on its cell's ground. */
+  props?: WorldProp[];
+}
+
+/** A placed decoration: its cell (col,row) + tall (64×128) tile PNG path. */
+export interface WorldProp {
+  col: number;
+  row: number;
+  path: string;
 }
 
 /**
@@ -556,7 +566,13 @@ function parseRingworld(json: any): ParsedWorld {
   }
   const sp = json.spawn ?? json.meta?.spawn;
   const spawn = Array.isArray(sp) ? (sp as [number, number]) : undefined;
-  return { width, height, rows, pois: [], spawn, faceTiles };
+  // Props: {x,y,tile} → place the tall tile paths[tile] on cell (x,y).
+  const props: WorldProp[] = Array.isArray(json.props)
+    ? json.props
+        .map((p: any) => ({ col: p.x, row: p.y, path: paths[p.tile] }))
+        .filter((p: WorldProp) => !!p.path)
+    : [];
+  return { width, height, rows, pois: [], spawn, faceTiles, props };
 }
 
 /**
