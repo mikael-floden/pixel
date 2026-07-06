@@ -34,6 +34,7 @@ LABEL = {"saturated_grass": "grass", "lightdark_dirt": "dirt",
 R = 16          # circle radius (big, so the loop is clearly visible)
 MARGIN = 9      # surround thickness of B around the circle
 FADE = 5        # width (cells) of the graded fade band on EACH side of the seam
+FADE_DENSITY = 0.22  # at most ~this fraction of cells get an island (at the seam)
 PLOT = 2 * R + 2 * MARGIN
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
@@ -120,14 +121,16 @@ class TransDemo:
                 self.top[y, x], self.edges[y, x] = self._pick(table, code, x, y)
 
     def _fade(self, band, f, othermax, x, y):
-        """Pick an interior-island tile whose OTHER-material fraction tracks the
-        target for this depth (max near the seam -> 0 deep in), with a little
-        positional jitter so equal-depth cells don't all show the same island."""
-        t = othermax * (1.0 - f) + (_h01(x, y, self.seed + 5) - 0.5) * 0.05
-        if t <= 0.02:
+        """Sparingly drop an interior-island tile as an accent. Only a small
+        fraction of cells (FADE_DENSITY at the seam, tapering to 0 deep in) get
+        one at all; the rest stay pure ground, so the fade reads as an occasional
+        speckle, not a texture. The chosen island's strength also eases off with
+        depth, and positional jitter keeps equal-depth cells from matching."""
+        if _h01(x, y, self.seed + 7) > FADE_DENSITY * (1.0 - f):
             return (band[0]["file"], band[0]["mirror"])   # pure plain
-        near = min(abs(c["other"] - t) for c in band)
-        pool = [c for c in band if abs(c["other"] - t) <= near + 0.04]
+        t = othermax * (1.0 - f) + (_h01(x, y, self.seed + 5) - 0.5) * 0.05
+        near = min(abs(c["other"] - t) for c in band[1:] or band)
+        pool = [c for c in band[1:] if abs(c["other"] - t) <= near + 0.04] or band[:1]
         c = pool[int(_h01(x, y, self.seed + 6) * len(pool)) % len(pool)]
         return (c["file"], c["mirror"])
 
