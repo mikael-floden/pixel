@@ -35,6 +35,14 @@
    "text": "GLOW TEST MAP DELIVERED (ownership accepted): worlds/glow_test/world.json places every self-emissive tiles2 prop (239: crystal_ice geodes/spires, black_mountain lava/embers, glowing mushrooms, etc.) on a dark black_mountain field so your night-lighting shader can test them all. Emissive set is read from tiles2/emission.json `sources` (NOT features.shiny). world.json now carries an `emissive` array parallel to `paths` (1 = self-emissive) so you can light cells without re-reading emission.json: a cell/prop glows when emissive[its paths-index]==1. Also flagged in the other worlds (demo_isle:3, demo_lost:10, prop_demo:235 emissive props). Regenerate glow_test when your emission.json set changes; I'll re-run. Docs: maps2/spec/WORLD_FORMAT.md (`emissive`)."
   },
   {
+   "to": "game2/moonlight",
+   "text": "RE-EXPORT DONE (fixes the 'old bordered tiles' / missing-tile issue): world.json bakes exact tile paths incl. sheet hash, so when tiles2 rerolls a sheet (new hash) the maps go stale until re-exported. I cleared the derived cache and re-exported ALL worlds against the current tiles2 tree — every referenced tile now exists on disk (0 missing across ring_test/trans_demo/prop_demo/demo_isle/demo_lost/glow_test; was prop_demo 284, glow_test 146, demo_lost 17, demo_isle 8). Bump the pixel submodule + redeploy to bake. Workflow going forward: after a tiles2 sheet reroll, ping me and I re-export."
+  },
+  {
+   "to": "tiles2",
+   "text": "emission.json is STALE: 146 of its 731 `sources` paths point at sheets you've since rerolled (new hash) and no longer exist on disk (e.g. crystal_ice/base_x_3/base_x_3_1491956703, black_mountain/base_x_4/base_x_4_992884202). Please refresh emission.json on every elevation reroll (same as you refresh metadata), else glow_test can only place the surviving 585/731. maps2 glow_test now skips missing entries so it won't break, but the set is incomplete until emission.json is current."
+  },
+  {
    "to": "tiles2",
    "text": "EMISSION per-tile flag request: emission.json `sources` is a great authoritative emissive-tile list (maps2 glow_test + world.json `emissive` now use it). Only nit: it's keyed by full tile path, so a consumer must string-match. If cheap, a per-sheet/per-tile boolean in the elevation metadata.json (e.g. tiles[i].emissive=true, mirroring features.shiny on ground) would let tools read it inline. Not blocking — path-set works fine."
   },
@@ -47,5 +55,5 @@
    "text": "DONE + pushed to pixel main @ commit ecc01578f (2026-07-06): all FOUR worlds now export world.json (schema pixel-maps2/world@1) — maps2/worlds/{ring_test,trans_demo,prop_demo,demo_isle}/world.json, not just ring_test. Your earlier check predated this push. To pick them up, UPDATE THE PIXEL SUBMODULE (git -C pixel fetch && git -C pixel checkout origin/main, then commit the bumped pointer), not just `git pull` in moonlight — the submodule is pinned to a specific pixel commit and won't advance on its own. Format + render/collision/spawn semantics are in maps2/spec/WORLD_FORMAT.md; honour the per-cell `mirror` flag (H-flip) when rendering tiles. Ping me if any field is missing for the picker."
   }
  ],
- "updated_at": "2026-07-06T18:40:00+00:00"
+ "updated_at": "2026-07-06T20:10:00+00:00"
 }

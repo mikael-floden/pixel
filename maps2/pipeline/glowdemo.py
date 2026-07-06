@@ -47,11 +47,16 @@ def _ymax(im):
 class GlowDemo:
     def __init__(self):
         self.lib = Tiles2()
-        # emissive prop tiles grouped by material, per emission.json
+        # emissive prop tiles grouped by material, per emission.json — skip any
+        # whose file no longer exists (emission.json can lag a tiles2 sheet reroll)
         self.by_mat = collections.OrderedDict()
+        self.missing = 0
         for rel in sorted(worldio.emissive_paths()):
-            mat = rel.split("/")[1]
-            self.by_mat.setdefault(mat, []).append(os.path.join(REPO, rel))
+            ap = os.path.join(REPO, rel)
+            if not os.path.isfile(ap):
+                self.missing += 1
+                continue
+            self.by_mat.setdefault(rel.split("/")[1], []).append(ap)
         mats = [m for m in ORDER if m in self.by_mat] + \
                [m for m in self.by_mat if m not in ORDER]
         rows_per = {m: (len(self.by_mat[m]) + COLS - 1) // COLS for m in mats}
@@ -120,7 +125,8 @@ def build(out=None):
     worldio.save_world(os.path.join(out, "world.json"), name="glow_test",
                        mat=d.mat, top=d.top, spawn=d.spawn, props=props)
     d.render().save(os.path.join(out, "overview.png"))
-    print(f"glow_test {d.n_x}x{d.n_y}: {len(d.props)} emissive props; "
+    print(f"glow_test {d.n_x}x{d.n_y}: {len(d.props)} emissive props "
+          f"({d.missing} in emission.json missing on disk, skipped); "
           + ", ".join(f"{m.split('_')[0]}:{len(v)}" for m, v in d.by_mat.items()))
     return d
 
