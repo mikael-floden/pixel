@@ -23,6 +23,7 @@ import os
 import numpy as np
 from PIL import Image
 
+import worldio
 from tiles2lib import DX, DY, EDGE_K, Tiles2
 
 TYPES = ["saturated_grass", "lightdark_dirt", "stone_mountain",
@@ -58,6 +59,7 @@ class TransDemo:
         self.W = (len(TYPES) - 1) * PLOT   # each row is A vs the other N-1 types
         self.H = len(TYPES) * PLOT
         self.top = np.full((self.H, self.W), None, object)   # (path, mirror) | None
+        self.mat = np.full((self.H, self.W), "", object)     # material per cell
         self.edges = np.full((self.H, self.W), None, object)  # chosen edge profiles
         self.circles = []                                    # (A,B,cx,cy)
         self.fallbacks = 0                                   # cells with no exact code
@@ -98,6 +100,7 @@ class TransDemo:
                      for x in range(max(0, x0), min(self.W, x1))]
             cells.sort(key=lambda p: (p[0] + p[1], p[0]))
             for x, y in cells:
+                self.mat[y, x] = A if self._inside(x, y, cx, cy) else B
                 code = (
                     int(self._inside(x - 0.5, y - 0.5, cx, cy)),
                     int(self._inside(x + 0.5, y - 0.5, cx, cy)),
@@ -211,6 +214,17 @@ def build(out=None, seed=4):
     d = TransDemo(seed=seed)
     out = out or os.path.join(MAPS2, "worlds", "trans_demo")
     os.makedirs(out, exist_ok=True)
+    # split (path, mirror) cells into parallel grids for the loadable world
+    top = np.full((d.H, d.W), None, object)
+    mir = np.zeros((d.H, d.W), bool)
+    for y in range(d.H):
+        for x in range(d.W):
+            c = d.top[y, x]
+            if c is not None:
+                top[y, x], mir[y, x] = c
+    spawn = (int(PLOT / 2), int(PLOT / 2))       # centre of the first circle
+    worldio.save_world(os.path.join(out, "world.json"), name="trans_demo",
+                       mat=d.mat, top=top, mirror=mir, spawn=spawn)
     _cap(d.render(0, 0, d.W, d.H), 2800).convert("RGB").save(
         os.path.join(out, "overview.png"))
     print("overview ok")

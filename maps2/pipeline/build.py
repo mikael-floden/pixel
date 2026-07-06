@@ -22,7 +22,8 @@ import time
 _HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, _HERE)
 
-from ringworld import SLICES, WATER, generate, save          # noqa: E402
+import worldio                                               # noqa: E402
+from ringworld import SLICES, WATER, generate                # noqa: E402
 from render2 import Ctx, render_minimap, render_overview, render_window  # noqa: E402
 from tiles2lib import Tiles2                                  # noqa: E402
 
@@ -85,14 +86,18 @@ def main():
 
     lib = Tiles2()
     if args.render_only and os.path.isfile(wpath):
-        world = _load(wpath, lib)
+        world = worldio.load_world(wpath)
         print(f"loaded {world.n}x{world.n}")
     else:
         t0 = time.time()
         world = generate(args.n, seed=args.seed, lib=lib)
         print(f"generated {world.n}x{world.n} in {time.time()-t0:.1f}s "
               f"({len(world.paths)} distinct tiles)")
-        save(world, wpath)
+        top_paths = [[world.paths[world.top[y, x]] if world.top[y, x] >= 0 else None
+                      for x in range(world.n)] for y in range(world.n)]
+        worldio.save_world(wpath, name=args.name, mat=world.mat, top=top_paths,
+                           mirror=world.mirror, level=world.level,
+                           spawn=world.spawn, meta=world.meta)
         print(f"wrote {wpath} ({os.path.getsize(wpath)//1024}KB)")
 
     ctx = Ctx(world, lib)
@@ -109,27 +114,6 @@ def main():
             img = render_window(world, x0, y0, x1, y1, ctx)
             img.save(os.path.join(out, f"border_{name}.png"))
         print("borders ok")
-
-
-def _load(path, lib):
-    import json
-    import numpy as np
-    from ringworld import RingWorld
-    d = json.load(open(path))
-    REPO = os.path.dirname(MAPS2)
-    n = d["meta"]["n"]
-    w = RingWorld(n, d["meta"]["seed"])
-    w.meta = d["meta"]
-    w.paths = [os.path.join(REPO, p) for p in d["paths"]]
-    w.top = np.array(d["top"], np.int32)
-    w.mirror = np.array(d.get("mirror",
-                              np.zeros_like(w.top)), bool)
-    w.level = np.array(d["level"], np.int16)
-    inv = {v: k for k, v in d["matids"].items()}
-    matarr = np.array(d["mat"], np.uint8)
-    w.mat = np.vectorize(lambda i: inv[i])(matarr)
-    w.spawn = tuple(d["meta"]["spawn"])
-    return w
 
 
 if __name__ == "__main__":

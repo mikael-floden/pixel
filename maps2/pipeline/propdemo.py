@@ -20,6 +20,7 @@ import os
 import numpy as np
 from PIL import Image
 
+import worldio
 from tiles2lib import DX, DY, LEVEL_PX, Tiles2
 
 TERRAINS = ["saturated_grass", "lightdark_dirt", "stone_mountain",
@@ -138,6 +139,16 @@ def build(out: str | None = None):
     os.makedirs(out, exist_ok=True)
     print(f"grid {d.n_x}x{d.n_y}; plots: "
           + ", ".join(f"{g}:{d.plots[g][2]}x{d.plots[g][3]}" for g in TERRAINS))
+    # loadable world: plain ground per cell + the props laid on top
+    mat = np.full((d.n_y, d.n_x), "", object)
+    top = np.full((d.n_y, d.n_x), None, object)
+    for (x, y), gid in d.ground.items():
+        mat[y, x] = gid
+        top[y, x] = d.lib.plain_tile(gid)
+    props = [(x, y, p) for (x, y), p in d.props.items()]
+    x0, y0 = d.plots[TERRAINS[0]][:2]
+    worldio.save_world(os.path.join(out, "world.json"), name="prop_demo",
+                       mat=mat, top=top, spawn=(x0, y0 + 1), props=props)
     _cap(d.render(), 2400).convert("RGB").save(os.path.join(out, "overview.png"))
     print("overview ok")
     for gid in TERRAINS:

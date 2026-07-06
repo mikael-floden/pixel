@@ -18,6 +18,7 @@ import os
 import numpy as np
 from PIL import Image
 
+import worldio
 from autotile import PRIORITY, AutoTiler, flatten_shores
 from tiles2lib import DX, DY, LEVEL_PX, Tiles2
 
@@ -262,6 +263,9 @@ def build(out=None, n=104, seed=6):
     d = Demo(n=n, seed=seed)
     out = out or os.path.join(MAPS2, "worlds", "demo_isle")
     os.makedirs(out, exist_ok=True)
+    worldio.save_world(os.path.join(out, "world.json"), name="demo_isle",
+                       mat=d.mat, top=d.top, mirror=d.mirror, level=d.level,
+                       spawn=d.spawn, props=d.props)
     img = d.render()
     img.convert("RGB").save(os.path.join(out, "demo.png"))
     # a capped preview for quick viewing / sharing

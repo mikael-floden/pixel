@@ -1,7 +1,7 @@
 {
  "domain": "maps2",
  "health": "running",
- "current": "trans_demo world + seamless corner+edge Wang auto-tiler",
+ "current": "all worlds playable (unified world.json) + seamless elevation-aware tiler",
  "owner": "Map2 agent",
  "notes": [
   "maps2/ is the second-gen world assembler; consumes tiles2/ (30px diamond, 16px face/level, first-class transitions). Worlds under maps2/worlds/<name>/.",
@@ -9,6 +9,8 @@
   "Transition auto-tiler computes each tiles2 transition tile's composition + screen-orientation from pixels and feathers the softer terrain into the harder one; borders are seamless and correctly faced.",
   "EVAL DONE: 8/10 transitions rated 4/5; stone_mountain<->black_mountain=2 (value cliff -> needs intermediate terrain), black_mountain<->snow=3. Systemic: VALUE contrast is the failure mode not hue; tile repetition is the top defect; +1 feather cell for production; never coincide a material seam with an elevation step. Full findings in maps2/worlds/ring_test/INSIGHTS.md + transition_ratings.json.",
   "REFINED fill: pure ground is now ~80% one canonical plain tile / rest clean+rare special accents (classified by off-material pixel fraction + luminance texture); cliff faces clean-only. Keeps flowers/mushrooms rare + special.",
+  "PLAYABLE WORLDS: every world under maps2/worlds/<name>/ now ships a loadable world.json (schema pixel-maps2/world@1, written by pipeline/worldio.py) with geometry, materials, per-cell mat/level/top(tile-index)/mirror, collision mask, props, and a guaranteed-walkable spawn (snapped off water/void). Format documented in maps2/spec/WORLD_FORMAT.md. All 4 validate: ring_test, trans_demo, prop_demo, demo_isle. This is the artifact a game client (moonlight) or viewer consumes to render + walk a map without re-running the generator; honour the `mirror` flag (auto-tiler uses H-flips to complete transition sets).",
+  "SHORES: water sits at level 0; land rises to cliffs. flatten_shores() pulls the first land ring down to the waterline (ramps up +1/cell) so coasts BEACH into water instead of cliffing in; the tiler never raises a water tile onto elevated land (cliff drops a clean face); no island-fade across a water boundary (water stays clean, shore transition lives on the land-side beach tile).",
   "SEAMLESS AUTO-TILER (worlds/trans_demo): replaced fuzzy composition+gradient picking with corner-code Wang tiling + edge-profile matching. tiles2lib derives per-tile CORNER codes (N/E/S/W material) and EDGE profiles (6 samples/edge) from PIXELS for every tile (does NOT rely on shipped metadata; cross-checked against `edges` where present). Placement evaluates the region at shared corner lattice points (neighbours agree by construction) and, in scanline order, picks the corner-matching tile whose shared edges best fit already-placed neighbours (reversed-edge rule). Horizontal mirrors included to fill missing codes. Result: grass/dirt seam mismatches 5%->1.7%, no speckle/notches. Derived analysis cached (gitignored) at maps2/config/tiles2_analysis.json, regenerated on demand; tiles2/ files never modified."
  ],
  "requests": [
