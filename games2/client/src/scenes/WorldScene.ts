@@ -40,6 +40,7 @@ import {
   emissionSelfPulse,
   EmissionMap,
   EmissionEntry,
+  EmissionSource,
   GlowStamp,
   buildGlowStamps,
 } from "../nightlight";
@@ -224,6 +225,12 @@ export class WorldScene extends Phaser.Scene {
 
   // tiles/emission.json categories (empty when the registry failed to load).
   private emission: EmissionMap = {};
+  // tiles2/emission.json (maps2 worlds): per-material glow params (keyed by
+  // material name = a maps2 cell/prop's `t`) + per-tile-path glow sources.
+  private tiles2Mat: EmissionMap = {};
+  private tiles2Src: Record<string, EmissionSource[]> = {};
+  // Glow halos emitted by emissive PROPS this frame — merged into glowStamps.
+  private propStamps: GlowStamp[] = [];
   // Bottom-anchor offset for tall (64x128 cliff/tall profile) tile art: drawn
   // with the same top-left anchor as 64px tiles it sinks 64px into the ground
   // (only the crystal tip peeked out — playtester report). Lift comes from the
@@ -317,8 +324,11 @@ export class WorldScene extends Phaser.Scene {
         }
       }
       // Self-emission registry (v1 tiles only; maps2 materials never match, so
-      // the glow layers stay dormant — kept so the emission-demo path works).
+      // the per-cell glow layers stay dormant — kept so the emission-demo path
+      // works). maps2 worlds get their glow from tiles2/emission.json instead
+      // (per-MATERIAL params + per-TILE-PATH sources — see loadTiles2Emission).
       this.load.json("tile-emission", "/assets/tiles/emission.json");
+      if (this.maps2) this.load.json("tiles2-emission", "/assets/tiles2/emission.json");
       this.load.spritesheet(CAMPFIRE_KEY, CAMPFIRE_URL, {
         frameWidth: CAMPFIRE_FRAME,
         frameHeight: CAMPFIRE_FRAME,
@@ -347,6 +357,19 @@ export class WorldScene extends Phaser.Scene {
     this.emission = emissionData?.categories ?? {};
     if (!emissionData)
       console.warn("[nangijala] tiles/emission.json missing — tile self-emission disabled");
+    // maps2 self-emission (tiles2/emission.json): per-material glow params +
+    // per-tile-path glow sources. In every maps2 world the emissive tiles are
+    // PROPS (geodes, lava rocks, glowing mushrooms — base_x_N object tiles), so
+    // the glow is stamped from prop positions in rebuildProps; nothing on the
+    // flat terrain glows, so this stays out of the per-cell shader floor.
+    if (this.maps2) {
+      const t2 = this.cache.json.get("tiles2-emission") as
+        | { materials?: EmissionMap; sources?: Record<string, EmissionSource[]> }
+        | undefined;
+      this.tiles2Mat = t2?.materials ?? {};
+      this.tiles2Src = t2?.sources ?? {};
+      if (!t2) console.warn("[nangijala] tiles2/emission.json missing — prop glow disabled");
+    }
     if (this.world && this.game.renderer.type === Phaser.WEBGL) {
       try {
         this.night = new NightLights(this, this.world, this.iso, this.maxLevel, this.emission);
@@ -1723,7 +1746,7 @@ export class WorldScene extends Phaser.Scene {
       undefined,
       (t, v) => this.artYOff(tileKey(t, v)),
       this.demoMode,
-    ).concat(this.buildPoolStamps(cam));
+    ).concat(this.buildPoolStamps(cam)).concat(this.propStamps);
   }
 
   /**
@@ -1744,9 +1767,11 @@ export class WorldScene extends Phaser.Scene {
   private rebuildProps(cam: Phaser.Cameras.Scene2D.Camera) {
     for (const im of this.propImgs) im.destroy();
     this.propImgs = [];
+    this.propStamps = [];
     if (!this.world || !this.maps2) return;
     const props = this.world.props;
     if (!props || !props.length) return;
+    const ANIM: Record<string, number> = { static: 0, pulse: 1, flicker: 2 };
 
     const { dx, dy, lh, tile: tileSize } = MAP_GEOMETRY;
     const pad = 200;
@@ -1779,6 +1804,29 @@ export class WorldScene extends Phaser.Scene {
       // order by (col+row) puts characters correctly in front / behind.
       const depth = this.iso.oy + v * dy + dy;
       this.propImgs.push(this.add.image(bx, py, key).setOrigin(0, 0).setDepth(depth));
+      // Self-emission: an emissive prop (a tiles2 tile with glow `sources`)
+      // stamps one glow halo per source at the source's DRAWN pixel — the
+      // shader adds this world-anchored field, so the prop art itself lights up
+      // AND the glow spills onto the ground around it. All emissive maps2 tiles
+      // are props (never terrain), so this is the only emission entry point.
+      const srcs = this.night ? this.tiles2Src[p.path] : undefined;
+      if (srcs?.length) {
+        const mat = p.path.split("/")[1]; // tiles2/<material>/…
+        const anim = ANIM[this.tiles2Mat[mat]?.anim ?? "static"] ?? 0;
+        for (let i = 0; i < srcs.length; i++) {
+          const g = srcs[i];
+          const phase = ((((p.col * 73856093) ^ (p.row * 19349663) ^ (i * 83492791)) >>> 0) % 628) / 100;
+          this.propStamps.push({
+            x: bx + g.x,
+            y: py + g.y,
+            radius: Math.min(90, 8 + g.r * 4),
+            color: g.color,
+            alpha: Math.min(1, g.s * 0.45),
+            anim,
+            phase,
+          });
+        }
+      }
       // Register as a SOLID billboard occluder so a character standing behind
       // the prop is hidden by it (the per-frame depth test's solidArtOver
       // branch), instead of always drawing on top.
