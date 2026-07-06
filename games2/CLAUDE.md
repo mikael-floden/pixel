@@ -68,7 +68,11 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
 - **Controls are screen-relative** on the iso world: `stepMovement(..., screenInput)`
   rotates the input by the projection ratio (`ISO_DX`/`ISO_DY` in `shared/` — the
   client's `MAP_GEOMETRY` imports them so they can't drift) so pressing Up walks
-  straight up on screen; facing uses the raw screen vector.
+  straight up on screen; facing uses the raw screen vector. **Grid-axis lock**:
+  a diagonal press (both a horizontal AND a vertical key) snaps the world move
+  to the nearest tile axis (`screenToWorldVector`) — down-left/up-right run along
+  one iso axis, down-right/up-left the other — so corridors/bridges track true
+  instead of drifting off screen-45°. Single-key presses keep screen-cardinal.
 - Open follow-ups (#28): occlusion behind tall tiles; half-level (0.5) stair/ramp
   tiles from the maps agent so players can ascend without jumping. If the tile
   "house format" changes, re-measure `MAP_GEOMETRY` and update `ISO_DX/ISO_DY`.

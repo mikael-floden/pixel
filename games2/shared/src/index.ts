@@ -195,8 +195,24 @@ export function screenToWorldVector(ix: number, iy: number): { x: number; y: num
   const wy = iy / ISO_DY - ix / ISO_DX;
   const len = Math.hypot(wx, wy);
   if (len < 1e-9) return { x: 0, y: 0 };
-  const ux = wx / len;
-  const uy = wy / len;
+  let ux = wx / len;
+  let uy = wy / len;
+  // Grid-axis lock: a DIAGONAL press (both a horizontal AND a vertical key) is
+  // meant to run straight ALONG a tile row/column — on the iso screen the two
+  // grid axes ARE the diagonals (down-left/up-right = one axis, down-right/
+  // up-left = the other). A raw screen-45° vector drifts a few degrees off that
+  // line, so a bridge/corridor slowly slips sideways. Snap the world direction
+  // to the nearest grid axis so those runs track true. Single-key presses are
+  // untouched — they keep their screen-cardinal (up/down/left/right) move.
+  if (ix !== 0 && iy !== 0) {
+    if (Math.abs(ux) >= Math.abs(uy)) {
+      ux = Math.sign(ux);
+      uy = 0;
+    } else {
+      ux = 0;
+      uy = Math.sign(uy);
+    }
+  }
   // Projected screen-speed factor of this unit world vector.
   const screenLen = Math.hypot((ux - uy) * ISO_DX, (ux + uy) * ISO_DY);
   const k = SCREEN_SPEED_REF / screenLen;
