@@ -295,7 +295,7 @@ function loadWorldGrid(name: string): LoadedWorld {
     const world = parseWorld(JSON.parse(readFileSync(path, "utf8")));
     if (!world) return open;
     return {
-      terrain: buildTerrainGrid(world.width, world.height, world.rows),
+      terrain: buildTerrainGrid(world.width, world.height, world.rows, world.props),
       spawn: world.spawn
         ? { x: world.spawn[0] * CELL_WU, y: world.spawn[1] * CELL_WU }
         : { x: (world.width * CELL_WU) / 2, y: (world.height * CELL_WU) / 2 },

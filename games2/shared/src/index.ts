@@ -718,15 +718,22 @@ export interface TerrainGrid {
   height: number;
   level: number[];
   type: string[];
+  /** Cells made impassable by a solid object standing on them (a maps2 prop).
+   * The terrain type stays whatever ground it is (so lighting/surfaces are
+   * unaffected), but movement into the cell is refused — a prop is an obstacle
+   * the player collides with, like a tree or boulder. */
+  blocked: boolean[];
 }
 
 export function buildTerrainGrid(
   width: number,
   height: number,
   rows: { t: string; l?: number }[][],
+  props: { col: number; row: number }[] = [],
 ): TerrainGrid {
   const level: number[] = new Array(width * height).fill(0);
   const type: string[] = new Array(width * height).fill("");
+  const blocked: boolean[] = new Array(width * height).fill(false);
   for (let r = 0; r < height; r++) {
     for (let c = 0; c < width; c++) {
       const cell = rows[r]?.[c];
@@ -735,7 +742,15 @@ export function buildTerrainGrid(
       type[i] = cell?.t ?? "";
     }
   }
-  return { width, height, level, type };
+  // A placed prop makes its cell solid: the game owns collision (derived from
+  // terrain), and a prop is a solid object ON the terrain, so it blocks. maps2
+  // marks every prop cell in its own `collision` grid too; we derive the same
+  // from the prop placements rather than consuming that grid.
+  for (const p of props) {
+    if (p.col >= 0 && p.row >= 0 && p.col < width && p.row < height)
+      blocked[p.row * width + p.col] = true;
+  }
+  return { width, height, level, type, blocked };
 }
 
 // World units per cell is a FIXED constant (CELL_WU), so a world's extent is
@@ -769,7 +784,17 @@ export function levelAtWorld(grid: TerrainGrid, x: number, y: number): number {
 }
 
 export function isStandableAtWorld(grid: TerrainGrid, x: number, y: number): boolean {
-  return surfaceAtWorld(grid, x, y).standable;
+  const i = cellIndex(grid, x, y);
+  if (i < 0) return false;
+  if (grid.blocked[i]) return false; // a prop stands here — solid
+  const t = grid.type[i];
+  return t ? surfaceFor(t).standable : false;
+}
+
+/** True when a solid prop occupies this cell (movement in is refused). */
+export function isBlockedAtWorld(grid: TerrainGrid, x: number, y: number): boolean {
+  const i = cellIndex(grid, x, y);
+  return i < 0 ? false : grid.blocked[i];
 }
 
 /** State that gates a move: how high the player may step, and whether they may
@@ -791,6 +816,7 @@ export function canEnter(
   toY: number,
   ctx: MoveContext,
 ): boolean {
+  if (isBlockedAtWorld(grid, toX, toY)) return false; // solid prop in the way
   const to = surfaceAtWorld(grid, toX, toY);
   const enterable = to.standable || (to.swimmable && ctx.canSwim);
   if (!enterable) return false;

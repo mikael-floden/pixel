@@ -235,6 +235,30 @@ test("feet touching a drop edge commits the fall (no resting overhang)", () => {
   assert.ok(x >= edge, "walked off the ledge (falling still works without a jump)");
 });
 
+test("a placed prop makes its cell solid (movement in is refused)", () => {
+  // Flat 3×1 grass; a prop stands on the middle cell (col 1). Walking east from
+  // cell 0 must stop before entering cell 1 — the prop is an obstacle.
+  const rows = [[{ t: "grass", l: 0 }, { t: "grass", l: 0 }, { t: "grass", l: 0 }]];
+  const g = buildTerrainGrid(3, 1, rows, [{ col: 1, row: 0 }]);
+  assert.equal(isStandableAtWorld(g, CELL_WU * 1.5, CELL_WU * 0.5), false, "prop cell not standable");
+  assert.equal(isStandableAtWorld(g, CELL_WU * 0.5, CELL_WU * 0.5), true, "plain cell standable");
+  assert.equal(
+    canEnter(g, CELL_WU * 0.5, CELL_WU * 0.5, CELL_WU * 1.5, CELL_WU * 0.5, { maxClimb: JUMP_CLIMB, canSwim: true }),
+    false,
+    "cannot enter a prop cell even while jumping",
+  );
+  // Integrating movement east, the player never ends up standing on the prop.
+  const blocked = makeBlocked(g, { maxClimb: WALK_CLIMB, canSwim: true });
+  let x = CELL_WU * 0.5;
+  const midY = CELL_WU / 2;
+  for (let i = 0; i < 80; i++) {
+    const r = stepMovement(x, midY, 1, 0, false, 2 / WALK_SPEED, blocked, 1, false);
+    if (Math.abs(r.x - x) < 1e-6) break;
+    x = r.x;
+  }
+  assert.ok(x < CELL_WU, `stopped before the prop cell (x=${x}, cell boundary ${CELL_WU})`);
+});
+
 test("cleanupRoads: stubs dissolve, roads unify to their majority style", () => {
   // One long road (5 cells) with a minority style in the middle, plus a
   // 2-cell orphan stub elsewhere.

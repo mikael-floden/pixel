@@ -18,6 +18,7 @@ import {
   surfaceAtWorld,
   levelAtWorld,
   isStandableAtWorld,
+  isBlockedAtWorld,
   findSpawn,
   surfaceFor,
   isKnownSurface,
@@ -124,6 +125,10 @@ const litDepth = (baseDepth: number) => 900_001 + baseDepth * 1e-5;
 const JUMP_HEIGHT = 28; // px peak of the jump hop (a tall, floaty arc)
 const SWIM_SINK = 6; // px the sprite sinks while swimming
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
+// Content-bottom row of a maps2 64px ground tile — a prop is anchored so its
+// own opaque bottom lands here, i.e. its object base sits on the ground exactly
+// as the maps agent's renderer plants it (maps2/pipeline/propdemo.py:GROUND_BOTTOM).
+const PROP_GROUND_BOTTOM = 54;
 
 interface Avatar {
   sprite: Phaser.GameObjects.Sprite;
@@ -210,7 +215,6 @@ export class WorldScene extends Phaser.Scene {
     y1: number;
   }[] = [];
   private lastOccl = { x: NaN, y: NaN };
-  private lastProp = { x: NaN, y: NaN };
   private emissiveLights: LightSource[] = [];
   // Local jump prediction (client owns its jump timing).
   private jumpUntil = 0;
@@ -273,7 +277,7 @@ export class WorldScene extends Phaser.Scene {
       // size renders/collides right (see shared: WORLD_WIDTH is only a default).
       this.worldW = this.world.width * CELL_WU;
       this.worldH = this.world.height * CELL_WU;
-      this.terrain = buildTerrainGrid(this.world.width, this.world.height, this.world.rows);
+      this.terrain = buildTerrainGrid(this.world.width, this.world.height, this.world.rows, this.world.props);
       // Surface-contract watchdog: categories missing from SURFACES default
       // to walkable ground, which ALSO makes the night lighting treat them
       // as terrain (walls + face shadows) instead of solid objects (art +
@@ -492,6 +496,8 @@ export class WorldScene extends Phaser.Scene {
       stamina: () => this.room?.state.players.get(this.room!.sessionId)?.stamina ?? null,
       swimming: () => !!this.room?.state.players.get(this.room!.sessionId)?.swimming,
       surfaceAt: (x: number, y: number) => (this.terrain ? surfaceAtWorld(this.terrain, x, y) : null),
+      blockedAt: (x: number, y: number) => (this.terrain ? isBlockedAtWorld(this.terrain, x, y) : null),
+      propCount: () => this.propImgs.length,
       levelAt: (x: number, y: number) => (this.terrain ? levelAtWorld(this.terrain, x, y) : 0),
       nightShader: () => !!this.night && this.night.active,
       // Get/set the time-of-day phase (by index or name); instant when set —
@@ -692,7 +698,6 @@ export class WorldScene extends Phaser.Scene {
   update(_time: number, delta: number) {
     this.redrawGround();
     this.rebuildOccluders();
-    this.rebuildProps();
     if (!this.room) return;
     const dt = delta / 1000;
     const myId = this.room.sessionId;
@@ -1703,6 +1708,13 @@ export class WorldScene extends Phaser.Scene {
       }
     }
 
+    // Placed props (maps2 world@1) share the occluder rebuild: they're tall
+    // billboards that also occlude characters, so building them here — under
+    // the same camera-move guard, appending to the SAME occluderMeta — keeps
+    // the two layers atomic (a separate guard could rebuild one without the
+    // other and desync the depth metadata).
+    this.rebuildProps(cam);
+
     // Per-pixel glow halos (tile-emission@2 sources) for this window. Demo
     // stations draw tall art ONCE at ground level, so every source anchors
     // to the drawn art instead of repeating down a stacked column.
@@ -1720,33 +1732,28 @@ export class WorldScene extends Phaser.Scene {
 
   /**
    * Rebuild the placed-decoration set (maps2 world@1 `props`): each prop is a
-   * TALL 64×128 tile standing on its cell, drawn as a depth-sorted image so
-   * characters pass in front of / behind it. Culled to the camera window (+pad)
-   * and rebuilt only when the camera moves — same cadence as the occluders, but
-   * with its OWN guard: rebuildOccluders has already advanced lastOccl by the
-   * time this runs, so sharing it would skip every prop rebuild.
+   * TALL 64×128 tile standing on its cell, drawn as a depth-sorted billboard so
+   * characters pass in front of / behind it. Called from rebuildOccluders under
+   * its camera-move guard, so it culls to the same window and appends to the
+   * same occluderMeta.
+   *
+   * ANCHOR: a prop's canvas is NOT bottom-full — the object's ground-contact row
+   * varies (a short bush ends high in the canvas, a tall tower nearly fills it).
+   * maps2's own renderer (maps2/pipeline/propdemo.py) plants a prop by aligning
+   * its content BOTTOM (lowest opaque row) to the ground cell's own content-
+   * bottom line (PROP_GROUND_BOTTOM). Bottom-of-CANVAS aligning (the old
+   * imgH−64) only happened to match full-height props, so shorter props floated.
    */
-  private rebuildProps() {
+  private rebuildProps(cam: Phaser.Cameras.Scene2D.Camera) {
+    for (const im of this.propImgs) im.destroy();
+    this.propImgs = [];
     if (!this.world || !this.maps2) return;
     const props = this.world.props;
     if (!props || !props.length) return;
-    const cam = this.cameras.main;
-    const ccx = cam.worldView.centerX;
-    const ccy = cam.worldView.centerY;
-    if (
-      !Number.isNaN(this.lastProp.x) &&
-      Math.abs(ccx - this.lastProp.x) < 96 &&
-      Math.abs(ccy - this.lastProp.y) < 96
-    )
-      return;
-    this.lastProp = { x: ccx, y: ccy };
-    for (const im of this.propImgs) im.destroy();
-    this.propImgs = [];
 
     const { dx, dy, lh, tile: tileSize } = MAP_GEOMETRY;
     const pad = 200;
-    // A tall prop rises up to (imgH − tile) px above its ground box, so pad the
-    // top of the cull rect generously; the bottom is the ground diamond.
+    // A tall prop rises well above its ground box, so pad the top generously.
     const x0 = cam.worldView.x - pad;
     const x1 = cam.worldView.right + pad;
     const y0 = cam.worldView.y - pad - 128;
@@ -1756,21 +1763,72 @@ export class WorldScene extends Phaser.Scene {
       const key = pathTileKey(p.path);
       if (!this.textures.exists(key)) continue;
       const lvl = cell?.l ?? 0;
-      // Unlifted ground depth (matches occluders + character depth), so painter
-      // order by (col+row) puts characters correctly in front / behind.
       const u = p.col - p.row;
       const v = p.col + p.row;
       const bx = this.iso.ox + u * dx;
       const byGround = this.iso.oy + v * dy - lvl * lh; // ground tile top-left
-      const src = this.textures.get(key).getSourceImage() as { height?: number };
-      const imgH = src?.height ?? 128;
-      const py = byGround - (imgH - tileSize); // bottom tile-box aligns with ground
-      if (bx + tileSize < x0 || bx > x1 || py + imgH < y0 || py > y1) continue;
-      const depth = this.iso.oy + v * dy + dy; // unlifted ground line for this cell
-      this.propImgs.push(
-        this.add.image(bx, py, key).setOrigin(0, 0).setDepth(depth),
-      );
+      const b = this.propBounds(key); // opaque {top,bottom} rows in the art
+      const py = byGround + PROP_GROUND_BOTTOM - b.bottom; // content-bottom on the ground line
+      if (bx + tileSize < x0 || bx > x1 || py + b.bottom < y0 || py + b.top > y1) continue;
+      // Unlifted ground line (matches occluders + character depth), so painter
+      // order by (col+row) puts characters correctly in front / behind.
+      const depth = this.iso.oy + v * dy + dy;
+      this.propImgs.push(this.add.image(bx, py, key).setOrigin(0, 0).setDepth(depth));
+      // Register as a SOLID billboard occluder so a character standing behind
+      // the prop is hidden by it (the per-frame depth test's solidArtOver
+      // branch), instead of always drawing on top.
+      this.occluderMeta.push({
+        col: p.col,
+        row: p.row,
+        top: lvl + 1, // rises at least one level above its cell → "higher"
+        solid: true,
+        depth,
+        x0: bx,
+        x1: bx + tileSize,
+        y0: py + b.top,
+        y1: py + b.bottom,
+      });
     }
+  }
+
+  /** Opaque vertical extent {top,bottom} (rows) of a prop texture, measured
+   * once from its alpha and cached — props pad their 64×128 canvas differently
+   * per object, so the anchor + occluder box need the real content rows. */
+  private propBoundsCache = new Map<string, { top: number; bottom: number }>();
+  private propBounds(key: string): { top: number; bottom: number } {
+    let b = this.propBoundsCache.get(key);
+    if (b) return b;
+    b = { top: 0, bottom: 63 };
+    try {
+      const src = this.textures.get(key).getSourceImage() as CanvasImageSource & {
+        width: number;
+        height: number;
+      };
+      const w = src.width, h = src.height;
+      const cnv = document.createElement("canvas");
+      cnv.width = w;
+      cnv.height = h;
+      const ctx = cnv.getContext("2d", { willReadFrequently: true });
+      if (ctx) {
+        ctx.drawImage(src, 0, 0);
+        const d = ctx.getImageData(0, 0, w, h).data;
+        let top = -1, bottom = -1;
+        for (let y = 0; y < h; y++) {
+          let op = false;
+          for (let x = 0; x < w; x++)
+            if (d[(y * w + x) * 4 + 3] > 16) { op = true; break; }
+          if (op) {
+            if (top < 0) top = y;
+            bottom = y;
+          }
+        }
+        if (bottom >= 0) b = { top, bottom };
+      }
+    } catch {
+      // Unreadable source (shouldn't happen same-origin) — keep the fallback.
+    }
+    this.propBoundsCache.set(key, b);
+    return b;
   }
 
   /** Emission glow POOLS as elliptical stamps in the additive glow field.
