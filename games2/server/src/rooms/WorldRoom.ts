@@ -8,6 +8,7 @@ import {
   sanitizeChat,
   WORLD_WIDTH,
   WORLD_HEIGHT,
+  CELL_WU,
   TICK_RATE,
   MAX_INPUT_DT,
   INPUT_TIME_SLACK,
@@ -116,14 +117,16 @@ export class WorldRoom extends Room<WorldState> {
       player.x = saved.x;
       player.y = saved.y;
     } else if (this.terrain) {
-      // Spawn on open walkable land near the world centre.
-      const s = findSpawn(this.terrain, WORLD_WIDTH / 2 + rand(-120, 120), WORLD_HEIGHT / 2 + rand(-120, 120));
+      // Spawn on open walkable land near the world's spawn point.
+      const c = worldSpawn ?? { x: WORLD_WIDTH / 2, y: WORLD_HEIGHT / 2 };
+      const s = findSpawn(this.terrain, c.x + rand(-120, 120), c.y + rand(-120, 120));
       player.x = s.x;
       player.y = s.y;
     } else {
       // No map loaded → open world; spawn near centre so newcomers meet quickly.
-      player.x = WORLD_WIDTH / 2 + rand(-120, 120);
-      player.y = WORLD_HEIGHT / 2 + rand(-120, 120);
+      const c = worldSpawn ?? { x: WORLD_WIDTH / 2, y: WORLD_HEIGHT / 2 };
+      player.x = c.x + rand(-120, 120);
+      player.y = c.y + rand(-120, 120);
     }
     this.state.players.set(client.sessionId, player);
   }
@@ -225,8 +228,8 @@ function rand(lo: number, hi: number): number {
 function loadDemoTerrain(): TerrainGrid | null {
   try {
     const srcDir = dirname(fileURLToPath(import.meta.url)); // server/src/rooms
-    const gameRoot = join(srcDir, "..", "..", ".."); // games/nangijala
-    const assetsRoot = process.env.ASSETS_ROOT || join(gameRoot, "..", ".."); // repo root
+    const gameRoot = join(srcDir, "..", "..", ".."); // games2
+    const assetsRoot = process.env.ASSETS_ROOT || join(gameRoot, ".."); // repo root
     const emissionPath = join(assetsRoot, "tiles", "emission.json");
     const basesPath = join(gameRoot, "client", "public", "tile-bases.json");
     const emission = existsSync(emissionPath)
@@ -240,17 +243,28 @@ function loadDemoTerrain(): TerrainGrid | null {
   }
 }
 
+/** The maps2 world the game serves. prop_demo (the real demo level) has no
+ * world.json yet — ring_test uses the same ringworld@1 schema; flip this and
+ * the client's WORLD_URL together when prop_demo lands. */
+const WORLD_REL = ["maps2", "worlds", "ring_test", "world.json"];
+
+// Player spawn (world units), taken from the maps2 world's spawn cell.
+let worldSpawn: { x: number; y: number } | null = null;
+
 /** Load the maps agent's world grid and build a collision grid, or null if the
  * map isn't present (then the world is open and players move unobstructed). */
 function loadTerrain(): TerrainGrid | null {
   try {
     const srcDir = dirname(fileURLToPath(import.meta.url)); // server/src/rooms
-    const gameRoot = join(srcDir, "..", "..", ".."); // games/nangijala
-    const assetsRoot = process.env.ASSETS_ROOT || join(gameRoot, "..", ".."); // repo root
-    const path = join(assetsRoot, "maps", "world", "world.json");
+    const gameRoot = join(srcDir, "..", "..", ".."); // games2
+    const assetsRoot = process.env.ASSETS_ROOT || join(gameRoot, ".."); // repo root
+    const path = join(assetsRoot, ...WORLD_REL);
     if (!existsSync(path)) return null;
     const world = parseWorld(JSON.parse(readFileSync(path, "utf8")));
     if (!world) return null;
+    worldSpawn = world.spawn
+      ? { x: world.spawn[0] * CELL_WU, y: world.spawn[1] * CELL_WU }
+      : { x: (world.width * CELL_WU) / 2, y: (world.height * CELL_WU) / 2 };
     return buildTerrainGrid(world.width, world.height, world.rows);
   } catch {
     return null;

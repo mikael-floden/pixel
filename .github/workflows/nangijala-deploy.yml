@@ -12,7 +12,7 @@ on:
     # with the scheduled run or a manual dispatch (avoids redeploying on every
     # art commit — the art loops push very frequently).
     paths:
-      - "games/nangijala/**"
+      - "games2/**"
       - ".github/workflows/nangijala-deploy.yml"
   workflow_dispatch: {}       # manual: also picks up the latest baked-in art
   schedule:
@@ -47,7 +47,7 @@ jobs:
         env:
           IMAGE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_AR_REPO }}/${{ vars.GCP_SERVICE }}
         run: |
-          docker build -f games/nangijala/Dockerfile --build-arg GIT_SHA=${{ github.sha }} \
+          docker build -f games2/Dockerfile --build-arg GIT_SHA=${{ github.sha }} \
             -t "$IMAGE:${{ github.sha }}" -t "$IMAGE:latest" .
           docker push "$IMAGE:${{ github.sha }}"
           docker push "$IMAGE:latest"

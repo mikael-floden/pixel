@@ -28,7 +28,7 @@ import {
   JUMP_COOLDOWN_MS,
   MAX_STAMINA,
 } from "@nangijala/shared";
-import { CharacterDef, Manifest, stripUrl } from "../manifest";
+import { CharacterDef, Manifest, frameUrl, frameKey } from "../manifest";
 import { colorForName } from "../placeholder";
 import { Atmosphere, LightSource } from "../lighting";
 import {
@@ -51,6 +51,12 @@ import {
   tileKey,
   tileUrl,
   distinctTiles,
+  distinctTilePaths,
+  pathTileKey,
+  assetUrl,
+  faceKeyFor,
+  topKeyFor,
+  isMaps2World,
   drawOrder,
   canvasSize,
   TileBases,
@@ -158,6 +164,7 @@ export class WorldScene extends Phaser.Scene {
   private lastInput: { ax: number; ay: number; running: boolean } = { ax: 0, ay: 0, running: false };
   // Isometric tile world (null → fall back to a plain ground).
   private world: World | null = null;
+  private maps2 = false; // true when the world uses maps2 explicit tile paths
   private iso = { ox: 0, oy: 0, w: WORLD_WIDTH, h: WORLD_HEIGHT };
   // Terrain (elevation + surface) — same grid the server uses, so prediction matches.
   private terrain: TerrainGrid | null = null;
@@ -248,6 +255,7 @@ export class WorldScene extends Phaser.Scene {
     this.myCharacter = this.registry.get("character") as CharacterDef;
     this.myName = this.registry.get("name") as string;
     this.world = (this.registry.get("world") as World | null) ?? null;
+    this.maps2 = !!this.world && isMaps2World(this.world);
     this.tileBases = (this.registry.get("tileBases") as TileBases | null) ?? null;
     this.demoMode = (this.registry.get("demoMode") as boolean | undefined) ?? false;
     if (this.world) {
@@ -267,23 +275,32 @@ export class WorldScene extends Phaser.Scene {
   }
 
   preload() {
-    // Load every character's movement strips as spritesheets (few requests).
+    // characters2 stores animations as frame FOLDERS (one PNG per frame), not
+    // strips — load each frame as its own texture.
     for (const def of this.manifest.characters) {
-      for (const [anim, dirs] of Object.entries(def.animations)) {
-        for (const dir of Object.keys(dirs)) {
-          this.load.spritesheet(sheetKey(def.uid, anim, dir), stripUrl(def, anim, dir), {
-            frameWidth: def.frameW,
-            frameHeight: def.frameH,
-          });
+      for (const [state, dirs] of Object.entries(def.animations)) {
+        for (const [dir, count] of Object.entries(dirs)) {
+          for (let n = 0; n < count; n++) {
+            this.load.image(frameKey(def.uid, state, dir, n), frameUrl(def, state, dir, n));
+          }
         }
       }
     }
-    // Isometric ground tiles the world uses.
+    // Isometric ground tiles.
     if (this.world) {
-      for (const { t, v } of distinctTiles(this.world)) {
-        this.load.image(tileKey(t, v), tileUrl(t, v));
+      if (this.maps2) {
+        // maps2 world bakes an explicit tile PNG per cell + per-material face
+        // tiles — load that unique set.
+        for (const path of distinctTilePaths(this.world)) {
+          this.load.image(pathTileKey(path), assetUrl(path));
+        }
+      } else {
+        for (const { t, v } of distinctTiles(this.world)) {
+          this.load.image(tileKey(t, v), tileUrl(t, v));
+        }
       }
-      // Self-emission registry (which categories glow, how) — tiles agent's.
+      // Self-emission registry (v1 tiles only; maps2 materials never match, so
+      // the glow layers stay dormant — kept so the emission-demo path works).
       this.load.json("tile-emission", "/assets/tiles/emission.json");
       this.load.spritesheet(CAMPFIRE_KEY, CAMPFIRE_URL, {
         frameWidth: CAMPFIRE_FRAME,
@@ -619,7 +636,7 @@ export class WorldScene extends Phaser.Scene {
 
   private addAvatar(id: string, player: any) {
     const uid: string = player.character || this.manifest.characters[0]?.uid || PLACEHOLDER_TEX;
-    const key = sheetKey(uid, "idle", DEFAULT_DIRECTION);
+    const key = frameKey(uid, "idle", DEFAULT_DIRECTION, 0);
     const p0 = this.project(player.x, player.y);
     // Fall back to the built-in wanderer whenever the character's art is absent
     // (empty roster, a deleted character, or art still loading). Tint it per
@@ -1179,16 +1196,23 @@ export class WorldScene extends Phaser.Scene {
 
   private buildAnimations() {
     for (const def of this.manifest.characters) {
-      for (const [anim, dirs] of Object.entries(def.animations)) {
-        for (const dir of Object.keys(dirs)) {
-          const sheet = sheetKey(def.uid, anim, dir);
-          const key = animKey(def.uid, anim, dir);
-          if (!this.textures.exists(sheet) || this.anims.exists(key)) continue;
+      for (const [state, dirs] of Object.entries(def.animations)) {
+        for (const [dir, count] of Object.entries(dirs)) {
+          const key = animKey(def.uid, state, dir);
+          if (this.anims.exists(key)) continue;
+          const frames: Phaser.Types.Animations.AnimationFrame[] = [];
+          for (let n = 0; n < count; n++) {
+            const fk = frameKey(def.uid, state, dir, n);
+            if (this.textures.exists(fk)) frames.push({ key: fk });
+          }
+          if (!frames.length) continue;
+          // idle/walk/run loop; jump/kick play once.
+          const once = state === "jump" || state === "kick";
           this.anims.create({
             key,
-            frames: this.anims.generateFrameNumbers(sheet, {}),
-            frameRate: ANIM_FPS[anim] ?? 10,
-            repeat: -1,
+            frames,
+            frameRate: ANIM_FPS[state] ?? 10,
+            repeat: once ? 0 : -1,
           });
         }
       }
@@ -1264,10 +1288,22 @@ export class WorldScene extends Phaser.Scene {
         const row = (v - u) / 2;
         if (col < 0 || row < 0 || col >= world.width || row >= world.height) continue;
         const cell = world.rows[row][col];
-        const key = tileKey(cell.t, cell.v);
-        if (!this.textures.exists(key)) continue;
         const bx = this.iso.ox + u * dx - ax;
         const by = this.iso.oy + v * dy - ay;
+        if (this.maps2) {
+          // maps2: the world bakes the exact TOP tile per cell; terraces are
+          // built by stacking the material's plain FACE tile 16px per level
+          // (LEVEL_PX), with the cell's top tile last (like maps2 render2.py).
+          const topKey = topKeyFor(cell);
+          if (!topKey || !this.textures.exists(topKey)) continue; // void cell
+          const faceKey = faceKeyFor(world, cell);
+          const fk = faceKey && this.textures.exists(faceKey) ? faceKey : topKey;
+          for (let lvl = 0; lvl < cell.l; lvl++) rt.batchDraw(fk, bx, by - lvl * lh);
+          rt.batchDraw(topKey, bx, by - cell.l * lh);
+          continue;
+        }
+        const key = tileKey(cell.t, cell.v);
+        if (!this.textures.exists(key)) continue;
         // Per-level stacking builds raised TERRAIN columns out of flat tiles.
         // SOLID structures (trees, pillars, towers) are one object: stacking
         // their tall art drew 2-3 overlapping copies ("two long tiles on top

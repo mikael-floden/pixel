@@ -373,6 +373,17 @@ export const SURFACES: Record<string, Surface> = {
   obelisk_v2: solid,
   watchtower: solid,
   cactus: solid,
+  // tiles2 materials (maps2 worlds) — terrain the player stands on (elevation
+  // drives walls, not solidity); clear_water is swimmable like `water`.
+  clear_water: { standable: false, swimmable: true, speed: 0.55, sound: "water" },
+  saturated_grass: ground(1.0, "grass"),
+  regular_snow: ground(0.7, "snow"),
+  light_sand: ground(0.8, "sand"),
+  lightdark_dirt: ground(0.95, "dirt"),
+  stone_mountain: ground(1.0, "stone"),
+  black_mountain: ground(1.0, "stone"),
+  crystal_ice: ground(1.15, "ice"),
+  wooden_balcony: ground(1.0, "wood"),
 };
 export const DEFAULT_SURFACE: Surface = ground(1.0, "grass");
 const ROAD_SURFACE: Surface = ground(1.2, "stone");

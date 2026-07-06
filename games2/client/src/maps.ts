@@ -17,6 +17,10 @@ export interface World {
   height: number;
   rows: Cell[][];
   pois: { x: number; y: number; label: string; tile?: string }[];
+  /** maps2: player spawn cell (col,row). */
+  spawn?: [number, number];
+  /** maps2: per-material canonical plain base tile PNG for cliff faces. */
+  faceTiles?: Record<string, string>;
 }
 
 import { ISO_DX, ISO_DY, LEVEL_PX, WorldCell, parseWorld } from "@nangijala/shared";
@@ -57,6 +61,35 @@ export function pathTileKey(path: string): string {
 /** Repo-relative asset path ("tiles2/…") → served URL ("/assets/tiles2/…"). */
 export function assetUrl(path: string): string {
   return "/assets/" + path.replace(/^\/+/, "");
+}
+
+/** Texture key for a maps2 cell's TOP surface tile (its baked `path`). */
+export function topKeyFor(cell: WorldCell): string | null {
+  return cell.path ? pathTileKey(cell.path) : null;
+}
+
+/** Texture key for a maps2 cell's FACE (the stacked cliff below the surface):
+ * the material's plain base tile, so terraces read as one wall. Falls back to
+ * the cell's own top tile if no face tile is registered for the material. */
+export function faceKeyFor(world: World, cell: WorldCell): string | null {
+  const fp = world.faceTiles?.[cell.t];
+  if (fp) return pathTileKey(fp);
+  return cell.path ? pathTileKey(cell.path) : null;
+}
+
+/** Every unique tile PNG path the world references (per-cell tops + per-material
+ * faces) — the set to preload as Phaser textures for a maps2 world. */
+export function distinctTilePaths(world: World): string[] {
+  const set = new Set<string>();
+  for (const row of world.rows)
+    for (const c of row) if (c?.path) set.add(c.path);
+  for (const p of Object.values(world.faceTiles ?? {})) set.add(p);
+  return [...set];
+}
+
+/** True when this world is a maps2 world (cells carry explicit tile paths). */
+export function isMaps2World(world: World): boolean {
+  return !!world.faceTiles || world.rows.some((r) => r.some((c) => c?.path));
 }
 
 /** client/public/tile-bases.json — per-variant lowest opaque row of each tile

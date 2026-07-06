@@ -10,9 +10,23 @@ const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const GAME_ROOT = join(SCRIPT_DIR, ".."); // pixel/games2
 // Art domains live at the repo root by default; ASSETS_ROOT overrides it (Docker).
 const ASSETS_ROOT = process.env.ASSETS_ROOT || join(SCRIPT_DIR, "..", "..");
-const SKELETONS = join(ASSETS_ROOT, "characters", "skeletons");
+// v2 characters: characters2/humans/<id>/{base,animations}. Two characters
+// (default_boy = "Man", default_girl = "Woman"), 112x112 frames, animations as
+// frame FOLDERS (animations/<srcAnim>/<dir>/N.png, unpadded N) — NOT strips.
+const HUMANS = join(ASSETS_ROOT, "characters2", "humans");
 
-const MOVEMENT_ANIMS = ["idle", "walk", "run"];
+// Game movement state -> characters2 source animation folder name. The client
+// keeps using idle/walk/run/jump as state names; animSrc (below) tells it the
+// folder to build frame URLs from.
+const ANIM_MAP = {
+  idle: "breathing-idle",
+  walk: "walking",
+  run: "running-8-frames",
+  jump: "jumping-1",
+  kick: "high-kick",
+};
+// Friendly display name per character id (character.json names are prompt junk).
+const DISPLAY = { default_boy: "Man", default_girl: "Woman" };
 const DIRECTIONS = ["south", "south-west", "west", "north-west", "north", "north-east", "east", "south-east"];
 
 function dirsIn(p) {
@@ -148,58 +162,57 @@ function displayName(look, fallback) {
 
 function scan() {
   const characters = [];
-  if (!existsSync(SKELETONS)) return characters;
-  for (const skel of dirsIn(SKELETONS)) {
-    const charsRoot = join(SKELETONS, skel, "characters");
-    for (const id of dirsIn(charsRoot)) {
-      const charDir = join(charsRoot, id);
-      const animsDir = join(charDir, "animations");
-      const animations = {};
-      let frameW = 0;
-      let frameH = 0;
-      for (const anim of MOVEMENT_ANIMS) {
-        const perDir = {};
-        for (const d of DIRECTIONS) {
-          const frameDir = join(animsDir, anim, d);
-          const strip = join(animsDir, `${anim}__${d}.png`);
-          if (!existsSync(frameDir) || !existsSync(strip)) continue;
-          const count = readdirSync(frameDir).filter((f) => f.endsWith(".png")).length;
-          if (count > 0) {
-            perDir[d] = count;
-            if (!frameH) [frameW, frameH] = pngDims(join(frameDir, "00.png"));
-          }
+  if (!existsSync(HUMANS)) return characters;
+  for (const id of dirsIn(HUMANS)) {
+    if (id.startsWith("_")) continue; // _experiments etc.
+    const charDir = join(HUMANS, id);
+    const animsDir = join(charDir, "animations");
+    if (!existsSync(animsDir)) continue;
+    // Movement/action states -> per-direction frame counts, plus animSrc (the
+    // source folder each state maps to) so the client can build frame URLs.
+    const animations = {};
+    const animSrc = {};
+    let frameW = 0;
+    let frameH = 0;
+    for (const [state, src] of Object.entries(ANIM_MAP)) {
+      const perDir = {};
+      for (const d of DIRECTIONS) {
+        const frameDir = join(animsDir, src, d);
+        if (!existsSync(frameDir)) continue; // some anims (high-kick) lack NE/NW
+        const count = readdirSync(frameDir).filter((f) => /^\d+\.png$/.test(f)).length;
+        if (count > 0) {
+          perDir[d] = count;
+          if (!frameH) [frameW, frameH] = pngDims(join(frameDir, "0.png"));
         }
-        if (Object.keys(perDir).length) animations[anim] = perDir;
       }
-      if (!Object.keys(animations).length) continue; // unplayable
-      // Foot anchors per direction (from idle frame 0) — where the sole line
-      // sits inside the frame, as origin fractions for the client.
-      const anchors = {};
-      for (const d of Object.keys(animations.idle ?? {})) {
-        const a = footAnchor(join(animsDir, "idle", d, "00.png"));
-        if (a) anchors[d] = a;
+      if (Object.keys(perDir).length) {
+        animations[state] = perDir;
+        animSrc[state] = src;
       }
-      let look = "";
-      const metaPath = join(charDir, "character.json");
-      if (existsSync(metaPath)) {
-        try {
-          look = JSON.parse(readFileSync(metaPath, "utf8")).look || "";
-        } catch {}
-      }
-      const webRoot = "/assets/" + relative(ASSETS_ROOT, charDir).split("\\").join("/");
-      characters.push({
-        uid: `${skel}/${id}`,
-        skeleton: skel,
-        id,
-        name: displayName(look, id),
-        root: webRoot,
-        portrait: `${webRoot}/portrait.png`,
-        frameW,
-        frameH,
-        animations,
-        anchors,
-      });
     }
+    if (!animations.idle) continue; // unplayable without an idle
+    // Foot anchors per direction (from idle frame 0) — where the sole line
+    // sits inside the frame, as origin fractions for the client.
+    const anchors = {};
+    for (const d of Object.keys(animations.idle)) {
+      const a = footAnchor(join(animsDir, ANIM_MAP.idle, d, "0.png"));
+      if (a) anchors[d] = a;
+    }
+    const webRoot = "/assets/" + relative(ASSETS_ROOT, charDir).split("\\").join("/");
+    characters.push({
+      uid: id,
+      skeleton: "humans",
+      id,
+      name: DISPLAY[id] || id,
+      root: webRoot,
+      // No portrait.png in characters2 — use the south rotation as the face.
+      portrait: `${webRoot}/base/south.png`,
+      frameW,
+      frameH,
+      animations,
+      animSrc,
+      anchors,
+    });
   }
   return characters;
 }
@@ -210,6 +223,6 @@ const publicDir = join(GAME_ROOT, "client", "public");
 mkdirSync(publicDir, { recursive: true });
 
 const characters = scan();
-const out = { generatedFrom: "pixel/characters", directions: DIRECTIONS, characters };
+const out = { generatedFrom: "pixel/characters2", directions: DIRECTIONS, characters };
 writeFileSync(join(publicDir, "characters.json"), JSON.stringify(out, null, 2) + "\n");
 console.log(`[manifest] ${characters.length} characters -> client/public/characters.json`);

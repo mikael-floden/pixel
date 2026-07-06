@@ -6,11 +6,11 @@ on:
   push:
     branches: [main]
     paths:
-      - "games/nangijala/**"
+      - "games2/**"
       - ".github/workflows/nangijala.yml"
   pull_request:
     paths:
-      - "games/nangijala/**"
+      - "games2/**"
 
 permissions:
   contents: read
@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: games/nangijala
+        working-directory: games2
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,7 +35,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: games/nangijala/package-lock.json
+          cache-dependency-path: games2/package-lock.json
 
       - name: Install
         run: npm ci

@@ -1,4 +1,4 @@
-import { CharacterDef, Manifest, stripUrl } from "./manifest";
+import { CharacterDef, Manifest, frameUrl } from "./manifest";
 
 const NAMES = ["Ari", "Bex", "Cyl", "Dax", "Eir", "Fen", "Gio", "Hana", "Ivo", "Juno", "Kira", "Lio"];
 
@@ -111,31 +111,31 @@ function el(tag: string, cls: string): HTMLElement {
 const IDLE_FPS = 6; // matches the in-game idle frame rate (WorldScene ANIM_FPS)
 
 /**
- * A preview showing the character exactly as in game: the idle-south strip at
- * native 1:1 pixel scale, animated by stepping background-position (same FPS
- * as in-game idle). Falls back to the portrait (e.g. the built-in Wanderer,
- * whose art is procedural and has no strips).
+ * A preview showing the character as in game: the idle-south frames cycled at
+ * the in-game idle FPS. characters2 stores animations as frame folders, so we
+ * swap an <img>'s src per frame. Falls back to the portrait (base/south.png)
+ * when there are no idle frames (e.g. the built-in Wanderer).
  */
 function spritePreview(c: CharacterDef, label: string): HTMLElement {
+  const img = el("img", "ml-portrait") as HTMLImageElement;
+  img.alt = label;
   const frames = c.animations.idle?.south ?? 0;
-  if (!frames) {
-    const img = el("img", "ml-portrait") as HTMLImageElement;
+  if (frames > 1) {
+    const urls = Array.from({ length: frames }, (_, i) => frameUrl(c, "idle", "south", i));
+    urls.forEach((u) => {
+      const p = new Image();
+      p.src = u; // warm the cache so swaps don't flicker
+    });
+    let n = 0;
+    img.src = urls[0];
+    setInterval(() => {
+      n = (n + 1) % frames;
+      img.src = urls[n];
+    }, 1000 / IDLE_FPS);
+  } else {
     img.src = c.portrait;
-    img.alt = label;
-    return img;
   }
-  const sprite = el("div", "ml-sprite");
-  sprite.setAttribute("role", "img");
-  sprite.setAttribute("aria-label", label);
-  sprite.style.width = `${c.frameW}px`;
-  sprite.style.height = `${c.frameH}px`;
-  sprite.style.backgroundImage = `url("${stripUrl(c, "idle", "south")}")`;
-  // Step through the strip; steps(N) holds each frame like the game does.
-  sprite.animate(
-    [{ backgroundPosition: "0px 0px" }, { backgroundPosition: `-${frames * c.frameW}px 0px` }],
-    { duration: (frames / IDLE_FPS) * 1000, iterations: Infinity, easing: `steps(${frames}, end)` },
-  );
-  return sprite;
+  return img;
 }
 
 let stylesInjected = false;

@@ -936,7 +936,7 @@ export class NightLights {
       const vRowLo = 2 * ri + (col - row);
       const hb = vColLo >= vRowLo ? tAt(ci - 1, ri) : tAt(ci, ri - 1);
       if (hb < 90 && hb > z + 0.5) {
-        const dBase = Math.max(0, (col + row - Math.max(vColLo, vRowLo)) * 13);
+        const dBase = Math.max(0, (col + row - Math.max(vColLo, vRowLo)) * 15);
         const t2 = Math.min(1, dBase / 6);
         const ao = 0.72 + 0.28 * (t2 * t2 * (3 - 2 * t2));
         for (let ch = 0; ch < 3; ch++) out[ch] *= ao;

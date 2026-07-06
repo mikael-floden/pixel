@@ -8,7 +8,11 @@ export interface CharacterDef {
   portrait: string;
   frameW: number;
   frameH: number;
-  animations: Record<string, Record<string, number>>; // anim -> dir -> frameCount
+  animations: Record<string, Record<string, number>>; // state -> dir -> frameCount
+  // state -> characters2 source animation FOLDER (idle -> breathing-idle,
+  // walk -> walking, run -> running-8-frames, jump -> jumping-1, kick ->
+  // high-kick). Frames: <root>/animations/<animSrc[state]>/<dir>/<n>.png.
+  animSrc?: Record<string, string>;
   // Foot anchor per direction: where the sole line (centre point between the
   // feet) sits inside the frame, as origin fractions. Pinning the sprite there
   // makes the drawn feet meet the collision position exactly. `top` is the
@@ -31,7 +35,14 @@ export async function loadManifest(): Promise<Manifest> {
   return cache;
 }
 
-/** URL of the horizontal strip for one animation/direction. */
-export function stripUrl(def: CharacterDef, anim: string, dir: string): string {
-  return `${def.root}/animations/${anim}__${dir}.png`;
+/** characters2 stores animations as frame FOLDERS (not strips): one PNG per
+ * frame at <root>/animations/<srcAnim>/<dir>/<n>.png (unpadded n). */
+export function frameUrl(def: CharacterDef, state: string, dir: string, n: number): string {
+  const src = def.animSrc?.[state] ?? state;
+  return `${def.root}/animations/${src}/${dir}/${n}.png`;
+}
+
+/** Phaser texture key for one character frame. */
+export function frameKey(uid: string, state: string, dir: string, n: number): string {
+  return `f:${uid}:${state}:${dir}:${n}`;
 }

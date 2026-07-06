@@ -21,6 +21,8 @@ import {
   WORLD_WIDTH,
   WORLD_HEIGHT,
   WALK_SPEED,
+  ISO_DX,
+  ISO_DY,
 } from "@nangijala/shared";
 
 // A 3×3 world. Centre column is grass; left column water; the right column is a
@@ -153,7 +155,7 @@ test("screen speed is uniform: Up, Right and diagonals all move equally fast on 
     const dx = r.x - 800;
     const dy = r.y - 800;
     // Project the world displacement back to screen pixels (per iso geometry).
-    return Math.hypot((dx - dy) * 32, (dx + dy) * 13);
+    return Math.hypot((dx - dy) * ISO_DX, (dx + dy) * ISO_DY);
   };
   const up = screenSpeed(0, -1);
   const right = screenSpeed(1, 0);
