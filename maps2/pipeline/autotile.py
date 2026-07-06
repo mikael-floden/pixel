@@ -231,9 +231,11 @@ class AutoTiler:
         pure = {e: (mm,) * EDGE_K for e in EDGES}
         if near:
             o, dd, olvl = self._nearest_other(mm, x, y)
-            # never fade water UP onto higher ground — that raises the water
-            water_uphill = o in self.water and self.level[y, x] > olvl
-            if o is not None and dd <= self.fw and not water_uphill:
+            # no island fade across a water boundary: the shore transition lives
+            # only on the land-side beach tile, and water stays clean up to it
+            # (this also never raises water onto higher ground).
+            water_edge = mm in self.water or o in self.water
+            if o is not None and dd <= self.fw and not water_edge:
                 f = dd / self.fw                               # 0 at seam .. 1 out
                 if _h01(x, y, self.seed + 7) <= self.fd * (1.0 - f):
                     band, omax = self._fade_band(mm, o)
