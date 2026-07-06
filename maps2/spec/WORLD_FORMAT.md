@@ -24,9 +24,14 @@ screen_y = origin_y + (x + y) * dy - level[y][x] * level_px
 | `dx`, `dy` | 32, 15 | iso step per cell |
 | `level_px` | 16 | vertical pixels per elevation level |
 
-Tiles are drawn back-to-front by `(x + y)`. A cell of elevation `L` stacks its
-material's plain tile `L` times (each 16px up) and then draws its `top` tile on
-the surface; props draw last, anchored by content-bottom.
+Tiles are drawn back-to-front by `(x + y)`. A cell of elevation `L` stacks a
+**base surface tile** `L` times (each 16px up) and then draws its `top` tile on
+the surface; props draw last, anchored by content-bottom. For the cliff FACES,
+stack the cell's own `top` tile when it is a plain ground tile (for a transition
+`top`, use any solid base tile of the cell's `mat`). The generator varies which
+solid base tile a region uses — so cliff walls differ across the map but stay
+coherent within an area — and, because a plain cell's `top` IS that region tile,
+stacking `top` reproduces the coherent wall for free.
 
 ## Fields
 

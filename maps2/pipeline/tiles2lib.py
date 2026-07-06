@@ -117,6 +117,7 @@ class Tiles2:
         self.types = self._discover()
         self._targets: dict[str, list] = {}
         self._targets_inner: dict[str, list] = {}
+        self._solid: dict[str, list] = {}
         self._img: dict[str, Image.Image] = {}
         self._pools: dict = {}
         self._analysis = self._load_or_build_analysis()
@@ -261,6 +262,20 @@ class Tiles2:
             score = 4.0 * top_std + mean_dist + 0.5 * wall_std + 0.5 * idx
             scored.append((score, p))
         scored.sort()
+        # genuinely SOLID tiles (uniform top), best-first — candidates for the
+        # region-coherent base. The WALL style is per-sheet, so keep at most one
+        # solid tile per sheet: that way the candidates have DISTINCT cliff walls.
+        std_by_p = {p: ts for ts, _m, _w, _i, p in stats}
+        solid, seen_sheets = [], set()
+        for _, p in scored:
+            if std_by_p[p] >= 1.5:
+                continue
+            sheet = os.path.basename(os.path.dirname(p))
+            if sheet in seen_sheets:
+                continue
+            seen_sheets.add(sheet)
+            solid.append(p)
+        self._solid[gid] = (solid or [scored[0][1]])[:6]
         k = max(3, int(round(len(scored) * clean_pct)))
         clean = [p for _, p in scored[:k]]
         special = [p for _, p in scored[k:]] or clean
@@ -272,27 +287,55 @@ class Tiles2:
         uniform tile is wanted (e.g. stacked cliff faces read as a clean wall)."""
         return self.base_pools(gid)[0][0]
 
-    def plain_set(self, gid: str, k: int = 5) -> list[str]:
-        """The `k` flattest, most on-target tiles. Filling the bulk of a field by
-        mixing THESE (rather than repeating one tile) keeps the colour uniform and
-        on-target — they're all normalized to the same target, so no cell pops —
-        while breaking up the visible single-tile repeat. Excludes the textured /
-        bushy / speckled tiles (those live in `special`)."""
-        return self.base_pools(gid)[0][:k]
+    def plain_set(self, gid: str, k: int = 4) -> list[str]:
+        """Up to `k` genuinely SOLID base tiles (uniform tops, best-first). They
+        look identical on top but carry different cliff-WALL styles, so they're the
+        palette for region-coherent variety (see `region_base`)."""
+        self.base_pools(gid)
+        return self._solid.get(gid, [self.plain_tile(gid)])[:k]
 
-    def pick_base(self, gid: str, r_plain: float, r_pool: float, r_tile: float,
-                  plain_prob: float = 0.90, special_prob: float = 0.15) -> str:
-        """Deterministic pick. THE single solid base tile (`plain_tile`) is used
-        almost everywhere: it gives one uniform SOLID colour on top AND — since it
-        renders the cliff faces too — a COHERENT wall. Solid tiles from different
-        sheets share the same flat top but have different wall styles, so swapping
-        between them per-cell would make cliffs look patchy; we deliberately don't.
-        Only a rare cell (~`(1-plain_prob)*special_prob`) breaks to a special
-        accent (flower/pebble/bare patch) for a touch of life."""
+    @staticmethod
+    def _vnoise(x: float, y: float, scale: float, seed: int) -> float:
+        """Smooth bilinear value noise in [0,1) — large, organic regions."""
+        fx, fy = x / scale, y / scale
+        ix, iy = int(np.floor(fx)), int(np.floor(fy))
+        tx, ty = fx - ix, fy - iy
+
+        def h(a, b):
+            v = (a * 374761393 + b * 668265263 + seed * 362437) & 0xFFFFFFFF
+            v = ((v ^ (v >> 13)) * 1274126177) & 0xFFFFFFFF
+            return ((v ^ (v >> 16)) & 0xFFFFFFFF) / 0xFFFFFFFF
+
+        ux, uy = tx * tx * (3 - 2 * tx), ty * ty * (3 - 2 * ty)
+        a = h(ix, iy) + (h(ix + 1, iy) - h(ix, iy)) * ux
+        b = h(ix, iy + 1) + (h(ix + 1, iy + 1) - h(ix, iy + 1)) * ux
+        return a + (b - a) * uy
+
+    def region_base(self, gid: str, x: int, y: int, scale: float = 32) -> str:
+        """The solid base tile for cell (x, y), chosen by LARGE regions so a whole
+        area shares one tile — the tops match (all solid, same colour) and, since
+        this tile also renders the cliff FACES, the walls stay coherent within a
+        region. Different regions use different solid tiles => varied cliff walls
+        across the map, without patchiness. `scale` sets the switch distance."""
+        ps = self.plain_set(gid)
+        if len(ps) <= 1:
+            return ps[0]
+        seed = 1000 + sum(ord(c) for c in gid)
+        v = self._vnoise(x, y, scale, seed)
+        return ps[min(len(ps) - 1, int(v * len(ps)))]
+
+    def pick_base(self, gid: str, x: int, y: int, r_plain: float, r_pool: float,
+                  r_tile: float, plain_prob: float = 0.90,
+                  special_prob: float = 0.15) -> str:
+        """Deterministic pick for cell (x, y). Almost every cell gets the SOLID
+        region base (`region_base`) — uniform tops, and coherent walls within a
+        region because the same tile renders the cliff faces; different regions use
+        different solid tiles so cliff walls vary across the map. Only a rare cell
+        (~`(1-plain_prob)*special_prob`) breaks to a special accent for life."""
         if r_plain >= plain_prob and r_pool < special_prob:
             special = self.base_pools(gid)[1]
             return special[int(r_tile * len(special)) % len(special)]
-        return self.plain_tile(gid)
+        return self.region_base(gid, x, y)
 
     # -- transition analysis --------------------------------------------------
 

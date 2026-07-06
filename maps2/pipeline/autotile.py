@@ -309,9 +309,9 @@ class AutoTiler:
                         pool = [c for c in band[1:] if abs(c["other"] - t) <= near_o + 0.04]
                         c = pool[int(_h01(x, y, self.seed + 6) * len(pool)) % len(pool)]
                         return c["file"], c["mirror"], pure
-        # plain ground with the usual rare clean/special variation
-        p = self.lib.pick_base(mm, _h01(x, y, self.seed + 4), _h01(x, y, self.seed + 2),
-                               _h01(x, y, self.seed + 1),
+        # plain ground: region-coherent solid base, rare special accent
+        p = self.lib.pick_base(mm, x, y, _h01(x, y, self.seed + 4),
+                               _h01(x, y, self.seed + 2), _h01(x, y, self.seed + 1),
                                plain_prob=self.plain_prob, special_prob=self.special_prob)
         return p, False, pure
 

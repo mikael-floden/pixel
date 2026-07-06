@@ -233,7 +233,6 @@ class Demo:
         canvas = Image.new("RGBA", (W, H), tuple(int(c) for c in wc)+(255,))
         order = sorted(((x, y) for y in range(n) for x in range(n)),
                        key=lambda p: (p[0]+p[1], p[1]))
-        plaincache = {}
         for x, y in order:
             m = self.mat[y, x]
             if m == "":
@@ -241,9 +240,9 @@ class Demo:
             bx = ox + (x-y)*DX
             by = oy + (x+y)*DY
             L = int(self.level[y, x])
-            if m not in plaincache:
-                plaincache[m] = self.lib.img(self.lib.plain_tile(m))
-            face = plaincache[m]
+            # cliff faces use the cell's region base tile (matches the top; walls
+            # stay coherent within a region, vary across the map)
+            face = self.lib.img(self.lib.region_base(m, x, y))
             for lvl in range(L):
                 canvas.alpha_composite(face, (bx, by - lvl*LEVEL_PX))
             timg = self.lib.img(self.top[y, x])
