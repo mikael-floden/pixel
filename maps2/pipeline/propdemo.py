@@ -23,7 +23,7 @@ from PIL import Image
 from tiles2lib import DX, DY, LEVEL_PX, Tiles2
 
 TERRAINS = ["saturated_grass", "lightdark_dirt", "stone_mountain",
-            "black_mountain", "regular_snow"]
+            "black_mountain", "regular_snow", "clear_water"]
 GROUND_BOTTOM = 54          # content bottom of a 64x64 base tile
 COLS = 16                   # props per row within a height group
 SX = 2                      # cell spacing between props across
