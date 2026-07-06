@@ -1523,7 +1523,13 @@ export class WorldScene extends Phaser.Scene {
           const bx = this.iso.ox + u * dx;
           const by = this.iso.oy + v * dy;
           const oDepth = by + dy;
-          for (let lvl = 0; lvl < cell.l; lvl++)
+          // Draw only the EXPOSED cliff faces (from the lowest front neighbour
+          // up). The ground RT already bakes every cell's full face stack with
+          // the lower front cells drawn OVER it; redrawing the covered lower
+          // faces here — on top of the RT at a high depth — re-exposed them,
+          // painting the front cell's ground back into a wall (the "half-tile"
+          // terrace tear). stackFrom = one above the lower of the E/S fronts.
+          for (let lvl = this.stackFrom(col, row, cell.l, false); lvl < cell.l; lvl++)
             this.occluders.push(
               this.add.image(bx, by - lvl * lh, fk).setOrigin(0, 0).setDepth(oDepth),
             );
