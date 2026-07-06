@@ -55,6 +55,28 @@ def diamond_mask() -> np.ndarray:
 DM = diamond_mask()
 _YS, _XS = np.where(DM)
 
+
+def _erode(mask: np.ndarray, r: int) -> np.ndarray:
+    """Shrink a boolean mask inward by r px (4-neighbour erosion)."""
+    m = mask.copy()
+    for _ in range(r):
+        m = (m & np.roll(m, 1, 0) & np.roll(m, -1, 0)
+             & np.roll(m, 1, 1) & np.roll(m, -1, 1))
+    return m
+
+
+# The INTERIOR of the top diamond — the diamond minus its baked dark outline rim.
+# Tile "solidity"/colour must be judged HERE: every tile carries a dark edge line,
+# so measuring the whole diamond makes even a perfectly flat tile look textured
+# and hides the genuinely solid ones.
+DM_INNER = _erode(DM, 4)
+
+# The side FACE (wall) below the diamond — what shows on a stacked cliff. The
+# plain tile is used for cliff faces too, so we prefer a tile whose wall is also
+# clean (a uniform dirt/rock face, not a busy or wrong-coloured one).
+_Wy, _Wx = np.mgrid[0:64, 0:64]
+WALL_MASK = (~DM) & (_Wy >= 38) & (_Wy <= 58)
+
 # The four diamond CORNER points (N apex, E, S, W) and a small sampling patch at
 # each — used to read a tile's Wang corner-code (which material owns each corner).
 CORNERS = {"N": (32, 9), "E": (61, 23), "S": (32, 37), "W": (3, 23)}
@@ -94,6 +116,7 @@ class Tiles2:
         self.root = tiles_root
         self.types = self._discover()
         self._targets: dict[str, list] = {}
+        self._targets_inner: dict[str, list] = {}
         self._img: dict[str, Image.Image] = {}
         self._pools: dict = {}
         self._analysis = self._load_or_build_analysis()
@@ -178,6 +201,20 @@ class Tiles2:
                                   else np.array([128, 128, 128.])).tolist()
         return np.array(self._targets[gid], np.float32)
 
+    def target_inner(self, gid: str) -> np.ndarray:
+        """Canonical material colour measured on the diamond INTERIOR (excludes the
+        dark outline), so it reflects the flat surface colour a solid tile shows."""
+        if gid not in self._targets_inner:
+            cols = []
+            for f in self.base(gid)[:24]:
+                a = np.asarray(self.img(f)).astype(np.float32)
+                sel = DM_INNER & (a[:, :, 3] > 40)
+                if sel.any():
+                    cols.append(a[:, :, :3][sel].mean(0))
+            self._targets_inner[gid] = (np.mean(cols, 0) if cols
+                                        else np.array([128, 128, 128.])).tolist()
+        return np.array(self._targets_inner[gid], np.float32)
+
     # -- clean vs special base tiles ------------------------------------------
 
     def base_pools(self, gid: str, clean_pct: float = 0.30):
@@ -197,16 +234,31 @@ class Tiles2:
         target colour, not merely the least-speckled one."""
         if gid in self._pools:
             return self._pools[gid]
-        t = self.target_color(gid)
-        scored = []
+        # measure every tile: INTERIOR flatness + mean colour (top), WALL flatness
+        # (the cliff face), and tile index (tile_00 is usually the canonical clean
+        # one, with a clean wall too — a good tie-breaker).
+        stats = []
         for p in self.base(gid):
             a = np.asarray(self.img(p)).astype(np.float32)
-            sel = DM & (a[:, :, 3] > 40)
-            px = a[:, :, :3][sel]
-            mean_dist = float(np.linalg.norm(px.mean(0) - t))
-            rgb_std = float(px.std(0).mean())
-            accent = float((np.linalg.norm(px - t, axis=1) > 55).mean())
-            score = mean_dist + 1.5 * rgb_std + 30.0 * accent
+            al = a[:, :, 3] > 40
+            top = a[:, :, :3][DM_INNER & al]
+            wall = a[:, :, :3][WALL_MASK & al]
+            wall_std = float(wall.std(0).mean()) if len(wall) else 40.0
+            try:
+                idx = int(p.rsplit("tile_", 1)[1].split(".")[0])
+            except (IndexError, ValueError):
+                idx = 8
+            stats.append((float(top.std(0).mean()), top.mean(0), wall_std, idx, p))
+        # canonical FLAT colour = centre of the genuinely solid tiles (the mean of
+        # all is skewed by textured/tinted ones), so an on-shade solid tile isn't
+        # wrongly rejected as "off colour"
+        solid = [s for s in stats if s[0] < 2.0] or sorted(stats)[:3]
+        ctarget = np.mean([s[1] for s in solid], 0)
+        scored = []
+        for top_std, mean, wall_std, idx, p in stats:
+            mean_dist = float(np.linalg.norm(mean - ctarget))
+            # SOLID top dominates; then a clean wall + on-shade colour; tile_00 nudge
+            score = 4.0 * top_std + mean_dist + 0.5 * wall_std + 0.5 * idx
             scored.append((score, p))
         scored.sort()
         k = max(3, int(round(len(scored) * clean_pct)))
