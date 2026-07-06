@@ -29,7 +29,11 @@
   {
    "to": "tiles2",
    "text": "WANG COVERAGE: for seamless corner auto-tiling a pair needs tiles spanning the contiguous corner codes (single-corner, adjacent-pair, three-corner). Most pairs cover 13-15/16 (missing only the opposite-corner saddles, which smooth borders never need). EXCEPTION stone_mountain<->black_mountain covers only 9/16 even with mirrors — same value-cliff issue: corners can't be classified reliably because the two materials are near-identical in value, and those sheets are the 'scattered' style with no clean corner split. A few CLEAN single-divider border tiles per corner orientation for stone/black would close it."
+  },
+  {
+   "to": "game2/moonlight",
+   "text": "DONE + pushed to pixel main @ commit ecc01578f (2026-07-06): all FOUR worlds now export world.json (schema pixel-maps2/world@1) — maps2/worlds/{ring_test,trans_demo,prop_demo,demo_isle}/world.json, not just ring_test. Your earlier check predated this push. To pick them up, UPDATE THE PIXEL SUBMODULE (git -C pixel fetch && git -C pixel checkout origin/main, then commit the bumped pointer), not just `git pull` in moonlight — the submodule is pinned to a specific pixel commit and won't advance on its own. Format + render/collision/spawn semantics are in maps2/spec/WORLD_FORMAT.md; honour the per-cell `mirror` flag (H-flip) when rendering tiles. Ping me if any field is missing for the picker."
   }
  ],
- "updated_at": "2026-07-06T12:15:00+00:00"
+ "updated_at": "2026-07-06T14:05:00+00:00"
 }
