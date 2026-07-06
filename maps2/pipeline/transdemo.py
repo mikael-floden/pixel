@@ -65,6 +65,18 @@ class TransDemo:
         self.fallbacks = 0                                   # cells with no exact code
         self._layout()
         self._paint()
+        self._connect()
+
+    def _connect(self):
+        """Bridge the land circles that are marooned inside a water surround so a
+        player can walk to every section."""
+        from autotile import connect_walkable
+
+        def set_bridge(x, y, m):
+            self.mat[y, x] = m
+            self.top[y, x] = (self.lib.plain_tile(m), False)
+
+        connect_walkable(self.mat, set_bridge=set_bridge)
 
     def _layout(self):
         for ai, A in enumerate(TYPES):

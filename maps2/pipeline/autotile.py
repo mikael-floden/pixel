@@ -87,6 +87,70 @@ def flatten_shores(mat, level, water=("clear_water",), band=3, ramp=1):
     return level
 
 
+def connect_walkable(mat, water=("clear_water",), *, set_bridge, min_size=60,
+                     width=3):
+    """Carve walkable land bridges so a player can move between otherwise
+    disconnected sections. Finds 4-connected components of walkable cells (land =
+    non-void, non-water) and links every component of >= `min_size` to the largest
+    one with a straight L-shaped corridor `width` cells wide. For each cell the
+    corridor must reclaim (void or water), calls `set_bridge(x, y, m)` where `m`
+    is the connecting section's dominant material (so the bridge reads as a spit
+    of that land) — the caller turns it into ground in its own render structures.
+    Tiny decorative islets (< min_size) are left alone. Returns bridges carved."""
+    from collections import Counter
+    from collections import deque
+    H, W = mat.shape
+    ws = set(water)
+
+    def walk(x, y):
+        return mat[y, x] != "" and mat[y, x] not in ws
+
+    seen = np.zeros((H, W), bool)
+    comps = []
+    for y in range(H):
+        for x in range(W):
+            if walk(x, y) and not seen[y, x]:
+                q, cells = deque([(x, y)]), []
+                seen[y, x] = True
+                while q:
+                    cx, cy = q.popleft()
+                    cells.append((cx, cy))
+                    for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                        xx, yy = cx + i, cy + j
+                        if 0 <= xx < W and 0 <= yy < H and walk(xx, yy) and not seen[yy, xx]:
+                            seen[yy, xx] = True
+                            q.append((xx, yy))
+                comps.append(cells)
+    if len(comps) <= 1:
+        return 0
+    comps.sort(key=len, reverse=True)
+    main = set(comps[0])
+    r = width // 2
+    bridges = 0
+    for comp in comps[1:]:
+        if len(comp) < min_size:
+            continue
+        m = Counter(mat[y, x] for x, y in comp).most_common(1)[0][0]
+        # nearest cell pair (comp centroid -> nearest main -> nearest comp)
+        cx = sum(p[0] for p in comp) / len(comp)
+        cy = sum(p[1] for p in comp) / len(comp)
+        mx, my = min(main, key=lambda p: (p[0] - cx) ** 2 + (p[1] - cy) ** 2)
+        sx, sy = min(comp, key=lambda p: (p[0] - mx) ** 2 + (p[1] - my) ** 2)
+        # L-path sx,sy -> mx,my; reclaim any non-walkable cell (thickened)
+        path = [(x, sy) for x in range(min(sx, mx), max(sx, mx) + 1)] + \
+               [(mx, y) for y in range(min(sy, my), max(sy, my) + 1)]
+        for px, py in path:
+            for dx in range(-r, r + 1):
+                for dy in range(-r, r + 1):
+                    x, y = px + dx, py + dy
+                    if 0 <= x < W and 0 <= y < H and not walk(x, y):
+                        set_bridge(x, y, m)
+                        main.add((x, y))
+        main.update(comp)
+        bridges += 1
+    return bridges
+
+
 class AutoTiler:
     def __init__(self, mat, lib: Tiles2, seed: int, *, priority=None, level=None,
                  water=("clear_water",), fade_width: int = 5,

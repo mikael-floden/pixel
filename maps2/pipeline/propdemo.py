@@ -139,6 +139,18 @@ def build(out: str | None = None):
     os.makedirs(out, exist_ok=True)
     print(f"grid {d.n_x}x{d.n_y}; plots: "
           + ", ".join(f"{g}:{d.plots[g][2]}x{d.plots[g][3]}" for g in TERRAINS))
+    # bridge the void gaps between plots so a player can walk between sections
+    from autotile import connect_walkable
+    matg = np.full((d.n_y, d.n_x), "", object)
+    for (x, y), gid in d.ground.items():
+        matg[y, x] = gid
+
+    def set_bridge(x, y, m):
+        d.ground[(x, y)] = m
+
+    nb = connect_walkable(matg, set_bridge=set_bridge)
+    print(f"bridged {nb} plot gap(s)")
+
     # loadable world: plain ground per cell + the props laid on top
     mat = np.full((d.n_y, d.n_x), "", object)
     top = np.full((d.n_y, d.n_x), None, object)
