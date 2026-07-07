@@ -225,14 +225,17 @@ export class WorldScene extends Phaser.Scene {
     y1: number;
   }[] = [];
   private lastOccl = { x: NaN, y: NaN };
-  // --- Occlusion fade: tall geometry ABOVE the local player's level that sits
-  // between camera and player is redrawn BEHIND the player (so the character +
-  // same-level entities show on top) as a faint ghost over a BLACK backing (so
-  // no walkable-looking ground leaks through). Graded by height-above + distance
-  // so you keep your level clear and still see the next level up (where to jump).
+  // --- Occlusion fade: tall geometry ABOVE the local player's level near the
+  // player is faded to a faint ghost (moved behind the player) so it stops
+  // hiding the character; a REVEAL layer redraws the player-level ground the
+  // tower was covering (so you see the grass/level you're walking on, NOT the
+  // tower), and drops a BLACK diamond at each faded tower's ROOT (its base
+  // footprint — the one spot with nothing behind it, so it must read as void).
+  // Masked to a soft bubble around the player (distance falloff).
   private occFadeOn = false; // feature toggle ([7]) — WIP prototype, opt-in for now
   private occFocus: { col: number; row: number } | null = null; // debug focus override
-  private occBlackPool: Phaser.GameObjects.Image[] = []; // recycled black backings
+  private occRevealRT?: Phaser.GameObjects.RenderTexture; // player-level ground + black roots
+  private lastReveal = { x: NaN, y: NaN, cx: NaN, cy: NaN };
   private emissiveLights: LightSource[] = [];
   // Local jump prediction (client owns its jump timing).
   private jumpUntil = 0;
@@ -554,30 +557,14 @@ export class WorldScene extends Phaser.Scene {
         return { name: this.worldName, maps2: this.maps2, w: this.world?.width, h: this.world?.height, maxL };
       },
       occApply: () => {
+        this.lastReveal = { x: NaN, y: NaN, cx: NaN, cy: NaN }; // force a reveal redraw
         this.updateOcclusionFade();
-        const blacked = this.occBlackPool.filter((b) => b.visible).length;
-        // sub-condition diagnostics at the current focus
         const fc = this.occFocus;
         let fLevel = null,
-          above = 0,
-          near = 0,
-          front = 0,
-          maxTop = 0;
-        if (fc && this.world) {
-          fLevel = this.world.rows[fc.row]?.[fc.col]?.l ?? 0;
-          const fSum = fc.col + fc.row;
-          for (const o of this.occluders) {
-            const col = o.getData("oc") as number | undefined;
-            if (col === undefined) continue;
-            const row = o.getData("or") as number;
-            const top = o.getData("ot") as number;
-            maxTop = Math.max(maxTop, top);
-            if (top - fLevel > 0) above++;
-            if (Math.hypot(col - fc.col, row - fc.row) < 16) near++;
-            if (col + row > fSum) front++;
-          }
-        }
-        return { occluders: this.occluders.length, blacked, focus: fc, fLevel, above, near, front, maxTop };
+          ghosted = 0;
+        for (const o of this.occluders) if (o.getData("oc") !== undefined && o.depth < -1000) ghosted++;
+        if (fc && this.world) fLevel = this.world.rows[fc.row]?.[fc.col]?.l ?? 0;
+        return { occluders: this.occluders.length, ghosted, revealVisible: !!this.occRevealRT?.visible, focus: fc, fLevel };
       },
       // Would auto-jump fire from world (x,y) moving in screen dir (ax,ay)?
       // Headless probe for the auto-hop rule against real map geometry.
@@ -1709,23 +1696,22 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /**
-   * Occlusion fade (see the field note): each frame, any tagged tall occluder
-   * that is ABOVE the focus level AND camera-closer than the focus (between
-   * camera and player) within a radius gets re-parented BEHIND the player as a
-   * faint ghost, over a pooled BLACK silhouette backing (so the hidden geometry
-   * reads as void, never as walkable ground). Everything else is restored to its
-   * opaque, in-front state. Focus = debug override (`occFocus`) or local player.
+   * Occlusion fade (see the field note). Two parts, both keyed to the local
+   * player (or debug `occFocus`):
+   *  (1) tall occluders ABOVE the focus level, camera-closer than it, within a
+   *      radius are dimmed to a faint GHOST and moved behind the player so they
+   *      stop hiding the character;
+   *  (2) a REVEAL render-texture redraws the player-level GROUND those towers
+   *      were covering (so you see the grass/level you walk on, not the tower)
+   *      and drops a BLACK diamond at each tower's ROOT (base footprint = void).
    */
   private updateOcclusionFade() {
     const world = this.world;
-    const BEHIND = -500_000; // above the ground RT (−1e6), below every sprite
-    const R = 16; // clear radius in cells
+    const R = 14; // bubble radius in cells
+    const GHOST = -800_000; // faded tower ghost: above the reveal layer, below sprites
     let fc = this.occFocus;
-    if (!fc && this.room) {
-      const me = this.avatars.get(this.room.sessionId);
-      if (me) fc = { col: Math.floor(me.fx / CELL_WU), row: Math.floor(me.fy / CELL_WU) };
-    }
-    let black = 0;
+    const pav = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+    if (!fc && pav) fc = { col: Math.floor(pav.fx / CELL_WU), row: Math.floor(pav.fy / CELL_WU) };
     const active = this.occFadeOn && this.maps2 && !!world && !!fc;
     if (active && world && fc) {
       const fLevel = world.rows[fc.row]?.[fc.col]?.l ?? 0;
@@ -1736,26 +1722,10 @@ export class WorldScene extends Phaser.Scene {
         const row = o.getData("or") as number;
         const top = o.getData("ot") as number;
         const od = o.getData("od") as number;
-        const heightAbove = top - fLevel;
         const dist = Math.hypot(col - fc.col, row - fc.row);
-        if (heightAbove > 0 && dist < R && col + row > fSum) {
+        if (top > fLevel && dist < R && col + row > fSum) {
           const clear = Math.min(1, 1 - dist / R); // 1 at focus → 0 at edge
-          // Height above the player sets how much of the ghost survives: the next
-          // level up stays legible (where to jump), higher levels fade harder.
-          const ghostBase = heightAbove <= 1 ? 0.55 : heightAbove <= 2 ? 0.32 : 0.14;
-          o.setDepth(BEHIND).setAlpha(1 - clear * (1 - ghostBase));
-          const b =
-            this.occBlackPool[black] ??
-            (this.occBlackPool[black] = this.add.image(0, 0, o.texture.key).setOrigin(0, 0));
-          black++;
-          b.setTexture(o.texture.key, o.frame.name)
-            .setPosition(o.x, o.y)
-            .setFlipX(o.flipX)
-            .setScale(o.scaleX, o.scaleY)
-            .setTintFill(0x000000) // solid black in the shape of the tile art
-            .setAlpha(clear)
-            .setDepth(BEHIND - 1)
-            .setVisible(true);
+          o.setDepth(GHOST).setAlpha(0.16 + 0.34 * (1 - clear)); // fainter nearer the player
         } else {
           o.setDepth(od).setAlpha(1);
         }
@@ -1766,7 +1736,99 @@ export class WorldScene extends Phaser.Scene {
         if (od !== undefined) o.setDepth(od).setAlpha(1);
       }
     }
-    for (let i = black; i < this.occBlackPool.length; i++) this.occBlackPool[i].setVisible(false);
+    this.updateOccReveal(active && fc ? fc : null, pav, R);
+  }
+
+  /** Lazily build the occlusion-fade assets: a black cell-diamond (tower roots)
+   * drawn into the reveal layer. */
+  private ensureOccAssets() {
+    const { tile, dy } = MAP_GEOMETRY;
+    if (this.textures.exists("occ-root")) return;
+    const g = this.make.graphics({ x: 0, y: 0 }, false);
+    g.fillStyle(0x000000, 1).beginPath();
+    g.moveTo(tile / 2, 0);
+    g.lineTo(tile, dy);
+    g.lineTo(tile / 2, dy * 2);
+    g.lineTo(0, dy);
+    g.closePath();
+    g.fillPath();
+    g.generateTexture("occ-root", tile, dy * 2);
+    g.destroy();
+  }
+
+  /**
+   * Reveal layer: a world-anchored RenderTexture drawn just above the ground RT
+   * (−900k) but below the faded ghosts + sprites. Within `R` cells of the focus
+   * it redraws the player-level GROUND (walkable cells at/below the focus level)
+   * — so a faded tower reveals the grass you walk on — and paints a BLACK
+   * diamond at every taller cell's ROOT so the tower's own footprint reads as
+   * void, never walkable. Redrawn only when the player/camera moves.
+   */
+  private updateOccReveal(fc: { col: number; row: number } | null, pav: Avatar | undefined, R: number) {
+    if (!fc || !this.world || !pav) {
+      this.occRevealRT?.setVisible(false);
+      return;
+    }
+    this.ensureOccAssets();
+    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    if (!this.occRevealRT) {
+      this.occRevealRT = this.add
+        .renderTexture(0, 0, this.scale.width + GROUND_MARGIN * 2, this.scale.height + GROUND_MARGIN * 2)
+        .setOrigin(0, 0)
+        .setDepth(-900_000);
+    }
+    const rt = this.occRevealRT;
+    rt.setVisible(true);
+    const cam = this.cameras.main;
+    const ccx = cam.scrollX + cam.width / 2;
+    const ccy = cam.scrollY + cam.height / 2;
+    // Redraw only when the player or camera drifts — otherwise the texture holds.
+    if (
+      !Number.isNaN(this.lastReveal.x) &&
+      Math.abs(pav.fx - this.lastReveal.x) < 4 &&
+      Math.abs(pav.fy - this.lastReveal.y) < 4 &&
+      Math.abs(ccx - this.lastReveal.cx) < 4 &&
+      Math.abs(ccy - this.lastReveal.cy) < 4
+    )
+      return;
+    this.lastReveal = { x: pav.fx, y: pav.fy, cx: ccx, cy: ccy };
+    const world = this.world;
+    const ax = Math.round(ccx - rt.width / 2);
+    const ay = Math.round(ccy - rt.height / 2);
+    rt.setPosition(ax, ay);
+    rt.clear();
+    const fLevel = world.rows[fc.row]?.[fc.col]?.l ?? 0;
+    const fSum = fc.col + fc.row;
+    const x0 = ax - tile;
+    const x1 = ax + rt.width + tile;
+    const y0 = ay - tile;
+    const y1 = ay + rt.height + tile + this.maxLevel * lh;
+    const u0 = Math.floor((x0 - this.iso.ox) / dx) - 1;
+    const u1 = Math.ceil((x1 - this.iso.ox) / dx) + 1;
+    const v0 = Math.max(0, Math.floor((y0 - this.iso.oy) / dy) - 1);
+    const v1 = Math.ceil((y1 - this.iso.oy) / dy) + 1;
+    rt.beginDraw();
+    for (let v = v0; v <= v1; v++) {
+      for (let u = u0; u <= u1; u++) {
+        if ((u + v) & 1) continue;
+        const col = (u + v) / 2;
+        const row = (v - u) / 2;
+        const cell = world.rows[row]?.[col];
+        if (!cell) continue;
+        if (Math.hypot(col - fc.col, row - fc.row) > R) continue;
+        const bx = this.iso.ox + u * dx - ax;
+        const by = this.iso.oy + v * dy - ay;
+        if (cell.l > fLevel && col + row > fSum) {
+          // Taller than the player, in front of them → black root diamond (void).
+          rt.batchDraw("occ-root", bx, by);
+        } else if (surfaceFor(cell.t).standable || surfaceFor(cell.t).swimmable) {
+          // The ground the player walks on — re-expose it over the towers above.
+          const k0 = topKeyFor(cell);
+          if (k0 && this.textures.exists(k0)) rt.batchDraw(cell.flip ? this.flippedKey(k0) : k0, bx, by - cell.l * lh);
+        }
+      }
+    }
+    rt.endDraw();
   }
 
   private rebuildOccluders() {
