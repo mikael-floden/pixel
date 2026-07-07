@@ -230,7 +230,7 @@ export class WorldScene extends Phaser.Scene {
   // same-level entities show on top) as a faint ghost over a BLACK backing (so
   // no walkable-looking ground leaks through). Graded by height-above + distance
   // so you keep your level clear and still see the next level up (where to jump).
-  private occFadeOn = false; // feature toggle ([O]) — WIP prototype, opt-in for now
+  private occFadeOn = false; // feature toggle ([7]) — WIP prototype, opt-in for now
   private occFocus: { col: number; row: number } | null = null; // debug focus override
   private occBlackPool: Phaser.GameObjects.Image[] = []; // recycled black backings
   private emissiveLights: LightSource[] = [];
@@ -452,9 +452,9 @@ export class WorldScene extends Phaser.Scene {
       this.torchOn = !this.torchOn;
       this.chat.addLog("—", `[5] My torch: ${this.torchOn ? "on" : "off"}`);
     });
-    this.input.keyboard!.on("keydown-O", () => {
+    this.input.keyboard!.on("keydown-SEVEN", () => {
       this.occFadeOn = !this.occFadeOn;
-      this.chat.addLog("—", `[O] See-through walls: ${this.occFadeOn ? "on" : "off"}`);
+      this.chat.addLog("—", `[7] See-through walls: ${this.occFadeOn ? "on" : "off"}`);
     });
     // [6]: the spawn bonfire on/off — its firelight drowns nearby tiles'
     // self-emission, so QA next to it needs the fire quiet. (The old
@@ -466,7 +466,7 @@ export class WorldScene extends Phaser.Scene {
       this.campfireLit?.setVisible(this.fireOn && !!this.night?.active);
       this.chat.addLog("—", `[6] Bonfire: ${this.fireOn ? "lit" : "out"}`);
     });
-    this.chat.addLog("—", "Toggles: [1] time of day · [4] collision · [5] torch · [6] bonfire · [0] emission demo");
+    this.chat.addLog("—", "Toggles: [1] time of day · [4] collision · [5] torch · [6] bonfire · [7] see-through walls · [0] emission demo");
 
     const cam = this.cameras.main;
     cam.setBounds(0, 0, this.iso.w, this.iso.h);
