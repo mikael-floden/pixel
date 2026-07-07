@@ -1696,55 +1696,48 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /**
-   * Occlusion fade — a LINE-OF-SIGHT clear, keyed to the local player (or debug
-   * `occFocus`). The camera looks from the "north", so painter order is
-   * `(col+row, then row)`: any tile with a LARGER key is drawn IN FRONT of the
-   * player and can hide the player, or the ground/area ahead of them. Those are
-   * exactly the tiles we clear — not the ones ABOVE the player by level. A
-   * raised block that is only knee-high but sits between the camera and the
-   * floor the player is walking toward still hides that floor, so height alone
-   * is the wrong test; what matters is "is it in front of my sightline".
-   *
-   * Two parts:
-   *  (1) every occluder IN FRONT of the player within a radius is dimmed to a
-   *      faint ghost and dropped behind the player so it stops hiding anything;
-   *  (2) a REVEAL render-texture (updateOccReveal) repaints the walkable ground
-   *      those blocks were covering and drops a BLACK diamond at each taller
-   *      cell's ROOT (its base footprint = void behind it).
-   * Occluders are only ever raised blocks (flat ground lives in the ground RT),
-   * so this never dissolves flat terrain — only the things standing up in view.
+   * Occlusion fade (see the field note). Two parts, both keyed to the local
+   * player (or debug `occFocus`):
+   *  (1) tall occluders ABOVE the focus level, camera-closer than it, within a
+   *      radius are dimmed to a faint GHOST and moved behind the player so they
+   *      stop hiding the character;
+   *  (2) a REVEAL render-texture redraws the player-level GROUND those towers
+   *      were covering (so you see the grass/level you walk on, not the tower)
+   *      and drops a BLACK diamond at each tower's ROOT (base footprint = void).
    */
   private updateOcclusionFade() {
     const world = this.world;
-    const R = 28; // bubble radius in cells (how far the sightline is kept clear)
-    const GHOST = -800_000; // faded ghost: above the reveal layer, below sprites
+    const R = 22; // bubble radius in cells (which tall tiles fall into the fade)
+    const GHOST = -800_000; // faded tower ghost: above the reveal layer, below sprites
     let fc = this.occFocus;
     const pav = this.room ? this.avatars.get(this.room.sessionId) : undefined;
     if (!fc && pav) fc = { col: Math.floor(pav.fx / CELL_WU), row: Math.floor(pav.fy / CELL_WU) };
     const active = this.occFadeOn && this.maps2 && !!world && !!fc;
     if (active && world && fc) {
-      const fSum = fc.col + fc.row; // player's painter key
+      const fLevel = world.rows[fc.row]?.[fc.col]?.l ?? 0;
       for (const o of this.occluders) {
         const col = o.getData("oc") as number | undefined;
         if (col === undefined) continue; // untagged (legacy/demo) — leave as-is
         const row = o.getData("or") as number;
+        const top = o.getData("ot") as number;
         const od = o.getData("od") as number;
         const dist = Math.hypot(col - fc.col, row - fc.row);
-        // In front of the player on screen? Painter order breaks ties by row, so
-        // an equal-sum tile with a larger row is still drawn in front — fold that
-        // in with a tiny epsilon term.
-        const front = col + row - fSum + (row - fc.row) * 1e-3;
-        if (front > 0 && dist < R) {
-          // Clear it. Near-perfect transparency across almost the whole bubble
-          // so the character + the ground around and ahead of them read cleanly,
-          // blending back to solid only across the outer 20% of the radius so
-          // the edge isn't a hard ring.
-          const near = 0.06;
-          const edge = Math.min(1, Math.max(0, (dist - R * 0.8) / (R * 0.2)));
-          o.setDepth(GHOST).setAlpha(near + (1 - near) * edge);
+        // Fade EVERY tall tile above the player within the radius — not just the
+        // ones "in front" — so a player in a pit/crater (walls on all sides) is
+        // never left hidden behind a beside/behind wall that stays opaque.
+        if (top > fLevel && dist < R) {
+          // Fade harder the higher the tile sits above the player: 1 level up
+          // stays mostly visible (only ~foot height obscures anyway), 2 up is
+          // near-transparent, 3 up faint, 4+ up extremely faint (near-perfect
+          // grass). The character always draws on top, so the ghost never hides
+          // more than the ground it stands on.
+          const h = top - fLevel;
+          const ghost = h <= 1 ? 0.6 : h === 2 ? 0.18 : h === 3 ? 0.1 : 0.04;
+          // Blend back to solid across the outer 25% of the radius so the bubble
+          // edge isn't a hard ring.
+          const edge = Math.min(1, Math.max(0, (dist - R * 0.75) / (R * 0.25)));
+          o.setDepth(GHOST).setAlpha(ghost + (1 - ghost) * edge);
         } else {
-          // Behind / beside the player: it draws behind the character anyway and
-          // is the player's own plateau/floor edge — keep it fully solid.
           o.setDepth(od).setAlpha(1);
         }
       }
@@ -1776,23 +1769,11 @@ export class WorldScene extends Phaser.Scene {
 
   /**
    * Reveal layer: a world-anchored RenderTexture drawn just above the ground RT
-   * (−900k) but below the faded ghosts + sprites. It RECONSTRUCTS the bubble as
-   * a mini-scene with the front-facing walls stripped out — this is what makes
-   * the fade actually see-through. (The static ground RT bakes every raised
-   * cell's full FACE stack, so merely fading the occluder Images would just
-   * expose an identical baked wall underneath; the reveal has to overpaint it.)
-   *
-   * For cells within `R` of the focus, in painter order:
-   *  - BEHIND/beside the player (paint key ≤ focus): draw the cell solid (faces
-   *    + top) — the exact backdrop, so whatever sits behind a stripped wall
-   *    (plateau grass, ground behind a pillar) shows through;
-   *  - IN FRONT and taller than the player: draw ONLY a BLACK diamond at its
-   *    ROOT (its base footprint = void) and omit its faces/top — the wall is
-   *    gone and the backdrop drawn earlier shows in its place (the "black
-   *    feature": reveal what's behind, black the one spot that has nothing);
-   *  - IN FRONT at/below the player: a walkable floor / low step — draw its
-   *    faces + top so the ground the player is walking toward stays visible.
-   * Redrawn only when the player/camera moves.
+   * (−900k) but below the faded ghosts + sprites. Within `R` cells of the focus
+   * it redraws the player-level GROUND (walkable cells at/below the focus level)
+   * — so a faded tower reveals the grass you walk on — and paints a BLACK
+   * diamond at every taller cell's ROOT so the tower's own footprint reads as
+   * void, never walkable. Redrawn only when the player/camera moves.
    */
   private updateOccReveal(fc: { col: number; row: number } | null, pav: Avatar | undefined, R: number) {
     if (!fc || !this.world || !pav) {
@@ -1828,7 +1809,6 @@ export class WorldScene extends Phaser.Scene {
     rt.setPosition(ax, ay);
     rt.clear();
     const fLevel = world.rows[fc.row]?.[fc.col]?.l ?? 0;
-    const fSum = fc.col + fc.row;
     const x0 = ax - tile;
     const x1 = ax + rt.width + tile;
     const y0 = ay - tile;
@@ -1846,27 +1826,15 @@ export class WorldScene extends Phaser.Scene {
         const cell = world.rows[row]?.[col];
         if (!cell) continue;
         if (Math.hypot(col - fc.col, row - fc.row) > R) continue;
-        const topKey0 = topKeyFor(cell);
-        if (!topKey0 || !this.textures.exists(topKey0)) continue; // void cell
         const bx = this.iso.ox + u * dx - ax;
         const by = this.iso.oy + v * dy - ay;
-        const topKey = cell.flip ? this.flippedKey(topKey0) : topKey0;
-        const faceK = faceKeyFor(world, cell);
-        const fk = faceK && this.textures.exists(faceK) ? faceK : topKey0;
-        const front = col + row - fSum + (row - fc.row) * 1e-3;
-        if (front <= 0) {
-          // Behind/beside → solid backdrop (faces + top), exactly like the
-          // ground bake, so a stripped front wall reveals what's actually here.
-          for (let lvl = 0; lvl < cell.l; lvl++) rt.batchDraw(fk, bx, by - lvl * lh);
-          rt.batchDraw(topKey, bx, by - cell.l * lh);
-        } else if (cell.l > fLevel) {
-          // In front + taller than the player → strip the wall, black its root.
+        if (cell.l > fLevel) {
+          // Taller than the player → black root diamond at its base (void).
           rt.batchDraw("occ-root", bx, by);
-        } else {
-          // In front, at/below the player → a floor/low step the player walks
-          // toward: keep its surface (and downward faces) so it reads.
-          for (let lvl = 0; lvl < cell.l; lvl++) rt.batchDraw(fk, bx, by - lvl * lh);
-          rt.batchDraw(topKey, bx, by - cell.l * lh);
+        } else if (surfaceFor(cell.t).standable || surfaceFor(cell.t).swimmable) {
+          // The ground the player walks on — re-expose it over the towers above.
+          const k0 = topKeyFor(cell);
+          if (k0 && this.textures.exists(k0)) rt.batchDraw(cell.flip ? this.flippedKey(k0) : k0, bx, by - cell.l * lh);
         }
       }
     }
@@ -1933,9 +1901,7 @@ export class WorldScene extends Phaser.Scene {
           // terrace tear). stackFrom = one above the lower of the E/S fronts.
           for (let lvl = this.stackFrom(col, row, cell.l, false); lvl < cell.l; lvl++)
             this.occluders.push(
-              // Tag each FACE with its OWN level (not the column top) so the fade
-              // can keep low faces opaque and only thin the ones above the player.
-              this.tagOccluder(this.add.image(bx, by - lvl * lh, fk).setOrigin(0, 0).setDepth(oDepth), col, row, lvl, oDepth),
+              this.tagOccluder(this.add.image(bx, by - lvl * lh, fk).setOrigin(0, 0).setDepth(oDepth), col, row, cell.l, oDepth),
             );
           this.occluders.push(
             // Occluder images CAN flip directly (setFlipX) — matches the RT's
