@@ -56,6 +56,17 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
   `WALK_CLIMB = 0.5` (you can't walk up a full 1-level ledge), but a **timed
   jump** (`JUMP_CLIMB = 1`, Space) climbs it. `stepMovement` resolves axis-
   separated (wall-slide) and scales by the current **surface** speed.
+- **Edge feel / falling**: walking off a ledge is forgiving — `stepMovement`
+  no longer commits the drop a `PLAYER_RADIUS` early or snaps the anchor past
+  the rim (the old "teleport to the floor beneath" feel). The feet just walk to
+  the rim (the body billboard overhangs "slightly over the edge") and, once the
+  centre crosses onto the lower cell, the descent is a **gravity FALL** animated
+  client-side: `WorldScene` keeps each avatar's elevation lift (`elev` px) apart
+  from the flat ground projection and integrates it with the shared pure
+  `integrateFall` (`shared/`) — up-steps snap, stairs-sized down-steps ease,
+  real cliffs fall (shadow stays on the landing ground, sprite drops toward it).
+  `makeDrops` is now just the canonical "is this a fall" predicate the client
+  mirrors. Tune via `FALL_GRAVITY`/`FALL_TRIGGER_FRAC` in `shared/`.
 - **Surfaces** (`SURFACES` in `shared/`) are the *other* axis: per-category
   `{ standable, swimmable, speed, sound }` — roads faster, sand/snow slower,
   water swimmable. Unknown categories default to plain walkable ground.

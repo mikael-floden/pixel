@@ -18,7 +18,6 @@ import {
   parseWorld,
   buildDemoWorld,
   makeBlocked,
-  makeDrops,
   surfaceAtWorld,
   isStandableAtWorld,
   findSpawn,
@@ -196,7 +195,6 @@ export class WorldRoom extends Room<WorldState> {
             makeBlocked(terrain, ctx),
             surf.speed * (jumping ? JUMP_SPEED_FACTOR : 1),
             true, // iso world → input is screen-relative (Up walks up on screen)
-            makeDrops(terrain),
             this.worldW,
             this.worldH,
           );

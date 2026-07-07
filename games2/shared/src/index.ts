@@ -246,7 +246,6 @@ export function stepMovement(
   blocked?: BlockedFn,
   speedScale = 1,
   screenInput = false,
-  drops?: DropFn,
   // The world's extent in world units (grid×CELL_WU). Defaults to the legacy
   // constant so tests + the open-world fallback keep working; the server and
   // client pass the LOADED world's size so any-sized worlds stay in bounds.
@@ -275,35 +274,25 @@ export function stepMovement(
   // enterable, then the Y move from the (possibly advanced) X — wall-sliding.
   // Collision probes the LEADING EDGE of the feet (PLAYER_RADIUS ahead), not
   // the centre point, so sprites stop before visually entering a tile block.
-  // Symmetrically, when the leading edge reaches a DROP the fall is committed
-  // (the anchor snaps past the rim) so feet never rest overhanging a ledge.
   // Each axis probes its leading edge at BOTH lateral corners: a single
   // centre probe let the mover slide ALONG a block's boundary and park with
   // its centre exactly on the edge — half the sprite visually inside the
   // block ("the bottom layer has no collision", playtester at a demo column).
+  //
+  // Dropping DOWN a ledge is intentionally NOT special-cased here: the mover
+  // just walks onto the lower cell (canEnter always permits a descent). Feet
+  // can therefore rest right at — or a hair past — the rim (the body billboard
+  // overhangs the edge), and the visual FALL to the lower ground is animated
+  // client-side (WorldScene) instead of teleporting the anchor past the rim.
   const SIDE = PLAYER_RADIUS * 0.75;
   const px = tx + Math.sign(tx - x) * PLAYER_RADIUS;
   const blockedX =
     blocked && (blocked(px, y - SIDE, x, y) || blocked(px, y + SIDE, x, y));
-  if (!blockedX) {
-    rx = tx;
-    if (drops && drops(px, y, tx, y)) {
-      // Feet touched a drop edge → step off, landing a full foot-radius clear
-      // of the cliff base so the sprite doesn't stand "in" the slope face.
-      const fx = px + Math.sign(tx - x) * PLAYER_RADIUS;
-      rx = !blocked || !blocked(fx, y, x, y) ? fx : px;
-    }
-  }
+  if (!blockedX) rx = tx;
   const py = ty + Math.sign(ty - y) * PLAYER_RADIUS;
   const blockedY =
     blocked && (blocked(rx - SIDE, py, rx, y) || blocked(rx + SIDE, py, rx, y));
-  if (!blockedY) {
-    ry = ty;
-    if (drops && drops(rx, py, rx, ty)) {
-      const fy = py + Math.sign(ty - y) * PLAYER_RADIUS;
-      ry = !blocked || !blocked(rx, fy, rx, ty) ? fy : py;
-    }
-  }
+  if (!blockedY) ry = ty;
   return { x: rx, y: ry, dir, moving: true };
 }
 
@@ -440,6 +429,45 @@ export const JUMP_CLIMB = 1; // step you can cross while jumping
 export const JUMP_MS = 500; // active jump window (climb allowance + hop visual)
 export const JUMP_COOLDOWN_MS = 180; // after landing, before you can jump again
 export const JUMP_SPEED_FACTOR = 0.6; // slower ground travel while airborne (taller, not farther)
+
+// --- Cliff falls (client visual; elevation in px) -----------------------------
+// Stepping DOWN a ledge is a gravity fall, not a teleport. The client renderer
+// keeps an elevation lift (px) per avatar and integrates it toward the cell's
+// level each frame; this pure step encodes the feel so it can be unit-tested.
+export const FALL_GRAVITY = 1400; // px/s²: a 1-level (≈16px) drop lands in ~0.15s
+export const FALL_TRIGGER_FRAC = 0.75; // down-steps beyond this × level height fall
+export const STEP_EASE_RATE = 14; // gentle down-steps (stairs) ease at this rate
+
+export interface FallState {
+  elev: number; // current elevation lift in px
+  fallV: number; // downward velocity (px/s), only while falling
+  falling: boolean;
+}
+
+/**
+ * Integrate an avatar's elevation lift one frame toward `target` (cell level ×
+ * level-height px). Rules, matched to `makeDrops`:
+ *  • stepping UP (or level) snaps — the jump hop already sells the up arc, and
+ *    easing up would sink the sprite into the step;
+ *  • a gentle down-step (≤ FALL_TRIGGER_FRAC of a level: stairs/ramps) eases
+ *    smoothly;
+ *  • a real CLIFF down-step falls under gravity until it reaches the ground.
+ * Pure (no scene state) so the fall feel is deterministic + unit-tested.
+ */
+export function integrateFall(s: FallState, target: number, dt: number, lh: number): FallState {
+  const trigger = lh * FALL_TRIGGER_FRAC;
+  const diff = target - s.elev; // + up, − down
+  if (diff >= -0.01) return { elev: target, fallV: 0, falling: false };
+  if (-diff <= trigger && !s.falling) {
+    let elev = s.elev + diff * Math.min(1, dt * STEP_EASE_RATE);
+    if (elev - target < 0.5) elev = target;
+    return { elev, fallV: 0, falling: false };
+  }
+  const fallV = s.fallV + FALL_GRAVITY * dt;
+  const elev = s.elev - fallV * dt;
+  if (elev <= target) return { elev: target, fallV: 0, falling: false };
+  return { elev, fallV, falling: true };
+}
 
 // Swimming: entering water starts a stamina drain; at zero you drown.
 export const MAX_STAMINA = 100;
@@ -849,8 +877,11 @@ export function makeBlocked(grid: TerrainGrid, ctx: MoveContext): BlockedFn {
   return (toX, toY, fromX, fromY) => !canEnter(grid, fromX, fromY, toX, toY, ctx);
 }
 
-/** Drop predicate for stepMovement: a downward step bigger than what walking
- * handles smoothly (stairs make a 1-level descent a normal walk, not a fall). */
+/** Canonical FALL predicate: is moving from `from` onto `to` a downward step
+ * bigger than what walking handles smoothly (stairs make a 1-level descent a
+ * normal walk, not a fall)? `stepMovement` no longer snaps on this — the client
+ * renderer mirrors the same threshold to animate the drop as a gravity fall
+ * (see WorldScene.stepElevation) rather than teleport the anchor past the rim. */
 export function makeDrops(grid: TerrainGrid): DropFn {
   return (toX, toY, fromX, fromY) => {
     const to = surfaceAtWorld(grid, toX, toY);

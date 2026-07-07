@@ -14,9 +14,9 @@ import {
   TerrainGrid,
   buildTerrainGrid,
   makeBlocked,
-  makeDrops,
   surfaceAtWorld,
   levelAtWorld,
+  integrateFall,
   isStandableAtWorld,
   isBlockedAtWorld,
   findSpawn,
@@ -135,9 +135,17 @@ interface Avatar {
   label: Phaser.GameObjects.Text;
   character: string;
   // Logical (eased) ground position; the sprite is drawn at this minus the jump
-  // hop so the hop offset never feeds back into the easing.
+  // hop so the hop offset never feeds back into the easing. `ly` is the LIFTED
+  // feet screen y (flat ground minus the animated elevation) — every consumer
+  // (depth, shadow, labels, lit copy) reads it. `lyFlat` is the eased FLAT
+  // (unlifted) ground y and `elev` the animated elevation lift in px; splitting
+  // them lets a cliff descent fall under gravity instead of snapping.
   lx: number;
   ly: number;
+  lyFlat: number;
+  elev: number; // current elevation lift (px); eases/falls toward cell level×lh
+  fallV: number; // downward velocity (px/s) while a cliff fall is in progress
+  falling: boolean;
   // Flat authoritative world position (pre-projection) — terrain queries and
   // the night-shader lights need THIS space, never the projected lx/ly.
   fx: number;
@@ -520,6 +528,12 @@ export class WorldScene extends Phaser.Scene {
         const av = id ? this.avatars.get(id) : undefined;
         return av ? av.sprite.anims.getName() : null;
       },
+      // Local avatar fall state — headless probe for the cliff-fall animation.
+      fall: () => {
+        const id = this.room?.sessionId;
+        const av = id ? this.avatars.get(id) : undefined;
+        return av ? { falling: av.falling, elev: av.elev, fallV: av.fallV } : null;
+      },
       me: () => this.room?.state.players.get(this.room!.sessionId),
       stamina: () => this.room?.state.players.get(this.room!.sessionId)?.stamina ?? null,
       swimming: () => !!this.room?.state.players.get(this.room!.sessionId)?.swimming,
@@ -694,7 +708,9 @@ export class WorldScene extends Phaser.Scene {
   private addAvatar(id: string, player: any) {
     const uid: string = player.character || this.manifest.characters[0]?.uid || PLACEHOLDER_TEX;
     const key = frameKey(uid, "idle", DEFAULT_DIRECTION, 0);
-    const p0 = this.project(player.x, player.y);
+    const f0 = this.projectFlat(player.x, player.y);
+    const elev0 = f0.lvl * MAP_GEOMETRY.lh;
+    const p0 = { x: f0.x, y: f0.y - elev0 };
     // Fall back to the built-in wanderer whenever the character's art is absent
     // (empty roster, a deleted character, or art still loading). Tint it per
     // name so same-named wanderers stay distinguishable.
@@ -718,6 +734,10 @@ export class WorldScene extends Phaser.Scene {
       character: uid,
       lx: p0.x,
       ly: p0.y,
+      lyFlat: f0.y,
+      elev: elev0,
+      fallV: 0,
+      falling: false,
       fx: player.x,
       fy: player.y,
       hopUntil: 0,
@@ -757,16 +777,14 @@ export class WorldScene extends Phaser.Scene {
         const jumping = this.time.now < this.jumpUntil;
         const stepLocal = (ax: number, ay: number, running: boolean, sdt: number) => {
           let blocked;
-          let drops;
           let speed = 1;
           if (this.terrain) {
             const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
             blocked = makeBlocked(this.terrain, ctx);
-            drops = makeDrops(this.terrain);
             speed = surfaceAtWorld(this.terrain, rx, ry).speed * (jumping ? JUMP_SPEED_FACTOR : 1);
           }
           // screenInput matches the server: on the iso world, input is screen-relative.
-          const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain, drops, this.worldW, this.worldH);
+          const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain, this.worldW, this.worldH);
           rx = r.x;
           ry = r.y;
         };
@@ -790,14 +808,30 @@ export class WorldScene extends Phaser.Scene {
         dir = player.dir;
       }
 
-      // Project the authoritative world position onto the iso ground, then ease
-      // the logical position toward it (snappier for the local player).
+      // Project onto the iso ground with the FLAT (unlifted) point + cell level
+      // kept apart: ease the horizontal + flat ground toward the target, but
+      // animate the elevation lift separately so a cliff descent FALLS under
+      // gravity instead of the anchor snapping down a level. `av.ly` stays the
+      // lifted feet y (flat − elevation) every other consumer expects.
       av.fx = tx;
       av.fy = ty;
-      const target = this.project(tx, ty);
-      const k = Math.min(1, dt * (id === myId ? 45 : 12));
-      av.lx += (target.x - av.lx) * k;
-      av.ly += (target.y - av.ly) * k;
+      const g = this.projectFlat(tx, ty);
+      const targetElev = g.lvl * MAP_GEOMETRY.lh;
+      // A big horizontal jump (respawn/teleport) is not a walk — snap, don't
+      // ease or fall, so the character doesn't skate/plummet across the map.
+      if (Math.abs(g.x - av.lx) > CELL_WU * 2 || Math.abs(g.y - av.lyFlat) > CELL_WU * 2) {
+        av.lx = g.x;
+        av.lyFlat = g.y;
+        av.elev = targetElev;
+        av.fallV = 0;
+        av.falling = false;
+      } else {
+        const k = Math.min(1, dt * (id === myId ? 45 : 12));
+        av.lx += (g.x - av.lx) * k;
+        av.lyFlat += (g.y - av.lyFlat) * k;
+        this.stepElevation(av, targetElev, dt);
+      }
+      av.ly = av.lyFlat - av.elev;
 
       // Jump hop: a short parabola driven by the synced `jumping` flag.
       if (player.jumping && av.hopUntil <= this.time.now) av.hopUntil = this.time.now + JUMP_MS;
@@ -818,7 +852,7 @@ export class WorldScene extends Phaser.Scene {
       // AND it lies on the camera ray (grid interval test). Place the sprite
       // above every falsely-deeper column and below every true occluder.
       const lvl = this.terrain ? levelAtWorld(this.terrain, tx, ty) : 0;
-      let depth = av.ly + lvl * MAP_GEOMETRY.lh + 0.5; // unlifted ground y
+      let depth = av.lyFlat + 0.5; // painter y at the flat (unlifted) ground
       if (this.world) {
         const colf = tx / CELL_WU; // 1 cell = CELL_WU world units (any world size)
         const rowf = ty / CELL_WU;
@@ -895,14 +929,17 @@ export class WorldScene extends Phaser.Scene {
         av.coverY = undefined;
       }
       av.sprite.setDepth(depth);
-      // Shadow: always at the GROUND point (the collision anchor) — it stays
-      // put while the sprite hops, shrinking a little at the jump's peak.
-      const hopFrac = hop / JUMP_HEIGHT;
+      // Shadow: cast on the LANDING ground (flat − target elevation), not the
+      // sprite's current lifted feet. It stays put on the lower ground while the
+      // character hops OR falls toward it, shrinking with total air height so a
+      // cliff fall reads as "dropping toward the shadow below".
+      const landY = av.lyFlat - targetElev;
+      const airFrac = Math.min(1, (hop + Math.max(0, landY - av.ly)) / JUMP_HEIGHT);
       av.shadow
-        .setPosition(av.lx, av.ly)
+        .setPosition(av.lx, landY)
         .setVisible(!av.swimming)
-        .setAlpha(1 - hopFrac * 0.35)
-        .setDisplaySize(34 - hopFrac * 9, 14 - hopFrac * 4)
+        .setAlpha(1 - airFrac * 0.35)
+        .setDisplaySize(34 - airFrac * 9, 14 - airFrac * 4)
         .setDepth(av.sprite.depth - 0.1);
       // Head top (measured from the art), not the frame top — labels hug the
       // character instead of floating over transparent padding.
@@ -932,7 +969,7 @@ export class WorldScene extends Phaser.Scene {
           av.bubble = undefined;
         }
       }
-      this.applyAnimState(av, moving, running, dir, hopLeft > 0);
+      this.applyAnimState(av, moving, running, dir, hopLeft > 0 || av.falling);
     });
 
     // Local player's swim-stamina HUD.
@@ -2157,8 +2194,17 @@ export class WorldScene extends Phaser.Scene {
   /** Project an authoritative world position (flat x,y) onto the iso ground —
    * the point where a character's feet stand, lifted by that cell's elevation. */
   private project(px: number, py: number): { x: number; y: number } {
-    if (!this.world) return { x: px, y: py };
-    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    const f = this.projectFlat(px, py);
+    return { x: f.x, y: f.y - f.lvl * MAP_GEOMETRY.lh };
+  }
+
+  /** Iso projection split into the FLAT (unlifted) ground point and the cell's
+   * elevation level, so the renderer can animate the lift (fall under gravity)
+   * separately from the horizontal walk. Flat x/y are continuous in (px,py);
+   * only `lvl` steps at cell boundaries. */
+  private projectFlat(px: number, py: number): { x: number; y: number; lvl: number } {
+    if (!this.world) return { x: px, y: py, lvl: 0 };
+    const { dx, dy, tile } = MAP_GEOMETRY;
     const W = this.world.width;
     const H = this.world.height;
     const col = Math.max(0, Math.min(W - 0.001, px / CELL_WU)); // 1 cell = CELL_WU wu
@@ -2166,8 +2212,22 @@ export class WorldScene extends Phaser.Scene {
     const lvl = this.world.rows[Math.floor(row)]?.[Math.floor(col)]?.l ?? 0;
     return {
       x: this.iso.ox + (col - row) * dx + tile / 2,
-      y: this.iso.oy + (col + row) * dy + dy - lvl * lh,
+      y: this.iso.oy + (col + row) * dy + dy,
+      lvl,
     };
+  }
+
+  /**
+   * Advance an avatar's elevation lift one frame toward the target (cell
+   * level×lh) via the shared `integrateFall`: up-steps snap (the hop sells the
+   * arc), gentle down-steps ease, and real cliff down-steps fall under gravity
+   * so walking off a ledge drops to the ground below instead of teleporting.
+   */
+  private stepElevation(av: Avatar, target: number, dt: number): void {
+    const s = integrateFall({ elev: av.elev, fallV: av.fallV, falling: av.falling }, target, dt, MAP_GEOMETRY.lh);
+    av.elev = s.elev;
+    av.fallV = s.fallV;
+    av.falling = s.falling;
   }
 
   /**
