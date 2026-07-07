@@ -225,6 +225,14 @@ export class WorldScene extends Phaser.Scene {
     y1: number;
   }[] = [];
   private lastOccl = { x: NaN, y: NaN };
+  // --- Occlusion fade: tall geometry ABOVE the local player's level that sits
+  // between camera and player is redrawn BEHIND the player (so the character +
+  // same-level entities show on top) as a faint ghost over a BLACK backing (so
+  // no walkable-looking ground leaks through). Graded by height-above + distance
+  // so you keep your level clear and still see the next level up (where to jump).
+  private occFadeOn = false; // feature toggle ([O]) — WIP prototype, opt-in for now
+  private occFocus: { col: number; row: number } | null = null; // debug focus override
+  private occBlackPool: Phaser.GameObjects.Image[] = []; // recycled black backings
   private emissiveLights: LightSource[] = [];
   // Local jump prediction (client owns its jump timing).
   private jumpUntil = 0;
@@ -444,6 +452,10 @@ export class WorldScene extends Phaser.Scene {
       this.torchOn = !this.torchOn;
       this.chat.addLog("—", `[5] My torch: ${this.torchOn ? "on" : "off"}`);
     });
+    this.input.keyboard!.on("keydown-O", () => {
+      this.occFadeOn = !this.occFadeOn;
+      this.chat.addLog("—", `[O] See-through walls: ${this.occFadeOn ? "on" : "off"}`);
+    });
     // [6]: the spawn bonfire on/off — its firelight drowns nearby tiles'
     // self-emission, so QA next to it needs the fire quiet. (The old
     // [6][7][8][9] light-field calibration keys are retired; headless probes
@@ -524,6 +536,49 @@ export class WorldScene extends Phaser.Scene {
       occCount: () => ({ maps2: this.maps2, occluders: this.occluders.length, meta: this.occluderMeta.length }),
       bubbles: () => [...this.avatars.values()].filter((a) => a.bubble).map((a) => a.bubble!.text),
       jump: () => this.tryJump(),
+      // Occlusion-fade debug: force the fade focus to a cell (null → follow the
+      // player), and toggle the feature. Lets headless probes frame the effect.
+      occFocus: (col?: number, row?: number) => {
+        this.occFocus = col === undefined || row === undefined ? null : { col, row };
+        return this.occFocus;
+      },
+      occFade: (on?: boolean) => {
+        if (on !== undefined) this.occFadeOn = on;
+        return this.occFadeOn;
+      },
+      // Force one fade pass now (headless render loop is throttled) and report
+      // how many occluders were tagged vs ghosted-to-black.
+      worldInfo: () => {
+        let maxL = 0;
+        if (this.world) for (const r of this.world.rows) for (const c of r) if (c.l > maxL) maxL = c.l;
+        return { name: this.worldName, maps2: this.maps2, w: this.world?.width, h: this.world?.height, maxL };
+      },
+      occApply: () => {
+        this.updateOcclusionFade();
+        const blacked = this.occBlackPool.filter((b) => b.visible).length;
+        // sub-condition diagnostics at the current focus
+        const fc = this.occFocus;
+        let fLevel = null,
+          above = 0,
+          near = 0,
+          front = 0,
+          maxTop = 0;
+        if (fc && this.world) {
+          fLevel = this.world.rows[fc.row]?.[fc.col]?.l ?? 0;
+          const fSum = fc.col + fc.row;
+          for (const o of this.occluders) {
+            const col = o.getData("oc") as number | undefined;
+            if (col === undefined) continue;
+            const row = o.getData("or") as number;
+            const top = o.getData("ot") as number;
+            maxTop = Math.max(maxTop, top);
+            if (top - fLevel > 0) above++;
+            if (Math.hypot(col - fc.col, row - fc.row) < 16) near++;
+            if (col + row > fSum) front++;
+          }
+        }
+        return { occluders: this.occluders.length, blacked, focus: fc, fLevel, above, near, front, maxTop };
+      },
       // Would auto-jump fire from world (x,y) moving in screen dir (ax,ay)?
       // Headless probe for the auto-hop rule against real map geometry.
       autoJumpAt: (x: number, y: number, ax: number, ay: number) => this.wouldAutoJump(x, y, ax, ay),
@@ -977,6 +1032,9 @@ export class WorldScene extends Phaser.Scene {
       }
       this.applyAnimState(av, moving, running, dir, hopLeft > 0 || av.falling);
     });
+
+    // See-through tall geometry above the player's level (occlusion fade).
+    this.updateOcclusionFade();
 
     // Local player's swim-stamina HUD.
     const me = state.players.get(myId);
@@ -1634,6 +1692,83 @@ export class WorldScene extends Phaser.Scene {
    * vertex y), so sprites standing behind it are covered while sprites in
    * front draw over it. The ground RT stays as the flat base underneath.
    */
+  /** Tag a maps2 terrain occluder image with its cell, top level and original
+   * depth so the occlusion-fade pass can find/ghost/restore it. */
+  private tagOccluder(
+    img: Phaser.GameObjects.Image,
+    col: number,
+    row: number,
+    top: number,
+    od: number,
+  ): Phaser.GameObjects.Image {
+    img.setData("oc", col);
+    img.setData("or", row);
+    img.setData("ot", top);
+    img.setData("od", od);
+    return img;
+  }
+
+  /**
+   * Occlusion fade (see the field note): each frame, any tagged tall occluder
+   * that is ABOVE the focus level AND camera-closer than the focus (between
+   * camera and player) within a radius gets re-parented BEHIND the player as a
+   * faint ghost, over a pooled BLACK silhouette backing (so the hidden geometry
+   * reads as void, never as walkable ground). Everything else is restored to its
+   * opaque, in-front state. Focus = debug override (`occFocus`) or local player.
+   */
+  private updateOcclusionFade() {
+    const world = this.world;
+    const BEHIND = -500_000; // above the ground RT (−1e6), below every sprite
+    const R = 16; // clear radius in cells
+    let fc = this.occFocus;
+    if (!fc && this.room) {
+      const me = this.avatars.get(this.room.sessionId);
+      if (me) fc = { col: Math.floor(me.fx / CELL_WU), row: Math.floor(me.fy / CELL_WU) };
+    }
+    let black = 0;
+    const active = this.occFadeOn && this.maps2 && !!world && !!fc;
+    if (active && world && fc) {
+      const fLevel = world.rows[fc.row]?.[fc.col]?.l ?? 0;
+      const fSum = fc.col + fc.row;
+      for (const o of this.occluders) {
+        const col = o.getData("oc") as number | undefined;
+        if (col === undefined) continue; // untagged (legacy/demo) — leave as-is
+        const row = o.getData("or") as number;
+        const top = o.getData("ot") as number;
+        const od = o.getData("od") as number;
+        const heightAbove = top - fLevel;
+        const dist = Math.hypot(col - fc.col, row - fc.row);
+        if (heightAbove > 0 && dist < R && col + row > fSum) {
+          const clear = Math.min(1, 1 - dist / R); // 1 at focus → 0 at edge
+          // Height above the player sets how much of the ghost survives: the next
+          // level up stays legible (where to jump), higher levels fade harder.
+          const ghostBase = heightAbove <= 1 ? 0.55 : heightAbove <= 2 ? 0.32 : 0.14;
+          o.setDepth(BEHIND).setAlpha(1 - clear * (1 - ghostBase));
+          const b =
+            this.occBlackPool[black] ??
+            (this.occBlackPool[black] = this.add.image(0, 0, o.texture.key).setOrigin(0, 0));
+          black++;
+          b.setTexture(o.texture.key, o.frame.name)
+            .setPosition(o.x, o.y)
+            .setFlipX(o.flipX)
+            .setScale(o.scaleX, o.scaleY)
+            .setTintFill(0x000000) // solid black in the shape of the tile art
+            .setAlpha(clear)
+            .setDepth(BEHIND - 1)
+            .setVisible(true);
+        } else {
+          o.setDepth(od).setAlpha(1);
+        }
+      }
+    } else {
+      for (const o of this.occluders) {
+        const od = o.getData("od") as number | undefined;
+        if (od !== undefined) o.setDepth(od).setAlpha(1);
+      }
+    }
+    for (let i = black; i < this.occBlackPool.length; i++) this.occBlackPool[i].setVisible(false);
+  }
+
   private rebuildOccluders() {
     if (!this.world) return;
     const cam = this.cameras.main;
@@ -1694,12 +1829,18 @@ export class WorldScene extends Phaser.Scene {
           // terrace tear). stackFrom = one above the lower of the E/S fronts.
           for (let lvl = this.stackFrom(col, row, cell.l, false); lvl < cell.l; lvl++)
             this.occluders.push(
-              this.add.image(bx, by - lvl * lh, fk).setOrigin(0, 0).setDepth(oDepth),
+              this.tagOccluder(this.add.image(bx, by - lvl * lh, fk).setOrigin(0, 0).setDepth(oDepth), col, row, cell.l, oDepth),
             );
           this.occluders.push(
             // Occluder images CAN flip directly (setFlipX) — matches the RT's
             // mirrored top so the two layers stay pixel-aligned for flipped cells.
-            this.add.image(bx, by - cell.l * lh, topKey).setOrigin(0, 0).setFlipX(!!cell.flip).setDepth(oDepth),
+            this.tagOccluder(
+              this.add.image(bx, by - cell.l * lh, topKey).setOrigin(0, 0).setFlipX(!!cell.flip).setDepth(oDepth),
+              col,
+              row,
+              cell.l,
+              oDepth,
+            ),
           );
           this.occluderMeta.push({
             col,
