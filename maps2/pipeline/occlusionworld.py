@@ -40,7 +40,7 @@ def _h01(x, y, s):
 
 
 class Occlude:
-    def __init__(self, n=100, seed=3):
+    def __init__(self, n=128, seed=3):
         self.n, self.seed = n, seed
         self.lib = Tiles2()
         self.mat = np.full((n, n), "saturated_grass", object)   # flat walkable field
@@ -53,42 +53,64 @@ class Occlude:
         self._paint()
         self._decorate()
 
+    def _wall(self, x0, y0, x1, y1, lvl, mat="stone_mountain"):
+        n = self.n
+        for yy in range(max(0, y0), min(n, y1)):
+            for x in range(max(0, x0), min(n, x1)):
+                self.mat[yy, x] = mat
+                self.level[yy, x] = lvl
+
     # -- tall structures -------------------------------------------------------
 
     def _structures(self):
         n = self.n
         Y, X = np.mgrid[0:n, 0:n].astype(np.float32)
 
-        # 1) BIG MOUNTAIN (west): a stone cone to a snow cap, ~8 levels tall
-        mcx, mcy = n * 0.24, n * 0.56
+        # 1) HUGE MOUNTAIN (west): a broad stone massif to a snow cap ~28 levels
+        #    tall — tall enough to fully hide a player on the grass BEHIND it, not
+        #    just its snowy tip. (3x+ the old 8-level version, bigger radius too.)
+        mcx, mcy = n * 0.26, n * 0.62
         dm = np.hypot(X - mcx, Y - mcy)
-        mh = np.clip(8.5 - dm * 0.8, 0, 8)
+        mh = np.clip(28.0 - dm * 1.15, 0, 28)
         m = mh > 0.5
         self.level[m] = np.rint(mh)[m].astype(np.int16)
         self.mat[m] = "stone_mountain"
-        self.mat[m & (self.level >= 6)] = "regular_snow"
+        self.mat[m & (self.level >= 18)] = "regular_snow"
 
-        # 2) LONG WALL (centre): a 6-level stone wall with a doorway gap
-        wy = int(n * 0.50)
-        for x in range(int(n * 0.42), int(n * 0.66)):
-            if int(n * 0.52) <= x <= int(n * 0.55):        # doorway
-                continue
-            for yy in range(wy, wy + 3):
-                self.mat[yy, x] = "stone_mountain"
-                self.level[yy, x] = 6
+        # 2) CITY WALL — a U of 10-level ramparts around a courtyard, open to the
+        #    south so you walk in; props go on top (battlements) to test those too
+        cwx, cwy, cw = int(n * 0.44), int(n * 0.12), 22
+        self._wall(cwx, cwy, cwx + cw, cwy + 3, 10)             # north rampart
+        self._wall(cwx, cwy, cwx + 3, cwy + cw, 10)            # west rampart
+        self._wall(cwx + cw - 3, cwy, cwx + cw, cwy + cw, 10)  # east rampart
 
-        # 3) HOLLOW KEEP (east): a square of 7-level walls with a room inside and
-        #    a south entrance — walk in, or stand behind and watch the north wall fade
-        kx, ky, ks = int(n * 0.80), int(n * 0.46), 12
+        # 3) LONG HIGH CLIFF WALL (centre, E-W): 14 levels, thick, with a doorway
+        wy = int(n * 0.52)
+        self._wall(int(n * 0.40), wy, int(n * 0.72), wy + 3, 14)
+        self._wall(int(n * 0.55), wy, int(n * 0.58), wy + 3, 0, "saturated_grass")  # doorway
+
+        # 4) TERRACED CLIFFS (east): a stepped ziggurat 5/10/16 to test walking
+        #    behind stacked terraces
+        tx, ty = int(n * 0.80), int(n * 0.30)
+        for lvl, pad in ((5, 0), (10, 3), (16, 6)):
+            self._wall(tx + pad, ty + pad, tx + 16 - pad, ty + 16 - pad, lvl)
+
+        # 5) HOLLOW KEEP (SE): 12-level black-stone walls, room inside, south
+        #    entrance; battlement props on top
+        kx, ky, ks = int(n * 0.78), int(n * 0.66), 14
         for yy in range(ky, ky + ks):
             for x in range(kx, kx + ks):
                 on_wall = (yy < ky + 2 or yy >= ky + ks - 2
                            or x < kx + 2 or x >= kx + ks - 2)
-                if yy >= ky + ks - 2 and kx + 5 <= x <= kx + 6:   # south entrance
+                if yy >= ky + ks - 2 and kx + 6 <= x <= kx + 7:   # south entrance
                     on_wall = False
                 if on_wall:
                     self.mat[yy, x] = "black_mountain"
-                    self.level[yy, x] = 7
+                    self.level[yy, x] = 12
+
+        # 6) a couple of free-standing STONE WALL segments to stand behind
+        self._wall(int(n * 0.30), int(n * 0.30), int(n * 0.46), int(n * 0.32), 8)
+        self._wall(int(n * 0.60), int(n * 0.68), int(n * 0.62), int(n * 0.82), 9)
 
     # -- auto-tile -------------------------------------------------------------
 
@@ -100,7 +122,8 @@ class Occlude:
 
     # -- props -----------------------------------------------------------------
 
-    def _place(self, cells, terrain, heights, count, spacing, seedoff):
+    def _place(self, cells, terrain, heights, count, spacing, seedoff,
+               on_ground=True):
         pool = [p for hh in heights for p in self.lib.elev(terrain, hh)]
         if not pool or not cells:
             return
@@ -109,7 +132,9 @@ class Occlude:
         for (x, y) in cells:
             if any(abs(px - x) < spacing and abs(py - y) < spacing for px, py in placed):
                 continue
-            if (x, y) in self.props or self.level[y, x] > 0:
+            if (x, y) in self.props:
+                continue
+            if on_ground and self.level[y, x] > 0:     # flat ground only
                 continue
             self.props[(x, y)] = pool[int(_h01(x, y, self.seed + seedoff + 9) * len(pool)) % len(pool)]
             placed.append((x, y))
@@ -123,26 +148,31 @@ class Occlude:
         n = self.n
         flat = lambda x, y: self.mat[y, x] == "saturated_grass" and self.level[y, x] == 0
 
-        # TOWER ROW: tall stone obelisks north of the wall (behind it, up-screen)
-        towers = [(int(n * 0.34) + i * 4, int(n * 0.30)) for i in range(5)]
-        self._place([c for c in towers if 0 <= c[0] < n and flat(*c)],
-                    "stone_mountain", [5], 5, 1, 40)
-        # TALL FOREST: dense giant trees, east-north
-        grove = self._cells(lambda x, y: flat(x, y) and n * 0.60 < x < n * 0.82
-                            and n * 0.22 < y < n * 0.40)
-        self._place(grove, "saturated_grass", [5], 10, 2, 41)
-        self._place(grove, "saturated_grass", [4], 6, 3, 42)
-        # CRYSTAL SPIRES: a few tall crystal towers, centre-north
-        spires = self._cells(lambda x, y: flat(x, y) and n * 0.44 < x < n * 0.58
-                            and n * 0.20 < y < n * 0.34)
-        self._place(spires, "crystal_ice", [5, 4], 4, 3, 43)
+        # BATTLEMENTS: x2..x5 props ON TOP of the tall walls/cliffs — so the game
+        # can check that props standing on a wall fade with it. Wall tops = the
+        # stone/black cells with real elevation.
+        walltop = self._cells(lambda x, y: self.level[y, x] >= 6
+                              and self.mat[y, x] in ("stone_mountain", "black_mountain"))
+        self._place(walltop, "stone_mountain", [2, 3], 16, 2, 50, on_ground=False)
+        self._place(walltop, "stone_mountain", [4], 8, 3, 51, on_ground=False)
+        self._place(walltop, "crystal_ice", [5], 5, 4, 52, on_ground=False)
+
+        # TALL FOREST: dense giant trees (north-east), behind the cliffs
+        grove = self._cells(lambda x, y: flat(x, y) and n * 0.60 < x < n * 0.78
+                            and n * 0.14 < y < n * 0.34)
+        self._place(grove, "saturated_grass", [5], 12, 2, 41)
+        self._place(grove, "saturated_grass", [4], 7, 3, 42)
+        # CRYSTAL SPIRES on the ground, centre-north
+        spires = self._cells(lambda x, y: flat(x, y) and n * 0.30 < x < n * 0.42
+                            and n * 0.14 < y < n * 0.28)
+        self._place(spires, "crystal_ice", [5, 4], 5, 3, 43)
         # DETAIL to see behind the occluders: bushes/flowers scattered up-screen
-        behind = self._cells(lambda x, y: flat(x, y) and y < n * 0.44)
-        self._place(behind, "saturated_grass", [2], 22, 3, 44)
-        self._place(behind, "saturated_grass", [3], 8, 5, 45)
-        # a couple of lone tall trees in front too, so the player passes behind them
-        front = self._cells(lambda x, y: flat(x, y) and y > n * 0.66)
-        self._place(front, "saturated_grass", [5, 4], 5, 8, 46)
+        behind = self._cells(lambda x, y: flat(x, y) and y < n * 0.46)
+        self._place(behind, "saturated_grass", [2], 28, 3, 44)
+        self._place(behind, "saturated_grass", [3], 10, 5, 45)
+        # a few lone tall trees in front too, so the player passes behind them
+        front = self._cells(lambda x, y: flat(x, y) and y > n * 0.68)
+        self._place(front, "saturated_grass", [5, 4], 6, 9, 46)
 
     # -- render ----------------------------------------------------------------
 
@@ -184,7 +214,7 @@ class Occlude:
         return canvas
 
 
-def build(out=None, n=100, seed=3):
+def build(out=None, n=128, seed=3):
     d = Occlude(n=n, seed=seed)
     out = out or os.path.join(MAPS2, "worlds", "occlusion_test")
     os.makedirs(out, exist_ok=True)
