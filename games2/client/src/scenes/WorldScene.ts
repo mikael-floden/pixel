@@ -1707,7 +1707,7 @@ export class WorldScene extends Phaser.Scene {
    */
   private updateOcclusionFade() {
     const world = this.world;
-    const R = 14; // bubble radius in cells
+    const R = 22; // bubble radius in cells (which tall tiles fall into the fade)
     const GHOST = -800_000; // faded tower ghost: above the reveal layer, below sprites
     let fc = this.occFocus;
     const pav = this.room ? this.avatars.get(this.room.sessionId) : undefined;
@@ -1724,8 +1724,17 @@ export class WorldScene extends Phaser.Scene {
         const od = o.getData("od") as number;
         const dist = Math.hypot(col - fc.col, row - fc.row);
         if (top > fLevel && dist < R && col + row > fSum) {
-          const clear = Math.min(1, 1 - dist / R); // 1 at focus → 0 at edge
-          o.setDepth(GHOST).setAlpha(0.16 + 0.34 * (1 - clear)); // fainter nearer the player
+          // Fade harder the higher the tile sits above the player: 1 level up
+          // stays mostly visible (only ~foot height obscures anyway), 2 up is
+          // near-transparent, 3 up faint, 4+ up extremely faint (near-perfect
+          // grass). The character always draws on top, so the ghost never hides
+          // more than the ground it stands on.
+          const h = top - fLevel;
+          const ghost = h <= 1 ? 0.6 : h === 2 ? 0.18 : h === 3 ? 0.1 : 0.04;
+          // Blend back to solid across the outer 25% of the radius so the bubble
+          // edge isn't a hard ring.
+          const edge = Math.min(1, Math.max(0, (dist - R * 0.75) / (R * 0.25)));
+          o.setDepth(GHOST).setAlpha(ghost + (1 - ghost) * edge);
         } else {
           o.setDepth(od).setAlpha(1);
         }
