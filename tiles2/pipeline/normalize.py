@@ -170,18 +170,27 @@ def _run_len(mask, dy, dx):
 
 def fade_outline_alpha(im, darkness_thresh=60, soft_lum=120, run_min=9, thick_max=3,
                        strength=0.6, rim_strength=0.4, min_alpha=0,
-                       material_target=None, protect_dark_material=True):
+                       seam_strength=0.0, seam_jump=70, seam_bright=130, seam_nbr_sat=90,
+                       seam_rows=1, material_target=None, protect_dark_material=True):
     """Soften the generated near-black wireframe OUTLINE by REDUCING its ALPHA
     (toward transparent) — game1 had a similar step. RGB is never modified and
     non-dark pixels are never touched, so it only thins hard black lines.
 
-    A pixel is faded if it is near-black AND either (a) SILHOUETTE-RIM (touching
-    transparency) or (b) a THIN FRAME LINE — a dark run >= run_min along one of the
-    four orientations whose PERPENDICULAR run is <= thick_max. Compact dark blobs
-    (rock, trunks) are thick both ways -> never faded. `material_target` carries the
-    harmonize centroid; a near-black material (value<90 == black_mountain) drops the
-    rim component and caps strength so the volcanic body cannot dissolve. Handles
-    64x64 base and 64x128 elevation. Re-runnable from raw; toggle via config.
+    A pixel is faded if it is near-black AND any of:
+      (a) SILHOUETTE-RIM — touching transparency;
+      (b) THIN FRAME LINE — a dark run >= run_min along one of the four orientations
+          whose PERPENDICULAR run is <= thick_max (compact dark blobs stay);
+      (c) WAIST SEAM (opt-in, seam_strength>0) — the hard line where a dark object
+          meets the LIGHT base platform: a near-black px whose pixel DIRECTLY BELOW
+          is opaque, much brighter (jump > seam_jump), genuinely bright
+          (> seam_bright) and neutral (< seam_nbr_sat sat). The single dy=+1 test
+          gives a provable max-vertical-run of 1, so it can never climb a dark
+          trunk/crystal; it only softens the object-to-platform contact row (fixes
+          the basalt-column case the rim/thin gates miss).
+    `material_target` carries the harmonize centroid; a near-black material
+    (value<90 == black_mountain) drops the rim + seam components and caps strength so
+    the volcanic body cannot dissolve. Handles 64x64 base and 64x128 elevation.
+    Re-runnable from raw; every component toggles independently via config.
     """
     im = im.convert("RGBA")
     a = np.asarray(im).astype(np.float32)
@@ -210,10 +219,29 @@ def fade_outline_alpha(im, darkness_thresh=60, soft_lum=120, run_min=9, thick_ma
     thin |= (Ag >= run_min) & (Dg <= thick_max)
     thin &= core_dark
 
+    # waist seam (opt-in): near-black px sitting directly ON TOP of a much brighter,
+    # neutral, opaque pixel = the dark object's contact row with the light base
+    # platform. dy=+1 only -> max vertical run of 1 -> cannot climb into art.
+    if seam_strength > 0:
+        mx = rgb.max(2); mn = rgb.min(2)
+        sat = np.zeros_like(mx); nz = mx > 0
+        sat[nz] = (mx[nz] - mn[nz]) / mx[nz] * 255.0
+        below_op = _shift0(opaque, -1, 0)              # off-canvas == 0 -> tile-bottom never qualifies
+        below_lum = _shift0(lum, -1, 0)
+        below_sat = _shift0(sat, -1, 0)
+        seam = (core_dark & below_op & (below_lum - lum > seam_jump)
+                & (below_lum > seam_bright) & (below_sat < seam_nbr_sat))
+        if seam_rows >= 2:
+            seam = seam | (core_dark & _shift0(seam, -1, 0))
+        seam &= ~rim & ~thin
+    else:
+        seam = np.zeros(core_dark.shape, bool)
+
     if (protect_dark_material and material_target is not None
             and float(material_target.get("value", 255)) < 90):
         rim_strength = 0.0                             # near-black terrain rim is real rock
         strength = min(strength, 0.35)
+        seam_strength = 0.0                            # and no seam fade on near-black terrain
 
     # darkness weight: 1 at lum<=darkness_thresh, ramps to 0 at lum>=soft_lum, so
     # light rims (crystal_ice/snow) are spared and only genuinely-black lines fade.
@@ -221,6 +249,7 @@ def fade_outline_alpha(im, darkness_thresh=60, soft_lum=120, run_min=9, thick_ma
     reduce = np.zeros(alpha.shape, np.float32)
     reduce = np.where(rim, np.maximum(reduce, rim_strength), reduce)
     reduce = np.where(thin, np.maximum(reduce, strength), reduce)
+    reduce = np.where(seam, np.maximum(reduce, seam_strength), reduce)
     reduce = reduce * dark_w
 
     new_alpha = alpha * (1.0 - reduce)

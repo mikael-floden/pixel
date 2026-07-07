@@ -33,6 +33,8 @@ DEFAULTS = {"neutralize_outline": True, "darkness_thresh": 60,
             "fade_outline": {"enabled": False, "darkness_thresh": 60, "soft_lum": 120,
                              "run_min": 9, "thick_max": 3, "strength": 0.6,
                              "rim_strength": 0.4, "min_alpha": 0,
+                             "seam_strength": 0.0, "seam_jump": 70, "seam_bright": 130,
+                             "seam_nbr_sat": 90, "seam_rows": 1,
                              "protect_dark_material": True}}
 
 
@@ -47,7 +49,9 @@ def _pp_cfg(cfg):
 def _fade_kwargs(fo):
     """Args for normalize.fade_outline_alpha from the fade_outline config (minus enabled)."""
     return {k: fo[k] for k in ("darkness_thresh", "soft_lum", "run_min", "thick_max",
-                               "strength", "rim_strength", "min_alpha", "protect_dark_material")}
+                               "strength", "rim_strength", "min_alpha",
+                               "seam_strength", "seam_jump", "seam_bright", "seam_nbr_sat",
+                               "seam_rows", "protect_dark_material")}
 
 
 def _first_base_sheet(gid):
