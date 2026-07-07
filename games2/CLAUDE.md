@@ -56,6 +56,14 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
   `WALK_CLIMB = 0.5` (you can't walk up a full 1-level ledge), but a **timed
   jump** (`JUMP_CLIMB = 1`, Space) climbs it. `stepMovement` resolves axis-
   separated (wall-slide) and scales by the current **surface** speed.
+- **Auto-jump**: walking INTO a 1-level wall auto-fires the jump so you don't
+  tap Space at every ledge (`WorldScene.maybeAutoJump`/`wouldAutoJump`, called
+  from `predictAndSend`). The rule is exactly `!canEnter(walk) && canEnter(jump)`
+  probed a leading-edge ahead in the move direction — so a 2-level+ wall (fails
+  the jump check too) and solid props (impassable at any climb) are left alone,
+  and flat ground never auto-jumps. Client-only (queues the same jump input the
+  server validates); `tryJump` still gates on grounded+cooldown. Probe via
+  `__ml.autoJumpAt(x,y,ax,ay)`.
 - **Edge feel / falling**: walking off a ledge is forgiving — `stepMovement`
   no longer commits the drop a `PLAYER_RADIUS` early or snaps the anchor past
   the rim (the old "teleport to the floor beneath" feel). The feet just walk to

@@ -290,6 +290,23 @@ test("integrateFall: up-steps snap, gentle down-steps ease (stairs are not falls
   assert.ok(Math.abs(s.elev) < 0.5, "eases down onto the lower step");
 });
 
+test("auto-jump rule: a 1-level wall auto-hops; a 2-level wall / prop / flat do not", () => {
+  // cells: l0 | l1 | l2 | l0(+prop). The client auto-jumps exactly when a walk
+  // is blocked by height but a jump would clear it: !canEnter(walk)&&canEnter(jump).
+  const rows = [[{ t: "grass", l: 0 }, { t: "grass", l: 1 }, { t: "grass", l: 2 }, { t: "grass", l: 0 }]];
+  const g = buildTerrainGrid(4, 1, rows, [{ col: 3, row: 0 }]); // prop on the last cell
+  const y = CELL_WU / 2;
+  const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+  const jump = { maxClimb: JUMP_CLIMB, canSwim: true };
+  const c = (n: number) => CELL_WU * (n + 0.5);
+  const autoJump = (fromCell: number, toCell: number) =>
+    !canEnter(g, c(fromCell), y, c(toCell), y, walk) && canEnter(g, c(fromCell), y, c(toCell), y, jump);
+  assert.equal(autoJump(0, 1), true, "l0→l1 (1-level wall) auto-jumps");
+  assert.equal(autoJump(0, 2), false, "l0→l2 (2-level wall) does NOT auto-jump");
+  assert.equal(autoJump(0, 3), false, "into a solid prop does NOT auto-jump");
+  assert.equal(autoJump(1, 1), false, "flat ground does NOT auto-jump");
+});
+
 test("a placed prop makes its cell solid (movement in is refused)", () => {
   // Flat 3×1 grass; a prop stands on the middle cell (col 1). Walking east from
   // cell 0 must stop before entering cell 1 — the prop is an obstacle.

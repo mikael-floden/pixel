@@ -14,6 +14,7 @@ import {
   TerrainGrid,
   buildTerrainGrid,
   makeBlocked,
+  canEnter,
   surfaceAtWorld,
   levelAtWorld,
   integrateFall,
@@ -22,6 +23,8 @@ import {
   findSpawn,
   surfaceFor,
   isKnownSurface,
+  screenToWorldVector,
+  PLAYER_RADIUS,
   WALK_CLIMB,
   JUMP_CLIMB,
   JUMP_SPEED_FACTOR,
@@ -521,6 +524,9 @@ export class WorldScene extends Phaser.Scene {
       occCount: () => ({ maps2: this.maps2, occluders: this.occluders.length, meta: this.occluderMeta.length }),
       bubbles: () => [...this.avatars.values()].filter((a) => a.bubble).map((a) => a.bubble!.text),
       jump: () => this.tryJump(),
+      // Would auto-jump fire from world (x,y) moving in screen dir (ax,ay)?
+      // Headless probe for the auto-hop rule against real map geometry.
+      autoJumpAt: (x: number, y: number, ax: number, ay: number) => this.wouldAutoJump(x, y, ax, ay),
       // Current animation key of the local avatar's sprite — headless probe for
       // verifying jump/runjump selection.
       anim: () => {
@@ -1193,8 +1199,44 @@ export class WorldScene extends Phaser.Scene {
     this.lastInput = { ax, ay, running };
     this.lastSent = sig;
     this.sendAccum += dt;
+    // Auto-hop a 1-level ledge you walk into (a wall a jump COULD clear) so the
+    // player doesn't have to tap Space at every step — may set jumpQueued.
+    this.maybeAutoJump(ax, ay);
     // Regular cadence, and jumps flush immediately so the edge isn't delayed.
     if (this.jumpQueued || this.sendAccum >= 1 / INPUT_HZ) this.flushInput();
+  }
+
+  /**
+   * If the player is walking INTO a ledge that a jump could climb but a walk
+   * can't — i.e. exactly a 1-level wall (`WALK_CLIMB < step ≤ JUMP_CLIMB`) —
+   * fire the jump automatically. A 2-level+ wall fails the jump check too, so
+   * it's left alone; solid props (trees/boulders) are impassable at any climb,
+   * so they never auto-jump either. `tryJump` still gates on grounded+cooldown.
+   */
+  private maybeAutoJump(ax: number, ay: number) {
+    if (ax === 0 && ay === 0) return;
+    const now = this.time.now;
+    if (now < this.jumpUntil || now < this.jumpReadyAt) return; // already airborne / cooling down
+    const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+    if (me && this.wouldAutoJump(me.fx, me.fy, ax, ay)) this.tryJump();
+  }
+
+  /** The terrain predicate behind auto-jump: from world (fromX,fromY), moving in
+   * screen direction (ax,ay), is the cell just past the feet a wall a walk can't
+   * climb but a jump would (a 1-level ledge)? Excludes 2-level+ walls and solid
+   * props (a jump can't clear those either). Also exposed via __ml.autoJumpAt. */
+  private wouldAutoJump(fromX: number, fromY: number, ax: number, ay: number): boolean {
+    if (!this.terrain) return false;
+    const w = screenToWorldVector(ax, ay);
+    const len = Math.hypot(w.x, w.y);
+    if (len < 1e-6) return false;
+    // Probe the cell just past the feet's leading edge, in the move direction.
+    const d = PLAYER_RADIUS + 3;
+    const tx = fromX + (w.x / len) * d;
+    const ty = fromY + (w.y / len) * d;
+    const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+    const jump = { maxClimb: JUMP_CLIMB, canSwim: true };
+    return !canEnter(this.terrain, fromX, fromY, tx, ty, walk) && canEnter(this.terrain, fromX, fromY, tx, ty, jump);
   }
 
   /** Persist + send the accumulated input window (prediction and server get
