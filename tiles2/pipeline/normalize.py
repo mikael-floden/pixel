@@ -171,7 +171,8 @@ def _run_len(mask, dy, dx):
 def fade_outline_alpha(im, darkness_thresh=60, soft_lum=120, run_min=9, thick_max=3,
                        strength=0.6, rim_strength=0.4, min_alpha=0,
                        seam_strength=0.0, seam_jump=70, seam_bright=130, seam_nbr_sat=90,
-                       seam_rows=1, material_target=None, protect_dark_material=True):
+                       seam_rows=1, thin_lum_light=120, light_value=180,
+                       material_target=None, protect_dark_material=True):
     """Soften the generated near-black wireframe OUTLINE by REDUCING its ALPHA
     (toward transparent) — game1 had a similar step. RGB is never modified and
     non-dark pixels are never touched, so it only thins hard black lines.
@@ -203,21 +204,31 @@ def fade_outline_alpha(im, darkness_thresh=60, soft_lum=120, run_min=9, thick_ma
     near_black = opaque & (lum < soft_lum)
     core_dark = opaque & (lum < darkness_thresh)
 
+    # On a LIGHT material (pale ice/snow/sand — value > light_value) a thin DARK-GREY
+    # line is an unwanted outline, not art: extend the thin detector's luminance
+    # ceiling to thin_lum_light there so it also catches grey (lum 60-120) cube edges,
+    # which core_dark<60 misses entirely. Dark/mid materials keep the tight <60 gate,
+    # so stone/dirt/black_mountain/grass detail is untouched (as verified).
+    light_mat = (material_target is not None
+                 and float(material_target.get("value", 0)) > light_value)
+    thin_ceiling = thin_lum_light if light_mat else darkness_thresh
+    thin_dark = opaque & (lum < thin_ceiling)
+
     trans = ~opaque                                    # silhouette rim (off-canvas == transparent)
     neigh_t = (_shift0(trans, 1, 0) | _shift0(trans, -1, 0)
                | _shift0(trans, 0, 1) | _shift0(trans, 0, -1))
     rim = near_black & neigh_t
 
-    H = _run_len(core_dark, 0, 1)                      # thin frame lines: long one way, thin across
-    V = _run_len(core_dark, 1, 0)
-    Dg = _run_len(core_dark, 1, 1)
-    Ag = _run_len(core_dark, 1, -1)
-    thin = np.zeros(core_dark.shape, bool)
+    H = _run_len(thin_dark, 0, 1)                      # thin frame lines: long one way, thin across
+    V = _run_len(thin_dark, 1, 0)
+    Dg = _run_len(thin_dark, 1, 1)
+    Ag = _run_len(thin_dark, 1, -1)
+    thin = np.zeros(thin_dark.shape, bool)
     thin |= (H >= run_min) & (V <= thick_max)
     thin |= (V >= run_min) & (H <= thick_max)
     thin |= (Dg >= run_min) & (Ag <= thick_max)
     thin |= (Ag >= run_min) & (Dg <= thick_max)
-    thin &= core_dark
+    thin &= thin_dark
 
     # waist seam (opt-in): near-black px sitting directly ON TOP of a much brighter,
     # neutral, opaque pixel = the dark object's contact row with the light base

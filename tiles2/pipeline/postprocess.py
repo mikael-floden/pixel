@@ -35,6 +35,7 @@ DEFAULTS = {"neutralize_outline": True, "darkness_thresh": 60,
                              "rim_strength": 0.4, "min_alpha": 0,
                              "seam_strength": 0.0, "seam_jump": 70, "seam_bright": 130,
                              "seam_nbr_sat": 90, "seam_rows": 1,
+                             "thin_lum_light": 120, "light_value": 180,
                              "protect_dark_material": True}}
 
 
@@ -51,7 +52,8 @@ def _fade_kwargs(fo):
     return {k: fo[k] for k in ("darkness_thresh", "soft_lum", "run_min", "thick_max",
                                "strength", "rim_strength", "min_alpha",
                                "seam_strength", "seam_jump", "seam_bright", "seam_nbr_sat",
-                               "seam_rows", "protect_dark_material")}
+                               "seam_rows", "thin_lum_light", "light_value",
+                               "protect_dark_material")}
 
 
 def _first_base_sheet(gid):
