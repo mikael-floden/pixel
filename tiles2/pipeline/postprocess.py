@@ -29,14 +29,25 @@ import normalize
 import tilemeta
 
 DEFAULTS = {"neutralize_outline": True, "darkness_thresh": 60,
-            "harmonize": {"hue_strength": 0.9, "sat_strength": 0.6, "v_strength": 0.65}}
+            "harmonize": {"hue_strength": 0.9, "sat_strength": 0.6, "v_strength": 0.65},
+            "fade_outline": {"enabled": False, "darkness_thresh": 60, "soft_lum": 120,
+                             "run_min": 9, "thick_max": 3, "strength": 0.6,
+                             "rim_strength": 0.4, "min_alpha": 0,
+                             "protect_dark_material": True}}
 
 
 def _pp_cfg(cfg):
     pp = (cfg.get("postprocess") or {}) if cfg else {}
     out = {**DEFAULTS, **pp}
     out["harmonize"] = {**DEFAULTS["harmonize"], **(pp.get("harmonize") or {})}
+    out["fade_outline"] = {**DEFAULTS["fade_outline"], **(pp.get("fade_outline") or {})}
     return out
+
+
+def _fade_kwargs(fo):
+    """Args for normalize.fade_outline_alpha from the fade_outline config (minus enabled)."""
+    return {k: fo[k] for k in ("darkness_thresh", "soft_lum", "run_min", "thick_max",
+                               "strength", "rim_strength", "min_alpha", "protect_dark_material")}
 
 
 def _first_base_sheet(gid):
@@ -90,6 +101,12 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
     ctx = {"ground_type": gid, "transition_to": other}
     raw_by_file = {t["file"]: t for t in (req.get("tiles") or [])}
 
+    fo = pp["fade_outline"]
+    # guard on the DARKER of the two materials so a transition INTO black_mountain
+    # still trips the dark-material protection
+    fade_mt = min([t for t in (t_from, t_to) if t],
+                  key=lambda x: x.get("value", 255), default=None)
+
     tiles_meta = []
     for fn in common.tile_files(sdir):
         im = Image.open(os.path.join(sdir, fn)).convert("RGBA")
@@ -98,6 +115,8 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
         im = normalize.harmonize(im, t_from, hs["hue_strength"], hs["sat_strength"], hs["v_strength"])
         if t_to:
             im = normalize.harmonize(im, t_to, hs["hue_strength"], hs["sat_strength"], hs["v_strength"])
+        if fo.get("enabled"):                          # fade AFTER harmonize (which restores alpha)
+            im = normalize.fade_outline_alpha(im, material_target=fade_mt, **_fade_kwargs(fo))
         im.save(os.path.join(dest, fn))
         # Per-tile map-builder metadata computed on the FINAL (harmonised) image.
         entry = dict(raw_by_file.get(fn, {"file": fn}))
@@ -126,6 +145,7 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
             "harmonize": hs,
             "harmonized_from": bool(t_from),
             "harmonized_to": bool(t_to),
+            "fade_outline": fo if fo.get("enabled") else False,
         },
     }
     with open(os.path.join(dest, "metadata.json"), "w") as f:

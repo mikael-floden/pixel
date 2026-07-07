@@ -236,6 +236,10 @@ def process_sheet(gid, terrain, sheet, sdir, req, cfg, cache):
             im = normalize.neutralize_outline(im, darkness_thresh=pp["darkness_thresh"])
         for tgt in ref_targets:
             im = normalize.harmonize(im, tgt, hs["hue_strength"], hs["sat_strength"], hs["v_strength"])
+        fo = pp["fade_outline"]
+        if fo.get("enabled"):                          # soften hard black frame lines AFTER harmonize
+            im = normalize.fade_outline_alpha(im, material_target=emit_target,
+                                              **postprocess._fade_kwargs(fo))
         im.save(os.path.join(dest, fn))
         entry = dict(raw_by_file.get(fn, {"file": fn}))
         # Per-tile emission so the glowing PROPS (crystals, lava, mushrooms, lamps,
@@ -262,7 +266,8 @@ def process_sheet(gid, terrain, sheet, sdir, req, cfg, cache):
         "generated_at": req.get("generated_at"),
         "processing": {"neutralize_outline": pp["neutralize_outline"],
                        "harmonize": hs, "harmonize_refs": refs,
-                       "harmonized": len(ref_targets)},
+                       "harmonized": len(ref_targets),
+                       "fade_outline": pp["fade_outline"] if pp["fade_outline"].get("enabled") else False},
     }
     with open(os.path.join(dest, "metadata.json"), "w") as f:
         json.dump(dest_meta, f, indent=2)

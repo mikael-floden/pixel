@@ -135,3 +135,97 @@ def neutralize_outline(im, darkness_thresh=60):
     apply = target & have
     a[:, :, :3] = np.where(apply[:, :, None], avg, rgb)
     return Image.fromarray(a.clip(0, 255).astype(np.uint8), "RGBA")
+
+
+def _shift0(a, dy, dx):
+    """Shift array; vacated border filled with 0 (off-canvas == transparent).
+    Unlike _shift (np.roll, wraps), so the tile edge reads as a true silhouette."""
+    out = np.zeros_like(a)
+    ys_src = slice(max(0, -dy), a.shape[0] - max(0, dy))
+    ys_dst = slice(max(0, dy), a.shape[0] - max(0, -dy))
+    xs_src = slice(max(0, -dx), a.shape[1] - max(0, dx))
+    xs_dst = slice(max(0, dx), a.shape[1] - max(0, -dx))
+    out[ys_dst, xs_dst] = a[ys_src, xs_src]
+    return out
+
+
+def _run_len(mask, dy, dx):
+    """Length of the maximal consecutive True run through each pixel along
+    (dy,dx). Pure-numpy shift-accumulate; no scipy."""
+    m = mask.astype(np.int32)
+    fwd = np.zeros(mask.shape, np.int32)
+    for _ in range(max(mask.shape)):
+        nxt = m * (1 + _shift0(fwd, dy, dx))
+        if np.array_equal(nxt, fwd):
+            break
+        fwd = nxt
+    bwd = np.zeros(mask.shape, np.int32)
+    for _ in range(max(mask.shape)):
+        nxt = m * (1 + _shift0(bwd, -dy, -dx))
+        if np.array_equal(nxt, bwd):
+            break
+        bwd = nxt
+    return fwd + bwd - m
+
+
+def fade_outline_alpha(im, darkness_thresh=60, soft_lum=120, run_min=9, thick_max=3,
+                       strength=0.6, rim_strength=0.4, min_alpha=0,
+                       material_target=None, protect_dark_material=True):
+    """Soften the generated near-black wireframe OUTLINE by REDUCING its ALPHA
+    (toward transparent) — game1 had a similar step. RGB is never modified and
+    non-dark pixels are never touched, so it only thins hard black lines.
+
+    A pixel is faded if it is near-black AND either (a) SILHOUETTE-RIM (touching
+    transparency) or (b) a THIN FRAME LINE — a dark run >= run_min along one of the
+    four orientations whose PERPENDICULAR run is <= thick_max. Compact dark blobs
+    (rock, trunks) are thick both ways -> never faded. `material_target` carries the
+    harmonize centroid; a near-black material (value<90 == black_mountain) drops the
+    rim component and caps strength so the volcanic body cannot dissolve. Handles
+    64x64 base and 64x128 elevation. Re-runnable from raw; toggle via config.
+    """
+    im = im.convert("RGBA")
+    a = np.asarray(im).astype(np.float32)
+    rgb, alpha = a[:, :, :3], a[:, :, 3]
+    opaque = alpha > 16
+    if not opaque.any():
+        return im.copy()
+
+    lum = 0.299 * rgb[:, :, 0] + 0.587 * rgb[:, :, 1] + 0.114 * rgb[:, :, 2]
+    near_black = opaque & (lum < soft_lum)
+    core_dark = opaque & (lum < darkness_thresh)
+
+    trans = ~opaque                                    # silhouette rim (off-canvas == transparent)
+    neigh_t = (_shift0(trans, 1, 0) | _shift0(trans, -1, 0)
+               | _shift0(trans, 0, 1) | _shift0(trans, 0, -1))
+    rim = near_black & neigh_t
+
+    H = _run_len(core_dark, 0, 1)                      # thin frame lines: long one way, thin across
+    V = _run_len(core_dark, 1, 0)
+    Dg = _run_len(core_dark, 1, 1)
+    Ag = _run_len(core_dark, 1, -1)
+    thin = np.zeros(core_dark.shape, bool)
+    thin |= (H >= run_min) & (V <= thick_max)
+    thin |= (V >= run_min) & (H <= thick_max)
+    thin |= (Dg >= run_min) & (Ag <= thick_max)
+    thin |= (Ag >= run_min) & (Dg <= thick_max)
+    thin &= core_dark
+
+    if (protect_dark_material and material_target is not None
+            and float(material_target.get("value", 255)) < 90):
+        rim_strength = 0.0                             # near-black terrain rim is real rock
+        strength = min(strength, 0.35)
+
+    # darkness weight: 1 at lum<=darkness_thresh, ramps to 0 at lum>=soft_lum, so
+    # light rims (crystal_ice/snow) are spared and only genuinely-black lines fade.
+    dark_w = np.clip((soft_lum - lum) / max(1.0, soft_lum - darkness_thresh), 0.0, 1.0)
+    reduce = np.zeros(alpha.shape, np.float32)
+    reduce = np.where(rim, np.maximum(reduce, rim_strength), reduce)
+    reduce = np.where(thin, np.maximum(reduce, strength), reduce)
+    reduce = reduce * dark_w
+
+    new_alpha = alpha * (1.0 - reduce)
+    if min_alpha > 0:
+        faded = reduce > 0
+        new_alpha = np.where(faded & (new_alpha < min_alpha), float(min_alpha), new_alpha)
+    a[:, :, 3] = np.clip(new_alpha, 0, 255)
+    return Image.fromarray(a.astype(np.uint8), "RGBA")

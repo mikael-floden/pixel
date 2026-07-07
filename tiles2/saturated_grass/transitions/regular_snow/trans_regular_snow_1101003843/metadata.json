@@ -1294,6 +1294,17 @@
       "v_strength": 0.9
     },
     "harmonized_from": true,
-    "harmonized_to": true
+    "harmonized_to": true,
+    "fade_outline": {
+      "enabled": true,
+      "darkness_thresh": 60,
+      "soft_lum": 120,
+      "run_min": 9,
+      "thick_max": 3,
+      "strength": 0.6,
+      "rim_strength": 0.4,
+      "min_alpha": 0,
+      "protect_dark_material": true
+    }
   }
 }
