@@ -66,36 +66,37 @@ class Occlude:
         n = self.n
         Y, X = np.mgrid[0:n, 0:n].astype(np.float32)
 
-        # 1) HUGE MOUNTAIN (west): a broad stone massif to a snow cap ~28 levels
-        #    tall — tall enough to fully hide a player on the grass BEHIND it, not
-        #    just its snowy tip. (3x+ the old 8-level version, bigger radius too.)
-        mcx, mcy = n * 0.26, n * 0.62
+        # 1) HUGE STEEP MOUNTAIN (west): a tall stone peak (~32 levels) with STEEP
+        #    sides — a small footprint but very high, so the summit sits right
+        #    above the grass behind it and fully hides a player standing there
+        #    (a broad, gradual cone wastes its height just reaching the back rim).
+        mcx, mcy = n * 0.28, n * 0.64
         dm = np.hypot(X - mcx, Y - mcy)
-        mh = np.clip(28.0 - dm * 1.15, 0, 28)
+        mh = np.clip(32.0 - dm * 2.6, 0, 32)          # ~2.6 levels/cell => steep
         m = mh > 0.5
         self.level[m] = np.rint(mh)[m].astype(np.int16)
         self.mat[m] = "stone_mountain"
-        self.mat[m & (self.level >= 18)] = "regular_snow"
+        self.mat[m & (self.level >= 22)] = "regular_snow"
 
-        # 2) CITY WALL — a U of 10-level ramparts around a courtyard, open to the
+        # 2) CITY WALL — a U of 14-level ramparts around a courtyard, open to the
         #    south so you walk in; props go on top (battlements) to test those too
         cwx, cwy, cw = int(n * 0.44), int(n * 0.12), 22
-        self._wall(cwx, cwy, cwx + cw, cwy + 3, 10)             # north rampart
-        self._wall(cwx, cwy, cwx + 3, cwy + cw, 10)            # west rampart
-        self._wall(cwx + cw - 3, cwy, cwx + cw, cwy + cw, 10)  # east rampart
+        self._wall(cwx, cwy, cwx + cw, cwy + 3, 14)             # north rampart
+        self._wall(cwx, cwy, cwx + 3, cwy + cw, 14)            # west rampart
+        self._wall(cwx + cw - 3, cwy, cwx + cw, cwy + cw, 14)  # east rampart
 
-        # 3) LONG HIGH CLIFF WALL (centre, E-W): 14 levels, thick, with a doorway
+        # 3) LONG HIGH CLIFF WALL (centre, E-W): 16 levels, thick, with a doorway
         wy = int(n * 0.52)
-        self._wall(int(n * 0.40), wy, int(n * 0.72), wy + 3, 14)
+        self._wall(int(n * 0.40), wy, int(n * 0.72), wy + 3, 16)
         self._wall(int(n * 0.55), wy, int(n * 0.58), wy + 3, 0, "saturated_grass")  # doorway
 
-        # 4) TERRACED CLIFFS (east): a stepped ziggurat 5/10/16 to test walking
-        #    behind stacked terraces
+        # 4) TALL STEP PYRAMID (east): a steep ziggurat 12/22/32 — tall enough that
+        #    you can stand behind it on the grass and be fully hidden
         tx, ty = int(n * 0.80), int(n * 0.30)
-        for lvl, pad in ((5, 0), (10, 3), (16, 6)):
+        for lvl, pad in ((12, 0), (22, 3), (32, 6)):
             self._wall(tx + pad, ty + pad, tx + 16 - pad, ty + 16 - pad, lvl)
 
-        # 5) HOLLOW KEEP (SE): 12-level black-stone walls, room inside, south
+        # 5) HOLLOW KEEP (SE): 16-level black-stone walls, room inside, south
         #    entrance; battlement props on top
         kx, ky, ks = int(n * 0.78), int(n * 0.66), 14
         for yy in range(ky, ky + ks):
@@ -106,11 +107,11 @@ class Occlude:
                     on_wall = False
                 if on_wall:
                     self.mat[yy, x] = "black_mountain"
-                    self.level[yy, x] = 12
+                    self.level[yy, x] = 16
 
         # 6) a couple of free-standing STONE WALL segments to stand behind
-        self._wall(int(n * 0.30), int(n * 0.30), int(n * 0.46), int(n * 0.32), 8)
-        self._wall(int(n * 0.60), int(n * 0.68), int(n * 0.62), int(n * 0.82), 9)
+        self._wall(int(n * 0.30), int(n * 0.30), int(n * 0.46), int(n * 0.32), 12)
+        self._wall(int(n * 0.60), int(n * 0.68), int(n * 0.62), int(n * 0.82), 12)
 
     # -- auto-tile -------------------------------------------------------------
 
