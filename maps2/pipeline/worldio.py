@@ -92,14 +92,26 @@ def save_world(path, *, name, mat, top, mirror=None, level=None, spawn,
     top_ix = [[intern(top[y][x] if top[y][x] is not None else None)
                for x in range(W)] for y in range(H)]
 
-    # props -> list, interning their (taller) tiles into the same table
+    # props -> list, interning their (taller) tiles into the same table. `levels`
+    # (parsed from base_x_N; 1 otherwise) is the prop's height in elevation levels
+    # — a hint for occlusion/fade logic (how tall the occluder stands).
+    def _levels(path):
+        b = os.path.basename(os.path.dirname(path))
+        if b.startswith("base_x_"):
+            try:
+                return int(b.split("base_x_")[1].split("_")[0])
+            except (IndexError, ValueError):
+                pass
+        return 1
+
     prop_list = []
     prop_cell = set()
     if props:
         triples = (((k[0], k[1], v) for k, v in props.items())
                    if isinstance(props, dict) else props)
         for x, y, p in triples:
-            prop_list.append({"x": int(x), "y": int(y), "tile": intern(p)})
+            prop_list.append({"x": int(x), "y": int(y), "tile": intern(p),
+                              "levels": _levels(p)})
             prop_cell.add((int(x), int(y)))
 
     # collision: water, void, or a prop cell blocks

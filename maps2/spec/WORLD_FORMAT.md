@@ -60,8 +60,10 @@ stacking `top` reproduces the coherent wall for free.
   owns walkability** and should derive it from `level` (elevation) + `mat`
   (surfaces), NOT from this grid — see *Ownership boundary* below. A game engine
   may ignore this field entirely.
-- `props[]` — `{x, y, tile}` where `tile` indexes `paths`; a 64×128 landmark
-  tile anchored content-bottom on that cell.
+- `props[]` — `{x, y, tile, levels}` where `tile` indexes `paths`; a 64×128
+  landmark tile anchored content-bottom on that cell. `levels` is its height in
+  elevation levels (`base_x_N` → N; 1 otherwise) — a hint for occlusion/fade
+  logic (how tall the occluder stands). Terrain occluder height is `level`.
 - `meta` — optional generator metadata (not needed to render).
 
 ## Notes for consumers

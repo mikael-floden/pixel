@@ -87,6 +87,10 @@ def main():
         import glowdemo
         glowdemo.build(os.path.join(MAPS2, "worlds", "glow_test"))
         return
+    if args.name == "occlusion_test":
+        import occlusionworld
+        occlusionworld.build(os.path.join(MAPS2, "worlds", "occlusion_test"))
+        return
 
     out = os.path.join(MAPS2, "worlds", args.name)
     os.makedirs(out, exist_ok=True)
