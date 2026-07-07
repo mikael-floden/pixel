@@ -1707,7 +1707,7 @@ export class WorldScene extends Phaser.Scene {
    */
   private updateOcclusionFade() {
     const world = this.world;
-    const R = 22; // bubble radius in cells (which tall tiles fall into the fade)
+    const R = 14; // bubble radius in cells
     const GHOST = -800_000; // faded tower ghost: above the reveal layer, below sprites
     let fc = this.occFocus;
     const pav = this.room ? this.avatars.get(this.room.sessionId) : undefined;
@@ -1715,6 +1715,7 @@ export class WorldScene extends Phaser.Scene {
     const active = this.occFadeOn && this.maps2 && !!world && !!fc;
     if (active && world && fc) {
       const fLevel = world.rows[fc.row]?.[fc.col]?.l ?? 0;
+      const fSum = fc.col + fc.row;
       for (const o of this.occluders) {
         const col = o.getData("oc") as number | undefined;
         if (col === undefined) continue; // untagged (legacy/demo) — leave as-is
@@ -1722,21 +1723,9 @@ export class WorldScene extends Phaser.Scene {
         const top = o.getData("ot") as number;
         const od = o.getData("od") as number;
         const dist = Math.hypot(col - fc.col, row - fc.row);
-        // Fade EVERY tall tile above the player within the radius — not just the
-        // ones "in front" — so a player in a pit/crater (walls on all sides) is
-        // never left hidden behind a beside/behind wall that stays opaque.
-        if (top > fLevel && dist < R) {
-          // Fade harder the higher the tile sits above the player: 1 level up
-          // stays mostly visible (only ~foot height obscures anyway), 2 up is
-          // near-transparent, 3 up faint, 4+ up extremely faint (near-perfect
-          // grass). The character always draws on top, so the ghost never hides
-          // more than the ground it stands on.
-          const h = top - fLevel;
-          const ghost = h <= 1 ? 0.6 : h === 2 ? 0.18 : h === 3 ? 0.1 : 0.04;
-          // Blend back to solid across the outer 25% of the radius so the bubble
-          // edge isn't a hard ring.
-          const edge = Math.min(1, Math.max(0, (dist - R * 0.75) / (R * 0.25)));
-          o.setDepth(GHOST).setAlpha(ghost + (1 - ghost) * edge);
+        if (top > fLevel && dist < R && col + row > fSum) {
+          const clear = Math.min(1, 1 - dist / R); // 1 at focus → 0 at edge
+          o.setDepth(GHOST).setAlpha(0.16 + 0.34 * (1 - clear)); // fainter nearer the player
         } else {
           o.setDepth(od).setAlpha(1);
         }
@@ -1809,6 +1798,7 @@ export class WorldScene extends Phaser.Scene {
     rt.setPosition(ax, ay);
     rt.clear();
     const fLevel = world.rows[fc.row]?.[fc.col]?.l ?? 0;
+    const fSum = fc.col + fc.row;
     const x0 = ax - tile;
     const x1 = ax + rt.width + tile;
     const y0 = ay - tile;
@@ -1828,8 +1818,8 @@ export class WorldScene extends Phaser.Scene {
         if (Math.hypot(col - fc.col, row - fc.row) > R) continue;
         const bx = this.iso.ox + u * dx - ax;
         const by = this.iso.oy + v * dy - ay;
-        if (cell.l > fLevel) {
-          // Taller than the player → black root diamond at its base (void).
+        if (cell.l > fLevel && col + row > fSum) {
+          // Taller than the player, in front of them → black root diamond (void).
           rt.batchDraw("occ-root", bx, by);
         } else if (surfaceFor(cell.t).standable || surfaceFor(cell.t).swimmable) {
           // The ground the player walks on — re-expose it over the towers above.
