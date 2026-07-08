@@ -7,8 +7,10 @@ name: Pixel sound-effects loop
 # secret is present the loop automatically upgrades to AI text-to-SFX foley.
 
 on:
-  schedule:
-    - cron: "40 * * * *"        # hourly, offset from the other domains
+  # Scheduled runs DISABLED at the user's request (failing runs were emailing the
+  # repo owner). Re-enable by uncommenting the schedule below.
+  # schedule:
+  #   - cron: "40 * * * *"        # hourly, offset from the other domains
   workflow_dispatch:
     inputs:
       max_minutes:
