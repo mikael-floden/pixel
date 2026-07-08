@@ -5,8 +5,10 @@ name: Pixel tiles factory loop
 # commits + pushes each to main. Add the PIXELLAB_API_KEY secret in repo settings.
 
 on:
-  schedule:
-    - cron: "15 */3 * * *"     # every 3 hours (UTC), offset from the other loops
+  # Scheduled loop PAUSED at the user's request. Re-enable by uncommenting the
+  # cron below; the loop still runs on demand via the Actions "Run workflow" button.
+  # schedule:
+  #   - cron: "15 */3 * * *"     # every 3 hours (UTC), offset from the other loops
   workflow_dispatch:
     inputs:
       max_minutes:

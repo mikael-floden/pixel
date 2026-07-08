@@ -7,8 +7,10 @@ name: characters2 sync
 # changed, so a run with nothing new costs nothing and commits nothing.
 
 on:
-  schedule:
-    - cron: "*/30 * * * *"      # every 30 min — picks up newly-added animations
+  # Scheduled auto-sync PAUSED at the user's request. Re-enable by uncommenting.
+  # Run manually via the Actions "Run workflow" button when you want a sync.
+  # schedule:
+  #   - cron: "*/30 * * * *"      # every 30 min — picks up newly-added animations
   workflow_dispatch:
     inputs:
       names:

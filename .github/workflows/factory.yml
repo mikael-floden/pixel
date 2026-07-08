@@ -6,13 +6,15 @@ name: Pixel character factory loop
 # GitHub repo settings, and trigger/disable from the Actions tab.
 
 on:
-  schedule:
-    # Every 6h (UTC). Each pass runs ~5.5h (near GitHub's 6h job cap), so passes
-    # are essentially continuous — this cron only needs to RESTART a finished
-    # pass, not fill gaps. GitHub's scheduler is best-effort (delays/skips), but
-    # with long passes an occasional missed tick barely matters, and a manual
-    # "Run workflow" always resumes immediately.
-    - cron: "7 */6 * * *"
+  # Scheduled loop PAUSED at the user's request. Re-enable by uncommenting the
+  # cron below; the loop still runs on demand via the Actions "Run workflow" button.
+  # schedule:
+  #   # Every 6h (UTC). Each pass runs ~5.5h (near GitHub's 6h job cap), so passes
+  #   # are essentially continuous — this cron only needs to RESTART a finished
+  #   # pass, not fill gaps. GitHub's scheduler is best-effort (delays/skips), but
+  #   # with long passes an occasional missed tick barely matters, and a manual
+  #   # "Run workflow" always resumes immediately.
+  #   - cron: "7 */6 * * *"
   workflow_dispatch:
     inputs:
       max_minutes:
