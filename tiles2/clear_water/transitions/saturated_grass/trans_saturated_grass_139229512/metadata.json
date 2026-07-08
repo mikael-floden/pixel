@@ -15,6 +15,7 @@
     "tile_flat_top_px": 2
   },
   "count": 16,
+  "metadata_complete": true,
   "tiles": [
     {
       "index": 0,
@@ -882,10 +883,9 @@
       },
       "features": [
         "flowers",
-        "accent",
-        "water"
+        "accent"
       ],
-      "description": "saturated grass blending to clear water with small flowers, a small detail, a small puddle"
+      "description": "saturated grass blending to clear water with small flowers, a small detail"
     },
     {
       "index": 11,
@@ -1122,10 +1122,10 @@
       },
       "features": [
         "accent",
-        "water",
-        "pebbles"
+        "pebbles",
+        "water"
       ],
-      "description": "saturated grass blending to clear water with a small detail, a small puddle, pebbles"
+      "description": "saturated grass blending to clear water with a small detail, pebbles, a small puddle"
     },
     {
       "index": 14,
@@ -1283,10 +1283,28 @@
     "neutralize_outline": true,
     "harmonize": {
       "hue_strength": 0.9,
-      "sat_strength": 0.6,
-      "v_strength": 0.65
+      "sat_strength": 0.7,
+      "v_strength": 0.9
     },
     "harmonized_from": true,
-    "harmonized_to": true
+    "harmonized_to": true,
+    "fade_outline": {
+      "enabled": true,
+      "darkness_thresh": 60,
+      "soft_lum": 120,
+      "run_min": 9,
+      "thick_max": 3,
+      "strength": 0.6,
+      "rim_strength": 0.4,
+      "min_alpha": 0,
+      "seam_strength": 0.4,
+      "seam_jump": 70,
+      "seam_bright": 130,
+      "seam_nbr_sat": 90,
+      "seam_rows": 1,
+      "thin_lum_light": 120,
+      "light_value": 180,
+      "protect_dark_material": true
+    }
   }
 }

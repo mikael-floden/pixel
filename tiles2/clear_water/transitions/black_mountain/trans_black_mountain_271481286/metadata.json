@@ -15,6 +15,7 @@
     "tile_flat_top_px": 2
   },
   "count": 16,
+  "metadata_complete": true,
   "tiles": [
     {
       "index": 0,
@@ -94,9 +95,11 @@
         }
       },
       "features": [
-        "accent"
+        "pebbles",
+        "water",
+        "shiny"
       ],
-      "description": "clear water blending to black volcanic rock with a small detail"
+      "description": "clear water blending to black volcanic rock with pebbles, a small puddle, a shiny speck"
     },
     {
       "index": 1,
@@ -104,8 +107,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.837,
-        "black_mountain": 0.163
+        "clear_water": 0.862,
+        "black_mountain": 0.138
       },
       "edges": {
         "NE": {
@@ -170,11 +173,12 @@
         }
       },
       "features": [
-        "accent",
         "pebbles",
+        "accent",
+        "shiny",
         "flowers"
       ],
-      "description": "clear water blending to black volcanic rock with a small detail, pebbles, small flowers"
+      "description": "clear water blending to black volcanic rock with pebbles, a small detail, a shiny speck, small flowers"
     },
     {
       "index": 2,
@@ -182,8 +186,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.875,
-        "black_mountain": 0.125
+        "clear_water": 0.94,
+        "black_mountain": 0.06
       },
       "edges": {
         "NE": {
@@ -249,10 +253,10 @@
       },
       "features": [
         "accent",
-        "pebbles",
-        "water"
+        "shiny",
+        "pebbles"
       ],
-      "description": "clear water blending to black volcanic rock with a small detail, pebbles, a small puddle"
+      "description": "clear water blending to black volcanic rock with a small detail, a shiny speck, pebbles"
     },
     {
       "index": 3,
@@ -260,8 +264,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.799,
-        "black_mountain": 0.201
+        "clear_water": 0.798,
+        "black_mountain": 0.202
       },
       "edges": {
         "NE": {
@@ -327,11 +331,13 @@
         }
       },
       "features": [
-        "accent",
         "pebbles",
-        "water"
+        "shiny",
+        "accent",
+        "water",
+        "bare_soil"
       ],
-      "description": "clear water blending to black volcanic rock with a small detail, pebbles, a small puddle"
+      "description": "clear water blending to black volcanic rock with pebbles, a shiny speck, a small detail, a small puddle, a bare soil patch"
     },
     {
       "index": 4,
@@ -339,8 +345,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.561,
-        "black_mountain": 0.439
+        "clear_water": 0.663,
+        "black_mountain": 0.337
       },
       "edges": {
         "NE": {
@@ -366,16 +372,16 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
+            "clear_water",
+            "clear_water",
+            "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "black_mountain": 0.875,
-            "clear_water": 0.125
+            "black_mountain": 0.5,
+            "clear_water": 0.5
           },
-          "divider": 0.875
+          "divider": 0.5
         },
         "SW": {
           "samples": [
@@ -409,10 +415,11 @@
         }
       },
       "features": [
+        "shiny",
         "pebbles",
         "accent"
       ],
-      "description": "clear water blending to black volcanic rock with pebbles, a small detail"
+      "description": "clear water blending to black volcanic rock with a shiny speck, pebbles, a small detail"
     },
     {
       "index": 5,
@@ -420,8 +427,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.769,
-        "black_mountain": 0.231
+        "clear_water": 0.863,
+        "black_mountain": 0.137
       },
       "edges": {
         "NE": {
@@ -446,14 +453,15 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
+            "clear_water",
+            "clear_water",
             "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
+            "clear_water",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 1.0
+            "black_mountain": 0.625,
+            "clear_water": 0.375
           }
         },
         "SW": {
@@ -488,11 +496,12 @@
         }
       },
       "features": [
-        "pebbles",
         "accent",
+        "pebbles",
+        "shiny",
         "water"
       ],
-      "description": "clear water blending to black volcanic rock with pebbles, a small detail, a small puddle"
+      "description": "clear water blending to black volcanic rock with a small detail, pebbles, a shiny speck, a small puddle"
     },
     {
       "index": 6,
@@ -500,8 +509,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.223,
-        "clear_water": 0.777
+        "black_mountain": 0.221,
+        "clear_water": 0.779
       },
       "edges": {
         "NE": {
@@ -568,11 +577,14 @@
         }
       },
       "features": [
-        "accent",
+        "shiny",
         "pebbles",
-        "flowers"
+        "accent",
+        "bare_soil",
+        "flowers",
+        "water"
       ],
-      "description": "clear water blending to black volcanic rock with a small detail, pebbles, small flowers"
+      "description": "clear water blending to black volcanic rock with a shiny speck, pebbles, a small detail, a bare soil patch, small flowers, a small puddle"
     },
     {
       "index": 7,
@@ -580,8 +592,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.594,
-        "clear_water": 0.406
+        "black_mountain": 0.573,
+        "clear_water": 0.427
       },
       "edges": {
         "NE": {
@@ -651,10 +663,11 @@
       },
       "features": [
         "pebbles",
-        "accent",
-        "water"
+        "shiny",
+        "water",
+        "accent"
       ],
-      "description": "black volcanic rock blending to clear water with pebbles, a small detail, a small puddle"
+      "description": "black volcanic rock blending to clear water with pebbles, a shiny speck, a small puddle, a small detail"
     },
     {
       "index": 8,
@@ -662,8 +675,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.72,
-        "clear_water": 0.28
+        "black_mountain": 0.702,
+        "clear_water": 0.298
       },
       "edges": {
         "NE": {
@@ -733,10 +746,11 @@
       },
       "features": [
         "pebbles",
-        "accent",
-        "water"
+        "water",
+        "shiny",
+        "accent"
       ],
-      "description": "black volcanic rock blending to clear water with pebbles, a small detail, a small puddle"
+      "description": "black volcanic rock blending to clear water with pebbles, a small puddle, a shiny speck, a small detail"
     },
     {
       "index": 9,
@@ -744,8 +758,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.758,
-        "clear_water": 0.242
+        "black_mountain": 0.745,
+        "clear_water": 0.255
       },
       "edges": {
         "NE": {
@@ -812,10 +826,11 @@
       },
       "features": [
         "pebbles",
+        "water",
         "accent",
-        "water"
+        "shiny"
       ],
-      "description": "black volcanic rock blending to clear water with pebbles, a small detail, a small puddle"
+      "description": "black volcanic rock blending to clear water with pebbles, a small puddle, a small detail, a shiny speck"
     },
     {
       "index": 10,
@@ -823,8 +838,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.403,
-        "clear_water": 0.597
+        "black_mountain": 0.397,
+        "clear_water": 0.603
       },
       "edges": {
         "NE": {
@@ -835,12 +850,12 @@
             "clear_water",
             "clear_water",
             "black_mountain",
-            "black_mountain",
+            "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "black_mountain": 0.625,
-            "clear_water": 0.375
+            "black_mountain": 0.5,
+            "clear_water": 0.5
           }
         },
         "SE": {
@@ -892,11 +907,12 @@
         }
       },
       "features": [
-        "accent",
+        "pebbles",
+        "shiny",
         "water",
-        "pebbles"
+        "accent"
       ],
-      "description": "clear water blending to black volcanic rock with a small detail, a small puddle, pebbles"
+      "description": "clear water blending to black volcanic rock with pebbles, a shiny speck, a small puddle, a small detail"
     },
     {
       "index": 11,
@@ -904,8 +920,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.758,
-        "clear_water": 0.242
+        "black_mountain": 0.739,
+        "clear_water": 0.261
       },
       "edges": {
         "NE": {
@@ -976,9 +992,10 @@
       "features": [
         "pebbles",
         "accent",
+        "shiny",
         "water"
       ],
-      "description": "black volcanic rock blending to clear water with pebbles, a small detail, a small puddle"
+      "description": "black volcanic rock blending to clear water with pebbles, a small detail, a shiny speck, a small puddle"
     },
     {
       "index": 12,
@@ -1057,11 +1074,9 @@
         }
       },
       "features": [
-        "water",
-        "pebbles",
-        "accent"
+        "pebbles"
       ],
-      "description": "black volcanic rock blending to clear water with a small puddle, pebbles, a small detail"
+      "description": "black volcanic rock blending to clear water with pebbles"
     },
     {
       "index": 13,
@@ -1135,11 +1150,9 @@
         }
       },
       "features": [
-        "water",
-        "pebbles",
-        "accent"
+        "pebbles"
       ],
-      "description": "black volcanic rock blending to clear water with a small puddle, pebbles, a small detail"
+      "description": "black volcanic rock blending to clear water with pebbles"
     },
     {
       "index": 14,
@@ -1216,12 +1229,10 @@
         }
       },
       "features": [
-        "water",
-        "flowers",
         "pebbles",
-        "accent"
+        "flowers"
       ],
-      "description": "black volcanic rock blending to clear water with a small puddle, small flowers, pebbles, a small detail"
+      "description": "black volcanic rock blending to clear water with pebbles, small flowers"
     },
     {
       "index": 15,
@@ -1295,9 +1306,10 @@
         }
       },
       "features": [
-        "pebbles"
+        "pebbles",
+        "accent"
       ],
-      "description": "black volcanic rock blending to clear water with pebbles"
+      "description": "black volcanic rock blending to clear water with pebbles, a small detail"
     }
   ],
   "generated_at": "2026-07-05T16:24:08+00:00",
@@ -1306,10 +1318,28 @@
     "neutralize_outline": true,
     "harmonize": {
       "hue_strength": 0.9,
-      "sat_strength": 0.6,
-      "v_strength": 0.65
+      "sat_strength": 0.7,
+      "v_strength": 0.9
     },
     "harmonized_from": true,
-    "harmonized_to": true
+    "harmonized_to": true,
+    "fade_outline": {
+      "enabled": true,
+      "darkness_thresh": 60,
+      "soft_lum": 120,
+      "run_min": 9,
+      "thick_max": 3,
+      "strength": 0.6,
+      "rim_strength": 0.4,
+      "min_alpha": 0,
+      "seam_strength": 0.4,
+      "seam_jump": 70,
+      "seam_bright": 130,
+      "seam_nbr_sat": 90,
+      "seam_rows": 1,
+      "thin_lum_light": 120,
+      "light_value": 180,
+      "protect_dark_material": true
+    }
   }
 }

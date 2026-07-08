@@ -35,12 +35,17 @@ const serveClient = process.env.SERVE_CLIENT === "1" || existsSync(clientDist);
 //   load and gets fresh content the moment a deploy changes it (cheap 304s
 //   otherwise);
 // - Vite's content-hashed bundles → immutable, cache for a year;
-// - art PNGs → 1h (new art usually arrives as NEW files, so staleness is rare).
+// - art (tiles/characters PNGs) → no-cache too. The path LOOKS content-hashed
+//   (…/base_x_2_161302781/…), but the art agents routinely edit a tile
+//   IN-PLACE (same path, new pixels — e.g. tiles2 softening edges), so a long
+//   cache served the OLD art for up to an hour after a deploy. Revalidate
+//   instead: a plain refresh always shows the latest art (unchanged tiles are
+//   cheap 304s via ETag/Last-Modified).
 function setCacheHeaders(res: express.Response, path: string) {
-  if (path.endsWith(".html") || path.endsWith(".json")) {
-    res.setHeader("Cache-Control", "no-cache");
-  } else if (/-[A-Za-z0-9_-]{8,}\.(js|css)$/.test(path)) {
+  if (/-[A-Za-z0-9_-]{8,}\.(js|css)$/.test(path)) {
     res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+  } else {
+    res.setHeader("Cache-Control", "no-cache");
   }
 }
 
@@ -66,7 +71,10 @@ const gameServer = new Server({
   transport: new WebSocketTransport({ server: createServer(app) }),
 });
 
-gameServer.define(ROOM_NAME, WorldRoom);
+// One WorldRoom per maps2 world: filterBy 'world' so joinOrCreate matches
+// players who picked the SAME world into one shared room, and spins up a
+// separate room (with that world's own grid) for each different selection.
+gameServer.define(ROOM_NAME, WorldRoom).filterBy(["world"]);
 // The emission demo: the SAME room class on a generated station world — the
 // demo is the real game (renderer, movement, night pipeline), just elsewhere.
 gameServer.define(DEMO_ROOM_NAME, WorldRoom, { demo: true });

@@ -46,6 +46,7 @@ import random
 from PIL import Image
 
 import common
+import emission        # per-tile prop emission marking (night-glow metadata)
 import loop            # reuse commit_push (add/commit/push to main, with retries)
 import normalize
 import postprocess     # reuse type_target (per-terrain material colour)
@@ -226,15 +227,34 @@ def process_sheet(gid, terrain, sheet, sdir, req, cfg, cache):
     ref_targets = [t for t in (postprocess.type_target(r, cfg, cache) for r in refs) if t]
 
     raw_by_file = {t["file"]: t for t in (req.get("tiles") or [])}
+    emit_target = postprocess.type_target(gid, cfg, cache)   # material colour for glow gating
     tiles_meta = []
+    n_emit = 0
     for fn in common.tile_files(sdir):
         im = Image.open(os.path.join(sdir, fn)).convert("RGBA")
         if pp["neutralize_outline"]:
             im = normalize.neutralize_outline(im, darkness_thresh=pp["darkness_thresh"])
         for tgt in ref_targets:
             im = normalize.harmonize(im, tgt, hs["hue_strength"], hs["sat_strength"], hs["v_strength"])
+        fo = pp["fade_outline"]
+        if fo.get("enabled"):                          # soften hard black frame lines AFTER harmonize
+            im = normalize.fade_outline_alpha(im, material_target=emit_target,
+                                              **postprocess._fade_kwargs(fo))
         im.save(os.path.join(dest, fn))
-        tiles_meta.append(dict(raw_by_file.get(fn, {"file": fn})))
+        entry = dict(raw_by_file.get(fn, {"file": fn}))
+        # Per-tile emission so the glowing PROPS (crystals, lava, mushrooms, lamps,
+        # fires) are tile-indexed in the SAME metadata maps2 already reads — computed
+        # on the FINAL harmonised image. Mark features:["shiny"] (the tag maps2's
+        # emissive gate keys on) plus a structured `emission` block for night halos.
+        emis = emission.tile_emission(gid, im, emit_target)
+        if emis:
+            entry["emission"] = emis
+            feats = list(entry.get("features") or [])
+            if "shiny" not in feats:
+                feats.append("shiny")
+            entry["features"] = feats
+            n_emit += 1
+        tiles_meta.append(entry)
 
     dest_meta = {
         "schema": "tiles2/sheet@1", "sheet": sheet, "ground_type": gid,
@@ -242,10 +262,12 @@ def process_sheet(gid, terrain, sheet, sdir, req, cfg, cache):
         "face_px": (req.get("levels") or 0) * LEVEL_PX, "slot": req.get("slot"),
         "objects": req.get("objects"), "tile_id": req.get("tile_id"),
         "settings": req.get("settings"), "count": len(tiles_meta), "tiles": tiles_meta,
+        "emissive_tiles": n_emit,
         "generated_at": req.get("generated_at"),
         "processing": {"neutralize_outline": pp["neutralize_outline"],
                        "harmonize": hs, "harmonize_refs": refs,
-                       "harmonized": len(ref_targets)},
+                       "harmonized": len(ref_targets),
+                       "fade_outline": pp["fade_outline"] if pp["fade_outline"].get("enabled") else False},
     }
     with open(os.path.join(dest, "metadata.json"), "w") as f:
         json.dump(dest_meta, f, indent=2)
@@ -267,14 +289,17 @@ def process_terrain(cfg, terrain, cache=None):
     return total
 
 
-def next_unit(cfg, skip=None):
+def next_unit(cfg, skip=None, only=None):
     """(terrain, height_id, slot) for the first open sheet slot — heights inner so
     a terrain fills x2 then x3/x4/x5 before moving on. `skip` holds
     (gid, height, slot) tuples that failed this run, so one flaky/stalled job
-    doesn't get retried forever and doesn't stall the rest of the fleet."""
+    doesn't get retried forever and doesn't stall the rest of the fleet. `only`
+    restricts filling to a single terrain."""
     skip = skip or set()
     tgt = target_per_elev(cfg)
     for terrain in terrains(cfg):
+        if only and terrain["id"] != only:
+            continue
         for h in heights(cfg):
             have = present_slots(terrain["id"], h["id"])
             for i in range(tgt):
@@ -292,6 +317,16 @@ def _run_sync(cfg, client, push):
     return removed
 
 
+def refresh_emission(push=True):
+    """Rebuild tiles2/emission.json from the current tree and commit if it changed.
+    Runs after any reroll so the game-facing glow file never drifts from the art
+    (world.json bakes exact hashed paths, so a stale emission.json points at sheets
+    that no longer exist). commit_push is a no-op when nothing changed."""
+    emission.build()
+    if loop.commit_push("tiles2: auto-refresh emission.json after reroll", push=push):
+        print("  + refreshed emission.json")
+
+
 def main():
     ap = argparse.ArgumentParser(description="Generate tiles2 elevation tiles (base_x_2…5 per terrain).")
     ap.add_argument("--dry-run", action="store_true")
@@ -299,9 +334,14 @@ def main():
     ap.add_argument("--no-sync", action="store_true", help="skip the startup UI-deletion sync")
     ap.add_argument("--no-push", action="store_true")
     ap.add_argument("--max-units", type=int, default=0)
+    ap.add_argument("--max-retries", type=int, default=3,
+                    help="how many times to retry a slot that hits a PixelLab stall "
+                         "(0.49 hang) with a fresh seed before giving up (default 3)")
     ap.add_argument("--min-usd", type=float, default=None,
                     help="override the USD credit floor (default from config); use to "
                          "spend down remaining credits")
+    ap.add_argument("--only", metavar="TERRAIN", default=None,
+                    help="fill only this terrain's elevation slots; leave others untouched")
     args = ap.parse_args()
     cfg = common.load_config()
     cache = {}
@@ -311,6 +351,7 @@ def main():
             n = process_terrain(cfg, terrain, cache)
             if n:
                 print(f"  {terrain['id']:16s} reprocessed {n} tile(s)")
+        refresh_emission(push=not args.no_push)   # detection/harmonization may have changed glow
         return
 
     if args.dry_run:
@@ -321,7 +362,7 @@ def main():
                 have = present_slots(terrain["id"], h["id"])
                 print(f"    {h['id']}  {len(have)}/{tgt}  levels {h['levels']} face {h['levels']*LEVEL_PX}px "
                       f"depth {h['depth_ratio']} pool {len(pool(cfg, terrain['id'], h['id']))}")
-        nxt = next_unit(cfg)
+        nxt = next_unit(cfg, only=args.only)
         print("next:", f"{nxt[0]['id']} {nxt[1]} slot {nxt[2]}" if nxt else "== all elevation targets met ==")
         return
 
@@ -332,28 +373,43 @@ def main():
     b = client.budget()
     print(f"elevation run — {b['generations']:.0f} generations, ${b['usd']:.2f} credits")
     if not args.no_sync:
-        _run_sync(cfg, client, push=not args.no_push)
+        removed = _run_sync(cfg, client, push=not args.no_push)
+    else:
+        removed = []
 
     units = 0
     skip = set()
+    fails = {}                     # (gid,height,slot) -> failures so far this run
     while True:
         try:
             client.ensure_budget(min_gen, min_usd)
         except BudgetExhausted as e:
             print("stopping:", e); break
-        unit = next_unit(cfg, skip)
+        unit = next_unit(cfg, skip, only=args.only)
         if unit is None:
             print("== all elevation targets met ==" if not skip else
-                  f"== nothing left except {len(skip)} skipped/failed slot(s) =="); break
+                  f"== gave up on {len(skip)} slot(s) after {args.max_retries} tries each =="); break
         terrain, height_id, slot = unit
+        key = (terrain["id"], height_id, slot)
         try:
             req = generate_sheet(client, cfg, terrain, height_id, slot)
             process_terrain(cfg, terrain, cache)
         except BudgetExhausted as e:
             print("stopping:", e); break
         except PixelLabError as e:
-            print(f"  ! {terrain['id']} {height_id} slot {slot} failed: {e}; skipping for this run")
-            skip.add((terrain["id"], height_id, slot))
+            # PixelLab jobs sometimes stall at progress~0.49 server-side. That's
+            # transient, so RE-QUEUE the slot (generate_sheet already bumps the
+            # attempt counter -> a fresh seed next try) up to --max-retries before
+            # giving up, so one run fills the gaps instead of leaving them for a
+            # manual re-run.
+            fails[key] = fails.get(key, 0) + 1
+            if fails[key] >= args.max_retries:
+                print(f"  ! {terrain['id']} {height_id} slot {slot} failed "
+                      f"{fails[key]}x ({e}); giving up for this run")
+                skip.add(key)
+            else:
+                print(f"  ~ {terrain['id']} {height_id} slot {slot} stalled "
+                      f"(try {fails[key]}/{args.max_retries}); retrying with a fresh seed")
             continue
         desc = (f"tiles2: elevation {terrain['id']}/{height_id} sheet {slot + 1}/{tgt} — "
                 f"{req['count']} tiles, {len(req['objects'])} varied objects")
@@ -363,6 +419,8 @@ def main():
         if args.max_units and units >= args.max_units:
             break
     print(f"done — {units} sheet(s)")
+    if units or removed:                          # art changed -> keep emission.json in sync
+        refresh_emission(push=not args.no_push)
 
 
 if __name__ == "__main__":

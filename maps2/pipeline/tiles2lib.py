@@ -56,11 +56,68 @@ DM = diamond_mask()
 _YS, _XS = np.where(DM)
 
 
+def _erode(mask: np.ndarray, r: int) -> np.ndarray:
+    """Shrink a boolean mask inward by r px (4-neighbour erosion)."""
+    m = mask.copy()
+    for _ in range(r):
+        m = (m & np.roll(m, 1, 0) & np.roll(m, -1, 0)
+             & np.roll(m, 1, 1) & np.roll(m, -1, 1))
+    return m
+
+
+# The INTERIOR of the top diamond — the diamond minus its baked dark outline rim.
+# Tile "solidity"/colour must be judged HERE: every tile carries a dark edge line,
+# so measuring the whole diamond makes even a perfectly flat tile look textured
+# and hides the genuinely solid ones.
+DM_INNER = _erode(DM, 4)
+
+# The side FACE (wall) below the diamond — what shows on a stacked cliff. The
+# plain tile is used for cliff faces too, so we prefer a tile whose wall is also
+# clean (a uniform dirt/rock face, not a busy or wrong-coloured one).
+_Wy, _Wx = np.mgrid[0:64, 0:64]
+WALL_MASK = (~DM) & (_Wy >= 38) & (_Wy <= 58)
+
+# The four diamond CORNER points (N apex, E, S, W) and a small sampling patch at
+# each — used to read a tile's Wang corner-code (which material owns each corner).
+CORNERS = {"N": (32, 9), "E": (61, 23), "S": (32, 37), "W": (3, 23)}
+_YY, _XX = np.mgrid[0:64, 0:64]
+CORNER_MASK = {k: (DM & ((_XX - cx) ** 2 + (_YY - cy) ** 2 < 9 ** 2))
+               for k, (cx, cy) in CORNERS.items()}
+CORNER_ORDER = ("N", "E", "S", "W")   # cyclic order around the diamond
+
+# The four diamond EDGES, each sampled at EDGE_K points from one corner to the
+# next in cyclic order (NE: N->E, SE: E->S, SW: S->W, NW: W->N). Matching a tile's
+# edge profile against its neighbour's shared edge (reversed) pins not just the
+# corners but WHERE along the edge the materials swap (the divider) — which is
+# what removes the sub-edge "notch". Samples are nudged toward the diamond centre
+# so they read interior art, not the outline rim.
+EDGE_K = 6
+_EDGE_CORNERS = {"NE": ("N", "E"), "SE": ("E", "S"),
+                 "SW": ("S", "W"), "NW": ("W", "N")}
+_ECENTER = (32, 23)
+
+
+def _edge_mask(p0, p1, t):
+    x = p0[0] + (p1[0] - p0[0]) * t
+    y = p0[1] + (p1[1] - p0[1]) * t
+    x += (_ECENTER[0] - x) * 0.18
+    y += (_ECENTER[1] - y) * 0.18
+    return DM & ((_XX - x) ** 2 + (_YY - y) ** 2 < 3.5 ** 2)
+
+
+EDGE_MASK = {e: [_edge_mask(CORNERS[c0], CORNERS[c1], (i + 1) / (EDGE_K + 1))
+                 for i in range(EDGE_K)]
+             for e, (c0, c1) in _EDGE_CORNERS.items()}
+EDGE_ORDER = ("NE", "SE", "SW", "NW")
+
+
 class Tiles2:
     def __init__(self, tiles_root: str = TILES2):
         self.root = tiles_root
         self.types = self._discover()
         self._targets: dict[str, list] = {}
+        self._targets_inner: dict[str, list] = {}
+        self._solid: dict[str, list] = {}
         self._img: dict[str, Image.Image] = {}
         self._pools: dict = {}
         self._analysis = self._load_or_build_analysis()
@@ -93,6 +150,29 @@ class Tiles2:
     def has(self, gid: str) -> bool:
         return gid in self.types
 
+    def audit_transition_metadata(self) -> list[str]:
+        """List every transition sheet whose metadata.json is missing the
+        `edges`/`composition` fields the DESIGNER_GUIDE guarantees. tiles2 owns
+        this data; maps2 relies on it being complete, so builds call this and
+        fail loudly rather than silently working around a gap."""
+        import json
+        missing = []
+        for gid, d in self.types.items():
+            for other, tt in d["transitions"].items():
+                for p in tt:
+                    meta = os.path.join(os.path.dirname(p), "metadata.json")
+                    ok = False
+                    if os.path.isfile(meta):
+                        try:
+                            t0 = json.load(open(meta))["tiles"][0]
+                            ok = "edges" in t0 and "composition" in t0
+                        except Exception:
+                            ok = False
+                    if not ok:
+                        missing.append(os.path.relpath(os.path.dirname(p), self.root))
+                        break   # one report per sheet is enough
+        return sorted(set(missing))
+
     def base(self, gid: str) -> list[str]:
         return self.types[gid]["base"]
 
@@ -122,28 +202,80 @@ class Tiles2:
                                   else np.array([128, 128, 128.])).tolist()
         return np.array(self._targets[gid], np.float32)
 
+    def target_inner(self, gid: str) -> np.ndarray:
+        """Canonical material colour measured on the diamond INTERIOR (excludes the
+        dark outline), so it reflects the flat surface colour a solid tile shows."""
+        if gid not in self._targets_inner:
+            cols = []
+            for f in self.base(gid)[:24]:
+                a = np.asarray(self.img(f)).astype(np.float32)
+                sel = DM_INNER & (a[:, :, 3] > 40)
+                if sel.any():
+                    cols.append(a[:, :, :3][sel].mean(0))
+            self._targets_inner[gid] = (np.mean(cols, 0) if cols
+                                        else np.array([128, 128, 128.])).tolist()
+        return np.array(self._targets_inner[gid], np.float32)
+
     # -- clean vs special base tiles ------------------------------------------
 
     def base_pools(self, gid: str, clean_pct: float = 0.30):
         """Split a type's base tiles into (clean, special). "Clean" = the flat,
-        near-single-colour standard ground; "special" = the flower/mushroom/
-        bare-earth/pebble/textured tiles. Ranked by a combined cleanness score:
-        off-material pixel fraction (colour specks/patches) PLUS internal
-        luminance texture (busyness), so only the genuinely uniform tiles land
-        in the clean pool. Keeping specials scarce keeps them special."""
+        ON-TARGET standard ground; "special" = flower/mushroom/bare-earth/pebble/
+        textured tiles. Ranked by a cleanness score with THREE terms:
+
+          * meanDist  — how far the tile's MEAN colour is from the material's
+            normalized target. This is the important one: tiles2 pulls every tile
+            to a canonical colour so tiles mix seamlessly, but only if the base we
+            fill with actually sits ON that colour. A uniform-but-off-hue tile
+            used as the field makes every properly-normalized tile "pop".
+          * rgbStd    — internal colour variance (flatness / lack of pattern).
+          * accent    — fraction of off-material specks (flowers/pebbles/bare soil).
+
+        so the canonical plain tile is the flattest tile that is genuinely the
+        target colour, not merely the least-speckled one."""
         if gid in self._pools:
             return self._pools[gid]
-        t = self.target_color(gid)
-        scored = []
+        # measure every tile: INTERIOR flatness + mean colour (top), WALL flatness
+        # (the cliff face), and tile index (tile_00 is usually the canonical clean
+        # one, with a clean wall too — a good tie-breaker).
+        stats = []
         for p in self.base(gid):
             a = np.asarray(self.img(p)).astype(np.float32)
-            sel = DM & (a[:, :, 3] > 40)
-            px = a[:, :, :3][sel]
-            accent = float((np.linalg.norm(px - t, axis=1) > 55).mean())
-            lum = 0.3 * px[:, 0] + 0.59 * px[:, 1] + 0.11 * px[:, 2]
-            tex = float(lum.std()) / 40.0
-            scored.append((accent + 0.6 * tex, p))
+            al = a[:, :, 3] > 40
+            top = a[:, :, :3][DM_INNER & al]
+            wall = a[:, :, :3][WALL_MASK & al]
+            wall_std = float(wall.std(0).mean()) if len(wall) else 40.0
+            try:
+                idx = int(p.rsplit("tile_", 1)[1].split(".")[0])
+            except (IndexError, ValueError):
+                idx = 8
+            stats.append((float(top.std(0).mean()), top.mean(0), wall_std, idx, p))
+        # canonical FLAT colour = centre of the genuinely solid tiles (the mean of
+        # all is skewed by textured/tinted ones), so an on-shade solid tile isn't
+        # wrongly rejected as "off colour"
+        solid = [s for s in stats if s[0] < 2.0] or sorted(stats)[:3]
+        ctarget = np.mean([s[1] for s in solid], 0)
+        scored = []
+        for top_std, mean, wall_std, idx, p in stats:
+            mean_dist = float(np.linalg.norm(mean - ctarget))
+            # SOLID top dominates; then a clean wall + on-shade colour; tile_00 nudge
+            score = 4.0 * top_std + mean_dist + 0.5 * wall_std + 0.5 * idx
+            scored.append((score, p))
         scored.sort()
+        # genuinely SOLID tiles (uniform top), best-first — candidates for the
+        # region-coherent base. The WALL style is per-sheet, so keep at most one
+        # solid tile per sheet: that way the candidates have DISTINCT cliff walls.
+        std_by_p = {p: ts for ts, _m, _w, _i, p in stats}
+        solid, seen_sheets = [], set()
+        for _, p in scored:
+            if std_by_p[p] >= 1.5:
+                continue
+            sheet = os.path.basename(os.path.dirname(p))
+            if sheet in seen_sheets:
+                continue
+            seen_sheets.add(sheet)
+            solid.append(p)
+        self._solid[gid] = (solid or [scored[0][1]])[:6]
         k = max(3, int(round(len(scored) * clean_pct)))
         clean = [p for _, p in scored[:k]]
         special = [p for _, p in scored[k:]] or clean
@@ -151,21 +283,59 @@ class Tiles2:
         return clean, special
 
     def plain_tile(self, gid: str) -> str:
-        """The single cleanest, most single-colour tile of a type — the canonical
-        plain ground used for the bulk of the fill so a field reads as ONE flat
-        material, not a patchwork of near-identical variants ("salami")."""
+        """The single flattest, most on-target tile of a type — used where ONE
+        uniform tile is wanted (e.g. stacked cliff faces read as a clean wall)."""
         return self.base_pools(gid)[0][0]
 
-    def pick_base(self, gid: str, r_plain: float, r_pool: float, r_tile: float,
-                  plain_prob: float = 0.90, special_prob: float = 0.15) -> str:
-        """Deterministic pick. `plain_prob` of cells get the ONE canonical plain
-        tile; the rest add a little life — mostly other clean variants, rarely a
-        special accent."""
-        clean, special = self.base_pools(gid)
-        if r_plain < plain_prob:
-            return clean[0]
-        pool = special if r_pool < special_prob else clean
-        return pool[int(r_tile * len(pool)) % len(pool)]
+    def plain_set(self, gid: str, k: int = 4) -> list[str]:
+        """Up to `k` genuinely SOLID base tiles (uniform tops, best-first). They
+        look identical on top but carry different cliff-WALL styles, so they're the
+        palette for region-coherent variety (see `region_base`)."""
+        self.base_pools(gid)
+        return self._solid.get(gid, [self.plain_tile(gid)])[:k]
+
+    @staticmethod
+    def _vnoise(x: float, y: float, scale: float, seed: int) -> float:
+        """Smooth bilinear value noise in [0,1) — large, organic regions."""
+        fx, fy = x / scale, y / scale
+        ix, iy = int(np.floor(fx)), int(np.floor(fy))
+        tx, ty = fx - ix, fy - iy
+
+        def h(a, b):
+            v = (a * 374761393 + b * 668265263 + seed * 362437) & 0xFFFFFFFF
+            v = ((v ^ (v >> 13)) * 1274126177) & 0xFFFFFFFF
+            return ((v ^ (v >> 16)) & 0xFFFFFFFF) / 0xFFFFFFFF
+
+        ux, uy = tx * tx * (3 - 2 * tx), ty * ty * (3 - 2 * ty)
+        a = h(ix, iy) + (h(ix + 1, iy) - h(ix, iy)) * ux
+        b = h(ix, iy + 1) + (h(ix + 1, iy + 1) - h(ix, iy + 1)) * ux
+        return a + (b - a) * uy
+
+    def region_base(self, gid: str, x: int, y: int, scale: float = 32) -> str:
+        """The solid base tile for cell (x, y), chosen by LARGE regions so a whole
+        area shares one tile — the tops match (all solid, same colour) and, since
+        this tile also renders the cliff FACES, the walls stay coherent within a
+        region. Different regions use different solid tiles => varied cliff walls
+        across the map, without patchiness. `scale` sets the switch distance."""
+        ps = self.plain_set(gid)
+        if len(ps) <= 1:
+            return ps[0]
+        seed = 1000 + sum(ord(c) for c in gid)
+        v = self._vnoise(x, y, scale, seed)
+        return ps[min(len(ps) - 1, int(v * len(ps)))]
+
+    def pick_base(self, gid: str, x: int, y: int, r_plain: float, r_pool: float,
+                  r_tile: float, plain_prob: float = 0.90,
+                  special_prob: float = 0.15) -> str:
+        """Deterministic pick for cell (x, y). Almost every cell gets the SOLID
+        region base (`region_base`) — uniform tops, and coherent walls within a
+        region because the same tile renders the cliff faces; different regions use
+        different solid tiles so cliff walls vary across the map. Only a rare cell
+        (~`(1-plain_prob)*special_prob`) breaks to a special accent for life."""
+        if r_plain >= plain_prob and r_pool < special_prob:
+            special = self.base_pools(gid)[1]
+            return special[int(r_tile * len(special)) % len(special)]
+        return self.region_base(gid, x, y)
 
     # -- transition analysis --------------------------------------------------
 
@@ -191,8 +361,40 @@ class Tiles2:
         g = np.array([bx - ax, by - ay], np.float32)
         n = np.linalg.norm(g)
         g = (g / n) if n > 1e-3 else np.array([0, 0], np.float32)
+        # Wang corner-code: for each diamond corner, which material owns it (1=A)
+        # plus how confidently (1 = pure, 0 = 50/50), so the auto-tiler can prefer
+        # tiles whose corners are unambiguous.
+        corners, conf = [], []
+        alpha = a[:, :, 3] > 40
+        for k in CORNER_ORDER:
+            sel = CORNER_MASK[k] & alpha
+            cpx = a[:, :, :3][sel]
+            if len(cpx) == 0:
+                corners.append(1 if compA >= 0.5 else 0)
+                conf.append(0.0)
+                continue
+            fa = float((np.linalg.norm(cpx - ca, axis=1)
+                        < np.linalg.norm(cpx - cb, axis=1)).mean())
+            corners.append(1 if fa > 0.5 else 0)
+            conf.append(round(abs(fa - 0.5) * 2, 3))
+        # edge profiles: EDGE_K samples along each edge (1 = A), for seam matching
+        edges = {}
+        for e in EDGE_ORDER:
+            prof = []
+            for m in EDGE_MASK[e]:
+                sel = m & alpha
+                epx = a[:, :, :3][sel]
+                if len(epx) == 0:
+                    prof.append(1 if compA >= 0.5 else 0)
+                else:
+                    prof.append(1 if float((np.linalg.norm(epx - ca, axis=1)
+                                < np.linalg.norm(epx - cb, axis=1)).mean()) > 0.5
+                                else 0)
+            edges[e] = prof
         return {"file": path, "compA": round(compA, 3),
-                "grad": [round(float(g[0]), 3), round(float(g[1]), 3)]}
+                "grad": [round(float(g[0]), 3), round(float(g[1]), 3)],
+                "corners": corners, "conf": round(float(np.mean(conf)), 3),
+                "edges": edges}
 
     def _load_or_build_analysis(self) -> dict:
         sig = self._signature()
@@ -209,7 +411,7 @@ class Tiles2:
         return pairs
 
     def _signature(self) -> str:
-        parts = []
+        parts = ["v3-edges"]   # bump when the analysis schema changes
         for gid, d in self.types.items():
             for other, tt in d["transitions"].items():
                 parts.append(f"{gid}>{other}:{len(tt)}")
@@ -244,6 +446,85 @@ class Tiles2:
         key = tuple(sorted((a, b)))
         tiles = self._analysis.get(f"{key[0]}|{key[1]}", [])
         return tiles, (a == key[0])
+
+    def fade_tiles(self, hi: str, lo: str):
+        """Tiles for the graded band either side of the hard boundary line.
+
+        Returns (hi_border, lo_border). `hi_border` = tiles whose entire BORDER
+        (all four corners and every edge sample) is `hi`, but whose interior
+        carries some `lo` — an island of the other material that does NOT touch
+        any edge, so the tile still tessellates seamlessly against pure `hi`.
+        Dropped a little denser near the seam and thinning out, they read as a
+        fade-in before the hard line (and the mirror image fades out after it).
+
+        Each entry: {"file", "mirror", "other"} where `other` is the interior
+        fraction of the OTHER material (0 = pure). Sorted ascending by `other`,
+        with the pure plain tile first."""
+        key = tuple(sorted((hi, lo)))
+        tiles = self._analysis.get(f"{key[0]}|{key[1]}", [])
+        hi_first = (hi == key[0])
+        hi_border, lo_border = [{"file": self.plain_tile(hi), "mirror": False,
+                                 "other": 0.0}], \
+                               [{"file": self.plain_tile(lo), "mirror": False,
+                                 "other": 0.0}]
+        for t in tiles:
+            c = t.get("corners") or []
+            eg = t.get("edges") or {}
+            if len(c) != 4 or len(eg) != 4:
+                continue
+            comp_hi = t["compA"] if hi_first else 1 - t["compA"]
+            allhi = all(v == 1 for v in c) if hi_first else all(v == 0 for v in c)
+            alllo = all(v == 0 for v in c) if hi_first else all(v == 1 for v in c)
+            edge_hi = all((v == 1) == hi_first for pr in eg.values() for v in pr)
+            edge_lo = all((v == 0) == hi_first for pr in eg.values() for v in pr)
+            if allhi and edge_hi and comp_hi < 0.999:
+                for m in (False, True):
+                    hi_border.append({"file": t["file"], "mirror": m,
+                                      "other": round(1 - comp_hi, 3)})
+            if alllo and edge_lo and comp_hi > 0.001:
+                for m in (False, True):
+                    lo_border.append({"file": t["file"], "mirror": m,
+                                      "other": round(comp_hi, 3)})
+        hi_border.sort(key=lambda r: r["other"])
+        lo_border.sort(key=lambda r: r["other"])
+        return hi_border, lo_border
+
+    def wang(self, hi: str, lo: str):
+        """Corner-code Wang table for placing `hi` material dissolving into `lo`.
+
+        Returns dict: code -> list of {"file", "mirror", "conf"} sorted best-first,
+        where `code` is a 4-tuple of corner materials in cyclic order (N, E, S, W),
+        each 1 if that corner is `hi` else 0 (`lo`). Placement is seamless *by
+        construction*: neighbours share corner lattice points, so if every cell
+        gets a tile whose corners equal its corner-code, all borders agree.
+
+        Horizontal MIRRORS are included (image flipped left-right → the E and W
+        corners swap), which fills codes the raw sheets happen to miss."""
+        key = tuple(sorted((hi, lo)))
+        tiles = self._analysis.get(f"{key[0]}|{key[1]}", [])
+        hi_first = (hi == key[0])
+        table: dict = {}
+        for t in tiles:
+            c = list(t.get("corners") or [])
+            eg = t.get("edges") or {}
+            if len(c) != 4 or len(eg) != 4:
+                continue
+            # analysis stores 1==first-material; re-express as 1==hi
+            if not hi_first:
+                c = [1 - v for v in c]
+                eg = {k: [1 - v for v in prof] for k, prof in eg.items()}
+            n, e, s, w = c
+            # unmirrored, then horizontal mirror (E<->W corners; edges remap+reverse)
+            emir = {"NE": list(reversed(eg["NW"])), "SE": list(reversed(eg["SW"])),
+                    "SW": list(reversed(eg["SE"])), "NW": list(reversed(eg["NE"]))}
+            for mirror, code, edges in ((False, (n, e, s, w), eg),
+                                        (True, (n, w, s, e), emir)):
+                table.setdefault(code, []).append(
+                    {"file": t["file"], "mirror": mirror,
+                     "conf": t.get("conf", 0), "edges": edges})
+        for code in table:
+            table[code].sort(key=lambda r: -r["conf"])
+        return table
 
 
 if __name__ == "__main__":

@@ -56,6 +56,25 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
   `WALK_CLIMB = 0.5` (you can't walk up a full 1-level ledge), but a **timed
   jump** (`JUMP_CLIMB = 1`, Space) climbs it. `stepMovement` resolves axis-
   separated (wall-slide) and scales by the current **surface** speed.
+- **Auto-jump**: walking INTO a 1-level wall auto-fires the jump so you don't
+  tap Space at every ledge (`WorldScene.maybeAutoJump`/`wouldAutoJump`, called
+  from `predictAndSend`). The rule is exactly `!canEnter(walk) && canEnter(jump)`
+  probed a leading-edge ahead in the move direction — so a 2-level+ wall (fails
+  the jump check too) and solid props (impassable at any climb) are left alone,
+  and flat ground never auto-jumps. Client-only (queues the same jump input the
+  server validates); `tryJump` still gates on grounded+cooldown. Probe via
+  `__ml.autoJumpAt(x,y,ax,ay)`.
+- **Edge feel / falling**: walking off a ledge is forgiving — `stepMovement`
+  no longer commits the drop a `PLAYER_RADIUS` early or snaps the anchor past
+  the rim (the old "teleport to the floor beneath" feel). The feet just walk to
+  the rim (the body billboard overhangs "slightly over the edge") and, once the
+  centre crosses onto the lower cell, the descent is a **gravity FALL** animated
+  client-side: `WorldScene` keeps each avatar's elevation lift (`elev` px) apart
+  from the flat ground projection and integrates it with the shared pure
+  `integrateFall` (`shared/`) — up-steps snap, stairs-sized down-steps ease,
+  real cliffs fall (shadow stays on the landing ground, sprite drops toward it).
+  `makeDrops` is now just the canonical "is this a fall" predicate the client
+  mirrors. Tune via `FALL_GRAVITY`/`FALL_TRIGGER_FRAC` in `shared/`.
 - **Surfaces** (`SURFACES` in `shared/`) are the *other* axis: per-category
   `{ standable, swimmable, speed, sound }` — roads faster, sand/snow slower,
   water swimmable. Unknown categories default to plain walkable ground.
@@ -68,7 +87,11 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
 - **Controls are screen-relative** on the iso world: `stepMovement(..., screenInput)`
   rotates the input by the projection ratio (`ISO_DX`/`ISO_DY` in `shared/` — the
   client's `MAP_GEOMETRY` imports them so they can't drift) so pressing Up walks
-  straight up on screen; facing uses the raw screen vector.
+  straight up on screen; facing uses the raw screen vector. **Grid-axis lock**:
+  a diagonal press (both a horizontal AND a vertical key) snaps the world move
+  to the nearest tile axis (`screenToWorldVector`) — down-left/up-right run along
+  one iso axis, down-right/up-left the other — so corridors/bridges track true
+  instead of drifting off screen-45°. Single-key presses keep screen-cardinal.
 - Open follow-ups (#28): occlusion behind tall tiles; half-level (0.5) stair/ramp
   tiles from the maps agent so players can ascend without jumping. If the tile
   "house format" changes, re-measure `MAP_GEOMETRY` and update `ISO_DX/ISO_DY`.

@@ -38,7 +38,57 @@
       "index": 0,
       "file": "tile_00.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "stone_mountain",
+        "color": [
+          0.6,
+          0.75,
+          0.95
+        ],
+        "anim": "pulse",
+        "sources": [
+          {
+            "x": 42.5,
+            "y": 76.5,
+            "r": 6.4,
+            "color": [
+              0.427,
+              0.282,
+              0.164
+            ],
+            "s": 0.586,
+            "dir": "up"
+          },
+          {
+            "x": 35.5,
+            "y": 43.5,
+            "r": 6.1,
+            "color": [
+              0.414,
+              0.263,
+              0.152
+            ],
+            "s": 0.57,
+            "dir": "up"
+          },
+          {
+            "x": 36.5,
+            "y": 63.3,
+            "r": 5.9,
+            "color": [
+              0.425,
+              0.273,
+              0.161
+            ],
+            "s": 0.581,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 1,
@@ -62,7 +112,33 @@
       "index": 4,
       "file": "tile_04.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "stone_mountain",
+        "color": [
+          0.6,
+          0.75,
+          0.95
+        ],
+        "anim": "pulse",
+        "sources": [
+          {
+            "x": 44.3,
+            "y": 55.8,
+            "r": 4.0,
+            "color": [
+              0.69,
+              0.361,
+              0.12
+            ],
+            "s": 0.661,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 5,
@@ -74,7 +150,57 @@
       "index": 6,
       "file": "tile_06.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "stone_mountain",
+        "color": [
+          0.6,
+          0.75,
+          0.95
+        ],
+        "anim": "pulse",
+        "sources": [
+          {
+            "x": 17.7,
+            "y": 44.1,
+            "r": 3.1,
+            "color": [
+              0.803,
+              0.501,
+              0.135
+            ],
+            "s": 0.735,
+            "dir": "up"
+          },
+          {
+            "x": 8.9,
+            "y": 62.1,
+            "r": 2.0,
+            "color": [
+              0.794,
+              0.15,
+              0.092
+            ],
+            "s": 0.549,
+            "dir": "up"
+          },
+          {
+            "x": 21.8,
+            "y": 50.8,
+            "r": 2.0,
+            "color": [
+              0.84,
+              0.485,
+              0.125
+            ],
+            "s": 0.738,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 7,
@@ -92,13 +218,113 @@
       "index": 9,
       "file": "tile_09.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "stone_mountain",
+        "color": [
+          0.6,
+          0.75,
+          0.95
+        ],
+        "anim": "pulse",
+        "sources": [
+          {
+            "x": 35.3,
+            "y": 27.9,
+            "r": 7.3,
+            "color": [
+              0.555,
+              0.347,
+              0.191
+            ],
+            "s": 0.643,
+            "dir": "up"
+          },
+          {
+            "x": 37.7,
+            "y": 88.8,
+            "r": 6.7,
+            "color": [
+              0.585,
+              0.349,
+              0.183
+            ],
+            "s": 0.648,
+            "dir": "up"
+          },
+          {
+            "x": 32.3,
+            "y": 50.8,
+            "r": 5.8,
+            "color": [
+              0.49,
+              0.299,
+              0.16
+            ],
+            "s": 0.604,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 10,
       "file": "tile_10.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "stone_mountain",
+        "color": [
+          0.6,
+          0.75,
+          0.95
+        ],
+        "anim": "pulse",
+        "sources": [
+          {
+            "x": 36.1,
+            "y": 63.9,
+            "r": 6.4,
+            "color": [
+              0.424,
+              0.274,
+              0.16
+            ],
+            "s": 0.581,
+            "dir": "up"
+          },
+          {
+            "x": 44.4,
+            "y": 37.1,
+            "r": 4.3,
+            "color": [
+              0.411,
+              0.259,
+              0.154
+            ],
+            "s": 0.568,
+            "dir": "up"
+          },
+          {
+            "x": 31.0,
+            "y": 36.8,
+            "r": 3.4,
+            "color": [
+              0.419,
+              0.267,
+              0.156
+            ],
+            "s": 0.575,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 11,
@@ -107,17 +333,36 @@
       "height": 128
     }
   ],
+  "emissive_tiles": 5,
   "generated_at": "2026-07-05T18:27:09+00:00",
   "processing": {
     "neutralize_outline": true,
     "harmonize": {
       "hue_strength": 0.9,
-      "sat_strength": 0.6,
-      "v_strength": 0.65
+      "sat_strength": 0.7,
+      "v_strength": 0.9
     },
     "harmonize_refs": [
       "stone_mountain"
     ],
-    "harmonized": 1
+    "harmonized": 1,
+    "fade_outline": {
+      "enabled": true,
+      "darkness_thresh": 60,
+      "soft_lum": 120,
+      "run_min": 9,
+      "thick_max": 3,
+      "strength": 0.6,
+      "rim_strength": 0.4,
+      "min_alpha": 0,
+      "seam_strength": 0.4,
+      "seam_jump": 70,
+      "seam_bright": 130,
+      "seam_nbr_sat": 90,
+      "seam_rows": 1,
+      "thin_lum_light": 120,
+      "light_value": 180,
+      "protect_dark_material": true
+    }
   }
 }

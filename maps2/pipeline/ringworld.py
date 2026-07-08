@@ -29,6 +29,7 @@ import os
 
 import numpy as np
 
+from autotile import AutoTiler, flatten_shores
 from tiles2lib import DX, DY, Tiles2
 
 # slice order around the ring (green -> brown -> grey -> black -> white)
@@ -42,8 +43,8 @@ PRIORITY = {"saturated_grass": 0, "lightdark_dirt": 1, "regular_snow": 2,
 
 # fill mix for pure ground: PLAIN_PROB use the ONE canonical plain tile (so the
 # field reads flat/uniform); of the remainder, SPECIAL_PROB are accent tiles.
-PLAIN_PROB = 0.80
-SPECIAL_PROB = 0.15
+PLAIN_PROB = 0.94
+SPECIAL_PROB = 0.10
 
 
 class RingWorld:
@@ -53,6 +54,7 @@ class RingWorld:
         self.mat = np.full((n, n), "", object)      # material id per cell ("" = void)
         self.level = np.zeros((n, n), np.int16)
         self.top = np.full((n, n), None, object)     # top-surface tile path
+        self.mirror = np.zeros((n, n), bool)          # flip tile horizontally?
         self.paths: list[str] = []
         self.path_idx: dict[str, int] = {}
         self.spawn = (n // 2, n // 2)
@@ -120,84 +122,18 @@ def generate(n: int = 160, seed: int = 7, lib: Tiles2 | None = None) -> RingWorl
     level[~land] = 0
     W.level = level
 
-    # --- feather assignment ----------------------------------------------------
-    prio = np.vectorize(lambda m: PRIORITY.get(m, -1))(mat)
-    B = int(math.ceil(band)) + 1
-
-    def add_path(p):
-        i = W.path_idx.get(p)
-        if i is None:
-            i = len(W.paths)
-            W.paths.append(p)
-            W.path_idx[p] = i
-        return i
-
-    # cache candidate arrays per pair for fast scoring
-    cand_cache: dict = {}
-
-    def candidates(m, other):
-        key = (m, other)
-        if key not in cand_cache:
-            tiles, m_first = lib.transition(m, other)
-            comp = np.array([t["compA"] if m_first else 1 - t["compA"] for t in tiles])
-            grad = np.array([t["grad"] if m_first else [-t["grad"][0], -t["grad"][1]]
-                             for t in tiles], float)
-            files = [t["file"] for t in tiles]
-            cand_cache[key] = (comp, grad, files)
-        return cand_cache[key]
-
-    top = np.full((n, n), None, object)
-    ny, nx = np.where(mat != "")
-    for y, x in zip(ny.tolist(), nx.tolist()):
-        m = mat[y, x]
-        if m == "":
-            continue
-        pm = PRIORITY[m]
-        # find nearest cell of a HIGHER-priority material within band
-        best_d, best_n, best_dir = 1e9, None, None
-        for j in range(-B, B + 1):
-            yy = y + j
-            if yy < 0 or yy >= n:
-                continue
-            for i in range(-B, B + 1):
-                xx = x + i
-                if xx < 0 or xx >= n:
-                    continue
-                mo = mat[yy, xx]
-                if mo == "" or PRIORITY.get(mo, -1) <= pm:
-                    continue
-                d = math.hypot(i, j)
-                if d < best_d:
-                    best_d, best_n = d, mo
-                    best_dir = (i, j)
-        if best_n is not None and best_d <= band + 0.5:
-            # desired: deep in host (d~band) -> mostly host; near seam (d~1) -> mostly other
-            f = (best_d - 1) / max(1e-3, band - 1)          # 0 near seam .. 1 deep
-            desired_compM = float(np.clip(0.12 + 0.80 * f, 0.05, 0.95))
-            di, dj = best_dir                                # world dir host->other
-            sg = np.array([(di - dj) * DX, (di + dj) * DY], float)
-            sgn = np.linalg.norm(sg)
-            sg = sg / sgn if sgn > 1e-6 else np.array([0, -1.0])
-            comp, grad, files = candidates(m, best_n)
-            score = 2.0 * np.abs(comp - desired_compM) + 1.0 * (1 - grad @ sg)
-            # a little deterministic jitter for variety among near-ties
-            score += _hash01(x, y, seed + 3) * 0.06
-            k = int(np.argmin(score))
-            top[y, x] = files[k]
-        else:
-            # pure material: ~75% standard clean ground, ~25% special accents,
-            # so flowers/mushrooms/bare patches stay rare and special
-            top[y, x] = lib.pick_base(m, _hash01(x, y, seed + 4),
-                                      _hash01(x, y, seed + 2),
-                                      _hash01(x, y, seed + 1),
-                                      plain_prob=PLAIN_PROB,
-                                      special_prob=SPECIAL_PROB)
-
+    # bring the coast down to the waterline so shores transition, not cliff
+    flatten_shores(mat, level)
+    W.level = level
+    # --- seamless corner+edge Wang top-tile assignment + sparse fade ------------
+    at = AutoTiler(mat, lib, seed, level=level,
+                   plain_prob=PLAIN_PROB, special_prob=SPECIAL_PROB)
+    W.mirror = at.mirror
     # intern tile paths into a compact table + per-cell index
     idx = np.full((n, n), -1, np.int32)
     for y in range(n):
         for x in range(n):
-            p = top[y, x]
+            p = at.top[y, x]
             if p is None:
                 continue
             i = W.path_idx.get(p)
@@ -230,6 +166,7 @@ def save(W: RingWorld, path: str) -> None:
         "matids": matids,
         "paths": [os.path.relpath(p, REPO) for p in W.paths],
         "top": [row.tolist() for row in W.top],
+        "mirror": [row.tolist() for row in W.mirror.astype(np.uint8)],
         "level": [row.tolist() for row in W.level],
         "mat": [row.tolist() for row in matarr],
     }

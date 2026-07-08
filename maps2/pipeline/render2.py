@@ -28,6 +28,7 @@ class Ctx:
         self.mat = world.mat
         self.level = world.level
         self.top = world.top
+        self.mirror = getattr(world, "mirror", None)
         self.paths = world.paths
         self.n = world.n
         # background = mean water color
@@ -38,13 +39,16 @@ class Ctx:
         self.skip = ~solid   # void cells: don't draw, show background
 
     def face_tile(self, y, x) -> Image.Image:
-        # cliff faces all use the ONE canonical plain tile so terraces read as
-        # uniform walls, not a patchwork
-        return self.lib.img(self.lib.plain_tile(self.mat[y, x]))
+        # cliff faces use the cell's REGION base tile — same tile as the top, so a
+        # terrace reads as one coherent wall; walls vary by region across the map
+        return self.lib.img(self.lib.region_base(self.mat[y, x], x, y))
 
     def top_tile(self, y, x) -> Image.Image:
         i = int(self.top[y, x])
-        return self.lib.img(self.paths[i])
+        im = self.lib.img(self.paths[i])
+        if self.mirror is not None and self.mirror[y, x]:
+            im = im.transpose(Image.FLIP_LEFT_RIGHT)
+        return im
 
 
 def _origin(world):

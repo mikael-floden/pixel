@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   stepMovement,
+  screenToWorldVector,
   WALK_SPEED,
   RUN_SPEED,
   WORLD_WIDTH,
@@ -36,4 +37,31 @@ test("stepMovement: diagonal is normalized (no speed boost)", () => {
 test("stepMovement: clamps to the world margin", () => {
   const r = stepMovement(WORLD_WIDTH - 10, 100, 1, 0, true, 5);
   assert.equal(r.x, WORLD_WIDTH - SPAWN_MARGIN);
+});
+
+test("screenToWorldVector: diagonal keys lock to a grid axis (corridor run)", () => {
+  // Each of the four diagonal presses must snap to exactly ONE world axis, so
+  // the player runs straight along a tile row/column.
+  for (const [ix, iy] of [
+    [-1, 1], // down-left
+    [1, -1], // up-right
+    [1, 1], // down-right
+    [-1, -1], // up-left
+  ] as const) {
+    const w = screenToWorldVector(ix, iy);
+    // Exactly one world component is non-zero → movement is along a grid axis.
+    assert.ok((Math.abs(w.x) < 1e-9) !== (Math.abs(w.y) < 1e-9), `${ix},${iy} → single axis`);
+  }
+  // Single-key presses are NOT snapped — they keep their two-component
+  // screen-cardinal world vector (up/down/left/right move between the axes).
+  const single = screenToWorldVector(1, 0);
+  assert.ok(Math.abs(single.x) > 1e-6 && Math.abs(single.y) > 1e-6, "single key unchanged");
+});
+
+test("stepMovement: diagonal press moves along a single world axis", () => {
+  // With screenInput, holding down+left runs straight along +row (world y),
+  // with no x drift — a corridor/bridge stays true.
+  const r = stepMovement(400, 400, -1, 1, false, 1, undefined, 1, true);
+  assert.ok(Math.abs(r.x - 400) < 1e-6, `no x drift (x=${r.x})`);
+  assert.ok(r.y > 400, "advanced along +row");
 });

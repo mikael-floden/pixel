@@ -1,0 +1,404 @@
+{
+  "schema": "tiles2/sheet@1",
+  "sheet": "base_x_3_1040634552",
+  "ground_type": "stone_mountain",
+  "kind": "elevation",
+  "height": "base_x_3",
+  "levels": 3,
+  "face_px": 48,
+  "slot": 2,
+  "objects": [
+    "a rugged rock spire",
+    "a mossy broken archway",
+    "a broken fluted column",
+    "a natural rock arch",
+    "a moss-streaked stone pillar",
+    "a leaning cracked monolith",
+    "a carved grey runestone",
+    "a fossil-laden stone column",
+    "a balanced cairn of boulders",
+    "a wind-carved hoodoo rock"
+  ],
+  "tile_id": "835b99d7-d5e1-4789-999d-ba2d544d6065",
+  "settings": {
+    "endpoint": "/create-tiles-pro",
+    "tile_type": "isometric",
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "tile_view_angle": 28.0,
+    "tile_depth_ratio": 0.0,
+    "tile_height": 128,
+    "tile_flat_top_px": 2,
+    "levels": 3,
+    "face_px": 48
+  },
+  "count": 16,
+  "tiles": [
+    {
+      "index": 0,
+      "file": "tile_00.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 1,
+      "file": "tile_01.png",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "stone_mountain",
+        "color": [
+          0.6,
+          0.75,
+          0.95
+        ],
+        "anim": "pulse",
+        "sources": [
+          {
+            "x": 4.5,
+            "y": 75.0,
+            "r": 2.0,
+            "color": [
+              0.377,
+              0.37,
+              0.112
+            ],
+            "s": 0.61,
+            "dir": "up"
+          },
+          {
+            "x": 45.3,
+            "y": 48.7,
+            "r": 2.0,
+            "color": [
+              0.291,
+              0.284,
+              0.104
+            ],
+            "s": 0.545,
+            "dir": "up"
+          },
+          {
+            "x": 39.3,
+            "y": 82.3,
+            "r": 2.0,
+            "color": [
+              0.29,
+              0.305,
+              0.096
+            ],
+            "s": 0.554,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 2,
+      "file": "tile_02.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 3,
+      "file": "tile_03.png",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "stone_mountain",
+        "color": [
+          0.6,
+          0.75,
+          0.95
+        ],
+        "anim": "pulse",
+        "sources": [
+          {
+            "x": 37.3,
+            "y": 81.0,
+            "r": 9.0,
+            "color": [
+              0.713,
+              0.428,
+              0.216
+            ],
+            "s": 0.715,
+            "dir": "up"
+          },
+          {
+            "x": 31.6,
+            "y": 37.5,
+            "r": 8.3,
+            "color": [
+              0.78,
+              0.506,
+              0.28
+            ],
+            "s": 0.764,
+            "dir": "up"
+          },
+          {
+            "x": 13.0,
+            "y": 62.2,
+            "r": 5.5,
+            "color": [
+              0.715,
+              0.43,
+              0.22
+            ],
+            "s": 0.715,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 4,
+      "file": "tile_04.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 5,
+      "file": "tile_05.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 6,
+      "file": "tile_06.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 7,
+      "file": "tile_07.png",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "stone_mountain",
+        "color": [
+          0.6,
+          0.75,
+          0.95
+        ],
+        "anim": "pulse",
+        "sources": [
+          {
+            "x": 23.1,
+            "y": 66.6,
+            "r": 2.3,
+            "color": [
+              0.519,
+              0.338,
+              0.198
+            ],
+            "s": 0.639,
+            "dir": "up"
+          },
+          {
+            "x": 37.9,
+            "y": 36.9,
+            "r": 2.1,
+            "color": [
+              0.615,
+              0.43,
+              0.238
+            ],
+            "s": 0.704,
+            "dir": "up"
+          },
+          {
+            "x": 18.1,
+            "y": 38.1,
+            "r": 2.0,
+            "color": [
+              0.744,
+              0.534,
+              0.288
+            ],
+            "s": 0.772,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 8,
+      "file": "tile_08.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 9,
+      "file": "tile_09.png",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "stone_mountain",
+        "color": [
+          0.6,
+          0.75,
+          0.95
+        ],
+        "anim": "pulse",
+        "sources": [
+          {
+            "x": 28.6,
+            "y": 83.5,
+            "r": 5.4,
+            "color": [
+              0.604,
+              0.322,
+              0.166
+            ],
+            "s": 0.643,
+            "dir": "up"
+          },
+          {
+            "x": 28.8,
+            "y": 64.6,
+            "r": 5.4,
+            "color": [
+              0.586,
+              0.336,
+              0.182
+            ],
+            "s": 0.64,
+            "dir": "up"
+          },
+          {
+            "x": 29.4,
+            "y": 39.8,
+            "r": 4.8,
+            "color": [
+              0.685,
+              0.388,
+              0.201
+            ],
+            "s": 0.69,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 10,
+      "file": "tile_10.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 11,
+      "file": "tile_11.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 12,
+      "file": "tile_12.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 13,
+      "file": "tile_13.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 14,
+      "file": "tile_14.png",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "stone_mountain",
+        "color": [
+          0.6,
+          0.75,
+          0.95
+        ],
+        "anim": "pulse",
+        "sources": [
+          {
+            "x": 36.1,
+            "y": 50.6,
+            "r": 2.0,
+            "color": [
+              0.374,
+              0.141,
+              0.373
+            ],
+            "s": 0.508,
+            "dir": "up"
+          },
+          {
+            "x": 45.8,
+            "y": 62.0,
+            "r": 2.0,
+            "color": [
+              0.341,
+              0.136,
+              0.361
+            ],
+            "s": 0.494,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 15,
+      "file": "tile_15.png",
+      "width": 64,
+      "height": 128
+    }
+  ],
+  "emissive_tiles": 5,
+  "generated_at": "2026-07-06T23:17:46+00:00",
+  "processing": {
+    "neutralize_outline": true,
+    "harmonize": {
+      "hue_strength": 0.9,
+      "sat_strength": 0.7,
+      "v_strength": 0.9
+    },
+    "harmonize_refs": [
+      "stone_mountain"
+    ],
+    "harmonized": 1,
+    "fade_outline": {
+      "enabled": true,
+      "darkness_thresh": 60,
+      "soft_lum": 120,
+      "run_min": 9,
+      "thick_max": 3,
+      "strength": 0.6,
+      "rim_strength": 0.4,
+      "min_alpha": 0,
+      "seam_strength": 0.4,
+      "seam_jump": 70,
+      "seam_bright": 130,
+      "seam_nbr_sat": 90,
+      "seam_rows": 1,
+      "thin_lum_light": 120,
+      "light_value": 180,
+      "protect_dark_material": true
+    }
+  }
+}

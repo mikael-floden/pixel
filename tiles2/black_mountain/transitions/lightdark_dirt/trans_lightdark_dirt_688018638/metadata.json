@@ -15,6 +15,7 @@
     "tile_flat_top_px": 2
   },
   "count": 16,
+  "metadata_complete": true,
   "tiles": [
     {
       "index": 0,
@@ -249,10 +250,9 @@
         }
       },
       "features": [
-        "water",
-        "flowers"
+        "water"
       ],
-      "description": "dirt blending to black volcanic rock with a small puddle, small flowers"
+      "description": "dirt blending to black volcanic rock with a small puddle"
     },
     {
       "index": 3,
@@ -727,10 +727,9 @@
         }
       },
       "features": [
-        "water",
-        "flowers"
+        "water"
       ],
-      "description": "black volcanic rock blending to dirt with a small puddle, small flowers"
+      "description": "black volcanic rock blending to dirt with a small puddle"
     },
     {
       "index": 9,
@@ -810,10 +809,9 @@
         }
       },
       "features": [
-        "water",
-        "flowers"
+        "water"
       ],
-      "description": "black volcanic rock blending to dirt with a small puddle, small flowers"
+      "description": "black volcanic rock blending to dirt with a small puddle"
     },
     {
       "index": 10,
@@ -974,10 +972,9 @@
       },
       "features": [
         "water",
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "black volcanic rock blending to dirt with a small puddle, a small detail, small flowers"
+      "description": "black volcanic rock blending to dirt with a small puddle, a small detail"
     },
     {
       "index": 12,
@@ -1208,10 +1205,9 @@
         }
       },
       "features": [
-        "water",
-        "flowers"
+        "water"
       ],
-      "description": "dirt blending to black volcanic rock with a small puddle, small flowers"
+      "description": "dirt blending to black volcanic rock with a small puddle"
     },
     {
       "index": 15,
@@ -1301,10 +1297,28 @@
     "neutralize_outline": true,
     "harmonize": {
       "hue_strength": 0.9,
-      "sat_strength": 0.6,
-      "v_strength": 0.65
+      "sat_strength": 0.7,
+      "v_strength": 0.9
     },
     "harmonized_from": true,
-    "harmonized_to": true
+    "harmonized_to": true,
+    "fade_outline": {
+      "enabled": true,
+      "darkness_thresh": 60,
+      "soft_lum": 120,
+      "run_min": 9,
+      "thick_max": 3,
+      "strength": 0.6,
+      "rim_strength": 0.4,
+      "min_alpha": 0,
+      "seam_strength": 0.4,
+      "seam_jump": 70,
+      "seam_bright": 130,
+      "seam_nbr_sat": 90,
+      "seam_rows": 1,
+      "thin_lum_light": 120,
+      "light_value": 180,
+      "protect_dark_material": true
+    }
   }
 }

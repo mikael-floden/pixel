@@ -15,6 +15,7 @@
     "tile_flat_top_px": 2
   },
   "count": 16,
+  "metadata_complete": true,
   "tiles": [
     {
       "index": 0,
@@ -415,9 +416,10 @@
       },
       "features": [
         "water",
+        "pebbles",
         "accent"
       ],
-      "description": "black volcanic rock blending to saturated grass with a small puddle, a small detail"
+      "description": "black volcanic rock blending to saturated grass with a small puddle, pebbles, a small detail"
     },
     {
       "index": 5,
@@ -498,9 +500,10 @@
       },
       "features": [
         "water",
+        "pebbles",
         "accent"
       ],
-      "description": "black volcanic rock blending to saturated grass with a small puddle, a small detail"
+      "description": "black volcanic rock blending to saturated grass with a small puddle, pebbles, a small detail"
     },
     {
       "index": 6,
@@ -581,9 +584,10 @@
       },
       "features": [
         "water",
+        "pebbles",
         "accent"
       ],
-      "description": "black volcanic rock blending to saturated grass with a small puddle, a small detail"
+      "description": "black volcanic rock blending to saturated grass with a small puddle, pebbles, a small detail"
     },
     {
       "index": 7,
@@ -661,9 +665,10 @@
         }
       },
       "features": [
-        "water"
+        "water",
+        "pebbles"
       ],
-      "description": "saturated grass blending to black volcanic rock with a small puddle"
+      "description": "saturated grass blending to black volcanic rock with a small puddle, pebbles"
     },
     {
       "index": 8,
@@ -1311,10 +1316,28 @@
     "neutralize_outline": true,
     "harmonize": {
       "hue_strength": 0.9,
-      "sat_strength": 0.6,
-      "v_strength": 0.65
+      "sat_strength": 0.7,
+      "v_strength": 0.9
     },
     "harmonized_from": true,
-    "harmonized_to": true
+    "harmonized_to": true,
+    "fade_outline": {
+      "enabled": true,
+      "darkness_thresh": 60,
+      "soft_lum": 120,
+      "run_min": 9,
+      "thick_max": 3,
+      "strength": 0.6,
+      "rim_strength": 0.4,
+      "min_alpha": 0,
+      "seam_strength": 0.4,
+      "seam_jump": 70,
+      "seam_bright": 130,
+      "seam_nbr_sat": 90,
+      "seam_rows": 1,
+      "thin_lum_light": 120,
+      "light_value": 180,
+      "protect_dark_material": true
+    }
   }
 }

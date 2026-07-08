@@ -64,6 +64,12 @@ export interface GlowStamp {
   alpha: number; // 0..1 peak intensity
   anim: number; // 0 static, 1 pulse, 2 flicker
   phase: number; // per-source hash phase
+  // Whether this stamp may tint a CHARACTER's lit copy (lightAt). Ground-level
+  // pools set true; halos stamped HIGH on tall prop art set FALSE — a high
+  // halo sampled at the character's FEET is a 2D screen distance that peaks at
+  // an offset and dims when you stand under it (the "brighter then darker as I
+  // approach" bug). Undefined = eligible (legacy/terrain stamps, near-ground).
+  litChar?: boolean;
 }
 
 export const MAX_SHADER_LIGHTS = 12;
@@ -936,7 +942,7 @@ export class NightLights {
       const vRowLo = 2 * ri + (col - row);
       const hb = vColLo >= vRowLo ? tAt(ci - 1, ri) : tAt(ci, ri - 1);
       if (hb < 90 && hb > z + 0.5) {
-        const dBase = Math.max(0, (col + row - Math.max(vColLo, vRowLo)) * 13);
+        const dBase = Math.max(0, (col + row - Math.max(vColLo, vRowLo)) * 15);
         const t2 = Math.min(1, dBase / 6);
         const ao = 0.72 + 0.28 * (t2 * t2 * (3 - 2 * t2));
         for (let ch = 0; ch < 3; ch++) out[ch] *= ao;
@@ -950,6 +956,7 @@ export class NightLights {
       const wx = this.iso.ox + (col - row) * dx + dx;
       const wy = this.iso.oy + (col + row) * dy + dy - z * lh;
       for (const g of this.curStamps) {
+        if (g.litChar === false) continue; // high prop halos don't tint bodies
         const d = Math.hypot(g.x - wx, g.y - wy) / g.radius;
         if (d >= 1) continue;
         const f = (1 - d) * (1 - d); // ≈ the stamp texture's falloff

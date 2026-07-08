@@ -14,13 +14,17 @@ import {
   TerrainGrid,
   buildTerrainGrid,
   makeBlocked,
-  makeDrops,
+  canEnter,
   surfaceAtWorld,
   levelAtWorld,
+  integrateFall,
   isStandableAtWorld,
+  isBlockedAtWorld,
   findSpawn,
   surfaceFor,
   isKnownSurface,
+  screenToWorldVector,
+  PLAYER_RADIUS,
   WALK_CLIMB,
   JUMP_CLIMB,
   JUMP_SPEED_FACTOR,
@@ -28,7 +32,7 @@ import {
   JUMP_COOLDOWN_MS,
   MAX_STAMINA,
 } from "@nangijala/shared";
-import { CharacterDef, Manifest, stripUrl } from "../manifest";
+import { CharacterDef, Manifest, frameUrl, frameKey } from "../manifest";
 import { colorForName } from "../placeholder";
 import { Atmosphere, LightSource } from "../lighting";
 import {
@@ -39,6 +43,7 @@ import {
   emissionSelfPulse,
   EmissionMap,
   EmissionEntry,
+  EmissionSource,
   GlowStamp,
   buildGlowStamps,
 } from "../nightlight";
@@ -51,13 +56,23 @@ import {
   tileKey,
   tileUrl,
   distinctTiles,
+  distinctTilePaths,
+  distinctPropPaths,
+  pathTileKey,
+  assetUrl,
+  faceKeyFor,
+  topKeyFor,
+  isMaps2World,
   drawOrder,
   canvasSize,
   TileBases,
   artLift,
+  DEFAULT_WORLD,
 } from "../maps";
 
-const ANIM_FPS: Record<string, number> = { idle: 6, walk: 12, run: 14 };
+// jump/runjump play ONCE, timed to span the ~500ms hop (JUMP_MS): 9 frames→18fps,
+// 8 frames→16fps land the character on its feet just as the arc completes.
+const ANIM_FPS: Record<string, number> = { idle: 6, walk: 12, run: 14, jump: 18, runjump: 16 };
 // Spawn campfire (objects/campfire, burn/south): 96px frames; per its
 // placement metadata the fire is 0.6m ≈ 23px tall vs a 64px character, and
 // the drawn logs span rows 15..83 of the frame → scale + base anchor below.
@@ -123,9 +138,17 @@ interface Avatar {
   label: Phaser.GameObjects.Text;
   character: string;
   // Logical (eased) ground position; the sprite is drawn at this minus the jump
-  // hop so the hop offset never feeds back into the easing.
+  // hop so the hop offset never feeds back into the easing. `ly` is the LIFTED
+  // feet screen y (flat ground minus the animated elevation) — every consumer
+  // (depth, shadow, labels, lit copy) reads it. `lyFlat` is the eased FLAT
+  // (unlifted) ground y and `elev` the animated elevation lift in px; splitting
+  // them lets a cliff descent fall under gravity instead of snapping.
   lx: number;
   ly: number;
+  lyFlat: number;
+  elev: number; // current elevation lift (px); eases/falls toward cell level×lh
+  fallV: number; // downward velocity (px/s) while a cliff fall is in progress
+  falling: boolean;
   // Flat authoritative world position (pre-projection) — terrain queries and
   // the night-shader lights need THIS space, never the projected lx/ly.
   fx: number;
@@ -158,6 +181,10 @@ export class WorldScene extends Phaser.Scene {
   private lastInput: { ax: number; ay: number; running: boolean } = { ax: 0, ay: 0, running: false };
   // Isometric tile world (null → fall back to a plain ground).
   private world: World | null = null;
+  private worldName: string = DEFAULT_WORLD; // which maps2 world (room + assets)
+  private worldW = WORLD_WIDTH; // this world's extent in world units (grid×CELL_WU)
+  private worldH = WORLD_HEIGHT;
+  private maps2 = false; // true when the world uses maps2 explicit tile paths
   private iso = { ox: 0, oy: 0, w: WORLD_WIDTH, h: WORLD_HEIGHT };
   // Terrain (elevation + surface) — same grid the server uses, so prediction matches.
   private terrain: TerrainGrid | null = null;
@@ -169,6 +196,9 @@ export class WorldScene extends Phaser.Scene {
   // Occlusion: raised/solid tiles near the camera drawn as depth-sorted images
   // so they cover characters standing BEHIND them (the ground RT is flat).
   private occluders: Phaser.GameObjects.Image[] = [];
+  // Placed decorations (maps2 world@1 props): depth-sorted so characters pass
+  // in front of / behind them; rebuilt with the occluders as the camera moves.
+  private propImgs: Phaser.GameObjects.Image[] = [];
   // Lit copies of TALL NON-EMISSIVE solid structures: billboard art samples
   // the light field of the terrain BEHIND it, so a shore tree's canopy was
   // multiplied by the level-0 ocean's night — pitch black above the horizon
@@ -195,6 +225,17 @@ export class WorldScene extends Phaser.Scene {
     y1: number;
   }[] = [];
   private lastOccl = { x: NaN, y: NaN };
+  // --- Occlusion fade: tall geometry ABOVE the local player's level near the
+  // player is faded to a faint ghost (moved behind the player) so it stops
+  // hiding the character; a REVEAL layer redraws the player-level ground the
+  // tower was covering (so you see the grass/level you're walking on, NOT the
+  // tower), and drops a BLACK diamond at each faded tower's ROOT (its base
+  // footprint — the one spot with nothing behind it, so it must read as void).
+  // Masked to a soft bubble around the player (distance falloff).
+  private occFadeOn = false; // feature toggle ([7]) — WIP prototype, opt-in for now
+  private occFocus: { col: number; row: number } | null = null; // debug focus override
+  private occRevealRT?: Phaser.GameObjects.RenderTexture; // player-level ground + black roots
+  private lastReveal = { x: NaN, y: NaN, cx: NaN, cy: NaN };
   private emissiveLights: LightSource[] = [];
   // Local jump prediction (client owns its jump timing).
   private jumpUntil = 0;
@@ -208,6 +249,12 @@ export class WorldScene extends Phaser.Scene {
 
   // tiles/emission.json categories (empty when the registry failed to load).
   private emission: EmissionMap = {};
+  // tiles2/emission.json (maps2 worlds): per-material glow params (keyed by
+  // material name = a maps2 cell/prop's `t`) + per-tile-path glow sources.
+  private tiles2Mat: EmissionMap = {};
+  private tiles2Src: Record<string, EmissionSource[]> = {};
+  // Glow halos emitted by emissive PROPS this frame — merged into glowStamps.
+  private propStamps: GlowStamp[] = [];
   // Bottom-anchor offset for tall (64x128 cliff/tall profile) tile art: drawn
   // with the same top-left anchor as 64px tiles it sinks 64px into the ground
   // (only the crystal tip peeked out — playtester report). Lift comes from the
@@ -248,10 +295,16 @@ export class WorldScene extends Phaser.Scene {
     this.myCharacter = this.registry.get("character") as CharacterDef;
     this.myName = this.registry.get("name") as string;
     this.world = (this.registry.get("world") as World | null) ?? null;
+    this.worldName = (this.registry.get("worldName") as string | undefined) ?? DEFAULT_WORLD;
+    this.maps2 = !!this.world && isMaps2World(this.world);
     this.tileBases = (this.registry.get("tileBases") as TileBases | null) ?? null;
     this.demoMode = (this.registry.get("demoMode") as boolean | undefined) ?? false;
     if (this.world) {
-      this.terrain = buildTerrainGrid(this.world.width, this.world.height, this.world.rows);
+      // The world's extent in world units (grid×CELL_WU) — per-world, so any
+      // size renders/collides right (see shared: WORLD_WIDTH is only a default).
+      this.worldW = this.world.width * CELL_WU;
+      this.worldH = this.world.height * CELL_WU;
+      this.terrain = buildTerrainGrid(this.world.width, this.world.height, this.world.rows, this.world.props);
       // Surface-contract watchdog: categories missing from SURFACES default
       // to walkable ground, which ALSO makes the night lighting treat them
       // as terrain (walls + face shadows) instead of solid objects (art +
@@ -267,24 +320,39 @@ export class WorldScene extends Phaser.Scene {
   }
 
   preload() {
-    // Load every character's movement strips as spritesheets (few requests).
+    // characters2 stores animations as frame FOLDERS (one PNG per frame), not
+    // strips — load each frame as its own texture.
     for (const def of this.manifest.characters) {
-      for (const [anim, dirs] of Object.entries(def.animations)) {
-        for (const dir of Object.keys(dirs)) {
-          this.load.spritesheet(sheetKey(def.uid, anim, dir), stripUrl(def, anim, dir), {
-            frameWidth: def.frameW,
-            frameHeight: def.frameH,
-          });
+      for (const [state, dirs] of Object.entries(def.animations)) {
+        for (const [dir, count] of Object.entries(dirs)) {
+          for (let n = 0; n < count; n++) {
+            this.load.image(frameKey(def.uid, state, dir, n), frameUrl(def, state, dir, n));
+          }
         }
       }
     }
-    // Isometric ground tiles the world uses.
+    // Isometric ground tiles.
     if (this.world) {
-      for (const { t, v } of distinctTiles(this.world)) {
-        this.load.image(tileKey(t, v), tileUrl(t, v));
+      if (this.maps2) {
+        // maps2 world bakes an explicit tile PNG per cell + per-material face
+        // tiles + placed props — load that unique set.
+        for (const path of distinctTilePaths(this.world)) {
+          this.load.image(pathTileKey(path), assetUrl(path));
+        }
+        for (const path of distinctPropPaths(this.world)) {
+          this.load.image(pathTileKey(path), assetUrl(path));
+        }
+      } else {
+        for (const { t, v } of distinctTiles(this.world)) {
+          this.load.image(tileKey(t, v), tileUrl(t, v));
+        }
       }
-      // Self-emission registry (which categories glow, how) — tiles agent's.
+      // Self-emission registry (v1 tiles only; maps2 materials never match, so
+      // the per-cell glow layers stay dormant — kept so the emission-demo path
+      // works). maps2 worlds get their glow from tiles2/emission.json instead
+      // (per-MATERIAL params + per-TILE-PATH sources — see loadTiles2Emission).
       this.load.json("tile-emission", "/assets/tiles/emission.json");
+      if (this.maps2) this.load.json("tiles2-emission", "/assets/tiles2/emission.json");
       this.load.spritesheet(CAMPFIRE_KEY, CAMPFIRE_URL, {
         frameWidth: CAMPFIRE_FRAME,
         frameHeight: CAMPFIRE_FRAME,
@@ -313,6 +381,19 @@ export class WorldScene extends Phaser.Scene {
     this.emission = emissionData?.categories ?? {};
     if (!emissionData)
       console.warn("[nangijala] tiles/emission.json missing — tile self-emission disabled");
+    // maps2 self-emission (tiles2/emission.json): per-material glow params +
+    // per-tile-path glow sources. In every maps2 world the emissive tiles are
+    // PROPS (geodes, lava rocks, glowing mushrooms — base_x_N object tiles), so
+    // the glow is stamped from prop positions in rebuildProps; nothing on the
+    // flat terrain glows, so this stays out of the per-cell shader floor.
+    if (this.maps2) {
+      const t2 = this.cache.json.get("tiles2-emission") as
+        | { materials?: EmissionMap; sources?: Record<string, EmissionSource[]> }
+        | undefined;
+      this.tiles2Mat = t2?.materials ?? {};
+      this.tiles2Src = t2?.sources ?? {};
+      if (!t2) console.warn("[nangijala] tiles2/emission.json missing — prop glow disabled");
+    }
     if (this.world && this.game.renderer.type === Phaser.WEBGL) {
       try {
         this.night = new NightLights(this, this.world, this.iso, this.maxLevel, this.emission);
@@ -374,6 +455,10 @@ export class WorldScene extends Phaser.Scene {
       this.torchOn = !this.torchOn;
       this.chat.addLog("—", `[5] My torch: ${this.torchOn ? "on" : "off"}`);
     });
+    this.input.keyboard!.on("keydown-SEVEN", () => {
+      this.occFadeOn = !this.occFadeOn;
+      this.chat.addLog("—", `[7] See-through walls: ${this.occFadeOn ? "on" : "off"}`);
+    });
     // [6]: the spawn bonfire on/off — its firelight drowns nearby tiles'
     // self-emission, so QA next to it needs the fire quiet. (The old
     // [6][7][8][9] light-field calibration keys are retired; headless probes
@@ -384,7 +469,7 @@ export class WorldScene extends Phaser.Scene {
       this.campfireLit?.setVisible(this.fireOn && !!this.night?.active);
       this.chat.addLog("—", `[6] Bonfire: ${this.fireOn ? "lit" : "out"}`);
     });
-    this.chat.addLog("—", "Toggles: [1] time of day · [4] collision · [5] torch · [6] bonfire · [0] emission demo");
+    this.chat.addLog("—", "Toggles: [1] time of day · [4] collision · [5] torch · [6] bonfire · [7] see-through walls · [0] emission demo");
 
     const cam = this.cameras.main;
     cam.setBounds(0, 0, this.iso.w, this.iso.h);
@@ -395,7 +480,7 @@ export class WorldScene extends Phaser.Scene {
 
     try {
       this.room = await joinWorld(
-        { name: this.myName, character: this.myCharacter.uid },
+        { name: this.myName, character: this.myCharacter.uid, world: this.worldName },
         this.demoMode ? DEMO_ROOM_NAME : undefined,
       );
     } catch (err) {
@@ -450,12 +535,63 @@ export class WorldScene extends Phaser.Scene {
         return av ? av.character : null;
       },
       say: (text: string) => this.room?.send("chat", { text }),
+      // Debug: occluder build state (maps2 z-order verification).
+      occCount: () => ({ maps2: this.maps2, occluders: this.occluders.length, meta: this.occluderMeta.length }),
       bubbles: () => [...this.avatars.values()].filter((a) => a.bubble).map((a) => a.bubble!.text),
       jump: () => this.tryJump(),
+      // Occlusion-fade debug: force the fade focus to a cell (null → follow the
+      // player), and toggle the feature. Lets headless probes frame the effect.
+      occFocus: (col?: number, row?: number) => {
+        this.occFocus = col === undefined || row === undefined ? null : { col, row };
+        return this.occFocus;
+      },
+      occFade: (on?: boolean) => {
+        if (on !== undefined) this.occFadeOn = on;
+        return this.occFadeOn;
+      },
+      // Force one fade pass now (headless render loop is throttled) and report
+      // how many occluders were tagged vs ghosted-to-black.
+      worldInfo: () => {
+        let maxL = 0;
+        if (this.world) for (const r of this.world.rows) for (const c of r) if (c.l > maxL) maxL = c.l;
+        return { name: this.worldName, maps2: this.maps2, w: this.world?.width, h: this.world?.height, maxL };
+      },
+      occApply: () => {
+        this.lastReveal = { x: NaN, y: NaN, cx: NaN, cy: NaN }; // force a reveal redraw
+        this.updateOcclusionFade();
+        const fc = this.occFocus;
+        let fLevel = null,
+          ghosted = 0;
+        for (const o of this.occluders) if (o.getData("oc") !== undefined && o.depth < -1000) ghosted++;
+        if (fc && this.world) fLevel = this.world.rows[fc.row]?.[fc.col]?.l ?? 0;
+        return { occluders: this.occluders.length, ghosted, revealVisible: !!this.occRevealRT?.visible, focus: fc, fLevel };
+      },
+      // Would auto-jump fire from world (x,y) moving in screen dir (ax,ay)?
+      // Headless probe for the auto-hop rule against real map geometry.
+      autoJumpAt: (x: number, y: number, ax: number, ay: number) => this.wouldAutoJump(x, y, ax, ay),
+      // Current animation key of the local avatar's sprite — headless probe for
+      // verifying jump/runjump selection.
+      anim: () => {
+        const id = this.room?.sessionId;
+        const av = id ? this.avatars.get(id) : undefined;
+        return av ? av.sprite.anims.getName() : null;
+      },
+      // Local avatar fall state — headless probe for the cliff-fall animation.
+      fall: () => {
+        const id = this.room?.sessionId;
+        const av = id ? this.avatars.get(id) : undefined;
+        return av ? { falling: av.falling, elev: av.elev, fallV: av.fallV } : null;
+      },
       me: () => this.room?.state.players.get(this.room!.sessionId),
       stamina: () => this.room?.state.players.get(this.room!.sessionId)?.stamina ?? null,
       swimming: () => !!this.room?.state.players.get(this.room!.sessionId)?.swimming,
       surfaceAt: (x: number, y: number) => (this.terrain ? surfaceAtWorld(this.terrain, x, y) : null),
+      blockedAt: (x: number, y: number) => (this.terrain ? isBlockedAtWorld(this.terrain, x, y) : null),
+      propCount: () => this.propImgs.length,
+      // Sample the CPU light (what a character's lit copy is tinted by) at a
+      // grid cell — headless probe for emission monotonicity/colour.
+      lightAtCell: (col: number, row: number, z = 0) =>
+        this.night ? this.night.lightAt(col, row, z, false) : null,
       levelAt: (x: number, y: number) => (this.terrain ? levelAtWorld(this.terrain, x, y) : 0),
       nightShader: () => !!this.night && this.night.active,
       // Get/set the time-of-day phase (by index or name); instant when set —
@@ -619,8 +755,10 @@ export class WorldScene extends Phaser.Scene {
 
   private addAvatar(id: string, player: any) {
     const uid: string = player.character || this.manifest.characters[0]?.uid || PLACEHOLDER_TEX;
-    const key = sheetKey(uid, "idle", DEFAULT_DIRECTION);
-    const p0 = this.project(player.x, player.y);
+    const key = frameKey(uid, "idle", DEFAULT_DIRECTION, 0);
+    const f0 = this.projectFlat(player.x, player.y);
+    const elev0 = f0.lvl * MAP_GEOMETRY.lh;
+    const p0 = { x: f0.x, y: f0.y - elev0 };
     // Fall back to the built-in wanderer whenever the character's art is absent
     // (empty roster, a deleted character, or art still loading). Tint it per
     // name so same-named wanderers stay distinguishable.
@@ -644,13 +782,17 @@ export class WorldScene extends Phaser.Scene {
       character: uid,
       lx: p0.x,
       ly: p0.y,
+      lyFlat: f0.y,
+      elev: elev0,
+      fallV: 0,
+      falling: false,
       fx: player.x,
       fy: player.y,
       hopUntil: 0,
       swimming: false,
       baseTint,
     });
-    this.applyAnimState(this.avatars.get(id)!, player.moving, player.running, player.dir);
+    this.applyAnimState(this.avatars.get(id)!, player.moving, player.running, player.dir, false);
   }
 
   update(_time: number, delta: number) {
@@ -683,16 +825,14 @@ export class WorldScene extends Phaser.Scene {
         const jumping = this.time.now < this.jumpUntil;
         const stepLocal = (ax: number, ay: number, running: boolean, sdt: number) => {
           let blocked;
-          let drops;
           let speed = 1;
           if (this.terrain) {
             const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
             blocked = makeBlocked(this.terrain, ctx);
-            drops = makeDrops(this.terrain);
             speed = surfaceAtWorld(this.terrain, rx, ry).speed * (jumping ? JUMP_SPEED_FACTOR : 1);
           }
           // screenInput matches the server: on the iso world, input is screen-relative.
-          const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain, drops);
+          const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain, this.worldW, this.worldH);
           rx = r.x;
           ry = r.y;
         };
@@ -716,14 +856,30 @@ export class WorldScene extends Phaser.Scene {
         dir = player.dir;
       }
 
-      // Project the authoritative world position onto the iso ground, then ease
-      // the logical position toward it (snappier for the local player).
+      // Project onto the iso ground with the FLAT (unlifted) point + cell level
+      // kept apart: ease the horizontal + flat ground toward the target, but
+      // animate the elevation lift separately so a cliff descent FALLS under
+      // gravity instead of the anchor snapping down a level. `av.ly` stays the
+      // lifted feet y (flat − elevation) every other consumer expects.
       av.fx = tx;
       av.fy = ty;
-      const target = this.project(tx, ty);
-      const k = Math.min(1, dt * (id === myId ? 45 : 12));
-      av.lx += (target.x - av.lx) * k;
-      av.ly += (target.y - av.ly) * k;
+      const g = this.projectFlat(tx, ty);
+      const targetElev = g.lvl * MAP_GEOMETRY.lh;
+      // A big horizontal jump (respawn/teleport) is not a walk — snap, don't
+      // ease or fall, so the character doesn't skate/plummet across the map.
+      if (Math.abs(g.x - av.lx) > CELL_WU * 2 || Math.abs(g.y - av.lyFlat) > CELL_WU * 2) {
+        av.lx = g.x;
+        av.lyFlat = g.y;
+        av.elev = targetElev;
+        av.fallV = 0;
+        av.falling = false;
+      } else {
+        const k = Math.min(1, dt * (id === myId ? 45 : 12));
+        av.lx += (g.x - av.lx) * k;
+        av.lyFlat += (g.y - av.lyFlat) * k;
+        this.stepElevation(av, targetElev, dt);
+      }
+      av.ly = av.lyFlat - av.elev;
 
       // Jump hop: a short parabola driven by the synced `jumping` flag.
       if (player.jumping && av.hopUntil <= this.time.now) av.hopUntil = this.time.now + JUMP_MS;
@@ -744,10 +900,10 @@ export class WorldScene extends Phaser.Scene {
       // AND it lies on the camera ray (grid interval test). Place the sprite
       // above every falsely-deeper column and below every true occluder.
       const lvl = this.terrain ? levelAtWorld(this.terrain, tx, ty) : 0;
-      let depth = av.ly + lvl * MAP_GEOMETRY.lh + 0.5; // unlifted ground y
+      let depth = av.lyFlat + 0.5; // painter y at the flat (unlifted) ground
       if (this.world) {
-        const colf = (tx / WORLD_WIDTH) * this.world.width;
-        const rowf = (ty / WORLD_HEIGHT) * this.world.height;
+        const colf = tx / CELL_WU; // 1 cell = CELL_WU world units (any world size)
+        const rowf = ty / CELL_WU;
         // Sprite bounds = the MEASURED opaque art box (+4px margin for walk
         // frames dipping past the idle anchor). The drawn figure is ~30x68px
         // inside a 128px frame — testing the whole frame let raised cells 2-3
@@ -774,10 +930,15 @@ export class WorldScene extends Phaser.Scene {
           // (the sprite is a billboard — raised corners of side/front
           // neighbours pass in front of its lower pixels even when the feet
           // point itself is visible) and whose face is camera-closer.
+          // The upper reach must clear a DIAGONALLY adjacent ledge: a step to
+          // the E/S (same-row/col neighbour) sits one grid diagonal AND one
+          // level up, so its top lands ~lh+dy above the feet — a tighter band
+          // (the old −26) let that ledge's corner poke between the legs with
+          // the foot drawn over it (playtester, standing at a step edge).
           const faceOverFeet =
             higher &&
             o.y0 <= feetY + 6 &&
-            o.y0 >= feetY - 26 &&
+            o.y0 >= feetY - (MAP_GEOMETRY.lh + MAP_GEOMETRY.dy + 9) &&
             o.col + o.row + 1.2 > colf + rowf;
           // (c) A camera-closer SOLID structure whose (tall, bottom-anchored)
           // art overlaps the sprite: billboard art covers anything behind
@@ -816,14 +977,17 @@ export class WorldScene extends Phaser.Scene {
         av.coverY = undefined;
       }
       av.sprite.setDepth(depth);
-      // Shadow: always at the GROUND point (the collision anchor) — it stays
-      // put while the sprite hops, shrinking a little at the jump's peak.
-      const hopFrac = hop / JUMP_HEIGHT;
+      // Shadow: cast on the LANDING ground (flat − target elevation), not the
+      // sprite's current lifted feet. It stays put on the lower ground while the
+      // character hops OR falls toward it, shrinking with total air height so a
+      // cliff fall reads as "dropping toward the shadow below".
+      const landY = av.lyFlat - targetElev;
+      const airFrac = Math.min(1, (hop + Math.max(0, landY - av.ly)) / JUMP_HEIGHT);
       av.shadow
-        .setPosition(av.lx, av.ly)
+        .setPosition(av.lx, landY)
         .setVisible(!av.swimming)
-        .setAlpha(1 - hopFrac * 0.35)
-        .setDisplaySize(34 - hopFrac * 9, 14 - hopFrac * 4)
+        .setAlpha(1 - airFrac * 0.35)
+        .setDisplaySize(34 - airFrac * 9, 14 - airFrac * 4)
         .setDepth(av.sprite.depth - 0.1);
       // Head top (measured from the art), not the frame top — labels hug the
       // character instead of floating over transparent padding.
@@ -853,8 +1017,11 @@ export class WorldScene extends Phaser.Scene {
           av.bubble = undefined;
         }
       }
-      this.applyAnimState(av, moving, running, dir);
+      this.applyAnimState(av, moving, running, dir, hopLeft > 0 || av.falling);
     });
+
+    // See-through tall geometry above the player's level (occlusion fade).
+    this.updateOcclusionFade();
 
     // Local player's swim-stamina HUD.
     const me = state.players.get(myId);
@@ -1077,8 +1244,44 @@ export class WorldScene extends Phaser.Scene {
     this.lastInput = { ax, ay, running };
     this.lastSent = sig;
     this.sendAccum += dt;
+    // Auto-hop a 1-level ledge you walk into (a wall a jump COULD clear) so the
+    // player doesn't have to tap Space at every step — may set jumpQueued.
+    this.maybeAutoJump(ax, ay);
     // Regular cadence, and jumps flush immediately so the edge isn't delayed.
     if (this.jumpQueued || this.sendAccum >= 1 / INPUT_HZ) this.flushInput();
+  }
+
+  /**
+   * If the player is walking INTO a ledge that a jump could climb but a walk
+   * can't — i.e. exactly a 1-level wall (`WALK_CLIMB < step ≤ JUMP_CLIMB`) —
+   * fire the jump automatically. A 2-level+ wall fails the jump check too, so
+   * it's left alone; solid props (trees/boulders) are impassable at any climb,
+   * so they never auto-jump either. `tryJump` still gates on grounded+cooldown.
+   */
+  private maybeAutoJump(ax: number, ay: number) {
+    if (ax === 0 && ay === 0) return;
+    const now = this.time.now;
+    if (now < this.jumpUntil || now < this.jumpReadyAt) return; // already airborne / cooling down
+    const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+    if (me && this.wouldAutoJump(me.fx, me.fy, ax, ay)) this.tryJump();
+  }
+
+  /** The terrain predicate behind auto-jump: from world (fromX,fromY), moving in
+   * screen direction (ax,ay), is the cell just past the feet a wall a walk can't
+   * climb but a jump would (a 1-level ledge)? Excludes 2-level+ walls and solid
+   * props (a jump can't clear those either). Also exposed via __ml.autoJumpAt. */
+  private wouldAutoJump(fromX: number, fromY: number, ax: number, ay: number): boolean {
+    if (!this.terrain) return false;
+    const w = screenToWorldVector(ax, ay);
+    const len = Math.hypot(w.x, w.y);
+    if (len < 1e-6) return false;
+    // Probe the cell just past the feet's leading edge, in the move direction.
+    const d = PLAYER_RADIUS + 3;
+    const tx = fromX + (w.x / len) * d;
+    const ty = fromY + (w.y / len) * d;
+    const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+    const jump = { maxClimb: JUMP_CLIMB, canSwim: true };
+    return !canEnter(this.terrain, fromX, fromY, tx, ty, walk) && canEnter(this.terrain, fromX, fromY, tx, ty, jump);
   }
 
   /** Persist + send the accumulated input window (prediction and server get
@@ -1096,8 +1299,19 @@ export class WorldScene extends Phaser.Scene {
     this.sendAccum = 0;
   }
 
-  private applyAnimState(av: Avatar, moving: boolean, running: boolean, dir: string) {
-    const state = moving ? (running ? "run" : "walk") : "idle";
+  private applyAnimState(av: Avatar, moving: boolean, running: boolean, dir: string, jumping: boolean) {
+    // Airborne overrides ground gait: a moving-fast leap uses running-jump, any
+    // other hop (standing or walking) uses the plain jump. Timed to the hop so
+    // the leap/land poses line up with the visual arc.
+    const state = jumping
+      ? running && moving
+        ? "runjump"
+        : "jump"
+      : moving
+        ? running
+          ? "run"
+          : "walk"
+        : "idle";
     const d = DIRECTIONS.includes(dir as never) ? dir : DEFAULT_DIRECTION;
     const key = this.resolveAnim(av.character, state, d);
     if (key && av.sprite.anims.getName() !== key) {
@@ -1167,7 +1381,16 @@ export class WorldScene extends Phaser.Scene {
 
   /** Pick an existing animation, falling back run→walk→idle then default dir. */
   private resolveAnim(uid: string, state: string, dir: string): string | null {
-    const order = state === "run" ? ["run", "walk", "idle"] : state === "walk" ? ["walk", "idle"] : ["idle"];
+    const order =
+      state === "runjump"
+        ? ["runjump", "jump", "run", "walk", "idle"]
+        : state === "jump"
+          ? ["jump", "walk", "idle"]
+          : state === "run"
+            ? ["run", "walk", "idle"]
+            : state === "walk"
+              ? ["walk", "idle"]
+              : ["idle"];
     for (const s of order) {
       for (const d of [dir, DEFAULT_DIRECTION]) {
         const key = animKey(uid, s, d);
@@ -1179,16 +1402,23 @@ export class WorldScene extends Phaser.Scene {
 
   private buildAnimations() {
     for (const def of this.manifest.characters) {
-      for (const [anim, dirs] of Object.entries(def.animations)) {
-        for (const dir of Object.keys(dirs)) {
-          const sheet = sheetKey(def.uid, anim, dir);
-          const key = animKey(def.uid, anim, dir);
-          if (!this.textures.exists(sheet) || this.anims.exists(key)) continue;
+      for (const [state, dirs] of Object.entries(def.animations)) {
+        for (const [dir, count] of Object.entries(dirs)) {
+          const key = animKey(def.uid, state, dir);
+          if (this.anims.exists(key)) continue;
+          const frames: Phaser.Types.Animations.AnimationFrame[] = [];
+          for (let n = 0; n < count; n++) {
+            const fk = frameKey(def.uid, state, dir, n);
+            if (this.textures.exists(fk)) frames.push({ key: fk });
+          }
+          if (!frames.length) continue;
+          // idle/walk/run loop; jump/runjump/kick play once.
+          const once = state === "jump" || state === "runjump" || state === "kick";
           this.anims.create({
             key,
-            frames: this.anims.generateFrameNumbers(sheet, {}),
-            frameRate: ANIM_FPS[anim] ?? 10,
-            repeat: -1,
+            frames,
+            frameRate: ANIM_FPS[state] ?? 10,
+            repeat: once ? 0 : -1,
           });
         }
       }
@@ -1264,10 +1494,26 @@ export class WorldScene extends Phaser.Scene {
         const row = (v - u) / 2;
         if (col < 0 || row < 0 || col >= world.width || row >= world.height) continue;
         const cell = world.rows[row][col];
-        const key = tileKey(cell.t, cell.v);
-        if (!this.textures.exists(key)) continue;
         const bx = this.iso.ox + u * dx - ax;
         const by = this.iso.oy + v * dy - ay;
+        if (this.maps2) {
+          // maps2: the world bakes the exact TOP tile per cell; terraces are
+          // built by stacking the material's plain FACE tile 16px per level
+          // (LEVEL_PX), with the cell's top tile last (like maps2 render2.py).
+          const topKey0 = topKeyFor(cell);
+          if (!topKey0 || !this.textures.exists(topKey0)) continue; // void cell
+          // world@1 mirror: some transition tiles are placed flipped; honour it
+          // or borders face the wrong way. RT batchDraw can't flip, so draw a
+          // lazily-mirrored texture copy for flipped cells.
+          const topKey = cell.flip ? this.flippedKey(topKey0) : topKey0;
+          const faceKey = faceKeyFor(world, cell);
+          const fk = faceKey && this.textures.exists(faceKey) ? faceKey : topKey0;
+          for (let lvl = 0; lvl < cell.l; lvl++) rt.batchDraw(fk, bx, by - lvl * lh);
+          rt.batchDraw(topKey, bx, by - cell.l * lh);
+          continue;
+        }
+        const key = tileKey(cell.t, cell.v);
+        if (!this.textures.exists(key)) continue;
         // Per-level stacking builds raised TERRAIN columns out of flat tiles.
         // SOLID structures (trees, pillars, towers) are one object: stacking
         // their tall art drew 2-3 overlapping copies ("two long tiles on top
@@ -1433,6 +1679,158 @@ export class WorldScene extends Phaser.Scene {
    * vertex y), so sprites standing behind it are covered while sprites in
    * front draw over it. The ground RT stays as the flat base underneath.
    */
+  /** Tag a maps2 terrain occluder image with its cell, top level and original
+   * depth so the occlusion-fade pass can find/ghost/restore it. */
+  private tagOccluder(
+    img: Phaser.GameObjects.Image,
+    col: number,
+    row: number,
+    top: number,
+    od: number,
+  ): Phaser.GameObjects.Image {
+    img.setData("oc", col);
+    img.setData("or", row);
+    img.setData("ot", top);
+    img.setData("od", od);
+    return img;
+  }
+
+  /**
+   * Occlusion fade (see the field note). Two parts, both keyed to the local
+   * player (or debug `occFocus`):
+   *  (1) tall occluders ABOVE the focus level, camera-closer than it, within a
+   *      radius are dimmed to a faint GHOST and moved behind the player so they
+   *      stop hiding the character;
+   *  (2) a REVEAL render-texture redraws the player-level GROUND those towers
+   *      were covering (so you see the grass/level you walk on, not the tower)
+   *      and drops a BLACK diamond at each tower's ROOT (base footprint = void).
+   */
+  private updateOcclusionFade() {
+    const world = this.world;
+    const R = 14; // bubble radius in cells
+    const GHOST = -800_000; // faded tower ghost: above the reveal layer, below sprites
+    let fc = this.occFocus;
+    const pav = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+    if (!fc && pav) fc = { col: Math.floor(pav.fx / CELL_WU), row: Math.floor(pav.fy / CELL_WU) };
+    const active = this.occFadeOn && this.maps2 && !!world && !!fc;
+    if (active && world && fc) {
+      const fLevel = world.rows[fc.row]?.[fc.col]?.l ?? 0;
+      const fSum = fc.col + fc.row;
+      for (const o of this.occluders) {
+        const col = o.getData("oc") as number | undefined;
+        if (col === undefined) continue; // untagged (legacy/demo) — leave as-is
+        const row = o.getData("or") as number;
+        const top = o.getData("ot") as number;
+        const od = o.getData("od") as number;
+        const dist = Math.hypot(col - fc.col, row - fc.row);
+        if (top > fLevel && dist < R && col + row > fSum) {
+          const clear = Math.min(1, 1 - dist / R); // 1 at focus → 0 at edge
+          o.setDepth(GHOST).setAlpha(0.16 + 0.34 * (1 - clear)); // fainter nearer the player
+        } else {
+          o.setDepth(od).setAlpha(1);
+        }
+      }
+    } else {
+      for (const o of this.occluders) {
+        const od = o.getData("od") as number | undefined;
+        if (od !== undefined) o.setDepth(od).setAlpha(1);
+      }
+    }
+    this.updateOccReveal(active && fc ? fc : null, pav, R);
+  }
+
+  /** Lazily build the occlusion-fade assets: a black cell-diamond (tower roots)
+   * drawn into the reveal layer. */
+  private ensureOccAssets() {
+    const { tile, dy } = MAP_GEOMETRY;
+    if (this.textures.exists("occ-root")) return;
+    const g = this.make.graphics({ x: 0, y: 0 }, false);
+    g.fillStyle(0x000000, 1).beginPath();
+    g.moveTo(tile / 2, 0);
+    g.lineTo(tile, dy);
+    g.lineTo(tile / 2, dy * 2);
+    g.lineTo(0, dy);
+    g.closePath();
+    g.fillPath();
+    g.generateTexture("occ-root", tile, dy * 2);
+    g.destroy();
+  }
+
+  /**
+   * Reveal layer: a world-anchored RenderTexture drawn just above the ground RT
+   * (−900k) but below the faded ghosts + sprites. Within `R` cells of the focus
+   * it redraws the player-level GROUND (walkable cells at/below the focus level)
+   * — so a faded tower reveals the grass you walk on — and paints a BLACK
+   * diamond at every taller cell's ROOT so the tower's own footprint reads as
+   * void, never walkable. Redrawn only when the player/camera moves.
+   */
+  private updateOccReveal(fc: { col: number; row: number } | null, pav: Avatar | undefined, R: number) {
+    if (!fc || !this.world || !pav) {
+      this.occRevealRT?.setVisible(false);
+      return;
+    }
+    this.ensureOccAssets();
+    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    if (!this.occRevealRT) {
+      this.occRevealRT = this.add
+        .renderTexture(0, 0, this.scale.width + GROUND_MARGIN * 2, this.scale.height + GROUND_MARGIN * 2)
+        .setOrigin(0, 0)
+        .setDepth(-900_000);
+    }
+    const rt = this.occRevealRT;
+    rt.setVisible(true);
+    const cam = this.cameras.main;
+    const ccx = cam.scrollX + cam.width / 2;
+    const ccy = cam.scrollY + cam.height / 2;
+    // Redraw only when the player or camera drifts — otherwise the texture holds.
+    if (
+      !Number.isNaN(this.lastReveal.x) &&
+      Math.abs(pav.fx - this.lastReveal.x) < 4 &&
+      Math.abs(pav.fy - this.lastReveal.y) < 4 &&
+      Math.abs(ccx - this.lastReveal.cx) < 4 &&
+      Math.abs(ccy - this.lastReveal.cy) < 4
+    )
+      return;
+    this.lastReveal = { x: pav.fx, y: pav.fy, cx: ccx, cy: ccy };
+    const world = this.world;
+    const ax = Math.round(ccx - rt.width / 2);
+    const ay = Math.round(ccy - rt.height / 2);
+    rt.setPosition(ax, ay);
+    rt.clear();
+    const fLevel = world.rows[fc.row]?.[fc.col]?.l ?? 0;
+    const fSum = fc.col + fc.row;
+    const x0 = ax - tile;
+    const x1 = ax + rt.width + tile;
+    const y0 = ay - tile;
+    const y1 = ay + rt.height + tile + this.maxLevel * lh;
+    const u0 = Math.floor((x0 - this.iso.ox) / dx) - 1;
+    const u1 = Math.ceil((x1 - this.iso.ox) / dx) + 1;
+    const v0 = Math.max(0, Math.floor((y0 - this.iso.oy) / dy) - 1);
+    const v1 = Math.ceil((y1 - this.iso.oy) / dy) + 1;
+    rt.beginDraw();
+    for (let v = v0; v <= v1; v++) {
+      for (let u = u0; u <= u1; u++) {
+        if ((u + v) & 1) continue;
+        const col = (u + v) / 2;
+        const row = (v - u) / 2;
+        const cell = world.rows[row]?.[col];
+        if (!cell) continue;
+        if (Math.hypot(col - fc.col, row - fc.row) > R) continue;
+        const bx = this.iso.ox + u * dx - ax;
+        const by = this.iso.oy + v * dy - ay;
+        if (cell.l > fLevel && col + row > fSum) {
+          // Taller than the player, in front of them → black root diamond (void).
+          rt.batchDraw("occ-root", bx, by);
+        } else if (surfaceFor(cell.t).standable || surfaceFor(cell.t).swimmable) {
+          // The ground the player walks on — re-expose it over the towers above.
+          const k0 = topKeyFor(cell);
+          if (k0 && this.textures.exists(k0)) rt.batchDraw(cell.flip ? this.flippedKey(k0) : k0, bx, by - cell.l * lh);
+        }
+      }
+    }
+    rt.endDraw();
+  }
+
   private rebuildOccluders() {
     if (!this.world) return;
     const cam = this.cameras.main;
@@ -1470,6 +1868,55 @@ export class WorldScene extends Phaser.Scene {
         const cell = this.world.rows[row]?.[col];
         if (!cell) continue;
         const s = surfaceFor(cell.t);
+        if (this.maps2) {
+          // maps2 cells bake an explicit tile PNG path (loaded under
+          // pathTileKey), NOT the legacy tile:(t,v) key — so the legacy branch
+          // below finds no texture and builds ZERO occluders, leaving every
+          // sprite drawn ON TOP of raised terraces. Build the occluder column
+          // here instead, mirroring the ground pass's stacking (faces 0..l-1,
+          // then the baked top at l). Flat (l=0) and void cells never occlude.
+          if (cell.l <= 0) continue;
+          const topKey = topKeyFor(cell);
+          if (!topKey || !this.textures.exists(topKey)) continue;
+          const faceKey = faceKeyFor(this.world, cell);
+          const fk = faceKey && this.textures.exists(faceKey) ? faceKey : topKey;
+          const bx = this.iso.ox + u * dx;
+          const by = this.iso.oy + v * dy;
+          const oDepth = by + dy;
+          // Draw only the EXPOSED cliff faces (from the lowest front neighbour
+          // up). The ground RT already bakes every cell's full face stack with
+          // the lower front cells drawn OVER it; redrawing the covered lower
+          // faces here — on top of the RT at a high depth — re-exposed them,
+          // painting the front cell's ground back into a wall (the "half-tile"
+          // terrace tear). stackFrom = one above the lower of the E/S fronts.
+          for (let lvl = this.stackFrom(col, row, cell.l, false); lvl < cell.l; lvl++)
+            this.occluders.push(
+              this.tagOccluder(this.add.image(bx, by - lvl * lh, fk).setOrigin(0, 0).setDepth(oDepth), col, row, cell.l, oDepth),
+            );
+          this.occluders.push(
+            // Occluder images CAN flip directly (setFlipX) — matches the RT's
+            // mirrored top so the two layers stay pixel-aligned for flipped cells.
+            this.tagOccluder(
+              this.add.image(bx, by - cell.l * lh, topKey).setOrigin(0, 0).setFlipX(!!cell.flip).setDepth(oDepth),
+              col,
+              row,
+              cell.l,
+              oDepth,
+            ),
+          );
+          this.occluderMeta.push({
+            col,
+            row,
+            top: cell.l, // maps2 terrain is all standable ground: visual top = level
+            solid: false,
+            depth: oDepth,
+            x0: bx,
+            x1: bx + tileSize,
+            y0: by - cell.l * lh,
+            y1: by + tileSize,
+          });
+          continue;
+        }
         // Emissive tiles (tiles/emission.json): atmosphere bloom for the
         // canvas fallback (glow POOLS are collected in their own wider pass
         // below). Per-VARIANT: plain variants of a glowing category stay
@@ -1595,6 +2042,13 @@ export class WorldScene extends Phaser.Scene {
       }
     }
 
+    // Placed props (maps2 world@1) share the occluder rebuild: they're tall
+    // billboards that also occlude characters, so building them here — under
+    // the same camera-move guard, appending to the SAME occluderMeta — keeps
+    // the two layers atomic (a separate guard could rebuild one without the
+    // other and desync the depth metadata).
+    this.rebuildProps(cam);
+
     // Per-pixel glow halos (tile-emission@2 sources) for this window. Demo
     // stations draw tall art ONCE at ground level, so every source anchors
     // to the drawn art instead of repeating down a stacked column.
@@ -1607,7 +2061,182 @@ export class WorldScene extends Phaser.Scene {
       undefined,
       (t, v) => this.artYOff(tileKey(t, v)),
       this.demoMode,
-    ).concat(this.buildPoolStamps(cam));
+    ).concat(this.buildPoolStamps(cam)).concat(this.propStamps);
+  }
+
+  /**
+   * Rebuild the placed-decoration set (maps2 world@1 `props`): each prop is a
+   * TALL 64×128 tile standing on its cell, drawn as a depth-sorted billboard so
+   * characters pass in front of / behind it. Called from rebuildOccluders under
+   * its camera-move guard, so it culls to the same window and appends to the
+   * same occluderMeta.
+   *
+   * ANCHOR: a prop's canvas is NOT bottom-full — the object's ground-contact row
+   * varies (a short bush ends high in the canvas, a tall tower nearly fills it).
+   * So we measure each prop's opaque BOTTOM (its base V) and plant it on the
+   * cell's grid diamond FRONT vertex (groundTop + 2·dy), so the base sits IN the
+   * grid cell. Two earlier tries were wrong: bottom-of-CANVAS (imgH−64) only
+   * matched full-height props; content-bottom-to-skirt (row 54, as propdemo.py
+   * does) dropped every prop one elevation level below the grid V (playtester).
+   */
+  private rebuildProps(cam: Phaser.Cameras.Scene2D.Camera) {
+    for (const im of this.propImgs) im.destroy();
+    this.propImgs = [];
+    this.propStamps = [];
+    if (!this.world || !this.maps2) return;
+    const props = this.world.props;
+    if (!props || !props.length) return;
+    const ANIM: Record<string, number> = { static: 0, pulse: 1, flicker: 2 };
+
+    const { dx, dy, lh, tile: tileSize } = MAP_GEOMETRY;
+    const pad = 200;
+    // A tall prop rises well above its ground box, so pad the top generously.
+    const x0 = cam.worldView.x - pad;
+    const x1 = cam.worldView.right + pad;
+    const y0 = cam.worldView.y - pad - 128;
+    const y1 = cam.worldView.bottom + pad + this.maxLevel * lh;
+    // Anchor row: the cell's grid diamond FRONT vertex — groundTop (the surface
+    // diamond's top row) + the diamond's full height (2·dy). A prop's opaque
+    // BOTTOM (its base V) is planted here so it sits IN the grid cell, not one
+    // level below it. maps2's propdemo aligns to the tile's SKIRT bottom (row
+    // 54) instead, which drops every prop a full elevation level — the base V
+    // ended up under the grid V (playtester). The skirt is the flat tile's own
+    // front face; a prop is not part of that face.
+    const anchorRow = (this.tileBases?.groundTop ?? 8) + 2 * dy;
+    for (const p of props) {
+      const cell = this.world.rows[p.row]?.[p.col];
+      const key = pathTileKey(p.path);
+      if (!this.textures.exists(key)) continue;
+      const lvl = cell?.l ?? 0;
+      const u = p.col - p.row;
+      const v = p.col + p.row;
+      const bx = this.iso.ox + u * dx;
+      const byGround = this.iso.oy + v * dy - lvl * lh; // ground tile top-left
+      const b = this.propBounds(key); // opaque {top,bottom} rows in the art
+      const py = byGround + anchorRow - b.bottom; // base V on the grid diamond vertex
+      if (bx + tileSize < x0 || bx > x1 || py + b.bottom < y0 || py + b.top > y1) continue;
+      // Unlifted ground line (matches occluders + character depth), so painter
+      // order by (col+row) puts characters correctly in front / behind.
+      const depth = this.iso.oy + v * dy + dy;
+      this.propImgs.push(this.add.image(bx, py, key).setOrigin(0, 0).setDepth(depth));
+      // Self-emission: an emissive prop (a tiles2 tile with glow `sources`).
+      // Two SEPARATE jobs, mirroring how the bonfire works vs how it looked
+      // buggy before (root-caused with the playtester):
+      //   • light ON THE GROUND + CHARACTER: a strong pool at GROUND level in
+      //     the prop's real glow colour. Ground-anchored ⇒ the base lights up
+      //     AND a character brightens monotonically as it walks in (litChar).
+      //   • glow ON THE ART: the sharp per-source halos stamped high on the
+      //     tall tile so the runes/crystals bloom — cosmetic only (litChar
+      //     false), because sampling a HIGH point from the character's feet
+      //     made it brighter-then-darker as you approached.
+      const srcs = this.night ? this.tiles2Src[p.path] : undefined;
+      if (srcs?.length) {
+        const mat = p.path.split("/")[1]; // tiles2/<material>/…
+        const em = this.tiles2Mat[mat];
+        const anim = ANIM[em?.anim ?? "static"] ?? 0;
+        // The prop's ACTUAL glow colour = strength-weighted mean of its source
+        // colours (a stone obelisk's material hue is blue, but its runes glow
+        // GREEN — the character was green, so the ground must be too), plus a
+        // representative strength for the pool intensity.
+        let cr = 0, cg = 0, cb = 0, sw = 0;
+        for (const g of srcs) {
+          cr += g.color[0] * g.s;
+          cg += g.color[1] * g.s;
+          cb += g.color[2] * g.s;
+          sw += g.s;
+        }
+        const glowColor: [number, number, number] =
+          sw > 0 ? [cr / sw, cg / sw, cb / sw] : em?.color ?? [1, 1, 1];
+        const avgS = srcs.length ? sw / srcs.length : 0;
+        // (a) GROUND POOL — the bonfire-like wash at ground level, in the real
+        // glow colour. The ONLY stamp that tints characters (litChar). Nudged a
+        // few px toward the camera-front so the standing sprite doesn't sit on
+        // the brightest core.
+        const rCells = (em?.radius ?? 2) + 0.5;
+        this.propStamps.push({
+          x: bx + dx,
+          y: byGround + dy + 4,
+          radius: rCells * Math.SQRT2 * dx,
+          ry: rCells * Math.SQRT2 * dy,
+          color: glowColor,
+          alpha: Math.min(0.85, avgS * 0.7),
+          anim,
+          phase: ((((p.col * 40503) ^ (p.row * 12289)) >>> 0) % 628) / 100,
+          litChar: true,
+        });
+        // (b) HIGH HALOS — cosmetic bloom on the glowing pixels of the art
+        // itself (rendered into the glow field over the prop body). NOT used to
+        // tint characters (litChar:false) — see the field note in nightlight.ts.
+        for (let i = 0; i < srcs.length; i++) {
+          const g = srcs[i];
+          const phase = ((((p.col * 73856093) ^ (p.row * 19349663) ^ (i * 83492791)) >>> 0) % 628) / 100;
+          this.propStamps.push({
+            x: bx + g.x,
+            y: py + g.y,
+            radius: Math.min(90, 8 + g.r * 4),
+            color: g.color,
+            alpha: Math.min(1, g.s * 0.4),
+            anim,
+            phase,
+            litChar: false,
+          });
+        }
+      }
+      // Register as a SOLID billboard occluder so a character standing behind
+      // the prop is hidden by it (the per-frame depth test's solidArtOver
+      // branch), instead of always drawing on top.
+      this.occluderMeta.push({
+        col: p.col,
+        row: p.row,
+        top: lvl + 1, // rises at least one level above its cell → "higher"
+        solid: true,
+        depth,
+        x0: bx,
+        x1: bx + tileSize,
+        y0: py + b.top,
+        y1: py + b.bottom,
+      });
+    }
+  }
+
+  /** Opaque vertical extent {top,bottom} (rows) of a prop texture, measured
+   * once from its alpha and cached — props pad their 64×128 canvas differently
+   * per object, so the anchor + occluder box need the real content rows. */
+  private propBoundsCache = new Map<string, { top: number; bottom: number }>();
+  private propBounds(key: string): { top: number; bottom: number } {
+    let b = this.propBoundsCache.get(key);
+    if (b) return b;
+    b = { top: 0, bottom: 63 };
+    try {
+      const src = this.textures.get(key).getSourceImage() as CanvasImageSource & {
+        width: number;
+        height: number;
+      };
+      const w = src.width, h = src.height;
+      const cnv = document.createElement("canvas");
+      cnv.width = w;
+      cnv.height = h;
+      const ctx = cnv.getContext("2d", { willReadFrequently: true });
+      if (ctx) {
+        ctx.drawImage(src, 0, 0);
+        const d = ctx.getImageData(0, 0, w, h).data;
+        let top = -1, bottom = -1;
+        for (let y = 0; y < h; y++) {
+          let op = false;
+          for (let x = 0; x < w; x++)
+            if (d[(y * w + x) * 4 + 3] > 16) { op = true; break; }
+          if (op) {
+            if (top < 0) top = y;
+            bottom = y;
+          }
+        }
+        if (bottom >= 0) b = { top, bottom };
+      }
+    } catch {
+      // Unreadable source (shouldn't happen same-origin) — keep the fallback.
+    }
+    this.propBoundsCache.set(key, b);
+    return b;
   }
 
   /** Emission glow POOLS as elliptical stamps in the additive glow field.
@@ -1765,7 +2394,7 @@ export class WorldScene extends Phaser.Scene {
       console.warn(`[nangijala] campfire strip missing (${CAMPFIRE_URL}) — fire not placed`);
       return;
     }
-    const spawn = findSpawn(this.terrain, WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
+    const spawn = findSpawn(this.terrain, this.worldW / 2, this.worldH / 2);
     const sc = Math.floor(spawn.x / CELL_WU);
     const sr = Math.floor(spawn.y / CELL_WU);
     const sLvl = levelAtWorld(this.terrain, spawn.x, spawn.y);
@@ -1810,17 +2439,40 @@ export class WorldScene extends Phaser.Scene {
   /** Project an authoritative world position (flat x,y) onto the iso ground —
    * the point where a character's feet stand, lifted by that cell's elevation. */
   private project(px: number, py: number): { x: number; y: number } {
-    if (!this.world) return { x: px, y: py };
-    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    const f = this.projectFlat(px, py);
+    return { x: f.x, y: f.y - f.lvl * MAP_GEOMETRY.lh };
+  }
+
+  /** Iso projection split into the FLAT (unlifted) ground point and the cell's
+   * elevation level, so the renderer can animate the lift (fall under gravity)
+   * separately from the horizontal walk. Flat x/y are continuous in (px,py);
+   * only `lvl` steps at cell boundaries. */
+  private projectFlat(px: number, py: number): { x: number; y: number; lvl: number } {
+    if (!this.world) return { x: px, y: py, lvl: 0 };
+    const { dx, dy, tile } = MAP_GEOMETRY;
     const W = this.world.width;
     const H = this.world.height;
-    const col = Math.max(0, Math.min(W - 0.001, (px / WORLD_WIDTH) * W));
-    const row = Math.max(0, Math.min(H - 0.001, (py / WORLD_HEIGHT) * H));
+    const col = Math.max(0, Math.min(W - 0.001, px / CELL_WU)); // 1 cell = CELL_WU wu
+    const row = Math.max(0, Math.min(H - 0.001, py / CELL_WU));
     const lvl = this.world.rows[Math.floor(row)]?.[Math.floor(col)]?.l ?? 0;
     return {
       x: this.iso.ox + (col - row) * dx + tile / 2,
-      y: this.iso.oy + (col + row) * dy + dy - lvl * lh,
+      y: this.iso.oy + (col + row) * dy + dy,
+      lvl,
     };
+  }
+
+  /**
+   * Advance an avatar's elevation lift one frame toward the target (cell
+   * level×lh) via the shared `integrateFall`: up-steps snap (the hop sells the
+   * arc), gentle down-steps ease, and real cliff down-steps fall under gravity
+   * so walking off a ledge drops to the ground below instead of teleporting.
+   */
+  private stepElevation(av: Avatar, target: number, dt: number): void {
+    const s = integrateFall({ elev: av.elev, fallV: av.fallV, falling: av.falling }, target, dt, MAP_GEOMETRY.lh);
+    av.elev = s.elev;
+    av.fallV = s.fallV;
+    av.falling = s.falling;
   }
 
   /**
@@ -1895,6 +2547,30 @@ export class WorldScene extends Phaser.Scene {
     ctx.fillRect(0, 0, w, w);
     ctx.restore();
     tex!.refresh();
+  }
+
+  private flipCache = new Set<string>();
+  /** A horizontally-mirrored copy of a tile texture, generated + cached on first
+   * use — the RenderTexture's batchDraw can't flip, so world@1 `mirror` cells
+   * (auto-tiler-flipped transition tiles) draw this instead. Cheap: only the few
+   * distinct tiles that appear flipped (~1-4% of cells) ever get a copy. */
+  private flippedKey(key: string): string {
+    const fk = key + "#flip";
+    if (!this.flipCache.has(fk)) {
+      const src = this.textures.get(key).getSourceImage() as CanvasImageSource & { width: number; height: number };
+      const w = src.width, h = src.height;
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d")!;
+      ctx.translate(w, 0);
+      ctx.scale(-1, 1);
+      ctx.drawImage(src, 0, 0);
+      if (this.textures.exists(fk)) this.textures.remove(fk);
+      this.textures.addCanvas(fk, canvas);
+      this.flipCache.add(fk);
+    }
+    return fk;
   }
 
   /** Draw the art-free "Wanderer" fallback sprite into a texture once. A small

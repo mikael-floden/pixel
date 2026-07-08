@@ -1,0 +1,316 @@
+{
+  "schema": "tiles2/sheet@1",
+  "sheet": "base_x_2_1614964661",
+  "ground_type": "black_mountain",
+  "kind": "elevation",
+  "height": "base_x_2",
+  "levels": 2,
+  "face_px": 32,
+  "slot": 0,
+  "objects": [
+    "a charred tree stump",
+    "a black rock with a sulphur crust",
+    "a cooling lava rock with glowing cracks",
+    "a pile of dark volcanic rocks",
+    "a small crater rim of black rock",
+    "a scorched animal skull",
+    "a cluster of obsidian shards",
+    "a chunk of black obsidian",
+    "a small steaming vent",
+    "a small black crystal cluster"
+  ],
+  "tile_id": "103f50a7-334a-4b20-83cb-f8fc6c249108",
+  "settings": {
+    "endpoint": "/create-tiles-pro",
+    "tile_type": "isometric",
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "tile_view_angle": 28.0,
+    "tile_depth_ratio": 0.0,
+    "tile_height": 128,
+    "tile_flat_top_px": 2,
+    "levels": 2,
+    "face_px": 32
+  },
+  "count": 16,
+  "tiles": [
+    {
+      "index": 0,
+      "file": "tile_00.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 1,
+      "file": "tile_01.png",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "black_mountain",
+        "color": [
+          1.0,
+          0.45,
+          0.15
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 18.2,
+            "y": 59.0,
+            "r": 7.6,
+            "color": [
+              0.668,
+              0.418,
+              0.065
+            ],
+            "s": 0.662,
+            "dir": "up"
+          },
+          {
+            "x": 32.4,
+            "y": 78.9,
+            "r": 6.1,
+            "color": [
+              0.503,
+              0.303,
+              0.041
+            ],
+            "s": 0.559,
+            "dir": "up"
+          },
+          {
+            "x": 47.2,
+            "y": 54.4,
+            "r": 5.9,
+            "color": [
+              0.586,
+              0.357,
+              0.06
+            ],
+            "s": 0.62,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 2,
+      "file": "tile_02.png",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "black_mountain",
+        "color": [
+          1.0,
+          0.45,
+          0.15
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 31.5,
+            "y": 63.6,
+            "r": 11.8,
+            "color": [
+              0.808,
+              0.245,
+              0.02
+            ],
+            "s": 0.577,
+            "dir": "up"
+          },
+          {
+            "x": 30.5,
+            "y": 90.8,
+            "r": 2.6,
+            "color": [
+              0.721,
+              0.147,
+              0.024
+            ],
+            "s": 0.503,
+            "dir": "up"
+          },
+          {
+            "x": 5.5,
+            "y": 69.8,
+            "r": 2.5,
+            "color": [
+              0.65,
+              0.124,
+              0.015
+            ],
+            "s": 0.469,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 3,
+      "file": "tile_03.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 4,
+      "file": "tile_04.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 5,
+      "file": "tile_05.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 6,
+      "file": "tile_06.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 7,
+      "file": "tile_07.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 8,
+      "file": "tile_08.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 9,
+      "file": "tile_09.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 10,
+      "file": "tile_10.png",
+      "width": 64,
+      "height": 128,
+      "emission": {
+        "material": "black_mountain",
+        "color": [
+          1.0,
+          0.45,
+          0.15
+        ],
+        "anim": "flicker",
+        "sources": [
+          {
+            "x": 11.2,
+            "y": 68.6,
+            "r": 5.7,
+            "color": [
+              0.231,
+              0.116,
+              0.068
+            ],
+            "s": 0.404,
+            "dir": "up"
+          },
+          {
+            "x": 18.1,
+            "y": 59.7,
+            "r": 2.0,
+            "color": [
+              0.189,
+              0.097,
+              0.076
+            ],
+            "s": 0.378,
+            "dir": "up"
+          },
+          {
+            "x": 32.3,
+            "y": 45.7,
+            "r": 2.0,
+            "color": [
+              0.244,
+              0.147,
+              0.089
+            ],
+            "s": 0.435,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
+    },
+    {
+      "index": 11,
+      "file": "tile_11.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 12,
+      "file": "tile_12.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 13,
+      "file": "tile_13.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 14,
+      "file": "tile_14.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 15,
+      "file": "tile_15.png",
+      "width": 64,
+      "height": 128
+    }
+  ],
+  "emissive_tiles": 3,
+  "generated_at": "2026-07-06T17:36:44+00:00",
+  "processing": {
+    "neutralize_outline": true,
+    "harmonize": {
+      "hue_strength": 0.9,
+      "sat_strength": 0.7,
+      "v_strength": 0.9
+    },
+    "harmonize_refs": [
+      "black_mountain"
+    ],
+    "harmonized": 1,
+    "fade_outline": {
+      "enabled": true,
+      "darkness_thresh": 60,
+      "soft_lum": 120,
+      "run_min": 9,
+      "thick_max": 3,
+      "strength": 0.6,
+      "rim_strength": 0.4,
+      "min_alpha": 0,
+      "seam_strength": 0.4,
+      "seam_jump": 70,
+      "seam_bright": 130,
+      "seam_nbr_sat": 90,
+      "seam_rows": 1,
+      "thin_lum_light": 120,
+      "light_value": 180,
+      "protect_dark_material": true
+    }
+  }
+}

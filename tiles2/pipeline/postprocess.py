@@ -29,14 +29,31 @@ import normalize
 import tilemeta
 
 DEFAULTS = {"neutralize_outline": True, "darkness_thresh": 60,
-            "harmonize": {"hue_strength": 0.9, "sat_strength": 0.6, "v_strength": 0.65}}
+            "harmonize": {"hue_strength": 0.9, "sat_strength": 0.6, "v_strength": 0.65},
+            "fade_outline": {"enabled": False, "darkness_thresh": 60, "soft_lum": 120,
+                             "run_min": 9, "thick_max": 3, "strength": 0.6,
+                             "rim_strength": 0.4, "min_alpha": 0,
+                             "seam_strength": 0.0, "seam_jump": 70, "seam_bright": 130,
+                             "seam_nbr_sat": 90, "seam_rows": 1,
+                             "thin_lum_light": 120, "light_value": 180,
+                             "protect_dark_material": True}}
 
 
 def _pp_cfg(cfg):
     pp = (cfg.get("postprocess") or {}) if cfg else {}
     out = {**DEFAULTS, **pp}
     out["harmonize"] = {**DEFAULTS["harmonize"], **(pp.get("harmonize") or {})}
+    out["fade_outline"] = {**DEFAULTS["fade_outline"], **(pp.get("fade_outline") or {})}
     return out
+
+
+def _fade_kwargs(fo):
+    """Args for normalize.fade_outline_alpha from the fade_outline config (minus enabled)."""
+    return {k: fo[k] for k in ("darkness_thresh", "soft_lum", "run_min", "thick_max",
+                               "strength", "rim_strength", "min_alpha",
+                               "seam_strength", "seam_jump", "seam_bright", "seam_nbr_sat",
+                               "seam_rows", "thin_lum_light", "light_value",
+                               "protect_dark_material")}
 
 
 def _first_base_sheet(gid):
@@ -90,6 +107,12 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
     ctx = {"ground_type": gid, "transition_to": other}
     raw_by_file = {t["file"]: t for t in (req.get("tiles") or [])}
 
+    fo = pp["fade_outline"]
+    # guard on the DARKER of the two materials so a transition INTO black_mountain
+    # still trips the dark-material protection
+    fade_mt = min([t for t in (t_from, t_to) if t],
+                  key=lambda x: x.get("value", 255), default=None)
+
     tiles_meta = []
     for fn in common.tile_files(sdir):
         im = Image.open(os.path.join(sdir, fn)).convert("RGBA")
@@ -98,6 +121,8 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
         im = normalize.harmonize(im, t_from, hs["hue_strength"], hs["sat_strength"], hs["v_strength"])
         if t_to:
             im = normalize.harmonize(im, t_to, hs["hue_strength"], hs["sat_strength"], hs["v_strength"])
+        if fo.get("enabled"):                          # fade AFTER harmonize (which restores alpha)
+            im = normalize.fade_outline_alpha(im, material_target=fade_mt, **_fade_kwargs(fo))
         im.save(os.path.join(dest, fn))
         # Per-tile map-builder metadata computed on the FINAL (harmonised) image.
         entry = dict(raw_by_file.get(fn, {"file": fn}))
@@ -105,17 +130,28 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
         tiles_meta.append(entry)
     n = len(tiles_meta)
 
+    # Metadata is part of DONE: a base/transition tile isn't finished without its
+    # per-tile edges + composition (maps2's auto-tiler consumes these; if they're
+    # missing it has to re-derive from pixels). Surface any gap loudly rather than
+    # committing a half-described sheet.
+    complete = sum(1 for t in tiles_meta if "edges" in t and "composition" in t)
+    if complete < n:
+        print(f"  ! INCOMPLETE metadata {gid}/{sheet}: {complete}/{n} tiles have "
+              f"edges+composition (mtargets={list(mtargets)}) — not done without it")
+
     dest_meta = {
         "schema": "tiles2/sheet@1",
         "sheet": sheet, "ground_type": gid, "kind": kind, "transition_to": other,
         "tile_id": req.get("tile_id"), "settings": req.get("settings"),
-        "count": n, "tiles": tiles_meta, "generated_at": req.get("generated_at"),
+        "count": n, "metadata_complete": complete == n,
+        "tiles": tiles_meta, "generated_at": req.get("generated_at"),
         "processing": {
             "source_raw": os.path.relpath(sdir, common.type_dir(gid)),
             "neutralize_outline": pp["neutralize_outline"],
             "harmonize": hs,
             "harmonized_from": bool(t_from),
             "harmonized_to": bool(t_to),
+            "fade_outline": fo if fo.get("enabled") else False,
         },
     }
     with open(os.path.join(dest, "metadata.json"), "w") as f:

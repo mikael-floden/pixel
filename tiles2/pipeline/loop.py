@@ -26,6 +26,7 @@ import subprocess
 import time
 
 import common
+import emission
 import generate
 import postprocess
 import sync
@@ -48,12 +49,14 @@ def pair_count(a, b):
             + len(common.list_raw_sheets(b, kind="transition", other=a)))
 
 
-def next_unit(cfg, bases_only=False, skip=None):
+def next_unit(cfg, bases_only=False, skip=None, only=None):
     """Complete each type before the next: its base sheets, then a transition to
     EVERY earlier type — so map builders always have every border (full pairwise
     mesh). Each new type owns the transitions toward all types before it; a pair
     is skipped if already covered in either direction. `bases_only` defers all
-    transitions. `skip` holds unit descriptions that failed this run — they're
+    transitions. `only` restricts generation to a single type's OWN units (its
+    base + its transitions to earlier base-complete types), leaving every other
+    type untouched. `skip` holds unit descriptions that failed this run — they're
     passed over so one flaky job doesn't stall everything else. Returns
     ('base', gt) / ('transition', frm, to) / None."""
     skip = skip or set()
@@ -61,6 +64,8 @@ def next_unit(cfg, bases_only=False, skip=None):
     order = cfg["ground_types"]
     for i, gt in enumerate(order):
         gid = gt["id"]
+        if only and gid != only:
+            continue                           # only generate the target type's units
         if len(common.list_raw_sheets(gid, kind="base")) < tgt["base_sheets_per_type"]:
             unit = ("base", gt)
             if _describe(unit) not in skip:
@@ -105,11 +110,11 @@ def commit_push(message, push=True):
     return True
 
 
-def advance(client, cfg, unit, push=True):
+def advance(client, cfg, unit, push=True, attempt=0):
     if unit[0] == "base":
-        req = generate.generate_base(client, cfg, unit[1])
+        req = generate.generate_base(client, cfg, unit[1], attempt=attempt)
     else:
-        req = generate.generate_transition(client, cfg, unit[1], unit[2])
+        req = generate.generate_transition(client, cfg, unit[1], unit[2], attempt=attempt)
     postprocess.process_type(req["ground_type"], cfg)
     desc = f"tiles2: {_describe(unit)} — {req['count']} tiles ({req['sheet']})"
     commit_push(desc, push=push)
@@ -120,6 +125,9 @@ def advance(client, cfg, unit, push=True):
 def main():
     ap = argparse.ArgumentParser(description="Run the tiles2 loop.")
     ap.add_argument("--max-units", type=int, default=0)
+    ap.add_argument("--max-retries", type=int, default=3,
+                    help="retry a unit that hits a PixelLab stall (0.49 hang) with a "
+                         "fresh seed this many times before giving up (default 3)")
     ap.add_argument("--max-minutes", type=float, default=0)
     ap.add_argument("--min-balance", type=int, default=None)
     ap.add_argument("--once", action="store_true")
@@ -128,17 +136,22 @@ def main():
     ap.add_argument("--through", metavar="TYPE_ID", default=None,
                     help="only generate up to and including this ground type (its base "
                          "plus its transitions to earlier types); skip every type after it")
+    ap.add_argument("--only", metavar="TYPE_ID", default=None,
+                    help="generate ONLY this type's base + its transitions to earlier "
+                         "base-complete types; leave every other type untouched")
     ap.add_argument("--dry-run", action="store_true", help="print the next units; no API calls")
     args = ap.parse_args()
 
     cfg = common.load_config()
+    ids = [g["id"] for g in cfg["ground_types"]]
     if args.through:
-        ids = [g["id"] for g in cfg["ground_types"]]
         if args.through not in ids:
             ap.error(f"--through '{args.through}' is not a ground type; choose from {ids}")
         cfg["ground_types"] = cfg["ground_types"][:ids.index(args.through) + 1]
         print(f"limiting to types through '{args.through}': "
               f"{[g['id'] for g in cfg['ground_types']]}")
+    if args.only and args.only not in ids:
+        ap.error(f"--only '{args.only}' is not a ground type; choose from {ids}")
 
     if args.dry_run:
         # Show what the loop WOULD do, without generating (safe to run anytime).
@@ -153,7 +166,7 @@ def main():
                 cov = pair_count(gid, u["id"])
                 print(f"      -> {u['id']}: {cov}/{tgt['transition_sheets_per_pair']}"
                       + ("" if base_complete(cfg, u["id"]) else "  (waiting on its base)"))
-        nxt = next_unit(cfg, args.bases_only)
+        nxt = next_unit(cfg, args.bases_only, only=args.only)
         print("next unit:", _describe(nxt) if nxt else "== all targets met ==")
         return
 
@@ -177,22 +190,32 @@ def main():
         commit_push(f"tiles2: sync — drop {len(removed)} sheet(s) deleted in PixelLab",
                     push=not args.no_push)
 
+    fails = {}                     # unit description -> failures so far this run
     while True:
         try:
             client.ensure_budget(min_balance, min_usd)
         except BudgetExhausted as e:
             print(f"stopping: {e}"); break
-        unit = next_unit(cfg, args.bases_only, skip)
+        unit = next_unit(cfg, args.bases_only, skip, only=args.only)
         if unit is None:
             print("== all targets met ==" if not skip else
-                  f"== nothing left except {len(skip)} skipped/failed unit(s) =="); break
+                  f"== gave up on {len(skip)} unit(s) after {args.max_retries} tries each =="); break
+        desc = _describe(unit)
         try:
-            advance(client, cfg, unit, push=not args.no_push)
+            advance(client, cfg, unit, push=not args.no_push, attempt=fails.get(desc, 0))
         except BudgetExhausted as e:
             print(f"stopping: {e}"); break
         except PixelLabError as e:
-            print(f"  ! {_describe(unit)} failed: {e}; skipping for this run")
-            skip.add(_describe(unit))
+            # PixelLab jobs sometimes stall at progress~0.49 server-side (transient).
+            # Re-queue the unit (a fresh seed is derived per attempt) up to
+            # --max-retries before giving up, so one run fills the gaps.
+            fails[desc] = fails.get(desc, 0) + 1
+            if fails[desc] >= args.max_retries:
+                print(f"  ! {desc} failed {fails[desc]}x ({e}); giving up for this run")
+                skip.add(desc)
+            else:
+                print(f"  ~ {desc} stalled (try {fails[desc]}/{args.max_retries}); "
+                      f"retrying with a fresh seed")
             continue
         units += 1
         if args.once or (args.max_units and units >= args.max_units):
@@ -200,6 +223,11 @@ def main():
         if args.max_minutes and (time.monotonic() - start) / 60 >= args.max_minutes:
             break
     print(f"done — {units} unit(s)")
+    if units or removed:                          # art changed -> keep emission.json in sync
+        emission.build()
+        if commit_push("tiles2: auto-refresh emission.json after reroll",
+                       push=not args.no_push):
+            print("  + refreshed emission.json")
 
 
 if __name__ == "__main__":

@@ -53,12 +53,16 @@ def _settings(cfg):
     }
 
 
-def _generate(client, cfg, gt, kind, prompt_fn, other=None):
+def _generate(client, cfg, gt, kind, prompt_fn, other=None, attempt=0):
     gid = gt["id"]
     common.ensure_type_meta(gt, cfg)
     idx = len(common.list_raw_sheets(gid, kind=kind, other=other))
     prompt = prompt_fn(idx)
-    seed = common._seed(gid, kind, other or "", idx)
+    # attempt>0 salts the seed so a re-run after a PixelLab stall gets a FRESH
+    # generation (idx is unchanged since the stalled sheet was never written, so an
+    # unsalted seed would just re-hit the same stall). attempt==0 is unchanged, so
+    # the normal path stays reproducible.
+    seed = common._seed(gid, kind, other or "", idx, *(["retry", attempt] if attempt else []))
     slug = common.sheet_slug(kind, seed, other=other)
     t = cfg["tile"]
     tiles, tile_id = client.create_tiles(
@@ -93,10 +97,12 @@ def _generate(client, cfg, gt, kind, prompt_fn, other=None):
     return req
 
 
-def generate_base(client, cfg, gt):
-    return _generate(client, cfg, gt, "base", lambda idx: build_base_prompt(cfg, gt, idx))
+def generate_base(client, cfg, gt, attempt=0):
+    return _generate(client, cfg, gt, "base",
+                     lambda idx: build_base_prompt(cfg, gt, idx), attempt=attempt)
 
 
-def generate_transition(client, cfg, frm, to):
+def generate_transition(client, cfg, frm, to, attempt=0):
     return _generate(client, cfg, frm, "transition",
-                     lambda idx: build_transition_prompt(cfg, frm, to, idx), other=to["id"])
+                     lambda idx: build_transition_prompt(cfg, frm, to, idx),
+                     other=to["id"], attempt=attempt)

@@ -3,9 +3,10 @@ node_modules/
 dist/
 *.tsbuildinfo
 
-# Generated assets
+# Generated assets (rebuilt by npm run manifest)
 client/public/characters.json
 client/public/tile-bases.json
+client/public/worlds.json
 
 # Throwaway headless-probe scripts (session scratch; never ship)
 scripts/_tmp-*.mjs

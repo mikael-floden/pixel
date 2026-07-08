@@ -1,26 +1,32 @@
-import { CharacterDef, Manifest, stripUrl } from "./manifest";
+import { CharacterDef, Manifest, frameUrl } from "./manifest";
+import { WorldInfo, DEFAULT_WORLD } from "./maps";
 
 const NAMES = ["Ari", "Bex", "Cyl", "Dax", "Eir", "Fen", "Gio", "Hana", "Ivo", "Juno", "Kira", "Lio"];
 
 export interface JoinChoice {
+  world: string;
   character: CharacterDef;
   name: string;
 }
 
 /**
- * Show a pre-join screen: pick any generated character + enter a name.
- * Resolves once the player commits, then the caller starts the game.
+ * Show a pre-join screen: pick a WORLD (any playable maps2 world) + a character
+ * + a name. `worlds` empty ⇒ no world picker (demo mode fixes the world);
+ * resolves once the player commits, then the caller starts the game.
  */
-export function chooseCharacter(manifest: Manifest): Promise<JoinChoice> {
+export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): Promise<JoinChoice> {
   return new Promise((resolve) => {
     const chars = manifest.characters;
     let selected = Math.floor(Math.random() * chars.length);
+    let selectedWorld = 0; // index into `worlds`
 
+    const showWorlds = worlds.length > 0;
     const overlay = el("div", "ml-overlay");
     overlay.innerHTML = `
       <div class="ml-panel">
         <h1 class="ml-title">Nangijala</h1>
-        <p class="ml-sub">Choose your character and step into the shared world.</p>
+        <p class="ml-sub">${showWorlds ? "Choose a world and a character, then step in." : "Choose your character and step into the shared world."}</p>
+        ${showWorlds ? '<div class="ml-section">World</div><div class="ml-worlds" id="ml-worlds"></div><div class="ml-section">Character</div>' : ""}
         <div class="ml-grid" id="ml-grid"></div>
         <div class="ml-row">
           <input id="ml-name" class="ml-name" maxlength="24" placeholder="your name"
@@ -31,6 +37,32 @@ export function chooseCharacter(manifest: Manifest): Promise<JoinChoice> {
       </div>`;
     document.body.appendChild(overlay);
     injectStyles();
+
+    // World picker: one chip per playable world (thumbnail + label).
+    const worldChips: HTMLElement[] = [];
+    if (showWorlds) {
+      const wrap = overlay.querySelector("#ml-worlds") as HTMLElement;
+      worlds.forEach((w, i) => {
+        const chip = el("button", "ml-world");
+        if (w.preview) {
+          const img = el("img", "ml-world-img") as HTMLImageElement;
+          img.src = `/assets/${w.preview.replace(/^\/+/, "")}`;
+          img.alt = w.label;
+          chip.appendChild(img);
+        }
+        const span = el("span", "");
+        span.textContent = w.label;
+        chip.appendChild(span);
+        chip.addEventListener("click", () => selectWorld(i));
+        wrap.appendChild(chip);
+        worldChips.push(chip);
+      });
+      function selectWorld(i: number) {
+        selectedWorld = i;
+        worldChips.forEach((c, j) => c.classList.toggle("sel", j === i));
+      }
+      selectWorld(0);
+    }
 
     const grid = overlay.querySelector("#ml-grid") as HTMLElement;
     const nameInput = overlay.querySelector("#ml-name") as HTMLInputElement;
@@ -63,8 +95,9 @@ export function chooseCharacter(manifest: Manifest): Promise<JoinChoice> {
 
     function commit() {
       const name = (nameInput.value.trim() || NAMES[selected % NAMES.length]).slice(0, 24);
+      const world = showWorlds ? worlds[selectedWorld].name : DEFAULT_WORLD;
       overlay.remove();
-      resolve({ character: chars[selected], name });
+      resolve({ world, character: chars[selected], name });
     }
 
     (overlay.querySelector("#ml-enter") as HTMLElement).addEventListener("click", commit);
@@ -80,6 +113,9 @@ export function chooseCharacter(manifest: Manifest): Promise<JoinChoice> {
       count: () => chars.length,
       pick: (i: number) => select(i),
       selected: () => selected,
+      worlds: () => worlds.map((w) => w.name),
+      pickWorld: (i: number) => worldChips[i]?.click(),
+      selectedWorld: () => (showWorlds ? worlds[selectedWorld].name : DEFAULT_WORLD),
       commit,
     };
   });
@@ -111,31 +147,31 @@ function el(tag: string, cls: string): HTMLElement {
 const IDLE_FPS = 6; // matches the in-game idle frame rate (WorldScene ANIM_FPS)
 
 /**
- * A preview showing the character exactly as in game: the idle-south strip at
- * native 1:1 pixel scale, animated by stepping background-position (same FPS
- * as in-game idle). Falls back to the portrait (e.g. the built-in Wanderer,
- * whose art is procedural and has no strips).
+ * A preview showing the character as in game: the idle-south frames cycled at
+ * the in-game idle FPS. characters2 stores animations as frame folders, so we
+ * swap an <img>'s src per frame. Falls back to the portrait (base/south.png)
+ * when there are no idle frames (e.g. the built-in Wanderer).
  */
 function spritePreview(c: CharacterDef, label: string): HTMLElement {
+  const img = el("img", "ml-portrait") as HTMLImageElement;
+  img.alt = label;
   const frames = c.animations.idle?.south ?? 0;
-  if (!frames) {
-    const img = el("img", "ml-portrait") as HTMLImageElement;
+  if (frames > 1) {
+    const urls = Array.from({ length: frames }, (_, i) => frameUrl(c, "idle", "south", i));
+    urls.forEach((u) => {
+      const p = new Image();
+      p.src = u; // warm the cache so swaps don't flicker
+    });
+    let n = 0;
+    img.src = urls[0];
+    setInterval(() => {
+      n = (n + 1) % frames;
+      img.src = urls[n];
+    }, 1000 / IDLE_FPS);
+  } else {
     img.src = c.portrait;
-    img.alt = label;
-    return img;
   }
-  const sprite = el("div", "ml-sprite");
-  sprite.setAttribute("role", "img");
-  sprite.setAttribute("aria-label", label);
-  sprite.style.width = `${c.frameW}px`;
-  sprite.style.height = `${c.frameH}px`;
-  sprite.style.backgroundImage = `url("${stripUrl(c, "idle", "south")}")`;
-  // Step through the strip; steps(N) holds each frame like the game does.
-  sprite.animate(
-    [{ backgroundPosition: "0px 0px" }, { backgroundPosition: `-${frames * c.frameW}px 0px` }],
-    { duration: (frames / IDLE_FPS) * 1000, iterations: Infinity, easing: `steps(${frames}, end)` },
-  );
-  return sprite;
+  return img;
 }
 
 let stylesInjected = false;
@@ -148,9 +184,15 @@ function injectStyles() {
   .ml-panel{width:min(720px,92vw);max-height:92vh;overflow:auto;padding:28px;border-radius:14px;
     background:#12121ccc;box-shadow:0 10px 40px #0008;text-align:center}
   .ml-title{margin:0;font-size:44px;letter-spacing:2px;color:#cfe0ff}
-  .ml-sub{margin:6px 0 20px;color:#9aa0bf}
+  .ml-sub{margin:6px 0 16px;color:#9aa0bf}
+  .ml-section{text-align:left;margin:14px 2px 6px;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#8890b3}
+  .ml-worlds{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start;max-height:24vh;overflow:auto;padding:2px}
+  .ml-world{display:flex;align-items:center;gap:8px;padding:6px 10px 6px 6px;cursor:pointer;
+    background:#1e1e30;border:2px solid transparent;border-radius:10px;color:#c7cbe6;font-size:13px}
+  .ml-world-img{width:34px;height:34px;object-fit:cover;image-rendering:auto;border-radius:6px;background:#0f0f1c;flex:none}
+  .ml-world.sel{border-color:#ffd678;background:#2a2a44}
   .ml-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px;
-    max-height:52vh;overflow:auto;padding:4px}
+    max-height:44vh;overflow:auto;padding:4px}
   .ml-cell{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;cursor:pointer;
     background:#1e1e30;border:2px solid transparent;border-radius:10px;color:#c7cbe6;font-size:12px}
   .ml-sprite{image-rendering:pixelated;background-repeat:no-repeat;flex:none}

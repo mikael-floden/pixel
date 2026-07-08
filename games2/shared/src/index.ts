@@ -4,11 +4,17 @@
  */
 
 // --- World -------------------------------------------------------------------
-// World units: 32 per map cell, sized to the current bigworld grid (512×448).
-// If the maps agent changes the world dimensions, update these to w*32 / h*32.
+// World units: a FIXED 32 per map cell (CELL_WU). A world's extent is therefore
+// grid×CELL_WU — derived per-world (worldWidthOf/worldHeightOf), NOT a global
+// constant. Every grid↔world conversion (surfaceAtWorld, findSpawn, the client's
+// project()) divides by CELL_WU, so worlds of any dimensions render + collide
+// correctly and the server can host several differently-sized worlds at once.
+// WORLD_WIDTH/HEIGHT survive only as the DEFAULT extent for the open-world
+// fallback (no map loaded) and the movement tests — a nominal 160×160.
 export const CELL_WU = 32;
-export const WORLD_WIDTH = 512 * CELL_WU;
-export const WORLD_HEIGHT = 448 * CELL_WU;
+export const WORLD_GRID = 160;
+export const WORLD_WIDTH = WORLD_GRID * CELL_WU;
+export const WORLD_HEIGHT = WORLD_GRID * CELL_WU;
 
 // Movement speeds in world units per second.
 // Retuned for CELL_WU=32 (screen px/wu grew ~13% vs the old 44×44 world).
@@ -189,8 +195,24 @@ export function screenToWorldVector(ix: number, iy: number): { x: number; y: num
   const wy = iy / ISO_DY - ix / ISO_DX;
   const len = Math.hypot(wx, wy);
   if (len < 1e-9) return { x: 0, y: 0 };
-  const ux = wx / len;
-  const uy = wy / len;
+  let ux = wx / len;
+  let uy = wy / len;
+  // Grid-axis lock: a DIAGONAL press (both a horizontal AND a vertical key) is
+  // meant to run straight ALONG a tile row/column — on the iso screen the two
+  // grid axes ARE the diagonals (down-left/up-right = one axis, down-right/
+  // up-left = the other). A raw screen-45° vector drifts a few degrees off that
+  // line, so a bridge/corridor slowly slips sideways. Snap the world direction
+  // to the nearest grid axis so those runs track true. Single-key presses are
+  // untouched — they keep their screen-cardinal (up/down/left/right) move.
+  if (ix !== 0 && iy !== 0) {
+    if (Math.abs(ux) >= Math.abs(uy)) {
+      ux = Math.sign(ux);
+      uy = 0;
+    } else {
+      ux = 0;
+      uy = Math.sign(uy);
+    }
+  }
   // Projected screen-speed factor of this unit world vector.
   const screenLen = Math.hypot((ux - uy) * ISO_DX, (ux + uy) * ISO_DY);
   const k = SCREEN_SPEED_REF / screenLen;
@@ -224,7 +246,11 @@ export function stepMovement(
   blocked?: BlockedFn,
   speedScale = 1,
   screenInput = false,
-  drops?: DropFn,
+  // The world's extent in world units (grid×CELL_WU). Defaults to the legacy
+  // constant so tests + the open-world fallback keep working; the server and
+  // client pass the LOADED world's size so any-sized worlds stay in bounds.
+  worldW: number = WORLD_WIDTH,
+  worldH: number = WORLD_HEIGHT,
 ): MoveResult {
   const len = Math.hypot(ax, ay);
   if (len < 1e-6) return { x, y, dir: null, moving: false };
@@ -240,43 +266,33 @@ export function stepMovement(
     ny = ay / len;
   }
   const speed = (running ? RUN_SPEED : WALK_SPEED) * speedScale;
-  const tx = clamp(x + nx * speed * dt, SPAWN_MARGIN, WORLD_WIDTH - SPAWN_MARGIN);
-  const ty = clamp(y + ny * speed * dt, SPAWN_MARGIN, WORLD_HEIGHT - SPAWN_MARGIN);
+  const tx = clamp(x + nx * speed * dt, SPAWN_MARGIN, worldW - SPAWN_MARGIN);
+  const ty = clamp(y + ny * speed * dt, SPAWN_MARGIN, worldH - SPAWN_MARGIN);
   let rx = x;
   let ry = y;
   // Resolve each axis independently: keep the X move if its destination is
   // enterable, then the Y move from the (possibly advanced) X — wall-sliding.
   // Collision probes the LEADING EDGE of the feet (PLAYER_RADIUS ahead), not
   // the centre point, so sprites stop before visually entering a tile block.
-  // Symmetrically, when the leading edge reaches a DROP the fall is committed
-  // (the anchor snaps past the rim) so feet never rest overhanging a ledge.
   // Each axis probes its leading edge at BOTH lateral corners: a single
   // centre probe let the mover slide ALONG a block's boundary and park with
   // its centre exactly on the edge — half the sprite visually inside the
   // block ("the bottom layer has no collision", playtester at a demo column).
+  //
+  // Dropping DOWN a ledge is intentionally NOT special-cased here: the mover
+  // just walks onto the lower cell (canEnter always permits a descent). Feet
+  // can therefore rest right at — or a hair past — the rim (the body billboard
+  // overhangs the edge), and the visual FALL to the lower ground is animated
+  // client-side (WorldScene) instead of teleporting the anchor past the rim.
   const SIDE = PLAYER_RADIUS * 0.75;
   const px = tx + Math.sign(tx - x) * PLAYER_RADIUS;
   const blockedX =
     blocked && (blocked(px, y - SIDE, x, y) || blocked(px, y + SIDE, x, y));
-  if (!blockedX) {
-    rx = tx;
-    if (drops && drops(px, y, tx, y)) {
-      // Feet touched a drop edge → step off, landing a full foot-radius clear
-      // of the cliff base so the sprite doesn't stand "in" the slope face.
-      const fx = px + Math.sign(tx - x) * PLAYER_RADIUS;
-      rx = !blocked || !blocked(fx, y, x, y) ? fx : px;
-    }
-  }
+  if (!blockedX) rx = tx;
   const py = ty + Math.sign(ty - y) * PLAYER_RADIUS;
   const blockedY =
     blocked && (blocked(rx - SIDE, py, rx, y) || blocked(rx + SIDE, py, rx, y));
-  if (!blockedY) {
-    ry = ty;
-    if (drops && drops(rx, py, rx, ty)) {
-      const fy = py + Math.sign(ty - y) * PLAYER_RADIUS;
-      ry = !blocked || !blocked(rx, fy, rx, ty) ? fy : py;
-    }
-  }
+  if (!blockedY) ry = ty;
   return { x: rx, y: ry, dir, moving: true };
 }
 
@@ -373,6 +389,17 @@ export const SURFACES: Record<string, Surface> = {
   obelisk_v2: solid,
   watchtower: solid,
   cactus: solid,
+  // tiles2 materials (maps2 worlds) — terrain the player stands on (elevation
+  // drives walls, not solidity); clear_water is swimmable like `water`.
+  clear_water: { standable: false, swimmable: true, speed: 0.55, sound: "water" },
+  saturated_grass: ground(1.0, "grass"),
+  regular_snow: ground(0.7, "snow"),
+  light_sand: ground(0.8, "sand"),
+  lightdark_dirt: ground(0.95, "dirt"),
+  stone_mountain: ground(1.0, "stone"),
+  black_mountain: ground(1.0, "stone"),
+  crystal_ice: ground(1.15, "ice"),
+  wooden_balcony: ground(1.0, "wood"),
 };
 export const DEFAULT_SURFACE: Surface = ground(1.0, "grass");
 const ROAD_SURFACE: Surface = ground(1.2, "stone");
@@ -403,6 +430,45 @@ export const JUMP_MS = 500; // active jump window (climb allowance + hop visual)
 export const JUMP_COOLDOWN_MS = 180; // after landing, before you can jump again
 export const JUMP_SPEED_FACTOR = 0.6; // slower ground travel while airborne (taller, not farther)
 
+// --- Cliff falls (client visual; elevation in px) -----------------------------
+// Stepping DOWN a ledge is a gravity fall, not a teleport. The client renderer
+// keeps an elevation lift (px) per avatar and integrates it toward the cell's
+// level each frame; this pure step encodes the feel so it can be unit-tested.
+export const FALL_GRAVITY = 1400; // px/s²: a 1-level (≈16px) drop lands in ~0.15s
+export const FALL_TRIGGER_FRAC = 0.75; // down-steps beyond this × level height fall
+export const STEP_EASE_RATE = 14; // gentle down-steps (stairs) ease at this rate
+
+export interface FallState {
+  elev: number; // current elevation lift in px
+  fallV: number; // downward velocity (px/s), only while falling
+  falling: boolean;
+}
+
+/**
+ * Integrate an avatar's elevation lift one frame toward `target` (cell level ×
+ * level-height px). Rules, matched to `makeDrops`:
+ *  • stepping UP (or level) snaps — the jump hop already sells the up arc, and
+ *    easing up would sink the sprite into the step;
+ *  • a gentle down-step (≤ FALL_TRIGGER_FRAC of a level: stairs/ramps) eases
+ *    smoothly;
+ *  • a real CLIFF down-step falls under gravity until it reaches the ground.
+ * Pure (no scene state) so the fall feel is deterministic + unit-tested.
+ */
+export function integrateFall(s: FallState, target: number, dt: number, lh: number): FallState {
+  const trigger = lh * FALL_TRIGGER_FRAC;
+  const diff = target - s.elev; // + up, − down
+  if (diff >= -0.01) return { elev: target, fallV: 0, falling: false };
+  if (-diff <= trigger && !s.falling) {
+    let elev = s.elev + diff * Math.min(1, dt * STEP_EASE_RATE);
+    if (elev - target < 0.5) elev = target;
+    return { elev, fallV: 0, falling: false };
+  }
+  const fallV = s.fallV + FALL_GRAVITY * dt;
+  const elev = s.elev - fallV * dt;
+  if (elev <= target) return { elev: target, fallV: 0, falling: false };
+  return { elev, fallV, falling: true };
+}
+
 // Swimming: entering water starts a stamina drain; at zero you drown.
 export const MAX_STAMINA = 100;
 export const SWIM_DRAIN = 20; // stamina per second while swimming
@@ -420,6 +486,10 @@ export interface WorldCell {
   l: number;
   r?: string;
   path?: string;
+  // maps2 world@1: draw this cell's tile HORIZONTALLY FLIPPED. The auto-tiler
+  // places some transition tiles as mirrors; without honouring it, those tiles
+  // face the wrong way at material borders.
+  flip?: boolean;
 }
 
 export interface ParsedWorld {
@@ -434,6 +504,16 @@ export interface ParsedWorld {
    * which draws faces with the material's plain tile so terraces read as one
    * wall, not a patchwork of the top's transition tiles. */
   faceTiles?: Record<string, string>;
+  /** maps2 world@1: decorative objects placed on cells (grass tufts, rocks,
+   * …). Each is a TALL 64×128 tile PNG standing on its cell's ground. */
+  props?: WorldProp[];
+}
+
+/** A placed decoration: its cell (col,row) + tall (64×128) tile PNG path. */
+export interface WorldProp {
+  col: number;
+  row: number;
+  path: string;
 }
 
 /**
@@ -482,25 +562,43 @@ export function parseWorld(json: any): ParsedWorld | null {
   return null;
 }
 
-/** Parse maps2 / ringworld@1 into the shared ParsedWorld model. */
+/** Parse a maps2 world (schema pixel-maps2/world@1, and the older ringworld@1)
+ * into the shared ParsedWorld model. world@1 changed a few things: it carries a
+ * `size` {w,h} so worlds can be NON-SQUARE, ships materials as an id→name ARRAY
+ * (was a `matids` name→id map), and puts `spawn` at the top level (was
+ * `meta.spawn`). Cells still bake explicit tile PNG paths in `top`.
+ *
+ * We read `mat`/`level`/`top`/`mirror`/`spawn`/`size`. We deliberately IGNORE
+ * the world's `collision` field: walkability is the GAME ENGINE's job, derived
+ * from elevation (level steps) + SURFACES (per-material standable/swimmable) —
+ * see buildTerrainGrid/canEnter. The maps agent owns world DATA; the engine owns
+ * what it MEANS for movement. `props`/`geometry`/`water` aren't consumed yet. */
 function parseRingworld(json: any): ParsedWorld {
   const top: number[][] = json.top;
   const level: number[][] = json.level ?? [];
   const mat: number[][] = json.mat ?? [];
   const paths: string[] = json.paths ?? [];
-  const n = top.length;
-  const idToMat: string[] = [];
-  for (const [name, id] of Object.entries(json.matids ?? {})) idToMat[id as number] = name;
+  const mirror: number[][] = json.mirror ?? [];
+  // Non-square worlds: prefer the explicit size; fall back to the grid shape.
+  const height = json.size?.h ?? top.length;
+  const width = json.size?.w ?? top[0]?.length ?? height;
+  // Material id → name. world@1 = `materials` array (index is the id);
+  // ringworld@1 = `matids` name→id map.
+  let idToMat: string[] = [];
+  if (Array.isArray(json.materials)) {
+    idToMat = json.materials as string[];
+  } else {
+    for (const [name, id] of Object.entries(json.matids ?? {})) idToMat[id as number] = name;
+  }
   const rows: WorldCell[][] = [];
   const faceTiles: Record<string, string> = {};
-  for (let r = 0; r < n; r++) {
+  for (let r = 0; r < height; r++) {
     const row: WorldCell[] = [];
-    const w = top[r]?.length ?? n;
-    for (let c = 0; c < w; c++) {
+    for (let c = 0; c < width; c++) {
       const m = idToMat[mat[r]?.[c] ?? 0] ?? "";
-      const ti = top[r][c];
+      const ti = top[r]?.[c] ?? -1;
       const path = ti >= 0 ? paths[ti] : undefined;
-      row.push({ t: m, v: 0, l: level[r]?.[c] ?? 0, path });
+      row.push({ t: m, v: 0, l: level[r]?.[c] ?? 0, path, flip: !!mirror[r]?.[c] });
       // Canonical PLAIN base tile per material for cliff faces: a pure cell's
       // top tile lives under .../base/ (only borders use .../transitions/), so
       // the first base-folder tile we see for a material is a plain face tile.
@@ -510,8 +608,15 @@ function parseRingworld(json: any): ParsedWorld {
     }
     rows.push(row);
   }
-  const spawn = Array.isArray(json.meta?.spawn) ? (json.meta.spawn as [number, number]) : undefined;
-  return { width: n, height: n, rows, pois: [], spawn, faceTiles };
+  const sp = json.spawn ?? json.meta?.spawn;
+  const spawn = Array.isArray(sp) ? (sp as [number, number]) : undefined;
+  // Props: {x,y,tile} → place the tall tile paths[tile] on cell (x,y).
+  const props: WorldProp[] = Array.isArray(json.props)
+    ? json.props
+        .map((p: any) => ({ col: p.x, row: p.y, path: paths[p.tile] }))
+        .filter((p: WorldProp) => !!p.path)
+    : [];
+  return { width, height, rows, pois: [], spawn, faceTiles, props };
 }
 
 /**
@@ -657,15 +762,22 @@ export interface TerrainGrid {
   height: number;
   level: number[];
   type: string[];
+  /** Cells made impassable by a solid object standing on them (a maps2 prop).
+   * The terrain type stays whatever ground it is (so lighting/surfaces are
+   * unaffected), but movement into the cell is refused — a prop is an obstacle
+   * the player collides with, like a tree or boulder. */
+  blocked: boolean[];
 }
 
 export function buildTerrainGrid(
   width: number,
   height: number,
   rows: { t: string; l?: number }[][],
+  props: { col: number; row: number }[] = [],
 ): TerrainGrid {
   const level: number[] = new Array(width * height).fill(0);
   const type: string[] = new Array(width * height).fill("");
+  const blocked: boolean[] = new Array(width * height).fill(false);
   for (let r = 0; r < height; r++) {
     for (let c = 0; c < width; c++) {
       const cell = rows[r]?.[c];
@@ -674,12 +786,31 @@ export function buildTerrainGrid(
       type[i] = cell?.t ?? "";
     }
   }
-  return { width, height, level, type };
+  // A placed prop makes its cell solid: the game owns collision (derived from
+  // terrain), and a prop is a solid object ON the terrain, so it blocks. maps2
+  // marks every prop cell in its own `collision` grid too; we derive the same
+  // from the prop placements rather than consuming that grid.
+  for (const p of props) {
+    if (p.col >= 0 && p.row >= 0 && p.col < width && p.row < height)
+      blocked[p.row * width + p.col] = true;
+  }
+  return { width, height, level, type, blocked };
+}
+
+// World units per cell is a FIXED constant (CELL_WU), so a world's extent is
+// simply grid×CELL_WU — no global WORLD_WIDTH needed. This keeps every grid↔
+// world conversion size-agnostic, so worlds of ANY dimensions render + collide
+// correctly (the server can host several differently-sized worlds at once).
+export function worldWidthOf(grid: TerrainGrid): number {
+  return grid.width * CELL_WU;
+}
+export function worldHeightOf(grid: TerrainGrid): number {
+  return grid.height * CELL_WU;
 }
 
 function cellIndex(grid: TerrainGrid, x: number, y: number): number {
-  const col = Math.floor((x / WORLD_WIDTH) * grid.width);
-  const row = Math.floor((y / WORLD_HEIGHT) * grid.height);
+  const col = Math.floor(x / CELL_WU);
+  const row = Math.floor(y / CELL_WU);
   if (col < 0 || row < 0 || col >= grid.width || row >= grid.height) return -1;
   return row * grid.width + col;
 }
@@ -697,7 +828,17 @@ export function levelAtWorld(grid: TerrainGrid, x: number, y: number): number {
 }
 
 export function isStandableAtWorld(grid: TerrainGrid, x: number, y: number): boolean {
-  return surfaceAtWorld(grid, x, y).standable;
+  const i = cellIndex(grid, x, y);
+  if (i < 0) return false;
+  if (grid.blocked[i]) return false; // a prop stands here — solid
+  const t = grid.type[i];
+  return t ? surfaceFor(t).standable : false;
+}
+
+/** True when a solid prop occupies this cell (movement in is refused). */
+export function isBlockedAtWorld(grid: TerrainGrid, x: number, y: number): boolean {
+  const i = cellIndex(grid, x, y);
+  return i < 0 ? false : grid.blocked[i];
 }
 
 /** State that gates a move: how high the player may step, and whether they may
@@ -719,6 +860,7 @@ export function canEnter(
   toY: number,
   ctx: MoveContext,
 ): boolean {
+  if (isBlockedAtWorld(grid, toX, toY)) return false; // solid prop in the way
   const to = surfaceAtWorld(grid, toX, toY);
   const enterable = to.standable || (to.swimmable && ctx.canSwim);
   if (!enterable) return false;
@@ -735,8 +877,11 @@ export function makeBlocked(grid: TerrainGrid, ctx: MoveContext): BlockedFn {
   return (toX, toY, fromX, fromY) => !canEnter(grid, fromX, fromY, toX, toY, ctx);
 }
 
-/** Drop predicate for stepMovement: a downward step bigger than what walking
- * handles smoothly (stairs make a 1-level descent a normal walk, not a fall). */
+/** Canonical FALL predicate: is moving from `from` onto `to` a downward step
+ * bigger than what walking handles smoothly (stairs make a 1-level descent a
+ * normal walk, not a fall)? `stepMovement` no longer snaps on this — the client
+ * renderer mirrors the same threshold to animate the drop as a gravity fall
+ * (see WorldScene.stepElevation) rather than teleport the anchor past the rim. */
 export function makeDrops(grid: TerrainGrid): DropFn {
   return (toX, toY, fromX, fromY) => {
     const to = surfaceAtWorld(grid, toX, toY);
@@ -767,10 +912,7 @@ export function stepStamina(
 
 /** World coordinates of a map cell's centre. */
 export function cellCenterWorld(grid: TerrainGrid, col: number, row: number): { x: number; y: number } {
-  return {
-    x: ((col + 0.5) / grid.width) * WORLD_WIDTH,
-    y: ((row + 0.5) / grid.height) * WORLD_HEIGHT,
-  };
+  return { x: (col + 0.5) * CELL_WU, y: (row + 0.5) * CELL_WU };
 }
 
 function cellStandable(grid: TerrainGrid, col: number, row: number): boolean {
@@ -802,11 +944,11 @@ function spawnCellOk(grid: TerrainGrid, col: number, row: number): boolean {
  */
 export function findSpawn(
   grid: TerrainGrid,
-  prefX: number = WORLD_WIDTH / 2,
-  prefY: number = WORLD_HEIGHT / 2,
+  prefX: number = (grid.width * CELL_WU) / 2,
+  prefY: number = (grid.height * CELL_WU) / 2,
 ): { x: number; y: number } {
-  const c0 = clamp(Math.floor((prefX / WORLD_WIDTH) * grid.width), 0, grid.width - 1);
-  const r0 = clamp(Math.floor((prefY / WORLD_HEIGHT) * grid.height), 0, grid.height - 1);
+  const c0 = clamp(Math.floor(prefX / CELL_WU), 0, grid.width - 1);
+  const r0 = clamp(Math.floor(prefY / CELL_WU), 0, grid.height - 1);
   const maxRad = grid.width + grid.height;
   let firstStandable: { col: number; row: number } | null = null;
   for (let rad = 0; rad <= maxRad; rad++) {
@@ -830,6 +972,7 @@ export interface JoinOptions {
   name?: string;
   character?: string; // character uid from the pixel catalog
   token?: string; // opaque per-player id for persistence (from localStorage)
+  world?: string; // maps2 world name to load/join (rooms are filtered by it)
 }
 
 // --- Chat --------------------------------------------------------------------

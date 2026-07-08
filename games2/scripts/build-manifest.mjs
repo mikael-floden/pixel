@@ -10,9 +10,24 @@ const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const GAME_ROOT = join(SCRIPT_DIR, ".."); // pixel/games2
 // Art domains live at the repo root by default; ASSETS_ROOT overrides it (Docker).
 const ASSETS_ROOT = process.env.ASSETS_ROOT || join(SCRIPT_DIR, "..", "..");
-const SKELETONS = join(ASSETS_ROOT, "characters", "skeletons");
+// v2 characters: characters2/humans/<id>/{base,animations}. Two characters
+// (default_boy = "Man", default_girl = "Woman"), 112x112 frames, animations as
+// frame FOLDERS (animations/<srcAnim>/<dir>/N.png, unpadded N) — NOT strips.
+const HUMANS = join(ASSETS_ROOT, "characters2", "humans");
 
-const MOVEMENT_ANIMS = ["idle", "walk", "run"];
+// Game movement state -> characters2 source animation folder name. The client
+// keeps using idle/walk/run/jump as state names; animSrc (below) tells it the
+// folder to build frame URLs from.
+const ANIM_MAP = {
+  idle: "breathing-idle",
+  walk: "walking",
+  run: "running-8-frames",
+  jump: "jumping-1",
+  runjump: "running-jump",
+  kick: "high-kick",
+};
+// Friendly display name per character id (character.json names are prompt junk).
+const DISPLAY = { default_boy: "Man", default_girl: "Woman" };
 const DIRECTIONS = ["south", "south-west", "west", "north-west", "north", "north-east", "east", "south-east"];
 
 function dirsIn(p) {
@@ -81,10 +96,20 @@ function pngAlpha(p) {
 }
 
 /**
- * Measure the FOOT ANCHOR of a frame: the centre pixel between the two feet at
- * sole level — the point where the character contacts the ground. This is what
- * the game pins to the collision position, so drawn feet meet edges/walls
- * exactly. Measured over the bottom 4 opaque rows (the soles).
+ * Measure the FOOT ANCHOR of a frame: the point BETWEEN the two feet at sole
+ * level — where the character contacts the ground. The game pins this to the
+ * collision position, so the drop-shadow (which marks the true world position)
+ * sits centred between the drawn feet, and the feet meet edges/walls exactly.
+ *
+ * We look at a SOLE BAND (the bottom ~9% of the frame — tall enough to catch
+ * BOTH feet even when a 3/4-view pose sets one sole a few px higher than the
+ * other), collapse it to a per-column "is there a sole pixel here" mask, split
+ * that into contiguous runs = the feet, and take the MIDPOINT BETWEEN the outer
+ * two feet's centres. This is robust to unequal foot size and to a centred
+ * ponytail/dress hem (a middle run never moves the outermost centres). The old
+ * method — bounding-box midpoint of only the bottom 4 rows — saw just the lower
+ * foot in angled poses and skewed the anchor up to ±5px sideways per direction,
+ * so the shadow drifted out from between the feet as the character turned.
  */
 function footAnchor(framePath) {
   const png = pngAlpha(framePath);
@@ -109,28 +134,35 @@ function footAnchor(framePath) {
     }
   }
   if (bottom < 0) return null;
-  let sum = 0;
-  let n = 0;
-  for (let y = Math.max(0, bottom - 3); y <= bottom; y++) {
-    let lo = -1;
-    let hi = -1;
-    for (let x = 0; x < w; x++) {
+  const band = Math.max(6, Math.round(h * 0.09)); // ≈10px at 112
+  const y0 = Math.max(0, bottom - band + 1);
+  const colHit = new Array(w).fill(false);
+  for (let x = 0; x < w; x++) {
+    for (let y = y0; y <= bottom; y++) {
       if (opaque(x, y)) {
-        if (lo < 0) lo = x;
-        hi = x;
+        colHit[x] = true;
+        break;
       }
     }
-    if (lo >= 0) {
-      sum += (lo + hi) / 2;
-      n++;
+  }
+  // Contiguous runs of sole columns → feet (drop 1px specks / stray pixels).
+  const feet = [];
+  let s = -1;
+  for (let x = 0; x < w; x++) {
+    if (colHit[x] && s < 0) s = x;
+    else if (!colHit[x] && s >= 0) {
+      if (x - 1 - s >= 1) feet.push((s + x - 1) / 2);
+      s = -1;
     }
   }
-  if (!n) return null;
+  if (s >= 0 && w - 1 - s >= 1) feet.push((s + w - 1) / 2);
+  if (!feet.length) return null;
+  const ax = (Math.min(...feet) + Math.max(...feet)) / 2; // between the outer feet
   // Fractions of the frame: (x,y) = foot anchor for the sprite origin;
   // top = crown of the head, so labels can hug the character instead of
   // floating at the (mostly transparent) frame top.
   return {
-    x: +(sum / n / w).toFixed(4),
+    x: +(ax / w).toFixed(4),
     y: +((bottom + 1) / h).toFixed(4),
     top: +(Math.max(0, top) / h).toFixed(4),
   };
@@ -148,58 +180,57 @@ function displayName(look, fallback) {
 
 function scan() {
   const characters = [];
-  if (!existsSync(SKELETONS)) return characters;
-  for (const skel of dirsIn(SKELETONS)) {
-    const charsRoot = join(SKELETONS, skel, "characters");
-    for (const id of dirsIn(charsRoot)) {
-      const charDir = join(charsRoot, id);
-      const animsDir = join(charDir, "animations");
-      const animations = {};
-      let frameW = 0;
-      let frameH = 0;
-      for (const anim of MOVEMENT_ANIMS) {
-        const perDir = {};
-        for (const d of DIRECTIONS) {
-          const frameDir = join(animsDir, anim, d);
-          const strip = join(animsDir, `${anim}__${d}.png`);
-          if (!existsSync(frameDir) || !existsSync(strip)) continue;
-          const count = readdirSync(frameDir).filter((f) => f.endsWith(".png")).length;
-          if (count > 0) {
-            perDir[d] = count;
-            if (!frameH) [frameW, frameH] = pngDims(join(frameDir, "00.png"));
-          }
+  if (!existsSync(HUMANS)) return characters;
+  for (const id of dirsIn(HUMANS)) {
+    if (id.startsWith("_")) continue; // _experiments etc.
+    const charDir = join(HUMANS, id);
+    const animsDir = join(charDir, "animations");
+    if (!existsSync(animsDir)) continue;
+    // Movement/action states -> per-direction frame counts, plus animSrc (the
+    // source folder each state maps to) so the client can build frame URLs.
+    const animations = {};
+    const animSrc = {};
+    let frameW = 0;
+    let frameH = 0;
+    for (const [state, src] of Object.entries(ANIM_MAP)) {
+      const perDir = {};
+      for (const d of DIRECTIONS) {
+        const frameDir = join(animsDir, src, d);
+        if (!existsSync(frameDir)) continue; // some anims (high-kick) lack NE/NW
+        const count = readdirSync(frameDir).filter((f) => /^\d+\.png$/.test(f)).length;
+        if (count > 0) {
+          perDir[d] = count;
+          if (!frameH) [frameW, frameH] = pngDims(join(frameDir, "0.png"));
         }
-        if (Object.keys(perDir).length) animations[anim] = perDir;
       }
-      if (!Object.keys(animations).length) continue; // unplayable
-      // Foot anchors per direction (from idle frame 0) — where the sole line
-      // sits inside the frame, as origin fractions for the client.
-      const anchors = {};
-      for (const d of Object.keys(animations.idle ?? {})) {
-        const a = footAnchor(join(animsDir, "idle", d, "00.png"));
-        if (a) anchors[d] = a;
+      if (Object.keys(perDir).length) {
+        animations[state] = perDir;
+        animSrc[state] = src;
       }
-      let look = "";
-      const metaPath = join(charDir, "character.json");
-      if (existsSync(metaPath)) {
-        try {
-          look = JSON.parse(readFileSync(metaPath, "utf8")).look || "";
-        } catch {}
-      }
-      const webRoot = "/assets/" + relative(ASSETS_ROOT, charDir).split("\\").join("/");
-      characters.push({
-        uid: `${skel}/${id}`,
-        skeleton: skel,
-        id,
-        name: displayName(look, id),
-        root: webRoot,
-        portrait: `${webRoot}/portrait.png`,
-        frameW,
-        frameH,
-        animations,
-        anchors,
-      });
     }
+    if (!animations.idle) continue; // unplayable without an idle
+    // Foot anchors per direction (from idle frame 0) — where the sole line
+    // sits inside the frame, as origin fractions for the client.
+    const anchors = {};
+    for (const d of Object.keys(animations.idle)) {
+      const a = footAnchor(join(animsDir, ANIM_MAP.idle, d, "0.png"));
+      if (a) anchors[d] = a;
+    }
+    const webRoot = "/assets/" + relative(ASSETS_ROOT, charDir).split("\\").join("/");
+    characters.push({
+      uid: id,
+      skeleton: "humans",
+      id,
+      name: DISPLAY[id] || id,
+      root: webRoot,
+      // No portrait.png in characters2 — use the south rotation as the face.
+      portrait: `${webRoot}/base/south.png`,
+      frameW,
+      frameH,
+      animations,
+      animSrc,
+      anchors,
+    });
   }
   return characters;
 }
@@ -210,6 +241,6 @@ const publicDir = join(GAME_ROOT, "client", "public");
 mkdirSync(publicDir, { recursive: true });
 
 const characters = scan();
-const out = { generatedFrom: "pixel/characters", directions: DIRECTIONS, characters };
+const out = { generatedFrom: "pixel/characters2", directions: DIRECTIONS, characters };
 writeFileSync(join(publicDir, "characters.json"), JSON.stringify(out, null, 2) + "\n");
 console.log(`[manifest] ${characters.length} characters -> client/public/characters.json`);

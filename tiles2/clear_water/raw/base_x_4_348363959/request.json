@@ -1,0 +1,140 @@
+{
+  "schema": "tiles2/raw-sheet@1",
+  "sheet": "base_x_4_348363959",
+  "ground_type": "clear_water",
+  "kind": "elevation",
+  "height": "base_x_4",
+  "levels": 4,
+  "transition_to": null,
+  "tile_id": "a1558955-e71f-4fbc-ad0d-66ce4da6dee8",
+  "slot": 2,
+  "attempt": 6,
+  "objects": [
+    "a tall rock islet with a windswept tree",
+    "a tall driftwood totem",
+    "a ruined stone pillar rising from water",
+    "a tall willow leaning over the water",
+    "a tall bare dead tree in the water",
+    "a tall papyrus stand",
+    "a tall stand of bamboo in the water",
+    "a weathered stone obelisk in the water",
+    "a lone lighthouse rock",
+    "a half-sunken ship's mast"
+  ],
+  "prompt": "isometric pixel-art game tiles for a top-down RPG map. Each tile is a DIFFERENT large object standing FREE in empty space, resting on a small flat patch of clear blue water; the object rises straight up and IS the sprite. CRITICAL: the entire background is FULLY TRANSPARENT and there is NO black outline, NO dark border, NO frame, NO box, NO rectangle, NO square, NO cube edges and NO wireframe anywhere around the tile or the object \u2014 the object's silhouette is soft and organic against empty transparency, with no containing lines or hard straight edges enclosing it. Do NOT stand it on a raised block, cube, column, box, crate or pedestal, and do NOT draw the ground as a raised cube: just a small low patch at its base. Go for maximum variety \u2014 different shapes, species, ages and conditions, no two tiles alike. The set: 1) a tall rock islet with a windswept tree 2) a tall driftwood totem 3) a ruined stone pillar rising from water 4) a tall willow leaning over the water 5) a tall bare dead tree in the water 6) a tall papyrus stand 7) a tall stand of bamboo in the water 8) a weathered stone obelisk in the water 9) a lone lighthouse rock 10) a half-sunken ship's mast. cozy hand-crafted top-down RPG pixel art, rich natural texture, cohesive harmonious palette, soft directional shading, high quality game asset, transparent background",
+  "settings": {
+    "endpoint": "/create-tiles-pro",
+    "tile_type": "isometric",
+    "tile_size": 64,
+    "tile_view": "high top-down",
+    "tile_view_angle": 28.0,
+    "tile_depth_ratio": 0.0,
+    "tile_height": 128,
+    "tile_flat_top_px": 2,
+    "levels": 4,
+    "face_px": 64
+  },
+  "seed": 348363959,
+  "count": 16,
+  "tiles": [
+    {
+      "index": 0,
+      "file": "tile_00.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 1,
+      "file": "tile_01.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 2,
+      "file": "tile_02.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 3,
+      "file": "tile_03.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 4,
+      "file": "tile_04.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 5,
+      "file": "tile_05.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 6,
+      "file": "tile_06.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 7,
+      "file": "tile_07.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 8,
+      "file": "tile_08.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 9,
+      "file": "tile_09.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 10,
+      "file": "tile_10.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 11,
+      "file": "tile_11.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 12,
+      "file": "tile_12.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 13,
+      "file": "tile_13.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 14,
+      "file": "tile_14.png",
+      "width": 64,
+      "height": 128
+    },
+    {
+      "index": 15,
+      "file": "tile_15.png",
+      "width": 64,
+      "height": 128
+    }
+  ],
+  "generated_at": "2026-07-06T23:34:34+00:00",
+  "processed": true,
+  "processed_to": "base_x_4/base_x_4_348363959"
+}

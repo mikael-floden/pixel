@@ -53,7 +53,6 @@
     { "id": "stone_mountain",  "name": "grey mountain stone", "description": "rugged grey mountain rock and stone" },
     { "id": "black_mountain",  "name": "black volcanic rock", "description": "dark near-black volcanic mountain rock" },
     { "id": "clear_water",     "name": "clear water",         "description": "clear calm blue water" },
-    { "id": "wooden_balcony",  "name": "wooden balcony",      "description": "warm wooden plank balcony floor / deck boards" },
     { "id": "light_sand",      "name": "light sand",          "description": "pale light sandy beach" },
     { "id": "crystal_ice",     "name": "crystal ice",         "description": "crystalline translucent pale-blue ice" }
   ],
@@ -63,16 +62,16 @@
     "objects_per_sheet": 10,
     "objects_file": "elevation_objects.json",
     "style": "cozy hand-crafted top-down RPG pixel art, rich natural texture, cohesive harmonious palette, soft directional shading, high quality game asset, transparent background",
-    "template": "isometric pixel-art game tiles for a top-down RPG map. Each tile shows a DIFFERENT {height_word} object as the clear MAIN SUBJECT — prominent, detailed and standing tall, on only a small low patch of {flavor}. The object dominates and fills the tile; keep the ground base minimal and thin — NOT a tall dirt pedestal or block with a small object on top. Go for maximum variety — different shapes, species, ages and conditions, no two tiles alike. The set: {objects}. {style}",
+    "template": "isometric pixel-art game tiles for a top-down RPG map. Each tile is a DIFFERENT {height_word} object standing FREE in empty space, resting on a small flat patch of {flavor}; the object rises straight up and IS the sprite. CRITICAL: the entire background is FULLY TRANSPARENT and there is NO black outline, NO dark border, NO frame, NO box, NO rectangle, NO square, NO cube edges and NO wireframe anywhere around the tile or the object — the object's silhouette is soft and organic against empty transparency, with no containing lines or hard straight edges enclosing it. Do NOT stand it on a raised block, cube, column, box, crate or pedestal, and do NOT draw the ground as a raised cube: just a small low patch at its base. Go for maximum variety — different shapes, species, ages and conditions, no two tiles alike. The set: {objects}. {style}",
     "heights": [
       { "id": "base_x_2", "levels": 2, "height_word": "small",
         "tile_size": 64, "tile_height": 128, "depth_ratio": 0.0 },
       { "id": "base_x_3", "levels": 3, "height_word": "medium-sized",
-        "tile_size": 64, "tile_height": 128, "depth_ratio": 0.2423 },
+        "tile_size": 64, "tile_height": 128, "depth_ratio": 0.0 },
       { "id": "base_x_4", "levels": 4, "height_word": "large",
-        "tile_size": 64, "tile_height": 128, "depth_ratio": 0.4885 },
+        "tile_size": 64, "tile_height": 128, "depth_ratio": 0.0 },
       { "id": "base_x_5", "levels": 5, "height_word": "huge towering",
-        "tile_size": 64, "tile_height": 128, "depth_ratio": 0.7346 }
+        "tile_size": 64, "tile_height": 128, "depth_ratio": 0.0 }
     ],
     "terrains": [
       { "id": "saturated_grass", "flavor": "lush green grass", "harmonize_refs": ["saturated_grass", "stone_mountain"] },
@@ -81,7 +80,8 @@
       { "id": "regular_snow",    "flavor": "white snow", "harmonize_refs": ["regular_snow", "stone_mountain"] },
       { "id": "lightdark_dirt",  "flavor": "packed brown dirt", "harmonize_refs": ["lightdark_dirt", "stone_mountain"] },
       { "id": "black_mountain",  "flavor": "dark near-black volcanic rock", "harmonize_refs": ["black_mountain"] },
-      { "id": "clear_water",     "flavor": "clear blue water", "harmonize_refs": ["clear_water", "saturated_grass"] }
+      { "id": "clear_water",     "flavor": "clear blue water", "harmonize_refs": ["clear_water", "saturated_grass"] },
+      { "id": "light_sand",      "flavor": "pale sandy beach", "harmonize_refs": ["light_sand", "saturated_grass"] }
     ]
   },
   "_transitions_comment": "FULL MESH — no adjacency list. Map builders must have every border, so each type gets a transition to EVERY other type. The loop completes a type's bases, then generates its transition to every EARLIER type (the new type owns transitions toward all existing ones); a pair is skipped if already covered either direction. Stored under <type>/transitions/<earlier-type>.",
@@ -99,6 +99,25 @@
     "_comment": "raw -> base/transitions. neutralize_outline softens the outer silhouette rim. harmonize pulls each tile's dominant MATERIAL colour (auto-detected per type from its first base sheet) to a common target — greens together for grass, whites for snow — keeping texture; dirt/rock/flowers untouched. ab_strength = hue+saturation pull, v_strength = mean-brightness leveling (0..1).",
     "neutralize_outline": true,
     "darkness_thresh": 60,
-    "harmonize": { "hue_strength": 0.9, "sat_strength": 0.6, "v_strength": 0.65 }
+    "harmonize": { "hue_strength": 0.9, "sat_strength": 0.7, "v_strength": 0.9 },
+    "_fade_outline_comment": "Softens the generated near-black wireframe OUTLINE by REDUCING its alpha (toward transparent) so hard black frame/platform lines on base_x_N tiles look gentler — like game1's step. Fades only near-black SILHOUETTE-RIM + THIN FRAME LINES (run>=run_min, perpendicular<=thick_max); compact dark art (rock, trunks) is spared. strength/rim_strength are GENTLE (partial fade, never full cut). protect_dark_material zeroes the rim + caps strength for near-black terrain (black_mountain) so it can't dissolve. Toggle enabled:false + reprocess to fully revert (raw untouched).",
+    "fade_outline": {
+      "enabled": true,
+      "darkness_thresh": 60,
+      "soft_lum": 120,
+      "run_min": 9,
+      "thick_max": 3,
+      "strength": 0.6,
+      "rim_strength": 0.4,
+      "min_alpha": 0,
+      "seam_strength": 0.4,
+      "seam_jump": 70,
+      "seam_bright": 130,
+      "seam_nbr_sat": 90,
+      "seam_rows": 1,
+      "thin_lum_light": 120,
+      "light_value": 180,
+      "protect_dark_material": true
+    }
   }
 }

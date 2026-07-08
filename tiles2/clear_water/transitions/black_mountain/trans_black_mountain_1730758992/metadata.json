@@ -15,6 +15,7 @@
     "tile_flat_top_px": 2
   },
   "count": 16,
+  "metadata_complete": true,
   "tiles": [
     {
       "index": 0,
@@ -176,8 +177,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.149,
-        "clear_water": 0.851
+        "black_mountain": 0.129,
+        "clear_water": 0.871
       },
       "edges": {
         "NE": {
@@ -258,8 +259,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.734,
-        "black_mountain": 0.266
+        "clear_water": 0.742,
+        "black_mountain": 0.258
       },
       "edges": {
         "NE": {
@@ -267,17 +268,17 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "black_mountain",
+            "clear_water",
             "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "clear_water": 0.375,
-            "black_mountain": 0.625
+            "clear_water": 0.5,
+            "black_mountain": 0.5
           },
-          "divider": 0.375
+          "divider": 0.5
         },
         "SE": {
           "samples": [
@@ -419,8 +420,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.475,
-        "clear_water": 0.525
+        "black_mountain": 0.47,
+        "clear_water": 0.53
       },
       "edges": {
         "NE": {
@@ -501,8 +502,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.208,
-        "clear_water": 0.792
+        "black_mountain": 0.169,
+        "clear_water": 0.831
       },
       "edges": {
         "NE": {
@@ -556,7 +557,7 @@
           "samples": [
             "clear_water",
             "clear_water",
-            "black_mountain",
+            "clear_water",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -564,9 +565,10 @@
             "black_mountain"
           ],
           "ratio": {
-            "clear_water": 0.625,
-            "black_mountain": 0.375
-          }
+            "clear_water": 0.75,
+            "black_mountain": 0.25
+          },
+          "divider": 0.75
         }
       },
       "features": [
@@ -581,8 +583,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.328,
-        "clear_water": 0.672
+        "black_mountain": 0.307,
+        "clear_water": 0.693
       },
       "edges": {
         "NE": {
@@ -635,7 +637,7 @@
         },
         "NW": {
           "samples": [
-            "black_mountain",
+            "clear_water",
             "black_mountain",
             "black_mountain",
             "black_mountain",
@@ -645,8 +647,8 @@
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.625,
-            "clear_water": 0.375
+            "clear_water": 0.5,
+            "black_mountain": 0.5
           }
         }
       },
@@ -663,8 +665,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.432,
-        "clear_water": 0.568
+        "black_mountain": 0.406,
+        "clear_water": 0.594
       },
       "edges": {
         "NE": {
@@ -745,8 +747,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.697,
-        "clear_water": 0.303
+        "black_mountain": 0.668,
+        "clear_water": 0.332
       },
       "edges": {
         "NE": {
@@ -826,8 +828,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.531,
-        "clear_water": 0.469
+        "clear_water": 0.597,
+        "black_mountain": 0.403
       },
       "edges": {
         "NE": {
@@ -901,7 +903,7 @@
         "water",
         "flowers"
       ],
-      "description": "black volcanic rock blending to clear water with a small detail, a small puddle, small flowers"
+      "description": "clear water blending to black volcanic rock with a small detail, a small puddle, small flowers"
     },
     {
       "index": 11,
@@ -975,10 +977,9 @@
         }
       },
       "features": [
-        "water",
-        "accent"
+        "water"
       ],
-      "description": "black volcanic rock blending to clear water with a small puddle, a small detail"
+      "description": "black volcanic rock blending to clear water with a small puddle"
     },
     {
       "index": 12,
@@ -1055,11 +1056,8 @@
           }
         }
       },
-      "features": [
-        "water",
-        "accent"
-      ],
-      "description": "clear water blending to black volcanic rock with a small puddle, a small detail"
+      "features": [],
+      "description": "clear water blending to black volcanic rock"
     },
     {
       "index": 13,
@@ -1067,8 +1065,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.899,
-        "black_mountain": 0.101
+        "clear_water": 0.936,
+        "black_mountain": 0.064
       },
       "edges": {
         "NE": {
@@ -1079,14 +1077,14 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "black_mountain",
+            "clear_water",
             "black_mountain"
           ],
           "ratio": {
-            "clear_water": 0.75,
-            "black_mountain": 0.25
+            "clear_water": 0.875,
+            "black_mountain": 0.125
           },
-          "divider": 0.75
+          "divider": 0.875
         },
         "SE": {
           "samples": [
@@ -1217,11 +1215,8 @@
           }
         }
       },
-      "features": [
-        "water",
-        "accent"
-      ],
-      "description": "black volcanic rock blending to clear water with a small puddle, a small detail"
+      "features": [],
+      "description": "black volcanic rock blending to clear water"
     },
     {
       "index": 15,
@@ -1298,11 +1293,8 @@
           }
         }
       },
-      "features": [
-        "water",
-        "accent"
-      ],
-      "description": "clear water blending to black volcanic rock with a small puddle, a small detail"
+      "features": [],
+      "description": "clear water blending to black volcanic rock"
     }
   ],
   "generated_at": "2026-07-05T16:25:54+00:00",
@@ -1311,10 +1303,28 @@
     "neutralize_outline": true,
     "harmonize": {
       "hue_strength": 0.9,
-      "sat_strength": 0.6,
-      "v_strength": 0.65
+      "sat_strength": 0.7,
+      "v_strength": 0.9
     },
     "harmonized_from": true,
-    "harmonized_to": true
+    "harmonized_to": true,
+    "fade_outline": {
+      "enabled": true,
+      "darkness_thresh": 60,
+      "soft_lum": 120,
+      "run_min": 9,
+      "thick_max": 3,
+      "strength": 0.6,
+      "rim_strength": 0.4,
+      "min_alpha": 0,
+      "seam_strength": 0.4,
+      "seam_jump": 70,
+      "seam_bright": 130,
+      "seam_nbr_sat": 90,
+      "seam_rows": 1,
+      "thin_lum_light": 120,
+      "light_value": 180,
+      "protect_dark_material": true
+    }
   }
 }

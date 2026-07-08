@@ -3,7 +3,7 @@ import { loadManifest } from "./manifest";
 import { withFallback } from "./placeholder";
 import { chooseCharacter } from "./select";
 import { WorldScene } from "./scenes/WorldScene";
-import { loadWorld } from "./maps";
+import { loadWorld, loadWorldsList } from "./maps";
 import { buildDemoWorld } from "@nangijala/shared";
 import { MapPreviewScene } from "./scenes/MapPreviewScene";
 
@@ -98,6 +98,13 @@ async function boot() {
   // server reads, so client and server hold the identical grid.
   const demoMode = location.hash === "#emission";
   const tileBases = await loadTileBases();
+
+  // Pre-join screen. Demo mode fixes the world (the generated station), so it
+  // only picks a character; otherwise the player chooses BOTH a world (any
+  // playable maps2 world the maps agent has shipped) AND a character.
+  const worlds = demoMode ? [] : await loadWorldsList();
+  const { world: worldName, character, name } = await chooseCharacter(manifest, worlds);
+
   let world: Awaited<ReturnType<typeof loadWorld>>;
   if (demoMode) {
     let emission: Record<string, never> = {};
@@ -107,13 +114,10 @@ async function boot() {
     } catch {}
     world = buildDemoWorld(emission, tileBases as Parameters<typeof buildDemoWorld>[1]);
   } else {
-    // The isometric tile world (may be null if the maps submodule isn't
-    // present; the world scene falls back to a plain ground in that case).
-    world = await loadWorld();
+    // The chosen isometric world (null if its world.json is missing; the world
+    // scene then falls back to a plain ground).
+    world = await loadWorld(worldName);
   }
-
-  // Pre-join screen: pick any generated character + a name, then enter the world.
-  const { character, name } = await chooseCharacter(manifest);
 
   const game = new Phaser.Game({
     type: Phaser.AUTO,
@@ -132,6 +136,7 @@ async function boot() {
   game.registry.set("character", character);
   game.registry.set("name", name);
   game.registry.set("world", world);
+  game.registry.set("worldName", worldName);
   game.registry.set("tileBases", tileBases);
   game.registry.set("demoMode", demoMode);
 }
