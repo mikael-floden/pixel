@@ -84,12 +84,12 @@ function injectStyles() {
     left:${FILL_RECT.left}%;top:${FILL_RECT.top}%;width:${FILL_RECT.width}%;height:${FILL_RECT.height}%}
   .ml-load-bar{width:0%;height:100%;transition:width .25s ease;
     background:
-      repeating-linear-gradient(90deg, rgba(255,255,255,.10) 0 2px, transparent 2px 6px),
-      linear-gradient(180deg, #d8f2ff 0%, #8fd0f8 25%, #5a7bd6 50%, #9a63e0 75%, #6a3fae 100%);
+      repeating-linear-gradient(90deg, rgba(255,255,255,.08) 0 2px, transparent 2px 6px),
+      linear-gradient(180deg, #a2b6bf 0%, #6b9cba 25%, #435ca0 50%, #734aa8 75%, #4f2f82 100%);
     animation:mlglow 1.6s ease-in-out infinite}
   .ml-load-label{font-size:13px;color:#9aa0bf;min-height:1.2em}
   .ml-load-tip{font-size:12px;color:#666d92;margin-top:6px}
-  @keyframes mlglow{0%,100%{filter:brightness(1)}50%{filter:brightness(1.35)}}`;
+  @keyframes mlglow{0%,100%{filter:brightness(1)}50%{filter:brightness(1.18)}}`;
   const s = document.createElement("style");
   s.textContent = css;
   document.head.appendChild(s);
