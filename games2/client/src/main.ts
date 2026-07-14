@@ -22,6 +22,20 @@ window.addEventListener("beforeinstallprompt", (e) => {
 if (import.meta.env.PROD && "serviceWorker" in navigator) {
   navigator.serviceWorker.register("/sw.js").catch(() => {});
 }
+// Block pinch-zoom in ALL modes. Under "Desktop site" the viewport meta
+// (user-scalable=no included) is ignored, so CSS touch-action (index.html)
+// plus these listeners are what actually enforce it: kill any multi-touch
+// move before the browser turns it into a page zoom, and iOS's proprietary
+// gesture events for good measure. Single-finger input (taps, list
+// scrolling) is untouched.
+document.addEventListener(
+  "touchmove",
+  (e) => {
+    if (e.touches.length > 1) e.preventDefault();
+  },
+  { passive: false },
+);
+document.addEventListener("gesturestart", (e) => e.preventDefault());
 // Portrait-only (for now): the manifest locks the installed app; in-browser
 // the lock API only works in fullscreen contexts, so it's best-effort (the
 // #ml-rotate CSS overlay in index.html covers plain browser landscape).

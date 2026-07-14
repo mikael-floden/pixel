@@ -15,8 +15,12 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <style>
+      /* touch-action pan-x pan-y: panning (list scrolling) stays allowed but
+         PINCH-ZOOM and double-tap-zoom are blocked — crucially this works
+         even under "Desktop site", where the viewport meta (incl.
+         user-scalable=no) is ignored. main.ts adds the JS belt-and-braces. */
       html, body { margin: 0; height: 100%; background: #12121c; overflow: hidden;
-        overscroll-behavior: none; }
+        overscroll-behavior: none; touch-action: pan-x pan-y; }
       /* dvh tracks the REAL visible height on mobile (address bar shown/hidden);
          vh is the fallback for older browsers. touch-action here (NOT on body:
          the select screen's lists still need touch scrolling) stops double-tap
