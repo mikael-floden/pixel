@@ -7,6 +7,7 @@ import { loadWorld, loadWorldsList } from "./maps";
 import { buildDemoWorld } from "@nangijala/shared";
 import { MapPreviewScene } from "./scenes/MapPreviewScene";
 import { setLoadingProgress, showLoading } from "./loading";
+import { applyUiZoom } from "./uiscale";
 
 // ---- PWA ----
 // Capture the browser's install prompt the moment it fires (often before any
@@ -65,16 +66,21 @@ async function bootMapPreview(): Promise<boolean> {
   return true;
 }
 
-/** Tiny build-version badge so testers can tell which deploy they're running. */
+/** Build-version badge (git sha) so testers can tell which deploy they're
+ * running. Centered at the bottom, styled like the in-game coordinate label
+ * (light monospace on a dark outline), above every overlay (select screen,
+ * loading screen, game HUD alike). */
 function showVersion() {
   const sha = (import.meta.env.VITE_GIT_SHA as string | undefined) || "dev";
   console.log(`[nangijala] build ${sha}`);
   const el = document.createElement("div");
   el.textContent = sha.slice(0, 7);
   el.style.cssText =
-    "position:fixed;left:6px;bottom:4px;z-index:50;font:11px monospace;color:#8890b3;" +
-    "opacity:.7;pointer-events:none;user-select:none";
+    "position:fixed;left:50%;bottom:6px;transform:translateX(-50%);z-index:50;" +
+    "font:12px monospace;color:#cfd6ff;text-shadow:0 1px 2px #000,0 0 3px #000;" +
+    "pointer-events:none;user-select:none";
   document.body.appendChild(el);
+  applyUiZoom(el); // keep it readable under "Desktop site" too
 }
 
 /** Poll /version and offer a one-click reload when a newer deploy is live. */
