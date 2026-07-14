@@ -25,7 +25,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     const overlay = el("div", "ml-overlay");
     overlay.innerHTML = `
       <div class="ml-panel">
-        <h1 class="ml-title">Nangijala</h1>
+        <img class="ml-logo" src="/logo.png" alt="Nangijala Online — a browser MMORPG" />
         <p class="ml-sub">${showWorlds ? "Choose a world and a character, then step in." : "Choose your character and step into the shared world."}</p>
         ${showWorlds ? '<div class="ml-section">World</div><div class="ml-worlds" id="ml-worlds"></div><div class="ml-section">Character</div>' : ""}
         <div class="ml-grid" id="ml-grid"></div>
@@ -213,7 +213,7 @@ function injectStyles() {
     background:radial-gradient(circle at 50% 30%, #1c2540, #0c0c16);font-family:system-ui,sans-serif;color:#e8e8f0}
   .ml-panel{width:min(720px,92vw);max-height:92vh;overflow:auto;padding:28px;border-radius:14px;
     background:#12121ccc;box-shadow:0 10px 40px #0008;text-align:center}
-  .ml-title{margin:0;font-size:44px;letter-spacing:2px;color:#cfe0ff}
+  .ml-logo{display:block;width:min(420px,88%);margin:0 auto;user-select:none;-webkit-user-drag:none}
   .ml-sub{margin:6px 0 16px;color:#9aa0bf}
   .ml-section{text-align:left;margin:14px 2px 6px;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#8890b3}
   .ml-worlds{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start;max-height:24vh;overflow:auto;padding:2px}

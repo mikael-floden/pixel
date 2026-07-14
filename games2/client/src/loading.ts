@@ -24,8 +24,8 @@ export function showLoading(text = "Entering Nangijala…") {
   overlay.id = "ml-loading";
   overlay.innerHTML = `
     <div class="ml-load-box">
+      <img class="ml-load-logo" src="/logo.png" alt="Nangijala Online" />
       <div class="ml-load-spinner"></div>
-      <h1 class="ml-load-title">Nangijala</h1>
       <div class="ml-load-barwrap"><div class="ml-load-bar" id="ml-load-bar"></div></div>
       <div class="ml-load-label" id="ml-load-label"></div>
       <div class="ml-load-tip">Tip: tap the ground to walk there · double-tap to run</div>
@@ -65,7 +65,7 @@ function injectStyles() {
   #ml-loading{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;
     background:radial-gradient(circle at 50% 30%, #1c2540, #0c0c16);font-family:system-ui,sans-serif;color:#e8e8f0}
   .ml-load-box{display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px;text-align:center}
-  .ml-load-title{margin:0;font-size:36px;letter-spacing:2px;color:#cfe0ff}
+  .ml-load-logo{width:min(340px,78vw);user-select:none;-webkit-user-drag:none}
   .ml-load-spinner{width:42px;height:42px;border-radius:50%;border:4px solid #2a2a44;border-top-color:#ffd678;
     animation:mlspin 0.9s linear infinite}
   .ml-load-barwrap{width:min(320px,70vw);height:8px;border-radius:4px;background:#1e1e30;overflow:hidden}
