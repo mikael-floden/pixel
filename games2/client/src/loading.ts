@@ -17,7 +17,6 @@
 
 let overlay: HTMLElement | null = null;
 let bar: HTMLElement | null = null;
-let label: HTMLElement | null = null;
 let failsafe: ReturnType<typeof setTimeout> | null = null;
 
 // The LOADING banner's interior within logo-load.png (percent of image box).
@@ -37,21 +36,21 @@ export function showLoading(text = "Entering Nangijala…") {
         <div class="ml-load-track"><div class="ml-load-bar" id="ml-load-bar"></div></div>
         <img class="ml-load-logo" src="/logo-load.png" alt="Nangijala Online — loading" />
       </div>
-      <div class="ml-load-label" id="ml-load-label"></div>
-      <div class="ml-load-tip">Tip: tap the ground to walk there · double-tap to run</div>
     </div>`;
   document.body.appendChild(overlay);
   bar = overlay.querySelector("#ml-load-bar");
-  label = overlay.querySelector("#ml-load-label");
   setLoadingProgress(0.03, text); // a visible sliver right away — it's alive
   // Failsafe: never trap the player behind the overlay (slow nets still get
   // the world once it arrives; the overlay is cosmetic).
   failsafe = setTimeout(hideLoading, 60_000);
 }
 
+// `text` is accepted (callers describe their phase) but not shown — the
+// screen is just the logo + banner fill for now; a status line / gameplay
+// tips may return once the game is further along.
 export function setLoadingProgress(frac: number, text?: string) {
+  void text;
   if (bar) bar.style.width = `${Math.round(Math.min(1, Math.max(0, frac)) * 100)}%`;
-  if (text && label) label.textContent = text;
 }
 
 export function hideLoading() {
@@ -60,7 +59,6 @@ export function hideLoading() {
   overlay?.remove();
   overlay = null;
   bar = null;
-  label = null;
 }
 
 export function loadingVisible(): boolean {
@@ -87,8 +85,6 @@ function injectStyles() {
       repeating-linear-gradient(90deg, rgba(255,255,255,.08) 0 2px, transparent 2px 6px),
       linear-gradient(180deg, #a2b6bf 0%, #6b9cba 25%, #435ca0 50%, #734aa8 75%, #4f2f82 100%);
     animation:mlglow 1.6s ease-in-out infinite}
-  .ml-load-label{font-size:13px;color:#9aa0bf;min-height:1.2em}
-  .ml-load-tip{font-size:12px;color:#666d92;margin-top:6px}
   @keyframes mlglow{0%,100%{filter:brightness(1)}50%{filter:brightness(1.18)}}`;
   const s = document.createElement("style");
   s.textContent = css;
