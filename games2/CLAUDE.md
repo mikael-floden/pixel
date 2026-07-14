@@ -143,16 +143,23 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   the first attempt's SAD strip-matcher also under-measured strides).
   Output: `gaitFps` in characters.json, applied per-clip in
   `buildAnimations` (fallback: ANIM_FPS).
-- Rate ∝ CURRENT speed: `applyAnimState` sets `anims.timeScale` to the
-  avatar's EMA'd on-screen speed (`av.spdPx`, sampled from the eased flat
-  position) over the gait's base speed, so water slowdown / easing /
-  autopilot pace changes keep footfalls on the ground. MOVEMENT SPEED IS
-  UNTOUCHED — only playback. Probes: `__ml.animRate(uid,state,dir)`,
-  `__ml.timeScale()`, `__ml.screenSpeed()`, `__ml.gaitSample()`; regressions:
-  `scripts/verify-animrates.mjs` (rates + live timeScale) and
-  `scripts/verify-gaitsync.mjs` (end-to-end: ground px per animation cycle ==
-  the design stride, starvation-immune; stance foot-slip reported as info —
-  the art glides a little by design, cadence-true playback keeps a residual).
+- Rate ∝ CURRENT **WORLD** speed: `applyAnimState` sets `anims.timeScale` to
+  the avatar's EMA'd world-units speed (`av.spdWu`, back-projected from the
+  eased flat screen delta) over the gait's side-view reference speed
+  (base·√½ ≈ 49.5/123.7 wu/s). World — not screen — speed on purpose: the
+  calibrated-uniform screen speed means a screen-north walk crosses
+  ISO_DX/ISO_DY ≈ 2.13× more world ground per second than east, so N/S legs
+  pace 2.13× faster (playtester: "up/down walk plays too slow"), key
+  diagonals 1.28×, and water slowdown / easing / autopilot pace changes keep
+  footfalls on the ground — continuously, no per-direction cadence pops.
+  MOVEMENT SPEED IS UNTOUCHED — only playback. Probes:
+  `__ml.animRate(uid,state,dir)`, `__ml.timeScale()`, `__ml.worldSpeed()`,
+  `__ml.gaitSample()`; regressions: `scripts/verify-animrates.mjs` (rates +
+  live timeScale ≡ worldSpeed/ref on east AND north) and
+  `scripts/verify-gaitsync.mjs` (end-to-end: world ground per animation
+  cycle == the design stride on BOTH headings, starvation-immune; stance
+  foot-slip reported as info — the art glides a little by design,
+  cadence-true playback keeps a residual).
 
 ## Night lighting (client/src/nightlight.ts)
 

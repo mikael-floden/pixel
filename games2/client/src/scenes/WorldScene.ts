@@ -176,11 +176,15 @@ interface Avatar {
   dispDir?: string;
   pendDir?: string;
   pendSince?: number;
-  // EMA of the avatar's on-screen ground speed (px/s at zoom 1), sampled from
-  // the eased flat position. Drives anims.timeScale so gait playback stays
-  // proportional to how fast the character ACTUALLY moves (water slowdown,
-  // easing lag, autopilot walk) — feet keep tracking the ground.
-  spdPx?: number;
+  // EMA of the avatar's ground speed in WORLD units/s, back-projected from
+  // the eased flat screen position. Drives anims.timeScale so gait playback
+  // stays proportional to the ground ACTUALLY covered. World — not screen —
+  // speed on purpose: the iso projection compresses vertical, so at the
+  // calibrated uniform screen speed a screen-north walk crosses ISO_DX/ISO_DY
+  // ≈ 2.13× more world ground per second than an east one; legs must pace
+  // the ground, or fore/back walks read as a lazy shuffle while tiles fly by
+  // (playtester: "up/down walk plays too slow, feet not traveling as far").
+  spdWu?: number;
 }
 
 // How long an ADJACENT (45°) direction change must persist before the sprite
@@ -615,20 +619,22 @@ export class WorldScene extends Phaser.Scene {
       animRate: (uid: string, state: string, dir: string) =>
         this.anims.get(animKey(uid, state, dir))?.frameRate ?? null,
       // Live gait-sync probes: my avatar's playback timeScale (rate ∝ speed)
-      // and the EMA'd on-screen ground speed it derives from (px/s at zoom 1).
+      // and the EMA'd WORLD-units ground speed it derives from (wu/s).
       timeScale: () => this.avatars.get(this.room?.sessionId ?? "")?.sprite.anims.timeScale ?? null,
-      screenSpeed: () => this.avatars.get(this.room?.sessionId ?? "")?.spdPx ?? null,
-      // One-call sample for the foot-slip probe (verify-gaitsync): the EASED
+      worldSpeed: () => this.avatars.get(this.room?.sessionId ?? "")?.spdWu ?? null,
+      // One-call sample for the gait-sync probe (verify-gaitsync): the EASED
       // sprite ground position (scene px at zoom 1 — what the eye sees), the
-      // playing clip and its 0-based frame index. Sampled per rAF, combined
-      // offline with the art's per-frame planted-foot offsets to measure how
-      // much a planted foot slides against the ground ("moonwalk meter").
+      // flat WORLD position, the playing clip and its 0-based frame index.
+      // Sampled per rAF; offline it gates world-ground-per-cycle and measures
+      // planted-foot slip against the art offsets ("moonwalk meter").
       gaitSample: () => {
         const av = this.avatars.get(this.room?.sessionId ?? "");
         if (!av) return null;
         return {
           sx: av.lx,
           sy: av.lyFlat,
+          wx: av.fx,
+          wy: av.fy,
           anim: av.sprite.anims.getName(),
           frame: (av.sprite.anims.currentFrame?.index ?? 0) - 1, // Phaser is 1-based
           originX: av.sprite.originX,
@@ -1103,7 +1109,7 @@ export class WorldScene extends Phaser.Scene {
         av.elev = targetElev;
         av.fallV = 0;
         av.falling = false;
-        av.spdPx = undefined; // a teleport is not a speed sample
+        av.spdWu = undefined; // a teleport is not a speed sample
       } else {
         const px0 = av.lx;
         const py0 = av.lyFlat;
@@ -1111,13 +1117,21 @@ export class WorldScene extends Phaser.Scene {
         av.lx += (g.x - av.lx) * k;
         av.lyFlat += (g.y - av.lyFlat) * k;
         this.stepElevation(av, targetElev, dt);
-        // On-screen ground speed (px/s at zoom 1) from the EASED flat point —
-        // exactly what the viewer sees, smooth for remote 20Hz-stepped
-        // targets too. EMA (~125ms) irons out easing ripple; applyAnimState
-        // turns it into gait-playback timeScale (feet track the ground).
+        // Ground speed in WORLD units/s, back-projected from the EASED flat
+        // screen delta (smooth for remote 20Hz-stepped targets too):
+        // Δsx = Δ(x−y)·dx/CELL_WU, Δsy = Δ(x+y)·dy/CELL_WU — invert, so a
+        // screen-north walk (vertical, iso-compressed) counts the full
+        // ~2.13× world ground it actually covers. On the plain fallback
+        // ground the projection is identity. EMA (~125ms) irons out easing
+        // ripple; applyAnimState turns it into gait-playback timeScale.
         if (dt > 0.001) {
-          const v = Math.hypot(av.lx - px0, av.lyFlat - py0) / dt;
-          av.spdPx = av.spdPx === undefined ? v : av.spdPx + (v - av.spdPx) * Math.min(1, dt * 8);
+          const dsx = av.lx - px0; // = Δ(x−y)·dx/CELL_WU (dx == CELL_WU → 1:1)
+          const dsy = av.lyFlat - py0; // = Δ(x+y)·dy/CELL_WU
+          const dSum = dsy * (CELL_WU / MAP_GEOMETRY.dy); // Δ(x+y)
+          const v = this.world
+            ? Math.hypot((dsx + dSum) / 2, (dSum - dsx) / 2) / dt
+            : Math.hypot(dsx, dsy) / dt;
+          av.spdWu = av.spdWu === undefined ? v : av.spdWu + (v - av.spdWu) * Math.min(1, dt * 8);
         }
       }
       av.ly = av.lyFlat - av.elev;
@@ -1732,13 +1746,18 @@ export class WorldScene extends Phaser.Scene {
       this.applyAnchor(av.sprite, av.character, d, av.sprite.texture.key !== PLACEHOLDER_TEX);
     }
     // Rate ∝ speed: the gait clips' base frameRate is measured (build-manifest
-    // gaitFps) to plant feet at the gait's BASE speed; scale playback by the
-    // avatar's ACTUAL screen speed so footfalls keep tracking the ground when
-    // water/easing/autopilot change the pace. Clamped: a wall-push (speed→0)
+    // gaitFps) to plant feet at the gait's base SIDE-VIEW speed — in world
+    // units that's speed·√½ (a screen-east walk maps to the world diagonal).
+    // Scale playback by the avatar's ACTUAL world speed over that reference:
+    // east/west stay 1×, screen-north/south walks cover ISO_DX/ISO_DY ≈ 2.13×
+    // the world ground so their legs pace 2.13× faster (playtester: N/S
+    // "playing too slow"), key diagonals land at 1.28×, and water/autopilot/
+    // easing pace changes keep footfalls tracking the ground — continuously,
+    // no per-direction cadence pops. Clamp floor: a wall-push (speed→0)
     // reads as a slow struggle, not frozen legs mid-stride.
     if (state === "walk" || state === "run") {
-      const base = running ? RUN_SPEED : WALK_SPEED; // == screen px/s at zoom 1
-      av.sprite.anims.timeScale = Phaser.Math.Clamp((av.spdPx ?? base) / base, 0.4, 1.5);
+      const base = (running ? RUN_SPEED : WALK_SPEED) * (this.world ? Math.SQRT1_2 : 1);
+      av.sprite.anims.timeScale = Phaser.Math.Clamp((av.spdWu ?? base) / base, 0.4, 2.6);
     } else {
       av.sprite.anims.timeScale = 1;
     }
