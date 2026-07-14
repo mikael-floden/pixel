@@ -251,6 +251,10 @@ export function stepMovement(
   // client pass the LOADED world's size so any-sized worlds stay in bounds.
   worldW: number = WORLD_WIDTH,
   worldH: number = WORLD_HEIGHT,
+  // Softer predicate for the LATERAL corner probes (see below). Defaults to
+  // `blocked`; real callers pass makeSideBlocked so elevation walls beside
+  // the path can't wedge a player who just descended a cliff.
+  sideBlocked?: BlockedFn,
 ): MoveResult {
   const len = Math.hypot(ax, ay);
   if (len < 1e-6) return { x, y, dir: null, moving: false };
@@ -284,14 +288,24 @@ export function stepMovement(
   // can therefore rest right at — or a hair past — the rim (the body billboard
   // overhangs the edge), and the visual FALL to the lower ground is animated
   // client-side (WorldScene) instead of teleporting the anchor past the rim.
+  // Probe layout per axis: the forward CENTRE probe applies the FULL rule
+  // (elevation climb + solids) — you can never walk head-on into a cliff
+  // face or a prop. The LATERAL corner probes apply the softer `sideBlocked`
+  // rule (real callers: solids only). An elevation wall BESIDE the path must
+  // not veto a parallel or escaping move: a player who had just descended a
+  // cliff stood within probe reach of BOTH faces of any inside corner, so
+  // every axis was rejected and they were wedged in place — the "stuck after
+  // walking downhill near a corner" bug. Solid props still block from every
+  // side (no sideways clipping into trees/boulders).
   const SIDE = PLAYER_RADIUS * 0.75;
+  const sideB = sideBlocked ?? blocked;
   const px = tx + Math.sign(tx - x) * PLAYER_RADIUS;
   const blockedX =
-    blocked && (blocked(px, y - SIDE, x, y) || blocked(px, y + SIDE, x, y));
+    blocked && (blocked(px, y, x, y) || sideB!(px, y - SIDE, x, y) || sideB!(px, y + SIDE, x, y));
   if (!blockedX) rx = tx;
   const py = ty + Math.sign(ty - y) * PLAYER_RADIUS;
   const blockedY =
-    blocked && (blocked(rx - SIDE, py, rx, y) || blocked(rx + SIDE, py, rx, y));
+    blocked && (blocked(rx, py, rx, y) || sideB!(rx - SIDE, py, rx, y) || sideB!(rx + SIDE, py, rx, y));
   if (!blockedY) ry = ty;
   return { x: rx, y: ry, dir, moving: true };
 }
@@ -875,6 +889,19 @@ export function canEnter(
 /** Adapt canEnter into stepMovement's blocked() predicate for a given context. */
 export function makeBlocked(grid: TerrainGrid, ctx: MoveContext): BlockedFn {
   return (toX, toY, fromX, fromY) => !canEnter(grid, fromX, fromY, toX, toY, ctx);
+}
+
+/** stepMovement's LATERAL corner-probe predicate: only SOLIDS block sideways
+ * (props, structures, non-enterable surfaces) — pure elevation steps don't.
+ * The forward centre probe (full canEnter) still stops head-on wall walks;
+ * this keeps a wall BESIDE the path from vetoing a parallel/escaping move,
+ * which wedged players at inside corners right after a cliff descent. */
+export function makeSideBlocked(grid: TerrainGrid, ctx: MoveContext): BlockedFn {
+  return (toX, toY) => {
+    if (isBlockedAtWorld(grid, toX, toY)) return true;
+    const to = surfaceAtWorld(grid, toX, toY);
+    return !(to.standable || (to.swimmable && ctx.canSwim));
+  };
 }
 
 /** Canonical FALL predicate: is moving from `from` onto `to` a downward step

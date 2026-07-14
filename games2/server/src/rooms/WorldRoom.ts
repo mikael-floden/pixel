@@ -18,6 +18,7 @@ import {
   parseWorld,
   buildDemoWorld,
   makeBlocked,
+  makeSideBlocked,
   surfaceAtWorld,
   isStandableAtWorld,
   findSpawn,
@@ -197,6 +198,7 @@ export class WorldRoom extends Room<WorldState> {
             true, // iso world → input is screen-relative (Up walks up on screen)
             this.worldW,
             this.worldH,
+            makeSideBlocked(terrain, ctx), // corner probes: solids only (no ledge-wedging)
           );
         } else {
           r = stepMovement(player.x, player.y, inp.ax, inp.ay, inp.running, eff);

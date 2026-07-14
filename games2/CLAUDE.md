@@ -64,6 +64,14 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
   and flat ground never auto-jumps. Client-only (queues the same jump input the
   server validates); `tryJump` still gates on grounded+cooldown. Probe via
   `__ml.autoJumpAt(x,y,ax,ay)`.
+- **Collision probes** (`stepMovement`): per axis, the forward CENTRE probe
+  applies the full rule (elevation + solids, `makeBlocked`); the two LATERAL
+  corner probes apply `makeSideBlocked` (solids only). An elevation wall
+  beside the path must never veto a parallel/escaping move — with full-rule
+  corner probes, a player who had just descended a cliff was wedged at any
+  inside corner (both axes vetoed by the two wall faces). Solid props still
+  block from every side. Regression test: "no wedging at an inside cliff
+  corner" in server/test/collision.test.ts.
 - **Edge feel / falling**: walking off a ledge is forgiving — `stepMovement`
   no longer commits the drop a `PLAYER_RADIUS` early or snaps the anchor past
   the rim (the old "teleport to the floor beneath" feel). The feet just walk to

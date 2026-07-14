@@ -5,6 +5,7 @@ import {
   buildTerrainGrid,
   makeBlocked,
   makeDrops,
+  makeSideBlocked,
   canEnter,
   surfaceFor,
   surfaceAtWorld,
@@ -370,4 +371,33 @@ test("stepStamina drains in water, drowns at zero, regenerates on land", () => {
   const regen = stepStamina(50, false, 1);
   assert.ok(regen.stamina > 50 && regen.stamina <= MAX_STAMINA);
   assert.equal(regen.drowned, false);
+});
+
+test("no wedging at an inside cliff corner (stuck-walking-downhill bug)", () => {
+  // A 2×2 low pocket with HIGH walls east (col 2) and south (row 2) — the
+  // inside corner a player stands in right after descending a ledge near its
+  // corner. Wedged spot: within the forward probe (PLAYER_RADIUS) of the east
+  // wall AND within a lateral probe (0.75×PLAYER_RADIUS) of the south wall.
+  // With full-rule corner probes BOTH axes were vetoed by the wall beside the
+  // path and the player froze; lateral probes are solids-only now.
+  const g = (l = 0) => ({ t: "grass", l });
+  const rows = [
+    [g(0), g(0), g(1)],
+    [g(0), g(0), g(1)],
+    [g(1), g(1), g(1)],
+  ];
+  const grid = buildTerrainGrid(3, 3, rows);
+  const ctx = { maxClimb: WALK_CLIMB, canSwim: true };
+  const blocked = makeBlocked(grid, ctx);
+  const side = makeSideBlocked(grid, ctx);
+  const x0 = 2 * CELL_WU - 6;
+  const y0 = 2 * CELL_WU - 6;
+  const step = (ax: number, ay: number) =>
+    stepMovement(x0, y0, ax, ay, false, 0.2, blocked, 1, false, undefined, undefined, side);
+  // Escaping along either axis must actually move…
+  assert.ok(step(-1, 0).x < x0 - 1, "walks west out of the corner");
+  assert.ok(step(0, -1).y < y0 - 1, "walks north out of the corner");
+  // …while the forward centre probe still stops walking INTO the walls.
+  assert.ok(step(1, 0).x <= x0 + 1e-6, "cannot walk east up the wall");
+  assert.ok(step(0, 1).y <= y0 + 1e-6, "cannot walk south up the wall");
 });

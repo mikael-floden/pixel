@@ -14,6 +14,7 @@ import {
   TerrainGrid,
   buildTerrainGrid,
   makeBlocked,
+  makeSideBlocked,
   canEnter,
   surfaceAtWorld,
   levelAtWorld,
@@ -879,14 +880,16 @@ export class WorldScene extends Phaser.Scene {
         const jumping = this.time.now < this.jumpUntil;
         const stepLocal = (ax: number, ay: number, running: boolean, sdt: number) => {
           let blocked;
+          let sideBlocked;
           let speed = 1;
           if (this.terrain) {
             const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
             blocked = makeBlocked(this.terrain, ctx);
+            sideBlocked = makeSideBlocked(this.terrain, ctx); // corner probes: solids only
             speed = surfaceAtWorld(this.terrain, rx, ry).speed * (jumping ? JUMP_SPEED_FACTOR : 1);
           }
           // screenInput matches the server: on the iso world, input is screen-relative.
-          const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain, this.worldW, this.worldH);
+          const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain, this.worldW, this.worldH, sideBlocked);
           rx = r.x;
           ry = r.y;
         };
