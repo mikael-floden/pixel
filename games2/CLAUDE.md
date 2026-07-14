@@ -219,29 +219,58 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
   prop face — or inside the prop — walks to the nearest spot the BODY can
   occupy, instead of grinding at the face like a fly at a window). A* is
   best-effort: unreachable/solid goals route to the nearest reachable rim;
-  `null` (nowhere to go) ignores the tap. The autopilot
-  (`WorldScene.driveAutopilot`) follows the waypoints emitting the SAME 8-way
-  screen input a keyboard would (best-of-8 by dot product through the shared
-  `screenToWorldVector`), so prediction, server validation and auto-jump
-  behave identically to keys. Two follower rules matter: (1) "open heading"
-  checks simulate a REAL `stepMovement` tick (lateral corner probes and all)
-  — a centre-point probe lies exactly at 1-cell gaps between props, where the
-  body must first be centred by sliding; when the direct heading can't
-  actually displace the body, the best open heading within reason steers
-  instead. (2) Waypoints advance when the movement SEGMENT since last frame
-  swept within the radius — endpoint-only sampling at run speed under long
-  frames (laggy phone, throttled tab) leapfrogs the waypoint every frame and
-  orbits it forever. Trips end on arrival (< ¾ player radius, same segment
-  sweep); a 1.5s per-waypoint stall re-plans once, then gives up (stall
-  within ~1 cell of the goal counts as arrival — a nudged target snug
-  between props). Auto-jump uses the shared `autoJumpWanted` (probe scaled
-  by the DOMINANT axis so concave "V" corners fire too). Double-taps are
-  timed by DOM event time (`pointer.upTime`), NOT the game clock. Probes:
-  `__ml.tapTo`, `__ml.target`, `__ml.path`, `__ml.navLog`, `__ml.gridAround`,
-  `__ml.pickAt`. The honest gate is `scripts/verify-longwalk.mjs` (seeded
-  15-35-cell walk/run trips on props or WORLD=emission; PASS = ARRIVAL) —
-  keep its viewport small: headless software-GL at big viewports starves the
-  frame loop into slow-motion and fakes navigation failures.
+  `null` (nowhere to go) ignores the tap. The FOLLOWER lives in `shared/`
+  (**`startTrip`/`stepAutopilot`** — WorldScene only feeds it the predicted
+  position, renders the marker, and cancels on keyboard) and emits the SAME
+  8-way screen input a keyboard would (best-of-8 by dot product through the
+  shared `screenToWorldVector`), so prediction, server validation and
+  auto-jump behave identically to keys. The follower rules that matter:
+  (1) "open heading" checks simulate a REAL `stepMovement` tick (lateral
+  corner probes and all) — a centre-point probe lies exactly at 1-cell gaps
+  between props, where the body must first be centred by sliding; openness is
+  measured against each input's own speed-scaled displacement. (2) When the
+  direct heading is body-blocked the chosen detour heading is COMMITTED
+  (`trip.steer`) until the direct opens / the waypoint advances / a clearly
+  better escape appears — re-picking every frame lets the two flanking
+  headings' lateral components cancel and the player vibrates in place at a
+  gap's mouth. (3) Waypoints advance when the movement SEGMENT since last
+  step swept within the radius, and arrival/advance radii scale with the
+  observed per-step distance (capped at one cell) — endpoint sampling with
+  fixed radii at run speed under long frames leapfrogs/orbits forever.
+  (4) Once one step exceeds a cell, the trip stickily demotes run→walk
+  (`trip.slow`): 2.5fps frames cover two cells per decision, faster than any
+  controller can steer. A 1.5s per-waypoint stall re-plans once, then gives
+  up (stall within ~1 cell of the goal counts as arrival). Auto-jump uses the
+  shared `autoJumpWanted` (probe scaled by the DOMINANT axis so concave "V"
+  corners fire too). Double-taps are timed by DOM event time
+  (`pointer.upTime`), NOT the game clock. Probes: `__ml.tapTo`, `__ml.target`,
+  `__ml.path`, `__ml.navLog`, `__ml.gridAround`, `__ml.pickAt`.
+
+## Dev-test workflow (fast loop — keep it this way)
+
+- **Navigation/movement logic → `server/test/navigation.sim.test.ts`**, NOT
+  the browser. It runs the real brain (shared `stepAutopilot`) against the
+  real body (server integration: unstick + `stepMovement` + auto-jump model)
+  on the REAL worlds (prop_demo from maps2, the emission station from its
+  registries) at ~1000× real time — ~100 seeded walk/run trips × three frame
+  cadences (16/133/400ms; the laggy rows are what catch the big-dt freeze and
+  orbit classes) in ~2s inside `npm test`. A 2000-trip sweep takes ~15s in a
+  scratch script. When a trip fails, print `stepAutopilot`'s debug fields —
+  full decision forensics in seconds, no browser.
+- **Browser = graphics + glue only, ONE session**: `scripts/verify-smoke.mjs`
+  runs everything browser-bound back-to-back in a single Chromium + world
+  load (~30s total): loading overlay, version badge, real-pointer tap walk,
+  synthetic double-tap run, keyboard cancel, jump anim states, measured anim
+  rates, in-place reconnect (last — it swaps the session), then one reload
+  for an emission join + trip. The per-feature scripts (verify-mobile/-jump/
+  -reconnect/-animrates/-navigation/-longwalk) remain for deep dives.
+- **Headless-GL starvation preflight**: verify-smoke measures raw keyboard
+  speed first and ABORTS ("HARNESS STARVED") if the harness is too slow —
+  software-GL at big viewports throttles the frame loop into slow motion
+  that fakes "stuck player" bugs (this once cost an hour of ghost-chasing).
+  Keep e2e viewports small (480×320); `scripts/debug-speed.mjs` measures.
+- Rule of thumb: if a check doesn't need pixels, pointer events, websockets,
+  or Phaser anims, it belongs in `server/test` (3s), not in a browser (min).
 - **Loading screen** (`loading.ts`): select.ts shows it on "Enter world",
   WorldScene.preload feeds real asset progress, hidden when the player's own
   avatar joins (or on connection error; 60s failsafe so it can't trap).

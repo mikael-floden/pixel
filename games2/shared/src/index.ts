@@ -1428,3 +1428,237 @@ export function sanitizeChat(text: unknown): string {
   }
   return out.trim().slice(0, MAX_CHAT_LEN);
 }
+
+// ---------------------------------------------------------------------------
+// Tap-to-move autopilot — SHARED so headless tests drive the exact game logic.
+// The client (WorldScene) owns only the Phaser glue (tap picking, the marker,
+// keyboard-cancels); every navigation decision lives here, which is what lets
+// server/test/navigation.sim.test.ts run hundreds of walk/run trips at ~1000x
+// real time without a browser. If you change how the follower steers, the sim
+// suite IS the regression gate; the browser smoke test only proves the glue.
+// ---------------------------------------------------------------------------
+
+/** Live state of one tap-to-move trip. Mutated in place by stepAutopilot. */
+export interface AutopilotTrip {
+  /** The route's END: the tapped point clearance-adjusted out of collision
+   * margins (or the reachable rim for walled-off goals) — see findPath. */
+  target: { x: number; y: number; run: boolean };
+  path: { x: number; y: number }[];
+  repathed: boolean; // one re-route per trip when progress stalls
+  progress: { d: number; t: number }; // best waypoint distance so far + when
+  lastPos: { x: number; y: number } | null; // last step's position (segment sweep)
+  /** Committed detour heading while the direct heading is body-blocked.
+   * Without this the two open headings FLANKING a blocked direction can have
+   * near-equal dots whose order flips as the body crosses the waypoint's
+   * axis — their lateral components cancel and the player vibrates in place
+   * at a gap's mouth forever (found by the trip simulator, 60fps frames). */
+  steer: { ax: number; ay: number } | null;
+  /** Sticky run→walk demotion: once one frame's displacement exceeds a CELL
+   * the control rate can no longer steer a run (70wu per decision at 2.5fps
+   * — two cells blind between choices). The rest of the trip walks; manual
+   * keyboard running is unaffected. */
+  slow: boolean;
+}
+
+/** Plan a trip from (fromX,fromY) to the tapped (toX,toY). Null → nowhere to
+ * go (tap into a sealed area) — callers ignore the tap. Without a grid the
+ * trip is a beeline (open worlds). */
+export function startTrip(
+  grid: TerrainGrid | null,
+  fromX: number,
+  fromY: number,
+  toX: number,
+  toY: number,
+  run: boolean,
+  nowMs: number,
+): AutopilotTrip | null {
+  const path = grid ? (findPath(grid, fromX, fromY, toX, toY) ?? []) : [{ x: toX, y: toY }];
+  if (path.length === 0) return null;
+  const end = path[path.length - 1];
+  return {
+    target: { x: end.x, y: end.y, run },
+    path,
+    repathed: false,
+    progress: { d: Infinity, t: nowMs },
+    lastPos: null,
+    steer: null,
+    slow: false,
+  };
+}
+
+export interface AutopilotDrive {
+  ax: number; // 8-way SCREEN input, exactly what a keyboard would hold
+  ay: number;
+  running: boolean;
+  done: boolean; // trip over (arrived, or gave up truly blocked) — caller clears
+  // Decision trace for debugging (client mirrors this into __ml.navLog).
+  wp: { x: number; y: number };
+  dist: number;
+  rawDot: number;
+  openDot: number | null;
+  usedOpen: boolean;
+}
+
+const AUTOPILOT_IDLE: AutopilotDrive = {
+  ax: 0, ay: 0, running: false, done: true,
+  wp: { x: 0, y: 0 }, dist: 0, rawDot: 0, openDot: null, usedOpen: false,
+};
+
+/**
+ * One autopilot step: steer toward the next WAYPOINT of the planned route
+ * with, out of the 8 inputs a keyboard could hold, the one whose WORLD
+ * direction (via screenToWorldVector, grid-axis lock included) points most
+ * toward it. Re-evaluated every predict tick. Arrival ends the trip; a 1.5s
+ * per-waypoint stall re-plans once from the current spot, then gives up
+ * (a stall within ~1 cell of the goal counts as arrival — a nudged target
+ * still snug between props). Auto-jump handles 1-level ledges on the way
+ * (the caller fires the actual jump; see autoJumpWanted).
+ */
+export function stepAutopilot(
+  grid: TerrainGrid | null,
+  trip: AutopilotTrip,
+  x: number,
+  y: number,
+  nowMs: number,
+  worldW: number = WORLD_WIDTH,
+  worldH: number = WORLD_HEIGHT,
+): AutopilotDrive {
+  const t = trip.target;
+  // A waypoint counts as reached when the position lands within the radius OR
+  // the movement SEGMENT since last step passed within it. One frame of run
+  // under a long dt (throttled tab, laggy phone) covers more than the whole
+  // radius — endpoint sampling alone leapfrogs the waypoint every frame and
+  // orbits it forever without ever "arriving".
+  const prev = trip.lastPos ?? { x, y };
+  const segLen = Math.hypot(x - prev.x, y - prev.y);
+  const segNear = (wx: number, wy: number, r: number): boolean => {
+    if (segLen > CELL_WU * 3) return false; // teleport/respawn, not a walk step
+    const dx = x - prev.x;
+    const dy = y - prev.y;
+    const l2 = dx * dx + dy * dy;
+    const u = l2 > 1e-9 ? Math.max(0, Math.min(1, ((wx - prev.x) * dx + (wy - prev.y) * dy) / l2)) : 0;
+    return Math.hypot(wx - (prev.x + dx * u), wy - (prev.y + dy * u)) <= r;
+  };
+  trip.lastPos = { x, y };
+  // Radii scale with the observed per-step distance (capped at one cell):
+  // you cannot stop or clip a point finer than one movement step, and under
+  // long frames (laggy phone, throttled tab) a run step is 30-70wu — fixed
+  // radii either orbit forever or read as "never arrived".
+  const stepR = Math.min(Math.max(segLen * 0.75, 0), CELL_WU);
+  if (segLen > CELL_WU) trip.slow = true; // control rate can't steer a run
+
+  const advanceR = Math.max(PLAYER_RADIUS, stepR);
+  const arriveR = Math.max(PLAYER_RADIUS * 0.75, stepR);
+  // Advance past reached waypoints (intermediate radius is loose — the 8-way
+  // heading has up to ~22° of error, tight radii would make it orbit).
+  while (trip.path.length > 1) {
+    const w0 = trip.path[0];
+    if (Math.hypot(w0.x - x, w0.y - y) > advanceR && !segNear(w0.x, w0.y, PLAYER_RADIUS)) break;
+    trip.path.shift();
+    trip.progress = { d: Infinity, t: nowMs };
+    trip.steer = null; // new waypoint → re-pick the detour heading fresh
+  }
+  const wp = trip.path[0] ?? { x: t.x, y: t.y };
+  const dxw = wp.x - x;
+  const dyw = wp.y - y;
+  const dist = Math.hypot(dxw, dyw);
+  if (trip.path.length <= 1 && (dist < arriveR || segNear(wp.x, wp.y, PLAYER_RADIUS * 0.75))) {
+    return AUTOPILOT_IDLE; // arrived at the final target
+  }
+  // Stall detection is per-WAYPOINT (euclid distance to the final target can
+  // legitimately grow during a detour). One stall → re-plan from here (the
+  // route may be stale); a second → give up.
+  if (dist < trip.progress.d - 2) trip.progress = { d: dist, t: nowMs };
+  else if (nowMs - trip.progress.t > 1500) {
+    // Pinned but essentially there (collision holds us a body-width short,
+    // e.g. a nudged target still snug between props): that's an arrival.
+    if (Math.hypot(t.x - x, t.y - y) < CELL_WU * 1.25) return AUTOPILOT_IDLE;
+    if (!trip.repathed && grid) {
+      trip.repathed = true;
+      trip.path = findPath(grid, x, y, t.x, t.y) ?? [];
+      trip.progress = { d: Infinity, t: nowMs };
+      trip.steer = null;
+      if (trip.path.length === 0) return AUTOPILOT_IDLE;
+    } else {
+      return AUTOPILOT_IDLE; // truly blocked (wall/prop/water edge)
+    }
+  }
+  // Blocked-aware 8-way steering. "Open" is decided by simulating a REAL
+  // movement tick (stepMovement, lateral corner probes included) — a
+  // centre-point probe lies in exactly the case that matters: a 1-cell gap
+  // between props admits the centre but not the body, so the direct heading
+  // "looks open", never corrects sideways, and the player freezes at the
+  // mouth of the gap (the fly at the window). A candidate is open when the
+  // body actually DISPLACES (wall-slide counts — sliding along the gap's
+  // face is what centres the body into it) or when it's a 1-level ledge the
+  // auto-jump will take. If the raw best heading is open it stands; if not,
+  // steer with the best open heading unless everything open points away
+  // (then keep pushing: unstick or the stall-replan resolves it).
+  const walkCtx = { maxClimb: WALK_CLIMB, canSwim: true };
+  const probeBlocked = grid ? makeBlocked(grid, walkCtx) : undefined;
+  const probeSide = grid ? makeSideBlocked(grid, walkCtx) : undefined;
+  const PROBE_DT = 0.15; // one honest walk step (~10.5wu): reaches past the next cell edge
+  const cand: { ax: number; ay: number; dot: number; open: boolean }[] = [];
+  for (let iy = -1; iy <= 1; iy++) {
+    for (let ix = -1; ix <= 1; ix++) {
+      if (ix === 0 && iy === 0) continue;
+      const w = screenToWorldVector(ix, iy);
+      const wl = Math.hypot(w.x, w.y);
+      if (wl < 1e-9) continue;
+      const dot = (w.x * dxw + w.y * dyw) / (wl * Math.max(dist, 1e-6));
+      let open = true;
+      if (grid && probeBlocked) {
+        const r = stepMovement(x, y, ix, iy, false, PROBE_DT, probeBlocked, 1, true, worldW, worldH, probeSide);
+        // Progress relative to THIS input's intended displacement —
+        // screenToWorldVector returns speed-scaled vectors (|w| ≈ 0.7 for
+        // world diagonals, ≈ 0.93-1.74 elsewhere), so a fixed denominator
+        // scored a diagonal's clean one-axis wall-slide at exactly 0.5 and
+        // disqualified the best detours around props.
+        const frac = Math.hypot(r.x - x, r.y - y) / (wl * WALK_SPEED * PROBE_DT);
+        open = frac > 0.45 || autoJumpWanted(grid, x, y, w.x, w.y);
+      }
+      cand.push({ ax: ix, ay: iy, dot, open });
+    }
+  }
+  let rawBest = cand[0];
+  let bestOpen: (typeof cand)[0] | null = null;
+  for (const c of cand) {
+    if (c.dot > rawBest.dot) rawBest = c;
+    if (c.open && (!bestOpen || c.dot > bestOpen.dot)) bestOpen = c;
+  }
+  let best = rawBest;
+  if (rawBest.open || !grid) {
+    trip.steer = null; // direct heading works — normal driving
+  } else {
+    // Direct heading is body-blocked: steer with an OPEN detour heading, and
+    // COMMIT to it. The two open headings flanking a blocked direction have
+    // near-equal dots whose order flips as the body crosses the waypoint's
+    // axis — re-picking every step lets their lateral components cancel and
+    // the player vibrates in place at a gap's mouth. The committed heading
+    // holds while it stays open and roughly sane; a clearly better escape
+    // (+0.35 dot) or an opened direct heading re-decides.
+    const kept = trip.steer ? cand.find((c) => c.ax === trip.steer!.ax && c.ay === trip.steer!.ay) : undefined;
+    if (kept && kept.open && kept.dot > -0.3 && (!bestOpen || kept.dot >= bestOpen.dot - 0.35)) {
+      best = kept;
+    } else if (bestOpen && bestOpen.dot > -0.3) {
+      best = bestOpen;
+      trip.steer = { ax: bestOpen.ax, ay: bestOpen.ay };
+    } else {
+      trip.steer = null; // nothing sane is open — push on; unstick/stall-replan resolves
+    }
+  }
+  // Run trips drop to a walk for the last stretch so the 8-way quantized
+  // heading can't orbit the target at run speed.
+  const finalDist = Math.hypot(t.x - x, t.y - y);
+  return {
+    ax: best.ax,
+    ay: best.ay,
+    running: t.run && !trip.slow && finalDist > CELL_WU,
+    done: false,
+    wp: { x: wp.x, y: wp.y },
+    dist,
+    rawDot: rawBest.dot,
+    openDot: bestOpen ? bestOpen.dot : null,
+    usedOpen: best !== rawBest,
+  };
+}

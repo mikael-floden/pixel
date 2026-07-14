@@ -17,7 +17,9 @@ import {
   makeSideBlocked,
   unstickFromSolids,
   autoJumpWanted,
-  findPath,
+  startTrip,
+  stepAutopilot,
+  AutopilotTrip,
   surfaceAtWorld,
   levelAtWorld,
   integrateFall,
@@ -28,7 +30,6 @@ import {
   isKnownSurface,
   screenToWorldVector,
   PLAYER_RADIUS,
-  WALK_SPEED,
   WALK_CLIMB,
   JUMP_CLIMB,
   JUMP_SPEED_FACTOR,
@@ -209,13 +210,10 @@ export class WorldScene extends Phaser.Scene {
   private connected = false; // live room connection (false while reconnecting)
   private reconnectRetries = 0;
   private reconnectToast?: HTMLElement;
-  private moveTarget: { x: number; y: number; run: boolean } | null = null;
-  // Waypoints toward moveTarget (shared findPath; last = the exact tapped
-  // point). Beeline fallback = a single waypoint when no path was found.
-  private movePath: { x: number; y: number }[] = [];
-  private moveRepathed = false; // one re-route per trip when progress stalls
-  private moveProgress = { d: Infinity, t: 0 }; // best distance so far + when (stall detection)
-  private lastAutoPos: { x: number; y: number } | null = null; // last frame's position (segment sweep)
+  // Trip state — ALL navigation logic lives in the shared startTrip /
+  // stepAutopilot (headless-testable, see server/test/navigation.sim.test.ts);
+  // the scene owns only the glue (tap picking, marker, keyboard-cancels).
+  private trip: AutopilotTrip | null = null;
   // Autopilot decision trace (debug hook __ml.navLog; ring buffer, dev cost ~0).
   private navLog: Record<string, unknown>[] = [];
   private lastTap = { t: -Infinity, x: 0, y: 0 }; // double-tap detection
@@ -583,8 +581,8 @@ export class WorldScene extends Phaser.Scene {
       // Tap-to-move probes: set/inspect the autopilot target directly, and
       // run the same screen-point picking a real tap uses.
       tapTo: (x: number, y: number, run = false) => this.setMoveTarget(x, y, !!run),
-      target: () => this.moveTarget,
-      path: () => this.movePath,
+      target: () => this.trip?.target ?? null,
+      path: () => this.trip?.path ?? [],
       navLog: (n = 40) => this.navLog.slice(-n),
       // 5x5 cell dump around a world point (solid/level) — stall forensics.
       gridAround: (x: number, y: number, r = 2) => {
@@ -1459,8 +1457,8 @@ export class WorldScene extends Phaser.Scene {
     // the trip); otherwise steer toward the tapped target with the same 8-way
     // screen input a keyboard would produce.
     if (ax !== 0 || ay !== 0) {
-      if (this.moveTarget) this.clearMoveTarget();
-    } else if (this.moveTarget) {
+      if (this.trip) this.clearMoveTarget();
+    } else if (this.trip) {
       const drive = this.driveAutopilot();
       ax = drive.ax;
       ay = drive.ay;
@@ -1513,19 +1511,16 @@ export class WorldScene extends Phaser.Scene {
    * shared findPath (walk around props, along walls, jump 1-level ledges
    * head-on) and drops a pulsing ground marker at the destination. */
   private setMoveTarget(x: number, y: number, run: boolean) {
-    const path = this.planPath(x, y);
-    if (path.length === 0) return; // nowhere to go (tap into a sealed area) — ignore
-    // The trip's real destination is the route's END — the tapped point
-    // pushed out of any solid's collision margin (clearanceAdjust), or the
-    // reachable rim when the goal is walled off (best-effort A*). Aiming at
-    // the raw tap ground the player against props when the tap landed a few
-    // units from a face (a spot the body can't physically occupy).
-    const end = path[path.length - 1];
-    this.moveTarget = { x: end.x, y: end.y, run };
-    this.movePath = path;
-    this.moveRepathed = false;
-    this.moveProgress = { d: Infinity, t: this.time.now };
-    this.lastAutoPos = null; // fresh trip: no carry-over movement segment
+    const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+    if (!me) return;
+    // startTrip routes with the shared findPath; the trip's destination is
+    // the route's END — the tapped point pushed out of any solid's collision
+    // margin, or the reachable rim when the goal is walled off. Null →
+    // nowhere to go (tap into a sealed area) — ignore.
+    const trip = startTrip(this.terrain, me.fx, me.fy, x, y, run, this.time.now);
+    if (!trip) return;
+    this.trip = trip;
+    const end = trip.target;
     this.ensureTapAssets();
     this.tapMarker?.destroy();
     const p = this.projectFlat(end.x, end.y);
@@ -1546,22 +1541,8 @@ export class WorldScene extends Phaser.Scene {
     });
   }
 
-  /** Route to (x,y) from the player's current spot; beeline fallback when
-   * there's no terrain or no path within budget (stall handling still applies). */
-  private planPath(x: number, y: number): { x: number; y: number }[] {
-    const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
-    if (this.terrain && me) {
-      // findPath is best-effort (unreachable goals route to the nearest
-      // reachable rim); null means there is genuinely nowhere to go.
-      return findPath(this.terrain, me.fx, me.fy, x, y) ?? [];
-    }
-    return [{ x, y }];
-  }
-
   private clearMoveTarget() {
-    this.moveTarget = null;
-    this.movePath = [];
-    this.lastAutoPos = null;
+    this.trip = null;
     if (this.tapMarker) {
       const m = this.tapMarker;
       this.tapMarker = undefined;
@@ -1570,140 +1551,34 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
-  /**
-   * One autopilot step: steer toward the next WAYPOINT of the planned route
-   * (findPath — around props, along walls, ledge climbs approached head-on)
-   * with, out of the 8 inputs a keyboard could hold, the one whose WORLD
-   * direction (via the shared screenToWorldVector, grid-axis lock included)
-   * points most toward it. Re-evaluated every predict tick. Arrival ends the
-   * trip; a stall re-plans once from the current spot, then gives up.
-   * Auto-jump keeps handling 1-level ledges on the way.
-   */
+  /** One autopilot step — delegates every decision to the shared
+   * stepAutopilot (the headless-tested brain); here we only feed it the
+   * predicted position, mirror its trace into __ml.navLog, and clear the
+   * trip (marker included) when it reports done. */
   private driveAutopilot(): { ax: number; ay: number; running: boolean } {
     const idle = { ax: 0, ay: 0, running: false };
     const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
-    const t = this.moveTarget;
-    if (!me || !t) return idle;
-    const now = this.time.now;
-    // A waypoint counts as reached when the position lands within the radius
-    // OR the movement SEGMENT since last frame passed within it. One frame of
-    // run under a long dt (throttled tab, laggy phone) covers more than the
-    // whole radius — endpoint sampling alone leapfrogs the waypoint every
-    // frame and orbits it forever without ever "arriving".
-    const prev = this.lastAutoPos ?? { x: me.fx, y: me.fy };
-    const segLen = Math.hypot(me.fx - prev.x, me.fy - prev.y);
-    const segNear = (wx: number, wy: number, r: number): boolean => {
-      if (segLen > CELL_WU * 3) return false; // teleport/respawn, not a walk step
-      const dx = me.fx - prev.x;
-      const dy = me.fy - prev.y;
-      const l2 = dx * dx + dy * dy;
-      const u = l2 > 1e-9 ? Math.max(0, Math.min(1, ((wx - prev.x) * dx + (wy - prev.y) * dy) / l2)) : 0;
-      return Math.hypot(wx - (prev.x + dx * u), wy - (prev.y + dy * u)) <= r;
-    };
-    this.lastAutoPos = { x: me.fx, y: me.fy };
-    // Advance past reached waypoints (intermediate radius is loose — the 8-way
-    // heading has up to ~22° of error, tight radii would make it orbit).
-    while (this.movePath.length > 1) {
-      const w0 = this.movePath[0];
-      if (Math.hypot(w0.x - me.fx, w0.y - me.fy) > PLAYER_RADIUS && !segNear(w0.x, w0.y, PLAYER_RADIUS)) break;
-      this.movePath.shift();
-      this.moveProgress = { d: Infinity, t: now };
-    }
-    const wp = this.movePath[0] ?? { x: t.x, y: t.y };
-    const dxw = wp.x - me.fx;
-    const dyw = wp.y - me.fy;
-    const dist = Math.hypot(dxw, dyw);
-    if (
-      this.movePath.length <= 1 &&
-      (dist < PLAYER_RADIUS * 0.75 || segNear(wp.x, wp.y, PLAYER_RADIUS * 0.75))
-    ) {
-      this.clearMoveTarget(); // arrived at the final target
+    if (!me || !this.trip) return idle;
+    const d = stepAutopilot(this.terrain, this.trip, me.fx, me.fy, this.time.now, this.worldW, this.worldH);
+    if (d.done) {
+      this.clearMoveTarget();
       return idle;
     }
-    // Stall detection is per-WAYPOINT (euclid distance to the final target can
-    // legitimately grow during a detour). One stall → re-plan from here (the
-    // route may be stale); a second → give up.
-    if (dist < this.moveProgress.d - 2) this.moveProgress = { d: dist, t: now };
-    else if (now - this.moveProgress.t > 1500) {
-      // Pinned but essentially there (collision holds us a body-width short,
-      // e.g. a nudged target still snug between props): that's an arrival,
-      // not a reason to grind at the obstacle.
-      if (Math.hypot(t.x - me.fx, t.y - me.fy) < CELL_WU * 1.25) {
-        this.clearMoveTarget();
-        return idle;
-      }
-      if (!this.moveRepathed) {
-        this.moveRepathed = true;
-        this.movePath = this.planPath(t.x, t.y);
-        this.moveProgress = { d: Infinity, t: now };
-      } else {
-        this.clearMoveTarget(); // truly blocked (wall/prop/water edge)
-        return idle;
-      }
-    }
-    // Blocked-aware 8-way steering. "Open" is decided by simulating a REAL
-    // movement tick (stepMovement, lateral corner probes included) — a
-    // centre-point probe lies in exactly the case that matters: a 1-cell gap
-    // between props admits the centre but not the body, so the direct heading
-    // "looks open", never corrects sideways, and the player freezes at the
-    // mouth of the gap (the fly at the window). A candidate is open when the
-    // body actually DISPLACES (wall-slide counts — sliding along the gap's
-    // face is what centres the body into it) or when it's a 1-level ledge the
-    // auto-jump will take. If the raw best heading is open it stands; if not,
-    // steer with the best open heading unless everything open points away
-    // (then keep pushing: unstick or the stall-replan resolves it).
-    const walkCtx = { maxClimb: WALK_CLIMB, canSwim: true };
-    const probeBlocked = this.terrain ? makeBlocked(this.terrain, walkCtx) : undefined;
-    const probeSide = this.terrain ? makeSideBlocked(this.terrain, walkCtx) : undefined;
-    const PROBE_DT = 0.15; // one honest walk step (~10.5wu): reaches past the next cell edge
-    let best = { ax: 0, ay: 0, dot: -Infinity };
-    let bestOpen = { ax: 0, ay: 0, dot: -Infinity };
-    for (let iy = -1; iy <= 1; iy++) {
-      for (let ix = -1; ix <= 1; ix++) {
-        if (ix === 0 && iy === 0) continue;
-        const w = screenToWorldVector(ix, iy);
-        const wl = Math.hypot(w.x, w.y);
-        if (wl < 1e-9) continue;
-        const dot = (w.x * dxw + w.y * dyw) / (wl * Math.max(dist, 1e-6));
-        if (dot > best.dot) best = { ax: ix, ay: iy, dot };
-        if (this.terrain && probeBlocked && dot > bestOpen.dot) {
-          const r = stepMovement(
-            me.fx, me.fy, ix, iy, false, PROBE_DT, probeBlocked, 1, true,
-            this.worldW, this.worldH, probeSide,
-          );
-          // Progress relative to THIS input's intended displacement —
-          // screenToWorldVector returns speed-scaled vectors (|w| ≈ 0.7 for
-          // world diagonals, ≈ 0.93 for cardinals), so a fixed denominator
-          // scored a diagonal's clean one-axis wall-slide at exactly 0.5 and
-          // disqualified the best detours around props.
-          const frac = Math.hypot(r.x - me.fx, r.y - me.fy) / (wl * WALK_SPEED * PROBE_DT);
-          const open = frac > 0.45 || autoJumpWanted(this.terrain, me.fx, me.fy, w.x, w.y);
-          if (open) bestOpen = { ax: ix, ay: iy, dot };
-        }
-      }
-    }
-    const rawBest = best;
-    // bestOpen.dot === best.dot ⇔ the raw best itself is open (it's the max
-    // over a subset). Only reroute when the raw best is CLOSED.
-    if (this.terrain && bestOpen.dot < best.dot - 1e-9 && bestOpen.dot > -0.3) best = bestOpen;
-    // Run trips drop to a walk for the last stretch so the 8-way quantized
-    // heading can't orbit the target at run speed.
-    const finalDist = Math.hypot(t.x - me.fx, t.y - me.fy);
     this.navLog.push({
-      t: now,
+      t: this.time.now,
       x: Math.round(me.fx * 10) / 10,
       y: Math.round(me.fy * 10) / 10,
-      wp: { x: Math.round(wp.x), y: Math.round(wp.y) },
-      left: this.movePath.length,
-      dist: Math.round(dist),
-      ax: best.ax,
-      ay: best.ay,
-      rawDot: Math.round(rawBest.dot * 100) / 100,
-      openDot: bestOpen.dot === -Infinity ? null : Math.round(bestOpen.dot * 100) / 100,
-      usedOpen: best === bestOpen,
+      wp: { x: Math.round(d.wp.x), y: Math.round(d.wp.y) },
+      left: this.trip.path.length,
+      dist: Math.round(d.dist),
+      ax: d.ax,
+      ay: d.ay,
+      rawDot: Math.round(d.rawDot * 100) / 100,
+      openDot: d.openDot === null ? null : Math.round(d.openDot * 100) / 100,
+      usedOpen: d.usedOpen,
     });
     if (this.navLog.length > 400) this.navLog.splice(0, this.navLog.length - 400);
-    return { ax: best.ax, ay: best.ay, running: t.run && finalDist > CELL_WU };
+    return { ax: d.ax, ay: d.ay, running: d.running };
   }
 
   /** The tap marker texture: a small iso-foreshortened ring (white; tinted
