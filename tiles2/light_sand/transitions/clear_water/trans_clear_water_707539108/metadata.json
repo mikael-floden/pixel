@@ -183,8 +183,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.877,
-        "light_sand": 0.123
+        "clear_water": 0.615,
+        "light_sand": 0.385
       },
       "edges": {
         "NE": {
@@ -196,63 +196,67 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "clear_water"
+            "light_sand"
           ],
           "ratio": {
-            "clear_water": 1.0
-          }
+            "clear_water": 0.875,
+            "light_sand": 0.125
+          },
+          "divider": 0.875
         },
         "SE": {
           "samples": [
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water"
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
           ],
           "ratio": {
-            "clear_water": 1.0
+            "light_sand": 1.0
           }
         },
         "SW": {
           "samples": [
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
             "light_sand",
             "light_sand",
             "light_sand",
-            "clear_water"
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
           ],
           "ratio": {
-            "clear_water": 0.625,
-            "light_sand": 0.375
+            "light_sand": 1.0
           }
         },
         "NW": {
           "samples": [
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
             "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 1.0
-          }
+            "light_sand": 0.625,
+            "clear_water": 0.375
+          },
+          "divider": 0.625
         }
       },
       "features": [
-        "pebbles"
+        "pebbles",
+        "flowers"
       ],
-      "description": "clear water blending to light sand with pebbles"
+      "description": "clear water blending to light sand with pebbles, small flowers"
     },
     {
       "index": 3,
@@ -1316,9 +1320,9 @@
       "seam_rows": 1,
       "thin_lum_light": 120,
       "light_value": 180,
-      "strength_light": 0.97,
-      "rim_strength_light": 0.9,
-      "soft_lum_light": 160,
+      "strength_light": 1.0,
+      "rim_strength_light": 1.0,
+      "soft_lum_light": 200,
       "protect_dark_material": true
     }
   }

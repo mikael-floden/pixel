@@ -101,8 +101,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.447,
-        "regular_snow": 0.553
+        "light_sand": 0.446,
+        "regular_snow": 0.554
       },
       "edges": {
         "NE": {
@@ -408,8 +408,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.413,
-        "regular_snow": 0.587
+        "light_sand": 0.412,
+        "regular_snow": 0.588
       },
       "edges": {
         "NE": {
@@ -1281,9 +1281,9 @@
       "seam_rows": 1,
       "thin_lum_light": 120,
       "light_value": 180,
-      "strength_light": 0.97,
-      "rim_strength_light": 0.9,
-      "soft_lum_light": 160,
+      "strength_light": 1.0,
+      "rim_strength_light": 1.0,
+      "soft_lum_light": 200,
       "protect_dark_material": true
     }
   }

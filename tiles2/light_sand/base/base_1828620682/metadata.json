@@ -824,10 +824,10 @@
         }
       },
       "features": [
-        "accent",
-        "flowers"
+        "flowers",
+        "accent"
       ],
-      "description": "light sand with a small detail, small flowers"
+      "description": "light sand with small flowers, a small detail"
     },
     {
       "index": 11,
@@ -1233,9 +1233,9 @@
       "seam_rows": 1,
       "thin_lum_light": 120,
       "light_value": 180,
-      "strength_light": 0.97,
-      "rim_strength_light": 0.9,
-      "soft_lum_light": 160,
+      "strength_light": 1.0,
+      "rim_strength_light": 1.0,
+      "soft_lum_light": 200,
       "protect_dark_material": true
     }
   }

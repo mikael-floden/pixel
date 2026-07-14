@@ -327,15 +327,15 @@
         "anim": "flicker",
         "sources": [
           {
-            "x": 21.4,
-            "y": 80.4,
+            "x": 21.2,
+            "y": 80.3,
             "r": 3.6,
             "color": [
-              0.571,
-              0.428,
-              0.193
+              0.574,
+              0.43,
+              0.195
             ],
-            "s": 0.689,
+            "s": 0.691,
             "dir": "up"
           },
           {
@@ -383,18 +383,6 @@
         "anim": "flicker",
         "sources": [
           {
-            "x": 30.2,
-            "y": 31.6,
-            "r": 2.2,
-            "color": [
-              0.735,
-              0.173,
-              0.119
-            ],
-            "s": 0.569,
-            "dir": "up"
-          },
-          {
             "x": 28.0,
             "y": 45.8,
             "r": 2.2,
@@ -404,6 +392,18 @@
               0.12
             ],
             "s": 0.541,
+            "dir": "up"
+          },
+          {
+            "x": 30.2,
+            "y": 31.5,
+            "r": 2.1,
+            "color": [
+              0.738,
+              0.175,
+              0.12
+            ],
+            "s": 0.571,
             "dir": "up"
           },
           {
@@ -487,9 +487,9 @@
       "seam_rows": 1,
       "thin_lum_light": 120,
       "light_value": 180,
-      "strength_light": 0.97,
-      "rim_strength_light": 0.9,
-      "soft_lum_light": 160,
+      "strength_light": 1.0,
+      "rim_strength_light": 1.0,
+      "soft_lum_light": 200,
       "protect_dark_material": true
     }
   }

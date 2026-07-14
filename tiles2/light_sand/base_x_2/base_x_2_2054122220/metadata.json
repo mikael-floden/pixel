@@ -87,15 +87,27 @@
         "anim": "flicker",
         "sources": [
           {
-            "x": 34.9,
-            "y": 55.9,
-            "r": 6.1,
+            "x": 36.5,
+            "y": 54.2,
+            "r": 5.2,
             "color": [
-              0.895,
-              0.65,
-              0.268
+              0.916,
+              0.669,
+              0.277
             ],
-            "s": 0.829,
+            "s": 0.84,
+            "dir": "up"
+          },
+          {
+            "x": 30.0,
+            "y": 60.9,
+            "r": 2.9,
+            "color": [
+              0.858,
+              0.613,
+              0.25
+            ],
+            "s": 0.807,
             "dir": "up"
           }
         ]
@@ -429,9 +441,9 @@
       "seam_rows": 1,
       "thin_lum_light": 120,
       "light_value": 180,
-      "strength_light": 0.97,
-      "rim_strength_light": 0.9,
-      "soft_lum_light": 160,
+      "strength_light": 1.0,
+      "rim_strength_light": 1.0,
+      "soft_lum_light": 200,
       "protect_dark_material": true
     }
   }
