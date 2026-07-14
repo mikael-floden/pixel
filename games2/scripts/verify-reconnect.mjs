@@ -1,6 +1,8 @@
 // Dead-connection recovery: when the websocket drops (phone slept, network
-// blip), the client must notice, reload itself, SKIP the select screen (the
-// ml-rejoin fast path) and land back in the world at the persisted position.
+// blip), the client must rejoin IN PLACE — no page reload (phones background
+// constantly; re-running the whole loading screen each time is unacceptable).
+// Expected: "Reconnecting…" toast, new session in the same page, position
+// restored via the token store, old avatars swapped for fresh state.
 import { chromium } from "playwright-core";
 
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
@@ -15,30 +17,32 @@ try {
   await page.waitForFunction(() => window.__mlSelect, { timeout: 25000 });
   await page.evaluate(() => window.__mlSelect.commit());
   await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, { timeout: 30000 });
-  await page.waitForTimeout(1500); // let the position persist once (onLeave saves too)
+  await page.waitForTimeout(1500);
   const before = await page.evaluate(() => {
+    window.__noReloadMarker = true; // survives only if the page does NOT reload
     const m = window.__ml.me();
-    return { x: m.x, y: m.y };
+    return { x: m.x, y: m.y, id: window.__ml.myId() };
   });
 
-  // Kill the socket. The onLeave handler must reload the page on its own.
-  await Promise.all([
-    page.waitForNavigation({ timeout: 15000 }),
-    page.evaluate(() => window.__ml.dropConnection()),
-  ]);
-  console.log("auto-reload OK");
-
-  // After the reload the select screen must be SKIPPED (rejoin fast path):
-  // the world comes up without any __mlSelect.commit() from us.
-  await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, { timeout: 30000 });
+  // Kill the socket; the scene must reconnect in place.
+  await page.evaluate(() => window.__ml.dropConnection());
+  await page.waitForFunction(
+    (oldId) => window.__ml && window.__ml.myId() && window.__ml.myId() !== oldId && window.__ml.players() >= 1,
+    before.id,
+    { timeout: 20000 },
+  );
   const after = await page.evaluate(() => {
     const m = window.__ml.me();
-    return { x: m.x, y: m.y };
+    return { x: m.x, y: m.y, marker: !!window.__noReloadMarker, toast: !!document.body.textContent.includes?.("Reconnecting") };
   });
+  if (!after.marker) fail("page RELOADED — reconnect must happen in place");
   const d = Math.hypot(after.x - before.x, after.y - before.y);
-  console.log(`rejoined at ${after.x.toFixed(0)},${after.y.toFixed(0)} (moved ${d.toFixed(0)}wu from before)`);
+  console.log(`rejoined in place (new session), moved ${d.toFixed(0)}wu from before`);
   if (d > 64) fail(`position not restored (drifted ${d.toFixed(0)}wu)`);
-  console.log("RECONNECT OK");
+  // The toast must be gone once reconnected.
+  const toastGone = await page.evaluate(() => !document.body.innerText.includes("Reconnecting"));
+  if (!toastGone) fail("Reconnecting toast still visible after rejoin");
+  console.log("RECONNECT-IN-PLACE OK");
 } finally {
   await browser.close();
 }

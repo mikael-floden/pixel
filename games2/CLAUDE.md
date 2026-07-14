@@ -218,12 +218,18 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
 - **Dead-connection recovery**: backgrounding a phone tab freezes JS; the
   server drops the client and the room turns into a ZOMBIE (no patches/acks
   — prediction replays an ever-growing unacked history; the old "teleport
-  when jumping uphill after tabbing back" bug). `room.onLeave` (WorldScene)
-  reloads the page when unexpected (visibility-aware; real unloads fire
-  pagehide first and are left alone), sets `ml-rejoin`, and main.ts then
-  SKIPS the select screen using the `ml-last-choice` saved at commit — the
-  token store restores the position. Probe: `__ml.dropConnection()`;
-  regression: `scripts/verify-reconnect.mjs`.
+  when jumping uphill after tabbing back" bug). `room.onLeave` (WorldScene,
+  ignoring real unloads — pagehide fires first) triggers an IN-PLACE rejoin
+  (`handleDrop`): "Reconnecting…" toast, joinWorld again (immediately when
+  visible, else on visibilitychange), old avatars + prediction state
+  dropped, `bindRoom` rewires the new room; NO page reload (phones
+  background constantly — reloading meant the whole loading screen every
+  time). Input sending is frozen while disconnected (flushInput guard).
+  Retries back off; only after 6 failures does it fall back to a reload
+  with `ml-rejoin` set (main.ts then skips the select screen using
+  `ml-last-choice`). NOTE: `room.state.players` is undefined until the
+  first patch — never touch it right after joinOrCreate resolves. Probe:
+  `__ml.dropConnection()`; regression: `scripts/verify-reconnect.mjs`.
 
 ## Conventions
 

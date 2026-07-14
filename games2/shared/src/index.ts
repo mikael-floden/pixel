@@ -1066,6 +1066,38 @@ export function findPath(
     bc >= 0 && br >= 0 && bc < W && br < H && canEnter(grid, cx(ac), cy(ar), cx(bc), cy(br), walk);
   const canJump = (ac: number, ar: number, bc: number, br: number) =>
     bc >= 0 && br >= 0 && bc < W && br < H && canEnter(grid, cx(ac), cy(ar), cx(bc), cy(br), jump);
+  // SOLID cells (props / structures / non-enterable surfaces) need clearance:
+  // the mover's collision reaches PLAYER_RADIUS ahead and 0.75R sideways, and
+  // the path follower turns up to a waypoint-radius early — a route hugging a
+  // prop cell clips its corner and grinds ("doesn't understand the hitbox").
+  const solidCell = (c: number, r: number) => {
+    if (c < 0 || r < 0 || c >= W || r >= H) return false;
+    if (grid.blocked[r * W + c]) return true;
+    const s = surfaceAtWorld(grid, cx(c), cy(r));
+    return !s.standable && !s.swimmable;
+  };
+  const nearSolid = (c: number, r: number) => {
+    for (let dr = -1; dr <= 1; dr++)
+      for (let dc = -1; dc <= 1; dc++)
+        if ((dc !== 0 || dr !== 0) && solidCell(c + dc, r + dr)) return true;
+    return false;
+  };
+  // Nudge a waypoint away from adjacent solid cells (≤8wu, stays in-cell) so
+  // the followed line keeps real clearance around prop corners.
+  const nudged = (c: number, r: number) => {
+    let px = 0;
+    let py = 0;
+    for (let dr = -1; dr <= 1; dr++)
+      for (let dc = -1; dc <= 1; dc++)
+        if ((dc !== 0 || dr !== 0) && solidCell(c + dc, r + dr)) {
+          const l = Math.hypot(dc, dr);
+          px -= dc / l;
+          py -= dr / l;
+        }
+    const pl = Math.hypot(px, py);
+    if (pl < 1e-6) return { x: cx(c), y: cy(r) };
+    return { x: cx(c) + (px / pl) * 8, y: cy(r) + (py / pl) * 8 };
+  };
 
   const gScore = new Map<number, number>();
   const cameFrom = new Map<number, number>();
@@ -1141,6 +1173,8 @@ export function findPath(
         } else {
           continue;
         }
+        // Prefer a 1-cell buffer around solids when one exists nearby.
+        if (nearSolid(nc, nr)) cost += 0.6;
         const n = id(nc, nr);
         const g = g0 + cost;
         if (g < (gScore.get(n) ?? Infinity)) {
@@ -1168,7 +1202,7 @@ export function findPath(
     const dc = c - pc;
     const dr = r - pr;
     if (dc === lastDc && dr === lastDr && pts.length) pts.pop(); // extend the straight run
-    pts.push({ x: cx(c), y: cy(r) });
+    pts.push(nudged(c, r));
     lastDc = dc;
     lastDr = dr;
     pc = c;

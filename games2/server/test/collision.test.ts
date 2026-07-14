@@ -472,3 +472,25 @@ test("findPath climbs a 1-level ledge when there is no way around", () => {
   grid.level[1] = 2;
   assert.equal(findPath(grid, c(0), y, c(2), y), null, "2-level wall is a dead end");
 });
+
+test("findPath keeps hitbox clearance around props (buffer + nudged corners)", () => {
+  // 7×5 open grass with a single prop in the middle: the route past it must
+  // keep real distance (the follower cuts corners by its waypoint radius and
+  // collision reaches PLAYER_RADIUS ahead — hugging cell centres clipped it).
+  const g = () => ({ t: "grass", l: 0 });
+  const rows = Array.from({ length: 5 }, () => Array.from({ length: 7 }, g));
+  const grid = buildTerrainGrid(7, 5, rows, [{ col: 3, row: 2 }]);
+  const c = (n: number) => (n + 0.5) * CELL_WU;
+  const path = findPath(grid, c(0), c(2), c(6), c(2));
+  assert.ok(path, "path exists");
+  // Min distance from every waypoint to the prop cell's rectangle ≥ 20wu
+  // (a raw hugging cell centre would be 16; buffered/nudged routes clear it).
+  const px0 = 3 * CELL_WU;
+  const py0 = 2 * CELL_WU;
+  for (const p of path) {
+    const dx = Math.max(px0 - p.x, 0, p.x - (px0 + CELL_WU));
+    const dy = Math.max(py0 - p.y, 0, p.y - (py0 + CELL_WU));
+    const d = Math.hypot(dx, dy);
+    assert.ok(d >= 20, `waypoint ${p.x.toFixed(0)},${p.y.toFixed(0)} hugs the prop (${d.toFixed(1)}wu)`);
+  }
+});

@@ -54,6 +54,7 @@ import { joinWorld } from "../net";
 import { ChatUI } from "../chat";
 import { RosterUI } from "../roster";
 import { setLoadingProgress, hideLoading } from "../loading";
+import { applyUiZoom } from "../uiscale";
 import {
   World,
   MAP_GEOMETRY,
@@ -204,6 +205,9 @@ export class WorldScene extends Phaser.Scene {
   // The autopilot only SYNTHESIZES the same 8-way screen input the keyboard
   // produces, so prediction/server validation/auto-jump all behave identically.
   private unloading = false; // page is really unloading (pagehide) — don't auto-rejoin
+  private connected = false; // live room connection (false while reconnecting)
+  private reconnectRetries = 0;
+  private reconnectToast?: HTMLElement;
   private moveTarget: { x: number; y: number; run: boolean } | null = null;
   // Waypoints toward moveTarget (shared findPath; last = the exact tapped
   // point). Beeline fallback = a single waypoint when no path was found.
@@ -539,66 +543,18 @@ export class WorldScene extends Phaser.Scene {
 
     setLoadingProgress(0.95, "Connecting…");
     try {
-      this.room = await joinWorld(
-        { name: this.myName, character: this.myCharacter.uid, world: this.worldName },
-        this.demoMode ? DEMO_ROOM_NAME : undefined,
+      this.bindRoom(
+        await joinWorld(
+          { name: this.myName, character: this.myCharacter.uid, world: this.worldName },
+          this.demoMode ? DEMO_ROOM_NAME : undefined,
+        ),
       );
     } catch (err) {
       hideLoading(); // the error panel must not sit behind the overlay
       this.showConnectionError(err);
       return;
     }
-
-    const $ = getStateCallbacks(this.room);
-    $(this.room.state).players.onAdd((player: any, id: string) => {
-      this.addAvatar(id, player);
-      if (id === this.room!.sessionId) {
-        const av = this.avatars.get(id)!;
-        cam.startFollow(av.sprite, true, 0.15, 0.15);
-        hideLoading(); // my avatar is in and the camera is on it — world's up
-      }
-      this.refreshRoster();
-    });
-    $(this.room.state).players.onRemove((_player: any, id: string) => {
-      const av = this.avatars.get(id);
-      if (av) {
-        av.sprite.destroy();
-      av.lit?.destroy();
-        av.shadow.destroy();
-        av.label.destroy();
-        av.bubble?.destroy();
-        this.avatars.delete(id);
-      }
-      this.refreshRoster();
-    });
-
-    this.room.onMessage("chat", (msg: ChatBroadcast) => {
-      this.chat.addLog(msg.name, msg.text);
-      this.showBubble(msg.id, msg.text);
-    });
-
-    this.room.onMessage("drown", (msg: { id: string; name: string }) => {
-      this.showBubble(msg.id, "blub… 🫧");
-      this.chat.addLog("—", `${msg.name} nearly drowned and washed ashore.`);
-    });
-
-    // Dead-connection recovery. Backgrounding the tab (phones especially)
-    // freezes JS; the server drops the silent client and this room becomes a
-    // ZOMBIE — no patches, no acks, prediction replaying an ever-growing
-    // unacked input history from a frozen base (the "teleport when I jump
-    // uphill after tabbing back" bug). The game cannot run offline: the
-    // moment the drop is noticed (the socket close event fires when the page
-    // thaws), rejoin cleanly via reload — main.ts sees the rejoin flag and
-    // skips the select screen, and the token store restores the spot. A real
-    // page unload (refresh/navigation) fires pagehide first and is left alone.
     window.addEventListener("pagehide", () => (this.unloading = true), { once: true });
-    this.room.onLeave(() => {
-      if (this.unloading) return;
-      sessionStorage.setItem("ml-rejoin", "1");
-      const rejoin = () => location.reload();
-      if (document.visibilityState === "visible") setTimeout(rejoin, 250);
-      else document.addEventListener("visibilitychange", rejoin, { once: true });
-    });
 
     // Debug hooks for headless end-to-end verification.
     (window as any).__ml = {
@@ -800,6 +756,122 @@ export class WorldScene extends Phaser.Scene {
     };
   }
 
+  /** Wire a (re)joined room into the scene: state callbacks, messages, and
+   * the dead-connection recovery. Called for the initial join and for every
+   * in-place rejoin. */
+  private bindRoom(room: Room) {
+    this.room = room;
+    this.connected = true;
+    this.reconnectRetries = 0;
+    const cam = this.cameras.main;
+    const $ = getStateCallbacks(room);
+    $(room.state).players.onAdd((player: any, id: string) => {
+      this.addAvatar(id, player);
+      if (id === room.sessionId) {
+        const av = this.avatars.get(id)!;
+        cam.startFollow(av.sprite, true, 0.15, 0.15);
+        hideLoading(); // my avatar is in and the camera is on it — world's up
+      }
+      this.refreshRoster();
+    });
+    $(room.state).players.onRemove((_player: any, id: string) => {
+      this.removeAvatar(id);
+      this.refreshRoster();
+    });
+    room.onMessage("chat", (msg: ChatBroadcast) => {
+      this.chat.addLog(msg.name, msg.text);
+      this.showBubble(msg.id, msg.text);
+    });
+    room.onMessage("drown", (msg: { id: string; name: string }) => {
+      this.showBubble(msg.id, "blub… 🫧");
+      this.chat.addLog("—", `${msg.name} nearly drowned and washed ashore.`);
+    });
+    // Dead-connection recovery. Backgrounding the tab (phones especially)
+    // freezes JS; the server drops the silent client and this room becomes a
+    // ZOMBIE — no patches, no acks, prediction replaying an ever-growing
+    // unacked input history from a frozen base (the old "teleport when I jump
+    // uphill after tabbing back" bug). The game can't run offline — rejoin
+    // IN PLACE (no page reload: phones background constantly and a reload
+    // means the whole loading screen again). A real page unload fires
+    // pagehide first and is left alone.
+    room.onLeave(() => {
+      if (this.unloading || this.room !== room) return;
+      this.handleDrop();
+    });
+  }
+
+  private removeAvatar(id: string) {
+    const av = this.avatars.get(id);
+    if (!av) return;
+    av.sprite.destroy();
+    av.lit?.destroy();
+    av.shadow.destroy();
+    av.label.destroy();
+    av.bubble?.destroy();
+    this.avatars.delete(id);
+  }
+
+  /** The connection died: freeze input, rejoin in place (immediately when
+   * visible, else the moment the tab is shown again), retry with backoff,
+   * and only fall back to a full reload after repeated failures. */
+  private handleDrop() {
+    this.connected = false;
+    this.showReconnectToast();
+    const attempt = async () => {
+      if (this.unloading) return;
+      if (document.visibilityState !== "visible") {
+        document.addEventListener("visibilitychange", () => void attempt(), { once: true });
+        return;
+      }
+      try {
+        const room = await joinWorld(
+          { name: this.myName, character: this.myCharacter.uid, world: this.worldName },
+          this.demoMode ? DEMO_ROOM_NAME : undefined,
+        );
+        // Clean slate: the new room's full state re-adds every player (new
+        // sessionIds), so drop all old sprites + prediction/input state.
+        for (const id of [...this.avatars.keys()]) this.removeAvatar(id);
+        this.pending = [];
+        this.inputSeq = 0;
+        this.sendAccum = 0;
+        this.lastSent = "";
+        this.jumpQueued = false;
+        this.clearMoveTarget();
+        this.bindRoom(room);
+        this.hideReconnectToast();
+        this.chat.addLog("—", "Reconnected.");
+      } catch {
+        if (++this.reconnectRetries >= 6) {
+          // Persistent failure — a clean reload (with the select-skip flag)
+          // is the last resort, not the first.
+          sessionStorage.setItem("ml-rejoin", "1");
+          location.reload();
+          return;
+        }
+        setTimeout(() => void attempt(), Math.min(15_000, 1000 * 2 ** this.reconnectRetries));
+      }
+    };
+    void attempt();
+  }
+
+  private showReconnectToast() {
+    if (this.reconnectToast) return;
+    const el = document.createElement("div");
+    el.textContent = "Reconnecting…";
+    el.style.cssText =
+      "position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:100;" +
+      "padding:7px 14px;border-radius:8px;background:#12121cee;border:1px solid #3a3a58;" +
+      "color:#ffd678;font:13px system-ui,sans-serif;pointer-events:none";
+    document.body.appendChild(el);
+    applyUiZoom(el);
+    this.reconnectToast = el;
+  }
+
+  private hideReconnectToast() {
+    this.reconnectToast?.remove();
+    this.reconnectToast = undefined;
+  }
+
   private showConnectionError(err: unknown) {
     const cx = this.scale.width / 2;
     const cy = this.scale.height / 2;
@@ -837,7 +909,8 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private refreshRoster() {
-    if (!this.room) return;
+    // players is undefined until the first state patch lands (fresh joins).
+    if (!this.room || !(this.room.state as any)?.players) return;
     const me = this.room.sessionId;
     const players: { name: string; me: boolean }[] = [];
     (this.room.state as any).players.forEach((p: any, id: string) =>
@@ -1551,6 +1624,13 @@ export class WorldScene extends Phaser.Scene {
   /** Persist + send the accumulated input window (prediction and server get
    * the exact same vector and duration). */
   private flushInput() {
+    // Disconnected (reconnecting): don't queue prediction inputs or send on a
+    // dead socket — the position stays put until the new room takes over.
+    if (!this.connected || !this.room) {
+      this.sendAccum = 0;
+      this.jumpQueued = false;
+      return;
+    }
     const li = this.lastInput;
     this.inputSeq += 1;
     this.pending.push({
