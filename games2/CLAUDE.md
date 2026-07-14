@@ -112,6 +112,21 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
   tiles from the maps agent so players can ascend without jumping. If the tile
   "house format" changes, re-measure `MAP_GEOMETRY` and update `ISO_DX/ISO_DY`.
 
+## Animation playback (anti-moonwalk)
+
+- Walk/run playback rates are MEASURED, not guessed: per (character,
+  walk|run, direction), `scripts/measure-stride.py` reads the frame art,
+  estimates the planted foot's backward slide per cycle (ground-contact
+  strip + best-shift matching along the screen travel axis) and derives
+  `fps = screen_speed × frames / stride` (screen speed is direction-uniform
+  by projection design: WALK 70 / RUN 175 px/s). Side-ish views measure
+  reliably; fore/back views encode almost no slide and inherit the MEDIAN
+  cadence of the reliable views (one gait = one step frequency). Output:
+  `client/public/anim-speeds.json`, loaded in preload and applied per-clip
+  in `buildAnimations` (fallback: ANIM_FPS). MOVEMENT SPEED IS UNTOUCHED —
+  only playback rate. Re-run the script when character art changes. Probe:
+  `__ml.animRate(uid,state,dir)`; regression: `scripts/verify-animrates.mjs`.
+
 ## Night lighting (client/src/nightlight.ts)
 
 - Always-night per-pixel shader: MULTIPLY overlay; per-pixel surface resolve

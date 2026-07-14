@@ -360,6 +360,7 @@ export class WorldScene extends Phaser.Scene {
     // Drive the post-"Enter world" loading overlay with real asset progress
     // (characters + tiles are hundreds of small PNGs — slow on mobile).
     this.load.on("progress", (f: number) => setLoadingProgress(0.05 + f * 0.85, "Loading art…"));
+    this.load.json("anim-speeds", "/anim-speeds.json"); // anti-moonwalk playback rates
     // characters2 stores animations as frame FOLDERS (one PNG per frame), not
     // strips — load each frame as its own texture.
     for (const def of this.manifest.characters) {
@@ -582,6 +583,9 @@ export class WorldScene extends Phaser.Scene {
       path: () => this.movePath,
       pickAt: (wx: number, wy: number) => this.pickGround(wx, wy),
       camZoom: () => this.cameras.main.zoom,
+      // Playback rate of a built animation (anti-moonwalk verification).
+      animRate: (uid: string, state: string, dir: string) =>
+        this.anims.get(animKey(uid, state, dir))?.frameRate ?? null,
       // Kill the websocket (headless probe for the dead-connection recovery).
       dropConnection: () => {
         const conn = (this.room as unknown as { connection?: { close?: () => void; transport?: { close?: () => void } } })
@@ -1820,6 +1824,15 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private buildAnimations() {
+    // Measured anti-moonwalk playback rates (scripts/measure-stride.py):
+    // per (character, walk|run, direction) fps that makes the planted foot
+    // track the ground at the game's screen speed. Movement speed itself is
+    // untouched — only how fast the clip plays. Missing entries fall back to
+    // the static ANIM_FPS defaults.
+    const speeds = (this.cache.json.get("anim-speeds") ?? {}) as Record<
+      string,
+      Record<string, Record<string, number>>
+    >;
     for (const def of this.manifest.characters) {
       for (const [state, dirs] of Object.entries(def.animations)) {
         for (const [dir, count] of Object.entries(dirs)) {
@@ -1836,7 +1849,7 @@ export class WorldScene extends Phaser.Scene {
           this.anims.create({
             key,
             frames,
-            frameRate: ANIM_FPS[state] ?? 10,
+            frameRate: speeds[def.uid]?.[state]?.[dir] ?? ANIM_FPS[state] ?? 10,
             repeat: once ? 0 : -1,
           });
         }
