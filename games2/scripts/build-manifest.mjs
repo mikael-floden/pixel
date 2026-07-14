@@ -115,16 +115,7 @@ function footAnchor(framePath) {
   const png = pngAlpha(framePath);
   if (!png) return null;
   const { w, h, opaque } = png;
-  let bottom = -1;
   let top = -1;
-  for (let y = h - 1; y >= 0 && bottom < 0; y--) {
-    for (let x = 0; x < w; x++) {
-      if (opaque(x, y)) {
-        bottom = y;
-        break;
-      }
-    }
-  }
   for (let y = 0; y < h && top < 0; y++) {
     for (let x = 0; x < w; x++) {
       if (opaque(x, y)) {
@@ -133,37 +124,36 @@ function footAnchor(framePath) {
       }
     }
   }
-  if (bottom < 0) return null;
-  const band = Math.max(6, Math.round(h * 0.09)); // ≈10px at 112
-  const y0 = Math.max(0, bottom - band + 1);
-  const colHit = new Array(w).fill(false);
-  for (let x = 0; x < w; x++) {
-    for (let y = y0; y <= bottom; y++) {
+  // SOLE LINE = the lowest row with real mass (>=3 opaque px), NOT the single
+  // lowest pixel: a 1-2px toe tip / anti-alias speck dragged the old anchor
+  // below the soles, so characters read as hovering above their shadow.
+  const rowCount = (y) => {
+    let n = 0;
+    for (let x = 0; x < w; x++) if (opaque(x, y)) n++;
+    return n;
+  };
+  let sole = -1;
+  for (let y = h - 1; y >= 0 && sole < 0; y--) if (rowCount(y) >= 3) sole = y;
+  if (sole < 0) return null;
+  // x = CENTROID of the ground-contact band's opaque pixels (the bottom ~6px
+  // above the sole line). The old outer-run MIDPOINT keyed on foot edges: a
+  // pose with one foot angled forward pushed the midpoint sideways, and the
+  // shadow slid out from between the feet (playtester's red-vs-green dot).
+  // The mass centroid sits where the weight actually is.
+  const band = Math.max(5, Math.round(h * 0.055)); // ≈6px at 112
+  const y0 = Math.max(0, sole - band + 1);
+  let mass = 0;
+  let mx = 0;
+  for (let y = y0; y <= sole; y++)
+    for (let x = 0; x < w; x++)
       if (opaque(x, y)) {
-        colHit[x] = true;
-        break;
+        mass++;
+        mx += x + 0.5;
       }
-    }
-  }
-  // Contiguous runs of sole columns → feet (drop 1px specks / stray pixels).
-  const feet = [];
-  let s = -1;
-  for (let x = 0; x < w; x++) {
-    if (colHit[x] && s < 0) s = x;
-    else if (!colHit[x] && s >= 0) {
-      if (x - 1 - s >= 1) feet.push((s + x - 1) / 2);
-      s = -1;
-    }
-  }
-  if (s >= 0 && w - 1 - s >= 1) feet.push((s + w - 1) / 2);
-  if (!feet.length) return null;
-  const ax = (Math.min(...feet) + Math.max(...feet)) / 2; // between the outer feet
-  // Fractions of the frame: (x,y) = foot anchor for the sprite origin;
-  // top = crown of the head, so labels can hug the character instead of
-  // floating at the (mostly transparent) frame top.
+  if (!mass) return null;
   return {
-    x: +(ax / w).toFixed(4),
-    y: +((bottom + 1) / h).toFixed(4),
+    x: +(mx / mass / w).toFixed(4),
+    y: +((sole + 1) / h).toFixed(4),
     top: +(Math.max(0, top) / h).toFixed(4),
   };
 }
@@ -209,12 +199,37 @@ function scan() {
       }
     }
     if (!animations.idle) continue; // unplayable without an idle
-    // Foot anchors per direction (from idle frame 0) — where the sole line
-    // sits inside the frame, as origin fractions for the client.
+    // Foot anchors: measured from EVERY frame of EVERY state, per direction —
+    // the per-clip MEDIAN pins the sprite (a per-frame anchor would bob the
+    // body against the gait). `anchors` stays the idle-frame-0 shape (with
+    // `top` for labels) as the fallback; `anchorsByState` is what the client
+    // prefers, so walk/run gaits get their own sole line + feet centre.
     const anchors = {};
     for (const d of Object.keys(animations.idle)) {
       const a = footAnchor(join(animsDir, ANIM_MAP.idle, d, "0.png"));
       if (a) anchors[d] = a;
+    }
+    const anchorsByState = {};
+    for (const [state, perDirCounts] of Object.entries(animations)) {
+      const src = animSrc[state];
+      const perDir = {};
+      for (const [d, n] of Object.entries(perDirCounts)) {
+        const xs = [];
+        const ys = [];
+        for (let i = 0; i < n; i++) {
+          const a = footAnchor(join(animsDir, src, d, `${i}.png`));
+          if (a) {
+            xs.push(a.x);
+            ys.push(a.y);
+          }
+        }
+        if (xs.length) {
+          xs.sort((p, q) => p - q);
+          ys.sort((p, q) => p - q);
+          perDir[d] = { x: xs[xs.length >> 1], y: ys[ys.length >> 1] };
+        }
+      }
+      if (Object.keys(perDir).length) anchorsByState[state] = perDir;
     }
     const webRoot = "/assets/" + relative(ASSETS_ROOT, charDir).split("\\").join("/");
     characters.push({
@@ -230,6 +245,7 @@ function scan() {
       animations,
       animSrc,
       anchors,
+      anchorsByState,
     });
   }
   return characters;

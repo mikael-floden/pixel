@@ -18,6 +18,9 @@ export interface CharacterDef {
   // makes the drawn feet meet the collision position exactly. `top` is the
   // crown of the head — labels hug it instead of the transparent frame top.
   anchors?: Record<string, { x: number; y: number; top?: number }>;
+  // Per-STATE foot anchors (median across the clip's frames) — walk/run gaits
+  // plant the feet elsewhere than the idle pose; the client prefers these.
+  anchorsByState?: Record<string, Record<string, { x: number; y: number }>>;
 }
 
 export interface Manifest {
