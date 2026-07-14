@@ -9,10 +9,9 @@ async function measure(worldTag) {
   const ctx = await browser.newContext({ viewport: { width: Number(process.env.VW || 900), height: Number(process.env.VH || 640) } });
   const page = await ctx.newPage();
   page.on("pageerror", (e) => console.log("[pageerror]", e.message));
-  const url = worldTag === "emission" ? "http://localhost:5173/#emission" : "http://localhost:5173/";
-  await page.goto(url, { waitUntil: "load" });
+  await page.goto("http://localhost:5173/", { waitUntil: "load" });
   await page.waitForFunction(() => window.__mlSelect, { timeout: 25000 });
-  if (worldTag !== "emission") {
+  {
     const idx = await page.evaluate(
       (re) => window.__mlSelect.worlds().findIndex((w) => new RegExp(re, "i").test(w)),
       worldTag,
@@ -54,5 +53,5 @@ async function measure(worldTag) {
 
 try {
   await measure("prop");
-  await measure("emission");
+  await measure("glow");
 } finally { await browser.close(); }

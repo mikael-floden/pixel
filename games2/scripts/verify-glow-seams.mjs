@@ -10,17 +10,22 @@ import { chromium } from "playwright-core";
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox"] });
 const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
-await page.goto((process.env.PROBE_URL || "http://localhost:5173/") + "#emission", { waitUntil: "load" });
-// The demo is the REAL game on the generated station world: join like a player.
-await page.waitForSelector("input", { timeout: 20000 });
-await page.fill("input", "seamprobe");
-await page.keyboard.press("Enter");
+// glow_test: maps2's emissive showcase (successor of the retired tiles/
+// emission demo) — every glowing tiles2 material as world props.
+await page.goto(process.env.PROBE_URL || "http://localhost:5173/", { waitUntil: "load" });
+await page.waitForFunction(() => window.__mlSelect, { timeout: 20000 });
+await page.evaluate(() => {
+  const i = window.__mlSelect.worlds().findIndex((w) => /glow/i.test(w));
+  if (i >= 0) window.__mlSelect.pickWorld(i);
+  window.__mlSelect.commit();
+});
 await page.waitForFunction(() => window.__ml?.nightShader?.() === true, null, { timeout: 30000 });
 await page.waitForTimeout(2500);
-const st = await page.evaluate(() =>
-  window.__ml.stations().find((p) => p.label.includes("cliff_gold_v2 05")),
-);
-await page.evaluate((n) => window.__ml.lookStation(n), parseInt(st.label, 10));
+// Frame a dense emissive area: the middle of the world.
+await page.evaluate(() => {
+  const w = window.__ml.worldInfo();
+  window.__ml.lookAt(Math.floor((w.w ?? 64) / 2), Math.floor((w.h ?? 64) / 2));
+});
 await page.waitForTimeout(1500);
 await page.evaluate(() => window.__ml.nightCal(0, 1, 5)); // raw field, opaque
 await page.waitForTimeout(1200);

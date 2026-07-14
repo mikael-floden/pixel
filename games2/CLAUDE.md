@@ -4,11 +4,13 @@
 
 **Nangijala** is a browser-based **multiplayer** (MMO-style) pixel-art RPG.
 Everyone who connects joins the **same shared isometric world**. It lives inside
-the **`pixel` monorepo** at `games/nangijala` and renders the art produced by the
-sibling agent domains (`characters/`, `tiles/`, `maps/`, `objects/`). **Read-only
-toward the art** — never edit those directories (see `coordination/PROTOCOL.md`;
-this game owns the `games/` domain + `coordination/games.json`). No submodule.
-The game is developed by a self-iterating loop — see `loop/LOOP.md`.
+the **`pixel` monorepo** at `games2/` and renders the art produced by the
+sibling agent domains (`characters2/`, `tiles2/`, `maps2/`, `objects/`).
+**Read-only toward the art** — never edit those directories (see
+`coordination/PROTOCOL.md`; this game owns `games2/` +
+`coordination/games.json`). No submodule. Developed by a self-iterating loop —
+see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
+`tiles/` were retired 2026-07-14; history in git.)
 
 ## Tech stack
 
@@ -26,24 +28,26 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
 
 - Art is read from the repo-root sibling domains — NOT copied in. The dev server
   (Vite middleware in `client/vite.config.ts`) and prod server (`server/index.ts`)
-  both serve `/assets/<domain>/…` from `characters/ tiles/ maps/ objects/`
+  both serve `/assets/<domain>/…` from `characters2/ tiles2/ maps2/ objects/`
   (override the location with `ASSETS_ROOT`, e.g. in Docker).
-- `scripts/build-manifest.mjs` scans `characters/skeletons/` →
+- `scripts/build-manifest.mjs` scans `characters2/humans/` →
   `client/public/characters.json` (uid, name, frame size, per-anim/dir counts,
-  `/assets/...` urls). Regenerate after graphics change (`npm run manifest`).
+  `/assets/...` urls); `build-worlds.mjs` discovers `maps2/worlds/*/world.json`
+  → `client/public/worlds.json` (the picker). Regenerate after graphics change
+  (`npm run manifest`).
 
 ## Isometric world
 
-- `shared/parseWorld` reads `maps/world/world.json` — the **bigworld@1** schema
-  (512×448; `categories`/`climates` string tables + `terr`/`variant`/`level`/
-  `climate` index arrays + named `pois`) and the legacy `rows` schema. Geometry
+- `shared/parseWorld` reads `maps2/worlds/<name>/world.json` — **world@1**
+  (materials/paths/top/level/mat grids + props + spawn + size; also still
+  parses the legacy `rows`/bigworld@1 schemas). Geometry
   unchanged (`x=(col-row)*32`, `y=(col+row)*dy − level*lh`, painter order by
   `(col+row,row)`). World units: **32 per cell** (`CELL_WU`); WORLD_WIDTH/HEIGHT
   are sized to the current grid — update them if the map dimensions change.
 - The world is far too large to bake into one texture, so `WorldScene` streams
   it: a world-anchored RenderTexture covering the screen + `GROUND_MARGIN` px is
   redrawn only when the camera nears its edge. `MapPreviewScene` (`/#map`) shows
-  the maps agent's pre-rendered `minimap.png` with POI markers. `project()`s each
+  a maps2 world's pre-rendered `minimap.png` when it ships one. `project()`s each
   player's flat `(x,y)` onto the grid (feet lifted by elevation).
 - `stairs` tiles act as ramps (crossing one allows a full 1-level step without
   jumping); solid structure tiles (trees, boulders, obelisks, watchtower, cactus,
@@ -157,43 +161,24 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
   category from the tiles agent must get a SURFACES entry (shared/) or its
   block shadow returns. This is ENFORCED: `npm test` runs
   `scripts/check-surfaces.mjs`, which FAILS when the world uses an
-  unclassified category and prints a measured, ready-to-paste proposal
-  (art-decisive cases are auto-classified; stand-on-it-or-not is a gameplay
-  call the tool hedges with name hints). `WorldScene` also warns at boot.
-  Expanding the tileset = add art, run tests, paste the proposed line.
-- **Tile self-emission** is data-driven from `tiles/emission.json`
-  (`tile-emission@2`, owned by the tiles agent; every category has an entry,
-  `null` = does not glow). THREE runtime layers per glowing category:
-  (1) per-cell self-glow FLOOR (`max(light, color*self*anim)` — daylight
-  swallows it, night reveals it; ×1.4 on side faces to cancel the art's
-  baked ~0.70 face shading; per-cell hash phase so lava shimmers out of
-  sync); (2) clustered SHADOW-FREE glow pools, rendered as big ELLIPTICAL
-  STAMPS in the additive glow field (`buildPoolStamps` — NOT shader light
-  slots: slots are capped and nearest-wins culling popped pools on/off deep
-  inside the viewport while walking; the stamp walk window `EMISSION_PAD`
-  exceeds any pool's reach + rebuild drift, so culled light is entirely
-  off-screen. Emissive cells with exposed faces add pool samples floating
-  IN FRONT of the face at mid-height so glow reaches the base ground +
-  neighbouring walls; the 12 shader slots now serve only real lights —
-  campfire/torches/probe); (3) per-pixel GLOW HALOS —
-  `sources` in the registry (generated by `scripts/analyze-emission.mjs`)
-  record each glowing pixel cluster (x/y/r/own colour/strength/dir up|sw|se);
-  `buildGlowStamps` stamps a tinted radial halo per visible source into a
-  world-anchored RenderTexture the shader ADDS to the light field. Halos are
-  localized (a mushroom lights its patch, the forest stays dark), free of
-  light-slot limits, and directional (face sources repeat on each exposed
-  stacked level, biased outward). Re-run the analyzer after art changes;
-  `check-surfaces.mjs` FAILS on missing/malformed entries or sources, and
-  the tiles pipeline auto-appends `null` for new categories
-  (`tilegen.register_emission`).
-- **Emission demo world**: press [0] in game (or `/#emission`) to join the
-  REAL game on a generated station world (shared `buildDemoWorld`, served by
-  the second Colyseus room `demo`): every variant of every glowing category
-  on a numbered station, walkable with your character — movement, z-order,
-  lighting and time-of-day are the game's own code, so what you test there
-  IS what the game does. [6] douses the spawn bonfire (its firelight drowns
-  self-emission QA). `scripts/demo-shots.mjs` batch-captures every station
-  headlessly; `__ml.lookStation(n)` jumps the camera.
+  unclassified category (across ALL maps2 worlds) and prints a name-hinted,
+  ready-to-paste proposal — stand-on-it-or-not is a gameplay call.
+  `WorldScene` also warns at boot. Expanding the material set = ship the
+  world, run tests, paste the proposed line.
+- **Self-emission (maps2 era)** is data-driven from `tiles2/emission.json`
+  (`tiles2-emission@1`, owned by the tiles2 agent): per-MATERIAL glow params
+  + per-tile-path glow `sources`. In maps2 worlds every emissive tile is a
+  PROP, so `rebuildProps` stamps a tinted radial halo per visible source
+  into the world-anchored additive glow RenderTexture the night shader ADDS
+  to the light field (localized: a mushroom lights its patch, the forest
+  stays dark). The emissive showcase world is maps2's `glow_test` (in the
+  world picker) — every glowing material as walkable props; that's where
+  glow/night QA happens (`verify-glow-seams.mjs` targets it).
+  (RETIRED 2026-07-14 with the first-gen `tiles/` domain: the v1
+  `tiles/emission.json` registry, the generated `#emission` station demo +
+  its `demo` room + `buildDemoWorld`, per-cell glow floors/pools for v1
+  categories, `analyze-emission.mjs`, `demo-shots.mjs`, `verify-emission*`,
+  and `tile-bases.json`. History in git if the techniques are needed again.)
 - Debug: `__ml.nightCal(flip,span,test)` drives the field test patterns
   (gradient/grid/uv/classification/raw field — headless probes only; the
   old [6]-[9] calibration keys are retired);
@@ -201,9 +186,8 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
   `__ml.lookAt(col,row)` detaches the camera to any cell (no args re-follows);
   numeric probes live in `scripts/verify-solidband.mjs` (no phantom bands),
   `verify-penumbra.mjs` (soft wall bases), `verify-wallspread.mjs` (lateral
-  falloff parity), `verify-timecycle.mjs` (phase grades), `verify-emission.mjs`
-  (glow floors/pools/animation), `verify-lit-order.mjs` (lit-copy draw
-  order). Run them against a dev stack before touching the shader.
+  falloff parity), `verify-timecycle.mjs` (phase grades), `verify-lit-order.mjs` (lit-copy
+  draw order). Run them against a dev stack before touching the shader.
 
 ## Mobile / PWA (client)
 
@@ -262,7 +246,7 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
   load (~30s total): loading overlay, version badge, real-pointer tap walk,
   synthetic double-tap run, keyboard cancel, jump anim states, measured anim
   rates, in-place reconnect (last — it swaps the session), then one reload
-  for an emission join + trip. The per-feature scripts (verify-mobile/-jump/
+  for a glow_test join + trip. The per-feature scripts (verify-mobile/-jump/
   -reconnect/-animrates/-navigation/-longwalk) remain for deep dives.
 - **Headless-GL starvation preflight**: verify-smoke measures raw keyboard
   speed first and ABORTS ("HARNESS STARVED") if the harness is too slow —

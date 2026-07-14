@@ -13,16 +13,13 @@ try {
   const page = await ctx.newPage();
   page.on("pageerror", (e) => console.log("[pageerror]", e.message));
   const WORLD = process.env.WORLD || "prop";
-  const url = WORLD === "emission" ? "http://localhost:5173/#emission" : "http://localhost:5173/";
-  await page.goto(url, { waitUntil: "load" });
+  await page.goto("http://localhost:5173/", { waitUntil: "load" });
   await page.waitForFunction(() => window.__mlSelect, { timeout: 25000 });
-  if (WORLD !== "emission") {
-    const idx = await page.evaluate(
-      (re) => window.__mlSelect.worlds().findIndex((w) => new RegExp(re, "i").test(w)),
-      WORLD,
-    );
-    if (idx >= 0) await page.evaluate((i) => window.__mlSelect.pickWorld(i), idx);
-  }
+  const idx = await page.evaluate(
+    (re) => window.__mlSelect.worlds().findIndex((w) => new RegExp(re, "i").test(w)),
+    WORLD,
+  );
+  if (idx >= 0) await page.evaluate((i) => window.__mlSelect.pickWorld(i), idx);
   await page.evaluate(() => window.__mlSelect.commit());
   await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, { timeout: 30000 });
   await page.waitForTimeout(1500);

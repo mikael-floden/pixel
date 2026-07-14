@@ -75,70 +75,6 @@ export const ROOM_NAME = "world";
 // The EMISSION DEMO room: a real Colyseus room on a generated station world —
 // the demo runs the full game (renderer, movement, night pipeline) so what
 // the maintainer tests there IS what the game does.
-export const DEMO_ROOM_NAME = "demo";
-
-/**
- * Generate the emission demo world: every variant of every GLOWING tile
- * category (tiles/emission.json) on a numbered station, centered on a plain
- * meadow the same size as the main world (512x448 — every coordinate
- * constant, spawn rule and grid mapping stays untouched). Stations sit in
- * rows of 20, four cells apart; station labels ride in pois. Flat 64px tiles
- * stand on a 2-level column so their side faces show; tall art (per-variant
- * base metadata) sits flat and is drawn once. Deterministic: server and
- * client build the identical world from the same two registries.
- */
-export function buildDemoWorld(
-  emission: Record<string, { sources?: Record<string, unknown[]>; variants?: number } | null>,
-  bases: { categories: Record<string, number[]> } | null,
-): ParsedWorld {
-  const W = 512;
-  const H = 448;
-  const PER_ROW = 20;
-  const SPACING = 4;
-  const ROW_PITCH = 7;
-  const rows: WorldCell[][] = Array.from({ length: H }, (_, r) =>
-    Array.from({ length: W }, (_, c) => ({ t: "meadow", v: (c * 7 + r * 13) % 3, l: 0 })),
-  );
-  const pois: ParsedWorld["pois"] = [];
-  const cats = Object.entries(emission)
-    .filter(([, e]) => e)
-    .sort(([a], [b]) => a.localeCompare(b));
-  let n = 1;
-  for (const [cat, entry] of cats) {
-    // Only variants that actually GLOW get a station: the tile generator
-    // mixes glowing and plain variants inside each category (dark basalt
-    // among molten lava, plain towers beside the lit brazier), and a
-    // station with no glow sources QAs nothing — 77 of 178 stations were
-    // dead rock before this filter.
-    const variants = Object.entries(entry!.sources ?? {})
-      .filter(([, arr]) => Array.isArray(arr) && arr.length > 0)
-      .map(([k]) => Number(k))
-      .sort((a, b) => a - b);
-    for (const v of variants) {
-      const i = n - 1;
-      // Centre the station grid on the world centre (players spawn there).
-      const col = 256 - Math.floor((PER_ROW * SPACING) / 2) + (i % PER_ROW) * SPACING;
-      const row = 224 - 24 + Math.floor(i / PER_ROW) * ROW_PITCH;
-      const s = surfaceFor(cat);
-      const solid = !s.standable && !s.swimmable;
-      const tall = (bases?.categories[cat]?.[v] ?? 64) > 64;
-      // Solid FLAT art (64px block format, e.g. lava) paints a one-level
-      // block whose ground contact is the bottom V of the standard tile
-      // skirt — at l:0 the drawn block lands ~20px south-below its collision
-      // cell (an isolated cell has no southern neighbour covering the skirt,
-      // unlike the flush pools of the main world). Standing it on l:1 puts
-      // the drawn footprint exactly on the cell; collision is untouched
-      // (solid cells are never enterable at any level) and the lighting
-      // heightmap sees the same one-level step the art depicts.
-      const level = solid ? (tall ? 0 : 1) : tall ? 0 : 2;
-      rows[row][col] = { t: cat, v, l: level };
-      pois.push({ x: col, y: row, label: `${n} ${cat} ${String(v).padStart(2, "0")}`, tile: cat });
-      n++;
-    }
-  }
-  return { width: W, height: H, rows, pois };
-}
-
 /** Client → server: the player's desired movement for this frame. */
 export interface InputMessage {
   ax: number; // -1..1 horizontal
@@ -1202,10 +1138,18 @@ export function findPath(
   fromY: number,
   toX: number,
   toY: number,
-  opts?: { canSwim?: boolean; maxNodes?: number },
+  opts?: { canSwim?: boolean; maxNodes?: number; swimBudget?: number },
 ): { x: number; y: number }[] | null {
   const W = grid.width;
   const H = grid.height;
+  // The mover is CLAMPED to the SPAWN_MARGIN band at the world border
+  // (stepMovement) — a route through border cells has waypoints the body can
+  // physically never reach (it stalls ~24wu short and gives up). Clamp the
+  // goal into the reachable band and refuse border cells as route nodes.
+  const inBandX = (c: number) => (c + 0.5) * CELL_WU >= SPAWN_MARGIN && (c + 0.5) * CELL_WU <= W * CELL_WU - SPAWN_MARGIN;
+  const inBandY = (r: number) => (r + 0.5) * CELL_WU >= SPAWN_MARGIN && (r + 0.5) * CELL_WU <= H * CELL_WU - SPAWN_MARGIN;
+  toX = clamp(toX, SPAWN_MARGIN + 2, W * CELL_WU - SPAWN_MARGIN - 2);
+  toY = clamp(toY, SPAWN_MARGIN + 2, H * CELL_WU - SPAWN_MARGIN - 2);
   const c0 = clamp(Math.floor(fromX / CELL_WU), 0, W - 1);
   const r0 = clamp(Math.floor(fromY / CELL_WU), 0, H - 1);
   let c1 = clamp(Math.floor(toX / CELL_WU), 0, W - 1);
@@ -1217,9 +1161,11 @@ export function findPath(
   const cx = (c: number) => (c + 0.5) * CELL_WU;
   const cy = (r: number) => (r + 0.5) * CELL_WU;
   const canWalk = (ac: number, ar: number, bc: number, br: number) =>
-    bc >= 0 && br >= 0 && bc < W && br < H && canEnter(grid, cx(ac), cy(ar), cx(bc), cy(br), walk);
+    bc >= 0 && br >= 0 && bc < W && br < H && inBandX(bc) && inBandY(br) &&
+    canEnter(grid, cx(ac), cy(ar), cx(bc), cy(br), walk);
   const canJump = (ac: number, ar: number, bc: number, br: number) =>
-    bc >= 0 && br >= 0 && bc < W && br < H && canEnter(grid, cx(ac), cy(ar), cx(bc), cy(br), jump);
+    bc >= 0 && br >= 0 && bc < W && br < H && inBandX(bc) && inBandY(br) &&
+    canEnter(grid, cx(ac), cy(ar), cx(bc), cy(br), jump);
   // SOLID cells (props / structures / non-enterable surfaces) need clearance:
   // the mover's collision reaches PLAYER_RADIUS ahead and 0.75R sideways, and
   // the path follower turns up to a waypoint-radius early — a route hugging a
@@ -1230,6 +1176,10 @@ export function findPath(
       for (let dc = -1; dc <= 1; dc++)
         if ((dc !== 0 || dr !== 0) && solidCell(c + dc, r + dr)) return true;
     return false;
+  };
+  const isSwim = (c: number, r: number) => {
+    const s = surfaceAtWorld(grid, (c + 0.5) * CELL_WU, (r + 0.5) * CELL_WU);
+    return !s.standable && s.swimmable;
   };
   // Nudge a waypoint away from adjacent solid cells (≤8wu, stays in-cell) so
   // the followed line keeps real clearance around prop corners.
@@ -1250,7 +1200,26 @@ export function findPath(
 
   const gScore = new Map<number, number>();
   const cameFrom = new Map<number, number>();
+  // Node state = (cell, consecutive routed WATER cells). Swimming drains
+  // stamina (~5s of continuous water = drown + respawn), so a route may only
+  // ford up to SWIM_RUN_MAX cells of water in a row (~3s at swim speed) —
+  // a soft cost can be beaten by geography (a long THIN lake is depth-legal
+  // but lethal lengthwise); a run cap can't. START_WET marks "in water since
+  // the start": a player already swimming may path to land at ANY distance
+  // (they're already at risk; refusing them a route home would be worse).
+  // The cap scales with the player's stamina at PLAN time (swimBudget,
+  // default full): ~17 stamina per water cell, keep a ~30 safety floor. A
+  // player who just swam re-plans with a smaller (possibly zero) water
+  // allowance until they recover. Land cells decay the run by 1 instead of
+  // resetting it, so chained fords with 1-cell breathers can't out-run the
+  // real recovery rate.
+  const SWIM_RUN_HARD = 3;
+  const budget = opts?.swimBudget ?? MAX_STAMINA;
+  const SWIM_RUN_MAX = Math.max(0, Math.min(SWIM_RUN_HARD, Math.floor((budget - 30) / 17)));
+  const RUNS = SWIM_RUN_HARD + 2;
   const id = (c: number, r: number) => r * W + c;
+  const sid = (c: number, r: number, run: number) => (r * W + c) * RUNS + run;
+  const sidCell = (n: number) => Math.floor(n / RUNS);
   const hx = (c: number, r: number) => {
     const dc = Math.abs(c - c1);
     const dr = Math.abs(r - r1);
@@ -1292,7 +1261,13 @@ export function findPath(
   // A tap on/into a solid area (or an enclosed pocket) has no reachable goal
   // cell: retarget to the nearest non-solid cell around it so the search has
   // something to aim at; the best-effort fallback below covers the rest.
-  if (cellSolid(grid, c1, r1)) {
+  // Retarget goals the body cannot SAFELY occupy: solid cells (can't stand
+  // in a prop) and WATER cells (standing in water drains stamina until you
+  // drown — arrival must end on land). Route to the nearest standable cell
+  // around the tap; a mid-lake tap with no shore within reach keeps the
+  // original goal and best-efforts to the land rim below.
+  if (cellSolid(grid, c1, r1) || isSwim(c1, r1)) {
+    const mustEscapeSolid = cellSolid(grid, c1, r1);
     let bestCell: { c: number; r: number; d: number } | null = null;
     for (let rad = 1; rad <= 4 && !bestCell; rad++)
       for (let dr = -rad; dr <= rad; dr++)
@@ -1300,44 +1275,51 @@ export function findPath(
           if (Math.max(Math.abs(dc), Math.abs(dr)) !== rad) continue;
           const c = c1 + dc;
           const r = r1 + dr;
-          if (c < 0 || r < 0 || c >= W || r >= H || cellSolid(grid, c, r)) continue;
+          if (c < 0 || r < 0 || c >= W || r >= H || cellSolid(grid, c, r) || isSwim(c, r)) continue;
           const d = Math.hypot(c - c0, r - r0);
           if (!bestCell || d < bestCell.d) bestCell = { c, r, d };
         }
-    if (!bestCell) return null;
-    c1 = bestCell.c;
-    r1 = bestCell.r;
-    toX = cx(c1);
-    toY = cy(r1);
-    if (c0 === c1 && r0 === r1) return [clearanceAdjust(grid, toX, toY)];
+    if (bestCell) {
+      c1 = bestCell.c;
+      r1 = bestCell.r;
+      toX = cx(c1);
+      toY = cy(r1);
+      if (c0 === c1 && r0 === r1) return [clearanceAdjust(grid, toX, toY)];
+    } else if (mustEscapeSolid) {
+      return null;
+    }
   }
-  const goal = id(c1, r1);
-  gScore.set(start, 0);
-  push(hx(c0, r0), start);
+  const goalCell = id(c1, r1);
+  const startSid = sid(c0, r0, isSwim(c0, r0) ? 1 : 0);
+  gScore.set(startSid, 0);
+  push(hx(c0, r0), startSid);
   let expanded = 0;
   let found = false;
+  let foundSid = startSid;
   // Best-effort: remember the explored node CLOSEST to the goal — when the
   // goal can't be reached (walled off, budget exhausted), walking to that rim
   // and stopping cleanly beats beelining into the wall and grinding.
-  let closest = start;
+  let closest = startSid;
   let closestH = hx(c0, r0);
   while (heap.length) {
     const cur = pop();
-    if (cur === goal) {
+    const curCell = sidCell(cur);
+    const cc = curCell % W;
+    const cr = (curCell - cc) / W;
+    if (curCell === goalCell) {
       found = true;
+      foundSid = cur;
       break;
     }
-    {
-      const cc0 = cur % W;
-      const ch = hx(cc0, (cur - cc0) / W);
+    if (!isSwim(cc, cr)) {
+      const ch = hx(cc, cr);
       if (ch < closestH) {
         closestH = ch;
         closest = cur;
       }
     }
     if (++expanded > maxNodes) break;
-    const cc = cur % W;
-    const cr = (cur - cc) / W;
+    const run = cur - curCell * RUNS;
     const g0 = gScore.get(cur)!;
     for (let dr = -1; dr <= 1; dr++) {
       for (let dc = -1; dc <= 1; dc++) {
@@ -1359,7 +1341,17 @@ export function findPath(
         }
         // Prefer a 1-cell buffer around solids when one exists nearby.
         if (nearSolid(nc, nr)) cost += 0.6;
-        const n = id(nc, nr);
+        // Water: extend the swim run (capped — see SWIM_RUN_MAX above) and
+        // make even legal fords cost ~4 walked cells so land detours win.
+        let nrun = Math.max(0, run - 1); // land: decay, not reset
+        if (isSwim(nc, nr)) {
+          nrun = run + 1;
+          // A wet START may always step to run 2 (one more cell to escape by)
+          // even on an empty budget — refusing a swimmer any route is worse.
+          if (nrun > Math.max(SWIM_RUN_MAX, isSwim(c0, r0) ? 2 : 0)) continue;
+          cost += 3;
+        }
+        const n = sid(nc, nr, nrun);
         const g = g0 + cost;
         if (g < (gScore.get(n) ?? Infinity)) {
           gScore.set(n, g);
@@ -1369,13 +1361,13 @@ export function findPath(
       }
     }
   }
-  const dest = found ? goal : closest;
-  if (dest === start) return null; // nowhere to go at all — ignore the tap
+  const dest = found ? foundSid : closest;
+  if (dest === startSid) return null; // nowhere to go at all — ignore the tap
   // Reconstruct dest→start, then emit start→dest cell centres, merging
   // straight runs; the last waypoint becomes the exact tapped point (or the
   // best-effort rim cell when the goal was unreachable).
   const cells: number[] = [];
-  for (let n: number | undefined = dest; n !== undefined && n !== start; n = cameFrom.get(n)) cells.push(n);
+  for (let n: number | undefined = dest; n !== undefined && n !== startSid; n = cameFrom.get(n)) cells.push(sidCell(n));
   cells.reverse();
   // One waypoint PER CELL (no collinear merging): a merged long leg beside a
   // prop line has no interior nudged points, and the 8-way-quantized follower
@@ -1453,6 +1445,9 @@ export interface AutopilotTrip {
    * axis — their lateral components cancel and the player vibrates in place
    * at a gap's mouth forever (found by the trip simulator, 60fps frames). */
   steer: { ax: number; ay: number } | null;
+  /** Swim-stamina budget captured when the trip was planned — replans reuse
+   * it so a drained player is not routed into water they cannot survive. */
+  swimBudget: number;
   /** Sticky run→walk demotion: once one frame's displacement exceeds a CELL
    * the control rate can no longer steer a run (70wu per decision at 2.5fps
    * — two cells blind between choices). The rest of the trip walks; manual
@@ -1471,8 +1466,10 @@ export function startTrip(
   toY: number,
   run: boolean,
   nowMs: number,
+  opts?: { swimBudget?: number },
 ): AutopilotTrip | null {
-  const path = grid ? (findPath(grid, fromX, fromY, toX, toY) ?? []) : [{ x: toX, y: toY }];
+  const swimBudget = opts?.swimBudget ?? MAX_STAMINA;
+  const path = grid ? (findPath(grid, fromX, fromY, toX, toY, { swimBudget }) ?? []) : [{ x: toX, y: toY }];
   if (path.length === 0) return null;
   const end = path[path.length - 1];
   return {
@@ -1483,6 +1480,7 @@ export function startTrip(
     lastPos: null,
     steer: null,
     slow: false,
+    swimBudget,
   };
 }
 
@@ -1575,7 +1573,7 @@ export function stepAutopilot(
     if (Math.hypot(t.x - x, t.y - y) < CELL_WU * 1.25) return AUTOPILOT_IDLE;
     if (!trip.repathed && grid) {
       trip.repathed = true;
-      trip.path = findPath(grid, x, y, t.x, t.y) ?? [];
+      trip.path = findPath(grid, x, y, t.x, t.y, { swimBudget: trip.swimBudget }) ?? [];
       trip.progress = { d: Infinity, t: nowMs };
       trip.steer = null;
       if (trip.path.length === 0) return AUTOPILOT_IDLE;

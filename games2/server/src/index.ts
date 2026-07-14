@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 import express from "express";
 import { Server } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
-import { ROOM_NAME, DEMO_ROOM_NAME } from "@nangijala/shared";
+import { ROOM_NAME } from "@nangijala/shared";
 import { WorldRoom } from "./rooms/WorldRoom.js";
 
 const PORT = Number(process.env.PORT || 2567);
@@ -75,9 +75,6 @@ const gameServer = new Server({
 // players who picked the SAME world into one shared room, and spins up a
 // separate room (with that world's own grid) for each different selection.
 gameServer.define(ROOM_NAME, WorldRoom).filterBy(["world"]);
-// The emission demo: the SAME room class on a generated station world — the
-// demo is the real game (renderer, movement, night pipeline), just elsewhere.
-gameServer.define(DEMO_ROOM_NAME, WorldRoom, { demo: true });
 
 gameServer
   .listen(PORT)

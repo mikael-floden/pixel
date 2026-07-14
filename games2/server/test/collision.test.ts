@@ -436,43 +436,43 @@ test("auto-jump fires in a concave corner (upside-down V notch)", () => {
 });
 
 test("findPath routes around a solid prop wall instead of into it", () => {
-  // 5×3 flat grass; a prop wall on column 2, rows 0-1 — the only way from the
-  // west side to the east side is around the south end.
+  // 9×7 flat grass; a prop wall on column 4, rows 1-2 — the only way from the
+  // west side to the east side is around the south end. (Geometry sits inside
+  // the world-border SPAWN_MARGIN band, like anything reachable in-game.)
   const g = () => ({ t: "grass", l: 0 });
-  const rows = [
-    [g(), g(), g(), g(), g()],
-    [g(), g(), g(), g(), g()],
-    [g(), g(), g(), g(), g()],
-  ];
-  const grid = buildTerrainGrid(5, 3, rows, [
-    { col: 2, row: 0 },
-    { col: 2, row: 1 },
+  const rows = Array.from({ length: 7 }, () => Array.from({ length: 9 }, g));
+  const grid = buildTerrainGrid(9, 7, rows, [
+    { col: 4, row: 1 },
+    { col: 4, row: 2 },
   ]);
   const c = (n: number) => (n + 0.5) * CELL_WU;
-  const path = findPath(grid, c(0), c(0), c(4), c(0));
+  const path = findPath(grid, c(2), c(1), c(6), c(1));
   assert.ok(path, "a path exists");
-  // It must detour through row 2 (south of the prop wall)…
-  assert.ok(path.some((p) => Math.floor(p.y / CELL_WU) === 2), "detours south around the props");
+  // It must detour south of the prop wall…
+  assert.ok(path.some((p) => Math.floor(p.y / CELL_WU) >= 3), "detours south around the props");
   // …never touch a prop cell…
   for (const p of path) {
     assert.equal(isBlockedAtWorld(grid, p.x, p.y), false, "waypoint on a prop cell");
   }
   // …and end exactly at the tapped point.
-  assert.deepEqual(path[path.length - 1], { x: c(4), y: c(0) });
+  assert.deepEqual(path[path.length - 1], { x: c(6), y: c(1) });
 });
 
 test("findPath climbs a 1-level ledge when there is no way around", () => {
-  // g0 | g1 | g0 in a 1-cell-tall world: the middle cell must be jumped.
-  const rows = [[{ t: "grass", l: 0 }, { t: "grass", l: 1 }, { t: "grass", l: 0 }]];
-  const grid = buildTerrainGrid(3, 1, rows);
+  // A full-height 1-level wall on column 3 of a 7×5 world: the only way
+  // east is jumping it (no way around — the wall spans every routable row).
+  const g = (l = 0) => ({ t: "grass", l });
+  const rows = Array.from({ length: 5 }, () => Array.from({ length: 7 }, (_, c) => g(c === 3 ? 1 : 0)));
+  const grid = buildTerrainGrid(7, 5, rows);
   const c = (n: number) => (n + 0.5) * CELL_WU;
-  const y = CELL_WU / 2;
-  const path = findPath(grid, c(0), y, c(2), y);
+  const y = c(2);
+  const path = findPath(grid, c(1), y, c(5), y);
   assert.ok(path, "path exists via the jumpable ledge");
-  assert.equal(path[path.length - 1].x, c(2));
-  // Unreachable: raise the ledge to 2 levels (jump can't clear it).
-  grid.level[1] = 2;
-  assert.equal(findPath(grid, c(0), y, c(2), y), null, "2-level wall is a dead end");
+  assert.equal(path[path.length - 1].x, c(5));
+  // Unreachable: raise the wall to 2 levels (jump can't clear it). From the
+  // wall's base cell there is no closer rim, so the tap is a true dead end.
+  for (let r = 0; r < 5; r++) grid.level[r * 7 + 3] = 2;
+  assert.equal(findPath(grid, c(2), y, c(5), y), null, "2-level wall is a dead end");
 });
 
 test("findPath keeps hitbox clearance around props (buffer + nudged corners)", () => {
@@ -528,6 +528,21 @@ test("findPath's final waypoint respects the collision margin next to props", ()
   const end = path[path.length - 1];
   const d = Math.hypot(Math.max(64 - end.x, 0, end.x - 96), Math.max(64 - end.y, 0, end.y - 96));
   assert.ok(d >= PLAYER_RADIUS + 1, `final waypoint keeps the body clear (${d.toFixed(1)}wu)`);
+});
+
+test("findPath never routes through the world-border margin band", () => {
+  // stepMovement clamps the body to SPAWN_MARGIN from the world edge; a tap
+  // AT the edge must clamp its goal + route into the reachable band or the
+  // follower stalls ~24wu short of border waypoints forever (glow_test west
+  // edge). 12x12 grass, tap at (3,180) hugging the west border.
+  const g = () => ({ t: "grass", l: 0 });
+  const rows = Array.from({ length: 12 }, () => Array.from({ length: 12 }, g));
+  const grid = buildTerrainGrid(12, 12, rows);
+  const pts = findPath(grid, 200, 200, 3, 180);
+  assert.ok(pts && pts.length >= 1, "border tap still routes");
+  for (const p of pts!) {
+    assert.ok(p.x >= 40 && p.y >= 40, `waypoint (${p.x.toFixed(1)},${p.y.toFixed(1)}) inside the unreachable border band`);
+  }
 });
 
 test("big-dt input advances to contact instead of freezing a step early", () => {
@@ -601,16 +616,16 @@ test("unstickFromSolids frees overlapped bodies, leaves clean ones alone", () =>
 });
 
 test("findPath best-effort: unreachable goal routes to the reachable rim", () => {
-  // A 2-level wall seals the east half; tapping beyond it must walk to the
-  // rim and stop cleanly (not beeline into the wall, not fail outright).
-  const rows = [
-    [{ t: "grass", l: 0 }, { t: "grass", l: 0 }, { t: "grass", l: 2 }, { t: "grass", l: 0 }, { t: "grass", l: 0 }],
-  ];
-  const grid = buildTerrainGrid(5, 1, rows);
+  // A full-height 2-level wall on column 4 seals the east half of a 9×5
+  // world; tapping beyond it must walk to the rim and stop cleanly (not
+  // beeline into the wall, not fail outright).
+  const g = (l = 0) => ({ t: "grass", l });
+  const rows = Array.from({ length: 5 }, () => Array.from({ length: 9 }, (_, c) => g(c === 4 ? 2 : 0)));
+  const grid = buildTerrainGrid(9, 5, rows);
   const c = (n: number) => (n + 0.5) * CELL_WU;
-  const y = CELL_WU / 2;
-  const path = findPath(grid, c(0), y, c(4), y);
+  const y = c(2);
+  const path = findPath(grid, c(1), y, c(7), y);
   assert.ok(path, "best-effort path exists");
   const end = path[path.length - 1];
-  assert.ok(end.x < 2 * CELL_WU, `stops on the reachable side (ended at x=${end.x.toFixed(0)})`);
+  assert.ok(end.x < 4 * CELL_WU, `stops on the reachable side (ended at x=${end.x.toFixed(0)})`);
 });

@@ -221,11 +221,15 @@ try {
     console.log(`reconnect-in-place OK (drift ${drift.toFixed(0)}wu, no reload)`);
   }
 
-  // ---- one reload: emission world join + a short trip ----
+  // ---- one reload: the glow_test showcase (maps2's emissive world) ----
   {
-    await page.goto("http://localhost:5173/#emission", { waitUntil: "load" });
+    await page.goto("http://localhost:5173/", { waitUntil: "load" });
     await page.waitForFunction(() => window.__mlSelect, { timeout: 25000 });
-    await page.evaluate(() => window.__mlSelect.commit());
+    await page.evaluate(() => {
+      const i = window.__mlSelect.worlds().findIndex((w) => /glow/i.test(w));
+      if (i >= 0) window.__mlSelect.pickWorld(i);
+      window.__mlSelect.commit();
+    });
     await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, { timeout: 30000 });
     await page.waitForTimeout(1200);
     await page.bringToFront();
@@ -242,7 +246,7 @@ try {
       }
       return null;
     }, p0);
-    if (!t) fail("emission: no tap target found");
+    if (!t) fail("glow_test: no tap target found");
     let arrived = false;
     for (let i = 0; i < 100 && !arrived; i++) {
       await page.waitForTimeout(150);
@@ -250,8 +254,8 @@ try {
     }
     const p1 = await pos();
     const dEnd = Math.hypot(t.x - p1.x, t.y - p1.y);
-    if (!arrived || dEnd > 40) fail(`emission trip did not arrive (dist ${dEnd.toFixed(0)}wu)`);
-    console.log(`emission smoke OK (arrived, ${dEnd.toFixed(0)}wu)`);
+    if (!arrived || dEnd > 40) fail(`glow_test trip did not arrive (dist ${dEnd.toFixed(0)}wu)`);
+    console.log(`glow_test smoke OK (arrived, ${dEnd.toFixed(0)}wu)`);
   }
 
   if (errors.length) fail("page errors: " + errors.slice(0, 3).join(" | "));

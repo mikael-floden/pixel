@@ -14,7 +14,6 @@ generates art and pushes it to `main`.
 | [`tiles2/`](tiles2/) | Tile/material library (2nd gen) — iso terrain + prop sheets | see `tiles2/` |
 | [`maps2/`](maps2/) | Worlds (2nd gen) — `worlds/<name>/world.json` grids the game loads | see `maps2/` |
 | [`objects/`](objects/) | Animated props / map objects | see `objects/` |
-| [`tiles/`](tiles/) | Legacy tile art + `emission.json` (still powers the in-game #emission demo) | see `tiles/` |
 | [`sounds/`](sounds/) | Game sound effects (UI, items, tools, movement, combat) — procedural sfxr by default, optional AI foley | [`sounds/README.md`](sounds/README.md) |
 
 Each domain is **independent**: its own config, pipeline, generated art and

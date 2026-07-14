@@ -4,7 +4,6 @@ import {
   WORLD_WIDTH,
   WORLD_HEIGHT,
   CELL_WU,
-  DEMO_ROOM_NAME,
   DIRECTIONS,
   DEFAULT_DIRECTION,
   InputMessage,
@@ -301,7 +300,6 @@ export class WorldScene extends Phaser.Scene {
   private artOffCache = new Map<string, number>();
   private tileBases: TileBases | null = null;
   // /#emission: this SAME scene on the generated station world (demo room).
-  private demoMode = false;
   // Per-pixel glow halos for the visible window (rebuilt with the occluders).
   private glowStamps: GlowStamp[] = [];
   // The spawn campfire: an animated world object with its own fire light.
@@ -337,7 +335,6 @@ export class WorldScene extends Phaser.Scene {
     this.worldName = (this.registry.get("worldName") as string | undefined) ?? DEFAULT_WORLD;
     this.maps2 = !!this.world && isMaps2World(this.world);
     this.tileBases = (this.registry.get("tileBases") as TileBases | null) ?? null;
-    this.demoMode = (this.registry.get("demoMode") as boolean | undefined) ?? false;
     if (this.world) {
       // The world's extent in world units (grid×CELL_WU) — per-world, so any
       // size renders/collides right (see shared: WORLD_WIDTH is only a default).
@@ -390,11 +387,8 @@ export class WorldScene extends Phaser.Scene {
           this.load.image(tileKey(t, v), tileUrl(t, v));
         }
       }
-      // Self-emission registry (v1 tiles only; maps2 materials never match, so
-      // the per-cell glow layers stay dormant — kept so the emission-demo path
-      // works). maps2 worlds get their glow from tiles2/emission.json instead
+      // maps2 worlds get their glow from tiles2/emission.json
       // (per-MATERIAL params + per-TILE-PATH sources — see loadTiles2Emission).
-      this.load.json("tile-emission", "/assets/tiles/emission.json");
       if (this.maps2) this.load.json("tiles2-emission", "/assets/tiles2/emission.json");
       this.load.spritesheet(CAMPFIRE_KEY, CAMPFIRE_URL, {
         frameWidth: CAMPFIRE_FRAME,
@@ -411,19 +405,12 @@ export class WorldScene extends Phaser.Scene {
     if (this.world) this.setupStreamingGround();
     else this.drawGround();
     this.placeCampfire();
-    this.placeDemoLabels();
 
     this.atmo = new Atmosphere(this);
     this.atmo.create();
     this.atmo.setPreset("night");
     // Shader night needs WebGL; on canvas renderers the multiply grade
     // remains the night fallback.
-    const emissionData = this.cache.json.get("tile-emission") as
-      | { categories?: EmissionMap }
-      | undefined;
-    this.emission = emissionData?.categories ?? {};
-    if (!emissionData)
-      console.warn("[nangijala] tiles/emission.json missing — tile self-emission disabled");
     // maps2 self-emission (tiles2/emission.json): per-material glow params +
     // per-tile-path glow sources. In every maps2 world the emissive tiles are
     // PROPS (geodes, lava rocks, glowing mushrooms — base_x_N object tiles), so
@@ -497,12 +484,6 @@ export class WorldScene extends Phaser.Scene {
     });
     // Jump (Space): edge-triggered, lets you cross a 1-level ledge if timed.
     this.input.keyboard!.on("keydown-SPACE", () => this.tryJump());
-    // [0]: toggle between the main world and the emission demo world (the
-    // real game on a generated station map — every glowing tile, numbered).
-    this.input.keyboard!.on("keydown-ZERO", () => {
-      location.hash = this.demoMode ? "" : "#emission";
-      location.reload();
-    });
     // Feature/debug toggles live on the TOP-ROW digits (1-9).
     this.input.keyboard!.on("keydown-ONE", () => {
       this.setTimeOfDay((this.timeIdx + 1) % TIME_PHASES.length);
@@ -549,7 +530,6 @@ export class WorldScene extends Phaser.Scene {
       this.bindRoom(
         await joinWorld(
           { name: this.myName, character: this.myCharacter.uid, world: this.worldName },
-          this.demoMode ? DEMO_ROOM_NAME : undefined,
         ),
       );
     } catch (err) {
@@ -858,7 +838,6 @@ export class WorldScene extends Phaser.Scene {
       try {
         const room = await joinWorld(
           { name: this.myName, character: this.myCharacter.uid, world: this.worldName },
-          this.demoMode ? DEMO_ROOM_NAME : undefined,
         );
         // Clean slate: the new room's full state re-adds every player (new
         // sessionIds), so drop all old sprites + prediction/input state.
@@ -1517,7 +1496,10 @@ export class WorldScene extends Phaser.Scene {
     // the route's END — the tapped point pushed out of any solid's collision
     // margin, or the reachable rim when the goal is walled off. Null →
     // nowhere to go (tap into a sealed area) — ignore.
-    const trip = startTrip(this.terrain, me.fx, me.fy, x, y, run, this.time.now);
+    const stamina = this.room?.state.players.get(this.room.sessionId)?.stamina;
+    const trip = startTrip(this.terrain, me.fx, me.fy, x, y, run, this.time.now, {
+      swimBudget: typeof stamina === "number" ? stamina : undefined,
+    });
     if (!trip) return;
     this.trip = trip;
     const end = trip.target;
@@ -1933,9 +1915,7 @@ export class WorldScene extends Phaser.Scene {
         const sSolid = surfaceFor(cell.t);
         const fromLvl = !sSolid.standable && !sSolid.swimmable
           ? cell.l
-          : this.demoMode
-            ? this.stackFrom(col, row, cell.l, false)
-            : 0;
+          : 0;
         for (let lvl = fromLvl; lvl <= cell.l; lvl++)
           rt.batchDraw(key, bx, by - lvl * lh - this.artYOff(key));
         // Baked contact shadows from higher sun-side neighbours: a DAYLIGHT
@@ -2377,9 +2357,7 @@ export class WorldScene extends Phaser.Scene {
         const aOff = this.artYOff(key);
         const fromLvl = solidHere
           ? cell.l
-          : this.demoMode
-            ? this.stackFrom(col, row, cell.l, false)
-            : 0;
+          : 0;
         for (let lvl = fromLvl; lvl <= cell.l; lvl++) {
           this.occluders.push(
             this.add.image(bx, by - lvl * lh - aOff, key).setOrigin(0, 0).setDepth(oDepth),
@@ -2390,21 +2368,6 @@ export class WorldScene extends Phaser.Scene {
         // whole stack — the wall's lowest band falls into the diamond
         // interlock wedge where the shader resolves pixels to the dark
         // meadow IN FRONT, leaving an unlit "step" at the base (#64).
-        if (this.demoMode && this.night && !solidHere && cell.l > 0 && em && variantGlows) {
-          for (let lvl = this.stackFrom(col, row, cell.l, false); lvl <= cell.l; lvl++) {
-            this.litOccluders.push({
-              img: this.add
-                .image(bx, by - lvl * lh - aOff, key)
-                .setOrigin(0, 0)
-                .setDepth(litDepth(oDepth)),
-              col: col + 0.5,
-              row: row + 0.5,
-              z: cell.l + 0.5,
-              emission: em,
-              phase: ((((col * 73856093) ^ (row * 19349663)) >>> 0) % 628) / 100,
-            });
-          }
-        }
         // Tall solids get a LIT COPY above the darkness overlay (see the
         // litOccluders field note): billboard art must be lit by its OWN
         // cell, not by whatever terrain lies behind its upper pixels.
@@ -2476,7 +2439,7 @@ export class WorldScene extends Phaser.Scene {
       this.maxLevel,
       undefined,
       (t, v) => this.artYOff(tileKey(t, v)),
-      this.demoMode,
+      false,
     ).concat(this.buildPoolStamps(cam)).concat(this.propStamps);
   }
 
@@ -2757,45 +2720,6 @@ export class WorldScene extends Phaser.Scene {
       });
     }
     return out;
-  }
-
-  /** Demo mode: a floating number + name label above every station (from the
-   * generated world's pois) so odd tiles can be reported by number. Drawn
-   * above the darkness overlay so they stay readable at night. */
-  private placeDemoLabels() {
-    if (!this.demoMode || !this.world) return;
-    const { dx, dy, lh } = MAP_GEOMETRY;
-    for (const poi of this.world.pois) {
-      const cell = this.world.rows[poi.y]?.[poi.x];
-      const bx = this.iso.ox + (poi.x - poi.y) * dx + dx;
-      const key = tileKey(cell?.t ?? "meadow", cell?.v ?? 0);
-      const topY =
-        this.iso.oy + (poi.x + poi.y) * dy - (cell?.l ?? 0) * lh - this.artYOff(key);
-      const sp = poi.label.indexOf(" ");
-      const num = sp > 0 ? poi.label.slice(0, sp) : poi.label;
-      const name = sp > 0 ? poi.label.slice(sp + 1) : "";
-      this.add
-        .text(bx, topY - 26, num, {
-          fontFamily: "monospace",
-          fontSize: "16px",
-          color: "#ffffff",
-          stroke: "#000000",
-          strokeThickness: 3,
-        })
-        .setOrigin(0.5, 1)
-        .setDepth(900_100);
-      if (name)
-        this.add
-          .text(bx, topY - 24, name, {
-            fontFamily: "monospace",
-            fontSize: "9px",
-            color: "#9aa3c8",
-            stroke: "#000000",
-            strokeThickness: 2,
-          })
-          .setOrigin(0.5, 0)
-          .setDepth(900_100);
-    }
   }
 
   /** A burning campfire beside the spawn point — the gathering spot. The

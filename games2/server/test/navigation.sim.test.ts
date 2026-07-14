@@ -5,7 +5,6 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   parseWorld,
-  buildDemoWorld,
   buildTerrainGrid,
   startTrip,
   stepAutopilot,
@@ -18,6 +17,8 @@ import {
   screenToWorldVector,
   autoJumpWanted,
   findSpawn,
+  stepStamina,
+  MAX_STAMINA,
   TerrainGrid,
   CELL_WU,
   WALK_CLIMB,
@@ -48,27 +49,13 @@ interface SimWorld {
   worldH: number;
 }
 
-function loadPropWorld(): SimWorld | null {
-  const path = join(REPO, "maps2", "worlds", "prop_demo", "world.json");
+function loadMaps2World(name: string): SimWorld | null {
+  const path = join(REPO, "maps2", "worlds", name, "world.json");
   if (!existsSync(path)) return null;
   const world = parseWorld(JSON.parse(readFileSync(path, "utf8")));
   if (!world) return null;
   return {
     grid: buildTerrainGrid(world.width, world.height, world.rows, world.props),
-    worldW: world.width * CELL_WU,
-    worldH: world.height * CELL_WU,
-  };
-}
-
-function loadEmissionWorld(): SimWorld | null {
-  const emissionPath = join(REPO, "tiles", "emission.json");
-  const basesPath = join(REPO, "games2", "client", "public", "tile-bases.json");
-  if (!existsSync(emissionPath)) return null;
-  const emission = JSON.parse(readFileSync(emissionPath, "utf8")).categories ?? {};
-  const bases = existsSync(basesPath) ? JSON.parse(readFileSync(basesPath, "utf8")) : null;
-  const world = buildDemoWorld(emission, bases);
-  return {
-    grid: buildTerrainGrid(world.width, world.height, world.rows),
     worldW: world.width * CELL_WU,
     worldH: world.height * CELL_WU,
   };
@@ -81,6 +68,7 @@ function makeRand(seed: number): () => number {
 }
 
 interface TripResult {
+  drownings: number;
   arrived: boolean;
   simSeconds: number;
   endDist: number;
@@ -107,6 +95,8 @@ function simTrips(
   let now = 0; // simulated ms
   let jumpUntil = -Infinity;
   let jumpReadyAt = 0;
+  let stamina = MAX_STAMINA;
+  let drownings = 0;
   const results: TripResult[] = [];
 
   const integrate = (ax: number, ay: number, running: boolean, dtMs: number) => {
@@ -130,6 +120,19 @@ function simTrips(
       );
       x = r.x;
       y = r.y;
+      // Swim stamina, exactly like WorldRoom.update: drain in water, recover
+      // on land; at 0 you drown and respawn on the nearest land. An autopilot
+      // that routes long swims turns trips into drown-teleports — the browser
+      // caught this on glow_test before the sim modelled it.
+      const st = stepStamina(stamina, surfaceAtWorld(grid, x, y).swimmable, eff);
+      stamina = st.stamina;
+      if (st.drowned) {
+        const spot = findSpawn(grid, x, y);
+        x = spot.x;
+        y = spot.y;
+        stamina = MAX_STAMINA;
+        drownings++;
+      }
     }
   };
 
@@ -148,9 +151,10 @@ function simTrips(
       const s = surfaceAtWorld(grid, tx, ty);
       if (!s.standable && !s.swimmable) continue;
       run = rand() > 0.5;
-      trip = startTrip(grid, x, y, tx, ty, run, now);
+      trip = startTrip(grid, x, y, tx, ty, run, now, { swimBudget: stamina });
     }
     if (!trip) continue; // hemmed in — same as the e2e's "no target found, skip"
+    drownings = 0;
 
     const budgetMs = 120_000; // simulated: any healthy trip is far shorter
     const t0 = now;
@@ -174,6 +178,7 @@ function simTrips(
       now += opts.frameMs;
     }
     results.push({
+      drownings,
       arrived,
       simSeconds: (now - t0) / 1000,
       endDist: Math.hypot(trip.target.x - x, trip.target.y - y),
@@ -188,6 +193,8 @@ function simTrips(
 
 function assertAllArrive(results: TripResult[], label: string) {
   assert.ok(results.length >= 1, `${label}: at least one trip ran`);
+  const totalDrownings = results.reduce((a, r) => a + r.drownings, 0);
+  assert.equal(totalDrownings, 0, `${label}: the autopilot drowned the player ${totalDrownings} time(s) — routes must avoid lethal swims`);
   const fails = results.filter((r) => !(r.arrived && r.endDist < 40));
   const detail = fails
     .map((f) => `at (${f.at.x.toFixed(0)},${f.at.y.toFixed(0)}) target (${f.target.x.toFixed(0)},${f.target.y.toFixed(0)}) endDist=${f.endDist.toFixed(0)}wu run=${f.run} ${f.simSeconds.toFixed(1)}s`)
@@ -199,7 +206,7 @@ function assertAllArrive(results: TripResult[], label: string) {
 // rows are the regression net for the big-dt freeze and the waypoint orbit.
 for (const frameMs of [16, 133, 400]) {
   test(`sim: prop_demo trips arrive (frame ${frameMs}ms, 3 seeds)`, (t) => {
-    const w = loadPropWorld();
+    const w = loadMaps2World("prop_demo");
     if (!w) return t.skip("maps2/worlds/prop_demo missing");
     for (const seed of [5, 21, 99]) {
       assertAllArrive(simTrips(w, { seed, trips: 12, frameMs }), `prop_demo seed=${seed} frame=${frameMs}`);
@@ -207,12 +214,14 @@ for (const frameMs of [16, 133, 400]) {
   });
 }
 
+// glow_test: maps2's emissive showcase (dense props + elevation) — the
+// successor of the retired tiles/ emission-demo station.
 for (const frameMs of [16, 133]) {
-  test(`sim: emission station trips arrive (frame ${frameMs}ms, 2 seeds)`, (t) => {
-    const w = loadEmissionWorld();
-    if (!w) return t.skip("tiles/emission.json missing");
+  test(`sim: glow_test trips arrive (frame ${frameMs}ms, 2 seeds)`, (t) => {
+    const w = loadMaps2World("glow_test");
+    if (!w) return t.skip("maps2/worlds/glow_test missing");
     for (const seed of [5, 21]) {
-      assertAllArrive(simTrips(w, { seed, trips: 10, frameMs }), `emission seed=${seed} frame=${frameMs}`);
+      assertAllArrive(simTrips(w, { seed, trips: 10, frameMs }), `glow_test seed=${seed} frame=${frameMs}`);
     }
   });
 }

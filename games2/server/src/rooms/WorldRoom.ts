@@ -16,7 +16,6 @@ import {
   TerrainGrid,
   buildTerrainGrid,
   parseWorld,
-  buildDemoWorld,
   makeBlocked,
   makeSideBlocked,
   unstickFromSolids,
@@ -56,16 +55,8 @@ export class WorldRoom extends Room<WorldState> {
   private worldW = WORLD_WIDTH; // world extent (grid×CELL_WU) for movement bounds
   private worldH = WORLD_HEIGHT;
 
-  onCreate(options?: { demo?: boolean; world?: string }) {
-    // Demo room: the generated emission-station world (its own persistence file
-    // — positions there mean nothing on the maps2 worlds).
-    if (options?.demo) {
-      const w = loadDemoTerrain();
-      this.terrain = w.terrain;
-      this.worldW = w.worldW;
-      this.worldH = w.worldH;
-      this.store = new JsonPlayerStore(join(process.cwd(), ".data", "demo-players.json"));
-    } else {
+  onCreate(options?: { world?: string }) {
+    {
       // Load the maps2 world the client asked for (default ring_test). Rooms are
       // matched by this name (filterBy in index.ts), so everyone who picks the
       // same world shares one room; different worlds get separate rooms.
@@ -264,31 +255,6 @@ function assetsRoot(): string {
   const srcDir = dirname(fileURLToPath(import.meta.url)); // server/src/rooms
   const gameRoot = join(srcDir, "..", "..", ".."); // games2
   return process.env.ASSETS_ROOT || join(gameRoot, ".."); // repo root
-}
-
-/** Terrain for the demo room: the generated station world (see shared
- * buildDemoWorld). Reads the same two registries the client builds it from,
- * so both sides hold the identical grid. */
-function loadDemoTerrain(): LoadedWorld {
-  try {
-    const srcDir = dirname(fileURLToPath(import.meta.url));
-    const gameRoot = join(srcDir, "..", "..", "..");
-    const emissionPath = join(assetsRoot(), "tiles", "emission.json");
-    const basesPath = join(gameRoot, "client", "public", "tile-bases.json");
-    const emission = existsSync(emissionPath)
-      ? (JSON.parse(readFileSync(emissionPath, "utf8")).categories ?? {})
-      : {};
-    const bases = existsSync(basesPath) ? JSON.parse(readFileSync(basesPath, "utf8")) : null;
-    const world = buildDemoWorld(emission, bases);
-    return {
-      terrain: buildTerrainGrid(world.width, world.height, world.rows),
-      spawn: null,
-      worldW: world.width * CELL_WU,
-      worldH: world.height * CELL_WU,
-    };
-  } catch {
-    return { terrain: null, spawn: null, worldW: WORLD_WIDTH, worldH: WORLD_HEIGHT };
-  }
 }
 
 /** Load a named maps2 world (maps2/worlds/<name>/world.json) into a collision
