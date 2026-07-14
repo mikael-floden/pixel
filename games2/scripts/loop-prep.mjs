@@ -28,7 +28,7 @@ if (args.has("--pull")) {
   console.log(git("pull", "--ff-only", "origin", "main"));
 }
 
-// Regenerate the client character manifest from the sibling characters/ domain.
+// Regenerate the client character manifest from the sibling characters2/ domain.
 execFileSync("node", [join(SCRIPT_DIR, "build-manifest.mjs")], { cwd: GAME_ROOT, stdio: "inherit" });
 
 const headSha = git("rev-parse", "HEAD");

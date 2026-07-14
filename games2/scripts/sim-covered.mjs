@@ -11,7 +11,8 @@ const root = join(here, "../..");
 const shared = await import(join(here, "../shared/src/index.ts"));
 const { parseWorld, surfaceFor } = shared;
 
-const world = parseWorld(JSON.parse(readFileSync(join(root, "maps/world/world.json"), "utf8")));
+const WORLD_NAME = process.env.WORLD || "ring_test"; // any maps2 world
+const world = parseWorld(JSON.parse(readFileSync(join(root, "maps2/worlds", WORLD_NAME, "world.json"), "utf8")));
 if (!world) throw new Error("world parse failed");
 const { rows, width: W, height: H } = world;
 

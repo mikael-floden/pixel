@@ -51,7 +51,7 @@ async function bootMapPreview(): Promise<boolean> {
   if (!world) {
     document.body.innerHTML =
       '<p style="color:#eef;font-family:monospace;padding:2rem">No map yet ' +
-      "(pixel/maps/world/world.json not found).</p>";
+      "(maps2/worlds/&lt;name&gt;/world.json not found).</p>";
     return true;
   }
   const game = new Phaser.Game({

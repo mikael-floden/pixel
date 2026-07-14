@@ -40,7 +40,7 @@ jobs:
   # Quality gate — runs in parallel with the image build, so it adds ~no wall
   # time. Sparse checkout: only what typecheck + npm test actually read
   # (games2, characters2 for the manifest, maps2/worlds + tiles for the
-  # navigation sim and the surface gate, maps/world for check-surfaces).
+  # navigation sim and the surface/emission gates).
   test:
     runs-on: ubuntu-latest
     permissions:
@@ -52,7 +52,6 @@ jobs:
             /games2/
             /characters2/
             /maps2/worlds/
-            /maps/world/
             /tiles/
           sparse-checkout-cone-mode: false
       - uses: actions/setup-node@v4
@@ -84,9 +83,7 @@ jobs:
         with:
           sparse-checkout: |
             games2
-            characters
             tiles
-            maps
             objects
             characters2
             tiles2

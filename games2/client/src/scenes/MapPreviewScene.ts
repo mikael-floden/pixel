@@ -4,7 +4,7 @@ import { World } from "../maps";
 /**
  * World overview reached at `#map`. The bigworld is far too large to composite
  * tile-by-tile in the browser (512×448 cells ≈ 30k px), so this shows the maps
- * agent's pre-rendered minimap (maps/world/minimap.png). Drag to pan, wheel to
+ * agent's pre-rendered minimap (maps2 world minimap.png). Drag to pan, wheel to
  * zoom.
  */
 export class MapPreviewScene extends Phaser.Scene {
@@ -19,12 +19,12 @@ export class MapPreviewScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("world-minimap", "/assets/maps/world/minimap.png");
+    this.load.image("world-minimap", "/assets/maps2/worlds/ring_test/minimap.png");
   }
 
   create() {
     if (!this.textures.exists("world-minimap")) {
-      this.add.text(20, 20, "No minimap available (maps/world/minimap.png).", {
+      this.add.text(20, 20, "No minimap available (maps2/worlds/<name>/minimap.png).", {
         fontFamily: "monospace",
         fontSize: "14px",
         color: "#eef",

@@ -4,7 +4,7 @@ export interface CharacterDef {
   skeleton: string;
   id: string;
   name: string;
-  root: string; // web path, e.g. /assets/characters/.../char_00
+  root: string; // web path, e.g. /assets/characters2/humans/<id>
   portrait: string;
   frameW: number;
   frameH: number;

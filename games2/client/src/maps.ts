@@ -1,5 +1,5 @@
 /**
- * Consume the maps agent's isometric world (pixel/maps/world/world.json) and the
+ * Consume the maps2 agent's isometric worlds (maps2/worlds/<name>/world.json) and the
  * tile sets (pixel/tiles/<category>/tile_NN.png). Mirrors the geometry the maps
  * pipeline documents (maps/pipeline/tileset.py + render.py):
  *

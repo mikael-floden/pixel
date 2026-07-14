@@ -5,9 +5,17 @@ run in parallel — each owns one top-level domain directory:
 
 | Domain | Directory | Owner agent |
 |--------|-----------|-------------|
-| Characters (base bodies, dresses, animations) | `characters/` | characters agent |
+| Characters, 2nd gen | `characters2/` | characters2 agent |
+| Tiles/materials, 2nd gen | `tiles2/` | tiles2 agent |
+| Worlds, 2nd gen | `maps2/` | maps2 agent |
 | Animated props / map objects | `objects/` | objects agent |
-| Tilesets / environments | `maps/` | maps agent |
+| Sounds | `sounds/` | sounds agent |
+| Legacy tiles + emission registry | `tiles/` | (frozen; games2 reads `emission.json`) |
+| The game (consumer) | `games2/` | game agent |
+
+RETIRED 2026-07-14: `characters/`, `maps/`, `games/` — first-generation
+domains + game, deleted after the 2nd generation took over (their paused
+workflows `factory.yml`/`maps.yml` were removed too). History is in git.
 
 They share one repo, one `main` branch, and one PixelLab account. This document
 is the contract that lets them work at the same time without stepping on each

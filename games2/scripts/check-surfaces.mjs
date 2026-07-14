@@ -18,7 +18,9 @@ import { parseWorld, isKnownSurface } from "../shared/src/index.ts";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../.."); // pixel repo root
 const TILES = join(ROOT, "tiles");
-const WORLD = join(ROOT, "maps/world/world.json");
+// Every maps2 world a player can load in the picker (games2 discovers them the
+// same way — scripts/build-worlds.mjs). The old maps/world flat world is gone.
+const WORLDS_DIR = join(ROOT, "maps2", "worlds");
 const W = 64, TOP = 8, MID = 21, BOT = 34;
 
 /** Measure a tile PNG and propose a SURFACES classification from its shape —
@@ -83,13 +85,22 @@ function proposalFor(cat) {
   };
 }
 
-const world = parseWorld(JSON.parse(readFileSync(WORLD, "utf8")));
-if (!world) {
-  console.error("check-surfaces: could not parse world.json");
+const worldNames = existsSync(WORLDS_DIR)
+  ? readdirSync(WORLDS_DIR).filter((n) => existsSync(join(WORLDS_DIR, n, "world.json")))
+  : [];
+if (worldNames.length === 0) {
+  console.error("check-surfaces: FAIL — no maps2/worlds/*/world.json found (nothing playable to gate)");
   process.exit(1);
 }
 const used = new Set();
-for (const row of world.rows) for (const c of row) if (c) used.add(c.t);
+for (const n of worldNames) {
+  const world = parseWorld(JSON.parse(readFileSync(join(WORLDS_DIR, n, "world.json"), "utf8")));
+  if (!world) {
+    console.error(`check-surfaces: could not parse maps2/worlds/${n}/world.json`);
+    process.exit(1);
+  }
+  for (const row of world.rows) for (const c of row) if (c && c.t) used.add(c.t);
+}
 
 const unknownUsed = [...used].filter((t) => !isKnownSurface(t)).sort();
 // The emission demo world (shared buildDemoWorld) instantiates EVERY glowing
@@ -116,11 +127,12 @@ if (unknownUnused.length)
     `check-surfaces: ${unknownUnused.length} tile categories exist but are unused and unclassified (fine for now): ${unknownUnused.join(", ")}`,
   );
 
-// Emission-contract gate: every world-used category must ALSO have an entry
-// in tiles/emission.json (null = audited, does not glow). Without one the
-// tile silently never glows — the "did anyone look at this tile?" audit trail
-// is the point. Non-null entries are shape-checked so a typo can't ship a
-// black light or a NaN radius into the shader palette.
+// Emission-registry gate: tiles/emission.json powers the #emission DEMO
+// world (shared buildDemoWorld) and its shape feeds the shader palette, so
+// it must exist and every entry must be well-formed. maps2 worlds are NOT
+// audited against it — their glow ships as tiles2-emission@1 metadata baked
+// into world props (tiles2/maps2 own that contract), a different namespace
+// from these old tiles/ categories.
 let emissionFail = 0;
 if (!existsSync(EMISSION)) {
   console.error("check-surfaces: FAIL — tiles/emission.json is missing (self-emission registry).");
@@ -128,15 +140,6 @@ if (!existsSync(EMISSION)) {
 } else {
   const em = JSON.parse(readFileSync(EMISSION, "utf8"));
   const cats = em.categories ?? {};
-  const missing = [...used].filter((t) => !(t in cats)).sort();
-  if (missing.length) {
-    console.error(
-      `check-surfaces: FAIL — ${missing.length} world-used categories have no tiles/emission.json entry` +
-        ` (add "cat": null if the tile does not glow):`,
-    );
-    for (const t of missing) console.error(`    "${t}": null,`);
-    emissionFail++;
-  }
   const num = (v, lo, hi) => typeof v === "number" && Number.isFinite(v) && v >= lo && v <= hi;
   const badColor = (c) => !Array.isArray(c) || c.length !== 3 || c.some((v) => !num(v, 0, 1));
   for (const [cat, e] of Object.entries(cats)) {
@@ -182,13 +185,13 @@ if (!existsSync(EMISSION)) {
 if (!unknownUsed.length && !unknownDemo.length) {
   if (emissionFail) process.exit(1);
   console.log(
-    `check-surfaces: OK — all ${used.size} world + all emissive (demo) categories have SURFACES + emission entries.`,
+    `check-surfaces: OK — all ${used.size} categories across ${worldNames.length} maps2 worlds + all emissive (demo) categories have SURFACES entries; emission registry well-formed.`,
   );
   process.exit(0);
 }
 
 if (unknownUsed.length) {
-  console.error(`\ncheck-surfaces: FAIL — the world uses ${unknownUsed.length} categories with NO SURFACES entry.`);
+  console.error(`\ncheck-surfaces: FAIL — the maps2 worlds use ${unknownUsed.length} categories with NO SURFACES entry.`);
   console.error(`They default to walkable ground: players walk through them AND the night shader`);
   console.error(`gives them phantom block shadows outside their art.`);
 }

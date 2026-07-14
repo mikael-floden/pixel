@@ -13,13 +13,17 @@ Each art domain is a **self-contained top-level directory** and is owned by its
 own agent/loop/Routine. Keep everything for a domain **inside its directory** —
 do not add domain-specific files to the repo root.
 
-- `characters/` — this agent's domain (undressed base characters + dresses +
-  animations). Everything lives here: `characters/config/factory.json`,
-  `characters/pipeline/*.py`, `characters/skeletons/` (generated art),
-  `characters/index.html` + `characters/viewer_data.json` (viewer),
-  `characters/spec/`.
+- `characters2/` — character art, 2nd generation (its own agent).
+- `tiles2/` — tile/material library, 2nd generation (its own agent).
+- `maps2/` — worlds, 2nd generation (its own agent; `worlds/<name>/world.json`).
 - `objects/` — animated props / map objects (a separate agent).
-- `maps/` — tilesets / environments (a separate agent).
+- `tiles/` — legacy tile art + `emission.json` (still read by games2's
+  #emission demo and its surface/emission test gates).
+- `games2/` — the Nangijala game (consumer of the art domains; see
+  `games2/CLAUDE.md`).
+- RETIRED 2026-07-14: `characters/`, `maps/`, `games/` (first-generation
+  domains + game) were deleted when the project committed to the 2nd
+  generation. Their history lives in git.
 - Repo root holds only shared/repo-level files: `README.md`, `CLAUDE.md`,
   `requirements.txt`, `.gitignore`, `.env` (gitignored).
 

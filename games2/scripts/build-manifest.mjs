@@ -1,5 +1,5 @@
 // Emit a character manifest the web client loads. The game lives at
-// pixel/games/nangijala; character art is a sibling domain at <repo>/characters/.
+// pixel/games2; character art is the sibling characters2/ domain.
 // Frame URLs are served under /assets/... (see client/vite.config.ts + server).
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";

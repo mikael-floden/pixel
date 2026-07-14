@@ -10,9 +10,11 @@ generates art and pushes it to `main`.
 
 | Domain | What it makes | Docs |
 |---|---|---|
-| [`characters/`](characters/) | Modular characters — undressed base bodies, outfits ("dresses"), per-direction animations | this file + [`characters/spec/FACTORY_SPEC.md`](characters/spec/FACTORY_SPEC.md) |
-| [`maps/`](maps/) | Map **zones** — islands (world maps) and interiors (caves, houses), as tilemaps + collision + exits | [`maps/README.md`](maps/README.md) |
+| [`characters2/`](characters2/) | Modular characters (2nd gen) — base bodies + per-direction animations | see `characters2/` |
+| [`tiles2/`](tiles2/) | Tile/material library (2nd gen) — iso terrain + prop sheets | see `tiles2/` |
+| [`maps2/`](maps2/) | Worlds (2nd gen) — `worlds/<name>/world.json` grids the game loads | see `maps2/` |
 | [`objects/`](objects/) | Animated props / map objects | see `objects/` |
+| [`tiles/`](tiles/) | Legacy tile art + `emission.json` (still powers the in-game #emission demo) | see `tiles/` |
 | [`sounds/`](sounds/) | Game sound effects (UI, items, tools, movement, combat) — procedural sfxr by default, optional AI foley | [`sounds/README.md`](sounds/README.md) |
 
 Each domain is **independent**: its own config, pipeline, generated art and
@@ -31,7 +33,10 @@ phone-friendly `index.html` viewer.
 
 # Characters domain
 
-> Paths in this section are relative to [`characters/`](characters/).
+> HISTORICAL: the section below described the retired first-generation
+> `characters/` domain (deleted 2026-07-14 with `maps/` and `games/` when the
+> project committed to the 2nd-generation pipeline — see `games2/` and the
+> `*2` domains).
 
 An automated loop that generates **modular, game-ready pixel-art characters**.
 It explores **skeletons** — generation-parameter profiles (view, size, number of
