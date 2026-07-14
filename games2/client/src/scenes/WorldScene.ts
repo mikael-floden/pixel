@@ -1689,17 +1689,10 @@ export class WorldScene extends Phaser.Scene {
       const progress = sameState ? av.sprite.anims.getProgress() : 0;
       av.sprite.play(key, true);
       if (progress > 0) av.sprite.anims.setProgress(progress);
-      // The foot position shifts between directions AND states (idle vs walk
-      // vs run gait) — re-pin to the RESOLVED clip's measured anchor (the
-      // key's state/dir, which may be a fallback of what was asked for).
-      const parts = key.split(":");
-      this.applyAnchor(
-        av.sprite,
-        av.character,
-        parts[parts.length - 1],
-        av.sprite.texture.key !== PLACEHOLDER_TEX,
-        parts[parts.length - 2],
-      );
+      // The foot position shifts slightly between directions — re-pin.
+      // (Per-DIRECTION on purpose: per-state anchors would snap the sprite
+      // sideways at every idle→walk→run transition.)
+      this.applyAnchor(av.sprite, av.character, d, av.sprite.texture.key !== PLACEHOLDER_TEX);
     }
   }
 
@@ -1782,30 +1775,17 @@ export class WorldScene extends Phaser.Scene {
 
   /** Set the sprite origin to the measured foot anchor for this direction and
    * remember the head-top fraction for label placement. */
-  private applyAnchor(
-    sprite: Phaser.GameObjects.Sprite,
-    uid: string,
-    dir: string,
-    hasArt: boolean,
-    state = "idle",
-  ) {
+  private applyAnchor(sprite: Phaser.GameObjects.Sprite, uid: string, dir: string, hasArt: boolean) {
     if (!hasArt) {
       sprite.setOrigin(0.5, 0.94); // placeholder wanderer: feet at 32/34
       sprite.setData("topFrac", 0.1);
       return;
     }
     const def = this.manifest.characters.find((c) => c.uid === uid);
-    // Per-state anchors first (walk/run plant the feet differently than the
-    // idle pose — the sole line + feet centre are measured per clip), then
-    // the idle-frame fallback. `top` (label height) always comes from the
-    // per-direction idle measurement.
-    const byState = def?.anchorsByState?.[state] ?? def?.anchorsByState?.idle;
-    const a =
-      byState?.[dir] ?? byState?.[DEFAULT_DIRECTION] ?? def?.anchors?.[dir] ?? def?.anchors?.[DEFAULT_DIRECTION];
-    const top = (def?.anchors?.[dir] ?? def?.anchors?.[DEFAULT_DIRECTION])?.top;
+    const a = def?.anchors?.[dir] ?? def?.anchors?.[DEFAULT_DIRECTION];
     if (a) {
       sprite.setOrigin(a.x, a.y);
-      sprite.setData("topFrac", top ?? Math.max(0, a.y - 0.55));
+      sprite.setData("topFrac", a.top ?? Math.max(0, a.y - 0.55));
     } else {
       sprite.setOrigin(0.5, 0.9);
       sprite.setData("topFrac", 0.25);

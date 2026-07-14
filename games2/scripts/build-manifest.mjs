@@ -135,25 +135,66 @@ function footAnchor(framePath) {
   let sole = -1;
   for (let y = h - 1; y >= 0 && sole < 0; y--) if (rowCount(y) >= 3) sole = y;
   if (sole < 0) return null;
-  // x = CENTROID of the ground-contact band's opaque pixels (the bottom ~6px
-  // above the sole line). The old outer-run MIDPOINT keyed on foot edges: a
-  // pose with one foot angled forward pushed the midpoint sideways, and the
-  // shadow slid out from between the feet (playtester's red-vs-green dot).
-  // The mass centroid sits where the weight actually is.
-  const band = Math.max(5, Math.round(h * 0.055)); // ≈6px at 112
+  // The anchor is the point BETWEEN the feet, per the maintainer's spec: each
+  // foot counts as its geometric CENTER — the midpoint of its toe-to-heel
+  // span, NOT the toes, NOT the heels, NOT a mass centroid (mass skews toward
+  // the chunkier foot) — and the anchor is midway between the two feet.
+  //
+  // Feet are found as 2D connected blobs in the bottom band (~10px — tall
+  // enough that a 3/4-view back foot drawn a few px higher by perspective is
+  // still seen; column runs alone would merge staggered feet). A blob only
+  // counts as a PLANTED foot if it reaches within 6px of the sole line —
+  // side-view back legs whose foot hides behind the front foot are ignored.
+  const band = Math.max(8, Math.round(h * 0.09)); // ≈10px at 112
   const y0 = Math.max(0, sole - band + 1);
-  let mass = 0;
-  let mx = 0;
-  for (let y = y0; y <= sole; y++)
-    for (let x = 0; x < w; x++)
-      if (opaque(x, y)) {
-        mass++;
-        mx += x + 0.5;
+  // 8-connected component labelling over the band's opaque pixels.
+  const bandH = sole - y0 + 1;
+  const label = new Int32Array(w * bandH).fill(-1);
+  const blobs = []; // {minX, maxX, maxY, size}
+  for (let by = 0; by < bandH; by++)
+    for (let x = 0; x < w; x++) {
+      if (label[by * w + x] >= 0 || !opaque(x, y0 + by)) continue;
+      const id = blobs.length;
+      const blob = { minX: x, maxX: x, maxY: y0 + by, size: 0 };
+      const stack = [[x, by]];
+      label[by * w + x] = id;
+      while (stack.length) {
+        const [cx, cy] = stack.pop();
+        blob.size++;
+        if (cx < blob.minX) blob.minX = cx;
+        if (cx > blob.maxX) blob.maxX = cx;
+        if (y0 + cy > blob.maxY) blob.maxY = y0 + cy;
+        for (let dy = -1; dy <= 1; dy++)
+          for (let dx = -1; dx <= 1; dx++) {
+            const nx = cx + dx;
+            const ny = cy + dy;
+            if (nx < 0 || ny < 0 || nx >= w || ny >= bandH) continue;
+            if (label[ny * w + nx] >= 0 || !opaque(nx, y0 + ny)) continue;
+            label[ny * w + nx] = id;
+            stack.push([nx, ny]);
+          }
       }
-  if (!mass) return null;
+      blobs.push(blob);
+    }
+  const planted = blobs
+    .filter((b) => b.size >= 4 && b.maxY >= sole - 6)
+    .sort((a, b) => a.minX + a.maxX - (b.minX + b.maxX));
+  if (!planted.length) return null;
+  const centerOf = (b) => (b.minX + b.maxX + 1) / 2; // pixel x spans [x, x+1)
+  // Two (or more) planted blobs = the feet: outermost two centres (a middle
+  // blob — a hem, a tail — never moves the anchor). One blob = feet touching
+  // or overlapping; its own centre is already between them.
+  const first = planted[0];
+  const last = planted[planted.length - 1];
+  const ax = (centerOf(first) + centerOf(last)) / 2;
+  // Depth: each foot's own ground line (bottom edge), averaged — for a
+  // staggered 3/4 stance the anchor sits between the front and back foot —
+  // then lifted ~2.5px from the toe line to mid-foot (centre of the foot,
+  // not the toes; the playtester's green dot).
+  const ay = (first.maxY + last.maxY + 2) / 2 - h * 0.022;
   return {
-    x: +(mx / mass / w).toFixed(4),
-    y: +((sole + 1) / h).toFixed(4),
+    x: +(ax / w).toFixed(4),
+    y: +(ay / h).toFixed(4),
     top: +(Math.max(0, top) / h).toFixed(4),
   };
 }
@@ -199,37 +240,30 @@ function scan() {
       }
     }
     if (!animations.idle) continue; // unplayable without an idle
-    // Foot anchors: measured from EVERY frame of EVERY state, per direction —
-    // the per-clip MEDIAN pins the sprite (a per-frame anchor would bob the
-    // body against the gait). `anchors` stays the idle-frame-0 shape (with
-    // `top` for labels) as the fallback; `anchorsByState` is what the client
-    // prefers, so walk/run gaits get their own sole line + feet centre.
+    // ONE foot anchor per DIRECTION, applied to every state — deliberately
+    // NOT per-state/per-frame (per-state anchors snap the sprite sideways at
+    // every idle→walk→run transition; maintainer prefers a stable pin). The
+    // measurement is the per-direction MEDIAN across the idle frames using
+    // the robust sole line + contact-band centroid (see footAnchor); `top`
+    // (label height) comes from idle frame 0.
     const anchors = {};
-    for (const d of Object.keys(animations.idle)) {
-      const a = footAnchor(join(animsDir, ANIM_MAP.idle, d, "0.png"));
-      if (a) anchors[d] = a;
-    }
-    const anchorsByState = {};
-    for (const [state, perDirCounts] of Object.entries(animations)) {
-      const src = animSrc[state];
-      const perDir = {};
-      for (const [d, n] of Object.entries(perDirCounts)) {
-        const xs = [];
-        const ys = [];
-        for (let i = 0; i < n; i++) {
-          const a = footAnchor(join(animsDir, src, d, `${i}.png`));
-          if (a) {
-            xs.push(a.x);
-            ys.push(a.y);
-          }
-        }
-        if (xs.length) {
-          xs.sort((p, q) => p - q);
-          ys.sort((p, q) => p - q);
-          perDir[d] = { x: xs[xs.length >> 1], y: ys[ys.length >> 1] };
+    for (const [d, n] of Object.entries(animations.idle)) {
+      const xs = [];
+      const ys = [];
+      let top;
+      for (let i = 0; i < n; i++) {
+        const a = footAnchor(join(animsDir, ANIM_MAP.idle, d, `${i}.png`));
+        if (a) {
+          xs.push(a.x);
+          ys.push(a.y);
+          if (i === 0) top = a.top;
         }
       }
-      if (Object.keys(perDir).length) anchorsByState[state] = perDir;
+      if (xs.length) {
+        xs.sort((p, q) => p - q);
+        ys.sort((p, q) => p - q);
+        anchors[d] = { x: xs[xs.length >> 1], y: ys[ys.length >> 1], top };
+      }
     }
     const webRoot = "/assets/" + relative(ASSETS_ROOT, charDir).split("\\").join("/");
     characters.push({
@@ -245,7 +279,6 @@ function scan() {
       animations,
       animSrc,
       anchors,
-      anchorsByState,
     });
   }
   return characters;
