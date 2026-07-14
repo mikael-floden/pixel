@@ -72,9 +72,9 @@ function injectStyles() {
   const css = `
   #ml-loading{position:fixed;inset:0;z-index:20;
     background:radial-gradient(circle at 50% 30%, #1c2540, #0c0c16);font-family:system-ui,sans-serif;color:#e8e8f0}
-  /* Centre the logo on the GOLDEN RATIO line (38.2% from the top = 61.8%
-     from the bottom) — dead-centre reads as slightly sunken. */
-  .ml-load-box{position:absolute;left:50%;top:38.2%;transform:translate(-50%,-50%);
+  /* Centre the logo slightly above dead-centre (45% from the top) — full
+     golden-ratio height (38.2%) read as too high on phones. */
+  .ml-load-box{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);
     display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px;text-align:center;width:100%}
   .ml-load-logoWrap{position:relative;width:min(400px,84vw)}
   .ml-load-logo{position:relative;display:block;width:100%;z-index:1;user-select:none;-webkit-user-drag:none}
