@@ -67,11 +67,16 @@ jobs:
       - run: npm test
         working-directory: games2
 
-  build:
+  # Build, push AND roll out in ONE job — a separate deploy job costs a whole
+  # extra runner spinup + auth (~45s measured). The test gate stays real: the
+  # deploy step polls the parallel `test` job and aborts on failure (tests
+  # normally finish before the image push does, so the wait is ~zero).
+  build-deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write          # required for Workload Identity Federation
+      actions: read            # poll the sibling test job's status
     steps:
       # Sparse checkout of exactly the build context (games2 + the art domains
       # the Dockerfile bakes in) — skips the old game tree, sounds, docs, etc.
@@ -115,20 +120,18 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  deploy:
-    needs: [build, test]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - id: auth
-        uses: google-github-actions/auth@v2
-        with:
-          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
-          service_account: ${{ vars.GCP_DEPLOY_SA }}
-
-      - uses: google-github-actions/setup-gcloud@v2
+      - name: Wait for the test gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in $(seq 1 90); do
+            st=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" \
+              --jq '.jobs[] | select(.name=="test") | .conclusion // "pending"')
+            if [ "$st" = "success" ]; then echo "test gate green"; exit 0; fi
+            case "$st" in failure|cancelled|timed_out) echo "test job: $st — NOT deploying"; exit 1;; esac
+            sleep 5
+          done
+          echo "timed out waiting for the test job" && exit 1
 
       - name: Deploy to Cloud Run
         env:
