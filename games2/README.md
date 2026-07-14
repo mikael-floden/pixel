@@ -59,3 +59,5 @@ npm run typecheck      # per-package tsc --noEmit
 Production is a single container (client + assets + WS on one port) — see
 [`deploy/DEPLOY.md`](deploy/DEPLOY.md) (GCP `europe-north1`, Caddy auto-TLS,
 `nangijala.online`).
+
+<!-- deploy-timing probe: warm-cache measurement, safe to remove -->
