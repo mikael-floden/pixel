@@ -163,7 +163,18 @@ interface Avatar {
   baseTint: number;
   bubble?: Phaser.GameObjects.Text;
   bubbleUntil?: number;
+  // Direction hysteresis (stableDir): the direction currently DISPLAYED, and
+  // the pending adjacent-sector candidate with the time it first appeared.
+  dispDir?: string;
+  pendDir?: string;
+  pendSince?: number;
 }
+
+// How long an ADJACENT (45°) direction change must persist before the sprite
+// turns. Walking along a sector boundary makes vectorToDirection flip every
+// few frames; each flip used to restart the walk cycle ("jitter"). 160ms is
+// invisible on a deliberate turn but longer than any boundary wobble period.
+const DIR_STICK_MS = 160;
 
 export class WorldScene extends Phaser.Scene {
   private manifest!: Manifest;
@@ -1483,13 +1494,62 @@ export class WorldScene extends Phaser.Scene {
           ? "run"
           : "walk"
         : "idle";
-    const d = DIRECTIONS.includes(dir as never) ? dir : DEFAULT_DIRECTION;
+    const want = DIRECTIONS.includes(dir as never) ? dir : DEFAULT_DIRECTION;
+    const d = this.stableDir(av, want);
     const key = this.resolveAnim(av.character, state, d);
     if (key && av.sprite.anims.getName() !== key) {
+      // A direction-only change keeps the stride: resume the new clip at the
+      // SAME loop progress instead of frame 0 — a restarted cycle on every
+      // turn read as a visible hitch even when the turn itself was right.
+      // animKey format: anim:<uid>:<state>:<dir> — state is second-to-last
+      // (indexing from the end keeps this safe even if a uid had a colon).
+      const prev = av.sprite.anims.getName();
+      const sameState =
+        !!prev && av.sprite.anims.isPlaying && prev.split(":").at(-2) === key.split(":").at(-2);
+      const progress = sameState ? av.sprite.anims.getProgress() : 0;
       av.sprite.play(key, true);
+      if (progress > 0) av.sprite.anims.setProgress(progress);
       // The foot position shifts slightly between directions — re-pin.
       this.applyAnchor(av.sprite, av.character, d, av.sprite.texture.key !== PLACEHOLDER_TEX);
     }
+  }
+
+  /**
+   * Direction hysteresis: which direction should avatar `av` DISPLAY when the
+   * movement math wants `want`? A turn of 2+ sectors (90°+) is a deliberate
+   * turn — switch immediately. A 1-sector (45°) change is indistinguishable
+   * from walking along a sector boundary, where the raw direction flips back
+   * and forth every few frames — only accept it once it has PERSISTED for
+   * DIR_STICK_MS. A wobble flips the candidate back to the current direction
+   * (clearing the pending timer) long before that, so the sprite holds one
+   * stable orientation; a real 45° turn lands ~160ms later, imperceptibly.
+   */
+  private stableDir(av: Avatar, want: string): string {
+    const cur = (av.dispDir ??= want);
+    if (want === cur) {
+      av.pendDir = undefined;
+      return cur;
+    }
+    const i = DIRECTIONS.indexOf(cur as (typeof DIRECTIONS)[number]);
+    const j = DIRECTIONS.indexOf(want as (typeof DIRECTIONS)[number]);
+    const ring = Math.abs(i - j);
+    if (Math.min(ring, DIRECTIONS.length - ring) >= 2) {
+      av.dispDir = want;
+      av.pendDir = undefined;
+      return want;
+    }
+    const now = this.time.now;
+    if (av.pendDir !== want) {
+      av.pendDir = want;
+      av.pendSince = now;
+      return cur;
+    }
+    if (now - (av.pendSince ?? 0) >= DIR_STICK_MS) {
+      av.dispDir = want;
+      av.pendDir = undefined;
+      return want;
+    }
+    return cur;
   }
 
   /** Opaque art bounds inside the sprite's current frame (frame px), measured

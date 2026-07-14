@@ -84,6 +84,13 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
 - Client rebuilds the SAME grid and predicts jump/swim/speed so nothing rubber-
   bands. Press **C** to visualize water cells. Tune feel via the `*_CLIMB`,
   `*_STAMINA`/`SWIM_*` constants and the `SURFACES` table.
+- **Direction display is hysteretic** (`WorldScene.stableDir`): walking along
+  an 8-way sector boundary flips `vectorToDirection` every few frames, which
+  used to restart the walk clip each flip ("jitter"). Adjacent (45°) changes
+  must persist `DIR_STICK_MS` before the sprite turns; 90°+ turns switch
+  instantly; and a direction-only clip change resumes at the same loop
+  progress (no stride restart). This is display-only — server/movement math
+  is untouched.
 - **Controls are screen-relative** on the iso world: `stepMovement(..., screenInput)`
   rotates the input by the projection ratio (`ISO_DX`/`ISO_DY` in `shared/` — the
   client's `MAP_GEOMETRY` imports them so they can't drift) so pressing Up walks
