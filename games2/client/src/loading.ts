@@ -71,7 +71,7 @@ function injectStyles() {
   stylesInjected = true;
   const css = `
   #ml-loading{position:fixed;inset:0;z-index:20;
-    background:radial-gradient(circle at 50% 30%, #1c2540, #0c0c16);font-family:system-ui,sans-serif;color:#e8e8f0}
+    background:#000;font-family:system-ui,sans-serif;color:#e8e8f0}
   /* Centre the logo slightly above dead-centre (45% from the top) — full
      golden-ratio height (38.2%) read as too high on phones. */
   .ml-load-box{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);
