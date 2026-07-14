@@ -95,6 +95,58 @@ function pngAlpha(p) {
   return { w, h, opaque };
 }
 
+/** Lowest row of the figure with real mass (>=3 opaque px) — the ground line.
+ * NOT the single lowest pixel: a 1-2px toe tip / anti-alias speck dragged the
+ * old anchor below the soles, so characters read as hovering. */
+function soleOf(png) {
+  const { w, h, opaque } = png;
+  for (let y = h - 1; y >= 0; y--) {
+    let n = 0;
+    for (let x = 0; x < w && n < 3; x++) if (opaque(x, y)) n++;
+    if (n >= 3) return y;
+  }
+  return -1;
+}
+
+/** 8-connected blobs of opaque pixels in the bottom `band` rows above `sole`
+ * — the feet (plus whatever legs/hem dip into the band). Returns
+ * {minX, maxX, maxY, size} per blob. */
+function bandBlobs(png, sole, band) {
+  const { w, opaque } = png;
+  const y0 = Math.max(0, sole - band + 1);
+  const bandH = sole - y0 + 1;
+  const label = new Int32Array(w * bandH).fill(-1);
+  const blobs = [];
+  for (let by = 0; by < bandH; by++)
+    for (let x = 0; x < w; x++) {
+      if (label[by * w + x] >= 0 || !opaque(x, y0 + by)) continue;
+      const id = blobs.length;
+      const blob = { minX: x, maxX: x, maxY: y0 + by, size: 0 };
+      const stack = [[x, by]];
+      label[by * w + x] = id;
+      while (stack.length) {
+        const [cx, cy] = stack.pop();
+        blob.size++;
+        if (cx < blob.minX) blob.minX = cx;
+        if (cx > blob.maxX) blob.maxX = cx;
+        if (y0 + cy > blob.maxY) blob.maxY = y0 + cy;
+        for (let dy = -1; dy <= 1; dy++)
+          for (let dx = -1; dx <= 1; dx++) {
+            const nx = cx + dx;
+            const ny = cy + dy;
+            if (nx < 0 || ny < 0 || nx >= w || ny >= bandH) continue;
+            if (label[ny * w + nx] >= 0 || !opaque(nx, y0 + ny)) continue;
+            label[ny * w + nx] = id;
+            stack.push([nx, ny]);
+          }
+      }
+      blobs.push(blob);
+    }
+  return blobs;
+}
+
+const blobCenter = (b) => (b.minX + b.maxX + 1) / 2; // pixel x spans [x, x+1)
+
 /**
  * Measure the FOOT ANCHOR of a frame: the point BETWEEN the two feet at sole
  * level — where the character contacts the ground. The game pins this to the
@@ -124,16 +176,7 @@ function footAnchor(framePath) {
       }
     }
   }
-  // SOLE LINE = the lowest row with real mass (>=3 opaque px), NOT the single
-  // lowest pixel: a 1-2px toe tip / anti-alias speck dragged the old anchor
-  // below the soles, so characters read as hovering above their shadow.
-  const rowCount = (y) => {
-    let n = 0;
-    for (let x = 0; x < w; x++) if (opaque(x, y)) n++;
-    return n;
-  };
-  let sole = -1;
-  for (let y = h - 1; y >= 0 && sole < 0; y--) if (rowCount(y) >= 3) sole = y;
+  const sole = soleOf(png);
   if (sole < 0) return null;
   // The anchor is the point BETWEEN the feet, per the maintainer's spec: each
   // foot counts as its geometric CENTER — the midpoint of its toe-to-heel
@@ -146,47 +189,16 @@ function footAnchor(framePath) {
   // counts as a PLANTED foot if it reaches within 6px of the sole line —
   // side-view back legs whose foot hides behind the front foot are ignored.
   const band = Math.max(8, Math.round(h * 0.09)); // ≈10px at 112
-  const y0 = Math.max(0, sole - band + 1);
-  // 8-connected component labelling over the band's opaque pixels.
-  const bandH = sole - y0 + 1;
-  const label = new Int32Array(w * bandH).fill(-1);
-  const blobs = []; // {minX, maxX, maxY, size}
-  for (let by = 0; by < bandH; by++)
-    for (let x = 0; x < w; x++) {
-      if (label[by * w + x] >= 0 || !opaque(x, y0 + by)) continue;
-      const id = blobs.length;
-      const blob = { minX: x, maxX: x, maxY: y0 + by, size: 0 };
-      const stack = [[x, by]];
-      label[by * w + x] = id;
-      while (stack.length) {
-        const [cx, cy] = stack.pop();
-        blob.size++;
-        if (cx < blob.minX) blob.minX = cx;
-        if (cx > blob.maxX) blob.maxX = cx;
-        if (y0 + cy > blob.maxY) blob.maxY = y0 + cy;
-        for (let dy = -1; dy <= 1; dy++)
-          for (let dx = -1; dx <= 1; dx++) {
-            const nx = cx + dx;
-            const ny = cy + dy;
-            if (nx < 0 || ny < 0 || nx >= w || ny >= bandH) continue;
-            if (label[ny * w + nx] >= 0 || !opaque(nx, y0 + ny)) continue;
-            label[ny * w + nx] = id;
-            stack.push([nx, ny]);
-          }
-      }
-      blobs.push(blob);
-    }
-  const planted = blobs
+  const planted = bandBlobs(png, sole, band)
     .filter((b) => b.size >= 4 && b.maxY >= sole - 6)
     .sort((a, b) => a.minX + a.maxX - (b.minX + b.maxX));
   if (!planted.length) return null;
-  const centerOf = (b) => (b.minX + b.maxX + 1) / 2; // pixel x spans [x, x+1)
   // Two (or more) planted blobs = the feet: outermost two centres (a middle
   // blob — a hem, a tail — never moves the anchor). One blob = feet touching
   // or overlapping; its own centre is already between them.
   const first = planted[0];
   const last = planted[planted.length - 1];
-  const ax = (centerOf(first) + centerOf(last)) / 2;
+  const ax = (blobCenter(first) + blobCenter(last)) / 2;
   // Depth: each foot's own ground line (bottom edge), averaged — for a
   // staggered 3/4 stance the anchor sits between the front and back foot —
   // then lifted ~2.5px from the toe line to mid-foot (centre of the foot,
@@ -197,6 +209,74 @@ function footAnchor(framePath) {
     y: +(ay / h).toFixed(4),
     top: +(Math.max(0, top) / h).toFixed(4),
   };
+}
+
+// ---- Anti-moonwalk gait rates -----------------------------------------------
+// Movement speed in wu/s equals SCREEN px/s at zoom 1 in every direction
+// (shared screenToWorldVector calibrates uniform projected speed with
+// REF = ISO_DX = CELL_WU). Keep in sync with shared/src WALK_SPEED/RUN_SPEED.
+const GAIT_SPEED = { walk: 70, run: 175 };
+// Horizontal share of the screen travel vector per animation view. Diagonal
+// key travel is grid-axis locked; its screen vector is (±ISO_DX, ±ISO_DY)
+// normalized → |ux| = 32/√(32²+15²). North/south travel is vertical — those
+// views can't encode a horizontal stride and simply inherit the gait's rate.
+const GAIT_VIEW_UX = {
+  east: 1,
+  west: 1,
+  "north-east": 0.9055,
+  "north-west": 0.9055,
+  "south-east": 0.9055,
+  "south-west": 0.9055,
+};
+// A runner covers ground while AIRBORNE too; static frames only encode the
+// stance sweep (foot spread). Real running spends ~55% of each step's
+// distance grounded — divide to get the true stride. Walking has no flight.
+const RUN_STANCE_FRACTION = 0.55;
+
+/**
+ * Derive the playback fps at which each gait's feet TRACK THE GROUND at the
+ * gait's base speed ("anti-moonwalk"): fps = speed·frames / stride, where the
+ * stride (ground covered per animation cycle) is measured from the art. The
+ * step length is the MAX horizontal spread between the two foot blobs across
+ * a cycle (full extension); stride = 2 steps. One rate per GAIT — legs keep
+ * one cadence in every direction (per-direction rates made the legs pop when
+ * turning, and the spread across views is measurement noise, ±5%).
+ *
+ * The previous attempt (measure-stride.py, SAD strip-matching) underestimated
+ * strides so badly the formula demanded 16-30fps — the playtester's
+ * "animation is playing way too fast". Runtime speed changes (water, easing)
+ * are handled by anims.timeScale ∝ actual screen speed in WorldScene.
+ */
+function gaitFpsOf(animsDir, animations, animSrc) {
+  const out = {};
+  for (const gait of ["walk", "run"]) {
+    const src = animSrc[gait];
+    const perDir = animations[gait];
+    if (!src || !perDir) continue;
+    const fpsVotes = [];
+    for (const [d, ux] of Object.entries(GAIT_VIEW_UX)) {
+      const n = perDir[d];
+      if (!n) continue;
+      let spread = 0; // max foot-blob separation across the cycle = step px
+      for (let i = 0; i < n; i++) {
+        const png = pngAlpha(join(animsDir, src, d, `${i}.png`));
+        if (!png) continue;
+        const sole = soleOf(png);
+        if (sole < 0) continue;
+        const blobs = bandBlobs(png, sole, 12).filter((b) => b.size >= 6);
+        for (let a = 0; a < blobs.length; a++)
+          for (let b = a + 1; b < blobs.length; b++)
+            spread = Math.max(spread, Math.abs(blobCenter(blobs[a]) - blobCenter(blobs[b])));
+      }
+      if (spread < 8) continue; // no usable stride in this view
+      const stride = gait === "run" ? (2 * spread) / RUN_STANCE_FRACTION : 2 * spread;
+      fpsVotes.push((GAIT_SPEED[gait] * ux * n) / stride);
+    }
+    if (!fpsVotes.length) continue;
+    fpsVotes.sort((a, b) => a - b);
+    out[gait] = +fpsVotes[fpsVotes.length >> 1].toFixed(1);
+  }
+  return out;
 }
 
 function displayName(look, fallback) {
@@ -265,6 +345,7 @@ function scan() {
         anchors[d] = { x: xs[xs.length >> 1], y: ys[ys.length >> 1], top };
       }
     }
+    const gaitFps = gaitFpsOf(animsDir, animations, animSrc);
     const webRoot = "/assets/" + relative(ASSETS_ROOT, charDir).split("\\").join("/");
     characters.push({
       uid: id,
@@ -279,6 +360,7 @@ function scan() {
       animations,
       animSrc,
       anchors,
+      gaitFps,
     });
   }
   return characters;

@@ -18,6 +18,11 @@ export interface CharacterDef {
   // makes the drawn feet meet the collision position exactly. `top` is the
   // crown of the head — labels hug it instead of the transparent frame top.
   anchors?: Record<string, { x: number; y: number; top?: number }>;
+  // Anti-moonwalk playback rates measured from the art (build-manifest):
+  // the fps at which each gait's feet track the ground at the gait's BASE
+  // speed (WALK_SPEED/RUN_SPEED). One rate per gait — every direction keeps
+  // the same leg cadence. Runtime speed variation scales anims.timeScale.
+  gaitFps?: Record<string, number>;
 }
 
 export interface Manifest {

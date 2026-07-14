@@ -35,6 +35,8 @@ import {
   JUMP_MS,
   JUMP_COOLDOWN_MS,
   MAX_STAMINA,
+  WALK_SPEED,
+  RUN_SPEED,
 } from "@nangijala/shared";
 import { CharacterDef, Manifest, frameUrl, frameKey } from "../manifest";
 import { colorForName } from "../placeholder";
@@ -174,6 +176,11 @@ interface Avatar {
   dispDir?: string;
   pendDir?: string;
   pendSince?: number;
+  // EMA of the avatar's on-screen ground speed (px/s at zoom 1), sampled from
+  // the eased flat position. Drives anims.timeScale so gait playback stays
+  // proportional to how fast the character ACTUALLY moves (water slowdown,
+  // easing lag, autopilot walk) — feet keep tracking the ground.
+  spdPx?: number;
 }
 
 // How long an ADJACENT (45°) direction change must persist before the sprite
@@ -359,7 +366,6 @@ export class WorldScene extends Phaser.Scene {
     // Drive the post-"Enter world" loading overlay with real asset progress
     // (characters + tiles are hundreds of small PNGs — slow on mobile).
     this.load.on("progress", (f: number) => setLoadingProgress(0.05 + f * 0.85, "Loading art…"));
-    this.load.json("anim-speeds", "/anim-speeds.json"); // anti-moonwalk playback rates
     // characters2 stores animations as frame FOLDERS (one PNG per frame), not
     // strips — load each frame as its own texture.
     for (const def of this.manifest.characters) {
@@ -608,6 +614,26 @@ export class WorldScene extends Phaser.Scene {
       // Playback rate of a built animation (anti-moonwalk verification).
       animRate: (uid: string, state: string, dir: string) =>
         this.anims.get(animKey(uid, state, dir))?.frameRate ?? null,
+      // Live gait-sync probes: my avatar's playback timeScale (rate ∝ speed)
+      // and the EMA'd on-screen ground speed it derives from (px/s at zoom 1).
+      timeScale: () => this.avatars.get(this.room?.sessionId ?? "")?.sprite.anims.timeScale ?? null,
+      screenSpeed: () => this.avatars.get(this.room?.sessionId ?? "")?.spdPx ?? null,
+      // One-call sample for the foot-slip probe (verify-gaitsync): the EASED
+      // sprite ground position (scene px at zoom 1 — what the eye sees), the
+      // playing clip and its 0-based frame index. Sampled per rAF, combined
+      // offline with the art's per-frame planted-foot offsets to measure how
+      // much a planted foot slides against the ground ("moonwalk meter").
+      gaitSample: () => {
+        const av = this.avatars.get(this.room?.sessionId ?? "");
+        if (!av) return null;
+        return {
+          sx: av.lx,
+          sy: av.lyFlat,
+          anim: av.sprite.anims.getName(),
+          frame: (av.sprite.anims.currentFrame?.index ?? 0) - 1, // Phaser is 1-based
+          originX: av.sprite.originX,
+        };
+      },
       // Kill the websocket (headless probe for the dead-connection recovery).
       dropConnection: () => {
         const conn = (this.room as unknown as { connection?: { close?: () => void; transport?: { close?: () => void } } })
@@ -1077,11 +1103,22 @@ export class WorldScene extends Phaser.Scene {
         av.elev = targetElev;
         av.fallV = 0;
         av.falling = false;
+        av.spdPx = undefined; // a teleport is not a speed sample
       } else {
+        const px0 = av.lx;
+        const py0 = av.lyFlat;
         const k = Math.min(1, dt * (id === myId ? 45 : 12));
         av.lx += (g.x - av.lx) * k;
         av.lyFlat += (g.y - av.lyFlat) * k;
         this.stepElevation(av, targetElev, dt);
+        // On-screen ground speed (px/s at zoom 1) from the EASED flat point —
+        // exactly what the viewer sees, smooth for remote 20Hz-stepped
+        // targets too. EMA (~125ms) irons out easing ripple; applyAnimState
+        // turns it into gait-playback timeScale (feet track the ground).
+        if (dt > 0.001) {
+          const v = Math.hypot(av.lx - px0, av.lyFlat - py0) / dt;
+          av.spdPx = av.spdPx === undefined ? v : av.spdPx + (v - av.spdPx) * Math.min(1, dt * 8);
+        }
       }
       av.ly = av.lyFlat - av.elev;
 
@@ -1694,6 +1731,17 @@ export class WorldScene extends Phaser.Scene {
       // sideways at every idle→walk→run transition.)
       this.applyAnchor(av.sprite, av.character, d, av.sprite.texture.key !== PLACEHOLDER_TEX);
     }
+    // Rate ∝ speed: the gait clips' base frameRate is measured (build-manifest
+    // gaitFps) to plant feet at the gait's BASE speed; scale playback by the
+    // avatar's ACTUAL screen speed so footfalls keep tracking the ground when
+    // water/easing/autopilot change the pace. Clamped: a wall-push (speed→0)
+    // reads as a slow struggle, not frozen legs mid-stride.
+    if (state === "walk" || state === "run") {
+      const base = running ? RUN_SPEED : WALK_SPEED; // == screen px/s at zoom 1
+      av.sprite.anims.timeScale = Phaser.Math.Clamp((av.spdPx ?? base) / base, 0.4, 1.5);
+    } else {
+      av.sprite.anims.timeScale = 1;
+    }
   }
 
   /**
@@ -1814,15 +1862,12 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private buildAnimations() {
-    // Measured anti-moonwalk playback rates (scripts/measure-stride.py):
-    // per (character, walk|run, direction) fps that makes the planted foot
-    // track the ground at the game's screen speed. Movement speed itself is
-    // untouched — only how fast the clip plays. Missing entries fall back to
-    // the static ANIM_FPS defaults.
-    const speeds = (this.cache.json.get("anim-speeds") ?? {}) as Record<
-      string,
-      Record<string, Record<string, number>>
-    >;
+    // Anti-moonwalk playback rates measured from the art (build-manifest
+    // gaitFps): the fps at which the gait's feet track the ground at the
+    // gait's BASE speed. ONE rate per gait — legs keep the same cadence in
+    // every direction (the old per-direction table was measurement noise and
+    // made cadence pop on turns). Movement speed itself is untouched; actual
+    // speed variation scales anims.timeScale per frame (applyAnimState).
     for (const def of this.manifest.characters) {
       for (const [state, dirs] of Object.entries(def.animations)) {
         for (const [dir, count] of Object.entries(dirs)) {
@@ -1839,7 +1884,7 @@ export class WorldScene extends Phaser.Scene {
           this.anims.create({
             key,
             frames,
-            frameRate: speeds[def.uid]?.[state]?.[dir] ?? ANIM_FPS[state] ?? 10,
+            frameRate: def.gaitFps?.[state] ?? ANIM_FPS[state] ?? 10,
             repeat: once ? 0 : -1,
           });
         }

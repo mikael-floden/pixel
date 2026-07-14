@@ -180,20 +180,19 @@ try {
 
   // ---- measured anim playback rates applied (anti-moonwalk) ----
   {
-    const speeds = await (await fetch("http://localhost:5173/anim-speeds.json")).json();
-    const uid = Object.keys(speeds)[0];
-    const state = Object.keys(speeds[uid])[0];
-    const dir = Object.keys(speeds[uid][state])[0];
-    const want = speeds[uid][state][dir];
-    const got = await page.evaluate(
-      ({ uid, state, dir }) => window.__ml.animRate(uid, state, dir),
-      { uid, state, dir },
-    );
+    const manifest = await (await fetch("http://localhost:5173/characters.json")).json();
+    const def = manifest.characters.find((c) => c.gaitFps?.walk && c.gaitFps?.run);
+    if (!def) fail("no character carries measured gaitFps in characters.json");
+    const walk = await page.evaluate((uid) => window.__ml.animRate(uid, "walk", "south"), def.uid);
+    const run = await page.evaluate((uid) => window.__ml.animRate(uid, "run", "east"), def.uid);
     const idle = await page.evaluate(() => window.__ml.animRate("default_boy", "idle", "south"));
     const jump = await page.evaluate(() => window.__ml.animRate("default_boy", "jump", "south"));
-    if (got === null || Math.abs(got - want) > 0.11) fail(`anim rate ${uid}/${state}/${dir}: want ${want} got ${got}`);
+    if (walk === null || Math.abs(walk - def.gaitFps.walk) > 0.11)
+      fail(`walk rate ${def.uid}: want ${def.gaitFps.walk} got ${walk}`);
+    if (run === null || Math.abs(run - def.gaitFps.run) > 0.11)
+      fail(`run rate ${def.uid}: want ${def.gaitFps.run} got ${run}`);
     if (idle !== 6 || jump !== 18) fail(`fallback rates wrong (idle=${idle} jump=${jump})`);
-    console.log(`anim rates OK (${uid}/${state}/${dir}=${got}, idle=6, jump=18)`);
+    console.log(`anim rates OK (${def.uid} walk=${walk} run=${run}, idle=6, jump=18)`);
   }
 
   // ---- reconnect in place, LAST (swaps the session) ----
