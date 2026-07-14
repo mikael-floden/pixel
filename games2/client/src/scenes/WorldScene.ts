@@ -160,6 +160,7 @@ interface Avatar {
   // undefined when nothing covers it — the lit copy is cropped BELOW this line.
   coverY?: number;
   hopUntil: number;
+  wasJumping?: boolean; // last synced jumping flag (hop re-arms on rising edge only)
   swimming: boolean;
   baseTint: number;
   bubble?: Phaser.GameObjects.Text;
@@ -187,8 +188,13 @@ export class WorldScene extends Phaser.Scene {
   private lastSent = "";
   private chat!: ChatUI;
   private roster = new RosterUI();
-  // Client-side prediction state (local player).
-  private pending: { seq: number; ax: number; ay: number; running: boolean; dt: number }[] = [];
+  // Client-side prediction state (local player). Each pending input keeps the
+  // JUMP state it was originally integrated with: reconcile replays must use
+  // the same climb allowance, or mid-jump inputs replayed after landing get
+  // re-blocked at the ledge (walk climb) — the anchor briefly rolls back to
+  // the wall base until the server acks, and auto-jump saw that phantom wall
+  // and fired a silly second hop on the hilltop.
+  private pending: { seq: number; ax: number; ay: number; running: boolean; dt: number; jumping: boolean }[] = [];
   private inputSeq = 0;
   private sendAccum = 0;
   private lastInput: { ax: number; ay: number; running: boolean } = { ax: 0, ay: 0, running: false };
@@ -877,8 +883,11 @@ export class WorldScene extends Phaser.Scene {
         this.pending = this.pending.filter((p) => p.seq > player.seq);
         let rx = player.x;
         let ry = player.y;
-        const jumping = this.time.now < this.jumpUntil;
-        const stepLocal = (ax: number, ay: number, running: boolean, sdt: number) => {
+        const jumpingNow = this.time.now < this.jumpUntil;
+        // Each input replays with the jump state it was ORIGINALLY integrated
+        // under (see the `pending` field note) — using "jumping right now" for
+        // historical inputs rolled the anchor back below ledges after landing.
+        const stepLocal = (ax: number, ay: number, running: boolean, sdt: number, jumping: boolean) => {
           let blocked;
           let sideBlocked;
           let speed = 1;
@@ -893,11 +902,11 @@ export class WorldScene extends Phaser.Scene {
           rx = r.x;
           ry = r.y;
         };
-        for (const p of this.pending) stepLocal(p.ax, p.ay, p.running, p.dt);
+        for (const p of this.pending) stepLocal(p.ax, p.ay, p.running, p.dt, p.jumping);
         // Integrate the not-yet-sent input tail too, so the local player moves
         // every FRAME (60fps-smooth) instead of only at the 20Hz send tick.
         if (this.sendAccum > 0)
-          stepLocal(this.lastInput.ax, this.lastInput.ay, this.lastInput.running, this.sendAccum);
+          stepLocal(this.lastInput.ax, this.lastInput.ay, this.lastInput.running, this.sendAccum, jumpingNow);
         tx = rx;
         ty = ry;
         // Animate from live input for instant turn/walk feedback.
@@ -938,8 +947,14 @@ export class WorldScene extends Phaser.Scene {
       }
       av.ly = av.lyFlat - av.elev;
 
-      // Jump hop: a short parabola driven by the synced `jumping` flag.
-      if (player.jumping && av.hopUntil <= this.time.now) av.hopUntil = this.time.now + JUMP_MS;
+      // Jump hop: a short parabola driven by the synced `jumping` flag —
+      // RISING-EDGE triggered. Re-arming whenever the flag was still true
+      // after the hop expired replayed a whole second hop when a state patch
+      // arrived late (the flag outlives the local 500ms window by a frame on
+      // jittery links): the "jumps again after landing on the hill" bug.
+      if (player.jumping && !av.wasJumping && av.hopUntil <= this.time.now)
+        av.hopUntil = this.time.now + JUMP_MS;
+      av.wasJumping = !!player.jumping;
       const hopLeft = av.hopUntil - this.time.now;
       const hop = hopLeft > 0 ? Math.sin((1 - hopLeft / JUMP_MS) * Math.PI) * JUMP_HEIGHT : 0;
 
@@ -1474,7 +1489,17 @@ export class WorldScene extends Phaser.Scene {
   private flushInput() {
     const li = this.lastInput;
     this.inputSeq += 1;
-    this.pending.push({ seq: this.inputSeq, ax: li.ax, ay: li.ay, running: li.running, dt: this.sendAccum });
+    this.pending.push({
+      seq: this.inputSeq,
+      ax: li.ax,
+      ay: li.ay,
+      running: li.running,
+      dt: this.sendAccum,
+      // The jump state this window was integrated under — replays must match
+      // (jump flushes immediately in predictAndSend, so windows never straddle
+      // a jump onset).
+      jumping: this.time.now < this.jumpUntil,
+    });
     const msg: InputMessage = { ax: li.ax, ay: li.ay, running: li.running, seq: this.inputSeq, dt: this.sendAccum };
     if (this.jumpQueued) {
       msg.jump = true;

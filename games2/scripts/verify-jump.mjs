@@ -8,18 +8,22 @@ const URL = "http://localhost:5173/";
 
 const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox"] });
 
-// Poll __ml.anim() for ~JUMP_MS and return the peak (non-ground) state seen.
+// Poll __ml.anim() across the jump window and return the states seen. Polls
+// from the NODE side (one short evaluate per sample): a single long evaluate
+// with setTimeout polling gets background-throttled to ~1Hz in headless and
+// can miss the whole 500ms window (it sampled only the post-land idle).
 async function sampleWhileJumping(page) {
-  return page.evaluate(async () => {
-    const seen = new Set();
-    const t0 = performance.now();
-    while (performance.now() - t0 < 520) {
-      const a = window.__ml.anim();
-      if (a) seen.add(a.split(":")[2]); // "anim:<uid>:<state>:<dir>" -> state
-      await new Promise((r) => setTimeout(r, 20));
-    }
-    return [...seen];
-  });
+  const seen = new Set();
+  const t0 = Date.now();
+  // Generous budget: each evaluate round-trip can cost 300ms+ here, and the
+  // hop starts a server round-trip after the trigger — the window must catch
+  // several samples inside the ~500ms jump no matter how the latency lands.
+  while (Date.now() - t0 < 1400) {
+    const a = await page.evaluate(() => window.__ml.anim());
+    if (a) seen.add(a.split(":").at(-2)); // "anim:<uid>:<state>:<dir>" -> state
+    await page.waitForTimeout(40);
+  }
+  return [...seen];
 }
 
 try {
