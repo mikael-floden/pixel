@@ -6,6 +6,7 @@ import {
   makeBlocked,
   makeDrops,
   makeSideBlocked,
+  unstickFromSolids,
   autoJumpWanted,
   findPath,
   clearanceAdjust,
@@ -529,11 +530,38 @@ test("findPath's final waypoint respects the collision margin next to props", ()
   assert.ok(d >= PLAYER_RADIUS + 1, `final waypoint keeps the body clear (${d.toFixed(1)}wu)`);
 });
 
-test("no wedging between two props forming an inside corner", () => {
+test("big-dt input advances to contact instead of freezing a step early", () => {
+  // Picket row: props at (0,1) and (2,1), a 1-cell gap at col 1. The body
+  // stands 1wu LEFT of the gap's clearance band, heading straight north at
+  // RUN with a MAX_INPUT_DT-sized step (laggy frame): the leading probe at
+  // the FULL step's end hits the prop margin, and pre-substep code refused
+  // the entire move — a freeze ~30wu from the wall, where the autopilot's
+  // (short) probes see nothing blocked: a deadlock. Substepped integration
+  // must advance to natural contact distance instead.
+  const g = () => ({ t: "grass", l: 0 });
+  const rows = Array.from({ length: 4 }, () => Array.from({ length: 4 }, g));
+  const grid = buildTerrainGrid(4, 4, rows, [
+    { col: 0, row: 1 },
+    { col: 2, row: 1 },
+  ]);
+  const ctx = { maxClimb: WALK_CLIMB, canSwim: true };
+  const blocked = makeBlocked(grid, ctx);
+  const side = makeSideBlocked(grid, ctx);
+  const r = stepMovement(40, 90, 0, -1, true, 0.1, blocked, 1, false, undefined, undefined, side);
+  assert.equal(r.x, 40, "no x input, no x drift");
+  assert.ok(r.y < 82, `advanced toward the wall (y=${r.y.toFixed(1)}, was 90)`);
+  assert.ok(r.y > 70, `stopped at contact, not inside the margin (y=${r.y.toFixed(1)})`);
+  // From INSIDE the gap band the same input passes straight through the gap.
+  const thru = stepMovement(48, 90, 0, -1, true, 0.4, blocked, 1, false, undefined, undefined, side);
+  assert.ok(thru.y < 64, `centred body passes the 1-cell gap (y=${thru.y.toFixed(1)})`);
+});
+
+test("no wedging between two props forming an inside corner (unstick loop)", () => {
   // Flat grass; props east (2,1) and south (1,2) of the player's cell (1,1).
-  // Wedged into that corner, BOTH axes used to be vetoed by the lateral
-  // probes (dense prop fields are full of these) — escape must move, and
-  // walking INTO a prop must still be blocked by the strict centre probe.
+  // Wedged deep into that corner (inside both lateral margins), the strict
+  // probes veto every axis — the game loop (server tick + client prediction)
+  // runs unstickFromSolids BEFORE each input integration, so the body drifts
+  // free within a few ticks and normal movement takes over.
   const g = () => ({ t: "grass", l: 0 });
   const rows = Array.from({ length: 4 }, () => Array.from({ length: 4 }, g));
   const grid = buildTerrainGrid(4, 4, rows, [
@@ -543,14 +571,33 @@ test("no wedging between two props forming an inside corner", () => {
   const ctx = { maxClimb: WALK_CLIMB, canSwim: true };
   const blocked = makeBlocked(grid, ctx);
   const side = makeSideBlocked(grid, ctx);
-  const x0 = 2 * CELL_WU - 6; // deep in the corner: overlapping both margins
-  const y0 = 2 * CELL_WU - 6;
-  const step = (ax: number, ay: number) =>
-    stepMovement(x0, y0, ax, ay, false, 0.2, blocked, 1, false, undefined, undefined, side);
-  assert.ok(step(-1, 0).x < x0 - 1, "escapes west past the south prop");
-  assert.ok(step(0, -1).y < y0 - 1, "escapes north past the east prop");
-  assert.ok(step(1, 0).x <= x0 + 1e-6, "cannot walk east into the prop");
-  assert.ok(step(0, 1).y <= y0 + 1e-6, "cannot walk south into the prop");
+  let x = 2 * CELL_WU - 6; // deep in the corner: overlapping both margins
+  let y = 2 * CELL_WU - 6;
+  const dt = 1 / 20;
+  for (let i = 0; i < 30; i++) {
+    const u = unstickFromSolids(grid, x, y, 80 * dt);
+    x = u.x;
+    y = u.y;
+    const r = stepMovement(x, y, -1, 0, false, dt, blocked, 1, false, undefined, undefined, side);
+    x = r.x;
+    y = r.y;
+  }
+  assert.ok(x < 2 * CELL_WU - 20, `walked west out of the corner (x=${x.toFixed(1)})`);
+  // And the strict probes still forbid walking INTO the prop from clean ground.
+  const clean = stepMovement(40, 48, 1, 0, false, 3, blocked, 1, false, undefined, undefined, side);
+  assert.ok(clean.x < 2 * CELL_WU - PLAYER_RADIUS + 1, "cannot walk east into the prop");
+});
+
+test("unstickFromSolids frees overlapped bodies, leaves clean ones alone", () => {
+  const g = () => ({ t: "grass", l: 0 });
+  const rows = Array.from({ length: 4 }, () => Array.from({ length: 4 }, g));
+  const grid = buildTerrainGrid(4, 4, rows, [{ col: 2, row: 2 }]); // prop at [64..96]²
+  // 3wu from the prop face (inside the lateral margin): pushed away.
+  let p = { x: 61, y: 80 };
+  for (let i = 0; i < 20; i++) p = unstickFromSolids(grid, p.x, p.y, 4);
+  assert.ok(64 - p.x >= PLAYER_RADIUS * 0.75, `cleared the margin (${(64 - p.x).toFixed(1)}wu)`);
+  // Far away: untouched.
+  assert.deepEqual(unstickFromSolids(grid, 20, 20, 4), { x: 20, y: 20 });
 });
 
 test("findPath best-effort: unreachable goal routes to the reachable rim", () => {

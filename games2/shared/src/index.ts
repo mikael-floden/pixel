@@ -270,8 +270,8 @@ export function stepMovement(
     ny = ay / len;
   }
   const speed = (running ? RUN_SPEED : WALK_SPEED) * speedScale;
-  const tx = clamp(x + nx * speed * dt, SPAWN_MARGIN, worldW - SPAWN_MARGIN);
-  const ty = clamp(y + ny * speed * dt, SPAWN_MARGIN, worldH - SPAWN_MARGIN);
+  const stepX = nx * speed * dt;
+  const stepY = ny * speed * dt;
   let rx = x;
   let ry = y;
   // Resolve each axis independently: keep the X move if its destination is
@@ -297,28 +297,49 @@ export function stepMovement(
   // every axis was rejected and they were wedged in place — the "stuck after
   // walking downhill near a corner" bug. Solid props still block from every
   // side (no sideways clipping into trees/boulders).
-  // Lateral corner probes are additionally ESCAPE-PERMISSIVE: they only veto
-  // a move when the hit is NEW (the matching probe at the CURRENT position is
-  // clear). If the body already overlaps a solid's margin (walked in before
-  // the solid mattered, spawned tight, wedged between two props forming an
-  // inside corner), a parallel/escaping move keeps that overlap constant and
-  // must not be blocked — otherwise both axes were vetoed and the player was
-  // hard STUCK in dense prop fields. Digging deeper stays impossible: the
-  // forward CENTRE probe is strict.
+  // (Bodies that somehow end up INSIDE a solid's margin are freed by
+  // unstickFromSolids — applied by the server tick and client prediction
+  // before each input integration — never by weakening these probes: an
+  // earlier "escape-permissive" variant effectively disabled lateral prop
+  // collision for normal-sized steps and let bodies drift into props.)
   const SIDE = PLAYER_RADIUS * 0.75;
   const sideB = sideBlocked ?? blocked;
-  const sx = Math.sign(tx - x);
-  const px = tx + sx * PLAYER_RADIUS;
-  const cpx = x + sx * PLAYER_RADIUS;
-  const sideHitX = (off: number) => sideB!(px, y + off, x, y) && !sideB!(cpx, y + off, x, y);
-  const blockedX = blocked && (blocked(px, y, x, y) || sideHitX(-SIDE) || sideHitX(SIDE));
-  if (!blockedX) rx = tx;
-  const sy = Math.sign(ty - y);
-  const py = ty + sy * PLAYER_RADIUS;
-  const cpy = y + sy * PLAYER_RADIUS;
-  const sideHitY = (off: number) => sideB!(rx + off, py, rx, y) && !sideB!(rx + off, cpy, rx, y);
-  const blockedY = blocked && (blocked(rx, py, rx, y) || sideHitY(-SIDE) || sideHitY(SIDE));
-  if (!blockedY) ry = ty;
+  // Integrate in SUBSTEPS so one big-dt input (a laggy phone frame, a 100ms
+  // server input) behaves exactly like several small ones. The probes refuse
+  // an axis when its LEADING EDGE at the step's END is blocked — correct for
+  // 60fps-sized steps, but a single 100ms RUN step reaches ~30wu ahead and
+  // refused the WHOLE move, freezing the body far from the wall (where
+  // short-step probes — the autopilot's openness checks, the next walk tick —
+  // see nothing blocked at all: a deadlock of disagreeing probes). Substeps
+  // advance to natural contact distance no matter the dt.
+  const SUBSTEP = 4; // wu — finer than any real per-frame step
+  const n = Math.max(
+    1,
+    Math.min(16, Math.ceil(Math.max(Math.abs(stepX), Math.abs(stepY)) / SUBSTEP)),
+  );
+  let freeX = true;
+  let freeY = true;
+  for (let i = 0; i < n; i++) {
+    const fx = rx;
+    const fy = ry;
+    const tx = clamp(rx + stepX / n, SPAWN_MARGIN, worldW - SPAWN_MARGIN);
+    const ty = clamp(ry + stepY / n, SPAWN_MARGIN, worldH - SPAWN_MARGIN);
+    const px = tx + Math.sign(tx - rx) * PLAYER_RADIUS;
+    const blockedX =
+      blocked && (blocked(px, ry, rx, ry) || sideB!(px, ry - SIDE, rx, ry) || sideB!(px, ry + SIDE, rx, ry));
+    if (!blockedX) rx = tx;
+    else freeX = false;
+    const py = ty + Math.sign(ty - ry) * PLAYER_RADIUS;
+    const blockedY =
+      blocked && (blocked(rx, py, rx, ry) || sideB!(rx - SIDE, py, rx, ry) || sideB!(rx + SIDE, py, rx, ry));
+    if (!blockedY) ry = ty;
+    else freeY = false;
+    if (rx === fx && ry === fy) break; // both axes refused — no further substep differs
+  }
+  // Never-blocked axes land on the EXACT single-step endpoint (n accumulated
+  // fractions drift a few ulps — callers assert exact distances).
+  if (freeX) rx = clamp(x + stepX, SPAWN_MARGIN, worldW - SPAWN_MARGIN);
+  if (freeY) ry = clamp(y + stepY, SPAWN_MARGIN, worldH - SPAWN_MARGIN);
   return { x: rx, y: ry, dir, moving: true };
 }
 
@@ -903,6 +924,68 @@ export function makeBlocked(grid: TerrainGrid, ctx: MoveContext): BlockedFn {
   return (toX, toY, fromX, fromY) => !canEnter(grid, fromX, fromY, toX, toY, ctx);
 }
 
+/**
+ * Free a body that overlaps a SOLID cell's collision margin: push it along
+ * the away-gradient, at most `maxPush` (smooth, speed-limited). The strict
+ * probes can wedge a body that is ALREADY inside a margin (fall landings,
+ * spawns, historical positions) because every axis reads blocked — instead
+ * of weakening the probes, the server tick and the client prediction both
+ * run this before integrating each input, so a wedged body drifts free in a
+ * few ticks and normal movement takes over. Elevation walls are untouched
+ * (the forgiving-edge overhang is a feature).
+ */
+export function unstickFromSolids(
+  grid: TerrainGrid,
+  x: number,
+  y: number,
+  maxPush: number,
+  clearance: number = PLAYER_RADIUS * 0.75 + 0.5,
+): { x: number; y: number } {
+  let px = 0;
+  let py = 0;
+  let worst = clearance;
+  const c0 = Math.floor(x / CELL_WU);
+  const r0 = Math.floor(y / CELL_WU);
+  for (let dr = -1; dr <= 1; dr++) {
+    for (let dc = -1; dc <= 1; dc++) {
+      const c = c0 + dc;
+      const r = r0 + dr;
+      if (!cellSolid(grid, c, r)) continue;
+      const x0 = c * CELL_WU;
+      const y0 = r * CELL_WU;
+      const nx = clamp(x, x0, x0 + CELL_WU);
+      const ny = clamp(y, y0, y0 + CELL_WU);
+      let dx = x - nx;
+      let dy = y - ny;
+      let d = Math.hypot(dx, dy);
+      if (d >= clearance) continue;
+      if (d < 1e-6) {
+        // Centre inside the solid cell: exit toward the nearest face.
+        const exits = [
+          { d: x - x0, ux: -1, uy: 0 },
+          { d: x0 + CELL_WU - x, ux: 1, uy: 0 },
+          { d: y - y0, ux: 0, uy: -1 },
+          { d: y0 + CELL_WU - y, ux: 0, uy: 1 },
+        ].sort((a, b) => a.d - b.d)[0];
+        dx = exits.ux;
+        dy = exits.uy;
+        d = 0;
+      } else {
+        dx /= d;
+        dy /= d;
+      }
+      const need = clearance - d;
+      px += dx * need;
+      py += dy * need;
+      worst = Math.min(worst, d);
+    }
+  }
+  const pl = Math.hypot(px, py);
+  if (pl < 1e-6) return { x, y };
+  const step = Math.min(maxPush, pl);
+  return { x: x + (px / pl) * step, y: y + (py / pl) * step };
+}
+
 /** stepMovement's LATERAL corner-probe predicate: only SOLIDS block sideways
  * (props, structures, non-enterable surfaces) — pure elevation steps don't.
  * The forward centre probe (full canEnter) still stops head-on wall walks;
@@ -1294,22 +1377,15 @@ export function findPath(
   const cells: number[] = [];
   for (let n: number | undefined = dest; n !== undefined && n !== start; n = cameFrom.get(n)) cells.push(n);
   cells.reverse();
+  // One waypoint PER CELL (no collinear merging): a merged long leg beside a
+  // prop line has no interior nudged points, and the 8-way-quantized follower
+  // drifted into the prop margin mid-leg. Per-cell waypoints keep the route
+  // tracked tightly everywhere.
   const pts: { x: number; y: number }[] = [];
-  let lastDc = NaN;
-  let lastDr = NaN;
-  let pc = c0;
-  let pr = r0;
   for (const n of cells) {
     const c = n % W;
     const r = (n - c) / W;
-    const dc = c - pc;
-    const dr = r - pr;
-    if (dc === lastDc && dr === lastDr && pts.length) pts.pop(); // extend the straight run
     pts.push(nudged(c, r));
-    lastDc = dc;
-    lastDr = dr;
-    pc = c;
-    pr = r;
   }
   // The last waypoint is the exact tapped point pushed out of any solid's
   // collision margin — a spot the body can genuinely stand on. Best-effort

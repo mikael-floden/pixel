@@ -15,9 +15,9 @@ import {
   buildTerrainGrid,
   makeBlocked,
   makeSideBlocked,
+  unstickFromSolids,
   autoJumpWanted,
   findPath,
-  canEnter,
   surfaceAtWorld,
   levelAtWorld,
   integrateFall,
@@ -28,6 +28,7 @@ import {
   isKnownSurface,
   screenToWorldVector,
   PLAYER_RADIUS,
+  WALK_SPEED,
   WALK_CLIMB,
   JUMP_CLIMB,
   JUMP_SPEED_FACTOR,
@@ -214,6 +215,9 @@ export class WorldScene extends Phaser.Scene {
   private movePath: { x: number; y: number }[] = [];
   private moveRepathed = false; // one re-route per trip when progress stalls
   private moveProgress = { d: Infinity, t: 0 }; // best distance so far + when (stall detection)
+  private lastAutoPos: { x: number; y: number } | null = null; // last frame's position (segment sweep)
+  // Autopilot decision trace (debug hook __ml.navLog; ring buffer, dev cost ~0).
+  private navLog: Record<string, unknown>[] = [];
   private lastTap = { t: -Infinity, x: 0, y: 0 }; // double-tap detection
   private tapMarker?: Phaser.GameObjects.Image;
   // Isometric tile world (null → fall back to a plain ground).
@@ -581,6 +585,32 @@ export class WorldScene extends Phaser.Scene {
       tapTo: (x: number, y: number, run = false) => this.setMoveTarget(x, y, !!run),
       target: () => this.moveTarget,
       path: () => this.movePath,
+      navLog: (n = 40) => this.navLog.slice(-n),
+      // 5x5 cell dump around a world point (solid/level) — stall forensics.
+      gridAround: (x: number, y: number, r = 2) => {
+        if (!this.terrain) return null;
+        const g = this.terrain;
+        const c0 = Math.floor(x / CELL_WU);
+        const r0 = Math.floor(y / CELL_WU);
+        const rows: string[] = [];
+        for (let rr = r0 - r; rr <= r0 + r; rr++) {
+          let line = "";
+          for (let cc = c0 - r; cc <= c0 + r; cc++) {
+            if (cc < 0 || rr < 0 || cc >= g.width || rr >= g.height) {
+              line += "  ?";
+              continue;
+            }
+            const i = rr * g.width + cc;
+            const cx = (cc + 0.5) * CELL_WU;
+            const cy = (rr + 0.5) * CELL_WU;
+            const s = surfaceAtWorld(g, cx, cy);
+            const solid = g.blocked[i] || (!s.standable && !s.swimmable);
+            line += solid ? "  #" : ` ${String(g.level[i]).padStart(2)}`;
+          }
+          rows.push(line);
+        }
+        return { c0, r0, rows };
+      },
       pickAt: (wx: number, wy: number) => this.pickGround(wx, wy),
       camZoom: () => this.cameras.main.zoom,
       // Playback rate of a built animation (anti-moonwalk verification).
@@ -1005,6 +1035,10 @@ export class WorldScene extends Phaser.Scene {
           let sideBlocked;
           let speed = 1;
           if (this.terrain) {
+            // Mirror the server exactly: unstick before integrating.
+            const u = unstickFromSolids(this.terrain, rx, ry, 80 * sdt);
+            rx = u.x;
+            ry = u.y;
             const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
             blocked = makeBlocked(this.terrain, ctx);
             sideBlocked = makeSideBlocked(this.terrain, ctx); // corner probes: solids only
@@ -1491,6 +1525,7 @@ export class WorldScene extends Phaser.Scene {
     this.movePath = path;
     this.moveRepathed = false;
     this.moveProgress = { d: Infinity, t: this.time.now };
+    this.lastAutoPos = null; // fresh trip: no carry-over movement segment
     this.ensureTapAssets();
     this.tapMarker?.destroy();
     const p = this.projectFlat(end.x, end.y);
@@ -1526,6 +1561,7 @@ export class WorldScene extends Phaser.Scene {
   private clearMoveTarget() {
     this.moveTarget = null;
     this.movePath = [];
+    this.lastAutoPos = null;
     if (this.tapMarker) {
       const m = this.tapMarker;
       this.tapMarker = undefined;
@@ -1549,11 +1585,27 @@ export class WorldScene extends Phaser.Scene {
     const t = this.moveTarget;
     if (!me || !t) return idle;
     const now = this.time.now;
+    // A waypoint counts as reached when the position lands within the radius
+    // OR the movement SEGMENT since last frame passed within it. One frame of
+    // run under a long dt (throttled tab, laggy phone) covers more than the
+    // whole radius — endpoint sampling alone leapfrogs the waypoint every
+    // frame and orbits it forever without ever "arriving".
+    const prev = this.lastAutoPos ?? { x: me.fx, y: me.fy };
+    const segLen = Math.hypot(me.fx - prev.x, me.fy - prev.y);
+    const segNear = (wx: number, wy: number, r: number): boolean => {
+      if (segLen > CELL_WU * 3) return false; // teleport/respawn, not a walk step
+      const dx = me.fx - prev.x;
+      const dy = me.fy - prev.y;
+      const l2 = dx * dx + dy * dy;
+      const u = l2 > 1e-9 ? Math.max(0, Math.min(1, ((wx - prev.x) * dx + (wy - prev.y) * dy) / l2)) : 0;
+      return Math.hypot(wx - (prev.x + dx * u), wy - (prev.y + dy * u)) <= r;
+    };
+    this.lastAutoPos = { x: me.fx, y: me.fy };
     // Advance past reached waypoints (intermediate radius is loose — the 8-way
     // heading has up to ~22° of error, tight radii would make it orbit).
     while (this.movePath.length > 1) {
       const w0 = this.movePath[0];
-      if (Math.hypot(w0.x - me.fx, w0.y - me.fy) > PLAYER_RADIUS) break;
+      if (Math.hypot(w0.x - me.fx, w0.y - me.fy) > PLAYER_RADIUS && !segNear(w0.x, w0.y, PLAYER_RADIUS)) break;
       this.movePath.shift();
       this.moveProgress = { d: Infinity, t: now };
     }
@@ -1561,7 +1613,10 @@ export class WorldScene extends Phaser.Scene {
     const dxw = wp.x - me.fx;
     const dyw = wp.y - me.fy;
     const dist = Math.hypot(dxw, dyw);
-    if (this.movePath.length <= 1 && dist < PLAYER_RADIUS * 0.75) {
+    if (
+      this.movePath.length <= 1 &&
+      (dist < PLAYER_RADIUS * 0.75 || segNear(wp.x, wp.y, PLAYER_RADIUS * 0.75))
+    ) {
       this.clearMoveTarget(); // arrived at the final target
       return idle;
     }
@@ -1586,7 +1641,23 @@ export class WorldScene extends Phaser.Scene {
         return idle;
       }
     }
+    // Blocked-aware 8-way steering. "Open" is decided by simulating a REAL
+    // movement tick (stepMovement, lateral corner probes included) — a
+    // centre-point probe lies in exactly the case that matters: a 1-cell gap
+    // between props admits the centre but not the body, so the direct heading
+    // "looks open", never corrects sideways, and the player freezes at the
+    // mouth of the gap (the fly at the window). A candidate is open when the
+    // body actually DISPLACES (wall-slide counts — sliding along the gap's
+    // face is what centres the body into it) or when it's a 1-level ledge the
+    // auto-jump will take. If the raw best heading is open it stands; if not,
+    // steer with the best open heading unless everything open points away
+    // (then keep pushing: unstick or the stall-replan resolves it).
+    const walkCtx = { maxClimb: WALK_CLIMB, canSwim: true };
+    const probeBlocked = this.terrain ? makeBlocked(this.terrain, walkCtx) : undefined;
+    const probeSide = this.terrain ? makeSideBlocked(this.terrain, walkCtx) : undefined;
+    const PROBE_DT = 0.15; // one honest walk step (~10.5wu): reaches past the next cell edge
     let best = { ax: 0, ay: 0, dot: -Infinity };
+    let bestOpen = { ax: 0, ay: 0, dot: -Infinity };
     for (let iy = -1; iy <= 1; iy++) {
       for (let ix = -1; ix <= 1; ix++) {
         if (ix === 0 && iy === 0) continue;
@@ -1595,11 +1666,43 @@ export class WorldScene extends Phaser.Scene {
         if (wl < 1e-9) continue;
         const dot = (w.x * dxw + w.y * dyw) / (wl * Math.max(dist, 1e-6));
         if (dot > best.dot) best = { ax: ix, ay: iy, dot };
+        if (this.terrain && probeBlocked && dot > bestOpen.dot) {
+          const r = stepMovement(
+            me.fx, me.fy, ix, iy, false, PROBE_DT, probeBlocked, 1, true,
+            this.worldW, this.worldH, probeSide,
+          );
+          // Progress relative to THIS input's intended displacement —
+          // screenToWorldVector returns speed-scaled vectors (|w| ≈ 0.7 for
+          // world diagonals, ≈ 0.93 for cardinals), so a fixed denominator
+          // scored a diagonal's clean one-axis wall-slide at exactly 0.5 and
+          // disqualified the best detours around props.
+          const frac = Math.hypot(r.x - me.fx, r.y - me.fy) / (wl * WALK_SPEED * PROBE_DT);
+          const open = frac > 0.45 || autoJumpWanted(this.terrain, me.fx, me.fy, w.x, w.y);
+          if (open) bestOpen = { ax: ix, ay: iy, dot };
+        }
       }
     }
+    const rawBest = best;
+    // bestOpen.dot === best.dot ⇔ the raw best itself is open (it's the max
+    // over a subset). Only reroute when the raw best is CLOSED.
+    if (this.terrain && bestOpen.dot < best.dot - 1e-9 && bestOpen.dot > -0.3) best = bestOpen;
     // Run trips drop to a walk for the last stretch so the 8-way quantized
     // heading can't orbit the target at run speed.
     const finalDist = Math.hypot(t.x - me.fx, t.y - me.fy);
+    this.navLog.push({
+      t: now,
+      x: Math.round(me.fx * 10) / 10,
+      y: Math.round(me.fy * 10) / 10,
+      wp: { x: Math.round(wp.x), y: Math.round(wp.y) },
+      left: this.movePath.length,
+      dist: Math.round(dist),
+      ax: best.ax,
+      ay: best.ay,
+      rawDot: Math.round(rawBest.dot * 100) / 100,
+      openDot: bestOpen.dot === -Infinity ? null : Math.round(bestOpen.dot * 100) / 100,
+      usedOpen: best === bestOpen,
+    });
+    if (this.navLog.length > 400) this.navLog.splice(0, this.navLog.length - 400);
     return { ax: best.ax, ay: best.ay, running: t.run && finalDist > CELL_WU };
   }
 

@@ -19,6 +19,7 @@ import {
   buildDemoWorld,
   makeBlocked,
   makeSideBlocked,
+  unstickFromSolids,
   surfaceAtWorld,
   isStandableAtWorld,
   findSpawn,
@@ -182,6 +183,11 @@ export class WorldRoom extends Room<WorldState> {
         player.timeCredit -= eff;
         let r;
         if (terrain) {
+          // Free a body overlapping a solid's margin BEFORE integrating (the
+          // client prediction runs the identical call — lockstep).
+          const u = unstickFromSolids(terrain, player.x, player.y, 80 * eff);
+          player.x = u.x;
+          player.y = u.y;
           // Surface under the feet drives walk speed; a jump raises how high
           // you can step (crossing a 1-level ledge) but slows ground travel.
           const surf = surfaceAtWorld(terrain, player.x, player.y);

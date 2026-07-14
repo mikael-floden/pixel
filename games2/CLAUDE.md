@@ -66,13 +66,25 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
   `__ml.autoJumpAt(x,y,ax,ay)`.
 - **Collision probes** (`stepMovement`): per axis, the forward CENTRE probe
   applies the full rule (elevation + solids, `makeBlocked`); the two LATERAL
-  corner probes apply `makeSideBlocked` (solids only) and are additionally
-  ESCAPE-PERMISSIVE: a lateral hit only vetoes the move when it is NEW (the
-  matching probe at the CURRENT position is clear). Pre-existing overlap —
-  wedged between two props forming an inside corner, tight spawns — must
-  never lock both axes; digging deeper stays impossible via the strict
-  centre probe. Regression tests: "no wedging at an inside cliff corner" /
-  "…between two props" in server/test/collision.test.ts.
+  corner probes (±`PLAYER_RADIUS*0.75`) apply `makeSideBlocked` (solids only)
+  and are STRICT — an earlier "escape-permissive" variant compared probe cells
+  at current-vs-target and, for normal step sizes, both landed in the same
+  cell, which effectively disabled lateral prop collision and let bodies
+  drift INTO prop footprints. Integration is SUBSTEPPED (~4wu chunks): the
+  probes refuse an axis whose leading edge at the step's END is blocked, and
+  one 100ms run input (`MAX_INPUT_DT`, or a laggy phone frame in the client
+  tail) reaches ~30wu — pre-substep it refused the whole move and froze the
+  body far from the wall, where short-step probes (the autopilot's openness
+  checks, the next walk tick) disagreed that anything was blocked at all.
+  Test: "big-dt input advances to contact instead of freezing a step early". Bodies that nonetheless end up inside a solid's
+  collision margin (fall landings, spawns, historical positions) are freed by
+  **`unstickFromSolids`** (shared): a smooth, speed-limited push out along the
+  away-gradient of every overlapping solid cell, run by the SERVER before each
+  input integration and mirrored by the client prediction (`stepLocal`) so
+  they stay in lockstep. Never weaken the probes to fix a wedge — unstick is
+  the escape hatch. Regression tests: "no wedging at an inside cliff corner" /
+  "…between two props (unstick loop)" / "unstickFromSolids frees overlapped
+  bodies" in server/test/collision.test.ts.
 - **Edge feel / falling**: walking off a ledge is forgiving — `stepMovement`
   no longer commits the drop a `PLAYER_RADIUS` early or snaps the anchor past
   the rim (the old "teleport to the floor beneath" feel). The feet just walk to
@@ -198,19 +210,38 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
 - **Tap-to-move**: tap the ground → the player walks there; double-tap → run;
   any movement key cancels. Routes come from the shared **`findPath`** (A*
   over the terrain grid: walk edges, no-corner-cut diagonals, CARDINAL
-  1-level jump climbs at ~3× cost) so the character walks AROUND props and
-  ALONG walls to a head-on jump approach — never grinding into obstacles.
-  The autopilot (`WorldScene.driveAutopilot`) follows the waypoints emitting
-  the SAME 8-way screen input a keyboard would (best-of-8 by dot product
-  through the shared `screenToWorldVector`), so prediction, server validation
-  and auto-jump behave identically to keys. Tap picking (`pickGround`)
-  inverts the iso projection once per candidate LEVEL from the top down —
-  the first cell whose level matches is the surface the player actually
-  sees. Trips end on arrival (< ¾ player radius); a 1.5s per-waypoint stall
-  re-plans once, then gives up. Auto-jump uses the shared `autoJumpWanted`
-  (probe scaled by the DOMINANT axis so concave "V" corners fire too).
-  Double-taps are timed by DOM event time (`pointer.upTime`), NOT the game
-  clock. Probes: `__ml.tapTo`, `__ml.target`, `__ml.path`, `__ml.pickAt`.
+  1-level jump climbs at ~3× cost, +0.6 for cells hugging solids) so the
+  character walks AROUND props and ALONG walls to a head-on jump approach.
+  The route is HITBOX-aware end to end: waypoints come one per cell (NOT
+  merged into long legs — a quantized follower drifts off long legs into
+  prop margins), each nudged away from adjacent solids; the FINAL point is
+  `clearanceAdjust`ed out of any solid's collision margin (a tap 2wu from a
+  prop face — or inside the prop — walks to the nearest spot the BODY can
+  occupy, instead of grinding at the face like a fly at a window). A* is
+  best-effort: unreachable/solid goals route to the nearest reachable rim;
+  `null` (nowhere to go) ignores the tap. The autopilot
+  (`WorldScene.driveAutopilot`) follows the waypoints emitting the SAME 8-way
+  screen input a keyboard would (best-of-8 by dot product through the shared
+  `screenToWorldVector`), so prediction, server validation and auto-jump
+  behave identically to keys. Two follower rules matter: (1) "open heading"
+  checks simulate a REAL `stepMovement` tick (lateral corner probes and all)
+  — a centre-point probe lies exactly at 1-cell gaps between props, where the
+  body must first be centred by sliding; when the direct heading can't
+  actually displace the body, the best open heading within reason steers
+  instead. (2) Waypoints advance when the movement SEGMENT since last frame
+  swept within the radius — endpoint-only sampling at run speed under long
+  frames (laggy phone, throttled tab) leapfrogs the waypoint every frame and
+  orbits it forever. Trips end on arrival (< ¾ player radius, same segment
+  sweep); a 1.5s per-waypoint stall re-plans once, then gives up (stall
+  within ~1 cell of the goal counts as arrival — a nudged target snug
+  between props). Auto-jump uses the shared `autoJumpWanted` (probe scaled
+  by the DOMINANT axis so concave "V" corners fire too). Double-taps are
+  timed by DOM event time (`pointer.upTime`), NOT the game clock. Probes:
+  `__ml.tapTo`, `__ml.target`, `__ml.path`, `__ml.navLog`, `__ml.gridAround`,
+  `__ml.pickAt`. The honest gate is `scripts/verify-longwalk.mjs` (seeded
+  15-35-cell walk/run trips on props or WORLD=emission; PASS = ARRIVAL) —
+  keep its viewport small: headless software-GL at big viewports starves the
+  frame loop into slow-motion and fakes navigation failures.
 - **Loading screen** (`loading.ts`): select.ts shows it on "Enter world",
   WorldScene.preload feeds real asset progress, hidden when the player's own
   avatar joins (or on connection error; 60s failsafe so it can't trap).
