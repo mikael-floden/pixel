@@ -206,14 +206,14 @@
         "sources": [
           {
             "x": 26.0,
-            "y": 49.1,
-            "r": 4.4,
+            "y": 49.3,
+            "r": 4.5,
             "color": [
-              0.591,
-              0.484,
-              0.213
+              0.587,
+              0.481,
+              0.212
             ],
-            "s": 0.713,
+            "s": 0.711,
             "dir": "up"
           },
           {
@@ -221,11 +221,11 @@
             "y": 42.4,
             "r": 4.1,
             "color": [
-              0.612,
-              0.502,
-              0.226
+              0.607,
+              0.498,
+              0.224
             ],
-            "s": 0.73,
+            "s": 0.727,
             "dir": "up"
           }
         ]
@@ -403,9 +403,9 @@
       "seam_rows": 1,
       "thin_lum_light": 120,
       "light_value": 180,
-      "strength_light": 1.0,
+      "strength_light": 0.0,
       "rim_strength_light": 1.0,
-      "soft_lum_light": 200,
+      "soft_lum_light": 150,
       "protect_dark_material": true
     }
   }

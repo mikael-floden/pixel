@@ -203,13 +203,13 @@ def fade_outline_alpha(im, darkness_thresh=60, soft_lum=120, run_min=9, thick_ma
 
     lum = 0.299 * rgb[:, :, 0] + 0.587 * rgb[:, :, 1] + 0.114 * rgb[:, :, 2]
 
-    # On a LIGHT material (pale ice/snow/sand/water — value > light_value) a dark line
-    # is an unwanted outline, not art, so fade it HARDER: extend the thin detector's
-    # luminance ceiling to thin_lum_light (catches grey lum 60-120 cube edges that
-    # core_dark<60 misses), and use the stronger *_light strengths + a higher soft_lum
-    # so the dark_w ramp gives grey edges near-full weight. Dark/mid materials keep the
-    # tight <60 gate and gentle strengths, so stone/dirt/black_mountain/grass are
-    # untouched (verified byte-identical).
+    # On a LIGHT material (pale ice/snow/sand/water — value > light_value) the fade is
+    # BORDER-ONLY: rim_strength_light clears the outer silhouette outline (incl. the
+    # off-canvas edge fix below), while strength_light=0 turns the interior `thin`
+    # detector OFF so it never eats interior tile graphics — the outline goes, the
+    # inside stays. thin_lum_light still widens the (now-disabled) thin gate; harmless.
+    # Dark/mid materials keep the tight <60 gate and gentle strengths, so
+    # stone/dirt/black_mountain/grass are untouched (verified byte-identical).
     light_mat = (material_target is not None
                  and float(material_target.get("value", 0)) > light_value)
     if light_mat:
@@ -225,6 +225,13 @@ def fade_outline_alpha(im, darkness_thresh=60, soft_lum=120, run_min=9, thick_ma
     trans = ~opaque                                    # silhouette rim (off-canvas == transparent)
     neigh_t = (_shift0(trans, 1, 0) | _shift0(trans, -1, 0)
                | _shift0(trans, 0, 1) | _shift0(trans, 0, -1))
+    # Off-canvas IS transparent: a near-black pixel on the tile's outermost row/column
+    # (the very-left / very-right points of the iso diamond, x=0/63, y=0/H-1) has its
+    # transparent neighbour off-canvas, which _shift0 zero-fills as opaque and misses —
+    # that's what left the hard black vertical stubs at the left/right ends. Mark the
+    # canvas border as transparency-adjacent so rim clears those edge pixels cleanly.
+    neigh_t[0, :] = True; neigh_t[-1, :] = True
+    neigh_t[:, 0] = True; neigh_t[:, -1] = True
     rim = near_black & neigh_t
 
     H = _run_len(thin_dark, 0, 1)                      # thin frame lines: long one way, thin across

@@ -508,8 +508,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.444,
-        "crystal_ice": 0.556
+        "light_sand": 0.474,
+        "crystal_ice": 0.526
       },
       "edges": {
         "NE": {
@@ -530,19 +530,19 @@
         "SE": {
           "samples": [
             "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "light_sand": 0.625,
-            "crystal_ice": 0.375
+            "light_sand": 0.125,
+            "crystal_ice": 0.875
           },
-          "divider": 0.625
+          "divider": 0.125
         },
         "SW": {
           "samples": [
@@ -553,11 +553,13 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "crystal_ice"
+            "light_sand"
           ],
           "ratio": {
-            "crystal_ice": 1.0
-          }
+            "crystal_ice": 0.875,
+            "light_sand": 0.125
+          },
+          "divider": 0.875
         },
         "NW": {
           "samples": [
@@ -577,10 +579,9 @@
       },
       "features": [
         "pebbles",
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "crystal ice blending to light sand with pebbles, a small detail, small flowers"
+      "description": "crystal ice blending to light sand with pebbles, a small detail"
     },
     {
       "index": 7,
@@ -1321,9 +1322,9 @@
       "seam_rows": 1,
       "thin_lum_light": 120,
       "light_value": 180,
-      "strength_light": 1.0,
+      "strength_light": 0.0,
       "rim_strength_light": 1.0,
-      "soft_lum_light": 200,
+      "soft_lum_light": 150,
       "protect_dark_material": true
     }
   }
