@@ -238,17 +238,18 @@ let stylesInjected = false;
 function injectStyles() {
   if (stylesInjected) return;
   stylesInjected = true;
-  /* Pure-black theme, matching the loading screen — the logo sits on raw
-     black. Surfaces are neutral near-black greys (the old blue tint clashed
-     against #000, playtester), with the selection gold as the ONE accent:
-     borders, the Enter CTA, hovers. */
+  /* Pure-black theme, matching the loading screen. The "panel" is only a
+     scroll/layout container — NO background card: the logo (transparent PNG)
+     must sit directly on raw #000 (playtester), so the world/character cards
+     and inputs alone provide the structure. Neutral near-black greys for
+     those (the old blue tint clashed against #000), with the selection gold
+     as the ONE accent: borders, the Enter CTA, hovers. */
   const css = `
   .ml-overlay{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;
     background:#000;font-family:system-ui,sans-serif;color:#e8e8ec}
   /* No vw/vh inside this overlay: it may carry a compensating CSS zoom
      (uiscale.ts) and viewport units would double-count under it. */
-  .ml-panel{width:min(720px,92%);max-height:92%;overflow:auto;padding:28px;border-radius:14px;
-    background:#0c0c0ee6;border:1px solid #1e1e22;box-shadow:0 10px 40px #000c;text-align:center}
+  .ml-panel{width:min(720px,92%);max-height:92%;overflow:auto;padding:28px 28px 20px;text-align:center}
   .ml-logo{display:block;width:min(420px,88%);margin:0 auto;user-select:none;-webkit-user-drag:none}
   .ml-sub{margin:6px 0 16px;color:#8f8f98}
   .ml-section{text-align:left;margin:14px 2px 6px;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#7c7c86}
