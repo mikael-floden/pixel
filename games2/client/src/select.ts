@@ -218,39 +218,47 @@ let stylesInjected = false;
 function injectStyles() {
   if (stylesInjected) return;
   stylesInjected = true;
+  /* Pure-black theme, matching the loading screen — the logo sits on raw
+     black. Surfaces are neutral near-black greys (the old blue tint clashed
+     against #000, playtester), with the selection gold as the ONE accent:
+     borders, the Enter CTA, hovers. */
   const css = `
   .ml-overlay{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;
-    background:radial-gradient(circle at 50% 30%, #1c2540, #0c0c16);font-family:system-ui,sans-serif;color:#e8e8f0}
+    background:#000;font-family:system-ui,sans-serif;color:#e8e8ec}
   /* No vw/vh inside this overlay: it may carry a compensating CSS zoom
      (uiscale.ts) and viewport units would double-count under it. */
   .ml-panel{width:min(720px,92%);max-height:92%;overflow:auto;padding:28px;border-radius:14px;
-    background:#12121ccc;box-shadow:0 10px 40px #0008;text-align:center}
+    background:#0c0c0ee6;border:1px solid #1e1e22;box-shadow:0 10px 40px #000c;text-align:center}
   .ml-logo{display:block;width:min(420px,88%);margin:0 auto;user-select:none;-webkit-user-drag:none}
-  .ml-sub{margin:6px 0 16px;color:#9aa0bf}
-  .ml-section{text-align:left;margin:14px 2px 6px;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#8890b3}
+  .ml-sub{margin:6px 0 16px;color:#8f8f98}
+  .ml-section{text-align:left;margin:14px 2px 6px;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#7c7c86}
   .ml-worlds{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start;max-height:190px;overflow:auto;padding:2px}
   .ml-world{display:flex;align-items:center;gap:8px;padding:6px 10px 6px 6px;cursor:pointer;
-    background:#1e1e30;border:2px solid transparent;border-radius:10px;color:#c7cbe6;font-size:13px}
-  .ml-world-img{width:34px;height:34px;object-fit:cover;image-rendering:auto;border-radius:6px;background:#0f0f1c;flex:none}
-  .ml-world.sel{border-color:#ffd678;background:#2a2a44}
+    background:#151517;border:2px solid #232327;border-radius:10px;color:#c9c9cf;font-size:13px}
+  .ml-world:hover{background:#1b1b1e}
+  .ml-world-img{width:34px;height:34px;object-fit:cover;image-rendering:auto;border-radius:6px;background:#0a0a0c;flex:none}
+  .ml-world.sel{border-color:#ffd678;background:#211c12}
   .ml-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px;
     max-height:340px;overflow:auto;padding:4px}
   .ml-cell{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;cursor:pointer;
-    background:#1e1e30;border:2px solid transparent;border-radius:10px;color:#c7cbe6;font-size:12px}
+    background:#151517;border:2px solid #232327;border-radius:10px;color:#c9c9cf;font-size:12px}
+  .ml-cell:hover{background:#1b1b1e}
   .ml-sprite{image-rendering:pixelated;background-repeat:no-repeat;flex:none}
   .ml-portrait{width:72px;height:72px;object-fit:contain;image-rendering:pixelated;margin:28px 0}
   .ml-cell span{max-width:136px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .ml-cell.sel{border-color:#ffd678;background:#2a2a44}
+  .ml-cell.sel{border-color:#ffd678;background:#211c12}
   .ml-row{display:flex;gap:10px;margin-top:20px;justify-content:center;align-items:stretch}
-  .ml-name{flex:1;max-width:280px;padding:10px 14px;border-radius:8px;border:1px solid #3a3a58;
-    background:#0f0f1c;color:#e8e8f0;font-size:16px}
-  .ml-btn{padding:10px 18px;border:none;border-radius:8px;background:#5a7bd6;color:#fff;font-size:15px;
-    font-weight:600;cursor:pointer}
-  .ml-btn:hover{background:#6a8bea}
-  .ml-ghost{background:#26263c;font-size:18px;padding:10px 14px}
-  .ml-install{margin-top:14px;padding:9px 16px;border:1px solid #3a3a58;border-radius:8px;
-    background:#1e1e30;color:#c7cbe6;font-size:13px;cursor:pointer}
-  .ml-install:hover{background:#2a2a44}`;
+  .ml-name{flex:1;max-width:280px;padding:10px 14px;border-radius:8px;border:1px solid #2c2c31;
+    background:#0a0a0c;color:#e8e8ec;font-size:16px}
+  .ml-name:focus{outline:none;border-color:#ffd67888}
+  .ml-btn{padding:10px 18px;border:none;border-radius:8px;background:#ffd678;color:#1c1300;font-size:15px;
+    font-weight:700;cursor:pointer}
+  .ml-btn:hover{background:#ffe093}
+  .ml-ghost{background:#1c1c1f;color:#e8e8ec;font-size:18px;padding:10px 14px}
+  .ml-ghost:hover{background:#242428}
+  .ml-install{margin-top:14px;padding:9px 16px;border:1px solid #2c2c31;border-radius:8px;
+    background:#151517;color:#c9c9cf;font-size:13px;cursor:pointer}
+  .ml-install:hover{background:#1b1b1e}`;
   const s = document.createElement("style");
   s.textContent = css;
   document.head.appendChild(s);

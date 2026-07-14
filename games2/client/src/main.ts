@@ -102,11 +102,15 @@ function showUpdateBanner(sha: string) {
   if (updateBannerShown) return;
   updateBannerShown = true;
   const el = document.createElement("div");
-  el.textContent = `⬆ New version ${sha.slice(0, 7)} — click to reload`;
+  el.textContent = `⬆ New version ${sha.slice(0, 7)} — tap to reload`;
+  // Non-selectable on purpose (belt and braces with the global rule): a long
+  // press used to text-select the hash and pop Chrome's search sheet mid-game.
   el.style.cssText =
     "position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:100;cursor:pointer;" +
-    "padding:8px 16px;border-radius:8px;background:#5a7bd6;color:#fff;font:14px system-ui,sans-serif;" +
-    "box-shadow:0 4px 16px #0007";
+    "padding:8px 16px;border-radius:8px;background:#111114f2;color:#ffd678;" +
+    "border:1px solid #ffd67855;font:14px system-ui,sans-serif;box-shadow:0 4px 16px #000a;" +
+    "user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;" +
+    "-webkit-tap-highlight-color:transparent";
   el.addEventListener("click", () => location.reload());
   document.body.appendChild(el);
 }

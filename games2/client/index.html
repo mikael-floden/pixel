@@ -5,7 +5,7 @@
     <!-- viewport-fit=cover: draw under notches/rounded corners in the installed
          app; user-scalable=no: pinch-zoom fights the game's own input. -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
-    <meta name="theme-color" content="#12121c" />
+    <meta name="theme-color" content="#000000" />
     <title>Nangijala</title>
     <!-- PWA: installable on the Android home screen; starts fullscreen. -->
     <link rel="manifest" href="/manifest.webmanifest" />
@@ -19,8 +19,15 @@
          PINCH-ZOOM and double-tap-zoom are blocked — crucially this works
          even under "Desktop site", where the viewport meta (incl.
          user-scalable=no) is ignored. main.ts adds the JS belt-and-braces. */
-      html, body { margin: 0; height: 100%; background: #12121c; overflow: hidden;
+      html, body { margin: 0; height: 100%; background: #000; overflow: hidden;
         overscroll-behavior: none; touch-action: pan-x pan-y; }
+      /* This is a game, not a document: no text selection anywhere (a long
+         press on Android selected UI text — e.g. the update toast's version
+         hash — and popped Chrome's "search results" sheet over the game).
+         Inputs keep normal text editing. */
+      body { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent; }
+      input, textarea { user-select: text; -webkit-user-select: text; }
       /* dvh tracks the REAL visible height on mobile (address bar shown/hidden);
          vh is the fallback for older browsers. touch-action here (NOT on body:
          the select screen's lists still need touch scrolling) stops double-tap
