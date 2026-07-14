@@ -297,15 +297,27 @@ export function stepMovement(
   // every axis was rejected and they were wedged in place — the "stuck after
   // walking downhill near a corner" bug. Solid props still block from every
   // side (no sideways clipping into trees/boulders).
+  // Lateral corner probes are additionally ESCAPE-PERMISSIVE: they only veto
+  // a move when the hit is NEW (the matching probe at the CURRENT position is
+  // clear). If the body already overlaps a solid's margin (walked in before
+  // the solid mattered, spawned tight, wedged between two props forming an
+  // inside corner), a parallel/escaping move keeps that overlap constant and
+  // must not be blocked — otherwise both axes were vetoed and the player was
+  // hard STUCK in dense prop fields. Digging deeper stays impossible: the
+  // forward CENTRE probe is strict.
   const SIDE = PLAYER_RADIUS * 0.75;
   const sideB = sideBlocked ?? blocked;
-  const px = tx + Math.sign(tx - x) * PLAYER_RADIUS;
-  const blockedX =
-    blocked && (blocked(px, y, x, y) || sideB!(px, y - SIDE, x, y) || sideB!(px, y + SIDE, x, y));
+  const sx = Math.sign(tx - x);
+  const px = tx + sx * PLAYER_RADIUS;
+  const cpx = x + sx * PLAYER_RADIUS;
+  const sideHitX = (off: number) => sideB!(px, y + off, x, y) && !sideB!(cpx, y + off, x, y);
+  const blockedX = blocked && (blocked(px, y, x, y) || sideHitX(-SIDE) || sideHitX(SIDE));
   if (!blockedX) rx = tx;
-  const py = ty + Math.sign(ty - y) * PLAYER_RADIUS;
-  const blockedY =
-    blocked && (blocked(rx, py, rx, y) || sideB!(rx - SIDE, py, rx, y) || sideB!(rx + SIDE, py, rx, y));
+  const sy = Math.sign(ty - y);
+  const py = ty + sy * PLAYER_RADIUS;
+  const cpy = y + sy * PLAYER_RADIUS;
+  const sideHitY = (off: number) => sideB!(rx + off, py, rx, y) && !sideB!(rx + off, cpy, rx, y);
+  const blockedY = blocked && (blocked(rx, py, rx, y) || sideHitY(-SIDE) || sideHitY(SIDE));
   if (!blockedY) ry = ty;
   return { x: rx, y: ry, dir, moving: true };
 }
@@ -1034,6 +1046,65 @@ export function autoJumpWanted(
 
 const JUMP_EDGE_COST = 3; // a 1-level climb costs ~3 walked cells — prefer short detours
 
+/** Is this CELL a solid obstacle (prop / structure / non-enterable surface)? */
+function cellSolid(grid: TerrainGrid, c: number, r: number): boolean {
+  if (c < 0 || r < 0 || c >= grid.width || r >= grid.height) return false;
+  if (grid.blocked[r * grid.width + c]) return true;
+  const s = surfaceAtWorld(grid, (c + 0.5) * CELL_WU, (r + 0.5) * CELL_WU);
+  return !s.standable && !s.swimmable;
+}
+
+/**
+ * Push a world point out of the collision margin of nearby solid cells — the
+ * closest spot the player's BODY can actually occupy. A tap 1-2wu from a
+ * prop's face is a point the mover physically can't reach (collision stops
+ * PLAYER_RADIUS out): aiming at it ground the player against the prop like a
+ * fly at a window. Two passes handle corners (pushed off one face into
+ * another's margin).
+ */
+export function clearanceAdjust(
+  grid: TerrainGrid,
+  x: number,
+  y: number,
+  margin: number = PLAYER_RADIUS + 2,
+): { x: number; y: number } {
+  for (let pass = 0; pass < 2; pass++) {
+    const c0 = Math.floor(x / CELL_WU);
+    const r0 = Math.floor(y / CELL_WU);
+    for (let dr = -1; dr <= 1; dr++) {
+      for (let dc = -1; dc <= 1; dc++) {
+        const c = c0 + dc;
+        const r = r0 + dr;
+        if (!cellSolid(grid, c, r)) continue;
+        const x0 = c * CELL_WU;
+        const y0 = r * CELL_WU;
+        const nx = clamp(x, x0, x0 + CELL_WU);
+        const ny = clamp(y, y0, y0 + CELL_WU);
+        let dx = x - nx;
+        let dy = y - ny;
+        const d = Math.hypot(dx, dy);
+        if (d >= margin) continue;
+        if (d < 1e-6) {
+          // Inside the solid cell (tap on its walkable-looking skirt): exit
+          // through the nearest face.
+          const exits = [
+            { d: x - x0, x: x0 - margin, y },
+            { d: x0 + CELL_WU - x, x: x0 + CELL_WU + margin, y },
+            { d: y - y0, x, y: y0 - margin },
+            { d: y0 + CELL_WU - y, x, y: y0 + CELL_WU + margin },
+          ].sort((a, b) => a.d - b.d)[0];
+          x = exits.x;
+          y = exits.y;
+        } else {
+          x = nx + (dx / d) * margin;
+          y = ny + (dy / d) * margin;
+        }
+      }
+    }
+  }
+  return { x, y };
+}
+
 /**
  * A* from (fromX,fromY) to (toX,toY), world units. Grid edges: 4-way walk
  * moves, diagonal walk moves (only when both flanking cardinals are walkable —
@@ -1054,9 +1125,9 @@ export function findPath(
   const H = grid.height;
   const c0 = clamp(Math.floor(fromX / CELL_WU), 0, W - 1);
   const r0 = clamp(Math.floor(fromY / CELL_WU), 0, H - 1);
-  const c1 = clamp(Math.floor(toX / CELL_WU), 0, W - 1);
-  const r1 = clamp(Math.floor(toY / CELL_WU), 0, H - 1);
-  if (c0 === c1 && r0 === r1) return [{ x: toX, y: toY }];
+  let c1 = clamp(Math.floor(toX / CELL_WU), 0, W - 1);
+  let r1 = clamp(Math.floor(toY / CELL_WU), 0, H - 1);
+  if (c0 === c1 && r0 === r1) return [clearanceAdjust(grid, toX, toY)];
   const walk = { maxClimb: WALK_CLIMB, canSwim: opts?.canSwim ?? true };
   const jump = { maxClimb: JUMP_CLIMB, canSwim: opts?.canSwim ?? true };
   const maxNodes = opts?.maxNodes ?? 4000;
@@ -1070,12 +1141,7 @@ export function findPath(
   // the mover's collision reaches PLAYER_RADIUS ahead and 0.75R sideways, and
   // the path follower turns up to a waypoint-radius early — a route hugging a
   // prop cell clips its corner and grinds ("doesn't understand the hitbox").
-  const solidCell = (c: number, r: number) => {
-    if (c < 0 || r < 0 || c >= W || r >= H) return false;
-    if (grid.blocked[r * W + c]) return true;
-    const s = surfaceAtWorld(grid, cx(c), cy(r));
-    return !s.standable && !s.swimmable;
-  };
+  const solidCell = (c: number, r: number) => cellSolid(grid, c, r);
   const nearSolid = (c: number, r: number) => {
     for (let dr = -1; dr <= 1; dr++)
       for (let dc = -1; dc <= 1; dc++)
@@ -1140,16 +1206,51 @@ export function findPath(
   };
 
   const start = id(c0, r0);
+  // A tap on/into a solid area (or an enclosed pocket) has no reachable goal
+  // cell: retarget to the nearest non-solid cell around it so the search has
+  // something to aim at; the best-effort fallback below covers the rest.
+  if (cellSolid(grid, c1, r1)) {
+    let bestCell: { c: number; r: number; d: number } | null = null;
+    for (let rad = 1; rad <= 4 && !bestCell; rad++)
+      for (let dr = -rad; dr <= rad; dr++)
+        for (let dc = -rad; dc <= rad; dc++) {
+          if (Math.max(Math.abs(dc), Math.abs(dr)) !== rad) continue;
+          const c = c1 + dc;
+          const r = r1 + dr;
+          if (c < 0 || r < 0 || c >= W || r >= H || cellSolid(grid, c, r)) continue;
+          const d = Math.hypot(c - c0, r - r0);
+          if (!bestCell || d < bestCell.d) bestCell = { c, r, d };
+        }
+    if (!bestCell) return null;
+    c1 = bestCell.c;
+    r1 = bestCell.r;
+    toX = cx(c1);
+    toY = cy(r1);
+    if (c0 === c1 && r0 === r1) return [clearanceAdjust(grid, toX, toY)];
+  }
   const goal = id(c1, r1);
   gScore.set(start, 0);
   push(hx(c0, r0), start);
   let expanded = 0;
   let found = false;
+  // Best-effort: remember the explored node CLOSEST to the goal — when the
+  // goal can't be reached (walled off, budget exhausted), walking to that rim
+  // and stopping cleanly beats beelining into the wall and grinding.
+  let closest = start;
+  let closestH = hx(c0, r0);
   while (heap.length) {
     const cur = pop();
     if (cur === goal) {
       found = true;
       break;
+    }
+    {
+      const cc0 = cur % W;
+      const ch = hx(cc0, (cur - cc0) / W);
+      if (ch < closestH) {
+        closestH = ch;
+        closest = cur;
+      }
     }
     if (++expanded > maxNodes) break;
     const cc = cur % W;
@@ -1185,11 +1286,13 @@ export function findPath(
       }
     }
   }
-  if (!found) return null;
-  // Reconstruct goal→start, then emit start→goal cell centres, merging
-  // straight runs; the last waypoint becomes the exact tapped point.
+  const dest = found ? goal : closest;
+  if (dest === start) return null; // nowhere to go at all — ignore the tap
+  // Reconstruct dest→start, then emit start→dest cell centres, merging
+  // straight runs; the last waypoint becomes the exact tapped point (or the
+  // best-effort rim cell when the goal was unreachable).
   const cells: number[] = [];
-  for (let n: number | undefined = goal; n !== undefined && n !== start; n = cameFrom.get(n)) cells.push(n);
+  for (let n: number | undefined = dest; n !== undefined && n !== start; n = cameFrom.get(n)) cells.push(n);
   cells.reverse();
   const pts: { x: number; y: number }[] = [];
   let lastDc = NaN;
@@ -1208,7 +1311,10 @@ export function findPath(
     pc = c;
     pr = r;
   }
-  pts[pts.length - 1] = { x: toX, y: toY };
+  // The last waypoint is the exact tapped point pushed out of any solid's
+  // collision margin — a spot the body can genuinely stand on. Best-effort
+  // paths end at their rim cell's centre instead.
+  if (found) pts[pts.length - 1] = clearanceAdjust(grid, toX, toY);
   return pts;
 }
 

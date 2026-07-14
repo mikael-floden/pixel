@@ -1475,13 +1475,21 @@ export class WorldScene extends Phaser.Scene {
    * shared findPath (walk around props, along walls, jump 1-level ledges
    * head-on) and drops a pulsing ground marker at the destination. */
   private setMoveTarget(x: number, y: number, run: boolean) {
-    this.moveTarget = { x, y, run };
-    this.movePath = this.planPath(x, y);
+    const path = this.planPath(x, y);
+    if (path.length === 0) return; // nowhere to go (tap into a sealed area) — ignore
+    // The trip's real destination is the route's END — the tapped point
+    // pushed out of any solid's collision margin (clearanceAdjust), or the
+    // reachable rim when the goal is walled off (best-effort A*). Aiming at
+    // the raw tap ground the player against props when the tap landed a few
+    // units from a face (a spot the body can't physically occupy).
+    const end = path[path.length - 1];
+    this.moveTarget = { x: end.x, y: end.y, run };
+    this.movePath = path;
     this.moveRepathed = false;
     this.moveProgress = { d: Infinity, t: this.time.now };
     this.ensureTapAssets();
     this.tapMarker?.destroy();
-    const p = this.projectFlat(x, y);
+    const p = this.projectFlat(end.x, end.y);
     const my = p.y - p.lvl * MAP_GEOMETRY.lh;
     // A ground decal: above the terrain layers, below every sprite (sprites
     // carry positive foot-y depths; the marker must never cover the player).
@@ -1504,8 +1512,9 @@ export class WorldScene extends Phaser.Scene {
   private planPath(x: number, y: number): { x: number; y: number }[] {
     const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
     if (this.terrain && me) {
-      const path = findPath(this.terrain, me.fx, me.fy, x, y);
-      if (path) return path;
+      // findPath is best-effort (unreachable goals route to the nearest
+      // reachable rim); null means there is genuinely nowhere to go.
+      return findPath(this.terrain, me.fx, me.fy, x, y) ?? [];
     }
     return [{ x, y }];
   }
@@ -1557,6 +1566,13 @@ export class WorldScene extends Phaser.Scene {
     // route may be stale); a second → give up.
     if (dist < this.moveProgress.d - 2) this.moveProgress = { d: dist, t: now };
     else if (now - this.moveProgress.t > 1500) {
+      // Pinned but essentially there (collision holds us a body-width short,
+      // e.g. a nudged target still snug between props): that's an arrival,
+      // not a reason to grind at the obstacle.
+      if (Math.hypot(t.x - me.fx, t.y - me.fy) < CELL_WU * 1.25) {
+        this.clearMoveTarget();
+        return idle;
+      }
       if (!this.moveRepathed) {
         this.moveRepathed = true;
         this.movePath = this.planPath(t.x, t.y);

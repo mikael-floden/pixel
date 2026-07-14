@@ -8,6 +8,7 @@ import {
   makeSideBlocked,
   autoJumpWanted,
   findPath,
+  clearanceAdjust,
   isBlockedAtWorld,
   canEnter,
   surfaceFor,
@@ -493,4 +494,76 @@ test("findPath keeps hitbox clearance around props (buffer + nudged corners)", (
     const d = Math.hypot(dx, dy);
     assert.ok(d >= 20, `waypoint ${p.x.toFixed(0)},${p.y.toFixed(0)} hugs the prop (${d.toFixed(1)}wu)`);
   }
+});
+
+test("clearanceAdjust: taps hugging (or on) a prop become standable spots", () => {
+  // 5×5 flat grass, prop in the centre cell (2,2) = world rect [64..96]².
+  const g = () => ({ t: "grass", l: 0 });
+  const rows = Array.from({ length: 5 }, () => Array.from({ length: 5 }, g));
+  const grid = buildTerrainGrid(5, 5, rows, [{ col: 2, row: 2 }]);
+  const margin = PLAYER_RADIUS + 2;
+  // 2wu west of the prop's west face → pushed to `margin` away.
+  const a = clearanceAdjust(grid, 62, 80);
+  assert.ok(64 - a.x >= margin - 1e-6, `west-face tap pushed out (${(64 - a.x).toFixed(1)}wu)`);
+  // Tap right at the prop's corner → cleared diagonally past the margin.
+  const b = clearanceAdjust(grid, 63, 63);
+  const bd = Math.hypot(Math.max(64 - b.x, 0, b.x - 96), Math.max(64 - b.y, 0, b.y - 96));
+  assert.ok(bd >= margin - 1e-6, `corner tap cleared (${bd.toFixed(1)}wu)`);
+  // Tap INSIDE the prop cell → exits through the nearest face.
+  const c = clearanceAdjust(grid, 66, 80);
+  const cd = Math.hypot(Math.max(64 - c.x, 0, c.x - 96), Math.max(64 - c.y, 0, c.y - 96));
+  assert.ok(cd >= margin - 1e-6, `inside tap exits (${cd.toFixed(1)}wu)`);
+  // Open ground far from anything is untouched.
+  assert.deepEqual(clearanceAdjust(grid, 16, 16), { x: 16, y: 16 });
+});
+
+test("findPath's final waypoint respects the collision margin next to props", () => {
+  const g = () => ({ t: "grass", l: 0 });
+  const rows = Array.from({ length: 5 }, () => Array.from({ length: 5 }, g));
+  const grid = buildTerrainGrid(5, 5, rows, [{ col: 2, row: 2 }]);
+  // Tap 2wu from the prop's face, approaching from the far west.
+  const path = findPath(grid, 16, 80, 62, 80);
+  assert.ok(path, "path exists");
+  const end = path[path.length - 1];
+  const d = Math.hypot(Math.max(64 - end.x, 0, end.x - 96), Math.max(64 - end.y, 0, end.y - 96));
+  assert.ok(d >= PLAYER_RADIUS + 1, `final waypoint keeps the body clear (${d.toFixed(1)}wu)`);
+});
+
+test("no wedging between two props forming an inside corner", () => {
+  // Flat grass; props east (2,1) and south (1,2) of the player's cell (1,1).
+  // Wedged into that corner, BOTH axes used to be vetoed by the lateral
+  // probes (dense prop fields are full of these) — escape must move, and
+  // walking INTO a prop must still be blocked by the strict centre probe.
+  const g = () => ({ t: "grass", l: 0 });
+  const rows = Array.from({ length: 4 }, () => Array.from({ length: 4 }, g));
+  const grid = buildTerrainGrid(4, 4, rows, [
+    { col: 2, row: 1 },
+    { col: 1, row: 2 },
+  ]);
+  const ctx = { maxClimb: WALK_CLIMB, canSwim: true };
+  const blocked = makeBlocked(grid, ctx);
+  const side = makeSideBlocked(grid, ctx);
+  const x0 = 2 * CELL_WU - 6; // deep in the corner: overlapping both margins
+  const y0 = 2 * CELL_WU - 6;
+  const step = (ax: number, ay: number) =>
+    stepMovement(x0, y0, ax, ay, false, 0.2, blocked, 1, false, undefined, undefined, side);
+  assert.ok(step(-1, 0).x < x0 - 1, "escapes west past the south prop");
+  assert.ok(step(0, -1).y < y0 - 1, "escapes north past the east prop");
+  assert.ok(step(1, 0).x <= x0 + 1e-6, "cannot walk east into the prop");
+  assert.ok(step(0, 1).y <= y0 + 1e-6, "cannot walk south into the prop");
+});
+
+test("findPath best-effort: unreachable goal routes to the reachable rim", () => {
+  // A 2-level wall seals the east half; tapping beyond it must walk to the
+  // rim and stop cleanly (not beeline into the wall, not fail outright).
+  const rows = [
+    [{ t: "grass", l: 0 }, { t: "grass", l: 0 }, { t: "grass", l: 2 }, { t: "grass", l: 0 }, { t: "grass", l: 0 }],
+  ];
+  const grid = buildTerrainGrid(5, 1, rows);
+  const c = (n: number) => (n + 0.5) * CELL_WU;
+  const y = CELL_WU / 2;
+  const path = findPath(grid, c(0), y, c(4), y);
+  assert.ok(path, "best-effort path exists");
+  const end = path[path.length - 1];
+  assert.ok(end.x < 2 * CELL_WU, `stops on the reachable side (ended at x=${end.x.toFixed(0)})`);
 });

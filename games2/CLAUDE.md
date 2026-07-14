@@ -66,12 +66,13 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
   `__ml.autoJumpAt(x,y,ax,ay)`.
 - **Collision probes** (`stepMovement`): per axis, the forward CENTRE probe
   applies the full rule (elevation + solids, `makeBlocked`); the two LATERAL
-  corner probes apply `makeSideBlocked` (solids only). An elevation wall
-  beside the path must never veto a parallel/escaping move — with full-rule
-  corner probes, a player who had just descended a cliff was wedged at any
-  inside corner (both axes vetoed by the two wall faces). Solid props still
-  block from every side. Regression test: "no wedging at an inside cliff
-  corner" in server/test/collision.test.ts.
+  corner probes apply `makeSideBlocked` (solids only) and are additionally
+  ESCAPE-PERMISSIVE: a lateral hit only vetoes the move when it is NEW (the
+  matching probe at the CURRENT position is clear). Pre-existing overlap —
+  wedged between two props forming an inside corner, tight spawns — must
+  never lock both axes; digging deeper stays impossible via the strict
+  centre probe. Regression tests: "no wedging at an inside cliff corner" /
+  "…between two props" in server/test/collision.test.ts.
 - **Edge feel / falling**: walking off a ledge is forgiving — `stepMovement`
   no longer commits the drop a `PLAYER_RADIUS` early or snaps the anchor past
   the rim (the old "teleport to the floor beneath" feel). The feet just walk to

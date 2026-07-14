@@ -74,7 +74,7 @@ function showVersion() {
   const sha = (import.meta.env.VITE_GIT_SHA as string | undefined) || "dev";
   console.log(`[nangijala] build ${sha}`);
   const el = document.createElement("div");
-  el.textContent = sha.slice(0, 7);
+  el.textContent = sha.slice(0, 9); // 9 chars — matches the hashes in dev chat/commits
   el.style.cssText =
     "position:fixed;left:50%;bottom:6px;transform:translateX(-50%);z-index:50;" +
     "font:12px monospace;color:#cfd6ff;text-shadow:0 1px 2px #000,0 0 3px #000;" +
