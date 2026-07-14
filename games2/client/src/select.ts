@@ -1,4 +1,4 @@
-import { CharacterDef, Manifest, frameUrl } from "./manifest";
+import { CharacterDef, Manifest } from "./manifest";
 import { WorldInfo, DEFAULT_WORLD } from "./maps";
 import { showLoading } from "./loading";
 import { applyUiZoom } from "./uiscale";
@@ -71,6 +71,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     const grid = overlay.querySelector("#ml-grid") as HTMLElement;
     const nameInput = overlay.querySelector("#ml-name") as HTMLInputElement;
     const cells: HTMLElement[] = [];
+    const spins: ((on: boolean) => void)[] = [];
 
     // Different skeletons can reuse the same look prompt, so display names
     // collide (same label, distinct art/uid). Number the repeats so every
@@ -81,7 +82,9 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       const label = displayNames[i];
       const cell = el("button", "ml-cell");
       cell.dataset.index = String(i);
-      cell.appendChild(spritePreview(c, label));
+      const preview = spritePreview(c, label, manifest.directions);
+      cell.appendChild(preview.img);
+      spins.push(preview.setSpin);
       const span = el("span", "");
       span.textContent = label;
       cell.appendChild(span);
@@ -93,6 +96,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     function select(i: number) {
       selected = i;
       cells.forEach((c, j) => c.classList.toggle("sel", j === i));
+      spins.forEach((s, j) => s(j === i));
       cells[i].scrollIntoView({ block: "nearest" });
     }
     select(selected);
@@ -184,34 +188,50 @@ function el(tag: string, cls: string): HTMLElement {
   return e;
 }
 
-const IDLE_FPS = 6; // matches the in-game idle frame rate (WorldScene ANIM_FPS)
+const SPIN_MS = 220; // per 45° rotation step ≈ 1.8s per full revolution
 
 /**
- * A preview showing the character as in game: the idle-south frames cycled at
- * the in-game idle FPS. characters2 stores animations as frame folders, so we
- * swap an <img>'s src per frame. Falls back to the portrait (base/south.png)
- * when there are no idle frames (e.g. the built-in Wanderer).
+ * Character preview. UNSELECTED characters stand still facing the camera
+ * (base/south.png); the SELECTED one pivots through all 8 base rotations in
+ * a 360° loop, like a figure on a turntable (the maintainer swapped this in
+ * for the old idle-animation preview). Rotations are warmed and the spin
+ * only engages once every direction has loaded — a character with missing
+ * rotation art (the built-in Wanderer) just stays on its static portrait.
  */
-function spritePreview(c: CharacterDef, label: string): HTMLElement {
+function spritePreview(
+  c: CharacterDef,
+  label: string,
+  directions: string[],
+): { img: HTMLElement; setSpin: (on: boolean) => void } {
   const img = el("img", "ml-portrait") as HTMLImageElement;
   img.alt = label;
-  const frames = c.animations.idle?.south ?? 0;
-  if (frames > 1) {
-    const urls = Array.from({ length: frames }, (_, i) => frameUrl(c, "idle", "south", i));
-    urls.forEach((u) => {
-      const p = new Image();
-      p.src = u; // warm the cache so swaps don't flicker
-    });
-    let n = 0;
-    img.src = urls[0];
-    setInterval(() => {
-      n = (n + 1) % frames;
-      img.src = urls[n];
-    }, 1000 / IDLE_FPS);
-  } else {
-    img.src = c.portrait;
-  }
-  return img;
+  img.src = c.portrait;
+  // Rotations live beside the portrait: <root>/base/<dir>.png.
+  let urls: string[] | null = c.portrait.endsWith("/south.png")
+    ? directions.map((d) => c.portrait.replace(/south\.png$/, `${d}.png`))
+    : null;
+  urls?.forEach((u) => {
+    const p = new Image();
+    p.onerror = () => (urls = null); // any missing rotation disables the spin
+    p.src = u;
+  });
+  let timer: ReturnType<typeof setInterval> | null = null;
+  let k = 0;
+  const setSpin = (on: boolean) => {
+    if (on && urls && timer === null) {
+      timer = setInterval(() => {
+        if (!urls) return;
+        k = (k + 1) % urls.length;
+        img.src = urls[k];
+      }, SPIN_MS);
+    } else if (!on && timer !== null) {
+      clearInterval(timer);
+      timer = null;
+      k = 0;
+      img.src = c.portrait;
+    }
+  };
+  return { img, setSpin };
 }
 
 let stylesInjected = false;
@@ -244,7 +264,7 @@ function injectStyles() {
     background:#151517;border:2px solid #232327;border-radius:10px;color:#c9c9cf;font-size:12px}
   .ml-cell:hover{background:#1b1b1e}
   .ml-sprite{image-rendering:pixelated;background-repeat:no-repeat;flex:none}
-  .ml-portrait{width:72px;height:72px;object-fit:contain;image-rendering:pixelated;margin:28px 0}
+  .ml-portrait{width:128px;height:128px;object-fit:contain;image-rendering:pixelated;margin:6px 0}
   .ml-cell span{max-width:136px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .ml-cell.sel{border-color:#ffd678;background:#211c12}
   .ml-row{display:flex;gap:10px;margin-top:20px;justify-content:center;align-items:stretch}
