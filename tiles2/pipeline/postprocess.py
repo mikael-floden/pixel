@@ -36,6 +36,8 @@ DEFAULTS = {"neutralize_outline": True, "darkness_thresh": 60,
                              "seam_strength": 0.0, "seam_jump": 70, "seam_bright": 130,
                              "seam_nbr_sat": 90, "seam_rows": 1,
                              "thin_lum_light": 120, "light_value": 180,
+                             "strength_light": 0.97, "rim_strength_light": 0.9,
+                             "soft_lum_light": 160,
                              "protect_dark_material": True}}
 
 
@@ -53,6 +55,7 @@ def _fade_kwargs(fo):
                                "strength", "rim_strength", "min_alpha",
                                "seam_strength", "seam_jump", "seam_bright", "seam_nbr_sat",
                                "seam_rows", "thin_lum_light", "light_value",
+                               "strength_light", "rim_strength_light", "soft_lum_light",
                                "protect_dark_material")}
 
 

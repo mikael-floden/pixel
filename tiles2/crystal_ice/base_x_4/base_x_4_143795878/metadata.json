@@ -577,15 +577,15 @@
             "dir": "up"
           },
           {
-            "x": 43.2,
-            "y": 71.1,
-            "r": 3.2,
+            "x": 43.0,
+            "y": 70.9,
+            "r": 3.1,
             "color": [
               0.519,
-              0.858,
-              0.939
+              0.857,
+              0.938
             ],
-            "s": 0.883,
+            "s": 0.882,
             "dir": "up"
           }
         ]
@@ -960,6 +960,9 @@
       "seam_rows": 1,
       "thin_lum_light": 120,
       "light_value": 180,
+      "strength_light": 0.97,
+      "rim_strength_light": 0.9,
+      "soft_lum_light": 160,
       "protect_dark_material": true
     }
   }

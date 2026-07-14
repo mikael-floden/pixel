@@ -447,15 +447,15 @@
         "anim": "pulse",
         "sources": [
           {
-            "x": 24.9,
-            "y": 84.6,
-            "r": 7.3,
+            "x": 24.7,
+            "y": 84.4,
+            "r": 7.2,
             "color": [
-              0.49,
-              0.81,
-              0.916
+              0.489,
+              0.809,
+              0.915
             ],
-            "s": 0.862,
+            "s": 0.861,
             "dir": "up"
           },
           {
@@ -886,6 +886,9 @@
       "seam_rows": 1,
       "thin_lum_light": 120,
       "light_value": 180,
+      "strength_light": 0.97,
+      "rim_strength_light": 0.9,
+      "soft_lum_light": 160,
       "protect_dark_material": true
     }
   }

@@ -229,15 +229,15 @@
         "anim": "flicker",
         "sources": [
           {
-            "x": 28.5,
+            "x": 28.7,
             "y": 14.3,
-            "r": 3.0,
+            "r": 2.9,
             "color": [
-              0.677,
-              0.329,
-              0.16
+              0.695,
+              0.34,
+              0.166
             ],
-            "s": 0.65,
+            "s": 0.659,
             "dir": "up"
           },
           {
@@ -415,15 +415,15 @@
         "anim": "flicker",
         "sources": [
           {
-            "x": 18.5,
+            "x": 18.8,
             "y": 92.0,
             "r": 2.0,
             "color": [
-              0.703,
-              0.231,
-              0.186
+              0.732,
+              0.244,
+              0.193
             ],
-            "s": 0.612,
+            "s": 0.627,
             "dir": "up"
           }
         ]
@@ -463,6 +463,9 @@
       "seam_rows": 1,
       "thin_lum_light": 120,
       "light_value": 180,
+      "strength_light": 0.97,
+      "rim_strength_light": 0.9,
+      "soft_lum_light": 160,
       "protect_dark_material": true
     }
   }

@@ -183,18 +183,6 @@
             ],
             "s": 0.81,
             "dir": "up"
-          },
-          {
-            "x": 19.5,
-            "y": 56.0,
-            "r": 2.0,
-            "color": [
-              0.141,
-              0.596,
-              0.138
-            ],
-            "s": 0.636,
-            "dir": "up"
           }
         ]
       },
@@ -415,6 +403,9 @@
       "seam_rows": 1,
       "thin_lum_light": 120,
       "light_value": 180,
+      "strength_light": 0.97,
+      "rim_strength_light": 0.9,
+      "soft_lum_light": 160,
       "protect_dark_material": true
     }
   }

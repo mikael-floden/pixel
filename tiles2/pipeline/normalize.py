@@ -172,6 +172,7 @@ def fade_outline_alpha(im, darkness_thresh=60, soft_lum=120, run_min=9, thick_ma
                        strength=0.6, rim_strength=0.4, min_alpha=0,
                        seam_strength=0.0, seam_jump=70, seam_bright=130, seam_nbr_sat=90,
                        seam_rows=1, thin_lum_light=120, light_value=180,
+                       strength_light=0.97, rim_strength_light=0.9, soft_lum_light=160,
                        material_target=None, protect_dark_material=True):
     """Soften the generated near-black wireframe OUTLINE by REDUCING its ALPHA
     (toward transparent) — game1 had a similar step. RGB is never modified and
@@ -201,16 +202,23 @@ def fade_outline_alpha(im, darkness_thresh=60, soft_lum=120, run_min=9, thick_ma
         return im.copy()
 
     lum = 0.299 * rgb[:, :, 0] + 0.587 * rgb[:, :, 1] + 0.114 * rgb[:, :, 2]
-    near_black = opaque & (lum < soft_lum)
-    core_dark = opaque & (lum < darkness_thresh)
 
-    # On a LIGHT material (pale ice/snow/sand — value > light_value) a thin DARK-GREY
-    # line is an unwanted outline, not art: extend the thin detector's luminance
-    # ceiling to thin_lum_light there so it also catches grey (lum 60-120) cube edges,
-    # which core_dark<60 misses entirely. Dark/mid materials keep the tight <60 gate,
-    # so stone/dirt/black_mountain/grass detail is untouched (as verified).
+    # On a LIGHT material (pale ice/snow/sand/water — value > light_value) a dark line
+    # is an unwanted outline, not art, so fade it HARDER: extend the thin detector's
+    # luminance ceiling to thin_lum_light (catches grey lum 60-120 cube edges that
+    # core_dark<60 misses), and use the stronger *_light strengths + a higher soft_lum
+    # so the dark_w ramp gives grey edges near-full weight. Dark/mid materials keep the
+    # tight <60 gate and gentle strengths, so stone/dirt/black_mountain/grass are
+    # untouched (verified byte-identical).
     light_mat = (material_target is not None
                  and float(material_target.get("value", 0)) > light_value)
+    if light_mat:
+        soft_lum = soft_lum_light
+        strength = strength_light
+        rim_strength = rim_strength_light
+
+    near_black = opaque & (lum < soft_lum)
+    core_dark = opaque & (lum < darkness_thresh)
     thin_ceiling = thin_lum_light if light_mat else darkness_thresh
     thin_dark = opaque & (lum < thin_ceiling)
 
