@@ -271,6 +271,12 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
   Keep e2e viewports small (480×320); `scripts/debug-speed.mjs` measures.
 - Rule of thumb: if a check doesn't need pixels, pointer events, websockets,
   or Phaser anims, it belongs in `server/test` (3s), not in a browser (min).
+- **Deploy** (push to main → live): the workflow runs a `test` job (typecheck
+  + full unit/sim suite) IN PARALLEL with the layer-cached image build;
+  `deploy` needs both. Dockerfile layers are ordered deps → art (per-domain)
+  → game source LAST, and BuildKit's GHA cache means a code-only deploy
+  uploads only the small source/build layers. Don't reorder the Dockerfile
+  COPYs without thinking about which layer changes per deploy.
 - **Loading screen** (`loading.ts`): select.ts shows it on "Enter world",
   WorldScene.preload feeds real asset progress, hidden when the player's own
   avatar joins (or on connection error; 60s failsafe so it can't trap).

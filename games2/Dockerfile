@@ -8,15 +8,16 @@ FROM node:22-slim
 
 WORKDIR /app
 
-# Install deps first for layer caching (needs every workspace manifest).
+# Layer order = change frequency (cheapest cache invalidation): deps almost
+# never change; art domains change per-domain between deploys (each gets its
+# OWN layer so one active domain re-uploads ~tens of MB, not all art); game
+# SOURCE changes every deploy so it comes LAST — with BuildKit+registry-side
+# layer dedup a code-only deploy uploads only the small source/build layers.
 COPY games2/package.json games2/package-lock.json ./
 COPY games2/shared/package.json shared/
 COPY games2/server/package.json server/
 COPY games2/client/package.json client/
 RUN npm ci
-
-# Game source.
-COPY games2/ ./
 
 # Art assets (sibling domains) baked in under a fixed ASSETS_ROOT.
 COPY characters/ /assets/characters/
@@ -27,6 +28,9 @@ COPY characters2/ /assets/characters2/
 COPY tiles2/ /assets/tiles2/
 COPY maps2/ /assets/maps2/
 ENV ASSETS_ROOT=/assets
+
+# Game source (changes every deploy — keep below the art layers).
+COPY games2/ ./
 
 # Generate the character manifest + build the client bundle.
 # Bake the deployed commit into the bundle so testers can see which version

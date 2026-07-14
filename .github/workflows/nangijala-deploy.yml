@@ -1,16 +1,27 @@
 name: nangijala deploy
 
-# Build the single Nangijala image (client + art + Colyseus WS) and deploy it to
-# Cloud Run. Keyless auth via Workload Identity Federation — no stored secrets.
-# One-time setup: games/nangijala/deploy/gcp-bootstrap.sh, then set the repo
-# Variables it prints. See games/nangijala/deploy/DEPLOY.md.
+# Build the single Nangijala image (client + art + Colyseus WS) and deploy it
+# to Cloud Run. Keyless auth via Workload Identity Federation — no stored
+# secrets. One-time setup: games2/deploy/gcp-bootstrap.sh, then set the repo
+# Variables it prints. See games2/deploy/DEPLOY.md.
+#
+# Speed design (same quality, faster):
+# - `test` runs typecheck + the FULL unit/sim suite IN PARALLEL with the image
+#   build; `deploy` needs both. The gate costs ~0 wall time (build is longer)
+#   and CI now enforces what agents already run locally.
+# - BuildKit layer cache (GHA cache backend): npm ci and untouched art-domain
+#   layers are reused, not rebuilt — and unchanged layers are already in the
+#   registry, so a code-only deploy uploads megabytes, not ~500MB. (Classic
+#   `docker build` re-churned every layer digest via file mtimes.)
+# - Dockerfile layers are ordered by change frequency (deps → art per domain →
+#   game source last); .dockerignore is an allowlist.
 
 on:
   push:
     branches: [main]
     # Game code changes auto-deploy. Art is baked into the image, so refresh it
-    # with the scheduled run or a manual dispatch (avoids redeploying on every
-    # art commit — the art loops push very frequently).
+    # with a manual dispatch (avoids redeploying on every art commit — the art
+    # loops push very frequently).
     paths:
       - "games2/**"
       - ".github/workflows/nangijala-deploy.yml"
@@ -26,13 +37,55 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  # Quality gate — runs in parallel with the image build, so it adds ~no wall
+  # time. Sparse checkout: only what typecheck + npm test actually read
+  # (games2, characters2 for the manifest, maps2/worlds + tiles for the
+  # navigation sim and the surface gate, maps/world for check-surfaces).
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            /games2/
+            /characters2/
+            /maps2/worlds/
+            /maps/world/
+            /tiles/
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: games2/package-lock.json
+      - run: npm ci
+        working-directory: games2
+      - run: npm run typecheck
+        working-directory: games2
+      - run: npm test
+        working-directory: games2
+
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write          # required for Workload Identity Federation
     steps:
-      - uses: actions/checkout@v4   # full repo — the image bakes in sibling art
+      # Sparse checkout of exactly the build context (games2 + the art domains
+      # the Dockerfile bakes in) — skips the old game tree, sounds, docs, etc.
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            games2
+            characters
+            tiles
+            maps
+            objects
+            characters2
+            tiles2
+            maps2
 
       - id: auth
         uses: google-github-actions/auth@v2
@@ -45,14 +98,37 @@ jobs:
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ vars.GCP_REGION }}-docker.pkg.dev --quiet
 
-      - name: Build & push image
-        env:
-          IMAGE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_AR_REPO }}/${{ vars.GCP_SERVICE }}
-        run: |
-          docker build -f games2/Dockerfile --build-arg GIT_SHA=${{ github.sha }} \
-            -t "$IMAGE:${{ github.sha }}" -t "$IMAGE:latest" .
-          docker push "$IMAGE:${{ github.sha }}"
-          docker push "$IMAGE:latest"
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build & push image (layer-cached)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: games2/Dockerfile
+          push: true
+          provenance: false
+          tags: |
+            ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_AR_REPO }}/${{ vars.GCP_SERVICE }}:${{ github.sha }}
+            ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_AR_REPO }}/${{ vars.GCP_SERVICE }}:latest
+          build-args: |
+            GIT_SHA=${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    needs: [build, test]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SA }}
+
+      - uses: google-github-actions/setup-gcloud@v2
 
       - name: Deploy to Cloud Run
         env:

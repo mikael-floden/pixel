@@ -1,9 +1,19 @@
-# Keeps the games/nangijala Docker build context lean (build from repo root).
-.git
-**/node_modules
-games/nangijala/client/dist
-games/nangijala/**/*.tsbuildinfo
-games/nangijala/.data
+# Allowlist build context (build from repo root): ONLY what games2/Dockerfile
+# COPYs. New top-level domains stay out of the context (and off the deploy
+# critical path) until the Dockerfile actually bakes them in.
+*
+!games2
+games2/node_modules
+games2/client/dist
+games2/**/*.tsbuildinfo
+games2/.data
+!characters
+!tiles
+!maps
+!objects
+!characters2
+!tiles2
+!maps2
 **/__pycache__
 **/.venv
 *.log
