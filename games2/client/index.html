@@ -23,10 +23,21 @@
          zoom / pan gestures from fighting the game's tap-to-move. */
       #game { width: 100vw; height: 100vh; height: 100dvh; touch-action: none; }
       canvas { display: block; image-rendering: pixelated; }
+      /* Portrait-only on phones (for now): landscape on a small touch screen
+         gets a full-screen "rotate back" prompt instead of a broken layout.
+         Desktops/laptops (fine pointer) and tall tablets are unaffected. */
+      #ml-rotate { display: none; }
+      @media (orientation: landscape) and (pointer: coarse) and (max-height: 520px) {
+        #ml-rotate { display: flex; position: fixed; inset: 0; z-index: 1000;
+          align-items: center; justify-content: center; text-align: center;
+          background: #000; color: #e8e8f0; font: 600 20px system-ui, sans-serif; }
+        #ml-rotate small { display: block; margin-top: 8px; font: 400 13px system-ui, sans-serif; color: #9aa0bf; }
+      }
     </style>
   </head>
   <body>
     <div id="game"></div>
+    <div id="ml-rotate"><div>📱<br />Rotate your phone<small>Nangijala plays upright (portrait) for now</small></div></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

@@ -22,6 +22,13 @@ window.addEventListener("beforeinstallprompt", (e) => {
 if (import.meta.env.PROD && "serviceWorker" in navigator) {
   navigator.serviceWorker.register("/sw.js").catch(() => {});
 }
+// Portrait-only (for now): the manifest locks the installed app; in-browser
+// the lock API only works in fullscreen contexts, so it's best-effort (the
+// #ml-rotate CSS overlay in index.html covers plain browser landscape).
+if (window.matchMedia("(display-mode: standalone), (display-mode: fullscreen)").matches) {
+  (screen.orientation as unknown as { lock?: (o: string) => Promise<void> }).lock?.("portrait")
+    .catch(() => {});
+}
 
 async function bootMapPreview(): Promise<boolean> {
   if (location.hash !== "#map") return false;

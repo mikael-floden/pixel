@@ -1,3 +1,5 @@
+import { applyUiZoom } from "./uiscale";
+
 /** A small top-right panel listing who's online, with a live count. */
 export class RosterUI {
   private el: HTMLDivElement;
@@ -7,6 +9,7 @@ export class RosterUI {
     this.el = document.createElement("div");
     this.el.className = "ml-roster";
     document.body.appendChild(this.el);
+    applyUiZoom(this.el); // "Desktop site" must not shrink the HUD
   }
 
   refresh(players: { name: string; me: boolean }[]) {
@@ -29,7 +32,7 @@ function injectStyles() {
   if (injected) return;
   injected = true;
   const css = `
-  .ml-roster{position:fixed;top:12px;right:12px;z-index:5;min-width:120px;max-height:50vh;overflow:auto;
+  .ml-roster{position:fixed;top:12px;right:12px;z-index:5;min-width:120px;max-height:320px;overflow:auto;
     padding:8px 10px;border-radius:8px;background:#12121ccc;color:#dfe3f5;
     font-family:system-ui,sans-serif;font-size:13px;pointer-events:none}
   .ml-roster-head{font-weight:600;color:#9fb4ff;margin-bottom:4px;border-bottom:1px solid #ffffff22;padding-bottom:3px}

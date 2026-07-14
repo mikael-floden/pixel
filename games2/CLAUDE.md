@@ -180,11 +180,22 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
   WorldScene.preload feeds real asset progress, hidden when the player's own
   avatar joins (or on connection error; 60s failsafe so it can't trap).
 - **PWA**: `public/manifest.webmanifest` (display: fullscreen — installed app
-  has no address bar), `public/sw.js` (passthrough only, caches NOTHING — this
-  repo fought stale-deploy bugs; the server's Cache-Control is the policy),
-  icons from `scripts/build-pwa-icons.py` (committed). main.ts stashes
+  has no address bar; orientation: portrait-primary), `public/sw.js`
+  (passthrough only, caches NOTHING — this repo fought stale-deploy bugs; the
+  server's Cache-Control is the policy), icons from
+  `scripts/build-pwa-icons.py` (committed). main.ts stashes
   `beforeinstallprompt` → select.ts shows "Install as an app" (Android).
   `verify-mobile.mjs` covers all of this headlessly.
+- **"Desktop site" toggle is neutralized** — the game must look the same
+  regardless. Canvas side: camera zoom is dynamic (`WorldScene.zoomFor`),
+  integer, targeting ~520 world-px of visible width (phone→1, desktop→2).
+  DOM side: `uiscale.ts` applies a compensating CSS zoom
+  (innerWidth/screen.width) to every overlay root (select, loading, chat,
+  roster) — overlay CSS must use px/% only, NEVER vw/vh (they double-count
+  under zoom). Probe via `__ml.camZoom()`.
+- **Portrait-only (for now)**: manifest locks the installed app; in-browser
+  landscape on a small touch screen shows the `#ml-rotate` prompt
+  (index.html media query — coarse pointer + landscape + max-height 520px).
 
 ## Conventions
 

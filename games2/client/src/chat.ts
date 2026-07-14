@@ -1,4 +1,5 @@
 import { MAX_CHAT_LEN } from "@nangijala/shared";
+import { applyUiZoom } from "./uiscale";
 
 /**
  * Minimal DOM chat: a bottom-left message log + an input box that opens on Enter.
@@ -22,6 +23,8 @@ export class ChatUI {
     this.input.placeholder = "say something…";
     this.input.style.display = "none";
     document.body.append(this.log, this.input);
+    applyUiZoom(this.log); // "Desktop site" must not shrink the HUD
+    applyUiZoom(this.input);
 
     this.input.addEventListener("keydown", (e) => {
       e.stopPropagation();
@@ -68,11 +71,13 @@ function injectStyles() {
   if (injected) return;
   injected = true;
   const css = `
-  .ml-chatlog{position:fixed;left:12px;bottom:48px;z-index:5;max-width:46vw;
+  /* px (not vw) sizes: these roots may carry a compensating CSS zoom
+     (uiscale.ts) and viewport units would double-count under it. */
+  .ml-chatlog{position:fixed;left:12px;bottom:48px;z-index:5;max-width:330px;
     font-family:system-ui,sans-serif;font-size:13px;color:#e8e8f0;text-shadow:0 1px 2px #000;pointer-events:none}
   .ml-chatline{margin:2px 0;line-height:1.3}
   .ml-chatwho{color:#ffd678;font-weight:600}
-  .ml-chatinput{position:fixed;left:12px;bottom:12px;z-index:6;width:min(420px,70vw);
+  .ml-chatinput{position:fixed;left:12px;bottom:12px;z-index:6;width:320px;
     padding:9px 12px;border-radius:8px;border:1px solid #4a4a70;background:#0f0f1cee;color:#fff;font-size:15px}`;
   const s = document.createElement("style");
   s.textContent = css;

@@ -423,8 +423,10 @@ export class WorldScene extends Phaser.Scene {
     }
 
     // A resize grows the visible window: force the streamed ground,
-    // occluders and glow stamps to rebuild for the new extent.
+    // occluders and glow stamps to rebuild for the new extent (and re-pick
+    // the camera zoom for the new viewport width).
     this.scale.on("resize", () => {
+      this.cameras.main.setZoom(this.zoomFor());
       this.lastGround = { x: NaN, y: NaN };
       this.lastOccl = { x: NaN, y: NaN };
     });
@@ -501,9 +503,13 @@ export class WorldScene extends Phaser.Scene {
 
     const cam = this.cameras.main;
     cam.setBounds(0, 0, this.iso.w, this.iso.h);
-    // 2× integer zoom: closer view, still crisp (nearest-neighbour, no
-    // fractional scaling of the pixel art).
-    cam.setZoom(2);
+    // Integer zoom (crisp nearest-neighbour pixels) chosen so the VISIBLE
+    // WORLD WIDTH is ~520 world-px regardless of the CSS viewport. This
+    // neutralizes mobile Chrome's "Desktop site" toggle for the canvas: a
+    // phone viewport (~412px) gets zoom 1 and desktop-site/desktop (~980-
+    // 1100px) gets zoom 2 — the same amount of world either way (the
+    // maintainer's preferred, slightly zoomed-out framing on phones).
+    cam.setZoom(this.zoomFor());
     cam.setBackgroundColor(this.world ? "#181c28" : "#1b3327");
 
     setLoadingProgress(0.95, "Connecting…");
@@ -575,6 +581,7 @@ export class WorldScene extends Phaser.Scene {
       tapTo: (x: number, y: number, run = false) => this.setMoveTarget(x, y, !!run),
       target: () => this.moveTarget,
       pickAt: (wx: number, wy: number) => this.pickGround(wx, wy),
+      camZoom: () => this.cameras.main.zoom,
       // Occlusion-fade debug: force the fade focus to a cell (null → follow the
       // player), and toggle the feature. Lets headless probes frame the effect.
       occFocus: (col?: number, row?: number) => {
@@ -1714,6 +1721,12 @@ export class WorldScene extends Phaser.Scene {
 
   /** Start a jump if grounded and off cooldown (client-side prediction; the
    * server independently validates from the jump input). */
+  /** Camera zoom for the current viewport: integer, targeting ~520 world-px
+   * of visible width (see the note at create's setZoom call). */
+  private zoomFor(): number {
+    return Math.max(1, Math.round(this.scale.width / 520));
+  }
+
   private tryJump() {
     const now = this.time.now;
     if (now < this.jumpUntil || now < this.jumpReadyAt) return;

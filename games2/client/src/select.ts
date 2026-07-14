@@ -1,6 +1,7 @@
 import { CharacterDef, Manifest, frameUrl } from "./manifest";
 import { WorldInfo, DEFAULT_WORLD } from "./maps";
 import { showLoading } from "./loading";
+import { applyUiZoom } from "./uiscale";
 
 const NAMES = ["Ari", "Bex", "Cyl", "Dax", "Eir", "Fen", "Gio", "Hana", "Ivo", "Juno", "Kira", "Lio"];
 
@@ -38,6 +39,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
         <button id="ml-install" class="ml-install" hidden>📱 Install as an app on your home screen</button>
       </div>`;
     document.body.appendChild(overlay);
+    applyUiZoom(overlay); // "Desktop site" must not shrink the menu
     injectStyles();
 
     // World picker: one chip per playable world (thumbnail + label).
@@ -211,18 +213,20 @@ function injectStyles() {
   const css = `
   .ml-overlay{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;
     background:radial-gradient(circle at 50% 30%, #1c2540, #0c0c16);font-family:system-ui,sans-serif;color:#e8e8f0}
-  .ml-panel{width:min(720px,92vw);max-height:92vh;overflow:auto;padding:28px;border-radius:14px;
+  /* No vw/vh inside this overlay: it may carry a compensating CSS zoom
+     (uiscale.ts) and viewport units would double-count under it. */
+  .ml-panel{width:min(720px,92%);max-height:92%;overflow:auto;padding:28px;border-radius:14px;
     background:#12121ccc;box-shadow:0 10px 40px #0008;text-align:center}
   .ml-logo{display:block;width:min(420px,88%);margin:0 auto;user-select:none;-webkit-user-drag:none}
   .ml-sub{margin:6px 0 16px;color:#9aa0bf}
   .ml-section{text-align:left;margin:14px 2px 6px;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#8890b3}
-  .ml-worlds{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start;max-height:24vh;overflow:auto;padding:2px}
+  .ml-worlds{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start;max-height:190px;overflow:auto;padding:2px}
   .ml-world{display:flex;align-items:center;gap:8px;padding:6px 10px 6px 6px;cursor:pointer;
     background:#1e1e30;border:2px solid transparent;border-radius:10px;color:#c7cbe6;font-size:13px}
   .ml-world-img{width:34px;height:34px;object-fit:cover;image-rendering:auto;border-radius:6px;background:#0f0f1c;flex:none}
   .ml-world.sel{border-color:#ffd678;background:#2a2a44}
   .ml-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px;
-    max-height:44vh;overflow:auto;padding:4px}
+    max-height:340px;overflow:auto;padding:4px}
   .ml-cell{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;cursor:pointer;
     background:#1e1e30;border:2px solid transparent;border-radius:10px;color:#c7cbe6;font-size:12px}
   .ml-sprite{image-rendering:pixelated;background-repeat:no-repeat;flex:none}

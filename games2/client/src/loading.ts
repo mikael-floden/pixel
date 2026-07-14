@@ -15,6 +15,8 @@
  * a stuck load can never trap the player behind an opaque overlay.
  */
 
+import { applyUiZoom } from "./uiscale";
+
 let overlay: HTMLElement | null = null;
 let bar: HTMLElement | null = null;
 let failsafe: ReturnType<typeof setTimeout> | null = null;
@@ -38,6 +40,7 @@ export function showLoading(text = "Entering Nangijala…") {
       </div>
     </div>`;
   document.body.appendChild(overlay);
+  applyUiZoom(overlay); // "Desktop site" must not shrink the loading logo
   bar = overlay.querySelector("#ml-load-bar");
   setLoadingProgress(0.03, text); // a visible sliver right away — it's alive
   // Failsafe: never trap the player behind the overlay (slow nets still get
@@ -74,9 +77,11 @@ function injectStyles() {
     background:#000;font-family:system-ui,sans-serif;color:#e8e8f0}
   /* Centre the logo slightly above dead-centre (45% from the top) — full
      golden-ratio height (38.2%) read as too high on phones. */
+  /* No vw/vh here: the overlay may carry a compensating CSS zoom (uiscale.ts)
+     and viewport units would double-count under it. */
   .ml-load-box{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);
     display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px;text-align:center;width:100%}
-  .ml-load-logoWrap{position:relative;width:min(400px,84vw)}
+  .ml-load-logoWrap{position:relative;width:min(400px,84%)}
   .ml-load-logo{position:relative;display:block;width:100%;z-index:1;user-select:none;-webkit-user-drag:none}
   /* The progress fill sits BEHIND the logo and shows through the punched-out
      banner interior; the gradient echoes the NANGIJALA lettering (icy cyan →
