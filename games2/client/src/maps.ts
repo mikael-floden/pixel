@@ -79,7 +79,7 @@ export async function loadWorldsList(): Promise<WorldInfo[]> {
 
 /** Texture key for a cell's tile. maps2 bakes an explicit PNG path per cell, so
  * the key is derived from that path; the legacy (t,v) form is kept for the
- * emission demo world which still uses category+variant tiles. */
+ * legacy category+variant worlds (none shipped since the demo retired). */
 export function tileKey(t: string, v: number): string {
   return `tile:${t}:${v}`;
 }

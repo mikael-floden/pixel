@@ -216,7 +216,7 @@ export class WorldScene extends Phaser.Scene {
   // Autopilot decision trace (debug hook __ml.navLog; ring buffer, dev cost ~0).
   private navLog: Record<string, unknown>[] = [];
   private lastTap = { t: -Infinity, x: 0, y: 0 }; // double-tap detection
-  private tapMarker?: Phaser.GameObjects.Image;
+  private tapMarker?: Phaser.GameObjects.Container;
   // Isometric tile world (null → fall back to a plain ground).
   private world: World | null = null;
   private worldName: string = DEFAULT_WORLD; // which maps2 world (room + assets)
@@ -511,7 +511,7 @@ export class WorldScene extends Phaser.Scene {
       this.campfireLit?.setVisible(this.fireOn && !!this.night?.active);
       this.chat.addLog("—", `[6] Bonfire: ${this.fireOn ? "lit" : "out"}`);
     });
-    this.chat.addLog("—", "Toggles: [1] time of day · [4] collision · [5] torch · [6] bonfire · [7] see-through walls · [0] emission demo");
+    this.chat.addLog("—", "Toggles: [1] time of day · [4] collision · [5] torch · [6] bonfire · [7] see-through walls");
     this.chat.addLog("—", "Tap the ground to walk there · double-tap to run");
 
     const cam = this.cameras.main;
@@ -564,6 +564,20 @@ export class WorldScene extends Phaser.Scene {
       target: () => this.trip?.target ?? null,
       path: () => this.trip?.path ?? [],
       navLog: (n = 40) => this.navLog.slice(-n),
+      // Destination marker probe: world+screen position while a trip is live.
+      marker: () => {
+        const m = this.tapMarker;
+        if (!m) return null;
+        const cam = this.cameras.main;
+        return {
+          x: m.x,
+          y: m.y,
+          sx: (m.x - cam.worldView.x) * cam.zoom,
+          sy: (m.y - cam.worldView.y) * cam.zoom,
+          alpha: m.alpha,
+          visible: m.visible,
+        };
+      },
       // 5x5 cell dump around a world point (solid/level) — stall forensics.
       gridAround: (x: number, y: number, r = 2) => {
         if (!this.terrain) return null;
@@ -1507,17 +1521,21 @@ export class WorldScene extends Phaser.Scene {
     this.tapMarker?.destroy();
     const p = this.projectFlat(end.x, end.y);
     const my = p.y - p.lvl * MAP_GEOMETRY.lh;
-    // A ground decal: above the terrain layers, below every sprite (sprites
-    // carry positive foot-y depths; the marker must never cover the player).
-    this.tapMarker = this.add
-      .image(p.x, my, "tap-ring")
-      .setDepth(-700_000)
-      .setTint(run ? 0xffb454 : 0x8fe08f);
+    // A GLOWING destination beacon. Depth 900_000.5 sits ABOVE the darkness
+    // overlay (900_000) so night can't dim it, and above every terrain
+    // occluder so a target on top of a cliff stays visible — but BELOW the
+    // lit avatar copies (900_001+), so characters still read on top of it at
+    // night. ADD blend makes it light-like wherever it lands. It pulses until
+    // the trip ends (arrival/cancel fades it in clearMoveTarget).
+    const tint = run ? 0xffb454 : 0x8fe08f;
+    const glow = this.add.image(0, 0, "tap-glow").setBlendMode(Phaser.BlendModes.ADD).setTint(tint);
+    const ring = this.add.image(0, 0, "tap-ring").setBlendMode(Phaser.BlendModes.ADD).setTint(tint);
+    this.tapMarker = this.add.container(p.x, my, [glow, ring]).setDepth(900_000.5);
     this.tweens.add({
       targets: this.tapMarker,
-      scale: { from: 1.15, to: 0.7 },
-      alpha: { from: 0.95, to: 0.45 },
-      duration: run ? 260 : 420,
+      scale: { from: 1.25, to: 0.8 },
+      alpha: { from: 1, to: 0.55 },
+      duration: run ? 300 : 500,
       yoyo: true,
       repeat: -1,
     });
@@ -1567,12 +1585,22 @@ export class WorldScene extends Phaser.Scene {
    * green for walk, orange for run at use). */
   private ensureTapAssets() {
     if (this.textures.exists("tap-ring")) return;
-    const w = 26;
-    const h = 13;
+    // Iso-foreshortened ring (crisp edge) + a soft radial glow disc under it.
+    // Both render ADD-blended and tinted at use, so the marker reads as a
+    // glowing ground light day and night.
+    const w = 30;
+    const h = 15;
     const g = this.make.graphics({ x: 0, y: 0 }, false);
-    g.lineStyle(2, 0xffffff, 1).strokeEllipse(w / 2, h / 2, w - 3, h - 3);
-    g.fillStyle(0xffffff, 0.35).fillEllipse(w / 2, h / 2, (w - 3) / 2.2, (h - 3) / 2.2);
+    g.lineStyle(3, 0xffffff, 1).strokeEllipse(w / 2, h / 2, w - 4, h - 4);
+    g.fillStyle(0xffffff, 0.5).fillEllipse(w / 2, h / 2, (w - 4) / 2.4, (h - 4) / 2.4);
     g.generateTexture("tap-ring", w, h);
+    g.clear();
+    const gw = 56;
+    const gh = 28;
+    for (let i = 8; i >= 1; i--) {
+      g.fillStyle(0xffffff, 0.09).fillEllipse(gw / 2, gh / 2, (gw * i) / 8, (gh * i) / 8);
+    }
+    g.generateTexture("tap-glow", gw, gh);
     g.destroy();
   }
 

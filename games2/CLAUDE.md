@@ -227,7 +227,12 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   up (stall within ~1 cell of the goal counts as arrival). Auto-jump uses the
   shared `autoJumpWanted` (probe scaled by the DOMINANT axis so concave "V"
   corners fire too). Double-taps are timed by DOM event time
-  (`pointer.upTime`), NOT the game clock. Probes: `__ml.tapTo`, `__ml.target`,
+  (`pointer.upTime`), NOT the game clock. The destination MARKER is a glowing
+  additive beacon at depth 900_000.5 — above the darkness overlay (night
+  can't dim it) and every terrain occluder (visible on clifftops), below
+  the lit avatar copies; it pulses until the trip ends
+  (`scripts/verify-tapmarker.mjs` samples real pixels at night, flat +
+  elevated). Probes: `__ml.tapTo`, `__ml.target`,
   `__ml.path`, `__ml.navLog`, `__ml.gridAround`, `__ml.pickAt`.
 
 ## Dev-test workflow (fast loop — keep it this way)
