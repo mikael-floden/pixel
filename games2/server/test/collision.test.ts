@@ -6,6 +6,9 @@ import {
   makeBlocked,
   makeDrops,
   makeSideBlocked,
+  autoJumpWanted,
+  findPath,
+  isBlockedAtWorld,
   canEnter,
   surfaceFor,
   surfaceAtWorld,
@@ -400,4 +403,72 @@ test("no wedging at an inside cliff corner (stuck-walking-downhill bug)", () => 
   // …while the forward centre probe still stops walking INTO the walls.
   assert.ok(step(1, 0).x <= x0 + 1e-6, "cannot walk east up the wall");
   assert.ok(step(0, 1).y <= y0 + 1e-6, "cannot walk south up the wall");
+});
+
+test("auto-jump fires in a concave corner (upside-down V notch)", () => {
+  // High cells west and north of the player's cell meet in a concave corner:
+  //   g1 g1 g0
+  //   g1 g0 g0
+  //   g0 g0 g0
+  // Pressed diagonally into the notch, the feet rest PLAYER_RADIUS from BOTH
+  // wall lines. The old along-the-vector probe reached only ~0.7×(R+3) per
+  // axis — it stayed on the player's own cell and the jump never fired.
+  const g = (l = 0) => ({ t: "grass", l });
+  const rows = [
+    [g(1), g(1), g(0)],
+    [g(1), g(0), g(0)],
+    [g(0), g(0), g(0)],
+  ];
+  const grid = buildTerrainGrid(3, 3, rows);
+  // Player wedged into the corner of cell (1,1): PLAYER_RADIUS from both walls.
+  const px = CELL_WU + PLAYER_RADIUS;
+  const py = CELL_WU + PLAYER_RADIUS;
+  assert.equal(autoJumpWanted(grid, px, py, -1, -1), true, "diagonal push into the notch auto-jumps");
+  assert.equal(autoJumpWanted(grid, px, py, -1, 0), true, "straight push into the west wall auto-jumps");
+  assert.equal(autoJumpWanted(grid, px, py, 1, 1), false, "walking away from the notch does not");
+  // A 2-level notch must NOT auto-jump (a jump can't clear it either).
+  grid.level[0] = 2; // (0,0)
+  grid.level[1] = 2; // (1,0)
+  grid.level[3] = 2; // (0,1)
+  assert.equal(autoJumpWanted(grid, px, py, -1, -1), false, "2-level notch never auto-jumps");
+});
+
+test("findPath routes around a solid prop wall instead of into it", () => {
+  // 5×3 flat grass; a prop wall on column 2, rows 0-1 — the only way from the
+  // west side to the east side is around the south end.
+  const g = () => ({ t: "grass", l: 0 });
+  const rows = [
+    [g(), g(), g(), g(), g()],
+    [g(), g(), g(), g(), g()],
+    [g(), g(), g(), g(), g()],
+  ];
+  const grid = buildTerrainGrid(5, 3, rows, [
+    { col: 2, row: 0 },
+    { col: 2, row: 1 },
+  ]);
+  const c = (n: number) => (n + 0.5) * CELL_WU;
+  const path = findPath(grid, c(0), c(0), c(4), c(0));
+  assert.ok(path, "a path exists");
+  // It must detour through row 2 (south of the prop wall)…
+  assert.ok(path.some((p) => Math.floor(p.y / CELL_WU) === 2), "detours south around the props");
+  // …never touch a prop cell…
+  for (const p of path) {
+    assert.equal(isBlockedAtWorld(grid, p.x, p.y), false, "waypoint on a prop cell");
+  }
+  // …and end exactly at the tapped point.
+  assert.deepEqual(path[path.length - 1], { x: c(4), y: c(0) });
+});
+
+test("findPath climbs a 1-level ledge when there is no way around", () => {
+  // g0 | g1 | g0 in a 1-cell-tall world: the middle cell must be jumped.
+  const rows = [[{ t: "grass", l: 0 }, { t: "grass", l: 1 }, { t: "grass", l: 0 }]];
+  const grid = buildTerrainGrid(3, 1, rows);
+  const c = (n: number) => (n + 0.5) * CELL_WU;
+  const y = CELL_WU / 2;
+  const path = findPath(grid, c(0), y, c(2), y);
+  assert.ok(path, "path exists via the jumpable ledge");
+  assert.equal(path[path.length - 1].x, c(2));
+  // Unreachable: raise the ledge to 2 levels (jump can't clear it).
+  grid.level[1] = 2;
+  assert.equal(findPath(grid, c(0), y, c(2), y), null, "2-level wall is a dead end");
 });

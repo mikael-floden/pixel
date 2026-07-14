@@ -994,6 +994,190 @@ export function findSpawn(
   return { x: prefX, y: prefY };
 }
 
+/**
+ * Auto-jump predicate: standing at (x,y) and pushing in WORLD direction
+ * (ux,uy), is the terrain just past the feet a wall a walk can't climb but a
+ * jump would (exactly a 1-level ledge)? 2-level+ walls and solid props fail
+ * the jump check too, so they never auto-hop.
+ *
+ * The probe reaches PLAYER_RADIUS+3 in the DOMINANT axis (not along the
+ * vector): pressed diagonally into a concave corner ("upside-down V") the
+ * feet rest PLAYER_RADIUS from BOTH wall lines, and a probe measured along
+ * the diagonal only reaches ~0.7×(R+3) per axis — it landed on the player's
+ * own cell and the jump never fired. Scaling by the dominant component makes
+ * the probe cross the nearer wall line at any push angle.
+ */
+export function autoJumpWanted(
+  grid: TerrainGrid,
+  x: number,
+  y: number,
+  ux: number,
+  uy: number,
+): boolean {
+  const len = Math.hypot(ux, uy);
+  if (len < 1e-6) return false;
+  ux /= len;
+  uy /= len;
+  const d = (PLAYER_RADIUS + 3) / Math.max(Math.abs(ux), Math.abs(uy));
+  const tx = x + ux * d;
+  const ty = y + uy * d;
+  const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+  const jump = { maxClimb: JUMP_CLIMB, canSwim: true };
+  return !canEnter(grid, x, y, tx, ty, walk) && canEnter(grid, x, y, tx, ty, jump);
+}
+
+// --- Navigation: A* pathfinding over the terrain grid ------------------------
+// Used by the client's tap-to-move autopilot so the character walks AROUND
+// solid props and ALONG cliff walls to a clean jump approach, instead of
+// beelining into obstacles. Kept in shared so it is unit-testable and can
+// never drift from canEnter (the same rule the server enforces).
+
+const JUMP_EDGE_COST = 3; // a 1-level climb costs ~3 walked cells — prefer short detours
+
+/**
+ * A* from (fromX,fromY) to (toX,toY), world units. Grid edges: 4-way walk
+ * moves, diagonal walk moves (only when both flanking cardinals are walkable —
+ * no corner cutting), and CARDINAL 1-level jump climbs (weighted, so paths
+ * walk around when that's comparable). Returns waypoints (cell centres, the
+ * final one replaced by the exact target), EXCLUDING the start; null when no
+ * path exists within `maxNodes` expansions. Straight runs are merged.
+ */
+export function findPath(
+  grid: TerrainGrid,
+  fromX: number,
+  fromY: number,
+  toX: number,
+  toY: number,
+  opts?: { canSwim?: boolean; maxNodes?: number },
+): { x: number; y: number }[] | null {
+  const W = grid.width;
+  const H = grid.height;
+  const c0 = clamp(Math.floor(fromX / CELL_WU), 0, W - 1);
+  const r0 = clamp(Math.floor(fromY / CELL_WU), 0, H - 1);
+  const c1 = clamp(Math.floor(toX / CELL_WU), 0, W - 1);
+  const r1 = clamp(Math.floor(toY / CELL_WU), 0, H - 1);
+  if (c0 === c1 && r0 === r1) return [{ x: toX, y: toY }];
+  const walk = { maxClimb: WALK_CLIMB, canSwim: opts?.canSwim ?? true };
+  const jump = { maxClimb: JUMP_CLIMB, canSwim: opts?.canSwim ?? true };
+  const maxNodes = opts?.maxNodes ?? 4000;
+  const cx = (c: number) => (c + 0.5) * CELL_WU;
+  const cy = (r: number) => (r + 0.5) * CELL_WU;
+  const canWalk = (ac: number, ar: number, bc: number, br: number) =>
+    bc >= 0 && br >= 0 && bc < W && br < H && canEnter(grid, cx(ac), cy(ar), cx(bc), cy(br), walk);
+  const canJump = (ac: number, ar: number, bc: number, br: number) =>
+    bc >= 0 && br >= 0 && bc < W && br < H && canEnter(grid, cx(ac), cy(ar), cx(bc), cy(br), jump);
+
+  const gScore = new Map<number, number>();
+  const cameFrom = new Map<number, number>();
+  const id = (c: number, r: number) => r * W + c;
+  const hx = (c: number, r: number) => {
+    const dc = Math.abs(c - c1);
+    const dr = Math.abs(r - r1);
+    return (Math.max(dc, dr) + 0.4142 * Math.min(dc, dr)) * 1.001; // octile
+  };
+  // Tiny binary heap of [f, id] — paths are short, this stays small.
+  const heap: [number, number][] = [];
+  const push = (f: number, n: number) => {
+    heap.push([f, n]);
+    let i = heap.length - 1;
+    while (i > 0) {
+      const p = (i - 1) >> 1;
+      if (heap[p][0] <= heap[i][0]) break;
+      [heap[p], heap[i]] = [heap[i], heap[p]];
+      i = p;
+    }
+  };
+  const pop = (): number => {
+    const top = heap[0][1];
+    const last = heap.pop()!;
+    if (heap.length) {
+      heap[0] = last;
+      let i = 0;
+      for (;;) {
+        const l = 2 * i + 1;
+        const r = l + 1;
+        let m = i;
+        if (l < heap.length && heap[l][0] < heap[m][0]) m = l;
+        if (r < heap.length && heap[r][0] < heap[m][0]) m = r;
+        if (m === i) break;
+        [heap[m], heap[i]] = [heap[i], heap[m]];
+        i = m;
+      }
+    }
+    return top;
+  };
+
+  const start = id(c0, r0);
+  const goal = id(c1, r1);
+  gScore.set(start, 0);
+  push(hx(c0, r0), start);
+  let expanded = 0;
+  let found = false;
+  while (heap.length) {
+    const cur = pop();
+    if (cur === goal) {
+      found = true;
+      break;
+    }
+    if (++expanded > maxNodes) break;
+    const cc = cur % W;
+    const cr = (cur - cc) / W;
+    const g0 = gScore.get(cur)!;
+    for (let dr = -1; dr <= 1; dr++) {
+      for (let dc = -1; dc <= 1; dc++) {
+        if (dc === 0 && dr === 0) continue;
+        const nc = cc + dc;
+        const nr = cr + dr;
+        let cost: number;
+        if (dc !== 0 && dr !== 0) {
+          // Diagonal: walk only, and both flanking cardinals must be walkable
+          // (the body is round — no squeezing through touching corners).
+          if (!canWalk(cc, cr, nc, nr) || !canWalk(cc, cr, nc, cr) || !canWalk(cc, cr, cc, nr)) continue;
+          cost = 1.4142;
+        } else if (canWalk(cc, cr, nc, nr)) {
+          cost = 1;
+        } else if (canJump(cc, cr, nc, nr)) {
+          cost = JUMP_EDGE_COST; // a 1-level auto-jump climb
+        } else {
+          continue;
+        }
+        const n = id(nc, nr);
+        const g = g0 + cost;
+        if (g < (gScore.get(n) ?? Infinity)) {
+          gScore.set(n, g);
+          cameFrom.set(n, cur);
+          push(g + hx(nc, nr), n);
+        }
+      }
+    }
+  }
+  if (!found) return null;
+  // Reconstruct goal→start, then emit start→goal cell centres, merging
+  // straight runs; the last waypoint becomes the exact tapped point.
+  const cells: number[] = [];
+  for (let n: number | undefined = goal; n !== undefined && n !== start; n = cameFrom.get(n)) cells.push(n);
+  cells.reverse();
+  const pts: { x: number; y: number }[] = [];
+  let lastDc = NaN;
+  let lastDr = NaN;
+  let pc = c0;
+  let pr = r0;
+  for (const n of cells) {
+    const c = n % W;
+    const r = (n - c) / W;
+    const dc = c - pc;
+    const dr = r - pr;
+    if (dc === lastDc && dr === lastDr && pts.length) pts.pop(); // extend the straight run
+    pts.push({ x: cx(c), y: cy(r) });
+    lastDc = dc;
+    lastDr = dr;
+    pc = c;
+    pr = r;
+  }
+  pts[pts.length - 1] = { x: toX, y: toY };
+  return pts;
+}
+
 /** Options sent by the client when joining the world room. */
 export interface JoinOptions {
   name?: string;

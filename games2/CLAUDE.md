@@ -180,17 +180,21 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
 ## Mobile / PWA (client)
 
 - **Tap-to-move**: tap the ground → the player walks there; double-tap → run;
-  any movement key cancels. The autopilot (`WorldScene.driveAutopilot`) emits
+  any movement key cancels. Routes come from the shared **`findPath`** (A*
+  over the terrain grid: walk edges, no-corner-cut diagonals, CARDINAL
+  1-level jump climbs at ~3× cost) so the character walks AROUND props and
+  ALONG walls to a head-on jump approach — never grinding into obstacles.
+  The autopilot (`WorldScene.driveAutopilot`) follows the waypoints emitting
   the SAME 8-way screen input a keyboard would (best-of-8 by dot product
-  against the target direction through the shared `screenToWorldVector`), so
-  prediction, server validation and auto-jump behave identically to keys.
-  Tap picking (`pickGround`) inverts the iso projection once per candidate
-  LEVEL from the top down — the first cell whose level matches is the surface
-  the player actually sees (tall tops in front win). Trips end on arrival
-  (< ¾ player radius) or a 1.5s no-progress stall (unclimbable wall/prop).
+  through the shared `screenToWorldVector`), so prediction, server validation
+  and auto-jump behave identically to keys. Tap picking (`pickGround`)
+  inverts the iso projection once per candidate LEVEL from the top down —
+  the first cell whose level matches is the surface the player actually
+  sees. Trips end on arrival (< ¾ player radius); a 1.5s per-waypoint stall
+  re-plans once, then gives up. Auto-jump uses the shared `autoJumpWanted`
+  (probe scaled by the DOMINANT axis so concave "V" corners fire too).
   Double-taps are timed by DOM event time (`pointer.upTime`), NOT the game
-  clock (whole steps — throttled tabs would miss them). Probes: `__ml.tapTo`,
-  `__ml.target`, `__ml.pickAt`.
+  clock. Probes: `__ml.tapTo`, `__ml.target`, `__ml.path`, `__ml.pickAt`.
 - **Loading screen** (`loading.ts`): select.ts shows it on "Enter world",
   WorldScene.preload feeds real asset progress, hidden when the player's own
   avatar joins (or on connection error; 60s failsafe so it can't trap).

@@ -15,6 +15,8 @@ import {
   buildTerrainGrid,
   makeBlocked,
   makeSideBlocked,
+  autoJumpWanted,
+  findPath,
   canEnter,
   surfaceAtWorld,
   levelAtWorld,
@@ -203,6 +205,10 @@ export class WorldScene extends Phaser.Scene {
   // produces, so prediction/server validation/auto-jump all behave identically.
   private unloading = false; // page is really unloading (pagehide) — don't auto-rejoin
   private moveTarget: { x: number; y: number; run: boolean } | null = null;
+  // Waypoints toward moveTarget (shared findPath; last = the exact tapped
+  // point). Beeline fallback = a single waypoint when no path was found.
+  private movePath: { x: number; y: number }[] = [];
+  private moveRepathed = false; // one re-route per trip when progress stalls
   private moveProgress = { d: Infinity, t: 0 }; // best distance so far + when (stall detection)
   private lastTap = { t: -Infinity, x: 0, y: 0 }; // double-tap detection
   private tapMarker?: Phaser.GameObjects.Image;
@@ -617,6 +623,7 @@ export class WorldScene extends Phaser.Scene {
       // run the same screen-point picking a real tap uses.
       tapTo: (x: number, y: number, run = false) => this.setMoveTarget(x, y, !!run),
       target: () => this.moveTarget,
+      path: () => this.movePath,
       pickAt: (wx: number, wy: number) => this.pickGround(wx, wy),
       camZoom: () => this.cameras.main.zoom,
       // Kill the websocket (headless probe for the dead-connection recovery).
@@ -1391,10 +1398,13 @@ export class WorldScene extends Phaser.Scene {
     return null; // void (outside the drawn world)
   }
 
-  /** Start a tap-to-move trip (run = double-tap). Drops a pulsing ground
-   * marker at the destination so the tap visibly registered. */
+  /** Start a tap-to-move trip (run = double-tap). Plans a route with the
+   * shared findPath (walk around props, along walls, jump 1-level ledges
+   * head-on) and drops a pulsing ground marker at the destination. */
   private setMoveTarget(x: number, y: number, run: boolean) {
     this.moveTarget = { x, y, run };
+    this.movePath = this.planPath(x, y);
+    this.moveRepathed = false;
     this.moveProgress = { d: Infinity, t: this.time.now };
     this.ensureTapAssets();
     this.tapMarker?.destroy();
@@ -1416,8 +1426,20 @@ export class WorldScene extends Phaser.Scene {
     });
   }
 
+  /** Route to (x,y) from the player's current spot; beeline fallback when
+   * there's no terrain or no path within budget (stall handling still applies). */
+  private planPath(x: number, y: number): { x: number; y: number }[] {
+    const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+    if (this.terrain && me) {
+      const path = findPath(this.terrain, me.fx, me.fy, x, y);
+      if (path) return path;
+    }
+    return [{ x, y }];
+  }
+
   private clearMoveTarget() {
     this.moveTarget = null;
+    this.movePath = [];
     if (this.tapMarker) {
       const m = this.tapMarker;
       this.tapMarker = undefined;
@@ -1427,29 +1449,49 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /**
-   * One autopilot step: pick, out of the 8 inputs a keyboard could hold, the
-   * one whose WORLD direction (via the shared screenToWorldVector, grid-axis
-   * lock included) points most toward the target. Re-evaluated every predict
-   * tick, so the path self-corrects; arrival and "stuck against something"
-   * both end the trip. Auto-jump keeps handling 1-level ledges on the way.
+   * One autopilot step: steer toward the next WAYPOINT of the planned route
+   * (findPath — around props, along walls, ledge climbs approached head-on)
+   * with, out of the 8 inputs a keyboard could hold, the one whose WORLD
+   * direction (via the shared screenToWorldVector, grid-axis lock included)
+   * points most toward it. Re-evaluated every predict tick. Arrival ends the
+   * trip; a stall re-plans once from the current spot, then gives up.
+   * Auto-jump keeps handling 1-level ledges on the way.
    */
   private driveAutopilot(): { ax: number; ay: number; running: boolean } {
     const idle = { ax: 0, ay: 0, running: false };
     const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
     const t = this.moveTarget;
     if (!me || !t) return idle;
-    const dxw = t.x - me.fx;
-    const dyw = t.y - me.fy;
+    const now = this.time.now;
+    // Advance past reached waypoints (intermediate radius is loose — the 8-way
+    // heading has up to ~22° of error, tight radii would make it orbit).
+    while (this.movePath.length > 1) {
+      const w0 = this.movePath[0];
+      if (Math.hypot(w0.x - me.fx, w0.y - me.fy) > PLAYER_RADIUS) break;
+      this.movePath.shift();
+      this.moveProgress = { d: Infinity, t: now };
+    }
+    const wp = this.movePath[0] ?? { x: t.x, y: t.y };
+    const dxw = wp.x - me.fx;
+    const dyw = wp.y - me.fy;
     const dist = Math.hypot(dxw, dyw);
-    if (dist < PLAYER_RADIUS * 0.75) {
-      this.clearMoveTarget(); // arrived
+    if (this.movePath.length <= 1 && dist < PLAYER_RADIUS * 0.75) {
+      this.clearMoveTarget(); // arrived at the final target
       return idle;
     }
-    const now = this.time.now;
+    // Stall detection is per-WAYPOINT (euclid distance to the final target can
+    // legitimately grow during a detour). One stall → re-plan from here (the
+    // route may be stale); a second → give up.
     if (dist < this.moveProgress.d - 2) this.moveProgress = { d: dist, t: now };
     else if (now - this.moveProgress.t > 1500) {
-      this.clearMoveTarget(); // no progress for 1.5s — blocked (wall/prop/water edge)
-      return idle;
+      if (!this.moveRepathed) {
+        this.moveRepathed = true;
+        this.movePath = this.planPath(t.x, t.y);
+        this.moveProgress = { d: Infinity, t: now };
+      } else {
+        this.clearMoveTarget(); // truly blocked (wall/prop/water edge)
+        return idle;
+      }
     }
     let best = { ax: 0, ay: 0, dot: -Infinity };
     for (let iy = -1; iy <= 1; iy++) {
@@ -1458,13 +1500,14 @@ export class WorldScene extends Phaser.Scene {
         const w = screenToWorldVector(ix, iy);
         const wl = Math.hypot(w.x, w.y);
         if (wl < 1e-9) continue;
-        const dot = (w.x * dxw + w.y * dyw) / (wl * dist);
+        const dot = (w.x * dxw + w.y * dyw) / (wl * Math.max(dist, 1e-6));
         if (dot > best.dot) best = { ax: ix, ay: iy, dot };
       }
     }
     // Run trips drop to a walk for the last stretch so the 8-way quantized
     // heading can't orbit the target at run speed.
-    return { ax: best.ax, ay: best.ay, running: t.run && dist > CELL_WU };
+    const finalDist = Math.hypot(t.x - me.fx, t.y - me.fy);
+    return { ax: best.ax, ay: best.ay, running: t.run && finalDist > CELL_WU };
   }
 
   /** The tap marker texture: a small iso-foreshortened ring (white; tinted
@@ -1495,22 +1538,14 @@ export class WorldScene extends Phaser.Scene {
     if (me && this.wouldAutoJump(me.fx, me.fy, ax, ay)) this.tryJump();
   }
 
-  /** The terrain predicate behind auto-jump: from world (fromX,fromY), moving in
-   * screen direction (ax,ay), is the cell just past the feet a wall a walk can't
-   * climb but a jump would (a 1-level ledge)? Excludes 2-level+ walls and solid
-   * props (a jump can't clear those either). Also exposed via __ml.autoJumpAt. */
+  /** The terrain predicate behind auto-jump: from world (fromX,fromY), moving
+   * in screen direction (ax,ay), is the terrain just past the feet a 1-level
+   * ledge a jump would clear? Delegates to the shared `autoJumpWanted` (which
+   * also handles the concave-corner probe geometry). Exposed via __ml.autoJumpAt. */
   private wouldAutoJump(fromX: number, fromY: number, ax: number, ay: number): boolean {
     if (!this.terrain) return false;
     const w = screenToWorldVector(ax, ay);
-    const len = Math.hypot(w.x, w.y);
-    if (len < 1e-6) return false;
-    // Probe the cell just past the feet's leading edge, in the move direction.
-    const d = PLAYER_RADIUS + 3;
-    const tx = fromX + (w.x / len) * d;
-    const ty = fromY + (w.y / len) * d;
-    const walk = { maxClimb: WALK_CLIMB, canSwim: true };
-    const jump = { maxClimb: JUMP_CLIMB, canSwim: true };
-    return !canEnter(this.terrain, fromX, fromY, tx, ty, walk) && canEnter(this.terrain, fromX, fromY, tx, ty, jump);
+    return autoJumpWanted(this.terrain, fromX, fromY, w.x, w.y);
   }
 
   /** Persist + send the accumulated input window (prediction and server get
