@@ -6,7 +6,7 @@ import { WorldScene } from "./scenes/WorldScene";
 import { loadWorld, loadWorldsList } from "./maps";
 import { buildDemoWorld } from "@nangijala/shared";
 import { MapPreviewScene } from "./scenes/MapPreviewScene";
-import { setLoadingProgress } from "./loading";
+import { setLoadingProgress, showLoading } from "./loading";
 
 // ---- PWA ----
 // Capture the browser's install prompt the moment it fires (often before any
@@ -140,7 +140,29 @@ async function boot() {
   // only picks a character; otherwise the player chooses BOTH a world (any
   // playable maps2 world the maps agent has shipped) AND a character.
   const worlds = demoMode ? [] : await loadWorldsList();
-  const { world: worldName, character, name } = await chooseCharacter(manifest, worlds);
+
+  // Dead-connection rejoin fast path: WorldScene sets ml-rejoin before its
+  // recovery reload — skip the select screen and re-enter with the remembered
+  // choice, so a phone coming back from background is in the world within
+  // seconds (position restored server-side via the token store).
+  let choice: Awaited<ReturnType<typeof chooseCharacter>> | null = null;
+  if (!demoMode && sessionStorage.getItem("ml-rejoin") === "1") {
+    sessionStorage.removeItem("ml-rejoin");
+    try {
+      const saved = JSON.parse(localStorage.getItem("ml-last-choice") || "null") as {
+        world?: string;
+        characterUid?: string;
+        name?: string;
+      } | null;
+      const character = manifest.characters.find((c) => c.uid === saved?.characterUid);
+      const worldOk = worlds.length === 0 || worlds.some((w) => w.name === saved?.world);
+      if (saved?.world && character && worldOk) {
+        showLoading();
+        choice = { world: saved.world, character, name: saved.name || "wanderer" };
+      }
+    } catch {}
+  }
+  const { world: worldName, character, name } = choice ?? (await chooseCharacter(manifest, worlds));
 
   // select.ts showed the loading overlay on commit; the world JSON is the
   // first slow step (a few MB on mobile), then WorldScene.preload takes over

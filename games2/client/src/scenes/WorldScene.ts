@@ -201,6 +201,7 @@ export class WorldScene extends Phaser.Scene {
   // Tap-to-move (mobile-first): tap the ground → walk there; double-tap → run.
   // The autopilot only SYNTHESIZES the same 8-way screen input the keyboard
   // produces, so prediction/server validation/auto-jump all behave identically.
+  private unloading = false; // page is really unloading (pagehide) — don't auto-rejoin
   private moveTarget: { x: number; y: number; run: boolean } | null = null;
   private moveProgress = { d: Infinity, t: 0 }; // best distance so far + when (stall detection)
   private lastTap = { t: -Infinity, x: 0, y: 0 }; // double-tap detection
@@ -575,6 +576,24 @@ export class WorldScene extends Phaser.Scene {
       this.chat.addLog("—", `${msg.name} nearly drowned and washed ashore.`);
     });
 
+    // Dead-connection recovery. Backgrounding the tab (phones especially)
+    // freezes JS; the server drops the silent client and this room becomes a
+    // ZOMBIE — no patches, no acks, prediction replaying an ever-growing
+    // unacked input history from a frozen base (the "teleport when I jump
+    // uphill after tabbing back" bug). The game cannot run offline: the
+    // moment the drop is noticed (the socket close event fires when the page
+    // thaws), rejoin cleanly via reload — main.ts sees the rejoin flag and
+    // skips the select screen, and the token store restores the spot. A real
+    // page unload (refresh/navigation) fires pagehide first and is left alone.
+    window.addEventListener("pagehide", () => (this.unloading = true), { once: true });
+    this.room.onLeave(() => {
+      if (this.unloading) return;
+      sessionStorage.setItem("ml-rejoin", "1");
+      const rejoin = () => location.reload();
+      if (document.visibilityState === "visible") setTimeout(rejoin, 250);
+      else document.addEventListener("visibilitychange", rejoin, { once: true });
+    });
+
     // Debug hooks for headless end-to-end verification.
     (window as any).__ml = {
       players: () => this.avatars.size,
@@ -600,6 +619,12 @@ export class WorldScene extends Phaser.Scene {
       target: () => this.moveTarget,
       pickAt: (wx: number, wy: number) => this.pickGround(wx, wy),
       camZoom: () => this.cameras.main.zoom,
+      // Kill the websocket (headless probe for the dead-connection recovery).
+      dropConnection: () => {
+        const conn = (this.room as unknown as { connection?: { close?: () => void; transport?: { close?: () => void } } })
+          ?.connection;
+        (conn?.close ?? conn?.transport?.close)?.call(conn?.close ? conn : conn?.transport);
+      },
       // Occlusion-fade debug: force the fade focus to a cell (null → follow the
       // player), and toggle the feature. Lets headless probes frame the effect.
       occFocus: (col?: number, row?: number) => {
@@ -881,6 +906,10 @@ export class WorldScene extends Phaser.Scene {
         // input the server hasn't acked yet, so the local player is responsive
         // but never drifts from the server.
         this.pending = this.pending.filter((p) => p.seq > player.seq);
+        // Zombie-connection guard: with a dead room nothing is ever acked and
+        // this list (and the per-frame replay cost) grows without bound. The
+        // onLeave handler reloads soon; keep the tail bounded meanwhile.
+        if (this.pending.length > 400) this.pending.splice(0, this.pending.length - 400);
         let rx = player.x;
         let ry = player.y;
         const jumpingNow = this.time.now < this.jumpUntil;

@@ -100,6 +100,14 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     function commit() {
       const name = (nameInput.value.trim() || NAMES[selected % NAMES.length]).slice(0, 24);
       const world = showWorlds ? worlds[selectedWorld].name : DEFAULT_WORLD;
+      // Remember the choice so a dead-connection rejoin (main.ts) can skip
+      // this screen and go straight back into the world.
+      try {
+        localStorage.setItem(
+          "ml-last-choice",
+          JSON.stringify({ world, characterUid: chars[selected].uid, name }),
+        );
+      } catch {}
       // Show the loading overlay BEFORE tearing this screen down so slow
       // phones never sit on a black page while the world downloads
       // (WorldScene hides it once the player's avatar is in).

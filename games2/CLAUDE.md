@@ -211,6 +211,15 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
 - **Portrait-only (for now)**: manifest locks the installed app; in-browser
   landscape on a small touch screen shows the `#ml-rotate` prompt
   (index.html media query — coarse pointer + landscape + max-height 520px).
+- **Dead-connection recovery**: backgrounding a phone tab freezes JS; the
+  server drops the client and the room turns into a ZOMBIE (no patches/acks
+  — prediction replays an ever-growing unacked history; the old "teleport
+  when jumping uphill after tabbing back" bug). `room.onLeave` (WorldScene)
+  reloads the page when unexpected (visibility-aware; real unloads fire
+  pagehide first and are left alone), sets `ml-rejoin`, and main.ts then
+  SKIPS the select screen using the `ml-last-choice` saved at commit — the
+  token store restores the position. Probe: `__ml.dropConnection()`;
+  regression: `scripts/verify-reconnect.mjs`.
 
 ## Conventions
 
