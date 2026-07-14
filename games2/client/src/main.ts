@@ -6,6 +6,22 @@ import { WorldScene } from "./scenes/WorldScene";
 import { loadWorld, loadWorldsList } from "./maps";
 import { buildDemoWorld } from "@nangijala/shared";
 import { MapPreviewScene } from "./scenes/MapPreviewScene";
+import { setLoadingProgress } from "./loading";
+
+// ---- PWA ----
+// Capture the browser's install prompt the moment it fires (often before any
+// UI exists) so the select screen can offer an "Install app" button
+// (Android home screen). Registered at module scope on purpose.
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  (window as any).__mlInstall = e;
+  window.dispatchEvent(new Event("ml-can-install"));
+});
+// The service worker exists only for installability — it caches nothing
+// (see public/sw.js). Dev stays SW-free so vite HMR is never in its path.
+if (import.meta.env.PROD && "serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js").catch(() => {});
+}
 
 async function bootMapPreview(): Promise<boolean> {
   if (location.hash !== "#map") return false;
@@ -105,6 +121,10 @@ async function boot() {
   const worlds = demoMode ? [] : await loadWorldsList();
   const { world: worldName, character, name } = await chooseCharacter(manifest, worlds);
 
+  // select.ts showed the loading overlay on commit; the world JSON is the
+  // first slow step (a few MB on mobile), then WorldScene.preload takes over
+  // the progress bar with the actual asset counts.
+  setLoadingProgress(0.05, "Fetching world…");
   let world: Awaited<ReturnType<typeof loadWorld>>;
   if (demoMode) {
     let emission: Record<string, never> = {};

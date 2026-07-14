@@ -2,11 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- viewport-fit=cover: draw under notches/rounded corners in the installed
+         app; user-scalable=no: pinch-zoom fights the game's own input. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#12121c" />
     <title>Nangijala</title>
+    <!-- PWA: installable on the Android home screen; starts fullscreen. -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <style>
-      html, body { margin: 0; height: 100%; background: #12121c; overflow: hidden; }
-      #game { width: 100vw; height: 100vh; }
+      html, body { margin: 0; height: 100%; background: #12121c; overflow: hidden;
+        overscroll-behavior: none; }
+      /* dvh tracks the REAL visible height on mobile (address bar shown/hidden);
+         vh is the fallback for older browsers. touch-action here (NOT on body:
+         the select screen's lists still need touch scrolling) stops double-tap
+         zoom / pan gestures from fighting the game's tap-to-move. */
+      #game { width: 100vw; height: 100vh; height: 100dvh; touch-action: none; }
       canvas { display: block; image-rendering: pixelated; }
     </style>
   </head>

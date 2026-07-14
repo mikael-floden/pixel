@@ -50,6 +50,7 @@ import {
 import { joinWorld } from "../net";
 import { ChatUI } from "../chat";
 import { RosterUI } from "../roster";
+import { setLoadingProgress, hideLoading } from "../loading";
 import {
   World,
   MAP_GEOMETRY,
@@ -179,6 +180,13 @@ export class WorldScene extends Phaser.Scene {
   private inputSeq = 0;
   private sendAccum = 0;
   private lastInput: { ax: number; ay: number; running: boolean } = { ax: 0, ay: 0, running: false };
+  // Tap-to-move (mobile-first): tap the ground → walk there; double-tap → run.
+  // The autopilot only SYNTHESIZES the same 8-way screen input the keyboard
+  // produces, so prediction/server validation/auto-jump all behave identically.
+  private moveTarget: { x: number; y: number; run: boolean } | null = null;
+  private moveProgress = { d: Infinity, t: 0 }; // best distance so far + when (stall detection)
+  private lastTap = { t: -Infinity, x: 0, y: 0 }; // double-tap detection
+  private tapMarker?: Phaser.GameObjects.Image;
   // Isometric tile world (null → fall back to a plain ground).
   private world: World | null = null;
   private worldName: string = DEFAULT_WORLD; // which maps2 world (room + assets)
@@ -320,6 +328,9 @@ export class WorldScene extends Phaser.Scene {
   }
 
   preload() {
+    // Drive the post-"Enter world" loading overlay with real asset progress
+    // (characters + tiles are hundreds of small PNGs — slow on mobile).
+    this.load.on("progress", (f: number) => setLoadingProgress(0.05 + f * 0.85, "Loading art…"));
     // characters2 stores animations as frame FOLDERS (one PNG per frame), not
     // strips — load each frame as its own texture.
     for (const def of this.manifest.characters) {
@@ -422,6 +433,22 @@ export class WorldScene extends Phaser.Scene {
       "W,A,S,D,UP,DOWN,LEFT,RIGHT,SHIFT",
     ) as Record<string, Phaser.Input.Keyboard.Key>;
 
+    // Tap-to-move: tap/click the ground to walk there (strategy-game style);
+    // double-tap to run. Drags and long holds are not taps.
+    this.input.addPointer(2); // second touch (e.g. resting thumb) must not eat taps
+    this.input.on("pointerup", (p: Phaser.Input.Pointer) => {
+      if (p.getDistance() > 16 || p.getDuration() > 600) return;
+      // Time taps by the DOM event clock (upTime), NOT this.time.now: the game
+      // clock advances in whole steps, so on a throttled tab two quick taps
+      // can measure hundreds of ms apart and the double-tap never registers.
+      const now = p.upTime;
+      const dbl =
+        now - this.lastTap.t < 400 && Math.hypot(p.x - this.lastTap.x, p.y - this.lastTap.y) < 48;
+      this.lastTap = { t: now, x: p.x, y: p.y };
+      const g = this.pickGround(p.worldX, p.worldY);
+      if (g) this.setMoveTarget(g.x, g.y, dbl);
+    });
+
     // Chat: Enter opens the input; while typing, Phaser keyboard is disabled so
     // movement keys don't leak through, and re-enabled when the box closes.
     this.chat = new ChatUI(
@@ -470,6 +497,7 @@ export class WorldScene extends Phaser.Scene {
       this.chat.addLog("—", `[6] Bonfire: ${this.fireOn ? "lit" : "out"}`);
     });
     this.chat.addLog("—", "Toggles: [1] time of day · [4] collision · [5] torch · [6] bonfire · [7] see-through walls · [0] emission demo");
+    this.chat.addLog("—", "Tap the ground to walk there · double-tap to run");
 
     const cam = this.cameras.main;
     cam.setBounds(0, 0, this.iso.w, this.iso.h);
@@ -478,12 +506,14 @@ export class WorldScene extends Phaser.Scene {
     cam.setZoom(2);
     cam.setBackgroundColor(this.world ? "#181c28" : "#1b3327");
 
+    setLoadingProgress(0.95, "Connecting…");
     try {
       this.room = await joinWorld(
         { name: this.myName, character: this.myCharacter.uid, world: this.worldName },
         this.demoMode ? DEMO_ROOM_NAME : undefined,
       );
     } catch (err) {
+      hideLoading(); // the error panel must not sit behind the overlay
       this.showConnectionError(err);
       return;
     }
@@ -494,6 +524,7 @@ export class WorldScene extends Phaser.Scene {
       if (id === this.room!.sessionId) {
         const av = this.avatars.get(id)!;
         cam.startFollow(av.sprite, true, 0.15, 0.15);
+        hideLoading(); // my avatar is in and the camera is on it — world's up
       }
       this.refreshRoster();
     });
@@ -539,6 +570,11 @@ export class WorldScene extends Phaser.Scene {
       occCount: () => ({ maps2: this.maps2, occluders: this.occluders.length, meta: this.occluderMeta.length }),
       bubbles: () => [...this.avatars.values()].filter((a) => a.bubble).map((a) => a.bubble!.text),
       jump: () => this.tryJump(),
+      // Tap-to-move probes: set/inspect the autopilot target directly, and
+      // run the same screen-point picking a real tap uses.
+      tapTo: (x: number, y: number, run = false) => this.setMoveTarget(x, y, !!run),
+      target: () => this.moveTarget,
+      pickAt: (wx: number, wy: number) => this.pickGround(wx, wy),
       // Occlusion-fade debug: force the fade focus to a cell (null → follow the
       // player), and toggle the feature. Lets headless probes frame the effect.
       occFocus: (col?: number, row?: number) => {
@@ -1233,9 +1269,20 @@ export class WorldScene extends Phaser.Scene {
 
   private predictAndSend(dt: number) {
     const k = this.keys;
-    const ax = (down(k.D) || down(k.RIGHT) ? 1 : 0) - (down(k.A) || down(k.LEFT) ? 1 : 0);
-    const ay = (down(k.S) || down(k.DOWN) ? 1 : 0) - (down(k.W) || down(k.UP) ? 1 : 0);
-    const running = down(k.SHIFT);
+    let ax = (down(k.D) || down(k.RIGHT) ? 1 : 0) - (down(k.A) || down(k.LEFT) ? 1 : 0);
+    let ay = (down(k.S) || down(k.DOWN) ? 1 : 0) - (down(k.W) || down(k.UP) ? 1 : 0);
+    let running = down(k.SHIFT);
+    // Tap-to-move autopilot: keyboard always wins (touching the keys cancels
+    // the trip); otherwise steer toward the tapped target with the same 8-way
+    // screen input a keyboard would produce.
+    if (ax !== 0 || ay !== 0) {
+      if (this.moveTarget) this.clearMoveTarget();
+    } else if (this.moveTarget) {
+      const drive = this.driveAutopilot();
+      ax = drive.ax;
+      ay = drive.ay;
+      running = drive.running;
+    }
     const sig = `${ax},${ay},${running ? 1 : 0}`;
     // If the input CHANGED, flush the elapsed window under the PREVIOUS input
     // first. Otherwise a quick tap gets re-attributed to the new vector (e.g.
@@ -1249,6 +1296,123 @@ export class WorldScene extends Phaser.Scene {
     this.maybeAutoJump(ax, ay);
     // Regular cadence, and jumps flush immediately so the edge isn't delayed.
     if (this.jumpQueued || this.sendAccum >= 1 / INPUT_HZ) this.flushInput();
+  }
+
+  /**
+   * Iso pick: which walkable ground does a tap at camera-world (wx,wy) land
+   * on? Raised tops draw shifted UP by level×lh, so invert the projection
+   * once per candidate level, from the highest down — the first cell whose
+   * actual level matches the candidate is the surface the player SEES there.
+   * Returns flat world coords (the same space the server moves players in).
+   */
+  private pickGround(wx: number, wy: number): { x: number; y: number } | null {
+    const clampW = (x: number, y: number) => ({
+      x: Math.max(1, Math.min(this.worldW - 1, x)),
+      y: Math.max(1, Math.min(this.worldH - 1, y)),
+    });
+    if (!this.world) return clampW(wx, wy); // plain-ground fallback: screen == flat world
+    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    const u = (wx - this.iso.ox - tile / 2) / dx;
+    for (let l = this.maxLevel; l >= 0; l--) {
+      const v = (wy - this.iso.oy - dy + l * lh) / dy;
+      const col = (u + v) / 2;
+      const row = (v - u) / 2;
+      const cell = this.world.rows[Math.floor(row)]?.[Math.floor(col)];
+      if (!cell || cell.l !== l) continue;
+      const s = surfaceFor(cell.t);
+      if (!s.standable && !s.swimmable) return null; // tapped a solid prop/structure
+      return clampW(col * CELL_WU, row * CELL_WU);
+    }
+    return null; // void (outside the drawn world)
+  }
+
+  /** Start a tap-to-move trip (run = double-tap). Drops a pulsing ground
+   * marker at the destination so the tap visibly registered. */
+  private setMoveTarget(x: number, y: number, run: boolean) {
+    this.moveTarget = { x, y, run };
+    this.moveProgress = { d: Infinity, t: this.time.now };
+    this.ensureTapAssets();
+    this.tapMarker?.destroy();
+    const p = this.projectFlat(x, y);
+    const my = p.y - p.lvl * MAP_GEOMETRY.lh;
+    // A ground decal: above the terrain layers, below every sprite (sprites
+    // carry positive foot-y depths; the marker must never cover the player).
+    this.tapMarker = this.add
+      .image(p.x, my, "tap-ring")
+      .setDepth(-700_000)
+      .setTint(run ? 0xffb454 : 0x8fe08f);
+    this.tweens.add({
+      targets: this.tapMarker,
+      scale: { from: 1.15, to: 0.7 },
+      alpha: { from: 0.95, to: 0.45 },
+      duration: run ? 260 : 420,
+      yoyo: true,
+      repeat: -1,
+    });
+  }
+
+  private clearMoveTarget() {
+    this.moveTarget = null;
+    if (this.tapMarker) {
+      const m = this.tapMarker;
+      this.tapMarker = undefined;
+      this.tweens.killTweensOf(m);
+      this.tweens.add({ targets: m, alpha: 0, duration: 180, onComplete: () => m.destroy() });
+    }
+  }
+
+  /**
+   * One autopilot step: pick, out of the 8 inputs a keyboard could hold, the
+   * one whose WORLD direction (via the shared screenToWorldVector, grid-axis
+   * lock included) points most toward the target. Re-evaluated every predict
+   * tick, so the path self-corrects; arrival and "stuck against something"
+   * both end the trip. Auto-jump keeps handling 1-level ledges on the way.
+   */
+  private driveAutopilot(): { ax: number; ay: number; running: boolean } {
+    const idle = { ax: 0, ay: 0, running: false };
+    const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+    const t = this.moveTarget;
+    if (!me || !t) return idle;
+    const dxw = t.x - me.fx;
+    const dyw = t.y - me.fy;
+    const dist = Math.hypot(dxw, dyw);
+    if (dist < PLAYER_RADIUS * 0.75) {
+      this.clearMoveTarget(); // arrived
+      return idle;
+    }
+    const now = this.time.now;
+    if (dist < this.moveProgress.d - 2) this.moveProgress = { d: dist, t: now };
+    else if (now - this.moveProgress.t > 1500) {
+      this.clearMoveTarget(); // no progress for 1.5s — blocked (wall/prop/water edge)
+      return idle;
+    }
+    let best = { ax: 0, ay: 0, dot: -Infinity };
+    for (let iy = -1; iy <= 1; iy++) {
+      for (let ix = -1; ix <= 1; ix++) {
+        if (ix === 0 && iy === 0) continue;
+        const w = screenToWorldVector(ix, iy);
+        const wl = Math.hypot(w.x, w.y);
+        if (wl < 1e-9) continue;
+        const dot = (w.x * dxw + w.y * dyw) / (wl * dist);
+        if (dot > best.dot) best = { ax: ix, ay: iy, dot };
+      }
+    }
+    // Run trips drop to a walk for the last stretch so the 8-way quantized
+    // heading can't orbit the target at run speed.
+    return { ax: best.ax, ay: best.ay, running: t.run && dist > CELL_WU };
+  }
+
+  /** The tap marker texture: a small iso-foreshortened ring (white; tinted
+   * green for walk, orange for run at use). */
+  private ensureTapAssets() {
+    if (this.textures.exists("tap-ring")) return;
+    const w = 26;
+    const h = 13;
+    const g = this.make.graphics({ x: 0, y: 0 }, false);
+    g.lineStyle(2, 0xffffff, 1).strokeEllipse(w / 2, h / 2, w - 3, h - 3);
+    g.fillStyle(0xffffff, 0.35).fillEllipse(w / 2, h / 2, (w - 3) / 2.2, (h - 3) / 2.2);
+    g.generateTexture("tap-ring", w, h);
+    g.destroy();
   }
 
   /**

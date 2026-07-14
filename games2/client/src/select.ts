@@ -1,5 +1,6 @@
 import { CharacterDef, Manifest, frameUrl } from "./manifest";
 import { WorldInfo, DEFAULT_WORLD } from "./maps";
+import { showLoading } from "./loading";
 
 const NAMES = ["Ari", "Bex", "Cyl", "Dax", "Eir", "Fen", "Gio", "Hana", "Ivo", "Juno", "Kira", "Lio"];
 
@@ -34,6 +35,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
           <button id="ml-random" class="ml-btn ml-ghost" title="Random character">🎲</button>
           <button id="ml-enter" class="ml-btn">Enter world</button>
         </div>
+        <button id="ml-install" class="ml-install" hidden>📱 Install as an app on your home screen</button>
       </div>`;
     document.body.appendChild(overlay);
     injectStyles();
@@ -96,6 +98,10 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     function commit() {
       const name = (nameInput.value.trim() || NAMES[selected % NAMES.length]).slice(0, 24);
       const world = showWorlds ? worlds[selectedWorld].name : DEFAULT_WORLD;
+      // Show the loading overlay BEFORE tearing this screen down so slow
+      // phones never sit on a black page while the world downloads
+      // (WorldScene hides it once the player's avatar is in).
+      showLoading();
       overlay.remove();
       resolve({ world, character: chars[selected], name });
     }
@@ -108,6 +114,29 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       if (e.key === "Enter") commit();
     });
 
+    // "Install app" (PWA): shown only when the browser offers an install
+    // prompt (main.ts stashes it in __mlInstall) and we're not already
+    // running as an installed app.
+    const installBtn = overlay.querySelector("#ml-install") as HTMLButtonElement;
+    const installed = ["standalone", "fullscreen", "minimal-ui"].some(
+      (m) => window.matchMedia?.(`(display-mode: ${m})`).matches,
+    );
+    const refreshInstall = () => {
+      installBtn.hidden = installed || !(window as any).__mlInstall;
+    };
+    refreshInstall();
+    window.addEventListener("ml-can-install", refreshInstall);
+    installBtn.addEventListener("click", async () => {
+      const prompt = (window as any).__mlInstall;
+      if (!prompt) return;
+      prompt.prompt();
+      const choice = await prompt.userChoice.catch(() => null);
+      if (choice?.outcome === "accepted") {
+        (window as any).__mlInstall = null;
+        refreshInstall();
+      }
+    });
+
     // Expose for headless verification.
     (window as any).__mlSelect = {
       count: () => chars.length,
@@ -116,6 +145,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       worlds: () => worlds.map((w) => w.name),
       pickWorld: (i: number) => worldChips[i]?.click(),
       selectedWorld: () => (showWorlds ? worlds[selectedWorld].name : DEFAULT_WORLD),
+      installVisible: () => !installBtn.hidden,
       commit,
     };
   });
@@ -205,7 +235,10 @@ function injectStyles() {
   .ml-btn{padding:10px 18px;border:none;border-radius:8px;background:#5a7bd6;color:#fff;font-size:15px;
     font-weight:600;cursor:pointer}
   .ml-btn:hover{background:#6a8bea}
-  .ml-ghost{background:#26263c;font-size:18px;padding:10px 14px}`;
+  .ml-ghost{background:#26263c;font-size:18px;padding:10px 14px}
+  .ml-install{margin-top:14px;padding:9px 16px;border:1px solid #3a3a58;border-radius:8px;
+    background:#1e1e30;color:#c7cbe6;font-size:13px;cursor:pointer}
+  .ml-install:hover{background:#2a2a44}`;
   const s = document.createElement("style");
   s.textContent = css;
   document.head.appendChild(s);

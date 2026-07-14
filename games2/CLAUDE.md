@@ -162,6 +162,30 @@ The game is developed by a self-iterating loop — see `loop/LOOP.md`.
   (glow floors/pools/animation), `verify-lit-order.mjs` (lit-copy draw
   order). Run them against a dev stack before touching the shader.
 
+## Mobile / PWA (client)
+
+- **Tap-to-move**: tap the ground → the player walks there; double-tap → run;
+  any movement key cancels. The autopilot (`WorldScene.driveAutopilot`) emits
+  the SAME 8-way screen input a keyboard would (best-of-8 by dot product
+  against the target direction through the shared `screenToWorldVector`), so
+  prediction, server validation and auto-jump behave identically to keys.
+  Tap picking (`pickGround`) inverts the iso projection once per candidate
+  LEVEL from the top down — the first cell whose level matches is the surface
+  the player actually sees (tall tops in front win). Trips end on arrival
+  (< ¾ player radius) or a 1.5s no-progress stall (unclimbable wall/prop).
+  Double-taps are timed by DOM event time (`pointer.upTime`), NOT the game
+  clock (whole steps — throttled tabs would miss them). Probes: `__ml.tapTo`,
+  `__ml.target`, `__ml.pickAt`.
+- **Loading screen** (`loading.ts`): select.ts shows it on "Enter world",
+  WorldScene.preload feeds real asset progress, hidden when the player's own
+  avatar joins (or on connection error; 60s failsafe so it can't trap).
+- **PWA**: `public/manifest.webmanifest` (display: fullscreen — installed app
+  has no address bar), `public/sw.js` (passthrough only, caches NOTHING — this
+  repo fought stale-deploy bugs; the server's Cache-Control is the policy),
+  icons from `scripts/build-pwa-icons.py` (committed). main.ts stashes
+  `beforeinstallprompt` → select.ts shows "Install as an app" (Android).
+  `verify-mobile.mjs` covers all of this headlessly.
+
 ## Conventions
 
 - `npm run dev` runs server + client. `npm test` = headless two-client sync test.
