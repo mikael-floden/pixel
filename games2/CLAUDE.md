@@ -200,7 +200,8 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   button sends it, every client's listener applies it (instant on join,
   chat-logged after). Cloud cover EASES over ~4s (clouds roll in). The
   shader's uCloud drives a WORLD-ANCHORED 2-octave value-noise cloud
-  field drifting on a fixed wind, shading the ambient (depth 0.32×cover,
+  field (feature wavelength ~550 world px) drifting on a fixed wind
+  (~42/23 px/s via uAnimTime), shading the ambient (depth 0.45×cover,
   muted by the sun's strength — night clouds barely register); while
   cloudy the ambient also greys ~20% toward luminance ("the sky is not
   perfect blue"). cloudFactorAt() is the EXACT JS twin (lit-copy tints —

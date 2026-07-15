@@ -415,10 +415,12 @@ void main() {
   // register (no sun to block), at noon they stamp clear moving shade.
   float cloudF = 1.0;
   if (uCloud > 0.001) {
-    vec2 cp = vec2(wx, wy) * 0.0042 + uAnimTime * vec2(0.030, 0.017);
+    // Big slow continents of cloud (wavelength ~550 world px), clearly
+    // WIND-DRIVEN (~42/23 px/s) and a deep shade (maintainer round 2).
+    vec2 cp = vec2(wx, wy) * 0.0018 + uAnimTime * vec2(0.075, 0.042);
     float n = cwNoise(cp) * 0.65 + cwNoise(cp * 2.3 + 17.0) * 0.35;
     float cover = smoothstep(0.52, 0.78, n);
-    cloudF = 1.0 - cover * 0.32 * uCloud * mix(0.25, 1.0, uSun.w);
+    cloudF = 1.0 - cover * 0.45 * uCloud * mix(0.18, 1.0, uSun.w);
   }
   vec3 light = uAmbient * sunF * cloudF;
   for (int i = 0; i < ${MAX_SHADER_LIGHTS}; i++) {
@@ -955,12 +957,12 @@ export class NightLights {
       return (a + (b - a) * ux) * (1 - uy) + (c + (d - c) * ux) * uy;
     };
     const t = this.scene.time.now / 1000; // same clock as uAnimTime
-    const cx = wx * 0.0042 + t * 0.03;
-    const cy = wy * 0.0042 + t * 0.017;
+    const cx = wx * 0.0018 + t * 0.075;
+    const cy = wy * 0.0018 + t * 0.042;
     const n = noise(cx, cy) * 0.65 + noise(cx * 2.3 + 17, cy * 2.3 + 17) * 0.35;
     const ss = Math.min(1, Math.max(0, (n - 0.52) / 0.26));
     const cover = ss * ss * (3 - 2 * ss);
-    return 1 - cover * 0.32 * cloud * (0.25 + 0.75 * sunW);
+    return 1 - cover * 0.45 * cloud * (0.18 + 0.82 * sunW);
   }
 
   /** CPU twin of the shader's directional-sun shade for a surface (1 = fully
