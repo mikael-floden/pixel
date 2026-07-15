@@ -25,9 +25,11 @@
 
 export interface HudActions {
   onLogout: () => void;
-  /** Settings-tab toggle buttons (the keyboard digits' mobile home). The
-   * entry with `hook` keeps the .ml-hudbtn class the e2e smoke clicks. */
-  settings: { label: string; act: () => void; hook?: boolean }[];
+  /** Settings-tab controls (the keyboard digits' mobile home). Entries with
+   * `get` are SWITCHES: the plate renders pressed-down while get() is true
+   * (down = ON, up = OFF — maintainer); plain entries are one-shot buttons.
+   * The entry with `hook` keeps the .ml-hudbtn class the e2e smoke clicks. */
+  settings: { label: string; act: () => void; hook?: boolean; get?: () => boolean }[];
 }
 
 const TABS = [
@@ -65,6 +67,7 @@ export function mountPageFrame() {
 export class HudBar {
   private pages = new Map<TabId, HTMLElement>();
   private tabs = new Map<TabId, HTMLButtonElement>();
+  private switches: [HTMLButtonElement, () => boolean][] = [];
 
   constructor(private actions: HudActions) {
     injectStyles();
@@ -95,6 +98,10 @@ export class HudBar {
     this.buildPages();
 
     hud.append(tabRow, pageWrap);
+    // Android Chrome's long-press image detection hit-tests <img>s even
+    // through pointer-events:none — suppress the context menu at the root or
+    // holding a tab offers "download image" (maintainer, twice).
+    hud.addEventListener("contextmenu", (e) => e.preventDefault());
     document.body.appendChild(hud);
     this.select("backpack");
   }
@@ -102,6 +109,11 @@ export class HudBar {
   private select(id: TabId) {
     for (const [tid, b] of this.tabs) b.classList.toggle("sel", tid === id);
     for (const [tid, p] of this.pages) p.classList.toggle("show", tid === id);
+  }
+
+  /** Re-read every switch's state (keyboard toggles change it too). */
+  refreshSettings() {
+    for (const [b, get] of this.switches) b.classList.toggle("on", !!get());
   }
 
   private buildPages() {
@@ -119,10 +131,15 @@ export class HudBar {
     const st = this.pages.get("settings")!;
     const row = mk("div", "ml-btnrow");
     for (const t of this.actions.settings) {
-      const b = plateButton(t.label, t.act);
+      const b = plateButton(t.label, () => {
+        t.act();
+        this.refreshSettings();
+      });
       if (t.hook) b.classList.add("ml-hudbtn"); // stable hook for the smoke
+      if (t.get) this.switches.push([b, t.get]);
       row.appendChild(b);
     }
+    this.refreshSettings();
     st.appendChild(row);
 
     // Logout: deliberate two-step (a stray tap must not eject anyone).
@@ -225,11 +242,12 @@ function injectStyles() {
   .ml-tab{width:var(--ml-tab);height:var(--ml-tab);flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
     padding:2px 0;cursor:pointer;image-rendering:pixelated;box-sizing:border-box;
     touch-action:manipulation;-webkit-touch-callout:none;
-    border-style:solid;border-width:14px;border-image:url(/ui/plate-unselected.png) 26 fill / 14px;
+    border-style:solid;border-width:13px;border-image:url(/ui/plate-unselected.png) 26 fill / 13px;
     background:none}
-  .ml-tab:active{border-image:url(/ui/plate-pressed.png) 26 fill / 14px}
-  .ml-tab.sel{border-image:url(/ui/plate-selected.png) 32 fill / 15px}
-  .ml-tab-icon{height:calc(var(--ml-tab)*0.42);image-rendering:pixelated;-webkit-user-drag:none;pointer-events:none}
+  .ml-tab:active{border-image:url(/ui/plate-pressed.png) 26 fill / 13px}
+  .ml-tab.sel{border-image:url(/ui/plate-selected.png) 32 fill / 16px}
+  .ml-tab-icon{image-rendering:pixelated;-webkit-user-drag:none;pointer-events:none;
+    max-width:calc(100% - 6px);max-height:calc(100% - 22px);object-fit:contain}
   .ml-tab-label{font:700 11px/1.1 system-ui,sans-serif;font-size:clamp(6.5px,1.42vw,12px);
     text-transform:uppercase;color:#dfe2ea;text-shadow:0 1px 2px #000;white-space:nowrap;overflow:hidden;max-width:100%}
   .ml-tab.sel .ml-tab-label{color:#ffd678}
@@ -243,10 +261,11 @@ function injectStyles() {
     border-image:url(/ui/plate-pressed.png) 26 fill / 13px;box-sizing:border-box}
   .ml-btnrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:100%}
   .ml-plate-btn{padding:14px 26px;cursor:pointer;image-rendering:pixelated;background:none;touch-action:manipulation;
-    border-style:solid;border-width:16px;border-image:url(/ui/plate-unselected.png) 26 fill / 16px;
+    border-style:solid;border-width:13px;border-image:url(/ui/plate-unselected.png) 26 fill / 13px;
     font:700 14px system-ui,sans-serif;letter-spacing:.4px;text-transform:uppercase;color:#e8e8ec;
     text-shadow:0 1px 2px #000}
-  .ml-plate-btn:active{border-image:url(/ui/plate-pressed.png) 26 fill / 16px;color:#ffd678}
+  .ml-plate-btn:active{border-image:url(/ui/plate-pressed.png) 26 fill / 13px;color:#ffd678}
+  .ml-plate-btn.on{border-image:url(/ui/plate-pressed.png) 26 fill / 13px;color:#ffd678}
   /* Narrow phones: five square tabs must still fit between the outer rails. */
   @media (max-width:460px){
     .ml-tabrow{left:40px;right:40px;gap:5px}
@@ -260,6 +279,7 @@ function injectStyles() {
     .ml-pages{top:calc(var(--ml-tabzone) + 22px);bottom:38px}
     .ml-page{gap:8px}
     .ml-plate-btn{padding:6px 14px;border-width:12px;border-image-width:12px;font-size:11px}
+    .ml-plate-btn.on{border-image:url(/ui/plate-pressed.png) 26 fill / 12px}
     .ml-slot{width:36px;height:36px;border-width:9px;border-image-width:9px}
     .ml-muted{font-size:11px}
   }`;

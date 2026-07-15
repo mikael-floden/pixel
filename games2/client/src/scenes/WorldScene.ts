@@ -549,21 +549,28 @@ export class WorldScene extends Phaser.Scene {
     // Feature/debug toggles: TOP-ROW digits on keyboard AND buttons in the
     // HUD's Settings tab (mobile has no keys; maintainer moved them there —
     // the old chat welcome overlay listing the keys is gone).
+    const sync = (fn: () => void) => () => {
+      fn();
+      this.hud?.refreshSettings(); // keys flip the same state the switches show
+    };
     this.input.keyboard!.on("keydown-ONE", () => this.cycleTimeOfDay());
-    this.input.keyboard!.on("keydown-FOUR", () => this.toggleCollision());
-    this.input.keyboard!.on("keydown-FIVE", () => this.toggleTorch());
-    this.input.keyboard!.on("keydown-SIX", () => this.toggleBonfire());
-    this.input.keyboard!.on("keydown-SEVEN", () => this.toggleWalls());
+    this.input.keyboard!.on("keydown-FOUR", sync(() => this.toggleCollision()));
+    this.input.keyboard!.on("keydown-FIVE", sync(() => this.toggleTorch()));
+    this.input.keyboard!.on("keydown-SIX", sync(() => this.toggleBonfire()));
+    this.input.keyboard!.on("keydown-SEVEN", sync(() => this.toggleWalls()));
     // Bottom HUD (the golden-ratio dock): framed tab row + content page; the
     // game viewport itself gets the matching pixel frame overlay.
     this.hud = new HudBar({
       onLogout: () => this.logout(),
       settings: [
-        { label: "1: time-of-day", act: () => this.cycleTimeOfDay(), hook: true },
-        { label: "4: collision", act: () => this.toggleCollision() },
-        { label: "5: torch", act: () => this.toggleTorch() },
-        { label: "6: bonfire", act: () => this.toggleBonfire() },
-        { label: "7: see-through walls", act: () => this.toggleWalls() },
+        // Time-of-day is the one plain BUTTON; the rest are switches
+        // (down = ON) — no keyboard-digit prefixes (maintainer).
+        { label: "time-of-day", act: () => this.cycleTimeOfDay(), hook: true },
+        { label: "collision", act: () => this.toggleCollision(), get: () => !!this.collisionOverlay },
+        { label: "torch", act: () => this.toggleTorch(), get: () => this.torchOn },
+        { label: "bonfire", act: () => this.toggleBonfire(), get: () => this.fireOn },
+        { label: "see-through walls", act: () => this.toggleWalls(), get: () => this.occFadeOn },
+        { label: "black game-view", act: () => this.setBlackout(!this.blackoutOn), get: () => this.blackoutOn },
       ],
     });
     mountPageFrame();
@@ -665,14 +672,7 @@ export class WorldScene extends Phaser.Scene {
       // Frame-QA blackout: hide the game render so the HUD frame can be
       // screenshot-compared against the concept art without world noise
       // (maintainer's suggestion — the mock's game area is black).
-      blackout: (on = true) => {
-        const c = document.querySelector("canvas") as HTMLElement | null;
-        if (c) c.style.visibility = on ? "hidden" : "";
-        document
-          .querySelectorAll<HTMLElement>(".ml-chatlog, .ml-roster")
-          .forEach((e) => (e.style.display = on ? "none" : ""));
-        return !!on;
-      },
+      blackout: (on = true) => this.setBlackout(!!on),
       // Live gait-sync probes: my avatar's playback timeScale (rate ∝ speed)
       // and the EMA'd WORLD-units ground speed it derives from (wu/s).
       timeScale: () => this.avatars.get(this.room?.sessionId ?? "")?.sprite.anims.timeScale ?? null,
@@ -1447,6 +1447,20 @@ export class WorldScene extends Phaser.Scene {
   private toggleTorch() {
     this.torchOn = !this.torchOn;
     this.chat.addLog("—", `[5] My torch: ${this.torchOn ? "on" : "off"}`);
+  }
+
+  /** Hide the game render (frame QA + the Settings switch): black view,
+   * chat/roster hidden. State drives the "black game-view" switch. */
+  private blackoutOn = false;
+  private setBlackout(on: boolean) {
+    this.blackoutOn = on;
+    const c = document.querySelector("canvas") as HTMLElement | null;
+    if (c) c.style.visibility = on ? "hidden" : "";
+    document
+      .querySelectorAll<HTMLElement>(".ml-chatlog, .ml-roster")
+      .forEach((e) => (e.style.display = on ? "none" : ""));
+    this.hud?.refreshSettings();
+    return on;
   }
 
   private toggleWalls() {

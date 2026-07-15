@@ -246,7 +246,7 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   ONE thing is baked on top of the original pixels: the round-8 border
   ring — on the mock-global 4px grid, blocks that contain (>=1/4
   opaque) or 8-touch art get their EMPTY px painted a flat colour = 85%
-  of the block's own transparent-px page navy + 15% black at 65% ALPHA
+  of the block's own transparent-px page navy + 15% black at 90% ALPHA
   (outline(); crop origin passed so blocks align across joints). The
   ring wobbles 1-2 art px where the hand-drawn edge crosses a block —
   ACCEPTED; do not chase it (that is the rabbit hole).

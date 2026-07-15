@@ -213,11 +213,11 @@ function erase(img, x0, y0, x1, y1) {
  * blocks (mock-global 4px grid, ox/oy = crop origin so joints align) that
  * contain or touch art get their EMPTY pixels painted a flat ring colour —
  * 85% of the block's own painted-over page colour (keying only zeroed
- * alpha, the RGB survives) + 15% black, at 65% alpha. The ring wobbles
+ * alpha, the RGB survives) + 15% black, at 90% alpha (maintainer round 12). The ring wobbles
  * 1-2 art px where the hand-drawn art edge crosses a block — that is the
  * accepted trade (round 11: "don't be obsessed with it and destroy the
  * entire nice looking HUD"). */
-function outline(img, ox = 0, oy = 0, alpha = 166) {
+function outline(img, ox = 0, oy = 0, alpha = 230) {
   const { width: w, height: h, data } = img;
   const G = 4;
   // First block starts where the GLOBAL 4px grid would cut this crop.
@@ -312,7 +312,7 @@ save("bottom-seg.png", piece(180, 1188, 488, 76, ["top"]));
 save("left-v1.png", piece(0, 180, 64, 196, ["right"]));
 save("gem-left.png", piece(0, 376, 76, 68, ["right"]));
 save("left-v2.png", piece(0, 444, 64, 180, ["right"]));
-save("left-v3.png", piece(0, 740, 64, 122, ["right"], (i) => erase(i, 52, 0, 64, 122)));
+save("left-v3.png", piece(0, 740, 64, 122, ["right"], (i) => erase(i, 44, 0, 64, 122)));
 save("left-v4.png", piece(0, 918, 64, 166, ["right"]));
 save("right-v1.png", piece(784, 180, 64, 196, ["left"]));
 save("gem-right.png", piece(772, 376, 76, 68, ["left"]));
@@ -390,7 +390,7 @@ for (const [name, x0, x1] of SQ) {
 // ---- tab icons (concept, image 1 buttons row) -------------------------------
 // Tight boxes around each icon (above the label), background flooded away.
 const ICONS = [
-  ["icon-backpack.png", 72, 744, 104, 74, blueBg],
+  ["icon-backpack.png", 72, 747, 104, 71, blueBg],
   ["icon-equipment.png", 232, 748, 84, 70, plateBg],
   ["icon-map.png", 384, 748, 84, 70, plateBg],
   ["icon-settings.png", 534, 746, 86, 74, plateBg],
