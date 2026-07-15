@@ -58,16 +58,20 @@ function keyBackground(img, isBg) {
     const i = stack.pop();
     const x = i % w;
     const y = (i / w) | 0;
-    if (x > 0) push(x - 1, y);
-    if (x < w - 1) push(x + 1, y);
-    if (y > 0) push(x, y - 1);
-    if (y < h - 1) push(x, y + 1);
+    for (let dy = -1; dy <= 1; dy++)
+      for (let dx = -1; dx <= 1; dx++) {
+        const nx = x + dx;
+        const ny = y + dy;
+        if (nx >= 0 && ny >= 0 && nx < w && ny < h) push(nx, ny);
+      }
   }
   for (let i = 0; i < w * h; i++) if (seen[i]) data[i * 4 + 3] = 0;
   return img;
 }
 
-const darkBg = (d, o) => d[o] < 40 && d[o + 1] < 40 && d[o + 2] < 55; // navy/black page
+// Navy/black page bg incl. its AA halo — but never the art's warm dark
+// outlines (vine browns have r well above g).
+const darkBg = (d, o) => d[o] < 70 && d[o + 1] < 70 && d[o + 2] < 95 && d[o] <= d[o + 1] + 25;
 // Steel plate fill: light-to-mid desaturated grey gradient (icons are either
 // coloured or grey WITH a near-black outline the flood cannot cross).
 const plateBg = (d, o) => {
@@ -82,19 +86,85 @@ const blueBg = (d, o) => {
   return b > r + 12 && b > 70 && g > r - 10 && r < 150;
 };
 
+/** Remove tiny opaque islands left around the art after keying (the mock's
+ * anti-aliasing crumbs read as floating dirt over the game world at 2x). */
+function dropSpecks(img, minSize = 40) {
+  const { width: w, height: h, data } = img;
+  const lab = new Int32Array(w * h).fill(-1);
+  for (let i = 0; i < w * h; i++) {
+    if (lab[i] >= 0 || data[i * 4 + 3] === 0) continue;
+    const stack = [i];
+    const members = [];
+    lab[i] = i;
+    while (stack.length) {
+      const j = stack.pop();
+      members.push(j);
+      const x = j % w;
+      const y = (j / w) | 0;
+      for (let dy = -1; dy <= 1; dy++)
+        for (let dx = -1; dx <= 1; dx++) {
+          const nx = x + dx;
+          const ny = y + dy;
+          if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+          const k = ny * w + nx;
+          if (lab[k] < 0 && data[k * 4 + 3] > 0) {
+            lab[k] = i;
+            stack.push(k);
+          }
+        }
+    }
+    if (members.length < minSize) for (const j of members) data[j * 4 + 3] = 0;
+  }
+  return img;
+}
+
 const save = (name, img) => {
   writeFileSync(join(outDir, name), PNG.sync.write(img));
   console.log(`  ${name} ${img.width}x${img.height}`);
 };
 
 // ---- frame pieces (concept, image 1) ---------------------------------------
-// One corner + one rail per axis; the client mirrors them for the other
-// corners/edges so the rail bands always align seam-free.
-save("frame-corner.png", keyBackground(crop(c1, 26, 26, 130, 130), darkBg));
-save("frame-rail-h.png", keyBackground(crop(c1, 192, 26, 80, 24), darkBg));
-save("frame-rail-v.png", keyBackground(crop(c1, 26, 192, 24, 80), darkBg));
-save("frame-gem-h.png", keyBackground(crop(c1, 400, 2, 48, 66), darkBg));
-save("frame-gem-v.png", keyBackground(crop(c1, 2, 386, 66, 48), darkBg));
+// NOTHING is mirrored (maintainer): the art's lighting differs per side, so
+// every corner, every rail direction and every gem is its own crop, and the
+// two horizontal DIVIDERS (game/tabs and tabs/content) are distinct
+// assemblies with their own ╠/╣ T-pieces, rail and centre gem. Corners are
+// cut generously so they include the transition into the clean repeating
+// rail. Bands (from the gold-row scan): top y≈26..50, divider A y≈695..725,
+// divider B y≈866..896, bottom y≈1222..1246; left x≈26..50, right x≈798..822.
+const CR = 160; // corner crop size — ornament (~130) + transition rail
+save("corner-tl.png", dropSpecks(keyBackground(crop(c1, 20, 20, CR, CR), darkBg)));
+save("corner-tr.png", dropSpecks(keyBackground(crop(c1, 848 - 20 - CR, 20, CR, CR), darkBg)));
+save("corner-bl.png", dropSpecks(keyBackground(crop(c1, 20, 1264 - 20 - CR, CR, CR), darkBg)));
+{
+  // corner-br: the mock's decorative page sparkle floats in this crop's
+  // interior (disconnected from the frame, so the flood can't reach it) —
+  // clear the inner quadrant the ornament never reaches.
+  const br = dropSpecks(keyBackground(crop(c1, 848 - 20 - CR, 1264 - 20 - CR, CR, CR), darkBg));
+  for (let y = 0; y < 100; y++)
+    for (let x = 0; x < 100; x++) br.data[(y * CR + x) * 4 + 3] = 0;
+  save("corner-br.png", br);
+}
+// Outer rails — clean 80px segments per side (distinct lighting).
+save("rail-top.png", dropSpecks(keyBackground(crop(c1, 200, 20, 80, 36), darkBg)));
+save("rail-bottom.png", dropSpecks(keyBackground(crop(c1, 200, 1264 - 20 - 36, 80, 36), darkBg)));
+save("rail-left.png", dropSpecks(keyBackground(crop(c1, 20, 200, 36, 80), darkBg)));
+save("rail-right.png", dropSpecks(keyBackground(crop(c1, 848 - 20 - 36, 200, 36, 80), darkBg)));
+// Outer gems: top blue + left/right green. (No gem on the outer bottom rail
+// or divider B in the mock — verified at pixel level.)
+save("gem-top.png", dropSpecks(keyBackground(crop(c1, 396, 0, 56, 72), darkBg)));
+save("gem-left.png", dropSpecks(keyBackground(crop(c1, 0, 382, 72, 56), darkBg)));
+save("gem-right.png", dropSpecks(keyBackground(crop(c1, 848 - 72, 382, 72, 56), darkBg)));
+// Divider A (game ↔ buttons, band ≈695..725): ╠ + rail + centre gem + ╣.
+// T-piece/gem crops stop at y=734 — the button row starts right below.
+save("divA-left.png", dropSpecks(keyBackground(crop(c1, 0, 670, 84, 56), darkBg)));
+save("divA-right.png", dropSpecks(keyBackground(crop(c1, 848 - 84, 670, 84, 56), darkBg)));
+save("divA-rail.png", dropSpecks(keyBackground(crop(c1, 200, 694, 80, 32), darkBg)));
+save("divA-gem.png", dropSpecks(keyBackground(crop(c1, 396, 674, 56, 52), darkBg)));
+// Divider B (buttons ↔ content, band ≈858..880, no gem): ╠ + rail + ╣.
+// Crops start at y=856 — the button row's plates end just above.
+save("divB-left.png", dropSpecks(keyBackground(crop(c1, 0, 862, 44, 58), darkBg)));
+save("divB-right.png", dropSpecks(keyBackground(crop(c1, 848 - 44, 862, 44, 58), darkBg)));
+save("divB-rail.png", dropSpecks(keyBackground(crop(c1, 200, 862, 80, 20), darkBg)));
 
 // ---- button plates (states, image 2) ---------------------------------------
 // Bounds auto-detected: within each square's row band, find the columns/rows

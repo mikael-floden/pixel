@@ -224,15 +224,21 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   windows.
 - **UI tiles**: `client/public/ui/*.png` are cut from the maintainer's
   concept mockups by `scripts/build-ui-tiles.mjs` (sources live outside
-  the repo — the tiles are committed). The frame = ONE ornate corner
-  (mirrored via CSS transforms), repeating h/v rail strips and a gem
-  medallion centred per edge (`dressFrame`); displayed at 0.5× concept
-  scale, `image-rendering:pixelated`. Buttons are the mock's three plate
-  states 9-sliced via `border-image` (unselected / selected / `:active`
-  pressed); tab icons were flood-key-extracted (background flooded from
-  the crop border — grey icons survive because their outlines stop the
-  fill). The game viewport wears the same frame as a pointer-transparent
-  overlay (`mountGameFrame`).
+  the repo — the tiles are committed). NOTHING is mirrored (per-side
+  lighting differs): 4 distinct corners (cut wide — they include the
+  transition into the clean rail), 4 distinct rails, top/left/right gems
+  (there is NO gem on the outer bottom or divider B), and TWO divider
+  assemblies with their own ╠/╣ T-pieces + rail (+ centre gem on divider
+  A only). The page is ONE continuous frame (`mountPageFrame`, a
+  pointer-transparent overlay) split by those dividers — never stacked
+  per-section boxes ("double borders"). Tiles display at concept 1:1 CSS
+  px ("2×"), `image-rendering:pixelated`. Alignment: corner/rail crops
+  start 20px before the gold band (band at 6..30px in-tile); pieces
+  cropped at the mock's absolute edge (T-stubs, side gems) carry a 26px
+  margin and are shifted -20px to compensate. Buttons are the mock's
+  three plate states 9-sliced via `border-image`; tab icons were
+  flood-key-extracted (grey icons survive because their outlines stop
+  the fill); stray AA crumbs are dropped as sub-40px alpha islands.
 
 - **Tap/hold-to-move**: a tap RUNS to the point (there is NO double-tap
   gesture — nobody walks when they can run, maintainer); the autopilot

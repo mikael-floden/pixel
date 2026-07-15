@@ -55,7 +55,7 @@ import {
 } from "../nightlight";
 import { joinWorld } from "../net";
 import { ChatUI } from "../chat";
-import { HudBar, mountGameFrame } from "../hud";
+import { HudBar, mountPageFrame } from "../hud";
 import { RosterUI } from "../roster";
 import { setLoadingProgress, hideLoading } from "../loading";
 import { applyUiZoom } from "../uiscale";
@@ -555,7 +555,7 @@ export class WorldScene extends Phaser.Scene {
       onCycleTime: () => this.cycleTimeOfDay(),
       onLogout: () => this.logout(),
     });
-    mountGameFrame();
+    mountPageFrame();
     this.input.keyboard!.on("keydown-FOUR", () => {
       this.toggleCollisionOverlay();
       this.chat.addLog("—", `[4] Collision overlay: ${this.collisionOverlay ? "on" : "off"}`);

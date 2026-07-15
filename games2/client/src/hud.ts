@@ -1,21 +1,26 @@
 /**
- * Bottom HUD — the page below the golden-ratio split (index.html keeps #game
- * to the top 61.8dvh; this dock owns the bottom 38.2dvh; --hud-h on :root).
+ * Bottom HUD + the page frame — built EXACTLY like the maintainer's mock:
+ * ONE continuous frame around the whole page, with two horizontal DIVIDER
+ * assemblies splitting it into game viewport / tab row / content page.
  *
- * Structure (per the maintainer's concept art, cut into tiles by
- * scripts/build-ui-tiles.mjs → /ui/*.png):
- *   [ tab row    ]  Backpack · Equipment · Map · Settings · Logout
- *   [ page frame ]  content of the selected tab
- * Both boxes — and the game viewport itself (mountGameFrame) — wear the
- * pixel frame: ornate corner (mirrored for all four), repeating rail tiles,
- * and a gem medallion centred on every edge run, exactly like the mock.
+ * Frame rules learned from round 1 (maintainer feedback):
+ * - NOTHING is mirrored. The art's lighting differs per side — every corner,
+ *   rail direction and gem is its own tile (scripts/build-ui-tiles.mjs).
+ * - The dividers are real ╠/╣ T-intersections joining the outer rails, each
+ *   with its own rail lighting (divider A ≠ divider B ≠ outer rails); no
+ *   stacked "double borders" between sections.
+ * - Corners include the transition stretch into the clean repeating rail.
+ * - Tiles render at CONCEPT scale 1:1 CSS px ("2× bigger"), nearest-neighbour
+ *   (image-rendering: pixelated) to keep the chunky pixel-art look.
  *
- * Buttons are the concept's three plate states (9-sliced): unselected steel,
- * gold/blue selected, darker steel while pressed.
+ * Piece alignment: every crop starts 20px before its rail band, so the gold
+ * band sits 6..30px from the crop edge — anchoring all pieces flush to the
+ * page edges lines the bands up seam-free. Divider tiles carry their own
+ * vertical offsets (see the *-y constants baked into the CSS).
  *
- * Nothing here is uiZoom'd: the dock's dvh geometry must match the #game
- * split (CSS zoom rescales viewport units), so sizes are plain px tuned to
- * stay tappable on phones.
+ * The overlay ignores the pointer entirely; the interactive tab row/pages
+ * live in .ml-hud underneath it. Nothing here is uiZoom'd (the dvh geometry
+ * must match the #game split; CSS zoom rescales viewport units).
  */
 
 export interface HudActions {
@@ -32,45 +37,47 @@ const TABS = [
 ] as const;
 type TabId = (typeof TABS)[number]["id"];
 
-/** Decorate `box` with the pixel frame: 4 mirrored corners, 4 repeating
- * rails, a gem medallion centred on every edge. Pieces ignore the pointer. */
-function dressFrame(box: HTMLElement) {
-  for (const c of ["tl", "tr", "bl", "br"]) box.appendChild(mk("i", `ml-fc ml-fc-${c}`));
-  for (const e of ["t", "b", "l", "r"]) box.appendChild(mk("i", `ml-fe ml-fe-${e}`));
-  for (const g of ["t", "b"]) box.appendChild(mk("i", `ml-fg ml-fg-h ml-fg-${g}`));
-  for (const g of ["l", "r"]) box.appendChild(mk("i", `ml-fg ml-fg-v ml-fg-${g}`));
-}
-
-/** Frame the game viewport (top 61.8dvh). Pointer-transparent overlay — taps
- * fall through to the Phaser canvas beneath. */
-export function mountGameFrame() {
+/** Mount the full-page frame overlay: outer corners/rails/gems + the two
+ * divider assemblies. Pointer-transparent; positioned by the same CSS vars
+ * the HUD layout uses, so the sections always meet the dividers exactly. */
+export function mountPageFrame() {
   injectStyles();
-  document.getElementById("ml-gameframe")?.remove();
-  const f = mk("div", "ml-gameframe");
-  f.id = "ml-gameframe";
-  dressFrame(f);
+  document.getElementById("ml-pageframe")?.remove();
+  const f = mk("div", "");
+  f.id = "ml-pageframe";
+  for (const p of [
+    "corner-tl",
+    "corner-tr",
+    "corner-bl",
+    "corner-br",
+    "rail-top",
+    "rail-bottom",
+    "rail-left",
+    "rail-right",
+    "gem-top",
+    "gem-left",
+    "gem-right",
+  ])
+    f.appendChild(mk("i", `ml-pf ml-${p}`));
+  for (const d of ["divA", "divB"]) {
+    const wrap = mk("div", `ml-pf ml-${d}`);
+    for (const p of ["left", "rail", "right"]) wrap.appendChild(mk("i", `ml-pf ml-${d}-${p}`));
+    if (d === "divA") wrap.appendChild(mk("i", "ml-pf ml-divA-gem"));
+    f.appendChild(wrap);
+  }
   document.body.appendChild(f);
 }
 
 export class HudBar {
   private pages = new Map<TabId, HTMLElement>();
   private tabs = new Map<TabId, HTMLButtonElement>();
-  private current: TabId = "backpack";
 
   constructor(private actions: HudActions) {
     injectStyles();
     document.querySelector(".ml-hud")?.remove(); // idempotent across re-joins
     const hud = mk("div", "ml-hud");
-
-    const tabBox = mk("div", "ml-hudbox ml-tabbox");
-    dressFrame(tabBox);
     const tabRow = mk("div", "ml-tabrow");
-    tabBox.appendChild(tabRow);
-
-    const pageBox = mk("div", "ml-hudbox ml-pagebox");
-    dressFrame(pageBox);
     const pageWrap = mk("div", "ml-pages");
-    pageBox.appendChild(pageWrap);
 
     for (const t of TABS) {
       const b = mk("button", "ml-tab") as HTMLButtonElement;
@@ -93,19 +100,18 @@ export class HudBar {
     }
     this.buildPages();
 
-    hud.append(tabBox, pageBox);
+    hud.append(tabRow, pageWrap);
     document.body.appendChild(hud);
     this.select("backpack");
   }
 
   private select(id: TabId) {
-    this.current = id;
     for (const [tid, b] of this.tabs) b.classList.toggle("sel", tid === id);
     for (const [tid, p] of this.pages) p.classList.toggle("show", tid === id);
   }
 
   private buildPages() {
-    // Backpack: a row of empty item slots (the unselected plate doubles as a
+    // Backpack: a row of empty item slots (the pressed plate doubles as a
     // slot, like the mock's content page) — real inventory comes later.
     const bp = this.pages.get("backpack")!;
     const slots = mk("div", "ml-slots");
@@ -153,76 +159,77 @@ let injected = false;
 function injectStyles() {
   if (injected) return;
   injected = true;
-  // Concept art is displayed at 0.5x: rail band 24→12px, corner 130→65px,
-  // gems 48x66→24x33 / 66x48→33x24. Rails start where the corner's arm band
-  // sits (both crops begin at the band edge), so a shared inset keeps seams
-  // invisible; corners paint after (on top of) the rail runs.
+  // --ml-tabzone: distance from the game/HUD boundary down to divider B's
+  // band centre — the tab row lives between the two dividers.
   const css = `
-  .ml-hud{position:fixed;left:0;right:0;bottom:0;height:var(--hud-h);z-index:4;background:#05050c;
-    display:flex;flex-direction:column;padding:4px 4px 6px;box-sizing:border-box;gap:2px}
-  .ml-hudbox{position:relative;box-sizing:border-box}
-  .ml-tabbox{flex:none;padding:14px 18px 10px}
-  .ml-pagebox{flex:1;min-height:0;padding:16px 14px;margin-top:2px}
-  .ml-gameframe{position:fixed;left:0;top:0;right:0;height:var(--hud-h-inv);z-index:3;pointer-events:none}
-  /* frame pieces */
-  .ml-fc,.ml-fe,.ml-fg{position:absolute;pointer-events:none;image-rendering:pixelated}
-  .ml-fc{width:65px;height:65px;background:url(/ui/frame-corner.png);background-size:65px 65px;z-index:2}
-  .ml-fc-tl{left:0;top:0}
-  .ml-fc-tr{right:0;top:0;transform:scaleX(-1)}
-  .ml-fc-bl{left:0;bottom:0;transform:scaleY(-1)}
-  .ml-fc-br{right:0;bottom:0;transform:scale(-1,-1)}
-  .ml-fe{z-index:1}
-  .ml-fe-t,.ml-fe-b{left:30px;right:30px;height:12px;background:url(/ui/frame-rail-h.png) repeat-x;background-size:40px 12px}
-  .ml-fe-t{top:0}
-  .ml-fe-b{bottom:0;transform:scaleY(-1)}
-  .ml-fe-l,.ml-fe-r{top:30px;bottom:30px;width:12px;background:url(/ui/frame-rail-v.png) repeat-y;background-size:12px 40px}
-  .ml-fe-l{left:0}
-  .ml-fe-r{right:0;transform:scaleX(-1)}
-  .ml-fg{z-index:3}
-  .ml-fg-h{width:24px;height:33px;left:50%;margin-left:-12px;background:url(/ui/frame-gem-h.png);background-size:24px 33px}
-  .ml-fg-t{top:-6px}
-  .ml-fg-b{bottom:-6px;transform:scaleY(-1)}
-  .ml-fg-v{width:33px;height:24px;top:50%;margin-top:-12px;background:url(/ui/frame-gem-v.png);background-size:33px 24px}
-  .ml-fg-l{left:-6px}
-  .ml-fg-r{right:-6px;transform:scaleX(-1)}
-  /* tab row */
-  .ml-tabrow{display:flex;gap:6px;justify-content:center}
-  .ml-tab{flex:1;max-width:118px;min-width:0;display:flex;flex-direction:column;align-items:center;gap:1px;
-    padding:6px 0 4px;cursor:pointer;image-rendering:pixelated;
-    border-style:solid;border-width:9px;border-image:url(/ui/plate-unselected.png) 26 fill / 9px;
-    background:none;filter:none}
-  .ml-tab:active{border-image:url(/ui/plate-pressed.png) 26 fill / 9px}
-  .ml-tab.sel{border-image:url(/ui/plate-selected.png) 32 fill / 10px}
-  .ml-tab-icon{height:30px;image-rendering:pixelated;-webkit-user-drag:none}
-  .ml-tab-label{font:700 9px/1.1 system-ui,sans-serif;font-size:clamp(7px,2vw,8.5px);
-    text-transform:uppercase;
-    color:#dfe2ea;text-shadow:0 1px 2px #000;white-space:nowrap;overflow:hidden;max-width:100%}
+  :root{--ml-tabzone:130px}
+  #ml-pageframe{position:fixed;inset:0;z-index:6;pointer-events:none}
+  .ml-pf{position:absolute;pointer-events:none;image-rendering:pixelated}
+  .ml-corner-tl{left:0;top:0;width:160px;height:160px;background:url(/ui/corner-tl.png);background-size:160px 160px}
+  .ml-corner-tr{right:0;top:0;width:160px;height:160px;background:url(/ui/corner-tr.png);background-size:160px 160px}
+  .ml-corner-bl{left:0;bottom:0;width:160px;height:160px;background:url(/ui/corner-bl.png);background-size:160px 160px}
+  .ml-corner-br{right:0;bottom:0;width:160px;height:160px;background:url(/ui/corner-br.png);background-size:160px 160px}
+  .ml-rail-top{left:150px;right:150px;top:0;height:36px;background:url(/ui/rail-top.png) repeat-x;background-size:80px 36px}
+  .ml-rail-bottom{left:150px;right:150px;bottom:0;height:36px;background:url(/ui/rail-bottom.png) repeat-x;background-size:80px 36px}
+  .ml-rail-left{top:150px;bottom:150px;left:0;width:36px;background:url(/ui/rail-left.png) repeat-y;background-size:36px 80px}
+  .ml-rail-right{top:150px;bottom:150px;right:0;width:36px;background:url(/ui/rail-right.png) repeat-y;background-size:36px 80px}
+  .ml-gem-top{top:-20px;left:50%;margin-left:-28px;width:56px;height:72px;background:url(/ui/gem-top.png);background-size:56px 72px}
+  .ml-gem-left{left:-20px;top:30%;width:72px;height:56px;background:url(/ui/gem-left.png);background-size:72px 56px}
+  .ml-gem-right{right:-20px;top:30%;width:72px;height:56px;background:url(/ui/gem-right.png);background-size:72px 56px}
+  /* Divider A (game ↔ tabs): band centre sits exactly on the boundary. */
+  .ml-divA{left:0;right:0;top:calc(var(--hud-h-inv) - 40px);height:56px}
+  .ml-divA-left{left:-20px;top:0;width:84px;height:56px;background:url(/ui/divA-left.png);background-size:84px 56px}
+  .ml-divA-right{right:-20px;top:0;width:84px;height:56px;background:url(/ui/divA-right.png);background-size:84px 56px}
+  .ml-divA-rail{left:62px;right:62px;top:24px;height:32px;background:url(/ui/divA-rail.png) repeat-x;background-size:80px 32px}
+  .ml-divA-gem{left:50%;margin-left:-28px;top:4px;width:56px;height:52px;background:url(/ui/divA-gem.png);background-size:56px 52px}
+  /* Divider B (tabs ↔ content): its band centre 13px into the crop. */
+  .ml-divB{left:0;right:0;top:calc(var(--hud-h-inv) + var(--ml-tabzone) - 7px);height:58px}
+  .ml-divB-left{left:-20px;top:0;width:44px;height:58px;background:url(/ui/divB-left.png);background-size:44px 58px}
+  .ml-divB-right{right:-20px;top:0;width:44px;height:58px;background:url(/ui/divB-right.png);background-size:44px 58px}
+  .ml-divB-rail{left:22px;right:22px;top:0;height:20px;background:url(/ui/divB-rail.png) repeat-x;background-size:80px 20px}
+  /* HUD content between the dividers */
+  .ml-hud{position:fixed;left:0;right:0;bottom:0;height:var(--hud-h);z-index:4;background:#07070e;box-sizing:border-box}
+  .ml-tabrow{position:absolute;top:30px;left:44px;right:44px;height:86px;display:flex;gap:8px;justify-content:center}
+  .ml-tab{flex:1;max-width:150px;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    padding:2px 0;cursor:pointer;image-rendering:pixelated;
+    border-style:solid;border-width:14px;border-image:url(/ui/plate-unselected.png) 26 fill / 14px;
+    background:none}
+  .ml-tab:active{border-image:url(/ui/plate-pressed.png) 26 fill / 14px}
+  .ml-tab.sel{border-image:url(/ui/plate-selected.png) 32 fill / 15px}
+  .ml-tab-icon{height:38px;image-rendering:pixelated;-webkit-user-drag:none}
+  .ml-tab-label{font:700 11px/1.1 system-ui,sans-serif;font-size:clamp(6.5px,1.42vw,11px);
+    text-transform:uppercase;color:#dfe2ea;text-shadow:0 1px 2px #000;white-space:nowrap;overflow:hidden;max-width:100%}
   .ml-tab.sel .ml-tab-label{color:#ffd678}
-  /* pages */
-  .ml-pages{height:100%;position:relative;overflow:hidden}
+  .ml-pages{position:absolute;left:48px;right:48px;top:calc(var(--ml-tabzone) + 26px);bottom:42px;overflow:hidden}
   .ml-page{display:none;height:100%;overflow:auto;flex-direction:column;align-items:center;
-    justify-content:center;gap:10px;text-align:center}
+    justify-content:center;gap:14px;text-align:center}
   .ml-page.show{display:flex}
-  .ml-muted{margin:0;font:12px/1.4 system-ui,sans-serif;color:#8f8f9c;text-shadow:0 1px 2px #000}
-  .ml-slots{display:flex;gap:8px;justify-content:center}
-  .ml-slot{width:40px;height:40px;image-rendering:pixelated;border-style:solid;border-width:9px;
-    border-image:url(/ui/plate-pressed.png) 26 fill / 9px;box-sizing:border-box}
-  .ml-plate-btn{padding:10px 18px;cursor:pointer;image-rendering:pixelated;background:none;
-    border-style:solid;border-width:12px;border-image:url(/ui/plate-unselected.png) 26 fill / 12px;
-    font:700 12px system-ui,sans-serif;letter-spacing:.4px;text-transform:uppercase;color:#e8e8ec;
+  .ml-muted{margin:0;font:14px/1.4 system-ui,sans-serif;color:#8f8f9c;text-shadow:0 1px 2px #000}
+  .ml-slots{display:flex;gap:12px;justify-content:center}
+  .ml-slot{width:56px;height:56px;image-rendering:pixelated;border-style:solid;border-width:13px;
+    border-image:url(/ui/plate-pressed.png) 26 fill / 13px;box-sizing:border-box}
+  .ml-plate-btn{padding:14px 26px;cursor:pointer;image-rendering:pixelated;background:none;
+    border-style:solid;border-width:16px;border-image:url(/ui/plate-unselected.png) 26 fill / 16px;
+    font:700 14px system-ui,sans-serif;letter-spacing:.4px;text-transform:uppercase;color:#e8e8ec;
     text-shadow:0 1px 2px #000}
-  .ml-plate-btn:active{border-image:url(/ui/plate-pressed.png) 26 fill / 12px;color:#ffd678}
-  /* Compact HUD for short viewports (small desktop windows; phones are tall
-     and portrait-locked) — everything shrinks so the page keeps usable room. */
-  @media (max-height:560px){
-    .ml-tabbox{padding:10px 14px 6px}
-    .ml-tab{border-width:7px;border-image-width:7px;padding:2px 0}
-    .ml-tab-icon{height:18px}
-    .ml-pagebox{padding:12px 12px}
-    .ml-page{gap:6px}
-    .ml-plate-btn{padding:4px 10px;border-width:9px;border-image-width:9px;font-size:10px}
-    .ml-slot{width:28px;height:28px;border-width:7px;border-image-width:7px}
-    .ml-muted{font-size:10px}
+  .ml-plate-btn:active{border-image:url(/ui/plate-pressed.png) 26 fill / 16px;color:#ffd678}
+  /* Narrow phones: five tabs must still fit between the outer rails. */
+  @media (max-width:460px){
+    .ml-tabrow{left:40px;right:40px;gap:5px}
+    .ml-tab{border-width:11px;border-image-width:11px}
+    .ml-tab.sel{border-image-width:12px}
+    .ml-tab-icon{height:30px}
+  }
+  /* Short viewports (small desktop windows): compact everything. */
+  @media (max-height:640px){
+    :root{--ml-tabzone:104px}
+    .ml-tabrow{top:24px;height:66px}
+    .ml-tab-icon{height:24px}
+    .ml-pages{top:calc(var(--ml-tabzone) + 18px);bottom:34px}
+    .ml-page{gap:8px}
+    .ml-plate-btn{padding:6px 14px;border-width:12px;border-image-width:12px;font-size:11px}
+    .ml-slot{width:36px;height:36px;border-width:9px;border-image-width:9px}
+    .ml-muted{font-size:11px}
   }`;
   const s = document.createElement("style");
   s.textContent = css;
