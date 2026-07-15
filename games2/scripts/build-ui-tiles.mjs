@@ -194,13 +194,32 @@ const RING_ALPHA = 166;
 /** Cut one frame piece as art-resolution pixel art (see block comment).
  * (px0,py0,pw,ph): mock-absolute crop. sides: flood seeds — edge names or
  * crop-relative px regions [x0,y0,x1,y1]. erasers: crop-relative px rects
- * whose blocks are forced transparent (mock button-glow bleed). */
-function pieceArt(px0, py0, pw, ph, sides, erasers = []) {
-  const G = 4;
-  const bx0 = Math.floor(px0 / G);
-  const by0 = Math.floor(py0 / G);
-  const bw = Math.ceil((px0 + pw) / G) - bx0;
-  const bh = Math.ceil((py0 + ph) / G) - by0;
+ * whose blocks are forced transparent (mock button-glow bleed).
+ * uniform: "h"|"v" — RAIL SEGMENTS ONLY (maintainer round 10: "spiky"):
+ * the mock's hand-drawn rails drift a few px and their soft shadow
+ * quantizes into ragged cell clumps, but the segment pieces between
+ * junctions are pure rail BY DESIGN (decor lives in caps/corners, which the
+ * reference shows organically vine-wrapped). So each cell-row ("h") /
+ * cell-column ("v") takes its majority cell colour across the whole run —
+ * rail and ring come out perfectly straight, like the reference.
+ * outer: which crop edges face the PAGE MARGIN (outside the frame). Navy
+ * pockets fully ENCLOSED by art — unreachable from both the interior seeds
+ * and these outer edges — go to the ring/transparent treatment instead of
+ * staying opaque (maintainer round 10: enclosed near-black px read DARKER
+ * than the 65%-alpha border). The outer margin itself stays opaque so the
+ * game view cannot leak past the frame. */
+function pieceArt(px0, py0, pw, ph, sides, { erasers = [], uniform = null, outer = [], mirror = null, grain = 4, phase = [0, 0] } = {}) {
+  // grain/phase: the mock is ~5px-grain art with locally drifting phase; the
+  // frame is cut at the global 4px compromise, but the GEMS are decisively
+  // 5px (edge-phase concentration up to 0.76) and alias to "broken" at 4 —
+  // they pass their measured native grain + phase, chosen so the mirror
+  // axis stays on a cell boundary.
+  const G = grain;
+  const [phX, phY] = phase;
+  const bx0 = Math.floor((px0 - phX) / G);
+  const by0 = Math.floor((py0 - phY) / G);
+  const bw = Math.ceil((px0 + pw - phX) / G) - bx0;
+  const bh = Math.ceil((py0 + ph - phY) / G) - by0;
   // 1) downsample: dominant colour per GLOBAL block (sampled straight from
   // the mock, beyond crop bounds too, so edge blocks match the neighbour
   // piece's colours exactly).
@@ -209,8 +228,8 @@ function pieceArt(px0, py0, pw, ph, sides, erasers = []) {
   for (let by = 0; by < bh; by++)
     for (let bx = 0; bx < bw; bx++) {
       const pts = [];
-      for (let y = (by0 + by) * G; y < (by0 + by + 1) * G; y++)
-        for (let x = (bx0 + bx) * G; x < (bx0 + bx + 1) * G; x++)
+      for (let y = phY + (by0 + by) * G; y < phY + (by0 + by + 1) * G; y++)
+        for (let x = phX + (bx0 + bx) * G; x < phX + (bx0 + bx + 1) * G; x++)
           if (x >= 0 && y >= 0 && x < c1.width && y < c1.height) pts.push([x, y]);
       const [r, g, b] = dominant(c1, pts);
       const i = by * bw + bx;
@@ -219,12 +238,100 @@ function pieceArt(px0, py0, pw, ph, sides, erasers = []) {
       col[i * 3 + 2] = b;
       isBg[i] = isBgCol(r, g, b) ? 1 : 0;
     }
-  // 2) flood-key page-bg blocks from the seeds. 4-CONNECTED on purpose: the
-  // filigree's own dark navy detail px (checker counterparts, curl insides)
-  // touch the open page only diagonally, and an 8-connected flood leaked
-  // through those gaps and washed the art's dark detail out to 65%-alpha
-  // ring — 4-connectivity against 8-connected art keeps enclosed detail
-  // opaque (digital-topology duality).
+  // 1a) symmetrize gems (maintainer round 10: "your diamonds look broken"):
+  // the medallions are centred in their crops by construction, but the
+  // quantization votes each side independently and the mock's soft edges
+  // break ties differently left vs right — so mirror the SILHOUETTE across
+  // the gem's axis: where the pair disagrees, art beats bg. Same-class
+  // pairs keep their own colours (averaging them melted the facets into
+  // gradients — the interior lighting is allowed its subtle asymmetry).
+  if (mirror) {
+    const M = mirror === "x" ? bw : bh;
+    const A = mirror === "x" ? bh : bw;
+    for (let a = 0; a < A; a++)
+      for (let k = 0; k * 2 < M - 1; k++) {
+        const i = mirror === "x" ? a * bw + k : k * bw + a;
+        const j = mirror === "x" ? a * bw + (M - 1 - k) : (M - 1 - k) * bw + a;
+        if (isBg[i] === isBg[j]) continue;
+        const art = isBg[i] ? j : i;
+        const bg = isBg[i] ? i : j;
+        col[bg * 3] = col[art * 3];
+        col[bg * 3 + 1] = col[art * 3 + 1];
+        col[bg * 3 + 2] = col[art * 3 + 2];
+        isBg[bg] = 0;
+      }
+    // Palette merge (gems only): the concept's medallions use a handful of
+    // flat facet colours, but independent per-cell votes over the soft
+    // source give every cell its own near-shade — noisy, "broken". Greedy
+    // cluster the piece's cell colours (radius 36) and snap each cell to
+    // its cluster average: near-identical shades collapse, distinct facets
+    // stay distinct.
+    const pal = [];
+    for (let i = 0; i < bw * bh; i++) {
+      let e = null;
+      for (const p of pal) {
+        const dr = col[i * 3] - p.r / p.n;
+        const dg = col[i * 3 + 1] - p.g / p.n;
+        const db = col[i * 3 + 2] - p.b / p.n;
+        if (dr * dr + dg * dg + db * db <= 36 * 36) {
+          e = p;
+          break;
+        }
+      }
+      if (!e) pal.push((e = { n: 0, r: 0, g: 0, b: 0, cells: [] }));
+      e.n++;
+      e.r += col[i * 3];
+      e.g += col[i * 3 + 1];
+      e.b += col[i * 3 + 2];
+      e.cells.push(i);
+    }
+    for (const p of pal) {
+      const r = Math.round(p.r / p.n);
+      const g = Math.round(p.g / p.n);
+      const b = Math.round(p.b / p.n);
+      for (const i of p.cells) {
+        col[i * 3] = r;
+        col[i * 3 + 1] = g;
+        col[i * 3 + 2] = b;
+        isBg[i] = isBgCol(r, g, b) ? 1 : 0;
+      }
+    }
+  }
+  // 1b) straighten rail segments: majority cell colour per row/column.
+  if (uniform) {
+    const runs = uniform === "h" ? bh : bw;
+    const len = uniform === "h" ? bw : bh;
+    for (let r0 = 0; r0 < runs; r0++) {
+      const bins = new Map();
+      for (let k0 = 0; k0 < len; k0++) {
+        const i = uniform === "h" ? r0 * bw + k0 : k0 * bw + r0;
+        const k = ((col[i * 3] >> 4) << 8) | ((col[i * 3 + 1] >> 4) << 4) | (col[i * 3 + 2] >> 4);
+        let b = bins.get(k);
+        if (!b) bins.set(k, (b = { n: 0, r: 0, g: 0, b: 0 }));
+        b.n++;
+        b.r += col[i * 3];
+        b.g += col[i * 3 + 1];
+        b.b += col[i * 3 + 2];
+      }
+      let best = null;
+      for (const b of bins.values()) if (!best || b.n > best.n) best = b;
+      const r = Math.round(best.r / best.n);
+      const g = Math.round(best.g / best.n);
+      const bl = Math.round(best.b / best.n);
+      for (let k0 = 0; k0 < len; k0++) {
+        const i = uniform === "h" ? r0 * bw + k0 : k0 * bw + r0;
+        col[i * 3] = r;
+        col[i * 3 + 1] = g;
+        col[i * 3 + 2] = bl;
+        isBg[i] = isBgCol(r, g, bl) ? 1 : 0;
+      }
+    }
+  }
+  // 2) flood-key page-bg blocks from the seeds. 4-CONNECTED on purpose: an
+  // 8-connected flood slips diagonally through single-cell art gaps (e.g.
+  // past the rail into the outer margin), and the margin must stay opaque —
+  // 4-connectivity against 8-connected art cannot cross it (digital-topology
+  // duality).
   const keyed = new Uint8Array(bw * bh);
   const stack = [];
   const push = (bx, by) => {
@@ -235,7 +342,7 @@ function pieceArt(px0, py0, pw, ph, sides, erasers = []) {
       stack.push(i);
     }
   };
-  const seedBlock = (px, py) => push(Math.floor((px0 + px) / G) - bx0, Math.floor((py0 + py) / G) - by0);
+  const seedBlock = (px, py) => push(Math.floor((px0 + px - phX) / G) - bx0, Math.floor((py0 + py - phY) / G) - by0);
   for (const s of sides) {
     if (s === "top") for (let x = 0; x < bw; x++) push(x, 0);
     if (s === "bottom") for (let x = 0; x < bw; x++) push(x, bh - 1);
@@ -252,14 +359,44 @@ function pieceArt(px0, py0, pw, ph, sides, erasers = []) {
     push(bx, by - 1);
     push(bx, by + 1);
   }
+  // 2b) enclosed navy pockets: flood the OUTER page margin from the piece's
+  // outer edges; bg cells reached by neither flood are fully surrounded by
+  // art and join the keyed set (→ ring shade next to art, transparent in
+  // pocket middles) instead of sitting opaque-black darker than the border.
+  const margin = new Uint8Array(bw * bh);
+  const mstack = [];
+  const mpush = (bx, by) => {
+    if (bx < 0 || by < 0 || bx >= bw || by >= bh) return;
+    const i = by * bw + bx;
+    if (!margin[i] && isBg[i] && !keyed[i]) {
+      margin[i] = 1;
+      mstack.push(i);
+    }
+  };
+  for (const s of outer) {
+    if (s === "top") for (let x = 0; x < bw; x++) mpush(x, 0);
+    if (s === "bottom") for (let x = 0; x < bw; x++) mpush(x, bh - 1);
+    if (s === "left") for (let y = 0; y < bh; y++) mpush(0, y);
+    if (s === "right") for (let y = 0; y < bh; y++) mpush(bw - 1, y);
+  }
+  while (mstack.length) {
+    const i = mstack.pop();
+    const bx = i % bw;
+    const by = (i / bw) | 0;
+    mpush(bx - 1, by);
+    mpush(bx + 1, by);
+    mpush(bx, by - 1);
+    mpush(bx, by + 1);
+  }
+  for (let i = 0; i < bw * bh; i++) if (isBg[i] && !keyed[i] && !margin[i]) keyed[i] = 1;
   // 3) erase mock bleed: block transparent, ring colour falls back to the
   // page navy (the bleed colour must not tint the border).
   const erased = new Uint8Array(bw * bh);
   for (const [ex0, ey0, ex1, ey1] of erasers)
     for (let by = 0; by < bh; by++)
       for (let bx = 0; bx < bw; bx++) {
-        const cx = (bx0 + bx) * G + G / 2 - px0;
-        const cy = (by0 + by) * G + G / 2 - py0;
+        const cx = phX + (bx0 + bx) * G + G / 2 - px0;
+        const cy = phY + (by0 + by) * G + G / 2 - py0;
         if (cx >= ex0 && cx < ex1 && cy >= ey0 && cy < ey1) {
           keyed[by * bw + bx] = 1;
           erased[by * bw + bx] = 1;
@@ -298,7 +435,7 @@ function pieceArt(px0, py0, pw, ph, sides, erasers = []) {
   const out = new PNG({ width: pw, height: ph });
   for (let y = 0; y < ph; y++)
     for (let x = 0; x < pw; x++) {
-      const bi = (Math.floor((py0 + y) / G) - by0) * bw + (Math.floor((px0 + x) / G) - bx0);
+      const bi = (Math.floor((py0 + y - phY) / G) - by0) * bw + (Math.floor((px0 + x - phX) / G) - bx0);
       const o = (y * pw + x) * 4;
       if (ring[bi]) {
         const src = erased[bi] ? page : [col[bi * 3], col[bi * 3 + 1], col[bi * 3 + 2]];
@@ -318,49 +455,49 @@ function pieceArt(px0, py0, pw, ph, sides, erasers = []) {
   return out;
 }
 
-const piece = (x, y, w, h, sides, erasers) => pieceArt(x, y, w, h, sides, erasers);
+const piece = (x, y, w, h, sides, opts) => pieceArt(x, y, w, h, sides, opts);
 
 // Corners: mock-absolute 180px tiles; flood only from the INNER quadrant so
 // the outside of the border stays opaque black.
-save("corner-tl.png", piece(0, 0, 180, 180, [[140, 140, 180, 180]]));
-save("corner-tr.png", piece(668, 0, 180, 180, [[0, 140, 40, 180]]));
-save("corner-bl.png", piece(0, 1084, 180, 180, [[140, 0, 180, 40]]));
-save("corner-br.png", piece(668, 1084, 180, 180, [[0, 0, 40, 40]], [[20, 20, 110, 110]]));
+save("corner-tl.png", piece(0, 0, 180, 180, [[140, 140, 180, 180]], { outer: ["top", "left"] }));
+save("corner-tr.png", piece(668, 0, 180, 180, [[0, 140, 40, 180]], { outer: ["top", "right"] }));
+save("corner-bl.png", piece(0, 1084, 180, 180, [[140, 0, 180, 40]], { outer: ["bottom", "left"] }));
+save("corner-br.png", piece(668, 1084, 180, 180, [[0, 0, 40, 40]], { erasers: [[20, 20, 110, 110]], outer: ["bottom", "right"] }));
 // Top border between the corners (filigree verified to stop by x=180, so
 // these are clean rail): stretch-segments + the fixed gem piece.
-save("top-seg-l.png", piece(180, 0, 216, 76, ["bottom"]));
-save("gem-top.png", piece(396, 0, 56, 76, ["bottom"]));
-save("top-seg-r.png", piece(452, 0, 216, 76, ["bottom"]));
-save("bottom-seg.png", piece(180, 1188, 488, 76, ["top"]));
+save("top-seg-l.png", piece(180, 0, 216, 76, ["bottom"], { uniform: "h", outer: ["top"] }));
+save("gem-top.png", piece(396, 0, 56, 76, ["bottom"], { outer: ["top"], mirror: "x", grain: 5, phase: [4, 4] }));
+save("top-seg-r.png", piece(452, 0, 216, 76, ["bottom"], { uniform: "h", outer: ["top"] }));
+save("bottom-seg.png", piece(180, 1188, 488, 76, ["top"], { uniform: "h", outer: ["bottom"] }));
 // Side borders: SEGMENTS BETWEEN JUNCTIONS ONLY (maintainer round 4: the old
 // full-height strip baked the divider-junction decor at mock positions and
 // stretched it into unrecognisable smears — junction art lives ONLY in the
 // caps now, and each clean-rail segment maps to its page span):
 //   v1 corner→gem, v2 gem→divA cap, v3 between the dividers (rail beside the
 //   tabs; the mock buttons' glow column x≥52 erased), v4 divB cap→corner.
-save("left-v1.png", piece(0, 180, 56, 196, ["right"]));
-save("gem-left.png", piece(0, 376, 76, 68, ["right"]));
-save("left-v2.png", piece(0, 444, 56, 196, ["right"]));
-save("left-v3.png", piece(0, 740, 56, 122, ["right"], [[52, 0, 56, 122]]));
-save("left-v4.png", piece(0, 918, 56, 166, ["right"]));
-save("right-v1.png", piece(792, 180, 56, 196, ["left"]));
-save("gem-right.png", piece(772, 376, 76, 68, ["left"]));
-save("right-v2.png", piece(792, 444, 56, 196, ["left"]));
-save("right-v3.png", piece(792, 740, 56, 122, ["left"], [[0, 0, 4, 122]]));
-save("right-v4.png", piece(792, 918, 56, 166, ["left"]));
+save("left-v1.png", piece(0, 180, 56, 196, ["right"], { uniform: "v", outer: ["left"] }));
+save("gem-left.png", piece(0, 376, 76, 68, ["right"], { outer: ["left"], mirror: "y", grain: 5, phase: [1, 0] }));
+save("left-v2.png", piece(0, 444, 56, 196, ["right"], { uniform: "v", outer: ["left"] }));
+save("left-v3.png", piece(0, 740, 56, 122, ["right"], { erasers: [[52, 0, 56, 122]], uniform: "v", outer: ["left"] }));
+save("left-v4.png", piece(0, 918, 56, 166, ["right"], { uniform: "v", outer: ["left"] }));
+save("right-v1.png", piece(792, 180, 56, 196, ["left"], { uniform: "v", outer: ["right"] }));
+save("gem-right.png", piece(772, 376, 76, 68, ["left"], { outer: ["right"], mirror: "y", grain: 5, phase: [2, 0] }));
+save("right-v2.png", piece(792, 444, 56, 196, ["left"], { uniform: "v", outer: ["right"] }));
+save("right-v3.png", piece(792, 740, 56, 122, ["left"], { erasers: [[0, 0, 4, 122]], uniform: "v", outer: ["right"] }));
+save("right-v4.png", piece(792, 918, 56, 166, ["left"], { uniform: "v", outer: ["right"] }));
 // Divider A (game ↔ tabs; thin line 707..711). WIDE caps (190px) own ALL the
 // junction decor — the ╠/╣ green gems and the curls that run along the line
 // to x≈190; the mock button row's pixels (y≥728, glow column x≥52) erased.
-save("divA-capl.png", piece(0, 640, 190, 100, ["right"], [[52, 82, 190, 100]]));
-save("divA-seg-l.png", piece(190, 688, 206, 36, ["top", "bottom"]));
-save("divA-gem.png", piece(396, 674, 56, 58, ["top", "bottom", "left", "right"]));
-save("divA-seg-r.png", piece(452, 688, 206, 36, ["top", "bottom"]));
-save("divA-capr.png", piece(848 - 190, 640, 190, 100, ["left"], [[0, 82, 138, 100]]));
+save("divA-capl.png", piece(0, 640, 190, 100, ["right"], { erasers: [[52, 82, 190, 100]] }));
+save("divA-seg-l.png", piece(190, 688, 206, 36, ["top", "bottom"], { uniform: "h" }));
+save("divA-gem.png", piece(396, 674, 56, 58, ["top", "bottom", "left", "right"], { mirror: "x" }));
+save("divA-seg-r.png", piece(452, 688, 206, 36, ["top", "bottom"], { uniform: "h" }));
+save("divA-capr.png", piece(848 - 190, 640, 190, 100, ["left"], { erasers: [[0, 82, 138, 100]] }));
 // Divider B (tabs ↔ content; thin sloping line, no gem): wide caps with the
 // button-bottom bleed erased (x≥52 / mirrored, top 16 rows).
-save("divB-capl.png", piece(0, 862, 190, 56, ["right"], [[52, 0, 190, 16]]));
-save("divB-seg.png", piece(190, 872, 468, 16, ["top", "bottom"]));
-save("divB-capr.png", piece(848 - 190, 862, 190, 56, ["left"], [[0, 0, 138, 16]]));
+save("divB-capl.png", piece(0, 862, 190, 56, ["right"], { erasers: [[52, 0, 190, 16]] }));
+save("divB-seg.png", piece(190, 872, 468, 16, ["top", "bottom"], { uniform: "h" }));
+save("divB-capr.png", piece(848 - 190, 862, 190, 56, ["left"], { erasers: [[0, 0, 138, 16]] }));
 
 // ---- button plates (states, image 2) ---------------------------------------
 // Bounds auto-detected: within each square's row band, find the columns/rows

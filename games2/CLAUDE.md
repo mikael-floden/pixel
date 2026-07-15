@@ -252,8 +252,24 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   surviving art, EXACTLY one art pixel by construction, coloured 85%
   of the cell's own page colour + 15% black at 65% ALPHA (RING_KEEP /
   RING_ALPHA; erased-bleed cells fall back to the piece's page navy).
-  History: round 6 rejected the CSS-looking dilated band, 7 the 1-2px
-  width wobble, 8 flat black, 9 the muddy per-pixel snap.
+  RAIL SEGMENTS between junctions are additionally made UNIFORM along
+  their run (majority cell per row/column — the mock's hand-drawn lines
+  drift and their soft shadow quantizes to ragged clumps; the reference
+  keeps decor organic at corners/caps but rails straight). Navy pockets
+  fully ENCLOSED by art (unreachable from both interior seeds and the
+  piece's `outer` page-margin edges) join the ring/transparent set —
+  opaque they read DARKER than the 65% border. GEMS: the medallions'
+  native grain is 5px (edge-phase concentration 0.65-0.76; the mock's
+  grain drifts locally, ~4-5px elsewhere), so the four gem pieces pass
+  {grain:5, phase:[measured]} — cutting them at 4 aliased "broken"
+  diamonds — plus a silhouette MIRROR across their centred axis (art
+  beats bg; same-class pairs keep their own colours) and a per-piece
+  palette merge (radius 36) that collapses near-shades into the
+  concept's flat facets (divA-gem stays at grain 4 — it is genuinely
+  smaller/softer art). History: round 6 rejected the CSS-looking
+  dilated band, 7 the 1-2px width wobble, 8 flat black, 9 the muddy
+  per-pixel snap, 10 spiky rails / too-dark enclosed px / broken
+  diamonds.
   Tabs are PERFECT SQUARES (`--ml-tab`, capped 150px = the mock plate)
   with the three plate states 9-sliced via `border-image`; icons were
   flood-key-extracted (grey icons survive — their outlines stop the
