@@ -58,6 +58,7 @@ import {
 } from "../nightlight";
 import { joinWorld } from "../net";
 import { ChatUI } from "../chat";
+import { setClockPhase } from "../clock";
 import { HudBar, mountPageFrame } from "../hud";
 import { RosterUI } from "../roster";
 import { setLoadingProgress, hideLoading } from "../loading";
@@ -1610,6 +1611,7 @@ export class WorldScene extends Phaser.Scene {
     this.timeIdx = idx;
     this.timeT = instant ? 1 : 0;
     this.timeStart = this.time.now;
+    setClockPhase(idx, instant); // celestial dial top-centre follows the phase
     if (instant) {
       this.curAmbient = [...TIME_PHASES[idx].ambient];
       this.curSun = sunVec(idx);

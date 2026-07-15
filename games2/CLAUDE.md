@@ -192,6 +192,13 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   local mirror instantly, everyone else reads the synced field, and a
   rejoin re-asserts the local value to the fresh player entry
   (server/test/torch.test.ts).
+- The CELESTIAL CLOCK (client/src/clock.ts) hangs a per-phase dial
+  top-centre (under the frame art, pointer-events none): four pre-keyed,
+  pixel-aligned PNGs (ui/clock_<phase>.png, cut from the maintainer's
+  mocks by scripts/build-clock.mjs — outside-flood key + largest-blob,
+  ORIGINAL pixels) cross-fade on the ambient's 2.5s clock via
+  setClockPhase() from setTimeOfDay(). First pass — sizing/fading polish
+  and a dynamic pointer hand are still to come (mocks ship without one).
 
 ## Weather (server-owned world state, layer 2)
 
