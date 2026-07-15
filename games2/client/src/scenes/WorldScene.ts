@@ -140,14 +140,14 @@ const TIME_PHASES: { name: string; ambient: [number, number, number] }[] = [
 const R2 = Math.SQRT1_2;
 const SUN_PHASES: { cast: [number, number]; slope: number; strength: number }[] = [
   { cast: [0, 0], slope: 1, strength: 0 }, // Night — no sun
-  { cast: [-R2, R2], slope: 0.34, strength: 1 }, // Morning — long shadows to screen-west
-  // Day: the noon sun stands in the SOUTH (screen-bottom) so the arc runs
-  // CLOCKWISE east -> south -> west (playtest: it swept CCW over the top).
-  // Shadows therefore point UP-screen, slightly west — they land on the
-  // open ground behind the rims (the north side has no drawn wall faces to
-  // swallow them) and the visible south walls read sunlit at midday.
-  { cast: [-0.947, -0.319], slope: 0.45, strength: 1 },
-  { cast: [R2, -R2], slope: 0.34, strength: 1 }, // Evening — long shadows to screen-east
+  // Maintainer-specified sweep: shadows point screen-RIGHT in the morning,
+  // screen-DOWN(-ish) at midday (sun top-centre), screen-LEFT in the
+  // evening — the shadow direction rotates clockwise right -> down -> left.
+  { cast: [R2, -R2], slope: 0.34, strength: 1 }, // Morning — shadows to screen-east
+  // Midday keeps the slight west tilt so the short shadows step out from
+  // under the south wall faces instead of hiding behind them.
+  { cast: [0.32, 0.95], slope: 0.45, strength: 1 },
+  { cast: [-R2, R2], slope: 0.34, strength: 1 }, // Evening — shadows to screen-west
 ];
 
 function sunVec(idx: number): [number, number, number, number] {
