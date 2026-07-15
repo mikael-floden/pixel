@@ -367,13 +367,17 @@ void main() {
     }
   }
 
-  // DIRECTIONAL SUN (day phases; maintainer): uSun.xy is the direction
-  // shadows are CAST, so march the linear heightmap the OTHER way, rising
-  // uSun.z levels per cell — terrain or solid objects poking above the ray
-  // shade this surface with the same soft penumbra family as the point
-  // lights. Faces turned away from the sun fall to shade via a Lambert
-  // gate. Only the AMBIENT (sky) term is shaded — torches still light
-  // shadowed ground.
+  // DIRECTIONAL SUN (day phases; maintainer): daylight is modelled as
+  // SKY + SUN — the phase ambient is split into a flat sky term (55%) and a
+  // directional sun term (45%) that only reaches tiles with a clear line
+  // toward the sun, so full authored brightness NEEDS the sun and shadowed
+  // ground visibly drops to the sky level ("the previous ambient was
+  // powerful enough to show full colour on its own — lower it so the
+  // directional shadow is visible"). uSun.xy is the direction shadows are
+  // CAST; march the linear heightmap the other way, rising uSun.z levels
+  // per cell — terrain or solid objects above the ray shade the surface
+  // with the point lights' soft penumbra family; faces turned away from
+  // the sun shade via a Lambert gate. Point lights still add in shadow.
   float sunF = 1.0;
   if (uSun.w > 0.001) {
     float sunVis = 1.0;
@@ -383,14 +387,15 @@ void main() {
       if (floor(p.x) == floor(pos.x) && floor(p.y) == floor(pos.y)) continue;
       float hRay = z + dc * uSun.z + 0.15;
       float H = heightAtSoft(p);
-      if (H < 90.0 && H > hRay) sunVis *= mix(0.86, 0.60, clamp((H - hRay) * 1.2, 0.0, 1.0));
+      if (H < 90.0 && H > hRay) sunVis *= mix(0.80, 0.35, clamp((H - hRay) * 1.2, 0.0, 1.0));
     }
     if (isFace) {
       vec2 nrm = mix(vec2(0.0, 1.0), vec2(1.0, 0.0), pickR);
       float cosS = dot(nrm, -uSun.xy);
       sunVis *= clamp(cosS * 1.4 + 0.55, 0.3, 1.0);
     }
-    sunF = 1.0 - (1.0 - clamp(sunVis, 0.0, 1.0)) * 0.38 * uSun.w;
+    float sunShare = 0.45 * uSun.w; // the sun's slice of the phase ambient
+    sunF = (1.0 - sunShare) + sunShare * clamp(sunVis, 0.0, 1.0);
   }
   vec3 light = uAmbient * sunF;
   for (int i = 0; i < ${MAX_SHADER_LIGHTS}; i++) {
@@ -937,9 +942,10 @@ export class NightLights {
       if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
       const hRay = z + dc * sun[2] + 0.15;
       const hh = hAtSoft(px, py);
-      if (hh < 90 && hh > hRay) sunVis *= 0.86 + (0.6 - 0.86) * Math.min(1, (hh - hRay) * 1.2);
+      if (hh < 90 && hh > hRay) sunVis *= 0.8 + (0.35 - 0.8) * Math.min(1, (hh - hRay) * 1.2);
     }
-    return 1 - (1 - Math.max(0, Math.min(1, sunVis))) * 0.38 * sun[3];
+    const sunShare = 0.45 * sun[3];
+    return 1 - sunShare + sunShare * Math.max(0, Math.min(1, sunVis));
   }
 
   lightAt(col: number, row: number, z: number, isObj: boolean): [number, number, number] {

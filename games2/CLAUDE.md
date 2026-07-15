@@ -196,14 +196,19 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
 ## Directional sun shadows (day phases)
 
 - The night shader also carries a DIRECTIONAL SUN (uSun = cast-dir grid
-  x/y, slope levels-per-cell, strength): every fragment marches the
-  LINEAR heightmap toward the sun — terrain or solid objects poking
-  above the ray shade the surface (soft penumbra, same family as the
-  point-light LOS), faces away from the sun fall to shade via a Lambert
-  gate, and only the AMBIENT term is shaded (torches still light
-  shadowed ground; deepest shade = 62% ambient). SUN_PHASES
+  x/y, slope levels-per-cell, strength). DAYLIGHT IS SKY + SUN
+  (maintainer): the phase ambient splits into a flat sky term (55%) and
+  a directional term (45%) that only reaches surfaces with a clear
+  line toward the sun — full authored brightness NEEDS the sun, and
+  shadowed ground visibly drops toward the sky level (the first cut
+  multiplied a small factor onto an already-full ambient and read as
+  nothing). Every fragment marches the LINEAR heightmap toward the
+  sun — terrain or solid objects above the ray shade the surface (soft
+  penumbra, point-light LOS family), faces away from the sun shade via
+  a Lambert gate; point lights still add in shadow. SUN_PHASES
   (WorldScene) drives it: Morning casts long shadows to screen-west,
-  Day short down-screen, Evening mirrors to screen-east, Night off —
+  Day slightly-west-of-down (a straight-down cast hides under the
+  south wall faces), Evening mirrors to screen-east, Night off —
   lerped with the SAME clock as the ambient fade so shadows sweep as a
   phase changes (maintainer: "the sun moves... shadows move
   accordingly"). CPU twin sunFactorAt() shades the lit-copy tints the
@@ -213,7 +218,11 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   flip sides, noon shortest — runs on the default cliffy world).
   NOTE: verify-solidband.mjs + verify-wallspread.mjs are STALE (they
   predate the maps2 worlds and fail on baseline too — "no 5-cell wall
-  run on screen"); penumbra/timecycle/lit-order still gate.
+  run on screen"). verify-penumbra is now PINNED TO NIGHT (the day sun
+  shaded its sampled wall bases); under the pin it finds PRE-EXISTING
+  base defects at some ledges (fails on the pre-sun baseline
+  identically — candidate-placement sensitivity, needs its own
+  follow-up); timecycle/lit-order still gate clean.
 
 ## Night lighting (client/src/nightlight.ts)
 

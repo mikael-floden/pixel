@@ -141,7 +141,10 @@ const R2 = Math.SQRT1_2;
 const SUN_PHASES: { cast: [number, number]; slope: number; strength: number }[] = [
   { cast: [0, 0], slope: 1, strength: 0 }, // Night — no sun
   { cast: [-R2, R2], slope: 0.34, strength: 1 }, // Morning — long shadows to screen-west
-  { cast: [R2 * 0.9, R2 * 0.9], slope: 1.15, strength: 0.85 }, // Day — short, down-screen
+  // Day: mostly down-screen but tilted WEST — a straight-down cast lands
+  // exactly under the south faces where the wall art + AO swallow it
+  // (playtest: "can't see a single shadow during the day").
+  { cast: [0.32, 0.95], slope: 0.45, strength: 1 },
   { cast: [R2, -R2], slope: 0.34, strength: 1 }, // Evening — long shadows to screen-east
 ];
 

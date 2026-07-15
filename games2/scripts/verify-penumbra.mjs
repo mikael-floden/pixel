@@ -18,6 +18,9 @@ await page.waitForSelector("input", { timeout: 20000 });
 await page.fill("input", "penumbraprobe");
 await page.keyboard.press("Enter");
 await page.waitForFunction(() => window.__ml?.nightShader?.() === true, null, { timeout: 20000 });
+// Pin NIGHT: this probe analyses POINT-LIGHT wall penumbras — the directional
+// day sun would shade the sampled bases and read as defects.
+await page.evaluate(() => window.__ml.timeOfDay("night", true));
 await page.waitForTimeout(1200);
 
 const scan = () =>
