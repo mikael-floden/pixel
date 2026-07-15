@@ -101,8 +101,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.565,
-        "light_sand": 0.435
+        "crystal_ice": 0.566,
+        "light_sand": 0.434
       },
       "edges": {
         "NE": {
@@ -333,8 +333,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.712,
-        "light_sand": 0.288
+        "crystal_ice": 0.713,
+        "light_sand": 0.287
       },
       "edges": {
         "NE": {
@@ -727,8 +727,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.634,
-        "crystal_ice": 0.366
+        "light_sand": 0.63,
+        "crystal_ice": 0.37
       },
       "edges": {
         "NE": {
@@ -808,8 +808,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.416,
-        "light_sand": 0.584
+        "crystal_ice": 0.423,
+        "light_sand": 0.577
       },
       "edges": {
         "NE": {
@@ -867,21 +867,19 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "light_sand",
+            "crystal_ice",
             "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "light_sand": 0.75,
-            "crystal_ice": 0.25
+            "light_sand": 0.625,
+            "crystal_ice": 0.375
           },
-          "divider": 0.75
+          "divider": 0.625
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "light sand blending to crystal ice with pebbles"
+      "features": [],
+      "description": "light sand blending to crystal ice"
     },
     {
       "index": 11,
@@ -1044,8 +1042,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.517,
-        "crystal_ice": 0.483
+        "light_sand": 0.518,
+        "crystal_ice": 0.482
       },
       "edges": {
         "NE": {
@@ -1282,6 +1280,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

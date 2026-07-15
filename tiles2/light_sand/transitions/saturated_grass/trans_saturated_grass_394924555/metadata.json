@@ -335,8 +335,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.618,
-        "light_sand": 0.382
+        "saturated_grass": 0.609,
+        "light_sand": 0.391
       },
       "edges": {
         "NE": {
@@ -413,8 +413,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.677,
-        "saturated_grass": 0.323
+        "light_sand": 0.692,
+        "saturated_grass": 0.308
       },
       "edges": {
         "NE": {
@@ -424,15 +424,15 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "saturated_grass",
+            "light_sand",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "light_sand": 0.625,
-            "saturated_grass": 0.375
+            "light_sand": 0.75,
+            "saturated_grass": 0.25
           },
-          "divider": 0.625
+          "divider": 0.75
         },
         "SE": {
           "samples": [
@@ -491,8 +491,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.872,
-        "light_sand": 0.128
+        "saturated_grass": 0.854,
+        "light_sand": 0.146
       },
       "edges": {
         "NE": {
@@ -558,8 +558,10 @@
           }
         }
       },
-      "features": [],
-      "description": "saturated grass blending to light sand"
+      "features": [
+        "accent"
+      ],
+      "description": "saturated grass blending to light sand with a small detail"
     },
     {
       "index": 7,
@@ -643,8 +645,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.96,
-        "saturated_grass": 0.04
+        "light_sand": 0.964,
+        "saturated_grass": 0.036
       },
       "edges": {
         "NE": {
@@ -951,8 +953,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.449,
-        "light_sand": 0.551
+        "saturated_grass": 0.447,
+        "light_sand": 0.553
       },
       "edges": {
         "NE": {
@@ -1255,6 +1257,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

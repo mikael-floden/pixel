@@ -99,8 +99,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.563,
-        "light_sand": 0.437
+        "stone_mountain": 0.562,
+        "light_sand": 0.438
       },
       "edges": {
         "NE": {
@@ -180,8 +180,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.733,
-        "light_sand": 0.267
+        "stone_mountain": 0.732,
+        "light_sand": 0.268
       },
       "edges": {
         "NE": {
@@ -340,8 +340,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.493,
-        "light_sand": 0.507
+        "stone_mountain": 0.475,
+        "light_sand": 0.525
       },
       "edges": {
         "NE": {
@@ -362,7 +362,7 @@
         },
         "SE": {
           "samples": [
-            "stone_mountain",
+            "light_sand",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
@@ -372,8 +372,8 @@
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.625,
-            "light_sand": 0.375
+            "light_sand": 0.5,
+            "stone_mountain": 0.5
           }
         },
         "SW": {
@@ -653,8 +653,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.816,
-        "stone_mountain": 0.184
+        "light_sand": 0.825,
+        "stone_mountain": 0.175
       },
       "edges": {
         "NE": {
@@ -721,10 +721,10 @@
         }
       },
       "features": [
-        "pebbles",
-        "accent"
+        "accent",
+        "pebbles"
       ],
-      "description": "light sand blending to grey mountain stone with pebbles, a small detail"
+      "description": "light sand blending to grey mountain stone with a small detail, pebbles"
     },
     {
       "index": 9,
@@ -732,8 +732,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.847,
-        "light_sand": 0.153
+        "stone_mountain": 0.845,
+        "light_sand": 0.155
       },
       "edges": {
         "NE": {
@@ -810,8 +810,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.613,
-        "stone_mountain": 0.387
+        "light_sand": 0.615,
+        "stone_mountain": 0.385
       },
       "edges": {
         "NE": {
@@ -970,8 +970,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.276,
-        "light_sand": 0.724
+        "stone_mountain": 0.261,
+        "light_sand": 0.739
       },
       "edges": {
         "NE": {
@@ -1041,11 +1041,11 @@
         }
       },
       "features": [
-        "pebbles",
         "accent",
+        "pebbles",
         "shiny"
       ],
-      "description": "light sand blending to grey mountain stone with pebbles, a small detail, a shiny speck"
+      "description": "light sand blending to grey mountain stone with a small detail, pebbles, a shiny speck"
     },
     {
       "index": 13,
@@ -1053,8 +1053,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.357,
-        "stone_mountain": 0.643
+        "light_sand": 0.358,
+        "stone_mountain": 0.642
       },
       "edges": {
         "NE": {
@@ -1125,10 +1125,10 @@
         }
       },
       "features": [
-        "pebbles",
-        "accent"
+        "accent",
+        "pebbles"
       ],
-      "description": "grey mountain stone blending to light sand with pebbles, a small detail"
+      "description": "grey mountain stone blending to light sand with a small detail, pebbles"
     },
     {
       "index": 14,
@@ -1136,8 +1136,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.506,
-        "stone_mountain": 0.494
+        "light_sand": 0.513,
+        "stone_mountain": 0.487
       },
       "edges": {
         "NE": {
@@ -1303,6 +1303,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

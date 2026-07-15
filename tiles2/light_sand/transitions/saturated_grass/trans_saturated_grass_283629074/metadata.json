@@ -252,8 +252,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.844,
-        "saturated_grass": 0.156
+        "light_sand": 0.85,
+        "saturated_grass": 0.15
       },
       "edges": {
         "NE": {
@@ -559,8 +559,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.791,
-        "light_sand": 0.209
+        "saturated_grass": 0.788,
+        "light_sand": 0.212
       },
       "edges": {
         "NE": {
@@ -713,8 +713,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.671,
-        "light_sand": 0.329
+        "saturated_grass": 0.666,
+        "light_sand": 0.334
       },
       "edges": {
         "NE": {
@@ -722,15 +722,15 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
+            "light_sand",
             "light_sand",
             "light_sand",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.75,
-            "light_sand": 0.25
+            "saturated_grass": 0.625,
+            "light_sand": 0.375
           }
         },
         "SE": {
@@ -869,8 +869,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.524,
-        "light_sand": 0.476
+        "saturated_grass": 0.508,
+        "light_sand": 0.492
       },
       "edges": {
         "NE": {
@@ -947,8 +947,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.55,
-        "light_sand": 0.45
+        "saturated_grass": 0.528,
+        "light_sand": 0.472
       },
       "edges": {
         "NE": {
@@ -1017,10 +1017,9 @@
         }
       },
       "features": [
-        "accent",
         "flowers"
       ],
-      "description": "saturated grass blending to light sand with a small detail, small flowers"
+      "description": "saturated grass blending to light sand with small flowers"
     },
     {
       "index": 13,
@@ -1028,8 +1027,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.735,
-        "saturated_grass": 0.265
+        "light_sand": 0.741,
+        "saturated_grass": 0.259
       },
       "edges": {
         "NE": {
@@ -1104,8 +1103,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.918,
-        "saturated_grass": 0.082
+        "light_sand": 0.925,
+        "saturated_grass": 0.075
       },
       "edges": {
         "NE": {
@@ -1267,6 +1266,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

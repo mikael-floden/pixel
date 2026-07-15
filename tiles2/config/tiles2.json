@@ -108,6 +108,15 @@
       "strength": 1.0,
       "protect_dark_material": true
     },
+    "_clean_top_rim_comment": "Kills the faint dark DOT the user sees at every diamond VERTEX in-game. Cause: the top diamond's baked edge rim sits a bit darker than the interior (snow interior lum ~210, rim ~180 — only ~30 down, so absolute-dark steps miss it); where four diamonds meet those rims converge into a dot, worst on bright snow/ice. Threshold is RELATIVE to the material brightness (value*factor) so it works on light and dark grounds. Only the TOP diamond (top_frac of the height) and only the silhouette-adjacent rim band are touched — the front soil/rock FACE and interior details (flowers/pebbles/rocks) are left alone. Runs after fade_outline, before gap_close. black_mountain (value<70) skipped. Toggle enabled:false + reprocess to revert.",
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

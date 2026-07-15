@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.489,
-        "crystal_ice": 0.511
+        "regular_snow": 0.49,
+        "crystal_ice": 0.51
       },
       "edges": {
         "NE": {
@@ -100,8 +100,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.482,
-        "crystal_ice": 0.518
+        "regular_snow": 0.483,
+        "crystal_ice": 0.517
       },
       "edges": {
         "NE": {
@@ -177,8 +177,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.669,
-        "crystal_ice": 0.331
+        "regular_snow": 0.672,
+        "crystal_ice": 0.328
       },
       "edges": {
         "NE": {
@@ -254,8 +254,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.519,
-        "crystal_ice": 0.481
+        "regular_snow": 0.52,
+        "crystal_ice": 0.48
       },
       "edges": {
         "NE": {
@@ -410,8 +410,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.437,
-        "crystal_ice": 0.563
+        "regular_snow": 0.442,
+        "crystal_ice": 0.558
       },
       "edges": {
         "NE": {
@@ -870,8 +870,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.808,
-        "crystal_ice": 0.192
+        "regular_snow": 0.819,
+        "crystal_ice": 0.181
       },
       "edges": {
         "NE": {
@@ -1169,8 +1169,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.664,
-        "crystal_ice": 0.336
+        "regular_snow": 0.667,
+        "crystal_ice": 0.333
       },
       "edges": {
         "NE": {
@@ -1252,6 +1252,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

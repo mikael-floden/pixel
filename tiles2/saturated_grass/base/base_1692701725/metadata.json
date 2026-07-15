@@ -754,8 +754,12 @@
           }
         }
       },
-      "features": [],
-      "description": "plain saturated grass"
+      "features": [
+        "accent",
+        "pebbles",
+        "flowers"
+      ],
+      "description": "saturated grass with a small detail, pebbles, small flowers"
     },
     {
       "index": 10,
@@ -977,8 +981,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain saturated grass"
+      "features": [
+        "flowers"
+      ],
+      "description": "saturated grass with small flowers"
     },
     {
       "index": 13,
@@ -1126,9 +1132,10 @@
         }
       },
       "features": [
-        "flowers"
+        "flowers",
+        "bare_soil"
       ],
-      "description": "saturated grass with small flowers"
+      "description": "saturated grass with small flowers, a bare soil patch"
     },
     {
       "index": 15,
@@ -1218,6 +1225,14 @@
     "harmonized_from": true,
     "harmonized_to": false,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

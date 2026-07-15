@@ -602,8 +602,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain clear water"
+      "features": [
+        "accent"
+      ],
+      "description": "clear water with a small detail"
     },
     {
       "index": 8,
@@ -750,11 +752,11 @@
       },
       "features": [
         "accent",
-        "water",
         "flowers",
+        "water",
         "pebbles"
       ],
-      "description": "clear water with a small detail, a small puddle, small flowers, pebbles"
+      "description": "clear water with a small detail, small flowers, a small puddle, pebbles"
     },
     {
       "index": 10,
@@ -1213,6 +1215,14 @@
     "harmonized_from": true,
     "harmonized_to": false,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

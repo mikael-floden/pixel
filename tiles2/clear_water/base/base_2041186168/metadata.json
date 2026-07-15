@@ -676,9 +676,10 @@
         }
       },
       "features": [
-        "shiny"
+        "shiny",
+        "accent"
       ],
-      "description": "clear water with a shiny speck"
+      "description": "clear water with a shiny speck, a small detail"
     },
     {
       "index": 9,
@@ -1212,6 +1213,14 @@
     "harmonized_from": true,
     "harmonized_to": false,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

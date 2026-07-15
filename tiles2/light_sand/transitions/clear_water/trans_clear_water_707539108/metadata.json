@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.714,
-        "clear_water": 0.286
+        "light_sand": 0.729,
+        "clear_water": 0.271
       },
       "edges": {
         "NE": {
@@ -93,9 +93,10 @@
         }
       },
       "features": [
-        "shiny"
+        "shiny",
+        "accent"
       ],
-      "description": "light sand blending to clear water with a shiny speck"
+      "description": "light sand blending to clear water with a shiny speck, a small detail"
     },
     {
       "index": 1,
@@ -103,8 +104,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.704,
-        "clear_water": 0.296
+        "light_sand": 0.712,
+        "clear_water": 0.288
       },
       "edges": {
         "NE": {
@@ -114,15 +115,15 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "clear_water",
+            "light_sand",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "light_sand": 0.625,
-            "clear_water": 0.375
+            "light_sand": 0.75,
+            "clear_water": 0.25
           },
-          "divider": 0.625
+          "divider": 0.75
         },
         "SE": {
           "samples": [
@@ -173,9 +174,10 @@
         }
       },
       "features": [
-        "shiny"
+        "shiny",
+        "accent"
       ],
-      "description": "light sand blending to clear water with a shiny speck"
+      "description": "light sand blending to clear water with a shiny speck, a small detail"
     },
     {
       "index": 2,
@@ -183,8 +185,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.91,
-        "light_sand": 0.09
+        "clear_water": 0.909,
+        "light_sand": 0.091
       },
       "edges": {
         "NE": {
@@ -260,8 +262,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.625,
-        "clear_water": 0.375
+        "light_sand": 0.649,
+        "clear_water": 0.351
       },
       "edges": {
         "NE": {
@@ -270,16 +272,16 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "clear_water",
+            "light_sand",
             "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "light_sand": 0.5,
-            "clear_water": 0.5
+            "light_sand": 0.625,
+            "clear_water": 0.375
           },
-          "divider": 0.5
+          "divider": 0.625
         },
         "SE": {
           "samples": [
@@ -330,9 +332,10 @@
         }
       },
       "features": [
-        "shiny"
+        "shiny",
+        "accent"
       ],
-      "description": "light sand blending to clear water with a shiny speck"
+      "description": "light sand blending to clear water with a shiny speck, a small detail"
     },
     {
       "index": 4,
@@ -340,8 +343,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.798,
-        "clear_water": 0.202
+        "light_sand": 0.799,
+        "clear_water": 0.201
       },
       "edges": {
         "NE": {
@@ -416,8 +419,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.6,
-        "clear_water": 0.4
+        "light_sand": 0.617,
+        "clear_water": 0.383
       },
       "edges": {
         "NE": {
@@ -497,8 +500,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.699,
-        "light_sand": 0.301
+        "clear_water": 0.691,
+        "light_sand": 0.309
       },
       "edges": {
         "NE": {
@@ -556,20 +559,21 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "clear_water",
+            "light_sand",
             "clear_water"
           ],
           "ratio": {
-            "light_sand": 0.75,
-            "clear_water": 0.25
+            "light_sand": 0.875,
+            "clear_water": 0.125
           },
-          "divider": 0.75
+          "divider": 0.875
         }
       },
       "features": [
-        "shiny"
+        "shiny",
+        "accent"
       ],
-      "description": "clear water blending to light sand with a shiny speck"
+      "description": "clear water blending to light sand with a shiny speck, a small detail"
     },
     {
       "index": 7,
@@ -577,8 +581,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.801,
-        "clear_water": 0.199
+        "light_sand": 0.802,
+        "clear_water": 0.198
       },
       "edges": {
         "NE": {
@@ -655,8 +659,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.697,
-        "clear_water": 0.303
+        "light_sand": 0.701,
+        "clear_water": 0.299
       },
       "edges": {
         "NE": {
@@ -736,8 +740,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.535,
-        "clear_water": 0.465
+        "light_sand": 0.545,
+        "clear_water": 0.455
       },
       "edges": {
         "NE": {
@@ -806,9 +810,10 @@
         }
       },
       "features": [
-        "shiny"
+        "shiny",
+        "accent"
       ],
-      "description": "light sand blending to clear water with a shiny speck"
+      "description": "light sand blending to clear water with a shiny speck, a small detail"
     },
     {
       "index": 10,
@@ -816,8 +821,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.787,
-        "clear_water": 0.213
+        "light_sand": 0.797,
+        "clear_water": 0.203
       },
       "edges": {
         "NE": {
@@ -899,8 +904,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.827,
-        "light_sand": 0.173
+        "clear_water": 0.797,
+        "light_sand": 0.203
       },
       "edges": {
         "NE": {
@@ -977,8 +982,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.691,
-        "clear_water": 0.309
+        "light_sand": 0.698,
+        "clear_water": 0.302
       },
       "edges": {
         "NE": {
@@ -989,14 +994,14 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "clear_water",
+            "light_sand",
             "clear_water"
           ],
           "ratio": {
-            "light_sand": 0.75,
-            "clear_water": 0.25
+            "light_sand": 0.875,
+            "clear_water": 0.125
           },
-          "divider": 0.75
+          "divider": 0.875
         },
         "SE": {
           "samples": [
@@ -1047,9 +1052,10 @@
         }
       },
       "features": [
-        "shiny"
+        "shiny",
+        "accent"
       ],
-      "description": "light sand blending to clear water with a shiny speck"
+      "description": "light sand blending to clear water with a shiny speck, a small detail"
     },
     {
       "index": 13,
@@ -1214,13 +1220,13 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.417,
-        "light_sand": 0.583
+        "clear_water": 0.364,
+        "light_sand": 0.636
       },
       "edges": {
         "NE": {
           "samples": [
-            "clear_water",
+            "light_sand",
             "light_sand",
             "light_sand",
             "light_sand",
@@ -1230,9 +1236,10 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.5,
-            "light_sand": 0.5
-          }
+            "light_sand": 0.625,
+            "clear_water": 0.375
+          },
+          "divider": 0.625
         },
         "SE": {
           "samples": [
@@ -1275,12 +1282,12 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "clear_water",
+            "light_sand",
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.5,
-            "light_sand": 0.5
+            "clear_water": 0.375,
+            "light_sand": 0.625
           }
         }
       },
@@ -1302,6 +1309,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

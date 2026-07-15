@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.389,
-        "clear_water": 0.611
+        "saturated_grass": 0.373,
+        "clear_water": 0.627
       },
       "edges": {
         "NE": {
@@ -103,8 +103,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.586,
-        "saturated_grass": 0.414
+        "clear_water": 0.598,
+        "saturated_grass": 0.402
       },
       "edges": {
         "NE": {
@@ -113,16 +113,16 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "saturated_grass",
+            "clear_water",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "clear_water": 0.5,
-            "saturated_grass": 0.5
+            "clear_water": 0.625,
+            "saturated_grass": 0.375
           },
-          "divider": 0.5
+          "divider": 0.625
         },
         "SE": {
           "samples": [
@@ -261,8 +261,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.749,
-        "clear_water": 0.251
+        "saturated_grass": 0.74,
+        "clear_water": 0.26
       },
       "edges": {
         "NE": {
@@ -273,11 +273,12 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
+            "clear_water",
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 1.0
+            "saturated_grass": 0.875,
+            "clear_water": 0.125
           }
         },
         "SE": {
@@ -341,8 +342,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.617,
-        "clear_water": 0.383
+        "saturated_grass": 0.61,
+        "clear_water": 0.39
       },
       "edges": {
         "NE": {
@@ -409,8 +410,10 @@
           "divider": 0.375
         }
       },
-      "features": [],
-      "description": "saturated grass blending to clear water"
+      "features": [
+        "accent"
+      ],
+      "description": "saturated grass blending to clear water with a small detail"
     },
     {
       "index": 5,
@@ -418,8 +421,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.405,
-        "clear_water": 0.595
+        "saturated_grass": 0.387,
+        "clear_water": 0.613
       },
       "edges": {
         "NE": {
@@ -442,7 +445,7 @@
         "SE": {
           "samples": [
             "clear_water",
-            "saturated_grass",
+            "clear_water",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -451,8 +454,7 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.875,
-            "saturated_grass": 0.125
+            "clear_water": 1.0
           }
         },
         "SW": {
@@ -500,8 +502,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.435,
-        "clear_water": 0.565
+        "saturated_grass": 0.411,
+        "clear_water": 0.589
       },
       "edges": {
         "NE": {
@@ -558,21 +560,19 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "saturated_grass",
+            "clear_water",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "clear_water": 0.625,
-            "saturated_grass": 0.375
+            "clear_water": 0.75,
+            "saturated_grass": 0.25
           },
-          "divider": 0.625
+          "divider": 0.75
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "clear water blending to saturated grass with a small detail"
+      "features": [],
+      "description": "clear water blending to saturated grass"
     },
     {
       "index": 7,
@@ -580,8 +580,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.651,
-        "clear_water": 0.349
+        "saturated_grass": 0.653,
+        "clear_water": 0.347
       },
       "edges": {
         "NE": {
@@ -736,8 +736,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.861,
-        "clear_water": 0.139
+        "clear_water": 0.179,
+        "saturated_grass": 0.821
       },
       "edges": {
         "NE": {
@@ -794,15 +794,19 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass"
+            "clear_water"
           ],
           "ratio": {
-            "saturated_grass": 1.0
-          }
+            "saturated_grass": 0.875,
+            "clear_water": 0.125
+          },
+          "divider": 0.875
         }
       },
-      "features": [],
-      "description": "saturated grass blending to clear water"
+      "features": [
+        "accent"
+      ],
+      "description": "saturated grass blending to clear water with a small detail"
     },
     {
       "index": 10,
@@ -810,8 +814,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.843,
-        "clear_water": 0.157
+        "saturated_grass": 0.835,
+        "clear_water": 0.165
       },
       "edges": {
         "NE": {
@@ -971,8 +975,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.998,
-        "clear_water": 0.002
+        "saturated_grass": 0.989,
+        "clear_water": 0.011
       },
       "edges": {
         "NE": {
@@ -1037,11 +1041,10 @@
         }
       },
       "features": [
-        "accent",
         "flowers",
-        "pebbles"
+        "accent"
       ],
-      "description": "saturated grass with a small detail, small flowers, pebbles"
+      "description": "saturated grass with small flowers, a small detail"
     },
     {
       "index": 13,
@@ -1049,8 +1052,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.833,
-        "clear_water": 0.167
+        "saturated_grass": 0.813,
+        "clear_water": 0.187
       },
       "edges": {
         "NE": {
@@ -1118,10 +1121,9 @@
         }
       },
       "features": [
-        "accent",
-        "pebbles"
+        "accent"
       ],
-      "description": "saturated grass blending to clear water with a small detail, pebbles"
+      "description": "saturated grass blending to clear water with a small detail"
     },
     {
       "index": 14,
@@ -1285,6 +1287,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

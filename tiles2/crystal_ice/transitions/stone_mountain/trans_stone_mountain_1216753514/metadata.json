@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.827,
-        "stone_mountain": 0.173
+        "crystal_ice": 0.83,
+        "stone_mountain": 0.17
       },
       "edges": {
         "NE": {
@@ -257,8 +257,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.634,
-        "crystal_ice": 0.366
+        "stone_mountain": 0.629,
+        "crystal_ice": 0.371
       },
       "edges": {
         "NE": {
@@ -419,8 +419,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.603,
-        "crystal_ice": 0.397
+        "stone_mountain": 0.602,
+        "crystal_ice": 0.398
       },
       "edges": {
         "NE": {
@@ -579,8 +579,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.535,
-        "stone_mountain": 0.465
+        "crystal_ice": 0.536,
+        "stone_mountain": 0.464
       },
       "edges": {
         "NE": {
@@ -657,8 +657,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.645,
-        "stone_mountain": 0.355
+        "crystal_ice": 0.654,
+        "stone_mountain": 0.346
       },
       "edges": {
         "NE": {
@@ -739,8 +739,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.669,
-        "stone_mountain": 0.331
+        "crystal_ice": 0.671,
+        "stone_mountain": 0.329
       },
       "edges": {
         "NE": {
@@ -1278,10 +1278,8 @@
           "divider": 0.75
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "crystal ice blending to grey mountain stone with pebbles"
+      "features": [],
+      "description": "crystal ice blending to grey mountain stone"
     }
   ],
   "generated_at": "2026-07-06T11:25:12+00:00",
@@ -1296,6 +1294,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

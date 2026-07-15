@@ -833,10 +833,9 @@
         "accent",
         "flowers",
         "water",
-        "shiny",
-        "pebbles"
+        "shiny"
       ],
-      "description": "saturated grass with a small detail, small flowers, a small puddle, a shiny speck, pebbles"
+      "description": "saturated grass with a small detail, small flowers, a small puddle, a shiny speck"
     },
     {
       "index": 11,
@@ -1224,6 +1223,14 @@
     "harmonized_from": true,
     "harmonized_to": false,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

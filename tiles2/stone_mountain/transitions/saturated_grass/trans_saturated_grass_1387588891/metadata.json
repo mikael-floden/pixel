@@ -98,8 +98,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.517,
-        "stone_mountain": 0.483
+        "saturated_grass": 0.486,
+        "stone_mountain": 0.514
       },
       "edges": {
         "NE": {
@@ -107,17 +107,17 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
+            "stone_mountain",
+            "stone_mountain",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "saturated_grass": 0.625,
-            "stone_mountain": 0.375
+            "saturated_grass": 0.375,
+            "stone_mountain": 0.625
           },
-          "divider": 0.625
+          "divider": 0.375
         },
         "SE": {
           "samples": [
@@ -170,7 +170,7 @@
       "features": [
         "pebbles"
       ],
-      "description": "saturated grass blending to grey mountain stone with pebbles"
+      "description": "grey mountain stone blending to saturated grass with pebbles"
     },
     {
       "index": 2,
@@ -256,8 +256,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.119,
-        "stone_mountain": 0.881
+        "stone_mountain": 0.941,
+        "saturated_grass": 0.059
       },
       "edges": {
         "NE": {
@@ -277,8 +277,8 @@
         },
         "SE": {
           "samples": [
-            "saturated_grass",
-            "saturated_grass",
+            "stone_mountain",
+            "stone_mountain",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
@@ -287,10 +287,8 @@
             "stone_mountain"
           ],
           "ratio": {
-            "saturated_grass": 0.25,
-            "stone_mountain": 0.75
-          },
-          "divider": 0.25
+            "stone_mountain": 1.0
+          }
         },
         "SW": {
           "samples": [
@@ -300,17 +298,16 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "saturated_grass",
+            "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.875,
-            "saturated_grass": 0.125
+            "stone_mountain": 1.0
           }
         },
         "NW": {
           "samples": [
-            "saturated_grass",
+            "stone_mountain",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
@@ -320,10 +317,8 @@
             "stone_mountain"
           ],
           "ratio": {
-            "saturated_grass": 0.125,
-            "stone_mountain": 0.875
-          },
-          "divider": 0.125
+            "stone_mountain": 1.0
+          }
         }
       },
       "features": [
@@ -338,8 +333,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.63,
-        "saturated_grass": 0.37
+        "stone_mountain": 0.631,
+        "saturated_grass": 0.369
       },
       "edges": {
         "NE": {
@@ -418,8 +413,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.653,
-        "stone_mountain": 0.347
+        "saturated_grass": 0.652,
+        "stone_mountain": 0.348
       },
       "edges": {
         "NE": {
@@ -574,8 +569,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.591,
-        "stone_mountain": 0.409
+        "saturated_grass": 0.571,
+        "stone_mountain": 0.429
       },
       "edges": {
         "NE": {
@@ -655,8 +650,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.803,
-        "stone_mountain": 0.197
+        "saturated_grass": 0.779,
+        "stone_mountain": 0.221
       },
       "edges": {
         "NE": {
@@ -711,90 +706,13 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass"
-          ],
-          "ratio": {
-            "saturated_grass": 1.0
-          }
-        }
-      },
-      "features": [
-        "pebbles",
-        "water",
-        "accent"
-      ],
-      "description": "saturated grass blending to grey mountain stone with pebbles, a small puddle, a small detail"
-    },
-    {
-      "index": 9,
-      "file": "tile_09.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "saturated_grass": 0.917,
-        "stone_mountain": 0.083
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
+            "stone_mountain",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass"
-          ],
-          "ratio": {
-            "saturated_grass": 1.0
-          }
-        },
-        "SW": {
-          "samples": [
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass"
-          ],
-          "ratio": {
-            "saturated_grass": 1.0
-          }
-        },
-        "NW": {
-          "samples": [
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass"
-          ],
-          "ratio": {
-            "saturated_grass": 1.0
+            "saturated_grass": 0.875,
+            "stone_mountain": 0.125
           }
         }
       },
@@ -803,6 +721,83 @@
         "accent"
       ],
       "description": "saturated grass blending to grey mountain stone with pebbles, a small detail"
+    },
+    {
+      "index": 9,
+      "file": "tile_09.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "saturated_grass": 0.888,
+        "stone_mountain": 0.112
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "saturated_grass",
+            "stone_mountain",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 0.875,
+            "stone_mountain": 0.125
+          }
+        },
+        "SE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        }
+      },
+      "features": [
+        "pebbles"
+      ],
+      "description": "saturated grass blending to grey mountain stone with pebbles"
     },
     {
       "index": 10,
@@ -883,13 +878,13 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.964,
-        "stone_mountain": 0.036
+        "saturated_grass": 0.896,
+        "stone_mountain": 0.104
       },
       "edges": {
         "NE": {
           "samples": [
-            "saturated_grass",
+            "stone_mountain",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
@@ -899,13 +894,15 @@
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 1.0
-          }
+            "stone_mountain": 0.125,
+            "saturated_grass": 0.875
+          },
+          "divider": 0.125
         },
         "SE": {
           "samples": [
             "saturated_grass",
-            "saturated_grass",
+            "stone_mountain",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
@@ -914,7 +911,8 @@
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 1.0
+            "saturated_grass": 0.875,
+            "stone_mountain": 0.125
           }
         },
         "SW": {
@@ -925,11 +923,12 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
+            "stone_mountain",
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 1.0
+            "saturated_grass": 0.875,
+            "stone_mountain": 0.125
           }
         },
         "NW": {
@@ -940,16 +939,18 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
-            "saturated_grass"
+            "stone_mountain",
+            "stone_mountain"
           ],
           "ratio": {
-            "saturated_grass": 1.0
-          }
+            "saturated_grass": 0.75,
+            "stone_mountain": 0.25
+          },
+          "divider": 0.75
         }
       },
       "features": [],
-      "description": "plain saturated grass"
+      "description": "saturated grass blending to grey mountain stone"
     },
     {
       "index": 12,
@@ -957,14 +958,14 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.384,
-        "stone_mountain": 0.616
+        "saturated_grass": 0.324,
+        "stone_mountain": 0.676
       },
       "edges": {
         "NE": {
           "samples": [
             "saturated_grass",
-            "saturated_grass",
+            "stone_mountain",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
@@ -973,8 +974,8 @@
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.375,
-            "stone_mountain": 0.625
+            "saturated_grass": 0.25,
+            "stone_mountain": 0.75
           }
         },
         "SE": {
@@ -1013,7 +1014,7 @@
         "NW": {
           "samples": [
             "stone_mountain",
-            "saturated_grass",
+            "stone_mountain",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
@@ -1022,9 +1023,10 @@
             "saturated_grass"
           ],
           "ratio": {
-            "stone_mountain": 0.625,
-            "saturated_grass": 0.375
-          }
+            "stone_mountain": 0.75,
+            "saturated_grass": 0.25
+          },
+          "divider": 0.75
         }
       },
       "features": [
@@ -1038,8 +1040,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.742,
-        "saturated_grass": 0.258
+        "stone_mountain": 0.745,
+        "saturated_grass": 0.255
       },
       "edges": {
         "NE": {
@@ -1118,15 +1120,15 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.677,
-        "stone_mountain": 0.323
+        "saturated_grass": 0.662,
+        "stone_mountain": 0.338
       },
       "edges": {
         "NE": {
           "samples": [
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
+            "stone_mountain",
             "stone_mountain",
             "stone_mountain",
             "saturated_grass",
@@ -1134,8 +1136,8 @@
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.75,
-            "stone_mountain": 0.25
+            "saturated_grass": 0.625,
+            "stone_mountain": 0.375
           }
         },
         "SE": {
@@ -1199,8 +1201,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.475,
-        "saturated_grass": 0.525
+        "stone_mountain": 0.494,
+        "saturated_grass": 0.506
       },
       "edges": {
         "NE": {
@@ -1223,7 +1225,7 @@
         "SE": {
           "samples": [
             "saturated_grass",
-            "stone_mountain",
+            "saturated_grass",
             "stone_mountain",
             "stone_mountain",
             "saturated_grass",
@@ -1232,8 +1234,8 @@
             "stone_mountain"
           ],
           "ratio": {
-            "saturated_grass": 0.5,
-            "stone_mountain": 0.5
+            "saturated_grass": 0.625,
+            "stone_mountain": 0.375
           }
         },
         "SW": {
@@ -1258,14 +1260,14 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "saturated_grass",
+            "stone_mountain",
             "saturated_grass",
             "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "saturated_grass": 0.375,
-            "stone_mountain": 0.625
+            "saturated_grass": 0.25,
+            "stone_mountain": 0.75
           }
         }
       },
@@ -1289,6 +1291,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

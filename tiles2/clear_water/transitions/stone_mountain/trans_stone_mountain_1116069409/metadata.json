@@ -315,8 +315,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.858,
-        "stone_mountain": 0.142
+        "clear_water": 0.854,
+        "stone_mountain": 0.146
       },
       "edges": {
         "NE": {
@@ -384,10 +384,10 @@
       },
       "features": [
         "accent",
-        "water",
-        "pebbles"
+        "pebbles",
+        "water"
       ],
-      "description": "clear water blending to grey mountain stone with a small detail, a small puddle, pebbles"
+      "description": "clear water blending to grey mountain stone with a small detail, pebbles, a small puddle"
     },
     {
       "index": 5,
@@ -395,8 +395,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.398,
-        "clear_water": 0.602
+        "stone_mountain": 0.403,
+        "clear_water": 0.597
       },
       "edges": {
         "NE": {
@@ -452,7 +452,7 @@
           "samples": [
             "clear_water",
             "clear_water",
-            "clear_water",
+            "stone_mountain",
             "stone_mountain",
             "stone_mountain",
             "clear_water",
@@ -460,8 +460,8 @@
             "stone_mountain"
           ],
           "ratio": {
-            "clear_water": 0.5,
-            "stone_mountain": 0.5
+            "clear_water": 0.375,
+            "stone_mountain": 0.625
           }
         }
       },
@@ -478,8 +478,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.792,
-        "stone_mountain": 0.208
+        "clear_water": 0.785,
+        "stone_mountain": 0.215
       },
       "edges": {
         "NE": {
@@ -559,8 +559,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.47,
-        "clear_water": 0.53
+        "stone_mountain": 0.474,
+        "clear_water": 0.526
       },
       "edges": {
         "NE": {
@@ -724,8 +724,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.667,
-        "clear_water": 0.333
+        "stone_mountain": 0.671,
+        "clear_water": 0.329
       },
       "edges": {
         "NE": {
@@ -883,8 +883,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.555,
-        "clear_water": 0.445
+        "stone_mountain": 0.556,
+        "clear_water": 0.444
       },
       "edges": {
         "NE": {
@@ -1042,8 +1042,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.799,
-        "clear_water": 0.201
+        "stone_mountain": 0.788,
+        "clear_water": 0.212
       },
       "edges": {
         "NE": {
@@ -1098,22 +1098,21 @@
             "stone_mountain",
             "clear_water",
             "clear_water",
-            "stone_mountain",
+            "clear_water",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.75,
-            "clear_water": 0.25
+            "stone_mountain": 0.625,
+            "clear_water": 0.375
           }
         }
       },
       "features": [
-        "pebbles",
-        "accent"
+        "pebbles"
       ],
-      "description": "grey mountain stone blending to clear water with pebbles, a small detail"
+      "description": "grey mountain stone blending to clear water with pebbles"
     },
     {
       "index": 14,
@@ -1121,8 +1120,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.995,
-        "clear_water": 0.005
+        "stone_mountain": 1.0
       },
       "edges": {
         "NE": {
@@ -1281,6 +1279,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

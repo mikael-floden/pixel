@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.956,
-        "crystal_ice": 0.044
+        "regular_snow": 0.96,
+        "crystal_ice": 0.04
       },
       "edges": {
         "NE": {
@@ -97,8 +97,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.948,
-        "crystal_ice": 0.052
+        "regular_snow": 0.954,
+        "crystal_ice": 0.046
       },
       "edges": {
         "NE": {
@@ -164,7 +164,7 @@
         }
       },
       "features": [],
-      "description": "snow blending to crystal ice"
+      "description": "plain snow"
     },
     {
       "index": 2,
@@ -246,8 +246,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.947,
-        "crystal_ice": 0.053
+        "regular_snow": 0.949,
+        "crystal_ice": 0.051
       },
       "edges": {
         "NE": {
@@ -321,8 +321,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.921,
-        "crystal_ice": 0.079
+        "regular_snow": 0.925,
+        "crystal_ice": 0.075
       },
       "edges": {
         "NE": {
@@ -469,8 +469,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.846,
-        "crystal_ice": 0.154
+        "regular_snow": 0.86,
+        "crystal_ice": 0.14
       },
       "edges": {
         "NE": {
@@ -544,8 +544,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.956,
-        "crystal_ice": 0.044
+        "regular_snow": 0.958,
+        "crystal_ice": 0.042
       },
       "edges": {
         "NE": {
@@ -619,8 +619,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.945,
-        "crystal_ice": 0.055
+        "regular_snow": 0.949,
+        "crystal_ice": 0.051
       },
       "edges": {
         "NE": {
@@ -693,8 +693,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.869,
-        "crystal_ice": 0.131
+        "regular_snow": 0.871,
+        "crystal_ice": 0.129
       },
       "edges": {
         "NE": {
@@ -847,8 +847,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.905,
-        "crystal_ice": 0.095
+        "regular_snow": 0.912,
+        "crystal_ice": 0.088
       },
       "edges": {
         "NE": {
@@ -998,8 +998,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.867,
-        "crystal_ice": 0.133
+        "regular_snow": 0.874,
+        "crystal_ice": 0.126
       },
       "edges": {
         "NE": {
@@ -1074,8 +1074,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.868,
-        "crystal_ice": 0.132
+        "regular_snow": 0.871,
+        "crystal_ice": 0.129
       },
       "edges": {
         "NE": {
@@ -1229,6 +1229,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

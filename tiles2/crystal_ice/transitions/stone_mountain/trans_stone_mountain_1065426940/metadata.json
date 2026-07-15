@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.834,
-        "stone_mountain": 0.166
+        "crystal_ice": 0.835,
+        "stone_mountain": 0.165
       },
       "edges": {
         "NE": {
@@ -101,8 +101,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.501,
-        "crystal_ice": 0.499
+        "stone_mountain": 0.495,
+        "crystal_ice": 0.505
       },
       "edges": {
         "NE": {
@@ -161,18 +161,20 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain"
+            "crystal_ice"
           ],
           "ratio": {
-            "stone_mountain": 1.0
-          }
+            "stone_mountain": 0.875,
+            "crystal_ice": 0.125
+          },
+          "divider": 0.875
         }
       },
       "features": [
-        "pebbles",
-        "accent"
+        "accent",
+        "pebbles"
       ],
-      "description": "grey mountain stone blending to crystal ice with pebbles, a small detail"
+      "description": "crystal ice blending to grey mountain stone with a small detail, pebbles"
     },
     {
       "index": 2,
@@ -260,8 +262,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.764,
-        "stone_mountain": 0.236
+        "crystal_ice": 0.773,
+        "stone_mountain": 0.227
       },
       "edges": {
         "NE": {
@@ -878,8 +880,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.782,
-        "crystal_ice": 0.218
+        "stone_mountain": 0.776,
+        "crystal_ice": 0.224
       },
       "edges": {
         "NE": {
@@ -946,10 +948,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "grey mountain stone blending to crystal ice with pebbles"
+      "features": [],
+      "description": "grey mountain stone blending to crystal ice"
     },
     {
       "index": 12,
@@ -1035,8 +1035,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.822,
-        "crystal_ice": 0.178
+        "stone_mountain": 0.82,
+        "crystal_ice": 0.18
       },
       "edges": {
         "NE": {
@@ -1114,8 +1114,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.192,
-        "stone_mountain": 0.808
+        "crystal_ice": 0.193,
+        "stone_mountain": 0.807
       },
       "edges": {
         "NE": {
@@ -1196,8 +1196,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.868,
-        "crystal_ice": 0.132
+        "stone_mountain": 0.858,
+        "crystal_ice": 0.142
       },
       "edges": {
         "NE": {
@@ -1282,6 +1282,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

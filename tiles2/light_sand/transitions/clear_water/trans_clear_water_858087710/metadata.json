@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.78,
-        "clear_water": 0.22
+        "light_sand": 0.79,
+        "clear_water": 0.21
       },
       "edges": {
         "NE": {
@@ -33,16 +33,16 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "clear_water",
+            "light_sand",
             "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "light_sand": 0.5,
-            "clear_water": 0.5
+            "light_sand": 0.625,
+            "clear_water": 0.375
           },
-          "divider": 0.5
+          "divider": 0.625
         },
         "SE": {
           "samples": [
@@ -258,8 +258,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.691,
-        "clear_water": 0.309
+        "light_sand": 0.696,
+        "clear_water": 0.304
       },
       "edges": {
         "NE": {
@@ -336,8 +336,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.631,
-        "clear_water": 0.369
+        "light_sand": 0.647,
+        "clear_water": 0.353
       },
       "edges": {
         "NE": {
@@ -416,8 +416,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.627,
-        "clear_water": 0.373
+        "light_sand": 0.643,
+        "clear_water": 0.357
       },
       "edges": {
         "NE": {
@@ -496,8 +496,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.541,
-        "clear_water": 0.459
+        "light_sand": 0.548,
+        "clear_water": 0.452
       },
       "edges": {
         "NE": {
@@ -566,9 +566,10 @@
         }
       },
       "features": [
-        "shiny"
+        "shiny",
+        "accent"
       ],
-      "description": "light sand blending to clear water with a shiny speck"
+      "description": "light sand blending to clear water with a shiny speck, a small detail"
     },
     {
       "index": 7,
@@ -576,8 +577,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.646,
-        "clear_water": 0.354
+        "light_sand": 0.651,
+        "clear_water": 0.349
       },
       "edges": {
         "NE": {
@@ -727,8 +728,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.642,
-        "light_sand": 0.358
+        "clear_water": 0.636,
+        "light_sand": 0.364
       },
       "edges": {
         "NE": {
@@ -953,8 +954,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.727,
-        "light_sand": 0.273
+        "clear_water": 0.691,
+        "light_sand": 0.309
       },
       "edges": {
         "NE": {
@@ -974,7 +975,7 @@
         },
         "SE": {
           "samples": [
-            "clear_water",
+            "light_sand",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -984,8 +985,10 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 1.0
-          }
+            "light_sand": 0.125,
+            "clear_water": 0.875
+          },
+          "divider": 0.125
         },
         "SW": {
           "samples": [
@@ -1006,7 +1009,7 @@
           "samples": [
             "light_sand",
             "light_sand",
-            "clear_water",
+            "light_sand",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -1014,16 +1017,17 @@
             "clear_water"
           ],
           "ratio": {
-            "light_sand": 0.25,
-            "clear_water": 0.75
+            "light_sand": 0.375,
+            "clear_water": 0.625
           },
-          "divider": 0.25
+          "divider": 0.375
         }
       },
       "features": [
+        "accent",
         "shiny"
       ],
-      "description": "clear water blending to light sand with a shiny speck"
+      "description": "clear water blending to light sand with a small detail, a shiny speck"
     },
     {
       "index": 13,
@@ -1260,6 +1264,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

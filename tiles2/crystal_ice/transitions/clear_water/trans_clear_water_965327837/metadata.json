@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.427,
-        "clear_water": 0.573
+        "crystal_ice": 0.447,
+        "clear_water": 0.553
       },
       "edges": {
         "NE": {
@@ -35,14 +35,14 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "clear_water",
+            "crystal_ice",
             "clear_water"
           ],
           "ratio": {
-            "crystal_ice": 0.75,
-            "clear_water": 0.25
+            "crystal_ice": 0.875,
+            "clear_water": 0.125
           },
-          "divider": 0.75
+          "divider": 0.875
         },
         "SE": {
           "samples": [
@@ -102,8 +102,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.215,
-        "clear_water": 0.785
+        "crystal_ice": 0.236,
+        "clear_water": 0.764
       },
       "edges": {
         "NE": {
@@ -112,16 +112,16 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "clear_water",
+            "crystal_ice",
             "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "crystal_ice": 0.5,
-            "clear_water": 0.5
+            "crystal_ice": 0.625,
+            "clear_water": 0.375
           },
-          "divider": 0.5
+          "divider": 0.625
         },
         "SE": {
           "samples": [
@@ -180,8 +180,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.207,
-        "clear_water": 0.793
+        "crystal_ice": 0.221,
+        "clear_water": 0.779
       },
       "edges": {
         "NE": {
@@ -190,16 +190,15 @@
             "crystal_ice",
             "crystal_ice",
             "clear_water",
-            "clear_water",
+            "crystal_ice",
             "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "crystal_ice": 0.375,
-            "clear_water": 0.625
-          },
-          "divider": 0.375
+            "crystal_ice": 0.5,
+            "clear_water": 0.5
+          }
         },
         "SE": {
           "samples": [
@@ -416,8 +415,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.227,
-        "clear_water": 0.773
+        "crystal_ice": 0.232,
+        "clear_water": 0.768
       },
       "edges": {
         "NE": {
@@ -426,16 +425,16 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "clear_water",
+            "crystal_ice",
             "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "crystal_ice": 0.5,
-            "clear_water": 0.5
+            "crystal_ice": 0.625,
+            "clear_water": 0.375
           },
-          "divider": 0.5
+          "divider": 0.625
         },
         "SE": {
           "samples": [
@@ -494,8 +493,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.244,
-        "clear_water": 0.756
+        "crystal_ice": 0.255,
+        "clear_water": 0.745
       },
       "edges": {
         "NE": {
@@ -572,8 +571,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.806,
-        "crystal_ice": 0.194
+        "clear_water": 0.785,
+        "crystal_ice": 0.215
       },
       "edges": {
         "NE": {
@@ -581,15 +580,15 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "clear_water",
+            "crystal_ice",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.625,
-            "crystal_ice": 0.375
+            "clear_water": 0.5,
+            "crystal_ice": 0.5
           }
         },
         "SE": {
@@ -649,8 +648,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.403,
-        "clear_water": 0.597
+        "crystal_ice": 0.428,
+        "clear_water": 0.572
       },
       "edges": {
         "NE": {
@@ -877,8 +876,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.303,
-        "clear_water": 0.697
+        "crystal_ice": 0.308,
+        "clear_water": 0.692
       },
       "edges": {
         "NE": {
@@ -954,8 +953,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.506,
-        "clear_water": 0.494
+        "crystal_ice": 0.525,
+        "clear_water": 0.475
       },
       "edges": {
         "NE": {
@@ -1033,8 +1032,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.407,
-        "clear_water": 0.593
+        "crystal_ice": 0.453,
+        "clear_water": 0.547
       },
       "edges": {
         "NE": {
@@ -1044,13 +1043,13 @@
             "crystal_ice",
             "clear_water",
             "clear_water",
-            "clear_water",
+            "crystal_ice",
             "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.625,
-            "clear_water": 0.375
+            "crystal_ice": 0.75,
+            "clear_water": 0.25
           }
         },
         "SE": {
@@ -1090,7 +1089,7 @@
           "samples": [
             "crystal_ice",
             "crystal_ice",
-            "clear_water",
+            "crystal_ice",
             "clear_water",
             "clear_water",
             "crystal_ice",
@@ -1098,15 +1097,13 @@
             "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.625,
-            "clear_water": 0.375
+            "crystal_ice": 0.75,
+            "clear_water": 0.25
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "clear water blending to crystal ice with a small detail"
+      "features": [],
+      "description": "clear water blending to crystal ice"
     },
     {
       "index": 14,
@@ -1114,8 +1111,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.325,
-        "clear_water": 0.675
+        "crystal_ice": 0.49,
+        "clear_water": 0.51
       },
       "edges": {
         "NE": {
@@ -1123,15 +1120,15 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "clear_water",
+            "crystal_ice",
             "crystal_ice",
             "clear_water",
             "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.75,
-            "clear_water": 0.25
+            "crystal_ice": 0.875,
+            "clear_water": 0.125
           }
         },
         "SE": {
@@ -1159,30 +1156,29 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "clear_water",
-            "clear_water"
+            "crystal_ice",
+            "crystal_ice"
           ],
           "ratio": {
-            "clear_water": 0.875,
-            "crystal_ice": 0.125
+            "clear_water": 0.625,
+            "crystal_ice": 0.375
           }
         },
         "NW": {
           "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
             "clear_water",
             "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
+            "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "clear_water": 0.875,
-            "crystal_ice": 0.125
-          },
-          "divider": 0.875
+            "crystal_ice": 0.75,
+            "clear_water": 0.25
+          }
         }
       },
       "features": [],
@@ -1274,6 +1270,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.867,
-        "regular_snow": 0.133
+        "light_sand": 0.871,
+        "regular_snow": 0.129
       },
       "edges": {
         "NE": {
@@ -641,8 +641,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.549,
-        "light_sand": 0.451
+        "regular_snow": 0.56,
+        "light_sand": 0.44
       },
       "edges": {
         "NE": {
@@ -720,8 +720,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.583,
-        "light_sand": 0.417
+        "regular_snow": 0.581,
+        "light_sand": 0.419
       },
       "edges": {
         "NE": {
@@ -955,8 +955,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.916,
-        "light_sand": 0.084
+        "regular_snow": 0.918,
+        "light_sand": 0.082
       },
       "edges": {
         "NE": {
@@ -1031,8 +1031,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.556,
-        "regular_snow": 0.444
+        "light_sand": 0.555,
+        "regular_snow": 0.445
       },
       "edges": {
         "NE": {
@@ -1265,6 +1265,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

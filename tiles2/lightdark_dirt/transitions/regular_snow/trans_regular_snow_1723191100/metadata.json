@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.612,
-        "lightdark_dirt": 0.388
+        "regular_snow": 0.625,
+        "lightdark_dirt": 0.375
       },
       "edges": {
         "NE": {
@@ -34,15 +34,15 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "lightdark_dirt",
+            "regular_snow",
             "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "regular_snow": 0.625,
-            "lightdark_dirt": 0.375
+            "regular_snow": 0.75,
+            "lightdark_dirt": 0.25
           },
-          "divider": 0.625
+          "divider": 0.75
         },
         "SE": {
           "samples": [
@@ -101,8 +101,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.509,
-        "regular_snow": 0.491
+        "regular_snow": 0.503,
+        "lightdark_dirt": 0.497
       },
       "edges": {
         "NE": {
@@ -166,8 +166,10 @@
           }
         }
       },
-      "features": [],
-      "description": "dirt blending to snow"
+      "features": [
+        "pebbles"
+      ],
+      "description": "snow blending to dirt with pebbles"
     },
     {
       "index": 2,
@@ -250,8 +252,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.727,
-        "regular_snow": 0.273
+        "lightdark_dirt": 0.71,
+        "regular_snow": 0.29
       },
       "edges": {
         "NE": {
@@ -326,8 +328,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.615,
-        "lightdark_dirt": 0.385
+        "regular_snow": 0.627,
+        "lightdark_dirt": 0.373
       },
       "edges": {
         "NE": {
@@ -335,17 +337,17 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "lightdark_dirt",
+            "regular_snow",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "regular_snow": 0.375,
-            "lightdark_dirt": 0.625
+            "regular_snow": 0.5,
+            "lightdark_dirt": 0.5
           },
-          "divider": 0.375
+          "divider": 0.5
         },
         "SE": {
           "samples": [
@@ -404,8 +406,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.556,
-        "lightdark_dirt": 0.444
+        "regular_snow": 0.635,
+        "lightdark_dirt": 0.365
       },
       "edges": {
         "NE": {
@@ -414,14 +416,14 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "lightdark_dirt",
+            "regular_snow",
             "lightdark_dirt",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 0.75,
-            "lightdark_dirt": 0.25
+            "regular_snow": 0.875,
+            "lightdark_dirt": 0.125
           }
         },
         "SE": {
@@ -485,8 +487,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.723,
-        "regular_snow": 0.277
+        "lightdark_dirt": 0.697,
+        "regular_snow": 0.303
       },
       "edges": {
         "NE": {
@@ -793,15 +795,15 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.765,
-        "regular_snow": 0.235
+        "lightdark_dirt": 0.651,
+        "regular_snow": 0.349
       },
       "edges": {
         "NE": {
           "samples": [
             "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
+            "regular_snow",
+            "regular_snow",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
@@ -809,7 +811,8 @@
             "lightdark_dirt"
           ],
           "ratio": {
-            "lightdark_dirt": 1.0
+            "lightdark_dirt": 0.75,
+            "regular_snow": 0.25
           }
         },
         "SE": {
@@ -852,16 +855,20 @@
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
-            "lightdark_dirt",
+            "regular_snow",
             "lightdark_dirt"
           ],
           "ratio": {
-            "lightdark_dirt": 1.0
+            "lightdark_dirt": 0.875,
+            "regular_snow": 0.125
           }
         }
       },
-      "features": [],
-      "description": "dirt blending to snow"
+      "features": [
+        "accent",
+        "flowers"
+      ],
+      "description": "dirt blending to snow with a small detail, small flowers"
     },
     {
       "index": 11,
@@ -945,8 +952,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.761,
-        "regular_snow": 0.239
+        "lightdark_dirt": 0.742,
+        "regular_snow": 0.258
       },
       "edges": {
         "NE": {
@@ -955,16 +962,16 @@
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
-            "lightdark_dirt",
+            "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "lightdark_dirt": 0.625,
-            "regular_snow": 0.375
+            "lightdark_dirt": 0.5,
+            "regular_snow": 0.5
           },
-          "divider": 0.625
+          "divider": 0.5
         },
         "SE": {
           "samples": [
@@ -1256,6 +1263,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.672,
-        "saturated_grass": 0.328
+        "stone_mountain": 0.676,
+        "saturated_grass": 0.324
       },
       "edges": {
         "NE": {
@@ -260,8 +260,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.621,
-        "saturated_grass": 0.379
+        "stone_mountain": 0.622,
+        "saturated_grass": 0.378
       },
       "edges": {
         "NE": {
@@ -338,8 +338,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.379,
-        "saturated_grass": 0.621
+        "saturated_grass": 0.609,
+        "stone_mountain": 0.391
       },
       "edges": {
         "NE": {
@@ -347,15 +347,15 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
+            "stone_mountain",
             "stone_mountain",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.875,
-            "stone_mountain": 0.125
+            "saturated_grass": 0.75,
+            "stone_mountain": 0.25
           }
         },
         "SE": {
@@ -408,10 +408,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "saturated grass blending to grey mountain stone with pebbles"
+      "features": [],
+      "description": "saturated grass blending to grey mountain stone"
     },
     {
       "index": 5,
@@ -419,8 +417,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.705,
-        "saturated_grass": 0.295
+        "stone_mountain": 0.711,
+        "saturated_grass": 0.289
       },
       "edges": {
         "NE": {
@@ -496,8 +494,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.412,
-        "saturated_grass": 0.588
+        "stone_mountain": 0.417,
+        "saturated_grass": 0.583
       },
       "edges": {
         "NE": {
@@ -580,8 +578,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.671,
-        "saturated_grass": 0.329
+        "stone_mountain": 0.685,
+        "saturated_grass": 0.315
       },
       "edges": {
         "NE": {
@@ -663,8 +661,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.583,
-        "saturated_grass": 0.417
+        "stone_mountain": 0.603,
+        "saturated_grass": 0.397
       },
       "edges": {
         "NE": {
@@ -821,8 +819,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.912,
-        "saturated_grass": 0.088
+        "stone_mountain": 0.917,
+        "saturated_grass": 0.083
       },
       "edges": {
         "NE": {
@@ -843,7 +841,7 @@
         "SE": {
           "samples": [
             "stone_mountain",
-            "saturated_grass",
+            "stone_mountain",
             "saturated_grass",
             "stone_mountain",
             "saturated_grass",
@@ -852,8 +850,8 @@
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.625,
-            "saturated_grass": 0.375
+            "stone_mountain": 0.75,
+            "saturated_grass": 0.25
           }
         },
         "SW": {
@@ -890,10 +888,9 @@
       "features": [
         "flowers",
         "bare_soil",
-        "pebbles",
-        "accent"
+        "pebbles"
       ],
-      "description": "grey mountain stone blending to saturated grass with small flowers, a bare soil patch, pebbles, a small detail"
+      "description": "grey mountain stone blending to saturated grass with small flowers, a bare soil patch, pebbles"
     },
     {
       "index": 11,
@@ -901,8 +898,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.779,
-        "saturated_grass": 0.221
+        "stone_mountain": 0.791,
+        "saturated_grass": 0.209
       },
       "edges": {
         "NE": {
@@ -981,8 +978,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.647,
-        "stone_mountain": 0.353
+        "saturated_grass": 0.642,
+        "stone_mountain": 0.358
       },
       "edges": {
         "NE": {
@@ -990,17 +987,17 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
+            "stone_mountain",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "saturated_grass": 0.5,
-            "stone_mountain": 0.5
+            "saturated_grass": 0.375,
+            "stone_mountain": 0.625
           },
-          "divider": 0.5
+          "divider": 0.375
         },
         "SE": {
           "samples": [
@@ -1137,8 +1134,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.745,
-        "stone_mountain": 0.255
+        "saturated_grass": 0.737,
+        "stone_mountain": 0.263
       },
       "edges": {
         "NE": {
@@ -1215,8 +1212,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.592,
-        "saturated_grass": 0.408
+        "stone_mountain": 0.6,
+        "saturated_grass": 0.4
       },
       "edges": {
         "NE": {
@@ -1284,10 +1281,10 @@
         }
       },
       "features": [
-        "pebbles",
-        "accent"
+        "accent",
+        "pebbles"
       ],
-      "description": "grey mountain stone blending to saturated grass with pebbles, a small detail"
+      "description": "grey mountain stone blending to saturated grass with a small detail, pebbles"
     }
   ],
   "generated_at": "2026-07-05T09:54:24+00:00",
@@ -1302,6 +1299,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

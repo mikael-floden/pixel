@@ -101,8 +101,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.558,
-        "regular_snow": 0.442
+        "crystal_ice": 0.555,
+        "regular_snow": 0.445
       },
       "edges": {
         "NE": {
@@ -256,8 +256,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.795,
-        "crystal_ice": 0.205
+        "regular_snow": 0.798,
+        "crystal_ice": 0.202
       },
       "edges": {
         "NE": {
@@ -331,8 +331,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.364,
-        "crystal_ice": 0.636
+        "regular_snow": 0.368,
+        "crystal_ice": 0.632
       },
       "edges": {
         "NE": {
@@ -484,8 +484,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.444,
-        "crystal_ice": 0.556
+        "regular_snow": 0.445,
+        "crystal_ice": 0.555
       },
       "edges": {
         "NE": {
@@ -634,8 +634,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.649,
-        "crystal_ice": 0.351
+        "regular_snow": 0.655,
+        "crystal_ice": 0.345
       },
       "edges": {
         "NE": {
@@ -791,15 +791,15 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.518,
-        "crystal_ice": 0.482
+        "regular_snow": 0.52,
+        "crystal_ice": 0.48
       },
       "edges": {
         "NE": {
           "samples": [
             "regular_snow",
             "regular_snow",
-            "crystal_ice",
+            "regular_snow",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
@@ -807,8 +807,8 @@
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 0.5,
-            "crystal_ice": 0.5
+            "regular_snow": 0.625,
+            "crystal_ice": 0.375
           }
         },
         "SE": {
@@ -943,8 +943,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.667,
-        "crystal_ice": 0.333
+        "regular_snow": 0.672,
+        "crystal_ice": 0.328
       },
       "edges": {
         "NE": {
@@ -1262,6 +1262,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

@@ -100,8 +100,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.572,
-        "regular_snow": 0.428
+        "stone_mountain": 0.556,
+        "regular_snow": 0.444
       },
       "edges": {
         "NE": {
@@ -109,17 +109,17 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
+            "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "stone_mountain": 0.5,
-            "regular_snow": 0.5
+            "stone_mountain": 0.375,
+            "regular_snow": 0.625
           },
-          "divider": 0.5
+          "divider": 0.375
         },
         "SE": {
           "samples": [
@@ -181,8 +181,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.849,
-        "stone_mountain": 0.151
+        "regular_snow": 0.865,
+        "stone_mountain": 0.135
       },
       "edges": {
         "NE": {
@@ -193,14 +193,14 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "stone_mountain",
+            "regular_snow",
             "stone_mountain"
           ],
           "ratio": {
-            "regular_snow": 0.75,
-            "stone_mountain": 0.25
+            "regular_snow": 0.875,
+            "stone_mountain": 0.125
           },
-          "divider": 0.75
+          "divider": 0.875
         },
         "SE": {
           "samples": [
@@ -261,8 +261,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.606,
-        "stone_mountain": 0.394
+        "regular_snow": 0.613,
+        "stone_mountain": 0.387
       },
       "edges": {
         "NE": {
@@ -342,8 +342,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.657,
-        "stone_mountain": 0.343
+        "regular_snow": 0.669,
+        "stone_mountain": 0.331
       },
       "edges": {
         "NE": {
@@ -423,8 +423,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.875,
-        "stone_mountain": 0.125
+        "regular_snow": 0.877,
+        "stone_mountain": 0.123
       },
       "edges": {
         "NE": {
@@ -580,8 +580,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.569,
-        "regular_snow": 0.431
+        "stone_mountain": 0.459,
+        "regular_snow": 0.541
       },
       "edges": {
         "NE": {
@@ -589,15 +589,15 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "stone_mountain",
+            "regular_snow",
             "stone_mountain",
             "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 0.75,
-            "stone_mountain": 0.25
+            "regular_snow": 0.875,
+            "stone_mountain": 0.125
           }
         },
         "SE": {
@@ -634,26 +634,25 @@
         },
         "NW": {
           "samples": [
-            "stone_mountain",
-            "stone_mountain",
             "regular_snow",
             "regular_snow",
             "regular_snow",
+            "regular_snow",
+            "regular_snow",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain"
+            "regular_snow"
           ],
           "ratio": {
-            "stone_mountain": 0.625,
-            "regular_snow": 0.375
+            "regular_snow": 0.75,
+            "stone_mountain": 0.25
           }
         }
       },
       "features": [
-        "pebbles",
-        "accent"
+        "pebbles"
       ],
-      "description": "grey mountain stone blending to snow with pebbles, a small detail"
+      "description": "snow blending to grey mountain stone with pebbles"
     },
     {
       "index": 8,
@@ -661,8 +660,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.524,
-        "regular_snow": 0.476
+        "stone_mountain": 0.435,
+        "regular_snow": 0.565
       },
       "edges": {
         "NE": {
@@ -670,16 +669,17 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
             "regular_snow",
             "regular_snow",
-            "stone_mountain",
+            "regular_snow",
+            "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "stone_mountain": 0.625,
-            "regular_snow": 0.375
-          }
+            "stone_mountain": 0.375,
+            "regular_snow": 0.625
+          },
+          "divider": 0.375
         },
         "SE": {
           "samples": [
@@ -721,12 +721,12 @@
             "stone_mountain",
             "regular_snow",
             "regular_snow",
-            "stone_mountain",
+            "regular_snow",
             "stone_mountain"
           ],
           "ratio": {
-            "regular_snow": 0.375,
-            "stone_mountain": 0.625
+            "regular_snow": 0.5,
+            "stone_mountain": 0.5
           }
         }
       },
@@ -735,7 +735,7 @@
         "accent",
         "water"
       ],
-      "description": "grey mountain stone blending to snow with pebbles, a small detail, a small puddle"
+      "description": "snow blending to grey mountain stone with pebbles, a small detail, a small puddle"
     },
     {
       "index": 9,
@@ -743,8 +743,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.655,
-        "regular_snow": 0.345
+        "stone_mountain": 0.627,
+        "regular_snow": 0.373
       },
       "edges": {
         "NE": {
@@ -755,12 +755,12 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "stone_mountain",
+            "regular_snow",
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.375,
-            "regular_snow": 0.625
+            "stone_mountain": 0.25,
+            "regular_snow": 0.75
           }
         },
         "SE": {
@@ -825,8 +825,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.599,
-        "stone_mountain": 0.401
+        "regular_snow": 0.616,
+        "stone_mountain": 0.384
       },
       "edges": {
         "NE": {
@@ -881,17 +881,17 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
+            "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "stone_mountain": 0.5,
-            "regular_snow": 0.5
+            "stone_mountain": 0.375,
+            "regular_snow": 0.625
           },
-          "divider": 0.5
+          "divider": 0.375
         }
       },
       "features": [
@@ -906,8 +906,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.807,
-        "stone_mountain": 0.193
+        "regular_snow": 0.842,
+        "stone_mountain": 0.158
       },
       "edges": {
         "NE": {
@@ -948,20 +948,19 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
+            "regular_snow",
             "stone_mountain"
           ],
           "ratio": {
-            "regular_snow": 0.375,
-            "stone_mountain": 0.625
-          },
-          "divider": 0.375
+            "regular_snow": 0.5,
+            "stone_mountain": 0.5
+          }
         },
         "NW": {
           "samples": [
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
+            "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow",
@@ -969,10 +968,10 @@
             "regular_snow"
           ],
           "ratio": {
-            "stone_mountain": 0.375,
-            "regular_snow": 0.625
+            "stone_mountain": 0.25,
+            "regular_snow": 0.75
           },
-          "divider": 0.375
+          "divider": 0.25
         }
       },
       "features": [
@@ -987,8 +986,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.784,
-        "regular_snow": 0.216
+        "stone_mountain": 0.765,
+        "regular_snow": 0.235
       },
       "edges": {
         "NE": {
@@ -997,16 +996,16 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
+            "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "stone_mountain": 0.625,
-            "regular_snow": 0.375
+            "stone_mountain": 0.5,
+            "regular_snow": 0.5
           },
-          "divider": 0.625
+          "divider": 0.5
         },
         "SE": {
           "samples": [
@@ -1144,8 +1143,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.519,
-        "stone_mountain": 0.481
+        "regular_snow": 0.599,
+        "stone_mountain": 0.401
       },
       "edges": {
         "NE": {
@@ -1154,14 +1153,13 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "stone_mountain",
-            "stone_mountain",
+            "regular_snow",
+            "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 0.75,
-            "stone_mountain": 0.25
+            "regular_snow": 1.0
           }
         },
         "SE": {
@@ -1188,19 +1186,19 @@
             "stone_mountain",
             "stone_mountain",
             "regular_snow",
-            "stone_mountain",
+            "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "stone_mountain": 0.625,
-            "regular_snow": 0.375
+            "stone_mountain": 0.5,
+            "regular_snow": 0.5
           }
         },
         "NW": {
           "samples": [
             "regular_snow",
             "regular_snow",
-            "stone_mountain",
+            "regular_snow",
             "stone_mountain",
             "regular_snow",
             "regular_snow",
@@ -1208,8 +1206,8 @@
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 0.75,
-            "stone_mountain": 0.25
+            "regular_snow": 0.875,
+            "stone_mountain": 0.125
           }
         }
       },
@@ -1225,8 +1223,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.506,
-        "stone_mountain": 0.494
+        "regular_snow": 0.622,
+        "stone_mountain": 0.378
       },
       "edges": {
         "NE": {
@@ -1234,15 +1232,15 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
+            "regular_snow",
             "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
+            "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 0.625,
-            "stone_mountain": 0.375
+            "regular_snow": 0.875,
+            "stone_mountain": 0.125
           }
         },
         "SE": {
@@ -1283,23 +1281,23 @@
             "regular_snow",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
+            "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 0.625,
-            "stone_mountain": 0.375
+            "regular_snow": 0.75,
+            "stone_mountain": 0.25
           }
         }
       },
       "features": [
-        "accent",
         "pebbles",
+        "accent",
         "water"
       ],
-      "description": "snow blending to grey mountain stone with a small detail, pebbles, a small puddle"
+      "description": "snow blending to grey mountain stone with pebbles, a small detail, a small puddle"
     }
   ],
   "generated_at": "2026-07-05T09:56:39+00:00",
@@ -1314,6 +1312,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

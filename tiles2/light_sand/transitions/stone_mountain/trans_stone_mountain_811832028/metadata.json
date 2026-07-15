@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.84,
-        "stone_mountain": 0.16
+        "light_sand": 0.842,
+        "stone_mountain": 0.158
       },
       "edges": {
         "NE": {
@@ -104,8 +104,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.95,
-        "stone_mountain": 0.05
+        "light_sand": 0.951,
+        "stone_mountain": 0.049
       },
       "edges": {
         "NE": {
@@ -173,7 +173,7 @@
       "features": [
         "pebbles"
       ],
-      "description": "light sand blending to grey mountain stone with pebbles"
+      "description": "light sand with pebbles"
     },
     {
       "index": 2,
@@ -328,14 +328,14 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.264,
-        "light_sand": 0.736
+        "stone_mountain": 0.252,
+        "light_sand": 0.748
       },
       "edges": {
         "NE": {
           "samples": [
             "stone_mountain",
-            "stone_mountain",
+            "light_sand",
             "light_sand",
             "light_sand",
             "light_sand",
@@ -344,10 +344,10 @@
             "light_sand"
           ],
           "ratio": {
-            "stone_mountain": 0.25,
-            "light_sand": 0.75
+            "stone_mountain": 0.125,
+            "light_sand": 0.875
           },
-          "divider": 0.25
+          "divider": 0.125
         },
         "SE": {
           "samples": [
@@ -488,8 +488,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.602,
-        "light_sand": 0.398
+        "stone_mountain": 0.588,
+        "light_sand": 0.412
       },
       "edges": {
         "NE": {
@@ -533,17 +533,17 @@
             "stone_mountain",
             "light_sand",
             "light_sand",
-            "stone_mountain",
-            "stone_mountain"
+            "light_sand",
+            "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.5,
-            "stone_mountain": 0.5
+            "light_sand": 0.75,
+            "stone_mountain": 0.25
           }
         },
         "NW": {
           "samples": [
-            "stone_mountain",
+            "light_sand",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
@@ -553,8 +553,10 @@
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 1.0
-          }
+            "light_sand": 0.125,
+            "stone_mountain": 0.875
+          },
+          "divider": 0.125
         }
       },
       "features": [
@@ -716,10 +718,10 @@
         }
       },
       "features": [
-        "pebbles",
-        "shiny"
+        "shiny",
+        "pebbles"
       ],
-      "description": "grey mountain stone blending to light sand with pebbles, a shiny speck"
+      "description": "grey mountain stone blending to light sand with a shiny speck, pebbles"
     },
     {
       "index": 9,
@@ -1032,10 +1034,9 @@
         }
       },
       "features": [
-        "pebbles",
-        "accent"
+        "pebbles"
       ],
-      "description": "grey mountain stone with pebbles, a small detail"
+      "description": "grey mountain stone with pebbles"
     },
     {
       "index": 13,
@@ -1280,6 +1281,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

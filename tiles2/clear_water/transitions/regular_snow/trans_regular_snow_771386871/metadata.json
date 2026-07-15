@@ -96,8 +96,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.208,
-        "clear_water": 0.792
+        "regular_snow": 0.209,
+        "clear_water": 0.791
       },
       "edges": {
         "NE": {
@@ -405,8 +405,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.635,
-        "clear_water": 0.365
+        "regular_snow": 0.628,
+        "clear_water": 0.372
       },
       "edges": {
         "NE": {
@@ -415,16 +415,16 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "regular_snow",
+            "clear_water",
             "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "regular_snow": 0.625,
-            "clear_water": 0.375
+            "regular_snow": 0.5,
+            "clear_water": 0.5
           },
-          "divider": 0.625
+          "divider": 0.5
         },
         "SE": {
           "samples": [
@@ -939,8 +939,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.49,
-        "clear_water": 0.51
+        "regular_snow": 0.491,
+        "clear_water": 0.509
       },
       "edges": {
         "NE": {
@@ -1175,8 +1175,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.687,
-        "clear_water": 0.313
+        "regular_snow": 0.719,
+        "clear_water": 0.281
       },
       "edges": {
         "NE": {
@@ -1184,15 +1184,15 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "clear_water",
+            "regular_snow",
             "clear_water",
             "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 0.75,
-            "clear_water": 0.25
+            "regular_snow": 0.875,
+            "clear_water": 0.125
           }
         },
         "SE": {
@@ -1259,6 +1259,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.844,
-        "regular_snow": 0.156
+        "light_sand": 0.835,
+        "regular_snow": 0.165
       },
       "edges": {
         "NE": {
@@ -92,11 +92,8 @@
           "divider": 0.5
         }
       },
-      "features": [
-        "pebbles",
-        "accent"
-      ],
-      "description": "light sand blending to snow with pebbles, a small detail"
+      "features": [],
+      "description": "light sand blending to snow"
     },
     {
       "index": 1,
@@ -104,8 +101,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.521,
-        "light_sand": 0.479
+        "regular_snow": 0.512,
+        "light_sand": 0.488
       },
       "edges": {
         "NE": {
@@ -175,11 +172,8 @@
           "divider": 0.25
         }
       },
-      "features": [
-        "pebbles",
-        "water"
-      ],
-      "description": "snow blending to light sand with pebbles, a small puddle"
+      "features": [],
+      "description": "snow blending to light sand"
     },
     {
       "index": 2,
@@ -263,8 +257,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.817,
-        "light_sand": 0.183
+        "regular_snow": 0.807,
+        "light_sand": 0.193
       },
       "edges": {
         "NE": {
@@ -426,8 +420,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.56,
-        "regular_snow": 0.44
+        "light_sand": 0.556,
+        "regular_snow": 0.444
       },
       "edges": {
         "NE": {
@@ -506,14 +500,14 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.363,
-        "regular_snow": 0.637
+        "light_sand": 0.362,
+        "regular_snow": 0.638
       },
       "edges": {
         "NE": {
           "samples": [
             "light_sand",
-            "regular_snow",
+            "light_sand",
             "regular_snow",
             "regular_snow",
             "regular_snow",
@@ -522,10 +516,10 @@
             "regular_snow"
           ],
           "ratio": {
-            "light_sand": 0.125,
-            "regular_snow": 0.875
+            "light_sand": 0.25,
+            "regular_snow": 0.75
           },
-          "divider": 0.125
+          "divider": 0.25
         },
         "SE": {
           "samples": [
@@ -577,11 +571,9 @@
         }
       },
       "features": [
-        "pebbles",
-        "accent",
-        "water"
+        "pebbles"
       ],
-      "description": "snow blending to light sand with pebbles, a small detail, a small puddle"
+      "description": "snow blending to light sand with pebbles"
     },
     {
       "index": 7,
@@ -589,8 +581,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.654,
-        "light_sand": 0.346
+        "regular_snow": 0.653,
+        "light_sand": 0.347
       },
       "edges": {
         "NE": {
@@ -825,8 +817,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.762,
-        "light_sand": 0.238
+        "regular_snow": 0.765,
+        "light_sand": 0.235
       },
       "edges": {
         "NE": {
@@ -903,8 +895,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.299,
-        "regular_snow": 0.701
+        "regular_snow": 0.725,
+        "light_sand": 0.275
       },
       "edges": {
         "NE": {
@@ -984,8 +976,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.642,
-        "light_sand": 0.358
+        "regular_snow": 0.647,
+        "light_sand": 0.353
       },
       "edges": {
         "NE": {
@@ -1068,8 +1060,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.466,
-        "light_sand": 0.534
+        "regular_snow": 0.464,
+        "light_sand": 0.536
       },
       "edges": {
         "NE": {
@@ -1140,11 +1132,11 @@
         }
       },
       "features": [
-        "water",
         "accent",
+        "water",
         "pebbles"
       ],
-      "description": "light sand blending to snow with a small puddle, a small detail, pebbles"
+      "description": "light sand blending to snow with a small detail, a small puddle, pebbles"
     },
     {
       "index": 14,
@@ -1152,8 +1144,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.679,
-        "regular_snow": 0.321
+        "light_sand": 0.682,
+        "regular_snow": 0.318
       },
       "edges": {
         "NE": {
@@ -1195,12 +1187,12 @@
             "light_sand",
             "regular_snow",
             "regular_snow",
-            "regular_snow",
+            "light_sand",
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.625,
-            "regular_snow": 0.375
+            "light_sand": 0.75,
+            "regular_snow": 0.25
           }
         },
         "NW": {
@@ -1231,8 +1223,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.928,
-        "light_sand": 0.072
+        "regular_snow": 0.931,
+        "light_sand": 0.069
       },
       "edges": {
         "NE": {
@@ -1300,10 +1292,9 @@
         }
       },
       "features": [
-        "water",
-        "pebbles"
+        "water"
       ],
-      "description": "snow blending to light sand with a small puddle, pebbles"
+      "description": "snow blending to light sand with a small puddle"
     }
   ],
   "generated_at": "2026-07-06T13:11:52+00:00",
@@ -1318,6 +1309,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

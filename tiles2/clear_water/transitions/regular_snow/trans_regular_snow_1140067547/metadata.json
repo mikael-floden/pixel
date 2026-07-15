@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.382,
-        "clear_water": 0.618
+        "regular_snow": 0.4,
+        "clear_water": 0.6
       },
       "edges": {
         "NE": {
@@ -93,10 +93,9 @@
         }
       },
       "features": [
-        "pebbles",
         "accent"
       ],
-      "description": "clear water blending to snow with pebbles, a small detail"
+      "description": "clear water blending to snow with a small detail"
     },
     {
       "index": 1,
@@ -104,8 +103,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.863,
-        "regular_snow": 0.137
+        "clear_water": 0.848,
+        "regular_snow": 0.152
       },
       "edges": {
         "NE": {
@@ -114,16 +113,16 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "clear_water",
+            "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "clear_water": 0.625,
-            "regular_snow": 0.375
+            "clear_water": 0.5,
+            "regular_snow": 0.5
           },
-          "divider": 0.625
+          "divider": 0.5
         },
         "SE": {
           "samples": [
@@ -175,10 +174,9 @@
       },
       "features": [
         "accent",
-        "pebbles",
         "water"
       ],
-      "description": "clear water blending to snow with a small detail, pebbles, a small puddle"
+      "description": "clear water blending to snow with a small detail, a small puddle"
     },
     {
       "index": 2,
@@ -186,8 +184,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.645,
-        "regular_snow": 0.355
+        "clear_water": 0.603,
+        "regular_snow": 0.397
       },
       "edges": {
         "NE": {
@@ -196,16 +194,16 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "clear_water",
-            "clear_water",
+            "regular_snow",
+            "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "clear_water": 0.75,
-            "regular_snow": 0.25
+            "clear_water": 0.5,
+            "regular_snow": 0.5
           },
-          "divider": 0.75
+          "divider": 0.5
         },
         "SE": {
           "samples": [
@@ -257,10 +255,9 @@
       },
       "features": [
         "accent",
-        "pebbles",
-        "water"
+        "pebbles"
       ],
-      "description": "clear water blending to snow with a small detail, pebbles, a small puddle"
+      "description": "clear water blending to snow with a small detail, pebbles"
     },
     {
       "index": 3,
@@ -268,8 +265,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.626,
-        "clear_water": 0.374
+        "regular_snow": 0.637,
+        "clear_water": 0.363
       },
       "edges": {
         "NE": {
@@ -338,10 +335,9 @@
         }
       },
       "features": [
-        "pebbles",
         "accent"
       ],
-      "description": "snow blending to clear water with pebbles, a small detail"
+      "description": "snow blending to clear water with a small detail"
     },
     {
       "index": 4,
@@ -349,8 +345,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.85,
-        "clear_water": 0.15
+        "regular_snow": 0.869,
+        "clear_water": 0.131
       },
       "edges": {
         "NE": {
@@ -359,14 +355,13 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "clear_water",
+            "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 0.875,
-            "clear_water": 0.125
+            "regular_snow": 1.0
           }
         },
         "SE": {
@@ -419,12 +414,8 @@
           }
         }
       },
-      "features": [
-        "pebbles",
-        "water",
-        "accent"
-      ],
-      "description": "snow blending to clear water with pebbles, a small puddle, a small detail"
+      "features": [],
+      "description": "snow blending to clear water"
     },
     {
       "index": 5,
@@ -432,8 +423,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.667,
-        "clear_water": 0.333
+        "regular_snow": 0.671,
+        "clear_water": 0.329
       },
       "edges": {
         "NE": {
@@ -510,28 +501,29 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.746,
-        "regular_snow": 0.254
+        "clear_water": 0.575,
+        "regular_snow": 0.425
       },
       "edges": {
         "NE": {
           "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
             "clear_water",
             "clear_water",
             "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water"
+            "regular_snow",
+            "regular_snow"
           ],
           "ratio": {
-            "clear_water": 1.0
+            "regular_snow": 0.625,
+            "clear_water": 0.375
           }
         },
         "SE": {
           "samples": [
-            "clear_water",
+            "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow",
@@ -541,9 +533,10 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.625,
-            "regular_snow": 0.375
-          }
+            "regular_snow": 0.5,
+            "clear_water": 0.5
+          },
+          "divider": 0.5
         },
         "SW": {
           "samples": [
@@ -553,12 +546,12 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "clear_water",
+            "regular_snow",
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.625,
-            "regular_snow": 0.375
+            "clear_water": 0.5,
+            "regular_snow": 0.5
           }
         },
         "NW": {
@@ -568,13 +561,15 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water"
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
           ],
           "ratio": {
-            "clear_water": 1.0
-          }
+            "clear_water": 0.625,
+            "regular_snow": 0.375
+          },
+          "divider": 0.625
         }
       },
       "features": [],
@@ -586,26 +581,25 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.735,
-        "regular_snow": 0.265
+        "clear_water": 0.608,
+        "regular_snow": 0.392
       },
       "edges": {
         "NE": {
           "samples": [
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
             "clear_water",
             "clear_water",
             "clear_water",
             "regular_snow"
           ],
           "ratio": {
-            "clear_water": 0.875,
-            "regular_snow": 0.125
-          },
-          "divider": 0.875
+            "regular_snow": 0.625,
+            "clear_water": 0.375
+          }
         },
         "SE": {
           "samples": [
@@ -632,12 +626,12 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "clear_water",
+            "regular_snow",
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.625,
-            "regular_snow": 0.375
+            "clear_water": 0.5,
+            "regular_snow": 0.5
           }
         },
         "NW": {
@@ -647,13 +641,15 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water"
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
           ],
           "ratio": {
-            "clear_water": 1.0
-          }
+            "clear_water": 0.625,
+            "regular_snow": 0.375
+          },
+          "divider": 0.625
         }
       },
       "features": [],
@@ -665,8 +661,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.797,
-        "clear_water": 0.203
+        "regular_snow": 0.815,
+        "clear_water": 0.185
       },
       "edges": {
         "NE": {
@@ -689,7 +685,7 @@
         "SE": {
           "samples": [
             "clear_water",
-            "clear_water",
+            "regular_snow",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -698,7 +694,8 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 1.0
+            "clear_water": 0.875,
+            "regular_snow": 0.125
           }
         },
         "SW": {
@@ -819,8 +816,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.698,
-        "clear_water": 0.302
+        "regular_snow": 0.72,
+        "clear_water": 0.28
       },
       "edges": {
         "NE": {
@@ -843,7 +840,7 @@
         "SE": {
           "samples": [
             "clear_water",
-            "clear_water",
+            "regular_snow",
             "clear_water",
             "clear_water",
             "regular_snow",
@@ -852,8 +849,8 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.875,
-            "regular_snow": 0.125
+            "clear_water": 0.75,
+            "regular_snow": 0.25
           }
         },
         "SW": {
@@ -898,8 +895,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.746,
-        "clear_water": 0.254
+        "regular_snow": 0.762,
+        "clear_water": 0.238
       },
       "edges": {
         "NE": {
@@ -978,8 +975,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.809,
-        "clear_water": 0.191
+        "regular_snow": 0.821,
+        "clear_water": 0.179
       },
       "edges": {
         "NE": {
@@ -1001,7 +998,7 @@
         "SE": {
           "samples": [
             "clear_water",
-            "clear_water",
+            "regular_snow",
             "clear_water",
             "regular_snow",
             "clear_water",
@@ -1010,8 +1007,8 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.875,
-            "regular_snow": 0.125
+            "clear_water": 0.75,
+            "regular_snow": 0.25
           }
         },
         "SW": {
@@ -1054,8 +1051,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.614,
-        "clear_water": 0.386
+        "regular_snow": 0.615,
+        "clear_water": 0.385
       },
       "edges": {
         "NE": {
@@ -1132,8 +1129,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.353,
-        "clear_water": 0.647
+        "regular_snow": 0.369,
+        "clear_water": 0.631
       },
       "edges": {
         "NE": {
@@ -1210,8 +1207,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.437,
-        "clear_water": 0.563
+        "regular_snow": 0.438,
+        "clear_water": 0.562
       },
       "edges": {
         "NE": {
@@ -1295,6 +1292,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

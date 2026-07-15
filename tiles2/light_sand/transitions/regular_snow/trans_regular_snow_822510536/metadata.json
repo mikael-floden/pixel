@@ -863,8 +863,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.926,
-        "light_sand": 0.074
+        "regular_snow": 0.927,
+        "light_sand": 0.073
       },
       "edges": {
         "NE": {
@@ -938,8 +938,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.779,
-        "light_sand": 0.221
+        "regular_snow": 0.78,
+        "light_sand": 0.22
       },
       "edges": {
         "NE": {
@@ -1239,6 +1239,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

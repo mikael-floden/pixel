@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.894,
-        "saturated_grass": 0.106
+        "stone_mountain": 0.886,
+        "saturated_grass": 0.114
       },
       "edges": {
         "NE": {
@@ -35,14 +35,14 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
+            "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "stone_mountain": 0.875,
-            "saturated_grass": 0.125
+            "stone_mountain": 0.75,
+            "saturated_grass": 0.25
           },
-          "divider": 0.875
+          "divider": 0.75
         },
         "SE": {
           "samples": [
@@ -104,8 +104,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.563,
-        "saturated_grass": 0.437
+        "stone_mountain": 0.576,
+        "saturated_grass": 0.424
       },
       "edges": {
         "NE": {
@@ -185,8 +185,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.836,
-        "stone_mountain": 0.164
+        "saturated_grass": 0.795,
+        "stone_mountain": 0.205
       },
       "edges": {
         "NE": {
@@ -197,14 +197,14 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
+            "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "saturated_grass": 0.875,
-            "stone_mountain": 0.125
+            "saturated_grass": 0.75,
+            "stone_mountain": 0.25
           },
-          "divider": 0.875
+          "divider": 0.75
         },
         "SE": {
           "samples": [
@@ -265,8 +265,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.719,
-        "stone_mountain": 0.281
+        "saturated_grass": 0.693,
+        "stone_mountain": 0.307
       },
       "edges": {
         "NE": {
@@ -276,15 +276,15 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
+            "stone_mountain",
             "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "saturated_grass": 0.75,
-            "stone_mountain": 0.25
+            "saturated_grass": 0.625,
+            "stone_mountain": 0.375
           },
-          "divider": 0.75
+          "divider": 0.625
         },
         "SE": {
           "samples": [
@@ -347,8 +347,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.841,
-        "saturated_grass": 0.159
+        "stone_mountain": 0.87,
+        "saturated_grass": 0.13
       },
       "edges": {
         "NE": {
@@ -371,7 +371,7 @@
         "SE": {
           "samples": [
             "saturated_grass",
-            "saturated_grass",
+            "stone_mountain",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
@@ -380,10 +380,9 @@
             "stone_mountain"
           ],
           "ratio": {
-            "saturated_grass": 0.625,
-            "stone_mountain": 0.375
-          },
-          "divider": 0.625
+            "saturated_grass": 0.5,
+            "stone_mountain": 0.5
+          }
         },
         "SW": {
           "samples": [
@@ -428,8 +427,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.616,
-        "saturated_grass": 0.384
+        "stone_mountain": 0.617,
+        "saturated_grass": 0.383
       },
       "edges": {
         "NE": {
@@ -510,8 +509,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.772,
-        "stone_mountain": 0.228
+        "saturated_grass": 0.668,
+        "stone_mountain": 0.332
       },
       "edges": {
         "NE": {
@@ -565,18 +564,20 @@
         },
         "NW": {
           "samples": [
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 1.0
-          }
+            "stone_mountain": 0.5,
+            "saturated_grass": 0.5
+          },
+          "divider": 0.5
         }
       },
       "features": [],
@@ -588,8 +589,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.672,
-        "stone_mountain": 0.328
+        "saturated_grass": 0.662,
+        "stone_mountain": 0.338
       },
       "edges": {
         "NE": {
@@ -646,7 +647,7 @@
         "NW": {
           "samples": [
             "stone_mountain",
-            "saturated_grass",
+            "stone_mountain",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
@@ -655,10 +656,10 @@
             "saturated_grass"
           ],
           "ratio": {
-            "stone_mountain": 0.125,
-            "saturated_grass": 0.875
+            "stone_mountain": 0.25,
+            "saturated_grass": 0.75
           },
-          "divider": 0.125
+          "divider": 0.25
         }
       },
       "features": [
@@ -672,8 +673,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.734,
-        "saturated_grass": 0.266
+        "stone_mountain": 0.738,
+        "saturated_grass": 0.262
       },
       "edges": {
         "NE": {
@@ -753,8 +754,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.718,
-        "saturated_grass": 0.282
+        "stone_mountain": 0.716,
+        "saturated_grass": 0.284
       },
       "edges": {
         "NE": {
@@ -836,8 +837,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.793,
-        "stone_mountain": 0.207
+        "saturated_grass": 0.732,
+        "stone_mountain": 0.268
       },
       "edges": {
         "NE": {
@@ -880,16 +881,16 @@
             "stone_mountain",
             "saturated_grass",
             "stone_mountain",
-            "saturated_grass"
+            "stone_mountain"
           ],
           "ratio": {
-            "saturated_grass": 0.75,
-            "stone_mountain": 0.25
+            "saturated_grass": 0.625,
+            "stone_mountain": 0.375
           }
         },
         "NW": {
           "samples": [
-            "saturated_grass",
+            "stone_mountain",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
@@ -899,8 +900,10 @@
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 1.0
-          }
+            "stone_mountain": 0.125,
+            "saturated_grass": 0.875
+          },
+          "divider": 0.125
         }
       },
       "features": [
@@ -914,8 +917,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.655,
-        "stone_mountain": 0.345
+        "saturated_grass": 0.643,
+        "stone_mountain": 0.357
       },
       "edges": {
         "NE": {
@@ -998,15 +1001,15 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.676,
-        "saturated_grass": 0.324
+        "stone_mountain": 0.698,
+        "saturated_grass": 0.302
       },
       "edges": {
         "NE": {
           "samples": [
             "stone_mountain",
             "stone_mountain",
-            "saturated_grass",
+            "stone_mountain",
             "stone_mountain",
             "saturated_grass",
             "saturated_grass",
@@ -1014,9 +1017,10 @@
             "saturated_grass"
           ],
           "ratio": {
-            "stone_mountain": 0.375,
-            "saturated_grass": 0.625
-          }
+            "stone_mountain": 0.5,
+            "saturated_grass": 0.5
+          },
+          "divider": 0.5
         },
         "SE": {
           "samples": [
@@ -1067,10 +1071,10 @@
         }
       },
       "features": [
-        "pebbles",
-        "accent"
+        "accent",
+        "pebbles"
       ],
-      "description": "grey mountain stone blending to saturated grass with pebbles, a small detail"
+      "description": "grey mountain stone blending to saturated grass with a small detail, pebbles"
     },
     {
       "index": 13,
@@ -1078,8 +1082,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.639,
-        "saturated_grass": 0.361
+        "stone_mountain": 0.665,
+        "saturated_grass": 0.335
       },
       "edges": {
         "NE": {
@@ -1091,11 +1095,11 @@
             "saturated_grass",
             "stone_mountain",
             "stone_mountain",
-            "saturated_grass"
+            "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.625,
-            "saturated_grass": 0.375
+            "stone_mountain": 0.75,
+            "saturated_grass": 0.25
           }
         },
         "SE": {
@@ -1148,11 +1152,11 @@
         }
       },
       "features": [
+        "water",
         "accent",
-        "pebbles",
-        "water"
+        "pebbles"
       ],
-      "description": "grey mountain stone blending to saturated grass with a small detail, pebbles, a small puddle"
+      "description": "grey mountain stone blending to saturated grass with a small puddle, a small detail, pebbles"
     },
     {
       "index": 14,
@@ -1160,15 +1164,15 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.806,
-        "stone_mountain": 0.194
+        "saturated_grass": 0.757,
+        "stone_mountain": 0.243
       },
       "edges": {
         "NE": {
           "samples": [
             "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
+            "stone_mountain",
+            "stone_mountain",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
@@ -1176,7 +1180,8 @@
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 1.0
+            "saturated_grass": 0.75,
+            "stone_mountain": 0.25
           }
         },
         "SE": {
@@ -1230,10 +1235,9 @@
         }
       },
       "features": [
-        "accent",
-        "pebbles"
+        "accent"
       ],
-      "description": "saturated grass blending to grey mountain stone with a small detail, pebbles"
+      "description": "saturated grass blending to grey mountain stone with a small detail"
     },
     {
       "index": 15,
@@ -1241,8 +1245,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.753,
-        "stone_mountain": 0.247
+        "saturated_grass": 0.744,
+        "stone_mountain": 0.256
       },
       "edges": {
         "NE": {
@@ -1314,10 +1318,8 @@
           "divider": 0.25
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "saturated grass blending to grey mountain stone with a small detail"
+      "features": [],
+      "description": "saturated grass blending to grey mountain stone"
     }
   ],
   "generated_at": "2026-07-05T09:52:00+00:00",
@@ -1332,6 +1334,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

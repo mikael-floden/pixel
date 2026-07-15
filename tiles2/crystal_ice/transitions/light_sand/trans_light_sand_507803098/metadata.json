@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.837,
-        "light_sand": 0.163
+        "crystal_ice": 0.838,
+        "light_sand": 0.162
       },
       "edges": {
         "NE": {
@@ -179,8 +179,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.659,
-        "crystal_ice": 0.341
+        "light_sand": 0.657,
+        "crystal_ice": 0.343
       },
       "edges": {
         "NE": {
@@ -257,8 +257,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.731,
-        "light_sand": 0.269
+        "crystal_ice": 0.748,
+        "light_sand": 0.252
       },
       "edges": {
         "NE": {
@@ -279,7 +279,7 @@
         "SE": {
           "samples": [
             "crystal_ice",
-            "light_sand",
+            "crystal_ice",
             "crystal_ice",
             "light_sand",
             "light_sand",
@@ -288,8 +288,8 @@
             "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.5,
-            "light_sand": 0.5
+            "crystal_ice": 0.625,
+            "light_sand": 0.375
           }
         },
         "SW": {
@@ -335,8 +335,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.576,
-        "light_sand": 0.424
+        "crystal_ice": 0.577,
+        "light_sand": 0.423
       },
       "edges": {
         "NE": {
@@ -413,8 +413,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.65,
-        "light_sand": 0.35
+        "crystal_ice": 0.652,
+        "light_sand": 0.348
       },
       "edges": {
         "NE": {
@@ -492,8 +492,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.516,
-        "light_sand": 0.484
+        "crystal_ice": 0.51,
+        "light_sand": 0.49
       },
       "edges": {
         "NE": {
@@ -572,8 +572,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.857,
-        "light_sand": 0.143
+        "crystal_ice": 0.862,
+        "light_sand": 0.138
       },
       "edges": {
         "NE": {
@@ -1119,8 +1119,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.494,
-        "light_sand": 0.506
+        "crystal_ice": 0.491,
+        "light_sand": 0.509
       },
       "edges": {
         "NE": {
@@ -1188,10 +1188,8 @@
           "divider": 0.25
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "light sand blending to crystal ice with pebbles"
+      "features": [],
+      "description": "light sand blending to crystal ice"
     },
     {
       "index": 15,
@@ -1284,6 +1282,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

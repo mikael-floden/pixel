@@ -319,8 +319,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.429,
-        "clear_water": 0.571
+        "lightdark_dirt": 0.428,
+        "clear_water": 0.572
       },
       "edges": {
         "NE": {
@@ -478,8 +478,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.64,
-        "lightdark_dirt": 0.36
+        "clear_water": 0.649,
+        "lightdark_dirt": 0.351
       },
       "edges": {
         "NE": {
@@ -562,8 +562,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.472,
-        "clear_water": 0.528
+        "lightdark_dirt": 0.459,
+        "clear_water": 0.541
       },
       "edges": {
         "NE": {
@@ -720,8 +720,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.66,
-        "clear_water": 0.34
+        "lightdark_dirt": 0.652,
+        "clear_water": 0.348
       },
       "edges": {
         "NE": {
@@ -789,8 +789,10 @@
           }
         }
       },
-      "features": [],
-      "description": "dirt blending to clear water"
+      "features": [
+        "pebbles"
+      ],
+      "description": "dirt blending to clear water with pebbles"
     },
     {
       "index": 10,
@@ -878,8 +880,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.928,
-        "clear_water": 0.072
+        "lightdark_dirt": 0.925,
+        "clear_water": 0.075
       },
       "edges": {
         "NE": {
@@ -1102,8 +1104,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.999,
-        "clear_water": 0.001
+        "lightdark_dirt": 0.978,
+        "clear_water": 0.022
       },
       "edges": {
         "NE": {
@@ -1167,8 +1169,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain dirt"
+      "features": [
+        "pebbles"
+      ],
+      "description": "dirt with pebbles"
     },
     {
       "index": 15,
@@ -1260,6 +1264,14 @@
     "harmonized_from": true,
     "harmonized_to": true,
     "deseam": false,
+    "clean_top_rim": {
+      "enabled": true,
+      "factor": 0.86,
+      "band": 4,
+      "strength": 1.0,
+      "top_frac": 0.58,
+      "protect_dark_material": true
+    },
     "gap_close": {
       "enabled": true,
       "alpha_thresh": 16,

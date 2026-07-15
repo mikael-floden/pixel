@@ -137,6 +137,55 @@ def neutralize_outline(im, darkness_thresh=60):
     return Image.fromarray(a.clip(0, 255).astype(np.uint8), "RGBA")
 
 
+def clean_top_rim(im, material_target=None, factor=0.86, band=4, strength=1.0,
+                  top_frac=0.58, protect_dark_material=True):
+    """Lighten the slightly-dark baked rim on the TOP diamond so tessellating tiles
+    don't show a dark dot at every shared vertex.
+
+    Distinct from gap_close (which closes true background gaps) and neutralize_outline
+    (silhouette pixels only): the culprit here is the diamond's edge rim sitting a bit
+    darker than the interior (e.g. snow interior lum ~210, rim ~180 — only ~30 down, so
+    absolute-dark thresholds miss it). Where four diamonds meet, those rims converge
+    into a faint dot; on bright snow/ice it reads as a grey/black dot grid. Threshold is
+    RELATIVE to the material brightness (mv*factor) so it works on light AND dark grounds.
+    Only the TOP diamond is touched (top_frac of the height) — the front soil/rock FACE
+    below is left alone — and only the silhouette-adjacent rim band (edge-distance<=band);
+    interior detail (flowers, pebbles, rocks) sits deeper and is untouched. Recolours the
+    rim toward the brighter local material.
+    """
+    a = np.asarray(im.convert("RGBA")).astype(np.float32)
+    rgb, al = a[:, :, :3], a[:, :, 3]
+    op = al > 16
+    if not op.any():
+        return im.convert("RGBA")
+    lum = 0.299 * rgb[:, :, 0] + 0.587 * rgb[:, :, 1] + 0.114 * rgb[:, :, 2]
+    mv = float(material_target.get("value", 180)) if material_target else 180.0
+    if protect_dark_material and mv < 70:             # near-black terrain rim is real rock
+        return im.convert("RGBA")
+    thr = mv * factor
+    d = _edge_dist(op, band + 1)
+    top = np.zeros_like(op)
+    top[:int(round(op.shape[0] * top_frac)), :] = True   # top diamond only (spare front face)
+    target = op & (lum < thr) & (d >= 1) & (d <= band) & top
+    if not target.any():
+        return im.convert("RGBA")
+    bright = op & (lum >= thr)
+    acc = np.zeros_like(rgb)
+    cnt = np.zeros(lum.shape, np.float32)
+    bf = bright.astype(np.float32)
+    for dy in range(-2, 3):
+        for dx in range(-2, 3):
+            acc += _shift0(rgb * bright[:, :, None], dy, dx)
+            cnt += _shift0(bf, dy, dx)
+    have = cnt > 0
+    avg = np.zeros_like(rgb)
+    avg[have] = acc[have] / cnt[have, None]
+    apply = target & have
+    blended = rgb * (1.0 - strength) + avg * strength
+    a[:, :, :3] = np.where(apply[:, :, None], blended, rgb)
+    return Image.fromarray(a.clip(0, 255).astype(np.uint8), "RGBA")
+
+
 def close_iso_gaps(im, alpha_thresh=16, grow=2):
     """Close the hairline GRID SEAM between tessellating iso tiles.
 
