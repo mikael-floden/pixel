@@ -243,9 +243,9 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   fully solid (empty px take the nearest opaque px colour), lesser
   fringe is erased — and the ring of neighbouring blocks is then
   EXACTLY one art pixel wide everywhere by construction. Ring colour =
-  75% of the mock colour it paints over (keying only zeroes alpha, so
-  the navy page RGB survives in the channel) + 25% black, averaged per
-  block, at 50% ALPHA so half the game world reads through. The border
+  85% of the mock colour it paints over (keying only zeroes alpha, so
+  the navy page RGB survives in the channel) + 15% black, averaged per
+  block, at 65% ALPHA (35% of the game world reads through). The border
   is part of the frame pixel art, same pixel size as the art — NOT a
   smooth dilated halo (maintainer round 6 rejected the CSS-looking
   band, round 7 the 1-2px width wobble, round 8 flat 0.8-alpha black;

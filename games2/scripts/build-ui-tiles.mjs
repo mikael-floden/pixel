@@ -216,7 +216,7 @@ function erase(img, x0, y0, x1, y1) {
  * (empty px take the nearest opaque px's colour), anything less is fringe
  * and is erased. The art boundary is then block-crisp, so the black ring of
  * neighbouring blocks is EXACTLY one art pixel wide everywhere. */
-function outline(img, ox = 0, oy = 0, alpha = 128) {
+function outline(img, ox = 0, oy = 0, alpha = 166) {
   const { width: w, height: h, data } = img;
   const G = 4;
   // First block starts where the GLOBAL 4px grid would cut this crop.
@@ -298,9 +298,9 @@ function outline(img, ox = 0, oy = 0, alpha = 128) {
         g += data[o + 1];
         b += data[o + 2];
       }
-      r = Math.round((r / px.length) * 0.75);
-      g = Math.round((g / px.length) * 0.75);
-      b = Math.round((b / px.length) * 0.75);
+      r = Math.round((r / px.length) * 0.85);
+      g = Math.round((g / px.length) * 0.85);
+      b = Math.round((b / px.length) * 0.85);
       for (const [x, y] of px) {
         const o = (y * w + x) * 4;
         data[o] = r;
