@@ -158,6 +158,7 @@ uniform vec4 uIsoA;       // ox, oy, dx, dy
 uniform vec4 uIsoB;       // lh, gridW, gridH, maxLevel
 uniform vec3 uAmbient;    // night grade (what unlit white becomes)
 uniform vec4 uSun;        // directional sun: cast dir (grid x,y), slope (levels/cell), strength
+uniform float uCloud;     // weather: cloud cover 0..1 (world-anchored drifting shadow field)
 uniform float uFlip;      // 1 = invert fragment y (GL bottom-up), 0 = direct
 uniform float uTest;      // 1 = output a raw world-y gradient (calibration)
 uniform float uNumLights;
@@ -222,6 +223,17 @@ float emSelfPulse(float m, float ph) {
 // "lit BY the glowing detail" while still clearly having life of its own.
 float emCellSupport(float m, float ph) {
   return mix(1.0, emSelfPulse(m, ph), 0.5);
+}
+
+// Weather clouds: 2-octave value noise, world-anchored and wind-drifted.
+// EXACT twin of cloudFactorAt() in JS (lit-copy tints) — change BOTH.
+float cwHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float cwNoise(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(cwHash(i), cwHash(i + vec2(1.0, 0.0)), u.x),
+             mix(cwHash(i + vec2(0.0, 1.0)), cwHash(i + vec2(1.0, 1.0)), u.x), u.y);
 }
 
 void main() {
@@ -397,7 +409,18 @@ void main() {
     float sunShare = 0.45 * uSun.w; // the sun's slice of the phase ambient
     sunF = (1.0 - sunShare) + sunShare * clamp(sunVis, 0.0, 1.0);
   }
-  vec3 light = uAmbient * sunF;
+  // Cloud shadows ride between the sun and the ground: world-anchored blobs
+  // drifting on the wind, shading the ambient like the sun march does. The
+  // depth scales with the sun's strength — thick clouds at night barely
+  // register (no sun to block), at noon they stamp clear moving shade.
+  float cloudF = 1.0;
+  if (uCloud > 0.001) {
+    vec2 cp = vec2(wx, wy) * 0.0042 + uAnimTime * vec2(0.030, 0.017);
+    float n = cwNoise(cp) * 0.65 + cwNoise(cp * 2.3 + 17.0) * 0.35;
+    float cover = smoothstep(0.52, 0.78, n);
+    cloudF = 1.0 - cover * 0.32 * uCloud * mix(0.25, 1.0, uSun.w);
+  }
+  vec3 light = uAmbient * sunF * cloudF;
   for (int i = 0; i < ${MAX_SHADER_LIGHTS}; i++) {
     if (float(i) >= uNumLights) continue;
     vec3 lp = uLightPos[i].xyz;
@@ -700,6 +723,7 @@ export class NightLights {
       // phone GPUs leave it at vec4(0) = sun permanently off (playtest:
       // "0 effect"). The inverse twin of the uAnimTime bug below.
       uSun: { type: "4f", value: { x: 0, y: 0, z: 1, w: 0 } },
+      uCloud: { type: "1f", value: 0 },
       uFlip: { type: "1f", value: 1 },
       uTest: { type: "1f", value: 0 },
       // Animation clock (seconds). MUST be driven every frame from the SAME
@@ -913,6 +937,31 @@ export class NightLights {
    * light of their own cell — the screen-space field only shades the flat
    * ground. Same ambient/attenuation/LOS/ember/flicker, same clock. */
   private curSun: [number, number, number, number] = [0, 0, 1, 0];
+  private curCloud = 0;
+
+  /** EXACT JS twin of the shader's cloud field (see cwNoise) — tints the
+   * lit copies so characters dim as a cloud passes over them. */
+  cloudFactorAt(wx: number, wy: number, cloud = this.curCloud, sunW = this.curSun[3]): number {
+    if (cloud <= 0.001) return 1;
+    const hash = (x: number, y: number) => {
+      const v = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
+      return v - Math.floor(v);
+    };
+    const noise = (x: number, y: number) => {
+      const ix = Math.floor(x), iy = Math.floor(y);
+      const fx = x - ix, fy = y - iy;
+      const ux = fx * fx * (3 - 2 * fx), uy = fy * fy * (3 - 2 * fy);
+      const a = hash(ix, iy), b = hash(ix + 1, iy), c = hash(ix, iy + 1), d = hash(ix + 1, iy + 1);
+      return (a + (b - a) * ux) * (1 - uy) + (c + (d - c) * ux) * uy;
+    };
+    const t = this.scene.time.now / 1000; // same clock as uAnimTime
+    const cx = wx * 0.0042 + t * 0.03;
+    const cy = wy * 0.0042 + t * 0.017;
+    const n = noise(cx, cy) * 0.65 + noise(cx * 2.3 + 17, cy * 2.3 + 17) * 0.35;
+    const ss = Math.min(1, Math.max(0, (n - 0.52) / 0.26));
+    const cover = ss * ss * (3 - 2 * ss);
+    return 1 - cover * 0.32 * cloud * (0.25 + 0.75 * sunW);
+  }
 
   /** CPU twin of the shader's directional-sun shade for a surface (1 = fully
    * lit, ~0.62 = deepest shade). Drives lit-copy tints and the headless
@@ -974,8 +1023,11 @@ export class NightLights {
       return (a * (1 - fx) + b * fx) * (1 - fy) + (d * (1 - fx) + e * fx) * fy;
     };
     const t = this.scene.game.loop.getDuration();
-    // Directional-sun twin (see the shader): shade the ambient term only.
-    const sunF = this.sunFactorAt(col, row, z);
+    // Directional-sun + cloud twins (see the shader): shade the ambient term.
+    const geo = MAP_GEOMETRY;
+    const wxT = this.iso.ox + (col - row) * geo.dx + geo.dx;
+    const wyT = this.iso.oy + (col + row) * geo.dy + geo.dy - z * geo.lh;
+    const sunF = this.sunFactorAt(col, row, z) * this.cloudFactorAt(wxT, wyT);
     const out: [number, number, number] = [
       this.curAmbient[0] * sunF,
       this.curAmbient[1] * sunF,
@@ -1096,11 +1148,13 @@ export class NightLights {
     ambient: [number, number, number],
     stamps: GlowStamp[] = [],
     sun: [number, number, number, number] = [0, 0, 1, 0],
+    cloud = 0,
   ) {
     this.curLights = lights;
     this.curStamps = stamps;
     this.curAmbient = ambient;
     this.curSun = sun;
+    this.curCloud = cloud;
     if (!this.shader || !this.active) return;
     const s = this.shader;
     // Ground-truth calibrated by raw suv readback: the zoomed overlay shows
@@ -1175,6 +1229,7 @@ export class NightLights {
     s.setUniform("uIsoB.value.y", this.world.width);
     s.setUniform("uIsoB.value.z", this.world.height);
     s.setUniform("uIsoB.value.w", this.maxLevel);
+    s.setUniform("uCloud.value", cloud);
     s.setUniform("uSun.value.x", sun[0]);
     s.setUniform("uSun.value.y", sun[1]);
     s.setUniform("uSun.value.z", sun[2]);

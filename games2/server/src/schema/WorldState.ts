@@ -69,15 +69,18 @@ defineTypes(Player, {
 export class WorldState extends Schema {
   declare players: MapSchema<Player>;
   declare timeIdx: number; // shared time-of-day phase (server-owned)
+  declare weather: number; // shared weather layer (server-owned; 0 = clear)
 
   constructor() {
     super();
     this.players = new MapSchema<Player>();
     this.timeIdx = DEFAULT_TIME_IDX;
+    this.weather = 0;
   }
 }
 
 defineTypes(WorldState, {
   players: { map: Player },
   timeIdx: "number",
+  weather: "number",
 });

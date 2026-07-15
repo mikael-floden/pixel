@@ -193,6 +193,24 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   rejoin re-asserts the local value to the fresh player entry
   (server/test/torch.test.ts).
 
+## Weather (server-owned world state, layer 2)
+
+- WorldState.weather (shared WEATHER_NAMES/COUNT; 0 = "Clear sky",
+  1 = "Cloudy at times") cycles via the "weather" message — the Settings
+  button sends it, every client's listener applies it (instant on join,
+  chat-logged after). Cloud cover EASES over ~4s (clouds roll in). The
+  shader's uCloud drives a WORLD-ANCHORED 2-octave value-noise cloud
+  field drifting on a fixed wind, shading the ambient (depth 0.32×cover,
+  muted by the sun's strength — night clouds barely register); while
+  cloudy the ambient also greys ~20% toward luminance ("the sky is not
+  perfect blue"). cloudFactorAt() is the EXACT JS twin (lit-copy tints —
+  characters dim as a cloud passes; change both together). uCloud is
+  DECLARED in the uniforms config (see the uSun lesson). Probes:
+  `__ml.weatherInfo()`, `__ml.weather(idx, instant)` (LOCAL force for
+  headless QA), `__ml.cloudAt(wx,wy)`; regressions:
+  scripts/verify-weather.mjs (clear=1 everywhere, patchy not overcast,
+  drifts over time, night-muted) + server/test/weather.test.ts.
+
 ## Directional sun shadows (day phases)
 
 - The night shader also carries a DIRECTIONAL SUN (uSun = cast-dir grid

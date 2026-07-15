@@ -49,6 +49,12 @@ export const DEFAULT_DIRECTION: Direction = "south";
 export const TIME_PHASE_COUNT = 4; // Night, Morning, Day, Evening
 export const DEFAULT_TIME_IDX = 2; // Day
 
+// WEATHER is a second server-owned world-state layer on top of time-of-day
+// (maintainer: "the final game should have a combination of time-of-day and
+// weather"). Index into WEATHER_NAMES; 0 = the default clear sky.
+export const WEATHER_NAMES = ["Clear sky", "Cloudy at times"] as const;
+export const WEATHER_COUNT = WEATHER_NAMES.length;
+
 /** Map a movement vector (screen space, +y down) to one of 8 directions. */
 export function vectorToDirection(dx: number, dy: number): Direction | null {
   if (Math.abs(dx) < 1e-6 && Math.abs(dy) < 1e-6) return null;

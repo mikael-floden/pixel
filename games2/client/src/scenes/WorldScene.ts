@@ -38,6 +38,8 @@ import {
   WALK_SPEED,
   RUN_SPEED,
   DEFAULT_TIME_IDX,
+  WEATHER_NAMES,
+  WEATHER_COUNT,
 } from "@nangijala/shared";
 import { CharacterDef, Manifest, frameUrl, frameKey } from "../manifest";
 import { colorForName } from "../placeholder";
@@ -390,6 +392,10 @@ export class WorldScene extends Phaser.Scene {
   private timeFromAmbient: [number, number, number] = [...TIME_PHASES[DEFAULT_TIME_IDX].ambient];
   private timeFromSun: [number, number, number, number] = sunVec(DEFAULT_TIME_IDX);
   private curSun: [number, number, number, number] = sunVec(DEFAULT_TIME_IDX);
+  // Weather layer (server-owned like timeIdx): cloud cover eases toward the
+  // target over a few seconds — clouds roll in, they don't blink in.
+  private weatherIdx = 0;
+  private curCloud = 0;
   private curAmbient: [number, number, number] = [...TIME_PHASES[DEFAULT_TIME_IDX].ambient];
 
   constructor() {
@@ -607,6 +613,7 @@ export class WorldScene extends Phaser.Scene {
         // Time-of-day is the one plain BUTTON; the rest are switches
         // (down = ON) — no keyboard-digit prefixes (maintainer).
         { label: "time-of-day", act: () => this.cycleTimeOfDay(), hook: true },
+        { label: "weather", act: () => this.room?.send("weather") },
         { label: "collision", act: () => this.toggleCollision(), get: () => !!this.collisionOverlay },
         { label: "torch", act: () => this.toggleTorch(), get: () => this.torchOn },
         { label: "bonfire", act: () => this.toggleBonfire(), get: () => this.fireOn },
@@ -708,6 +715,16 @@ export class WorldScene extends Phaser.Scene {
       pickAt: (wx: number, wy: number) => this.pickGround(wx, wy),
       camZoom: () => this.cameras.main.zoom,
       sunInfo: () => ({ sun: [...this.curSun], phase: TIME_PHASES[this.timeIdx].name, t: this.timeT }),
+      // Weather probes: info + LOCAL force (headless QA without the server).
+      weatherInfo: () => ({ idx: this.weatherIdx, name: WEATHER_NAMES[this.weatherIdx], cloud: this.curCloud }),
+      weather: (idx?: number, instant = true) => {
+        if (idx !== undefined) {
+          this.weatherIdx = idx % WEATHER_COUNT;
+          if (instant) this.curCloud = this.weatherIdx === 1 ? 1 : 0;
+        }
+        return this.weatherIdx;
+      },
+      cloudAt: (wx: number, wy: number) => this.night?.cloudFactorAt(wx, wy, this.curCloud, this.curSun[3]) ?? 1,
       sunAt: (col: number, row: number, z = -1) =>
         this.night?.sunFactorAt(col + 0.5, row + 0.5, z, this.curSun as [number, number, number, number]) ?? 1,
       // Chase-cam probe: eased zoom vs base, and how far the camera trails
@@ -943,6 +960,13 @@ export class WorldScene extends Phaser.Scene {
       this.setTimeOfDay(idx % TIME_PHASES.length, firstTimeSync);
       if (!firstTimeSync) this.chat.addLog("—", `Time of day: ${TIME_PHASES[idx % TIME_PHASES.length].name}`);
       firstTimeSync = false;
+    });
+    let firstWeatherSync = true;
+    $(room.state).listen("weather", (idx: number) => {
+      this.weatherIdx = idx % WEATHER_COUNT;
+      if (firstWeatherSync) this.curCloud = this.weatherIdx === 1 ? 1 : 0; // no roll-in on join
+      else this.chat.addLog("—", `Weather: ${WEATHER_NAMES[this.weatherIdx]}`);
+      firstWeatherSync = false;
     });
     $(room.state).players.onAdd((player: any, id: string) => {
       this.addAvatar(id, player);
@@ -1464,7 +1488,18 @@ export class WorldScene extends Phaser.Scene {
       const sunTo = sunVec(this.timeIdx);
       for (let ch = 0; ch < 4; ch++)
         this.curSun[ch] = this.timeFromSun[ch] + (sunTo[ch] - this.timeFromSun[ch]) * e;
-      this.night!.update(this.cameras.main, sl, this.curAmbient, this.glowStamps, this.curSun);
+      // Weather: ease the cloud cover toward the synced target (~4s roll),
+      // and grey the sky a touch while cloudy — "the sky is not perfect
+      // blue" — before handing the ambient to the shader + CPU twin.
+      const cloudTo = this.weatherIdx === 1 ? 1 : 0;
+      const ca = 1 - Math.exp(-(this.game.loop.delta / 1000) / 4);
+      this.curCloud += (cloudTo - this.curCloud) * ca;
+      if (Math.abs(this.curCloud - cloudTo) < 0.005) this.curCloud = cloudTo;
+      const ambEff = this.curAmbient.map((v, i) => {
+        const grey = (this.curAmbient[0] + this.curAmbient[1] + this.curAmbient[2]) / 3;
+        return v + (grey * 0.94 - v) * this.curCloud * 0.22;
+      }) as [number, number, number];
+      this.night!.update(this.cameras.main, sl, ambEff, this.glowStamps, this.curSun, this.curCloud);
     }
 
     const lights: LightSource[] = [];

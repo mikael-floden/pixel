@@ -30,6 +30,7 @@ import {
   JUMP_COOLDOWN_MS,
   MAX_STAMINA,
   TIME_PHASE_COUNT,
+  WEATHER_COUNT,
 } from "@nangijala/shared";
 import { WorldState, Player } from "../schema/WorldState.js";
 import { JsonPlayerStore, PlayerStore } from "../store.js";
@@ -108,6 +109,11 @@ export class WorldRoom extends Room<WorldState> {
     // Time-of-day is world state: anyone can cycle it, everyone sees it.
     this.onMessage("timeofday", () => {
       this.state.timeIdx = (this.state.timeIdx + 1) % TIME_PHASE_COUNT;
+    });
+
+    // Weather is the second world-state layer, same contract.
+    this.onMessage("weather", () => {
+      this.state.weather = (this.state.weather + 1) % WEATHER_COUNT;
     });
 
     this.onMessage("chat", (client, message: ChatInput) => {
