@@ -228,11 +228,14 @@ function outline(img, ox = 0, oy = 0, alpha = 204) {
       for (let x = Math.max(0, bx0 + bx * G); x < Math.min(w, bx0 + (bx + 1) * G); x++)
         fn((y * w + x) * 4);
   };
+  // A block is ART only when a real share of it is opaque — the mock's
+  // soft-brush edges leave 1-3 stray AA pixels in neighbouring blocks, and
+  // counting those as art inflated the outline to 2 art px in places.
   for (let by = 0; by < bh; by++)
     for (let bx = 0; bx < bw; bx++) {
       let n = 0;
       eachPx(bx, by, (o) => { if (data[o + 3] > 120) n++; });
-      if (n) art[by * bw + bx] = 1;
+      if (n >= 4) art[by * bw + bx] = 1;
     }
   for (let by = 0; by < bh; by++)
     for (let bx = 0; bx < bw; bx++) {
