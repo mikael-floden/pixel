@@ -187,7 +187,11 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   Ambient palettes (TIME_PHASES) stay client-side; keep the array length
   == TIME_PHASE_COUNT. `__ml.timeOfDay(which)` remains a LOCAL debug
   probe (verify-timecycle drives grades headlessly without the server).
-  Regression: server/test/timeofday.test.ts.
+  Regression: server/test/timeofday.test.ts. TORCH is PLAYER state the
+  same way (Player.torch, "torch" message): my own light flips on the
+  local mirror instantly, everyone else reads the synced field, and a
+  rejoin re-asserts the local value to the fresh player entry
+  (server/test/torch.test.ts).
 
 ## Night lighting (client/src/nightlight.ts)
 

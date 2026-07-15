@@ -920,6 +920,8 @@ export class WorldScene extends Phaser.Scene {
       if (id === room.sessionId) {
         this.camDetached = false;
         this.camChase.init = false; // chase-cam snaps onto the new avatar
+        // Re-assert my torch to the fresh player entry (rejoins reset it).
+        if (!this.torchOn) room.send("torch", { on: false });
         hideLoading(); // my avatar is in and the camera is on it — world's up
       }
       this.refreshRoster();
@@ -1403,7 +1405,7 @@ export class WorldScene extends Phaser.Scene {
       // Torches fill the remaining slots (emission glow pools live in the
       // additive glow field, not in light slots — they can't be crowded out).
       for (const [id, a] of this.avatars.entries()) {
-        if (id === myId && !this.torchOn) continue;
+        if (!this.torchLit(id, myId, state)) continue;
         if (sl.length >= MAX_SHADER_LIGHTS) break;
         // Grid position from the FLAT authoritative coords (1 cell = CELL_WU
         // world units) — the projected lx/ly live in screen space and put the
@@ -1452,7 +1454,7 @@ export class WorldScene extends Phaser.Scene {
     }
     if (!shaderNight) {
       for (const [id, a] of this.avatars.entries()) {
-        if (id === myId && !this.torchOn) continue;
+        if (!this.torchLit(id, myId, this.room?.state as any)) continue;
         lights.push({ x: a.lx, y: a.ly - 20 }); // lantern pool
       }
       lights.push(...this.emissiveLights);
@@ -1483,9 +1485,19 @@ export class WorldScene extends Phaser.Scene {
     this.chat.addLog("—", `[4] Collision overlay: ${this.collisionOverlay ? "on" : "off"}`);
   }
 
+  /** Torch is PLAYER state everyone sees: local mirror flips instantly (my
+   * own light + the switch), and the server broadcasts it to the world. */
   private toggleTorch() {
     this.torchOn = !this.torchOn;
-    this.chat.addLog("—", `[5] My torch: ${this.torchOn ? "on" : "off"}`);
+    this.room?.send("torch", { on: this.torchOn });
+    this.chat.addLog("—", `My torch: ${this.torchOn ? "on" : "off"}`);
+  }
+
+  /** Is a player's torch lit? Mine reads the instant local mirror; everyone
+   * else reads their synced player state (default lit). */
+  private torchLit(id: string, myId: string, state: any): boolean {
+    if (id === myId) return this.torchOn;
+    return state?.players?.get?.(id)?.torch ?? true;
   }
 
   /** Hide the game render (frame QA + the Settings switch): black view,

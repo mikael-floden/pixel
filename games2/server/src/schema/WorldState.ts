@@ -20,6 +20,7 @@ export class Player extends Schema {
   declare jumping: boolean; // in a jump window (for the hop visual + climb)
   declare swimming: boolean; // currently in water
   declare stamina: number; // swim stamina 0..MAX_STAMINA
+  declare torch: boolean; // player's torch lit (visible to everyone)
 
   // Server-only (not synced): queued inputs + rate-limit bookkeeping. The
   // server integrates each input's dt (client-reported, budget-bounded) so
@@ -45,6 +46,7 @@ export class Player extends Schema {
     this.jumping = false;
     this.swimming = false;
     this.stamina = MAX_STAMINA;
+    this.torch = true;
   }
 }
 
@@ -60,6 +62,7 @@ defineTypes(Player, {
   jumping: "boolean",
   swimming: "boolean",
   stamina: "number",
+  torch: "boolean",
 });
 
 /** The whole shared world. Everyone connected is in this one state. */

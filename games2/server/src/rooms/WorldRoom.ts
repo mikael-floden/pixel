@@ -99,6 +99,12 @@ export class WorldRoom extends Room<WorldState> {
       }
     });
 
+    // Torch is PLAYER state: everyone sees whose torch is lit.
+    this.onMessage("torch", (client, message: { on?: boolean }) => {
+      const player = this.state.players.get(client.sessionId);
+      if (player) player.torch = !!message?.on;
+    });
+
     // Time-of-day is world state: anyone can cycle it, everyone sees it.
     this.onMessage("timeofday", () => {
       this.state.timeIdx = (this.state.timeIdx + 1) % TIME_PHASE_COUNT;
