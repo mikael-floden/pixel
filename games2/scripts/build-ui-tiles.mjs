@@ -228,12 +228,27 @@ function addBand(img, r = 12, alpha = 204) {
     }
     frontier = next;
   }
-  for (let i = 0; i < w * h; i++)
-    if (dist[i] > 0 && data[i * 4 + 3] === 0) {
-      data[i * 4] = 0;
-      data[i * 4 + 1] = 0;
-      data[i * 4 + 2] = 0;
-      data[i * 4 + 3] = alpha;
+  // Quantize to the art's 4px grain: a 4x4 block joins the band when most of
+  // it is in dilation range, so the border's edge is as chunky as the art.
+  const G = 4;
+  for (let by = 0; by < h; by += G)
+    for (let bx = 0; bx < w; bx += G) {
+      let n = 0;
+      for (let y = by; y < Math.min(by + G, h); y++)
+        for (let x = bx; x < Math.min(bx + G, w); x++) {
+          const i = y * w + x;
+          if (dist[i] > 0 && data[i * 4 + 3] === 0) n++;
+        }
+      if (n < 6) continue;
+      for (let y = by; y < Math.min(by + G, h); y++)
+        for (let x = bx; x < Math.min(bx + G, w); x++) {
+          const i = y * w + x;
+          if (data[i * 4 + 3] !== 0) continue;
+          data[i * 4] = 0;
+          data[i * 4 + 1] = 0;
+          data[i * 4 + 2] = 0;
+          data[i * 4 + 3] = alpha;
+        }
     }
   return img;
 }
@@ -259,26 +274,26 @@ save("bottom-seg.png", addBand(keyFrom(crop(c1, 180, 1188, 488, 76), ["top"])));
 save("left-v1.png", addBand(keyFrom(crop(c1, 0, 180, 56, 196), ["right"])));
 save("gem-left.png", addBand(keyFrom(crop(c1, 0, 376, 76, 68), ["right"])));
 save("left-v2.png", addBand(keyFrom(crop(c1, 0, 444, 56, 196), ["right"])));
-save("left-v3.png", addBand(erase(keyFrom(crop(c1, 0, 740, 56, 122), ["right", "top", "bottom"]), 52, 0, 56, 122)));
+save("left-v3.png", addBand(erase(keyFrom(crop(c1, 0, 740, 56, 122), ["right"]), 52, 0, 56, 122)));
 save("left-v4.png", addBand(keyFrom(crop(c1, 0, 918, 56, 166), ["right"])));
 save("right-v1.png", addBand(keyFrom(crop(c1, 792, 180, 56, 196), ["left"])));
 save("gem-right.png", addBand(keyFrom(crop(c1, 772, 376, 76, 68), ["left"])));
 save("right-v2.png", addBand(keyFrom(crop(c1, 792, 444, 56, 196), ["left"])));
-save("right-v3.png", addBand(erase(keyFrom(crop(c1, 792, 740, 56, 122), ["left", "top", "bottom"]), 0, 0, 4, 122)));
+save("right-v3.png", addBand(erase(keyFrom(crop(c1, 792, 740, 56, 122), ["left"]), 0, 0, 4, 122)));
 save("right-v4.png", addBand(keyFrom(crop(c1, 792, 918, 56, 166), ["left"])));
 // Divider A (game ↔ tabs; thin line 707..711). WIDE caps (190px) own ALL the
 // junction decor — the ╠/╣ green gems and the curls that run along the line
 // to x≈190; the mock button row's pixels (y≥728, glow column x≥52) erased.
-save("divA-capl.png", addBand(erase(keyFrom(crop(c1, 0, 640, 190, 100), ["top", "bottom", "right"]), 52, 82, 190, 100)));
+save("divA-capl.png", addBand(erase(keyFrom(crop(c1, 0, 640, 190, 100), ["right"]), 52, 82, 190, 100)));
 save("divA-seg-l.png", addBand(keyFrom(crop(c1, 190, 688, 206, 36), ["top", "bottom"])));
 save("divA-gem.png", addBand(keyFrom(crop(c1, 396, 674, 56, 58), ["top", "bottom", "left", "right"])));
 save("divA-seg-r.png", addBand(keyFrom(crop(c1, 452, 688, 206, 36), ["top", "bottom"])));
-save("divA-capr.png", addBand(erase(keyFrom(crop(c1, 848 - 190, 640, 190, 100), ["top", "bottom", "left"]), 0, 82, 138, 100)));
+save("divA-capr.png", addBand(erase(keyFrom(crop(c1, 848 - 190, 640, 190, 100), ["left"]), 0, 82, 138, 100)));
 // Divider B (tabs ↔ content; thin sloping line, no gem): wide caps with the
 // button-bottom bleed erased (x≥52 / mirrored, top 16 rows).
-save("divB-capl.png", addBand(erase(keyFrom(crop(c1, 0, 862, 190, 56), ["top", "bottom", "right"]), 52, 0, 190, 16)));
+save("divB-capl.png", addBand(erase(keyFrom(crop(c1, 0, 862, 190, 56), ["right"]), 52, 0, 190, 16)));
 save("divB-seg.png", addBand(keyFrom(crop(c1, 190, 872, 468, 16), ["top", "bottom"])));
-save("divB-capr.png", addBand(erase(keyFrom(crop(c1, 848 - 190, 862, 190, 56), ["top", "bottom", "left"]), 0, 0, 138, 16)));
+save("divB-capr.png", addBand(erase(keyFrom(crop(c1, 848 - 190, 862, 190, 56), ["left"]), 0, 0, 138, 16)));
 
 // ---- button plates (states, image 2) ---------------------------------------
 // Bounds auto-detected: within each square's row band, find the columns/rows

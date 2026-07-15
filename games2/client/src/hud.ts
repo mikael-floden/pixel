@@ -24,8 +24,10 @@
  */
 
 export interface HudActions {
-  onCycleTime: () => void;
   onLogout: () => void;
+  /** Settings-tab toggle buttons (the keyboard digits' mobile home). The
+   * entry with `hook` keeps the .ml-hudbtn class the e2e smoke clicks. */
+  settings: { label: string; act: () => void; hook?: boolean }[];
 }
 
 const TABS = [
@@ -113,11 +115,15 @@ export class HudBar {
     this.pages.get("equipment")!.append(muted("Nothing equipped yet — armor and tools are coming."));
     this.pages.get("map")!.append(muted("The cartographers are still charting Nangijala."));
 
-    // Settings: home of the toggles mobile can't reach by keyboard.
+    // Settings: home of ALL the toggles mobile can't reach by keyboard.
     const st = this.pages.get("settings")!;
-    const time = plateButton("1: time-of-day", () => this.actions.onCycleTime());
-    time.classList.add("ml-hudbtn"); // stable hook for the e2e smoke
-    st.appendChild(time);
+    const row = mk("div", "ml-btnrow");
+    for (const t of this.actions.settings) {
+      const b = plateButton(t.label, t.act);
+      if (t.hook) b.classList.add("ml-hudbtn"); // stable hook for the smoke
+      row.appendChild(b);
+    }
+    st.appendChild(row);
 
     // Logout: deliberate two-step (a stray tap must not eject anyone).
     const lo = this.pages.get("logout")!;
@@ -185,11 +191,11 @@ function injectStyles() {
   .ml-er .v1,.ml-er .v2,.ml-er .v3,.ml-er .v4{right:0;width:56px}
   .ml-el .gm{left:0;width:76px}
   .ml-er .gm{right:0;width:76px}
-  .ml-pf .v1{top:180px;height:calc(var(--gemc) - 34px - 180px)}
-  .ml-pf .gm{top:calc(var(--gemc) - 34px);height:68px}
-  .ml-pf .v2{top:calc(var(--gemc) + 34px);height:calc(var(--hud-h-inv) - 69px - var(--gemc) - 34px)}
-  .ml-pf .v3{top:calc(var(--hud-h-inv) + 31px);height:calc(var(--ml-tabzone) - 47px)}
-  .ml-pf .v4{top:calc(var(--hud-h-inv) + var(--ml-tabzone) + 40px);bottom:180px}
+  .ml-el .v1,.ml-er .v1{top:180px;height:calc(var(--gemc) - 34px - 180px)}
+  .ml-el .gm,.ml-er .gm{top:calc(var(--gemc) - 34px);height:68px}
+  .ml-el .v2,.ml-er .v2{top:calc(var(--gemc) + 34px);height:calc(var(--hud-h-inv) - 69px - var(--gemc) - 34px)}
+  .ml-el .v3,.ml-er .v3{top:calc(var(--hud-h-inv) + 31px);height:calc(var(--ml-tabzone) - 47px)}
+  .ml-el .v4,.ml-er .v4{top:calc(var(--hud-h-inv) + var(--ml-tabzone) + 40px);bottom:180px}
   .ml-el .v1{background-image:url(/ui/left-v1.png)}
   .ml-el .gm{background-image:url(/ui/gem-left.png)}
   .ml-el .v2{background-image:url(/ui/left-v2.png)}
@@ -218,11 +224,12 @@ function injectStyles() {
   .ml-tabrow{position:absolute;top:24px;left:44px;right:44px;height:var(--ml-tab);display:flex;gap:8px;justify-content:center}
   .ml-tab{width:var(--ml-tab);height:var(--ml-tab);flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
     padding:2px 0;cursor:pointer;image-rendering:pixelated;box-sizing:border-box;
+    touch-action:manipulation;-webkit-touch-callout:none;
     border-style:solid;border-width:14px;border-image:url(/ui/plate-unselected.png) 26 fill / 14px;
     background:none}
   .ml-tab:active{border-image:url(/ui/plate-pressed.png) 26 fill / 14px}
   .ml-tab.sel{border-image:url(/ui/plate-selected.png) 32 fill / 15px}
-  .ml-tab-icon{height:calc(var(--ml-tab)*0.42);image-rendering:pixelated;-webkit-user-drag:none}
+  .ml-tab-icon{height:calc(var(--ml-tab)*0.42);image-rendering:pixelated;-webkit-user-drag:none;pointer-events:none}
   .ml-tab-label{font:700 11px/1.1 system-ui,sans-serif;font-size:clamp(6.5px,1.42vw,12px);
     text-transform:uppercase;color:#dfe2ea;text-shadow:0 1px 2px #000;white-space:nowrap;overflow:hidden;max-width:100%}
   .ml-tab.sel .ml-tab-label{color:#ffd678}
@@ -234,7 +241,8 @@ function injectStyles() {
   .ml-slots{display:flex;gap:12px;justify-content:center}
   .ml-slot{width:56px;height:56px;image-rendering:pixelated;border-style:solid;border-width:13px;
     border-image:url(/ui/plate-pressed.png) 26 fill / 13px;box-sizing:border-box}
-  .ml-plate-btn{padding:14px 26px;cursor:pointer;image-rendering:pixelated;background:none;
+  .ml-btnrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:100%}
+  .ml-plate-btn{padding:14px 26px;cursor:pointer;image-rendering:pixelated;background:none;touch-action:manipulation;
     border-style:solid;border-width:16px;border-image:url(/ui/plate-unselected.png) 26 fill / 16px;
     font:700 14px system-ui,sans-serif;letter-spacing:.4px;text-transform:uppercase;color:#e8e8ec;
     text-shadow:0 1px 2px #000}

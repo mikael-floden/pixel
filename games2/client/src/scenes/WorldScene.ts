@@ -546,40 +546,27 @@ export class WorldScene extends Phaser.Scene {
     });
     // Jump (Space): edge-triggered, lets you cross a 1-level ledge if timed.
     this.input.keyboard!.on("keydown-SPACE", () => this.tryJump());
-    // Feature/debug toggles live on the TOP-ROW digits (1-9).
+    // Feature/debug toggles: TOP-ROW digits on keyboard AND buttons in the
+    // HUD's Settings tab (mobile has no keys; maintainer moved them there —
+    // the old chat welcome overlay listing the keys is gone).
     this.input.keyboard!.on("keydown-ONE", () => this.cycleTimeOfDay());
-    // Bottom HUD (the golden-ratio dock): framed tab row + content page.
-    // Settings hosts the toggles mobile can't reach by keyboard; the game
-    // viewport itself gets the matching pixel frame overlay.
+    this.input.keyboard!.on("keydown-FOUR", () => this.toggleCollision());
+    this.input.keyboard!.on("keydown-FIVE", () => this.toggleTorch());
+    this.input.keyboard!.on("keydown-SIX", () => this.toggleBonfire());
+    this.input.keyboard!.on("keydown-SEVEN", () => this.toggleWalls());
+    // Bottom HUD (the golden-ratio dock): framed tab row + content page; the
+    // game viewport itself gets the matching pixel frame overlay.
     this.hud = new HudBar({
-      onCycleTime: () => this.cycleTimeOfDay(),
       onLogout: () => this.logout(),
+      settings: [
+        { label: "1: time-of-day", act: () => this.cycleTimeOfDay(), hook: true },
+        { label: "4: collision", act: () => this.toggleCollision() },
+        { label: "5: torch", act: () => this.toggleTorch() },
+        { label: "6: bonfire", act: () => this.toggleBonfire() },
+        { label: "7: see-through walls", act: () => this.toggleWalls() },
+      ],
     });
     mountPageFrame();
-    this.input.keyboard!.on("keydown-FOUR", () => {
-      this.toggleCollisionOverlay();
-      this.chat.addLog("—", `[4] Collision overlay: ${this.collisionOverlay ? "on" : "off"}`);
-    });
-    this.input.keyboard!.on("keydown-FIVE", () => {
-      this.torchOn = !this.torchOn;
-      this.chat.addLog("—", `[5] My torch: ${this.torchOn ? "on" : "off"}`);
-    });
-    this.input.keyboard!.on("keydown-SEVEN", () => {
-      this.occFadeOn = !this.occFadeOn;
-      this.chat.addLog("—", `[7] See-through walls: ${this.occFadeOn ? "on" : "off"}`);
-    });
-    // [6]: the spawn bonfire on/off — its firelight drowns nearby tiles'
-    // self-emission, so QA next to it needs the fire quiet. (The old
-    // [6][7][8][9] light-field calibration keys are retired; headless probes
-    // keep the same controls via __ml.nightCal.)
-    this.input.keyboard!.on("keydown-SIX", () => {
-      this.fireOn = !this.fireOn;
-      this.campfireSprite?.setVisible(this.fireOn);
-      this.campfireLit?.setVisible(this.fireOn && !!this.night?.active);
-      this.chat.addLog("—", `[6] Bonfire: ${this.fireOn ? "lit" : "out"}`);
-    });
-    this.chat.addLog("—", "Toggles: [1] time of day · [4] collision · [5] torch · [6] bonfire · [7] see-through walls");
-    this.chat.addLog("—", "Tap the ground to run there · hold to steer · hold close to walk");
 
     const cam = this.cameras.main;
     cam.setBounds(0, 0, this.iso.w, this.iso.h);
@@ -1450,6 +1437,30 @@ export class WorldScene extends Phaser.Scene {
       this.room?.leave();
     } catch {}
     location.reload();
+  }
+
+  private toggleCollision() {
+    this.toggleCollisionOverlay();
+    this.chat.addLog("—", `[4] Collision overlay: ${this.collisionOverlay ? "on" : "off"}`);
+  }
+
+  private toggleTorch() {
+    this.torchOn = !this.torchOn;
+    this.chat.addLog("—", `[5] My torch: ${this.torchOn ? "on" : "off"}`);
+  }
+
+  private toggleWalls() {
+    this.occFadeOn = !this.occFadeOn;
+    this.chat.addLog("—", `[7] See-through walls: ${this.occFadeOn ? "on" : "off"}`);
+  }
+
+  /** The spawn bonfire on/off — its firelight drowns nearby tiles'
+   * self-emission, so QA next to it needs the fire quiet. */
+  private toggleBonfire() {
+    this.fireOn = !this.fireOn;
+    this.campfireSprite?.setVisible(this.fireOn);
+    this.campfireLit?.setVisible(this.fireOn && !!this.night?.active);
+    this.chat.addLog("—", `[6] Bonfire: ${this.fireOn ? "lit" : "out"}`);
   }
 
   /** Advance to the next time-of-day phase (the [1] key and the HUD button). */
