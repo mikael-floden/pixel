@@ -238,12 +238,15 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   the frame); divider pieces flood from all edges; mock button-glow
   bleed is erased from caps/side strips. Every piece then gets a
   1-ART-PIXEL black outline (0.8 alpha) BAKED INTO THE TILE on the
-  mock's global 4px art grid (`outline()` — art-block adjacency, with
-  the crop origin passed so blocks align across joints): the border is
-  part of the frame pixel art, same pixel size as the art — NOT a
-  smooth dilated halo (maintainer round 6 rejected the CSS-looking
-  band; soft AA edge pixels inside painted blocks are consumed into
-  the outline).
+  mock's global 4px art grid (`outline()`, crop origin passed so blocks
+  align across joints): the ART IS SNAPPED TO THE GRID FIRST — blocks
+  ≥1/4 opaque become fully solid (empty px take the nearest opaque px
+  colour), lesser fringe is erased — and the ring of neighbouring
+  blocks is then EXACTLY one art pixel wide everywhere by construction.
+  The border is part of the frame pixel art, same pixel size as the
+  art — NOT a smooth dilated halo (maintainer round 6 rejected the
+  CSS-looking band, round 7 the 1-2px width wobble; 1/4 not 1/2
+  coverage keeps thin off-grid filigree from fragmenting).
   Tabs are PERFECT SQUARES (`--ml-tab`, capped 150px = the mock plate)
   with the three plate states 9-sliced via `border-image`; icons were
   flood-key-extracted (grey icons survive — their outlines stop the
