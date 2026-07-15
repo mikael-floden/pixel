@@ -20,4 +20,9 @@ export function uiZoom(): number {
 export function applyUiZoom(el: HTMLElement) {
   const z = uiZoom();
   if (z > 1.05) (el.style as unknown as { zoom: string }).zoom = z.toFixed(2);
+  // Expose the factor so zoomed overlays can un-double-count viewport-unit
+  // vars in their anchors: dvh resolves against the REAL viewport and the
+  // zoom then scales it again (e.g. the chat log's --hud-h bottom anchor
+  // landed at the TOP of the game view in desktop-site mode).
+  document.documentElement.style.setProperty("--ml-uizoom", z > 1.05 ? z.toFixed(2) : "1");
 }
