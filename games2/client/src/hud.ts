@@ -156,6 +156,13 @@ function plateButton(label: string, onPress: () => void): HTMLButtonElement {
   const b = mk("button", "ml-plate-btn") as HTMLButtonElement;
   b.textContent = label;
   b.addEventListener("click", onPress);
+  // Momentary pressed feedback via pointer events: CSS :active is hover-only
+  // (mobile Chrome keeps it sticky on the last tap), so touch needs its own
+  // press state — added on finger-down, gone the instant the finger lifts or
+  // leaves, so it can never stick.
+  b.addEventListener("pointerdown", () => b.classList.add("press"));
+  for (const ev of ["pointerup", "pointercancel", "pointerleave"])
+    b.addEventListener(ev, () => b.classList.remove("press"));
   return b;
 }
 
@@ -275,6 +282,7 @@ function injectStyles() {
   .ml-plate-btn:active{border-image:url(/ui/plate-pressed.png) 26 fill / 26px;color:#ffd678}
   }
   .ml-plate-btn.on{border-image:url(/ui/plate-pressed.png) 26 fill / 26px;color:#ffd678}
+  .ml-plate-btn.press{border-image:url(/ui/plate-pressed.png) 26 fill / 26px;color:#ffd678}
   /* Narrow phones: five square tabs must still fit between the outer rails. */
   @media (max-width:460px){
     .ml-tabrow{left:40px;right:40px}

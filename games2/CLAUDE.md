@@ -164,8 +164,8 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
 ## Living camera (WorldScene.updateChaseCam)
 
 - The camera CHASES the player instead of pinning them dead-centre:
-  exponential ease toward the sprite (CAM_TAU 0.45s, trail capped at
-  CAM_TRAIL_MAX 100px; CAM_SNAP_DIST snaps teleports/respawns), plus a
+  exponential ease toward the sprite (CAM_TAU 0.3s, trail capped at
+  CAM_TRAIL_MAX 70px; CAM_SNAP_DIST snaps teleports/respawns), plus a
   small speed-coupled ZOOM-OUT — up to CAM_ZOOM_OUT (18%) of the base
   integer zoom at full run world-speed (CAM_ZOOM_REF_WU, driven by the
   gait EMA spdWu so water/walk scale naturally) — because the chase

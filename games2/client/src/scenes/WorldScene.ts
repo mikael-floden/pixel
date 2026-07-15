@@ -149,8 +149,8 @@ const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
 // them dead-centre — exponential ease toward the sprite with the trail capped,
 // plus a small speed-coupled ZOOM-OUT so the player still sees a bit further
 // while moving (the chase alone would show less in the running direction).
-const CAM_TAU = 0.45; // s — position smoothing (run trail ≈ 175px/s × τ ≈ 79px)
-const CAM_TRAIL_MAX = 100; // scene px — the player never outruns the frame
+const CAM_TAU = 0.3; // s — position smoothing (run trail ≈ 175px/s × τ ≈ 52px)
+const CAM_TRAIL_MAX = 70; // scene px — the player never outruns the frame
 const CAM_SNAP_DIST = 600; // teleports (respawn/lookAt) snap instead of crawl
 const CAM_ZOOM_OUT = 0.18; // fraction of base zoom shed at full run speed
 const CAM_ZOOM_REF_WU = 124; // ≈ run world-speed (175 px/s side-view · √½)
