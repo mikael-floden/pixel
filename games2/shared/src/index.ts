@@ -1430,6 +1430,12 @@ export function sanitizeChat(text: unknown): string {
 // suite IS the regression gate; the browser smoke test only proves the glue.
 // ---------------------------------------------------------------------------
 
+/** Distance from the final target where a run trip eases into a walk (the
+ * slow-down-and-arrive feel; also the hold-to-move "walk zone" — a finger
+ * held within this of the player walks). 2.5 cells ≈ a good beat of walking
+ * before stopping. */
+export const APPROACH_WALK_RADIUS = CELL_WU * 2.5;
+
 /** Live state of one tap-to-move trip. Mutated in place by stepAutopilot. */
 export interface AutopilotTrip {
   /** The route's END: the tapped point clearance-adjusted out of collision
@@ -1645,13 +1651,17 @@ export function stepAutopilot(
       trip.steer = null; // nothing sane is open — push on; unstick/stall-replan resolves
     }
   }
-  // Run trips drop to a walk for the last stretch so the 8-way quantized
-  // heading can't orbit the target at run speed.
+  // Run trips drop to a walk for the final approach — partly so the 8-way
+  // quantized heading can't orbit the target at run speed, but mostly for
+  // feel: every tap runs (nobody walks when they can run), and easing into
+  // a walk for the last stretch is what makes arrivals read as deliberate.
+  // The radius doubles as the hold-to-move walk zone: holding the finger
+  // NEAR the player keeps the target inside it, so the player just walks.
   const finalDist = Math.hypot(t.x - x, t.y - y);
   return {
     ax: best.ax,
     ay: best.ay,
-    running: t.run && !trip.slow && finalDist > CELL_WU,
+    running: t.run && !trip.slow && finalDist > APPROACH_WALK_RADIUS,
     done: false,
     wp: { x: wp.x, y: wp.y },
     dist,

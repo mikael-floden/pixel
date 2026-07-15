@@ -209,8 +209,16 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
 
 ## Mobile / PWA (client)
 
-- **Tap-to-move**: tap the ground → the player walks there; double-tap → run;
-  any movement key cancels. Routes come from the shared **`findPath`** (A*
+- **Tap/hold-to-move**: a tap RUNS to the point (there is NO double-tap
+  gesture — nobody walks when they can run, maintainer); the autopilot
+  eases into a walk inside `APPROACH_WALK_RADIUS` (2.5 cells) of the
+  target, so arrivals read as deliberate. HOLDING the pointer steers
+  continuously: the trip starts on pointerDOWN, drag retargets follow the
+  finger (throttled to ~7/s + ≥0.6-cell moves; `trip.slow` carries across
+  hold retargets or throttled tabs re-arm the run every replan), release
+  finishes at the last point — and holding NEAR the player walks, since
+  the target stays inside the walk radius. Any movement key cancels.
+  Routes come from the shared **`findPath`** (A*
   over the terrain grid: walk edges, no-corner-cut diagonals, CARDINAL
   1-level jump climbs at ~3× cost, +0.6 for cells hugging solids) so the
   character walks AROUND props and ALONG walls to a head-on jump approach.
@@ -266,10 +274,10 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   full decision forensics in seconds, no browser.
 - **Browser = graphics + glue only, ONE session**: `scripts/verify-smoke.mjs`
   runs everything browser-bound back-to-back in a single Chromium + world
-  load (~30s total): loading overlay, version badge, real-pointer tap walk,
-  synthetic double-tap run, keyboard cancel, jump anim states, measured anim
-  rates, in-place reconnect (last — it swaps the session), then one reload
-  for a glow_test join + trip. The per-feature scripts (verify-mobile/-jump/
+  load (~30s total): loading overlay, version badge, real-pointer tap run,
+  press-and-drag hold-to-move steering, keyboard cancel, jump anim states,
+  measured anim rates, in-place reconnect (last — it swaps the session),
+  then one reload for a glow_test join + trip. The per-feature scripts (verify-mobile/-jump/
   -reconnect/-animrates/-navigation/-longwalk) remain for deep dives.
 - **Headless-GL starvation preflight**: verify-smoke measures raw keyboard
   speed first and ABORTS ("HARNESS STARVED") if the harness is too slow —

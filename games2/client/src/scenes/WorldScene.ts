@@ -226,7 +226,10 @@ export class WorldScene extends Phaser.Scene {
   private trip: AutopilotTrip | null = null;
   // Autopilot decision trace (debug hook __ml.navLog; ring buffer, dev cost ~0).
   private navLog: Record<string, unknown>[] = [];
-  private lastTap = { t: -Infinity, x: 0, y: 0 }; // double-tap detection
+  // Hold-to-move: the one pointer allowed to steer (first touch down), and
+  // the last drag-retarget time (throttles findPath while the finger moves).
+  private holdPointerId: number | null = null;
+  private lastHoldRetarget = 0;
   private tapMarker?: Phaser.GameObjects.Container;
   // Isometric tile world (null → fall back to a plain ground).
   private world: World | null = null;
@@ -464,21 +467,39 @@ export class WorldScene extends Phaser.Scene {
       "W,A,S,D,UP,DOWN,LEFT,RIGHT,SHIFT",
     ) as Record<string, Phaser.Input.Keyboard.Key>;
 
-    // Tap-to-move: tap/click the ground to walk there (strategy-game style);
-    // double-tap to run. Drags and long holds are not taps.
-    this.input.addPointer(2); // second touch (e.g. resting thumb) must not eat taps
-    this.input.on("pointerup", (p: Phaser.Input.Pointer) => {
-      if (p.getDistance() > 16 || p.getDuration() > 600) return;
-      // Time taps by the DOM event clock (upTime), NOT this.time.now: the game
-      // clock advances in whole steps, so on a throttled tab two quick taps
-      // can measure hundreds of ms apart and the double-tap never registers.
-      const now = p.upTime;
-      const dbl =
-        now - this.lastTap.t < 400 && Math.hypot(p.x - this.lastTap.x, p.y - this.lastTap.y) < 48;
-      this.lastTap = { t: now, x: p.x, y: p.y };
+    // Tap/hold-to-move. A tap RUNS to the tapped point — nobody walks when
+    // they can run (maintainer), so there is no double-tap gesture; the
+    // autopilot itself eases into a walk inside APPROACH_WALK_RADIUS of the
+    // target. HOLDING the pointer steers continuously: the target follows
+    // the finger (no tap-tap-tap), so holding near the player walks (the
+    // target stays inside the walk zone) and holding further out runs.
+    // The trip starts on pointerDOWN (instant response); releasing simply
+    // stops retargeting — the trip finishes at the last touched point.
+    this.input.addPointer(2); // second touch (e.g. resting thumb) must not steer
+    this.input.on("pointerdown", (p: Phaser.Input.Pointer) => {
+      if (this.holdPointerId !== null) return; // first touch keeps the wheel
+      this.holdPointerId = p.id;
+      this.lastHoldRetarget = p.event.timeStamp;
       const g = this.pickGround(p.worldX, p.worldY);
-      if (g) this.setMoveTarget(g.x, g.y, dbl);
+      if (g) this.setMoveTarget(g.x, g.y, true);
     });
+    this.input.on("pointermove", (p: Phaser.Input.Pointer) => {
+      if (p.id !== this.holdPointerId || !p.isDown) return;
+      // Throttle drag retargets: each one is a fresh findPath, and a finger
+      // resting in place must not re-plan sub-cell wiggles every frame.
+      if (p.event.timeStamp - this.lastHoldRetarget < 140) return;
+      const g = this.pickGround(p.worldX, p.worldY);
+      if (!g) return;
+      const cur = this.trip?.target;
+      if (cur && Math.hypot(g.x - cur.x, g.y - cur.y) < CELL_WU * 0.6) return;
+      this.lastHoldRetarget = p.event.timeStamp;
+      this.setMoveTarget(g.x, g.y, true, true);
+    });
+    const releaseHold = (p: Phaser.Input.Pointer) => {
+      if (p.id === this.holdPointerId) this.holdPointerId = null;
+    };
+    this.input.on("pointerup", releaseHold);
+    this.input.on("pointerupoutside", releaseHold);
 
     // Chat: Enter opens the input; while typing, Phaser keyboard is disabled so
     // movement keys don't leak through, and re-enabled when the box closes.
@@ -1554,24 +1575,35 @@ export class WorldScene extends Phaser.Scene {
   /** Start a tap-to-move trip (run = double-tap). Plans a route with the
    * shared findPath (walk around props, along walls, jump 1-level ledges
    * head-on) and drops a pulsing ground marker at the destination. */
-  private setMoveTarget(x: number, y: number, run: boolean) {
+  private setMoveTarget(x: number, y: number, run: boolean, hold = false) {
     const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
     if (!me) return;
     // startTrip routes with the shared findPath; the trip's destination is
     // the route's END — the tapped point pushed out of any solid's collision
     // margin, or the reachable rim when the goal is walled off. Null →
-    // nowhere to go (tap into a sealed area) — ignore.
+    // nowhere to go (tap into a sealed area) — ignore (a hold-drag passing
+    // over a sealed spot keeps the current trip alive).
     const stamina = this.room?.state.players.get(this.room.sessionId)?.stamina;
     const trip = startTrip(this.terrain, me.fx, me.fy, x, y, run, this.time.now, {
       swimBudget: typeof stamina === "number" ? stamina : undefined,
     });
     if (!trip) return;
+    // A hold-drag retarget carries the sticky run→walk demotion: fresh trips
+    // reset it, and at ~7 retargets/s a throttled tab would re-arm the run
+    // every retarget and oscillate run/walk forever.
+    if (hold && this.trip) trip.slow = this.trip.slow;
     this.trip = trip;
     const end = trip.target;
     this.ensureTapAssets();
-    this.tapMarker?.destroy();
     const p = this.projectFlat(end.x, end.y);
     const my = p.y - p.lvl * MAP_GEOMETRY.lh;
+    // While the finger drags, the existing beacon just FOLLOWS (rebuilding
+    // the container + tween ~7×/s made the pulse stutter).
+    if (hold && this.tapMarker) {
+      this.tapMarker.setPosition(p.x, my);
+      return;
+    }
+    this.tapMarker?.destroy();
     // A GLOWING destination beacon. Depth 900_000.5 sits ABOVE the darkness
     // overlay (900_000) so night can't dim it, and above every terrain
     // occluder so a target on top of a cliff stays visible — but BELOW the

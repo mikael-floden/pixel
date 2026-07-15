@@ -78,7 +78,8 @@ try {
   if (!badge) fail("version badge missing");
   console.log(`badge OK (${badge})`);
 
-  // ---- tap-to-move: WALK (real pointer path: pick → trip → input synth) ----
+  // ---- tap-to-move: single tap RUNS to the point and arrives (the
+  // autopilot walks the final approach itself) ----
   {
     let target = null;
     for (const [dx, dy] of [[100, 55], [-110, 60], [120, -45], [-90, -60]]) {
@@ -88,7 +89,7 @@ try {
       if (target) break;
     }
     if (!target) fail("tap never set a move target");
-    if (target.run) fail("single tap must WALK, got run=true");
+    if (!target.run) fail("a tap must RUN (single-tap-runs), got run=false");
     const p0 = await pos();
     const d0 = Math.hypot(target.x - p0.x, target.y - p0.y);
     let dEnd = d0;
@@ -99,43 +100,42 @@ try {
       if (!s.t) break;
     }
     const arrived = await page.evaluate(() => !window.__ml.target());
-    if (!arrived || dEnd > 40) fail(`tap-walk did not arrive (${d0.toFixed(0)} → ${dEnd.toFixed(0)}wu)`);
+    if (!arrived || dEnd > 40) fail(`tap trip did not arrive (${d0.toFixed(0)} → ${dEnd.toFixed(0)}wu)`);
     console.log(`tap-to-move OK (${d0.toFixed(0)} → ${dEnd.toFixed(0)}wu, arrived)`);
   }
 
-  // ---- double-tap: RUN (synthetic events — protocol latency breaks the
-  // 400ms window if the two taps go through the real mouse API) ----
+  // ---- hold-to-move: press-and-drag steers the target continuously ----
   {
-    let t = null;
-    // Far corners first: a close target legitimately walks (the follower
-    // drops run inside the last cell), which would starve the running check.
-    for (const [cx, cy] of [[VW - 50, 50], [50, VH - 40], [VW - 40, VH - 40], [50, 50], [170, 110]]) {
-      await page.evaluate(({ cx, cy }) => {
-        const c = document.querySelector("canvas");
-        const opts = { bubbles: true, cancelable: true, clientX: cx, clientY: cy, button: 0 };
-        for (let i = 0; i < 2; i++) {
-          c.dispatchEvent(new MouseEvent("mousedown", opts));
-          c.dispatchEvent(new MouseEvent("mouseup", opts));
-        }
-      }, { cx, cy });
-      await page.waitForTimeout(250);
-      t = await page.evaluate(() => window.__ml.target());
-      if (t) break; // spot may be unreachable ground — try another
+    await page.mouse.move(VW / 2 + 90, VH / 2 + 50);
+    await page.mouse.down();
+    await page.waitForTimeout(250);
+    // Drag through several spots; the target must FOLLOW the finger (each
+    // stop that lands on reachable ground re-targets — require at least two
+    // distinct targets across the stroke).
+    const seen = [];
+    for (const [mx, my] of [[VW - 60, 60], [VW - 50, VH - 50], [60, VH - 60], [70, 70], [VW / 2, VH / 2 + 80]]) {
+      await page.mouse.move(mx, my, { steps: 6 });
+      await page.waitForTimeout(280);
+      seen.push(await page.evaluate(() => window.__ml.target()));
     }
-    if (!t || !t.run) fail(`double tap must RUN, got ${JSON.stringify(t)}`);
-    // The run-flagged trip must either be observed running (server state) or
-    // finish — short trips can complete between polls, and the follower
-    // legitimately walks the final cell. Run MECHANICS are covered by the
-    // navigation sim; this asserts the double-tap → run-trip glue.
+    await page.mouse.up();
+    const distinct = new Set(seen.filter(Boolean).map((t) => `${Math.round(t.x)},${Math.round(t.y)}`));
+    if (distinct.size < 2) fail(`hold-drag did not steer the target (saw ${JSON.stringify([...distinct])})`);
+    // Any live target must be a RUN trip (hold uses the same single-gesture
+    // rule); after release the trip finishes at the last point OR is seen
+    // running on the way there.
+    if (seen.filter(Boolean).some((t) => !t.run)) fail("hold-drag produced a non-run trip");
     let runningSeen = false;
     let ended = false;
-    for (let i = 0; i < 30 && !runningSeen && !ended; i++) {
+    for (let i = 0; i < 40 && !runningSeen && !ended; i++) {
       runningSeen = await page.evaluate(() => !!window.__ml.me()?.running);
       ended = await page.evaluate(() => !window.__ml.target());
       await page.waitForTimeout(100);
     }
-    if (!runningSeen && !ended) fail("double-tap trip neither ran nor completed");
-    console.log(`double-tap run OK (${runningSeen ? "running observed" : "short trip completed"})`);
+    if (!runningSeen && !ended) fail("hold-to-move trip neither ran nor completed");
+    console.log(
+      `hold-to-move OK (${distinct.size} targets steered, ${runningSeen ? "running observed" : "trip completed"})`,
+    );
   }
 
   // ---- keyboard cancels the trip ----

@@ -69,7 +69,7 @@ try {
   await page.waitForTimeout(200);
   const target = await page.evaluate(() => window.__ml.target());
   if (!target) fail("tap did not set a move target");
-  if (target.run) fail("single tap must WALK, got run=true");
+  if (!target.run) fail("a tap must RUN (single-tap-runs), got run=false");
   // The player must make real progress toward the target.
   const d0 = Math.hypot(target.x - start.x, target.y - start.y);
   let dEnd = d0;
@@ -88,31 +88,32 @@ try {
     `Tap-to-move OK (dist ${d0.toFixed(0)} → ${dEnd.toFixed(0)}wu${arrived ? ", arrived" : ""})`,
   );
 
-  // Double-tap → run. Playwright's mouse API pays a protocol round-trip per
-  // step (~250ms here) which alone blows the 400ms double-tap window, so fire
-  // the two taps as synthetic DOM events in ONE evaluate — Phaser's mouse
-  // handlers run on dispatchEvent synchronously, and the timestamps are real.
-  await page.evaluate(() => {
-    const c = document.querySelector("canvas");
-    const opts = { bubbles: true, cancelable: true, clientX: 310, clientY: 280, button: 0 };
-    for (let i = 0; i < 2; i++) {
-      c.dispatchEvent(new MouseEvent("mousedown", opts));
-      c.dispatchEvent(new MouseEvent("mouseup", opts));
-    }
-  });
+  // Hold-to-move: press and DRAG — the target must follow the finger (this
+  // replaced the old double-tap-to-run gesture; every tap/hold runs now).
+  await page.mouse.move(450 + 120, 320 + 55);
+  await page.mouse.down();
   await page.waitForTimeout(250);
-  const runTarget = await page.evaluate(() => window.__ml.target());
-  if (!runTarget || !runTarget.run) fail(`double tap must RUN, got ${JSON.stringify(runTarget)}`);
+  const holdSeen = [];
+  for (const [mx, my] of [[840, 90], [830, 560], [90, 550], [140, 120]]) {
+    await page.mouse.move(mx, my, { steps: 6 });
+    await page.waitForTimeout(280);
+    holdSeen.push(await page.evaluate(() => window.__ml.target()));
+  }
+  await page.mouse.up();
+  const holdDistinct = new Set(holdSeen.filter(Boolean).map((t) => `${Math.round(t.x)},${Math.round(t.y)}`));
+  if (holdDistinct.size < 2) fail(`hold-drag did not steer the target (${JSON.stringify([...holdDistinct])})`);
+  if (holdSeen.filter(Boolean).some((t) => !t.run)) fail("hold-drag produced a non-run trip");
   const runningSeen = await page.evaluate(async () => {
     for (let i = 0; i < 40; i++) {
       const me = window.__ml.me();
       if (me && me.running) return true;
+      if (!window.__ml.target()) return true; // short leg completed — fine
       await new Promise((r) => setTimeout(r, 100));
     }
     return false;
   });
-  if (!runningSeen) fail("double-tap trip never reported running=true on the server state");
-  console.log("Double-tap run OK");
+  if (!runningSeen) fail("hold-to-move trip neither ran nor completed");
+  console.log(`Hold-to-move OK (${holdDistinct.size} targets steered)`);
 
   // Keyboard cancels the trip.
   await page.mouse.click(450 + 100, 320 + 40);

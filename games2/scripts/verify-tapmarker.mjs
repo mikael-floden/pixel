@@ -103,13 +103,19 @@ try {
   if (flat1.best < 110) fail(`marker too dark at night (${flat1.best.toFixed(0)} < 110)`);
 
   // 2) PULSATES until arrival: alpha keeps changing while the trip is live,
-  //    and the marker disappears once the target clears.
-  const a1 = flat1.alpha;
-  await page.waitForTimeout(260);
-  const m2 = await page.evaluate(() => window.__ml.marker());
-  if (!m2) fail("marker vanished mid-trip");
-  if (Math.abs(m2.alpha - a1) < 0.02) fail(`marker not pulsating (alpha ${a1.toFixed(2)} → ${m2.alpha.toFixed(2)})`);
-  console.log(`pulsating OK (alpha ${a1.toFixed(2)} → ${m2.alpha.toFixed(2)})`);
+  //    and the marker disappears once the target clears. THREE samples at
+  //    co-prime-ish offsets vs the tween period — two samples can land on
+  //    symmetric points around a yoyo peak and read "static" (0.86 → 0.85).
+  const alphas = [flat1.alpha];
+  for (const wait of [260, 130]) {
+    await page.waitForTimeout(wait);
+    const m = await page.evaluate(() => window.__ml.marker());
+    if (!m) fail("marker vanished mid-trip");
+    alphas.push(m.alpha);
+  }
+  const spread = Math.max(...alphas) - Math.min(...alphas);
+  if (spread < 0.02) fail(`marker not pulsating (alphas ${alphas.map((a) => a.toFixed(2)).join(" → ")})`);
+  console.log(`pulsating OK (alphas ${alphas.map((a) => a.toFixed(2)).join(" → ")})`);
   let cleared = false;
   for (let i = 0; i < 120 && !cleared; i++) {
     await page.waitForTimeout(200);
