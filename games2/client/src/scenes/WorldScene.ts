@@ -37,6 +37,7 @@ import {
   MAX_STAMINA,
   WALK_SPEED,
   RUN_SPEED,
+  DEFAULT_TIME_IDX,
 } from "@nangijala/shared";
 import { CharacterDef, Manifest, frameUrl, frameKey } from "../manifest";
 import { colorForName } from "../placeholder";
@@ -131,12 +132,10 @@ const TIME_PHASES: { name: string; ambient: [number, number, number] }[] = [
   { name: "Evening", ambient: [0.74, 0.55, 0.37] },
 ];
 const TIME_TRANSITION_S = 2.5;
-// The phase everyone STARTS in. Day, per the maintainer (iterating on the
-// day look); [1] / the HUD button still cycle from there.
-const DEFAULT_TIME_IDX = Math.max(
-  0,
-  TIME_PHASES.findIndex((p) => p.name === "Day"),
-);
+// The starting phase + count live in shared/ — time-of-day is WORLD STATE
+// (server-owned, synced): [1] / the HUD button send "timeofday" and the
+// state listener applies the change for everyone. TIME_PHASES must stay in
+// step with TIME_PHASE_COUNT.
 
 // Lit copies (see applyObjectLights) live in a thin band ABOVE the darkness
 // overlay (depth 900_000) but must keep the world's relative draw order among
@@ -150,10 +149,10 @@ const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
 // them dead-centre — exponential ease toward the sprite with the trail capped,
 // plus a small speed-coupled ZOOM-OUT so the player still sees a bit further
 // while moving (the chase alone would show less in the running direction).
-const CAM_TAU = 0.3; // s — position smoothing (run trail ≈ 175px/s × τ ≈ 52px)
-const CAM_TRAIL_MAX = 70; // scene px — the player never outruns the frame
+const CAM_TAU = 0.45; // s — position smoothing (run trail ≈ 175px/s × τ ≈ 79px)
+const CAM_TRAIL_MAX = 100; // scene px — the player never outruns the frame
 const CAM_SNAP_DIST = 600; // teleports (respawn/lookAt) snap instead of crawl
-const CAM_ZOOM_OUT = 0.12; // fraction of base zoom shed at full run speed
+const CAM_ZOOM_OUT = 0.18; // fraction of base zoom shed at full run speed
 const CAM_ZOOM_REF_WU = 124; // ≈ run world-speed (175 px/s side-view · √½)
 const CAM_ZOOM_TAU_OUT = 0.45; // s — ease toward zoomed-out while speeding up
 const CAM_ZOOM_TAU_IN = 0.85; // s — slower ease back in (no pumping)
@@ -908,6 +907,14 @@ export class WorldScene extends Phaser.Scene {
     this.reconnectRetries = 0;
     const cam = this.cameras.main;
     const $ = getStateCallbacks(room);
+    // Shared time-of-day: fires immediately with the current phase (instant
+    // apply, no log) and then on every change anyone triggers.
+    let firstTimeSync = true;
+    $(room.state).listen("timeIdx", (idx: number) => {
+      this.setTimeOfDay(idx % TIME_PHASES.length, firstTimeSync);
+      if (!firstTimeSync) this.chat.addLog("—", `Time of day: ${TIME_PHASES[idx % TIME_PHASES.length].name}`);
+      firstTimeSync = false;
+    });
     $(room.state).players.onAdd((player: any, id: string) => {
       this.addAvatar(id, player);
       if (id === room.sessionId) {
@@ -1509,10 +1516,11 @@ export class WorldScene extends Phaser.Scene {
     this.chat.addLog("—", `[6] Bonfire: ${this.fireOn ? "lit" : "out"}`);
   }
 
-  /** Advance to the next time-of-day phase (the [1] key and the HUD button). */
+  /** Ask the SERVER for the next time-of-day phase (the [1] key and the HUD
+   * button) — the state listener applies it when the patch lands, for every
+   * player at once. */
   private cycleTimeOfDay() {
-    this.setTimeOfDay((this.timeIdx + 1) % TIME_PHASES.length);
-    this.chat.addLog("—", `[1] Time of day: ${TIME_PHASES[this.timeIdx].name}`);
+    this.room?.send("timeofday");
   }
 
   private setTimeOfDay(idx: number, instant = false) {

@@ -245,7 +245,12 @@ function injectStyles() {
     touch-action:manipulation;-webkit-touch-callout:none;
     border-style:solid;border-width:26px;border-image:url(/ui/plate-unselected.png) 26 fill / 26px;
     background:none}
+  /* :active only where a real hover exists — mobile Chrome keeps :active
+     sticky on the last-tapped element, which made switches read "pressed"
+     regardless of their .on state (maintainer). */
+  @media (hover:hover){
   .ml-tab:active{border-image:url(/ui/plate-pressed.png) 26 fill / 26px}
+  }
   .ml-tab.sel{border-width:32px;border-image:url(/ui/plate-selected.png) 32 fill / 32px}
   .ml-tab-icon{image-rendering:pixelated;-webkit-user-drag:none;pointer-events:none;
     max-width:calc(100% - 6px);max-height:calc(100% - 22px);object-fit:contain}
@@ -266,7 +271,9 @@ function injectStyles() {
     border-style:solid;border-width:26px;border-image:url(/ui/plate-unselected.png) 26 fill / 26px;
     font:700 14px system-ui,sans-serif;letter-spacing:.4px;text-transform:uppercase;color:#e8e8ec;
     text-shadow:0 1px 2px #000}
+  @media (hover:hover){
   .ml-plate-btn:active{border-image:url(/ui/plate-pressed.png) 26 fill / 26px;color:#ffd678}
+  }
   .ml-plate-btn.on{border-image:url(/ui/plate-pressed.png) 26 fill / 26px;color:#ffd678}
   /* Narrow phones: five square tabs must still fit between the outer rails. */
   @media (max-width:460px){

@@ -29,6 +29,7 @@ import {
   JUMP_MS,
   JUMP_COOLDOWN_MS,
   MAX_STAMINA,
+  TIME_PHASE_COUNT,
 } from "@nangijala/shared";
 import { WorldState, Player } from "../schema/WorldState.js";
 import { JsonPlayerStore, PlayerStore } from "../store.js";
@@ -96,6 +97,11 @@ export class WorldRoom extends Room<WorldState> {
           player.jumpReadyAt = now + JUMP_MS + JUMP_COOLDOWN_MS;
         }
       }
+    });
+
+    // Time-of-day is world state: anyone can cycle it, everyone sees it.
+    this.onMessage("timeofday", () => {
+      this.state.timeIdx = (this.state.timeIdx + 1) % TIME_PHASE_COUNT;
     });
 
     this.onMessage("chat", (client, message: ChatInput) => {

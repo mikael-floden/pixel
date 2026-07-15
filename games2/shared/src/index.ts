@@ -43,6 +43,12 @@ export const DIRECTIONS = [
 export type Direction = (typeof DIRECTIONS)[number];
 export const DEFAULT_DIRECTION: Direction = "south";
 
+// Time-of-day is SHARED WORLD STATE (maintainer): the server owns the phase
+// index and every client renders it — ambient palettes stay client-side, but
+// the count and the starting phase must agree on both ends.
+export const TIME_PHASE_COUNT = 4; // Night, Morning, Day, Evening
+export const DEFAULT_TIME_IDX = 2; // Day
+
 /** Map a movement vector (screen space, +y down) to one of 8 directions. */
 export function vectorToDirection(dx: number, dy: number): Direction | null {
   if (Math.abs(dx) < 1e-6 && Math.abs(dy) < 1e-6) return null;

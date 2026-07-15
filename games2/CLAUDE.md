@@ -164,9 +164,9 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
 ## Living camera (WorldScene.updateChaseCam)
 
 - The camera CHASES the player instead of pinning them dead-centre:
-  exponential ease toward the sprite (CAM_TAU 0.3s, trail capped at
-  CAM_TRAIL_MAX 70px; CAM_SNAP_DIST snaps teleports/respawns), plus a
-  small speed-coupled ZOOM-OUT — up to CAM_ZOOM_OUT (12%) of the base
+  exponential ease toward the sprite (CAM_TAU 0.45s, trail capped at
+  CAM_TRAIL_MAX 100px; CAM_SNAP_DIST snaps teleports/respawns), plus a
+  small speed-coupled ZOOM-OUT — up to CAM_ZOOM_OUT (18%) of the base
   integer zoom at full run world-speed (CAM_ZOOM_REF_WU, driven by the
   gait EMA spdWu so water/walk scale naturally) — because the chase
   alone would show LESS in the running direction (maintainer). Ease-out
@@ -177,6 +177,17 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   Probe: `__ml.camInfo()` → {zoom, base, trail, detached}; regression
   lives in verify-smoke (trail>6px + zoom dip while running, settles to
   base within 8px).
+
+## Time-of-day (server-owned world state)
+
+- The phase index lives in WorldState.timeIdx (shared DEFAULT_TIME_IDX /
+  TIME_PHASE_COUNT): the [1] key / HUD button send "timeofday" and the
+  server increments — every client's state listener applies the change
+  (instant + logless on the initial sync, 2.5s fade + chat log after).
+  Ambient palettes (TIME_PHASES) stay client-side; keep the array length
+  == TIME_PHASE_COUNT. `__ml.timeOfDay(which)` remains a LOCAL debug
+  probe (verify-timecycle drives grades headlessly without the server).
+  Regression: server/test/timeofday.test.ts.
 
 ## Night lighting (client/src/nightlight.ts)
 

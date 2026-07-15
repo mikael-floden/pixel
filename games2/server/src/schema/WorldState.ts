@@ -1,5 +1,5 @@
 import { Schema, MapSchema, defineTypes } from "@colyseus/schema";
-import { DEFAULT_DIRECTION, MAX_STAMINA } from "@nangijala/shared";
+import { DEFAULT_DIRECTION, DEFAULT_TIME_IDX, MAX_STAMINA } from "@nangijala/shared";
 
 /**
  * One connected player. Synced fields are declared with `declare` (so no class
@@ -65,13 +65,16 @@ defineTypes(Player, {
 /** The whole shared world. Everyone connected is in this one state. */
 export class WorldState extends Schema {
   declare players: MapSchema<Player>;
+  declare timeIdx: number; // shared time-of-day phase (server-owned)
 
   constructor() {
     super();
     this.players = new MapSchema<Player>();
+    this.timeIdx = DEFAULT_TIME_IDX;
   }
 }
 
 defineTypes(WorldState, {
   players: { map: Player },
+  timeIdx: "number",
 });
