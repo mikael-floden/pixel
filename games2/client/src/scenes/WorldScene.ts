@@ -141,10 +141,12 @@ const R2 = Math.SQRT1_2;
 const SUN_PHASES: { cast: [number, number]; slope: number; strength: number }[] = [
   { cast: [0, 0], slope: 1, strength: 0 }, // Night — no sun
   { cast: [-R2, R2], slope: 0.34, strength: 1 }, // Morning — long shadows to screen-west
-  // Day: mostly down-screen but tilted WEST — a straight-down cast lands
-  // exactly under the south faces where the wall art + AO swallow it
-  // (playtest: "can't see a single shadow during the day").
-  { cast: [0.32, 0.95], slope: 0.45, strength: 1 },
+  // Day: the noon sun stands in the SOUTH (screen-bottom) so the arc runs
+  // CLOCKWISE east -> south -> west (playtest: it swept CCW over the top).
+  // Shadows therefore point UP-screen, slightly west — they land on the
+  // open ground behind the rims (the north side has no drawn wall faces to
+  // swallow them) and the visible south walls read sunlit at midday.
+  { cast: [-0.947, -0.319], slope: 0.45, strength: 1 },
   { cast: [R2, -R2], slope: 0.34, strength: 1 }, // Evening — long shadows to screen-east
 ];
 
