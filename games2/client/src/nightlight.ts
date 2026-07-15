@@ -157,6 +157,7 @@ uniform vec4 uCam;        // worldView x, y, w, h (world-render px)
 uniform vec4 uIsoA;       // ox, oy, dx, dy
 uniform vec4 uIsoB;       // lh, gridW, gridH, maxLevel
 uniform vec3 uAmbient;    // night grade (what unlit white becomes)
+uniform vec4 uSun;        // directional sun: cast dir (grid x,y), slope (levels/cell), strength
 uniform float uFlip;      // 1 = invert fragment y (GL bottom-up), 0 = direct
 uniform float uTest;      // 1 = output a raw world-y gradient (calibration)
 uniform float uNumLights;
@@ -366,7 +367,32 @@ void main() {
     }
   }
 
-  vec3 light = uAmbient;
+  // DIRECTIONAL SUN (day phases; maintainer): uSun.xy is the direction
+  // shadows are CAST, so march the linear heightmap the OTHER way, rising
+  // uSun.z levels per cell — terrain or solid objects poking above the ray
+  // shade this surface with the same soft penumbra family as the point
+  // lights. Faces turned away from the sun fall to shade via a Lambert
+  // gate. Only the AMBIENT (sky) term is shaded — torches still light
+  // shadowed ground.
+  float sunF = 1.0;
+  if (uSun.w > 0.001) {
+    float sunVis = 1.0;
+    for (int s = 1; s <= 20; s++) {
+      float dc = float(s) * 0.6;
+      vec2 p = pos - uSun.xy * dc;
+      if (floor(p.x) == floor(pos.x) && floor(p.y) == floor(pos.y)) continue;
+      float hRay = z + dc * uSun.z + 0.15;
+      float H = heightAtSoft(p);
+      if (H < 90.0 && H > hRay) sunVis *= mix(0.86, 0.60, clamp((H - hRay) * 1.2, 0.0, 1.0));
+    }
+    if (isFace) {
+      vec2 nrm = mix(vec2(0.0, 1.0), vec2(1.0, 0.0), pickR);
+      float cosS = dot(nrm, -uSun.xy);
+      sunVis *= clamp(cosS * 1.4 + 0.55, 0.3, 1.0);
+    }
+    sunF = 1.0 - (1.0 - clamp(sunVis, 0.0, 1.0)) * 0.38 * uSun.w;
+  }
+  vec3 light = uAmbient * sunF;
   for (int i = 0; i < ${MAX_SHADER_LIGHTS}; i++) {
     if (float(i) >= uNumLights) continue;
     vec3 lp = uLightPos[i].xyz;
@@ -874,6 +900,48 @@ export class NightLights {
    * tint STANDING objects (characters, wall columns, props) so they carry the
    * light of their own cell — the screen-space field only shades the flat
    * ground. Same ambient/attenuation/LOS/ember/flicker, same clock. */
+  private curSun: [number, number, number, number] = [0, 0, 1, 0];
+
+  /** CPU twin of the shader's directional-sun shade for a surface (1 = fully
+   * lit, ~0.62 = deepest shade). Drives lit-copy tints and the headless
+   * verify probe. */
+  sunFactorAt(col: number, row: number, z: number, sun: [number, number, number, number] = this.curSun): number {
+    if (sun[3] <= 0.001) return 1;
+    // z < 0 = "use the cell's own terrain height" (headless probe sugar).
+    if (z < 0) {
+      const ci = Math.floor(col), ri = Math.floor(row);
+      z = ci < 0 || ri < 0 || ci >= this.world.width || ri >= this.world.height ? 0 : this.tArr[ri * this.world.width + ci];
+      if (z > 90) z = 0;
+    }
+    const W = this.world.width;
+    const H = this.world.height;
+    const hAt = (c: number, r: number) => {
+      const ci = Math.floor(c), ri = Math.floor(r);
+      return ci < 0 || ri < 0 || ci >= W || ri >= H ? 99 : this.hArr[ri * W + ci];
+    };
+    const hAtSoft = (c: number, r: number) => {
+      const cf = c - 0.5, rf = r - 0.5;
+      const c0 = Math.floor(cf), r0 = Math.floor(rf);
+      const fx = cf - c0, fy = rf - r0;
+      const v = (ci: number, ri: number) =>
+        ci < 0 || ri < 0 || ci >= W || ri >= H ? 99 : this.hArr[ri * W + ci];
+      const a = v(c0, r0), b = v(c0 + 1, r0), d = v(c0, r0 + 1), e = v(c0 + 1, r0 + 1);
+      if (a > 90 || b > 90 || d > 90 || e > 90) return hAt(c, r);
+      return (a * (1 - fx) + b * fx) * (1 - fy) + (d * (1 - fx) + e * fx) * fy;
+    };
+    let sunVis = 1;
+    for (let sN = 1; sN <= 20; sN++) {
+      const dc = sN * 0.6;
+      const px = col - sun[0] * dc;
+      const py = row - sun[1] * dc;
+      if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
+      const hRay = z + dc * sun[2] + 0.15;
+      const hh = hAtSoft(px, py);
+      if (hh < 90 && hh > hRay) sunVis *= 0.86 + (0.6 - 0.86) * Math.min(1, (hh - hRay) * 1.2);
+    }
+    return 1 - (1 - Math.max(0, Math.min(1, sunVis))) * 0.38 * sun[3];
+  }
+
   lightAt(col: number, row: number, z: number, isObj: boolean): [number, number, number] {
     const W = this.world.width;
     const H = this.world.height;
@@ -893,7 +961,13 @@ export class NightLights {
       return (a * (1 - fx) + b * fx) * (1 - fy) + (d * (1 - fx) + e * fx) * fy;
     };
     const t = this.scene.game.loop.getDuration();
-    const out: [number, number, number] = [...this.curAmbient] as [number, number, number];
+    // Directional-sun twin (see the shader): shade the ambient term only.
+    const sunF = this.sunFactorAt(col, row, z);
+    const out: [number, number, number] = [
+      this.curAmbient[0] * sunF,
+      this.curAmbient[1] * sunF,
+      this.curAmbient[2] * sunF,
+    ];
     for (let i = 0; i < this.curLights.length && i < MAX_SHADER_LIGHTS; i++) {
       const L = this.curLights[i];
       const dx = L.col - col;
@@ -1008,10 +1082,12 @@ export class NightLights {
     lights: ShaderLight[],
     ambient: [number, number, number],
     stamps: GlowStamp[] = [],
+    sun: [number, number, number, number] = [0, 0, 1, 0],
   ) {
     this.curLights = lights;
     this.curStamps = stamps;
     this.curAmbient = ambient;
+    this.curSun = sun;
     if (!this.shader || !this.active) return;
     const s = this.shader;
     // Ground-truth calibrated by raw suv readback: the zoomed overlay shows
@@ -1086,6 +1162,10 @@ export class NightLights {
     s.setUniform("uIsoB.value.y", this.world.width);
     s.setUniform("uIsoB.value.z", this.world.height);
     s.setUniform("uIsoB.value.w", this.maxLevel);
+    s.setUniform("uSun.value.x", sun[0]);
+    s.setUniform("uSun.value.y", sun[1]);
+    s.setUniform("uSun.value.z", sun[2]);
+    s.setUniform("uSun.value.w", sun[3]);
     s.setUniform("uAmbient.value.x", ambient[0]);
     s.setUniform("uAmbient.value.y", ambient[1]);
     s.setUniform("uAmbient.value.z", ambient[2]);

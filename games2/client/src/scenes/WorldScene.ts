@@ -131,6 +131,25 @@ const TIME_PHASES: { name: string; ambient: [number, number, number] }[] = [
   // Amber sunset, dimmed — same hue as before, ~78% the brightness.
   { name: "Evening", ambient: [0.74, 0.55, 0.37] },
 ];
+// Directional sun per phase (maintainer: the day's sun MOVES — morning light
+// from the east casts long west-pointing shadows, noon stands high with short
+// ones, evening mirrors morning; night has no sun). cast = the GRID direction
+// shadows fall (screen west ≈ grid (-1,+1), screen east ≈ (+1,-1), down-screen
+// ≈ (+1,+1)); slope = levels climbed per cell toward the sun (lower = longer
+// shadows); strength 0 disables. Lerped with the same clock as the ambient.
+const R2 = Math.SQRT1_2;
+const SUN_PHASES: { cast: [number, number]; slope: number; strength: number }[] = [
+  { cast: [0, 0], slope: 1, strength: 0 }, // Night — no sun
+  { cast: [-R2, R2], slope: 0.34, strength: 1 }, // Morning — long shadows to screen-west
+  { cast: [R2 * 0.9, R2 * 0.9], slope: 1.15, strength: 0.85 }, // Day — short, down-screen
+  { cast: [R2, -R2], slope: 0.34, strength: 1 }, // Evening — long shadows to screen-east
+];
+
+function sunVec(idx: number): [number, number, number, number] {
+  const p = SUN_PHASES[idx % SUN_PHASES.length];
+  return [p.cast[0], p.cast[1], p.slope, p.strength];
+}
+
 const TIME_TRANSITION_S = 2.5;
 // The starting phase + count live in shared/ — time-of-day is WORLD STATE
 // (server-owned, synced): [1] / the HUD button send "timeofday" and the
@@ -364,6 +383,8 @@ export class WorldScene extends Phaser.Scene {
   private timeT = 1; // 0..1 progress toward TIME_PHASES[timeIdx]
   private timeStart = 0; // wall-clock ms when the transition began
   private timeFromAmbient: [number, number, number] = [...TIME_PHASES[DEFAULT_TIME_IDX].ambient];
+  private timeFromSun: [number, number, number, number] = sunVec(DEFAULT_TIME_IDX);
+  private curSun: [number, number, number, number] = sunVec(DEFAULT_TIME_IDX);
   private curAmbient: [number, number, number] = [...TIME_PHASES[DEFAULT_TIME_IDX].ambient];
 
   constructor() {
@@ -681,6 +702,9 @@ export class WorldScene extends Phaser.Scene {
       },
       pickAt: (wx: number, wy: number) => this.pickGround(wx, wy),
       camZoom: () => this.cameras.main.zoom,
+      sunInfo: () => ({ sun: [...this.curSun], phase: TIME_PHASES[this.timeIdx].name, t: this.timeT }),
+      sunAt: (col: number, row: number, z = -1) =>
+        this.night?.sunFactorAt(col + 0.5, row + 0.5, z, this.curSun as [number, number, number, number]) ?? 1,
       // Chase-cam probe: eased zoom vs base, and how far the camera trails
       // the avatar (scene px).
       camInfo: () => {
@@ -1430,7 +1454,12 @@ export class WorldScene extends Phaser.Scene {
       const target = TIME_PHASES[this.timeIdx];
       for (let ch = 0; ch < 3; ch++)
         this.curAmbient[ch] = this.timeFromAmbient[ch] + (target.ambient[ch] - this.timeFromAmbient[ch]) * e;
-      this.night!.update(this.cameras.main, sl, this.curAmbient, this.glowStamps);
+      // The sun rides the same clock: direction/slope/strength lerp with the
+      // ambient so shadows sweep as one phase fades into the next.
+      const sunTo = sunVec(this.timeIdx);
+      for (let ch = 0; ch < 4; ch++)
+        this.curSun[ch] = this.timeFromSun[ch] + (sunTo[ch] - this.timeFromSun[ch]) * e;
+      this.night!.update(this.cameras.main, sl, this.curAmbient, this.glowStamps, this.curSun);
     }
 
     const lights: LightSource[] = [];
@@ -1537,10 +1566,14 @@ export class WorldScene extends Phaser.Scene {
 
   private setTimeOfDay(idx: number, instant = false) {
     this.timeFromAmbient = [...this.curAmbient];
+    this.timeFromSun = [...this.curSun];
     this.timeIdx = idx;
     this.timeT = instant ? 1 : 0;
     this.timeStart = this.time.now;
-    if (instant) this.curAmbient = [...TIME_PHASES[idx].ambient];
+    if (instant) {
+      this.curAmbient = [...TIME_PHASES[idx].ambient];
+      this.curSun = sunVec(idx);
+    }
   }
 
   /** Lit copies: a pixel-identical duplicate of each character drawn ABOVE
