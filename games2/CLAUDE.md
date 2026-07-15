@@ -224,21 +224,25 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   windows.
 - **UI tiles**: `client/public/ui/*.png` are cut from the maintainer's
   concept mockups by `scripts/build-ui-tiles.mjs` (sources live outside
-  the repo — the tiles are committed). NOTHING is mirrored (per-side
-  lighting differs): 4 distinct corners (cut wide — they include the
-  transition into the clean rail), 4 distinct rails, top/left/right gems
-  (there is NO gem on the outer bottom or divider B), and TWO divider
-  assemblies with their own ╠/╣ T-pieces + rail (+ centre gem on divider
-  A only). The page is ONE continuous frame (`mountPageFrame`, a
-  pointer-transparent overlay) split by those dividers — never stacked
-  per-section boxes ("double borders"). Tiles display at concept 1:1 CSS
-  px ("2×"), `image-rendering:pixelated`. Alignment: corner/rail crops
-  start 20px before the gold band (band at 6..30px in-tile); pieces
-  cropped at the mock's absolute edge (T-stubs, side gems) carry a 26px
-  margin and are shifted -20px to compensate. Buttons are the mock's
-  three plate states 9-sliced via `border-image`; tab icons were
-  flood-key-extracted (grey icons survive because their outlines stop
-  the fill); stray AA crumbs are dropped as sub-40px alpha islands.
+  the repo — the tiles are committed). PIXEL-PERFECT JOINTS BY
+  CONSTRUCTION: the mock's rails are thin hand-drawn lines that MEANDER
+  a few px, so the frame is cut as mock-ABSOLUTE segments between
+  junctions (180px corners, stretch-segments between them, fixed gems,
+  divider ╠/╣ caps + stretch-segments) — the client stretches only
+  segment interiors (`background-size:100% 100%`), so every joint shares
+  identical adjacent mock pixels. Side-border segments are flex-
+  proportioned by source height so the green gems land at the mock's
+  fraction. NOTHING is mirrored; no gem on the outer bottom or divider
+  B. Keying: outer pieces flood only from their INNER side (everything
+  outside the border stays opaque black — the game view cannot leak past
+  the frame); divider pieces flood from all edges; boundary pixels get
+  soft ALPHA; mock button-glow bleed is erased from caps/side strips.
+  Tabs are PERFECT SQUARES (`--ml-tab`, capped 150px = the mock plate)
+  with the three plate states 9-sliced via `border-image`; icons were
+  flood-key-extracted (grey icons survive — their outlines stop the
+  fill). Verify joints with the blackout trick: hide the canvas and diff
+  junction crops against the mock (see the session's junction-compare
+  probes).
 
 - **Tap/hold-to-move**: a tap RUNS to the point (there is NO double-tap
   gesture — nobody walks when they can run, maintainer); the autopilot

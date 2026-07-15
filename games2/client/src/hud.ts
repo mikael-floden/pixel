@@ -45,26 +45,18 @@ export function mountPageFrame() {
   document.getElementById("ml-pageframe")?.remove();
   const f = mk("div", "");
   f.id = "ml-pageframe";
-  for (const p of [
-    "corner-tl",
-    "corner-tr",
-    "corner-bl",
-    "corner-br",
-    "rail-top",
-    "rail-bottom",
-    "rail-left",
-    "rail-right",
-    "gem-top",
-    "gem-left",
-    "gem-right",
-  ])
-    f.appendChild(mk("i", `ml-pf ml-${p}`));
-  for (const d of ["divA", "divB"]) {
-    const wrap = mk("div", `ml-pf ml-${d}`);
-    for (const p of ["left", "rail", "right"]) wrap.appendChild(mk("i", `ml-pf ml-${d}-${p}`));
-    if (d === "divA") wrap.appendChild(mk("i", "ml-pf ml-divA-gem"));
-    f.appendChild(wrap);
-  }
+  const group = (cls: string, kids: string[]) => {
+    const g = mk("div", `ml-pf ${cls}`);
+    for (const k of kids) g.appendChild(mk("i", k));
+    f.appendChild(g);
+  };
+  for (const c of ["tl", "tr", "bl", "br"]) f.appendChild(mk("i", `ml-pf ml-corner-${c}`));
+  group("ml-et", ["sl", "gm", "sr"]); // top border between corners
+  group("ml-eb", ["sg"]); // bottom border
+  group("ml-el", ["st", "gm", "sb"]); // left border (flex column)
+  group("ml-er", ["st", "gm", "sb"]); // right border
+  group("ml-divA", ["cl", "sl", "gm", "sr", "cr"]);
+  group("ml-divB", ["cl", "sg", "cr"]);
   document.body.appendChild(f);
 }
 
@@ -159,48 +151,67 @@ let injected = false;
 function injectStyles() {
   if (injected) return;
   injected = true;
-  // --ml-tabzone: distance from the game/HUD boundary down to divider B's
-  // band centre — the tab row lives between the two dividers.
+  // --ml-tab: PERFECT-SQUARE tab plate side (mock plates capped at 150).
+  // --ml-tabzone: boundary → divider B line centre; tracks the tab size.
+  // Frame pieces are mock-ABSOLUTE crops: corners 180px, borders as
+  // segment strips stretched between fixed junctions (see build-ui-tiles).
   const css = `
-  :root{--ml-tabzone:130px}
+  :root{--ml-tab:min(150px,calc((100vw - 200px)/5));--ml-tabzone:calc(var(--ml-tab) + 48px)}
   #ml-pageframe{position:fixed;inset:0;z-index:6;pointer-events:none}
-  .ml-pf{position:absolute;pointer-events:none;image-rendering:pixelated}
-  .ml-corner-tl{left:0;top:0;width:160px;height:160px;background:url(/ui/corner-tl.png);background-size:160px 160px}
-  .ml-corner-tr{right:0;top:0;width:160px;height:160px;background:url(/ui/corner-tr.png);background-size:160px 160px}
-  .ml-corner-bl{left:0;bottom:0;width:160px;height:160px;background:url(/ui/corner-bl.png);background-size:160px 160px}
-  .ml-corner-br{right:0;bottom:0;width:160px;height:160px;background:url(/ui/corner-br.png);background-size:160px 160px}
-  .ml-rail-top{left:150px;right:150px;top:0;height:36px;background:url(/ui/rail-top.png) repeat-x;background-size:80px 36px}
-  .ml-rail-bottom{left:150px;right:150px;bottom:0;height:36px;background:url(/ui/rail-bottom.png) repeat-x;background-size:80px 36px}
-  .ml-rail-left{top:150px;bottom:150px;left:0;width:36px;background:url(/ui/rail-left.png) repeat-y;background-size:36px 80px}
-  .ml-rail-right{top:150px;bottom:150px;right:0;width:36px;background:url(/ui/rail-right.png) repeat-y;background-size:36px 80px}
-  .ml-gem-top{top:-20px;left:50%;margin-left:-28px;width:56px;height:72px;background:url(/ui/gem-top.png);background-size:56px 72px}
-  .ml-gem-left{left:-20px;top:30%;width:72px;height:56px;background:url(/ui/gem-left.png);background-size:72px 56px}
-  .ml-gem-right{right:-20px;top:30%;width:72px;height:56px;background:url(/ui/gem-right.png);background-size:72px 56px}
-  /* Divider A (game ↔ tabs): band centre sits exactly on the boundary. */
-  .ml-divA{left:0;right:0;top:calc(var(--hud-h-inv) - 40px);height:56px}
-  .ml-divA-left{left:-20px;top:0;width:84px;height:56px;background:url(/ui/divA-left.png);background-size:84px 56px}
-  .ml-divA-right{right:-20px;top:0;width:84px;height:56px;background:url(/ui/divA-right.png);background-size:84px 56px}
-  .ml-divA-rail{left:62px;right:62px;top:24px;height:32px;background:url(/ui/divA-rail.png) repeat-x;background-size:80px 32px}
-  .ml-divA-gem{left:50%;margin-left:-28px;top:4px;width:56px;height:52px;background:url(/ui/divA-gem.png);background-size:56px 52px}
-  /* Divider B (tabs ↔ content): its band centre 13px into the crop. */
-  .ml-divB{left:0;right:0;top:calc(var(--hud-h-inv) + var(--ml-tabzone) - 7px);height:58px}
-  .ml-divB-left{left:-20px;top:0;width:44px;height:58px;background:url(/ui/divB-left.png);background-size:44px 58px}
-  .ml-divB-right{right:-20px;top:0;width:44px;height:58px;background:url(/ui/divB-right.png);background-size:44px 58px}
-  .ml-divB-rail{left:22px;right:22px;top:0;height:20px;background:url(/ui/divB-rail.png) repeat-x;background-size:80px 20px}
+  .ml-pf,.ml-pf i{position:absolute;pointer-events:none;image-rendering:pixelated;background-size:100% 100%}
+  .ml-corner-tl{left:0;top:0;width:180px;height:180px;background-image:url(/ui/corner-tl.png)}
+  .ml-corner-tr{right:0;top:0;width:180px;height:180px;background-image:url(/ui/corner-tr.png)}
+  .ml-corner-bl{left:0;bottom:0;width:180px;height:180px;background-image:url(/ui/corner-bl.png)}
+  .ml-corner-br{right:0;bottom:0;width:180px;height:180px;background-image:url(/ui/corner-br.png)}
+  /* top border: stretch-segments join the corners/gem with identical mock
+     pixels on both sides of every joint */
+  .ml-et{left:180px;right:180px;top:0;height:76px}
+  .ml-et .sl{left:0;right:calc(50% + 28px);top:0;bottom:0;background-image:url(/ui/top-seg-l.png)}
+  .ml-et .gm{left:calc(50% - 28px);width:56px;top:0;bottom:0;background-image:url(/ui/gem-top.png)}
+  .ml-et .sr{left:calc(50% + 28px);right:0;top:0;bottom:0;background-image:url(/ui/top-seg-r.png)}
+  .ml-eb{left:180px;right:180px;bottom:0;height:76px}
+  .ml-eb .sg{inset:0;background-image:url(/ui/bottom-seg.png)}
+  /* side borders: flex columns; segment flex ratios = source heights, so the
+     gem sits at the mock's fraction and both its joints are native pixels */
+  .ml-el,.ml-er{top:180px;bottom:180px;width:76px;display:flex;flex-direction:column}
+  .ml-el{left:0}
+  .ml-er{right:0}
+  .ml-el i,.ml-er i{position:static;width:100%}
+  .ml-el .st{flex:196 196 0}
+  .ml-el .gm{flex:none;height:68px;background-image:url(/ui/gem-left.png)}
+  .ml-el .sb{flex:640 640 0}
+  .ml-el .st{background-image:url(/ui/left-seg-t.png)}
+  .ml-el .sb{background-image:url(/ui/left-seg-b.png)}
+  .ml-er .st{flex:196 196 0;background-image:url(/ui/right-seg-t.png)}
+  .ml-er .gm{flex:none;height:68px;background-image:url(/ui/gem-right.png)}
+  .ml-er .sb{flex:640 640 0;background-image:url(/ui/right-seg-b.png)}
+  /* divider A: thin line centred on the game/HUD boundary (line centre sits
+     35px into the 66px caps / 21px into the 36px segs / gem carries its own) */
+  .ml-divA{left:0;right:0;top:calc(var(--hud-h-inv) - 35px);height:72px}
+  .ml-divA .cl{left:0;top:0;width:76px;height:66px;background-image:url(/ui/divA-capl.png)}
+  .ml-divA .sl{left:76px;right:calc(50% + 28px);top:14px;height:36px;background-image:url(/ui/divA-seg-l.png)}
+  .ml-divA .gm{left:calc(50% - 28px);width:56px;top:0;height:58px;background-image:url(/ui/divA-gem.png)}
+  .ml-divA .sr{left:calc(50% + 28px);right:76px;top:14px;height:36px;background-image:url(/ui/divA-seg-r.png)}
+  .ml-divA .cr{right:0;top:0;width:76px;height:66px;background-image:url(/ui/divA-capr.png)}
+  /* divider B: line centre 18px into the caps / 8px into the 16px seg */
+  .ml-divB{left:0;right:0;top:calc(var(--hud-h-inv) + var(--ml-tabzone) - 18px);height:56px}
+  .ml-divB .cl{left:0;top:0;width:76px;height:56px;background-image:url(/ui/divB-capl.png)}
+  .ml-divB .sg{left:76px;right:76px;top:10px;height:16px;background-image:url(/ui/divB-seg.png)}
+  .ml-divB .cr{right:0;top:0;width:76px;height:56px;background-image:url(/ui/divB-capr.png)}
   /* HUD content between the dividers */
   .ml-hud{position:fixed;left:0;right:0;bottom:0;height:var(--hud-h);z-index:4;background:#07070e;box-sizing:border-box}
-  .ml-tabrow{position:absolute;top:30px;left:44px;right:44px;height:86px;display:flex;gap:8px;justify-content:center}
-  .ml-tab{flex:1;max-width:150px;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-    padding:2px 0;cursor:pointer;image-rendering:pixelated;
+  .ml-tabrow{position:absolute;top:24px;left:44px;right:44px;height:var(--ml-tab);display:flex;gap:8px;justify-content:center}
+  .ml-tab{width:var(--ml-tab);height:var(--ml-tab);flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    padding:2px 0;cursor:pointer;image-rendering:pixelated;box-sizing:border-box;
     border-style:solid;border-width:14px;border-image:url(/ui/plate-unselected.png) 26 fill / 14px;
     background:none}
   .ml-tab:active{border-image:url(/ui/plate-pressed.png) 26 fill / 14px}
   .ml-tab.sel{border-image:url(/ui/plate-selected.png) 32 fill / 15px}
-  .ml-tab-icon{height:38px;image-rendering:pixelated;-webkit-user-drag:none}
-  .ml-tab-label{font:700 11px/1.1 system-ui,sans-serif;font-size:clamp(6.5px,1.42vw,11px);
+  .ml-tab-icon{height:calc(var(--ml-tab)*0.42);image-rendering:pixelated;-webkit-user-drag:none}
+  .ml-tab-label{font:700 11px/1.1 system-ui,sans-serif;font-size:clamp(6.5px,1.42vw,12px);
     text-transform:uppercase;color:#dfe2ea;text-shadow:0 1px 2px #000;white-space:nowrap;overflow:hidden;max-width:100%}
   .ml-tab.sel .ml-tab-label{color:#ffd678}
-  .ml-pages{position:absolute;left:48px;right:48px;top:calc(var(--ml-tabzone) + 26px);bottom:42px;overflow:hidden}
+  .ml-pages{position:absolute;left:48px;right:48px;top:calc(var(--ml-tabzone) + 30px);bottom:46px;overflow:hidden}
   .ml-page{display:none;height:100%;overflow:auto;flex-direction:column;align-items:center;
     justify-content:center;gap:14px;text-align:center}
   .ml-page.show{display:flex}
@@ -213,19 +224,17 @@ function injectStyles() {
     font:700 14px system-ui,sans-serif;letter-spacing:.4px;text-transform:uppercase;color:#e8e8ec;
     text-shadow:0 1px 2px #000}
   .ml-plate-btn:active{border-image:url(/ui/plate-pressed.png) 26 fill / 16px;color:#ffd678}
-  /* Narrow phones: five tabs must still fit between the outer rails. */
+  /* Narrow phones: five square tabs must still fit between the outer rails. */
   @media (max-width:460px){
     .ml-tabrow{left:40px;right:40px;gap:5px}
     .ml-tab{border-width:11px;border-image-width:11px}
     .ml-tab.sel{border-image-width:12px}
-    .ml-tab-icon{height:30px}
   }
   /* Short viewports (small desktop windows): compact everything. */
   @media (max-height:640px){
-    :root{--ml-tabzone:104px}
-    .ml-tabrow{top:24px;height:66px}
-    .ml-tab-icon{height:24px}
-    .ml-pages{top:calc(var(--ml-tabzone) + 18px);bottom:34px}
+    :root{--ml-tab:min(84px,calc((100vw - 200px)/5));--ml-tabzone:calc(var(--ml-tab) + 38px)}
+    .ml-tabrow{top:20px}
+    .ml-pages{top:calc(var(--ml-tabzone) + 22px);bottom:38px}
     .ml-page{gap:8px}
     .ml-plate-btn{padding:6px 14px;border-width:12px;border-image-width:12px;font-size:11px}
     .ml-slot{width:36px;height:36px;border-width:9px;border-image-width:9px}
