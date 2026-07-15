@@ -20,12 +20,14 @@ import { applyUiZoom } from "./uiscale";
 const PHASE_FILES = ["night", "morning", "day", "evening"] as const;
 const FADE_S = 2.5; // keep in step with WorldScene's TIME_TRANSITION_S
 
-// The dial is a four-sector gauge read left -> right chronologically:
-// Morning, Day, Evening, Night at the sector centres. Matches the in-game
-// sun (morning sun west/left, evening east/right); night parks rightmost,
-// then the hand sweeps back across the dial for the new morning.
+// The dial is a four-sector gauge; the hand points the way the SUN'S
+// SHADOWS fall (maintainer playtest round 3: "when the shadow is cast to
+// the left the arrow points to the left"): morning shadows fall screen-
+// right -> hand right, evening left -> hand left. So chronologically the
+// hand sweeps RIGHT -> LEFT (Morning, Day, Evening, Night at the sector
+// centres), parking leftmost at night, then swinging back for morning.
 // Index order = TIME_PHASES / shared timeIdx (0 Night, 1 Morning, ...).
-const HAND_DEG = [-67.5, 67.5, 22.5, -22.5];
+const HAND_DEG = [67.5, -67.5, -22.5, 22.5];
 
 // Display size: dial width in CSS px — everything else derives from it.
 const ROOT_W = 176;
