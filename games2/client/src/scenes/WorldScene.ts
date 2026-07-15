@@ -131,6 +131,12 @@ const TIME_PHASES: { name: string; ambient: [number, number, number] }[] = [
   { name: "Evening", ambient: [0.74, 0.55, 0.37] },
 ];
 const TIME_TRANSITION_S = 2.5;
+// The phase everyone STARTS in. Day, per the maintainer (iterating on the
+// day look); [1] / the HUD button still cycle from there.
+const DEFAULT_TIME_IDX = Math.max(
+  0,
+  TIME_PHASES.findIndex((p) => p.name === "Day"),
+);
 
 // Lit copies (see applyObjectLights) live in a thin band ABOVE the darkness
 // overlay (depth 900_000) but must keep the world's relative draw order among
@@ -340,11 +346,11 @@ export class WorldScene extends Phaser.Scene {
   private probeLight: ShaderLight | null = null;
   // Time-of-day state: target phase index + eased interpolation FROM whatever
   // grade is currently on screen (mid-transition retargets stay smooth).
-  private timeIdx = 0;
+  private timeIdx = DEFAULT_TIME_IDX;
   private timeT = 1; // 0..1 progress toward TIME_PHASES[timeIdx]
   private timeStart = 0; // wall-clock ms when the transition began
-  private timeFromAmbient: [number, number, number] = [...TIME_PHASES[0].ambient];
-  private curAmbient: [number, number, number] = [...TIME_PHASES[0].ambient];
+  private timeFromAmbient: [number, number, number] = [...TIME_PHASES[DEFAULT_TIME_IDX].ambient];
+  private curAmbient: [number, number, number] = [...TIME_PHASES[DEFAULT_TIME_IDX].ambient];
 
   constructor() {
     super("world");

@@ -19,8 +19,11 @@ export interface JoinChoice {
 export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): Promise<JoinChoice> {
   return new Promise((resolve) => {
     const chars = manifest.characters;
-    let selected = Math.floor(Math.random() * chars.length);
-    let selectedWorld = 0; // index into `worlds`
+    // Maintainer defaults for fast join-and-iterate: the girl on Demo Lost
+    // (the current day-look playground). Fall back to the first entry when
+    // either is missing; the 🎲 button still randomizes.
+    let selected = Math.max(0, chars.findIndex((c) => c.uid === "default_girl"));
+    let selectedWorld = Math.max(0, worlds.findIndex((w) => w.name === "demo_lost"));
 
     const showWorlds = worlds.length > 0;
     const overlay = el("div", "ml-overlay");
@@ -65,7 +68,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
         selectedWorld = i;
         worldChips.forEach((c, j) => c.classList.toggle("sel", j === i));
       }
-      selectWorld(0);
+      selectWorld(selectedWorld);
     }
 
     const grid = overlay.querySelector("#ml-grid") as HTMLElement;
