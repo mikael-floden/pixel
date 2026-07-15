@@ -252,12 +252,13 @@ function injectStyles() {
   .ml-tab-label{font:700 11px/1.1 system-ui,sans-serif;font-size:clamp(6.5px,1.42vw,12px);
     text-transform:uppercase;color:#dfe2ea;text-shadow:0 1px 2px #000;white-space:nowrap;overflow:hidden;max-width:100%}
   .ml-tab.sel .ml-tab-label{color:#ffd678}
-  .ml-pages{position:absolute;left:48px;right:48px;top:calc(var(--ml-tabzone) + 30px);bottom:46px;overflow:hidden}
+  .ml-pages{position:absolute;left:44px;right:44px;top:calc(var(--ml-tabzone) + 30px);bottom:46px;overflow:hidden}
   .ml-page{display:none;height:100%;overflow:auto;flex-direction:column;align-items:center;
     justify-content:center;gap:14px;text-align:center}
   .ml-page.show{display:flex}
   .ml-muted{margin:0;font:14px/1.4 system-ui,sans-serif;color:#8f8f9c;text-shadow:0 1px 2px #000}
-  .ml-slots{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;max-width:calc(5*var(--ml-tab) + 4*14px)}
+  .ml-slots{display:grid;grid-template-columns:repeat(5,var(--ml-tab));justify-content:space-evenly;
+    row-gap:40px;width:100%}
   .ml-slot{width:var(--ml-tab);height:var(--ml-tab);image-rendering:pixelated;border-style:solid;border-width:26px;
     border-image:url(/ui/plate-pressed.png) 26 fill / 26px;box-sizing:border-box}
   .ml-btnrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:100%}
