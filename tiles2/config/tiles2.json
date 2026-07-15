@@ -100,6 +100,14 @@
     "neutralize_outline": true,
     "darkness_thresh": 60,
     "harmonize": { "hue_strength": 0.9, "sat_strength": 0.7, "v_strength": 0.9 },
+    "_deseam_comment": "Erases the near-black diamond-EDGE outline that tessellating ground tiles share — in-game it reads as a hard grid / 'Ʌ' seam over the whole map. neutralize_outline only recolours pixels touching transparency, but the baked edge line sits 1-3px INSIDE the silhouette, so it survives. deseam recolours every near-black pixel within `band` px of the silhouette toward its LOCAL non-dark interior colour (keeps alpha -> no gap between tiles). Deep-interior dark texture (distance > band) is untouched, so surface detail stays. black_mountain (value<90) is skipped. Base + transition floor tiles only (elevation objects unaffected). Toggle enabled:false + reprocess to revert (raw untouched).",
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "_fade_outline_comment": "Softens the generated near-black wireframe OUTLINE by REDUCING its alpha (toward transparent) so hard black frame/platform lines on base_x_N tiles look gentler — like game1's step. Fades only near-black SILHOUETTE-RIM + THIN FRAME LINES (run>=run_min, perpendicular<=thick_max); compact dark art (rock, trunks) is spared. strength/rim_strength are GENTLE (partial fade, never full cut). protect_dark_material zeroes the rim + caps strength for near-black terrain (black_mountain) so it can't dissolve. Toggle enabled:false + reprocess to fully revert (raw untouched).",
     "fade_outline": {
       "enabled": true,

@@ -1204,10 +1204,10 @@
       },
       "features": [
         "bare_soil",
-        "accent",
-        "pebbles"
+        "pebbles",
+        "accent"
       ],
-      "description": "crystal ice blending to light sand with a bare soil patch, a small detail, pebbles"
+      "description": "crystal ice blending to light sand with a bare soil patch, pebbles, a small detail"
     },
     {
       "index": 15,
@@ -1298,6 +1298,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

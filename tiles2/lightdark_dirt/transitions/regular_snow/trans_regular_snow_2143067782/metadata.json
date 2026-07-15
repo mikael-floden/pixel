@@ -167,10 +167,9 @@
       },
       "features": [
         "pebbles",
-        "water",
-        "accent"
+        "water"
       ],
-      "description": "dirt blending to snow with pebbles, a small puddle, a small detail"
+      "description": "dirt blending to snow with pebbles, a small puddle"
     },
     {
       "index": 2,
@@ -261,8 +260,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.425,
-        "lightdark_dirt": 0.575
+        "regular_snow": 0.427,
+        "lightdark_dirt": 0.573
       },
       "edges": {
         "NE": {
@@ -1298,6 +1297,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

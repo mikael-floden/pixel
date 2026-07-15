@@ -163,10 +163,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "clear water with a small detail"
+      "features": [],
+      "description": "plain clear water"
     },
     {
       "index": 2,
@@ -253,8 +251,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.299,
-        "clear_water": 0.701
+        "stone_mountain": 0.302,
+        "clear_water": 0.698
       },
       "edges": {
         "NE": {
@@ -262,17 +260,17 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "clear_water",
+            "stone_mountain",
             "clear_water",
             "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "stone_mountain": 0.375,
-            "clear_water": 0.625
+            "stone_mountain": 0.5,
+            "clear_water": 0.5
           },
-          "divider": 0.375
+          "divider": 0.5
         },
         "SE": {
           "samples": [
@@ -405,10 +403,9 @@
       },
       "features": [
         "pebbles",
-        "accent",
-        "water"
+        "accent"
       ],
-      "description": "clear water blending to grey mountain stone with pebbles, a small detail, a small puddle"
+      "description": "clear water blending to grey mountain stone with pebbles, a small detail"
     },
     {
       "index": 5,
@@ -416,8 +413,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.6,
-        "clear_water": 0.4
+        "stone_mountain": 0.602,
+        "clear_water": 0.398
       },
       "edges": {
         "NE": {
@@ -1033,10 +1030,9 @@
         }
       },
       "features": [
-        "pebbles",
-        "accent"
+        "pebbles"
       ],
-      "description": "grey mountain stone blending to clear water with pebbles, a small detail"
+      "description": "grey mountain stone blending to clear water with pebbles"
     },
     {
       "index": 13,
@@ -1285,6 +1281,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

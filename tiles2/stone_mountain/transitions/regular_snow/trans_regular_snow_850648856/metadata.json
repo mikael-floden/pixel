@@ -745,8 +745,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.685,
-        "stone_mountain": 0.315
+        "regular_snow": 0.686,
+        "stone_mountain": 0.314
       },
       "edges": {
         "NE": {
@@ -1208,8 +1208,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.851,
-        "stone_mountain": 0.149
+        "regular_snow": 0.853,
+        "stone_mountain": 0.147
       },
       "edges": {
         "NE": {
@@ -1221,13 +1221,12 @@
             "regular_snow",
             "regular_snow",
             "stone_mountain",
-            "stone_mountain"
+            "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 0.75,
-            "stone_mountain": 0.25
-          },
-          "divider": 0.75
+            "regular_snow": 0.875,
+            "stone_mountain": 0.125
+          }
         },
         "SE": {
           "samples": [
@@ -1296,6 +1295,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

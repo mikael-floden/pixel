@@ -312,10 +312,9 @@
       },
       "features": [
         "flowers",
-        "bare_soil",
-        "accent"
+        "bare_soil"
       ],
-      "description": "saturated grass with small flowers, a bare soil patch, a small detail"
+      "description": "saturated grass with small flowers, a bare soil patch"
     },
     {
       "index": 4,
@@ -1222,6 +1221,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": false,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

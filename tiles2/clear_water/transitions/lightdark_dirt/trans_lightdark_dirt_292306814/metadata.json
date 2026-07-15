@@ -723,8 +723,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.704,
-        "clear_water": 0.296
+        "lightdark_dirt": 0.702,
+        "clear_water": 0.298
       },
       "edges": {
         "NE": {
@@ -732,14 +732,15 @@
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
-            "lightdark_dirt",
+            "clear_water",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "lightdark_dirt": 1.0
+            "lightdark_dirt": 0.875,
+            "clear_water": 0.125
           }
         },
         "SE": {
@@ -789,9 +790,10 @@
         }
       },
       "features": [
-        "accent"
+        "accent",
+        "pebbles"
       ],
-      "description": "dirt blending to clear water with a small detail"
+      "description": "dirt blending to clear water with a small detail, pebbles"
     },
     {
       "index": 10,
@@ -1262,6 +1264,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

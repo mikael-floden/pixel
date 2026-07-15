@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.199,
-        "light_sand": 0.801
+        "stone_mountain": 0.198,
+        "light_sand": 0.802
       },
       "edges": {
         "NE": {
@@ -342,8 +342,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.276,
-        "light_sand": 0.724
+        "stone_mountain": 0.273,
+        "light_sand": 0.727
       },
       "edges": {
         "NE": {
@@ -666,8 +666,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.385,
-        "light_sand": 0.615
+        "stone_mountain": 0.377,
+        "light_sand": 0.623
       },
       "edges": {
         "NE": {
@@ -677,13 +677,13 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "stone_mountain",
+            "light_sand",
             "stone_mountain",
             "light_sand"
           ],
           "ratio": {
-            "stone_mountain": 0.5,
-            "light_sand": 0.5
+            "stone_mountain": 0.375,
+            "light_sand": 0.625
           }
         },
         "SE": {
@@ -980,8 +980,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.845,
-        "stone_mountain": 0.155
+        "light_sand": 0.846,
+        "stone_mountain": 0.154
       },
       "edges": {
         "NE": {
@@ -1061,8 +1061,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.562,
-        "light_sand": 0.438
+        "stone_mountain": 0.561,
+        "light_sand": 0.439
       },
       "edges": {
         "NE": {
@@ -1145,15 +1145,15 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.322,
-        "light_sand": 0.678
+        "stone_mountain": 0.319,
+        "light_sand": 0.681
       },
       "edges": {
         "NE": {
           "samples": [
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
+            "light_sand",
             "light_sand",
             "light_sand",
             "light_sand",
@@ -1161,10 +1161,10 @@
             "light_sand"
           ],
           "ratio": {
-            "stone_mountain": 0.375,
-            "light_sand": 0.625
+            "stone_mountain": 0.25,
+            "light_sand": 0.75
           },
-          "divider": 0.375
+          "divider": 0.25
         },
         "SE": {
           "samples": [
@@ -1313,6 +1313,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

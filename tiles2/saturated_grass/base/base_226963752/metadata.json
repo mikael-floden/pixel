@@ -838,10 +838,10 @@
       },
       "features": [
         "flowers",
-        "accent",
-        "bare_soil"
+        "bare_soil",
+        "accent"
       ],
-      "description": "saturated grass with small flowers, a small detail, a bare soil patch"
+      "description": "saturated grass with small flowers, a bare soil patch, a small detail"
     },
     {
       "index": 11,
@@ -989,10 +989,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "saturated grass with a small detail"
+      "features": [],
+      "description": "plain saturated grass"
     },
     {
       "index": 13,
@@ -1140,10 +1138,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "saturated grass with a small detail"
+      "features": [],
+      "description": "plain saturated grass"
     },
     {
       "index": 15,
@@ -1230,6 +1226,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": false,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

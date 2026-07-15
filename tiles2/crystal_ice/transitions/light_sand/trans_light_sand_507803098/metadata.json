@@ -572,8 +572,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.846,
-        "light_sand": 0.154
+        "crystal_ice": 0.845,
+        "light_sand": 0.155
       },
       "edges": {
         "NE": {
@@ -1049,8 +1049,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.756,
-        "crystal_ice": 0.244
+        "light_sand": 0.757,
+        "crystal_ice": 0.243
       },
       "edges": {
         "NE": {
@@ -1288,6 +1288,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

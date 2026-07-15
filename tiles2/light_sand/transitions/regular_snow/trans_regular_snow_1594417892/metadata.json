@@ -419,8 +419,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.823,
-        "light_sand": 0.177
+        "regular_snow": 0.824,
+        "light_sand": 0.176
       },
       "edges": {
         "NE": {
@@ -582,8 +582,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.362,
-        "light_sand": 0.638
+        "regular_snow": 0.361,
+        "light_sand": 0.639
       },
       "edges": {
         "NE": {
@@ -819,8 +819,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.998,
-        "light_sand": 0.002
+        "regular_snow": 0.999,
+        "light_sand": 0.001
       },
       "edges": {
         "NE": {
@@ -895,8 +895,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.999,
-        "light_sand": 0.001
+        "regular_snow": 1.0
       },
       "edges": {
         "NE": {
@@ -1051,8 +1050,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.675,
-        "light_sand": 0.325
+        "regular_snow": 0.676,
+        "light_sand": 0.324
       },
       "edges": {
         "NE": {
@@ -1129,8 +1128,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.962,
-        "light_sand": 0.038
+        "regular_snow": 0.963,
+        "light_sand": 0.037
       },
       "edges": {
         "NE": {
@@ -1291,6 +1290,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

@@ -1031,8 +1031,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.355,
-        "clear_water": 0.645
+        "crystal_ice": 0.357,
+        "clear_water": 0.643
       },
       "edges": {
         "NE": {
@@ -1268,6 +1268,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

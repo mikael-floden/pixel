@@ -96,8 +96,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.129,
-        "clear_water": 0.871
+        "saturated_grass": 0.125,
+        "clear_water": 0.875
       },
       "edges": {
         "NE": {
@@ -177,8 +177,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.325,
-        "clear_water": 0.675
+        "saturated_grass": 0.321,
+        "clear_water": 0.679
       },
       "edges": {
         "NE": {
@@ -188,15 +188,15 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
+            "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "saturated_grass": 0.75,
-            "clear_water": 0.25
+            "saturated_grass": 0.625,
+            "clear_water": 0.375
           },
-          "divider": 0.75
+          "divider": 0.625
         },
         "SE": {
           "samples": [
@@ -419,8 +419,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.515,
-        "saturated_grass": 0.485
+        "clear_water": 0.516,
+        "saturated_grass": 0.484
       },
       "edges": {
         "NE": {
@@ -577,8 +577,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.415,
-        "clear_water": 0.585
+        "saturated_grass": 0.418,
+        "clear_water": 0.582
       },
       "edges": {
         "NE": {
@@ -658,8 +658,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.428,
-        "clear_water": 0.572
+        "saturated_grass": 0.411,
+        "clear_water": 0.589
       },
       "edges": {
         "NE": {
@@ -712,7 +712,7 @@
         },
         "NW": {
           "samples": [
-            "saturated_grass",
+            "clear_water",
             "saturated_grass",
             "saturated_grass",
             "clear_water",
@@ -722,8 +722,8 @@
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.625,
-            "clear_water": 0.375
+            "clear_water": 0.5,
+            "saturated_grass": 0.5
           }
         }
       },
@@ -972,8 +972,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.982,
-        "clear_water": 0.018
+        "saturated_grass": 0.98,
+        "clear_water": 0.02
       },
       "edges": {
         "NE": {
@@ -1125,7 +1125,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 1.0
+        "saturated_grass": 0.999,
+        "clear_water": 0.001
       },
       "edges": {
         "NE": {
@@ -1203,7 +1204,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 1.0
+        "saturated_grass": 0.999,
+        "clear_water": 0.001
       },
       "edges": {
         "NE": {
@@ -1284,6 +1286,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

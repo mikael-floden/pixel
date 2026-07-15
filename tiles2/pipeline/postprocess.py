@@ -30,6 +30,8 @@ import tilemeta
 
 DEFAULTS = {"neutralize_outline": True, "darkness_thresh": 60,
             "harmonize": {"hue_strength": 0.9, "sat_strength": 0.6, "v_strength": 0.65},
+            "deseam": {"enabled": False, "band": 3, "darkness_thresh": 70,
+                       "strength": 0.9, "protect_dark_material": True},
             "fade_outline": {"enabled": False, "darkness_thresh": 60, "soft_lum": 120,
                              "run_min": 9, "thick_max": 3, "strength": 0.6,
                              "rim_strength": 0.4, "min_alpha": 0,
@@ -45,6 +47,7 @@ def _pp_cfg(cfg):
     pp = (cfg.get("postprocess") or {}) if cfg else {}
     out = {**DEFAULTS, **pp}
     out["harmonize"] = {**DEFAULTS["harmonize"], **(pp.get("harmonize") or {})}
+    out["deseam"] = {**DEFAULTS["deseam"], **(pp.get("deseam") or {})}
     out["fade_outline"] = {**DEFAULTS["fade_outline"], **(pp.get("fade_outline") or {})}
     return out
 
@@ -110,6 +113,7 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
     ctx = {"ground_type": gid, "transition_to": other}
     raw_by_file = {t["file"]: t for t in (req.get("tiles") or [])}
 
+    ds = pp["deseam"]
     fo = pp["fade_outline"]
     # guard on the DARKER of the two materials so a transition INTO black_mountain
     # still trips the dark-material protection
@@ -124,6 +128,11 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
         im = normalize.harmonize(im, t_from, hs["hue_strength"], hs["sat_strength"], hs["v_strength"])
         if t_to:
             im = normalize.harmonize(im, t_to, hs["hue_strength"], hs["sat_strength"], hs["v_strength"])
+        if ds.get("enabled"):                          # erase the tessellating diamond-edge grid seam
+            im = normalize.deseam_diamond(
+                im, band=ds["band"], darkness_thresh=ds["darkness_thresh"],
+                strength=ds["strength"], material_target=fade_mt,
+                protect_dark_material=ds["protect_dark_material"])
         if fo.get("enabled"):                          # fade AFTER harmonize (which restores alpha)
             im = normalize.fade_outline_alpha(im, material_target=fade_mt, **_fade_kwargs(fo))
         im.save(os.path.join(dest, fn))
@@ -154,6 +163,7 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
             "harmonize": hs,
             "harmonized_from": bool(t_from),
             "harmonized_to": bool(t_to),
+            "deseam": ds if ds.get("enabled") else False,
             "fade_outline": fo if fo.get("enabled") else False,
         },
     }

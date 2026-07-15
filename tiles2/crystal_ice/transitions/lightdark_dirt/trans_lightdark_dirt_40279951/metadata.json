@@ -495,8 +495,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.269,
-        "crystal_ice": 0.731
+        "lightdark_dirt": 0.265,
+        "crystal_ice": 0.735
       },
       "edges": {
         "NE": {
@@ -552,16 +552,15 @@
             "crystal_ice",
             "crystal_ice",
             "lightdark_dirt",
-            "lightdark_dirt",
+            "crystal_ice",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "crystal_ice": 0.375,
-            "lightdark_dirt": 0.625
-          },
-          "divider": 0.375
+            "crystal_ice": 0.5,
+            "lightdark_dirt": 0.5
+          }
         }
       },
       "features": [
@@ -575,8 +574,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.51,
-        "crystal_ice": 0.49
+        "lightdark_dirt": 0.509,
+        "crystal_ice": 0.491
       },
       "edges": {
         "NE": {
@@ -1298,6 +1297,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

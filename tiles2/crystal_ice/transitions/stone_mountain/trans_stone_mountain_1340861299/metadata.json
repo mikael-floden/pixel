@@ -349,8 +349,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.521,
-        "stone_mountain": 0.479
+        "crystal_ice": 0.522,
+        "stone_mountain": 0.478
       },
       "edges": {
         "NE": {
@@ -739,10 +739,9 @@
         }
       },
       "features": [
-        "pebbles",
-        "accent"
+        "pebbles"
       ],
-      "description": "grey mountain stone blending to crystal ice with pebbles, a small detail"
+      "description": "grey mountain stone blending to crystal ice with pebbles"
     },
     {
       "index": 9,
@@ -1322,6 +1321,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

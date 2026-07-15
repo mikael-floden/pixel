@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.295,
-        "clear_water": 0.705
+        "saturated_grass": 0.291,
+        "clear_water": 0.709
       },
       "edges": {
         "NE": {
@@ -33,16 +33,16 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
+            "clear_water",
             "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "saturated_grass": 0.625,
-            "clear_water": 0.375
+            "saturated_grass": 0.5,
+            "clear_water": 0.5
           },
-          "divider": 0.625
+          "divider": 0.5
         },
         "SE": {
           "samples": [
@@ -78,7 +78,7 @@
           "samples": [
             "clear_water",
             "clear_water",
-            "saturated_grass",
+            "clear_water",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
@@ -86,10 +86,10 @@
             "saturated_grass"
           ],
           "ratio": {
-            "clear_water": 0.25,
-            "saturated_grass": 0.75
+            "clear_water": 0.375,
+            "saturated_grass": 0.625
           },
-          "divider": 0.25
+          "divider": 0.375
         }
       },
       "features": [],
@@ -101,8 +101,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.517,
-        "saturated_grass": 0.483
+        "clear_water": 0.516,
+        "saturated_grass": 0.484
       },
       "edges": {
         "NE": {
@@ -258,8 +258,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.597,
-        "clear_water": 0.403
+        "saturated_grass": 0.596,
+        "clear_water": 0.404
       },
       "edges": {
         "NE": {
@@ -340,8 +340,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.497,
-        "clear_water": 0.503
+        "saturated_grass": 0.499,
+        "clear_water": 0.501
       },
       "edges": {
         "NE": {
@@ -420,8 +420,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.361,
-        "clear_water": 0.639
+        "saturated_grass": 0.354,
+        "clear_water": 0.646
       },
       "edges": {
         "NE": {
@@ -431,13 +431,13 @@
             "clear_water",
             "clear_water",
             "saturated_grass",
-            "saturated_grass",
+            "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "saturated_grass": 0.5,
-            "clear_water": 0.5
+            "saturated_grass": 0.375,
+            "clear_water": 0.625
           }
         },
         "SE": {
@@ -581,8 +581,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.524,
-        "clear_water": 0.476
+        "saturated_grass": 0.526,
+        "clear_water": 0.474
       },
       "edges": {
         "NE": {
@@ -822,15 +822,15 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
+            "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "saturated_grass": 0.75,
-            "clear_water": 0.25
+            "saturated_grass": 0.625,
+            "clear_water": 0.375
           },
-          "divider": 0.75
+          "divider": 0.625
         },
         "SE": {
           "samples": [
@@ -1051,8 +1051,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.69,
-        "clear_water": 0.31
+        "saturated_grass": 0.687,
+        "clear_water": 0.313
       },
       "edges": {
         "NE": {
@@ -1288,6 +1288,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

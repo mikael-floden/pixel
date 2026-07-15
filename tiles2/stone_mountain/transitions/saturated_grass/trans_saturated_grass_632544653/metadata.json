@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.213,
-        "stone_mountain": 0.787
+        "saturated_grass": 0.212,
+        "stone_mountain": 0.788
       },
       "edges": {
         "NE": {
@@ -106,8 +106,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.271,
-        "stone_mountain": 0.729
+        "saturated_grass": 0.27,
+        "stone_mountain": 0.73
       },
       "edges": {
         "NE": {
@@ -188,8 +188,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.596,
-        "saturated_grass": 0.404
+        "stone_mountain": 0.6,
+        "saturated_grass": 0.4
       },
       "edges": {
         "NE": {
@@ -268,8 +268,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.909,
-        "saturated_grass": 0.091
+        "stone_mountain": 0.914,
+        "saturated_grass": 0.086
       },
       "edges": {
         "NE": {
@@ -346,8 +346,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.517,
-        "stone_mountain": 0.483
+        "saturated_grass": 0.515,
+        "stone_mountain": 0.485
       },
       "edges": {
         "NE": {
@@ -429,8 +429,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.408,
-        "saturated_grass": 0.592
+        "stone_mountain": 0.412,
+        "saturated_grass": 0.588
       },
       "edges": {
         "NE": {
@@ -594,8 +594,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.55,
-        "saturated_grass": 0.45
+        "stone_mountain": 0.565,
+        "saturated_grass": 0.435
       },
       "edges": {
         "NE": {
@@ -649,17 +649,17 @@
         "NW": {
           "samples": [
             "stone_mountain",
+            "stone_mountain",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
+            "stone_mountain",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.5,
-            "saturated_grass": 0.5
+            "stone_mountain": 0.75,
+            "saturated_grass": 0.25
           }
         }
       },
@@ -675,8 +675,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.781,
-        "stone_mountain": 0.219
+        "saturated_grass": 0.78,
+        "stone_mountain": 0.22
       },
       "edges": {
         "NE": {
@@ -757,8 +757,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.196,
-        "saturated_grass": 0.804
+        "stone_mountain": 0.197,
+        "saturated_grass": 0.803
       },
       "edges": {
         "NE": {
@@ -1217,8 +1217,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.111,
-        "saturated_grass": 0.889
+        "stone_mountain": 0.116,
+        "saturated_grass": 0.884
       },
       "edges": {
         "NE": {
@@ -1228,13 +1228,13 @@
             "saturated_grass",
             "saturated_grass",
             "stone_mountain",
-            "saturated_grass",
+            "stone_mountain",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.875,
-            "stone_mountain": 0.125
+            "saturated_grass": 0.75,
+            "stone_mountain": 0.25
           }
         },
         "SE": {
@@ -1284,11 +1284,11 @@
         }
       },
       "features": [
-        "accent",
         "flowers",
+        "accent",
         "water"
       ],
-      "description": "saturated grass blending to grey mountain stone with a small detail, small flowers, a small puddle"
+      "description": "saturated grass blending to grey mountain stone with small flowers, a small detail, a small puddle"
     }
   ],
   "generated_at": "2026-07-05T09:47:19+00:00",
@@ -1302,6 +1302,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

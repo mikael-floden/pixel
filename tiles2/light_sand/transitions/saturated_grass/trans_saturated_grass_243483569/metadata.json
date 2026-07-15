@@ -249,14 +249,14 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.367,
-        "light_sand": 0.633
+        "saturated_grass": 0.364,
+        "light_sand": 0.636
       },
       "edges": {
         "NE": {
           "samples": [
             "saturated_grass",
-            "saturated_grass",
+            "light_sand",
             "light_sand",
             "light_sand",
             "light_sand",
@@ -265,8 +265,8 @@
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.5,
-            "light_sand": 0.5
+            "saturated_grass": 0.375,
+            "light_sand": 0.625
           }
         },
         "SE": {
@@ -806,8 +806,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.234,
-        "light_sand": 0.766
+        "saturated_grass": 0.233,
+        "light_sand": 0.767
       },
       "edges": {
         "NE": {
@@ -1113,8 +1113,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.907,
-        "light_sand": 0.093
+        "saturated_grass": 0.908,
+        "light_sand": 0.092
       },
       "edges": {
         "NE": {
@@ -1270,6 +1270,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

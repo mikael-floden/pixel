@@ -137,6 +137,75 @@ def neutralize_outline(im, darkness_thresh=60):
     return Image.fromarray(a.clip(0, 255).astype(np.uint8), "RGBA")
 
 
+def _edge_dist(opaque, maxd):
+    """Chebyshev-ish 4-neighbour distance (1..maxd) from the transparent silhouette
+    INTO the opaque body; off-canvas counts as transparent so the canvas border is
+    distance 1. Opaque pixels farther than maxd stay at 99. Pure-numpy flood."""
+    d = np.full(opaque.shape, 99, np.int32)
+    seen = ~opaque
+    cur = seen.copy()
+    for dist in range(1, maxd + 1):
+        nb = (_shift0(cur, 1, 0) | _shift0(cur, -1, 0)
+              | _shift0(cur, 0, 1) | _shift0(cur, 0, -1))
+        newf = nb & opaque & ~seen
+        if dist == 1:                                  # off-canvas border == transparent
+            border = np.zeros_like(opaque)
+            border[0, :] = border[-1, :] = border[:, 0] = border[:, -1] = True
+            newf |= border & opaque & ~seen
+        d[newf] = dist
+        seen |= newf
+        cur = newf
+        if not newf.any():
+            break
+    return d
+
+
+def deseam_diamond(im, band=3, darkness_thresh=70, strength=0.9, material_target=None,
+                   protect_dark_material=True):
+    """Erase the near-black diamond-EDGE outline that tessellating ground tiles share,
+    which reads in-game as a hard grid/'Ʌ' seam over the whole map.
+
+    neutralize_outline only recolours pixels DIRECTLY touching transparency; but the
+    baked diamond-edge line sits 1-3px INSIDE the silhouette (a thin skirt of slightly
+    lighter edge pixels wraps it), so the outline itself is interior and survives. This
+    recolours every near-black pixel within `band` px of the silhouette toward its LOCAL
+    non-dark interior colour (a 5x5 average of nearby lit pixels), keeping alpha — so the
+    grid line blends into the ground with NO transparent gap between tiles. Deep-interior
+    dark texture (distance > band) is left untouched, so tile surface detail stays.
+    A near-black MATERIAL (value < 90 == black_mountain) is skipped entirely (its dark
+    body is the point), and it also self-guards: with no lit interior to sample, nothing
+    changes. Runs on the harmonised image so it pulls toward the canonical ground colour.
+    """
+    if (protect_dark_material and material_target is not None
+            and float(material_target.get("value", 255)) < 90):
+        return im.convert("RGBA").copy()
+    a = np.asarray(im.convert("RGBA")).astype(np.float32)
+    rgb, alpha = a[:, :, :3], a[:, :, 3]
+    opaque = alpha > 16
+    if not opaque.any():
+        return im.convert("RGBA").copy()
+    lum = 0.299 * rgb[:, :, 0] + 0.587 * rgb[:, :, 1] + 0.114 * rgb[:, :, 2]
+    d = _edge_dist(opaque, band + 1)
+    target = opaque & (lum < darkness_thresh) & (d >= 1) & (d <= band)
+    if not target.any():
+        return im.convert("RGBA").copy()
+    src = opaque & (lum >= darkness_thresh)            # local non-dark interior to pull toward
+    acc = np.zeros_like(rgb)
+    cnt = np.zeros(lum.shape, np.float32)
+    srcf = src.astype(np.float32)
+    for dy in range(-2, 3):
+        for dx in range(-2, 3):
+            acc += _shift0(rgb * src[:, :, None], dy, dx)
+            cnt += _shift0(srcf, dy, dx)
+    have = cnt > 0
+    avg = np.zeros_like(rgb)
+    avg[have] = acc[have] / cnt[have, None]
+    apply = target & have
+    blended = rgb * (1.0 - strength) + avg * strength
+    a[:, :, :3] = np.where(apply[:, :, None], blended, rgb)
+    return Image.fromarray(a.clip(0, 255).astype(np.uint8), "RGBA")
+
+
 def _shift0(a, dy, dx):
     """Shift array; vacated border filled with 0 (off-canvas == transparent).
     Unlike _shift (np.roll, wraps), so the tile edge reads as a true silhouette."""

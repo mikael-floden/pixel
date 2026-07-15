@@ -342,8 +342,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.489,
-        "lightdark_dirt": 0.511
+        "stone_mountain": 0.49,
+        "lightdark_dirt": 0.51
       },
       "edges": {
         "NE": {
@@ -822,8 +822,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.906,
-        "stone_mountain": 0.094
+        "lightdark_dirt": 0.905,
+        "stone_mountain": 0.095
       },
       "edges": {
         "NE": {
@@ -877,7 +877,7 @@
           "samples": [
             "lightdark_dirt",
             "lightdark_dirt",
-            "lightdark_dirt",
+            "stone_mountain",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
@@ -885,7 +885,8 @@
             "lightdark_dirt"
           ],
           "ratio": {
-            "lightdark_dirt": 1.0
+            "lightdark_dirt": 0.875,
+            "stone_mountain": 0.125
           }
         }
       },
@@ -1138,8 +1139,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.513,
-        "stone_mountain": 0.487
+        "lightdark_dirt": 0.516,
+        "stone_mountain": 0.484
       },
       "edges": {
         "NE": {
@@ -1290,10 +1291,9 @@
       },
       "features": [
         "accent",
-        "pebbles",
-        "water"
+        "pebbles"
       ],
-      "description": "grey mountain stone blending to dirt with a small detail, pebbles, a small puddle"
+      "description": "grey mountain stone blending to dirt with a small detail, pebbles"
     }
   ],
   "generated_at": "2026-07-05T10:05:18+00:00",
@@ -1307,6 +1307,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

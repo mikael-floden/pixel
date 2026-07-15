@@ -490,8 +490,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.964,
-        "light_sand": 0.036
+        "lightdark_dirt": 0.961,
+        "light_sand": 0.039
       },
       "edges": {
         "NE": {
@@ -640,8 +640,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.494,
-        "lightdark_dirt": 0.506
+        "light_sand": 0.499,
+        "lightdark_dirt": 0.501
       },
       "edges": {
         "NE": {
@@ -1019,11 +1019,11 @@
         }
       },
       "features": [
-        "flowers",
         "pebbles",
+        "flowers",
         "accent"
       ],
-      "description": "dirt with small flowers, pebbles, a small detail"
+      "description": "dirt with pebbles, small flowers, a small detail"
     },
     {
       "index": 13,
@@ -1031,8 +1031,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.982,
-        "light_sand": 0.018
+        "lightdark_dirt": 0.98,
+        "light_sand": 0.02
       },
       "edges": {
         "NE": {
@@ -1268,6 +1268,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

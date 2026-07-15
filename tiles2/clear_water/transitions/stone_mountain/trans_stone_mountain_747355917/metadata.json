@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.303,
-        "clear_water": 0.697
+        "stone_mountain": 0.304,
+        "clear_water": 0.696
       },
       "edges": {
         "NE": {
@@ -109,8 +109,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.437,
-        "clear_water": 0.563
+        "stone_mountain": 0.441,
+        "clear_water": 0.559
       },
       "edges": {
         "NE": {
@@ -168,7 +168,7 @@
           "samples": [
             "clear_water",
             "clear_water",
-            "clear_water",
+            "stone_mountain",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
@@ -176,10 +176,10 @@
             "stone_mountain"
           ],
           "ratio": {
-            "clear_water": 0.375,
-            "stone_mountain": 0.625
+            "clear_water": 0.25,
+            "stone_mountain": 0.75
           },
-          "divider": 0.375
+          "divider": 0.25
         }
       },
       "features": [
@@ -350,8 +350,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.577,
-        "stone_mountain": 0.423
+        "clear_water": 0.572,
+        "stone_mountain": 0.428
       },
       "edges": {
         "NE": {
@@ -516,8 +516,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.123,
-        "clear_water": 0.877
+        "stone_mountain": 0.127,
+        "clear_water": 0.873
       },
       "edges": {
         "NE": {
@@ -586,12 +586,12 @@
         }
       },
       "features": [
-        "water",
         "accent",
         "shiny",
+        "water",
         "pebbles"
       ],
-      "description": "clear water blending to grey mountain stone with a small puddle, a small detail, a shiny speck, pebbles"
+      "description": "clear water blending to grey mountain stone with a small detail, a shiny speck, a small puddle, pebbles"
     },
     {
       "index": 7,
@@ -994,8 +994,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.907,
-        "stone_mountain": 0.093
+        "clear_water": 0.904,
+        "stone_mountain": 0.096
       },
       "edges": {
         "NE": {
@@ -1234,8 +1234,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.062,
-        "clear_water": 0.938
+        "stone_mountain": 0.064,
+        "clear_water": 0.936
       },
       "edges": {
         "NE": {
@@ -1304,10 +1304,9 @@
         }
       },
       "features": [
-        "shiny",
-        "accent"
+        "shiny"
       ],
-      "description": "clear water blending to grey mountain stone with a shiny speck, a small detail"
+      "description": "clear water blending to grey mountain stone with a shiny speck"
     }
   ],
   "generated_at": "2026-07-05T16:07:24+00:00",
@@ -1321,6 +1320,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.211,
-        "light_sand": 0.789
+        "saturated_grass": 0.207,
+        "light_sand": 0.793
       },
       "edges": {
         "NE": {
@@ -93,8 +93,10 @@
           }
         }
       },
-      "features": [],
-      "description": "light sand blending to saturated grass"
+      "features": [
+        "flowers"
+      ],
+      "description": "light sand blending to saturated grass with small flowers"
     },
     {
       "index": 1,
@@ -178,8 +180,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.86,
-        "saturated_grass": 0.14
+        "light_sand": 0.863,
+        "saturated_grass": 0.137
       },
       "edges": {
         "NE": {
@@ -256,8 +258,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.938,
-        "saturated_grass": 0.062
+        "light_sand": 0.941,
+        "saturated_grass": 0.059
       },
       "edges": {
         "NE": {
@@ -330,8 +332,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.839,
-        "saturated_grass": 0.161
+        "light_sand": 0.84,
+        "saturated_grass": 0.16
       },
       "edges": {
         "NE": {
@@ -869,8 +871,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.85,
-        "saturated_grass": 0.15
+        "light_sand": 0.853,
+        "saturated_grass": 0.147
       },
       "edges": {
         "NE": {
@@ -946,8 +948,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.826,
-        "saturated_grass": 0.174
+        "light_sand": 0.83,
+        "saturated_grass": 0.17
       },
       "edges": {
         "NE": {
@@ -1262,6 +1264,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

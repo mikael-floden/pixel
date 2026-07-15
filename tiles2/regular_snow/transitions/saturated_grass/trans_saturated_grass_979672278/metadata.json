@@ -1031,8 +1031,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.745,
-        "saturated_grass": 0.255
+        "regular_snow": 0.747,
+        "saturated_grass": 0.253
       },
       "edges": {
         "NE": {
@@ -1256,9 +1256,10 @@
         }
       },
       "features": [
-        "pebbles"
+        "pebbles",
+        "accent"
       ],
-      "description": "saturated grass with pebbles"
+      "description": "saturated grass with pebbles, a small detail"
     }
   ],
   "generated_at": "2026-07-05T09:29:41+00:00",
@@ -1272,6 +1273,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

@@ -104,8 +104,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.462,
-        "stone_mountain": 0.538
+        "lightdark_dirt": 0.46,
+        "stone_mountain": 0.54
       },
       "edges": {
         "NE": {
@@ -429,8 +429,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.516,
-        "lightdark_dirt": 0.484
+        "stone_mountain": 0.518,
+        "lightdark_dirt": 0.482
       },
       "edges": {
         "NE": {
@@ -499,10 +499,10 @@
         }
       },
       "features": [
-        "accent",
-        "pebbles"
+        "pebbles",
+        "accent"
       ],
-      "description": "grey mountain stone blending to dirt with a small detail, pebbles"
+      "description": "grey mountain stone blending to dirt with pebbles, a small detail"
     },
     {
       "index": 6,
@@ -833,8 +833,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.751,
-        "stone_mountain": 0.249
+        "lightdark_dirt": 0.738,
+        "stone_mountain": 0.262
       },
       "edges": {
         "NE": {
@@ -888,7 +888,7 @@
         "NW": {
           "samples": [
             "lightdark_dirt",
-            "stone_mountain",
+            "lightdark_dirt",
             "stone_mountain",
             "lightdark_dirt",
             "lightdark_dirt",
@@ -897,8 +897,8 @@
             "stone_mountain"
           ],
           "ratio": {
-            "lightdark_dirt": 0.5,
-            "stone_mountain": 0.5
+            "lightdark_dirt": 0.625,
+            "stone_mountain": 0.375
           }
         }
       },
@@ -993,8 +993,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.545,
-        "lightdark_dirt": 0.455
+        "stone_mountain": 0.546,
+        "lightdark_dirt": 0.454
       },
       "edges": {
         "NE": {
@@ -1326,6 +1326,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

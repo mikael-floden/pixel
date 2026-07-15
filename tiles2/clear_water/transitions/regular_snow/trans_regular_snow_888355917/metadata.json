@@ -487,8 +487,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.59,
-        "regular_snow": 0.41
+        "clear_water": 0.589,
+        "regular_snow": 0.411
       },
       "edges": {
         "NE": {
@@ -556,10 +556,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "clear water blending to snow with a small detail"
+      "features": [],
+      "description": "clear water blending to snow"
     },
     {
       "index": 7,
@@ -1264,6 +1262,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

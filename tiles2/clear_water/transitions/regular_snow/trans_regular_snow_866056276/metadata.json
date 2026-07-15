@@ -796,8 +796,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.785,
-        "clear_water": 0.215
+        "regular_snow": 0.786,
+        "clear_water": 0.214
       },
       "edges": {
         "NE": {
@@ -1260,6 +1260,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

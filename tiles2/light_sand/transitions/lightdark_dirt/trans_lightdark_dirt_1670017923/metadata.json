@@ -919,8 +919,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.989,
-        "light_sand": 0.011
+        "lightdark_dirt": 0.988,
+        "light_sand": 0.012
       },
       "edges": {
         "NE": {
@@ -1231,6 +1231,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

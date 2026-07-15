@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.086,
-        "lightdark_dirt": 0.914
+        "regular_snow": 0.087,
+        "lightdark_dirt": 0.913
       },
       "edges": {
         "NE": {
@@ -93,8 +93,10 @@
           }
         }
       },
-      "features": [],
-      "description": "dirt blending to snow"
+      "features": [
+        "pebbles"
+      ],
+      "description": "dirt blending to snow with pebbles"
     },
     {
       "index": 1,
@@ -1109,8 +1111,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.999,
-        "lightdark_dirt": 0.001
+        "regular_snow": 1.0
       },
       "edges": {
         "NE": {
@@ -1269,6 +1270,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

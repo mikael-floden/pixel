@@ -586,8 +586,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.518,
-        "lightdark_dirt": 0.482
+        "stone_mountain": 0.52,
+        "lightdark_dirt": 0.48
       },
       "edges": {
         "NE": {
@@ -962,10 +962,10 @@
         }
       },
       "features": [
-        "accent",
-        "pebbles"
+        "pebbles",
+        "accent"
       ],
-      "description": "dirt blending to grey mountain stone with a small detail, pebbles"
+      "description": "dirt blending to grey mountain stone with pebbles, a small detail"
     },
     {
       "index": 12,
@@ -1301,6 +1301,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

@@ -100,8 +100,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.922,
-        "saturated_grass": 0.078
+        "regular_snow": 0.923,
+        "saturated_grass": 0.077
       },
       "edges": {
         "NE": {
@@ -263,8 +263,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.535,
-        "saturated_grass": 0.465
+        "regular_snow": 0.536,
+        "saturated_grass": 0.464
       },
       "edges": {
         "NE": {
@@ -273,16 +273,16 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "saturated_grass",
+            "regular_snow",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "regular_snow": 0.5,
-            "saturated_grass": 0.5
+            "regular_snow": 0.625,
+            "saturated_grass": 0.375
           },
-          "divider": 0.5
+          "divider": 0.625
         },
         "SE": {
           "samples": [
@@ -426,8 +426,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.824,
-        "saturated_grass": 0.176
+        "regular_snow": 0.825,
+        "saturated_grass": 0.175
       },
       "edges": {
         "NE": {
@@ -973,8 +973,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.998,
-        "regular_snow": 0.002
+        "saturated_grass": 1.0
       },
       "edges": {
         "NE": {
@@ -1038,10 +1037,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "saturated grass with a small detail"
+      "features": [],
+      "description": "plain saturated grass"
     },
     {
       "index": 13,
@@ -1049,8 +1046,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.953,
-        "regular_snow": 0.047
+        "saturated_grass": 0.951,
+        "regular_snow": 0.049
       },
       "edges": {
         "NE": {
@@ -1206,8 +1203,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.975,
-        "regular_snow": 0.025
+        "saturated_grass": 0.978,
+        "regular_snow": 0.022
       },
       "edges": {
         "NE": {
@@ -1289,6 +1286,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

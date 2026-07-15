@@ -344,8 +344,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.353,
-        "light_sand": 0.647
+        "stone_mountain": 0.35,
+        "light_sand": 0.65
       },
       "edges": {
         "NE": {
@@ -657,8 +657,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.874,
-        "stone_mountain": 0.126
+        "light_sand": 0.88,
+        "stone_mountain": 0.12
       },
       "edges": {
         "NE": {
@@ -668,13 +668,12 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "stone_mountain",
+            "light_sand",
             "light_sand",
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.875,
-            "stone_mountain": 0.125
+            "light_sand": 1.0
           }
         },
         "SE": {
@@ -976,8 +975,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.212,
-        "light_sand": 0.788
+        "stone_mountain": 0.21,
+        "light_sand": 0.79
       },
       "edges": {
         "NE": {
@@ -1045,11 +1044,11 @@
         }
       },
       "features": [
-        "accent",
         "pebbles",
+        "accent",
         "shiny"
       ],
-      "description": "light sand blending to grey mountain stone with a small detail, pebbles, a shiny speck"
+      "description": "light sand blending to grey mountain stone with pebbles, a small detail, a shiny speck"
     },
     {
       "index": 13,
@@ -1057,8 +1056,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.426,
-        "stone_mountain": 0.574
+        "light_sand": 0.427,
+        "stone_mountain": 0.573
       },
       "edges": {
         "NE": {
@@ -1307,6 +1306,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

@@ -599,8 +599,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.664,
-        "stone_mountain": 0.336
+        "regular_snow": 0.665,
+        "stone_mountain": 0.335
       },
       "edges": {
         "NE": {
@@ -751,11 +751,11 @@
         }
       },
       "features": [
-        "accent",
         "water",
+        "accent",
         "pebbles"
       ],
-      "description": "grey mountain stone blending to snow with a small detail, a small puddle, pebbles"
+      "description": "grey mountain stone blending to snow with a small puddle, a small detail, pebbles"
     },
     {
       "index": 9,
@@ -763,8 +763,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.665,
-        "stone_mountain": 0.335
+        "regular_snow": 0.666,
+        "stone_mountain": 0.334
       },
       "edges": {
         "NE": {
@@ -1331,6 +1331,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

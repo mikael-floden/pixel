@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.444,
-        "lightdark_dirt": 0.556
+        "saturated_grass": 0.442,
+        "lightdark_dirt": 0.558
       },
       "edges": {
         "NE": {
@@ -101,8 +101,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.505,
-        "lightdark_dirt": 0.495
+        "saturated_grass": 0.504,
+        "lightdark_dirt": 0.496
       },
       "edges": {
         "NE": {
@@ -255,8 +255,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.849,
-        "saturated_grass": 0.151
+        "lightdark_dirt": 0.85,
+        "saturated_grass": 0.15
       },
       "edges": {
         "NE": {
@@ -405,8 +405,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.351,
-        "lightdark_dirt": 0.649
+        "saturated_grass": 0.347,
+        "lightdark_dirt": 0.653
       },
       "edges": {
         "NE": {
@@ -718,8 +718,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.604,
-        "lightdark_dirt": 0.396
+        "saturated_grass": 0.6,
+        "lightdark_dirt": 0.4
       },
       "edges": {
         "NE": {
@@ -796,8 +796,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.631,
-        "lightdark_dirt": 0.369
+        "saturated_grass": 0.626,
+        "lightdark_dirt": 0.374
       },
       "edges": {
         "NE": {
@@ -805,15 +805,15 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
+            "lightdark_dirt",
             "lightdark_dirt",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.875,
-            "lightdark_dirt": 0.125
+            "saturated_grass": 0.75,
+            "lightdark_dirt": 0.25
           }
         },
         "SE": {
@@ -865,8 +865,10 @@
           }
         }
       },
-      "features": [],
-      "description": "saturated grass blending to dirt"
+      "features": [
+        "flowers"
+      ],
+      "description": "saturated grass blending to dirt with small flowers"
     },
     {
       "index": 11,
@@ -1014,10 +1016,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "saturated grass with a small detail"
+      "features": [],
+      "description": "plain saturated grass"
     },
     {
       "index": 13,
@@ -1025,8 +1025,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.639,
-        "saturated_grass": 0.361
+        "lightdark_dirt": 0.643,
+        "saturated_grass": 0.357
       },
       "edges": {
         "NE": {
@@ -1036,13 +1036,13 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
+            "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "lightdark_dirt": 0.5,
-            "saturated_grass": 0.5
+            "lightdark_dirt": 0.625,
+            "saturated_grass": 0.375
           }
         },
         "SE": {
@@ -1101,8 +1101,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.516,
-        "lightdark_dirt": 0.484
+        "saturated_grass": 0.512,
+        "lightdark_dirt": 0.488
       },
       "edges": {
         "NE": {
@@ -1179,8 +1179,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.972,
-        "saturated_grass": 0.028
+        "lightdark_dirt": 0.973,
+        "saturated_grass": 0.027
       },
       "edges": {
         "NE": {
@@ -1259,6 +1259,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,

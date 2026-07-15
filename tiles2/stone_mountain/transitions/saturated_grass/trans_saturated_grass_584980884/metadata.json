@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.675,
-        "saturated_grass": 0.325
+        "stone_mountain": 0.678,
+        "saturated_grass": 0.322
       },
       "edges": {
         "NE": {
@@ -259,8 +259,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.507,
-        "saturated_grass": 0.493
+        "stone_mountain": 0.508,
+        "saturated_grass": 0.492
       },
       "edges": {
         "NE": {
@@ -339,8 +339,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.376,
-        "saturated_grass": 0.624
+        "stone_mountain": 0.382,
+        "saturated_grass": 0.618
       },
       "edges": {
         "NE": {
@@ -396,15 +396,15 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
+            "stone_mountain",
             "stone_mountain",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.875,
-            "stone_mountain": 0.125
+            "saturated_grass": 0.75,
+            "stone_mountain": 0.25
           }
         }
       },
@@ -498,8 +498,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.436,
-        "saturated_grass": 0.564
+        "stone_mountain": 0.439,
+        "saturated_grass": 0.561
       },
       "edges": {
         "NE": {
@@ -573,10 +573,9 @@
       },
       "features": [
         "pebbles",
-        "water",
-        "accent"
+        "water"
       ],
-      "description": "saturated grass blending to grey mountain stone with pebbles, a small puddle, a small detail"
+      "description": "saturated grass blending to grey mountain stone with pebbles, a small puddle"
     },
     {
       "index": 7,
@@ -665,8 +664,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.569,
-        "saturated_grass": 0.431
+        "stone_mountain": 0.577,
+        "saturated_grass": 0.423
       },
       "edges": {
         "NE": {
@@ -725,12 +724,12 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
+            "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.375,
-            "saturated_grass": 0.625
+            "stone_mountain": 0.5,
+            "saturated_grass": 0.5
           }
         }
       },
@@ -822,8 +821,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.892,
-        "saturated_grass": 0.108
+        "stone_mountain": 0.898,
+        "saturated_grass": 0.102
       },
       "edges": {
         "NE": {
@@ -834,17 +833,16 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "saturated_grass",
+            "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.875,
-            "saturated_grass": 0.125
+            "stone_mountain": 1.0
           }
         },
         "SE": {
           "samples": [
-            "saturated_grass",
+            "stone_mountain",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
@@ -854,10 +852,8 @@
             "stone_mountain"
           ],
           "ratio": {
-            "saturated_grass": 0.125,
-            "stone_mountain": 0.875
-          },
-          "divider": 0.125
+            "stone_mountain": 1.0
+          }
         },
         "SW": {
           "samples": [
@@ -904,8 +900,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.774,
-        "saturated_grass": 0.226
+        "stone_mountain": 0.78,
+        "saturated_grass": 0.22
       },
       "edges": {
         "NE": {
@@ -984,8 +980,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.579,
-        "stone_mountain": 0.421
+        "saturated_grass": 0.577,
+        "stone_mountain": 0.423
       },
       "edges": {
         "NE": {
@@ -1141,8 +1137,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.751,
-        "stone_mountain": 0.249
+        "saturated_grass": 0.749,
+        "stone_mountain": 0.251
       },
       "edges": {
         "NE": {
@@ -1151,14 +1147,14 @@
             "saturated_grass",
             "stone_mountain",
             "stone_mountain",
-            "saturated_grass",
+            "stone_mountain",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.75,
-            "stone_mountain": 0.25
+            "saturated_grass": 0.625,
+            "stone_mountain": 0.375
           }
         },
         "SE": {
@@ -1219,8 +1215,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.623,
-        "saturated_grass": 0.377
+        "stone_mountain": 0.629,
+        "saturated_grass": 0.371
       },
       "edges": {
         "NE": {
@@ -1229,14 +1225,14 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
+            "stone_mountain",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.5,
-            "saturated_grass": 0.5
+            "stone_mountain": 0.625,
+            "saturated_grass": 0.375
           }
         },
         "SE": {
@@ -1305,6 +1301,13 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
+    "deseam": {
+      "enabled": true,
+      "band": 4,
+      "darkness_thresh": 70,
+      "strength": 1.0,
+      "protect_dark_material": true
+    },
     "fade_outline": {
       "enabled": true,
       "darkness_thresh": 60,
