@@ -96,15 +96,36 @@ try {
     const p0 = await pos();
     const d0 = Math.hypot(target.x - p0.x, target.y - p0.y);
     let dEnd = d0;
+    // Living camera: while the trip runs the camera must trail the avatar
+    // and shed some zoom; once it settles it must sit back on the crisp
+    // integer base zoom with the player near dead-centre.
+    let chasePeak = { trail: 0, dip: 0 };
     for (let i = 0; i < 80; i++) {
       await page.waitForTimeout(150);
-      const s = await page.evaluate(() => ({ m: window.__ml.me(), t: window.__ml.target() }));
+      const s = await page.evaluate(() => ({
+        m: window.__ml.me(),
+        t: window.__ml.target(),
+        c: window.__ml.camInfo(),
+      }));
       dEnd = Math.hypot(target.x - s.m.x, target.y - s.m.y);
+      if (s.c && !s.c.detached) {
+        chasePeak.trail = Math.max(chasePeak.trail, s.c.trail ?? 0);
+        chasePeak.dip = Math.max(chasePeak.dip, s.c.base - s.c.zoom);
+      }
       if (!s.t) break;
     }
     const arrived = await page.evaluate(() => !window.__ml.target());
     if (!arrived || dEnd > 40) fail(`tap trip did not arrive (${d0.toFixed(0)} → ${dEnd.toFixed(0)}wu)`);
     console.log(`tap-to-move OK (${d0.toFixed(0)} → ${dEnd.toFixed(0)}wu, arrived)`);
+    if (chasePeak.trail < 6) fail(`chase-cam never trailed the runner (peak ${chasePeak.trail.toFixed(1)}px)`);
+    if (chasePeak.dip < 0.02) fail(`chase-cam never zoomed out while running (dip ${chasePeak.dip.toFixed(3)})`);
+    await page.waitForTimeout(2600); // settle
+    const rest = await page.evaluate(() => window.__ml.camInfo());
+    if (Math.abs(rest.zoom - rest.base) > 0.01 || (rest.trail ?? 99) > 8)
+      fail(`chase-cam did not settle (zoom ${rest.zoom.toFixed(3)}/${rest.base}, trail ${(rest.trail ?? -1).toFixed(1)}px)`);
+    console.log(
+      `chase-cam OK (peak trail ${chasePeak.trail.toFixed(0)}px, zoom dip ${chasePeak.dip.toFixed(2)}, settles to ${rest.base})`,
+    );
   }
 
   // ---- hold-to-move: press-and-drag steers the target continuously ----

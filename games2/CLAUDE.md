@@ -161,6 +161,23 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   foot-slip reported as info — the art glides a little by design,
   cadence-true playback keeps a residual).
 
+## Living camera (WorldScene.updateChaseCam)
+
+- The camera CHASES the player instead of pinning them dead-centre:
+  exponential ease toward the sprite (CAM_TAU 0.3s, trail capped at
+  CAM_TRAIL_MAX 70px; CAM_SNAP_DIST snaps teleports/respawns), plus a
+  small speed-coupled ZOOM-OUT — up to CAM_ZOOM_OUT (12%) of the base
+  integer zoom at full run world-speed (CAM_ZOOM_REF_WU, driven by the
+  gait EMA spdWu so water/walk scale naturally) — because the chase
+  alone would show LESS in the running direction (maintainer). Ease-out
+  0.45s, ease-back 0.85s (no pumping); at rest it settles back onto the
+  crisp integer zoom, dead-centred. Fractional zoom while MOVING is the
+  accepted trade (motion hides the shimmer; rest is always integer).
+  `__ml.lookAt` detaches the chase (camDetached); no-arg re-attaches.
+  Probe: `__ml.camInfo()` → {zoom, base, trail, detached}; regression
+  lives in verify-smoke (trail>6px + zoom dip while running, settles to
+  base within 8px).
+
 ## Night lighting (client/src/nightlight.ts)
 
 - Always-night per-pixel shader: MULTIPLY overlay; per-pixel surface resolve

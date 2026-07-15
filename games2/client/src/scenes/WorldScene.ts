@@ -146,6 +146,17 @@ const litDepth = (baseDepth: number) => 900_001 + baseDepth * 1e-5;
 const JUMP_HEIGHT = 28; // px peak of the jump hop (a tall, floaty arc)
 const SWIM_SINK = 6; // px the sprite sinks while swimming
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
+// Living camera (maintainer): the camera CHASES the player instead of pinning
+// them dead-centre — exponential ease toward the sprite with the trail capped,
+// plus a small speed-coupled ZOOM-OUT so the player still sees a bit further
+// while moving (the chase alone would show less in the running direction).
+const CAM_TAU = 0.3; // s — position smoothing (run trail ≈ 175px/s × τ ≈ 52px)
+const CAM_TRAIL_MAX = 70; // scene px — the player never outruns the frame
+const CAM_SNAP_DIST = 600; // teleports (respawn/lookAt) snap instead of crawl
+const CAM_ZOOM_OUT = 0.12; // fraction of base zoom shed at full run speed
+const CAM_ZOOM_REF_WU = 124; // ≈ run world-speed (175 px/s side-view · √½)
+const CAM_ZOOM_TAU_OUT = 0.45; // s — ease toward zoomed-out while speeding up
+const CAM_ZOOM_TAU_IN = 0.85; // s — slower ease back in (no pumping)
 
 interface Avatar {
   sprite: Phaser.GameObjects.Sprite;
@@ -258,6 +269,10 @@ export class WorldScene extends Phaser.Scene {
   private collisionOverlay?: Phaser.GameObjects.Graphics;
   // Streaming ground renderer state.
   private groundRT?: Phaser.GameObjects.RenderTexture;
+  // Chase-cam state: eased world centre + eased zoom; detached while a debug
+  // lookAt holds the camera elsewhere.
+  private camChase = { x: 0, y: 0, zoom: 0, init: false };
+  private camDetached = false;
   private lastGround = { x: NaN, y: NaN };
   private maxLevel = 0;
   // Occlusion: raised/solid tiles near the camera drawn as depth-sorted images
@@ -474,6 +489,7 @@ export class WorldScene extends Phaser.Scene {
     // the camera zoom for the new viewport width).
     this.scale.on("resize", () => {
       this.cameras.main.setZoom(this.zoomFor());
+      this.camChase.zoom = this.zoomFor(); // re-base the chase zoom too
       this.lastGround = { x: NaN, y: NaN };
       this.lastOccl = { x: NaN, y: NaN };
     });
@@ -666,6 +682,21 @@ export class WorldScene extends Phaser.Scene {
       },
       pickAt: (wx: number, wy: number) => this.pickGround(wx, wy),
       camZoom: () => this.cameras.main.zoom,
+      // Chase-cam probe: eased zoom vs base, and how far the camera trails
+      // the avatar (scene px).
+      camInfo: () => {
+        const id = this.room?.sessionId;
+        const av = id ? this.avatars.get(id) : undefined;
+        const cam = this.cameras.main;
+        const cx = cam.scrollX + cam.width / 2;
+        const cy = cam.scrollY + cam.height / 2;
+        return {
+          zoom: cam.zoom,
+          base: this.zoomFor(),
+          trail: av ? Math.hypot(av.sprite.x - cx, av.sprite.y - cy) : null,
+          detached: this.camDetached,
+        };
+      },
       // Playback rate of a built animation (anti-moonwalk verification).
       animRate: (uid: string, state: string, dir: string) =>
         this.anims.get(animKey(uid, state, dir))?.frameRate ?? null,
@@ -825,12 +856,11 @@ export class WorldScene extends Phaser.Scene {
       lookAt: (col?: number, row?: number) => {
         const cam = this.cameras.main;
         if (col === undefined || row === undefined) {
-          const id = this.room?.sessionId;
-          const av = id ? this.avatars.get(id) : undefined;
-          if (av) cam.startFollow(av.sprite, true, 0.15, 0.15);
+          this.camDetached = false;
+          this.camChase.init = false; // snap back onto the avatar
           return null;
         }
-        cam.stopFollow();
+        this.camDetached = true;
         const { dx, dy, lh } = MAP_GEOMETRY;
         const cell = this.world?.rows[row]?.[col];
         const wx = this.iso.ox + (col - row) * dx + dx;
@@ -881,8 +911,8 @@ export class WorldScene extends Phaser.Scene {
     $(room.state).players.onAdd((player: any, id: string) => {
       this.addAvatar(id, player);
       if (id === room.sessionId) {
-        const av = this.avatars.get(id)!;
-        cam.startFollow(av.sprite, true, 0.15, 0.15);
+        this.camDetached = false;
+        this.camChase.init = false; // chase-cam snaps onto the new avatar
         hideLoading(); // my avatar is in and the camera is on it — world's up
       }
       this.refreshRoster();
@@ -1335,6 +1365,8 @@ export class WorldScene extends Phaser.Scene {
       }
       this.applyAnimState(av, moving, running, dir, hopLeft > 0 || av.falling);
     });
+
+    this.updateChaseCam(delta);
 
     // See-through tall geometry above the player's level (occlusion fade).
     this.updateOcclusionFade();
@@ -2190,6 +2222,48 @@ export class WorldScene extends Phaser.Scene {
    * server independently validates from the jump input). */
   /** Camera zoom for the current viewport: integer, targeting ~520 world-px
    * of visible width (see the note at create's setZoom call). */
+  /** Living camera: ease the view toward the player's rendered position
+   * (capped trail = the chase), and shed up to CAM_ZOOM_OUT of the base
+   * integer zoom proportionally to the avatar's world speed so movement
+   * reveals slightly more of the world. At rest it settles back onto the
+   * crisp integer zoom and dead-centres the player. */
+  private updateChaseCam(deltaMs: number) {
+    if (this.camDetached) return;
+    const id = this.room?.sessionId;
+    const av = id ? this.avatars.get(id) : undefined;
+    if (!av) return;
+    const cam = this.cameras.main;
+    const tx = av.sprite.x;
+    const ty = av.sprite.y;
+    const dt = Math.min(deltaMs, 100) / 1000;
+    const base = this.zoomFor();
+
+    if (!this.camChase.init || Math.hypot(tx - this.camChase.x, ty - this.camChase.y) > CAM_SNAP_DIST) {
+      this.camChase = { x: tx, y: ty, zoom: base, init: true };
+    } else {
+      const a = 1 - Math.exp(-dt / CAM_TAU);
+      this.camChase.x += (tx - this.camChase.x) * a;
+      this.camChase.y += (ty - this.camChase.y) * a;
+      const ddx = tx - this.camChase.x;
+      const ddy = ty - this.camChase.y;
+      const d = Math.hypot(ddx, ddy);
+      if (d > CAM_TRAIL_MAX) {
+        this.camChase.x = tx - (ddx / d) * CAM_TRAIL_MAX;
+        this.camChase.y = ty - (ddy / d) * CAM_TRAIL_MAX;
+      }
+      // Zoom breathes with WORLD speed (spdWu is the gait EMA — water
+      // slowdowns and walk/run all scale it naturally).
+      const k = Math.min(1, Math.max(0, (av.spdWu ?? 0) / CAM_ZOOM_REF_WU));
+      const zTarget = base * (1 - CAM_ZOOM_OUT * k);
+      const tau = zTarget < this.camChase.zoom ? CAM_ZOOM_TAU_OUT : CAM_ZOOM_TAU_IN;
+      const za = 1 - Math.exp(-dt / tau);
+      this.camChase.zoom += (zTarget - this.camChase.zoom) * za;
+      if (Math.abs(this.camChase.zoom - zTarget) < 0.0015) this.camChase.zoom = zTarget;
+    }
+    cam.setZoom(this.camChase.zoom);
+    cam.centerOn(this.camChase.x, this.camChase.y);
+  }
+
   private zoomFor(): number {
     return Math.max(1, Math.round(this.scale.width / 520));
   }
