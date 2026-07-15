@@ -204,16 +204,18 @@ function erase(img, x0, y0, x1, y1) {
   return img;
 }
 
-/** BLACK OUTLINE, part of the pixel art (maintainer round 6): the reference
- * mock draws a black border exactly ONE art pixel (= 4 mock px) thick hugging
- * every curl of the filigree, made of the SAME square pixels as the frame
- * art — not a smooth dilated CSS-looking halo. So: snap the keyed art to the
- * mock's global 4px art grid (ox/oy = the piece's mock-absolute crop origin,
- * so blocks line up ACROSS segment joints), then paint every empty block that
- * 8-touches an art block — plus the empty remainder of partially-filled art
- * blocks — solid black at the maintainer's 0.8 alpha. Any soft/AA edge pixel
- * inside a painted block is consumed into the outline (squareness beats
- * blending). */
+/** BLACK OUTLINE, part of the pixel art (maintainer rounds 6-7): the
+ * reference mock draws a black border exactly ONE art pixel (= 4 mock px)
+ * thick hugging every curl of the filigree, made of the SAME square pixels
+ * as the frame art. Painting art-block remainders black made the border read
+ * 1-2 px wide depending on where the mock's soft-brushed art edge fell
+ * inside a block (maintainer's blue/red-marked screenshot). So the art
+ * itself is SNAPPED to the mock's global 4px art grid first (ox/oy = the
+ * piece's mock-absolute crop origin, so blocks line up across segment
+ * joints): a block at least half opaque becomes a fully solid art block
+ * (empty px take the nearest opaque px's colour), anything less is fringe
+ * and is erased. The art boundary is then block-crisp, so the black ring of
+ * neighbouring blocks is EXACTLY one art pixel wide everywhere. */
 function outline(img, ox = 0, oy = 0, alpha = 204) {
   const { width: w, height: h, data } = img;
   const G = 4;
@@ -223,37 +225,71 @@ function outline(img, ox = 0, oy = 0, alpha = 204) {
   const bw = Math.ceil((w - bx0) / G);
   const bh = Math.ceil((h - by0) / G);
   const art = new Uint8Array(bw * bh);
-  const eachPx = (bx, by, fn) => {
+  const pxOf = (bx, by) => {
+    const px = [];
     for (let y = Math.max(0, by0 + by * G); y < Math.min(h, by0 + (by + 1) * G); y++)
       for (let x = Math.max(0, bx0 + bx * G); x < Math.min(w, bx0 + (bx + 1) * G); x++)
-        fn((y * w + x) * 4);
+        px.push([x, y]);
+    return px;
   };
-  // A block is ART only when a real share of it is opaque — the mock's
-  // soft-brush edges leave 1-3 stray AA pixels in neighbouring blocks, and
-  // counting those as art inflated the outline to 2 art px in places.
+  // Pass 1: classify — a block is ART when at least half of it is opaque.
   for (let by = 0; by < bh; by++)
     for (let bx = 0; bx < bw; bx++) {
+      const px = pxOf(bx, by);
       let n = 0;
-      eachPx(bx, by, (o) => { if (data[o + 3] > 120) n++; });
-      if (n >= 4) art[by * bw + bx] = 1;
+      for (const [x, y] of px) if (data[(y * w + x) * 4 + 3] > 120) n++;
+      if (n * 4 >= px.length) art[by * bw + bx] = 1;
     }
+  // Pass 2: snap the art to the grid — solidify art blocks, erase fringe.
   for (let by = 0; by < bh; by++)
     for (let bx = 0; bx < bw; bx++) {
-      let paint = art[by * bw + bx];
-      for (let dy = -1; dy <= 1 && !paint; dy++)
-        for (let dx = -1; dx <= 1 && !paint; dx++) {
+      const px = pxOf(bx, by);
+      if (!art[by * bw + bx]) {
+        for (const [x, y] of px) data[(y * w + x) * 4 + 3] = 0;
+        continue;
+      }
+      const solid = px.filter(([x, y]) => data[(y * w + x) * 4 + 3] > 120);
+      for (const [x, y] of px) {
+        const o = (y * w + x) * 4;
+        if (data[o + 3] > 120) {
+          data[o + 3] = 255;
+          continue;
+        }
+        let best = 0;
+        let bd = Infinity;
+        for (const [sx, sy] of solid) {
+          const d = Math.max(Math.abs(sx - x), Math.abs(sy - y));
+          if (d < bd) {
+            bd = d;
+            best = (sy * w + sx) * 4;
+          }
+        }
+        data[o] = data[best];
+        data[o + 1] = data[best + 1];
+        data[o + 2] = data[best + 2];
+        data[o + 3] = 255;
+      }
+    }
+  // Pass 3: the outline — every empty block 8-touching an art block goes
+  // solid black at the maintainer's 0.8 alpha.
+  for (let by = 0; by < bh; by++)
+    for (let bx = 0; bx < bw; bx++) {
+      if (art[by * bw + bx]) continue;
+      let adj = false;
+      for (let dy = -1; dy <= 1 && !adj; dy++)
+        for (let dx = -1; dx <= 1 && !adj; dx++) {
           const nx = bx + dx;
           const ny = by + dy;
-          if (nx >= 0 && ny >= 0 && nx < bw && ny < bh && art[ny * bw + nx]) paint = 1;
+          if (nx >= 0 && ny >= 0 && nx < bw && ny < bh && art[ny * bw + nx]) adj = true;
         }
-      if (!paint) continue;
-      eachPx(bx, by, (o) => {
-        if (data[o + 3] >= alpha) return; // real art stays untouched
+      if (!adj) continue;
+      for (const [x, y] of pxOf(bx, by)) {
+        const o = (y * w + x) * 4;
         data[o] = 0;
         data[o + 1] = 0;
         data[o + 2] = 0;
         data[o + 3] = alpha;
-      });
+      }
     }
   return img;
 }
