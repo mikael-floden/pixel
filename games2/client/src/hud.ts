@@ -117,11 +117,12 @@ export class HudBar {
   }
 
   private buildPages() {
-    // Backpack: a row of empty item slots (the pressed plate doubles as a
-    // slot, like the mock's content page) — real inventory comes later.
+    // Backpack: TWO rows of empty item slots, each slot as big as a tab
+    // button (maintainer) — the pressed plate doubles as a slot, like the
+    // mock's content page. Real inventory comes later.
     const bp = this.pages.get("backpack")!;
     const slots = mk("div", "ml-slots");
-    for (let i = 0; i < 6; i++) slots.appendChild(mk("i", "ml-slot"));
+    for (let i = 0; i < 10; i++) slots.appendChild(mk("i", "ml-slot"));
     bp.append(slots, muted("Your backpack is empty… for now."));
 
     this.pages.get("equipment")!.append(muted("Nothing equipped yet — armor and tools are coming."));
@@ -256,8 +257,8 @@ function injectStyles() {
     justify-content:center;gap:14px;text-align:center}
   .ml-page.show{display:flex}
   .ml-muted{margin:0;font:14px/1.4 system-ui,sans-serif;color:#8f8f9c;text-shadow:0 1px 2px #000}
-  .ml-slots{display:flex;gap:12px;justify-content:center}
-  .ml-slot{width:56px;height:56px;image-rendering:pixelated;border-style:solid;border-width:13px;
+  .ml-slots{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;max-width:calc(5*var(--ml-tab) + 4*14px)}
+  .ml-slot{width:var(--ml-tab);height:var(--ml-tab);image-rendering:pixelated;border-style:solid;border-width:13px;
     border-image:url(/ui/plate-pressed.png) 26 fill / 13px;box-sizing:border-box}
   .ml-btnrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:100%}
   .ml-plate-btn{padding:14px 26px;cursor:pointer;image-rendering:pixelated;background:none;touch-action:manipulation;
@@ -280,7 +281,7 @@ function injectStyles() {
     .ml-page{gap:8px}
     .ml-plate-btn{padding:6px 14px;border-width:12px;border-image-width:12px;font-size:11px}
     .ml-plate-btn.on{border-image:url(/ui/plate-pressed.png) 26 fill / 12px}
-    .ml-slot{width:36px;height:36px;border-width:9px;border-image-width:9px}
+    .ml-slot{border-width:9px;border-image-width:9px}
     .ml-muted{font-size:11px}
   }`;
   const s = document.createElement("style");
