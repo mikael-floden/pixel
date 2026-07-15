@@ -693,6 +693,13 @@ export class NightLights {
       uIsoA: { type: "4f", value: { x: 0, y: 0, z: ISO_DX, w: ISO_DY } },
       uIsoB: { type: "4f", value: { x: MAP_GEOMETRY.lh, y: 1, z: 1, w: 0 } },
       uAmbient: { type: "3f", value: { x: 0.16, y: 0.2, z: 0.36 } },
+      // Directional sun (cast dir, slope, strength). DECLARED here on
+      // purpose: a uniform that is setUniform()'d but missing from this
+      // config gets no GL setter — some pipelines still sync it (headless
+      // swiftshader did, which made the harness screenshots lie), real
+      // phone GPUs leave it at vec4(0) = sun permanently off (playtest:
+      // "0 effect"). The inverse twin of the uAnimTime bug below.
+      uSun: { type: "4f", value: { x: 0, y: 0, z: 1, w: 0 } },
       uFlip: { type: "1f", value: 1 },
       uTest: { type: "1f", value: 0 },
       // Animation clock (seconds). MUST be driven every frame from the SAME
