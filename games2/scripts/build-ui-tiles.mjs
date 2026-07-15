@@ -216,7 +216,7 @@ function erase(img, x0, y0, x1, y1) {
  * (empty px take the nearest opaque px's colour), anything less is fringe
  * and is erased. The art boundary is then block-crisp, so the black ring of
  * neighbouring blocks is EXACTLY one art pixel wide everywhere. */
-function outline(img, ox = 0, oy = 0, alpha = 204) {
+function outline(img, ox = 0, oy = 0, alpha = 128) {
   const { width: w, height: h, data } = img;
   const G = 4;
   // First block starts where the GLOBAL 4px grid would cut this crop.
@@ -270,8 +270,13 @@ function outline(img, ox = 0, oy = 0, alpha = 204) {
         data[o + 3] = 255;
       }
     }
-  // Pass 3: the outline — every empty block 8-touching an art block goes
-  // solid black at the maintainer's 0.8 alpha.
+  // Pass 3: the outline — every empty block 8-touching an art block. NOT
+  // flat black (maintainer round 8): the border pixel keeps 75% of the
+  // colour it paints over (keying/erasing only zeroed ALPHA, so the mock's
+  // original RGB — usually the navy page — is still in the channel) blended
+  // with 25% black, at 50% alpha so half the game world reads through. The
+  // blend colour is averaged PER BLOCK so the border stays one flat square
+  // art pixel, not a soft gradient.
   for (let by = 0; by < bh; by++)
     for (let bx = 0; bx < bw; bx++) {
       if (art[by * bw + bx]) continue;
@@ -283,11 +288,24 @@ function outline(img, ox = 0, oy = 0, alpha = 204) {
           if (nx >= 0 && ny >= 0 && nx < bw && ny < bh && art[ny * bw + nx]) adj = true;
         }
       if (!adj) continue;
-      for (const [x, y] of pxOf(bx, by)) {
+      const px = pxOf(bx, by);
+      let r = 0;
+      let g = 0;
+      let b = 0;
+      for (const [x, y] of px) {
         const o = (y * w + x) * 4;
-        data[o] = 0;
-        data[o + 1] = 0;
-        data[o + 2] = 0;
+        r += data[o];
+        g += data[o + 1];
+        b += data[o + 2];
+      }
+      r = Math.round((r / px.length) * 0.75);
+      g = Math.round((g / px.length) * 0.75);
+      b = Math.round((b / px.length) * 0.75);
+      for (const [x, y] of px) {
+        const o = (y * w + x) * 4;
+        data[o] = r;
+        data[o + 1] = g;
+        data[o + 2] = b;
         data[o + 3] = alpha;
       }
     }
