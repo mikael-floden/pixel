@@ -117,12 +117,12 @@ export class HudBar {
   }
 
   private buildPages() {
-    // Backpack: TWO rows of empty item slots, each slot as big as a tab
-    // button (maintainer) — the pressed plate doubles as a slot, like the
-    // mock's content page. Real inventory comes later.
+    // Backpack: 5x3 empty item slots, each slot as big as a tab button
+    // (maintainer) — the pressed plate doubles as a slot, like the mock's
+    // content page. Real inventory comes later.
     const bp = this.pages.get("backpack")!;
     const slots = mk("div", "ml-slots");
-    for (let i = 0; i < 10; i++) slots.appendChild(mk("i", "ml-slot"));
+    for (let i = 0; i < 15; i++) slots.appendChild(mk("i", "ml-slot"));
     bp.append(slots);
 
     this.pages.get("equipment")!.append(muted("Nothing equipped yet — armor and tools are coming."));
