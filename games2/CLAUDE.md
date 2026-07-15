@@ -236,40 +236,20 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   B. Keying: outer pieces flood only from their INNER side (everything
   outside the border stays opaque black — the game view cannot leak past
   the frame); divider pieces flood from all edges; mock button-glow
-  bleed is erased from caps/side strips (block-centre-in-rect). Frame
-  pieces are built by `pieceArt()` as GENUINE ART-RESOLUTION PIXEL ART
-  scaled 4x nearest-neighbour: every 4px cell of the mock (global grid,
-  so joints stay identical) becomes exactly ONE flat colour — the
-  DOMINANT colour cluster of its 16 px, never a cross-cluster blend
-  (per-pixel snapping had manufactured mud/AA-smear blocks the mock
-  never had — maintainer round 9 "the original is way more clean").
-  Bright clusters ≥5/16 beat a bigger navy cluster (else soft-brushed
-  gold detail loses the plurality vote and erodes); the bias is
-  BRIGHT-only so dark-rust AA can't widen the mock's rust band. Keying
-  floods bg cells from the seeds 4-CONNECTED (8-connected leaked
-  through diagonal checker gaps and washed the filigree's own enclosed
-  dark px out to ring alpha). The border ring = keyed cells 8-touching
-  surviving art, EXACTLY one art pixel by construction, coloured 85%
-  of the cell's own page colour + 15% black at 65% ALPHA (RING_KEEP /
-  RING_ALPHA; erased-bleed cells fall back to the piece's page navy).
-  RAIL SEGMENTS between junctions are additionally made UNIFORM along
-  their run (majority cell per row/column — the mock's hand-drawn lines
-  drift and their soft shadow quantizes to ragged clumps; the reference
-  keeps decor organic at corners/caps but rails straight). Navy pockets
-  fully ENCLOSED by art (unreachable from both interior seeds and the
-  piece's `outer` page-margin edges) join the ring/transparent set —
-  opaque they read DARKER than the 65% border. GEMS: the medallions'
-  native grain is 5px (edge-phase concentration 0.65-0.76; the mock's
-  grain drifts locally, ~4-5px elsewhere), so the four gem pieces pass
-  {grain:5, phase:[measured]} — cutting them at 4 aliased "broken"
-  diamonds — plus a silhouette MIRROR across their centred axis (art
-  beats bg; same-class pairs keep their own colours) and a per-piece
-  palette merge (radius 36) that collapses near-shades into the
-  concept's flat facets (divA-gem stays at grain 4 — it is genuinely
-  smaller/softer art). History: round 6 rejected the CSS-looking
-  dilated band, 7 the 1-2px width wobble, 8 flat black, 9 the muddy
-  per-pixel snap, 10 spiky rails / too-dark enclosed px / broken
-  diamonds.
+  bleed is erased from caps/side strips; boundary pixels get soft
+  ALPHA. THE ART IS THE MOCK'S ORIGINAL PIXELS, UNTOUCHED (maintainer
+  round 11, "take a step back... it looks like shit"): every attempt to
+  re-synthesize the art at cell resolution in pursuit of a perfect 1px
+  border (grid-snapped blocks, dominant-vote cells, straightened rails,
+  mirrored gems — rounds 7-10) made the border cleaner and the frame
+  chunkier, until the delicate reference became fat striped tubes. Only
+  ONE thing is baked on top of the original pixels: the round-8 border
+  ring — on the mock-global 4px grid, blocks that contain (>=1/4
+  opaque) or 8-touch art get their EMPTY px painted a flat colour = 85%
+  of the block's own transparent-px page navy + 15% black at 65% ALPHA
+  (outline(); crop origin passed so blocks align across joints). The
+  ring wobbles 1-2 art px where the hand-drawn edge crosses a block —
+  ACCEPTED; do not chase it (that is the rabbit hole).
   Tabs are PERFECT SQUARES (`--ml-tab`, capped 150px = the mock plate)
   with the three plate states 9-sliced via `border-image`; icons were
   flood-key-extracted (grey icons survive — their outlines stop the
