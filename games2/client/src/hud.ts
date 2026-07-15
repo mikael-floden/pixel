@@ -123,7 +123,7 @@ export class HudBar {
     const bp = this.pages.get("backpack")!;
     const slots = mk("div", "ml-slots");
     for (let i = 0; i < 10; i++) slots.appendChild(mk("i", "ml-slot"));
-    bp.append(slots, muted("Your backpack is empty… for now."));
+    bp.append(slots);
 
     this.pages.get("equipment")!.append(muted("Nothing equipped yet — armor and tools are coming."));
     this.pages.get("map")!.append(muted("The cartographers are still charting Nangijala."));
@@ -243,10 +243,10 @@ function injectStyles() {
   .ml-tab{width:var(--ml-tab);height:var(--ml-tab);flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
     padding:2px 0;cursor:pointer;image-rendering:pixelated;box-sizing:border-box;
     touch-action:manipulation;-webkit-touch-callout:none;
-    border-style:solid;border-width:13px;border-image:url(/ui/plate-unselected.png) 26 fill / 13px;
+    border-style:solid;border-width:26px;border-image:url(/ui/plate-unselected.png) 26 fill / 26px;
     background:none}
-  .ml-tab:active{border-image:url(/ui/plate-pressed.png) 26 fill / 13px}
-  .ml-tab.sel{border-image:url(/ui/plate-selected.png) 32 fill / 16px}
+  .ml-tab:active{border-image:url(/ui/plate-pressed.png) 26 fill / 26px}
+  .ml-tab.sel{border-width:32px;border-image:url(/ui/plate-selected.png) 32 fill / 32px}
   .ml-tab-icon{image-rendering:pixelated;-webkit-user-drag:none;pointer-events:none;
     max-width:calc(100% - 6px);max-height:calc(100% - 22px);object-fit:contain}
   .ml-tab-label{font:700 11px/1.1 system-ui,sans-serif;font-size:clamp(6.5px,1.42vw,12px);
@@ -258,20 +258,20 @@ function injectStyles() {
   .ml-page.show{display:flex}
   .ml-muted{margin:0;font:14px/1.4 system-ui,sans-serif;color:#8f8f9c;text-shadow:0 1px 2px #000}
   .ml-slots{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;max-width:calc(5*var(--ml-tab) + 4*14px)}
-  .ml-slot{width:var(--ml-tab);height:var(--ml-tab);image-rendering:pixelated;border-style:solid;border-width:13px;
-    border-image:url(/ui/plate-pressed.png) 26 fill / 13px;box-sizing:border-box}
+  .ml-slot{width:var(--ml-tab);height:var(--ml-tab);image-rendering:pixelated;border-style:solid;border-width:26px;
+    border-image:url(/ui/plate-pressed.png) 26 fill / 26px;box-sizing:border-box}
   .ml-btnrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:100%}
-  .ml-plate-btn{padding:14px 26px;cursor:pointer;image-rendering:pixelated;background:none;touch-action:manipulation;
-    border-style:solid;border-width:13px;border-image:url(/ui/plate-unselected.png) 26 fill / 13px;
+  .ml-plate-btn{padding:10px 20px;cursor:pointer;image-rendering:pixelated;background:none;touch-action:manipulation;
+    border-style:solid;border-width:26px;border-image:url(/ui/plate-unselected.png) 26 fill / 26px;
     font:700 14px system-ui,sans-serif;letter-spacing:.4px;text-transform:uppercase;color:#e8e8ec;
     text-shadow:0 1px 2px #000}
-  .ml-plate-btn:active{border-image:url(/ui/plate-pressed.png) 26 fill / 13px;color:#ffd678}
-  .ml-plate-btn.on{border-image:url(/ui/plate-pressed.png) 26 fill / 13px;color:#ffd678}
+  .ml-plate-btn:active{border-image:url(/ui/plate-pressed.png) 26 fill / 26px;color:#ffd678}
+  .ml-plate-btn.on{border-image:url(/ui/plate-pressed.png) 26 fill / 26px;color:#ffd678}
   /* Narrow phones: five square tabs must still fit between the outer rails. */
   @media (max-width:460px){
     .ml-tabrow{left:40px;right:40px}
-    .ml-tab{border-width:11px;border-image-width:11px}
-    .ml-tab.sel{border-image-width:12px}
+    .ml-tab{border-width:13px;border-image-width:13px}
+    .ml-tab.sel{border-width:16px;border-image-width:16px}
   }
   /* Short viewports (small desktop windows): compact everything. */
   @media (max-height:640px){
@@ -279,9 +279,9 @@ function injectStyles() {
     .ml-tabrow{top:20px}
     .ml-pages{top:calc(var(--ml-tabzone) + 22px);bottom:38px}
     .ml-page{gap:8px}
-    .ml-plate-btn{padding:6px 14px;border-width:12px;border-image-width:12px;font-size:11px}
-    .ml-plate-btn.on{border-image:url(/ui/plate-pressed.png) 26 fill / 12px}
-    .ml-slot{border-width:9px;border-image-width:9px}
+    .ml-plate-btn{padding:6px 14px;border-width:13px;border-image-width:13px;font-size:11px}
+    .ml-plate-btn.on{border-image:url(/ui/plate-pressed.png) 26 fill / 13px}
+    .ml-slot{border-width:13px;border-image-width:13px}
     .ml-muted{font-size:11px}
   }`;
   const s = document.createElement("style");
