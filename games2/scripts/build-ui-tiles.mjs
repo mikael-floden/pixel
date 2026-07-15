@@ -118,6 +118,69 @@ function dropSpecks(img, minSize = 40) {
   return img;
 }
 
+/** Keep only the LARGEST connected art blob (8-connected): the backpack
+ * icon's sparkle stars + swoosh are separate blobs the maintainer wants
+ * gone ("only have a backpack" — one star was clipped by the crop). */
+function keepLargest(img) {
+  const { width: w, height: h, data } = img;
+  const lab = new Int32Array(w * h).fill(-1);
+  let bestId = -1;
+  let bestN = 0;
+  for (let i = 0; i < w * h; i++) {
+    if (lab[i] >= 0 || data[i * 4 + 3] === 0) continue;
+    const stack = [i];
+    lab[i] = i;
+    let n = 0;
+    while (stack.length) {
+      const j = stack.pop();
+      n++;
+      const x = j % w;
+      const y = (j / w) | 0;
+      for (let dy = -1; dy <= 1; dy++)
+        for (let dx = -1; dx <= 1; dx++) {
+          const nx = x + dx;
+          const ny = y + dy;
+          if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+          const k = ny * w + nx;
+          if (lab[k] < 0 && data[k * 4 + 3] > 0) {
+            lab[k] = i;
+            stack.push(k);
+          }
+        }
+    }
+    if (n > bestN) {
+      bestN = n;
+      bestId = i;
+    }
+  }
+  for (let i = 0; i < w * h; i++) if (data[i * 4 + 3] > 0 && lab[i] !== bestId) data[i * 4 + 3] = 0;
+  return img;
+}
+
+/** Tight-crop to the art's bounding box (keeps the icon centred in the
+ * tab's flexbox instead of dragging transparent margins along). */
+function trimToArt(img, pad = 1) {
+  const { width: w, height: h, data } = img;
+  let x0 = w;
+  let y0 = h;
+  let x1 = -1;
+  let y1 = -1;
+  for (let y = 0; y < h; y++)
+    for (let x = 0; x < w; x++)
+      if (data[(y * w + x) * 4 + 3] > 0) {
+        if (x < x0) x0 = x;
+        if (y < y0) y0 = y;
+        if (x > x1) x1 = x;
+        if (y > y1) y1 = y;
+      }
+  if (x1 < 0) return img;
+  x0 = Math.max(0, x0 - pad);
+  y0 = Math.max(0, y0 - pad);
+  x1 = Math.min(w - 1, x1 + pad);
+  y1 = Math.min(h - 1, y1 + pad);
+  return crop(img, x0, y0, x1 - x0 + 1, y1 - y0 + 1);
+}
+
 const save = (name, img) => {
   writeFileSync(join(outDir, name), PNG.sync.write(img));
   console.log(`  ${name} ${img.width}x${img.height}`);
@@ -396,6 +459,22 @@ const ICONS = [
   ["icon-settings.png", 534, 746, 86, 74, plateBg],
   ["icon-logout.png", 684, 748, 92, 70, plateBg],
 ];
-for (const [name, x, y, w, h, bg] of ICONS) save(name, keyBackground(crop(c1, x, y, w, h), bg));
+for (const [name, x, y, w, h, bg] of ICONS) {
+  let img = keyBackground(crop(c1, x, y, w, h), bg);
+  // backpack: drop the sparkle stars + swoosh ("only have a backpack").
+  // The sparkles are detached blobs EXCEPT for a 4-row bridge where the
+  // swoosh trail arcs over the flap ridge and merges with the star cluster
+  // (mock rows 747-750, x>=137 — mapped at full res; the flap loses at most
+  // a 1px top sliver there). Erase the bridge, keep-largest sweeps the
+  // freed sparkle blobs, tight-crop. NO colour heuristics: a yellow
+  // threshold ate the buckle highlight, a big rect notched the flap.
+  if (name === "icon-backpack.png") {
+    for (let yy = 747; yy <= 750; yy++)
+      for (let xx = 137; xx < 72 + img.width; xx++)
+        img.data[((yy - 747) * img.width + (xx - 72)) * 4 + 3] = 0;
+    img = trimToArt(keepLargest(img));
+  }
+  save(name, img);
+}
 
 console.log(`[ui-tiles] -> ${outDir}`);

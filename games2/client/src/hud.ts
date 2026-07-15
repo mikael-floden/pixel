@@ -238,7 +238,7 @@ function injectStyles() {
   .ml-divB .cr{right:0;top:0;width:190px;height:56px;background-image:url(/ui/divB-capr.png)}
   /* HUD content between the dividers */
   .ml-hud{position:fixed;left:0;right:0;bottom:0;height:var(--hud-h);z-index:4;background:#07070e;box-sizing:border-box}
-  .ml-tabrow{position:absolute;top:24px;left:44px;right:44px;height:var(--ml-tab);display:flex;gap:8px;justify-content:center}
+  .ml-tabrow{position:absolute;top:24px;left:44px;right:44px;height:var(--ml-tab);display:flex;justify-content:space-evenly}
   .ml-tab{width:var(--ml-tab);height:var(--ml-tab);flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
     padding:2px 0;cursor:pointer;image-rendering:pixelated;box-sizing:border-box;
     touch-action:manipulation;-webkit-touch-callout:none;
@@ -268,7 +268,7 @@ function injectStyles() {
   .ml-plate-btn.on{border-image:url(/ui/plate-pressed.png) 26 fill / 13px;color:#ffd678}
   /* Narrow phones: five square tabs must still fit between the outer rails. */
   @media (max-width:460px){
-    .ml-tabrow{left:40px;right:40px;gap:5px}
+    .ml-tabrow{left:40px;right:40px}
     .ml-tab{border-width:11px;border-image-width:11px}
     .ml-tab.sel{border-image-width:12px}
   }
