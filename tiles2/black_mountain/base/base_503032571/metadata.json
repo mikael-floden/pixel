@@ -380,10 +380,10 @@
         }
       },
       "features": [
-        "water",
-        "flowers"
+        "flowers",
+        "water"
       ],
-      "description": "black volcanic rock with a small puddle, small flowers"
+      "description": "black volcanic rock with small flowers, a small puddle"
     },
     {
       "index": 5,
@@ -531,10 +531,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock with a small puddle"
+      "features": [],
+      "description": "plain black volcanic rock"
     },
     {
       "index": 7,
@@ -682,10 +680,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock with a small puddle"
+      "features": [],
+      "description": "plain black volcanic rock"
     },
     {
       "index": 9,
@@ -757,10 +753,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock with a small puddle"
+      "features": [],
+      "description": "plain black volcanic rock"
     },
     {
       "index": 10,
@@ -833,10 +827,9 @@
         }
       },
       "features": [
-        "water",
         "pebbles"
       ],
-      "description": "black volcanic rock with a small puddle, pebbles"
+      "description": "black volcanic rock with pebbles"
     },
     {
       "index": 11,
@@ -1209,10 +1202,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock with a small puddle"
+      "features": [],
+      "description": "plain black volcanic rock"
     }
   ],
   "generated_at": "2026-07-05T10:09:28+00:00",
@@ -1226,12 +1217,11 @@
     },
     "harmonized_from": true,
     "harmonized_to": false,
-    "deseam": {
+    "deseam": false,
+    "gap_close": {
       "enabled": true,
-      "band": 4,
-      "darkness_thresh": 70,
-      "strength": 1.0,
-      "protect_dark_material": true
+      "alpha_thresh": 16,
+      "grow": 2
     },
     "fade_outline": {
       "enabled": true,

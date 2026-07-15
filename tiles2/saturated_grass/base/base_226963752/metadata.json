@@ -160,8 +160,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain saturated grass"
+      "features": [
+        "pebbles"
+      ],
+      "description": "saturated grass with pebbles"
     },
     {
       "index": 2,
@@ -456,9 +458,10 @@
         }
       },
       "features": [
-        "accent"
+        "accent",
+        "pebbles"
       ],
-      "description": "saturated grass with a small detail"
+      "description": "saturated grass with a small detail, pebbles"
     },
     {
       "index": 6,
@@ -684,9 +687,11 @@
       },
       "features": [
         "flowers",
-        "accent"
+        "accent",
+        "pebbles",
+        "bare_soil"
       ],
-      "description": "saturated grass with small flowers, a small detail"
+      "description": "saturated grass with small flowers, a small detail, pebbles, a bare soil patch"
     },
     {
       "index": 9,
@@ -759,16 +764,93 @@
         }
       },
       "features": [
-        "flowers",
         "accent",
-        "water",
-        "pebbles"
+        "flowers",
+        "water"
       ],
-      "description": "saturated grass with small flowers, a small detail, a small puddle, pebbles"
+      "description": "saturated grass with a small detail, small flowers, a small puddle"
     },
     {
       "index": 10,
       "file": "tile_10.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "saturated_grass": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        }
+      },
+      "features": [
+        "flowers",
+        "accent",
+        "bare_soil",
+        "pebbles"
+      ],
+      "description": "saturated grass with small flowers, a small detail, a bare soil patch, pebbles"
+    },
+    {
+      "index": 11,
+      "file": "tile_11.png",
       "width": 64,
       "height": 64,
       "composition": {
@@ -844,82 +926,6 @@
       "description": "saturated grass with small flowers, a bare soil patch, a small detail"
     },
     {
-      "index": 11,
-      "file": "tile_11.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "saturated_grass": 1.0
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass"
-          ],
-          "ratio": {
-            "saturated_grass": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass"
-          ],
-          "ratio": {
-            "saturated_grass": 1.0
-          }
-        },
-        "SW": {
-          "samples": [
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass"
-          ],
-          "ratio": {
-            "saturated_grass": 1.0
-          }
-        },
-        "NW": {
-          "samples": [
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass"
-          ],
-          "ratio": {
-            "saturated_grass": 1.0
-          }
-        }
-      },
-      "features": [
-        "flowers",
-        "bare_soil"
-      ],
-      "description": "saturated grass with small flowers, a bare soil patch"
-    },
-    {
       "index": 12,
       "file": "tile_12.png",
       "width": 64,
@@ -989,8 +995,11 @@
           }
         }
       },
-      "features": [],
-      "description": "plain saturated grass"
+      "features": [
+        "pebbles",
+        "accent"
+      ],
+      "description": "saturated grass with pebbles, a small detail"
     },
     {
       "index": 13,
@@ -1138,8 +1147,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain saturated grass"
+      "features": [
+        "accent"
+      ],
+      "description": "saturated grass with a small detail"
     },
     {
       "index": 15,
@@ -1211,8 +1222,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain saturated grass"
+      "features": [
+        "pebbles"
+      ],
+      "description": "saturated grass with pebbles"
     }
   ],
   "generated_at": "2026-07-05T08:28:56+00:00",
@@ -1226,12 +1239,11 @@
     },
     "harmonized_from": true,
     "harmonized_to": false,
-    "deseam": {
+    "deseam": false,
+    "gap_close": {
       "enabled": true,
-      "band": 4,
-      "darkness_thresh": 70,
-      "strength": 1.0,
-      "protect_dark_material": true
+      "alpha_thresh": 16,
+      "grow": 2
     },
     "fade_outline": {
       "enabled": true,

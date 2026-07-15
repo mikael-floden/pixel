@@ -87,10 +87,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "snow with a small detail"
+      "features": [],
+      "description": "plain snow"
     },
     {
       "index": 1,
@@ -162,10 +160,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "snow with a small detail"
+      "features": [],
+      "description": "plain snow"
     },
     {
       "index": 2,
@@ -238,10 +234,9 @@
         }
       },
       "features": [
-        "pebbles",
-        "accent"
+        "pebbles"
       ],
-      "description": "snow with pebbles, a small detail"
+      "description": "snow with pebbles"
     },
     {
       "index": 3,
@@ -314,10 +309,9 @@
         }
       },
       "features": [
-        "accent",
         "pebbles"
       ],
-      "description": "snow with a small detail, pebbles"
+      "description": "snow with pebbles"
     },
     {
       "index": 4,
@@ -389,11 +383,8 @@
           }
         }
       },
-      "features": [
-        "accent",
-        "pebbles"
-      ],
-      "description": "snow with a small detail, pebbles"
+      "features": [],
+      "description": "plain snow"
     },
     {
       "index": 5,
@@ -465,10 +456,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "snow with a small detail"
+      "features": [],
+      "description": "plain snow"
     },
     {
       "index": 6,
@@ -540,11 +529,8 @@
           }
         }
       },
-      "features": [
-        "accent",
-        "pebbles"
-      ],
-      "description": "snow with a small detail, pebbles"
+      "features": [],
+      "description": "plain snow"
     },
     {
       "index": 7,
@@ -616,10 +602,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "snow with a small detail"
+      "features": [],
+      "description": "plain snow"
     },
     {
       "index": 8,
@@ -691,10 +675,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "snow with a small detail"
+      "features": [],
+      "description": "plain snow"
     },
     {
       "index": 9,
@@ -766,10 +748,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "snow with a small detail"
+      "features": [],
+      "description": "plain snow"
     },
     {
       "index": 10,
@@ -841,10 +821,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "snow with a small detail"
+      "features": [],
+      "description": "plain snow"
     },
     {
       "index": 11,
@@ -916,10 +894,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "snow with a small detail"
+      "features": [],
+      "description": "plain snow"
     },
     {
       "index": 12,
@@ -992,12 +968,11 @@
         }
       },
       "features": [
-        "accent",
         "pebbles",
         "bare_soil",
         "flowers"
       ],
-      "description": "snow with a small detail, pebbles, a bare soil patch, small flowers"
+      "description": "snow with pebbles, a bare soil patch, small flowers"
     },
     {
       "index": 13,
@@ -1069,10 +1044,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "snow with a small detail"
+      "features": [],
+      "description": "plain snow"
     },
     {
       "index": 14,
@@ -1144,10 +1117,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "snow with a small detail"
+      "features": [],
+      "description": "plain snow"
     },
     {
       "index": 15,
@@ -1219,10 +1190,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "snow with a small detail"
+      "features": [],
+      "description": "plain snow"
     }
   ],
   "generated_at": "2026-07-05T09:02:42+00:00",
@@ -1236,12 +1205,11 @@
     },
     "harmonized_from": true,
     "harmonized_to": false,
-    "deseam": {
+    "deseam": false,
+    "gap_close": {
       "enabled": true,
-      "band": 4,
-      "darkness_thresh": 70,
-      "strength": 1.0,
-      "protect_dark_material": true
+      "alpha_thresh": 16,
+      "grow": 2
     },
     "fade_outline": {
       "enabled": true,

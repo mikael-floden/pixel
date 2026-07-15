@@ -87,10 +87,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock with a small puddle"
+      "features": [],
+      "description": "plain black volcanic rock"
     },
     {
       "index": 1,
@@ -162,10 +160,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock with a small puddle"
+      "features": [],
+      "description": "plain black volcanic rock"
     },
     {
       "index": 2,
@@ -312,10 +308,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock with a small puddle"
+      "features": [],
+      "description": "plain black volcanic rock"
     },
     {
       "index": 4,
@@ -387,10 +381,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock with a small puddle"
+      "features": [],
+      "description": "plain black volcanic rock"
     },
     {
       "index": 5,
@@ -537,10 +529,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock with a small puddle"
+      "features": [],
+      "description": "plain black volcanic rock"
     },
     {
       "index": 7,
@@ -838,10 +828,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock with a small puddle"
+      "features": [],
+      "description": "plain black volcanic rock"
     },
     {
       "index": 11,
@@ -1063,10 +1051,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock with a small puddle"
+      "features": [],
+      "description": "plain black volcanic rock"
     },
     {
       "index": 14,
@@ -1213,10 +1199,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock with a small puddle"
+      "features": [],
+      "description": "plain black volcanic rock"
     }
   ],
   "generated_at": "2026-07-05T10:08:11+00:00",
@@ -1230,12 +1214,11 @@
     },
     "harmonized_from": true,
     "harmonized_to": false,
-    "deseam": {
+    "deseam": false,
+    "gap_close": {
       "enabled": true,
-      "band": 4,
-      "darkness_thresh": 70,
-      "strength": 1.0,
-      "protect_dark_material": true
+      "alpha_thresh": 16,
+      "grow": 2
     },
     "fade_outline": {
       "enabled": true,

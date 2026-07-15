@@ -234,10 +234,9 @@
         }
       },
       "features": [
-        "shiny",
-        "accent"
+        "shiny"
       ],
-      "description": "clear water with a shiny speck, a small detail"
+      "description": "clear water with a shiny speck"
     },
     {
       "index": 3,
@@ -382,11 +381,8 @@
           }
         }
       },
-      "features": [
-        "accent",
-        "shiny"
-      ],
-      "description": "clear water with a small detail, a shiny speck"
+      "features": [],
+      "description": "plain clear water"
     },
     {
       "index": 5,
@@ -1215,12 +1211,11 @@
     },
     "harmonized_from": true,
     "harmonized_to": false,
-    "deseam": {
+    "deseam": false,
+    "gap_close": {
       "enabled": true,
-      "band": 4,
-      "darkness_thresh": 70,
-      "strength": 1.0,
-      "protect_dark_material": true
+      "alpha_thresh": 16,
+      "grow": 2
     },
     "fade_outline": {
       "enabled": true,

@@ -751,9 +751,10 @@
       "features": [
         "accent",
         "water",
-        "flowers"
+        "flowers",
+        "pebbles"
       ],
-      "description": "clear water with a small detail, a small puddle, small flowers"
+      "description": "clear water with a small detail, a small puddle, small flowers, pebbles"
     },
     {
       "index": 10,
@@ -1046,9 +1047,10 @@
       },
       "features": [
         "flowers",
-        "water"
+        "water",
+        "accent"
       ],
-      "description": "clear water with small flowers, a small puddle"
+      "description": "clear water with small flowers, a small puddle, a small detail"
     },
     {
       "index": 14,
@@ -1210,12 +1212,11 @@
     },
     "harmonized_from": true,
     "harmonized_to": false,
-    "deseam": {
+    "deseam": false,
+    "gap_close": {
       "enabled": true,
-      "band": 4,
-      "darkness_thresh": 70,
-      "strength": 1.0,
-      "protect_dark_material": true
+      "alpha_thresh": 16,
+      "grow": 2
     },
     "fade_outline": {
       "enabled": true,

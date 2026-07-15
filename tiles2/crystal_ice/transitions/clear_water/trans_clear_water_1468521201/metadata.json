@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.53,
-        "clear_water": 0.47
+        "crystal_ice": 0.659,
+        "clear_water": 0.341
       },
       "edges": {
         "NE": {
@@ -33,15 +33,16 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "clear_water",
             "crystal_ice",
+            "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
             "crystal_ice": 0.625,
             "clear_water": 0.375
-          }
+          },
+          "divider": 0.625
         },
         "SE": {
           "samples": [
@@ -49,29 +50,30 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 1.0
+            "clear_water": 0.625,
+            "crystal_ice": 0.375
           }
         },
         "SW": {
           "samples": [
             "clear_water",
-            "clear_water",
-            "clear_water",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "clear_water",
-            "crystal_ice"
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.5,
-            "crystal_ice": 0.5
+            "clear_water": 0.25,
+            "crystal_ice": 0.75
           }
         },
         "NW": {
@@ -100,8 +102,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.404,
-        "clear_water": 0.596
+        "crystal_ice": 0.535,
+        "clear_water": 0.465
       },
       "edges": {
         "NE": {
@@ -140,16 +142,16 @@
           "samples": [
             "clear_water",
             "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
             "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "clear_water",
             "clear_water",
             "crystal_ice"
           ],
           "ratio": {
-            "clear_water": 0.75,
-            "crystal_ice": 0.25
+            "clear_water": 0.5,
+            "crystal_ice": 0.5
           }
         },
         "NW": {
@@ -157,20 +159,20 @@
             "crystal_ice",
             "clear_water",
             "clear_water",
-            "clear_water",
+            "crystal_ice",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.625,
-            "clear_water": 0.375
+            "crystal_ice": 0.75,
+            "clear_water": 0.25
           }
         }
       },
       "features": [],
-      "description": "clear water blending to crystal ice"
+      "description": "crystal ice blending to clear water"
     },
     {
       "index": 2,
@@ -251,16 +253,31 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.66,
-        "clear_water": 0.34
+        "crystal_ice": 0.714,
+        "clear_water": 0.286
       },
       "edges": {
         "NE": {
           "samples": [
             "crystal_ice",
-            "clear_water",
-            "clear_water",
             "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "clear_water",
+            "clear_water",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
@@ -271,42 +288,25 @@
             "clear_water": 0.25
           }
         },
-        "SE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "clear_water"
-          ],
-          "ratio": {
-            "crystal_ice": 0.875,
-            "clear_water": 0.125
-          },
-          "divider": 0.875
-        },
         "SW": {
           "samples": [
+            "clear_water",
+            "clear_water",
             "crystal_ice",
             "clear_water",
             "clear_water",
             "clear_water",
             "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "clear_water"
+            "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.5,
-            "clear_water": 0.5
+            "clear_water": 0.625,
+            "crystal_ice": 0.375
           }
         },
         "NW": {
           "samples": [
-            "clear_water",
+            "crystal_ice",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
@@ -316,10 +316,8 @@
             "crystal_ice"
           ],
           "ratio": {
-            "clear_water": 0.125,
-            "crystal_ice": 0.875
-          },
-          "divider": 0.125
+            "crystal_ice": 1.0
+          }
         }
       },
       "features": [],
@@ -331,8 +329,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.869,
-        "crystal_ice": 0.131
+        "clear_water": 0.849,
+        "crystal_ice": 0.151
       },
       "edges": {
         "NE": {
@@ -355,14 +353,15 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "clear_water",
+            "crystal_ice",
             "clear_water",
             "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 1.0
+            "clear_water": 0.875,
+            "crystal_ice": 0.125
           }
         },
         "SW": {
@@ -405,25 +404,26 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.258,
-        "clear_water": 0.742
+        "crystal_ice": 0.292,
+        "clear_water": 0.708
       },
       "edges": {
         "NE": {
           "samples": [
             "crystal_ice",
             "crystal_ice",
+            "crystal_ice",
             "clear_water",
             "clear_water",
             "clear_water",
             "clear_water",
-            "clear_water",
-            "crystal_ice"
+            "clear_water"
           ],
           "ratio": {
             "crystal_ice": 0.375,
             "clear_water": 0.625
-          }
+          },
+          "divider": 0.375
         },
         "SE": {
           "samples": [
@@ -446,16 +446,16 @@
           "samples": [
             "clear_water",
             "clear_water",
-            "clear_water",
-            "clear_water",
             "crystal_ice",
+            "crystal_ice",
+            "clear_water",
             "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.875,
-            "crystal_ice": 0.125
+            "clear_water": 0.75,
+            "crystal_ice": 0.25
           }
         },
         "NW": {
@@ -485,8 +485,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.15,
-        "clear_water": 0.85
+        "crystal_ice": 0.287,
+        "clear_water": 0.713
       },
       "edges": {
         "NE": {
@@ -494,17 +494,16 @@
             "crystal_ice",
             "crystal_ice",
             "clear_water",
-            "clear_water",
+            "crystal_ice",
             "clear_water",
             "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "crystal_ice": 0.25,
-            "clear_water": 0.75
-          },
-          "divider": 0.25
+            "crystal_ice": 0.375,
+            "clear_water": 0.625
+          }
         },
         "SE": {
           "samples": [
@@ -538,18 +537,17 @@
         },
         "NW": {
           "samples": [
-            "clear_water",
-            "clear_water",
             "crystal_ice",
             "crystal_ice",
-            "clear_water",
-            "clear_water",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
             "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "clear_water": 0.5,
-            "crystal_ice": 0.5
+            "crystal_ice": 1.0
           }
         }
       },
@@ -562,27 +560,11 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.717,
-        "crystal_ice": 0.283
+        "clear_water": 0.674,
+        "crystal_ice": 0.326
       },
       "edges": {
         "NE": {
-          "samples": [
-            "clear_water",
-            "crystal_ice",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water"
-          ],
-          "ratio": {
-            "clear_water": 0.875,
-            "crystal_ice": 0.125
-          }
-        },
-        "SE": {
           "samples": [
             "clear_water",
             "clear_water",
@@ -595,6 +577,22 @@
           ],
           "ratio": {
             "clear_water": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "crystal_ice",
+            "clear_water",
+            "crystal_ice",
+            "clear_water",
+            "clear_water"
+          ],
+          "ratio": {
+            "clear_water": 0.75,
+            "crystal_ice": 0.25
           }
         },
         "SW": {
@@ -637,14 +635,14 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.799,
-        "crystal_ice": 0.201
+        "clear_water": 0.757,
+        "crystal_ice": 0.243
       },
       "edges": {
         "NE": {
           "samples": [
             "clear_water",
-            "crystal_ice",
+            "clear_water",
             "crystal_ice",
             "crystal_ice",
             "clear_water",
@@ -653,8 +651,8 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.625,
-            "crystal_ice": 0.375
+            "clear_water": 0.75,
+            "crystal_ice": 0.25
           }
         },
         "SE": {
@@ -678,6 +676,22 @@
             "clear_water",
             "clear_water",
             "clear_water",
+            "crystal_ice",
+            "crystal_ice",
+            "clear_water",
+            "clear_water"
+          ],
+          "ratio": {
+            "clear_water": 0.75,
+            "crystal_ice": 0.25
+          }
+        },
+        "NW": {
+          "samples": [
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -685,22 +699,6 @@
           ],
           "ratio": {
             "clear_water": 1.0
-          }
-        },
-        "NW": {
-          "samples": [
-            "clear_water",
-            "clear_water",
-            "crystal_ice",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water"
-          ],
-          "ratio": {
-            "clear_water": 0.875,
-            "crystal_ice": 0.125
           }
         }
       },
@@ -713,15 +711,15 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.05,
-        "clear_water": 0.95
+        "crystal_ice": 0.106,
+        "clear_water": 0.894
       },
       "edges": {
         "NE": {
           "samples": [
             "crystal_ice",
-            "clear_water",
-            "clear_water",
+            "crystal_ice",
+            "crystal_ice",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -729,10 +727,10 @@
             "clear_water"
           ],
           "ratio": {
-            "crystal_ice": 0.125,
-            "clear_water": 0.875
+            "crystal_ice": 0.375,
+            "clear_water": 0.625
           },
-          "divider": 0.125
+          "divider": 0.375
         },
         "SE": {
           "samples": [
@@ -750,50 +748,6 @@
           }
         },
         "SW": {
-          "samples": [
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water"
-          ],
-          "ratio": {
-            "clear_water": 1.0
-          }
-        },
-        "NW": {
-          "samples": [
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water"
-          ],
-          "ratio": {
-            "clear_water": 1.0
-          }
-        }
-      },
-      "features": [],
-      "description": "clear water blending to crystal ice"
-    },
-    {
-      "index": 10,
-      "file": "tile_10.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "clear_water": 0.807,
-        "crystal_ice": 0.193
-      },
-      "edges": {
-        "NE": {
           "samples": [
             "clear_water",
             "clear_water",
@@ -810,67 +764,35 @@
           },
           "divider": 0.875
         },
-        "SE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water"
-          ],
-          "ratio": {
-            "crystal_ice": 0.25,
-            "clear_water": 0.75
-          },
-          "divider": 0.25
-        },
-        "SW": {
+        "NW": {
           "samples": [
             "clear_water",
             "clear_water",
-            "crystal_ice",
             "clear_water",
             "clear_water",
             "clear_water",
             "clear_water",
-            "clear_water"
+            "clear_water",
+            "crystal_ice"
           ],
           "ratio": {
             "clear_water": 0.875,
             "crystal_ice": 0.125
-          }
-        },
-        "NW": {
-          "samples": [
-            "crystal_ice",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "crystal_ice",
-            "clear_water",
-            "clear_water",
-            "clear_water"
-          ],
-          "ratio": {
-            "crystal_ice": 0.25,
-            "clear_water": 0.75
-          }
+          },
+          "divider": 0.875
         }
       },
       "features": [],
       "description": "clear water blending to crystal ice"
     },
     {
-      "index": 11,
-      "file": "tile_11.png",
+      "index": 10,
+      "file": "tile_10.png",
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.449,
-        "clear_water": 0.551
+        "clear_water": 0.812,
+        "crystal_ice": 0.188
       },
       "edges": {
         "NE": {
@@ -879,87 +801,9 @@
             "crystal_ice",
             "clear_water",
             "clear_water",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "clear_water": 0.375,
-            "crystal_ice": 0.625
-          }
-        },
-        "SE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
             "clear_water",
             "crystal_ice",
             "clear_water",
-            "crystal_ice",
-            "crystal_ice",
-            "clear_water"
-          ],
-          "ratio": {
-            "crystal_ice": 0.625,
-            "clear_water": 0.375
-          }
-        },
-        "SW": {
-          "samples": [
-            "clear_water",
-            "crystal_ice",
-            "crystal_ice",
-            "clear_water",
-            "clear_water",
-            "crystal_ice",
-            "clear_water",
-            "clear_water"
-          ],
-          "ratio": {
-            "clear_water": 0.625,
-            "crystal_ice": 0.375
-          }
-        },
-        "NW": {
-          "samples": [
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "crystal_ice",
-            "crystal_ice",
-            "clear_water",
-            "crystal_ice",
-            "clear_water"
-          ],
-          "ratio": {
-            "clear_water": 0.625,
-            "crystal_ice": 0.375
-          }
-        }
-      },
-      "features": [],
-      "description": "clear water blending to crystal ice"
-    },
-    {
-      "index": 12,
-      "file": "tile_12.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "clear_water": 0.974,
-        "crystal_ice": 0.026
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "crystal_ice",
-            "crystal_ice",
             "clear_water"
           ],
           "ratio": {
@@ -991,6 +835,162 @@
             "clear_water",
             "clear_water",
             "clear_water",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "clear_water": 0.875,
+            "crystal_ice": 0.125
+          },
+          "divider": 0.875
+        },
+        "NW": {
+          "samples": [
+            "crystal_ice",
+            "clear_water",
+            "clear_water",
+            "crystal_ice",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water"
+          ],
+          "ratio": {
+            "crystal_ice": 0.25,
+            "clear_water": 0.75
+          }
+        }
+      },
+      "features": [],
+      "description": "clear water blending to crystal ice"
+    },
+    {
+      "index": 11,
+      "file": "tile_11.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "crystal_ice": 0.517,
+        "clear_water": 0.483
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 0.5,
+            "clear_water": 0.5
+          }
+        },
+        "SW": {
+          "samples": [
+            "crystal_ice",
+            "clear_water",
+            "clear_water",
+            "crystal_ice",
+            "crystal_ice",
+            "clear_water",
+            "clear_water",
+            "clear_water"
+          ],
+          "ratio": {
+            "crystal_ice": 0.375,
+            "clear_water": 0.625
+          }
+        },
+        "NW": {
+          "samples": [
+            "clear_water",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "clear_water",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "clear_water": 0.25,
+            "crystal_ice": 0.75
+          }
+        }
+      },
+      "features": [],
+      "description": "crystal ice blending to clear water"
+    },
+    {
+      "index": 12,
+      "file": "tile_12.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "clear_water": 0.94,
+        "crystal_ice": 0.06
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "crystal_ice",
+            "crystal_ice",
+            "clear_water"
+          ],
+          "ratio": {
+            "clear_water": 0.75,
+            "crystal_ice": 0.25
+          }
+        },
+        "SE": {
+          "samples": [
+            "clear_water",
+            "crystal_ice",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water"
+          ],
+          "ratio": {
+            "clear_water": 0.875,
+            "crystal_ice": 0.125
+          }
+        },
+        "SW": {
+          "samples": [
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
             "clear_water"
           ],
           "ratio": {
@@ -1014,7 +1014,7 @@
         }
       },
       "features": [],
-      "description": "plain clear water"
+      "description": "clear water blending to crystal ice"
     },
     {
       "index": 13,
@@ -1022,24 +1022,24 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.266,
-        "clear_water": 0.734
+        "crystal_ice": 0.401,
+        "clear_water": 0.599
       },
       "edges": {
         "NE": {
           "samples": [
             "crystal_ice",
-            "clear_water",
             "crystal_ice",
             "clear_water",
             "clear_water",
             "clear_water",
-            "clear_water",
+            "crystal_ice",
+            "crystal_ice",
             "clear_water"
           ],
           "ratio": {
-            "crystal_ice": 0.25,
-            "clear_water": 0.75
+            "crystal_ice": 0.5,
+            "clear_water": 0.5
           }
         },
         "SE": {
@@ -1061,15 +1061,16 @@
           "samples": [
             "clear_water",
             "clear_water",
+            "crystal_ice",
             "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water"
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
           ],
           "ratio": {
-            "clear_water": 1.0
+            "clear_water": 0.375,
+            "crystal_ice": 0.625
           }
         },
         "NW": {
@@ -1079,13 +1080,13 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "crystal_ice",
+            "clear_water",
             "clear_water",
             "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.875,
-            "clear_water": 0.125
+            "crystal_ice": 0.75,
+            "clear_water": 0.25
           }
         }
       },
@@ -1250,12 +1251,11 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
-    "deseam": {
+    "deseam": false,
+    "gap_close": {
       "enabled": true,
-      "band": 4,
-      "darkness_thresh": 70,
-      "strength": 1.0,
-      "protect_dark_material": true
+      "alpha_thresh": 16,
+      "grow": 2
     },
     "fade_outline": {
       "enabled": true,

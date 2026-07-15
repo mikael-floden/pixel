@@ -900,10 +900,10 @@
         }
       },
       "features": [
-        "water",
-        "flowers"
+        "flowers",
+        "water"
       ],
-      "description": "black volcanic rock with a small puddle, small flowers"
+      "description": "black volcanic rock with small flowers, a small puddle"
     },
     {
       "index": 12,
@@ -1050,10 +1050,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock with a small puddle"
+      "features": [],
+      "description": "plain black volcanic rock"
     },
     {
       "index": 14,
@@ -1125,10 +1123,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock with a small puddle"
+      "features": [],
+      "description": "plain black volcanic rock"
     },
     {
       "index": 15,
@@ -1200,11 +1196,8 @@
           }
         }
       },
-      "features": [
-        "water",
-        "flowers"
-      ],
-      "description": "black volcanic rock with a small puddle, small flowers"
+      "features": [],
+      "description": "plain black volcanic rock"
     }
   ],
   "generated_at": "2026-07-05T10:11:37+00:00",
@@ -1218,12 +1211,11 @@
     },
     "harmonized_from": true,
     "harmonized_to": false,
-    "deseam": {
+    "deseam": false,
+    "gap_close": {
       "enabled": true,
-      "band": 4,
-      "darkness_thresh": 70,
-      "strength": 1.0,
-      "protect_dark_material": true
+      "alpha_thresh": 16,
+      "grow": 2
     },
     "fade_outline": {
       "enabled": true,

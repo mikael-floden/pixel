@@ -23,8 +23,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.999,
-        "black_mountain": 0.001
+        "light_sand": 1.0
       },
       "edges": {
         "NE": {
@@ -88,11 +87,8 @@
           }
         }
       },
-      "features": [
-        "bare_soil",
-        "flowers"
-      ],
-      "description": "light sand with a bare soil patch, small flowers"
+      "features": [],
+      "description": "plain light sand"
     },
     {
       "index": 1,
@@ -100,8 +96,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.966,
-        "black_mountain": 0.034
+        "light_sand": 0.963,
+        "black_mountain": 0.037
       },
       "edges": {
         "NE": {
@@ -165,11 +161,8 @@
           }
         }
       },
-      "features": [
-        "bare_soil",
-        "flowers"
-      ],
-      "description": "light sand with a bare soil patch, small flowers"
+      "features": [],
+      "description": "plain light sand"
     },
     {
       "index": 2,
@@ -177,8 +170,237 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.889,
-        "black_mountain": 0.111
+        "light_sand": 0.983,
+        "black_mountain": 0.017
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "light_sand": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "light_sand": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "light_sand": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "light_sand": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "plain light sand"
+    },
+    {
+      "index": 3,
+      "file": "tile_03.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "light_sand": 0.843,
+        "black_mountain": 0.157
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "light_sand": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "light_sand": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "black_mountain",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "light_sand": 0.875,
+            "black_mountain": 0.125
+          }
+        },
+        "NW": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "light_sand": 1.0
+          }
+        }
+      },
+      "features": [
+        "bare_soil"
+      ],
+      "description": "light sand blending to black volcanic rock with a bare soil patch"
+    },
+    {
+      "index": 4,
+      "file": "tile_04.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "light_sand": 0.699,
+        "black_mountain": 0.301
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "light_sand": 0.75,
+            "black_mountain": 0.25
+          },
+          "divider": 0.75
+        },
+        "SE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "black_mountain": 0.375,
+            "light_sand": 0.625
+          },
+          "divider": 0.375
+        },
+        "NW": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "light_sand": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "light sand blending to black volcanic rock"
+    },
+    {
+      "index": 5,
+      "file": "tile_05.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "light_sand": 0.731,
+        "black_mountain": 0.269
       },
       "edges": {
         "NE": {
@@ -217,96 +439,16 @@
           "samples": [
             "black_mountain",
             "black_mountain",
+            "light_sand",
+            "black_mountain",
+            "black_mountain",
             "black_mountain",
             "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
             "light_sand"
           ],
           "ratio": {
-            "black_mountain": 0.375,
-            "light_sand": 0.625
-          },
-          "divider": 0.375
-        },
-        "NW": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        }
-      },
-      "features": [
-        "bare_soil",
-        "flowers"
-      ],
-      "description": "light sand blending to black volcanic rock with a bare soil patch, small flowers"
-    },
-    {
-      "index": 3,
-      "file": "tile_03.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "light_sand": 0.861,
-        "black_mountain": 0.139
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "black_mountain": 0.125,
-            "light_sand": 0.875
-          },
-          "divider": 0.125
-        },
-        "SE": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        },
-        "SW": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
+            "black_mountain": 0.625,
+            "light_sand": 0.375
           }
         },
         "NW": {
@@ -326,173 +468,11 @@
         }
       },
       "features": [
-        "bare_soil",
-        "flowers"
-      ],
-      "description": "light sand blending to black volcanic rock with a bare soil patch, small flowers"
-    },
-    {
-      "index": 4,
-      "file": "tile_04.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "light_sand": 0.563,
-        "black_mountain": 0.437
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "light_sand": 0.625,
-            "black_mountain": 0.375
-          },
-          "divider": 0.625
-        },
-        "SE": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "black_mountain": 1.0
-          }
-        },
-        "SW": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "black_mountain": 0.375,
-            "light_sand": 0.625
-          },
-          "divider": 0.375
-        },
-        "NW": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        }
-      },
-      "features": [
-        "bare_soil"
-      ],
-      "description": "light sand blending to black volcanic rock with a bare soil patch"
-    },
-    {
-      "index": 5,
-      "file": "tile_05.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "light_sand": 0.703,
-        "black_mountain": 0.297
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "black_mountain": 0.375,
-            "light_sand": 0.625
-          },
-          "divider": 0.375
-        },
-        "SE": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 0.625,
-            "black_mountain": 0.375
-          }
-        },
-        "SW": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        },
-        "NW": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "black_mountain",
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "black_mountain"
-          ],
-          "ratio": {
-            "light_sand": 0.625,
-            "black_mountain": 0.375
-          }
-        }
-      },
-      "features": [
-        "bare_soil",
         "water",
         "flowers",
         "accent"
       ],
-      "description": "light sand blending to black volcanic rock with a bare soil patch, a small puddle, small flowers, a small detail"
+      "description": "light sand blending to black volcanic rock with a small puddle, small flowers, a small detail"
     },
     {
       "index": 6,
@@ -500,8 +480,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.819,
-        "black_mountain": 0.181
+        "light_sand": 0.958,
+        "black_mountain": 0.042
       },
       "edges": {
         "NE": {
@@ -525,33 +505,31 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
+            "light_sand",
+            "light_sand",
+            "light_sand",
             "black_mountain"
           ],
           "ratio": {
-            "light_sand": 0.5,
-            "black_mountain": 0.5
+            "light_sand": 0.875,
+            "black_mountain": 0.125
           },
-          "divider": 0.5
+          "divider": 0.875
         },
         "SW": {
           "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
             "light_sand",
             "light_sand",
             "light_sand",
             "light_sand"
           ],
           "ratio": {
-            "black_mountain": 0.5,
-            "light_sand": 0.5
-          },
-          "divider": 0.5
+            "light_sand": 1.0
+          }
         },
         "NW": {
           "samples": [
@@ -569,11 +547,8 @@
           }
         }
       },
-      "features": [
-        "bare_soil",
-        "flowers"
-      ],
-      "description": "light sand blending to black volcanic rock with a bare soil patch, small flowers"
+      "features": [],
+      "description": "plain light sand"
     },
     {
       "index": 7,
@@ -581,8 +556,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.427,
-        "black_mountain": 0.573
+        "light_sand": 0.523,
+        "black_mountain": 0.477
       },
       "edges": {
         "NE": {
@@ -621,18 +596,18 @@
           "samples": [
             "black_mountain",
             "black_mountain",
-            "black_mountain",
-            "black_mountain",
+            "light_sand",
+            "light_sand",
             "light_sand",
             "light_sand",
             "light_sand",
             "light_sand"
           ],
           "ratio": {
-            "black_mountain": 0.5,
-            "light_sand": 0.5
+            "black_mountain": 0.25,
+            "light_sand": 0.75
           },
-          "divider": 0.5
+          "divider": 0.25
         },
         "NW": {
           "samples": [
@@ -651,11 +626,9 @@
         }
       },
       "features": [
-        "water",
-        "bare_soil",
-        "flowers"
+        "water"
       ],
-      "description": "black volcanic rock blending to light sand with a small puddle, a bare soil patch, small flowers"
+      "description": "light sand blending to black volcanic rock with a small puddle"
     },
     {
       "index": 8,
@@ -663,8 +636,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.459,
-        "black_mountain": 0.541
+        "light_sand": 0.572,
+        "black_mountain": 0.428
       },
       "edges": {
         "NE": {
@@ -688,16 +661,16 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "black_mountain",
+            "light_sand",
             "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "light_sand": 0.5,
-            "black_mountain": 0.5
+            "light_sand": 0.625,
+            "black_mountain": 0.375
           },
-          "divider": 0.5
+          "divider": 0.625
         },
         "SW": {
           "samples": [
@@ -720,23 +693,20 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "black_mountain",
+            "light_sand",
             "light_sand",
             "light_sand",
             "light_sand"
           ],
           "ratio": {
-            "black_mountain": 0.625,
-            "light_sand": 0.375
+            "black_mountain": 0.5,
+            "light_sand": 0.5
           },
-          "divider": 0.625
+          "divider": 0.5
         }
       },
-      "features": [
-        "bare_soil",
-        "flowers"
-      ],
-      "description": "black volcanic rock blending to light sand with a bare soil patch, small flowers"
+      "features": [],
+      "description": "light sand blending to black volcanic rock"
     },
     {
       "index": 9,
@@ -744,8 +714,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.647,
-        "light_sand": 0.353
+        "black_mountain": 0.644,
+        "light_sand": 0.356
       },
       "edges": {
         "NE": {
@@ -755,8 +725,8 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "light_sand",
             "black_mountain",
+            "light_sand",
             "black_mountain"
           ],
           "ratio": {
@@ -771,13 +741,13 @@
             "black_mountain",
             "light_sand",
             "light_sand",
-            "light_sand",
+            "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.625,
-            "light_sand": 0.375
+            "black_mountain": 0.75,
+            "light_sand": 0.25
           }
         },
         "SW": {
@@ -787,8 +757,8 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "black_mountain",
             "light_sand",
+            "black_mountain",
             "black_mountain"
           ],
           "ratio": {
@@ -803,13 +773,13 @@
             "black_mountain",
             "black_mountain",
             "light_sand",
-            "light_sand",
+            "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.75,
-            "light_sand": 0.25
+            "black_mountain": 0.875,
+            "light_sand": 0.125
           }
         }
       },
@@ -825,169 +795,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.769,
-        "light_sand": 0.231
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "black_mountain": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "black_mountain": 0.5,
-            "light_sand": 0.5
-          },
-          "divider": 0.5
-        },
-        "SW": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "light_sand": 0.5,
-            "black_mountain": 0.5
-          },
-          "divider": 0.5
-        },
-        "NW": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "black_mountain": 1.0
-          }
-        }
-      },
-      "features": [
-        "bare_soil",
-        "flowers"
-      ],
-      "description": "black volcanic rock blending to light sand with a bare soil patch, small flowers"
-    },
-    {
-      "index": 11,
-      "file": "tile_11.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "light_sand": 0.791,
-        "black_mountain": 0.209
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        },
-        "SW": {
-          "samples": [
-            "light_sand",
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 0.875,
-            "black_mountain": 0.125
-          }
-        },
-        "NW": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 0.875,
-            "black_mountain": 0.125
-          }
-        }
-      },
-      "features": [
-        "bare_soil",
-        "flowers",
-        "pebbles"
-      ],
-      "description": "light sand blending to black volcanic rock with a bare soil patch, small flowers, pebbles"
-    },
-    {
-      "index": 12,
-      "file": "tile_12.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "black_mountain": 0.805,
-        "light_sand": 0.195
+        "black_mountain": 0.895,
+        "light_sand": 0.105
       },
       "edges": {
         "NE": {
@@ -1012,15 +821,15 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "black_mountain",
+            "light_sand",
             "light_sand",
             "light_sand"
           ],
           "ratio": {
-            "black_mountain": 0.75,
-            "light_sand": 0.25
+            "black_mountain": 0.625,
+            "light_sand": 0.375
           },
-          "divider": 0.75
+          "divider": 0.625
         },
         "SW": {
           "samples": [
@@ -1055,12 +864,168 @@
           }
         }
       },
+      "features": [],
+      "description": "black volcanic rock blending to light sand"
+    },
+    {
+      "index": 11,
+      "file": "tile_11.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "light_sand": 0.751,
+        "black_mountain": 0.249
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "black_mountain",
+            "black_mountain",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "light_sand": 0.75,
+            "black_mountain": 0.25
+          }
+        },
+        "SE": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "light_sand": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "black_mountain"
+          ],
+          "ratio": {
+            "light_sand": 0.875,
+            "black_mountain": 0.125
+          },
+          "divider": 0.875
+        },
+        "NW": {
+          "samples": [
+            "black_mountain",
+            "light_sand",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "light_sand"
+          ],
+          "ratio": {
+            "black_mountain": 0.75,
+            "light_sand": 0.25
+          }
+        }
+      },
       "features": [
-        "flowers",
-        "water",
-        "bare_soil"
+        "bare_soil",
+        "pebbles",
+        "flowers"
       ],
-      "description": "black volcanic rock blending to light sand with small flowers, a small puddle, a bare soil patch"
+      "description": "light sand blending to black volcanic rock with a bare soil patch, pebbles, small flowers"
+    },
+    {
+      "index": 12,
+      "file": "tile_12.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "black_mountain": 0.854,
+        "light_sand": 0.146
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "light_sand",
+            "light_sand",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 0.75,
+            "light_sand": 0.25
+          }
+        },
+        "SW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "light_sand",
+            "light_sand",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 0.75,
+            "light_sand": 0.25
+          }
+        },
+        "NW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        }
+      },
+      "features": [
+        "flowers"
+      ],
+      "description": "black volcanic rock blending to light sand with small flowers"
     },
     {
       "index": 13,
@@ -1068,8 +1033,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.981,
-        "light_sand": 0.019
+        "black_mountain": 0.986,
+        "light_sand": 0.014
       },
       "edges": {
         "NE": {
@@ -1108,14 +1073,13 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "light_sand",
+            "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.875,
-            "light_sand": 0.125
+            "black_mountain": 1.0
           }
         },
         "NW": {
@@ -1134,10 +1098,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock with a small puddle"
+      "features": [],
+      "description": "plain black volcanic rock"
     },
     {
       "index": 14,
@@ -1301,12 +1263,11 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
-    "deseam": {
+    "deseam": false,
+    "gap_close": {
       "enabled": true,
-      "band": 4,
-      "darkness_thresh": 70,
-      "strength": 1.0,
-      "protect_dark_material": true
+      "alpha_thresh": 16,
+      "grow": 2
     },
     "fade_outline": {
       "enabled": true,

@@ -309,11 +309,11 @@
         }
       },
       "features": [
-        "bare_soil",
         "flowers",
+        "bare_soil",
         "pebbles"
       ],
-      "description": "light sand with a bare soil patch, small flowers, pebbles"
+      "description": "light sand with small flowers, a bare soil patch, pebbles"
     },
     {
       "index": 4,
@@ -461,10 +461,8 @@
           }
         }
       },
-      "features": [
-        "bare_soil"
-      ],
-      "description": "light sand with a bare soil patch"
+      "features": [],
+      "description": "plain light sand"
     },
     {
       "index": 6,
@@ -609,10 +607,8 @@
           }
         }
       },
-      "features": [
-        "bare_soil"
-      ],
-      "description": "light sand with a bare soil patch"
+      "features": [],
+      "description": "plain light sand"
     },
     {
       "index": 8,
@@ -684,10 +680,8 @@
           }
         }
       },
-      "features": [
-        "bare_soil"
-      ],
-      "description": "light sand with a bare soil patch"
+      "features": [],
+      "description": "plain light sand"
     },
     {
       "index": 9,
@@ -760,10 +754,9 @@
         }
       },
       "features": [
-        "flowers",
-        "bare_soil"
+        "flowers"
       ],
-      "description": "light sand with small flowers, a bare soil patch"
+      "description": "light sand with small flowers"
     },
     {
       "index": 10,
@@ -1209,10 +1202,8 @@
           }
         }
       },
-      "features": [
-        "bare_soil"
-      ],
-      "description": "light sand with a bare soil patch"
+      "features": [],
+      "description": "plain light sand"
     }
   ],
   "generated_at": "2026-07-06T13:00:55+00:00",
@@ -1226,12 +1217,11 @@
     },
     "harmonized_from": true,
     "harmonized_to": false,
-    "deseam": {
+    "deseam": false,
+    "gap_close": {
       "enabled": true,
-      "band": 4,
-      "darkness_thresh": 70,
-      "strength": 1.0,
-      "protect_dark_material": true
+      "alpha_thresh": 16,
+      "grow": 2
     },
     "fade_outline": {
       "enabled": true,

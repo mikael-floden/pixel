@@ -311,10 +311,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "snow with a small detail"
+      "features": [],
+      "description": "plain snow"
     },
     {
       "index": 4,
@@ -609,10 +607,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "snow with a small detail"
+      "features": [],
+      "description": "plain snow"
     },
     {
       "index": 8,
@@ -1126,11 +1122,11 @@
       },
       "features": [
         "accent",
-        "pebbles",
         "flowers",
+        "pebbles",
         "water"
       ],
-      "description": "snow with a small detail, pebbles, small flowers, a small puddle"
+      "description": "snow with a small detail, small flowers, pebbles, a small puddle"
     },
     {
       "index": 15,
@@ -1217,12 +1213,11 @@
     },
     "harmonized_from": true,
     "harmonized_to": false,
-    "deseam": {
+    "deseam": false,
+    "gap_close": {
       "enabled": true,
-      "band": 4,
-      "darkness_thresh": 70,
-      "strength": 1.0,
-      "protect_dark_material": true
+      "alpha_thresh": 16,
+      "grow": 2
     },
     "fade_outline": {
       "enabled": true,

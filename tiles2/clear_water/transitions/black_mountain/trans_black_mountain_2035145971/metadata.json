@@ -23,8 +23,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.999,
-        "black_mountain": 0.001
+        "clear_water": 1.0
       },
       "edges": {
         "NE": {
@@ -99,45 +98,11 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.856,
-        "black_mountain": 0.144
+        "clear_water": 0.898,
+        "black_mountain": 0.102
       },
       "edges": {
         "NE": {
-          "samples": [
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "clear_water": 0.375,
-            "black_mountain": 0.625
-          },
-          "divider": 0.375
-        },
-        "SE": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water"
-          ],
-          "ratio": {
-            "black_mountain": 0.25,
-            "clear_water": 0.75
-          },
-          "divider": 0.25
-        },
-        "SW": {
           "samples": [
             "clear_water",
             "clear_water",
@@ -154,41 +119,7 @@
           },
           "divider": 0.5
         },
-        "NW": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "clear_water",
-            "clear_water",
-            "clear_water"
-          ],
-          "ratio": {
-            "black_mountain": 0.625,
-            "clear_water": 0.375
-          },
-          "divider": 0.625
-        }
-      },
-      "features": [
-        "water",
-        "accent"
-      ],
-      "description": "clear water blending to black volcanic rock with a small puddle, a small detail"
-    },
-    {
-      "index": 2,
-      "file": "tile_02.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "black_mountain": 0.247,
-        "clear_water": 0.753
-      },
-      "edges": {
-        "NE": {
+        "SE": {
           "samples": [
             "black_mountain",
             "black_mountain",
@@ -205,20 +136,88 @@
           },
           "divider": 0.25
         },
-        "SE": {
+        "SW": {
           "samples": [
             "clear_water",
             "clear_water",
             "clear_water",
             "clear_water",
+            "clear_water",
             "black_mountain",
             "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "clear_water": 0.625,
+            "black_mountain": 0.375
+          },
+          "divider": 0.625
+        },
+        "NW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "clear_water",
+            "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.75,
-            "black_mountain": 0.25
+            "black_mountain": 0.5,
+            "clear_water": 0.5
+          },
+          "divider": 0.5
+        }
+      },
+      "features": [
+        "accent",
+        "water"
+      ],
+      "description": "clear water blending to black volcanic rock with a small detail, a small puddle"
+    },
+    {
+      "index": 2,
+      "file": "tile_02.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "black_mountain": 0.283,
+        "clear_water": 0.717
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "black_mountain",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water"
+          ],
+          "ratio": {
+            "black_mountain": 0.125,
+            "clear_water": 0.875
+          },
+          "divider": 0.125
+        },
+        "SE": {
+          "samples": [
+            "clear_water",
+            "clear_water",
+            "black_mountain",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water"
+          ],
+          "ratio": {
+            "clear_water": 0.875,
+            "black_mountain": 0.125
           }
         },
         "SW": {
@@ -228,12 +227,13 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "clear_water",
+            "black_mountain",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 1.0
+            "clear_water": 0.875,
+            "black_mountain": 0.125
           }
         },
         "NW": {
@@ -244,12 +244,12 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "clear_water",
+            "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "clear_water": 0.75,
-            "black_mountain": 0.25
+            "clear_water": 0.625,
+            "black_mountain": 0.375
           }
         }
       },
@@ -266,8 +266,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.835,
-        "black_mountain": 0.165
+        "black_mountain": 0.204,
+        "clear_water": 0.796
       },
       "edges": {
         "NE": {
@@ -275,21 +275,21 @@
             "black_mountain",
             "clear_water",
             "clear_water",
-            "black_mountain",
+            "clear_water",
             "black_mountain",
             "black_mountain",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "black_mountain": 0.5,
-            "clear_water": 0.5
+            "black_mountain": 0.375,
+            "clear_water": 0.625
           }
         },
         "SE": {
           "samples": [
             "clear_water",
-            "clear_water",
+            "black_mountain",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -298,7 +298,8 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 1.0
+            "clear_water": 0.875,
+            "black_mountain": 0.125
           }
         },
         "SW": {
@@ -323,15 +324,15 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "black_mountain",
-            "black_mountain",
+            "clear_water",
+            "clear_water",
             "black_mountain"
           ],
           "ratio": {
-            "clear_water": 0.625,
-            "black_mountain": 0.375
+            "clear_water": 0.875,
+            "black_mountain": 0.125
           },
-          "divider": 0.625
+          "divider": 0.875
         }
       },
       "features": [
@@ -346,8 +347,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.586,
-        "black_mountain": 0.414
+        "clear_water": 0.689,
+        "black_mountain": 0.311
       },
       "edges": {
         "NE": {
@@ -356,16 +357,16 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "black_mountain",
+            "clear_water",
             "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "clear_water": 0.5,
-            "black_mountain": 0.5
+            "clear_water": 0.625,
+            "black_mountain": 0.375
           },
-          "divider": 0.5
+          "divider": 0.625
         },
         "SE": {
           "samples": [
@@ -384,8 +385,8 @@
         },
         "SW": {
           "samples": [
-            "black_mountain",
-            "black_mountain",
+            "clear_water",
+            "clear_water",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -394,10 +395,8 @@
             "clear_water"
           ],
           "ratio": {
-            "black_mountain": 0.25,
-            "clear_water": 0.75
-          },
-          "divider": 0.25
+            "clear_water": 1.0
+          }
         },
         "NW": {
           "samples": [
@@ -427,8 +426,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.993,
-        "black_mountain": 0.007
+        "clear_water": 0.992,
+        "black_mountain": 0.008
       },
       "edges": {
         "NE": {
@@ -503,8 +502,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.61,
-        "black_mountain": 0.39
+        "clear_water": 0.763,
+        "black_mountain": 0.237
       },
       "edges": {
         "NE": {
@@ -513,20 +512,20 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "black_mountain",
+            "clear_water",
             "black_mountain",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.75,
-            "black_mountain": 0.25
+            "clear_water": 0.875,
+            "black_mountain": 0.125
           }
         },
         "SE": {
           "samples": [
             "clear_water",
-            "black_mountain",
+            "clear_water",
             "black_mountain",
             "black_mountain",
             "black_mountain",
@@ -535,27 +534,25 @@
             "black_mountain"
           ],
           "ratio": {
-            "clear_water": 0.125,
-            "black_mountain": 0.875
+            "clear_water": 0.25,
+            "black_mountain": 0.75
           },
-          "divider": 0.125
+          "divider": 0.25
         },
         "SW": {
           "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
             "clear_water",
             "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "black_mountain": 0.5,
-            "clear_water": 0.5
-          },
-          "divider": 0.5
+            "clear_water": 1.0
+          }
         },
         "NW": {
           "samples": [
@@ -585,8 +582,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.931,
-        "black_mountain": 0.069
+        "clear_water": 0.923,
+        "black_mountain": 0.077
       },
       "edges": {
         "NE": {
@@ -642,12 +639,11 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "black_mountain",
+            "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.875,
-            "black_mountain": 0.125
+            "clear_water": 1.0
           }
         }
       },
@@ -663,8 +659,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.981,
-        "black_mountain": 0.019
+        "clear_water": 0.972,
+        "black_mountain": 0.028
       },
       "edges": {
         "NE": {
@@ -676,15 +672,17 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "clear_water"
+            "black_mountain"
           ],
           "ratio": {
-            "clear_water": 1.0
-          }
+            "clear_water": 0.875,
+            "black_mountain": 0.125
+          },
+          "divider": 0.875
         },
         "SE": {
           "samples": [
-            "clear_water",
+            "black_mountain",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -694,8 +692,10 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 1.0
-          }
+            "black_mountain": 0.125,
+            "clear_water": 0.875
+          },
+          "divider": 0.125
         },
         "SW": {
           "samples": [
@@ -740,8 +740,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.988,
-        "black_mountain": 0.012
+        "clear_water": 0.978,
+        "black_mountain": 0.022
       },
       "edges": {
         "NE": {
@@ -763,7 +763,7 @@
         },
         "SE": {
           "samples": [
-            "clear_water",
+            "black_mountain",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -773,8 +773,10 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 1.0
-          }
+            "black_mountain": 0.125,
+            "clear_water": 0.875
+          },
+          "divider": 0.125
         },
         "SW": {
           "samples": [
@@ -819,11 +821,28 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.09,
-        "clear_water": 0.91
+        "black_mountain": 0.114,
+        "clear_water": 0.886
       },
       "edges": {
         "NE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water"
+          ],
+          "ratio": {
+            "black_mountain": 0.25,
+            "clear_water": 0.75
+          },
+          "divider": 0.25
+        },
+        "SE": {
           "samples": [
             "black_mountain",
             "clear_water",
@@ -840,25 +859,10 @@
           },
           "divider": 0.125
         },
-        "SE": {
-          "samples": [
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water"
-          ],
-          "ratio": {
-            "clear_water": 1.0
-          }
-        },
         "SW": {
           "samples": [
             "clear_water",
-            "clear_water",
+            "black_mountain",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -867,7 +871,8 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 1.0
+            "clear_water": 0.875,
+            "black_mountain": 0.125
           }
         },
         "NW": {
@@ -900,14 +905,14 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.93,
-        "black_mountain": 0.07
+        "clear_water": 0.947,
+        "black_mountain": 0.053
       },
       "edges": {
         "NE": {
           "samples": [
             "clear_water",
-            "black_mountain",
+            "clear_water",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -916,8 +921,7 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.875,
-            "black_mountain": 0.125
+            "clear_water": 1.0
           }
         },
         "SE": {
@@ -938,7 +942,7 @@
         "SW": {
           "samples": [
             "clear_water",
-            "black_mountain",
+            "clear_water",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -947,13 +951,12 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.875,
-            "black_mountain": 0.125
+            "clear_water": 1.0
           }
         },
         "NW": {
           "samples": [
-            "black_mountain",
+            "clear_water",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -963,10 +966,8 @@
             "clear_water"
           ],
           "ratio": {
-            "black_mountain": 0.125,
-            "clear_water": 0.875
-          },
-          "divider": 0.125
+            "clear_water": 1.0
+          }
         }
       },
       "features": [
@@ -981,104 +982,24 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.283,
-        "clear_water": 0.717
+        "black_mountain": 0.242,
+        "clear_water": 0.758
       },
       "edges": {
         "NE": {
           "samples": [
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water"
-          ],
-          "ratio": {
-            "clear_water": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "clear_water",
             "black_mountain",
             "clear_water",
             "clear_water",
             "clear_water",
             "clear_water",
             "clear_water",
-            "clear_water"
-          ],
-          "ratio": {
-            "clear_water": 0.875,
-            "black_mountain": 0.125
-          }
-        },
-        "SW": {
-          "samples": [
             "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "clear_water",
-            "black_mountain",
-            "black_mountain",
-            "clear_water"
-          ],
-          "ratio": {
-            "black_mountain": 0.75,
-            "clear_water": 0.25
-          }
-        },
-        "NW": {
-          "samples": [
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "black_mountain",
-            "black_mountain",
-            "clear_water",
             "black_mountain"
           ],
           "ratio": {
-            "clear_water": 0.625,
-            "black_mountain": 0.375
-          }
-        }
-      },
-      "features": [
-        "water",
-        "accent",
-        "pebbles"
-      ],
-      "description": "clear water blending to black volcanic rock with a small puddle, a small detail, pebbles"
-    },
-    {
-      "index": 13,
-      "file": "tile_13.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "clear_water": 0.993,
-        "black_mountain": 0.007
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water"
-          ],
-          "ratio": {
-            "clear_water": 1.0
+            "black_mountain": 0.375,
+            "clear_water": 0.625
           }
         },
         "SE": {
@@ -1097,67 +1018,6 @@
           }
         },
         "SW": {
-          "samples": [
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water"
-          ],
-          "ratio": {
-            "clear_water": 1.0
-          }
-        },
-        "NW": {
-          "samples": [
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water"
-          ],
-          "ratio": {
-            "clear_water": 1.0
-          }
-        }
-      },
-      "features": [
-        "water"
-      ],
-      "description": "clear water with a small puddle"
-    },
-    {
-      "index": 14,
-      "file": "tile_14.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "clear_water": 0.927,
-        "black_mountain": 0.073
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water"
-          ],
-          "ratio": {
-            "clear_water": 1.0
-          }
-        },
-        "SE": {
           "samples": [
             "clear_water",
             "clear_water",
@@ -1171,6 +1031,144 @@
           "ratio": {
             "clear_water": 0.75,
             "black_mountain": 0.25
+          }
+        },
+        "NW": {
+          "samples": [
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "black_mountain"
+          ],
+          "ratio": {
+            "clear_water": 0.875,
+            "black_mountain": 0.125
+          },
+          "divider": 0.875
+        }
+      },
+      "features": [
+        "water",
+        "accent"
+      ],
+      "description": "clear water blending to black volcanic rock with a small puddle, a small detail"
+    },
+    {
+      "index": 13,
+      "file": "tile_13.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "clear_water": 0.997,
+        "black_mountain": 0.003
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water"
+          ],
+          "ratio": {
+            "clear_water": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water"
+          ],
+          "ratio": {
+            "clear_water": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water"
+          ],
+          "ratio": {
+            "clear_water": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water"
+          ],
+          "ratio": {
+            "clear_water": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "plain clear water"
+    },
+    {
+      "index": 14,
+      "file": "tile_14.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "clear_water": 0.95,
+        "black_mountain": 0.05
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water"
+          ],
+          "ratio": {
+            "clear_water": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water"
+          ],
+          "ratio": {
+            "clear_water": 1.0
           }
         },
         "SW": {
@@ -1213,8 +1211,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.642,
-        "clear_water": 0.358
+        "black_mountain": 0.686,
+        "clear_water": 0.314
       },
       "edges": {
         "NE": {
@@ -1224,13 +1222,13 @@
             "black_mountain",
             "black_mountain",
             "clear_water",
+            "clear_water",
             "black_mountain",
-            "black_mountain",
-            "black_mountain"
+            "clear_water"
           ],
           "ratio": {
-            "black_mountain": 0.875,
-            "clear_water": 0.125
+            "black_mountain": 0.625,
+            "clear_water": 0.375
           }
         },
         "SE": {
@@ -1239,52 +1237,54 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
+            "clear_water",
             "black_mountain",
-            "clear_water",
-            "clear_water",
+            "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "clear_water": 0.375,
-            "black_mountain": 0.625
+            "clear_water": 0.25,
+            "black_mountain": 0.75
           }
         },
         "SW": {
           "samples": [
             "black_mountain",
             "black_mountain",
+            "clear_water",
             "black_mountain",
             "black_mountain",
             "clear_water",
-            "clear_water",
-            "clear_water",
+            "black_mountain",
             "clear_water"
           ],
           "ratio": {
-            "black_mountain": 0.5,
-            "clear_water": 0.5
-          },
-          "divider": 0.5
+            "black_mountain": 0.625,
+            "clear_water": 0.375
+          }
         },
         "NW": {
           "samples": [
             "black_mountain",
             "black_mountain",
-            "black_mountain",
+            "clear_water",
             "clear_water",
             "black_mountain",
-            "black_mountain",
+            "clear_water",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.875,
-            "clear_water": 0.125
+            "black_mountain": 0.625,
+            "clear_water": 0.375
           }
         }
       },
-      "features": [],
-      "description": "black volcanic rock blending to clear water"
+      "features": [
+        "water",
+        "accent"
+      ],
+      "description": "black volcanic rock blending to clear water with a small puddle, a small detail"
     }
   ],
   "generated_at": "2026-07-05T16:27:46+00:00",
@@ -1298,12 +1298,11 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
-    "deseam": {
+    "deseam": false,
+    "gap_close": {
       "enabled": true,
-      "band": 4,
-      "darkness_thresh": 70,
-      "strength": 1.0,
-      "protect_dark_material": true
+      "alpha_thresh": 16,
+      "grow": 2
     },
     "fade_outline": {
       "enabled": true,

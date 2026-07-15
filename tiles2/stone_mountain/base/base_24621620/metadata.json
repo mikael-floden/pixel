@@ -87,11 +87,8 @@
           }
         }
       },
-      "features": [
-        "pebbles",
-        "accent"
-      ],
-      "description": "grey mountain stone with pebbles, a small detail"
+      "features": [],
+      "description": "plain grey mountain stone"
     },
     {
       "index": 1,
@@ -163,11 +160,8 @@
           }
         }
       },
-      "features": [
-        "pebbles",
-        "accent"
-      ],
-      "description": "grey mountain stone with pebbles, a small detail"
+      "features": [],
+      "description": "plain grey mountain stone"
     },
     {
       "index": 2,
@@ -239,11 +233,8 @@
           }
         }
       },
-      "features": [
-        "pebbles",
-        "accent"
-      ],
-      "description": "grey mountain stone with pebbles, a small detail"
+      "features": [],
+      "description": "plain grey mountain stone"
     },
     {
       "index": 3,
@@ -468,11 +459,11 @@
         }
       },
       "features": [
-        "pebbles",
         "accent",
-        "flowers"
+        "flowers",
+        "pebbles"
       ],
-      "description": "grey mountain stone with pebbles, a small detail, small flowers"
+      "description": "grey mountain stone with a small detail, small flowers, pebbles"
     },
     {
       "index": 6,
@@ -620,11 +611,8 @@
           }
         }
       },
-      "features": [
-        "pebbles",
-        "accent"
-      ],
-      "description": "grey mountain stone with pebbles, a small detail"
+      "features": [],
+      "description": "plain grey mountain stone"
     },
     {
       "index": 8,
@@ -698,10 +686,9 @@
       },
       "features": [
         "pebbles",
-        "accent",
         "shiny"
       ],
-      "description": "grey mountain stone with pebbles, a small detail, a shiny speck"
+      "description": "grey mountain stone with pebbles, a shiny speck"
     },
     {
       "index": 9,
@@ -773,11 +760,8 @@
           }
         }
       },
-      "features": [
-        "pebbles",
-        "accent"
-      ],
-      "description": "grey mountain stone with pebbles, a small detail"
+      "features": [],
+      "description": "plain grey mountain stone"
     },
     {
       "index": 10,
@@ -850,10 +834,9 @@
         }
       },
       "features": [
-        "accent",
         "pebbles"
       ],
-      "description": "grey mountain stone with a small detail, pebbles"
+      "description": "grey mountain stone with pebbles"
     },
     {
       "index": 11,
@@ -1079,10 +1062,9 @@
         }
       },
       "features": [
-        "accent",
         "pebbles"
       ],
-      "description": "grey mountain stone with a small detail, pebbles"
+      "description": "grey mountain stone with pebbles"
     },
     {
       "index": 14,
@@ -1155,10 +1137,10 @@
         }
       },
       "features": [
-        "accent",
-        "pebbles"
+        "pebbles",
+        "accent"
       ],
-      "description": "grey mountain stone with a small detail, pebbles"
+      "description": "grey mountain stone with pebbles, a small detail"
     },
     {
       "index": 15,
@@ -1231,10 +1213,9 @@
         }
       },
       "features": [
-        "pebbles",
-        "accent"
+        "pebbles"
       ],
-      "description": "grey mountain stone with pebbles, a small detail"
+      "description": "grey mountain stone with pebbles"
     }
   ],
   "generated_at": "2026-07-05T09:44:02+00:00",
@@ -1248,12 +1229,11 @@
     },
     "harmonized_from": true,
     "harmonized_to": false,
-    "deseam": {
+    "deseam": false,
+    "gap_close": {
       "enabled": true,
-      "band": 4,
-      "darkness_thresh": 70,
-      "strength": 1.0,
-      "protect_dark_material": true
+      "alpha_thresh": 16,
+      "grow": 2
     },
     "fade_outline": {
       "enabled": true,

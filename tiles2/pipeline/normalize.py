@@ -137,6 +137,44 @@ def neutralize_outline(im, darkness_thresh=60):
     return Image.fromarray(a.clip(0, 255).astype(np.uint8), "RGBA")
 
 
+def close_iso_gaps(im, alpha_thresh=16, grow=2):
+    """Close the hairline GRID SEAM between tessellating iso tiles.
+
+    The in-game 'grid'/'Ʌ' seam is NOT a dark outline on the tiles — it is the dark
+    BACKGROUND showing through 1-2px gaps along every diamond edge, because the
+    generated diamond silhouette (soft/antialiased rim) does not fully tile: adjacent
+    diamonds leave a thin transparent lane the void shows through (verified: seam
+    pixels == background luminance, and a magenta-background tessellation bleeds
+    magenta along every edge).
+
+    Fix = a small OUTWARD bleed: harden the silhouette (any alpha>thresh -> opaque)
+    and grow it `grow` px, filling each newly-covered pixel with the average of its
+    opaque neighbours at full alpha. Neighbouring diamonds then overlap by `grow` px
+    (same material, drawn back-to-front) so no gap remains. Interior pixels and any
+    interior transparency (they have no transparent-outside neighbour reached by the
+    grow front from the silhouette) are untouched. Base + transition floor tiles only;
+    NOT elevation object art (a lone sprite must keep its true silhouette).
+    """
+    a = np.asarray(im.convert("RGBA")).astype(np.float32)
+    rgb, al = a[:, :, :3], a[:, :, 3]
+    al = np.where(al > alpha_thresh, 255.0, 0.0)       # harden AA rim -> no dark halo
+    for _ in range(grow):
+        cur = al >= 128
+        acc = np.zeros_like(rgb)
+        cnt = np.zeros(al.shape, np.float32)
+        cf = cur.astype(np.float32)
+        for dy, dx in _SHIFTS:                         # zero-fill shifts: no canvas wrap
+            acc += _shift0(rgb * cur[:, :, None], dy, dx)
+            cnt += _shift0(cf, dy, dx)
+        newp = (~cur) & (cnt > 0)
+        have = cnt > 0
+        avg = np.zeros_like(rgb)
+        avg[have] = acc[have] / cnt[have, None]
+        rgb = np.where(newp[:, :, None], avg, rgb)
+        al = np.where(newp, 255.0, al)
+    return Image.fromarray(np.dstack([rgb, al]).clip(0, 255).astype(np.uint8), "RGBA")
+
+
 def _edge_dist(opaque, maxd):
     """Chebyshev-ish 4-neighbour distance (1..maxd) from the transparent silhouette
     INTO the opaque body; off-canvas counts as transparent so the canvas border is

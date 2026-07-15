@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.805,
-        "black_mountain": 0.195
+        "crystal_ice": 0.821,
+        "black_mountain": 0.179
       },
       "edges": {
         "NE": {
@@ -34,15 +34,15 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "black_mountain",
+            "crystal_ice",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "crystal_ice": 0.625,
-            "black_mountain": 0.375
+            "crystal_ice": 0.75,
+            "black_mountain": 0.25
           },
-          "divider": 0.625
+          "divider": 0.75
         },
         "SE": {
           "samples": [
@@ -50,16 +50,16 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "crystal_ice",
+            "black_mountain",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "black_mountain": 0.5,
-            "crystal_ice": 0.5
+            "black_mountain": 0.625,
+            "crystal_ice": 0.375
           },
-          "divider": 0.5
+          "divider": 0.625
         },
         "SW": {
           "samples": [
@@ -103,8 +103,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.849,
-        "black_mountain": 0.151
+        "crystal_ice": 0.904,
+        "black_mountain": 0.096
       },
       "edges": {
         "NE": {
@@ -115,12 +115,11 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "black_mountain",
+            "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.875,
-            "black_mountain": 0.125
+            "crystal_ice": 1.0
           }
         },
         "SE": {
@@ -131,12 +130,12 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "crystal_ice",
+            "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "crystal_ice": 0.75,
-            "black_mountain": 0.25
+            "crystal_ice": 0.625,
+            "black_mountain": 0.375
           }
         },
         "SW": {
@@ -183,8 +182,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.783,
-        "black_mountain": 0.217
+        "crystal_ice": 0.807,
+        "black_mountain": 0.193
       },
       "edges": {
         "NE": {
@@ -222,32 +221,30 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
             "black_mountain",
             "black_mountain",
-            "black_mountain"
+            "crystal_ice",
+            "black_mountain",
+            "crystal_ice"
           ],
           "ratio": {
             "crystal_ice": 0.625,
             "black_mountain": 0.375
-          },
-          "divider": 0.625
+          }
         },
         "NW": {
           "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
             "crystal_ice",
             "crystal_ice",
-            "black_mountain",
             "crystal_ice",
-            "black_mountain"
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
           ],
           "ratio": {
-            "black_mountain": 0.625,
-            "crystal_ice": 0.375
+            "crystal_ice": 1.0
           }
         }
       },
@@ -262,8 +259,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.946,
-        "black_mountain": 0.054
+        "crystal_ice": 0.98,
+        "black_mountain": 0.02
       },
       "edges": {
         "NE": {
@@ -290,13 +287,11 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "black_mountain"
+            "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.875,
-            "black_mountain": 0.125
-          },
-          "divider": 0.875
+            "crystal_ice": 1.0
+          }
         },
         "SW": {
           "samples": [
@@ -315,7 +310,7 @@
         },
         "NW": {
           "samples": [
-            "crystal_ice",
+            "black_mountain",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
@@ -325,14 +320,17 @@
             "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 1.0
-          }
+            "black_mountain": 0.125,
+            "crystal_ice": 0.875
+          },
+          "divider": 0.125
         }
       },
       "features": [
-        "accent"
+        "accent",
+        "pebbles"
       ],
-      "description": "crystal ice blending to black volcanic rock with a small detail"
+      "description": "crystal ice with a small detail, pebbles"
     },
     {
       "index": 4,
@@ -340,8 +338,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.722,
-        "black_mountain": 0.278
+        "crystal_ice": 0.714,
+        "black_mountain": 0.286
       },
       "edges": {
         "NE": {
@@ -364,8 +362,8 @@
         "SE": {
           "samples": [
             "black_mountain",
-            "black_mountain",
             "crystal_ice",
+            "black_mountain",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
@@ -375,10 +373,25 @@
           "ratio": {
             "black_mountain": 0.25,
             "crystal_ice": 0.75
-          },
-          "divider": 0.25
+          }
         },
         "SW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 0.5,
+            "black_mountain": 0.5
+          }
+        },
+        "NW": {
           "samples": [
             "crystal_ice",
             "crystal_ice",
@@ -391,22 +404,6 @@
           ],
           "ratio": {
             "crystal_ice": 1.0
-          }
-        },
-        "NW": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "black_mountain",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "crystal_ice": 0.625,
-            "black_mountain": 0.375
           }
         }
       },
@@ -422,8 +419,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.777,
-        "black_mountain": 0.223
+        "crystal_ice": 0.809,
+        "black_mountain": 0.191
       },
       "edges": {
         "NE": {
@@ -432,32 +429,31 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "black_mountain",
-            "black_mountain",
             "crystal_ice",
-            "black_mountain"
+            "black_mountain",
+            "black_mountain",
+            "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.625,
-            "black_mountain": 0.375
+            "crystal_ice": 0.75,
+            "black_mountain": 0.25
           }
         },
         "SE": {
           "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
             "crystal_ice",
             "crystal_ice",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
             "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "black_mountain": 0.5,
-            "crystal_ice": 0.5
-          },
-          "divider": 0.5
+            "crystal_ice": 0.5,
+            "black_mountain": 0.5
+          }
         },
         "SW": {
           "samples": [
@@ -501,32 +497,33 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.187,
-        "crystal_ice": 0.813
+        "black_mountain": 0.222,
+        "crystal_ice": 0.778
       },
       "edges": {
         "NE": {
           "samples": [
             "black_mountain",
             "black_mountain",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
             "black_mountain",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
             "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
             "black_mountain": 0.375,
             "crystal_ice": 0.625
-          }
+          },
+          "divider": 0.375
         },
         "SE": {
           "samples": [
             "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
             "black_mountain",
-            "crystal_ice",
-            "crystal_ice",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
@@ -581,8 +578,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.945,
-        "black_mountain": 0.055
+        "crystal_ice": 0.99,
+        "black_mountain": 0.01
       },
       "edges": {
         "NE": {
@@ -606,19 +603,18 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "black_mountain",
             "crystal_ice",
             "crystal_ice",
-            "black_mountain"
+            "crystal_ice",
+            "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.75,
-            "black_mountain": 0.25
+            "crystal_ice": 1.0
           }
         },
         "SW": {
           "samples": [
-            "black_mountain",
+            "crystal_ice",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
@@ -628,10 +624,86 @@
             "crystal_ice"
           ],
           "ratio": {
-            "black_mountain": 0.125,
-            "crystal_ice": 0.875
-          },
-          "divider": 0.125
+            "crystal_ice": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent"
+      ],
+      "description": "crystal ice with a small detail"
+    },
+    {
+      "index": 8,
+      "file": "tile_08.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "crystal_ice": 0.706,
+        "black_mountain": 0.294
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 0.5,
+            "black_mountain": 0.5
+          }
+        },
+        "SW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 0.5,
+            "black_mountain": 0.5
+          }
         },
         "NW": {
           "samples": [
@@ -655,93 +727,13 @@
       "description": "crystal ice blending to black volcanic rock with a small detail"
     },
     {
-      "index": 8,
-      "file": "tile_08.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "crystal_ice": 0.723,
-        "black_mountain": 0.277
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "black_mountain",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "black_mountain": 0.125,
-            "crystal_ice": 0.875
-          },
-          "divider": 0.125
-        },
-        "SE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        },
-        "SW": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        },
-        "NW": {
-          "samples": [
-            "crystal_ice",
-            "black_mountain",
-            "black_mountain",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "black_mountain"
-          ],
-          "ratio": {
-            "crystal_ice": 0.625,
-            "black_mountain": 0.375
-          }
-        }
-      },
-      "features": [
-        "accent",
-        "water"
-      ],
-      "description": "crystal ice blending to black volcanic rock with a small detail, a small puddle"
-    },
-    {
       "index": 9,
       "file": "tile_09.png",
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.822,
-        "black_mountain": 0.178
+        "crystal_ice": 0.809,
+        "black_mountain": 0.191
       },
       "edges": {
         "NE": {
@@ -750,33 +742,33 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "black_mountain",
+            "crystal_ice",
             "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "crystal_ice": 0.5,
-            "black_mountain": 0.5
+            "crystal_ice": 0.625,
+            "black_mountain": 0.375
           },
-          "divider": 0.5
+          "divider": 0.625
         },
         "SE": {
           "samples": [
             "black_mountain",
             "black_mountain",
-            "crystal_ice",
-            "crystal_ice",
+            "black_mountain",
+            "black_mountain",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "black_mountain": 0.25,
-            "crystal_ice": 0.75
+            "black_mountain": 0.5,
+            "crystal_ice": 0.5
           },
-          "divider": 0.25
+          "divider": 0.5
         },
         "SW": {
           "samples": [
@@ -820,8 +812,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.884,
-        "black_mountain": 0.116
+        "crystal_ice": 0.874,
+        "black_mountain": 0.126
       },
       "edges": {
         "NE": {
@@ -900,8 +892,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.962,
-        "black_mountain": 0.038
+        "crystal_ice": 0.976,
+        "black_mountain": 0.024
       },
       "edges": {
         "NE": {
@@ -976,39 +968,41 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.736,
-        "black_mountain": 0.264
+        "crystal_ice": 0.709,
+        "black_mountain": 0.291
       },
       "edges": {
         "NE": {
           "samples": [
             "black_mountain",
-            "black_mountain",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "black_mountain",
-            "black_mountain",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "black_mountain": 0.5,
-            "crystal_ice": 0.5
-          }
+            "black_mountain": 0.125,
+            "crystal_ice": 0.875
+          },
+          "divider": 0.125
         },
         "SE": {
           "samples": [
             "crystal_ice",
+            "black_mountain",
+            "black_mountain",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "black_mountain"
           ],
           "ratio": {
-            "crystal_ice": 1.0
+            "crystal_ice": 0.625,
+            "black_mountain": 0.375
           }
         },
         "SW": {
@@ -1016,6 +1010,22 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 0.625,
+            "black_mountain": 0.375
+          }
+        },
+        "NW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
@@ -1025,8 +1035,25 @@
           "ratio": {
             "crystal_ice": 1.0
           }
-        },
-        "NW": {
+        }
+      },
+      "features": [
+        "accent",
+        "water"
+      ],
+      "description": "crystal ice blending to black volcanic rock with a small detail, a small puddle"
+    },
+    {
+      "index": 13,
+      "file": "tile_13.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "crystal_ice": 0.792,
+        "black_mountain": 0.208
+      },
+      "edges": {
+        "NE": {
           "samples": [
             "crystal_ice",
             "crystal_ice",
@@ -1042,40 +1069,6 @@
             "black_mountain": 0.25
           },
           "divider": 0.75
-        }
-      },
-      "features": [
-        "accent",
-        "water"
-      ],
-      "description": "crystal ice blending to black volcanic rock with a small detail, a small puddle"
-    },
-    {
-      "index": 13,
-      "file": "tile_13.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "crystal_ice": 0.779,
-        "black_mountain": 0.221
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "crystal_ice": 0.625,
-            "black_mountain": 0.375
-          },
-          "divider": 0.625
         },
         "SE": {
           "samples": [
@@ -1083,16 +1076,16 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "crystal_ice",
-            "crystal_ice",
+            "black_mountain",
+            "black_mountain",
             "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "black_mountain": 0.5,
-            "crystal_ice": 0.5
+            "black_mountain": 0.75,
+            "crystal_ice": 0.25
           },
-          "divider": 0.5
+          "divider": 0.75
         },
         "SW": {
           "samples": [
@@ -1136,8 +1129,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.807,
-        "black_mountain": 0.193
+        "crystal_ice": 0.824,
+        "black_mountain": 0.176
       },
       "edges": {
         "NE": {
@@ -1147,15 +1140,15 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "black_mountain",
+            "crystal_ice",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "crystal_ice": 0.625,
-            "black_mountain": 0.375
+            "crystal_ice": 0.75,
+            "black_mountain": 0.25
           },
-          "divider": 0.625
+          "divider": 0.75
         },
         "SE": {
           "samples": [
@@ -1163,16 +1156,16 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "crystal_ice",
+            "black_mountain",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "black_mountain": 0.5,
-            "crystal_ice": 0.5
+            "black_mountain": 0.625,
+            "crystal_ice": 0.375
           },
-          "divider": 0.5
+          "divider": 0.625
         },
         "SW": {
           "samples": [
@@ -1216,8 +1209,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.955,
-        "black_mountain": 0.045
+        "crystal_ice": 0.98,
+        "black_mountain": 0.02
       },
       "edges": {
         "NE": {
@@ -1298,12 +1291,11 @@
     },
     "harmonized_from": true,
     "harmonized_to": true,
-    "deseam": {
+    "deseam": false,
+    "gap_close": {
       "enabled": true,
-      "band": 4,
-      "darkness_thresh": 70,
-      "strength": 1.0,
-      "protect_dark_material": true
+      "alpha_thresh": 16,
+      "grow": 2
     },
     "fade_outline": {
       "enabled": true,

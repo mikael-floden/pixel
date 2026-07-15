@@ -87,10 +87,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "crystal ice with a small detail"
+      "features": [],
+      "description": "plain crystal ice"
     },
     {
       "index": 1,
@@ -527,10 +525,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "crystal ice with a small detail"
+      "features": [],
+      "description": "plain crystal ice"
     },
     {
       "index": 7,
@@ -894,10 +890,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "crystal ice with a small detail"
+      "features": [],
+      "description": "plain crystal ice"
     },
     {
       "index": 12,
@@ -969,10 +963,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "crystal ice with a small detail"
+      "features": [],
+      "description": "plain crystal ice"
     },
     {
       "index": 13,
@@ -1044,10 +1036,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "crystal ice with a small detail"
+      "features": [],
+      "description": "plain crystal ice"
     },
     {
       "index": 14,
@@ -1119,10 +1109,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "crystal ice with a small detail"
+      "features": [],
+      "description": "plain crystal ice"
     },
     {
       "index": 15,
@@ -1209,12 +1197,11 @@
     },
     "harmonized_from": true,
     "harmonized_to": false,
-    "deseam": {
+    "deseam": false,
+    "gap_close": {
       "enabled": true,
-      "band": 4,
-      "darkness_thresh": 70,
-      "strength": 1.0,
-      "protect_dark_material": true
+      "alpha_thresh": 16,
+      "grow": 2
     },
     "fade_outline": {
       "enabled": true,

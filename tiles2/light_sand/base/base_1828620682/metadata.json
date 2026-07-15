@@ -1200,10 +1200,9 @@
       },
       "features": [
         "accent",
-        "pebbles",
-        "bare_soil"
+        "pebbles"
       ],
-      "description": "light sand with a small detail, pebbles, a bare soil patch"
+      "description": "light sand with a small detail, pebbles"
     }
   ],
   "generated_at": "2026-07-06T12:57:36+00:00",
@@ -1217,12 +1216,11 @@
     },
     "harmonized_from": true,
     "harmonized_to": false,
-    "deseam": {
+    "deseam": false,
+    "gap_close": {
       "enabled": true,
-      "band": 4,
-      "darkness_thresh": 70,
-      "strength": 1.0,
-      "protect_dark_material": true
+      "alpha_thresh": 16,
+      "grow": 2
     },
     "fade_outline": {
       "enabled": true,

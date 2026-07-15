@@ -32,6 +32,7 @@ DEFAULTS = {"neutralize_outline": True, "darkness_thresh": 60,
             "harmonize": {"hue_strength": 0.9, "sat_strength": 0.6, "v_strength": 0.65},
             "deseam": {"enabled": False, "band": 3, "darkness_thresh": 70,
                        "strength": 0.9, "protect_dark_material": True},
+            "gap_close": {"enabled": False, "alpha_thresh": 16, "grow": 2},
             "fade_outline": {"enabled": False, "darkness_thresh": 60, "soft_lum": 120,
                              "run_min": 9, "thick_max": 3, "strength": 0.6,
                              "rim_strength": 0.4, "min_alpha": 0,
@@ -48,6 +49,7 @@ def _pp_cfg(cfg):
     out = {**DEFAULTS, **pp}
     out["harmonize"] = {**DEFAULTS["harmonize"], **(pp.get("harmonize") or {})}
     out["deseam"] = {**DEFAULTS["deseam"], **(pp.get("deseam") or {})}
+    out["gap_close"] = {**DEFAULTS["gap_close"], **(pp.get("gap_close") or {})}
     out["fade_outline"] = {**DEFAULTS["fade_outline"], **(pp.get("fade_outline") or {})}
     return out
 
@@ -114,6 +116,7 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
     raw_by_file = {t["file"]: t for t in (req.get("tiles") or [])}
 
     ds = pp["deseam"]
+    gc = pp["gap_close"]
     fo = pp["fade_outline"]
     # guard on the DARKER of the two materials so a transition INTO black_mountain
     # still trips the dark-material protection
@@ -135,6 +138,9 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
                 protect_dark_material=ds["protect_dark_material"])
         if fo.get("enabled"):                          # fade AFTER harmonize (which restores alpha)
             im = normalize.fade_outline_alpha(im, material_target=fade_mt, **_fade_kwargs(fo))
+        if gc.get("enabled"):                          # LAST: bleed silhouette outward to close
+            im = normalize.close_iso_gaps(              # the background-through-gaps grid seam
+                im, alpha_thresh=gc["alpha_thresh"], grow=gc["grow"])
         im.save(os.path.join(dest, fn))
         # Per-tile map-builder metadata computed on the FINAL (harmonised) image.
         entry = dict(raw_by_file.get(fn, {"file": fn}))
@@ -164,6 +170,7 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
             "harmonized_from": bool(t_from),
             "harmonized_to": bool(t_to),
             "deseam": ds if ds.get("enabled") else False,
+            "gap_close": gc if gc.get("enabled") else False,
             "fade_outline": fo if fo.get("enabled") else False,
         },
     }
