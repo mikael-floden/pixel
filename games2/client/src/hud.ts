@@ -53,8 +53,8 @@ export function mountPageFrame() {
   for (const c of ["tl", "tr", "bl", "br"]) f.appendChild(mk("i", `ml-pf ml-corner-${c}`));
   group("ml-et", ["sl", "gm", "sr"]); // top border between corners
   group("ml-eb", ["sg"]); // bottom border
-  group("ml-el", ["st", "gm", "sb"]); // left border (flex column)
-  group("ml-er", ["st", "gm", "sb"]); // right border
+  group("ml-el", ["v1", "gm", "v2", "v3", "v4"]); // left border segments
+  group("ml-er", ["v1", "gm", "v2", "v3", "v4"]); // right border segments
   group("ml-divA", ["cl", "sl", "gm", "sr", "cr"]);
   group("ml-divB", ["cl", "sg", "cr"]);
   document.body.appendChild(f);
@@ -156,7 +156,8 @@ function injectStyles() {
   // Frame pieces are mock-ABSOLUTE crops: corners 180px, borders as
   // segment strips stretched between fixed junctions (see build-ui-tiles).
   const css = `
-  :root{--ml-tab:min(150px,calc((100vw - 200px)/5));--ml-tabzone:calc(var(--ml-tab) + 48px)}
+  :root{--ml-tab:min(150px,calc((100vw - 200px)/5));--ml-tabzone:calc(var(--ml-tab) + 48px);
+    --gemc:calc(var(--hud-h-inv)*0.564)}
   #ml-pageframe{position:fixed;inset:0;z-index:6;pointer-events:none}
   .ml-pf,.ml-pf i{position:absolute;pointer-events:none;image-rendering:pixelated;background-size:100% 100%}
   .ml-corner-tl{left:0;top:0;width:180px;height:180px;background-image:url(/ui/corner-tl.png)}
@@ -171,33 +172,47 @@ function injectStyles() {
   .ml-et .sr{left:calc(50% + 28px);right:0;top:0;bottom:0;background-image:url(/ui/top-seg-r.png)}
   .ml-eb{left:180px;right:180px;bottom:0;height:76px}
   .ml-eb .sg{inset:0;background-image:url(/ui/bottom-seg.png)}
-  /* side borders: flex columns; segment flex ratios = source heights, so the
-     gem sits at the mock's fraction and both its joints are native pixels */
-  .ml-el,.ml-er{top:180px;bottom:180px;width:76px;display:flex;flex-direction:column}
+  /* side borders: four clean-rail segments BETWEEN the junctions (corner→gem,
+     gem→divA cap, divider-to-divider, divB cap→corner) — junction/ornament
+     art lives only in the caps/gem tiles, so vertical stretching only ever
+     touches featureless straight rail (invisible; no smeared decor, no
+     non-square pixels on features). --gemc = the side gems' centre, at the
+     mock's fraction (56.4%) of the game section. */
+  .ml-el,.ml-er{top:0;bottom:0;width:76px}
   .ml-el{left:0}
   .ml-er{right:0}
-  .ml-el i,.ml-er i{position:static;width:100%}
-  .ml-el .st{flex:196 196 0}
-  .ml-el .gm{flex:none;height:68px;background-image:url(/ui/gem-left.png)}
-  .ml-el .sb{flex:640 640 0}
-  .ml-el .st{background-image:url(/ui/left-seg-t.png)}
-  .ml-el .sb{background-image:url(/ui/left-seg-b.png)}
-  .ml-er .st{flex:196 196 0;background-image:url(/ui/right-seg-t.png)}
-  .ml-er .gm{flex:none;height:68px;background-image:url(/ui/gem-right.png)}
-  .ml-er .sb{flex:640 640 0;background-image:url(/ui/right-seg-b.png)}
-  /* divider A: thin line centred on the game/HUD boundary (line centre sits
-     35px into the 66px caps / 21px into the 36px segs / gem carries its own) */
-  .ml-divA{left:0;right:0;top:calc(var(--hud-h-inv) - 35px);height:72px}
-  .ml-divA .cl{left:0;top:0;width:76px;height:66px;background-image:url(/ui/divA-capl.png)}
-  .ml-divA .sl{left:76px;right:calc(50% + 28px);top:14px;height:36px;background-image:url(/ui/divA-seg-l.png)}
-  .ml-divA .gm{left:calc(50% - 28px);width:56px;top:0;height:58px;background-image:url(/ui/divA-gem.png)}
-  .ml-divA .sr{left:calc(50% + 28px);right:76px;top:14px;height:36px;background-image:url(/ui/divA-seg-r.png)}
-  .ml-divA .cr{right:0;top:0;width:76px;height:66px;background-image:url(/ui/divA-capr.png)}
-  /* divider B: line centre 18px into the caps / 8px into the 16px seg */
-  .ml-divB{left:0;right:0;top:calc(var(--hud-h-inv) + var(--ml-tabzone) - 18px);height:56px}
-  .ml-divB .cl{left:0;top:0;width:76px;height:56px;background-image:url(/ui/divB-capl.png)}
-  .ml-divB .sg{left:76px;right:76px;top:10px;height:16px;background-image:url(/ui/divB-seg.png)}
-  .ml-divB .cr{right:0;top:0;width:76px;height:56px;background-image:url(/ui/divB-capr.png)}
+  .ml-el .v1,.ml-el .v2,.ml-el .v3,.ml-el .v4{left:0;width:56px}
+  .ml-er .v1,.ml-er .v2,.ml-er .v3,.ml-er .v4{right:0;width:56px}
+  .ml-el .gm{left:0;width:76px}
+  .ml-er .gm{right:0;width:76px}
+  .ml-pf .v1{top:180px;height:calc(var(--gemc) - 34px - 180px)}
+  .ml-pf .gm{top:calc(var(--gemc) - 34px);height:68px}
+  .ml-pf .v2{top:calc(var(--gemc) + 34px);height:calc(var(--hud-h-inv) - 69px - var(--gemc) - 34px)}
+  .ml-pf .v3{top:calc(var(--hud-h-inv) + 31px);height:calc(var(--ml-tabzone) - 47px)}
+  .ml-pf .v4{top:calc(var(--hud-h-inv) + var(--ml-tabzone) + 40px);bottom:180px}
+  .ml-el .v1{background-image:url(/ui/left-v1.png)}
+  .ml-el .gm{background-image:url(/ui/gem-left.png)}
+  .ml-el .v2{background-image:url(/ui/left-v2.png)}
+  .ml-el .v3{background-image:url(/ui/left-v3.png)}
+  .ml-el .v4{background-image:url(/ui/left-v4.png)}
+  .ml-er .v1{background-image:url(/ui/right-v1.png)}
+  .ml-er .gm{background-image:url(/ui/gem-right.png)}
+  .ml-er .v2{background-image:url(/ui/right-v2.png)}
+  .ml-er .v3{background-image:url(/ui/right-v3.png)}
+  .ml-er .v4{background-image:url(/ui/right-v4.png)}
+  /* divider A: thin line (mock 707..711) centred on the game/HUD boundary;
+     the 190px caps own ALL the junction decor (line centre 55px into them) */
+  .ml-divA{left:0;right:0;top:calc(var(--hud-h-inv) - 69px);height:100px}
+  .ml-divA .cl{left:0;top:0;width:190px;height:100px;background-image:url(/ui/divA-capl.png)}
+  .ml-divA .sl{left:190px;right:calc(50% + 28px);top:48px;height:36px;background-image:url(/ui/divA-seg-l.png)}
+  .ml-divA .gm{left:calc(50% - 28px);width:56px;top:34px;height:58px;background-image:url(/ui/divA-gem.png)}
+  .ml-divA .sr{left:calc(50% + 28px);right:190px;top:48px;height:36px;background-image:url(/ui/divA-seg-r.png)}
+  .ml-divA .cr{right:0;top:0;width:190px;height:100px;background-image:url(/ui/divA-capr.png)}
+  /* divider B: line centre 16px into the caps / 6px into the 16px seg */
+  .ml-divB{left:0;right:0;top:calc(var(--hud-h-inv) + var(--ml-tabzone) - 16px);height:56px}
+  .ml-divB .cl{left:0;top:0;width:190px;height:56px;background-image:url(/ui/divB-capl.png)}
+  .ml-divB .sg{left:190px;right:190px;top:10px;height:16px;background-image:url(/ui/divB-seg.png)}
+  .ml-divB .cr{right:0;top:0;width:190px;height:56px;background-image:url(/ui/divB-capr.png)}
   /* HUD content between the dividers */
   .ml-hud{position:fixed;left:0;right:0;bottom:0;height:var(--hud-h);z-index:4;background:#07070e;box-sizing:border-box}
   .ml-tabrow{position:absolute;top:24px;left:44px;right:44px;height:var(--ml-tab);display:flex;gap:8px;justify-content:center}

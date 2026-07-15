@@ -675,6 +675,17 @@ export class WorldScene extends Phaser.Scene {
       // Playback rate of a built animation (anti-moonwalk verification).
       animRate: (uid: string, state: string, dir: string) =>
         this.anims.get(animKey(uid, state, dir))?.frameRate ?? null,
+      // Frame-QA blackout: hide the game render so the HUD frame can be
+      // screenshot-compared against the concept art without world noise
+      // (maintainer's suggestion — the mock's game area is black).
+      blackout: (on = true) => {
+        const c = document.querySelector("canvas") as HTMLElement | null;
+        if (c) c.style.visibility = on ? "hidden" : "";
+        document
+          .querySelectorAll<HTMLElement>(".ml-chatlog, .ml-roster")
+          .forEach((e) => (e.style.display = on ? "none" : ""));
+        return !!on;
+      },
       // Live gait-sync probes: my avatar's playback timeScale (rate ∝ speed)
       // and the EMA'd WORLD-units ground speed it derives from (wu/s).
       timeScale: () => this.avatars.get(this.room?.sessionId ?? "")?.sprite.anims.timeScale ?? null,
