@@ -236,20 +236,24 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   B. Keying: outer pieces flood only from their INNER side (everything
   outside the border stays opaque black — the game view cannot leak past
   the frame); divider pieces flood from all edges; mock button-glow
-  bleed is erased from caps/side strips. Every piece then gets a
-  1-ART-PIXEL outline BAKED INTO THE TILE on the mock's global 4px art
-  grid (`outline()`, crop origin passed so blocks align across joints):
-  the ART IS SNAPPED TO THE GRID FIRST — blocks ≥1/4 opaque become
-  fully solid (empty px take the nearest opaque px colour), lesser
-  fringe is erased — and the ring of neighbouring blocks is then
-  EXACTLY one art pixel wide everywhere by construction. Ring colour =
-  85% of the mock colour it paints over (keying only zeroes alpha, so
-  the navy page RGB survives in the channel) + 15% black, averaged per
-  block, at 65% ALPHA (35% of the game world reads through). The border
-  is part of the frame pixel art, same pixel size as the art — NOT a
-  smooth dilated halo (maintainer round 6 rejected the CSS-looking
-  band, round 7 the 1-2px width wobble, round 8 flat 0.8-alpha black;
-  1/4 not 1/2 coverage keeps thin off-grid filigree from fragmenting).
+  bleed is erased from caps/side strips (block-centre-in-rect). Frame
+  pieces are built by `pieceArt()` as GENUINE ART-RESOLUTION PIXEL ART
+  scaled 4x nearest-neighbour: every 4px cell of the mock (global grid,
+  so joints stay identical) becomes exactly ONE flat colour — the
+  DOMINANT colour cluster of its 16 px, never a cross-cluster blend
+  (per-pixel snapping had manufactured mud/AA-smear blocks the mock
+  never had — maintainer round 9 "the original is way more clean").
+  Bright clusters ≥5/16 beat a bigger navy cluster (else soft-brushed
+  gold detail loses the plurality vote and erodes); the bias is
+  BRIGHT-only so dark-rust AA can't widen the mock's rust band. Keying
+  floods bg cells from the seeds 4-CONNECTED (8-connected leaked
+  through diagonal checker gaps and washed the filigree's own enclosed
+  dark px out to ring alpha). The border ring = keyed cells 8-touching
+  surviving art, EXACTLY one art pixel by construction, coloured 85%
+  of the cell's own page colour + 15% black at 65% ALPHA (RING_KEEP /
+  RING_ALPHA; erased-bleed cells fall back to the piece's page navy).
+  History: round 6 rejected the CSS-looking dilated band, 7 the 1-2px
+  width wobble, 8 flat black, 9 the muddy per-pixel snap.
   Tabs are PERFECT SQUARES (`--ml-tab`, capped 150px = the mock plate)
   with the three plate states 9-sliced via `border-image`; icons were
   flood-key-extracted (grey icons survive — their outlines stop the
