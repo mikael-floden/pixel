@@ -213,11 +213,17 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   gesture — nobody walks when they can run, maintainer); the autopilot
   eases into a walk inside `APPROACH_WALK_RADIUS` (2.5 cells) of the
   target, so arrivals read as deliberate. HOLDING the pointer steers
-  continuously: the trip starts on pointerDOWN, drag retargets follow the
-  finger (throttled to ~7/s + ≥0.6-cell moves; `trip.slow` carries across
-  hold retargets or throttled tabs re-arm the run every replan), release
-  finishes at the last point — and holding NEAR the player walks, since
-  the target stays inside the walk radius. Any movement key cancels.
+  continuously: the trip starts on pointerDOWN, the beacon tracks the
+  finger EVERY frame (pure projection — the instant-feel half), and the
+  actual findPath replan runs on an adaptive budget (cost×8, floor 50ms:
+  measured p50 3-5ms / p95 17-24ms, scripts/bench-findpath.ts — per-frame
+  replans would eat whole frames on phones; a deferred replan is committed
+  from the frame loop when the finger rests, and on release). `trip.slow`
+  carries across hold replans (throttled tabs would re-arm the run every
+  replan); release lands the beacon on the trip's true end. Holding NEAR
+  the player walks — the target stays inside the walk radius. Any
+  movement key cancels (keys also pause hold replanning; it resumes on
+  release).
   Routes come from the shared **`findPath`** (A*
   over the terrain grid: walk edges, no-corner-cut diagonals, CARDINAL
   1-level jump climbs at ~3× cost, +0.6 for cells hugging solids) so the

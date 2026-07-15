@@ -226,10 +226,17 @@ export class WorldScene extends Phaser.Scene {
   private trip: AutopilotTrip | null = null;
   // Autopilot decision trace (debug hook __ml.navLog; ring buffer, dev cost ~0).
   private navLog: Record<string, unknown>[] = [];
-  // Hold-to-move: the one pointer allowed to steer (first touch down), and
-  // the last drag-retarget time (throttles findPath while the finger moves).
+  // Hold-to-move: the one pointer allowed to steer (first touch down), the
+  // finger's CURRENT ground point (the beacon follows it every frame — the
+  // instant-feel half), and the next time a real findPath replan is allowed
+  // (the adaptive-budget half: measured p50 ≈ 3-5ms, p95 ≈ 17-24ms on the
+  // shipped worlds — see scripts/bench-findpath.ts — so per-frame replans
+  // would eat whole frames on phones; each replan schedules the next at
+  // cost×8, floored at 50ms).
   private holdPointerId: number | null = null;
-  private lastHoldRetarget = 0;
+  private holdGround: { x: number; y: number } | null = null;
+  private holdRepathAt = 0;
+  private keysActive = false;
   private tapMarker?: Phaser.GameObjects.Container;
   // Isometric tile world (null → fall back to a plain ground).
   private world: World | null = null;
@@ -479,24 +486,40 @@ export class WorldScene extends Phaser.Scene {
     this.input.on("pointerdown", (p: Phaser.Input.Pointer) => {
       if (this.holdPointerId !== null) return; // first touch keeps the wheel
       this.holdPointerId = p.id;
-      this.lastHoldRetarget = p.event.timeStamp;
-      const g = this.pickGround(p.worldX, p.worldY);
-      if (g) this.setMoveTarget(g.x, g.y, true);
+      this.holdGround = this.pickGround(p.worldX, p.worldY);
+      // Fresh gesture = fresh trip (hold=false: reset the sticky slow, build
+      // the beacon); subsequent drag replans go through holdRepath's budget.
+      if (this.holdGround) this.setMoveTarget(this.holdGround.x, this.holdGround.y, true);
+      this.holdRepathAt = performance.now() + 50;
     });
     this.input.on("pointermove", (p: Phaser.Input.Pointer) => {
       if (p.id !== this.holdPointerId || !p.isDown) return;
-      // Throttle drag retargets: each one is a fresh findPath, and a finger
-      // resting in place must not re-plan sub-cell wiggles every frame.
-      if (p.event.timeStamp - this.lastHoldRetarget < 140) return;
       const g = this.pickGround(p.worldX, p.worldY);
       if (!g) return;
-      const cur = this.trip?.target;
-      if (cur && Math.hypot(g.x - cur.x, g.y - cur.y) < CELL_WU * 0.6) return;
-      this.lastHoldRetarget = p.event.timeStamp;
-      this.setMoveTarget(g.x, g.y, true, true);
+      this.holdGround = g;
+      // The beacon tracks the FINGER in realtime (free — pure projection);
+      // the actual findPath replan runs on holdRepath's adaptive budget, so
+      // the drag never *feels* throttled even when a replan is deferred.
+      if (this.tapMarker) {
+        const pr = this.projectFlat(g.x, g.y);
+        this.tapMarker.setPosition(pr.x, pr.y - pr.lvl * MAP_GEOMETRY.lh);
+      }
+      this.holdRepath(performance.now());
     });
     const releaseHold = (p: Phaser.Input.Pointer) => {
-      if (p.id === this.holdPointerId) this.holdPointerId = null;
+      if (p.id !== this.holdPointerId) return;
+      // Commit the final finger position even if the budget deferred it, then
+      // land the beacon on the trip's TRUE end (the finger point clearance-
+      // adjusted out of solids — they can differ while dragging).
+      this.holdRepathAt = 0;
+      this.holdRepath(performance.now());
+      if (this.trip && this.tapMarker) {
+        const e = this.trip.target;
+        const pr = this.projectFlat(e.x, e.y);
+        this.tapMarker.setPosition(pr.x, pr.y - pr.lvl * MAP_GEOMETRY.lh);
+      }
+      this.holdPointerId = null;
+      this.holdGround = null;
     };
     this.input.on("pointerup", releaseHold);
     this.input.on("pointerupoutside", releaseHold);
@@ -1521,13 +1544,19 @@ export class WorldScene extends Phaser.Scene {
     // Tap-to-move autopilot: keyboard always wins (touching the keys cancels
     // the trip); otherwise steer toward the tapped target with the same 8-way
     // screen input a keyboard would produce.
-    if (ax !== 0 || ay !== 0) {
+    this.keysActive = ax !== 0 || ay !== 0;
+    if (this.keysActive) {
       if (this.trip) this.clearMoveTarget();
-    } else if (this.trip) {
-      const drive = this.driveAutopilot();
-      ax = drive.ax;
-      ay = drive.ay;
-      running = drive.running;
+    } else {
+      // Held finger at rest: pointermove stops firing, so commit any
+      // budget-deferred drag retarget from the frame loop instead.
+      this.holdRepath(performance.now());
+      if (this.trip) {
+        const drive = this.driveAutopilot();
+        ax = drive.ax;
+        ay = drive.ay;
+        running = drive.running;
+      }
     }
     const sig = `${ax},${ay},${running ? 1 : 0}`;
     // If the input CHANGED, flush the elapsed window under the PREVIOUS input
@@ -1575,6 +1604,30 @@ export class WorldScene extends Phaser.Scene {
   /** Start a tap-to-move trip (run = double-tap). Plans a route with the
    * shared findPath (walk around props, along walls, jump 1-level ledges
    * head-on) and drops a pulsing ground marker at the destination. */
+  /** Replan the hold-to-move trip toward the finger's current ground point,
+   * under an adaptive time budget: each findPath schedules the next replan at
+   * cost×8 (floor 50ms, cap 400ms), so cheap paths replan at ~20Hz while a
+   * pathological drag (sealed target → exhaustive search, ~20-40ms) backs
+   * off by itself. Skipped while keyboard movement is active (keys win) and
+   * when the finger rests on the player/current target. */
+  private holdRepath(nowMs: number) {
+    if (this.holdPointerId === null || !this.holdGround || this.keysActive) return;
+    if (nowMs < this.holdRepathAt) return;
+    const g = this.holdGround;
+    const cur = this.trip?.target;
+    if (cur && Math.hypot(g.x - cur.x, g.y - cur.y) < CELL_WU * 0.35) return;
+    if (!this.trip) {
+      // Arrived and the finger is resting on us: standing at the finger IS
+      // the goal — don't churn a new one-step trip (and beacon) every budget.
+      const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+      if (me && Math.hypot(g.x - me.fx, g.y - me.fy) < CELL_WU * 0.75) return;
+    }
+    const t0 = performance.now();
+    this.setMoveTarget(g.x, g.y, true, true);
+    const cost = performance.now() - t0;
+    this.holdRepathAt = nowMs + Math.min(400, Math.max(50, cost * 8));
+  }
+
   private setMoveTarget(x: number, y: number, run: boolean, hold = false) {
     const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
     if (!me) return;
@@ -1597,12 +1650,11 @@ export class WorldScene extends Phaser.Scene {
     this.ensureTapAssets();
     const p = this.projectFlat(end.x, end.y);
     const my = p.y - p.lvl * MAP_GEOMETRY.lh;
-    // While the finger drags, the existing beacon just FOLLOWS (rebuilding
-    // the container + tween ~7×/s made the pulse stutter).
-    if (hold && this.tapMarker) {
-      this.tapMarker.setPosition(p.x, my);
-      return;
-    }
+    // Hold replans never touch the beacon: while the finger is down the
+    // beacon tracks the FINGER per frame (pointermove/releaseHold own it) —
+    // rebuilding the container + tween per replan also made the pulse
+    // stutter.
+    if (hold && this.tapMarker) return;
     this.tapMarker?.destroy();
     // A GLOWING destination beacon. Depth 900_000.5 sits ABOVE the darkness
     // overlay (900_000) so night can't dim it, and above every terrain
