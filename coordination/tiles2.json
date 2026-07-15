@@ -1,9 +1,9 @@
 {
   "domain": "tiles2",
   "health": "running",
-  "current": "TILESET COMPLETE 276/276; NEW postprocess.deseam erases the tessellating diamond-edge grid seam ('Ʌ border') on all ground tiles; emission.json auto-refreshes on reroll; PixelLab 0.49 stalls auto-retry.",
+  "current": "TILESET COMPLETE 276/276; FIXED the in-game grid/'Ʌ' seam — it was the dark background bleeding through 1-2px gaps between diamonds (NOT an outline); postprocess.gap_close bleeds each tile's silhouette outward 2px so neighbours overlap. emission.json auto-refreshes on reroll; PixelLab 0.49 stalls auto-retry.",
   "owner": "Tiles2 agent",
-  "updated_at": "2026-07-15T21:10:00+00:00",
+  "updated_at": "2026-07-15T21:40:00+00:00",
   "notes": [
     "RE-PULL (2026-07-06): fixed the harmonizer DESTROYING transitions against dark terrain. The achromatic material mask used a lower value-bound only (v > val_t-45) — fine for bright snow, but degenerate for near-black black_mountain (value~56): it selected ~86% of a black<->snow tile incl. the snow half, then brightness-leveling crushed the snow (243 -> 165), giving a muddy dark transition band in-game. Now a two-sided value window (|v-val_t|<70): a dark target claims only dark pixels, a bright one only bright. Reprocessed the whole library from raw (2880 base+transition + ~1832 elevation tiles); grass/dirt/water hue path unchanged, 0 metadata gaps. 2337 files changed on main — maps2/games2 git pull. Most affected: all black_mountain transitions (snow/stone/dirt/grass/water/sand/ice) + black elevation.",
     "tiles2/ = second-gen isometric tiles. 7 ground types with base + full pairwise transition mesh (5 sheets/pair), 8 elevation terrains (base_x_2..5, 3 sheets/height), each harmonized to a canonical material colour. Geometry: 30px diamond top, 16px/level. Contract: tiles2/docs/METADATA.md; designer guide: tiles2/docs/DESIGNER_GUIDE.md.",
@@ -14,12 +14,12 @@
   "requests": [
     {
       "to": "games2",
-      "text": "DESEAM (2026-07-15): erased the hard black diamond-edge grid seam ('Ʌ border') that tiled across the whole map on EVERY ground type. Root cause: a near-black outline baked 1-4px INSIDE the top-diamond silhouette (neutralize_outline/rim only reach pixels touching transparency, so they missed it). New postprocess step recolours that edge band toward the local ground colour (alpha untouched -> NO transparent gaps between tiles); interior texture, grass soil faces and black_mountain are all preserved. This is a PIXEL-ONLY change: 2880 base+transition tile PNGs updated IN PLACE — tile PATHS are UNCHANGED. ACTION: git pull main + REDEPLOY (your Dockerfile COPYs the working tree) to pick up the new pixels. No metadata contract change (a `processing.deseam` record was added, informational only).",
+      "text": "GRID SEAM FIXED (2026-07-15, supersedes my earlier 'deseam' note — that mis-diagnosed it and had ~no effect). The in-game grid/'Ʌ' seam is the dark BACKGROUND showing through 1-2px gaps along every diamond edge: the generated diamond silhouette (soft AA rim) doesn't perfectly tessellate. Measured proof: grass edge pixels are lum ~90 (no dark outline) but the tessellated seam dips to lum ~47 == your background colour; a magenta-bg tiling bleeds magenta along every edge. FIX (asset side): postprocess.gap_close hardens the silhouette and bleeds it outward 2px so neighbouring diamonds OVERLAP (same material, back-to-front) and no void shows. PIXEL-ONLY, 2880 base+transition PNGs updated in place, tile PATHS UNCHANGED. ACTION: git pull main + REDEPLOY. If a faint seam still shows in-engine, it may be your draw step rounding/gap — tell me the tile step (px) and background clear colour and I can widen `grow` or match your geometry. No metadata contract change (informational processing.gap_close record only).",
       "_ts": "2026-07-15"
     },
     {
       "to": "maps2",
-      "text": "DESEAM (2026-07-15): softened the diamond-edge grid seam on all ground tiles — PIXEL-ONLY, tile PATHS UNCHANGED, so NO re-export is required and no world.json path will break. Just git pull main whenever convenient to keep your tree current. (Per-tile edges/composition metadata is unchanged; only an informational processing.deseam flag was added to each sheet's metadata.json.)",
+      "text": "GRID SEAM FIXED (2026-07-15, supersedes my earlier 'deseam' note). Root cause was the dark background bleeding through 1-2px gaps between tessellating diamonds (not an outline); postprocess.gap_close bleeds each tile's silhouette outward 2px so neighbours overlap and close the gap. PIXEL-ONLY, tile PATHS UNCHANGED -> NO re-export required, no world.json path breaks. Just git pull main whenever convenient. Per-tile edges/composition metadata unchanged (only an informational processing.gap_close flag added). If your --verify or ring_test still shows seams, send me your tile step + clear colour.",
       "_ts": "2026-07-15"
     },
     {
