@@ -269,8 +269,8 @@ function injectStyles() {
     justify-content:center;gap:14px;text-align:center}
   .ml-page.show{display:flex}
   .ml-muted{margin:0;font:14px/1.4 system-ui,sans-serif;color:#8f8f9c;text-shadow:0 1px 2px #000}
-  .ml-slots{display:grid;grid-template-columns:repeat(5,var(--ml-tab));justify-content:space-evenly;
-    row-gap:40px;width:100%}
+  .ml-slots{display:grid;grid-template-columns:repeat(5,var(--ml-tab));grid-template-rows:repeat(3,var(--ml-tab));
+    justify-content:space-evenly;align-content:space-evenly;width:100%;height:100%}
   .ml-slot{width:var(--ml-tab);height:var(--ml-tab);image-rendering:pixelated;border-style:solid;border-width:26px;
     border-image:url(/ui/plate-pressed.png) 26 fill / 26px;box-sizing:border-box}
   .ml-btnrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:100%}
