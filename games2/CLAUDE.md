@@ -193,6 +193,28 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   rejoin re-asserts the local value to the fresh player entry
   (server/test/torch.test.ts).
 
+## Directional sun shadows (day phases)
+
+- The night shader also carries a DIRECTIONAL SUN (uSun = cast-dir grid
+  x/y, slope levels-per-cell, strength): every fragment marches the
+  LINEAR heightmap toward the sun — terrain or solid objects poking
+  above the ray shade the surface (soft penumbra, same family as the
+  point-light LOS), faces away from the sun fall to shade via a Lambert
+  gate, and only the AMBIENT term is shaded (torches still light
+  shadowed ground; deepest shade = 62% ambient). SUN_PHASES
+  (WorldScene) drives it: Morning casts long shadows to screen-west,
+  Day short down-screen, Evening mirrors to screen-east, Night off —
+  lerped with the SAME clock as the ambient fade so shadows sweep as a
+  phase changes (maintainer: "the sun moves... shadows move
+  accordingly"). CPU twin sunFactorAt() shades the lit-copy tints the
+  same way. Probes: `__ml.sunInfo()`, `__ml.sunAt(col,row[,z])`
+  (z=-1 → the cell's own height); regression:
+  scripts/verify-sunshadow.mjs (night=1 everywhere, morning/evening
+  flip sides, noon shortest — runs on the default cliffy world).
+  NOTE: verify-solidband.mjs + verify-wallspread.mjs are STALE (they
+  predate the maps2 worlds and fail on baseline too — "no 5-cell wall
+  run on screen"); penumbra/timecycle/lit-order still gate.
+
 ## Night lighting (client/src/nightlight.ts)
 
 - Always-night per-pixel shader: MULTIPLY overlay; per-pixel surface resolve
