@@ -94,7 +94,8 @@ try {
   await page.mouse.down();
   await page.waitForTimeout(250);
   const holdSeen = [];
-  for (const [mx, my] of [[840, 90], [830, 560], [90, 550], [140, 120]]) {
+  // Spots stay inside the TOP 80% of the page — the bottom 20% is the HUD dock.
+  for (const [mx, my] of [[840, 90], [830, 470], [90, 460], [140, 120]]) {
     await page.mouse.move(mx, my, { steps: 6 });
     await page.waitForTimeout(280);
     holdSeen.push(await page.evaluate(() => window.__ml.target()));

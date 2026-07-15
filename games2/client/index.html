@@ -31,8 +31,11 @@
       /* dvh tracks the REAL visible height on mobile (address bar shown/hidden);
          vh is the fallback for older browsers. touch-action here (NOT on body:
          the select screen's lists still need touch scrolling) stops double-tap
-         zoom / pan gestures from fighting the game's tap-to-move. */
-      #game { width: 100vw; height: 100vh; height: 100dvh; touch-action: none; }
+         zoom / pan gestures from fighting the game's tap-to-move.
+         The game viewport is the TOP 80% only — the bottom 20% is the HUD
+         dock (client/src/hud.ts): action buttons today (mobile has no
+         keyboard for the toggles), backpack/inventory to come. */
+      #game { width: 100vw; height: 80vh; height: 80dvh; touch-action: none; }
       canvas { display: block; image-rendering: pixelated; }
       /* Portrait-only on phones (for now): landscape on a small touch screen
          gets a full-screen "rotate back" prompt instead of a broken layout.

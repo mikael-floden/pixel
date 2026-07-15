@@ -113,7 +113,9 @@ try {
     // stop that lands on reachable ground re-targets — require at least two
     // distinct targets across the stroke).
     const seen = [];
-    for (const [mx, my] of [[VW - 60, 60], [VW - 50, VH - 50], [60, VH - 60], [70, 70], [VW / 2, VH / 2 + 80]]) {
+    // Spots stay inside the TOP 80% of the page — the bottom 20% is the HUD
+    // dock (not game viewport; pointer events there never reach Phaser).
+    for (const [mx, my] of [[VW - 60, 60], [VW - 50, VH * 0.72], [60, VH * 0.7], [70, 70], [VW / 2, VH / 2 + 80]]) {
       await page.mouse.move(mx, my, { steps: 6 });
       await page.waitForTimeout(280);
       seen.push(await page.evaluate(() => window.__ml.target()));
@@ -136,6 +138,19 @@ try {
     console.log(
       `hold-to-move OK (${distinct.size} targets steered, ${runningSeen ? "running observed" : "trip completed"})`,
     );
+  }
+
+  // ---- HUD dock: the time-of-day button cycles the phase (mobile has no
+  // keyboard for the [1] toggle) ----
+  {
+    const t0 = await page.evaluate(() => window.__ml.timeOfDay().name);
+    const btn = await page.$(".ml-hudbtn");
+    if (!btn) fail("HUD dock button missing");
+    await btn.click();
+    await page.waitForTimeout(150);
+    const t1 = await page.evaluate(() => window.__ml.timeOfDay().name);
+    if (t0 === t1) fail(`HUD time-of-day button did not cycle (${t0})`);
+    console.log(`HUD time button OK (${t0} → ${t1})`);
   }
 
   // ---- keyboard cancels the trip ----

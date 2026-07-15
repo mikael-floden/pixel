@@ -209,6 +209,15 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
 
 ## Mobile / PWA (client)
 
+- **HUD dock**: the game viewport is the TOP 80% of the page only
+  (index.html `#game` 80dvh); the bottom 20% is a DOM dock
+  (`client/src/hud.ts`, `.ml-hud`) — action buttons today ("1:
+  time-of-day"; mobile has no keyboard for the toggles), backpack/
+  inventory planned. Pointer events there never reach Phaser — e2e
+  scripts must keep tap/drag coordinates in the top 80%. The dock itself
+  is not uiZoom'd (its 20dvh must match the #game split); only the inner
+  px-sized button row gets the compensating zoom.
+
 - **Tap/hold-to-move**: a tap RUNS to the point (there is NO double-tap
   gesture — nobody walks when they can run, maintainer); the autopilot
   eases into a walk inside `APPROACH_WALK_RADIUS` (2.5 cells) of the

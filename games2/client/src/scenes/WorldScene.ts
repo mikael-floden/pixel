@@ -55,6 +55,7 @@ import {
 } from "../nightlight";
 import { joinWorld } from "../net";
 import { ChatUI } from "../chat";
+import { HudBar } from "../hud";
 import { RosterUI } from "../roster";
 import { setLoadingProgress, hideLoading } from "../loading";
 import { applyUiZoom } from "../uiscale";
@@ -202,6 +203,7 @@ export class WorldScene extends Phaser.Scene {
   private keys!: Record<string, Phaser.Input.Keyboard.Key>;
   private lastSent = "";
   private chat!: ChatUI;
+  private hud?: HudBar;
   private roster = new RosterUI();
   // Client-side prediction state (local player). Each pending input keeps the
   // JUMP state it was originally integrated with: reconcile replays must use
@@ -539,10 +541,11 @@ export class WorldScene extends Phaser.Scene {
     // Jump (Space): edge-triggered, lets you cross a 1-level ledge if timed.
     this.input.keyboard!.on("keydown-SPACE", () => this.tryJump());
     // Feature/debug toggles live on the TOP-ROW digits (1-9).
-    this.input.keyboard!.on("keydown-ONE", () => {
-      this.setTimeOfDay((this.timeIdx + 1) % TIME_PHASES.length);
-      this.chat.addLog("—", `[1] Time of day: ${TIME_PHASES[this.timeIdx].name}`);
-    });
+    this.input.keyboard!.on("keydown-ONE", () => this.cycleTimeOfDay());
+    // Bottom HUD dock (the page's reserved bottom 20%): buttons for what
+    // mobile can't reach by keyboard. Backpack/inventory will join it.
+    this.hud = new HudBar();
+    this.hud.button("1: time-of-day", () => this.cycleTimeOfDay());
     this.input.keyboard!.on("keydown-FOUR", () => {
       this.toggleCollisionOverlay();
       this.chat.addLog("—", `[4] Collision overlay: ${this.collisionOverlay ? "on" : "off"}`);
@@ -566,7 +569,7 @@ export class WorldScene extends Phaser.Scene {
       this.chat.addLog("—", `[6] Bonfire: ${this.fireOn ? "lit" : "out"}`);
     });
     this.chat.addLog("—", "Toggles: [1] time of day · [4] collision · [5] torch · [6] bonfire · [7] see-through walls");
-    this.chat.addLog("—", "Tap the ground to walk there · double-tap to run");
+    this.chat.addLog("—", "Tap the ground to run there · hold to steer · hold close to walk");
 
     const cam = this.cameras.main;
     cam.setBounds(0, 0, this.iso.w, this.iso.h);
@@ -1413,6 +1416,12 @@ export class WorldScene extends Phaser.Scene {
 
   /** Start easing toward a time-of-day phase FROM the grade currently on
    * screen — pressing [1] mid-transition retargets without a jump. */
+  /** Advance to the next time-of-day phase (the [1] key and the HUD button). */
+  private cycleTimeOfDay() {
+    this.setTimeOfDay((this.timeIdx + 1) % TIME_PHASES.length);
+    this.chat.addLog("—", `[1] Time of day: ${TIME_PHASES[this.timeIdx].name}`);
+  }
+
   private setTimeOfDay(idx: number, instant = false) {
     this.timeFromAmbient = [...this.curAmbient];
     this.timeIdx = idx;
