@@ -309,24 +309,24 @@ save("bottom-seg.png", piece(180, 1188, 488, 76, ["top"]));
 // caps now, and each clean-rail segment maps to its page span):
 //   v1 corner→gem, v2 gem→divA cap, v3 between the dividers (rail beside the
 //   tabs; the mock buttons' glow column x≥52 erased), v4 divB cap→corner.
-save("left-v1.png", piece(0, 180, 56, 196, ["right"]));
+save("left-v1.png", piece(0, 180, 64, 196, ["right"]));
 save("gem-left.png", piece(0, 376, 76, 68, ["right"]));
-save("left-v2.png", piece(0, 444, 56, 196, ["right"]));
-save("left-v3.png", piece(0, 740, 56, 122, ["right"], (i) => erase(i, 52, 0, 56, 122)));
-save("left-v4.png", piece(0, 918, 56, 166, ["right"]));
-save("right-v1.png", piece(792, 180, 56, 196, ["left"]));
+save("left-v2.png", piece(0, 444, 64, 180, ["right"]));
+save("left-v3.png", piece(0, 740, 64, 122, ["right"], (i) => erase(i, 52, 0, 64, 122)));
+save("left-v4.png", piece(0, 918, 64, 166, ["right"]));
+save("right-v1.png", piece(784, 180, 64, 196, ["left"]));
 save("gem-right.png", piece(772, 376, 76, 68, ["left"]));
-save("right-v2.png", piece(792, 444, 56, 196, ["left"]));
-save("right-v3.png", piece(792, 740, 56, 122, ["left"], (i) => erase(i, 0, 0, 4, 122)));
-save("right-v4.png", piece(792, 918, 56, 166, ["left"]));
+save("right-v2.png", piece(784, 444, 64, 180, ["left"]));
+save("right-v3.png", piece(784, 740, 64, 122, ["left"], (i) => erase(i, 0, 0, 12, 122)));
+save("right-v4.png", piece(784, 918, 64, 166, ["left"]));
 // Divider A (game ↔ tabs; thin line 707..711). WIDE caps (190px) own ALL the
 // junction decor — the ╠/╣ green gems and the curls that run along the line
 // to x≈190; the mock button row's pixels (y≥728, glow column x≥52) erased.
-save("divA-capl.png", piece(0, 640, 190, 100, ["right"], (i) => erase(i, 52, 82, 190, 100)));
+save("divA-capl.png", piece(0, 624, 190, 116, ["right"], (i) => erase(i, 52, 98, 190, 116)));
 save("divA-seg-l.png", piece(190, 688, 206, 36, ["top", "bottom"]));
 save("divA-gem.png", piece(396, 674, 56, 58, ["top", "bottom", "left", "right"]));
 save("divA-seg-r.png", piece(452, 688, 206, 36, ["top", "bottom"]));
-save("divA-capr.png", piece(848 - 190, 640, 190, 100, ["left"], (i) => erase(i, 0, 82, 138, 100)));
+save("divA-capr.png", piece(848 - 190, 624, 190, 116, ["left"], (i) => erase(i, 0, 98, 138, 116)));
 // Divider B (tabs ↔ content; thin sloping line, no gem): wide caps with the
 // button-bottom bleed erased (x≥52 / mirrored, top 16 rows).
 save("divB-capl.png", piece(0, 862, 190, 56, ["right"], (i) => erase(i, 52, 0, 190, 16)));

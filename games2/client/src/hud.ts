@@ -187,13 +187,13 @@ function injectStyles() {
   .ml-el,.ml-er{top:0;bottom:0;width:76px}
   .ml-el{left:0}
   .ml-er{right:0}
-  .ml-el .v1,.ml-el .v2,.ml-el .v3,.ml-el .v4{left:0;width:56px}
-  .ml-er .v1,.ml-er .v2,.ml-er .v3,.ml-er .v4{right:0;width:56px}
+  .ml-el .v1,.ml-el .v2,.ml-el .v3,.ml-el .v4{left:0;width:64px}
+  .ml-er .v1,.ml-er .v2,.ml-er .v3,.ml-er .v4{right:0;width:64px}
   .ml-el .gm{left:0;width:76px}
   .ml-er .gm{right:0;width:76px}
   .ml-el .v1,.ml-er .v1{top:180px;height:calc(var(--gemc) - 34px - 180px)}
   .ml-el .gm,.ml-er .gm{top:calc(var(--gemc) - 34px);height:68px}
-  .ml-el .v2,.ml-er .v2{top:calc(var(--gemc) + 34px);height:calc(var(--hud-h-inv) - 69px - var(--gemc) - 34px)}
+  .ml-el .v2,.ml-er .v2{top:calc(var(--gemc) + 34px);height:calc(var(--hud-h-inv) - 85px - var(--gemc) - 34px)}
   .ml-el .v3,.ml-er .v3{top:calc(var(--hud-h-inv) + 31px);height:calc(var(--ml-tabzone) - 47px)}
   .ml-el .v4,.ml-er .v4{top:calc(var(--hud-h-inv) + var(--ml-tabzone) + 40px);bottom:180px}
   .ml-el .v1{background-image:url(/ui/left-v1.png)}
@@ -208,12 +208,12 @@ function injectStyles() {
   .ml-er .v4{background-image:url(/ui/right-v4.png)}
   /* divider A: thin line (mock 707..711) centred on the game/HUD boundary;
      the 190px caps own ALL the junction decor (line centre 55px into them) */
-  .ml-divA{left:0;right:0;top:calc(var(--hud-h-inv) - 69px);height:100px}
-  .ml-divA .cl{left:0;top:0;width:190px;height:100px;background-image:url(/ui/divA-capl.png)}
-  .ml-divA .sl{left:190px;right:calc(50% + 28px);top:48px;height:36px;background-image:url(/ui/divA-seg-l.png)}
-  .ml-divA .gm{left:calc(50% - 28px);width:56px;top:34px;height:58px;background-image:url(/ui/divA-gem.png)}
-  .ml-divA .sr{left:calc(50% + 28px);right:190px;top:48px;height:36px;background-image:url(/ui/divA-seg-r.png)}
-  .ml-divA .cr{right:0;top:0;width:190px;height:100px;background-image:url(/ui/divA-capr.png)}
+  .ml-divA{left:0;right:0;top:calc(var(--hud-h-inv) - 85px);height:116px}
+  .ml-divA .cl{left:0;top:0;width:190px;height:116px;background-image:url(/ui/divA-capl.png)}
+  .ml-divA .sl{left:190px;right:calc(50% + 28px);top:64px;height:36px;background-image:url(/ui/divA-seg-l.png)}
+  .ml-divA .gm{left:calc(50% - 28px);width:56px;top:50px;height:58px;background-image:url(/ui/divA-gem.png)}
+  .ml-divA .sr{left:calc(50% + 28px);right:190px;top:64px;height:36px;background-image:url(/ui/divA-seg-r.png)}
+  .ml-divA .cr{right:0;top:0;width:190px;height:116px;background-image:url(/ui/divA-capr.png)}
   /* divider B: line centre 16px into the caps / 6px into the 16px seg */
   .ml-divB{left:0;right:0;top:calc(var(--hud-h-inv) + var(--ml-tabzone) - 16px);height:56px}
   .ml-divB .cl{left:0;top:0;width:190px;height:56px;background-image:url(/ui/divB-capl.png)}
