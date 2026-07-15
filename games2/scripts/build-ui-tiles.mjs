@@ -136,8 +136,9 @@ const save = (name, img) => {
 // Keying policy: everything OUTSIDE the border must stay opaque black (the
 // game view must not leak past the frame), so outer-border pieces flood only
 // from their INNER side; divider pieces flood from all edges (both sides are
-// interior). Boundary pixels get soft ALPHA so cuts blend instead of stair-
-// stepping (maintainer: "allow alpha to make it look better").
+// interior). Every piece then gets a 1-ART-PIXEL black outline baked in (see
+// outline()) — the border is part of the frame pixel art, on the same 4px
+// grid, not a CSS-smooth halo (maintainer round 6).
 
 /** Flood-key with explicit seed edges; then soften: any remaining dark pixel
  * touching transparency gets partial alpha proportional to its brightness. */
@@ -203,97 +204,105 @@ function erase(img, x0, y0, x1, y1) {
   return img;
 }
 
-/** Inner BLACK BORDER (maintainer reference): every frame piece gets a
- * rgba(0,0,0,.8) band under/inside the art — transparent pixels within R px
- * of any opaque pixel become translucent black, so the gold line and the
- * filigree always read against black instead of raw game pixels. */
-function addBand(img, r = 12, alpha = 204) {
+/** BLACK OUTLINE, part of the pixel art (maintainer round 6): the reference
+ * mock draws a black border exactly ONE art pixel (= 4 mock px) thick hugging
+ * every curl of the filigree, made of the SAME square pixels as the frame
+ * art — not a smooth dilated CSS-looking halo. So: snap the keyed art to the
+ * mock's global 4px art grid (ox/oy = the piece's mock-absolute crop origin,
+ * so blocks line up ACROSS segment joints), then paint every empty block that
+ * 8-touches an art block — plus the empty remainder of partially-filled art
+ * blocks — solid black at the maintainer's 0.8 alpha. Any soft/AA edge pixel
+ * inside a painted block is consumed into the outline (squareness beats
+ * blending). */
+function outline(img, ox = 0, oy = 0, alpha = 204) {
   const { width: w, height: h, data } = img;
-  const dist = new Int16Array(w * h).fill(-1);
-  let frontier = [];
-  for (let i = 0; i < w * h; i++) if (data[i * 4 + 3] > 120) { dist[i] = 0; frontier.push(i); }
-  for (let d = 1; d <= r && frontier.length; d++) {
-    const next = [];
-    for (const i of frontier) {
-      const x = i % w;
-      const y = (i / w) | 0;
-      for (let dy = -1; dy <= 1; dy++)
-        for (let dx = -1; dx <= 1; dx++) {
-          const nx = x + dx;
-          const ny = y + dy;
-          if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
-          const k = ny * w + nx;
-          if (dist[k] < 0) { dist[k] = d; next.push(k); }
-        }
-    }
-    frontier = next;
-  }
-  // Quantize to the art's 4px grain: a 4x4 block joins the band when most of
-  // it is in dilation range, so the border's edge is as chunky as the art.
   const G = 4;
-  for (let by = 0; by < h; by += G)
-    for (let bx = 0; bx < w; bx += G) {
+  // First block starts where the GLOBAL 4px grid would cut this crop.
+  const bx0 = -(((ox % G) + G) % G);
+  const by0 = -(((oy % G) + G) % G);
+  const bw = Math.ceil((w - bx0) / G);
+  const bh = Math.ceil((h - by0) / G);
+  const art = new Uint8Array(bw * bh);
+  const eachPx = (bx, by, fn) => {
+    for (let y = Math.max(0, by0 + by * G); y < Math.min(h, by0 + (by + 1) * G); y++)
+      for (let x = Math.max(0, bx0 + bx * G); x < Math.min(w, bx0 + (bx + 1) * G); x++)
+        fn((y * w + x) * 4);
+  };
+  for (let by = 0; by < bh; by++)
+    for (let bx = 0; bx < bw; bx++) {
       let n = 0;
-      for (let y = by; y < Math.min(by + G, h); y++)
-        for (let x = bx; x < Math.min(bx + G, w); x++) {
-          const i = y * w + x;
-          if (dist[i] > 0 && data[i * 4 + 3] === 0) n++;
+      eachPx(bx, by, (o) => { if (data[o + 3] > 120) n++; });
+      if (n) art[by * bw + bx] = 1;
+    }
+  for (let by = 0; by < bh; by++)
+    for (let bx = 0; bx < bw; bx++) {
+      let paint = art[by * bw + bx];
+      for (let dy = -1; dy <= 1 && !paint; dy++)
+        for (let dx = -1; dx <= 1 && !paint; dx++) {
+          const nx = bx + dx;
+          const ny = by + dy;
+          if (nx >= 0 && ny >= 0 && nx < bw && ny < bh && art[ny * bw + nx]) paint = 1;
         }
-      if (n < 6) continue;
-      for (let y = by; y < Math.min(by + G, h); y++)
-        for (let x = bx; x < Math.min(bx + G, w); x++) {
-          const i = y * w + x;
-          if (data[i * 4 + 3] !== 0) continue;
-          data[i * 4] = 0;
-          data[i * 4 + 1] = 0;
-          data[i * 4 + 2] = 0;
-          data[i * 4 + 3] = alpha;
-        }
+      if (!paint) continue;
+      eachPx(bx, by, (o) => {
+        if (data[o + 3] >= alpha) return; // real art stays untouched
+        data[o] = 0;
+        data[o + 1] = 0;
+        data[o + 2] = 0;
+        data[o + 3] = alpha;
+      });
     }
   return img;
 }
 
+// Piece cutter: crop at mock-absolute (x,y), key from the given sides, then
+// bake the 1-art-pixel outline on the global grid. `post` runs between the
+// keying and the outline (erase() of mock bleed must happen first so the
+// outline hugs the CLEANED art).
+const piece = (x, y, w, h, sides, post = (i) => i) =>
+  outline(post(keyFrom(crop(c1, x, y, w, h), sides)), x, y);
+
 // Corners: mock-absolute 180px tiles; flood only from the INNER quadrant so
 // the outside of the border stays opaque black.
-save("corner-tl.png", addBand(keyFrom(crop(c1, 0, 0, 180, 180), [[140, 140, 180, 180]])));
-save("corner-tr.png", addBand(keyFrom(crop(c1, 668, 0, 180, 180), [[0, 140, 40, 180]])));
-save("corner-bl.png", addBand(keyFrom(crop(c1, 0, 1084, 180, 180), [[140, 0, 180, 40]])));
-save("corner-br.png", addBand(erase(keyFrom(crop(c1, 668, 1084, 180, 180), [[0, 0, 40, 40]]), 20, 20, 110, 110)));
+save("corner-tl.png", piece(0, 0, 180, 180, [[140, 140, 180, 180]]));
+save("corner-tr.png", piece(668, 0, 180, 180, [[0, 140, 40, 180]]));
+save("corner-bl.png", piece(0, 1084, 180, 180, [[140, 0, 180, 40]]));
+save("corner-br.png", piece(668, 1084, 180, 180, [[0, 0, 40, 40]], (i) => erase(i, 20, 20, 110, 110)));
 // Top border between the corners (filigree verified to stop by x=180, so
 // these are clean rail): stretch-segments + the fixed gem piece.
-save("top-seg-l.png", addBand(keyFrom(crop(c1, 180, 0, 216, 76), ["bottom"])));
-save("gem-top.png", addBand(keyFrom(crop(c1, 396, 0, 56, 76), ["bottom"])));
-save("top-seg-r.png", addBand(keyFrom(crop(c1, 452, 0, 216, 76), ["bottom"])));
-save("bottom-seg.png", addBand(keyFrom(crop(c1, 180, 1188, 488, 76), ["top"])));
+save("top-seg-l.png", piece(180, 0, 216, 76, ["bottom"]));
+save("gem-top.png", piece(396, 0, 56, 76, ["bottom"]));
+save("top-seg-r.png", piece(452, 0, 216, 76, ["bottom"]));
+save("bottom-seg.png", piece(180, 1188, 488, 76, ["top"]));
 // Side borders: SEGMENTS BETWEEN JUNCTIONS ONLY (maintainer round 4: the old
 // full-height strip baked the divider-junction decor at mock positions and
 // stretched it into unrecognisable smears — junction art lives ONLY in the
 // caps now, and each clean-rail segment maps to its page span):
 //   v1 corner→gem, v2 gem→divA cap, v3 between the dividers (rail beside the
 //   tabs; the mock buttons' glow column x≥52 erased), v4 divB cap→corner.
-save("left-v1.png", addBand(keyFrom(crop(c1, 0, 180, 56, 196), ["right"])));
-save("gem-left.png", addBand(keyFrom(crop(c1, 0, 376, 76, 68), ["right"])));
-save("left-v2.png", addBand(keyFrom(crop(c1, 0, 444, 56, 196), ["right"])));
-save("left-v3.png", addBand(erase(keyFrom(crop(c1, 0, 740, 56, 122), ["right"]), 52, 0, 56, 122)));
-save("left-v4.png", addBand(keyFrom(crop(c1, 0, 918, 56, 166), ["right"])));
-save("right-v1.png", addBand(keyFrom(crop(c1, 792, 180, 56, 196), ["left"])));
-save("gem-right.png", addBand(keyFrom(crop(c1, 772, 376, 76, 68), ["left"])));
-save("right-v2.png", addBand(keyFrom(crop(c1, 792, 444, 56, 196), ["left"])));
-save("right-v3.png", addBand(erase(keyFrom(crop(c1, 792, 740, 56, 122), ["left"]), 0, 0, 4, 122)));
-save("right-v4.png", addBand(keyFrom(crop(c1, 792, 918, 56, 166), ["left"])));
+save("left-v1.png", piece(0, 180, 56, 196, ["right"]));
+save("gem-left.png", piece(0, 376, 76, 68, ["right"]));
+save("left-v2.png", piece(0, 444, 56, 196, ["right"]));
+save("left-v3.png", piece(0, 740, 56, 122, ["right"], (i) => erase(i, 52, 0, 56, 122)));
+save("left-v4.png", piece(0, 918, 56, 166, ["right"]));
+save("right-v1.png", piece(792, 180, 56, 196, ["left"]));
+save("gem-right.png", piece(772, 376, 76, 68, ["left"]));
+save("right-v2.png", piece(792, 444, 56, 196, ["left"]));
+save("right-v3.png", piece(792, 740, 56, 122, ["left"], (i) => erase(i, 0, 0, 4, 122)));
+save("right-v4.png", piece(792, 918, 56, 166, ["left"]));
 // Divider A (game ↔ tabs; thin line 707..711). WIDE caps (190px) own ALL the
 // junction decor — the ╠/╣ green gems and the curls that run along the line
 // to x≈190; the mock button row's pixels (y≥728, glow column x≥52) erased.
-save("divA-capl.png", addBand(erase(keyFrom(crop(c1, 0, 640, 190, 100), ["right"]), 52, 82, 190, 100)));
-save("divA-seg-l.png", addBand(keyFrom(crop(c1, 190, 688, 206, 36), ["top", "bottom"])));
-save("divA-gem.png", addBand(keyFrom(crop(c1, 396, 674, 56, 58), ["top", "bottom", "left", "right"])));
-save("divA-seg-r.png", addBand(keyFrom(crop(c1, 452, 688, 206, 36), ["top", "bottom"])));
-save("divA-capr.png", addBand(erase(keyFrom(crop(c1, 848 - 190, 640, 190, 100), ["left"]), 0, 82, 138, 100)));
+save("divA-capl.png", piece(0, 640, 190, 100, ["right"], (i) => erase(i, 52, 82, 190, 100)));
+save("divA-seg-l.png", piece(190, 688, 206, 36, ["top", "bottom"]));
+save("divA-gem.png", piece(396, 674, 56, 58, ["top", "bottom", "left", "right"]));
+save("divA-seg-r.png", piece(452, 688, 206, 36, ["top", "bottom"]));
+save("divA-capr.png", piece(848 - 190, 640, 190, 100, ["left"], (i) => erase(i, 0, 82, 138, 100)));
 // Divider B (tabs ↔ content; thin sloping line, no gem): wide caps with the
 // button-bottom bleed erased (x≥52 / mirrored, top 16 rows).
-save("divB-capl.png", addBand(erase(keyFrom(crop(c1, 0, 862, 190, 56), ["right"]), 52, 0, 190, 16)));
-save("divB-seg.png", addBand(keyFrom(crop(c1, 190, 872, 468, 16), ["top", "bottom"])));
-save("divB-capr.png", addBand(erase(keyFrom(crop(c1, 848 - 190, 862, 190, 56), ["left"]), 0, 0, 138, 16)));
+save("divB-capl.png", piece(0, 862, 190, 56, ["right"], (i) => erase(i, 52, 0, 190, 16)));
+save("divB-seg.png", piece(190, 872, 468, 16, ["top", "bottom"]));
+save("divB-capr.png", piece(848 - 190, 862, 190, 56, ["left"], (i) => erase(i, 0, 0, 138, 16)));
 
 // ---- button plates (states, image 2) ---------------------------------------
 // Bounds auto-detected: within each square's row band, find the columns/rows
