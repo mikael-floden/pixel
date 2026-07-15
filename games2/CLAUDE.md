@@ -193,12 +193,19 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   rejoin re-asserts the local value to the fresh player entry
   (server/test/torch.test.ts).
 - The CELESTIAL CLOCK (client/src/clock.ts) hangs a per-phase dial
-  top-centre (under the frame art, pointer-events none): four pre-keyed,
-  pixel-aligned PNGs (ui/clock_<phase>.png, cut from the maintainer's
-  mocks by scripts/build-clock.mjs — outside-flood key + largest-blob,
-  ORIGINAL pixels) cross-fade on the ambient's 2.5s clock via
-  setClockPhase() from setTimeOfDay(). First pass — sizing/fading polish
-  and a dynamic pointer hand are still to come (mocks ship without one).
+  top-centre under the frame's gem (pointer-events none, kept SUBTLE —
+  maintainer sized it down from full-mock): four pre-keyed, pixel-aligned
+  PNGs (ui/clock_<phase>.png, cut from the maintainer's mocks by
+  scripts/build-clock.mjs — outside-flood key + largest-blob, ORIGINAL
+  pixels) cross-fade on the ambient's 2.5s clock via setClockPhase()
+  from setTimeOfDay(). The ARROW (ui/clock_hand.png, flipped by the same
+  script which prints its hub/tip geometry) is its OWN layer above the
+  dials — never fades, only rotates to the phase's quarter-sector
+  (chronological left→right; the reading lives in the arrow). CAREFUL:
+  CSS rotate() from straight-down sweeps screen-LEFT for positive
+  angles — this shipped inverted once; convention is documented in
+  clock.ts. The version badge sits top-LEFT (main.ts) so it stays off
+  the dial.
 
 ## Weather (server-owned world state, layer 2)
 

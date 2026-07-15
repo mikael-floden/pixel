@@ -74,9 +74,10 @@ function showVersion() {
   console.log(`[nangijala] build ${sha}`);
   const el = document.createElement("div");
   el.textContent = sha.slice(0, 9); // 9 chars — matches the hashes in dev chat/commits
-  // Tucked under the game frame's top rail — the bottom belongs to the HUD.
+  // Tucked under the game frame's top rail, LEFT of centre — the celestial
+  // clock owns top-centre and the roster owns the right.
   el.style.cssText =
-    "position:fixed;left:50%;top:76px;transform:translateX(-50%);z-index:50;" +
+    "position:fixed;left:64px;top:52px;z-index:50;" +
     "font:12px monospace;color:#cfd6ff;text-shadow:0 1px 2px #000,0 0 3px #000;" +
     "pointer-events:none;user-select:none";
   document.body.appendChild(el);

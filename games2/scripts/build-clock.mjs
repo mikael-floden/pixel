@@ -21,7 +21,11 @@ const OUT = path.resolve("client/public/ui");
 const PHASES = ["night", "morning", "day", "evening"];
 const T = 30; // background = max(r,g,b) <= T, reachable from the border
 
-for (const phase of PHASES) {
+// The pointer hand mock (clock-hand.png) points UP-left with the pivot hub
+// bottom-right; the dial hangs DOWN, so the hand is flipped vertically
+// (pixel-exact) before cropping. The printed hub-centre / tip coords feed
+// the mount constants in client/src/clock.ts.
+for (const phase of [...PHASES, "hand"]) {
   const img = PNG.sync.read(fs.readFileSync(path.join(SRC, `clock-${phase}.png`)));
   const { width: w, height: h, data } = img;
   const dark = (i) => Math.max(data[i], data[i + 1], data[i + 2]) <= T;
@@ -91,6 +95,44 @@ for (const phase of PHASES) {
   const cw = maxX - minX + 1, ch = maxY - minY + 1;
   const out = new PNG({ width: cw, height: ch });
   PNG.bitblt(img, out, minX, minY, cw, ch, 0, 0);
+  if (phase === "hand") {
+    // Flip vertically, pixel-exact (no resampling).
+    for (let y = 0; y < ch >> 1; y++)
+      for (let x = 0; x < cw * 4; x++) {
+        const a = y * cw * 4 + x, b = (ch - 1 - y) * cw * 4 + x;
+        const t = out.data[a];
+        out.data[a] = out.data[b];
+        out.data[b] = t;
+      }
+    // Geometry for clock.ts: hub centre = centroid of the wide rows (the
+    // hub circle is far wider than the shaft), tip = pixel farthest from it.
+    const runs = [];
+    for (let y = 0; y < ch; y++) {
+      let lo = -1, hi = -1;
+      for (let x = 0; x < cw; x++)
+        if (out.data[(y * cw + x) * 4 + 3] > 128) {
+          if (lo < 0) lo = x;
+          hi = x;
+        }
+      if (lo >= 0) runs.push({ y, lo, hi, wdt: hi - lo + 1 });
+    }
+    const wide = runs.filter((r) => r.wdt > Math.max(...runs.map((q) => q.wdt)) * 0.6);
+    const hub = {
+      x: wide.reduce((s, r) => s + (r.lo + r.hi) / 2, 0) / wide.length,
+      y: wide.reduce((s, r) => s + r.y, 0) / wide.length,
+    };
+    let tip = { x: 0, y: 0, d: -1 };
+    for (const r of runs)
+      for (const x of [r.lo, r.hi]) {
+        const d = (x - hub.x) ** 2 + (r.y - hub.y) ** 2;
+        if (d > tip.d) tip = { x, y: r.y, d };
+      }
+    const ang = (Math.atan2(tip.x - hub.x, tip.y - hub.y) * -180) / Math.PI;
+    console.log(
+      `  hand hub (${hub.x.toFixed(1)}, ${hub.y.toFixed(1)})  tip (${tip.x}, ${tip.y})  ` +
+        `angle-from-straight-down ${ang.toFixed(1)}deg  len ${Math.sqrt(tip.d).toFixed(0)}px`
+    );
+  }
   fs.writeFileSync(path.join(OUT, `clock_${phase}.png`), PNG.sync.write(out));
   console.log(`clock_${phase}.png  ${cw}x${ch}  (crop ${minX},${minY})`);
 }
