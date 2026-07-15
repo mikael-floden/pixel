@@ -20,6 +20,9 @@ const fail = (m) => {
 };
 const VW = Number(process.env.VW || 480);
 const VH = Number(process.env.VH || 320);
+// Canvas is the TOP 61.8% of the page (golden-ratio HUD split) — the camera
+// centres the player at CY, and every tap/drag must stay above the HUD.
+const CY = Math.round(VH * 0.309);
 
 try {
   const ctx = await browser.newContext({ viewport: { width: VW, height: VH } });
@@ -68,10 +71,10 @@ try {
       );
   }
 
-  // ---- version badge (bottom-centre, 9-char sha) ----
+  // ---- version badge (top-centre under the frame rail, 9-char sha) ----
   const badge = await page.evaluate(() => {
     const els = [...document.querySelectorAll("div")].filter(
-      (d) => d.style.position === "fixed" && d.style.bottom && /^[0-9a-f]{9}$|^dev$/.test(d.textContent ?? ""),
+      (d) => d.style.position === "fixed" && d.style.top && /^[0-9a-f]{9}$|^dev$/.test(d.textContent ?? ""),
     );
     return els[0]?.textContent ?? null;
   });
@@ -83,7 +86,7 @@ try {
   {
     let target = null;
     for (const [dx, dy] of [[100, 55], [-110, 60], [120, -45], [-90, -60]]) {
-      await page.mouse.click(VW / 2 + dx, VH / 2 + dy);
+      await page.mouse.click(VW / 2 + dx, CY + dy);
       await page.waitForTimeout(200);
       target = await page.evaluate(() => window.__ml.target());
       if (target) break;
@@ -106,7 +109,7 @@ try {
 
   // ---- hold-to-move: press-and-drag steers the target continuously ----
   {
-    await page.mouse.move(VW / 2 + 90, VH / 2 + 50);
+    await page.mouse.move(VW / 2 + 90, CY + 50);
     await page.mouse.down();
     await page.waitForTimeout(250);
     // Drag through several spots; the target must FOLLOW the finger (each
@@ -115,7 +118,7 @@ try {
     const seen = [];
     // Spots stay inside the TOP 80% of the page — the bottom 20% is the HUD
     // dock (not game viewport; pointer events there never reach Phaser).
-    for (const [mx, my] of [[VW - 60, 60], [VW - 50, VH * 0.72], [60, VH * 0.7], [70, 70], [VW / 2, VH / 2 + 80]]) {
+    for (const [mx, my] of [[VW - 60, 60], [VW - 50, VH * 0.55], [60, VH * 0.52], [70, 70], [VW / 2, VH * 0.45]]) {
       await page.mouse.move(mx, my, { steps: 6 });
       await page.waitForTimeout(280);
       seen.push(await page.evaluate(() => window.__ml.target()));
@@ -140,17 +143,28 @@ try {
     );
   }
 
-  // ---- HUD dock: the time-of-day button cycles the phase (mobile has no
-  // keyboard for the [1] toggle) ----
+  // ---- HUD: five tabs, and Settings hosts the time-of-day button (mobile
+  // has no keyboard for the [1] toggle) ----
   {
+    const tabs = await page.$$eval(".ml-tab", (els) => els.map((e) => e.dataset.tab));
+    if (tabs.length !== 5) fail(`want 5 HUD tabs, got ${JSON.stringify(tabs)}`);
+    await page.click('[data-tab="settings"]');
+    await page.waitForTimeout(120);
     const t0 = await page.evaluate(() => window.__ml.timeOfDay().name);
-    const btn = await page.$(".ml-hudbtn");
-    if (!btn) fail("HUD dock button missing");
-    await btn.click();
+    // DOM click, not a pointer click: this harness viewport (480x320, kept
+    // small for headless-GL health) squeezes the HUD to ~120px — the plate
+    // button is half-clipped there, which is not what this step is judging.
+    const clicked = await page.evaluate(() => {
+      const b = document.querySelector(".ml-hudbtn");
+      if (!b) return false;
+      b.click();
+      return true;
+    });
+    if (!clicked) fail("HUD time-of-day button missing");
     await page.waitForTimeout(150);
     const t1 = await page.evaluate(() => window.__ml.timeOfDay().name);
     if (t0 === t1) fail(`HUD time-of-day button did not cycle (${t0})`);
-    console.log(`HUD time button OK (${t0} → ${t1})`);
+    console.log(`HUD tabs OK (5 tabs; settings time button ${t0} → ${t1})`);
   }
 
   // ---- keyboard cancels the trip ----

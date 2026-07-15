@@ -209,14 +209,30 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
 
 ## Mobile / PWA (client)
 
-- **HUD dock**: the game viewport is the TOP 80% of the page only
-  (index.html `#game` 80dvh); the bottom 20% is a DOM dock
-  (`client/src/hud.ts`, `.ml-hud`) — action buttons today ("1:
-  time-of-day"; mobile has no keyboard for the toggles), backpack/
-  inventory planned. Pointer events there never reach Phaser — e2e
-  scripts must keep tap/drag coordinates in the top 80%. The dock itself
-  is not uiZoom'd (its 20dvh must match the #game split); only the inner
-  px-sized button row gets the compensating zoom.
+- **HUD (golden-ratio split)**: the game viewport is the TOP 61.8% of the
+  page (index.html `#game` = `--hud-h-inv`); the bottom 38.2% (`--hud-h`)
+  is the DOM HUD (`client/src/hud.ts`): a framed TAB ROW (Backpack /
+  Equipment / Map / Settings / Logout) over a framed CONTENT PAGE.
+  Settings hosts the toggles mobile can't reach by keyboard (the
+  time-of-day button keeps the `.ml-hudbtn` hook for the smoke); Logout
+  is a two-step (tab → confirm) that clears ml-last-choice/ml-rejoin and
+  reloads to the select screen. Pointer events in the HUD never reach
+  Phaser — e2e scripts must keep tap/drag coordinates in the top 61.8%
+  (canvas centre y = `VH*0.309`). Nothing in the HUD is uiZoom'd (its
+  dvh geometry must match the #game split; CSS zoom rescales viewport
+  units). A `max-height:560px` media query compacts it for short
+  windows.
+- **UI tiles**: `client/public/ui/*.png` are cut from the maintainer's
+  concept mockups by `scripts/build-ui-tiles.mjs` (sources live outside
+  the repo — the tiles are committed). The frame = ONE ornate corner
+  (mirrored via CSS transforms), repeating h/v rail strips and a gem
+  medallion centred per edge (`dressFrame`); displayed at 0.5× concept
+  scale, `image-rendering:pixelated`. Buttons are the mock's three plate
+  states 9-sliced via `border-image` (unselected / selected / `:active`
+  pressed); tab icons were flood-key-extracted (background flooded from
+  the crop border — grey icons survive because their outlines stop the
+  fill). The game viewport wears the same frame as a pointer-transparent
+  overlay (`mountGameFrame`).
 
 - **Tap/hold-to-move**: a tap RUNS to the point (there is NO double-tap
   gesture — nobody walks when they can run, maintainer); the autopilot

@@ -55,7 +55,7 @@ import {
 } from "../nightlight";
 import { joinWorld } from "../net";
 import { ChatUI } from "../chat";
-import { HudBar } from "../hud";
+import { HudBar, mountGameFrame } from "../hud";
 import { RosterUI } from "../roster";
 import { setLoadingProgress, hideLoading } from "../loading";
 import { applyUiZoom } from "../uiscale";
@@ -548,10 +548,14 @@ export class WorldScene extends Phaser.Scene {
     this.input.keyboard!.on("keydown-SPACE", () => this.tryJump());
     // Feature/debug toggles live on the TOP-ROW digits (1-9).
     this.input.keyboard!.on("keydown-ONE", () => this.cycleTimeOfDay());
-    // Bottom HUD dock (the page's reserved bottom 20%): buttons for what
-    // mobile can't reach by keyboard. Backpack/inventory will join it.
-    this.hud = new HudBar();
-    this.hud.button("1: time-of-day", () => this.cycleTimeOfDay());
+    // Bottom HUD (the golden-ratio dock): framed tab row + content page.
+    // Settings hosts the toggles mobile can't reach by keyboard; the game
+    // viewport itself gets the matching pixel frame overlay.
+    this.hud = new HudBar({
+      onCycleTime: () => this.cycleTimeOfDay(),
+      onLogout: () => this.logout(),
+    });
+    mountGameFrame();
     this.input.keyboard!.on("keydown-FOUR", () => {
       this.toggleCollisionOverlay();
       this.chat.addLog("—", `[4] Collision overlay: ${this.collisionOverlay ? "on" : "off"}`);
@@ -1422,6 +1426,21 @@ export class WorldScene extends Phaser.Scene {
 
   /** Start easing toward a time-of-day phase FROM the grade currently on
    * screen — pressing [1] mid-transition retargets without a jump. */
+  /** HUD Logout: leave the room and return to the character select. Clears
+   * the remembered choice + rejoin fast-path so the reload really lands on
+   * the select screen instead of auto-rejoining the world. */
+  private logout() {
+    this.unloading = true;
+    try {
+      localStorage.removeItem("ml-last-choice");
+      sessionStorage.removeItem("ml-rejoin");
+    } catch {}
+    try {
+      this.room?.leave();
+    } catch {}
+    location.reload();
+  }
+
   /** Advance to the next time-of-day phase (the [1] key and the HUD button). */
   private cycleTimeOfDay() {
     this.setTimeOfDay((this.timeIdx + 1) % TIME_PHASES.length);

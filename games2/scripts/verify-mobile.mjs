@@ -65,7 +65,7 @@ try {
     return { x: m.x, y: m.y };
   });
   // Tap a bit down-right of the screen centre (the camera centres the player).
-  await page.mouse.click(450 + 130, 320 + 60);
+  await page.mouse.click(450 + 130, 198 + 55); // canvas centre y = 640*0.309
   await page.waitForTimeout(200);
   const target = await page.evaluate(() => window.__ml.target());
   if (!target) fail("tap did not set a move target");
@@ -90,12 +90,12 @@ try {
 
   // Hold-to-move: press and DRAG — the target must follow the finger (this
   // replaced the old double-tap-to-run gesture; every tap/hold runs now).
-  await page.mouse.move(450 + 120, 320 + 55);
+  await page.mouse.move(450 + 120, 198 + 50);
   await page.mouse.down();
   await page.waitForTimeout(250);
   const holdSeen = [];
   // Spots stay inside the TOP 80% of the page — the bottom 20% is the HUD dock.
-  for (const [mx, my] of [[840, 90], [830, 470], [90, 460], [140, 120]]) {
+  for (const [mx, my] of [[840, 90], [830, 340], [90, 330], [140, 120]]) {
     await page.mouse.move(mx, my, { steps: 6 });
     await page.waitForTimeout(280);
     holdSeen.push(await page.evaluate(() => window.__ml.target()));
@@ -117,7 +117,7 @@ try {
   console.log(`Hold-to-move OK (${holdDistinct.size} targets steered)`);
 
   // Keyboard cancels the trip.
-  await page.mouse.click(450 + 100, 320 + 40);
+  await page.mouse.click(450 + 100, 198 + 40);
   await page.waitForTimeout(200);
   await page.keyboard.down("ArrowDown");
   await page.waitForTimeout(300);
