@@ -157,6 +157,14 @@ for (const phase of [...PHASES, "hand"]) {
   }
 
   // ---- hand ----
+  // The mock hand is gold like the dial rims — invisible on top of them.
+  // Darken it to a deep brown (maintainer: "dark brown or black so we all
+  // see it easily"); scaling RGB keeps the metallic shading, and gold
+  // scaled down IS dark brown.
+  for (let p = 0; p < cw * ch; p++) {
+    if (!full.data[p * 4 + 3]) continue;
+    for (let c = 0; c < 3; c++) full.data[p * 4 + c] = Math.round(full.data[p * 4 + c] * 0.24);
+  }
   // Hub/tip geometry (hub centre = centroid of the wide rows — the hub
   // circle is far wider than the shaft; tip = pixel farthest from it).
   const measure = (im) => {
