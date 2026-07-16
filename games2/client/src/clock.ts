@@ -24,10 +24,12 @@ const FADE_S = 2.5; // keep in step with WorldScene's TIME_TRANSITION_S
 // SHADOWS fall (maintainer playtest round 3: "when the shadow is cast to
 // the left the arrow points to the left"): morning shadows fall screen-
 // right -> hand right, evening left -> hand left. So chronologically the
-// hand sweeps RIGHT -> LEFT (Morning, Day, Evening, Night at the sector
-// centres), parking leftmost at night, then swinging back for morning.
+// hand sweeps RIGHT -> LEFT, and it uses the FULL semicircle (round 4):
+// morning pops up 100% right (horizontal), night parks 100% left, with
+// day/evening 30 deg either side of straight down. Then the CW-only rule
+// swings it over the top for the new morning.
 // Index order = TIME_PHASES / shared timeIdx (0 Night, 1 Morning, ...).
-const HAND_DEG = [67.5, -67.5, -22.5, 22.5];
+const HAND_DEG = [90, -90, -30, 30];
 
 // The assets are baked AT display resolution (see build-clock.mjs — the
 // browser must never resample them; that made the border mush next to the
@@ -42,6 +44,12 @@ const F = 1;
 const HAND_SCALE = 1;
 
 let root: HTMLDivElement | null = null;
+// The hand lives in its OWN fixed layer ABOVE the page-frame art (z 7 vs
+// the frame's 6, dials at 5): at the 100%-horizontal night/morning stops
+// it lies along the frame rail and would vanish behind it otherwise — on
+// top it reads as resting on the rail, and the over-the-top CW sweep
+// stays visible.
+let handRoot: HTMLDivElement | null = null;
 let dials: HTMLImageElement[] = [];
 let hand: HTMLImageElement | null = null;
 // Cumulative CSS rotation. The hand only ever advances CLOCKWISE
@@ -54,13 +62,15 @@ function mount() {
   if (root) return;
   const style = document.createElement("style");
   style.textContent = `
-  .ml-clock{position:fixed;top:36px;left:50%;transform:translateX(-50%);z-index:5;
-    width:${ROOT_W}px;pointer-events:none}
-  .ml-clock img{position:absolute;top:0;left:0;width:100%;opacity:0;
-    image-rendering:pixelated;transition:opacity ${FADE_S}s ease}
+  .ml-clock,.ml-clock-hand{position:fixed;top:36px;left:50%;
+    transform:translateX(-50%);width:${ROOT_W}px;pointer-events:none}
+  .ml-clock{z-index:5}
+  .ml-clock-hand{z-index:7}
+  .ml-clock img,.ml-clock-hand img{position:absolute;top:0;left:0;width:100%;
+    opacity:0;image-rendering:pixelated;transition:opacity ${FADE_S}s ease}
   .ml-clock img.on{opacity:1}
-  .ml-clock img.ml-hand{opacity:1;transition:transform ${FADE_S}s ease}
-  .ml-clock.snap img{transition:none}`;
+  .ml-clock-hand img{opacity:1;transition:transform ${FADE_S}s ease}
+  .ml-clock.snap img,.ml-clock-hand.snap img{transition:none}`;
   document.head.appendChild(style);
   root = document.createElement("div");
   root.className = "ml-clock";
@@ -73,10 +83,11 @@ function mount() {
     return img;
   });
   // The hand mounts with its hub centred on the dial's knob and rotates
-  // about that point (last in DOM = drawn above every dial).
+  // about that point.
+  handRoot = document.createElement("div");
+  handRoot.className = "ml-clock-hand";
   hand = document.createElement("img");
   hand.src = "/ui/clock_hand.png";
-  hand.className = "ml-hand";
   hand.alt = "";
   hand.draggable = false;
   const s = HAND_SCALE;
@@ -85,9 +96,11 @@ function mount() {
   hand.style.left = `${knob.x - HAND.hubX * s}px`;
   hand.style.top = `${knob.y - HAND.hubY * s}px`;
   hand.style.transformOrigin = `${HAND.hubX * s}px ${HAND.hubY * s}px`;
-  root.appendChild(hand);
+  handRoot.appendChild(hand);
   document.body.appendChild(root);
+  document.body.appendChild(handRoot);
   applyUiZoom(root);
+  applyUiZoom(handRoot);
 }
 
 /** Show the dial for a TIME_PHASES index (0 Night, 1 Morning, 2 Day,
@@ -96,6 +109,7 @@ export function setClockPhase(idx: number, instant = false) {
   mount();
   if (instant) {
     root!.classList.add("snap");
+    handRoot!.classList.add("snap");
     root!.offsetWidth; // flush styles so the snap really skips the fade
   }
   dials.forEach((img, i) => img.classList.toggle("on", i === idx % dials.length));
@@ -106,5 +120,6 @@ export function setClockPhase(idx: number, instant = false) {
   if (instant) {
     root!.offsetWidth;
     root!.classList.remove("snap");
+    handRoot!.classList.remove("snap");
   }
 }
