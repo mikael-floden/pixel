@@ -196,7 +196,9 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   same way (Player.torch, "torch" message): my own light flips on the
   local mirror instantly, everyone else reads the synced field, and a
   rejoin re-asserts the local value to the fresh player entry
-  (server/test/torch.test.ts).
+  (server/test/torch.test.ts). NOBODY'S torch burns during DAY
+  (torchLit gates on timeIdx: torches are an evening/night/morning
+  feature; the switch keeps the preference, the flame waits for dusk).
 - The CELESTIAL CLOCK (client/src/clock.ts) hangs a per-phase dial
   top-centre under the frame's gem (pointer-events none, kept SUBTLE —
   maintainer sized it down from full-mock): four pre-keyed, pixel-aligned
@@ -261,12 +263,15 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
 ## Contact shadows (baked, always on)
 
 - Tiles with HIGHER west/north neighbours get soft dark gradients baked
-  into the ground pass (shade-w/n/nw in WorldScene, alpha scaled by the
-  height diff, capped 3) — the game1 elevation cue, restored per the
-  maintainer at ~70% of game1's daylight strength so it reads as dim
-  shade UNDER the per-pixel shader instead of the double-darkened razor
-  edges that got it disabled originally. Column-top redraws mirror the
-  same strengths.
+  into the ground pass (drawContactShade in WorldScene — called from
+  BOTH ground branches; the maps2 branch's `continue` silently skipped
+  the first restore) at ~70% of game1's daylight strength, so it reads
+  as dim shade UNDER the per-pixel shader instead of the double-darkened
+  razor edges that got it disabled originally. effHeight counts solid
+  terrain categories +1 AND placed props by their `levels` (2-5, now
+  carried through parseWorld into WorldProp) — obj tiles cast shade
+  scaled by how tall their art is (QA on prop_demo: flat ground, any
+  shade there is prop-cast). Column-top redraws mirror the strengths.
 
 ## Directional sun shadows (day phases)
 

@@ -508,11 +508,14 @@ export interface ParsedWorld {
   props?: WorldProp[];
 }
 
-/** A placed decoration: its cell (col,row) + tall (64×128) tile PNG path. */
+/** A placed decoration: its cell (col,row) + tall (64×128) tile PNG path.
+ * `levels` = how many elevation levels the art spans (2-5) — drives the
+ * contact shade it casts on neighbouring ground. */
 export interface WorldProp {
   col: number;
   row: number;
   path: string;
+  levels?: number;
 }
 
 /**
@@ -612,7 +615,12 @@ function parseRingworld(json: any): ParsedWorld {
   // Props: {x,y,tile} → place the tall tile paths[tile] on cell (x,y).
   const props: WorldProp[] = Array.isArray(json.props)
     ? json.props
-        .map((p: any) => ({ col: p.x, row: p.y, path: paths[p.tile] }))
+        .map((p: any) => ({
+          col: p.x,
+          row: p.y,
+          path: paths[p.tile],
+          levels: typeof p.levels === "number" ? p.levels : 2,
+        }))
         .filter((p: WorldProp) => !!p.path)
     : [];
   return { width, height, rows, pois: [], spawn, faceTiles, props };
