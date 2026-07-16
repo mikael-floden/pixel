@@ -20,16 +20,17 @@ import { applyUiZoom } from "./uiscale";
 const PHASE_FILES = ["night", "morning", "day", "evening"] as const;
 const FADE_S = 2.5; // keep in step with WorldScene's TIME_TRANSITION_S
 
-// The dial is a four-sector gauge; the hand points the way the SUN'S
-// SHADOWS fall (maintainer playtest round 3: "when the shadow is cast to
-// the left the arrow points to the left"): morning shadows fall screen-
-// right -> hand right, evening left -> hand left. So chronologically the
-// hand sweeps RIGHT -> LEFT, and it uses the FULL semicircle (round 4):
-// morning pops up 100% right (horizontal), night parks 100% left, with
-// day/evening 30 deg either side of straight down. Then the CW-only rule
-// swings it over the top for the new morning.
+// The hand points EXACTLY the way the sun's shadows fall ON SCREEN
+// (maintainer round 3+5: hand direction = shadow direction, no artistic
+// re-spacing). Angles derive from WorldScene's SUN_PHASES cast vectors
+// through the iso projection (screen px = ((col-row)*32, (col+row)*13)):
+// Morning shadows point screen-right (-90), Day down-left (+50.7 — the
+// midday sun keeps a west tilt and the iso squash steepens it), Evening
+// horizontal-left (+90). Night has no sun: the hand STAYS where the sun
+// set (100% left), then sweeps CW over the top for the new morning
+// (round 4). Recompute these if SUN_PHASES ever changes.
 // Index order = TIME_PHASES / shared timeIdx (0 Night, 1 Morning, ...).
-const HAND_DEG = [90, -90, -30, 30];
+const HAND_DEG = [90, -90, 50.7, 90];
 
 // The assets are baked AT display resolution (see build-clock.mjs — the
 // browser must never resample them; that made the border mush next to the
