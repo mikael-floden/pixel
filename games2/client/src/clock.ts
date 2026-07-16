@@ -21,11 +21,12 @@ import { applyUiZoom } from "./uiscale";
 const PHASE_FILES = ["night", "morning", "day", "evening"] as const;
 const FADE_S = 2.5; // keep in step with WorldScene's TIME_TRANSITION_S
 
-// Hand positions (maintainer rounds 3-8): the sweep follows the shadows'
-// side — Morning 100% right (-90, shadows east), DAY straight down at the
-// dial's "12" (the bottom-centre plate; 100% day beats shadow-exactness),
-// Evening 100% left (+90, shadows west). Night has no sun: the hand STAYS
-// where the sun set, then sweeps CW over the top for the new morning.
+// Hand positions (maintainer rounds 3-9): the hand IS the shadow
+// direction — Morning 100% right (-90, shadows east), DAY straight down
+// at the dial's "12" (the midday sun now casts exactly down-screen, in
+// sync — see SUN_PHASES), Evening 100% left (+90, shadows west). Night
+// has no sun: the hand STAYS where the sun set, then sweeps CW over the
+// top for the new morning.
 // Index order = TIME_PHASES / shared timeIdx (0 Night, 1 Morning, ...).
 const HAND_DEG = [90, -90, 0, 90];
 

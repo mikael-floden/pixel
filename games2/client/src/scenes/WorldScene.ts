@@ -147,9 +147,12 @@ const SUN_PHASES: { cast: [number, number]; slope: number; strength: number }[] 
   // screen-DOWN(-ish) at midday (sun top-centre), screen-LEFT in the
   // evening — the shadow direction rotates clockwise right -> down -> left.
   { cast: [R2, -R2], slope: 0.34, strength: 1 }, // Morning — shadows to screen-east
-  // Midday keeps the slight west tilt so the short shadows step out from
-  // under the south wall faces instead of hiding behind them.
-  { cast: [0.32, 0.95], slope: 0.45, strength: 1 },
+  // Midday: shadows fall EXACTLY straight down-screen, in sync with the
+  // clock hand at 12 (maintainer). An older west tilt guarded against
+  // shadows hiding under south wall faces, but that dated from the steep
+  // slope-1.15 era — at 0.45 a 1-level ledge shadow spans ~2 cells and
+  // clears the face (verify-sunshadow's day gate holds it honest).
+  { cast: [R2, R2], slope: 0.45, strength: 1 },
   { cast: [-R2, R2], slope: 0.34, strength: 1 }, // Evening — shadows to screen-west
 ];
 
