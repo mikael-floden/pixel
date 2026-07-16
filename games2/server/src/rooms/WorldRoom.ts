@@ -64,6 +64,7 @@ export class WorldRoom extends Room<WorldState> {
   // Wild shooting stars streak the night sky at random (arrivals get their
   // own star in onJoin, any hour).
   private starTimer: ReturnType<typeof setTimeout> | null = null;
+  private auroraChance = 0.45; // share of nights with northern lights
 
   private scheduleWildStar() {
     if (this.starTimer) clearTimeout(this.starTimer);
@@ -75,6 +76,9 @@ export class WorldRoom extends Room<WorldState> {
 
   private advanceTime() {
     this.state.timeIdx = (this.state.timeIdx + 1) % TIME_PHASE_COUNT;
+    // Some nights the northern lights come out — rolled once as night
+    // falls, shared by everyone, gone by morning.
+    this.state.aurora = this.state.timeIdx === 0 && Math.random() < this.auroraChance;
     this.scheduleTimeOfDay();
   }
 
@@ -85,7 +89,8 @@ export class WorldRoom extends Room<WorldState> {
     this.phaseTimer = setTimeout(() => this.advanceTime(), s * 1000);
   }
 
-  onCreate(options?: { world?: string; phaseSeconds?: number[] }) {
+  onCreate(options?: { world?: string; phaseSeconds?: number[]; auroraChance?: number }) {
+    if (typeof options?.auroraChance === "number") this.auroraChance = options.auroraChance;
     {
       // Load the maps2 world the client asked for (default ring_test). Rooms are
       // matched by this name (filterBy in index.ts), so everyone who picks the

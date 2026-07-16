@@ -159,6 +159,7 @@ uniform vec4 uIsoB;       // lh, gridW, gridH, maxLevel
 uniform vec3 uAmbient;    // night grade (what unlit white becomes)
 uniform vec4 uSun;        // directional sun: cast dir (grid x,y), slope (levels/cell), strength
 uniform float uCloud;     // weather: cloud cover 0..1 (world-anchored drifting shadow field)
+uniform float uAurora;    // aurora night 0..1: northern-light curtains ADD colour to the ambient
 uniform float uFlip;      // 1 = invert fragment y (GL bottom-up), 0 = direct
 uniform float uTest;      // 1 = output a raw world-y gradient (calibration)
 uniform float uNumLights;
@@ -423,6 +424,18 @@ void main() {
     cloudF = 1.0 - cover * 0.45 * uCloud * mix(0.18, 1.0, uSun.w);
   }
   vec3 light = uAmbient * sunF * cloudF;
+  // AURORA NIGHTS: some nights the northern lights dance over Nangijala —
+  // slow drifting curtains of arctic green/violet ADDED to the ambient (the
+  // ground and everyone standing on it glows with the sky), auto-fading as
+  // the sun returns. EXACT JS twin: auroraAt() — change BOTH together.
+  if (uAurora > 0.001) {
+    vec2 ap = vec2(wx, wy) * 0.0013 + uAnimTime * vec2(0.045, -0.02);
+    float an = cwNoise(ap) * 0.6 + cwNoise(ap * 2.1 + 31.0) * 0.4;
+    float curtain = smoothstep(0.40, 0.80, an);
+    float hue = 0.5 + 0.5 * sin(uAnimTime * 0.12 + wx * 0.0011);
+    vec3 acol = mix(vec3(0.10, 0.85, 0.45), vec3(0.45, 0.25, 0.85), hue);
+    light += acol * curtain * 0.18 * uAurora * (1.0 - uSun.w);
+  }
   for (int i = 0; i < ${MAX_SHADER_LIGHTS}; i++) {
     if (float(i) >= uNumLights) continue;
     vec3 lp = uLightPos[i].xyz;
@@ -726,6 +739,7 @@ export class NightLights {
       // "0 effect"). The inverse twin of the uAnimTime bug below.
       uSun: { type: "4f", value: { x: 0, y: 0, z: 1, w: 0 } },
       uCloud: { type: "1f", value: 0 },
+      uAurora: { type: "1f", value: 0 },
       uFlip: { type: "1f", value: 1 },
       uTest: { type: "1f", value: 0 },
       // Animation clock (seconds). MUST be driven every frame from the SAME
@@ -940,6 +954,42 @@ export class NightLights {
    * ground. Same ambient/attenuation/LOS/ember/flicker, same clock. */
   private curSun: [number, number, number, number] = [0, 0, 1, 0];
   private curCloud = 0;
+  private curAurora = 0;
+
+  /** EXACT JS twin of the shader's aurora curtains (additive RGB) — tints
+   * the lit copies so characters glow with the sky. Change BOTH together. */
+  auroraAt(
+    wx: number,
+    wy: number,
+    aurora = this.curAurora,
+    sunW = this.curSun[3],
+  ): [number, number, number] {
+    if (aurora <= 0.001) return [0, 0, 0];
+    const hash = (x: number, y: number) => {
+      const v = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
+      return v - Math.floor(v);
+    };
+    const noise = (x: number, y: number) => {
+      const ix = Math.floor(x), iy = Math.floor(y);
+      const fx = x - ix, fy = y - iy;
+      const ux = fx * fx * (3 - 2 * fx), uy = fy * fy * (3 - 2 * fy);
+      const a = hash(ix, iy), b = hash(ix + 1, iy), c = hash(ix, iy + 1), d = hash(ix + 1, iy + 1);
+      return (a + (b - a) * ux) * (1 - uy) + (c + (d - c) * ux) * uy;
+    };
+    const t = this.scene.time.now / 1000; // same clock as uAnimTime
+    const ax = wx * 0.0013 + t * 0.045;
+    const ay = wy * 0.0013 - t * 0.02;
+    const an = noise(ax, ay) * 0.6 + noise(ax * 2.1 + 31, ay * 2.1 + 31) * 0.4;
+    const ss = Math.min(1, Math.max(0, (an - 0.40) / 0.4));
+    const curtain = ss * ss * (3 - 2 * ss);
+    const hue = 0.5 + 0.5 * Math.sin(t * 0.12 + wx * 0.0011);
+    const k = curtain * 0.18 * aurora * (1 - sunW);
+    return [
+      (0.1 + (0.45 - 0.1) * hue) * k,
+      (0.85 + (0.25 - 0.85) * hue) * k,
+      (0.45 + (0.85 - 0.45) * hue) * k,
+    ];
+  }
 
   /** EXACT JS twin of the shader's cloud field (see cwNoise) — tints the
    * lit copies so characters dim as a cloud passes over them. */
@@ -1030,10 +1080,11 @@ export class NightLights {
     const wxT = this.iso.ox + (col - row) * geo.dx + geo.dx;
     const wyT = this.iso.oy + (col + row) * geo.dy + geo.dy - z * geo.lh;
     const sunF = this.sunFactorAt(col, row, z) * this.cloudFactorAt(wxT, wyT);
+    const aur = this.auroraAt(wxT, wyT);
     const out: [number, number, number] = [
-      this.curAmbient[0] * sunF,
-      this.curAmbient[1] * sunF,
-      this.curAmbient[2] * sunF,
+      this.curAmbient[0] * sunF + aur[0],
+      this.curAmbient[1] * sunF + aur[1],
+      this.curAmbient[2] * sunF + aur[2],
     ];
     for (let i = 0; i < this.curLights.length && i < MAX_SHADER_LIGHTS; i++) {
       const L = this.curLights[i];
@@ -1151,12 +1202,14 @@ export class NightLights {
     stamps: GlowStamp[] = [],
     sun: [number, number, number, number] = [0, 0, 1, 0],
     cloud = 0,
+    aurora = 0,
   ) {
     this.curLights = lights;
     this.curStamps = stamps;
     this.curAmbient = ambient;
     this.curSun = sun;
     this.curCloud = cloud;
+    this.curAurora = aurora;
     if (!this.shader || !this.active) return;
     const s = this.shader;
     // Ground-truth calibrated by raw suv readback: the zoomed overlay shows
@@ -1232,6 +1285,7 @@ export class NightLights {
     s.setUniform("uIsoB.value.z", this.world.height);
     s.setUniform("uIsoB.value.w", this.maxLevel);
     s.setUniform("uCloud.value", cloud);
+    s.setUniform("uAurora.value", aurora);
     s.setUniform("uSun.value.x", sun[0]);
     s.setUniform("uSun.value.y", sun[1]);
     s.setUniform("uSun.value.z", sun[2]);

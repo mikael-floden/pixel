@@ -70,12 +70,14 @@ export class WorldState extends Schema {
   declare players: MapSchema<Player>;
   declare timeIdx: number; // shared time-of-day phase (server-owned)
   declare weather: number; // shared weather layer (server-owned; 0 = clear)
+  declare aurora: boolean; // aurora night: northern lights over the world
 
   constructor() {
     super();
     this.players = new MapSchema<Player>();
     this.timeIdx = DEFAULT_TIME_IDX;
     this.weather = 0;
+    this.aurora = false;
   }
 }
 
@@ -83,4 +85,5 @@ defineTypes(WorldState, {
   players: { map: Player },
   timeIdx: "number",
   weather: "number",
+  aurora: "boolean",
 });

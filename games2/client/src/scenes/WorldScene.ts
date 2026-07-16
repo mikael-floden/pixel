@@ -397,6 +397,8 @@ export class WorldScene extends Phaser.Scene {
   // target over a few seconds — clouds roll in, they don't blink in.
   private weatherIdx = 0;
   private curCloud = 0;
+  private auroraOn = false; // synced target; curAurora eases toward it
+  private curAurora = 0;
   private curAmbient: [number, number, number] = [...TIME_PHASES[DEFAULT_TIME_IDX].ambient];
 
   constructor() {
@@ -727,6 +729,14 @@ export class WorldScene extends Phaser.Scene {
       },
       cloudAt: (wx: number, wy: number) => this.night?.cloudFactorAt(wx, wy, this.curCloud, this.curSun[3]) ?? 1,
       star: (name?: string) => this.shootingStar(name), // LOCAL trigger for headless QA
+      aurora: (on?: boolean, instant = true) => {
+        if (on !== undefined) {
+          this.auroraOn = on;
+          if (instant) this.curAurora = on ? 1 : 0;
+        }
+        return this.curAurora;
+      },
+      auroraAt: (wx: number, wy: number) => this.night?.auroraAt(wx, wy, this.curAurora, this.curSun[3]) ?? [0, 0, 0],
 
       sunAt: (col: number, row: number, z = -1) =>
         this.night?.sunFactorAt(col + 0.5, row + 0.5, z, this.curSun as [number, number, number, number]) ?? 1,
@@ -963,6 +973,13 @@ export class WorldScene extends Phaser.Scene {
       this.setTimeOfDay(idx % TIME_PHASES.length, firstTimeSync);
       if (!firstTimeSync) this.chat.addLog("—", `Time of day: ${TIME_PHASES[idx % TIME_PHASES.length].name}`);
       firstTimeSync = false;
+    });
+    let firstAuroraSync = true;
+    $(room.state).listen("aurora", (on: boolean) => {
+      this.auroraOn = !!on;
+      if (firstAuroraSync) this.curAurora = on ? 1 : 0; // no roll-in on join
+      else if (on) this.chat.addLog("—", "Northern lights dance over Nangijala.");
+      firstAuroraSync = false;
     });
     let firstWeatherSync = true;
     $(room.state).listen("weather", (idx: number) => {
@@ -1554,11 +1571,23 @@ export class WorldScene extends Phaser.Scene {
       const ca = 1 - Math.exp(-(this.game.loop.delta / 1000) / 4);
       this.curCloud += (cloudTo - this.curCloud) * ca;
       if (Math.abs(this.curCloud - cloudTo) < 0.005) this.curCloud = cloudTo;
+      // Aurora eases on the same ~4s roll (the curtains breathe in).
+      const auroraTo = this.auroraOn ? 1 : 0;
+      this.curAurora += (auroraTo - this.curAurora) * ca;
+      if (Math.abs(this.curAurora - auroraTo) < 0.005) this.curAurora = auroraTo;
       const ambEff = this.curAmbient.map((v, i) => {
         const grey = (this.curAmbient[0] + this.curAmbient[1] + this.curAmbient[2]) / 3;
         return v + (grey * 0.94 - v) * this.curCloud * 0.22;
       }) as [number, number, number];
-      this.night!.update(this.cameras.main, sl, ambEff, this.glowStamps, this.curSun, this.curCloud);
+      this.night!.update(
+        this.cameras.main,
+        sl,
+        ambEff,
+        this.glowStamps,
+        this.curSun,
+        this.curCloud,
+        this.curAurora,
+      );
     }
 
     const lights: LightSource[] = [];

@@ -221,6 +221,15 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   clock.ts. The version badge sits top-LEFT (main.ts) so it stays off
   the dial.
 
+- AURORA NIGHTS: WorldState.aurora (server-rolled in advanceTime — 45%
+  of nights, auroraChance room option for tests; gone by morning).
+  Shader uAurora (DECLARED in the uniforms config — the uSun lesson)
+  ADDS drifting green/violet noise curtains to the ambient, scaled by
+  (1-uSun.w) so they fade as the sun returns; auroraAt() is the EXACT
+  JS twin (lit copies glow with the sky — change both). Client eases
+  curAurora on the cloud's ~4s roll; chat logs "Northern lights dance
+  over Nangijala." Probes: `__ml.aurora(on?, instant)` (local force),
+  `__ml.auroraAt(wx,wy)`. Regression: server/test/aurora.test.ts.
 - SHOOTING STARS (Nangijala is the land you ARRIVE in): every player
   join broadcasts "star" {name} — all clients draw the same streak
   across the visible sky (WorldScene.shootingStar: additive head +
