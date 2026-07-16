@@ -907,9 +907,10 @@
       },
       "features": [
         "accent",
-        "pebbles"
+        "pebbles",
+        "water"
       ],
-      "description": "grey mountain stone with a small detail, pebbles"
+      "description": "grey mountain stone with a small detail, pebbles, a small puddle"
     },
     {
       "index": 12,
@@ -1228,7 +1229,8 @@
       "band": 4,
       "strength": 1.0,
       "top_frac": 0.58,
-      "protect_dark_material": true
+      "protect_dark_material": true,
+      "edge_margin": 22
     },
     "gap_close": {
       "enabled": true,

@@ -453,10 +453,9 @@
         }
       },
       "features": [
-        "accent",
         "shiny"
       ],
-      "description": "clear water with a small detail, a shiny speck"
+      "description": "clear water with a shiny speck"
     },
     {
       "index": 6,
@@ -528,11 +527,8 @@
           }
         }
       },
-      "features": [
-        "accent",
-        "shiny"
-      ],
-      "description": "clear water with a small detail, a shiny speck"
+      "features": [],
+      "description": "plain clear water"
     },
     {
       "index": 7,
@@ -750,10 +746,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "clear water with pebbles"
+      "features": [],
+      "description": "plain clear water"
     },
     {
       "index": 10,
@@ -1045,10 +1039,9 @@
         }
       },
       "features": [
-        "shiny",
-        "accent"
+        "shiny"
       ],
-      "description": "clear water with a shiny speck, a small detail"
+      "description": "clear water with a shiny speck"
     },
     {
       "index": 14,
@@ -1215,7 +1208,8 @@
       "band": 4,
       "strength": 1.0,
       "top_frac": 0.58,
-      "protect_dark_material": true
+      "protect_dark_material": true,
+      "edge_margin": 22
     },
     "gap_close": {
       "enabled": true,

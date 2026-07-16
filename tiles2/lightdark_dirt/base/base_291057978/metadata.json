@@ -759,11 +759,11 @@
         }
       },
       "features": [
-        "flowers",
         "accent",
+        "flowers",
         "pebbles"
       ],
-      "description": "dirt with small flowers, a small detail, pebbles"
+      "description": "dirt with a small detail, small flowers, pebbles"
     },
     {
       "index": 10,
@@ -1139,11 +1139,11 @@
       },
       "features": [
         "accent",
-        "pebbles",
         "shiny",
+        "pebbles",
         "flowers"
       ],
-      "description": "dirt with a small detail, pebbles, a shiny speck, small flowers"
+      "description": "dirt with a small detail, a shiny speck, pebbles, small flowers"
     },
     {
       "index": 15,
@@ -1240,7 +1240,8 @@
       "band": 4,
       "strength": 1.0,
       "top_frac": 0.58,
-      "protect_dark_material": true
+      "protect_dark_material": true,
+      "edge_margin": 22
     },
     "gap_close": {
       "enabled": true,

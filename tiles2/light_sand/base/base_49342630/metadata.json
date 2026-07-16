@@ -309,11 +309,11 @@
         }
       },
       "features": [
-        "bare_soil",
         "flowers",
+        "bare_soil",
         "pebbles"
       ],
-      "description": "light sand with a bare soil patch, small flowers, pebbles"
+      "description": "light sand with small flowers, a bare soil patch, pebbles"
     },
     {
       "index": 4,
@@ -386,9 +386,10 @@
         }
       },
       "features": [
-        "bare_soil"
+        "bare_soil",
+        "flowers"
       ],
-      "description": "light sand with a bare soil patch"
+      "description": "light sand with a bare soil patch, small flowers"
     },
     {
       "index": 5,
@@ -1223,7 +1224,8 @@
       "band": 4,
       "strength": 1.0,
       "top_frac": 0.58,
-      "protect_dark_material": true
+      "protect_dark_material": true,
+      "edge_margin": 22
     },
     "gap_close": {
       "enabled": true,

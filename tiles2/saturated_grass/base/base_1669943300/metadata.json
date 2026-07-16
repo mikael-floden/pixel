@@ -534,10 +534,9 @@
         }
       },
       "features": [
-        "water",
-        "accent"
+        "water"
       ],
-      "description": "saturated grass with a small puddle, a small detail"
+      "description": "saturated grass with a small puddle"
     },
     {
       "index": 7,
@@ -685,9 +684,10 @@
       "features": [
         "pebbles",
         "accent",
+        "water",
         "flowers"
       ],
-      "description": "saturated grass with pebbles, a small detail, small flowers"
+      "description": "saturated grass with pebbles, a small detail, a small puddle, small flowers"
     },
     {
       "index": 9,
@@ -1229,7 +1229,8 @@
       "band": 4,
       "strength": 1.0,
       "top_frac": 0.58,
-      "protect_dark_material": true
+      "protect_dark_material": true,
+      "edge_margin": 22
     },
     "gap_close": {
       "enabled": true,

@@ -608,10 +608,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "snow with pebbles"
+      "features": [],
+      "description": "plain snow"
     },
     {
       "index": 8,
@@ -1225,7 +1223,8 @@
       "band": 4,
       "strength": 1.0,
       "top_frac": 0.58,
-      "protect_dark_material": true
+      "protect_dark_material": true,
+      "edge_margin": 22
     },
     "gap_close": {
       "enabled": true,

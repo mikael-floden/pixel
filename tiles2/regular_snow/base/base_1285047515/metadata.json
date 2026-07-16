@@ -1122,10 +1122,11 @@
       },
       "features": [
         "accent",
+        "flowers",
         "pebbles",
-        "flowers"
+        "water"
       ],
-      "description": "snow with a small detail, pebbles, small flowers"
+      "description": "snow with a small detail, small flowers, pebbles, a small puddle"
     },
     {
       "index": 15,
@@ -1219,7 +1220,8 @@
       "band": 4,
       "strength": 1.0,
       "top_frac": 0.58,
-      "protect_dark_material": true
+      "protect_dark_material": true,
+      "edge_margin": 22
     },
     "gap_close": {
       "enabled": true,

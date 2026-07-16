@@ -137,13 +137,18 @@ def neutralize_outline(im, darkness_thresh=60):
     return Image.fromarray(a.clip(0, 255).astype(np.uint8), "RGBA")
 
 
-_DIAMOND_APEX_Y = 8
-_DIAMOND_H = 30
+# Actual generated top-diamond geometry (measured on the sheets, NOT the narrower
+# nominal 30px/apex-8): apex ~y6, full 64px width by ~y22, S vertex ~y38 — a standard
+# 64x32 iso diamond. The nominal mask was far too small, so the perimeter target missed
+# the real (wider) diamond edge, letting crystal_ice's bright facet edge tile into a
+# 'chessboard' lattice.
+_DIAMOND_APEX_Y = 6
+_DIAMOND_H = 32
 
 
 def _diamond_mask(h, w):
-    """Top-diamond mask matching the tiles2 geometry (apex y=8, 30px tall, full width),
-    so we can target the diamond PERIMETER without ever touching the front face below."""
+    """Top-diamond mask matching the ACTUAL tile geometry, so we can target the diamond
+    PERIMETER without ever touching the front face below it."""
     m = np.zeros((h, w), bool)
     cx = w // 2
     for y in range(_DIAMOND_APEX_Y, min(h, _DIAMOND_APEX_Y + _DIAMOND_H)):
@@ -159,10 +164,17 @@ def _erode_m(m, r):
     return m
 
 
+def _dilate_m(m, r):
+    for _ in range(r):
+        m = m | _shift0(m, 1, 0) | _shift0(m, -1, 0) | _shift0(m, 0, 1) | _shift0(m, 0, -1)
+    return m
+
+
 def clean_top_rim(im, material_target=None, factor=0.86, band=4, strength=1.0,
-                  top_frac=0.58, protect_dark_material=True):
-    """Lighten the baked dark rim around the WHOLE top diamond so a clean tile
-    tessellates with NO dark dot at any shared vertex/edge.
+                  top_frac=0.58, protect_dark_material=True, edge_margin=22):
+    """Flatten the baked rim around the WHOLE top diamond so a clean tile tessellates
+    with NO seam at any shared vertex/edge — a dark outline (stone/grass) OR a bright
+    block-edge bevel (crystal_ice/snow, which tiles into a white 'chessboard' lattice).
 
     This matters because the map fills large areas by REPEATING one clean tile, so
     that tile must be flawless when tiled — a single dark edge pixel becomes a dot at
@@ -187,32 +199,25 @@ def clean_top_rim(im, material_target=None, factor=0.86, band=4, strength=1.0,
     mv = float(material_target.get("value", 180)) if material_target else 180.0
     if protect_dark_material and mv < 70:             # near-black terrain rim is real rock
         return im.convert("RGBA")
-    thr = mv * factor
     h, w = op.shape
     dm = _diamond_mask(h, w)
-    perim = dm & ~_erode_m(dm, band)                  # the diamond's outer edge ring
-    target = op & perim & (lum < thr)
+    core = _erode_m(dm, band)
+    perim = _dilate_m(dm, 2) & ~core                  # diamond edge ring (+2px for AA/growth)
+    body_mask = op & core
+    if not body_mask.any():
+        body_mask = op & dm
+    if not body_mask.any():
+        return im.convert("RGBA")
+    # the material's own body colour (median of the diamond interior). Perimeter pixels
+    # that DEVIATE from it — a dark baked outline (stone/grass) OR a bright block-edge
+    # bevel (crystal_ice/snow, which tiles into a white 'chessboard' lattice) — are
+    # pulled toward it, so the shared edges vanish and the clean tile tessellates flat.
+    gcolor = np.median(rgb[body_mask], axis=0)
+    dist = np.sqrt(((rgb - gcolor[None, None, :]) ** 2).sum(axis=2))
+    target = op & perim & (dist > edge_margin)
     if not target.any():
         return im.convert("RGBA")
-    # recolour toward the material's own lit body (median of the diamond interior)
-    body = op & _erode_m(dm, band) & (lum >= thr)
-    if not body.any():
-        body = op & dm & (lum >= thr)
-    gcolor = (np.median(rgb[body], axis=0) if body.any()
-              else np.array([mv, mv, mv], np.float32))
-    bright = op & (lum >= thr)                         # local bright neighbours where present
-    acc = np.zeros_like(rgb)
-    cnt = np.zeros(lum.shape, np.float32)
-    bf = bright.astype(np.float32)
-    for dy in range(-2, 3):
-        for dx in range(-2, 3):
-            acc += _shift0(rgb * bright[:, :, None], dy, dx)
-            cnt += _shift0(bf, dy, dx)
-    have = cnt > 0
-    avg = np.empty_like(rgb)
-    avg[:] = gcolor                                    # global body colour fallback
-    avg[have] = acc[have] / cnt[have, None]
-    blended = rgb * (1.0 - strength) + avg * strength
+    blended = rgb * (1.0 - strength) + gcolor[None, None, :] * strength
     a[:, :, :3] = np.where(target[:, :, None], blended, rgb)
     return Image.fromarray(a.clip(0, 255).astype(np.uint8), "RGBA")
 

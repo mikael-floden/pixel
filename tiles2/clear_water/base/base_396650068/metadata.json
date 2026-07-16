@@ -1198,10 +1198,9 @@
         }
       },
       "features": [
-        "shiny",
-        "accent"
+        "shiny"
       ],
-      "description": "clear water with a shiny speck, a small detail"
+      "description": "clear water with a shiny speck"
     }
   ],
   "generated_at": "2026-07-05T15:33:55+00:00",
@@ -1222,7 +1221,8 @@
       "band": 4,
       "strength": 1.0,
       "top_frac": 0.58,
-      "protect_dark_material": true
+      "protect_dark_material": true,
+      "edge_margin": 22
     },
     "gap_close": {
       "enabled": true,

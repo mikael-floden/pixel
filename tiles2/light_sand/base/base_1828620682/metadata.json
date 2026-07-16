@@ -899,8 +899,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain light sand"
+      "features": [
+        "bare_soil"
+      ],
+      "description": "light sand with a bare soil patch"
     },
     {
       "index": 12,
@@ -1119,11 +1121,12 @@
         }
       },
       "features": [
-        "water",
         "pebbles",
-        "accent"
+        "water",
+        "accent",
+        "flowers"
       ],
-      "description": "light sand with a small puddle, pebbles, a small detail"
+      "description": "light sand with pebbles, a small puddle, a small detail, small flowers"
     },
     {
       "index": 15,
@@ -1220,7 +1223,8 @@
       "band": 4,
       "strength": 1.0,
       "top_frac": 0.58,
-      "protect_dark_material": true
+      "protect_dark_material": true,
+      "edge_margin": 22
     },
     "gap_close": {
       "enabled": true,

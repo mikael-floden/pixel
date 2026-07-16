@@ -674,10 +674,9 @@
         }
       },
       "features": [
-        "flowers",
-        "pebbles"
+        "flowers"
       ],
-      "description": "dirt with small flowers, pebbles"
+      "description": "dirt with small flowers"
     },
     {
       "index": 9,
@@ -1189,11 +1188,8 @@
           }
         }
       },
-      "features": [
-        "pebbles",
-        "accent"
-      ],
-      "description": "dirt with pebbles, a small detail"
+      "features": [],
+      "description": "plain dirt"
     }
   ],
   "generated_at": "2026-07-05T09:22:59+00:00",
@@ -1214,7 +1210,8 @@
       "band": 4,
       "strength": 1.0,
       "top_frac": 0.58,
-      "protect_dark_material": true
+      "protect_dark_material": true,
+      "edge_margin": 22
     },
     "gap_close": {
       "enabled": true,

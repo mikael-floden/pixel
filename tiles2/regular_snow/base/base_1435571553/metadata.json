@@ -235,10 +235,10 @@
       },
       "features": [
         "water",
-        "pebbles",
-        "accent"
+        "accent",
+        "pebbles"
       ],
-      "description": "snow with a small puddle, pebbles, a small detail"
+      "description": "snow with a small puddle, a small detail, pebbles"
     },
     {
       "index": 3,
@@ -1116,11 +1116,11 @@
         }
       },
       "features": [
-        "pebbles",
         "accent",
-        "water"
+        "water",
+        "pebbles"
       ],
-      "description": "snow with pebbles, a small detail, a small puddle"
+      "description": "snow with a small detail, a small puddle, pebbles"
     },
     {
       "index": 15,
@@ -1216,7 +1216,8 @@
       "band": 4,
       "strength": 1.0,
       "top_frac": 0.58,
-      "protect_dark_material": true
+      "protect_dark_material": true,
+      "edge_margin": 22
     },
     "gap_close": {
       "enabled": true,
