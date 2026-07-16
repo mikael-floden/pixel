@@ -107,14 +107,19 @@ function showUpdateBanner(sha: string) {
   el.textContent = `⬆ New version ${sha.slice(0, 7)} — tap to reload`;
   // Non-selectable on purpose (belt and braces with the global rule): a long
   // press used to text-select the hash and pop Chrome's search sheet mid-game.
+  // BIG on purpose too (maintainer: it was "super small and hard to click"):
+  // a fat thumb-sized pill below the celestial clock, and it goes through
+  // applyUiZoom like every other overlay — without it, phone desktop-site
+  // mode shrank it ~3x along with the layout viewport.
   el.style.cssText =
-    "position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:100;cursor:pointer;" +
-    "padding:8px 16px;border-radius:8px;background:#111114f2;color:#ffd678;" +
-    "border:1px solid #ffd67855;font:14px system-ui,sans-serif;box-shadow:0 4px 16px #000a;" +
-    "user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;" +
+    "position:fixed;top:160px;left:50%;transform:translateX(-50%);z-index:100;cursor:pointer;" +
+    "padding:16px 26px;border-radius:14px;background:#111114f2;color:#ffd678;" +
+    "border:2px solid #ffd678aa;font:bold 19px system-ui,sans-serif;box-shadow:0 6px 24px #000c;" +
+    "white-space:nowrap;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;" +
     "-webkit-tap-highlight-color:transparent";
   el.addEventListener("click", () => location.reload());
   document.body.appendChild(el);
+  applyUiZoom(el);
 }
 
 async function boot() {
