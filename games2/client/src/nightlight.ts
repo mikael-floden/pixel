@@ -406,23 +406,24 @@ void main() {
     // solid) and this plain march — the same code path the torch LOS and
     // the cliffs use — casts their shade. No prop special-casing (three
     // hand-crafted variants all bought artifacts: spikes, circles, cubes).
-    // Variable-step march, attenuation normalized per step (pow(occ, step))
-    // so shade depth is step-invariant: FINE 0.35-cell steps over the first
-    // ~5 cells — the full reach of 1-2 level shadows (props, single ledges;
-    // coarse 0.6-step banding drew a small blocker's sample-count
-    // boundaries as arcs, "blobs") — then coarse steps for the long cliff
-    // reach, where shadows are broad bands and banding can't read.
+    // Fine fixed-step march (0.35 cells — coarse 0.6 steps drew a small
+    // blocker's sample-count boundaries as arcs, "blobs"), attenuation
+    // normalized per step (pow(occ, step)). Reach rolls off softly past
+    // ~3 cells (gone by 4.5): every shadow band the playtests approved
+    // lives within that range, and without the cap tall blockers taper
+    // into long "spiky" tails that read as artifacts, not shade.
     float sunVis = 1.0;
     float dc = 0.0;
-    for (int s = 1; s <= 20; s++) {
-      float step = s <= 14 ? 0.35 : 1.4;
-      dc += step;
+    for (int s = 1; s <= 13; s++) {
+      dc += 0.35;
       vec2 p = pos - uSun.xy * dc;
       if (floor(p.x) == floor(pos.x) && floor(p.y) == floor(pos.y)) continue;
+      float reach = smoothstep(4.5, 2.8, dc);
+      if (reach <= 0.0) break;
       float hRay = z + dc * uSun.z + 0.15;
       float H = heightAtSoft(p);
       if (H < 90.0 && H > hRay)
-        sunVis *= pow(mix(0.70, 0.17, clamp((H - hRay) * 1.2, 0.0, 1.0)), step);
+        sunVis *= pow(mix(0.70, 0.17, clamp((H - hRay) * 1.2, 0.0, 1.0)), 0.35 * reach);
     }
     if (isFace) {
       vec2 nrm = mix(vec2(0.0, 1.0), vec2(1.0, 0.0), pickR);
@@ -1073,19 +1074,24 @@ export class NightLights {
       return (a * (1 - fx) + b * fx) * (1 - fy) + (d * (1 - fx) + e * fx) * fy;
     };
     const hAtSoft = soft(this.hArr, 99);
-    // Mirror of the shader: variable-step march, per-step-normalized occ.
+    const sstep = (e0: number, e1: number, x: number) => {
+      const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0)));
+      return t * t * (3 - 2 * t);
+    };
+    // Mirror of the shader: fine march, soft reach cap ~3-4.5 cells.
     let sunVis = 1;
     let dc = 0;
-    for (let sN = 1; sN <= 20; sN++) {
-      const step = sN <= 14 ? 0.35 : 1.4;
-      dc += step;
+    for (let sN = 1; sN <= 13; sN++) {
+      dc += 0.35;
       const px = col - sun[0] * dc;
       const py = row - sun[1] * dc;
       if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
+      const reach = sstep(4.5, 2.8, dc);
+      if (reach <= 0) break;
       const hRay = z + dc * sun[2] + 0.15;
       const hh = hAtSoft(px, py);
       if (hh < 90 && hh > hRay)
-        sunVis *= Math.pow(0.7 + (0.17 - 0.7) * Math.min(1, (hh - hRay) * 1.2), step);
+        sunVis *= Math.pow(0.7 + (0.17 - 0.7) * Math.min(1, (hh - hRay) * 1.2), 0.35 * reach);
     }
     const sunShare = 0.45 * sun[3];
     return 1 - sunShare + sunShare * Math.max(0, Math.min(1, sunVis));
