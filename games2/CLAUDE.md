@@ -258,6 +258,16 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   scripts/verify-weather.mjs (clear=1 everywhere, patchy not overcast,
   drifts over time, night-muted) + server/test/weather.test.ts.
 
+## Contact shadows (baked, always on)
+
+- Tiles with HIGHER west/north neighbours get soft dark gradients baked
+  into the ground pass (shade-w/n/nw in WorldScene, alpha scaled by the
+  height diff, capped 3) — the game1 elevation cue, restored per the
+  maintainer at ~70% of game1's daylight strength so it reads as dim
+  shade UNDER the per-pixel shader instead of the double-darkened razor
+  edges that got it disabled originally. Column-top redraws mirror the
+  same strengths.
+
 ## Directional sun shadows (day phases)
 
 - The night shader also carries a DIRECTIONAL SUN (uSun = cast-dir grid

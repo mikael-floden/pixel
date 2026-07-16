@@ -2380,20 +2380,22 @@ export class WorldScene extends Phaser.Scene {
           : 0;
         for (let lvl = fromLvl; lvl <= cell.l; lvl++)
           rt.batchDraw(key, bx, by - lvl * lh - this.artYOff(key));
-        // Baked contact shadows from higher sun-side neighbours: a DAYLIGHT
-        // elevation cue. Under the per-pixel night shader they double-darken
-        // every ledge with hard-edged black gradients the light multiplies
-        // UNDER — the razor-sharp black edges no field softening can remove.
-        // The shader's own occlusion/face lighting carries the depth cue now.
-        if (!this.night) {
+        // Baked contact shadows from higher sun-side neighbours — the game1
+        // elevation cue the maintainer asked back (tall 2-5 level tiles cast
+        // dim shade on the ground beside them). Restored UNDER the per-pixel
+        // shader at ~70% of the game1 daylight strength: the shader's own
+        // night AO/face shadows carry most of the depth cue in the dark, so
+        // the dimmer bake reads as a soft always-on shadow instead of the
+        // old double-darkened razor edges.
+        {
           const own = cell.l;
           const topY = by - cell.l * lh;
           const dW = Math.min(3, this.effHeight(col - 1, row, own) - own);
           const dN = Math.min(3, this.effHeight(col, row - 1, own) - own);
           const dNW = Math.min(3, this.effHeight(col - 1, row - 1, own) - own);
-          if (dW > 0) rt.batchDraw("shade-w", bx, topY, 0.22 + dW * 0.14);
-          if (dN > 0) rt.batchDraw("shade-n", bx, topY, 0.18 + dN * 0.12);
-          if (dNW > 0 && dW <= 0 && dN <= 0) rt.batchDraw("shade-nw", bx, topY, 0.3);
+          if (dW > 0) rt.batchDraw("shade-w", bx, topY, 0.15 + dW * 0.1);
+          if (dN > 0) rt.batchDraw("shade-n", bx, topY, 0.13 + dN * 0.08);
+          if (dNW > 0 && dW <= 0 && dN <= 0) rt.batchDraw("shade-nw", bx, topY, 0.21);
         }
       }
     }
@@ -2906,20 +2908,20 @@ export class WorldScene extends Phaser.Scene {
           y0: by - cell.l * lh - aOff,
           y1: by + tileSize,
         });
-        // Match the ground pass's contact shadows on redrawn column tops —
-        // daylight/canvas fallback only (see drawGroundWindow).
-        if (!this.night) {
+        // Match the ground pass's contact shadows on redrawn column tops
+        // (same restored strengths — see drawGroundWindow).
+        {
           const own = cell.l;
           const topY = by - cell.l * lh;
           const dW = Math.min(3, this.effHeight(col - 1, row, own) - own);
           const dN = Math.min(3, this.effHeight(col, row - 1, own) - own);
           if (dW > 0)
             this.occluders.push(
-              this.add.image(bx, topY, "shade-w").setOrigin(0, 0).setAlpha(0.22 + dW * 0.14).setDepth(by + dy + 0.05),
+              this.add.image(bx, topY, "shade-w").setOrigin(0, 0).setAlpha(0.15 + dW * 0.1).setDepth(by + dy + 0.05),
             );
           if (dN > 0)
             this.occluders.push(
-              this.add.image(bx, topY, "shade-n").setOrigin(0, 0).setAlpha(0.18 + dN * 0.12).setDepth(by + dy + 0.05),
+              this.add.image(bx, topY, "shade-n").setOrigin(0, 0).setAlpha(0.13 + dN * 0.08).setDepth(by + dy + 0.05),
             );
         }
       }
