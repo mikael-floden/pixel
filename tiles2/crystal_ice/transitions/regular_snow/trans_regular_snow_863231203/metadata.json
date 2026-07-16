@@ -99,8 +99,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.664,
-        "crystal_ice": 0.336
+        "regular_snow": 0.661,
+        "crystal_ice": 0.339
       },
       "edges": {
         "NE": {
@@ -109,13 +109,14 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "regular_snow",
+            "crystal_ice",
             "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 1.0
+            "regular_snow": 0.875,
+            "crystal_ice": 0.125
           }
         },
         "SE": {
@@ -174,8 +175,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.882,
-        "crystal_ice": 0.118
+        "regular_snow": 0.883,
+        "crystal_ice": 0.117
       },
       "edges": {
         "NE": {
@@ -249,8 +250,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.624,
-        "crystal_ice": 0.376
+        "regular_snow": 0.549,
+        "crystal_ice": 0.451
       },
       "edges": {
         "NE": {
@@ -259,13 +260,14 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
+            "crystal_ice",
             "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow"
+            "crystal_ice",
+            "crystal_ice"
           ],
           "ratio": {
-            "regular_snow": 1.0
+            "regular_snow": 0.625,
+            "crystal_ice": 0.375
           }
         },
         "SE": {
@@ -302,7 +304,7 @@
         "NW": {
           "samples": [
             "regular_snow",
-            "regular_snow",
+            "crystal_ice",
             "crystal_ice",
             "regular_snow",
             "crystal_ice",
@@ -311,13 +313,16 @@
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 0.75,
-            "crystal_ice": 0.25
+            "regular_snow": 0.625,
+            "crystal_ice": 0.375
           }
         }
       },
-      "features": [],
-      "description": "snow blending to crystal ice"
+      "features": [
+        "pebbles",
+        "accent"
+      ],
+      "description": "snow blending to crystal ice with pebbles, a small detail"
     },
     {
       "index": 4,
@@ -325,8 +330,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.632,
-        "crystal_ice": 0.368
+        "regular_snow": 0.643,
+        "crystal_ice": 0.357
       },
       "edges": {
         "NE": {
@@ -481,8 +486,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.696,
-        "crystal_ice": 0.304
+        "regular_snow": 0.699,
+        "crystal_ice": 0.301
       },
       "edges": {
         "NE": {
@@ -558,8 +563,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.607,
-        "crystal_ice": 0.393
+        "regular_snow": 0.612,
+        "crystal_ice": 0.388
       },
       "edges": {
         "NE": {
@@ -714,8 +719,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.698,
-        "crystal_ice": 0.302
+        "regular_snow": 0.699,
+        "crystal_ice": 0.301
       },
       "edges": {
         "NE": {
@@ -865,8 +870,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.592,
-        "crystal_ice": 0.408
+        "regular_snow": 0.594,
+        "crystal_ice": 0.406
       },
       "edges": {
         "NE": {
@@ -946,8 +951,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.599,
-        "crystal_ice": 0.401
+        "regular_snow": 0.606,
+        "crystal_ice": 0.394
       },
       "edges": {
         "NE": {
@@ -1100,8 +1105,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.592,
-        "crystal_ice": 0.408
+        "regular_snow": 0.597,
+        "crystal_ice": 0.403
       },
       "edges": {
         "NE": {

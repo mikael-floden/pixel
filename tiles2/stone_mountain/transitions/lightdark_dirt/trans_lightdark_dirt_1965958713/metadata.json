@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.924,
-        "lightdark_dirt": 0.076
+        "stone_mountain": 0.918,
+        "lightdark_dirt": 0.082
       },
       "edges": {
         "NE": {
@@ -35,14 +35,14 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
+            "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "stone_mountain": 0.875,
-            "lightdark_dirt": 0.125
+            "stone_mountain": 0.75,
+            "lightdark_dirt": 0.25
           },
-          "divider": 0.875
+          "divider": 0.75
         },
         "SE": {
           "samples": [
@@ -103,8 +103,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.835,
-        "lightdark_dirt": 0.165
+        "stone_mountain": 0.827,
+        "lightdark_dirt": 0.173
       },
       "edges": {
         "NE": {
@@ -114,15 +114,15 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
+            "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "stone_mountain": 0.75,
-            "lightdark_dirt": 0.25
+            "stone_mountain": 0.625,
+            "lightdark_dirt": 0.375
           },
-          "divider": 0.75
+          "divider": 0.625
         },
         "SE": {
           "samples": [
@@ -183,8 +183,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.982,
-        "lightdark_dirt": 0.018
+        "stone_mountain": 0.977,
+        "lightdark_dirt": 0.023
       },
       "edges": {
         "NE": {
@@ -260,8 +260,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.855,
-        "lightdark_dirt": 0.145
+        "stone_mountain": 0.82,
+        "lightdark_dirt": 0.18
       },
       "edges": {
         "NE": {
@@ -272,16 +272,18 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
-            "stone_mountain"
+            "lightdark_dirt",
+            "lightdark_dirt"
           ],
           "ratio": {
-            "stone_mountain": 1.0
-          }
+            "stone_mountain": 0.75,
+            "lightdark_dirt": 0.25
+          },
+          "divider": 0.75
         },
         "SE": {
           "samples": [
-            "stone_mountain",
+            "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
@@ -291,9 +293,10 @@
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.375,
-            "lightdark_dirt": 0.625
-          }
+            "lightdark_dirt": 0.75,
+            "stone_mountain": 0.25
+          },
+          "divider": 0.75
         },
         "SW": {
           "samples": [
@@ -337,8 +340,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.815,
-        "lightdark_dirt": 0.185
+        "stone_mountain": 0.817,
+        "lightdark_dirt": 0.183
       },
       "edges": {
         "NE": {
@@ -578,8 +581,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.509,
-        "lightdark_dirt": 0.491
+        "stone_mountain": 0.495,
+        "lightdark_dirt": 0.505
       },
       "edges": {
         "NE": {
@@ -649,7 +652,7 @@
         }
       },
       "features": [],
-      "description": "grey mountain stone blending to dirt"
+      "description": "dirt blending to grey mountain stone"
     },
     {
       "index": 8,
@@ -731,8 +734,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.822,
-        "stone_mountain": 0.178
+        "lightdark_dirt": 0.831,
+        "stone_mountain": 0.169
       },
       "edges": {
         "NE": {
@@ -809,8 +812,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.838,
-        "stone_mountain": 0.162
+        "lightdark_dirt": 0.837,
+        "stone_mountain": 0.163
       },
       "edges": {
         "NE": {
@@ -884,8 +887,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.474,
-        "lightdark_dirt": 0.526
+        "stone_mountain": 0.465,
+        "lightdark_dirt": 0.535
       },
       "edges": {
         "NE": {
@@ -1041,8 +1044,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.652,
-        "lightdark_dirt": 0.348
+        "stone_mountain": 0.676,
+        "lightdark_dirt": 0.324
       },
       "edges": {
         "NE": {
@@ -1117,27 +1120,11 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.658,
-        "stone_mountain": 0.342
+        "lightdark_dirt": 0.684,
+        "stone_mountain": 0.316
       },
       "edges": {
         "NE": {
-          "samples": [
-            "stone_mountain",
-            "stone_mountain",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "stone_mountain"
-          ],
-          "ratio": {
-            "stone_mountain": 0.375,
-            "lightdark_dirt": 0.625
-          }
-        },
-        "SE": {
           "samples": [
             "stone_mountain",
             "stone_mountain",
@@ -1153,6 +1140,22 @@
             "lightdark_dirt": 0.75
           },
           "divider": 0.25
+        },
+        "SE": {
+          "samples": [
+            "lightdark_dirt",
+            "stone_mountain",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 0.875,
+            "stone_mountain": 0.125
+          }
         },
         "SW": {
           "samples": [
@@ -1176,15 +1179,15 @@
             "stone_mountain",
             "lightdark_dirt",
             "lightdark_dirt",
-            "stone_mountain",
+            "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.375,
-            "lightdark_dirt": 0.625
+            "stone_mountain": 0.25,
+            "lightdark_dirt": 0.75
           }
         }
       },

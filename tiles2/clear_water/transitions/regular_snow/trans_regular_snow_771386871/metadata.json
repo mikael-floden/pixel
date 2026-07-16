@@ -96,8 +96,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.209,
-        "clear_water": 0.791
+        "regular_snow": 0.212,
+        "clear_water": 0.788
       },
       "edges": {
         "NE": {
@@ -174,8 +174,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.788,
-        "regular_snow": 0.212
+        "clear_water": 0.787,
+        "regular_snow": 0.213
       },
       "edges": {
         "NE": {
@@ -405,8 +405,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.628,
-        "clear_water": 0.372
+        "regular_snow": 0.629,
+        "clear_water": 0.371
       },
       "edges": {
         "NE": {
@@ -415,16 +415,16 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "clear_water",
+            "regular_snow",
             "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "regular_snow": 0.5,
-            "clear_water": 0.5
+            "regular_snow": 0.625,
+            "clear_water": 0.375
           },
-          "divider": 0.5
+          "divider": 0.625
         },
         "SE": {
           "samples": [
@@ -1019,8 +1019,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.632,
-        "clear_water": 0.368
+        "regular_snow": 0.625,
+        "clear_water": 0.375
       },
       "edges": {
         "NE": {
@@ -1175,8 +1175,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.735,
-        "clear_water": 0.265
+        "regular_snow": 0.724,
+        "clear_water": 0.276
       },
       "edges": {
         "NE": {
@@ -1185,13 +1185,14 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "regular_snow",
+            "clear_water",
             "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 1.0
+            "regular_snow": 0.875,
+            "clear_water": 0.125
           }
         },
         "SE": {

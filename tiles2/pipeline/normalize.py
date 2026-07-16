@@ -137,21 +137,46 @@ def neutralize_outline(im, darkness_thresh=60):
     return Image.fromarray(a.clip(0, 255).astype(np.uint8), "RGBA")
 
 
+_DIAMOND_APEX_Y = 8
+_DIAMOND_H = 30
+
+
+def _diamond_mask(h, w):
+    """Top-diamond mask matching the tiles2 geometry (apex y=8, 30px tall, full width),
+    so we can target the diamond PERIMETER without ever touching the front face below."""
+    m = np.zeros((h, w), bool)
+    cx = w // 2
+    for y in range(_DIAMOND_APEX_Y, min(h, _DIAMOND_APEX_Y + _DIAMOND_H)):
+        t = (y - _DIAMOND_APEX_Y) / _DIAMOND_H
+        hw = int(round((w / 2) * (1 - abs(2 * t - 1))))
+        m[y, max(0, cx - hw):min(w, cx + hw)] = True
+    return m
+
+
+def _erode_m(m, r):
+    for _ in range(r):
+        m = m & _shift0(m, 1, 0) & _shift0(m, -1, 0) & _shift0(m, 0, 1) & _shift0(m, 0, -1)
+    return m
+
+
 def clean_top_rim(im, material_target=None, factor=0.86, band=4, strength=1.0,
                   top_frac=0.58, protect_dark_material=True):
-    """Lighten the slightly-dark baked rim on the TOP diamond so tessellating tiles
-    don't show a dark dot at every shared vertex.
+    """Lighten the baked dark rim around the WHOLE top diamond so a clean tile
+    tessellates with NO dark dot at any shared vertex/edge.
 
-    Distinct from gap_close (which closes true background gaps) and neutralize_outline
-    (silhouette pixels only): the culprit here is the diamond's edge rim sitting a bit
-    darker than the interior (e.g. snow interior lum ~210, rim ~180 — only ~30 down, so
-    absolute-dark thresholds miss it). Where four diamonds meet, those rims converge
-    into a faint dot; on bright snow/ice it reads as a grey/black dot grid. Threshold is
-    RELATIVE to the material brightness (mv*factor) so it works on light AND dark grounds.
-    Only the TOP diamond is touched (top_frac of the height) — the front soil/rock FACE
-    below is left alone — and only the silhouette-adjacent rim band (edge-distance<=band);
-    interior detail (flowers, pebbles, rocks) sits deeper and is untouched. Recolours the
-    rim toward the brighter local material.
+    This matters because the map fills large areas by REPEATING one clean tile, so
+    that tile must be flawless when tiled — a single dark edge pixel becomes a dot at
+    every junction. The dots are the diamond's edge rim sitting darker than the
+    interior (snow interior ~210 vs rim ~180; stone ~188 vs SE-edge ~85). An earlier
+    silhouette-only pass missed the LOWER diamond edges (SE/SW): they border the front
+    face, so they aren't silhouette-adjacent, yet they land on shared vertices when
+    tiled. Fix = target the whole top-diamond PERIMETER geometrically (diamond mask
+    minus its eroded interior). The diamond mask covers ONLY the top surface, so the
+    front soil/rock FACE is never touched, and interior detail lives in the eroded core
+    and is spared. Runs BEFORE gap_close so the mask aligns with the un-grown diamond.
+    Threshold is RELATIVE to the material brightness (mv*factor); dark rim pixels are
+    recoloured toward the material's own lit body. Near-black terrain (value<70) is
+    skipped. (`band` = perimeter width; `top_frac` kept for config compat, unused.)
     """
     a = np.asarray(im.convert("RGBA")).astype(np.float32)
     rgb, al = a[:, :, :3], a[:, :, 3]
@@ -163,13 +188,19 @@ def clean_top_rim(im, material_target=None, factor=0.86, band=4, strength=1.0,
     if protect_dark_material and mv < 70:             # near-black terrain rim is real rock
         return im.convert("RGBA")
     thr = mv * factor
-    d = _edge_dist(op, band + 1)
-    top = np.zeros_like(op)
-    top[:int(round(op.shape[0] * top_frac)), :] = True   # top diamond only (spare front face)
-    target = op & (lum < thr) & (d >= 1) & (d <= band) & top
+    h, w = op.shape
+    dm = _diamond_mask(h, w)
+    perim = dm & ~_erode_m(dm, band)                  # the diamond's outer edge ring
+    target = op & perim & (lum < thr)
     if not target.any():
         return im.convert("RGBA")
-    bright = op & (lum >= thr)
+    # recolour toward the material's own lit body (median of the diamond interior)
+    body = op & _erode_m(dm, band) & (lum >= thr)
+    if not body.any():
+        body = op & dm & (lum >= thr)
+    gcolor = (np.median(rgb[body], axis=0) if body.any()
+              else np.array([mv, mv, mv], np.float32))
+    bright = op & (lum >= thr)                         # local bright neighbours where present
     acc = np.zeros_like(rgb)
     cnt = np.zeros(lum.shape, np.float32)
     bf = bright.astype(np.float32)
@@ -178,20 +209,11 @@ def clean_top_rim(im, material_target=None, factor=0.86, band=4, strength=1.0,
             acc += _shift0(rgb * bright[:, :, None], dy, dx)
             cnt += _shift0(bf, dy, dx)
     have = cnt > 0
-    avg = np.zeros_like(rgb)
+    avg = np.empty_like(rgb)
+    avg[:] = gcolor                                    # global body colour fallback
     avg[have] = acc[have] / cnt[have, None]
-    # GLOBAL material colour fallback: a dark corner surrounded by more dark rim (e.g.
-    # stone's near-black W/S vertex, lum ~13) has no bright neighbour to pull toward,
-    # so the local average leaves it dark. Fill those from the material's own bright
-    # body (median of the top-diamond's lit pixels) so every dark vertex lightens.
-    gmask = bright & top
-    if gmask.any():
-        gcolor = np.median(rgb[gmask], axis=0)
-        avg[~have] = gcolor
-        have = np.ones_like(have)                       # every target now has a source
-    apply = target & have
     blended = rgb * (1.0 - strength) + avg * strength
-    a[:, :, :3] = np.where(apply[:, :, None], blended, rgb)
+    a[:, :, :3] = np.where(target[:, :, None], blended, rgb)
     return Image.fromarray(a.clip(0, 255).astype(np.uint8), "RGBA")
 
 

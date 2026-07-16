@@ -478,8 +478,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.649,
-        "lightdark_dirt": 0.351
+        "clear_water": 0.652,
+        "lightdark_dirt": 0.348
       },
       "edges": {
         "NE": {
@@ -562,8 +562,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.591,
-        "lightdark_dirt": 0.409
+        "lightdark_dirt": 0.438,
+        "clear_water": 0.562
       },
       "edges": {
         "NE": {
@@ -635,9 +635,10 @@
         }
       },
       "features": [
-        "pebbles"
+        "pebbles",
+        "bare_soil"
       ],
-      "description": "clear water blending to dirt with pebbles"
+      "description": "clear water blending to dirt with pebbles, a bare soil patch"
     },
     {
       "index": 8,
@@ -719,8 +720,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.652,
-        "clear_water": 0.348
+        "lightdark_dirt": 0.625,
+        "clear_water": 0.375
       },
       "edges": {
         "NE": {
@@ -789,9 +790,10 @@
         }
       },
       "features": [
-        "pebbles"
+        "pebbles",
+        "accent"
       ],
-      "description": "dirt blending to clear water with pebbles"
+      "description": "dirt blending to clear water with pebbles, a small detail"
     },
     {
       "index": 10,
@@ -948,8 +950,10 @@
           }
         }
       },
-      "features": [],
-      "description": "dirt blending to clear water"
+      "features": [
+        "pebbles"
+      ],
+      "description": "dirt blending to clear water with pebbles"
     },
     {
       "index": 12,
@@ -1103,8 +1107,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.978,
-        "clear_water": 0.022
+        "lightdark_dirt": 0.991,
+        "clear_water": 0.009
       },
       "edges": {
         "NE": {
@@ -1168,10 +1172,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "dirt with pebbles"
+      "features": [],
+      "description": "plain dirt"
     },
     {
       "index": 15,

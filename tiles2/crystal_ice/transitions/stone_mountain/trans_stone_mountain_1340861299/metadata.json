@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.525,
-        "crystal_ice": 0.475
+        "stone_mountain": 0.494,
+        "crystal_ice": 0.506
       },
       "edges": {
         "NE": {
@@ -67,14 +67,13 @@
             "crystal_ice",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
+            "crystal_ice",
             "stone_mountain"
           ],
           "ratio": {
-            "crystal_ice": 0.5,
-            "stone_mountain": 0.5
-          },
-          "divider": 0.5
+            "crystal_ice": 0.625,
+            "stone_mountain": 0.375
+          }
         },
         "NW": {
           "samples": [
@@ -83,13 +82,12 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "crystal_ice",
+            "stone_mountain",
             "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.875,
-            "crystal_ice": 0.125
+            "stone_mountain": 1.0
           }
         }
       },
@@ -97,7 +95,7 @@
         "pebbles",
         "accent"
       ],
-      "description": "grey mountain stone blending to crystal ice with pebbles, a small detail"
+      "description": "crystal ice blending to grey mountain stone with pebbles, a small detail"
     },
     {
       "index": 1,
@@ -105,57 +103,11 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.787,
-        "stone_mountain": 0.213
+        "stone_mountain": 0.259,
+        "crystal_ice": 0.741
       },
       "edges": {
         "NE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "stone_mountain",
-            "stone_mountain",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 0.75,
-            "stone_mountain": 0.25
-          }
-        },
-        "SE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        },
-        "SW": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        },
-        "NW": {
           "samples": [
             "crystal_ice",
             "crystal_ice",
@@ -170,25 +122,8 @@
             "crystal_ice": 0.625,
             "stone_mountain": 0.375
           }
-        }
-      },
-      "features": [
-        "accent",
-        "pebbles"
-      ],
-      "description": "crystal ice blending to grey mountain stone with a small detail, pebbles"
-    },
-    {
-      "index": 2,
-      "file": "tile_02.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "crystal_ice": 0.764,
-        "stone_mountain": 0.236
-      },
-      "edges": {
-        "NE": {
+        },
+        "SE": {
           "samples": [
             "crystal_ice",
             "crystal_ice",
@@ -202,6 +137,71 @@
           "ratio": {
             "crystal_ice": 1.0
           }
+        },
+        "SW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 0.5,
+            "stone_mountain": 0.5
+          }
+        }
+      },
+      "features": [
+        "pebbles",
+        "accent"
+      ],
+      "description": "crystal ice blending to grey mountain stone with pebbles, a small detail"
+    },
+    {
+      "index": 2,
+      "file": "tile_02.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "crystal_ice": 0.714,
+        "stone_mountain": 0.286
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "stone_mountain",
+            "stone_mountain"
+          ],
+          "ratio": {
+            "crystal_ice": 0.75,
+            "stone_mountain": 0.25
+          },
+          "divider": 0.75
         },
         "SE": {
           "samples": [
@@ -229,16 +229,17 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "crystal_ice"
+            "stone_mountain"
           ],
           "ratio": {
-            "crystal_ice": 0.5,
-            "stone_mountain": 0.5
-          }
+            "crystal_ice": 0.375,
+            "stone_mountain": 0.625
+          },
+          "divider": 0.375
         },
         "NW": {
           "samples": [
-            "crystal_ice",
+            "stone_mountain",
             "stone_mountain",
             "stone_mountain",
             "crystal_ice",
@@ -248,9 +249,10 @@
             "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.75,
-            "stone_mountain": 0.25
-          }
+            "stone_mountain": 0.375,
+            "crystal_ice": 0.625
+          },
+          "divider": 0.375
         }
       },
       "features": [
@@ -346,8 +348,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.646,
-        "stone_mountain": 0.354
+        "crystal_ice": 0.647,
+        "stone_mountain": 0.353
       },
       "edges": {
         "NE": {
@@ -427,8 +429,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.667,
-        "stone_mountain": 0.333
+        "crystal_ice": 0.668,
+        "stone_mountain": 0.332
       },
       "edges": {
         "NE": {
@@ -508,8 +510,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.56,
-        "stone_mountain": 0.44
+        "crystal_ice": 0.558,
+        "stone_mountain": 0.442
       },
       "edges": {
         "NE": {
@@ -589,8 +591,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.558,
-        "stone_mountain": 0.442
+        "crystal_ice": 0.557,
+        "stone_mountain": 0.443
       },
       "edges": {
         "NE": {
@@ -670,8 +672,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.965,
-        "crystal_ice": 0.035
+        "stone_mountain": 0.973,
+        "crystal_ice": 0.027
       },
       "edges": {
         "NE": {
@@ -726,13 +728,12 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "crystal_ice",
+            "stone_mountain",
             "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.875,
-            "crystal_ice": 0.125
+            "stone_mountain": 1.0
           }
         }
       },
@@ -827,8 +828,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.714,
-        "crystal_ice": 0.286
+        "stone_mountain": 0.717,
+        "crystal_ice": 0.283
       },
       "edges": {
         "NE": {
@@ -989,8 +990,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.631,
-        "stone_mountain": 0.369
+        "stone_mountain": 0.486,
+        "crystal_ice": 0.514
       },
       "edges": {
         "NE": {
@@ -998,15 +999,15 @@
             "crystal_ice",
             "stone_mountain",
             "stone_mountain",
-            "crystal_ice",
-            "crystal_ice",
+            "stone_mountain",
+            "stone_mountain",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.75,
-            "stone_mountain": 0.25
+            "crystal_ice": 0.5,
+            "stone_mountain": 0.5
           }
         },
         "SE": {
@@ -1033,27 +1034,29 @@
             "stone_mountain",
             "stone_mountain",
             "crystal_ice",
-            "crystal_ice"
+            "stone_mountain"
           ],
           "ratio": {
-            "crystal_ice": 0.5,
-            "stone_mountain": 0.5
+            "crystal_ice": 0.375,
+            "stone_mountain": 0.625
           }
         },
         "NW": {
           "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 1.0
-          }
+            "stone_mountain": 0.625,
+            "crystal_ice": 0.375
+          },
+          "divider": 0.625
         }
       },
       "features": [
@@ -1068,8 +1071,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.477,
-        "crystal_ice": 0.523
+        "stone_mountain": 0.548,
+        "crystal_ice": 0.452
       },
       "edges": {
         "NE": {
@@ -1123,24 +1126,24 @@
         "NW": {
           "samples": [
             "stone_mountain",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
             "crystal_ice",
             "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.375,
-            "crystal_ice": 0.625
+            "stone_mountain": 0.875,
+            "crystal_ice": 0.125
           }
         }
       },
       "features": [
         "pebbles"
       ],
-      "description": "crystal ice blending to grey mountain stone with pebbles"
+      "description": "grey mountain stone blending to crystal ice with pebbles"
     },
     {
       "index": 14,
@@ -1148,8 +1151,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.481,
-        "stone_mountain": 0.519
+        "stone_mountain": 0.659,
+        "crystal_ice": 0.341
       },
       "edges": {
         "NE": {
@@ -1157,15 +1160,15 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "crystal_ice",
+            "stone_mountain",
             "stone_mountain",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.875,
-            "stone_mountain": 0.125
+            "crystal_ice": 0.75,
+            "stone_mountain": 0.25
           }
         },
         "SE": {
@@ -1193,27 +1196,29 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "crystal_ice"
+            "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.5,
-            "crystal_ice": 0.5
+            "stone_mountain": 0.625,
+            "crystal_ice": 0.375
           }
         },
         "NW": {
           "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 1.0
-          }
+            "stone_mountain": 0.625,
+            "crystal_ice": 0.375
+          },
+          "divider": 0.625
         }
       },
       "features": [

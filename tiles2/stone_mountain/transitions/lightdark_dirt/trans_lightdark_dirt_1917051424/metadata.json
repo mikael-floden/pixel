@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.914,
-        "lightdark_dirt": 0.086
+        "stone_mountain": 0.879,
+        "lightdark_dirt": 0.121
       },
       "edges": {
         "NE": {
@@ -35,17 +35,19 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
-            "stone_mountain"
+            "lightdark_dirt",
+            "lightdark_dirt"
           ],
           "ratio": {
-            "stone_mountain": 1.0
-          }
+            "stone_mountain": 0.75,
+            "lightdark_dirt": 0.25
+          },
+          "divider": 0.75
         },
         "SE": {
           "samples": [
-            "stone_mountain",
             "lightdark_dirt",
+            "stone_mountain",
             "lightdark_dirt",
             "lightdark_dirt",
             "stone_mountain",
@@ -54,8 +56,8 @@
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.625,
-            "lightdark_dirt": 0.375
+            "lightdark_dirt": 0.375,
+            "stone_mountain": 0.625
           }
         },
         "SW": {
@@ -98,8 +100,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.695,
-        "lightdark_dirt": 0.305
+        "lightdark_dirt": 0.413,
+        "stone_mountain": 0.587
       },
       "edges": {
         "NE": {
@@ -108,18 +110,20 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain"
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
           ],
           "ratio": {
-            "stone_mountain": 1.0
-          }
+            "stone_mountain": 0.5,
+            "lightdark_dirt": 0.5
+          },
+          "divider": 0.5
         },
         "SE": {
           "samples": [
-            "stone_mountain",
+            "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
@@ -129,9 +133,10 @@
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.375,
-            "lightdark_dirt": 0.625
-          }
+            "lightdark_dirt": 0.75,
+            "stone_mountain": 0.25
+          },
+          "divider": 0.75
         },
         "SW": {
           "samples": [
@@ -173,11 +178,26 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.407,
-        "lightdark_dirt": 0.593
+        "lightdark_dirt": 0.743,
+        "stone_mountain": 0.257
       },
       "edges": {
         "NE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SE": {
           "samples": [
             "lightdark_dirt",
             "lightdark_dirt",
@@ -194,22 +214,6 @@
           },
           "divider": 0.625
         },
-        "SE": {
-          "samples": [
-            "stone_mountain",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain"
-          ],
-          "ratio": {
-            "stone_mountain": 0.5,
-            "lightdark_dirt": 0.5
-          }
-        },
         "SW": {
           "samples": [
             "stone_mountain",
@@ -219,27 +223,28 @@
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
-            "stone_mountain"
-          ],
-          "ratio": {
-            "stone_mountain": 0.5,
-            "lightdark_dirt": 0.5
-          }
-        },
-        "NW": {
-          "samples": [
-            "stone_mountain",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
             "lightdark_dirt"
           ],
           "ratio": {
-            "stone_mountain": 0.5,
-            "lightdark_dirt": 0.5
+            "stone_mountain": 0.375,
+            "lightdark_dirt": 0.625
+          },
+          "divider": 0.375
+        },
+        "NW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "stone_mountain",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 0.875,
+            "stone_mountain": 0.125
           }
         }
       },
@@ -252,8 +257,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.741,
-        "lightdark_dirt": 0.259
+        "stone_mountain": 0.718,
+        "lightdark_dirt": 0.282
       },
       "edges": {
         "NE": {
@@ -264,17 +269,18 @@
             "stone_mountain",
             "stone_mountain",
             "lightdark_dirt",
-            "stone_mountain",
+            "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "stone_mountain": 0.75,
-            "lightdark_dirt": 0.25
-          }
+            "stone_mountain": 0.625,
+            "lightdark_dirt": 0.375
+          },
+          "divider": 0.625
         },
         "SE": {
           "samples": [
-            "stone_mountain",
+            "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
@@ -284,10 +290,8 @@
             "lightdark_dirt"
           ],
           "ratio": {
-            "stone_mountain": 0.125,
-            "lightdark_dirt": 0.875
-          },
-          "divider": 0.125
+            "lightdark_dirt": 1.0
+          }
         },
         "SW": {
           "samples": [
@@ -331,8 +335,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.66,
-        "lightdark_dirt": 0.34
+        "stone_mountain": 0.605,
+        "lightdark_dirt": 0.395
       },
       "edges": {
         "NE": {
@@ -342,17 +346,19 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain"
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
           ],
           "ratio": {
-            "stone_mountain": 1.0
-          }
+            "stone_mountain": 0.625,
+            "lightdark_dirt": 0.375
+          },
+          "divider": 0.625
         },
         "SE": {
           "samples": [
-            "stone_mountain",
+            "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
@@ -362,10 +368,8 @@
             "lightdark_dirt"
           ],
           "ratio": {
-            "stone_mountain": 0.125,
-            "lightdark_dirt": 0.875
-          },
-          "divider": 0.125
+            "lightdark_dirt": 1.0
+          }
         },
         "SW": {
           "samples": [
@@ -409,8 +413,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.684,
-        "lightdark_dirt": 0.316
+        "stone_mountain": 0.615,
+        "lightdark_dirt": 0.385
       },
       "edges": {
         "NE": {
@@ -418,19 +422,21 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain"
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
           ],
           "ratio": {
-            "stone_mountain": 1.0
-          }
+            "stone_mountain": 0.375,
+            "lightdark_dirt": 0.625
+          },
+          "divider": 0.375
         },
         "SE": {
           "samples": [
-            "stone_mountain",
+            "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
@@ -440,10 +446,8 @@
             "lightdark_dirt"
           ],
           "ratio": {
-            "stone_mountain": 0.125,
-            "lightdark_dirt": 0.875
-          },
-          "divider": 0.125
+            "lightdark_dirt": 1.0
+          }
         },
         "SW": {
           "samples": [
@@ -565,8 +569,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.813,
-        "lightdark_dirt": 0.187
+        "stone_mountain": 0.803,
+        "lightdark_dirt": 0.197
       },
       "edges": {
         "NE": {
@@ -577,13 +581,14 @@
             "stone_mountain",
             "stone_mountain",
             "lightdark_dirt",
-            "stone_mountain",
+            "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "stone_mountain": 0.75,
-            "lightdark_dirt": 0.25
-          }
+            "stone_mountain": 0.625,
+            "lightdark_dirt": 0.375
+          },
+          "divider": 0.625
         },
         "SE": {
           "samples": [
@@ -718,8 +723,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.646,
-        "lightdark_dirt": 0.354
+        "stone_mountain": 0.652,
+        "lightdark_dirt": 0.348
       },
       "edges": {
         "NE": {
@@ -796,15 +801,15 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.751,
-        "stone_mountain": 0.249
+        "lightdark_dirt": 0.764,
+        "stone_mountain": 0.236
       },
       "edges": {
         "NE": {
           "samples": [
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
+            "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
@@ -812,10 +817,10 @@
             "lightdark_dirt"
           ],
           "ratio": {
-            "stone_mountain": 0.375,
-            "lightdark_dirt": 0.625
+            "stone_mountain": 0.25,
+            "lightdark_dirt": 0.75
           },
-          "divider": 0.375
+          "divider": 0.25
         },
         "SE": {
           "samples": [
@@ -868,10 +873,10 @@
         }
       },
       "features": [
-        "accent",
-        "pebbles"
+        "pebbles",
+        "accent"
       ],
-      "description": "dirt blending to grey mountain stone with a small detail, pebbles"
+      "description": "dirt blending to grey mountain stone with pebbles, a small detail"
     },
     {
       "index": 11,
@@ -879,8 +884,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.736,
-        "lightdark_dirt": 0.264
+        "stone_mountain": 0.718,
+        "lightdark_dirt": 0.282
       },
       "edges": {
         "NE": {
@@ -889,13 +894,14 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
+            "lightdark_dirt",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 1.0
+            "stone_mountain": 0.875,
+            "lightdark_dirt": 0.125
           }
         },
         "SE": {
@@ -955,8 +961,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.673,
-        "lightdark_dirt": 0.327
+        "stone_mountain": 0.679,
+        "lightdark_dirt": 0.321
       },
       "edges": {
         "NE": {
@@ -1034,8 +1040,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.724,
-        "lightdark_dirt": 0.276
+        "stone_mountain": 0.726,
+        "lightdark_dirt": 0.274
       },
       "edges": {
         "NE": {
@@ -1112,8 +1118,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.561,
-        "lightdark_dirt": 0.439
+        "stone_mountain": 0.551,
+        "lightdark_dirt": 0.449
       },
       "edges": {
         "NE": {
@@ -1170,14 +1176,15 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
+            "lightdark_dirt",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 1.0
+            "stone_mountain": 0.875,
+            "lightdark_dirt": 0.125
           }
         }
       },
@@ -1190,8 +1197,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.646,
-        "lightdark_dirt": 0.354
+        "stone_mountain": 0.635,
+        "lightdark_dirt": 0.365
       },
       "edges": {
         "NE": {
@@ -1201,13 +1208,13 @@
             "stone_mountain",
             "stone_mountain",
             "lightdark_dirt",
-            "stone_mountain",
+            "lightdark_dirt",
             "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.875,
-            "lightdark_dirt": 0.125
+            "stone_mountain": 0.75,
+            "lightdark_dirt": 0.25
           }
         },
         "SE": {

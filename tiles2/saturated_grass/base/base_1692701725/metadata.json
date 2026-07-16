@@ -832,9 +832,11 @@
         }
       },
       "features": [
-        "flowers"
+        "bare_soil",
+        "flowers",
+        "pebbles"
       ],
-      "description": "saturated grass with small flowers"
+      "description": "saturated grass with a bare soil patch, small flowers, pebbles"
     },
     {
       "index": 11,
@@ -1057,10 +1059,9 @@
         }
       },
       "features": [
-        "flowers",
-        "bare_soil"
+        "flowers"
       ],
-      "description": "saturated grass with small flowers, a bare soil patch"
+      "description": "saturated grass with small flowers"
     },
     {
       "index": 14,

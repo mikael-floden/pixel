@@ -249,8 +249,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.822,
-        "lightdark_dirt": 0.178
+        "crystal_ice": 0.805,
+        "lightdark_dirt": 0.195
       },
       "edges": {
         "NE": {
@@ -304,7 +304,7 @@
           "samples": [
             "lightdark_dirt",
             "lightdark_dirt",
-            "crystal_ice",
+            "lightdark_dirt",
             "lightdark_dirt",
             "crystal_ice",
             "crystal_ice",
@@ -312,16 +312,14 @@
             "crystal_ice"
           ],
           "ratio": {
-            "lightdark_dirt": 0.375,
-            "crystal_ice": 0.625
-          }
+            "lightdark_dirt": 0.5,
+            "crystal_ice": 0.5
+          },
+          "divider": 0.5
         }
       },
-      "features": [
-        "accent",
-        "pebbles"
-      ],
-      "description": "crystal ice blending to dirt with a small detail, pebbles"
+      "features": [],
+      "description": "crystal ice blending to dirt"
     },
     {
       "index": 4,
@@ -329,8 +327,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.77,
-        "lightdark_dirt": 0.23
+        "crystal_ice": 0.714,
+        "lightdark_dirt": 0.286
       },
       "edges": {
         "NE": {
@@ -339,18 +337,20 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
           ],
           "ratio": {
-            "crystal_ice": 1.0
-          }
+            "crystal_ice": 0.5,
+            "lightdark_dirt": 0.5
+          },
+          "divider": 0.5
         },
         "SE": {
           "samples": [
-            "crystal_ice",
+            "lightdark_dirt",
             "crystal_ice",
             "lightdark_dirt",
             "lightdark_dirt",
@@ -360,10 +360,9 @@
             "lightdark_dirt"
           ],
           "ratio": {
-            "crystal_ice": 0.25,
-            "lightdark_dirt": 0.75
-          },
-          "divider": 0.25
+            "lightdark_dirt": 0.875,
+            "crystal_ice": 0.125
+          }
         },
         "SW": {
           "samples": [
@@ -407,8 +406,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.719,
-        "lightdark_dirt": 0.281
+        "crystal_ice": 0.681,
+        "lightdark_dirt": 0.319
       },
       "edges": {
         "NE": {
@@ -417,15 +416,16 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "crystal_ice",
             "lightdark_dirt",
-            "crystal_ice",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "crystal_ice": 0.75,
-            "lightdark_dirt": 0.25
-          }
+            "crystal_ice": 0.5,
+            "lightdark_dirt": 0.5
+          },
+          "divider": 0.5
         },
         "SE": {
           "samples": [
@@ -475,10 +475,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "crystal ice blending to dirt with pebbles"
+      "features": [],
+      "description": "crystal ice blending to dirt"
     },
     {
       "index": 6,
@@ -486,8 +484,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.711,
-        "lightdark_dirt": 0.289
+        "crystal_ice": 0.652,
+        "lightdark_dirt": 0.348
       },
       "edges": {
         "NE": {
@@ -496,14 +494,16 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
           ],
           "ratio": {
-            "crystal_ice": 1.0
-          }
+            "crystal_ice": 0.5,
+            "lightdark_dirt": 0.5
+          },
+          "divider": 0.5
         },
         "SE": {
           "samples": [
@@ -562,8 +562,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.719,
-        "lightdark_dirt": 0.281
+        "crystal_ice": 0.673,
+        "lightdark_dirt": 0.327
       },
       "edges": {
         "NE": {
@@ -572,16 +572,16 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "crystal_ice": 0.875,
-            "lightdark_dirt": 0.125
+            "crystal_ice": 0.5,
+            "lightdark_dirt": 0.5
           },
-          "divider": 0.875
+          "divider": 0.5
         },
         "SE": {
           "samples": [
@@ -629,10 +629,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "crystal ice blending to dirt with pebbles"
+      "features": [],
+      "description": "crystal ice blending to dirt"
     },
     {
       "index": 8,
@@ -640,8 +638,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.834,
-        "crystal_ice": 0.166
+        "lightdark_dirt": 0.831,
+        "crystal_ice": 0.169
       },
       "edges": {
         "NE": {
@@ -720,8 +718,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.702,
-        "crystal_ice": 0.298
+        "lightdark_dirt": 0.739,
+        "crystal_ice": 0.261
       },
       "edges": {
         "NE": {
@@ -730,16 +728,15 @@
             "lightdark_dirt",
             "lightdark_dirt",
             "crystal_ice",
-            "crystal_ice",
+            "lightdark_dirt",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "lightdark_dirt": 0.375,
-            "crystal_ice": 0.625
-          },
-          "divider": 0.375
+            "lightdark_dirt": 0.5,
+            "crystal_ice": 0.5
+          }
         },
         "SE": {
           "samples": [
@@ -779,15 +776,14 @@
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
-            "crystal_ice",
+            "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "lightdark_dirt": 0.875,
-            "crystal_ice": 0.125
+            "lightdark_dirt": 1.0
           }
         }
       },
@@ -802,8 +798,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.691,
-        "crystal_ice": 0.309
+        "lightdark_dirt": 0.716,
+        "crystal_ice": 0.284
       },
       "edges": {
         "NE": {
@@ -858,15 +854,14 @@
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
-            "crystal_ice",
+            "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "lightdark_dirt": 0.875,
-            "crystal_ice": 0.125
+            "lightdark_dirt": 1.0
           }
         }
       },
@@ -881,8 +876,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.614,
-        "crystal_ice": 0.386
+        "lightdark_dirt": 0.62,
+        "crystal_ice": 0.38
       },
       "edges": {
         "NE": {
@@ -959,15 +954,15 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.613,
-        "lightdark_dirt": 0.387
+        "lightdark_dirt": 0.527,
+        "crystal_ice": 0.473
       },
       "edges": {
         "NE": {
           "samples": [
-            "crystal_ice",
             "lightdark_dirt",
-            "crystal_ice",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
@@ -975,9 +970,10 @@
             "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.875,
-            "lightdark_dirt": 0.125
-          }
+            "lightdark_dirt": 0.375,
+            "crystal_ice": 0.625
+          },
+          "divider": 0.375
         },
         "SE": {
           "samples": [
@@ -1003,35 +999,36 @@
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
-            "crystal_ice"
+            "lightdark_dirt"
           ],
           "ratio": {
-            "crystal_ice": 0.625,
-            "lightdark_dirt": 0.375
-          }
+            "crystal_ice": 0.5,
+            "lightdark_dirt": 0.5
+          },
+          "divider": 0.5
         },
         "NW": {
           "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "crystal_ice",
             "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "crystal_ice": 0.75,
-            "lightdark_dirt": 0.25
-          },
-          "divider": 0.75
+            "lightdark_dirt": 0.875,
+            "crystal_ice": 0.125
+          }
         }
       },
       "features": [
-        "pebbles"
+        "pebbles",
+        "flowers"
       ],
-      "description": "crystal ice blending to dirt with pebbles"
+      "description": "dirt blending to crystal ice with pebbles, small flowers"
     },
     {
       "index": 13,
@@ -1039,8 +1036,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.882,
-        "lightdark_dirt": 0.118
+        "crystal_ice": 0.892,
+        "lightdark_dirt": 0.108
       },
       "edges": {
         "NE": {
@@ -1115,8 +1112,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.728,
-        "lightdark_dirt": 0.272
+        "crystal_ice": 0.74,
+        "lightdark_dirt": 0.26
       },
       "edges": {
         "NE": {
@@ -1194,8 +1191,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.673,
-        "lightdark_dirt": 0.327
+        "crystal_ice": 0.674,
+        "lightdark_dirt": 0.326
       },
       "edges": {
         "NE": {
