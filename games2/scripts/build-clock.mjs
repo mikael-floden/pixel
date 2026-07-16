@@ -160,12 +160,15 @@ for (const q of QUADS) {
 // Canvas dims stay multiples of 2*SCALE_D so the 3/4 bake lands on integers
 // with the knob (canvas centre) on an integer too.
 const halfW = Math.max(...cuts.map((c) => Math.max(c.cxOff, c.img.width - c.cxOff)));
-const canW = Math.ceil((halfW * 2 + 1) / (2 * SCALE_D)) * 2 * SCALE_D;
-const canH = Math.ceil(Math.max(...cuts.map((c) => c.topOff + c.img.height)) / SCALE_D) * SCALE_D;
+// +16/+8 mock px margin (sides/bottom) so the baked border ring has room to
+// grow; the TOP stays flush — it tucks under the frame rail.
+const canW = Math.ceil((halfW * 2 + 1 + 16) / (2 * SCALE_D)) * 2 * SCALE_D;
+const canH = Math.ceil((Math.max(...cuts.map((c) => c.topOff + c.img.height)) + 8) / SCALE_D) * SCALE_D;
 for (const c of cuts) {
   const pad = new PNG({ width: canW, height: canH });
   PNG.bitblt(c.img, pad, 0, 0, c.img.width, c.img.height, Math.round(canW / 2 - c.cxOff), c.topOff);
   const small = boxDown(up(pad, SCALE_N), SCALE_D);
+  ring(small, 2);
   fs.writeFileSync(path.join(OUT, `clock_${c.phase}.png`), PNG.sync.write(small));
   console.log(`clock_${c.phase}.png  ${small.width}x${small.height}`);
 }
@@ -350,6 +353,41 @@ function up(img, f) {
       for (let k = 0; k < 4; k++) out.data[di + k] = img.data[si + k];
     }
   return out;
+}
+
+// The maintainer's enforced border, back from the sheet-2 era ("the clock
+// should also have the same 1px border, same size as the frame"): near-black
+// painted on the empty px bordering the art of the FINAL baked asset (post-
+// scale, so it stays crisp at 1:1). Two passes ~= the frame outline's visual
+// weight beside the 1:1 dial on the desktop-site phone; without it the pale
+// rim melted into snow.
+function ring(img, passes) {
+  const w = img.width, h = img.height;
+  for (let pass = 0; pass < passes; pass++) {
+    const grow = [];
+    for (let y = 0; y < h; y++)
+      for (let x = 0; x < w; x++) {
+        const o = (y * w + x) * 4;
+        if (img.data[o + 3]) continue;
+        let touches = false;
+        for (let dy = -1; dy <= 1 && !touches; dy++)
+          for (let dx = -1; dx <= 1; dx++) {
+            const nx = x + dx, ny = y + dy;
+            if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+            if (img.data[(ny * w + nx) * 4 + 3] > 60) {
+              touches = true;
+              break;
+            }
+          }
+        if (touches) grow.push(o);
+      }
+    for (const o of grow) {
+      img.data[o] = 8;
+      img.data[o + 1] = 6;
+      img.data[o + 2] = 5;
+      img.data[o + 3] = 230;
+    }
+  }
 }
 
 function boxDown(img, f, thresh = 128) {

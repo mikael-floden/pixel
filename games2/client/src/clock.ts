@@ -42,7 +42,7 @@ const HAND_PREFIX = [0, 180, 270, 360];
 // 1.5x the first bake — full mock res (2x) read "a bit too big"
 // (maintainer); assets are area-average baked to 3/4 mock size and render
 // 1:1 + pixelated (nearest-neighbour rule — the browser never resamples).
-const DIAL = { w: 156, h: 93, knobX: 78, knobY: 0 };
+const DIAL = { w: 168, h: 99, knobX: 84, knobY: 0 }; // incl. baked border-ring margin
 const ROOT_W = DIAL.w;
 // Sheet-3 hand points RIGHT as authored (hub = the sun-face disc, left end).
 const HAND = { w: 81, h: 19, hubX: 11.2, hubY: 9.3, baseDeg: -90.8 };
