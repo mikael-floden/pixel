@@ -69,8 +69,15 @@ test("the world clock advances time on its own", async () => {
     await waitFor(() => r1.state.players?.size === 1);
     assert.equal(r1.state.timeIdx, DEFAULT_TIME_IDX);
 
-    // NOBODY sends "timeofday" — the server's own clock moves the world
-    // through the phase ring.
+    // Time starts FROZEN (maintainer: default ON for phase testing) — the
+    // clock must NOT move until someone unfreezes it.
+    assert.equal(!!r1.state.frozen, true);
+    await new Promise((r) => setTimeout(r, 400));
+    assert.equal(r1.state.timeIdx, DEFAULT_TIME_IDX);
+
+    // Unfreeze: NOBODY sends "timeofday" — the server's own clock moves the
+    // world through the phase ring, the same for every player.
+    r1.send("freezetime");
     const next = (DEFAULT_TIME_IDX + 1) % TIME_PHASE_COUNT;
     await waitFor(() => r1.state.timeIdx === next);
     const after = (DEFAULT_TIME_IDX + 2) % TIME_PHASE_COUNT;

@@ -50,8 +50,8 @@ export const TIME_PHASE_COUNT = 4; // Night, Morning, Day, Evening
 export const DEFAULT_TIME_IDX = 2; // Day
 // The world clock: time advances on its own (the day/night cycle is a core
 // rhythm of the game, not a debug toggle). Per-phase duration in seconds,
-// indexed like timeIdx — days are long, dawn/dusk are shorter accents.
-export const TIME_PHASE_SECONDS = [240, 150, 300, 150]; // ~14 min full day
+// indexed like timeIdx (maintainer: 1 min per phase, 4 min full cycle).
+export const TIME_PHASE_SECONDS = [60, 60, 60, 60];
 
 // WEATHER is a second server-owned world-state layer on top of time-of-day
 // (maintainer: "the final game should have a combination of time-of-day and

@@ -183,8 +183,11 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
 - The phase index lives in WorldState.timeIdx (shared DEFAULT_TIME_IDX /
   TIME_PHASE_COUNT) and the cycle RUNS BY ITSELF (maintainer: the
   day/night cycle is a core rhythm of the game): the server's world
-  clock advances the phase per TIME_PHASE_SECONDS (~14 min full day;
-  long days, short dawns/dusks). The [1] key / HUD button send
+  clock advances the phase per TIME_PHASE_SECONDS (1 min per phase,
+  4 min full cycle). WorldState.frozen ("freeze time" settings switch,
+  "freezetime" message) holds the clock for phase testing — DEFAULT ON
+  for now; manual skips still work while frozen; tests must unfreeze
+  before expecting auto-advance. The [1] key / HUD button send
   "timeofday" — a SKIP that also restarts the phase timer (room option
   phaseSeconds overrides durations for tests). Every client's state
   listener applies the change (instant + logless on the initial sync,

@@ -397,6 +397,7 @@ export class WorldScene extends Phaser.Scene {
   // target over a few seconds — clouds roll in, they don't blink in.
   private weatherIdx = 0;
   private curCloud = 0;
+  private timeFrozen = true; // synced mirror of WorldState.frozen (switch state)
   private auroraOn = false; // synced target; curAurora eases toward it
   private curAurora = 0;
   // Torch IMPACT is continuous, not a boolean (maintainer): 1 at dusk/night/
@@ -620,6 +621,7 @@ export class WorldScene extends Phaser.Scene {
         // Time-of-day is the one plain BUTTON; the rest are switches
         // (down = ON) — no keyboard-digit prefixes (maintainer).
         { label: "time-of-day", act: () => this.cycleTimeOfDay(), hook: true },
+        { label: "freeze time", act: () => this.room?.send("freezetime"), get: () => this.timeFrozen },
         { label: "weather", act: () => this.room?.send("weather") },
         { label: "collision", act: () => this.toggleCollision(), get: () => !!this.collisionOverlay },
         { label: "torch", act: () => this.toggleTorch(), get: () => this.torchOn },
@@ -977,6 +979,13 @@ export class WorldScene extends Phaser.Scene {
       this.setTimeOfDay(idx % TIME_PHASES.length, firstTimeSync);
       if (!firstTimeSync) this.chat.addLog("—", `Time of day: ${TIME_PHASES[idx % TIME_PHASES.length].name}`);
       firstTimeSync = false;
+    });
+    let firstFrozenSync = true;
+    $(room.state).listen("frozen", (on: boolean) => {
+      this.timeFrozen = !!on;
+      this.hud?.refreshSettings();
+      if (!firstFrozenSync) this.chat.addLog("—", on ? "Time is frozen." : "Time flows again.");
+      firstFrozenSync = false;
     });
     let firstAuroraSync = true;
     $(room.state).listen("aurora", (on: boolean) => {

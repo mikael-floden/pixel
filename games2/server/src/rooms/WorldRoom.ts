@@ -85,6 +85,7 @@ export class WorldRoom extends Room<WorldState> {
   private scheduleTimeOfDay(override?: readonly number[]) {
     if (override) this.phaseSeconds = override;
     if (this.phaseTimer) clearTimeout(this.phaseTimer);
+    if (this.state.frozen) return; // freeze time: the clock holds still
     const s = this.phaseSeconds[this.state.timeIdx % this.phaseSeconds.length];
     this.phaseTimer = setTimeout(() => this.advanceTime(), s * 1000);
   }
@@ -145,6 +146,13 @@ export class WorldRoom extends Room<WorldState> {
     // "timeofday" — now a SKIP that also restarts the phase timer so a
     // manual skip grants the full next phase.
     this.onMessage("timeofday", () => this.advanceTime());
+    // Freeze time (world state, default ON): holds the clock so a given
+    // phase can be tested; manual skips still work while frozen. When time
+    // flows it ticks the same for every player — it's the room's clock.
+    this.onMessage("freezetime", () => {
+      this.state.frozen = !this.state.frozen;
+      this.scheduleTimeOfDay();
+    });
     this.scheduleTimeOfDay(options?.phaseSeconds);
     this.scheduleWildStar();
 

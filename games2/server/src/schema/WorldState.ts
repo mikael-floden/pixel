@@ -71,6 +71,7 @@ export class WorldState extends Schema {
   declare timeIdx: number; // shared time-of-day phase (server-owned)
   declare weather: number; // shared weather layer (server-owned; 0 = clear)
   declare aurora: boolean; // aurora night: northern lights over the world
+  declare frozen: boolean; // freeze time: the world clock holds the phase
 
   constructor() {
     super();
@@ -78,6 +79,7 @@ export class WorldState extends Schema {
     this.timeIdx = DEFAULT_TIME_IDX;
     this.weather = 0;
     this.aurora = false;
+    this.frozen = true; // frozen by default for now (maintainer: testing phases)
   }
 }
 
@@ -86,4 +88,5 @@ defineTypes(WorldState, {
   timeIdx: "number",
   weather: "number",
   aurora: "boolean",
+  frozen: "boolean",
 });
