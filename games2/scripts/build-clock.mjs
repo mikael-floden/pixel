@@ -33,7 +33,10 @@ const SRC =
   "/tmp/claude-0/-home-user/9b663e9c-b357-5388-9df4-7e56e3039f71/scratchpad";
 const OUT = path.resolve("client/public/ui");
 const T = 28; // lit = brighter than the black mock page
-const DIV = 2; // dial mock px per displayed px
+// Dial mock px per displayed px. The sheet-3 mocks are 1:1 game screenshots
+// (maintainer: "the scale is wrong and should be x2" — the ÷2 bake halved
+// the intended size), so the dials display at FULL mock resolution.
+const DIV = 1;
 const HAND_LEN_FRAC = 0.88; // hand length as a share of the dial radius
 
 const sheet = PNG.sync.read(fs.readFileSync(path.join(SRC, "clock3-sheet.png")));

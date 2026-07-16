@@ -225,8 +225,10 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   cut once from the day quadrant by size+warm-colour filter) as its OWN
   static layer: the dots must NEVER fade with phase cross-fades —
   always the same. Assets bake at EXACTLY the display resolution
-  (box ÷2, ~102px dials registered on one shared canvas by each disc's
-  own axis + the rail row — quadrant-centre registration drifted ~10px;
+  (the sheet-3 mocks are 1:1 game screenshots, so DIV=1 — full mock res,
+  ~204px dials; a ÷2 bake shipped once and read half-size (maintainer:
+  "the scale is wrong and should be x2"); registered on one shared
+  canvas by each disc's own axis + the rail row — quadrant-centre registration drifted ~10px;
   the mocks have NO clean pixel grid — do not grid-guess) and render
   1 asset px = 1 CSS px + pixelated so the browser never resamples
   (resampling = mush; a COARSER chunk grid was tried and rejected — it
