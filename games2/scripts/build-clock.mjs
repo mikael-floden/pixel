@@ -29,8 +29,8 @@ const T = 30; // background = max(r,g,b) <= T, reachable from the border
 // pixel stairs) and the client blows each asset px up to 4 CSS px
 // (pixelated, integer scale). Same on-screen size as before, 4x chunkier
 // pixels; fine detail (ticks, numerals) deliberately melts away.
-const DIAL_DIV = 16; // dial mock px per art px (display: x4 CSS px)
-const FINE_DIV = 8; // the fine hand (only shown while sweeping) keeps 2x detail
+const DIAL_DIV = 24; // dial mock px per art px (display: x4 CSS px)
+const FINE_DIV = 13; // the fine hand (only shown while sweeping) keeps ~2x detail
 
 // A hand ROTATED at runtime can't stay on the chunky grid (it dissolves
 // into a dotted line of diamonds), so the resting hand is baked per phase:
@@ -40,7 +40,7 @@ const FINE_DIV = 8; // the fine hand (only shown while sweeping) keeps 2x detail
 // KEEP IN SYNC with HAND_DEG in client/src/clock.ts (degrees from straight
 // down, positive = screen-left; the on-screen shadow directions).
 const HAND_DEG = { night: 90, morning: -90, day: 50.7, evening: 90 };
-const HAND_PAD = 16; // one art row of headroom above the dial's flat top
+const HAND_PAD = DIAL_DIV; // one art row of headroom above the dial's flat top
 
 function boxDown(img, f, thresh = 128) {
   const w = Math.floor(img.width / f), h = Math.floor(img.height / f);
@@ -236,7 +236,7 @@ for (const phase of [...PHASES, "hand"]) {
       }
     // The shaft is ~0.4 art px thick — a 50% coverage cut erases it, so
     // rest sprites keep any cell the hand meaningfully touches (~15%).
-    const spr = boxDown(canvas, DIAL_DIV, 28);
+    const spr = boxDown(canvas, DIAL_DIV, 20);
     fs.writeFileSync(path.join(OUT, `clock_hand_${ph}.png`), PNG.sync.write(spr));
     console.log(`clock_hand_${ph}.png  ${spr.width}x${spr.height}  (A ${A}deg)`);
   }

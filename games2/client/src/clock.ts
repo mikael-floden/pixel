@@ -41,12 +41,14 @@ const FADE_S = 2.5; // keep in step with WorldScene's TIME_TRANSITION_S
 const HAND_DEG = [90, -90, 50.7, 90];
 
 const PX = 4; // CSS px per asset art px — matches the frame's grain
-const DIAL = { w: 44, h: 26, knobX: 22.4, knobY: 1.4 }; // asset px
+// Sized to the maintainer's sketched area (round 7: "this is not how this
+// game is built" — smaller wins): ~116 CSS px wide, grain unchanged.
+const DIAL = { w: 29, h: 17, knobX: 14.9, knobY: 0.9 }; // asset px
 const ROOT_W = DIAL.w * PX;
 // The fine (sweep-only) hand, measured by build-clock.mjs: size, pivot-hub
 // centre, resting angle (down-left = +42.2 in the convention above). It
 // displays at 1 asset px = 1 CSS px so its length matches the rest sprites.
-const FINE = { w: 63, h: 69, hubX: 54.4, hubY: 8.0, baseDeg: 42.2 };
+const FINE = { w: 38, h: 42, hubX: 33.1, hubY: 4.5, baseDeg: 42.2 };
 // Rest sprites are dial-grid overlays with 1 art row of headroom above the
 // dial's flat top (HAND_PAD in the build script).
 const REST_TOP = -1 * PX;
