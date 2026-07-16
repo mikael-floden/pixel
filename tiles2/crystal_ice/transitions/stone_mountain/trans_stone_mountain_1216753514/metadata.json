@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.83,
-        "stone_mountain": 0.17
+        "crystal_ice": 0.854,
+        "stone_mountain": 0.146
       },
       "edges": {
         "NE": {
@@ -35,14 +35,13 @@
             "crystal_ice",
             "crystal_ice",
             "stone_mountain",
-            "stone_mountain",
-            "stone_mountain"
+            "crystal_ice",
+            "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.625,
-            "stone_mountain": 0.375
-          },
-          "divider": 0.625
+            "crystal_ice": 0.875,
+            "stone_mountain": 0.125
+          }
         },
         "SE": {
           "samples": [

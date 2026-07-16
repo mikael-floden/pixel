@@ -562,14 +562,14 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.459,
-        "clear_water": 0.541
+        "clear_water": 0.591,
+        "lightdark_dirt": 0.409
       },
       "edges": {
         "NE": {
           "samples": [
-            "lightdark_dirt",
-            "lightdark_dirt",
+            "clear_water",
+            "clear_water",
             "lightdark_dirt",
             "lightdark_dirt",
             "clear_water",
@@ -578,10 +578,9 @@
             "clear_water"
           ],
           "ratio": {
-            "lightdark_dirt": 0.5,
-            "clear_water": 0.5
-          },
-          "divider": 0.5
+            "clear_water": 0.75,
+            "lightdark_dirt": 0.25
+          }
         },
         "SE": {
           "samples": [

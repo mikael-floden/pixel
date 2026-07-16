@@ -1019,8 +1019,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.625,
-        "clear_water": 0.375
+        "regular_snow": 0.632,
+        "clear_water": 0.368
       },
       "edges": {
         "NE": {
@@ -1175,8 +1175,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.719,
-        "clear_water": 0.281
+        "regular_snow": 0.735,
+        "clear_water": 0.265
       },
       "edges": {
         "NE": {
@@ -1185,14 +1185,13 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "clear_water",
+            "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 0.875,
-            "clear_water": 0.125
+            "regular_snow": 1.0
           }
         },
         "SE": {

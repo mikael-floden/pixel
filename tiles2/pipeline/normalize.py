@@ -180,6 +180,15 @@ def clean_top_rim(im, material_target=None, factor=0.86, band=4, strength=1.0,
     have = cnt > 0
     avg = np.zeros_like(rgb)
     avg[have] = acc[have] / cnt[have, None]
+    # GLOBAL material colour fallback: a dark corner surrounded by more dark rim (e.g.
+    # stone's near-black W/S vertex, lum ~13) has no bright neighbour to pull toward,
+    # so the local average leaves it dark. Fill those from the material's own bright
+    # body (median of the top-diamond's lit pixels) so every dark vertex lightens.
+    gmask = bright & top
+    if gmask.any():
+        gcolor = np.median(rgb[gmask], axis=0)
+        avg[~have] = gcolor
+        have = np.ones_like(have)                       # every target now has a source
     apply = target & have
     blended = rgb * (1.0 - strength) + avg * strength
     a[:, :, :3] = np.where(apply[:, :, None], blended, rgb)

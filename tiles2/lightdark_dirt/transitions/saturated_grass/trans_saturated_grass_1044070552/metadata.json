@@ -105,29 +105,30 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.575,
-        "lightdark_dirt": 0.425
+        "lightdark_dirt": 0.547,
+        "saturated_grass": 0.453
       },
       "edges": {
         "NE": {
           "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass"
+            "lightdark_dirt",
+            "lightdark_dirt"
           ],
           "ratio": {
-            "saturated_grass": 1.0
+            "lightdark_dirt": 0.75,
+            "saturated_grass": 0.25
           }
         },
         "SE": {
           "samples": [
-            "saturated_grass",
-            "saturated_grass",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
@@ -136,8 +137,10 @@
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 1.0
-          }
+            "lightdark_dirt": 0.25,
+            "saturated_grass": 0.75
+          },
+          "divider": 0.25
         },
         "SW": {
           "samples": [
@@ -173,7 +176,7 @@
         }
       },
       "features": [],
-      "description": "saturated grass blending to dirt"
+      "description": "dirt blending to saturated grass"
     },
     {
       "index": 2,
@@ -409,8 +412,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.639,
-        "saturated_grass": 0.361
+        "lightdark_dirt": 0.72,
+        "saturated_grass": 0.28
       },
       "edges": {
         "NE": {
@@ -420,20 +423,19 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass"
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
           ],
           "ratio": {
-            "lightdark_dirt": 0.25,
-            "saturated_grass": 0.75
-          },
-          "divider": 0.25
+            "lightdark_dirt": 0.625,
+            "saturated_grass": 0.375
+          }
         },
         "SE": {
           "samples": [
             "saturated_grass",
-            "saturated_grass",
+            "lightdark_dirt",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
@@ -442,10 +444,9 @@
             "lightdark_dirt"
           ],
           "ratio": {
-            "saturated_grass": 0.875,
-            "lightdark_dirt": 0.125
-          },
-          "divider": 0.875
+            "saturated_grass": 0.75,
+            "lightdark_dirt": 0.25
+          }
         },
         "SW": {
           "samples": [
@@ -478,8 +479,10 @@
           }
         }
       },
-      "features": [],
-      "description": "dirt blending to saturated grass"
+      "features": [
+        "flowers"
+      ],
+      "description": "dirt blending to saturated grass with small flowers"
     },
     {
       "index": 6,
@@ -487,8 +490,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.551,
-        "lightdark_dirt": 0.449
+        "saturated_grass": 0.541,
+        "lightdark_dirt": 0.459
       },
       "edges": {
         "NE": {
@@ -499,14 +502,14 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
+            "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "saturated_grass": 0.875,
-            "lightdark_dirt": 0.125
+            "saturated_grass": 0.75,
+            "lightdark_dirt": 0.25
           },
-          "divider": 0.875
+          "divider": 0.75
         },
         "SE": {
           "samples": [
@@ -723,8 +726,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.644,
-        "lightdark_dirt": 0.356
+        "saturated_grass": 0.639,
+        "lightdark_dirt": 0.361
       },
       "edges": {
         "NE": {

@@ -888,14 +888,14 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.623,
-        "crystal_ice": 0.377
+        "crystal_ice": 0.529,
+        "stone_mountain": 0.471
       },
       "edges": {
         "NE": {
           "samples": [
-            "stone_mountain",
-            "stone_mountain",
+            "crystal_ice",
+            "crystal_ice",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
@@ -904,10 +904,8 @@
             "crystal_ice"
           ],
           "ratio": {
-            "stone_mountain": 0.25,
-            "crystal_ice": 0.75
-          },
-          "divider": 0.25
+            "crystal_ice": 1.0
+          }
         },
         "SE": {
           "samples": [
@@ -933,34 +931,34 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain"
+            "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.125,
-            "stone_mountain": 0.875
-          },
-          "divider": 0.125
+            "crystal_ice": 0.25,
+            "stone_mountain": 0.75
+          }
         },
         "NW": {
           "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain"
+            "crystal_ice"
           ],
           "ratio": {
-            "stone_mountain": 1.0
+            "crystal_ice": 0.75,
+            "stone_mountain": 0.25
           }
         }
       },
       "features": [
         "pebbles"
       ],
-      "description": "grey mountain stone blending to crystal ice with pebbles"
+      "description": "crystal ice blending to grey mountain stone with pebbles"
     },
     {
       "index": 12,
@@ -1202,8 +1200,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.311,
-        "crystal_ice": 0.689
+        "stone_mountain": 0.286,
+        "crystal_ice": 0.714
       },
       "edges": {
         "NE": {
@@ -1261,15 +1259,14 @@
             "crystal_ice",
             "crystal_ice",
             "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
+            "crystal_ice",
+            "crystal_ice",
             "stone_mountain"
           ],
           "ratio": {
-            "crystal_ice": 0.5,
-            "stone_mountain": 0.5
-          },
-          "divider": 0.5
+            "crystal_ice": 0.75,
+            "stone_mountain": 0.25
+          }
         }
       },
       "features": [

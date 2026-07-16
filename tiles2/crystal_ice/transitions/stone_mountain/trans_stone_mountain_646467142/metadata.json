@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.733,
-        "stone_mountain": 0.267
+        "crystal_ice": 0.764,
+        "stone_mountain": 0.236
       },
       "edges": {
         "NE": {
@@ -36,17 +36,16 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain"
+            "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.375,
-            "stone_mountain": 0.625
-          },
-          "divider": 0.375
+            "crystal_ice": 0.5,
+            "stone_mountain": 0.5
+          }
         },
         "SE": {
           "samples": [
-            "stone_mountain",
+            "crystal_ice",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
@@ -56,10 +55,9 @@
             "crystal_ice"
           ],
           "ratio": {
-            "stone_mountain": 0.75,
-            "crystal_ice": 0.25
-          },
-          "divider": 0.75
+            "crystal_ice": 0.375,
+            "stone_mountain": 0.625
+          }
         },
         "SW": {
           "samples": [
