@@ -202,16 +202,16 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   maintainer sized it down from full-mock): four pre-keyed, pixel-aligned
   PNGs (ui/clock_<phase>.png, cut from the maintainer's mocks by
   scripts/build-clock.mjs — outside-flood key + largest-blob) cross-fade
-  on the ambient's 2.5s clock via setClockPhase(). The assets share the
-  FRAME'S PIXEL GRAIN (maintainer): baked on a coarse art grid (box ÷16,
-  alpha hard-thresholded into pixel-stair borders; the mocks have NO
-  clean pixel grid — do not grid-guess) and rendered 1 art px = 4 CSS px
-  with image-rendering:pixelated (browser resampling is what made the
-  rim mush against the crisp frame). The HAND at rest is a PRE-ROTATED
-  dial-grid-aligned sprite per phase (clock_hand_<phase>; runtime-
-  rotating chunky art dissolves into dotted diamonds; shaft needs the
-  low ~11% coverage threshold or it vanishes) — the finer clock_hand.png
-  only rotates during the 2.5s sweep, then swaps to the sprite
+  on the ambient's 2.5s clock via setClockPhase(). Assets bake at
+  EXACTLY the display resolution (box ÷6, ~119px wide; the mocks have NO
+  clean pixel grid — do not grid-guess) and render 1 asset px = 1 CSS px
+  + pixelated so the browser never resamples (resampling = mush; a
+  COARSER chunk grid was tried and rejected — it melted the art to mud).
+  Dials get hard pixel-stair alpha + a baked RING=4px near-black border
+  (the frame's border weight). The HAND (single img, recoloured deep
+  brown so it reads on the gold rims) keeps SOFT averaged alpha — it
+  rotates at runtime and a thresholded ~1px shaft shreds into a ragged
+  line
   from setTimeOfDay(). The ARROW (ui/clock_hand.png, flipped by the same
   script which prints its hub/tip geometry) is its OWN layer above the
   dials — never fades, only rotates to the phase's quarter-sector

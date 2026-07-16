@@ -21,26 +21,19 @@ const OUT = path.resolve("client/public/ui");
 const PHASES = ["night", "morning", "day", "evening"];
 const T = 30; // background = max(r,g,b) <= T, reachable from the border
 
-// The clock must share the HUD frame's pixel GRAIN (maintainer: "same per
-// pixel size resolution as the frame/border/buttons — zoom in A LOT"). The
-// frame's art pixels render at ~4 CSS px, so the dial is reduced all the
-// way to a coarse art grid (box-downscale — no grid guessing, the mocks
-// have no clean pixel grid — with the alpha edge hard-thresholded into
-// pixel stairs) and the client blows each asset px up to 4 CSS px
-// (pixelated, integer scale). Same on-screen size as before, 4x chunkier
-// pixels; fine detail (ticks, numerals) deliberately melts away.
-const DIAL_DIV = 24; // dial mock px per art px (display: x4 CSS px)
-const FINE_DIV = 13; // the fine hand (only shown while sweeping) keeps ~2x detail
+// AAA pass (maintainer round 9): the coarse-grid experiment turned the
+// dial into a mud blob — full detail wins. Assets bake at EXACTLY the
+// display resolution (box-downscale, alpha hard-thresholded into pixel
+// stairs; the mocks have no clean pixel grid — do not grid-guess) on the
+// small approved footprint, rendered 1 asset px = 1 CSS px + pixelated so
+// the browser never resamples. Every mock detail (moon, stars, rings,
+// zodiac) survives at the small size.
+const DIAL_DIV = 6; // dial mock px per displayed px (~119 CSS px wide)
+const FINE_DIV = 12; // hand mock is ~2x the dial mock's scale
 
-// A hand ROTATED at runtime can't stay on the chunky grid (it dissolves
-// into a dotted line of diamonds), so the resting hand is baked per phase:
-// rotate the FULL-RES art to the phase angle first, then reduce onto the
-// dial's own 16px grid — a dial-aligned overlay sprite. The fine hand only
-// shows during the 2.5s sweep, where motion masks its finer grain.
-// KEEP IN SYNC with HAND_DEG in client/src/clock.ts (degrees from straight
-// down, positive = screen-left; the on-screen shadow directions).
-const HAND_DEG = { night: 90, morning: -90, day: 0, evening: 90 };
-const HAND_PAD = DIAL_DIV; // one art row of headroom above the dial's flat top
+// Border ring width in asset px: the maintainer-approved "1px border" was
+// 1 art px at the old 4-CSS chunk — keep that same on-screen weight.
+const RING = 4;
 
 function boxDown(img, f, thresh = 128) {
   const w = Math.floor(img.width / f), h = Math.floor(img.height / f);
@@ -59,8 +52,11 @@ function boxDown(img, f, thresh = 128) {
       out.data[o] = a ? Math.round(r / a) : 0;
       out.data[o + 1] = a ? Math.round(g / a) : 0;
       out.data[o + 2] = a ? Math.round(b / a) : 0;
-      // Hard pixel edge: a cell is either art or empty, no feather.
-      out.data[o + 3] = a / (f * f) >= thresh ? 255 : 0;
+      // Hard pixel edge (a cell is either art or empty) — or, with
+      // thresh 0, keep the averaged SOFT alpha: the hand rotates at
+      // runtime and a thresholded ~1px shaft shreds into a ragged line,
+      // while soft alpha anti-aliases cleanly through every angle.
+      out.data[o + 3] = thresh === 0 ? Math.round(a / (f * f)) : a / (f * f) >= thresh ? 255 : 0;
     }
   return out;
 }
@@ -151,30 +147,34 @@ for (const phase of [...PHASES, "hand"]) {
   }
   if (phase !== "hand") {
     const out = boxDown(full, DIAL_DIV);
-    // 1-art-px border ring, like every other HUD tile (the frame recipe —
-    // near-black at 90% alpha painted on the empty px bordering the art —
-    // reduces to black here because the keyed-out backdrop was black):
-    // without it the dial's bare rim floats on the world.
+    // Border ring, like every other HUD tile (the frame recipe — near-black
+    // at 90% alpha painted on the empty px bordering the art — reduces to
+    // black here because the keyed-out backdrop was black). RING px wide so
+    // it keeps the frame's border weight at this finer resolution.
     const ow = out.width, oh = out.height;
-    for (let y = 0; y < oh; y++)
-      for (let x = 0; x < ow; x++) {
-        const o = (y * ow + x) * 4;
-        if (out.data[o + 3]) continue;
-        let touches = false;
-        for (let dy = -1; dy <= 1 && !touches; dy++)
-          for (let dx = -1; dx <= 1; dx++) {
-            const nx = x + dx, ny = y + dy;
-            if (nx < 0 || ny < 0 || nx >= ow || ny >= oh) continue;
-            if (out.data[(ny * ow + nx) * 4 + 3] === 255) {
-              touches = true;
-              break;
+    for (let pass = 0; pass < RING; pass++) {
+      const grow = [];
+      for (let y = 0; y < oh; y++)
+        for (let x = 0; x < ow; x++) {
+          const o = (y * ow + x) * 4;
+          if (out.data[o + 3]) continue;
+          let touches = false;
+          for (let dy = -1; dy <= 1 && !touches; dy++)
+            for (let dx = -1; dx <= 1; dx++) {
+              const nx = x + dx, ny = y + dy;
+              if (nx < 0 || ny < 0 || nx >= ow || ny >= oh) continue;
+              if (out.data[(ny * ow + nx) * 4 + 3] > 0) {
+                touches = true;
+                break;
+              }
             }
-          }
-        if (touches) {
-          out.data[o] = 8; out.data[o + 1] = 6; out.data[o + 2] = 5;
-          out.data[o + 3] = 230;
+          if (touches) grow.push(o);
         }
+      for (const o of grow) {
+        out.data[o] = 8; out.data[o + 1] = 6; out.data[o + 2] = 5;
+        out.data[o + 3] = 230;
       }
+    }
     fs.writeFileSync(path.join(OUT, `clock_${phase}.png`), PNG.sync.write(out));
     console.log(`clock_${phase}.png  ${out.width}x${out.height}  (crop ${minX},${minY} of ${cw}x${ch})`);
     continue;
@@ -218,7 +218,7 @@ for (const phase of [...PHASES, "hand"]) {
   };
 
   // Fine hand for the sweep animation.
-  const fine = boxDown(full, FINE_DIV);
+  const fine = boxDown(full, FINE_DIV, 0);
   const gf = measure(fine);
   fs.writeFileSync(path.join(OUT, "clock_hand.png"), PNG.sync.write(fine));
   console.log(
@@ -226,42 +226,4 @@ for (const phase of [...PHASES, "hand"]) {
       `  angle-from-down ${gf.deg.toFixed(1)}deg  len ${Math.sqrt(gf.tip.d).toFixed(0)}px`
   );
 
-  // Resting sprites: rotate full-res around the hub onto a dial-mock-scale
-  // canvas (hand mock is 2x the dial mock's scale), then reduce onto the
-  // SAME 16px grid as the dial — a perfectly grid-aligned overlay.
-  const gF = measure(full);
-  for (const [ph, A] of Object.entries(HAND_DEG)) {
-    const R = ((A - gF.deg) * Math.PI) / 180;
-    const cos = Math.cos(-R), sin = Math.sin(-R);
-    const canvas = new PNG({ width: 716, height: 419 + HAND_PAD });
-    for (let y = 0; y < canvas.height; y++)
-      for (let x = 0; x < canvas.width; x++) {
-        const vx = x - 358, vy = y - (22 + HAND_PAD);
-        const sx = gF.hub.x + (vx * cos - vy * sin) * 2;
-        const sy = gF.hub.y + (vx * sin + vy * cos) * 2;
-        const x0 = Math.floor(sx), y0 = Math.floor(sy);
-        if (x0 < 0 || y0 < 0 || x0 >= cw - 1 || y0 >= ch - 1) continue;
-        const fx = sx - x0, fy = sy - y0;
-        let r = 0, g = 0, b = 0, a = 0;
-        for (const [ox, oy, wgt] of [
-          [0, 0, (1 - fx) * (1 - fy)], [1, 0, fx * (1 - fy)],
-          [0, 1, (1 - fx) * fy], [1, 1, fx * fy],
-        ]) {
-          const i = ((y0 + oy) * cw + x0 + ox) * 4;
-          const al = full.data[i + 3] * wgt;
-          r += full.data[i] * al; g += full.data[i + 1] * al; b += full.data[i + 2] * al;
-          a += al;
-        }
-        const o = (y * canvas.width + x) * 4;
-        canvas.data[o] = a ? Math.round(r / a) : 0;
-        canvas.data[o + 1] = a ? Math.round(g / a) : 0;
-        canvas.data[o + 2] = a ? Math.round(b / a) : 0;
-        canvas.data[o + 3] = Math.round(a);
-      }
-    // The shaft is ~0.4 art px thick — a 50% coverage cut erases it, so
-    // rest sprites keep any cell the hand meaningfully touches (~15%).
-    const spr = boxDown(canvas, DIAL_DIV, 20);
-    fs.writeFileSync(path.join(OUT, `clock_hand_${ph}.png`), PNG.sync.write(spr));
-    console.log(`clock_hand_${ph}.png  ${spr.width}x${spr.height}  (A ${A}deg)`);
-  }
 }
