@@ -221,6 +221,15 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   clock.ts. The version badge sits top-LEFT (main.ts) so it stays off
   the dial.
 
+- SHOOTING STARS (Nangijala is the land you ARRIVE in): every player
+  join broadcasts "star" {name} — all clients draw the same streak
+  across the visible sky (WorldScene.shootingStar: additive head +
+  particle tail at depth 1.5M, brightest at night, chat-logs the
+  arrival) with a micro-star echo on the dial (clock.ts clockStar()).
+  The server also throws wild no-name stars at random during NIGHT
+  (scheduleWildStar, 25-75s). Probe: `__ml.star(name?)` (local).
+  Regression: server/test/star.test.ts.
+
 ## Weather (server-owned world state, layer 2)
 
 - WorldState.weather (shared WEATHER_NAMES/COUNT; 0 = "Clear sky",

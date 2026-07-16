@@ -61,6 +61,17 @@ export class WorldRoom extends Room<WorldState> {
   // World-clock bookkeeping (see the "timeofday" wiring in onCreate).
   private phaseTimer: ReturnType<typeof setTimeout> | null = null;
   private phaseSeconds: readonly number[] = TIME_PHASE_SECONDS;
+  // Wild shooting stars streak the night sky at random (arrivals get their
+  // own star in onJoin, any hour).
+  private starTimer: ReturnType<typeof setTimeout> | null = null;
+
+  private scheduleWildStar() {
+    if (this.starTimer) clearTimeout(this.starTimer);
+    this.starTimer = setTimeout(() => {
+      if (this.state.timeIdx === 0) this.broadcast("star", {});
+      this.scheduleWildStar();
+    }, (25 + Math.random() * 50) * 1000);
+  }
 
   private advanceTime() {
     this.state.timeIdx = (this.state.timeIdx + 1) % TIME_PHASE_COUNT;
@@ -130,6 +141,7 @@ export class WorldRoom extends Room<WorldState> {
     // manual skip grants the full next phase.
     this.onMessage("timeofday", () => this.advanceTime());
     this.scheduleTimeOfDay(options?.phaseSeconds);
+    this.scheduleWildStar();
 
     // Weather is the second world-state layer, same contract.
     this.onMessage("weather", () => {
@@ -177,6 +189,9 @@ export class WorldRoom extends Room<WorldState> {
       player.y = c.y + rand(-120, 120);
     }
     this.state.players.set(client.sessionId, player);
+    // Every arrival in Nangijala is announced by a shooting star crossing
+    // the sky — the same streak for every player in the world.
+    this.broadcast("star", { name: player.name });
   }
 
   onLeave(client: Client) {
@@ -270,6 +285,7 @@ export class WorldRoom extends Room<WorldState> {
 
   onDispose() {
     if (this.phaseTimer) clearTimeout(this.phaseTimer);
+    if (this.starTimer) clearTimeout(this.starTimer);
   }
 }
 

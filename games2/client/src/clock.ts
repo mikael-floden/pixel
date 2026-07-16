@@ -93,6 +93,34 @@ function mount() {
   applyUiZoom(handRoot);
 }
 
+/** A tiny star twinkles across the dial's sky — the HUD echo of a shooting
+ * star in the world (arrivals + wild night stars). */
+export function clockStar() {
+  if (!root) return;
+  const s = document.createElement("div");
+  s.style.cssText =
+    "position:absolute;width:2px;height:2px;background:#fff;" +
+    "box-shadow:0 0 3px 1px rgba(255,255,240,.9);pointer-events:none";
+  root.appendChild(s);
+  const dur = 900;
+  const t0 = performance.now();
+  const dir = Math.random() < 0.5 ? 1 : -1; // which horizon it falls toward
+  const r = 26 + Math.random() * 18; // orbit radius inside the dial art
+  const step = (t: number) => {
+    const k = (t - t0) / dur;
+    if (k >= 1 || !root) {
+      s.remove();
+      return;
+    }
+    const a = Math.PI * (dir > 0 ? k : 1 - k); // 0..PI sweeps the semicircle
+    s.style.left = `${DIAL.knobX - Math.cos(a) * r}px`;
+    s.style.top = `${DIAL.knobY + Math.sin(a) * r * 0.8}px`;
+    s.style.opacity = String(Math.sin(Math.PI * k));
+    requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
 /** Show the dial for a TIME_PHASES index (0 Night, 1 Morning, 2 Day,
  * 3 Evening), cross-fading unless `instant` (join snaps straight in). */
 export function setClockPhase(idx: number, instant = false) {

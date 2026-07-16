@@ -58,7 +58,7 @@ import {
 } from "../nightlight";
 import { joinWorld } from "../net";
 import { ChatUI } from "../chat";
-import { setClockPhase } from "../clock";
+import { setClockPhase, clockStar } from "../clock";
 import { HudBar, mountPageFrame } from "../hud";
 import { RosterUI } from "../roster";
 import { setLoadingProgress, hideLoading } from "../loading";
@@ -726,6 +726,8 @@ export class WorldScene extends Phaser.Scene {
         return this.weatherIdx;
       },
       cloudAt: (wx: number, wy: number) => this.night?.cloudFactorAt(wx, wy, this.curCloud, this.curSun[3]) ?? 1,
+      star: (name?: string) => this.shootingStar(name), // LOCAL trigger for headless QA
+
       sunAt: (col: number, row: number, z = -1) =>
         this.night?.sunFactorAt(col + 0.5, row + 0.5, z, this.curSun as [number, number, number, number]) ?? 1,
       // Chase-cam probe: eased zoom vs base, and how far the camera trails
@@ -992,6 +994,9 @@ export class WorldScene extends Phaser.Scene {
       this.showBubble(msg.id, "blub… 🫧");
       this.chat.addLog("—", `${msg.name} nearly drowned and washed ashore.`);
     });
+    // Every arrival in Nangijala is a shooting star everyone sees at the
+    // same moment; the night sky also throws wild ones (no name).
+    room.onMessage("star", (msg: { name?: string }) => this.shootingStar(msg?.name));
     // Dead-connection recovery. Backgrounding the tab (phones especially)
     // freezes JS; the server drops the silent client and this room becomes a
     // ZOMBIE — no patches, no acks, prediction replaying an ever-growing
@@ -1091,6 +1096,59 @@ export class WorldScene extends Phaser.Scene {
       wordWrap: { width: panel.width - 30 },
     }).setOrigin(0.5).setScrollFactor(0).setDepth(1e9 + 1);
     console.error("[nangijala] failed to join world:", err);
+  }
+
+  /** A shooting star streaks across the visible sky — high above the world
+   * (over the darkness overlay), additive glow with a fading particle tail,
+   * echoed by a micro-star on the celestial dial. Arrivals carry a name
+   * (chat-logged); wild night stars don't. Brightest at night. */
+  private shootingStar(name?: string) {
+    if (!this.textures.exists("star-spark")) {
+      const g = this.make.graphics({ x: 0, y: 0 }, false);
+      for (let i = 4; i >= 2; i--) g.fillStyle(0xffffff, 0.13).fillCircle(6, 6, 1.5 * i);
+      g.fillStyle(0xffffff, 1).fillCircle(6, 6, 1.6);
+      g.generateTexture("star-spark", 12, 12);
+      g.destroy();
+    }
+    const view = this.cameras.main.worldView;
+    const ltr = Math.random() < 0.5;
+    const sx = view.x + view.width * (ltr ? 0.08 + Math.random() * 0.22 : 0.7 + Math.random() * 0.22);
+    const sy = view.y + view.height * (0.08 + Math.random() * 0.16);
+    const len = view.width * (0.32 + Math.random() * 0.16);
+    const ang = ((12 + Math.random() * 16) * Math.PI) / 180;
+    const bright = this.timeIdx === 0 ? 1 : 0.55; // night stars blaze, day ones shimmer
+    const head = this.add
+      .image(sx, sy, "star-spark")
+      .setDepth(1_500_000)
+      .setBlendMode(Phaser.BlendModes.ADD)
+      .setAlpha(bright)
+      .setScale(1.5);
+    const tail = this.add
+      .particles(0, 0, "star-spark", {
+        lifespan: 480,
+        speed: { min: 0, max: 8 },
+        scale: { start: 0.9, end: 0 },
+        alpha: { start: 0.7 * bright, end: 0 },
+        frequency: 12,
+        blendMode: Phaser.BlendModes.ADD,
+      })
+      .setDepth(1_499_999);
+    tail.startFollow(head);
+    this.tweens.add({
+      targets: head,
+      x: sx + (ltr ? 1 : -1) * Math.cos(ang) * len,
+      y: sy + Math.sin(ang) * len,
+      duration: 850 + Math.random() * 300,
+      ease: "Sine.easeIn",
+      onComplete: () => {
+        tail.stopFollow();
+        tail.stop();
+        this.tweens.add({ targets: head, alpha: 0, scale: 0.2, duration: 250, onComplete: () => head.destroy() });
+        this.time.delayedCall(600, () => tail.destroy());
+      },
+    });
+    clockStar();
+    if (name) this.chat.addLog("⭐", `${name} has arrived in Nangijala — a star crosses the sky.`);
   }
 
   private showBubble(id: string, text: string) {
