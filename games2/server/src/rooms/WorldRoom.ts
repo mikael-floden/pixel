@@ -58,8 +58,11 @@ export class WorldRoom extends Room<WorldState> {
   private worldW = WORLD_WIDTH; // world extent (grid×CELL_WU) for movement bounds
   private worldH = WORLD_HEIGHT;
 
-  // World-clock bookkeeping (see the "timeofday" wiring in onCreate).
-  private phaseTimer: ReturnType<typeof setTimeout> | null = null;
+  // World-clock bookkeeping (see the "timeofday" wiring in onCreate). The
+  // clock is a DEADLINE checked from the 20Hz simulation loop, not a lone
+  // setTimeout: the sim loop provably runs in production (movement syncs),
+  // so the phase tick can't stall independently of it.
+  private nextPhaseAt: number | null = null;
   private phaseSeconds: readonly number[] = TIME_PHASE_SECONDS;
   // Wild shooting stars streak the night sky at random (arrivals get their
   // own star in onJoin, any hour).
@@ -84,10 +87,12 @@ export class WorldRoom extends Room<WorldState> {
 
   private scheduleTimeOfDay(override?: readonly number[]) {
     if (override) this.phaseSeconds = override;
-    if (this.phaseTimer) clearTimeout(this.phaseTimer);
-    if (this.state.frozen) return; // freeze time: the clock holds still
+    if (this.state.frozen) {
+      this.nextPhaseAt = null; // freeze time: the clock holds still
+      return;
+    }
     const s = this.phaseSeconds[this.state.timeIdx % this.phaseSeconds.length];
-    this.phaseTimer = setTimeout(() => this.advanceTime(), s * 1000);
+    this.nextPhaseAt = Date.now() + s * 1000;
   }
 
   onCreate(options?: { world?: string; phaseSeconds?: number[]; auroraChance?: number }) {
@@ -221,6 +226,9 @@ export class WorldRoom extends Room<WorldState> {
   }
 
   private update(dt: number) {
+    // World clock: phase deadline checked here (see nextPhaseAt note).
+    if (this.nextPhaseAt !== null && Date.now() >= this.nextPhaseAt) this.advanceTime();
+
     const now = Date.now();
     this.state.players.forEach((player, id) => {
       const jumping = now < player.jumpUntil;
@@ -297,7 +305,6 @@ export class WorldRoom extends Room<WorldState> {
   }
 
   onDispose() {
-    if (this.phaseTimer) clearTimeout(this.phaseTimer);
     if (this.starTimer) clearTimeout(this.starTimer);
   }
 }
