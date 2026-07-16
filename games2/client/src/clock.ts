@@ -45,6 +45,11 @@ const HAND_SCALE = (358 * F * 0.85) / 652;
 let root: HTMLDivElement | null = null;
 let dials: HTMLImageElement[] = [];
 let hand: HTMLImageElement | null = null;
+// Cumulative CSS rotation. The hand only ever advances CLOCKWISE
+// (maintainer: night -> morning must continue over the top, never sweep
+// backwards through the day), so this grows monotonically — 360° per full
+// game day — and the transition always takes the CW path.
+let handDeg: number | null = null;
 
 function mount() {
   if (root) return;
@@ -95,7 +100,10 @@ export function setClockPhase(idx: number, instant = false) {
     root!.offsetWidth; // flush styles so the snap really skips the fade
   }
   dials.forEach((img, i) => img.classList.toggle("on", i === idx % dials.length));
-  hand!.style.transform = `rotate(${HAND_DEG[idx % HAND_DEG.length] - HAND.baseDeg}deg)`;
+  const target = HAND_DEG[idx % HAND_DEG.length] - HAND.baseDeg;
+  if (handDeg === null || instant) handDeg = target;
+  else handDeg += ((((target - handDeg) % 360) + 360) % 360); // CW only
+  hand!.style.transform = `rotate(${handDeg}deg)`;
   if (instant) {
     root!.offsetWidth;
     root!.classList.remove("snap");
