@@ -406,14 +406,23 @@ void main() {
     // solid) and this plain march — the same code path the torch LOS and
     // the cliffs use — casts their shade. No prop special-casing (three
     // hand-crafted variants all bought artifacts: spikes, circles, cubes).
+    // Variable-step march, attenuation normalized per step (pow(occ, step))
+    // so shade depth is step-invariant: FINE 0.35-cell steps over the first
+    // ~5 cells — the full reach of 1-2 level shadows (props, single ledges;
+    // coarse 0.6-step banding drew a small blocker's sample-count
+    // boundaries as arcs, "blobs") — then coarse steps for the long cliff
+    // reach, where shadows are broad bands and banding can't read.
     float sunVis = 1.0;
+    float dc = 0.0;
     for (int s = 1; s <= 20; s++) {
-      float dc = float(s) * 0.6;
+      float step = s <= 14 ? 0.35 : 1.4;
+      dc += step;
       vec2 p = pos - uSun.xy * dc;
       if (floor(p.x) == floor(pos.x) && floor(p.y) == floor(pos.y)) continue;
       float hRay = z + dc * uSun.z + 0.15;
       float H = heightAtSoft(p);
-      if (H < 90.0 && H > hRay) sunVis *= mix(0.80, 0.35, clamp((H - hRay) * 1.2, 0.0, 1.0));
+      if (H < 90.0 && H > hRay)
+        sunVis *= pow(mix(0.70, 0.17, clamp((H - hRay) * 1.2, 0.0, 1.0)), step);
     }
     if (isFace) {
       vec2 nrm = mix(vec2(0.0, 1.0), vec2(1.0, 0.0), pickR);
@@ -1064,16 +1073,19 @@ export class NightLights {
       return (a * (1 - fx) + b * fx) * (1 - fy) + (d * (1 - fx) + e * fx) * fy;
     };
     const hAtSoft = soft(this.hArr, 99);
-    // Mirror of the shader: one plain march over the occlusion heights.
+    // Mirror of the shader: variable-step march, per-step-normalized occ.
     let sunVis = 1;
+    let dc = 0;
     for (let sN = 1; sN <= 20; sN++) {
-      const dc = sN * 0.6;
+      const step = sN <= 14 ? 0.35 : 1.4;
+      dc += step;
       const px = col - sun[0] * dc;
       const py = row - sun[1] * dc;
       if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
       const hRay = z + dc * sun[2] + 0.15;
       const hh = hAtSoft(px, py);
-      if (hh < 90 && hh > hRay) sunVis *= 0.8 + (0.35 - 0.8) * Math.min(1, (hh - hRay) * 1.2);
+      if (hh < 90 && hh > hRay)
+        sunVis *= Math.pow(0.7 + (0.17 - 0.7) * Math.min(1, (hh - hRay) * 1.2), step);
     }
     const sunShare = 0.45 * sun[3];
     return 1 - sunShare + sunShare * Math.max(0, Math.min(1, sunVis));
