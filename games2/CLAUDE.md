@@ -506,6 +506,15 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   software-GL at big viewports throttles the frame loop into slow motion
   that fakes "stuck player" bugs (this once cost an hour of ghost-chasing).
   Keep e2e viewports small (480×320); `scripts/debug-speed.mjs` measures.
+- **HUD / visual QA runs in the SIMULATED MOBILE view** (maintainer:
+  phones are the reference device): Playwright context `{viewport:
+  {width: 393, height: 851}, deviceScaleFactor: 2, isMobile: true,
+  hasTouch: true, userAgent: <mobile Chrome>}`. Desktop-ish viewports
+  lie about proportions — the frame's gem crest is ~90 CSS px on a wide
+  window but dominates the top rail on a phone (the clock mocks were
+  drawn on desktop-width screenshots; mobile is what the maintainer
+  sees). Movement-timing e2e (verify-smoke) stays on its small fast
+  viewport — the starvation rule above outranks realism there.
 - Rule of thumb: if a check doesn't need pixels, pointer events, websockets,
   or Phaser anims, it belongs in `server/test` (3s), not in a browser (min).
 - **Deploy** (push to main → live): the workflow runs a `test` job (typecheck
