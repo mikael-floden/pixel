@@ -38,6 +38,7 @@ import {
   WALK_SPEED,
   RUN_SPEED,
   DEFAULT_TIME_IDX,
+  TIME_PHASE_SECONDS,
   WEATHER_NAMES,
   WEATHER_COUNT,
 } from "@nangijala/shared";
@@ -58,7 +59,7 @@ import {
 } from "../nightlight";
 import { joinWorld } from "../net";
 import { ChatUI } from "../chat";
-import { setClockPhase, setClockProgress, clockStar } from "../clock";
+import { setClockPhase, setClockAngle, clockStar } from "../clock";
 import { HudBar, mountPageFrame } from "../hud";
 import { setLoadingProgress, hideLoading } from "../loading";
 import { applyUiZoom } from "../uiscale";
@@ -170,7 +171,6 @@ function sunVec(idx: number): [number, number, number, number] {
  * exact keyframes (and every verify script keeps its calibration). */
 function blendPhases(u: number): {
   ambient: [number, number, number];
-  sun: [number, number, number, number];
   torchF: number;
 } {
   const N = TIME_PHASES.length;
@@ -181,8 +181,6 @@ function blendPhases(u: number): {
   const i1 = (i0 + 1) % N;
   const a0 = TIME_PHASES[i0].ambient;
   const a1 = TIME_PHASES[i1].ambient;
-  const s0 = SUN_PHASES[i0];
-  const s1 = SUN_PHASES[i1];
   const L = (x: number, y: number) => x + (y - x) * w;
   // Torch impact is part of the sweep: melts out through late morning,
   // rekindles through early evening.
@@ -190,14 +188,47 @@ function blendPhases(u: number): {
   const t1 = i1 === 2 ? 0 : 1;
   return {
     ambient: [L(a0[0], a1[0]), L(a0[1], a1[1]), L(a0[2], a1[2])],
-    sun: [
-      L(s0.cast[0], s1.cast[0]),
-      L(s0.cast[1], s1.cast[1]),
-      L(s0.slope, s1.slope),
-      L(s0.strength, s1.strength),
-    ],
     torchF: L(t0, t1),
   };
+}
+
+/** The clock hand's continuous position, weighted by the PHASE DURATIONS:
+ * the sunlit phases (morning+day+evening) share ONE sweep of the 12-hour
+ * face in proportion to their length, the night is the other sweep — with
+ * night = the sunlit sum (shared TIME_PHASE_SECONDS) both sweeps run at
+ * the same constant speed. Angle: degrees from straight DOWN, + = left. */
+function handAngle(u: number): { deg: number; night: boolean; f: number } {
+  const N = TIME_PHASE_SECONDS.length;
+  const idx = ((Math.floor(u) % N) + N) % N;
+  const t = u - Math.floor(u);
+  if (idx === 0) return { deg: -90 + t * 180, night: true, f: t };
+  const D = TIME_PHASE_SECONDS[1] + TIME_PHASE_SECONDS[2] + TIME_PHASE_SECONDS[3];
+  let acc = 0;
+  for (let i = 1; i < idx; i++) acc += TIME_PHASE_SECONDS[i];
+  const f = (acc + t * TIME_PHASE_SECONDS[idx]) / D;
+  return { deg: -90 + f * 180, night: false, f };
+}
+
+/** Directional light ALWAYS points where the arrow points (maintainer):
+ * the sun vector DERIVES from the hand angle instead of per-phase
+ * keyframes. Screen shadow direction for hand angle A is (-sin A, cos A);
+ * the grid cast solves the iso projection ((cx-cy)*32, (cx+cy)*13) to
+ * yield it — passing exactly through the approved keyframes: -90 ->
+ * (R2,-R2) morning-right, 0 -> (R2,R2) straight down at 12, +90 ->
+ * (-R2,R2) evening-left. Slope rises toward noon; strength is 0 all night
+ * (no sun = no wrong direction) with short sunrise/sunset ramps at the
+ * sweep ends. */
+function sunFromHand(deg: number, night: boolean, f: number): [number, number, number, number] {
+  if (night) return [0, 0, 1, 0];
+  const A = (deg * Math.PI) / 180;
+  const sx = -Math.sin(A);
+  const sy = Math.cos(A);
+  let cx = sx / 32 + sy / 13;
+  let cy = sy / 13 - sx / 32;
+  const n = Math.hypot(cx, cy) || 1;
+  const slope = 0.34 + 0.11 * Math.cos(A);
+  const strength = Math.max(0, Math.min(1, f / 0.06, (1 - f) / 0.06));
+  return [cx / n, cy / n, slope, strength];
 }
 
 const TIME_TRANSITION_S = 2.5;
@@ -1620,13 +1651,14 @@ export class WorldScene extends Phaser.Scene {
       const blend = blendPhases(this.timeIdx + this.phaseT);
       for (let ch = 0; ch < 3; ch++)
         this.curAmbient[ch] = this.timeFromAmbient[ch] + (blend.ambient[ch] - this.timeFromAmbient[ch]) * e;
-      // The sun rides the same clock: direction/slope/strength sweep with the
-      // ambient so shadows move continuously through the day.
+      // The sun IS the hand (maintainer): direction/slope/strength derive
+      // from the same continuous hand angle the dial shows.
+      const ha = handAngle(this.timeIdx + this.phaseT);
+      const sunTo = sunFromHand(ha.deg, ha.night, ha.f);
       for (let ch = 0; ch < 4; ch++)
-        this.curSun[ch] = this.timeFromSun[ch] + (blend.sun[ch] - this.timeFromSun[ch]) * e;
+        this.curSun[ch] = this.timeFromSun[ch] + (sunTo[ch] - this.timeFromSun[ch]) * e;
       this.curTorchF = this.timeFromTorchF + (blend.torchF - this.timeFromTorchF) * e;
-      // The celestial hand sweeps with the same continuous clock.
-      setClockProgress(this.timeIdx + this.phaseT);
+      setClockAngle(ha.deg);
       // Weather: ease the cloud cover toward the synced target (~4s roll),
       // and grey the sky a touch while cloudy — "the sky is not perfect
       // blue" — before handing the ambient to the shader + CPU twin.
@@ -1775,10 +1807,11 @@ export class WorldScene extends Phaser.Scene {
       const t = tOverride ?? this.room?.state?.phaseT;
       if (typeof t === "number" && !Number.isNaN(t)) this.phaseT = t;
       const blend = blendPhases(idx + this.phaseT);
+      const ha = handAngle(idx + this.phaseT);
       this.curAmbient = [...blend.ambient];
-      this.curSun = [...blend.sun];
+      this.curSun = sunFromHand(ha.deg, ha.night, ha.f);
       this.curTorchF = blend.torchF;
-      setClockProgress(idx + this.phaseT, true);
+      setClockAngle(ha.deg, true);
     }
   }
 

@@ -51,7 +51,12 @@ export const DEFAULT_TIME_IDX = 2; // Day
 // The world clock: time advances on its own (the day/night cycle is a core
 // rhythm of the game, not a debug toggle). Per-phase duration in seconds,
 // indexed like timeIdx (maintainer: 1 min per phase, 4 min full cycle).
-export const TIME_PHASE_SECONDS = [60, 60, 60, 60];
+// Night lasts as long as morning+day+evening COMBINED (maintainer): the
+// half-dial clock hand crosses the 12-hour face once per half — sunlit
+// (morning+day+evening) and night — so equal halves give the hand ONE
+// constant sweep speed all day (1.5 deg/s at the 4-min cycle). Morning and
+// evening are short, day is long but still shorter than the night.
+export const TIME_PHASE_SECONDS = [120, 25, 70, 25];
 
 // WEATHER is a second server-owned world-state layer on top of time-of-day
 // (maintainer: "the final game should have a combination of time-of-day and

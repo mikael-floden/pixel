@@ -183,8 +183,9 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
 - The phase index lives in WorldState.timeIdx (shared DEFAULT_TIME_IDX /
   TIME_PHASE_COUNT) and the cycle RUNS BY ITSELF (maintainer: the
   day/night cycle is a core rhythm of the game): the server's world
-  clock advances the phase per TIME_PHASE_SECONDS (1 min per phase,
-  4 min full cycle). Time is CONTINUOUS (maintainer: "the clock arrow
+  clock advances the phase per TIME_PHASE_SECONDS ([120, 25, 70, 25] —
+  NIGHT lasts as long as morning+day+evening combined, short dawn/dusk,
+  long day; 4 min full cycle). Time is CONTINUOUS (maintainer: "the clock arrow
   and the shadow should move continuously... not swap from day to
   evening that sudden" — the discrete jumps were why time kept LOOKING
   frozen): WorldState.phaseT (0..1 progress, written by the 20Hz sim
@@ -197,12 +198,21 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   characteristic look, for frozen testing); unfreeze RESUMES from the
   held phaseT (never restarts the phase). The hand reads the half-dial
   as a 12-HOUR face crossed TWICE per game day (maintainer's wedge
-  marking): the DAY sweep morning-mid -> evening-mid and the NIGHT
-  sweep evening-mid -> morning-mid, each -90..+90 with "12" straight
-  down at day-mid AND night-mid; at each hand-off (50% through
-  evening / morning, at 100% left) the hand JUMPS instantly back to
-  100% right (setClockProgress; it never leaves the dial face). The
-  dial cross-fade stays the only faded discrete event. CAREFUL: local
+  marking): the SUNLIT sweep spans morning+day+evening — phases share
+  the -90..+90 arc IN PROPORTION TO THEIR DURATIONS (handAngle), "12"
+  straight down at day's middle — and the NIGHT sweep spans the night
+  phase ("12" at midnight); with night = the sunlit sum both sweeps
+  run at one constant speed. At each hand-off (sunset = evening's
+  end; night's end) the hand JUMPS from 100% left back to 100% right
+  (setClockAngle snaps backward deltas). THE SUN IS THE HAND
+  (maintainer: "directional light always points in the clock arrow
+  direction"): sunFromHand derives the grid cast from the hand angle
+  by inverting the iso projection (passes exactly through the old
+  keyframes: -90 -> (R2,-R2), 0 -> (R2,R2), +90 -> (-R2,R2)), slope
+  0.34..0.45 by altitude, strength 0 all night (no sun = no wrong
+  direction) with ~6%-of-sweep sunrise/sunset ramps; SUN_PHASES
+  remains only as the sunVec(DEFAULT_TIME_IDX) init. The dial
+  cross-fade stays the only faded discrete event. CAREFUL: local
   probes pin phaseT via setTimeOfDay's tOverride param — reading
   state.phaseT inside setTimeOfDay once clobbered the probe keyframe
   (only worked because fresh rooms default to 0.5). WorldState.frozen ("freeze time" settings switch,

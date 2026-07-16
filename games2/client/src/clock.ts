@@ -22,13 +22,13 @@ const PHASE_FILES = ["night", "morning", "day", "evening"] as const;
 const FADE_S = 2.5; // keep in step with WorldScene's TIME_TRANSITION_S
 
 // The hand reads the half-dial as a 12-HOUR face crossed TWICE per game
-// day (maintainer's green/morning + red/evening wedges): the DAY sweep runs
-// morning-mid -> evening-mid (-90 right horizon .. +90 left horizon, "12"
-// straight down at day-mid) and the NIGHT sweep runs evening-mid ->
-// morning-mid the same way ("12" at night-mid). At each hand-off — 50%
-// through evening and 50% through morning, having reached 100% left — the
-// hand JUMPS immediately back to 100% right (maintainer). It never leaves
-// the dial face (the old over-the-top night sweep poked into the sky).
+// day: the SUNLIT sweep spans morning+day+evening (phases share the arc in
+// proportion to their durations — short dawn/dusk wedges, long day, "12"
+// straight down at day's middle) and the NIGHT sweep spans the night phase
+// ("12" at midnight). At each hand-off (sunset = evening's end, and
+// night's end) the hand JUMPS from 100% left straight back to 100% right.
+// WorldScene owns the angle math (handAngle/sunFromHand — the directional
+// sun always points where the arrow points); this module only renders it.
 
 // Asset geometry, measured/printed by scripts/build-clock.mjs. Everything
 // renders at 1 asset px = 1 CSS px. Sheet-3 dials are the half-moon sky
@@ -169,15 +169,15 @@ export function setClockPhase(idx: number, instant = false) {
   }
 }
 
-/** Sweep the hand to the continuous day position u = timeIdx + phaseT:
- * two half-day sweeps of -90..+90 across the 12-hour face (see the note at
- * HAND). The hand-off jump and continuous ticks SNAP; forward skips
- * (freeze-mode phase testing) ride the CSS transition. */
-export function setClockProgress(u: number, instant = false) {
+/** Point the hand at an absolute angle (degrees from straight down,
+ * positive = screen-left) — WorldScene computes it from the duration-
+ * weighted sweeps and the SUN derives from the same angle, so the arrow
+ * and the directional light can never disagree (maintainer). The hand-off
+ * jump and continuous ticks SNAP; forward skips (freeze-mode phase
+ * testing) ride the CSS transition. */
+export function setClockAngle(deg: number, instant = false) {
   mount();
-  const um = (((u - 1.5) % 4) + 4) % 4; // 0 at morning-mid (a sweep start)
-  const half = um < 2 ? um : um - 2; // 0..2 progress within the current sweep
-  const target = -90 + (half / 2) * 180 - HAND.baseDeg;
+  const target = deg - HAND.baseDeg;
   if (handDeg !== null && Math.abs(target - handDeg) < 0.01) return;
   const delta = handDeg === null ? 0 : target - handDeg;
   const snap = instant || handDeg === null || delta < 3; // backwards = the hand-off jump
