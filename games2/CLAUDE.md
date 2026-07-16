@@ -196,9 +196,11 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   same way (Player.torch, "torch" message): my own light flips on the
   local mirror instantly, everyone else reads the synced field, and a
   rejoin re-asserts the local value to the fresh player entry
-  (server/test/torch.test.ts). NOBODY'S torch burns during DAY
-  (torchLit gates on timeIdx: torches are an evening/night/morning
-  feature; the switch keeps the preference, the flame waits for dusk).
+  (server/test/torch.test.ts). Torch IMPACT is CONTINUOUS, not a
+  boolean (maintainer): curTorchF rides the ambient's 2.5s clock, 0 at
+  full Day and 1 otherwise — the shader light's colour scales by it so
+  flames melt away as daylight arrives and rekindle as it passes (the
+  switch keeps the preference).
 - The CELESTIAL CLOCK (client/src/clock.ts) hangs a per-phase dial
   top-centre under the frame's gem (pointer-events none, kept SUBTLE —
   maintainer sized it down from full-mock): four pre-keyed, pixel-aligned
@@ -260,23 +262,18 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   scripts/verify-weather.mjs (clear=1 everywhere, patchy not overcast,
   drifts over time, night-muted) + server/test/weather.test.ts.
 
-## Contact shadows (baked, always on)
-
-- Tiles with HIGHER west/north neighbours get soft dark gradients baked
-  into the ground pass (drawContactShade in WorldScene — called from
-  BOTH ground branches; the maps2 branch's `continue` silently skipped
-  the first restore) at ~70% of game1's daylight strength, so it reads
-  as dim shade UNDER the per-pixel shader instead of the double-darkened
-  razor edges that got it disabled originally. effHeight counts solid
-  terrain categories +1 AND placed props by their `levels` (2-5, now
-  carried through parseWorld into WorldProp) — obj tiles cast shade
-  scaled by how tall their art is (QA on prop_demo: flat ground, any
-  shade there is prop-cast). Column-top redraws mirror the strengths.
-
 ## Directional sun shadows (day phases)
 
 - The night shader also carries a DIRECTIONAL SUN (uSun = cast-dir grid
-  x/y, slope levels-per-cell, strength). DAYLIGHT IS SKY + SUN
+  x/y, slope levels-per-cell, strength). Placed PROPS are just TALL
+  CELLS to it (maintainer: "nothing special, the objects/tiles are just
+  taller"): their `levels` (2-5, carried through parseWorld into
+  WorldProp) raise the OCCLUSION heightmap (hArr/imgL in nightlight),
+  so the sun march + point-light LOS cast their shadows like terrain;
+  terrain-only heights (faces/AO/ground z) stay untouched — prop art is
+  a billboard, not a wall. There is NO separate baked contact-shadow
+  overlay (a game1 relic; restored once and removed — the one shadow
+  system rules them all). DAYLIGHT IS SKY + SUN
   (maintainer): the phase ambient splits into a flat sky term (55%) and
   a directional term (45%) that only reaches surfaces with a clear
   line toward the sun — full authored brightness NEEDS the sun, and

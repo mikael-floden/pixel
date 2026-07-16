@@ -884,18 +884,29 @@ export class NightLights {
     this.hArr = new Float32Array(w * h);
     this.tArr = new Float32Array(w * h);
     this.oArr = new Uint8Array(w * h);
+    // Placed props are just TALL cells to the shadow system (maintainer):
+    // their `levels` (2-5) raise the OCCLUSION height, so the sun march and
+    // point-light LOS cast their shadows exactly like terrain — no special
+    // overlay system. Terrain-only heights (walls/faces/AO seams and ground
+    // z resolution) stay untouched: prop art is a billboard, not a wall.
+    const propLvl = new Map<number, number>();
+    for (const pr of this.world.props ?? []) {
+      const k = pr.row * w + pr.col;
+      propLvl.set(k, Math.max(propLvl.get(k) ?? 0, pr.levels ?? 2));
+    }
     for (let r = 0; r < h; r++) {
       for (let c = 0; c < w; c++) {
         const i = (r * w + c) * 4;
         const cell = this.world.rows[r][c];
         const s = surfaceFor(cell.t);
         const solid = !s.standable && !s.swimmable;
-        // CPU twin marches LOS only → occlusion heights (with the solid +1).
-        this.hArr[r * w + c] = cell.l + (solid ? 1 : 0);
+        const occH = cell.l + Math.max(solid ? 1 : 0, propLvl.get(r * w + c) ?? 0);
+        // CPU twin marches LOS only → occlusion heights (solid +1 / prop levels).
+        this.hArr[r * w + c] = occH;
         this.tArr[r * w + c] = cell.l;
         this.oArr[r * w + c] = solid ? 1 : 0;
         img.data[i] = Math.min(255, cell.l * 16);
-        imgL.data[i] = Math.min(255, (cell.l + (solid ? 1 : 0)) * 16);
+        imgL.data[i] = Math.min(255, occH * 16);
         // G flags solid OBJECTS (bush, boulder, tree…): they keep full LOS
         // occlusion — the billboard compromise is for players, who can never
         // stand on these cells.

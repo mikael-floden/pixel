@@ -307,10 +307,6 @@ export class WorldScene extends Phaser.Scene {
   // Placed decorations (maps2 world@1 props): depth-sorted so characters pass
   // in front of / behind them; rebuilt with the occluders as the camera moves.
   private propImgs: Phaser.GameObjects.Image[] = [];
-  // Prop heights by cell (row*width+col -> levels): tall obj tiles cast
-  // contact shade on the ground beside them, scaled by how many levels
-  // (2-5) the art spans — see effHeight.
-  private propLvl = new Map<number, number>();
   // Lit copies of TALL NON-EMISSIVE solid structures: billboard art samples
   // the light field of the terrain BEHIND it, so a shore tree's canopy was
   // multiplied by the level-0 ocean's night — pitch black above the horizon
@@ -403,6 +399,11 @@ export class WorldScene extends Phaser.Scene {
   private curCloud = 0;
   private auroraOn = false; // synced target; curAurora eases toward it
   private curAurora = 0;
+  // Torch IMPACT is continuous, not a boolean (maintainer): 1 at dusk/night/
+  // dawn, 0 at full Day, riding the same 2.5s clock as the ambient grade so
+  // flames melt away as daylight arrives and rekindle as it passes.
+  private curTorchF = 1;
+  private timeFromTorchF = 1;
   private curAmbient: [number, number, number] = [...TIME_PHASES[DEFAULT_TIME_IDX].ambient];
 
   constructor() {
@@ -423,11 +424,6 @@ export class WorldScene extends Phaser.Scene {
       this.worldW = this.world.width * CELL_WU;
       this.worldH = this.world.height * CELL_WU;
       this.terrain = buildTerrainGrid(this.world.width, this.world.height, this.world.rows, this.world.props);
-      this.propLvl.clear();
-      for (const p of this.world.props ?? []) {
-        const k = p.row * this.world.width + p.col;
-        this.propLvl.set(k, Math.max(this.propLvl.get(k) ?? 0, p.levels ?? 2));
-      }
       // Surface-contract watchdog: categories missing from SURFACES default
       // to walkable ground, which ALSO makes the night lighting treat them
       // as terrain (walls + face shadows) instead of solid objects (art +
@@ -486,7 +482,6 @@ export class WorldScene extends Phaser.Scene {
   async create() {
     this.ensurePlaceholderTexture();
     this.ensureShadowTexture();
-    this.ensureShadeTextures();
     this.buildAnimations();
     if (this.world) this.setupStreamingGround();
     else this.drawGround();
@@ -848,12 +843,6 @@ export class WorldScene extends Phaser.Scene {
       surfaceAt: (x: number, y: number) => (this.terrain ? surfaceAtWorld(this.terrain, x, y) : null),
       blockedAt: (x: number, y: number) => (this.terrain ? isBlockedAtWorld(this.terrain, x, y) : null),
       propCount: () => this.propImgs.length,
-      shadeInfo: (col: number, row: number) => ({
-        lvlMapSize: this.propLvl.size,
-        eff: this.effHeight(col, row, 0),
-        propLvl: this.propLvl.get(row * (this.world?.width ?? 0) + col) ?? 0,
-        cell: this.world?.rows[row]?.[col] ?? null,
-      }),
       // Sample the CPU light (what a character's lit copy is tinted by) at a
       // grid cell — headless probe for emission monotonicity/colour.
       lightAtCell: (col: number, row: number, z = 0) =>
@@ -1548,7 +1537,9 @@ export class WorldScene extends Phaser.Scene {
       }
       // Torches fill the remaining slots (emission glow pools live in the
       // additive glow field, not in light slots — they can't be crowded out).
+      const tf = this.curTorchF;
       for (const [id, a] of this.avatars.entries()) {
+        if (tf <= 0.01) break; // full Day: torches have no impact
         if (!this.torchLit(id, myId, state)) continue;
         if (sl.length >= MAX_SHADER_LIGHTS) break;
         // Grid position from the FLAT authoritative coords (1 cell = CELL_WU
@@ -1561,7 +1552,9 @@ export class WorldScene extends Phaser.Scene {
           // lights ground far below cliffs, which reads as leakage.
           z: (this.terrain ? levelAtWorld(this.terrain, a.fx, a.fy) : 0) + 0.55,
           radius: 6,
-          color: [0.85, 0.58, 0.32],
+          // Colour scales with the day-fade: the light's whole contribution
+          // is linear in it, so the pool melts out smoothly.
+          color: [0.85 * tf, 0.58 * tf, 0.32 * tf],
           flicker: 0.35, // hand torch: gentle fire flicker
         });
       }
@@ -1579,6 +1572,9 @@ export class WorldScene extends Phaser.Scene {
       const sunTo = sunVec(this.timeIdx);
       for (let ch = 0; ch < 4; ch++)
         this.curSun[ch] = this.timeFromSun[ch] + (sunTo[ch] - this.timeFromSun[ch]) * e;
+      // Torch impact fades to 0 at full Day and back as the day passes.
+      const torchTo = this.timeIdx === 2 ? 0 : 1;
+      this.curTorchF = this.timeFromTorchF + (torchTo - this.timeFromTorchF) * e;
       // Weather: ease the cloud cover toward the synced target (~4s roll),
       // and grey the sky a touch while cloudy — "the sky is not perfect
       // blue" — before handing the ambient to the shader + CPU twin.
@@ -1626,6 +1622,7 @@ export class WorldScene extends Phaser.Scene {
     }
     if (!shaderNight) {
       for (const [id, a] of this.avatars.entries()) {
+        if (this.curTorchF <= 0.5) break; // canvas fallback: no per-light tint
         if (!this.torchLit(id, myId, this.room?.state as any)) continue;
         lights.push({ x: a.lx, y: a.ly - 20 }); // lantern pool
       }
@@ -1671,7 +1668,6 @@ export class WorldScene extends Phaser.Scene {
    * the switch keeps the preference, the flame just waits for the light to
    * fade. */
   private torchLit(id: string, myId: string, state: any): boolean {
-    if (this.timeIdx === 2) return false; // Day: torches are out
     if (id === myId) return this.torchOn;
     return state?.players?.get?.(id)?.torch ?? true;
   }
@@ -1714,6 +1710,7 @@ export class WorldScene extends Phaser.Scene {
   private setTimeOfDay(idx: number, instant = false) {
     this.timeFromAmbient = [...this.curAmbient];
     this.timeFromSun = [...this.curSun];
+    this.timeFromTorchF = this.curTorchF;
     this.timeIdx = idx;
     this.timeT = instant ? 1 : 0;
     this.timeStart = this.time.now;
@@ -1721,6 +1718,7 @@ export class WorldScene extends Phaser.Scene {
     if (instant) {
       this.curAmbient = [...TIME_PHASES[idx].ambient];
       this.curSun = sunVec(idx);
+      this.curTorchF = idx === 2 ? 0 : 1;
     }
   }
 
@@ -2383,7 +2381,6 @@ export class WorldScene extends Phaser.Scene {
           const fk = faceKey && this.textures.exists(faceKey) ? faceKey : topKey0;
           for (let lvl = 0; lvl < cell.l; lvl++) rt.batchDraw(fk, bx, by - lvl * lh);
           rt.batchDraw(topKey, bx, by - cell.l * lh);
-          this.drawContactShade(rt, col, row, cell.l, bx, by);
           continue;
         }
         const key = tileKey(cell.t, cell.v);
@@ -2400,7 +2397,6 @@ export class WorldScene extends Phaser.Scene {
           : 0;
         for (let lvl = fromLvl; lvl <= cell.l; lvl++)
           rt.batchDraw(key, bx, by - lvl * lh - this.artYOff(key));
-        this.drawContactShade(rt, col, row, cell.l, bx, by);
       }
     }
     rt.endDraw();
@@ -2912,22 +2908,6 @@ export class WorldScene extends Phaser.Scene {
           y0: by - cell.l * lh - aOff,
           y1: by + tileSize,
         });
-        // Match the ground pass's contact shadows on redrawn column tops
-        // (same restored strengths — see drawGroundWindow).
-        {
-          const own = cell.l;
-          const topY = by - cell.l * lh;
-          const dW = Math.min(3, this.effHeight(col - 1, row, own) - own);
-          const dN = Math.min(3, this.effHeight(col, row - 1, own) - own);
-          if (dW > 0)
-            this.occluders.push(
-              this.add.image(bx, topY, "shade-w").setOrigin(0, 0).setAlpha(0.15 + dW * 0.1).setDepth(by + dy + 0.05),
-            );
-          if (dN > 0)
-            this.occluders.push(
-              this.add.image(bx, topY, "shade-n").setOrigin(0, 0).setAlpha(0.13 + dN * 0.08).setDepth(by + dy + 0.05),
-            );
-        }
       }
     }
 
@@ -3323,88 +3303,6 @@ export class WorldScene extends Phaser.Scene {
     av.elev = s.elev;
     av.fallV = s.fallV;
     av.falling = s.falling;
-  }
-
-  /**
-   * Contact-shadow overlays for elevation readability: a tile with HIGHER
-   * ground on its sun-side (screen-left → grid west/north) gets a soft dark
-   * gradient along that edge, scaled by the height difference. Baked into the
-   * ground pass — the classic "just works" iso AO trick.
-   */
-  private ensureShadeTextures() {
-    const { dy, tile } = MAP_GEOMETRY;
-    const w = tile;
-    const h = dy * 2;
-    const make = (key: string, draw: (ctx: CanvasRenderingContext2D) => void) => {
-      if (this.textures.exists(key)) return;
-      const tex = this.textures.createCanvas(key, w, h);
-      const ctx = tex!.getContext();
-      // Clip to the tile's top diamond.
-      ctx.beginPath();
-      ctx.moveTo(w / 2, 0);
-      ctx.lineTo(w, h / 2);
-      ctx.lineTo(w / 2, h);
-      ctx.lineTo(0, h / 2);
-      ctx.closePath();
-      ctx.clip();
-      draw(ctx);
-      tex!.refresh();
-    };
-    const grad = (ctx: CanvasRenderingContext2D, x0: number, y0: number, x1: number, y1: number) => {
-      const g = ctx.createLinearGradient(x0, y0, x1, y1);
-      g.addColorStop(0, "rgba(8,12,26,0.85)");
-      g.addColorStop(1, "rgba(8,12,26,0)");
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, w, h);
-    };
-    // Shadow cast from a higher WEST neighbour (shared NW edge).
-    make("shade-w", (ctx) => grad(ctx, 10, 7, 42, 21));
-    // From a higher NORTH neighbour (shared NE edge).
-    make("shade-n", (ctx) => grad(ctx, w - 10, 7, w - 42, 21));
-    // From a higher NW-diagonal neighbour (top corner).
-    make("shade-nw", (ctx) => {
-      const g = ctx.createRadialGradient(w / 2, 0, 0, w / 2, 0, 20);
-      g.addColorStop(0, "rgba(8,12,26,0.7)");
-      g.addColorStop(1, "rgba(8,12,26,0)");
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, w, h);
-    });
-  }
-
-  /** Effective blocking height of a cell for shadow casting (solid structures
-   * like trees count one level above their ground). */
-  /** Baked contact shadows from higher sun-side neighbours — the game1
-   * elevation cue the maintainer asked back (tall 2-5 level terrain AND
-   * placed props cast dim shade on the ground beside them). Drawn in BOTH
-   * ground branches (maps2 + legacy) at ~70% of the game1 daylight
-   * strength: the per-pixel shader's own night AO/face shadows carry the
-   * depth cue in the dark, so the dimmer bake reads as soft always-on
-   * shade instead of the old double-darkened razor edges. */
-  private drawContactShade(
-    rt: Phaser.GameObjects.RenderTexture,
-    col: number,
-    row: number,
-    own: number,
-    bx: number,
-    by: number,
-  ) {
-    const { lh } = MAP_GEOMETRY;
-    const topY = by - own * lh;
-    const dW = Math.min(3, this.effHeight(col - 1, row, own) - own);
-    const dN = Math.min(3, this.effHeight(col, row - 1, own) - own);
-    const dNW = Math.min(3, this.effHeight(col - 1, row - 1, own) - own);
-    if (dW > 0) rt.batchDraw("shade-w", bx, topY, 0.15 + dW * 0.1);
-    if (dN > 0) rt.batchDraw("shade-n", bx, topY, 0.13 + dN * 0.08);
-    if (dNW > 0 && dW <= 0 && dN <= 0) rt.batchDraw("shade-nw", bx, topY, 0.21);
-  }
-
-  private effHeight(col: number, row: number, own: number): number {
-    const cell = this.world?.rows[row]?.[col];
-    if (!cell) return own; // off-map: no shade
-    // Placed props (tall obj tiles) block by how many levels their art
-    // spans; solid terrain categories count one level above their ground.
-    const pl = this.propLvl.get(row * (this.world?.width ?? 0) + col) ?? 0;
-    return cell.l + Math.max(surfaceFor(cell.t).standable ? 0 : 1, pl);
   }
 
   /** Soft elliptical drop shadow (Mario 64 style): drawn once, reused by every
