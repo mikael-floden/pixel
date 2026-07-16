@@ -31,12 +31,18 @@ const FADE_S = 2.5; // keep in step with WorldScene's TIME_TRANSITION_S
 const HAND_DEG = [90, -90, 0, 90];
 
 // Asset geometry, measured/printed by scripts/build-clock.mjs. Everything
-// renders at 1 asset px = 1 CSS px. Sheet-2 dials are cut just BELOW the
-// frame rail (their top strip lives behind it), so the pivot sits at the
-// asset's top edge and the mount tucks right under the rail.
-const DIAL = { w: 102, h: 66, knobX: 51, knobY: 14 };
+// renders at 1 asset px = 1 CSS px. Sheet-3 dials are the half-moon sky
+// discs cut just BELOW the frame rail (flat edge at the top, mock gem tip
+// notched out — the frame's real gem covers that spot), so the pivot is
+// the semicircle's centre: the middle of the asset's top edge.
+const DIAL = { w: 102, h: 61, knobX: 51, knobY: 0 };
 const ROOT_W = DIAL.w;
-const HAND = { w: 36, h: 39, hubX: 30.8, hubY: 4.5, baseDeg: 42.5 };
+// Sheet-3 hand points RIGHT as authored (hub = the sun-face disc, left end).
+const HAND = { w: 49, h: 11, hubX: 6.7, hubY: 5.6, baseDeg: -90.8 };
+// The floating dot arc around the dial is its OWN static layer (maintainer:
+// the dots must never fade with the phase cross-fades). Axis-centred like
+// the dials, top row = the same rail-bottom line.
+const DOTS = { w: 116, h: 65 };
 
 let root: HTMLDivElement | null = null;
 // The hand lives in its OWN fixed layer ABOVE the page-frame art (z 7 vs
@@ -57,16 +63,30 @@ function mount() {
   if (root) return;
   const style = document.createElement("style");
   style.textContent = `
-  .ml-clock,.ml-clock-hand{position:fixed;top:33px;left:50%;
+  .ml-clock,.ml-clock-hand,.ml-clock-dots{position:fixed;top:33px;left:50%;
     transform:translateX(-50%);width:${ROOT_W}px;pointer-events:none}
   .ml-clock{z-index:5}
+  .ml-clock-dots{z-index:5;width:${DOTS.w}px}
   .ml-clock-hand{z-index:7}
   .ml-clock img,.ml-clock-hand img{position:absolute;top:0;left:0;width:100%;
     opacity:0;image-rendering:pixelated;transition:opacity ${FADE_S}s ease}
+  .ml-clock-dots img{position:absolute;top:0;left:0;width:100%;
+    image-rendering:pixelated}
   .ml-clock img.on{opacity:1}
   .ml-clock-hand img{opacity:1;transition:transform ${FADE_S}s ease}
   .ml-clock.snap img,.ml-clock-hand.snap img{transition:none}`;
   document.head.appendChild(style);
+  // Static dot arc UNDER the dial stack in the same plane — mounted first,
+  // constant forever (no phase class, no transition: it must not blink).
+  const dotsRoot = document.createElement("div");
+  dotsRoot.className = "ml-clock-dots";
+  const dotsImg = document.createElement("img");
+  dotsImg.src = "/ui/clock_dots.png";
+  dotsImg.alt = "";
+  dotsImg.draggable = false;
+  dotsRoot.appendChild(dotsImg);
+  document.body.appendChild(dotsRoot);
+  applyUiZoom(dotsRoot);
   root = document.createElement("div");
   root.className = "ml-clock";
   dials = PHASE_FILES.map((p) => {

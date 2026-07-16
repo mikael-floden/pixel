@@ -212,28 +212,30 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   full Day and 1 otherwise — the shader light's colour scales by it so
   flames melt away as daylight arrives and rekindle as it passes (the
   switch keeps the preference).
-- The CELESTIAL CLOCK (client/src/clock.ts) hangs a per-phase dial
-  top-centre under the frame's gem (pointer-events none, kept SUBTLE —
-  maintainer sized it down from full-mock): four pre-keyed, pixel-aligned
-  PNGs (ui/clock_<phase>.png, cut from the maintainer's mocks by
-  scripts/build-clock.mjs — outside-flood key + largest-blob) cross-fade
-  on the ambient's 2.5s clock via setClockPhase(). Assets bake at
-  EXACTLY the display resolution (sheet-2 mocks: quadrant split, cut
-  just below the frame rail keeping a narrow central gem window, box ÷2,
-  ~102px wide, BOTTOM-aligned onto one shared canvas so cross-fades stay
-  registered; the mocks have NO clean pixel grid — do not grid-guess)
-  and render 1 asset px = 1 CSS px
-  + pixelated so the browser never resamples (resampling = mush; a
-  COARSER chunk grid was tried and rejected — it melted the art to mud).
-  Dials get hard pixel-stair alpha + a baked RING=4px near-black border
-  (the frame's border weight). The HAND (single img, recoloured deep
-  brown so it reads on the gold rims) keeps SOFT averaged alpha — it
-  rotates at runtime and a thresholded ~1px shaft shreds into a ragged
-  line
-  from setTimeOfDay(). The ARROW (ui/clock_hand.png, flipped by the same
-  script which prints its hub/tip geometry) is its OWN layer above the
-  dials — never fades, only rotates to the phase's quarter-sector
-  (chronological left→right; the reading lives in the arrow). CAREFUL:
+- The CELESTIAL CLOCK (client/src/clock.ts) hangs a per-phase half-moon
+  SKY DISC top-centre under the frame's gem (pointer-events none): four
+  pre-keyed, pixel-aligned PNGs (ui/clock_<phase>.png, cut from the
+  maintainer's sheet-3 mocks by scripts/build-clock.mjs) cross-fade on
+  the ambient's 2.5s clock via setClockPhase(). Extraction rules
+  (maintainer's red marking): the dial is ONLY the connected half-disc
+  below the frame rail — the mock's floating dot arcs / numerals /
+  labels are detached and MUST NOT ship with the dials; the mock gem's
+  tip is notched out (measured contour) and the frame's real gem covers
+  the notch at mount. The DOT ARC ships separately (ui/clock_dots.png,
+  cut once from the day quadrant by size+warm-colour filter) as its OWN
+  static layer: the dots must NEVER fade with phase cross-fades —
+  always the same. Assets bake at EXACTLY the display resolution
+  (box ÷2, ~102px dials registered on one shared canvas by each disc's
+  own axis + the rail row — quadrant-centre registration drifted ~10px;
+  the mocks have NO clean pixel grid — do not grid-guess) and render
+  1 asset px = 1 CSS px + pixelated so the browser never resamples
+  (resampling = mush; a COARSER chunk grid was tried and rejected — it
+  melted the art to mud). Dials get hard pixel-stair alpha; the HAND
+  (sheet-3: ornate gold, points RIGHT as authored, sun-face disc = hub,
+  kept in its original colours) keeps SOFT averaged alpha — it rotates
+  at runtime and a thresholded shaft shreds into a ragged line. The
+  hand is its OWN layer above the dials — never fades, only rotates;
+  pivot = the semicircle centre (mid top edge, behind the gem). CAREFUL:
   CSS rotate() from straight-down sweeps screen-LEFT for positive
   angles — this shipped inverted once; convention is documented in
   clock.ts. The version badge sits top-LEFT (main.ts) so it stays off
