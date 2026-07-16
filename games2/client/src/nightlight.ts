@@ -181,13 +181,6 @@ float heightAtSoft(vec2 cr) {
   return texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).r * 255.0 / 16.0;
 }
 
-// The prop share of the occlusion height (G of the same map): prop-cast sun
-// shade fades with distance so trees pool shade at their feet instead of
-// throwing wall-length spikes.
-float propAtSoft(vec2 cr) {
-  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
-  return texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).g * 255.0 / 16.0;
-}
 
 
 float heightAt(vec2 cr) {
@@ -409,25 +402,19 @@ void main() {
     // continuous gradient. Nearest-texel round quantized into "stacked
     // cubes"; multiplicative round rang into "stacked circles" — this is
     // the smooth-and-once combination (maintainer round 3).
-    // Prop shade is a normalized SUM of the samples, not a max and not a
-    // product: overlapping soft contributions blend into one continuous
-    // capsule (max switched hard between samples — the scalloped "chain of
-    // circles"; per-sample multiply rang; sums of smooth blobs are smooth).
+    // ONE shadow system: props sit in the occlusion heightmap (+1 like any
+    // solid) and this plain march — the same code path the torch LOS and
+    // the cliffs use — casts their shade. No prop special-casing (three
+    // hand-crafted variants all bought artifacts: spikes, circles, cubes).
     float sunVis = 1.0;
-    float propAcc = 0.0;
     for (int s = 1; s <= 20; s++) {
       float dc = float(s) * 0.6;
       vec2 p = pos - uSun.xy * dc;
       if (floor(p.x) == floor(pos.x) && floor(p.y) == floor(pos.y)) continue;
       float hRay = z + dc * uSun.z + 0.15;
-      float Hs = heightAtSoft(p);
-      float Ps = propAtSoft(p);
-      float terrS = Hs - Ps;
-      if (terrS < 90.0 && terrS > hRay) sunVis *= mix(0.80, 0.35, clamp((terrS - hRay) * 1.2, 0.0, 1.0));
-      if (Ps > 0.01 && Hs < 90.0 && Hs > hRay)
-        propAcc += clamp((Hs - hRay) * 1.2, 0.0, 1.0) * smoothstep(3.2, 1.2, dc);
+      float H = heightAtSoft(p);
+      if (H < 90.0 && H > hRay) sunVis *= mix(0.80, 0.35, clamp((H - hRay) * 1.2, 0.0, 1.0));
     }
-    sunVis *= 1.0 - min(0.5, propAcc * 0.28);
     if (isFace) {
       vec2 nrm = mix(vec2(0.0, 1.0), vec2(1.0, 0.0), pickR);
       float cosS = dot(nrm, -uSun.xy);
@@ -713,7 +700,6 @@ export class NightLights {
   private colArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private fieldCount = 0;
   private hArr!: Float32Array; // CPU occlusion heights (terrain + solid objects)
-  private pArr!: Float32Array; // CPU prop-height share (distance-faded sun shade)
   private tArr!: Float32Array; // CPU terrain-only heights (walls/AO seams)
   private oArr!: Uint8Array;   // CPU solid-object flags
   private curLights: ShaderLight[] = [];
@@ -911,36 +897,26 @@ export class NightLights {
     this.hArr = new Float32Array(w * h);
     this.tArr = new Float32Array(w * h);
     this.oArr = new Uint8Array(w * h);
-    this.pArr = new Float32Array(w * h);
-    // Placed props are just TALL cells to the shadow system (maintainer):
-    // their `levels` (2-5) raise the OCCLUSION height, so the sun march and
-    // point-light LOS cast their shadows exactly like terrain — no special
-    // overlay system. Terrain-only heights (walls/faces/AO seams and ground
-    // z resolution) stay untouched: prop art is a billboard, not a wall.
+    // Placed props occlude EXACTLY like solid terrain categories: +1 level,
+    // one shadow system for everything (maintainer — the torch LOS look).
+    // Their taller art heights (2-5 levels) were tried in the map and only
+    // ever bought spike/blob artifacts; +1 gives the same compact soft
+    // shadow the torch casts, from the same march.
     const propLvl = new Map<number, number>();
-    for (const pr of this.world.props ?? []) {
-      const k = pr.row * w + pr.col;
-      propLvl.set(k, Math.max(propLvl.get(k) ?? 0, pr.levels ?? 2));
-    }
+    for (const pr of this.world.props ?? []) propLvl.set(pr.row * w + pr.col, 1);
     for (let r = 0; r < h; r++) {
       for (let c = 0; c < w; c++) {
         const i = (r * w + c) * 4;
         const cell = this.world.rows[r][c];
         const s = surfaceFor(cell.t);
         const solid = !s.standable && !s.swimmable;
-        const pl = propLvl.get(r * w + c) ?? 0;
-        const occH = cell.l + Math.max(solid ? 1 : 0, pl);
-        // CPU twin marches LOS only → occlusion heights (solid +1 / prop levels).
+        const occH = cell.l + Math.max(solid ? 1 : 0, propLvl.get(r * w + c) ?? 0);
+        // CPU twin marches LOS only → occlusion heights (solids/props +1).
         this.hArr[r * w + c] = occH;
         this.tArr[r * w + c] = cell.l;
         this.oArr[r * w + c] = solid ? 1 : 0;
-        this.pArr[r * w + c] = pl;
         img.data[i] = Math.min(255, cell.l * 16);
         imgL.data[i] = Math.min(255, occH * 16);
-        // G of the OCCLUSION map = the prop's share of the height: the sun
-        // march fades prop-cast shade with distance (a tree is a thin
-        // billboard, not a wall — full-length hard shadows read as spikes).
-        imgL.data[i + 1] = Math.min(255, pl * 16);
         // G flags solid OBJECTS (bush, boulder, tree…): they keep full LOS
         // occlusion — the billboard compromise is for players, who can never
         // stand on these cells.
@@ -1088,29 +1064,17 @@ export class NightLights {
       return (a * (1 - fx) + b * fx) * (1 - fy) + (d * (1 - fx) + e * fx) * fy;
     };
     const hAtSoft = soft(this.hArr, 99);
-    const pAtSoft = soft(this.pArr, 0);
-    const smoothstep = (e0: number, e1: number, x: number) => {
-      const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0)));
-      return t * t * (3 - 2 * t);
-    };
-    // Mirror of the shader: terrain multiplicative over the soft field,
-    // prop = one normalized SUM (smooth capsule, no scalloping).
+    // Mirror of the shader: one plain march over the occlusion heights.
     let sunVis = 1;
-    let propAcc = 0;
     for (let sN = 1; sN <= 20; sN++) {
       const dc = sN * 0.6;
       const px = col - sun[0] * dc;
       const py = row - sun[1] * dc;
       if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
       const hRay = z + dc * sun[2] + 0.15;
-      const hs = hAtSoft(px, py);
-      const ps = pAtSoft(px, py);
-      const terrS = hs - ps;
-      if (terrS < 90 && terrS > hRay) sunVis *= 0.8 + (0.35 - 0.8) * Math.min(1, (terrS - hRay) * 1.2);
-      if (ps > 0.01 && hs < 90 && hs > hRay)
-        propAcc += Math.min(1, (hs - hRay) * 1.2) * smoothstep(3.2, 1.2, dc);
+      const hh = hAtSoft(px, py);
+      if (hh < 90 && hh > hRay) sunVis *= 0.8 + (0.35 - 0.8) * Math.min(1, (hh - hRay) * 1.2);
     }
-    sunVis *= 1 - Math.min(0.5, propAcc * 0.28);
     const sunShare = 0.45 * sun[3];
     return 1 - sunShare + sunShare * Math.max(0, Math.min(1, sunVis));
   }
