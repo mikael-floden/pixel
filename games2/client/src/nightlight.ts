@@ -181,6 +181,14 @@ float heightAtSoft(vec2 cr) {
   return texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).r * 255.0 / 16.0;
 }
 
+// The prop share of the occlusion height (G of the same map): prop-cast sun
+// shade fades with distance so trees pool shade at their feet instead of
+// throwing wall-length spikes.
+float propAtSoft(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
+  return texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).g * 255.0 / 16.0;
+}
+
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
@@ -400,7 +408,13 @@ void main() {
       if (floor(p.x) == floor(pos.x) && floor(p.y) == floor(pos.y)) continue;
       float hRay = z + dc * uSun.z + 0.15;
       float H = heightAtSoft(p);
-      if (H < 90.0 && H > hRay) sunVis *= mix(0.80, 0.35, clamp((H - hRay) * 1.2, 0.0, 1.0));
+      if (H < 90.0 && H > hRay) {
+        float occ = mix(0.80, 0.35, clamp((H - hRay) * 1.2, 0.0, 1.0));
+        // Blocking that only exists because of a PROP fades out by ~3 cells
+        // (maintainer: only the shade pool at the base, no spike).
+        if (H - propAtSoft(p) <= hRay) occ = mix(1.0, occ, smoothstep(3.0, 1.2, dc));
+        sunVis *= occ;
+      }
     }
     if (isFace) {
       vec2 nrm = mix(vec2(0.0, 1.0), vec2(1.0, 0.0), pickR);
@@ -687,6 +701,7 @@ export class NightLights {
   private colArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private fieldCount = 0;
   private hArr!: Float32Array; // CPU occlusion heights (terrain + solid objects)
+  private pArr!: Float32Array; // CPU prop-height share (distance-faded sun shade)
   private tArr!: Float32Array; // CPU terrain-only heights (walls/AO seams)
   private oArr!: Uint8Array;   // CPU solid-object flags
   private curLights: ShaderLight[] = [];
@@ -884,6 +899,7 @@ export class NightLights {
     this.hArr = new Float32Array(w * h);
     this.tArr = new Float32Array(w * h);
     this.oArr = new Uint8Array(w * h);
+    this.pArr = new Float32Array(w * h);
     // Placed props are just TALL cells to the shadow system (maintainer):
     // their `levels` (2-5) raise the OCCLUSION height, so the sun march and
     // point-light LOS cast their shadows exactly like terrain — no special
@@ -900,13 +916,19 @@ export class NightLights {
         const cell = this.world.rows[r][c];
         const s = surfaceFor(cell.t);
         const solid = !s.standable && !s.swimmable;
-        const occH = cell.l + Math.max(solid ? 1 : 0, propLvl.get(r * w + c) ?? 0);
+        const pl = propLvl.get(r * w + c) ?? 0;
+        const occH = cell.l + Math.max(solid ? 1 : 0, pl);
         // CPU twin marches LOS only → occlusion heights (solid +1 / prop levels).
         this.hArr[r * w + c] = occH;
         this.tArr[r * w + c] = cell.l;
         this.oArr[r * w + c] = solid ? 1 : 0;
+        this.pArr[r * w + c] = pl;
         img.data[i] = Math.min(255, cell.l * 16);
         imgL.data[i] = Math.min(255, occH * 16);
+        // G of the OCCLUSION map = the prop's share of the height: the sun
+        // march fades prop-cast shade with distance (a tree is a thin
+        // billboard, not a wall — full-length hard shadows read as spikes).
+        imgL.data[i + 1] = Math.min(255, pl * 16);
         // G flags solid OBJECTS (bush, boulder, tree…): they keep full LOS
         // occlusion — the billboard compromise is for players, who can never
         // stand on these cells.
@@ -1043,15 +1065,21 @@ export class NightLights {
       const ci = Math.floor(c), ri = Math.floor(r);
       return ci < 0 || ri < 0 || ci >= W || ri >= H ? 99 : this.hArr[ri * W + ci];
     };
-    const hAtSoft = (c: number, r: number) => {
+    const soft = (arr: Float32Array, empty: number) => (c: number, r: number) => {
       const cf = c - 0.5, rf = r - 0.5;
       const c0 = Math.floor(cf), r0 = Math.floor(rf);
       const fx = cf - c0, fy = rf - r0;
       const v = (ci: number, ri: number) =>
-        ci < 0 || ri < 0 || ci >= W || ri >= H ? 99 : this.hArr[ri * W + ci];
+        ci < 0 || ri < 0 || ci >= W || ri >= H ? empty : arr[ri * W + ci];
       const a = v(c0, r0), b = v(c0 + 1, r0), d = v(c0, r0 + 1), e = v(c0 + 1, r0 + 1);
-      if (a > 90 || b > 90 || d > 90 || e > 90) return hAt(c, r);
+      if (a > 90 || b > 90 || d > 90 || e > 90) return empty === 99 ? hAt(c, r) : 0;
       return (a * (1 - fx) + b * fx) * (1 - fy) + (d * (1 - fx) + e * fx) * fy;
+    };
+    const hAtSoft = soft(this.hArr, 99);
+    const pAtSoft = soft(this.pArr, 0);
+    const smoothstep = (e0: number, e1: number, x: number) => {
+      const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0)));
+      return t * t * (3 - 2 * t);
     };
     let sunVis = 1;
     for (let sN = 1; sN <= 20; sN++) {
@@ -1061,7 +1089,12 @@ export class NightLights {
       if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
       const hRay = z + dc * sun[2] + 0.15;
       const hh = hAtSoft(px, py);
-      if (hh < 90 && hh > hRay) sunVis *= 0.8 + (0.35 - 0.8) * Math.min(1, (hh - hRay) * 1.2);
+      if (hh < 90 && hh > hRay) {
+        let occ = 0.8 + (0.35 - 0.8) * Math.min(1, (hh - hRay) * 1.2);
+        // Prop-only blocking fades out by ~3 cells — mirror of the shader.
+        if (hh - pAtSoft(px, py) <= hRay) occ = 1 + (occ - 1) * smoothstep(3.0, 1.2, dc);
+        sunVis *= occ;
+      }
     }
     const sunShare = 0.45 * sun[3];
     return 1 - sunShare + sunShare * Math.max(0, Math.min(1, sunVis));
