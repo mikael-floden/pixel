@@ -21,6 +21,38 @@ const OUT = path.resolve("client/public/ui");
 const PHASES = ["night", "morning", "day", "evening"];
 const T = 30; // background = max(r,g,b) <= T, reachable from the border
 
+// The mocks are ~4x the display size, and letting the browser smooth-scale
+// them down made the dial's border mushy next to the crisp HUD frame
+// (maintainer: "respect the pixel art resolution at the border"). So the
+// assets are baked AT display resolution — box-downscaled (no grid
+// guessing; the mocks have no clean pixel grid) with the alpha edge
+// hard-thresholded into pixel stairs — and rendered 1:1 + pixelated.
+const DIAL_DIV = 4; // dial mock px per displayed px
+const HAND_DIV = 8; // hand mock is ~2x the dial mock's scale
+
+function boxDown(img, f) {
+  const w = Math.floor(img.width / f), h = Math.floor(img.height / f);
+  const out = new PNG({ width: w, height: h });
+  for (let y = 0; y < h; y++)
+    for (let x = 0; x < w; x++) {
+      let r = 0, g = 0, b = 0, a = 0;
+      for (let dy = 0; dy < f; dy++)
+        for (let dx = 0; dx < f; dx++) {
+          const i = ((y * f + dy) * img.width + x * f + dx) * 4;
+          const al = img.data[i + 3];
+          r += img.data[i] * al; g += img.data[i + 1] * al; b += img.data[i + 2] * al;
+          a += al;
+        }
+      const o = (y * w + x) * 4;
+      out.data[o] = a ? Math.round(r / a) : 0;
+      out.data[o + 1] = a ? Math.round(g / a) : 0;
+      out.data[o + 2] = a ? Math.round(b / a) : 0;
+      // Hard pixel edge: a cell is either art or empty, no feather.
+      out.data[o + 3] = a / (f * f) >= 128 ? 255 : 0;
+    }
+  return out;
+}
+
 // The pointer hand mock (clock-hand.png) points UP-left with the pivot hub
 // bottom-right; the dial hangs DOWN, so the hand is flipped vertically
 // (pixel-exact) before cropping. The printed hub-centre / tip coords feed
@@ -93,24 +125,28 @@ for (const phase of [...PHASES, "hand"]) {
   if (maxX < 0) throw new Error(`${phase}: nothing survived keying`);
 
   const cw = maxX - minX + 1, ch = maxY - minY + 1;
-  const out = new PNG({ width: cw, height: ch });
-  PNG.bitblt(img, out, minX, minY, cw, ch, 0, 0);
+  const full = new PNG({ width: cw, height: ch });
+  PNG.bitblt(img, full, minX, minY, cw, ch, 0, 0);
   if (phase === "hand") {
     // Flip vertically, pixel-exact (no resampling).
     for (let y = 0; y < ch >> 1; y++)
       for (let x = 0; x < cw * 4; x++) {
         const a = y * cw * 4 + x, b = (ch - 1 - y) * cw * 4 + x;
-        const t = out.data[a];
-        out.data[a] = out.data[b];
-        out.data[b] = t;
+        const t = full.data[a];
+        full.data[a] = full.data[b];
+        full.data[b] = t;
       }
-    // Geometry for clock.ts: hub centre = centroid of the wide rows (the
-    // hub circle is far wider than the shaft), tip = pixel farthest from it.
+  }
+  const out = boxDown(full, phase === "hand" ? HAND_DIV : DIAL_DIV);
+  if (phase === "hand") {
+    // Geometry for clock.ts (in FINAL asset px): hub centre = centroid of
+    // the wide rows (the hub circle is far wider than the shaft), tip =
+    // pixel farthest from it.
     const runs = [];
-    for (let y = 0; y < ch; y++) {
+    for (let y = 0; y < out.height; y++) {
       let lo = -1, hi = -1;
-      for (let x = 0; x < cw; x++)
-        if (out.data[(y * cw + x) * 4 + 3] > 128) {
+      for (let x = 0; x < out.width; x++)
+        if (out.data[(y * out.width + x) * 4 + 3] > 128) {
           if (lo < 0) lo = x;
           hi = x;
         }
@@ -134,5 +170,5 @@ for (const phase of [...PHASES, "hand"]) {
     );
   }
   fs.writeFileSync(path.join(OUT, `clock_${phase}.png`), PNG.sync.write(out));
-  console.log(`clock_${phase}.png  ${cw}x${ch}  (crop ${minX},${minY})`);
+  console.log(`clock_${phase}.png  ${out.width}x${out.height}  (crop ${minX},${minY} of ${cw}x${ch})`);
 }

@@ -29,18 +29,17 @@ const FADE_S = 2.5; // keep in step with WorldScene's TIME_TRANSITION_S
 // Index order = TIME_PHASES / shared timeIdx (0 Night, 1 Morning, ...).
 const HAND_DEG = [67.5, -67.5, -22.5, 22.5];
 
-// Display size: dial width in CSS px — everything else derives from it.
-const ROOT_W = 176;
-const DIAL = { w: 716, h: 419, knobX: 358, knobY: 22 }; // mock px (keyed crop)
-// Measured by scripts/build-clock.mjs from the keyed, flipped hand art:
-// image size, pivot-hub centre, and its resting angle (down-left = +42.2
-// in the convention above).
-const HAND = { w: 504, h: 552, hubX: 437.6, hubY: 67.0, baseDeg: 42.2 };
-// Hand px -> CSS px: sized so the tip reaches ~85% of the dial radius —
-// the arrow must stay legible at the small dial size (it IS the reading).
-// Hand length 652 mock px (hub centre -> tip), dial radius 358 mock px.
-const F = ROOT_W / DIAL.w;
-const HAND_SCALE = (358 * F * 0.85) / 652;
+// The assets are baked AT display resolution (see build-clock.mjs — the
+// browser must never resample them; that made the border mush next to the
+// crisp HUD frame) and rendered 1 asset px = 1 CSS px, pixelated.
+const DIAL = { w: 179, h: 104, knobX: 89.5, knobY: 5.5 }; // asset px
+const ROOT_W = DIAL.w;
+// Measured by scripts/build-clock.mjs from the keyed, flipped, downscaled
+// hand art: image size, pivot-hub centre, and its resting angle
+// (down-left = +42.2 in the convention above).
+const HAND = { w: 63, h: 69, hubX: 54.4, hubY: 8.0, baseDeg: 42.2 };
+const F = 1;
+const HAND_SCALE = 1;
 
 let root: HTMLDivElement | null = null;
 let dials: HTMLImageElement[] = [];
@@ -58,7 +57,7 @@ function mount() {
   .ml-clock{position:fixed;top:36px;left:50%;transform:translateX(-50%);z-index:5;
     width:${ROOT_W}px;pointer-events:none}
   .ml-clock img{position:absolute;top:0;left:0;width:100%;opacity:0;
-    transition:opacity ${FADE_S}s ease}
+    image-rendering:pixelated;transition:opacity ${FADE_S}s ease}
   .ml-clock img.on{opacity:1}
   .ml-clock img.ml-hand{opacity:1;transition:transform ${FADE_S}s ease}
   .ml-clock.snap img{transition:none}`;
