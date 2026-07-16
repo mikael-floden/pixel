@@ -475,7 +475,10 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   can't dim it) and every terrain occluder (visible on clifftops), below
   the lit avatar copies; it pulses until the trip ends
   (`scripts/verify-tapmarker.mjs` samples real pixels at night, flat +
-  elevated). Probes: `__ml.tapTo`, `__ml.target`,
+  elevated). A NORMAL-blend dark under-ring rims the additive pair:
+  ADD light cannot brighten near-white ground, so on snow the beacon
+  used to vanish (maintainer) — the dark outline carries the shape on
+  bright terrain, the glow carries it in the dark. Probes: `__ml.tapTo`, `__ml.target`,
   `__ml.path`, `__ml.navLog`, `__ml.gridAround`, `__ml.pickAt`.
 
 ## Dev-test workflow (fast loop — keep it this way)

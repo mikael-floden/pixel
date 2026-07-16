@@ -1971,9 +1971,12 @@ export class WorldScene extends Phaser.Scene {
     // night. ADD blend makes it light-like wherever it lands. It pulses until
     // the trip ends (arrival/cancel fades it in clearMoveTarget).
     const tint = run ? 0xffb454 : 0x8fe08f;
+    // 0.9: the pulse tween drops the container to 0.55 alpha — the outline
+    // must stay legible on white ground at the trough too.
+    const dark = this.add.image(0, 0, "tap-dark").setAlpha(0.9);
     const glow = this.add.image(0, 0, "tap-glow").setBlendMode(Phaser.BlendModes.ADD).setTint(tint);
     const ring = this.add.image(0, 0, "tap-ring").setBlendMode(Phaser.BlendModes.ADD).setTint(tint);
-    this.tapMarker = this.add.container(p.x, my, [glow, ring]).setDepth(900_000.5);
+    this.tapMarker = this.add.container(p.x, my, [dark, glow, ring]).setDepth(900_000.5);
     this.tweens.add({
       targets: this.tapMarker,
       scale: { from: 1.25, to: 0.8 },
@@ -2037,6 +2040,16 @@ export class WorldScene extends Phaser.Scene {
     g.lineStyle(3, 0xffffff, 1).strokeEllipse(w / 2, h / 2, w - 4, h - 4);
     g.fillStyle(0xffffff, 0.5).fillEllipse(w / 2, h / 2, (w - 4) / 2.4, (h - 4) / 2.4);
     g.generateTexture("tap-ring", w, h);
+    g.clear();
+    // Dark under-ring, NORMAL blend: additive light cannot brighten
+    // near-white ground (on snow the beacon vanished — maintainer), so a
+    // dark outline carries the shape on bright terrain while the additive
+    // pair carries it in the dark. Slightly larger canvas so the wider
+    // stroke isn't clipped; same ellipse, so it rims the bright ring.
+    const dw = w + 4;
+    const dh = h + 4;
+    g.lineStyle(6, 0x140f0a, 1).strokeEllipse(dw / 2, dh / 2, w - 4, h - 4);
+    g.generateTexture("tap-dark", dw, dh);
     g.clear();
     const gw = 56;
     const gh = 28;
