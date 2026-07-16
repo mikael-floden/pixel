@@ -65,8 +65,16 @@ let handDeg: number | null = null;
 function mount() {
   if (root) return;
   const style = document.createElement("style");
+  // top: the dial's flat edge tucks under the FRAME's rail. The frame is
+  // NOT uiZoom'd (its art is fixed layout px) while the clock IS — under
+  // desktop-site layout (maintainer's phone: ~980px layout on a ~393px
+  // screen, zoom ~2.5) a plain top:33px rendered 33*zoom layout px and the
+  // dial floated ~20px BELOW the rail ("big gap, not connected to the
+  // frame"). Dividing by --ml-uizoom cancels the zoom for the anchor only,
+  // so the dial meets the rail in EVERY layout mode.
   style.textContent = `
-  .ml-clock,.ml-clock-hand,.ml-clock-dots{position:fixed;top:33px;left:50%;
+  .ml-clock,.ml-clock-hand,.ml-clock-dots{position:fixed;
+    top:calc(33px / var(--ml-uizoom, 1));left:50%;
     transform:translateX(-50%);width:${ROOT_W}px;pointer-events:none}
   .ml-clock{z-index:5}
   .ml-clock-dots{z-index:5;width:${DOTS.w}px}

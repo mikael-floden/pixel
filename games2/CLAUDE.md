@@ -508,15 +508,24 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   software-GL at big viewports throttles the frame loop into slow motion
   that fakes "stuck player" bugs (this once cost an hour of ghost-chasing).
   Keep e2e viewports small (480×320); `scripts/debug-speed.mjs` measures.
-- **HUD / visual QA runs in the SIMULATED MOBILE view** (maintainer:
-  phones are the reference device): Playwright context `{viewport:
-  {width: 393, height: 851}, deviceScaleFactor: 2, isMobile: true,
-  hasTouch: true, userAgent: <mobile Chrome>}`. Desktop-ish viewports
-  lie about proportions — the frame's gem crest is ~90 CSS px on a wide
-  window but dominates the top rail on a phone (the clock mocks were
-  drawn on desktop-width screenshots; mobile is what the maintainer
-  sees). Movement-timing e2e (verify-smoke) stays on its small fast
-  viewport — the starvation rule above outranks realism there.
+- **HUD / visual QA runs in the maintainer's REAL phone view, which is
+  DESKTOP-SITE layout on a phone screen**: Playwright context
+  `{viewport: {width: 980, height: 2123}, screen: {width: 393, height:
+  851}, isMobile: true, hasTouch: true}` → innerWidth 980, screen.width
+  393, uiZoom ≈ 2.49, 150px HUD tabs WITH icons. A plain device-width
+  context (viewport 393) is a DIFFERENT geometry — 39px icon-less tabs,
+  no zoom — and QA screenshots taken there did not match the
+  maintainer's phone at all ("something is wrong when you try to
+  simulate my mobile view"). Check BOTH modes when touching overlay
+  anchors. THE TRAP: two coordinate spaces coexist — the page FRAME is
+  fixed layout px (never uiZoom'd) while overlays (clock, badge,
+  banner, select, chat) get the compensating `zoom`; a px anchor inside
+  a zoomed overlay renders at value×zoom layout px, so anchoring an
+  overlay to a frame feature needs `calc(<px> / var(--ml-uizoom, 1))`
+  (see .ml-clock's top — a plain 33px floated the dial ~20px off the
+  rail on the real phone). Movement-timing e2e (verify-smoke) stays on
+  its small fast viewport — the starvation rule above outranks realism
+  there.
 - Rule of thumb: if a check doesn't need pixels, pointer events, websockets,
   or Phaser anims, it belongs in `server/test` (3s), not in a browser (min).
 - **Deploy** (push to main → live): the workflow runs a `test` job (typecheck
@@ -565,6 +574,13 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
 
 - `npm run dev` runs server + client. `npm test` = headless two-client sync test.
   `npm run typecheck` per package. Work from `games/nangijala/`.
+- **PIXEL ART SCALES NEAREST-NEIGHBOUR ONLY — everywhere, always**
+  (maintainer, repeatedly): `image-rendering:pixelated` on every art
+  img/canvas, Phaser nearest filtering, `imageSmoothingEnabled=false` in
+  canvas code, and nearest in QA/preview scripts' zoom helpers. Offline
+  pipelines may box-average ONLY when BAKING an asset down to its final
+  display resolution (a downscale bake whose output then renders 1:1);
+  nothing ever upscales with smoothing.
 - Keep shared movement/direction math in `shared/` — never duplicate it.
 - Server is authoritative; never trust client positions.
 - Tests stay headless (node + Colyseus, no browser); browser checks go through
