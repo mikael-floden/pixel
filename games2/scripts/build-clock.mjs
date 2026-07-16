@@ -39,7 +39,7 @@ const FINE_DIV = 13; // the fine hand (only shown while sweeping) keeps ~2x deta
 // shows during the 2.5s sweep, where motion masks its finer grain.
 // KEEP IN SYNC with HAND_DEG in client/src/clock.ts (degrees from straight
 // down, positive = screen-left; the on-screen shadow directions).
-const HAND_DEG = { night: 90, morning: -90, day: 50.7, evening: 90 };
+const HAND_DEG = { night: 90, morning: -90, day: 0, evening: 90 };
 const HAND_PAD = DIAL_DIV; // one art row of headroom above the dial's flat top
 
 function boxDown(img, f, thresh = 128) {
@@ -151,6 +151,30 @@ for (const phase of [...PHASES, "hand"]) {
   }
   if (phase !== "hand") {
     const out = boxDown(full, DIAL_DIV);
+    // 1-art-px border ring, like every other HUD tile (the frame recipe —
+    // near-black at 90% alpha painted on the empty px bordering the art —
+    // reduces to black here because the keyed-out backdrop was black):
+    // without it the dial's bare rim floats on the world.
+    const ow = out.width, oh = out.height;
+    for (let y = 0; y < oh; y++)
+      for (let x = 0; x < ow; x++) {
+        const o = (y * ow + x) * 4;
+        if (out.data[o + 3]) continue;
+        let touches = false;
+        for (let dy = -1; dy <= 1 && !touches; dy++)
+          for (let dx = -1; dx <= 1; dx++) {
+            const nx = x + dx, ny = y + dy;
+            if (nx < 0 || ny < 0 || nx >= ow || ny >= oh) continue;
+            if (out.data[(ny * ow + nx) * 4 + 3] === 255) {
+              touches = true;
+              break;
+            }
+          }
+        if (touches) {
+          out.data[o] = 8; out.data[o + 1] = 6; out.data[o + 2] = 5;
+          out.data[o + 3] = 230;
+        }
+      }
     fs.writeFileSync(path.join(OUT, `clock_${phase}.png`), PNG.sync.write(out));
     console.log(`clock_${phase}.png  ${out.width}x${out.height}  (crop ${minX},${minY} of ${cw}x${ch})`);
     continue;

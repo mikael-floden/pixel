@@ -27,18 +27,14 @@ import { applyUiZoom } from "./uiscale";
 const PHASE_FILES = ["night", "morning", "day", "evening"] as const;
 const FADE_S = 2.5; // keep in step with WorldScene's TIME_TRANSITION_S
 
-// The hand points EXACTLY the way the sun's shadows fall ON SCREEN
-// (maintainer round 3+5: hand direction = shadow direction, no artistic
-// re-spacing). Angles derive from WorldScene's SUN_PHASES cast vectors
-// through the iso projection (screen px = ((col-row)*32, (col+row)*13)):
-// Morning shadows point screen-right (-90), Day down-left (+50.7 — the
-// midday sun keeps a west tilt and the iso squash steepens it), Evening
-// horizontal-left (+90). Night has no sun: the hand STAYS where the sun
-// set (100% left), then sweeps CW over the top for the new morning
-// (round 4). Recompute if SUN_PHASES ever changes, and KEEP IN SYNC with
-// HAND_DEG in scripts/build-clock.mjs (it bakes the rest sprites).
+// Hand positions (maintainer rounds 3-8): the sweep follows the shadows'
+// side — Morning 100% right (-90, shadows east), DAY straight down at the
+// dial's "12" (the bottom-centre plate; 100% day beats shadow-exactness),
+// Evening 100% left (+90, shadows west). Night has no sun: the hand STAYS
+// where the sun set, then sweeps CW over the top for the new morning.
+// KEEP IN SYNC with HAND_DEG in scripts/build-clock.mjs (rest sprites).
 // Index order = TIME_PHASES / shared timeIdx (0 Night, 1 Morning, ...).
-const HAND_DEG = [90, -90, 50.7, 90];
+const HAND_DEG = [90, -90, 0, 90];
 
 const PX = 4; // CSS px per asset art px — matches the frame's grain
 // Sized to the maintainer's sketched area (round 7: "this is not how this
