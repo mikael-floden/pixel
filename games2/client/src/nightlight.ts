@@ -409,8 +409,12 @@ void main() {
     // continuous gradient. Nearest-texel round quantized into "stacked
     // cubes"; multiplicative round rang into "stacked circles" — this is
     // the smooth-and-once combination (maintainer round 3).
+    // Prop shade is a normalized SUM of the samples, not a max and not a
+    // product: overlapping soft contributions blend into one continuous
+    // capsule (max switched hard between samples — the scalloped "chain of
+    // circles"; per-sample multiply rang; sums of smooth blobs are smooth).
     float sunVis = 1.0;
-    float propOcc = 0.0;
+    float propAcc = 0.0;
     for (int s = 1; s <= 20; s++) {
       float dc = float(s) * 0.6;
       vec2 p = pos - uSun.xy * dc;
@@ -421,9 +425,9 @@ void main() {
       float terrS = Hs - Ps;
       if (terrS < 90.0 && terrS > hRay) sunVis *= mix(0.80, 0.35, clamp((terrS - hRay) * 1.2, 0.0, 1.0));
       if (Ps > 0.01 && Hs < 90.0 && Hs > hRay)
-        propOcc = max(propOcc, mix(0.12, 0.50, clamp((Hs - hRay) * 1.2, 0.0, 1.0)) * smoothstep(3.2, 1.2, dc));
+        propAcc += clamp((Hs - hRay) * 1.2, 0.0, 1.0) * smoothstep(3.2, 1.2, dc);
     }
-    sunVis *= 1.0 - propOcc;
+    sunVis *= 1.0 - min(0.5, propAcc * 0.28);
     if (isFace) {
       vec2 nrm = mix(vec2(0.0, 1.0), vec2(1.0, 0.0), pickR);
       float cosS = dot(nrm, -uSun.xy);
@@ -1090,9 +1094,9 @@ export class NightLights {
       return t * t * (3 - 2 * t);
     };
     // Mirror of the shader: terrain multiplicative over the soft field,
-    // prop = ONE smooth max-projection of the same field.
+    // prop = one normalized SUM (smooth capsule, no scalloping).
     let sunVis = 1;
-    let propOcc = 0;
+    let propAcc = 0;
     for (let sN = 1; sN <= 20; sN++) {
       const dc = sN * 0.6;
       const px = col - sun[0] * dc;
@@ -1104,12 +1108,9 @@ export class NightLights {
       const terrS = hs - ps;
       if (terrS < 90 && terrS > hRay) sunVis *= 0.8 + (0.35 - 0.8) * Math.min(1, (terrS - hRay) * 1.2);
       if (ps > 0.01 && hs < 90 && hs > hRay)
-        propOcc = Math.max(
-          propOcc,
-          (0.12 + (0.5 - 0.12) * Math.min(1, (hs - hRay) * 1.2)) * smoothstep(3.2, 1.2, dc),
-        );
+        propAcc += Math.min(1, (hs - hRay) * 1.2) * smoothstep(3.2, 1.2, dc);
     }
-    sunVis *= 1 - propOcc;
+    sunVis *= 1 - Math.min(0.5, propAcc * 0.28);
     const sunShare = 0.45 * sun[3];
     return 1 - sunShare + sunShare * Math.max(0, Math.min(1, sunVis));
   }
