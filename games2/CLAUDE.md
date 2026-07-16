@@ -184,7 +184,21 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   TIME_PHASE_COUNT) and the cycle RUNS BY ITSELF (maintainer: the
   day/night cycle is a core rhythm of the game): the server's world
   clock advances the phase per TIME_PHASE_SECONDS (1 min per phase,
-  4 min full cycle). WorldState.frozen ("freeze time" settings switch,
+  4 min full cycle). Time is CONTINUOUS (maintainer: "the clock arrow
+  and the shadow should move continuously... not swap from day to
+  evening that sudden" — the discrete jumps were why time kept LOOKING
+  frozen): WorldState.phaseT (0..1 progress, written by the 20Hz sim
+  loop) sweeps every client's hand/sun/ambient/torch via
+  blendPhases(u = timeIdx + phaseT), which lerps the phase tables
+  between MID-phase anchors — u = i + 0.5 is exactly TIME_PHASES[i]/
+  SUN_PHASES[i], so every calibrated verify script still sees the
+  approved keyframes (local probes pin phaseT = 0.5). Natural rollover
+  enters at phaseT 0; a manual SKIP lands at 0.5 (the phase's
+  characteristic look, for frozen testing); unfreeze RESUMES from the
+  held phaseT (never restarts the phase). The hand sweeps 360°/game
+  day via setClockProgress: +90°/quarter through the sunlit phases,
+  parked from evening-mid to night-mid (sun has set), +180° over the
+  top before dawn; the dial cross-fade stays the only discrete event. WorldState.frozen ("freeze time" settings switch,
   "freezetime" message) holds the clock for phase testing — DEFAULT ON
   for now; manual skips still work while frozen; tests must unfreeze
   before expecting auto-advance. The [1] key / HUD button send

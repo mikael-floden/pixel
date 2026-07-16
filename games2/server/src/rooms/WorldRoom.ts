@@ -47,6 +47,7 @@ import { fileURLToPath } from "url";
  * a brand-new process still boots frozen-by-default. */
 interface WorldClock {
   timeIdx: number;
+  phaseT: number;
   frozen: boolean;
   weather: number;
   aurora: boolean;
@@ -98,20 +99,28 @@ export class WorldRoom extends Room<WorldState> {
     }, (25 + Math.random() * 50) * 1000);
   }
 
-  private advanceTime() {
+  private advanceTime(skip = false) {
     this.state.timeIdx = (this.state.timeIdx + 1) % TIME_PHASE_COUNT;
     // Some nights the northern lights come out — rolled once as night
     // falls, shared by everyone, gone by morning.
     this.state.aurora = this.state.timeIdx === 0 && Math.random() < this.auroraChance;
+    // Natural rollover continues from the phase START (time is CONTINUOUS —
+    // phaseT sweeps 0..1 and the clients sweep the hand/sun/ambient with
+    // it); a manual SKIP lands MID-phase, the phase's characteristic look
+    // (hand on the phase position, approved grade), so frozen phase-testing
+    // shows exactly the discrete-era look.
+    this.state.phaseT = skip ? 0.5 : 0;
     this.scheduleTimeOfDay();
   }
 
   private scheduleTimeOfDay() {
     if (this.state.frozen) {
-      this.nextPhaseAt = null; // freeze time: the clock holds still
+      this.nextPhaseAt = null; // freeze time: the clock holds still (phaseT keeps its value)
     } else {
+      // Resume from the CURRENT progress — unfreezing must not restart the
+      // phase or the continuously-swept hand/shadows would snap backwards.
       const s = this.phaseSeconds[this.state.timeIdx % this.phaseSeconds.length];
-      this.nextPhaseAt = Date.now() + s * 1000;
+      this.nextPhaseAt = Date.now() + (1 - this.state.phaseT) * s * 1000;
     }
     this.saveClock();
   }
@@ -121,6 +130,7 @@ export class WorldRoom extends Room<WorldState> {
   private saveClock() {
     worldClocks.set(this.worldName, {
       timeIdx: this.state.timeIdx,
+      phaseT: this.state.phaseT,
       frozen: this.state.frozen,
       weather: this.state.weather,
       aurora: this.state.aurora,
@@ -184,7 +194,7 @@ export class WorldRoom extends Room<WorldState> {
     // cycle is a core rhythm of the game). The settings button still sends
     // "timeofday" — now a SKIP that also restarts the phase timer so a
     // manual skip grants the full next phase.
-    this.onMessage("timeofday", () => this.advanceTime());
+    this.onMessage("timeofday", () => this.advanceTime(true));
     // Freeze time (world state, default ON): holds the clock so a given
     // phase can be tested; manual skips still work while frozen. When time
     // flows it ticks the same for every player — it's the room's clock.
@@ -199,6 +209,7 @@ export class WorldRoom extends Room<WorldState> {
     const saved = worldClocks.get(this.worldName);
     if (saved) {
       this.state.timeIdx = saved.timeIdx;
+      this.state.phaseT = saved.phaseT;
       this.state.frozen = saved.frozen;
       this.state.weather = saved.weather;
       this.state.aurora = saved.aurora;
@@ -281,8 +292,16 @@ export class WorldRoom extends Room<WorldState> {
   }
 
   private update(dt: number) {
-    // World clock: phase deadline checked here (see nextPhaseAt note).
-    if (this.nextPhaseAt !== null && Date.now() >= this.nextPhaseAt) this.advanceTime();
+    // World clock: phase deadline checked here (see nextPhaseAt note); the
+    // synced phaseT sweeps continuously between rollovers.
+    if (this.nextPhaseAt !== null) {
+      const now = Date.now();
+      if (now >= this.nextPhaseAt) this.advanceTime();
+      else {
+        const s = this.phaseSeconds[this.state.timeIdx % this.phaseSeconds.length] * 1000;
+        this.state.phaseT = Math.min(1, Math.max(0, 1 - (this.nextPhaseAt - now) / s));
+      }
+    }
 
     const now = Date.now();
     this.state.players.forEach((player, id) => {

@@ -58,7 +58,7 @@ import {
 } from "../nightlight";
 import { joinWorld } from "../net";
 import { ChatUI } from "../chat";
-import { setClockPhase, clockStar } from "../clock";
+import { setClockPhase, setClockProgress, clockStar } from "../clock";
 import { HudBar, mountPageFrame } from "../hud";
 import { setLoadingProgress, hideLoading } from "../loading";
 import { applyUiZoom } from "../uiscale";
@@ -158,6 +158,46 @@ const SUN_PHASES: { cast: [number, number]; slope: number; strength: number }[] 
 function sunVec(idx: number): [number, number, number, number] {
   const p = SUN_PHASES[idx % SUN_PHASES.length];
   return [p.cast[0], p.cast[1], p.slope, p.strength];
+}
+
+/** CONTINUOUS time: blend the phase tables between MID-phase anchors.
+ * u = timeIdx + phaseT (server-synced progress). At u = i + 0.5 the look is
+ * exactly TIME_PHASES[i]/SUN_PHASES[i] — the approved discrete looks — and
+ * between anchors everything sweeps linearly (maintainer: "the clock arrow
+ * and the shadow should move continuously... not swap from day to evening
+ * that sudden"; the discrete jumps were why time kept LOOKING broken).
+ * Manual skips land at phaseT 0.5, so frozen phase-testing still shows the
+ * exact keyframes (and every verify script keeps its calibration). */
+function blendPhases(u: number): {
+  ambient: [number, number, number];
+  sun: [number, number, number, number];
+  torchF: number;
+} {
+  const N = TIME_PHASES.length;
+  const v = u - 0.5;
+  const k = Math.floor(v);
+  const w = v - k;
+  const i0 = ((k % N) + N) % N;
+  const i1 = (i0 + 1) % N;
+  const a0 = TIME_PHASES[i0].ambient;
+  const a1 = TIME_PHASES[i1].ambient;
+  const s0 = SUN_PHASES[i0];
+  const s1 = SUN_PHASES[i1];
+  const L = (x: number, y: number) => x + (y - x) * w;
+  // Torch impact is part of the sweep: melts out through late morning,
+  // rekindles through early evening.
+  const t0 = i0 === 2 ? 0 : 1;
+  const t1 = i1 === 2 ? 0 : 1;
+  return {
+    ambient: [L(a0[0], a1[0]), L(a0[1], a1[1]), L(a0[2], a1[2])],
+    sun: [
+      L(s0.cast[0], s1.cast[0]),
+      L(s0.cast[1], s1.cast[1]),
+      L(s0.slope, s1.slope),
+      L(s0.strength, s1.strength),
+    ],
+    torchF: L(t0, t1),
+  };
 }
 
 const TIME_TRANSITION_S = 2.5;
@@ -399,6 +439,7 @@ export class WorldScene extends Phaser.Scene {
   private weatherIdx = 0;
   private curCloud = 0;
   private timeFrozen = true; // synced mirror of WorldState.frozen (switch state)
+  private phaseT = 0.5; // synced mirror of WorldState.phaseT (continuous progress)
   private auroraOn = false; // synced target; curAurora eases toward it
   private curAurora = 0;
   // Torch IMPACT is continuous, not a boolean (maintainer): 1 at dusk/night/
@@ -860,7 +901,10 @@ export class WorldScene extends Phaser.Scene {
             typeof which === "number"
               ? which % TIME_PHASES.length
               : TIME_PHASES.findIndex((p) => p.name.toLowerCase() === String(which).toLowerCase());
-          if (idx >= 0) this.setTimeOfDay(idx, instant);
+          if (idx >= 0) {
+            this.phaseT = 0.5; // probes land on the exact phase keyframe
+            this.setTimeOfDay(idx, instant);
+          }
         }
         return { name: TIME_PHASES[this.timeIdx].name, t: this.timeT, ambient: [...this.curAmbient] };
       },
@@ -980,6 +1024,9 @@ export class WorldScene extends Phaser.Scene {
       this.setTimeOfDay(idx % TIME_PHASES.length, firstTimeSync);
       if (!firstTimeSync) this.chat.addLog("—", `Time of day: ${TIME_PHASES[idx % TIME_PHASES.length].name}`);
       firstTimeSync = false;
+    });
+    $(room.state).listen("phaseT", (t: number) => {
+      if (typeof t === "number" && !Number.isNaN(t)) this.phaseT = t;
     });
     let firstFrozenSync = true;
     $(room.state).listen("frozen", (on: boolean) => {
@@ -1571,17 +1618,18 @@ export class WorldScene extends Phaser.Scene {
       if (this.timeT < 1)
         this.timeT = Math.min(1, (this.time.now - this.timeStart) / (TIME_TRANSITION_S * 1000));
       const e = this.timeT * this.timeT * (3 - 2 * this.timeT); // smoothstep
-      const target = TIME_PHASES[this.timeIdx];
+      // Continuous target from the synced (timeIdx, phaseT): drifts a little
+      // every frame while time flows; the 2.5s ease only smooths SKIPS.
+      const blend = blendPhases(this.timeIdx + this.phaseT);
       for (let ch = 0; ch < 3; ch++)
-        this.curAmbient[ch] = this.timeFromAmbient[ch] + (target.ambient[ch] - this.timeFromAmbient[ch]) * e;
-      // The sun rides the same clock: direction/slope/strength lerp with the
-      // ambient so shadows sweep as one phase fades into the next.
-      const sunTo = sunVec(this.timeIdx);
+        this.curAmbient[ch] = this.timeFromAmbient[ch] + (blend.ambient[ch] - this.timeFromAmbient[ch]) * e;
+      // The sun rides the same clock: direction/slope/strength sweep with the
+      // ambient so shadows move continuously through the day.
       for (let ch = 0; ch < 4; ch++)
-        this.curSun[ch] = this.timeFromSun[ch] + (sunTo[ch] - this.timeFromSun[ch]) * e;
-      // Torch impact fades to 0 at full Day and back as the day passes.
-      const torchTo = this.timeIdx === 2 ? 0 : 1;
-      this.curTorchF = this.timeFromTorchF + (torchTo - this.timeFromTorchF) * e;
+        this.curSun[ch] = this.timeFromSun[ch] + (blend.sun[ch] - this.timeFromSun[ch]) * e;
+      this.curTorchF = this.timeFromTorchF + (blend.torchF - this.timeFromTorchF) * e;
+      // The celestial hand sweeps with the same continuous clock.
+      setClockProgress(this.timeIdx + this.phaseT);
       // Weather: ease the cloud cover toward the synced target (~4s roll),
       // and grey the sky a touch while cloudy — "the sky is not perfect
       // blue" — before handing the ambient to the shader + CPU twin.
@@ -1723,9 +1771,15 @@ export class WorldScene extends Phaser.Scene {
     this.timeStart = this.time.now;
     setClockPhase(idx, instant); // celestial dial top-centre follows the phase
     if (instant) {
-      this.curAmbient = [...TIME_PHASES[idx].ambient];
-      this.curSun = sunVec(idx);
-      this.curTorchF = idx === 2 ? 0 : 1;
+      // Read the freshest synced progress directly (patch listener order is
+      // not guaranteed within the join sync).
+      const t = this.room?.state?.phaseT;
+      if (typeof t === "number" && !Number.isNaN(t)) this.phaseT = t;
+      const blend = blendPhases(idx + this.phaseT);
+      this.curAmbient = [...blend.ambient];
+      this.curSun = [...blend.sun];
+      this.curTorchF = blend.torchF;
+      setClockProgress(idx + this.phaseT, true);
     }
   }
 

@@ -23,12 +23,16 @@ const FADE_S = 2.5; // keep in step with WorldScene's TIME_TRANSITION_S
 
 // Hand positions (maintainer rounds 3-9): the hand IS the shadow
 // direction — Morning 100% right (-90, shadows east), DAY straight down
-// at the dial's "12" (the midday sun now casts exactly down-screen, in
-// sync — see SUN_PHASES), Evening 100% left (+90, shadows west). Night
-// has no sun: the hand STAYS where the sun set, then sweeps CW over the
-// top for the new morning.
-// Index order = TIME_PHASES / shared timeIdx (0 Night, 1 Morning, ...).
-const HAND_DEG = [90, -90, 0, 90];
+// at the dial's "12", Evening 100% left (+90, shadows west); night: the
+// hand rests where the sun set, then sweeps CW over the top before dawn.
+// CONTINUOUS since the phaseT era: those positions are MID-phase anchors
+// and setClockProgress(u = timeIdx + phaseT) sweeps between them — night-
+// mid -> morning-mid +180 over the top, +90 per quarter through the day,
+// evening-mid -> night-mid parked (the sun has set). 360 deg per game day,
+// monotonically clockwise (maintainer: never sweep backwards).
+const HAND_ANCHOR = 90; // hand angle at night-mid (u = 0.5)
+const HAND_DELTAS = [180, 90, 90, 0]; // per segment from night-mid
+const HAND_PREFIX = [0, 180, 270, 360];
 
 // Asset geometry, measured/printed by scripts/build-clock.mjs. Everything
 // renders at 1 asset px = 1 CSS px. Sheet-3 dials are the half-moon sky
@@ -56,10 +60,8 @@ let root: HTMLDivElement | null = null;
 let handRoot: HTMLDivElement | null = null;
 let dials: HTMLImageElement[] = [];
 let hand: HTMLImageElement | null = null;
-// Cumulative CSS rotation. The hand only ever advances CLOCKWISE
-// (maintainer: night -> morning must continue over the top, never sweep
-// backwards through the day), so this grows monotonically — 360° per full
-// game day — and the transition always takes the CW path.
+// Cumulative CSS rotation, monotonic (360° per full game day). Continuous
+// ticks snap (sub-degree steps at 20Hz); skips ride the CSS transition.
 let handDeg: number | null = null;
 
 function mount() {
@@ -156,22 +158,45 @@ export function clockStar() {
 }
 
 /** Show the dial for a TIME_PHASES index (0 Night, 1 Morning, 2 Day,
- * 3 Evening), cross-fading unless `instant` (join snaps straight in). */
+ * 3 Evening), cross-fading unless `instant` (join snaps straight in).
+ * The HAND is driven separately by setClockProgress. */
 export function setClockPhase(idx: number, instant = false) {
   mount();
   if (instant) {
     root!.classList.add("snap");
-    handRoot!.classList.add("snap");
     root!.offsetWidth; // flush styles so the snap really skips the fade
   }
   dials.forEach((img, i) => img.classList.toggle("on", i === idx % dials.length));
-  const target = HAND_DEG[idx % HAND_DEG.length] - HAND.baseDeg;
-  if (handDeg === null || instant) handDeg = target;
-  else handDeg += ((((target - handDeg) % 360) + 360) % 360); // CW only
-  hand!.style.transform = `rotate(${handDeg}deg)`;
   if (instant) {
     root!.offsetWidth;
     root!.classList.remove("snap");
+  }
+}
+
+/** Sweep the hand to the continuous day position u = timeIdx + phaseT.
+ * Monotonic clockwise; small (continuous) steps snap, big jumps (skips,
+ * rollover corrections) animate on the CSS transition. */
+export function setClockProgress(u: number, instant = false) {
+  mount();
+  const v = u - 0.5; // segment space: v = 0 at night-mid
+  const days = Math.floor(v / 4);
+  const v4 = v - days * 4;
+  const k = Math.min(3, Math.floor(v4));
+  const w = v4 - k;
+  const raw = HAND_ANCHOR + days * 360 + HAND_PREFIX[k] + w * HAND_DELTAS[k];
+  let target = raw - HAND.baseDeg;
+  if (handDeg !== null && !instant) {
+    // Keep the cumulative winding: move CW to the equivalent angle >= here
+    // (minus a hair of tolerance so 20Hz jitter can't wind extra turns).
+    target = handDeg + ((((target - handDeg) % 360) + 362) % 360) - 2;
+  }
+  if (handDeg !== null && Math.abs(target - handDeg) < 0.01) return;
+  const snap = instant || handDeg === null || Math.abs(target - handDeg) < 3;
+  if (snap) handRoot!.classList.add("snap");
+  handDeg = target;
+  hand!.style.transform = `rotate(${handDeg}deg)`;
+  if (snap) {
+    handRoot!.offsetWidth;
     handRoot!.classList.remove("snap");
   }
 }

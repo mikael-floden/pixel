@@ -135,3 +135,36 @@ test("unfreezing sticks: the clock survives room recycling", async () => {
     await gameServer.gracefullyShutdown(false);
   }
 });
+
+test("time is continuous: phaseT sweeps while unfrozen, skips land mid-phase", async () => {
+  const port = 2992;
+  const gameServer = new Server({
+    transport: new WebSocketTransport({ server: createServer() }),
+  });
+  gameServer.define(ROOM_NAME, WorldRoom);
+  await gameServer.listen(port);
+
+  try {
+    const c1 = new Client(`ws://localhost:${port}`);
+    const r1 = await c1.joinOrCreate(ROOM_NAME, { name: "A", character: "c", phaseSeconds: [2, 2, 2, 2] });
+    await waitFor(() => r1.state.players?.size === 1);
+    assert.equal(r1.state.phaseT, 0.5); // boots on the phase's characteristic look
+    r1.send("timeofday"); // manual skip (frozen by default)
+    const next = (DEFAULT_TIME_IDX + 1) % TIME_PHASE_COUNT;
+    await waitFor(() => r1.state.timeIdx === next);
+    assert.equal(r1.state.phaseT, 0.5); // skips land MID-phase, the approved look
+    r1.send("freezetime"); // let time flow
+    await waitFor(() => r1.state.frozen === false);
+    await new Promise((r) => setTimeout(r, 600));
+    const t1 = r1.state.phaseT;
+    assert.ok(t1 > 0.6, `phaseT must sweep continuously while unfrozen (got ${t1})`);
+    r1.send("freezetime"); // freeze mid-sweep: progress must hold
+    await waitFor(() => r1.state.frozen === true);
+    const held = r1.state.phaseT;
+    await new Promise((r) => setTimeout(r, 300));
+    assert.equal(r1.state.phaseT, held);
+    await r1.leave();
+  } finally {
+    await gameServer.gracefullyShutdown(false);
+  }
+});

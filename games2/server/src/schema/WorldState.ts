@@ -69,6 +69,7 @@ defineTypes(Player, {
 export class WorldState extends Schema {
   declare players: MapSchema<Player>;
   declare timeIdx: number; // shared time-of-day phase (server-owned)
+  declare phaseT: number; // continuous progress 0..1 through the phase (clock hand/sun sweep smoothly)
   declare weather: number; // shared weather layer (server-owned; 0 = clear)
   declare aurora: boolean; // aurora night: northern lights over the world
   declare frozen: boolean; // freeze time: the world clock holds the phase
@@ -77,6 +78,7 @@ export class WorldState extends Schema {
     super();
     this.players = new MapSchema<Player>();
     this.timeIdx = DEFAULT_TIME_IDX;
+    this.phaseT = 0.5; // mid-phase: the exact "characteristic" look of the phase
     this.weather = 0;
     this.aurora = false;
     this.frozen = true; // frozen by default for now (maintainer: testing phases)
@@ -86,6 +88,7 @@ export class WorldState extends Schema {
 defineTypes(WorldState, {
   players: { map: Player },
   timeIdx: "number",
+  phaseT: "number",
   weather: "number",
   aurora: "boolean",
   frozen: "boolean",
