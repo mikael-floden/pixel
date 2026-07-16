@@ -195,10 +195,17 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   approved keyframes (local probes pin phaseT = 0.5). Natural rollover
   enters at phaseT 0; a manual SKIP lands at 0.5 (the phase's
   characteristic look, for frozen testing); unfreeze RESUMES from the
-  held phaseT (never restarts the phase). The hand sweeps 360°/game
-  day via setClockProgress: +90°/quarter through the sunlit phases,
-  parked from evening-mid to night-mid (sun has set), +180° over the
-  top before dawn; the dial cross-fade stays the only discrete event. WorldState.frozen ("freeze time" settings switch,
+  held phaseT (never restarts the phase). The hand reads the half-dial
+  as a 12-HOUR face crossed TWICE per game day (maintainer's wedge
+  marking): the DAY sweep morning-mid -> evening-mid and the NIGHT
+  sweep evening-mid -> morning-mid, each -90..+90 with "12" straight
+  down at day-mid AND night-mid; at each hand-off (50% through
+  evening / morning, at 100% left) the hand JUMPS instantly back to
+  100% right (setClockProgress; it never leaves the dial face). The
+  dial cross-fade stays the only faded discrete event. CAREFUL: local
+  probes pin phaseT via setTimeOfDay's tOverride param — reading
+  state.phaseT inside setTimeOfDay once clobbered the probe keyframe
+  (only worked because fresh rooms default to 0.5). WorldState.frozen ("freeze time" settings switch,
   "freezetime" message) holds the clock for phase testing — DEFAULT ON
   for now; manual skips still work while frozen; tests must unfreeze
   before expecting auto-advance. The [1] key / HUD button send

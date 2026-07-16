@@ -21,18 +21,14 @@ import { applyUiZoom } from "./uiscale";
 const PHASE_FILES = ["night", "morning", "day", "evening"] as const;
 const FADE_S = 2.5; // keep in step with WorldScene's TIME_TRANSITION_S
 
-// Hand positions (maintainer rounds 3-9): the hand IS the shadow
-// direction — Morning 100% right (-90, shadows east), DAY straight down
-// at the dial's "12", Evening 100% left (+90, shadows west); night: the
-// hand rests where the sun set, then sweeps CW over the top before dawn.
-// CONTINUOUS since the phaseT era: those positions are MID-phase anchors
-// and setClockProgress(u = timeIdx + phaseT) sweeps between them — night-
-// mid -> morning-mid +180 over the top, +90 per quarter through the day,
-// evening-mid -> night-mid parked (the sun has set). 360 deg per game day,
-// monotonically clockwise (maintainer: never sweep backwards).
-const HAND_ANCHOR = 90; // hand angle at night-mid (u = 0.5)
-const HAND_DELTAS = [180, 90, 90, 0]; // per segment from night-mid
-const HAND_PREFIX = [0, 180, 270, 360];
+// The hand reads the half-dial as a 12-HOUR face crossed TWICE per game
+// day (maintainer's green/morning + red/evening wedges): the DAY sweep runs
+// morning-mid -> evening-mid (-90 right horizon .. +90 left horizon, "12"
+// straight down at day-mid) and the NIGHT sweep runs evening-mid ->
+// morning-mid the same way ("12" at night-mid). At each hand-off — 50%
+// through evening and 50% through morning, having reached 100% left — the
+// hand JUMPS immediately back to 100% right (maintainer). It never leaves
+// the dial face (the old over-the-top night sweep poked into the sky).
 
 // Asset geometry, measured/printed by scripts/build-clock.mjs. Everything
 // renders at 1 asset px = 1 CSS px. Sheet-3 dials are the half-moon sky
@@ -60,8 +56,8 @@ let root: HTMLDivElement | null = null;
 let handRoot: HTMLDivElement | null = null;
 let dials: HTMLImageElement[] = [];
 let hand: HTMLImageElement | null = null;
-// Cumulative CSS rotation, monotonic (360° per full game day). Continuous
-// ticks snap (sub-degree steps at 20Hz); skips ride the CSS transition.
+// Current CSS rotation. Continuous ticks and the mid-phase hand-off jump
+// snap; only large forward skips ride the CSS transition.
 let handDeg: number | null = null;
 
 function mount() {
@@ -173,25 +169,18 @@ export function setClockPhase(idx: number, instant = false) {
   }
 }
 
-/** Sweep the hand to the continuous day position u = timeIdx + phaseT.
- * Monotonic clockwise; small (continuous) steps snap, big jumps (skips,
- * rollover corrections) animate on the CSS transition. */
+/** Sweep the hand to the continuous day position u = timeIdx + phaseT:
+ * two half-day sweeps of -90..+90 across the 12-hour face (see the note at
+ * HAND). The hand-off jump and continuous ticks SNAP; forward skips
+ * (freeze-mode phase testing) ride the CSS transition. */
 export function setClockProgress(u: number, instant = false) {
   mount();
-  const v = u - 0.5; // segment space: v = 0 at night-mid
-  const days = Math.floor(v / 4);
-  const v4 = v - days * 4;
-  const k = Math.min(3, Math.floor(v4));
-  const w = v4 - k;
-  const raw = HAND_ANCHOR + days * 360 + HAND_PREFIX[k] + w * HAND_DELTAS[k];
-  let target = raw - HAND.baseDeg;
-  if (handDeg !== null && !instant) {
-    // Keep the cumulative winding: move CW to the equivalent angle >= here
-    // (minus a hair of tolerance so 20Hz jitter can't wind extra turns).
-    target = handDeg + ((((target - handDeg) % 360) + 362) % 360) - 2;
-  }
+  const um = (((u - 1.5) % 4) + 4) % 4; // 0 at morning-mid (a sweep start)
+  const half = um < 2 ? um : um - 2; // 0..2 progress within the current sweep
+  const target = -90 + (half / 2) * 180 - HAND.baseDeg;
   if (handDeg !== null && Math.abs(target - handDeg) < 0.01) return;
-  const snap = instant || handDeg === null || Math.abs(target - handDeg) < 3;
+  const delta = handDeg === null ? 0 : target - handDeg;
+  const snap = instant || handDeg === null || delta < 3; // backwards = the hand-off jump
   if (snap) handRoot!.classList.add("snap");
   handDeg = target;
   hand!.style.transform = `rotate(${handDeg}deg)`;

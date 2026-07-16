@@ -901,10 +901,7 @@ export class WorldScene extends Phaser.Scene {
             typeof which === "number"
               ? which % TIME_PHASES.length
               : TIME_PHASES.findIndex((p) => p.name.toLowerCase() === String(which).toLowerCase());
-          if (idx >= 0) {
-            this.phaseT = 0.5; // probes land on the exact phase keyframe
-            this.setTimeOfDay(idx, instant);
-          }
+          if (idx >= 0) this.setTimeOfDay(idx, instant, 0.5); // probes pin the exact keyframe
         }
         return { name: TIME_PHASES[this.timeIdx].name, t: this.timeT, ambient: [...this.curAmbient] };
       },
@@ -1762,7 +1759,8 @@ export class WorldScene extends Phaser.Scene {
     this.room?.send("timeofday");
   }
 
-  private setTimeOfDay(idx: number, instant = false) {
+  private setTimeOfDay(idx: number, instant = false, tOverride?: number) {
+    if (tOverride !== undefined) this.phaseT = tOverride; // local probes pin mid-phase
     this.timeFromAmbient = [...this.curAmbient];
     this.timeFromSun = [...this.curSun];
     this.timeFromTorchF = this.curTorchF;
@@ -1772,8 +1770,9 @@ export class WorldScene extends Phaser.Scene {
     setClockPhase(idx, instant); // celestial dial top-centre follows the phase
     if (instant) {
       // Read the freshest synced progress directly (patch listener order is
-      // not guaranteed within the join sync).
-      const t = this.room?.state?.phaseT;
+      // not guaranteed within the join sync) — unless a LOCAL probe pinned
+      // it (reading state here once clobbered the probe's keyframe).
+      const t = tOverride ?? this.room?.state?.phaseT;
       if (typeof t === "number" && !Number.isNaN(t)) this.phaseT = t;
       const blend = blendPhases(idx + this.phaseT);
       this.curAmbient = [...blend.ambient];
