@@ -210,8 +210,11 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   PNGs (ui/clock_<phase>.png, cut from the maintainer's mocks by
   scripts/build-clock.mjs — outside-flood key + largest-blob) cross-fade
   on the ambient's 2.5s clock via setClockPhase(). Assets bake at
-  EXACTLY the display resolution (box ÷6, ~119px wide; the mocks have NO
-  clean pixel grid — do not grid-guess) and render 1 asset px = 1 CSS px
+  EXACTLY the display resolution (sheet-2 mocks: quadrant split, cut
+  just below the frame rail keeping a narrow central gem window, box ÷2,
+  ~102px wide, BOTTOM-aligned onto one shared canvas so cross-fades stay
+  registered; the mocks have NO clean pixel grid — do not grid-guess)
+  and render 1 asset px = 1 CSS px
   + pixelated so the browser never resamples (resampling = mush; a
   COARSER chunk grid was tried and rejected — it melted the art to mud).
   Dials get hard pixel-stair alpha + a baked RING=4px near-black border

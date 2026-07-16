@@ -28,8 +28,8 @@ const T = 30; // background = max(r,g,b) <= T, reachable from the border
 // small approved footprint, rendered 1 asset px = 1 CSS px + pixelated so
 // the browser never resamples. Every mock detail (moon, stars, rings,
 // zodiac) survives at the small size.
-const DIAL_DIV = 6; // dial mock px per displayed px (~119 CSS px wide)
-const FINE_DIV = 12; // hand mock is ~2x the dial mock's scale
+const DIAL_DIV = 2; // dial mock px per displayed px (sheet-2 mocks are ~0.29x the old scale)
+const FINE_DIV = 14; // hand sized to ~90% of the new (smaller) dial radius
 
 // Border ring width in asset px: the maintainer-approved "1px border" was
 // 1 art px at the old 4-CSS chunk — keep that same on-screen weight.
@@ -175,8 +175,18 @@ for (const phase of [...PHASES, "hand"]) {
         out.data[o + 3] = 230;
       }
     }
-    fs.writeFileSync(path.join(OUT, `clock_${phase}.png`), PNG.sync.write(out));
-    console.log(`clock_${phase}.png  ${out.width}x${out.height}  (crop ${minX},${minY} of ${cw}x${ch})`);
+    // The four sheet mocks crop to slightly different sizes — pad onto ONE
+    // shared canvas (centred-x, top-aligned) so the stacked <img>s render
+    // 1:1 with zero browser resampling during cross-fades.
+    const CANW = 102, CANH = 66;
+    const pad = new PNG({ width: CANW, height: CANH });
+    // BOTTOM-aligned: the dial rims are consistent across the four mocks
+    // while the gem stub above varies — bottom alignment keeps cross-fades
+    // registered.
+    PNG.bitblt(out, pad, 0, 0, Math.min(out.width, CANW), Math.min(out.height, CANH),
+      Math.max(0, Math.round((CANW - out.width) / 2)), Math.max(0, CANH - out.height));
+    fs.writeFileSync(path.join(OUT, `clock_${phase}.png`), PNG.sync.write(pad));
+    console.log(`clock_${phase}.png  ${out.width}x${out.height} -> ${CANW}x${CANH}  (crop ${minX},${minY})`);
     continue;
   }
 

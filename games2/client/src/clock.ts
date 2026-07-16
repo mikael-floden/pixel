@@ -31,10 +31,12 @@ const FADE_S = 2.5; // keep in step with WorldScene's TIME_TRANSITION_S
 const HAND_DEG = [90, -90, 0, 90];
 
 // Asset geometry, measured/printed by scripts/build-clock.mjs. Everything
-// renders at 1 asset px = 1 CSS px.
-const DIAL = { w: 119, h: 69, knobX: 59.7, knobY: 3.7 };
+// renders at 1 asset px = 1 CSS px. Sheet-2 dials are cut just BELOW the
+// frame rail (their top strip lives behind it), so the pivot sits at the
+// asset's top edge and the mount tucks right under the rail.
+const DIAL = { w: 102, h: 66, knobX: 51, knobY: 14 };
 const ROOT_W = DIAL.w;
-const HAND = { w: 42, h: 46, hubX: 36.1, hubY: 5.0, baseDeg: 42.0 };
+const HAND = { w: 36, h: 39, hubX: 30.8, hubY: 4.5, baseDeg: 42.5 };
 
 let root: HTMLDivElement | null = null;
 // The hand lives in its OWN fixed layer ABOVE the page-frame art (z 7 vs
@@ -55,7 +57,7 @@ function mount() {
   if (root) return;
   const style = document.createElement("style");
   style.textContent = `
-  .ml-clock,.ml-clock-hand{position:fixed;top:36px;left:50%;
+  .ml-clock,.ml-clock-hand{position:fixed;top:33px;left:50%;
     transform:translateX(-50%);width:${ROOT_W}px;pointer-events:none}
   .ml-clock{z-index:5}
   .ml-clock-hand{z-index:7}
