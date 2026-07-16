@@ -30,6 +30,7 @@ import {
   JUMP_COOLDOWN_MS,
   MAX_STAMINA,
   TIME_PHASE_COUNT,
+  TIME_PHASE_SECONDS,
   WEATHER_COUNT,
 } from "@nangijala/shared";
 import { WorldState, Player } from "../schema/WorldState.js";
@@ -57,7 +58,23 @@ export class WorldRoom extends Room<WorldState> {
   private worldW = WORLD_WIDTH; // world extent (grid×CELL_WU) for movement bounds
   private worldH = WORLD_HEIGHT;
 
-  onCreate(options?: { world?: string }) {
+  // World-clock bookkeeping (see the "timeofday" wiring in onCreate).
+  private phaseTimer: ReturnType<typeof setTimeout> | null = null;
+  private phaseSeconds: readonly number[] = TIME_PHASE_SECONDS;
+
+  private advanceTime() {
+    this.state.timeIdx = (this.state.timeIdx + 1) % TIME_PHASE_COUNT;
+    this.scheduleTimeOfDay();
+  }
+
+  private scheduleTimeOfDay(override?: readonly number[]) {
+    if (override) this.phaseSeconds = override;
+    if (this.phaseTimer) clearTimeout(this.phaseTimer);
+    const s = this.phaseSeconds[this.state.timeIdx % this.phaseSeconds.length];
+    this.phaseTimer = setTimeout(() => this.advanceTime(), s * 1000);
+  }
+
+  onCreate(options?: { world?: string; phaseSeconds?: number[] }) {
     {
       // Load the maps2 world the client asked for (default ring_test). Rooms are
       // matched by this name (filterBy in index.ts), so everyone who picks the
@@ -106,10 +123,13 @@ export class WorldRoom extends Room<WorldState> {
       if (player) player.torch = !!message?.on;
     });
 
-    // Time-of-day is world state: anyone can cycle it, everyone sees it.
-    this.onMessage("timeofday", () => {
-      this.state.timeIdx = (this.state.timeIdx + 1) % TIME_PHASE_COUNT;
-    });
+    // Time-of-day is world state, and it RUNS: the server's world clock
+    // advances the phase on its own (TIME_PHASE_SECONDS; the day/night
+    // cycle is a core rhythm of the game). The settings button still sends
+    // "timeofday" — now a SKIP that also restarts the phase timer so a
+    // manual skip grants the full next phase.
+    this.onMessage("timeofday", () => this.advanceTime());
+    this.scheduleTimeOfDay(options?.phaseSeconds);
 
     // Weather is the second world-state layer, same contract.
     this.onMessage("weather", () => {
@@ -246,6 +266,10 @@ export class WorldRoom extends Room<WorldState> {
         }
       }
     });
+  }
+
+  onDispose() {
+    if (this.phaseTimer) clearTimeout(this.phaseTimer);
   }
 }
 

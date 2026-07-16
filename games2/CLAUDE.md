@@ -181,9 +181,14 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
 ## Time-of-day (server-owned world state)
 
 - The phase index lives in WorldState.timeIdx (shared DEFAULT_TIME_IDX /
-  TIME_PHASE_COUNT): the [1] key / HUD button send "timeofday" and the
-  server increments — every client's state listener applies the change
-  (instant + logless on the initial sync, 2.5s fade + chat log after).
+  TIME_PHASE_COUNT) and the cycle RUNS BY ITSELF (maintainer: the
+  day/night cycle is a core rhythm of the game): the server's world
+  clock advances the phase per TIME_PHASE_SECONDS (~14 min full day;
+  long days, short dawns/dusks). The [1] key / HUD button send
+  "timeofday" — a SKIP that also restarts the phase timer (room option
+  phaseSeconds overrides durations for tests). Every client's state
+  listener applies the change (instant + logless on the initial sync,
+  2.5s fade + chat log after).
   Ambient palettes (TIME_PHASES) stay client-side; keep the array length
   == TIME_PHASE_COUNT. `__ml.timeOfDay(which)` remains a LOCAL debug
   probe (verify-timecycle drives grades headlessly without the server).

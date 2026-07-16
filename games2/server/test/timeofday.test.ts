@@ -49,3 +49,40 @@ test("time-of-day is server-owned world state every client sees", async () => {
     await gameServer.gracefullyShutdown(false);
   }
 });
+
+test("the world clock advances time on its own", async () => {
+  const port = 2986;
+  const gameServer = new Server({
+    transport: new WebSocketTransport({ server: createServer() }),
+  });
+  gameServer.define(ROOM_NAME, WorldRoom);
+  await gameServer.listen(port);
+
+  try {
+    const c1 = new Client(`ws://localhost:${port}`);
+    // phaseSeconds is a test-only override of TIME_PHASE_SECONDS.
+    const r1 = await c1.joinOrCreate(ROOM_NAME, {
+      name: "A",
+      character: "char_a",
+      phaseSeconds: [0.15, 0.15, 0.15, 0.15],
+    });
+    await waitFor(() => r1.state.players?.size === 1);
+    assert.equal(r1.state.timeIdx, DEFAULT_TIME_IDX);
+
+    // NOBODY sends "timeofday" — the server's own clock moves the world
+    // through the phase ring.
+    const next = (DEFAULT_TIME_IDX + 1) % TIME_PHASE_COUNT;
+    await waitFor(() => r1.state.timeIdx === next);
+    const after = (DEFAULT_TIME_IDX + 2) % TIME_PHASE_COUNT;
+    await waitFor(() => r1.state.timeIdx === after);
+
+    // A manual skip still works on top of the running clock.
+    const skip = (after + 1) % TIME_PHASE_COUNT;
+    r1.send("timeofday");
+    await waitFor(() => r1.state.timeIdx === skip || r1.state.timeIdx === (skip + 1) % TIME_PHASE_COUNT);
+
+    await r1.leave();
+  } finally {
+    await gameServer.gracefullyShutdown(false);
+  }
+});
