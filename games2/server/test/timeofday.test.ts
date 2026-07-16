@@ -1,11 +1,15 @@
-import { test } from "node:test";
+import { test, beforeEach } from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "http";
 import { Server } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { Client } from "colyseus.js";
 import { ROOM_NAME, DEFAULT_TIME_IDX, TIME_PHASE_COUNT } from "@nangijala/shared";
-import { WorldRoom } from "../src/rooms/WorldRoom.js";
+import { WorldRoom, resetWorldClocks } from "../src/rooms/WorldRoom.js";
+
+// The per-world clock registry outlives rooms BY DESIGN; tests in one file
+// share a process, so start each from the frozen default.
+beforeEach(() => resetWorldClocks());
 
 async function waitFor(cond: () => boolean, timeout = 3000): Promise<void> {
   const start = Date.now();
@@ -89,6 +93,44 @@ test("the world clock advances time on its own", async () => {
     await waitFor(() => r1.state.timeIdx === skip || r1.state.timeIdx === (skip + 1) % TIME_PHASE_COUNT);
 
     await r1.leave();
+  } finally {
+    await gameServer.gracefullyShutdown(false);
+  }
+});
+
+test("unfreezing sticks: the clock survives room recycling", async () => {
+  const port = 2991;
+  const gameServer = new Server({
+    transport: new WebSocketTransport({ server: createServer() }),
+  });
+  gameServer.define(ROOM_NAME, WorldRoom);
+  await gameServer.listen(port);
+
+  try {
+    // Unfreeze and move the phase along, then leave — the empty room disposes,
+    // exactly what happens around every real-world reconnect.
+    const c1 = new Client(`ws://localhost:${port}`);
+    const slow = { phaseSeconds: [600, 600, 600, 600] }; // no natural tick mid-test
+    const r1 = await c1.joinOrCreate(ROOM_NAME, { name: "A", character: "c", ...slow });
+    await waitFor(() => r1.state.players?.size === 1);
+    assert.equal(r1.state.frozen, true); // fresh process: the default applies
+    r1.send("freezetime");
+    await waitFor(() => r1.state.frozen === false);
+    r1.send("timeofday");
+    const next = (DEFAULT_TIME_IDX + 1) % TIME_PHASE_COUNT;
+    await waitFor(() => r1.state.timeIdx === next);
+    const firstRoomId = r1.roomId;
+    await r1.leave();
+    await new Promise((r) => setTimeout(r, 400));
+
+    // The next join gets a FRESH room — which must resume the world's clock,
+    // not reset it to the frozen default.
+    const r2 = await c1.joinOrCreate(ROOM_NAME, { name: "B", character: "c", ...slow });
+    await waitFor(() => r2.state.players?.size === 1);
+    assert.notEqual(r2.roomId, firstRoomId); // really a new room
+    assert.equal(r2.state.frozen, false); // time kept flowing
+    assert.equal(r2.state.timeIdx, next); // on the phase we left it
+    await r2.leave();
   } finally {
     await gameServer.gracefullyShutdown(false);
   }

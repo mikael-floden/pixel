@@ -1,11 +1,15 @@
-import { test } from "node:test";
+import { test, beforeEach } from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "http";
 import { Server } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { Client } from "colyseus.js";
 import { ROOM_NAME, WEATHER_COUNT } from "@nangijala/shared";
-import { WorldRoom } from "../src/rooms/WorldRoom.js";
+import { WorldRoom, resetWorldClocks } from "../src/rooms/WorldRoom.js";
+
+// The per-world clock registry outlives rooms BY DESIGN; tests in one file
+// share a process, so start each from the frozen default.
+beforeEach(() => resetWorldClocks());
 
 async function waitFor(cond: () => boolean, timeout = 3000): Promise<void> {
   const start = Date.now();

@@ -191,7 +191,15 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   "timeofday" — a SKIP that also restarts the phase timer (room option
   phaseSeconds overrides durations for tests). Every client's state
   listener applies the change (instant + logless on the initial sync,
-  2.5s fade + chat log after).
+  2.5s fade + chat log after). The clock OUTLIVES rooms: rooms
+  auto-dispose when empty and reconnects land in fresh ones, so
+  WorldRoom keeps a per-world `worldClocks` registry (timeIdx/frozen/
+  weather/aurora + phase deadline, process lifetime) that a new room
+  resumes — fast-forwarding phases missed while nobody was online —
+  instead of resetting to the frozen default (maintainer hit exactly
+  that: "unfreezing doesn't stick"; a headless prod probe proved the
+  in-room clock itself ticked fine). Tests call resetWorldClocks()
+  in beforeEach — one process per file shares the registry.
   Ambient palettes (TIME_PHASES) stay client-side; keep the array length
   == TIME_PHASE_COUNT. `__ml.timeOfDay(which)` remains a LOCAL debug
   probe (verify-timecycle drives grades headlessly without the server).

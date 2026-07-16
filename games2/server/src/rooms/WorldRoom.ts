@@ -39,6 +39,26 @@ import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
+/** The world's clock OUTLIVES any single room. Rooms auto-dispose when their
+ * last player leaves and reconnects land in fresh ones, so room-local clock
+ * state alone meant every rejoin quietly reset time to the frozen default —
+ * the maintainer unfroze time and the next reconnect froze it again
+ * ("unfreezing doesn't stick"). Keyed by world name for the process lifetime;
+ * a brand-new process still boots frozen-by-default. */
+interface WorldClock {
+  timeIdx: number;
+  frozen: boolean;
+  weather: number;
+  aurora: boolean;
+  nextPhaseAt: number | null;
+}
+const worldClocks = new Map<string, WorldClock>();
+
+/** Tests share one process per file; clock persistence must not leak between them. */
+export function resetWorldClocks() {
+  worldClocks.clear();
+}
+
 /**
  * The single shared world. Every client that connects joins this same room, so
  * they all see each other. The server is authoritative: clients send input, the
@@ -64,6 +84,7 @@ export class WorldRoom extends Room<WorldState> {
   // so the phase tick can't stall independently of it.
   private nextPhaseAt: number | null = null;
   private phaseSeconds: readonly number[] = TIME_PHASE_SECONDS;
+  private worldName = ""; // set in onCreate; keys the worldClocks registry
   // Wild shooting stars streak the night sky at random (arrivals get their
   // own star in onJoin, any hour).
   private starTimer: ReturnType<typeof setTimeout> | null = null;
@@ -85,14 +106,26 @@ export class WorldRoom extends Room<WorldState> {
     this.scheduleTimeOfDay();
   }
 
-  private scheduleTimeOfDay(override?: readonly number[]) {
-    if (override) this.phaseSeconds = override;
+  private scheduleTimeOfDay() {
     if (this.state.frozen) {
       this.nextPhaseAt = null; // freeze time: the clock holds still
-      return;
+    } else {
+      const s = this.phaseSeconds[this.state.timeIdx % this.phaseSeconds.length];
+      this.nextPhaseAt = Date.now() + s * 1000;
     }
-    const s = this.phaseSeconds[this.state.timeIdx % this.phaseSeconds.length];
-    this.nextPhaseAt = Date.now() + s * 1000;
+    this.saveClock();
+  }
+
+  /** Mirror the clock into the per-world registry so the NEXT room for this
+   * world (rooms recycle constantly) resumes instead of resetting. */
+  private saveClock() {
+    worldClocks.set(this.worldName, {
+      timeIdx: this.state.timeIdx,
+      frozen: this.state.frozen,
+      weather: this.state.weather,
+      aurora: this.state.aurora,
+      nextPhaseAt: this.nextPhaseAt,
+    });
   }
 
   onCreate(options?: { world?: string; phaseSeconds?: number[]; auroraChance?: number }) {
@@ -108,6 +141,7 @@ export class WorldRoom extends Room<WorldState> {
       this.worldW = w.worldW;
       this.worldH = w.worldH;
       this.setMetadata({ world });
+      this.worldName = world;
       this.store = new JsonPlayerStore(join(process.cwd(), ".data", `players-${world}.json`));
     }
     this.setState(new WorldState());
@@ -158,12 +192,33 @@ export class WorldRoom extends Room<WorldState> {
       this.state.frozen = !this.state.frozen;
       this.scheduleTimeOfDay();
     });
-    this.scheduleTimeOfDay(options?.phaseSeconds);
+    if (options?.phaseSeconds) this.phaseSeconds = options.phaseSeconds;
+    // Resume this world's clock if the process has seen it before (rooms are
+    // disposable, the world's time is not), fast-forwarding any phases that
+    // elapsed while no room was open so time flows even with nobody online.
+    const saved = worldClocks.get(this.worldName);
+    if (saved) {
+      this.state.timeIdx = saved.timeIdx;
+      this.state.frozen = saved.frozen;
+      this.state.weather = saved.weather;
+      this.state.aurora = saved.aurora;
+      this.nextPhaseAt = saved.nextPhaseAt;
+      let guard = 0;
+      while (this.nextPhaseAt !== null && Date.now() >= this.nextPhaseAt && guard++ < 50_000) {
+        this.state.timeIdx = (this.state.timeIdx + 1) % TIME_PHASE_COUNT;
+        this.state.aurora = this.state.timeIdx === 0 && Math.random() < this.auroraChance;
+        this.nextPhaseAt += this.phaseSeconds[this.state.timeIdx % this.phaseSeconds.length] * 1000;
+      }
+      this.saveClock();
+    } else {
+      this.scheduleTimeOfDay();
+    }
     this.scheduleWildStar();
 
     // Weather is the second world-state layer, same contract.
     this.onMessage("weather", () => {
       this.state.weather = (this.state.weather + 1) % WEATHER_COUNT;
+      this.saveClock();
     });
 
     this.onMessage("chat", (client, message: ChatInput) => {
