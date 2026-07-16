@@ -60,7 +60,6 @@ import { joinWorld } from "../net";
 import { ChatUI } from "../chat";
 import { setClockPhase, clockStar } from "../clock";
 import { HudBar, mountPageFrame } from "../hud";
-import { RosterUI } from "../roster";
 import { setLoadingProgress, hideLoading } from "../loading";
 import { applyUiZoom } from "../uiscale";
 import {
@@ -250,7 +249,6 @@ export class WorldScene extends Phaser.Scene {
   private lastSent = "";
   private chat!: ChatUI;
   private hud?: HudBar;
-  private roster = new RosterUI();
   // Client-side prediction state (local player). Each pending input keeps the
   // JUMP state it was originally integrated with: reconcile replays must use
   // the same climb allowance, or mid-jump inputs replayed after landing get
@@ -988,6 +986,10 @@ export class WorldScene extends Phaser.Scene {
       this.timeFrozen = !!on;
       this.hud?.refreshSettings();
       if (!firstFrozenSync) this.chat.addLog("—", on ? "Time is frozen." : "Time flows again.");
+      // A reconnect can land in a FRESH room where freeze is back to its
+      // default (ON) — say so on join, or unfrozen time silently "stops"
+      // again (maintainer hit exactly this).
+      else if (on) this.chat.addLog("—", "Time is frozen (Settings → freeze time).");
       firstFrozenSync = false;
     });
     let firstAuroraSync = true;
@@ -1204,16 +1206,9 @@ export class WorldScene extends Phaser.Scene {
     av.bubbleUntil = this.time.now + BUBBLE_MS;
   }
 
-  private refreshRoster() {
-    // players is undefined until the first state patch lands (fresh joins).
-    if (!this.room || !(this.room.state as any)?.players) return;
-    const me = this.room.sessionId;
-    const players: { name: string; me: boolean }[] = [];
-    (this.room.state as any).players.forEach((p: any, id: string) =>
-      players.push({ name: p.name || "…", me: id === me }),
-    );
-    this.roster.refresh(players);
-  }
+  /** The online-players panel is GONE (maintainer) — arrivals still show as
+   * shooting stars + chat lines; this stub keeps the call sites cheap. */
+  private refreshRoster() {}
 
   private addAvatar(id: string, player: any) {
     const uid: string = player.character || this.manifest.characters[0]?.uid || PLACEHOLDER_TEX;
