@@ -215,10 +215,18 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   cross-fade stays the only faded discrete event. CAREFUL: local
   probes pin phaseT via setTimeOfDay's tOverride param — reading
   state.phaseT inside setTimeOfDay once clobbered the probe keyframe
-  (only worked because fresh rooms default to 0.5). WorldState.frozen ("freeze time" settings switch,
-  "freezetime" message) holds the clock for phase testing — DEFAULT ON
-  for now; manual skips still work while frozen; tests must unfreeze
-  before expecting auto-advance. The [1] key / HUD button send
+  (only worked because fresh rooms default to 0.5). WorldState.timeSpeed (settings "time speed"
+  button, "timespeed" message) scales the clock: the button CYCLES
+  shared TIME_SPEEDS x0 (freeze) -> x0.5 -> x1 -> x2 -> x5 -> x10 -> x0
+  (an explicit {v} in the message jumps straight to a valid value —
+  tests use { v: 1 }); x0 is the frozen default for now, mirrored into
+  WorldState.frozen for the pressed-switch look. Speed changes resume
+  from the current phaseT (never restart the phase). Manual skips still
+  work while frozen; tests must set a speed before expecting
+  auto-advance. The settings buttons PRINT THEIR STATE (maintainer):
+  "time-of-day: Day", "time speed: x2" / "time speed: frozen",
+  "weather: Clear sky" — hud.ts `state` callbacks re-read on
+  refreshSettings, which every relevant state listener calls. The [1] key / HUD button send
   "timeofday" — a SKIP that also restarts the phase timer (room option
   phaseSeconds overrides durations for tests). Every client's state
   listener applies the change (instant + logless on the initial sync,

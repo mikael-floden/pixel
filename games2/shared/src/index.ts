@@ -58,6 +58,10 @@ export const DEFAULT_TIME_IDX = 2; // Day
 // evening are short, day is long but still shorter than the night.
 export const TIME_PHASE_SECONDS = [120, 25, 70, 25];
 
+// Time-speed steps the settings button cycles through (maintainer):
+// x0 freeze, x0.5 twice as slow, x1 normal, x2/x5/x10 faster.
+export const TIME_SPEEDS = [0, 0.5, 1, 2, 5, 10];
+
 // WEATHER is a second server-owned world-state layer on top of time-of-day
 // (maintainer: "the final game should have a combination of time-of-day and
 // weather"). Index into WEATHER_NAMES; 0 = the default clear sky.

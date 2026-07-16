@@ -470,6 +470,7 @@ export class WorldScene extends Phaser.Scene {
   private weatherIdx = 0;
   private curCloud = 0;
   private timeFrozen = true; // synced mirror of WorldState.frozen (switch state)
+  private timeSpeed = 0; // synced mirror of WorldState.timeSpeed (button label)
   private phaseT = 0.5; // synced mirror of WorldState.phaseT (continuous progress)
   private auroraOn = false; // synced target; curAurora eases toward it
   private curAurora = 0;
@@ -693,9 +694,26 @@ export class WorldScene extends Phaser.Scene {
       settings: [
         // Time-of-day is the one plain BUTTON; the rest are switches
         // (down = ON) — no keyboard-digit prefixes (maintainer).
-        { label: "time-of-day", act: () => this.cycleTimeOfDay(), hook: true },
-        { label: "freeze time", act: () => this.room?.send("freezetime"), get: () => this.timeFrozen },
-        { label: "weather", act: () => this.room?.send("weather") },
+        {
+          label: "time-of-day",
+          act: () => this.cycleTimeOfDay(),
+          hook: true,
+          state: () => TIME_PHASES[this.timeIdx].name,
+        },
+        // The old freeze switch is now the SPEED cycler (maintainer): x0
+        // freeze -> x0.5 -> x1 -> x2 -> x5 -> x10 -> back to x0; pressed
+        // look while frozen.
+        {
+          label: "time speed",
+          act: () => this.room?.send("timespeed", {}),
+          get: () => this.timeSpeed === 0,
+          state: () => (this.timeSpeed === 0 ? "frozen" : `x${this.timeSpeed}`),
+        },
+        {
+          label: "weather",
+          act: () => this.room?.send("weather"),
+          state: () => WEATHER_NAMES[this.weatherIdx % WEATHER_NAMES.length],
+        },
         { label: "collision", act: () => this.toggleCollision(), get: () => !!this.collisionOverlay },
         { label: "torch", act: () => this.toggleTorch(), get: () => this.torchOn },
         { label: "bonfire", act: () => this.toggleBonfire(), get: () => this.fireOn },
@@ -1056,16 +1074,21 @@ export class WorldScene extends Phaser.Scene {
     $(room.state).listen("phaseT", (t: number) => {
       if (typeof t === "number" && !Number.isNaN(t)) this.phaseT = t;
     });
-    let firstFrozenSync = true;
     $(room.state).listen("frozen", (on: boolean) => {
-      this.timeFrozen = !!on;
+      this.timeFrozen = !!on; // logs live on the timeSpeed listener
       this.hud?.refreshSettings();
-      if (!firstFrozenSync) this.chat.addLog("—", on ? "Time is frozen." : "Time flows again.");
-      // A reconnect can land in a FRESH room where freeze is back to its
-      // default (ON) — say so on join, or unfrozen time silently "stops"
+    });
+    let firstSpeedSync = true;
+    $(room.state).listen("timeSpeed", (v: number) => {
+      this.timeSpeed = typeof v === "number" ? v : 0;
+      this.hud?.refreshSettings();
+      if (!firstSpeedSync)
+        this.chat.addLog("—", v === 0 ? "Time is frozen." : `Time speed: x${v}.`);
+      // A reconnect can land in a FRESH room where the clock is back to its
+      // frozen default — say so on join, or flowing time silently "stops"
       // again (maintainer hit exactly this).
-      else if (on) this.chat.addLog("—", "Time is frozen (Settings → freeze time).");
-      firstFrozenSync = false;
+      else if (v === 0) this.chat.addLog("—", "Time is frozen (Settings → time speed).");
+      firstSpeedSync = false;
     });
     let firstAuroraSync = true;
     $(room.state).listen("aurora", (on: boolean) => {
@@ -1077,6 +1100,7 @@ export class WorldScene extends Phaser.Scene {
     let firstWeatherSync = true;
     $(room.state).listen("weather", (idx: number) => {
       this.weatherIdx = idx % WEATHER_COUNT;
+      this.hud?.refreshSettings(); // the weather button prints the state
       if (firstWeatherSync) this.curCloud = this.weatherIdx === 1 ? 1 : 0; // no roll-in on join
       else this.chat.addLog("—", `Weather: ${WEATHER_NAMES[this.weatherIdx]}`);
       firstWeatherSync = false;

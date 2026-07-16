@@ -81,7 +81,7 @@ test("the world clock advances time on its own", async () => {
 
     // Unfreeze: NOBODY sends "timeofday" — the server's own clock moves the
     // world through the phase ring, the same for every player.
-    r1.send("freezetime");
+    r1.send("timespeed", { v: 1 });
     const next = (DEFAULT_TIME_IDX + 1) % TIME_PHASE_COUNT;
     await waitFor(() => r1.state.timeIdx === next);
     const after = (DEFAULT_TIME_IDX + 2) % TIME_PHASE_COUNT;
@@ -114,7 +114,7 @@ test("unfreezing sticks: the clock survives room recycling", async () => {
     const r1 = await c1.joinOrCreate(ROOM_NAME, { name: "A", character: "c", ...slow });
     await waitFor(() => r1.state.players?.size === 1);
     assert.equal(r1.state.frozen, true); // fresh process: the default applies
-    r1.send("freezetime");
+    r1.send("timespeed", { v: 1 });
     await waitFor(() => r1.state.frozen === false);
     r1.send("timeofday");
     const next = (DEFAULT_TIME_IDX + 1) % TIME_PHASE_COUNT;
@@ -153,16 +153,50 @@ test("time is continuous: phaseT sweeps while unfrozen, skips land mid-phase", a
     const next = (DEFAULT_TIME_IDX + 1) % TIME_PHASE_COUNT;
     await waitFor(() => r1.state.timeIdx === next);
     assert.equal(r1.state.phaseT, 0.5); // skips land MID-phase, the approved look
-    r1.send("freezetime"); // let time flow
+    r1.send("timespeed", { v: 1 }); // let time flow
     await waitFor(() => r1.state.frozen === false);
     await new Promise((r) => setTimeout(r, 600));
     const t1 = r1.state.phaseT;
     assert.ok(t1 > 0.6, `phaseT must sweep continuously while unfrozen (got ${t1})`);
-    r1.send("freezetime"); // freeze mid-sweep: progress must hold
+    r1.send("timespeed", { v: 0 }); // freeze mid-sweep: progress must hold
     await waitFor(() => r1.state.frozen === true);
     const held = r1.state.phaseT;
     await new Promise((r) => setTimeout(r, 300));
     assert.equal(r1.state.phaseT, held);
+    await r1.leave();
+  } finally {
+    await gameServer.gracefullyShutdown(false);
+  }
+});
+
+test("time speed: the switch cycles x0->x0.5->x1->x2->x5->x10 and scales the clock", async () => {
+  const port = 2993;
+  const gameServer = new Server({
+    transport: new WebSocketTransport({ server: createServer() }),
+  });
+  gameServer.define(ROOM_NAME, WorldRoom);
+  await gameServer.listen(port);
+
+  try {
+    const c1 = new Client(`ws://localhost:${port}`);
+    const r1 = await c1.joinOrCreate(ROOM_NAME, { name: "A", character: "c", phaseSeconds: [2, 2, 2, 2] });
+    await waitFor(() => r1.state.players?.size === 1);
+    assert.equal(r1.state.timeSpeed, 0); // frozen default
+    const seen: number[] = [];
+    let prev = r1.state.timeSpeed;
+    for (let i = 0; i < 6; i++) {
+      r1.send("timespeed", {}); // no value = cycle
+      await waitFor(() => r1.state.timeSpeed !== prev);
+      prev = r1.state.timeSpeed;
+      seen.push(prev);
+    }
+    assert.deepEqual(seen, [0.5, 1, 2, 5, 10, 0]);
+
+    // x10 on 2s phases: a phase rolls over in ~200ms.
+    r1.send("timespeed", { v: 10 });
+    await waitFor(() => r1.state.timeSpeed === 10);
+    const idx0 = r1.state.timeIdx;
+    await waitFor(() => r1.state.timeIdx !== idx0, 1500);
     await r1.leave();
   } finally {
     await gameServer.gracefullyShutdown(false);

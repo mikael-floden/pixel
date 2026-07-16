@@ -29,7 +29,15 @@ export interface HudActions {
    * `get` are SWITCHES: the plate renders pressed-down while get() is true
    * (down = ON, up = OFF — maintainer); plain entries are one-shot buttons.
    * The entry with `hook` keeps the .ml-hudbtn class the e2e smoke clicks. */
-  settings: { label: string; act: () => void; hook?: boolean; get?: () => boolean }[];
+  settings: {
+    label: string;
+    act: () => void;
+    hook?: boolean;
+    get?: () => boolean;
+    /** Live state printed on the button after the label (maintainer: the
+     * buttons show their current state — "time-of-day: Day", "speed: x2"). */
+    state?: () => string;
+  }[];
 }
 
 const TABS = [
@@ -68,6 +76,7 @@ export class HudBar {
   private pages = new Map<TabId, HTMLElement>();
   private tabs = new Map<TabId, HTMLButtonElement>();
   private switches: [HTMLButtonElement, () => boolean][] = [];
+  private stateful: [HTMLButtonElement, HudActions["settings"][number]][] = [];
 
   constructor(private actions: HudActions) {
     injectStyles();
@@ -111,9 +120,11 @@ export class HudBar {
     for (const [tid, p] of this.pages) p.classList.toggle("show", tid === id);
   }
 
-  /** Re-read every switch's state (keyboard toggles change it too). */
+  /** Re-read every switch's pressed state AND every live state label
+   * (keyboard toggles + server syncs change them too). */
   refreshSettings() {
     for (const [b, get] of this.switches) b.classList.toggle("on", !!get());
+    for (const [b, entry] of this.stateful) b.textContent = `${entry.label}: ${entry.state!()}`;
   }
 
   private buildPages() {
@@ -138,6 +149,7 @@ export class HudBar {
       });
       if (t.hook) b.classList.add("ml-hudbtn"); // stable hook for the smoke
       if (t.get) this.switches.push([b, t.get]);
+      if (t.state) this.stateful.push([b, t]);
       row.appendChild(b);
     }
     this.refreshSettings();

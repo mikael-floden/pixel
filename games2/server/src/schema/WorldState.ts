@@ -72,7 +72,8 @@ export class WorldState extends Schema {
   declare phaseT: number; // continuous progress 0..1 through the phase (clock hand/sun sweep smoothly)
   declare weather: number; // shared weather layer (server-owned; 0 = clear)
   declare aurora: boolean; // aurora night: northern lights over the world
-  declare frozen: boolean; // freeze time: the world clock holds the phase
+  declare frozen: boolean; // timeSpeed === 0 mirror (kept for the switch/UI)
+  declare timeSpeed: number; // world-clock speed multiplier (TIME_SPEEDS)
 
   constructor() {
     super();
@@ -82,6 +83,7 @@ export class WorldState extends Schema {
     this.weather = 0;
     this.aurora = false;
     this.frozen = true; // frozen by default for now (maintainer: testing phases)
+    this.timeSpeed = 0;
   }
 }
 
@@ -92,4 +94,5 @@ defineTypes(WorldState, {
   weather: "number",
   aurora: "boolean",
   frozen: "boolean",
+  timeSpeed: "number",
 });

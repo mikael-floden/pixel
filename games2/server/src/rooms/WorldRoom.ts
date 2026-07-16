@@ -31,6 +31,7 @@ import {
   MAX_STAMINA,
   TIME_PHASE_COUNT,
   TIME_PHASE_SECONDS,
+  TIME_SPEEDS,
   WEATHER_COUNT,
 } from "@nangijala/shared";
 import { WorldState, Player } from "../schema/WorldState.js";
@@ -49,6 +50,7 @@ interface WorldClock {
   timeIdx: number;
   phaseT: number;
   frozen: boolean;
+  timeSpeed: number;
   weather: number;
   aurora: boolean;
   nextPhaseAt: number | null;
@@ -113,16 +115,30 @@ export class WorldRoom extends Room<WorldState> {
     this.scheduleTimeOfDay();
   }
 
+  /** The phase's effective duration in ms at the current time speed. */
+  private effPhaseMs() {
+    const s = this.phaseSeconds[this.state.timeIdx % this.phaseSeconds.length];
+    return (s * 1000) / this.state.timeSpeed;
+  }
+
   private scheduleTimeOfDay() {
-    if (this.state.frozen) {
-      this.nextPhaseAt = null; // freeze time: the clock holds still (phaseT keeps its value)
+    if (this.state.timeSpeed <= 0) {
+      this.nextPhaseAt = null; // x0 = freeze: the clock holds still (phaseT keeps its value)
     } else {
-      // Resume from the CURRENT progress — unfreezing must not restart the
-      // phase or the continuously-swept hand/shadows would snap backwards.
-      const s = this.phaseSeconds[this.state.timeIdx % this.phaseSeconds.length];
-      this.nextPhaseAt = Date.now() + (1 - this.state.phaseT) * s * 1000;
+      // Resume from the CURRENT progress — speed changes and unfreezing
+      // must not restart the phase or the continuously-swept hand/shadows
+      // would snap backwards.
+      this.nextPhaseAt = Date.now() + (1 - this.state.phaseT) * this.effPhaseMs();
     }
     this.saveClock();
+  }
+
+  /** Set the world-clock speed (x0 freeze .. x10) — the "timespeed" message
+   * cycles TIME_SPEEDS; an explicit valid value (tests, tools) jumps to it. */
+  private setTimeSpeed(v: number) {
+    this.state.timeSpeed = v;
+    this.state.frozen = v === 0; // mirror for the switch UI / old asserts
+    this.scheduleTimeOfDay();
   }
 
   /** Mirror the clock into the per-world registry so the NEXT room for this
@@ -132,6 +148,7 @@ export class WorldRoom extends Room<WorldState> {
       timeIdx: this.state.timeIdx,
       phaseT: this.state.phaseT,
       frozen: this.state.frozen,
+      timeSpeed: this.state.timeSpeed,
       weather: this.state.weather,
       aurora: this.state.aurora,
       nextPhaseAt: this.nextPhaseAt,
@@ -198,10 +215,14 @@ export class WorldRoom extends Room<WorldState> {
     // Freeze time (world state, default ON): holds the clock so a given
     // phase can be tested; manual skips still work while frozen. When time
     // flows it ticks the same for every player — it's the room's clock.
-    this.onMessage("freezetime", () => {
-      this.state.frozen = !this.state.frozen;
-      this.scheduleTimeOfDay();
-    });
+    const cycleSpeed = (v?: unknown) => {
+      if (typeof v === "number" && TIME_SPEEDS.includes(v)) return this.setTimeSpeed(v);
+      const i = TIME_SPEEDS.indexOf(this.state.timeSpeed);
+      this.setTimeSpeed(TIME_SPEEDS[(i + 1) % TIME_SPEEDS.length]);
+    };
+    this.onMessage("timespeed", (client, message: { v?: number }) => cycleSpeed(message?.v));
+    // Back-compat alias (the old freeze switch): same cycle.
+    this.onMessage("freezetime", () => cycleSpeed());
     if (options?.phaseSeconds) this.phaseSeconds = options.phaseSeconds;
     // Resume this world's clock if the process has seen it before (rooms are
     // disposable, the world's time is not), fast-forwarding any phases that
@@ -211,14 +232,20 @@ export class WorldRoom extends Room<WorldState> {
       this.state.timeIdx = saved.timeIdx;
       this.state.phaseT = saved.phaseT;
       this.state.frozen = saved.frozen;
+      this.state.timeSpeed = saved.timeSpeed ?? (saved.frozen ? 0 : 1);
       this.state.weather = saved.weather;
       this.state.aurora = saved.aurora;
       this.nextPhaseAt = saved.nextPhaseAt;
       let guard = 0;
-      while (this.nextPhaseAt !== null && Date.now() >= this.nextPhaseAt && guard++ < 50_000) {
+      while (
+        this.nextPhaseAt !== null &&
+        this.state.timeSpeed > 0 &&
+        Date.now() >= this.nextPhaseAt &&
+        guard++ < 50_000
+      ) {
         this.state.timeIdx = (this.state.timeIdx + 1) % TIME_PHASE_COUNT;
         this.state.aurora = this.state.timeIdx === 0 && Math.random() < this.auroraChance;
-        this.nextPhaseAt += this.phaseSeconds[this.state.timeIdx % this.phaseSeconds.length] * 1000;
+        this.nextPhaseAt += this.effPhaseMs();
       }
       this.saveClock();
     } else {
@@ -297,10 +324,7 @@ export class WorldRoom extends Room<WorldState> {
     if (this.nextPhaseAt !== null) {
       const now = Date.now();
       if (now >= this.nextPhaseAt) this.advanceTime();
-      else {
-        const s = this.phaseSeconds[this.state.timeIdx % this.phaseSeconds.length] * 1000;
-        this.state.phaseT = Math.min(1, Math.max(0, 1 - (this.nextPhaseAt - now) / s));
-      }
+      else this.state.phaseT = Math.min(1, Math.max(0, 1 - (this.nextPhaseAt - now) / this.effPhaseMs()));
     }
 
     const now = Date.now();
