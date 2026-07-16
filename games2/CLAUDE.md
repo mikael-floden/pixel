@@ -271,15 +271,24 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
 ## Directional sun shadows (day phases)
 
 - The night shader also carries a DIRECTIONAL SUN (uSun = cast-dir grid
-  x/y, slope levels-per-cell, strength). Placed PROPS are just TALL
-  CELLS to it (maintainer: "nothing special, the objects/tiles are just
-  taller"): their `levels` (2-5, carried through parseWorld into
-  WorldProp) raise the OCCLUSION heightmap (hArr/imgL in nightlight),
-  so the sun march + point-light LOS cast their shadows like terrain;
-  terrain-only heights (faces/AO/ground z) stay untouched — prop art is
-  a billboard, not a wall. There is NO separate baked contact-shadow
-  overlay (a game1 relic; restored once and removed — the one shadow
-  system rules them all). DAYLIGHT IS SKY + SUN
+  x/y, slope levels-per-cell, strength). The sun march is TWO passes
+  over the same field (maintainer: "the shadow on cliffs looks perfect
+  — don't change that part"): TERRAIN keeps the original multiplicative
+  march LOCKED (20×0.6-cell samples, mix(0.80,0.35) ramp — the approved
+  cliff look, byte-identical; the prop share is subtracted from its
+  heights so props can't perturb it), while PROPS shade through one
+  smooth MAX-MARGIN patch (fine 0.35 steps, margin = max over samples —
+  per-sample multiplication scalloped small footprints into "x-mas
+  trees"/"stacked circles"). Props occlude +1 level flat in the LINEAR
+  heightmap G channel (their art `levels` 2-5 made spikes) and the
+  patch amplifies the bilinear footprint into a plateau + fades reach
+  out by ~2.5 cells — the raw pyramid footprint tapered the cast into
+  a spiky needle (maintainer: "the top of the shadow is so
+  spiky/small"); plateau + short reach ends every pool in a soft round
+  fade. Terrain-only heights (faces/AO/ground z) stay untouched — prop
+  art is a billboard, not a wall. There is NO separate baked
+  contact-shadow overlay (a game1 relic; restored once and removed).
+  DAYLIGHT IS SKY + SUN
   (maintainer): the phase ambient splits into a flat sky term (55%) and
   a directional term (45%) that only reaches surfaces with a clear
   line toward the sun — full authored brightness NEEDS the sun, and
@@ -289,12 +298,12 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   sun — terrain or solid objects above the ray shade the surface (soft
   penumbra, point-light LOS family), faces away from the sun shade via
   a Lambert gate; point lights still add in shadow. SUN_PHASES
-  (WorldScene) drives it: Morning casts long shadows to screen-west,
-  Day slightly-west-of-down (a straight-down cast hides under the
-  south wall faces), Evening mirrors to screen-east, Night off —
-  lerped with the SAME clock as the ambient fade so shadows sweep as a
-  phase changes (maintainer: "the sun moves... shadows move
-  accordingly"). CPU twin sunFactorAt() shades the lit-copy tints the
+  (WorldScene) drives it: Morning casts long shadows to screen-RIGHT,
+  Day casts straight down-screen (synced with the celestial-clock hand
+  at "12"), Evening mirrors to screen-LEFT, Night off — matching the
+  clock hand's reading, lerped with the SAME clock as the ambient fade
+  so shadows sweep as a phase changes (maintainer: "the sun moves...
+  shadows move accordingly"). CPU twin sunFactorAt() shades the lit-copy tints the
   same way. Probes: `__ml.sunInfo()`, `__ml.sunAt(col,row[,z])`
   (z=-1 → the cell's own height); regression:
   scripts/verify-sunshadow.mjs (night=1 everywhere, morning/evening

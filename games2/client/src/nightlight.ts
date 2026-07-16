@@ -181,6 +181,12 @@ float heightAtSoft(vec2 cr) {
   return texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).r * 255.0 / 16.0;
 }
 
+// The prop share of the occlusion height (G of the same map).
+float propAtSoft(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
+  return texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).g * 255.0 / 16.0;
+}
+
 
 
 float heightAt(vec2 cr) {
@@ -396,35 +402,42 @@ void main() {
   float sunF = 1.0;
   if (uSun.w > 0.001) {
     // Terrain marches multiplicatively (long straight ridges project as
-    // clean bands). PROP blocking uses the SAME smooth bilinear field the
-    // cliffs owe their look to, but applied ONCE (max over samples, no
-    // per-sample stacking): a single soft pool of shade with the cliff's
-    // continuous gradient. Nearest-texel round quantized into "stacked
-    // cubes"; multiplicative round rang into "stacked circles" — this is
-    // the smooth-and-once combination (maintainer round 3).
-    // ONE shadow system: props sit in the occlusion heightmap (+1 like any
-    // solid) and this plain march — the same code path the torch LOS and
-    // the cliffs use — casts their shade. No prop special-casing (three
-    // hand-crafted variants all bought artifacts: spikes, circles, cubes).
-    // ONE smooth shade quantity: the maximum blocking margin along the
-    // ray. Per-sample MULTIPLICATION imprinted every sample's round
-    // boundary into the shade (scalloped "x-mas tree" edges on small
-    // blockers); the max of densely-spaced smooth samples has no
-    // per-sample structure — a single soft patch with a linear edge, for
-    // objects and cliffs alike. Reach rolls off past ~3 cells (no tails).
-    float m = 0.0;
-    float dc = 0.0;
-    for (int s = 1; s <= 13; s++) {
-      dc += 0.35;
+    // TERRAIN: the original multiplicative march, byte-identical to the
+    // approved cliff look (maintainer: cliffs are PERFECT — locked). The
+    // prop share is subtracted so props don't feed this path.
+    float sunVis = 1.0;
+    for (int s = 1; s <= 20; s++) {
+      float dc = float(s) * 0.6;
       vec2 p = pos - uSun.xy * dc;
       if (floor(p.x) == floor(pos.x) && floor(p.y) == floor(pos.y)) continue;
-      float reach = smoothstep(4.5, 2.8, dc);
-      if (reach <= 0.0) break;
       float hRay = z + dc * uSun.z + 0.15;
-      float H = heightAtSoft(p);
-      if (H < 90.0 && H > hRay) m = max(m, min((H - hRay) * 2.2, 1.0) * reach);
+      float H = heightAtSoft(p) - propAtSoft(p);
+      if (H < 90.0 && H > hRay) sunVis *= mix(0.80, 0.35, clamp((H - hRay) * 1.2, 0.0, 1.0));
     }
-    float sunVis = 1.0 - 0.75 * m;
+    // PROPS: one smooth max-margin patch (fine 0.35 steps). Per-sample
+    // multiplication scalloped these small shadows into "x-mas trees" —
+    // a single margin has no sample structure. Shape (maintainer: "the
+    // top of the shadow is so spiky/small"): the raw bilinear footprint
+    // is a pyramid, so the cast narrowed linearly into a needle — the
+    // share is AMPLIFIED into a plateau (near-constant width along the
+    // cast) and the reach fades the pool out by ~2.5 cells, before the
+    // geometric cone can pinch, so the tip ends as a soft round fade.
+    float m = 0.0;
+    float dcp = 0.0;
+    for (int s = 1; s <= 8; s++) {
+      dcp += 0.35;
+      vec2 p = pos - uSun.xy * dcp;
+      if (floor(p.x) == floor(pos.x) && floor(p.y) == floor(pos.y)) continue;
+      float reach = smoothstep(2.7, 1.3, dcp);
+      if (reach <= 0.0) break;
+      float hRay = z + dcp * uSun.z + 0.15;
+      float pr = propAtSoft(p);
+      float Hs = heightAtSoft(p);
+      float Hp = Hs - pr + min(pr * 1.8, 1.0);
+      if (pr > 0.001 && Hs < 90.0 && Hp > hRay)
+        m = max(m, min((Hp - hRay) * 2.2, 1.0) * reach);
+    }
+    sunVis *= 1.0 - 0.75 * m;
     if (isFace) {
       vec2 nrm = mix(vec2(0.0, 1.0), vec2(1.0, 0.0), pickR);
       float cosS = dot(nrm, -uSun.xy);
@@ -710,6 +723,7 @@ export class NightLights {
   private colArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private fieldCount = 0;
   private hArr!: Float32Array; // CPU occlusion heights (terrain + solid objects)
+  private pArr!: Float32Array; // CPU prop share (props get their own shade patch)
   private tArr!: Float32Array; // CPU terrain-only heights (walls/AO seams)
   private oArr!: Uint8Array;   // CPU solid-object flags
   private curLights: ShaderLight[] = [];
@@ -907,6 +921,7 @@ export class NightLights {
     this.hArr = new Float32Array(w * h);
     this.tArr = new Float32Array(w * h);
     this.oArr = new Uint8Array(w * h);
+    this.pArr = new Float32Array(w * h);
     // Placed props occlude EXACTLY like solid terrain categories: +1 level,
     // one shadow system for everything (maintainer — the torch LOS look).
     // Their taller art heights (2-5 levels) were tried in the map and only
@@ -920,13 +935,18 @@ export class NightLights {
         const cell = this.world.rows[r][c];
         const s = surfaceFor(cell.t);
         const solid = !s.standable && !s.swimmable;
-        const occH = cell.l + Math.max(solid ? 1 : 0, propLvl.get(r * w + c) ?? 0);
+        const pl = propLvl.get(r * w + c) ?? 0;
+        const occH = cell.l + Math.max(solid ? 1 : 0, pl);
         // CPU twin marches LOS only → occlusion heights (solids/props +1).
         this.hArr[r * w + c] = occH;
         this.tArr[r * w + c] = cell.l;
         this.oArr[r * w + c] = solid ? 1 : 0;
+        this.pArr[r * w + c] = pl;
         img.data[i] = Math.min(255, cell.l * 16);
         imgL.data[i] = Math.min(255, occH * 16);
+        // G = the prop share: props get their own smooth shade patch while
+        // TERRAIN keeps the byte-identical march (cliffs are locked).
+        imgL.data[i + 1] = Math.min(255, pl * 16);
         // G flags solid OBJECTS (bush, boulder, tree…): they keep full LOS
         // occlusion — the billboard compromise is for players, who can never
         // stand on these cells.
@@ -1074,25 +1094,40 @@ export class NightLights {
       return (a * (1 - fx) + b * fx) * (1 - fy) + (d * (1 - fx) + e * fx) * fy;
     };
     const hAtSoft = soft(this.hArr, 99);
+    const pAtSoft = soft(this.pArr, 0);
     const sstep = (e0: number, e1: number, x: number) => {
       const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0)));
       return t * t * (3 - 2 * t);
     };
-    // Mirror of the shader: one smooth max-margin, shaded once.
-    let m = 0;
-    let dc = 0;
-    for (let sN = 1; sN <= 13; sN++) {
-      dc += 0.35;
+    // Mirror of the shader: terrain multiplicative (cliffs locked), props
+    // as one smooth max-margin patch.
+    let sunVis = 1;
+    for (let sN = 1; sN <= 20; sN++) {
+      const dc = sN * 0.6;
       const px = col - sun[0] * dc;
       const py = row - sun[1] * dc;
       if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
-      const reach = sstep(4.5, 2.8, dc);
-      if (reach <= 0) break;
       const hRay = z + dc * sun[2] + 0.15;
-      const hh = hAtSoft(px, py);
-      if (hh < 90 && hh > hRay) m = Math.max(m, Math.min(1, (hh - hRay) * 2.2) * reach);
+      const hh = hAtSoft(px, py) - pAtSoft(px, py);
+      if (hh < 90 && hh > hRay) sunVis *= 0.8 + (0.35 - 0.8) * Math.min(1, (hh - hRay) * 1.2);
     }
-    const sunVis = 1 - 0.75 * m;
+    let m = 0;
+    let dcp = 0;
+    for (let sN = 1; sN <= 8; sN++) {
+      dcp += 0.35;
+      const px = col - sun[0] * dcp;
+      const py = row - sun[1] * dcp;
+      if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
+      const reach = sstep(2.7, 1.3, dcp);
+      if (reach <= 0) break;
+      const hRay = z + dcp * sun[2] + 0.15;
+      const pr = pAtSoft(px, py);
+      const hh = hAtSoft(px, py);
+      const hp = hh - pr + Math.min(1, pr * 1.8);
+      if (pr > 0.001 && hh < 90 && hp > hRay)
+        m = Math.max(m, Math.min(1, (hp - hRay) * 2.2) * reach);
+    }
+    sunVis *= 1 - 0.75 * m;
     const sunShare = 0.45 * sun[3];
     return 1 - sunShare + sunShare * Math.max(0, Math.min(1, sunVis));
   }
