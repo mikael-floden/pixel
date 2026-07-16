@@ -35,17 +35,17 @@ const HAND_DEG = [90, -90, 0, 90];
 // discs cut just BELOW the frame rail (flat edge at the top, mock gem tip
 // notched out — the frame's real gem covers that spot), so the pivot is
 // the semicircle's centre: the middle of the asset's top edge.
-// Full mock resolution — the sheet-3 mocks are 1:1 game screenshots, and
-// the first ÷2 bake rendered the dial half the intended size (maintainer:
-// "the scale is wrong and should be x2").
-const DIAL = { w: 204, h: 122, knobX: 102, knobY: 0 };
+// 1.5x the first bake — full mock res (2x) read "a bit too big"
+// (maintainer); assets are area-average baked to 3/4 mock size and render
+// 1:1 + pixelated (nearest-neighbour rule — the browser never resamples).
+const DIAL = { w: 156, h: 93, knobX: 78, knobY: 0 };
 const ROOT_W = DIAL.w;
 // Sheet-3 hand points RIGHT as authored (hub = the sun-face disc, left end).
-const HAND = { w: 122, h: 28, hubX: 16.8, hubY: 14, baseDeg: -90.8 };
+const HAND = { w: 81, h: 19, hubX: 11.2, hubY: 9.3, baseDeg: -90.8 };
 // The floating dot arc around the dial is its OWN static layer (maintainer:
 // the dots must never fade with the phase cross-fades). Axis-centred like
 // the dials, top row = the same rail-bottom line.
-const DOTS = { w: 230, h: 130 };
+const DOTS = { w: 174, h: 99 };
 
 let root: HTMLDivElement | null = null;
 // The hand lives in its OWN fixed layer ABOVE the page-frame art (z 7 vs
@@ -139,7 +139,7 @@ export function clockStar() {
   const dur = 900;
   const t0 = performance.now();
   const dir = Math.random() < 0.5 ? 1 : -1; // which horizon it falls toward
-  const r = 52 + Math.random() * 36; // orbit radius inside the dial art
+  const r = 39 + Math.random() * 27; // orbit radius inside the dial art
   const step = (t: number) => {
     const k = (t - t0) / dur;
     if (k >= 1 || !root) {

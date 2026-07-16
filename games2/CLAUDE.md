@@ -580,7 +580,12 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   canvas code, and nearest in QA/preview scripts' zoom helpers. Offline
   pipelines may box-average ONLY when BAKING an asset down to its final
   display resolution (a downscale bake whose output then renders 1:1);
-  nothing ever upscales with smoothing.
+  nothing ever upscales with smoothing. When KEYING/extracting art,
+  finish every cut edge with SOFT ALPHA — outer silhouette AND interior
+  holes (flood the outside, then clear enclosed backdrop components,
+  then let the bake average the boundary) — never a hard 100%->0% alpha
+  step (maintainer; the ornate clock hand's ring hole shipped opaque
+  black once).
 - Keep shared movement/direction math in `shared/` — never duplicate it.
 - Server is authoritative; never trust client positions.
 - Tests stay headless (node + Colyseus, no browser); browser checks go through

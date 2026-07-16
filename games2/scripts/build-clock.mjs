@@ -33,10 +33,15 @@ const SRC =
   "/tmp/claude-0/-home-user/9b663e9c-b357-5388-9df4-7e56e3039f71/scratchpad";
 const OUT = path.resolve("client/public/ui");
 const T = 28; // lit = brighter than the black mock page
-// Dial mock px per displayed px. The sheet-3 mocks are 1:1 game screenshots
-// (maintainer: "the scale is wrong and should be x2" — the ÷2 bake halved
-// the intended size), so the dials display at FULL mock resolution.
-const DIV = 1;
+// Display scale, in mock px per displayed px terms. The sheet-3 mocks are
+// 1:1 game screenshots; full mock res (2x the first bake) read "a bit too
+// big" (maintainer) — the approved size is 1.5x, i.e. 3/4 of the mock.
+// That's a non-integer DOWNSCALE, so it happens as an offline area-average
+// bake (supersample x3 nearest, box /4 — exact 0.75) whose output renders
+// 1:1 + pixelated; the browser never resamples (nearest-neighbour rule).
+const SCALE_N = 3; // nearest supersample factor…
+const SCALE_D = 4; // …then box these many px per output px
+const DIV = 1; // extraction/registration stays at mock resolution
 const HAND_LEN_FRAC = 0.88; // hand length as a share of the dial radius
 
 const sheet = PNG.sync.read(fs.readFileSync(path.join(SRC, "clock3-sheet.png")));
@@ -152,17 +157,20 @@ for (const q of QUADS) {
 // One shared canvas, registered by (disc centre-x, rail row) so the stacked
 // <img>s cross-fade without drifting. Sizes differ a few px between mocks —
 // centre-x alignment carries the registration.
+// Canvas dims stay multiples of 2*SCALE_D so the 3/4 bake lands on integers
+// with the knob (canvas centre) on an integer too.
 const halfW = Math.max(...cuts.map((c) => Math.max(c.cxOff, c.img.width - c.cxOff)));
-const canW = Math.ceil((halfW * 2 + 1) / DIV) * DIV;
-const canH = Math.ceil(Math.max(...cuts.map((c) => c.topOff + c.img.height)) / DIV) * DIV;
+const canW = Math.ceil((halfW * 2 + 1) / (2 * SCALE_D)) * 2 * SCALE_D;
+const canH = Math.ceil(Math.max(...cuts.map((c) => c.topOff + c.img.height)) / SCALE_D) * SCALE_D;
 for (const c of cuts) {
   const pad = new PNG({ width: canW, height: canH });
   PNG.bitblt(c.img, pad, 0, 0, c.img.width, c.img.height, Math.round(canW / 2 - c.cxOff), c.topOff);
-  const small = boxDown(pad, DIV);
+  const small = boxDown(up(pad, SCALE_N), SCALE_D);
   fs.writeFileSync(path.join(OUT, `clock_${c.phase}.png`), PNG.sync.write(small));
   console.log(`clock_${c.phase}.png  ${small.width}x${small.height}`);
 }
-console.log(`dial canvas ${canW / DIV}x${canH / DIV}, knobX ${canW / DIV / 2}`);
+const dialW = (canW * SCALE_N) / SCALE_D;
+console.log(`dial canvas ${dialW}x${(canH * SCALE_N) / SCALE_D}, knobX ${dialW / 2}`);
 
 // ---- dots ----
 // The floating gold dot arc around the SUN dial ships as its OWN static
@@ -203,8 +211,8 @@ console.log(`dial canvas ${canW / DIV}x${canH / DIV}, knobX ${canW / DIV / 2}`);
     if (n >= 12 && n <= 60 && w <= 10 && h <= 10 && warm)
       dots.push({ x0: bx0 + minX, x1: bx0 + maxX, y0: by0 + minY, y1: by0 + maxY });
   }
-  const half = Math.ceil(Math.max(...dots.map((d) => Math.max(axisX - d.x0, d.x1 + 1 - axisX))) / DIV) * DIV + 2;
-  const dotW = half * 2, dotH = Math.ceil(Math.max(...dots.map((d) => d.y1 + 1 - cut)) / DIV) * DIV + 2;
+  const half = Math.ceil((Math.max(...dots.map((d) => Math.max(axisX - d.x0, d.x1 + 1 - axisX))) + 2) / SCALE_D) * SCALE_D;
+  const dotW = half * 2, dotH = Math.ceil((Math.max(...dots.map((d) => d.y1 + 1 - cut)) + 2) / SCALE_D) * SCALE_D;
   const pad = new PNG({ width: dotW, height: dotH });
   for (const d of dots)
     for (let y = d.y0; y <= d.y1; y++)
@@ -217,7 +225,7 @@ console.log(`dial canvas ${canW / DIV}x${canH / DIV}, knobX ${canW / DIV / 2}`);
         pad.data[di + 2] = sheet.data[si + 2];
         pad.data[di + 3] = 255;
       }
-  const small = boxDown(pad, DIV, 64); // gentle threshold: dots are 3x3 at display
+  const small = boxDown(up(pad, SCALE_N), SCALE_D, 64); // gentle threshold: the dots are small
   fs.writeFileSync(path.join(OUT, "clock_dots.png"), PNG.sync.write(small));
   console.log(`clock_dots.png  ${small.width}x${small.height}  (${dots.length} dots, axis-centred, top = rail bottom)`);
 }
@@ -243,9 +251,38 @@ console.log(`dial canvas ${canW / DIV}x${canH / DIV}, knobX ${canW / DIV / 2}`);
     if (p >= w) stack.push(p - w);
     if (p < w * (h - 1)) stack.push(p + w);
   }
+  // ENCLOSED backdrop too: the ornate hand has openwork — the ring hole and
+  // the scroll cavities enclose black page pixels the outside flood can't
+  // reach, and they shipped as opaque black once (maintainer: "the handle
+  // inside is not transparent"). Enclosed near-black components >= 8px are
+  // holes; the hand's own dark outline joints are smaller and survive. The
+  // soft-alpha box-down below then anti-aliases every cleared edge — no
+  // sudden 100%->0% alpha steps (maintainer; reuse this technique whenever
+  // extracting art with interior holes).
+  const hole = new Uint8Array(w * h);
+  {
+    const seen = new Uint8Array(w * h);
+    for (let s0 = 0; s0 < w * h; s0++) {
+      if (bg[s0] || seen[s0] || lum(img, s0 % w, (s0 / w) | 0) > T) continue;
+      const members = [];
+      const q = [s0];
+      while (q.length) {
+        const p = q.pop();
+        if (p < 0 || p >= w * h || bg[p] || seen[p]) continue;
+        if (lum(img, p % w, (p / w) | 0) > T) continue;
+        seen[p] = 1;
+        members.push(p);
+        const x = p % w;
+        if (x > 0) q.push(p - 1);
+        if (x < w - 1) q.push(p + 1);
+        q.push(p - w, p + w);
+      }
+      if (members.length >= 8) for (const p of members) hole[p] = 1;
+    }
+  }
   let minX = w, maxX = -1, minY = h, maxY = -1;
   for (let p = 0; p < w * h; p++) {
-    if (bg[p]) {
+    if (bg[p] || hole[p]) {
       img.data[p * 4 + 3] = 0;
       continue;
     }
@@ -290,7 +327,7 @@ console.log(`dial canvas ${canW / DIV}x${canH / DIV}, knobX ${canW / DIV / 2}`);
       if (d > tip.d) tip = { x, y, d };
     }
   const len = Math.sqrt(tip.d);
-  const dialRadius = canW / DIV / 2;
+  const dialRadius = (canW * SCALE_N) / SCALE_D / 2;
   const div = Math.max(1, Math.round(len / (dialRadius * HAND_LEN_FRAC)));
   const fine = boxDown(full, div, 0); // soft alpha: the hand rotates at runtime
   const deg = (Math.atan2(tip.x - hub.x, tip.y - hub.y) * -180) / Math.PI;
@@ -300,6 +337,19 @@ console.log(`dial canvas ${canW / DIV}x${canH / DIV}, knobX ${canW / DIV / 2}`);
       `hub (${(hub.x / div).toFixed(1)}, ${(hub.y / div).toFixed(1)})  ` +
       `angle-from-down ${deg.toFixed(1)}deg  len ${(len / div).toFixed(0)}px`
   );
+}
+
+function up(img, f) {
+  // Nearest-neighbour integer supersample (with boxDown(SCALE_D) this makes
+  // an exact area-average 3/4 downscale bake — see the SCALE_N/D note).
+  const out = new PNG({ width: img.width * f, height: img.height * f });
+  for (let y = 0; y < out.height; y++)
+    for (let x = 0; x < out.width; x++) {
+      const si = (((y / f) | 0) * img.width + ((x / f) | 0)) * 4;
+      const di = (y * out.width + x) * 4;
+      for (let k = 0; k < 4; k++) out.data[di + k] = img.data[si + k];
+    }
+  return out;
 }
 
 function boxDown(img, f, thresh = 128) {

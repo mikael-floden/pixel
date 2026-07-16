@@ -457,7 +457,11 @@ void main() {
     vec2 cp = vec2(wx, wy) * 0.0018 + uAnimTime * vec2(0.075, 0.042);
     float n = cwNoise(cp) * 0.65 + cwNoise(cp * 2.3 + 17.0) * 0.35;
     float cover = smoothstep(0.52, 0.78, n);
-    cloudF = 1.0 - cover * 0.45 * uCloud * mix(0.18, 1.0, uSun.w);
+    // Depth 0.62 (maintainer: "somewhat darker clouds" — 0.45 read faint,
+    // and the character stands under this same multiply overlay, so she
+    // dims with the ground). The night floor drops to 0.13 so nighttime
+    // shade stays as muted as before (no sun to block).
+    cloudF = 1.0 - cover * 0.62 * uCloud * mix(0.13, 1.0, uSun.w);
   }
   vec3 light = uAmbient * sunF * cloudF;
   // AURORA NIGHTS: some nights the northern lights dance over Nangijala —
@@ -1063,7 +1067,7 @@ export class NightLights {
     const n = noise(cx, cy) * 0.65 + noise(cx * 2.3 + 17, cy * 2.3 + 17) * 0.35;
     const ss = Math.min(1, Math.max(0, (n - 0.52) / 0.26));
     const cover = ss * ss * (3 - 2 * ss);
-    return 1 - cover * 0.45 * cloud * (0.18 + 0.82 * sunW);
+    return 1 - cover * 0.62 * cloud * (0.13 + 0.87 * sunW);
   }
 
   /** CPU twin of the shader's directional-sun shade for a surface (1 = fully
