@@ -189,6 +189,15 @@ float propAtSoft(vec2 cr) {
   return texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).g * 255.0 / 16.0;
 }
 
+// Nearest-texel prop share: sampling at the texel CENTRE defeats the linear
+// filter, giving the prop's exact cell footprint — its shadow projects as a
+// crisp diamond like a cliff's band, not a smeared blob.
+float propAtNearest(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  return texture2D(uHeightL, uv).g * 255.0 / 16.0;
+}
+
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
@@ -401,21 +410,28 @@ void main() {
   // the sun shade via a Lambert gate. Point lights still add in shadow.
   float sunF = 1.0;
   if (uSun.w > 0.001) {
+    // Terrain marches multiplicatively (long straight ridges project as
+    // clean bands); PROP blocking is ONE crisp max-projection of the cell
+    // footprint — per-sample stacking turned a lone one-cell spike into
+    // concentric blobs ("balls/stacked circles", maintainer).
     float sunVis = 1.0;
+    float propOcc = 0.0;
     for (int s = 1; s <= 20; s++) {
       float dc = float(s) * 0.6;
       vec2 p = pos - uSun.xy * dc;
       if (floor(p.x) == floor(pos.x) && floor(p.y) == floor(pos.y)) continue;
       float hRay = z + dc * uSun.z + 0.15;
-      float H = heightAtSoft(p);
-      if (H < 90.0 && H > hRay) {
-        float occ = mix(0.80, 0.35, clamp((H - hRay) * 1.2, 0.0, 1.0));
-        // Blocking that only exists because of a PROP fades out by ~3 cells
-        // (maintainer: only the shade pool at the base, no spike).
-        if (H - propAtSoft(p) <= hRay) occ = mix(1.0, occ, smoothstep(3.0, 1.2, dc));
-        sunVis *= occ;
+      float Hs = heightAtSoft(p);
+      float terrS = Hs - propAtSoft(p);
+      if (terrS < 90.0 && terrS > hRay) sunVis *= mix(0.80, 0.35, clamp((terrS - hRay) * 1.2, 0.0, 1.0));
+      float Pn = propAtNearest(p);
+      if (Pn > 0.01) {
+        float topN = heightAt(p) + Pn; // terrain-only nearest + prop levels
+        if (topN > hRay)
+          propOcc = max(propOcc, mix(0.18, 0.50, clamp((topN - hRay) * 0.8, 0.0, 1.0)) * smoothstep(3.0, 1.4, dc));
       }
     }
+    sunVis *= 1.0 - propOcc;
     if (isFace) {
       vec2 nrm = mix(vec2(0.0, 1.0), vec2(1.0, 0.0), pickR);
       float cosS = dot(nrm, -uSun.xy);
@@ -1081,21 +1097,33 @@ export class NightLights {
       const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0)));
       return t * t * (3 - 2 * t);
     };
+    const nearest = (arr: Float32Array, c: number, r: number, empty: number) => {
+      const ci = Math.floor(c), ri = Math.floor(r);
+      return ci < 0 || ri < 0 || ci >= W || ri >= H ? empty : arr[ri * W + ci];
+    };
+    // Mirror of the shader: terrain multiplicative, prop = one crisp
+    // max-projection of the cell footprint.
     let sunVis = 1;
+    let propOcc = 0;
     for (let sN = 1; sN <= 20; sN++) {
       const dc = sN * 0.6;
       const px = col - sun[0] * dc;
       const py = row - sun[1] * dc;
       if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
       const hRay = z + dc * sun[2] + 0.15;
-      const hh = hAtSoft(px, py);
-      if (hh < 90 && hh > hRay) {
-        let occ = 0.8 + (0.35 - 0.8) * Math.min(1, (hh - hRay) * 1.2);
-        // Prop-only blocking fades out by ~3 cells — mirror of the shader.
-        if (hh - pAtSoft(px, py) <= hRay) occ = 1 + (occ - 1) * smoothstep(3.0, 1.2, dc);
-        sunVis *= occ;
+      const terrS = hAtSoft(px, py) - pAtSoft(px, py);
+      if (terrS < 90 && terrS > hRay) sunVis *= 0.8 + (0.35 - 0.8) * Math.min(1, (terrS - hRay) * 1.2);
+      const Pn = nearest(this.pArr, px, py, 0);
+      if (Pn > 0.01) {
+        const topN = nearest(this.tArr, px, py, 99) + Pn;
+        if (topN < 190 && topN > hRay)
+          propOcc = Math.max(
+            propOcc,
+            (0.18 + (0.5 - 0.18) * Math.min(1, (topN - hRay) * 0.8)) * smoothstep(3.0, 1.4, dc),
+          );
       }
     }
+    sunVis *= 1 - propOcc;
     const sunShare = 0.45 * sun[3];
     return 1 - sunShare + sunShare * Math.max(0, Math.min(1, sunVis));
   }
