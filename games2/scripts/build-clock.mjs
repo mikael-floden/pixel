@@ -21,16 +21,28 @@ const OUT = path.resolve("client/public/ui");
 const PHASES = ["night", "morning", "day", "evening"];
 const T = 30; // background = max(r,g,b) <= T, reachable from the border
 
-// The mocks are ~4x the display size, and letting the browser smooth-scale
-// them down made the dial's border mushy next to the crisp HUD frame
-// (maintainer: "respect the pixel art resolution at the border"). So the
-// assets are baked AT display resolution — box-downscaled (no grid
-// guessing; the mocks have no clean pixel grid) with the alpha edge
-// hard-thresholded into pixel stairs — and rendered 1:1 + pixelated.
-const DIAL_DIV = 4; // dial mock px per displayed px
-const HAND_DIV = 8; // hand mock is ~2x the dial mock's scale
+// The clock must share the HUD frame's pixel GRAIN (maintainer: "same per
+// pixel size resolution as the frame/border/buttons — zoom in A LOT"). The
+// frame's art pixels render at ~4 CSS px, so the dial is reduced all the
+// way to a coarse art grid (box-downscale — no grid guessing, the mocks
+// have no clean pixel grid — with the alpha edge hard-thresholded into
+// pixel stairs) and the client blows each asset px up to 4 CSS px
+// (pixelated, integer scale). Same on-screen size as before, 4x chunkier
+// pixels; fine detail (ticks, numerals) deliberately melts away.
+const DIAL_DIV = 16; // dial mock px per art px (display: x4 CSS px)
+const FINE_DIV = 8; // the fine hand (only shown while sweeping) keeps 2x detail
 
-function boxDown(img, f) {
+// A hand ROTATED at runtime can't stay on the chunky grid (it dissolves
+// into a dotted line of diamonds), so the resting hand is baked per phase:
+// rotate the FULL-RES art to the phase angle first, then reduce onto the
+// dial's own 16px grid — a dial-aligned overlay sprite. The fine hand only
+// shows during the 2.5s sweep, where motion masks its finer grain.
+// KEEP IN SYNC with HAND_DEG in client/src/clock.ts (degrees from straight
+// down, positive = screen-left; the on-screen shadow directions).
+const HAND_DEG = { night: 90, morning: -90, day: 50.7, evening: 90 };
+const HAND_PAD = 16; // one art row of headroom above the dial's flat top
+
+function boxDown(img, f, thresh = 128) {
   const w = Math.floor(img.width / f), h = Math.floor(img.height / f);
   const out = new PNG({ width: w, height: h });
   for (let y = 0; y < h; y++)
@@ -48,7 +60,7 @@ function boxDown(img, f) {
       out.data[o + 1] = a ? Math.round(g / a) : 0;
       out.data[o + 2] = a ? Math.round(b / a) : 0;
       // Hard pixel edge: a cell is either art or empty, no feather.
-      out.data[o + 3] = a / (f * f) >= 128 ? 255 : 0;
+      out.data[o + 3] = a / (f * f) >= thresh ? 255 : 0;
     }
   return out;
 }
@@ -137,16 +149,22 @@ for (const phase of [...PHASES, "hand"]) {
         full.data[b] = t;
       }
   }
-  const out = boxDown(full, phase === "hand" ? HAND_DIV : DIAL_DIV);
-  if (phase === "hand") {
-    // Geometry for clock.ts (in FINAL asset px): hub centre = centroid of
-    // the wide rows (the hub circle is far wider than the shaft), tip =
-    // pixel farthest from it.
+  if (phase !== "hand") {
+    const out = boxDown(full, DIAL_DIV);
+    fs.writeFileSync(path.join(OUT, `clock_${phase}.png`), PNG.sync.write(out));
+    console.log(`clock_${phase}.png  ${out.width}x${out.height}  (crop ${minX},${minY} of ${cw}x${ch})`);
+    continue;
+  }
+
+  // ---- hand ----
+  // Hub/tip geometry (hub centre = centroid of the wide rows — the hub
+  // circle is far wider than the shaft; tip = pixel farthest from it).
+  const measure = (im) => {
     const runs = [];
-    for (let y = 0; y < out.height; y++) {
+    for (let y = 0; y < im.height; y++) {
       let lo = -1, hi = -1;
-      for (let x = 0; x < out.width; x++)
-        if (out.data[(y * out.width + x) * 4 + 3] > 128) {
+      for (let x = 0; x < im.width; x++)
+        if (im.data[(y * im.width + x) * 4 + 3] > 128) {
           if (lo < 0) lo = x;
           hi = x;
         }
@@ -163,12 +181,55 @@ for (const phase of [...PHASES, "hand"]) {
         const d = (x - hub.x) ** 2 + (r.y - hub.y) ** 2;
         if (d > tip.d) tip = { x, y: r.y, d };
       }
-    const ang = (Math.atan2(tip.x - hub.x, tip.y - hub.y) * -180) / Math.PI;
-    console.log(
-      `  hand hub (${hub.x.toFixed(1)}, ${hub.y.toFixed(1)})  tip (${tip.x}, ${tip.y})  ` +
-        `angle-from-straight-down ${ang.toFixed(1)}deg  len ${Math.sqrt(tip.d).toFixed(0)}px`
-    );
+    const deg = (Math.atan2(tip.x - hub.x, tip.y - hub.y) * -180) / Math.PI;
+    return { hub, tip, deg };
+  };
+
+  // Fine hand for the sweep animation.
+  const fine = boxDown(full, FINE_DIV);
+  const gf = measure(fine);
+  fs.writeFileSync(path.join(OUT, "clock_hand.png"), PNG.sync.write(fine));
+  console.log(
+    `clock_hand.png  ${fine.width}x${fine.height}  hub (${gf.hub.x.toFixed(1)}, ${gf.hub.y.toFixed(1)})` +
+      `  angle-from-down ${gf.deg.toFixed(1)}deg  len ${Math.sqrt(gf.tip.d).toFixed(0)}px`
+  );
+
+  // Resting sprites: rotate full-res around the hub onto a dial-mock-scale
+  // canvas (hand mock is 2x the dial mock's scale), then reduce onto the
+  // SAME 16px grid as the dial — a perfectly grid-aligned overlay.
+  const gF = measure(full);
+  for (const [ph, A] of Object.entries(HAND_DEG)) {
+    const R = ((A - gF.deg) * Math.PI) / 180;
+    const cos = Math.cos(-R), sin = Math.sin(-R);
+    const canvas = new PNG({ width: 716, height: 419 + HAND_PAD });
+    for (let y = 0; y < canvas.height; y++)
+      for (let x = 0; x < canvas.width; x++) {
+        const vx = x - 358, vy = y - (22 + HAND_PAD);
+        const sx = gF.hub.x + (vx * cos - vy * sin) * 2;
+        const sy = gF.hub.y + (vx * sin + vy * cos) * 2;
+        const x0 = Math.floor(sx), y0 = Math.floor(sy);
+        if (x0 < 0 || y0 < 0 || x0 >= cw - 1 || y0 >= ch - 1) continue;
+        const fx = sx - x0, fy = sy - y0;
+        let r = 0, g = 0, b = 0, a = 0;
+        for (const [ox, oy, wgt] of [
+          [0, 0, (1 - fx) * (1 - fy)], [1, 0, fx * (1 - fy)],
+          [0, 1, (1 - fx) * fy], [1, 1, fx * fy],
+        ]) {
+          const i = ((y0 + oy) * cw + x0 + ox) * 4;
+          const al = full.data[i + 3] * wgt;
+          r += full.data[i] * al; g += full.data[i + 1] * al; b += full.data[i + 2] * al;
+          a += al;
+        }
+        const o = (y * canvas.width + x) * 4;
+        canvas.data[o] = a ? Math.round(r / a) : 0;
+        canvas.data[o + 1] = a ? Math.round(g / a) : 0;
+        canvas.data[o + 2] = a ? Math.round(b / a) : 0;
+        canvas.data[o + 3] = Math.round(a);
+      }
+    // The shaft is ~0.4 art px thick — a 50% coverage cut erases it, so
+    // rest sprites keep any cell the hand meaningfully touches (~15%).
+    const spr = boxDown(canvas, DIAL_DIV, 28);
+    fs.writeFileSync(path.join(OUT, `clock_hand_${ph}.png`), PNG.sync.write(spr));
+    console.log(`clock_hand_${ph}.png  ${spr.width}x${spr.height}  (A ${A}deg)`);
   }
-  fs.writeFileSync(path.join(OUT, `clock_${phase}.png`), PNG.sync.write(out));
-  console.log(`clock_${phase}.png  ${out.width}x${out.height}  (crop ${minX},${minY} of ${cw}x${ch})`);
 }

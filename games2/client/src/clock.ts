@@ -5,15 +5,22 @@
  * other) are stacked and cross-faded on the same 2.5s clock as the ambient
  * grade. Order matches WorldScene's TIME_PHASES / shared timeIdx.
  *
- * Kept SUBTLE (maintainer, playtest round 2): a small dial tucked under the
- * top frame rail; the ARROW is the primary reading. The pointer hand
- * (ui/clock_hand.png) is its own layer above the dials — it never fades, it
- * only ROTATES to the phase's sector while the dials cross-fade under it.
+ * Kept SUBTLE (maintainer, playtest round 2), and at the HUD frame's pixel
+ * GRAIN (round 6: "same per pixel size resolution as the frame — zoom in A
+ * LOT"): assets are baked on a coarse art grid and every art px renders as
+ * a fat ${PX} CSS px block, integer-scaled + pixelated.
  *
- * Angle convention (careful — this bit was shipped wrong once): CSS
- * rotate() is clockwise on screen, so rotating a DOWN-pointing hand by a
- * POSITIVE angle sweeps its tip toward screen-LEFT. All angles below are
- * "degrees from straight down, positive = left".
+ * The ARROW is the primary reading and lives above the frame art. At REST
+ * it is a pre-rotated, dial-grid-aligned chunky sprite (clock_hand_<phase>);
+ * a runtime-rotated chunky hand dissolves into dotted diamonds. Only during
+ * the 2.5s sweep does a finer hand (clock_hand.png) rotate — motion masks
+ * its finer grain, then it settles into the crisp sprite (same idea as the
+ * camera settling to integer zoom).
+ *
+ * Angle convention (careful — this shipped wrong once): CSS rotate() is
+ * clockwise on screen, so rotating a DOWN-pointing hand by a POSITIVE angle
+ * sweeps its tip toward screen-LEFT. All angles below are "degrees from
+ * straight down, positive = left".
  */
 import { applyUiZoom } from "./uiscale";
 
@@ -28,21 +35,21 @@ const FADE_S = 2.5; // keep in step with WorldScene's TIME_TRANSITION_S
 // midday sun keeps a west tilt and the iso squash steepens it), Evening
 // horizontal-left (+90). Night has no sun: the hand STAYS where the sun
 // set (100% left), then sweeps CW over the top for the new morning
-// (round 4). Recompute these if SUN_PHASES ever changes.
+// (round 4). Recompute if SUN_PHASES ever changes, and KEEP IN SYNC with
+// HAND_DEG in scripts/build-clock.mjs (it bakes the rest sprites).
 // Index order = TIME_PHASES / shared timeIdx (0 Night, 1 Morning, ...).
 const HAND_DEG = [90, -90, 50.7, 90];
 
-// The assets are baked AT display resolution (see build-clock.mjs — the
-// browser must never resample them; that made the border mush next to the
-// crisp HUD frame) and rendered 1 asset px = 1 CSS px, pixelated.
-const DIAL = { w: 179, h: 104, knobX: 89.5, knobY: 5.5 }; // asset px
-const ROOT_W = DIAL.w;
-// Measured by scripts/build-clock.mjs from the keyed, flipped, downscaled
-// hand art: image size, pivot-hub centre, and its resting angle
-// (down-left = +42.2 in the convention above).
-const HAND = { w: 63, h: 69, hubX: 54.4, hubY: 8.0, baseDeg: 42.2 };
-const F = 1;
-const HAND_SCALE = 1;
+const PX = 4; // CSS px per asset art px — matches the frame's grain
+const DIAL = { w: 44, h: 26, knobX: 22.4, knobY: 1.4 }; // asset px
+const ROOT_W = DIAL.w * PX;
+// The fine (sweep-only) hand, measured by build-clock.mjs: size, pivot-hub
+// centre, resting angle (down-left = +42.2 in the convention above). It
+// displays at 1 asset px = 1 CSS px so its length matches the rest sprites.
+const FINE = { w: 63, h: 69, hubX: 54.4, hubY: 8.0, baseDeg: 42.2 };
+// Rest sprites are dial-grid overlays with 1 art row of headroom above the
+// dial's flat top (HAND_PAD in the build script).
+const REST_TOP = -1 * PX;
 
 let root: HTMLDivElement | null = null;
 // The hand lives in its OWN fixed layer ABOVE the page-frame art (z 7 vs
@@ -52,7 +59,9 @@ let root: HTMLDivElement | null = null;
 // stays visible.
 let handRoot: HTMLDivElement | null = null;
 let dials: HTMLImageElement[] = [];
-let hand: HTMLImageElement | null = null;
+let fineHand: HTMLImageElement | null = null;
+let restHand: HTMLImageElement | null = null;
+let restTimer: ReturnType<typeof setTimeout> | null = null;
 // Cumulative CSS rotation. The hand only ever advances CLOCKWISE
 // (maintainer: night -> morning must continue over the top, never sweep
 // backwards through the day), so this grows monotonically — 360° per full
@@ -70,7 +79,8 @@ function mount() {
   .ml-clock img,.ml-clock-hand img{position:absolute;top:0;left:0;width:100%;
     opacity:0;image-rendering:pixelated;transition:opacity ${FADE_S}s ease}
   .ml-clock img.on{opacity:1}
-  .ml-clock-hand img{opacity:1;transition:transform ${FADE_S}s ease}
+  .ml-clock-hand img{opacity:1;transition:none}
+  .ml-clock-hand img.ml-fine{transition:transform ${FADE_S}s ease}
   .ml-clock.snap img,.ml-clock-hand.snap img{transition:none}`;
   document.head.appendChild(style);
   root = document.createElement("div");
@@ -83,25 +93,37 @@ function mount() {
     root!.appendChild(img);
     return img;
   });
-  // The hand mounts with its hub centred on the dial's knob and rotates
-  // about that point.
   handRoot = document.createElement("div");
   handRoot.className = "ml-clock-hand";
-  hand = document.createElement("img");
-  hand.src = "/ui/clock_hand.png";
-  hand.alt = "";
-  hand.draggable = false;
-  const s = HAND_SCALE;
-  const knob = { x: DIAL.knobX * F, y: DIAL.knobY * F };
-  hand.style.width = `${HAND.w * s}px`;
-  hand.style.left = `${knob.x - HAND.hubX * s}px`;
-  hand.style.top = `${knob.y - HAND.hubY * s}px`;
-  hand.style.transformOrigin = `${HAND.hubX * s}px ${HAND.hubY * s}px`;
-  handRoot.appendChild(hand);
+  // Resting hand: a dial-aligned chunky sprite, swapped per phase.
+  restHand = document.createElement("img");
+  restHand.alt = "";
+  restHand.draggable = false;
+  restHand.style.top = `${REST_TOP}px`;
+  handRoot.appendChild(restHand);
+  // Sweeping hand: hub centred on the dial's knob, rotates about it.
+  fineHand = document.createElement("img");
+  fineHand.src = "/ui/clock_hand.png";
+  fineHand.className = "ml-fine";
+  fineHand.alt = "";
+  fineHand.draggable = false;
+  const knob = { x: DIAL.knobX * PX, y: DIAL.knobY * PX };
+  fineHand.style.width = `${FINE.w}px`;
+  fineHand.style.left = `${knob.x - FINE.hubX}px`;
+  fineHand.style.top = `${knob.y - FINE.hubY}px`;
+  fineHand.style.transformOrigin = `${FINE.hubX}px ${FINE.hubY}px`;
+  fineHand.style.display = "none";
+  handRoot.appendChild(fineHand);
   document.body.appendChild(root);
   document.body.appendChild(handRoot);
   applyUiZoom(root);
   applyUiZoom(handRoot);
+}
+
+function showRest(idx: number) {
+  restHand!.src = `/ui/clock_hand_${PHASE_FILES[idx % PHASE_FILES.length]}.png`;
+  restHand!.style.display = "";
+  fineHand!.style.display = "none";
 }
 
 /** Show the dial for a TIME_PHASES index (0 Night, 1 Morning, 2 Day,
@@ -110,17 +132,41 @@ export function setClockPhase(idx: number, instant = false) {
   mount();
   if (instant) {
     root!.classList.add("snap");
-    handRoot!.classList.add("snap");
     root!.offsetWidth; // flush styles so the snap really skips the fade
   }
   dials.forEach((img, i) => img.classList.toggle("on", i === idx % dials.length));
-  const target = HAND_DEG[idx % HAND_DEG.length] - HAND.baseDeg;
-  if (handDeg === null || instant) handDeg = target;
-  else handDeg += ((((target - handDeg) % 360) + 360) % 360); // CW only
-  hand!.style.transform = `rotate(${handDeg}deg)`;
+
+  const target = HAND_DEG[idx % HAND_DEG.length] - FINE.baseDeg;
+  if (restTimer) {
+    clearTimeout(restTimer);
+    restTimer = null;
+  }
+  if (handDeg === null || instant) {
+    handDeg = target;
+    fineHand!.style.transform = `rotate(${handDeg}deg)`;
+    showRest(idx);
+  } else {
+    const delta = (((target - handDeg) % 360) + 360) % 360; // CW only
+    if (delta === 0) {
+      showRest(idx); // same angle (evening -> night): no sweep needed
+    } else {
+      // Sweep with the fine hand from the current angle, then settle into
+      // the chunky rest sprite.
+      if (fineHand!.style.display === "none") {
+        handRoot!.classList.add("snap");
+        fineHand!.style.transform = `rotate(${handDeg}deg)`;
+        fineHand!.style.display = "";
+        restHand!.style.display = "none";
+        fineHand!.offsetWidth; // commit the start angle without transition
+        handRoot!.classList.remove("snap");
+      }
+      handDeg += delta;
+      fineHand!.style.transform = `rotate(${handDeg}deg)`;
+      restTimer = setTimeout(() => showRest(idx), FADE_S * 1000 + 100);
+    }
+  }
   if (instant) {
     root!.offsetWidth;
     root!.classList.remove("snap");
-    handRoot!.classList.remove("snap");
   }
 }
