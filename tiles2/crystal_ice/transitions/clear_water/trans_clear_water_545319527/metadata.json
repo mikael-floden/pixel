@@ -90,8 +90,10 @@
           }
         }
       },
-      "features": [],
-      "description": "crystal ice blending to clear water"
+      "features": [
+        "shiny"
+      ],
+      "description": "crystal ice blending to clear water with a shiny speck"
     },
     {
       "index": 1,
@@ -165,8 +167,10 @@
           }
         }
       },
-      "features": [],
-      "description": "clear water blending to crystal ice"
+      "features": [
+        "shiny"
+      ],
+      "description": "clear water blending to crystal ice with a shiny speck"
     },
     {
       "index": 2,
@@ -240,8 +244,10 @@
           }
         }
       },
-      "features": [],
-      "description": "clear water blending to crystal ice"
+      "features": [
+        "shiny"
+      ],
+      "description": "clear water blending to crystal ice with a shiny speck"
     },
     {
       "index": 3,
@@ -249,8 +255,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.886,
-        "crystal_ice": 0.114
+        "clear_water": 0.909,
+        "crystal_ice": 0.091
       },
       "edges": {
         "NE": {
@@ -317,9 +323,10 @@
         }
       },
       "features": [
-        "pebbles"
+        "pebbles",
+        "shiny"
       ],
-      "description": "clear water blending to crystal ice with pebbles"
+      "description": "clear water blending to crystal ice with pebbles, a shiny speck"
     },
     {
       "index": 4,
@@ -395,8 +402,10 @@
           }
         }
       },
-      "features": [],
-      "description": "clear water blending to crystal ice"
+      "features": [
+        "shiny"
+      ],
+      "description": "clear water blending to crystal ice with a shiny speck"
     },
     {
       "index": 5,
@@ -471,8 +480,10 @@
           }
         }
       },
-      "features": [],
-      "description": "clear water blending to crystal ice"
+      "features": [
+        "shiny"
+      ],
+      "description": "clear water blending to crystal ice with a shiny speck"
     },
     {
       "index": 6,
@@ -548,8 +559,10 @@
           }
         }
       },
-      "features": [],
-      "description": "crystal ice blending to clear water"
+      "features": [
+        "shiny"
+      ],
+      "description": "crystal ice blending to clear water with a shiny speck"
     },
     {
       "index": 7,
@@ -623,8 +636,10 @@
           }
         }
       },
-      "features": [],
-      "description": "clear water blending to crystal ice"
+      "features": [
+        "shiny"
+      ],
+      "description": "clear water blending to crystal ice with a shiny speck"
     },
     {
       "index": 8,
@@ -698,8 +713,10 @@
           }
         }
       },
-      "features": [],
-      "description": "clear water blending to crystal ice"
+      "features": [
+        "shiny"
+      ],
+      "description": "clear water blending to crystal ice with a shiny speck"
     },
     {
       "index": 9,
@@ -707,8 +724,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.185,
-        "clear_water": 0.815
+        "crystal_ice": 0.099,
+        "clear_water": 0.901
       },
       "edges": {
         "NE": {
@@ -729,7 +746,7 @@
         "SE": {
           "samples": [
             "clear_water",
-            "crystal_ice",
+            "clear_water",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -738,8 +755,7 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.875,
-            "crystal_ice": 0.125
+            "clear_water": 1.0
           }
         },
         "SW": {
@@ -775,9 +791,10 @@
       },
       "features": [
         "pebbles",
+        "shiny",
         "accent"
       ],
-      "description": "clear water blending to crystal ice with pebbles, a small detail"
+      "description": "clear water blending to crystal ice with pebbles, a shiny speck, a small detail"
     },
     {
       "index": 10,
@@ -785,8 +802,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.933,
-        "crystal_ice": 0.067
+        "clear_water": 0.962,
+        "crystal_ice": 0.038
       },
       "edges": {
         "NE": {
@@ -808,16 +825,15 @@
           "samples": [
             "clear_water",
             "clear_water",
-            "crystal_ice",
-            "crystal_ice",
+            "clear_water",
+            "clear_water",
             "clear_water",
             "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.75,
-            "crystal_ice": 0.25
+            "clear_water": 1.0
           }
         },
         "SW": {
@@ -852,9 +868,10 @@
         }
       },
       "features": [
-        "pebbles"
+        "pebbles",
+        "shiny"
       ],
-      "description": "clear water blending to crystal ice with pebbles"
+      "description": "clear water with pebbles, a shiny speck"
     },
     {
       "index": 11,
@@ -929,8 +946,10 @@
           }
         }
       },
-      "features": [],
-      "description": "crystal ice blending to clear water"
+      "features": [
+        "shiny"
+      ],
+      "description": "crystal ice blending to clear water with a shiny speck"
     },
     {
       "index": 12,
@@ -1005,8 +1024,10 @@
           }
         }
       },
-      "features": [],
-      "description": "crystal ice blending to clear water"
+      "features": [
+        "shiny"
+      ],
+      "description": "crystal ice blending to clear water with a shiny speck"
     },
     {
       "index": 13,
@@ -1014,8 +1035,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.83,
-        "crystal_ice": 0.17
+        "clear_water": 0.902,
+        "crystal_ice": 0.098
       },
       "edges": {
         "NE": {
@@ -1040,13 +1061,12 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "crystal_ice",
+            "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.875,
-            "crystal_ice": 0.125
+            "clear_water": 1.0
           }
         },
         "SW": {
@@ -1055,14 +1075,14 @@
             "crystal_ice",
             "clear_water",
             "clear_water",
-            "crystal_ice",
+            "clear_water",
             "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.75,
-            "crystal_ice": 0.25
+            "clear_water": 0.875,
+            "crystal_ice": 0.125
           }
         },
         "NW": {
@@ -1082,9 +1102,10 @@
         }
       },
       "features": [
-        "pebbles"
+        "pebbles",
+        "shiny"
       ],
-      "description": "clear water blending to crystal ice with pebbles"
+      "description": "clear water blending to crystal ice with pebbles, a shiny speck"
     },
     {
       "index": 14,
@@ -1159,8 +1180,10 @@
           }
         }
       },
-      "features": [],
-      "description": "crystal ice blending to clear water"
+      "features": [
+        "shiny"
+      ],
+      "description": "crystal ice blending to clear water with a shiny speck"
     },
     {
       "index": 15,
@@ -1168,8 +1191,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.824,
-        "crystal_ice": 0.176
+        "clear_water": 0.896,
+        "crystal_ice": 0.104
       },
       "edges": {
         "NE": {
@@ -1236,9 +1259,10 @@
       },
       "features": [
         "pebbles",
+        "shiny",
         "accent"
       ],
-      "description": "clear water blending to crystal ice with pebbles, a small detail"
+      "description": "clear water blending to crystal ice with pebbles, a shiny speck, a small detail"
     }
   ],
   "generated_at": "2026-07-06T11:45:10+00:00",

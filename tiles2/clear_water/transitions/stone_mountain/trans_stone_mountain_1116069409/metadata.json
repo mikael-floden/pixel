@@ -315,8 +315,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.889,
-        "stone_mountain": 0.111
+        "clear_water": 0.868,
+        "stone_mountain": 0.132
       },
       "edges": {
         "NE": {
@@ -382,11 +382,9 @@
         }
       },
       "features": [
-        "accent",
-        "pebbles",
-        "water"
+        "accent"
       ],
-      "description": "clear water blending to grey mountain stone with a small detail, pebbles, a small puddle"
+      "description": "clear water blending to grey mountain stone with a small detail"
     },
     {
       "index": 5,
@@ -394,8 +392,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.767,
-        "stone_mountain": 0.233
+        "clear_water": 0.73,
+        "stone_mountain": 0.27
       },
       "edges": {
         "NE": {
@@ -421,17 +419,17 @@
             "stone_mountain",
             "clear_water",
             "clear_water",
-            "clear_water",
+            "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "clear_water": 0.625,
-            "stone_mountain": 0.375
+            "clear_water": 0.5,
+            "stone_mountain": 0.5
           }
         },
         "SW": {
           "samples": [
-            "clear_water",
+            "stone_mountain",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -441,8 +439,8 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.875,
-            "stone_mountain": 0.125
+            "stone_mountain": 0.25,
+            "clear_water": 0.75
           }
         },
         "NW": {
@@ -462,11 +460,9 @@
         }
       },
       "features": [
-        "accent",
-        "pebbles",
-        "water"
+        "accent"
       ],
-      "description": "clear water blending to grey mountain stone with a small detail, pebbles, a small puddle"
+      "description": "clear water blending to grey mountain stone with a small detail"
     },
     {
       "index": 6,
@@ -552,8 +548,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.303,
-        "clear_water": 0.697
+        "stone_mountain": 0.317,
+        "clear_water": 0.683
       },
       "edges": {
         "NE": {
@@ -623,11 +619,9 @@
       },
       "features": [
         "accent",
-        "pebbles",
-        "water",
         "flowers"
       ],
-      "description": "clear water blending to grey mountain stone with a small detail, pebbles, a small puddle, small flowers"
+      "description": "clear water blending to grey mountain stone with a small detail, small flowers"
     },
     {
       "index": 8,
@@ -704,10 +698,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "clear water blending to grey mountain stone with pebbles"
+      "features": [],
+      "description": "clear water blending to grey mountain stone"
     },
     {
       "index": 9,
@@ -784,11 +776,8 @@
           }
         }
       },
-      "features": [
-        "pebbles",
-        "accent"
-      ],
-      "description": "clear water blending to grey mountain stone with pebbles, a small detail"
+      "features": [],
+      "description": "clear water blending to grey mountain stone"
     },
     {
       "index": 10,
@@ -863,9 +852,10 @@
         }
       },
       "features": [
+        "accent",
         "pebbles"
       ],
-      "description": "clear water blending to grey mountain stone with pebbles"
+      "description": "clear water blending to grey mountain stone with a small detail, pebbles"
     },
     {
       "index": 11,
@@ -938,12 +928,8 @@
           }
         }
       },
-      "features": [
-        "pebbles",
-        "accent",
-        "water"
-      ],
-      "description": "clear water blending to grey mountain stone with pebbles, a small detail, a small puddle"
+      "features": [],
+      "description": "clear water blending to grey mountain stone"
     },
     {
       "index": 12,
@@ -1018,9 +1004,9 @@
         }
       },
       "features": [
-        "pebbles"
+        "accent"
       ],
-      "description": "grey mountain stone blending to clear water with pebbles"
+      "description": "grey mountain stone blending to clear water with a small detail"
     },
     {
       "index": 13,
@@ -1094,11 +1080,8 @@
           }
         }
       },
-      "features": [
-        "pebbles",
-        "accent"
-      ],
-      "description": "grey mountain stone blending to clear water with pebbles, a small detail"
+      "features": [],
+      "description": "grey mountain stone blending to clear water"
     },
     {
       "index": 14,
@@ -1170,11 +1153,8 @@
           }
         }
       },
-      "features": [
-        "pebbles",
-        "accent"
-      ],
-      "description": "grey mountain stone with pebbles, a small detail"
+      "features": [],
+      "description": "plain grey mountain stone"
     },
     {
       "index": 15,
@@ -1246,11 +1226,8 @@
           }
         }
       },
-      "features": [
-        "pebbles",
-        "accent"
-      ],
-      "description": "grey mountain stone with pebbles, a small detail"
+      "features": [],
+      "description": "plain grey mountain stone"
     }
   ],
   "generated_at": "2026-07-05T16:10:04+00:00",

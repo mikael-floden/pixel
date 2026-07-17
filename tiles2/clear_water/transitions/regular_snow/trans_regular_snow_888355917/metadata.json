@@ -238,8 +238,10 @@
           }
         }
       },
-      "features": [],
-      "description": "clear water blending to snow"
+      "features": [
+        "accent"
+      ],
+      "description": "clear water blending to snow with a small detail"
     },
     {
       "index": 3,
@@ -544,8 +546,10 @@
           }
         }
       },
-      "features": [],
-      "description": "clear water blending to snow"
+      "features": [
+        "accent"
+      ],
+      "description": "clear water blending to snow with a small detail"
     },
     {
       "index": 7,
@@ -1091,8 +1095,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.963,
-        "clear_water": 0.037
+        "regular_snow": 0.94,
+        "clear_water": 0.06
       },
       "edges": {
         "NE": {
@@ -1159,7 +1163,7 @@
       "features": [
         "pebbles"
       ],
-      "description": "snow with pebbles"
+      "description": "snow blending to clear water with pebbles"
     },
     {
       "index": 15,

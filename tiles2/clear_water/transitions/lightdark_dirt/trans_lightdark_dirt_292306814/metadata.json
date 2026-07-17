@@ -170,8 +170,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.909,
-        "lightdark_dirt": 0.091
+        "clear_water": 0.911,
+        "lightdark_dirt": 0.089
       },
       "edges": {
         "NE": {
@@ -319,8 +319,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.813,
-        "lightdark_dirt": 0.187
+        "clear_water": 0.81,
+        "lightdark_dirt": 0.19
       },
       "edges": {
         "NE": {
@@ -618,10 +618,8 @@
           }
         }
       },
-      "features": [
-        "flowers"
-      ],
-      "description": "dirt blending to clear water with small flowers"
+      "features": [],
+      "description": "dirt blending to clear water"
     },
     {
       "index": 8,
@@ -629,8 +627,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.884,
-        "clear_water": 0.116
+        "lightdark_dirt": 0.883,
+        "clear_water": 0.117
       },
       "edges": {
         "NE": {
@@ -703,8 +701,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.711,
-        "lightdark_dirt": 0.289
+        "clear_water": 0.712,
+        "lightdark_dirt": 0.288
       },
       "edges": {
         "NE": {
@@ -1151,8 +1149,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.972,
-        "clear_water": 0.028
+        "lightdark_dirt": 0.95,
+        "clear_water": 0.05
       },
       "edges": {
         "NE": {
@@ -1220,7 +1218,7 @@
         "accent",
         "flowers"
       ],
-      "description": "dirt with a small detail, small flowers"
+      "description": "dirt blending to clear water with a small detail, small flowers"
     }
   ],
   "generated_at": "2026-07-05T16:03:02+00:00",

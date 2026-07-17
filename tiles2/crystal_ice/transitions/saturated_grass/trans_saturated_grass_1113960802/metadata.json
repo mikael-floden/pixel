@@ -23,73 +23,76 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.97,
-        "saturated_grass": 0.03
+        "saturated_grass": 0.879,
+        "crystal_ice": 0.121
       },
       "edges": {
         "NE": {
           "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "crystal_ice": 1.0
+            "saturated_grass": 1.0
           }
         },
         "SE": {
           "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "crystal_ice": 1.0
+            "saturated_grass": 1.0
           }
         },
         "SW": {
           "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
             "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "crystal_ice": 1.0
+            "saturated_grass": 0.875,
+            "crystal_ice": 0.125
           }
         },
         "NW": {
           "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "crystal_ice": 1.0
+            "saturated_grass": 1.0
           }
         }
       },
-      "features": [],
-      "description": "plain crystal ice"
+      "features": [
+        "accent"
+      ],
+      "description": "saturated grass blending to crystal ice with a small detail"
     },
     {
       "index": 1,
@@ -97,29 +100,14 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.729,
-        "saturated_grass": 0.271
+        "saturated_grass": 0.931,
+        "crystal_ice": 0.069
       },
       "edges": {
         "NE": {
           "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
+            "saturated_grass",
+            "saturated_grass",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
@@ -128,46 +116,59 @@
             "saturated_grass"
           ],
           "ratio": {
-            "crystal_ice": 0.25,
-            "saturated_grass": 0.75
-          },
-          "divider": 0.25
+            "saturated_grass": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
         },
         "SW": {
           "samples": [
             "saturated_grass",
             "saturated_grass",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.25,
-            "crystal_ice": 0.75
-          },
-          "divider": 0.25
+            "saturated_grass": 1.0
+          }
         },
         "NW": {
           "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "crystal_ice": 1.0
+            "saturated_grass": 1.0
           }
         }
       },
-      "features": [],
-      "description": "crystal ice blending to saturated grass"
+      "features": [
+        "accent"
+      ],
+      "description": "saturated grass blending to crystal ice with a small detail"
     },
     {
       "index": 2,
@@ -175,8 +176,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.874,
-        "crystal_ice": 0.126
+        "saturated_grass": 0.869,
+        "crystal_ice": 0.131
       },
       "edges": {
         "NE": {
@@ -240,8 +241,10 @@
           }
         }
       },
-      "features": [],
-      "description": "saturated grass blending to crystal ice"
+      "features": [
+        "accent"
+      ],
+      "description": "saturated grass blending to crystal ice with a small detail"
     },
     {
       "index": 3,
@@ -249,8 +252,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.686,
-        "crystal_ice": 0.314
+        "saturated_grass": 0.998,
+        "crystal_ice": 0.002
       },
       "edges": {
         "NE": {
@@ -272,16 +275,399 @@
           "samples": [
             "saturated_grass",
             "saturated_grass",
-            "crystal_ice",
-            "crystal_ice",
             "saturated_grass",
             "saturated_grass",
-            "crystal_ice",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent"
+      ],
+      "description": "saturated grass with a small detail"
+    },
+    {
+      "index": 4,
+      "file": "tile_04.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "saturated_grass": 0.992,
+        "crystal_ice": 0.008
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent"
+      ],
+      "description": "saturated grass with a small detail"
+    },
+    {
+      "index": 5,
+      "file": "tile_05.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "saturated_grass": 0.956,
+        "crystal_ice": 0.044
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent"
+      ],
+      "description": "saturated grass with a small detail"
+    },
+    {
+      "index": 6,
+      "file": "tile_06.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "saturated_grass": 0.927,
+        "crystal_ice": 0.073
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
             "crystal_ice"
           ],
           "ratio": {
-            "saturated_grass": 0.5,
-            "crystal_ice": 0.5
+            "saturated_grass": 0.875,
+            "crystal_ice": 0.125
+          },
+          "divider": 0.875
+        },
+        "SW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent",
+        "pebbles"
+      ],
+      "description": "saturated grass blending to crystal ice with a small detail, pebbles"
+    },
+    {
+      "index": 7,
+      "file": "tile_07.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "saturated_grass": 0.995,
+        "crystal_ice": 0.005
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent"
+      ],
+      "description": "saturated grass with a small detail"
+    },
+    {
+      "index": 8,
+      "file": "tile_08.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "saturated_grass": 0.89,
+        "crystal_ice": 0.11
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "crystal_ice",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 0.875,
+            "crystal_ice": 0.125
           }
         },
         "SW": {
@@ -291,7 +677,317 @@
             "saturated_grass",
             "saturated_grass",
             "crystal_ice",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 0.875,
+            "crystal_ice": 0.125
+          }
+        },
+        "NW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent"
+      ],
+      "description": "saturated grass blending to crystal ice with a small detail"
+    },
+    {
+      "index": 9,
+      "file": "tile_09.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "saturated_grass": 0.887,
+        "crystal_ice": 0.113
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "saturated_grass": 0.875,
+            "crystal_ice": 0.125
+          },
+          "divider": 0.875
+        },
+        "SW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
             "crystal_ice",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 0.875,
+            "crystal_ice": 0.125
+          }
+        },
+        "NW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent"
+      ],
+      "description": "saturated grass blending to crystal ice with a small detail"
+    },
+    {
+      "index": 10,
+      "file": "tile_10.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "saturated_grass": 0.906,
+        "crystal_ice": 0.094
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "crystal_ice",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 0.875,
+            "crystal_ice": 0.125
+          }
+        },
+        "NW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent"
+      ],
+      "description": "saturated grass blending to crystal ice with a small detail"
+    },
+    {
+      "index": 11,
+      "file": "tile_11.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "saturated_grass": 0.882,
+        "crystal_ice": 0.118
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "crystal_ice",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 0.875,
+            "crystal_ice": 0.125
+          }
+        },
+        "NW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent"
+      ],
+      "description": "saturated grass blending to crystal ice with a small detail"
+    },
+    {
+      "index": 12,
+      "file": "tile_12.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "saturated_grass": 0.851,
+        "crystal_ice": 0.149
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "saturated_grass",
+            "crystal_ice",
+            "saturated_grass",
+            "saturated_grass",
+            "crystal_ice",
+            "saturated_grass",
             "saturated_grass",
             "saturated_grass"
           ],
@@ -316,701 +1012,10 @@
           }
         }
       },
-      "features": [],
-      "description": "saturated grass blending to crystal ice"
-    },
-    {
-      "index": 4,
-      "file": "tile_04.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "crystal_ice": 0.723,
-        "saturated_grass": 0.277
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "saturated_grass",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "saturated_grass",
-            "saturated_grass"
-          ],
-          "ratio": {
-            "crystal_ice": 0.625,
-            "saturated_grass": 0.375
-          }
-        },
-        "SW": {
-          "samples": [
-            "saturated_grass",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "saturated_grass",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "saturated_grass": 0.25,
-            "crystal_ice": 0.75
-          }
-        },
-        "NW": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        }
-      },
-      "features": [],
-      "description": "crystal ice blending to saturated grass"
-    },
-    {
-      "index": 5,
-      "file": "tile_05.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "crystal_ice": 0.858,
-        "saturated_grass": 0.142
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass"
-          ],
-          "ratio": {
-            "crystal_ice": 0.25,
-            "saturated_grass": 0.75
-          },
-          "divider": 0.25
-        },
-        "SW": {
-          "samples": [
-            "saturated_grass",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "saturated_grass": 0.125,
-            "crystal_ice": 0.875
-          },
-          "divider": 0.125
-        },
-        "NW": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        }
-      },
-      "features": [],
-      "description": "crystal ice blending to saturated grass"
-    },
-    {
-      "index": 6,
-      "file": "tile_06.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "crystal_ice": 0.83,
-        "saturated_grass": 0.17
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass"
-          ],
-          "ratio": {
-            "crystal_ice": 0.25,
-            "saturated_grass": 0.75
-          },
-          "divider": 0.25
-        },
-        "SW": {
-          "samples": [
-            "saturated_grass",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "saturated_grass": 0.125,
-            "crystal_ice": 0.875
-          },
-          "divider": 0.125
-        },
-        "NW": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        }
-      },
-      "features": [],
-      "description": "crystal ice blending to saturated grass"
-    },
-    {
-      "index": 7,
-      "file": "tile_07.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "crystal_ice": 0.746,
-        "saturated_grass": 0.254
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        },
-        "SW": {
-          "samples": [
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "saturated_grass": 0.375,
-            "crystal_ice": 0.625
-          },
-          "divider": 0.375
-        },
-        "NW": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        }
-      },
-      "features": [],
-      "description": "crystal ice blending to saturated grass"
-    },
-    {
-      "index": 8,
-      "file": "tile_08.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "crystal_ice": 0.896,
-        "saturated_grass": 0.104
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "saturated_grass",
-            "saturated_grass"
-          ],
-          "ratio": {
-            "crystal_ice": 0.75,
-            "saturated_grass": 0.25
-          },
-          "divider": 0.75
-        },
-        "SW": {
-          "samples": [
-            "saturated_grass",
-            "saturated_grass",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "saturated_grass": 0.25,
-            "crystal_ice": 0.75
-          },
-          "divider": 0.25
-        },
-        "NW": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        }
-      },
-      "features": [],
-      "description": "crystal ice blending to saturated grass"
-    },
-    {
-      "index": 9,
-      "file": "tile_09.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "crystal_ice": 0.827,
-        "saturated_grass": 0.173
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "saturated_grass",
-            "saturated_grass",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 0.75,
-            "saturated_grass": 0.25
-          }
-        },
-        "SW": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        },
-        "NW": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        }
-      },
       "features": [
         "accent"
       ],
-      "description": "crystal ice blending to saturated grass with a small detail"
-    },
-    {
-      "index": 10,
-      "file": "tile_10.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "crystal_ice": 0.751,
-        "saturated_grass": 0.249
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "crystal_ice",
-            "saturated_grass",
-            "saturated_grass"
-          ],
-          "ratio": {
-            "crystal_ice": 0.375,
-            "saturated_grass": 0.625
-          }
-        },
-        "SW": {
-          "samples": [
-            "saturated_grass",
-            "crystal_ice",
-            "crystal_ice",
-            "saturated_grass",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "saturated_grass": 0.25,
-            "crystal_ice": 0.75
-          }
-        },
-        "NW": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        }
-      },
-      "features": [
-        "accent"
-      ],
-      "description": "crystal ice blending to saturated grass with a small detail"
-    },
-    {
-      "index": 11,
-      "file": "tile_11.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "crystal_ice": 0.806,
-        "saturated_grass": 0.194
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 0.5,
-            "saturated_grass": 0.5
-          }
-        },
-        "SW": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        },
-        "NW": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        }
-      },
-      "features": [],
-      "description": "crystal ice blending to saturated grass"
-    },
-    {
-      "index": 12,
-      "file": "tile_12.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "crystal_ice": 0.908,
-        "saturated_grass": 0.092
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "saturated_grass",
-            "saturated_grass",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 0.75,
-            "saturated_grass": 0.25
-          }
-        },
-        "SW": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        },
-        "NW": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "crystal_ice": 1.0
-          }
-        }
-      },
-      "features": [
-        "accent"
-      ],
-      "description": "crystal ice blending to saturated grass with a small detail"
+      "description": "saturated grass blending to crystal ice with a small detail"
     },
     {
       "index": 13,
@@ -1018,76 +1023,76 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.718,
-        "saturated_grass": 0.282
+        "saturated_grass": 0.895,
+        "crystal_ice": 0.105
       },
       "edges": {
         "NE": {
           "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "crystal_ice": 1.0
+            "saturated_grass": 1.0
           }
         },
         "SE": {
           "samples": [
-            "crystal_ice",
-            "crystal_ice",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "crystal_ice"
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "crystal_ice": 0.375,
-            "saturated_grass": 0.625
+            "saturated_grass": 1.0
           }
         },
         "SW": {
           "samples": [
+            "saturated_grass",
+            "saturated_grass",
             "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "crystal_ice": 1.0
+            "saturated_grass": 0.875,
+            "crystal_ice": 0.125
           }
         },
         "NW": {
           "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "crystal_ice": 1.0
+            "saturated_grass": 1.0
           }
         }
       },
       "features": [
         "accent"
       ],
-      "description": "crystal ice blending to saturated grass with a small detail"
+      "description": "saturated grass blending to crystal ice with a small detail"
     },
     {
       "index": 14,
@@ -1095,8 +1100,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.713,
-        "saturated_grass": 0.287
+        "crystal_ice": 0.395,
+        "saturated_grass": 0.605
       },
       "edges": {
         "NE": {
@@ -1117,35 +1122,36 @@
         "SE": {
           "samples": [
             "crystal_ice",
-            "crystal_ice",
             "saturated_grass",
             "saturated_grass",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "crystal_ice": 0.625,
-            "saturated_grass": 0.375
-          }
+            "crystal_ice": 0.125,
+            "saturated_grass": 0.875
+          },
+          "divider": 0.125
         },
         "SW": {
           "samples": [
             "saturated_grass",
             "saturated_grass",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
             "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "saturated_grass": 0.25,
-            "crystal_ice": 0.75
+            "saturated_grass": 0.75,
+            "crystal_ice": 0.25
           },
-          "divider": 0.25
+          "divider": 0.75
         },
         "NW": {
           "samples": [
@@ -1164,9 +1170,10 @@
         }
       },
       "features": [
-        "accent"
+        "accent",
+        "shiny"
       ],
-      "description": "crystal ice blending to saturated grass with a small detail"
+      "description": "saturated grass blending to crystal ice with a small detail, a shiny speck"
     },
     {
       "index": 15,
@@ -1174,74 +1181,77 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.898,
-        "saturated_grass": 0.102
+        "saturated_grass": 0.842,
+        "crystal_ice": 0.158
       },
       "edges": {
         "NE": {
           "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "crystal_ice": 1.0
+            "saturated_grass": 1.0
           }
         },
         "SE": {
           "samples": [
-            "crystal_ice",
-            "crystal_ice",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "crystal_ice": 0.625,
-            "saturated_grass": 0.375
+            "saturated_grass": 1.0
           }
         },
         "SW": {
           "samples": [
+            "saturated_grass",
             "crystal_ice",
             "crystal_ice",
+            "saturated_grass",
             "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "crystal_ice": 1.0
+            "saturated_grass": 0.625,
+            "crystal_ice": 0.375
           }
         },
         "NW": {
           "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "crystal_ice": 1.0
+            "saturated_grass": 1.0
           }
         }
       },
-      "features": [],
-      "description": "crystal ice blending to saturated grass"
+      "features": [
+        "accent",
+        "shiny"
+      ],
+      "description": "saturated grass blending to crystal ice with a small detail, a shiny speck"
     }
   ],
   "generated_at": "2026-07-06T11:07:31+00:00",

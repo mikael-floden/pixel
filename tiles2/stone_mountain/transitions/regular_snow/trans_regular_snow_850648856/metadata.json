@@ -88,10 +88,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "grey mountain stone with pebbles"
+      "features": [],
+      "description": "plain grey mountain stone"
     },
     {
       "index": 1,
@@ -166,11 +164,9 @@
         }
       },
       "features": [
-        "pebbles",
-        "accent",
         "water"
       ],
-      "description": "grey mountain stone blending to snow with pebbles, a small detail, a small puddle"
+      "description": "grey mountain stone blending to snow with a small puddle"
     },
     {
       "index": 2,
@@ -178,8 +174,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.706,
-        "stone_mountain": 0.294
+        "regular_snow": 0.709,
+        "stone_mountain": 0.291
       },
       "edges": {
         "NE": {
@@ -249,10 +245,9 @@
       },
       "features": [
         "flowers",
-        "accent",
-        "pebbles"
+        "accent"
       ],
-      "description": "snow blending to grey mountain stone with small flowers, a small detail, pebbles"
+      "description": "snow blending to grey mountain stone with small flowers, a small detail"
     },
     {
       "index": 3,
@@ -260,8 +255,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.829,
-        "regular_snow": 0.171
+        "stone_mountain": 0.83,
+        "regular_snow": 0.17
       },
       "edges": {
         "NE": {
@@ -326,10 +321,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "grey mountain stone blending to snow with pebbles"
+      "features": [],
+      "description": "grey mountain stone blending to snow"
     },
     {
       "index": 4,
@@ -337,8 +330,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.832,
-        "stone_mountain": 0.168
+        "regular_snow": 0.837,
+        "stone_mountain": 0.163
       },
       "edges": {
         "NE": {
@@ -406,10 +399,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "snow blending to grey mountain stone with pebbles"
+      "features": [],
+      "description": "snow blending to grey mountain stone"
     },
     {
       "index": 5,
@@ -417,8 +408,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.736,
-        "stone_mountain": 0.264
+        "regular_snow": 0.739,
+        "stone_mountain": 0.261
       },
       "edges": {
         "NE": {
@@ -484,10 +475,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "snow blending to grey mountain stone with pebbles"
+      "features": [],
+      "description": "snow blending to grey mountain stone"
     },
     {
       "index": 6,
@@ -495,8 +484,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.956,
-        "stone_mountain": 0.044
+        "regular_snow": 1.0
       },
       "edges": {
         "NE": {
@@ -536,13 +524,12 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "stone_mountain",
+            "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 0.875,
-            "stone_mountain": 0.125
+            "regular_snow": 1.0
           }
         },
         "NW": {
@@ -570,8 +557,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.906,
-        "stone_mountain": 0.094
+        "regular_snow": 0.908,
+        "stone_mountain": 0.092
       },
       "edges": {
         "NE": {
@@ -636,10 +623,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "snow blending to grey mountain stone with pebbles"
+      "features": [],
+      "description": "snow blending to grey mountain stone"
     },
     {
       "index": 8,
@@ -647,8 +632,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.971,
-        "stone_mountain": 0.029
+        "regular_snow": 0.977,
+        "stone_mountain": 0.023
       },
       "edges": {
         "NE": {
@@ -712,11 +697,8 @@
           }
         }
       },
-      "features": [
-        "accent",
-        "pebbles"
-      ],
-      "description": "snow with a small detail, pebbles"
+      "features": [],
+      "description": "plain snow"
     },
     {
       "index": 9,
@@ -724,8 +706,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.842,
-        "stone_mountain": 0.158
+        "regular_snow": 0.89,
+        "stone_mountain": 0.11
       },
       "edges": {
         "NE": {
@@ -802,8 +784,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.868,
-        "stone_mountain": 0.132
+        "regular_snow": 0.91,
+        "stone_mountain": 0.09
       },
       "edges": {
         "NE": {
@@ -826,15 +808,14 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "stone_mountain",
+            "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 0.875,
-            "stone_mountain": 0.125
+            "regular_snow": 1.0
           }
         },
         "SW": {
@@ -869,10 +850,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "snow blending to grey mountain stone with pebbles"
+      "features": [],
+      "description": "snow blending to grey mountain stone"
     },
     {
       "index": 11,
@@ -880,8 +859,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.783,
-        "stone_mountain": 0.217
+        "regular_snow": 0.837,
+        "stone_mountain": 0.163
       },
       "edges": {
         "NE": {
@@ -918,16 +897,16 @@
           "samples": [
             "regular_snow",
             "regular_snow",
+            "regular_snow",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
+            "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 0.5,
-            "stone_mountain": 0.5
+            "regular_snow": 0.75,
+            "stone_mountain": 0.25
           }
         },
         "NW": {
@@ -946,11 +925,8 @@
           }
         }
       },
-      "features": [
-        "pebbles",
-        "accent"
-      ],
-      "description": "snow blending to grey mountain stone with pebbles, a small detail"
+      "features": [],
+      "description": "snow blending to grey mountain stone"
     },
     {
       "index": 12,
@@ -1031,8 +1007,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.951,
-        "stone_mountain": 0.049
+        "regular_snow": 1.0
       },
       "edges": {
         "NE": {
@@ -1178,8 +1153,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.954,
-        "stone_mountain": 0.046
+        "regular_snow": 0.963,
+        "stone_mountain": 0.037
       },
       "edges": {
         "NE": {
@@ -1244,11 +1219,8 @@
           }
         }
       },
-      "features": [
-        "accent",
-        "pebbles"
-      ],
-      "description": "snow with a small detail, pebbles"
+      "features": [],
+      "description": "plain snow"
     }
   ],
   "generated_at": "2026-07-05T09:57:32+00:00",

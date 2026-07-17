@@ -234,10 +234,9 @@
         }
       },
       "features": [
-        "flowers",
-        "bare_soil"
+        "flowers"
       ],
-      "description": "light sand with small flowers, a bare soil patch"
+      "description": "light sand with small flowers"
     },
     {
       "index": 3,
@@ -604,10 +603,9 @@
       "features": [
         "flowers",
         "pebbles",
-        "bare_soil",
         "accent"
       ],
-      "description": "light sand with small flowers, pebbles, a bare soil patch, a small detail"
+      "description": "light sand with small flowers, pebbles, a small detail"
     },
     {
       "index": 8,
@@ -753,10 +751,9 @@
         }
       },
       "features": [
-        "bare_soil",
         "flowers"
       ],
-      "description": "light sand with a bare soil patch, small flowers"
+      "description": "light sand with small flowers"
     },
     {
       "index": 10,
@@ -829,11 +826,10 @@
         }
       },
       "features": [
-        "bare_soil",
-        "pebbles",
-        "flowers"
+        "flowers",
+        "pebbles"
       ],
-      "description": "light sand with a bare soil patch, pebbles, small flowers"
+      "description": "light sand with small flowers, pebbles"
     },
     {
       "index": 11,
@@ -1199,8 +1195,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain light sand"
+      "features": [
+        "flowers"
+      ],
+      "description": "light sand with small flowers"
     }
   ],
   "generated_at": "2026-07-06T13:02:34+00:00",

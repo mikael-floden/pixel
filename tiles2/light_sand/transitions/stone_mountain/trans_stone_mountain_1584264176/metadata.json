@@ -90,10 +90,8 @@
           "divider": 0.875
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "light sand blending to grey mountain stone with pebbles"
+      "features": [],
+      "description": "light sand blending to grey mountain stone"
     },
     {
       "index": 1,
@@ -101,8 +99,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.697,
-        "stone_mountain": 0.303
+        "light_sand": 0.701,
+        "stone_mountain": 0.299
       },
       "edges": {
         "NE": {
@@ -167,11 +165,8 @@
           }
         }
       },
-      "features": [
-        "pebbles",
-        "accent"
-      ],
-      "description": "light sand blending to grey mountain stone with pebbles, a small detail"
+      "features": [],
+      "description": "light sand blending to grey mountain stone"
     },
     {
       "index": 2,
@@ -179,8 +174,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.773,
-        "stone_mountain": 0.227
+        "light_sand": 0.83,
+        "stone_mountain": 0.17
       },
       "edges": {
         "NE": {
@@ -205,13 +200,13 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
+            "light_sand",
             "light_sand",
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.5,
-            "stone_mountain": 0.5
+            "light_sand": 0.625,
+            "stone_mountain": 0.375
           }
         },
         "SW": {
@@ -254,8 +249,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.925,
-        "light_sand": 0.075
+        "stone_mountain": 0.924,
+        "light_sand": 0.076
       },
       "edges": {
         "NE": {
@@ -323,10 +318,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "grey mountain stone blending to light sand with pebbles"
+      "features": [],
+      "description": "grey mountain stone blending to light sand"
     },
     {
       "index": 4,
@@ -334,8 +327,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.82,
-        "stone_mountain": 0.18
+        "light_sand": 0.842,
+        "stone_mountain": 0.158
       },
       "edges": {
         "NE": {
@@ -357,16 +350,15 @@
           "samples": [
             "light_sand",
             "light_sand",
-            "stone_mountain",
             "light_sand",
-            "stone_mountain",
+            "light_sand",
+            "light_sand",
             "light_sand",
             "light_sand",
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.75,
-            "stone_mountain": 0.25
+            "light_sand": 1.0
           }
         },
         "SW": {
@@ -401,11 +393,8 @@
           }
         }
       },
-      "features": [
-        "pebbles",
-        "accent"
-      ],
-      "description": "light sand blending to grey mountain stone with pebbles, a small detail"
+      "features": [],
+      "description": "light sand blending to grey mountain stone"
     },
     {
       "index": 5,
@@ -413,8 +402,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.676,
-        "stone_mountain": 0.324
+        "light_sand": 0.683,
+        "stone_mountain": 0.317
       },
       "edges": {
         "NE": {
@@ -480,11 +469,8 @@
           }
         }
       },
-      "features": [
-        "pebbles",
-        "accent"
-      ],
-      "description": "light sand blending to grey mountain stone with pebbles, a small detail"
+      "features": [],
+      "description": "light sand blending to grey mountain stone"
     },
     {
       "index": 6,
@@ -492,8 +478,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.852,
-        "light_sand": 0.148
+        "stone_mountain": 0.849,
+        "light_sand": 0.151
       },
       "edges": {
         "NE": {
@@ -562,10 +548,9 @@
         }
       },
       "features": [
-        "pebbles",
-        "bare_soil"
+        "flowers"
       ],
-      "description": "grey mountain stone blending to light sand with pebbles, a bare soil patch"
+      "description": "grey mountain stone blending to light sand with small flowers"
     },
     {
       "index": 7,
@@ -573,8 +558,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.918,
-        "light_sand": 0.082
+        "stone_mountain": 0.68,
+        "light_sand": 0.32
       },
       "edges": {
         "NE": {
@@ -611,16 +596,16 @@
           "samples": [
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
             "light_sand",
             "light_sand",
-            "stone_mountain",
+            "light_sand",
+            "light_sand",
             "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.75,
-            "light_sand": 0.25
+            "stone_mountain": 0.5,
+            "light_sand": 0.5
           }
         },
         "NW": {
@@ -639,12 +624,8 @@
           }
         }
       },
-      "features": [
-        "pebbles",
-        "shiny",
-        "accent"
-      ],
-      "description": "grey mountain stone blending to light sand with pebbles, a shiny speck, a small detail"
+      "features": [],
+      "description": "grey mountain stone blending to light sand"
     },
     {
       "index": 8,
@@ -652,8 +633,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.736,
-        "stone_mountain": 0.264
+        "light_sand": 0.742,
+        "stone_mountain": 0.258
       },
       "edges": {
         "NE": {
@@ -719,11 +700,8 @@
           }
         }
       },
-      "features": [
-        "accent",
-        "pebbles"
-      ],
-      "description": "light sand blending to grey mountain stone with a small detail, pebbles"
+      "features": [],
+      "description": "light sand blending to grey mountain stone"
     },
     {
       "index": 9,
@@ -731,8 +709,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.726,
-        "stone_mountain": 0.274
+        "light_sand": 0.801,
+        "stone_mountain": 0.199
       },
       "edges": {
         "NE": {
@@ -797,10 +775,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "light sand blending to grey mountain stone with pebbles"
+      "features": [],
+      "description": "light sand blending to grey mountain stone"
     },
     {
       "index": 10,
@@ -808,7 +784,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 1.0
+        "stone_mountain": 0.979,
+        "light_sand": 0.021
       },
       "edges": {
         "NE": {
@@ -872,10 +849,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "grey mountain stone with pebbles"
+      "features": [],
+      "description": "plain grey mountain stone"
     },
     {
       "index": 11,
@@ -883,8 +858,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.823,
-        "light_sand": 0.177
+        "stone_mountain": 0.821,
+        "light_sand": 0.179
       },
       "edges": {
         "NE": {
@@ -950,11 +925,8 @@
           }
         }
       },
-      "features": [
-        "pebbles",
-        "accent"
-      ],
-      "description": "grey mountain stone blending to light sand with pebbles, a small detail"
+      "features": [],
+      "description": "grey mountain stone blending to light sand"
     },
     {
       "index": 12,
@@ -1028,11 +1000,8 @@
           }
         }
       },
-      "features": [
-        "pebbles",
-        "accent"
-      ],
-      "description": "light sand blending to grey mountain stone with pebbles, a small detail"
+      "features": [],
+      "description": "light sand blending to grey mountain stone"
     },
     {
       "index": 13,
@@ -1040,39 +1009,38 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.76,
-        "light_sand": 0.24
+        "light_sand": 0.84,
+        "stone_mountain": 0.16
       },
       "edges": {
         "NE": {
           "samples": [
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain"
-          ],
-          "ratio": {
-            "stone_mountain": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "stone_mountain",
-            "stone_mountain",
             "light_sand",
-            "stone_mountain",
-            "stone_mountain",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
             "light_sand",
             "light_sand",
             "light_sand"
           ],
           "ratio": {
-            "stone_mountain": 0.5,
-            "light_sand": 0.5
+            "light_sand": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "light_sand": 1.0
           }
         },
         "SW": {
@@ -1081,39 +1049,36 @@
             "light_sand",
             "light_sand",
             "stone_mountain",
+            "light_sand",
             "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain"
+            "light_sand",
+            "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.375,
-            "stone_mountain": 0.625
-          },
-          "divider": 0.375
+            "light_sand": 0.75,
+            "stone_mountain": 0.25
+          }
         },
         "NW": {
           "samples": [
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain"
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
           ],
           "ratio": {
-            "stone_mountain": 1.0
+            "light_sand": 1.0
           }
         }
       },
       "features": [
-        "pebbles",
-        "accent",
         "water"
       ],
-      "description": "grey mountain stone blending to light sand with pebbles, a small detail, a small puddle"
+      "description": "light sand blending to grey mountain stone with a small puddle"
     },
     {
       "index": 14,
@@ -1121,8 +1086,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.734,
-        "stone_mountain": 0.266
+        "light_sand": 0.741,
+        "stone_mountain": 0.259
       },
       "edges": {
         "NE": {
@@ -1188,11 +1153,8 @@
           }
         }
       },
-      "features": [
-        "accent",
-        "pebbles"
-      ],
-      "description": "light sand blending to grey mountain stone with a small detail, pebbles"
+      "features": [],
+      "description": "light sand blending to grey mountain stone"
     },
     {
       "index": 15,
@@ -1200,8 +1162,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.956,
-        "light_sand": 0.044
+        "stone_mountain": 0.947,
+        "light_sand": 0.053
       },
       "edges": {
         "NE": {
@@ -1265,10 +1227,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "grey mountain stone with pebbles"
+      "features": [],
+      "description": "grey mountain stone blending to light sand"
     }
   ],
   "generated_at": "2026-07-06T13:37:15+00:00",

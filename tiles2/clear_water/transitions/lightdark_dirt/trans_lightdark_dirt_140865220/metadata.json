@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.982,
-        "lightdark_dirt": 0.018
+        "clear_water": 0.995,
+        "lightdark_dirt": 0.005
       },
       "edges": {
         "NE": {
@@ -36,13 +36,11 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "lightdark_dirt"
+            "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.875,
-            "lightdark_dirt": 0.125
-          },
-          "divider": 0.875
+            "clear_water": 1.0
+          }
         },
         "SE": {
           "samples": [
@@ -91,11 +89,9 @@
         }
       },
       "features": [
-        "pebbles",
-        "accent",
-        "water"
+        "pebbles"
       ],
-      "description": "clear water with pebbles, a small detail, a small puddle"
+      "description": "clear water with pebbles"
     },
     {
       "index": 1,
@@ -103,8 +99,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.721,
-        "lightdark_dirt": 0.279
+        "clear_water": 0.724,
+        "lightdark_dirt": 0.276
       },
       "edges": {
         "NE": {
@@ -175,10 +171,9 @@
         }
       },
       "features": [
-        "pebbles",
-        "water"
+        "pebbles"
       ],
-      "description": "clear water blending to dirt with pebbles, a small puddle"
+      "description": "clear water blending to dirt with pebbles"
     },
     {
       "index": 2,
@@ -186,8 +181,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.847,
-        "lightdark_dirt": 0.153
+        "clear_water": 0.85,
+        "lightdark_dirt": 0.15
       },
       "edges": {
         "NE": {
@@ -339,8 +334,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.867,
-        "lightdark_dirt": 0.133
+        "clear_water": 0.881,
+        "lightdark_dirt": 0.119
       },
       "edges": {
         "NE": {
@@ -352,13 +347,11 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "lightdark_dirt"
+            "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.875,
-            "lightdark_dirt": 0.125
-          },
-          "divider": 0.875
+            "clear_water": 1.0
+          }
         },
         "SE": {
           "samples": [
@@ -409,11 +402,9 @@
         }
       },
       "features": [
-        "pebbles",
-        "accent",
-        "water"
+        "pebbles"
       ],
-      "description": "clear water blending to dirt with pebbles, a small detail, a small puddle"
+      "description": "clear water blending to dirt with pebbles"
     },
     {
       "index": 5,
@@ -421,8 +412,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.704,
-        "lightdark_dirt": 0.296
+        "clear_water": 0.712,
+        "lightdark_dirt": 0.288
       },
       "edges": {
         "NE": {
@@ -493,11 +484,9 @@
         }
       },
       "features": [
-        "pebbles",
-        "accent",
-        "water"
+        "pebbles"
       ],
-      "description": "clear water blending to dirt with pebbles, a small detail, a small puddle"
+      "description": "clear water blending to dirt with pebbles"
     },
     {
       "index": 6,
@@ -505,8 +494,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.783,
-        "lightdark_dirt": 0.217
+        "clear_water": 0.792,
+        "lightdark_dirt": 0.208
       },
       "edges": {
         "NE": {
@@ -660,8 +649,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.685,
-        "clear_water": 0.315
+        "clear_water": 0.325,
+        "lightdark_dirt": 0.675
       },
       "edges": {
         "NE": {
@@ -672,14 +661,12 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "lightdark_dirt",
-            "lightdark_dirt"
+            "clear_water",
+            "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.75,
-            "lightdark_dirt": 0.25
-          },
-          "divider": 0.75
+            "clear_water": 1.0
+          }
         },
         "SE": {
           "samples": [
@@ -732,10 +719,9 @@
       },
       "features": [
         "pebbles",
-        "accent",
-        "water"
+        "accent"
       ],
-      "description": "dirt blending to clear water with pebbles, a small detail, a small puddle"
+      "description": "dirt blending to clear water with pebbles, a small detail"
     },
     {
       "index": 9,
@@ -743,8 +729,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.417,
-        "clear_water": 0.583
+        "lightdark_dirt": 0.416,
+        "clear_water": 0.584
       },
       "edges": {
         "NE": {
@@ -822,8 +808,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.772,
-        "lightdark_dirt": 0.228
+        "clear_water": 0.752,
+        "lightdark_dirt": 0.248
       },
       "edges": {
         "NE": {
@@ -862,8 +848,8 @@
         },
         "SW": {
           "samples": [
-            "clear_water",
-            "clear_water",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -872,8 +858,10 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 1.0
-          }
+            "lightdark_dirt": 0.25,
+            "clear_water": 0.75
+          },
+          "divider": 0.25
         },
         "NW": {
           "samples": [
@@ -892,10 +880,9 @@
         }
       },
       "features": [
-        "pebbles",
-        "accent"
+        "pebbles"
       ],
-      "description": "clear water blending to dirt with pebbles, a small detail"
+      "description": "clear water blending to dirt with pebbles"
     },
     {
       "index": 11,
@@ -903,8 +890,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.925,
-        "clear_water": 0.075
+        "lightdark_dirt": 0.913,
+        "clear_water": 0.087
       },
       "edges": {
         "NE": {
@@ -980,8 +967,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.989,
-        "lightdark_dirt": 0.011
+        "clear_water": 0.999,
+        "lightdark_dirt": 0.001
       },
       "edges": {
         "NE": {
@@ -993,13 +980,11 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "lightdark_dirt"
+            "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.875,
-            "lightdark_dirt": 0.125
-          },
-          "divider": 0.875
+            "clear_water": 1.0
+          }
         },
         "SE": {
           "samples": [
@@ -1048,11 +1033,9 @@
         }
       },
       "features": [
-        "pebbles",
-        "accent",
-        "water"
+        "pebbles"
       ],
-      "description": "clear water with pebbles, a small detail, a small puddle"
+      "description": "clear water with pebbles"
     },
     {
       "index": 13,
@@ -1060,8 +1043,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.361,
-        "clear_water": 0.639
+        "lightdark_dirt": 0.359,
+        "clear_water": 0.641
       },
       "edges": {
         "NE": {
@@ -1129,10 +1112,9 @@
         }
       },
       "features": [
-        "pebbles",
-        "flowers"
+        "pebbles"
       ],
-      "description": "clear water blending to dirt with pebbles, small flowers"
+      "description": "clear water blending to dirt with pebbles"
     },
     {
       "index": 14,
@@ -1140,8 +1122,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.861,
-        "clear_water": 0.139
+        "lightdark_dirt": 0.859,
+        "clear_water": 0.141
       },
       "edges": {
         "NE": {

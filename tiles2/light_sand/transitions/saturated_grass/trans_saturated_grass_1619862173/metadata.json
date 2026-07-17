@@ -89,8 +89,10 @@
           }
         }
       },
-      "features": [],
-      "description": "light sand blending to saturated grass"
+      "features": [
+        "accent"
+      ],
+      "description": "light sand blending to saturated grass with a small detail"
     },
     {
       "index": 1,
@@ -163,8 +165,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain light sand"
+      "features": [
+        "accent"
+      ],
+      "description": "light sand with a small detail"
     },
     {
       "index": 2,
@@ -172,8 +176,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.861,
-        "saturated_grass": 0.139
+        "light_sand": 0.871,
+        "saturated_grass": 0.129
       },
       "edges": {
         "NE": {
@@ -238,8 +242,10 @@
           }
         }
       },
-      "features": [],
-      "description": "light sand blending to saturated grass"
+      "features": [
+        "accent"
+      ],
+      "description": "light sand blending to saturated grass with a small detail"
     },
     {
       "index": 3,
@@ -478,8 +484,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.719,
-        "saturated_grass": 0.281
+        "light_sand": 0.72,
+        "saturated_grass": 0.28
       },
       "edges": {
         "NE": {
@@ -935,8 +941,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.933,
-        "light_sand": 0.067
+        "saturated_grass": 0.932,
+        "light_sand": 0.068
       },
       "edges": {
         "NE": {
@@ -1009,8 +1015,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.999,
-        "light_sand": 0.001
+        "saturated_grass": 0.978,
+        "light_sand": 0.022
       },
       "edges": {
         "NE": {
@@ -1085,7 +1091,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 1.0
+        "saturated_grass": 0.997,
+        "light_sand": 0.003
       },
       "edges": {
         "NE": {
@@ -1149,8 +1156,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain saturated grass"
+      "features": [
+        "accent"
+      ],
+      "description": "saturated grass with a small detail"
     },
     {
       "index": 15,

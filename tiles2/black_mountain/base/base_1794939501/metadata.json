@@ -87,8 +87,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain black volcanic rock"
+      "features": [
+        "accent"
+      ],
+      "description": "black volcanic rock with a small detail"
     },
     {
       "index": 1,
@@ -160,8 +162,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain black volcanic rock"
+      "features": [
+        "accent"
+      ],
+      "description": "black volcanic rock with a small detail"
     },
     {
       "index": 2,
@@ -234,9 +238,11 @@
         }
       },
       "features": [
-        "water"
+        "accent",
+        "water",
+        "pebbles"
       ],
-      "description": "black volcanic rock with a small puddle"
+      "description": "black volcanic rock with a small detail, a small puddle, pebbles"
     },
     {
       "index": 3,
@@ -308,8 +314,11 @@
           }
         }
       },
-      "features": [],
-      "description": "plain black volcanic rock"
+      "features": [
+        "accent",
+        "water"
+      ],
+      "description": "black volcanic rock with a small detail, a small puddle"
     },
     {
       "index": 4,
@@ -381,8 +390,11 @@
           }
         }
       },
-      "features": [],
-      "description": "plain black volcanic rock"
+      "features": [
+        "accent",
+        "pebbles"
+      ],
+      "description": "black volcanic rock with a small detail, pebbles"
     },
     {
       "index": 5,
@@ -455,10 +467,11 @@
         }
       },
       "features": [
+        "accent",
         "pebbles",
         "flowers"
       ],
-      "description": "black volcanic rock with pebbles, small flowers"
+      "description": "black volcanic rock with a small detail, pebbles, small flowers"
     },
     {
       "index": 6,
@@ -530,8 +543,11 @@
           }
         }
       },
-      "features": [],
-      "description": "plain black volcanic rock"
+      "features": [
+        "accent",
+        "water"
+      ],
+      "description": "black volcanic rock with a small detail, a small puddle"
     },
     {
       "index": 7,
@@ -604,10 +620,11 @@
         }
       },
       "features": [
+        "accent",
         "pebbles",
         "flowers"
       ],
-      "description": "black volcanic rock with pebbles, small flowers"
+      "description": "black volcanic rock with a small detail, pebbles, small flowers"
     },
     {
       "index": 8,
@@ -680,9 +697,11 @@
         }
       },
       "features": [
+        "accent",
+        "pebbles",
         "water"
       ],
-      "description": "black volcanic rock with a small puddle"
+      "description": "black volcanic rock with a small detail, pebbles, a small puddle"
     },
     {
       "index": 9,
@@ -755,9 +774,10 @@
         }
       },
       "features": [
+        "accent",
         "water"
       ],
-      "description": "black volcanic rock with a small puddle"
+      "description": "black volcanic rock with a small detail, a small puddle"
     },
     {
       "index": 10,
@@ -829,8 +849,11 @@
           }
         }
       },
-      "features": [],
-      "description": "plain black volcanic rock"
+      "features": [
+        "accent",
+        "pebbles"
+      ],
+      "description": "black volcanic rock with a small detail, pebbles"
     },
     {
       "index": 11,
@@ -903,9 +926,11 @@
         }
       },
       "features": [
+        "accent",
+        "pebbles",
         "flowers"
       ],
-      "description": "black volcanic rock with small flowers"
+      "description": "black volcanic rock with a small detail, pebbles, small flowers"
     },
     {
       "index": 12,
@@ -978,9 +1003,10 @@
         }
       },
       "features": [
+        "accent",
         "water"
       ],
-      "description": "black volcanic rock with a small puddle"
+      "description": "black volcanic rock with a small detail, a small puddle"
     },
     {
       "index": 13,
@@ -1053,9 +1079,12 @@
         }
       },
       "features": [
-        "flowers"
+        "accent",
+        "pebbles",
+        "flowers",
+        "water"
       ],
-      "description": "black volcanic rock with small flowers"
+      "description": "black volcanic rock with a small detail, pebbles, small flowers, a small puddle"
     },
     {
       "index": 14,
@@ -1127,8 +1156,11 @@
           }
         }
       },
-      "features": [],
-      "description": "plain black volcanic rock"
+      "features": [
+        "accent",
+        "pebbles"
+      ],
+      "description": "black volcanic rock with a small detail, pebbles"
     },
     {
       "index": 15,
@@ -1201,10 +1233,11 @@
         }
       },
       "features": [
+        "accent",
         "pebbles",
         "flowers"
       ],
-      "description": "black volcanic rock with pebbles, small flowers"
+      "description": "black volcanic rock with a small detail, pebbles, small flowers"
     }
   ],
   "generated_at": "2026-07-05T10:10:32+00:00",

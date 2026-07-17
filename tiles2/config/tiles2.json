@@ -100,6 +100,17 @@
     "neutralize_outline": true,
     "darkness_thresh": 60,
     "harmonize": { "hue_strength": 0.9, "sat_strength": 0.7, "v_strength": 0.9 },
+    "_palette_comment": "Re-tint the whole tileset to the game's HUD/UI colour palette (cohesive muted-forest theme). Each entry OVERRIDES the auto-detected material colour that harmonize pulls every tile toward, so grass/dirt/etc. read as one harmonic set with the HUD. grass + dirt are the exact colours the designer supplied; the rest are sampled from the HUD (crystal-teal water, sage stone, near-black rock, cool-pale snow, warm sand, icy-cyan ice). Remove an entry to fall back to auto-detection. Reprocess after any change.",
+    "palette": {
+      "saturated_grass": [7, 59, 53],
+      "lightdark_dirt":  [169, 145, 102],
+      "regular_snow":    [210, 219, 214],
+      "stone_mountain":  [95, 105, 92],
+      "black_mountain":  [16, 18, 14],
+      "clear_water":     [58, 109, 112],
+      "light_sand":      [203, 180, 136],
+      "crystal_ice":     [143, 211, 228]
+    },
     "_gap_close_comment": "THE actual fix for the in-game 'grid'/'Ʌ' seam. The seam is NOT a dark outline on the tiles — it is the dark BACKGROUND showing through 1-2px gaps along every diamond edge, because the generated diamond silhouette (soft/antialiased rim) does not perfectly tessellate (verified: seam pixels == background luminance; a magenta-background tessellation bleeds magenta along every edge). gap_close hardens the silhouette (alpha>thresh -> opaque, kills the dark AA halo) and bleeds it OUTWARD `grow` px, filling new pixels with the average of opaque neighbours at full alpha, so neighbouring diamonds overlap (same material, back-to-front draw) and no void shows. Runs LAST (after fade_outline, which reduces rim alpha and would otherwise reopen the gap). Base + transition floor tiles ONLY — elevation object sprites keep their true silhouette. Toggle enabled:false + reprocess to revert (raw untouched). NOTE: superseded `deseam`, which mis-diagnosed the seam as a dark outline and had ~no in-game effect.",
     "deseam": {
       "enabled": false,

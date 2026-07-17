@@ -627,10 +627,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "snow blending to dirt with pebbles"
+      "features": [],
+      "description": "snow blending to dirt"
     },
     {
       "index": 8,
@@ -1092,8 +1090,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.91,
-        "lightdark_dirt": 0.09
+        "regular_snow": 0.912,
+        "lightdark_dirt": 0.088
       },
       "edges": {
         "NE": {
@@ -1157,8 +1155,10 @@
           }
         }
       },
-      "features": [],
-      "description": "snow blending to dirt"
+      "features": [
+        "accent"
+      ],
+      "description": "snow blending to dirt with a small detail"
     },
     {
       "index": 15,

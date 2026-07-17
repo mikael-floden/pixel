@@ -160,8 +160,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain saturated grass"
+      "features": [
+        "accent"
+      ],
+      "description": "saturated grass with a small detail"
     },
     {
       "index": 2,
@@ -234,9 +236,10 @@
         }
       },
       "features": [
-        "flowers"
+        "flowers",
+        "accent"
       ],
-      "description": "saturated grass with small flowers"
+      "description": "saturated grass with small flowers, a small detail"
     },
     {
       "index": 3,
@@ -310,9 +313,10 @@
       },
       "features": [
         "flowers",
+        "accent",
         "bare_soil"
       ],
-      "description": "saturated grass with small flowers, a bare soil patch"
+      "description": "saturated grass with small flowers, a small detail, a bare soil patch"
     },
     {
       "index": 4,
@@ -459,13 +463,90 @@
       },
       "features": [
         "flowers",
-        "bare_soil"
+        "bare_soil",
+        "accent"
       ],
-      "description": "saturated grass with small flowers, a bare soil patch"
+      "description": "saturated grass with small flowers, a bare soil patch, a small detail"
     },
     {
       "index": 6,
       "file": "tile_06.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "saturated_grass": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
+        }
+      },
+      "features": [
+        "flowers",
+        "accent"
+      ],
+      "description": "saturated grass with small flowers, a small detail"
+    },
+    {
+      "index": 7,
+      "file": "tile_07.png",
       "width": 64,
       "height": 64,
       "composition": {
@@ -539,79 +620,6 @@
       "description": "saturated grass with small flowers"
     },
     {
-      "index": 7,
-      "file": "tile_07.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "saturated_grass": 1.0
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass"
-          ],
-          "ratio": {
-            "saturated_grass": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass"
-          ],
-          "ratio": {
-            "saturated_grass": 1.0
-          }
-        },
-        "SW": {
-          "samples": [
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass"
-          ],
-          "ratio": {
-            "saturated_grass": 1.0
-          }
-        },
-        "NW": {
-          "samples": [
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass"
-          ],
-          "ratio": {
-            "saturated_grass": 1.0
-          }
-        }
-      },
-      "features": [],
-      "description": "plain saturated grass"
-    },
-    {
       "index": 8,
       "file": "tile_08.png",
       "width": 64,
@@ -681,8 +689,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain saturated grass"
+      "features": [
+        "flowers"
+      ],
+      "description": "saturated grass with small flowers"
     },
     {
       "index": 9,
@@ -828,9 +838,10 @@
         }
       },
       "features": [
-        "flowers"
+        "flowers",
+        "accent"
       ],
-      "description": "saturated grass with small flowers"
+      "description": "saturated grass with small flowers, a small detail"
     },
     {
       "index": 11,
@@ -903,9 +914,10 @@
         }
       },
       "features": [
-        "flowers"
+        "flowers",
+        "accent"
       ],
-      "description": "saturated grass with small flowers"
+      "description": "saturated grass with small flowers, a small detail"
     },
     {
       "index": 12,
@@ -977,8 +989,11 @@
           }
         }
       },
-      "features": [],
-      "description": "plain saturated grass"
+      "features": [
+        "flowers",
+        "accent"
+      ],
+      "description": "saturated grass with small flowers, a small detail"
     },
     {
       "index": 13,
@@ -1051,9 +1066,10 @@
         }
       },
       "features": [
-        "flowers"
+        "flowers",
+        "accent"
       ],
-      "description": "saturated grass with small flowers"
+      "description": "saturated grass with small flowers, a small detail"
     },
     {
       "index": 14,
@@ -1126,9 +1142,10 @@
         }
       },
       "features": [
-        "flowers"
+        "flowers",
+        "accent"
       ],
-      "description": "saturated grass with small flowers"
+      "description": "saturated grass with small flowers, a small detail"
     },
     {
       "index": 15,
@@ -1201,9 +1218,10 @@
         }
       },
       "features": [
-        "flowers"
+        "flowers",
+        "accent"
       ],
-      "description": "saturated grass with small flowers"
+      "description": "saturated grass with small flowers, a small detail"
     }
   ],
   "generated_at": "2026-07-05T08:31:29+00:00",

@@ -89,8 +89,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain crystal ice"
+      "features": [
+        "shiny"
+      ],
+      "description": "crystal ice with a shiny speck"
     },
     {
       "index": 1,
@@ -164,8 +166,10 @@
           }
         }
       },
-      "features": [],
-      "description": "crystal ice blending to light sand"
+      "features": [
+        "shiny"
+      ],
+      "description": "crystal ice blending to light sand with a shiny speck"
     },
     {
       "index": 2,
@@ -239,8 +243,10 @@
           }
         }
       },
-      "features": [],
-      "description": "light sand blending to crystal ice"
+      "features": [
+        "shiny"
+      ],
+      "description": "light sand blending to crystal ice with a shiny speck"
     },
     {
       "index": 3,
@@ -248,8 +254,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.955,
-        "crystal_ice": 0.045
+        "light_sand": 0.961,
+        "crystal_ice": 0.039
       },
       "edges": {
         "NE": {
@@ -284,7 +290,7 @@
         },
         "SW": {
           "samples": [
-            "crystal_ice",
+            "light_sand",
             "light_sand",
             "light_sand",
             "light_sand",
@@ -294,10 +300,8 @@
             "light_sand"
           ],
           "ratio": {
-            "crystal_ice": 0.125,
-            "light_sand": 0.875
-          },
-          "divider": 0.125
+            "light_sand": 1.0
+          }
         },
         "NW": {
           "samples": [
@@ -315,8 +319,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain light sand"
+      "features": [
+        "shiny"
+      ],
+      "description": "light sand with a shiny speck"
     },
     {
       "index": 4,
@@ -324,8 +330,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.957,
-        "light_sand": 0.043
+        "crystal_ice": 0.953,
+        "light_sand": 0.047
       },
       "edges": {
         "NE": {
@@ -389,8 +395,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain crystal ice"
+      "features": [
+        "shiny"
+      ],
+      "description": "crystal ice with a shiny speck"
     },
     {
       "index": 5,
@@ -398,8 +406,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.891,
-        "light_sand": 0.109
+        "crystal_ice": 0.887,
+        "light_sand": 0.113
       },
       "edges": {
         "NE": {
@@ -464,8 +472,10 @@
           }
         }
       },
-      "features": [],
-      "description": "crystal ice blending to light sand"
+      "features": [
+        "shiny"
+      ],
+      "description": "crystal ice blending to light sand with a shiny speck"
     },
     {
       "index": 6,
@@ -473,8 +483,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.677,
-        "light_sand": 0.323
+        "crystal_ice": 0.655,
+        "light_sand": 0.345
       },
       "edges": {
         "NE": {
@@ -538,8 +548,10 @@
           }
         }
       },
-      "features": [],
-      "description": "crystal ice blending to light sand"
+      "features": [
+        "shiny"
+      ],
+      "description": "crystal ice blending to light sand with a shiny speck"
     },
     {
       "index": 7,
@@ -547,8 +559,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.745,
-        "light_sand": 0.255
+        "crystal_ice": 0.704,
+        "light_sand": 0.296
       },
       "edges": {
         "NE": {
@@ -616,9 +628,10 @@
         }
       },
       "features": [
-        "pebbles"
+        "pebbles",
+        "shiny"
       ],
-      "description": "crystal ice blending to light sand with pebbles"
+      "description": "crystal ice blending to light sand with pebbles, a shiny speck"
     },
     {
       "index": 8,
@@ -692,8 +705,10 @@
           }
         }
       },
-      "features": [],
-      "description": "light sand blending to crystal ice"
+      "features": [
+        "shiny"
+      ],
+      "description": "light sand blending to crystal ice with a shiny speck"
     },
     {
       "index": 9,
@@ -770,8 +785,10 @@
           }
         }
       },
-      "features": [],
-      "description": "light sand blending to crystal ice"
+      "features": [
+        "shiny"
+      ],
+      "description": "light sand blending to crystal ice with a shiny speck"
     },
     {
       "index": 10,
@@ -855,8 +872,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.871,
-        "light_sand": 0.129
+        "crystal_ice": 0.854,
+        "light_sand": 0.146
       },
       "edges": {
         "NE": {
@@ -923,9 +940,11 @@
         }
       },
       "features": [
-        "pebbles"
+        "pebbles",
+        "shiny",
+        "accent"
       ],
-      "description": "crystal ice blending to light sand with pebbles"
+      "description": "crystal ice blending to light sand with pebbles, a shiny speck, a small detail"
     },
     {
       "index": 12,
@@ -933,8 +952,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.757,
-        "crystal_ice": 0.243
+        "light_sand": 0.758,
+        "crystal_ice": 0.242
       },
       "edges": {
         "NE": {
@@ -1002,9 +1021,10 @@
         }
       },
       "features": [
+        "shiny",
         "pebbles"
       ],
-      "description": "light sand blending to crystal ice with pebbles"
+      "description": "light sand blending to crystal ice with a shiny speck, pebbles"
     },
     {
       "index": 13,
@@ -1079,9 +1099,10 @@
         }
       },
       "features": [
+        "shiny",
         "pebbles"
       ],
-      "description": "light sand blending to crystal ice with pebbles"
+      "description": "light sand blending to crystal ice with a shiny speck, pebbles"
     },
     {
       "index": 14,
@@ -1089,8 +1110,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.882,
-        "light_sand": 0.118
+        "crystal_ice": 0.874,
+        "light_sand": 0.126
       },
       "edges": {
         "NE": {
@@ -1157,9 +1178,10 @@
         }
       },
       "features": [
-        "pebbles"
+        "pebbles",
+        "shiny"
       ],
-      "description": "crystal ice blending to light sand with pebbles"
+      "description": "crystal ice blending to light sand with pebbles, a shiny speck"
     },
     {
       "index": 15,
@@ -1167,8 +1189,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.897,
-        "light_sand": 0.103
+        "crystal_ice": 0.888,
+        "light_sand": 0.112
       },
       "edges": {
         "NE": {
@@ -1233,8 +1255,10 @@
           }
         }
       },
-      "features": [],
-      "description": "crystal ice blending to light sand"
+      "features": [
+        "shiny"
+      ],
+      "description": "crystal ice blending to light sand with a shiny speck"
     }
   ],
   "generated_at": "2026-07-06T15:32:33+00:00",

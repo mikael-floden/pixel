@@ -23,8 +23,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.908,
-        "stone_mountain": 0.092
+        "crystal_ice": 1.0
       },
       "edges": {
         "NE": {
@@ -88,8 +87,10 @@
           }
         }
       },
-      "features": [],
-      "description": "crystal ice blending to grey mountain stone"
+      "features": [
+        "shiny"
+      ],
+      "description": "crystal ice with a shiny speck"
     },
     {
       "index": 1,
@@ -162,8 +163,11 @@
           }
         }
       },
-      "features": [],
-      "description": "plain crystal ice"
+      "features": [
+        "shiny",
+        "accent"
+      ],
+      "description": "crystal ice with a shiny speck, a small detail"
     },
     {
       "index": 2,
@@ -241,9 +245,10 @@
         }
       },
       "features": [
-        "pebbles"
+        "shiny",
+        "accent"
       ],
-      "description": "crystal ice blending to grey mountain stone with pebbles"
+      "description": "crystal ice blending to grey mountain stone with a shiny speck, a small detail"
     },
     {
       "index": 3,
@@ -316,10 +321,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "grey mountain stone blending to crystal ice with pebbles"
+      "features": [],
+      "description": "grey mountain stone blending to crystal ice"
     },
     {
       "index": 4,
@@ -395,10 +398,10 @@
         }
       },
       "features": [
-        "pebbles",
-        "accent"
+        "accent",
+        "shiny"
       ],
-      "description": "crystal ice blending to grey mountain stone with pebbles, a small detail"
+      "description": "crystal ice blending to grey mountain stone with a small detail, a shiny speck"
     },
     {
       "index": 5,
@@ -406,8 +409,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.844,
-        "crystal_ice": 0.156
+        "stone_mountain": 0.771,
+        "crystal_ice": 0.229
       },
       "edges": {
         "NE": {
@@ -430,15 +433,15 @@
             "stone_mountain",
             "stone_mountain",
             "crystal_ice",
-            "stone_mountain",
+            "crystal_ice",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.875,
-            "crystal_ice": 0.125
+            "stone_mountain": 0.75,
+            "crystal_ice": 0.25
           }
         },
         "SW": {
@@ -472,8 +475,10 @@
           }
         }
       },
-      "features": [],
-      "description": "grey mountain stone blending to crystal ice"
+      "features": [
+        "shiny"
+      ],
+      "description": "grey mountain stone blending to crystal ice with a shiny speck"
     },
     {
       "index": 6,
@@ -481,8 +486,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.682,
-        "crystal_ice": 0.318
+        "stone_mountain": 0.679,
+        "crystal_ice": 0.321
       },
       "edges": {
         "NE": {
@@ -549,9 +554,10 @@
         }
       },
       "features": [
-        "pebbles"
+        "shiny",
+        "accent"
       ],
-      "description": "grey mountain stone blending to crystal ice with pebbles"
+      "description": "grey mountain stone blending to crystal ice with a shiny speck, a small detail"
     },
     {
       "index": 7,
@@ -559,8 +565,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.927,
-        "crystal_ice": 0.073
+        "stone_mountain": 0.924,
+        "crystal_ice": 0.076
       },
       "edges": {
         "NE": {
@@ -627,9 +633,9 @@
         }
       },
       "features": [
-        "pebbles"
+        "shiny"
       ],
-      "description": "grey mountain stone blending to crystal ice with pebbles"
+      "description": "grey mountain stone blending to crystal ice with a shiny speck"
     },
     {
       "index": 8,
@@ -637,88 +643,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.736,
-        "crystal_ice": 0.264
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain"
-          ],
-          "ratio": {
-            "stone_mountain": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "stone_mountain": 0.625,
-            "crystal_ice": 0.375
-          },
-          "divider": 0.625
-        },
-        "SW": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain"
-          ],
-          "ratio": {
-            "crystal_ice": 0.375,
-            "stone_mountain": 0.625
-          },
-          "divider": 0.375
-        },
-        "NW": {
-          "samples": [
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain"
-          ],
-          "ratio": {
-            "stone_mountain": 1.0
-          }
-        }
-      },
-      "features": [
-        "pebbles"
-      ],
-      "description": "grey mountain stone blending to crystal ice with pebbles"
-    },
-    {
-      "index": 9,
-      "file": "tile_09.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "stone_mountain": 0.758,
-        "crystal_ice": 0.242
+        "stone_mountain": 0.686,
+        "crystal_ice": 0.314
       },
       "edges": {
         "NE": {
@@ -760,6 +686,86 @@
             "crystal_ice",
             "stone_mountain",
             "stone_mountain",
+            "crystal_ice",
+            "stone_mountain",
+            "stone_mountain"
+          ],
+          "ratio": {
+            "crystal_ice": 0.5,
+            "stone_mountain": 0.5
+          }
+        },
+        "NW": {
+          "samples": [
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain"
+          ],
+          "ratio": {
+            "stone_mountain": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent",
+        "shiny"
+      ],
+      "description": "grey mountain stone blending to crystal ice with a small detail, a shiny speck"
+    },
+    {
+      "index": 9,
+      "file": "tile_09.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "stone_mountain": 0.743,
+        "crystal_ice": 0.257
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain"
+          ],
+          "ratio": {
+            "stone_mountain": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "stone_mountain": 0.375,
+            "crystal_ice": 0.625
+          },
+          "divider": 0.375
+        },
+        "SW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "stone_mountain",
+            "stone_mountain",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain"
@@ -787,10 +793,10 @@
         }
       },
       "features": [
-        "pebbles",
+        "shiny",
         "accent"
       ],
-      "description": "grey mountain stone blending to crystal ice with pebbles, a small detail"
+      "description": "grey mountain stone blending to crystal ice with a shiny speck, a small detail"
     },
     {
       "index": 10,
@@ -864,9 +870,9 @@
         }
       },
       "features": [
-        "pebbles"
+        "shiny"
       ],
-      "description": "grey mountain stone blending to crystal ice with pebbles"
+      "description": "grey mountain stone blending to crystal ice with a shiny speck"
     },
     {
       "index": 11,
@@ -874,8 +880,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.612,
-        "stone_mountain": 0.388
+        "crystal_ice": 0.724,
+        "stone_mountain": 0.276
       },
       "edges": {
         "NE": {
@@ -911,8 +917,8 @@
         "SW": {
           "samples": [
             "crystal_ice",
-            "stone_mountain",
-            "stone_mountain",
+            "crystal_ice",
+            "crystal_ice",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
@@ -920,8 +926,8 @@
             "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.375,
-            "stone_mountain": 0.625
+            "crystal_ice": 0.625,
+            "stone_mountain": 0.375
           }
         },
         "NW": {
@@ -941,9 +947,9 @@
         }
       },
       "features": [
-        "pebbles"
+        "accent"
       ],
-      "description": "crystal ice blending to grey mountain stone with pebbles"
+      "description": "crystal ice blending to grey mountain stone with a small detail"
     },
     {
       "index": 12,
@@ -951,8 +957,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.865,
-        "stone_mountain": 0.135
+        "crystal_ice": 0.874,
+        "stone_mountain": 0.126
       },
       "edges": {
         "NE": {
@@ -1019,10 +1025,10 @@
         }
       },
       "features": [
-        "pebbles",
+        "shiny",
         "accent"
       ],
-      "description": "crystal ice blending to grey mountain stone with pebbles, a small detail"
+      "description": "crystal ice blending to grey mountain stone with a shiny speck, a small detail"
     },
     {
       "index": 13,
@@ -1030,8 +1036,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.906,
-        "crystal_ice": 0.094
+        "stone_mountain": 0.903,
+        "crystal_ice": 0.097
       },
       "edges": {
         "NE": {
@@ -1107,8 +1113,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.954,
-        "crystal_ice": 0.046
+        "stone_mountain": 0.94,
+        "crystal_ice": 0.06
       },
       "edges": {
         "NE": {
@@ -1172,10 +1178,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "grey mountain stone with pebbles"
+      "features": [],
+      "description": "grey mountain stone blending to crystal ice"
     },
     {
       "index": 15,
@@ -1250,10 +1254,10 @@
         }
       },
       "features": [
-        "accent",
-        "pebbles"
+        "shiny",
+        "accent"
       ],
-      "description": "crystal ice blending to grey mountain stone with a small detail, pebbles"
+      "description": "crystal ice blending to grey mountain stone with a shiny speck, a small detail"
     }
   ],
   "generated_at": "2026-07-06T11:29:35+00:00",

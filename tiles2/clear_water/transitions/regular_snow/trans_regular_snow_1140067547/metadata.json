@@ -407,8 +407,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.671,
-        "clear_water": 0.329
+        "regular_snow": 0.672,
+        "clear_water": 0.328
       },
       "edges": {
         "NE": {
@@ -781,8 +781,10 @@
           }
         }
       },
-      "features": [],
-      "description": "snow blending to clear water"
+      "features": [
+        "accent"
+      ],
+      "description": "snow blending to clear water with a small detail"
     },
     {
       "index": 10,

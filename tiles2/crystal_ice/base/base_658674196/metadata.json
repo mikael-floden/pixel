@@ -379,8 +379,11 @@
           }
         }
       },
-      "features": [],
-      "description": "plain crystal ice"
+      "features": [
+        "shiny",
+        "accent"
+      ],
+      "description": "crystal ice with a shiny speck, a small detail"
     },
     {
       "index": 5,
@@ -452,8 +455,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain crystal ice"
+      "features": [
+        "shiny"
+      ],
+      "description": "crystal ice with a shiny speck"
     },
     {
       "index": 6,
@@ -818,9 +823,10 @@
         }
       },
       "features": [
-        "shiny"
+        "shiny",
+        "accent"
       ],
-      "description": "crystal ice with a shiny speck"
+      "description": "crystal ice with a shiny speck, a small detail"
     },
     {
       "index": 11,
@@ -892,8 +898,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain crystal ice"
+      "features": [
+        "shiny"
+      ],
+      "description": "crystal ice with a shiny speck"
     },
     {
       "index": 12,
@@ -966,9 +974,10 @@
         }
       },
       "features": [
+        "accent",
         "shiny"
       ],
-      "description": "crystal ice with a shiny speck"
+      "description": "crystal ice with a small detail, a shiny speck"
     },
     {
       "index": 13,
@@ -1188,8 +1197,11 @@
           }
         }
       },
-      "features": [],
-      "description": "plain crystal ice"
+      "features": [
+        "shiny",
+        "accent"
+      ],
+      "description": "crystal ice with a shiny speck, a small detail"
     }
   ],
   "generated_at": "2026-07-06T11:03:42+00:00",

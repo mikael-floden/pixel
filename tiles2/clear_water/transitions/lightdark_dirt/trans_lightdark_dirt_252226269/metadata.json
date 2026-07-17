@@ -168,9 +168,9 @@
         }
       },
       "features": [
-        "flowers"
+        "accent"
       ],
-      "description": "dirt blending to clear water with small flowers"
+      "description": "dirt blending to clear water with a small detail"
     },
     {
       "index": 2,
@@ -330,8 +330,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.782,
-        "lightdark_dirt": 0.218
+        "clear_water": 0.785,
+        "lightdark_dirt": 0.215
       },
       "edges": {
         "NE": {
@@ -643,8 +643,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.742,
-        "lightdark_dirt": 0.258
+        "clear_water": 0.743,
+        "lightdark_dirt": 0.257
       },
       "edges": {
         "NE": {
@@ -795,8 +795,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.693,
-        "lightdark_dirt": 0.307
+        "clear_water": 0.702,
+        "lightdark_dirt": 0.298
       },
       "edges": {
         "NE": {
@@ -872,8 +872,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.689,
-        "lightdark_dirt": 0.311
+        "clear_water": 0.687,
+        "lightdark_dirt": 0.313
       },
       "edges": {
         "NE": {
@@ -898,13 +898,13 @@
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
-            "clear_water",
+            "lightdark_dirt",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.625,
-            "lightdark_dirt": 0.375
+            "clear_water": 0.5,
+            "lightdark_dirt": 0.5
           }
         },
         "SW": {
@@ -1027,8 +1027,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.79,
-        "clear_water": 0.21
+        "lightdark_dirt": 0.786,
+        "clear_water": 0.214
       },
       "edges": {
         "NE": {
@@ -1095,11 +1095,10 @@
         }
       },
       "features": [
-        "flowers",
         "pebbles",
         "accent"
       ],
-      "description": "dirt blending to clear water with small flowers, pebbles, a small detail"
+      "description": "dirt blending to clear water with pebbles, a small detail"
     },
     {
       "index": 14,
@@ -1182,8 +1181,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.775,
-        "lightdark_dirt": 0.225
+        "clear_water": 0.776,
+        "lightdark_dirt": 0.224
       },
       "edges": {
         "NE": {

@@ -100,29 +100,29 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.668,
-        "light_sand": 0.332
+        "light_sand": 0.703,
+        "clear_water": 0.297
       },
       "edges": {
         "NE": {
           "samples": [
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water"
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
           ],
           "ratio": {
-            "clear_water": 1.0
+            "light_sand": 1.0
           }
         },
         "SE": {
           "samples": [
-            "clear_water",
-            "clear_water",
+            "light_sand",
+            "light_sand",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -131,8 +131,10 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 1.0
-          }
+            "light_sand": 0.25,
+            "clear_water": 0.75
+          },
+          "divider": 0.25
         },
         "SW": {
           "samples": [
@@ -142,35 +144,37 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "clear_water",
-            "clear_water"
+            "light_sand",
+            "light_sand"
           ],
           "ratio": {
-            "clear_water": 0.625,
-            "light_sand": 0.375
-          }
+            "clear_water": 0.375,
+            "light_sand": 0.625
+          },
+          "divider": 0.375
         },
         "NW": {
           "samples": [
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water"
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
           ],
           "ratio": {
-            "clear_water": 1.0
+            "light_sand": 1.0
           }
         }
       },
       "features": [
-        "accent",
-        "shiny"
+        "pebbles",
+        "shiny",
+        "accent"
       ],
-      "description": "clear water blending to light sand with a small detail, a shiny speck"
+      "description": "light sand blending to clear water with pebbles, a shiny speck, a small detail"
     },
     {
       "index": 2,
@@ -638,8 +642,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.975,
-        "light_sand": 0.025
+        "clear_water": 0.976,
+        "light_sand": 0.024
       },
       "edges": {
         "NE": {
@@ -703,8 +707,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain clear water"
+      "features": [
+        "accent"
+      ],
+      "description": "clear water with a small detail"
     },
     {
       "index": 9,
@@ -712,8 +718,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.821,
-        "light_sand": 0.179
+        "clear_water": 0.822,
+        "light_sand": 0.178
       },
       "edges": {
         "NE": {
@@ -779,8 +785,10 @@
           }
         }
       },
-      "features": [],
-      "description": "clear water blending to light sand"
+      "features": [
+        "accent"
+      ],
+      "description": "clear water blending to light sand with a small detail"
     },
     {
       "index": 10,
@@ -866,8 +874,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.883,
-        "light_sand": 0.117
+        "clear_water": 0.886,
+        "light_sand": 0.114
       },
       "edges": {
         "NE": {
@@ -933,9 +941,9 @@
         }
       },
       "features": [
-        "pebbles"
+        "accent"
       ],
-      "description": "clear water blending to light sand with pebbles"
+      "description": "clear water blending to light sand with a small detail"
     },
     {
       "index": 12,
@@ -1021,8 +1029,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.838,
-        "clear_water": 0.162
+        "light_sand": 0.832,
+        "clear_water": 0.168
       },
       "edges": {
         "NE": {
@@ -1165,9 +1173,9 @@
         }
       },
       "features": [
-        "bare_soil"
+        "flowers"
       ],
-      "description": "light sand with a bare soil patch"
+      "description": "light sand with small flowers"
     },
     {
       "index": 15,

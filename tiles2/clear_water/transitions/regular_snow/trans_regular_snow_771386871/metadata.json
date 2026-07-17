@@ -161,8 +161,10 @@
           }
         }
       },
-      "features": [],
-      "description": "clear water blending to snow"
+      "features": [
+        "accent"
+      ],
+      "description": "clear water blending to snow with a small detail"
     },
     {
       "index": 2,
@@ -170,8 +172,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.788,
-        "regular_snow": 0.212
+        "clear_water": 0.784,
+        "regular_snow": 0.216
       },
       "edges": {
         "NE": {
@@ -236,8 +238,10 @@
           }
         }
       },
-      "features": [],
-      "description": "clear water blending to snow"
+      "features": [
+        "accent"
+      ],
+      "description": "clear water blending to snow with a small detail"
     },
     {
       "index": 3,
@@ -314,8 +318,10 @@
           }
         }
       },
-      "features": [],
-      "description": "snow blending to clear water"
+      "features": [
+        "accent"
+      ],
+      "description": "snow blending to clear water with a small detail"
     },
     {
       "index": 4,
@@ -323,8 +329,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.689,
-        "regular_snow": 0.311
+        "clear_water": 0.688,
+        "regular_snow": 0.312
       },
       "edges": {
         "NE": {
@@ -390,8 +396,10 @@
           }
         }
       },
-      "features": [],
-      "description": "clear water blending to snow"
+      "features": [
+        "accent"
+      ],
+      "description": "clear water blending to snow with a small detail"
     },
     {
       "index": 5,
@@ -399,8 +407,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.643,
-        "regular_snow": 0.357
+        "clear_water": 0.673,
+        "regular_snow": 0.327
       },
       "edges": {
         "NE": {
@@ -437,7 +445,7 @@
           "samples": [
             "clear_water",
             "clear_water",
-            "regular_snow",
+            "clear_water",
             "regular_snow",
             "regular_snow",
             "regular_snow",
@@ -445,8 +453,8 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.5,
-            "regular_snow": 0.5
+            "clear_water": 0.625,
+            "regular_snow": 0.375
           }
         },
         "NW": {
@@ -545,8 +553,10 @@
           }
         }
       },
-      "features": [],
-      "description": "snow blending to clear water"
+      "features": [
+        "accent"
+      ],
+      "description": "snow blending to clear water with a small detail"
     },
     {
       "index": 7,
@@ -554,8 +564,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.91,
-        "clear_water": 0.09
+        "regular_snow": 0.921,
+        "clear_water": 0.079
       },
       "edges": {
         "NE": {
@@ -620,8 +630,10 @@
           }
         }
       },
-      "features": [],
-      "description": "snow blending to clear water"
+      "features": [
+        "accent"
+      ],
+      "description": "snow blending to clear water with a small detail"
     },
     {
       "index": 8,
@@ -767,8 +779,10 @@
           }
         }
       },
-      "features": [],
-      "description": "snow blending to clear water"
+      "features": [
+        "accent"
+      ],
+      "description": "snow blending to clear water with a small detail"
     },
     {
       "index": 10,
@@ -776,8 +790,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.831,
-        "clear_water": 0.169
+        "regular_snow": 0.832,
+        "clear_water": 0.168
       },
       "edges": {
         "NE": {
@@ -930,8 +944,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.765,
-        "regular_snow": 0.235
+        "clear_water": 0.749,
+        "regular_snow": 0.251
       },
       "edges": {
         "NE": {
@@ -997,8 +1011,10 @@
           }
         }
       },
-      "features": [],
-      "description": "clear water blending to snow"
+      "features": [
+        "accent"
+      ],
+      "description": "clear water blending to snow with a small detail"
     },
     {
       "index": 13,
@@ -1153,8 +1169,10 @@
           }
         }
       },
-      "features": [],
-      "description": "snow blending to clear water"
+      "features": [
+        "accent"
+      ],
+      "description": "snow blending to clear water with a small detail"
     },
     {
       "index": 15,
@@ -1162,8 +1180,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.74,
-        "clear_water": 0.26
+        "regular_snow": 0.747,
+        "clear_water": 0.253
       },
       "edges": {
         "NE": {
@@ -1229,8 +1247,10 @@
           }
         }
       },
-      "features": [],
-      "description": "snow blending to clear water"
+      "features": [
+        "accent"
+      ],
+      "description": "snow blending to clear water with a small detail"
     }
   ],
   "generated_at": "2026-07-05T15:54:52+00:00",

@@ -197,8 +197,8 @@ def clean_top_rim(im, material_target=None, factor=0.86, band=4, strength=1.0,
         return im.convert("RGBA")
     lum = 0.299 * rgb[:, :, 0] + 0.587 * rgb[:, :, 1] + 0.114 * rgb[:, :, 2]
     mv = float(material_target.get("value", 180)) if material_target else 180.0
-    if protect_dark_material and mv < 70:             # near-black terrain rim is real rock
-        return im.convert("RGBA")
+    if protect_dark_material and mv < 35:             # only true near-black terrain (black_mountain
+        return im.convert("RGBA")                      # ~18); the palette's dark grass (~59) still cleans
     h, w = op.shape
     dm = _diamond_mask(h, w)
     core = _erode_m(dm, band)

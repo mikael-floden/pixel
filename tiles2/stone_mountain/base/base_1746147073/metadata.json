@@ -160,8 +160,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain grey mountain stone"
+      "features": [
+        "pebbles"
+      ],
+      "description": "grey mountain stone with pebbles"
     },
     {
       "index": 2,
@@ -383,10 +385,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "grey mountain stone with pebbles"
+      "features": [],
+      "description": "plain grey mountain stone"
     },
     {
       "index": 5,
@@ -458,8 +458,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain grey mountain stone"
+      "features": [
+        "accent"
+      ],
+      "description": "grey mountain stone with a small detail"
     },
     {
       "index": 6,
@@ -531,10 +533,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "grey mountain stone with pebbles"
+      "features": [],
+      "description": "plain grey mountain stone"
     },
     {
       "index": 7,
@@ -756,9 +756,10 @@
         }
       },
       "features": [
+        "accent",
         "pebbles"
       ],
-      "description": "grey mountain stone with pebbles"
+      "description": "grey mountain stone with a small detail, pebbles"
     },
     {
       "index": 10,
@@ -830,10 +831,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "grey mountain stone with pebbles"
+      "features": [],
+      "description": "plain grey mountain stone"
     },
     {
       "index": 11,
@@ -906,11 +905,10 @@
         }
       },
       "features": [
-        "accent",
         "pebbles",
         "water"
       ],
-      "description": "grey mountain stone with a small detail, pebbles, a small puddle"
+      "description": "grey mountain stone with pebbles, a small puddle"
     },
     {
       "index": 12,
@@ -983,9 +981,9 @@
         }
       },
       "features": [
-        "pebbles"
+        "accent"
       ],
-      "description": "grey mountain stone with pebbles"
+      "description": "grey mountain stone with a small detail"
     },
     {
       "index": 13,
@@ -1057,8 +1055,11 @@
           }
         }
       },
-      "features": [],
-      "description": "plain grey mountain stone"
+      "features": [
+        "pebbles",
+        "accent"
+      ],
+      "description": "grey mountain stone with pebbles, a small detail"
     },
     {
       "index": 14,
@@ -1207,8 +1208,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain grey mountain stone"
+      "features": [
+        "accent"
+      ],
+      "description": "grey mountain stone with a small detail"
     }
   ],
   "generated_at": "2026-07-05T09:46:27+00:00",

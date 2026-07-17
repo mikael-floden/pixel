@@ -160,8 +160,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain saturated grass"
+      "features": [
+        "accent"
+      ],
+      "description": "saturated grass with a small detail"
     },
     {
       "index": 2,
@@ -234,10 +236,10 @@
         }
       },
       "features": [
-        "pebbles",
-        "accent"
+        "accent",
+        "pebbles"
       ],
-      "description": "saturated grass with pebbles, a small detail"
+      "description": "saturated grass with a small detail, pebbles"
     },
     {
       "index": 3,
@@ -309,8 +311,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain saturated grass"
+      "features": [
+        "accent"
+      ],
+      "description": "saturated grass with a small detail"
     },
     {
       "index": 4,
@@ -382,8 +386,11 @@
           }
         }
       },
-      "features": [],
-      "description": "plain saturated grass"
+      "features": [
+        "flowers",
+        "accent"
+      ],
+      "description": "saturated grass with small flowers, a small detail"
     },
     {
       "index": 5,
@@ -531,11 +538,11 @@
         }
       },
       "features": [
+        "accent",
         "shiny",
-        "flowers",
-        "accent"
+        "flowers"
       ],
-      "description": "saturated grass with a shiny speck, small flowers, a small detail"
+      "description": "saturated grass with a small detail, a shiny speck, small flowers"
     },
     {
       "index": 7,
@@ -607,8 +614,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain saturated grass"
+      "features": [
+        "accent"
+      ],
+      "description": "saturated grass with a small detail"
     },
     {
       "index": 8,
@@ -754,9 +763,10 @@
         }
       },
       "features": [
-        "pebbles"
+        "pebbles",
+        "accent"
       ],
-      "description": "saturated grass with pebbles"
+      "description": "saturated grass with pebbles, a small detail"
     },
     {
       "index": 10,
@@ -831,10 +841,9 @@
       "features": [
         "accent",
         "flowers",
-        "shiny",
-        "water"
+        "shiny"
       ],
-      "description": "saturated grass with a small detail, small flowers, a shiny speck, a small puddle"
+      "description": "saturated grass with a small detail, small flowers, a shiny speck"
     },
     {
       "index": 11,
@@ -906,8 +915,11 @@
           }
         }
       },
-      "features": [],
-      "description": "plain saturated grass"
+      "features": [
+        "accent",
+        "flowers"
+      ],
+      "description": "saturated grass with a small detail, small flowers"
     },
     {
       "index": 12,
@@ -979,8 +991,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain saturated grass"
+      "features": [
+        "flowers"
+      ],
+      "description": "saturated grass with small flowers"
     },
     {
       "index": 13,
@@ -1203,9 +1217,10 @@
         }
       },
       "features": [
+        "flowers",
         "accent"
       ],
-      "description": "saturated grass with a small detail"
+      "description": "saturated grass with small flowers, a small detail"
     }
   ],
   "generated_at": "2026-07-05T08:29:54+00:00",

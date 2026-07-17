@@ -87,10 +87,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "grey mountain stone with pebbles"
+      "features": [],
+      "description": "plain grey mountain stone"
     },
     {
       "index": 1,
@@ -235,87 +233,12 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "grey mountain stone with pebbles"
-    },
-    {
-      "index": 3,
-      "file": "tile_03.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "stone_mountain": 1.0
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain"
-          ],
-          "ratio": {
-            "stone_mountain": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain"
-          ],
-          "ratio": {
-            "stone_mountain": 1.0
-          }
-        },
-        "SW": {
-          "samples": [
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain"
-          ],
-          "ratio": {
-            "stone_mountain": 1.0
-          }
-        },
-        "NW": {
-          "samples": [
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain",
-            "stone_mountain"
-          ],
-          "ratio": {
-            "stone_mountain": 1.0
-          }
-        }
-      },
       "features": [],
       "description": "plain grey mountain stone"
     },
     {
-      "index": 4,
-      "file": "tile_04.png",
+      "index": 3,
+      "file": "tile_03.png",
       "width": 64,
       "height": 64,
       "composition": {
@@ -388,6 +311,79 @@
         "pebbles"
       ],
       "description": "grey mountain stone with a small detail, pebbles"
+    },
+    {
+      "index": 4,
+      "file": "tile_04.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "stone_mountain": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain"
+          ],
+          "ratio": {
+            "stone_mountain": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain"
+          ],
+          "ratio": {
+            "stone_mountain": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain"
+          ],
+          "ratio": {
+            "stone_mountain": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain"
+          ],
+          "ratio": {
+            "stone_mountain": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "plain grey mountain stone"
     },
     {
       "index": 5,
@@ -536,11 +532,8 @@
           }
         }
       },
-      "features": [
-        "accent",
-        "pebbles"
-      ],
-      "description": "grey mountain stone with a small detail, pebbles"
+      "features": [],
+      "description": "plain grey mountain stone"
     },
     {
       "index": 7,
@@ -614,10 +607,10 @@
       },
       "features": [
         "water",
-        "pebbles",
-        "shiny"
+        "shiny",
+        "accent"
       ],
-      "description": "grey mountain stone with a small puddle, pebbles, a shiny speck"
+      "description": "grey mountain stone with a small puddle, a shiny speck, a small detail"
     },
     {
       "index": 8,
@@ -689,10 +682,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "grey mountain stone with pebbles"
+      "features": [],
+      "description": "plain grey mountain stone"
     },
     {
       "index": 9,
@@ -765,9 +756,10 @@
         }
       },
       "features": [
-        "pebbles"
+        "pebbles",
+        "accent"
       ],
-      "description": "grey mountain stone with pebbles"
+      "description": "grey mountain stone with pebbles, a small detail"
     },
     {
       "index": 10,
@@ -840,12 +832,9 @@
         }
       },
       "features": [
-        "pebbles",
-        "bare_soil",
-        "accent",
         "flowers"
       ],
-      "description": "grey mountain stone with pebbles, a bare soil patch, a small detail, small flowers"
+      "description": "grey mountain stone with small flowers"
     },
     {
       "index": 11,
@@ -917,8 +906,11 @@
           }
         }
       },
-      "features": [],
-      "description": "plain grey mountain stone"
+      "features": [
+        "pebbles",
+        "accent"
+      ],
+      "description": "grey mountain stone with pebbles, a small detail"
     },
     {
       "index": 12,
@@ -991,10 +983,9 @@
         }
       },
       "features": [
-        "water",
-        "pebbles"
+        "water"
       ],
-      "description": "grey mountain stone with a small puddle, pebbles"
+      "description": "grey mountain stone with a small puddle"
     },
     {
       "index": 13,
@@ -1067,11 +1058,11 @@
         }
       },
       "features": [
-        "accent",
         "pebbles",
+        "accent",
         "water"
       ],
-      "description": "grey mountain stone with a small detail, pebbles, a small puddle"
+      "description": "grey mountain stone with pebbles, a small detail, a small puddle"
     },
     {
       "index": 14,
@@ -1143,11 +1134,8 @@
           }
         }
       },
-      "features": [
-        "accent",
-        "pebbles"
-      ],
-      "description": "grey mountain stone with a small detail, pebbles"
+      "features": [],
+      "description": "plain grey mountain stone"
     },
     {
       "index": 15,
@@ -1220,11 +1208,9 @@
         }
       },
       "features": [
-        "pebbles",
-        "flowers",
-        "accent"
+        "flowers"
       ],
-      "description": "grey mountain stone with pebbles, small flowers, a small detail"
+      "description": "grey mountain stone with small flowers"
     }
   ],
   "generated_at": "2026-07-05T09:44:54+00:00",

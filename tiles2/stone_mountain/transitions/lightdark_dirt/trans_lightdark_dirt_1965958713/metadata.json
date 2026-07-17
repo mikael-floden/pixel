@@ -89,10 +89,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "grey mountain stone with pebbles"
+      "features": [],
+      "description": "plain grey mountain stone"
     },
     {
       "index": 1,
@@ -166,10 +164,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "grey mountain stone blending to dirt with pebbles"
+      "features": [],
+      "description": "grey mountain stone blending to dirt"
     },
     {
       "index": 2,
@@ -177,8 +173,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.979,
-        "lightdark_dirt": 0.021
+        "stone_mountain": 0.988,
+        "lightdark_dirt": 0.012
       },
       "edges": {
         "NE": {
@@ -242,11 +238,8 @@
           }
         }
       },
-      "features": [
-        "pebbles",
-        "accent"
-      ],
-      "description": "grey mountain stone with pebbles, a small detail"
+      "features": [],
+      "description": "plain grey mountain stone"
     },
     {
       "index": 3,
@@ -320,10 +313,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "grey mountain stone blending to dirt with pebbles"
+      "features": [],
+      "description": "grey mountain stone blending to dirt"
     },
     {
       "index": 4,
@@ -399,10 +390,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "grey mountain stone blending to dirt with pebbles"
+      "features": [],
+      "description": "grey mountain stone blending to dirt"
     },
     {
       "index": 5,
@@ -410,8 +399,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.652,
-        "stone_mountain": 0.348
+        "lightdark_dirt": 0.635,
+        "stone_mountain": 0.365
       },
       "edges": {
         "NE": {
@@ -419,14 +408,15 @@
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
-            "lightdark_dirt",
+            "stone_mountain",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "lightdark_dirt": 1.0
+            "lightdark_dirt": 0.875,
+            "stone_mountain": 0.125
           }
         },
         "SE": {
@@ -476,10 +466,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "dirt blending to grey mountain stone with pebbles"
+      "features": [],
+      "description": "dirt blending to grey mountain stone"
     },
     {
       "index": 6,
@@ -556,10 +544,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "dirt blending to grey mountain stone with pebbles"
+      "features": [],
+      "description": "dirt blending to grey mountain stone"
     },
     {
       "index": 7,
@@ -567,8 +553,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.76,
-        "stone_mountain": 0.24
+        "lightdark_dirt": 0.756,
+        "stone_mountain": 0.244
       },
       "edges": {
         "NE": {
@@ -708,8 +694,10 @@
           }
         }
       },
-      "features": [],
-      "description": "dirt blending to grey mountain stone"
+      "features": [
+        "pebbles"
+      ],
+      "description": "dirt blending to grey mountain stone with pebbles"
     },
     {
       "index": 9,
@@ -859,8 +847,10 @@
           }
         }
       },
-      "features": [],
-      "description": "dirt blending to grey mountain stone"
+      "features": [
+        "pebbles"
+      ],
+      "description": "dirt blending to grey mountain stone with pebbles"
     },
     {
       "index": 11,
@@ -868,8 +858,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.814,
-        "stone_mountain": 0.186
+        "lightdark_dirt": 0.815,
+        "stone_mountain": 0.185
       },
       "edges": {
         "NE": {
@@ -934,8 +924,10 @@
           }
         }
       },
-      "features": [],
-      "description": "dirt blending to grey mountain stone"
+      "features": [
+        "pebbles"
+      ],
+      "description": "dirt blending to grey mountain stone with pebbles"
     },
     {
       "index": 12,
@@ -1020,8 +1012,84 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.727,
-        "stone_mountain": 0.273
+        "stone_mountain": 0.644,
+        "lightdark_dirt": 0.356
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain"
+          ],
+          "ratio": {
+            "stone_mountain": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "stone_mountain",
+            "stone_mountain",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "stone_mountain",
+            "stone_mountain",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "stone_mountain": 0.5,
+            "lightdark_dirt": 0.5
+          }
+        },
+        "SW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "stone_mountain",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "stone_mountain",
+            "stone_mountain"
+          ],
+          "ratio": {
+            "lightdark_dirt": 0.625,
+            "stone_mountain": 0.375
+          }
+        },
+        "NW": {
+          "samples": [
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain"
+          ],
+          "ratio": {
+            "stone_mountain": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "grey mountain stone blending to dirt"
+    },
+    {
+      "index": 14,
+      "file": "tile_14.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "lightdark_dirt": 0.803,
+        "stone_mountain": 0.197
       },
       "edges": {
         "NE": {
@@ -1040,6 +1108,21 @@
           }
         },
         "SE": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 1.0
+          }
+        },
+        "SW": {
           "samples": [
             "lightdark_dirt",
             "lightdark_dirt",
@@ -1053,97 +1136,6 @@
           "ratio": {
             "lightdark_dirt": 0.75,
             "stone_mountain": 0.25
-          }
-        },
-        "SW": {
-          "samples": [
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "stone_mountain",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt"
-          ],
-          "ratio": {
-            "lightdark_dirt": 0.875,
-            "stone_mountain": 0.125
-          }
-        },
-        "NW": {
-          "samples": [
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt"
-          ],
-          "ratio": {
-            "lightdark_dirt": 1.0
-          }
-        }
-      },
-      "features": [],
-      "description": "dirt blending to grey mountain stone"
-    },
-    {
-      "index": 14,
-      "file": "tile_14.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "lightdark_dirt": 0.805,
-        "stone_mountain": 0.195
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt"
-          ],
-          "ratio": {
-            "lightdark_dirt": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt"
-          ],
-          "ratio": {
-            "lightdark_dirt": 1.0
-          }
-        },
-        "SW": {
-          "samples": [
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "stone_mountain",
-            "lightdark_dirt",
-            "lightdark_dirt"
-          ],
-          "ratio": {
-            "lightdark_dirt": 0.875,
-            "stone_mountain": 0.125
           }
         },
         "NW": {

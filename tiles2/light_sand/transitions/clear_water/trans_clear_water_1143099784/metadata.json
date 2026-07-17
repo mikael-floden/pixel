@@ -97,8 +97,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.718,
-        "light_sand": 0.282
+        "clear_water": 0.714,
+        "light_sand": 0.286
       },
       "edges": {
         "NE": {
@@ -174,29 +174,29 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.668,
-        "light_sand": 0.332
+        "light_sand": 0.703,
+        "clear_water": 0.297
       },
       "edges": {
         "NE": {
           "samples": [
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water"
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
           ],
           "ratio": {
-            "clear_water": 1.0
+            "light_sand": 1.0
           }
         },
         "SE": {
           "samples": [
-            "clear_water",
-            "clear_water",
+            "light_sand",
+            "light_sand",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -205,8 +205,10 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 1.0
-          }
+            "light_sand": 0.25,
+            "clear_water": 0.75
+          },
+          "divider": 0.25
         },
         "SW": {
           "samples": [
@@ -216,34 +218,35 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "clear_water",
-            "clear_water"
+            "light_sand",
+            "light_sand"
           ],
           "ratio": {
-            "clear_water": 0.625,
-            "light_sand": 0.375
-          }
+            "clear_water": 0.375,
+            "light_sand": 0.625
+          },
+          "divider": 0.375
         },
         "NW": {
           "samples": [
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water"
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
           ],
           "ratio": {
-            "clear_water": 1.0
+            "light_sand": 1.0
           }
         }
       },
       "features": [
-        "accent"
+        "pebbles"
       ],
-      "description": "clear water blending to light sand with a small detail"
+      "description": "light sand blending to clear water with pebbles"
     },
     {
       "index": 3,
@@ -405,8 +408,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.813,
-        "clear_water": 0.187
+        "light_sand": 0.815,
+        "clear_water": 0.185
       },
       "edges": {
         "NE": {
@@ -562,8 +565,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.953,
-        "clear_water": 0.047
+        "light_sand": 0.955,
+        "clear_water": 0.045
       },
       "edges": {
         "NE": {
@@ -586,15 +589,15 @@
             "light_sand",
             "light_sand",
             "clear_water",
-            "clear_water",
+            "light_sand",
             "light_sand",
             "light_sand",
             "light_sand",
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.75,
-            "clear_water": 0.25
+            "light_sand": 0.875,
+            "clear_water": 0.125
           }
         },
         "SW": {
@@ -794,8 +797,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.788,
-        "clear_water": 0.212
+        "light_sand": 0.792,
+        "clear_water": 0.208
       },
       "edges": {
         "NE": {
@@ -863,8 +866,10 @@
           }
         }
       },
-      "features": [],
-      "description": "light sand blending to clear water"
+      "features": [
+        "accent"
+      ],
+      "description": "light sand blending to clear water with a small detail"
     },
     {
       "index": 11,
@@ -1014,8 +1019,11 @@
           }
         }
       },
-      "features": [],
-      "description": "plain light sand"
+      "features": [
+        "shiny",
+        "accent"
+      ],
+      "description": "light sand with a shiny speck, a small detail"
     },
     {
       "index": 13,

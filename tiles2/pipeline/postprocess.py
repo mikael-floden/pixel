@@ -22,6 +22,7 @@ import json
 import os
 import sys
 
+import numpy as np
 from PIL import Image
 
 import common
@@ -80,11 +81,28 @@ def _first_base_sheet(gid):
     return None
 
 
+def _palette_target(rgb):
+    """Turn a palette RGB into a harmonize target dict (HSV hue/sat/value)."""
+    from PIL import Image as _I
+    h, s, v = np.asarray(_I.new("RGB", (1, 1), tuple(int(c) for c in rgb)).convert("HSV"))[0, 0].tolist()
+    return {"hue": float(h), "sat": float(s), "value": float(v), "chroma": float(s)}
+
+
 def type_target(gid, cfg, cache):
-    """Material target for a type (cached). Auto-detected from its first base (or,
-    for base-less elevation types, elevation) sheet; recorded in the type metadata."""
+    """Material target for a type (cached). A configured palette colour
+    (postprocess.palette[gid]) OVERRIDES auto-detection, so the whole tileset can be
+    re-tinted to the game's HUD palette; otherwise it's auto-detected from the first
+    base (or, for base-less elevation types, elevation) sheet. Recorded in type meta."""
     if gid in cache:
         return cache[gid]
+    palette = ((cfg.get("postprocess") or {}).get("palette") or {}) if cfg else {}
+    if gid in palette:
+        target = _palette_target(palette[gid])
+        cache[gid] = target
+        meta = common.load_type_meta(gid) or {}
+        meta["harmonize_target"] = target
+        common.save_type_meta(gid, meta)
+        return target
     sdir = _first_base_sheet(gid)
     target = None
     if sdir:

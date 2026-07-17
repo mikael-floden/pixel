@@ -87,8 +87,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain crystal ice"
+      "features": [
+        "shiny"
+      ],
+      "description": "crystal ice with a shiny speck"
     },
     {
       "index": 1,
@@ -165,8 +167,11 @@
           "divider": 0.5
         }
       },
-      "features": [],
-      "description": "crystal ice blending to black volcanic rock"
+      "features": [
+        "accent",
+        "shiny"
+      ],
+      "description": "crystal ice blending to black volcanic rock with a small detail, a shiny speck"
     },
     {
       "index": 2,
@@ -243,8 +248,11 @@
           }
         }
       },
-      "features": [],
-      "description": "crystal ice blending to black volcanic rock"
+      "features": [
+        "accent",
+        "shiny"
+      ],
+      "description": "crystal ice blending to black volcanic rock with a small detail, a shiny speck"
     },
     {
       "index": 3,
@@ -317,8 +325,11 @@
           }
         }
       },
-      "features": [],
-      "description": "plain crystal ice"
+      "features": [
+        "shiny",
+        "accent"
+      ],
+      "description": "crystal ice with a shiny speck, a small detail"
     },
     {
       "index": 4,
@@ -326,8 +337,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.6,
-        "black_mountain": 0.4
+        "crystal_ice": 0.625,
+        "black_mountain": 0.375
       },
       "edges": {
         "NE": {
@@ -365,7 +376,7 @@
         "SW": {
           "samples": [
             "black_mountain",
-            "black_mountain",
+            "crystal_ice",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
@@ -374,10 +385,10 @@
             "crystal_ice"
           ],
           "ratio": {
-            "black_mountain": 0.25,
-            "crystal_ice": 0.75
+            "black_mountain": 0.125,
+            "crystal_ice": 0.875
           },
-          "divider": 0.25
+          "divider": 0.125
         },
         "NW": {
           "samples": [
@@ -396,9 +407,10 @@
         }
       },
       "features": [
-        "accent"
+        "accent",
+        "shiny"
       ],
-      "description": "crystal ice blending to black volcanic rock with a small detail"
+      "description": "crystal ice blending to black volcanic rock with a small detail, a shiny speck"
     },
     {
       "index": 5,
@@ -406,8 +418,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.584,
-        "crystal_ice": 0.416
+        "black_mountain": 0.548,
+        "crystal_ice": 0.452
       },
       "edges": {
         "NE": {
@@ -464,21 +476,23 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "black_mountain",
+            "crystal_ice",
             "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 1.0
+            "black_mountain": 0.875,
+            "crystal_ice": 0.125
           }
         }
       },
       "features": [
-        "accent"
+        "accent",
+        "shiny"
       ],
-      "description": "black volcanic rock blending to crystal ice with a small detail"
+      "description": "black volcanic rock blending to crystal ice with a small detail, a shiny speck"
     },
     {
       "index": 6,
@@ -486,8 +500,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.751,
-        "crystal_ice": 0.249
+        "black_mountain": 0.742,
+        "crystal_ice": 0.258
       },
       "edges": {
         "NE": {
@@ -556,9 +570,10 @@
         }
       },
       "features": [
-        "accent"
+        "accent",
+        "shiny"
       ],
-      "description": "black volcanic rock blending to crystal ice with a small detail"
+      "description": "black volcanic rock blending to crystal ice with a small detail, a shiny speck"
     },
     {
       "index": 7,
@@ -566,8 +581,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.735,
-        "crystal_ice": 0.265
+        "black_mountain": 0.732,
+        "crystal_ice": 0.268
       },
       "edges": {
         "NE": {
@@ -637,9 +652,10 @@
         }
       },
       "features": [
-        "accent"
+        "accent",
+        "shiny"
       ],
-      "description": "black volcanic rock blending to crystal ice with a small detail"
+      "description": "black volcanic rock blending to crystal ice with a small detail, a shiny speck"
     },
     {
       "index": 8,
@@ -647,8 +663,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.768,
-        "black_mountain": 0.232
+        "crystal_ice": 0.782,
+        "black_mountain": 0.218
       },
       "edges": {
         "NE": {
@@ -717,9 +733,10 @@
         }
       },
       "features": [
-        "accent"
+        "accent",
+        "shiny"
       ],
-      "description": "crystal ice blending to black volcanic rock with a small detail"
+      "description": "crystal ice blending to black volcanic rock with a small detail, a shiny speck"
     },
     {
       "index": 9,
@@ -727,8 +744,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.884,
-        "black_mountain": 0.116
+        "crystal_ice": 0.897,
+        "black_mountain": 0.103
       },
       "edges": {
         "NE": {
@@ -795,9 +812,10 @@
         }
       },
       "features": [
-        "accent"
+        "accent",
+        "shiny"
       ],
-      "description": "crystal ice blending to black volcanic rock with a small detail"
+      "description": "crystal ice blending to black volcanic rock with a small detail, a shiny speck"
     },
     {
       "index": 10,
@@ -805,8 +823,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.89,
-        "black_mountain": 0.11
+        "crystal_ice": 0.899,
+        "black_mountain": 0.101
       },
       "edges": {
         "NE": {
@@ -873,9 +891,10 @@
         }
       },
       "features": [
-        "accent"
+        "accent",
+        "shiny"
       ],
-      "description": "crystal ice blending to black volcanic rock with a small detail"
+      "description": "crystal ice blending to black volcanic rock with a small detail, a shiny speck"
     },
     {
       "index": 11,
@@ -883,24 +902,24 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.74,
-        "black_mountain": 0.26
+        "crystal_ice": 0.783,
+        "black_mountain": 0.217
       },
       "edges": {
         "NE": {
           "samples": [
             "crystal_ice",
             "crystal_ice",
+            "crystal_ice",
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "black_mountain",
-            "black_mountain",
+            "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.375,
-            "black_mountain": 0.625
+            "crystal_ice": 0.625,
+            "black_mountain": 0.375
           }
         },
         "SE": {
@@ -911,12 +930,11 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "black_mountain",
+            "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.875,
-            "black_mountain": 0.125
+            "crystal_ice": 1.0
           }
         },
         "SW": {
@@ -1036,8 +1054,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.95,
-        "crystal_ice": 0.05
+        "black_mountain": 0.899,
+        "crystal_ice": 0.101
       },
       "edges": {
         "NE": {
@@ -1090,21 +1108,23 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "black_mountain",
+            "crystal_ice",
             "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 1.0
+            "black_mountain": 0.875,
+            "crystal_ice": 0.125
           }
         }
       },
       "features": [
-        "accent"
+        "accent",
+        "shiny"
       ],
-      "description": "black volcanic rock blending to crystal ice with a small detail"
+      "description": "black volcanic rock blending to crystal ice with a small detail, a shiny speck"
     },
     {
       "index": 14,
@@ -1177,8 +1197,11 @@
           }
         }
       },
-      "features": [],
-      "description": "crystal ice blending to black volcanic rock"
+      "features": [
+        "accent",
+        "shiny"
+      ],
+      "description": "crystal ice blending to black volcanic rock with a small detail, a shiny speck"
     },
     {
       "index": 15,
@@ -1186,8 +1209,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.798,
-        "crystal_ice": 0.202
+        "black_mountain": 0.792,
+        "crystal_ice": 0.208
       },
       "edges": {
         "NE": {
@@ -1257,9 +1280,10 @@
         }
       },
       "features": [
-        "accent"
+        "accent",
+        "shiny"
       ],
-      "description": "black volcanic rock blending to crystal ice with a small detail"
+      "description": "black volcanic rock blending to crystal ice with a small detail, a shiny speck"
     }
   ],
   "generated_at": "2026-07-06T11:36:23+00:00",

@@ -23,318 +23,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.95,
-        "black_mountain": 0.05
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "black_mountain"
-          ],
-          "ratio": {
-            "light_sand": 0.875,
-            "black_mountain": 0.125
-          },
-          "divider": 0.875
-        },
-        "SW": {
-          "samples": [
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "black_mountain": 0.125,
-            "light_sand": 0.875
-          },
-          "divider": 0.125
-        },
-        "NW": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        }
-      },
-      "features": [],
-      "description": "light sand blending to black volcanic rock"
-    },
-    {
-      "index": 1,
-      "file": "tile_01.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "black_mountain": 0.571,
-        "light_sand": 0.429
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "black_mountain": 0.375,
-            "light_sand": 0.625
-          },
-          "divider": 0.375
-        },
-        "SE": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        },
-        "SW": {
-          "samples": [
-            "light_sand",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "light_sand": 0.125,
-            "black_mountain": 0.875
-          },
-          "divider": 0.125
-        },
-        "NW": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "black_mountain": 1.0
-          }
-        }
-      },
-      "features": [],
-      "description": "black volcanic rock blending to light sand"
-    },
-    {
-      "index": 2,
-      "file": "tile_02.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "black_mountain": 0.685,
-        "light_sand": 0.315
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "black_mountain": 0.625,
-            "light_sand": 0.375
-          },
-          "divider": 0.625
-        },
-        "SE": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        },
-        "SW": {
-          "samples": [
-            "light_sand",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "light_sand": 0.125,
-            "black_mountain": 0.875
-          },
-          "divider": 0.125
-        },
-        "NW": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "black_mountain": 1.0
-          }
-        }
-      },
-      "features": [],
-      "description": "black volcanic rock blending to light sand"
-    },
-    {
-      "index": 3,
-      "file": "tile_03.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "light_sand": 0.762,
-        "black_mountain": 0.238
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "black_mountain",
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 0.75,
-            "black_mountain": 0.25
-          }
-        },
-        "SW": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "black_mountain",
-            "black_mountain",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 0.75,
-            "black_mountain": 0.25
-          }
-        },
-        "NW": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        }
-      },
-      "features": [],
-      "description": "light sand blending to black volcanic rock"
-    },
-    {
-      "index": 4,
-      "file": "tile_04.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "black_mountain": 0.908,
-        "light_sand": 0.092
+        "black_mountain": 1.0
       },
       "edges": {
         "NE": {
@@ -354,18 +43,17 @@
         },
         "SE": {
           "samples": [
-            "light_sand",
             "black_mountain",
             "black_mountain",
-            "light_sand",
-            "light_sand",
-            "light_sand",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "light_sand": 0.5,
-            "black_mountain": 0.5
+            "black_mountain": 1.0
           }
         },
         "SW": {
@@ -400,9 +88,315 @@
         }
       },
       "features": [
-        "bare_soil"
+        "accent"
       ],
-      "description": "black volcanic rock blending to light sand with a bare soil patch"
+      "description": "black volcanic rock with a small detail"
+    },
+    {
+      "index": 1,
+      "file": "tile_01.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "black_mountain": 0.997,
+        "light_sand": 0.003
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent",
+        "water"
+      ],
+      "description": "black volcanic rock with a small detail, a small puddle"
+    },
+    {
+      "index": 2,
+      "file": "tile_02.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "black_mountain": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent"
+      ],
+      "description": "black volcanic rock with a small detail"
+    },
+    {
+      "index": 3,
+      "file": "tile_03.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "black_mountain": 0.997,
+        "light_sand": 0.003
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent",
+        "pebbles",
+        "water"
+      ],
+      "description": "black volcanic rock with a small detail, pebbles, a small puddle"
+    },
+    {
+      "index": 4,
+      "file": "tile_04.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "black_mountain": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent",
+        "pebbles"
+      ],
+      "description": "black volcanic rock with a small detail, pebbles"
     },
     {
       "index": 5,
@@ -410,8 +404,84 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.977,
-        "light_sand": 0.023
+        "black_mountain": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent",
+        "pebbles"
+      ],
+      "description": "black volcanic rock with a small detail, pebbles"
+    },
+    {
+      "index": 6,
+      "file": "tile_06.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "black_mountain": 0.999,
+        "light_sand": 0.001
       },
       "edges": {
         "NE": {
@@ -479,91 +549,12 @@
       "description": "plain black volcanic rock"
     },
     {
-      "index": 6,
-      "file": "tile_06.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "light_sand": 0.935,
-        "black_mountain": 0.065
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "light_sand",
-            "black_mountain",
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "black_mountain",
-            "black_mountain",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 0.5,
-            "black_mountain": 0.5
-          }
-        },
-        "SW": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        },
-        "NW": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        }
-      },
-      "features": [
-        "bare_soil",
-        "flowers"
-      ],
-      "description": "light sand blending to black volcanic rock with a bare soil patch, small flowers"
-    },
-    {
       "index": 7,
       "file": "tile_07.png",
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.956,
-        "light_sand": 0.044
+        "black_mountain": 1.0
       },
       "edges": {
         "NE": {
@@ -628,10 +619,11 @@
         }
       },
       "features": [
+        "accent",
         "water",
-        "accent"
+        "pebbles"
       ],
-      "description": "black volcanic rock with a small puddle, a small detail"
+      "description": "black volcanic rock with a small detail, a small puddle, pebbles"
     },
     {
       "index": 8,
@@ -639,90 +631,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.497,
-        "light_sand": 0.503
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "black_mountain",
-            "black_mountain",
-            "light_sand"
-          ],
-          "ratio": {
-            "black_mountain": 0.5,
-            "light_sand": 0.5
-          }
-        },
-        "SE": {
-          "samples": [
-            "light_sand",
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "black_mountain"
-          ],
-          "ratio": {
-            "light_sand": 0.75,
-            "black_mountain": 0.25
-          }
-        },
-        "SW": {
-          "samples": [
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "black_mountain",
-            "light_sand",
-            "black_mountain",
-            "black_mountain",
-            "light_sand"
-          ],
-          "ratio": {
-            "black_mountain": 0.5,
-            "light_sand": 0.5
-          }
-        },
-        "NW": {
-          "samples": [
-            "light_sand",
-            "black_mountain",
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "light_sand": 0.5,
-            "black_mountain": 0.5
-          }
-        }
-      },
-      "features": [
-        "water",
-        "pebbles",
-        "accent"
-      ],
-      "description": "light sand blending to black volcanic rock with a small puddle, pebbles, a small detail"
-    },
-    {
-      "index": 9,
-      "file": "tile_09.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "black_mountain": 0.791,
-        "light_sand": 0.209
+        "black_mountain": 0.972,
+        "light_sand": 0.028
       },
       "edges": {
         "NE": {
@@ -739,88 +649,6 @@
           "ratio": {
             "black_mountain": 1.0
           }
-        },
-        "SE": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "black_mountain": 0.375,
-            "light_sand": 0.625
-          },
-          "divider": 0.375
-        },
-        "SW": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "light_sand": 0.25,
-            "black_mountain": 0.75
-          },
-          "divider": 0.25
-        },
-        "NW": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "black_mountain": 1.0
-          }
-        }
-      },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock blending to light sand with a small puddle"
-    },
-    {
-      "index": 10,
-      "file": "tile_10.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "light_sand": 0.688,
-        "black_mountain": 0.312
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "black_mountain"
-          ],
-          "ratio": {
-            "light_sand": 0.875,
-            "black_mountain": 0.125
-          },
-          "divider": 0.875
         },
         "SE": {
           "samples": [
@@ -841,68 +669,6 @@
           "samples": [
             "black_mountain",
             "black_mountain",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "black_mountain": 0.25,
-            "light_sand": 0.75
-          },
-          "divider": 0.25
-        },
-        "NW": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        }
-      },
-      "features": [],
-      "description": "light sand blending to black volcanic rock"
-    },
-    {
-      "index": 11,
-      "file": "tile_11.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "black_mountain": 0.85,
-        "light_sand": 0.15
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "light_sand",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "black_mountain": 0.875,
-            "light_sand": 0.125
-          }
-        },
-        "SE": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain",
@@ -914,70 +680,7 @@
             "black_mountain": 1.0
           }
         },
-        "SW": {
-          "samples": [
-            "black_mountain",
-            "light_sand",
-            "light_sand",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "black_mountain": 0.75,
-            "light_sand": 0.25
-          }
-        },
         "NW": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "light_sand",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "black_mountain": 0.875,
-            "light_sand": 0.125
-          }
-        }
-      },
-      "features": [
-        "bare_soil"
-      ],
-      "description": "black volcanic rock blending to light sand with a bare soil patch"
-    },
-    {
-      "index": 12,
-      "file": "tile_12.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "black_mountain": 0.983,
-        "light_sand": 0.017
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "black_mountain": 1.0
-          }
-        },
-        "SE": {
           "samples": [
             "light_sand",
             "black_mountain",
@@ -993,6 +696,53 @@
             "black_mountain": 0.875
           },
           "divider": 0.125
+        }
+      },
+      "features": [
+        "accent",
+        "water",
+        "pebbles"
+      ],
+      "description": "black volcanic rock with a small detail, a small puddle, pebbles"
+    },
+    {
+      "index": 9,
+      "file": "tile_09.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "black_mountain": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
         },
         "SW": {
           "samples": [
@@ -1026,9 +776,242 @@
         }
       },
       "features": [
+        "accent",
+        "pebbles",
         "water"
       ],
-      "description": "black volcanic rock with a small puddle"
+      "description": "black volcanic rock with a small detail, pebbles, a small puddle"
+    },
+    {
+      "index": 10,
+      "file": "tile_10.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "black_mountain": 0.999,
+        "light_sand": 0.001
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent",
+        "pebbles"
+      ],
+      "description": "black volcanic rock with a small detail, pebbles"
+    },
+    {
+      "index": 11,
+      "file": "tile_11.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "black_mountain": 1.0
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent",
+        "pebbles",
+        "water"
+      ],
+      "description": "black volcanic rock with a small detail, pebbles, a small puddle"
+    },
+    {
+      "index": 12,
+      "file": "tile_12.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "black_mountain": 0.998,
+        "light_sand": 0.002
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent",
+        "water"
+      ],
+      "description": "black volcanic rock with a small detail, a small puddle"
     },
     {
       "index": 13,
@@ -1036,8 +1019,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.863,
-        "light_sand": 0.137
+        "black_mountain": 1.0
       },
       "edges": {
         "NE": {
@@ -1062,21 +1044,19 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "light_sand",
-            "light_sand",
-            "light_sand"
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.625,
-            "light_sand": 0.375
-          },
-          "divider": 0.625
+            "black_mountain": 1.0
+          }
         },
         "SW": {
           "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain",
@@ -1084,10 +1064,8 @@
             "black_mountain"
           ],
           "ratio": {
-            "light_sand": 0.375,
-            "black_mountain": 0.625
-          },
-          "divider": 0.375
+            "black_mountain": 1.0
+          }
         },
         "NW": {
           "samples": [
@@ -1106,10 +1084,11 @@
         }
       },
       "features": [
+        "accent",
         "water",
-        "accent"
+        "pebbles"
       ],
-      "description": "black volcanic rock blending to light sand with a small puddle, a small detail"
+      "description": "black volcanic rock with a small detail, a small puddle, pebbles"
     },
     {
       "index": 14,
@@ -1117,8 +1096,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.923,
-        "light_sand": 0.077
+        "black_mountain": 0.997,
+        "light_sand": 0.003
       },
       "edges": {
         "NE": {
@@ -1141,15 +1120,14 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "light_sand",
+            "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.875,
-            "light_sand": 0.125
+            "black_mountain": 1.0
           }
         },
         "SW": {
@@ -1184,10 +1162,11 @@
         }
       },
       "features": [
+        "accent",
         "water",
         "flowers"
       ],
-      "description": "black volcanic rock blending to light sand with a small puddle, small flowers"
+      "description": "black volcanic rock with a small detail, a small puddle, small flowers"
     },
     {
       "index": 15,
@@ -1260,9 +1239,10 @@
         }
       },
       "features": [
+        "accent",
         "water"
       ],
-      "description": "black volcanic rock with a small puddle"
+      "description": "black volcanic rock with a small detail, a small puddle"
     }
   ],
   "generated_at": "2026-07-06T14:09:27+00:00",
