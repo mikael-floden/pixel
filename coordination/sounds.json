@@ -1,16 +1,17 @@
 {
   "domain": "sounds",
-  "updated_at": "2026-07-02T04:44:12+00:00",
-  "health": "idle",
-  "current": "idle after 0 unit(s) this pass",
+  "updated_at": "2026-07-17T09:47:32+00:00",
+  "health": "blocked",
+  "current": "RE-ARCHITECTED to AAA quality (ElevenLabs SFX v2, 48kHz, mastered). BLOCKED: needs ELEVENLABS_API_KEY.",
   "progress": {
-    "sounds_complete": 30,
+    "sounds_complete": 0,
     "sounds_target": 30
   },
   "budget_remaining": null,
   "notes": [
     "sounds domain: game SFX one-shots (UI, items, tools, movement, combat, feedback). Each sound = sounds/<category>/<id>/ with a WAV/MP3 + sound.json. Default engine is free procedural sfxr; set ELEVENLABS_API_KEY for realistic AI foley. Games: read sounds/viewer_data.json for the whole catalog.",
-    "[2026-07-01T16:14:10+00:00] seeded initial catalog of 30 SFX via procedural sfxr engine; ElevenLabs AI engine wired up behind ELEVENLABS_API_KEY for realistic foley upgrade."
+    "[2026-07-01T16:14:10+00:00] seeded initial catalog of 30 SFX via procedural sfxr engine; ElevenLabs AI engine wired up behind ELEVENLABS_API_KEY for realistic foley upgrade.",
+    "v1 procedural sfxr output was REJECTED as low quality and removed. Rebuilt around ElevenLabs SFX v2 (lossless 48kHz + local mastering + AAA foley prompts). BLOCKED until ELEVENLABS_API_KEY (Pro tier) is provided; loop refuses to ship low-fi."
   ],
   "requests": [
     {

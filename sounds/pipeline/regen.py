@@ -21,7 +21,9 @@ import viewer_build
 def main():
     ap = argparse.ArgumentParser(description="Regenerate catalog sounds in place.")
     ap.add_argument("ids", nargs="*", help="sound ids (default: all)")
-    ap.add_argument("--ai", action="store_true", help="force the ElevenLabs engine")
+    ap.add_argument("--placeholder", action="store_true",
+                    help="use the REJECTED offline low-fi synth instead of the AAA "
+                         "AI engine (pipeline test only — never ship)")
     args = ap.parse_args()
 
     cfg = factory.load_config()
@@ -29,9 +31,13 @@ def main():
     targets = args.ids or list(specs)
 
     client = None
-    if args.ai:
-        from elevenlabs_client import ElevenLabsClient
-        client = ElevenLabsClient()
+    if not args.placeholder:
+        from elevenlabs_client import ElevenLabsClient, ElevenLabsError
+        try:
+            client = ElevenLabsClient()
+        except ElevenLabsError as e:
+            raise SystemExit(f"{e}\nSet ELEVENLABS_API_KEY, or pass --placeholder for "
+                             f"the rejected offline synth (not for shipping).")
 
     for sid in targets:
         spec = specs.get(sid)

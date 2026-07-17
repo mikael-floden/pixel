@@ -19,6 +19,7 @@ import json
 import os
 import random
 
+import postprocess
 import sfxr
 
 # sounds/ domain root (this file is sounds/pipeline/factory.py).
@@ -136,6 +137,7 @@ def generate_procedural(cfg: dict, spec: dict) -> dict:
     )
     man = _base_manifest(spec, engine="procedural")
     man.update({
+        "quality": "rejected-lowfi",
         "file": os.path.join(spec["category"], spec["id"], fname),
         "format": "wav",
         "audio": stats,
@@ -151,41 +153,78 @@ def generate_procedural(cfg: dict, spec: dict) -> dict:
     return man
 
 
+def build_prompt(cfg: dict, spec: dict) -> str:
+    """Compose the full foley brief sent to the model: the sound's own AAA prompt,
+    plus the catalog-wide production directives (fidelity, dryness, exclusions).
+    A precise, material-rich brief is what separates production-ready foley from a
+    vague approximation."""
+    parts = [spec.get("ai_prompt") or spec["description"]]
+    directives = cfg["engine"]["ai"].get("prompt_directives")
+    if directives:
+        parts.append(directives)
+    return ". ".join(p.strip().rstrip(".") for p in parts if p) + "."
+
+
 def generate_ai(client, cfg: dict, spec: dict) -> dict:
-    """Render `spec` with the ElevenLabs engine, write the MP3, return the
-    manifest. `client` must be an available ElevenLabsClient."""
+    """Render `spec` with ElevenLabs SFX (the quality engine): request lossless
+    48 kHz PCM, wrap → WAV, master (trim/normalize/fade), and — for `variants` > 1
+    — keep every take so a human can pick the best, with take 1 as the primary.
+    Writes a quality-rich manifest. `client` must be an available ElevenLabsClient."""
     ai_cfg = cfg["engine"]["ai"]
-    prompt = spec.get("ai_prompt") or spec.get("description")
-    audio = client.generate(
-        prompt,
-        duration_seconds=spec.get("duration_hint"),
-        prompt_influence=spec.get("prompt_influence", cfg["defaults"]["prompt_influence"]),
-        loop=bool(spec.get("loop", cfg["defaults"]["loop"])),
-        model_id=ai_cfg["model_id"],
-        output_format=ai_cfg["output_format"],
-    )
+    out_fmt = ai_cfg["output_format"]
+    is_pcm, sr = client.parse_format(out_fmt)
+    prompt = build_prompt(cfg, spec)
+    influence = spec.get("prompt_influence", cfg["defaults"]["prompt_influence"])
+    loop = bool(spec.get("loop", cfg["defaults"]["loop"]))
+    n = max(1, int(spec.get("variants", cfg["defaults"].get("variants", 1))))
+
     d = sound_dir(spec)
     os.makedirs(d, exist_ok=True)
-    fname = f"{spec['id']}.mp3"
-    with open(os.path.join(d, fname), "wb") as f:
-        f.write(audio)
+
+    takes = []
+    primary_file = primary_stats = None
+    for i in range(1, n + 1):
+        audio = client.generate(
+            prompt, duration_seconds=spec.get("duration_hint"),
+            prompt_influence=influence, loop=loop,
+            model_id=ai_cfg["model_id"], output_format=out_fmt,
+        )
+        if not is_pcm:
+            # Non-PCM (e.g. mp3): store as-is, no local mastering possible.
+            fname = f"{spec['id']}.mp3" if n == 1 else f"{spec['id']}__take{i:02d}.mp3"
+            with open(os.path.join(d, fname), "wb") as f:
+                f.write(audio)
+            stats = {"bytes": len(audio), "output_format": out_fmt}
+        else:
+            samples = postprocess.master(postprocess.pcm16_to_float(audio), sr,
+                                         fade_out_ms=40.0 if loop else 15.0)
+            fname = f"{spec['id']}.wav" if n == 1 else f"{spec['id']}__take{i:02d}.wav"
+            stats = postprocess.write_wav(samples, os.path.join(d, fname), sr)
+            stats["output_format"] = out_fmt
+        rel = os.path.join(spec["category"], spec["id"], fname)
+        takes.append(rel)
+        if primary_file is None:
+            primary_file, primary_stats = rel, stats
+
     man = _base_manifest(spec, engine="ai")
     man.update({
-        "file": os.path.join(spec["category"], spec["id"], fname),
-        "format": "mp3",
-        "audio": {
-            "bytes": len(audio),
-            "output_format": ai_cfg["output_format"],
-            "duration_hint_seconds": spec.get("duration_hint"),
-        },
+        "quality": "aaa",
+        "file": primary_file,
+        "format": "wav" if is_pcm else "mp3",
+        "audio": primary_stats,
+        "takes": takes,
         "ai": {
             "provider": ai_cfg["provider"],
             "model_id": ai_cfg["model_id"],
             "prompt": prompt,
-            "prompt_influence": spec.get("prompt_influence", cfg["defaults"]["prompt_influence"]),
-            "loop": bool(spec.get("loop", cfg["defaults"]["loop"])),
+            "prompt_influence": influence,
+            "loop": loop,
+            "variants": n,
         },
-        "source": f"{ai_cfg['provider']} text-to-sound-effects ({ai_cfg['model_id']})",
+        "mastering": ("trim + peak-normalize(-1 dBFS) + edge-fades" if is_pcm
+                      else "none (lossy output_format)"),
+        "source": f"{ai_cfg['provider']} text-to-sound-effects ({ai_cfg['model_id']}), "
+                  f"{out_fmt}, mastered",
     })
     return man
 
@@ -208,9 +247,10 @@ def _base_manifest(spec: dict, engine: str) -> dict:
 
 
 def generate(client, cfg: dict, spec: dict) -> dict:
-    """Generate one sound with the best available engine and write its manifest.
-    Uses AI when a client is supplied, else the procedural engine. Returns the
-    written manifest."""
+    """Generate one sound and write its manifest. With an ElevenLabs client this
+    produces the AAA-quality AI take; with `client=None` it falls back to the
+    REJECTED low-fi procedural placeholder (explicit opt-in only — never shipped
+    as the real asset). Returns the written manifest."""
     if client is not None:
         man = generate_ai(client, cfg, spec)
     else:

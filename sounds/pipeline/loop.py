@@ -92,25 +92,32 @@ def advance(client, cfg, push=True):
 
 # --- main -------------------------------------------------------------------
 
+class NoQualityEngine(RuntimeError):
+    """Raised when the AAA engine can't run and we refuse to ship low-fi."""
+
+
 def _make_client(engine, cfg):
-    """Resolve the engine to a client (or None for procedural). 'auto' uses AI when
-    ELEVENLABS_API_KEY is set, else procedural."""
+    """Resolve the engine to a client. Returns an ElevenLabsClient for the AAA
+    quality engine, or None for the REJECTED low-fi placeholder (explicit
+    `--engine placeholder` only).
+
+    'auto'/'ai' REQUIRE ELEVENLABS_API_KEY. If it's missing we STOP rather than
+    silently emit the chiptune placeholder — shipping low-fi as if it were the
+    real asset is exactly the mistake we're correcting."""
     from elevenlabs_client import ElevenLabsClient, ElevenLabsError
-    if engine == "procedural":
+    if engine == "placeholder":
+        print("!! --engine placeholder: emitting REJECTED low-fi sfxr audio "
+              "(offline test only; do NOT ship).")
         return None
     if engine in ("auto", "ai"):
         if ElevenLabsClient.available():
-            try:
-                return ElevenLabsClient()
-            except ElevenLabsError as e:
-                if engine == "ai":
-                    raise
-                print(f"AI engine unavailable ({e}); using procedural.")
-                return None
-        if engine == "ai":
-            raise ElevenLabsError("ELEVENLABS_API_KEY is not set (required for --engine ai)")
-        print("no ELEVENLABS_API_KEY — using free procedural sfxr engine.")
-        return None
+            return ElevenLabsClient()
+        raise NoQualityEngine(
+            "ELEVENLABS_API_KEY is not set — the AAA sound engine cannot run.\n"
+            "  Set it (Pro tier for lossless 48 kHz) as an env var or GitHub secret:\n"
+            "    export ELEVENLABS_API_KEY=...\n"
+            "  Refusing to generate low-fi placeholder audio. To force the rejected\n"
+            "  offline synth anyway (NOT for shipping), pass --engine placeholder.")
     raise ValueError(f"unknown engine {engine}")
 
 
@@ -120,15 +127,28 @@ def main():
     ap.add_argument("--max-minutes", type=float, default=0, help="0 = unlimited")
     ap.add_argument("--once", action="store_true", help="Do a single unit and exit.")
     ap.add_argument("--no-push", action="store_true")
-    ap.add_argument("--engine", choices=["auto", "procedural", "ai"], default="auto",
-                    help="auto = AI if ELEVENLABS_API_KEY set, else procedural.")
+    ap.add_argument("--engine", choices=["auto", "ai", "placeholder"], default="auto",
+                    help="auto/ai = AAA ElevenLabs engine (needs ELEVENLABS_API_KEY); "
+                         "placeholder = REJECTED offline low-fi synth (never ship).")
     ap.add_argument("--min-credits", type=int, default=None,
                     help="Stop the AI engine when credits fall below this "
                          "(default: budget.min_ai_credits_remaining).")
     args = ap.parse_args()
 
     cfg = factory.load_config()
-    client = _make_client(args.engine, cfg)
+    try:
+        client = _make_client(args.engine, cfg)
+    except NoQualityEngine as e:
+        print(f"\n== sounds loop BLOCKED ==\n{e}")
+        coordination.publish(
+            current="blocked: ELEVENLABS_API_KEY not set (AAA engine unavailable)",
+            progress=coordination.progress_snapshot(cfg),
+            budget_remaining=None, health="blocked",
+            add_notes=["BLOCKED: needs ELEVENLABS_API_KEY (Pro tier, 48 kHz) to "
+                       "generate AAA sound. Procedural low-fi was rejected by the "
+                       "product owner; the loop refuses to ship placeholder audio."])
+        commit_push("sounds heartbeat: blocked (no ELEVENLABS_API_KEY)", push=not args.no_push)
+        return
     min_credits = args.min_credits if args.min_credits is not None \
         else cfg["budget"]["min_ai_credits_remaining"]
 
@@ -140,7 +160,8 @@ def main():
             if req.get("to") == coordination.DOMAIN:
                 print(f"  » request from {dom}: {req.get('text')}")
 
-    engine_name = "ai (elevenlabs)" if client is not None else "procedural (sfxr)"
+    engine_name = "AAA ai (elevenlabs SFX v2)" if client is not None \
+        else "REJECTED low-fi placeholder (sfxr)"
     print(f"sounds loop starting — engine: {engine_name}")
     coordination.publish(current="startup", progress=coordination.progress_snapshot(cfg),
                          budget_remaining=(client.credits_remaining() if client else None),

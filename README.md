@@ -14,7 +14,7 @@ generates art and pushes it to `main`.
 | [`tiles2/`](tiles2/) | Tile/material library (2nd gen) — iso terrain + prop sheets | see `tiles2/` |
 | [`maps2/`](maps2/) | Worlds (2nd gen) — `worlds/<name>/world.json` grids the game loads | see `maps2/` |
 | [`objects/`](objects/) | Animated props / map objects | see `objects/` |
-| [`sounds/`](sounds/) | Game sound effects (UI, items, tools, movement, combat) — procedural sfxr by default, optional AI foley | [`sounds/README.md`](sounds/README.md) |
+| [`sounds/`](sounds/) | AAA game sound effects (UI, items, tools, movement, combat) — ElevenLabs SFX v2, lossless 48 kHz, mastered; needs `ELEVENLABS_API_KEY` | [`sounds/README.md`](sounds/README.md) |
 | [`monsters/`](monsters/) | Monsters/creatures — PixelLab skeleton templates (Bear, Cat, Dog, Horse, Lion) + a free-form prompt per generation; one folder per monster | [`monsters/README.md`](monsters/README.md) |
 
 Each domain is **independent**: its own config, pipeline, generated art and

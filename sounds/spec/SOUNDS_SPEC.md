@@ -6,36 +6,33 @@ the day-to-day "how do I run it / add a sound" guide, see `sounds/README.md`.
 
 ## Goal
 
-Produce **game-ready sound effects** for the pixel RPG built in `games/` — UI
-blips, item pickups, tool swings, footsteps, combat hits, feedback jingles — in a
-style that matches the pixel art (`characters/`, `objects/`, `tiles/`, `maps/`).
+Produce **AAA / cinematic sound effects** for the game in `games/` — UI, item,
+tool, movement, combat and feedback foley at the quality bar of a flagship
+console/film title (Zelda, God of War, *Lord of the Rings*). Not retro, not indie
+placeholder. See the README's Quality standard + post-mortem.
 
-## Why these engines (the research)
+## Why this engine (the research, take 2)
 
-Two families dominate SFX generation in 2026, and this domain uses **both**, with
-a deliberate default:
+**v1 used procedural synthesis (sfxr) and it was rejected** — a chiptune
+oscillator has a hard quality ceiling and cannot produce realistic foley (see the
+README post-mortem). The corrected design is **quality-first**:
 
-1. **Procedural synthesis — the sfxr / bfxr family (DEFAULT).**
-   DrPetter's *sfxr* is the de-facto standard for retro / 8-bit game SFX: a small
-   oscillator → envelope → filter → phaser chain driven by ~24 parameters, with
-   battle-tested presets (`pickupCoin`, `laserShoot`, `explosion`, `powerUp`,
-   `hitHurt`, `jump`, `blipSelect`). It is **free, offline, deterministic, and
-   needs no API key**, so it runs in CI today and every result is reproducible
-   from `(preset, seed)`. Ported to pure Python in `pipeline/sfxr.py`. This suits
-   a pixel game stylistically and removes any dependency/secret risk.
+1. **AI text-to-SFX — ElevenLabs Sound Effects v2 (REQUIRED, the quality engine).**
+   The 2026 leader for realistic, promptable foley — rated indistinguishable from
+   recorded foley in blind tests — with lossless **48 kHz** output
+   (`POST /v1/sound-generation`, `eleven_text_to_sound_v2`,
+   `pipeline/elevenlabs_client.py`). Needs `ELEVENLABS_API_KEY` (Pro tier for
+   `pcm_48000`). We request lossless PCM, generate multiple takes, and **master**
+   each locally (`pipeline/postprocess.py`: trim → fade → −1 dBFS normalize).
 
-2. **AI text-to-SFX — ElevenLabs Sound Effects (OPTIONAL upgrade).**
-   As of 2026 the market leader for turning a text prompt into a *realistic /
-   foley* effect (`POST /v1/sound-generation`, `eleven_text_to_sound_v2`). Higher
-   fidelity than synthesis but hosted + paid. Wired up in
-   `pipeline/elevenlabs_client.py` and used automatically when `ELEVENLABS_API_KEY`
-   is set (or `--engine ai`). Each catalog entry already carries an `ai_prompt`,
-   so switching engines re-renders the same catalog as foley with no other change.
+2. **Procedural sfxr (REJECTED, `pipeline/sfxr.py`).** Retained only as an offline
+   pipeline-test placeholder (`--engine placeholder`); output is quality-tagged
+   `rejected-lowfi` and never shipped.
 
-Other options considered: Stability's *Stable Audio* (music-leaning), Meta's
-*AudioCraft/AudioGen* (self-host, GPU + model weights), and game-focused APIs
-(Ludo, Optimizer AI). ElevenLabs won the "best hosted AI SFX" slot on breadth and
-prompt control; sfxr won the "always-works default" slot on cost/determinism.
+Other options: **Stable Audio** (Stability) — slightly behind ElevenLabs on precise
+foley but best for long ambient beds (planned second engine); Meta *AudioBox/
+AudioGen* (self-host, GPU); licensed pro libraries + a human sound designer are the
+absolute ceiling for hero sounds and drop straight into the same manifest format.
 
 ## On-disk contract
 
@@ -44,8 +41,8 @@ sounds/
   config/sounds.json        the catalog (list of sound specs) + engine/audio config
   pipeline/                 sfxr synth, elevenlabs client, factory, loop, viewer
   <category>/<id>/          ONE sound per folder (category ∈ ui|item|tool|movement|combat|feedback)
-    <id>.wav                procedural output (16-bit mono PCM WAV, 44.1 kHz)
-    <id>.mp3                AI output (mp3_44100_128) — only when generated via AI
+    <id>.wav                AAA AI output: mastered 48 kHz mono WAV (primary take)
+    <id>__take01.wav …      extra takes when variants > 1 (human picks the best)
     sound.json              the manifest (the contract; read this)
   viewer_data.json          rolled-up index of every sound (for games / the viewer)
   index.html                phone-friendly gallery with audio players
@@ -59,31 +56,32 @@ resolves the same on disk or over HTTP.
 | Field | Meaning |
 |-------|---------|
 | `id`, `name`, `category`, `description`, `tags`, `usage` | what the sound is + when to play it |
-| `engine` | `procedural` or `ai` |
+| `engine` | `ai` (shippable) or `procedural` (rejected-lowfi placeholder) |
+| `quality` | `aaa` or `rejected-lowfi` |
 | `loop` | whether it is intended to loop |
-| `license` | `CC0-1.0` for procedural output |
-| `file`, `format` | repo-relative audio path + `wav`/`mp3` |
-| `audio` | duration, sample rate, channels, bit depth (procedural) / bytes + format (AI) |
-| `procedural` | `{family, preset, seed, params, reproduce}` — exact sfxr params; paste into jsfxr/bfxr, or `regen` to reproduce byte-for-byte |
-| `ai` | `{provider, model_id, prompt, prompt_influence, loop}` — for AI output |
+| `file`, `format`, `takes` | primary take path + `wav`/`mp3` + all take paths |
+| `audio` | duration, sample rate (48 kHz), channels, bit depth, peak dBFS |
+| `ai` | `{provider, model_id, prompt, prompt_influence, loop, variants}` |
+| `mastering` | the post-processing applied (trim + normalize + fades) |
 | `source` | free-text provenance |
 
-## Determinism & reproducibility
+## Quality & mastering
 
-Procedural sounds are a pure function of the spec: the seed is derived from the id
-(`sha256`), then re-rolled deterministically if a seed yields an inaudibly short
-clip (below `min_duration`, default 0.14 s; footsteps opt lower). The chosen seed
-is stored in the manifest and `pipeline/regen.py <id>` reproduces the identical
-WAV. Change a seed/preset/params in `config/sounds.json` and re-run to re-roll.
+Every shipped clip is `quality: "aaa"`. The AI returns lossless 48 kHz PCM; the
+factory wraps it to WAV and masters it (`pipeline/postprocess.py`): trim silence →
+short raised-cosine edge fades (de-click) → peak-normalize to −1 dBFS. With
+`variants > 1`, all takes are kept so a human can pick the best (take 1 = primary).
+The `procedural` engine is a rejected offline placeholder only and is never shipped.
 
 ## The loop
 
 `pipeline/loop.py` — each **unit** is one sound. It reads the filesystem for the
-first catalog entry without audio, generates it (procedural or AI), writes the
-manifest, rebuilds `viewer_data.json`, refreshes the `coordination/sounds.json`
-heartbeat, then commits + pushes. Fully **resumable**; bounded by
-`--max-units` / `--max-minutes`. The AI engine additionally respects a credit
-floor (`budget.min_ai_credits_remaining`).
+first catalog entry without audio, generates it with the AAA AI engine, masters +
+writes the manifest, rebuilds `viewer_data.json`, refreshes the
+`coordination/sounds.json` heartbeat, then commits + pushes. Fully **resumable**;
+bounded by `--max-units` / `--max-minutes`; respects a credit floor
+(`budget.min_ai_credits_remaining`). **Without `ELEVENLABS_API_KEY` it blocks** —
+it writes a `blocked` heartbeat and generates nothing rather than ship low-fi.
 
 ## Coordination
 
@@ -96,9 +94,10 @@ sounds`.
 ## Extending
 
 - **Add a sound:** append an entry to `config/sounds.json → catalog`
-  (`id`, `name`, `category`, `description`, `tags`, `preset`, `ai_prompt`,
-  `duration_hint`, `usage`; optional `seed`, `params`, `min_duration`, `loop`).
-  The loop picks it up on the next run.
-- **New preset:** add a generator to `pipeline/sfxr.py:PRESETS`.
-- **Go realistic:** set `ELEVENLABS_API_KEY` (repo secret) — the same catalog
-  re-renders as AI foley from each entry's `ai_prompt`.
+  (`id`, `name`, `category`, `description`, `tags`, `ai_prompt` — a rich
+  material-rich foley brief — `duration_hint`, `usage`; optional `variants`,
+  `loop`, `prompt_influence`). The loop picks it up on the next run.
+- **Raise quality further:** tune the per-sound `ai_prompt` (material + intensity +
+  detail) and the catalog-wide `engine.ai.prompt_directives`; bump `variants` for
+  more takes to choose from; for hero sounds, drop human/licensed foley WAVs into
+  the folder — the manifest format is engine-agnostic.

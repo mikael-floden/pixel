@@ -52,12 +52,27 @@ class ElevenLabsClient:
     def available() -> bool:
         return bool(os.environ.get("ELEVENLABS_API_KEY"))
 
+    @staticmethod
+    def parse_format(output_format: str) -> tuple[bool, int]:
+        """(is_pcm, sample_rate) for an ElevenLabs output_format string, e.g.
+        'pcm_48000' -> (True, 48000), 'mp3_44100_128' -> (False, 44100)."""
+        parts = output_format.split("_")
+        is_pcm = parts[0] == "pcm"
+        sr = 48000
+        for p in parts[1:]:
+            if p.isdigit() and int(p) >= 8000:
+                sr = int(p)
+                break
+        return is_pcm, sr
+
     def generate(self, text: str, *, duration_seconds: float | None = None,
-                 prompt_influence: float = 0.4, loop: bool = False,
+                 prompt_influence: float = 0.5, loop: bool = False,
                  model_id: str = "eleven_text_to_sound_v2",
-                 output_format: str = "mp3_44100_128") -> bytes:
+                 output_format: str = "pcm_48000") -> bytes:
         """Return raw audio bytes for `text`. `duration_seconds` in [0.5, 30]; when
-        None the model picks a natural length."""
+        None the model picks a natural length. Default `pcm_48000` is lossless
+        48 kHz (Pro tier) for AAA delivery; raw PCM is wrapped into WAV by the
+        caller."""
         body: dict = {
             "text": text,
             "prompt_influence": prompt_influence,
