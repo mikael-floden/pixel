@@ -92,6 +92,8 @@ jobs:
             characters2
             tiles2
             maps2
+            sounds
+            music
 
       - id: auth
         uses: google-github-actions/auth@v2
