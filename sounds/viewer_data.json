@@ -1,9 +1,9 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 5,
+  "count": 6,
   "by_category": {
-    "ui": 5
+    "ui": 6
   },
   "sounds": [
     {
@@ -99,6 +99,25 @@
       "format": "wav",
       "loop": false,
       "file": "ui/menu_confirm/menu_confirm__take01.wav",
+      "duration_seconds": 0.092
+    },
+    {
+      "id": "menu_cancel",
+      "name": "Menu Cancel",
+      "category": "ui",
+      "description": "a low descending blip for backing out or cancelling",
+      "tags": [
+        "menu",
+        "cancel",
+        "back",
+        "close",
+        "ui"
+      ],
+      "usage": "Cancel / back / close a menu.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "ui/menu_cancel/menu_cancel__take01.wav",
       "duration_seconds": 0.092
     }
   ]
