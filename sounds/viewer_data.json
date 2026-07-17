@@ -1,9 +1,10 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 8,
+  "count": 9,
   "by_category": {
-    "ui": 8
+    "ui": 8,
+    "item": 1
   },
   "sounds": [
     {
@@ -157,6 +158,25 @@
       "loop": false,
       "file": "ui/notification/notification__take01.wav",
       "duration_seconds": 0.497
+    },
+    {
+      "id": "chest_open",
+      "name": "Chest Open",
+      "category": "item",
+      "description": "a rising creak-and-clunk as a wooden chest is opened",
+      "tags": [
+        "chest",
+        "open",
+        "container",
+        "treasure",
+        "creak"
+      ],
+      "usage": "Opening wooden_chest / containers.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "item/chest_open/chest_open__take01.wav",
+      "duration_seconds": 0.811
     }
   ]
 }
