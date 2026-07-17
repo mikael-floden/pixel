@@ -67,12 +67,19 @@ const INNER_X0 = 80, INNER_X1 = 692;
 const GAME_SPLIT_Y = 648;                 // rail A's visual top edge
 const TAB_WIN = { y0: 714, y1: 844 };     // between rail A and rail B
 const PAGE_WIN = { y0: 912, y1: 1298 };   // below rail B, above bottom rail
+const PAGE_TUCK_Y = 848;                  // rail B's top edge — the stone
+                                          // backdrop starts HERE, under the
+                                          // opaque rail art, so no dark gap
+                                          // can open between rail and stone
+                                          // (maintainer marked exactly that)
 
 export interface FrameLayout {
   /** css px per asset px */
   scale: number;
   /** css-px y of the game/HUD boundary (top edge of rail A) */
   gameHeight: number;
+  /** css-px y where the stone page backdrop must start (under rail B) */
+  pageTuckTop: number;
   tabRect: { left: number; top: number; width: number; height: number };
   pageRect: { left: number; top: number; width: number; height: number };
 }
@@ -191,6 +198,7 @@ function compose() {
   const layout: FrameLayout = {
     scale: s,
     gameHeight: (GAME_SPLIT_Y + g1) * s,
+    pageTuckTop: (PAGE_TUCK_Y + g1) * s,
     tabRect: {
       left: INNER_X0 * s,
       top: (TAB_WIN.y0 + g1) * s,
