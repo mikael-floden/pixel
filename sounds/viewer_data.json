@@ -1,11 +1,11 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 17,
+  "count": 18,
   "by_category": {
     "ui": 8,
     "item": 5,
-    "tool": 4
+    "tool": 5
   },
   "sounds": [
     {
@@ -329,6 +329,25 @@
       "format": "wav",
       "loop": false,
       "file": "tool/pickaxe_hit/pickaxe_hit__take01.wav",
+      "duration_seconds": 0.497
+    },
+    {
+      "id": "hoe_till",
+      "name": "Hoe Till",
+      "category": "tool",
+      "description": "a gritty dig of a hoe breaking soil",
+      "tags": [
+        "hoe",
+        "till",
+        "soil",
+        "dirt",
+        "farm"
+      ],
+      "usage": "Tilling a soil tile with the hoe.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "tool/hoe_till/hoe_till__take01.wav",
       "duration_seconds": 0.497
     }
   ]
