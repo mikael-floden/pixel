@@ -17,6 +17,9 @@ on:
       max_minutes:
         description: "Minutes to run this pass"
         default: "50"
+      max_units:
+        description: "Max sounds this pass (0 = unlimited; use a small number for a validation batch)"
+        default: "0"
       engine:
         description: "auto | ai | placeholder (placeholder = rejected low-fi, test only)"
         default: "auto"
@@ -58,4 +61,5 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           python sounds/pipeline/loop.py \
             --max-minutes "${{ github.event.inputs.max_minutes || '50' }}" \
+            --max-units "${{ github.event.inputs.max_units || '0' }}" \
             --engine "${{ github.event.inputs.engine || 'auto' }}"
