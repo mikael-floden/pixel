@@ -7,6 +7,8 @@ import { thunderFeature } from "./thunder/thunder";
 import { rainbowFeature } from "./rainbow/rainbow";
 import { sandstormFeature } from "./sandstorm/sandstorm";
 import { tumbleweedFeature } from "./tumbleweed/tumbleweed";
+import { leavesFeature } from "./leaves/leaves";
+import { heatHazeFeature } from "./heathaze/heathaze";
 
 /** The ambient-life registry — one entry per feature folder. FIELD features
  * (fireflies, pollen) gate themselves on the environment; EPISODE features
@@ -22,5 +24,7 @@ export function mountAmbient(game: Phaser.Game) {
     rainbowFeature(),
     sandstormFeature(),
     tumbleweedFeature(),
+    leavesFeature(),
+    heatHazeFeature(),
   ]);
 }

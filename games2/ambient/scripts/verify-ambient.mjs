@@ -27,7 +27,7 @@ try {
 
   // ---- registry ----
   const list = await page.evaluate(() => window.__mlAmbient.list());
-  for (const want of ["fireflies", "pollen", "bats", "thunder", "rainbow", "sandstorm", "tumbleweed"])
+  for (const want of ["fireflies", "pollen", "bats", "thunder", "rainbow", "sandstorm", "tumbleweed", "leaves", "heathaze"])
     if (!list.includes(want)) fail(`feature ${want} not mounted (got ${list})`);
   ok(`mounted: ${list.join(", ")}`);
 
@@ -120,6 +120,18 @@ try {
   if (!(tw.grass > 0.05)) fail(`tumbleweed may still cross a plain (grass ${tw.grass})`);
   if (tw.rain > 0.001) fail(`rain must stop the tumbleweed (${tw.rain})`);
   ok(`tumbleweed likeliness: sand ${tw.sand.toFixed(2)}, grass ${tw.grass.toFixed(2)}, rain ${tw.rain}`);
+  // Heat haze is terrain-gated like the sandstorm: hot sand + sun only.
+  const hh = await page.evaluate(() => ({
+    onSand: window.__mlAmbient.weights({ sun: 1, sand: 1, cloud: 0, mist: 0, weatherName: "Clear sky" }).heathaze,
+    offSand: window.__mlAmbient.weights({ sun: 1, sand: 0, cloud: 0, mist: 0, weatherName: "Clear sky" }).heathaze,
+    night: window.__mlAmbient.weights({ sun: 0, sand: 1, cloud: 0, mist: 0, weatherName: "Clear sky" }).heathaze,
+    cloudy: window.__mlAmbient.weights({ sun: 1, sand: 1, cloud: 1, mist: 0, weatherName: "Cloudy at times" }).heathaze,
+  }));
+  if (!(hh.onSand > 0.3)) fail(`heat haze must be likely on hot sand (${hh.onSand})`);
+  if (hh.offSand > 0.001) fail(`heat haze needs sand (${hh.offSand})`);
+  if (hh.night > 0.001) fail(`heat haze needs sun (${hh.night})`);
+  if (!(hh.cloudy < hh.onSand)) fail(`cloud must thin the heat haze (${hh.cloudy} vs ${hh.onSand})`);
+  ok(`heat haze likeliness: sun×sand×dry (sand ${hh.onSand.toFixed(2)}, grass ${hh.offSand}, night ${hh.night}, cloudy ${hh.cloudy.toFixed(2)})`);
 
   // ---- director rolls + episode life cycle ----
   await page.evaluate(() => window.__ml.timeOfDay("night", true));
@@ -233,8 +245,35 @@ try {
   if (!twd.active) fail("demoed tumbleweed must be active");
   if (twd.rolled < 1) fail(`an active tumbleweed episode must launch a weed (${twd.rolled})`);
   ok(`demo(tumbleweed): ${twd.rolled} weed(s) rolled, ${twd.rolling} in frame`);
+  // Demo the leaves: world -> Evening + Clear, the fall thins in.
+  await page.evaluate(() => window.__mlAmbient.demo("leaves"));
+  await page.waitForFunction(() => window.__ml.timeOfDay().name === "Evening", null, { timeout: 5000 });
+  await page.waitForTimeout(4000);
+  const lvd = await dbg("leaves");
+  if (!lvd.active) fail("demoed leaves must be active");
+  if (lvd.gain < 0.4 || lvd.count < 3) fail(`leaves must fall in a demo (gain ${lvd.gain?.toFixed?.(2)}, ${lvd.count})`);
+  if (!lvd.sample || typeof lvd.sample.d !== "number") fail("leaves must depth-sort into the world (no sample depth)");
+  ok(`demo(leaves): ${lvd.count} falling (gain ${lvd.gain.toFixed(2)}, sample depth ${lvd.sample.d})`);
+  // Demo heat haze: world -> Day + Clear; the post-process attaches, dust floor.
+  await page.evaluate(() => window.__mlAmbient.demo("heathaze"));
+  await page.waitForFunction(() => window.__ml.timeOfDay().name === "Day", null, { timeout: 5000 });
+  await page.waitForTimeout(6000);
+  const hhd = await dbg("heathaze");
+  if (hhd.broken) fail("heat haze pipeline must not be broken on WebGL");
+  if (!hhd.active) fail("demoed heat haze must be active");
+  if (hhd.gain < 0.2) fail(`heat haze floor must show in a demo (gain ${hhd.gain?.toFixed?.(2)})`);
+  if (!hhd.attached) fail("heat haze must attach its camera post-process when visible");
+  // And the game must still render underneath the pipeline (player present).
+  const alive = await page.evaluate(() => window.__ml.players() >= 1);
+  if (!alive) fail("game must keep rendering with the heat-haze pipeline attached");
+  ok(`demo(heathaze): pipeline attached=${hhd.attached}, gain ${hhd.gain.toFixed(2)}, game still live`);
   // Back to auto: pin released, suppression lifted, director rolls again.
+  // Heat haze must DETACH its camera post-process on the way out.
   await page.evaluate(() => window.__mlAmbient.demo(null));
+  await page.waitForTimeout(3500);
+  const hhOff = await dbg("heathaze");
+  if (hhOff.attached) fail("heat haze must detach its post-process when it fades out");
+  else ok("heat haze detaches its post-process when idle (render path restored)");
   const dirAuto = await page.evaluate(() => window.__mlAmbient.director());
   if (dirAuto.pinned !== null) fail(`demo(null) must release the pin (got ${JSON.stringify(dirAuto)})`);
   const ffAuto = await dbg("fireflies");

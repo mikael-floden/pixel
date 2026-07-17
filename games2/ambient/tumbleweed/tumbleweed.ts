@@ -2,13 +2,19 @@ import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature, PHASE_DAY, WEATHER_CLEAR } from "../runtime/types";
 import { isRainy } from "../runtime/env";
 
-// Tumbleweed — a dry twig-ball that BOUNCES across the view on the wind,
-// spinning as it rolls, hopping on an invisible ground line and losing a
-// little bounce each landing like the real thing. Terrain-flavoured like
-// its sibling sandstorm: most likely rolling over sandy ground, rare on
-// plains, never in the rain. Lives UNDER the darkness overlay so night
-// grades it like any physical thing in the world.
-const DEPTH = 850_000; // above every world sprite, below the darkness overlay
+// Tumbleweed — a dry twig-ball that BOUNCES across the WORLD on the wind,
+// spinning as it rolls, hopping on its ground line and losing a little
+// bounce each landing like the real thing. Terrain-flavoured like its
+// sibling sandstorm: most likely rolling over sandy ground, rare on plains,
+// never in the rain.
+//
+// IN THE WORLD, NOT ON THE HUD (maintainer): the weed lives in the game's
+// isometric world space (cam.worldView coords) and DEPTH-SORTS by its ground
+// contact's world-y — exactly like a character (WorldScene sorts avatars by
+// their flat painter-y, a screen-y scalar < ~20k, under the 900_000 darkness
+// overlay). So it rolls THROUGH the scene: passing BEHIND higher terrain and
+// IN FRONT of nearer ground, dimmed by night like any physical thing —
+// never a flat sprite painted over everything.
 const FRAMES = ["amb-weed0", "amb-weed1"];
 // 11×11 two-tone twig-ball, D dark / L light; frame 1 is a quarter-turn
 // re-scribble so the roll reads even at low speed.
@@ -92,15 +98,17 @@ export function tumbleweedFeature(): AmbientFeature {
     const view = ctx.view;
     const sprite = ctx.scene.add
       .image(0, 0, FRAMES[0])
-      .setDepth(DEPTH)
-      .setScale(2) // integer nearest scale — pixel-art rule
+      .setScale(3) // ~1 cell across at world scale (11px art → 33px)
       .setAlpha(0.95);
+    // Enter from the UPWIND edge in WORLD coords (wind is down-right, so
+    // left/top), anywhere along it — its ground-y sets its depth, so weeds
+    // entering low roll in front, high roll behind.
+    const fromLeft = rnd() < 0.62;
     weeds.push({
       sprite,
-      x: view.x - 16,
-      // Roll through the mid/lower band where the ground reads closest.
-      y: view.y + view.height * (0.45 + rnd() * 0.45),
-      h: 20 + rnd() * 30, // enters mid-hop
+      x: fromLeft ? view.x - 24 : view.x + rnd() * view.width,
+      y: fromLeft ? view.y + rnd() * view.height : view.y - 24,
+      h: 14 + rnd() * 26, // enters mid-hop
       vh: 0,
       v: 95 + rnd() * 70,
       spin: 0,
@@ -140,8 +148,11 @@ export function tumbleweedFeature(): AmbientFeature {
       const dts = Math.min(dt, 100) / 1000;
       for (let i = weeds.length - 1; i >= 0; i--) {
         const w = weeds[i];
+        // The ground CONTACT rolls through the world on the wind heading
+        // (down-right); as its world-y grows it moves toward the camera and
+        // sorts to the front — real ground motion, not a screen pan.
         w.x += WX * w.v * dts;
-        w.y += WY * w.v * dts * 0.5; // the ground line drifts with the wind too
+        w.y += WY * w.v * dts;
         // Hop physics: gravity pulls the ball onto its ground line; each
         // landing keeps `bounce` of the energy plus a small fresh kick, so
         // it never quite settles — tumbleweeds jitter along.
@@ -151,7 +162,7 @@ export function tumbleweedFeature(): AmbientFeature {
           w.h = 0;
           w.vh = Math.max(60, -w.vh * w.bounce + 40 + rnd() * 60);
         }
-        w.spin += (w.v * dts) / 11; // roll: arc length over radius
+        w.spin += (w.v * dts) / 16; // roll: arc length over radius (3× sprite)
         w.flapT += dt;
         if (w.flapT > 160) {
           // Re-scribble mid-roll — a rigid rotating ball reads as a coin.
@@ -159,8 +170,19 @@ export function tumbleweedFeature(): AmbientFeature {
           w.frame = 1 - w.frame;
           w.sprite.setTexture(FRAMES[w.frame]);
         }
-        w.sprite.setPosition(w.x, w.y - w.h).setRotation(w.spin);
-        if (w.x > view.right + 24 || w.y > view.bottom + 24) {
+        // Drawn lifted by the hop (up-screen = smaller world-y), but SORTED
+        // by the ground contact's world-y — like a jumping character, so a
+        // hop never pops it in front of things it's behind.
+        w.sprite
+          .setPosition(w.x, w.y - w.h)
+          .setDepth(w.y + 0.5)
+          .setRotation(w.spin);
+        // Recycle once it has rolled off the world view (+ margin).
+        const M = 40;
+        if (
+          w.x > view.right + M || w.y > view.bottom + M ||
+          w.x < view.x - M * 3 || w.y < view.y - M * 3
+        ) {
           w.sprite.destroy();
           weeds.splice(i, 1);
         }

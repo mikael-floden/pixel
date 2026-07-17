@@ -131,7 +131,9 @@ covered by `server/test/ambientdemo.test.ts`. QA probe:
 | `thunder/` | episode | Distant sheet lightning beyond the horizon | base 0.35 × (1 + rain + night); cloud/mist as weak proxies until a rain weather ships |
 | `rainbow/` | episode | One leg of a real shader rainbow you can never reach, with sun-shower drizzle | base 0.5 × sun × moisture (rain 1.0, else 0.55·cloud + 0.4·mist) |
 | `sandstorm/` | episode | Warm dust veil + wind-driven sand streaks that swallow the player | base 0.6 × **sand** (terrain-aware: only rolls while the player stands in sandy ground) × dryness |
-| `tumbleweed/` | episode | A twig-ball bouncing across on the wind, hop physics and all | base 0.45 × (0.25 + 0.75·**sand**) × dryness — sand-biased, not sand-locked |
+| `tumbleweed/` | episode | A twig-ball rolling through the WORLD on the wind, depth-sorted, hop physics and all | base 0.45 × (0.25 + 0.75·**sand**) × dryness — sand-biased, not sand-locked |
+| `leaves/` | episode | Autumn leaves spiralling down through the world, tumbling edge-on | base 0.5 × (0.6 + 0.4·cloud); prefers Evening |
+| `heathaze/` | episode | Real heat shimmer — a camera post-process refracting the actual scene | base 0.5 × sun × **sand** × dryness (terrain-aware) |
 
 ## QA
 
