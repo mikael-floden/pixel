@@ -1,10 +1,11 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 13,
+  "count": 14,
   "by_category": {
     "ui": 8,
-    "item": 5
+    "item": 5,
+    "tool": 1
   },
   "sounds": [
     {
@@ -252,6 +253,25 @@
       "format": "wav",
       "loop": false,
       "file": "item/eat_food/eat_food__take01.wav",
+      "duration_seconds": 0.497
+    },
+    {
+      "id": "sword_swing",
+      "name": "Sword Swing",
+      "category": "tool",
+      "description": "a quick whoosh of a sword swung through the air",
+      "tags": [
+        "sword",
+        "swing",
+        "whoosh",
+        "attack",
+        "weapon"
+      ],
+      "usage": "Swinging the sword (miss / wind-up).",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "tool/sword_swing/sword_swing__take01.wav",
       "duration_seconds": 0.497
     }
   ]
