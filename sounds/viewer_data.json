@@ -51,7 +51,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.263,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.025
+      },
+      "envelope": {
+        "duration_ms": 497.4,
+        "onset_ms": 0.3,
+        "peak_ms": 7.0,
+        "attack_ms": 6.7,
+        "peak_dbfs": -1.0,
+        "rms": 0.0623,
+        "crest": 14.3
+      },
+      "sync_points": [
+        {
+          "t_ms": 7.0,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "gem_pickup",
@@ -92,7 +120,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": true,
+        "root_midi": 89,
+        "note": "F6",
+        "fundamental_hz": 1411.8,
+        "cents_off": 18,
+        "pitch_confidence": 0.578,
+        "max_shift_semitones": 3,
+        "scale_snap_replaces_jitter": true,
+        "tonality": "mixed",
+        "spectral_flatness": 0.015
+      },
+      "envelope": {
+        "duration_ms": 601.9,
+        "onset_ms": 0.6,
+        "peak_ms": 147.6,
+        "attack_ms": 147.0,
+        "peak_dbfs": -1.0,
+        "rms": 0.059,
+        "crest": 15.1
+      },
+      "sync_points": [
+        {
+          "t_ms": 147.6,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "item_get",
@@ -133,7 +189,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": true,
+        "root_midi": 72,
+        "note": "C5",
+        "fundamental_hz": 521.7,
+        "cents_off": -5,
+        "pitch_confidence": 0.948,
+        "max_shift_semitones": 3,
+        "scale_snap_replaces_jitter": true,
+        "tonality": "tonal",
+        "spectral_flatness": 0.026
+      },
+      "envelope": {
+        "duration_ms": 889.2,
+        "onset_ms": 0.4,
+        "peak_ms": 112.8,
+        "attack_ms": 112.4,
+        "peak_dbfs": -1.0,
+        "rms": 0.1064,
+        "crest": 8.4
+      },
+      "sync_points": [
+        {
+          "t_ms": 112.8,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "menu_select",
@@ -174,7 +258,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": true,
+        "root_midi": 89,
+        "note": "F6",
+        "fundamental_hz": 1371.4,
+        "cents_off": -32,
+        "pitch_confidence": 0.733,
+        "max_shift_semitones": 3,
+        "scale_snap_replaces_jitter": true,
+        "tonality": "tonal",
+        "spectral_flatness": 0.042
+      },
+      "envelope": {
+        "duration_ms": 497.4,
+        "onset_ms": 1.0,
+        "peak_ms": 107.1,
+        "attack_ms": 106.2,
+        "peak_dbfs": -1.0,
+        "rms": 0.0589,
+        "crest": 15.1
+      },
+      "sync_points": [
+        {
+          "t_ms": 107.1,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "menu_confirm",
@@ -215,7 +327,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": true,
+        "root_midi": 62,
+        "note": "D4",
+        "fundamental_hz": 296.3,
+        "cents_off": 15,
+        "pitch_confidence": 0.951,
+        "max_shift_semitones": 3,
+        "scale_snap_replaces_jitter": true,
+        "tonality": "tonal",
+        "spectral_flatness": 0.009
+      },
+      "envelope": {
+        "duration_ms": 497.4,
+        "onset_ms": 0.5,
+        "peak_ms": 16.4,
+        "attack_ms": 15.9,
+        "peak_dbfs": -1.0,
+        "rms": 0.1247,
+        "crest": 7.1
+      },
+      "sync_points": [
+        {
+          "t_ms": 16.4,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "menu_cancel",
@@ -256,7 +396,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": true,
+        "root_midi": 51,
+        "note": "D#3",
+        "fundamental_hz": 159.5,
+        "cents_off": 43,
+        "pitch_confidence": 0.675,
+        "max_shift_semitones": 3,
+        "scale_snap_replaces_jitter": true,
+        "tonality": "mixed",
+        "spectral_flatness": 0.036
+      },
+      "envelope": {
+        "duration_ms": 497.4,
+        "onset_ms": 0.2,
+        "peak_ms": 2.9,
+        "attack_ms": 2.8,
+        "peak_dbfs": -1.0,
+        "rms": 0.1239,
+        "crest": 7.2
+      },
+      "sync_points": [
+        {
+          "t_ms": 2.9,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "error_buzz",
@@ -297,7 +465,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.0,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.015
+      },
+      "envelope": {
+        "duration_ms": 497.4,
+        "onset_ms": 0.2,
+        "peak_ms": 4.1,
+        "attack_ms": 3.9,
+        "peak_dbfs": -1.0,
+        "rms": 0.1358,
+        "crest": 6.6
+      },
+      "sync_points": [
+        {
+          "t_ms": 4.1,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "notification",
@@ -338,7 +534,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": true,
+        "root_midi": 72,
+        "note": "C5",
+        "fundamental_hz": 521.7,
+        "cents_off": -5,
+        "pitch_confidence": 0.988,
+        "max_shift_semitones": 3,
+        "scale_snap_replaces_jitter": true,
+        "tonality": "tonal",
+        "spectral_flatness": 0.008
+      },
+      "envelope": {
+        "duration_ms": 497.4,
+        "onset_ms": 0.3,
+        "peak_ms": 6.3,
+        "attack_ms": 6.0,
+        "peak_dbfs": -1.0,
+        "rms": 0.206,
+        "crest": 4.3
+      },
+      "sync_points": [
+        {
+          "t_ms": 6.3,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "chest_open",
@@ -379,7 +603,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": true,
+        "root_midi": 87,
+        "note": "D#6",
+        "fundamental_hz": 1230.8,
+        "cents_off": -19,
+        "pitch_confidence": 0.604,
+        "max_shift_semitones": 3,
+        "scale_snap_replaces_jitter": true,
+        "tonality": "mixed",
+        "spectral_flatness": 0.033
+      },
+      "envelope": {
+        "duration_ms": 810.9,
+        "onset_ms": 1.3,
+        "peak_ms": 113.6,
+        "attack_ms": 112.3,
+        "peak_dbfs": -1.0,
+        "rms": 0.075,
+        "crest": 11.9
+      },
+      "sync_points": [
+        {
+          "t_ms": 113.6,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "chest_close",
@@ -420,7 +672,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.354,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.041
+      },
+      "envelope": {
+        "duration_ms": 496.2,
+        "onset_ms": 29.9,
+        "peak_ms": 53.7,
+        "attack_ms": 23.7,
+        "peak_dbfs": -1.0,
+        "rms": 0.079,
+        "crest": 11.3
+      },
+      "sync_points": [
+        {
+          "t_ms": 53.7,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "key_unlock",
@@ -461,7 +741,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.293,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.032
+      },
+      "envelope": {
+        "duration_ms": 497.4,
+        "onset_ms": 77.0,
+        "peak_ms": 248.2,
+        "attack_ms": 171.3,
+        "peak_dbfs": -1.0,
+        "rms": 0.0572,
+        "crest": 15.6
+      },
+      "sync_points": [
+        {
+          "t_ms": 248.2,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "drink_potion",
@@ -502,7 +810,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.254,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.029
+      },
+      "envelope": {
+        "duration_ms": 706.4,
+        "onset_ms": 0.6,
+        "peak_ms": 49.0,
+        "attack_ms": 48.4,
+        "peak_dbfs": -1.0,
+        "rms": 0.0472,
+        "crest": 18.9
+      },
+      "sync_points": [
+        {
+          "t_ms": 49.0,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "eat_food",
@@ -543,7 +879,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.365,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.032
+      },
+      "envelope": {
+        "duration_ms": 497.4,
+        "onset_ms": 1.2,
+        "peak_ms": 97.4,
+        "attack_ms": 96.3,
+        "peak_dbfs": -1.0,
+        "rms": 0.0832,
+        "crest": 10.7
+      },
+      "sync_points": [
+        {
+          "t_ms": 97.4,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "sword_swing",
@@ -585,7 +949,35 @@
           20
         ],
         "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.365,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.05
+      },
+      "envelope": {
+        "duration_ms": 497.4,
+        "onset_ms": 1.3,
+        "peak_ms": 93.1,
+        "attack_ms": 91.8,
+        "peak_dbfs": -1.0,
+        "rms": 0.1161,
+        "crest": 7.7
+      },
+      "sync_points": [
+        {
+          "t_ms": 93.1,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "sword_hit",
@@ -627,7 +1019,35 @@
           20
         ],
         "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.188,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.102
+      },
+      "envelope": {
+        "duration_ms": 497.4,
+        "onset_ms": 0.4,
+        "peak_ms": 3.3,
+        "attack_ms": 2.9,
+        "peak_dbfs": -1.0,
+        "rms": 0.0641,
+        "crest": 13.9
+      },
+      "sync_points": [
+        {
+          "t_ms": 3.3,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "axe_chop",
@@ -669,7 +1089,35 @@
           20
         ],
         "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
-      }
+      },
+      "music": {
+        "tonal": true,
+        "root_midi": 88,
+        "note": "E6",
+        "fundamental_hz": 1297.3,
+        "cents_off": -28,
+        "pitch_confidence": 0.501,
+        "max_shift_semitones": 3,
+        "scale_snap_replaces_jitter": true,
+        "tonality": "mixed",
+        "spectral_flatness": 0.029
+      },
+      "envelope": {
+        "duration_ms": 497.4,
+        "onset_ms": 0.5,
+        "peak_ms": 33.5,
+        "attack_ms": 33.0,
+        "peak_dbfs": -1.0,
+        "rms": 0.0468,
+        "crest": 19.0
+      },
+      "sync_points": [
+        {
+          "t_ms": 33.5,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "pickaxe_hit",
@@ -711,7 +1159,35 @@
           20
         ],
         "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.135,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.055
+      },
+      "envelope": {
+        "duration_ms": 497.4,
+        "onset_ms": 0.4,
+        "peak_ms": 11.1,
+        "attack_ms": 10.7,
+        "peak_dbfs": -1.0,
+        "rms": 0.072,
+        "crest": 12.4
+      },
+      "sync_points": [
+        {
+          "t_ms": 11.1,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "hoe_till",
@@ -752,7 +1228,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.2,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.069
+      },
+      "envelope": {
+        "duration_ms": 497.4,
+        "onset_ms": 0.5,
+        "peak_ms": 14.7,
+        "attack_ms": 14.2,
+        "peak_dbfs": -1.0,
+        "rms": 0.0645,
+        "crest": 13.8
+      },
+      "sync_points": [
+        {
+          "t_ms": 14.7,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "watering_can",
@@ -793,7 +1297,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.109,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.032
+      },
+      "envelope": {
+        "duration_ms": 497.4,
+        "onset_ms": 0.2,
+        "peak_ms": 26.2,
+        "attack_ms": 25.9,
+        "peak_dbfs": -1.0,
+        "rms": 0.1128,
+        "crest": 7.9
+      },
+      "sync_points": [
+        {
+          "t_ms": 26.2,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "footstep_grass",
@@ -835,7 +1367,35 @@
           20
         ],
         "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.184,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.019
+      },
+      "envelope": {
+        "duration_ms": 497.4,
+        "onset_ms": 0.5,
+        "peak_ms": 138.1,
+        "attack_ms": 137.6,
+        "peak_dbfs": -1.0,
+        "rms": 0.1199,
+        "crest": 7.4
+      },
+      "sync_points": [
+        {
+          "t_ms": 138.1,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "footstep_stone",
@@ -877,7 +1437,35 @@
           20
         ],
         "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.184,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.065
+      },
+      "envelope": {
+        "duration_ms": 497.4,
+        "onset_ms": 2.0,
+        "peak_ms": 19.5,
+        "attack_ms": 17.5,
+        "peak_dbfs": -1.0,
+        "rms": 0.0397,
+        "crest": 22.5
+      },
+      "sync_points": [
+        {
+          "t_ms": 19.5,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "footstep_wood",
@@ -919,7 +1507,35 @@
           20
         ],
         "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.252,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.026
+      },
+      "envelope": {
+        "duration_ms": 497.4,
+        "onset_ms": 0.3,
+        "peak_ms": 5.2,
+        "attack_ms": 4.8,
+        "peak_dbfs": -1.0,
+        "rms": 0.124,
+        "crest": 7.2
+      },
+      "sync_points": [
+        {
+          "t_ms": 5.2,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "jump",
@@ -959,7 +1575,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.0,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.026
+      },
+      "envelope": {
+        "duration_ms": 497.4,
+        "onset_ms": 0.2,
+        "peak_ms": 3.9,
+        "attack_ms": 3.6,
+        "peak_dbfs": -1.0,
+        "rms": 0.1549,
+        "crest": 5.8
+      },
+      "sync_points": [
+        {
+          "t_ms": 3.9,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "splash",
@@ -1000,7 +1644,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": true,
+        "root_midi": 90,
+        "note": "F#6",
+        "fundamental_hz": 1454.5,
+        "cents_off": -30,
+        "pitch_confidence": 0.8,
+        "max_shift_semitones": 3,
+        "scale_snap_replaces_jitter": true,
+        "tonality": "tonal",
+        "spectral_flatness": 0.027
+      },
+      "envelope": {
+        "duration_ms": 497.4,
+        "onset_ms": 2.3,
+        "peak_ms": 77.6,
+        "attack_ms": 75.3,
+        "peak_dbfs": -1.0,
+        "rms": 0.0499,
+        "crest": 17.8
+      },
+      "sync_points": [
+        {
+          "t_ms": 77.6,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "hit_hurt",
@@ -1042,7 +1714,35 @@
           20
         ],
         "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.061,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.02
+      },
+      "envelope": {
+        "duration_ms": 400.6,
+        "onset_ms": 5.4,
+        "peak_ms": 55.6,
+        "attack_ms": 50.2,
+        "peak_dbfs": -1.0,
+        "rms": 0.1245,
+        "crest": 7.2
+      },
+      "sync_points": [
+        {
+          "t_ms": 55.6,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "enemy_defeat",
@@ -1083,7 +1783,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.426,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.024
+      },
+      "envelope": {
+        "duration_ms": 497.4,
+        "onset_ms": 0.3,
+        "peak_ms": 28.8,
+        "attack_ms": 28.5,
+        "peak_dbfs": -1.0,
+        "rms": 0.1773,
+        "crest": 5.0
+      },
+      "sync_points": [
+        {
+          "t_ms": 28.8,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "explosion",
@@ -1124,7 +1852,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.0,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.004
+      },
+      "envelope": {
+        "duration_ms": 706.4,
+        "onset_ms": 0.2,
+        "peak_ms": 44.7,
+        "attack_ms": 44.5,
+        "peak_dbfs": -1.0,
+        "rms": 0.2635,
+        "crest": 3.4
+      },
+      "sync_points": [
+        {
+          "t_ms": 44.7,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "magic_cast",
@@ -1165,7 +1921,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.179,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.037
+      },
+      "envelope": {
+        "duration_ms": 706.4,
+        "onset_ms": 0.4,
+        "peak_ms": 92.6,
+        "attack_ms": 92.3,
+        "peak_dbfs": -1.0,
+        "rms": 0.1361,
+        "crest": 6.5
+      },
+      "sync_points": [
+        {
+          "t_ms": 92.6,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "level_up",
@@ -1206,7 +1990,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": true,
+        "root_midi": 76,
+        "note": "E5",
+        "fundamental_hz": 666.7,
+        "cents_off": 19,
+        "pitch_confidence": 0.599,
+        "max_shift_semitones": 3,
+        "scale_snap_replaces_jitter": true,
+        "tonality": "mixed",
+        "spectral_flatness": 0.032
+      },
+      "envelope": {
+        "duration_ms": 1019.9,
+        "onset_ms": 0.4,
+        "peak_ms": 3.7,
+        "attack_ms": 3.3,
+        "peak_dbfs": -1.0,
+        "rms": 0.1353,
+        "crest": 6.6
+      },
+      "sync_points": [
+        {
+          "t_ms": 3.7,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "quest_complete",
@@ -1247,7 +2059,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.423,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.029
+      },
+      "envelope": {
+        "duration_ms": 1019.9,
+        "onset_ms": 0.5,
+        "peak_ms": 21.8,
+        "attack_ms": 21.2,
+        "peak_dbfs": -1.0,
+        "rms": 0.1091,
+        "crest": 8.2
+      },
+      "sync_points": [
+        {
+          "t_ms": 21.8,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "birds_day",
@@ -1287,7 +2127,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.486,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.051
+      },
+      "envelope": {
+        "duration_ms": 12017.4,
+        "onset_ms": 0.0,
+        "peak_ms": 6763.2,
+        "attack_ms": 6763.2,
+        "peak_dbfs": -1.0,
+        "rms": 0.0649,
+        "crest": 13.7
+      },
+      "sync_points": [
+        {
+          "t_ms": 6763.2,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "crickets_night",
@@ -1327,7 +2195,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.443,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.054
+      },
+      "envelope": {
+        "duration_ms": 12017.4,
+        "onset_ms": 0.4,
+        "peak_ms": 8288.7,
+        "attack_ms": 8288.3,
+        "peak_dbfs": -1.0,
+        "rms": 0.0546,
+        "crest": 16.3
+      },
+      "sync_points": [
+        {
+          "t_ms": 8288.7,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "wind",
@@ -1366,7 +2262,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.0,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.026
+      },
+      "envelope": {
+        "duration_ms": 12017.4,
+        "onset_ms": 0.0,
+        "peak_ms": 5058.1,
+        "attack_ms": 5058.1,
+        "peak_dbfs": -1.0,
+        "rms": 0.1677,
+        "crest": 5.3
+      },
+      "sync_points": [
+        {
+          "t_ms": 5058.1,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "rain",
@@ -1405,7 +2329,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.201,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.087
+      },
+      "envelope": {
+        "duration_ms": 12017.4,
+        "onset_ms": 0.0,
+        "peak_ms": 1135.7,
+        "attack_ms": 1135.6,
+        "peak_dbfs": -1.0,
+        "rms": 0.0313,
+        "crest": 28.5
+      },
+      "sync_points": [
+        {
+          "t_ms": 1135.7,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "ocean_waves",
@@ -1445,7 +2397,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.175,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.028
+      },
+      "envelope": {
+        "duration_ms": 12017.4,
+        "onset_ms": 0.0,
+        "peak_ms": 3738.2,
+        "attack_ms": 3738.2,
+        "peak_dbfs": -1.0,
+        "rms": 0.1205,
+        "crest": 7.4
+      },
+      "sync_points": [
+        {
+          "t_ms": 3738.2,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "river",
@@ -1484,7 +2464,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.14,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.04
+      },
+      "envelope": {
+        "duration_ms": 12017.4,
+        "onset_ms": 0.1,
+        "peak_ms": 1548.6,
+        "attack_ms": 1548.6,
+        "peak_dbfs": -1.0,
+        "rms": 0.0817,
+        "crest": 10.9
+      },
+      "sync_points": [
+        {
+          "t_ms": 1548.6,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "fire_crackle",
@@ -1523,7 +2531,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.187,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.076
+      },
+      "envelope": {
+        "duration_ms": 12017.4,
+        "onset_ms": 0.1,
+        "peak_ms": 11368.8,
+        "attack_ms": 11368.8,
+        "peak_dbfs": -1.0,
+        "rms": 0.0157,
+        "crest": 56.7
+      },
+      "sync_points": [
+        {
+          "t_ms": 11368.8,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "cave_drips",
@@ -1563,7 +2599,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": true,
+        "root_midi": 48,
+        "note": "C3",
+        "fundamental_hz": 127.3,
+        "cents_off": -47,
+        "pitch_confidence": 0.645,
+        "max_shift_semitones": 3,
+        "scale_snap_replaces_jitter": true,
+        "tonality": "mixed",
+        "spectral_flatness": 0.003
+      },
+      "envelope": {
+        "duration_ms": 12017.4,
+        "onset_ms": 0.0,
+        "peak_ms": 675.7,
+        "attack_ms": 675.7,
+        "peak_dbfs": -1.0,
+        "rms": 0.1113,
+        "crest": 8.0
+      },
+      "sync_points": [
+        {
+          "t_ms": 675.7,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "town_murmur",
@@ -1603,7 +2667,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.0,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.031
+      },
+      "envelope": {
+        "duration_ms": 12017.4,
+        "onset_ms": 0.0,
+        "peak_ms": 38.1,
+        "attack_ms": 38.1,
+        "peak_dbfs": -1.0,
+        "rms": 0.1836,
+        "crest": 4.9
+      },
+      "sync_points": [
+        {
+          "t_ms": 38.1,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     },
     {
       "id": "forest",
@@ -1642,7 +2734,35 @@
           0,
           15
         ]
-      }
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.0,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.056
+      },
+      "envelope": {
+        "duration_ms": 12017.4,
+        "onset_ms": 0.0,
+        "peak_ms": 11066.7,
+        "attack_ms": 11066.7,
+        "peak_dbfs": -1.0,
+        "rms": 0.2748,
+        "crest": 3.2
+      },
+      "sync_points": [
+        {
+          "t_ms": 11066.7,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
     }
   ]
 }

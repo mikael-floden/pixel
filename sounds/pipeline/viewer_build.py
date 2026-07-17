@@ -36,6 +36,9 @@ def build() -> dict:
             "duration_seconds": (man.get("audio") or {}).get("duration_seconds"),
             "mix_gain_db": man.get("mix_gain_db", 0.0),
             "variation": man.get("variation"),
+            "music": man.get("music"),
+            "envelope": man.get("envelope"),
+            "sync_points": man.get("sync_points", []),
         }
         sounds.append(entry)
         by_category[man["category"]] = by_category.get(man["category"], 0) + 1

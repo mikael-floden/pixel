@@ -243,5 +243,10 @@
       "play": "loop_crossfade",
       "note": "base bed by region + optional time/weather layer"
     }
-  ]
+  ],
+  "consumes": [
+    "sounds/<category>/<id>/metadata.json (per-asset contract incl. measured music + envelope + sync_points)",
+    "sounds/viewer_data.json (rolled-up index)"
+  ],
+  "scale_match": "For tonal sounds, read metadata.music (root_midi, max_shift_semitones); snap to the current music key and REPLACE pitch-jitter. Never shift atonal foley."
 }

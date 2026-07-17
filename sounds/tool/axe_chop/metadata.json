@@ -1,0 +1,96 @@
+{
+  "manifest_version": 1,
+  "id": "axe_chop",
+  "name": "Axe Chop",
+  "category": "tool",
+  "description": "a heavy wooden thock of an axe biting into a tree",
+  "tags": [
+    "axe",
+    "chop",
+    "wood",
+    "tree",
+    "impact"
+  ],
+  "usage": "Chopping oak_tree / pine_tree with the axe.",
+  "loop": false,
+  "engine": "ai",
+  "license": "CC0-1.0",
+  "status": "complete",
+  "quality": "aaa",
+  "file": "tool/axe_chop/axe_chop__take01.wav",
+  "format": "wav",
+  "audio": {
+    "samples": 23875,
+    "duration_seconds": 0.497,
+    "sample_rate": 48000,
+    "channels": 1,
+    "bit_depth": 16,
+    "peak_dbfs": -1.0,
+    "requested_format": "mp3_44100_192",
+    "delivered": "mp3"
+  },
+  "takes": [
+    "tool/axe_chop/axe_chop__take01.wav",
+    "tool/axe_chop/axe_chop__take02.wav"
+  ],
+  "ai": {
+    "provider": "elevenlabs",
+    "model_id": "eleven_text_to_sound_v2",
+    "prompt": "An axe biting deep into wood: a heavy, meaty wooden thock with splintering, solid and impactful. High-fidelity recorded foley, close-miked, crisp transient, rich body, natural short tail; single isolated sound; dry with only a subtle natural room; no music, no voice, no melody, no chiptune, no synth beeps, no background noise; broadcast-quality, production-ready.",
+    "prompt_influence": 0.5,
+    "loop": false,
+    "variants": 2,
+    "requested_format": "mp3_44100_192"
+  },
+  "mastering": "trim + peak-normalize(-1 dBFS) + edge-fades",
+  "source": "elevenlabs text-to-sound-effects (eleven_text_to_sound_v2)",
+  "feel": "impactful, meaty",
+  "mix_gain_db": -2,
+  "variation": {
+    "round_robin": true,
+    "no_immediate_repeat": true,
+    "pitch_jitter_semitones": [
+      -2.0,
+      2.0
+    ],
+    "gain_jitter_db": [
+      -3.0,
+      3.0
+    ],
+    "start_jitter_ms": [
+      0,
+      20
+    ],
+    "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
+  },
+  "schema": "audio-metadata/1",
+  "asset_type": "sfx",
+  "music": {
+    "tonal": true,
+    "root_midi": 88,
+    "note": "E6",
+    "fundamental_hz": 1297.3,
+    "cents_off": -28,
+    "pitch_confidence": 0.501,
+    "max_shift_semitones": 3,
+    "scale_snap_replaces_jitter": true,
+    "tonality": "mixed",
+    "spectral_flatness": 0.029
+  },
+  "envelope": {
+    "duration_ms": 497.4,
+    "onset_ms": 0.5,
+    "peak_ms": 33.5,
+    "attack_ms": 33.0,
+    "peak_dbfs": -1.0,
+    "rms": 0.0468,
+    "crest": 19.0
+  },
+  "sync_points": [
+    {
+      "t_ms": 33.5,
+      "name": "transient",
+      "note": "main attack \u2014 measured; safe sync/trigger point"
+    }
+  ]
+}

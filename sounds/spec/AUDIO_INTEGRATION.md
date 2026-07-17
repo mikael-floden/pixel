@@ -27,9 +27,21 @@ I stop at the **contract**. I do NOT bind or mix — that's the composer's job. 
 
 ## What the composer consumes from me
 
-1. `sounds/viewer_data.json` — the catalog + per-sound playback metadata.
-2. `sounds/bindings.json` — the recommended bindings/rules (turnkey starting point).
-3. Assets under `/assets/sounds/<category>/<id>/…` (WAV; primary take + variants).
+1. **`sounds/<category>/<id>/metadata.json`** — the per-asset contract (shared
+   `metadata.json` convention with the `music/` domain). Carries `feel`,
+   `mix_gain_db`, `variation`, and — **measured from the rendered audio** — a
+   `music` block (tonal? root_midi, pitch_confidence, max_shift_semitones,
+   scale_snap_replaces_jitter) and `envelope` + `sync_points` (sub-second timing).
+   Full schema: [`METADATA.md`](METADATA.md).
+2. `sounds/viewer_data.json` — the rolled-up index of all per-asset metadata.
+3. `sounds/bindings.json` — recommended event → sound + playback rules (turnkey).
+4. Assets under `/assets/sounds/<category>/<id>/…` (WAV; primary take + variants).
+
+**Scale-matched SFX** (the "same-scale" feature): the composer reads `music` to
+snap a tonal SFX's `root_midi` to the current music key (`playbackRate =
+2^(semitones/12)`, clamped to `max_shift_semitones`); snapping **replaces** the
+random pitch-jitter, and **atonal foley is never shifted**. Timing sync hangs off
+`sync_points` aligned to the music domain's beat grid.
 
 The composer combines this with the musician's music contract, negotiates the
 event names / interface with the game agent (e.g. a stable `AudioBus` the game calls:

@@ -1,0 +1,95 @@
+{
+  "manifest_version": 1,
+  "id": "eat_food",
+  "name": "Eat Food",
+  "category": "item",
+  "description": "a soft munch-and-satisfied blip of eating food",
+  "tags": [
+    "food",
+    "eat",
+    "munch",
+    "restore",
+    "bite"
+  ],
+  "usage": "Eating a food item to restore energy.",
+  "loop": false,
+  "engine": "ai",
+  "license": "CC0-1.0",
+  "status": "complete",
+  "quality": "aaa",
+  "file": "item/eat_food/eat_food__take01.wav",
+  "format": "wav",
+  "audio": {
+    "samples": 23875,
+    "duration_seconds": 0.497,
+    "sample_rate": 48000,
+    "channels": 1,
+    "bit_depth": 16,
+    "peak_dbfs": -1.0,
+    "requested_format": "mp3_44100_192",
+    "delivered": "mp3"
+  },
+  "takes": [
+    "item/eat_food/eat_food__take01.wav",
+    "item/eat_food/eat_food__take02.wav"
+  ],
+  "ai": {
+    "provider": "elevenlabs",
+    "model_id": "eleven_text_to_sound_v2",
+    "prompt": "Eating food: a couple of soft organic bites and chews with subtle mouth foley, then a small satisfied cue, natural and not cartoonish. High-fidelity recorded foley, close-miked, crisp transient, rich body, natural short tail; single isolated sound; dry with only a subtle natural room; no music, no voice, no melody, no chiptune, no synth beeps, no background noise; broadcast-quality, production-ready.",
+    "prompt_influence": 0.5,
+    "loop": false,
+    "variants": 2,
+    "requested_format": "mp3_44100_192"
+  },
+  "mastering": "trim + peak-normalize(-1 dBFS) + edge-fades",
+  "source": "elevenlabs text-to-sound-effects (eleven_text_to_sound_v2)",
+  "feel": "organic, homely",
+  "mix_gain_db": -4,
+  "variation": {
+    "round_robin": true,
+    "no_immediate_repeat": true,
+    "pitch_jitter_semitones": [
+      -1.0,
+      1.0
+    ],
+    "gain_jitter_db": [
+      -2.0,
+      2.0
+    ],
+    "start_jitter_ms": [
+      0,
+      15
+    ]
+  },
+  "schema": "audio-metadata/1",
+  "asset_type": "sfx",
+  "music": {
+    "tonal": false,
+    "root_midi": null,
+    "note": null,
+    "fundamental_hz": null,
+    "cents_off": null,
+    "pitch_confidence": 0.365,
+    "max_shift_semitones": 0,
+    "scale_snap_replaces_jitter": false,
+    "tonality": "atonal",
+    "spectral_flatness": 0.032
+  },
+  "envelope": {
+    "duration_ms": 497.4,
+    "onset_ms": 1.2,
+    "peak_ms": 97.4,
+    "attack_ms": 96.3,
+    "peak_dbfs": -1.0,
+    "rms": 0.0832,
+    "crest": 10.7
+  },
+  "sync_points": [
+    {
+      "t_ms": 97.4,
+      "name": "transient",
+      "note": "main attack \u2014 measured; safe sync/trigger point"
+    }
+  ]
+}

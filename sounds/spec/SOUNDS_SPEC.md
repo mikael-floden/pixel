@@ -43,7 +43,7 @@ sounds/
   <category>/<id>/          ONE sound per folder (category ∈ ui|item|tool|movement|combat|feedback)
     <id>.wav                AAA AI output: mastered 48 kHz mono WAV (primary take)
     <id>__take01.wav …      extra takes when variants > 1 (human picks the best)
-    sound.json              the manifest (the contract; read this)
+    metadata.json              the manifest (the contract; read this)
   viewer_data.json          rolled-up index of every sound (for games / the viewer)
   index.html                phone-friendly gallery with audio players
 ```
@@ -51,7 +51,7 @@ sounds/
 Every path in a manifest is **repo-relative** and starts with the category, so it
 resolves the same on disk or over HTTP.
 
-### `sound.json` fields
+### `metadata.json` fields
 
 | Field | Meaning |
 |-------|---------|
@@ -63,7 +63,14 @@ resolves the same on disk or over HTTP.
 | `audio` | duration, sample rate (48 kHz), channels, bit depth, peak dBFS |
 | `ai` | `{provider, model_id, prompt, prompt_influence, loop, variants}` |
 | `mastering` | the post-processing applied (trim + normalize + fades) |
+| `feel`, `mix_gain_db`, `variation` | composer-facing: emotional intent, SFX-vs-music balance, anti-repetition (round-robin + jitter) |
+| `music` | **MEASURED** pitch/tonality: `{tonal, root_midi, note, pitch_confidence, max_shift_semitones, scale_snap_replaces_jitter, ...}` — lets the composer scale-match tonal SFX to the music's key (never foley) |
+| `envelope`, `sync_points` | **MEASURED** sub-second timing (onset/peak/attack) + named trigger points for effect sync |
 | `source` | free-text provenance |
+
+> Full per-asset schema (shared with the `music/` domain, consumed by the composer):
+> [`METADATA.md`](METADATA.md). Musical/timing fields are **measured from the
+> rendered audio** (`pipeline/analyze.py`), never written from intention.
 
 ## Quality & mastering
 

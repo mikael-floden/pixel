@@ -1,0 +1,95 @@
+{
+  "manifest_version": 1,
+  "id": "chest_close",
+  "name": "Chest Close",
+  "category": "item",
+  "description": "a short wooden thud as a chest lid closes",
+  "tags": [
+    "chest",
+    "close",
+    "container",
+    "thud",
+    "wood"
+  ],
+  "usage": "Closing wooden_chest / containers.",
+  "loop": false,
+  "engine": "ai",
+  "license": "CC0-1.0",
+  "status": "complete",
+  "quality": "aaa",
+  "file": "item/chest_close/chest_close__take01.wav",
+  "format": "wav",
+  "audio": {
+    "samples": 23816,
+    "duration_seconds": 0.496,
+    "sample_rate": 48000,
+    "channels": 1,
+    "bit_depth": 16,
+    "peak_dbfs": -1.0,
+    "requested_format": "mp3_44100_192",
+    "delivered": "mp3"
+  },
+  "takes": [
+    "item/chest_close/chest_close__take01.wav",
+    "item/chest_close/chest_close__take02.wav"
+  ],
+  "ai": {
+    "provider": "elevenlabs",
+    "model_id": "eleven_text_to_sound_v2",
+    "prompt": "A heavy wooden chest lid closing: a solid deep wooden thud with an iron latch click and a short low resonance. High-fidelity recorded foley, close-miked, crisp transient, rich body, natural short tail; single isolated sound; dry with only a subtle natural room; no music, no voice, no melody, no chiptune, no synth beeps, no background noise; broadcast-quality, production-ready.",
+    "prompt_influence": 0.5,
+    "loop": false,
+    "variants": 2,
+    "requested_format": "mp3_44100_192"
+  },
+  "mastering": "trim + peak-normalize(-1 dBFS) + edge-fades",
+  "source": "elevenlabs text-to-sound-effects (eleven_text_to_sound_v2)",
+  "feel": "tactile, solid",
+  "mix_gain_db": -4,
+  "variation": {
+    "round_robin": true,
+    "no_immediate_repeat": true,
+    "pitch_jitter_semitones": [
+      -1.0,
+      1.0
+    ],
+    "gain_jitter_db": [
+      -2.0,
+      2.0
+    ],
+    "start_jitter_ms": [
+      0,
+      15
+    ]
+  },
+  "schema": "audio-metadata/1",
+  "asset_type": "sfx",
+  "music": {
+    "tonal": false,
+    "root_midi": null,
+    "note": null,
+    "fundamental_hz": null,
+    "cents_off": null,
+    "pitch_confidence": 0.354,
+    "max_shift_semitones": 0,
+    "scale_snap_replaces_jitter": false,
+    "tonality": "atonal",
+    "spectral_flatness": 0.041
+  },
+  "envelope": {
+    "duration_ms": 496.2,
+    "onset_ms": 29.9,
+    "peak_ms": 53.7,
+    "attack_ms": 23.7,
+    "peak_dbfs": -1.0,
+    "rms": 0.079,
+    "crest": 11.3
+  },
+  "sync_points": [
+    {
+      "t_ms": 53.7,
+      "name": "transient",
+      "note": "main attack \u2014 measured; safe sync/trigger point"
+    }
+  ]
+}

@@ -87,13 +87,13 @@ ready; the moment the key exists the loop produces the real assets.)
 ## What is a "sound"?
 
 One sound = **one folder** `sounds/<category>/<id>/`, holding the audio file(s) plus
-`sound.json` (the manifest). Categories: `ui`, `item`, `tool`, `movement`, `combat`,
+`metadata.json` (the manifest). Categories: `ui`, `item`, `tool`, `movement`, `combat`,
 `feedback`.
 
 ```
 sounds/tool/sword_hit/
   sword_hit.wav        48 kHz mono WAV, mastered (or sword_hit__take01.wav … for variants)
-  sound.json           the manifest describing it
+  metadata.json           the manifest describing it
 ```
 
 ---
@@ -101,11 +101,11 @@ sounds/tool/sword_hit/
 ## Using the sounds in a game
 
 Read **`sounds/viewer_data.json`** for the whole catalog, or a single
-`sounds/<category>/<id>/sound.json`. All paths are repo-relative and start with the
+`sounds/<category>/<id>/metadata.json`. All paths are repo-relative and start with the
 category, so they resolve on disk or over HTTP (served at
 `/assets/sounds/<category>/<id>/<file>`).
 
-### `sound.json` fields
+### `metadata.json` fields
 
 ```jsonc
 {
@@ -123,9 +123,24 @@ category, so they resolve on disk or over HTTP (served at
   "audio": { "duration_seconds": 0.6, "sample_rate": 48000, "channels": 1, "bit_depth": 16, "peak_dbfs": -1.0 },
   "takes": ["tool/sword_hit/sword_hit__take01.wav", "tool/sword_hit/sword_hit__take02.wav"],
   "ai": { "provider": "elevenlabs", "model_id": "eleven_text_to_sound_v2", "prompt": "…full foley brief…", "prompt_influence": 0.5, "variants": 2 },
-  "mastering": "trim + peak-normalize(-1 dBFS) + edge-fades"
+  "mastering": "trim + peak-normalize(-1 dBFS) + edge-fades",
+
+  // composer-facing (see spec/METADATA.md) — MEASURED from the rendered audio:
+  "feel": "impactful, sharp", "mix_gain_db": -2,
+  "variation": { "round_robin": true, "pitch_jitter_semitones": [-2,2], "gain_jitter_db": [-3,3] },
+  "music": { "tonal": false, "root_midi": null, "pitch_confidence": 0.19, "max_shift_semitones": 0,
+             "scale_snap_replaces_jitter": false },   // tonal chimes get root_midi + ±3 so the composer keys them to the music
+  "envelope": { "onset_ms": 0.3, "peak_ms": 6.3, "attack_ms": 6.0 },
+  "sync_points": [ { "t_ms": 6.3, "name": "transient" } ]
 }
 ```
+
+**Every asset carries a `metadata.json`** — the shared cross-domain convention (same
+file in the `music/` domain) that the **composer** (`games2/composer`) consumes to
+bind + mix without listening. Musical/timing fields (`music`, `envelope`,
+`sync_points`) are **measured from the rendered WAV** (`pipeline/analyze.py`), so
+tonal SFX can be pitched into the music's key and effects synced to the transient.
+Full schema + composer usage: [`spec/METADATA.md`](spec/METADATA.md).
 
 ### How to load it (web / Phaser)
 

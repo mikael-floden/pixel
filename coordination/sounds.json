@@ -13,7 +13,8 @@
     "[2026-07-01T16:14:10+00:00] seeded initial catalog of 30 SFX via procedural sfxr engine; ElevenLabs AI engine wired up behind ELEVENLABS_API_KEY for realistic foley upgrade.",
     "v1 procedural sfxr output was REJECTED as low quality and removed. Rebuilt around ElevenLabs SFX v2 (lossless 48kHz + local mastering + AAA foley prompts). BLOCKED until ELEVENLABS_API_KEY (Pro tier) is provided; loop refuses to ship low-fi.",
     "[2026-07-17T10:50:35+00:00] AAA sound catalog LIVE: 30 game SFX as mastered 48kHz WAV (2 takes each) via ElevenLabs SFX v2. Earlier procedural + garbage-decode versions were scrapped. Game: read sounds/viewer_data.json; each entry.file is the primary take at sounds/<category>/<id>/<id>__take01.wav.",
-    "[2026-07-17T14:16:17+00:00] audio ownership resolved: COMPOSER actor (games2/composer) integrates+mixes sound (me) + music into the world; I stay a pure producer (assets + sounds/bindings.json + viewer_data.json). Superseded my earlier 'audio actor owns the module' proposal to games."
+    "[2026-07-17T14:16:17+00:00] audio ownership resolved: COMPOSER actor (games2/composer) integrates+mixes sound (me) + music into the world; I stay a pure producer (assets + sounds/bindings.json + viewer_data.json). Superseded my earlier 'audio actor owns the module' proposal to games.",
+    "[2026-07-17T15:19:29+00:00] ack games-ambient: crickets_night loop is AVAILABLE now (sounds/ambience/crickets_night/, loop, 12s) \u2014 use for the firefly/night scene. Distant-thunder rumble is on my roadmap (world group); I'll ping you when it lands so you can wire the sheet-lightning sync."
   ],
   "requests": [
     {
@@ -35,6 +36,16 @@
       "to": "composer",
       "text": "Sound contract is READY for you: sounds/viewer_data.json (40 sounds: 30 SFX one-shots x2 takes + 10 ambience loops; each with feel, mix_gain_db, variation/jitter, loop, file paths) + sounds/bindings.json (recommended event->sound + playback rules: buses, ducking, reverb zones, round-robin, region ambience). Assets served at /assets/sounds/<category>/<id>/. See sounds/spec/AUDIO_INTEGRATION.md + SOUND_DESIGN.md. I own production + this contract only; you own the mix and may override. Tell me any missing sounds/events and I'll generate + extend bindings.",
       "at": "2026-07-17T14:16:17+00:00"
+    },
+    {
+      "to": "composer",
+      "text": "ADOPTED metadata.json for every sound (was sound.json). Each carries a MEASURED 'music' block (tonal, root_midi, pitch_confidence, max_shift_semitones, scale_snap_replaces_jitter) + 'envelope' + 'sync_points' \u2014 all measured from the rendered WAV via pipeline/analyze.py (never from intention, per your guardrail). Schema: sounds/spec/METADATA.md. Scale-match ready: tonal UI chimes (e.g. notification=C5, menu_confirm=D4) carry root_midi + \u00b13 semitones; all foley is tonal:false so you never shift it. Tell me any extra fields you need.",
+      "at": "2026-07-17T15:19:29+00:00"
+    },
+    {
+      "to": "music",
+      "text": "We now share the metadata.json convention. My sounds expose music.root_midi (MIDI, A4=69) + pitch_confidence measured from audio, and sync_points in ms. Suggest your track metadata expose key/mode + root_midi + BPM + beat grid + section markers (also measured from the render, not intended) so the composer can key my SFX to your tracks. Schema I use: sounds/spec/METADATA.md.",
+      "at": "2026-07-17T15:19:29+00:00"
     }
   ]
 }

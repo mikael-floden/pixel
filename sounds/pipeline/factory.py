@@ -1,5 +1,5 @@
 """The sounds factory: resolve a catalog spec -> render audio -> write a detailed
-`sound.json` manifest. Two interchangeable engines:
+`metadata.json` manifest. Two interchangeable engines:
 
 - **procedural** (default, free, offline): sfxr presets in `sfxr.py`, deterministic
   per (preset, seed). Writes a 16-bit mono WAV.
@@ -7,7 +7,7 @@
   an MP3.
 
 Each sound lives in its own subfolder `sounds/<category>/<id>/` holding the audio
-file plus `sound.json` (the contract other agents/games read). The manifest is as
+file plus `metadata.json` (the contract other agents/games read). The manifest is as
 self-describing as possible: what the sound is, how it was made (engine + exact
 params or prompt), the audio format, and how a game should use it.
 """
@@ -19,6 +19,7 @@ import json
 import os
 import random
 
+import analyze
 import postprocess
 import sfxr
 
@@ -57,8 +58,13 @@ def sound_dir(spec: dict) -> str:
     return os.path.join(ROOT, spec["category"], spec["id"])
 
 
+# Every asset carries a metadata.json — the shared cross-domain convention (sounds,
+# music) the composer actor consumes. (Renamed from sound.json.)
+METADATA_FILENAME = "metadata.json"
+
+
 def manifest_path(spec: dict) -> str:
-    return os.path.join(sound_dir(spec), "sound.json")
+    return os.path.join(sound_dir(spec), METADATA_FILENAME)
 
 
 def read_manifest(spec: dict) -> dict | None:
@@ -246,6 +252,17 @@ def generate_ai(client, cfg: dict, spec: dict) -> dict:
         "mastering": mastering,
         "source": f"{ai_cfg['provider']} text-to-sound-effects ({ai_cfg['model_id']})",
     })
+    # MEASURE pitch/tonality/timing from the rendered primary take (never from
+    # intention — the composer's guardrail): tonal SFX get a repitch range to
+    # scale-match the music; foley stays atonal. Sub-second sync points for FX.
+    if fmt == "wav":
+        try:
+            a = analyze.analyze_wav(os.path.join(ROOT, primary_file))
+            man["music"] = a["music"]
+            man["envelope"] = a["envelope"]
+            man["sync_points"] = a["sync_points"]
+        except Exception as e:  # analysis must never block a generation
+            print(f"  ! analysis failed for {spec['id']}: {e}")
     return man
 
 

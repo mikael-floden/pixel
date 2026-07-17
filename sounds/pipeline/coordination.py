@@ -45,7 +45,7 @@ def read_peers() -> dict:
 def _default_notes():
     return ["sounds domain: game SFX one-shots (UI, items, tools, movement, "
             "combat, feedback). Each sound = sounds/<category>/<id>/ with a WAV/MP3 "
-            "+ sound.json. Default engine is free procedural sfxr; set "
+            "+ metadata.json. Default engine is free procedural sfxr; set "
             "ELEVENLABS_API_KEY for realistic AI foley. Games: read "
             "sounds/viewer_data.json for the whole catalog."]
 

@@ -1,7 +1,7 @@
 """The sounds loop.
 
 Each **unit** of work is one sound: render the audio (procedural sfxr by default,
-ElevenLabs AI when a key is present), write its `sound.json`, rebuild the viewer
+ElevenLabs AI when a key is present), write its `metadata.json`, rebuild the viewer
 index, refresh the coordination heartbeat, then commit + push. The next missing
 unit is derived purely from the filesystem, so the loop is fully **resumable** —
 stop it any time and the next run continues where it left off.
