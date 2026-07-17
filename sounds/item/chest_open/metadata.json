@@ -91,5 +91,29 @@
       "name": "transient",
       "note": "main attack \u2014 measured; safe sync/trigger point"
     }
-  ]
+  ],
+  "delivery": {
+    "formats": {
+      "wav": {
+        "file": "item/chest_open/chest_open__take01.wav",
+        "bytes": 77888,
+        "codec": "pcm_s16le",
+        "role": "master"
+      },
+      "m4a": {
+        "file": "item/chest_open/chest_open__take01.m4a",
+        "bytes": 13514,
+        "codec": "aac"
+      },
+      "ogg": {
+        "file": "item/chest_open/chest_open__take01.ogg",
+        "bytes": 15063,
+        "codec": "libvorbis"
+      }
+    },
+    "web_source_order": [
+      "m4a",
+      "ogg"
+    ]
+  }
 }

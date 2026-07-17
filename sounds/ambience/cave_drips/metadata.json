@@ -90,5 +90,29 @@
       "name": "transient",
       "note": "main attack \u2014 measured; safe sync/trigger point"
     }
-  ]
+  ],
+  "delivery": {
+    "formats": {
+      "wav": {
+        "file": "ambience/cave_drips/cave_drips.wav",
+        "bytes": 1153714,
+        "codec": "pcm_s16le",
+        "role": "master"
+      },
+      "m4a": {
+        "file": "ambience/cave_drips/cave_drips.m4a",
+        "bytes": 196914,
+        "codec": "aac"
+      },
+      "ogg": {
+        "file": "ambience/cave_drips/cave_drips.ogg",
+        "bytes": 138666,
+        "codec": "libvorbis"
+      }
+    },
+    "web_source_order": [
+      "m4a",
+      "ogg"
+    ]
+  }
 }

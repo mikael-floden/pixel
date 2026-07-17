@@ -90,5 +90,29 @@
       "name": "transient",
       "note": "main attack \u2014 measured; safe sync/trigger point"
     }
-  ]
+  ],
+  "delivery": {
+    "formats": {
+      "wav": {
+        "file": "ambience/town_murmur/town_murmur.wav",
+        "bytes": 1153714,
+        "codec": "pcm_s16le",
+        "role": "master"
+      },
+      "m4a": {
+        "file": "ambience/town_murmur/town_murmur.m4a",
+        "bytes": 195661,
+        "codec": "aac"
+      },
+      "ogg": {
+        "file": "ambience/town_murmur/town_murmur.ogg",
+        "bytes": 149234,
+        "codec": "libvorbis"
+      }
+    },
+    "web_source_order": [
+      "m4a",
+      "ogg"
+    ]
+  }
 }

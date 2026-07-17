@@ -90,5 +90,29 @@
       "name": "transient",
       "note": "main attack \u2014 measured; safe sync/trigger point"
     }
-  ]
+  ],
+  "delivery": {
+    "formats": {
+      "wav": {
+        "file": "ambience/crickets_night/crickets_night.wav",
+        "bytes": 1153714,
+        "codec": "pcm_s16le",
+        "role": "master"
+      },
+      "m4a": {
+        "file": "ambience/crickets_night/crickets_night.m4a",
+        "bytes": 204146,
+        "codec": "aac"
+      },
+      "ogg": {
+        "file": "ambience/crickets_night/crickets_night.ogg",
+        "bytes": 218130,
+        "codec": "libvorbis"
+      }
+    },
+    "web_source_order": [
+      "m4a",
+      "ogg"
+    ]
+  }
 }

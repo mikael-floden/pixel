@@ -91,5 +91,29 @@
       "name": "transient",
       "note": "main attack \u2014 measured; safe sync/trigger point"
     }
-  ]
+  ],
+  "delivery": {
+    "formats": {
+      "wav": {
+        "file": "combat/magic_cast/magic_cast__take01.wav",
+        "bytes": 67856,
+        "codec": "pcm_s16le",
+        "role": "master"
+      },
+      "m4a": {
+        "file": "combat/magic_cast/magic_cast__take01.m4a",
+        "bytes": 12102,
+        "codec": "aac"
+      },
+      "ogg": {
+        "file": "combat/magic_cast/magic_cast__take01.ogg",
+        "bytes": 13235,
+        "codec": "libvorbis"
+      }
+    },
+    "web_source_order": [
+      "m4a",
+      "ogg"
+    ]
+  }
 }

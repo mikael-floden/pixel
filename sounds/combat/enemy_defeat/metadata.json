@@ -91,5 +91,29 @@
       "name": "transient",
       "note": "main attack \u2014 measured; safe sync/trigger point"
     }
-  ]
+  ],
+  "delivery": {
+    "formats": {
+      "wav": {
+        "file": "combat/enemy_defeat/enemy_defeat__take01.wav",
+        "bytes": 47794,
+        "codec": "pcm_s16le",
+        "role": "master"
+      },
+      "m4a": {
+        "file": "combat/enemy_defeat/enemy_defeat__take01.m4a",
+        "bytes": 8923,
+        "codec": "aac"
+      },
+      "ogg": {
+        "file": "combat/enemy_defeat/enemy_defeat__take01.ogg",
+        "bytes": 10670,
+        "codec": "libvorbis"
+      }
+    },
+    "web_source_order": [
+      "m4a",
+      "ogg"
+    ]
+  }
 }

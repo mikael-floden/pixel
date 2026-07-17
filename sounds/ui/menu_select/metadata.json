@@ -91,5 +91,29 @@
       "name": "transient",
       "note": "main attack \u2014 measured; safe sync/trigger point"
     }
-  ]
+  ],
+  "delivery": {
+    "formats": {
+      "wav": {
+        "file": "ui/menu_select/menu_select__take01.wav",
+        "bytes": 47794,
+        "codec": "pcm_s16le",
+        "role": "master"
+      },
+      "m4a": {
+        "file": "ui/menu_select/menu_select__take01.m4a",
+        "bytes": 8776,
+        "codec": "aac"
+      },
+      "ogg": {
+        "file": "ui/menu_select/menu_select__take01.ogg",
+        "bytes": 10595,
+        "codec": "libvorbis"
+      }
+    },
+    "web_source_order": [
+      "m4a",
+      "ogg"
+    ]
+  }
 }

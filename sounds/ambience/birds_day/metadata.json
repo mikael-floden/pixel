@@ -90,5 +90,29 @@
       "name": "transient",
       "note": "main attack \u2014 measured; safe sync/trigger point"
     }
-  ]
+  ],
+  "delivery": {
+    "formats": {
+      "wav": {
+        "file": "ambience/birds_day/birds_day.wav",
+        "bytes": 1153714,
+        "codec": "pcm_s16le",
+        "role": "master"
+      },
+      "m4a": {
+        "file": "ambience/birds_day/birds_day.m4a",
+        "bytes": 195488,
+        "codec": "aac"
+      },
+      "ogg": {
+        "file": "ambience/birds_day/birds_day.ogg",
+        "bytes": 158662,
+        "codec": "libvorbis"
+      }
+    },
+    "web_source_order": [
+      "m4a",
+      "ogg"
+    ]
+  }
 }

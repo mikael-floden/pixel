@@ -30,6 +30,30 @@
       "format": "wav",
       "loop": false,
       "file": "ui/coin_pickup/coin_pickup__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "ui/coin_pickup/coin_pickup__take01.wav",
+            "bytes": 47794,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "ui/coin_pickup/coin_pickup__take01.m4a",
+            "bytes": 8799,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "ui/coin_pickup/coin_pickup__take01.ogg",
+            "bytes": 9970,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "ui/coin_pickup/coin_pickup__take01.wav",
         "ui/coin_pickup/coin_pickup__take02.wav"
@@ -99,6 +123,30 @@
       "format": "wav",
       "loop": false,
       "file": "ui/gem_pickup/gem_pickup__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "ui/gem_pickup/gem_pickup__take01.wav",
+            "bytes": 57826,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "ui/gem_pickup/gem_pickup__take01.m4a",
+            "bytes": 10574,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "ui/gem_pickup/gem_pickup__take01.ogg",
+            "bytes": 11285,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "ui/gem_pickup/gem_pickup__take01.wav",
         "ui/gem_pickup/gem_pickup__take02.wav"
@@ -168,6 +216,30 @@
       "format": "wav",
       "loop": false,
       "file": "ui/item_get/item_get__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "ui/item_get/item_get__take01.wav",
+            "bytes": 85410,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "ui/item_get/item_get__take01.m4a",
+            "bytes": 14951,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "ui/item_get/item_get__take01.ogg",
+            "bytes": 15375,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "ui/item_get/item_get__take01.wav",
         "ui/item_get/item_get__take02.wav"
@@ -237,6 +309,30 @@
       "format": "wav",
       "loop": false,
       "file": "ui/menu_select/menu_select__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "ui/menu_select/menu_select__take01.wav",
+            "bytes": 47794,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "ui/menu_select/menu_select__take01.m4a",
+            "bytes": 8776,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "ui/menu_select/menu_select__take01.ogg",
+            "bytes": 10595,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "ui/menu_select/menu_select__take01.wav",
         "ui/menu_select/menu_select__take02.wav"
@@ -306,6 +402,30 @@
       "format": "wav",
       "loop": false,
       "file": "ui/menu_confirm/menu_confirm__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "ui/menu_confirm/menu_confirm__take01.wav",
+            "bytes": 47794,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "ui/menu_confirm/menu_confirm__take01.m4a",
+            "bytes": 8810,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "ui/menu_confirm/menu_confirm__take01.ogg",
+            "bytes": 9395,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "ui/menu_confirm/menu_confirm__take01.wav",
         "ui/menu_confirm/menu_confirm__take02.wav"
@@ -375,6 +495,30 @@
       "format": "wav",
       "loop": false,
       "file": "ui/menu_cancel/menu_cancel__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "ui/menu_cancel/menu_cancel__take01.wav",
+            "bytes": 47794,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "ui/menu_cancel/menu_cancel__take01.m4a",
+            "bytes": 8813,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "ui/menu_cancel/menu_cancel__take01.ogg",
+            "bytes": 10047,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "ui/menu_cancel/menu_cancel__take01.wav",
         "ui/menu_cancel/menu_cancel__take02.wav"
@@ -444,6 +588,30 @@
       "format": "wav",
       "loop": false,
       "file": "ui/error_buzz/error_buzz__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "ui/error_buzz/error_buzz__take01.wav",
+            "bytes": 47794,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "ui/error_buzz/error_buzz__take01.m4a",
+            "bytes": 8969,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "ui/error_buzz/error_buzz__take01.ogg",
+            "bytes": 10047,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "ui/error_buzz/error_buzz__take01.wav",
         "ui/error_buzz/error_buzz__take02.wav"
@@ -513,6 +681,30 @@
       "format": "wav",
       "loop": false,
       "file": "ui/notification/notification__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "ui/notification/notification__take01.wav",
+            "bytes": 47794,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "ui/notification/notification__take01.m4a",
+            "bytes": 8857,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "ui/notification/notification__take01.ogg",
+            "bytes": 9096,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "ui/notification/notification__take01.wav",
         "ui/notification/notification__take02.wav"
@@ -582,6 +774,30 @@
       "format": "wav",
       "loop": false,
       "file": "item/chest_open/chest_open__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "item/chest_open/chest_open__take01.wav",
+            "bytes": 77888,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "item/chest_open/chest_open__take01.m4a",
+            "bytes": 13514,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "item/chest_open/chest_open__take01.ogg",
+            "bytes": 15063,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "item/chest_open/chest_open__take01.wav",
         "item/chest_open/chest_open__take02.wav"
@@ -651,6 +867,30 @@
       "format": "wav",
       "loop": false,
       "file": "item/chest_close/chest_close__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "item/chest_close/chest_close__take01.wav",
+            "bytes": 47676,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "item/chest_close/chest_close__take01.m4a",
+            "bytes": 8739,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "item/chest_close/chest_close__take01.ogg",
+            "bytes": 9456,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "item/chest_close/chest_close__take01.wav",
         "item/chest_close/chest_close__take02.wav"
@@ -720,6 +960,30 @@
       "format": "wav",
       "loop": false,
       "file": "item/key_unlock/key_unlock__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "item/key_unlock/key_unlock__take01.wav",
+            "bytes": 47794,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "item/key_unlock/key_unlock__take01.m4a",
+            "bytes": 8848,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "item/key_unlock/key_unlock__take01.ogg",
+            "bytes": 11331,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "item/key_unlock/key_unlock__take01.wav",
         "item/key_unlock/key_unlock__take02.wav"
@@ -789,6 +1053,30 @@
       "format": "wav",
       "loop": false,
       "file": "item/drink_potion/drink_potion__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "item/drink_potion/drink_potion__take01.wav",
+            "bytes": 67856,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "item/drink_potion/drink_potion__take01.m4a",
+            "bytes": 11980,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "item/drink_potion/drink_potion__take01.ogg",
+            "bytes": 13079,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "item/drink_potion/drink_potion__take01.wav",
         "item/drink_potion/drink_potion__take02.wav"
@@ -858,6 +1146,30 @@
       "format": "wav",
       "loop": false,
       "file": "item/eat_food/eat_food__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "item/eat_food/eat_food__take01.wav",
+            "bytes": 47794,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "item/eat_food/eat_food__take01.m4a",
+            "bytes": 8820,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "item/eat_food/eat_food__take01.ogg",
+            "bytes": 11784,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "item/eat_food/eat_food__take01.wav",
         "item/eat_food/eat_food__take02.wav"
@@ -927,6 +1239,30 @@
       "format": "wav",
       "loop": false,
       "file": "tool/sword_swing/sword_swing__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "tool/sword_swing/sword_swing__take01.wav",
+            "bytes": 47794,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "tool/sword_swing/sword_swing__take01.m4a",
+            "bytes": 8792,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "tool/sword_swing/sword_swing__take01.ogg",
+            "bytes": 10526,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "tool/sword_swing/sword_swing__take01.wav",
         "tool/sword_swing/sword_swing__take02.wav"
@@ -997,6 +1333,30 @@
       "format": "wav",
       "loop": false,
       "file": "tool/sword_hit/sword_hit__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "tool/sword_hit/sword_hit__take01.wav",
+            "bytes": 47794,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "tool/sword_hit/sword_hit__take01.m4a",
+            "bytes": 8796,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "tool/sword_hit/sword_hit__take01.ogg",
+            "bytes": 10201,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "tool/sword_hit/sword_hit__take01.wav",
         "tool/sword_hit/sword_hit__take02.wav"
@@ -1067,6 +1427,30 @@
       "format": "wav",
       "loop": false,
       "file": "tool/axe_chop/axe_chop__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "tool/axe_chop/axe_chop__take01.wav",
+            "bytes": 47794,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "tool/axe_chop/axe_chop__take01.m4a",
+            "bytes": 8800,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "tool/axe_chop/axe_chop__take01.ogg",
+            "bytes": 10037,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "tool/axe_chop/axe_chop__take01.wav",
         "tool/axe_chop/axe_chop__take02.wav"
@@ -1137,6 +1521,30 @@
       "format": "wav",
       "loop": false,
       "file": "tool/pickaxe_hit/pickaxe_hit__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "tool/pickaxe_hit/pickaxe_hit__take01.wav",
+            "bytes": 47794,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "tool/pickaxe_hit/pickaxe_hit__take01.m4a",
+            "bytes": 8838,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "tool/pickaxe_hit/pickaxe_hit__take01.ogg",
+            "bytes": 11308,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "tool/pickaxe_hit/pickaxe_hit__take01.wav",
         "tool/pickaxe_hit/pickaxe_hit__take02.wav"
@@ -1207,6 +1615,30 @@
       "format": "wav",
       "loop": false,
       "file": "tool/hoe_till/hoe_till__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "tool/hoe_till/hoe_till__take01.wav",
+            "bytes": 47794,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "tool/hoe_till/hoe_till__take01.m4a",
+            "bytes": 8678,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "tool/hoe_till/hoe_till__take01.ogg",
+            "bytes": 11258,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "tool/hoe_till/hoe_till__take01.wav",
         "tool/hoe_till/hoe_till__take02.wav"
@@ -1276,6 +1708,30 @@
       "format": "wav",
       "loop": false,
       "file": "tool/watering_can/watering_can__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "tool/watering_can/watering_can__take01.wav",
+            "bytes": 47794,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "tool/watering_can/watering_can__take01.m4a",
+            "bytes": 8942,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "tool/watering_can/watering_can__take01.ogg",
+            "bytes": 10454,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "tool/watering_can/watering_can__take01.wav",
         "tool/watering_can/watering_can__take02.wav"
@@ -1345,6 +1801,30 @@
       "format": "wav",
       "loop": false,
       "file": "movement/footstep_grass/footstep_grass__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "movement/footstep_grass/footstep_grass__take01.wav",
+            "bytes": 47794,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "movement/footstep_grass/footstep_grass__take01.m4a",
+            "bytes": 8810,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "movement/footstep_grass/footstep_grass__take01.ogg",
+            "bytes": 9940,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "movement/footstep_grass/footstep_grass__take01.wav",
         "movement/footstep_grass/footstep_grass__take02.wav"
@@ -1415,6 +1895,30 @@
       "format": "wav",
       "loop": false,
       "file": "movement/footstep_stone/footstep_stone__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "movement/footstep_stone/footstep_stone__take01.wav",
+            "bytes": 47794,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "movement/footstep_stone/footstep_stone__take01.m4a",
+            "bytes": 8835,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "movement/footstep_stone/footstep_stone__take01.ogg",
+            "bytes": 12125,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "movement/footstep_stone/footstep_stone__take01.wav",
         "movement/footstep_stone/footstep_stone__take02.wav"
@@ -1485,6 +1989,30 @@
       "format": "wav",
       "loop": false,
       "file": "movement/footstep_wood/footstep_wood__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "movement/footstep_wood/footstep_wood__take01.wav",
+            "bytes": 47794,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "movement/footstep_wood/footstep_wood__take01.m4a",
+            "bytes": 8838,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "movement/footstep_wood/footstep_wood__take01.ogg",
+            "bytes": 10060,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "movement/footstep_wood/footstep_wood__take01.wav",
         "movement/footstep_wood/footstep_wood__take02.wav"
@@ -1554,6 +2082,30 @@
       "format": "wav",
       "loop": false,
       "file": "movement/jump/jump__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "movement/jump/jump__take01.wav",
+            "bytes": 47794,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "movement/jump/jump__take01.m4a",
+            "bytes": 8881,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "movement/jump/jump__take01.ogg",
+            "bytes": 9993,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "movement/jump/jump__take01.wav",
         "movement/jump/jump__take02.wav"
@@ -1623,6 +2175,30 @@
       "format": "wav",
       "loop": false,
       "file": "movement/splash/splash__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "movement/splash/splash__take01.wav",
+            "bytes": 47794,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "movement/splash/splash__take01.m4a",
+            "bytes": 8790,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "movement/splash/splash__take01.ogg",
+            "bytes": 11643,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "movement/splash/splash__take01.wav",
         "movement/splash/splash__take02.wav"
@@ -1692,6 +2268,30 @@
       "format": "wav",
       "loop": false,
       "file": "combat/hit_hurt/hit_hurt__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "combat/hit_hurt/hit_hurt__take01.wav",
+            "bytes": 38504,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "combat/hit_hurt/hit_hurt__take01.m4a",
+            "bytes": 7492,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "combat/hit_hurt/hit_hurt__take01.ogg",
+            "bytes": 8829,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "combat/hit_hurt/hit_hurt__take01.wav",
         "combat/hit_hurt/hit_hurt__take02.wav"
@@ -1762,6 +2362,30 @@
       "format": "wav",
       "loop": false,
       "file": "combat/enemy_defeat/enemy_defeat__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "combat/enemy_defeat/enemy_defeat__take01.wav",
+            "bytes": 47794,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "combat/enemy_defeat/enemy_defeat__take01.m4a",
+            "bytes": 8923,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "combat/enemy_defeat/enemy_defeat__take01.ogg",
+            "bytes": 10670,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "combat/enemy_defeat/enemy_defeat__take01.wav",
         "combat/enemy_defeat/enemy_defeat__take02.wav"
@@ -1831,6 +2455,30 @@
       "format": "wav",
       "loop": false,
       "file": "combat/explosion/explosion__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "combat/explosion/explosion__take01.wav",
+            "bytes": 67856,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "combat/explosion/explosion__take01.m4a",
+            "bytes": 12152,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "combat/explosion/explosion__take01.ogg",
+            "bytes": 11476,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "combat/explosion/explosion__take01.wav",
         "combat/explosion/explosion__take02.wav"
@@ -1900,6 +2548,30 @@
       "format": "wav",
       "loop": false,
       "file": "combat/magic_cast/magic_cast__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "combat/magic_cast/magic_cast__take01.wav",
+            "bytes": 67856,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "combat/magic_cast/magic_cast__take01.m4a",
+            "bytes": 12102,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "combat/magic_cast/magic_cast__take01.ogg",
+            "bytes": 13235,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "combat/magic_cast/magic_cast__take01.wav",
         "combat/magic_cast/magic_cast__take02.wav"
@@ -1969,6 +2641,30 @@
       "format": "wav",
       "loop": false,
       "file": "feedback/level_up/level_up__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "feedback/level_up/level_up__take01.wav",
+            "bytes": 97950,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "feedback/level_up/level_up__take01.m4a",
+            "bytes": 16714,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "feedback/level_up/level_up__take01.ogg",
+            "bytes": 16899,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "feedback/level_up/level_up__take01.wav",
         "feedback/level_up/level_up__take02.wav"
@@ -2038,6 +2734,30 @@
       "format": "wav",
       "loop": false,
       "file": "feedback/quest_complete/quest_complete__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "feedback/quest_complete/quest_complete__take01.wav",
+            "bytes": 97950,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "feedback/quest_complete/quest_complete__take01.m4a",
+            "bytes": 16688,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "feedback/quest_complete/quest_complete__take01.ogg",
+            "bytes": 16941,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "feedback/quest_complete/quest_complete__take01.wav",
         "feedback/quest_complete/quest_complete__take02.wav"
@@ -2107,6 +2827,30 @@
       "format": "wav",
       "loop": true,
       "file": "ambience/birds_day/birds_day.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "ambience/birds_day/birds_day.wav",
+            "bytes": 1153714,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "ambience/birds_day/birds_day.m4a",
+            "bytes": 195488,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "ambience/birds_day/birds_day.ogg",
+            "bytes": 158662,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "ambience/birds_day/birds_day.wav"
       ],
@@ -2175,6 +2919,30 @@
       "format": "wav",
       "loop": true,
       "file": "ambience/crickets_night/crickets_night.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "ambience/crickets_night/crickets_night.wav",
+            "bytes": 1153714,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "ambience/crickets_night/crickets_night.m4a",
+            "bytes": 204146,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "ambience/crickets_night/crickets_night.ogg",
+            "bytes": 218130,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "ambience/crickets_night/crickets_night.wav"
       ],
@@ -2242,6 +3010,30 @@
       "format": "wav",
       "loop": true,
       "file": "ambience/wind/wind.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "ambience/wind/wind.wav",
+            "bytes": 1153714,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "ambience/wind/wind.m4a",
+            "bytes": 196263,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "ambience/wind/wind.ogg",
+            "bytes": 152472,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "ambience/wind/wind.wav"
       ],
@@ -2309,6 +3101,30 @@
       "format": "wav",
       "loop": true,
       "file": "ambience/rain/rain.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "ambience/rain/rain.wav",
+            "bytes": 1153714,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "ambience/rain/rain.m4a",
+            "bytes": 195689,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "ambience/rain/rain.ogg",
+            "bytes": 163212,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "ambience/rain/rain.wav"
       ],
@@ -2377,6 +3193,30 @@
       "format": "wav",
       "loop": true,
       "file": "ambience/ocean_waves/ocean_waves.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "ambience/ocean_waves/ocean_waves.wav",
+            "bytes": 1153714,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "ambience/ocean_waves/ocean_waves.m4a",
+            "bytes": 195803,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "ambience/ocean_waves/ocean_waves.ogg",
+            "bytes": 148885,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "ambience/ocean_waves/ocean_waves.wav"
       ],
@@ -2444,6 +3284,30 @@
       "format": "wav",
       "loop": true,
       "file": "ambience/river/river.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "ambience/river/river.wav",
+            "bytes": 1153714,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "ambience/river/river.m4a",
+            "bytes": 196151,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "ambience/river/river.ogg",
+            "bytes": 150626,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "ambience/river/river.wav"
       ],
@@ -2511,6 +3375,30 @@
       "format": "wav",
       "loop": true,
       "file": "ambience/fire_crackle/fire_crackle.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "ambience/fire_crackle/fire_crackle.wav",
+            "bytes": 1153714,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "ambience/fire_crackle/fire_crackle.m4a",
+            "bytes": 208962,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "ambience/fire_crackle/fire_crackle.ogg",
+            "bytes": 236572,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "ambience/fire_crackle/fire_crackle.wav"
       ],
@@ -2579,6 +3467,30 @@
       "format": "wav",
       "loop": true,
       "file": "ambience/cave_drips/cave_drips.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "ambience/cave_drips/cave_drips.wav",
+            "bytes": 1153714,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "ambience/cave_drips/cave_drips.m4a",
+            "bytes": 196914,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "ambience/cave_drips/cave_drips.ogg",
+            "bytes": 138666,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "ambience/cave_drips/cave_drips.wav"
       ],
@@ -2647,6 +3559,30 @@
       "format": "wav",
       "loop": true,
       "file": "ambience/town_murmur/town_murmur.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "ambience/town_murmur/town_murmur.wav",
+            "bytes": 1153714,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "ambience/town_murmur/town_murmur.m4a",
+            "bytes": 195661,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "ambience/town_murmur/town_murmur.ogg",
+            "bytes": 149234,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "ambience/town_murmur/town_murmur.wav"
       ],
@@ -2714,6 +3650,30 @@
       "format": "wav",
       "loop": true,
       "file": "ambience/forest/forest.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "ambience/forest/forest.wav",
+            "bytes": 1153714,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "ambience/forest/forest.m4a",
+            "bytes": 195402,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "ambience/forest/forest.ogg",
+            "bytes": 155599,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
       "takes": [
         "ambience/forest/forest.wav"
       ],

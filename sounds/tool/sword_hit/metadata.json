@@ -92,5 +92,29 @@
       "name": "transient",
       "note": "main attack \u2014 measured; safe sync/trigger point"
     }
-  ]
+  ],
+  "delivery": {
+    "formats": {
+      "wav": {
+        "file": "tool/sword_hit/sword_hit__take01.wav",
+        "bytes": 47794,
+        "codec": "pcm_s16le",
+        "role": "master"
+      },
+      "m4a": {
+        "file": "tool/sword_hit/sword_hit__take01.m4a",
+        "bytes": 8796,
+        "codec": "aac"
+      },
+      "ogg": {
+        "file": "tool/sword_hit/sword_hit__take01.ogg",
+        "bytes": 10201,
+        "codec": "libvorbis"
+      }
+    },
+    "web_source_order": [
+      "m4a",
+      "ogg"
+    ]
+  }
 }

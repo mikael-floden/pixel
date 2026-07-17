@@ -92,5 +92,29 @@
       "name": "transient",
       "note": "main attack \u2014 measured; safe sync/trigger point"
     }
-  ]
+  ],
+  "delivery": {
+    "formats": {
+      "wav": {
+        "file": "combat/hit_hurt/hit_hurt__take01.wav",
+        "bytes": 38504,
+        "codec": "pcm_s16le",
+        "role": "master"
+      },
+      "m4a": {
+        "file": "combat/hit_hurt/hit_hurt__take01.m4a",
+        "bytes": 7492,
+        "codec": "aac"
+      },
+      "ogg": {
+        "file": "combat/hit_hurt/hit_hurt__take01.ogg",
+        "bytes": 8829,
+        "codec": "libvorbis"
+      }
+    },
+    "web_source_order": [
+      "m4a",
+      "ogg"
+    ]
+  }
 }

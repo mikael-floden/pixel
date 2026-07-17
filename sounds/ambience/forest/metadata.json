@@ -89,5 +89,29 @@
       "name": "transient",
       "note": "main attack \u2014 measured; safe sync/trigger point"
     }
-  ]
+  ],
+  "delivery": {
+    "formats": {
+      "wav": {
+        "file": "ambience/forest/forest.wav",
+        "bytes": 1153714,
+        "codec": "pcm_s16le",
+        "role": "master"
+      },
+      "m4a": {
+        "file": "ambience/forest/forest.m4a",
+        "bytes": 195402,
+        "codec": "aac"
+      },
+      "ogg": {
+        "file": "ambience/forest/forest.ogg",
+        "bytes": 155599,
+        "codec": "libvorbis"
+      }
+    },
+    "web_source_order": [
+      "m4a",
+      "ogg"
+    ]
+  }
 }
