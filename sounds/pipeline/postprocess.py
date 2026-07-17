@@ -59,20 +59,24 @@ def _db_to_amp(db: float) -> float:
     return float(10.0 ** (db / 20.0))
 
 
-def trim_silence(x: np.ndarray, sr: int, thresh_db: float = -45.0,
-                 pad_ms: float = 8.0) -> np.ndarray:
-    """Trim leading/trailing audio below `thresh_db` (rel. to the clip's peak),
-    keeping `pad_ms` of headroom either side so transients aren't clipped."""
+def trim_silence(x: np.ndarray, sr: int, lead_db: float = -45.0,
+                 tail_db: float = -60.0, lead_pad_ms: float = 6.0,
+                 tail_pad_ms: float = 40.0) -> np.ndarray:
+    """Trim dead air, ASYMMETRICALLY: cut the leading silence tight (a −45 dB
+    gate — that's just latency), but keep the trailing DECAY (a much gentler
+    −60 dB gate + generous pad), so a natural ring-out / reverb tail survives
+    instead of being chopped to a click."""
     if x.size == 0:
         return x
     peak = float(np.max(np.abs(x))) or 1.0
-    gate = peak * _db_to_amp(thresh_db)
-    above = np.where(np.abs(x) >= gate)[0]
-    if above.size == 0:
+    lead_gate = peak * _db_to_amp(lead_db)
+    tail_gate = peak * _db_to_amp(tail_db)
+    above_lead = np.where(np.abs(x) >= lead_gate)[0]
+    above_tail = np.where(np.abs(x) >= tail_gate)[0]
+    if above_lead.size == 0 or above_tail.size == 0:
         return x
-    pad = int(sr * pad_ms / 1000.0)
-    start = max(0, above[0] - pad)
-    end = min(x.size, above[-1] + pad + 1)
+    start = max(0, above_lead[0] - int(sr * lead_pad_ms / 1000.0))
+    end = min(x.size, above_tail[-1] + int(sr * tail_pad_ms / 1000.0) + 1)
     return x[start:end]
 
 
