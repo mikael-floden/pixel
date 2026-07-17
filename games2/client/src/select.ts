@@ -49,10 +49,22 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     overlay.addEventListener("contextmenu", (e) => e.preventDefault());
     overlay.querySelectorAll<HTMLElement>(".ml-plated").forEach(pressFx);
 
-    // World picker: one chip per playable world (thumbnail + label).
+    // World picker: a SWIPE CAROUSEL, not a button grid (maintainer: the
+    // grid ate screen space and the picker is a game-under-development
+    // feature anyway). The selected world sits CENTRED, the strip LOOPS
+    // around, and the neighbours peek in from the edges as a hint of what
+    // a swipe brings. Chips are absolutely positioned by signed circular
+    // distance from the selection; a swipe drags the whole strip live and
+    // snaps on release; clicking a peeked neighbour selects it directly
+    // (which is also what the headless pickWorld(i) hook drives).
     const worldChips: HTMLElement[] = [];
     if (showWorlds) {
       const wrap = overlay.querySelector("#ml-worlds") as HTMLElement;
+      const n = worlds.length;
+      const CHIP_W = 210, GAP = 8, STEP = CHIP_W + GAP;
+      let dragDx = 0;
+      let swallowClick = false; // a real swipe must not click-select a chip
+      const prevD = new Map<HTMLElement, number>();
       worlds.forEach((w, i) => {
         const chip = el("button", "ml-world ml-plated");
         pressFx(chip);
@@ -60,19 +72,84 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
           const img = el("img", "ml-world-img") as HTMLImageElement;
           img.src = `/assets/${w.preview.replace(/^\/+/, "")}`;
           img.alt = w.label;
+          img.draggable = false; // native image drag would hijack the swipe
           chip.appendChild(img);
         }
         const span = el("span", "");
         span.textContent = w.label;
         chip.appendChild(span);
-        chip.addEventListener("click", () => selectWorld(i));
+        chip.addEventListener("click", () => {
+          if (!swallowClick) selectWorld(i);
+        });
         wrap.appendChild(chip);
         worldChips.push(chip);
       });
+      // Position every chip around the centre. d is the signed circular
+      // distance ((-n/2, n/2]), so the strip loops; a chip whose d JUMPS
+      // across the wrap (|Δd| > 1) teleports without transition — it's
+      // off-screen on both ends, and animating it would streak it across
+      // the visible middle.
+      const layout = (animate: boolean) => {
+        worldChips.forEach((chip, i) => {
+          let d = (((i - selectedWorld) % n) + n) % n;
+          if (d > n / 2) d -= n;
+          const wrapped = Math.abs(d - (prevD.get(chip) ?? d)) > 1.5;
+          prevD.set(chip, d);
+          chip.classList.toggle("anim", animate && !wrapped);
+          chip.style.transform = `translateX(calc(-50% + ${Math.round(d * STEP + dragDx)}px))`;
+        });
+      };
       function selectWorld(i: number) {
-        selectedWorld = i;
-        worldChips.forEach((c, j) => c.classList.toggle("sel", j === i));
+        selectedWorld = ((i % n) + n) % n;
+        worldChips.forEach((c, j) => c.classList.toggle("sel", j === selectedWorld));
+        layout(true);
       }
+      // Swipe: drag the strip live and snap to the nearest chip on release;
+      // a short flick past CHIP_W/4 still advances one step. Pointer capture
+      // is taken only ONCE the drag crosses the swipe threshold — capturing
+      // at pointerdown retargeted the derived click to the strip, so tapping
+      // a peeked neighbour never reached the chip's click handler.
+      let downX: number | null = null;
+      let captured = false;
+      wrap.addEventListener("pointerdown", (e) => {
+        downX = e.clientX;
+        captured = false;
+      });
+      wrap.addEventListener("pointermove", (e) => {
+        if (downX === null) return;
+        dragDx = e.clientX - downX;
+        if (!captured && Math.abs(dragDx) > 6) {
+          captured = true;
+          swallowClick = true;
+          wrap.setPointerCapture(e.pointerId); // keep the gesture off-row
+        }
+        layout(false);
+      });
+      const finish = () => {
+        if (downX === null) return;
+        const steps =
+          Math.round(-dragDx / STEP) ||
+          (Math.abs(dragDx) > CHIP_W / 4 ? -Math.sign(dragDx) : 0);
+        downX = null;
+        dragDx = 0;
+        selectWorld(selectedWorld + steps);
+        setTimeout(() => (swallowClick = false), 0); // click fires before this
+      };
+      wrap.addEventListener("pointerup", finish);
+      wrap.addEventListener("pointercancel", finish);
+      // Uncaptured pointers (pre-threshold) can exit the row without an up.
+      wrap.addEventListener("pointerleave", () => {
+        if (!captured) finish();
+      });
+      // Desktop nicety: the wheel steps the carousel too.
+      let wheelAt = 0;
+      wrap.addEventListener("wheel", (e) => {
+        e.preventDefault();
+        const now = performance.now();
+        if (now - wheelAt < 200) return;
+        wheelAt = now;
+        selectWorld(selectedWorld + Math.sign(e.deltaY || e.deltaX));
+      }, { passive: false });
       selectWorld(selectedWorld);
     }
 
@@ -285,14 +362,16 @@ function injectStyles() {
   .ml-plated{border-style:solid;border-width:13px;border-image:url(/ui2/plate-normal.png) 56 fill / 13px;
     background:none;image-rendering:pixelated;box-sizing:border-box;cursor:pointer;
     touch-action:manipulation;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
-  /* No nested scroll boxes: the panel is the ONE scroll context (the
-     maintainer's concept is a single scrolling page) — a capped inner box
-     silently hid the worlds that didn't fit (Trans Demo, on the phone).
-     GRID, not flex-wrap: every chip fills an equal track, so all world
-     buttons are the SAME SIZE with centered content (maintainer). */
-  .ml-worlds{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;padding:2px}
-  .ml-world{display:flex;align-items:center;justify-content:center;gap:8px;height:64px;padding:2px 6px;
-    color:#dfe2ea;font-size:13px;text-shadow:0 1px 2px #000}
+  /* World SWIPE CAROUSEL (maintainer: save the screen space — selected in
+     the middle, loops around, neighbours peek in from the edges). One
+     chip-height clipping strip; chips are absolutely positioned around the
+     centre by the carousel layout() and slide via transform. */
+  .ml-worlds{position:relative;overflow:hidden;height:68px;padding:0;touch-action:pan-y;
+    user-select:none;-webkit-user-select:none;cursor:grab}
+  .ml-worlds:active{cursor:grabbing}
+  .ml-world{position:absolute;left:50%;top:2px;width:210px;height:64px;display:flex;align-items:center;
+    justify-content:center;gap:8px;padding:2px 6px;color:#dfe2ea;font-size:13px;text-shadow:0 1px 2px #000}
+  .ml-world.anim{transition:transform .25s ease}
   .ml-world span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .ml-world.sel{border-image:url(/ui2/plate-selected.png) 56 fill / 13px;color:#ffd678}
   .ml-world.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
