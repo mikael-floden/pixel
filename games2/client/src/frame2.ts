@@ -271,12 +271,13 @@ function composeSelect() {
   const s = Math.min(wCss / AW, hCss / AH);
   const w0 = Math.max(AW, Math.round(wCss / s));
   const h0 = Math.max(AH, Math.round(hCss / s));
-  // split the height insert between BOTH plain stretch points (unlike the
-  // HUD frame, which sends everything to the game view) so the ring's rune
-  // clusters keep their proportions on tall screens
+  // ALL vertical stretch goes to the 86px winding-bark unit (VCUT2) — the
+  // single-row extrusion at VCUT1 smeared 100+ identical rows through the
+  // rails' vine wraps on tall phones, which the maintainer circled as
+  // "broken graphics". The bark unit tiles organically with zero new seams
+  // (its entry joint is original-adjacent by construction).
   const insH = h0 - AH;
-  const g1 = insH >> 1;
-  const img = heighten(widen(selFrame, selAux, w0), h0, g1, insH - g1);
+  const img = heighten(widen(selFrame, selAux, w0), h0, 0, insH);
   selCanvas.width = w0;
   selCanvas.height = h0;
   selCanvas.getContext("2d")!.putImageData(img, 0, 0);

@@ -37,10 +37,13 @@ const UI2 = path.join(ROOT, "client", "public", "ui2");
 
 const DISC = { x0: 205, x1: 565, y0: 62 }; // disc/strap region under the beam
 const INT = { x0: 48, x1: 720, y0: 300, y1: 1308 }; // main interior
-// Junction span starts at 505: the left vine-knot and the right crystal
-// cluster (divider-junction dressing) begin there, just under the rails'
-// rune glyphs — the first cut at 550 left their upper halves dangling.
-const JUNC = { y0: 505, y1: 930 }; // divider junction span on the side rails
+// Junction spans are PER SIDE (maintainer's phone marks, round 2): the left
+// seam moves to 501 so the wrap tail at y501-504 is wiped instead of cut
+// mid-strand (rows 494-500 are wrap-free trunk), and the right seam moves to
+// 511 so the '16' rune plate (its glyphs reach y493, its frame ~y508) stays
+// whole instead of losing its bottom rows.
+const JUNC_L = { y0: 501, y1: 930 };
+const JUNC_R = { y0: 511, y1: 930 };
 const BARK = { y0: 992, p: 86, phase: 1035 }; // clean side-rail tiling unit
 const SIDE_W = 48; // side band width (rails end at x≈43/726)
 
@@ -49,9 +52,12 @@ const { width: W, height: H, data: D } = src;
 const idx = (x, y) => (y * W + x) * 4;
 
 // --- 1. junction replace (before erases, so bark rows are pristine) ---
-for (let y = JUNC.y0; y < JUNC.y1; y++) {
-  const sy = BARK.y0 + ((((y - BARK.phase) % BARK.p) + BARK.p) % BARK.p);
-  for (const [x0, x1] of [[0, SIDE_W], [W - SIDE_W, W]]) {
+for (const [junc, x0, x1] of [
+  [JUNC_L, 0, SIDE_W],
+  [JUNC_R, W - SIDE_W, W],
+]) {
+  for (let y = junc.y0; y < junc.y1; y++) {
+    const sy = BARK.y0 + ((((y - BARK.phase) % BARK.p) + BARK.p) % BARK.p);
     for (let x = x0; x < x1; x++) {
       const s = idx(x, sy), d = idx(x, y);
       D[d] = D[s]; D[d + 1] = D[s + 1]; D[d + 2] = D[s + 2]; D[d + 3] = D[s + 3];
@@ -70,6 +76,34 @@ for (let y = DISC.y0; y < INT.y0; y++)
   for (let x = DISC.x0; x < DISC.x1; x++) erase(x, y);
 for (let y = INT.y0; y < INT.y1; y++)
   for (let x = INT.x0; x < INT.x1; x++) erase(x, y);
+
+// --- 2a. sliced crystal fragments (maintainer's phone marks, round 2) ---
+// The interior erase cut through two junction crystals whose tips crossed
+// the x48/x720 line, leaving colour slivers welded to the rails. Erase the
+// crystal-coloured pixels in their measured boxes (rune glyphs nearby are
+// untouched — the boxes stop above/beside them).
+const colourErase = (x0, x1, y0, y1, cond) => {
+  for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) {
+    const d = idx(x, y);
+    if (D[d + 3] > 0 && cond(D[d], D[d + 1], D[d + 2])) erase(x, y);
+  }
+};
+colourErase(28, 48, 400, 440, (r, g) => g > r + 8 && g > 40); // left green (incl. dark facets)
+colourErase(716, 732, 405, 435, (r, g, b) => b > r + 25 && b > 85); // right blue
+// outline sweep: the crystals' near-black outlines aren't colour-keyable —
+// erase dark pixels in the boxes that ended up ADJACENT to erased ones
+for (let pass = 0; pass < 3; pass++) {
+  for (const [x0, x1, y0, y1] of [[28, 48, 400, 440], [716, 732, 405, 435]]) {
+    for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) {
+      const d = idx(x, y);
+      if (D[d + 3] === 0) continue;
+      const dark = Math.max(D[d], D[d + 1], D[d + 2]) < 58;
+      const adj = erased[y * W + x - 1] || erased[y * W + x + 1] ||
+        erased[(y - 1) * W + x] || erased[(y + 1) * W + x];
+      if (dark && adj) erase(x, y);
+    }
+  }
+}
 
 // --- 2b. flood-erase the baked OUTSIDE backdrop from the image edges ---
 // The extraction kept an opaque dark-teal mock backdrop outside parts of
