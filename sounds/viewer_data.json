@@ -1,11 +1,11 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 15,
+  "count": 16,
   "by_category": {
     "ui": 8,
     "item": 5,
-    "tool": 2
+    "tool": 3
   },
   "sounds": [
     {
@@ -291,6 +291,25 @@
       "format": "wav",
       "loop": false,
       "file": "tool/sword_hit/sword_hit__take01.wav",
+      "duration_seconds": 0.092
+    },
+    {
+      "id": "axe_chop",
+      "name": "Axe Chop",
+      "category": "tool",
+      "description": "a heavy wooden thock of an axe biting into a tree",
+      "tags": [
+        "axe",
+        "chop",
+        "wood",
+        "tree",
+        "impact"
+      ],
+      "usage": "Chopping oak_tree / pine_tree with the axe.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "tool/axe_chop/axe_chop__take01.wav",
       "duration_seconds": 0.092
     }
   ]
