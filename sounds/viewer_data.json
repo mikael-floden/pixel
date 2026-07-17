@@ -1,7 +1,29 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 0,
-  "by_category": {},
-  "sounds": []
+  "count": 1,
+  "by_category": {
+    "ui": 1
+  },
+  "sounds": [
+    {
+      "id": "coin_pickup",
+      "name": "Coin Pickup",
+      "category": "ui",
+      "description": "a bright, short metallic jingle played when the player picks up a gold coin",
+      "tags": [
+        "coin",
+        "pickup",
+        "money",
+        "reward",
+        "collect"
+      ],
+      "usage": "Play on gold_coin / gold_ingot pickup and shop sales.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "ui/coin_pickup/coin_pickup__take01.wav",
+      "duration_seconds": 0.497
+    }
+  ]
 }
