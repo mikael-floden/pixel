@@ -246,6 +246,83 @@ function compose() {
   layoutCb?.(layout);
 }
 
+// ---- character-select RING frame ------------------------------------------
+// The same compose run on the INDEPENDENT copies /ui2/select-frame.png +
+// /ui2/select-frame-top.png (built by scripts/build-select-frame.mjs): the
+// in-game border ONLY — corners + connecting rails, disc/dividers/junction
+// dressing surgically removed. A copy, not a reference, per the maintainer:
+// pixel edits to the select ring must never touch the in-game frame (and
+// vice versa). Mounted INSIDE the select overlay, which carries the uiZoom —
+// clientWidth/Height are the overlay's own (virtual) px, so the ring scales
+// with the rest of the select UI.
+
+const RING_PAD = { t: 100, r: 48, b: 68, l: 48 }; // asset-px band depths
+
+let selCanvas: HTMLCanvasElement | null = null;
+let selFrame: ImageData | null = null;
+let selAux: ImageData | null = null;
+let selParent: HTMLElement | null = null;
+
+function composeSelect() {
+  if (!selCanvas || !selFrame || !selAux || !selParent || !selCanvas.isConnected) return;
+  const wCss = selParent.clientWidth;
+  const hCss = selParent.clientHeight;
+  if (!wCss || !hCss) return;
+  const s = Math.min(wCss / AW, hCss / AH);
+  const w0 = Math.max(AW, Math.round(wCss / s));
+  const h0 = Math.max(AH, Math.round(hCss / s));
+  // split the height insert between BOTH plain stretch points (unlike the
+  // HUD frame, which sends everything to the game view) so the ring's rune
+  // clusters keep their proportions on tall screens
+  const insH = h0 - AH;
+  const g1 = insH >> 1;
+  const img = heighten(widen(selFrame, selAux, w0), h0, g1, insH - g1);
+  selCanvas.width = w0;
+  selCanvas.height = h0;
+  selCanvas.getContext("2d")!.putImageData(img, 0, 0);
+  selCanvas.style.width = `${wCss}px`;
+  selCanvas.style.height = `${hCss}px`;
+  // content stays inside the ring: the overlay's padding IS the band depth
+  selParent.style.padding =
+    `${Math.round(RING_PAD.t * s)}px ${Math.round(RING_PAD.r * s)}px ` +
+    `${Math.round(RING_PAD.b * s)}px ${Math.round(RING_PAD.l * s)}px`;
+}
+
+/** Mount the select ring into the (uiZoom'd) select overlay. Idempotent per
+ * overlay: a fresh overlay (re-entering select) gets a fresh canvas. */
+export function mountSelectFrame(parent: HTMLElement) {
+  selParent = parent;
+  if (!selCanvas || !selCanvas.isConnected) {
+    selCanvas = document.createElement("canvas");
+    selCanvas.id = "ml-select-frame";
+    selCanvas.style.cssText =
+      "position:absolute;inset:0;z-index:3;pointer-events:none;image-rendering:pixelated";
+  }
+  if (!selResizeHooked) {
+    selResizeHooked = true;
+    window.addEventListener("resize", () => {
+      window.clearTimeout(selResizeTimer);
+      selResizeTimer = window.setTimeout(composeSelect, 120);
+    });
+  }
+  parent.appendChild(selCanvas);
+  if (selFrame && selAux) {
+    composeSelect();
+  } else {
+    Promise.all([
+      loadImageData("/ui2/select-frame.png"),
+      loadImageData("/ui2/select-frame-top.png"),
+    ]).then(([f, a]) => {
+      selFrame = f;
+      selAux = a;
+      composeSelect();
+    });
+  }
+}
+
+let selResizeTimer: number | undefined;
+let selResizeHooked = false;
+
 let resizeTimer: number | undefined;
 
 /** Mount the frame canvas (idempotent) and start relayouting on resize.

@@ -2,6 +2,7 @@ import { CharacterDef, Manifest } from "./manifest";
 import { WorldInfo, DEFAULT_WORLD } from "./maps";
 import { showLoading } from "./loading";
 import { applyUiZoom } from "./uiscale";
+import { mountSelectFrame } from "./frame2";
 
 const NAMES = ["Ari", "Bex", "Cyl", "Dax", "Eir", "Fen", "Gio", "Hana", "Ivo", "Juno", "Kira", "Lio"];
 
@@ -44,6 +45,10 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     document.body.appendChild(overlay);
     applyUiZoom(overlay); // "Desktop site" must not shrink the menu
     injectStyles();
+    // The in-game border ring around the whole select screen (its own asset
+    // copy — see frame2.ts / build-select-frame.mjs). Sets the overlay's
+    // padding so everything stays inside the ring.
+    mountSelectFrame(overlay);
     // Android Chrome long-press hit-tests <img>s (thumbnails, portraits) and
     // offers "download image" — suppress at the root, like the HUD does.
     overlay.addEventListener("contextmenu", (e) => e.preventDefault());
@@ -351,7 +356,10 @@ function injectStyles() {
     background-size:auto,100% auto;background-repeat:repeat,repeat-y;image-rendering:pixelated}
   /* No vw/vh inside this overlay: it may carry a compensating CSS zoom
      (uiscale.ts) and viewport units would double-count under it. */
-  .ml-panel{width:min(720px,96%);max-height:96%;overflow:auto;padding:24px 14px 20px;text-align:center}
+  /* Slim side padding: the ring frame provides the visual margin now, and
+     the phone needs the width — two 152px character tracks + their gap must
+     fit inside ring pads + panel (128px native portraits, never scaled). */
+  .ml-panel{width:min(720px,100%);max-height:100%;overflow:auto;padding:16px 8px 12px;text-align:center}
   .ml-logo{display:block;width:min(420px,88%);margin:0 auto;user-select:none;-webkit-user-drag:none}
   .ml-sub{margin:6px 0 14px;color:#b8a67f;text-shadow:0 1px 2px #000}
   .ml-section{text-align:left;margin:12px 4px 6px;font:700 12px/1 system-ui,sans-serif;letter-spacing:1.5px;
@@ -376,7 +384,7 @@ function injectStyles() {
   .ml-world.sel{border-image:url(/ui2/plate-selected.png) 56 fill / 13px;color:#ffd678}
   .ml-world.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
   .ml-world-img{width:34px;height:34px;object-fit:cover;image-rendering:auto;flex:none}
-  .ml-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:8px;padding:2px}
+  .ml-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(152px,1fr));gap:8px;padding:2px}
   .ml-cell{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 2px;
     color:#dfe2ea;font-size:12px;text-shadow:0 1px 2px #000}
   .ml-cell.sel{border-image:url(/ui2/plate-selected.png) 56 fill / 13px;color:#ffd678}
@@ -385,10 +393,12 @@ function injectStyles() {
   .ml-portrait{width:128px;height:128px;object-fit:contain;image-rendering:pixelated;margin:4px 0}
   .ml-cell span{max-width:136px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   /* Action row: ONE height (64px, same as the world chips) for the trough,
-     the dice and Enter — all buttons the same size, text centered. */
-  .ml-row{display:flex;gap:8px;margin-top:16px;justify-content:center;align-items:center}
+     the dice and Enter — all buttons the same size, text centered. Wraps on
+     narrow screens (inside the ring) so the trough never collapses: the
+     Enter CTA drops to its own centred line instead. */
+  .ml-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;justify-content:center;align-items:center}
   /* Name input = the backpack slot socket (its fill IS the dark trough). */
-  .ml-name{flex:1;max-width:280px;min-width:0;height:64px;padding:0 8px;border-style:solid;border-width:20px;
+  .ml-name{flex:1 1 170px;max-width:280px;min-width:170px;height:64px;padding:0 8px;border-style:solid;border-width:20px;
     border-image:url(/ui2/slot.png) 10 fill / 20px;image-rendering:pixelated;box-sizing:border-box;
     background:none;color:#e8e8ec;font-size:16px;text-align:center;text-shadow:0 1px 2px #000}
   .ml-name:focus{outline:none;color:#ffd678}
