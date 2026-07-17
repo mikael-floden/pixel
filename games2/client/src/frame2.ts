@@ -246,47 +246,79 @@ function compose() {
   layoutCb?.(layout);
 }
 
-// ---- character-select RING frame ------------------------------------------
-// The same compose run on the INDEPENDENT copies /ui2/select-frame.png +
-// /ui2/select-frame-top.png (built by scripts/build-select-frame.mjs): the
-// in-game border ONLY — corners + connecting rails, disc/dividers/junction
-// dressing surgically removed. A copy, not a reference, per the maintainer:
-// pixel edits to the select ring must never touch the in-game frame (and
-// vice versa). Mounted INSIDE the select overlay, which carries the uiZoom —
-// clientWidth/Height are the overlay's own (virtual) px, so the ring scales
-// with the rest of the select UI.
+// ---- character-select RING frame v2 ---------------------------------------
+// Composed from the maintainer's AUTHORED ring art (2026-07-17), cut into
+// pieces by scripts/extract-select2.mjs (/ui2/select2/): four decorated
+// corners pinned to the screen corners + a repeatable plain-beam strip tiled
+// per side between them. Pieces render at TRUE 1:1 art pixels: the canvas
+// backing is sized in real CSS px (virtual px × the overlay's uiZoom), so
+// the art never resamples even though the canvas element lives inside the
+// zoomed overlay. If a viewport is too narrow for two corners side by side
+// (a real device-width phone), everything drops to an exact half scale.
 
-const RING_PAD = { t: 100, r: 48, b: 68, l: 48 }; // asset-px band depths
+interface Sel2Geo {
+  art: { w: number; h: number };
+  beams: {
+    top: { y: number; h: number };
+    bottom: { y: number; h: number };
+    left: { x: number; w: number };
+    right: { x: number; w: number };
+  };
+  corners: Record<"tl" | "tr" | "bl" | "br", { w: number; h: number }>;
+  inner: { top: number; bottom: number; left: number; right: number };
+}
 
 let selCanvas: HTMLCanvasElement | null = null;
-let selFrame: ImageData | null = null;
-let selAux: ImageData | null = null;
 let selParent: HTMLElement | null = null;
+let sel2Geo: Sel2Geo | null = null;
+let sel2Imgs: Record<string, HTMLImageElement> | null = null;
 
 function composeSelect() {
-  if (!selCanvas || !selFrame || !selAux || !selParent || !selCanvas.isConnected) return;
-  const wCss = selParent.clientWidth;
-  const hCss = selParent.clientHeight;
-  if (!wCss || !hCss) return;
-  const s = Math.min(wCss / AW, hCss / AH);
-  const w0 = Math.max(AW, Math.round(wCss / s));
-  const h0 = Math.max(AH, Math.round(hCss / s));
-  // ALL vertical stretch goes to the 86px winding-bark unit (VCUT2) — the
-  // single-row extrusion at VCUT1 smeared 100+ identical rows through the
-  // rails' vine wraps on tall phones, which the maintainer circled as
-  // "broken graphics". The bark unit tiles organically with zero new seams
-  // (its entry joint is original-adjacent by construction).
-  const insH = h0 - AH;
-  const img = heighten(widen(selFrame, selAux, w0), h0, 0, insH);
-  selCanvas.width = w0;
-  selCanvas.height = h0;
-  selCanvas.getContext("2d")!.putImageData(img, 0, 0);
-  selCanvas.style.width = `${wCss}px`;
-  selCanvas.style.height = `${hCss}px`;
-  // content stays inside the ring: the overlay's padding IS the band depth
+  if (!selCanvas || !selParent || !sel2Geo || !sel2Imgs || !selCanvas.isConnected) return;
+  const vw = selParent.clientWidth; // virtual px (inside the uiZoom)
+  const vh = selParent.clientHeight;
+  if (!vw || !vh) return;
+  const zoom = parseFloat(getComputedStyle(selParent).zoom as string) || 1;
+  const bw = Math.round(vw * zoom); // backing = real CSS px → 1 art px = 1 px
+  const bh = Math.round(vh * zoom);
+  const g = sel2Geo, I = sel2Imgs;
+  const s = bw >= (g.corners.tl.w + g.corners.tr.w) * 1.05 ? 1 : 0.5;
+  selCanvas.width = bw;
+  selCanvas.height = bh;
+  selCanvas.style.width = `${vw}px`;
+  selCanvas.style.height = `${vh}px`;
+  const ctx = selCanvas.getContext("2d")!;
+  ctx.imageSmoothingEnabled = false;
+  ctx.clearRect(0, 0, bw, bh);
+  const yBot = (artY: number) => bh - (g.art.h - artY) * s; // bottom-anchored
+  const xRight = (artX: number) => bw - (g.art.w - artX) * s;
+  // beams first (corners overdraw their stubs), tiled along each side
+  const tileH = (img: HTMLImageElement, y: number, x0: number, x1: number) => {
+    for (let x = x0; x < x1; x += img.width * s)
+      ctx.drawImage(img, 0, 0, Math.min(img.width, (x1 - x) / s), img.height,
+        x, y, Math.min(img.width * s, x1 - x), img.height * s);
+  };
+  const tileV = (img: HTMLImageElement, x: number, y0: number, y1: number) => {
+    for (let y = y0; y < y1; y += img.height * s)
+      ctx.drawImage(img, 0, 0, img.width, Math.min(img.height, (y1 - y) / s),
+        x, y, img.width * s, Math.min(img.height * s, y1 - y));
+  };
+  tileH(I.beamTop, g.beams.top.y * s, g.corners.tl.w * s, bw - g.corners.tr.w * s);
+  tileH(I.beamBottom, yBot(g.beams.bottom.y), g.corners.bl.w * s, bw - g.corners.br.w * s);
+  tileV(I.beamLeft, g.beams.left.x * s, g.corners.tl.h * s, bh - g.corners.bl.h * s);
+  tileV(I.beamRight, xRight(g.beams.right.x), g.corners.tr.h * s, bh - g.corners.br.h * s);
+  const draw = (img: HTMLImageElement, x: number, y: number) =>
+    ctx.drawImage(img, x, y, img.width * s, img.height * s);
+  draw(I.tl, 0, 0);
+  draw(I.tr, bw - g.corners.tr.w * s, 0);
+  draw(I.bl, 0, bh - g.corners.bl.h * s);
+  draw(I.br, bw - g.corners.br.w * s, bh - g.corners.br.h * s);
+  // content stays inside the beams' inner faces (overlay padding is in
+  // VIRTUAL px — divide the backing-px band depth by the zoom)
+  const pad = (v: number) => `${Math.max(0, Math.round((v * s) / zoom)) + 4}px`;
   selParent.style.padding =
-    `${Math.round(RING_PAD.t * s)}px ${Math.round(RING_PAD.r * s)}px ` +
-    `${Math.round(RING_PAD.b * s)}px ${Math.round(RING_PAD.l * s)}px`;
+    `${pad(g.inner.top)} ${pad(g.art.w - g.inner.right)} ` +
+    `${pad(g.art.h - g.inner.bottom)} ${pad(g.inner.left)}`;
 }
 
 /** Mount the select ring into the (uiZoom'd) select overlay. Idempotent per
@@ -307,15 +339,23 @@ export function mountSelectFrame(parent: HTMLElement) {
     });
   }
   parent.appendChild(selCanvas);
-  if (selFrame && selAux) {
+  if (sel2Geo && sel2Imgs) {
     composeSelect();
   } else {
+    const load = (name: string) =>
+      new Promise<HTMLImageElement>((res, rej) => {
+        const img = new Image();
+        img.onload = () => res(img);
+        img.onerror = rej;
+        img.src = `/ui2/select2/${name}.png`;
+      });
     Promise.all([
-      loadImageData("/ui2/select-frame.png"),
-      loadImageData("/ui2/select-frame-top.png"),
-    ]).then(([f, a]) => {
-      selFrame = f;
-      selAux = a;
+      fetch("/ui2/select2/select2.json").then((r) => r.json()),
+      load("corner-tl"), load("corner-tr"), load("corner-bl"), load("corner-br"),
+      load("beam-top"), load("beam-bottom"), load("beam-left"), load("beam-right"),
+    ]).then(([geo, tl, tr, bl, br, beamTop, beamBottom, beamLeft, beamRight]) => {
+      sel2Geo = geo as Sel2Geo;
+      sel2Imgs = { tl, tr, bl, br, beamTop, beamBottom, beamLeft, beamRight };
       composeSelect();
     });
   }
