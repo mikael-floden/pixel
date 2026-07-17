@@ -145,6 +145,7 @@ export class HudBar {
       label.textContent = t.label;
       b.append(icon, label);
       b.addEventListener("click", () => this.select(t.id));
+      pressFx(b);
       tabRow.appendChild(b);
       this.tabs.set(t.id, b);
 
@@ -218,14 +219,18 @@ function plateButton(label: string, onPress: () => void): HTMLButtonElement {
   const b = mk("button", "ml-plate-btn") as HTMLButtonElement;
   b.textContent = label;
   b.addEventListener("click", onPress);
-  // Momentary pressed feedback via pointer events: CSS :active is hover-only
-  // (mobile Chrome keeps it sticky on the last tap), so touch needs its own
-  // press state — added on finger-down, gone the instant the finger lifts or
-  // leaves, so it can never stick.
+  pressFx(b);
+  return b;
+}
+
+/** Momentary pressed-plate feedback via pointer events: CSS :active is
+ * hover-only (mobile Chrome keeps it sticky on the last tap), so touch needs
+ * its own press state — added on finger-down, gone the instant the finger
+ * lifts or leaves, so it can never stick. */
+function pressFx(b: HTMLElement) {
   b.addEventListener("pointerdown", () => b.classList.add("press"));
   for (const ev of ["pointerup", "pointercancel", "pointerleave"])
     b.addEventListener(ev, () => b.classList.remove("press"));
-  return b;
 }
 
 function muted(text: string): HTMLElement {
@@ -266,6 +271,8 @@ function injectStyles() {
   .ml-tab:active{border-image:url(/ui2/plate-pressed.png) 56 fill / 26px}
   }
   .ml-tab.sel{border-image:url(/ui2/plate-selected.png) 56 fill / 26px}
+  /* .press after .sel so a finger on the selected tab still reads pressed */
+  .ml-tab.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 26px}
   .ml-tab-icon{image-rendering:pixelated;-webkit-user-drag:none;pointer-events:none;
     max-width:calc(100% - 6px);max-height:calc(100% - 22px);object-fit:contain}
   .ml-tab-label{font:700 11px/1.1 system-ui,sans-serif;font-size:clamp(6.5px,1.42vw,12px);
@@ -298,6 +305,7 @@ function injectStyles() {
     .ml-tabrow{left:40px;right:40px}
     .ml-tab{border-width:13px;border-image-width:13px}
     .ml-tab.sel{border-width:13px;border-image-width:13px}
+    .ml-tab.press{border-width:13px;border-image-width:13px}
   }
   /* Short viewports (small desktop windows): compact everything. */
   @media (max-height:640px){
@@ -305,6 +313,7 @@ function injectStyles() {
     .ml-page{gap:8px}
     .ml-plate-btn{padding:6px 14px;border-width:13px;border-image-width:13px;font-size:11px}
     .ml-plate-btn.on{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
+    .ml-plate-btn.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
     .ml-slot{border-width:20px;border-image-width:20px}
     .ml-muted{font-size:11px}
   }`;
