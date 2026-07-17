@@ -124,6 +124,18 @@ try {
   const btn = await page.evaluate(() => document.querySelector(".ml-ambient-btn")?.textContent ?? null);
   if (btn !== "ambient: auto") fail(`settings must carry the ambient button (got ${JSON.stringify(btn)})`);
   else ok("settings button injected (ambient: auto)");
+  // Reset: align the SHARED world AND the local probe overrides to Day+Clear.
+  // Earlier sections force LOCAL probes; a {v} set matching the server's
+  // current value produces no patch, so a stale local override would never
+  // be corrected and the demo waits below would hang (dev servers keep world
+  // state across verify runs).
+  await page.evaluate(() => {
+    window.__ml.worldTime(2);
+    window.__ml.worldWeather(0);
+    window.__ml.timeOfDay("day", true);
+    window.__ml.weather(0, true);
+  });
+  await page.waitForTimeout(1000);
   // Demo thunder: world jumps to its preferred Night + Cloudy, episode pinned on.
   await page.evaluate(() => window.__mlAmbient.demo("thunder"));
   await page.waitForFunction(

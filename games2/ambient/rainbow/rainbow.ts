@@ -30,52 +30,64 @@ const CENTER_TAU = 550; // ms — the chase lag that makes it recede
 const DRIZZLE_COUNT = 36;
 const DRIZZLE_TEX = "amb-drizzle";
 
+// The maintainer's concept art (2026-07-17, annotated screenshot): ONE HUGE
+// bow of which you only ever see PARTS — a segment rising from one lower
+// corner, another crossing the opposite upper corner, the middle swallowed
+// by the sky. Distinct colour STRIPES, not a smooth gradient: red outermost,
+// then yellow / green / blue / magenta, and a WHITE glow band on the inner
+// edge (his exact six pens). So: giant radius (the circle dwarfs the
+// screen), centre far off-screen on the anti-solar side, hard-ish posterized
+// bands (the mist shader's stylized-layers philosophy), and PATCHY
+// visibility — slow drifting noise lobes along the arc so only a few
+// segments show at a time and they slowly migrate along the bow.
 const FRAG = `
 precision mediump float;
 uniform float time;
 uniform vec2 resolution;
-uniform vec2 uCenter;  // arc circle centre, quad-local px
-uniform float uRadius; // primary bow radius, px
-uniform float uWidth;  // primary band thickness, px
+uniform vec2 uCenter;  // arc circle centre, quad-local px (far off-screen)
+uniform float uRadius; // bow radius, px (larger than the view diagonal)
+uniform float uWidth;  // full stripe-stack thickness, px
 uniform float uAlpha;  // master gain 0..1
 uniform float uUp;     // +1/-1: which fragCoord y direction is screen-UP
+uniform float uSeed;   // per-showing patch layout
 varying vec2 fragCoord;
 
-vec3 hsv2rgb(vec3 c) {
-  vec3 p = abs(fract(c.xxx + vec3(0.0, 2.0 / 3.0, 1.0 / 3.0)) * 6.0 - 3.0);
-  return c.z * mix(vec3(1.0), clamp(p - 1.0, 0.0, 1.0), c.y);
-}
-
-// One spectral band: t = signed distance from band centre in widths.
-// reversed=0: red on the OUTER edge (primary bow); 1: red inner (secondary).
-float band(float d, float radius, float width, out vec3 col, float reversed) {
-  float t = (d - radius) / width + 0.5; // 0 inner .. 1 outer
-  float env = smoothstep(0.0, 0.22, t) * (1.0 - smoothstep(0.78, 1.0, t));
-  float spec = mix(t, 1.0 - t, reversed);
-  // hue: red (0.0) at the red edge -> violet (0.78) at the violet edge
-  col = hsv2rgb(vec3((1.0 - spec) * 0.78, 0.75, 1.0));
-  return env;
+// Six hard-edged stripes, inner -> outer: white glow, magenta, blue, green,
+// yellow, red. Edges get a short smoothstep (soft alpha, never a hard
+// 100%->0% step — the house keying rule) but stay clearly banded.
+vec3 stripes(float t) {
+  vec3 c = vec3(1.0, 1.0, 1.0);                                   // white inner glow
+  c = mix(c, vec3(1.0, 0.45, 0.90), smoothstep(0.115, 0.145, t)); // magenta
+  c = mix(c, vec3(0.30, 0.50, 1.00), smoothstep(0.290, 0.320, t)); // blue
+  c = mix(c, vec3(0.35, 1.00, 0.40), smoothstep(0.465, 0.495, t)); // green
+  c = mix(c, vec3(1.00, 0.92, 0.25), smoothstep(0.640, 0.670, t)); // yellow
+  c = mix(c, vec3(1.00, 0.30, 0.22), smoothstep(0.815, 0.845, t)); // red
+  return c;
 }
 
 void main() {
-  vec2 p = fragCoord.xy;
-  vec2 rel = p - uCenter;
+  vec2 rel = fragCoord.xy - uCenter;
   float d = length(rel);
-  if (d < 1.0) { gl_FragColor = vec4(0.0); return; }
-  vec2 dir = rel / d;
-  // Only the arc ABOVE the horizon shows; the feet fade toward the ground.
-  float upness = dir.y * uUp;
-  float arc = smoothstep(-0.05, 0.45, upness);
-  vec3 c1; float b1 = band(d, uRadius, uWidth, c1, 0.0);
-  vec3 c2; float b2 = band(d, uRadius * 1.28, uWidth * 1.5, c2, 1.0) * 0.32;
-  // Gentle shimmer along the arc so the bow feels lit by moving air.
-  float ang = atan(rel.y, rel.x);
-  float shimmer = 0.92 + 0.08 * sin(ang * 9.0 + time * 0.6);
-  float a1 = b1 * arc * shimmer;
-  float a2 = b2 * arc;
-  vec3 col = (c1 * a1 + c2 * a2) / max(a1 + a2, 1e-4);
-  float a = (a1 + a2) * uAlpha * 0.42;
-  gl_FragColor = vec4(col * a, a); // premultiplied-ish: soft additive feel
+  float t = (d - uRadius) / uWidth + 0.5; // 0 inner .. 1 outer across the stack
+  if (t < -0.1 || t > 1.1) { gl_FragColor = vec4(0.0); return; }
+  // Band envelope: soft outer/inner skirts; the white band glows a bit softer.
+  float env = smoothstep(0.0, 0.08, t) * (1.0 - smoothstep(0.92, 1.0, t));
+  env *= mix(0.75, 1.0, smoothstep(0.115, 0.145, t));
+  // Angle along the arc, up-half = (0..pi) after the uUp flip.
+  float ang = atan(rel.y * uUp, rel.x);
+  // Feet fade only right at the horizon; the bow otherwise reaches ground.
+  float feet = smoothstep(0.0, 0.09, sin(ang));
+  // PATCHY: slow-drifting lobes along the arc — you only see parts of the
+  // bow, and which parts you see wanders over time. The lobe wavelength is
+  // deliberately SMALLER than the visible arc window (the view only spans
+  // ~1 rad of this giant circle), so some segment is always in frame —
+  // "parts of it", never long minutes of nothing.
+  float u = ang * 8.0;
+  float n = 0.5 + 0.35 * sin(u * 1.7 + uSeed + time * 0.15)
+                + 0.25 * sin(u * 3.3 - time * 0.11 + uSeed * 1.7);
+  float vis = smoothstep(0.30, 0.56, n);
+  float a = env * feet * vis * uAlpha * 0.5;
+  gl_FragColor = vec4(stripes(t) * a, a); // premultiplied: soft luminous feel
 }
 `;
 
@@ -87,6 +99,8 @@ export function rainbowFeature(): AmbientFeature {
   let cx = 0; // eased arc-centre (world px) — the "never arrive" anchor
   let cy = 0;
   let centered = false;
+  let seedPhase = 0; // per-showing patch layout (which parts of the bow show)
+  let lastNow = 0; // wall-clock of the previous update (gain easing)
   const drops: { sprite: Phaser.GameObjects.Image; x: number; y: number; v: number }[] = [];
   let seed = 41;
   const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 0xffffffff;
@@ -114,6 +128,7 @@ export function rainbowFeature(): AmbientFeature {
     },
     setActive(on) {
       active = on; // gain eases both ways — a rainbow never pops
+      if (on) seedPhase = rnd() * 6.28; // fresh patch layout each showing
     },
     init(ctx) {
       const scene = ctx.scene;
@@ -124,7 +139,11 @@ export function rainbowFeature(): AmbientFeature {
         uRadius: { type: "1f", value: 260 },
         uWidth: { type: "1f", value: 24 },
         uAlpha: { type: "1f", value: 0 },
-        uUp: { type: "1f", value: -1 }, // fragCoord y grows down-screen
+        // fragCoord is BOTTOM-UP (Shadertoy convention — verified with a
+        // gradient probe 2026-07-17): +y is screen-up, so uUp is +1 and the
+        // centre's y is flipped into frag space when passed (update()).
+        uUp: { type: "1f", value: 1 },
+        uSeed: { type: "1f", value: 0 },
       });
       shader = scene.add
         .shader(base, 0, 0, 2, 2)
@@ -135,8 +154,14 @@ export function rainbowFeature(): AmbientFeature {
     update(ctx, dt) {
       const view = ctx.view;
       const env = ctx.env;
+      // Ease on WALL-CLOCK, not frame dt: Phaser's smoothed delta
+      // under-reports long frames (software-GL/laggy devices), and a bow
+      // that condenses per-frame instead of per-second never shows there.
+      const now = ctx.scene.time.now;
+      const wallDt = lastNow ? Math.min(500, now - lastNow) : dt;
+      lastNow = now;
       const target = active ? Math.min(1, env.sun * (0.35 + 0.65 * moisture(env))) : 0;
-      gain += (target - gain) * Math.min(1, (dt / GAIN_TAU) * 3);
+      gain += (target - gain) * Math.min(1, (wallDt / GAIN_TAU) * 3);
       const visible = gain > 0.02;
 
       // ---- the bow (shader quad) ----
@@ -163,18 +188,27 @@ export function rainbowFeature(): AmbientFeature {
           const sl = Math.hypot(sx, sy) || 1;
           sx /= sl;
           sy /= sl;
-          const radius = Math.min(view.width, view.height) * 0.62;
-          // The circle centre sits toward the anti-solar side and BELOW the
-          // horizon line so only the upper arc rises over the land.
-          const tx = view.centerX + sx * view.width * 0.22;
-          const ty = view.centerY + Math.max(0.25, sy) * view.height * 0.28 + radius * 0.55;
+          // GIANT bow (maintainer's concept art): the circle dwarfs the
+          // screen so only arc SEGMENTS cross the view. The centre sits far
+          // off-screen, down-screen and leaning to the anti-solar side —
+          // morning bows rise over the left of the view, evening the right,
+          // noon straight across the top.
+          const diag = Math.hypot(view.width, view.height);
+          const radius = diag * 1.15;
+          let cdx = sx * 0.6;
+          let cdy = 1.0;
+          const cdl = Math.hypot(cdx, cdy);
+          cdx /= cdl;
+          cdy /= cdl;
+          const tx = view.centerX + cdx * radius * 0.8;
+          const ty = view.centerY + cdy * radius * 0.8;
           if (!centered) {
             centered = true;
             cx = tx;
             cy = ty;
           } else {
             // The chase lag: run at the bow and it stays ahead of you.
-            const k = Math.min(1, (dt / CENTER_TAU) * 3);
+            const k = Math.min(1, (wallDt / CENTER_TAU) * 3);
             cx += (tx - cx) * k;
             cy += (ty - cy) * k;
           }
@@ -184,10 +218,12 @@ export function rainbowFeature(): AmbientFeature {
           if (Math.abs(shader.width - view.width) > 1 || Math.abs(shader.height - view.height) > 1)
             shader.setSize(view.width, view.height);
           shader.setUniform("uCenter.value.x", cx - view.x);
-          shader.setUniform("uCenter.value.y", cy - view.y);
+          // Flip into the shader's bottom-up frag space.
+          shader.setUniform("uCenter.value.y", view.height - (cy - view.y));
           shader.setUniform("uRadius.value", radius);
-          shader.setUniform("uWidth.value", Math.max(14, radius * 0.085));
+          shader.setUniform("uWidth.value", Math.max(20, diag * 0.09));
           shader.setUniform("uAlpha.value", gain);
+          shader.setUniform("uSeed.value", seedPhase);
         }
       }
 
