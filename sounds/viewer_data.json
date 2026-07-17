@@ -1,9 +1,9 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 4,
+  "count": 5,
   "by_category": {
-    "ui": 4
+    "ui": 5
   },
   "sounds": [
     {
@@ -80,6 +80,25 @@
       "format": "wav",
       "loop": false,
       "file": "ui/menu_select/menu_select__take01.wav",
+      "duration_seconds": 0.497
+    },
+    {
+      "id": "menu_confirm",
+      "name": "Menu Confirm",
+      "category": "ui",
+      "description": "a bright positive blip confirming a menu choice",
+      "tags": [
+        "menu",
+        "confirm",
+        "accept",
+        "ok",
+        "ui"
+      ],
+      "usage": "Confirming/accepting a selection.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "ui/menu_confirm/menu_confirm__take01.wav",
       "duration_seconds": 0.497
     }
   ]
