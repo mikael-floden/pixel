@@ -14,7 +14,10 @@ const PORT = Number(process.env.PORT || 2567);
 const SRC_DIR = dirname(fileURLToPath(import.meta.url));
 const GAME_ROOT = join(SRC_DIR, "..", "..");
 const ASSETS_ROOT = process.env.ASSETS_ROOT || join(GAME_ROOT, "..");
-const ASSET_DOMAINS = ["characters", "tiles", "maps", "objects", "characters2", "tiles2", "maps2"];
+const ASSET_DOMAINS = [
+  "characters", "tiles", "maps", "objects", "characters2", "tiles2", "maps2",
+  "sounds", "music",
+];
 
 const app = express();
 app.get("/health", (_req, res) => res.json({ ok: true }));

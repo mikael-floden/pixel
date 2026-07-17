@@ -25,6 +25,7 @@
 
 import { mountFrame2, FrameLayout } from "./frame2";
 import { setClockMount } from "./clock";
+import { gameAudio } from "../../composer/index";
 
 export interface HudActions {
   onLogout: () => void;
@@ -150,7 +151,10 @@ export class HudBar {
       const label = mk("span", "ml-tab-label");
       label.textContent = t.label;
       b.append(icon, label);
-      b.addEventListener("click", () => this.select(t.id));
+      b.addEventListener("click", () => {
+        this.select(t.id);
+        gameAudio.event("ui.cursor_move"); // tab tick (menu_select binding)
+      });
       pressFx(b);
       tabRow.appendChild(b);
       this.tabs.set(t.id, b);
@@ -224,7 +228,10 @@ export class HudBar {
 function plateButton(label: string, onPress: () => void): HTMLButtonElement {
   const b = mk("button", "ml-plate-btn") as HTMLButtonElement;
   b.textContent = label;
-  b.addEventListener("click", onPress);
+  b.addEventListener("click", () => {
+    gameAudio.event("ui.confirm");
+    onPress();
+  });
   pressFx(b);
   return b;
 }

@@ -8,6 +8,7 @@ import { MapPreviewScene } from "./scenes/MapPreviewScene";
 import { setLoadingProgress, showLoading } from "./loading";
 import { applyUiZoom } from "./uiscale";
 import { mountAmbient } from "../../ambient/index";
+import { gameAudio } from "../../composer/index";
 
 // ---- PWA ----
 // Capture the browser's install prompt the moment it fires (often before any
@@ -203,6 +204,11 @@ async function boot() {
   // world scene from outside and only ever ADDS display objects — zero
   // gameplay impact by charter (see ambient/README.md).
   mountAmbient(game);
+
+  // Audio (games2/composer, its own agent): the engine boots now — buses +
+  // catalogs + preloads — and unlocks on the select screen's first tap. The
+  // scene feeds it semantic events; music starts once the world is joined.
+  gameAudio.init();
 }
 
 boot();

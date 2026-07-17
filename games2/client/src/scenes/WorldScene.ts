@@ -44,6 +44,7 @@ import {
 } from "@nangijala/shared";
 import { CharacterDef, Manifest, frameUrl, frameKey } from "../manifest";
 import { colorForName } from "../placeholder";
+import { gameAudio } from "../../../composer/index";
 import { Atmosphere, LightSource } from "../lighting";
 import {
   NightLights,
@@ -723,6 +724,9 @@ export class WorldScene extends Phaser.Scene {
           act: () => this.room?.send("weather"),
           state: () => WEATHER_NAMES[this.weatherIdx % WEATHER_NAMES.length],
         },
+        // Audio (composer agent): master sound + music, persisted switches.
+        { label: "sound", act: () => gameAudio.toggleSound(), get: () => gameAudio.soundEnabled },
+        { label: "music", act: () => gameAudio.toggleMusic(), get: () => gameAudio.musicEnabled },
         { label: "collision", act: () => this.toggleCollision(), get: () => !!this.collisionOverlay },
         { label: "torch", act: () => this.toggleTorch(), get: () => this.torchOn },
         { label: "bonfire", act: () => this.toggleBonfire(), get: () => this.fireOn },
@@ -755,6 +759,10 @@ export class WorldScene extends Phaser.Scene {
           { name: this.myName, character: this.myCharacter.uid, world: this.worldName },
         ),
       );
+      // The world is live: bring in the score + let the composer sample the
+      // terrain mood (forest/water/town/fire beds) around the player.
+      gameAudio.startMusic();
+      gameAudio.setFieldSampler(() => this.sampleAudioField());
     } catch (err) {
       hideLoading(); // the error panel must not sit behind the overlay
       this.showConnectionError(err);
@@ -961,6 +969,11 @@ export class WorldScene extends Phaser.Scene {
         return av ? { falling: av.falling, elev: av.elev, fallV: av.fallV } : null;
       },
       me: () => this.room?.state.players.get(this.room!.sessionId),
+      // Composer probes: engine state, the musical clock (beat/scale — what
+      // beat-reactive visuals read), and a manual event trigger for QA.
+      audio: () => gameAudio.debug(),
+      audioClock: () => gameAudio.clock(),
+      audioEvent: (name: string) => gameAudio.event(name),
       stamina: () => this.room?.state.players.get(this.room!.sessionId)?.stamina ?? null,
       swimming: () => !!this.room?.state.players.get(this.room!.sessionId)?.swimming,
       surfaceAt: (x: number, y: number) => (this.terrain ? surfaceAtWorld(this.terrain, x, y) : null),
@@ -1156,14 +1169,20 @@ export class WorldScene extends Phaser.Scene {
     room.onMessage("chat", (msg: ChatBroadcast) => {
       this.chat.addLog(msg.name, msg.text);
       this.showBubble(msg.id, msg.text);
+      if (msg.id !== room.sessionId) gameAudio.event("ui.notify", { gainDb: -9 });
     });
     room.onMessage("drown", (msg: { id: string; name: string }) => {
       this.showBubble(msg.id, "blub… 🫧");
       this.chat.addLog("—", `${msg.name} nearly drowned and washed ashore.`);
+      const s = this.avatarSpatial(msg.id);
+      gameAudio.play("splash", "sfx", { rate: 0.75, gainDb: 2, pan: s.pan, dist: s.dist });
     });
     // Every arrival in Nangijala is a shooting star everyone sees at the
     // same moment; the night sky also throws wild ones (no name).
-    room.onMessage("star", (msg: { name?: string }) => this.shootingStar(msg?.name));
+    room.onMessage("star", (msg: { name?: string }) => {
+      this.shootingStar(msg?.name);
+      gameAudio.star(); // a chime in key, on the beat
+    });
     // Dead-connection recovery. Backgrounding the tab (phones especially)
     // freezes JS; the server drops the silent client and this room becomes a
     // ZOMBIE — no patches, no acks, prediction replaying an ever-growing
@@ -1187,6 +1206,67 @@ export class WorldScene extends Phaser.Scene {
     av.label.destroy();
     av.bubble?.destroy();
     this.avatars.delete(id);
+    gameAudio.dropAvatar(id);
+  }
+
+  /** Stereo position of an avatar relative to the camera view — pan (-1..1)
+   * and distance (0 at centre, 1 at the edge of earshot) for the composer's
+   * spatialized one-shots. The local player is always centred. */
+  private avatarSpatial(id: string | undefined): { pan: number; dist: number } {
+    if (!id || id === this.room?.sessionId) return { pan: 0, dist: 0 };
+    const av = id ? this.avatars.get(id) : undefined;
+    if (!av) return { pan: 0, dist: 0.5 };
+    const view = this.cameras.main.worldView;
+    const nx = (av.sprite.x - view.centerX) / Math.max(1, view.width * 0.55);
+    const ny = (av.sprite.y - view.centerY) / Math.max(1, view.height * 0.55);
+    return {
+      pan: Math.max(-1, Math.min(1, nx)),
+      dist: Math.min(1, Math.hypot(nx, ny) * 0.75),
+    };
+  }
+
+  /** Terrain mood around the player for the composer's ambience beds:
+   * fractions (0..1) of forest / water / town cells in earshot, plus
+   * campfire proximity. Sampled by the composer at ~4 Hz — keep it cheap
+   * (a 15×15 cell window ≈ 225 string checks). */
+  private sampleAudioField(): { forest: number; water: number; town: number; fire: number } {
+    const none = { forest: 0, water: 0, town: 0, fire: 0 };
+    const g = this.terrain;
+    const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+    if (!g || !me) return none;
+    const cc = Math.floor(me.fx / CELL_WU);
+    const cr = Math.floor(me.fy / CELL_WU);
+    const R = 7;
+    let forest = 0;
+    let water = 0;
+    let town = 0;
+    let n = 0;
+    for (let r = cr - R; r <= cr + R; r++) {
+      if (r < 0 || r >= g.height) continue;
+      for (let c = cc - R; c <= cc + R; c++) {
+        if (c < 0 || c >= g.width) continue;
+        n++;
+        const t = g.type[r * g.width + c];
+        if (!t) continue;
+        if (
+          t.includes("tree") || t.includes("forest") || t === "jungle" || t === "mushroom_grove"
+        ) forest++;
+        else if (surfaceFor(t).swimmable) water++;
+        else if (t.startsWith("road_") || t === "mosaic_floor" || t === "farm" || t === "vineyard")
+          town++;
+      }
+    }
+    if (!n) return none;
+    // Small fractions should already register (a lakeside has ~15% water
+    // cells in earshot) — scale up and cap.
+    const frac = (k: number) => Math.min(1, (k / n) * 3.2);
+    let fire = 0;
+    if (this.fireOn && this.campfire) {
+      // campfire.x/y are projected screen px — measure in grid cells instead.
+      const d = Math.hypot(me.fx / CELL_WU - this.campfire.col, me.fy / CELL_WU - this.campfire.row);
+      fire = Math.max(0, 1 - d / 7);
+    }
+    return { forest: frac(forest), water: frac(water), town: frac(town), fire };
   }
 
   /** The connection died: freeze input, rejoin in place (immediately when
@@ -1394,6 +1474,12 @@ export class WorldScene extends Phaser.Scene {
 
     const state = this.room.state as any;
     if (!state?.players) return; // first frame after join, before the state syncs
+
+    // World mood → composer: sun strength drives day/night beds + the music's
+    // night dip; swimming muffles the whole mix (underwater insert).
+    gameAudio.setEnv({ sun: this.curSun[3], cloud: this.curCloud, mist: this.curMist });
+    gameAudio.setUnderwater(!!state.players.get(myId)?.swimming);
+
     this.avatars.forEach((av, id) => {
       const player = state.players.get(id);
       if (!player) return;
@@ -1507,8 +1593,13 @@ export class WorldScene extends Phaser.Scene {
       // after the hop expired replayed a whole second hop when a state patch
       // arrived late (the flag outlives the local 500ms window by a frame on
       // jittery links): the "jumps again after landing on the hill" bug.
-      if (player.jumping && !av.wasJumping && av.hopUntil <= this.time.now)
+      if (player.jumping && !av.wasJumping && av.hopUntil <= this.time.now) {
         av.hopUntil = this.time.now + JUMP_MS;
+        // Sound exactly when the visual hop starts (synced flag = same
+        // trigger for every client), spatialized for other players.
+        const sp = this.avatarSpatial(id);
+        gameAudio.event("player.jump", { pan: sp.pan, dist: sp.dist });
+      }
       av.wasJumping = !!player.jumping;
       const hopLeft = av.hopUntil - this.time.now;
       const hop = hopLeft > 0 ? Math.sin((1 - hopLeft / JUMP_MS) * Math.PI) * JUMP_HEIGHT : 0;
@@ -1645,6 +1736,21 @@ export class WorldScene extends Phaser.Scene {
         }
       }
       this.applyAnimState(av, moving, running, dir, hopLeft > 0 || av.falling);
+
+      // Feed the composer's gait tracker: it turns travelled distance into
+      // surface-matched footsteps at walk/run cadence, and water enter/exit
+      // into splashes. Remote players are panned/attenuated by screen pos.
+      const sp = this.avatarSpatial(id);
+      gameAudio.avatarFrame(id, {
+        moving,
+        running,
+        grounded: hopLeft <= 0 && !av.falling,
+        swimming: av.swimming,
+        surface: this.terrain ? surfaceAtWorld(this.terrain, tx, ty).sound : "grass",
+        distWu: (av.spdWu ?? 0) * dt,
+        pan: sp.pan,
+        dist: sp.dist,
+      });
     });
 
     this.updateChaseCam(delta);

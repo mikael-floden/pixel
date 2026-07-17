@@ -577,6 +577,24 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   bright terrain, the glow carries it in the dark. Probes: `__ml.tapTo`, `__ml.target`,
   `__ml.path`, `__ml.navLog`, `__ml.gridAround`, `__ml.pickAt`.
 
+## Audio (games2/composer — the games-audio agent's module)
+
+- Since 2026-07-17 a THIRD agent works in `games2/`: **games-audio** (the
+  composer actor, `sounds/spec/AUDIO_INTEGRATION.md`), sole owner of
+  `games2/composer/` + `coordination/games-audio.json`. It binds `sounds/` +
+  `music/` to the game: WebAudio buses, surface footsteps at gait cadence,
+  jump/splash, UI clicks, thunder rumble, mood ambience, the looping score
+  with ducking/night dip, scale-snapped tonal SFX. See `composer/README.md`.
+- The game code talks to it ONLY via the `gameAudio` singleton — the small
+  `gameAudio.*` calls sprinkled in `WorldScene`/`hud.ts`/`main.ts`/
+  `ambient/thunder` are the audio agent's wiring; **don't remove them**, and
+  emit new semantic events (`gameAudio.event("item.get")` etc.,
+  names from `sounds/bindings.json`) when adding gameplay that should sound.
+- `gameAudio.clock()` / `__ml.audioClock()` publishes the score's live
+  beat/bar phase + section intensity — use it to sync visuals to the music.
+- QA: `__ml.audio()` state probe; `scripts/verify-audio.mjs` (needs the dev
+  stack) checks contracts→engine→footsteps→clock→ambience end to end.
+
 ## Dev-test workflow (fast loop — keep it this way)
 
 - **Navigation/movement logic → `server/test/navigation.sim.test.ts`**, NOT

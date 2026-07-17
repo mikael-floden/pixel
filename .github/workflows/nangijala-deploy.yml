@@ -32,6 +32,8 @@ on:
       - "tiles2/**"
       - "maps2/**"
       - "objects/**"
+      - "sounds/**"
+      - "music/**"
       - ".github/workflows/nangijala-deploy.yml"
   workflow_dispatch: {}       # manual: force a roll without any commit
 

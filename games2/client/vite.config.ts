@@ -5,11 +5,17 @@ import { extname, join, normalize, resolve } from "node:path";
 // The game lives at pixel/games/nangijala/client; the art domains are siblings
 // at the repo root (two levels up): characters/, tiles/, maps/, objects/.
 const REPO_ROOT = resolve(__dirname, "../..");
-const ASSET_DOMAINS = new Set(["characters", "tiles", "maps", "objects", "characters2", "tiles2", "maps2"]);
+const ASSET_DOMAINS = new Set([
+  "characters", "tiles", "maps", "objects", "characters2", "tiles2", "maps2",
+  "sounds", "music",
+]);
 const TYPES: Record<string, string> = {
   ".png": "image/png",
   ".json": "application/json",
   ".gif": "image/gif",
+  ".wav": "audio/wav",
+  ".ogg": "audio/ogg",
+  ".mp3": "audio/mpeg",
 };
 
 // Serve the sibling art domains at /assets/<domain>/* in dev. Production does

@@ -1,11 +1,12 @@
 import Phaser from "phaser";
 import { AmbientFeature, PHASE_NIGHT, WEATHER_CLOUDY } from "../runtime/types";
 import { isRainy } from "../runtime/env";
+import { gameAudio } from "../../composer/index";
 
 // Distant thunder — an EPISODE feature: while active, sheet-lightning
 // flashes wash over the whole view every so often (double/triple pulses,
-// like a storm beyond the horizon). Visual only for now — when the sounds
-// domain ships a rumble, this is where it hooks in.
+// like a storm beyond the horizon). The composer plays the matching rumble
+// (delayed after the light, like a real distant storm).
 //
 // Likeliness follows the maintainer's spec verbatim: base × 2 when it's
 // raining, × 3 when night + raining. No rain weather exists yet (Clear /
@@ -34,10 +35,15 @@ export function thunderFeature(): AmbientFeature {
     const n = 2 + (rnd() < 0.4 ? 1 : 0);
     spikes = [];
     let t = 0;
+    let peakSum = 0;
     for (let i = 0; i < n; i++) {
-      spikes.push([t, (i === 0 ? 0.22 : 0.13) + rnd() * 0.12]);
+      const peak = (i === 0 ? 0.22 : 0.13) + rnd() * 0.12;
+      spikes.push([t, peak]);
+      peakSum += peak;
       t += 90 + rnd() * 180;
     }
+    // The rumble: composer delays it 1-2.5s after the light (distant storm).
+    gameAudio.thunder(Math.min(1, peakSum * 1.8));
   };
 
   return {
