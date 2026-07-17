@@ -471,9 +471,13 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   baked): the fill pixels were borrowed from the maintainer's hand-free
   render of the same art (registered per-band, colour-matched by local
   means; his AI-regen images never align globally — patch locally).
-  That hand ships separately as `/ui2/clock-hand.png` (38×160 native,
-  soft alpha for rotation), pivot at the ring centre = sprite (20,38)
-  = frame (383,101).
+  That hand ships separately as `/ui2/clock-hand.png` (the maintainer's
+  v2 sprite WITH its own ring, 45×163 native — extracted from an 11.1×
+  phone upscale by box-downscale, white outline + teal keyed to soft
+  alpha), pivot at the ring-hole centroid = sprite (22,18); it hangs on
+  the frame's strap, whose lower end sits at frame ≈(384,76). Only the
+  strap + its bordered notch remain baked in the frame — hand, ring and
+  shackle are all runtime elements now (three review rounds of marks).
 - **Tap/hold-to-move**: a tap RUNS to the point (there is NO double-tap
   gesture — nobody walks when they can run, maintainer); the autopilot
   eases into a walk inside `APPROACH_WALK_RADIUS` (2.5 cells) of the
