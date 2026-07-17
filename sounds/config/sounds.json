@@ -14,7 +14,8 @@
       "prompt_influence": 0.5,
       "api_key_env": "ELEVENLABS_API_KEY",
       "note": "REQUIRED engine. ElevenLabs SFX v2 (2026 quality leader for realistic foley). Requests high-bitrate MP3 (this key tier delivers MP3, not lossless PCM); the factory decodes via ffmpeg and masters to a clean 48 kHz WAV. Needs ELEVENLABS_API_KEY.",
-      "prompt_directives": "High-fidelity recorded foley, close-miked, crisp transient, rich body, natural short tail; single isolated sound; dry with only a subtle natural room; no music, no voice, no melody, no chiptune, no synth beeps, no background noise; broadcast-quality, production-ready"
+      "prompt_directives": "High-fidelity recorded foley, close-miked, crisp transient, rich body, natural short tail; single isolated sound; dry with only a subtle natural room; no music, no voice, no melody, no chiptune, no synth beeps, no background noise; broadcast-quality, production-ready",
+      "prompt_directives_loop": "Seamless, evenly-textured environmental ambience bed; immersive and continuous with no sudden one-off events; steady throughout so it loops cleanly; no music, no melody, no speech, no discernible words; natural field-recording quality"
     }
   },
   "audio": {
@@ -752,6 +753,191 @@
       "duration_hint": 1.0,
       "usage": "Completing a quest / objective.",
       "feel": "triumphant, warm"
+    },
+    {
+      "id": "birds_day",
+      "name": "Birdsong (Day)",
+      "category": "ambience",
+      "description": "a gentle daytime woodland ambience",
+      "feel": "welcoming, peaceful",
+      "tags": [
+        "ambience",
+        "birds",
+        "day",
+        "nature",
+        "peaceful"
+      ],
+      "ai_prompt": "A gentle daytime woodland ambience: soft songbirds chirping and twittering at a distance, a faint warm breeze, calm and welcoming",
+      "duration_hint": 12.0,
+      "loop": true,
+      "variants": 1,
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience)."
+    },
+    {
+      "id": "crickets_night",
+      "name": "Crickets (Night)",
+      "category": "ambience",
+      "description": "a calm night-time countryside ambience",
+      "feel": "calm, safe",
+      "tags": [
+        "ambience",
+        "crickets",
+        "night",
+        "nature",
+        "calm"
+      ],
+      "ai_prompt": "A calm night-time countryside ambience: steady chirping crickets, a distant owl, faint gentle wind, tranquil and safe",
+      "duration_hint": 12.0,
+      "loop": true,
+      "variants": 1,
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience)."
+    },
+    {
+      "id": "wind",
+      "name": "Wind",
+      "category": "ambience",
+      "description": "a soft open-air wind ambience",
+      "feel": "open, airy",
+      "tags": [
+        "ambience",
+        "wind",
+        "air",
+        "outdoor"
+      ],
+      "ai_prompt": "A soft open-air wind ambience: gentle wind moving across grassland with subtle whistling, airy and spacious",
+      "duration_hint": 12.0,
+      "loop": true,
+      "variants": 1,
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience)."
+    },
+    {
+      "id": "rain",
+      "name": "Rain",
+      "category": "ambience",
+      "description": "a steady gentle rain ambience",
+      "feel": "cozy, calming",
+      "tags": [
+        "ambience",
+        "rain",
+        "weather",
+        "calm"
+      ],
+      "ai_prompt": "A steady gentle rain ambience: soft rainfall pattering on leaves and ground, no thunder, cozy and calming",
+      "duration_hint": 12.0,
+      "loop": true,
+      "variants": 1,
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience)."
+    },
+    {
+      "id": "ocean_waves",
+      "name": "Ocean Waves",
+      "category": "ambience",
+      "description": "a calm coastal ambience",
+      "feel": "soothing",
+      "tags": [
+        "ambience",
+        "ocean",
+        "waves",
+        "water",
+        "coast"
+      ],
+      "ai_prompt": "A calm coastal ambience: gentle ocean waves lapping and rolling onto a sandy shore, faint distant seabirds, soothing",
+      "duration_hint": 12.0,
+      "loop": true,
+      "variants": 1,
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience)."
+    },
+    {
+      "id": "river",
+      "name": "River",
+      "category": "ambience",
+      "description": "a flowing river ambience",
+      "feel": "fresh, lively",
+      "tags": [
+        "ambience",
+        "river",
+        "water",
+        "stream"
+      ],
+      "ai_prompt": "A flowing river ambience: steady babbling water over rocks with a gentle current, fresh and lively",
+      "duration_hint": 12.0,
+      "loop": true,
+      "variants": 1,
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience)."
+    },
+    {
+      "id": "fire_crackle",
+      "name": "Campfire",
+      "category": "ambience",
+      "description": "a cozy campfire ambience",
+      "feel": "cozy, intimate",
+      "tags": [
+        "ambience",
+        "fire",
+        "campfire",
+        "warm"
+      ],
+      "ai_prompt": "A cozy campfire ambience: crackling and popping wood fire, warm and comforting, close and intimate",
+      "duration_hint": 12.0,
+      "loop": true,
+      "variants": 1,
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience)."
+    },
+    {
+      "id": "cave_drips",
+      "name": "Cave Drips",
+      "category": "ambience",
+      "description": "a dark cave ambience",
+      "feel": "mysterious, tense",
+      "tags": [
+        "ambience",
+        "cave",
+        "drips",
+        "echo",
+        "mystical"
+      ],
+      "ai_prompt": "A dark cave ambience: echoing water drips in a deep hollow reverberant space with a faint low rumble, mysterious and tense",
+      "duration_hint": 12.0,
+      "loop": true,
+      "variants": 1,
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience)."
+    },
+    {
+      "id": "town_murmur",
+      "name": "Town Murmur",
+      "category": "ambience",
+      "description": "a lively medieval town ambience",
+      "feel": "welcoming, lively",
+      "tags": [
+        "ambience",
+        "town",
+        "crowd",
+        "market",
+        "welcoming"
+      ],
+      "ai_prompt": "A lively medieval town ambience: distant indistinct chatter and footsteps and faint market bustle, warm and welcoming, no discernible words",
+      "duration_hint": 12.0,
+      "loop": true,
+      "variants": 1,
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience)."
+    },
+    {
+      "id": "forest",
+      "name": "Forest",
+      "category": "ambience",
+      "description": "a deep forest ambience",
+      "feel": "immersive, natural",
+      "tags": [
+        "ambience",
+        "forest",
+        "nature",
+        "trees"
+      ],
+      "ai_prompt": "A deep forest ambience: rustling leaves, distant birds and insects, gentle wind through the trees, natural and immersive",
+      "duration_hint": 12.0,
+      "loop": true,
+      "variants": 1,
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience)."
     }
   ],
   "quality_target": "Best-in-class. Every shipped clip must be indistinguishable from professionally recorded/edited foley. No 8-bit, no bleeps, no synth artifacts.",
@@ -786,18 +972,7 @@
   },
   "roadmap": {
     "note": "Backlog of missing sounds by priority (see spec/SOUND_DESIGN.md). Move an entry into `catalog` to have the loop generate it.",
-    "1_ambience_loops": [
-      "birds_day",
-      "crickets_night",
-      "wind",
-      "rain",
-      "ocean_waves",
-      "river",
-      "fire_crackle",
-      "cave_drips",
-      "town_murmur",
-      "forest"
-    ],
+    "1_ambience_loops": [],
     "2_movement_surfaces": [
       "footstep_dirt",
       "footstep_sand",

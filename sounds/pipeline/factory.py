@@ -159,7 +159,13 @@ def build_prompt(cfg: dict, spec: dict) -> str:
     A precise, material-rich brief is what separates production-ready foley from a
     vague approximation."""
     parts = [spec.get("ai_prompt") or spec["description"]]
-    directives = cfg["engine"]["ai"].get("prompt_directives")
+    ai = cfg["engine"]["ai"]
+    # Ambience/loops ARE background — the dry, single-isolated-event directive would
+    # fight them, so use the loop directive instead.
+    if bool(spec.get("loop", cfg["defaults"].get("loop", False))):
+        directives = ai.get("prompt_directives_loop") or ai.get("prompt_directives")
+    else:
+        directives = ai.get("prompt_directives")
     if directives:
         parts.append(directives)
     return ". ".join(p.strip().rstrip(".") for p in parts if p) + "."
@@ -194,8 +200,9 @@ def generate_ai(client, cfg: dict, spec: dict) -> dict:
         # ffmpeg) do we store the compressed bytes verbatim.
         try:
             samples, real_sr = postprocess.decode_audio(audio, sr_hint)
-            samples = postprocess.master(samples, real_sr,
-                                         fade_out_ms=40.0 if loop else 15.0)
+            # Loops (ambience beds): don't trim or edge-fade — that breaks the seam.
+            samples = postprocess.master(samples, real_sr, trim=not loop,
+                                         fades=not loop, fade_out_ms=15.0)
             fname = f"{spec['id']}.wav" if n == 1 else f"{spec['id']}__take{i:02d}.wav"
             stats = postprocess.write_wav(samples, os.path.join(d, fname), real_sr)
             stats["requested_format"] = req_fmt

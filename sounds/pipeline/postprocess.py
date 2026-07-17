@@ -141,12 +141,17 @@ def apply_fades(x: np.ndarray, sr: int, fade_in_ms: float = 3.0,
     return x
 
 
-def master(x: np.ndarray, sr: int, *, trim: bool = True,
+def master(x: np.ndarray, sr: int, *, trim: bool = True, fades: bool = True,
            target_dbfs: float = -1.0, fade_out_ms: float = 15.0) -> np.ndarray:
-    """Trim → fade → peak-normalise. Returns the mastered float array."""
+    """Trim → fade → peak-normalise. Returns the mastered float array.
+
+    For a **seamless loop** (ambience bed) pass `trim=False, fades=False`: trimming
+    or edge-fading a loop creates an audible gap/dip at the seam. Loops are only
+    peak-normalised; the model's loop mode handles seamlessness."""
     if trim:
         x = trim_silence(x, sr)
-    x = apply_fades(x, sr, fade_out_ms=fade_out_ms)
+    if fades:
+        x = apply_fades(x, sr, fade_out_ms=fade_out_ms)
     x = normalize_peak(x, target_dbfs)
     return np.clip(x, -1.0, 1.0)
 
