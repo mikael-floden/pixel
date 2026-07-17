@@ -273,8 +273,8 @@ function injectStyles() {
   .ml-muted{margin:0;font:14px/1.4 system-ui,sans-serif;color:#8f8f9c;text-shadow:0 1px 2px #000}
   .ml-slots{display:grid;grid-template-columns:repeat(5,var(--ml-tab));grid-template-rows:repeat(3,var(--ml-tab));
     justify-content:space-evenly;align-content:space-evenly;width:100%;height:100%}
-  .ml-slot{width:var(--ml-tab);height:var(--ml-tab);image-rendering:pixelated;border-style:solid;border-width:26px;
-    border-image:url(/ui2/slot.png) 52 fill / 26px;box-sizing:border-box}
+  .ml-slot{width:var(--ml-tab);height:var(--ml-tab);image-rendering:pixelated;border-style:solid;border-width:30px;
+    border-image:url(/ui2/slot.png) 10 fill / 30px;box-sizing:border-box}
   .ml-btnrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:100%}
   .ml-plate-btn{padding:10px 20px;cursor:pointer;image-rendering:pixelated;background:none;touch-action:manipulation;
     border-style:solid;border-width:26px;border-image:url(/ui2/plate-normal.png) 52 fill / 26px;
@@ -297,7 +297,7 @@ function injectStyles() {
     .ml-page{gap:8px}
     .ml-plate-btn{padding:6px 14px;border-width:13px;border-image-width:13px;font-size:11px}
     .ml-plate-btn.on{border-image:url(/ui2/plate-pressed.png) 52 fill / 13px}
-    .ml-slot{border-width:13px;border-image-width:13px}
+    .ml-slot{border-width:20px;border-image-width:20px}
     .ml-muted{font-size:11px}
   }`;
   const s = document.createElement("style");
