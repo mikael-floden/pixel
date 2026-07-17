@@ -1,0 +1,47 @@
+{
+  "manifest_version": 1,
+  "id": "watering_can",
+  "name": "Watering Can",
+  "category": "tool",
+  "description": "a soft splash of water poured from a watering can",
+  "tags": [
+    "water",
+    "watering",
+    "splash",
+    "farm",
+    "crops"
+  ],
+  "usage": "Watering crops with the watering can.",
+  "loop": false,
+  "engine": "ai",
+  "license": "CC0-1.0",
+  "status": "complete",
+  "quality": "aaa",
+  "file": "tool/watering_can/watering_can__take01.wav",
+  "format": "wav",
+  "audio": {
+    "samples": 23875,
+    "duration_seconds": 0.497,
+    "sample_rate": 48000,
+    "channels": 1,
+    "bit_depth": 16,
+    "peak_dbfs": -1.0,
+    "requested_format": "mp3_44100_192",
+    "delivered": "mp3"
+  },
+  "takes": [
+    "tool/watering_can/watering_can__take01.wav",
+    "tool/watering_can/watering_can__take02.wav"
+  ],
+  "ai": {
+    "provider": "elevenlabs",
+    "model_id": "eleven_text_to_sound_v2",
+    "prompt": "Water poured from a watering can onto soil: a gentle, even sprinkling shower of droppets pattering on earth, soft and wet. High-fidelity recorded foley, close-miked, crisp transient, rich body, natural short tail; single isolated sound; dry with only a subtle natural room; no music, no voice, no melody, no chiptune, no synth beeps, no background noise; broadcast-quality, production-ready.",
+    "prompt_influence": 0.5,
+    "loop": false,
+    "variants": 2,
+    "requested_format": "mp3_44100_192"
+  },
+  "mastering": "trim + peak-normalize(-1 dBFS) + edge-fades",
+  "source": "elevenlabs text-to-sound-effects (eleven_text_to_sound_v2)"
+}
