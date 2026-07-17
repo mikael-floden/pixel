@@ -1,7 +1,7 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 34,
+  "count": 35,
   "by_category": {
     "ui": 8,
     "item": 5,
@@ -9,7 +9,7 @@
     "movement": 5,
     "combat": 4,
     "feedback": 2,
-    "ambience": 4
+    "ambience": 5
   },
   "sounds": [
     {
@@ -1387,6 +1387,46 @@
       "file": "ambience/rain/rain.wav",
       "takes": [
         "ambience/rain/rain.wav"
+      ],
+      "duration_seconds": 12.017,
+      "mix_gain_db": -20,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
+    },
+    {
+      "id": "ocean_waves",
+      "name": "Ocean Waves",
+      "category": "ambience",
+      "description": "a calm coastal ambience",
+      "feel": "soothing",
+      "tags": [
+        "ambience",
+        "ocean",
+        "waves",
+        "water",
+        "coast"
+      ],
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience).",
+      "engine": "ai",
+      "format": "wav",
+      "loop": true,
+      "file": "ambience/ocean_waves/ocean_waves.wav",
+      "takes": [
+        "ambience/ocean_waves/ocean_waves.wav"
       ],
       "duration_seconds": 12.017,
       "mix_gain_db": -20,
