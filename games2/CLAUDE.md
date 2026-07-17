@@ -589,7 +589,13 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   or Phaser anims, it belongs in `server/test` (3s), not in a browser (min).
 - **Deploy** (push to main → live): the workflow runs a `test` job (typecheck
   + full unit/sim suite) IN PARALLEL with the layer-cached image build;
-  `deploy` needs both. Dockerfile layers are ordered deps → art (per-domain)
+  `deploy` needs both. Triggers on games2/** AND on every art domain the
+  image bakes (characters2/tiles2/maps2/objects) — art pushes deploy
+  automatically (maintainer 2026-07-17; manual dispatches got old fast).
+  The concurrency group collapses rapid art pushes into the newest run.
+  NOTE: a maps2 push that uses an unclassified tile category will fail the
+  check-surfaces gate and BLOCK its own deploy (prod stays on the previous
+  revision) until games2 ships the SURFACES entry — watch for red runs. Dockerfile layers are ordered deps → art (per-domain)
   → game source LAST, and BuildKit's GHA cache means a code-only deploy
   uploads only the small source/build layers. Don't reorder the Dockerfile
   COPYs without thinking about which layer changes per deploy.

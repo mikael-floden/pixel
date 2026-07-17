@@ -19,17 +19,21 @@ name: nangijala deploy
 on:
   push:
     branches: [main]
-    # Game code changes auto-deploy. Art is baked into the image, so refresh it
-    # with a manual dispatch (avoids redeploying on every art commit — the art
-    # loops push very frequently).
+    # Game code AND every art domain the game bakes into its image auto-deploy
+    # (maintainer 2026-07-17: "if graphics or map data that effects the game
+    # changed, it should be baked into a deploy and released automatically").
+    # The art loops push frequently, but the concurrency group below collapses
+    # rapid pushes into the newest run, and BuildKit's layer cache keeps
+    # art-only rebuilds cheap. Manifests (characters.json / worlds.json)
+    # regenerate inside the image build, so art-only deploys are complete.
     paths:
       - "games2/**"
+      - "characters2/**"
+      - "tiles2/**"
+      - "maps2/**"
+      - "objects/**"
       - ".github/workflows/nangijala-deploy.yml"
-  workflow_dispatch: {}       # manual: also picks up the latest baked-in art
-  # Scheduled daily art-roll PAUSED at the user's request. Re-enable by
-  # uncommenting. (Push-on-game-change deploy above is left intact.)
-  # schedule:
-  #   - cron: "0 5 * * *"       # daily 05:00 UTC — roll the newest art into prod
+  workflow_dispatch: {}       # manual: force a roll without any commit
 
 # Only the newest deploy matters; cancel superseded runs.
 concurrency:
