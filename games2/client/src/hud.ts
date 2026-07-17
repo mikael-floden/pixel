@@ -256,7 +256,12 @@ function injectStyles() {
   injected = true;
   // Scale the plates in lockstep with the frame's HUD_SCALE (frame2) so they
   // keep filling the frame's tab/page windows at the "1x" experiment size.
+  // --ml-hud-scale-2x is the "x2 of the current" size (capped at the art's
+  // native 1.0) — the backpack slots + settings buttons opt into it so they
+  // stay comfortably tappable while the rest of the HUD stays small
+  // (maintainer 2026-07-17).
   document.documentElement.style.setProperty("--ml-hud-scale", String(HUD_SCALE));
+  document.documentElement.style.setProperty("--ml-hud-scale-2x", String(Math.min(1, HUD_SCALE * 2)));
   // --ml-tab: PERFECT-SQUARE tab plate side (mock plates capped at 150).
   // --ml-tabzone: boundary → divider B line centre; tracks the tab size.
   // Frame pieces are mock-ABSOLUTE crops: corners 180px, borders as
@@ -299,11 +304,18 @@ function injectStyles() {
     background-image:url(/ui2/stone.png);background-size:100% auto;
     background-repeat:repeat-y;background-attachment:local;image-rendering:pixelated}
   .ml-page.show{display:flex}
-  .ml-slots{display:grid;grid-template-columns:repeat(5,var(--ml-tab));grid-template-rows:repeat(2,var(--ml-tab));
+  /* backpack slots opt into the x2 (native) scale — the slots read big while
+     the tabs/frame stay small (maintainer). --ml-hud-scale override on the
+     GRID makes both the column track (var(--ml-tab)) and the slots resolve
+     at the bigger scale together. */
+  .ml-slots{--ml-hud-scale:var(--ml-hud-scale-2x);
+    display:grid;grid-template-columns:repeat(5,var(--ml-tab));grid-template-rows:repeat(2,var(--ml-tab));
     justify-content:space-evenly;align-content:space-evenly;width:100%;height:100%}
   .ml-slot{width:var(--ml-tab);height:var(--ml-tab);image-rendering:pixelated;border-style:solid;border-width:var(--ml-sbw);
     border-image:url(/ui2/slot.png) 10 fill / var(--ml-sbw);box-sizing:border-box}
-  .ml-btnrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:100%}
+  /* settings "menu buttons" also opt into x2 (native) so they stay tappable */
+  .ml-btnrow{--ml-hud-scale:var(--ml-hud-scale-2x);
+    display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:100%}
   /* settings buttons must never be SHORTER than the menu tabs / backpack
      slots (maintainer) — same --ml-tab height, width still fits the label */
   .ml-plate-btn{padding:10px 20px;min-height:var(--ml-tab);box-sizing:border-box;
