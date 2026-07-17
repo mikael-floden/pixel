@@ -1,10 +1,10 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 11,
+  "count": 12,
   "by_category": {
     "ui": 8,
-    "item": 3
+    "item": 4
   },
   "sounds": [
     {
@@ -215,6 +215,25 @@
       "loop": false,
       "file": "item/key_unlock/key_unlock__take01.wav",
       "duration_seconds": 0.092
+    },
+    {
+      "id": "drink_potion",
+      "name": "Drink Potion",
+      "category": "item",
+      "description": "a bubbly gulp-and-sparkle of drinking a potion",
+      "tags": [
+        "potion",
+        "drink",
+        "heal",
+        "quaff",
+        "bubbly"
+      ],
+      "usage": "Consuming a potion / healing item.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "item/drink_potion/drink_potion__take01.wav",
+      "duration_seconds": 0.127
     }
   ]
 }
