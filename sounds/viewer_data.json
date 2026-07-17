@@ -1,13 +1,14 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 28,
+  "count": 29,
   "by_category": {
     "ui": 8,
     "item": 5,
     "tool": 6,
     "movement": 5,
-    "combat": 4
+    "combat": 4,
+    "feedback": 1
   },
   "sounds": [
     {
@@ -540,6 +541,25 @@
       "loop": false,
       "file": "combat/magic_cast/magic_cast__take01.wav",
       "duration_seconds": 0.706
+    },
+    {
+      "id": "level_up",
+      "name": "Level Up",
+      "category": "feedback",
+      "description": "a bright ascending fanfare for gaining a level",
+      "tags": [
+        "level",
+        "up",
+        "fanfare",
+        "progress",
+        "reward"
+      ],
+      "usage": "Player gains a level / skill increases.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "feedback/level_up/level_up__take01.wav",
+      "duration_seconds": 1.02
     }
   ]
 }

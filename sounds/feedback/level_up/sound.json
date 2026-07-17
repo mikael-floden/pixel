@@ -1,0 +1,47 @@
+{
+  "manifest_version": 1,
+  "id": "level_up",
+  "name": "Level Up",
+  "category": "feedback",
+  "description": "a bright ascending fanfare for gaining a level",
+  "tags": [
+    "level",
+    "up",
+    "fanfare",
+    "progress",
+    "reward"
+  ],
+  "usage": "Player gains a level / skill increases.",
+  "loop": false,
+  "engine": "ai",
+  "license": "CC0-1.0",
+  "status": "complete",
+  "quality": "aaa",
+  "file": "feedback/level_up/level_up__take01.wav",
+  "format": "wav",
+  "audio": {
+    "samples": 48953,
+    "duration_seconds": 1.02,
+    "sample_rate": 48000,
+    "channels": 1,
+    "bit_depth": 16,
+    "peak_dbfs": -1.0,
+    "requested_format": "mp3_44100_192",
+    "delivered": "mp3"
+  },
+  "takes": [
+    "feedback/level_up/level_up__take01.wav",
+    "feedback/level_up/level_up__take02.wav"
+  ],
+  "ai": {
+    "provider": "elevenlabs",
+    "model_id": "eleven_text_to_sound_v2",
+    "prompt": "A level-up reward: a bright, uplifting ascending magical arpeggio with warm bells and a shimmering sparkle, celebratory and premium. High-fidelity recorded foley, close-miked, crisp transient, rich body, natural short tail; single isolated sound; dry with only a subtle natural room; no music, no voice, no melody, no chiptune, no synth beeps, no background noise; broadcast-quality, production-ready.",
+    "prompt_influence": 0.5,
+    "loop": false,
+    "variants": 2,
+    "requested_format": "mp3_44100_192"
+  },
+  "mastering": "trim + peak-normalize(-1 dBFS) + edge-fades",
+  "source": "elevenlabs text-to-sound-effects (eleven_text_to_sound_v2)"
+}
