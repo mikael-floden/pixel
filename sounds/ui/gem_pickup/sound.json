@@ -1,0 +1,42 @@
+{
+  "manifest_version": 1,
+  "id": "gem_pickup",
+  "name": "Gem Pickup",
+  "category": "ui",
+  "description": "a sparkly ascending chime for collecting a gem or valuable",
+  "tags": [
+    "gem",
+    "ruby",
+    "pickup",
+    "sparkle",
+    "valuable"
+  ],
+  "usage": "Play on gem_ruby and other high-value pickups.",
+  "loop": false,
+  "engine": "ai",
+  "license": "CC0-1.0",
+  "status": "complete",
+  "quality": "aaa",
+  "file": "ui/gem_pickup/gem_pickup__take01.mp3",
+  "format": "mp3",
+  "audio": {
+    "bytes": 10493,
+    "requested_format": "mp3_44100_192",
+    "delivered": "mp3"
+  },
+  "takes": [
+    "ui/gem_pickup/gem_pickup__take01.mp3",
+    "ui/gem_pickup/gem_pickup__take02.mp3"
+  ],
+  "ai": {
+    "provider": "elevenlabs",
+    "model_id": "eleven_text_to_sound_v2",
+    "prompt": "Picking up a precious gemstone: a crystalline glassy chime with a delicate sparkling upward shimmer, jewel-like and magical yet grounded. High-fidelity recorded foley, close-miked, crisp transient, rich body, natural short tail; single isolated sound; dry with only a subtle natural room; no music, no voice, no melody, no chiptune, no synth beeps, no background noise; broadcast-quality, production-ready.",
+    "prompt_influence": 0.5,
+    "loop": false,
+    "variants": 2,
+    "requested_format": "mp3_44100_192"
+  },
+  "mastering": "none (stored compressed; ffmpeg unavailable to master)",
+  "source": "elevenlabs text-to-sound-effects (eleven_text_to_sound_v2)"
+}

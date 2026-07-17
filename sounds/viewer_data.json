@@ -1,9 +1,9 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 1,
+  "count": 2,
   "by_category": {
-    "ui": 1
+    "ui": 2
   },
   "sounds": [
     {
@@ -23,6 +23,25 @@
       "format": "mp3",
       "loop": false,
       "file": "ui/coin_pickup/coin_pickup__take01.mp3",
+      "duration_seconds": null
+    },
+    {
+      "id": "gem_pickup",
+      "name": "Gem Pickup",
+      "category": "ui",
+      "description": "a sparkly ascending chime for collecting a gem or valuable",
+      "tags": [
+        "gem",
+        "ruby",
+        "pickup",
+        "sparkle",
+        "valuable"
+      ],
+      "usage": "Play on gem_ruby and other high-value pickups.",
+      "engine": "ai",
+      "format": "mp3",
+      "loop": false,
+      "file": "ui/gem_pickup/gem_pickup__take01.mp3",
       "duration_seconds": null
     }
   ]
