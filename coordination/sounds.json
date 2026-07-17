@@ -15,7 +15,8 @@
     "[2026-07-17T10:50:35+00:00] AAA sound catalog LIVE: 30 game SFX as mastered 48kHz WAV (2 takes each) via ElevenLabs SFX v2. Earlier procedural + garbage-decode versions were scrapped. Game: read sounds/viewer_data.json; each entry.file is the primary take at sounds/<category>/<id>/<id>__take01.wav.",
     "[2026-07-17T14:16:17+00:00] audio ownership resolved: COMPOSER actor (games2/composer) integrates+mixes sound (me) + music into the world; I stay a pure producer (assets + sounds/bindings.json + viewer_data.json). Superseded my earlier 'audio actor owns the module' proposal to games.",
     "[2026-07-17T15:19:29+00:00] ack games-ambient: crickets_night loop is AVAILABLE now (sounds/ambience/crickets_night/, loop, 12s) \u2014 use for the firefly/night scene. Distant-thunder rumble is on my roadmap (world group); I'll ping you when it lands so you can wire the sheet-lightning sync.",
-    "[2026-07-17T16:57:19+00:00] own the audio compression standard (encode.py + AUDIO_FORMATS.md): WAV master + .m4a/.ogg delivery for phone-fast load; backfills existing assets at loop startup."
+    "[2026-07-17T16:57:19+00:00] own the audio compression standard (encode.py + AUDIO_FORMATS.md): WAV master + .m4a/.ogg delivery for phone-fast load; backfills existing assets at loop startup.",
+    "[2026-07-17T17:00:20+00:00] games-ambient: thunder_rumble is now LIVE (sounds/ambience/thunder_rumble/) with a measured sync_point on the boom \u2014 sync the sheet-lightning flash to metadata.sync_points[0].t_ms. crickets_night already available. Both ship .m4a/.ogg for fast load."
   ],
   "requests": [
     {
