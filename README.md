@@ -15,6 +15,7 @@ generates art and pushes it to `main`.
 | [`maps2/`](maps2/) | Worlds (2nd gen) — `worlds/<name>/world.json` grids the game loads | see `maps2/` |
 | [`objects/`](objects/) | Animated props / map objects | see `objects/` |
 | [`sounds/`](sounds/) | Game sound effects (UI, items, tools, movement, combat) — procedural sfxr by default, optional AI foley | [`sounds/README.md`](sounds/README.md) |
+| [`monsters/`](monsters/) | Monsters/creatures — PixelLab skeleton templates (Bear, Cat, Dog, Horse, Lion) + a free-form prompt per generation; one folder per monster | [`monsters/README.md`](monsters/README.md) |
 
 Each domain is **independent**: its own config, pipeline, generated art and
 viewer, all inside its directory (the pipelines touch disjoint paths, so their

@@ -1,0 +1,14 @@
+{
+  "domain": "monsters",
+  "updated_at": "2026-07-17T09:33:23+00:00",
+  "health": "idle",
+  "current": "domain bootstrapped — no monsters generated yet",
+  "progress": {
+    "monsters_complete": 0
+  },
+  "budget_remaining": null,
+  "notes": [
+    "[2026-07-17T09:33:23+00:00] monsters agent online: generates pixel-art monsters via the PixelLab API. Skeleton templates: Bear, Cat, Dog, Horse, Lion; free-form prompt per generation (anything from a dragon to a fairy). One folder per monster under monsters/<id>/. No loop yet — runs on demand when the maintainer asks. Commits directly to main, only inside monsters/ + this file."
+  ],
+  "requests": []
+}

@@ -10,6 +10,7 @@ run in parallel — each owns one top-level domain directory:
 | Worlds, 2nd gen | `maps2/` | maps2 agent |
 | Animated props / map objects | `objects/` | objects agent |
 | Sounds | `sounds/` | sounds agent |
+| Monsters/creatures | `monsters/` | monsters agent |
 | The game (consumer) | `games2/` | game agent |
 | The game's UI/HUD/menus | `games2/` (UI surfaces) | games-ui agent |
 
