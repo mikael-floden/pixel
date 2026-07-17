@@ -23,6 +23,8 @@
  * must match the #game split; CSS zoom rescales viewport units).
  */
 
+import { mountFrame2, FrameLayout } from "./frame2";
+
 export interface HudActions {
   onLogout: () => void;
   /** Settings-tab controls (the keyboard digits' mobile home). Entries with
@@ -49,27 +51,55 @@ const TABS = [
 ] as const;
 type TabId = (typeof TABS)[number]["id"];
 
-/** Mount the full-page frame overlay: outer corners/rails/gems + the two
- * divider assemblies. Pointer-transparent; positioned by the same CSS vars
- * the HUD layout uses, so the sections always meet the dividers exactly. */
+/** Mount the composed frame-v2 canvas (see frame2.ts) and keep the HUD
+ * sections + the #game split glued to the frame's window rectangles. The
+ * old tile-assembly overlay is gone — the frame is now one runtime-composed
+ * canvas that stretches its plain sections to any viewport. */
 export function mountPageFrame() {
   injectStyles();
-  document.getElementById("ml-pageframe")?.remove();
-  const f = mk("div", "");
-  f.id = "ml-pageframe";
-  const group = (cls: string, kids: string[]) => {
-    const g = mk("div", `ml-pf ${cls}`);
-    for (const k of kids) g.appendChild(mk("i", k));
-    f.appendChild(g);
+  document.getElementById("ml-pageframe")?.remove(); // old overlay, if any
+  mountFrame2((l) => {
+    lastLayout = l;
+    applyFrameLayout();
+  });
+}
+
+let lastLayout: FrameLayout | null = null;
+
+/** Position the HUD sections into the frame's windows (called after every
+ * frame compose AND after HudBar [re]construction). The game/HUD boundary
+ * vars keep chat + the Phaser canvas split in sync, exactly like before. */
+function applyFrameLayout() {
+  const l = lastLayout;
+  if (!l) return;
+  const root = document.documentElement;
+  root.style.setProperty("--hud-h-inv", `${Math.round(l.gameHeight)}px`);
+  root.style.setProperty("--hud-h", `${Math.round(window.innerHeight - l.gameHeight)}px`);
+  const hud = document.querySelector<HTMLElement>(".ml-hud");
+  if (!hud) return;
+  hud.style.top = `${Math.round(l.gameHeight)}px`;
+  hud.style.height = "auto";
+  hud.style.bottom = "0";
+  const tr = hud.querySelector<HTMLElement>(".ml-tabrow");
+  const pg = hud.querySelector<HTMLElement>(".ml-pages");
+  const place = (el: HTMLElement | null, r: { left: number; top: number; width: number; height: number }) => {
+    if (!el) return;
+    el.style.left = `${Math.round(r.left)}px`;
+    el.style.top = `${Math.round(r.top - l.gameHeight)}px`;
+    el.style.width = `${Math.round(r.width)}px`;
+    el.style.height = `${Math.round(r.height)}px`;
+    el.style.right = "auto";
+    el.style.bottom = "auto";
   };
-  for (const c of ["tl", "tr", "bl", "br"]) f.appendChild(mk("i", `ml-pf ml-corner-${c}`));
-  group("ml-et", ["sl", "gm", "sr"]); // top border between corners
-  group("ml-eb", ["sg"]); // bottom border
-  group("ml-el", ["v1", "gm", "v2", "v3", "v4"]); // left border segments
-  group("ml-er", ["v1", "gm", "v2", "v3", "v4"]); // right border segments
-  group("ml-divA", ["cl", "sl", "gm", "sr", "cr"]);
-  group("ml-divB", ["cl", "sg", "cr"]);
-  document.body.appendChild(f);
+  place(tr, l.tabRect);
+  place(pg, l.pageRect);
+  if (pg) {
+    // the maintainer's cracked-stone backdrop for the (scrollable) pages;
+    // sized to the frame's art scale so its pixels match the frame's
+    pg.style.backgroundImage = "url(/ui2/stone.png)";
+    pg.style.backgroundSize = `${Math.round(768 * l.scale)}px auto`;
+    pg.style.backgroundRepeat = "repeat-y";
+  }
 }
 
 export class HudBar {
@@ -113,6 +143,7 @@ export class HudBar {
     hud.addEventListener("contextmenu", (e) => e.preventDefault());
     document.body.appendChild(hud);
     this.select("backpack");
+    applyFrameLayout(); // adopt the frame windows if the frame is already composed
   }
 
   private select(id: TabId) {
@@ -199,66 +230,11 @@ function injectStyles() {
   // Frame pieces are mock-ABSOLUTE crops: corners 180px, borders as
   // segment strips stretched between fixed junctions (see build-ui-tiles).
   const css = `
-  :root{--ml-tab:min(150px,calc((100vw - 200px)/5));--ml-tabzone:calc(var(--ml-tab) + 48px);
-    --gemc:calc(var(--hud-h-inv)*0.564)}
-  #ml-pageframe{position:fixed;inset:0;z-index:6;pointer-events:none}
-  .ml-pf,.ml-pf i{position:absolute;pointer-events:none;image-rendering:pixelated;background-size:100% 100%}
-  .ml-corner-tl{left:0;top:0;width:180px;height:180px;background-image:url(/ui/corner-tl.png)}
-  .ml-corner-tr{right:0;top:0;width:180px;height:180px;background-image:url(/ui/corner-tr.png)}
-  .ml-corner-bl{left:0;bottom:0;width:180px;height:180px;background-image:url(/ui/corner-bl.png)}
-  .ml-corner-br{right:0;bottom:0;width:180px;height:180px;background-image:url(/ui/corner-br.png)}
-  /* top border: stretch-segments join the corners/gem with identical mock
-     pixels on both sides of every joint */
-  .ml-et{left:180px;right:180px;top:0;height:76px}
-  .ml-et .sl{left:0;right:calc(50% + 28px);top:0;bottom:0;background-image:url(/ui/top-seg-l.png)}
-  .ml-et .gm{left:calc(50% - 28px);width:56px;top:0;bottom:0;background-image:url(/ui/gem-top.png)}
-  .ml-et .sr{left:calc(50% + 28px);right:0;top:0;bottom:0;background-image:url(/ui/top-seg-r.png)}
-  .ml-eb{left:180px;right:180px;bottom:0;height:76px}
-  .ml-eb .sg{inset:0;background-image:url(/ui/bottom-seg.png)}
-  /* side borders: four clean-rail segments BETWEEN the junctions (corner→gem,
-     gem→divA cap, divider-to-divider, divB cap→corner) — junction/ornament
-     art lives only in the caps/gem tiles, so vertical stretching only ever
-     touches featureless straight rail (invisible; no smeared decor, no
-     non-square pixels on features). --gemc = the side gems' centre, at the
-     mock's fraction (56.4%) of the game section. */
-  .ml-el,.ml-er{top:0;bottom:0;width:76px}
-  .ml-el{left:0}
-  .ml-er{right:0}
-  .ml-el .v1,.ml-el .v2,.ml-el .v3,.ml-el .v4{left:0;width:64px}
-  .ml-er .v1,.ml-er .v2,.ml-er .v3,.ml-er .v4{right:0;width:64px}
-  .ml-el .gm{left:0;width:76px}
-  .ml-er .gm{right:0;width:76px}
-  .ml-el .v1,.ml-er .v1{top:180px;height:calc(var(--gemc) - 34px - 180px)}
-  .ml-el .gm,.ml-er .gm{top:calc(var(--gemc) - 34px);height:68px}
-  .ml-el .v2,.ml-er .v2{top:calc(var(--gemc) + 34px);height:calc(var(--hud-h-inv) - 85px - var(--gemc) - 34px)}
-  .ml-el .v3,.ml-er .v3{top:calc(var(--hud-h-inv) + 31px);height:calc(var(--ml-tabzone) - 47px)}
-  .ml-el .v4,.ml-er .v4{top:calc(var(--hud-h-inv) + var(--ml-tabzone) + 40px);bottom:180px}
-  .ml-el .v1{background-image:url(/ui/left-v1.png)}
-  .ml-el .gm{background-image:url(/ui/gem-left.png)}
-  .ml-el .v2{background-image:url(/ui/left-v2.png)}
-  .ml-el .v3{background-image:url(/ui/left-v3.png)}
-  .ml-el .v4{background-image:url(/ui/left-v4.png)}
-  .ml-er .v1{background-image:url(/ui/right-v1.png)}
-  .ml-er .gm{background-image:url(/ui/gem-right.png)}
-  .ml-er .v2{background-image:url(/ui/right-v2.png)}
-  .ml-er .v3{background-image:url(/ui/right-v3.png)}
-  .ml-er .v4{background-image:url(/ui/right-v4.png)}
-  /* divider A: thin line (mock 707..711) centred on the game/HUD boundary;
-     the 190px caps own ALL the junction decor (line centre 55px into them) */
-  .ml-divA{left:0;right:0;top:calc(var(--hud-h-inv) - 85px);height:116px}
-  .ml-divA .cl{left:0;top:0;width:190px;height:116px;background-image:url(/ui/divA-capl.png)}
-  .ml-divA .sl{left:190px;right:calc(50% + 28px);top:64px;height:36px;background-image:url(/ui/divA-seg-l.png)}
-  .ml-divA .gm{left:calc(50% - 28px);width:56px;top:50px;height:58px;background-image:url(/ui/divA-gem.png)}
-  .ml-divA .sr{left:calc(50% + 28px);right:190px;top:64px;height:36px;background-image:url(/ui/divA-seg-r.png)}
-  .ml-divA .cr{right:0;top:0;width:190px;height:116px;background-image:url(/ui/divA-capr.png)}
-  /* divider B: line centre 16px into the caps / 6px into the 16px seg */
-  .ml-divB{left:0;right:0;top:calc(var(--hud-h-inv) + var(--ml-tabzone) - 16px);height:56px}
-  .ml-divB .cl{left:0;top:0;width:190px;height:56px;background-image:url(/ui/divB-capl.png)}
-  .ml-divB .sg{left:190px;right:190px;top:10px;height:16px;background-image:url(/ui/divB-seg.png)}
-  .ml-divB .cr{right:0;top:0;width:190px;height:56px;background-image:url(/ui/divB-capr.png)}
-  /* HUD content between the dividers */
-  .ml-hud{position:fixed;left:0;right:0;bottom:0;height:var(--hud-h);z-index:4;background:#07070e;box-sizing:border-box}
-  .ml-tabrow{position:absolute;top:24px;left:44px;right:44px;height:var(--ml-tab);display:flex;justify-content:space-evenly}
+  :root{--ml-tab:min(150px,calc((100vw - 200px)/5))}
+  /* HUD sections: base props only — position/size come from applyFrameLayout
+     (the frame-v2 windows), set inline after every compose. */
+  .ml-hud{position:fixed;left:0;right:0;bottom:0;z-index:4;background:#07070e;box-sizing:border-box}
+  .ml-tabrow{position:absolute;display:flex;justify-content:space-evenly;align-items:center}
   .ml-tab{width:var(--ml-tab);height:var(--ml-tab);flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
     padding:2px 0;cursor:pointer;image-rendering:pixelated;box-sizing:border-box;
     touch-action:manipulation;-webkit-touch-callout:none;
@@ -276,7 +252,7 @@ function injectStyles() {
   .ml-tab-label{font:700 11px/1.1 system-ui,sans-serif;font-size:clamp(6.5px,1.42vw,12px);
     text-transform:uppercase;color:#dfe2ea;text-shadow:0 1px 2px #000;white-space:nowrap;overflow:hidden;max-width:100%}
   .ml-tab.sel .ml-tab-label{color:#ffd678}
-  .ml-pages{position:absolute;left:44px;right:44px;top:calc(var(--ml-tabzone) + 30px);bottom:46px;overflow:hidden}
+  .ml-pages{position:absolute;overflow:hidden;image-rendering:pixelated}
   .ml-page{display:none;height:100%;overflow:auto;flex-direction:column;align-items:center;
     justify-content:center;gap:14px;text-align:center}
   .ml-page.show{display:flex}
@@ -303,9 +279,7 @@ function injectStyles() {
   }
   /* Short viewports (small desktop windows): compact everything. */
   @media (max-height:640px){
-    :root{--ml-tab:min(84px,calc((100vw - 200px)/5));--ml-tabzone:calc(var(--ml-tab) + 38px)}
-    .ml-tabrow{top:20px}
-    .ml-pages{top:calc(var(--ml-tabzone) + 22px);bottom:38px}
+    :root{--ml-tab:min(84px,calc((100vw - 200px)/5))}
     .ml-page{gap:8px}
     .ml-plate-btn{padding:6px 14px;border-width:13px;border-image-width:13px;font-size:11px}
     .ml-plate-btn.on{border-image:url(/ui/plate-pressed.png) 26 fill / 13px}

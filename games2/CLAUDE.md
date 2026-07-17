@@ -428,41 +428,32 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   dvh geometry must match the #game split; CSS zoom rescales viewport
   units). A `max-height:560px` media query compacts it for short
   windows.
-- **UI tiles**: `client/public/ui/*.png` are cut from the maintainer's
-  concept mockups by `scripts/build-ui-tiles.mjs` (sources live outside
-  the repo — the tiles are committed). PIXEL-PERFECT JOINTS BY
-  CONSTRUCTION: the mock's rails are thin hand-drawn lines that MEANDER
-  a few px, so the frame is cut as mock-ABSOLUTE segments between
-  junctions (180px corners, stretch-segments between them, fixed gems,
-  divider ╠/╣ caps + stretch-segments) — the client stretches only
-  segment interiors (`background-size:100% 100%`), so every joint shares
-  identical adjacent mock pixels. Side-border segments are flex-
-  proportioned by source height so the green gems land at the mock's
-  fraction. NOTHING is mirrored; no gem on the outer bottom or divider
-  B. Keying: outer pieces flood only from their INNER side (everything
-  outside the border stays opaque black — the game view cannot leak past
-  the frame); divider pieces flood from all edges; mock button-glow
-  bleed is erased from caps/side strips; boundary pixels get soft
-  ALPHA. THE ART IS THE MOCK'S ORIGINAL PIXELS, UNTOUCHED (maintainer
-  round 11, "take a step back... it looks like shit"): every attempt to
-  re-synthesize the art at cell resolution in pursuit of a perfect 1px
-  border (grid-snapped blocks, dominant-vote cells, straightened rails,
-  mirrored gems — rounds 7-10) made the border cleaner and the frame
-  chunkier, until the delicate reference became fat striped tubes. Only
-  ONE thing is baked on top of the original pixels: the round-8 border
-  ring — on the mock-global 4px grid, blocks that contain (>=1/4
-  opaque) or 8-touch art get their EMPTY px painted a flat colour = 85%
-  of the block's own transparent-px page navy + 15% black at 90% ALPHA
-  (outline(); crop origin passed so blocks align across joints). The
-  ring wobbles 1-2 art px where the hand-drawn edge crosses a block —
-  ACCEPTED; do not chase it (that is the rabbit hole).
-  Tabs are PERFECT SQUARES (`--ml-tab`, capped 150px = the mock plate)
-  with the three plate states 9-sliced via `border-image`; icons were
-  flood-key-extracted (grey icons survive — their outlines stop the
-  fill). Verify joints with the blackout trick: hide the canvas and diff
-  junction crops against the mock (see the session's junction-compare
-  probes).
-
+- **UI frame v2 (`client/src/frame2.ts` + `/ui2/*`)**: the vine/crystal/
+  clock frame from the maintainer's second concept round replaced the old
+  per-tile overlay (its `/ui/corner-*`/rail/divider tiles + the
+  `#ml-pageframe` CSS are retired; the plate/tab/icon tiles remain). The
+  frame is ONE runtime-composed canvas: `/ui2/frame.png` (the pixel-perfect
+  768×1376 extraction, 15 review rounds) + `/ui2/frame-top-runefree.png`
+  (top-rail rows with both rune glyphs inpainted) are stretched to the
+  viewport by inserting pixels at maintainer-marked cut lines
+  (scratchpad hud2-tilespec.json). RULES LEARNED OVER THE DUMMY ROUNDS:
+  every stretch section repeats PLAIN texture only — single-column/row
+  extrusions of the exact cut column, so any pixel count works and every
+  joint is a pair of originally-adjacent pixels; decorated art (wraps,
+  runes, crystals, corners, the zodiac clock disc) lives ONLY in fixed
+  sections; the top rail cuts avoid slicing the runes (vertical x=196
+  left; kinked x=534+y dodging to ≥576 on the right). Vertical stretch:
+  single row 326 + the 86px winding-bark unit at y=1035 (remainder goes
+  to the single row). Scale s = min(W/768, H/1376) CSS-scales the canvas
+  (pixelated); the axis with head-room gets the insert, so the frame
+  never distorts. `mountPageFrame()` (hud.ts) mounts it and glues the
+  layout: the onLayout callback sets `--hud-h`/`--hud-h-inv` (game split,
+  chat anchors) and positions `.ml-tabrow`/`.ml-pages` into the frame's
+  two lower windows by inline style. The pages carry the maintainer's
+  cracked-stone backdrop (`/ui2/stone.png`, repeat-y at the frame's art
+  scale — it is deliberately tall for scrolling pages). The frame's
+  static clock disc sits under the dynamic celestial-clock overlay
+  (clock.ts) top-centre.
 - **Tap/hold-to-move**: a tap RUNS to the point (there is NO double-tap
   gesture — nobody walks when they can run, maintainer); the autopilot
   eases into a walk inside `APPROACH_WALK_RADIUS` (2.5 cells) of the
