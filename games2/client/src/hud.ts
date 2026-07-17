@@ -244,20 +244,20 @@ function injectStyles() {
   :root{--ml-tab:min(150px,calc((100vw - 200px)/5))}
   /* HUD sections: base props only — position/size come from applyFrameLayout
      (the frame-v2 windows), set inline after every compose. */
-  .ml-hud{position:fixed;left:0;right:0;bottom:0;z-index:4;background:#07070e;box-sizing:border-box}
-  .ml-tabrow{position:absolute;display:flex;justify-content:space-evenly;align-items:center;background:#23160d}
+  .ml-hud{position:fixed;left:0;right:0;bottom:0;z-index:4;background:#23160d;box-sizing:border-box}
+  .ml-tabrow{position:absolute;display:flex;justify-content:space-evenly;align-items:center}
   .ml-tab{width:var(--ml-tab);height:var(--ml-tab);flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
     padding:2px 0;cursor:pointer;image-rendering:pixelated;box-sizing:border-box;
     touch-action:manipulation;-webkit-touch-callout:none;
-    border-style:solid;border-width:26px;border-image:url(/ui2/plate-normal.png) 52 fill / 26px;
+    border-style:solid;border-width:26px;border-image:url(/ui2/plate-normal.png) 56 fill / 26px;
     background:none}
   /* :active only where a real hover exists — mobile Chrome keeps :active
      sticky on the last-tapped element, which made switches read "pressed"
      regardless of their .on state (maintainer). */
   @media (hover:hover){
-  .ml-tab:active{border-image:url(/ui2/plate-pressed.png) 52 fill / 26px}
+  .ml-tab:active{border-image:url(/ui2/plate-pressed.png) 56 fill / 26px}
   }
-  .ml-tab.sel{border-image:url(/ui2/plate-selected.png) 52 fill / 26px}
+  .ml-tab.sel{border-image:url(/ui2/plate-selected.png) 56 fill / 26px}
   .ml-tab-icon{image-rendering:pixelated;-webkit-user-drag:none;pointer-events:none;
     max-width:calc(100% - 6px);max-height:calc(100% - 22px);object-fit:contain}
   .ml-tab-label{font:700 11px/1.1 system-ui,sans-serif;font-size:clamp(6.5px,1.42vw,12px);
@@ -277,14 +277,14 @@ function injectStyles() {
     border-image:url(/ui2/slot.png) 10 fill / 30px;box-sizing:border-box}
   .ml-btnrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:100%}
   .ml-plate-btn{padding:10px 20px;cursor:pointer;image-rendering:pixelated;background:none;touch-action:manipulation;
-    border-style:solid;border-width:26px;border-image:url(/ui2/plate-normal.png) 52 fill / 26px;
+    border-style:solid;border-width:26px;border-image:url(/ui2/plate-normal.png) 56 fill / 26px;
     font:700 14px system-ui,sans-serif;letter-spacing:.4px;text-transform:uppercase;color:#e8e8ec;
     text-shadow:0 1px 2px #000}
   @media (hover:hover){
-  .ml-plate-btn:active{border-image:url(/ui2/plate-pressed.png) 52 fill / 26px;color:#ffd678}
+  .ml-plate-btn:active{border-image:url(/ui2/plate-pressed.png) 56 fill / 26px;color:#ffd678}
   }
-  .ml-plate-btn.on{border-image:url(/ui2/plate-pressed.png) 52 fill / 26px;color:#ffd678}
-  .ml-plate-btn.press{border-image:url(/ui2/plate-pressed.png) 52 fill / 26px;color:#ffd678}
+  .ml-plate-btn.on{border-image:url(/ui2/plate-pressed.png) 56 fill / 26px;color:#ffd678}
+  .ml-plate-btn.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 26px;color:#ffd678}
   /* Narrow phones: five square tabs must still fit between the outer rails. */
   @media (max-width:460px){
     .ml-tabrow{left:40px;right:40px}
@@ -296,7 +296,7 @@ function injectStyles() {
     :root{--ml-tab:min(84px,calc((100vw - 200px)/5))}
     .ml-page{gap:8px}
     .ml-plate-btn{padding:6px 14px;border-width:13px;border-image-width:13px;font-size:11px}
-    .ml-plate-btn.on{border-image:url(/ui2/plate-pressed.png) 52 fill / 13px}
+    .ml-plate-btn.on{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
     .ml-slot{border-width:20px;border-image-width:20px}
     .ml-muted{font-size:11px}
   }`;
