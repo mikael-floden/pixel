@@ -92,14 +92,20 @@ function applyFrameLayout() {
     el.style.bottom = "auto";
   };
   place(tr, l.tabRect);
-  place(pg, l.pageRect);
+  // pages span the FULL viewport width (maintainer: the stone backdrop
+  // "should span from the very left to the very right"); the frame canvas
+  // overlays the rails on top, and content insets to the inner window via
+  // --ml-page-pad. Height runs to the viewport bottom — the bottom rail art
+  // covers the tail.
   if (pg) {
-    // the maintainer's cracked-stone backdrop for the (scrollable) pages;
-    // sized to the frame's art scale so its pixels match the frame's
-    pg.style.backgroundImage = "url(/ui2/stone.png)";
-    pg.style.backgroundSize = `${Math.round(768 * l.scale)}px auto`;
-    pg.style.backgroundRepeat = "repeat-y";
+    pg.style.left = "0";
+    pg.style.top = `${Math.round(l.pageRect.top - l.gameHeight)}px`;
+    pg.style.width = "100vw";
+    pg.style.height = `${Math.round(window.innerHeight - l.pageRect.top)}px`;
+    pg.style.right = "auto";
+    pg.style.bottom = "auto";
   }
+  document.documentElement.style.setProperty("--ml-page-pad", `${Math.round(l.pageRect.left)}px`);
 }
 
 export class HudBar {
@@ -254,7 +260,10 @@ function injectStyles() {
   .ml-tab.sel .ml-tab-label{color:#ffd678}
   .ml-pages{position:absolute;overflow:hidden;image-rendering:pixelated}
   .ml-page{display:none;height:100%;overflow:auto;flex-direction:column;align-items:center;
-    justify-content:center;gap:14px;text-align:center}
+    justify-content:center;gap:14px;text-align:center;box-sizing:border-box;
+    padding:14px var(--ml-page-pad,44px);
+    background-image:url(/ui2/stone.png);background-size:100% auto;
+    background-repeat:repeat-y;background-attachment:local;image-rendering:pixelated}
   .ml-page.show{display:flex}
   .ml-muted{margin:0;font:14px/1.4 system-ui,sans-serif;color:#8f8f9c;text-shadow:0 1px 2px #000}
   .ml-slots{display:grid;grid-template-columns:repeat(5,var(--ml-tab));grid-template-rows:repeat(3,var(--ml-tab));

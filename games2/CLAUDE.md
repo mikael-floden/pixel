@@ -450,8 +450,12 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   layout: the onLayout callback sets `--hud-h`/`--hud-h-inv` (game split,
   chat anchors) and positions `.ml-tabrow`/`.ml-pages` into the frame's
   two lower windows by inline style. The pages carry the maintainer's
-  cracked-stone backdrop (`/ui2/stone.png`, repeat-y at the frame's art
-  scale — it is deliberately tall for scrolling pages). The frame's
+  cobblestone backdrop (`/ui2/stone.png`) FULL-BLEED — "from the very
+  left to the very right" (maintainer): .ml-pages spans 100vw under the
+  rails, content insets via --ml-page-pad, and the image sits on each
+  scrolling .ml-page (background-size:100% auto, repeat-y,
+  background-attachment:local so it travels with long scrolled content —
+  the art is deliberately tall for that). The frame's
   static clock disc sits under the dynamic celestial-clock overlay
   (clock.ts) top-centre.
 - **Tap/hold-to-move**: a tap RUNS to the point (there is NO double-tap
