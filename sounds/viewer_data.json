@@ -1,7 +1,7 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 40,
+  "count": 41,
   "by_category": {
     "ui": 8,
     "item": 5,
@@ -9,7 +9,7 @@
     "movement": 5,
     "combat": 4,
     "feedback": 2,
-    "ambience": 10
+    "ambience": 11
   },
   "sounds": [
     {
@@ -3719,6 +3719,99 @@
       "sync_points": [
         {
           "t_ms": 11066.7,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
+    },
+    {
+      "id": "thunder_rumble",
+      "name": "Thunder Rumble",
+      "category": "ambience",
+      "description": "a deep rolling thunder rumble",
+      "feel": "ominous, powerful",
+      "tags": [
+        "thunder",
+        "storm",
+        "rumble",
+        "weather",
+        "sky"
+      ],
+      "usage": "Play on sheet-lightning flashes (games-ambient) / storm events; sync the boom to the flash via sync_points.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "ambience/thunder_rumble/thunder_rumble__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "ambience/thunder_rumble/thunder_rumble__take01.wav",
+            "bytes": 386342,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "ambience/thunder_rumble/thunder_rumble__take01.m4a",
+            "bytes": 66908,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "ambience/thunder_rumble/thunder_rumble__take01.ogg",
+            "bytes": 45039,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
+      "takes": [
+        "ambience/thunder_rumble/thunder_rumble__take01.wav",
+        "ambience/thunder_rumble/thunder_rumble__take02.wav"
+      ],
+      "duration_seconds": 4.024,
+      "mix_gain_db": -20,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.096,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.003
+      },
+      "envelope": {
+        "duration_ms": 4023.9,
+        "onset_ms": 1.6,
+        "peak_ms": 870.4,
+        "attack_ms": 868.8,
+        "peak_dbfs": -1.0,
+        "rms": 0.1407,
+        "crest": 6.3
+      },
+      "sync_points": [
+        {
+          "t_ms": 870.4,
           "name": "transient",
           "note": "main attack \u2014 measured; safe sync/trigger point"
         }
