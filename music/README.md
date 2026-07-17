@@ -15,10 +15,16 @@ chiptune, not elevator filler. Every track must earn its feeling: home, wonder,
 preparation for battle, love, grief, mystery — the brief names the feeling and
 the music delivers it.
 
-**No melody is forbidden.** The gold standard for a region theme is Gerudo
-Valley (Ocarina of Time): a bold, hummable tune with real character that
-players remember for decades. When a place deserves a theme, write a *theme* —
-never hide behind tasteful ambience out of caution.
+**No melody is forbidden — and no style is the house style.** The standard is
+the *freedom* a great game composer takes: one score can hold a flamenco
+gallop, a fragile music-box lullaby, a five-note ocarina motif, and a
+dissonant dread-drone, and be loved for exactly that range (Ocarina of Time's
+score is the proof). Never converge on a formula — not orchestral-cozy, not
+any one sound that happened to land well. Each brief starts from the *place
+and feeling* and picks whatever instruments, scale, and idiom serve it, even
+(especially) if nothing else in the catalog sounds like it. When a place
+deserves a theme, write a theme; when it deserves near-silence and one lonely
+instrument, write that.
 
 Engine: **ElevenLabs Music** (`music_v1`) — the strongest promptable
 text-to-music API as of 2026 — same account/key as [`sounds/`](../sounds).
