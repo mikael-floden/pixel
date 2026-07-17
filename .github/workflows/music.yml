@@ -10,12 +10,12 @@ on:
   # schedule:
   #   - cron: "25 * * * *"        # hourly, offset from the other domains
   #
-  # Bootstrap trigger: workflow_dispatch only registers once this file reaches
-  # the default branch, so while the domain lives on its feature branch the
-  # loop fires on pushes that change the catalog or this workflow. Loop commits
-  # (made with GITHUB_TOKEN) never retrigger runs, so this cannot recurse.
+  # Catalog-driven: pushing a new brief to config/music.json (or editing this
+  # workflow) starts a composition pass — that's how briefs become tracks
+  # without a schedule. Loop commits (made with GITHUB_TOKEN) never retrigger
+  # runs, so this cannot recurse.
   push:
-    branches: ["claude/music-agent-first-track-8b1dg6"]
+    branches: ["main"]
     paths: ["music/config/**", ".github/workflows/music.yml"]
   workflow_dispatch:
     inputs:
