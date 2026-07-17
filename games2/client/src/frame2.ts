@@ -322,16 +322,31 @@ function composeSelect() {
       ctx.drawImage(img, 0, 0, img.width, Math.min(img.height, (y1 - y) / s),
         x, y, img.width * s, Math.min(img.height * s, y1 - y));
   };
-  tileH(I.beamTop, g.beams.top.y * s - shT, (g.corners.tl.w - 2) * s - shL, bw - (g.corners.tr.w - 2) * s + shR);
-  tileH(I.beamBottom, yBot(g.beams.bottom.y), (g.corners.bl.w - 2) * s - shL, bw - (g.corners.br.w - 2) * s + shR);
-  tileV(I.beamLeft, g.beams.left.x * s - shL, (g.corners.tl.h - 2) * s - shT, bh - (g.corners.bl.h - 2) * s + shB);
-  tileV(I.beamRight, xRight(g.beams.right.x), (g.corners.tr.h - 2) * s - shT, bh - (g.corners.br.h - 2) * s + shB);
-  const draw = (img: HTMLImageElement, x: number, y: number) =>
-    ctx.drawImage(img, x, y, img.width * s, img.height * s);
-  draw(I.tl, -shL, -shT);
-  draw(I.tr, bw - g.corners.tr.w * s + shR, -shT);
-  draw(I.bl, -shL, bh - g.corners.bl.h * s + shB);
-  draw(I.br, bw - g.corners.br.w * s + shR, bh - g.corners.br.h * s + shB);
+  // Beams run the FULL rectangle — corner to corner, UNDER the corners —
+  // so the corners (drawn on top) can be h-MIRRORED to point their crystals
+  // INWARD (maintainer 2026-07-17) without exposing a seam: flipping moves
+  // each corner's beam stub to its outer side, and the continuous beam
+  // underneath covers the gap that would otherwise open on the inner side.
+  const leftBeamX = g.beams.left.x * s - shL;
+  const rightBeamX = xRight(g.beams.right.x);
+  const topBeamY = g.beams.top.y * s - shT;
+  const botBeamY = yBot(g.beams.bottom.y);
+  tileH(I.beamTop, topBeamY, leftBeamX, rightBeamX + g.beams.right.w * s);
+  tileH(I.beamBottom, botBeamY, leftBeamX, rightBeamX + g.beams.right.w * s);
+  tileV(I.beamLeft, leftBeamX, topBeamY, botBeamY + g.beams.bottom.h * s);
+  tileV(I.beamRight, rightBeamX, topBeamY, botBeamY + g.beams.bottom.h * s);
+  // corners drawn h-MIRRORED (crystals point inward)
+  const drawF = (img: HTMLImageElement, x: number, y: number) => {
+    ctx.save();
+    ctx.translate(x + img.width * s, y);
+    ctx.scale(-1, 1);
+    ctx.drawImage(img, 0, 0, img.width * s, img.height * s);
+    ctx.restore();
+  };
+  drawF(I.tl, -shL, -shT);
+  drawF(I.tr, bw - g.corners.tr.w * s + shR, -shT);
+  drawF(I.bl, -shL, bh - g.corners.bl.h * s + shB);
+  drawF(I.br, bw - g.corners.br.w * s + shR, bh - g.corners.br.h * s + shB);
   // content stays inside the beams' inner faces (overlay padding is in
   // VIRTUAL px — divide the backing-px band depth by the zoom)
   const pad = (v: number, sh: number) =>
