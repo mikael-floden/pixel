@@ -177,6 +177,12 @@ The loop is **fully resumable** (next unit = first catalog track without a
 feeling, the narrative, the key/BPM (they go into the prompt *and* the
 metadata), the section arc with per-section `sync_hints`, and references.
 
+⚠️ **Prompts must not name real artists, composers, or works** — the engine's
+TOS filter rejects them with a 400 (learned the hard way: "Koji Kondo's Gerudo
+Valley" killed a composition). Describe the *style* in the prompt instead;
+keep human-readable homages in the brief's `references` field, which is
+documentation only and never sent to the API.
+
 ### On a schedule / on demand (durable)
 
 [`.github/workflows/music.yml`](../.github/workflows/music.yml) runs the loop
