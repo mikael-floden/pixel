@@ -1163,10 +1163,9 @@
       },
       "features": [
         "accent",
-        "water",
-        "flowers"
+        "water"
       ],
-      "description": "black volcanic rock with a small detail, a small puddle, small flowers"
+      "description": "black volcanic rock with a small detail, a small puddle"
     },
     {
       "index": 15,
@@ -1252,7 +1251,8 @@
     "harmonize": {
       "hue_strength": 0.9,
       "sat_strength": 0.7,
-      "v_strength": 0.9
+      "v_strength": 0.9,
+      "hue_band": 65
     },
     "harmonized_from": true,
     "harmonized_to": true,

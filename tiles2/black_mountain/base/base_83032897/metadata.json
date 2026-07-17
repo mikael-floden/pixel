@@ -772,11 +772,10 @@
       "features": [
         "accent",
         "pebbles",
-        "bare_soil",
         "flowers",
         "water"
       ],
-      "description": "black volcanic rock with a small detail, pebbles, a bare soil patch, small flowers, a small puddle"
+      "description": "black volcanic rock with a small detail, pebbles, small flowers, a small puddle"
     },
     {
       "index": 10,
@@ -1240,7 +1239,8 @@
     "harmonize": {
       "hue_strength": 0.9,
       "sat_strength": 0.7,
-      "v_strength": 0.9
+      "v_strength": 0.9,
+      "hue_band": 65
     },
     "harmonized_from": true,
     "harmonized_to": false,

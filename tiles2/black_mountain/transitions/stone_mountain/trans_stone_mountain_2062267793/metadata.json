@@ -271,8 +271,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.526,
-        "black_mountain": 0.474
+        "stone_mountain": 0.533,
+        "black_mountain": 0.467
       },
       "edges": {
         "NE": {
@@ -284,11 +284,11 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "black_mountain"
+            "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.625,
-            "black_mountain": 0.375
+            "stone_mountain": 0.75,
+            "black_mountain": 0.25
           }
         },
         "SE": {
@@ -352,8 +352,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.432,
-        "stone_mountain": 0.568
+        "black_mountain": 0.457,
+        "stone_mountain": 0.543
       },
       "edges": {
         "NE": {
@@ -517,8 +517,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.778,
-        "black_mountain": 0.222
+        "stone_mountain": 0.777,
+        "black_mountain": 0.223
       },
       "edges": {
         "NE": {
@@ -835,8 +835,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.192,
-        "stone_mountain": 0.808
+        "black_mountain": 0.198,
+        "stone_mountain": 0.802
       },
       "edges": {
         "NE": {
@@ -915,8 +915,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.879,
-        "black_mountain": 0.121
+        "stone_mountain": 0.877,
+        "black_mountain": 0.123
       },
       "edges": {
         "NE": {
@@ -996,8 +996,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.986,
-        "black_mountain": 0.014
+        "stone_mountain": 0.985,
+        "black_mountain": 0.015
       },
       "edges": {
         "NE": {
@@ -1073,8 +1073,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.824,
-        "black_mountain": 0.176
+        "stone_mountain": 0.815,
+        "black_mountain": 0.185
       },
       "edges": {
         "NE": {
@@ -1154,8 +1154,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.864,
-        "black_mountain": 0.136
+        "stone_mountain": 0.857,
+        "black_mountain": 0.143
       },
       "edges": {
         "NE": {
@@ -1233,8 +1233,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.338,
-        "stone_mountain": 0.662
+        "black_mountain": 0.343,
+        "stone_mountain": 0.657
       },
       "edges": {
         "NE": {
@@ -1278,12 +1278,12 @@
             "stone_mountain",
             "stone_mountain",
             "black_mountain",
-            "stone_mountain",
+            "black_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.875,
-            "black_mountain": 0.125
+            "stone_mountain": 0.75,
+            "black_mountain": 0.25
           }
         },
         "NW": {
@@ -1318,7 +1318,8 @@
     "harmonize": {
       "hue_strength": 0.9,
       "sat_strength": 0.7,
-      "v_strength": 0.9
+      "v_strength": 0.9,
+      "hue_band": 65
     },
     "harmonized_from": true,
     "harmonized_to": true,

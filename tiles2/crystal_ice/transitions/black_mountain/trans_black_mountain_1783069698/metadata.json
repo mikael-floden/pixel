@@ -340,8 +340,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.968,
-        "black_mountain": 0.032
+        "crystal_ice": 0.977,
+        "black_mountain": 0.023
       },
       "edges": {
         "NE": {
@@ -407,10 +407,9 @@
       },
       "features": [
         "accent",
-        "shiny",
-        "water"
+        "shiny"
       ],
-      "description": "crystal ice with a small detail, a shiny speck, a small puddle"
+      "description": "crystal ice with a small detail, a shiny speck"
     },
     {
       "index": 5,
@@ -418,8 +417,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.972,
-        "black_mountain": 0.028
+        "crystal_ice": 0.973,
+        "black_mountain": 0.027
       },
       "edges": {
         "NE": {
@@ -495,8 +494,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.131,
-        "crystal_ice": 0.869
+        "black_mountain": 0.126,
+        "crystal_ice": 0.874
       },
       "edges": {
         "NE": {
@@ -654,8 +653,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.919,
-        "black_mountain": 0.081
+        "crystal_ice": 0.934,
+        "black_mountain": 0.066
       },
       "edges": {
         "NE": {
@@ -722,10 +721,9 @@
       },
       "features": [
         "accent",
-        "shiny",
-        "water"
+        "shiny"
       ],
-      "description": "crystal ice blending to black volcanic rock with a small detail, a shiny speck, a small puddle"
+      "description": "crystal ice blending to black volcanic rock with a small detail, a shiny speck"
     },
     {
       "index": 9,
@@ -964,8 +962,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.947,
-        "black_mountain": 0.053
+        "crystal_ice": 0.962,
+        "black_mountain": 0.038
       },
       "edges": {
         "NE": {
@@ -1031,10 +1029,9 @@
       },
       "features": [
         "accent",
-        "shiny",
-        "water"
+        "shiny"
       ],
-      "description": "crystal ice blending to black volcanic rock with a small detail, a shiny speck, a small puddle"
+      "description": "crystal ice with a small detail, a shiny speck"
     },
     {
       "index": 13,
@@ -1275,7 +1272,8 @@
     "harmonize": {
       "hue_strength": 0.9,
       "sat_strength": 0.7,
-      "v_strength": 0.9
+      "v_strength": 0.9,
+      "hue_band": 65
     },
     "harmonized_from": true,
     "harmonized_to": true,

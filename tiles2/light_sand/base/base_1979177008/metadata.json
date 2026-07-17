@@ -750,10 +750,9 @@
         }
       },
       "features": [
-        "flowers",
-        "accent"
+        "flowers"
       ],
-      "description": "light sand with small flowers, a small detail"
+      "description": "light sand with small flowers"
     },
     {
       "index": 10,
@@ -1206,7 +1205,8 @@
     "harmonize": {
       "hue_strength": 0.9,
       "sat_strength": 0.7,
-      "v_strength": 0.9
+      "v_strength": 0.9,
+      "hue_band": 65
     },
     "harmonized_from": true,
     "harmonized_to": false,

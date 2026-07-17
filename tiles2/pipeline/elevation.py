@@ -235,11 +235,21 @@ def process_sheet(gid, terrain, sheet, sdir, req, cfg, cache):
         if pp["neutralize_outline"]:
             im = normalize.neutralize_outline(im, darkness_thresh=pp["darkness_thresh"])
         for tgt in ref_targets:
-            im = normalize.harmonize(im, tgt, hs["hue_strength"], hs["sat_strength"], hs["v_strength"])
+            im = normalize.harmonize(im, tgt, hs["hue_strength"], hs["sat_strength"],
+                                     hs["v_strength"], hue_band=hs.get("hue_band", 42))
         fo = pp["fade_outline"]
         if fo.get("enabled"):                          # soften hard black frame lines AFTER harmonize
             im = normalize.fade_outline_alpha(im, material_target=emit_target,
                                               **postprocess._fade_kwargs(fo))
+        cr = pp["clean_top_rim"]
+        if cr.get("enabled"):                          # flatten the top-diamond rim so the raised
+            im = normalize.clean_top_rim(               # grass PATCH shows no dot grid (top-diamond
+                im, material_target=emit_target, factor=cr["factor"], band=cr["band"],
+                strength=cr["strength"], top_frac=cr["top_frac"],
+                protect_dark_material=cr["protect_dark_material"],
+                edge_margin=cr.get("edge_margin", 22))  # only; the rising object is untouched, and
+        # gap_close is intentionally NOT run here — props are placed in isolation, and its
+        # outward bleed would fatten a lone sprite's silhouette.
         im.save(os.path.join(dest, fn))
         entry = dict(raw_by_file.get(fn, {"file": fn}))
         # Per-tile emission so the glowing PROPS (crystals, lava, mushrooms, lamps,

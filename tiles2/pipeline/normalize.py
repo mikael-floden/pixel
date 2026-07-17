@@ -75,7 +75,7 @@ def material_target(images):
     }
 
 
-def harmonize(im, target, hue_strength=0.9, sat_strength=0.6, v_strength=0.65):
+def harmonize(im, target, hue_strength=0.9, sat_strength=0.6, v_strength=0.65, hue_band=42):
     """Pull `im`'s MATERIAL pixels toward the target hue/saturation and level their
     mean brightness, keeping texture. The material is selected by a generous
     HUE BAND for chromatic materials (grass/dirt/water — catches every tone of
@@ -90,7 +90,7 @@ def harmonize(im, target, hue_strength=0.9, sat_strength=0.6, v_strength=0.65):
     hue_t, sat_t, val_t = target["hue"], target["sat"], target["value"]
     if target.get("chroma", sat_t) > 55:                 # chromatic: hue band
         dh = np.abs(((h - hue_t + 128) % 256) - 128)
-        m = op & (s > 45) & (dh < 42)
+        m = op & (s > 45) & (dh < hue_band)
     else:                                                # achromatic: desaturated + value BAND
         # Two-sided value window around the target: a DARK material (black rock,
         # value~56) claims only dark pixels, a BRIGHT one (snow, value~243) only

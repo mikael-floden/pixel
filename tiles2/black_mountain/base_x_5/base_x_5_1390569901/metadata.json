@@ -38,65 +38,13 @@
       "index": 0,
       "file": "tile_00.png",
       "width": 64,
-      "height": 128,
-      "emission": {
-        "material": "black_mountain",
-        "color": [
-          1.0,
-          0.45,
-          0.15
-        ],
-        "anim": "flicker",
-        "sources": [
-          {
-            "x": 41.5,
-            "y": 78.4,
-            "r": 4.4,
-            "color": [
-              0.679,
-              0.108,
-              0.053
-            ],
-            "s": 0.489,
-            "dir": "up"
-          }
-        ]
-      },
-      "features": [
-        "shiny"
-      ]
+      "height": 128
     },
     {
       "index": 1,
       "file": "tile_01.png",
       "width": 64,
-      "height": 128,
-      "emission": {
-        "material": "black_mountain",
-        "color": [
-          1.0,
-          0.45,
-          0.15
-        ],
-        "anim": "flicker",
-        "sources": [
-          {
-            "x": 23.8,
-            "y": 94.4,
-            "r": 2.0,
-            "color": [
-              0.129,
-              0.067,
-              0.048
-            ],
-            "s": 0.314,
-            "dir": "up"
-          }
-        ]
-      },
-      "features": [
-        "shiny"
-      ]
+      "height": 128
     },
     {
       "index": 2,
@@ -120,45 +68,7 @@
       "index": 5,
       "file": "tile_05.png",
       "width": 64,
-      "height": 128,
-      "emission": {
-        "material": "black_mountain",
-        "color": [
-          1.0,
-          0.45,
-          0.15
-        ],
-        "anim": "flicker",
-        "sources": [
-          {
-            "x": 30.0,
-            "y": 85.5,
-            "r": 2.0,
-            "color": [
-              0.12,
-              0.068,
-              0.049
-            ],
-            "s": 0.311,
-            "dir": "up"
-          },
-          {
-            "x": 29.0,
-            "y": 92.5,
-            "r": 2.0,
-            "color": [
-              0.132,
-              0.077,
-              0.055
-            ],
-            "s": 0.329,
-            "dir": "up"
-          }
-        ]
-      },
-      "features": [
-        "shiny"
-      ]
+      "height": 128
     },
     {
       "index": 6,
@@ -197,14 +107,15 @@
       "height": 128
     }
   ],
-  "emissive_tiles": 3,
+  "emissive_tiles": 0,
   "generated_at": "2026-07-05T20:06:34+00:00",
   "processing": {
     "neutralize_outline": true,
     "harmonize": {
       "hue_strength": 0.9,
       "sat_strength": 0.7,
-      "v_strength": 0.9
+      "v_strength": 0.9,
+      "hue_band": 65
     },
     "harmonize_refs": [
       "black_mountain"

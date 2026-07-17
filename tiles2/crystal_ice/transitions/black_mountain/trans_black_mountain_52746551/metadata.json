@@ -500,8 +500,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.742,
-        "crystal_ice": 0.258
+        "black_mountain": 0.733,
+        "crystal_ice": 0.267
       },
       "edges": {
         "NE": {
@@ -744,8 +744,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.897,
-        "black_mountain": 0.103
+        "crystal_ice": 0.899,
+        "black_mountain": 0.101
       },
       "edges": {
         "NE": {
@@ -823,8 +823,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.899,
-        "black_mountain": 0.101
+        "crystal_ice": 0.901,
+        "black_mountain": 0.099
       },
       "edges": {
         "NE": {
@@ -902,8 +902,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.783,
-        "black_mountain": 0.217
+        "crystal_ice": 0.798,
+        "black_mountain": 0.202
       },
       "edges": {
         "NE": {
@@ -969,10 +969,9 @@
         }
       },
       "features": [
-        "accent",
-        "water"
+        "accent"
       ],
-      "description": "crystal ice blending to black volcanic rock with a small detail, a small puddle"
+      "description": "crystal ice blending to black volcanic rock with a small detail"
     },
     {
       "index": 12,
@@ -1054,8 +1053,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.899,
-        "crystal_ice": 0.101
+        "black_mountain": 0.896,
+        "crystal_ice": 0.104
       },
       "edges": {
         "NE": {
@@ -1095,12 +1094,13 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "black_mountain",
+            "crystal_ice",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 1.0
+            "black_mountain": 0.875,
+            "crystal_ice": 0.125
           }
         },
         "NW": {
@@ -1209,8 +1209,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.792,
-        "crystal_ice": 0.208
+        "black_mountain": 0.791,
+        "crystal_ice": 0.209
       },
       "edges": {
         "NE": {
@@ -1293,7 +1293,8 @@
     "harmonize": {
       "hue_strength": 0.9,
       "sat_strength": 0.7,
-      "v_strength": 0.9
+      "v_strength": 0.9,
+      "hue_band": 65
     },
     "harmonized_from": true,
     "harmonized_to": true,

@@ -827,10 +827,10 @@
         }
       },
       "features": [
-        "pebbles",
-        "accent"
+        "accent",
+        "pebbles"
       ],
-      "description": "clear water with pebbles, a small detail"
+      "description": "clear water with a small detail, pebbles"
     },
     {
       "index": 11,
@@ -1207,7 +1207,8 @@
     "harmonize": {
       "hue_strength": 0.9,
       "sat_strength": 0.7,
-      "v_strength": 0.9
+      "v_strength": 0.9,
+      "hue_band": 65
     },
     "harmonized_from": true,
     "harmonized_to": false,

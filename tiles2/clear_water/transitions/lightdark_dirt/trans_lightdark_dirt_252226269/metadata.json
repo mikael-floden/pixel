@@ -795,8 +795,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.702,
-        "lightdark_dirt": 0.298
+        "clear_water": 0.726,
+        "lightdark_dirt": 0.274
       },
       "edges": {
         "NE": {
@@ -818,7 +818,7 @@
           "samples": [
             "clear_water",
             "clear_water",
-            "lightdark_dirt",
+            "clear_water",
             "lightdark_dirt",
             "lightdark_dirt",
             "clear_water",
@@ -826,8 +826,8 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.625,
-            "lightdark_dirt": 0.375
+            "clear_water": 0.75,
+            "lightdark_dirt": 0.25
           }
         },
         "SW": {
@@ -1260,7 +1260,8 @@
     "harmonize": {
       "hue_strength": 0.9,
       "sat_strength": 0.7,
-      "v_strength": 0.9
+      "v_strength": 0.9,
+      "hue_band": 65
     },
     "harmonized_from": true,
     "harmonized_to": true,

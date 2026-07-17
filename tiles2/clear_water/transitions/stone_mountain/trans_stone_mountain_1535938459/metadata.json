@@ -172,8 +172,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.797,
-        "stone_mountain": 0.203
+        "clear_water": 0.799,
+        "stone_mountain": 0.201
       },
       "edges": {
         "NE": {
@@ -869,8 +869,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.97,
-        "clear_water": 0.03
+        "stone_mountain": 0.947,
+        "clear_water": 0.053
       },
       "edges": {
         "NE": {
@@ -938,7 +938,7 @@
         "flowers",
         "accent"
       ],
-      "description": "grey mountain stone with small flowers, a small detail"
+      "description": "grey mountain stone blending to clear water with small flowers, a small detail"
     },
     {
       "index": 12,
@@ -1251,7 +1251,8 @@
     "harmonize": {
       "hue_strength": 0.9,
       "sat_strength": 0.7,
-      "v_strength": 0.9
+      "v_strength": 0.9,
+      "hue_band": 65
     },
     "harmonized_from": true,
     "harmonized_to": true,

@@ -97,8 +97,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.903,
-        "lightdark_dirt": 0.097
+        "light_sand": 0.928,
+        "lightdark_dirt": 0.072
       },
       "edges": {
         "NE": {
@@ -399,8 +399,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.81,
-        "lightdark_dirt": 0.19
+        "light_sand": 0.812,
+        "lightdark_dirt": 0.188
       },
       "edges": {
         "NE": {
@@ -1228,7 +1228,8 @@
     "harmonize": {
       "hue_strength": 0.9,
       "sat_strength": 0.7,
-      "v_strength": 0.9
+      "v_strength": 0.9,
+      "hue_band": 65
     },
     "harmonized_from": true,
     "harmonized_to": true,

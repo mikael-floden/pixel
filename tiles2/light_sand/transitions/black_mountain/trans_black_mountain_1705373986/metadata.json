@@ -254,8 +254,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.991,
-        "light_sand": 0.009
+        "black_mountain": 0.99,
+        "light_sand": 0.01
       },
       "edges": {
         "NE": {
@@ -265,12 +265,13 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "black_mountain",
+            "light_sand",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 1.0
+            "black_mountain": 0.875,
+            "light_sand": 0.125
           }
         },
         "SE": {
@@ -408,8 +409,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.994,
-        "light_sand": 0.006
+        "black_mountain": 0.993,
+        "light_sand": 0.007
       },
       "edges": {
         "NE": {
@@ -1259,7 +1260,8 @@
     "harmonize": {
       "hue_strength": 0.9,
       "sat_strength": 0.7,
-      "v_strength": 0.9
+      "v_strength": 0.9,
+      "hue_band": 65
     },
     "harmonized_from": true,
     "harmonized_to": true,

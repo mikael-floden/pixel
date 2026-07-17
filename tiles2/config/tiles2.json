@@ -99,7 +99,7 @@
     "_comment": "raw -> base/transitions. neutralize_outline softens the outer silhouette rim. harmonize pulls each tile's dominant MATERIAL colour (auto-detected per type from its first base sheet) to a common target — greens together for grass, whites for snow — keeping texture; dirt/rock/flowers untouched. ab_strength = hue+saturation pull, v_strength = mean-brightness leveling (0..1).",
     "neutralize_outline": true,
     "darkness_thresh": 60,
-    "harmonize": { "hue_strength": 0.9, "sat_strength": 0.7, "v_strength": 0.9 },
+    "harmonize": { "hue_strength": 0.9, "sat_strength": 0.7, "v_strength": 0.9, "hue_band": 65 },
     "_palette_comment": "Re-tint the whole tileset to the game's HUD/UI colour palette (cohesive muted-forest theme). Each entry OVERRIDES the auto-detected material colour that harmonize pulls every tile toward, so grass/dirt/etc. read as one harmonic set with the HUD. grass + dirt are the exact colours the designer supplied; the rest are sampled from the HUD (crystal-teal water, sage stone, near-black rock, cool-pale snow, warm sand, icy-cyan ice). Remove an entry to fall back to auto-detection. Reprocess after any change.",
     "palette": {
       "saturated_grass": [7, 59, 53],

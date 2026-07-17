@@ -1151,10 +1151,9 @@
         }
       },
       "features": [
-        "pebbles",
-        "bare_soil"
+        "pebbles"
       ],
-      "description": "black volcanic rock with pebbles, a bare soil patch"
+      "description": "black volcanic rock with pebbles"
     },
     {
       "index": 15,
@@ -1227,11 +1226,10 @@
         }
       },
       "features": [
-        "pebbles",
         "accent",
-        "bare_soil"
+        "pebbles"
       ],
-      "description": "black volcanic rock with pebbles, a small detail, a bare soil patch"
+      "description": "black volcanic rock with a small detail, pebbles"
     }
   ],
   "generated_at": "2026-07-05T10:11:37+00:00",
@@ -1241,7 +1239,8 @@
     "harmonize": {
       "hue_strength": 0.9,
       "sat_strength": 0.7,
-      "v_strength": 0.9
+      "v_strength": 0.9,
+      "hue_band": 65
     },
     "harmonized_from": true,
     "harmonized_to": false,

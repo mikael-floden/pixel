@@ -30,7 +30,7 @@ import normalize
 import tilemeta
 
 DEFAULTS = {"neutralize_outline": True, "darkness_thresh": 60,
-            "harmonize": {"hue_strength": 0.9, "sat_strength": 0.6, "v_strength": 0.65},
+            "harmonize": {"hue_strength": 0.9, "sat_strength": 0.6, "v_strength": 0.65, "hue_band": 42},
             "deseam": {"enabled": False, "band": 3, "darkness_thresh": 70,
                        "strength": 0.9, "protect_dark_material": True},
             "clean_top_rim": {"enabled": False, "factor": 0.86, "band": 4,
@@ -151,9 +151,9 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
         im = Image.open(os.path.join(sdir, fn)).convert("RGBA")
         if pp["neutralize_outline"]:
             im = normalize.neutralize_outline(im, darkness_thresh=pp["darkness_thresh"])
-        im = normalize.harmonize(im, t_from, hs["hue_strength"], hs["sat_strength"], hs["v_strength"])
+        im = normalize.harmonize(im, t_from, hs["hue_strength"], hs["sat_strength"], hs["v_strength"], hue_band=hs.get("hue_band", 42))
         if t_to:
-            im = normalize.harmonize(im, t_to, hs["hue_strength"], hs["sat_strength"], hs["v_strength"])
+            im = normalize.harmonize(im, t_to, hs["hue_strength"], hs["sat_strength"], hs["v_strength"], hue_band=hs.get("hue_band", 42))
         if ds.get("enabled"):                          # erase the tessellating diamond-edge grid seam
             im = normalize.deseam_diamond(
                 im, band=ds["band"], darkness_thresh=ds["darkness_thresh"],

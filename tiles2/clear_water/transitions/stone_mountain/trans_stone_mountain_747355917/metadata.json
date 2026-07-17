@@ -103,8 +103,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.222,
-        "clear_water": 0.778
+        "stone_mountain": 0.22,
+        "clear_water": 0.78
       },
       "edges": {
         "NE": {
@@ -1284,7 +1284,8 @@
     "harmonize": {
       "hue_strength": 0.9,
       "sat_strength": 0.7,
-      "v_strength": 0.9
+      "v_strength": 0.9,
+      "hue_band": 65
     },
     "harmonized_from": true,
     "harmonized_to": true,

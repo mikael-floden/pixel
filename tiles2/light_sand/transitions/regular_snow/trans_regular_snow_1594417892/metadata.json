@@ -576,8 +576,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.191,
-        "light_sand": 0.809
+        "regular_snow": 0.192,
+        "light_sand": 0.808
       },
       "edges": {
         "NE": {
@@ -635,11 +635,13 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "light_sand"
+            "regular_snow"
           ],
           "ratio": {
-            "light_sand": 1.0
-          }
+            "light_sand": 0.875,
+            "regular_snow": 0.125
+          },
+          "divider": 0.875
         }
       },
       "features": [],
@@ -730,8 +732,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.938,
-        "light_sand": 0.062
+        "regular_snow": 0.937,
+        "light_sand": 0.063
       },
       "edges": {
         "NE": {
@@ -1264,7 +1266,8 @@
     "harmonize": {
       "hue_strength": 0.9,
       "sat_strength": 0.7,
-      "v_strength": 0.9
+      "v_strength": 0.9,
+      "hue_band": 65
     },
     "harmonized_from": true,
     "harmonized_to": true,

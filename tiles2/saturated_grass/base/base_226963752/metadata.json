@@ -162,11 +162,8 @@
           }
         }
       },
-      "features": [
-        "accent",
-        "flowers"
-      ],
-      "description": "saturated grass with a small detail, small flowers"
+      "features": [],
+      "description": "plain saturated grass"
     },
     {
       "index": 2,
@@ -239,11 +236,11 @@
         }
       },
       "features": [
-        "accent",
         "pebbles",
+        "accent",
         "flowers"
       ],
-      "description": "saturated grass with a small detail, pebbles, small flowers"
+      "description": "saturated grass with pebbles, a small detail, small flowers"
     },
     {
       "index": 3,
@@ -316,10 +313,9 @@
         }
       },
       "features": [
-        "flowers",
-        "accent"
+        "flowers"
       ],
-      "description": "saturated grass with small flowers, a small detail"
+      "description": "saturated grass with small flowers"
     },
     {
       "index": 4,
@@ -392,10 +388,9 @@
         }
       },
       "features": [
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "saturated grass with a small detail, small flowers"
+      "description": "saturated grass with a small detail"
     },
     {
       "index": 5,
@@ -468,10 +463,9 @@
         }
       },
       "features": [
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "saturated grass with a small detail, small flowers"
+      "description": "saturated grass with a small detail"
     },
     {
       "index": 6,
@@ -771,12 +765,10 @@
         }
       },
       "features": [
-        "accent",
         "flowers",
-        "water",
-        "pebbles"
+        "accent"
       ],
-      "description": "saturated grass with a small detail, small flowers, a small puddle, pebbles"
+      "description": "saturated grass with small flowers, a small detail"
     },
     {
       "index": 10,
@@ -849,11 +841,11 @@
         }
       },
       "features": [
-        "accent",
         "flowers",
+        "accent",
         "bare_soil"
       ],
-      "description": "saturated grass with a small detail, small flowers, a bare soil patch"
+      "description": "saturated grass with small flowers, a small detail, a bare soil patch"
     },
     {
       "index": 11,
@@ -1078,10 +1070,10 @@
         }
       },
       "features": [
-        "accent",
-        "flowers"
+        "flowers",
+        "accent"
       ],
-      "description": "saturated grass with a small detail, small flowers"
+      "description": "saturated grass with small flowers, a small detail"
     },
     {
       "index": 14,
@@ -1242,7 +1234,8 @@
     "harmonize": {
       "hue_strength": 0.9,
       "sat_strength": 0.7,
-      "v_strength": 0.9
+      "v_strength": 0.9,
+      "hue_band": 65
     },
     "harmonized_from": true,
     "harmonized_to": false,

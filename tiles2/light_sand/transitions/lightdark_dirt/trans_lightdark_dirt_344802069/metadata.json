@@ -647,8 +647,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.76,
-        "lightdark_dirt": 0.24
+        "light_sand": 0.764,
+        "lightdark_dirt": 0.236
       },
       "edges": {
         "NE": {
@@ -1270,7 +1270,8 @@
     "harmonize": {
       "hue_strength": 0.9,
       "sat_strength": 0.7,
-      "v_strength": 0.9
+      "v_strength": 0.9,
+      "hue_band": 65
     },
     "harmonized_from": true,
     "harmonized_to": true,
