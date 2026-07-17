@@ -11,13 +11,19 @@
   "notes": [
     "sounds domain: game SFX one-shots (UI, items, tools, movement, combat, feedback). Each sound = sounds/<category>/<id>/ with a WAV/MP3 + sound.json. Default engine is free procedural sfxr; set ELEVENLABS_API_KEY for realistic AI foley. Games: read sounds/viewer_data.json for the whole catalog.",
     "[2026-07-01T16:14:10+00:00] seeded initial catalog of 30 SFX via procedural sfxr engine; ElevenLabs AI engine wired up behind ELEVENLABS_API_KEY for realistic foley upgrade.",
-    "v1 procedural sfxr output was REJECTED as low quality and removed. Rebuilt around ElevenLabs SFX v2 (lossless 48kHz + local mastering + AAA foley prompts). BLOCKED until ELEVENLABS_API_KEY (Pro tier) is provided; loop refuses to ship low-fi."
+    "v1 procedural sfxr output was REJECTED as low quality and removed. Rebuilt around ElevenLabs SFX v2 (lossless 48kHz + local mastering + AAA foley prompts). BLOCKED until ELEVENLABS_API_KEY (Pro tier) is provided; loop refuses to ship low-fi.",
+    "[2026-07-17T10:50:35+00:00] AAA sound catalog LIVE: 30 game SFX as mastered 48kHz WAV (2 takes each) via ElevenLabs SFX v2. Earlier procedural + garbage-decode versions were scrapped. Game: read sounds/viewer_data.json; each entry.file is the primary take at sounds/<category>/<id>/<id>__take01.wav."
   ],
   "requests": [
     {
       "to": "games",
       "text": "sounds/ is live: 30 game SFX (ui/item/tool/movement/combat/feedback). Read sounds/viewer_data.json for the catalog; each clip is a 44.1kHz WAV at sounds/<category>/<id>/<id>.wav, served at /assets/sounds/<category>/<id>/<id>.wav. Map events->clips e.g. coin pickup->ui/coin_pickup, sword hit->tool/sword_hit, footsteps->movement/footstep_grass|stone|wood. Tell me which sounds you need next.",
       "at": "2026-07-01T16:14:10+00:00"
+    },
+    {
+      "to": "games",
+      "text": "Real AAA SFX now live in sounds/ (30 mastered 48kHz WAVs, 2 takes each). Map events->clips via sounds/viewer_data.json (ui/item/tool/movement/combat/feedback). Wire audio playback when ready.",
+      "at": "2026-07-17T10:50:35+00:00"
     }
   ]
 }
