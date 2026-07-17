@@ -1,9 +1,9 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 6,
+  "count": 7,
   "by_category": {
-    "ui": 6
+    "ui": 7
   },
   "sounds": [
     {
@@ -118,6 +118,25 @@
       "format": "wav",
       "loop": false,
       "file": "ui/menu_cancel/menu_cancel__take01.wav",
+      "duration_seconds": 0.497
+    },
+    {
+      "id": "error_buzz",
+      "name": "Error Buzz",
+      "category": "ui",
+      "description": "a short harsh buzz signalling an invalid or blocked action",
+      "tags": [
+        "error",
+        "invalid",
+        "denied",
+        "buzz",
+        "ui"
+      ],
+      "usage": "Invalid action, not enough money, blocked placement.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "ui/error_buzz/error_buzz__take01.wav",
       "duration_seconds": 0.497
     }
   ]
