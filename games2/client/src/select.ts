@@ -66,7 +66,11 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     if (showWorlds) {
       const wrap = overlay.querySelector("#ml-worlds") as HTMLElement;
       const n = worlds.length;
-      const CHIP_W = 210, GAP = 8, STEP = CHIP_W + GAP;
+      // Chips take their NATURAL width (maintainer: in a slide the buttons
+      // no longer have to share one size) — the layout measures each chip
+      // and spaces adjacent ones an equal GAP apart.
+      const GAP = 8;
+      const FLICK = 44; // px of drag that still advances one step
       let dragDx = 0;
       let swallowClick = false; // a real swipe must not click-select a chip
       const prevD = new Map<HTMLElement, number>();
@@ -93,15 +97,34 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       // distance ((-n/2, n/2]), so the strip loops; a chip whose d JUMPS
       // across the wrap (|Δd| > 1) teleports without transition — it's
       // off-screen on both ends, and animating it would streak it across
-      // the visible middle.
+      // the visible middle. Offsets accumulate the MEASURED widths of the
+      // chips between a chip and the centre (equal gaps, unequal chips).
+      const mod = (i: number) => ((i % n) + n) % n;
+      const chipXs = (): number[] => {
+        const xs = new Array<number>(n).fill(0);
+        const wOf = (i: number) => worldChips[mod(i)].offsetWidth;
+        const right = Math.floor(n / 2); // d range is (-n/2, n/2]
+        let x = 0;
+        for (let k = 1; k <= right; k++) {
+          x += wOf(selectedWorld + k - 1) / 2 + GAP + wOf(selectedWorld + k) / 2;
+          xs[mod(selectedWorld + k)] = x;
+        }
+        x = 0;
+        for (let k = 1; k <= n - 1 - right; k++) {
+          x -= wOf(selectedWorld - k + 1) / 2 + GAP + wOf(selectedWorld - k) / 2;
+          xs[mod(selectedWorld - k)] = x;
+        }
+        return xs;
+      };
       const layout = (animate: boolean) => {
+        const xs = chipXs();
         worldChips.forEach((chip, i) => {
           let d = (((i - selectedWorld) % n) + n) % n;
           if (d > n / 2) d -= n;
           const wrapped = Math.abs(d - (prevD.get(chip) ?? d)) > 1.5;
           prevD.set(chip, d);
           chip.classList.toggle("anim", animate && !wrapped);
-          chip.style.transform = `translateX(calc(-50% + ${Math.round(d * STEP + dragDx)}px))`;
+          chip.style.transform = `translateX(calc(-50% + ${Math.round(xs[i] + dragDx)}px))`;
         });
       };
       function selectWorld(i: number) {
@@ -110,7 +133,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
         layout(true);
       }
       // Swipe: drag the strip live and snap to the nearest chip on release;
-      // a short flick past CHIP_W/4 still advances one step. Pointer capture
+      // a short flick past FLICK px still advances one step. Pointer capture
       // is taken only ONCE the drag crosses the swipe threshold — capturing
       // at pointerdown retargeted the derived click to the strip, so tapping
       // a peeked neighbour never reached the chip's click handler.
@@ -122,7 +145,11 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       });
       wrap.addEventListener("pointermove", (e) => {
         if (downX === null) return;
-        dragDx = e.clientX - downX;
+        // clientX is VIEWPORT px but the strip's transforms live inside the
+        // uiZoom'd overlay — divide by the zoom or the chips move zoom×
+        // faster than the finger (one phone swipe leapt two chips).
+        const zoom = parseFloat(getComputedStyle(overlay).zoom as string) || 1;
+        dragDx = (e.clientX - downX) / zoom;
         if (!captured && Math.abs(dragDx) > 6) {
           captured = true;
           swallowClick = true;
@@ -132,12 +159,18 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       });
       const finish = () => {
         if (downX === null) return;
-        const steps =
-          Math.round(-dragDx / STEP) ||
-          (Math.abs(dragDx) > CHIP_W / 4 ? -Math.sign(dragDx) : 0);
+        // Variable-width snap: the chip whose centre ended nearest the
+        // strip's centre wins; a short flick that didn't get that far
+        // still advances one step in the drag direction.
+        const xs = chipXs();
+        let best = selectedWorld;
+        for (let i = 0; i < n; i++)
+          if (Math.abs(xs[i] + dragDx) < Math.abs(xs[best] + dragDx)) best = i;
+        if (best === selectedWorld && Math.abs(dragDx) > FLICK)
+          best = mod(selectedWorld - Math.sign(dragDx));
         downX = null;
         dragDx = 0;
-        selectWorld(selectedWorld + steps);
+        selectWorld(best);
         setTimeout(() => (swallowClick = false), 0); // click fires before this
       };
       wrap.addEventListener("pointerup", finish);
@@ -377,10 +410,12 @@ function injectStyles() {
   .ml-worlds{position:relative;overflow:hidden;height:68px;padding:0;touch-action:pan-y;
     user-select:none;-webkit-user-select:none;cursor:grab}
   .ml-worlds:active{cursor:grabbing}
-  .ml-world{position:absolute;left:50%;top:2px;width:210px;height:64px;display:flex;align-items:center;
-    justify-content:center;gap:8px;padding:2px 6px;color:#dfe2ea;font-size:13px;text-shadow:0 1px 2px #000}
+  /* natural chip width — the carousel measures each chip and spaces them
+     an equal gap apart (uniform size was the old grid's constraint) */
+  .ml-world{position:absolute;left:50%;top:2px;height:64px;display:flex;align-items:center;
+    justify-content:center;gap:8px;padding:2px 12px 2px 6px;color:#dfe2ea;font-size:13px;text-shadow:0 1px 2px #000}
   .ml-world.anim{transition:transform .25s ease}
-  .ml-world span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ml-world span{white-space:nowrap}
   .ml-world.sel{border-image:url(/ui2/plate-selected.png) 56 fill / 13px;color:#ffd678}
   .ml-world.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
   .ml-world-img{width:34px;height:34px;object-fit:cover;image-rendering:auto;flex:none}
