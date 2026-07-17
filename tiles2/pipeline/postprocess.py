@@ -161,12 +161,14 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
                 protect_dark_material=ds["protect_dark_material"])
         if fo.get("enabled"):                          # fade AFTER harmonize (which restores alpha)
             im = normalize.fade_outline_alpha(im, material_target=fade_mt, **_fade_kwargs(fo))
-        if cr.get("enabled"):                          # lighten the top-diamond rim so tessellating
-            im = normalize.clean_top_rim(               # tiles show no seam at shared vertices/edges
+        if cr.get("enabled") and kind == "base":       # BASE only: clean_top_rim recolours the
+            im = normalize.clean_top_rim(               # diamond perimeter toward ONE body colour,
                 im, material_target=fade_mt, factor=cr["factor"], band=cr["band"],
                 strength=cr["strength"], top_frac=cr["top_frac"],
                 protect_dark_material=cr["protect_dark_material"],
-                edge_margin=cr.get("edge_margin", 22))
+                edge_margin=cr.get("edge_margin", 22))  # which on a two-material TRANSITION paints a
+        # muddy ring that boxes in the blend — so it's skipped for transitions (their
+        # blend hides the vertex dot anyway); gap_close still runs to close real gaps.
         if gc.get("enabled"):                          # LAST: bleed silhouette outward to close
             im = normalize.close_iso_gaps(              # the background-through-gaps grid seam
                 im, alpha_thresh=gc["alpha_thresh"], grow=gc["grow"])

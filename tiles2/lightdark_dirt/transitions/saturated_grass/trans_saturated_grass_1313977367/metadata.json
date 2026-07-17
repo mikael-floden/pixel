@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.955,
-        "saturated_grass": 0.045
+        "lightdark_dirt": 0.94,
+        "saturated_grass": 0.06
       },
       "edges": {
         "NE": {
@@ -89,9 +89,11 @@
         }
       },
       "features": [
-        "bare_soil"
+        "accent",
+        "bare_soil",
+        "flowers"
       ],
-      "description": "dirt with a bare soil patch"
+      "description": "dirt blending to saturated grass with a small detail, a bare soil patch, small flowers"
     },
     {
       "index": 1,
@@ -99,8 +101,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.985,
-        "saturated_grass": 0.015
+        "lightdark_dirt": 0.982,
+        "saturated_grass": 0.018
       },
       "edges": {
         "NE": {
@@ -164,8 +166,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain dirt"
+      "features": [
+        "accent"
+      ],
+      "description": "dirt with a small detail"
     },
     {
       "index": 2,
@@ -394,8 +398,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.947,
-        "saturated_grass": 0.053
+        "lightdark_dirt": 0.935,
+        "saturated_grass": 0.065
       },
       "edges": {
         "NE": {
@@ -452,11 +456,13 @@
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
-            "lightdark_dirt"
+            "saturated_grass"
           ],
           "ratio": {
-            "lightdark_dirt": 1.0
-          }
+            "lightdark_dirt": 0.875,
+            "saturated_grass": 0.125
+          },
+          "divider": 0.875
         }
       },
       "features": [],
@@ -614,8 +620,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.998,
-        "saturated_grass": 0.002
+        "lightdark_dirt": 0.995,
+        "saturated_grass": 0.005
       },
       "edges": {
         "NE": {
@@ -688,8 +694,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.99,
-        "saturated_grass": 0.01
+        "lightdark_dirt": 0.946,
+        "saturated_grass": 0.054
       },
       "edges": {
         "NE": {
@@ -740,7 +746,7 @@
         "NW": {
           "samples": [
             "lightdark_dirt",
-            "lightdark_dirt",
+            "saturated_grass",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
@@ -749,12 +755,13 @@
             "lightdark_dirt"
           ],
           "ratio": {
-            "lightdark_dirt": 1.0
+            "lightdark_dirt": 0.875,
+            "saturated_grass": 0.125
           }
         }
       },
       "features": [],
-      "description": "plain dirt"
+      "description": "dirt blending to saturated grass"
     },
     {
       "index": 10,
@@ -762,8 +769,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.955,
-        "saturated_grass": 0.045
+        "lightdark_dirt": 0.943,
+        "saturated_grass": 0.057
       },
       "edges": {
         "NE": {
@@ -828,7 +835,7 @@
         }
       },
       "features": [],
-      "description": "plain dirt"
+      "description": "dirt blending to saturated grass"
     },
     {
       "index": 11,
@@ -913,8 +920,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.922,
-        "saturated_grass": 0.078
+        "lightdark_dirt": 0.812,
+        "saturated_grass": 0.188
       },
       "edges": {
         "NE": {
@@ -956,6 +963,22 @@
             "saturated_grass",
             "lightdark_dirt",
             "lightdark_dirt",
+            "saturated_grass",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 0.75,
+            "saturated_grass": 0.25
+          }
+        },
+        "NW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "saturated_grass",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt"
           ],
@@ -963,27 +986,14 @@
             "lightdark_dirt": 0.875,
             "saturated_grass": 0.125
           }
-        },
-        "NW": {
-          "samples": [
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt"
-          ],
-          "ratio": {
-            "lightdark_dirt": 1.0
-          }
         }
       },
       "features": [
-        "accent"
+        "accent",
+        "flowers",
+        "bare_soil"
       ],
-      "description": "dirt blending to saturated grass with a small detail"
+      "description": "dirt blending to saturated grass with a small detail, small flowers, a bare soil patch"
     },
     {
       "index": 13,
@@ -991,8 +1001,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.985,
-        "saturated_grass": 0.015
+        "lightdark_dirt": 0.979,
+        "saturated_grass": 0.021
       },
       "edges": {
         "NE": {
@@ -1067,8 +1077,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.934,
-        "saturated_grass": 0.066
+        "lightdark_dirt": 0.918,
+        "saturated_grass": 0.082
       },
       "edges": {
         "NE": {
@@ -1142,7 +1152,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 1.0
+        "lightdark_dirt": 0.999,
+        "saturated_grass": 0.001
       },
       "edges": {
         "NE": {
@@ -1206,8 +1217,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain dirt"
+      "features": [
+        "accent"
+      ],
+      "description": "dirt with a small detail"
     }
   ],
   "generated_at": "2026-07-05T09:32:42+00:00",

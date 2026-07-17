@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.132,
-        "light_sand": 0.868
+        "lightdark_dirt": 0.144,
+        "light_sand": 0.856
       },
       "edges": {
         "NE": {
@@ -46,7 +46,7 @@
         },
         "SE": {
           "samples": [
-            "light_sand",
+            "lightdark_dirt",
             "light_sand",
             "light_sand",
             "light_sand",
@@ -56,8 +56,10 @@
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 1.0
-          }
+            "lightdark_dirt": 0.125,
+            "light_sand": 0.875
+          },
+          "divider": 0.125
         },
         "SW": {
           "samples": [
@@ -104,14 +106,14 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.217,
-        "light_sand": 0.783
+        "lightdark_dirt": 0.355,
+        "light_sand": 0.645
       },
       "edges": {
         "NE": {
           "samples": [
             "light_sand",
-            "light_sand",
+            "lightdark_dirt",
             "light_sand",
             "light_sand",
             "light_sand",
@@ -120,10 +122,9 @@
             "lightdark_dirt"
           ],
           "ratio": {
-            "light_sand": 0.75,
-            "lightdark_dirt": 0.25
-          },
-          "divider": 0.75
+            "light_sand": 0.625,
+            "lightdark_dirt": 0.375
+          }
         },
         "SE": {
           "samples": [
@@ -147,13 +148,13 @@
             "light_sand",
             "lightdark_dirt",
             "light_sand",
-            "light_sand",
-            "light_sand",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "light_sand": 0.75,
-            "lightdark_dirt": 0.25
+            "light_sand": 0.5,
+            "lightdark_dirt": 0.5
           }
         },
         "NW": {
@@ -187,8 +188,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.168,
-        "light_sand": 0.832
+        "lightdark_dirt": 0.287,
+        "light_sand": 0.713
       },
       "edges": {
         "NE": {
@@ -210,8 +211,8 @@
         },
         "SE": {
           "samples": [
-            "light_sand",
-            "light_sand",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
@@ -220,13 +221,13 @@
             "lightdark_dirt"
           ],
           "ratio": {
-            "light_sand": 0.5,
-            "lightdark_dirt": 0.5
+            "lightdark_dirt": 0.75,
+            "light_sand": 0.25
           }
         },
         "SW": {
           "samples": [
-            "light_sand",
+            "lightdark_dirt",
             "light_sand",
             "light_sand",
             "light_sand",
@@ -236,23 +237,25 @@
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 1.0
-          }
+            "lightdark_dirt": 0.125,
+            "light_sand": 0.875
+          },
+          "divider": 0.125
         },
         "NW": {
           "samples": [
+            "lightdark_dirt",
             "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "light_sand",
             "lightdark_dirt",
             "lightdark_dirt",
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.75,
-            "lightdark_dirt": 0.25
+            "lightdark_dirt": 0.625,
+            "light_sand": 0.375
           }
         }
       },
@@ -268,23 +271,24 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.148,
-        "light_sand": 0.852
+        "lightdark_dirt": 0.331,
+        "light_sand": 0.669
       },
       "edges": {
         "NE": {
           "samples": [
             "light_sand",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
+            "lightdark_dirt",
             "light_sand",
             "light_sand",
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 1.0
+            "light_sand": 0.625,
+            "lightdark_dirt": 0.375
           }
         },
         "SE": {
@@ -292,14 +296,15 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "light_sand",
-            "light_sand",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "light_sand",
             "light_sand",
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 1.0
+            "light_sand": 0.75,
+            "lightdark_dirt": 0.25
           }
         },
         "SW": {
@@ -307,36 +312,38 @@
             "light_sand",
             "light_sand",
             "light_sand",
+            "lightdark_dirt",
             "light_sand",
             "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
+            "lightdark_dirt",
+            "lightdark_dirt"
           ],
           "ratio": {
-            "light_sand": 1.0
+            "light_sand": 0.625,
+            "lightdark_dirt": 0.375
           }
         },
         "NW": {
           "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
           ],
           "ratio": {
-            "light_sand": 1.0
+            "lightdark_dirt": 1.0
           }
         }
       },
       "features": [
-        "flowers"
+        "flowers",
+        "pebbles"
       ],
-      "description": "light sand blending to dirt with small flowers"
+      "description": "light sand blending to dirt with small flowers, pebbles"
     },
     {
       "index": 4,
@@ -344,8 +351,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.265,
-        "light_sand": 0.735
+        "lightdark_dirt": 0.345,
+        "light_sand": 0.655
       },
       "edges": {
         "NE": {
@@ -356,19 +363,20 @@
             "light_sand",
             "light_sand",
             "lightdark_dirt",
-            "light_sand",
+            "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "light_sand": 0.75,
-            "lightdark_dirt": 0.25
-          }
+            "light_sand": 0.625,
+            "lightdark_dirt": 0.375
+          },
+          "divider": 0.625
         },
         "SE": {
           "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
@@ -376,10 +384,8 @@
             "lightdark_dirt"
           ],
           "ratio": {
-            "light_sand": 0.375,
-            "lightdark_dirt": 0.625
-          },
-          "divider": 0.375
+            "lightdark_dirt": 1.0
+          }
         },
         "SW": {
           "samples": [
@@ -427,8 +433,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.25,
-        "light_sand": 0.75
+        "lightdark_dirt": 0.303,
+        "light_sand": 0.697
       },
       "edges": {
         "NE": {
@@ -450,8 +456,8 @@
         },
         "SE": {
           "samples": [
-            "light_sand",
-            "light_sand",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "light_sand",
@@ -460,8 +466,8 @@
             "lightdark_dirt"
           ],
           "ratio": {
-            "light_sand": 0.5,
-            "lightdark_dirt": 0.5
+            "lightdark_dirt": 0.75,
+            "light_sand": 0.25
           }
         },
         "SW": {
@@ -509,8 +515,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.163,
-        "light_sand": 0.837
+        "lightdark_dirt": 0.313,
+        "light_sand": 0.687
       },
       "edges": {
         "NE": {
@@ -532,8 +538,8 @@
         },
         "SE": {
           "samples": [
-            "light_sand",
-            "light_sand",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "lightdark_dirt",
             "light_sand",
             "light_sand",
@@ -542,9 +548,10 @@
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.875,
-            "lightdark_dirt": 0.125
-          }
+            "lightdark_dirt": 0.375,
+            "light_sand": 0.625
+          },
+          "divider": 0.375
         },
         "SW": {
           "samples": [
@@ -554,19 +561,20 @@
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
-            "light_sand",
-            "light_sand"
+            "lightdark_dirt",
+            "lightdark_dirt"
           ],
           "ratio": {
-            "light_sand": 0.625,
-            "lightdark_dirt": 0.375
-          }
+            "light_sand": 0.375,
+            "lightdark_dirt": 0.625
+          },
+          "divider": 0.375
         },
         "NW": {
           "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "light_sand",
             "light_sand",
             "light_sand",
@@ -574,15 +582,16 @@
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.875,
-            "lightdark_dirt": 0.125
+            "lightdark_dirt": 0.5,
+            "light_sand": 0.5
           }
         }
       },
       "features": [
-        "pebbles"
+        "pebbles",
+        "flowers"
       ],
-      "description": "light sand blending to dirt with pebbles"
+      "description": "light sand blending to dirt with pebbles, small flowers"
     },
     {
       "index": 7,
@@ -590,73 +599,79 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.725,
-        "light_sand": 0.275
+        "lightdark_dirt": 0.542,
+        "light_sand": 0.458
       },
       "edges": {
         "NE": {
           "samples": [
             "lightdark_dirt",
             "lightdark_dirt",
+            "light_sand",
             "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
+            "light_sand",
+            "light_sand",
             "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "lightdark_dirt": 1.0
+            "lightdark_dirt": 0.625,
+            "light_sand": 0.375
           }
         },
         "SE": {
           "samples": [
             "lightdark_dirt",
+            "light_sand",
+            "light_sand",
             "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
+            "light_sand",
+            "light_sand",
             "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "lightdark_dirt": 1.0
+            "lightdark_dirt": 0.5,
+            "light_sand": 0.5
           }
         },
         "SW": {
           "samples": [
+            "light_sand",
             "lightdark_dirt",
             "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
+            "light_sand",
+            "light_sand",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "lightdark_dirt": 1.0
+            "light_sand": 0.375,
+            "lightdark_dirt": 0.625
           }
         },
         "NW": {
           "samples": [
             "lightdark_dirt",
+            "light_sand",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
+            "light_sand",
             "lightdark_dirt"
           ],
           "ratio": {
-            "lightdark_dirt": 1.0
+            "lightdark_dirt": 0.75,
+            "light_sand": 0.25
           }
         }
       },
-      "features": [],
-      "description": "dirt blending to light sand"
+      "features": [
+        "pebbles"
+      ],
+      "description": "dirt blending to light sand with pebbles"
     },
     {
       "index": 8,
@@ -664,8 +679,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.324,
-        "light_sand": 0.676
+        "lightdark_dirt": 0.637,
+        "light_sand": 0.363
       },
       "edges": {
         "NE": {
@@ -676,19 +691,18 @@
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
-            "light_sand",
+            "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "lightdark_dirt": 0.875,
-            "light_sand": 0.125
+            "lightdark_dirt": 1.0
           }
         },
         "SE": {
           "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "light_sand",
@@ -696,9 +710,10 @@
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.75,
-            "lightdark_dirt": 0.25
-          }
+            "lightdark_dirt": 0.625,
+            "light_sand": 0.375
+          },
+          "divider": 0.625
         },
         "SW": {
           "samples": [
@@ -707,14 +722,15 @@
             "light_sand",
             "light_sand",
             "lightdark_dirt",
-            "light_sand",
-            "light_sand",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "light_sand": 0.75,
-            "lightdark_dirt": 0.25
-          }
+            "light_sand": 0.5,
+            "lightdark_dirt": 0.5
+          },
+          "divider": 0.5
         },
         "NW": {
           "samples": [
@@ -735,7 +751,7 @@
       "features": [
         "pebbles"
       ],
-      "description": "light sand blending to dirt with pebbles"
+      "description": "dirt blending to light sand with pebbles"
     },
     {
       "index": 9,
@@ -743,8 +759,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.921,
-        "light_sand": 0.079
+        "lightdark_dirt": 0.895,
+        "light_sand": 0.105
       },
       "edges": {
         "NE": {
@@ -823,8 +839,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.899,
-        "light_sand": 0.101
+        "lightdark_dirt": 0.79,
+        "light_sand": 0.21
       },
       "edges": {
         "NE": {
@@ -836,31 +852,32 @@
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
-            "lightdark_dirt"
+            "light_sand"
           ],
           "ratio": {
-            "lightdark_dirt": 1.0
-          }
+            "lightdark_dirt": 0.875,
+            "light_sand": 0.125
+          },
+          "divider": 0.875
         },
         "SE": {
           "samples": [
-            "lightdark_dirt",
             "light_sand",
             "light_sand",
             "light_sand",
             "light_sand",
             "light_sand",
-            "lightdark_dirt",
-            "lightdark_dirt"
+            "light_sand",
+            "light_sand",
+            "light_sand"
           ],
           "ratio": {
-            "lightdark_dirt": 0.375,
-            "light_sand": 0.625
+            "light_sand": 1.0
           }
         },
         "SW": {
           "samples": [
-            "lightdark_dirt",
+            "light_sand",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
@@ -870,8 +887,10 @@
             "lightdark_dirt"
           ],
           "ratio": {
-            "lightdark_dirt": 1.0
-          }
+            "light_sand": 0.125,
+            "lightdark_dirt": 0.875
+          },
+          "divider": 0.125
         },
         "NW": {
           "samples": [
@@ -898,8 +917,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.856,
-        "light_sand": 0.144
+        "lightdark_dirt": 0.833,
+        "light_sand": 0.167
       },
       "edges": {
         "NE": {
@@ -919,8 +938,8 @@
         },
         "SE": {
           "samples": [
-            "lightdark_dirt",
-            "lightdark_dirt",
+            "light_sand",
+            "light_sand",
             "light_sand",
             "light_sand",
             "light_sand",
@@ -929,9 +948,10 @@
             "lightdark_dirt"
           ],
           "ratio": {
-            "lightdark_dirt": 0.625,
-            "light_sand": 0.375
-          }
+            "light_sand": 0.625,
+            "lightdark_dirt": 0.375
+          },
+          "divider": 0.625
         },
         "SW": {
           "samples": [
@@ -964,8 +984,10 @@
           }
         }
       },
-      "features": [],
-      "description": "dirt blending to light sand"
+      "features": [
+        "pebbles"
+      ],
+      "description": "dirt blending to light sand with pebbles"
     },
     {
       "index": 12,
@@ -973,14 +995,14 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.458,
-        "light_sand": 0.542
+        "lightdark_dirt": 0.56,
+        "light_sand": 0.44
       },
       "edges": {
         "NE": {
           "samples": [
             "lightdark_dirt",
-            "light_sand",
+            "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
@@ -989,13 +1011,12 @@
             "lightdark_dirt"
           ],
           "ratio": {
-            "lightdark_dirt": 0.875,
-            "light_sand": 0.125
+            "lightdark_dirt": 1.0
           }
         },
         "SE": {
           "samples": [
-            "light_sand",
+            "lightdark_dirt",
             "lightdark_dirt",
             "light_sand",
             "lightdark_dirt",
@@ -1005,8 +1026,8 @@
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.75,
-            "lightdark_dirt": 0.25
+            "lightdark_dirt": 0.375,
+            "light_sand": 0.625
           }
         },
         "SW": {
@@ -1046,7 +1067,7 @@
         "pebbles",
         "flowers"
       ],
-      "description": "light sand blending to dirt with pebbles, small flowers"
+      "description": "dirt blending to light sand with pebbles, small flowers"
     },
     {
       "index": 13,
@@ -1054,15 +1075,15 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.412,
-        "light_sand": 0.588
+        "lightdark_dirt": 0.619,
+        "light_sand": 0.381
       },
       "edges": {
         "NE": {
           "samples": [
             "lightdark_dirt",
             "lightdark_dirt",
-            "light_sand",
+            "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
@@ -1070,14 +1091,13 @@
             "lightdark_dirt"
           ],
           "ratio": {
-            "lightdark_dirt": 0.875,
-            "light_sand": 0.125
+            "lightdark_dirt": 1.0
           }
         },
         "SE": {
           "samples": [
-            "light_sand",
-            "light_sand",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
@@ -1086,9 +1106,10 @@
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.5,
-            "lightdark_dirt": 0.5
-          }
+            "lightdark_dirt": 0.75,
+            "light_sand": 0.25
+          },
+          "divider": 0.75
         },
         "SW": {
           "samples": [
@@ -1125,7 +1146,7 @@
         "pebbles",
         "flowers"
       ],
-      "description": "light sand blending to dirt with pebbles, small flowers"
+      "description": "dirt blending to light sand with pebbles, small flowers"
     },
     {
       "index": 14,
@@ -1133,8 +1154,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.837,
-        "light_sand": 0.163
+        "lightdark_dirt": 0.725,
+        "light_sand": 0.275
       },
       "edges": {
         "NE": {
@@ -1188,22 +1209,24 @@
         "NW": {
           "samples": [
             "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
             "light_sand",
             "lightdark_dirt",
-            "lightdark_dirt",
+            "light_sand",
+            "light_sand",
+            "light_sand",
             "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "lightdark_dirt": 0.875,
-            "light_sand": 0.125
+            "lightdark_dirt": 0.5,
+            "light_sand": 0.5
           }
         }
       },
-      "features": [],
-      "description": "dirt blending to light sand"
+      "features": [
+        "pebbles"
+      ],
+      "description": "dirt blending to light sand with pebbles"
     },
     {
       "index": 15,
@@ -1211,8 +1234,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.033,
-        "light_sand": 0.967
+        "lightdark_dirt": 0.223,
+        "light_sand": 0.777
       },
       "edges": {
         "NE": {
@@ -1232,52 +1255,58 @@
         },
         "SE": {
           "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "light_sand",
             "light_sand",
+            "lightdark_dirt",
             "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
+            "lightdark_dirt"
           ],
           "ratio": {
-            "light_sand": 1.0
+            "lightdark_dirt": 0.625,
+            "light_sand": 0.375
           }
         },
         "SW": {
           "samples": [
+            "lightdark_dirt",
             "light_sand",
             "light_sand",
             "light_sand",
             "light_sand",
             "light_sand",
             "light_sand",
-            "light_sand",
-            "light_sand"
+            "lightdark_dirt"
           ],
           "ratio": {
-            "light_sand": 1.0
+            "lightdark_dirt": 0.25,
+            "light_sand": 0.75
           }
         },
         "NW": {
           "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
           ],
           "ratio": {
-            "light_sand": 1.0
+            "lightdark_dirt": 1.0
           }
         }
       },
-      "features": [],
-      "description": "plain light sand"
+      "features": [
+        "pebbles",
+        "accent",
+        "flowers"
+      ],
+      "description": "light sand blending to dirt with pebbles, a small detail, small flowers"
     }
   ],
   "generated_at": "2026-07-06T13:25:02+00:00",

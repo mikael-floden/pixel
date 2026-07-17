@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.928,
-        "saturated_grass": 0.072
+        "light_sand": 0.842,
+        "saturated_grass": 0.158
       },
       "edges": {
         "NE": {
@@ -65,32 +65,37 @@
             "light_sand",
             "saturated_grass",
             "saturated_grass",
-            "light_sand",
-            "light_sand"
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "light_sand": 0.75,
-            "saturated_grass": 0.25
-          }
+            "light_sand": 0.5,
+            "saturated_grass": 0.5
+          },
+          "divider": 0.5
         },
         "NW": {
           "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
             "light_sand",
             "light_sand",
             "light_sand",
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 1.0
-          }
+            "saturated_grass": 0.5,
+            "light_sand": 0.5
+          },
+          "divider": 0.5
         }
       },
-      "features": [],
-      "description": "light sand blending to saturated grass"
+      "features": [
+        "accent"
+      ],
+      "description": "light sand blending to saturated grass with a small detail"
     },
     {
       "index": 1,
@@ -172,8 +177,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.94,
-        "saturated_grass": 0.06
+        "saturated_grass": 0.123,
+        "light_sand": 0.877
       },
       "edges": {
         "NE": {
@@ -231,17 +236,21 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "light_sand"
+            "saturated_grass"
           ],
           "ratio": {
-            "light_sand": 1.0
-          }
+            "light_sand": 0.875,
+            "saturated_grass": 0.125
+          },
+          "divider": 0.875
         }
       },
       "features": [
-        "bare_soil"
+        "bare_soil",
+        "accent",
+        "pebbles"
       ],
-      "description": "light sand blending to saturated grass with a bare soil patch"
+      "description": "light sand blending to saturated grass with a bare soil patch, a small detail, pebbles"
     },
     {
       "index": 3,
@@ -324,8 +333,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.999,
-        "saturated_grass": 0.001
+        "light_sand": 0.982,
+        "saturated_grass": 0.018
       },
       "edges": {
         "NE": {
@@ -398,8 +407,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.982,
-        "saturated_grass": 0.018
+        "light_sand": 0.928,
+        "saturated_grass": 0.072
       },
       "edges": {
         "NE": {
@@ -433,139 +442,6 @@
           }
         },
         "SW": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        },
-        "NW": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        }
-      },
-      "features": [],
-      "description": "plain light sand"
-    },
-    {
-      "index": 6,
-      "file": "tile_06.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "light_sand": 0.92,
-        "saturated_grass": 0.08
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        },
-        "SW": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        },
-        "NW": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        }
-      },
-      "features": [],
-      "description": "light sand blending to saturated grass"
-    },
-    {
-      "index": 7,
-      "file": "tile_07.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "light_sand": 0.894,
-        "saturated_grass": 0.106
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
-          ],
-          "ratio": {
-            "light_sand": 1.0
-          }
-        },
-        "SE": {
           "samples": [
             "light_sand",
             "light_sand",
@@ -582,6 +458,151 @@
           },
           "divider": 0.875
         },
+        "NW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "saturated_grass": 0.25,
+            "light_sand": 0.75
+          },
+          "divider": 0.25
+        }
+      },
+      "features": [],
+      "description": "light sand blending to saturated grass"
+    },
+    {
+      "index": 6,
+      "file": "tile_06.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "light_sand": 0.827,
+        "saturated_grass": 0.173
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "light_sand": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "light_sand": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "light_sand": 0.75,
+            "saturated_grass": 0.25
+          },
+          "divider": 0.75
+        },
+        "NW": {
+          "samples": [
+            "saturated_grass",
+            "light_sand",
+            "saturated_grass",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
+          ],
+          "ratio": {
+            "saturated_grass": 0.25,
+            "light_sand": 0.75
+          }
+        }
+      },
+      "features": [
+        "accent",
+        "bare_soil",
+        "flowers"
+      ],
+      "description": "light sand blending to saturated grass with a small detail, a bare soil patch, small flowers"
+    },
+    {
+      "index": 7,
+      "file": "tile_07.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "light_sand": 0.84,
+        "saturated_grass": 0.16
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "light_sand": 0.875,
+            "saturated_grass": 0.125
+          },
+          "divider": 0.875
+        },
+        "SE": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 0.375,
+            "light_sand": 0.625
+          }
+        },
         "SW": {
           "samples": [
             "saturated_grass",
@@ -608,11 +629,13 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "light_sand"
+            "saturated_grass"
           ],
           "ratio": {
-            "light_sand": 1.0
-          }
+            "light_sand": 0.875,
+            "saturated_grass": 0.125
+          },
+          "divider": 0.875
         }
       },
       "features": [],
@@ -624,8 +647,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.843,
-        "saturated_grass": 0.157
+        "light_sand": 0.691,
+        "saturated_grass": 0.309
       },
       "edges": {
         "NE": {
@@ -646,7 +669,7 @@
         "SE": {
           "samples": [
             "light_sand",
-            "light_sand",
+            "saturated_grass",
             "saturated_grass",
             "light_sand",
             "light_sand",
@@ -655,8 +678,8 @@
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.875,
-            "saturated_grass": 0.125
+            "light_sand": 0.75,
+            "saturated_grass": 0.25
           }
         },
         "SW": {
@@ -668,31 +691,35 @@
             "light_sand",
             "saturated_grass",
             "light_sand",
-            "light_sand"
+            "saturated_grass"
           ],
           "ratio": {
-            "light_sand": 0.875,
-            "saturated_grass": 0.125
+            "light_sand": 0.75,
+            "saturated_grass": 0.25
           }
         },
         "NW": {
           "samples": [
             "light_sand",
+            "saturated_grass",
+            "saturated_grass",
             "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
+            "saturated_grass",
+            "saturated_grass",
             "light_sand",
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 1.0
+            "light_sand": 0.5,
+            "saturated_grass": 0.5
           }
         }
       },
-      "features": [],
-      "description": "light sand blending to saturated grass"
+      "features": [
+        "accent",
+        "pebbles"
+      ],
+      "description": "light sand blending to saturated grass with a small detail, pebbles"
     },
     {
       "index": 9,
@@ -700,8 +727,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.953,
-        "saturated_grass": 0.047
+        "light_sand": 0.814,
+        "saturated_grass": 0.186
       },
       "edges": {
         "NE": {
@@ -710,19 +737,21 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "light_sand": 1.0
-          }
+            "light_sand": 0.5,
+            "saturated_grass": 0.5
+          },
+          "divider": 0.5
         },
         "SE": {
           "samples": [
-            "light_sand",
-            "light_sand",
+            "saturated_grass",
+            "saturated_grass",
             "light_sand",
             "light_sand",
             "light_sand",
@@ -731,8 +760,10 @@
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 1.0
-          }
+            "saturated_grass": 0.25,
+            "light_sand": 0.75
+          },
+          "divider": 0.25
         },
         "SW": {
           "samples": [
@@ -754,19 +785,22 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "light_sand",
-            "light_sand",
+            "saturated_grass",
+            "saturated_grass",
             "light_sand",
             "light_sand",
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 1.0
+            "light_sand": 0.75,
+            "saturated_grass": 0.25
           }
         }
       },
-      "features": [],
-      "description": "plain light sand"
+      "features": [
+        "accent"
+      ],
+      "description": "light sand blending to saturated grass with a small detail"
     },
     {
       "index": 10,
@@ -774,24 +808,26 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.85,
-        "saturated_grass": 0.15
+        "saturated_grass": 0.406,
+        "light_sand": 0.594
       },
       "edges": {
         "NE": {
           "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
             "light_sand",
             "light_sand",
             "light_sand",
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 1.0
-          }
+            "saturated_grass": 0.5,
+            "light_sand": 0.5
+          },
+          "divider": 0.5
         },
         "SE": {
           "samples": [
@@ -816,27 +852,28 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "light_sand",
-            "light_sand"
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "light_sand": 0.625,
-            "saturated_grass": 0.375
-          }
+            "light_sand": 0.375,
+            "saturated_grass": 0.625
+          },
+          "divider": 0.375
         },
         "NW": {
           "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "light_sand": 1.0
+            "saturated_grass": 1.0
           }
         }
       },
@@ -849,29 +886,30 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.859,
-        "saturated_grass": 0.141
+        "saturated_grass": 0.342,
+        "light_sand": 0.658
       },
       "edges": {
         "NE": {
           "samples": [
             "light_sand",
+            "saturated_grass",
+            "saturated_grass",
             "light_sand",
             "light_sand",
             "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "light_sand": 1.0
+            "light_sand": 0.5,
+            "saturated_grass": 0.5
           }
         },
         "SE": {
           "samples": [
-            "light_sand",
-            "light_sand",
+            "saturated_grass",
+            "saturated_grass",
             "light_sand",
             "light_sand",
             "saturated_grass",
@@ -880,8 +918,8 @@
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.875,
-            "saturated_grass": 0.125
+            "saturated_grass": 0.375,
+            "light_sand": 0.625
           }
         },
         "SW": {
@@ -892,33 +930,37 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "light_sand",
-            "light_sand"
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "light_sand": 1.0
-          }
+            "light_sand": 0.75,
+            "saturated_grass": 0.25
+          },
+          "divider": 0.75
         },
         "NW": {
           "samples": [
+            "saturated_grass",
+            "saturated_grass",
             "light_sand",
             "light_sand",
             "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
+            "saturated_grass",
+            "saturated_grass",
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 1.0
+            "saturated_grass": 0.5,
+            "light_sand": 0.5
           }
         }
       },
       "features": [
+        "accent",
         "pebbles"
       ],
-      "description": "light sand blending to saturated grass with pebbles"
+      "description": "light sand blending to saturated grass with a small detail, pebbles"
     },
     {
       "index": 12,
@@ -926,13 +968,13 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.929,
-        "saturated_grass": 0.071
+        "saturated_grass": 0.281,
+        "light_sand": 0.719
       },
       "edges": {
         "NE": {
           "samples": [
-            "light_sand",
+            "saturated_grass",
             "light_sand",
             "light_sand",
             "light_sand",
@@ -942,8 +984,10 @@
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 1.0
-          }
+            "saturated_grass": 0.125,
+            "light_sand": 0.875
+          },
+          "divider": 0.125
         },
         "SE": {
           "samples": [
@@ -969,25 +1013,27 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "light_sand"
+            "saturated_grass"
           ],
           "ratio": {
-            "light_sand": 1.0
-          }
+            "light_sand": 0.875,
+            "saturated_grass": 0.125
+          },
+          "divider": 0.875
         },
         "NW": {
           "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "light_sand": 1.0
+            "saturated_grass": 1.0
           }
         }
       },
@@ -1000,8 +1046,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.817,
-        "saturated_grass": 0.183
+        "saturated_grass": 0.255,
+        "light_sand": 0.745
       },
       "edges": {
         "NE": {
@@ -1056,20 +1102,23 @@
           "samples": [
             "light_sand",
             "light_sand",
+            "saturated_grass",
             "light_sand",
             "light_sand",
             "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
+            "saturated_grass",
+            "saturated_grass"
           ],
           "ratio": {
-            "light_sand": 1.0
+            "light_sand": 0.625,
+            "saturated_grass": 0.375
           }
         }
       },
-      "features": [],
-      "description": "light sand blending to saturated grass"
+      "features": [
+        "accent"
+      ],
+      "description": "light sand blending to saturated grass with a small detail"
     },
     {
       "index": 14,
@@ -1077,8 +1126,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.981,
-        "light_sand": 0.019
+        "saturated_grass": 0.921,
+        "light_sand": 0.079
       },
       "edges": {
         "NE": {
@@ -1143,9 +1192,10 @@
         }
       },
       "features": [
-        "accent"
+        "accent",
+        "pebbles"
       ],
-      "description": "saturated grass with a small detail"
+      "description": "saturated grass blending to light sand with a small detail, pebbles"
     },
     {
       "index": 15,
@@ -1153,8 +1203,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.8,
-        "light_sand": 0.2
+        "saturated_grass": 0.675,
+        "light_sand": 0.325
       },
       "edges": {
         "NE": {
@@ -1197,33 +1247,36 @@
             "light_sand",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass"
+            "light_sand"
           ],
           "ratio": {
-            "saturated_grass": 0.875,
-            "light_sand": 0.125
+            "saturated_grass": 0.75,
+            "light_sand": 0.25
           }
         },
         "NW": {
           "samples": [
+            "light_sand",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
+            "light_sand",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 1.0
+            "light_sand": 0.25,
+            "saturated_grass": 0.75
           }
         }
       },
       "features": [
-        "shiny"
+        "accent",
+        "shiny",
+        "flowers"
       ],
-      "description": "saturated grass blending to light sand with a shiny speck"
+      "description": "saturated grass blending to light sand with a small detail, a shiny speck, small flowers"
     }
   ],
   "generated_at": "2026-07-06T13:06:06+00:00",
