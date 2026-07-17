@@ -1,6 +1,9 @@
 import { MAX_CHAT_LEN } from "@nangijala/shared";
 import { applyUiZoom } from "./uiscale";
 
+/** How long a log line stays before fading out. */
+const CHAT_LINE_TTL_MS = 20_000;
+
 /**
  * Minimal DOM chat: a bottom-left message log + an input box that opens on Enter.
  * Movement is gated by `open` in the world scene while typing.
@@ -63,6 +66,13 @@ export class ChatUI {
     line.append(who, document.createTextNode(text));
     this.log.appendChild(line);
     while (this.log.childElementCount > 8) this.log.removeChild(this.log.firstChild!);
+    // chat/event lines are transient (maintainer): fade after 20s, then drop.
+    window.setTimeout(() => {
+      line.classList.add("ml-chatfade");
+      line.addEventListener("transitionend", () => line.remove(), { once: true });
+      // transitions don't run in backgrounded tabs — make sure it still leaves
+      window.setTimeout(() => line.remove(), 3000);
+    }, CHAT_LINE_TTL_MS);
   }
 }
 
@@ -77,7 +87,8 @@ function injectStyles() {
      desktop-site zoom is acceptable) — the dock is real UI now. */
   .ml-chatlog{position:fixed;left:46px;bottom:calc(var(--hud-h, 0px) / var(--ml-uizoom, 1) + 46px);z-index:5;max-width:330px;
     font-family:system-ui,sans-serif;font-size:13px;color:#e8e8f0;text-shadow:0 1px 2px #000;pointer-events:none}
-  .ml-chatline{margin:2px 0;line-height:1.3}
+  .ml-chatline{margin:2px 0;line-height:1.3;transition:opacity 1.6s ease}
+  .ml-chatline.ml-chatfade{opacity:0}
   .ml-chatwho{color:#ffd678;font-weight:600}
   .ml-chatinput{position:fixed;left:46px;bottom:calc(var(--hud-h, 0px) / var(--ml-uizoom, 1) + 12px);z-index:6;width:320px;
     padding:9px 12px;border-radius:8px;border:1px solid #2c2c31;background:#0a0a0cee;color:#fff;font-size:15px}`;

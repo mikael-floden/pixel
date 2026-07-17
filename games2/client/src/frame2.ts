@@ -62,7 +62,6 @@ const VCUT1 = 326; // single-row extrusion (rune-free on both rails)
 const VCUT2 = { y: 1035, s0: 992, p: 86 }; // winding-bark unit
 
 // ---- interior windows (asset coords, MEASURED off frame.png's alpha) ----
-const INNER_X0 = 80, INNER_X1 = 692;      // tab-row span (eyeballed, approved)
 const RAIL_TOP_Y = 648;                   // rail A's visual top edge (ragged)
 const RAIL_SOLID_Y = 676;                 // inside rail A's full-width-opaque
                                           // band (rows 665-693) — the REAL
@@ -72,7 +71,11 @@ const RAIL_SOLID_Y = 676;                 // inside rail A's full-width-opaque
                                           // "the in-game viewport should render
                                           // all the way down"), while chat still
                                           // anchors above RAIL_TOP_Y
-const TAB_WIN = { y0: 714, y1: 844 };     // between rail A and rail B
+// tab window: the brown band between rail A and rail B — its true side span
+// (rows 703-845) matches the page window's rail edges, so the tab row's
+// outer margins come out equal to its inter-button gaps (maintainer: "the
+// menu buttons are still not spaced correctly")
+const TAB_WIN = { x0: 48, x1: 720, y0: 714, y1: 844 };
 // page window = where the stone is actually exposed: rail B's art ends at
 // row 869 (center span), the bottom rail's ragged art starts at 1310, and
 // the vertical rails' inner edges sit at x 42/725 (median) — the old
@@ -216,9 +219,9 @@ function compose() {
     railTop: (RAIL_TOP_Y + g1) * s,
     pageTuckTop: (PAGE_TUCK_Y + g1) * s,
     tabRect: {
-      left: INNER_X0 * s,
+      left: TAB_WIN.x0 * s,
       top: (TAB_WIN.y0 + g1) * s,
-      width: (INNER_X1 + insW - INNER_X0) * s,
+      width: (TAB_WIN.x1 + insW - TAB_WIN.x0) * s,
       height: (TAB_WIN.y1 - TAB_WIN.y0) * s,
     },
     pageRect: {
