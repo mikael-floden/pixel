@@ -197,8 +197,8 @@ export class HudBar {
     for (let i = 0; i < 10; i++) slots.appendChild(mk("i", "ml-slot"));
     bp.append(slots);
 
-    this.pages.get("equipment")!.append(muted("Nothing equipped yet — armor and tools are coming."));
-    this.pages.get("map")!.append(muted("The cartographers are still charting Nangijala."));
+    // Equipment + Map pages: bare stone until their real content lands
+    // (maintainer 2026-07-17: no placeholder text).
 
     // Settings: home of ALL the toggles mobile can't reach by keyboard.
     const st = this.pages.get("settings")!;
@@ -216,12 +216,10 @@ export class HudBar {
     this.refreshSettings();
     st.appendChild(row);
 
-    // Logout: deliberate two-step (a stray tap must not eject anyone).
+    // Logout: deliberate two-step (a stray tap must not eject anyone) —
+    // just the button, no explainer text (maintainer 2026-07-17).
     const lo = this.pages.get("logout")!;
-    lo.append(
-      muted("Leave the world and return to the character select?"),
-      plateButton("Log out", () => this.actions.onLogout()),
-    );
+    lo.append(plateButton("Log out", () => this.actions.onLogout()));
   }
 }
 
@@ -244,12 +242,6 @@ function pressFx(b: HTMLElement) {
   b.addEventListener("pointerdown", () => b.classList.add("press"));
   for (const ev of ["pointerup", "pointercancel", "pointerleave"])
     b.addEventListener(ev, () => b.classList.remove("press"));
-}
-
-function muted(text: string): HTMLElement {
-  const p = mk("p", "ml-muted");
-  p.textContent = text;
-  return p;
 }
 
 function mk(tag: string, cls: string): HTMLElement {
@@ -298,7 +290,6 @@ function injectStyles() {
     background-image:url(/ui2/stone.png);background-size:100% auto;
     background-repeat:repeat-y;background-attachment:local;image-rendering:pixelated}
   .ml-page.show{display:flex}
-  .ml-muted{margin:0;font:14px/1.4 system-ui,sans-serif;color:#8f8f9c;text-shadow:0 1px 2px #000}
   .ml-slots{display:grid;grid-template-columns:repeat(5,var(--ml-tab));grid-template-rows:repeat(2,var(--ml-tab));
     justify-content:space-evenly;align-content:space-evenly;width:100%;height:100%}
   .ml-slot{width:var(--ml-tab);height:var(--ml-tab);image-rendering:pixelated;border-style:solid;border-width:30px;
@@ -331,7 +322,6 @@ function injectStyles() {
     .ml-plate-btn.on{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
     .ml-plate-btn.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
     .ml-slot{border-width:20px;border-image-width:20px}
-    .ml-muted{font-size:11px}
   }`;
   const s = document.createElement("style");
   s.textContent = css;
