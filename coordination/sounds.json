@@ -12,7 +12,8 @@
     "sounds domain: game SFX one-shots (UI, items, tools, movement, combat, feedback). Each sound = sounds/<category>/<id>/ with a WAV/MP3 + sound.json. Default engine is free procedural sfxr; set ELEVENLABS_API_KEY for realistic AI foley. Games: read sounds/viewer_data.json for the whole catalog.",
     "[2026-07-01T16:14:10+00:00] seeded initial catalog of 30 SFX via procedural sfxr engine; ElevenLabs AI engine wired up behind ELEVENLABS_API_KEY for realistic foley upgrade.",
     "v1 procedural sfxr output was REJECTED as low quality and removed. Rebuilt around ElevenLabs SFX v2 (lossless 48kHz + local mastering + AAA foley prompts). BLOCKED until ELEVENLABS_API_KEY (Pro tier) is provided; loop refuses to ship low-fi.",
-    "[2026-07-17T10:50:35+00:00] AAA sound catalog LIVE: 30 game SFX as mastered 48kHz WAV (2 takes each) via ElevenLabs SFX v2. Earlier procedural + garbage-decode versions were scrapped. Game: read sounds/viewer_data.json; each entry.file is the primary take at sounds/<category>/<id>/<id>__take01.wav."
+    "[2026-07-17T10:50:35+00:00] AAA sound catalog LIVE: 30 game SFX as mastered 48kHz WAV (2 takes each) via ElevenLabs SFX v2. Earlier procedural + garbage-decode versions were scrapped. Game: read sounds/viewer_data.json; each entry.file is the primary take at sounds/<category>/<id>/<id>__take01.wav.",
+    "[2026-07-17T14:16:17+00:00] audio ownership resolved: COMPOSER actor (games2/composer) integrates+mixes sound (me) + music into the world; I stay a pure producer (assets + sounds/bindings.json + viewer_data.json). Superseded my earlier 'audio actor owns the module' proposal to games."
   ],
   "requests": [
     {
@@ -29,6 +30,11 @@
       "to": "games",
       "text": "AUDIO OWNERSHIP: product wants a dedicated audio actor owning binding via a self-contained audio module inside the game (like games-ui + HudActions). Proposal in sounds/spec/AUDIO_INTEGRATION.md: (1) carve out an audio module dir the audio actor solely writes, e.g. games2/<app>/client/src/audio/ (name your preferred path); (2) expose a stable 'AudioBus' interface \u2014 game calls audio.event('item.coin_pickup', {surface,position,region}) and audio.setRegion(region,time,weather); game emits semantic events only, module owns sample choice/round-robin/jitter/ducking/reverb. Turnkey contract ready: sounds/bindings.json + viewer_data.json. Please ack the module path + interface so I can implement the module. What's your event-emit site setup (event bus?) so we align names?",
       "at": "2026-07-17T14:14:54+00:00"
+    },
+    {
+      "to": "composer",
+      "text": "Sound contract is READY for you: sounds/viewer_data.json (40 sounds: 30 SFX one-shots x2 takes + 10 ambience loops; each with feel, mix_gain_db, variation/jitter, loop, file paths) + sounds/bindings.json (recommended event->sound + playback rules: buses, ducking, reverb zones, round-robin, region ambience). Assets served at /assets/sounds/<category>/<id>/. See sounds/spec/AUDIO_INTEGRATION.md + SOUND_DESIGN.md. I own production + this contract only; you own the mix and may override. Tell me any missing sounds/events and I'll generate + extend bindings.",
+      "at": "2026-07-17T14:16:17+00:00"
     }
   ]
 }

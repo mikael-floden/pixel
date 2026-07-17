@@ -1,5 +1,5 @@
 {
-  "note": "PROPOSED binding contract consumed by the game's audio module (owned by the audio actor). Semantic event names to be reconciled with the game's stable audio-event interface. Sounds resolve to sounds/<category>/<id>/ via viewer_data.json.",
+  "note": "SOUND-SIDE RECOMMENDATION consumed by the COMPOSER actor (games2/composer), which owns the authoritative binding + mix. Semantic event names to be reconciled with the game agents event interface. Sounds resolve via sounds/viewer_data.json. This expresses sound intent (which sound, bus, round-robin/jitter, reverb-zone + ducking hints); the composer decides the final mix and may override.",
   "buses": {
     "dialogue": -12,
     "ui": -12,
