@@ -36,6 +36,22 @@
         "loopable": true,
         "recommended": { "crossfade_ms": 600 }
       },
+      "layers": [
+        {
+          "id": "combat",
+          "name": "Combat — Drums of the Valley",
+          "description": "The same Cherry Valley theme at battle intensity: driving war drums and taiko join, a low brass ostinato runs under the melody, strings turn to urgent tremolo. Crossfade in when combat starts — the melody stays recognizably the same, so the world never 'changes song'.",
+          "intensity": 1.0,
+          "style_delta": [
+            "driving war drums and taiko hits keeping the same tempo",
+            "low brass ostinato under the same main melody",
+            "urgent tremolo strings",
+            "forceful battle energy, same key and structure"
+          ],
+          "global_delta": ["epic battle intensity", "percussion-forward cinematic mix"],
+          "drop_negative": ["percussion"]
+        }
+      ],
       "prompt": "A warm, mythical orchestral fantasy theme for the overworld of a storybook adventure game, set in a peaceful afterlife valley of cherry blossoms, green meadows and campfire smoke. Cinematic but intimate, in the spirit of Howard Shore's Shire music and gentle Nordic folk. Structure: a solo wooden flute opens alone with a simple, singable melody over a soft string pad and sparse fingerpicked harp; the full theme then blooms in warm legato strings with the harp keeping flowing eighth-note arpeggios; a wide-eyed middle section lifts with a distant French horn countermelody and a soft wordless-choir-like pad, the emotional high point; then the theme settles back down to the quiet solo flute and strings for a gentle, unresolved, loop-friendly ending that can flow back into the beginning. A faint, soft frame-drum heartbeat keeps a clear gentle pulse throughout. Strictly instrumental. D major, 76 BPM, 4/4. High-fidelity, lush, spacious cinematic mix with soft dynamics and a touch of wistful melancholy under the warmth.",
       "sections": [
         {

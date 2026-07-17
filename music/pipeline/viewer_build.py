@@ -41,6 +41,13 @@ def build_viewer() -> dict:
             "loopable": m.get("loop", {}).get("loopable", False),
             "sections": [{k: s[k] for k in ("name", "start_s", "end_s")}
                          for s in m.get("structure", {}).get("sections", [])],
+            "layers": [{"id": l["id"], "name": l["name"],
+                        "intensity": l.get("intensity"), "file": l["file"],
+                        "stream": {v["format"]: {"file": v["file"],
+                                                 "mime": v["mime"]}
+                                   for v in l.get("compressed", [])},
+                        "metadata": l["metadata"]}
+                       for l in m.get("layers", [])],
             "metadata": f"{m['id']}/metadata.json",
         })
     data = {

@@ -22,7 +22,7 @@ import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from compose import ROOT, compose_track, load_config
+from compose import ROOT, compose_layer, compose_track, load_config
 from elevenlabs_music_client import (BudgetExhausted, ElevenLabsMusicClient,
                                      ElevenLabsMusicError)
 from viewer_build import build_viewer
@@ -76,17 +76,32 @@ def commit_push(message: str, push: bool = True) -> None:
     print("  ! push failed after retries — commit is local")
 
 
-def next_track(cfg: dict) -> dict | None:
+def _layer_done(track_id: str, layer_id: str) -> bool:
+    return os.path.exists(os.path.join(ROOT, track_id, "layers",
+                                       f"{layer_id}.metadata.json"))
+
+
+def next_unit(cfg: dict) -> tuple[str, dict, dict | None] | None:
+    """Base tracks first, then missing intensity layers. -> ("track"|"layer",
+    track, layer|None)."""
     for track in cfg["catalog"]:
         if not os.path.exists(os.path.join(ROOT, track["id"], "metadata.json")):
-            return track
+            return ("track", track, None)
+    for track in cfg["catalog"]:
+        for layer in track.get("layers", []):
+            if not _layer_done(track["id"], layer["id"]):
+                return ("layer", track, layer)
     return None
 
 
 def progress(cfg: dict) -> dict:
-    done = sum(1 for t in cfg["catalog"]
-               if os.path.exists(os.path.join(ROOT, t["id"], "metadata.json")))
-    return {"tracks_done": done, "tracks_total": len(cfg["catalog"])}
+    tracks = sum(1 for t in cfg["catalog"]
+                 if os.path.exists(os.path.join(ROOT, t["id"], "metadata.json")))
+    layers_total = sum(len(t.get("layers", [])) for t in cfg["catalog"])
+    layers = sum(1 for t in cfg["catalog"] for l in t.get("layers", [])
+                 if _layer_done(t["id"], l["id"]))
+    return {"tracks_done": tracks, "tracks_total": len(cfg["catalog"]),
+            "layers_done": layers, "layers_total": layers_total}
 
 
 def main() -> int:
@@ -117,15 +132,20 @@ def main() -> int:
     deadline = time.time() + args.max_minutes * 60
     units = 0
     while time.time() < deadline and (not args.max_units or units < args.max_units):
-        track = next_track(cfg)
-        if track is None:
+        unit = next_unit(cfg)
+        if unit is None:
             print("catalog complete — nothing to do")
             break
+        kind, track, layer = unit
+        label = track["id"] if kind == "track" else f"{track['id']}/{layer['id']}"
         try:
             client.ensure_budget(cfg["budget"]["min_ai_credits_remaining"])
-            heartbeat("running", f"composing {track['id']}", progress(cfg),
+            heartbeat("running", f"composing {label}", progress(cfg),
                       client.credits_remaining())
-            compose_track(track, cfg, client)
+            if kind == "track":
+                compose_track(track, cfg, client)
+            else:
+                compose_layer(track, layer, cfg, client)
         except BudgetExhausted as e:
             print(f"stopping: {e}")
             heartbeat("idle", f"budget floor reached ({e})", progress(cfg),
@@ -133,18 +153,17 @@ def main() -> int:
             commit_push("music heartbeat: budget floor", push=not args.no_push)
             return 0
         except ElevenLabsMusicError as e:
-            print(f"engine error on {track['id']}: {e}")
-            heartbeat("error", f"engine error on {track['id']}: {str(e)[:140]}",
+            print(f"engine error on {label}: {e}")
+            heartbeat("error", f"engine error on {label}: {str(e)[:140]}",
                       progress(cfg), client.credits_remaining())
-            commit_push(f"music heartbeat: engine error on {track['id']}",
+            commit_push(f"music heartbeat: engine error on {label}",
                         push=not args.no_push)
             return 1
         units += 1
         build_viewer()
-        heartbeat("running", f"composed {track['id']}", progress(cfg),
+        heartbeat("running", f"composed {label}", progress(cfg),
                   client.credits_remaining())
-        commit_push(f"music: compose {track['id']} ({track['name']})",
-                    push=not args.no_push)
+        commit_push(f"music: compose {label}", push=not args.no_push)
 
     heartbeat("idle", "pass complete", progress(cfg),
               client.credits_remaining())

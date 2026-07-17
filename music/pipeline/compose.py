@@ -159,6 +159,36 @@ def scale_info(root: str, mode: str, concert_a_hz: float = 440.0) -> dict:
     }
 
 
+def apply_style_delta(plan: dict, add_local: list[str], add_global: list[str],
+                      drop_negative: list[str]) -> dict:
+    """Derive an intensity-layer composition plan from the base plan: same
+    sections/durations (so tempo, key and structure carry over by
+    construction), with extra style descriptors appended and any conflicting
+    negative styles removed (e.g. a combat layer must drop 'harsh percussion').
+    Handles both snake_case and camelCase plan spellings."""
+    import copy
+    p = copy.deepcopy(plan)
+
+    def _drop(styles):
+        return [s for s in styles
+                if not any(d.lower() in s.lower() for d in drop_negative)]
+
+    for key in ("positive_global_styles", "positiveGlobalStyles"):
+        if key in p:
+            p[key] = list(p[key]) + add_global
+    for key in ("negative_global_styles", "negativeGlobalStyles"):
+        if key in p:
+            p[key] = _drop(p[key])
+    for sec in p.get("sections", []) or []:
+        for key in ("positive_local_styles", "positiveLocalStyles"):
+            if key in sec:
+                sec[key] = list(sec[key]) + add_local
+        for key in ("negative_local_styles", "negativeLocalStyles"):
+            if key in sec:
+                sec[key] = _drop(sec[key])
+    return p
+
+
 def sections_from_plan(plan: dict, intent_sections: list[dict]) -> list[dict]:
     """Composition-plan sections -> timeline with absolute start/end.
     `intent_sections` (authored, same arc as the prompt) contribute the human
@@ -167,7 +197,7 @@ def sections_from_plan(plan: dict, intent_sections: list[dict]) -> list[dict]:
     for i, sec in enumerate(plan_sections(plan)):
         dur = sec["duration_ms"] / 1000.0
         intent = intent_sections[i] if i < len(intent_sections) else {}
-        out.append({
+        entry = {
             "name": sec["name"],
             "start_s": round(t, 3),
             "end_s": round(t + dur, 3),
@@ -175,7 +205,10 @@ def sections_from_plan(plan: dict, intent_sections: list[dict]) -> list[dict]:
             "styles": sec["styles"],
             "description": intent.get("description", ""),
             "sync_hints": intent.get("sync_hints", []),
-        })
+        }
+        if intent.get("key"):                      # per-section key (modulation)
+            entry["key"] = scale_info(intent["key"]["root"], intent["key"]["mode"])
+        out.append(entry)
         t += dur
     return out
 
@@ -189,14 +222,17 @@ def sections_from_analysis(analysis: dict, intent_sections: list[dict]) -> list[
     out, t = [], 0.0
     for sec, w in zip(intent_sections, weights):
         dur = total * w / wsum
-        out.append({
+        entry = {
             "name": sec.get("name", "section"),
             "start_s": round(t, 3), "end_s": round(t + dur, 3),
             "duration_s": round(dur, 3), "styles": [],
             "description": sec.get("description", ""),
             "sync_hints": sec.get("sync_hints", []),
             "approximate": True,
-        })
+        }
+        if sec.get("key"):
+            entry["key"] = scale_info(sec["key"]["root"], sec["key"]["mode"])
+        out.append(entry)
         t += dur
     return out
 
@@ -315,6 +351,42 @@ def build_metadata(track: dict, cfg: dict, *, audio_file: str, fmt: str,
     return meta
 
 
+def package_audio(audio: bytes, fmt_req: str, expected_s: float, out_dir: str,
+                  stem: str, bpm: float | None, beats_per_bar: int,
+                  cfg: dict) -> tuple[str, str, int, int, dict | None, list[dict]]:
+    """Shared delivery path: sniff -> decode -> master -> WAV + compressed
+    copies -> analyze. Returns (audio_file, fmt, sr, channels, analysis|None,
+    variants). Used for base tracks and intensity layers alike."""
+    container = sniff_container(audio)
+    print(f"  got {len(audio)} bytes, requested {fmt_req}, sniffed {container}")
+    sr = 44100
+    y = None
+    if container == "wav":
+        y, sr = decode_wav(audio)
+    elif container == "pcm":
+        _, sr = _requested_rate(fmt_req)
+        y = decode_pcm(audio, sr, expected_s)
+    else:                                           # mp3
+        dec = decode_mp3_via_ffmpeg(audio)
+        if dec:
+            y, sr = dec
+    if y is not None:
+        y = master(y, sr, cfg["mastering"]["peak_dbfs"], cfg["mastering"]["edge_fade_ms"])
+        audio_file = f"{stem}.wav"
+        wav_path = os.path.join(out_dir, audio_file)
+        write_wav(wav_path, y, sr)
+        variants = encode_variants(wav_path)
+        analysis = analyze(y, sr, authored_bpm=bpm, beats_per_bar=beats_per_bar,
+                           rms_hop_s=cfg["analysis"]["rms_hop_ms"] / 1000.0)
+        return audio_file, "wav", sr, (y.shape[1] if y.ndim == 2 else 1), analysis, variants
+    audio_file = f"{stem}.mp3"
+    with open(os.path.join(out_dir, audio_file), "wb") as f:
+        f.write(audio)
+    print("  ! shipped as mp3 without measured analysis (no ffmpeg) — "
+          "metadata timing comes from the composition plan only")
+    return audio_file, "mp3", sr, 2, None, []
+
+
 # ----------------------------------------------------------------- top level
 
 def compose_track(track: dict, cfg: dict, client: ElevenLabsMusicClient) -> str:
@@ -343,41 +415,11 @@ def compose_track(track: dict, cfg: dict, client: ElevenLabsMusicClient) -> str:
           else {"prompt": prompt, "music_length_ms": track["length_ms"]})
     audio, fmt_req = client.compose_best(primary_format=eng["primary_format"],
                                          model_id=eng["model_id"], **kw)
-    container = sniff_container(audio)
-    print(f"  got {len(audio)} bytes, requested {fmt_req}, sniffed {container}")
-
     expected_s = (sum(s["duration_ms"] for s in plan_sections(plan)) / 1000.0
                   if plan else track["length_ms"] / 1000.0)
-    sr = 44100
-    y = None
-    if container == "wav":
-        y, sr = decode_wav(audio)
-    elif container == "pcm":
-        _, sr = _requested_rate(fmt_req)
-        y = decode_pcm(audio, sr, expected_s)
-    else:                                           # mp3
-        dec = decode_mp3_via_ffmpeg(audio)
-        if dec:
-            y, sr = dec
-
-    variants: list[dict] = []
-    if y is not None:
-        y = master(y, sr, cfg["mastering"]["peak_dbfs"], cfg["mastering"]["edge_fade_ms"])
-        audio_file = f"{track['id']}.wav"
-        wav_path = os.path.join(track_dir, audio_file)
-        write_wav(wav_path, y, sr)
-        variants = encode_variants(wav_path)
-        fmt, channels = "wav", (y.shape[1] if y.ndim == 2 else 1)
-        analysis = analyze(y, sr, authored_bpm=track.get("bpm"),
-                           beats_per_bar=int(track.get("time_signature", "4/4").split("/")[0]),
-                           rms_hop_s=cfg["analysis"]["rms_hop_ms"] / 1000.0)
-    else:
-        audio_file = f"{track['id']}.mp3"
-        with open(os.path.join(track_dir, audio_file), "wb") as f:
-            f.write(audio)
-        fmt, channels, analysis = "mp3", 2, None
-        print("  ! shipped as mp3 without measured analysis (no ffmpeg) — "
-              "metadata timing comes from the composition plan only")
+    audio_file, fmt, sr, channels, analysis, variants = package_audio(
+        audio, fmt_req, expected_s, track_dir, track["id"], track.get("bpm"),
+        int(track.get("time_signature", "4/4").split("/")[0]), cfg)
 
     meta = build_metadata(track, cfg, audio_file=audio_file, fmt=fmt, sr=sr,
                           channels=channels, analysis=analysis, plan=plan,
@@ -388,6 +430,98 @@ def compose_track(track: dict, cfg: dict, client: ElevenLabsMusicClient) -> str:
           f"({meta['audio']['duration_s']} s, {fmt}, "
           f"{len(meta['structure']['sections'])} sections)")
     return track_dir
+
+
+def compose_layer(track: dict, layer: dict, cfg: dict,
+                  client: ElevenLabsMusicClient) -> str:
+    """Generate one intensity layer for an already-composed track: the SAME
+    composition plan (same sections/tempo/key by construction) with the
+    layer's style delta applied — e.g. combat adds war drums to the same
+    theme. The result is a full sibling mix the game crossfades to, NOT a
+    phase-locked summable stem (honestly recorded in `alignment`)."""
+    eng = cfg["engine"]
+    track_dir = os.path.join(ROOT, track["id"])
+    layers_dir = os.path.join(track_dir, "layers")
+    os.makedirs(layers_dir, exist_ok=True)
+    with open(os.path.join(track_dir, "metadata.json")) as f:
+        parent = json.load(f)
+
+    delta = layer.get("style_delta", [])
+    plan = parent.get("engine", {}).get("composition_plan")
+    print(f"[{track['id']}/{layer['id']}] composing intensity layer ...")
+    if plan:
+        lplan = apply_style_delta(plan, delta, layer.get("global_delta", []),
+                                  layer.get("drop_negative", []))
+        kw: dict = {"composition_plan": lplan}
+    else:
+        kw = {"prompt": parent["engine"]["prompt"] + " Intensity variant: "
+              + "; ".join(delta),
+              "music_length_ms": track["length_ms"]}
+    audio, fmt_req = client.compose_best(primary_format=eng["primary_format"],
+                                         model_id=eng["model_id"], **kw)
+
+    audio_file, fmt, sr, channels, analysis, variants = package_audio(
+        audio, fmt_req, parent["audio"]["duration_s"], layers_dir, layer["id"],
+        track.get("bpm"), int(track.get("time_signature", "4/4").split("/")[0]),
+        cfg)
+
+    rel = f"{track['id']}/layers/"
+    lmeta = {
+        "schema": "music.layer/v1",
+        "id": layer["id"],
+        "layer_of": track["id"],
+        "name": layer.get("name", layer["id"]),
+        "description": layer.get("description", ""),
+        "intensity": layer.get("intensity"),
+        "style_delta": delta,
+        "created_at": _now(),
+        "audio": {
+            "file": rel + audio_file, "format": fmt, "sample_rate": sr,
+            "channels": channels,
+            "duration_s": analysis["duration_s"] if analysis
+                          else parent["audio"]["duration_s"],
+            "peak_dbfs": analysis["peak_dbfs"] if analysis else None,
+            "rms_dbfs": analysis["rms_dbfs"] if analysis else None,
+            "compressed": [dict(v, file=rel + v["file"]) for v in variants],
+        },
+        "alignment": {
+            "same_composition_plan": plan is not None,
+            "tempo_bpm": track.get("bpm"),
+            "note": ("Same sections/tempo/key as the base by construction, but "
+                     "generated independently — NOT phase-locked and NOT a "
+                     "summable stem. Vertical remix: crossfade full mixes on a "
+                     "downbeat of the DESTINATION mix (its timing.downbeats_s) "
+                     "over ~250-500 ms."),
+        },
+    }
+    if analysis:
+        lmeta["timing"] = {"tempo": analysis["tempo"],
+                           "beats_s": analysis["beats_s"],
+                           "downbeats_s": analysis["downbeats_s"]}
+        lmeta["events"] = {"onsets_s": analysis["onsets_s"],
+                           "onset_strengths": analysis["onset_strengths"],
+                           "peaks": analysis["peaks"]}
+        lmeta["dynamics"] = {"rms_db": analysis["rms_envelope"]}
+    lmeta_path = os.path.join(layers_dir, f"{layer['id']}.metadata.json")
+    with open(lmeta_path, "w") as f:
+        json.dump(lmeta, f, indent=2)
+
+    summary = {
+        "id": layer["id"],
+        "name": lmeta["name"],
+        "description": lmeta["description"],
+        "intensity": lmeta["intensity"],
+        "file": lmeta["audio"]["file"],
+        "compressed": lmeta["audio"]["compressed"],
+        "metadata": rel + f"{layer['id']}.metadata.json",
+        "mixing": lmeta["alignment"]["note"],
+    }
+    parent["layers"] = ([l for l in parent.get("layers", [])
+                         if l["id"] != layer["id"]] + [summary])
+    with open(os.path.join(track_dir, "metadata.json"), "w") as f:
+        json.dump(parent, f, indent=2)
+    print(f"[{track['id']}/{layer['id']}] done -> {lmeta_path}")
+    return layers_dir
 
 
 def _requested_rate(fmt: str) -> tuple[bool, int]:

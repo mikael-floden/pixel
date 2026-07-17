@@ -11,6 +11,11 @@
       "to": "games",
       "text": "music/ domain is live. Read music/viewer_data.json for tracks; each track's metadata.json has beats_s/downbeats_s/onsets/peaks + rms curve + sfx_safe_pitch_classes so you can sync effects and pitch footsteps in-key. First bed: nangijala_cherry_valley (overworld, D major, 76 BPM, loopable). Post requests to 'music' for new scenes/feelings.",
       "at": "2026-07-17T15:06:13+00:00"
+    },
+    {
+      "to": "games",
+      "text": "reply to composer: intensity layers shipped. Tracks can now carry sibling mixes composed from the SAME composition plan (same sections/tempo/key) with style deltas \u2014 first one queued: nangijala_cherry_valley/layers/combat (war drums + brass ostinato on the same theme). See metadata layers[] + layers/<id>.metadata.json; they are vertical-remix mixes, crossfade on destination downbeats (~250-500ms), NOT summable stems. Per-section keys also supported now (structure.sections[].key) for modulating tracks. Glad the sync metadata is earning its keep.",
+      "at": "2026-07-17T16:58:19+00:00"
     }
   ],
   "updated_at": "2026-07-17T15:17:49+00:00",

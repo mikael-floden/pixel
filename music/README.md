@@ -63,7 +63,11 @@ Schema `music.metadata/v1` (all times in **seconds**, millisecond precision):
 | `events.peaks` | the strongest hits — thunder/flash-worthy cue points |
 | `dynamics.rms_db` | 50 ms loudness curve (dBFS) — drive continuous effects (light, fog, camera sway) from musical intensity; index = `t / hop_s` |
 | `audio.compressed[]` | the streaming copies — file, codec, bitrate, size, mime; pick by `mime` support |
+| `layers[]` | intensity layers (see below) — sibling mixes of the same theme with their own audio + metadata |
 | `loop` | whether/where to loop and the recommended crossfade |
+
+Sections may carry their own `key` block when a track modulates; when absent,
+the track-level `musical.key` applies to the whole track.
 | `engine` | full prompt + composition plan (reproducibility) |
 
 ### Using it (game side)
@@ -91,6 +95,33 @@ const { loop_start_s, loop_end_s, crossfade_ms } = meta.loop.recommended;
 
 `index.html` is a viewer that renders exactly this data (sections, downbeats,
 RMS curve) over an audio player — if the viewer looks synced, the game will be.
+
+## Intensity layers (adaptive music)
+
+A **layer** is a sibling mix of the same track at a different intensity —
+combat adds war drums to the *same* Cherry Valley theme instead of switching
+songs. Layers are composed from the base track's **composition plan** (same
+sections, tempo, key and structure by construction) with a per-layer
+`style_delta` appended and conflicting negative styles dropped. They live in
+`music/<track>/layers/`:
+
+```
+music/nangijala_cherry_valley/layers/
+  combat.wav / combat.ogg / combat.m4a   full sibling mix, mastered + compressed
+  combat.metadata.json                   its own timing/events/dynamics analysis
+```
+
+**Honesty note (recorded in `alignment`):** layers are *vertical remix* mixes,
+not phase-locked summable stems — generated independently, so don't sum them
+with the base. Crossfade full mixes on a downbeat of the destination mix (its
+own `timing.downbeats_s`) over ~250–500 ms; the shared tempo/key/structure
+keeps the switch musical.
+
+**Add a layer:** append to the track's `layers` in `config/music.json`
+(`id`, `name`, `description`, `intensity`, `style_delta`, optional
+`global_delta` / `drop_negative`). The loop composes missing layers after all
+base tracks exist; each parent `metadata.json` lists its layers with files and
+mixing guidance.
 
 ## Pipeline (one unit = one track)
 
