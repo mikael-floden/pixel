@@ -34,6 +34,7 @@ import numpy as np
 from analyze import analyze, to_mono
 from elevenlabs_music_client import (ElevenLabsMusicClient, PlanUnavailable,
                                      plan_sections)
+from encode import encode_variants
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # music/
 
@@ -220,7 +221,8 @@ def section_intensity(sections: list[dict], analysis: dict | None) -> None:
 
 def build_metadata(track: dict, cfg: dict, *, audio_file: str, fmt: str,
                    sr: int, channels: int, analysis: dict | None,
-                   plan: dict | None, prompt: str) -> dict:
+                   plan: dict | None, prompt: str,
+                   variants: list[dict] | None = None) -> dict:
     key = track["key"]
     sections = (sections_from_plan(plan, track.get("sections", []))
                 if plan else
@@ -263,6 +265,10 @@ def build_metadata(track: dict, cfg: dict, *, audio_file: str, fmt: str,
             "duration_s": duration,
             "peak_dbfs": analysis["peak_dbfs"] if analysis else None,
             "rms_dbfs": analysis["rms_dbfs"] if analysis else None,
+            "compressed": [dict(v, file=f"{track['id']}/{v['file']}")
+                           for v in (variants or [])],
+            "note": ("audio.file is the lossless master (analysis ground "
+                     "truth); stream a `compressed` copy on web/mobile."),
         },
         "structure": {
             "source": "elevenlabs-composition-plan" if plan else "authored-arc-approximate",
@@ -354,10 +360,13 @@ def compose_track(track: dict, cfg: dict, client: ElevenLabsMusicClient) -> str:
         if dec:
             y, sr = dec
 
+    variants: list[dict] = []
     if y is not None:
         y = master(y, sr, cfg["mastering"]["peak_dbfs"], cfg["mastering"]["edge_fade_ms"])
         audio_file = f"{track['id']}.wav"
-        write_wav(os.path.join(track_dir, audio_file), y, sr)
+        wav_path = os.path.join(track_dir, audio_file)
+        write_wav(wav_path, y, sr)
+        variants = encode_variants(wav_path)
         fmt, channels = "wav", (y.shape[1] if y.ndim == 2 else 1)
         analysis = analyze(y, sr, authored_bpm=track.get("bpm"),
                            beats_per_bar=int(track.get("time_signature", "4/4").split("/")[0]),
@@ -372,7 +381,7 @@ def compose_track(track: dict, cfg: dict, client: ElevenLabsMusicClient) -> str:
 
     meta = build_metadata(track, cfg, audio_file=audio_file, fmt=fmt, sr=sr,
                           channels=channels, analysis=analysis, plan=plan,
-                          prompt=prompt)
+                          prompt=prompt, variants=variants)
     with open(os.path.join(track_dir, "metadata.json"), "w") as f:
         json.dump(meta, f, indent=2)
     print(f"[{track['id']}] done -> {track_dir} "

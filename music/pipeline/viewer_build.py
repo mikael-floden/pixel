@@ -32,6 +32,8 @@ def build_viewer() -> dict:
             "feeling": m.get("intent", {}).get("feeling", []),
             "file": m["audio"]["file"],
             "format": m["audio"]["format"],
+            "stream": {v["format"]: {"file": v["file"], "mime": v["mime"]}
+                       for v in m["audio"].get("compressed", [])},
             "duration_s": m["audio"]["duration_s"],
             "bpm": m.get("musical", {}).get("tempo_bpm"),
             "key": {k: m["musical"]["key"][k] for k in ("root", "mode")}

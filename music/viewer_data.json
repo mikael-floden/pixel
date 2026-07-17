@@ -1,6 +1,6 @@
 {
   "domain": "music",
-  "generated_at": "2026-07-17T15:08:41+00:00",
+  "generated_at": "2026-07-17T16:53:29+00:00",
   "tracks": [
     {
       "id": "nangijala_cherry_valley",
@@ -15,6 +15,16 @@
       ],
       "file": "nangijala_cherry_valley/nangijala_cherry_valley.wav",
       "format": "wav",
+      "stream": {
+        "ogg": {
+          "file": "nangijala_cherry_valley/nangijala_cherry_valley.ogg",
+          "mime": "audio/ogg; codecs=opus"
+        },
+        "m4a": {
+          "file": "nangijala_cherry_valley/nangijala_cherry_valley.m4a",
+          "mime": "audio/mp4"
+        }
+      },
       "duration_s": 120.001,
       "bpm": 76,
       "key": {

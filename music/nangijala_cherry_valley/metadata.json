@@ -73,7 +73,26 @@
     "channels": 2,
     "duration_s": 120.001,
     "peak_dbfs": -1.0,
-    "rms_dbfs": -20.0
+    "rms_dbfs": -20.0,
+    "compressed": [
+      {
+        "file": "nangijala_cherry_valley/nangijala_cherry_valley.ogg",
+        "format": "ogg",
+        "codec": "opus",
+        "bitrate_kbps": 96,
+        "size_bytes": 1716363,
+        "mime": "audio/ogg; codecs=opus"
+      },
+      {
+        "file": "nangijala_cherry_valley/nangijala_cherry_valley.m4a",
+        "format": "m4a",
+        "codec": "aac",
+        "bitrate_kbps": 128,
+        "size_bytes": 1956732,
+        "mime": "audio/mp4"
+      }
+    ],
+    "note": "audio.file is the lossless master (analysis ground truth); stream a `compressed` copy on web/mobile."
   },
   "structure": {
     "source": "elevenlabs-composition-plan",

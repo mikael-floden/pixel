@@ -28,9 +28,15 @@ One track = **one folder** `music/<id>/`:
 
 ```
 music/nangijala_cherry_valley/
-  nangijala_cherry_valley.wav   mastered 16-bit 44.1 kHz (mp3 only if lossless was impossible)
+  nangijala_cherry_valley.wav   the MASTER: mastered 16-bit 44.1 kHz (analysis ground truth)
+  nangijala_cherry_valley.ogg   streaming copy, Opus 96 kbps (~1.7 MB) — Chrome/Firefox/Android
+  nangijala_cherry_valley.m4a   streaming copy, AAC 128 kbps (~2 MB) — iOS/Safari fallback
   metadata.json                 the full sub-second description (see below)
 ```
+
+**Phones stream the compressed copies** (`audio.compressed` in the metadata,
+`stream` in `viewer_data.json`) — never make a player wait for the 21 MB WAV.
+The WAV stays committed as the master and the source for analysis.
 
 Reserved (non-track) entries under `music/`: `README.md`, `config/`, `pipeline/`,
 `index.html`, `viewer_data.json`.
@@ -56,6 +62,7 @@ Schema `music.metadata/v1` (all times in **seconds**, millisecond precision):
 | `events.onsets_s` (+ strengths) | every audible attack — fire discrete FX exactly on a hit |
 | `events.peaks` | the strongest hits — thunder/flash-worthy cue points |
 | `dynamics.rms_db` | 50 ms loudness curve (dBFS) — drive continuous effects (light, fog, camera sway) from musical intensity; index = `t / hop_s` |
+| `audio.compressed[]` | the streaming copies — file, codec, bitrate, size, mime; pick by `mime` support |
 | `loop` | whether/where to loop and the recommended crossfade |
 | `engine` | full prompt + composition plan (reproducibility) |
 
@@ -65,7 +72,10 @@ Schema `music.metadata/v1` (all times in **seconds**, millisecond precision):
 const cat  = await (await fetch('/assets/music/viewer_data.json')).json();
 const t    = cat.tracks.find(t => t.id === 'nangijala_cherry_valley');
 const meta = await (await fetch('/assets/music/' + t.metadata)).json();
-const bed  = new Audio('/assets/music/' + t.file); bed.loop = false; bed.play();
+// stream a compressed copy (ogg for most, m4a for Safari) — not the WAV master:
+const src  = t.stream.ogg && new Audio('').canPlayType(t.stream.ogg.mime)
+           ? t.stream.ogg.file : (t.stream.m4a?.file ?? t.file);
+const bed  = new Audio('/assets/music/' + src); bed.loop = false; bed.play();
 
 // thunder on the next strong musical hit:
 const next = meta.events.peaks.find(p => p.t_s > bed.currentTime);

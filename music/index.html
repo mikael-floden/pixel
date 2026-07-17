@@ -45,7 +45,11 @@ async function main() {
         ${t.bpm ?? '?'} BPM · ${Math.round(t.duration_s)} s ·
         ${t.loopable ? 'loopable' : 'one-shot'} · ${(t.feeling||[]).join(', ')}</div>
       <p class="use">${t.use || ''}</p>
-      <audio controls preload="none" src="${t.file}"></audio>
+      <audio controls preload="none">
+        ${Object.values(t.stream || {}).map(s =>
+          `<source src="${s.file}" type="${s.mime}">`).join('')}
+        <source src="${t.file}">
+      </audio>
       <canvas></canvas>
       <div class="legend">colored bands = sections · ticks = downbeats · line = loudness (RMS)</div>`;
     list.appendChild(div);
