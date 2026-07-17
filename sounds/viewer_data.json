@@ -1,13 +1,13 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 27,
+  "count": 28,
   "by_category": {
     "ui": 8,
     "item": 5,
     "tool": 6,
     "movement": 5,
-    "combat": 3
+    "combat": 4
   },
   "sounds": [
     {
@@ -520,6 +520,25 @@
       "format": "wav",
       "loop": false,
       "file": "combat/explosion/explosion__take01.wav",
+      "duration_seconds": 0.706
+    },
+    {
+      "id": "magic_cast",
+      "name": "Magic Cast",
+      "category": "combat",
+      "description": "a shimmering rising sweep of casting a spell",
+      "tags": [
+        "magic",
+        "spell",
+        "cast",
+        "shimmer",
+        "sweep"
+      ],
+      "usage": "Casting a spell / using magic.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "combat/magic_cast/magic_cast__take01.wav",
       "duration_seconds": 0.706
     }
   ]
