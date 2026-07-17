@@ -5,10 +5,33 @@ import { AmbientEnv, defaultEnv } from "./types";
  * for that field (ambient fades out rather than erroring — the charter's
  * degrade-gracefully rule). Callers throttle this (~10 Hz) — the probes
  * allocate small objects and per-frame sampling would be pure waste. */
-export function sampleEnv(prev?: AmbientEnv): AmbientEnv {
+export function sampleEnv(prev?: AmbientEnv, cx?: number, cy?: number): AmbientEnv {
   const env = prev ?? defaultEnv();
   const ml = (window as unknown as { __ml?: Record<string, (...a: never[]) => unknown> }).__ml;
   if (!ml) return env;
+  try {
+    // Terrain awareness: fraction of sandy ground in a 3×3 sample around
+    // the player (camera centre; the chase cam trails within ~2 cells).
+    // CAREFUL: surfaceAt takes FLAT grid world-units, but the camera centre
+    // is in iso-projected screen px — pickAt converts screen -> flat ground
+    // point (it's what tap-to-move uses). Sampling surfaceAt with screen
+    // coords silently reads off-grid and always answers "no sand".
+    const at = ml.surfaceAt as undefined | ((x: number, y: number) => { sound?: string } | null);
+    const pick = ml.pickAt as undefined | ((x: number, y: number) => { x: number; y: number } | null);
+    if (at && pick && typeof cx === "number" && typeof cy === "number") {
+      const p = pick(cx, cy);
+      if (p) {
+        let hits = 0;
+        for (let dy = -1; dy <= 1; dy++)
+          for (let dx = -1; dx <= 1; dx++) {
+            if (at(p.x + dx * 40, p.y + dy * 40)?.sound === "sand") hits++;
+          }
+        env.sand = hits / 9;
+      }
+    }
+  } catch {
+    /* no terrain yet — keep previous */
+  }
   try {
     const s = (ml.sunInfo as undefined | (() => { sun: number[]; phase: string }))?.();
     if (s && Array.isArray(s.sun) && typeof s.sun[3] === "number") {

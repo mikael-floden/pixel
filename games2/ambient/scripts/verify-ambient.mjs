@@ -27,7 +27,7 @@ try {
 
   // ---- registry ----
   const list = await page.evaluate(() => window.__mlAmbient.list());
-  for (const want of ["fireflies", "pollen", "bats", "thunder", "rainbow"])
+  for (const want of ["fireflies", "pollen", "bats", "thunder", "rainbow", "sandstorm", "tumbleweed"])
     if (!list.includes(want)) fail(`feature ${want} not mounted (got ${list})`);
   ok(`mounted: ${list.join(", ")}`);
 
@@ -100,6 +100,26 @@ try {
   if (rb.nightCloudy > 0.01) fail(`rainbow needs sun (night weight ${rb.nightCloudy})`);
   if (!(rb.dayRain > rb.dayCloudy)) fail(`a rain weather must beat the cloud proxy (${rb.dayRain} vs ${rb.dayCloudy})`);
   ok(`rainbow likeliness: sun x moisture (clear ${rb.dayClear}, cloudy ${rb.dayCloudy.toFixed(2)}, rain ${rb.dayRain.toFixed(2)}, night 0)`);
+  // Sandstorm is TERRAIN-gated: no sand underfoot, no storm — ever.
+  const ss = await page.evaluate(() => ({
+    onSand: window.__mlAmbient.weights({ sand: 1, mist: 0, weatherName: "Clear sky" }).sandstorm,
+    offSand: window.__mlAmbient.weights({ sand: 0, mist: 0, weatherName: "Clear sky" }).sandstorm,
+    sandRain: window.__mlAmbient.weights({ sand: 1, mist: 0, weatherName: "Rain" }).sandstorm,
+  }));
+  if (!(ss.onSand > 0.3)) fail(`sandstorm must be likely on sand (${ss.onSand})`);
+  if (ss.offSand > 0.001) fail(`sandstorm must NEVER roll off sand (${ss.offSand})`);
+  if (ss.sandRain > 0.001) fail(`rain must kill the sandstorm (${ss.sandRain})`);
+  ok(`sandstorm likeliness: terrain-gated (sand ${ss.onSand.toFixed(2)}, grass ${ss.offSand}, rain ${ss.sandRain})`);
+  // Tumbleweed: sand-BIASED but not sand-locked; rain soaks it to a stop.
+  const tw = await page.evaluate(() => ({
+    sand: window.__mlAmbient.weights({ sand: 1, mist: 0, weatherName: "Clear sky" }).tumbleweed,
+    grass: window.__mlAmbient.weights({ sand: 0, mist: 0, weatherName: "Clear sky" }).tumbleweed,
+    rain: window.__mlAmbient.weights({ sand: 1, mist: 0, weatherName: "Rain" }).tumbleweed,
+  }));
+  if (!(tw.sand > tw.grass * 2)) fail(`tumbleweed must prefer sand (sand ${tw.sand} vs grass ${tw.grass})`);
+  if (!(tw.grass > 0.05)) fail(`tumbleweed may still cross a plain (grass ${tw.grass})`);
+  if (tw.rain > 0.001) fail(`rain must stop the tumbleweed (${tw.rain})`);
+  ok(`tumbleweed likeliness: sand ${tw.sand.toFixed(2)}, grass ${tw.grass.toFixed(2)}, rain ${tw.rain}`);
 
   // ---- director rolls + episode life cycle ----
   await page.evaluate(() => window.__ml.timeOfDay("night", true));
@@ -191,6 +211,28 @@ try {
   if (!rbd.center) fail("rainbow must be drawing (no arc centre)");
   if (rbd.drops < 10) fail(`sun-shower drizzle must fall (${rbd.drops} drops)`);
   ok(`demo(rainbow): bow up (gain ${rbd.gain.toFixed(2)}, centre ${rbd.center}, ${rbd.drops} drizzle streaks)`);
+  // Demo the sandstorm: world -> Day + Clear; even off-sand the demo shows
+  // the drifting-dust floor (the button can't teleport the player to a
+  // beach), with the streak layer running.
+  await page.evaluate(() => window.__mlAmbient.demo("sandstorm"));
+  await page.waitForFunction(
+    () => window.__ml.timeOfDay().name === "Day" && window.__ml.weatherInfo().idx === 0,
+    null,
+    { timeout: 5000 },
+  );
+  await page.waitForTimeout(6000); // ~2.6s tau
+  const ssd = await dbg("sandstorm");
+  if (!ssd.active) fail("demoed sandstorm must be active");
+  if (ssd.gain < 0.2) fail(`sandstorm dust floor must show in a demo (gain ${ssd.gain.toFixed(2)})`);
+  if (ssd.streaks < 30) fail(`sand streaks must fly (${ssd.streaks})`);
+  ok(`demo(sandstorm): dust up (gain ${ssd.gain.toFixed(2)}, sand ${ssd.sand.toFixed(2)}, ${ssd.streaks} streaks)`);
+  // Demo the tumbleweed: a weed launches within a few seconds.
+  await page.evaluate(() => window.__mlAmbient.demo("tumbleweed"));
+  await page.waitForTimeout(5000);
+  const twd = await dbg("tumbleweed");
+  if (!twd.active) fail("demoed tumbleweed must be active");
+  if (twd.rolled < 1) fail(`an active tumbleweed episode must launch a weed (${twd.rolled})`);
+  ok(`demo(tumbleweed): ${twd.rolled} weed(s) rolled, ${twd.rolling} in frame`);
   // Back to auto: pin released, suppression lifted, director rolls again.
   await page.evaluate(() => window.__mlAmbient.demo(null));
   const dirAuto = await page.evaluate(() => window.__mlAmbient.director());

@@ -21,6 +21,10 @@ export interface AmbientEnv {
   phase: string;
   /** 0..1 aurora intensity (rolls in on some nights). */
   aurora: number;
+  /** 0..1 — fraction of SANDY ground sampled around the player (camera
+   * centre; the chase cam trails within ~2 cells). Terrain-aware effects
+   * (sandstorm) gate on this. */
+  sand: number;
 }
 
 /** Per-frame context handed to every feature. `view` is the camera's live
@@ -89,5 +93,6 @@ export function defaultEnv(): AmbientEnv {
     weatherName: "Clear sky",
     phase: "Day",
     aurora: 0,
+    sand: 0,
   };
 }

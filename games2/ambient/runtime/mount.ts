@@ -41,13 +41,22 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
         console.warn("[ambient]", e);
       }
     };
-    const onUpdate = (_time: number, dt: number) => {
+    let lastTick = 0;
+    const onUpdate = (_time: number, phaserDt: number) => {
       const cam = scene.cameras?.main;
       if (!cam) return;
+      // Hand features WALL-CLOCK deltas, not Phaser's smoothed dt: under
+      // long frames (software-GL harnesses, laggy phones) the smoothed dt
+      // under-reports real time and every ambient timer/fade crawls — the
+      // rainbow-gain lesson, applied to the whole layer. Capped at 500ms so
+      // a background-tab hitch can't teleport particles.
+      const now = scene.time.now;
+      const dt = lastTick ? Math.min(500, now - lastTick) : phaserDt;
+      lastTick = now;
       envAge += dt;
       if (envAge >= ENV_SAMPLE_MS) {
         envAge = 0;
-        ctx.env = sampleEnv(ctx.env);
+        ctx.env = sampleEnv(ctx.env, cam.worldView.centerX, cam.worldView.centerY);
         safe(() => director.tick(ctx.env));
         // The HudBar rebuilds on re-joins; keep the demo button alive/fresh.
         safe(() => demoButton.ensure());
