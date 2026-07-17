@@ -1,12 +1,12 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 42,
+  "count": 43,
   "by_category": {
     "ui": 8,
     "item": 5,
     "tool": 6,
-    "movement": 6,
+    "movement": 7,
     "combat": 4,
     "feedback": 2,
     "ambience": 11
@@ -3910,6 +3910,104 @@
       "sync_points": [
         {
           "t_ms": 40.0,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
+    },
+    {
+      "id": "footstep_snow",
+      "name": "Footstep (Snow)",
+      "category": "movement",
+      "description": "a crunchy compressing step on snow",
+      "feel": "grounded, crisp",
+      "tags": [
+        "footstep",
+        "walk",
+        "snow",
+        "winter",
+        "cold",
+        "movement"
+      ],
+      "usage": "Per-step on snow tiles.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "movement/footstep_snow/footstep_snow__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "movement/footstep_snow/footstep_snow__take01.wav",
+            "bytes": 47794,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "movement/footstep_snow/footstep_snow__take01.m4a",
+            "bytes": 8657,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "movement/footstep_snow/footstep_snow__take01.ogg",
+            "bytes": 11412,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
+      "takes": [
+        "movement/footstep_snow/footstep_snow__take01.wav",
+        "movement/footstep_snow/footstep_snow__take02.wav",
+        "movement/footstep_snow/footstep_snow__take03.wav",
+        "movement/footstep_snow/footstep_snow__take04.wav",
+        "movement/footstep_snow/footstep_snow__take05.wav"
+      ],
+      "duration_seconds": 0.497,
+      "mix_gain_db": -8,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -2.0,
+          2.0
+        ],
+        "gain_jitter_db": [
+          -3.0,
+          3.0
+        ],
+        "start_jitter_ms": [
+          0,
+          20
+        ],
+        "note": "repeating sound \u2014 round-robin + jitter every play"
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.34,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.08
+      },
+      "envelope": {
+        "duration_ms": 497.4,
+        "onset_ms": 0.6,
+        "peak_ms": 41.3,
+        "attack_ms": 40.7,
+        "peak_dbfs": -1.0,
+        "rms": 0.0533,
+        "crest": 16.7
+      },
+      "sync_points": [
+        {
+          "t_ms": 41.3,
           "name": "transient",
           "note": "main attack \u2014 measured; safe sync/trigger point"
         }
