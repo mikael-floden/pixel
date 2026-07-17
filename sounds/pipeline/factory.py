@@ -196,10 +196,11 @@ def generate_ai(client, cfg: dict, spec: dict) -> dict:
                 f.write(audio)
             stats = {"bytes": len(audio), "output_format": out_fmt}
         else:
-            samples = postprocess.master(postprocess.pcm16_to_float(audio), sr,
+            samples, real_sr = postprocess.decode_audio(audio, sr)
+            samples = postprocess.master(samples, real_sr,
                                          fade_out_ms=40.0 if loop else 15.0)
             fname = f"{spec['id']}.wav" if n == 1 else f"{spec['id']}__take{i:02d}.wav"
-            stats = postprocess.write_wav(samples, os.path.join(d, fname), sr)
+            stats = postprocess.write_wav(samples, os.path.join(d, fname), real_sr)
             stats["output_format"] = out_fmt
         rel = os.path.join(spec["category"], spec["id"], fname)
         takes.append(rel)

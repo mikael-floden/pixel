@@ -10,14 +10,49 @@ All functions work on a mono float32 array in [-1, 1]. `master()` is the pipelin
 
 from __future__ import annotations
 
+import io
 import wave
 
 import numpy as np
 
 
-def pcm16_to_float(raw: bytes) -> np.ndarray:
-    """Decode signed-16-bit little-endian mono PCM (ElevenLabs `pcm_*`) to float."""
-    return np.frombuffer(raw, dtype="<i2").astype(np.float32) / 32768.0
+def decode_audio(raw: bytes, default_sr: int) -> tuple[np.ndarray, int]:
+    """Decode ElevenLabs audio bytes to (mono float32 in [-1,1], sample_rate),
+    robust to how the API frames PCM. Handles a WAV/RIFF wrapper (any sample
+    width, reads the real rate) and headerless signed-16-bit LE PCM; odd-length
+    buffers are trimmed rather than raising."""
+    # WAV/RIFF-wrapped: authoritative width + rate from the header.
+    if raw[:4] == b"RIFF":
+        with wave.open(io.BytesIO(raw)) as w:
+            sw, sr, ch = w.getsampwidth(), w.getframerate(), w.getnchannels()
+            frames = w.readframes(w.getnframes())
+        x = _pcm_bytes_to_float(frames, sw)
+        if ch > 1:  # downmix to mono
+            x = x.reshape(-1, ch).mean(axis=1)
+        return x, sr
+    # Headerless raw PCM (ElevenLabs pcm_* = signed 16-bit LE).
+    return _pcm_bytes_to_float(raw, 2), default_sr
+
+
+def _pcm_bytes_to_float(raw: bytes, sampwidth: int) -> np.ndarray:
+    """Signed little-endian integer PCM bytes -> float32 in [-1, 1]."""
+    if sampwidth == 2:
+        if len(raw) % 2:
+            raw = raw[:-1]
+        return np.frombuffer(raw, dtype="<i2").astype(np.float32) / 32768.0
+    if sampwidth == 4:
+        if len(raw) % 4:
+            raw = raw[: len(raw) - (len(raw) % 4)]
+        return np.frombuffer(raw, dtype="<i4").astype(np.float32) / 2147483648.0
+    if sampwidth == 3:  # 24-bit: widen each 3-byte sample to int32
+        n = len(raw) // 3
+        b = np.frombuffer(raw[: n * 3], dtype=np.uint8).reshape(n, 3).astype(np.int32)
+        v = (b[:, 0] | (b[:, 1] << 8) | (b[:, 2] << 16))
+        v = np.where(v & 0x800000, v - 0x1000000, v)
+        return v.astype(np.float32) / 8388608.0
+    if sampwidth == 1:  # unsigned 8-bit
+        return (np.frombuffer(raw, dtype=np.uint8).astype(np.float32) - 128.0) / 128.0
+    raise ValueError(f"unsupported PCM sample width: {sampwidth}")
 
 
 def _db_to_amp(db: float) -> float:
