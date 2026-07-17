@@ -36,21 +36,26 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
         <div class="ml-row">
           <input id="ml-name" class="ml-name" maxlength="24" placeholder="your name"
                  value="${NAMES[Math.floor(Math.random() * NAMES.length)]}" />
-          <button id="ml-random" class="ml-btn ml-ghost" title="Random character">🎲</button>
-          <button id="ml-enter" class="ml-btn">Enter world</button>
+          <button id="ml-random" class="ml-btn ml-ghost ml-plated" title="Random character">🎲</button>
+          <button id="ml-enter" class="ml-btn ml-plated">Enter world</button>
         </div>
-        <button id="ml-install" class="ml-install" hidden>📱 Install as an app on your home screen</button>
+        <button id="ml-install" class="ml-install ml-plated" hidden>📱 Install as an app on your home screen</button>
       </div>`;
     document.body.appendChild(overlay);
     applyUiZoom(overlay); // "Desktop site" must not shrink the menu
     injectStyles();
+    // Android Chrome long-press hit-tests <img>s (thumbnails, portraits) and
+    // offers "download image" — suppress at the root, like the HUD does.
+    overlay.addEventListener("contextmenu", (e) => e.preventDefault());
+    overlay.querySelectorAll<HTMLElement>(".ml-plated").forEach(pressFx);
 
     // World picker: one chip per playable world (thumbnail + label).
     const worldChips: HTMLElement[] = [];
     if (showWorlds) {
       const wrap = overlay.querySelector("#ml-worlds") as HTMLElement;
       worlds.forEach((w, i) => {
-        const chip = el("button", "ml-world");
+        const chip = el("button", "ml-world ml-plated");
+        pressFx(chip);
         if (w.preview) {
           const img = el("img", "ml-world-img") as HTMLImageElement;
           img.src = `/assets/${w.preview.replace(/^\/+/, "")}`;
@@ -83,7 +88,8 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
 
     chars.forEach((c, i) => {
       const label = displayNames[i];
-      const cell = el("button", "ml-cell");
+      const cell = el("button", "ml-cell ml-plated");
+      pressFx(cell);
       cell.dataset.index = String(i);
       const preview = spritePreview(c, label, manifest.directions);
       cell.appendChild(preview.img);
@@ -97,6 +103,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     });
 
     function select(i: number) {
+      if (!cells[i]) return; // headless pick() may probe past the roster
       selected = i;
       cells.forEach((c, j) => c.classList.toggle("sel", j === i));
       spins.forEach((s, j) => s(j === i));
@@ -191,6 +198,16 @@ function el(tag: string, cls: string): HTMLElement {
   return e;
 }
 
+/** Momentary pressed-plate feedback via pointer events (same pattern as
+ * hud.ts): CSS :active is hover-gated because mobile Chrome keeps it sticky
+ * on the last tap — .press goes on at finger-down, off the moment the finger
+ * lifts or leaves, so it can never stick. */
+function pressFx(b: HTMLElement) {
+  b.addEventListener("pointerdown", () => b.classList.add("press"));
+  for (const ev of ["pointerup", "pointercancel", "pointerleave"])
+    b.addEventListener(ev, () => b.classList.remove("press"));
+}
+
 const SPIN_MS = 220; // per 45° rotation step ≈ 1.8s per full revolution
 
 /**
@@ -241,48 +258,66 @@ let stylesInjected = false;
 function injectStyles() {
   if (stylesInjected) return;
   stylesInjected = true;
-  /* Pure-black theme, matching the loading screen. The "panel" is only a
-     scroll/layout container — NO background card: the logo (transparent PNG)
-     must sit directly on raw #000 (playtester), so the world/character cards
-     and inputs alone provide the structure. Neutral near-black greys for
-     those (the old blue tint clashed against #000), with the selection gold
-     as the ONE accent: borders, the Enter CTA, hovers. */
+  /* In-game-UI theme (maintainer 2026-07-17: "the character-select looks a
+     bit old" next to the frame-v2 HUD). Built ONLY from the shipped /ui2
+     assets and their palette — the 3-state wooden plates (border-image,
+     13px = the sanctioned exact-half scale from the narrow-phone HUD), the
+     slot socket as the name trough, the cobblestone page backdrop dimmed
+     under a dark wash so the logo still pops, wood #23160d + gold #ffd678.
+     Selection = plate-selected (the pre-blended gold-glow art), NOT a CSS
+     border — same language as the HUD tabs. NO texture from the maintainer's
+     inspiration mock was copied. */
   const css = `
   .ml-overlay{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;
-    background:#000;font-family:system-ui,sans-serif;color:#e8e8ec}
+    background:#0b0705 linear-gradient(rgba(11,7,5,.82),rgba(11,7,5,.82));font-family:system-ui,sans-serif;color:#e8e8ec}
+  .ml-overlay{background-image:linear-gradient(rgba(11,7,5,.82),rgba(11,7,5,.82)),url(/ui2/stone.png);
+    background-size:auto,100% auto;background-repeat:repeat,repeat-y;image-rendering:pixelated}
   /* No vw/vh inside this overlay: it may carry a compensating CSS zoom
      (uiscale.ts) and viewport units would double-count under it. */
-  .ml-panel{width:min(720px,92%);max-height:92%;overflow:auto;padding:28px 28px 20px;text-align:center}
+  .ml-panel{width:min(720px,96%);max-height:96%;overflow:auto;padding:24px 14px 20px;text-align:center}
   .ml-logo{display:block;width:min(420px,88%);margin:0 auto;user-select:none;-webkit-user-drag:none}
-  .ml-sub{margin:6px 0 16px;color:#8f8f98}
-  .ml-section{text-align:left;margin:14px 2px 6px;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#7c7c86}
-  .ml-worlds{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-start;max-height:190px;overflow:auto;padding:2px}
-  .ml-world{display:flex;align-items:center;gap:8px;padding:6px 10px 6px 6px;cursor:pointer;
-    background:#151517;border:2px solid #232327;border-radius:10px;color:#c9c9cf;font-size:13px}
-  .ml-world:hover{background:#1b1b1e}
-  .ml-world-img{width:34px;height:34px;object-fit:cover;image-rendering:auto;border-radius:6px;background:#0a0a0c;flex:none}
-  .ml-world.sel{border-color:#ffd678;background:#211c12}
-  .ml-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px;
-    max-height:340px;overflow:auto;padding:4px}
-  .ml-cell{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;cursor:pointer;
-    background:#151517;border:2px solid #232327;border-radius:10px;color:#c9c9cf;font-size:12px}
-  .ml-cell:hover{background:#1b1b1e}
+  .ml-sub{margin:6px 0 14px;color:#b8a67f;text-shadow:0 1px 2px #000}
+  .ml-section{text-align:left;margin:12px 4px 6px;font:700 12px/1 system-ui,sans-serif;letter-spacing:1.5px;
+    text-transform:uppercase;color:#ffd678;text-shadow:0 1px 2px #000}
+  /* Wooden plate = the HUD's 3-state border-image at the 13px half scale;
+     no border-radius (the art owns the silhouette), backgrounds come from
+     the plate fill. Selected uses plate-selected's baked gold glow. */
+  .ml-plated{border-style:solid;border-width:13px;border-image:url(/ui2/plate-normal.png) 56 fill / 13px;
+    background:none;image-rendering:pixelated;box-sizing:border-box;cursor:pointer;
+    touch-action:manipulation;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+  /* No nested scroll boxes: the panel is the ONE scroll context (the
+     maintainer's concept is a single scrolling page) — a capped inner box
+     silently hid the worlds that didn't fit (Trans Demo, on the phone). */
+  .ml-worlds{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-start;padding:2px}
+  .ml-world{display:flex;align-items:center;gap:8px;padding:2px 8px 2px 2px;
+    color:#dfe2ea;font-size:13px;text-shadow:0 1px 2px #000}
+  .ml-world.sel{border-image:url(/ui2/plate-selected.png) 56 fill / 13px;color:#ffd678}
+  .ml-world.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
+  .ml-world-img{width:34px;height:34px;object-fit:cover;image-rendering:auto;flex:none}
+  .ml-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:8px;padding:2px}
+  .ml-cell{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 2px;
+    color:#dfe2ea;font-size:12px;text-shadow:0 1px 2px #000}
+  .ml-cell.sel{border-image:url(/ui2/plate-selected.png) 56 fill / 13px;color:#ffd678}
+  .ml-cell.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
   .ml-sprite{image-rendering:pixelated;background-repeat:no-repeat;flex:none}
-  .ml-portrait{width:128px;height:128px;object-fit:contain;image-rendering:pixelated;margin:6px 0}
+  .ml-portrait{width:128px;height:128px;object-fit:contain;image-rendering:pixelated;margin:4px 0}
   .ml-cell span{max-width:136px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .ml-cell.sel{border-color:#ffd678;background:#211c12}
-  .ml-row{display:flex;gap:10px;margin-top:20px;justify-content:center;align-items:stretch}
-  .ml-name{flex:1;max-width:280px;padding:10px 14px;border-radius:8px;border:1px solid #2c2c31;
-    background:#0a0a0c;color:#e8e8ec;font-size:16px}
-  .ml-name:focus{outline:none;border-color:#ffd67888}
-  .ml-btn{padding:10px 18px;border:none;border-radius:8px;background:#ffd678;color:#1c1300;font-size:15px;
-    font-weight:700;cursor:pointer}
-  .ml-btn:hover{background:#ffe093}
-  .ml-ghost{background:#1c1c1f;color:#e8e8ec;font-size:18px;padding:10px 14px}
-  .ml-ghost:hover{background:#242428}
-  .ml-install{margin-top:14px;padding:9px 16px;border:1px solid #2c2c31;border-radius:8px;
-    background:#151517;color:#c9c9cf;font-size:13px;cursor:pointer}
-  .ml-install:hover{background:#1b1b1e}`;
+  .ml-row{display:flex;gap:8px;margin-top:16px;justify-content:center;align-items:stretch}
+  /* Name input = the backpack slot socket (its fill IS the dark trough). */
+  .ml-name{flex:1;max-width:280px;min-width:0;padding:4px 8px;border-style:solid;border-width:20px;
+    border-image:url(/ui2/slot.png) 10 fill / 20px;image-rendering:pixelated;box-sizing:border-box;
+    background:none;color:#e8e8ec;font-size:16px;text-shadow:0 1px 2px #000}
+  .ml-name:focus{outline:none;color:#ffd678}
+  .ml-btn{padding:10px 16px;color:#ffd678;font:700 15px system-ui,sans-serif;letter-spacing:.4px;
+    text-transform:uppercase;text-shadow:0 1px 2px #000}
+  .ml-btn.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
+  .ml-ghost{color:#e8e8ec;font-size:18px;padding:10px 12px;text-transform:none}
+  .ml-install{margin-top:12px;padding:6px 14px;color:#c9c9cf;font-size:13px;text-shadow:0 1px 2px #000}
+  .ml-install.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
+  @media (hover:hover){
+    .ml-plated:active{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
+    .ml-world.sel:active,.ml-cell.sel:active{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
+  }`;
   const s = document.createElement("style");
   s.textContent = css;
   document.head.appendChild(s);

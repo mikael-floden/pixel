@@ -18,7 +18,9 @@ try {
 
   // Pick character index 2 and a specific name, then enter.
   const targetUid = await page.evaluate(() => {
-    window.__mlSelect.pick(2);
+    // Pick the last index up to 2 — the roster shrank to 2 characters once
+    // and the hardcoded pick(2) crashed on a missing cell.
+    window.__mlSelect.pick(Math.min(2, window.__mlSelect.count() - 1));
     return null;
   });
   await page.fill("#ml-name", "Verifier");
