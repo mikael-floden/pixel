@@ -20,7 +20,16 @@
   },
   "audio": {
     "sample_rate": 44100,
-    "peak_normalize": 0.9
+    "peak_normalize": 0.9,
+    "delivery": {
+      "bitrate": "128k",
+      "formats": [
+        "m4a",
+        "ogg"
+      ],
+      "master": "wav",
+      "note": "Every asset ships .m4a (AAC, iOS/Safari) + .ogg (Vorbis, Chrome/Firefox/Android) via ffmpeg; WAV is the lossless master. See spec/AUDIO_FORMATS.md."
+    }
   },
   "budget": {
     "min_ai_credits_remaining": 1000
@@ -938,6 +947,118 @@
       "loop": true,
       "variants": 1,
       "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience)."
+    },
+    {
+      "id": "thunder_rumble",
+      "name": "Thunder Rumble",
+      "category": "ambience",
+      "loop": false,
+      "variants": 2,
+      "description": "a deep rolling thunder rumble",
+      "feel": "ominous, powerful",
+      "tags": [
+        "thunder",
+        "storm",
+        "rumble",
+        "weather",
+        "sky"
+      ],
+      "ai_prompt": "A distant deep rolling thunder rumble building to a low powerful boom then fading, cinematic sky storm, no rain, no music",
+      "duration_hint": 4.0,
+      "usage": "Play on sheet-lightning flashes (games-ambient) / storm events; sync the boom to the flash via sync_points."
+    },
+    {
+      "id": "footstep_sand",
+      "name": "Footstep (Sand)",
+      "category": "movement",
+      "loop": false,
+      "variants": 5,
+      "description": "a soft gritty step on sand",
+      "feel": "grounded, soft",
+      "tags": [
+        "footstep",
+        "walk",
+        "sand",
+        "beach",
+        "desert",
+        "movement"
+      ],
+      "ai_prompt": "A single soft gritty footstep on dry sand, subtle shifting grains, close and natural",
+      "duration_hint": 0.4,
+      "usage": "Per-step on sand/beach/desert tiles.",
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -2.0,
+          2.0
+        ],
+        "gain_jitter_db": [
+          -3.0,
+          3.0
+        ],
+        "start_jitter_ms": [
+          0,
+          20
+        ],
+        "note": "repeating sound \u2014 round-robin + jitter every play"
+      }
+    },
+    {
+      "id": "footstep_snow",
+      "name": "Footstep (Snow)",
+      "category": "movement",
+      "loop": false,
+      "variants": 5,
+      "description": "a crunchy compressing step on snow",
+      "feel": "grounded, crisp",
+      "tags": [
+        "footstep",
+        "walk",
+        "snow",
+        "winter",
+        "cold",
+        "movement"
+      ],
+      "ai_prompt": "A single crunchy footstep compressing fresh snow, tight squeaky crunch, close and natural",
+      "duration_hint": 0.4,
+      "usage": "Per-step on snow tiles.",
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -2.0,
+          2.0
+        ],
+        "gain_jitter_db": [
+          -3.0,
+          3.0
+        ],
+        "start_jitter_ms": [
+          0,
+          20
+        ],
+        "note": "repeating sound \u2014 round-robin + jitter every play"
+      }
+    },
+    {
+      "id": "swim_stroke",
+      "name": "Swim Stroke",
+      "category": "movement",
+      "loop": true,
+      "variants": 1,
+      "description": "a rhythmic water swimming loop of arm strokes",
+      "feel": "fluid, wet",
+      "tags": [
+        "swim",
+        "water",
+        "stroke",
+        "movement",
+        "loop"
+      ],
+      "ai_prompt": "Rhythmic swimming in water: steady arm strokes and splashes with gentle water movement, immersive and continuous",
+      "duration_hint": 6.0,
+      "usage": "Loop while the player swims; crossfade in/out on water enter/exit."
     }
   ],
   "quality_target": "Best-in-class. Every shipped clip must be indistinguishable from professionally recorded/edited foley. No 8-bit, no bleeps, no synth artifacts.",
@@ -975,13 +1096,10 @@
     "1_ambience_loops": [],
     "2_movement_surfaces": [
       "footstep_dirt",
-      "footstep_sand",
-      "footstep_snow",
       "footstep_mud",
       "footstep_water",
       "land",
-      "dodge_roll",
-      "swim_stroke"
+      "dodge_roll"
     ],
     "3_combat_depth": [
       "hit_flesh",

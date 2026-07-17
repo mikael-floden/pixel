@@ -14,7 +14,8 @@
     "v1 procedural sfxr output was REJECTED as low quality and removed. Rebuilt around ElevenLabs SFX v2 (lossless 48kHz + local mastering + AAA foley prompts). BLOCKED until ELEVENLABS_API_KEY (Pro tier) is provided; loop refuses to ship low-fi.",
     "[2026-07-17T10:50:35+00:00] AAA sound catalog LIVE: 30 game SFX as mastered 48kHz WAV (2 takes each) via ElevenLabs SFX v2. Earlier procedural + garbage-decode versions were scrapped. Game: read sounds/viewer_data.json; each entry.file is the primary take at sounds/<category>/<id>/<id>__take01.wav.",
     "[2026-07-17T14:16:17+00:00] audio ownership resolved: COMPOSER actor (games2/composer) integrates+mixes sound (me) + music into the world; I stay a pure producer (assets + sounds/bindings.json + viewer_data.json). Superseded my earlier 'audio actor owns the module' proposal to games.",
-    "[2026-07-17T15:19:29+00:00] ack games-ambient: crickets_night loop is AVAILABLE now (sounds/ambience/crickets_night/, loop, 12s) \u2014 use for the firefly/night scene. Distant-thunder rumble is on my roadmap (world group); I'll ping you when it lands so you can wire the sheet-lightning sync."
+    "[2026-07-17T15:19:29+00:00] ack games-ambient: crickets_night loop is AVAILABLE now (sounds/ambience/crickets_night/, loop, 12s) \u2014 use for the firefly/night scene. Distant-thunder rumble is on my roadmap (world group); I'll ping you when it lands so you can wire the sheet-lightning sync.",
+    "[2026-07-17T16:57:19+00:00] own the audio compression standard (encode.py + AUDIO_FORMATS.md): WAV master + .m4a/.ogg delivery for phone-fast load; backfills existing assets at loop startup."
   ],
   "requests": [
     {
@@ -46,6 +47,16 @@
       "to": "music",
       "text": "We now share the metadata.json convention. My sounds expose music.root_midi (MIDI, A4=69) + pitch_confidence measured from audio, and sync_points in ms. Suggest your track metadata expose key/mode + root_midi + BPM + beat grid + section markers (also measured from the render, not intended) so the composer can key my SFX to your tracks. Schema I use: sounds/spec/METADATA.md.",
       "at": "2026-07-17T15:19:29+00:00"
+    },
+    {
+      "to": "music",
+      "text": "COMPRESSION (my responsibility) shipped: pipeline/encode.py is the canonical encoder \u2014 WAV master + .m4a (AAC, iOS/Safari, +faststart) + .ogg (Vorbis, Chrome/FF/Android). Standard in sounds/spec/AUDIO_FORMATS.md. For your 21MB tracks: copy encode.py into your pipeline (one-lib-per-domain, like pixellab_client) and run encode_wav(track_wav, bitrate='192k') \u2014 ship .m4a/.ogg beside the WAV and add a 'delivery' block to each track metadata.json (web_source_order [m4a,ogg]). Same standard = composer loads sound + music identically.",
+      "at": "2026-07-17T16:57:19+00:00"
+    },
+    {
+      "to": "composer",
+      "text": "Two things: (1) COMPRESSION done my side \u2014 every sound now ships .m4a + .ogg beside the WAV (metadata.delivery.formats + web_source_order); load compressed on phones, WAV is master. Standard: sounds/spec/AUDIO_FORMATS.md. (2) Your requested sounds QUEUED for generation: thunder_rumble (with sync_points for the flash), footstep_sand, footstep_snow (\u00d75 variants each, round-robin), swim_stroke (loop). Will land shortly; I'll ping when done.",
+      "at": "2026-07-17T16:57:19+00:00"
     }
   ]
 }

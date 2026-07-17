@@ -30,6 +30,10 @@ looks subtly wrong. We run onset/pitch analysis on the finished WAV and annotate
   "takes": ["ui/coin_pickup/coin_pickup__take01.wav", "...take02.wav"],
   "audio": { "duration_seconds": 0.5, "sample_rate": 48000, "channels": 1,
              "bit_depth": 16, "peak_dbfs": -1.0 },
+  "delivery": {                             // compressed formats for fast phone load
+    "formats": { "wav": {"file":"...", "role":"master"}, "m4a": {"file":"..."}, "ogg": {"file":"..."} },
+    "web_source_order": ["m4a", "ogg"]      // WAV = lossless master/fallback. See AUDIO_FORMATS.md
+  },
 
   // ─── composer-facing: mixing ───
   "mix_gain_db": -3,                       // per-category balance vs music bed

@@ -20,6 +20,7 @@ import os
 import random
 
 import analyze
+import encode
 import postprocess
 import sfxr
 
@@ -89,6 +90,31 @@ def has_sound(spec: dict) -> bool:
     """A sound is 'done' when its manifest and the audio it points at both exist."""
     man = read_manifest(spec)
     return _audio_exists(spec, man)
+
+
+def ensure_delivery(cfg: dict, spec: dict) -> bool:
+    """Idempotent backfill: make sure every WAV take has .m4a/.ogg siblings and the
+    manifest carries a `delivery` block. Returns True if it changed anything. No-op
+    without ffmpeg. Used to compress assets generated before delivery formats existed."""
+    man = read_manifest(spec)
+    if not man or man.get("format") != "wav" or not encode.have_ffmpeg():
+        return False
+    bitrate = cfg.get("audio", {}).get("delivery", {}).get("bitrate", "128k")
+    takes = man.get("takes") or ([man["file"]] if man.get("file") else [])
+    primary_delivery = None
+    for i, rel in enumerate(takes):
+        wav_abs = os.path.join(ROOT, rel)
+        if not os.path.exists(wav_abs):
+            continue
+        enc = encode.encode_wav(wav_abs, bitrate=bitrate)  # skips already-encoded
+        if i == 0:
+            primary_delivery = encode.encodings_meta(wav_abs, enc)
+    if primary_delivery and man.get("delivery") != primary_delivery:
+        man["delivery"] = primary_delivery
+        with open(manifest_path(spec), "w") as f:
+            json.dump(man, f, indent=2)
+        return True
+    return False
 
 
 def _estimate_duration(p: sfxr.Params, sample_rate: int = sfxr.SAMPLE_RATE) -> float:
@@ -194,6 +220,8 @@ def generate_ai(client, cfg: dict, spec: dict) -> dict:
 
     takes = []
     primary_file = primary_stats = None
+    primary_delivery = None
+    bitrate = cfg.get("audio", {}).get("delivery", {}).get("bitrate", "128k")
     out_fmt = req_fmt
     for i in range(1, n + 1):
         audio, out_fmt = client.generate_best(
@@ -210,9 +238,18 @@ def generate_ai(client, cfg: dict, spec: dict) -> dict:
             samples = postprocess.master(samples, real_sr, trim=not loop,
                                          fades=not loop, fade_out_ms=15.0)
             fname = f"{spec['id']}.wav" if n == 1 else f"{spec['id']}__take{i:02d}.wav"
-            stats = postprocess.write_wav(samples, os.path.join(d, fname), real_sr)
+            wav_abs = os.path.join(d, fname)
+            stats = postprocess.write_wav(samples, wav_abs, real_sr)
             stats["requested_format"] = req_fmt
             stats["delivered"] = postprocess._sniff(audio)
+            # Also ship compressed delivery formats (.m4a/.ogg) for fast phone load;
+            # WAV stays the lossless master. Best-effort — never block generation.
+            try:
+                enc = encode.encode_wav(wav_abs, bitrate=bitrate)
+                if primary_delivery is None:
+                    primary_delivery = encode.encodings_meta(wav_abs, enc)
+            except Exception as e:
+                print(f"  ! encode failed for {spec['id']} take{i}: {e}", flush=True)
         except RuntimeError as e:
             container = postprocess._sniff(audio)
             ext = container if container in ("mp3", "ogg", "flac", "wav") else "bin"
@@ -239,6 +276,7 @@ def generate_ai(client, cfg: dict, spec: dict) -> dict:
         "file": primary_file,
         "format": fmt,
         "audio": primary_stats,
+        "delivery": primary_delivery,
         "takes": takes,
         "ai": {
             "provider": ai_cfg["provider"],

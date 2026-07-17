@@ -32,6 +32,7 @@ def build() -> dict:
             "format": man.get("format"),
             "loop": man.get("loop", False),
             "file": man["file"],
+            "delivery": man.get("delivery"),
             "takes": man.get("takes", []),
             "duration_seconds": (man.get("audio") or {}).get("duration_seconds"),
             "mix_gain_db": man.get("mix_gain_db", 0.0),

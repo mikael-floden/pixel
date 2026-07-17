@@ -162,6 +162,15 @@ def main():
             if isinstance(req, dict) and req.get("to") == coordination.DOMAIN:
                 print(f"  » request from {dom}: {req.get('text')}")
 
+    # Backfill compressed delivery formats (.m4a/.ogg) for any WAV that predates
+    # them — so phones stream fast. Idempotent; no-op once every asset is encoded.
+    encoded = [s["id"] for s in factory.sound_specs(cfg) if factory.ensure_delivery(cfg, s)]
+    if encoded:
+        viewer_build.build()
+        commit_push(f"sounds: compress delivery formats (.m4a/.ogg) for {len(encoded)} asset(s)",
+                    push=not args.no_push)
+        print(f"  encoded delivery formats for {len(encoded)} asset(s)")
+
     engine_name = "AAA ai (elevenlabs SFX v2)" if client is not None \
         else "REJECTED low-fi placeholder (sfxr)"
     print(f"sounds loop starting — engine: {engine_name}")
