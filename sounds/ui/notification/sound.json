@@ -1,0 +1,45 @@
+{
+  "manifest_version": 1,
+  "id": "notification",
+  "name": "Notification",
+  "category": "ui",
+  "description": "a gentle two-note tone announcing a notification or new message",
+  "tags": [
+    "notify",
+    "message",
+    "alert",
+    "chat",
+    "ui"
+  ],
+  "usage": "New chat message / quest notification.",
+  "loop": false,
+  "engine": "ai",
+  "license": "CC0-1.0",
+  "status": "complete",
+  "quality": "aaa",
+  "file": "ui/notification/notification__take01.wav",
+  "format": "wav",
+  "audio": {
+    "samples": 4410,
+    "duration_seconds": 0.092,
+    "sample_rate": 48000,
+    "channels": 1,
+    "bit_depth": 16,
+    "peak_dbfs": -1.0,
+    "output_format": "pcm_48000"
+  },
+  "takes": [
+    "ui/notification/notification__take01.wav",
+    "ui/notification/notification__take02.wav"
+  ],
+  "ai": {
+    "provider": "elevenlabs",
+    "model_id": "eleven_text_to_sound_v2",
+    "prompt": "A gentle notification: a warm, rounded two-note bell tone with a soft tail, pleasant and unobtrusive. High-fidelity recorded foley, close-miked, crisp transient, rich body, natural short tail; single isolated sound; dry with only a subtle natural room; no music, no voice, no melody, no chiptune, no synth beeps, no background noise; broadcast-quality, production-ready.",
+    "prompt_influence": 0.5,
+    "loop": false,
+    "variants": 2
+  },
+  "mastering": "trim + peak-normalize(-1 dBFS) + edge-fades",
+  "source": "elevenlabs text-to-sound-effects (eleven_text_to_sound_v2), pcm_48000, mastered"
+}
