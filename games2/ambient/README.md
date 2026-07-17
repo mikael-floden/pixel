@@ -106,8 +106,11 @@ Every feature declares `preferred: { time, weather }` — the conditions it
 is most likely under. The **"ambient"** settings button (maintainer
 2026-07-17) iterates auto → each effect → auto; selecting an effect jumps
 the SHARED world time-of-day + weather to its preferred conditions and
-pins the director (a demoed episode is forced on; a demoed field gets the
-quiet pin so no episode wanders into its showing). "auto" releases the pin.
+gives it the stage SOLO: the director is pinned (a demoed episode is
+forced on; a demoed field gets the quiet pin) AND every other field is
+suppressed via `setSuppressed(true)` — the night jump must not wake the
+fireflies during a bats demo ("the bats look like fireflies", maintainer
+round 1). "auto" releases the pin and the suppression.
 
 Plumbing: the button is INJECTED into the settings row from
 `runtime/hudbutton.ts` (games-ui owns hud.ts — we never edit it; the

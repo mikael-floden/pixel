@@ -34,10 +34,14 @@ export class Demo {
   private set(i: number) {
     this.idx = i < 0 || i >= this.features.length ? -1 : i;
     if (this.idx < 0) {
+      for (const f of this.features) f.setSuppressed?.(false);
       this.director.force(null);
       return;
     }
     const f = this.features[this.idx];
+    // Solo mode: the demoed effect owns the stage — every other field fades
+    // out (episodes are handled by the director pin below).
+    for (const other of this.features) other.setSuppressed?.(other !== f);
     if (f.preferred) {
       // Move the shared world to where this effect is most at home. Fenced
       // like every probe use — no probe, no jump, the pin still applies.

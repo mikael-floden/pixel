@@ -37,6 +37,7 @@ interface Fly {
 export function firefliesFeature(): AmbientFeature {
   const flies: Fly[] = [];
   let gain = 0; // eased swarm-wide alpha multiplier
+  let suppressed = false; // demo solo mode: another effect owns the stage
   let seed = 1;
   // Deterministic-enough local PRNG (repo convention: derived seeds, but
   // ambient wander has no replay contract — cheap LCG keeps it allocation-free).
@@ -84,7 +85,7 @@ export function firefliesFeature(): AmbientFeature {
       const view = ctx.view;
       // Night owns the swarm; heavy cloud thins it (a starless overcast night
       // still keeps a few — mystery beats realism).
-      const target = ctx.env.night * (1 - 0.4 * ctx.env.cloud);
+      const target = suppressed ? 0 : ctx.env.night * (1 - 0.4 * ctx.env.cloud);
       gain += (target - gain) * Math.min(1, (dt / GAIN_TAU) * 3);
       const visible = gain > 0.02;
 
@@ -131,9 +132,13 @@ export function firefliesFeature(): AmbientFeature {
         f.sprite.setPosition(x, y).setAlpha(gain * f.bright * pulse).setVisible(true);
       }
     },
+    setSuppressed(on) {
+      suppressed = on;
+    },
     debug() {
       return {
         gain,
+        suppressed,
         count: flies.length,
         lit: flies.filter((f) => f.sprite.visible && f.sprite.alpha > 0.05).length,
         sample: flies[0] ? { x: flies[0].sprite.x, y: flies[0].sprite.y, a: flies[0].sprite.alpha } : null,

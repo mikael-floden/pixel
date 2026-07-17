@@ -124,6 +124,13 @@ try {
     fail(`demo(thunder) must pin thunder (got ${JSON.stringify(dirDemo)})`);
   if (!(await dbg("thunder")).active) fail("demoed thunder must be active");
   else ok("demo(thunder): world -> Night + Cloudy, episode pinned on");
+  // SOLO mode: the night jump must NOT wake the fireflies ("the bats look
+  // like fireflies" — every non-demoed feature fades out during a demo).
+  await page.waitForTimeout(4000);
+  const ffSolo = await dbg("fireflies");
+  if (!ffSolo.suppressed || ffSolo.gain > 0.15)
+    fail(`demoing thunder must suppress fireflies (suppressed=${ffSolo.suppressed}, gain ${ffSolo.gain.toFixed(2)})`);
+  else ok("solo mode: fireflies stay dark while thunder is demoed");
   // Demo a FIELD (pollen): world jumps to Day + Clear, episodes go quiet.
   await page.evaluate(() => window.__mlAmbient.demo("pollen"));
   await page.waitForFunction(
@@ -145,11 +152,13 @@ try {
   });
   if (label !== "ambient: bats") fail(`button click must advance pollen -> bats (got ${JSON.stringify(label)})`);
   else ok("button click advances the ring (pollen -> bats)");
-  // Back to auto: pin released, director rolls for the current window.
+  // Back to auto: pin released, suppression lifted, director rolls again.
   await page.evaluate(() => window.__mlAmbient.demo(null));
   const dirAuto = await page.evaluate(() => window.__mlAmbient.director());
   if (dirAuto.pinned !== null) fail(`demo(null) must release the pin (got ${JSON.stringify(dirAuto)})`);
-  else ok("demo(null) returns to auto");
+  const ffAuto = await dbg("fireflies");
+  if (ffAuto.suppressed) fail("demo(null) must lift field suppression");
+  else ok("demo(null) returns to auto (pin + suppression released)");
 
   if (!failed) console.log("AMBIENT OK");
 } finally {

@@ -63,6 +63,11 @@ export interface AmbientFeature {
    * `time` indexes the game's phase ring (0 Night, 1 Morning, 2 Day,
    * 3 Evening); `weather` its WEATHER_NAMES (0 Clear, 1 Cloudy, 2 Mist). */
   preferred?: { time: number; weather: number };
+  /** FIELD features: demo solo mode. While another feature is being demoed
+   * this is set true — the field must fade its gain to 0 (gracefully) so
+   * the demoed effect has the stage alone ("ambient: bats" must show BATS,
+   * not the fireflies the night jump would wake — maintainer round 1). */
+  setSuppressed?(on: boolean): void;
 }
 
 export const PHASE_NIGHT = 0;
