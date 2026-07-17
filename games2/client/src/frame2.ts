@@ -205,11 +205,19 @@ function splitInsH(insH: number): [number, number] {
   return [insH, 0];
 }
 
+// EXPERIMENT (maintainer 2026-07-17): render the whole page frame + its HUD
+// at "1x" instead of the current "2x"-feel. HUD_SCALE multiplies the frame's
+// render scale (thinner rails, smaller tab/page windows) and hud.ts reads
+// the SAME factor via --ml-hud-scale to shrink the plates in lockstep so
+// they keep filling the (now smaller) windows. 1 = today's look; 0.5 = half.
+// Rollback = set back to 1 (or revert the commit).
+export const HUD_SCALE = 0.5;
+
 function compose() {
   if (!canvas || !frameData || !auxData) return;
   const wCss = window.innerWidth;
   const hCss = window.innerHeight;
-  const s = Math.min(wCss / AW, hCss / AH);
+  const s = Math.min(wCss / AW, hCss / AH) * HUD_SCALE;
   const w0 = Math.max(AW, Math.round(wCss / s));
   const h0 = Math.max(AH, Math.round(hCss / s));
   const [g1, g2] = splitInsH(h0 - AH);

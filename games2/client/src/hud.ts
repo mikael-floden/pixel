@@ -23,7 +23,7 @@
  * must match the #game split; CSS zoom rescales viewport units).
  */
 
-import { mountFrame2, FrameLayout } from "./frame2";
+import { mountFrame2, FrameLayout, HUD_SCALE } from "./frame2";
 import { setClockMount } from "./clock";
 import { gameAudio } from "../../composer/index";
 
@@ -254,12 +254,18 @@ let injected = false;
 function injectStyles() {
   if (injected) return;
   injected = true;
+  // Scale the plates in lockstep with the frame's HUD_SCALE (frame2) so they
+  // keep filling the frame's tab/page windows at the "1x" experiment size.
+  document.documentElement.style.setProperty("--ml-hud-scale", String(HUD_SCALE));
   // --ml-tab: PERFECT-SQUARE tab plate side (mock plates capped at 150).
   // --ml-tabzone: boundary → divider B line centre; tracks the tab size.
   // Frame pieces are mock-ABSOLUTE crops: corners 180px, borders as
   // segment strips stretched between fixed junctions (see build-ui-tiles).
   const css = `
-  :root{--ml-tab:min(150px,calc((100vw - 200px)/5))}
+  :root{--ml-hud-scale:1;
+    --ml-tab:calc(min(150px,calc((100vw - 200px)/5)) * var(--ml-hud-scale));
+    --ml-bw:calc(26px * var(--ml-hud-scale));   /* plate border render width */
+    --ml-sbw:calc(30px * var(--ml-hud-scale))}  /* slot border render width */
   /* HUD sections: base props only — position/size come from applyFrameLayout
      (the frame-v2 windows), set inline after every compose. */
   .ml-hud{position:fixed;left:0;right:0;bottom:0;z-index:4;background:#23160d;box-sizing:border-box}
@@ -267,20 +273,23 @@ function injectStyles() {
   .ml-tab{width:var(--ml-tab);height:var(--ml-tab);flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
     padding:2px 0;cursor:pointer;image-rendering:pixelated;box-sizing:border-box;
     touch-action:manipulation;-webkit-touch-callout:none;
-    border-style:solid;border-width:26px;border-image:url(/ui2/plate-normal.png) 56 fill / 26px;
+    border-style:solid;border-width:var(--ml-bw);border-image:url(/ui2/plate-normal.png) 56 fill / var(--ml-bw);
     background:none}
   /* :active only where a real hover exists — mobile Chrome keeps :active
      sticky on the last-tapped element, which made switches read "pressed"
      regardless of their .on state (maintainer). */
   @media (hover:hover){
-  .ml-tab:active{border-image:url(/ui2/plate-pressed.png) 56 fill / 26px}
+  .ml-tab:active{border-image:url(/ui2/plate-pressed.png) 56 fill / var(--ml-bw)}
   }
-  .ml-tab.sel{border-image:url(/ui2/plate-selected.png) 56 fill / 26px}
+  .ml-tab.sel{border-image:url(/ui2/plate-selected.png) 56 fill / var(--ml-bw)}
   /* .press after .sel so a finger on the selected tab still reads pressed */
-  .ml-tab.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 26px}
+  .ml-tab.press{border-image:url(/ui2/plate-pressed.png) 56 fill / var(--ml-bw)}
   .ml-tab-icon{image-rendering:pixelated;-webkit-user-drag:none;pointer-events:none;
-    max-width:calc(100% - 6px);max-height:calc(100% - 22px);object-fit:contain}
-  .ml-tab-label{font:700 11px/1.1 system-ui,sans-serif;font-size:clamp(6.5px,1.42vw,12px);
+    max-width:calc(100% - 6px);max-height:calc(100% - 22px * var(--ml-hud-scale,1));object-fit:contain}
+  /* label font scales with the HUD so it fits the (smaller) square tab plate
+     at the 1x experiment size instead of overflowing (maintainer) */
+  .ml-tab-label{font:700 11px/1.1 system-ui,sans-serif;
+    font-size:calc(clamp(6.5px,1.42vw,12px) * var(--ml-hud-scale,1));
     text-transform:uppercase;color:#dfe2ea;text-shadow:0 1px 2px #000;white-space:nowrap;overflow:hidden;max-width:100%}
   .ml-tab.sel .ml-tab-label{color:#ffd678}
   .ml-pages{position:absolute;overflow:hidden;image-rendering:pixelated}
@@ -292,21 +301,21 @@ function injectStyles() {
   .ml-page.show{display:flex}
   .ml-slots{display:grid;grid-template-columns:repeat(5,var(--ml-tab));grid-template-rows:repeat(2,var(--ml-tab));
     justify-content:space-evenly;align-content:space-evenly;width:100%;height:100%}
-  .ml-slot{width:var(--ml-tab);height:var(--ml-tab);image-rendering:pixelated;border-style:solid;border-width:30px;
-    border-image:url(/ui2/slot.png) 10 fill / 30px;box-sizing:border-box}
+  .ml-slot{width:var(--ml-tab);height:var(--ml-tab);image-rendering:pixelated;border-style:solid;border-width:var(--ml-sbw);
+    border-image:url(/ui2/slot.png) 10 fill / var(--ml-sbw);box-sizing:border-box}
   .ml-btnrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:100%}
   /* settings buttons must never be SHORTER than the menu tabs / backpack
      slots (maintainer) — same --ml-tab height, width still fits the label */
   .ml-plate-btn{padding:10px 20px;min-height:var(--ml-tab);box-sizing:border-box;
     cursor:pointer;image-rendering:pixelated;background:none;touch-action:manipulation;
-    border-style:solid;border-width:26px;border-image:url(/ui2/plate-normal.png) 56 fill / 26px;
+    border-style:solid;border-width:var(--ml-bw);border-image:url(/ui2/plate-normal.png) 56 fill / var(--ml-bw);
     font:700 14px system-ui,sans-serif;letter-spacing:.4px;text-transform:uppercase;color:#e8e8ec;
     text-shadow:0 1px 2px #000}
   @media (hover:hover){
-  .ml-plate-btn:active{border-image:url(/ui2/plate-pressed.png) 56 fill / 26px;color:#ffd678}
+  .ml-plate-btn:active{border-image:url(/ui2/plate-pressed.png) 56 fill / var(--ml-bw);color:#ffd678}
   }
-  .ml-plate-btn.on{border-image:url(/ui2/plate-pressed.png) 56 fill / 26px;color:#ffd678}
-  .ml-plate-btn.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 26px;color:#ffd678}
+  .ml-plate-btn.on{border-image:url(/ui2/plate-pressed.png) 56 fill / var(--ml-bw);color:#ffd678}
+  .ml-plate-btn.press{border-image:url(/ui2/plate-pressed.png) 56 fill / var(--ml-bw);color:#ffd678}
   /* Narrow phones: five square tabs must still fit between the outer rails. */
   @media (max-width:460px){
     .ml-tabrow{left:40px;right:40px}

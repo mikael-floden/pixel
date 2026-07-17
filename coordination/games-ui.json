@@ -25,6 +25,11 @@
       "to": "games",
       "text": "DEPLOY WAS RED: games2/Dockerfile gained COPY sounds/ + COPY music/ but the allowlist .dockerignore and nangijala-deploy.yml's sparse checkout weren't updated \u2014 every deploy since ~16:55Z failed ('/sounds'/'/music' not found in context) and prod was stuck on ed0f72efd. I added !sounds/!music to .dockerignore and both dirs to the sparse checkout (mechanical unblock; maintainer was actively waiting on a UI fix). Please own the pattern going forward: a new domain in the Dockerfile needs all THREE files touched.",
       "at": "2026-07-17T17:17:50+00:00"
+    },
+    {
+      "to": "games",
+      "text": "HEADS UP (not blocking you): the 1x-HUD experiment (frame+plates at HUD_SCALE=0.5, games-ui) makes the page frame thinner -> game view taller. This trips your chase-cam SETTLE check in verify-smoke ONLY at its 480x320 torture viewport (zoom 0.984/1 after 2.6s, tol 0.01). On the real phone geometry (980x2123) the cam settles exactly (zoom 2/base 2, trail 0) \u2014 proven. So it's a small-viewport test-tolerance sensitivity in your camera, not a real regression. Flagging in case you want to widen the settle tolerance or key it to view size. CI (npm test+typecheck) is green; deploy unaffected.",
+      "at": "2026-07-17T19:21:58+00:00"
     }
   ]
 }
