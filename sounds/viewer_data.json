@@ -1,10 +1,10 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 12,
+  "count": 13,
   "by_category": {
     "ui": 8,
-    "item": 4
+    "item": 5
   },
   "sounds": [
     {
@@ -234,6 +234,25 @@
       "loop": false,
       "file": "item/drink_potion/drink_potion__take01.wav",
       "duration_seconds": 0.127
+    },
+    {
+      "id": "eat_food",
+      "name": "Eat Food",
+      "category": "item",
+      "description": "a soft munch-and-satisfied blip of eating food",
+      "tags": [
+        "food",
+        "eat",
+        "munch",
+        "restore",
+        "bite"
+      ],
+      "usage": "Eating a food item to restore energy.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "item/eat_food/eat_food__take01.wav",
+      "duration_seconds": 0.092
     }
   ]
 }
