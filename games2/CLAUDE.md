@@ -330,6 +330,29 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   headless QA), `__ml.cloudAt(wx,wy)`; regressions:
   scripts/verify-weather.mjs (clear=1 everywhere, patchy not overcast,
   drifts over time, night-muted) + server/test/weather.test.ts.
+- **PRECIPITATION (weathers 3-8)** — Drizzle / Rain / Heavy rain / Storm /
+  Snowing / Windy (client/src/weatherfx.ts): a manually-pooled particle
+  layer in WORLD space at depth 899_500 (above world art, BELOW the night
+  overlay so drops dim with the night and take torch light, below the lit
+  avatar copies). Drops RECYCLE inside the camera view (+margin): below
+  the view -> respawn in the top band, x wraps — constant density however
+  the camera moves, no lifespan pops; counts scale with view area
+  (REF_AREA). Storm gusts are a GLOBAL sine on vx (every streak leans
+  together) + camera-flash lightning every 5-14s (sometimes double);
+  streak rotation follows the velocity vector. Snow sways per-flake;
+  Windy is leaf debris (three autumn tints, deep per-leaf surge + curl
+  arcs — anime wind streams, maintainer's inspiration) plus faint long
+  motion-line wisps racing ahead of the leaves at 2.3x gust. Each state
+  brings overcast (WEATHER_CLOUD, scales uCloud) and a flat ambient
+  gloom (WEATHER_DIM -> eased curPrecipDim in ambEff) — both applied
+  instantly on join sync and by the __ml.weather(idx, true) probe
+  (WeatherFX.snap()); the eased path assumes a LIVE frame loop, so
+  HEADLESS QA at the big phone viewport (starved to ~3fps) must use
+  instant — and NOTE: starvation also stretches the 110ms lightning
+  flash across seconds of wall time, so storm screenshots there often
+  catch a "stuck" white wash that does NOT happen at real frame rates
+  (verified: 1 flash / 10s at the fast small viewport).
+  Probes: precip/precipDim in `__ml.weatherInfo()`.
 - **MIST (weather 2)** — creepy ground fog (maintainer: "follows the
   ground... over lakes and open fields... can appear inside a forest...
   part of the world, close to the ground, moving in the same isotropic

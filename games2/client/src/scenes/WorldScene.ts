@@ -60,6 +60,7 @@ import {
 } from "../nightlight";
 import { joinWorld } from "../net";
 import { ChatUI } from "../chat";
+import { WeatherFX } from "../weatherfx";
 import { setClockPhase, setClockAngle, clockStar } from "../clock";
 import { HudBar, mountPageFrame } from "../hud";
 import { setLoadingProgress, hideLoading } from "../loading";
@@ -98,6 +99,12 @@ const CAMPFIRE_SCALE = 42 / 68;
 const CAMPFIRE_BASE = 83 / 96;
 // Settings "OVERLAY" cycler: flat covers over the game view for frame QA
 // (pink = the keying magenta, deliberately loud).
+// Per-weather overcast (uCloud scale) + flat ambient gloom: the rain family
+// brings clouds, drizzle/snow/windy only partly. Shared by the ease loop and
+// the instant paths (join sync + the __ml.weather QA probe).
+const WEATHER_CLOUD: Record<number, number> = { 1: 1, 3: 0.35, 4: 0.7, 5: 1, 6: 1, 7: 0.4, 8: 0.25 };
+const WEATHER_DIM: Record<number, number> = { 3: 0.05, 4: 0.12, 5: 0.22, 6: 0.34, 7: 0.05 };
+
 const OVERLAYS = [
   { name: "none", color: null as string | null },
   { name: "black", color: "#000" },
@@ -479,6 +486,8 @@ export class WorldScene extends Phaser.Scene {
   private weatherIdx = 0;
   private curCloud = 0;
   private curMist = 0;
+  private curPrecipDim = 0;
+  private weatherFX?: WeatherFX;
   private timeFrozen = true; // synced mirror of WorldState.frozen (switch state)
   private timeSpeed = 0; // synced mirror of WorldState.timeSpeed (button label)
   private phaseT = 0.5; // synced mirror of WorldState.phaseT (continuous progress)
@@ -843,13 +852,17 @@ export class WorldScene extends Phaser.Scene {
         name: WEATHER_NAMES[this.weatherIdx],
         cloud: this.curCloud,
         mist: this.curMist,
+        precipDim: this.curPrecipDim,
+        precip: this.weatherFX?.info() ?? null,
       }),
       weather: (idx?: number, instant = true) => {
         if (idx !== undefined) {
           this.weatherIdx = idx % WEATHER_COUNT;
           if (instant) {
-            this.curCloud = this.weatherIdx === 1 ? 1 : 0;
+            this.curCloud = WEATHER_CLOUD[this.weatherIdx] ?? 0;
             this.curMist = this.weatherIdx === 2 ? 1 : 0;
+            this.curPrecipDim = WEATHER_DIM[this.weatherIdx] ?? 0;
+            this.weatherFX?.snap();
           }
         }
         return this.weatherIdx;
@@ -1145,8 +1158,10 @@ export class WorldScene extends Phaser.Scene {
       this.weatherIdx = idx % WEATHER_COUNT;
       this.hud?.refreshSettings(); // the weather button prints the state
       if (firstWeatherSync) {
-        this.curCloud = this.weatherIdx === 1 ? 1 : 0; // no roll-in on join
+        this.curCloud = WEATHER_CLOUD[this.weatherIdx] ?? 0; // no roll-in on join
         this.curMist = this.weatherIdx === 2 ? 1 : 0;
+        this.curPrecipDim = WEATHER_DIM[this.weatherIdx] ?? 0;
+        this.weatherFX?.snap();
       }
       else this.chat.addLog("—", `Weather: ${WEATHER_NAMES[this.weatherIdx]}`);
       firstWeatherSync = false;
@@ -1825,7 +1840,7 @@ export class WorldScene extends Phaser.Scene {
       // Weather: ease the cloud cover toward the synced target (~4s roll),
       // and grey the sky a touch while cloudy — "the sky is not perfect
       // blue" — before handing the ambient to the shader + CPU twin.
-      const cloudTo = this.weatherIdx === 1 ? 1 : 0;
+      const cloudTo = WEATHER_CLOUD[this.weatherIdx] ?? 0;
       const ca = 1 - Math.exp(-(this.game.loop.delta / 1000) / 4);
       this.curCloud += (cloudTo - this.curCloud) * ca;
       if (Math.abs(this.curCloud - cloudTo) < 0.005) this.curCloud = cloudTo;
@@ -1834,13 +1849,20 @@ export class WorldScene extends Phaser.Scene {
       const mistTo = this.weatherIdx === 2 ? 1 : 0;
       this.curMist += (mistTo - this.curMist) * ca;
       if (Math.abs(this.curMist - mistTo) < 0.005) this.curMist = mistTo;
+      // Flat rain-gloom on the ambient (the patchy cloud shade rides on top).
+      const dimTo = WEATHER_DIM[this.weatherIdx] ?? 0;
+      this.curPrecipDim += (dimTo - this.curPrecipDim) * ca;
+      if (!this.weatherFX) this.weatherFX = new WeatherFX(this);
+      this.weatherFX.setWeather(this.weatherIdx);
+      this.weatherFX.update(this.game.loop.delta, this.cameras.main);
       // Aurora eases on the same ~4s roll (the curtains breathe in).
       const auroraTo = this.auroraOn ? 1 : 0;
       this.curAurora += (auroraTo - this.curAurora) * ca;
       if (Math.abs(this.curAurora - auroraTo) < 0.005) this.curAurora = auroraTo;
       const ambEff = this.curAmbient.map((v, i) => {
         const grey = (this.curAmbient[0] + this.curAmbient[1] + this.curAmbient[2]) / 3;
-        return v + (grey * 0.94 - v) * this.curCloud * 0.22;
+        const clouded = v + (grey * 0.94 - v) * this.curCloud * 0.22;
+        return clouded * (1 - this.curPrecipDim);
       }) as [number, number, number];
       this.night!.update(
         this.cameras.main,
