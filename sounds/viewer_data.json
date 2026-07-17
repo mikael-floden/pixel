@@ -1,9 +1,9 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 2,
+  "count": 3,
   "by_category": {
-    "ui": 2
+    "ui": 3
   },
   "sounds": [
     {
@@ -43,6 +43,25 @@
       "loop": false,
       "file": "ui/gem_pickup/gem_pickup__take01.wav",
       "duration_seconds": 0.602
+    },
+    {
+      "id": "item_get",
+      "name": "Item Get",
+      "category": "ui",
+      "description": "a cheerful little fanfare for receiving a new item into the inventory",
+      "tags": [
+        "item",
+        "get",
+        "inventory",
+        "reward",
+        "fanfare"
+      ],
+      "usage": "Play when a tool or item enters the inventory.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "ui/item_get/item_get__take01.wav",
+      "duration_seconds": 0.889
     }
   ]
 }
