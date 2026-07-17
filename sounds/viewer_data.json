@@ -1,12 +1,12 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 41,
+  "count": 42,
   "by_category": {
     "ui": 8,
     "item": 5,
     "tool": 6,
-    "movement": 5,
+    "movement": 6,
     "combat": 4,
     "feedback": 2,
     "ambience": 11
@@ -3812,6 +3812,104 @@
       "sync_points": [
         {
           "t_ms": 870.4,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
+    },
+    {
+      "id": "footstep_sand",
+      "name": "Footstep (Sand)",
+      "category": "movement",
+      "description": "a soft gritty step on sand",
+      "feel": "grounded, soft",
+      "tags": [
+        "footstep",
+        "walk",
+        "sand",
+        "beach",
+        "desert",
+        "movement"
+      ],
+      "usage": "Per-step on sand/beach/desert tiles.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "movement/footstep_sand/footstep_sand__take01.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "movement/footstep_sand/footstep_sand__take01.wav",
+            "bytes": 47794,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "movement/footstep_sand/footstep_sand__take01.m4a",
+            "bytes": 8661,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "movement/footstep_sand/footstep_sand__take01.ogg",
+            "bytes": 11448,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
+      "takes": [
+        "movement/footstep_sand/footstep_sand__take01.wav",
+        "movement/footstep_sand/footstep_sand__take02.wav",
+        "movement/footstep_sand/footstep_sand__take03.wav",
+        "movement/footstep_sand/footstep_sand__take04.wav",
+        "movement/footstep_sand/footstep_sand__take05.wav"
+      ],
+      "duration_seconds": 0.497,
+      "mix_gain_db": -8,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -2.0,
+          2.0
+        ],
+        "gain_jitter_db": [
+          -3.0,
+          3.0
+        ],
+        "start_jitter_ms": [
+          0,
+          20
+        ],
+        "note": "repeating sound \u2014 round-robin + jitter every play"
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.233,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.056
+      },
+      "envelope": {
+        "duration_ms": 497.4,
+        "onset_ms": 0.4,
+        "peak_ms": 40.0,
+        "attack_ms": 39.6,
+        "peak_dbfs": -1.0,
+        "rms": 0.1085,
+        "crest": 8.2
+      },
+      "sync_points": [
+        {
+          "t_ms": 40.0,
           "name": "transient",
           "note": "main attack \u2014 measured; safe sync/trigger point"
         }
