@@ -40,8 +40,13 @@ const FADE_S = 2.5; // keep in step with WorldScene's TIME_TRANSITION_S
 // 1:1 + pixelated (nearest-neighbour rule — the browser never resamples).
 const DIAL = { w: 168, h: 99, knobX: 84, knobY: 0 }; // incl. baked border-ring margin
 const ROOT_W = DIAL.w;
-// Sheet-3 hand points RIGHT as authored (hub = the sun-face disc, left end).
-const HAND = { w: 81, h: 19, hubX: 11.2, hubY: 9.3, baseDeg: -90.8 };
+// The maintainer's v2 handle (/ui2/clock-hand.png): vine-wrapped blade WITH
+// its own ring, authored pointing DOWN (so baseDeg = 0), at FRAME-art scale
+// (45x163 native). Pivot = the ring hole (the maintainer's blue dot); it
+// mounts on the frame's strap stub (FrameLayout.clockAnchor), so unlike the
+// dials it is NOT uiZoom'd — it lives in the frame's own px space and is
+// sized by the frame scale.
+const HAND = { w: 45, h: 163, hubX: 23, hubY: 18, baseDeg: 0 };
 // The floating dot arc around the dial is its OWN static layer (maintainer:
 // the dots must never fade with the phase cross-fades). Axis-centred like
 // the dials, top row = the same rail-bottom line.
@@ -59,6 +64,25 @@ let hand: HTMLImageElement | null = null;
 // Current CSS rotation. Continuous ticks and the mid-phase hand-off jump
 // snap; only large forward skips ride the CSS transition.
 let handDeg: number | null = null;
+// Frame mount for the hand (set by hud.ts after every frame compose):
+// anchor in layout px + the frame's css-per-art-px scale.
+let mountPt = { x: 0, y: 0, s: 1, has: false };
+
+/** Hang the hand's pivot on the frame's strap stub (called on every frame
+ * compose/resize — the anchor moves with the width insert and the scale). */
+export function setClockMount(x: number, y: number, s: number) {
+  mountPt = { x, y, s, has: true };
+  applyMount();
+}
+
+function applyMount() {
+  if (!hand || !mountPt.has) return;
+  const { x, y, s } = mountPt;
+  hand.style.width = `${HAND.w * s}px`;
+  hand.style.left = `${x - HAND.hubX * s}px`;
+  hand.style.top = `${y - HAND.hubY * s}px`;
+  hand.style.transformOrigin = `${HAND.hubX * s}px ${HAND.hubY * s}px`;
+}
 
 function mount() {
   if (root) return;
@@ -71,12 +95,14 @@ function mount() {
   // frame"). Dividing by --ml-uizoom cancels the zoom for the anchor only,
   // so the dial meets the rail in EVERY layout mode.
   style.textContent = `
-  .ml-clock,.ml-clock-hand,.ml-clock-dots{position:fixed;
+  .ml-clock,.ml-clock-dots{position:fixed;
     top:calc(33px / var(--ml-uizoom, 1));left:50%;
     transform:translateX(-50%);width:${ROOT_W}px;pointer-events:none}
   .ml-clock{z-index:5}
   .ml-clock-dots{z-index:5;width:${DOTS.w}px}
-  .ml-clock-hand{z-index:7}
+  /* the hand layer is a full-viewport plane in FRAME px space (no uiZoom,
+     no centring transform) — the img inside is placed by applyMount */
+  .ml-clock-hand{position:fixed;inset:0;z-index:7;pointer-events:none}
   .ml-clock img,.ml-clock-hand img{position:absolute;top:0;left:0;width:100%;
     opacity:0;image-rendering:pixelated;transition:opacity ${FADE_S}s ease}
   .ml-clock-dots img{position:absolute;top:0;left:0;width:100%;
@@ -111,18 +137,14 @@ function mount() {
   handRoot = document.createElement("div");
   handRoot.className = "ml-clock-hand";
   hand = document.createElement("img");
-  hand.src = "/ui/clock_hand.png";
+  hand.src = "/ui2/clock-hand.png";
   hand.alt = "";
   hand.draggable = false;
-  hand.style.width = `${HAND.w}px`;
-  hand.style.left = `${DIAL.knobX - HAND.hubX}px`;
-  hand.style.top = `${DIAL.knobY - HAND.hubY}px`;
-  hand.style.transformOrigin = `${HAND.hubX}px ${HAND.hubY}px`;
   handRoot.appendChild(hand);
   document.body.appendChild(root);
   document.body.appendChild(handRoot);
   applyUiZoom(root);
-  applyUiZoom(handRoot);
+  applyMount(); // if the frame composed before the first clock call
 }
 
 /** A tiny star twinkles across the dial's sky — the HUD echo of a shooting

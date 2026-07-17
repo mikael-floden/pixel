@@ -475,10 +475,14 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   v2 sprite WITH its own ring, 45×163 native — extracted from an 11.1×
   phone upscale by box-downscale, white outline + teal keyed to soft
   alpha), pivot = sprite (23,18) (the maintainer's blue-dot mark in the
-  ring hole); it hangs on the frame's strap, whose stub ends at frame
-  ≈(384,78). Only a short strap stub remains baked in the frame — hand,
-  ring and shackle are all runtime elements now (four review rounds of
-  marks; the maintainer animates the hand himself).
+  ring hole). clock.ts renders it as THE clock hand (replacing the old
+  sheet-3 gold hand): FrameLayout.clockAnchor = frame (385,88) — just
+  below the strap stub, the maintainer's other blue dot — is fed through hud.ts'
+  applyFrameLayout into setClockMount on every compose, and the hand
+  layer lives in FRAME px space (sized by the frame scale, NOT uiZoom'd,
+  unlike the dials) rotating about the ring hole with baseDeg 0 (authored
+  pointing down). Only a short strap stub remains baked in the frame —
+  hand, ring and shackle are runtime elements (four review rounds).
 - **Tap/hold-to-move**: a tap RUNS to the point (there is NO double-tap
   gesture — nobody walks when they can run, maintainer); the autopilot
   eases into a walk inside `APPROACH_WALK_RADIUS` (2.5 cells) of the

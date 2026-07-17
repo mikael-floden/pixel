@@ -61,6 +61,11 @@ const WIN_CUT = 384; // window bands: cut through transparency
 const VCUT1 = 326; // single-row extrusion (rune-free on both rails)
 const VCUT2 = { y: 1035, s0: 992, p: 86 }; // winding-bark unit
 
+// where the animated clock hand's pivot hangs, just below the strap stub
+// (maintainer's blue dot, updated once). Between the top-rail cuts, so it
+// shifts by the left insert half; above VCUT1, so no vertical shift.
+const CLOCK_ANCHOR = { x: 385, y: 88 };
+
 // ---- interior windows (asset coords, MEASURED off frame.png's alpha) ----
 const RAIL_TOP_Y = 648;                   // rail A's visual top edge (ragged)
 const RAIL_SOLID_Y = 676;                 // inside rail A's full-width-opaque
@@ -96,6 +101,8 @@ export interface FrameLayout {
   gameHeight: number;
   /** css-px y of rail A's visual (ragged) top edge — chat anchors above this */
   railTop: number;
+  /** css-px point the animated clock hand's pivot mounts to (the strap stub) */
+  clockAnchor: { x: number; y: number };
   /** css-px y where the stone page backdrop must start (under rail B) */
   pageTuckTop: number;
   tabRect: { left: number; top: number; width: number; height: number };
@@ -217,6 +224,10 @@ function compose() {
     scale: s,
     gameHeight: (RAIL_SOLID_Y + g1) * s,
     railTop: (RAIL_TOP_Y + g1) * s,
+    clockAnchor: {
+      x: (CLOCK_ANCHOR.x + (insW >> 1)) * s,
+      y: CLOCK_ANCHOR.y * s,
+    },
     pageTuckTop: (PAGE_TUCK_Y + g1) * s,
     tabRect: {
       left: TAB_WIN.x0 * s,

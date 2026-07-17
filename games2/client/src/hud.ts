@@ -24,6 +24,7 @@
  */
 
 import { mountFrame2, FrameLayout } from "./frame2";
+import { setClockMount } from "./clock";
 
 export interface HudActions {
   onLogout: () => void;
@@ -72,6 +73,8 @@ let lastLayout: FrameLayout | null = null;
 function applyFrameLayout() {
   const l = lastLayout;
   if (!l) return;
+  // the animated clock hand hangs its ring on the frame's strap stub
+  setClockMount(l.clockAnchor.x, l.clockAnchor.y, l.scale);
   const root = document.documentElement;
   // the game canvas runs to gameHeight (inside rail A's opaque band, so the
   // frame art overlays the world), but chat keeps anchoring above the rail's
