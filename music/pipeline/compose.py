@@ -230,6 +230,8 @@ def build_metadata(track: dict, cfg: dict, *, audio_file: str, fmt: str,
     duration = (analysis["duration_s"] if analysis
                 else round(sum(s["duration_s"] for s in sections), 3))
     loop_cfg = track.get("loop", {})
+    loop_rec = {"loop_start_s": 0.0, "loop_end_s": duration, "crossfade_ms": 400}
+    loop_rec.update(loop_cfg.get("recommended", {}))
     meta = {
         "schema": "music.metadata/v1",
         "id": track["id"],
@@ -272,10 +274,7 @@ def build_metadata(track: dict, cfg: dict, *, audio_file: str, fmt: str,
         "loop": {
             "loopable": bool(loop_cfg.get("loopable", False)),
             "seamless": False,
-            "recommended": loop_cfg.get("recommended",
-                                        {"loop_start_s": 0.0,
-                                         "loop_end_s": duration,
-                                         "crossfade_ms": 400}),
+            "recommended": loop_rec,
             "note": ("Generated audio is not sample-loop-perfect; crossfade "
                      "loop_end into loop_start over crossfade_ms."),
         },

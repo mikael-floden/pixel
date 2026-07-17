@@ -3355,6 +3355,8 @@
     "loopable": true,
     "seamless": false,
     "recommended": {
+      "loop_start_s": 0.0,
+      "loop_end_s": 120.001,
       "crossfade_ms": 600
     },
     "note": "Generated audio is not sample-loop-perfect; crossfade loop_end into loop_start over crossfade_ms."
