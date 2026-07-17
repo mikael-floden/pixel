@@ -1,0 +1,247 @@
+{
+  "note": "PROPOSED binding contract consumed by the game's audio module (owned by the audio actor). Semantic event names to be reconciled with the game's stable audio-event interface. Sounds resolve to sounds/<category>/<id>/ via viewer_data.json.",
+  "buses": {
+    "dialogue": -12,
+    "ui": -12,
+    "sfx": -14,
+    "music": -20,
+    "ambience": -28
+  },
+  "category_gain_db": {
+    "ui": -3,
+    "item": -4,
+    "tool": -2,
+    "movement": -8,
+    "combat": 0,
+    "feedback": -1,
+    "ambience": -20
+  },
+  "ducking": {
+    "note": "Side-chain: dip music by amount for release_ms when these play.",
+    "music_duck_db": -5,
+    "release_ms": 300,
+    "triggers": [
+      "feedback",
+      "combat_stinger",
+      "dialogue"
+    ]
+  },
+  "reverb_zones": {
+    "note": "Apply at runtime by region; keep one-shots dry. Preset per region tag.",
+    "map": {
+      "outdoor": "dry_air",
+      "forest": "soft_air",
+      "town": "small_room",
+      "interior": "room",
+      "cave": "large_cave",
+      "dungeon": "stone_hall"
+    }
+  },
+  "playback_rules": {
+    "one_shot": "play once at event; apply category_gain_db + active reverb zone",
+    "round_robin": "repeating sounds: cycle takes, never repeat last; apply per-sound variation (pitch/gain/timing jitter)",
+    "loop_crossfade": "ambience: loop seamlessly; crossfade ~1.5s on region change; mix at ambience gain",
+    "duck": "on ducking.triggers, dip music by ducking.music_duck_db for ducking.release_ms"
+  },
+  "events": [
+    {
+      "event": "ui.cursor_move",
+      "sound": "menu_select",
+      "bus": "ui",
+      "play": "one_shot"
+    },
+    {
+      "event": "ui.confirm",
+      "sound": "menu_confirm",
+      "bus": "ui",
+      "play": "one_shot"
+    },
+    {
+      "event": "ui.cancel",
+      "sound": "menu_cancel",
+      "bus": "ui",
+      "play": "one_shot"
+    },
+    {
+      "event": "ui.error",
+      "sound": "error_buzz",
+      "bus": "ui",
+      "play": "one_shot"
+    },
+    {
+      "event": "ui.notify",
+      "sound": "notification",
+      "bus": "ui",
+      "play": "one_shot"
+    },
+    {
+      "event": "item.coin_pickup",
+      "sound": "coin_pickup",
+      "bus": "sfx",
+      "play": "one_shot"
+    },
+    {
+      "event": "item.gem_pickup",
+      "sound": "gem_pickup",
+      "bus": "sfx",
+      "play": "one_shot"
+    },
+    {
+      "event": "item.get",
+      "sound": "item_get",
+      "bus": "sfx",
+      "play": "one_shot",
+      "duck": true
+    },
+    {
+      "event": "container.chest_open",
+      "sound": "chest_open",
+      "bus": "sfx",
+      "play": "one_shot"
+    },
+    {
+      "event": "container.chest_close",
+      "sound": "chest_close",
+      "bus": "sfx",
+      "play": "one_shot"
+    },
+    {
+      "event": "door.unlock",
+      "sound": "key_unlock",
+      "bus": "sfx",
+      "play": "one_shot"
+    },
+    {
+      "event": "consume.potion",
+      "sound": "drink_potion",
+      "bus": "sfx",
+      "play": "one_shot"
+    },
+    {
+      "event": "consume.food",
+      "sound": "eat_food",
+      "bus": "sfx",
+      "play": "one_shot"
+    },
+    {
+      "event": "tool.sword_swing",
+      "sound": "sword_swing",
+      "bus": "sfx",
+      "play": "round_robin"
+    },
+    {
+      "event": "tool.sword_hit",
+      "sound": "sword_hit",
+      "bus": "sfx",
+      "play": "round_robin"
+    },
+    {
+      "event": "tool.axe_chop",
+      "sound": "axe_chop",
+      "bus": "sfx",
+      "play": "round_robin"
+    },
+    {
+      "event": "tool.pickaxe_hit",
+      "sound": "pickaxe_hit",
+      "bus": "sfx",
+      "play": "round_robin"
+    },
+    {
+      "event": "tool.hoe_till",
+      "sound": "hoe_till",
+      "bus": "sfx",
+      "play": "one_shot"
+    },
+    {
+      "event": "tool.watering_can",
+      "sound": "watering_can",
+      "bus": "sfx",
+      "play": "one_shot"
+    },
+    {
+      "event": "player.footstep",
+      "sound_by_surface": {
+        "grass": "footstep_grass",
+        "stone": "footstep_stone",
+        "wood": "footstep_wood"
+      },
+      "fallback": "footstep_grass",
+      "bus": "sfx",
+      "play": "round_robin",
+      "note": "pick set by ground tile; L/R alternate"
+    },
+    {
+      "event": "player.jump",
+      "sound": "jump",
+      "bus": "sfx",
+      "play": "round_robin"
+    },
+    {
+      "event": "player.water_enter",
+      "sound": "splash",
+      "bus": "sfx",
+      "play": "one_shot"
+    },
+    {
+      "event": "combat.hit_taken",
+      "sound": "hit_hurt",
+      "bus": "sfx",
+      "play": "round_robin"
+    },
+    {
+      "event": "combat.enemy_defeat",
+      "sound": "enemy_defeat",
+      "bus": "sfx",
+      "play": "one_shot"
+    },
+    {
+      "event": "combat.explosion",
+      "sound": "explosion",
+      "bus": "sfx",
+      "play": "one_shot",
+      "duck": true
+    },
+    {
+      "event": "combat.magic_cast",
+      "sound": "magic_cast",
+      "bus": "sfx",
+      "play": "one_shot"
+    },
+    {
+      "event": "progress.level_up",
+      "sound": "level_up",
+      "bus": "sfx",
+      "play": "one_shot",
+      "duck": true
+    },
+    {
+      "event": "progress.quest_complete",
+      "sound": "quest_complete",
+      "bus": "sfx",
+      "play": "one_shot",
+      "duck": true
+    },
+    {
+      "event": "region.enter",
+      "ambience_by_region": {
+        "forest": "forest",
+        "town": "town_murmur",
+        "cave": "cave_drips",
+        "coast": "ocean_waves",
+        "river": "river",
+        "plains": "wind",
+        "meadow": "birds_day"
+      },
+      "time_layer": {
+        "night": "crickets_night"
+      },
+      "weather_layer": {
+        "rain": "rain"
+      },
+      "bus": "ambience",
+      "play": "loop_crossfade",
+      "note": "base bed by region + optional time/weather layer"
+    }
+  ]
+}
