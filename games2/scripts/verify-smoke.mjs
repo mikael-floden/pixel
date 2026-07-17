@@ -71,10 +71,14 @@ try {
       );
   }
 
-  // ---- version badge (top-centre under the frame rail, 9-char sha) ----
+  // ---- version badge (bottom-centre of the game view since 2026-07-17 —
+  // anchored by `bottom`, not `top`), 9-char sha ----
   const badge = await page.evaluate(() => {
     const els = [...document.querySelectorAll("div")].filter(
-      (d) => d.style.position === "fixed" && d.style.top && /^[0-9a-f]{9}$|^dev$/.test(d.textContent ?? ""),
+      (d) =>
+        d.style.position === "fixed" &&
+        (d.style.bottom || d.style.top) &&
+        /^[0-9a-f]{9}$|^dev$/.test(d.textContent ?? ""),
     );
     return els[0]?.textContent ?? null;
   });
