@@ -156,8 +156,10 @@ def main():
     peers = coordination.read_peers()
     print("peers:", coordination.peer_summary(peers))
     for dom, s in peers.items():
-        for req in s.get("requests", []):
-            if req.get("to") == coordination.DOMAIN:
+        for req in (s.get("requests") or []):
+            # Peers write their own status files; tolerate loose shapes (a request
+            # may be a bare string, not a {to, text} dict).
+            if isinstance(req, dict) and req.get("to") == coordination.DOMAIN:
                 print(f"  » request from {dom}: {req.get('text')}")
 
     engine_name = "AAA ai (elevenlabs SFX v2)" if client is not None \

@@ -171,8 +171,7 @@ def generate_ai(client, cfg: dict, spec: dict) -> dict:
     — keep every take so a human can pick the best, with take 1 as the primary.
     Writes a quality-rich manifest. `client` must be an available ElevenLabsClient."""
     ai_cfg = cfg["engine"]["ai"]
-    out_fmt = ai_cfg["output_format"]
-    is_pcm, sr = client.parse_format(out_fmt)
+    req_fmt = ai_cfg["output_format"]
     prompt = build_prompt(cfg, spec)
     influence = spec.get("prompt_influence", cfg["defaults"]["prompt_influence"])
     loop = bool(spec.get("loop", cfg["defaults"]["loop"]))
@@ -183,12 +182,13 @@ def generate_ai(client, cfg: dict, spec: dict) -> dict:
 
     takes = []
     primary_file = primary_stats = None
+    out_fmt = req_fmt
     for i in range(1, n + 1):
-        audio = client.generate(
-            prompt, duration_seconds=spec.get("duration_hint"),
-            prompt_influence=influence, loop=loop,
-            model_id=ai_cfg["model_id"], output_format=out_fmt,
+        audio, out_fmt = client.generate_best(
+            prompt, primary_format=out_fmt, duration_seconds=spec.get("duration_hint"),
+            prompt_influence=influence, loop=loop, model_id=ai_cfg["model_id"],
         )
+        is_pcm, sr = client.parse_format(out_fmt)
         if not is_pcm:
             # Non-PCM (e.g. mp3): store as-is, no local mastering possible.
             fname = f"{spec['id']}.mp3" if n == 1 else f"{spec['id']}__take{i:02d}.mp3"

@@ -89,6 +89,21 @@ class ElevenLabsClient:
             raise ElevenLabsError("sound-generation returned empty body")
         return r.content
 
+    FALLBACK_FORMAT = "mp3_44100_192"
+
+    def generate_best(self, text: str, *, primary_format: str, **kw) -> tuple[bytes, str]:
+        """Generate at `primary_format`, but if that format is rejected (e.g.
+        `pcm_48000` needs a Pro subscription) degrade once to a high-bitrate MP3
+        rather than failing the whole run. Returns (audio_bytes, format_used)."""
+        try:
+            return self.generate(text, output_format=primary_format, **kw), primary_format
+        except ElevenLabsError as e:
+            if primary_format.startswith("pcm") and self.FALLBACK_FORMAT != primary_format:
+                print(f"  ! {primary_format} rejected ({str(e)[:80]}); "
+                      f"falling back to {self.FALLBACK_FORMAT}")
+                return self.generate(text, output_format=self.FALLBACK_FORMAT, **kw), self.FALLBACK_FORMAT
+            raise
+
     def credits_remaining(self) -> int | None:
         """character_count vs character_limit -> remaining credits, or None if the
         subscription endpoint is unavailable (treated as 'unknown, proceed')."""
