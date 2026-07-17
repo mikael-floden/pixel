@@ -236,7 +236,20 @@ float emCellSupport(float m, float ph) {
 
 // Weather clouds: 2-octave value noise, world-anchored and wind-drifted.
 // EXACT twin of cloudFactorAt() in JS (lit-copy tints) — change BOTH.
-float cwHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+// Precision-exact lattice hash: every intermediate stays an INTEGER below
+// 2^24, so GPU float32 and the JS twins' float64 compute IDENTICAL values.
+// The old fract(sin(big)*43758.5453) decorrelated between GPU and CPU once
+// the argument grew (phone GPUs resolve sin(27000) to ~0.002 rad — times
+// 43758 and fract'd, a DIFFERENT random field than the CPU's): the avatar's
+// cloud tint visibly disagreed with the drawn shade (maintainer: "darker
+// before the shadow has even hit... not in sync").
+float cwHash(vec2 i) {
+  float a = mod(i.x * 113.0 + i.y * 271.0, 971.0);
+  a = mod(a * a + 113.0, 971.0);
+  a = mod(a * a + i.x, 971.0);
+  a = mod(a * a + i.y, 971.0);
+  return a / 971.0;
+}
 float cwNoise(vec2 p) {
   vec2 i = floor(p);
   vec2 f = fract(p);
@@ -681,7 +694,14 @@ float heightAt(vec2 cr) {
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
   return texture2D(uHeight, uv).r * 255.0 / 16.0;
 }
-float mHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+// Same precision-exact hash as cwHash (see there) — twin of mistAt().
+float mHash(vec2 i) {
+  float a = mod(i.x * 113.0 + i.y * 271.0, 971.0);
+  a = mod(a * a + 113.0, 971.0);
+  a = mod(a * a + i.x, 971.0);
+  a = mod(a * a + i.y, 971.0);
+  return a / 971.0;
+}
 float mNoise(vec2 p) {
   vec2 i = floor(p);
   vec2 f = fract(p);
@@ -1171,9 +1191,16 @@ export class NightLights {
     sunW = this.curSun[3],
   ): [number, number, number] {
     if (aurora <= 0.001) return [0, 0, 0];
+    // Precision-exact integer hash — MUST stay identical to the shader's
+    // cwHash/mHash (see the GLSL comment: the old sin-hash decorrelated
+    // GPU vs CPU and the avatar tint sampled a different field).
     const hash = (x: number, y: number) => {
-      const v = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
-      return v - Math.floor(v);
+      const m971 = (v: number) => ((v % 971) + 971) % 971;
+      let a2 = m971(x * 113 + y * 271);
+      a2 = m971(a2 * a2 + 113);
+      a2 = m971(a2 * a2 + x);
+      a2 = m971(a2 * a2 + y);
+      return a2 / 971;
     };
     const noise = (x: number, y: number) => {
       const ix = Math.floor(x), iy = Math.floor(y);
@@ -1201,9 +1228,16 @@ export class NightLights {
    * lit copies so characters dim as a cloud passes over them. */
   cloudFactorAt(wx: number, wy: number, cloud = this.curCloud, sunW = this.curSun[3]): number {
     if (cloud <= 0.001) return 1;
+    // Precision-exact integer hash — MUST stay identical to the shader's
+    // cwHash/mHash (see the GLSL comment: the old sin-hash decorrelated
+    // GPU vs CPU and the avatar tint sampled a different field).
     const hash = (x: number, y: number) => {
-      const v = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
-      return v - Math.floor(v);
+      const m971 = (v: number) => ((v % 971) + 971) % 971;
+      let a2 = m971(x * 113 + y * 271);
+      a2 = m971(a2 * a2 + 113);
+      a2 = m971(a2 * a2 + x);
+      a2 = m971(a2 * a2 + y);
+      return a2 / 971;
     };
     const noise = (x: number, y: number) => {
       const ix = Math.floor(x), iy = Math.floor(y);
@@ -1586,9 +1620,16 @@ export class NightLights {
     if (col < 0 || row < 0 || col >= this.world.width || row >= this.world.height) return 0;
     const z = this.tArr[row * this.world.width + col];
     const t = this.scene.time.now / 1000;
+    // Precision-exact integer hash — MUST stay identical to the shader's
+    // cwHash/mHash (see the GLSL comment: the old sin-hash decorrelated
+    // GPU vs CPU and the avatar tint sampled a different field).
     const hash = (x: number, y: number) => {
-      const h = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
-      return h - Math.floor(h);
+      const m971 = (v: number) => ((v % 971) + 971) % 971;
+      let a2 = m971(x * 113 + y * 271);
+      a2 = m971(a2 * a2 + 113);
+      a2 = m971(a2 * a2 + x);
+      a2 = m971(a2 * a2 + y);
+      return a2 / 971;
     };
     const noise = (x: number, y: number) => {
       const ix = Math.floor(x), iy = Math.floor(y);

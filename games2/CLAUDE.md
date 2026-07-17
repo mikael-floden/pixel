@@ -316,7 +316,16 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   cloudy the ambient also greys ~20% toward luminance ("the sky is not
   perfect blue"). cloudFactorAt() is the EXACT JS twin (lit-copy tints —
   characters dim as a cloud passes; change both together). uCloud is
-  DECLARED in the uniforms config (see the uSun lesson). Probes:
+  DECLARED in the uniforms config (see the uSun lesson). ALL twinned
+  noise (clouds, aurora, mist) hashes with a PRECISION-EXACT integer
+  chain (mod-971 quadratic residues; every intermediate an integer
+  < 2^24, so GPU float32 and JS float64 agree exactly). NEVER
+  fract(sin(big)*43758) in a twinned field: phone GPUs resolve sin at
+  ~0.002 rad up there, the GPU/CPU lattices decorrelate, and the
+  avatar's cloud tint disagreed with the drawn shade (maintainer:
+  "darker before the shadow has even hit... not in sync" — headless
+  SwiftShader computes sin in higher precision, so QA screenshots
+  never caught it). Probes:
   `__ml.weatherInfo()`, `__ml.weather(idx, instant)` (LOCAL force for
   headless QA), `__ml.cloudAt(wx,wy)`; regressions:
   scripts/verify-weather.mjs (clear=1 everywhere, patchy not overcast,
