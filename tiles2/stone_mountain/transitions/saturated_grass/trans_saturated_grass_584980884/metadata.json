@@ -101,8 +101,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.551,
-        "saturated_grass": 0.449
+        "stone_mountain": 0.545,
+        "saturated_grass": 0.455
       },
       "edges": {
         "NE": {
@@ -255,8 +255,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.621,
-        "saturated_grass": 0.379
+        "stone_mountain": 0.622,
+        "saturated_grass": 0.378
       },
       "edges": {
         "NE": {
@@ -335,8 +335,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.384,
-        "saturated_grass": 0.616
+        "stone_mountain": 0.386,
+        "saturated_grass": 0.614
       },
       "edges": {
         "NE": {
@@ -493,8 +493,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.416,
-        "saturated_grass": 0.584
+        "stone_mountain": 0.413,
+        "saturated_grass": 0.587
       },
       "edges": {
         "NE": {
@@ -577,8 +577,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.667,
-        "saturated_grass": 0.333
+        "stone_mountain": 0.649,
+        "saturated_grass": 0.351
       },
       "edges": {
         "NE": {
@@ -648,10 +648,11 @@
         }
       },
       "features": [
+        "accent",
         "water",
-        "accent"
+        "pebbles"
       ],
-      "description": "grey mountain stone blending to saturated grass with a small puddle, a small detail"
+      "description": "grey mountain stone blending to saturated grass with a small detail, a small puddle, pebbles"
     },
     {
       "index": 8,
@@ -659,8 +660,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.58,
-        "saturated_grass": 0.42
+        "stone_mountain": 0.569,
+        "saturated_grass": 0.431
       },
       "edges": {
         "NE": {
@@ -729,10 +730,9 @@
         }
       },
       "features": [
-        "pebbles",
         "accent"
       ],
-      "description": "grey mountain stone blending to saturated grass with pebbles, a small detail"
+      "description": "grey mountain stone blending to saturated grass with a small detail"
     },
     {
       "index": 9,
@@ -818,8 +818,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.884,
-        "saturated_grass": 0.116
+        "stone_mountain": 0.864,
+        "saturated_grass": 0.136
       },
       "edges": {
         "NE": {
@@ -884,8 +884,10 @@
           }
         }
       },
-      "features": [],
-      "description": "grey mountain stone blending to saturated grass"
+      "features": [
+        "accent"
+      ],
+      "description": "grey mountain stone blending to saturated grass with a small detail"
     },
     {
       "index": 11,
@@ -893,8 +895,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.795,
-        "saturated_grass": 0.205
+        "stone_mountain": 0.76,
+        "saturated_grass": 0.24
       },
       "edges": {
         "NE": {
@@ -962,10 +964,9 @@
       },
       "features": [
         "accent",
-        "pebbles",
         "water"
       ],
-      "description": "grey mountain stone blending to saturated grass with a small detail, pebbles, a small puddle"
+      "description": "grey mountain stone blending to saturated grass with a small detail, a small puddle"
     },
     {
       "index": 12,
@@ -1125,8 +1126,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.74,
-        "stone_mountain": 0.26
+        "saturated_grass": 0.742,
+        "stone_mountain": 0.258
       },
       "edges": {
         "NE": {
@@ -1203,8 +1204,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.625,
-        "saturated_grass": 0.375
+        "stone_mountain": 0.583,
+        "saturated_grass": 0.417
       },
       "edges": {
         "NE": {

@@ -112,8 +112,9 @@ def type_target(gid, cfg, cache):
         raw = normalize.material_target(imgs)
     if gid in palette:
         target = _palette_target(palette[gid])
-        if raw:                                          # keep the RAW hue for masking
+        if raw:                                          # keep the RAW hue/value for masking
             target["select_hue"] = raw["hue"]
+            target["select_value"] = raw["value"]
             target["raw_chroma"] = raw.get("chroma", raw.get("sat", 0))
     else:
         target = raw
@@ -160,16 +161,20 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
         im = Image.open(os.path.join(sdir, fn)).convert("RGBA")
         if pp["neutralize_outline"]:
             im = normalize.neutralize_outline(im, darkness_thresh=pp["darkness_thresh"])
-        # In a transition of TWO chromatic materials, each pass avoids the other's raw
-        # hue so the sand pass can't grab (and brown-out) the grass pixels, and vice versa.
+        # In a transition, each pass avoids the OTHER material so one can't grab the other's
+        # pixels: chromatic pairs avoid by raw HUE (sand not browning grass); achromatic
+        # pairs avoid by raw VALUE (stone not whitening toward snow, snow not greying).
         both_chroma = _raw_chromatic(t_from) and _raw_chromatic(t_to)
-        avoid_from = (t_to.get("select_hue", t_to.get("hue")) if both_chroma else None)
-        avoid_to = (t_from.get("select_hue", t_from.get("hue")) if both_chroma else None)
+        both_achroma = (t_to is not None) and (not _raw_chromatic(t_from)) and (not _raw_chromatic(t_to))
+        avoid_h_from = (t_to.get("select_hue", t_to.get("hue")) if both_chroma else None)
+        avoid_h_to = (t_from.get("select_hue", t_from.get("hue")) if both_chroma else None)
+        avoid_v_from = (t_to.get("select_value", t_to.get("value")) if both_achroma else None)
+        avoid_v_to = (t_from.get("select_value", t_from.get("value")) if both_achroma else None)
         im = normalize.harmonize(im, t_from, hs["hue_strength"], hs["sat_strength"], hs["v_strength"],
-                                 hue_band=hs.get("hue_band", 42), avoid_hue=avoid_from)
+                                 hue_band=hs.get("hue_band", 42), avoid_hue=avoid_h_from, avoid_value=avoid_v_from)
         if t_to:
             im = normalize.harmonize(im, t_to, hs["hue_strength"], hs["sat_strength"], hs["v_strength"],
-                                     hue_band=hs.get("hue_band", 42), avoid_hue=avoid_to)
+                                     hue_band=hs.get("hue_band", 42), avoid_hue=avoid_h_to, avoid_value=avoid_v_to)
         if ds.get("enabled"):                          # erase the tessellating diamond-edge grid seam
             im = normalize.deseam_diamond(
                 im, band=ds["band"], darkness_thresh=ds["darkness_thresh"],

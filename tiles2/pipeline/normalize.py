@@ -76,7 +76,7 @@ def material_target(images):
 
 
 def harmonize(im, target, hue_strength=0.9, sat_strength=0.6, v_strength=0.65, hue_band=42,
-              avoid_hue=None):
+              avoid_hue=None, avoid_value=None):
     """Pull `im`'s MATERIAL pixels toward the target hue/saturation and level their
     mean brightness, keeping texture. The material is SELECTED by the hue of its own
     RAW colour (`target['select_hue']` — the auto-detected pre-palette hue) so that a
@@ -102,12 +102,18 @@ def harmonize(im, target, hue_strength=0.9, sat_strength=0.6, v_strength=0.65, h
             da = np.abs(((h - float(avoid_hue) + 128) % 256) - 128)
             m = m & (dh <= da)
     else:                                                # achromatic: desaturated + value BAND
-        # Two-sided value window around the target: a DARK material (black rock,
-        # value~56) claims only dark pixels, a BRIGHT one (snow, value~243) only
-        # bright pixels. A lower bound alone was degenerate for dark targets —
-        # `v > val_t-45` selected the whole tile (incl. the snow half of a
-        # black<->snow transition), then mean-leveling crushed it all to near-black.
-        m = op & (s < 70) & (np.abs(v - val_t) < 70)
+        # Two-sided value window around the material's RAW value (select_value, not the
+        # possibly-far palette value) — so a pale grey-stone variant (value ~178) still
+        # gets claimed and normalised to the palette grey instead of being left near-white
+        # and reading as SNOW. A DARK material (black rock) claims only dark pixels, a
+        # BRIGHT one (snow) only bright. `avoid_value` = the other achromatic material's
+        # raw value in a transition: claim a pixel only if it's nearer THIS material's
+        # value, so the stone pass can't grab snow and the snow pass can't grab stone.
+        sel_v = float(target.get("select_value", val_t))
+        dv0 = np.abs(v - sel_v)
+        m = op & (s < 70) & (dv0 < 70)
+        if avoid_value is not None:
+            m = m & (dv0 <= np.abs(v - float(avoid_value)))
     if m.any():
         dh = (((hue_t - h + 128) % 256) - 128) * hue_strength
         hsv[:, :, 0] = np.where(m, (h + dh) % 256, h)

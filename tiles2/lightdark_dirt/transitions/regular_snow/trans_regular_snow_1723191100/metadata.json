@@ -101,8 +101,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.509,
-        "regular_snow": 0.491
+        "lightdark_dirt": 0.511,
+        "regular_snow": 0.489
       },
       "edges": {
         "NE": {
@@ -250,8 +250,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.727,
-        "regular_snow": 0.273
+        "lightdark_dirt": 0.728,
+        "regular_snow": 0.272
       },
       "edges": {
         "NE": {
@@ -714,8 +714,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.924,
-        "lightdark_dirt": 0.076
+        "regular_snow": 0.903,
+        "lightdark_dirt": 0.097
       },
       "edges": {
         "NE": {
@@ -756,17 +756,18 @@
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
-            "regular_snow",
+            "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "regular_snow": 0.5,
-            "lightdark_dirt": 0.5
-          }
+            "regular_snow": 0.375,
+            "lightdark_dirt": 0.625
+          },
+          "divider": 0.375
         },
         "NW": {
           "samples": [
-            "regular_snow",
+            "lightdark_dirt",
             "regular_snow",
             "regular_snow",
             "regular_snow",
@@ -776,8 +777,10 @@
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 1.0
-          }
+            "lightdark_dirt": 0.125,
+            "regular_snow": 0.875
+          },
+          "divider": 0.125
         }
       },
       "features": [],
@@ -789,8 +792,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.765,
-        "regular_snow": 0.235
+        "lightdark_dirt": 0.766,
+        "regular_snow": 0.234
       },
       "edges": {
         "NE": {

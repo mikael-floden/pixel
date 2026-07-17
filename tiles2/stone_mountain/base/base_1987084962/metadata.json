@@ -306,11 +306,8 @@
           }
         }
       },
-      "features": [
-        "accent",
-        "pebbles"
-      ],
-      "description": "grey mountain stone with a small detail, pebbles"
+      "features": [],
+      "description": "plain grey mountain stone"
     },
     {
       "index": 4,
@@ -382,8 +379,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain grey mountain stone"
+      "features": [
+        "accent"
+      ],
+      "description": "grey mountain stone with a small detail"
     },
     {
       "index": 5,
@@ -457,10 +456,9 @@
       },
       "features": [
         "accent",
-        "water",
-        "pebbles"
+        "water"
       ],
-      "description": "grey mountain stone with a small detail, a small puddle, pebbles"
+      "description": "grey mountain stone with a small detail, a small puddle"
     },
     {
       "index": 6,
@@ -607,10 +605,9 @@
       },
       "features": [
         "water",
-        "shiny",
         "accent"
       ],
-      "description": "grey mountain stone with a small puddle, a shiny speck, a small detail"
+      "description": "grey mountain stone with a small puddle, a small detail"
     },
     {
       "index": 8,
@@ -755,11 +752,8 @@
           }
         }
       },
-      "features": [
-        "pebbles",
-        "accent"
-      ],
-      "description": "grey mountain stone with pebbles, a small detail"
+      "features": [],
+      "description": "plain grey mountain stone"
     },
     {
       "index": 10,
@@ -832,9 +826,11 @@
         }
       },
       "features": [
-        "flowers"
+        "bare_soil",
+        "flowers",
+        "accent"
       ],
-      "description": "grey mountain stone with small flowers"
+      "description": "grey mountain stone with a bare soil patch, small flowers, a small detail"
     },
     {
       "index": 11,
@@ -906,11 +902,8 @@
           }
         }
       },
-      "features": [
-        "pebbles",
-        "accent"
-      ],
-      "description": "grey mountain stone with pebbles, a small detail"
+      "features": [],
+      "description": "plain grey mountain stone"
     },
     {
       "index": 12,
@@ -1058,11 +1051,9 @@
         }
       },
       "features": [
-        "pebbles",
-        "accent",
         "water"
       ],
-      "description": "grey mountain stone with pebbles, a small detail, a small puddle"
+      "description": "grey mountain stone with a small puddle"
     },
     {
       "index": 14,
@@ -1208,9 +1199,10 @@
         }
       },
       "features": [
-        "flowers"
+        "flowers",
+        "accent"
       ],
-      "description": "grey mountain stone with small flowers"
+      "description": "grey mountain stone with small flowers, a small detail"
     }
   ],
   "generated_at": "2026-07-05T09:44:54+00:00",

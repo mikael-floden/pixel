@@ -573,8 +573,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.977,
-        "lightdark_dirt": 0.023
+        "regular_snow": 0.947,
+        "lightdark_dirt": 0.053
       },
       "edges": {
         "NE": {
@@ -595,16 +595,17 @@
         "SE": {
           "samples": [
             "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 1.0
+            "regular_snow": 0.625,
+            "lightdark_dirt": 0.375
           }
         },
         "SW": {
@@ -639,7 +640,7 @@
         }
       },
       "features": [],
-      "description": "plain snow"
+      "description": "snow blending to dirt"
     },
     {
       "index": 8,
@@ -717,10 +718,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "snow blending to dirt with pebbles"
+      "features": [],
+      "description": "snow blending to dirt"
     },
     {
       "index": 9,

@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.65,
-        "stone_mountain": 0.35
+        "black_mountain": 0.649,
+        "stone_mountain": 0.351
       },
       "edges": {
         "NE": {
@@ -103,8 +103,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.967,
-        "stone_mountain": 0.033
+        "black_mountain": 0.968,
+        "stone_mountain": 0.032
       },
       "edges": {
         "NE": {
@@ -181,8 +181,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.819,
-        "stone_mountain": 0.181
+        "black_mountain": 0.84,
+        "stone_mountain": 0.16
       },
       "edges": {
         "NE": {
@@ -261,8 +261,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.832,
-        "stone_mountain": 0.168
+        "black_mountain": 0.853,
+        "stone_mountain": 0.147
       },
       "edges": {
         "NE": {
@@ -273,14 +273,13 @@
             "black_mountain",
             "black_mountain",
             "stone_mountain",
-            "stone_mountain",
+            "black_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.625,
-            "stone_mountain": 0.375
-          },
-          "divider": 0.625
+            "black_mountain": 0.75,
+            "stone_mountain": 0.25
+          }
         },
         "SE": {
           "samples": [
@@ -341,8 +340,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.698,
-        "stone_mountain": 0.302
+        "black_mountain": 0.702,
+        "stone_mountain": 0.298
       },
       "edges": {
         "NE": {
@@ -422,8 +421,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.665,
-        "stone_mountain": 0.335
+        "black_mountain": 0.66,
+        "stone_mountain": 0.34
       },
       "edges": {
         "NE": {
@@ -480,14 +479,15 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "black_mountain",
+            "stone_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 1.0
+            "black_mountain": 0.875,
+            "stone_mountain": 0.125
           }
         }
       },
@@ -503,8 +503,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.681,
-        "stone_mountain": 0.319
+        "black_mountain": 0.702,
+        "stone_mountain": 0.298
       },
       "edges": {
         "NE": {
@@ -584,8 +584,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.328,
-        "black_mountain": 0.672
+        "stone_mountain": 0.312,
+        "black_mountain": 0.688
       },
       "edges": {
         "NE": {
@@ -610,14 +610,15 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "stone_mountain",
+            "black_mountain",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 1.0
+            "stone_mountain": 0.875,
+            "black_mountain": 0.125
           }
         },
         "SW": {
@@ -664,8 +665,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.918,
-        "black_mountain": 0.082
+        "stone_mountain": 0.914,
+        "black_mountain": 0.086
       },
       "edges": {
         "NE": {
@@ -742,8 +743,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.846,
-        "black_mountain": 0.154
+        "stone_mountain": 0.827,
+        "black_mountain": 0.173
       },
       "edges": {
         "NE": {
@@ -819,8 +820,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.783,
-        "black_mountain": 0.217
+        "stone_mountain": 0.764,
+        "black_mountain": 0.236
       },
       "edges": {
         "NE": {
@@ -896,8 +897,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.788,
-        "black_mountain": 0.212
+        "stone_mountain": 0.756,
+        "black_mountain": 0.244
       },
       "edges": {
         "NE": {
@@ -973,8 +974,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.554,
-        "black_mountain": 0.446
+        "black_mountain": 0.483,
+        "stone_mountain": 0.517
       },
       "edges": {
         "NE": {
@@ -1054,8 +1055,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.583,
-        "black_mountain": 0.417
+        "stone_mountain": 0.562,
+        "black_mountain": 0.438
       },
       "edges": {
         "NE": {
@@ -1132,8 +1133,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.902,
-        "stone_mountain": 0.098
+        "black_mountain": 0.905,
+        "stone_mountain": 0.095
       },
       "edges": {
         "NE": {
@@ -1210,8 +1211,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.649,
-        "stone_mountain": 0.351
+        "black_mountain": 0.745,
+        "stone_mountain": 0.255
       },
       "edges": {
         "NE": {
@@ -1221,15 +1222,15 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "stone_mountain",
-            "stone_mountain",
+            "black_mountain",
+            "black_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.625,
-            "stone_mountain": 0.375
+            "black_mountain": 0.875,
+            "stone_mountain": 0.125
           },
-          "divider": 0.625
+          "divider": 0.875
         },
         "SE": {
           "samples": [

@@ -104,8 +104,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.343,
-        "light_sand": 0.657
+        "regular_snow": 0.341,
+        "light_sand": 0.659
       },
       "edges": {
         "NE": {
@@ -259,8 +259,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.802,
-        "light_sand": 0.198
+        "regular_snow": 0.803,
+        "light_sand": 0.197
       },
       "edges": {
         "NE": {
@@ -406,10 +406,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "snow blending to light sand with pebbles"
+      "features": [],
+      "description": "snow blending to light sand"
     },
     {
       "index": 5,
@@ -569,11 +567,11 @@
         }
       },
       "features": [
-        "pebbles",
         "accent",
+        "pebbles",
         "water"
       ],
-      "description": "snow blending to light sand with pebbles, a small detail, a small puddle"
+      "description": "snow blending to light sand with a small detail, pebbles, a small puddle"
     },
     {
       "index": 7,
@@ -650,10 +648,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "snow blending to light sand with pebbles"
+      "features": [],
+      "description": "snow blending to light sand"
     },
     {
       "index": 8,
@@ -1131,9 +1127,10 @@
         }
       },
       "features": [
-        "water"
+        "water",
+        "accent"
       ],
-      "description": "light sand blending to snow with a small puddle"
+      "description": "light sand blending to snow with a small puddle, a small detail"
     },
     {
       "index": 14,

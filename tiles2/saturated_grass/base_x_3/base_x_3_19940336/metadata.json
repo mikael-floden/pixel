@@ -78,7 +78,57 @@
       "index": 6,
       "file": "tile_06.png",
       "width": 64,
-      "height": 128
+      "height": 128,
+      "emission": {
+        "material": "saturated_grass",
+        "color": [
+          0.4,
+          0.75,
+          0.95
+        ],
+        "anim": "pulse",
+        "sources": [
+          {
+            "x": 49.0,
+            "y": 44.0,
+            "r": 2.0,
+            "color": [
+              0.806,
+              0.298,
+              0.228
+            ],
+            "s": 0.671,
+            "dir": "up"
+          },
+          {
+            "x": 48.5,
+            "y": 40.5,
+            "r": 2.0,
+            "color": [
+              0.876,
+              0.369,
+              0.261
+            ],
+            "s": 0.715,
+            "dir": "up"
+          },
+          {
+            "x": 36.5,
+            "y": 21.5,
+            "r": 2.0,
+            "color": [
+              0.871,
+              0.396,
+              0.241
+            ],
+            "s": 0.73,
+            "dir": "up"
+          }
+        ]
+      },
+      "features": [
+        "shiny"
+      ]
     },
     {
       "index": 7,
@@ -285,7 +335,7 @@
       "height": 128
     }
   ],
-  "emissive_tiles": 3,
+  "emissive_tiles": 4,
   "generated_at": "2026-07-05T13:42:55+00:00",
   "processing": {
     "neutralize_outline": true,

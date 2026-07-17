@@ -175,8 +175,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.731,
-        "light_sand": 0.269
+        "stone_mountain": 0.732,
+        "light_sand": 0.268
       },
       "edges": {
         "NE": {
@@ -253,8 +253,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.688,
-        "stone_mountain": 0.312
+        "light_sand": 0.642,
+        "stone_mountain": 0.358
       },
       "edges": {
         "NE": {
@@ -329,8 +329,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.459,
-        "light_sand": 0.541
+        "stone_mountain": 0.472,
+        "light_sand": 0.528
       },
       "edges": {
         "NE": {
@@ -384,7 +384,7 @@
         "NW": {
           "samples": [
             "light_sand",
-            "light_sand",
+            "stone_mountain",
             "stone_mountain",
             "light_sand",
             "light_sand",
@@ -393,8 +393,8 @@
             "stone_mountain"
           ],
           "ratio": {
-            "light_sand": 0.5,
-            "stone_mountain": 0.5
+            "light_sand": 0.375,
+            "stone_mountain": 0.625
           }
         }
       },
@@ -409,8 +409,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.654,
-        "stone_mountain": 0.346
+        "light_sand": 0.631,
+        "stone_mountain": 0.369
       },
       "edges": {
         "NE": {
@@ -625,9 +625,10 @@
         }
       },
       "features": [
+        "accent",
         "water"
       ],
-      "description": "grey mountain stone with a small puddle"
+      "description": "grey mountain stone with a small detail, a small puddle"
     },
     {
       "index": 8,
@@ -635,8 +636,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.827,
-        "stone_mountain": 0.173
+        "light_sand": 0.821,
+        "stone_mountain": 0.179
       },
       "edges": {
         "NE": {
@@ -786,8 +787,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.616,
-        "stone_mountain": 0.384
+        "light_sand": 0.615,
+        "stone_mountain": 0.385
       },
       "edges": {
         "NE": {
@@ -932,8 +933,10 @@
           }
         }
       },
-      "features": [],
-      "description": "grey mountain stone blending to light sand"
+      "features": [
+        "accent"
+      ],
+      "description": "grey mountain stone blending to light sand with a small detail"
     },
     {
       "index": 12,
@@ -941,8 +944,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.255,
-        "light_sand": 0.745
+        "stone_mountain": 0.257,
+        "light_sand": 0.743
       },
       "edges": {
         "NE": {
@@ -1020,8 +1023,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.36,
-        "stone_mountain": 0.64
+        "light_sand": 0.358,
+        "stone_mountain": 0.642
       },
       "edges": {
         "NE": {
@@ -1102,8 +1105,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.531,
-        "stone_mountain": 0.469
+        "light_sand": 0.528,
+        "stone_mountain": 0.472
       },
       "edges": {
         "NE": {
