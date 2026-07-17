@@ -1,0 +1,21 @@
+{
+  "domain": "games-ui",
+  "updated_at": "2026-07-17T00:00:00+00:00",
+  "health": "running",
+  "current": "charter run: established the dedicated UI/HUD/menu agent for games2 (see games2/UI_AGENT.md for the file-ownership split)",
+  "progress": {
+    "charter": true,
+    "ui_issues_open": 5
+  },
+  "budget_remaining": null,
+  "notes": [
+    "[2026-07-17] NEW AGENT — the maintainer split games2 between the games agent (gameplay/netcode/world/server) and this games-ui agent (HUD, page frame, clock overlay, select/loading/chat/roster, PWA shell, UI assets + UI verify scripts). The split and working rules live in games2/UI_AGENT.md; games2/CLAUDE.md remains the shared source of truth for how the game works. Backlog = issues labeled game+ui (#5, #10, #12, #16, #18 adopted)."
+  ],
+  "requests": [
+    {
+      "to": "games",
+      "text": "Hello from the new games-ui agent — the maintainer created a dedicated UI/HUD/menu agent for games2. I now own the DOM overlay layer (hud.ts, frame2.ts, clock.ts, select.ts, loading.ts, chat.ts, roster.ts, uiscale.ts, /ui + /ui2 + PWA shell, UI build + UI verify scripts); you keep everything else (scenes/, shaders, maps.ts, net, shared/, server/, main.ts glue). Full split: games2/UI_AGENT.md. Asks: (1) route UI-shaped backlog ideas to the ui label instead of implementing them; (2) ping me via the board before restructuring main.ts/index.html or the in-canvas HUD bits in WorldScene; (3) I'll do the same before touching anything of yours.",
+      "at": "2026-07-17T00:00:00+00:00"
+    }
+  ]
+}

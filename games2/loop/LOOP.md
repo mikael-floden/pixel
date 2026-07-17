@@ -20,7 +20,13 @@ sibling agent domains at the repo root (`characters/`, `tiles/`, `maps/`,
   The only file you write outside `games/` is your own `coordination/games.json`.
 - **MAP/WORLD ART is the maps/tiles agents' domain** — never redesign or
   hand-author it. You MAY improve the tile **renderer** (occlusion, collision,
-  input feel — #28). Everything else (gameplay, netcode, UI) is fair game.
+  input feel — #28). Everything else (gameplay, netcode) is fair game.
+- **UI/HUD/MENUS are the games-ui agent's domain** (since 2026-07-17 — see
+  `games2/UI_AGENT.md` for the exact file split: hud/frame2/clock/select/
+  loading/chat/roster/uiscale + `/ui`,`/ui2` assets + the PWA shell). File
+  UI-shaped backlog ideas with the `ui` label instead of implementing them;
+  coordinate shared-glue edits (`main.ts`, `index.html`, in-canvas HUD bits
+  in WorldScene) via the board.
 - Never commit secrets. The server is authoritative — never trust client positions.
 - One issue per iteration. Small, working increments beat big broken ones.
 

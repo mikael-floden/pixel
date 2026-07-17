@@ -9,7 +9,10 @@ sibling agent domains (`characters2/`, `tiles2/`, `maps2/`, `objects/`).
 **Read-only toward the art** — never edit those directories (see
 `coordination/PROTOCOL.md`; this game owns `games2/` +
 `coordination/games.json`). No submodule. Developed by a self-iterating loop —
-see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
+see `loop/LOOP.md`. Since 2026-07-17 `games2/` is worked by TWO agents: the
+games agent (gameplay/netcode/world/server) and the **games-ui agent** (HUD,
+menus, screens, overlays — board file `coordination/games-ui.json`); the
+per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+`characters/`+`maps/`+
 `tiles/` were retired 2026-07-14; history in git.)
 
 ## Tech stack

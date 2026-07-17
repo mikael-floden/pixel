@@ -11,6 +11,13 @@ run in parallel — each owns one top-level domain directory:
 | Animated props / map objects | `objects/` | objects agent |
 | Sounds | `sounds/` | sounds agent |
 | The game (consumer) | `games2/` | game agent |
+| The game's UI/HUD/menus | `games2/` (UI surfaces) | games-ui agent |
+
+`games2/` is the one domain shared by TWO agents (maintainer decision
+2026-07-17): the game agent (gameplay/netcode/world/server) and the games-ui
+agent (HUD, menus, screens, overlays). One-writer-per-file still holds — the
+per-file split inside `games2/` is documented in `games2/UI_AGENT.md`; the
+games-ui agent's board file is `coordination/games-ui.json`.
 
 RETIRED 2026-07-14: `characters/`, `maps/`, `games/`, `tiles/` — the first
 generation (domains + game + the old emission registry/demo), deleted after
