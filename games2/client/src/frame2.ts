@@ -61,12 +61,24 @@ const WIN_CUT = 384; // window bands: cut through transparency
 const VCUT1 = 326; // single-row extrusion (rune-free on both rails)
 const VCUT2 = { y: 1035, s0: 992, p: 86 }; // winding-bark unit
 
-// ---- interior windows (asset coords; eyeballed off the concept, the
-// maintainer reviews screenshots and we adjust) ----
-const INNER_X0 = 80, INNER_X1 = 692;
-const GAME_SPLIT_Y = 648;                 // rail A's visual top edge
+// ---- interior windows (asset coords, MEASURED off frame.png's alpha) ----
+const INNER_X0 = 80, INNER_X1 = 692;      // tab-row span (eyeballed, approved)
+const RAIL_TOP_Y = 648;                   // rail A's visual top edge (ragged)
+const RAIL_SOLID_Y = 676;                 // inside rail A's full-width-opaque
+                                          // band (rows 665-693) — the REAL
+                                          // game/HUD split: the game canvas
+                                          // renders down to here so the rail
+                                          // art overlaps the world (maintainer:
+                                          // "the in-game viewport should render
+                                          // all the way down"), while chat still
+                                          // anchors above RAIL_TOP_Y
 const TAB_WIN = { y0: 714, y1: 844 };     // between rail A and rail B
-const PAGE_WIN = { y0: 912, y1: 1298 };   // below rail B, above bottom rail
+// page window = where the stone is actually exposed: rail B's art ends at
+// row 869 (center span), the bottom rail's ragged art starts at 1310, and
+// the vertical rails' inner edges sit at x 42/725 (median) — the old
+// eyeballed 80..692 / 912..1298 left big dead margins the maintainer marked
+// ("the spacing should look even")
+const PAGE_WIN = { x0: 48, x1: 720, y0: 874, y1: 1306 };
 const PAGE_TUCK_Y = 848;                  // rail B's top edge — the stone
                                           // backdrop starts HERE, under the
                                           // opaque rail art, so no dark gap
@@ -76,8 +88,11 @@ const PAGE_TUCK_Y = 848;                  // rail B's top edge — the stone
 export interface FrameLayout {
   /** css px per asset px */
   scale: number;
-  /** css-px y of the game/HUD boundary (top edge of rail A) */
+  /** css-px y of the game/HUD boundary — INSIDE rail A's opaque band, so the
+   * game canvas runs under the rail's ragged top and the frame overlays it */
   gameHeight: number;
+  /** css-px y of rail A's visual (ragged) top edge — chat anchors above this */
+  railTop: number;
   /** css-px y where the stone page backdrop must start (under rail B) */
   pageTuckTop: number;
   tabRect: { left: number; top: number; width: number; height: number };
@@ -197,7 +212,8 @@ function compose() {
   const insW = w0 - AW;
   const layout: FrameLayout = {
     scale: s,
-    gameHeight: (GAME_SPLIT_Y + g1) * s,
+    gameHeight: (RAIL_SOLID_Y + g1) * s,
+    railTop: (RAIL_TOP_Y + g1) * s,
     pageTuckTop: (PAGE_TUCK_Y + g1) * s,
     tabRect: {
       left: INNER_X0 * s,
@@ -206,9 +222,9 @@ function compose() {
       height: (TAB_WIN.y1 - TAB_WIN.y0) * s,
     },
     pageRect: {
-      left: INNER_X0 * s,
+      left: PAGE_WIN.x0 * s,
       top: (PAGE_WIN.y0 + g1) * s,
-      width: (INNER_X1 + insW - INNER_X0) * s,
+      width: (PAGE_WIN.x1 + insW - PAGE_WIN.x0) * s,
       height: (PAGE_WIN.y1 - PAGE_WIN.y0 + g2) * s,
     },
   };

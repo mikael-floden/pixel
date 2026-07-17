@@ -447,9 +447,18 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   to the single row). Scale s = min(W/768, H/1376) CSS-scales the canvas
   (pixelated); the axis with head-room gets the insert, so the frame
   never distorts. `mountPageFrame()` (hud.ts) mounts it and glues the
-  layout: the onLayout callback sets `--hud-h`/`--hud-h-inv` (game split,
-  chat anchors) and positions `.ml-tabrow`/`.ml-pages` into the frame's
-  two lower windows by inline style. The pages carry the maintainer's
+  layout: the onLayout callback sets `--hud-h-inv` = gameHeight (INSIDE
+  rail A's full-width-opaque band, rows 665-693 — the game canvas renders
+  under the rail's ragged top so the frame art overlays the world;
+  maintainer marked the old hard stop) and `--hud-h` from railTop (the
+  VISIBLE rail top, 648 — chat anchors above it, not under the rail), and
+  positions `.ml-tabrow`/`.ml-pages` into the frame's two lower windows by
+  inline style. The page content box (--ml-page-pad/-padtop/-padbot) is
+  the frame's MEASURED inner window (x 48..720, y 874..1306 — rail-B art
+  ends 869, bottom-rail ragged art starts 1310, side rails' inner edges
+  median 42/725), so grids with space-evenly get outer margins equal to
+  their item gaps ("the spacing should look even" — the old eyeballed
+  window left big dead margins). The pages carry the maintainer's
   cobblestone backdrop (`/ui2/stone.png`) FULL-BLEED — "from the very
   left to the very right" (maintainer): .ml-pages spans 100vw under the
   rails, content insets via --ml-page-pad, and the image sits on each

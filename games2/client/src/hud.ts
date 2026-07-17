@@ -73,8 +73,11 @@ function applyFrameLayout() {
   const l = lastLayout;
   if (!l) return;
   const root = document.documentElement;
+  // the game canvas runs to gameHeight (inside rail A's opaque band, so the
+  // frame art overlays the world), but chat keeps anchoring above the rail's
+  // VISIBLE top edge — anchored to gameHeight it would slide under the rail
   root.style.setProperty("--hud-h-inv", `${Math.round(l.gameHeight)}px`);
-  root.style.setProperty("--hud-h", `${Math.round(window.innerHeight - l.gameHeight)}px`);
+  root.style.setProperty("--hud-h", `${Math.round(window.innerHeight - l.railTop)}px`);
   const hud = document.querySelector<HTMLElement>(".ml-hud");
   if (!hud) return;
   hud.style.top = `${Math.round(l.gameHeight)}px`;
@@ -108,9 +111,14 @@ function applyFrameLayout() {
     pg.style.right = "auto";
     pg.style.bottom = "auto";
   }
+  // content box == the frame's true inner window on ALL FOUR sides — the
+  // grids distribute space-evenly inside it, so the margin against the frame
+  // equals the gap between items (maintainer: "the spacing should look even")
   document.documentElement.style.setProperty("--ml-page-pad", `${Math.round(l.pageRect.left)}px`);
   document.documentElement.style.setProperty(
-    "--ml-page-padtop", `${Math.round(l.pageRect.top - l.pageTuckTop + 14)}px`);
+    "--ml-page-padtop", `${Math.round(l.pageRect.top - l.pageTuckTop)}px`);
+  document.documentElement.style.setProperty(
+    "--ml-page-padbot", `${Math.round(window.innerHeight - (l.pageRect.top + l.pageRect.height))}px`);
 }
 
 export class HudBar {
@@ -266,7 +274,7 @@ function injectStyles() {
   .ml-pages{position:absolute;overflow:hidden;image-rendering:pixelated}
   .ml-page{display:none;height:100%;overflow:auto;flex-direction:column;align-items:center;
     justify-content:center;gap:14px;text-align:center;box-sizing:border-box;
-    padding:var(--ml-page-padtop,14px) var(--ml-page-pad,44px) 14px;
+    padding:var(--ml-page-padtop,14px) var(--ml-page-pad,44px) var(--ml-page-padbot,14px);
     background-image:url(/ui2/stone.png);background-size:100% auto;
     background-repeat:repeat-y;background-attachment:local;image-rendering:pixelated}
   .ml-page.show{display:flex}
