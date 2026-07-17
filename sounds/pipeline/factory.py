@@ -221,7 +221,12 @@ def generate_ai(client, cfg: dict, spec: dict) -> dict:
             primary_file, primary_stats = rel, stats
 
     fmt = os.path.splitext(primary_file)[1].lstrip(".")
-    mastered = fmt == "wav"
+    if fmt != "wav":
+        mastering = "none (stored compressed; ffmpeg unavailable to master)"
+    elif loop:
+        mastering = "peak-normalize(-1 dBFS) only (seamless loop — no trim/fades)"
+    else:
+        mastering = "trim + peak-normalize(-1 dBFS) + edge-fades"
     man = _base_manifest(spec, engine="ai", cfg=cfg)
     man.update({
         "quality": "aaa",
@@ -238,8 +243,7 @@ def generate_ai(client, cfg: dict, spec: dict) -> dict:
             "variants": n,
             "requested_format": req_fmt,
         },
-        "mastering": ("trim + peak-normalize(-1 dBFS) + edge-fades" if mastered
-                      else "none (stored compressed; ffmpeg unavailable to master)"),
+        "mastering": mastering,
         "source": f"{ai_cfg['provider']} text-to-sound-effects ({ai_cfg['model_id']})",
     })
     return man

@@ -58,6 +58,6 @@
     "variants": 1,
     "requested_format": "mp3_44100_192"
   },
-  "mastering": "trim + peak-normalize(-1 dBFS) + edge-fades",
+  "mastering": "peak-normalize(-1 dBFS) only (seamless loop \u2014 no trim/fades)",
   "source": "elevenlabs text-to-sound-effects (eleven_text_to_sound_v2)"
 }
