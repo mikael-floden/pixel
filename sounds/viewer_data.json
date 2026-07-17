@@ -1,12 +1,12 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 23,
+  "count": 24,
   "by_category": {
     "ui": 8,
     "item": 5,
     "tool": 6,
-    "movement": 4
+    "movement": 5
   },
   "sounds": [
     {
@@ -443,6 +443,25 @@
       "format": "wav",
       "loop": false,
       "file": "movement/jump/jump__take01.wav",
+      "duration_seconds": 0.092
+    },
+    {
+      "id": "splash",
+      "name": "Water Splash",
+      "category": "movement",
+      "description": "a wet splash of stepping or falling into water",
+      "tags": [
+        "water",
+        "splash",
+        "swim",
+        "wet",
+        "movement"
+      ],
+      "usage": "Entering water / fishing bobber landing.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "movement/splash/splash__take01.wav",
       "duration_seconds": 0.092
     }
   ]
