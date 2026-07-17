@@ -95,6 +95,14 @@ const CAMPFIRE_FRAME = 96;
 const CAMPFIRE_FRAMES = 17;
 const CAMPFIRE_SCALE = 42 / 68;
 const CAMPFIRE_BASE = 83 / 96;
+// Settings "OVERLAY" cycler: flat covers over the game view for frame QA
+// (pink = the keying magenta, deliberately loud).
+const OVERLAYS = [
+  { name: "none", color: null as string | null },
+  { name: "black", color: "#000" },
+  { name: "white", color: "#fff" },
+  { name: "pink", color: "#ff00ff" },
+];
 const INPUT_HZ = 20;
 const BUBBLE_MS = 5000;
 const PLACEHOLDER_TEX = "placeholder:wanderer";
@@ -718,7 +726,12 @@ export class WorldScene extends Phaser.Scene {
         { label: "torch", act: () => this.toggleTorch(), get: () => this.torchOn },
         { label: "bonfire", act: () => this.toggleBonfire(), get: () => this.fireOn },
         { label: "see-through walls", act: () => this.toggleWalls(), get: () => this.occFadeOn },
-        { label: "black game-view", act: () => this.setBlackout(!this.blackoutOn), get: () => this.blackoutOn },
+        {
+          label: "overlay",
+          act: () => this.setOverlay((this.overlayIdx + 1) % OVERLAYS.length),
+          get: () => this.overlayIdx !== 0,
+          state: () => OVERLAYS[this.overlayIdx].name,
+        },
       ],
     });
     mountPageFrame();
@@ -855,10 +868,12 @@ export class WorldScene extends Phaser.Scene {
       // Playback rate of a built animation (anti-moonwalk verification).
       animRate: (uid: string, state: string, dir: string) =>
         this.anims.get(animKey(uid, state, dir))?.frameRate ?? null,
-      // Frame-QA blackout: hide the game render so the HUD frame can be
+      // Frame-QA cover: flat-colour the game render so the HUD frame can be
       // screenshot-compared against the concept art without world noise
-      // (maintainer's suggestion — the mock's game area is black).
-      blackout: (on = true) => this.setBlackout(!!on),
+      // (maintainer's suggestion). Cycles NONE/BLACK/WHITE/PINK; pass an
+      // index (or true = black) to jump straight to a state.
+      blackout: (on: number | boolean = true) =>
+        this.setOverlay(typeof on === "number" ? on : on ? 1 : 0),
       // Live gait-sync probes: my avatar's playback timeScale (rate ∝ speed)
       // and the EMA'd WORLD-units ground speed it derives from (wu/s).
       timeScale: () => this.avatars.get(this.room?.sessionId ?? "")?.sprite.anims.timeScale ?? null,
@@ -1780,18 +1795,30 @@ export class WorldScene extends Phaser.Scene {
     return state?.players?.get?.(id)?.torch ?? true;
   }
 
-  /** Hide the game render (frame QA + the Settings switch): black view,
-   * chat/roster hidden. State drives the "black game-view" switch. */
-  private blackoutOn = false;
-  private setBlackout(on: boolean) {
-    this.blackoutOn = on;
-    const c = document.querySelector("canvas") as HTMLElement | null;
-    if (c) c.style.visibility = on ? "hidden" : "";
+  /** Cover the game render with a flat colour (frame QA): the Settings
+   * "OVERLAY" button cycles NONE -> BLACK -> WHITE -> PINK. The cover is a
+   * div over the game viewport only (z 3: above the canvas, below the HUD
+   * at 4 and the frame art at 6); chat/roster hide while it's up. */
+  private overlayIdx = 0;
+  private setOverlay(idx: number) {
+    this.overlayIdx = idx % OVERLAYS.length;
+    let el = document.getElementById("ml-overlay");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "ml-overlay";
+      el.style.cssText =
+        "position:fixed;left:0;top:0;width:100vw;height:var(--hud-h-inv,61.8vh);" +
+        "z-index:3;pointer-events:none;display:none";
+      document.body.appendChild(el);
+    }
+    const color = OVERLAYS[this.overlayIdx].color;
+    el.style.display = color ? "block" : "none";
+    if (color) el.style.background = color;
     document
       .querySelectorAll<HTMLElement>(".ml-chatlog, .ml-roster")
-      .forEach((e) => (e.style.display = on ? "none" : ""));
+      .forEach((e) => (e.style.display = color ? "none" : ""));
     this.hud?.refreshSettings();
-    return on;
+    return this.overlayIdx;
   }
 
   private toggleWalls() {
