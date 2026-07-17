@@ -29,8 +29,10 @@ const PIX1 = [
   "PDDDDDDDP",
   ".D..D..D.",
 ];
-const RIM = 0xb8c0e0; // pale moonlight on the wing edge
-const BODY = 0x232040; // dark violet body
+// 25% darker than round 2 (maintainer: "make the bat a little darker") —
+// still enough rim contrast to read over dark night ground.
+const RIM = 0x8a90a8; // muted moonlight on the wing edge
+const BODY = 0x1a1830; // dark violet body
 const BASE_WEIGHT = 1.0;
 const DAY_MULT = 0.01; // "1% times the base-likeliness during the day"
 // Dense enough that an active episode never shows 30s of empty sky.
