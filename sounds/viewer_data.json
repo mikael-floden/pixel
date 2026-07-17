@@ -1,12 +1,12 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 43,
+  "count": 44,
   "by_category": {
     "ui": 8,
     "item": 5,
     "tool": 6,
-    "movement": 7,
+    "movement": 8,
     "combat": 4,
     "feedback": 2,
     "ambience": 11
@@ -4008,6 +4008,98 @@
       "sync_points": [
         {
           "t_ms": 41.3,
+          "name": "transient",
+          "note": "main attack \u2014 measured; safe sync/trigger point"
+        }
+      ]
+    },
+    {
+      "id": "swim_stroke",
+      "name": "Swim Stroke",
+      "category": "movement",
+      "description": "a rhythmic water swimming loop of arm strokes",
+      "feel": "fluid, wet",
+      "tags": [
+        "swim",
+        "water",
+        "stroke",
+        "movement",
+        "loop"
+      ],
+      "usage": "Loop while the player swims; crossfade in/out on water enter/exit.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": true,
+      "file": "movement/swim_stroke/swim_stroke.wav",
+      "delivery": {
+        "formats": {
+          "wav": {
+            "file": "movement/swim_stroke/swim_stroke.wav",
+            "bytes": 576930,
+            "codec": "pcm_s16le",
+            "role": "master"
+          },
+          "m4a": {
+            "file": "movement/swim_stroke/swim_stroke.m4a",
+            "bytes": 98010,
+            "codec": "aac"
+          },
+          "ogg": {
+            "file": "movement/swim_stroke/swim_stroke.ogg",
+            "bytes": 88512,
+            "codec": "libvorbis"
+          }
+        },
+        "web_source_order": [
+          "m4a",
+          "ogg"
+        ]
+      },
+      "takes": [
+        "movement/swim_stroke/swim_stroke.wav"
+      ],
+      "duration_seconds": 6.009,
+      "mix_gain_db": -8,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      },
+      "music": {
+        "tonal": false,
+        "root_midi": null,
+        "note": null,
+        "fundamental_hz": null,
+        "cents_off": null,
+        "pitch_confidence": 0.249,
+        "max_shift_semitones": 0,
+        "scale_snap_replaces_jitter": false,
+        "tonality": "atonal",
+        "spectral_flatness": 0.047
+      },
+      "envelope": {
+        "duration_ms": 6009.2,
+        "onset_ms": 0.0,
+        "peak_ms": 3434.0,
+        "attack_ms": 3434.0,
+        "peak_dbfs": -1.0,
+        "rms": 0.0686,
+        "crest": 13.0
+      },
+      "sync_points": [
+        {
+          "t_ms": 3434.0,
           "name": "transient",
           "note": "main attack \u2014 measured; safe sync/trigger point"
         }
