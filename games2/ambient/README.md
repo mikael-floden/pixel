@@ -129,6 +129,7 @@ covered by `server/test/ambientdemo.test.ts`. QA probe:
 | `pollen/` | field | Sunbeam dust / drifting pollen in forest air | Sunlit hours, clear-ish sky, drifts on the cloud wind |
 | `bats/` | episode | Flocks crossing the night sky | base 1.0; day ×0.01 |
 | `thunder/` | episode | Distant sheet lightning beyond the horizon | base 0.35 × (1 + rain + night); cloud/mist as weak proxies until a rain weather ships |
+| `rainbow/` | episode | A shader double-bow at the anti-solar point you can never reach, with sun-shower drizzle | base 0.5 × sun × moisture (rain 1.0, else 0.55·cloud + 0.4·mist) |
 
 ## QA
 

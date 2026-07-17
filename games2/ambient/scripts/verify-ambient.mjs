@@ -27,7 +27,7 @@ try {
 
   // ---- registry ----
   const list = await page.evaluate(() => window.__mlAmbient.list());
-  for (const want of ["fireflies", "pollen", "bats", "thunder"])
+  for (const want of ["fireflies", "pollen", "bats", "thunder", "rainbow"])
     if (!list.includes(want)) fail(`feature ${want} not mounted (got ${list})`);
   ok(`mounted: ${list.join(", ")}`);
 
@@ -88,6 +88,18 @@ try {
   if (Math.abs(rn - 3) > 0.05) fail(`thunder night+raining must be x3 base (got x${rn.toFixed(2)})`);
   if (!(rd < rn)) fail("thunder: night+rain must beat rain alone");
   ok(`thunder likeliness rain x${rd.toFixed(2)}, night+rain x${rn.toFixed(2)}`);
+  // Rainbow physics: sunlight through wet air, or no bow at all.
+  const rb = await page.evaluate(() => ({
+    dayClear: window.__mlAmbient.weights({ night: 0, sun: 1, cloud: 0, mist: 0, weatherName: "Clear sky" }).rainbow,
+    dayCloudy: window.__mlAmbient.weights({ night: 0, sun: 1, cloud: 1, mist: 0, weatherName: "Cloudy at times" }).rainbow,
+    nightCloudy: window.__mlAmbient.weights({ night: 1, sun: 0, cloud: 1, mist: 0, weatherName: "Cloudy at times" }).rainbow,
+    dayRain: window.__mlAmbient.weights({ night: 0, sun: 1, cloud: 0.5, mist: 0, weatherName: "Light rain" }).rainbow,
+  }));
+  if (rb.dayClear > 0.01) fail(`rainbow needs moisture (day+clear weight ${rb.dayClear})`);
+  if (!(rb.dayCloudy > 0.2)) fail(`rainbow must be likely on a cloudy day (${rb.dayCloudy})`);
+  if (rb.nightCloudy > 0.01) fail(`rainbow needs sun (night weight ${rb.nightCloudy})`);
+  if (!(rb.dayRain > rb.dayCloudy)) fail(`a rain weather must beat the cloud proxy (${rb.dayRain} vs ${rb.dayCloudy})`);
+  ok(`rainbow likeliness: sun x moisture (clear ${rb.dayClear}, cloudy ${rb.dayCloudy.toFixed(2)}, rain ${rb.dayRain.toFixed(2)}, night 0)`);
 
   // ---- director rolls + episode life cycle ----
   await page.evaluate(() => window.__ml.timeOfDay("night", true));
@@ -152,6 +164,21 @@ try {
   });
   if (label !== "ambient: bats") fail(`button click must advance pollen -> bats (got ${JSON.stringify(label)})`);
   else ok("button click advances the ring (pollen -> bats)");
+  // Demo the rainbow: world -> Day + Cloudy, shader bow condenses, drizzle falls.
+  await page.evaluate(() => window.__mlAmbient.demo("rainbow"));
+  await page.waitForFunction(
+    () => window.__ml.timeOfDay().name === "Day" && window.__ml.weatherInfo().idx === 1,
+    null,
+    { timeout: 5000 },
+  );
+  await page.waitForTimeout(5500); // the bow condenses on a slow ~2.2s tau
+  const rbd = await dbg("rainbow");
+  if (!rbd.active) fail("demoed rainbow must be active");
+  if (!rbd.shader) fail("rainbow must have built its shader (WebGL)");
+  if (rbd.gain < 0.3) fail(`rainbow gain must rise in a demoed sun-shower (${rbd.gain.toFixed(2)})`);
+  if (!rbd.center) fail("rainbow must be drawing (no arc centre)");
+  if (rbd.drops < 10) fail(`sun-shower drizzle must fall (${rbd.drops} drops)`);
+  ok(`demo(rainbow): bow up (gain ${rbd.gain.toFixed(2)}, centre ${rbd.center}, ${rbd.drops} drizzle streaks)`);
   // Back to auto: pin released, suppression lifted, director rolls again.
   await page.evaluate(() => window.__mlAmbient.demo(null));
   const dirAuto = await page.evaluate(() => window.__mlAmbient.director());
