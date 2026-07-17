@@ -10,10 +10,10 @@
       "provider": "elevenlabs",
       "endpoint": "https://api.elevenlabs.io/v1/sound-generation",
       "model_id": "eleven_text_to_sound_v2",
-      "output_format": "pcm_48000",
+      "output_format": "mp3_44100_192",
       "prompt_influence": 0.5,
       "api_key_env": "ELEVENLABS_API_KEY",
-      "note": "REQUIRED engine. ElevenLabs SFX v2 \u2014 the 2026 quality leader for realistic foley (rated indistinguishable from recorded foley in blind tests), lossless 48 kHz. Needs ELEVENLABS_API_KEY (Pro tier for pcm_48000). Output is mastered locally (trim + normalize + fades).",
+      "note": "REQUIRED engine. ElevenLabs SFX v2 (2026 quality leader for realistic foley). Requests high-bitrate MP3 (this key tier delivers MP3, not lossless PCM); the factory decodes via ffmpeg and masters to a clean 48 kHz WAV. Needs ELEVENLABS_API_KEY.",
       "prompt_directives": "High-fidelity recorded foley, close-miked, crisp transient, rich body, natural short tail; single isolated sound; dry with only a subtle natural room; no music, no voice, no melody, no chiptune, no synth beeps, no background noise; broadcast-quality, production-ready"
     }
   },

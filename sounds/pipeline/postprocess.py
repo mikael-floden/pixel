@@ -11,27 +11,64 @@ All functions work on a mono float32 array in [-1, 1]. `master()` is the pipelin
 from __future__ import annotations
 
 import io
+import shutil
+import subprocess
 import wave
 
 import numpy as np
 
 
-def decode_audio(raw: bytes, default_sr: int) -> tuple[np.ndarray, int]:
-    """Decode ElevenLabs audio bytes to (mono float32 in [-1,1], sample_rate),
-    robust to how the API frames PCM. Handles a WAV/RIFF wrapper (any sample
-    width, reads the real rate) and headerless signed-16-bit LE PCM; odd-length
-    buffers are trimmed rather than raising."""
-    # WAV/RIFF-wrapped: authoritative width + rate from the header.
+def _sniff(raw: bytes) -> str:
+    """Identify the container from magic bytes. CRITICAL: the API may return a
+    format other than the one requested (e.g. an MP3 when pcm_48000 is asked for
+    on a non-Pro key), so we must decode by ACTUAL content, never by the request."""
     if raw[:4] == b"RIFF":
+        return "wav"
+    if raw[:3] == b"ID3":
+        return "mp3"
+    if len(raw) >= 2 and raw[0] == 0xFF and (raw[1] & 0xE0) == 0xE0:
+        return "mp3"  # MPEG audio frame sync
+    if raw[:4] == b"OggS":
+        return "ogg"
+    if raw[:4] == b"fLaC":
+        return "flac"
+    return "pcm"  # assume headerless signed-16-bit LE PCM
+
+
+def decode_audio(raw: bytes, default_sr: int, target_sr: int = 48000) -> tuple[np.ndarray, int]:
+    """Decode API audio bytes to (mono float32 in [-1,1], sample_rate), by sniffing
+    the real container: WAV/RIFF (any width, real rate), compressed (mp3/ogg/flac,
+    via ffmpeg), or headerless signed-16-bit LE PCM. Odd-length raw PCM is trimmed
+    rather than raising."""
+    kind = _sniff(raw)
+    if kind == "wav":
         with wave.open(io.BytesIO(raw)) as w:
             sw, sr, ch = w.getsampwidth(), w.getframerate(), w.getnchannels()
             frames = w.readframes(w.getnframes())
         x = _pcm_bytes_to_float(frames, sw)
-        if ch > 1:  # downmix to mono
+        if ch > 1:
             x = x.reshape(-1, ch).mean(axis=1)
         return x, sr
-    # Headerless raw PCM (ElevenLabs pcm_* = signed 16-bit LE).
+    if kind in ("mp3", "ogg", "flac"):
+        return _ffmpeg_decode(raw, target_sr), target_sr
     return _pcm_bytes_to_float(raw, 2), default_sr
+
+
+def _ffmpeg_decode(raw: bytes, target_sr: int) -> np.ndarray:
+    """Decode compressed audio to mono float32 via ffmpeg (present on CI runners).
+    Reads from stdin, writes 32-bit float mono PCM at `target_sr` to stdout."""
+    exe = shutil.which("ffmpeg")
+    if not exe:
+        raise RuntimeError("ffmpeg not found — cannot decode compressed audio "
+                           "(the API returned MP3/OGG). Install ffmpeg.")
+    p = subprocess.run(
+        [exe, "-hide_banner", "-loglevel", "error", "-i", "pipe:0",
+         "-f", "f32le", "-ac", "1", "-ar", str(target_sr), "pipe:1"],
+        input=raw, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+    )
+    if p.returncode != 0 or not p.stdout:
+        raise RuntimeError(f"ffmpeg decode failed: {p.stderr.decode()[:200]}")
+    return np.frombuffer(p.stdout, dtype="<f4").astype(np.float32)
 
 
 def _pcm_bytes_to_float(raw: bytes, sampwidth: int) -> np.ndarray:

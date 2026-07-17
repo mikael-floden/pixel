@@ -188,34 +188,38 @@ def generate_ai(client, cfg: dict, spec: dict) -> dict:
             prompt, primary_format=out_fmt, duration_seconds=spec.get("duration_hint"),
             prompt_influence=influence, loop=loop, model_id=ai_cfg["model_id"],
         )
-        is_pcm, sr = client.parse_format(out_fmt)
-        print(f"  [dbg] {spec['id']} take{i}: fmt={out_fmt} raw={len(audio)}B "
-              f"head={audio[:4].hex()}", flush=True)
-        if not is_pcm:
-            # Non-PCM (e.g. mp3): store as-is, no local mastering possible.
-            fname = f"{spec['id']}.mp3" if n == 1 else f"{spec['id']}__take{i:02d}.mp3"
-            with open(os.path.join(d, fname), "wb") as f:
-                f.write(audio)
-            stats = {"bytes": len(audio), "output_format": out_fmt}
-        else:
-            samples, real_sr = postprocess.decode_audio(audio, sr)
-            print(f"  [dbg]   pre-master {len(samples)} samp = "
-                  f"{len(samples)/real_sr:.3f}s @ {real_sr}Hz", flush=True)
+        _, sr_hint = client.parse_format(out_fmt)  # rate hint for headerless PCM only
+        # Decode by ACTUAL content (the API may return MP3 even for a PCM request),
+        # then master to a clean 48 kHz WAV. Only if decoding is impossible (no
+        # ffmpeg) do we store the compressed bytes verbatim.
+        try:
+            samples, real_sr = postprocess.decode_audio(audio, sr_hint)
             samples = postprocess.master(samples, real_sr,
                                          fade_out_ms=40.0 if loop else 15.0)
             fname = f"{spec['id']}.wav" if n == 1 else f"{spec['id']}__take{i:02d}.wav"
             stats = postprocess.write_wav(samples, os.path.join(d, fname), real_sr)
-            stats["output_format"] = out_fmt
+            stats["requested_format"] = req_fmt
+            stats["delivered"] = postprocess._sniff(audio)
+        except RuntimeError as e:
+            container = postprocess._sniff(audio)
+            ext = container if container in ("mp3", "ogg", "flac", "wav") else "bin"
+            print(f"  ! decode failed ({e}); storing {ext} verbatim", flush=True)
+            fname = f"{spec['id']}.{ext}" if n == 1 else f"{spec['id']}__take{i:02d}.{ext}"
+            with open(os.path.join(d, fname), "wb") as f:
+                f.write(audio)
+            stats = {"bytes": len(audio), "requested_format": req_fmt, "delivered": container}
         rel = os.path.join(spec["category"], spec["id"], fname)
         takes.append(rel)
         if primary_file is None:
             primary_file, primary_stats = rel, stats
 
+    fmt = os.path.splitext(primary_file)[1].lstrip(".")
+    mastered = fmt == "wav"
     man = _base_manifest(spec, engine="ai")
     man.update({
         "quality": "aaa",
         "file": primary_file,
-        "format": "wav" if is_pcm else "mp3",
+        "format": fmt,
         "audio": primary_stats,
         "takes": takes,
         "ai": {
@@ -225,11 +229,11 @@ def generate_ai(client, cfg: dict, spec: dict) -> dict:
             "prompt_influence": influence,
             "loop": loop,
             "variants": n,
+            "requested_format": req_fmt,
         },
-        "mastering": ("trim + peak-normalize(-1 dBFS) + edge-fades" if is_pcm
-                      else "none (lossy output_format)"),
-        "source": f"{ai_cfg['provider']} text-to-sound-effects ({ai_cfg['model_id']}), "
-                  f"{out_fmt}, mastered",
+        "mastering": ("trim + peak-normalize(-1 dBFS) + edge-fades" if mastered
+                      else "none (stored compressed; ffmpeg unavailable to master)"),
+        "source": f"{ai_cfg['provider']} text-to-sound-effects ({ai_cfg['model_id']})",
     })
     return man
 
