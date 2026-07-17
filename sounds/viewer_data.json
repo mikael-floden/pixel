@@ -1,10 +1,10 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 10,
+  "count": 11,
   "by_category": {
     "ui": 8,
-    "item": 2
+    "item": 3
   },
   "sounds": [
     {
@@ -195,6 +195,25 @@
       "format": "wav",
       "loop": false,
       "file": "item/chest_close/chest_close__take01.wav",
+      "duration_seconds": 0.092
+    },
+    {
+      "id": "key_unlock",
+      "name": "Key Unlock",
+      "category": "item",
+      "description": "a metallic click-clunk of a key turning in a lock",
+      "tags": [
+        "key",
+        "unlock",
+        "lock",
+        "door",
+        "metal"
+      ],
+      "usage": "Using iron_key / unlocking a door or chest.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "item/key_unlock/key_unlock__take01.wav",
       "duration_seconds": 0.092
     }
   ]
