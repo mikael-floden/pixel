@@ -75,12 +75,18 @@ def material_target(images):
     }
 
 
-def harmonize(im, target, hue_strength=0.9, sat_strength=0.6, v_strength=0.65, hue_band=42):
+def harmonize(im, target, hue_strength=0.9, sat_strength=0.6, v_strength=0.65, hue_band=42,
+              avoid_hue=None):
     """Pull `im`'s MATERIAL pixels toward the target hue/saturation and level their
-    mean brightness, keeping texture. The material is selected by a generous
-    HUE BAND for chromatic materials (grass/dirt/water — catches every tone of
-    that hue), or by low-saturation + brightness for achromatic ones (snow/stone).
-    Everything else (dirt sides on grass, flowers, rock) is left untouched."""
+    mean brightness, keeping texture. The material is SELECTED by the hue of its own
+    RAW colour (`target['select_hue']` — the auto-detected pre-palette hue) so that a
+    forced PALETTE target far from the raw colour (e.g. grass raw yellow-green ~70 ->
+    palette teal ~122) still selects the right pixels, then the pixels are SHIFTED to
+    the palette hue. `avoid_hue` is the other material's raw hue in a transition: a
+    pixel is only claimed if it's closer to THIS material's raw hue than the other's,
+    so the sand pass can't grab (and brown-out) the grass pixels. Achromatic materials
+    (snow/stone) select by low-saturation + a value band. Dirt sides, flowers, rock are
+    left untouched."""
     if not target:
         return im.copy()
     hsv = np.asarray(im.convert("HSV"), dtype=np.float32)
@@ -88,9 +94,13 @@ def harmonize(im, target, hue_strength=0.9, sat_strength=0.6, v_strength=0.65, h
     h, s, v = hsv[:, :, 0], hsv[:, :, 1], hsv[:, :, 2]
     op = al > 16
     hue_t, sat_t, val_t = target["hue"], target["sat"], target["value"]
-    if target.get("chroma", sat_t) > 55:                 # chromatic: hue band
-        dh = np.abs(((h - hue_t + 128) % 256) - 128)
+    sel_h = float(target.get("select_hue", hue_t))       # RAW hue for masking (palette-safe)
+    if target.get("chroma", sat_t) > 55:                 # chromatic: hue band around RAW hue
+        dh = np.abs(((h - sel_h + 128) % 256) - 128)
         m = op & (s > 45) & (dh < hue_band)
+        if avoid_hue is not None:                        # transition: claim only if nearer to US
+            da = np.abs(((h - float(avoid_hue) + 128) % 256) - 128)
+            m = m & (dh <= da)
     else:                                                # achromatic: desaturated + value BAND
         # Two-sided value window around the target: a DARK material (black rock,
         # value~56) claims only dark pixels, a BRIGHT one (snow, value~243) only

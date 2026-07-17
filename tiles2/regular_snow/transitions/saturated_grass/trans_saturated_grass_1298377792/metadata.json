@@ -956,8 +956,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.976,
-        "regular_snow": 0.024
+        "saturated_grass": 0.977,
+        "regular_snow": 0.023
       },
       "edges": {
         "NE": {
@@ -1032,8 +1032,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.897,
-        "regular_snow": 0.103
+        "saturated_grass": 0.93,
+        "regular_snow": 0.07
       },
       "edges": {
         "NE": {
@@ -1073,14 +1073,13 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "regular_snow",
-            "regular_snow",
+            "saturated_grass",
+            "saturated_grass",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.75,
-            "regular_snow": 0.25
+            "saturated_grass": 1.0
           }
         },
         "NW": {
@@ -1101,10 +1100,9 @@
       },
       "features": [
         "accent",
-        "flowers",
         "pebbles"
       ],
-      "description": "saturated grass blending to snow with a small detail, small flowers, pebbles"
+      "description": "saturated grass blending to snow with a small detail, pebbles"
     },
     {
       "index": 14,
@@ -1112,8 +1110,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.946,
-        "regular_snow": 0.054
+        "saturated_grass": 0.909,
+        "regular_snow": 0.091
       },
       "edges": {
         "NE": {
@@ -1179,11 +1177,11 @@
         }
       },
       "features": [
-        "accent",
+        "water",
         "pebbles",
-        "flowers"
+        "accent"
       ],
-      "description": "saturated grass blending to snow with a small detail, pebbles, small flowers"
+      "description": "saturated grass blending to snow with a small puddle, pebbles, a small detail"
     },
     {
       "index": 15,
@@ -1191,8 +1189,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.936,
-        "regular_snow": 0.064
+        "saturated_grass": 0.957,
+        "regular_snow": 0.043
       },
       "edges": {
         "NE": {
@@ -1260,10 +1258,9 @@
       },
       "features": [
         "accent",
-        "flowers",
         "pebbles"
       ],
-      "description": "saturated grass blending to snow with a small detail, small flowers, pebbles"
+      "description": "saturated grass with a small detail, pebbles"
     }
   ],
   "generated_at": "2026-07-05T09:28:55+00:00",

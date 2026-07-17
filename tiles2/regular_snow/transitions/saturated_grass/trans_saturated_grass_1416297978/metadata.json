@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.962,
-        "saturated_grass": 0.038
+        "regular_snow": 0.994,
+        "saturated_grass": 0.006
       },
       "edges": {
         "NE": {
@@ -33,14 +33,13 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "saturated_grass",
+            "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 0.875,
-            "saturated_grass": 0.125
+            "regular_snow": 1.0
           }
         },
         "SE": {
@@ -75,7 +74,7 @@
         },
         "NW": {
           "samples": [
-            "saturated_grass",
+            "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow",
@@ -85,17 +84,16 @@
             "regular_snow"
           ],
           "ratio": {
-            "saturated_grass": 0.125,
-            "regular_snow": 0.875
-          },
-          "divider": 0.125
+            "regular_snow": 1.0
+          }
         }
       },
       "features": [
         "pebbles",
-        "accent"
+        "accent",
+        "water"
       ],
-      "description": "snow with pebbles, a small detail"
+      "description": "snow with pebbles, a small detail, a small puddle"
     },
     {
       "index": 1,
@@ -103,8 +101,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.854,
-        "saturated_grass": 0.146
+        "regular_snow": 0.948,
+        "saturated_grass": 0.052
       },
       "edges": {
         "NE": {
@@ -113,14 +111,13 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "saturated_grass",
             "regular_snow",
-            "saturated_grass",
-            "saturated_grass"
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 0.625,
-            "saturated_grass": 0.375
+            "regular_snow": 1.0
           }
         },
         "SE": {
@@ -158,23 +155,24 @@
             "regular_snow",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
+            "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 0.625,
-            "saturated_grass": 0.375
+            "regular_snow": 0.75,
+            "saturated_grass": 0.25
           }
         }
       },
       "features": [
         "pebbles",
-        "accent"
+        "accent",
+        "water"
       ],
-      "description": "snow blending to saturated grass with pebbles, a small detail"
+      "description": "snow blending to saturated grass with pebbles, a small detail, a small puddle"
     },
     {
       "index": 2,
@@ -182,8 +180,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.824,
-        "saturated_grass": 0.176
+        "regular_snow": 0.923,
+        "saturated_grass": 0.077
       },
       "edges": {
         "NE": {
@@ -192,16 +190,14 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass"
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 0.5,
-            "saturated_grass": 0.5
-          },
-          "divider": 0.5
+            "regular_snow": 1.0
+          }
         },
         "SE": {
           "samples": [
@@ -238,8 +234,8 @@
         "NW": {
           "samples": [
             "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
+            "regular_snow",
+            "regular_snow",
             "regular_snow",
             "saturated_grass",
             "regular_snow",
@@ -247,16 +243,17 @@
             "regular_snow"
           ],
           "ratio": {
-            "saturated_grass": 0.5,
-            "regular_snow": 0.5
+            "saturated_grass": 0.25,
+            "regular_snow": 0.75
           }
         }
       },
       "features": [
         "pebbles",
-        "accent"
+        "accent",
+        "water"
       ],
-      "description": "snow blending to saturated grass with pebbles, a small detail"
+      "description": "snow blending to saturated grass with pebbles, a small detail, a small puddle"
     },
     {
       "index": 3,
@@ -264,8 +261,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.753,
-        "saturated_grass": 0.247
+        "regular_snow": 0.801,
+        "saturated_grass": 0.199
       },
       "edges": {
         "NE": {
@@ -274,15 +271,16 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "saturated_grass",
-            "saturated_grass",
+            "regular_snow",
+            "regular_snow",
             "regular_snow",
             "saturated_grass"
           ],
           "ratio": {
-            "regular_snow": 0.625,
-            "saturated_grass": 0.375
-          }
+            "regular_snow": 0.875,
+            "saturated_grass": 0.125
+          },
+          "divider": 0.875
         },
         "SE": {
           "samples": [
@@ -336,9 +334,10 @@
       },
       "features": [
         "pebbles",
-        "accent"
+        "accent",
+        "water"
       ],
-      "description": "snow blending to saturated grass with pebbles, a small detail"
+      "description": "snow blending to saturated grass with pebbles, a small detail, a small puddle"
     },
     {
       "index": 4,
@@ -346,8 +345,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.818,
-        "saturated_grass": 0.182
+        "regular_snow": 0.91,
+        "saturated_grass": 0.09
       },
       "edges": {
         "NE": {
@@ -356,16 +355,14 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass"
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 0.5,
-            "saturated_grass": 0.5
-          },
-          "divider": 0.5
+            "regular_snow": 1.0
+          }
         },
         "SE": {
           "samples": [
@@ -400,7 +397,7 @@
         "NW": {
           "samples": [
             "saturated_grass",
-            "saturated_grass",
+            "regular_snow",
             "saturated_grass",
             "saturated_grass",
             "regular_snow",
@@ -409,17 +406,17 @@
             "regular_snow"
           ],
           "ratio": {
-            "saturated_grass": 0.5,
-            "regular_snow": 0.5
-          },
-          "divider": 0.5
+            "saturated_grass": 0.375,
+            "regular_snow": 0.625
+          }
         }
       },
       "features": [
-        "accent",
-        "pebbles"
+        "water",
+        "pebbles",
+        "accent"
       ],
-      "description": "snow blending to saturated grass with a small detail, pebbles"
+      "description": "snow blending to saturated grass with a small puddle, pebbles, a small detail"
     },
     {
       "index": 5,
@@ -427,8 +424,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.434,
-        "regular_snow": 0.566
+        "saturated_grass": 0.371,
+        "regular_snow": 0.629
       },
       "edges": {
         "NE": {
@@ -482,8 +479,8 @@
         },
         "NW": {
           "samples": [
-            "saturated_grass",
-            "saturated_grass",
+            "regular_snow",
+            "regular_snow",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
@@ -492,17 +489,17 @@
             "regular_snow"
           ],
           "ratio": {
-            "saturated_grass": 0.625,
-            "regular_snow": 0.375
-          },
-          "divider": 0.625
+            "regular_snow": 0.625,
+            "saturated_grass": 0.375
+          }
         }
       },
       "features": [
         "accent",
+        "water",
         "pebbles"
       ],
-      "description": "snow blending to saturated grass with a small detail, pebbles"
+      "description": "snow blending to saturated grass with a small detail, a small puddle, pebbles"
     },
     {
       "index": 6,
@@ -510,8 +507,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.551,
-        "regular_snow": 0.449
+        "regular_snow": 0.579,
+        "saturated_grass": 0.421
       },
       "edges": {
         "NE": {
@@ -520,16 +517,16 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "saturated_grass",
+            "regular_snow",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "regular_snow": 0.5,
-            "saturated_grass": 0.5
+            "regular_snow": 0.625,
+            "saturated_grass": 0.375
           },
-          "divider": 0.5
+          "divider": 0.625
         },
         "SE": {
           "samples": [
@@ -565,26 +562,26 @@
         },
         "NW": {
           "samples": [
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "saturated_grass": 0.625,
-            "regular_snow": 0.375
-          },
-          "divider": 0.625
+            "regular_snow": 1.0
+          }
         }
       },
       "features": [
-        "accent"
+        "water",
+        "accent",
+        "pebbles"
       ],
-      "description": "saturated grass blending to snow with a small detail"
+      "description": "snow blending to saturated grass with a small puddle, a small detail, pebbles"
     },
     {
       "index": 7,
@@ -592,25 +589,26 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.516,
-        "regular_snow": 0.484
+        "saturated_grass": 0.484,
+        "regular_snow": 0.516
       },
       "edges": {
         "NE": {
           "samples": [
             "regular_snow",
-            "saturated_grass",
             "regular_snow",
             "regular_snow",
-            "saturated_grass",
+            "regular_snow",
+            "regular_snow",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "regular_snow": 0.375,
-            "saturated_grass": 0.625
-          }
+            "regular_snow": 0.625,
+            "saturated_grass": 0.375
+          },
+          "divider": 0.625
         },
         "SE": {
           "samples": [
@@ -651,23 +649,24 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
+            "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "saturated_grass": 0.625,
-            "regular_snow": 0.375
+            "saturated_grass": 0.5,
+            "regular_snow": 0.5
           },
-          "divider": 0.625
+          "divider": 0.5
         }
       },
       "features": [
         "accent",
-        "pebbles"
+        "pebbles",
+        "water"
       ],
-      "description": "saturated grass blending to snow with a small detail, pebbles"
+      "description": "snow blending to saturated grass with a small detail, pebbles, a small puddle"
     },
     {
       "index": 8,
@@ -675,8 +674,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.518,
-        "regular_snow": 0.482
+        "regular_snow": 0.556,
+        "saturated_grass": 0.444
       },
       "edges": {
         "NE": {
@@ -685,15 +684,16 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "saturated_grass",
+            "regular_snow",
             "regular_snow",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "regular_snow": 0.625,
-            "saturated_grass": 0.375
-          }
+            "regular_snow": 0.75,
+            "saturated_grass": 0.25
+          },
+          "divider": 0.75
         },
         "SE": {
           "samples": [
@@ -729,8 +729,8 @@
         },
         "NW": {
           "samples": [
-            "saturated_grass",
-            "saturated_grass",
+            "regular_snow",
+            "regular_snow",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
@@ -739,16 +739,17 @@
             "regular_snow"
           ],
           "ratio": {
-            "saturated_grass": 0.625,
-            "regular_snow": 0.375
-          },
-          "divider": 0.625
+            "regular_snow": 0.625,
+            "saturated_grass": 0.375
+          }
         }
       },
       "features": [
-        "accent"
+        "accent",
+        "water",
+        "pebbles"
       ],
-      "description": "saturated grass blending to snow with a small detail"
+      "description": "snow blending to saturated grass with a small detail, a small puddle, pebbles"
     },
     {
       "index": 9,
@@ -756,8 +757,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.727,
-        "regular_snow": 0.273
+        "regular_snow": 0.327,
+        "saturated_grass": 0.673
       },
       "edges": {
         "NE": {
@@ -812,7 +813,7 @@
         "NW": {
           "samples": [
             "saturated_grass",
-            "saturated_grass",
+            "regular_snow",
             "regular_snow",
             "saturated_grass",
             "regular_snow",
@@ -821,16 +822,17 @@
             "regular_snow"
           ],
           "ratio": {
-            "saturated_grass": 0.375,
-            "regular_snow": 0.625
+            "saturated_grass": 0.25,
+            "regular_snow": 0.75
           }
         }
       },
       "features": [
+        "water",
         "accent",
         "pebbles"
       ],
-      "description": "saturated grass blending to snow with a small detail, pebbles"
+      "description": "saturated grass blending to snow with a small puddle, a small detail, pebbles"
     },
     {
       "index": 10,
@@ -913,8 +915,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.855,
-        "regular_snow": 0.145
+        "saturated_grass": 0.854,
+        "regular_snow": 0.146
       },
       "edges": {
         "NE": {
@@ -991,8 +993,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.679,
-        "saturated_grass": 0.321
+        "regular_snow": 0.721,
+        "saturated_grass": 0.279
       },
       "edges": {
         "NE": {
@@ -1049,23 +1051,25 @@
             "saturated_grass",
             "saturated_grass",
             "regular_snow",
-            "saturated_grass",
+            "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "saturated_grass": 0.375,
-            "regular_snow": 0.625
-          }
+            "saturated_grass": 0.25,
+            "regular_snow": 0.75
+          },
+          "divider": 0.25
         }
       },
       "features": [
         "accent",
-        "pebbles"
+        "pebbles",
+        "water"
       ],
-      "description": "snow blending to saturated grass with a small detail, pebbles"
+      "description": "snow blending to saturated grass with a small detail, pebbles, a small puddle"
     },
     {
       "index": 13,
@@ -1073,8 +1077,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.578,
-        "regular_snow": 0.422
+        "regular_snow": 0.45,
+        "saturated_grass": 0.55
       },
       "edges": {
         "NE": {
@@ -1146,9 +1150,10 @@
       },
       "features": [
         "accent",
+        "water",
         "pebbles"
       ],
-      "description": "saturated grass blending to snow with a small detail, pebbles"
+      "description": "saturated grass blending to snow with a small detail, a small puddle, pebbles"
     },
     {
       "index": 14,
@@ -1156,8 +1161,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.497,
-        "regular_snow": 0.503
+        "saturated_grass": 0.477,
+        "regular_snow": 0.523
       },
       "edges": {
         "NE": {
@@ -1212,9 +1217,9 @@
         },
         "NW": {
           "samples": [
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
             "regular_snow",
             "saturated_grass",
             "saturated_grass",
@@ -1222,15 +1227,17 @@
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.875,
-            "regular_snow": 0.125
-          }
+            "regular_snow": 0.5,
+            "saturated_grass": 0.5
+          },
+          "divider": 0.5
         }
       },
       "features": [
+        "water",
         "accent"
       ],
-      "description": "snow blending to saturated grass with a small detail"
+      "description": "snow blending to saturated grass with a small puddle, a small detail"
     },
     {
       "index": 15,
@@ -1238,8 +1245,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.95,
-        "regular_snow": 0.05
+        "saturated_grass": 0.972,
+        "regular_snow": 0.028
       },
       "edges": {
         "NE": {
@@ -1261,7 +1268,7 @@
           "samples": [
             "saturated_grass",
             "saturated_grass",
-            "regular_snow",
+            "saturated_grass",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
@@ -1269,8 +1276,7 @@
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.875,
-            "regular_snow": 0.125
+            "saturated_grass": 1.0
           }
         },
         "SW": {
@@ -1305,10 +1311,9 @@
         }
       },
       "features": [
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "saturated grass blending to snow with a small detail, small flowers"
+      "description": "saturated grass with a small detail"
     }
   ],
   "generated_at": "2026-07-05T09:31:25+00:00",

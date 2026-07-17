@@ -81,6 +81,13 @@ def _first_base_sheet(gid):
     return None
 
 
+def _raw_chromatic(t):
+    """Is the material's RAW colour chromatic (a real hue) vs achromatic (grey/white)?"""
+    if not t:
+        return False
+    return float(t.get("raw_chroma", t.get("chroma", t.get("sat", 0)))) > 55
+
+
 def _palette_target(rgb):
     """Turn a palette RGB into a harmonize target dict (HSV hue/sat/value)."""
     from PIL import Image as _I
@@ -96,18 +103,20 @@ def type_target(gid, cfg, cache):
     if gid in cache:
         return cache[gid]
     palette = ((cfg.get("postprocess") or {}).get("palette") or {}) if cfg else {}
-    if gid in palette:
-        target = _palette_target(palette[gid])
-        cache[gid] = target
-        meta = common.load_type_meta(gid) or {}
-        meta["harmonize_target"] = target
-        common.save_type_meta(gid, meta)
-        return target
+    # Auto-detect the RAW material colour from the sheets — used to SELECT the material's
+    # pixels (its real hue), even when a palette target overrides the recolour destination.
     sdir = _first_base_sheet(gid)
-    target = None
+    raw = None
     if sdir:
         imgs = [Image.open(os.path.join(sdir, f)).convert("RGBA") for f in common.tile_files(sdir)]
-        target = normalize.material_target(imgs)
+        raw = normalize.material_target(imgs)
+    if gid in palette:
+        target = _palette_target(palette[gid])
+        if raw:                                          # keep the RAW hue for masking
+            target["select_hue"] = raw["hue"]
+            target["raw_chroma"] = raw.get("chroma", raw.get("sat", 0))
+    else:
+        target = raw
     cache[gid] = target
     if target:
         meta = common.load_type_meta(gid) or {}
@@ -151,9 +160,16 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
         im = Image.open(os.path.join(sdir, fn)).convert("RGBA")
         if pp["neutralize_outline"]:
             im = normalize.neutralize_outline(im, darkness_thresh=pp["darkness_thresh"])
-        im = normalize.harmonize(im, t_from, hs["hue_strength"], hs["sat_strength"], hs["v_strength"], hue_band=hs.get("hue_band", 42))
+        # In a transition of TWO chromatic materials, each pass avoids the other's raw
+        # hue so the sand pass can't grab (and brown-out) the grass pixels, and vice versa.
+        both_chroma = _raw_chromatic(t_from) and _raw_chromatic(t_to)
+        avoid_from = (t_to.get("select_hue", t_to.get("hue")) if both_chroma else None)
+        avoid_to = (t_from.get("select_hue", t_from.get("hue")) if both_chroma else None)
+        im = normalize.harmonize(im, t_from, hs["hue_strength"], hs["sat_strength"], hs["v_strength"],
+                                 hue_band=hs.get("hue_band", 42), avoid_hue=avoid_from)
         if t_to:
-            im = normalize.harmonize(im, t_to, hs["hue_strength"], hs["sat_strength"], hs["v_strength"], hue_band=hs.get("hue_band", 42))
+            im = normalize.harmonize(im, t_to, hs["hue_strength"], hs["sat_strength"], hs["v_strength"],
+                                     hue_band=hs.get("hue_band", 42), avoid_hue=avoid_to)
         if ds.get("enabled"):                          # erase the tessellating diamond-edge grid seam
             im = normalize.deseam_diamond(
                 im, band=ds["band"], darkness_thresh=ds["darkness_thresh"],

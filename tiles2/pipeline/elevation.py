@@ -234,9 +234,14 @@ def process_sheet(gid, terrain, sheet, sdir, req, cfg, cache):
         im = Image.open(os.path.join(sdir, fn)).convert("RGBA")
         if pp["neutralize_outline"]:
             im = normalize.neutralize_outline(im, darkness_thresh=pp["darkness_thresh"])
+        chroma_refs = [t for t in ref_targets if postprocess._raw_chromatic(t)]
         for tgt in ref_targets:
+            avoid = None                                 # avoid other chromatic refs' raw hue so a
+            if postprocess._raw_chromatic(tgt):          # warm ref (sand) can't brown-out grass px
+                others = [t.get("select_hue", t.get("hue")) for t in chroma_refs if t is not tgt]
+                avoid = others[0] if others else None
             im = normalize.harmonize(im, tgt, hs["hue_strength"], hs["sat_strength"],
-                                     hs["v_strength"], hue_band=hs.get("hue_band", 42))
+                                     hs["v_strength"], hue_band=hs.get("hue_band", 42), avoid_hue=avoid)
         fo = pp["fade_outline"]
         if fo.get("enabled"):                          # soften hard black frame lines AFTER harmonize
             im = normalize.fade_outline_alpha(im, material_target=emit_target,

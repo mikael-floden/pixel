@@ -637,8 +637,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.815,
-        "stone_mountain": 0.185
+        "saturated_grass": 0.81,
+        "stone_mountain": 0.19
       },
       "edges": {
         "NE": {
@@ -858,8 +858,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.968,
-        "stone_mountain": 0.032
+        "saturated_grass": 0.965,
+        "stone_mountain": 0.035
       },
       "edges": {
         "NE": {
@@ -1170,8 +1170,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.466,
-        "saturated_grass": 0.534
+        "stone_mountain": 0.474,
+        "saturated_grass": 0.526
       },
       "edges": {
         "NE": {
@@ -1194,7 +1194,7 @@
         "SE": {
           "samples": [
             "saturated_grass",
-            "saturated_grass",
+            "stone_mountain",
             "stone_mountain",
             "stone_mountain",
             "saturated_grass",
@@ -1203,8 +1203,8 @@
             "stone_mountain"
           ],
           "ratio": {
-            "saturated_grass": 0.625,
-            "stone_mountain": 0.375
+            "saturated_grass": 0.5,
+            "stone_mountain": 0.5
           }
         },
         "SW": {
@@ -1241,9 +1241,10 @@
         }
       },
       "features": [
-        "accent"
+        "accent",
+        "water"
       ],
-      "description": "saturated grass blending to grey mountain stone with a small detail"
+      "description": "saturated grass blending to grey mountain stone with a small detail, a small puddle"
     }
   ],
   "generated_at": "2026-07-05T09:48:46+00:00",

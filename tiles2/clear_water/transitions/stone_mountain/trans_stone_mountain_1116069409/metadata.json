@@ -315,8 +315,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.839,
-        "stone_mountain": 0.161
+        "clear_water": 0.834,
+        "stone_mountain": 0.166
       },
       "edges": {
         "NE": {
@@ -356,14 +356,14 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "clear_water",
+            "stone_mountain",
             "stone_mountain",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.875,
-            "stone_mountain": 0.125
+            "clear_water": 0.75,
+            "stone_mountain": 0.25
           }
         },
         "NW": {
