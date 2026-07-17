@@ -1,11 +1,11 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 18,
+  "count": 19,
   "by_category": {
     "ui": 8,
     "item": 5,
-    "tool": 5
+    "tool": 6
   },
   "sounds": [
     {
@@ -348,6 +348,25 @@
       "format": "wav",
       "loop": false,
       "file": "tool/hoe_till/hoe_till__take01.wav",
+      "duration_seconds": 0.092
+    },
+    {
+      "id": "watering_can",
+      "name": "Watering Can",
+      "category": "tool",
+      "description": "a soft splash of water poured from a watering can",
+      "tags": [
+        "water",
+        "watering",
+        "splash",
+        "farm",
+        "crops"
+      ],
+      "usage": "Watering crops with the watering can.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "tool/watering_can/watering_can__take01.wav",
       "duration_seconds": 0.092
     }
   ]
