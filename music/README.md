@@ -1,5 +1,9 @@
 # Pixel Music — the score
 
+> *Kondo was free to write Gerudo Valley one hour and a music-box lullaby the
+> next.* — the whole creed of this domain, in one sentence (the owner's idea;
+> the words found here, 2026-07-17)
+
 Background **music** for the game in [`games2/`](../games2). One **domain** of the
 multi-domain `pixel` repo; everything lives under `music/`, owned by the
 **music agent**.
