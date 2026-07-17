@@ -1,9 +1,9 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 7,
+  "count": 8,
   "by_category": {
-    "ui": 7
+    "ui": 8
   },
   "sounds": [
     {
@@ -137,6 +137,25 @@
       "format": "wav",
       "loop": false,
       "file": "ui/error_buzz/error_buzz__take01.wav",
+      "duration_seconds": 0.497
+    },
+    {
+      "id": "notification",
+      "name": "Notification",
+      "category": "ui",
+      "description": "a gentle two-note tone announcing a notification or new message",
+      "tags": [
+        "notify",
+        "message",
+        "alert",
+        "chat",
+        "ui"
+      ],
+      "usage": "New chat message / quest notification.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "ui/notification/notification__take01.wav",
       "duration_seconds": 0.497
     }
   ]
