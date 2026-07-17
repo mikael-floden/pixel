@@ -466,7 +466,14 @@ see `loop/LOOP.md`. (The first-generation `games/`+`characters/`+`maps/`+
   background-attachment:local so it travels with long scrolled content —
   the art is deliberately tall for that). The frame's
   static clock disc sits under the dynamic celestial-clock overlay
-  (clock.ts) top-centre.
+  (clock.ts) top-centre. The disc's baked vine-wrapped wooden HAND was
+  REMOVED (maintainer: the hand must be animated at runtime, never
+  baked): the fill pixels were borrowed from the maintainer's hand-free
+  render of the same art (registered per-band, colour-matched by local
+  means; his AI-regen images never align globally — patch locally).
+  That hand ships separately as `/ui2/clock-hand.png` (38×160 native,
+  soft alpha for rotation), pivot at the ring centre = sprite (20,38)
+  = frame (383,101).
 - **Tap/hold-to-move**: a tap RUNS to the point (there is NO double-tap
   gesture — nobody walks when they can run, maintainer); the autopilot
   eases into a walk inside `APPROACH_WALK_RADIUS` (2.5 cells) of the
