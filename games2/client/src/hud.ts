@@ -274,7 +274,7 @@ function injectStyles() {
   .ml-slots{display:grid;grid-template-columns:repeat(5,var(--ml-tab));grid-template-rows:repeat(3,var(--ml-tab));
     justify-content:space-evenly;align-content:space-evenly;width:100%;height:100%}
   .ml-slot{width:var(--ml-tab);height:var(--ml-tab);image-rendering:pixelated;border-style:solid;border-width:26px;
-    border-image:url(/ui2/plate-pressed.png) 52 fill / 26px;box-sizing:border-box}
+    border-image:url(/ui2/slot.png) 52 fill / 26px;box-sizing:border-box}
   .ml-btnrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:100%}
   .ml-plate-btn{padding:10px 20px;cursor:pointer;image-rendering:pixelated;background:none;touch-action:manipulation;
     border-style:solid;border-width:26px;border-image:url(/ui2/plate-normal.png) 52 fill / 26px;
