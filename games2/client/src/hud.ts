@@ -81,6 +81,9 @@ function applyFrameLayout() {
   // VISIBLE top edge — anchored to gameHeight it would slide under the rail
   root.style.setProperty("--hud-h-inv", `${Math.round(l.gameHeight)}px`);
   root.style.setProperty("--hud-h", `${Math.round(window.innerHeight - l.railTop)}px`);
+  // the version badge sits bottom-centre of the GAME VIEW: lift it above
+  // the HUD only when the HUD actually lays out (main.ts showVersion)
+  root.style.setProperty("--ml-badge-lift", `${Math.round(window.innerHeight - l.railTop)}px`);
   const hud = document.querySelector<HTMLElement>(".ml-hud");
   if (!hud) return;
   hud.style.top = `${Math.round(l.gameHeight)}px`;

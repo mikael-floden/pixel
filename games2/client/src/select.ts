@@ -6,6 +6,11 @@ import { mountSelectFrame } from "./frame2";
 
 const NAMES = ["Ari", "Bex", "Cyl", "Dax", "Eir", "Fen", "Gio", "Hana", "Ivo", "Juno", "Kira", "Lio"];
 
+// Worlds with a themed card in the maintainer's select-3 concept set (the
+// card art carries its own baked label). Everything else falls back to the
+// wooden plate chip.
+const WORLD_CARDS = new Set(["demo_isle", "demo_lost", "glow_test"]);
+
 export interface JoinChoice {
   world: string;
   character: CharacterDef;
@@ -75,18 +80,27 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       let swallowClick = false; // a real swipe must not click-select a chip
       const prevD = new Map<HTMLElement, number>();
       worlds.forEach((w, i) => {
-        const chip = el("button", "ml-world ml-plated");
+        // Worlds with a THEMED CARD from the maintainer's concept round
+        // (ui2/select3/world-<name>.png — label baked into the art) render
+        // the card full-bleed; the rest keep the wooden plate + minimap.
+        const hasCard = WORLD_CARDS.has(w.name);
+        const chip = el("button", hasCard ? "ml-world ml-wcard" : "ml-world ml-plated");
         pressFx(chip);
-        if (w.preview) {
-          const img = el("img", "ml-world-img") as HTMLImageElement;
-          img.src = `/assets/${w.preview.replace(/^\/+/, "")}`;
-          img.alt = w.label;
-          img.draggable = false; // native image drag would hijack the swipe
-          chip.appendChild(img);
+        if (hasCard) {
+          chip.style.backgroundImage = `url(/ui2/select3/world-${w.name}.png)`;
+          chip.setAttribute("aria-label", w.label);
+        } else {
+          if (w.preview) {
+            const img = el("img", "ml-world-img") as HTMLImageElement;
+            img.src = `/assets/${w.preview.replace(/^\/+/, "")}`;
+            img.alt = w.label;
+            img.draggable = false; // native image drag would hijack the swipe
+            chip.appendChild(img);
+          }
+          const span = el("span", "");
+          span.textContent = w.label;
+          chip.appendChild(span);
         }
-        const span = el("span", "");
-        span.textContent = w.label;
-        chip.appendChild(span);
         chip.addEventListener("click", () => {
           if (!swallowClick) selectWorld(i);
         });
@@ -390,9 +404,11 @@ function injectStyles() {
      border — same language as the HUD tabs. NO texture from the maintainer's
      inspiration mock was copied. */
   const css = `
+  /* deep blue-slate night stone (the select-3 concept's mood) — the stone
+     art under a navy wash */
   .ml-overlay{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;
-    background:#0b0705 linear-gradient(rgba(11,7,5,.82),rgba(11,7,5,.82));font-family:system-ui,sans-serif;color:#e8e8ec}
-  .ml-overlay{background-image:linear-gradient(rgba(11,7,5,.82),rgba(11,7,5,.82)),url(/ui2/stone.png);
+    background:#0d101c linear-gradient(rgba(13,16,28,.84),rgba(13,16,28,.84));font-family:system-ui,sans-serif;color:#e8e8ec}
+  .ml-overlay{background-image:linear-gradient(rgba(13,16,28,.84),rgba(13,16,28,.84)),url(/ui2/stone.png);
     background-size:auto,100% auto;background-repeat:repeat,repeat-y;image-rendering:pixelated}
   /* No vw/vh inside this overlay: it may carry a compensating CSS zoom
      (uiscale.ts) and viewport units would double-count under it. */
@@ -423,6 +439,15 @@ function injectStyles() {
     justify-content:center;gap:8px;padding:2px 12px 2px 6px;color:#dfe2ea;font-size:13px;text-shadow:0 1px 2px #000}
   .ml-world.anim{transition:transform .25s ease}
   .ml-world span{white-space:nowrap}
+  /* themed world card (select-3 concept): full-bleed art, baked label; the
+     selected card gets a gold outline + slight lift instead of the plate's
+     baked glow */
+  /* triple-class selectors: these must OUTRANK .ml-world.sel/.press (the
+     plate rules sit later in this sheet and tie on two classes) */
+  .ml-world.ml-wcard{border:none;border-image:none;background-size:100% 100%;background-repeat:no-repeat;
+    width:111px;height:58px;image-rendering:pixelated;padding:0}
+  .ml-world.ml-wcard.sel{border-image:none;outline:2px solid #ffd678;outline-offset:1px;filter:brightness(1.12)}
+  .ml-world.ml-wcard.press{border-image:none;filter:brightness(.9)}
   .ml-world.sel{border-image:url(/ui2/plate-selected.png) 56 fill / 13px;color:#ffd678}
   .ml-world.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
   .ml-world-img{width:34px;height:34px;object-fit:cover;image-rendering:auto;flex:none}
@@ -443,19 +468,29 @@ function injectStyles() {
      narrow screens (inside the ring) so the trough never collapses: the
      Enter CTA drops to its own centred line instead. */
   .ml-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;justify-content:center;align-items:center}
-  /* Name input = the backpack slot socket (its fill IS the dark trough). */
-  .ml-name{flex:1 1 170px;max-width:280px;min-width:170px;height:64px;padding:0 8px;border-style:solid;border-width:20px;
-    border-image:url(/ui2/slot.png) 10 fill / 20px;image-rendering:pixelated;box-sizing:border-box;
+  /* Name input = the select-3 STONE TABLET (9-slice so the carved corner
+     scrolls never smear when the input flexes). */
+  .ml-name{flex:1 1 170px;max-width:280px;min-width:170px;height:49px;padding:0 4px;border-style:solid;border-width:16px;
+    border-image:url(/ui2/select3/name-tablet.png) 22 fill / 16px;image-rendering:pixelated;box-sizing:border-box;
     background:none;color:#e8e8ec;font-size:16px;text-align:center;text-shadow:0 1px 2px #000}
   .ml-name:focus{outline:none;color:#ffd678}
-  .ml-btn{display:flex;align-items:center;justify-content:center;height:64px;padding:0 16px;
-    color:#ffd678;font:700 15px system-ui,sans-serif;letter-spacing:.4px;
-    text-transform:uppercase;text-shadow:0 1px 2px #000}
-  .ml-btn.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
-  .ml-ghost{color:#e8e8ec;font-size:18px;width:64px;padding:0;text-transform:none;flex:none}
-  .ml-install{margin-top:12px;padding:6px 14px;color:#c9c9cf;font-size:13px;text-shadow:0 1px 2px #000;
+  /* ENTER WORLD = the gold gem plaque, its label baked in the art (the DOM
+     text stays for a11y/e2e but renders invisible). */
+  .ml-btn{display:flex;align-items:center;justify-content:center;flex:none;border:none;padding:0;
+    width:141px;height:55px;background:url(/ui2/select3/enter-plaque.png) 50% 50% / 100% 100% no-repeat;
+    image-rendering:pixelated;color:transparent;font:700 15px system-ui,sans-serif}
+  .ml-btn.press{filter:brightness(.88)}
+  @media (hover:hover){ .ml-btn:active{filter:brightness(.88)} }
+  /* the dice keeps its wooden plate */
+  .ml-ghost{width:49px;height:49px;background:none;color:#e8e8ec;font-size:18px;
+    border-style:solid;border-width:13px;border-image:url(/ui2/plate-normal.png) 56 fill / 13px}
+  .ml-ghost.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px;filter:none}
+  /* install = the parchment scroll, text baked (DOM text invisible) */
+  .ml-install{margin-top:12px;border:none;padding:0;width:235px;height:40px;
+    background:url(/ui2/select3/install-scroll.png) 50% 50% / 100% 100% no-repeat;
+    image-rendering:pixelated;color:transparent;font-size:13px;cursor:pointer;
     display:inline-flex;align-items:center;justify-content:center}
-  .ml-install.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
+  .ml-install.press{filter:brightness(.88)}
   @media (hover:hover){
     .ml-plated:active{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
     .ml-world.sel:active,.ml-cell.sel:active{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
