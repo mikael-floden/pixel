@@ -306,7 +306,7 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
 ## Weather (server-owned world state, layer 2)
 
 - WorldState.weather (shared WEATHER_NAMES/COUNT; 0 = "Clear sky",
-  1 = "Cloudy at times") cycles via the "weather" message — the Settings
+  1 = "Cloudy at times", 2 = "Mist") cycles via the "weather" message — the Settings
   button sends it, every client's listener applies it (instant on join,
   chat-logged after). Cloud cover EASES over ~4s (clouds roll in). The
   shader's uCloud drives a WORLD-ANCHORED 2-octave value-noise cloud
@@ -321,6 +321,27 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   headless QA), `__ml.cloudAt(wx,wy)`; regressions:
   scripts/verify-weather.mjs (clear=1 everywhere, patchy not overcast,
   drifts over time, night-muted) + server/test/weather.test.ts.
+- **MIST (weather 2)** — creepy ground fog (maintainer: "follows the
+  ground... over lakes and open fields... can appear inside a forest...
+  part of the world, close to the ground, moving in the same isotropic
+  coordinate system"). Implemented in nightlight.ts as a SECOND shader
+  pass (MIST_FRAG): the multiply light field can only darken, and real
+  fog must COVER, so mist renders to its own RT composited with NORMAL
+  blend at depth 1_000_000 — above the light overlay AND the lit avatar
+  copies, so fog swallows whoever wades in. Each fragment runs the same
+  exact-crossing surface resolve as the light field, and density POOLS
+  by the resolved terrain height (full at ≤~0.4 levels — lakes, open
+  fields — gone by ~2.4): banks hug valleys and stop at cliff lines.
+  The noise banks drift along the WORLD axes = the iso diagonals on
+  screen. Density is posterized into 5 bands (stylized layers, cap
+  0.74); the cold-grey colour dims with the ambient so night mist looms
+  instead of glowing. LESSON: posterize AFTER scaling to the band range
+  — the first cut floor()'d raw density, almost everything fell below
+  band 1, and the whole effect silently vanished (debug by bisecting
+  the fragment with early colour returns). Eases on the clouds' ~4s
+  roll (curMist), skipped entirely while clear. EXACT JS twin mistAt()
+  — change together with MIST_FRAG; probes `__ml.mistAt(wx,wy)` + mist
+  in `__ml.weatherInfo()`.
 
 ## Directional sun shadows (day phases)
 

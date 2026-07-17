@@ -477,6 +477,7 @@ export class WorldScene extends Phaser.Scene {
   // target over a few seconds — clouds roll in, they don't blink in.
   private weatherIdx = 0;
   private curCloud = 0;
+  private curMist = 0;
   private timeFrozen = true; // synced mirror of WorldState.frozen (switch state)
   private timeSpeed = 0; // synced mirror of WorldState.timeSpeed (button label)
   private phaseT = 0.5; // synced mirror of WorldState.phaseT (continuous progress)
@@ -829,15 +830,24 @@ export class WorldScene extends Phaser.Scene {
       camZoom: () => this.cameras.main.zoom,
       sunInfo: () => ({ sun: [...this.curSun], phase: TIME_PHASES[this.timeIdx].name, t: this.timeT }),
       // Weather probes: info + LOCAL force (headless QA without the server).
-      weatherInfo: () => ({ idx: this.weatherIdx, name: WEATHER_NAMES[this.weatherIdx], cloud: this.curCloud }),
+      weatherInfo: () => ({
+        idx: this.weatherIdx,
+        name: WEATHER_NAMES[this.weatherIdx],
+        cloud: this.curCloud,
+        mist: this.curMist,
+      }),
       weather: (idx?: number, instant = true) => {
         if (idx !== undefined) {
           this.weatherIdx = idx % WEATHER_COUNT;
-          if (instant) this.curCloud = this.weatherIdx === 1 ? 1 : 0;
+          if (instant) {
+            this.curCloud = this.weatherIdx === 1 ? 1 : 0;
+            this.curMist = this.weatherIdx === 2 ? 1 : 0;
+          }
         }
         return this.weatherIdx;
       },
       cloudAt: (wx: number, wy: number) => this.night?.cloudFactorAt(wx, wy, this.curCloud, this.curSun[3]) ?? 1,
+      mistAt: (wx: number, wy: number) => this.night?.mistAt(wx, wy, this.curMist) ?? 0,
       star: (name?: string) => this.shootingStar(name), // LOCAL trigger for headless QA
       aurora: (on?: boolean, instant = true) => {
         if (on !== undefined) {
@@ -1116,7 +1126,10 @@ export class WorldScene extends Phaser.Scene {
     $(room.state).listen("weather", (idx: number) => {
       this.weatherIdx = idx % WEATHER_COUNT;
       this.hud?.refreshSettings(); // the weather button prints the state
-      if (firstWeatherSync) this.curCloud = this.weatherIdx === 1 ? 1 : 0; // no roll-in on join
+      if (firstWeatherSync) {
+        this.curCloud = this.weatherIdx === 1 ? 1 : 0; // no roll-in on join
+        this.curMist = this.weatherIdx === 2 ? 1 : 0;
+      }
       else this.chat.addLog("—", `Weather: ${WEATHER_NAMES[this.weatherIdx]}`);
       firstWeatherSync = false;
     });
@@ -1705,6 +1718,11 @@ export class WorldScene extends Phaser.Scene {
       const ca = 1 - Math.exp(-(this.game.loop.delta / 1000) / 4);
       this.curCloud += (cloudTo - this.curCloud) * ca;
       if (Math.abs(this.curCloud - cloudTo) < 0.005) this.curCloud = cloudTo;
+      // Mist (weather 2) creeps in on the same roll — banks ease up from
+      // nothing rather than popping.
+      const mistTo = this.weatherIdx === 2 ? 1 : 0;
+      this.curMist += (mistTo - this.curMist) * ca;
+      if (Math.abs(this.curMist - mistTo) < 0.005) this.curMist = mistTo;
       // Aurora eases on the same ~4s roll (the curtains breathe in).
       const auroraTo = this.auroraOn ? 1 : 0;
       this.curAurora += (auroraTo - this.curAurora) * ca;
@@ -1721,6 +1739,7 @@ export class WorldScene extends Phaser.Scene {
         this.curSun,
         this.curCloud,
         this.curAurora,
+        this.curMist,
       );
     }
 

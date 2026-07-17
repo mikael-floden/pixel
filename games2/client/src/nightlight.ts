@@ -640,6 +640,105 @@ void main() {
 `;
 
 const FIELD_KEY = "night-light-field";
+const MIST_KEY = "mist-field";
+
+/** MIST weather (WorldState.weather === 2) — a creeping ground fog.
+ *
+ * The maintainer's brief: "a mysterious fog that follows the ground and
+ * often appears over lakes and open fields... can also appear inside a
+ * forest. The feeling is creepy. The mist must look like it actually is
+ * part of the world and close to the ground — it must move in the same
+ * isotropic coordinate system."
+ *
+ * So the fog is a WORLD-anchored field, not a screen effect: this fragment
+ * runs the SAME exact-crossing surface resolve as the night shader (each
+ * pixel finds the terrain cell + height it shows), and the fog density
+ * pools by that height — full strength on level ≤0 ground (lakes, fields),
+ * gone by ~2.5 levels, so banks hug valleys and stop against cliffs. The
+ * noise banks drift along the WORLD axes (uAnimTime), which on screen is a
+ * slow creep along the iso diagonals — the mist visibly belongs to the
+ * ground plane. Drawn as its own NORMAL-blend overlay ABOVE the light
+ * overlay and the avatars (depth 1_000_000): fog covers whoever wades
+ * into it. Density is posterized into bands so the fog reads as stylized
+ * pixel-art layers, not photographic smoke; the colour is a cold pale
+ * grey dimmed by the ambient so night mist looms instead of glowing.
+ * EXACT JS twin: mistAt() — change BOTH together. */
+const MIST_FRAG = `
+precision highp float;
+
+uniform vec2 resolution;
+uniform float uAnimTime;
+uniform vec4 uCam;        // worldView x, y, w, h (world-render px)
+uniform vec4 uIsoA;       // ox, oy, dx, dy
+uniform vec4 uIsoB;       // lh, gridW, gridH, maxLevel
+uniform vec3 uAmbient;    // current grade — mist dims with the night
+uniform float uMist;      // eased cover 0..1
+uniform float uFlip;
+uniform sampler2D uHeight;
+
+float heightAt(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  return texture2D(uHeight, uv).r * 255.0 / 16.0;
+}
+float mHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float mNoise(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  vec2 u2 = f * f * (3.0 - 2.0 * f);
+  return mix(mix(mHash(i), mHash(i + vec2(1.0, 0.0)), u2.x),
+             mix(mHash(i + vec2(0.0, 1.0)), mHash(i + vec2(1.0, 1.0)), u2.x), u2.y);
+}
+
+void main() {
+  vec2 suv = gl_FragCoord.xy / resolution;
+  float wx = uCam.x + suv.x * uCam.z;
+  float wy = uCam.y + mix(suv.y, 1.0 - suv.y, uFlip) * uCam.w;
+  float u = (wx - uIsoA.x) / uIsoA.z - 1.0;
+  float v0 = (wy - uIsoA.y) / uIsoA.w;
+  float kk = uIsoB.x / uIsoA.w;
+  // Surface resolve — same exact cell-boundary walk as the night shader.
+  float vTop = v0 + uIsoB.w * kk;
+  float z = 0.0;
+  bool found = false;
+  float vHi = vTop;
+  for (int s = 0; s < 36; s++) {
+    if (found || vHi <= v0 - 1.5) continue;
+    float vColB = 2.0 * floor((vHi + u) * 0.5 - 0.0001) - u;
+    float vRowB = 2.0 * floor((vHi - u) * 0.5 - 0.0001) + u;
+    float vLo = max(vColB, vRowB);
+    float vMid = (vHi + vLo) * 0.5;
+    vec2 cr = vec2((u + vMid) * 0.5, (vMid - u) * 0.5);
+    float H = heightAt(cr);
+    if (H < 90.0) {
+      float vSurf = v0 + H * kk;
+      if (vSurf >= vLo - 0.0001) {
+        z = max((min(vHi, vSurf) - v0) / kk, 0.0);
+        found = true;
+      }
+    }
+    vHi = vLo;
+  }
+  if (!found || uMist <= 0.001) { gl_FragColor = vec4(0.0); return; }
+
+  // Fog banks drifting along the WORLD axes (screen: the iso diagonals).
+  vec2 w = vec2(wx, wy);
+  vec2 p1 = w * 0.0026 + uAnimTime * vec2(0.055, 0.030);
+  float banks = smoothstep(0.30, 0.60, mNoise(p1) * 0.6 + mNoise(p1 * 2.1 + 13.0) * 0.4);
+  vec2 p2 = w * 0.0074 + uAnimTime * vec2(-0.030, 0.048);
+  float roil = 0.55 + 0.45 * mNoise(p2);
+  // Hug the ground: full in the low (lakes/open fields), gone by ~2.5 levels.
+  float pool = clamp(1.0 - (z - 0.4) * 0.5, 0.0, 1.0);
+  float d = clamp(banks * roil * 1.55, 0.0, 1.0) * pool * uMist;
+  // Posterized bands = stylized pixel-art fog layers, capped so the ground
+  // still ghosts through the thickest bank.
+  float a = floor(d * 5.0 + 0.001) / 5.0 * 0.74;
+  if (a <= 0.001) { gl_FragColor = vec4(0.0); return; }
+  float ambLum = (uAmbient.r + uAmbient.g + uAmbient.b) / 3.0;
+  vec3 col = vec3(0.72, 0.78, 0.76) * clamp(0.22 + 0.95 * ambLum, 0.0, 1.0);
+  gl_FragColor = vec4(col * a, a); // premultiplied for Phaser's NORMAL blend
+}
+`;
 
 /** Glow stamps for every visible emission source (tile-emission@2).
  *
@@ -723,6 +822,9 @@ export class NightLights {
   private base?: Phaser.Display.BaseShader;
   private shader?: Phaser.GameObjects.Shader;
   private overlay?: Phaser.GameObjects.Image;
+  private mistBase?: Phaser.Display.BaseShader;
+  private mistShader?: Phaser.GameObjects.Shader;
+  private mistOverlay?: Phaser.GameObjects.Image;
   private posArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private colArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private fieldCount = 0;
@@ -767,6 +869,19 @@ export class NightLights {
 
   create() {
     this.buildHeightmap();
+    // MIST overlay shader (weather 2): declared uniforms only — the uSun
+    // lesson applies here too (an undeclared uniform silently never syncs
+    // on real phone GPUs).
+    this.mistBase = new Phaser.Display.BaseShader("mist-field", MIST_FRAG, undefined, {
+      uCam: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
+      uIsoA: { type: "4f", value: { x: 0, y: 0, z: ISO_DX, w: ISO_DY } },
+      uIsoB: { type: "4f", value: { x: MAP_GEOMETRY.lh, y: 1, z: 1, w: 0 } },
+      uAmbient: { type: "3f", value: { x: 1, y: 1, z: 1 } },
+      uMist: { type: "1f", value: 0 },
+      uFlip: { type: "1f", value: 1 },
+      uAnimTime: { type: "1f", value: 0 },
+      uHeight: { type: "sampler2D", value: null },
+    });
     this.base = new Phaser.Display.BaseShader("night-lights", FRAG, undefined, {
       uCam: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
       uIsoA: { type: "4f", value: { x: 0, y: 0, z: ISO_DX, w: ISO_DY } },
@@ -810,12 +925,24 @@ export class NightLights {
       .setDepth(900_000) // above the scene; avatars carve via the light mask
       .setBlendMode(Phaser.BlendModes.MULTIPLY)
       .setVisible(false);
+    // Mist rides ABOVE the light overlay and the lit avatar copies: ground
+    // fog covers whoever wades into it (NORMAL blend — fog occludes, it
+    // doesn't tint).
+    this.mistOverlay = this.scene.add
+      .image(0, 0, "__WHITE")
+      .setOrigin(0.5, 0.5)
+      .setScrollFactor(0)
+      .setDepth(1_000_000)
+      .setBlendMode(Phaser.BlendModes.NORMAL)
+      .setVisible(false);
     this.buildShader(this.scene.scale.width, this.scene.scale.height);
+    this.buildMistShader(this.scene.scale.width, this.scene.scale.height);
     // The render target does NOT follow setSize — a resized window left a
     // stale wrong-scale light field (bright rectangles, pools that ignore
     // zoom). Rebuild the shader + target at the new size instead.
     this.scene.scale.on("resize", (sz: Phaser.Structs.Size) => {
       this.buildShader(sz.width, sz.height);
+      this.buildMistShader(sz.width, sz.height);
     });
   }
 
@@ -850,6 +977,29 @@ export class NightLights {
       this.stampImg.setBlendMode(wr.addBlendMode([gl.ONE, gl.ONE], gl.FUNC_ADD));
     } else {
       this.stampImg.setBlendMode(Phaser.BlendModes.ADD);
+    }
+  }
+
+  /** (Re)create the mist shader + render target (same lifecycle rules as
+   * the main field: fresh key per size, rebuilt on resize). */
+  private buildMistShader(width: number, height: number) {
+    if (!this.mistBase || width <= 0 || height <= 0) return;
+    this.mistShader?.destroy();
+    const key = `${MIST_KEY}-${this.fieldCount++}`;
+    const s = this.scene.add
+      .shader(this.mistBase, 0, 0, width, height)
+      .setOrigin(0, 0)
+      .setVisible(false);
+    s.setSampler2D("uHeight", "world-heightmap");
+    s.setRenderToTexture(key);
+    this.mistShader = s;
+    const old = this.mistOverlay!.texture.key;
+    this.mistOverlay!
+      .setTexture(key)
+      .setPosition(width / 2, height / 2)
+      .setScale(1);
+    if (old.startsWith(MIST_KEY) && this.scene.textures.exists(old)) {
+      this.scene.textures.remove(old);
     }
   }
 
@@ -1010,6 +1160,7 @@ export class NightLights {
   private curSun: [number, number, number, number] = [0, 0, 1, 0];
   private curCloud = 0;
   private curAurora = 0;
+  private curMist = 0;
 
   /** EXACT JS twin of the shader's aurora curtains (additive RGB) — tints
    * the lit copies so characters glow with the sky. Change BOTH together. */
@@ -1251,6 +1402,10 @@ export class NightLights {
     this.active = on;
     this.shader?.setVisible(on);
     this.overlay?.setVisible(on);
+    if (!on) {
+      this.mistShader?.setVisible(false);
+      this.mistOverlay?.setVisible(false);
+    }
   }
 
   /** Headless-debug: real dimensions of the render target vs the screen. */
@@ -1283,6 +1438,7 @@ export class NightLights {
     sun: [number, number, number, number] = [0, 0, 1, 0],
     cloud = 0,
     aurora = 0,
+    mist = 0,
   ) {
     this.curLights = lights;
     this.curStamps = stamps;
@@ -1290,6 +1446,7 @@ export class NightLights {
     this.curSun = sun;
     this.curCloud = cloud;
     this.curAurora = aurora;
+    this.curMist = mist;
     if (!this.shader || !this.active) return;
     const s = this.shader;
     // Ground-truth calibrated by raw suv readback: the zoomed overlay shows
@@ -1389,5 +1546,66 @@ export class NightLights {
     s.setUniform("uLightPos.value", this.posArr);
     s.setUniform("uLightCol.value", this.colArr);
     s.setUniform("uEmitN.value", this.emitList.length);
+
+    // MIST overlay — same world window/clock as the light field, its own
+    // shader (NORMAL blend can't share the multiply pass). Skipped entirely
+    // while clear so the extra pass costs nothing.
+    const showMist = mist > 0.003;
+    this.mistShader?.setVisible(showMist);
+    this.mistOverlay?.setVisible(showMist);
+    if (showMist && this.mistShader) {
+      const m = this.mistShader;
+      m.setUniform("uAnimTime.value", this.scene.time.now / 1000);
+      m.setUniform("uCam.value.x", camX);
+      m.setUniform("uCam.value.y", camY);
+      m.setUniform("uCam.value.z", wv.width * k);
+      m.setUniform("uCam.value.w", wv.height * k);
+      m.setUniform("uFlip.value", this.fieldFlip);
+      m.setUniform("uIsoA.value.x", this.iso.ox);
+      m.setUniform("uIsoA.value.y", this.iso.oy + 8);
+      m.setUniform("uIsoB.value.y", this.world.width);
+      m.setUniform("uIsoB.value.z", this.world.height);
+      m.setUniform("uIsoB.value.w", this.maxLevel);
+      m.setUniform("uMist.value", mist);
+      m.setUniform("uAmbient.value.x", ambient[0]);
+      m.setUniform("uAmbient.value.y", ambient[1]);
+      m.setUniform("uAmbient.value.z", ambient[2]);
+    }
+  }
+
+  /** EXACT JS twin of the shader's mist density at a WORLD point (probes +
+   * QA) — change together with MIST_FRAG. Returns 0..1 opacity BEFORE the
+   * posterize/cap (the field's raw density). */
+  mistAt(wx: number, wy: number, mist = this.curMist): number {
+    if (mist <= 0.001 || !this.tArr) return 0;
+    // ground-plane inverse projection (level-0 cell; probes sample flats)
+    const u = (wx - this.iso.ox) / ISO_DX - 1;
+    const v = (wy - (this.iso.oy + 8)) / ISO_DY;
+    const col = Math.floor((u + v) / 2);
+    const row = Math.floor((v - u) / 2);
+    if (col < 0 || row < 0 || col >= this.world.width || row >= this.world.height) return 0;
+    const z = this.tArr[row * this.world.width + col];
+    const t = this.scene.time.now / 1000;
+    const hash = (x: number, y: number) => {
+      const h = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
+      return h - Math.floor(h);
+    };
+    const noise = (x: number, y: number) => {
+      const ix = Math.floor(x), iy = Math.floor(y);
+      const fx = x - ix, fy = y - iy;
+      const ux = fx * fx * (3 - 2 * fx), uy = fy * fy * (3 - 2 * fy);
+      const a = hash(ix, iy), b = hash(ix + 1, iy), c = hash(ix, iy + 1), d = hash(ix + 1, iy + 1);
+      return a + (b - a) * ux + (c + (d - c) * ux - (a + (b - a) * ux)) * uy;
+    };
+    const sstep = (e0: number, e1: number, x: number) => {
+      const k2 = Math.min(1, Math.max(0, (x - e0) / (e1 - e0)));
+      return k2 * k2 * (3 - 2 * k2);
+    };
+    const p1x = wx * 0.0026 + t * 0.055, p1y = wy * 0.0026 + t * 0.03;
+    const banks = sstep(0.30, 0.60, noise(p1x, p1y) * 0.6 + noise(p1x * 2.1 + 13, p1y * 2.1 + 13) * 0.4);
+    const p2x = wx * 0.0074 - t * 0.03, p2y = wy * 0.0074 + t * 0.048;
+    const roil = 0.55 + 0.45 * noise(p2x, p2y);
+    const pool = Math.min(1, Math.max(0, 1 - (z - 0.4) * 0.5));
+    return Math.min(1, banks * roil * 1.55) * pool * mist;
   }
 }
