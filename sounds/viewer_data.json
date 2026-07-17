@@ -1,12 +1,12 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 20,
+  "count": 21,
   "by_category": {
     "ui": 8,
     "item": 5,
     "tool": 6,
-    "movement": 1
+    "movement": 2
   },
   "sounds": [
     {
@@ -387,6 +387,25 @@
       "format": "wav",
       "loop": false,
       "file": "movement/footstep_grass/footstep_grass__take01.wav",
+      "duration_seconds": 0.092
+    },
+    {
+      "id": "footstep_stone",
+      "name": "Footstep (Stone)",
+      "category": "movement",
+      "description": "a crisp tap of a step on stone or pavement",
+      "tags": [
+        "footstep",
+        "walk",
+        "stone",
+        "movement",
+        "tap"
+      ],
+      "usage": "Per-step while walking on stone/path tiles.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "movement/footstep_stone/footstep_stone__take01.wav",
       "duration_seconds": 0.092
     }
   ]
