@@ -1,11 +1,11 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 16,
+  "count": 17,
   "by_category": {
     "ui": 8,
     "item": 5,
-    "tool": 3
+    "tool": 4
   },
   "sounds": [
     {
@@ -310,6 +310,25 @@
       "format": "wav",
       "loop": false,
       "file": "tool/axe_chop/axe_chop__take01.wav",
+      "duration_seconds": 0.497
+    },
+    {
+      "id": "pickaxe_hit",
+      "name": "Pickaxe Hit",
+      "category": "tool",
+      "description": "a sharp stony crack of a pickaxe striking rock",
+      "tags": [
+        "pickaxe",
+        "mine",
+        "rock",
+        "stone",
+        "impact"
+      ],
+      "usage": "Mining rock / ore with the pickaxe.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "tool/pickaxe_hit/pickaxe_hit__take01.wav",
       "duration_seconds": 0.497
     }
   ]
