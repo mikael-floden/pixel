@@ -130,7 +130,7 @@ export class HudBar {
       const b = mk("button", "ml-tab") as HTMLButtonElement;
       b.dataset.tab = t.id;
       const icon = mk("img", "ml-tab-icon") as HTMLImageElement;
-      icon.src = `/ui/icon-${t.id}.png`;
+      icon.src = `/ui2/icon-${t.id}.png`;
       icon.alt = "";
       icon.draggable = false;
       const label = mk("span", "ml-tab-label");
