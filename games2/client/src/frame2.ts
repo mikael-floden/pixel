@@ -197,11 +197,12 @@ function heighten(wideImg: ImageData, h0: number, g1: number, g2: number): Image
 }
 
 function splitInsH(insH: number): [number, number] {
-  // roughly half into the lower (86px-unit) stretch, rounded to whole units;
-  // the remainder goes to the single-row stretch which absorbs any count
-  let g2 = Math.round(insH / 2 / VCUT2.p) * VCUT2.p;
-  g2 = Math.max(0, Math.min(g2, insH));
-  return [insH - g2, g2];
+  // ALL vertical head-room goes to the game view (the stretch ABOVE rail A):
+  // the HUD keeps its base art height and the world gets every spare pixel
+  // (maintainer: "make the game-view bigger and HUD smaller"). The 86px
+  // bark-unit stretch below (VCUT2/g2) stays wired for the day the page
+  // window needs to grow again.
+  return [insH, 0];
 }
 
 function compose() {

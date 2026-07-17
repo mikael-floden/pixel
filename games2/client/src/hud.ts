@@ -187,7 +187,7 @@ export class HudBar {
     // content page. Real inventory comes later.
     const bp = this.pages.get("backpack")!;
     const slots = mk("div", "ml-slots");
-    for (let i = 0; i < 15; i++) slots.appendChild(mk("i", "ml-slot"));
+    for (let i = 0; i < 10; i++) slots.appendChild(mk("i", "ml-slot"));
     bp.append(slots);
 
     this.pages.get("equipment")!.append(muted("Nothing equipped yet — armor and tools are coming."));
@@ -289,7 +289,7 @@ function injectStyles() {
     background-repeat:repeat-y;background-attachment:local;image-rendering:pixelated}
   .ml-page.show{display:flex}
   .ml-muted{margin:0;font:14px/1.4 system-ui,sans-serif;color:#8f8f9c;text-shadow:0 1px 2px #000}
-  .ml-slots{display:grid;grid-template-columns:repeat(5,var(--ml-tab));grid-template-rows:repeat(3,var(--ml-tab));
+  .ml-slots{display:grid;grid-template-columns:repeat(5,var(--ml-tab));grid-template-rows:repeat(2,var(--ml-tab));
     justify-content:space-evenly;align-content:space-evenly;width:100%;height:100%}
   .ml-slot{width:var(--ml-tab);height:var(--ml-tab);image-rendering:pixelated;border-style:solid;border-width:30px;
     border-image:url(/ui2/slot.png) 10 fill / 30px;box-sizing:border-box}
