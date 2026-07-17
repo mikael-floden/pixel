@@ -1,0 +1,61 @@
+name: Pixel music loop
+
+# Autonomous composition loop for the music/ domain. Runs on demand (dispatch),
+# advances the catalog by a bounded chunk, and the loop itself commits + pushes
+# each track. REQUIRES the ELEVENLABS_API_KEY secret (same account as sounds/);
+# without it the loop records a `blocked` heartbeat and generates nothing.
+
+on:
+  # Scheduled runs off by default (repo owner preference — see sounds.yml).
+  # schedule:
+  #   - cron: "25 * * * *"        # hourly, offset from the other domains
+  workflow_dispatch:
+    inputs:
+      max_minutes:
+        description: "Minutes to run this pass"
+        default: "50"
+      max_units:
+        description: "Max tracks this pass (0 = unlimited)"
+        default: "0"
+
+permissions:
+  contents: write
+
+# Never let two music passes overlap; distinct group from the other domains so
+# everything else still runs in parallel (disjoint paths).
+concurrency:
+  group: music-loop
+  cancel-in-progress: false
+
+jobs:
+  loop:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - name: Checkout dispatched ref
+        uses: actions/checkout@v4
+        with:
+          # depth 1: the pack is >1 GiB of binary-art history — the loop only
+          # needs the tip to commit+push.
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run the music loop
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY || secrets.ELEVEN_LABS_API_KEY }}
+        run: |
+          git config user.name "pixel-music-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          python music/pipeline/loop.py \
+            --max-minutes "${{ github.event.inputs.max_minutes || '50' }}" \
+            --max-units "${{ github.event.inputs.max_units || '0' }}"

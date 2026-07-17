@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pixel Music — tracks</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; padding: 16px; background: #14121a; color: #efeaf7;
+         font: 15px/1.5 system-ui, sans-serif; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .sub { color: #9a90b0; font-size: 13px; margin-bottom: 16px; }
+  .track { background: #1e1a28; border: 1px solid #322b44; border-radius: 12px;
+           padding: 14px; margin-bottom: 14px; }
+  .track h2 { font-size: 16px; margin: 0; }
+  .meta { color: #9a90b0; font-size: 12px; margin: 2px 0 8px; }
+  .use { font-size: 13px; margin: 0 0 10px; }
+  audio { width: 100%; }
+  canvas { width: 100%; height: 72px; display: block; margin-top: 8px;
+           border-radius: 8px; background: #14121a; }
+  .legend { color: #9a90b0; font-size: 11px; margin-top: 4px; }
+  .err { color: #ff9d9d; }
+</style>
+</head>
+<body>
+<h1>🎼 Pixel Music</h1>
+<div class="sub">Background score for Nangijala — each timeline shows sections,
+downbeats and the loudness curve straight from <code>metadata.json</code>.</div>
+<div id="list">loading…</div>
+<script>
+const COLORS = ['#7b5cd6','#4f9dde','#4fc08d','#deb14f','#de6f4f'];
+
+async function main() {
+  const list = document.getElementById('list');
+  let cat;
+  try { cat = await (await fetch('viewer_data.json')).json(); }
+  catch (e) { list.innerHTML = '<span class="err">viewer_data.json not found — run pipeline/viewer_build.py</span>'; return; }
+  if (!cat.tracks.length) { list.textContent = 'no tracks yet'; return; }
+  list.innerHTML = '';
+  for (const t of cat.tracks) {
+    const div = document.createElement('div');
+    div.className = 'track';
+    div.innerHTML = `<h2>${t.name}</h2>
+      <div class="meta">${t.key ? t.key.root + ' ' + t.key.mode : ''} ·
+        ${t.bpm ?? '?'} BPM · ${Math.round(t.duration_s)} s ·
+        ${t.loopable ? 'loopable' : 'one-shot'} · ${(t.feeling||[]).join(', ')}</div>
+      <p class="use">${t.use || ''}</p>
+      <audio controls preload="none" src="${t.file}"></audio>
+      <canvas></canvas>
+      <div class="legend">colored bands = sections · ticks = downbeats · line = loudness (RMS)</div>`;
+    list.appendChild(div);
+    drawTimeline(div, t).catch(() => {});
+  }
+}
+
+async function drawTimeline(div, t) {
+  const meta = await (await fetch(t.metadata)).json();
+  const canvas = div.querySelector('canvas');
+  const audio = div.querySelector('audio');
+  const dpr = devicePixelRatio || 1;
+  const W = canvas.clientWidth * dpr, H = canvas.clientHeight * dpr;
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  const dur = meta.audio.duration_s;
+  const X = s => s / dur * W;
+
+  const render = () => {
+    ctx.clearRect(0, 0, W, H);
+    (meta.structure.sections || []).forEach((s, i) => {
+      ctx.fillStyle = COLORS[i % COLORS.length] + '55';
+      ctx.fillRect(X(s.start_s), 0, X(s.end_s) - X(s.start_s), H);
+      ctx.fillStyle = '#cfc6e6';
+      ctx.font = `${10 * dpr}px system-ui`;
+      ctx.fillText(s.name, X(s.start_s) + 4 * dpr, 12 * dpr);
+    });
+    if (meta.timing) {
+      ctx.fillStyle = '#efeaf7aa';
+      for (const b of meta.timing.downbeats_s) ctx.fillRect(X(b), H - 10 * dpr, dpr, 10 * dpr);
+    }
+    if (meta.dynamics) {
+      const { hop_s, values_db } = meta.dynamics.rms_db;
+      ctx.strokeStyle = '#efeaf7'; ctx.lineWidth = dpr; ctx.beginPath();
+      values_db.forEach((db, i) => {
+        const y = H - (Math.max(-60, db) + 60) / 60 * (H - 16 * dpr);
+        i ? ctx.lineTo(X(i * hop_s), y) : ctx.moveTo(0, y);
+      });
+      ctx.stroke();
+    }
+    if (!audio.paused || audio.currentTime > 0) {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(X(audio.currentTime), 0, 2 * dpr, H);
+    }
+    requestAnimationFrame(render);
+  };
+  render();
+  canvas.onclick = e => {
+    const r = canvas.getBoundingClientRect();
+    audio.currentTime = (e.clientX - r.left) / r.width * dur;
+  };
+}
+main();
+</script>
+</body>
+</html>

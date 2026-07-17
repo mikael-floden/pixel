@@ -1,0 +1,88 @@
+{
+  "engine": {
+    "provider": "elevenlabs",
+    "model_id": "music_v1",
+    "primary_format": "pcm_44100",
+    "fallback_format": "mp3_44100_128",
+    "global_negative_styles": [
+      "vocals", "sung lyrics", "singing", "spoken word",
+      "chiptune", "8-bit", "lo-fi", "distortion", "harsh percussion",
+      "EDM", "trap beat", "abrupt ending", "fade to silence mid-phrase"
+    ]
+  },
+  "budget": {
+    "min_ai_credits_remaining": 2000
+  },
+  "mastering": {
+    "peak_dbfs": -1.0,
+    "edge_fade_ms": 15
+  },
+  "analysis": {
+    "rms_hop_ms": 50
+  },
+  "catalog": [
+    {
+      "id": "nangijala_cherry_valley",
+      "name": "Nangijala — Cherry Valley",
+      "use": "Main overworld background bed: daytime exploring of the home valley (village, meadows, cherry orchards). The default track the player hears most, so it must be beautiful, calm, and never fatiguing.",
+      "feeling": ["home", "warmth", "gentle wonder", "quiet longing", "safety after a long journey"],
+      "narrative": "Nangijala is the land the Lionheart brothers wake up in — an afterlife valley of cherry blossoms and campfires. The music says: you have arrived somewhere kind, but it remembers the crossing; a thread of melancholy runs under the warmth.",
+      "references": ["Howard Shore — Concerning Hobbits (the Shire)", "Joe Hisaishi — pastoral cues", "gentle Nordic folk"],
+      "length_ms": 120000,
+      "bpm": 76,
+      "time_signature": "4/4",
+      "key": { "root": "D", "mode": "major" },
+      "loop": {
+        "loopable": true,
+        "recommended": { "crossfade_ms": 600 }
+      },
+      "prompt": "A warm, mythical orchestral fantasy theme for the overworld of a storybook adventure game, set in a peaceful afterlife valley of cherry blossoms, green meadows and campfire smoke. Cinematic but intimate, in the spirit of Howard Shore's Shire music and gentle Nordic folk. Structure: a solo wooden flute opens alone with a simple, singable melody over a soft string pad and sparse fingerpicked harp; the full theme then blooms in warm legato strings with the harp keeping flowing eighth-note arpeggios; a wide-eyed middle section lifts with a distant French horn countermelody and a soft wordless-choir-like pad, the emotional high point; then the theme settles back down to the quiet solo flute and strings for a gentle, unresolved, loop-friendly ending that can flow back into the beginning. A faint, soft frame-drum heartbeat keeps a clear gentle pulse throughout. Strictly instrumental. D major, 76 BPM, 4/4. High-fidelity, lush, spacious cinematic mix with soft dynamics and a touch of wistful melancholy under the warmth.",
+      "sections": [
+        {
+          "name": "awakening",
+          "description": "Solo wooden flute states the main melody over a soft string pad and sparse harp. The player's quietest moment — arrival, morning light.",
+          "sync_hints": [
+            "Safe entry point for scene fade-in; ambience (birds, wind) should sit above the sparse mix here.",
+            "Align slow environment events (petal falls, drifting smoke) to downbeats_s."
+          ],
+          "weight": 1.0
+        },
+        {
+          "name": "valley_theme",
+          "description": "The theme blooms: warm legato strings carry the melody, harp keeps flowing eighth-note arpeggios, frame-drum heartbeat becomes audible.",
+          "sync_hints": [
+            "Good moment for the world to feel alive: NPC activity, animals, waterwheel motion synced to beats_s.",
+            "Footstep SFX pitched to sfx_safe_notes read as part of the arrangement here."
+          ],
+          "weight": 1.2
+        },
+        {
+          "name": "wonder",
+          "description": "Emotional high point: French horn countermelody and soft choir-like pad widen the sound. Vista moment.",
+          "sync_hints": [
+            "Best section for reveals (vista opens, title card, quest banner) — trigger on this section's first downbeat.",
+            "Use events.peaks inside this window for one-shot sparkle/light effects."
+          ],
+          "weight": 1.1
+        },
+        {
+          "name": "homecoming",
+          "description": "The theme returns, gentler — strings soften, harp thins out. Warmth with the melancholy thread most audible.",
+          "sync_hints": [
+            "Good window for quiet dialogue or journal UI — mix leaves headroom for voice/UI sounds."
+          ],
+          "weight": 1.0
+        },
+        {
+          "name": "return_to_stillness",
+          "description": "Back to solo flute and pad, unresolved cadence; engineered to flow back into 'awakening' on loop.",
+          "sync_hints": [
+            "Loop seam lives here: crossfade loop.recommended.crossfade_ms from end_s into 0.0.",
+            "Avoid triggering big scripted moments in this window — the bed is at its thinnest."
+          ],
+          "weight": 0.7
+        }
+      ]
+    }
+  ]
+}
