@@ -17,6 +17,13 @@ the game works) and `coordination/PROTOCOL.md`. This file only adds the
 split: who owns which files, so the one-writer-per-file rule keeps working
 INSIDE the shared domain.
 
+**Read `games2/docs/UI_AGENT_ONBOARDING.md`** — the game agent's handoff
+handbook: how the maintainer reviews (annotated screenshots, RED=remove /
+BLUE=restore-or-coordinate / GREEN=keep, apply marks LITERALLY), the
+screenshot-registration recipe, keying recipes per backdrop colour,
+first-upload-is-pixel-source, send verification crops back to his phone,
+and the frame/clock asset contracts. It outranks this file on technique.
+
 ## File ownership (one writer per file, applied inside games2/)
 
 **games-ui owns (the DOM overlay layer + its assets/QA):**
@@ -28,7 +35,6 @@ INSIDE the shared domain.
 - `client/src/clock.ts` — the celestial clock overlay + animated hand.
 - `client/src/select.ts` — character/world select screen.
 - `client/src/loading.ts` — loading overlay.
-- `client/src/chat.ts` — chat overlay.
 - `client/src/roster.ts` — player roster overlay.
 - `client/src/uiscale.ts` — the compensating CSS zoom for overlays.
 - `client/public/ui/`, `client/public/ui2/`, `client/public/logo*.png`,
@@ -41,10 +47,14 @@ INSIDE the shared domain.
 - This file.
 
 **The games agent owns everything else**, notably: `client/src/scenes/`,
-`nightlight.ts`, `lighting.ts`, `maps.ts` (world consumption — NOT the Map
-tab page), `manifest.ts`, `net.ts`, `placeholder.ts`, `main.ts`, `shared/`,
-`server/`, `Dockerfile`, `deploy/`, `loop/`, the remaining scripts, and
-`games2/CLAUDE.md` + `games2/README.md`.
+`chat.ts` (chat internals — per the handoff), `nightlight.ts`,
+`lighting.ts`, `maps.ts` (world consumption — NOT the Map tab page),
+`manifest.ts`, `net.ts`, `placeholder.ts`, `main.ts`, `shared/`, `server/`,
+`Dockerfile`, `deploy/`, `loop/`, the remaining scripts, and
+`games2/CLAUDE.md` + `games2/README.md`. The Settings buttons' BEHAVIOUR is
+also theirs — they call into WorldScene; the `HudActions` interface
+(`act`/`get`/`state` callbacks in hud.ts) is the contract between us. Keep
+it stable; changing its semantics needs a board round trip.
 
 **Shared glue — coordinate via the board BEFORE editing:**
 
