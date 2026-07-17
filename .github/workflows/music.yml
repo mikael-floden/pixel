@@ -9,6 +9,14 @@ on:
   # Scheduled runs off by default (repo owner preference — see sounds.yml).
   # schedule:
   #   - cron: "25 * * * *"        # hourly, offset from the other domains
+  #
+  # Bootstrap trigger: workflow_dispatch only registers once this file reaches
+  # the default branch, so while the domain lives on its feature branch the
+  # loop fires on pushes that change the catalog or this workflow. Loop commits
+  # (made with GITHUB_TOKEN) never retrigger runs, so this cannot recurse.
+  push:
+    branches: ["claude/music-agent-first-track-8b1dg6"]
+    paths: ["music/config/**", ".github/workflows/music.yml"]
   workflow_dispatch:
     inputs:
       max_minutes:
