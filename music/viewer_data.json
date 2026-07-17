@@ -1,5 +1,50 @@
 {
   "domain": "music",
-  "generated_at": "2026-07-17T15:05:33+00:00",
-  "tracks": []
+  "generated_at": "2026-07-17T15:08:41+00:00",
+  "tracks": [
+    {
+      "id": "nangijala_cherry_valley",
+      "name": "Nangijala \u2014 Cherry Valley",
+      "use": "Main overworld background bed: daytime exploring of the home valley (village, meadows, cherry orchards). The default track the player hears most, so it must be beautiful, calm, and never fatiguing.",
+      "feeling": [
+        "home",
+        "warmth",
+        "gentle wonder",
+        "quiet longing",
+        "safety after a long journey"
+      ],
+      "file": "nangijala_cherry_valley/nangijala_cherry_valley.wav",
+      "format": "wav",
+      "duration_s": 120.001,
+      "bpm": 76,
+      "key": {
+        "root": "D",
+        "mode": "major"
+      },
+      "loopable": true,
+      "sections": [
+        {
+          "name": "Intro - The Whispering Blossoms",
+          "start_s": 0.0,
+          "end_s": 30.0
+        },
+        {
+          "name": "A-Section - The Valley Blooms",
+          "start_s": 30.0,
+          "end_s": 60.0
+        },
+        {
+          "name": "B-Section - Over the Green Meadows",
+          "start_s": 60.0,
+          "end_s": 90.0
+        },
+        {
+          "name": "Outro - Campfire Embers Fade",
+          "start_s": 90.0,
+          "end_s": 120.0
+        }
+      ],
+      "metadata": "nangijala_cherry_valley/metadata.json"
+    }
+  ]
 }
