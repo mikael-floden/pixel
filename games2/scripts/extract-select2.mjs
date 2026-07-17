@@ -148,8 +148,36 @@ const vym = ((vy0 + vy1) >> 1) - (STRIP >> 1);
 const beamLeft = write(LEFT[0] - 1, vym, LEFT[1] + 1, vym + STRIP, "beam-left.png");
 const beamRight = write(RIGHT[0] - 1, vym, RIGHT[1] + 1, vym + STRIP, "beam-right.png");
 
+// ---- outer empty margins: how far each corner's outward edges are from
+// any opaque pixel (the client shifts the whole ring outward by the min of
+// each side's two corners, so the beams hug the screen edge without
+// clipping one art pixel — maintainer: "the border is extremely far away
+// from the edge") ----
+const firstOpaque = (x0, y0, x1, y1, edge) => {
+  const opaque = (x, y) => solid(x, y);
+  const limit = edge === "top" || edge === "bottom" ? y1 - y0 : x1 - x0;
+  for (let d = 0; d < limit; d++) {
+    if (edge === "top" || edge === "bottom") {
+      const y = edge === "top" ? y0 + d : y1 - 1 - d;
+      for (let x = x0; x < x1; x++) if (opaque(x, y)) return d;
+    } else {
+      const x = edge === "left" ? x0 + d : x1 - 1 - d;
+      for (let y = y0; y < y1; y++) if (opaque(x, y)) return d;
+    }
+  }
+  return limit;
+};
+const margins = {
+  tl: { top: firstOpaque(0, 0, tlX, tlY, "top"), left: firstOpaque(0, 0, tlX, tlY, "left") },
+  tr: { top: firstOpaque(trX, 0, W, trY, "top"), right: firstOpaque(trX, 0, W, trY, "right") },
+  bl: { bottom: firstOpaque(0, blY, blX, H, "bottom"), left: firstOpaque(0, blY, blX, H, "left") },
+  br: { bottom: firstOpaque(brX, brY, W, H, "bottom"), right: firstOpaque(brX, brY, W, H, "right") },
+};
+console.log("outer margins:", JSON.stringify(margins));
+
 // ---- geometry manifest the client compose reads ----
 const geo = {
+  margins,
   art: { w: W, h: H },
   beams: {
     top: { y: TOP[0] - 1, h: beamTop.h },

@@ -266,6 +266,15 @@ interface Sel2Geo {
   };
   corners: Record<"tl" | "tr" | "bl" | "br", { w: number; h: number }>;
   inner: { top: number; bottom: number; left: number; right: number };
+  /** empty outer margin per corner edge — the ring shifts outward by the
+   * min of each side's two corners so the beams hug the screen edge
+   * (maintainer: the border sat far inside) without clipping any art */
+  margins: {
+    tl: { top: number; left: number };
+    tr: { top: number; right: number };
+    bl: { bottom: number; left: number };
+    br: { bottom: number; right: number };
+  };
 }
 
 let selCanvas: HTMLCanvasElement | null = null;
@@ -290,8 +299,16 @@ function composeSelect() {
   const ctx = selCanvas.getContext("2d")!;
   ctx.imageSmoothingEnabled = false;
   ctx.clearRect(0, 0, bw, bh);
-  const yBot = (artY: number) => bh - (g.art.h - artY) * s; // bottom-anchored
-  const xRight = (artX: number) => bw - (g.art.w - artX) * s;
+  // pull the whole ring outward by each side's shared EMPTY margin (-2px
+  // breathing room) so the beams hug the screen edge; corners shift
+  // diagonally by their two sides, so all beam stubs stay aligned
+  const m = g.margins;
+  const shT = Math.max(0, Math.min(m.tl.top, m.tr.top) - 2) * s;
+  const shB = Math.max(0, Math.min(m.bl.bottom, m.br.bottom) - 2) * s;
+  const shL = Math.max(0, Math.min(m.tl.left, m.bl.left) - 2) * s;
+  const shR = Math.max(0, Math.min(m.tr.right, m.br.right) - 2) * s;
+  const yBot = (artY: number) => bh - (g.art.h - artY) * s + shB; // bottom-anchored
+  const xRight = (artX: number) => bw - (g.art.w - artX) * s + shR;
   // beams first (corners overdraw their stubs), tiled along each side
   const tileH = (img: HTMLImageElement, y: number, x0: number, x1: number) => {
     for (let x = x0; x < x1; x += img.width * s)
@@ -303,22 +320,23 @@ function composeSelect() {
       ctx.drawImage(img, 0, 0, img.width, Math.min(img.height, (y1 - y) / s),
         x, y, img.width * s, Math.min(img.height * s, y1 - y));
   };
-  tileH(I.beamTop, g.beams.top.y * s, g.corners.tl.w * s, bw - g.corners.tr.w * s);
-  tileH(I.beamBottom, yBot(g.beams.bottom.y), g.corners.bl.w * s, bw - g.corners.br.w * s);
-  tileV(I.beamLeft, g.beams.left.x * s, g.corners.tl.h * s, bh - g.corners.bl.h * s);
-  tileV(I.beamRight, xRight(g.beams.right.x), g.corners.tr.h * s, bh - g.corners.br.h * s);
+  tileH(I.beamTop, g.beams.top.y * s - shT, (g.corners.tl.w - 2) * s - shL, bw - (g.corners.tr.w - 2) * s + shR);
+  tileH(I.beamBottom, yBot(g.beams.bottom.y), (g.corners.bl.w - 2) * s - shL, bw - (g.corners.br.w - 2) * s + shR);
+  tileV(I.beamLeft, g.beams.left.x * s - shL, (g.corners.tl.h - 2) * s - shT, bh - (g.corners.bl.h - 2) * s + shB);
+  tileV(I.beamRight, xRight(g.beams.right.x), (g.corners.tr.h - 2) * s - shT, bh - (g.corners.br.h - 2) * s + shB);
   const draw = (img: HTMLImageElement, x: number, y: number) =>
     ctx.drawImage(img, x, y, img.width * s, img.height * s);
-  draw(I.tl, 0, 0);
-  draw(I.tr, bw - g.corners.tr.w * s, 0);
-  draw(I.bl, 0, bh - g.corners.bl.h * s);
-  draw(I.br, bw - g.corners.br.w * s, bh - g.corners.br.h * s);
+  draw(I.tl, -shL, -shT);
+  draw(I.tr, bw - g.corners.tr.w * s + shR, -shT);
+  draw(I.bl, -shL, bh - g.corners.bl.h * s + shB);
+  draw(I.br, bw - g.corners.br.w * s + shR, bh - g.corners.br.h * s + shB);
   // content stays inside the beams' inner faces (overlay padding is in
   // VIRTUAL px — divide the backing-px band depth by the zoom)
-  const pad = (v: number) => `${Math.max(0, Math.round((v * s) / zoom)) + 4}px`;
+  const pad = (v: number, sh: number) =>
+    `${Math.max(0, Math.round((v * s - sh) / zoom)) + 4}px`;
   selParent.style.padding =
-    `${pad(g.inner.top)} ${pad(g.art.w - g.inner.right)} ` +
-    `${pad(g.art.h - g.inner.bottom)} ${pad(g.inner.left)}`;
+    `${pad(g.inner.top, shT)} ${pad(g.art.w - g.inner.right, shR)} ` +
+    `${pad(g.art.h - g.inner.bottom, shB)} ${pad(g.inner.left, shL)}`;
 }
 
 /** Mount the select ring into the (uiZoom'd) select overlay. Idempotent per
