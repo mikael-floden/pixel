@@ -1,48 +1,7 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 2,
-  "by_category": {
-    "ui": 2
-  },
-  "sounds": [
-    {
-      "id": "coin_pickup",
-      "name": "Coin Pickup",
-      "category": "ui",
-      "description": "a bright, short metallic jingle played when the player picks up a gold coin",
-      "tags": [
-        "coin",
-        "pickup",
-        "money",
-        "reward",
-        "collect"
-      ],
-      "usage": "Play on gold_coin / gold_ingot pickup and shop sales.",
-      "engine": "ai",
-      "format": "mp3",
-      "loop": false,
-      "file": "ui/coin_pickup/coin_pickup__take01.mp3",
-      "duration_seconds": null
-    },
-    {
-      "id": "gem_pickup",
-      "name": "Gem Pickup",
-      "category": "ui",
-      "description": "a sparkly ascending chime for collecting a gem or valuable",
-      "tags": [
-        "gem",
-        "ruby",
-        "pickup",
-        "sparkle",
-        "valuable"
-      ],
-      "usage": "Play on gem_ruby and other high-value pickups.",
-      "engine": "ai",
-      "format": "mp3",
-      "loop": false,
-      "file": "ui/gem_pickup/gem_pickup__take01.mp3",
-      "duration_seconds": null
-    }
-  ]
+  "count": 0,
+  "by_category": {},
+  "sounds": []
 }
