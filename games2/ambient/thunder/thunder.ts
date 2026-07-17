@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { AmbientFeature } from "../runtime/types";
+import { AmbientFeature, PHASE_NIGHT, WEATHER_CLOUDY } from "../runtime/types";
 import { isRainy } from "../runtime/env";
 
 // Distant thunder — an EPISODE feature: while active, sheet-lightning
@@ -42,6 +42,8 @@ export function thunderFeature(): AmbientFeature {
 
   return {
     name: "thunder",
+    // Cloudy night is thunder's most-likely home until a real rain ships.
+    preferred: { time: PHASE_NIGHT, weather: WEATHER_CLOUDY },
     weight(env) {
       const rainMult = isRainy(env) ? 1 : 0.4 * env.cloud + 0.3 * env.mist;
       // 1 + rain + night: rain alone ×2, night+rain ×3 (maintainer's spec).

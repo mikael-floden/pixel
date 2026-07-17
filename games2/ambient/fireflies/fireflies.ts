@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { AmbientCtx, AmbientFeature } from "../runtime/types";
+import { AmbientCtx, AmbientFeature, PHASE_NIGHT, WEATHER_CLEAR } from "../runtime/types";
 
 // Fireflies — tiny wandering lanterns that own the night. Each fly is an
 // additive glow sprite tracing a slow Lissajous wander around a drifting
@@ -75,6 +75,7 @@ export function firefliesFeature(): AmbientFeature {
 
   return {
     name: "fireflies",
+    preferred: { time: PHASE_NIGHT, weather: WEATHER_CLEAR },
     init(ctx) {
       ensureTexture(ctx.scene);
     },

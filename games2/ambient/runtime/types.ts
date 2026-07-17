@@ -58,7 +58,19 @@ export interface AmbientFeature {
   /** EPISODE features: the director's on/off switch. Implementations fade
    * out gracefully on false — never hard-cut mid-flight. */
   setActive?(on: boolean): void;
+  /** The conditions under which this effect is MOST likely — the ambient
+   * demo button jumps the shared world here before showing the effect.
+   * `time` indexes the game's phase ring (0 Night, 1 Morning, 2 Day,
+   * 3 Evening); `weather` its WEATHER_NAMES (0 Clear, 1 Cloudy, 2 Mist). */
+  preferred?: { time: number; weather: number };
 }
+
+export const PHASE_NIGHT = 0;
+export const PHASE_MORNING = 1;
+export const PHASE_DAY = 2;
+export const PHASE_EVENING = 3;
+export const WEATHER_CLEAR = 0;
+export const WEATHER_CLOUDY = 1;
 
 export function defaultEnv(): AmbientEnv {
   // Default to a clear full day: with no probes nothing glows oddly, and

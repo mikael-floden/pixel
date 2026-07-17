@@ -100,6 +100,24 @@ gracefully (bats finish their crossing, a flash finishes its decay).
 QA probes: `__mlAmbient.director()`, `.weights(envOverride?)`,
 `.reroll(pinnedRandom?)`.
 
+## The demo button (Settings page)
+
+Every feature declares `preferred: { time, weather }` — the conditions it
+is most likely under. The **"ambient"** settings button (maintainer
+2026-07-17) iterates auto → each effect → auto; selecting an effect jumps
+the SHARED world time-of-day + weather to its preferred conditions and
+pins the director (a demoed episode is forced on; a demoed field gets the
+quiet pin so no episode wanders into its showing). "auto" releases the pin.
+
+Plumbing: the button is INJECTED into the settings row from
+`runtime/hudbutton.ts` (games-ui owns hud.ts — we never edit it; the
+HudBar rebuilds on re-joins, so the runtime re-injects on a poll). The
+world jump rides a small `{v}` extension of the game's existing
+"timeofday"/"weather" messages (WorldRoom) + two `__ml` probes
+(`worldTime`/`worldWeather`) — announced to the games agent on the board;
+covered by `server/test/ambientdemo.test.ts`. QA probe:
+`__mlAmbient.demo(name? | null)`.
+
 ## Current features
 
 | Folder | Kind | Feeling | Likeliness / active when |

@@ -108,6 +108,49 @@ try {
   if ((await dbg("bats")).active) fail("bats must deactivate when the quiet slot wins");
   else ok("quiet slot wins → bats stand down");
 
+  // ---- demo button: injected into settings, cycles + jumps the world ----
+  const btn = await page.evaluate(() => document.querySelector(".ml-ambient-btn")?.textContent ?? null);
+  if (btn !== "ambient: auto") fail(`settings must carry the ambient button (got ${JSON.stringify(btn)})`);
+  else ok("settings button injected (ambient: auto)");
+  // Demo thunder: world jumps to its preferred Night + Cloudy, episode pinned on.
+  await page.evaluate(() => window.__mlAmbient.demo("thunder"));
+  await page.waitForFunction(
+    () => window.__ml.timeOfDay().name === "Night" && window.__ml.weatherInfo().idx === 1,
+    null,
+    { timeout: 5000 },
+  );
+  const dirDemo = await page.evaluate(() => window.__mlAmbient.director());
+  if (dirDemo.pinned !== "thunder" || dirDemo.active !== "thunder")
+    fail(`demo(thunder) must pin thunder (got ${JSON.stringify(dirDemo)})`);
+  if (!(await dbg("thunder")).active) fail("demoed thunder must be active");
+  else ok("demo(thunder): world -> Night + Cloudy, episode pinned on");
+  // Demo a FIELD (pollen): world jumps to Day + Clear, episodes go quiet.
+  await page.evaluate(() => window.__mlAmbient.demo("pollen"));
+  await page.waitForFunction(
+    () => window.__ml.timeOfDay().name === "Day" && window.__ml.weatherInfo().idx === 0,
+    null,
+    { timeout: 5000 },
+  );
+  const dirField = await page.evaluate(() => window.__mlAmbient.director());
+  if (dirField.pinned !== "quiet" || dirField.active !== null)
+    fail(`demo(pollen) must quiet the episodes (got ${JSON.stringify(dirField)})`);
+  if ((await dbg("thunder")).active) fail("thunder must stand down when a field is demoed");
+  await page.waitForTimeout(4500);
+  if ((await dbg("pollen")).gain < 0.5) fail("demoed pollen must reach daylight gain");
+  else ok("demo(pollen): world -> Day + Clear, pollen up, episodes quiet");
+  // Clicking the real button advances the ring and prints its state.
+  const label = await page.evaluate(() => {
+    document.querySelector(".ml-ambient-btn").click();
+    return document.querySelector(".ml-ambient-btn").textContent;
+  });
+  if (label !== "ambient: bats") fail(`button click must advance pollen -> bats (got ${JSON.stringify(label)})`);
+  else ok("button click advances the ring (pollen -> bats)");
+  // Back to auto: pin released, director rolls for the current window.
+  await page.evaluate(() => window.__mlAmbient.demo(null));
+  const dirAuto = await page.evaluate(() => window.__mlAmbient.director());
+  if (dirAuto.pinned !== null) fail(`demo(null) must release the pin (got ${JSON.stringify(dirAuto)})`);
+  else ok("demo(null) returns to auto");
+
   if (!failed) console.log("AMBIENT OK");
 } finally {
   await browser.close();

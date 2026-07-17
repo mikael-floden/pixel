@@ -848,6 +848,11 @@ export class WorldScene extends Phaser.Scene {
       },
       cloudAt: (wx: number, wy: number) => this.night?.cloudFactorAt(wx, wy, this.curCloud, this.curSun[3]) ?? 1,
       mistAt: (wx: number, wy: number) => this.night?.mistAt(wx, wy, this.curMist) ?? 0,
+      // World-state setters (games-ambient's demo button): jump the SHARED
+      // time/weather straight to a value via the messages' {v} extension —
+      // without {v} those messages keep their legacy cycle semantics.
+      worldTime: (idx: number) => this.room?.send("timeofday", { v: idx }),
+      worldWeather: (idx: number) => this.room?.send("weather", { v: idx }),
       star: (name?: string) => this.shootingStar(name), // LOCAL trigger for headless QA
       aurora: (on?: boolean, instant = true) => {
         if (on !== undefined) {

@@ -211,7 +211,22 @@ export class WorldRoom extends Room<WorldState> {
     // cycle is a core rhythm of the game). The settings button still sends
     // "timeofday" — now a SKIP that also restarts the phase timer so a
     // manual skip grants the full next phase.
-    this.onMessage("timeofday", () => this.advanceTime(true));
+    // An explicit valid {v} (ambient demo / tools) JUMPS straight to that
+    // phase — mid-phase look, same as a manual skip; no {v} keeps the
+    // legacy cycle semantics (same pattern as "timespeed").
+    this.onMessage("timeofday", (client, message: { v?: number }) => {
+      const v = message?.v;
+      if (typeof v === "number" && Number.isInteger(v) && v >= 0 && v < TIME_PHASE_COUNT) {
+        if (this.state.timeIdx !== v) {
+          this.state.timeIdx = v;
+          this.state.aurora = v === 0 && Math.random() < this.auroraChance;
+        }
+        this.state.phaseT = 0.5;
+        this.scheduleTimeOfDay(); // re-arms the timer + saves the clock
+        return;
+      }
+      this.advanceTime(true);
+    });
     // Freeze time (world state, default ON): holds the clock so a given
     // phase can be tested; manual skips still work while frozen. When time
     // flows it ticks the same for every player — it's the room's clock.
@@ -254,8 +269,12 @@ export class WorldRoom extends Room<WorldState> {
     this.scheduleWildStar();
 
     // Weather is the second world-state layer, same contract.
-    this.onMessage("weather", () => {
-      this.state.weather = (this.state.weather + 1) % WEATHER_COUNT;
+    this.onMessage("weather", (client, message: { v?: number }) => {
+      const v = message?.v;
+      this.state.weather =
+        typeof v === "number" && Number.isInteger(v) && v >= 0 && v < WEATHER_COUNT
+          ? v
+          : (this.state.weather + 1) % WEATHER_COUNT;
       this.saveClock();
     });
 

@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { AmbientCtx, AmbientFeature } from "../runtime/types";
+import { AmbientCtx, AmbientFeature, PHASE_NIGHT, WEATHER_CLEAR } from "../runtime/types";
 
 // Bats — an EPISODE feature: while the director has us active, a small
 // flock crosses the sky every so often. Nocturnal by design: likeliness is
@@ -99,6 +99,7 @@ export function batsFeature(): AmbientFeature {
 
   return {
     name: "bats",
+    preferred: { time: PHASE_NIGHT, weather: WEATHER_CLEAR },
     weight(env) {
       // Smooth between the maintainer's two anchors: night ×1, day ×0.01.
       return BASE_WEIGHT * (DAY_MULT + (1 - DAY_MULT) * env.night);

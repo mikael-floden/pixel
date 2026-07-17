@@ -8,24 +8,50 @@ import { AmbientEnv, AmbientFeature } from "./types";
 // empty on purpose — ambience that always performs stops feeling ambient.
 const QUIET_WEIGHT = 0.6;
 
+/** Demo pin: a specific episode forced on, "quiet" (all episodes off, e.g.
+ * while a field feature is being demoed), or null = normal auto rolls. */
+export type DirectorPin = AmbientFeature | "quiet" | null;
+
 export class Director {
   private episodes: AmbientFeature[];
   private active: AmbientFeature | null = null;
   private lastPhase = "";
   private lastWeather = -1;
   private lastWeights: Record<string, number> = {};
+  private lastEnv: AmbientEnv | null = null;
+  private pin: DirectorPin = null;
 
   constructor(features: AmbientFeature[]) {
     this.episodes = features.filter((f) => f.weight && f.setActive);
   }
 
   /** Call once per env sample: detects phase/weather transitions and
-   * re-rolls on change. First call (join) rolls too. */
+   * re-rolls on change. First call (join) rolls too. Pinned (demo mode):
+   * transitions are tracked but never rolled — the pin owns the stage. */
   tick(env: AmbientEnv) {
+    this.lastEnv = env;
     if (env.phase === this.lastPhase && env.weather === this.lastWeather) return;
     this.lastPhase = env.phase;
     this.lastWeather = env.weather;
-    this.reroll(env);
+    if (this.pin === null) this.reroll(env);
+  }
+
+  /** Demo-mode pin (the settings ambient button). null resumes auto and
+   * immediately re-rolls for the current conditions. */
+  force(pin: DirectorPin) {
+    this.pin = pin;
+    if (pin === null) {
+      if (this.lastEnv) this.reroll(this.lastEnv);
+      return;
+    }
+    this.setActive(pin === "quiet" ? null : pin);
+  }
+
+  private setActive(pick: AmbientFeature | null) {
+    if (pick === this.active) return;
+    this.active?.setActive!(false); // fades out gracefully, never hard-cuts
+    pick?.setActive!(true);
+    this.active = pick;
   }
 
   /** Weighted pick over the episodes + the quiet slot. Exposed for QA. */
@@ -46,16 +72,13 @@ export class Director {
       }
       // falls through → the quiet slot (pick stays null)
     }
-    if (pick !== this.active) {
-      this.active?.setActive!(false); // fades out gracefully, never hard-cuts
-      pick?.setActive!(true);
-      this.active = pick;
-    }
+    this.setActive(pick);
   }
 
   debug() {
     return {
       active: this.active?.name ?? null,
+      pinned: this.pin === null ? null : this.pin === "quiet" ? "quiet" : this.pin.name,
       phase: this.lastPhase,
       weather: this.lastWeather,
       weights: { ...this.lastWeights, quiet: QUIET_WEIGHT },

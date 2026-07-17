@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { AmbientCtx, AmbientFeature } from "../runtime/types";
+import { AmbientCtx, AmbientFeature, PHASE_DAY, WEATHER_CLEAR } from "../runtime/types";
 
 // Pollen / sun motes — the drifting dust you see when light cuts through
 // forest air. Faint additive specks ride the same wind direction as the
@@ -73,6 +73,7 @@ export function pollenFeature(): AmbientFeature {
 
   return {
     name: "pollen",
+    preferred: { time: PHASE_DAY, weather: WEATHER_CLEAR },
     init(ctx) {
       ensureTexture(ctx.scene);
     },

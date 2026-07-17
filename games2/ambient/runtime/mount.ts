@@ -2,6 +2,8 @@ import Phaser from "phaser";
 import { AmbientCtx, AmbientEnv, AmbientFeature, defaultEnv } from "./types";
 import { sampleEnv } from "./env";
 import { Director } from "./director";
+import { Demo } from "./demo";
+import { DemoButton } from "./hudbutton";
 
 const SCENE_KEY = "world"; // WorldScene's key
 const ENV_SAMPLE_MS = 100; // mood changes are seconds-long fades; 10 Hz is plenty
@@ -27,6 +29,8 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       zoom: 1,
     };
     const director = new Director(features);
+    const demo = new Demo(features, director);
+    const demoButton = new DemoButton(demo);
     let inited = false;
     let envAge = ENV_SAMPLE_MS; // sample on the first tick
     const safe = (fn: () => void) => {
@@ -45,6 +49,8 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
         envAge = 0;
         ctx.env = sampleEnv(ctx.env);
         safe(() => director.tick(ctx.env));
+        // The HudBar rebuilds on re-joins; keep the demo button alive/fresh.
+        safe(() => demoButton.ensure());
       }
       ctx.view = cam.worldView;
       ctx.zoom = cam.zoom;
@@ -70,6 +76,13 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       reroll: (r?: number) => {
         director.reroll(ctx.env, r === undefined ? Math.random : () => r);
         return director.debug();
+      },
+      // Demo cycler (the settings button's brain): no args = next stop on
+      // the ring; a name jumps straight there; null returns to auto.
+      demo: (name?: string | null) => {
+        const label = name === undefined ? demo.next() : demo.select(name);
+        demoButton.sync();
+        return label;
       },
       weights: (envOverride?: Partial<AmbientEnv>) => {
         const env = { ...ctx.env, ...envOverride };
