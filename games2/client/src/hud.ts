@@ -294,7 +294,10 @@ function injectStyles() {
   .ml-slot{width:var(--ml-tab);height:var(--ml-tab);image-rendering:pixelated;border-style:solid;border-width:30px;
     border-image:url(/ui2/slot.png) 10 fill / 30px;box-sizing:border-box}
   .ml-btnrow{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:100%}
-  .ml-plate-btn{padding:10px 20px;cursor:pointer;image-rendering:pixelated;background:none;touch-action:manipulation;
+  /* settings buttons must never be SHORTER than the menu tabs / backpack
+     slots (maintainer) — same --ml-tab height, width still fits the label */
+  .ml-plate-btn{padding:10px 20px;min-height:var(--ml-tab);box-sizing:border-box;
+    cursor:pointer;image-rendering:pixelated;background:none;touch-action:manipulation;
     border-style:solid;border-width:26px;border-image:url(/ui2/plate-normal.png) 56 fill / 26px;
     font:700 14px system-ui,sans-serif;letter-spacing:.4px;text-transform:uppercase;color:#e8e8ec;
     text-shadow:0 1px 2px #000}
