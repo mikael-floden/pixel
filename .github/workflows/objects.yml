@@ -45,7 +45,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
-          fetch-depth: 0
+          # depth 1: the pack is >1 GiB of binary-art history — the loop only
+          # needs the tip to commit+push (rebase-on-reject fetches what it
+          # needs). Full history cost ~minutes per run for nothing.
+          fetch-depth: 1
 
       - name: Set up Python
         uses: actions/setup-python@v5
