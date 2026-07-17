@@ -1,7 +1,7 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 33,
+  "count": 34,
   "by_category": {
     "ui": 8,
     "item": 5,
@@ -9,7 +9,7 @@
     "movement": 5,
     "combat": 4,
     "feedback": 2,
-    "ambience": 3
+    "ambience": 4
   },
   "sounds": [
     {
@@ -1348,6 +1348,45 @@
       "file": "ambience/wind/wind.wav",
       "takes": [
         "ambience/wind/wind.wav"
+      ],
+      "duration_seconds": 12.017,
+      "mix_gain_db": -20,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
+    },
+    {
+      "id": "rain",
+      "name": "Rain",
+      "category": "ambience",
+      "description": "a steady gentle rain ambience",
+      "feel": "cozy, calming",
+      "tags": [
+        "ambience",
+        "rain",
+        "weather",
+        "calm"
+      ],
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience).",
+      "engine": "ai",
+      "format": "wav",
+      "loop": true,
+      "file": "ambience/rain/rain.wav",
+      "takes": [
+        "ambience/rain/rain.wav"
       ],
       "duration_seconds": 12.017,
       "mix_gain_db": -20,
