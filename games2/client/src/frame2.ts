@@ -299,14 +299,16 @@ function composeSelect() {
   const ctx = selCanvas.getContext("2d")!;
   ctx.imageSmoothingEnabled = false;
   ctx.clearRect(0, 0, bw, bh);
-  // pull the whole ring outward by each side's shared EMPTY margin (-2px
-  // breathing room) so the beams hug the screen edge; corners shift
-  // diagonally by their two sides, so all beam stubs stay aligned
-  const m = g.margins;
-  const shT = Math.max(0, Math.min(m.tl.top, m.tr.top) - 2) * s;
-  const shB = Math.max(0, Math.min(m.bl.bottom, m.br.bottom) - 2) * s;
-  const shL = Math.max(0, Math.min(m.tl.left, m.bl.left) - 2) * s;
-  const shR = Math.max(0, Math.min(m.tr.right, m.br.right) - 2) * s;
+  // pull the whole ring outward until each beam's OUTER FACE sits EDGE_GAP
+  // from the screen edge (maintainer: "I don't care if half the crystal is
+  // outside the frame — move the border outwards"); the corner decor's
+  // overhang clips off-screen by design. Corners shift diagonally by their
+  // two sides, so all beam stubs stay aligned.
+  const EDGE_GAP = 8;
+  const shT = Math.max(0, g.beams.top.y - EDGE_GAP) * s;
+  const shB = Math.max(0, g.art.h - (g.beams.bottom.y + g.beams.bottom.h) - EDGE_GAP) * s;
+  const shL = Math.max(0, g.beams.left.x - EDGE_GAP) * s;
+  const shR = Math.max(0, g.art.w - (g.beams.right.x + g.beams.right.w) - EDGE_GAP) * s;
   const yBot = (artY: number) => bh - (g.art.h - artY) * s + shB; // bottom-anchored
   const xRight = (artX: number) => bw - (g.art.w - artX) * s + shR;
   // beams first (corners overdraw their stubs), tiled along each side
