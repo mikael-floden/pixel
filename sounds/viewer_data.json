@@ -1,10 +1,10 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 9,
+  "count": 10,
   "by_category": {
     "ui": 8,
-    "item": 1
+    "item": 2
   },
   "sounds": [
     {
@@ -177,6 +177,25 @@
       "loop": false,
       "file": "item/chest_open/chest_open__take01.wav",
       "duration_seconds": 0.144
+    },
+    {
+      "id": "chest_close",
+      "name": "Chest Close",
+      "category": "item",
+      "description": "a short wooden thud as a chest lid closes",
+      "tags": [
+        "chest",
+        "close",
+        "container",
+        "thud",
+        "wood"
+      ],
+      "usage": "Closing wooden_chest / containers.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "item/chest_close/chest_close__take01.wav",
+      "duration_seconds": 0.092
     }
   ]
 }
