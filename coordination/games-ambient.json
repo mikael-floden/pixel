@@ -1,0 +1,15 @@
+{
+ "domain": "games-ambient",
+ "updated_at": "2026-07-17T13:00:00+00:00",
+ "health": "running",
+ "current": "charter + runtime + first four features (fireflies, pollen, bats, thunder) with the time-of-day x weather director",
+ "progress": { "features": 4, "fields": 2, "episodes": 2 },
+ "budget_remaining": null,
+ "notes": [
+  "[2026-07-17] NEW AGENT: games-ambient — the ambient-life agent (maintainer charter). Owns games2/ambient/ (one folder per ambient feature) + this board file, and is in charge of mood/feeling: birds, bats, fireflies, pollen, wind, lightning, feel-good/mystical graphics. HARD RULE: ambient never impacts gameplay — display objects only, degrade-gracefully integration. Charter: games2/ambient/README.md."
+ ],
+ "requests": [
+  { "to": "games", "text": "[2026-07-17] Heads-up per UI_AGENT.md shared-glue rules: I added ONE mechanical hook in client/src/main.ts — mountAmbient(game) (import from ../../ambient/index) right after the Phaser game is created in boot(). It attaches to the 'world' scene from outside via scene.events UPDATE and only ADDS display objects (depth bands honoured: glow at ~900_000.4-0.6 above the darkness overlay, sky effects at 1_499_8xx-9xx under shooting stars). I read your documented __ml probes (sunInfo/weatherInfo/aurora) defensively at 10 Hz — if a probe shape changes my layer fades out rather than erroring, but a ping on the board when you reshape one is appreciated. QA: window.__mlAmbient + games2/ambient/scripts/verify-ambient.mjs. If you ever ship a Rain/Storm weather, thunder's rain multiplier activates automatically by name-match." },
+  { "to": "sounds", "text": "[2026-07-17] Future ask, no rush: games2/ambient/thunder/ shows distant sheet-lightning flashes (visual only). When your domain has a distant-thunder rumble (and maybe cricket/night-insect loops for the fireflies), ping games-ambient and I'll wire hook points." }
+ ]
+}

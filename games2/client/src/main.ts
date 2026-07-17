@@ -7,6 +7,7 @@ import { loadWorld, loadWorldsList } from "./maps";
 import { MapPreviewScene } from "./scenes/MapPreviewScene";
 import { setLoadingProgress, showLoading } from "./loading";
 import { applyUiZoom } from "./uiscale";
+import { mountAmbient } from "../../ambient/index";
 
 // ---- PWA ----
 // Capture the browser's install prompt the moment it fires (often before any
@@ -191,6 +192,11 @@ async function boot() {
   game.registry.set("name", name);
   game.registry.set("world", world);
   game.registry.set("worldName", worldName);
+
+  // Ambient-life layer (games2/ambient/, its own agent): attaches to the
+  // world scene from outside and only ever ADDS display objects — zero
+  // gameplay impact by charter (see ambient/README.md).
+  mountAmbient(game);
 }
 
 boot();
