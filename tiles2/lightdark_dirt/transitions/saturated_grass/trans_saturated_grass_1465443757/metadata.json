@@ -335,8 +335,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.447,
-        "lightdark_dirt": 0.553
+        "saturated_grass": 0.449,
+        "lightdark_dirt": 0.551
       },
       "edges": {
         "NE": {
@@ -344,15 +344,15 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "lightdark_dirt",
+            "saturated_grass",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.5,
-            "lightdark_dirt": 0.5
+            "saturated_grass": 0.625,
+            "lightdark_dirt": 0.375
           }
         },
         "SE": {

@@ -23,30 +23,13 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.711,
-        "regular_snow": 0.289
+        "crystal_ice": 0.955,
+        "regular_snow": 0.045
       },
       "edges": {
         "NE": {
           "samples": [
             "crystal_ice",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow"
-          ],
-          "ratio": {
-            "crystal_ice": 0.125,
-            "regular_snow": 0.875
-          },
-          "divider": 0.125
-        },
-        "SE": {
-          "samples": [
-            "regular_snow",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
@@ -56,10 +39,23 @@
             "crystal_ice"
           ],
           "ratio": {
-            "regular_snow": 0.125,
-            "crystal_ice": 0.875
-          },
-          "divider": 0.125
+            "crystal_ice": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
         },
         "SW": {
           "samples": [
@@ -69,34 +65,32 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "regular_snow",
-            "regular_snow"
-          ],
-          "ratio": {
-            "crystal_ice": 0.75,
-            "regular_snow": 0.25
-          },
-          "divider": 0.75
-        },
-        "NW": {
-          "samples": [
-            "regular_snow",
-            "regular_snow",
             "crystal_ice",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
             "crystal_ice"
           ],
           "ratio": {
-            "regular_snow": 0.75,
-            "crystal_ice": 0.25
+            "crystal_ice": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "crystal_ice",
+            "regular_snow",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 0.875,
+            "regular_snow": 0.125
           }
         }
       },
       "features": [],
-      "description": "crystal ice blending to snow"
+      "description": "plain crystal ice"
     },
     {
       "index": 1,
@@ -104,30 +98,14 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.361,
-        "crystal_ice": 0.639
+        "crystal_ice": 0.882,
+        "regular_snow": 0.118
       },
       "edges": {
         "NE": {
           "samples": [
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
             "crystal_ice",
             "crystal_ice",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow"
-          ],
-          "ratio": {
-            "regular_snow": 0.75,
-            "crystal_ice": 0.25
-          }
-        },
-        "SE": {
-          "samples": [
-            "regular_snow",
-            "regular_snow",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
@@ -136,10 +114,23 @@
             "crystal_ice"
           ],
           "ratio": {
-            "regular_snow": 0.25,
-            "crystal_ice": 0.75
-          },
-          "divider": 0.25
+            "crystal_ice": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
         },
         "SW": {
           "samples": [
@@ -149,28 +140,28 @@
             "crystal_ice",
             "regular_snow",
             "crystal_ice",
-            "regular_snow",
-            "regular_snow"
+            "crystal_ice",
+            "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.625,
-            "regular_snow": 0.375
+            "crystal_ice": 0.875,
+            "regular_snow": 0.125
           }
         },
         "NW": {
           "samples": [
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
             "crystal_ice",
             "regular_snow",
-            "regular_snow",
-            "regular_snow"
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
           ],
           "ratio": {
-            "regular_snow": 0.875,
-            "crystal_ice": 0.125
+            "crystal_ice": 0.875,
+            "regular_snow": 0.125
           }
         }
       },
@@ -260,8 +251,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.582,
-        "regular_snow": 0.418
+        "crystal_ice": 0.701,
+        "regular_snow": 0.299
       },
       "edges": {
         "NE": {
@@ -270,21 +261,19 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow"
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.5,
-            "regular_snow": 0.5
-          },
-          "divider": 0.5
+            "crystal_ice": 1.0
+          }
         },
         "SE": {
           "samples": [
-            "regular_snow",
-            "regular_snow",
+            "crystal_ice",
+            "crystal_ice",
             "regular_snow",
             "regular_snow",
             "regular_snow",
@@ -293,8 +282,10 @@
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 1.0
-          }
+            "crystal_ice": 0.25,
+            "regular_snow": 0.75
+          },
+          "divider": 0.25
         },
         "SW": {
           "samples": [
@@ -338,8 +329,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.642,
-        "regular_snow": 0.358
+        "crystal_ice": 0.732,
+        "regular_snow": 0.268
       },
       "edges": {
         "NE": {
@@ -349,20 +340,18 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow"
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.625,
-            "regular_snow": 0.375
-          },
-          "divider": 0.625
+            "crystal_ice": 1.0
+          }
         },
         "SE": {
           "samples": [
-            "regular_snow",
-            "regular_snow",
+            "crystal_ice",
+            "crystal_ice",
             "regular_snow",
             "regular_snow",
             "regular_snow",
@@ -371,8 +360,10 @@
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 1.0
-          }
+            "crystal_ice": 0.25,
+            "regular_snow": 0.75
+          },
+          "divider": 0.25
         },
         "SW": {
           "samples": [
@@ -416,15 +407,15 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.296,
-        "crystal_ice": 0.704
+        "crystal_ice": 0.805,
+        "regular_snow": 0.195
       },
       "edges": {
         "NE": {
           "samples": [
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
@@ -432,10 +423,8 @@
             "crystal_ice"
           ],
           "ratio": {
-            "regular_snow": 0.375,
-            "crystal_ice": 0.625
-          },
-          "divider": 0.375
+            "crystal_ice": 1.0
+          }
         },
         "SE": {
           "samples": [
@@ -461,12 +450,11 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "regular_snow",
+            "crystal_ice",
             "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.875,
-            "regular_snow": 0.125
+            "crystal_ice": 1.0
           }
         },
         "NW": {
@@ -477,14 +465,12 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "regular_snow",
-            "regular_snow"
+            "crystal_ice",
+            "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.75,
-            "regular_snow": 0.25
-          },
-          "divider": 0.75
+            "crystal_ice": 1.0
+          }
         }
       },
       "features": [],
@@ -574,8 +560,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.6,
-        "regular_snow": 0.4
+        "crystal_ice": 0.724,
+        "regular_snow": 0.276
       },
       "edges": {
         "NE": {
@@ -583,22 +569,20 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow"
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.375,
-            "regular_snow": 0.625
-          },
-          "divider": 0.375
+            "crystal_ice": 1.0
+          }
         },
         "SE": {
           "samples": [
-            "regular_snow",
-            "regular_snow",
+            "crystal_ice",
+            "crystal_ice",
             "regular_snow",
             "regular_snow",
             "regular_snow",
@@ -607,8 +591,10 @@
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 1.0
-          }
+            "crystal_ice": 0.25,
+            "regular_snow": 0.75
+          },
+          "divider": 0.25
         },
         "SW": {
           "samples": [
@@ -652,30 +638,14 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.387,
-        "crystal_ice": 0.613
+        "crystal_ice": 0.865,
+        "regular_snow": 0.135
       },
       "edges": {
         "NE": {
           "samples": [
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
             "crystal_ice",
             "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "regular_snow"
-          ],
-          "ratio": {
-            "regular_snow": 0.5,
-            "crystal_ice": 0.5
-          }
-        },
-        "SE": {
-          "samples": [
-            "regular_snow",
-            "regular_snow",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
@@ -684,152 +654,8 @@
             "crystal_ice"
           ],
           "ratio": {
-            "regular_snow": 0.25,
-            "crystal_ice": 0.75
-          },
-          "divider": 0.25
-        },
-        "SW": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow"
-          ],
-          "ratio": {
-            "crystal_ice": 0.625,
-            "regular_snow": 0.375
-          },
-          "divider": 0.625
-        },
-        "NW": {
-          "samples": [
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "crystal_ice",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow"
-          ],
-          "ratio": {
-            "regular_snow": 0.875,
-            "crystal_ice": 0.125
+            "crystal_ice": 1.0
           }
-        }
-      },
-      "features": [],
-      "description": "crystal ice blending to snow"
-    },
-    {
-      "index": 9,
-      "file": "tile_09.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "regular_snow": 0.61,
-        "crystal_ice": 0.39
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow"
-          ],
-          "ratio": {
-            "regular_snow": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "regular_snow": 0.375,
-            "crystal_ice": 0.625
-          },
-          "divider": 0.375
-        },
-        "SW": {
-          "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow"
-          ],
-          "ratio": {
-            "crystal_ice": 0.625,
-            "regular_snow": 0.375
-          },
-          "divider": 0.625
-        },
-        "NW": {
-          "samples": [
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow"
-          ],
-          "ratio": {
-            "regular_snow": 1.0
-          }
-        }
-      },
-      "features": [],
-      "description": "snow blending to crystal ice"
-    },
-    {
-      "index": 10,
-      "file": "tile_10.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "regular_snow": 0.801,
-        "crystal_ice": 0.199
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "crystal_ice",
-            "crystal_ice"
-          ],
-          "ratio": {
-            "regular_snow": 0.75,
-            "crystal_ice": 0.25
-          },
-          "divider": 0.75
         },
         "SE": {
           "samples": [
@@ -844,6 +670,160 @@
           ],
           "ratio": {
             "crystal_ice": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "regular_snow",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 0.875,
+            "regular_snow": 0.125
+          }
+        },
+        "NW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "crystal ice blending to snow"
+    },
+    {
+      "index": 9,
+      "file": "tile_09.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "crystal_ice": 0.755,
+        "regular_snow": 0.245
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "regular_snow",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 0.875,
+            "regular_snow": 0.125
+          }
+        },
+        "SW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "regular_snow",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 0.875,
+            "regular_snow": 0.125
+          }
+        },
+        "NW": {
+          "samples": [
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 1.0
+          }
+        }
+      },
+      "features": [],
+      "description": "crystal ice blending to snow"
+    },
+    {
+      "index": 10,
+      "file": "tile_10.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "regular_snow": 0.824,
+        "crystal_ice": 0.176
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "regular_snow",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "regular_snow": 0.875,
+            "crystal_ice": 0.125
+          },
+          "divider": 0.875
+        },
+        "SE": {
+          "samples": [
+            "crystal_ice",
+            "regular_snow",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
+          ],
+          "ratio": {
+            "crystal_ice": 0.875,
+            "regular_snow": 0.125
           }
         },
         "SW": {
@@ -962,8 +942,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.979,
-        "crystal_ice": 0.021
+        "regular_snow": 0.991,
+        "crystal_ice": 0.009
       },
       "edges": {
         "NE": {
@@ -1111,8 +1091,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.954,
-        "crystal_ice": 0.046
+        "regular_snow": 0.96,
+        "crystal_ice": 0.04
       },
       "edges": {
         "NE": {
@@ -1185,30 +1165,29 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.56,
-        "crystal_ice": 0.44
+        "crystal_ice": 0.697,
+        "regular_snow": 0.303
       },
       "edges": {
         "NE": {
           "samples": [
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
             "crystal_ice",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow"
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
           ],
           "ratio": {
-            "regular_snow": 0.875,
-            "crystal_ice": 0.125
+            "crystal_ice": 1.0
           }
         },
         "SE": {
           "samples": [
-            "regular_snow",
-            "regular_snow",
+            "crystal_ice",
+            "crystal_ice",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
@@ -1217,9 +1196,10 @@
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 0.5,
-            "crystal_ice": 0.5
-          }
+            "crystal_ice": 0.75,
+            "regular_snow": 0.25
+          },
+          "divider": 0.75
         },
         "SW": {
           "samples": [
@@ -1229,33 +1209,33 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "regular_snow",
-            "regular_snow"
+            "crystal_ice",
+            "crystal_ice"
           ],
           "ratio": {
-            "regular_snow": 0.625,
-            "crystal_ice": 0.375
-          }
+            "regular_snow": 0.375,
+            "crystal_ice": 0.625
+          },
+          "divider": 0.375
         },
         "NW": {
           "samples": [
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "regular_snow",
-            "regular_snow"
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
           ],
           "ratio": {
-            "regular_snow": 0.625,
-            "crystal_ice": 0.375
+            "crystal_ice": 1.0
           }
         }
       },
       "features": [],
-      "description": "snow blending to crystal ice"
+      "description": "crystal ice blending to snow"
     }
   ],
   "generated_at": "2026-07-06T11:14:17+00:00",

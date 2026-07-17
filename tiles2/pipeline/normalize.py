@@ -202,7 +202,8 @@ def _dilate_m(m, r):
 
 
 def clean_top_rim(im, material_target=None, factor=0.86, band=4, strength=1.0,
-                  top_frac=0.58, protect_dark_material=True, edge_margin=22):
+                  top_frac=0.58, protect_dark_material=True, edge_margin=22,
+                  bright_only=False, bright_body_floor=150):
     """Flatten the baked rim around the WHOLE top diamond so a clean tile tessellates
     with NO seam at any shared vertex/edge — a dark outline (stone/grass) OR a bright
     block-edge bevel (crystal_ice/snow, which tiles into a white 'chessboard' lattice).
@@ -246,6 +247,19 @@ def clean_top_rim(im, material_target=None, factor=0.86, band=4, strength=1.0,
     gcolor = np.median(rgb[body_mask], axis=0)
     dist = np.sqrt(((rgb - gcolor[None, None, :]) ** 2).sum(axis=2))
     target = op & perim & (dist > edge_margin)
+    # bright_only: flatten ONLY the bright block-edge BEVEL of a LIGHT material (the
+    # crisp white top-diamond rim on ice/snow that tiles into a 'thick white border'
+    # at boundaries). Used on TRANSITIONS, where the plain full-repaint would drag the
+    # OTHER (darker) material's perimeter pixels toward this body median and paint a
+    # muddy ring. Gate 1: only run when THIS tile's body is itself bright (ice/snow-
+    # dominant) — so a grass-dominant transition tile is skipped entirely and its grass
+    # side is never touched. Gate 2: only repaint perimeter pixels BRIGHTER than the
+    # body — so darker blend/grass pixels on a light tile keep their fade.
+    if bright_only:
+        gcolor_lum = float(0.299 * gcolor[0] + 0.587 * gcolor[1] + 0.114 * gcolor[2])
+        if gcolor_lum < bright_body_floor:
+            return im.convert("RGBA")
+        target = target & (lum > gcolor_lum)
     if not target.any():
         return im.convert("RGBA")
     blended = rgb * (1.0 - strength) + gcolor[None, None, :] * strength

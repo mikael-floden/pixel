@@ -565,14 +565,14 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.555,
-        "stone_mountain": 0.445
+        "stone_mountain": 0.671,
+        "regular_snow": 0.329
       },
       "edges": {
         "NE": {
           "samples": [
-            "regular_snow",
-            "regular_snow",
+            "stone_mountain",
+            "stone_mountain",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
@@ -581,10 +581,8 @@
             "stone_mountain"
           ],
           "ratio": {
-            "regular_snow": 0.25,
-            "stone_mountain": 0.75
-          },
-          "divider": 0.25
+            "stone_mountain": 1.0
+          }
         },
         "SE": {
           "samples": [
@@ -609,33 +607,32 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "regular_snow",
-            "regular_snow"
+            "stone_mountain",
+            "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.25,
-            "regular_snow": 0.75
-          },
-          "divider": 0.25
+            "stone_mountain": 0.5,
+            "regular_snow": 0.5
+          }
         },
         "NW": {
           "samples": [
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow"
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain"
           ],
           "ratio": {
-            "regular_snow": 1.0
+            "stone_mountain": 1.0
           }
         }
       },
       "features": [],
-      "description": "snow blending to grey mountain stone"
+      "description": "grey mountain stone blending to snow"
     },
     {
       "index": 8,
@@ -956,30 +953,29 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.488,
-        "stone_mountain": 0.512
+        "stone_mountain": 0.776,
+        "regular_snow": 0.224
       },
       "edges": {
         "NE": {
           "samples": [
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
             "stone_mountain",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow"
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain"
           ],
           "ratio": {
-            "regular_snow": 0.875,
-            "stone_mountain": 0.125
+            "stone_mountain": 1.0
           }
         },
         "SE": {
           "samples": [
-            "regular_snow",
-            "regular_snow",
+            "stone_mountain",
+            "stone_mountain",
             "regular_snow",
             "regular_snow",
             "stone_mountain",
@@ -988,10 +984,9 @@
             "stone_mountain"
           ],
           "ratio": {
-            "regular_snow": 0.5,
-            "stone_mountain": 0.5
-          },
-          "divider": 0.5
+            "stone_mountain": 0.75,
+            "regular_snow": 0.25
+          }
         },
         "SW": {
           "samples": [
@@ -1001,29 +996,27 @@
             "stone_mountain",
             "stone_mountain",
             "regular_snow",
-            "regular_snow",
-            "regular_snow"
+            "stone_mountain",
+            "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.625,
-            "regular_snow": 0.375
-          },
-          "divider": 0.625
+            "stone_mountain": 0.875,
+            "regular_snow": 0.125
+          }
         },
         "NW": {
           "samples": [
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
             "stone_mountain",
-            "regular_snow",
             "stone_mountain",
-            "regular_snow",
-            "regular_snow"
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain"
           ],
           "ratio": {
-            "regular_snow": 0.75,
-            "stone_mountain": 0.25
+            "stone_mountain": 1.0
           }
         }
       },

@@ -1186,26 +1186,24 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.527,
-        "clear_water": 0.473
+        "clear_water": 0.727,
+        "regular_snow": 0.273
       },
       "edges": {
         "NE": {
           "samples": [
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
             "clear_water",
             "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "regular_snow": 0.5,
-            "clear_water": 0.5
-          },
-          "divider": 0.5
+            "clear_water": 1.0
+          }
         },
         "SE": {
           "samples": [
@@ -1230,35 +1228,34 @@
             "clear_water",
             "regular_snow",
             "regular_snow",
-            "regular_snow",
-            "regular_snow"
+            "clear_water",
+            "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.5,
-            "regular_snow": 0.5
-          },
-          "divider": 0.5
+            "clear_water": 0.75,
+            "regular_snow": 0.25
+          }
         },
         "NW": {
           "samples": [
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow",
-            "regular_snow"
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water"
           ],
           "ratio": {
-            "regular_snow": 1.0
+            "clear_water": 1.0
           }
         }
       },
       "features": [
         "accent"
       ],
-      "description": "snow blending to clear water with a small detail"
+      "description": "clear water blending to snow with a small detail"
     }
   ],
   "generated_at": "2026-07-05T15:56:16+00:00",

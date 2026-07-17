@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.931,
-        "light_sand": 0.069
+        "crystal_ice": 0.963,
+        "light_sand": 0.037
       },
       "edges": {
         "NE": {
@@ -36,17 +36,16 @@
             "crystal_ice",
             "crystal_ice",
             "light_sand",
-            "light_sand"
+            "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.75,
-            "light_sand": 0.25
-          },
-          "divider": 0.75
+            "crystal_ice": 0.875,
+            "light_sand": 0.125
+          }
         },
         "SE": {
           "samples": [
-            "light_sand",
+            "crystal_ice",
             "light_sand",
             "light_sand",
             "crystal_ice",
@@ -56,10 +55,9 @@
             "crystal_ice"
           ],
           "ratio": {
-            "light_sand": 0.375,
-            "crystal_ice": 0.625
-          },
-          "divider": 0.375
+            "crystal_ice": 0.75,
+            "light_sand": 0.25
+          }
         },
         "SW": {
           "samples": [
@@ -95,7 +93,7 @@
       "features": [
         "shiny"
       ],
-      "description": "crystal ice blending to light sand with a shiny speck"
+      "description": "crystal ice with a shiny speck"
     },
     {
       "index": 1,
@@ -103,8 +101,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.95,
-        "light_sand": 0.05
+        "crystal_ice": 0.953,
+        "light_sand": 0.047
       },
       "edges": {
         "NE": {
@@ -171,7 +169,7 @@
       "features": [
         "shiny"
       ],
-      "description": "crystal ice blending to light sand with a shiny speck"
+      "description": "crystal ice with a shiny speck"
     },
     {
       "index": 2,
@@ -179,28 +177,28 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.434,
-        "crystal_ice": 0.566
+        "crystal_ice": 0.76,
+        "light_sand": 0.24
       },
       "edges": {
         "NE": {
           "samples": [
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
           ],
           "ratio": {
-            "light_sand": 1.0
+            "crystal_ice": 1.0
           }
         },
         "SE": {
           "samples": [
-            "light_sand",
+            "crystal_ice",
             "light_sand",
             "light_sand",
             "light_sand",
@@ -210,10 +208,9 @@
             "crystal_ice"
           ],
           "ratio": {
-            "light_sand": 0.625,
-            "crystal_ice": 0.375
-          },
-          "divider": 0.625
+            "crystal_ice": 0.5,
+            "light_sand": 0.5
+          }
         },
         "SW": {
           "samples": [
@@ -239,13 +236,12 @@
             "crystal_ice",
             "crystal_ice",
             "light_sand",
-            "light_sand"
+            "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.75,
-            "light_sand": 0.25
-          },
-          "divider": 0.75
+            "crystal_ice": 0.875,
+            "light_sand": 0.125
+          }
         }
       },
       "features": [
@@ -338,8 +334,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.701,
-        "light_sand": 0.299
+        "crystal_ice": 0.723,
+        "light_sand": 0.277
       },
       "edges": {
         "NE": {
@@ -351,13 +347,12 @@
             "crystal_ice",
             "light_sand",
             "light_sand",
-            "light_sand"
+            "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.625,
-            "light_sand": 0.375
-          },
-          "divider": 0.625
+            "crystal_ice": 0.75,
+            "light_sand": 0.25
+          }
         },
         "SE": {
           "samples": [
@@ -417,15 +412,15 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.548,
-        "light_sand": 0.452
+        "light_sand": 0.645,
+        "crystal_ice": 0.355
       },
       "edges": {
         "NE": {
           "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
+            "light_sand",
+            "light_sand",
+            "light_sand",
             "light_sand",
             "light_sand",
             "light_sand",
@@ -433,10 +428,8 @@
             "light_sand"
           ],
           "ratio": {
-            "crystal_ice": 0.375,
-            "light_sand": 0.625
-          },
-          "divider": 0.375
+            "light_sand": 1.0
+          }
         },
         "SE": {
           "samples": [
@@ -462,27 +455,27 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "crystal_ice"
+            "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.25,
-            "crystal_ice": 0.75
-          },
-          "divider": 0.25
+            "light_sand": 0.375,
+            "crystal_ice": 0.625
+          }
         },
         "NW": {
           "samples": [
+            "light_sand",
+            "light_sand",
             "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
           ],
           "ratio": {
-            "crystal_ice": 1.0
+            "light_sand": 0.875,
+            "crystal_ice": 0.125
           }
         }
       },
@@ -490,7 +483,7 @@
         "shiny",
         "pebbles"
       ],
-      "description": "crystal ice blending to light sand with a shiny speck, pebbles"
+      "description": "light sand blending to crystal ice with a shiny speck, pebbles"
     },
     {
       "index": 6,
@@ -498,8 +491,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.607,
-        "crystal_ice": 0.393
+        "light_sand": 0.698,
+        "crystal_ice": 0.302
       },
       "edges": {
         "NE": {
@@ -508,20 +501,18 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.5,
-            "crystal_ice": 0.5
-          },
-          "divider": 0.5
+            "light_sand": 1.0
+          }
         },
         "SE": {
           "samples": [
-            "crystal_ice",
+            "light_sand",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
@@ -531,8 +522,10 @@
             "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 1.0
-          }
+            "light_sand": 0.125,
+            "crystal_ice": 0.875
+          },
+          "divider": 0.125
         },
         "SW": {
           "samples": [
@@ -578,8 +571,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.399,
-        "light_sand": 0.601
+        "light_sand": 0.8,
+        "crystal_ice": 0.2
       },
       "edges": {
         "NE": {
@@ -620,28 +613,27 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "light_sand",
+            "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.375,
-            "crystal_ice": 0.625
-          },
-          "divider": 0.375
+            "light_sand": 0.625,
+            "crystal_ice": 0.375
+          }
         },
         "NW": {
           "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
           ],
           "ratio": {
-            "crystal_ice": 1.0
+            "light_sand": 1.0
           }
         }
       },
@@ -657,8 +649,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.808,
-        "crystal_ice": 0.192
+        "light_sand": 0.842,
+        "crystal_ice": 0.158
       },
       "edges": {
         "NE": {
@@ -670,17 +662,16 @@
             "light_sand",
             "crystal_ice",
             "crystal_ice",
-            "crystal_ice"
+            "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.625,
-            "crystal_ice": 0.375
-          },
-          "divider": 0.625
+            "light_sand": 0.75,
+            "crystal_ice": 0.25
+          }
         },
         "SE": {
           "samples": [
-            "crystal_ice",
+            "light_sand",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
@@ -690,10 +681,9 @@
             "light_sand"
           ],
           "ratio": {
-            "crystal_ice": 0.625,
-            "light_sand": 0.375
-          },
-          "divider": 0.625
+            "light_sand": 0.5,
+            "crystal_ice": 0.5
+          }
         },
         "SW": {
           "samples": [
@@ -738,8 +728,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.732,
-        "crystal_ice": 0.268
+        "light_sand": 0.735,
+        "crystal_ice": 0.265
       },
       "edges": {
         "NE": {
@@ -818,8 +808,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.691,
-        "crystal_ice": 0.309
+        "light_sand": 0.812,
+        "crystal_ice": 0.188
       },
       "edges": {
         "NE": {
@@ -861,30 +851,27 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "crystal_ice"
+            "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.375,
-            "crystal_ice": 0.625
-          },
-          "divider": 0.375
+            "light_sand": 0.5,
+            "crystal_ice": 0.5
+          }
         },
         "NW": {
           "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
             "light_sand",
             "light_sand"
           ],
           "ratio": {
-            "crystal_ice": 0.75,
-            "light_sand": 0.25
-          },
-          "divider": 0.75
+            "light_sand": 1.0
+          }
         }
       },
       "features": [
@@ -898,8 +885,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.58,
-        "crystal_ice": 0.42
+        "light_sand": 0.676,
+        "crystal_ice": 0.324
       },
       "edges": {
         "NE": {
@@ -941,20 +928,19 @@
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "light_sand",
+            "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.25,
-            "crystal_ice": 0.75
-          },
-          "divider": 0.25
+            "light_sand": 0.5,
+            "crystal_ice": 0.5
+          }
         },
         "NW": {
           "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
+            "light_sand",
+            "light_sand",
+            "light_sand",
             "crystal_ice",
             "light_sand",
             "light_sand",
@@ -962,10 +948,9 @@
             "light_sand"
           ],
           "ratio": {
-            "crystal_ice": 0.5,
-            "light_sand": 0.5
-          },
-          "divider": 0.5
+            "light_sand": 0.875,
+            "crystal_ice": 0.125
+          }
         }
       },
       "features": [
@@ -981,14 +966,14 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.387,
-        "light_sand": 0.613
+        "light_sand": 0.755,
+        "crystal_ice": 0.245
       },
       "edges": {
         "NE": {
           "samples": [
-            "crystal_ice",
-            "crystal_ice",
+            "light_sand",
+            "light_sand",
             "light_sand",
             "light_sand",
             "light_sand",
@@ -997,10 +982,8 @@
             "light_sand"
           ],
           "ratio": {
-            "crystal_ice": 0.25,
-            "light_sand": 0.75
-          },
-          "divider": 0.25
+            "light_sand": 1.0
+          }
         },
         "SE": {
           "samples": [
@@ -1027,37 +1010,36 @@
             "light_sand",
             "light_sand",
             "light_sand",
-            "crystal_ice",
-            "crystal_ice"
+            "light_sand",
+            "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.625,
-            "crystal_ice": 0.375
+            "light_sand": 0.875,
+            "crystal_ice": 0.125
           }
         },
         "NW": {
           "samples": [
-            "crystal_ice",
-            "crystal_ice",
             "light_sand",
             "light_sand",
             "light_sand",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand",
+            "light_sand"
           ],
           "ratio": {
-            "crystal_ice": 0.625,
-            "light_sand": 0.375
+            "light_sand": 1.0
           }
         }
       },
       "features": [
+        "accent",
         "shiny",
-        "pebbles",
-        "accent"
+        "pebbles"
       ],
-      "description": "light sand blending to crystal ice with a shiny speck, pebbles, a small detail"
+      "description": "light sand blending to crystal ice with a small detail, a shiny speck, pebbles"
     },
     {
       "index": 13,
@@ -1143,29 +1125,30 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.655,
-        "crystal_ice": 0.345
+        "light_sand": 0.443,
+        "crystal_ice": 0.557
       },
       "edges": {
         "NE": {
           "samples": [
             "light_sand",
+            "crystal_ice",
             "light_sand",
             "light_sand",
             "light_sand",
+            "crystal_ice",
             "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
+            "crystal_ice"
           ],
           "ratio": {
-            "light_sand": 1.0
+            "light_sand": 0.625,
+            "crystal_ice": 0.375
           }
         },
         "SE": {
           "samples": [
-            "light_sand",
-            "light_sand",
+            "crystal_ice",
+            "crystal_ice",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
@@ -1174,10 +1157,8 @@
             "crystal_ice"
           ],
           "ratio": {
-            "light_sand": 0.25,
-            "crystal_ice": 0.75
-          },
-          "divider": 0.25
+            "crystal_ice": 1.0
+          }
         },
         "SW": {
           "samples": [
@@ -1198,26 +1179,28 @@
         "NW": {
           "samples": [
             "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand",
-            "light_sand"
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice",
+            "crystal_ice"
           ],
           "ratio": {
-            "light_sand": 1.0
-          }
+            "light_sand": 0.125,
+            "crystal_ice": 0.875
+          },
+          "divider": 0.125
         }
       },
       "features": [
-        "shiny",
         "accent",
+        "shiny",
         "flowers",
         "pebbles"
       ],
-      "description": "light sand blending to crystal ice with a shiny speck, a small detail, small flowers, pebbles"
+      "description": "crystal ice blending to light sand with a small detail, a shiny speck, small flowers, pebbles"
     },
     {
       "index": 15,

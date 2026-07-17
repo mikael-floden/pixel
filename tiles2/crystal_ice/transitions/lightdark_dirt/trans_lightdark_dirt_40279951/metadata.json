@@ -329,10 +329,10 @@
         }
       },
       "features": [
-        "shiny",
-        "pebbles"
+        "pebbles",
+        "shiny"
       ],
-      "description": "crystal ice blending to dirt with a shiny speck, pebbles"
+      "description": "crystal ice blending to dirt with pebbles, a shiny speck"
     },
     {
       "index": 4,
@@ -576,8 +576,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.64,
-        "crystal_ice": 0.36
+        "lightdark_dirt": 0.729,
+        "crystal_ice": 0.271
       },
       "edges": {
         "NE": {
@@ -587,20 +587,18 @@
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
           ],
           "ratio": {
-            "lightdark_dirt": 0.625,
-            "crystal_ice": 0.375
-          },
-          "divider": 0.625
+            "lightdark_dirt": 1.0
+          }
         },
         "SE": {
           "samples": [
-            "crystal_ice",
-            "crystal_ice",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
@@ -609,8 +607,10 @@
             "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 1.0
-          }
+            "lightdark_dirt": 0.25,
+            "crystal_ice": 0.75
+          },
+          "divider": 0.25
         },
         "SW": {
           "samples": [
@@ -728,8 +728,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.696,
-        "lightdark_dirt": 0.304
+        "crystal_ice": 0.697,
+        "lightdark_dirt": 0.303
       },
       "edges": {
         "NE": {
@@ -951,10 +951,9 @@
         }
       },
       "features": [
-        "pebbles",
-        "shiny"
+        "pebbles"
       ],
-      "description": "crystal ice with pebbles, a shiny speck"
+      "description": "crystal ice with pebbles"
     },
     {
       "index": 12,
@@ -1121,8 +1120,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.801,
-        "crystal_ice": 0.199
+        "lightdark_dirt": 0.803,
+        "crystal_ice": 0.197
       },
       "edges": {
         "NE": {
@@ -1269,10 +1268,8 @@
           "divider": 0.375
         }
       },
-      "features": [
-        "shiny"
-      ],
-      "description": "crystal ice blending to dirt with a shiny speck"
+      "features": [],
+      "description": "crystal ice blending to dirt"
     }
   ],
   "generated_at": "2026-07-06T11:20:58+00:00",

@@ -253,8 +253,10 @@
           }
         }
       },
-      "features": [],
-      "description": "light sand blending to clear water"
+      "features": [
+        "pebbles"
+      ],
+      "description": "light sand blending to clear water with pebbles"
     },
     {
       "index": 3,
@@ -493,10 +495,10 @@
         }
       },
       "features": [
-        "shiny",
-        "accent"
+        "accent",
+        "shiny"
       ],
-      "description": "light sand blending to clear water with a shiny speck, a small detail"
+      "description": "light sand blending to clear water with a small detail, a shiny speck"
     },
     {
       "index": 6,
@@ -969,10 +971,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "clear water blending to light sand with a small detail"
+      "features": [],
+      "description": "clear water blending to light sand"
     },
     {
       "index": 12,

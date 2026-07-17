@@ -94,10 +94,10 @@
       },
       "features": [
         "accent",
-        "shiny",
-        "pebbles"
+        "pebbles",
+        "shiny"
       ],
-      "description": "crystal ice blending to saturated grass with a small detail, a shiny speck, pebbles"
+      "description": "crystal ice blending to saturated grass with a small detail, pebbles, a shiny speck"
     },
     {
       "index": 1,
@@ -177,10 +177,10 @@
       },
       "features": [
         "accent",
-        "shiny",
-        "pebbles"
+        "pebbles",
+        "shiny"
       ],
-      "description": "crystal ice blending to saturated grass with a small detail, a shiny speck, pebbles"
+      "description": "crystal ice blending to saturated grass with a small detail, pebbles, a shiny speck"
     },
     {
       "index": 2,
@@ -258,11 +258,10 @@
         }
       },
       "features": [
-        "shiny",
         "accent",
         "pebbles"
       ],
-      "description": "saturated grass blending to crystal ice with a shiny speck, a small detail, pebbles"
+      "description": "saturated grass blending to crystal ice with a small detail, pebbles"
     },
     {
       "index": 3,
@@ -342,10 +341,9 @@
       },
       "features": [
         "accent",
-        "shiny",
-        "pebbles"
+        "shiny"
       ],
-      "description": "crystal ice blending to saturated grass with a small detail, a shiny speck, pebbles"
+      "description": "crystal ice blending to saturated grass with a small detail, a shiny speck"
     },
     {
       "index": 4,
@@ -589,10 +587,9 @@
       },
       "features": [
         "accent",
-        "pebbles",
-        "shiny"
+        "pebbles"
       ],
-      "description": "saturated grass blending to crystal ice with a small detail, pebbles, a shiny speck"
+      "description": "saturated grass blending to crystal ice with a small detail, pebbles"
     },
     {
       "index": 7,
@@ -916,8 +913,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.378,
-        "crystal_ice": 0.622
+        "saturated_grass": 0.379,
+        "crystal_ice": 0.621
       },
       "edges": {
         "NE": {
@@ -938,7 +935,7 @@
         },
         "SE": {
           "samples": [
-            "crystal_ice",
+            "saturated_grass",
             "saturated_grass",
             "crystal_ice",
             "crystal_ice",
@@ -948,9 +945,10 @@
             "crystal_ice"
           ],
           "ratio": {
-            "crystal_ice": 0.875,
-            "saturated_grass": 0.125
-          }
+            "saturated_grass": 0.25,
+            "crystal_ice": 0.75
+          },
+          "divider": 0.25
         },
         "SW": {
           "samples": [
@@ -986,11 +984,10 @@
         }
       },
       "features": [
-        "shiny",
         "accent",
-        "pebbles"
+        "shiny"
       ],
-      "description": "crystal ice blending to saturated grass with a shiny speck, a small detail, pebbles"
+      "description": "crystal ice blending to saturated grass with a small detail, a shiny speck"
     },
     {
       "index": 12,
@@ -1068,10 +1065,9 @@
         }
       },
       "features": [
-        "shiny",
         "accent"
       ],
-      "description": "crystal ice blending to saturated grass with a shiny speck, a small detail"
+      "description": "crystal ice blending to saturated grass with a small detail"
     },
     {
       "index": 13,

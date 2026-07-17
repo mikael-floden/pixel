@@ -183,8 +183,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.639,
-        "saturated_grass": 0.361
+        "regular_snow": 0.636,
+        "saturated_grass": 0.364
       },
       "edges": {
         "NE": {
@@ -240,14 +240,15 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "regular_snow",
+            "saturated_grass",
             "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 1.0
+            "regular_snow": 0.875,
+            "saturated_grass": 0.125
           }
         }
       },

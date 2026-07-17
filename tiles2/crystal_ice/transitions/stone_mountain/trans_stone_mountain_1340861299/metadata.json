@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.577,
-        "crystal_ice": 0.423
+        "stone_mountain": 0.755,
+        "crystal_ice": 0.245
       },
       "edges": {
         "NE": {
@@ -33,37 +33,36 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.5,
-            "crystal_ice": 0.5
-          },
-          "divider": 0.5
+            "stone_mountain": 1.0
+          }
         },
         "SE": {
           "samples": [
+            "stone_mountain",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
             "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice"
+            "stone_mountain",
+            "stone_mountain"
           ],
           "ratio": {
-            "crystal_ice": 1.0
+            "stone_mountain": 0.375,
+            "crystal_ice": 0.625
           }
         },
         "SW": {
           "samples": [
-            "crystal_ice",
-            "crystal_ice",
-            "crystal_ice",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
             "crystal_ice",
             "stone_mountain",
             "stone_mountain",
@@ -71,10 +70,9 @@
             "stone_mountain"
           ],
           "ratio": {
-            "crystal_ice": 0.5,
-            "stone_mountain": 0.5
-          },
-          "divider": 0.5
+            "stone_mountain": 0.875,
+            "crystal_ice": 0.125
+          }
         },
         "NW": {
           "samples": [
@@ -93,10 +91,9 @@
         }
       },
       "features": [
-        "accent",
-        "shiny"
+        "accent"
       ],
-      "description": "grey mountain stone blending to crystal ice with a small detail, a shiny speck"
+      "description": "grey mountain stone blending to crystal ice with a small detail"
     },
     {
       "index": 1,
@@ -104,8 +101,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.313,
-        "crystal_ice": 0.687
+        "stone_mountain": 0.312,
+        "crystal_ice": 0.688
       },
       "edges": {
         "NE": {
@@ -172,10 +169,10 @@
         }
       },
       "features": [
-        "shiny",
-        "accent"
+        "accent",
+        "shiny"
       ],
-      "description": "crystal ice blending to grey mountain stone with a shiny speck, a small detail"
+      "description": "crystal ice blending to grey mountain stone with a small detail, a shiny speck"
     },
     {
       "index": 2,
@@ -268,8 +265,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.235,
-        "crystal_ice": 0.765
+        "stone_mountain": 0.231,
+        "crystal_ice": 0.769
       },
       "edges": {
         "NE": {
@@ -351,8 +348,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.647,
-        "stone_mountain": 0.353
+        "crystal_ice": 0.649,
+        "stone_mountain": 0.351
       },
       "edges": {
         "NE": {
@@ -421,10 +418,10 @@
         }
       },
       "features": [
-        "shiny",
-        "accent"
+        "accent",
+        "shiny"
       ],
-      "description": "crystal ice blending to grey mountain stone with a shiny speck, a small detail"
+      "description": "crystal ice blending to grey mountain stone with a small detail, a shiny speck"
     },
     {
       "index": 5,
@@ -502,10 +499,10 @@
         }
       },
       "features": [
-        "shiny",
-        "accent"
+        "accent",
+        "shiny"
       ],
-      "description": "crystal ice blending to grey mountain stone with a shiny speck, a small detail"
+      "description": "crystal ice blending to grey mountain stone with a small detail, a shiny speck"
     },
     {
       "index": 6,
@@ -1074,8 +1071,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.566,
-        "crystal_ice": 0.434
+        "stone_mountain": 0.568,
+        "crystal_ice": 0.432
       },
       "edges": {
         "NE": {
@@ -1144,10 +1141,10 @@
         }
       },
       "features": [
-        "accent",
-        "shiny"
+        "pebbles",
+        "accent"
       ],
-      "description": "grey mountain stone blending to crystal ice with a small detail, a shiny speck"
+      "description": "grey mountain stone blending to crystal ice with pebbles, a small detail"
     },
     {
       "index": 14,
@@ -1155,8 +1152,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.587,
-        "crystal_ice": 0.413
+        "stone_mountain": 0.586,
+        "crystal_ice": 0.414
       },
       "edges": {
         "NE": {
@@ -1238,8 +1235,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.654,
-        "stone_mountain": 0.346
+        "crystal_ice": 0.655,
+        "stone_mountain": 0.345
       },
       "edges": {
         "NE": {
