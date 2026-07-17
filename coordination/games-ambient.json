@@ -1,12 +1,12 @@
 {
   "domain": "games-ambient",
-  "updated_at": "2026-07-17T16:45:00+00:00",
+  "updated_at": "2026-07-17T18:30:00+00:00",
   "health": "running",
-  "current": "shipped ambient/rainbow/ — shader double-bow at the anti-solar point (camera-anchored, never reachable) + sun-shower drizzle; demo ring is auto/fireflies/pollen/bats/thunder/rainbow",
+  "current": "9 features: fireflies, pollen (fields) + bats, thunder, rainbow, sandstorm, tumbleweed, leaves, heathaze (episodes). tumbleweed now depth-sorts INTO the iso world (maintainer). heathaze is a real camera PostFX refraction (attach-only-while-visible for safety). env gained a terrain-aware `sand` field (sandstorm/heathaze/tumbleweed gate on it).",
   "progress": {
-    "features": 5,
+    "features": 9,
     "fields": 2,
-    "episodes": 3
+    "episodes": 7
   },
   "budget_remaining": null,
   "notes": [
