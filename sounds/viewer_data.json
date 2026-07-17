@@ -1,14 +1,14 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 29,
+  "count": 30,
   "by_category": {
     "ui": 8,
     "item": 5,
     "tool": 6,
     "movement": 5,
     "combat": 4,
-    "feedback": 1
+    "feedback": 2
   },
   "sounds": [
     {
@@ -559,6 +559,25 @@
       "format": "wav",
       "loop": false,
       "file": "feedback/level_up/level_up__take01.wav",
+      "duration_seconds": 0.179
+    },
+    {
+      "id": "quest_complete",
+      "name": "Quest Complete",
+      "category": "feedback",
+      "description": "a triumphant little jingle marking a completed quest",
+      "tags": [
+        "quest",
+        "complete",
+        "success",
+        "jingle",
+        "reward"
+      ],
+      "usage": "Completing a quest / objective.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "feedback/quest_complete/quest_complete__take01.wav",
       "duration_seconds": 0.179
     }
   ]
