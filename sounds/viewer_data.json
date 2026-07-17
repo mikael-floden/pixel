@@ -1,13 +1,13 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 25,
+  "count": 26,
   "by_category": {
     "ui": 8,
     "item": 5,
     "tool": 6,
     "movement": 5,
-    "combat": 1
+    "combat": 2
   },
   "sounds": [
     {
@@ -483,6 +483,25 @@
       "loop": false,
       "file": "combat/hit_hurt/hit_hurt__take01.wav",
       "duration_seconds": 0.401
+    },
+    {
+      "id": "enemy_defeat",
+      "name": "Enemy Defeat",
+      "category": "combat",
+      "description": "a descending puff as an enemy is defeated and vanishes",
+      "tags": [
+        "enemy",
+        "defeat",
+        "die",
+        "poof",
+        "combat"
+      ],
+      "usage": "Enemy defeated / despawns.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "combat/enemy_defeat/enemy_defeat__take01.wav",
+      "duration_seconds": 0.497
     }
   ]
 }
