@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.452,
-        "black_mountain": 0.548
+        "lightdark_dirt": 0.199,
+        "black_mountain": 0.801
       },
       "edges": {
         "NE": {
@@ -46,18 +46,17 @@
         },
         "SE": {
           "samples": [
-            "lightdark_dirt",
             "black_mountain",
             "black_mountain",
-            "lightdark_dirt",
             "black_mountain",
             "black_mountain",
-            "lightdark_dirt",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "lightdark_dirt": 0.375,
-            "black_mountain": 0.625
+            "black_mountain": 1.0
           }
         },
         "SW": {
@@ -65,40 +64,38 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "lightdark_dirt",
             "black_mountain",
-            "lightdark_dirt",
+            "black_mountain",
+            "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.75,
-            "lightdark_dirt": 0.25
+            "black_mountain": 1.0
           }
         },
         "NW": {
           "samples": [
             "black_mountain",
             "black_mountain",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "black_mountain": 0.25,
-            "lightdark_dirt": 0.75
+            "black_mountain": 0.625,
+            "lightdark_dirt": 0.375
           },
-          "divider": 0.25
+          "divider": 0.625
         }
       },
       "features": [
-        "accent",
-        "flowers"
+        "water"
       ],
-      "description": "black volcanic rock blending to dirt with a small detail, small flowers"
+      "description": "black volcanic rock blending to dirt with a small puddle"
     },
     {
       "index": 1,
@@ -106,92 +103,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.475,
-        "lightdark_dirt": 0.525
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "lightdark_dirt"
-          ],
-          "ratio": {
-            "black_mountain": 0.875,
-            "lightdark_dirt": 0.125
-          },
-          "divider": 0.875
-        },
-        "SE": {
-          "samples": [
-            "lightdark_dirt",
-            "black_mountain",
-            "black_mountain",
-            "lightdark_dirt",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "lightdark_dirt": 0.25,
-            "black_mountain": 0.75
-          }
-        },
-        "SW": {
-          "samples": [
-            "black_mountain",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt"
-          ],
-          "ratio": {
-            "black_mountain": 0.125,
-            "lightdark_dirt": 0.875
-          },
-          "divider": 0.125
-        },
-        "NW": {
-          "samples": [
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "black_mountain"
-          ],
-          "ratio": {
-            "lightdark_dirt": 0.875,
-            "black_mountain": 0.125
-          },
-          "divider": 0.875
-        }
-      },
-      "features": [
-        "accent",
-        "flowers"
-      ],
-      "description": "dirt blending to black volcanic rock with a small detail, small flowers"
-    },
-    {
-      "index": 2,
-      "file": "tile_02.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "black_mountain": 0.654,
-        "lightdark_dirt": 0.346
+        "black_mountain": 0.698,
+        "lightdark_dirt": 0.302
       },
       "edges": {
         "NE": {
@@ -214,15 +127,94 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
             "lightdark_dirt",
-            "black_mountain",
-            "black_mountain",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "black_mountain": 0.625,
-            "lightdark_dirt": 0.375
+            "black_mountain": 0.25,
+            "lightdark_dirt": 0.75
+          },
+          "divider": 0.25
+        },
+        "NW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "lightdark_dirt": 0.5,
+            "black_mountain": 0.5
+          },
+          "divider": 0.5
+        }
+      },
+      "features": [
+        "water"
+      ],
+      "description": "black volcanic rock blending to dirt with a small puddle"
+    },
+    {
+      "index": 2,
+      "file": "tile_02.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "black_mountain": 0.946,
+        "lightdark_dirt": 0.054
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
           }
         },
         "SW": {
@@ -230,15 +222,14 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "lightdark_dirt",
             "black_mountain",
-            "lightdark_dirt",
+            "black_mountain",
+            "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.75,
-            "lightdark_dirt": 0.25
+            "black_mountain": 1.0
           }
         },
         "NW": {
@@ -247,22 +238,20 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "lightdark_dirt",
-            "lightdark_dirt",
+            "black_mountain",
+            "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.75,
-            "lightdark_dirt": 0.25
+            "black_mountain": 1.0
           }
         }
       },
       "features": [
-        "accent",
-        "flowers"
+        "water"
       ],
-      "description": "black volcanic rock blending to dirt with a small detail, small flowers"
+      "description": "black volcanic rock blending to dirt with a small puddle"
     },
     {
       "index": 3,
@@ -270,8 +259,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.325,
-        "lightdark_dirt": 0.675
+        "black_mountain": 0.498,
+        "lightdark_dirt": 0.502
       },
       "edges": {
         "NE": {
@@ -313,37 +302,34 @@
             "lightdark_dirt",
             "black_mountain",
             "black_mountain",
-            "lightdark_dirt",
             "black_mountain",
-            "lightdark_dirt"
-          ],
-          "ratio": {
-            "lightdark_dirt": 0.625,
-            "black_mountain": 0.375
-          }
-        },
-        "NW": {
-          "samples": [
-            "lightdark_dirt",
-            "black_mountain",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "lightdark_dirt": 0.625,
-            "black_mountain": 0.375
+            "lightdark_dirt": 0.375,
+            "black_mountain": 0.625
+          },
+          "divider": 0.375
+        },
+        "NW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
           }
         }
       },
-      "features": [
-        "accent",
-        "flowers"
-      ],
-      "description": "dirt blending to black volcanic rock with a small detail, small flowers"
+      "features": [],
+      "description": "dirt blending to black volcanic rock"
     },
     {
       "index": 4,
@@ -351,8 +337,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.442,
-        "lightdark_dirt": 0.558
+        "black_mountain": 0.701,
+        "lightdark_dirt": 0.299
       },
       "edges": {
         "NE": {
@@ -361,180 +347,14 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "black_mountain"
-          ],
-          "ratio": {
-            "black_mountain": 0.625,
-            "lightdark_dirt": 0.375
-          }
-        },
-        "SE": {
-          "samples": [
             "black_mountain",
-            "black_mountain",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt"
-          ],
-          "ratio": {
-            "black_mountain": 0.25,
-            "lightdark_dirt": 0.75
-          },
-          "divider": 0.25
-        },
-        "SW": {
-          "samples": [
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "black_mountain",
-            "black_mountain",
-            "lightdark_dirt",
-            "black_mountain",
-            "lightdark_dirt"
-          ],
-          "ratio": {
-            "lightdark_dirt": 0.625,
-            "black_mountain": 0.375
-          }
-        },
-        "NW": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "black_mountain"
-          ],
-          "ratio": {
-            "black_mountain": 0.375,
-            "lightdark_dirt": 0.625
-          }
-        }
-      },
-      "features": [
-        "accent",
-        "flowers"
-      ],
-      "description": "dirt blending to black volcanic rock with a small detail, small flowers"
-    },
-    {
-      "index": 5,
-      "file": "tile_05.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "black_mountain": 0.391,
-        "lightdark_dirt": 0.609
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "black_mountain"
-          ],
-          "ratio": {
-            "black_mountain": 0.375,
-            "lightdark_dirt": 0.625
-          }
-        },
-        "SE": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt"
-          ],
-          "ratio": {
-            "black_mountain": 0.25,
-            "lightdark_dirt": 0.75
-          },
-          "divider": 0.25
-        },
-        "SW": {
-          "samples": [
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "lightdark_dirt",
-            "lightdark_dirt"
-          ],
-          "ratio": {
-            "lightdark_dirt": 0.625,
-            "black_mountain": 0.375
-          }
-        },
-        "NW": {
-          "samples": [
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "lightdark_dirt": 0.5,
-            "black_mountain": 0.5
-          },
-          "divider": 0.5
-        }
-      },
-      "features": [
-        "accent",
-        "flowers",
-        "bare_soil"
-      ],
-      "description": "dirt blending to black volcanic rock with a small detail, small flowers, a bare soil patch"
-    },
-    {
-      "index": 6,
-      "file": "tile_06.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "black_mountain": 0.334,
-        "lightdark_dirt": 0.666
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "black_mountain",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
             "lightdark_dirt",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.375,
-            "lightdark_dirt": 0.625
+            "black_mountain": 0.875,
+            "lightdark_dirt": 0.125
           }
         },
         "SE": {
@@ -556,25 +376,56 @@
         },
         "SW": {
           "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
             "lightdark_dirt",
-            "lightdark_dirt"
+            "lightdark_dirt",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.75,
-            "lightdark_dirt": 0.25
+            "lightdark_dirt": 0.25,
+            "black_mountain": 0.75
           },
-          "divider": 0.75
+          "divider": 0.25
         },
         "NW": {
           "samples": [
-            "lightdark_dirt",
-            "lightdark_dirt",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        }
+      },
+      "features": [
+        "water"
+      ],
+      "description": "black volcanic rock blending to dirt with a small puddle"
+    },
+    {
+      "index": 5,
+      "file": "tile_05.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "black_mountain": 0.553,
+        "lightdark_dirt": 0.447
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
@@ -583,17 +434,143 @@
             "black_mountain"
           ],
           "ratio": {
-            "lightdark_dirt": 0.875,
-            "black_mountain": 0.125
+            "black_mountain": 0.375,
+            "lightdark_dirt": 0.625
+          }
+        },
+        "SE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "black_mountain": 0.25,
+            "lightdark_dirt": 0.75
           },
-          "divider": 0.875
+          "divider": 0.25
+        },
+        "SW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "lightdark_dirt": 0.25,
+            "black_mountain": 0.75
+          },
+          "divider": 0.25
+        },
+        "NW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
         }
       },
       "features": [
-        "accent",
-        "flowers"
+        "water"
       ],
-      "description": "dirt blending to black volcanic rock with a small detail, small flowers"
+      "description": "black volcanic rock blending to dirt with a small puddle"
+    },
+    {
+      "index": 6,
+      "file": "tile_06.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "black_mountain": 0.608,
+        "lightdark_dirt": 0.392
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "black_mountain",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 0.375,
+            "lightdark_dirt": 0.625
+          }
+        },
+        "SE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "black_mountain": 0.5,
+            "lightdark_dirt": 0.5
+          },
+          "divider": 0.5
+        },
+        "SW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        }
+      },
+      "features": [
+        "water"
+      ],
+      "description": "black volcanic rock blending to dirt with a small puddle"
     },
     {
       "index": 7,
@@ -674,8 +651,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.814,
-        "black_mountain": 0.186
+        "lightdark_dirt": 0.725,
+        "black_mountain": 0.275
       },
       "edges": {
         "NE": {
@@ -702,26 +679,28 @@
             "lightdark_dirt",
             "black_mountain",
             "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "lightdark_dirt": 0.625,
+            "black_mountain": 0.375
+          },
+          "divider": 0.625
+        },
+        "SW": {
+          "samples": [
+            "lightdark_dirt",
+            "black_mountain",
+            "black_mountain",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
             "lightdark_dirt": 0.75,
             "black_mountain": 0.25
-          }
-        },
-        "SW": {
-          "samples": [
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt"
-          ],
-          "ratio": {
-            "lightdark_dirt": 1.0
           }
         },
         "NW": {
@@ -741,11 +720,9 @@
         }
       },
       "features": [
-        "accent",
-        "bare_soil",
-        "flowers"
+        "water"
       ],
-      "description": "dirt blending to black volcanic rock with a small detail, a bare soil patch, small flowers"
+      "description": "dirt blending to black volcanic rock with a small puddle"
     },
     {
       "index": 9,
@@ -753,13 +730,13 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.889,
-        "black_mountain": 0.111
+        "lightdark_dirt": 0.816,
+        "black_mountain": 0.184
       },
       "edges": {
         "NE": {
           "samples": [
-            "lightdark_dirt",
+            "black_mountain",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
@@ -769,8 +746,10 @@
             "lightdark_dirt"
           ],
           "ratio": {
-            "lightdark_dirt": 1.0
-          }
+            "black_mountain": 0.125,
+            "lightdark_dirt": 0.875
+          },
+          "divider": 0.125
         },
         "SE": {
           "samples": [
@@ -812,20 +791,20 @@
             "lightdark_dirt",
             "lightdark_dirt",
             "black_mountain",
-            "lightdark_dirt"
+            "black_mountain"
           ],
           "ratio": {
-            "lightdark_dirt": 0.875,
-            "black_mountain": 0.125
-          }
+            "lightdark_dirt": 0.75,
+            "black_mountain": 0.25
+          },
+          "divider": 0.75
         }
       },
       "features": [
-        "bare_soil",
-        "accent",
+        "water",
         "flowers"
       ],
-      "description": "dirt blending to black volcanic rock with a bare soil patch, a small detail, small flowers"
+      "description": "dirt blending to black volcanic rock with a small puddle, small flowers"
     },
     {
       "index": 10,
@@ -833,8 +812,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.231,
-        "lightdark_dirt": 0.769
+        "black_mountain": 0.4,
+        "lightdark_dirt": 0.6
       },
       "edges": {
         "NE": {
@@ -842,41 +821,25 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "lightdark_dirt",
+            "black_mountain",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "black_mountain": 0.375,
-            "lightdark_dirt": 0.625
+            "black_mountain": 0.5,
+            "lightdark_dirt": 0.5
           },
-          "divider": 0.375
+          "divider": 0.5
         },
         "SE": {
           "samples": [
             "lightdark_dirt",
             "lightdark_dirt",
             "black_mountain",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt"
-          ],
-          "ratio": {
-            "lightdark_dirt": 0.875,
-            "black_mountain": 0.125
-          }
-        },
-        "SW": {
-          "samples": [
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
             "black_mountain",
-            "black_mountain",
+            "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt"
@@ -886,29 +849,44 @@
             "black_mountain": 0.25
           }
         },
+        "SW": {
+          "samples": [
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "lightdark_dirt",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "lightdark_dirt",
+            "lightdark_dirt"
+          ],
+          "ratio": {
+            "lightdark_dirt": 0.625,
+            "black_mountain": 0.375
+          }
+        },
         "NW": {
           "samples": [
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "lightdark_dirt": 0.875,
-            "black_mountain": 0.125
+            "lightdark_dirt": 0.5,
+            "black_mountain": 0.5
           },
-          "divider": 0.875
+          "divider": 0.5
         }
       },
       "features": [
-        "accent",
-        "bare_soil"
+        "water"
       ],
-      "description": "dirt blending to black volcanic rock with a small detail, a bare soil patch"
+      "description": "dirt blending to black volcanic rock with a small puddle"
     },
     {
       "index": 11,
@@ -916,8 +894,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.83,
-        "black_mountain": 0.17
+        "lightdark_dirt": 0.766,
+        "black_mountain": 0.234
       },
       "edges": {
         "NE": {
@@ -944,15 +922,15 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "lightdark_dirt",
+            "black_mountain",
             "lightdark_dirt",
             "lightdark_dirt"
           ],
           "ratio": {
-            "black_mountain": 0.625,
-            "lightdark_dirt": 0.375
+            "black_mountain": 0.75,
+            "lightdark_dirt": 0.25
           },
-          "divider": 0.625
+          "divider": 0.75
         },
         "SW": {
           "samples": [
@@ -985,10 +963,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "dirt blending to black volcanic rock with a small detail"
+      "features": [],
+      "description": "dirt blending to black volcanic rock"
     },
     {
       "index": 12,
@@ -996,24 +972,24 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.363,
-        "lightdark_dirt": 0.637
+        "black_mountain": 0.506,
+        "lightdark_dirt": 0.494
       },
       "edges": {
         "NE": {
           "samples": [
             "black_mountain",
             "black_mountain",
+            "black_mountain",
             "lightdark_dirt",
             "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
+            "black_mountain",
             "lightdark_dirt",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.375,
-            "lightdark_dirt": 0.625
+            "black_mountain": 0.625,
+            "lightdark_dirt": 0.375
           }
         },
         "SE": {
@@ -1042,11 +1018,11 @@
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
-            "lightdark_dirt"
+            "black_mountain"
           ],
           "ratio": {
-            "lightdark_dirt": 0.875,
-            "black_mountain": 0.125
+            "lightdark_dirt": 0.75,
+            "black_mountain": 0.25
           }
         },
         "NW": {
@@ -1058,19 +1034,19 @@
             "black_mountain",
             "lightdark_dirt",
             "lightdark_dirt",
-            "lightdark_dirt"
+            "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.375,
-            "lightdark_dirt": 0.625
+            "black_mountain": 0.5,
+            "lightdark_dirt": 0.5
           }
         }
       },
       "features": [
-        "accent",
+        "water",
         "flowers"
       ],
-      "description": "dirt blending to black volcanic rock with a small detail, small flowers"
+      "description": "black volcanic rock blending to dirt with a small puddle, small flowers"
     },
     {
       "index": 13,
@@ -1078,15 +1054,15 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.717,
-        "black_mountain": 0.283
+        "black_mountain": 0.612,
+        "lightdark_dirt": 0.388
       },
       "edges": {
         "NE": {
           "samples": [
             "black_mountain",
             "black_mountain",
-            "lightdark_dirt",
+            "black_mountain",
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
@@ -1094,25 +1070,26 @@
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.5,
-            "lightdark_dirt": 0.5
+            "black_mountain": 0.625,
+            "lightdark_dirt": 0.375
           }
         },
         "SE": {
           "samples": [
             "black_mountain",
             "black_mountain",
-            "lightdark_dirt",
             "black_mountain",
-            "lightdark_dirt",
             "black_mountain",
-            "lightdark_dirt",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
             "lightdark_dirt"
           ],
           "ratio": {
-            "black_mountain": 0.5,
-            "lightdark_dirt": 0.5
-          }
+            "black_mountain": 0.875,
+            "lightdark_dirt": 0.125
+          },
+          "divider": 0.875
         },
         "SW": {
           "samples": [
@@ -1122,35 +1099,35 @@
             "lightdark_dirt",
             "black_mountain",
             "black_mountain",
-            "lightdark_dirt",
-            "lightdark_dirt"
+            "black_mountain",
+            "black_mountain"
           ],
           "ratio": {
-            "lightdark_dirt": 0.75,
-            "black_mountain": 0.25
-          }
+            "lightdark_dirt": 0.5,
+            "black_mountain": 0.5
+          },
+          "divider": 0.5
         },
         "NW": {
           "samples": [
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt"
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
           ],
           "ratio": {
-            "lightdark_dirt": 1.0
+            "black_mountain": 1.0
           }
         }
       },
       "features": [
-        "accent",
-        "flowers"
+        "water"
       ],
-      "description": "dirt blending to black volcanic rock with a small detail, small flowers"
+      "description": "black volcanic rock blending to dirt with a small puddle"
     },
     {
       "index": 14,
@@ -1158,8 +1135,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.234,
-        "lightdark_dirt": 0.766
+        "black_mountain": 0.393,
+        "lightdark_dirt": 0.607
       },
       "edges": {
         "NE": {
@@ -1219,23 +1196,21 @@
             "lightdark_dirt",
             "lightdark_dirt",
             "lightdark_dirt",
-            "lightdark_dirt",
-            "lightdark_dirt",
+            "black_mountain",
+            "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "lightdark_dirt": 0.875,
-            "black_mountain": 0.125
+            "lightdark_dirt": 0.625,
+            "black_mountain": 0.375
           },
-          "divider": 0.875
+          "divider": 0.625
         }
       },
       "features": [
-        "accent",
-        "bare_soil",
-        "flowers"
+        "water"
       ],
-      "description": "dirt blending to black volcanic rock with a small detail, a bare soil patch, small flowers"
+      "description": "dirt blending to black volcanic rock with a small puddle"
     },
     {
       "index": 15,
