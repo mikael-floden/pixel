@@ -338,7 +338,14 @@ function spritePreview(
   label: string,
   directions: string[],
 ): { img: HTMLElement; setSpin: (on: boolean) => void } {
+  // The 112×112 portrait canvas is mostly empty — the figure occupies only
+  // ~29×87 px in its centre (measured: x42-71, y10-97) — so the cards read
+  // "too big" (maintainer). Show the art 1:1 (native px — the old 128px box
+  // was a non-integer 1.14× upscale) through a viewport cropped to the
+  // figure; the box is the element the card lays out.
+  const box = el("div", "ml-portrait-box");
   const img = el("img", "ml-portrait") as HTMLImageElement;
+  box.appendChild(img);
   img.alt = label;
   img.src = c.portrait;
   // Rotations live beside the portrait: <root>/base/<dir>.png.
@@ -366,7 +373,7 @@ function spritePreview(
       img.src = c.portrait;
     }
   };
-  return { img, setSpin };
+  return { img: box, setSpin };
 }
 
 let stylesInjected = false;
@@ -419,14 +426,18 @@ function injectStyles() {
   .ml-world.sel{border-image:url(/ui2/plate-selected.png) 56 fill / 13px;color:#ffd678}
   .ml-world.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
   .ml-world-img{width:34px;height:34px;object-fit:cover;image-rendering:auto;flex:none}
-  .ml-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(152px,1fr));gap:8px;padding:2px}
-  .ml-cell{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 2px;
+  /* compact cards sized to their content (maintainer: the man/woman
+     buttons were too big) — the portrait viewport crops the 112px canvas
+     down to the figure, art at native 1:1 */
+  .ml-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:2px}
+  .ml-cell{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;
     color:#dfe2ea;font-size:12px;text-shadow:0 1px 2px #000}
   .ml-cell.sel{border-image:url(/ui2/plate-selected.png) 56 fill / 13px;color:#ffd678}
   .ml-cell.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
   .ml-sprite{image-rendering:pixelated;background-repeat:no-repeat;flex:none}
-  .ml-portrait{width:128px;height:128px;object-fit:contain;image-rendering:pixelated;margin:4px 0}
-  .ml-cell span{max-width:136px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ml-portrait-box{width:48px;height:92px;overflow:hidden;position:relative;flex:none}
+  .ml-portrait{position:absolute;left:-32px;top:-10px;width:112px;height:112px;image-rendering:pixelated}
+  .ml-cell span{max-width:96px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   /* Action row: ONE height (64px, same as the world chips) for the trough,
      the dice and Enter — all buttons the same size, text centered. Wraps on
      narrow screens (inside the ring) so the trough never collapses: the

@@ -52,13 +52,22 @@ const { width: W, height: H, data: D } = src;
 const idx = (x, y) => (y * W + x) * 4;
 
 // --- 1. junction replace (before erases, so bark rows are pristine) ---
+// The seam DISSOLVES over ±6 rows (maintainer round 3: a hard row where the
+// wide rune-plate rail meets the narrower bark unit read as "disconnected
+// tiles"): a deterministic per-pixel dither ramps original -> bark, so the
+// 4px width step morphs organically instead of snapping.
+const DITHER = 6;
 for (const [junc, x0, x1] of [
   [JUNC_L, 0, SIDE_W],
   [JUNC_R, W - SIDE_W, W],
 ]) {
-  for (let y = junc.y0; y < junc.y1; y++) {
+  for (let y = junc.y0 - DITHER; y < junc.y1; y++) {
     const sy = BARK.y0 + ((((y - BARK.phase) % BARK.p) + BARK.p) % BARK.p);
+    // 0 at y0-DITHER .. 2*DITHER inside; full bark from y0+DITHER on
+    const ramp = Math.min(2 * DITHER, y - (junc.y0 - DITHER));
     for (let x = x0; x < x1; x++) {
+      if (ramp < 2 * DITHER && ((x * 31 + y * 17 + ((x * y) | 0)) % (2 * DITHER)) >= ramp)
+        continue; // keep the original pixel in the dissolve band
       const s = idx(x, sy), d = idx(x, y);
       D[d] = D[s]; D[d + 1] = D[s + 1]; D[d + 2] = D[s + 2]; D[d + 3] = D[s + 3];
     }
@@ -90,6 +99,14 @@ const colourErase = (x0, x1, y0, y1, cond) => {
 };
 colourErase(28, 48, 400, 440, (r, g) => g > r + 8 && g > 40); // left green (incl. dark facets)
 colourErase(716, 732, 405, 435, (r, g, b) => b > r + 25 && b > 85); // right blue
+// inner-boundary sweep (round 3): decor that CROSSED the interior line got
+// sliced into slivers hugging it — a tall blue crystal edge on the right
+// (x720-725 y426-509) and leaf-green bits on the left. Erase saturated
+// (crystal/leaf coloured) pixels in the 4-5px strips beside the boundary,
+// above each side's bark seam; bark/rune-plate browns fail the conditions.
+colourErase(43, 48, 300, JUNC_L.y0, (r, g) => g > r + 10 && g > 45);
+colourErase(719, 726, 300, JUNC_R.y0,
+  (r, g, b) => (b > r + 18 && b > 70) || (g > r + 10 && g > 45));
 // outline sweep: the crystals' near-black outlines aren't colour-keyable —
 // erase dark pixels in the boxes that ended up ADJACENT to erased ones
 for (let pass = 0; pass < 3; pass++) {
