@@ -1,6 +1,6 @@
 {
   "domain": "music",
-  "generated_at": "2026-07-17T16:53:29+00:00",
+  "generated_at": "2026-07-17T16:59:32+00:00",
   "tracks": [
     {
       "id": "nangijala_cherry_valley",
@@ -52,6 +52,25 @@
           "name": "Outro - Campfire Embers Fade",
           "start_s": 90.0,
           "end_s": 120.0
+        }
+      ],
+      "layers": [
+        {
+          "id": "combat",
+          "name": "Combat \u2014 Drums of the Valley",
+          "intensity": 1.0,
+          "file": "nangijala_cherry_valley/layers/combat.wav",
+          "stream": {
+            "ogg": {
+              "file": "nangijala_cherry_valley/layers/combat.ogg",
+              "mime": "audio/ogg; codecs=opus"
+            },
+            "m4a": {
+              "file": "nangijala_cherry_valley/layers/combat.m4a",
+              "mime": "audio/mp4"
+            }
+          },
+          "metadata": "nangijala_cherry_valley/layers/combat.metadata.json"
         }
       ],
       "metadata": "nangijala_cherry_valley/metadata.json"

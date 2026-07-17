@@ -3484,5 +3484,34 @@
       ]
     }
   },
-  "mastering": "peak-normalize(-1.0 dBFS) + 15 ms edge fades"
+  "mastering": "peak-normalize(-1.0 dBFS) + 15 ms edge fades",
+  "layers": [
+    {
+      "id": "combat",
+      "name": "Combat \u2014 Drums of the Valley",
+      "description": "The same Cherry Valley theme at battle intensity: driving war drums and taiko join, a low brass ostinato runs under the melody, strings turn to urgent tremolo. Crossfade in when combat starts \u2014 the melody stays recognizably the same, so the world never 'changes song'.",
+      "intensity": 1.0,
+      "file": "nangijala_cherry_valley/layers/combat.wav",
+      "compressed": [
+        {
+          "file": "nangijala_cherry_valley/layers/combat.ogg",
+          "format": "ogg",
+          "codec": "opus",
+          "bitrate_kbps": 96,
+          "size_bytes": 1824098,
+          "mime": "audio/ogg; codecs=opus"
+        },
+        {
+          "file": "nangijala_cherry_valley/layers/combat.m4a",
+          "format": "m4a",
+          "codec": "aac",
+          "bitrate_kbps": 128,
+          "size_bytes": 1954892,
+          "mime": "audio/mp4"
+        }
+      ],
+      "metadata": "nangijala_cherry_valley/layers/combat.metadata.json",
+      "mixing": "Same sections/tempo/key as the base by construction, but generated independently \u2014 NOT phase-locked and NOT a summable stem. Vertical remix: crossfade full mixes on a downbeat of the DESTINATION mix (its timing.downbeats_s) over ~250-500 ms."
+    }
+  ]
 }
