@@ -6,10 +6,14 @@ import { mountSelectFrame } from "./frame2";
 
 const NAMES = ["Ari", "Bex", "Cyl", "Dax", "Eir", "Fen", "Gio", "Hana", "Ivo", "Juno", "Kira", "Lio"];
 
-// Worlds with a themed card in the maintainer's select-3 concept set (the
-// card art carries its own baked label). Everything else falls back to the
-// wooden plate chip.
-const WORLD_CARDS = new Set(["demo_isle", "demo_lost", "glow_test"]);
+// Worlds with an icon from the maintainer's World Selection Atlas
+// (ui2/select3/icon-<name>.png, extracted by scripts/extract-world-icons.mjs).
+// A world without one (a future maps2 addition) falls back to the wooden
+// plate + minimap chip until the atlas gains its icon.
+const WORLD_ICONS = new Set([
+  "ring_test", "demo_isle", "demo_lost", "glow_test",
+  "occlusion_test", "prop_demo", "trans_demo",
+]);
 
 export interface JoinChoice {
   world: string;
@@ -80,27 +84,26 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       let swallowClick = false; // a real swipe must not click-select a chip
       const prevD = new Map<HTMLElement, number>();
       worlds.forEach((w, i) => {
-        // Worlds with a THEMED CARD from the maintainer's concept round
-        // (ui2/select3/world-<name>.png — label baked into the art) render
-        // the card full-bleed; the rest keep the wooden plate + minimap.
-        const hasCard = WORLD_CARDS.has(w.name);
-        const chip = el("button", hasCard ? "ml-world ml-wcard" : "ml-world ml-plated");
+        // Worlds with an ATLAS ICON (the maintainer's World Selection Atlas
+        // sheet) render as a square icon tile + label; the rest keep the
+        // wooden plate + minimap fallback.
+        const hasIcon = WORLD_ICONS.has(w.name);
+        const chip = el("button", hasIcon ? "ml-world ml-wicon" : "ml-world ml-plated");
         pressFx(chip);
-        if (hasCard) {
-          chip.style.backgroundImage = `url(/ui2/select3/world-${w.name}.png)`;
-          chip.setAttribute("aria-label", w.label);
-        } else {
-          if (w.preview) {
-            const img = el("img", "ml-world-img") as HTMLImageElement;
-            img.src = `/assets/${w.preview.replace(/^\/+/, "")}`;
-            img.alt = w.label;
-            img.draggable = false; // native image drag would hijack the swipe
-            chip.appendChild(img);
-          }
-          const span = el("span", "");
-          span.textContent = w.label;
-          chip.appendChild(span);
+        if (hasIcon) {
+          const tile = el("div", "ml-wicon-img");
+          tile.style.backgroundImage = `url(/ui2/select3/icon-${w.name}.png)`;
+          chip.appendChild(tile);
+        } else if (w.preview) {
+          const img = el("img", "ml-world-img") as HTMLImageElement;
+          img.src = `/assets/${w.preview.replace(/^\/+/, "")}`;
+          img.alt = w.label;
+          img.draggable = false; // native image drag would hijack the swipe
+          chip.appendChild(img);
         }
+        const span = el("span", "");
+        span.textContent = w.label;
+        chip.appendChild(span);
         chip.addEventListener("click", () => {
           if (!swallowClick) selectWorld(i);
         });
@@ -430,24 +433,29 @@ function injectStyles() {
      the middle, loops around, neighbours peek in from the edges). One
      chip-height clipping strip; chips are absolutely positioned around the
      centre by the carousel layout() and slide via transform. */
-  .ml-worlds{position:relative;overflow:hidden;height:68px;padding:0;touch-action:pan-y;
+  .ml-worlds{position:relative;overflow:hidden;height:88px;padding:0;touch-action:pan-y;
     user-select:none;-webkit-user-select:none;cursor:grab}
   .ml-worlds:active{cursor:grabbing}
   /* natural chip width — the carousel measures each chip and spaces them
      an equal gap apart (uniform size was the old grid's constraint) */
   .ml-world{position:absolute;left:50%;top:2px;height:64px;display:flex;align-items:center;
-    justify-content:center;gap:8px;padding:2px 12px 2px 6px;color:#dfe2ea;font-size:13px;text-shadow:0 1px 2px #000}
+    justify-content:center;gap:8px;padding:2px 12px 2px 6px;color:#dfe2ea;font-size:12px;text-shadow:0 1px 2px #000}
   .ml-world.anim{transition:transform .25s ease}
   .ml-world span{white-space:nowrap}
   /* themed world card (select-3 concept): full-bleed art, baked label; the
      selected card gets a gold outline + slight lift instead of the plate's
      baked glow */
-  /* triple-class selectors: these must OUTRANK .ml-world.sel/.press (the
-     plate rules sit later in this sheet and tie on two classes) */
-  .ml-world.ml-wcard{border:none;border-image:none;background-size:100% 100%;background-repeat:no-repeat;
-    width:111px;height:58px;image-rendering:pixelated;padding:0}
-  .ml-world.ml-wcard.sel{border-image:none;outline:2px solid #ffd678;outline-offset:1px;filter:brightness(1.12)}
-  .ml-world.ml-wcard.press{border-image:none;filter:brightness(.9)}
+  /* atlas ICON chip: square icon tile + label below. Triple-class
+     selectors: these must OUTRANK .ml-world.sel/.press (the plate rules
+     sit later in this sheet and tie on two classes). */
+  .ml-world.ml-wicon{border:none;border-image:none;background:none;padding:0;
+    flex-direction:column;gap:3px;height:auto}
+  .ml-wicon-img{width:64px;height:64px;background-size:100% 100%;background-repeat:no-repeat;
+    image-rendering:pixelated}
+  .ml-world.ml-wicon.sel{border-image:none;background:none;color:#ffd678}
+  .ml-world.ml-wicon.sel .ml-wicon-img{outline:2px solid #ffd678;outline-offset:1px;filter:brightness(1.1)}
+  .ml-world.ml-wicon.press{border-image:none;background:none}
+  .ml-world.ml-wicon.press .ml-wicon-img{filter:brightness(.88)}
   .ml-world.sel{border-image:url(/ui2/plate-selected.png) 56 fill / 13px;color:#ffd678}
   .ml-world.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
   .ml-world-img{width:34px;height:34px;object-fit:cover;image-rendering:auto;flex:none}
