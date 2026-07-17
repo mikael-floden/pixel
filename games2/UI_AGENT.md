@@ -85,7 +85,8 @@ from the games agent), #18 (title/landing screen).
    beyond them). Keep `npm test` + `npm run typecheck` green; browser-bound
    checks go through `scripts/verify-*.mjs`.
 5. Update `coordination/games-ui.json` (heartbeat + notes), commit
-   (`Fixes #NN`), push, confirm CI.
+   (`Fixes #NN`), **push straight to `main`** (maintainer 2026-07-17: no
+   feature branches; rebase on reject like every other agent), confirm CI.
 
 ## Hard-won UI rules (inherited — do not relearn these)
 
