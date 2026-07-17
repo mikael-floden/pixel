@@ -92,10 +92,8 @@
           "divider": 0.5
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock blending to dirt with a small puddle"
+      "features": [],
+      "description": "black volcanic rock blending to dirt"
     },
     {
       "index": 1,
@@ -172,10 +170,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock blending to dirt with a small puddle"
+      "features": [],
+      "description": "black volcanic rock blending to dirt"
     },
     {
       "index": 2,
@@ -252,10 +248,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock blending to dirt with a small puddle"
+      "features": [],
+      "description": "black volcanic rock blending to dirt"
     },
     {
       "index": 3,
@@ -332,10 +326,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock blending to dirt with a small puddle"
+      "features": [],
+      "description": "black volcanic rock blending to dirt"
     },
     {
       "index": 4,
@@ -412,10 +404,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock blending to dirt with a small puddle"
+      "features": [],
+      "description": "black volcanic rock blending to dirt"
     },
     {
       "index": 5,
@@ -423,8 +413,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.588,
-        "black_mountain": 0.412
+        "lightdark_dirt": 0.59,
+        "black_mountain": 0.41
       },
       "edges": {
         "NE": {
@@ -492,10 +482,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "dirt blending to black volcanic rock with a small puddle"
+      "features": [],
+      "description": "dirt blending to black volcanic rock"
     },
     {
       "index": 6,
@@ -572,10 +560,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock blending to dirt with a small puddle"
+      "features": [],
+      "description": "black volcanic rock blending to dirt"
     },
     {
       "index": 7,
@@ -583,8 +569,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.891,
-        "black_mountain": 0.109
+        "lightdark_dirt": 0.892,
+        "black_mountain": 0.108
       },
       "edges": {
         "NE": {
@@ -652,10 +638,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "dirt blending to black volcanic rock with a small puddle"
+      "features": [],
+      "description": "dirt blending to black volcanic rock"
     },
     {
       "index": 8,
@@ -732,10 +716,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "dirt blending to black volcanic rock with a small puddle"
+      "features": [],
+      "description": "dirt blending to black volcanic rock"
     },
     {
       "index": 9,
@@ -809,10 +791,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "dirt blending to black volcanic rock with a small puddle"
+      "features": [],
+      "description": "dirt blending to black volcanic rock"
     },
     {
       "index": 10,
@@ -889,10 +869,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock blending to dirt with a small puddle"
+      "features": [],
+      "description": "black volcanic rock blending to dirt"
     },
     {
       "index": 11,
@@ -973,10 +951,8 @@
           "divider": 0.875
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock blending to dirt with a small puddle"
+      "features": [],
+      "description": "black volcanic rock blending to dirt"
     },
     {
       "index": 12,
@@ -984,8 +960,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.8,
-        "black_mountain": 0.2
+        "lightdark_dirt": 0.798,
+        "black_mountain": 0.202
       },
       "edges": {
         "NE": {
@@ -1139,8 +1115,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.549,
-        "lightdark_dirt": 0.451
+        "black_mountain": 0.55,
+        "lightdark_dirt": 0.45
       },
       "edges": {
         "NE": {
@@ -1208,10 +1184,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock blending to dirt with a small puddle"
+      "features": [],
+      "description": "black volcanic rock blending to dirt"
     },
     {
       "index": 15,
@@ -1288,10 +1262,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock blending to dirt with a small puddle"
+      "features": [],
+      "description": "black volcanic rock blending to dirt"
     }
   ],
   "generated_at": "2026-07-05T10:55:12+00:00",
@@ -1303,7 +1275,10 @@
       "sat_strength": 0.7,
       "v_strength": 0.9,
       "hue_band": 65,
-      "min_value": 14
+      "min_value": 14,
+      "dark_material_value": 50,
+      "dark_min_value": 38,
+      "dark_include": 46
     },
     "harmonized_from": true,
     "harmonized_to": true,

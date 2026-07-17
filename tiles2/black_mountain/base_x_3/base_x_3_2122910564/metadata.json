@@ -93,15 +93,15 @@
         "anim": "flicker",
         "sources": [
           {
-            "x": 36.9,
-            "y": 61.2,
+            "x": 37.5,
+            "y": 61.1,
             "r": 2.0,
             "color": [
-              0.179,
-              0.065,
+              0.182,
+              0.066,
               0.034
             ],
-            "s": 0.327,
+            "s": 0.329,
             "dir": "up"
           }
         ]
@@ -150,14 +150,14 @@
         "sources": [
           {
             "x": 24.1,
-            "y": 61.7,
+            "y": 62.0,
             "r": 4.4,
             "color": [
-              0.622,
-              0.135,
+              0.63,
+              0.136,
               0.03
             ],
-            "s": 0.485,
+            "s": 0.488,
             "dir": "up"
           },
           {
@@ -242,7 +242,10 @@
       "sat_strength": 0.7,
       "v_strength": 0.9,
       "hue_band": 65,
-      "min_value": 14
+      "min_value": 14,
+      "dark_material_value": 50,
+      "dark_min_value": 38,
+      "dark_include": 46
     },
     "harmonize_refs": [
       "black_mountain"

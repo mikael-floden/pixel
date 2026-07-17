@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.741,
-        "stone_mountain": 0.259
+        "black_mountain": 0.726,
+        "stone_mountain": 0.274
       },
       "edges": {
         "NE": {
@@ -33,6 +33,22 @@
             "black_mountain",
             "black_mountain",
             "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 0.5,
+            "stone_mountain": 0.5
+          }
+        },
+        "SE": {
+          "samples": [
+            "black_mountain",
+            "stone_mountain",
+            "black_mountain",
+            "black_mountain",
             "stone_mountain",
             "stone_mountain",
             "black_mountain",
@@ -43,22 +59,6 @@
             "stone_mountain": 0.375
           }
         },
-        "SE": {
-          "samples": [
-            "black_mountain",
-            "stone_mountain",
-            "black_mountain",
-            "black_mountain",
-            "stone_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "black_mountain": 0.75,
-            "stone_mountain": 0.25
-          }
-        },
         "SW": {
           "samples": [
             "black_mountain",
@@ -90,10 +90,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock blending to grey mountain stone with a small puddle"
+      "features": [],
+      "description": "black volcanic rock blending to grey mountain stone"
     },
     {
       "index": 1,
@@ -101,8 +99,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.976,
-        "stone_mountain": 0.024
+        "black_mountain": 0.978,
+        "stone_mountain": 0.022
       },
       "edges": {
         "NE": {
@@ -166,10 +164,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock with a small puddle"
+      "features": [],
+      "description": "plain black volcanic rock"
     },
     {
       "index": 2,
@@ -177,8 +173,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.866,
-        "stone_mountain": 0.134
+        "black_mountain": 0.864,
+        "stone_mountain": 0.136
       },
       "edges": {
         "NE": {
@@ -244,11 +240,8 @@
           }
         }
       },
-      "features": [
-        "water",
-        "flowers"
-      ],
-      "description": "black volcanic rock blending to grey mountain stone with a small puddle, small flowers"
+      "features": [],
+      "description": "black volcanic rock blending to grey mountain stone"
     },
     {
       "index": 3,
@@ -256,8 +249,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.873,
-        "stone_mountain": 0.127
+        "black_mountain": 0.87,
+        "stone_mountain": 0.13
       },
       "edges": {
         "NE": {
@@ -324,11 +317,8 @@
           }
         }
       },
-      "features": [
-        "water",
-        "accent"
-      ],
-      "description": "black volcanic rock blending to grey mountain stone with a small puddle, a small detail"
+      "features": [],
+      "description": "black volcanic rock blending to grey mountain stone"
     },
     {
       "index": 4,
@@ -336,8 +326,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.803,
-        "stone_mountain": 0.197
+        "black_mountain": 0.767,
+        "stone_mountain": 0.233
       },
       "edges": {
         "NE": {
@@ -362,14 +352,15 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "black_mountain",
+            "stone_mountain",
             "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.25,
-            "stone_mountain": 0.75
-          }
+            "black_mountain": 0.125,
+            "stone_mountain": 0.875
+          },
+          "divider": 0.125
         },
         "SW": {
           "samples": [
@@ -405,10 +396,9 @@
         }
       },
       "features": [
-        "water",
-        "flowers"
+        "water"
       ],
-      "description": "black volcanic rock blending to grey mountain stone with a small puddle, small flowers"
+      "description": "black volcanic rock blending to grey mountain stone with a small puddle"
     },
     {
       "index": 5,
@@ -416,8 +406,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.758,
-        "stone_mountain": 0.242
+        "black_mountain": 0.736,
+        "stone_mountain": 0.264
       },
       "edges": {
         "NE": {
@@ -487,10 +477,9 @@
         }
       },
       "features": [
-        "water",
-        "flowers"
+        "water"
       ],
-      "description": "black volcanic rock blending to grey mountain stone with a small puddle, small flowers"
+      "description": "black volcanic rock blending to grey mountain stone with a small puddle"
     },
     {
       "index": 6,
@@ -498,8 +487,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.763,
-        "stone_mountain": 0.237
+        "black_mountain": 0.738,
+        "stone_mountain": 0.262
       },
       "edges": {
         "NE": {
@@ -510,13 +499,14 @@
             "black_mountain",
             "black_mountain",
             "stone_mountain",
-            "black_mountain",
+            "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.75,
-            "stone_mountain": 0.25
-          }
+            "black_mountain": 0.625,
+            "stone_mountain": 0.375
+          },
+          "divider": 0.625
         },
         "SE": {
           "samples": [
@@ -567,11 +557,8 @@
           }
         }
       },
-      "features": [
-        "water",
-        "flowers"
-      ],
-      "description": "black volcanic rock blending to grey mountain stone with a small puddle, small flowers"
+      "features": [],
+      "description": "black volcanic rock blending to grey mountain stone"
     },
     {
       "index": 7,
@@ -579,8 +566,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.774,
-        "stone_mountain": 0.226
+        "black_mountain": 0.763,
+        "stone_mountain": 0.237
       },
       "edges": {
         "NE": {
@@ -648,11 +635,8 @@
           }
         }
       },
-      "features": [
-        "water",
-        "flowers"
-      ],
-      "description": "black volcanic rock blending to grey mountain stone with a small puddle, small flowers"
+      "features": [],
+      "description": "black volcanic rock blending to grey mountain stone"
     },
     {
       "index": 8,
@@ -660,8 +644,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.895,
-        "stone_mountain": 0.105
+        "black_mountain": 0.609,
+        "stone_mountain": 0.391
       },
       "edges": {
         "NE": {
@@ -683,7 +667,7 @@
           "samples": [
             "black_mountain",
             "black_mountain",
-            "black_mountain",
+            "stone_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain",
@@ -691,14 +675,15 @@
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 1.0
+            "black_mountain": 0.875,
+            "stone_mountain": 0.125
           }
         },
         "SW": {
           "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain",
@@ -706,8 +691,10 @@
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 1.0
-          }
+            "stone_mountain": 0.375,
+            "black_mountain": 0.625
+          },
+          "divider": 0.375
         },
         "NW": {
           "samples": [
@@ -715,21 +702,19 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "black_mountain",
+            "stone_mountain",
             "black_mountain",
             "stone_mountain",
-            "black_mountain"
+            "stone_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.875,
-            "stone_mountain": 0.125
+            "black_mountain": 0.625,
+            "stone_mountain": 0.375
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock blending to grey mountain stone with a small puddle"
+      "features": [],
+      "description": "black volcanic rock blending to grey mountain stone"
     },
     {
       "index": 9,
@@ -737,8 +722,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.847,
-        "stone_mountain": 0.153
+        "black_mountain": 0.814,
+        "stone_mountain": 0.186
       },
       "edges": {
         "NE": {
@@ -798,18 +783,17 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "black_mountain"
+            "stone_mountain"
           ],
           "ratio": {
-            "black_mountain": 1.0
-          }
+            "black_mountain": 0.875,
+            "stone_mountain": 0.125
+          },
+          "divider": 0.875
         }
       },
-      "features": [
-        "water",
-        "flowers"
-      ],
-      "description": "black volcanic rock blending to grey mountain stone with a small puddle, small flowers"
+      "features": [],
+      "description": "black volcanic rock blending to grey mountain stone"
     },
     {
       "index": 10,
@@ -817,11 +801,27 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.128,
-        "black_mountain": 0.872
+        "stone_mountain": 0.389,
+        "black_mountain": 0.611
       },
       "edges": {
         "NE": {
+          "samples": [
+            "stone_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain"
+          ],
+          "ratio": {
+            "stone_mountain": 0.625,
+            "black_mountain": 0.375
+          }
+        },
+        "SE": {
           "samples": [
             "stone_mountain",
             "black_mountain",
@@ -838,34 +838,20 @@
           },
           "divider": 0.125
         },
-        "SE": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "black_mountain": 1.0
-          }
-        },
         "SW": {
           "samples": [
+            "stone_mountain",
+            "stone_mountain",
             "black_mountain",
             "black_mountain",
+            "stone_mountain",
             "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
+            "stone_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 1.0
+            "stone_mountain": 0.5,
+            "black_mountain": 0.5
           }
         },
         "NW": {
@@ -873,38 +859,7 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "black_mountain": 1.0
-          }
-        }
-      },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock blending to grey mountain stone with a small puddle"
-    },
-    {
-      "index": 11,
-      "file": "tile_11.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "black_mountain": 0.848,
-        "stone_mountain": 0.152
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "black_mountain",
             "stone_mountain",
-            "black_mountain",
-            "black_mountain",
             "black_mountain",
             "stone_mountain",
             "black_mountain",
@@ -914,6 +869,36 @@
             "black_mountain": 0.75,
             "stone_mountain": 0.25
           }
+        }
+      },
+      "features": [],
+      "description": "black volcanic rock blending to grey mountain stone"
+    },
+    {
+      "index": 11,
+      "file": "tile_11.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "black_mountain": 0.61,
+        "stone_mountain": 0.39
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "black_mountain",
+            "stone_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 0.5,
+            "stone_mountain": 0.5
+          }
         },
         "SE": {
           "samples": [
@@ -923,26 +908,28 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "black_mountain",
+            "stone_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 1.0
+            "black_mountain": 0.875,
+            "stone_mountain": 0.125
           }
         },
         "SW": {
           "samples": [
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
             "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
+            "stone_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 1.0
+            "stone_mountain": 0.625,
+            "black_mountain": 0.375
           }
         },
         "NW": {
@@ -950,21 +937,20 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
+            "stone_mountain",
             "black_mountain",
             "black_mountain",
-            "black_mountain",
-            "black_mountain",
+            "stone_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 1.0
+            "black_mountain": 0.75,
+            "stone_mountain": 0.25
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock blending to grey mountain stone with a small puddle"
+      "features": [],
+      "description": "black volcanic rock blending to grey mountain stone"
     },
     {
       "index": 12,
@@ -972,23 +958,24 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.749,
-        "stone_mountain": 0.251
+        "black_mountain": 0.652,
+        "stone_mountain": 0.348
       },
       "edges": {
         "NE": {
           "samples": [
             "black_mountain",
             "black_mountain",
-            "black_mountain",
-            "black_mountain",
+            "stone_mountain",
+            "stone_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 1.0
+            "black_mountain": 0.75,
+            "stone_mountain": 0.25
           }
         },
         "SE": {
@@ -1016,12 +1003,12 @@
             "black_mountain",
             "stone_mountain",
             "black_mountain",
-            "black_mountain",
+            "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.75,
-            "stone_mountain": 0.25
+            "black_mountain": 0.625,
+            "stone_mountain": 0.375
           }
         },
         "NW": {
@@ -1042,11 +1029,8 @@
           "divider": 0.25
         }
       },
-      "features": [
-        "water",
-        "accent"
-      ],
-      "description": "black volcanic rock blending to grey mountain stone with a small puddle, a small detail"
+      "features": [],
+      "description": "black volcanic rock blending to grey mountain stone"
     },
     {
       "index": 13,
@@ -1054,24 +1038,24 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.714,
-        "stone_mountain": 0.286
+        "black_mountain": 0.626,
+        "stone_mountain": 0.374
       },
       "edges": {
         "NE": {
           "samples": [
             "black_mountain",
-            "black_mountain",
+            "stone_mountain",
             "black_mountain",
             "stone_mountain",
             "stone_mountain",
-            "black_mountain",
+            "stone_mountain",
             "black_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.625,
-            "stone_mountain": 0.375
+            "black_mountain": 0.375,
+            "stone_mountain": 0.625
           }
         },
         "SE": {
@@ -1096,32 +1080,32 @@
             "black_mountain",
             "stone_mountain",
             "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "black_mountain": 0.875,
-            "stone_mountain": 0.125
-          }
-        },
-        "NW": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
             "stone_mountain",
-            "stone_mountain",
+            "black_mountain",
+            "black_mountain",
             "stone_mountain"
           ],
           "ratio": {
             "black_mountain": 0.625,
             "stone_mountain": 0.375
+          }
+        },
+        "NW": {
+          "samples": [
+            "black_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain",
+            "stone_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 0.125,
+            "stone_mountain": 0.875
           },
-          "divider": 0.625
+          "divider": 0.125
         }
       },
       "features": [
@@ -1135,8 +1119,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.907,
-        "stone_mountain": 0.093
+        "black_mountain": 0.906,
+        "stone_mountain": 0.094
       },
       "edges": {
         "NE": {
@@ -1202,10 +1186,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock blending to grey mountain stone with a small puddle"
+      "features": [],
+      "description": "black volcanic rock blending to grey mountain stone"
     },
     {
       "index": 15,
@@ -1213,8 +1195,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.982,
-        "stone_mountain": 0.018
+        "black_mountain": 0.946,
+        "stone_mountain": 0.054
       },
       "edges": {
         "NE": {
@@ -1226,25 +1208,28 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "black_mountain"
+            "stone_mountain"
           ],
           "ratio": {
-            "black_mountain": 1.0
-          }
+            "black_mountain": 0.875,
+            "stone_mountain": 0.125
+          },
+          "divider": 0.875
         },
         "SE": {
           "samples": [
+            "stone_mountain",
+            "stone_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
+            "stone_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 1.0
+            "stone_mountain": 0.375,
+            "black_mountain": 0.625
           }
         },
         "SW": {
@@ -1278,10 +1263,8 @@
           }
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "black volcanic rock with a small puddle"
+      "features": [],
+      "description": "black volcanic rock blending to grey mountain stone"
     }
   ],
   "generated_at": "2026-07-05T15:22:47+00:00",
@@ -1293,7 +1276,10 @@
       "sat_strength": 0.7,
       "v_strength": 0.9,
       "hue_band": 65,
-      "min_value": 14
+      "min_value": 14,
+      "dark_material_value": 50,
+      "dark_min_value": 38,
+      "dark_include": 46
     },
     "harmonized_from": true,
     "harmonized_to": true,

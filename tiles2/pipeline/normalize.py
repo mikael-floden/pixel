@@ -76,7 +76,7 @@ def material_target(images):
 
 
 def harmonize(im, target, hue_strength=0.9, sat_strength=0.6, v_strength=0.65, hue_band=42,
-              avoid_hue=None, avoid_value=None, min_value=0):
+              avoid_hue=None, avoid_value=None, min_value=0, dark_include=0):
     """Pull `im`'s MATERIAL pixels toward the target hue/saturation and level their
     mean brightness, keeping texture. The material is SELECTED by the hue of its own
     RAW colour (`target['select_hue']` — the auto-detected pre-palette hue) so that a
@@ -111,7 +111,18 @@ def harmonize(im, target, hue_strength=0.9, sat_strength=0.6, v_strength=0.65, h
         # value, so the stone pass can't grab snow and the snow pass can't grab stone.
         sel_v = float(target.get("select_value", val_t))
         dv0 = np.abs(v - sel_v)
-        m = op & (s < 70) & (dv0 < 70)
+        # `s < 70` treats saturated pixels as untouchable accents — but a near-black
+        # material (black_mountain volcanic rock) has pixels like [15,16,22] whose HSV
+        # saturation is INFLATED to 80-110 purely by the tiny channel spread at very low
+        # value (sat = (max-min)/max). Those aren't real accents, they're the dark rock —
+        # yet the `s < 70` gate SKIPS them, so mean-leveling + the min_value floor never
+        # reach them and they stay pitch-#000000-black in transitions. `dark_include` (set
+        # only when harmonizing the dark material) also claims any pixel below that value,
+        # regardless of its noisy saturation, so the rock gets lifted to a charcoal grey.
+        sat_ok = (s < 70)
+        if dark_include:
+            sat_ok = sat_ok | (v < float(dark_include))
+        m = op & sat_ok & (dv0 < 70)
         if avoid_value is not None:
             m = m & (dv0 <= np.abs(v - float(avoid_value)))
     if m.any():

@@ -171,10 +171,9 @@
       },
       "features": [
         "shiny",
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "black volcanic rock blending to crystal ice with a shiny speck, a small detail, small flowers"
+      "description": "black volcanic rock blending to crystal ice with a shiny speck, a small detail"
     },
     {
       "index": 2,
@@ -1325,7 +1324,10 @@
       "sat_strength": 0.7,
       "v_strength": 0.9,
       "hue_band": 65,
-      "min_value": 14
+      "min_value": 14,
+      "dark_material_value": 50,
+      "dark_min_value": 38,
+      "dark_include": 46
     },
     "harmonized_from": true,
     "harmonized_to": true,

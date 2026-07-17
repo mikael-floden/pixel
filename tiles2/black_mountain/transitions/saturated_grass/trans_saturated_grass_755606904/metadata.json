@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.916,
-        "saturated_grass": 0.084
+        "black_mountain": 0.94,
+        "saturated_grass": 0.06
       },
       "edges": {
         "NE": {
@@ -35,14 +35,14 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "saturated_grass",
+            "black_mountain",
             "saturated_grass"
           ],
           "ratio": {
-            "black_mountain": 0.75,
-            "saturated_grass": 0.25
+            "black_mountain": 0.875,
+            "saturated_grass": 0.125
           },
-          "divider": 0.75
+          "divider": 0.875
         },
         "SE": {
           "samples": [
@@ -70,13 +70,11 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "saturated_grass"
+            "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.875,
-            "saturated_grass": 0.125
-          },
-          "divider": 0.875
+            "black_mountain": 1.0
+          }
         },
         "NW": {
           "samples": [
@@ -94,11 +92,8 @@
           }
         }
       },
-      "features": [
-        "water",
-        "accent"
-      ],
-      "description": "black volcanic rock blending to saturated grass with a small puddle, a small detail"
+      "features": [],
+      "description": "black volcanic rock blending to saturated grass"
     },
     {
       "index": 1,
@@ -106,8 +101,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.535,
-        "black_mountain": 0.465
+        "saturated_grass": 0.503,
+        "black_mountain": 0.497
       },
       "edges": {
         "NE": {
@@ -133,14 +128,14 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
+            "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "saturated_grass": 0.875,
-            "black_mountain": 0.125
+            "saturated_grass": 0.75,
+            "black_mountain": 0.25
           },
-          "divider": 0.875
+          "divider": 0.75
         },
         "SW": {
           "samples": [
@@ -163,22 +158,20 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "saturated_grass",
+            "black_mountain",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "black_mountain": 0.5,
-            "saturated_grass": 0.5
+            "black_mountain": 0.625,
+            "saturated_grass": 0.375
           },
-          "divider": 0.5
+          "divider": 0.625
         }
       },
-      "features": [
-        "water"
-      ],
-      "description": "saturated grass blending to black volcanic rock with a small puddle"
+      "features": [],
+      "description": "saturated grass blending to black volcanic rock"
     },
     {
       "index": 2,
@@ -186,8 +179,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.242,
-        "black_mountain": 0.758
+        "saturated_grass": 0.172,
+        "black_mountain": 0.828
       },
       "edges": {
         "NE": {
@@ -198,13 +191,14 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "saturated_grass",
+            "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "saturated_grass": 0.25,
-            "black_mountain": 0.75
-          }
+            "saturated_grass": 0.125,
+            "black_mountain": 0.875
+          },
+          "divider": 0.125
         },
         "SE": {
           "samples": [
@@ -240,26 +234,25 @@
         "NW": {
           "samples": [
             "black_mountain",
-            "saturated_grass",
-            "saturated_grass",
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "saturated_grass",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
             "saturated_grass"
           ],
           "ratio": {
-            "black_mountain": 0.5,
-            "saturated_grass": 0.5
-          }
+            "black_mountain": 0.875,
+            "saturated_grass": 0.125
+          },
+          "divider": 0.875
         }
       },
       "features": [
-        "water",
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "black volcanic rock blending to saturated grass with a small puddle, a small detail, small flowers"
+      "description": "black volcanic rock blending to saturated grass with a small detail"
     },
     {
       "index": 3,
@@ -267,8 +260,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.775,
-        "black_mountain": 0.225
+        "saturated_grass": 0.736,
+        "black_mountain": 0.264
       },
       "edges": {
         "NE": {
@@ -310,36 +303,34 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "saturated_grass"
+            "black_mountain"
           ],
           "ratio": {
-            "saturated_grass": 0.5,
-            "black_mountain": 0.5
-          }
+            "saturated_grass": 0.375,
+            "black_mountain": 0.625
+          },
+          "divider": 0.375
         },
         "NW": {
           "samples": [
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "saturated_grass",
+            "black_mountain",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "black_mountain": 0.375,
-            "saturated_grass": 0.625
+            "black_mountain": 0.5,
+            "saturated_grass": 0.5
           },
-          "divider": 0.375
+          "divider": 0.5
         }
       },
-      "features": [
-        "water",
-        "accent"
-      ],
-      "description": "saturated grass blending to black volcanic rock with a small puddle, a small detail"
+      "features": [],
+      "description": "saturated grass blending to black volcanic rock"
     },
     {
       "index": 4,
@@ -347,8 +338,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.654,
-        "black_mountain": 0.346
+        "saturated_grass": 0.561,
+        "black_mountain": 0.439
       },
       "edges": {
         "NE": {
@@ -392,37 +383,35 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "saturated_grass",
-            "saturated_grass"
+            "black_mountain",
+            "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.75,
-            "saturated_grass": 0.25
-          },
-          "divider": 0.75
+            "black_mountain": 1.0
+          }
         },
         "NW": {
           "samples": [
-            "saturated_grass",
-            "saturated_grass",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
             "black_mountain",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.875,
-            "black_mountain": 0.125
-          }
+            "black_mountain": 0.5,
+            "saturated_grass": 0.5
+          },
+          "divider": 0.5
         }
       },
       "features": [
-        "water",
-        "accent"
+        "water"
       ],
-      "description": "saturated grass blending to black volcanic rock with a small puddle, a small detail"
+      "description": "saturated grass blending to black volcanic rock with a small puddle"
     },
     {
       "index": 5,
@@ -430,8 +419,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.665,
-        "black_mountain": 0.335
+        "saturated_grass": 0.659,
+        "black_mountain": 0.341
       },
       "edges": {
         "NE": {
@@ -500,9 +489,9 @@
         }
       },
       "features": [
-        "water"
+        "accent"
       ],
-      "description": "saturated grass blending to black volcanic rock with a small puddle"
+      "description": "saturated grass blending to black volcanic rock with a small detail"
     },
     {
       "index": 6,
@@ -510,8 +499,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.277,
-        "saturated_grass": 0.723
+        "black_mountain": 0.339,
+        "saturated_grass": 0.661
       },
       "edges": {
         "NE": {
@@ -570,22 +559,20 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "saturated_grass",
+            "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "saturated_grass": 0.875,
-            "black_mountain": 0.125
+            "saturated_grass": 0.75,
+            "black_mountain": 0.25
           },
-          "divider": 0.875
+          "divider": 0.75
         }
       },
       "features": [
-        "water",
-        "flowers",
-        "accent"
+        "water"
       ],
-      "description": "saturated grass blending to black volcanic rock with a small puddle, small flowers, a small detail"
+      "description": "saturated grass blending to black volcanic rock with a small puddle"
     },
     {
       "index": 7,
@@ -593,8 +580,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.832,
-        "black_mountain": 0.168
+        "saturated_grass": 0.824,
+        "black_mountain": 0.176
       },
       "edges": {
         "NE": {
@@ -661,10 +648,8 @@
           }
         }
       },
-      "features": [
-        "flowers"
-      ],
-      "description": "saturated grass blending to black volcanic rock with small flowers"
+      "features": [],
+      "description": "saturated grass blending to black volcanic rock"
     },
     {
       "index": 8,
@@ -742,10 +727,9 @@
         }
       },
       "features": [
-        "water",
-        "accent"
+        "water"
       ],
-      "description": "saturated grass blending to black volcanic rock with a small puddle, a small detail"
+      "description": "saturated grass blending to black volcanic rock with a small puddle"
     },
     {
       "index": 9,
@@ -753,8 +737,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.774,
-        "black_mountain": 0.226
+        "saturated_grass": 0.752,
+        "black_mountain": 0.248
       },
       "edges": {
         "NE": {
@@ -981,8 +965,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.837,
-        "saturated_grass": 0.163
+        "black_mountain": 0.852,
+        "saturated_grass": 0.148
       },
       "edges": {
         "NE": {
@@ -1050,11 +1034,8 @@
           }
         }
       },
-      "features": [
-        "water",
-        "accent"
-      ],
-      "description": "black volcanic rock blending to saturated grass with a small puddle, a small detail"
+      "features": [],
+      "description": "black volcanic rock blending to saturated grass"
     },
     {
       "index": 13,
@@ -1062,8 +1043,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.729,
-        "saturated_grass": 0.271
+        "black_mountain": 0.858,
+        "saturated_grass": 0.142
       },
       "edges": {
         "NE": {
@@ -1105,39 +1086,34 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "saturated_grass",
+            "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.875,
-            "saturated_grass": 0.125
+            "black_mountain": 1.0
           }
         },
         "NW": {
           "samples": [
             "black_mountain",
             "black_mountain",
-            "saturated_grass",
             "black_mountain",
-            "saturated_grass",
-            "saturated_grass",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.625,
-            "saturated_grass": 0.375
+            "black_mountain": 1.0
           }
         }
       },
-      "features": [
-        "water",
-        "accent"
-      ],
-      "description": "black volcanic rock blending to saturated grass with a small puddle, a small detail"
+      "features": [],
+      "description": "black volcanic rock blending to saturated grass"
     },
     {
       "index": 14,
@@ -1145,8 +1121,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.883,
-        "black_mountain": 0.117
+        "saturated_grass": 0.871,
+        "black_mountain": 0.129
       },
       "edges": {
         "NE": {
@@ -1213,10 +1189,9 @@
         }
       },
       "features": [
-        "water",
-        "flowers"
+        "water"
       ],
-      "description": "saturated grass blending to black volcanic rock with a small puddle, small flowers"
+      "description": "saturated grass blending to black volcanic rock with a small puddle"
     },
     {
       "index": 15,
@@ -1224,7 +1199,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 1.0
+        "saturated_grass": 0.999,
+        "black_mountain": 0.001
       },
       "edges": {
         "NE": {
@@ -1301,7 +1277,10 @@
       "sat_strength": 0.7,
       "v_strength": 0.9,
       "hue_band": 65,
-      "min_value": 14
+      "min_value": 14,
+      "dark_material_value": 50,
+      "dark_min_value": 38,
+      "dark_include": 46
     },
     "harmonized_from": true,
     "harmonized_to": true,

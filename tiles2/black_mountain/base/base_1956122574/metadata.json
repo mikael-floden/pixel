@@ -672,10 +672,9 @@
         }
       },
       "features": [
-        "water",
-        "flowers"
+        "water"
       ],
-      "description": "black volcanic rock with a small puddle, small flowers"
+      "description": "black volcanic rock with a small puddle"
     },
     {
       "index": 9,
@@ -748,10 +747,9 @@
         }
       },
       "features": [
-        "water",
         "pebbles"
       ],
-      "description": "black volcanic rock with a small puddle, pebbles"
+      "description": "black volcanic rock with pebbles"
     },
     {
       "index": 10,
@@ -824,10 +822,9 @@
         }
       },
       "features": [
-        "water",
-        "flowers"
+        "water"
       ],
-      "description": "black volcanic rock with a small puddle, small flowers"
+      "description": "black volcanic rock with a small puddle"
     },
     {
       "index": 11,
@@ -900,10 +897,9 @@
         }
       },
       "features": [
-        "water",
-        "flowers"
+        "water"
       ],
-      "description": "black volcanic rock with a small puddle, small flowers"
+      "description": "black volcanic rock with a small puddle"
     },
     {
       "index": 12,
@@ -1209,7 +1205,10 @@
       "sat_strength": 0.7,
       "v_strength": 0.9,
       "hue_band": 65,
-      "min_value": 14
+      "min_value": 14,
+      "dark_material_value": 50,
+      "dark_min_value": 38,
+      "dark_include": 46
     },
     "harmonized_from": true,
     "harmonized_to": false,

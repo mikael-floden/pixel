@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.169,
-        "clear_water": 0.831
+        "black_mountain": 0.235,
+        "clear_water": 0.765
       },
       "edges": {
         "NE": {
@@ -32,17 +32,17 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "clear_water",
+            "black_mountain",
             "clear_water",
             "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "black_mountain": 0.375,
-            "clear_water": 0.625
+            "black_mountain": 0.5,
+            "clear_water": 0.5
           },
-          "divider": 0.375
+          "divider": 0.5
         },
         "SE": {
           "samples": [
@@ -92,10 +92,8 @@
           "divider": 0.375
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "clear water blending to black volcanic rock with a small detail"
+      "features": [],
+      "description": "clear water blending to black volcanic rock"
     },
     {
       "index": 1,
@@ -103,8 +101,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.98,
-        "black_mountain": 0.02
+        "clear_water": 0.943,
+        "black_mountain": 0.057
       },
       "edges": {
         "NE": {
@@ -131,15 +129,17 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "clear_water"
+            "black_mountain"
           ],
           "ratio": {
-            "clear_water": 1.0
-          }
+            "clear_water": 0.875,
+            "black_mountain": 0.125
+          },
+          "divider": 0.875
         },
         "SW": {
           "samples": [
-            "clear_water",
+            "black_mountain",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -149,8 +149,10 @@
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 1.0
-          }
+            "black_mountain": 0.125,
+            "clear_water": 0.875
+          },
+          "divider": 0.125
         },
         "NW": {
           "samples": [
@@ -171,7 +173,7 @@
       "features": [
         "accent"
       ],
-      "description": "clear water with a small detail"
+      "description": "clear water blending to black volcanic rock with a small detail"
     },
     {
       "index": 2,
@@ -179,8 +181,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.207,
-        "clear_water": 0.793
+        "black_mountain": 0.281,
+        "clear_water": 0.719
       },
       "edges": {
         "NE": {
@@ -224,11 +226,12 @@
             "clear_water",
             "clear_water",
             "clear_water",
-            "clear_water",
+            "black_mountain",
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 1.0
+            "clear_water": 0.875,
+            "black_mountain": 0.125
           }
         },
         "NW": {
@@ -259,8 +262,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.766,
-        "black_mountain": 0.234
+        "clear_water": 0.751,
+        "black_mountain": 0.249
       },
       "edges": {
         "NE": {
@@ -297,7 +300,7 @@
         "SW": {
           "samples": [
             "black_mountain",
-            "clear_water",
+            "black_mountain",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -306,10 +309,10 @@
             "clear_water"
           ],
           "ratio": {
-            "black_mountain": 0.125,
-            "clear_water": 0.875
+            "black_mountain": 0.25,
+            "clear_water": 0.75
           },
-          "divider": 0.125
+          "divider": 0.25
         },
         "NW": {
           "samples": [
@@ -327,10 +330,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "clear water blending to black volcanic rock with a small detail"
+      "features": [],
+      "description": "clear water blending to black volcanic rock"
     },
     {
       "index": 4,
@@ -338,8 +339,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.554,
-        "clear_water": 0.446
+        "black_mountain": 0.558,
+        "clear_water": 0.442
       },
       "edges": {
         "NE": {
@@ -419,8 +420,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.75,
-        "black_mountain": 0.25
+        "clear_water": 0.657,
+        "black_mountain": 0.343
       },
       "edges": {
         "NE": {
@@ -432,12 +433,13 @@
             "clear_water",
             "black_mountain",
             "black_mountain",
-            "clear_water"
+            "black_mountain"
           ],
           "ratio": {
-            "clear_water": 0.75,
-            "black_mountain": 0.25
-          }
+            "clear_water": 0.625,
+            "black_mountain": 0.375
+          },
+          "divider": 0.625
         },
         "SE": {
           "samples": [
@@ -457,7 +459,7 @@
         "SW": {
           "samples": [
             "black_mountain",
-            "clear_water",
+            "black_mountain",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -466,10 +468,10 @@
             "clear_water"
           ],
           "ratio": {
-            "black_mountain": 0.125,
-            "clear_water": 0.875
+            "black_mountain": 0.25,
+            "clear_water": 0.75
           },
-          "divider": 0.125
+          "divider": 0.25
         },
         "NW": {
           "samples": [
@@ -498,8 +500,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.337,
-        "clear_water": 0.663
+        "black_mountain": 0.473,
+        "clear_water": 0.527
       },
       "edges": {
         "NE": {
@@ -521,7 +523,7 @@
         "SE": {
           "samples": [
             "black_mountain",
-            "clear_water",
+            "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain",
@@ -530,16 +532,67 @@
             "clear_water"
           ],
           "ratio": {
-            "black_mountain": 0.5,
-            "clear_water": 0.5
-          }
+            "black_mountain": 0.625,
+            "clear_water": 0.375
+          },
+          "divider": 0.625
         },
         "SW": {
           "samples": [
             "black_mountain",
             "black_mountain",
             "black_mountain",
+            "black_mountain",
             "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water"
+          ],
+          "ratio": {
+            "black_mountain": 0.5,
+            "clear_water": 0.5
+          },
+          "divider": 0.5
+        },
+        "NW": {
+          "samples": [
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "clear_water",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "clear_water": 0.5,
+            "black_mountain": 0.5
+          },
+          "divider": 0.5
+        }
+      },
+      "features": [
+        "accent"
+      ],
+      "description": "clear water blending to black volcanic rock with a small detail"
+    },
+    {
+      "index": 7,
+      "file": "tile_07.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "black_mountain": 0.565,
+        "clear_water": 0.435
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "clear_water",
+            "black_mountain",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -548,10 +601,9 @@
           "ratio": {
             "black_mountain": 0.375,
             "clear_water": 0.625
-          },
-          "divider": 0.375
+          }
         },
-        "NW": {
+        "SE": {
           "samples": [
             "clear_water",
             "clear_water",
@@ -567,55 +619,6 @@
             "black_mountain": 0.375
           },
           "divider": 0.625
-        }
-      },
-      "features": [
-        "accent"
-      ],
-      "description": "clear water blending to black volcanic rock with a small detail"
-    },
-    {
-      "index": 7,
-      "file": "tile_07.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "black_mountain": 0.501,
-        "clear_water": 0.499
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "clear_water",
-            "black_mountain",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water"
-          ],
-          "ratio": {
-            "black_mountain": 0.375,
-            "clear_water": 0.625
-          }
-        },
-        "SE": {
-          "samples": [
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "clear_water",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "clear_water": 0.75,
-            "black_mountain": 0.25
-          },
-          "divider": 0.75
         },
         "SW": {
           "samples": [
@@ -623,14 +626,14 @@
             "black_mountain",
             "black_mountain",
             "clear_water",
-            "clear_water",
+            "black_mountain",
             "black_mountain",
             "black_mountain",
             "clear_water"
           ],
           "ratio": {
-            "black_mountain": 0.625,
-            "clear_water": 0.375
+            "black_mountain": 0.75,
+            "clear_water": 0.25
           }
         },
         "NW": {
@@ -736,8 +739,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.413,
-        "clear_water": 0.587
+        "black_mountain": 0.414,
+        "clear_water": 0.586
       },
       "edges": {
         "NE": {
@@ -1139,8 +1142,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.608,
-        "clear_water": 0.392
+        "black_mountain": 0.607,
+        "clear_water": 0.393
       },
       "edges": {
         "NE": {
@@ -1299,7 +1302,10 @@
       "sat_strength": 0.7,
       "v_strength": 0.9,
       "hue_band": 65,
-      "min_value": 14
+      "min_value": 14,
+      "dark_material_value": 50,
+      "dark_min_value": 38,
+      "dark_include": 46
     },
     "harmonized_from": true,
     "harmonized_to": true,
