@@ -287,10 +287,13 @@ function injectStyles() {
     touch-action:manipulation;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
   /* No nested scroll boxes: the panel is the ONE scroll context (the
      maintainer's concept is a single scrolling page) — a capped inner box
-     silently hid the worlds that didn't fit (Trans Demo, on the phone). */
-  .ml-worlds{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-start;padding:2px}
-  .ml-world{display:flex;align-items:center;gap:8px;padding:2px 8px 2px 2px;
+     silently hid the worlds that didn't fit (Trans Demo, on the phone).
+     GRID, not flex-wrap: every chip fills an equal track, so all world
+     buttons are the SAME SIZE with centered content (maintainer). */
+  .ml-worlds{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;padding:2px}
+  .ml-world{display:flex;align-items:center;justify-content:center;gap:8px;height:64px;padding:2px 6px;
     color:#dfe2ea;font-size:13px;text-shadow:0 1px 2px #000}
+  .ml-world span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .ml-world.sel{border-image:url(/ui2/plate-selected.png) 56 fill / 13px;color:#ffd678}
   .ml-world.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
   .ml-world-img{width:34px;height:34px;object-fit:cover;image-rendering:auto;flex:none}
@@ -302,17 +305,21 @@ function injectStyles() {
   .ml-sprite{image-rendering:pixelated;background-repeat:no-repeat;flex:none}
   .ml-portrait{width:128px;height:128px;object-fit:contain;image-rendering:pixelated;margin:4px 0}
   .ml-cell span{max-width:136px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .ml-row{display:flex;gap:8px;margin-top:16px;justify-content:center;align-items:stretch}
+  /* Action row: ONE height (64px, same as the world chips) for the trough,
+     the dice and Enter — all buttons the same size, text centered. */
+  .ml-row{display:flex;gap:8px;margin-top:16px;justify-content:center;align-items:center}
   /* Name input = the backpack slot socket (its fill IS the dark trough). */
-  .ml-name{flex:1;max-width:280px;min-width:0;padding:4px 8px;border-style:solid;border-width:20px;
+  .ml-name{flex:1;max-width:280px;min-width:0;height:64px;padding:0 8px;border-style:solid;border-width:20px;
     border-image:url(/ui2/slot.png) 10 fill / 20px;image-rendering:pixelated;box-sizing:border-box;
-    background:none;color:#e8e8ec;font-size:16px;text-shadow:0 1px 2px #000}
+    background:none;color:#e8e8ec;font-size:16px;text-align:center;text-shadow:0 1px 2px #000}
   .ml-name:focus{outline:none;color:#ffd678}
-  .ml-btn{padding:10px 16px;color:#ffd678;font:700 15px system-ui,sans-serif;letter-spacing:.4px;
+  .ml-btn{display:flex;align-items:center;justify-content:center;height:64px;padding:0 16px;
+    color:#ffd678;font:700 15px system-ui,sans-serif;letter-spacing:.4px;
     text-transform:uppercase;text-shadow:0 1px 2px #000}
   .ml-btn.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
-  .ml-ghost{color:#e8e8ec;font-size:18px;padding:10px 12px;text-transform:none}
-  .ml-install{margin-top:12px;padding:6px 14px;color:#c9c9cf;font-size:13px;text-shadow:0 1px 2px #000}
+  .ml-ghost{color:#e8e8ec;font-size:18px;width:64px;padding:0;text-transform:none;flex:none}
+  .ml-install{margin-top:12px;padding:6px 14px;color:#c9c9cf;font-size:13px;text-shadow:0 1px 2px #000;
+    display:inline-flex;align-items:center;justify-content:center}
   .ml-install.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
   @media (hover:hover){
     .ml-plated:active{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
