@@ -1,12 +1,13 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 24,
+  "count": 25,
   "by_category": {
     "ui": 8,
     "item": 5,
     "tool": 6,
-    "movement": 5
+    "movement": 5,
+    "combat": 1
   },
   "sounds": [
     {
@@ -463,6 +464,25 @@
       "loop": false,
       "file": "movement/splash/splash__take01.wav",
       "duration_seconds": 0.497
+    },
+    {
+      "id": "hit_hurt",
+      "name": "Take Damage",
+      "category": "combat",
+      "description": "a short pained grunt-blip when the player takes damage",
+      "tags": [
+        "damage",
+        "hurt",
+        "hit",
+        "pain",
+        "combat"
+      ],
+      "usage": "Player / entity takes damage.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "combat/hit_hurt/hit_hurt__take01.wav",
+      "duration_seconds": 0.401
     }
   ]
 }
