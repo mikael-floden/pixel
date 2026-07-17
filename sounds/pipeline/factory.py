@@ -189,6 +189,8 @@ def generate_ai(client, cfg: dict, spec: dict) -> dict:
             prompt_influence=influence, loop=loop, model_id=ai_cfg["model_id"],
         )
         is_pcm, sr = client.parse_format(out_fmt)
+        print(f"  [dbg] {spec['id']} take{i}: fmt={out_fmt} raw={len(audio)}B "
+              f"head={audio[:4].hex()}", flush=True)
         if not is_pcm:
             # Non-PCM (e.g. mp3): store as-is, no local mastering possible.
             fname = f"{spec['id']}.mp3" if n == 1 else f"{spec['id']}__take{i:02d}.mp3"
@@ -197,6 +199,8 @@ def generate_ai(client, cfg: dict, spec: dict) -> dict:
             stats = {"bytes": len(audio), "output_format": out_fmt}
         else:
             samples, real_sr = postprocess.decode_audio(audio, sr)
+            print(f"  [dbg]   pre-master {len(samples)} samp = "
+                  f"{len(samples)/real_sr:.3f}s @ {real_sr}Hz", flush=True)
             samples = postprocess.master(samples, real_sr,
                                          fade_out_ms=40.0 if loop else 15.0)
             fname = f"{spec['id']}.wav" if n == 1 else f"{spec['id']}__take{i:02d}.wav"
