@@ -107,7 +107,9 @@ function showUpdateBanner(sha: string) {
   // 9 hash chars — the SAME short form as the version badge and the dev
   // chat, so the two are comparable at a glance (7 read as "not the entire
   // hash", maintainer).
-  el.textContent = `⬆ New version ${sha.slice(0, 9)} — tap to reload`;
+  // Wording is maintainer-fixed: JUST "New version out <hash>" — no arrow,
+  // no "tap to reload" (2026-07-17). Tapping still reloads.
+  el.textContent = `New version out ${sha.slice(0, 9)}`;
   // Non-selectable on purpose (belt and braces with the global rule): a long
   // press used to text-select the hash and pop Chrome's search sheet mid-game.
   // Sizing has bounced twice (maintainer: first "super small and hard to
