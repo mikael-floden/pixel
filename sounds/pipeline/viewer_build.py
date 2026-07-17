@@ -25,13 +25,17 @@ def build() -> dict:
             "name": man["name"],
             "category": man["category"],
             "description": man["description"],
+            "feel": man.get("feel", ""),
             "tags": man.get("tags", []),
             "usage": man.get("usage", ""),
             "engine": man.get("engine"),
             "format": man.get("format"),
             "loop": man.get("loop", False),
             "file": man["file"],
+            "takes": man.get("takes", []),
             "duration_seconds": (man.get("audio") or {}).get("duration_seconds"),
+            "mix_gain_db": man.get("mix_gain_db", 0.0),
+            "variation": man.get("variation"),
         }
         sounds.append(entry)
         by_category[man["category"]] = by_category.get(man["category"], 0) + 1

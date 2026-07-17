@@ -43,5 +43,24 @@
     "requested_format": "mp3_44100_192"
   },
   "mastering": "trim + peak-normalize(-1 dBFS) + edge-fades",
-  "source": "elevenlabs text-to-sound-effects (eleven_text_to_sound_v2)"
+  "source": "elevenlabs text-to-sound-effects (eleven_text_to_sound_v2)",
+  "feel": "grounded, hollow",
+  "mix_gain_db": -8,
+  "variation": {
+    "round_robin": true,
+    "no_immediate_repeat": true,
+    "pitch_jitter_semitones": [
+      -2.0,
+      2.0
+    ],
+    "gain_jitter_db": [
+      -3.0,
+      3.0
+    ],
+    "start_jitter_ms": [
+      0,
+      20
+    ],
+    "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
+  }
 }

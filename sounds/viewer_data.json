@@ -16,6 +16,7 @@
       "name": "Coin Pickup",
       "category": "ui",
       "description": "a bright, short metallic jingle played when the player picks up a gold coin",
+      "feel": "rewarding",
       "tags": [
         "coin",
         "pickup",
@@ -28,13 +29,35 @@
       "format": "wav",
       "loop": false,
       "file": "ui/coin_pickup/coin_pickup__take01.wav",
-      "duration_seconds": 0.497
+      "takes": [
+        "ui/coin_pickup/coin_pickup__take01.wav",
+        "ui/coin_pickup/coin_pickup__take02.wav"
+      ],
+      "duration_seconds": 0.497,
+      "mix_gain_db": -3,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
     },
     {
       "id": "gem_pickup",
       "name": "Gem Pickup",
       "category": "ui",
       "description": "a sparkly ascending chime for collecting a gem or valuable",
+      "feel": "rewarding, mystical",
       "tags": [
         "gem",
         "ruby",
@@ -47,13 +70,35 @@
       "format": "wav",
       "loop": false,
       "file": "ui/gem_pickup/gem_pickup__take01.wav",
-      "duration_seconds": 0.602
+      "takes": [
+        "ui/gem_pickup/gem_pickup__take01.wav",
+        "ui/gem_pickup/gem_pickup__take02.wav"
+      ],
+      "duration_seconds": 0.602,
+      "mix_gain_db": -3,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
     },
     {
       "id": "item_get",
       "name": "Item Get",
       "category": "ui",
       "description": "a cheerful little fanfare for receiving a new item into the inventory",
+      "feel": "rewarding, triumphant",
       "tags": [
         "item",
         "get",
@@ -66,13 +111,35 @@
       "format": "wav",
       "loop": false,
       "file": "ui/item_get/item_get__take01.wav",
-      "duration_seconds": 0.889
+      "takes": [
+        "ui/item_get/item_get__take01.wav",
+        "ui/item_get/item_get__take02.wav"
+      ],
+      "duration_seconds": 0.889,
+      "mix_gain_db": -3,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
     },
     {
       "id": "menu_select",
       "name": "Menu Select",
       "category": "ui",
       "description": "a soft neutral blip when moving the cursor between menu options",
+      "feel": "clean, tactile",
       "tags": [
         "menu",
         "cursor",
@@ -85,13 +152,35 @@
       "format": "wav",
       "loop": false,
       "file": "ui/menu_select/menu_select__take01.wav",
-      "duration_seconds": 0.497
+      "takes": [
+        "ui/menu_select/menu_select__take01.wav",
+        "ui/menu_select/menu_select__take02.wav"
+      ],
+      "duration_seconds": 0.497,
+      "mix_gain_db": -3,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
     },
     {
       "id": "menu_confirm",
       "name": "Menu Confirm",
       "category": "ui",
       "description": "a bright positive blip confirming a menu choice",
+      "feel": "clean, positive",
       "tags": [
         "menu",
         "confirm",
@@ -104,13 +193,35 @@
       "format": "wav",
       "loop": false,
       "file": "ui/menu_confirm/menu_confirm__take01.wav",
-      "duration_seconds": 0.497
+      "takes": [
+        "ui/menu_confirm/menu_confirm__take01.wav",
+        "ui/menu_confirm/menu_confirm__take02.wav"
+      ],
+      "duration_seconds": 0.497,
+      "mix_gain_db": -3,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
     },
     {
       "id": "menu_cancel",
       "name": "Menu Cancel",
       "category": "ui",
       "description": "a low descending blip for backing out or cancelling",
+      "feel": "clean, neutral",
       "tags": [
         "menu",
         "cancel",
@@ -123,13 +234,35 @@
       "format": "wav",
       "loop": false,
       "file": "ui/menu_cancel/menu_cancel__take01.wav",
-      "duration_seconds": 0.497
+      "takes": [
+        "ui/menu_cancel/menu_cancel__take01.wav",
+        "ui/menu_cancel/menu_cancel__take02.wav"
+      ],
+      "duration_seconds": 0.497,
+      "mix_gain_db": -3,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
     },
     {
       "id": "error_buzz",
       "name": "Error Buzz",
       "category": "ui",
       "description": "a short harsh buzz signalling an invalid or blocked action",
+      "feel": "negative, non-harsh",
       "tags": [
         "error",
         "invalid",
@@ -142,13 +275,35 @@
       "format": "wav",
       "loop": false,
       "file": "ui/error_buzz/error_buzz__take01.wav",
-      "duration_seconds": 0.497
+      "takes": [
+        "ui/error_buzz/error_buzz__take01.wav",
+        "ui/error_buzz/error_buzz__take02.wav"
+      ],
+      "duration_seconds": 0.497,
+      "mix_gain_db": -3,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
     },
     {
       "id": "notification",
       "name": "Notification",
       "category": "ui",
       "description": "a gentle two-note tone announcing a notification or new message",
+      "feel": "welcoming, gentle",
       "tags": [
         "notify",
         "message",
@@ -161,13 +316,35 @@
       "format": "wav",
       "loop": false,
       "file": "ui/notification/notification__take01.wav",
-      "duration_seconds": 0.497
+      "takes": [
+        "ui/notification/notification__take01.wav",
+        "ui/notification/notification__take02.wav"
+      ],
+      "duration_seconds": 0.497,
+      "mix_gain_db": -3,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
     },
     {
       "id": "chest_open",
       "name": "Chest Open",
       "category": "item",
       "description": "a rising creak-and-clunk as a wooden chest is opened",
+      "feel": "rewarding, anticipatory",
       "tags": [
         "chest",
         "open",
@@ -180,13 +357,35 @@
       "format": "wav",
       "loop": false,
       "file": "item/chest_open/chest_open__take01.wav",
-      "duration_seconds": 0.811
+      "takes": [
+        "item/chest_open/chest_open__take01.wav",
+        "item/chest_open/chest_open__take02.wav"
+      ],
+      "duration_seconds": 0.811,
+      "mix_gain_db": -4,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
     },
     {
       "id": "chest_close",
       "name": "Chest Close",
       "category": "item",
       "description": "a short wooden thud as a chest lid closes",
+      "feel": "tactile, solid",
       "tags": [
         "chest",
         "close",
@@ -199,13 +398,35 @@
       "format": "wav",
       "loop": false,
       "file": "item/chest_close/chest_close__take01.wav",
-      "duration_seconds": 0.496
+      "takes": [
+        "item/chest_close/chest_close__take01.wav",
+        "item/chest_close/chest_close__take02.wav"
+      ],
+      "duration_seconds": 0.496,
+      "mix_gain_db": -4,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
     },
     {
       "id": "key_unlock",
       "name": "Key Unlock",
       "category": "item",
       "description": "a metallic click-clunk of a key turning in a lock",
+      "feel": "tactile, mechanical",
       "tags": [
         "key",
         "unlock",
@@ -218,13 +439,35 @@
       "format": "wav",
       "loop": false,
       "file": "item/key_unlock/key_unlock__take01.wav",
-      "duration_seconds": 0.497
+      "takes": [
+        "item/key_unlock/key_unlock__take01.wav",
+        "item/key_unlock/key_unlock__take02.wav"
+      ],
+      "duration_seconds": 0.497,
+      "mix_gain_db": -4,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
     },
     {
       "id": "drink_potion",
       "name": "Drink Potion",
       "category": "item",
       "description": "a bubbly gulp-and-sparkle of drinking a potion",
+      "feel": "restorative",
       "tags": [
         "potion",
         "drink",
@@ -237,13 +480,35 @@
       "format": "wav",
       "loop": false,
       "file": "item/drink_potion/drink_potion__take01.wav",
-      "duration_seconds": 0.706
+      "takes": [
+        "item/drink_potion/drink_potion__take01.wav",
+        "item/drink_potion/drink_potion__take02.wav"
+      ],
+      "duration_seconds": 0.706,
+      "mix_gain_db": -4,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
     },
     {
       "id": "eat_food",
       "name": "Eat Food",
       "category": "item",
       "description": "a soft munch-and-satisfied blip of eating food",
+      "feel": "organic, homely",
       "tags": [
         "food",
         "eat",
@@ -256,13 +521,35 @@
       "format": "wav",
       "loop": false,
       "file": "item/eat_food/eat_food__take01.wav",
-      "duration_seconds": 0.497
+      "takes": [
+        "item/eat_food/eat_food__take01.wav",
+        "item/eat_food/eat_food__take02.wav"
+      ],
+      "duration_seconds": 0.497,
+      "mix_gain_db": -4,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
     },
     {
       "id": "sword_swing",
       "name": "Sword Swing",
       "category": "tool",
       "description": "a quick whoosh of a sword swung through the air",
+      "feel": "weighty, kinetic",
       "tags": [
         "sword",
         "swing",
@@ -275,13 +562,36 @@
       "format": "wav",
       "loop": false,
       "file": "tool/sword_swing/sword_swing__take01.wav",
-      "duration_seconds": 0.497
+      "takes": [
+        "tool/sword_swing/sword_swing__take01.wav",
+        "tool/sword_swing/sword_swing__take02.wav"
+      ],
+      "duration_seconds": 0.497,
+      "mix_gain_db": -2,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -2.0,
+          2.0
+        ],
+        "gain_jitter_db": [
+          -3.0,
+          3.0
+        ],
+        "start_jitter_ms": [
+          0,
+          20
+        ],
+        "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
+      }
     },
     {
       "id": "sword_hit",
       "name": "Sword Hit",
       "category": "tool",
       "description": "a sharp metallic clang of a sword striking a target",
+      "feel": "impactful, sharp",
       "tags": [
         "sword",
         "hit",
@@ -294,13 +604,36 @@
       "format": "wav",
       "loop": false,
       "file": "tool/sword_hit/sword_hit__take01.wav",
-      "duration_seconds": 0.497
+      "takes": [
+        "tool/sword_hit/sword_hit__take01.wav",
+        "tool/sword_hit/sword_hit__take02.wav"
+      ],
+      "duration_seconds": 0.497,
+      "mix_gain_db": -2,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -2.0,
+          2.0
+        ],
+        "gain_jitter_db": [
+          -3.0,
+          3.0
+        ],
+        "start_jitter_ms": [
+          0,
+          20
+        ],
+        "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
+      }
     },
     {
       "id": "axe_chop",
       "name": "Axe Chop",
       "category": "tool",
       "description": "a heavy wooden thock of an axe biting into a tree",
+      "feel": "impactful, meaty",
       "tags": [
         "axe",
         "chop",
@@ -313,13 +646,36 @@
       "format": "wav",
       "loop": false,
       "file": "tool/axe_chop/axe_chop__take01.wav",
-      "duration_seconds": 0.497
+      "takes": [
+        "tool/axe_chop/axe_chop__take01.wav",
+        "tool/axe_chop/axe_chop__take02.wav"
+      ],
+      "duration_seconds": 0.497,
+      "mix_gain_db": -2,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -2.0,
+          2.0
+        ],
+        "gain_jitter_db": [
+          -3.0,
+          3.0
+        ],
+        "start_jitter_ms": [
+          0,
+          20
+        ],
+        "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
+      }
     },
     {
       "id": "pickaxe_hit",
       "name": "Pickaxe Hit",
       "category": "tool",
       "description": "a sharp stony crack of a pickaxe striking rock",
+      "feel": "impactful, stony",
       "tags": [
         "pickaxe",
         "mine",
@@ -332,13 +688,36 @@
       "format": "wav",
       "loop": false,
       "file": "tool/pickaxe_hit/pickaxe_hit__take01.wav",
-      "duration_seconds": 0.497
+      "takes": [
+        "tool/pickaxe_hit/pickaxe_hit__take01.wav",
+        "tool/pickaxe_hit/pickaxe_hit__take02.wav"
+      ],
+      "duration_seconds": 0.497,
+      "mix_gain_db": -2,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -2.0,
+          2.0
+        ],
+        "gain_jitter_db": [
+          -3.0,
+          3.0
+        ],
+        "start_jitter_ms": [
+          0,
+          20
+        ],
+        "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
+      }
     },
     {
       "id": "hoe_till",
       "name": "Hoe Till",
       "category": "tool",
       "description": "a gritty dig of a hoe breaking soil",
+      "feel": "earthy, grounded",
       "tags": [
         "hoe",
         "till",
@@ -351,13 +730,35 @@
       "format": "wav",
       "loop": false,
       "file": "tool/hoe_till/hoe_till__take01.wav",
-      "duration_seconds": 0.497
+      "takes": [
+        "tool/hoe_till/hoe_till__take01.wav",
+        "tool/hoe_till/hoe_till__take02.wav"
+      ],
+      "duration_seconds": 0.497,
+      "mix_gain_db": -2,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
     },
     {
       "id": "watering_can",
       "name": "Watering Can",
       "category": "tool",
       "description": "a soft splash of water poured from a watering can",
+      "feel": "gentle, wet",
       "tags": [
         "water",
         "watering",
@@ -370,13 +771,35 @@
       "format": "wav",
       "loop": false,
       "file": "tool/watering_can/watering_can__take01.wav",
-      "duration_seconds": 0.497
+      "takes": [
+        "tool/watering_can/watering_can__take01.wav",
+        "tool/watering_can/watering_can__take02.wav"
+      ],
+      "duration_seconds": 0.497,
+      "mix_gain_db": -2,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
     },
     {
       "id": "footstep_grass",
       "name": "Footstep (Grass)",
       "category": "movement",
       "description": "a soft muffled step on grass",
+      "feel": "grounded, soft",
       "tags": [
         "footstep",
         "walk",
@@ -389,13 +812,36 @@
       "format": "wav",
       "loop": false,
       "file": "movement/footstep_grass/footstep_grass__take01.wav",
-      "duration_seconds": 0.497
+      "takes": [
+        "movement/footstep_grass/footstep_grass__take01.wav",
+        "movement/footstep_grass/footstep_grass__take02.wav"
+      ],
+      "duration_seconds": 0.497,
+      "mix_gain_db": -8,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -2.0,
+          2.0
+        ],
+        "gain_jitter_db": [
+          -3.0,
+          3.0
+        ],
+        "start_jitter_ms": [
+          0,
+          20
+        ],
+        "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
+      }
     },
     {
       "id": "footstep_stone",
       "name": "Footstep (Stone)",
       "category": "movement",
       "description": "a crisp tap of a step on stone or pavement",
+      "feel": "grounded, crisp",
       "tags": [
         "footstep",
         "walk",
@@ -408,13 +854,36 @@
       "format": "wav",
       "loop": false,
       "file": "movement/footstep_stone/footstep_stone__take01.wav",
-      "duration_seconds": 0.497
+      "takes": [
+        "movement/footstep_stone/footstep_stone__take01.wav",
+        "movement/footstep_stone/footstep_stone__take02.wav"
+      ],
+      "duration_seconds": 0.497,
+      "mix_gain_db": -8,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -2.0,
+          2.0
+        ],
+        "gain_jitter_db": [
+          -3.0,
+          3.0
+        ],
+        "start_jitter_ms": [
+          0,
+          20
+        ],
+        "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
+      }
     },
     {
       "id": "footstep_wood",
       "name": "Footstep (Wood)",
       "category": "movement",
       "description": "a hollow knock of a step on a wooden floor",
+      "feel": "grounded, hollow",
       "tags": [
         "footstep",
         "walk",
@@ -427,13 +896,36 @@
       "format": "wav",
       "loop": false,
       "file": "movement/footstep_wood/footstep_wood__take01.wav",
-      "duration_seconds": 0.497
+      "takes": [
+        "movement/footstep_wood/footstep_wood__take01.wav",
+        "movement/footstep_wood/footstep_wood__take02.wav"
+      ],
+      "duration_seconds": 0.497,
+      "mix_gain_db": -8,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -2.0,
+          2.0
+        ],
+        "gain_jitter_db": [
+          -3.0,
+          3.0
+        ],
+        "start_jitter_ms": [
+          0,
+          20
+        ],
+        "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
+      }
     },
     {
       "id": "jump",
       "name": "Jump",
       "category": "movement",
       "description": "a short upward blip as the character hops",
+      "feel": "light, effortful",
       "tags": [
         "jump",
         "hop",
@@ -445,13 +937,35 @@
       "format": "wav",
       "loop": false,
       "file": "movement/jump/jump__take01.wav",
-      "duration_seconds": 0.497
+      "takes": [
+        "movement/jump/jump__take01.wav",
+        "movement/jump/jump__take02.wav"
+      ],
+      "duration_seconds": 0.497,
+      "mix_gain_db": -8,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
     },
     {
       "id": "splash",
       "name": "Water Splash",
       "category": "movement",
       "description": "a wet splash of stepping or falling into water",
+      "feel": "wet, full",
       "tags": [
         "water",
         "splash",
@@ -464,13 +978,35 @@
       "format": "wav",
       "loop": false,
       "file": "movement/splash/splash__take01.wav",
-      "duration_seconds": 0.497
+      "takes": [
+        "movement/splash/splash__take01.wav",
+        "movement/splash/splash__take02.wav"
+      ],
+      "duration_seconds": 0.497,
+      "mix_gain_db": -8,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
     },
     {
       "id": "hit_hurt",
       "name": "Take Damage",
       "category": "combat",
       "description": "a short pained grunt-blip when the player takes damage",
+      "feel": "visceral",
       "tags": [
         "damage",
         "hurt",
@@ -483,13 +1019,36 @@
       "format": "wav",
       "loop": false,
       "file": "combat/hit_hurt/hit_hurt__take01.wav",
-      "duration_seconds": 0.401
+      "takes": [
+        "combat/hit_hurt/hit_hurt__take01.wav",
+        "combat/hit_hurt/hit_hurt__take02.wav"
+      ],
+      "duration_seconds": 0.401,
+      "mix_gain_db": 0,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -2.0,
+          2.0
+        ],
+        "gain_jitter_db": [
+          -3.0,
+          3.0
+        ],
+        "start_jitter_ms": [
+          0,
+          20
+        ],
+        "note": "repeating sound \u2014 game MUST round-robin + jitter every play"
+      }
     },
     {
       "id": "enemy_defeat",
       "name": "Enemy Defeat",
       "category": "combat",
       "description": "a descending puff as an enemy is defeated and vanishes",
+      "feel": "conclusive",
       "tags": [
         "enemy",
         "defeat",
@@ -502,13 +1061,35 @@
       "format": "wav",
       "loop": false,
       "file": "combat/enemy_defeat/enemy_defeat__take01.wav",
-      "duration_seconds": 0.497
+      "takes": [
+        "combat/enemy_defeat/enemy_defeat__take01.wav",
+        "combat/enemy_defeat/enemy_defeat__take02.wav"
+      ],
+      "duration_seconds": 0.497,
+      "mix_gain_db": 0,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
     },
     {
       "id": "explosion",
       "name": "Explosion",
       "category": "combat",
       "description": "a punchy boom for bombs and destructible objects",
+      "feel": "powerful, cinematic",
       "tags": [
         "explosion",
         "boom",
@@ -521,13 +1102,35 @@
       "format": "wav",
       "loop": false,
       "file": "combat/explosion/explosion__take01.wav",
-      "duration_seconds": 0.706
+      "takes": [
+        "combat/explosion/explosion__take01.wav",
+        "combat/explosion/explosion__take02.wav"
+      ],
+      "duration_seconds": 0.706,
+      "mix_gain_db": 0,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
     },
     {
       "id": "magic_cast",
       "name": "Magic Cast",
       "category": "combat",
       "description": "a shimmering rising sweep of casting a spell",
+      "feel": "mystical, shimmering",
       "tags": [
         "magic",
         "spell",
@@ -540,13 +1143,35 @@
       "format": "wav",
       "loop": false,
       "file": "combat/magic_cast/magic_cast__take01.wav",
-      "duration_seconds": 0.706
+      "takes": [
+        "combat/magic_cast/magic_cast__take01.wav",
+        "combat/magic_cast/magic_cast__take02.wav"
+      ],
+      "duration_seconds": 0.706,
+      "mix_gain_db": 0,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
     },
     {
       "id": "level_up",
       "name": "Level Up",
       "category": "feedback",
       "description": "a bright ascending fanfare for gaining a level",
+      "feel": "triumphant, uplifting",
       "tags": [
         "level",
         "up",
@@ -559,13 +1184,35 @@
       "format": "wav",
       "loop": false,
       "file": "feedback/level_up/level_up__take01.wav",
-      "duration_seconds": 1.02
+      "takes": [
+        "feedback/level_up/level_up__take01.wav",
+        "feedback/level_up/level_up__take02.wav"
+      ],
+      "duration_seconds": 1.02,
+      "mix_gain_db": -1,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
     },
     {
       "id": "quest_complete",
       "name": "Quest Complete",
       "category": "feedback",
       "description": "a triumphant little jingle marking a completed quest",
+      "feel": "triumphant, warm",
       "tags": [
         "quest",
         "complete",
@@ -578,7 +1225,28 @@
       "format": "wav",
       "loop": false,
       "file": "feedback/quest_complete/quest_complete__take01.wav",
-      "duration_seconds": 1.02
+      "takes": [
+        "feedback/quest_complete/quest_complete__take01.wav",
+        "feedback/quest_complete/quest_complete__take02.wav"
+      ],
+      "duration_seconds": 1.02,
+      "mix_gain_db": -1,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
     }
   ]
 }

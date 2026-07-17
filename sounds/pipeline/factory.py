@@ -135,7 +135,7 @@ def generate_procedural(cfg: dict, spec: dict) -> dict:
         sample_rate=cfg["audio"]["sample_rate"],
         peak=cfg["audio"]["peak_normalize"],
     )
-    man = _base_manifest(spec, engine="procedural")
+    man = _base_manifest(spec, engine="procedural", cfg=cfg)
     man.update({
         "quality": "rejected-lowfi",
         "file": os.path.join(spec["category"], spec["id"], fname),
@@ -215,7 +215,7 @@ def generate_ai(client, cfg: dict, spec: dict) -> dict:
 
     fmt = os.path.splitext(primary_file)[1].lstrip(".")
     mastered = fmt == "wav"
-    man = _base_manifest(spec, engine="ai")
+    man = _base_manifest(spec, engine="ai", cfg=cfg)
     man.update({
         "quality": "aaa",
         "file": primary_file,
@@ -238,14 +238,25 @@ def generate_ai(client, cfg: dict, spec: dict) -> dict:
     return man
 
 
-def _base_manifest(spec: dict, engine: str) -> dict:
-    """The engine-independent metadata block."""
-    return {
+def sound_mix_variation(cfg: dict, spec: dict) -> tuple[float, dict]:
+    """The game-facing mix gain (per-category trim, dB) and the anti-repetition
+    variation contract (per-sound override, else catalog default) for a spec."""
+    gain = (cfg.get("mix", {}).get("category_gain_db", {})).get(spec["category"], 0.0)
+    variation = spec.get("variation") or cfg.get("defaults", {}).get("variation", {})
+    return gain, variation
+
+
+def _base_manifest(spec: dict, engine: str, cfg: dict | None = None) -> dict:
+    """The engine-independent metadata block, incl. the design-craft fields the
+    game consumes: `feel` (emotional intent), `mix_gain_db` (balance vs music), and
+    `variation` (round-robin + jitter so repeating sounds don't feel looped)."""
+    man = {
         "manifest_version": MANIFEST_VERSION,
         "id": spec["id"],
         "name": spec["name"],
         "category": spec["category"],
         "description": spec["description"],
+        "feel": spec.get("feel", ""),
         "tags": spec.get("tags", []),
         "usage": spec.get("usage", ""),
         "loop": bool(spec.get("loop", False)),
@@ -253,6 +264,11 @@ def _base_manifest(spec: dict, engine: str) -> dict:
         "license": LICENSE,
         "status": "complete",
     }
+    if cfg is not None:
+        gain, variation = sound_mix_variation(cfg, spec)
+        man["mix_gain_db"] = gain
+        man["variation"] = variation
+    return man
 
 
 def generate(client, cfg: dict, spec: dict) -> dict:

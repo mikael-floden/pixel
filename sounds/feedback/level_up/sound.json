@@ -43,5 +43,23 @@
     "requested_format": "mp3_44100_192"
   },
   "mastering": "trim + peak-normalize(-1 dBFS) + edge-fades",
-  "source": "elevenlabs text-to-sound-effects (eleven_text_to_sound_v2)"
+  "source": "elevenlabs text-to-sound-effects (eleven_text_to_sound_v2)",
+  "feel": "triumphant, uplifting",
+  "mix_gain_db": -1,
+  "variation": {
+    "round_robin": true,
+    "no_immediate_repeat": true,
+    "pitch_jitter_semitones": [
+      -1.0,
+      1.0
+    ],
+    "gain_jitter_db": [
+      -2.0,
+      2.0
+    ],
+    "start_jitter_ms": [
+      0,
+      15
+    ]
+  }
 }
