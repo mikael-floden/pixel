@@ -50,13 +50,18 @@ uniform float uA0;     // arc angle at the leg's FOOT (frag space, radians)
 uniform float uSpan;   // angular span foot -> top-corner exit (positive)
 varying vec2 fragCoord;
 
-// Real-rainbow spectrum: t 0 (inner) .. 1 (outer) maps violet -> red, so
-// red sits on the OUTSIDE of the bow like the real thing. Slightly
-// desaturated toward white — a rainbow is glare on rain, not neon.
+// Real-rainbow spectrum with EVEN bands (maintainer round 5: a linear hue
+// sweep spends most of its width in green and squeezes red to a sliver).
+// Six equal-width bands, violet (inner) -> red (outer), blended over short
+// transitions so it still reads as a natural continuous bow.
 vec3 spectrum(float t) {
-  float h = 0.75 * (1.0 - t); // hue: red 0.0 (outer) .. violet 0.75 (inner)
-  vec3 p = abs(fract(vec3(h) + vec3(0.0, 2.0 / 3.0, 1.0 / 3.0)) * 6.0 - 3.0);
-  return mix(vec3(1.0), clamp(p - 1.0, 0.0, 1.0), 0.8);
+  vec3 c = vec3(0.56, 0.32, 0.85);                                // violet (inner)
+  c = mix(c, vec3(0.25, 0.45, 1.00), smoothstep(0.125, 0.208, t)); // blue
+  c = mix(c, vec3(0.25, 0.85, 0.35), smoothstep(0.292, 0.375, t)); // green
+  c = mix(c, vec3(1.00, 0.95, 0.30), smoothstep(0.458, 0.542, t)); // yellow
+  c = mix(c, vec3(1.00, 0.60, 0.15), smoothstep(0.625, 0.708, t)); // orange
+  c = mix(c, vec3(1.00, 0.25, 0.20), smoothstep(0.792, 0.875, t)); // red (outer)
+  return mix(vec3(1.0), c, 0.85); // a touch toward white — glare on rain, not neon
 }
 
 void main() {
