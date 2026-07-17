@@ -15,6 +15,11 @@ chiptune, not elevator filler. Every track must earn its feeling: home, wonder,
 preparation for battle, love, grief, mystery — the brief names the feeling and
 the music delivers it.
 
+**No melody is forbidden.** The gold standard for a region theme is Gerudo
+Valley (Ocarina of Time): a bold, hummable tune with real character that
+players remember for decades. When a place deserves a theme, write a *theme* —
+never hide behind tasteful ambience out of caution.
+
 Engine: **ElevenLabs Music** (`music_v1`) — the strongest promptable
 text-to-music API as of 2026 — same account/key as [`sounds/`](../sounds).
 Without `ELEVENLABS_API_KEY` the loop records a `blocked` heartbeat and ships

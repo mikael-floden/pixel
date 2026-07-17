@@ -40,17 +40,21 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # music/
 
 NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 MODE_STEPS = {
-    "major":      [0, 2, 4, 5, 7, 9, 11],
-    "minor":      [0, 2, 3, 5, 7, 8, 10],
-    "dorian":     [0, 2, 3, 5, 7, 9, 10],
-    "mixolydian": [0, 2, 4, 5, 7, 9, 10],
-    "lydian":     [0, 2, 4, 6, 7, 9, 11],
+    "major":             [0, 2, 4, 5, 7, 9, 11],
+    "minor":             [0, 2, 3, 5, 7, 8, 10],
+    "dorian":            [0, 2, 3, 5, 7, 9, 10],
+    "mixolydian":        [0, 2, 4, 5, 7, 9, 10],
+    "lydian":            [0, 2, 4, 6, 7, 9, 11],
+    "phrygian":          [0, 1, 3, 5, 7, 8, 10],
+    "phrygian_dominant": [0, 1, 4, 5, 7, 8, 10],   # Spanish/flamenco scale
 }
 # Scale degrees (0-based) that are safest for pitching arbitrary SFX into the
-# key: the pentatonic subset — no semitone clashes against the harmony.
+# key: a pentatonic-ish subset — no semitone clashes against the harmony.
 PENTATONIC_DEGREES = {"major": [0, 1, 2, 4, 5], "minor": [0, 2, 3, 4, 6],
                       "dorian": [0, 2, 3, 4, 6], "mixolydian": [0, 1, 2, 4, 5],
-                      "lydian": [0, 1, 2, 4, 5]}
+                      "lydian": [0, 1, 2, 4, 5],
+                      "phrygian": [0, 2, 3, 4, 6],           # minor pentatonic
+                      "phrygian_dominant": [0, 2, 3, 4, 6]}  # root 3 4 5 b7
 
 
 def load_config() -> dict:

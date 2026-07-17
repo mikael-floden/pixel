@@ -99,6 +99,60 @@
           "weight": 0.7
         }
       ]
+    },
+    {
+      "id": "karmanjaka_riders_canyon",
+      "name": "Karmanjaka — Riders' Canyon",
+      "use": "Region theme for the wild canyon country beyond the river: cliffs, rope bridges, riders, outlaws. Plays while exploring/riding there. Melody-first by design — the player should hum this on the way to the fridge.",
+      "feeling": ["adventure", "swagger", "danger with a grin", "wind in your face", "wild freedom"],
+      "narrative": "Karmanjaka is the untamed land in the mountains — Katla's country, riders and rebels. Where Cherry Valley says 'you are home', this says 'ride'. Inspired by the Gerudo Valley school of area themes: a bold, unforgettable tune with flamenco fire, not background wallpaper. No melody is forbidden.",
+      "references": ["Koji Kondo — Gerudo Valley (Ocarina of Time)", "flamenco/Spanish guitar", "Morricone western trumpet"],
+      "length_ms": 120000,
+      "bpm": 126,
+      "time_signature": "4/4",
+      "key": { "root": "E", "mode": "phrygian_dominant" },
+      "loop": {
+        "loopable": true,
+        "recommended": { "crossfade_ms": 250 }
+      },
+      "prompt": "A bold, melody-first orchestral-flamenco region theme for a wild canyon land in an adventure game, in the spirit of Koji Kondo's Gerudo Valley: virtuosic Spanish nylon-string guitar, rhythmic hand claps (palmas) and castanets, driving hand percussion, and a proud, singable trumpet melody with a Morricone western edge. Structure: fiery solo guitar falsetas and claps set the groove; the trumpet then states a strong, memorable main theme any player could hum; a moodier half-time bridge lets the guitar take a lyrical solo over low strings; then the full ensemble returns with the main theme bigger, harmonized, with soaring strings, ending crisply so it loops straight back into the opening groove. Strictly instrumental. E Phrygian dominant (Spanish scale), 126 BPM, 4/4, tight rhythmic pulse throughout. High-fidelity, punchy, close and dry like a band in a canyon, confident and adventurous.",
+      "sections": [
+        {
+          "name": "canyon_groove",
+          "description": "Solo flamenco guitar falsetas over palmas and hand percussion — the groove and attitude arrive before the tune.",
+          "sync_hints": [
+            "Strong percussion onsets — sync hoofbeats/footsteps to beats_s and they read as part of the band.",
+            "Good entry point when crossing into the region."
+          ],
+          "weight": 1.0
+        },
+        {
+          "name": "riders_theme",
+          "description": "The trumpet states the main melody — proud, singable, the heart of the track.",
+          "sync_hints": [
+            "Region title card / vista reveal on this section's first downbeat.",
+            "Peaks here are ideal for scripted stunts (bridge collapse, hawk flyover)."
+          ],
+          "weight": 1.2
+        },
+        {
+          "name": "canyon_shadows",
+          "description": "Half-time bridge: lyrical guitar solo over low strings — the danger under the swagger.",
+          "sync_hints": [
+            "Good window for dialogue or discovering something ominous; mix leaves headroom."
+          ],
+          "weight": 0.9
+        },
+        {
+          "name": "full_gallop",
+          "description": "Full ensemble reprise — theme harmonized, strings soaring, maximum ride energy; ends crisply for the loop seam.",
+          "sync_hints": [
+            "Highest intensity window — chase sequences and mounted sprints belong here.",
+            "Loop seam: crossfade quickly (250 ms) back into canyon_groove on a downbeat."
+          ],
+          "weight": 1.0
+        }
+      ]
     }
   ]
 }
