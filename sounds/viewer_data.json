@@ -1,12 +1,12 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 21,
+  "count": 22,
   "by_category": {
     "ui": 8,
     "item": 5,
     "tool": 6,
-    "movement": 2
+    "movement": 3
   },
   "sounds": [
     {
@@ -406,6 +406,25 @@
       "format": "wav",
       "loop": false,
       "file": "movement/footstep_stone/footstep_stone__take01.wav",
+      "duration_seconds": 0.497
+    },
+    {
+      "id": "footstep_wood",
+      "name": "Footstep (Wood)",
+      "category": "movement",
+      "description": "a hollow knock of a step on a wooden floor",
+      "tags": [
+        "footstep",
+        "walk",
+        "wood",
+        "movement",
+        "hollow"
+      ],
+      "usage": "Per-step while walking on wood/bridge tiles.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "movement/footstep_wood/footstep_wood__take01.wav",
       "duration_seconds": 0.497
     }
   ]
