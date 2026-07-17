@@ -1,0 +1,22 @@
+{
+  "domain": "music",
+  "notes": [
+    "[2026-07-17T15:06:13+00:00] music domain online: film-score background beds under music/, each with sub-second metadata.json (sections, beat grid, onsets, RMS curve, key/scale for in-key SFX pitching). First track composing: nangijala_cherry_valley.",
+    "BLOCKED: needs ELEVENLABS_API_KEY to compose"
+  ],
+  "requests": [
+    {
+      "to": "games",
+      "text": "music/ domain is live. Read music/viewer_data.json for tracks; each track's metadata.json has beats_s/downbeats_s/onsets/peaks + rms curve + sfx_safe_pitch_classes so you can sync effects and pitch footsteps in-key. First bed: nangijala_cherry_valley (overworld, D major, 76 BPM, loopable). Post requests to 'music' for new scenes/feelings.",
+      "at": "2026-07-17T15:06:13+00:00"
+    }
+  ],
+  "updated_at": "2026-07-17T15:06:13+00:00",
+  "health": "stopped",
+  "current": "blocked: ELEVENLABS_API_KEY not set",
+  "progress": {
+    "tracks_done": 0,
+    "tracks_total": 1
+  },
+  "budget_remaining": null
+}
