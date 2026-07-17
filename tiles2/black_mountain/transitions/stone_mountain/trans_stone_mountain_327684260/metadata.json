@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.953,
-        "stone_mountain": 0.047
+        "black_mountain": 0.957,
+        "stone_mountain": 0.043
       },
       "edges": {
         "NE": {
@@ -564,8 +564,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.768,
-        "black_mountain": 0.232
+        "stone_mountain": 0.771,
+        "black_mountain": 0.229
       },
       "edges": {
         "NE": {
@@ -647,8 +647,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.365,
-        "black_mountain": 0.635
+        "stone_mountain": 0.354,
+        "black_mountain": 0.646
       },
       "edges": {
         "NE": {
@@ -671,7 +671,7 @@
           "samples": [
             "black_mountain",
             "black_mountain",
-            "stone_mountain",
+            "black_mountain",
             "stone_mountain",
             "stone_mountain",
             "black_mountain",
@@ -679,8 +679,8 @@
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.625,
-            "stone_mountain": 0.375
+            "black_mountain": 0.75,
+            "stone_mountain": 0.25
           }
         },
         "SW": {
@@ -701,7 +701,7 @@
         },
         "NW": {
           "samples": [
-            "black_mountain",
+            "stone_mountain",
             "stone_mountain",
             "black_mountain",
             "black_mountain",
@@ -711,8 +711,8 @@
             "stone_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.625,
-            "stone_mountain": 0.375
+            "stone_mountain": 0.5,
+            "black_mountain": 0.5
           }
         }
       },
@@ -727,8 +727,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.346,
-        "black_mountain": 0.654
+        "stone_mountain": 0.337,
+        "black_mountain": 0.663
       },
       "edges": {
         "NE": {
@@ -796,10 +796,9 @@
         }
       },
       "features": [
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "black volcanic rock blending to grey mountain stone with a small detail, small flowers"
+      "description": "black volcanic rock blending to grey mountain stone with a small detail"
     },
     {
       "index": 10,
@@ -807,8 +806,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.887,
-        "black_mountain": 0.113
+        "stone_mountain": 0.881,
+        "black_mountain": 0.119
       },
       "edges": {
         "NE": {
@@ -887,8 +886,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.977,
-        "black_mountain": 0.023
+        "stone_mountain": 0.999,
+        "black_mountain": 0.001
       },
       "edges": {
         "NE": {
@@ -930,17 +929,15 @@
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
-            "black_mountain"
+            "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.875,
-            "black_mountain": 0.125
-          },
-          "divider": 0.875
+            "stone_mountain": 1.0
+          }
         },
         "NW": {
           "samples": [
-            "black_mountain",
+            "stone_mountain",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
@@ -950,10 +947,8 @@
             "stone_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.125,
-            "stone_mountain": 0.875
-          },
-          "divider": 0.125
+            "stone_mountain": 1.0
+          }
         }
       },
       "features": [],
@@ -965,8 +960,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.524,
-        "stone_mountain": 0.476
+        "black_mountain": 0.525,
+        "stone_mountain": 0.475
       },
       "edges": {
         "NE": {
@@ -1035,10 +1030,9 @@
         }
       },
       "features": [
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "black volcanic rock blending to grey mountain stone with a small detail, small flowers"
+      "description": "black volcanic rock blending to grey mountain stone with a small detail"
     },
     {
       "index": 13,
@@ -1046,8 +1040,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.465,
-        "stone_mountain": 0.535
+        "black_mountain": 0.468,
+        "stone_mountain": 0.532
       },
       "edges": {
         "NE": {
@@ -1125,8 +1119,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.822,
-        "stone_mountain": 0.178
+        "black_mountain": 0.854,
+        "stone_mountain": 0.146
       },
       "edges": {
         "NE": {
@@ -1280,7 +1274,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

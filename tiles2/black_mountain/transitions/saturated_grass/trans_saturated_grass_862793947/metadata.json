@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.586,
-        "black_mountain": 0.414
+        "saturated_grass": 0.598,
+        "black_mountain": 0.402
       },
       "edges": {
         "NE": {
@@ -103,8 +103,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.711,
-        "black_mountain": 0.289
+        "saturated_grass": 0.726,
+        "black_mountain": 0.274
       },
       "edges": {
         "NE": {
@@ -145,17 +145,16 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "black_mountain",
+            "saturated_grass",
             "black_mountain",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "black_mountain": 0.625,
-            "saturated_grass": 0.375
-          },
-          "divider": 0.625
+            "black_mountain": 0.5,
+            "saturated_grass": 0.5
+          }
         },
         "NW": {
           "samples": [
@@ -184,8 +183,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.721,
-        "black_mountain": 0.279
+        "saturated_grass": 0.729,
+        "black_mountain": 0.271
       },
       "edges": {
         "NE": {
@@ -262,8 +261,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.929,
-        "black_mountain": 0.071
+        "saturated_grass": 0.97,
+        "black_mountain": 0.03
       },
       "edges": {
         "NE": {
@@ -300,23 +299,22 @@
           "samples": [
             "saturated_grass",
             "saturated_grass",
-            "black_mountain",
-            "black_mountain",
+            "saturated_grass",
+            "saturated_grass",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.75,
-            "black_mountain": 0.25
+            "saturated_grass": 1.0
           }
         },
         "NW": {
           "samples": [
             "saturated_grass",
             "saturated_grass",
-            "black_mountain",
+            "saturated_grass",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
@@ -324,15 +322,14 @@
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.875,
-            "black_mountain": 0.125
+            "saturated_grass": 1.0
           }
         }
       },
       "features": [
         "accent"
       ],
-      "description": "saturated grass blending to black volcanic rock with a small detail"
+      "description": "saturated grass with a small detail"
     },
     {
       "index": 4,
@@ -340,8 +337,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.79,
-        "black_mountain": 0.21
+        "saturated_grass": 0.806,
+        "black_mountain": 0.194
       },
       "edges": {
         "NE": {
@@ -419,8 +416,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.867,
-        "black_mountain": 0.133
+        "saturated_grass": 0.887,
+        "black_mountain": 0.113
       },
       "edges": {
         "NE": {
@@ -496,8 +493,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.876,
-        "black_mountain": 0.124
+        "saturated_grass": 0.918,
+        "black_mountain": 0.082
       },
       "edges": {
         "NE": {
@@ -573,8 +570,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.163,
-        "saturated_grass": 0.837
+        "black_mountain": 0.131,
+        "saturated_grass": 0.869
       },
       "edges": {
         "NE": {
@@ -651,8 +648,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.969,
-        "black_mountain": 0.031
+        "saturated_grass": 1.0
       },
       "edges": {
         "NE": {
@@ -674,7 +670,7 @@
           "samples": [
             "saturated_grass",
             "saturated_grass",
-            "black_mountain",
+            "saturated_grass",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
@@ -682,8 +678,7 @@
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.875,
-            "black_mountain": 0.125
+            "saturated_grass": 1.0
           }
         },
         "SW": {
@@ -717,10 +712,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "saturated grass with a small detail"
+      "features": [],
+      "description": "plain saturated grass"
     },
     {
       "index": 9,
@@ -728,8 +721,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.964,
-        "black_mountain": 0.036
+        "saturated_grass": 1.0
       },
       "edges": {
         "NE": {
@@ -751,7 +743,7 @@
           "samples": [
             "saturated_grass",
             "saturated_grass",
-            "black_mountain",
+            "saturated_grass",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
@@ -759,8 +751,7 @@
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.875,
-            "black_mountain": 0.125
+            "saturated_grass": 1.0
           }
         },
         "SW": {
@@ -794,10 +785,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "saturated grass with a small detail"
+      "features": [],
+      "description": "plain saturated grass"
     },
     {
       "index": 10,
@@ -805,8 +794,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.964,
-        "black_mountain": 0.036
+        "saturated_grass": 0.992,
+        "black_mountain": 0.008
       },
       "edges": {
         "NE": {
@@ -829,7 +818,7 @@
           "samples": [
             "saturated_grass",
             "saturated_grass",
-            "black_mountain",
+            "saturated_grass",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
@@ -837,8 +826,7 @@
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.875,
-            "black_mountain": 0.125
+            "saturated_grass": 1.0
           }
         },
         "SW": {
@@ -883,8 +871,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.97,
-        "black_mountain": 0.03
+        "saturated_grass": 1.0
       },
       "edges": {
         "NE": {
@@ -906,7 +893,7 @@
           "samples": [
             "saturated_grass",
             "saturated_grass",
-            "black_mountain",
+            "saturated_grass",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
@@ -914,8 +901,7 @@
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.875,
-            "black_mountain": 0.125
+            "saturated_grass": 1.0
           }
         },
         "SW": {
@@ -949,10 +935,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "saturated grass with a small detail"
+      "features": [],
+      "description": "plain saturated grass"
     },
     {
       "index": 12,
@@ -960,8 +944,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.978,
-        "black_mountain": 0.022
+        "saturated_grass": 0.986,
+        "black_mountain": 0.014
       },
       "edges": {
         "NE": {
@@ -1036,8 +1020,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.924,
-        "black_mountain": 0.076
+        "saturated_grass": 0.932,
+        "black_mountain": 0.068
       },
       "edges": {
         "NE": {
@@ -1113,8 +1097,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.92,
-        "black_mountain": 0.08
+        "saturated_grass": 0.956,
+        "black_mountain": 0.044
       },
       "edges": {
         "NE": {
@@ -1155,22 +1139,6 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "black_mountain",
-            "saturated_grass"
-          ],
-          "ratio": {
-            "saturated_grass": 0.75,
-            "black_mountain": 0.25
-          }
-        },
-        "NW": {
-          "samples": [
-            "saturated_grass",
-            "black_mountain",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
-            "saturated_grass",
             "saturated_grass",
             "saturated_grass"
           ],
@@ -1178,12 +1146,27 @@
             "saturated_grass": 0.875,
             "black_mountain": 0.125
           }
+        },
+        "NW": {
+          "samples": [
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass",
+            "saturated_grass"
+          ],
+          "ratio": {
+            "saturated_grass": 1.0
+          }
         }
       },
       "features": [
         "accent"
       ],
-      "description": "saturated grass blending to black volcanic rock with a small detail"
+      "description": "saturated grass with a small detail"
     },
     {
       "index": 15,
@@ -1191,8 +1174,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.977,
-        "black_mountain": 0.023
+        "saturated_grass": 0.985,
+        "black_mountain": 0.015
       },
       "edges": {
         "NE": {
@@ -1270,7 +1253,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.225,
-        "black_mountain": 0.775
+        "regular_snow": 0.224,
+        "black_mountain": 0.776
       },
       "edges": {
         "NE": {
@@ -105,8 +105,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.602,
-        "regular_snow": 0.398
+        "black_mountain": 0.603,
+        "regular_snow": 0.397
       },
       "edges": {
         "NE": {
@@ -186,8 +186,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.865,
-        "black_mountain": 0.135
+        "regular_snow": 0.864,
+        "black_mountain": 0.136
       },
       "edges": {
         "NE": {
@@ -336,10 +336,9 @@
         }
       },
       "features": [
-        "accent",
-        "pebbles"
+        "accent"
       ],
-      "description": "snow blending to black volcanic rock with a small detail, pebbles"
+      "description": "snow blending to black volcanic rock with a small detail"
     },
     {
       "index": 4,
@@ -347,8 +346,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.402,
-        "black_mountain": 0.598
+        "regular_snow": 0.401,
+        "black_mountain": 0.599
       },
       "edges": {
         "NE": {
@@ -429,8 +428,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.628,
-        "black_mountain": 0.372
+        "regular_snow": 0.594,
+        "black_mountain": 0.406
       },
       "edges": {
         "NE": {
@@ -470,15 +469,14 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "regular_snow",
-            "regular_snow",
+            "black_mountain",
+            "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.75,
-            "regular_snow": 0.25
+            "black_mountain": 1.0
           }
         },
         "NW": {
@@ -591,8 +589,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.709,
-        "black_mountain": 0.291
+        "regular_snow": 0.628,
+        "black_mountain": 0.372
       },
       "edges": {
         "NE": {
@@ -629,8 +627,8 @@
         },
         "SW": {
           "samples": [
-            "regular_snow",
-            "regular_snow",
+            "black_mountain",
+            "black_mountain",
             "regular_snow",
             "regular_snow",
             "regular_snow",
@@ -639,8 +637,10 @@
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 1.0
-          }
+            "black_mountain": 0.25,
+            "regular_snow": 0.75
+          },
+          "divider": 0.25
         },
         "NW": {
           "samples": [
@@ -750,8 +750,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.834,
-        "black_mountain": 0.166
+        "regular_snow": 0.822,
+        "black_mountain": 0.178
       },
       "edges": {
         "NE": {
@@ -827,8 +827,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.721,
-        "regular_snow": 0.279
+        "black_mountain": 0.724,
+        "regular_snow": 0.276
       },
       "edges": {
         "NE": {
@@ -908,8 +908,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.698,
-        "black_mountain": 0.302
+        "regular_snow": 0.699,
+        "black_mountain": 0.301
       },
       "edges": {
         "NE": {
@@ -1075,8 +1075,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.717,
-        "black_mountain": 0.283
+        "regular_snow": 0.715,
+        "black_mountain": 0.285
       },
       "edges": {
         "NE": {
@@ -1154,8 +1154,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.416,
-        "black_mountain": 0.584
+        "regular_snow": 0.413,
+        "black_mountain": 0.587
       },
       "edges": {
         "NE": {
@@ -1319,7 +1319,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

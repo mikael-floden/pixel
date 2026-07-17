@@ -185,8 +185,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.858,
-        "regular_snow": 0.142
+        "black_mountain": 0.859,
+        "regular_snow": 0.141
       },
       "edges": {
         "NE": {
@@ -666,8 +666,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.616,
-        "black_mountain": 0.384
+        "regular_snow": 0.613,
+        "black_mountain": 0.387
       },
       "edges": {
         "NE": {
@@ -727,11 +727,12 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "regular_snow",
+            "black_mountain",
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 1.0
+            "regular_snow": 0.875,
+            "black_mountain": 0.125
           }
         }
       },
@@ -907,15 +908,15 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.644,
-        "black_mountain": 0.356
+        "regular_snow": 0.638,
+        "black_mountain": 0.362
       },
       "edges": {
         "NE": {
           "samples": [
             "regular_snow",
             "regular_snow",
-            "regular_snow",
+            "black_mountain",
             "regular_snow",
             "regular_snow",
             "regular_snow",
@@ -923,7 +924,8 @@
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 1.0
+            "regular_snow": 0.875,
+            "black_mountain": 0.125
           }
         },
         "SE": {
@@ -987,8 +989,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.668,
-        "black_mountain": 0.332
+        "regular_snow": 0.664,
+        "black_mountain": 0.336
       },
       "edges": {
         "NE": {
@@ -1146,8 +1148,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.618,
-        "regular_snow": 0.382
+        "black_mountain": 0.595,
+        "regular_snow": 0.405
       },
       "edges": {
         "NE": {
@@ -1310,7 +1312,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

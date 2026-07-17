@@ -245,7 +245,7 @@ def process_sheet(gid, terrain, sheet, sdir, req, cfg, cache):
                 others = [t.get("select_value", t.get("value")) for t in achroma_refs if t is not tgt]
                 avoid_v = others[0] if others else None
             im = normalize.harmonize(im, tgt, hs["hue_strength"], hs["sat_strength"],
-                                     hs["v_strength"], hue_band=hs.get("hue_band", 42),
+                                     hs["v_strength"], hue_band=hs.get("hue_band", 42), min_value=hs.get("min_value", 0),
                                      avoid_hue=avoid_h, avoid_value=avoid_v)
         fo = pp["fade_outline"]
         if fo.get("enabled"):                          # soften hard black frame lines AFTER harmonize

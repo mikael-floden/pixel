@@ -315,8 +315,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.835,
-        "stone_mountain": 0.165
+        "clear_water": 0.861,
+        "stone_mountain": 0.139
       },
       "edges": {
         "NE": {
@@ -393,8 +393,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.453,
-        "clear_water": 0.547
+        "stone_mountain": 0.399,
+        "clear_water": 0.601
       },
       "edges": {
         "NE": {
@@ -422,17 +422,17 @@
             "stone_mountain",
             "clear_water",
             "clear_water",
-            "stone_mountain",
+            "clear_water",
             "stone_mountain"
           ],
           "ratio": {
-            "clear_water": 0.5,
-            "stone_mountain": 0.5
+            "clear_water": 0.625,
+            "stone_mountain": 0.375
           }
         },
         "SW": {
           "samples": [
-            "stone_mountain",
+            "clear_water",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -442,8 +442,8 @@
             "clear_water"
           ],
           "ratio": {
-            "stone_mountain": 0.25,
-            "clear_water": 0.75
+            "clear_water": 0.875,
+            "stone_mountain": 0.125
           }
         },
         "NW": {
@@ -555,8 +555,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.498,
-        "clear_water": 0.502
+        "stone_mountain": 0.471,
+        "clear_water": 0.529
       },
       "edges": {
         "NE": {
@@ -581,15 +581,15 @@
             "clear_water",
             "clear_water",
             "stone_mountain",
-            "stone_mountain",
+            "clear_water",
             "clear_water",
             "clear_water",
             "clear_water",
             "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.75,
-            "stone_mountain": 0.25
+            "clear_water": 0.875,
+            "stone_mountain": 0.125
           }
         },
         "SW": {
@@ -870,8 +870,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.556,
-        "clear_water": 0.444
+        "stone_mountain": 0.555,
+        "clear_water": 0.445
       },
       "edges": {
         "NE": {
@@ -1251,7 +1251,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

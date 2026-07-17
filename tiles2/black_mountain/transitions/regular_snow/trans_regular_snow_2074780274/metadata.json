@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.723,
-        "regular_snow": 0.277
+        "black_mountain": 0.727,
+        "regular_snow": 0.273
       },
       "edges": {
         "NE": {
@@ -106,8 +106,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.392,
-        "regular_snow": 0.608
+        "black_mountain": 0.401,
+        "regular_snow": 0.599
       },
       "edges": {
         "NE": {
@@ -153,11 +153,11 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "regular_snow"
+            "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.375,
-            "regular_snow": 0.625
+            "black_mountain": 0.5,
+            "regular_snow": 0.5
           }
         },
         "NW": {
@@ -190,8 +190,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.302,
-        "regular_snow": 0.698
+        "black_mountain": 0.31,
+        "regular_snow": 0.69
       },
       "edges": {
         "NE": {
@@ -272,8 +272,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.477,
-        "regular_snow": 0.523
+        "black_mountain": 0.481,
+        "regular_snow": 0.519
       },
       "edges": {
         "NE": {
@@ -355,8 +355,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.39,
-        "black_mountain": 0.61
+        "regular_snow": 0.389,
+        "black_mountain": 0.611
       },
       "edges": {
         "NE": {
@@ -519,8 +519,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.645,
-        "regular_snow": 0.355
+        "black_mountain": 0.648,
+        "regular_snow": 0.352
       },
       "edges": {
         "NE": {
@@ -591,10 +591,9 @@
       },
       "features": [
         "accent",
-        "pebbles",
-        "flowers"
+        "pebbles"
       ],
-      "description": "black volcanic rock blending to snow with a small detail, pebbles, small flowers"
+      "description": "black volcanic rock blending to snow with a small detail, pebbles"
     },
     {
       "index": 7,
@@ -602,8 +601,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.341,
-        "regular_snow": 0.659
+        "black_mountain": 0.344,
+        "regular_snow": 0.656
       },
       "edges": {
         "NE": {
@@ -684,8 +683,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.524,
-        "regular_snow": 0.476
+        "black_mountain": 0.525,
+        "regular_snow": 0.475
       },
       "edges": {
         "NE": {
@@ -752,10 +751,10 @@
         }
       },
       "features": [
-        "pebbles",
-        "accent"
+        "accent",
+        "pebbles"
       ],
-      "description": "black volcanic rock blending to snow with pebbles, a small detail"
+      "description": "black volcanic rock blending to snow with a small detail, pebbles"
     },
     {
       "index": 9,
@@ -763,8 +762,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.432,
-        "regular_snow": 0.568
+        "black_mountain": 0.434,
+        "regular_snow": 0.566
       },
       "edges": {
         "NE": {
@@ -844,8 +843,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.312,
-        "regular_snow": 0.688
+        "black_mountain": 0.316,
+        "regular_snow": 0.684
       },
       "edges": {
         "NE": {
@@ -927,8 +926,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.422,
-        "regular_snow": 0.578
+        "black_mountain": 0.428,
+        "regular_snow": 0.572
       },
       "edges": {
         "NE": {
@@ -999,11 +998,10 @@
         }
       },
       "features": [
-        "pebbles",
         "accent",
-        "flowers"
+        "pebbles"
       ],
-      "description": "snow blending to black volcanic rock with pebbles, a small detail, small flowers"
+      "description": "snow blending to black volcanic rock with a small detail, pebbles"
     },
     {
       "index": 12,
@@ -1011,8 +1009,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.453,
-        "regular_snow": 0.547
+        "black_mountain": 0.458,
+        "regular_snow": 0.542
       },
       "edges": {
         "NE": {
@@ -1069,14 +1067,15 @@
             "regular_snow",
             "regular_snow",
             "regular_snow",
-            "regular_snow",
+            "black_mountain",
             "regular_snow",
             "regular_snow",
             "regular_snow",
             "regular_snow"
           ],
           "ratio": {
-            "regular_snow": 1.0
+            "regular_snow": 0.875,
+            "black_mountain": 0.125
           }
         }
       },
@@ -1163,10 +1162,10 @@
         }
       },
       "features": [
-        "accent",
-        "pebbles"
+        "pebbles",
+        "accent"
       ],
-      "description": "black volcanic rock blending to snow with a small detail, pebbles"
+      "description": "black volcanic rock blending to snow with pebbles, a small detail"
     },
     {
       "index": 14,
@@ -1174,8 +1173,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.244,
-        "regular_snow": 0.756
+        "black_mountain": 0.242,
+        "regular_snow": 0.758
       },
       "edges": {
         "NE": {
@@ -1328,11 +1327,10 @@
         }
       },
       "features": [
-        "pebbles",
         "accent",
-        "flowers"
+        "pebbles"
       ],
-      "description": "snow blending to black volcanic rock with pebbles, a small detail, small flowers"
+      "description": "snow blending to black volcanic rock with a small detail, pebbles"
     }
   ],
   "generated_at": "2026-07-05T10:49:56+00:00",
@@ -1343,7 +1341,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

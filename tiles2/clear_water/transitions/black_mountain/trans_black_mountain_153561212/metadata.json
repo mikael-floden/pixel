@@ -87,10 +87,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "black volcanic rock with a small detail"
+      "features": [],
+      "description": "plain black volcanic rock"
     },
     {
       "index": 1,
@@ -98,8 +96,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.996,
-        "clear_water": 0.004
+        "black_mountain": 0.997,
+        "clear_water": 0.003
       },
       "edges": {
         "NE": {
@@ -326,8 +324,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.988,
-        "clear_water": 0.012
+        "black_mountain": 1.0
       },
       "edges": {
         "NE": {
@@ -392,10 +389,9 @@
         }
       },
       "features": [
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "black volcanic rock with a small detail, small flowers"
+      "description": "black volcanic rock with a small detail"
     },
     {
       "index": 5,
@@ -403,8 +399,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.998,
-        "clear_water": 0.002
+        "black_mountain": 1.0
       },
       "edges": {
         "NE": {
@@ -703,8 +698,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.997,
-        "clear_water": 0.003
+        "black_mountain": 1.0
       },
       "edges": {
         "NE": {
@@ -779,8 +773,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.992,
-        "clear_water": 0.008
+        "black_mountain": 0.995,
+        "clear_water": 0.005
       },
       "edges": {
         "NE": {
@@ -856,8 +850,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.999,
-        "clear_water": 0.001
+        "black_mountain": 1.0
       },
       "edges": {
         "NE": {
@@ -932,8 +925,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.986,
-        "clear_water": 0.014
+        "black_mountain": 0.998,
+        "clear_water": 0.002
       },
       "edges": {
         "NE": {
@@ -1237,7 +1230,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

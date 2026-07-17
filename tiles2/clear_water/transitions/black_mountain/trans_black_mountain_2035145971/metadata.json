@@ -163,8 +163,10 @@
           }
         }
       },
-      "features": [],
-      "description": "plain black volcanic rock"
+      "features": [
+        "accent"
+      ],
+      "description": "black volcanic rock with a small detail"
     },
     {
       "index": 2,
@@ -399,8 +401,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.953,
-        "clear_water": 0.047
+        "black_mountain": 1.0
       },
       "edges": {
         "NE": {
@@ -550,8 +551,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.916,
-        "clear_water": 0.084
+        "black_mountain": 0.998,
+        "clear_water": 0.002
       },
       "edges": {
         "NE": {
@@ -618,7 +619,7 @@
       "features": [
         "accent"
       ],
-      "description": "black volcanic rock blending to clear water with a small detail"
+      "description": "black volcanic rock with a small detail"
     },
     {
       "index": 8,
@@ -626,8 +627,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.984,
-        "clear_water": 0.016
+        "black_mountain": 0.991,
+        "clear_water": 0.009
       },
       "edges": {
         "NE": {
@@ -705,8 +706,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.957,
-        "clear_water": 0.043
+        "black_mountain": 0.986,
+        "clear_water": 0.014
       },
       "edges": {
         "NE": {
@@ -784,8 +785,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.932,
-        "clear_water": 0.068
+        "black_mountain": 1.0
       },
       "edges": {
         "NE": {
@@ -831,85 +831,6 @@
           ],
           "ratio": {
             "black_mountain": 1.0
-          }
-        },
-        "NW": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "black_mountain": 1.0
-          }
-        }
-      },
-      "features": [
-        "accent",
-        "flowers"
-      ],
-      "description": "black volcanic rock blending to clear water with a small detail, small flowers"
-    },
-    {
-      "index": 11,
-      "file": "tile_11.png",
-      "width": 64,
-      "height": 64,
-      "composition": {
-        "black_mountain": 0.723,
-        "clear_water": 0.277
-      },
-      "edges": {
-        "NE": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "black_mountain": 1.0
-          }
-        },
-        "SE": {
-          "samples": [
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "clear_water",
-            "black_mountain",
-            "clear_water",
-            "clear_water"
-          ],
-          "ratio": {
-            "black_mountain": 0.625,
-            "clear_water": 0.375
-          }
-        },
-        "SW": {
-          "samples": [
-            "clear_water",
-            "black_mountain",
-            "clear_water",
-            "clear_water",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain",
-            "black_mountain"
-          ],
-          "ratio": {
-            "clear_water": 0.375,
-            "black_mountain": 0.625
           }
         },
         "NW": {
@@ -931,7 +852,83 @@
       "features": [
         "accent"
       ],
-      "description": "black volcanic rock blending to clear water with a small detail"
+      "description": "black volcanic rock with a small detail"
+    },
+    {
+      "index": 11,
+      "file": "tile_11.png",
+      "width": 64,
+      "height": 64,
+      "composition": {
+        "black_mountain": 0.997,
+        "clear_water": 0.003
+      },
+      "edges": {
+        "NE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SE": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "SW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        },
+        "NW": {
+          "samples": [
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
+          ],
+          "ratio": {
+            "black_mountain": 1.0
+          }
+        }
+      },
+      "features": [
+        "accent"
+      ],
+      "description": "black volcanic rock with a small detail"
     },
     {
       "index": 12,
@@ -939,8 +936,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.243,
-        "black_mountain": 0.757
+        "clear_water": 0.242,
+        "black_mountain": 0.758
       },
       "edges": {
         "NE": {
@@ -1020,8 +1017,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.986,
-        "clear_water": 0.014
+        "black_mountain": 0.997,
+        "clear_water": 0.003
       },
       "edges": {
         "NE": {
@@ -1086,10 +1083,9 @@
         }
       },
       "features": [
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "black volcanic rock with a small detail, small flowers"
+      "description": "black volcanic rock with a small detail"
     },
     {
       "index": 14,
@@ -1097,8 +1093,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.91,
-        "clear_water": 0.09
+        "black_mountain": 1.0
       },
       "edges": {
         "NE": {
@@ -1138,20 +1133,18 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "clear_water",
-            "clear_water",
-            "clear_water"
+            "black_mountain",
+            "black_mountain",
+            "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.625,
-            "clear_water": 0.375
-          },
-          "divider": 0.625
+            "black_mountain": 1.0
+          }
         },
         "NW": {
           "samples": [
-            "clear_water",
-            "clear_water",
+            "black_mountain",
+            "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain",
@@ -1160,16 +1153,14 @@
             "black_mountain"
           ],
           "ratio": {
-            "clear_water": 0.25,
-            "black_mountain": 0.75
-          },
-          "divider": 0.25
+            "black_mountain": 1.0
+          }
         }
       },
       "features": [
         "accent"
       ],
-      "description": "black volcanic rock blending to clear water with a small detail"
+      "description": "black volcanic rock with a small detail"
     },
     {
       "index": 15,
@@ -1255,7 +1246,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

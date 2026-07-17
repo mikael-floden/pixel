@@ -183,8 +183,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.762,
-        "black_mountain": 0.238
+        "saturated_grass": 0.764,
+        "black_mountain": 0.236
       },
       "edges": {
         "NE": {
@@ -415,8 +415,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.844,
-        "black_mountain": 0.156
+        "saturated_grass": 0.846,
+        "black_mountain": 0.154
       },
       "edges": {
         "NE": {
@@ -470,15 +470,14 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "black_mountain",
+            "saturated_grass",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.875,
-            "black_mountain": 0.125
+            "saturated_grass": 1.0
           }
         }
       },
@@ -493,8 +492,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.972,
-        "black_mountain": 0.028
+        "saturated_grass": 0.973,
+        "black_mountain": 0.027
       },
       "edges": {
         "NE": {
@@ -569,8 +568,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.867,
-        "black_mountain": 0.133
+        "saturated_grass": 0.868,
+        "black_mountain": 0.132
       },
       "edges": {
         "NE": {
@@ -711,10 +710,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "saturated grass with a small detail"
+      "features": [],
+      "description": "plain saturated grass"
     },
     {
       "index": 9,
@@ -722,8 +719,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.831,
-        "black_mountain": 0.169
+        "saturated_grass": 0.879,
+        "black_mountain": 0.121
       },
       "edges": {
         "NE": {
@@ -748,15 +745,15 @@
             "saturated_grass",
             "black_mountain",
             "black_mountain",
-            "black_mountain",
+            "saturated_grass",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass"
           ],
           "ratio": {
-            "saturated_grass": 0.625,
-            "black_mountain": 0.375
+            "saturated_grass": 0.75,
+            "black_mountain": 0.25
           }
         },
         "SW": {
@@ -1112,8 +1109,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.933,
-        "black_mountain": 0.067
+        "saturated_grass": 0.96,
+        "black_mountain": 0.04
       },
       "edges": {
         "NE": {
@@ -1180,7 +1177,7 @@
       "features": [
         "accent"
       ],
-      "description": "saturated grass blending to black volcanic rock with a small detail"
+      "description": "saturated grass with a small detail"
     },
     {
       "index": 15,
@@ -1264,7 +1261,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

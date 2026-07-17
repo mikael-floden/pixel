@@ -329,8 +329,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.738,
-        "saturated_grass": 0.262
+        "lightdark_dirt": 0.736,
+        "saturated_grass": 0.264
       },
       "edges": {
         "NE": {
@@ -638,8 +638,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.445,
-        "lightdark_dirt": 0.555
+        "saturated_grass": 0.448,
+        "lightdark_dirt": 0.552
       },
       "edges": {
         "NE": {
@@ -720,8 +720,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.453,
-        "lightdark_dirt": 0.547
+        "saturated_grass": 0.458,
+        "lightdark_dirt": 0.542
       },
       "edges": {
         "NE": {
@@ -952,8 +952,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.731,
-        "lightdark_dirt": 0.269
+        "saturated_grass": 0.734,
+        "lightdark_dirt": 0.266
       },
       "edges": {
         "NE": {
@@ -1021,10 +1021,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "saturated grass blending to dirt with a small detail"
+      "features": [],
+      "description": "saturated grass blending to dirt"
     },
     {
       "index": 13,
@@ -1032,8 +1030,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "lightdark_dirt": 0.391,
-        "saturated_grass": 0.609
+        "lightdark_dirt": 0.39,
+        "saturated_grass": 0.61
       },
       "edges": {
         "NE": {
@@ -1111,8 +1109,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.566,
-        "lightdark_dirt": 0.434
+        "saturated_grass": 0.567,
+        "lightdark_dirt": 0.433
       },
       "edges": {
         "NE": {
@@ -1268,7 +1266,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

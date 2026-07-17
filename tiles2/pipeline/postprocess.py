@@ -171,10 +171,10 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
         avoid_v_from = (t_to.get("select_value", t_to.get("value")) if both_achroma else None)
         avoid_v_to = (t_from.get("select_value", t_from.get("value")) if both_achroma else None)
         im = normalize.harmonize(im, t_from, hs["hue_strength"], hs["sat_strength"], hs["v_strength"],
-                                 hue_band=hs.get("hue_band", 42), avoid_hue=avoid_h_from, avoid_value=avoid_v_from)
+                                 hue_band=hs.get("hue_band", 42), min_value=hs.get("min_value", 0), avoid_hue=avoid_h_from, avoid_value=avoid_v_from)
         if t_to:
             im = normalize.harmonize(im, t_to, hs["hue_strength"], hs["sat_strength"], hs["v_strength"],
-                                     hue_band=hs.get("hue_band", 42), avoid_hue=avoid_h_to, avoid_value=avoid_v_to)
+                                     hue_band=hs.get("hue_band", 42), min_value=hs.get("min_value", 0), avoid_hue=avoid_h_to, avoid_value=avoid_v_to)
         if ds.get("enabled"):                          # erase the tessellating diamond-edge grid seam
             im = normalize.deseam_diamond(
                 im, band=ds["band"], darkness_thresh=ds["darkness_thresh"],

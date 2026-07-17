@@ -76,7 +76,7 @@ def material_target(images):
 
 
 def harmonize(im, target, hue_strength=0.9, sat_strength=0.6, v_strength=0.65, hue_band=42,
-              avoid_hue=None, avoid_value=None):
+              avoid_hue=None, avoid_value=None, min_value=0):
     """Pull `im`'s MATERIAL pixels toward the target hue/saturation and level their
     mean brightness, keeping texture. The material is SELECTED by the hue of its own
     RAW colour (`target['select_hue']` — the auto-detected pre-palette hue) so that a
@@ -119,7 +119,11 @@ def harmonize(im, target, hue_strength=0.9, sat_strength=0.6, v_strength=0.65, h
         hsv[:, :, 0] = np.where(m, (h + dh) % 256, h)
         hsv[:, :, 1] = np.where(m, np.clip(s + (sat_t - s) * sat_strength, 0, 255), s)
         dv = (val_t - v[m].mean()) * v_strength
-        hsv[:, :, 2] = np.where(m, np.clip(v + dv, 0, 255), v)
+        # FLOOR at min_value: mean-leveling toward a dark target is a constant downward
+        # shift that clips a material's darkest texture to 0 (#000000) — worst on a dark
+        # target dragged lower still in a transition. Flooring keeps black rock a dark
+        # charcoal instead of pitch black; harmless for bright materials (always > floor).
+        hsv[:, :, 2] = np.where(m, np.clip(v + dv, float(min_value), 255), v)
     out = np.asarray(Image.fromarray(hsv.clip(0, 255).astype(np.uint8), "HSV").convert("RGBA")).copy()
     out[:, :, 3] = al
     return Image.fromarray(out, "RGBA")

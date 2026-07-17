@@ -179,15 +179,15 @@
         "anim": "flicker",
         "sources": [
           {
-            "x": 26.6,
-            "y": 49.0,
-            "r": 3.5,
+            "x": 26.4,
+            "y": 49.1,
+            "r": 3.4,
             "color": [
-              0.533,
-              0.342,
-              0.266
+              0.562,
+              0.334,
+              0.269
             ],
-            "s": 0.615,
+            "s": 0.62,
             "dir": "up"
           },
           {
@@ -265,7 +265,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonize_refs": [
       "clear_water",

@@ -256,13 +256,13 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.849,
-        "stone_mountain": 0.151
+        "black_mountain": 0.87,
+        "stone_mountain": 0.13
       },
       "edges": {
         "NE": {
           "samples": [
-            "stone_mountain",
+            "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain",
@@ -272,8 +272,8 @@
             "black_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.25,
-            "black_mountain": 0.75
+            "black_mountain": 0.875,
+            "stone_mountain": 0.125
           }
         },
         "SE": {
@@ -334,8 +334,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.667,
-        "stone_mountain": 0.333
+        "black_mountain": 0.751,
+        "stone_mountain": 0.249
       },
       "edges": {
         "NE": {
@@ -344,16 +344,16 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "stone_mountain",
-            "stone_mountain",
+            "black_mountain",
+            "black_mountain",
             "stone_mountain",
             "stone_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.5,
-            "stone_mountain": 0.5
+            "black_mountain": 0.75,
+            "stone_mountain": 0.25
           },
-          "divider": 0.5
+          "divider": 0.75
         },
         "SE": {
           "samples": [
@@ -373,7 +373,7 @@
         "SW": {
           "samples": [
             "stone_mountain",
-            "stone_mountain",
+            "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain",
@@ -382,10 +382,10 @@
             "black_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.25,
-            "black_mountain": 0.75
+            "stone_mountain": 0.125,
+            "black_mountain": 0.875
           },
-          "divider": 0.25
+          "divider": 0.125
         },
         "NW": {
           "samples": [
@@ -414,8 +414,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.665,
-        "stone_mountain": 0.335
+        "black_mountain": 0.667,
+        "stone_mountain": 0.333
       },
       "edges": {
         "NE": {
@@ -484,10 +484,9 @@
         }
       },
       "features": [
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "black volcanic rock blending to grey mountain stone with a small detail, small flowers"
+      "description": "black volcanic rock blending to grey mountain stone with a small detail"
     },
     {
       "index": 6,
@@ -495,8 +494,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.485,
-        "black_mountain": 0.515
+        "stone_mountain": 0.482,
+        "black_mountain": 0.518
       },
       "edges": {
         "NE": {
@@ -732,8 +731,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.162,
-        "stone_mountain": 0.838
+        "black_mountain": 0.164,
+        "stone_mountain": 0.836
       },
       "edges": {
         "NE": {
@@ -814,8 +813,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.419,
-        "stone_mountain": 0.581
+        "black_mountain": 0.424,
+        "stone_mountain": 0.576
       },
       "edges": {
         "NE": {
@@ -870,7 +869,7 @@
         "NW": {
           "samples": [
             "stone_mountain",
-            "stone_mountain",
+            "black_mountain",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
@@ -879,10 +878,9 @@
             "black_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.625,
-            "black_mountain": 0.375
-          },
-          "divider": 0.625
+            "stone_mountain": 0.5,
+            "black_mountain": 0.5
+          }
         }
       },
       "features": [
@@ -976,8 +974,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.904,
-        "black_mountain": 0.096
+        "stone_mountain": 0.897,
+        "black_mountain": 0.103
       },
       "edges": {
         "NE": {
@@ -1052,14 +1050,14 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.676,
-        "black_mountain": 0.324
+        "black_mountain": 0.379,
+        "stone_mountain": 0.621
       },
       "edges": {
         "NE": {
           "samples": [
             "stone_mountain",
-            "stone_mountain",
+            "black_mountain",
             "black_mountain",
             "stone_mountain",
             "stone_mountain",
@@ -1068,14 +1066,14 @@
             "stone_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.875,
-            "black_mountain": 0.125
+            "stone_mountain": 0.75,
+            "black_mountain": 0.25
           }
         },
         "SE": {
           "samples": [
             "stone_mountain",
-            "stone_mountain",
+            "black_mountain",
             "black_mountain",
             "stone_mountain",
             "stone_mountain",
@@ -1084,8 +1082,8 @@
             "black_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.5,
-            "black_mountain": 0.5
+            "stone_mountain": 0.375,
+            "black_mountain": 0.625
           }
         },
         "SW": {
@@ -1112,12 +1110,12 @@
             "stone_mountain",
             "stone_mountain",
             "black_mountain",
-            "stone_mountain",
+            "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.5,
-            "black_mountain": 0.5
+            "stone_mountain": 0.375,
+            "black_mountain": 0.625
           }
         }
       },
@@ -1132,8 +1130,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.77,
-        "black_mountain": 0.23
+        "stone_mountain": 0.735,
+        "black_mountain": 0.265
       },
       "edges": {
         "NE": {
@@ -1211,15 +1209,15 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.473,
-        "stone_mountain": 0.527
+        "black_mountain": 0.504,
+        "stone_mountain": 0.496
       },
       "edges": {
         "NE": {
           "samples": [
             "black_mountain",
             "black_mountain",
-            "stone_mountain",
+            "black_mountain",
             "stone_mountain",
             "stone_mountain",
             "stone_mountain",
@@ -1227,8 +1225,8 @@
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.5,
-            "stone_mountain": 0.5
+            "black_mountain": 0.625,
+            "stone_mountain": 0.375
           }
         },
         "SE": {
@@ -1256,13 +1254,14 @@
             "stone_mountain",
             "black_mountain",
             "black_mountain",
-            "stone_mountain",
+            "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.625,
-            "black_mountain": 0.375
-          }
+            "stone_mountain": 0.5,
+            "black_mountain": 0.5
+          },
+          "divider": 0.5
         },
         "NW": {
           "samples": [
@@ -1284,7 +1283,7 @@
       "features": [
         "accent"
       ],
-      "description": "grey mountain stone blending to black volcanic rock with a small detail"
+      "description": "black volcanic rock blending to grey mountain stone with a small detail"
     }
   ],
   "generated_at": "2026-07-05T16:16:52+00:00",
@@ -1295,7 +1294,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

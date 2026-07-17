@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.437,
-        "black_mountain": 0.563
+        "crystal_ice": 0.436,
+        "black_mountain": 0.564
       },
       "edges": {
         "NE": {
@@ -913,11 +913,10 @@
         }
       },
       "features": [
-        "accent",
         "shiny",
-        "pebbles"
+        "accent"
       ],
-      "description": "black volcanic rock blending to crystal ice with a small detail, a shiny speck, pebbles"
+      "description": "black volcanic rock blending to crystal ice with a shiny speck, a small detail"
     },
     {
       "index": 11,
@@ -1320,10 +1319,9 @@
       "features": [
         "accent",
         "shiny",
-        "flowers",
         "pebbles"
       ],
-      "description": "black volcanic rock blending to crystal ice with a small detail, a shiny speck, small flowers, pebbles"
+      "description": "black volcanic rock blending to crystal ice with a small detail, a shiny speck, pebbles"
     }
   ],
   "generated_at": "2026-07-06T11:39:42+00:00",
@@ -1334,7 +1332,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

@@ -350,8 +350,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.421,
-        "saturated_grass": 0.579
+        "black_mountain": 0.42,
+        "saturated_grass": 0.58
       },
       "edges": {
         "NE": {
@@ -514,8 +514,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.815,
-        "black_mountain": 0.185
+        "saturated_grass": 0.817,
+        "black_mountain": 0.183
       },
       "edges": {
         "NE": {
@@ -526,14 +526,14 @@
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
-            "black_mountain",
+            "saturated_grass",
             "black_mountain"
           ],
           "ratio": {
-            "saturated_grass": 0.75,
-            "black_mountain": 0.25
+            "saturated_grass": 0.875,
+            "black_mountain": 0.125
           },
-          "divider": 0.75
+          "divider": 0.875
         },
         "SE": {
           "samples": [
@@ -594,15 +594,15 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.345,
-        "saturated_grass": 0.655
+        "saturated_grass": 0.659,
+        "black_mountain": 0.341
       },
       "edges": {
         "NE": {
           "samples": [
             "black_mountain",
             "black_mountain",
-            "black_mountain",
+            "saturated_grass",
             "saturated_grass",
             "saturated_grass",
             "saturated_grass",
@@ -610,10 +610,10 @@
             "saturated_grass"
           ],
           "ratio": {
-            "black_mountain": 0.375,
-            "saturated_grass": 0.625
+            "black_mountain": 0.25,
+            "saturated_grass": 0.75
           },
-          "divider": 0.375
+          "divider": 0.25
         },
         "SE": {
           "samples": [
@@ -675,8 +675,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.898,
-        "black_mountain": 0.102
+        "saturated_grass": 0.903,
+        "black_mountain": 0.097
       },
       "edges": {
         "NE": {
@@ -752,8 +752,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.91,
-        "black_mountain": 0.09
+        "saturated_grass": 0.918,
+        "black_mountain": 0.082
       },
       "edges": {
         "NE": {
@@ -828,8 +828,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.923,
-        "black_mountain": 0.077
+        "saturated_grass": 0.94,
+        "black_mountain": 0.06
       },
       "edges": {
         "NE": {
@@ -904,8 +904,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.875,
-        "black_mountain": 0.125
+        "saturated_grass": 0.884,
+        "black_mountain": 0.116
       },
       "edges": {
         "NE": {
@@ -982,8 +982,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.987,
-        "black_mountain": 0.013
+        "saturated_grass": 0.997,
+        "black_mountain": 0.003
       },
       "edges": {
         "NE": {
@@ -1047,10 +1047,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "saturated grass with a small detail"
+      "features": [],
+      "description": "plain saturated grass"
     },
     {
       "index": 13,
@@ -1138,8 +1136,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.779,
-        "black_mountain": 0.221
+        "saturated_grass": 0.78,
+        "black_mountain": 0.22
       },
       "edges": {
         "NE": {
@@ -1284,10 +1282,8 @@
           }
         }
       },
-      "features": [
-        "pebbles"
-      ],
-      "description": "saturated grass with pebbles"
+      "features": [],
+      "description": "plain saturated grass"
     }
   ],
   "generated_at": "2026-07-05T10:13:52+00:00",
@@ -1298,7 +1294,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

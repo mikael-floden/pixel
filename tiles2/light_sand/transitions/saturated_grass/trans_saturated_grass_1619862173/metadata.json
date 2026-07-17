@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.788,
-        "saturated_grass": 0.212
+        "light_sand": 0.781,
+        "saturated_grass": 0.219
       },
       "edges": {
         "NE": {
@@ -177,8 +177,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.256,
-        "light_sand": 0.744
+        "saturated_grass": 0.259,
+        "light_sand": 0.741
       },
       "edges": {
         "NE": {
@@ -488,8 +488,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.563,
-        "light_sand": 0.437
+        "saturated_grass": 0.568,
+        "light_sand": 0.432
       },
       "edges": {
         "NE": {
@@ -646,8 +646,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.338,
-        "saturated_grass": 0.662
+        "light_sand": 0.331,
+        "saturated_grass": 0.669
       },
       "edges": {
         "NE": {
@@ -727,8 +727,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.755,
-        "light_sand": 0.245
+        "saturated_grass": 0.757,
+        "light_sand": 0.243
       },
       "edges": {
         "NE": {
@@ -880,8 +880,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.558,
-        "light_sand": 0.442
+        "saturated_grass": 0.56,
+        "light_sand": 0.44
       },
       "edges": {
         "NE": {
@@ -1034,8 +1034,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.957,
-        "light_sand": 0.043
+        "saturated_grass": 0.989,
+        "light_sand": 0.011
       },
       "edges": {
         "NE": {
@@ -1100,10 +1100,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "saturated grass with a small detail"
+      "features": [],
+      "description": "plain saturated grass"
     },
     {
       "index": 14,
@@ -1111,8 +1109,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.957,
-        "light_sand": 0.043
+        "saturated_grass": 0.985,
+        "light_sand": 0.015
       },
       "edges": {
         "NE": {
@@ -1189,8 +1187,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.959,
-        "light_sand": 0.041
+        "saturated_grass": 0.966,
+        "light_sand": 0.034
       },
       "edges": {
         "NE": {
@@ -1256,10 +1254,9 @@
         }
       },
       "features": [
-        "shiny",
-        "accent"
+        "shiny"
       ],
-      "description": "saturated grass with a shiny speck, a small detail"
+      "description": "saturated grass with a shiny speck"
     }
   ],
   "generated_at": "2026-07-06T13:06:06+00:00",
@@ -1270,7 +1267,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

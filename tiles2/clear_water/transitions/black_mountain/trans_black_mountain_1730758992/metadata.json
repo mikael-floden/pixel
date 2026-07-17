@@ -324,8 +324,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.999,
-        "clear_water": 0.001
+        "black_mountain": 1.0
       },
       "edges": {
         "NE": {
@@ -851,8 +850,7 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.972,
-        "clear_water": 0.028
+        "black_mountain": 1.0
       },
       "edges": {
         "NE": {
@@ -875,15 +873,14 @@
             "black_mountain",
             "black_mountain",
             "black_mountain",
-            "clear_water",
+            "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.875,
-            "clear_water": 0.125
+            "black_mountain": 1.0
           }
         },
         "SW": {
@@ -1068,10 +1065,9 @@
         }
       },
       "features": [
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "black volcanic rock with a small detail, small flowers"
+      "description": "black volcanic rock with a small detail"
     },
     {
       "index": 14,
@@ -1232,7 +1228,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

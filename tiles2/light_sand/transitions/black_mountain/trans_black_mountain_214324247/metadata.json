@@ -103,8 +103,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.568,
-        "light_sand": 0.432
+        "black_mountain": 0.571,
+        "light_sand": 0.429
       },
       "edges": {
         "NE": {
@@ -183,8 +183,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.684,
-        "light_sand": 0.316
+        "black_mountain": 0.685,
+        "light_sand": 0.315
       },
       "edges": {
         "NE": {
@@ -497,8 +497,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.938,
-        "black_mountain": 0.062
+        "light_sand": 0.931,
+        "black_mountain": 0.069
       },
       "edges": {
         "NE": {
@@ -519,17 +519,17 @@
         "SE": {
           "samples": [
             "light_sand",
-            "light_sand",
+            "black_mountain",
             "black_mountain",
             "light_sand",
             "light_sand",
             "black_mountain",
-            "light_sand",
+            "black_mountain",
             "light_sand"
           ],
           "ratio": {
-            "light_sand": 0.75,
-            "black_mountain": 0.25
+            "light_sand": 0.5,
+            "black_mountain": 0.5
           }
         },
         "SW": {
@@ -651,8 +651,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.493,
-        "light_sand": 0.507
+        "black_mountain": 0.496,
+        "light_sand": 0.504
       },
       "edges": {
         "NE": {
@@ -894,8 +894,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.849,
-        "light_sand": 0.151
+        "black_mountain": 0.851,
+        "light_sand": 0.149
       },
       "edges": {
         "NE": {
@@ -1042,10 +1042,9 @@
         }
       },
       "features": [
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "black volcanic rock with a small detail, small flowers"
+      "description": "black volcanic rock with a small detail"
     },
     {
       "index": 13,
@@ -1124,10 +1123,9 @@
       },
       "features": [
         "accent",
-        "flowers",
         "pebbles"
       ],
-      "description": "black volcanic rock blending to light sand with a small detail, small flowers, pebbles"
+      "description": "black volcanic rock blending to light sand with a small detail, pebbles"
     },
     {
       "index": 14,
@@ -1291,7 +1289,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

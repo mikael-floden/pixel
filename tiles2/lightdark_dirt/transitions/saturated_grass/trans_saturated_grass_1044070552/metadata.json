@@ -103,8 +103,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.591,
-        "lightdark_dirt": 0.409
+        "saturated_grass": 0.592,
+        "lightdark_dirt": 0.408
       },
       "edges": {
         "NE": {
@@ -329,8 +329,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.555,
-        "lightdark_dirt": 0.445
+        "saturated_grass": 0.556,
+        "lightdark_dirt": 0.444
       },
       "edges": {
         "NE": {
@@ -644,8 +644,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.655,
-        "lightdark_dirt": 0.345
+        "saturated_grass": 0.658,
+        "lightdark_dirt": 0.342
       },
       "edges": {
         "NE": {
@@ -723,8 +723,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.661,
-        "lightdark_dirt": 0.339
+        "saturated_grass": 0.666,
+        "lightdark_dirt": 0.334
       },
       "edges": {
         "NE": {
@@ -792,10 +792,8 @@
           "divider": 0.75
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "saturated grass blending to dirt with a small detail"
+      "features": [],
+      "description": "saturated grass blending to dirt"
     },
     {
       "index": 10,
@@ -883,8 +881,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.661,
-        "lightdark_dirt": 0.339
+        "saturated_grass": 0.662,
+        "lightdark_dirt": 0.338
       },
       "edges": {
         "NE": {
@@ -1121,8 +1119,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.689,
-        "lightdark_dirt": 0.311
+        "saturated_grass": 0.695,
+        "lightdark_dirt": 0.305
       },
       "edges": {
         "NE": {
@@ -1189,10 +1187,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "saturated grass blending to dirt with a small detail"
+      "features": [],
+      "description": "saturated grass blending to dirt"
     },
     {
       "index": 15,
@@ -1285,7 +1281,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

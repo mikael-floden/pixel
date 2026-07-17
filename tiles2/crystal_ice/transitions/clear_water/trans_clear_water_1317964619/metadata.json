@@ -738,8 +738,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "crystal_ice": 0.782,
-        "clear_water": 0.218
+        "crystal_ice": 0.783,
+        "clear_water": 0.217
       },
       "edges": {
         "NE": {
@@ -1297,7 +1297,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

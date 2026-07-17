@@ -98,8 +98,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "regular_snow": 0.503,
-        "black_mountain": 0.497
+        "regular_snow": 0.504,
+        "black_mountain": 0.496
       },
       "edges": {
         "NE": {
@@ -814,8 +814,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.215,
-        "regular_snow": 0.785
+        "black_mountain": 0.217,
+        "regular_snow": 0.783
       },
       "edges": {
         "NE": {
@@ -1291,7 +1291,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

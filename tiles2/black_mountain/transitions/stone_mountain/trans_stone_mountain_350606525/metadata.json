@@ -23,8 +23,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.565,
-        "stone_mountain": 0.435
+        "black_mountain": 0.592,
+        "stone_mountain": 0.408
       },
       "edges": {
         "NE": {
@@ -65,7 +65,7 @@
           "samples": [
             "black_mountain",
             "black_mountain",
-            "stone_mountain",
+            "black_mountain",
             "stone_mountain",
             "black_mountain",
             "black_mountain",
@@ -73,8 +73,8 @@
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.75,
-            "stone_mountain": 0.25
+            "black_mountain": 0.875,
+            "stone_mountain": 0.125
           }
         },
         "NW": {
@@ -104,8 +104,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.627,
-        "black_mountain": 0.373
+        "stone_mountain": 0.613,
+        "black_mountain": 0.387
       },
       "edges": {
         "NE": {
@@ -144,15 +144,15 @@
             "black_mountain",
             "black_mountain",
             "stone_mountain",
-            "stone_mountain",
+            "black_mountain",
             "stone_mountain",
             "black_mountain",
             "black_mountain",
             "black_mountain"
           ],
           "ratio": {
-            "black_mountain": 0.625,
-            "stone_mountain": 0.375
+            "black_mountain": 0.75,
+            "stone_mountain": 0.25
           }
         },
         "NW": {
@@ -184,8 +184,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.541,
-        "black_mountain": 0.459
+        "stone_mountain": 0.536,
+        "black_mountain": 0.464
       },
       "edges": {
         "NE": {
@@ -344,14 +344,14 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.645,
-        "black_mountain": 0.355
+        "stone_mountain": 0.623,
+        "black_mountain": 0.377
       },
       "edges": {
         "NE": {
           "samples": [
             "stone_mountain",
-            "stone_mountain",
+            "black_mountain",
             "black_mountain",
             "stone_mountain",
             "stone_mountain",
@@ -360,8 +360,8 @@
             "black_mountain"
           ],
           "ratio": {
-            "stone_mountain": 0.625,
-            "black_mountain": 0.375
+            "stone_mountain": 0.5,
+            "black_mountain": 0.5
           }
         },
         "SE": {
@@ -503,8 +503,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.634,
-        "black_mountain": 0.366
+        "stone_mountain": 0.629,
+        "black_mountain": 0.371
       },
       "edges": {
         "NE": {
@@ -583,8 +583,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.595,
-        "black_mountain": 0.405
+        "stone_mountain": 0.594,
+        "black_mountain": 0.406
       },
       "edges": {
         "NE": {
@@ -653,10 +653,9 @@
         }
       },
       "features": [
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "grey mountain stone blending to black volcanic rock with a small detail, small flowers"
+      "description": "grey mountain stone blending to black volcanic rock with a small detail"
     },
     {
       "index": 8,
@@ -664,8 +663,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.665,
-        "black_mountain": 0.335
+        "stone_mountain": 0.664,
+        "black_mountain": 0.336
       },
       "edges": {
         "NE": {
@@ -743,8 +742,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.356,
-        "stone_mountain": 0.644
+        "black_mountain": 0.357,
+        "stone_mountain": 0.643
       },
       "edges": {
         "NE": {
@@ -980,8 +979,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.521,
-        "black_mountain": 0.479
+        "stone_mountain": 0.519,
+        "black_mountain": 0.481
       },
       "edges": {
         "NE": {
@@ -1061,8 +1060,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.614,
-        "stone_mountain": 0.386
+        "black_mountain": 0.622,
+        "stone_mountain": 0.378
       },
       "edges": {
         "NE": {
@@ -1141,8 +1140,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.428,
-        "black_mountain": 0.572
+        "stone_mountain": 0.422,
+        "black_mountain": 0.578
       },
       "edges": {
         "NE": {
@@ -1220,8 +1219,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.304,
-        "stone_mountain": 0.696
+        "black_mountain": 0.298,
+        "stone_mountain": 0.702
       },
       "edges": {
         "NE": {
@@ -1303,7 +1302,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

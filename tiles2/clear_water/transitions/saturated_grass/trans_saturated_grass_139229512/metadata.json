@@ -101,8 +101,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.587,
-        "saturated_grass": 0.413
+        "clear_water": 0.586,
+        "saturated_grass": 0.414
       },
       "edges": {
         "NE": {
@@ -179,8 +179,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.297,
-        "saturated_grass": 0.703
+        "clear_water": 0.295,
+        "saturated_grass": 0.705
       },
       "edges": {
         "NE": {
@@ -341,8 +341,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.618,
-        "clear_water": 0.382
+        "saturated_grass": 0.619,
+        "clear_water": 0.381
       },
       "edges": {
         "NE": {
@@ -418,8 +418,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.418,
-        "clear_water": 0.582
+        "saturated_grass": 0.419,
+        "clear_water": 0.581
       },
       "edges": {
         "NE": {
@@ -576,8 +576,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.565,
-        "clear_water": 0.435
+        "saturated_grass": 0.566,
+        "clear_water": 0.434
       },
       "edges": {
         "NE": {
@@ -803,8 +803,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.826,
-        "clear_water": 0.174
+        "saturated_grass": 0.828,
+        "clear_water": 0.172
       },
       "edges": {
         "NE": {
@@ -833,11 +833,11 @@
             "clear_water",
             "saturated_grass",
             "clear_water",
-            "clear_water"
+            "saturated_grass"
           ],
           "ratio": {
-            "clear_water": 0.875,
-            "saturated_grass": 0.125
+            "clear_water": 0.75,
+            "saturated_grass": 0.25
           }
         },
         "SW": {
@@ -963,8 +963,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.097,
-        "saturated_grass": 0.903
+        "clear_water": 0.093,
+        "saturated_grass": 0.907
       },
       "edges": {
         "NE": {
@@ -1041,8 +1041,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.391,
-        "saturated_grass": 0.609
+        "clear_water": 0.389,
+        "saturated_grass": 0.611
       },
       "edges": {
         "NE": {
@@ -1274,7 +1274,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

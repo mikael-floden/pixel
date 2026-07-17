@@ -259,8 +259,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.717,
-        "stone_mountain": 0.283
+        "saturated_grass": 0.719,
+        "stone_mountain": 0.281
       },
       "edges": {
         "NE": {
@@ -341,8 +341,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.852,
-        "saturated_grass": 0.148
+        "stone_mountain": 0.851,
+        "saturated_grass": 0.149
       },
       "edges": {
         "NE": {
@@ -499,8 +499,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.771,
-        "stone_mountain": 0.229
+        "saturated_grass": 0.772,
+        "stone_mountain": 0.228
       },
       "edges": {
         "NE": {
@@ -577,8 +577,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.665,
-        "stone_mountain": 0.335
+        "saturated_grass": 0.666,
+        "stone_mountain": 0.334
       },
       "edges": {
         "NE": {
@@ -661,8 +661,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.736,
-        "saturated_grass": 0.264
+        "stone_mountain": 0.733,
+        "saturated_grass": 0.267
       },
       "edges": {
         "NE": {
@@ -896,8 +896,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.649,
-        "stone_mountain": 0.351
+        "saturated_grass": 0.65,
+        "stone_mountain": 0.35
       },
       "edges": {
         "NE": {
@@ -1057,8 +1057,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.643,
-        "saturated_grass": 0.357
+        "stone_mountain": 0.64,
+        "saturated_grass": 0.36
       },
       "edges": {
         "NE": {
@@ -1127,10 +1127,10 @@
         }
       },
       "features": [
-        "accent",
-        "water"
+        "water",
+        "accent"
       ],
-      "description": "grey mountain stone blending to saturated grass with a small detail, a small puddle"
+      "description": "grey mountain stone blending to saturated grass with a small puddle, a small detail"
     },
     {
       "index": 14,
@@ -1138,8 +1138,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.797,
-        "stone_mountain": 0.203
+        "saturated_grass": 0.798,
+        "stone_mountain": 0.202
       },
       "edges": {
         "NE": {
@@ -1216,8 +1216,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.74,
-        "stone_mountain": 0.26
+        "saturated_grass": 0.748,
+        "stone_mountain": 0.252
       },
       "edges": {
         "NE": {
@@ -1303,7 +1303,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

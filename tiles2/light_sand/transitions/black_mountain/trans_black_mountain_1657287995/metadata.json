@@ -565,10 +565,9 @@
         }
       },
       "features": [
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "black volcanic rock blending to light sand with a small detail, small flowers"
+      "description": "black volcanic rock blending to light sand with a small detail"
     },
     {
       "index": 7,
@@ -576,8 +575,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.756,
-        "light_sand": 0.244
+        "black_mountain": 0.757,
+        "light_sand": 0.243
       },
       "edges": {
         "NE": {
@@ -724,10 +723,9 @@
         }
       },
       "features": [
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "black volcanic rock blending to light sand with a small detail, small flowers"
+      "description": "black volcanic rock blending to light sand with a small detail"
     },
     {
       "index": 9,
@@ -805,10 +803,9 @@
         }
       },
       "features": [
-        "accent",
-        "flowers"
+        "accent"
       ],
-      "description": "black volcanic rock blending to light sand with a small detail, small flowers"
+      "description": "black volcanic rock blending to light sand with a small detail"
     },
     {
       "index": 10,
@@ -816,8 +813,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.129,
-        "black_mountain": 0.871
+        "light_sand": 0.128,
+        "black_mountain": 0.872
       },
       "edges": {
         "NE": {
@@ -971,8 +968,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.484,
-        "light_sand": 0.516
+        "black_mountain": 0.487,
+        "light_sand": 0.513
       },
       "edges": {
         "NE": {
@@ -1053,8 +1050,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.521,
-        "light_sand": 0.479
+        "black_mountain": 0.525,
+        "light_sand": 0.475
       },
       "edges": {
         "NE": {
@@ -1124,10 +1121,9 @@
       },
       "features": [
         "accent",
-        "flowers",
-        "pebbles"
+        "flowers"
       ],
-      "description": "black volcanic rock blending to light sand with a small detail, small flowers, pebbles"
+      "description": "black volcanic rock blending to light sand with a small detail, small flowers"
     },
     {
       "index": 14,
@@ -1135,8 +1131,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "black_mountain": 0.887,
-        "light_sand": 0.113
+        "black_mountain": 0.888,
+        "light_sand": 0.112
       },
       "edges": {
         "NE": {
@@ -1203,10 +1199,9 @@
         }
       },
       "features": [
-        "accent",
-        "pebbles"
+        "accent"
       ],
-      "description": "black volcanic rock blending to light sand with a small detail, pebbles"
+      "description": "black volcanic rock blending to light sand with a small detail"
     },
     {
       "index": 15,
@@ -1214,8 +1209,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "light_sand": 0.962,
-        "black_mountain": 0.038
+        "light_sand": 0.961,
+        "black_mountain": 0.039
       },
       "edges": {
         "NE": {
@@ -1293,7 +1288,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

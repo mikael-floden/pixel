@@ -503,8 +503,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.69,
-        "stone_mountain": 0.31
+        "saturated_grass": 0.691,
+        "stone_mountain": 0.309
       },
       "edges": {
         "NE": {
@@ -745,8 +745,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.295,
-        "saturated_grass": 0.705
+        "stone_mountain": 0.294,
+        "saturated_grass": 0.706
       },
       "edges": {
         "NE": {
@@ -826,8 +826,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.944,
-        "stone_mountain": 0.056
+        "saturated_grass": 0.945,
+        "stone_mountain": 0.055
       },
       "edges": {
         "NE": {
@@ -984,8 +984,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.977,
-        "stone_mountain": 0.023
+        "saturated_grass": 0.98,
+        "stone_mountain": 0.02
       },
       "edges": {
         "NE": {
@@ -1064,8 +1064,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.99,
-        "stone_mountain": 0.01
+        "saturated_grass": 0.996,
+        "stone_mountain": 0.004
       },
       "edges": {
         "NE": {
@@ -1129,10 +1129,8 @@
           }
         }
       },
-      "features": [
-        "accent"
-      ],
-      "description": "saturated grass with a small detail"
+      "features": [],
+      "description": "plain saturated grass"
     },
     {
       "index": 14,
@@ -1140,8 +1138,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "saturated_grass": 0.976,
-        "stone_mountain": 0.024
+        "saturated_grass": 0.978,
+        "stone_mountain": 0.022
       },
       "edges": {
         "NE": {
@@ -1220,8 +1218,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.237,
-        "saturated_grass": 0.763
+        "stone_mountain": 0.229,
+        "saturated_grass": 0.771
       },
       "edges": {
         "NE": {
@@ -1303,7 +1301,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,

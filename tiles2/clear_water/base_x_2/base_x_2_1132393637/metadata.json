@@ -329,15 +329,15 @@
             "dir": "up"
           },
           {
-            "x": 30.5,
-            "y": 31.3,
+            "x": 30.3,
+            "y": 31.4,
             "r": 2.0,
             "color": [
-              0.039,
-              0.555,
-              0.299
+              0.04,
+              0.566,
+              0.304
             ],
-            "s": 0.584,
+            "s": 0.589,
             "dir": "up"
           }
         ]
@@ -417,7 +417,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonize_refs": [
       "clear_water",

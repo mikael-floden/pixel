@@ -96,13 +96,13 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.968,
-        "stone_mountain": 0.032
+        "clear_water": 0.976,
+        "stone_mountain": 0.024
       },
       "edges": {
         "NE": {
           "samples": [
-            "stone_mountain",
+            "clear_water",
             "clear_water",
             "clear_water",
             "clear_water",
@@ -112,10 +112,8 @@
             "clear_water"
           ],
           "ratio": {
-            "stone_mountain": 0.125,
-            "clear_water": 0.875
-          },
-          "divider": 0.125
+            "clear_water": 1.0
+          }
         },
         "SE": {
           "samples": [
@@ -174,8 +172,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "clear_water": 0.795,
-        "stone_mountain": 0.205
+        "clear_water": 0.837,
+        "stone_mountain": 0.163
       },
       "edges": {
         "NE": {
@@ -202,13 +200,12 @@
             "clear_water",
             "clear_water",
             "stone_mountain",
-            "stone_mountain"
+            "clear_water"
           ],
           "ratio": {
-            "clear_water": 0.75,
-            "stone_mountain": 0.25
-          },
-          "divider": 0.75
+            "clear_water": 0.875,
+            "stone_mountain": 0.125
+          }
         },
         "SW": {
           "samples": [
@@ -252,8 +249,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.403,
-        "clear_water": 0.597
+        "stone_mountain": 0.397,
+        "clear_water": 0.603
       },
       "edges": {
         "NE": {
@@ -412,8 +409,8 @@
       "width": 64,
       "height": 64,
       "composition": {
-        "stone_mountain": 0.735,
-        "clear_water": 0.265
+        "stone_mountain": 0.733,
+        "clear_water": 0.267
       },
       "edges": {
         "NE": {
@@ -1264,7 +1261,8 @@
       "hue_strength": 0.9,
       "sat_strength": 0.7,
       "v_strength": 0.9,
-      "hue_band": 65
+      "hue_band": 65,
+      "min_value": 14
     },
     "harmonized_from": true,
     "harmonized_to": true,
