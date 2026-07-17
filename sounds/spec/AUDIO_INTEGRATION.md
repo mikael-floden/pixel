@@ -44,4 +44,6 @@ adaptive music layering.
 - Composer ↔ game: the composer negotiates its module path + event interface with
   the game agent (one-writer on `games2/composer`).
 - Sound ↔ musician: align on shared vocabulary (region/mood tags, ducking) so the
-  composer can mix SFX and music coherently.
+  composer can mix SFX and music coherently. See [`MUSICAL_SFX.md`](MUSICAL_SFX.md)
+  for the scale-matched-SFX idea (pitch tonal one-shots into the current track's
+  key, beat-quantize stingers) and the metadata each side must supply.
