@@ -11,7 +11,15 @@
  * Overlay CSS must avoid vw/vh units (they resolve against the REAL viewport
  * and would double-count under zoom) — use px and % inside zoomed roots.
  */
+// EXPERIMENT (maintainer 2026-07-17): try the HUD/UI overlays at x1 zoom —
+// NO compensating "Desktop site" scale — instead of the usual ~x2.49 on his
+// phone. Every overlay (select, loading, chat, roster, badge, banner, the
+// select ring) reads uiZoom() through this one chokepoint, so flipping this
+// flag back to false (or reverting the commit) is the full rollback.
+const UI_ZOOM_X1 = true;
+
 export function uiZoom(): number {
+  if (UI_ZOOM_X1) return 1;
   const sw = window.screen?.width || window.innerWidth;
   return Math.max(1, Math.min(4, window.innerWidth / sw));
 }
