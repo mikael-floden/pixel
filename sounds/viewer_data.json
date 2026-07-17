@@ -1,11 +1,12 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 19,
+  "count": 20,
   "by_category": {
     "ui": 8,
     "item": 5,
-    "tool": 6
+    "tool": 6,
+    "movement": 1
   },
   "sounds": [
     {
@@ -367,6 +368,25 @@
       "format": "wav",
       "loop": false,
       "file": "tool/watering_can/watering_can__take01.wav",
+      "duration_seconds": 0.497
+    },
+    {
+      "id": "footstep_grass",
+      "name": "Footstep (Grass)",
+      "category": "movement",
+      "description": "a soft muffled step on grass",
+      "tags": [
+        "footstep",
+        "walk",
+        "grass",
+        "movement",
+        "soft"
+      ],
+      "usage": "Per-step while walking on grass/foliage tiles.",
+      "engine": "ai",
+      "format": "wav",
+      "loop": false,
+      "file": "movement/footstep_grass/footstep_grass__take01.wav",
       "duration_seconds": 0.497
     }
   ]
