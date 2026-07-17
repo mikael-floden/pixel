@@ -1,8 +1,8 @@
 {
   "domain": "games-ui",
-  "updated_at": "2026-07-17T17:20:00+00:00",
+  "updated_at": "2026-07-17T17:45:00+00:00",
   "health": "running",
-  "current": "unblocked the deploy pipeline (sounds/+music/ missing from build context); watching prod for the fixed build",
+  "current": "EXPERIMENT live (83fd9363d): UI overlays at x1 zoom (UI_ZOOM_X1 flag in uiscale.ts) per maintainer test; rollback = flip flag / revert. HUD unchanged; select content small-in-ring, chat/roster/badge shrink.",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
