@@ -1,7 +1,7 @@
 {
   "domain": "sounds",
   "style": "AAA / cinematic game foley \u2014 the quality bar is top-tier console/film sound design (think Zelda, God of War, Lord of the Rings), NOT retro chiptune. Realistic, layered, punchy, production-clean one-shots.",
-  "count": 37,
+  "count": 38,
   "by_category": {
     "ui": 8,
     "item": 5,
@@ -9,7 +9,7 @@
     "movement": 5,
     "combat": 4,
     "feedback": 2,
-    "ambience": 7
+    "ambience": 8
   },
   "sounds": [
     {
@@ -1505,6 +1505,46 @@
       "file": "ambience/fire_crackle/fire_crackle.wav",
       "takes": [
         "ambience/fire_crackle/fire_crackle.wav"
+      ],
+      "duration_seconds": 12.017,
+      "mix_gain_db": -20,
+      "variation": {
+        "round_robin": true,
+        "no_immediate_repeat": true,
+        "pitch_jitter_semitones": [
+          -1.0,
+          1.0
+        ],
+        "gain_jitter_db": [
+          -2.0,
+          2.0
+        ],
+        "start_jitter_ms": [
+          0,
+          15
+        ]
+      }
+    },
+    {
+      "id": "cave_drips",
+      "name": "Cave Drips",
+      "category": "ambience",
+      "description": "a dark cave ambience",
+      "feel": "mysterious, tense",
+      "tags": [
+        "ambience",
+        "cave",
+        "drips",
+        "echo",
+        "mystical"
+      ],
+      "usage": "Looping background bed; play very low under gameplay (see mix.category_gain_db.ambience).",
+      "engine": "ai",
+      "format": "wav",
+      "loop": true,
+      "file": "ambience/cave_drips/cave_drips.wav",
+      "takes": [
+        "ambience/cave_drips/cave_drips.wav"
       ],
       "duration_seconds": 12.017,
       "mix_gain_db": -20,
