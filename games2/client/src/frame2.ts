@@ -196,13 +196,17 @@ function heighten(wideImg: ImageData, h0: number, g1: number, g2: number): Image
   return out;
 }
 
-function splitInsH(insH: number): [number, number] {
-  // ALL vertical head-room goes to the game view (the stretch ABOVE rail A):
-  // the HUD keeps its base art height and the world gets every spare pixel
-  // (maintainer: "make the game-view bigger and HUD smaller"). The 86px
-  // bark-unit stretch below (VCUT2/g2) stays wired for the day the page
-  // window needs to grow again.
-  return [insH, 0];
+const GAME_FRAC = 0.618; // golden ratio (maintainer: rail A at the golden split)
+
+function splitInsH(insH: number, h0: number): [number, number] {
+  // Place the game/HUD border (rail A's solid band) at the GOLDEN RATIO of
+  // the viewport height (maintainer). gameHeight = (RAIL_SOLID_Y + g1)*s and
+  // viewport = h0*s, so for gameHeight/viewport = GAME_FRAC:
+  //   g1 = GAME_FRAC*h0 - RAIL_SOLID_Y.
+  // The remainder stretches the PAGE window (VCUT2 bark unit, g2) — so the
+  // bigger HUD region gives the x2 slots/buttons their room.
+  const g1 = Math.max(0, Math.min(insH, Math.round(GAME_FRAC * h0 - RAIL_SOLID_Y)));
+  return [g1, insH - g1];
 }
 
 // EXPERIMENT (maintainer 2026-07-17): render the whole page frame + its HUD
@@ -220,7 +224,7 @@ function compose() {
   const s = Math.min(wCss / AW, hCss / AH) * HUD_SCALE;
   const w0 = Math.max(AW, Math.round(wCss / s));
   const h0 = Math.max(AH, Math.round(hCss / s));
-  const [g1, g2] = splitInsH(h0 - AH);
+  const [g1, g2] = splitInsH(h0 - AH, h0);
   const img = heighten(widen(frameData, auxData, w0), h0, g1, g2);
   canvas.width = w0;
   canvas.height = h0;
