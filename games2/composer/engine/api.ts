@@ -325,12 +325,13 @@ export class GameAudio {
     const own = composerFoley(setName) ?? composerFoley(FOOTSTEP_DEFAULT);
     if (own) {
       // Gentleness: no rate change for running — the faster CADENCE is the
-      // run signal. WALKING plays the same sound at 50% volume (−6 dB —
-      // maintainer 2026-07-18, revised from 25%).
+      // run signal. WALKING is the SAME sound, softer: 25% → 50% → now −3 dB
+      // (~70%) — the deeper cuts dropped walk footfalls under the music/
+      // ambience beds (maintainer: "so hard to hear", grass AND snow).
       this.oneShots.play(this.foleyEntry(setName, own, "step"), "sfx", {
         pan: f.pan,
         dist: f.dist,
-        gainDb: -8 + (FOOTSTEP_TRIM_DB[setName] ?? 0) + (f.running ? 0.8 : -6),
+        gainDb: -8 + (FOOTSTEP_TRIM_DB[setName] ?? 0) + (f.running ? 0.8 : -3),
       });
       return;
     }
