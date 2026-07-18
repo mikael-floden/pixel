@@ -177,6 +177,11 @@ SETS: dict[str, dict] = {
     },
     # ---- world/weather (real sources, not disguises: the maintainer heard
     # straight through the slowed-explosion "thunder") ----
+    # LIKED (maintainer 2026-07-18, once playback was synced to the flash
+    # and levelled up) — FROZEN like stone; keep this brief verbatim if it
+    # ever must rerun. NOTE the measured caveat for future big sounds: these
+    # takes are ~100% sub-150 Hz (mid_peak_db very low) — inaudible on the
+    # smallest speakers; the `boom` gate exists for when that matters.
     "thunder": {
         "brief": (
             "distant rolling thunder from a storm beyond the horizon: a deep "
@@ -305,13 +310,30 @@ def _features(x: np.ndarray) -> dict:
     spec = np.abs(np.fft.rfft(x))
     freqs = np.fft.rfftfreq(n, 1 / SR)
     centroid = float(np.sum(spec * freqs) / (np.sum(spec) + 1e-12))
+    # Small-speaker audibility: the first thunder set measured 100% of its
+    # energy BELOW 150 Hz — physically silent on phone/laptop speakers at
+    # any gain (maintainer heard rain, never thunder). Whole-clip energy
+    # fraction misjudges a short crack against a long roll, so measure the
+    # LOUDEST 300ms of the 150-4000 Hz band instead: was there ever a
+    # moment a small speaker could reproduce?
+    power = spec ** 2
+    mid = float(np.sum(power[(freqs >= 150) & (freqs < 4000)]) / (np.sum(power) + 1e-12))
+    fspec = np.fft.rfft(x)
+    fspec[(freqs < 150) | (freqs >= 4000)] = 0
+    band = np.fft.irfft(fspec, n)
+    win = max(1, int(SR * 0.3))
+    csum = np.concatenate(([0.0], np.cumsum(band.astype(np.float64) ** 2)))
+    win_rms = np.sqrt(np.max(csum[win:] - csum[:-win]) / win) if n > win else float(np.sqrt(np.mean(band ** 2)))
+    mid_peak_db = 20 * np.log10(max(win_rms, 1e-9))
     return {
+        "mid_peak_db": round(float(mid_peak_db), 1),
         "duration_s": round(n / SR, 3),
         "attack_ms": round(peak_idx / SR * 1000, 1),
         "tail_ratio": round(tail_ratio, 3),
         "tonality": round(tonality, 3),
         "crest": round(peak / rms, 2),
         "centroid_hz": round(centroid),
+        "mid_ratio": round(mid, 3),
     }
 
 
@@ -333,6 +355,13 @@ GATES: dict[str, dict[str, tuple[float, float, float]]] = {
         "tail_ratio": (0.0, 0.15, 40),
         "crest": (5.0, 99.0, 2),
     },
+    # Big atmospheric booms (thunder): MUST carry small-speaker-audible
+    # mid-band energy, and the crack should land promptly (synced to the
+    # lightning flash).
+    "boom": {
+        "mid_peak_db": (-28.0, 0.0, 3),
+        "crest": (2.5, 99.0, 1),
+    },
 }
 
 # Ranking among candidates (lower = better), per judge kind. Steps rank by
@@ -341,6 +370,9 @@ GATES: dict[str, dict[str, tuple[float, float, float]]] = {
 RANK = {
     "step": lambda f: f["tail_ratio"] * 5 + f["tonality"] * 1,
     "click": lambda f: f["tonality"] * 10 + f["tail_ratio"] * 5,
+    # Booms: strongest audible mid-band moment wins; early peak preferred
+    # (the crack must land with the flash).
+    "boom": lambda f: -f["mid_peak_db"] * 0.2 + f["attack_ms"] / 500,
 }
 
 
