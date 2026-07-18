@@ -160,6 +160,7 @@ export class HudBar {
         gameAudio.event("ui.cursor_move"); // tab tick (menu_select binding)
       });
       pressFx(b);
+      dressPlate(b, kindForState); // the kit trio, same as the settings rows
       tabRow.appendChild(b);
       this.tabs.set(t.id, b);
 
@@ -262,7 +263,7 @@ function plateButton(label: string, onPress: () => void): HTMLButtonElement {
 
 function kindForState(el: HTMLElement): "normal" | "sel" | "down" {
   if (el.classList.contains("press")) return "down";
-  if (el.classList.contains("on")) return "sel";
+  if (el.classList.contains("on") || el.classList.contains("sel")) return "sel";
   return "normal";
 }
 
@@ -312,28 +313,21 @@ function injectStyles() {
      (the frame-v2 windows), set inline after every compose. */
   .ml-hud{position:fixed;left:0;right:0;bottom:0;z-index:4;background:#23160d;box-sizing:border-box}
   .ml-tabrow{position:absolute;display:flex;justify-content:space-evenly;align-items:center}
+  /* tabs carry the SAME kit trio as the settings buttons (dressPlate in the
+     constructor): brown Normal, cream Selected, dark Down while held */
   .ml-tab{width:var(--ml-tab);height:var(--ml-tab);flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
     padding:2px 0;cursor:pointer;image-rendering:pixelated;box-sizing:border-box;
-    touch-action:manipulation;-webkit-touch-callout:none;
-    border-style:solid;border-width:var(--ml-bw);border-image:url(/ui2/plate-normal.png) 56 fill / var(--ml-bw);
-    background:none}
-  /* :active only where a real hover exists — mobile Chrome keeps :active
-     sticky on the last-tapped element, which made switches read "pressed"
-     regardless of their .on state (maintainer). */
-  @media (hover:hover){
-  .ml-tab:active{border-image:url(/ui2/plate-pressed.png) 56 fill / var(--ml-bw)}
-  }
-  .ml-tab.sel{border-image:url(/ui2/plate-selected.png) 56 fill / var(--ml-bw)}
-  /* .press after .sel so a finger on the selected tab still reads pressed */
-  .ml-tab.press{border-image:url(/ui2/plate-pressed.png) 56 fill / var(--ml-bw)}
+    touch-action:manipulation;-webkit-touch-callout:none;border:none;
+    background:none;background-repeat:no-repeat;background-size:100% 100%}
   .ml-tab-icon{image-rendering:pixelated;-webkit-user-drag:none;pointer-events:none;
     max-width:calc(100% - 6px);max-height:calc(100% - 22px * var(--ml-hud-scale,1));object-fit:contain}
   /* label font scales with the HUD so it fits the (smaller) square tab plate
      at the 1x experiment size instead of overflowing (maintainer) */
   .ml-tab-label{font:700 11px/1.1 system-ui,sans-serif;
     font-size:calc(clamp(6.5px,1.42vw,12px) * var(--ml-hud-scale,1));
-    text-transform:uppercase;color:#dfe2ea;text-shadow:0 1px 2px #000;white-space:nowrap;overflow:hidden;max-width:100%}
-  .ml-tab.sel .ml-tab-label{color:#ffd678}
+    text-transform:uppercase;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.35);white-space:nowrap;overflow:hidden;max-width:100%}
+  .ml-tab.sel .ml-tab-label{color:#4a2a1c;text-shadow:none}
+  .ml-tab.press .ml-tab-label{color:#f4e3c2}
   .ml-pages{position:absolute;overflow:hidden;image-rendering:pixelated}
   .ml-page{display:none;height:100%;overflow:auto;flex-direction:column;align-items:center;
     justify-content:center;gap:14px;text-align:center;box-sizing:border-box;
@@ -380,9 +374,6 @@ function injectStyles() {
   /* Narrow phones: five square tabs must still fit between the outer rails. */
   @media (max-width:460px){
     .ml-tabrow{left:40px;right:40px}
-    .ml-tab{border-width:13px;border-image-width:13px}
-    .ml-tab.sel{border-width:13px;border-image-width:13px}
-    .ml-tab.press{border-width:13px;border-image-width:13px}
   }
   /* Short viewports (small desktop windows): compact everything. Height 48
      keeps the kit rows on an exact integer scale (48 = 4 blocks of 12). */
