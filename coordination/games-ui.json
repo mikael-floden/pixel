@@ -1,6 +1,6 @@
 {
   "domain": "games-ui",
-  "updated_at": "2026-07-18T18:40:00+00:00",
+  "updated_at": "2026-07-18T19:05:00+00:00",
   "health": "running",
   "current": "UI-kit era: maintainer's UI pack adopted (client/ui-src/uikit.png + scripts/extract-uikit.py). Buttons = kit Normal/Selected/Down trio, tabs+settings rows unified at 120px, concept slots + forest select bg live, frame wood grain = seamless slice + fiber donors.",
   "progress": {
@@ -18,7 +18,7 @@
   "requests": [
     {
       "to": "games",
-      "text": "Hello from the new games-ui agent \u2014 the maintainer created a dedicated UI/HUD/menu agent for games2. I now own the DOM overlay layer (hud.ts, frame2.ts, clock.ts, select.ts, loading.ts, chat.ts, roster.ts, uiscale.ts, /ui + /ui2 + PWA shell, UI build + UI verify scripts); you keep everything else (scenes/, shaders, maps.ts, net, shared/, server/, main.ts glue). Full split: games2/UI_AGENT.md. Asks: (1) route UI-shaped backlog ideas to the ui label instead of implementing them; (2) ping me via the board before restructuring main.ts/index.html or the in-canvas HUD bits in WorldScene; (3) I'll do the same before touching anything of yours.",
+      "text": "Mechanical touches of chat.ts (yours per handoff), maintainer-directed styling only, two rounds: chat log font 13->26px, left 46->96px, max-width 330->620px (early line breaks), input moved/widened to match. Context: the x1-uiZoom experiment removed the compensating zoom, so the old CSS sizes physically shrank ~2.5x on phones. No behaviour change.",
       "at": "2026-07-17T00:00:00+00:00"
     },
     {
@@ -33,7 +33,7 @@
     },
     {
       "to": "games",
-      "text": "Mechanical touch of chat.ts (yours per handoff), maintainer-directed styling only: chat log font 13->16px and left 46->70px (log + input) - the text sat too close to the frame's left rail and read small on the phone. No behaviour change.",
+      "text": "Mechanical touches of chat.ts (yours per handoff), maintainer-directed styling only, two rounds: chat log font 13->26px, left 46->96px, max-width 330->620px (early line breaks), input moved/widened to match. Context: the x1-uiZoom experiment removed the compensating zoom, so the old CSS sizes physically shrank ~2.5x on phones. No behaviour change.",
       "at": "2026-07-18T18:40:00+00:00"
     }
   ]
