@@ -2,7 +2,6 @@ import { CharacterDef, Manifest } from "./manifest";
 import { WorldInfo, DEFAULT_WORLD } from "./maps";
 import { showLoading } from "./loading";
 import { applyUiZoom } from "./uiscale";
-import { mountSelectFrame } from "./frame2";
 
 const NAMES = ["Ari", "Bex", "Cyl", "Dax", "Eir", "Fen", "Gio", "Hana", "Ivo", "Juno", "Kira", "Lio"];
 
@@ -54,10 +53,10 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     document.body.appendChild(overlay);
     applyUiZoom(overlay); // "Desktop site" must not shrink the menu
     injectStyles();
-    // The in-game border ring around the whole select screen (its own asset
-    // copy — see frame2.ts / build-select-frame.mjs). Sets the overlay's
-    // padding so everything stays inside the ring.
-    mountSelectFrame(overlay);
+    // No border frame on the select screen (maintainer 2026-07-18: "just use
+    // the background without the frame") — the forest art carries the screen
+    // alone. The composed vine border (frame2.ts mountSelectFrame +
+    // /ui2/select-frame.png) stays available if it's ever wanted back.
     // Android Chrome long-press hit-tests <img>s (thumbnails, portraits) and
     // offers "download image" — suppress at the root, like the HUD does.
     overlay.addEventListener("contextmenu", (e) => e.preventDefault());
