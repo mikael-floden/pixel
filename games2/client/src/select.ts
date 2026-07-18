@@ -440,10 +440,10 @@ function injectStyles() {
     font:700 22px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#fff;
     text-shadow:0 1px 0 rgba(0,0,0,.35)}
   .ml-btn.press{color:#f4e3c2}
-  /* install prompt: ICON ONLY in the top-left corner (maintainer) — the
-     kit's house icon (install to home screen), a complete square icon
-     button at the shared 5x block scale. */
-  .ml-install{position:fixed;top:16px;left:16px;z-index:2;width:80px;height:80px;padding:0;
+  /* install prompt: ICON ONLY in the top-RIGHT corner (maintainer's red
+     circle) — the kit's download arrow, a complete square icon button at
+     the shared 5x block scale. */
+  .ml-install{position:fixed;top:16px;right:16px;z-index:2;width:80px;height:80px;padding:0;
     border:none;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
   .ml-install img{width:100%;height:100%;image-rendering:pixelated;-webkit-user-drag:none}
   .ml-install[hidden]{display:none}
