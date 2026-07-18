@@ -330,8 +330,14 @@ function injectStyles() {
   /* --ml-col: THE shared column width every row-level control aligns to
      (dropdown, character cards, action row, install). On the overlay, not
      the panel — the install button lives outside the panel now. */
+  /* The OVERLAY scrolls, not the panel: an overflow:auto panel clipped the
+     logo's drop-shadow glow at its top edge — a hard horizontal line over
+     the logo (maintainer). The overlay is viewport-sized, so its clip
+     edges are off screen; margin:auto on the panel keeps it centred when
+     short AND reachable when tall (flex centering alone would clip the
+     top of overflowing content). */
   .ml-overlay{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;
-    background:#0d101c;font-family:system-ui,sans-serif;color:#e8e8ec;--ml-col:min(720px,96%)}
+    overflow:auto;background:#0d101c;font-family:system-ui,sans-serif;color:#e8e8ec;--ml-col:min(720px,96%)}
   .ml-overlay{background-image:linear-gradient(rgba(13,16,28,.28),rgba(13,16,28,.28)),url(/ui2/select-bg.png);
     background-size:auto,cover;background-position:center;background-repeat:repeat,no-repeat;image-rendering:pixelated}
   /* No vw/vh inside this overlay: it may carry a compensating CSS zoom
@@ -344,7 +350,7 @@ function injectStyles() {
      gap — logo / world dropdown / characters / action row / install — and
      the dropdown + action row share ONE width (--ml-col) so their edges
      line up. */
-  .ml-panel{width:min(920px,100%);max-height:100%;overflow:auto;padding:16px 8px 12px;text-align:center;
+  .ml-panel{width:min(920px,100%);margin:auto;padding:16px 8px 12px;text-align:center;
     display:flex;flex-direction:column;align-items:center;gap:20px}
   /* 2x logo (maintainer), with a BLACK GLOW hugging the silhouette:
      drop-shadow follows the png alpha. Strengthened twice on request
@@ -383,8 +389,7 @@ function injectStyles() {
   .ml-ddrow.press{color:#f4e3c2}
   /* character cards GROW to the shared column (maintainer: "make the
      character buttons bigger so the UI align with the other UI rows") —
-     two per row, edges flush with the dropdown/action row; the portrait
-     art stays at its integer 4x inside the wider plate */
+     two per row, edges flush with the dropdown/action row */
   .ml-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;width:var(--ml-col)}
   .ml-cell{flex:1 1 calc(50% - 6px);display:flex;flex-direction:column;align-items:center;gap:2px;
     padding:6px 10px;color:#dfe2ea;font-size:12px;text-shadow:0 1px 2px #000;box-sizing:border-box}
@@ -392,10 +397,12 @@ function injectStyles() {
   .ml-cell.sel span{text-shadow:none}
   .ml-cell.press{color:#f4e3c2}
   .ml-sprite{image-rendering:pixelated;background-repeat:no-repeat;flex:none}
-  /* 4x characters (maintainer): the 112 art at an integer 4x = 448, viewport
-     and offsets scaled with it (figure crop x42-71, y10-97 at 4x) */
+  /* 2x characters in an UNCHANGED box (maintainer: half the 4x size, keep
+     the button size — the padding does the breathing): the 112 art at an
+     integer 2x = 224, the measured figure (x42-71, y10-97 native; 60x174
+     at 2x) centred in the same 192x368 viewport */
   .ml-portrait-box{width:192px;height:368px;overflow:hidden;position:relative;flex:none}
-  .ml-portrait{position:absolute;left:-128px;top:-40px;width:448px;height:448px;image-rendering:pixelated}
+  .ml-portrait{position:absolute;left:-18px;top:77px;width:224px;height:224px;image-rendering:pixelated}
   .ml-cell span{max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   /* Action row: ONE height (64px, same as the world chips) for the trough,
      the dice and Enter — all buttons the same size, text centered. Wraps on
@@ -420,7 +427,7 @@ function injectStyles() {
      width, clear of the version badge. Outside the panel, so the panel's
      overflow scroll can't clip or move it. Label styled EXACTLY like the
      Enter world button (maintainer: "INSTALL GAME", same font). */
-  .ml-install{position:absolute;bottom:44px;left:50%;transform:translateX(-50%);z-index:2;
+  .ml-install{position:fixed;bottom:44px;left:50%;transform:translateX(-50%);z-index:2;
     border:none;padding:0 24px;width:var(--ml-col);height:120px;
     image-rendering:pixelated;cursor:pointer;
     font:700 17px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#fff;
