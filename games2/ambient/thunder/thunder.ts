@@ -59,6 +59,9 @@ export function thunderFeature(): AmbientFeature {
       active = on;
       if (on) nextStrikeIn = 2500 + Math.random() * 5000;
       // off: current flash finishes its decay; no further strikes.
+      // A thunder episode IS a storm to the ears: the composer brings rain
+      // + gusts in with the lightning and fades them when it passes.
+      gameAudio.setStorm(on);
     },
     init(ctx) {
       flash = ctx.scene.add

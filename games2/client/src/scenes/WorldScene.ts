@@ -1508,7 +1508,17 @@ export class WorldScene extends Phaser.Scene {
 
     // World mood → composer: sun strength drives day/night beds + the music's
     // night dip; swimming muffles the whole mix (underwater insert).
-    gameAudio.setEnv({ sun: this.curSun[3], cloud: this.curCloud, mist: this.curMist });
+    // Name-matched (not index) so weather-list reordering can't break audio.
+    const wn = WEATHER_NAMES[this.weatherIdx % WEATHER_NAMES.length] as string;
+    gameAudio.setEnv({
+      sun: this.curSun[3],
+      cloud: this.curCloud,
+      mist: this.curMist,
+      rain: wn === "Drizzle" ? 0.35 : wn === "Rain" ? 0.7 : wn === "Heavy rain" || wn === "Storm" ? 1 : 0,
+      storm: wn === "Storm",
+      snow: wn === "Snowing",
+      windy: wn === "Windy",
+    });
     gameAudio.setUnderwater(!!state.players.get(myId)?.swimming);
 
     this.avatars.forEach((av, id) => {

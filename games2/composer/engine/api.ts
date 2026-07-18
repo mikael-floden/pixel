@@ -36,6 +36,10 @@ interface EnvState {
   sun: number; // 0..1 sun strength (0 all night)
   cloud: number;
   mist: number;
+  rain: number; // 0..1 (drizzle ~0.35, rain ~0.7, heavy/storm 1)
+  storm: boolean; // Storm weather (thunder episodes also set storm)
+  snow: boolean;
+  windy: boolean;
 }
 
 /** Terrain mood around the listener, sampled by the scene (fractions 0..1). */
@@ -74,11 +78,15 @@ export class GameAudio {
   private catalog: Catalog | null = null;
   private bindings = new Map<string, { sound: string; bus: BusName; duck: boolean }>();
   private gaits = new Map<string, AvatarGait>();
-  private env: EnvState = { sun: 1, cloud: 0, mist: 0 };
+  private env: EnvState = {
+    sun: 1, cloud: 0, mist: 0, rain: 0, storm: false, snow: false, windy: false,
+  };
   private fieldSampler: (() => FieldSample | null) | null = null;
   private tick: ReturnType<typeof setInterval> | null = null;
   private musicWanted = false;
   private underwater = false;
+  private storm = false;
+  private musicToggleFast = false;
   private mode = "overworld";
 
   /** Music-level multiplier per mixing mode (see setMode). */
@@ -367,6 +375,12 @@ export class GameAudio {
     Object.assign(this.env, env);
   }
 
+  /** The ambient thunder episode is a storm even outside Storm weather —
+   * rain + gusts accompany the lightning (called from ambient/thunder). */
+  setStorm(on: boolean): void {
+    this.storm = on;
+  }
+
   /** Underwater: ease the full-mix lowpass down while the player swims —
    * the whole world (music, birds, other players' steps) muffles together.
    * Suppressed entirely in pure mode (the insert IS a modification). */
@@ -387,17 +401,24 @@ export class GameAudio {
    * following the day/night level (its bus is unaffected by the sfx mute). */
   private slowTick(): void {
     if (!this.graph || !this.catalog || !this.ambience || !this.graph.running) return;
-    const { sun, cloud, mist } = this.env;
+    const { sun, cloud, mist, rain, snow, windy } = this.env;
     const night = 1 - sun;
     const field = this.fieldSampler?.() ?? { forest: 0, water: 0, town: 0, fire: 0 };
     const day = sun * (1 - 0.45 * cloud);
+    // Wetness: real rain weather (drizzle/rain/heavy/storm) or an active
+    // ambient thunder episode — rain falls, wind rises, birds shelter.
+    const wet = Math.max(rain, this.storm || this.env.storm ? 0.9 : 0);
+    // Birds sing in BOUTS (maintainer: "I hear birds always") — a slow ~47s
+    // swell-and-fade so daytime has birdsong AND silence.
+    const bout = 0.25 + 0.75 * (0.5 + 0.5 * Math.sin(performance.now() / 7500));
 
     this.ambience.setTargets({
       // The base pastoral pair: birdsong owns the day, crickets own the night.
-      birds_day: day * (0.45 + 0.55 * field.forest) * (1 - 0.6 * field.town),
-      crickets_night: night * (0.5 + 0.5 * field.forest),
-      // Weather: wind under cloud, an eerie thin wind inside mist.
-      wind: 0.18 + 0.55 * cloud + 0.35 * mist,
+      birds_day: day * (0.3 + 0.4 * field.forest) * (1 - 0.6 * field.town) * (1 - wet) * bout,
+      crickets_night: night * (0.5 + 0.5 * field.forest) * (1 - 0.7 * wet),
+      // Weather: wind under cloud, thin wind in mist, gusts when windy/stormy.
+      wind: 0.18 + 0.55 * cloud + 0.35 * mist + (windy ? 0.5 : 0) + (wet > 0.5 ? 0.3 : 0) + (snow ? 0.2 : 0),
+      rain: wet * 0.95,
       // Terrain beds from the live field sample.
       forest: field.forest * (0.35 + 0.4 * sun),
       river: field.water,
@@ -410,7 +431,10 @@ export class GameAudio {
     // freezes ALL level automation at unity (the score plays as authored).
     const modeMul = GameAudio.MODE_MUSIC[this.mode] ?? 1;
     const level = this.pureOn ? 1 : (0.45 + 0.55 * sun) * modeMul;
-    this.music.setLevel(this.musicOn ? level : 0);
+    // The user's toggle snaps (a switch must feel like a switch); mood
+    // changes keep the slow ease.
+    this.music.setLevel(this.musicOn ? level : 0, this.musicToggleFast ? 0.06 : 0.4);
+    this.musicToggleFast = false;
   }
 
   private duck(): void {
@@ -459,6 +483,7 @@ export class GameAudio {
 
   toggleMusic(): void {
     this.musicOn = !this.musicOn;
+    this.musicToggleFast = true;
     this.slowTickSoon();
     this.persist();
   }

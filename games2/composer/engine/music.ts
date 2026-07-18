@@ -124,11 +124,13 @@ export class MusicDirector implements MusicalContext {
     this.timer = setTimeout(() => this.schedulePass(nextWhen, false), armInMs);
   }
 
-  /** 0..1 target level (user music toggle × night dip); eased ~1.2s. */
-  setLevel(level: number): void {
+  /** 0..1 target level (user music toggle × night dip). Mood changes ease
+   * slowly (default tau); the user's on/off toggle passes a fast tau so the
+   * switch FEELS like a switch (maintainer: "doesn't toggle on/off"). */
+  setLevel(level: number, tauS = 0.4): void {
     if (Math.abs(level - this.targetLevel) < 0.01) return;
     this.targetLevel = level;
-    this.volume.gain.setTargetAtTime(Math.max(0.0001, level), this.graph.now, 0.4);
+    this.volume.gain.setTargetAtTime(Math.max(0.0001, level), this.graph.now, tauS);
   }
 
   /** Song position in seconds (within the current loop pass). */
