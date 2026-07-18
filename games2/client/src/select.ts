@@ -2,18 +2,9 @@ import { CharacterDef, Manifest } from "./manifest";
 import { WorldInfo, DEFAULT_WORLD } from "./maps";
 import { showLoading } from "./loading";
 import { applyUiZoom } from "./uiscale";
-import { dressPlate } from "./plate";
+import { dressPlate, repaintPlates } from "./plate";
 
 const NAMES = ["Ari", "Bex", "Cyl", "Dax", "Eir", "Fen", "Gio", "Hana", "Ivo", "Juno", "Kira", "Lio"];
-
-// Worlds with an icon from the maintainer's World Selection Atlas
-// (ui2/select3/icon-<name>.png, extracted by scripts/extract-world-icons.mjs).
-// A world without one (a future maps2 addition) falls back to the wooden
-// plate + minimap chip until the atlas gains its icon.
-const WORLD_ICONS = new Set([
-  "ring_test", "demo_isle", "demo_lost", "glow_test",
-  "occlusion_test", "prop_demo", "trans_demo",
-]);
 
 export interface JoinChoice {
   world: string;
@@ -40,15 +31,22 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     overlay.innerHTML = `
       <div class="ml-panel">
         <img class="ml-logo" src="/logo.png" alt="Nangijala Online — a browser MMORPG" />
-        ${showWorlds ? '<div class="ml-worlds" id="ml-worlds"></div>' : ""}
+        ${showWorlds ? `
+        <div class="ml-dd" id="ml-worlds">
+          <button id="ml-dd-head" class="ml-ddhead ml-plated">
+            <span id="ml-dd-label"></span>
+            <img class="ml-ddchev" src="/ui2/kit-chevron.png" alt="" draggable="false" />
+          </button>
+          <div class="ml-ddlist" id="ml-dd-list" hidden></div>
+        </div>` : ""}
         <div class="ml-grid" id="ml-grid"></div>
         <div class="ml-row">
           <input id="ml-name" class="ml-name" maxlength="24" placeholder="your name"
                  value="${NAMES[Math.floor(Math.random() * NAMES.length)]}" />
-          <button id="ml-random" class="ml-btn ml-ghost ml-plated" title="Random character">🎲</button>
-          <button id="ml-enter" class="ml-btn ml-plated">Enter world</button>
+          <button id="ml-random" class="ml-btn ml-ghost ml-plated" title="Random character"><span>🎲</span></button>
+          <button id="ml-enter" class="ml-btn ml-plated"><span>Enter world</span></button>
         </div>
-        <button id="ml-install" class="ml-install ml-plated" hidden>📱 Install as an app on your home screen</button>
+        <button id="ml-install" class="ml-install ml-plated" hidden><span>📱 Install as an app on your home screen</span></button>
       </div>`;
     document.body.appendChild(overlay);
     applyUiZoom(overlay); // "Desktop site" must not shrink the menu
@@ -67,149 +65,58 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     const nameBox = overlay.querySelector<HTMLElement>("#ml-name");
     if (nameBox) dressPlate(nameBox, () => "slot"); // the empty-slot trough
 
-    // World picker: a SWIPE CAROUSEL, not a button grid (maintainer: the
-    // grid ate screen space and the picker is a game-under-development
-    // feature anyway). The selected world sits CENTRED, the strip LOOPS
-    // around, and the neighbours peek in from the edges as a hint of what
-    // a swipe brings. Chips are absolutely positioned by signed circular
-    // distance from the selection; a swipe drags the whole strip live and
-    // snaps on release; clicking a peeked neighbour selects it directly
-    // (which is also what the headless pickWorld(i) hook drives).
-    const worldChips: HTMLElement[] = [];
+    // World picker: a DROPDOWN SELECT cut from the UI kit (maintainer
+    // 2026-07-18 — "dropdown instead of slider with icons", text only).
+    // Anatomy mirrors the kit sheet's dropdown column: the closed header is
+    // a kit button bar (same art as the trio — verified identical palette)
+    // with the extracted caret overlaid at the shared block scale, and the
+    // open list is a stack of option rows (the trio again: normal rows,
+    // cream = the selected world, dark while pressed). The old icon
+    // carousel is retired — world names render as plain text.
+    const worldRows: HTMLElement[] = [];
     if (showWorlds) {
-      const wrap = overlay.querySelector("#ml-worlds") as HTMLElement;
-      const n = worlds.length;
-      // Chips take their NATURAL width (maintainer: in a slide the buttons
-      // no longer have to share one size) — the layout measures each chip
-      // and spaces adjacent ones an equal GAP apart.
-      const GAP = 8;
-      const FLICK = 44; // px of drag that still advances one step
-      let dragDx = 0;
-      let swallowClick = false; // a real swipe must not click-select a chip
-      const prevD = new Map<HTMLElement, number>();
+      const head = overlay.querySelector("#ml-dd-head") as HTMLElement;
+      const label = overlay.querySelector("#ml-dd-label") as HTMLElement;
+      const chev = overlay.querySelector(".ml-ddchev") as HTMLImageElement;
+      const list = overlay.querySelector("#ml-dd-list") as HTMLElement;
+      // open ⇒ the kit's dark header state (same bar the pressed state
+      // uses), with the outline-dark caret the kit paints on it
+      dressPlate(head, (e) =>
+        e.classList.contains("press") || e.classList.contains("open") ? "down" : "normal",
+      );
+      pressFx(head);
+      const setOpen = (open: boolean) => {
+        head.classList.toggle("open", open);
+        chev.src = open ? "/ui2/kit-chevron-dark.png" : "/ui2/kit-chevron.png";
+        list.hidden = !open;
+        // rows were built display:none at 0×0 — compose their plates at
+        // the real size the moment they first become visible
+        if (open) repaintPlates(list);
+      };
       worlds.forEach((w, i) => {
-        // Worlds with an ATLAS ICON (the maintainer's World Selection Atlas
-        // sheet) render as a square icon tile + label; the rest keep the
-        // wooden plate + minimap fallback.
-        const hasIcon = WORLD_ICONS.has(w.name);
-        const chip = el("button", hasIcon ? "ml-world ml-wicon" : "ml-world ml-plated");
-      if (!hasIcon) dressPlate(chip, kitKind);
-        pressFx(chip);
-        if (hasIcon) {
-          const tile = el("div", "ml-wicon-img");
-          tile.style.backgroundImage = `url(/ui2/select3/icon-${w.name}.png)`;
-          chip.appendChild(tile);
-        } else if (w.preview) {
-          const img = el("img", "ml-world-img") as HTMLImageElement;
-          img.src = `/assets/${w.preview.replace(/^\/+/, "")}`;
-          img.alt = w.label;
-          img.draggable = false; // native image drag would hijack the swipe
-          chip.appendChild(img);
-        }
-        const span = el("span", "");
-        span.textContent = w.label;
-        chip.appendChild(span);
-        chip.addEventListener("click", () => {
-          if (!swallowClick) selectWorld(i);
+        const row = el("button", "ml-ddrow ml-plated");
+        const t = el("span", ""); // span, not a bare text node: the press
+        t.textContent = w.label; // rule dips element children only
+        row.appendChild(t);
+        dressPlate(row, kitKind);
+        pressFx(row);
+        row.addEventListener("click", () => {
+          selectWorld(i);
+          setOpen(false);
         });
-        wrap.appendChild(chip);
-        worldChips.push(chip);
+        list.appendChild(row);
+        worldRows.push(row);
       });
-      // Position every chip around the centre. d is the signed circular
-      // distance ((-n/2, n/2]), so the strip loops; a chip whose d JUMPS
-      // across the wrap (|Δd| > 1) teleports without transition — it's
-      // off-screen on both ends, and animating it would streak it across
-      // the visible middle. Offsets accumulate the MEASURED widths of the
-      // chips between a chip and the centre (equal gaps, unequal chips).
-      const mod = (i: number) => ((i % n) + n) % n;
-      const chipXs = (): number[] => {
-        const xs = new Array<number>(n).fill(0);
-        const wOf = (i: number) => worldChips[mod(i)].offsetWidth;
-        const right = Math.floor(n / 2); // d range is (-n/2, n/2]
-        let x = 0;
-        for (let k = 1; k <= right; k++) {
-          x += wOf(selectedWorld + k - 1) / 2 + GAP + wOf(selectedWorld + k) / 2;
-          xs[mod(selectedWorld + k)] = x;
-        }
-        x = 0;
-        for (let k = 1; k <= n - 1 - right; k++) {
-          x -= wOf(selectedWorld - k + 1) / 2 + GAP + wOf(selectedWorld - k) / 2;
-          xs[mod(selectedWorld - k)] = x;
-        }
-        return xs;
-      };
-      const layout = (animate: boolean) => {
-        const xs = chipXs();
-        worldChips.forEach((chip, i) => {
-          let d = (((i - selectedWorld) % n) + n) % n;
-          if (d > n / 2) d -= n;
-          const wrapped = Math.abs(d - (prevD.get(chip) ?? d)) > 1.5;
-          prevD.set(chip, d);
-          chip.classList.toggle("anim", animate && !wrapped);
-          chip.style.transform = `translateX(calc(-50% + ${Math.round(xs[i] + dragDx)}px))`;
-        });
-      };
       function selectWorld(i: number) {
-        selectedWorld = ((i % n) + n) % n;
-        worldChips.forEach((c, j) => c.classList.toggle("sel", j === selectedWorld));
-        layout(true);
+        selectedWorld = ((i % worlds.length) + worlds.length) % worlds.length;
+        worldRows.forEach((r, j) => r.classList.toggle("sel", j === selectedWorld));
+        label.textContent = worlds[selectedWorld].label;
       }
-      // Swipe: drag the strip live and snap to the nearest chip on release;
-      // a short flick past FLICK px still advances one step. Pointer capture
-      // is taken only ONCE the drag crosses the swipe threshold — capturing
-      // at pointerdown retargeted the derived click to the strip, so tapping
-      // a peeked neighbour never reached the chip's click handler.
-      let downX: number | null = null;
-      let captured = false;
-      wrap.addEventListener("pointerdown", (e) => {
-        downX = e.clientX;
-        captured = false;
+      head.addEventListener("click", () => setOpen(list.hidden));
+      // tapping anywhere else on the screen folds the list back up
+      overlay.addEventListener("pointerdown", (e) => {
+        if (!list.hidden && !(e.target as HTMLElement).closest(".ml-dd")) setOpen(false);
       });
-      wrap.addEventListener("pointermove", (e) => {
-        if (downX === null) return;
-        // clientX is VIEWPORT px but the strip's transforms live inside the
-        // uiZoom'd overlay — divide by the zoom or the chips move zoom×
-        // faster than the finger (one phone swipe leapt two chips).
-        const zoom = parseFloat(getComputedStyle(overlay).zoom as string) || 1;
-        dragDx = (e.clientX - downX) / zoom;
-        if (!captured && Math.abs(dragDx) > 6) {
-          captured = true;
-          swallowClick = true;
-          wrap.setPointerCapture(e.pointerId); // keep the gesture off-row
-        }
-        layout(false);
-      });
-      const finish = () => {
-        if (downX === null) return;
-        // Variable-width snap: the chip whose centre ended nearest the
-        // strip's centre wins; a short flick that didn't get that far
-        // still advances one step in the drag direction.
-        const xs = chipXs();
-        let best = selectedWorld;
-        for (let i = 0; i < n; i++)
-          if (Math.abs(xs[i] + dragDx) < Math.abs(xs[best] + dragDx)) best = i;
-        if (best === selectedWorld && Math.abs(dragDx) > FLICK)
-          best = mod(selectedWorld - Math.sign(dragDx));
-        downX = null;
-        dragDx = 0;
-        selectWorld(best);
-        setTimeout(() => (swallowClick = false), 0); // click fires before this
-      };
-      wrap.addEventListener("pointerup", finish);
-      wrap.addEventListener("pointercancel", finish);
-      // Uncaptured pointers (pre-threshold) can exit the row without an up.
-      wrap.addEventListener("pointerleave", () => {
-        if (!captured) finish();
-      });
-      // Desktop nicety: the wheel steps the carousel too.
-      let wheelAt = 0;
-      wrap.addEventListener("wheel", (e) => {
-        e.preventDefault();
-        const now = performance.now();
-        if (now - wheelAt < 200) return;
-        wheelAt = now;
-        selectWorld(selectedWorld + Math.sign(e.deltaY || e.deltaX));
-      }, { passive: false });
       selectWorld(selectedWorld);
     }
 
@@ -305,7 +212,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       pick: (i: number) => select(i),
       selected: () => selected,
       worlds: () => worlds.map((w) => w.name),
-      pickWorld: (i: number) => worldChips[i]?.click(),
+      pickWorld: (i: number) => worldRows[i]?.click(),
       selectedWorld: () => (showWorlds ? worlds[selectedWorld].name : DEFAULT_WORLD),
       installVisible: () => !installBtn.hidden,
       commit,
@@ -433,49 +340,46 @@ function injectStyles() {
   /* Slim side padding: the ring frame provides the visual margin now, and
      the phone needs the width — two 152px character tracks + their gap must
      fit inside ring pads + panel (128px native portraits, never scaled). */
-  .ml-panel{width:min(920px,100%);max-height:100%;overflow:auto;padding:16px 8px 12px;text-align:center}
+  /* One vertical RHYTHM for the whole column (maintainer: "add some spacing
+     to align the UI elements"): the panel is a flex column with a uniform
+     gap — logo / world dropdown / characters / action row / install — and
+     the dropdown + action row share ONE width (--ml-col) so their edges
+     line up. */
+  .ml-panel{width:min(920px,100%);max-height:100%;overflow:auto;padding:16px 8px 12px;text-align:center;
+    display:flex;flex-direction:column;align-items:center;gap:20px;--ml-col:min(720px,96%)}
   /* 2x logo (maintainer), with a soft BLACK GLOW hugging the silhouette:
      drop-shadow follows the png alpha, two soft layers fading 0 -> ~0.5
      black max (maintainer: "fade from BG to black more gentle, max 50%") */
   .ml-logo{display:block;width:min(840px,96%);margin:0 auto;user-select:none;-webkit-user-drag:none;
     filter:drop-shadow(0 0 6px rgba(0,0,0,.5)) drop-shadow(0 0 16px rgba(0,0,0,.5)) drop-shadow(0 0 36px rgba(0,0,0,.4))}
-  .ml-sub{margin:6px 0 14px;color:#b8a67f;text-shadow:0 1px 2px #000}
-  .ml-section{text-align:left;margin:12px 4px 6px;font:700 12px/1 system-ui,sans-serif;letter-spacing:1.5px;
-    text-transform:uppercase;color:#ffd678;text-shadow:0 1px 2px #000}
   /* UI-KIT plates (plate.ts dressPlate): Normal / cream Selected / dark
      Down — same trio and block scale as the HUD. */
   .ml-plated{border:none;background:none;background-repeat:no-repeat;background-size:100% 100%;
     image-rendering:pixelated;box-sizing:border-box;cursor:pointer;
     touch-action:manipulation;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
-  /* World SWIPE CAROUSEL (maintainer: save the screen space — selected in
-     the middle, loops around, neighbours peek in from the edges). One
-     chip-height clipping strip; chips are absolutely positioned around the
-     centre by the carousel layout() and slide via transform. */
-  .ml-worlds{position:relative;overflow:hidden;height:88px;padding:0;touch-action:pan-y;
-    user-select:none;-webkit-user-select:none;cursor:grab}
-  .ml-worlds:active{cursor:grabbing}
-  /* natural chip width — the carousel measures each chip and spaces them
-     an equal gap apart (uniform size was the old grid's constraint) */
-  .ml-world{position:absolute;left:50%;top:2px;height:64px;display:flex;align-items:center;
-    justify-content:center;gap:8px;padding:2px 12px 2px 6px;color:#dfe2ea;font-size:12px;text-shadow:0 1px 2px #000}
-  .ml-world.anim{transition:transform .25s ease}
-  .ml-world span{white-space:nowrap}
-  /* themed world card (select-3 concept): full-bleed art, baked label; the
-     selected card gets a gold outline + slight lift instead of the plate's
-     baked glow */
-  /* atlas ICON chip: square icon tile + label below. Triple-class
-     selectors: these must OUTRANK .ml-world.sel/.press (the plate rules
-     sit later in this sheet and tie on two classes). */
-  .ml-world.ml-wicon{border:none;border-image:none;background:none;padding:0;
-    flex-direction:column;gap:3px;height:auto}
-  .ml-wicon-img{width:64px;height:64px;background-size:100% 100%;background-repeat:no-repeat;
-    image-rendering:pixelated}
-  .ml-world.ml-wicon.sel{background:none;color:#edad5f}
-  .ml-world.ml-wicon.sel .ml-wicon-img{outline:3px solid #edad5f;outline-offset:2px;filter:brightness(1.1)}
-  .ml-world.ml-wicon.press{background:none}
-  .ml-world.ml-wicon.press .ml-wicon-img{filter:brightness(.88)}
-  .ml-world.sel{color:#4a2a1c}
-  .ml-world-img{width:34px;height:34px;object-fit:cover;image-rendering:auto;flex:none}
+  /* WORLD DROPDOWN (the kit's dropdown column, maintainer: "dropdown
+     instead of slider with icons", text only). Closed head = a kit bar +
+     the extracted caret at the shared block scale; open list = kit option
+     rows stacked below (cream = the selected world). The open head wears
+     the kit's dark header state (the down bar) like the sheet shows. */
+  .ml-dd{position:relative;width:var(--ml-col);z-index:20}
+  .ml-ddhead{position:relative;display:flex;align-items:center;justify-content:center;width:100%;height:120px;
+    color:#fff;font:700 17px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;
+    text-shadow:0 1px 0 rgba(0,0,0,.35)}
+  .ml-ddhead.press,.ml-ddhead.open{color:#f4e3c2}
+  /* the 6x6 caret at 5x = 30px; top/margin centering, NOT translate — the
+     plate press rule owns the children's translate channel */
+  .ml-ddchev{position:absolute;right:25px;top:50%;margin-top:-15px;width:30px;height:30px;
+    image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
+  .ml-ddlist{position:absolute;top:calc(100% + 6px);left:0;right:0;display:flex;flex-direction:column;
+    gap:6px;max-height:520px;overflow-y:auto;overscroll-behavior:contain}
+  /* author display:flex would beat the UA's [hidden] rule — restate it */
+  .ml-ddlist[hidden]{display:none}
+  .ml-ddrow{display:flex;align-items:center;justify-content:center;height:120px;flex:none;
+    color:#fff;font:700 17px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;
+    text-shadow:0 1px 0 rgba(0,0,0,.35)}
+  .ml-ddrow.sel{color:#4a2a1c;text-shadow:none}
+  .ml-ddrow.press{color:#f4e3c2}
   /* compact cards sized to their content (maintainer: the man/woman
      buttons were too big) — the portrait viewport crops the 112px canvas
      down to the figure, art at native 1:1 */
@@ -495,10 +399,11 @@ function injectStyles() {
      the dice and Enter — all buttons the same size, text centered. Wraps on
      narrow screens (inside the ring) so the trough never collapses: the
      Enter CTA drops to its own centred line instead. */
-  .ml-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;justify-content:center;align-items:center}
-  /* Name input = the kit's empty-slot trough (dressPlate "slot"); height 70
-     keeps its art on the shared 5px block grid. */
-  .ml-name{flex:1 1 170px;max-width:340px;min-width:170px;height:120px;padding:0 18px;border:none;
+  .ml-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center;width:var(--ml-col)}
+  /* Name input = the kit's empty-slot trough (dressPlate "slot"); it FILLS
+     the row's leftover width so the action row spans exactly --ml-col and
+     its edges line up with the dropdown above. */
+  .ml-name{flex:1 1 170px;min-width:170px;height:120px;padding:0 18px;border:none;
     image-rendering:pixelated;box-sizing:border-box;background:none;background-repeat:no-repeat;
     background-size:100% 100%;color:#e8e8ec;font-size:18px;text-align:center;text-shadow:0 1px 2px #000}
   .ml-name:focus{outline:none;color:#ffd678}
@@ -512,7 +417,7 @@ function injectStyles() {
   /* the dice on a kit plate */
   .ml-ghost{width:120px;height:120px;background:none;color:#e8e8ec;font-size:22px;padding:0}
   /* install prompt = a kit button with visible text */
-  .ml-install{margin-top:12px;border:none;padding:0 24px;width:auto;min-width:280px;height:120px;
+  .ml-install{border:none;padding:0 24px;width:auto;min-width:280px;height:120px;
     image-rendering:pixelated;color:#fff;font:700 13px system-ui,sans-serif;cursor:pointer;
     display:inline-flex;align-items:center;justify-content:center;text-shadow:0 1px 0 rgba(0,0,0,.35)}`;
   const s = document.createElement("style");

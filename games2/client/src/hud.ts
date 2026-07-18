@@ -198,7 +198,8 @@ export class HudBar {
    * (keyboard toggles + server syncs change them too). */
   refreshSettings() {
     for (const [b, get] of this.switches) b.classList.toggle("on", !!get());
-    for (const [b, entry] of this.stateful) b.textContent = `${entry.label}: ${entry.state!()}`;
+    for (const [b, entry] of this.stateful)
+      (b.firstElementChild ?? b).textContent = `${entry.label}: ${entry.state!()}`;
   }
 
   private buildPages() {
@@ -239,9 +240,17 @@ export class HudBar {
     // art — which stopped being CSS when plates went runtime-composed. Dress
     // any undressed arrival so injected buttons look like every other row.
     new MutationObserver(() => {
-      row.querySelectorAll<HTMLElement>(".ml-plate-btn:not([data-plate])").forEach((el) =>
-        dressPlate(el, kindForState),
-      );
+      row.querySelectorAll<HTMLElement>(".ml-plate-btn:not([data-plate])").forEach((el) => {
+        // foreign labels arrive as bare text — wrap so the press-dip applies
+        // (harmless if the owner later resets textContent: plate art stays)
+        if (!el.firstElementChild && el.textContent) {
+          const t = mk("span", "");
+          t.textContent = el.textContent;
+          el.textContent = "";
+          el.appendChild(t);
+        }
+        dressPlate(el, kindForState);
+      });
     }).observe(row, { childList: true });
 
     // Logout: deliberate two-step (a stray tap must not eject anyone) —
@@ -253,7 +262,11 @@ export class HudBar {
 
 function plateButton(label: string, onPress: () => void): HTMLButtonElement {
   const b = mk("button", "ml-plate-btn") as HTMLButtonElement;
-  b.textContent = label;
+  // label lives in a span (not a bare text node) so the pressed state can
+  // shift it 1 kit-pixel down with the plate art (plate.ts press rule)
+  const t = mk("span", "");
+  t.textContent = label;
+  b.appendChild(t);
   b.addEventListener("click", () => {
     gameAudio.event("ui.confirm");
     onPress();

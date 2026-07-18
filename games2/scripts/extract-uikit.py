@@ -16,6 +16,14 @@ Current cuts (extend this script as more elements are adopted):
 - kit-slot.png (16x14) the small dark rounded square below the segmented
   bar (maintainer circled it) — the backpack's empty item slot, displayed
   at an integer multiple, centred.
+- kit-chevron.png / kit-chevron-dark.png (6x6) the dropdown caret cut off
+  the kit's dropdown header bars (UI ELEMENTS, left column: normal/cream/
+  dark header states over an open option list). The header bars themselves
+  are the SAME art as the button trio (verified: identical fill/outline/
+  shadow palette), so the dropdown renders as a kit button + this chevron
+  overlaid at the shared block scale — the chevron can't ride inside the
+  9-slice (the stretch zone would smear it). The dark variant is the
+  outline-colour caret the kit paints on the dark (open) header.
 
 Backdrop/panel colours become transparency. These plates are FLAT pixel
 art: they 9-slice losslessly (plate.ts scales corners by an integer factor
@@ -61,6 +69,18 @@ def main():
         ("kit-slot", (958, 160, 994, 192)),
     ):
         b = cut(im, box, {BG})
+        b = b.crop(b.getbbox())
+        b.save(OUT + name + ".png")
+        print(name, b.size)
+
+    # dropdown chevrons: the caret glyph alone, keyed off its header's fill
+    # (normal header: shadow-brown caret on mid-brown; open header:
+    # outline-dark caret on shadow-brown fill)
+    for name, box, clear in (
+        ("kit-chevron", (870, 498, 882, 510), {BG, (156, 91, 52)}),
+        ("kit-chevron-dark", (870, 552, 882, 564), {BG, (96, 48, 38)}),
+    ):
+        b = cut(im, box, clear)
         b = b.crop(b.getbbox())
         b.save(OUT + name + ".png")
         print(name, b.size)

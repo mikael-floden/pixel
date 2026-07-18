@@ -105,13 +105,35 @@ export function plateUrl(kind: PlateKind, w: number, h: number): string | null {
 
 type Dressed = HTMLElement & { _paintPlate?: () => void };
 
+// The kit's DOWN bar is authored 1 art-pixel lower than the normal bar
+// (pressed into the surface), so a pressed plate's CONTENT — label, icon,
+// caret — dips with it: exactly 1 kit pixel, at the element's OWN block
+// scale (published as --ml-kitpx by paint). Children only: every plated
+// control is display:flex, so children are blockified and transformable;
+// bare text nodes can't shift — wrap labels in a <span>.
+let plateCssInjected = false;
+function injectPlateCss() {
+  if (plateCssInjected) return;
+  plateCssInjected = true;
+  const s = document.createElement("style");
+  s.textContent = `[data-plate].press>*{translate:0 var(--ml-kitpx,5px)}`;
+  document.head.appendChild(s);
+}
+
 /** Dress a button element with a composed plate that tracks its size and
  * state. The element keeps its own padding/height; we only paint the
  * background. */
 export function dressPlate(el: HTMLElement, kindFor: (el: HTMLElement) => PlateKind) {
+  injectPlateCss();
   const paint = () => {
-    const url = plateUrl(kindFor(el), el.clientWidth, el.clientHeight);
-    if (url) el.style.backgroundImage = `url(${url})`;
+    const kind = kindFor(el);
+    const url = plateUrl(kind, el.clientWidth, el.clientHeight);
+    if (url) {
+      el.style.backgroundImage = `url(${url})`;
+      const im = imgs[kind]!;
+      const k = Math.min(KIT_PX, Math.max(1, Math.floor(el.clientHeight / im.height)));
+      el.style.setProperty("--ml-kitpx", `${k}px`);
+    }
   };
   (el as Dressed)._paintPlate = paint;
   el.setAttribute("data-plate", "");
