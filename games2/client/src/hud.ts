@@ -86,6 +86,9 @@ function applyFrameLayout() {
   // the version badge sits bottom-centre of the GAME VIEW: lift it above
   // the HUD only when the HUD actually lays out (main.ts showVersion)
   root.style.setProperty("--ml-badge-lift", `${Math.round(window.innerHeight - l.railTop)}px`);
+  // the frame's render scale — frame-space art (backpack slots) rides it so
+  // 1 art px always equals 1 frame px on screen, whatever the viewport
+  root.style.setProperty("--ml-fs", String(l.scale));
   const hud = document.querySelector<HTMLElement>(".ml-hud");
   if (!hud) return;
   hud.style.top = `${Math.round(l.gameHeight)}px`;
@@ -190,12 +193,13 @@ export class HudBar {
   }
 
   private buildPages() {
-    // Backpack: 5x3 empty item slots, each slot as big as a tab button
-    // (maintainer) — the pressed plate doubles as a slot, like the mock's
-    // content page. Real inventory comes later.
+    // Backpack: 5×3 empty item slots — the REAL slot art from the round-2
+    // concept (twig frame + moss rim over a dark recess, extracted at native
+    // 128² in frame space; scripts/extract-slot2.py). Same count and layout
+    // as the concept page. Real inventory comes later.
     const bp = this.pages.get("backpack")!;
     const slots = mk("div", "ml-slots");
-    for (let i = 0; i < 10; i++) slots.appendChild(mk("i", "ml-slot"));
+    for (let i = 0; i < 15; i++) slots.appendChild(mk("i", "ml-slot"));
     bp.append(slots);
 
     // Equipment + Map pages: bare stone until their real content lands
@@ -276,14 +280,12 @@ function injectStyles() {
   :root{--ml-hud-scale:1;
     --ml-tab:calc(min(150px,calc((100vw - 200px)/5)) * var(--ml-hud-scale));
     --ml-bw:calc(26px * var(--ml-hud-scale));   /* plate border render width */
-    --ml-sbw:calc(30px * var(--ml-hud-scale));  /* slot border render width */
-    /* the "2x" (native) plate size for the backpack slots + settings buttons.
-       Resolved HERE at :root against --ml-hud-scale-2x (set on the root by
-       JS), because a nested var() inside a custom property resolves at the
-       DECLARING scope — overriding --ml-hud-scale on a child does NOT
-       re-resolve --ml-tab, so the slots/buttons need their own 2x vars. */
-    --ml-tab-2x:calc(min(150px,calc((100vw - 200px)/5)) * var(--ml-hud-scale-2x,1));
-    --ml-sbw-2x:calc(30px * var(--ml-hud-scale-2x,1))}
+    /* the "2x" (native) plate size for the settings buttons. Resolved HERE at
+       :root against --ml-hud-scale-2x (set on the root by JS), because a
+       nested var() inside a custom property resolves at the DECLARING scope —
+       overriding --ml-hud-scale on a child does NOT re-resolve --ml-tab, so
+       the buttons need their own 2x var. */
+    --ml-tab-2x:calc(min(150px,calc((100vw - 200px)/5)) * var(--ml-hud-scale-2x,1))}
   /* HUD sections: base props only — position/size come from applyFrameLayout
      (the frame-v2 windows), set inline after every compose. */
   .ml-hud{position:fixed;left:0;right:0;bottom:0;z-index:4;background:#23160d;box-sizing:border-box}
@@ -317,14 +319,18 @@ function injectStyles() {
     background-image:url(/ui2/stone.png);background-size:100% auto;
     background-repeat:repeat-y;background-attachment:local;image-rendering:pixelated}
   .ml-page.show{display:flex}
-  /* backpack slots opt into the x2 (native) scale — the slots read big while
-     the tabs/frame stay small (maintainer). --ml-hud-scale override on the
-     GRID makes both the column track (var(--ml-tab)) and the slots resolve
-     at the bigger scale together. */
-  .ml-slots{display:grid;grid-template-columns:repeat(5,var(--ml-tab-2x));grid-template-rows:repeat(2,var(--ml-tab-2x));
+  /* backpack slots are the round-2 concept's mossy recesses (slot2.png,
+     native 128² in FRAME space) — they ride the frame's scale factor
+     (--ml-fs, published from FrameLayout.scale) so 1 slot px scales exactly
+     like 1 frame px, the same proportion as the concept page. Fixed size,
+     no 9-slice: the art never stretches, only the frame-wide uniform scale
+     applies (nearest-neighbour via image-rendering:pixelated). */
+  .ml-slots{display:grid;grid-template-columns:repeat(5,calc(128px * var(--ml-fs,0.75)));
+    grid-template-rows:repeat(3,calc(128px * var(--ml-fs,0.75)));
     justify-content:space-evenly;align-content:space-evenly;width:100%;height:100%}
-  .ml-slot{width:var(--ml-tab-2x);height:var(--ml-tab-2x);image-rendering:pixelated;border-style:solid;border-width:var(--ml-sbw-2x);
-    border-image:url(/ui2/slot.png) 10 fill / var(--ml-sbw-2x);box-sizing:border-box}
+  .ml-slot{width:calc(128px * var(--ml-fs,0.75));height:calc(128px * var(--ml-fs,0.75));
+    image-rendering:pixelated;border:none;box-sizing:border-box;
+    background:url(/ui2/slot2.png) no-repeat;background-size:100% 100%}
   /* settings "menu buttons" also opt into x2 (native) so they stay tappable.
      GRID with equal columns (not flex-wrap): every button is the SAME fixed
      size, so a state label changing on press ("time speed: frozen" -> "x2",
@@ -365,7 +371,6 @@ function injectStyles() {
     .ml-plate-btn{padding:6px 14px;border-width:13px;border-image-width:13px;font-size:11px}
     .ml-plate-btn.on{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
     .ml-plate-btn.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
-    .ml-slot{border-width:20px;border-image-width:20px}
   }`;
   const s = document.createElement("style");
   s.textContent = css;
