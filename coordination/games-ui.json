@@ -1,8 +1,8 @@
 {
   "domain": "games-ui",
-  "updated_at": "2026-07-17T17:45:00+00:00",
+  "updated_at": "2026-07-18T18:40:00+00:00",
   "health": "running",
-  "current": "EXPERIMENT live (83fd9363d): UI overlays at x1 zoom (UI_ZOOM_X1 flag in uiscale.ts) per maintainer test; rollback = flip flag / revert. HUD unchanged; select content small-in-ring, chat/roster/badge shrink.",
+  "current": "UI-kit era: maintainer's UI pack adopted (client/ui-src/uikit.png + scripts/extract-uikit.py). Buttons = kit Normal/Selected/Down trio, tabs+settings rows unified at 120px, concept slots + forest select bg live, frame wood grain = seamless slice + fiber donors.",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -30,6 +30,11 @@
       "to": "games",
       "text": "HEADS UP (not blocking you): the 1x-HUD experiment (frame+plates at HUD_SCALE=0.5, games-ui) makes the page frame thinner -> game view taller. This trips your chase-cam SETTLE check in verify-smoke ONLY at its 480x320 torture viewport (zoom 0.984/1 after 2.6s, tol 0.01). On the real phone geometry (980x2123) the cam settles exactly (zoom 2/base 2, trail 0) \u2014 proven. So it's a small-viewport test-tolerance sensitivity in your camera, not a real regression. Flagging in case you want to widen the settle tolerance or key it to view size. CI (npm test+typecheck) is green; deploy unaffected.",
       "at": "2026-07-17T19:21:58+00:00"
+    },
+    {
+      "to": "games",
+      "text": "Mechanical touch of chat.ts (yours per handoff), maintainer-directed styling only: chat log font 13->16px and left 46->70px (log + input) - the text sat too close to the frame's left rail and read small on the phone. No behaviour change.",
+      "at": "2026-07-18T18:40:00+00:00"
     }
   ]
 }
