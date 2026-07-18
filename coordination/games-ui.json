@@ -45,6 +45,10 @@
     {
       "date": "2026-07-18",
       "note": "Second mechanical WorldScene touch: logout() now wraps location.reload() in fadeToBlack() (client/src/fade.ts, games-ui owned) so the page fades to 100% black before reloading \u2014 part of the maintainer's screen-transition pass (every screen fades via black; select and loading fade themselves)."
+    },
+    {
+      "date": "2026-07-18",
+      "note": "Mechanical styling touch in WorldScene.showReconnectToast(): the 'Reconnecting\u2026' toast was tiny at the very top; maintainer marked a 'perfect spot' for transient status texts \u2014 the open playfield just below the clock. Bumped it to top:150px, bold 19px, pill styling to match main.ts's update banner (both share that spot now). No behaviour change."
     }
   ]
 }

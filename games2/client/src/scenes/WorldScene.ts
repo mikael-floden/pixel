@@ -1362,10 +1362,15 @@ export class WorldScene extends Phaser.Scene {
     if (this.reconnectToast) return;
     const el = document.createElement("div");
     el.textContent = "Reconnecting…";
+    // Same SPOT and size family as main.ts's update banner (maintainer's
+    // "perfect spot" for transient status texts — the open playfield just
+    // below the clock, not crammed at the very top). top:150px is uiZoom'd
+    // to land there on the real phone.
     el.style.cssText =
-      "position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:100;" +
-      "padding:7px 14px;border-radius:8px;background:#12121cee;border:1px solid #3a3a58;" +
-      "color:#ffd678;font:13px system-ui,sans-serif;pointer-events:none";
+      "position:fixed;top:150px;left:50%;transform:translateX(-50%);z-index:100;" +
+      "padding:14px 26px;border-radius:12px;background:#111114f2;border:2px solid #ffd678aa;" +
+      "color:#ffd678;font:bold 19px system-ui,sans-serif;box-shadow:0 6px 24px #000c;" +
+      "white-space:nowrap;pointer-events:none";
     document.body.appendChild(el);
     applyUiZoom(el);
     this.reconnectToast = el;
