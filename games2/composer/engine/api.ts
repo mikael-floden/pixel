@@ -72,7 +72,12 @@ const FOOT_PHASES = [0.05, 0.55];
 // ONE AT A TIME with explicit approval. Snow re-enabled for trial ("let's
 // try the snow version") — same gentleness as stone: primary take every
 // step, micro-jitter only. Water stays splash/swim, no dry footfall.
-const FOOTSTEP_SETS: Record<string, string> = { snow: "snow", sand: "sand" };
+const FOOTSTEP_SETS: Record<string, string> = { snow: "snow" };
+// Surfaces mapped to a CATALOG sound played as a footstep, when the
+// maintainer picks an existing sound over a generated set. sand → the
+// `jump` sound ("closest we have to sand", 2026-07-18, after 4 sand
+// generations failed to read as sand). Overrides FOOTSTEP_SETS.
+const FOOTSTEP_CATALOG: Record<string, string> = { sand: "jump" };
 const FOOTSTEP_DEFAULT = "stone";
 // Per-SURFACE trims on top of the step base (maintainer verdicts
 // 2026-07-18): snow −12 ("too loud" ×2, run level then approved), grass
@@ -177,7 +182,7 @@ export class GameAudio {
       }
       // Warm the composer's own primary takes too — thunder especially must
       // not miss its first flash on a fetch+decode.
-      for (const set of ["stone", "snow", "sand", "ui_tick", "ui_cancel", "thunder"]) {
+      for (const set of ["stone", "snow", "ui_tick", "ui_cancel", "thunder"]) {
         const urls = composerFoley(set);
         if (urls) void this.buffers.get(urls[0]);
       }
@@ -356,6 +361,22 @@ export class GameAudio {
       }
     }
 
+    // Surfaces mapped to a catalog sound (sand → jump) — played as a
+    // footstep under the gentleness step profile, like the wet band.
+    const catId = FOOTSTEP_CATALOG[f.surface];
+    if (catId) {
+      const base = this.catalog?.sounds.get(catId);
+      if (base) {
+        const walkPenalty = FOOTSTEP_WALK_PENALTY_DB[f.surface] ?? WALK_PENALTY_DEFAULT_DB;
+        this.oneShots.play(this.catalogStepEntry(base), "sfx", {
+          pan: f.pan,
+          dist: f.dist,
+          gainDb: -8 + (FOOTSTEP_TRIM_DB[f.surface] ?? 0) + (f.running ? 0.8 : walkPenalty),
+        });
+        return;
+      }
+    }
+
     const setName = FOOTSTEP_SETS[f.surface] ?? FOOTSTEP_DEFAULT;
     const own = composerFoley(setName) ?? composerFoley(FOOTSTEP_DEFAULT);
     if (own) {
@@ -390,7 +411,7 @@ export class GameAudio {
     if (!e) {
       e = {
         ...base,
-        id: `wetstep_${base.id}`,
+        id: `catstep_${base.id}`,
         mix_gain_db: 0, // level decided per-play
         variation: {
           round_robin: false, // the approved primary take, every step
