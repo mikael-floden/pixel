@@ -27,7 +27,7 @@ try {
 
   // ---- registry ----
   const list = await page.evaluate(() => window.__mlAmbient.list());
-  for (const want of ["fireflies", "pollen", "bats", "thunder", "sandstorm", "leaves"])
+  for (const want of ["fireflies", "pollen", "bats", "birds", "thunder", "sandstorm", "leaves"])
     if (!list.includes(want)) fail(`feature ${want} not mounted (got ${list})`);
   if (list.includes("heathaze") || list.includes("rainbow") || list.includes("tumbleweed"))
     fail(`heathaze/rainbow/tumbleweed were removed but still mounted (${list})`);
@@ -84,6 +84,11 @@ try {
   if (Math.abs(ratio - 0.01) > 0.005)
     fail(`bats by day must be ~1% of night (got ${(ratio * 100).toFixed(2)}%)`);
   else ok(`bats day/night likeliness ${(ratio * 100).toFixed(1)}%`);
+  // Birds are the DAYTIME mirror: full by day, ~5% at night.
+  const birdRatio = w.night.birds / w.day.birds;
+  if (Math.abs(birdRatio - 0.05) > 0.01)
+    fail(`birds by night must be ~5% of day (got ${(birdRatio * 100).toFixed(2)}%)`);
+  else ok(`birds night/day likeliness ${(birdRatio * 100).toFixed(1)}%`);
   const rd = w.rainDay.thunder / w.day.thunder;
   const rn = w.rainNight.thunder / w.day.thunder;
   if (Math.abs(rd - 2) > 0.05) fail(`thunder raining must be x2 base (got x${rd.toFixed(2)})`);

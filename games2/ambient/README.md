@@ -106,7 +106,7 @@ The **"ambient"** settings button picks WHICH ambient effect is on. It
 **never changes time-of-day or weather** — the player owns those
 (maintainer 2026-07-18). The ring is:
 
-  `AUTO → NONE → fireflies → pollen → bats → thunder → sandstorm →
+  `AUTO → NONE → fireflies → pollen → bats → birds → thunder → sandstorm →
   leaves → AUTO`
 
 - **AUTO** — the director + fields run normally; the button prints
@@ -137,6 +137,7 @@ name, or null = auto.
 | `fireflies/` | field | Warm, mystical night — tiny wandering lanterns | Night (fades with sun strength), thinned by cloud |
 | `pollen/` | field | Sunbeam dust / drifting pollen in forest air | Sunlit hours, clear-ish sky, drifts on the cloud wind |
 | `bats/` | episode | Flocks crossing the night sky | base 1.0; day ×0.01 |
+| `birds/` | episode | Skeins of birds crossing the day sky in a loose V | base 1.0; night ×0.05 (the daytime mirror of bats) |
 | `thunder/` | episode | Distant sheet lightning beyond the horizon | base 0.35 × (1 + rain + night); cloud/mist as weak proxies until a rain weather ships |
 | `sandstorm/` | episode | Warm dust veil + wind-driven sand streaks that swallow the player | base 0.6 × **sand** (terrain-aware: only rolls while the player stands in sandy ground) × dryness |
 | `leaves/` | episode | Autumn leaves spiralling down through the world, tumbling edge-on | base 0.5 × (0.6 + 0.4·cloud); prefers Evening |

@@ -3,6 +3,7 @@ import { mountAmbient as mount } from "./runtime/mount";
 import { firefliesFeature } from "./fireflies/fireflies";
 import { pollenFeature } from "./pollen/pollen";
 import { batsFeature } from "./bats/bats";
+import { birdsFeature } from "./birds/birds";
 import { thunderFeature } from "./thunder/thunder";
 import { sandstormFeature } from "./sandstorm/sandstorm";
 import { leavesFeature } from "./leaves/leaves";
@@ -24,6 +25,7 @@ export function mountAmbient(game: Phaser.Game) {
     firefliesFeature(),
     pollenFeature(),
     batsFeature(),
+    birdsFeature(),
     thunderFeature(),
     sandstormFeature(),
     leavesFeature(),

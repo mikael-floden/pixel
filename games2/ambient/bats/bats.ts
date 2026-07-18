@@ -29,10 +29,12 @@ const PIX1 = [
   "PDDDDDDDP",
   ".D..D..D.",
 ];
-// 25% darker than round 2 (maintainer: "make the bat a little darker") —
-// still enough rim contrast to read over dark night ground.
-const RIM = 0x8a90a8; // muted moonlight on the wing edge
-const BODY = 0x1a1830; // dark violet body
+// Dimmed again (maintainer 2026-07-18: "not as bright") on top of the earlier
+// 25% cut — the moonlit rim is muted further so the flock reads as a soft
+// silhouette, not a bright cut-out, while keeping just enough edge contrast to
+// stay visible over dark night ground.
+const RIM = 0x676c81; // muted moonlight on the wing edge (dimmer)
+const BODY = 0x161326; // dark violet body
 const BASE_WEIGHT = 1.0;
 const DAY_MULT = 0.01; // "1% times the base-likeliness during the day"
 // Dense enough that an active episode never shows 30s of empty sky.
@@ -90,8 +92,8 @@ export function batsFeature(): AmbientFeature {
       const sprite = ctx.scene.add
         .image(0, 0, FRAMES[0])
         .setDepth(DEPTH + i * 0.001)
-        .setAlpha(0.95)
-        .setScale(2) // 2× nearest — pixel-art rule, integer scale
+        .setAlpha(0.8) // a touch more transparent — softer, less bright
+        .setScale(1.5) // a bit smaller than before (maintainer 2026-07-18)
         .setFlipX(!ltr);
       bats.push({
         sprite,
