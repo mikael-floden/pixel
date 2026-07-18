@@ -1792,5 +1792,78 @@
     "brief": "a single footstep on a flat stone paving slab: a hard leather boot heel striking dense rock, compact dry tap with a faint grit scuff",
     "generated_at": "2026-07-18T14:20:03+00:00",
     "model_id": "eleven_text_to_sound_v2"
+  },
+  "water_step": {
+    "takes": [
+      "water_step/water_step__take01.wav",
+      "water_step/water_step__take02.wav"
+    ],
+    "durations_s": [
+      0.7,
+      0.7
+    ],
+    "features": [
+      {
+        "mid_peak_db": -23.6,
+        "duration_s": 0.7,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.007,
+        "tonality": 0.346,
+        "crest": 19.05,
+        "centroid_hz": 5460,
+        "mid_ratio": 0.857
+      },
+      {
+        "mid_peak_db": -21.7,
+        "duration_s": 0.7,
+        "attack_ms": 10.6,
+        "tail_ratio": 0.105,
+        "tonality": 0.501,
+        "crest": 12.58,
+        "centroid_hz": 6967,
+        "mid_ratio": 0.671
+      }
+    ],
+    "qa": {
+      "judge": "step",
+      "pool": 9,
+      "passed_gates": 2,
+      "of": 4
+    },
+    "pool_candidates": [
+      {
+        "file": "water_step/pool/water_step__cand01.wav",
+        "passed_gates": true,
+        "rank": 0.38,
+        "features": {
+          "mid_peak_db": -23.6,
+          "duration_s": 0.7,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.007,
+          "tonality": 0.346,
+          "crest": 19.05,
+          "centroid_hz": 5460,
+          "mid_ratio": 0.857
+        }
+      },
+      {
+        "file": "water_step/pool/water_step__cand02.wav",
+        "passed_gates": true,
+        "rank": 1.03,
+        "features": {
+          "mid_peak_db": -21.7,
+          "duration_s": 0.7,
+          "attack_ms": 10.6,
+          "tail_ratio": 0.105,
+          "tonality": 0.501,
+          "crest": 12.58,
+          "centroid_hz": 6967,
+          "mid_ratio": 0.671
+        }
+      }
+    ],
+    "brief": "one single wet splashing footstep in ankle-deep water at a lake edge: a boot plunging into shallow still water, one short clean splosh with a few small droplets right after, tight, exactly one step, no stream, no flowing water, no rain, no ambience",
+    "generated_at": "2026-07-18T21:32:43+00:00",
+    "model_id": "eleven_text_to_sound_v2"
   }
 }
