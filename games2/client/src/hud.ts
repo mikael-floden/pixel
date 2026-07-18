@@ -357,14 +357,22 @@ function injectStyles() {
   .ml-slot{width:calc(128px * var(--ml-fs,0.75));height:calc(128px * var(--ml-fs,0.75));
     image-rendering:pixelated;border:none;box-sizing:border-box;
     background-repeat:no-repeat;background-size:100% 100%}
-  /* settings "menu buttons" also opt into x2 (native) so they stay tappable.
-     GRID with equal columns (not flex-wrap): every button is the SAME fixed
-     size, so a state label changing on press ("time speed: frozen" -> "x2",
-     "weather: clear sky" -> "cloudy at times") can't resize a button and
-     reflow the row — the buttons no longer move around (maintainer). The
-     three fixed columns (maintainer: 3 buttons per row). */
-  .ml-btnrow{display:grid;grid-template-columns:repeat(3,1fr);
-    gap:12px;justify-content:center;align-items:stretch;width:100%;margin:0 auto}
+  /* settings "menu buttons": SAME page geometry as the backpack grid
+     (maintainer: the buttons must respect the backpack view's distances
+     from left/top/right, and its spacing). Like .ml-slots: the grid fills
+     the page window and space-evenly distributes — outer margin equals the
+     gap between items. The column width is DERIVED so the horizontal gap
+     equals the backpack's slot gap g=(100% - 5*128px*fs)/6: three columns
+     leave 4 gaps, so col=(100% - 4g)/3. Fixed columns (not 1fr) also keep
+     a state label changing on press from resizing/reflowing the row
+     (maintainer: the buttons no longer move around; 3 per row). */
+  .ml-btnrow{display:grid;width:100%;height:100%;
+    grid-template-columns:repeat(3,calc((100% - 4*(100% - 640px*var(--ml-fs,0.75))/6)/3));
+    justify-content:space-evenly;align-content:space-evenly}
+  /* a lone page-level button (Logout): wide is fine (maintainer), but it
+     respects the SAME outer margin g as the backpack/settings grids —
+     full width minus a slot-gap on each side */
+  .ml-page>.ml-plate-btn{width:calc(100% - (100% - 640px*var(--ml-fs,0.75))/3)}
   /* UI-KIT plates (maintainer's pack, plate.ts): flat pixel plates composed
      at an INTEGER block scale (floor(h/native/2) — 5px blocks at h=120).
      Height 120 is the maintainer's shared button height, same as the tabs.
