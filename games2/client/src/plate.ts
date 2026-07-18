@@ -62,7 +62,9 @@ export function plateUrl(kind: PlateKind, w: number, h: number): string | null {
   w = Math.round(w);
   h = Math.round(h);
   if (w < 2 || h < 2) return null;
-  const k = Math.max(1, Math.floor(h / img.height));
+  // half the box-filling block size (maintainer: full-height blocks read too
+  // big — "scale it down by x0.5"): outline/corners at k, middle extruded
+  const k = Math.max(1, Math.floor(h / img.height / 2));
   const cs = Math.min(CS * k, w >> 1, h >> 1);
   const key = `${kind}:${w}x${h}`;
   const hit = cache.get(key);
