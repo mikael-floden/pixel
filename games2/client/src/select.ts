@@ -43,11 +43,10 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
         <div class="ml-row">
           <input id="ml-name" class="ml-name" maxlength="24" placeholder="your name"
                  value="${NAMES[Math.floor(Math.random() * NAMES.length)]}" />
-          <button id="ml-random" class="ml-btn ml-ghost ml-plated" title="Random character"><span>🎲</span></button>
           <button id="ml-enter" class="ml-btn ml-plated"><span>Enter world</span></button>
         </div>
-        <button id="ml-install" class="ml-install ml-plated" hidden><span>📱 Install as an app on your home screen</span></button>
-      </div>`;
+      </div>
+      <button id="ml-install" class="ml-install ml-plated" hidden><span>📱 Install as an app on your home screen</span></button>`;
     document.body.appendChild(overlay);
     applyUiZoom(overlay); // "Desktop site" must not shrink the menu
     injectStyles();
@@ -176,9 +175,6 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     }
 
     (overlay.querySelector("#ml-enter") as HTMLElement).addEventListener("click", commit);
-    (overlay.querySelector("#ml-random") as HTMLElement).addEventListener("click", () =>
-      select(Math.floor(Math.random() * chars.length)),
-    );
     nameInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") commit();
     });
@@ -331,8 +327,11 @@ function injectStyles() {
      cover + center keeps the clearing on screen at any aspect; a LIGHT navy
      veil keeps the plaques/text readable over the busy art (the old stone
      backdrop wore a heavy .84 wash — this art is meant to be SEEN). */
+  /* --ml-col: THE shared column width every row-level control aligns to
+     (dropdown, character cards, action row, install). On the overlay, not
+     the panel — the install button lives outside the panel now. */
   .ml-overlay{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;
-    background:#0d101c;font-family:system-ui,sans-serif;color:#e8e8ec}
+    background:#0d101c;font-family:system-ui,sans-serif;color:#e8e8ec;--ml-col:min(720px,96%)}
   .ml-overlay{background-image:linear-gradient(rgba(13,16,28,.28),rgba(13,16,28,.28)),url(/ui2/select-bg.png);
     background-size:auto,cover;background-position:center;background-repeat:repeat,no-repeat;image-rendering:pixelated}
   /* No vw/vh inside this overlay: it may carry a compensating CSS zoom
@@ -346,7 +345,7 @@ function injectStyles() {
      the dropdown + action row share ONE width (--ml-col) so their edges
      line up. */
   .ml-panel{width:min(920px,100%);max-height:100%;overflow:auto;padding:16px 8px 12px;text-align:center;
-    display:flex;flex-direction:column;align-items:center;gap:20px;--ml-col:min(720px,96%)}
+    display:flex;flex-direction:column;align-items:center;gap:20px}
   /* 2x logo (maintainer), with a soft BLACK GLOW hugging the silhouette:
      drop-shadow follows the png alpha, two soft layers fading 0 -> ~0.5
      black max (maintainer: "fade from BG to black more gentle, max 50%") */
@@ -380,12 +379,13 @@ function injectStyles() {
     text-shadow:0 1px 0 rgba(0,0,0,.35)}
   .ml-ddrow.sel{color:#4a2a1c;text-shadow:none}
   .ml-ddrow.press{color:#f4e3c2}
-  /* compact cards sized to their content (maintainer: the man/woman
-     buttons were too big) — the portrait viewport crops the 112px canvas
-     down to the figure, art at native 1:1 */
-  .ml-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:2px}
-  .ml-cell{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;
-    color:#dfe2ea;font-size:12px;text-shadow:0 1px 2px #000}
+  /* character cards GROW to the shared column (maintainer: "make the
+     character buttons bigger so the UI align with the other UI rows") —
+     two per row, edges flush with the dropdown/action row; the portrait
+     art stays at its integer 4x inside the wider plate */
+  .ml-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;width:var(--ml-col)}
+  .ml-cell{flex:1 1 calc(50% - 6px);display:flex;flex-direction:column;align-items:center;gap:2px;
+    padding:6px 10px;color:#dfe2ea;font-size:12px;text-shadow:0 1px 2px #000;box-sizing:border-box}
   .ml-cell.sel{color:#4a2a1c}
   .ml-cell.sel span{text-shadow:none}
   .ml-cell.press{color:#f4e3c2}
@@ -414,10 +414,11 @@ function injectStyles() {
     font:700 17px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#fff;
     text-shadow:0 1px 0 rgba(0,0,0,.35)}
   .ml-btn.press{color:#f4e3c2}
-  /* the dice on a kit plate */
-  .ml-ghost{width:120px;height:120px;background:none;color:#e8e8ec;font-size:22px;padding:0}
-  /* install prompt = a kit button with visible text */
-  .ml-install{border:none;padding:0 24px;width:auto;min-width:280px;height:120px;
+  /* install prompt: PINNED to the screen bottom (maintainer), full column
+     width, clear of the version badge. Outside the panel, so the panel's
+     overflow scroll can't clip or move it. */
+  .ml-install{position:absolute;bottom:44px;left:50%;transform:translateX(-50%);z-index:2;
+    border:none;padding:0 24px;width:var(--ml-col);height:120px;
     image-rendering:pixelated;color:#fff;font:700 13px system-ui,sans-serif;cursor:pointer;
     display:inline-flex;align-items:center;justify-content:center;text-shadow:0 1px 0 rgba(0,0,0,.35)}`;
   const s = document.createElement("style");
