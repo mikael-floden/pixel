@@ -77,7 +77,7 @@ const FOOTSTEP_SETS: Record<string, string> = { snow: "snow" };
 // maintainer picks an existing sound over a generated set. sand → the
 // `jump` sound ("closest we have to sand", 2026-07-18, after 4 sand
 // generations failed to read as sand). Overrides FOOTSTEP_SETS.
-const FOOTSTEP_CATALOG: Record<string, string> = { sand: "jump" };
+const FOOTSTEP_CATALOG: Record<string, string> = { sand: "jump", dirt: "jump" };
 const FOOTSTEP_DEFAULT = "stone";
 // Per-SURFACE trims on top of the step base (maintainer verdicts
 // 2026-07-18): snow −12 ("too loud" ×2, run level then approved), grass
