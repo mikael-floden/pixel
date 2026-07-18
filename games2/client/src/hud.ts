@@ -148,13 +148,15 @@ export class HudBar {
     for (const t of TABS) {
       const b = mk("button", "ml-tab") as HTMLButtonElement;
       b.dataset.tab = t.id;
+      // icon only — no text label (maintainer 2026-07-18: "icon is enough");
+      // the label lives on as the accessible name
       const icon = mk("img", "ml-tab-icon") as HTMLImageElement;
       icon.src = `/ui2/icon-${t.id}.png`;
       icon.alt = "";
       icon.draggable = false;
-      const label = mk("span", "ml-tab-label");
-      label.textContent = t.label;
-      b.append(icon, label);
+      b.title = t.label;
+      b.setAttribute("aria-label", t.label);
+      b.append(icon);
       b.addEventListener("click", () => {
         this.select(t.id);
         gameAudio.event("ui.cursor_move"); // tab tick (menu_select binding)
@@ -331,15 +333,10 @@ function injectStyles() {
     padding:2px 0;cursor:pointer;image-rendering:pixelated;box-sizing:border-box;
     touch-action:manipulation;-webkit-touch-callout:none;border:none;
     background:none;background-repeat:no-repeat;background-size:100% 100%}
+  /* icon-only tabs (maintainer: "icon is enough") — the icon gets the
+     plate's full inner height, contain-fit and centred */
   .ml-tab-icon{image-rendering:pixelated;-webkit-user-drag:none;pointer-events:none;
-    max-width:calc(100% - 6px);max-height:calc(100% - 22px * var(--ml-hud-scale,1));object-fit:contain}
-  /* label font scales with the HUD so it fits the (smaller) square tab plate
-     at the 1x experiment size instead of overflowing (maintainer) */
-  .ml-tab-label{font:700 11px/1.1 system-ui,sans-serif;
-    font-size:calc(clamp(6.5px,1.42vw,12px) * var(--ml-hud-scale,1));
-    text-transform:uppercase;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.35);white-space:nowrap;overflow:hidden;max-width:100%}
-  .ml-tab.sel .ml-tab-label{color:#4a2a1c;text-shadow:none}
-  .ml-tab.press .ml-tab-label{color:#f4e3c2}
+    max-width:calc(100% - 6px);max-height:calc(100% - 10px);object-fit:contain}
   .ml-pages{position:absolute;overflow:hidden;image-rendering:pixelated}
   .ml-page{display:none;height:100%;overflow:auto;flex-direction:column;align-items:center;
     justify-content:center;gap:14px;text-align:center;box-sizing:border-box;

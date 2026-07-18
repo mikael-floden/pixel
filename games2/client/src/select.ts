@@ -138,9 +138,10 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       const preview = spritePreview(c, label, manifest.directions);
       cell.appendChild(preview.img);
       spins.push(preview.setSpin);
-      const span = el("span", "");
-      span.textContent = label;
-      cell.appendChild(span);
+      // no text label (maintainer: "the art on the button is enough") —
+      // the name stays as the accessible/tooltip name only
+      cell.title = label;
+      cell.setAttribute("aria-label", label);
       cell.addEventListener("click", () => select(i));
       grid.appendChild(cell);
       cells.push(cell);
@@ -391,11 +392,8 @@ function injectStyles() {
      character buttons bigger so the UI align with the other UI rows") —
      two per row, edges flush with the dropdown/action row */
   .ml-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;width:var(--ml-col)}
-  .ml-cell{flex:1 1 calc(50% - 6px);display:flex;flex-direction:column;align-items:center;gap:2px;
-    padding:6px 10px;color:#dfe2ea;font-size:12px;text-shadow:0 1px 2px #000;box-sizing:border-box}
-  .ml-cell.sel{color:#4a2a1c}
-  .ml-cell.sel span{text-shadow:none}
-  .ml-cell.press{color:#f4e3c2}
+  .ml-cell{flex:1 1 calc(50% - 6px);display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:6px 10px;box-sizing:border-box}
   .ml-sprite{image-rendering:pixelated;background-repeat:no-repeat;flex:none}
   /* 2x characters in an UNCHANGED box (maintainer: half the 4x size, keep
      the button size — the padding does the breathing): the 112 art at an
@@ -403,7 +401,6 @@ function injectStyles() {
      at 2x) centred in the same 192x368 viewport */
   .ml-portrait-box{width:192px;height:368px;overflow:hidden;position:relative;flex:none}
   .ml-portrait{position:absolute;left:-18px;top:77px;width:224px;height:224px;image-rendering:pixelated}
-  .ml-cell span{max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   /* Action row: ONE height (64px, same as the world chips) for the trough,
      the dice and Enter — all buttons the same size, text centered. Wraps on
      narrow screens (inside the ring) so the trough never collapses: the
