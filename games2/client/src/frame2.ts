@@ -67,44 +67,55 @@ const VCUT2 = { y: 1035, s0: 992, p: 86 }; // winding-bark unit
 // color over and over"). A bounce-walk through neighbouring slices was tried
 // and REJECTED — real neighbouring slices carry knots/edges, and repeating
 // them read as "cuts" in the graphics. The maintainer's direction: keep the
-// old seamless 1px stripe, but make it "a bit longer" using texture from the
-// clean rail wood he circled. So the stripe stays THE SAME slice (perfect
-// cross-profile, no cuts ever) and only its BRIGHTNESS drifts along the run,
-// following a sequence sampled from that clean donor wood (left rail rows
-// 979..1027 — 48 rows of plain grain, luma drift ±6). The sequence ping-pongs
-// (continuous, loops forever), so the fill reads as one long piece of simple
-// clean wood instead of a colour-frozen bar.
-const DONOR = { x0: 8, x1: 44, y0: 979, y1: 1027 }; // clean left-rail wood
-let grainSeq: Int8Array = new Int8Array(0);
+// old seamless 1px stripe (perfect cross-profile, no cuts ever) and lay the
+// texture of the clean rail wood he circled over it. FIBER DIRECTION MATTERS
+// — a first cut drifted the whole slice per run-step, which striped the rail
+// PERPENDICULAR to its length ("you drew the fiber 90° wrong"): wood fiber
+// runs ALONG a beam. So the donor is kept as a true 2D patch (its fiber runs
+// vertically, along its rail) and is mapped donor-fiber -> RUN direction:
+// output(cross, i) = slice(cross) + donorDelta(cross, i), where the donor's
+// per-pixel delta (luma minus its column mean — the donor's own cross
+// profile removed) is mirror-wrapped in both axes. Fibers stay coherent
+// along i = along the piece, for vertical rails and horizontal beams alike.
+const DONOR = { x0: 8, x1: 44, y0: 941, y1: 1075 }; // clean left-rail wood
+const GRAIN_CLAMP = 12;
+let grainTex: Int8Array = new Int8Array(0);
+const DW = DONOR.x1 - DONOR.x0;
+const DH = DONOR.y1 - DONOR.y0;
 
-function buildGrainSeq(src: ImageData) {
+function buildGrainTex(src: ImageData) {
   const S = src.data;
-  const n = DONOR.y1 - DONOR.y0;
-  const means = new Float32Array(n);
-  for (let i = 0; i < n; i++) {
+  grainTex = new Int8Array(DW * DH);
+  for (let c = 0; c < DW; c++) {
     let sum = 0;
     let cnt = 0;
-    for (let x = DONOR.x0; x < DONOR.x1; x++) {
-      const si = ((DONOR.y0 + i) * AW + x) * 4;
+    for (let r = 0; r < DH; r++) {
+      const si = ((DONOR.y0 + r) * AW + DONOR.x0 + c) * 4;
       if (S[si + 3] > 200) {
         sum += 0.3 * S[si] + 0.6 * S[si + 1] + 0.1 * S[si + 2];
         cnt++;
       }
     }
-    means[i] = sum / Math.max(1, cnt);
+    const mean = sum / Math.max(1, cnt);
+    for (let r = 0; r < DH; r++) {
+      const si = ((DONOR.y0 + r) * AW + DONOR.x0 + c) * 4;
+      let d = 0;
+      if (S[si + 3] > 200)
+        d = 0.3 * S[si] + 0.6 * S[si + 1] + 0.1 * S[si + 2] - mean;
+      grainTex[r * DW + c] = Math.max(-GRAIN_CLAMP, Math.min(GRAIN_CLAMP, Math.round(d)));
+    }
   }
-  const avg = means.reduce((a, b) => a + b, 0) / n;
-  grainSeq = new Int8Array(n);
-  for (let i = 0; i < n; i++)
-    grainSeq[i] = Math.max(-6, Math.min(6, Math.round(means[i] - avg)));
 }
 
-/** the donor's brightness delta at run position i (ping-pong, seamless) */
-function grainAt(i: number): number {
-  const P = grainSeq.length;
-  if (P < 2) return 0;
-  const m = i % (2 * P - 2);
-  return grainSeq[m < P ? m : 2 * P - 2 - m];
+/** donor fiber delta at (cross position, run position) — mirror-wrapped both
+ * ways so the texture continues seamlessly at any size */
+function grainAt(cross: number, i: number): number {
+  if (!grainTex.length) return 0;
+  const mc = cross % (2 * DW - 2);
+  const mr = i % (2 * DH - 2);
+  const c = mc < DW ? mc : 2 * DW - 2 - mc;
+  const r = mr < DH ? mr : 2 * DH - 2 - mr;
+  return grainTex[r * DW + c];
 }
 
 // where the animated clock hand's pivot hangs, just below the strap stub
@@ -192,11 +203,11 @@ function widen(src: ImageData, aux: ImageData, w0: number): ImageData {
       O[d] = buf[si]; O[d + 1] = buf[si + 1]; O[d + 2] = buf[si + 2]; O[d + 3] = buf[si + 3];
     }
   };
-  // the same extruded slice, shade-drifted along the run (see grainAt)
-  const putGrain = (buf: Uint8ClampedArray, si: number, y: number, dx0: number, n: number) => {
+  // the same extruded slice + donor fiber along the run (cross = the row)
+  const putGrain = (buf: Uint8ClampedArray, si: number, y: number, dx0: number, n: number, cross: number) => {
     for (let i = 0; i < n; i++) {
       const d = (y * w0 + dx0 + i) * 4;
-      const g = buf[si + 3] > 0 ? grainAt(i) : 0;
+      const g = buf[si + 3] > 0 ? grainAt(cross, i) : 0;
       O[d] = buf[si] + g; O[d + 1] = buf[si + 1] + g; O[d + 2] = buf[si + 2] + g;
       O[d + 3] = buf[si + 3];
     }
@@ -208,8 +219,8 @@ function widen(src: ImageData, aux: ImageData, w0: number): ImageData {
       copy(y, CUT_L, cr, CUT_L + gl);
       copy(y, cr, AW, cr + insW);
       if (y < TOP_FILL_ROWS) {
-        putGrain(A, (y * AW + CUT_L) * 4, y, CUT_L, gl); // extrude cut column
-        putGrain(A, (y * AW + cr) * 4, y, cr + gl, gr); // extrude cut-line pixel
+        putGrain(A, (y * AW + CUT_L) * 4, y, CUT_L, gl, y); // extrude cut column
+        putGrain(A, (y * AW + cr) * 4, y, cr + gl, gr, y); // extrude cut-line pixel
       }
     } else {
       let m: HMember | undefined;
@@ -227,7 +238,7 @@ function widen(src: ImageData, aux: ImageData, w0: number): ImageData {
             const sx = m.s0 + ((cx - m.s0 + r) % m.p);
             const si = (y * AW + sx) * 4;
             const d = (y * w0 + cx + r) * 4;
-            const g = m.p <= 12 && S[si + 3] > 0 ? grainAt(r) : 0; // planks drift; rail B's 100px unit has its own grain
+            const g = m.p <= 12 && S[si + 3] > 0 ? grainAt(y - m.y0, r) : 0; // planks get fiber; rail B's 100px unit has its own grain
             O[d] = S[si] + g; O[d + 1] = S[si + 1] + g; O[d + 2] = S[si + 2] + g;
             O[d + 3] = S[si + 3];
           }
@@ -247,15 +258,16 @@ function heighten(wideImg: ImageData, h0: number, g1: number, g2: number): Image
     O.set(S.subarray(sy * w0 * 4, (sy + 1) * w0 * 4), dy * w0 * 4);
   let dy = 0;
   for (let y = 0; y < VCUT1; y++) row(y, dy++);
-  // g1 repeats the seamless cut row, shade-drifted along the run (grainAt)
+  // g1 repeats the seamless cut row + donor fiber (cross = the column, so
+  // fibers run DOWN the rails — along the wood, not across it)
   for (let r = 0; r < g1; r++) {
     row(VCUT1, dy);
-    const g = grainAt(r);
-    if (g) {
-      const base = dy * w0 * 4;
-      for (let x = 0; x < w0; x++) {
-        const d = base + x * 4;
-        if (O[d + 3] > 0) { O[d] += g; O[d + 1] += g; O[d + 2] += g; }
+    const base = dy * w0 * 4;
+    for (let x = 0; x < w0; x++) {
+      const d = base + x * 4;
+      if (O[d + 3] > 0) {
+        const g = grainAt(x, r);
+        if (g) { O[d] += g; O[d + 1] += g; O[d + 2] += g; }
       }
     }
     dy++;
@@ -503,7 +515,7 @@ export function mountFrame2(onLayout: (l: FrameLayout) => void) {
     ]).then(([f, a]) => {
       frameData = f;
       auxData = a;
-      buildGrainSeq(f);
+      buildGrainTex(f);
       compose();
     });
   } else {
