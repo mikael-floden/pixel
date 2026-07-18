@@ -47,14 +47,35 @@ function cutR(y: number): number {
 }
 const TOP_FILL_ROWS = 100; // rows that carry beam art at the top cuts
 
+// ---- horizontal-piece fiber donors ----
+// The V-donor (grain section below) fits the ~40px-wide vertical rails. The
+// HORIZONTAL fills (rail A ~130 cross rows, bottom rail, top beams) are far
+// wider than its 36px cross, and the mirror-wrap put a reflected copy of the
+// fiber mid-face — the maintainer circled rail A: "are you drawing this tile
+// twice?". Each horizontal fill samples ITS OWN clean face as donor: the
+// cross axis maps 1:1 (identity — it cannot wrap), and only the RUN
+// ping-pongs along the clean span, where a mirrored horizontal streak still
+// reads as a horizontal streak. Delta = pixel luma minus its row's mean over
+// the span (the face's own cross profile removed), so only fiber transfers.
+interface HDonor {
+  aux: boolean; // sample from the runefree top-rail image instead of the frame
+  x0: number; x1: number; y0: number; y1: number;
+  mean?: Float32Array; // per-row luma mean over the span (built once)
+}
+const HD_BEAM_L: HDonor = { aux: true, x0: 121, x1: 144, y0: 0, y1: 100 };
+const HD_BEAM_R: HDonor = { aux: true, x0: 633, x1: 644, y0: 0, y1: 100 };
+const HD_RAIL_A: HDonor = { aux: false, x0: 446, x1: 484, y0: 630, y1: 760 };
+const HD_BOTTOM: HDonor = { aux: false, x0: 450, x1: 466, y0: 1280, y1: 1376 };
+
 interface HMember {
   y0: number; y1: number; cx: number; p: number; s0: number;
   flat?: [number, number][]; fc?: number;
+  hd?: HDonor; // own-face fiber donor (12px plank members)
 }
 const H_MEMBERS: HMember[] = [
-  { y0: 630, y1: 760, cx: 451, p: 12, s0: 445, flat: [[669, 686]], fc: 451 },
+  { y0: 630, y1: 760, cx: 451, p: 12, s0: 445, flat: [[669, 686]], fc: 451, hd: HD_RAIL_A },
   { y0: 760, y1: 905, cx: 392, p: 100, s0: 292 },
-  { y0: 1280, y1: 1376, cx: 383, p: 12, s0: 377, flat: [[1362, 1370]], fc: 383 },
+  { y0: 1280, y1: 1376, cx: 383, p: 12, s0: 377, flat: [[1362, 1370]], fc: 383, hd: HD_BOTTOM },
 ];
 const WIN_CUT = 384; // window bands: cut through transparency
 
@@ -108,7 +129,9 @@ function buildGrainTex(src: ImageData) {
 }
 
 /** donor fiber delta at (cross position, run position) — mirror-wrapped both
- * ways so the texture continues seamlessly at any size */
+ * ways so the texture continues seamlessly at any size. CROSS positions must
+ * be LOCAL to one piece of wood (≈ the donor's own 36px width): a wrap inside
+ * one wide face mirrors the fiber and reads as the tile drawn twice. */
 function grainAt(cross: number, i: number): number {
   if (!grainTex.length) return 0;
   const mc = cross % (2 * DW - 2);
@@ -116,6 +139,38 @@ function grainAt(cross: number, i: number): number {
   const c = mc < DW ? mc : 2 * DW - 2 - mc;
   const r = mr < DH ? mr : 2 * DH - 2 - mr;
   return grainTex[r * DW + c];
+}
+
+function buildHDonor(d: HDonor, src: ImageData) {
+  const S = src.data;
+  d.mean = new Float32Array(d.y1 - d.y0);
+  for (let y = d.y0; y < d.y1; y++) {
+    let sum = 0;
+    let cnt = 0;
+    for (let x = d.x0; x < d.x1; x++) {
+      const si = (y * AW + x) * 4;
+      if (S[si + 3] > 200) {
+        sum += 0.3 * S[si] + 0.6 * S[si + 1] + 0.1 * S[si + 2];
+        cnt++;
+      }
+    }
+    // rows whose span is mostly transparent (ragged edges) carry no fiber
+    d.mean[y - d.y0] = cnt >= (d.x1 - d.x0) / 2 ? sum / cnt : NaN;
+  }
+}
+
+function hGrainAt(d: HDonor, src: ImageData, y: number, i: number): number {
+  if (!d.mean || y < d.y0 || y >= d.y1) return 0;
+  const m = d.mean[y - d.y0];
+  if (Number.isNaN(m)) return 0;
+  const w = d.x1 - d.x0;
+  const mi = i % (2 * w - 2);
+  const dx = d.x0 + (mi < w ? mi : 2 * w - 2 - mi);
+  const si = (y * AW + dx) * 4;
+  const S = src.data;
+  if (S[si + 3] <= 200) return 0;
+  const dlt = 0.3 * S[si] + 0.6 * S[si + 1] + 0.1 * S[si + 2] - m;
+  return Math.max(-GRAIN_CLAMP, Math.min(GRAIN_CLAMP, Math.round(dlt)));
 }
 
 // where the animated clock hand's pivot hangs, just below the strap stub
@@ -203,11 +258,11 @@ function widen(src: ImageData, aux: ImageData, w0: number): ImageData {
       O[d] = buf[si]; O[d + 1] = buf[si + 1]; O[d + 2] = buf[si + 2]; O[d + 3] = buf[si + 3];
     }
   };
-  // the same extruded slice + donor fiber along the run (cross = the row)
-  const putGrain = (buf: Uint8ClampedArray, si: number, y: number, dx0: number, n: number, cross: number) => {
+  // the same extruded slice + own-face fiber along the run (identity cross)
+  const putGrain = (buf: Uint8ClampedArray, si: number, y: number, dx0: number, n: number, hd: HDonor, hdImg: ImageData) => {
     for (let i = 0; i < n; i++) {
       const d = (y * w0 + dx0 + i) * 4;
-      const g = buf[si + 3] > 0 ? grainAt(cross, i) : 0;
+      const g = buf[si + 3] > 0 ? hGrainAt(hd, hdImg, y, i) : 0;
       O[d] = buf[si] + g; O[d + 1] = buf[si + 1] + g; O[d + 2] = buf[si + 2] + g;
       O[d + 3] = buf[si + 3];
     }
@@ -219,8 +274,8 @@ function widen(src: ImageData, aux: ImageData, w0: number): ImageData {
       copy(y, CUT_L, cr, CUT_L + gl);
       copy(y, cr, AW, cr + insW);
       if (y < TOP_FILL_ROWS) {
-        putGrain(A, (y * AW + CUT_L) * 4, y, CUT_L, gl, y); // extrude cut column
-        putGrain(A, (y * AW + cr) * 4, y, cr + gl, gr, y); // extrude cut-line pixel
+        putGrain(A, (y * AW + CUT_L) * 4, y, CUT_L, gl, HD_BEAM_L, aux); // extrude cut column
+        putGrain(A, (y * AW + cr) * 4, y, cr + gl, gr, HD_BEAM_R, aux); // extrude cut-line pixel
       }
     } else {
       let m: HMember | undefined;
@@ -238,7 +293,7 @@ function widen(src: ImageData, aux: ImageData, w0: number): ImageData {
             const sx = m.s0 + ((cx - m.s0 + r) % m.p);
             const si = (y * AW + sx) * 4;
             const d = (y * w0 + cx + r) * 4;
-            const g = m.p <= 12 && S[si + 3] > 0 ? grainAt(y - m.y0, r) : 0; // planks get fiber; rail B's 100px unit has its own grain
+            const g = m.hd && S[si + 3] > 0 ? hGrainAt(m.hd, src, y, r) : 0; // planks get own-face fiber; rail B's 100px unit has its own grain
             O[d] = S[si] + g; O[d + 1] = S[si + 1] + g; O[d + 2] = S[si + 2] + g;
             O[d + 3] = S[si + 3];
           }
@@ -259,14 +314,17 @@ function heighten(wideImg: ImageData, h0: number, g1: number, g2: number): Image
   let dy = 0;
   for (let y = 0; y < VCUT1; y++) row(y, dy++);
   // g1 repeats the seamless cut row + donor fiber (cross = the column, so
-  // fibers run DOWN the rails — along the wood, not across it)
+  // fibers run DOWN the rails — along the wood, not across it). Cross is
+  // LOCAL to each rail: an absolute x would mirror-wrap inside the right
+  // rail and stamp a reflected fiber copy there ("tile drawn twice").
   for (let r = 0; r < g1; r++) {
     row(VCUT1, dy);
     const base = dy * w0 * 4;
     for (let x = 0; x < w0; x++) {
       const d = base + x * 4;
       if (O[d + 3] > 0) {
-        const g = grainAt(x, r);
+        const cross = x >= w0 - 64 ? x - (w0 - 64) : x;
+        const g = grainAt(cross, r);
         if (g) { O[d] += g; O[d + 1] += g; O[d + 2] += g; }
       }
     }
@@ -516,6 +574,10 @@ export function mountFrame2(onLayout: (l: FrameLayout) => void) {
       frameData = f;
       auxData = a;
       buildGrainTex(f);
+      buildHDonor(HD_BEAM_L, a);
+      buildHDonor(HD_BEAM_R, a);
+      buildHDonor(HD_RAIL_A, f);
+      buildHDonor(HD_BOTTOM, f);
       compose();
     });
   } else {
