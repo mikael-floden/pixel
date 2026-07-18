@@ -85,6 +85,18 @@ def main():
         b.save(OUT + name + ".png")
         print(name, b.size)
 
+    # ICONS: complete square icon buttons (own plate + border baked in).
+    # kit-icon-down (16x16): the download arrow — the select screen's
+    # icon-only install button (maintainer picked it over the house).
+    for name, box in (
+        ("kit-icon-home", (640, 96, 672, 128)),
+        ("kit-icon-down", (704, 198, 736, 230)),
+    ):
+        b = cut(im, box, {BG})
+        b = b.crop(b.getbbox())
+        b.save(OUT + name + ".png")
+        print(name, b.size)
+
 
 if __name__ == "__main__":
     main()

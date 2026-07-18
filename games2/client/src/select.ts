@@ -43,10 +43,11 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
         <div class="ml-row">
           <input id="ml-name" class="ml-name" maxlength="24" placeholder="your name"
                  value="${NAMES[Math.floor(Math.random() * NAMES.length)]}" />
-          <button id="ml-enter" class="ml-btn ml-plated"><span>Enter world</span></button>
         </div>
       </div>
-      <button id="ml-install" class="ml-install ml-plated" hidden><span>Install game</span></button>`;
+      <button id="ml-enter" class="ml-btn ml-plated"><span>Enter world</span></button>
+      <button id="ml-install" class="ml-install" hidden title="Install game" aria-label="Install game">
+        <img src="/ui2/kit-icon-down.png" alt="" draggable="false" /></button>`;
     document.body.appendChild(overlay);
     applyUiZoom(overlay); // "Desktop site" must not shrink the menu
     injectStyles();
@@ -202,6 +203,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     // prompt (main.ts stashes it in __mlInstall) and we're not already
     // running as an installed app.
     const installBtn = overlay.querySelector("#ml-install") as HTMLButtonElement;
+    pressFx(installBtn); // not .ml-plated (the icon art IS the button) — wire the press state directly
     const installed = ["standalone", "fullscreen", "minimal-ui"].some(
       (m) => window.matchMedia?.(`(display-mode: ${m})`).matches,
     );
@@ -420,34 +422,32 @@ function injectStyles() {
   .ml-portrait-box{width:192px;height:368px;overflow:hidden;position:relative;flex:none}
   .ml-portrait{position:absolute;left:-18px;top:77px;width:224px;height:224px;image-rendering:pixelated}
   /* Action row: ONE height (64px, same as the world chips) for the trough,
-     the dice and Enter — all buttons the same size, text centered. Wraps on
-     narrow screens (inside the ring) so the trough never collapses: the
-     Enter CTA drops to its own centred line instead. */
+     the trough fills the full column now that Enter world pins to the
+     screen bottom. */
   .ml-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center;width:var(--ml-col)}
   /* Name input = the kit's empty-slot trough (dressPlate "slot"); it FILLS
-     the row's leftover width so the action row spans exactly --ml-col and
-     its edges line up with the dropdown above. */
+     the row so its edges line up with the dropdown above. */
   .ml-name{flex:1 1 170px;min-width:170px;height:120px;padding:0 18px;border:none;
     image-rendering:pixelated;box-sizing:border-box;background:none;background-repeat:no-repeat;
     background-size:100% 100%;color:#e8e8ec;font-size:22px;text-align:center;text-shadow:0 1px 2px #000}
   .ml-name:focus{outline:none;color:#ffd678}
-  /* ENTER WORLD = a kit button with a REAL label (the plaque art with the
-     baked label is retired) */
-  .ml-btn{display:flex;align-items:center;justify-content:center;flex:none;border:none;padding:0 20px;
-    width:240px;height:120px;image-rendering:pixelated;
+  /* ENTER WORLD: full-column bar PINNED near the screen bottom (the
+     maintainer's blue band), above the version badge. Outside the panel so
+     scroll can't move it; it still fades with the overlay. */
+  .ml-btn{position:fixed;bottom:44px;left:50%;transform:translateX(-50%);z-index:2;
+    display:flex;align-items:center;justify-content:center;border:none;padding:0 20px;
+    width:var(--ml-col);height:120px;image-rendering:pixelated;
     font:700 22px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#fff;
     text-shadow:0 1px 0 rgba(0,0,0,.35)}
   .ml-btn.press{color:#f4e3c2}
-  /* install prompt: PINNED to the screen bottom (maintainer), full column
-     width, clear of the version badge. Outside the panel, so the panel's
-     overflow scroll can't clip or move it. Label styled EXACTLY like the
-     Enter world button (maintainer: "INSTALL GAME", same font). */
-  .ml-install{position:fixed;bottom:44px;left:50%;transform:translateX(-50%);z-index:2;
-    border:none;padding:0 24px;width:var(--ml-col);height:120px;
-    image-rendering:pixelated;cursor:pointer;
-    font:700 22px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#fff;
-    display:inline-flex;align-items:center;justify-content:center;text-shadow:0 1px 0 rgba(0,0,0,.35)}
-  .ml-install.press{color:#f4e3c2}`;
+  /* install prompt: ICON ONLY in the top-left corner (maintainer) — the
+     kit's house icon (install to home screen), a complete square icon
+     button at the shared 5x block scale. */
+  .ml-install{position:fixed;top:16px;left:16px;z-index:2;width:80px;height:80px;padding:0;
+    border:none;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .ml-install img{width:100%;height:100%;image-rendering:pixelated;-webkit-user-drag:none}
+  .ml-install[hidden]{display:none}
+  .ml-install.press img{translate:0 2.5px;filter:brightness(.85)}`;
   const s = document.createElement("style");
   s.textContent = css;
   document.head.appendChild(s);

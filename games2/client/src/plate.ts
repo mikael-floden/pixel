@@ -107,16 +107,17 @@ type Dressed = HTMLElement & { _paintPlate?: () => void };
 
 // The kit's DOWN bar is authored 1 art-pixel lower than the normal bar
 // (pressed into the surface), so a pressed plate's CONTENT — label, icon,
-// caret — dips with it: exactly 1 kit pixel, at the element's OWN block
-// scale (published as --ml-kitpx by paint). Children only: every plated
-// control is display:flex, so children are blockified and transformable;
-// bare text nodes can't shift — wrap labels in a <span>.
+// caret — dips with it: HALF a kit pixel at the element's OWN block scale
+// (published as --ml-kitpx by paint; a full kit pixel read as "moved down
+// too much", maintainer). Children only: every plated control is
+// display:flex, so children are blockified and transformable; bare text
+// nodes can't shift — wrap labels in a <span>.
 let plateCssInjected = false;
 function injectPlateCss() {
   if (plateCssInjected) return;
   plateCssInjected = true;
   const s = document.createElement("style");
-  s.textContent = `[data-plate].press>*{translate:0 var(--ml-kitpx,5px)}`;
+  s.textContent = `[data-plate].press>*{translate:0 calc(var(--ml-kitpx,5px) / 2)}`;
   document.head.appendChild(s);
 }
 
