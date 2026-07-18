@@ -1000,6 +1000,9 @@ export class WorldScene extends Phaser.Scene {
         this.hud?.refreshSettings();
         return gameAudio.pureEnabled;
       },
+      // Fire the thunder rumble on demand (storms are rare episodes — this
+      // lets QA/the maintainer hear it without waiting for the weather).
+      audioThunder: (strength = 1) => gameAudio.thunder(strength),
       stamina: () => this.room?.state.players.get(this.room!.sessionId)?.stamina ?? null,
       swimming: () => !!this.room?.state.players.get(this.room!.sessionId)?.swimming,
       surfaceAt: (x: number, y: number) => (this.terrain ? surfaceAtWorld(this.terrain, x, y) : null),

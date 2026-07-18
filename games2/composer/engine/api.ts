@@ -202,18 +202,18 @@ export class GameAudio {
   }
 
   /** Distant thunder to accompany a lightning flash, arriving 0.8-2.3s
-   * after the light (the storm is beyond the horizon). Prefers the
-   * composer's REAL generated thunder set (foley/thunder — maintainer QA:
-   * the disguised explosion "doesn't sound like thunder"); until it's
-   * generated, the fallback is the explosion take slowed + muffled. */
+   * after the light (the storm is beyond the horizon — the delay is
+   * physics, not sound modification). GENTLENESS: the primary real roll
+   * (take01) every strike, micro pitch jitter only, near-center pan, and
+   * a small strength-driven level range (−7…−4 dB into the sfx bus). */
   thunder(strength = 1): void {
     if (!this.ready()) return;
     const own = composerFoley("thunder");
     if (own) {
       this.oneShots.play(this.foleyEntry("thunder", own, "click"), "sfx", {
-        gainDb: -8 + 5 * Math.min(1, strength),
+        gainDb: -7 + 3 * Math.min(1, strength),
         delayS: 0.8 + Math.random() * 1.5,
-        pan: (Math.random() - 0.5) * 0.6,
+        pan: (Math.random() - 0.5) * 0.16,
       });
       return;
     }
