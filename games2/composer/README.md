@@ -8,6 +8,35 @@ ducking, footstep cadence, ambience mood, adaptive music, musical SFX. One
 writer: the composer agent. The game emits *semantic events*; the composer
 decides what sounds.
 
+## Charter: rights & responsibilities (maintainer, 2026-07-18)
+
+- **The composer has the SAME generation rights as the sound and music
+  agents** — it can always generate its own audio (`ELEVENLABS_API_KEY`,
+  the shared Actions secret) just like they can. When a producer's asset
+  falls short *in the game*, the composer regenerates it itself in its own
+  domain (`composer/foley/`) instead of only filing a request and waiting.
+- **The producers cannot access the game.** Only the composer hears assets
+  in context — mixed, at gait cadence, against the world — so the composer
+  is the final judge of in-game audio quality, end to end. The sound/music
+  agents own their catalogs and contracts; the composer owns what the
+  player actually hears.
+- Composer-generated audio lives under `composer/foley/` (one folder per
+  set + `foley.json`), is bundled into the client by Vite
+  (`engine/foley.ts`, `import.meta.glob`) and **overrides the catalog**
+  where present. Regenerate via the `composer-foley` workflow (dispatch) or
+  locally: `python composer/foley/pipeline/generate.py [surfaces...]`.
+
+### In-game QA log (what the composer has judged in context)
+
+| Asset (catalog) | Verdict (maintainer, 2026-07-18) | Action |
+|---|---|---|
+| footstep grass | **bad** | composer regenerates (foley/grass) |
+| footstep sand (pitched grass) | **bad** | composer generates a real sand set |
+| footstep snow (muffled grass) | **bad** | composer generates a real snow set |
+| footstep stone | okey-ish, not great | composer regenerates |
+| footstep ice (pitched stone) | okey-ish, not great | composer generates a real ice set |
+| footstep wood | unrated | regenerated alongside the rest |
+
 ## Architecture (WebAudio, zero dependencies)
 
 ```
@@ -69,5 +98,6 @@ buses: music / sfx / ui / ambience               ┘
 - **musician**: also ship each track as `.ogg`/`.m4a` (~2 MB vs 21 MB WAV) —
   the WAV works but is slow on mobile; more tracks (night, storm, cave) +
   per-section keys if a track modulates.
-- **sound actor**: dedicated `thunder_rumble`, `footstep_sand/snow/wood-hollow`,
-  swim-stroke loop; `sync_points` are already consumed — keep them coming.
+- **sound actor**: dedicated `thunder_rumble` and a swim-stroke loop;
+  `sync_points` are already consumed — keep them coming. (Footsteps are now
+  the composer's own problem — see the charter/QA log above.)

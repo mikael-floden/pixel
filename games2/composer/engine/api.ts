@@ -14,6 +14,7 @@ import { AudioGraph, BufferCache, BusName } from "./context";
 import { AmbienceMixer } from "./ambience";
 import { MusicDirector } from "./music";
 import { OneShotPlayer, PlayOpts } from "./oneshot";
+import { composerFoley, composerFoleySurfaces } from "./foley";
 
 /** Per-avatar, per-frame movement sample — the scene reports what the body
  * is doing; the composer turns it into footsteps at gait cadence. */
@@ -230,6 +231,19 @@ export class GameAudio {
     if (g.travelled < stepLen) return;
     g.travelled = 0;
 
+    // Composer-generated per-surface foley wins (maintainer QA rated the
+    // catalog sets bad/okeyish); catalog mapping is the fallback until every
+    // surface is regenerated.
+    const own = composerFoley(f.surface);
+    if (own) {
+      this.oneShots.play(this.foleyEntry(f.surface, own), "sfx", {
+        pan: f.pan,
+        dist: f.dist,
+        rate: f.running ? 1.05 : 1,
+        gainDb: -8 + (f.running ? 1.5 : 0),
+      });
+      return;
+    }
     const foot = FOOTSTEPS[f.surface];
     if (!foot) return; // water/void/unknown: no dry footfall
     this.play(foot.id, "sfx", {
@@ -239,6 +253,40 @@ export class GameAudio {
       gainDb: (foot.gainDb ?? 0) + (f.running ? 1.5 : 0),
       lowpassHz: foot.lowpassHz,
     });
+  }
+
+  private foleyCache = new Map<string, SoundEntry>();
+
+  /** Synthetic catalog entry for a composer-generated foley set (bundled
+   * absolute URLs + the standard footstep variation contract). */
+  private foleyEntry(surface: string, urls: string[]): SoundEntry {
+    let e = this.foleyCache.get(surface);
+    if (!e) {
+      e = {
+        id: `composer_foley_${surface}`,
+        category: "movement",
+        loop: false,
+        file: urls[0],
+        urls,
+        mix_gain_db: 0, // gain passed per-play; footfall level lives there
+        variation: {
+          round_robin: true,
+          no_immediate_repeat: true,
+          pitch_jitter_semitones: [-1.5, 1.5],
+          gain_jitter_db: [-2.5, 2.5],
+          start_jitter_ms: [0, 15],
+        },
+        music: {
+          tonal: false,
+          root_midi: null,
+          pitch_confidence: 0,
+          max_shift_semitones: 0,
+          scale_snap_replaces_jitter: false,
+        },
+      };
+      this.foleyCache.set(surface, e);
+    }
+    return e;
   }
 
   dropAvatar(id: string): void {
@@ -370,6 +418,7 @@ export class GameAudio {
       played: this.graph ? this.oneShots.played : 0,
       sound: this.soundOn,
       musicOn: this.musicOn,
+      foley: composerFoleySurfaces(),
       mode: this.mode,
       underwater: this.underwater,
       music: this.graph ? this.music.debug() : null,

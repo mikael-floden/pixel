@@ -1,0 +1,62 @@
+name: Composer foley generation
+
+# The composer agent's OWN audio generation (games2/composer/foley/) — same
+# rights + same ELEVENLABS_API_KEY secret as the sounds/music domains
+# (maintainer 2026-07-18). On-demand only: run it after editing the briefs in
+# generate.py, optionally limiting to specific surfaces. Commits the mastered
+# takes + manifest; the pushed WAVs deploy with the next client build (they
+# are bundled by Vite via import.meta.glob).
+
+on:
+  workflow_dispatch:
+    inputs:
+      surfaces:
+        description: "Space-separated surfaces (empty = all: grass sand snow stone ice wood dirt swamp)"
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: composer-foley
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate + master the foley takes
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: python games2/composer/foley/pipeline/generate.py ${{ github.event.inputs.surfaces }}
+
+      - name: Commit + push
+        run: |
+          git config user.name "pixel-composer-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add games2/composer/foley/
+          git diff --cached --quiet && { echo "nothing generated"; exit 0; }
+          git commit -m "composer: regenerate footstep foley (own generation rights)"
+          for i in 1 2 3 4; do
+            git push origin main && exit 0
+            git pull --rebase origin main
+          done
+          git push origin main

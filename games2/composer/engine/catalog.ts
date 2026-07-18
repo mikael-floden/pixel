@@ -32,6 +32,9 @@ export interface SoundEntry {
   loop: boolean;
   file: string; // repo-relative under sounds/ (starts with the category)
   takes?: string[];
+  /** ABSOLUTE take URLs (composer's own bundled foley) — when set they win
+   * over file/takes and are used verbatim (no /assets/sounds prefix). */
+  urls?: string[];
   duration_seconds?: number;
   mix_gain_db?: number;
   variation?: SoundVariation;

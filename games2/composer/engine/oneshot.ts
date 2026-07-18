@@ -62,20 +62,25 @@ export class OneShotPlayer {
     if (now - last < 30) return;
     this.lastPlayedAt.set(sound.id, now);
 
-    void this.buffers.get(soundUrl(this.pickTake(sound))).then((buf) => {
+    void this.buffers.get(this.pickTake(sound)).then((buf) => {
       if (buf) this.start(sound, bus, buf, opts);
     });
   }
 
   /** Round-robin across takes, never repeating the last one (the sound
-   * actor's variation contract — repeating foley reads as a machine gun). */
+   * actor's variation contract — repeating foley reads as a machine gun).
+   * Returns a ready URL: composer-bundled `urls` win over catalog paths. */
   private pickTake(sound: SoundEntry): string {
-    const takes = sound.takes && sound.takes.length > 0 ? sound.takes : [sound.file];
+    if (sound.urls && sound.urls.length > 0) return this.pickFrom(sound.id, sound.urls);
+    return soundUrl(this.pickFrom(sound.id, sound.takes?.length ? sound.takes : [sound.file]));
+  }
+
+  private pickFrom(id: string, takes: string[]): string {
     if (takes.length === 1) return takes[0];
-    const last = this.lastTake.get(sound.id) ?? -1;
+    const last = this.lastTake.get(id) ?? -1;
     let idx = Math.floor(Math.random() * takes.length);
     if (idx === last) idx = (idx + 1) % takes.length;
-    this.lastTake.set(sound.id, idx);
+    this.lastTake.set(id, idx);
     return takes[idx];
   }
 
