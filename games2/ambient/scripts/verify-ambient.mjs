@@ -27,8 +27,10 @@ try {
 
   // ---- registry ----
   const list = await page.evaluate(() => window.__mlAmbient.list());
-  for (const want of ["fireflies", "pollen", "bats", "thunder", "rainbow", "sandstorm", "tumbleweed", "leaves", "heathaze"])
+  for (const want of ["fireflies", "pollen", "bats", "thunder", "sandstorm", "tumbleweed", "leaves"])
     if (!list.includes(want)) fail(`feature ${want} not mounted (got ${list})`);
+  if (list.includes("heathaze") || list.includes("rainbow"))
+    fail(`heathaze/rainbow were removed but still mounted (${list})`);
   ok(`mounted: ${list.join(", ")}`);
 
   // ---- night: fireflies up, pollen down ----
@@ -88,18 +90,6 @@ try {
   if (Math.abs(rn - 3) > 0.05) fail(`thunder night+raining must be x3 base (got x${rn.toFixed(2)})`);
   if (!(rd < rn)) fail("thunder: night+rain must beat rain alone");
   ok(`thunder likeliness rain x${rd.toFixed(2)}, night+rain x${rn.toFixed(2)}`);
-  // Rainbow physics: sunlight through wet air, or no bow at all.
-  const rb = await page.evaluate(() => ({
-    dayClear: window.__mlAmbient.weights({ night: 0, sun: 1, cloud: 0, mist: 0, weatherName: "Clear sky" }).rainbow,
-    dayCloudy: window.__mlAmbient.weights({ night: 0, sun: 1, cloud: 1, mist: 0, weatherName: "Cloudy at times" }).rainbow,
-    nightCloudy: window.__mlAmbient.weights({ night: 1, sun: 0, cloud: 1, mist: 0, weatherName: "Cloudy at times" }).rainbow,
-    dayRain: window.__mlAmbient.weights({ night: 0, sun: 1, cloud: 0.5, mist: 0, weatherName: "Light rain" }).rainbow,
-  }));
-  if (rb.dayClear > 0.01) fail(`rainbow needs moisture (day+clear weight ${rb.dayClear})`);
-  if (!(rb.dayCloudy > 0.2)) fail(`rainbow must be likely on a cloudy day (${rb.dayCloudy})`);
-  if (rb.nightCloudy > 0.01) fail(`rainbow needs sun (night weight ${rb.nightCloudy})`);
-  if (!(rb.dayRain > rb.dayCloudy)) fail(`a rain weather must beat the cloud proxy (${rb.dayRain} vs ${rb.dayCloudy})`);
-  ok(`rainbow likeliness: sun x moisture (clear ${rb.dayClear}, cloudy ${rb.dayCloudy.toFixed(2)}, rain ${rb.dayRain.toFixed(2)}, night 0)`);
   // Sandstorm is TERRAIN-gated: no sand underfoot, no storm — ever.
   const ss = await page.evaluate(() => ({
     onSand: window.__mlAmbient.weights({ sand: 1, mist: 0, weatherName: "Clear sky" }).sandstorm,
@@ -120,18 +110,6 @@ try {
   if (!(tw.grass > 0.05)) fail(`tumbleweed may still cross a plain (grass ${tw.grass})`);
   if (tw.rain > 0.001) fail(`rain must stop the tumbleweed (${tw.rain})`);
   ok(`tumbleweed likeliness: sand ${tw.sand.toFixed(2)}, grass ${tw.grass.toFixed(2)}, rain ${tw.rain}`);
-  // Heat haze is terrain-gated like the sandstorm: hot sand + sun only.
-  const hh = await page.evaluate(() => ({
-    onSand: window.__mlAmbient.weights({ sun: 1, sand: 1, cloud: 0, mist: 0, weatherName: "Clear sky" }).heathaze,
-    offSand: window.__mlAmbient.weights({ sun: 1, sand: 0, cloud: 0, mist: 0, weatherName: "Clear sky" }).heathaze,
-    night: window.__mlAmbient.weights({ sun: 0, sand: 1, cloud: 0, mist: 0, weatherName: "Clear sky" }).heathaze,
-    cloudy: window.__mlAmbient.weights({ sun: 1, sand: 1, cloud: 1, mist: 0, weatherName: "Cloudy at times" }).heathaze,
-  }));
-  if (!(hh.onSand > 0.3)) fail(`heat haze must be likely on hot sand (${hh.onSand})`);
-  if (hh.offSand > 0.001) fail(`heat haze needs sand (${hh.offSand})`);
-  if (hh.night > 0.001) fail(`heat haze needs sun (${hh.night})`);
-  if (!(hh.cloudy < hh.onSand)) fail(`cloud must thin the heat haze (${hh.cloudy} vs ${hh.onSand})`);
-  ok(`heat haze likeliness: sun×sand×dry (sand ${hh.onSand.toFixed(2)}, grass ${hh.offSand}, night ${hh.night}, cloudy ${hh.cloudy.toFixed(2)})`);
 
   // ---- director rolls + episode life cycle ----
   await page.evaluate(() => window.__ml.timeOfDay("night", true));
@@ -208,21 +186,6 @@ try {
   });
   if (label !== "ambient: bats") fail(`button click must advance pollen -> bats (got ${JSON.stringify(label)})`);
   else ok("button click advances the ring (pollen -> bats)");
-  // Demo the rainbow: world -> Day + Cloudy, shader bow condenses, drizzle falls.
-  await page.evaluate(() => window.__mlAmbient.demo("rainbow"));
-  await page.waitForFunction(
-    () => window.__ml.timeOfDay().name === "Day" && window.__ml.weatherInfo().idx === 1,
-    null,
-    { timeout: 5000 },
-  );
-  await page.waitForTimeout(5500); // the bow condenses on a slow ~2.2s tau
-  const rbd = await dbg("rainbow");
-  if (!rbd.active) fail("demoed rainbow must be active");
-  if (!rbd.shader) fail("rainbow must have built its shader (WebGL)");
-  if (rbd.gain < 0.3) fail(`rainbow gain must rise in a demoed sun-shower (${rbd.gain.toFixed(2)})`);
-  if (!rbd.center) fail("rainbow must be drawing (no arc centre)");
-  if (rbd.drops < 10) fail(`sun-shower drizzle must fall (${rbd.drops} drops)`);
-  ok(`demo(rainbow): bow up (gain ${rbd.gain.toFixed(2)}, centre ${rbd.center}, ${rbd.drops} drizzle streaks)`);
   // Demo the sandstorm: world -> Day + Clear; even off-sand the demo shows
   // the drifting-dust floor (the button can't teleport the player to a
   // beach), with the streak layer running.
@@ -254,26 +217,8 @@ try {
   if (lvd.gain < 0.4 || lvd.count < 3) fail(`leaves must fall in a demo (gain ${lvd.gain?.toFixed?.(2)}, ${lvd.count})`);
   if (!lvd.sample || typeof lvd.sample.d !== "number") fail("leaves must depth-sort into the world (no sample depth)");
   ok(`demo(leaves): ${lvd.count} falling (gain ${lvd.gain.toFixed(2)}, sample depth ${lvd.sample.d})`);
-  // Demo heat haze: world -> Day + Clear; the post-process attaches, dust floor.
-  await page.evaluate(() => window.__mlAmbient.demo("heathaze"));
-  await page.waitForFunction(() => window.__ml.timeOfDay().name === "Day", null, { timeout: 5000 });
-  await page.waitForTimeout(6000);
-  const hhd = await dbg("heathaze");
-  if (hhd.broken) fail("heat haze pipeline must not be broken on WebGL");
-  if (!hhd.active) fail("demoed heat haze must be active");
-  if (hhd.gain < 0.2) fail(`heat haze floor must show in a demo (gain ${hhd.gain?.toFixed?.(2)})`);
-  if (!hhd.attached) fail("heat haze must attach its camera post-process when visible");
-  // And the game must still render underneath the pipeline (player present).
-  const alive = await page.evaluate(() => window.__ml.players() >= 1);
-  if (!alive) fail("game must keep rendering with the heat-haze pipeline attached");
-  ok(`demo(heathaze): pipeline attached=${hhd.attached}, gain ${hhd.gain.toFixed(2)}, game still live`);
   // Back to auto: pin released, suppression lifted, director rolls again.
-  // Heat haze must DETACH its camera post-process on the way out.
   await page.evaluate(() => window.__mlAmbient.demo(null));
-  await page.waitForTimeout(3500);
-  const hhOff = await dbg("heathaze");
-  if (hhOff.attached) fail("heat haze must detach its post-process when it fades out");
-  else ok("heat haze detaches its post-process when idle (render path restored)");
   const dirAuto = await page.evaluate(() => window.__mlAmbient.director());
   if (dirAuto.pinned !== null) fail(`demo(null) must release the pin (got ${JSON.stringify(dirAuto)})`);
   const ffAuto = await dbg("fireflies");

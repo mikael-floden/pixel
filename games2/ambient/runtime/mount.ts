@@ -48,7 +48,7 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       // Hand features WALL-CLOCK deltas, not Phaser's smoothed dt: under
       // long frames (software-GL harnesses, laggy phones) the smoothed dt
       // under-reports real time and every ambient timer/fade crawls — the
-      // rainbow-gain lesson, applied to the whole layer. Capped at 500ms so
+      // eased-gain lesson, applied to the whole layer. Capped at 500ms so
       // a background-tab hitch can't teleport particles.
       const now = scene.time.now;
       const dt = lastTick ? Math.min(500, now - lastTick) : phaserDt;
