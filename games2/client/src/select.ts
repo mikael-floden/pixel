@@ -498,21 +498,21 @@ function injectStyles() {
   .ml-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;justify-content:center;align-items:center}
   /* Name input = the kit's empty-slot trough (dressPlate "slot"); height 70
      keeps its art on the shared 5px block grid. */
-  .ml-name{flex:1 1 170px;max-width:300px;min-width:170px;height:70px;padding:0 18px;border:none;
+  .ml-name{flex:1 1 170px;max-width:340px;min-width:170px;height:120px;padding:0 18px;border:none;
     image-rendering:pixelated;box-sizing:border-box;background:none;background-repeat:no-repeat;
     background-size:100% 100%;color:#e8e8ec;font-size:18px;text-align:center;text-shadow:0 1px 2px #000}
   .ml-name:focus{outline:none;color:#ffd678}
   /* ENTER WORLD = a kit button with a REAL label (the plaque art with the
      baked label is retired) */
   .ml-btn{display:flex;align-items:center;justify-content:center;flex:none;border:none;padding:0 20px;
-    width:200px;height:60px;image-rendering:pixelated;
+    width:240px;height:120px;image-rendering:pixelated;
     font:700 17px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#fff;
     text-shadow:0 1px 0 rgba(0,0,0,.35)}
   .ml-btn.press{color:#f4e3c2}
   /* the dice on a kit plate */
-  .ml-ghost{width:60px;height:60px;background:none;color:#e8e8ec;font-size:22px;padding:0}
+  .ml-ghost{width:120px;height:120px;background:none;color:#e8e8ec;font-size:22px;padding:0}
   /* install prompt = a kit button with visible text */
-  .ml-install{margin-top:12px;border:none;padding:0 18px;width:auto;min-width:260px;height:56px;
+  .ml-install{margin-top:12px;border:none;padding:0 24px;width:auto;min-width:280px;height:120px;
     image-rendering:pixelated;color:#fff;font:700 13px system-ui,sans-serif;cursor:pointer;
     display:inline-flex;align-items:center;justify-content:center;text-shadow:0 1px 0 rgba(0,0,0,.35)}`;
   const s = document.createElement("style");
