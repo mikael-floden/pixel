@@ -1,0 +1,189 @@
+{
+  "grass": {
+    "takes": [
+      "grass/grass__take01.wav",
+      "grass/grass__take02.wav",
+      "grass/grass__take03.wav",
+      "grass/grass__take04.wav"
+    ],
+    "durations_s": [
+      1.6,
+      1.6,
+      1.6,
+      1.6
+    ],
+    "brief": "a single footstep on dry meadow grass: a leather boot pressing into springy turf, light crisp rustle of grass blades over a soft earthy thud",
+    "generated_at": "2026-07-18T14:15:56+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "sand": {
+    "takes": [
+      "sand/sand__take01.wav",
+      "sand/sand__take02.wav",
+      "sand/sand__take03.wav",
+      "sand/sand__take04.wav"
+    ],
+    "durations_s": [
+      1.6,
+      1.6,
+      1.6,
+      1.6
+    ],
+    "brief": "a single footstep on loose dry sand: granular gritty crunch as the boot heel compresses the sand, with a fine short sandy slide as the foot settles",
+    "generated_at": "2026-07-18T14:16:05+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "snow": {
+    "takes": [
+      "snow/snow__take01.wav",
+      "snow/snow__take02.wav",
+      "snow/snow__take03.wav",
+      "snow/snow__take04.wav"
+    ],
+    "durations_s": [
+      1.6,
+      1.6,
+      1.6,
+      1.6
+    ],
+    "brief": "a single footstep in fresh dry powder snow: a clean muffled crunch of snow crystals compacting under a heavy winter boot",
+    "generated_at": "2026-07-18T14:16:14+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "ice": {
+    "takes": [
+      "ice/ice__take01.wav",
+      "ice/ice__take02.wav",
+      "ice/ice__take03.wav",
+      "ice/ice__take04.wav"
+    ],
+    "durations_s": [
+      1.6,
+      1.553,
+      1.6,
+      1.148
+    ],
+    "brief": "a single careful footstep on solid frozen lake ice: a hard boot tap with a thin glassy crackle and a very short slick slide",
+    "generated_at": "2026-07-18T14:16:25+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "wood": {
+    "takes": [
+      "wood/wood__take01.wav",
+      "wood/wood__take02.wav",
+      "wood/wood__take03.wav",
+      "wood/wood__take04.wav"
+    ],
+    "durations_s": [
+      1.6,
+      1.6,
+      1.6,
+      0.682
+    ],
+    "brief": "a single footstep on thick wooden planks: a boot heel landing on a timber balcony with a warm, slightly hollow knock",
+    "generated_at": "2026-07-18T14:16:34+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "dirt": {
+    "takes": [
+      "dirt/dirt__take01.wav",
+      "dirt/dirt__take02.wav",
+      "dirt/dirt__take03.wav",
+      "dirt/dirt__take04.wav"
+    ],
+    "durations_s": [
+      1.125,
+      1.6,
+      1.6,
+      1.6
+    ],
+    "brief": "a single footstep on packed dry dirt: a dull earthy thud of a boot on compacted soil with a tiny gravelly scuff",
+    "generated_at": "2026-07-18T14:16:42+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "swamp": {
+    "takes": [
+      "swamp/swamp__take01.wav",
+      "swamp/swamp__take02.wav",
+      "swamp/swamp__take03.wav",
+      "swamp/swamp__take04.wav"
+    ],
+    "durations_s": [
+      1.6,
+      1.6,
+      1.6,
+      1.405
+    ],
+    "brief": "a single squelching footstep in shallow bog mud: a wet sucking squish as a boot presses into soft marsh ground",
+    "generated_at": "2026-07-18T14:16:51+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "thunder": {
+    "takes": [
+      "thunder/thunder__take01.wav",
+      "thunder/thunder__take02.wav",
+      "thunder/thunder__take03.wav",
+      "thunder/thunder__take04.wav"
+    ],
+    "durations_s": [
+      10.937,
+      11.97,
+      11.235,
+      11.542
+    ],
+    "brief": "distant rolling thunder from a storm beyond the horizon: a deep natural low-frequency rumble rolling and echoing across a wide open valley sky, real outdoor storm recording, no rain, no wind",
+    "generated_at": "2026-07-18T14:17:02+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "ui_tick": {
+    "takes": [
+      "ui_tick/ui_tick__take01.wav",
+      "ui_tick/ui_tick__take02.wav",
+      "ui_tick/ui_tick__take03.wav",
+      "ui_tick/ui_tick__take04.wav"
+    ],
+    "durations_s": [
+      0.308,
+      0.96,
+      0.96,
+      0.96
+    ],
+    "brief": "a tiny tactile interface click: a small smooth wooden game button pressed once, a single short dry click, purely mechanical, NOT musical, no chime, no piano, no tone",
+    "generated_at": "2026-07-18T14:17:11+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "ui_confirm": {
+    "takes": [
+      "ui_confirm/ui_confirm__take01.wav",
+      "ui_confirm/ui_confirm__take02.wav",
+      "ui_confirm/ui_confirm__take03.wav",
+      "ui_confirm/ui_confirm__take04.wav"
+    ],
+    "durations_s": [
+      0.96,
+      0.96,
+      0.785,
+      0.96
+    ],
+    "brief": "a satisfying chunky mechanical click: a solid wooden game button pressed and seating firmly into its socket, a compact low tactile thock, purely mechanical, NOT musical, no chime, no piano, no tone",
+    "generated_at": "2026-07-18T14:17:19+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  },
+  "ui_cancel": {
+    "takes": [
+      "ui_cancel/ui_cancel__take01.wav",
+      "ui_cancel/ui_cancel__take02.wav",
+      "ui_cancel/ui_cancel__take03.wav",
+      "ui_cancel/ui_cancel__take04.wav"
+    ],
+    "durations_s": [
+      0.96,
+      0.96,
+      0.96,
+      0.96
+    ],
+    "brief": "a muted mechanical clack: a wooden latch releasing, a short lower-pitched dry double-click of a button backing out, purely mechanical, NOT musical, no chime, no piano, no tone",
+    "generated_at": "2026-07-18T14:17:28+00:00",
+    "model_id": "eleven_text_to_sound_v2"
+  }
+}
