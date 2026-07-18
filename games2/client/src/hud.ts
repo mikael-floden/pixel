@@ -307,7 +307,10 @@ function injectStyles() {
     --ml-bw:calc(26px * var(--ml-hud-scale))}   /* plate border render width */
   /* HUD sections: base props only — position/size come from applyFrameLayout
      (the frame-v2 windows), set inline after every compose. */
-  .ml-hud{position:fixed;left:0;right:0;bottom:0;z-index:4;background:#23160d;box-sizing:border-box}
+  /* the band behind the menu buttons: the KIT's pop-up panel brown
+     (80,60,51) — the tone its own buttons sit on. Brighter than the old
+     #23160d plate-sheet backdrop (maintainer, repeatedly). */
+  .ml-hud{position:fixed;left:0;right:0;bottom:0;z-index:4;background:#503c33;box-sizing:border-box}
   .ml-tabrow{position:absolute;display:flex;justify-content:space-evenly;align-items:center}
   /* tabs carry the SAME kit trio as the settings buttons (dressPlate in the
      constructor): brown Normal, cream Selected, dark Down while held */
