@@ -210,8 +210,13 @@ export class GameAudio {
     if (!this.ready()) return;
     const own = composerFoley("thunder");
     if (own) {
+      // Level, not processing: at the old −7..−4 dB the roll sat ~3 dB over
+      // the ambience beds — and thunder's 30-150 Hz energy barely exists on
+      // phone/laptop speakers, so it vanished entirely (maintainer: "I see
+      // flashes but hear nothing"). ~10 dB up gives it real presence while
+      // peaks stay well under the limiter.
       this.oneShots.play(this.foleyEntry("thunder", own, "click"), "sfx", {
-        gainDb: -7 + 3 * Math.min(1, strength),
+        gainDb: 6 * Math.min(1, strength),
         delayS: 0.8 + Math.random() * 1.5,
         pan: (Math.random() - 0.5) * 0.16,
       });
