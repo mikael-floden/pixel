@@ -71,9 +71,16 @@ const FOOT_PHASES = [0.05, 0.55];
 // step, micro-jitter only. Water stays splash/swim, no dry footfall.
 const FOOTSTEP_SETS: Record<string, string> = { snow: "snow" };
 const FOOTSTEP_DEFAULT = "stone";
-// Per-set trims/variation on top of the step profile (maintainer 2026-07-18:
-// snow "too loud — lower 50%, allow tiny tiny more variations").
-const FOOTSTEP_TRIM_DB: Record<string, number> = { snow: -12 }; // "still too loud" → another 50%
+// Per-SURFACE trims on top of the step base (maintainer verdicts
+// 2026-07-18): snow −12 ("too loud" ×2, run level then approved), grass
+// −1 ("maybe 90% of current"). Keyed by surface sound id so e.g. grass
+// can be trimmed without touching stone-on-stone tiles.
+const FOOTSTEP_TRIM_DB: Record<string, number> = { snow: -12, grass: -1 };
+// Walk plays softer than run by this penalty (default −3 dB ≈ 70%). Snow's
+// walk penalty is ZERO: at −3 on top of its deep trim the maintainer heard
+// "nothing at all" — snow walking now sits just under snow running.
+const FOOTSTEP_WALK_PENALTY_DB: Record<string, number> = { snow: 0 };
+const WALK_PENALTY_DEFAULT_DB = -3;
 const FOOTSTEP_JITTER: Record<string, { pitch: [number, number]; gain: [number, number] }> = {
   snow: { pitch: [-0.35, 0.35], gain: [-1.0, 0.6] },
 };
@@ -325,13 +332,13 @@ export class GameAudio {
     const own = composerFoley(setName) ?? composerFoley(FOOTSTEP_DEFAULT);
     if (own) {
       // Gentleness: no rate change for running — the faster CADENCE is the
-      // run signal. WALKING is the SAME sound, softer: 25% → 50% → now −3 dB
-      // (~70%) — the deeper cuts dropped walk footfalls under the music/
-      // ambience beds (maintainer: "so hard to hear", grass AND snow).
+      // run signal; walking is the SAME sound with a small per-surface
+      // penalty (see the tables above).
+      const walkPenalty = FOOTSTEP_WALK_PENALTY_DB[f.surface] ?? WALK_PENALTY_DEFAULT_DB;
       this.oneShots.play(this.foleyEntry(setName, own, "step"), "sfx", {
         pan: f.pan,
         dist: f.dist,
-        gainDb: -8 + (FOOTSTEP_TRIM_DB[setName] ?? 0) + (f.running ? 0.8 : -3),
+        gainDb: -8 + (FOOTSTEP_TRIM_DB[f.surface] ?? 0) + (f.running ? 0.8 : walkPenalty),
       });
       return;
     }
