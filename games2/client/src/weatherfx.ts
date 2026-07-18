@@ -15,7 +15,11 @@ import { gameAudio } from "../../composer/index";
  * Storm adds slow wind GUSTS (a global sine on the horizontal velocity —
  * every streak leans together, which sells the wind far more than per-drop
  * noise) and camera-flash lightning on a random 5-14s timer, sometimes
- * double-striking. Snow sways per-flake (phase-offset sine).
+ * double-striking. Snow sways per-flake (phase-offset sine) and SETTLES:
+ * each flake falls to its own ground height, rests there as a still flake
+ * for a few seconds, then melts (fades) and recycles — the same
+ * fall→land→rest→fade lifecycle rain drops and autumn leaves use, so snow
+ * reaches the ground instead of scrolling off the bottom of the view.
  *
  * The ambient dim for each state lives in WorldScene's ambEff (eased
  * curPrecipDim), NOT here — the same place the cloud grey lives.
@@ -51,6 +55,9 @@ const DEPTH = 899_500;
 const SPLASH_DEPTH = 899_490;
 const MAX_SPLASH = 130;         // hard cap on live ripples (heavy rain sits here)
 const SPLASH_LIFE: [number, number] = [300, 480]; // ms
+// Snow SETTLES: a flake that reaches the ground rests, then melts/fades.
+const SNOW_REST: [number, number] = [2500, 6000]; // ms a landed flake sits before melting
+const SNOW_FADE = 1500;                            // ms melt/fade-out
 
 interface Drop {
   img: Phaser.GameObjects.Image;
@@ -59,7 +66,9 @@ interface Drop {
   vy: number;
   vxJit: number; // per-drop horizontal jitter
   phase: number; // snow sway phase
-  landY: number; // rain: world-y where this drop hits the ground (0 = uninit)
+  landY: number; // rain/snow: world-y where this drop hits the ground (0 = uninit)
+  state: number; // snow: 0 falling, 1 resting on ground, 2 fading (melting)
+  restT: number; // snow: ms left in the current rest/fade phase
   wisp?: boolean; // Windy: this slot is a motion-line, not a leaf
 }
 
@@ -175,6 +184,18 @@ export class WeatherFX {
     return this.seed / 2147483647;
   }
 
+  /** Send a settled/melted snow flake back to the top band for another fall
+   * (new landing height, falling state). */
+  private recycleSnow(d: Drop, top: number, left: number, span: number, bottom: number) {
+    const cfg = this.cfg!;
+    d.state = 0;
+    d.restT = 0;
+    d.y = top - this.rand() * 30;
+    d.x = left + this.rand() * span;
+    d.vy = cfg.vy[0] + (cfg.vy[1] - cfg.vy[0]) * this.rand();
+    d.landY = top + (0.5 + 0.45 * this.rand()) * (bottom - top);
+  }
+
   setWeather(idx: number) {
     if (idx === this.kind) return;
     this.kind = idx;
@@ -208,7 +229,11 @@ export class WeatherFX {
   }
 
   info() {
-    return { kind: this.kind, shown: Math.round(this.shown), flashes: this.flashes };
+    // `rest` = snow flakes currently settled on / melting into the ground
+    // (0 for rain/leaves/windy) — lets QA confirm snow actually lands.
+    let rest = 0;
+    if (this.cfg?.snow) for (const d of this.pool) if (d.state === 1 || d.state === 2) rest++;
+    return { kind: this.kind, shown: Math.round(this.shown), flashes: this.flashes, rest };
   }
 
   update(dtMs: number, cam: Phaser.Cameras.Scene2D.Camera) {
@@ -239,6 +264,8 @@ export class WeatherFX {
         vxJit: this.rand(),
         phase: this.rand() * Math.PI * 2,
         landY: 0,
+        state: 0,
+        restT: 0,
       };
       this.dress(d, this.pool.length);
       this.pool.push(d);
@@ -267,55 +294,95 @@ export class WeatherFX {
       if (d.vy === 0) d.vy = cfg.vy[0] + (cfg.vy[1] - cfg.vy[0]) * d.vxJit;
       let vx = vxBase + (d.vxJit - 0.5) * (cfg.snow ? 30 : 40);
       if (cfg.snow) vx += Math.sin(t * 1.1 + d.phase) * 22;
-      let vyEff = d.vy;
-      if (cfg.leaf) {
-        if (d.wisp) {
-          // motion-line: races ahead of the leaves on the gust, waves gently
-          vx = vxBase * 2.3;
-          vyEff = Math.sin(t * 1.4 + d.phase) * 12;
+      let snowAlphaMul = 1;
+      if (cfg.snow) {
+        // Snow HITS THE GROUND like the rain/leaves: each flake sways down to
+        // its own landing height (a world-y in the near-ground band), SETTLES
+        // there as a resting flake for a few seconds, then melts (fades out)
+        // and recycles to the top for another fall.
+        if (d.landY === 0) d.landY = top + (0.5 + 0.45 * this.rand()) * (bottom - top);
+        if (d.state === 1) {
+          // resting on the ground — stays put in the WORLD (camera scrolls over)
+          d.restT -= dtMs;
+          if (d.restT <= 0) {
+            d.state = 2;
+            d.restT = SNOW_FADE;
+          }
+        } else if (d.state === 2) {
+          // melting away where it settled
+          d.restT -= dtMs;
+          snowAlphaMul = Math.max(0, d.restT / SNOW_FADE);
+          if (d.restT <= 0) this.recycleSnow(d, top, left, span, bottom);
         } else {
-          // leaves STREAM (anime wind): deep per-leaf surge on the shared
-          // gust + a curling swirl so paths arc instead of gliding straight
-          vx *= 0.5 + 0.65 * Math.sin(t * 1.3 + d.phase);
-          vx += Math.cos(t * 2.6 + d.phase * 3.0) * 45;
-          vyEff = d.vy * 0.4 + Math.sin(t * 2.1 + d.phase * 2.0) * 48;
+          // FALLING: sway sideways, drift down to the landing height
+          d.x += vx * dt;
+          d.y += d.vy * dt;
+          if (d.x < left) d.x += span;
+          else if (d.x > right) d.x -= span;
+          if (d.y >= d.landY) {
+            d.y = d.landY;
+            d.state = 1;
+            d.restT = SNOW_REST[0] + this.rand() * (SNOW_REST[1] - SNOW_REST[0]);
+          }
+          snowAlphaMul = 0.75 + 0.25 * Math.sin(t * 2 + d.phase); // falling twinkle
         }
-      }
-      d.x += vx * dt;
-      d.y += (cfg.leaf ? vyEff : d.vy) * dt;
-      if (cfg.splash) {
-        // Rain HITS THE GROUND: each drop falls to its own landing height
-        // (a world-y in the lower-middle band — the near ground), pops a
-        // ripple there, and recycles to the top with a fresh landing point.
-        if (d.landY === 0) d.landY = top + (0.45 + 0.5 * this.rand()) * (bottom - top);
-        if (d.y >= d.landY) {
-          this.spawnSplash(d.x, d.landY);
+        // far off-screen (camera teleport, or a resting flake scrolled away):
+        // drop the slot back into the current view
+        if (d.y < top - 200 || d.y > bottom + 200 || d.x < left - 200 || d.x > right + 200) {
+          this.recycleSnow(d, top, left, span, bottom);
+        }
+      } else {
+        let vyEff = d.vy;
+        if (cfg.leaf) {
+          if (d.wisp) {
+            // motion-line: races ahead of the leaves on the gust, waves gently
+            vx = vxBase * 2.3;
+            vyEff = Math.sin(t * 1.4 + d.phase) * 12;
+          } else {
+            // leaves STREAM (anime wind): deep per-leaf surge on the shared
+            // gust + a curling swirl so paths arc instead of gliding straight
+            vx *= 0.5 + 0.65 * Math.sin(t * 1.3 + d.phase);
+            vx += Math.cos(t * 2.6 + d.phase * 3.0) * 45;
+            vyEff = d.vy * 0.4 + Math.sin(t * 2.1 + d.phase * 2.0) * 48;
+          }
+        }
+        d.x += vx * dt;
+        d.y += (cfg.leaf ? vyEff : d.vy) * dt;
+        if (cfg.splash) {
+          // Rain HITS THE GROUND: each drop falls to its own landing height
+          // (a world-y in the lower-middle band — the near ground), pops a
+          // ripple there, and recycles to the top with a fresh landing point.
+          if (d.landY === 0) d.landY = top + (0.45 + 0.5 * this.rand()) * (bottom - top);
+          if (d.y >= d.landY) {
+            this.spawnSplash(d.x, d.landY);
+            d.y = top - this.rand() * 30;
+            d.x = left + this.rand() * span;
+            d.vy = cfg.vy[0] + (cfg.vy[1] - cfg.vy[0]) * this.rand();
+            d.landY = top + (0.45 + 0.5 * this.rand()) * (bottom - top);
+          }
+        } else if (d.y > bottom) {
+          // leaves: recycle below the view -> back to the top band
           d.y = top - this.rand() * 30;
           d.x = left + this.rand() * span;
           d.vy = cfg.vy[0] + (cfg.vy[1] - cfg.vy[0]) * this.rand();
-          d.landY = top + (0.45 + 0.5 * this.rand()) * (bottom - top);
         }
-      } else if (d.y > bottom) {
-        // snow / leaves: recycle below the view -> back to the top band
-        d.y = top - this.rand() * 30;
-        d.x = left + this.rand() * span;
-        d.vy = cfg.vy[0] + (cfg.vy[1] - cfg.vy[0]) * this.rand();
-      }
-      if (d.x < left) {
-        d.x += span;
-        if (cfg.leaf) d.y = top + this.rand() * (bottom - top);
-      } else if (d.x > right) d.x -= span;
-      // camera jumped (teleport/respawn): re-scatter into the new view
-      if (d.y < top - 200 || d.y > bottom + 200) {
-        d.y = top + this.rand() * (bottom - top);
-        d.x = left + this.rand() * span;
-        d.landY = 0; // recompute the landing point for the new view
+        if (d.x < left) {
+          d.x += span;
+          if (cfg.leaf) d.y = top + this.rand() * (bottom - top);
+        } else if (d.x > right) d.x -= span;
+        // camera jumped (teleport/respawn): re-scatter into the new view
+        if (d.y < top - 200 || d.y > bottom + 200) {
+          d.y = top + this.rand() * (bottom - top);
+          d.x = left + this.rand() * span;
+          d.landY = 0; // recompute the landing point for the new view
+        }
       }
       const wispA = d.wisp ? 0.13 : 1;
+      const twinkle = cfg.snow ? snowAlphaMul : cfg.leaf && !d.wisp ? 0.75 + 0.25 * Math.sin(t * 2 + d.phase) : 1;
       d.img
         .setVisible(true)
         .setPosition(d.x, d.y)
-        .setAlpha(cfg.alpha * wispA * (cfg.snow || (cfg.leaf && !d.wisp) ? 0.75 + 0.25 * Math.sin(t * 2 + d.phase) : 1))
+        .setAlpha(cfg.alpha * wispA * twinkle)
         .setScale(cfg.leaf && !d.wisp ? 1 + d.vxJit : 1, cfg.leaf && !d.wisp ? (1 + d.vxJit) * cfg.scaleY : cfg.scaleY)
         .setRotation(rot);
     }

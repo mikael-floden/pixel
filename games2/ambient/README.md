@@ -107,7 +107,7 @@ The **"ambient"** settings button picks WHICH ambient effect is on. It
 (maintainer 2026-07-18). The ring is:
 
   `AUTO → NONE → fireflies → pollen → bats → thunder → sandstorm →
-  tumbleweed → leaves → AUTO`
+  leaves → AUTO`
 
 - **AUTO** — the director + fields run normally; the button prints
   `ambient: auto (<current effect>)`, live — the active episode, else the
@@ -139,7 +139,6 @@ name, or null = auto.
 | `bats/` | episode | Flocks crossing the night sky | base 1.0; day ×0.01 |
 | `thunder/` | episode | Distant sheet lightning beyond the horizon | base 0.35 × (1 + rain + night); cloud/mist as weak proxies until a rain weather ships |
 | `sandstorm/` | episode | Warm dust veil + wind-driven sand streaks that swallow the player | base 0.6 × **sand** (terrain-aware: only rolls while the player stands in sandy ground) × dryness |
-| `tumbleweed/` | episode | A twig-ball rolling through the WORLD on the wind, depth-sorted, hop physics and all | base 0.45 × (0.25 + 0.75·**sand**) × dryness — sand-biased, not sand-locked |
 | `leaves/` | episode | Autumn leaves spiralling down through the world, tumbling edge-on | base 0.5 × (0.6 + 0.4·cloud); prefers Evening |
 
 **REMOVED 2026-07-18:** `heathaze/` (a camera PostFX refraction) corrupted

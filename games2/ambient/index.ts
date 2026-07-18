@@ -5,7 +5,6 @@ import { pollenFeature } from "./pollen/pollen";
 import { batsFeature } from "./bats/bats";
 import { thunderFeature } from "./thunder/thunder";
 import { sandstormFeature } from "./sandstorm/sandstorm";
-import { tumbleweedFeature } from "./tumbleweed/tumbleweed";
 import { leavesFeature } from "./leaves/leaves";
 
 /** The ambient-life registry — one entry per feature folder. FIELD features
@@ -27,7 +26,6 @@ export function mountAmbient(game: Phaser.Game) {
     batsFeature(),
     thunderFeature(),
     sandstormFeature(),
-    tumbleweedFeature(),
     leavesFeature(),
   ]);
 }

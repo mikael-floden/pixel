@@ -6,7 +6,7 @@ import { Director } from "./director";
 // time-of-day or weather (the player owns those). The ring is:
 //
 //   AUTO → NONE → fireflies → pollen → bats → thunder → sandstorm →
-//   tumbleweed → leaves → AUTO
+//   leaves → AUTO
 //
 // - AUTO  — the game runs the director + fields normally; the button prints
 //           "auto (<current active effect>)" so you can see what's playing.

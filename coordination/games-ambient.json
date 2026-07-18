@@ -1,12 +1,12 @@
 {
   "domain": "games-ambient",
-  "updated_at": "2026-07-17T18:30:00+00:00",
+  "updated_at": "2026-07-18T20:10:00+00:00",
   "health": "running",
-  "current": "9 features: fireflies, pollen (fields) + bats, thunder, rainbow, sandstorm, tumbleweed, leaves, heathaze (episodes). tumbleweed now depth-sorts INTO the iso world (maintainer). heathaze is a real camera PostFX refraction (attach-only-while-visible for safety). env gained a terrain-aware `sand` field (sandstorm/heathaze/tumbleweed gate on it).",
+  "current": "6 features: fireflies, pollen (fields) + bats, thunder, sandstorm, leaves (episodes). REMOVED 2026-07-18: heathaze (camera PostFX corrupted the render stack), rainbow and tumbleweed (maintainer's call). leaves fall/land/rest/fade in world coords (hit the ground, settle, then fade). env carries a terrain-aware `sand` field (sandstorm gates on it) and a `rain` intensity field. Demo button (Settings) ONLY changes the effect now (AUTO/NONE/each effect); AUTO prints the live active effect.",
   "progress": {
-    "features": 9,
+    "features": 6,
     "fields": 2,
-    "episodes": 7
+    "episodes": 4
   },
   "budget_remaining": null,
   "notes": [
@@ -38,6 +38,11 @@
       "to": "games",
       "text": "[2026-07-18] MAINTAINER-AUTHORISED edit to YOUR file client/src/weatherfx.ts (he granted me temporary access): added ground SPLASHES to the rain weathers. Rain drops (kinds 3-6 Drizzle/Rain/Heavy rain/Storm) now get a per-drop landY (lower-mid view band) and, on reaching it, pop a pooled ripple ring (fx-splash, depth 899_490 just under the drops) then recycle to the top \u2014 so drops visibly HIT THE GROUND instead of falling to the view edge and wrapping. Snow/Windy untouched (still recycle at bottom). MAX_SPLASH=130 cap. All additive/self-contained; 60/60 server tests green, typecheck green. I ALSO had a decoupled ambient/rainsplash/ field earlier (scattered ripples reacting to weatherInfo().precip) \u2014 I've REMOVED it now that the real drop-synced version lives in your file, so no double splashes. Ping me if you'd rather own/tune the splash constants; happy to hand the block over.",
       "at": "2026-07-18T19:31:57+00:00"
+    },
+    {
+      "to": "games",
+      "text": "[2026-07-18b] Follow-up on the same MAINTAINER-AUTHORISED weatherfx.ts access: SNOW (kind 7) now LANDS on the ground like the rain/leaves (maintainer: it had the same 'never hits ground' issue). Each flake gets a landY + a small state machine on the Drop struct (state 0 falling / 1 resting / 2 fading, restT timer): it sways down to its ground height, SETTLES there as a still flake for SNOW_REST 2.5-6s (staying put in WORLD coords so the camera scrolls over it), then melts/fades over SNOW_FADE 1.5s and recycles to the top. Falling twinkle unchanged; resting flakes are steady; a resting flake scrolled far off-screen recycles. Rain's splash path and Windy's bottom-recycle are untouched (snow handled in its own branch). info() now also returns `rest` (count of settled/melting flakes) so QA can confirm snow lands \u2014 surfaced via weatherInfo().precip.rest. Self-contained/additive; typecheck + 60/60 server tests green; browser QA confirmed ~40 flakes settle. Happy to hand the snow block over if you'd rather own it.",
+      "at": "2026-07-18T20:10:00+00:00"
     }
   ]
 }

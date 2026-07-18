@@ -27,10 +27,10 @@ try {
 
   // ---- registry ----
   const list = await page.evaluate(() => window.__mlAmbient.list());
-  for (const want of ["fireflies", "pollen", "bats", "thunder", "sandstorm", "tumbleweed", "leaves"])
+  for (const want of ["fireflies", "pollen", "bats", "thunder", "sandstorm", "leaves"])
     if (!list.includes(want)) fail(`feature ${want} not mounted (got ${list})`);
-  if (list.includes("heathaze") || list.includes("rainbow"))
-    fail(`heathaze/rainbow were removed but still mounted (${list})`);
+  if (list.includes("heathaze") || list.includes("rainbow") || list.includes("tumbleweed"))
+    fail(`heathaze/rainbow/tumbleweed were removed but still mounted (${list})`);
   ok(`mounted: ${list.join(", ")}`);
 
   // ---- night: fireflies up, pollen down ----
@@ -100,17 +100,6 @@ try {
   if (ss.offSand > 0.001) fail(`sandstorm must NEVER roll off sand (${ss.offSand})`);
   if (ss.sandRain > 0.001) fail(`rain must kill the sandstorm (${ss.sandRain})`);
   ok(`sandstorm likeliness: terrain-gated (sand ${ss.onSand.toFixed(2)}, grass ${ss.offSand}, rain ${ss.sandRain})`);
-  // Tumbleweed: sand-BIASED but not sand-locked; rain soaks it to a stop.
-  const tw = await page.evaluate(() => ({
-    sand: window.__mlAmbient.weights({ sand: 1, mist: 0, weatherName: "Clear sky" }).tumbleweed,
-    grass: window.__mlAmbient.weights({ sand: 0, mist: 0, weatherName: "Clear sky" }).tumbleweed,
-    rain: window.__mlAmbient.weights({ sand: 1, mist: 0, weatherName: "Rain" }).tumbleweed,
-  }));
-  if (!(tw.sand > tw.grass * 2)) fail(`tumbleweed must prefer sand (sand ${tw.sand} vs grass ${tw.grass})`);
-  if (!(tw.grass > 0.05)) fail(`tumbleweed may still cross a plain (grass ${tw.grass})`);
-  if (tw.rain > 0.001) fail(`rain must stop the tumbleweed (${tw.rain})`);
-  ok(`tumbleweed likeliness: sand ${tw.sand.toFixed(2)}, grass ${tw.grass.toFixed(2)}, rain ${tw.rain}`);
-
   // ---- director rolls + episode life cycle ----
   await page.evaluate(() => window.__ml.timeOfDay("night", true));
   await page.waitForTimeout(300);
@@ -178,25 +167,20 @@ try {
     fail(`NONE must silence everything (ff ${ffNone.gain?.toFixed?.(2)}, po ${poNone.gain?.toFixed?.(2)}, ep ${dirNone.active})`);
   else ok("none: every ambient effect off");
 
-  // Episodes still show FULL regardless of time (sandstorm floor, weed roll).
+  // Episodes still show FULL regardless of time (sandstorm dust floor).
   await page.evaluate(() => window.__mlAmbient.demo("sandstorm"));
   await page.waitForTimeout(6000);
   const ssd = await dbg("sandstorm");
   if (!ssd.active || ssd.streaks < 30) fail(`demoed sandstorm must run (active ${ssd.active}, ${ssd.streaks} streaks)`);
   else ok(`demo(sandstorm): running (gain ${ssd.gain.toFixed(2)}, ${ssd.streaks} streaks)`);
-  await page.evaluate(() => window.__mlAmbient.demo("tumbleweed"));
-  await page.waitForTimeout(5000);
-  const twd = await dbg("tumbleweed");
-  if (!twd.active || twd.rolled < 1) fail(`demoed tumbleweed must roll (active ${twd.active}, rolled ${twd.rolled})`);
-  else ok(`demo(tumbleweed): ${twd.rolled} weed(s) rolled`);
 
-  // Clicking the real button advances the ring and prints its state.
+  // Clicking the real button advances the ring (sandstorm → leaves) and prints state.
   const label = await page.evaluate(() => {
     document.querySelector(".ml-ambient-btn").click();
     return document.querySelector(".ml-ambient-btn").textContent;
   });
-  if (label !== "ambient: leaves") fail(`button click must advance tumbleweed -> leaves (got ${JSON.stringify(label)})`);
-  else ok("button click advances the ring (tumbleweed -> leaves)");
+  if (label !== "ambient: leaves") fail(`button click must advance sandstorm -> leaves (got ${JSON.stringify(label)})`);
+  else ok("button click advances the ring (sandstorm -> leaves)");
 
   // Leaves must FALL in world-height, LAND, and REST on the ground (not slide
   // down-screen forever). Give them time for the low ones to touch down.
