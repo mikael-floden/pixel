@@ -289,7 +289,7 @@ function injectStyles() {
   injected = true;
   // --ml-hud-scale (the frame's HUD_SCALE, frame2) still scales the tab
   // label font + legacy border width; button SIZES are fixed px now
-  // (maintainer: tabs and settings buttons both 132px).
+  // (maintainer: tabs and settings buttons both 120px).
   document.documentElement.style.setProperty("--ml-hud-scale", String(HUD_SCALE));
   // --ml-tab: PERFECT-SQUARE tab plate side (mock plates capped at 150).
   // --ml-tabzone: boundary → divider B line centre; tracks the tab size.
@@ -297,9 +297,9 @@ function injectStyles() {
   // segment strips stretched between fixed junctions (see build-ui-tiles).
   const css = `
   :root{--ml-hud-scale:1;
-    /* one shared button height (maintainer: both 132px), guarded so five
+    /* one shared button height (maintainer: both 120px), guarded so five
        tabs still fit between the rails on narrow real-device viewports */
-    --ml-tab:min(132px,calc((100vw - 200px)/5));
+    --ml-tab:min(120px,calc((100vw - 200px)/5));
     --ml-bw:calc(26px * var(--ml-hud-scale))}   /* plate border render width */
   /* HUD sections: base props only — position/size come from applyFrameLayout
      (the frame-v2 windows), set inline after every compose. */
@@ -348,13 +348,13 @@ function injectStyles() {
   .ml-btnrow{display:grid;grid-template-columns:repeat(3,1fr);
     gap:12px;justify-content:center;align-items:stretch;width:100%;margin:0 auto}
   /* UI-KIT plates (maintainer's pack, plate.ts): flat pixel plates composed
-     at an INTEGER block scale (floor(h/native/2) — 5px blocks at h=132).
-     Height 132 is the maintainer's shared button height, same as the tabs.
+     at an INTEGER block scale (floor(h/native/2) — 5px blocks at h=120).
+     Height 120 is the maintainer's shared button height, same as the tabs.
      Labels wrap to a second line when the 3-per-row column narrows. White
      uppercase labels like the kit's pop-up rows. */
   .ml-plate-btn{width:100%;white-space:normal;overflow:hidden;
     display:flex;align-items:center;justify-content:center;text-align:center;
-    padding:8px 24px;height:132px;box-sizing:border-box;border:none;
+    padding:8px 24px;height:120px;box-sizing:border-box;border:none;
     cursor:pointer;image-rendering:pixelated;touch-action:manipulation;
     background:none;background-repeat:no-repeat;background-size:100% 100%;
     font:700 15px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#fff;
