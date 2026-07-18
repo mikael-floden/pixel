@@ -484,9 +484,11 @@ function injectStyles() {
   .ml-cell.sel span{text-shadow:none}
   .ml-cell.press{color:#f4e3c2}
   .ml-sprite{image-rendering:pixelated;background-repeat:no-repeat;flex:none}
-  .ml-portrait-box{width:48px;height:92px;overflow:hidden;position:relative;flex:none}
-  .ml-portrait{position:absolute;left:-32px;top:-10px;width:112px;height:112px;image-rendering:pixelated}
-  .ml-cell span{max-width:96px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* 4x characters (maintainer): the 112 art at an integer 4x = 448, viewport
+     and offsets scaled with it (figure crop x42-71, y10-97 at 4x) */
+  .ml-portrait-box{width:192px;height:368px;overflow:hidden;position:relative;flex:none}
+  .ml-portrait{position:absolute;left:-128px;top:-40px;width:448px;height:448px;image-rendering:pixelated}
+  .ml-cell span{max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   /* Action row: ONE height (64px, same as the world chips) for the trough,
      the dice and Enter — all buttons the same size, text centered. Wraps on
      narrow screens (inside the ring) so the trough never collapses: the
