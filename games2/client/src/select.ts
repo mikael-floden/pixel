@@ -40,8 +40,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     overlay.innerHTML = `
       <div class="ml-panel">
         <img class="ml-logo" src="/logo.png" alt="Nangijala Online — a browser MMORPG" />
-        <p class="ml-sub">${showWorlds ? "Choose a world and a character, then step in." : "Choose your character and step into the shared world."}</p>
-        ${showWorlds ? '<div class="ml-section">World</div><div class="ml-worlds" id="ml-worlds"></div><div class="ml-section">Character</div>' : ""}
+        ${showWorlds ? '<div class="ml-worlds" id="ml-worlds"></div>' : ""}
         <div class="ml-grid" id="ml-grid"></div>
         <div class="ml-row">
           <input id="ml-name" class="ml-name" maxlength="24" placeholder="your name"
