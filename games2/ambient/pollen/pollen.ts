@@ -38,6 +38,7 @@ export function pollenFeature(): AmbientFeature {
   const motes: Mote[] = [];
   let gain = 0;
   let suppressed = false; // demo solo mode: another effect owns the stage
+  let forced = false; // demo: pollen selected — show at full, any time
   let seed = 7;
   const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 0xffffffff;
 
@@ -83,7 +84,7 @@ export function pollenFeature(): AmbientFeature {
       const view = ctx.view;
       // Sunlit air, clear-ish sky. The sun ramp already covers dawn/dusk;
       // cloud cover kills the beams the motes are supposed to hang in.
-      const target = suppressed ? 0 : ctx.env.sun * (1 - 0.85 * ctx.env.cloud);
+      const target = forced ? 1 : suppressed ? 0 : ctx.env.sun * (1 - 0.85 * ctx.env.cloud);
       gain += (target - gain) * Math.min(1, (dt / GAIN_TAU) * 3);
       const visible = gain > 0.02;
 
@@ -129,10 +130,14 @@ export function pollenFeature(): AmbientFeature {
     setSuppressed(on) {
       suppressed = on;
     },
+    setForced(on) {
+      forced = on;
+    },
     debug() {
       return {
         gain,
         suppressed,
+        forced,
         count: motes.length,
         lit: motes.filter((m) => m.sprite.visible && m.sprite.alpha > 0.02).length,
         sample: motes[0] ? { x: motes[0].sprite.x, y: motes[0].sprite.y, a: motes[0].sprite.alpha } : null,

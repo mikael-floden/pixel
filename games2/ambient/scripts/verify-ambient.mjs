@@ -130,100 +130,83 @@ try {
   if ((await dbg("bats")).active) fail("bats must deactivate when the quiet slot wins");
   else ok("quiet slot wins → bats stand down");
 
-  // ---- demo button: injected into settings, cycles + jumps the world ----
+  // ---- demo button (maintainer 2026-07-18): selects the effect ONLY, never
+  // changes time-of-day/weather; has AUTO (shows the live effect) + NONE ----
+  await page.evaluate(() => window.__mlAmbient.demo("auto"));
   const btn = await page.evaluate(() => document.querySelector(".ml-ambient-btn")?.textContent ?? null);
-  if (btn !== "ambient: auto") fail(`settings must carry the ambient button (got ${JSON.stringify(btn)})`);
-  else ok("settings button injected (ambient: auto)");
-  // Reset: align the SHARED world AND the local probe overrides to Day+Clear.
-  // Earlier sections force LOCAL probes; a {v} set matching the server's
-  // current value produces no patch, so a stale local override would never
-  // be corrected and the demo waits below would hang (dev servers keep world
-  // state across verify runs).
-  await page.evaluate(() => {
-    window.__ml.worldTime(2);
-    window.__ml.worldWeather(0);
-    window.__ml.timeOfDay("day", true);
-    window.__ml.weather(0, true);
-  });
-  await page.waitForTimeout(1000);
-  // Demo thunder: world jumps to its preferred Night + Cloudy, episode pinned on.
+  if (!btn || !btn.startsWith("ambient: auto")) fail(`settings must carry the ambient button (got ${JSON.stringify(btn)})`);
+  else ok(`settings button injected (${btn})`);
+
+  // The button must NOT touch time-of-day: record it, demo an effect, assert
+  // the phase is unchanged (the whole point of this change).
+  await page.evaluate(() => window.__ml.timeOfDay("day", true));
+  const todBefore = await page.evaluate(() => window.__ml.timeOfDay().name);
   await page.evaluate(() => window.__mlAmbient.demo("thunder"));
-  await page.waitForFunction(
-    () => window.__ml.timeOfDay().name === "Night" && window.__ml.weatherInfo().idx === 1,
-    null,
-    { timeout: 5000 },
-  );
+  await page.waitForTimeout(600);
+  const todAfter = await page.evaluate(() => window.__ml.timeOfDay().name);
+  if (todAfter !== todBefore) fail(`demo must NOT change time-of-day (${todBefore} -> ${todAfter})`);
+  else ok(`demo leaves time-of-day alone (stayed ${todAfter})`);
+
+  // Demo thunder: episode pinned on, fields suppressed (solo).
   const dirDemo = await page.evaluate(() => window.__mlAmbient.director());
   if (dirDemo.pinned !== "thunder" || dirDemo.active !== "thunder")
     fail(`demo(thunder) must pin thunder (got ${JSON.stringify(dirDemo)})`);
-  if (!(await dbg("thunder")).active) fail("demoed thunder must be active");
-  else ok("demo(thunder): world -> Night + Cloudy, episode pinned on");
-  // SOLO mode: the night jump must NOT wake the fireflies ("the bats look
-  // like fireflies" — every non-demoed feature fades out during a demo).
-  await page.waitForTimeout(4000);
+  await page.waitForTimeout(3500);
   const ffSolo = await dbg("fireflies");
   if (!ffSolo.suppressed || ffSolo.gain > 0.15)
     fail(`demoing thunder must suppress fireflies (suppressed=${ffSolo.suppressed}, gain ${ffSolo.gain.toFixed(2)})`);
-  else ok("solo mode: fireflies stay dark while thunder is demoed");
-  // Demo a FIELD (pollen): world jumps to Day + Clear, episodes go quiet.
-  await page.evaluate(() => window.__mlAmbient.demo("pollen"));
-  await page.waitForFunction(
-    () => window.__ml.timeOfDay().name === "Day" && window.__ml.weatherInfo().idx === 0,
-    null,
-    { timeout: 5000 },
-  );
+  else ok("solo: fireflies suppressed while thunder is selected");
+
+  // Demo a FIELD (fireflies): FORCED on at full regardless of the daytime
+  // env gate, episodes quiet — "select fireflies" actually shows fireflies.
+  await page.evaluate(() => window.__mlAmbient.demo("fireflies"));
+  await page.waitForTimeout(4000);
   const dirField = await page.evaluate(() => window.__mlAmbient.director());
-  if (dirField.pinned !== "quiet" || dirField.active !== null)
-    fail(`demo(pollen) must quiet the episodes (got ${JSON.stringify(dirField)})`);
-  if ((await dbg("thunder")).active) fail("thunder must stand down when a field is demoed");
-  await page.waitForTimeout(4500);
-  if ((await dbg("pollen")).gain < 0.5) fail("demoed pollen must reach daylight gain");
-  else ok("demo(pollen): world -> Day + Clear, pollen up, episodes quiet");
+  const ffOn = await dbg("fireflies");
+  if (dirField.active !== null) fail(`selecting a field must quiet episodes (got ${JSON.stringify(dirField)})`);
+  if (!ffOn.forced || ffOn.gain < 0.6)
+    fail(`selected fireflies must force ON by day (forced=${ffOn.forced}, gain ${ffOn.gain?.toFixed?.(2)})`);
+  else ok(`select(fireflies): forced on by day (gain ${ffOn.gain.toFixed(2)}), episodes quiet`);
+
+  // NONE: everything off.
+  await page.evaluate(() => window.__mlAmbient.demo("none"));
+  await page.waitForTimeout(4000);
+  const ffNone = await dbg("fireflies");
+  const poNone = await dbg("pollen");
+  const dirNone = await page.evaluate(() => window.__mlAmbient.director());
+  if (ffNone.gain > 0.15 || poNone.gain > 0.15 || dirNone.active !== null)
+    fail(`NONE must silence everything (ff ${ffNone.gain?.toFixed?.(2)}, po ${poNone.gain?.toFixed?.(2)}, ep ${dirNone.active})`);
+  else ok("none: every ambient effect off");
+
+  // Episodes still show FULL regardless of time (sandstorm floor, weed roll).
+  await page.evaluate(() => window.__mlAmbient.demo("sandstorm"));
+  await page.waitForTimeout(6000);
+  const ssd = await dbg("sandstorm");
+  if (!ssd.active || ssd.streaks < 30) fail(`demoed sandstorm must run (active ${ssd.active}, ${ssd.streaks} streaks)`);
+  else ok(`demo(sandstorm): running (gain ${ssd.gain.toFixed(2)}, ${ssd.streaks} streaks)`);
+  await page.evaluate(() => window.__mlAmbient.demo("tumbleweed"));
+  await page.waitForTimeout(5000);
+  const twd = await dbg("tumbleweed");
+  if (!twd.active || twd.rolled < 1) fail(`demoed tumbleweed must roll (active ${twd.active}, rolled ${twd.rolled})`);
+  else ok(`demo(tumbleweed): ${twd.rolled} weed(s) rolled`);
+
   // Clicking the real button advances the ring and prints its state.
   const label = await page.evaluate(() => {
     document.querySelector(".ml-ambient-btn").click();
     return document.querySelector(".ml-ambient-btn").textContent;
   });
-  if (label !== "ambient: bats") fail(`button click must advance pollen -> bats (got ${JSON.stringify(label)})`);
-  else ok("button click advances the ring (pollen -> bats)");
-  // Demo the sandstorm: world -> Day + Clear; even off-sand the demo shows
-  // the drifting-dust floor (the button can't teleport the player to a
-  // beach), with the streak layer running.
-  await page.evaluate(() => window.__mlAmbient.demo("sandstorm"));
-  await page.waitForFunction(
-    () => window.__ml.timeOfDay().name === "Day" && window.__ml.weatherInfo().idx === 0,
-    null,
-    { timeout: 5000 },
-  );
-  await page.waitForTimeout(6000); // ~2.6s tau
-  const ssd = await dbg("sandstorm");
-  if (!ssd.active) fail("demoed sandstorm must be active");
-  if (ssd.gain < 0.2) fail(`sandstorm dust floor must show in a demo (gain ${ssd.gain.toFixed(2)})`);
-  if (ssd.streaks < 30) fail(`sand streaks must fly (${ssd.streaks})`);
-  ok(`demo(sandstorm): dust up (gain ${ssd.gain.toFixed(2)}, sand ${ssd.sand.toFixed(2)}, ${ssd.streaks} streaks)`);
-  // Demo the tumbleweed: a weed launches within a few seconds.
-  await page.evaluate(() => window.__mlAmbient.demo("tumbleweed"));
-  await page.waitForTimeout(5000);
-  const twd = await dbg("tumbleweed");
-  if (!twd.active) fail("demoed tumbleweed must be active");
-  if (twd.rolled < 1) fail(`an active tumbleweed episode must launch a weed (${twd.rolled})`);
-  ok(`demo(tumbleweed): ${twd.rolled} weed(s) rolled, ${twd.rolling} in frame`);
-  // Demo the leaves: world -> Evening + Clear, the fall thins in.
-  await page.evaluate(() => window.__mlAmbient.demo("leaves"));
-  await page.waitForFunction(() => window.__ml.timeOfDay().name === "Evening", null, { timeout: 5000 });
+  if (label !== "ambient: leaves") fail(`button click must advance tumbleweed -> leaves (got ${JSON.stringify(label)})`);
+  else ok("button click advances the ring (tumbleweed -> leaves)");
+
+  // AUTO shows the LIVE active effect: at night with nothing pinned,
+  // fireflies self-gate on and the label reports "auto (fireflies)".
+  await page.evaluate(() => { window.__ml.timeOfDay("night", true); window.__mlAmbient.demo("auto"); });
   await page.waitForTimeout(4000);
-  const lvd = await dbg("leaves");
-  if (!lvd.active) fail("demoed leaves must be active");
-  if (lvd.gain < 0.4 || lvd.count < 3) fail(`leaves must fall in a demo (gain ${lvd.gain?.toFixed?.(2)}, ${lvd.count})`);
-  if (!lvd.sample || typeof lvd.sample.d !== "number") fail("leaves must depth-sort into the world (no sample depth)");
-  ok(`demo(leaves): ${lvd.count} falling (gain ${lvd.gain.toFixed(2)}, sample depth ${lvd.sample.d})`);
-  // Back to auto: pin released, suppression lifted, director rolls again.
-  await page.evaluate(() => window.__mlAmbient.demo(null));
+  const autoLabel = await page.evaluate(() => document.querySelector(".ml-ambient-btn")?.textContent);
   const dirAuto = await page.evaluate(() => window.__mlAmbient.director());
-  if (dirAuto.pinned !== null) fail(`demo(null) must release the pin (got ${JSON.stringify(dirAuto)})`);
-  const ffAuto = await dbg("fireflies");
-  if (ffAuto.suppressed) fail("demo(null) must lift field suppression");
-  else ok("demo(null) returns to auto (pin + suppression released)");
+  if (dirAuto.pinned !== null) fail(`auto must release the pin (got ${JSON.stringify(dirAuto)})`);
+  if (!/^ambient: auto \(.+\)$/.test(autoLabel)) fail(`AUTO must show the active effect (got ${JSON.stringify(autoLabel)})`);
+  else ok(`auto reports the live effect (${autoLabel})`);
 
   if (!failed) console.log("AMBIENT OK");
 } finally {

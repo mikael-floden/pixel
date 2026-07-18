@@ -62,16 +62,20 @@ export interface AmbientFeature {
   /** EPISODE features: the director's on/off switch. Implementations fade
    * out gracefully on false — never hard-cut mid-flight. */
   setActive?(on: boolean): void;
-  /** The conditions under which this effect is MOST likely — the ambient
-   * demo button jumps the shared world here before showing the effect.
-   * `time` indexes the game's phase ring (0 Night, 1 Morning, 2 Day,
-   * 3 Evening); `weather` its WEATHER_NAMES (0 Clear, 1 Cloudy, 2 Mist). */
+  /** The conditions under which this effect is most at home — documentation
+   * only now (the demo button no longer changes time-of-day; maintainer
+   * 2026-07-18). `time` indexes the phase ring (0 Night … 3 Evening),
+   * `weather` its WEATHER_NAMES (0 Clear, 1 Cloudy, 2 Mist). */
   preferred?: { time: number; weather: number };
-  /** FIELD features: demo solo mode. While another feature is being demoed
-   * this is set true — the field must fade its gain to 0 (gracefully) so
-   * the demoed effect has the stage alone ("ambient: bats" must show BATS,
-   * not the fireflies the night jump would wake — maintainer round 1). */
+  /** FIELD features: demo solo/none mode. While another effect is selected
+   * (or NONE) this is set true — the field fades its gain to 0 gracefully so
+   * the selected effect has the stage alone. */
   setSuppressed?(on: boolean): void;
+  /** FIELD features: demo FORCE. When THIS field is the selected effect the
+   * button sets it true — the field shows at full regardless of its env gate
+   * (fireflies by day, pollen at night), so "select fireflies" actually
+   * shows fireflies. The player's own time-of-day still grades the lighting. */
+  setForced?(on: boolean): void;
 }
 
 export const PHASE_NIGHT = 0;

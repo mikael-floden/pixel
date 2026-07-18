@@ -102,24 +102,33 @@ QA probes: `__mlAmbient.director()`, `.weights(envOverride?)`,
 
 ## The demo button (Settings page)
 
-Every feature declares `preferred: { time, weather }` — the conditions it
-is most likely under. The **"ambient"** settings button (maintainer
-2026-07-17) iterates auto → each effect → auto; selecting an effect jumps
-the SHARED world time-of-day + weather to its preferred conditions and
-gives it the stage SOLO: the director is pinned (a demoed episode is
-forced on; a demoed field gets the quiet pin) AND every other field is
-suppressed via `setSuppressed(true)` — the night jump must not wake the
-fireflies during a bats demo ("the bats look like fireflies", maintainer
-round 1). "auto" releases the pin and the suppression.
+The **"ambient"** settings button picks WHICH ambient effect is on. It
+**never changes time-of-day or weather** — the player owns those
+(maintainer 2026-07-18). The ring is:
+
+  `AUTO → NONE → fireflies → pollen → bats → thunder → sandstorm →
+  tumbleweed → leaves → AUTO`
+
+- **AUTO** — the director + fields run normally; the button prints
+  `ambient: auto (<current effect>)`, live — the active episode, else the
+  most-prominent showing field, else `none`.
+- **NONE** — every ambient effect off (all fields suppressed, episodes
+  quieted).
+- **<effect>** — that ONE effect, solo. An episode pins the director; a
+  field is FORCED on (`setForced(true)`) regardless of its env gate, so
+  selecting fireflies shows fireflies even by day (the player's own
+  time-of-day still grades the lighting). Every other field is suppressed.
+
+(Earlier the button jumped the shared world to each effect's `preferred`
+conditions; the maintainer removed that 2026-07-18. `preferred` is now
+documentation only — the `{v}` world-state message extension in WorldRoom
+stays, unused by the button but still handy.)
 
 Plumbing: the button is INJECTED into the settings row from
 `runtime/hudbutton.ts` (games-ui owns hud.ts — we never edit it; the
-HudBar rebuilds on re-joins, so the runtime re-injects on a poll). The
-world jump rides a small `{v}` extension of the game's existing
-"timeofday"/"weather" messages (WorldRoom) + two `__ml` probes
-(`worldTime`/`worldWeather`) — announced to the games agent on the board;
-covered by `server/test/ambientdemo.test.ts`. QA probe:
-`__mlAmbient.demo(name? | null)`.
+HudBar rebuilds on re-joins, so the runtime re-injects on a poll). QA
+probe: `__mlAmbient.demo(name? | null)` — `"auto"`/`"none"`/a feature
+name, or null = auto.
 
 ## Current features
 
