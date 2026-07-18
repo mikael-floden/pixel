@@ -42,6 +42,7 @@ MODEL_ID = "eleven_text_to_sound_v2"
 SR = 48000
 TAKES = 4
 PROMPT_INFLUENCE = 0.45
+MAX_PROMPT_CHARS = 450  # ElevenLabs sound-generation `text` hard limit
 
 # Catalog-wide production directives — precise prompts are what separate
 # production foley from a vague approximation (sounds/README.md lesson).
@@ -98,12 +99,13 @@ SETS: dict[str, dict] = {
     # granular crunch, no hard tap: the 'grain' judge caps crest (rejects
     # the metallic spike) and the brief bans every metal/click cue.
     "sand": {
+        # SHORT: prompt (brief + variant + STYLE) must stay under the API's
+        # 450-char cap (round-1 & round-2 briefs were too long → text_too_long
+        # 400 on every candidate, silently failing).
         "brief": (
-            "one single soft footstep on loose dry beach sand: a gentle "
-            "granular crunch as the boot presses down and fine sand grains "
-            "shift and compress, a soft dry sandy shuffle, muffled and dull, "
-            "no hard impact, no metal, no ring, no click, no tap, no tone, "
-            "exactly one step, no ambience, no wind"
+            "one soft footstep on loose dry beach sand: a gentle granular "
+            "crunch of shifting fine grains, muffled and dull, no metal, no "
+            "ring, no click, one step"
         ),
         "duration_s": 0.6,
         "variants": GAIT_VARIANTS,
@@ -583,6 +585,12 @@ def main() -> int:
             cands: list[tuple[bool, float, np.ndarray, dict]] = []
             for i in range(pool_n):
                 prompt = f"{spec['brief']}, {variants[i % len(variants)]}. {STYLE}"
+                if len(prompt) > MAX_PROMPT_CHARS:
+                    # The API rejects >450 chars (text_too_long). Drop the
+                    # shared STYLE suffix — the brief carries the intent.
+                    prompt = f"{spec['brief']}, {variants[i % len(variants)]}."[:MAX_PROMPT_CHARS]
+                    if i == 0:
+                        print(f"  NOTE: {name} prompt trimmed to fit {MAX_PROMPT_CHARS} chars")
                 # Candidate-level isolation: one corrupt payload must not
                 # kill the whole set (ui_cancel died twice on candidate 1).
                 try:
