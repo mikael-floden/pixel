@@ -339,10 +339,11 @@ function injectStyles() {
     padding:2px 0;cursor:pointer;image-rendering:pixelated;box-sizing:border-box;
     touch-action:manipulation;-webkit-touch-callout:none;border:none;
     background:none;background-repeat:no-repeat;background-size:100% 100%}
-  /* icon-only tabs (maintainer: "icon is enough") — the icon gets the
-     plate's full inner height, contain-fit and centred */
-  .ml-tab-icon{image-rendering:pixelated;-webkit-user-drag:none;pointer-events:none;
-    max-width:calc(100% - 6px);max-height:calc(100% - 10px);object-fit:contain}
+  /* icon-only tabs (maintainer: "icon is enough"). The icon files are
+     exact 2x bakes of the true pixel art — render them 1:1 CSS px (= 2x
+     zoom of the art, maintainer). The old contain-fit scaled each icon
+     ~1.4x non-integer ("half pixel offset" mush). */
+  .ml-tab-icon{image-rendering:pixelated;-webkit-user-drag:none;pointer-events:none}
   .ml-pages{position:absolute;overflow:hidden;image-rendering:pixelated}
   .ml-page{display:none;height:100%;overflow:auto;flex-direction:column;align-items:center;
     justify-content:center;gap:14px;text-align:center;box-sizing:border-box;
@@ -392,9 +393,12 @@ function injectStyles() {
      dressPlate); the cream SELECTED bar needs a dark label */
   .ml-plate-btn.on{color:#4a2a1c;text-shadow:none}
   .ml-plate-btn.press{color:#f4e3c2}
-  /* Narrow phones: five square tabs must still fit between the outer rails. */
+  /* Narrow phones: five square tabs must still fit between the outer rails;
+     icons drop to exactly HALF the file (= the art's true 1x) so the scale
+     stays integer-crisp in the smaller tabs. */
   @media (max-width:460px){
     .ml-tabrow{left:40px;right:40px}
+    .ml-tab-icon{zoom:0.5}
   }
   /* Short viewports (small desktop windows): compact everything. Height 48
      keeps the kit rows on an exact integer scale (48 = 4 blocks of 12). */
