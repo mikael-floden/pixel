@@ -435,8 +435,11 @@ function injectStyles() {
      the phone needs the width — two 152px character tracks + their gap must
      fit inside ring pads + panel (128px native portraits, never scaled). */
   .ml-panel{width:min(920px,100%);max-height:100%;overflow:auto;padding:16px 8px 12px;text-align:center}
-  /* 2x logo (maintainer) */
-  .ml-logo{display:block;width:min(840px,96%);margin:0 auto;user-select:none;-webkit-user-drag:none}
+  /* 2x logo (maintainer), with a soft BLACK GLOW hugging the silhouette:
+     drop-shadow follows the png alpha, two soft layers fading 0 -> ~0.5
+     black max (maintainer: "fade from BG to black more gentle, max 50%") */
+  .ml-logo{display:block;width:min(840px,96%);margin:0 auto;user-select:none;-webkit-user-drag:none;
+    filter:drop-shadow(0 0 5px rgba(0,0,0,.3)) drop-shadow(0 0 16px rgba(0,0,0,.3))}
   .ml-sub{margin:6px 0 14px;color:#b8a67f;text-shadow:0 1px 2px #000}
   .ml-section{text-align:left;margin:12px 4px 6px;font:700 12px/1 system-ui,sans-serif;letter-spacing:1.5px;
     text-transform:uppercase;color:#ffd678;text-shadow:0 1px 2px #000}
