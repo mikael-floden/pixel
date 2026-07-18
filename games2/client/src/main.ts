@@ -86,7 +86,7 @@ function showVersion() {
   el.style.cssText =
     "position:fixed;left:50%;transform:translateX(-50%);" +
     "bottom:calc((var(--ml-badge-lift, 0px) + 8px) / var(--ml-uizoom, 1));z-index:50;" +
-    "font:12px monospace;color:#cfd6ff;text-shadow:0 1px 2px #000,0 0 3px #000;" +
+    "font:24px monospace;color:#cfd6ff;text-shadow:0 1px 2px #000,0 0 3px #000;" +
     "pointer-events:none;user-select:none";
   document.body.appendChild(el);
   applyUiZoom(el); // keep it readable under "Desktop site" too
