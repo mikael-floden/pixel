@@ -44,6 +44,8 @@ export class OneShotPlayer {
   private lastTake = new Map<string, number>();
   private lastPlayedAt = new Map<string, number>();
   played = 0;
+  /** Last few sound ids that actually started (QA: "what just played?"). */
+  recent: string[] = [];
   /** ENFORCE UNMODIFIED AUDIO (maintainer testing switch): when true every
    * one-shot plays the raw file — no pitch/gain/start jitter, no scale-snap,
    * no rate change, no lowpass, no pan, no distance attenuation, no delay.
@@ -115,6 +117,8 @@ export class OneShotPlayer {
       src.start();
       src.onended = () => g.disconnect();
       this.played++;
+      this.recent.push(sound.id);
+      if (this.recent.length > 12) this.recent.shift();
       return;
     }
 
@@ -182,6 +186,8 @@ export class OneShotPlayer {
       g.disconnect();
     };
     this.played++;
+    this.recent.push(sound.id);
+    if (this.recent.length > 12) this.recent.shift();
   }
 }
 

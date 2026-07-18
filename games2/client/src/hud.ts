@@ -163,10 +163,8 @@ export class HudBar {
       b.title = t.label;
       b.setAttribute("aria-label", t.label);
       b.append(icon);
-      b.addEventListener("click", () => {
-        this.select(t.id);
-        gameAudio.event("ui.cursor_move"); // tab tick (menu_select binding)
-      });
+      // audio comes from pressFx (down/up pair) — no extra click sound
+      b.addEventListener("click", () => this.select(t.id));
       pressFx(b);
       dressPlate(b, kindForState); // the kit trio, same as the settings rows
       tabRow.appendChild(b);
@@ -275,10 +273,8 @@ function plateButton(label: string, onPress: () => void): HTMLButtonElement {
   const t = mk("span", "");
   t.textContent = label;
   b.appendChild(t);
-  b.addEventListener("click", () => {
-    gameAudio.event("ui.confirm");
-    onPress();
-  });
+  // audio comes from pressFx (down/up pair) — no extra click sound
+  b.addEventListener("click", onPress);
   pressFx(b);
   // the kit's circled state trio (plate.ts): held = the dark DOWN bar,
   // switch ON = the cream SELECTED bar, else the brown NORMAL bar
@@ -297,9 +293,21 @@ function kindForState(el: HTMLElement): "normal" | "sel" | "down" {
  * its own press state — added on finger-down, gone the instant the finger
  * lifts or leaves, so it can never stick. */
 function pressFx(b: HTMLElement) {
-  b.addEventListener("pointerdown", () => b.classList.add("press"));
+  // Tactile audio rides the SAME press state as the visual pressed plate
+  // (maintainer: distinct down/up sounds for immersive touch feedback) —
+  // finger down clicks, finger up (or sliding off) releases, exactly once.
+  let down = false;
+  b.addEventListener("pointerdown", () => {
+    down = true;
+    b.classList.add("press");
+    gameAudio.event("ui.press");
+  });
   for (const ev of ["pointerup", "pointercancel", "pointerleave"])
-    b.addEventListener(ev, () => b.classList.remove("press"));
+    b.addEventListener(ev, () => {
+      if (down) gameAudio.event("ui.release");
+      down = false;
+      b.classList.remove("press");
+    });
 }
 
 function mk(tag: string, cls: string): HTMLElement {

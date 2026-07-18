@@ -146,7 +146,7 @@ export class GameAudio {
       }
       // Warm the composer's own primary takes too — thunder especially must
       // not miss its first flash on a fetch+decode.
-      for (const set of ["stone", "ui_tick", "thunder"]) {
+      for (const set of ["stone", "ui_tick", "ui_cancel", "thunder"]) {
         const urls = composerFoley(set);
         if (urls) void this.buffers.get(urls[0]);
       }
@@ -178,6 +178,12 @@ export class GameAudio {
    * sound, everywhere, like the stone footsteps). The ui_confirm/ui_cancel
    * sets stay bundled + auditionable at /#foley for a future opt-in. */
   private static EVENT_FOLEY: Record<string, string> = {
+    // Tactile pair (maintainer 2026-07-18: distinct down/up for immersive
+    // touch feedback): press = the approved tab click, release = the
+    // dedicated duller release recording (ui_cancel — generated for this).
+    "ui.press": "ui_tick",
+    "ui.release": "ui_cancel",
+    // Legacy single-click events any game code may still emit.
     "ui.cursor_move": "ui_tick",
     "ui.confirm": "ui_tick",
     "ui.cancel": "ui_tick",
@@ -518,6 +524,7 @@ export class GameAudio {
       catalog: this.catalog ? this.catalog.sounds.size : 0,
       buffers: this.graph ? this.buffers.loadedCount() : 0,
       played: this.graph ? this.oneShots.played : 0,
+      recent: this.graph ? [...this.oneShots.recent] : [],
       sound: this.soundOn,
       musicOn: this.musicOn,
       pure: this.pureOn,
