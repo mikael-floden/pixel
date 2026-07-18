@@ -122,7 +122,7 @@ export class GameAudio {
     this.music = new MusicDirector(this.graph, this.buffers);
     this.oneShots = new OneShotPlayer(this.graph, this.buffers, this.music);
     this.oneShots.pure = this.pureOn;
-    this.applyMasterGain();
+    this.applySfxMute();
 
     void loadCatalog().then((cat) => {
       this.catalog = cat;
@@ -365,9 +365,11 @@ export class GameAudio {
     this.fieldSampler = fn;
   }
 
-  /** Slow tick (4 Hz): recompute ambience targets + music level. */
+  /** Slow tick (4 Hz): recompute ambience targets + music level. Runs even
+   * with the sound switch OFF — the music has its own switch and must keep
+   * following the day/night level (its bus is unaffected by the sfx mute). */
   private slowTick(): void {
-    if (!this.ready() || !this.ambience) return;
+    if (!this.graph || !this.catalog || !this.ambience || !this.graph.running) return;
     const { sun, cloud, mist } = this.env;
     const night = 1 - sun;
     const field = this.fieldSampler?.() ?? { forest: 0, water: 0, town: 0, fire: 0 };
@@ -432,7 +434,7 @@ export class GameAudio {
 
   toggleSound(): void {
     this.soundOn = !this.soundOn;
-    this.applyMasterGain();
+    this.applySfxMute();
     this.persist();
   }
 
@@ -442,9 +444,10 @@ export class GameAudio {
     this.persist();
   }
 
-  private applyMasterGain(): void {
-    if (!this.graph) return;
-    this.graph.master.gain.setTargetAtTime(this.soundOn ? 1 : 0.0001, this.graph.now, 0.1);
+  /** "sound" mutes the EFFECT buses only (sfx/ui/ambience) — the music has
+   * its own switch (maintainer: the sound button must not stop the music). */
+  private applySfxMute(): void {
+    this.graph?.setBusesMuted(["sfx", "ui", "ambience"], !this.soundOn);
   }
 
   private slowTickSoon(): void {

@@ -28,6 +28,7 @@ export class AudioGraph {
   readonly master: GainNode;
   private insert!: BiquadFilterNode;
   private readonly buses = new Map<BusName, GainNode>();
+  private readonly busBase = new Map<BusName, number>();
   /** Music passes through this extra gain so ducking never fights the bus
    * fader or the user's music toggle. */
   readonly musicDuck: GainNode;
@@ -66,6 +67,7 @@ export class AudioGraph {
       g.gain.value = dbToGain(db);
       g.connect(this.master);
       this.buses.set(name, g);
+      this.busBase.set(name, dbToGain(db));
     }
 
     this.musicDuck = this.ctx.createGain();
@@ -97,6 +99,16 @@ export class AudioGraph {
 
   get running(): boolean {
     return this.ctx.state === "running";
+  }
+
+  /** Mute/unmute buses without losing their base fader levels (the user's
+   * "sound" switch silences the EFFECT buses; music has its own switch). */
+  setBusesMuted(names: BusName[], muted: boolean): void {
+    for (const name of names) {
+      const g = this.buses.get(name);
+      const base = this.busBase.get(name) ?? 1;
+      g?.gain.setTargetAtTime(muted ? 0.0001 : base, this.now, 0.08);
+    }
   }
 
   /** Ease the full-mix lowpass toward a cutoff (Hz). 20000 = wide open. */
