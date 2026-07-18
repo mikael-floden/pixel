@@ -25,6 +25,7 @@
 
 import { mountFrame2, FrameLayout, HUD_SCALE } from "./frame2";
 import { setClockMount } from "./clock";
+import { dressPlate } from "./plate";
 import { gameAudio } from "../../composer/index";
 
 export interface HudActions {
@@ -231,6 +232,11 @@ function plateButton(label: string, onPress: () => void): HTMLButtonElement {
     onPress();
   });
   pressFx(b);
+  // runtime-composed plate (frame-style extrusion) instead of the stretched
+  // border-image; the pressed plate shows while the switch is ON or held
+  dressPlate(b, (el) =>
+    el.classList.contains("on") || el.classList.contains("press") ? "pressed" : "normal",
+  );
   return b;
 }
 
@@ -325,18 +331,21 @@ function injectStyles() {
   /* settings buttons must never be SHORTER than the menu tabs / backpack
      slots (maintainer) — same --ml-tab height, width fills the grid cell,
      label centred and single-line so it never changes the button size */
+  /* plate is a runtime-composed background (plate.ts / dressPlate) — NOT
+     border-image, which stretched the square art across wide buttons
+     (maintainer). border:none; padding sits the label inside the bevel. */
   .ml-plate-btn{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
     display:flex;align-items:center;justify-content:center;
-    padding:10px 20px;min-height:var(--ml-tab);box-sizing:border-box;
-    cursor:pointer;image-rendering:pixelated;background:none;touch-action:manipulation;
-    border-style:solid;border-width:var(--ml-bw);border-image:url(/ui2/plate-normal.png) 56 fill / var(--ml-bw);
+    padding:14px 30px;min-height:var(--ml-tab);box-sizing:border-box;border:none;
+    cursor:pointer;image-rendering:pixelated;touch-action:manipulation;
+    background:none;background-repeat:no-repeat;background-size:100% 100%;
     font:700 14px system-ui,sans-serif;letter-spacing:.4px;text-transform:uppercase;color:#e8e8ec;
     text-shadow:0 1px 2px #000}
-  @media (hover:hover){
-  .ml-plate-btn:active{border-image:url(/ui2/plate-pressed.png) 56 fill / var(--ml-bw);color:#ffd678}
-  }
-  .ml-plate-btn.on{border-image:url(/ui2/plate-pressed.png) 56 fill / var(--ml-bw);color:#ffd678}
-  .ml-plate-btn.press{border-image:url(/ui2/plate-pressed.png) 56 fill / var(--ml-bw);color:#ffd678}
+  /* pressed/on only change the LABEL colour; the pressed plate art is chosen
+     by dressPlate via the .on/.press class (MutationObserver) */
+  @media (hover:hover){ .ml-plate-btn:active{color:#ffd678} }
+  .ml-plate-btn.on{color:#ffd678}
+  .ml-plate-btn.press{color:#ffd678}
   /* Narrow phones: five square tabs must still fit between the outer rails. */
   @media (max-width:460px){
     .ml-tabrow{left:40px;right:40px}
