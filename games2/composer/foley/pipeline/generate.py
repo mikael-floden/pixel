@@ -226,10 +226,12 @@ SETS: dict[str, dict] = {
     },
     "ui_cancel": {
         "brief": (
-            "a soft dull mechanical release click of a switch snapping off, "
-            "slightly lower and duller than a press, one instant dry click, "
-            "no resonance, no ring, no echo, NOT musical, no chime, no "
-            "piano, no tone, no wooden knock"
+            # Reworded (the previous "switch snapping off" phrasing hit an
+            # unde codable API response twice in a row — set-specific).
+            "a soft dull mechanical click of a button being released, lower "
+            "and duller than a press click, one instant dry click, no "
+            "resonance, no ring, no echo, NOT musical, no chime, no piano, "
+            "no tone, no wooden knock"
         ),
         "duration_s": 0.5,
         "variants": PRESS_VARIANTS,
@@ -248,8 +250,15 @@ def _ffmpeg_decode(raw: bytes) -> np.ndarray:
     p = subprocess.run(
         ["ffmpeg", "-v", "error", "-i", "pipe:0", "-ac", "1", "-ar", str(SR),
          "-f", "s16le", "pipe:1"],
-        input=raw, capture_output=True, check=True,
+        input=raw, capture_output=True,
     )
+    if p.returncode != 0:
+        # Surface WHAT the API actually sent (ui_cancel failed twice on a
+        # payload ffmpeg rejects — the head bytes identify json errors etc).
+        raise RuntimeError(
+            f"ffmpeg decode failed (rc={p.returncode}, {len(raw)} bytes, "
+            f"head={raw[:60]!r}, stderr={p.stderr[:120]!r})"
+        )
     return np.frombuffer(p.stdout, dtype="<i2").astype(np.float32) / 32768.0
 
 
@@ -451,12 +460,21 @@ def main() -> int:
             cands: list[tuple[bool, float, np.ndarray, dict]] = []
             for i in range(pool_n):
                 prompt = f"{spec['brief']}, {variants[i % len(variants)]}. {STYLE}"
-                x = _master(_tighten(_generate(session, prompt, spec["duration_s"]), spec.get("max_ms")))
+                # Candidate-level isolation: one corrupt payload must not
+                # kill the whole set (ui_cancel died twice on candidate 1).
+                try:
+                    x = _master(_tighten(_generate(session, prompt, spec["duration_s"]), spec.get("max_ms")))
+                except Exception as ce:  # noqa: BLE001
+                    print(f"{name} cand {i + 1}/{pool_n}: GENERATION FAILED — {ce}")
+                    time.sleep(0.6)
+                    continue
                 feat = _features(x)
                 ok, score = _judge(feat, gates, spec["judge"]) if gates else (True, 0.0)
                 cands.append((ok, score, x, feat))
                 print(f"{name} cand {i + 1}/{pool_n}: {'PASS ' if ok else 'REJECT'} {feat}")
                 time.sleep(0.4)  # be polite to the API
+            if not cands:
+                raise RuntimeError("every candidate failed to generate")
             cands.sort(key=lambda c: (not c[0], c[1]))
             chosen = cands[:n_takes]
             passed = sum(1 for c in chosen if c[0])
