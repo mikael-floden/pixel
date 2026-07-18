@@ -228,15 +228,31 @@ export class HudBar {
     }
     this.refreshSettings();
     st.appendChild(row);
+    // Restore the .ml-plate-btn class CONTRACT for foreign buttons: the
+    // ambient agent injects its cycler into this row from outside
+    // (ambient/runtime/hudbutton.ts) relying on the class to bring the plate
+    // art — which stopped being CSS when plates went runtime-composed. Dress
+    // any undressed arrival so injected buttons look like every other row.
+    new MutationObserver(() => {
+      row.querySelectorAll<HTMLElement>(".ml-plate-btn:not([data-plate])").forEach((el) =>
+        dressPlate(el, (e) =>
+          e.classList.contains("on") || e.classList.contains("press") ? "rowSel" : "row",
+        ),
+      );
+    }).observe(row, { childList: true });
 
     // Logout: deliberate two-step (a stray tap must not eject anyone) —
     // just the button, no explainer text (maintainer 2026-07-17).
     const lo = this.pages.get("logout")!;
-    lo.append(plateButton("Log out", () => this.actions.onLogout()));
+    lo.append(plateButton("Log out", () => this.actions.onLogout(), "action"));
   }
 }
 
-function plateButton(label: string, onPress: () => void): HTMLButtonElement {
+function plateButton(
+  label: string,
+  onPress: () => void,
+  style: "row" | "action" = "row",
+): HTMLButtonElement {
   const b = mk("button", "ml-plate-btn") as HTMLButtonElement;
   b.textContent = label;
   b.addEventListener("click", () => {
@@ -244,10 +260,14 @@ function plateButton(label: string, onPress: () => void): HTMLButtonElement {
     onPress();
   });
   pressFx(b);
-  // runtime-composed plate (frame-style extrusion) instead of the stretched
-  // border-image; the pressed plate shows while the switch is ON or held
-  dressPlate(b, (el) =>
-    el.classList.contains("on") || el.classList.contains("press") ? "pressed" : "normal",
+  // UI-kit plates (plate.ts): settings toggles are pop-up ROW bars — flat
+  // while OFF, the kit's gold selection ring while ON or held; one-shot
+  // buttons (Log out) are the kit's standalone tan button.
+  dressPlate(
+    b,
+    style === "action"
+      ? () => "action"
+      : (el) => (el.classList.contains("on") || el.classList.contains("press") ? "rowSel" : "row"),
   );
   return b;
 }
@@ -347,25 +367,20 @@ function injectStyles() {
      three fixed columns (maintainer: 3 buttons per row). */
   .ml-btnrow{display:grid;grid-template-columns:repeat(3,1fr);
     gap:12px;justify-content:center;align-items:stretch;width:100%;margin:0 auto}
-  /* settings buttons must never be SHORTER than the menu tabs / backpack
-     slots (maintainer) — same --ml-tab height, width fills the grid cell.
-     At 3-per-row the columns are narrower, so long labels WRAP to a second
-     line (the button is tall enough) instead of ellipsis-truncating. */
-  /* plate is a runtime-composed background (plate.ts / dressPlate) — NOT
-     border-image, which stretched the square art across wide buttons
-     (maintainer). border:none; padding sits the label inside the bevel. */
+  /* UI-KIT plates (maintainer's pack, plate.ts): flat pixel plates composed
+     at an INTEGER scale — height 96 = exactly 8 art px blocks for the 12px
+     rows and 6 for the 16px action button, so every plate pixel is a crisp
+     block. Labels wrap to a second line when the 3-per-row column narrows.
+     White uppercase labels like the kit's pop-up rows. */
   .ml-plate-btn{width:100%;white-space:normal;overflow:hidden;
     display:flex;align-items:center;justify-content:center;text-align:center;
-    padding:14px 20px;min-height:var(--ml-tab-2x);box-sizing:border-box;border:none;
+    padding:8px 24px;height:96px;box-sizing:border-box;border:none;
     cursor:pointer;image-rendering:pixelated;touch-action:manipulation;
     background:none;background-repeat:no-repeat;background-size:100% 100%;
-    font:700 14px system-ui,sans-serif;letter-spacing:.4px;text-transform:uppercase;color:#e8e8ec;
-    text-shadow:0 1px 2px #000}
-  /* pressed/on only change the LABEL colour; the pressed plate art is chosen
-     by dressPlate via the .on/.press class (MutationObserver) */
-  @media (hover:hover){ .ml-plate-btn:active{color:#ffd678} }
-  .ml-plate-btn.on{color:#ffd678}
-  .ml-plate-btn.press{color:#ffd678}
+    font:700 15px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#fff;
+    text-shadow:0 1px 0 rgba(0,0,0,.35)}
+  /* state = the plate art (kit row vs gold-ringed row via dressPlate);
+     the label stays white like the kit's pop-up rows */
   /* Narrow phones: five square tabs must still fit between the outer rails. */
   @media (max-width:460px){
     .ml-tabrow{left:40px;right:40px}
@@ -373,13 +388,12 @@ function injectStyles() {
     .ml-tab.sel{border-width:13px;border-image-width:13px}
     .ml-tab.press{border-width:13px;border-image-width:13px}
   }
-  /* Short viewports (small desktop windows): compact everything. */
+  /* Short viewports (small desktop windows): compact everything. Height 48
+     keeps the kit rows on an exact integer scale (48 = 4 blocks of 12). */
   @media (max-height:640px){
     :root{--ml-tab:min(84px,calc((100vw - 200px)/5))}
     .ml-page{gap:8px}
-    .ml-plate-btn{padding:6px 14px;border-width:13px;border-image-width:13px;font-size:11px}
-    .ml-plate-btn.on{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
-    .ml-plate-btn.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
+    .ml-plate-btn{padding:4px 12px;height:48px;font-size:11px}
   }`;
   const s = document.createElement("style");
   s.textContent = css;
