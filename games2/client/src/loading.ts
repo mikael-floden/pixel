@@ -129,7 +129,9 @@ function injectStyles() {
      and viewport units would double-count under it. */
   .ml-load-box{position:absolute;left:50%;top:45%;transform:translate(-50%,-50%);
     display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px;text-align:center;width:100%}
-  .ml-load-logoWrap{position:relative;width:min(400px,84%)}
+  /* 2x logo (maintainer 2026-07-18) — the % cap keeps it on-screen on
+     narrow phones */
+  .ml-load-logoWrap{position:relative;width:min(800px,96%)}
   .ml-load-logo{position:relative;display:block;width:100%;z-index:1;user-select:none;-webkit-user-drag:none}
   /* The progress fill sits BEHIND the logo and shows through the punched-out
      banner interior; the gradient echoes the NANGIJALA lettering (icy cyan →
