@@ -190,171 +190,236 @@
     ],
     "features": [
       {
-        "mid_peak_db": -15.7,
-        "duration_s": 0.6,
-        "attack_ms": 21.0,
-        "tail_ratio": 0.014,
-        "tonality": 0.125,
-        "crest": 7.04,
-        "centroid_hz": 5229,
-        "mid_ratio": 0.865
-      },
-      {
-        "mid_peak_db": -17.7,
+        "mid_peak_db": -20.6,
         "duration_s": 0.6,
         "attack_ms": 30.0,
-        "tail_ratio": 0.003,
-        "tonality": 0.18,
-        "crest": 8.24,
-        "centroid_hz": 8488,
-        "mid_ratio": 0.735
+        "tail_ratio": 0.17,
+        "tonality": 0.17,
+        "crest": 5.37,
+        "centroid_hz": 11354,
+        "mid_ratio": 0.198
       },
       {
-        "mid_peak_db": -19.8,
+        "mid_peak_db": -14.8,
         "duration_s": 0.6,
         "attack_ms": 30.0,
-        "tail_ratio": 0.01,
-        "tonality": 0.149,
-        "crest": 11.36,
-        "centroid_hz": 5733,
-        "mid_ratio": 0.877
+        "tail_ratio": 0.05,
+        "tonality": 0.165,
+        "crest": 5.65,
+        "centroid_hz": 5890,
+        "mid_ratio": 0.728
       },
       {
-        "mid_peak_db": -23.8,
+        "mid_peak_db": -18.0,
         "duration_s": 0.6,
         "attack_ms": 30.0,
-        "tail_ratio": 0.008,
-        "tonality": 0.111,
-        "crest": 18.1,
-        "centroid_hz": 5124,
-        "mid_ratio": 0.871
+        "tail_ratio": 0.155,
+        "tonality": 0.207,
+        "crest": 5.73,
+        "centroid_hz": 7145,
+        "mid_ratio": 0.351
+      },
+      {
+        "mid_peak_db": -17.8,
+        "duration_s": 0.6,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.088,
+        "tonality": 0.247,
+        "crest": 5.99,
+        "centroid_hz": 7183,
+        "mid_ratio": 0.414
       }
     ],
     "qa": {
       "judge": "grain",
-      "note": "round-1 pool re-ranked by grain (softest primary) \u2014 API credits blocked round-2 regen"
+      "pool": 12,
+      "passed_gates": 4,
+      "of": 4
     },
     "pool_candidates": [
       {
         "file": "sand/pool/sand__cand01.wav",
         "passed_gates": true,
-        "rank": 0.15,
+        "rank": 9.41,
         "features": {
+          "mid_peak_db": -20.6,
           "duration_s": 0.6,
           "attack_ms": 30.0,
-          "tail_ratio": 0.008,
-          "tonality": 0.111,
-          "crest": 18.1,
-          "centroid_hz": 5124
+          "tail_ratio": 0.17,
+          "tonality": 0.17,
+          "crest": 5.37,
+          "centroid_hz": 11354,
+          "mid_ratio": 0.198
         }
       },
       {
         "file": "sand/pool/sand__cand02.wav",
         "passed_gates": true,
-        "rank": 0.2,
+        "rank": 9.8,
         "features": {
+          "mid_peak_db": -14.8,
           "duration_s": 0.6,
           "attack_ms": 30.0,
-          "tail_ratio": 0.003,
-          "tonality": 0.18,
-          "crest": 8.24,
-          "centroid_hz": 8488
+          "tail_ratio": 0.05,
+          "tonality": 0.165,
+          "crest": 5.65,
+          "centroid_hz": 5890,
+          "mid_ratio": 0.728
         }
       },
       {
         "file": "sand/pool/sand__cand03.wav",
         "passed_gates": true,
-        "rank": 0.2,
+        "rank": 10.25,
         "features": {
+          "mid_peak_db": -18.0,
           "duration_s": 0.6,
-          "attack_ms": 21.0,
-          "tail_ratio": 0.014,
-          "tonality": 0.125,
-          "crest": 7.04,
-          "centroid_hz": 5229
+          "attack_ms": 30.0,
+          "tail_ratio": 0.155,
+          "tonality": 0.207,
+          "crest": 5.73,
+          "centroid_hz": 7145,
+          "mid_ratio": 0.351
         }
       },
       {
         "file": "sand/pool/sand__cand04.wav",
         "passed_gates": true,
-        "rank": 0.2,
+        "rank": 10.96,
         "features": {
+          "mid_peak_db": -17.8,
           "duration_s": 0.6,
           "attack_ms": 30.0,
-          "tail_ratio": 0.01,
-          "tonality": 0.149,
-          "crest": 11.36,
-          "centroid_hz": 5733
+          "tail_ratio": 0.088,
+          "tonality": 0.247,
+          "crest": 5.99,
+          "centroid_hz": 7183,
+          "mid_ratio": 0.414
         }
       },
       {
         "file": "sand/pool/sand__cand05.wav",
         "passed_gates": true,
-        "rank": 0.27,
+        "rank": 11.78,
         "features": {
+          "mid_peak_db": -16.1,
           "duration_s": 0.6,
           "attack_ms": 30.0,
-          "tail_ratio": 0.002,
-          "tonality": 0.257,
-          "crest": 7.46,
-          "centroid_hz": 8097
+          "tail_ratio": 0.014,
+          "tonality": 0.139,
+          "crest": 7.11,
+          "centroid_hz": 5849,
+          "mid_ratio": 0.795
         }
       },
       {
         "file": "sand/pool/sand__cand06.wav",
         "passed_gates": true,
-        "rank": 0.29,
+        "rank": 11.88,
         "features": {
+          "mid_peak_db": -18.1,
           "duration_s": 0.6,
-          "attack_ms": 4.9,
-          "tail_ratio": 0.026,
-          "tonality": 0.155,
-          "crest": 8.53,
-          "centroid_hz": 5339
+          "attack_ms": 30.0,
+          "tail_ratio": 0.076,
+          "tonality": 0.233,
+          "crest": 6.68,
+          "centroid_hz": 9050,
+          "mid_ratio": 0.464
         }
       },
       {
         "file": "sand/pool/sand__cand07.wav",
         "passed_gates": true,
-        "rank": 0.34,
+        "rank": 11.91,
         "features": {
+          "mid_peak_db": -19.2,
           "duration_s": 0.6,
           "attack_ms": 30.0,
-          "tail_ratio": 0.016,
-          "tonality": 0.255,
-          "crest": 21.49,
-          "centroid_hz": 5080
+          "tail_ratio": 0.061,
+          "tonality": 0.279,
+          "crest": 6.45,
+          "centroid_hz": 10807,
+          "mid_ratio": 0.339
         }
       },
       {
         "file": "sand/pool/sand__cand08.wav",
         "passed_gates": true,
-        "rank": 0.98,
+        "rank": 11.95,
         "features": {
+          "mid_peak_db": -17.9,
           "duration_s": 0.6,
-          "attack_ms": 8.3,
-          "tail_ratio": 0.079,
-          "tonality": 0.587,
-          "crest": 7.17,
-          "centroid_hz": 8352
+          "attack_ms": 30.0,
+          "tail_ratio": 0.053,
+          "tonality": 0.211,
+          "crest": 6.84,
+          "centroid_hz": 6552,
+          "mid_ratio": 0.469
         }
       },
       {
         "file": "sand/pool/sand__cand09.wav",
-        "passed_gates": false,
-        "rank": 1.03,
+        "passed_gates": true,
+        "rank": 12.11,
         "features": {
+          "mid_peak_db": -20.1,
           "duration_s": 0.6,
           "attack_ms": 30.0,
-          "tail_ratio": 0.054,
-          "tonality": 0.12,
-          "crest": 5.68,
-          "centroid_hz": 5737
+          "tail_ratio": 0.034,
+          "tonality": 0.255,
+          "crest": 6.71,
+          "centroid_hz": 11000,
+          "mid_ratio": 0.305
+        }
+      },
+      {
+        "file": "sand/pool/sand__cand10.wav",
+        "passed_gates": true,
+        "rank": 12.81,
+        "features": {
+          "mid_peak_db": -19.3,
+          "duration_s": 0.6,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.014,
+          "tonality": 0.124,
+          "crest": 7.88,
+          "centroid_hz": 10681,
+          "mid_ratio": 0.486
+        }
+      },
+      {
+        "file": "sand/pool/sand__cand11.wav",
+        "passed_gates": true,
+        "rank": 14.45,
+        "features": {
+          "mid_peak_db": -19.6,
+          "duration_s": 0.6,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.058,
+          "tonality": 0.203,
+          "crest": 8.55,
+          "centroid_hz": 7821,
+          "mid_ratio": 0.614
+        }
+      },
+      {
+        "file": "sand/pool/sand__cand12.wav",
+        "passed_gates": false,
+        "rank": 25.49,
+        "features": {
+          "mid_peak_db": -23.5,
+          "duration_s": 0.6,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.051,
+          "tonality": 0.65,
+          "crest": 6.86,
+          "centroid_hz": 11144,
+          "mid_ratio": 0.137
         }
       }
     ],
-    "brief": "one single compact footstep on loose dry sand: a short gritty crunch as the boot compresses the sand, tight and dry, exactly one step, no walking sequence, no ambience, no wind",
-    "generated_at": "2026-07-18T15:11:05+00:00",
+    "brief": "one soft footstep on loose dry beach sand: a gentle granular crunch of shifting fine grains, muffled and dull, no metal, no ring, no click, one step",
+    "generated_at": "2026-07-18T23:21:53+00:00",
     "model_id": "eleven_text_to_sound_v2"
   },
   "snow": {
