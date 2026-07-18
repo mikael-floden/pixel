@@ -33,3 +33,36 @@ export function composerFoley(surface: string): string[] | null {
 export function composerFoleySurfaces(): string[] {
   return [...bySurface.keys()];
 }
+
+// Candidate pools (foley/<set>/pool/*.wav) for the human audition page
+// (/#foley): every generated candidate, not just the auto-selected takes.
+const poolFiles = import.meta.glob("../foley/*/pool/*.wav", {
+  query: "?url",
+  import: "default",
+  eager: true,
+}) as Record<string, string>;
+
+const poolBySet = new Map<string, { name: string; url: string }[]>();
+for (const path of Object.keys(poolFiles).sort()) {
+  const m = path.match(/\.\.\/foley\/([^/]+)\/pool\/([^/]+)$/);
+  if (!m) continue;
+  const list = poolBySet.get(m[1]) ?? [];
+  list.push({ name: m[2], url: poolFiles[path] });
+  poolBySet.set(m[1], list);
+}
+
+export function composerFoleyPools(): Map<string, { name: string; url: string }[]> {
+  return poolBySet;
+}
+
+export function composerFoleyTakes(): Map<string, { name: string; url: string }[]> {
+  const out = new Map<string, { name: string; url: string }[]>();
+  for (const path of Object.keys(files).sort()) {
+    const m = path.match(/\.\.\/foley\/([^/]+)\/([^/]+)$/);
+    if (!m) continue;
+    const list = out.get(m[1]) ?? [];
+    list.push({ name: m[2], url: files[path] });
+    out.set(m[1], list);
+  }
+  return out;
+}

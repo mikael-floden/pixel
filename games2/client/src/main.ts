@@ -138,6 +138,13 @@ function showUpdateBanner(sha: string) {
 async function boot() {
   showVersion();
   watchForUpdates();
+  // Composer's audition page (/#foley): every generated foley candidate,
+  // playable on the real deploy — the maintainer's ears close the QA loop.
+  if (location.hash === "#foley") {
+    const { mountFoleyAudition } = await import("../../composer/audition");
+    mountFoleyAudition();
+    return;
+  }
   if (await bootMapPreview()) return;
   const manifest = await loadManifest();
   // The art agents periodically reset/regenerate the roster, so it can be empty.

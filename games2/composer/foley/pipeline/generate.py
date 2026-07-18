@@ -90,6 +90,8 @@ SETS: dict[str, dict] = {
         "duration_s": 0.6,
         "variants": GAIT_VARIANTS,
         "max_ms": 600,
+        "judge": "step",
+        "pool": 9,
     },
     "sand": {
         "brief": (
@@ -100,6 +102,8 @@ SETS: dict[str, dict] = {
         "duration_s": 0.6,
         "variants": GAIT_VARIANTS,
         "max_ms": 600,
+        "judge": "step",
+        "pool": 9,
     },
     "snow": {
         "brief": (
@@ -110,6 +114,8 @@ SETS: dict[str, dict] = {
         "duration_s": 0.6,
         "variants": GAIT_VARIANTS,
         "max_ms": 600,
+        "judge": "step",
+        "pool": 9,
     },
     # LIKED (black_mountain verdict) — recipe frozen, do not regenerate
     # casually; if it ever must rerun, keep this brief verbatim.
@@ -130,6 +136,8 @@ SETS: dict[str, dict] = {
         "duration_s": 0.6,
         "variants": GAIT_VARIANTS,
         "max_ms": 600,
+        "judge": "step",
+        "pool": 9,
     },
     "wood": {
         "brief": (
@@ -140,6 +148,8 @@ SETS: dict[str, dict] = {
         "duration_s": 0.6,
         "variants": GAIT_VARIANTS,
         "max_ms": 600,
+        "judge": "step",
+        "pool": 9,
     },
     "dirt": {
         "brief": (
@@ -150,6 +160,8 @@ SETS: dict[str, dict] = {
         "duration_s": 0.6,
         "variants": GAIT_VARIANTS,
         "max_ms": 600,
+        "judge": "step",
+        "pool": 9,
     },
     "swamp": {
         "brief": (
@@ -160,6 +172,8 @@ SETS: dict[str, dict] = {
         "duration_s": 0.6,
         "variants": GAIT_VARIANTS,
         "max_ms": 700,
+        "judge": "step",
+        "pool": 9,
     },
     # ---- world/weather (real sources, not disguises: the maintainer heard
     # straight through the slowed-explosion "thunder") ----
@@ -178,34 +192,50 @@ SETS: dict[str, dict] = {
             "very far away, soft and very deep",
         ],
     },
-    # ---- UI buttons (the game's HUD is chunky carved wood + stone plates;
-    # the clicks are physical mechanisms, NEVER notes) ----
+    # ---- UI buttons. ROUND 3: "wooden button" briefs FAILED twice — wood
+    # resonates, resonance is pitch, pitch reads as piano. The mechanisms
+    # are now explicitly NON-RESONANT (switches, latches, mouse/keyboard),
+    # and the strict `click` tonality gate auto-rejects any candidate that
+    # rings — the pipeline can no longer ship a piano even if the model
+    # produces one. ----
     "ui_tick": {
         "brief": (
-            "a tiny tactile interface click: a small smooth wooden game button "
-            "pressed once, a single short dry click, purely mechanical, "
-            "NOT musical, no chime, no piano, no tone"
+            "a tiny dry mechanical click of a small plastic button, like a "
+            "single quiet mouse click, one instant snap, no resonance, no "
+            "ring, no echo, NOT musical, no chime, no piano, no tone, no "
+            "wooden knock"
         ),
         "duration_s": 0.5,  # API minimum — 0.4 got a 400 (run 2)
         "variants": PRESS_VARIANTS,
+        "max_ms": 250,
+        "judge": "click",
+        "pool": 9,
     },
     "ui_confirm": {
         "brief": (
-            "a satisfying chunky mechanical click: a solid wooden game button "
-            "pressed and seating firmly into its socket, a compact low tactile "
-            "thock, purely mechanical, NOT musical, no chime, no piano, no tone"
+            "a chunky mechanical latch click of a sturdy switch snapping on, "
+            "like a heavy mechanical keyboard thock, one instant dry clack, "
+            "no resonance, no ring, no echo, NOT musical, no chime, no "
+            "piano, no tone, no wooden knock"
         ),
         "duration_s": 0.5,
         "variants": PRESS_VARIANTS,
+        "max_ms": 350,
+        "judge": "click",
+        "pool": 9,
     },
     "ui_cancel": {
         "brief": (
-            "a muted mechanical clack: a wooden latch releasing, a short "
-            "lower-pitched dry double-click of a button backing out, purely "
-            "mechanical, NOT musical, no chime, no piano, no tone"
+            "a soft dull mechanical release click of a switch snapping off, "
+            "slightly lower and duller than a press, one instant dry click, "
+            "no resonance, no ring, no echo, NOT musical, no chime, no "
+            "piano, no tone, no wooden knock"
         ),
         "duration_s": 0.5,
         "variants": PRESS_VARIANTS,
+        "max_ms": 350,
+        "judge": "click",
+        "pool": 9,
     },
 }
 
@@ -238,6 +268,85 @@ def _decode(raw: bytes, fmt: str) -> np.ndarray:
     if x.size < SR * 0.05:
         raise RuntimeError(f"decoded audio too short ({x.size} samples) — bad payload?")
     return x
+
+
+def _features(x: np.ndarray) -> dict:
+    """Objective QA features (round 3: the composer can't listen, so it
+    MEASURES). tonality = normalized autocorrelation peak in the 80-2000 Hz
+    pitch band over 250ms after the main peak — a piano-like ring scores
+    high, real foley scores low. tail_ratio = energy after 400ms / total —
+    a texture bed scores high, a discrete impact scores low."""
+    n = x.size
+    ax = np.abs(x)
+    peak = float(np.max(ax)) or 1e-9
+    rms = float(np.sqrt(np.mean(x ** 2))) or 1e-9
+    peak_idx = int(np.argmax(ax))
+    i400 = int(SR * 0.4)
+    tail_ratio = float(np.sum(x[i400:] ** 2) / (np.sum(x ** 2) + 1e-12)) if n > i400 else 0.0
+    seg = x[peak_idx : peak_idx + int(SR * 0.25)].astype(np.float64)
+    tonality = 0.0
+    if seg.size > int(SR / 80):
+        seg = seg - seg.mean()
+        f = np.fft.rfft(seg, 2 * seg.size)
+        ac = np.fft.irfft(f * np.conj(f))[: seg.size]
+        if ac[0] > 0:
+            lo, hi = int(SR / 2000), min(int(SR / 80), seg.size - 1)
+            if hi > lo + 1:
+                tonality = float(np.max(ac[lo:hi]) / ac[0])
+    spec = np.abs(np.fft.rfft(x))
+    freqs = np.fft.rfftfreq(n, 1 / SR)
+    centroid = float(np.sum(spec * freqs) / (np.sum(spec) + 1e-12))
+    return {
+        "duration_s": round(n / SR, 3),
+        "attack_ms": round(peak_idx / SR * 1000, 1),
+        "tail_ratio": round(tail_ratio, 3),
+        "tonality": round(tonality, 3),
+        "crest": round(peak / rms, 2),
+        "centroid_hz": round(centroid),
+    }
+
+
+# Acceptance gates per judge kind: {feature: (min, max, penalty_weight)}.
+# CALIBRATED ON THE HUMAN-APPROVED REFERENCE: all four liked stone takes
+# must PASS the step gates (measured tonality up to 0.93 — a hard tap on
+# rock IS slightly pitched, and the maintainer likes it; the enemy of a
+# footstep is the texture BED: high tail_ratio, low crest). For clicks the
+# enemy IS tonality ("piano"), so the gate kills flagrant ring and the
+# ranking prefers the least tonal candidate.
+GATES: dict[str, dict[str, tuple[float, float, float]]] = {
+    "step": {
+        "tail_ratio": (0.0, 0.30, 40),
+        "crest": (6.0, 99.0, 2),
+        "tonality": (0.0, 0.95, 30),
+    },
+    "click": {
+        "tonality": (0.0, 0.40, 60),
+        "tail_ratio": (0.0, 0.15, 40),
+        "crest": (5.0, 99.0, 2),
+    },
+}
+
+# Ranking among candidates (lower = better), per judge kind. Steps rank by
+# dryness — NOT by low tonality, or crisp liked-style toks would lose to
+# mushy thuds. Clicks rank hard by low tonality: the anti-piano selector.
+RANK = {
+    "step": lambda f: f["tail_ratio"] * 5 + f["tonality"] * 1,
+    "click": lambda f: f["tonality"] * 10 + f["tail_ratio"] * 5,
+}
+
+
+def _judge(feat: dict, gates: dict[str, tuple[float, float, float]], kind: str) -> tuple[bool, float]:
+    ok = True
+    penalty = 0.0
+    for key, (lo, hi, w) in gates.items():
+        v = feat[key]
+        if v < lo:
+            ok = False
+            penalty += (lo - v) * w
+        elif v > hi:
+            ok = False
+            penalty += (v - hi) * w
+    return ok, penalty + RANK[kind](feat)
 
 
 def _tighten(x: np.ndarray, max_ms: float | None) -> np.ndarray:
@@ -333,25 +442,56 @@ def main() -> int:
         try:
             out_dir = FOLEY_DIR / name
             out_dir.mkdir(parents=True, exist_ok=True)
-            takes = []
             variants = spec["variants"]
             n_takes = spec.get("takes", TAKES)
-            prev_raw_len = -1
-            for i in range(n_takes):
+            # Round 3: generate a candidate POOL, measure every candidate,
+            # ship only the best n_takes. Blind generation → selection.
+            pool_n = max(n_takes, spec.get("pool", n_takes))
+            gates = GATES.get(spec.get("judge", ""))
+            cands: list[tuple[bool, float, np.ndarray, dict]] = []
+            for i in range(pool_n):
                 prompt = f"{spec['brief']}, {variants[i % len(variants)]}. {STYLE}"
-                x = _generate(session, prompt, spec["duration_s"])
-                x = _master(_tighten(x, spec.get("max_ms")))
-                if x.size == prev_raw_len:
-                    print(f"  WARNING: {name} take {i + 1} same length as previous — variation suspect")
-                prev_raw_len = x.size
+                x = _master(_tighten(_generate(session, prompt, spec["duration_s"]), spec.get("max_ms")))
+                feat = _features(x)
+                ok, score = _judge(feat, gates, spec["judge"]) if gates else (True, 0.0)
+                cands.append((ok, score, x, feat))
+                print(f"{name} cand {i + 1}/{pool_n}: {'PASS ' if ok else 'REJECT'} {feat}")
+                time.sleep(0.4)  # be polite to the API
+            cands.sort(key=lambda c: (not c[0], c[1]))
+            chosen = cands[:n_takes]
+            passed = sum(1 for c in chosen if c[0])
+            if passed < n_takes:
+                print(f"  WARNING: only {passed}/{n_takes} shipped takes pass the {spec.get('judge')} gates")
+            takes = []
+            for i, (_ok, _score, x, feat) in enumerate(chosen):
                 path = out_dir / f"{name}__take{i + 1:02d}.wav"
                 dur = _write_wav(x, path)
-                takes.append({"file": f"{name}/{path.name}", "duration_seconds": dur})
-                print(f"{name} take {i + 1}/{n_takes}: {dur}s")
-                time.sleep(0.5)  # be polite to the API
+                takes.append({"file": f"{name}/{path.name}", "duration_seconds": dur, "features": feat})
+            # Keep the WHOLE pool (sorted best-first) for the human audition
+            # page (/#foley): the maintainer listens and names winners, the
+            # composer promotes them — measurable gates can't judge material
+            # realism, ears can.
+            pool_meta = []
+            if pool_n > n_takes:
+                pool_dir = out_dir / "pool"
+                pool_dir.mkdir(exist_ok=True)
+                for old in pool_dir.glob("*.wav"):
+                    old.unlink()
+                for j, (ok_j, score_j, x_j, feat_j) in enumerate(cands):
+                    ppath = pool_dir / f"{name}__cand{j + 1:02d}.wav"
+                    _write_wav(x_j, ppath)
+                    pool_meta.append({
+                        "file": f"{name}/pool/{ppath.name}",
+                        "passed_gates": ok_j,
+                        "rank": round(score_j, 2),
+                        "features": feat_j,
+                    })
             manifest[name] = {
                 "takes": [t["file"] for t in takes],
                 "durations_s": [t["duration_seconds"] for t in takes],
+                "features": [t["features"] for t in takes],
+                "qa": {"judge": spec.get("judge"), "pool": pool_n, "passed_gates": passed, "of": n_takes},
+                "pool_candidates": pool_meta,
                 "brief": spec["brief"],
                 "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                 "model_id": MODEL_ID,
