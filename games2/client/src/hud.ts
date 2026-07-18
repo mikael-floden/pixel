@@ -25,7 +25,7 @@
 
 import { mountFrame2, FrameLayout, HUD_SCALE } from "./frame2";
 import { setClockMount } from "./clock";
-import { dressPlate } from "./plate";
+import { dressPlate, repaintPlates } from "./plate";
 import { gameAudio } from "../../composer/index";
 
 export interface HudActions {
@@ -182,7 +182,15 @@ export class HudBar {
 
   private select(id: TabId) {
     for (const [tid, b] of this.tabs) b.classList.toggle("sel", tid === id);
-    for (const [tid, p] of this.pages) p.classList.toggle("show", tid === id);
+    let shown: HTMLElement | undefined;
+    for (const [tid, p] of this.pages) {
+      const on = tid === id;
+      p.classList.toggle("show", on);
+      if (on) shown = p;
+    }
+    // Plates built while the page was display:none measured 0×0 — repaint
+    // them now that the page has a real size (next frame, after layout).
+    if (shown) requestAnimationFrame(() => repaintPlates(shown!));
   }
 
   /** Re-read every switch's pressed state AND every live state label
@@ -336,18 +344,19 @@ function injectStyles() {
      size, so a state label changing on press ("time speed: frozen" -> "x2",
      "weather: clear sky" -> "cloudy at times") can't resize a button and
      reflow the row — the buttons no longer move around (maintainer). The
-     column is wide enough for the longest possible label so it never wraps. */
-  .ml-btnrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(18rem,1fr));
-    gap:12px;justify-content:center;align-items:stretch;width:100%;max-width:820px;margin:0 auto}
+     three fixed columns (maintainer: 3 buttons per row). */
+  .ml-btnrow{display:grid;grid-template-columns:repeat(3,1fr);
+    gap:12px;justify-content:center;align-items:stretch;width:100%;margin:0 auto}
   /* settings buttons must never be SHORTER than the menu tabs / backpack
-     slots (maintainer) — same --ml-tab height, width fills the grid cell,
-     label centred and single-line so it never changes the button size */
+     slots (maintainer) — same --ml-tab height, width fills the grid cell.
+     At 3-per-row the columns are narrower, so long labels WRAP to a second
+     line (the button is tall enough) instead of ellipsis-truncating. */
   /* plate is a runtime-composed background (plate.ts / dressPlate) — NOT
      border-image, which stretched the square art across wide buttons
      (maintainer). border:none; padding sits the label inside the bevel. */
-  .ml-plate-btn{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-    display:flex;align-items:center;justify-content:center;
-    padding:14px 30px;min-height:var(--ml-tab-2x);box-sizing:border-box;border:none;
+  .ml-plate-btn{width:100%;white-space:normal;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    padding:14px 20px;min-height:var(--ml-tab-2x);box-sizing:border-box;border:none;
     cursor:pointer;image-rendering:pixelated;touch-action:manipulation;
     background:none;background-repeat:no-repeat;background-size:100% 100%;
     font:700 14px system-ui,sans-serif;letter-spacing:.4px;text-transform:uppercase;color:#e8e8ec;

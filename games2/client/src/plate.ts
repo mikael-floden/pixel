@@ -120,6 +120,8 @@ export function plateUrl(kind: PlateKind, w: number, h: number): string | null {
   return url;
 }
 
+type Dressed = HTMLElement & { _paintPlate?: () => void };
+
 /** Dress a button element with a composed plate that tracks its size and
  * pressed/selected state — a drop-in for the old border-image plate. The
  * element keeps its own padding/min-height; we only paint the background. */
@@ -128,8 +130,18 @@ export function dressPlate(el: HTMLElement, kindFor: (el: HTMLElement) => PlateK
     const url = plateUrl(kindFor(el), el.clientWidth, el.clientHeight);
     if (url) el.style.backgroundImage = `url(${url})`;
   };
+  (el as Dressed)._paintPlate = paint;
+  el.setAttribute("data-plate", "");
   readyPlates().then(paint);
   new ResizeObserver(paint).observe(el);
   // repaint when the pressed/selected class flips
   new MutationObserver(paint).observe(el, { attributes: true, attributeFilter: ["class"] });
+}
+
+/** Repaint every dressed plate under `root`. A plate button built inside a
+ * `display:none` page measures 0×0; the ResizeObserver reveal when the page
+ * is shown can race image load and leave one unpainted. Call this once the
+ * page is visible (next frame) so each plate composes at its real size. */
+export function repaintPlates(root: ParentNode) {
+  root.querySelectorAll<Dressed>("[data-plate]").forEach((el) => el._paintPlate?.());
 }
