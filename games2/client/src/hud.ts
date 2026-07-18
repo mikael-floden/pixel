@@ -345,11 +345,14 @@ function injectStyles() {
      ~1.4x non-integer ("half pixel offset" mush). */
   .ml-tab-icon{image-rendering:pixelated;-webkit-user-drag:none;pointer-events:none}
   .ml-pages{position:absolute;overflow:hidden;image-rendering:pixelated}
+  /* pages sit on the SAME plain kit-panel brown as the tab-row band
+     (maintainer 2026-07-18: no more stone backdrop — "the same plain
+     bg-color as we have under the menu buttons"); /ui2/stone.png stays
+     shipped if the cobble look is ever wanted back */
   .ml-page{display:none;height:100%;overflow:auto;flex-direction:column;align-items:center;
     justify-content:center;gap:14px;text-align:center;box-sizing:border-box;
     padding:var(--ml-page-padtop,14px) var(--ml-page-pad,44px) var(--ml-page-padbot,14px);
-    background-image:url(/ui2/stone.png);background-size:100% auto;
-    background-repeat:repeat-y;background-attachment:local;image-rendering:pixelated}
+    background:#503c33;image-rendering:pixelated}
   .ml-page.show{display:flex}
   /* backpack slots: the kit's empty-slot square (maintainer circled it),
      9-sliced by dressSlot to fill the box at the SAME KIT_PX block size as
