@@ -235,24 +235,18 @@ export class HudBar {
     // any undressed arrival so injected buttons look like every other row.
     new MutationObserver(() => {
       row.querySelectorAll<HTMLElement>(".ml-plate-btn:not([data-plate])").forEach((el) =>
-        dressPlate(el, (e) =>
-          e.classList.contains("on") || e.classList.contains("press") ? "rowSel" : "row",
-        ),
+        dressPlate(el, kindForState),
       );
     }).observe(row, { childList: true });
 
     // Logout: deliberate two-step (a stray tap must not eject anyone) —
     // just the button, no explainer text (maintainer 2026-07-17).
     const lo = this.pages.get("logout")!;
-    lo.append(plateButton("Log out", () => this.actions.onLogout(), "action"));
+    lo.append(plateButton("Log out", () => this.actions.onLogout()));
   }
 }
 
-function plateButton(
-  label: string,
-  onPress: () => void,
-  style: "row" | "action" = "row",
-): HTMLButtonElement {
+function plateButton(label: string, onPress: () => void): HTMLButtonElement {
   const b = mk("button", "ml-plate-btn") as HTMLButtonElement;
   b.textContent = label;
   b.addEventListener("click", () => {
@@ -260,16 +254,16 @@ function plateButton(
     onPress();
   });
   pressFx(b);
-  // UI-kit plates (plate.ts): settings toggles are pop-up ROW bars — flat
-  // while OFF, the kit's gold selection ring while ON or held; one-shot
-  // buttons (Log out) are the kit's standalone tan button.
-  dressPlate(
-    b,
-    style === "action"
-      ? () => "action"
-      : (el) => (el.classList.contains("on") || el.classList.contains("press") ? "rowSel" : "row"),
-  );
+  // the kit's circled state trio (plate.ts): held = the dark DOWN bar,
+  // switch ON = the cream SELECTED bar, else the brown NORMAL bar
+  dressPlate(b, kindForState);
   return b;
+}
+
+function kindForState(el: HTMLElement): "normal" | "sel" | "down" {
+  if (el.classList.contains("press")) return "down";
+  if (el.classList.contains("on")) return "sel";
+  return "normal";
 }
 
 /** Momentary pressed-plate feedback via pointer events: CSS :active is
@@ -379,8 +373,10 @@ function injectStyles() {
     background:none;background-repeat:no-repeat;background-size:100% 100%;
     font:700 15px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#fff;
     text-shadow:0 1px 0 rgba(0,0,0,.35)}
-  /* state = the plate art (kit row vs gold-ringed row via dressPlate);
-     the label stays white like the kit's pop-up rows */
+  /* state = the plate art (the kit's Normal/Selected/Down trio via
+     dressPlate); the cream SELECTED bar needs a dark label */
+  .ml-plate-btn.on{color:#4a2a1c;text-shadow:none}
+  .ml-plate-btn.press{color:#f4e3c2}
   /* Narrow phones: five square tabs must still fit between the outer rails. */
   @media (max-width:460px){
     .ml-tabrow{left:40px;right:40px}

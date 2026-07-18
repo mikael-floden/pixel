@@ -8,14 +8,11 @@ as argv[1]. Everything is cut at NATIVE 1x resolution (every 2x2 block is
 uniform — verified — so the downscale is exact, not a resample).
 
 Current cuts (extend this script as more elements are adopted):
-- kit-btn.png     the blank standalone button (tan fill, dark outline,
-                  bottom shadow) — action buttons (48x16)
-- kit-row.png     the blank pop-up row plate (flat brown bar) — settings
-                  toggles OFF (70x12)
-- kit-row-sel.png the highlighted row: same bar wrapped in the gold ring,
-                  reconstructed from the AUDIO pop-up's selected MUSIC row
-                  with its white label erased to the fill colour — settings
-                  toggles ON (72x14)
+- kit-btn-normal.png / kit-btn-sel.png / kit-btn-down.png (48x12 each)
+  THE button state trio the maintainer circled in UI ELEMENTS ("Normal,
+  Selected, Down"): mid-brown / cream / dark-brown bars, dark outline,
+  used for every HUD button (settings toggles: OFF=normal, ON=sel,
+  held=down; one-shot buttons: normal + down).
 
 Backdrop/panel colours become transparency. These plates are FLAT pixel
 art: they 9-slice losslessly (plate.ts scales corners by an integer factor
@@ -51,31 +48,18 @@ def cut(im, box, clear):
 
 def main():
     im = Image.open(sys.argv[1]).convert("RGB")
-    px = im.load()
 
-    # standalone button below QUIT (bbox found by backdrop flood)
-    cut(im, (368, 776, 464, 808), {BG}).save(OUT + "kit-btn.png")
-
-    # blank pop-up row (GRAPHICS pop-up, first empty row): find its exact
-    # vertical span at a column inside it
-    ys = [y for y in range(525, 562) if px[1240, y] == FILL]
-    row_box = (1212, min(ys), 1352, max(ys) + 1)
-    cut(im, row_box, {PANEL}).save(OUT + "kit-row.png")
-
-    # selected row: the AUDIO pop-up's MUSIC row (gold ring + fill + label) —
-    # fixed box just around the row (the volume meter sits further right),
-    # tight-cropped, with the white label erased into the fill
-    sel = cut(im, (1210, 782, 1360, 816), {PANEL})
-    sel = sel.crop(sel.getbbox())
-    sp = sel.load()
-    for y in range(sel.height):
-        for x in range(sel.width):
-            if sp[x, y][:3] == TEXT:
-                sp[x, y] = (*FILL, 255)
-    sel.save(OUT + "kit-row-sel.png")
-
-    for n in ("kit-btn", "kit-row", "kit-row-sel"):
-        print(n, Image.open(OUT + n + ".png").size)
+    # the circled state trio in UI ELEMENTS (below the dropdown rows),
+    # three stacked 96x24 bars at x 784..880 — tight-cropped per bar
+    for name, box in (
+        ("kit-btn-normal", (784, 568, 882, 596)),
+        ("kit-btn-sel", (784, 594, 882, 622)),
+        ("kit-btn-down", (784, 622, 882, 648)),
+    ):
+        b = cut(im, box, {BG})
+        b = b.crop(b.getbbox())
+        b.save(OUT + name + ".png")
+        print(name, b.size)
 
 
 if __name__ == "__main__":

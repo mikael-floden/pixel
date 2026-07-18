@@ -3,12 +3,12 @@
  * uikit.png, cut by scripts/extract-uikit.py) — "we have the buttons we
  * should use in the game now".
  *
- * Three plates, all FLAT pixel art at native 1x:
- * - row     (70x12) the pop-up row bar — settings toggles OFF
- * - rowSel  (70x12) the same bar with the kit's gold selection ring —
- *           settings toggles ON / pressed
- * - action  (48x16) the standalone button (outline + bottom shadow) —
- *           one-shot buttons (Log out)
+ * The maintainer circled the kit's button state trio ("Normal, Selected,
+ * Down") — three flat bars at native 1x, used for EVERY HUD button:
+ * - normal (48x12) mid-brown bar, dark outline, bottom shadow
+ * - sel    (48x12) the cream bar — settings toggles ON
+ * - down   (48x11) the dark bar, shadowless and 1px shorter (pressed into
+ *          the surface) — shown while a button is held
  *
  * Because the art is flat, the 9-slice is LOSSLESS: corners scale by an
  * INTEGER factor k = floor(boxHeight / nativeHeight) (nearest-neighbour,
@@ -18,12 +18,12 @@
  * thin, no non-integer scaling anywhere.
  */
 
-export type PlateKind = "row" | "rowSel" | "action";
+export type PlateKind = "normal" | "sel" | "down";
 
 const SRC: Record<PlateKind, string> = {
-  row: "/ui2/kit-row.png",
-  rowSel: "/ui2/kit-row-sel.png",
-  action: "/ui2/kit-btn.png",
+  normal: "/ui2/kit-btn-normal.png",
+  sel: "/ui2/kit-btn-sel.png",
+  down: "/ui2/kit-btn-down.png",
 };
 
 // native corner slice: covers the rounding + ring/outline of every plate
