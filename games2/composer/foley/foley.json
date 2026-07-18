@@ -185,5 +185,22 @@
     "brief": "a muted mechanical clack: a wooden latch releasing, a short lower-pitched dry double-click of a button backing out, purely mechanical, NOT musical, no chime, no piano, no tone",
     "generated_at": "2026-07-18T14:17:28+00:00",
     "model_id": "eleven_text_to_sound_v2"
+  },
+  "stone": {
+    "takes": [
+      "stone/stone__take01.wav",
+      "stone/stone__take02.wav",
+      "stone/stone__take03.wav",
+      "stone/stone__take04.wav"
+    ],
+    "durations_s": [
+      0.674,
+      1.6,
+      1.6,
+      0.909
+    ],
+    "brief": "a single footstep on a flat stone paving slab: a hard leather boot heel striking dense rock, compact dry tap with a faint grit scuff",
+    "generated_at": "2026-07-18T14:20:03+00:00",
+    "model_id": "eleven_text_to_sound_v2"
   }
 }
