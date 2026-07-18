@@ -158,15 +158,16 @@ export class GameAudio {
 
   // ---- semantic events ----
 
-  /** Events whose sound the composer has taken in-house (maintainer QA:
-   * the catalog UI clicks "sound like a piano, not like buttons"). When the
-   * named foley set exists under composer/foley/, it wins over the catalog
-   * binding; until generated, the catalog remains the fallback. */
+  /** Events whose sound the composer has taken in-house. MAINTAINER
+   * 2026-07-18: the tab click (ui_tick) is THE approved button sound —
+   * "I want the backpack button sound" — so every UI event plays it (one
+   * sound, everywhere, like the stone footsteps). The ui_confirm/ui_cancel
+   * sets stay bundled + auditionable at /#foley for a future opt-in. */
   private static EVENT_FOLEY: Record<string, string> = {
     "ui.cursor_move": "ui_tick",
-    "ui.confirm": "ui_confirm",
-    "ui.cancel": "ui_cancel",
-    "ui.error": "ui_cancel",
+    "ui.confirm": "ui_tick",
+    "ui.cancel": "ui_tick",
+    "ui.error": "ui_tick",
   };
 
   /** Fire a bound event (sounds/bindings.json names: "ui.confirm",
