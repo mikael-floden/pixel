@@ -73,31 +73,46 @@ PRESS_VARIANTS = [
 # — these briefs are TACTILE by construction (and say so out loud, because
 # the model loves drifting musical).
 SETS: dict[str, dict] = {
+    # ROUND 2 (maintainer QA 2026-07-18: black_mountain = the STONE set is
+    # the good one; the rest "still not good enough"). What stone got right:
+    # a COMPACT DISCRETE IMPACT — its takes trimmed to varied tight lengths,
+    # while every disliked set sat at the full clip length (continuous
+    # rustle/crunch texture instead of one step). Round-2 briefs copy stone's
+    # "one compact impact + tiny character tail" formula, and max_ms
+    # transient-tightening enforces it in post regardless of model rambling.
     "grass": {
         "brief": (
-            "a single footstep on dry meadow grass: a leather boot pressing into "
-            "springy turf, light crisp rustle of grass blades over a soft earthy thud"
+            "one single compact footstep on short dry grass: a firm boot impact "
+            "thud with a brief crisp blade rustle only at the moment of impact, "
+            "tight and dry, exactly one step, no walking sequence, no ambience, "
+            "no wind, no birds"
         ),
-        "duration_s": 0.8,
+        "duration_s": 0.6,
         "variants": GAIT_VARIANTS,
+        "max_ms": 600,
     },
     "sand": {
         "brief": (
-            "a single footstep on loose dry sand: granular gritty crunch as the "
-            "boot heel compresses the sand, with a fine short sandy slide as the "
-            "foot settles"
+            "one single compact footstep on loose dry sand: a short gritty "
+            "crunch as the boot compresses the sand, tight and dry, exactly one "
+            "step, no walking sequence, no ambience, no wind"
         ),
-        "duration_s": 0.8,
+        "duration_s": 0.6,
         "variants": GAIT_VARIANTS,
+        "max_ms": 600,
     },
     "snow": {
         "brief": (
-            "a single footstep in fresh dry powder snow: a clean muffled crunch "
-            "of snow crystals compacting under a heavy winter boot"
+            "one single compact footstep in dry powder snow: a short muffled "
+            "crunch of snow compacting under a boot, tight, exactly one step, "
+            "no walking sequence, no ambience, no wind"
         ),
-        "duration_s": 0.8,
+        "duration_s": 0.6,
         "variants": GAIT_VARIANTS,
+        "max_ms": 600,
     },
+    # LIKED (black_mountain verdict) — recipe frozen, do not regenerate
+    # casually; if it ever must rerun, keep this brief verbatim.
     "stone": {
         "brief": (
             "a single footstep on a flat stone paving slab: a hard leather boot "
@@ -108,35 +123,43 @@ SETS: dict[str, dict] = {
     },
     "ice": {
         "brief": (
-            "a single careful footstep on solid frozen lake ice: a hard boot tap "
-            "with a thin glassy crackle and a very short slick slide"
+            "one single compact footstep on solid frozen ice: a hard boot tap "
+            "like on stone with a brief thin glassy crackle, tight and dry, "
+            "exactly one step, no walking sequence, no ambience"
         ),
-        "duration_s": 0.8,
+        "duration_s": 0.6,
         "variants": GAIT_VARIANTS,
+        "max_ms": 600,
     },
     "wood": {
         "brief": (
-            "a single footstep on thick wooden planks: a boot heel landing on a "
-            "timber balcony with a warm, slightly hollow knock"
+            "one single compact footstep on a thick wooden plank: a boot heel "
+            "knock, hard like a tap on stone but hollow and woody, tight and "
+            "dry, exactly one step, no walking sequence, no ambience"
         ),
-        "duration_s": 0.8,
+        "duration_s": 0.6,
         "variants": GAIT_VARIANTS,
+        "max_ms": 600,
     },
     "dirt": {
         "brief": (
-            "a single footstep on packed dry dirt: a dull earthy thud of a boot "
-            "on compacted soil with a tiny gravelly scuff"
+            "one single compact footstep on hard-packed dry dirt: a dull firm "
+            "boot thud with a tiny grit scuff, tight and dry, exactly one step, "
+            "no walking sequence, no ambience"
         ),
-        "duration_s": 0.8,
+        "duration_s": 0.6,
         "variants": GAIT_VARIANTS,
+        "max_ms": 600,
     },
     "swamp": {
         "brief": (
-            "a single squelching footstep in shallow bog mud: a wet sucking "
-            "squish as a boot presses into soft marsh ground"
+            "one single compact squelching footstep in shallow mud: a short wet "
+            "sucking squish of one boot press, tight, exactly one step, no "
+            "walking sequence, no ambience, no water stream"
         ),
-        "duration_s": 0.8,
+        "duration_s": 0.6,
         "variants": GAIT_VARIANTS,
+        "max_ms": 700,
     },
     # ---- world/weather (real sources, not disguises: the maintainer heard
     # straight through the slowed-explosion "thunder") ----
@@ -215,6 +238,21 @@ def _decode(raw: bytes, fmt: str) -> np.ndarray:
     if x.size < SR * 0.05:
         raise RuntimeError(f"decoded audio too short ({x.size} samples) — bad payload?")
     return x
+
+
+def _tighten(x: np.ndarray, max_ms: float | None) -> np.ndarray:
+    """Transient-anchored cut: keep from just before the strongest onset to
+    max_ms after it. Round 2's enforcement of the stone-set lesson — a
+    footstep is ONE discrete impact; if the model pads the clip with
+    continuous texture, cut the step out of it instead of shipping the bed."""
+    if max_ms is None or x.size == 0:
+        return x
+    # Anchor on the strongest peak with a short fixed pre-roll — threshold
+    # onset-hunting latches onto the background texture floor instead.
+    peak_idx = int(np.argmax(np.abs(x)))
+    start = max(0, peak_idx - int(SR * 0.030))
+    end = min(x.size, start + int(SR * max_ms / 1000))
+    return x[start:end]
 
 
 def _master(x: np.ndarray) -> np.ndarray:
@@ -301,7 +339,8 @@ def main() -> int:
             prev_raw_len = -1
             for i in range(n_takes):
                 prompt = f"{spec['brief']}, {variants[i % len(variants)]}. {STYLE}"
-                x = _master(_generate(session, prompt, spec["duration_s"]))
+                x = _generate(session, prompt, spec["duration_s"])
+                x = _master(_tighten(x, spec.get("max_ms")))
                 if x.size == prev_raw_len:
                     print(f"  WARNING: {name} take {i + 1} same length as previous — variation suspect")
                 prev_raw_len = x.size

@@ -38,6 +38,7 @@ decides what sounds.
 | footstep wood | unrated | regenerated alongside the rest |
 | UI buttons (menu_select/confirm/cancel) | **"sound like a piano, not like buttons"** (2026-07-18) | composer generates tactile mechanical clicks (foley/ui_tick, ui_confirm, ui_cancel) — wooden-button thocks matching the carved HUD, explicitly non-musical |
 | thunder | **"doesn't sound like thunder"** (2026-07-18) | verdict: the COMPOSER's fault, not an asset — there was no thunder asset, so the composer disguised `explosion` (0.4× rate + lowpass) and the disguise reads as mush. Fix: real generated `foley/thunder` set (6 s natural rolls), preferred automatically; the disguise stays only as fallback |
+| composer foley round 1 | **stone (black_mountain) GOOD — "I like that one"; other footsteps "still not good enough (but better than before)"** (2026-07-18) | the liked set trims to tight varied lengths = a discrete impact; every disliked set sat at full clip length = continuous texture instead of one step. Round 2: briefs rewritten on stone's "one compact impact" formula + `max_ms` transient tightening cuts the step out of any texture bed in post. **Stone's recipe is FROZEN — never regenerate a liked set.** |
 
 ### ENFORCE UNMODIFIED AUDIO (Settings switch)
 
