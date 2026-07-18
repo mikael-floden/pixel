@@ -287,28 +287,20 @@ let injected = false;
 function injectStyles() {
   if (injected) return;
   injected = true;
-  // Scale the plates in lockstep with the frame's HUD_SCALE (frame2) so they
-  // keep filling the frame's tab/page windows at the "1x" experiment size.
-  // --ml-hud-scale-2x is the "x2 of the current" size (capped at the art's
-  // native 1.0) — the backpack slots + settings buttons opt into it so they
-  // stay comfortably tappable while the rest of the HUD stays small
-  // (maintainer 2026-07-17).
+  // --ml-hud-scale (the frame's HUD_SCALE, frame2) still scales the tab
+  // label font + legacy border width; button SIZES are fixed px now
+  // (maintainer: tabs and settings buttons both 132px).
   document.documentElement.style.setProperty("--ml-hud-scale", String(HUD_SCALE));
-  document.documentElement.style.setProperty("--ml-hud-scale-2x", String(Math.min(1, HUD_SCALE * 2)));
   // --ml-tab: PERFECT-SQUARE tab plate side (mock plates capped at 150).
   // --ml-tabzone: boundary → divider B line centre; tracks the tab size.
   // Frame pieces are mock-ABSOLUTE crops: corners 180px, borders as
   // segment strips stretched between fixed junctions (see build-ui-tiles).
   const css = `
   :root{--ml-hud-scale:1;
-    --ml-tab:calc(min(150px,calc((100vw - 200px)/5)) * var(--ml-hud-scale));
-    --ml-bw:calc(26px * var(--ml-hud-scale));   /* plate border render width */
-    /* the "2x" (native) plate size for the settings buttons. Resolved HERE at
-       :root against --ml-hud-scale-2x (set on the root by JS), because a
-       nested var() inside a custom property resolves at the DECLARING scope —
-       overriding --ml-hud-scale on a child does NOT re-resolve --ml-tab, so
-       the buttons need their own 2x var. */
-    --ml-tab-2x:calc(min(150px,calc((100vw - 200px)/5)) * var(--ml-hud-scale-2x,1))}
+    /* one shared button height (maintainer: both 132px), guarded so five
+       tabs still fit between the rails on narrow real-device viewports */
+    --ml-tab:min(132px,calc((100vw - 200px)/5));
+    --ml-bw:calc(26px * var(--ml-hud-scale))}   /* plate border render width */
   /* HUD sections: base props only — position/size come from applyFrameLayout
      (the frame-v2 windows), set inline after every compose. */
   .ml-hud{position:fixed;left:0;right:0;bottom:0;z-index:4;background:#23160d;box-sizing:border-box}
@@ -356,13 +348,13 @@ function injectStyles() {
   .ml-btnrow{display:grid;grid-template-columns:repeat(3,1fr);
     gap:12px;justify-content:center;align-items:stretch;width:100%;margin:0 auto}
   /* UI-KIT plates (maintainer's pack, plate.ts): flat pixel plates composed
-     at an INTEGER scale — height 96 = exactly 8 art px blocks for the 12px
-     rows and 6 for the 16px action button, so every plate pixel is a crisp
-     block. Labels wrap to a second line when the 3-per-row column narrows.
-     White uppercase labels like the kit's pop-up rows. */
+     at an INTEGER block scale (floor(h/native/2) — 5px blocks at h=132).
+     Height 132 is the maintainer's shared button height, same as the tabs.
+     Labels wrap to a second line when the 3-per-row column narrows. White
+     uppercase labels like the kit's pop-up rows. */
   .ml-plate-btn{width:100%;white-space:normal;overflow:hidden;
     display:flex;align-items:center;justify-content:center;text-align:center;
-    padding:8px 24px;height:96px;box-sizing:border-box;border:none;
+    padding:8px 24px;height:132px;box-sizing:border-box;border:none;
     cursor:pointer;image-rendering:pixelated;touch-action:manipulation;
     background:none;background-repeat:no-repeat;background-size:100% 100%;
     font:700 15px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#fff;
