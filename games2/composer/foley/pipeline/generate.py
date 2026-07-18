@@ -180,16 +180,26 @@ SETS: dict[str, dict] = {
     # next to water; swim-entry sounds are later scope). ROUND 2: round 1's
     # take sounded like a door — briefs now scream anti-door and candidates
     # are judged by similarity to the known-watery splash reference.
+    # ROUND 3 (round 2's "squelch mud" framing didn't read as a wet
+    # footstep either): classic puddle-step foley framing, and the pool
+    # explores FOUR different wet framings (variants carry whole framings,
+    # not gait articulations) — 3 candidates each, wetness-gated, most
+    # splash-like ranked first.
     "water_step": {
         "brief": (
-            "one single squelchy wet footstep on soaked waterlogged ground at "
-            "a lake shore: a boot pressing into wet mud-sand with water "
-            "squishing out around the sole, a soft watery squelch, exactly "
-            "one step, only water sounds, no door, no wood, no knock, no "
-            "creak, no latch, no click, no stream, no rain, no ambience"
+            "one single light wet footstep: a boot stepping into a shallow "
+            "puddle of water, a quick splashy slap with a few small droplets, "
+            "exactly one step, only water sounds, no door, no wood, no knock, "
+            "no creak, no click, no mud suction, no stream, no rain, no "
+            "ambience"
         ),
         "duration_s": 0.6,
-        "variants": GAIT_VARIANTS,
+        "variants": [
+            "in a shallow rain puddle on a path",
+            "on a wet sandy lake shore under a thin film of water",
+            "on wet smooth rock, water splashing off the sole",
+            "quick and light, barely ankle-deep clear water",
+        ],
         "max_ms": 650,
         "judge": "wet",
         "ref": "sounds/movement/splash/splash__take01.wav",
