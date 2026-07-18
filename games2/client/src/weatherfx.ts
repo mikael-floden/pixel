@@ -58,6 +58,7 @@ const SPLASH_LIFE: [number, number] = [300, 480]; // ms
 // Snow SETTLES: a flake that reaches the ground rests, then melts/fades.
 const SNOW_REST: [number, number] = [2500, 6000]; // ms a landed flake sits before melting
 const SNOW_FADE = 1500;                            // ms melt/fade-out
+const SNOW_WATER_MELT = 320;                       // ms: snow melts (near-)instantly on water
 
 interface Drop {
   img: Phaser.GameObjects.Image;
@@ -69,6 +70,7 @@ interface Drop {
   landY: number; // rain/snow: world-y where this drop hits the ground (0 = uninit)
   state: number; // snow: 0 falling, 1 resting on ground, 2 fading (melting)
   restT: number; // snow: ms left in the current rest/fade phase
+  meltDur: number; // snow: total fade duration for the CURRENT melt (SNOW_FADE, or fast on water)
   wisp?: boolean; // Windy: this slot is a motion-line, not a leaf
 }
 
@@ -236,7 +238,9 @@ export class WeatherFX {
     return { kind: this.kind, shown: Math.round(this.shown), flashes: this.flashes, rest };
   }
 
-  update(dtMs: number, cam: Phaser.Cameras.Scene2D.Camera) {
+  /** `waterAt(worldX, worldY)` — true when that ground point is open water.
+   * Snow that lands on water melts (near-)instantly instead of resting. */
+  update(dtMs: number, cam: Phaser.Cameras.Scene2D.Camera, waterAt?: (wx: number, wy: number) => boolean) {
     const dt = Math.min(dtMs, 100) / 1000;
     // Ripples always animate to completion, even after the rain stops.
     this.updateSplashes(Math.min(dtMs, 100));
@@ -266,6 +270,7 @@ export class WeatherFX {
         landY: 0,
         state: 0,
         restT: 0,
+        meltDur: SNOW_FADE,
       };
       this.dress(d, this.pool.length);
       this.pool.push(d);
@@ -306,12 +311,13 @@ export class WeatherFX {
           d.restT -= dtMs;
           if (d.restT <= 0) {
             d.state = 2;
-            d.restT = SNOW_FADE;
+            d.meltDur = SNOW_FADE;
+            d.restT = d.meltDur;
           }
         } else if (d.state === 2) {
           // melting away where it settled
           d.restT -= dtMs;
-          snowAlphaMul = Math.max(0, d.restT / SNOW_FADE);
+          snowAlphaMul = Math.max(0, d.restT / d.meltDur);
           if (d.restT <= 0) this.recycleSnow(d, top, left, span, bottom);
         } else {
           // FALLING: sway sideways, drift down to the landing height
@@ -321,8 +327,16 @@ export class WeatherFX {
           else if (d.x > right) d.x -= span;
           if (d.y >= d.landY) {
             d.y = d.landY;
-            d.state = 1;
-            d.restT = SNOW_REST[0] + this.rand() * (SNOW_REST[1] - SNOW_REST[0]);
+            // Snow doesn't settle on water — it melts on contact. Skip the
+            // rest phase and fade fast right where it touched the surface.
+            if (waterAt?.(d.x, d.landY)) {
+              d.state = 2;
+              d.meltDur = SNOW_WATER_MELT;
+              d.restT = d.meltDur;
+            } else {
+              d.state = 1;
+              d.restT = SNOW_REST[0] + this.rand() * (SNOW_REST[1] - SNOW_REST[0]);
+            }
           }
           snowAlphaMul = 0.75 + 0.25 * Math.sin(t * 2 + d.phase); // falling twinkle
         }

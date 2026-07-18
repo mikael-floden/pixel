@@ -879,6 +879,13 @@ export class WorldScene extends Phaser.Scene {
       },
       cloudAt: (wx: number, wy: number) => this.night?.cloudFactorAt(wx, wy, this.curCloud, this.curSun[3]) ?? 1,
       mistAt: (wx: number, wy: number) => this.night?.mistAt(wx, wy, this.curMist) ?? 0,
+      // Is the ground drawn at this world/screen point open water? (snow-melt QA)
+      waterAtScreen: (wx: number, wy: number) => this.isWaterAtScreen(wx, wy),
+      // Camera world-view rect (QA: sample effects across the visible world).
+      camView: () => {
+        const w = this.cameras.main.worldView;
+        return { x: w.x, y: w.y, w: w.width, h: w.height };
+      },
       // Footstep-mark probes: live count + per-mark world pos/style.
       footprints: () => this.footsteps?.count() ?? 0,
       footprintsList: () => this.footsteps?.list() ?? [],
@@ -1923,7 +1930,7 @@ export class WorldScene extends Phaser.Scene {
       this.curPrecipDim += (dimTo - this.curPrecipDim) * ca;
       if (!this.weatherFX) this.weatherFX = new WeatherFX(this);
       this.weatherFX.setWeather(this.weatherIdx);
-      this.weatherFX.update(this.game.loop.delta, this.cameras.main);
+      this.weatherFX.update(this.game.loop.delta, this.cameras.main, (wx, wy) => this.isWaterAtScreen(wx, wy));
       // Aurora eases on the same ~4s roll (the curtains breathe in).
       const auroraTo = this.auroraOn ? 1 : 0;
       this.curAurora += (auroraTo - this.curAurora) * ca;
@@ -2249,6 +2256,25 @@ export class WorldScene extends Phaser.Scene {
    * actual level matches the candidate is the surface the player SEES there.
    * Returns flat world coords (the same space the server moves players in).
    */
+  /** Is the ground point drawn at world/screen (wx, wy) open water? Same iso
+   * inverse-projection as pickGround, but reports the topmost hit cell's
+   * swimmable-ness — used by the snow FX so flakes melt on lakes, not rest. */
+  private isWaterAtScreen(wx: number, wy: number): boolean {
+    if (!this.world) return false;
+    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    const u = (wx - this.iso.ox - tile / 2) / dx;
+    for (let l = this.maxLevel; l >= 0; l--) {
+      const v = (wy - this.iso.oy - dy + l * lh) / dy;
+      const col = (u + v) / 2;
+      const row = (v - u) / 2;
+      const cell = this.world.rows[Math.floor(row)]?.[Math.floor(col)];
+      if (!cell || cell.l !== l) continue;
+      const s = surfaceFor(cell.t);
+      return !s.standable && s.swimmable; // a lake surface (not a walkable bank)
+    }
+    return false;
+  }
+
   private pickGround(wx: number, wy: number): { x: number; y: number } | null {
     const clampW = (x: number, y: number) => ({
       x: Math.max(1, Math.min(this.worldW - 1, x)),

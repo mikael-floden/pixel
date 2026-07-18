@@ -370,7 +370,14 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   the camera moves, no lifespan pops; counts scale with view area
   (REF_AREA). Storm gusts are a GLOBAL sine on vx (every streak leans
   together) + camera-flash lightning every 5-14s (sometimes double);
-  streak rotation follows the velocity vector. Snow sways per-flake;
+  streak rotation follows the velocity vector. Snow sways per-flake and
+  SETTLES: a flake falls to its own ground height, rests as a still flake
+  a few seconds, then melts (fades) and recycles — EXCEPT on water, where
+  it melts near-instantly (SNOW_WATER_MELT ≈320ms, no rest phase): WeatherFX
+  gets a `waterAt(wx,wy)` predicate from WorldScene (`isWaterAtScreen`, the
+  same iso inverse-projection as pickGround → swimmable cell) so flakes over
+  a lake don't blanket it. QA: `__ml.waterAtScreen`/`camView`, and rest/shown
+  is ~2.4x lower over a lake view than over land (ring_test cell 74,68).
   Windy is leaf debris (three autumn tints, deep per-leaf surge + curl
   arcs — anime wind streams, maintainer's inspiration) plus faint long
   motion-line wisps racing ahead of the leaves at 2.3x gust. Each state
