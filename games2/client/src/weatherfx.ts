@@ -30,14 +30,15 @@ interface Cfg {
   leaf?: boolean;     // Windy: tumbling debris, mostly horizontal
   gust?: boolean;
   lightning?: boolean;
+  splash?: boolean;   // rain: drop LANDS on the ground and pops a ripple
 }
 
 // Keyed by shared WEATHER_NAMES index.
 const PRECIP: Record<number, Cfg> = {
-  3: { count: 90,  vy: [300, 390], vx: -15,  alpha: 0.34, scaleY: 0.6 },              // Drizzle
-  4: { count: 260, vy: [620, 760], vx: -70,  alpha: 0.45, scaleY: 1 },                // Rain
-  5: { count: 520, vy: [700, 880], vx: -120, alpha: 0.52, scaleY: 1.25 },             // Heavy rain
-  6: { count: 660, vy: [760, 960], vx: -250, alpha: 0.56, scaleY: 1.4, gust: true, lightning: true }, // Storm
+  3: { count: 90,  vy: [300, 390], vx: -15,  alpha: 0.34, scaleY: 0.6, splash: true },  // Drizzle
+  4: { count: 260, vy: [620, 760], vx: -70,  alpha: 0.45, scaleY: 1, splash: true },     // Rain
+  5: { count: 520, vy: [700, 880], vx: -120, alpha: 0.52, scaleY: 1.25, splash: true },  // Heavy rain
+  6: { count: 660, vy: [760, 960], vx: -250, alpha: 0.56, scaleY: 1.4, gust: true, lightning: true, splash: true }, // Storm
   7: { count: 240, vy: [55, 95],   vx: 0,    alpha: 0.9,  scaleY: 1, snow: true },    // Snowing
   8: { count: 110, vy: [15, 60],   vx: -200, alpha: 0.95, scaleY: 1, leaf: true, gust: true }, // Windy
 };
@@ -45,6 +46,10 @@ const PRECIP: Record<number, Cfg> = {
 const REF_AREA = 520 * 700; // world px² the counts are tuned for
 const MARGIN = 60;
 const DEPTH = 899_500;
+// Ground splashes for rain: ripple rings just UNDER the falling drops.
+const SPLASH_DEPTH = 899_490;
+const MAX_SPLASH = 130;         // hard cap on live ripples (heavy rain sits here)
+const SPLASH_LIFE: [number, number] = [300, 480]; // ms
 
 interface Drop {
   img: Phaser.GameObjects.Image;
@@ -53,12 +58,24 @@ interface Drop {
   vy: number;
   vxJit: number; // per-drop horizontal jitter
   phase: number; // snow sway phase
+  landY: number; // rain: world-y where this drop hits the ground (0 = uninit)
   wisp?: boolean; // Windy: this slot is a motion-line, not a leaf
+}
+
+interface Splash {
+  img: Phaser.GameObjects.Image;
+  x: number;
+  y: number;
+  age: number; // ms
+  life: number;
+  grow: number;
+  active: boolean;
 }
 
 export class WeatherFX {
   private scene: Phaser.Scene;
   private pool: Drop[] = [];
+  private splashes: Splash[] = [];
   private cfg: Cfg | null = null;
   private kind = 0;
   private shown = 0;         // eased visible-drop count
@@ -102,6 +119,52 @@ export class WeatherFX {
       g.fillRect(0, 0, 2, 2);
       g.generateTexture("fx-leaf", 2, 2);
       g.destroy();
+    }
+    if (!t.exists("fx-splash")) {
+      // A thin 11×11 ripple ring + a faint impact dot; tinted cool at use.
+      const g = this.scene.add.graphics();
+      g.lineStyle(1.4, 0xffffff, 1);
+      g.strokeCircle(5.5, 5.5, 4.5);
+      g.fillStyle(0xffffff, 0.9).fillCircle(5.5, 5.5, 0.9);
+      g.generateTexture("fx-splash", 11, 11);
+      g.destroy();
+    }
+  }
+
+  /** Pop a ripple where a rain drop hit the ground (pooled, hard-capped). */
+  private spawnSplash(x: number, y: number) {
+    let s: Splash | undefined = this.splashes.find((p) => !p.active);
+    if (!s) {
+      if (this.splashes.length >= MAX_SPLASH) return; // at cap — skip
+      const img = this.scene.add
+        .image(0, 0, "fx-splash")
+        .setDepth(SPLASH_DEPTH)
+        .setTint(0xcfe4ff)
+        .setVisible(false);
+      s = { img, x: 0, y: 0, age: 0, life: 0, grow: 1, active: false };
+      this.splashes.push(s);
+    }
+    s.x = x;
+    s.y = y;
+    s.age = 0;
+    s.life = SPLASH_LIFE[0] + this.rand() * (SPLASH_LIFE[1] - SPLASH_LIFE[0]);
+    s.grow = 1.3 + this.rand() * 1.3;
+    s.active = true;
+    s.img.setPosition(x, y).setVisible(true);
+  }
+
+  private updateSplashes(dtMs: number) {
+    for (const s of this.splashes) {
+      if (!s.active) continue;
+      s.age += dtMs;
+      const p = s.age / s.life;
+      if (p >= 1) {
+        s.active = false;
+        s.img.setVisible(false);
+        continue;
+      }
+      const sc = 0.35 + p * s.grow;
+      s.img.setScale(sc, sc * 0.5).setAlpha((1 - p) * 0.7); // iso ground ellipse
     }
   }
 
@@ -149,6 +212,8 @@ export class WeatherFX {
 
   update(dtMs: number, cam: Phaser.Cameras.Scene2D.Camera) {
     const dt = Math.min(dtMs, 100) / 1000;
+    // Ripples always animate to completion, even after the rain stops.
+    this.updateSplashes(Math.min(dtMs, 100));
     const cfg = this.cfg;
     const wv = cam.worldView;
     const areaScale = Math.min(3, (wv.width * wv.height) / REF_AREA);
@@ -172,6 +237,7 @@ export class WeatherFX {
         vy: 0,
         vxJit: this.rand(),
         phase: this.rand() * Math.PI * 2,
+        landY: 0,
       };
       this.dress(d, this.pool.length);
       this.pool.push(d);
@@ -216,8 +282,20 @@ export class WeatherFX {
       }
       d.x += vx * dt;
       d.y += (cfg.leaf ? vyEff : d.vy) * dt;
-      // recycle: below the view -> back to the top band; wrap x
-      if (d.y > bottom) {
+      if (cfg.splash) {
+        // Rain HITS THE GROUND: each drop falls to its own landing height
+        // (a world-y in the lower-middle band — the near ground), pops a
+        // ripple there, and recycles to the top with a fresh landing point.
+        if (d.landY === 0) d.landY = top + (0.45 + 0.5 * this.rand()) * (bottom - top);
+        if (d.y >= d.landY) {
+          this.spawnSplash(d.x, d.landY);
+          d.y = top - this.rand() * 30;
+          d.x = left + this.rand() * span;
+          d.vy = cfg.vy[0] + (cfg.vy[1] - cfg.vy[0]) * this.rand();
+          d.landY = top + (0.45 + 0.5 * this.rand()) * (bottom - top);
+        }
+      } else if (d.y > bottom) {
+        // snow / leaves: recycle below the view -> back to the top band
         d.y = top - this.rand() * 30;
         d.x = left + this.rand() * span;
         d.vy = cfg.vy[0] + (cfg.vy[1] - cfg.vy[0]) * this.rand();
@@ -230,6 +308,7 @@ export class WeatherFX {
       if (d.y < top - 200 || d.y > bottom + 200) {
         d.y = top + this.rand() * (bottom - top);
         d.x = left + this.rand() * span;
+        d.landY = 0; // recompute the landing point for the new view
       }
       const wispA = d.wisp ? 0.13 : 1;
       d.img

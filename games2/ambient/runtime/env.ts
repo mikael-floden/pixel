@@ -44,13 +44,21 @@ export function sampleEnv(prev?: AmbientEnv, cx?: number, cy?: number): AmbientE
   }
   try {
     const w = (
-      ml.weatherInfo as undefined | (() => { idx: number; name: string; cloud: number; mist?: number })
+      ml.weatherInfo as undefined
+      | (() => { idx: number; name: string; cloud: number; mist?: number; precip?: { shown?: number } | null })
     )?.();
     if (w) {
       if (typeof w.cloud === "number") env.cloud = clamp01(w.cloud);
       if (typeof w.mist === "number") env.mist = clamp01(w.mist);
       if (typeof w.idx === "number") env.weather = w.idx;
       if (typeof w.name === "string") env.weatherName = w.name;
+      // Rain-splash intensity: rain KINDS only (not snow/wind), ramped with
+      // the games agent's live drop count so splashes appear as the rain
+      // rolls in, not before.
+      const kind = RAIN_INTENSITY[w.name] ?? 0;
+      const shown = w.precip && typeof w.precip.shown === "number" ? w.precip.shown : null;
+      const ramp = shown === null ? 1 : Math.min(1, shown / 40);
+      env.rain = kind * ramp;
     }
   } catch {
     /* ignore */
@@ -66,9 +74,18 @@ export function sampleEnv(prev?: AmbientEnv, cx?: number, cy?: number): AmbientE
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
-/** Is the current weather a rainy/stormy one? No rain weather exists yet
- * (Clear/Cloudy/Mist as of 2026-07-17) — matching by NAME means the day the
- * games agent ships "Rain"/"Storm", thunder's ×2 kicks in with no edit here. */
+// Rain-splash intensity per RAIN weather name (games agent's WEATHER_NAMES).
+// Snow / Windy are precipitation but not rain → no splashes.
+const RAIN_INTENSITY: Record<string, number> = {
+  Drizzle: 0.35,
+  Rain: 0.65,
+  "Heavy rain": 1.0,
+  Storm: 1.0,
+};
+
+/** Is the current weather a rainy/stormy one? Matches by NAME so thunder's
+ * ×2 and the rainbow's rain weight pick up the games agent's rain weathers
+ * (Drizzle/Rain/Heavy rain/Storm) automatically. */
 export function isRainy(env: AmbientEnv): boolean {
-  return /rain|storm|thunder|shower/i.test(env.weatherName);
+  return /drizzle|rain|storm|thunder|shower/i.test(env.weatherName);
 }

@@ -25,6 +25,10 @@ export interface AmbientEnv {
    * centre; the chase cam trails within ~2 cells). Terrain-aware effects
    * (sandstorm) gate on this. */
   sand: number;
+  /** 0..1 RAIN-type precipitation intensity (Drizzle/Rain/Heavy rain/Storm —
+   * NOT snow/wind), ramped with the games agent's drop count. Rain-splash
+   * gates on this. Read from the game's weatherInfo().precip. */
+  rain: number;
 }
 
 /** Per-frame context handed to every feature. `view` is the camera's live
@@ -98,5 +102,6 @@ export function defaultEnv(): AmbientEnv {
     phase: "Day",
     aurora: 0,
     sand: 0,
+    rain: 0,
   };
 }
