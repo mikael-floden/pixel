@@ -407,12 +407,15 @@ function injectStyles() {
      border — same language as the HUD tabs. NO texture from the maintainer's
      inspiration mock was copied. */
   const css = `
-  /* deep blue-slate night stone (the select-3 concept's mood) — the stone
-     art under a navy wash */
+  /* the maintainer's enchanted-forest select background (768x1376, frame
+     space): fairies, crystals, glowing mushrooms around a mossy clearing.
+     cover + center keeps the clearing on screen at any aspect; a LIGHT navy
+     veil keeps the plaques/text readable over the busy art (the old stone
+     backdrop wore a heavy .84 wash — this art is meant to be SEEN). */
   .ml-overlay{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;
-    background:#0d101c linear-gradient(rgba(13,16,28,.84),rgba(13,16,28,.84));font-family:system-ui,sans-serif;color:#e8e8ec}
-  .ml-overlay{background-image:linear-gradient(rgba(13,16,28,.84),rgba(13,16,28,.84)),url(/ui2/stone.png);
-    background-size:auto,100% auto;background-repeat:repeat,repeat-y;image-rendering:pixelated}
+    background:#0d101c;font-family:system-ui,sans-serif;color:#e8e8ec}
+  .ml-overlay{background-image:linear-gradient(rgba(13,16,28,.28),rgba(13,16,28,.28)),url(/ui2/select-bg.png);
+    background-size:auto,cover;background-position:center;background-repeat:repeat,no-repeat;image-rendering:pixelated}
   /* No vw/vh inside this overlay: it may carry a compensating CSS zoom
      (uiscale.ts) and viewport units would double-count under it. */
   /* Slim side padding: the ring frame provides the visual margin now, and
