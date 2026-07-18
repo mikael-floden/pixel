@@ -85,7 +85,7 @@ function injectStyles() {
      (uiscale.ts) and viewport units would double-count under it. The bottom
      anchors sit ABOVE the HUD dock (--hud-h; slight double-count under a
      desktop-site zoom is acceptable) — the dock is real UI now. */
-  .ml-chatlog{position:fixed;left:96px;bottom:calc(var(--hud-h, 0px) / var(--ml-uizoom, 1) + 46px);z-index:5;max-width:620px;
+  .ml-chatlog{position:fixed;left:96px;bottom:calc(var(--hud-h, 0px) / var(--ml-uizoom, 1) + 46px);z-index:5;max-width:840px;
     font-family:system-ui,sans-serif;font-size:26px;color:#e8e8f0;text-shadow:0 1px 2px #000;pointer-events:none}
   .ml-chatline{margin:2px 0;line-height:1.3;transition:opacity 1.6s ease}
   .ml-chatline.ml-chatfade{opacity:0}

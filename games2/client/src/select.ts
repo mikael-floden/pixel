@@ -2,6 +2,7 @@ import { CharacterDef, Manifest } from "./manifest";
 import { WorldInfo, DEFAULT_WORLD } from "./maps";
 import { showLoading } from "./loading";
 import { applyUiZoom } from "./uiscale";
+import { dressPlate } from "./plate";
 
 const NAMES = ["Ari", "Bex", "Cyl", "Dax", "Eir", "Fen", "Gio", "Hana", "Ivo", "Juno", "Kira", "Lio"];
 
@@ -61,6 +62,11 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     // offers "download image" — suppress at the root, like the HUD does.
     overlay.addEventListener("contextmenu", (e) => e.preventDefault());
     overlay.querySelectorAll<HTMLElement>(".ml-plated").forEach(pressFx);
+    // every select-screen control wears the UI-kit plates (maintainer):
+    // held = the dark Down bar, selected = the cream bar, else Normal
+    overlay.querySelectorAll<HTMLElement>(".ml-plated").forEach((el) => dressPlate(el, kitKind));
+    const nameBox = overlay.querySelector<HTMLElement>("#ml-name");
+    if (nameBox) dressPlate(nameBox, () => "slot"); // the empty-slot trough
 
     // World picker: a SWIPE CAROUSEL, not a button grid (maintainer: the
     // grid ate screen space and the picker is a game-under-development
@@ -88,6 +94,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
         // wooden plate + minimap fallback.
         const hasIcon = WORLD_ICONS.has(w.name);
         const chip = el("button", hasIcon ? "ml-world ml-wicon" : "ml-world ml-plated");
+      if (!hasIcon) dressPlate(chip, kitKind);
         pressFx(chip);
         if (hasIcon) {
           const tile = el("div", "ml-wicon-img");
@@ -221,6 +228,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       const label = displayNames[i];
       const cell = el("button", "ml-cell ml-plated");
       pressFx(cell);
+      dressPlate(cell, kitKind);
       cell.dataset.index = String(i);
       const preview = spritePreview(c, label, manifest.directions);
       cell.appendChild(preview.img);
@@ -393,6 +401,12 @@ function spritePreview(
 }
 
 let stylesInjected = false;
+function kitKind(el: HTMLElement): "normal" | "sel" | "down" {
+  if (el.classList.contains("press")) return "down";
+  if (el.classList.contains("sel")) return "sel";
+  return "normal";
+}
+
 function injectStyles() {
   if (stylesInjected) return;
   stylesInjected = true;
@@ -420,16 +434,16 @@ function injectStyles() {
   /* Slim side padding: the ring frame provides the visual margin now, and
      the phone needs the width — two 152px character tracks + their gap must
      fit inside ring pads + panel (128px native portraits, never scaled). */
-  .ml-panel{width:min(720px,100%);max-height:100%;overflow:auto;padding:16px 8px 12px;text-align:center}
-  .ml-logo{display:block;width:min(420px,88%);margin:0 auto;user-select:none;-webkit-user-drag:none}
+  .ml-panel{width:min(920px,100%);max-height:100%;overflow:auto;padding:16px 8px 12px;text-align:center}
+  /* 2x logo (maintainer) */
+  .ml-logo{display:block;width:min(840px,96%);margin:0 auto;user-select:none;-webkit-user-drag:none}
   .ml-sub{margin:6px 0 14px;color:#b8a67f;text-shadow:0 1px 2px #000}
   .ml-section{text-align:left;margin:12px 4px 6px;font:700 12px/1 system-ui,sans-serif;letter-spacing:1.5px;
     text-transform:uppercase;color:#ffd678;text-shadow:0 1px 2px #000}
-  /* Wooden plate = the HUD's 3-state border-image at the 13px half scale;
-     no border-radius (the art owns the silhouette), backgrounds come from
-     the plate fill. Selected uses plate-selected's baked gold glow. */
-  .ml-plated{border-style:solid;border-width:13px;border-image:url(/ui2/plate-normal.png) 56 fill / 13px;
-    background:none;image-rendering:pixelated;box-sizing:border-box;cursor:pointer;
+  /* UI-KIT plates (plate.ts dressPlate): Normal / cream Selected / dark
+     Down — same trio and block scale as the HUD. */
+  .ml-plated{border:none;background:none;background-repeat:no-repeat;background-size:100% 100%;
+    image-rendering:pixelated;box-sizing:border-box;cursor:pointer;
     touch-action:manipulation;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
   /* World SWIPE CAROUSEL (maintainer: save the screen space — selected in
      the middle, loops around, neighbours peek in from the edges). One
@@ -454,12 +468,11 @@ function injectStyles() {
     flex-direction:column;gap:3px;height:auto}
   .ml-wicon-img{width:64px;height:64px;background-size:100% 100%;background-repeat:no-repeat;
     image-rendering:pixelated}
-  .ml-world.ml-wicon.sel{border-image:none;background:none;color:#ffd678}
-  .ml-world.ml-wicon.sel .ml-wicon-img{outline:2px solid #ffd678;outline-offset:1px;filter:brightness(1.1)}
-  .ml-world.ml-wicon.press{border-image:none;background:none}
+  .ml-world.ml-wicon.sel{background:none;color:#edad5f}
+  .ml-world.ml-wicon.sel .ml-wicon-img{outline:3px solid #edad5f;outline-offset:2px;filter:brightness(1.1)}
+  .ml-world.ml-wicon.press{background:none}
   .ml-world.ml-wicon.press .ml-wicon-img{filter:brightness(.88)}
-  .ml-world.sel{border-image:url(/ui2/plate-selected.png) 56 fill / 13px;color:#ffd678}
-  .ml-world.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
+  .ml-world.sel{color:#4a2a1c}
   .ml-world-img{width:34px;height:34px;object-fit:cover;image-rendering:auto;flex:none}
   /* compact cards sized to their content (maintainer: the man/woman
      buttons were too big) — the portrait viewport crops the 112px canvas
@@ -467,8 +480,9 @@ function injectStyles() {
   .ml-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:2px}
   .ml-cell{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;
     color:#dfe2ea;font-size:12px;text-shadow:0 1px 2px #000}
-  .ml-cell.sel{border-image:url(/ui2/plate-selected.png) 56 fill / 13px;color:#ffd678}
-  .ml-cell.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
+  .ml-cell.sel{color:#4a2a1c}
+  .ml-cell.sel span{text-shadow:none}
+  .ml-cell.press{color:#f4e3c2}
   .ml-sprite{image-rendering:pixelated;background-repeat:no-repeat;flex:none}
   .ml-portrait-box{width:48px;height:92px;overflow:hidden;position:relative;flex:none}
   .ml-portrait{position:absolute;left:-32px;top:-10px;width:112px;height:112px;image-rendering:pixelated}
@@ -478,33 +492,25 @@ function injectStyles() {
      narrow screens (inside the ring) so the trough never collapses: the
      Enter CTA drops to its own centred line instead. */
   .ml-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;justify-content:center;align-items:center}
-  /* Name input = the select-3 STONE TABLET (9-slice so the carved corner
-     scrolls never smear when the input flexes). */
-  .ml-name{flex:1 1 170px;max-width:280px;min-width:170px;height:49px;padding:0 4px;border-style:solid;border-width:16px;
-    border-image:url(/ui2/select3/name-tablet.png) 22 fill / 16px;image-rendering:pixelated;box-sizing:border-box;
-    background:none;color:#e8e8ec;font-size:16px;text-align:center;text-shadow:0 1px 2px #000}
+  /* Name input = the kit's empty-slot trough (dressPlate "slot"); height 70
+     keeps its art on the shared 5px block grid. */
+  .ml-name{flex:1 1 170px;max-width:300px;min-width:170px;height:70px;padding:0 18px;border:none;
+    image-rendering:pixelated;box-sizing:border-box;background:none;background-repeat:no-repeat;
+    background-size:100% 100%;color:#e8e8ec;font-size:18px;text-align:center;text-shadow:0 1px 2px #000}
   .ml-name:focus{outline:none;color:#ffd678}
-  /* ENTER WORLD = the gold gem plaque, its label baked in the art (the DOM
-     text stays for a11y/e2e but renders invisible). */
-  .ml-btn{display:flex;align-items:center;justify-content:center;flex:none;border:none;padding:0;
-    width:141px;height:55px;background:url(/ui2/select3/enter-plaque.png) 50% 50% / 100% 100% no-repeat;
-    image-rendering:pixelated;color:transparent;font:700 15px system-ui,sans-serif}
-  .ml-btn.press{filter:brightness(.88)}
-  @media (hover:hover){ .ml-btn:active{filter:brightness(.88)} }
-  /* the dice keeps its wooden plate */
-  .ml-ghost{width:49px;height:49px;background:none;color:#e8e8ec;font-size:18px;
-    border-style:solid;border-width:13px;border-image:url(/ui2/plate-normal.png) 56 fill / 13px}
-  .ml-ghost.press{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px;filter:none}
-  /* install = the parchment scroll, text baked (DOM text invisible) */
-  .ml-install{margin-top:12px;border:none;padding:0;width:235px;height:40px;
-    background:url(/ui2/select3/install-scroll.png) 50% 50% / 100% 100% no-repeat;
-    image-rendering:pixelated;color:transparent;font-size:13px;cursor:pointer;
-    display:inline-flex;align-items:center;justify-content:center}
-  .ml-install.press{filter:brightness(.88)}
-  @media (hover:hover){
-    .ml-plated:active{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
-    .ml-world.sel:active,.ml-cell.sel:active{border-image:url(/ui2/plate-pressed.png) 56 fill / 13px}
-  }`;
+  /* ENTER WORLD = a kit button with a REAL label (the plaque art with the
+     baked label is retired) */
+  .ml-btn{display:flex;align-items:center;justify-content:center;flex:none;border:none;padding:0 20px;
+    width:200px;height:70px;image-rendering:pixelated;
+    font:700 17px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#fff;
+    text-shadow:0 1px 0 rgba(0,0,0,.35)}
+  .ml-btn.press{color:#f4e3c2}
+  /* the dice on a kit plate */
+  .ml-ghost{width:70px;height:70px;background:none;color:#e8e8ec;font-size:22px;padding:0}
+  /* install prompt = a kit button with visible text */
+  .ml-install{margin-top:12px;border:none;padding:0 18px;width:auto;min-width:260px;height:56px;
+    image-rendering:pixelated;color:#fff;font:700 13px system-ui,sans-serif;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;text-shadow:0 1px 0 rgba(0,0,0,.35)}`;
   const s = document.createElement("style");
   s.textContent = css;
   document.head.appendChild(s);
