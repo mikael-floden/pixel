@@ -190,43 +190,49 @@
     ],
     "features": [
       {
-        "duration_s": 0.6,
-        "attack_ms": 30.0,
-        "tail_ratio": 0.008,
-        "tonality": 0.111,
-        "crest": 18.1,
-        "centroid_hz": 5124
-      },
-      {
-        "duration_s": 0.6,
-        "attack_ms": 30.0,
-        "tail_ratio": 0.003,
-        "tonality": 0.18,
-        "crest": 8.24,
-        "centroid_hz": 8488
-      },
-      {
+        "mid_peak_db": -15.7,
         "duration_s": 0.6,
         "attack_ms": 21.0,
         "tail_ratio": 0.014,
         "tonality": 0.125,
         "crest": 7.04,
-        "centroid_hz": 5229
+        "centroid_hz": 5229,
+        "mid_ratio": 0.865
       },
       {
+        "mid_peak_db": -17.7,
+        "duration_s": 0.6,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.003,
+        "tonality": 0.18,
+        "crest": 8.24,
+        "centroid_hz": 8488,
+        "mid_ratio": 0.735
+      },
+      {
+        "mid_peak_db": -19.8,
         "duration_s": 0.6,
         "attack_ms": 30.0,
         "tail_ratio": 0.01,
         "tonality": 0.149,
         "crest": 11.36,
-        "centroid_hz": 5733
+        "centroid_hz": 5733,
+        "mid_ratio": 0.877
+      },
+      {
+        "mid_peak_db": -23.8,
+        "duration_s": 0.6,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.008,
+        "tonality": 0.111,
+        "crest": 18.1,
+        "centroid_hz": 5124,
+        "mid_ratio": 0.871
       }
     ],
     "qa": {
-      "judge": "step",
-      "pool": 9,
-      "passed_gates": 4,
-      "of": 4
+      "judge": "grain",
+      "note": "round-1 pool re-ranked by grain (softest primary) \u2014 API credits blocked round-2 regen"
     },
     "pool_candidates": [
       {

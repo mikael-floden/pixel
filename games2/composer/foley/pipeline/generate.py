@@ -544,8 +544,9 @@ def _generate(session: requests.Session, prompt: str, duration_s: float) -> np.n
             return _decode(r.content, fmt)
         if r.status_code not in (400, 402, 403):  # format/tier issues → fallback
             r.raise_for_status()
-    r.raise_for_status()
-    raise RuntimeError("unreachable")
+    # Both formats failed: surface the API's reason (quota/credits exhausted
+    # returns 400/402 with a message here — the log was opaque otherwise).
+    raise RuntimeError(f"API {r.status_code} for both formats: {r.text[:200]}")
 
 
 def main() -> int:
