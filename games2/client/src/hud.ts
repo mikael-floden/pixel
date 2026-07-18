@@ -276,7 +276,14 @@ function injectStyles() {
   :root{--ml-hud-scale:1;
     --ml-tab:calc(min(150px,calc((100vw - 200px)/5)) * var(--ml-hud-scale));
     --ml-bw:calc(26px * var(--ml-hud-scale));   /* plate border render width */
-    --ml-sbw:calc(30px * var(--ml-hud-scale))}  /* slot border render width */
+    --ml-sbw:calc(30px * var(--ml-hud-scale));  /* slot border render width */
+    /* the "2x" (native) plate size for the backpack slots + settings buttons.
+       Resolved HERE at :root against --ml-hud-scale-2x (set on the root by
+       JS), because a nested var() inside a custom property resolves at the
+       DECLARING scope — overriding --ml-hud-scale on a child does NOT
+       re-resolve --ml-tab, so the slots/buttons need their own 2x vars. */
+    --ml-tab-2x:calc(min(150px,calc((100vw - 200px)/5)) * var(--ml-hud-scale-2x,1));
+    --ml-sbw-2x:calc(30px * var(--ml-hud-scale-2x,1))}
   /* HUD sections: base props only — position/size come from applyFrameLayout
      (the frame-v2 windows), set inline after every compose. */
   .ml-hud{position:fixed;left:0;right:0;bottom:0;z-index:4;background:#23160d;box-sizing:border-box}
@@ -314,19 +321,17 @@ function injectStyles() {
      the tabs/frame stay small (maintainer). --ml-hud-scale override on the
      GRID makes both the column track (var(--ml-tab)) and the slots resolve
      at the bigger scale together. */
-  .ml-slots{--ml-hud-scale:var(--ml-hud-scale-2x);
-    display:grid;grid-template-columns:repeat(5,var(--ml-tab));grid-template-rows:repeat(2,var(--ml-tab));
+  .ml-slots{display:grid;grid-template-columns:repeat(5,var(--ml-tab-2x));grid-template-rows:repeat(2,var(--ml-tab-2x));
     justify-content:space-evenly;align-content:space-evenly;width:100%;height:100%}
-  .ml-slot{width:var(--ml-tab);height:var(--ml-tab);image-rendering:pixelated;border-style:solid;border-width:var(--ml-sbw);
-    border-image:url(/ui2/slot.png) 10 fill / var(--ml-sbw);box-sizing:border-box}
+  .ml-slot{width:var(--ml-tab-2x);height:var(--ml-tab-2x);image-rendering:pixelated;border-style:solid;border-width:var(--ml-sbw-2x);
+    border-image:url(/ui2/slot.png) 10 fill / var(--ml-sbw-2x);box-sizing:border-box}
   /* settings "menu buttons" also opt into x2 (native) so they stay tappable.
      GRID with equal columns (not flex-wrap): every button is the SAME fixed
      size, so a state label changing on press ("time speed: frozen" -> "x2",
      "weather: clear sky" -> "cloudy at times") can't resize a button and
      reflow the row — the buttons no longer move around (maintainer). The
      column is wide enough for the longest possible label so it never wraps. */
-  .ml-btnrow{--ml-hud-scale:var(--ml-hud-scale-2x);
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(18rem,1fr));
+  .ml-btnrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(18rem,1fr));
     gap:12px;justify-content:center;align-items:stretch;width:100%;max-width:820px;margin:0 auto}
   /* settings buttons must never be SHORTER than the menu tabs / backpack
      slots (maintainer) — same --ml-tab height, width fills the grid cell,
@@ -336,7 +341,7 @@ function injectStyles() {
      (maintainer). border:none; padding sits the label inside the bevel. */
   .ml-plate-btn{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
     display:flex;align-items:center;justify-content:center;
-    padding:14px 30px;min-height:var(--ml-tab);box-sizing:border-box;border:none;
+    padding:14px 30px;min-height:var(--ml-tab-2x);box-sizing:border-box;border:none;
     cursor:pointer;image-rendering:pixelated;touch-action:manipulation;
     background:none;background-repeat:no-repeat;background-size:100% 100%;
     font:700 14px system-ui,sans-serif;letter-spacing:.4px;text-transform:uppercase;color:#e8e8ec;
