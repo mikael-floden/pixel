@@ -377,7 +377,7 @@ function injectStyles() {
     padding:8px 24px;height:120px;box-sizing:border-box;border:none;
     cursor:pointer;image-rendering:pixelated;touch-action:manipulation;
     background:none;background-repeat:no-repeat;background-size:100% 100%;
-    font:700 15px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#fff;
+    font:700 24px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#fff;
     text-shadow:0 1px 0 rgba(0,0,0,.35)}
   /* state = the plate art (the kit's Normal/Selected/Down trio via
      dressPlate); the cream SELECTED bar needs a dark label */
@@ -392,7 +392,7 @@ function injectStyles() {
   @media (max-height:640px){
     :root{--ml-tab:min(84px,calc((100vw - 200px)/5))}
     .ml-page{gap:8px}
-    .ml-plate-btn{padding:4px 12px;height:48px;font-size:11px}
+    .ml-plate-btn{padding:4px 12px;height:48px;font-size:13px}
   }`;
   const s = document.createElement("style");
   s.textContent = css;

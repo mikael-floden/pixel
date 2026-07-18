@@ -390,7 +390,7 @@ function injectStyles() {
      the kit's dark header state (the down bar) like the sheet shows. */
   .ml-dd{position:relative;width:var(--ml-col);z-index:20}
   .ml-ddhead{position:relative;display:flex;align-items:center;justify-content:center;width:100%;height:120px;
-    color:#fff;font:700 17px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;
+    color:#fff;font:700 22px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;
     text-shadow:0 1px 0 rgba(0,0,0,.35)}
   .ml-ddhead.press,.ml-ddhead.open{color:#f4e3c2}
   /* the 6x6 caret at 5x = 30px; top/margin centering, NOT translate — the
@@ -402,7 +402,7 @@ function injectStyles() {
   /* author display:flex would beat the UA's [hidden] rule — restate it */
   .ml-ddlist[hidden]{display:none}
   .ml-ddrow{display:flex;align-items:center;justify-content:center;height:120px;flex:none;
-    color:#fff;font:700 17px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;
+    color:#fff;font:700 22px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;
     text-shadow:0 1px 0 rgba(0,0,0,.35)}
   .ml-ddrow.sel{color:#4a2a1c;text-shadow:none}
   .ml-ddrow.press{color:#f4e3c2}
@@ -429,13 +429,13 @@ function injectStyles() {
      its edges line up with the dropdown above. */
   .ml-name{flex:1 1 170px;min-width:170px;height:120px;padding:0 18px;border:none;
     image-rendering:pixelated;box-sizing:border-box;background:none;background-repeat:no-repeat;
-    background-size:100% 100%;color:#e8e8ec;font-size:18px;text-align:center;text-shadow:0 1px 2px #000}
+    background-size:100% 100%;color:#e8e8ec;font-size:22px;text-align:center;text-shadow:0 1px 2px #000}
   .ml-name:focus{outline:none;color:#ffd678}
   /* ENTER WORLD = a kit button with a REAL label (the plaque art with the
      baked label is retired) */
   .ml-btn{display:flex;align-items:center;justify-content:center;flex:none;border:none;padding:0 20px;
     width:240px;height:120px;image-rendering:pixelated;
-    font:700 17px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#fff;
+    font:700 22px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#fff;
     text-shadow:0 1px 0 rgba(0,0,0,.35)}
   .ml-btn.press{color:#f4e3c2}
   /* install prompt: PINNED to the screen bottom (maintainer), full column
@@ -445,7 +445,7 @@ function injectStyles() {
   .ml-install{position:fixed;bottom:44px;left:50%;transform:translateX(-50%);z-index:2;
     border:none;padding:0 24px;width:var(--ml-col);height:120px;
     image-rendering:pixelated;cursor:pointer;
-    font:700 17px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#fff;
+    font:700 22px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#fff;
     display:inline-flex;align-items:center;justify-content:center;text-shadow:0 1px 0 rgba(0,0,0,.35)}
   .ml-install.press{color:#f4e3c2}`;
   const s = document.createElement("style");
