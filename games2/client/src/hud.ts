@@ -331,16 +331,16 @@ function injectStyles() {
     background-image:url(/ui2/stone.png);background-size:100% auto;
     background-repeat:repeat-y;background-attachment:local;image-rendering:pixelated}
   .ml-page.show{display:flex}
-  /* backpack slots: the kit's empty-slot square (maintainer circled it —
-     kit-slot.png, 16x14 native), painted by dressSlot at the largest whole
-     multiple that fits the box, centred. The box still rides the frame's
-     scale (--ml-fs) so the 5x3 grid keeps the concept page's proportions. */
+  /* backpack slots: the kit's empty-slot square (maintainer circled it),
+     9-sliced by dressSlot to fill the box at the SAME KIT_PX block size as
+     the buttons ("this slot should look very much like an empty button").
+     The box still rides the frame's scale (--ml-fs). */
   .ml-slots{display:grid;grid-template-columns:repeat(5,calc(128px * var(--ml-fs,0.75)));
     grid-template-rows:repeat(3,calc(128px * var(--ml-fs,0.75)));
     justify-content:space-evenly;align-content:space-evenly;width:100%;height:100%}
   .ml-slot{width:calc(128px * var(--ml-fs,0.75));height:calc(128px * var(--ml-fs,0.75));
     image-rendering:pixelated;border:none;box-sizing:border-box;
-    background-repeat:no-repeat;background-position:center}
+    background-repeat:no-repeat;background-size:100% 100%}
   /* settings "menu buttons" also opt into x2 (native) so they stay tappable.
      GRID with equal columns (not flex-wrap): every button is the SAME fixed
      size, so a state label changing on press ("time speed: frozen" -> "x2",

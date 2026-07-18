@@ -18,13 +18,19 @@
  * thin, no non-integer scaling anywhere.
  */
 
-export type PlateKind = "normal" | "sel" | "down";
+export type PlateKind = "normal" | "sel" | "down" | "slot";
 
 const SRC: Record<PlateKind, string> = {
   normal: "/ui2/kit-btn-normal.png",
   sel: "/ui2/kit-btn-sel.png",
   down: "/ui2/kit-btn-down.png",
+  slot: "/ui2/kit-slot.png", // the empty item slot — an "empty button" square
 };
+
+// ONE art-pixel block size for every kit graphic (maintainer: slots had
+// bigger pixels than buttons — "should be same when you use UI-kit
+// graphics"). Small boxes (compact mode) drop to whatever fits.
+const KIT_PX = 5;
 
 // native corner slice: covers the rounding + ring/outline of every plate
 const CS = 4;
@@ -62,9 +68,7 @@ export function plateUrl(kind: PlateKind, w: number, h: number): string | null {
   w = Math.round(w);
   h = Math.round(h);
   if (w < 2 || h < 2) return null;
-  // half the box-filling block size (maintainer: full-height blocks read too
-  // big — "scale it down by x0.5"): outline/corners at k, middle extruded
-  const k = Math.max(1, Math.floor(h / img.height / 2));
+  const k = Math.min(KIT_PX, Math.max(1, Math.floor(h / img.height)));
   const cs = Math.min(CS * k, w >> 1, h >> 1);
   const key = `${kind}:${w}x${h}`;
   const hit = cache.get(key);
@@ -125,33 +129,9 @@ export function repaintPlates(root: ParentNode) {
   root.querySelectorAll<Dressed>("[data-plate]").forEach((el) => el._paintPlate?.());
 }
 
-// ---- the kit's empty item slot (fixed art, no 9-slice) --------------------
-const SLOT_SRC = "/ui2/kit-slot.png";
-let slotImg: HTMLImageElement | null = null;
-let slotReady: Promise<void> | null = null;
-
-/** Dress a backpack slot with the kit's empty-slot square, drawn at the
- * largest INTEGER multiple that fits the element and centred — the art is a
- * fixed icon, so it only ever scales by whole blocks (nearest-neighbour). */
+// ---- the kit's empty item slot ------------------------------------------
+/** Dress a backpack slot as an "empty button": the kit slot square 9-sliced
+ * to the box at the shared KIT_PX block size, exactly like the buttons. */
 export function dressSlot(el: HTMLElement) {
-  if (!slotReady) {
-    slotReady = new Promise((res) => {
-      const im = new Image();
-      im.onload = () => {
-        slotImg = im;
-        res();
-      };
-      im.src = SLOT_SRC;
-    });
-  }
-  const paint = () => {
-    if (!slotImg || !el.clientWidth) return;
-    const k = Math.max(1, Math.floor(Math.min(el.clientWidth / slotImg.width, el.clientHeight / slotImg.height)));
-    el.style.backgroundImage = `url(${SLOT_SRC})`;
-    el.style.backgroundSize = `${slotImg.width * k}px ${slotImg.height * k}px`;
-  };
-  (el as Dressed)._paintPlate = paint;
-  el.setAttribute("data-plate", "");
-  slotReady.then(paint);
-  new ResizeObserver(paint).observe(el);
+  dressPlate(el, () => "slot");
 }
