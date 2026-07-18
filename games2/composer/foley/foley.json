@@ -1608,13 +1608,172 @@
       "ui_cancel/ui_cancel__take04.wav"
     ],
     "durations_s": [
-      0.96,
-      0.96,
-      0.96,
-      0.96
+      0.019,
+      0.35,
+      0.35,
+      0.35
     ],
-    "brief": "a muted mechanical clack: a wooden latch releasing, a short lower-pitched dry double-click of a button backing out, purely mechanical, NOT musical, no chime, no piano, no tone",
-    "generated_at": "2026-07-18T14:17:28+00:00",
+    "features": [
+      {
+        "duration_s": 0.019,
+        "attack_ms": 14.3,
+        "tail_ratio": 0.0,
+        "tonality": 0.0,
+        "crest": 7.94,
+        "centroid_hz": 12011
+      },
+      {
+        "duration_s": 0.35,
+        "attack_ms": 23.5,
+        "tail_ratio": 0.0,
+        "tonality": 0.268,
+        "crest": 10.12,
+        "centroid_hz": 4863
+      },
+      {
+        "duration_s": 0.35,
+        "attack_ms": 20.6,
+        "tail_ratio": 0.0,
+        "tonality": 0.34,
+        "crest": 11.28,
+        "centroid_hz": 8345
+      },
+      {
+        "duration_s": 0.35,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.0,
+        "tonality": 0.352,
+        "crest": 14.55,
+        "centroid_hz": 8128
+      }
+    ],
+    "qa": {
+      "judge": "click",
+      "pool": 9,
+      "passed_gates": 4,
+      "of": 4
+    },
+    "pool_candidates": [
+      {
+        "file": "ui_cancel/pool/ui_cancel__cand01.wav",
+        "passed_gates": true,
+        "rank": 0.0,
+        "features": {
+          "duration_s": 0.019,
+          "attack_ms": 14.3,
+          "tail_ratio": 0.0,
+          "tonality": 0.0,
+          "crest": 7.94,
+          "centroid_hz": 12011
+        }
+      },
+      {
+        "file": "ui_cancel/pool/ui_cancel__cand02.wav",
+        "passed_gates": true,
+        "rank": 2.68,
+        "features": {
+          "duration_s": 0.35,
+          "attack_ms": 23.5,
+          "tail_ratio": 0.0,
+          "tonality": 0.268,
+          "crest": 10.12,
+          "centroid_hz": 4863
+        }
+      },
+      {
+        "file": "ui_cancel/pool/ui_cancel__cand03.wav",
+        "passed_gates": true,
+        "rank": 3.4,
+        "features": {
+          "duration_s": 0.35,
+          "attack_ms": 20.6,
+          "tail_ratio": 0.0,
+          "tonality": 0.34,
+          "crest": 11.28,
+          "centroid_hz": 8345
+        }
+      },
+      {
+        "file": "ui_cancel/pool/ui_cancel__cand04.wav",
+        "passed_gates": true,
+        "rank": 3.52,
+        "features": {
+          "duration_s": 0.35,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.352,
+          "crest": 14.55,
+          "centroid_hz": 8128
+        }
+      },
+      {
+        "file": "ui_cancel/pool/ui_cancel__cand05.wav",
+        "passed_gates": false,
+        "rank": 20.8,
+        "features": {
+          "duration_s": 0.35,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.64,
+          "crest": 11.12,
+          "centroid_hz": 5916
+        }
+      },
+      {
+        "file": "ui_cancel/pool/ui_cancel__cand06.wav",
+        "passed_gates": false,
+        "rank": 23.74,
+        "features": {
+          "duration_s": 0.35,
+          "attack_ms": 5.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.682,
+          "crest": 7.16,
+          "centroid_hz": 2971
+        }
+      },
+      {
+        "file": "ui_cancel/pool/ui_cancel__cand07.wav",
+        "passed_gates": false,
+        "rank": 33.26,
+        "features": {
+          "duration_s": 0.35,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.818,
+          "crest": 10.31,
+          "centroid_hz": 7735
+        }
+      },
+      {
+        "file": "ui_cancel/pool/ui_cancel__cand08.wav",
+        "passed_gates": false,
+        "rank": 39.7,
+        "features": {
+          "duration_s": 0.35,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.91,
+          "crest": 5.92,
+          "centroid_hz": 12505
+        }
+      },
+      {
+        "file": "ui_cancel/pool/ui_cancel__cand09.wav",
+        "passed_gates": false,
+        "rank": 40.56,
+        "features": {
+          "duration_s": 0.35,
+          "attack_ms": 30.0,
+          "tail_ratio": 0.0,
+          "tonality": 0.898,
+          "crest": 4.15,
+          "centroid_hz": 5771
+        }
+      }
+    ],
+    "brief": "a soft dull mechanical click of a button being released, lower and duller than a press click, one instant dry click, no resonance, no ring, no echo, NOT musical, no chime, no piano, no tone, no wooden knock",
+    "generated_at": "2026-07-18T15:28:44+00:00",
     "model_id": "eleven_text_to_sound_v2"
   },
   "stone": {
