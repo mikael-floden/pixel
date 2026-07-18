@@ -93,17 +93,23 @@ SETS: dict[str, dict] = {
         "judge": "step",
         "pool": 9,
     },
+    # ROUND 2 (maintainer: round-1 sand "sounds like metal not sand" — the
+    # shipped take had a crest of 18, a sharp metallic spike). Sand is a SOFT
+    # granular crunch, no hard tap: the 'grain' judge caps crest (rejects
+    # the metallic spike) and the brief bans every metal/click cue.
     "sand": {
         "brief": (
-            "one single compact footstep on loose dry sand: a short gritty "
-            "crunch as the boot compresses the sand, tight and dry, exactly one "
-            "step, no walking sequence, no ambience, no wind"
+            "one single soft footstep on loose dry beach sand: a gentle "
+            "granular crunch as the boot presses down and fine sand grains "
+            "shift and compress, a soft dry sandy shuffle, muffled and dull, "
+            "no hard impact, no metal, no ring, no click, no tap, no tone, "
+            "exactly one step, no ambience, no wind"
         ),
         "duration_s": 0.6,
         "variants": GAIT_VARIANTS,
         "max_ms": 600,
-        "judge": "step",
-        "pool": 9,
+        "judge": "grain",
+        "pool": 12,
     },
     "snow": {
         "brief": (
@@ -392,6 +398,15 @@ GATES: dict[str, dict[str, tuple[float, float, float]]] = {
         "mid_peak_db": (-28.0, 0.0, 3),
         "crest": (2.5, 99.0, 1),
     },
+    # Granular steps (sand/gravel): the enemy is a sharp metallic SPIKE.
+    # Sand is a SOFT crunch — low crest (a spike reads as a metallic tick;
+    # the round-1 sand primary measured crest 18, spikier than a hard stone
+    # tap) and no ring. High-frequency energy is FINE (grains hiss).
+    "grain": {
+        "crest": (2.0, 12.0, 5),
+        "tonality": (0.0, 0.4, 40),
+        "tail_ratio": (0.0, 0.5, 15),
+    },
     # Wet steps: candidates must be WETNESS-class (band-profile distance to
     # the known-watery splash reference — dry foley measures ~1.5-2.0, wet
     # ~0.7-0.9; 'door vs splash' inside the wet class is NOT measurable and
@@ -414,6 +429,8 @@ RANK = {
     "boom": lambda f: -f["mid_peak_db"] * 0.2 + f["attack_ms"] / 500,
     # Wet: most reference-like candidate wins.
     "wet": lambda f: f.get("ref_dist", 9.9) * 3,
+    # Grain: softest (lowest crest) + least ringy wins — the anti-metal sort.
+    "grain": lambda f: f["crest"] * 1.5 + f["tonality"] * 8,
 }
 
 
