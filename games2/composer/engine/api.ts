@@ -27,6 +27,11 @@ export interface AvatarFrame {
   surface: string;
   /** World-units moved since last frame (the gait EMA's raw distance). */
   distWu: number;
+  /** 0..1 progress of the walk/run animation cycle, when one is playing.
+   * THE sync source: footfalls trigger at fixed phases of the visible
+   * stride (maintainer: distance-guessed walking steps were out of sync
+   * with the animation) — the distance accumulator is only a fallback. */
+  animPhase?: number;
   /** Spatialization for OTHER players; the local player passes 0/0. */
   pan?: number;
   dist?: number;
@@ -50,10 +55,14 @@ export interface FieldSample {
   fire: number;
 }
 
-// Footfall cadence: distance between footfalls in world units. Matches the
-// measured gait design (walk ~49.5 wu/s side-view → ~2 steps/s).
+// Footfall cadence fallback: distance between footfalls in world units —
+// used only when no walk/run animation progress is available (placeholder
+// characters). Real sync comes from FOOT_PHASES on the animation cycle.
 const WALK_STEP_WU = 25;
 const RUN_STEP_WU = 38;
+// The two foot plants within one walk/run animation loop (0..1 phase).
+// Tunable: if the plant reads early/late on screen, nudge both together.
+const FOOT_PHASES = [0.05, 0.55];
 
 // Footstep routing (maintainer directives 2026-07-18): the approved STONE
 // set is the default for every dry surface; per-surface sets are enabled
@@ -72,7 +81,8 @@ const FOOTSTEP_JITTER: Record<string, { pitch: [number, number]; gain: [number, 
 const SETTINGS_KEY = "ml-audio";
 
 interface AvatarGait {
-  travelled: number; // wu since last footfall
+  travelled: number; // wu since last footfall (fallback cadence only)
+  lastPhase?: number; // last seen walk/run animation phase (sync source)
   swimming: boolean;
 }
 
@@ -283,12 +293,31 @@ export class GameAudio {
 
     if (!f.moving || !f.grounded || f.swimming) {
       g.travelled = Math.min(g.travelled, WALK_STEP_WU * 0.55); // next start-step comes quickly
+      g.lastPhase = undefined;
       return;
     }
-    g.travelled += Math.max(0, f.distWu);
-    const stepLen = f.running ? RUN_STEP_WU : WALK_STEP_WU;
-    if (g.travelled < stepLen) return;
-    g.travelled = 0;
+
+    if (f.animPhase !== undefined) {
+      // SYNC SOURCE: the visible stride. A footfall sounds exactly when the
+      // walk/run clip crosses a plant phase — per-character gait rates,
+      // timeScale and direction-preserving clip resumes all come for free.
+      const prev = g.lastPhase;
+      g.lastPhase = f.animPhase;
+      if (prev === undefined) return; // just started moving: wait for a plant
+      let planted = false;
+      for (const phase of FOOT_PHASES) {
+        planted ||= prev <= f.animPhase
+          ? prev < phase && phase <= f.animPhase
+          : phase > prev || phase <= f.animPhase; // loop wrapped
+      }
+      if (!planted) return;
+    } else {
+      // Fallback: distance cadence (characters without gait clips).
+      g.travelled += Math.max(0, f.distWu);
+      const stepLen = f.running ? RUN_STEP_WU : WALK_STEP_WU;
+      if (g.travelled < stepLen) return;
+      g.travelled = 0;
+    }
 
     // Water/void/unknown surfaces: no dry footfall (splash/swim handle water).
     if (!f.surface || f.surface === "water") return;
@@ -296,12 +325,12 @@ export class GameAudio {
     const own = composerFoley(setName) ?? composerFoley(FOOTSTEP_DEFAULT);
     if (own) {
       // Gentleness: no rate change for running — the faster CADENCE is the
-      // run signal; the footfall itself stays the approved sound (+0.8 dB
-      // of weight only). Pan/dist only ever apply to OTHER players.
+      // run signal. WALKING plays the same sound at 25% volume (−12 dB —
+      // maintainer 2026-07-18: soft strolling steps, full weight running).
       this.oneShots.play(this.foleyEntry(setName, own, "step"), "sfx", {
         pan: f.pan,
         dist: f.dist,
-        gainDb: -8 + (FOOTSTEP_TRIM_DB[setName] ?? 0) + (f.running ? 0.8 : 0),
+        gainDb: -8 + (FOOTSTEP_TRIM_DB[setName] ?? 0) + (f.running ? 0.8 : -12),
       });
       return;
     }

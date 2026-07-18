@@ -1778,10 +1778,14 @@ export class WorldScene extends Phaser.Scene {
       }
       this.applyAnimState(av, moving, running, dir, hopLeft > 0 || av.falling);
 
-      // Feed the composer's gait tracker: it turns travelled distance into
-      // surface-matched footsteps at walk/run cadence, and water enter/exit
-      // into splashes. Remote players are panned/attenuated by screen pos.
+      // Feed the composer's gait tracker: footfalls trigger on the walk/run
+      // clip's plant phases (animPhase) so sound locks to the VISIBLE
+      // stride; distance cadence is only the placeholder fallback. Water
+      // enter/exit become splashes; remote players pan by screen pos.
       const sp = this.avatarSpatial(id);
+      const animName = av.sprite.anims.getName();
+      const gaitState = animName ? animName.split(":").at(-2) : undefined;
+      const inGait = (gaitState === "walk" || gaitState === "run") && av.sprite.anims.isPlaying;
       gameAudio.avatarFrame(id, {
         moving,
         running,
@@ -1789,6 +1793,7 @@ export class WorldScene extends Phaser.Scene {
         swimming: av.swimming,
         surface: this.terrain ? surfaceAtWorld(this.terrain, tx, ty).sound : "grass",
         distWu: (av.spdWu ?? 0) * dt,
+        animPhase: inGait ? av.sprite.anims.getProgress() : undefined,
         pan: sp.pan,
         dist: sp.dist,
       });
