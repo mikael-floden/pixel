@@ -98,18 +98,20 @@ SETS: dict[str, dict] = {
     # shipped take had a crest of 18, a sharp metallic spike). Sand is a SOFT
     # granular crunch, no hard tap: the 'grain' judge caps crest (rejects
     # the metallic spike) and the brief bans every metal/click cue.
+    # ROUND 3 (maintainer: round-2 grain sand is 'better, not metal, but still
+    # not sand'). Hypothesis: a footstep on sand is NOT a crisp impact — it's
+    # a soft SCUFF with a granular slide/hiss as grains shift. Earlier rounds
+    # (and the max_ms tightener) forced a tight crunch and chopped the very
+    # sandiness. This one: soft scuff framing, longer, NO tightening (keep the
+    # grain-slide tail); grain judge still rejects metallic spikes.
     "sand": {
-        # SHORT: prompt (brief + variant + STYLE) must stay under the API's
-        # 450-char cap (round-1 & round-2 briefs were too long → text_too_long
-        # 400 on every candidate, silently failing).
         "brief": (
-            "one soft footstep on loose dry beach sand: a gentle granular "
-            "crunch of shifting fine grains, muffled and dull, no metal, no "
-            "ring, no click, one step"
+            "one soft footstep scuffing into loose dry sand, fine grains "
+            "hissing and sliding as the foot settles, a gentle sandy shuffle, "
+            "soft and grainy, no crunch, no metal, no click, one step"
         ),
-        "duration_s": 0.6,
+        "duration_s": 0.7,
         "variants": GAIT_VARIANTS,
-        "max_ms": 600,
         "judge": "grain",
         "pool": 12,
     },
@@ -407,7 +409,7 @@ GATES: dict[str, dict[str, tuple[float, float, float]]] = {
     "grain": {
         "crest": (2.0, 12.0, 5),
         "tonality": (0.0, 0.4, 40),
-        "tail_ratio": (0.0, 0.5, 15),
+        "tail_ratio": (0.0, 0.65, 10),  # a granular SLIDE is meant to sustain
     },
     # Wet steps: candidates must be WETNESS-class (band-profile distance to
     # the known-watery splash reference — dry foley measures ~1.5-2.0, wet
