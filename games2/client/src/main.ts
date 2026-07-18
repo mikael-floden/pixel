@@ -76,16 +76,14 @@ function showVersion() {
   console.log(`[nangijala] build ${sha}`);
   const el = document.createElement("div");
   el.textContent = sha.slice(0, 9); // 9 chars — matches the hashes in dev chat/commits
-  // Bottom-CENTRE of the game view (maintainer 2026-07-17 — the old top-left
-  // spot collided with the select ring's corner crystal): in-game it rests
-  // just above the HUD boundary, on the select screen at the viewport
-  // bottom. NOT --hud-h (index.html gives that a static default, so it
-  // "applies" even with no HUD mounted) — hud.ts publishes --ml-badge-lift
-  // only when the real HUD lays out. The badge is uiZoom'd while the lift
-  // is real CSS px — divide by the zoom or the offset double-counts.
+  // ONE fixed spot on ALL screens (maintainer 2026-07-18 red mark): centred
+  // at the very bottom of the page, over the frame's bottom rail — never
+  // lifted above the HUD, never part of any screen fade (the badge lives on
+  // body, outside every fading overlay). The badge is uiZoom'd while the
+  // offset is real CSS px — divide by the zoom or it double-counts.
   el.style.cssText =
     "position:fixed;left:50%;transform:translateX(-50%);" +
-    "bottom:calc((var(--ml-badge-lift, 0px) + 8px) / var(--ml-uizoom, 1));z-index:50;" +
+    "bottom:calc(14px / var(--ml-uizoom, 1));z-index:50;" +
     "font:700 24px system-ui,sans-serif;letter-spacing:1px;color:#cfd6ff;text-shadow:0 1px 2px #000,0 0 3px #000;" +
     "pointer-events:none;user-select:none";
   document.body.appendChild(el);

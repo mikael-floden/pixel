@@ -83,9 +83,6 @@ function applyFrameLayout() {
   // VISIBLE top edge — anchored to gameHeight it would slide under the rail
   root.style.setProperty("--hud-h-inv", `${Math.round(l.gameHeight)}px`);
   root.style.setProperty("--hud-h", `${Math.round(window.innerHeight - l.railTop)}px`);
-  // the version badge sits bottom-centre of the GAME VIEW: lift it above
-  // the HUD only when the HUD actually lays out (main.ts showVersion)
-  root.style.setProperty("--ml-badge-lift", `${Math.round(window.innerHeight - l.railTop)}px`);
   // the frame's render scale — frame-space art (backpack slots) rides it so
   // 1 art px always equals 1 frame px on screen, whatever the viewport
   root.style.setProperty("--ml-fs", String(l.scale));
