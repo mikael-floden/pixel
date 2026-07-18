@@ -170,7 +170,7 @@ export class GameAudio {
       }
       // Warm the composer's own primary takes too — thunder especially must
       // not miss its first flash on a fetch+decode.
-      for (const set of ["stone", "snow", "ui_tick", "ui_cancel", "thunder"]) {
+      for (const set of ["stone", "snow", "water_step", "ui_tick", "ui_cancel", "thunder"]) {
         const urls = composerFoley(set);
         if (urls) void this.buffers.get(urls[0]);
       }
@@ -287,15 +287,28 @@ export class GameAudio {
       this.gaits.set(id, g);
     }
 
-    // Water edges: entering/leaving water splashes (server owns swimming).
+    // Water edges (server owns swimming): the composer's WET FOOTSTEP —
+    // one splashing step on the land->water and water->land transitions
+    // (maintainer 2026-07-18). Same recording both ways, entering heavier,
+    // leaving lighter; gentleness step profile (primary take, micro-jitter).
+    // Catalog splash remains the fallback until the set is generated.
     if (f.swimming !== g.swimming) {
       g.swimming = f.swimming;
-      this.play("splash", "sfx", {
-        pan: f.pan,
-        dist: f.dist,
-        gainDb: f.swimming ? 0 : -6,
-        rate: f.swimming ? 1 : 1.15,
-      });
+      const wet = composerFoley("water_step");
+      if (wet) {
+        this.oneShots.play(this.foleyEntry("water_step", wet, "step"), "sfx", {
+          pan: f.pan,
+          dist: f.dist,
+          gainDb: f.swimming ? -8 : -11,
+        });
+      } else {
+        this.play("splash", "sfx", {
+          pan: f.pan,
+          dist: f.dist,
+          gainDb: f.swimming ? 0 : -6,
+          rate: f.swimming ? 1 : 1.15,
+        });
+      }
     }
 
     if (!f.moving || !f.grounded || f.swimming) {

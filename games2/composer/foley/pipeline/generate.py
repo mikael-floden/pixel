@@ -175,6 +175,22 @@ SETS: dict[str, dict] = {
         "judge": "step",
         "pool": 9,
     },
+    # Wet footstep for water TRANSITIONS (maintainer 2026-07-18): played on
+    # the land->water and water->land edges (entering heavier, leaving
+    # lighter — level only, same recording).
+    "water_step": {
+        "brief": (
+            "one single wet splashing footstep in ankle-deep water at a lake "
+            "edge: a boot plunging into shallow still water, one short clean "
+            "splosh with a few small droplets right after, tight, exactly one "
+            "step, no stream, no flowing water, no rain, no ambience"
+        ),
+        "duration_s": 0.7,
+        "variants": GAIT_VARIANTS,
+        "max_ms": 700,
+        "judge": "step",
+        "pool": 9,
+    },
     # ---- world/weather (real sources, not disguises: the maintainer heard
     # straight through the slowed-explosion "thunder") ----
     # LIKED (maintainer 2026-07-18, once playback was synced to the flash
