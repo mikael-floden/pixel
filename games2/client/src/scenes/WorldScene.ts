@@ -780,7 +780,7 @@ export class WorldScene extends Phaser.Scene {
       gameAudio.startMusic();
       gameAudio.setFieldSampler(() => this.sampleAudioField());
     } catch (err) {
-      hideLoading(); // the error panel must not sit behind the overlay
+      hideLoading(true); // instant — the error panel must not wait behind the cinematic fade
       this.showConnectionError(err);
       return;
     }

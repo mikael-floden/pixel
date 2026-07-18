@@ -13,6 +13,13 @@
  * feeds asset progress into it; it's hidden when the player's own avatar
  * joins (addAvatar) or a connection error is shown. A hard timeout makes sure
  * a stuck load can never trap the player behind an opaque overlay.
+ *
+ * Hiding is a STAGED CINEMA FADE (maintainer: "this makes the game not load
+ * like a website"): the logo fades away first so the screen is 100% black,
+ * the world keeps rendering under the black DOM overlay until it has real
+ * frames on screen, and only then does the black itself fade out. The
+ * connection-error path uses hideLoading(true) — an error panel must never
+ * wait behind a cinematic.
  */
 
 import { applyUiZoom } from "./uiscale";
@@ -20,11 +27,13 @@ import { applyUiZoom } from "./uiscale";
 let overlay: HTMLElement | null = null;
 let bar: HTMLElement | null = null;
 let failsafe: ReturnType<typeof setTimeout> | null = null;
+let hiding = false;
 
 // The LOADING banner's interior within logo-load.png (percent of image box).
 const FILL_RECT = { left: 33.82, top: 87.26, width: 28.87, height: 3.62 };
 
 export function showLoading(text = "Entering Nangijala…") {
+  if (overlay && hiding) teardown(); // mid-fade re-show (rejoin): start fresh
   if (overlay) {
     setLoadingProgress(0, text);
     return;
@@ -56,12 +65,51 @@ export function setLoadingProgress(frac: number, text?: string) {
   if (bar) bar.style.width = `${Math.round(Math.min(1, Math.max(0, frac)) * 100)}%`;
 }
 
-export function hideLoading() {
+export function hideLoading(instant = false) {
   if (failsafe) clearTimeout(failsafe);
   failsafe = null;
+  if (!overlay) return;
+  if (instant) {
+    teardown();
+    return;
+  }
+  if (hiding) return;
+  hiding = true;
+  // Stage 1: the logo fades away — the screen is 100% black while the world
+  // (already running) keeps drawing beneath the DOM overlay.
+  const box = overlay.querySelector<HTMLElement>(".ml-load-box");
+  if (box) {
+    box.style.transition = "opacity .45s ease";
+    box.style.opacity = "0";
+  }
+  // Stage 2: hold the black until the page has really drawn — rAF ticks
+  // align with browser paints (Phaser renders on the same loop), so count
+  // REAL frames instead of guessing a delay; the time floor also lets the
+  // logo fade finish before the black lifts.
+  const start = performance.now();
+  let frames = 0;
+  const fadeOut = () => {
+    if (!overlay) return;
+    overlay.style.transition = "opacity .8s ease";
+    overlay.style.opacity = "0";
+    overlay.addEventListener("transitionend", teardown, { once: true });
+    // transitions don't run in backgrounded tabs — never trap the player
+    setTimeout(teardown, 1600);
+  };
+  const tick = () => {
+    if (!overlay) return;
+    frames++;
+    if (frames >= 6 && performance.now() - start >= 700) fadeOut();
+    else requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+function teardown() {
   overlay?.remove();
   overlay = null;
   bar = null;
+  hiding = false;
 }
 
 export function loadingVisible(): boolean {
