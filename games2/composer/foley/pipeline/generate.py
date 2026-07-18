@@ -175,21 +175,25 @@ SETS: dict[str, dict] = {
         "judge": "step",
         "pool": 9,
     },
-    # Wet footstep for water TRANSITIONS (maintainer 2026-07-18): played on
-    # the land->water and water->land edges (entering heavier, leaving
-    # lighter — level only, same recording).
+    # WET footstep for the walkable SHORELINE band (maintainer 2026-07-18:
+    # wet steps take over when walking/running on the wet transition tiles
+    # next to water; swim-entry sounds are later scope). ROUND 2: round 1's
+    # take sounded like a door — briefs now scream anti-door and candidates
+    # are judged by similarity to the known-watery splash reference.
     "water_step": {
         "brief": (
-            "one single wet splashing footstep in ankle-deep water at a lake "
-            "edge: a boot plunging into shallow still water, one short clean "
-            "splosh with a few small droplets right after, tight, exactly one "
-            "step, no stream, no flowing water, no rain, no ambience"
+            "one single squelchy wet footstep on soaked waterlogged ground at "
+            "a lake shore: a boot pressing into wet mud-sand with water "
+            "squishing out around the sole, a soft watery squelch, exactly "
+            "one step, only water sounds, no door, no wood, no knock, no "
+            "creak, no latch, no click, no stream, no rain, no ambience"
         ),
-        "duration_s": 0.7,
+        "duration_s": 0.6,
         "variants": GAIT_VARIANTS,
-        "max_ms": 700,
-        "judge": "step",
-        "pool": 9,
+        "max_ms": 650,
+        "judge": "wet",
+        "ref": "sounds/movement/splash/splash__take01.wav",
+        "pool": 12,
     },
     # ---- world/weather (real sources, not disguises: the maintainer heard
     # straight through the slowed-explosion "thunder") ----
@@ -378,6 +382,15 @@ GATES: dict[str, dict[str, tuple[float, float, float]]] = {
         "mid_peak_db": (-28.0, 0.0, 3),
         "crest": (2.5, 99.0, 1),
     },
+    # Wet steps: candidates must be WETNESS-class (band-profile distance to
+    # the known-watery splash reference — dry foley measures ~1.5-2.0, wet
+    # ~0.7-0.9; 'door vs splash' inside the wet class is NOT measurable and
+    # falls to the brief + the maintainer's ear on /#foley).
+    "wet": {
+        "ref_dist": (0.0, 1.1, 15),
+        "tail_ratio": (0.0, 0.5, 20),
+        "crest": (4.0, 99.0, 1),
+    },
 }
 
 # Ranking among candidates (lower = better), per judge kind. Steps rank by
@@ -389,6 +402,8 @@ RANK = {
     # Booms: strongest audible mid-band moment wins; early peak preferred
     # (the crack must land with the flash).
     "boom": lambda f: -f["mid_peak_db"] * 0.2 + f["attack_ms"] / 500,
+    # Wet: most reference-like candidate wins.
+    "wet": lambda f: f.get("ref_dist", 9.9) * 3,
 }
 
 
@@ -396,7 +411,9 @@ def _judge(feat: dict, gates: dict[str, tuple[float, float, float]], kind: str) 
     ok = True
     penalty = 0.0
     for key, (lo, hi, w) in gates.items():
-        v = feat[key]
+        v = feat.get(key)
+        if v is None:
+            continue
         if v < lo:
             ok = False
             penalty += (lo - v) * w
@@ -404,6 +421,35 @@ def _judge(feat: dict, gates: dict[str, tuple[float, float, float]], kind: str) 
             ok = False
             penalty += (v - hi) * w
     return ok, penalty + RANK[kind](feat)
+
+
+OCTAVE_BANDS = [(150, 300), (300, 600), (600, 1200), (1200, 2400), (2400, 4800), (4800, 9600)]
+
+
+def _band_profile(x: np.ndarray) -> np.ndarray:
+    """Log-energy per octave band, normalized — a compact spectral character
+    fingerprint. Used to judge a candidate by SIMILARITY TO A REFERENCE
+    sound (the wet-step lesson: 'door vs splash' is not separable by simple
+    scalar features, but distance to a known-watery reference is)."""
+    spec = np.abs(np.fft.rfft(x.astype(np.float64))) ** 2
+    freqs = np.fft.rfftfreq(x.size, 1 / SR)
+    e = np.array([spec[(freqs >= a) & (freqs < b)].sum() for a, b in OCTAVE_BANDS])
+    e = np.log10(e + 1e-12)
+    return e - e.mean()
+
+
+def _ref_distance(x: np.ndarray, ref_profile: np.ndarray) -> float:
+    return float(np.mean(np.abs(_band_profile(x) - ref_profile)))
+
+
+def _load_ref_profile(repo_rel: str) -> np.ndarray:
+    repo_root = FOLEY_DIR.parent.parent.parent  # games2/composer/foley → repo
+    with wave.open(str(repo_root / repo_rel)) as w:
+        raw = np.frombuffer(w.readframes(w.getnframes()), dtype="<i2")
+        x = raw.astype(np.float32) / 32768.0
+        if w.getnchannels() == 2:
+            x = x.reshape(-1, 2).mean(axis=1)
+    return _band_profile(x)
 
 
 def _tighten(x: np.ndarray, max_ms: float | None) -> np.ndarray:
@@ -505,6 +551,7 @@ def main() -> int:
             # ship only the best n_takes. Blind generation → selection.
             pool_n = max(n_takes, spec.get("pool", n_takes))
             gates = GATES.get(spec.get("judge", ""))
+            ref_profile = _load_ref_profile(spec["ref"]) if "ref" in spec else None
             cands: list[tuple[bool, float, np.ndarray, dict]] = []
             for i in range(pool_n):
                 prompt = f"{spec['brief']}, {variants[i % len(variants)]}. {STYLE}"
@@ -517,6 +564,8 @@ def main() -> int:
                     time.sleep(0.6)
                     continue
                 feat = _features(x)
+                if ref_profile is not None:
+                    feat["ref_dist"] = round(_ref_distance(x, ref_profile), 2)
                 ok, score = _judge(feat, gates, spec["judge"]) if gates else (True, 0.0)
                 cands.append((ok, score, x, feat))
                 print(f"{name} cand {i + 1}/{pool_n}: {'PASS ' if ok else 'REJECT'} {feat}")

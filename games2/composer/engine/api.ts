@@ -25,6 +25,9 @@ export interface AvatarFrame {
   swimming: boolean;
   /** shared/SURFACES sound id under the feet ("grass"|"stone"|"wood"|...). */
   surface: string;
+  /** Standing on the wet shoreline band (walkable tile adjacent to water):
+   * footsteps switch to the wet set (maintainer 2026-07-18). */
+  wetGround?: boolean;
   /** World-units moved since last frame (the gait EMA's raw distance). */
   distWu: number;
   /** 0..1 progress of the walk/run animation cycle, when one is playing.
@@ -287,28 +290,17 @@ export class GameAudio {
       this.gaits.set(id, g);
     }
 
-    // Water edges (server owns swimming): the composer's WET FOOTSTEP —
-    // one splashing step on the land->water and water->land transitions
-    // (maintainer 2026-07-18). Same recording both ways, entering heavier,
-    // leaving lighter; gentleness step profile (primary take, micro-jitter).
-    // Catalog splash remains the fallback until the set is generated.
+    // Water edges (server owns swimming): the catalog splash, as before.
+    // (Maintainer 2026-07-18: swim-entry sounds are LATER scope — the
+    // composer wet set is for walking the wet shoreline band, below.)
     if (f.swimming !== g.swimming) {
       g.swimming = f.swimming;
-      const wet = composerFoley("water_step");
-      if (wet) {
-        this.oneShots.play(this.foleyEntry("water_step", wet, "step"), "sfx", {
-          pan: f.pan,
-          dist: f.dist,
-          gainDb: f.swimming ? -8 : -11,
-        });
-      } else {
-        this.play("splash", "sfx", {
-          pan: f.pan,
-          dist: f.dist,
-          gainDb: f.swimming ? 0 : -6,
-          rate: f.swimming ? 1 : 1.15,
-        });
-      }
+      this.play("splash", "sfx", {
+        pan: f.pan,
+        dist: f.dist,
+        gainDb: f.swimming ? 0 : -6,
+        rate: f.swimming ? 1 : 1.15,
+      });
     }
 
     if (!f.moving || !f.grounded || f.swimming) {
@@ -341,17 +333,20 @@ export class GameAudio {
 
     // Water/void/unknown surfaces: no dry footfall (splash/swim handle water).
     if (!f.surface || f.surface === "water") return;
-    const setName = FOOTSTEP_SETS[f.surface] ?? FOOTSTEP_DEFAULT;
+    // The wet shoreline band overrides the material: wet steps take over
+    // when walking/running next to water (maintainer 2026-07-18).
+    const setName = f.wetGround ? "water_step" : FOOTSTEP_SETS[f.surface] ?? FOOTSTEP_DEFAULT;
     const own = composerFoley(setName) ?? composerFoley(FOOTSTEP_DEFAULT);
     if (own) {
       // Gentleness: no rate change for running — the faster CADENCE is the
       // run signal; walking is the SAME sound with a small per-surface
       // penalty (see the tables above).
-      const walkPenalty = FOOTSTEP_WALK_PENALTY_DB[f.surface] ?? WALK_PENALTY_DEFAULT_DB;
+      const trimKey = f.wetGround ? "wet" : f.surface;
+      const walkPenalty = FOOTSTEP_WALK_PENALTY_DB[trimKey] ?? WALK_PENALTY_DEFAULT_DB;
       this.oneShots.play(this.foleyEntry(setName, own, "step"), "sfx", {
         pan: f.pan,
         dist: f.dist,
-        gainDb: -8 + (FOOTSTEP_TRIM_DB[f.surface] ?? 0) + (f.running ? 0.8 : walkPenalty),
+        gainDb: -8 + (FOOTSTEP_TRIM_DB[trimKey] ?? 0) + (f.running ? 0.8 : walkPenalty),
       });
       return;
     }

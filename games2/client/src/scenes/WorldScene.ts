@@ -1786,12 +1786,24 @@ export class WorldScene extends Phaser.Scene {
       const animName = av.sprite.anims.getName();
       const gaitState = animName ? animName.split(":").at(-2) : undefined;
       const inGait = (gaitState === "walk" || gaitState === "run") && av.sprite.anims.isPlaying;
+      // The wet shoreline band: a walkable tile with water within one cell
+      // (the maps' shore transition tiles) — footsteps go wet there.
+      let wetGround = false;
+      if (this.terrain) {
+        for (const [ox, oy] of [[CELL_WU, 0], [-CELL_WU, 0], [0, CELL_WU], [0, -CELL_WU]]) {
+          if (surfaceAtWorld(this.terrain, tx + ox, ty + oy).swimmable) {
+            wetGround = true;
+            break;
+          }
+        }
+      }
       gameAudio.avatarFrame(id, {
         moving,
         running,
         grounded: hopLeft <= 0 && !av.falling,
         swimming: av.swimming,
         surface: this.terrain ? surfaceAtWorld(this.terrain, tx, ty).sound : "grass",
+        wetGround,
         distWu: (av.spdWu ?? 0) * dt,
         animPhase: inGait ? av.sprite.anims.getProgress() : undefined,
         pan: sp.pan,
