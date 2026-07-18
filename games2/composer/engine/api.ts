@@ -160,10 +160,27 @@ export class GameAudio {
 
   // ---- semantic events ----
 
+  /** Events whose sound the composer has taken in-house (maintainer QA:
+   * the catalog UI clicks "sound like a piano, not like buttons"). When the
+   * named foley set exists under composer/foley/, it wins over the catalog
+   * binding; until generated, the catalog remains the fallback. */
+  private static EVENT_FOLEY: Record<string, string> = {
+    "ui.cursor_move": "ui_tick",
+    "ui.confirm": "ui_confirm",
+    "ui.cancel": "ui_cancel",
+    "ui.error": "ui_cancel",
+  };
+
   /** Fire a bound event (sounds/bindings.json names: "ui.confirm",
    * "player.jump", ...). Unknown events are silent no-ops. */
   event(name: string, opts: PlayOpts = {}): void {
     if (!this.ready()) return;
+    const ownSet = GameAudio.EVENT_FOLEY[name];
+    const own = ownSet ? composerFoley(ownSet) : null;
+    if (ownSet && own) {
+      this.oneShots.play(this.foleyEntry(ownSet, own, "click"), "ui", opts);
+      return;
+    }
     const bound = this.bindings.get(name);
     if (!bound) return;
     const sound = this.catalog!.sounds.get(bound.sound);
@@ -236,7 +253,7 @@ export class GameAudio {
     // surface is regenerated.
     const own = composerFoley(f.surface);
     if (own) {
-      this.oneShots.play(this.foleyEntry(f.surface, own), "sfx", {
+      this.oneShots.play(this.foleyEntry(f.surface, own, "step"), "sfx", {
         pan: f.pan,
         dist: f.dist,
         rate: f.running ? 1.05 : 1,
@@ -258,23 +275,25 @@ export class GameAudio {
   private foleyCache = new Map<string, SoundEntry>();
 
   /** Synthetic catalog entry for a composer-generated foley set (bundled
-   * absolute URLs + the standard footstep variation contract). */
-  private foleyEntry(surface: string, urls: string[]): SoundEntry {
-    let e = this.foleyCache.get(surface);
+   * absolute URLs). Profiles: "step" varies like foley footfalls; "click"
+   * stays tight — a button must sound like the SAME button every press. */
+  private foleyEntry(set: string, urls: string[], profile: "step" | "click"): SoundEntry {
+    let e = this.foleyCache.get(set);
     if (!e) {
+      const step = profile === "step";
       e = {
-        id: `composer_foley_${surface}`,
-        category: "movement",
+        id: `composer_foley_${set}`,
+        category: step ? "movement" : "ui",
         loop: false,
         file: urls[0],
         urls,
-        mix_gain_db: 0, // gain passed per-play; footfall level lives there
+        mix_gain_db: 0, // level is decided per-play by the caller
         variation: {
           round_robin: true,
           no_immediate_repeat: true,
-          pitch_jitter_semitones: [-1.5, 1.5],
-          gain_jitter_db: [-2.5, 2.5],
-          start_jitter_ms: [0, 15],
+          pitch_jitter_semitones: step ? [-1.5, 1.5] : [-0.4, 0.4],
+          gain_jitter_db: step ? [-2.5, 2.5] : [-1, 0.5],
+          start_jitter_ms: step ? [0, 15] : [0, 0],
         },
         music: {
           tonal: false,
@@ -284,7 +303,7 @@ export class GameAudio {
           scale_snap_replaces_jitter: false,
         },
       };
-      this.foleyCache.set(surface, e);
+      this.foleyCache.set(set, e);
     }
     return e;
   }

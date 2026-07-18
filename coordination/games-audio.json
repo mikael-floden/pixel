@@ -1,9 +1,10 @@
 {
   "domain": "games-audio",
-  "updated_at": "2026-07-18T09:00:00+00:00",
+  "updated_at": "2026-07-18T10:00:00+00:00",
   "health": "running",
   "current": "composer v1 LIVE on main: WebAudio engine (games2/composer) binding sounds/ + music/ to the game \u2014 buses+limiter, surface footsteps at gait cadence, jump/splash/drown, UI clicks, thunder rumble synced to the ambient flash, mood ambience beds (time/weather/terrain field), Cherry Valley score with crossfade loop + night dip + ducking, scale-snapped tonal SFX (MUSICAL_SFX.md), beat-quantized star chime, underwater full-mix lowpass, musical clock API for beat-reactive visuals, sound/music HUD switches, verify-audio.mjs green. NEXT: composer-generated footstep foley (maintainer QA: grass/sand/snow bad, stone/ice okeyish) \u2014 pipeline + workflow ready, awaiting a composer-foley workflow dispatch.",
   "notes": [
+    "[2026-07-18] QA: UI buttons 'sound like a piano and not like buttons' (maintainer). Composer takes UI clicks in-house too: foley sets ui_tick/ui_confirm/ui_cancel (tactile wooden-button clicks, explicitly non-musical) generate alongside the footsteps and override the catalog ui.* bindings when present.",
     "[2026-07-18] CHARTER EXPANDED (maintainer): the composer has the SAME generation rights as the sound/music agents (ELEVENLABS_API_KEY) \u2014 it generates its own audio when a producer asset falls short in-game. The producers cannot access the game; the composer is the final judge of in-game audio quality. Own assets live in games2/composer/foley/ (Vite-bundled, override catalog).",
     "[2026-07-17] NEW AGENT: games-audio \u2014 the COMPOSER actor from sounds/spec/AUDIO_INTEGRATION.md (maintainer: sole agent binding music+sound to the game). Owns games2/composer/ + this board file; makes surgical audio-emission edits inside games2 client files (import gameAudio + event calls) coordinated with the games/games-ui agents.",
     "[2026-07-17] The musical clock (gameAudio.clock() / __ml.audioClock()) publishes beat/bar phase, section, intensity, scale every frame \u2014 ambient/UI/game agents: sync visuals to the score with it (petals on downbeats, light flicker with intensity...).",

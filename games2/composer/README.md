@@ -36,6 +36,7 @@ decides what sounds.
 | footstep stone | okey-ish, not great | composer regenerates |
 | footstep ice (pitched stone) | okey-ish, not great | composer generates a real ice set |
 | footstep wood | unrated | regenerated alongside the rest |
+| UI buttons (menu_select/confirm/cancel) | **"sound like a piano, not like buttons"** (2026-07-18) | composer generates tactile mechanical clicks (foley/ui_tick, ui_confirm, ui_cancel) — wooden-button thocks matching the carved HUD, explicitly non-musical |
 
 ## Architecture (WebAudio, zero dependencies)
 
