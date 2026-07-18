@@ -98,47 +98,55 @@ const VCUT2 = { y: 1035, s0: 992, p: 86 }; // winding-bark unit
 // per-pixel delta (luma minus its column mean — the donor's own cross
 // profile removed) is mirror-wrapped in both axes. Fibers stay coherent
 // along i = along the piece, for vertical rails and horizontal beams alike.
-const DONOR = { x0: 8, x1: 44, y0: 941, y1: 1075 }; // clean left-rail wood
 const GRAIN_CLAMP = 12;
-let grainTex: Int8Array = new Int8Array(0);
-const DW = DONOR.x1 - DONOR.x0;
-const DH = DONOR.y1 - DONOR.y0;
 
-function buildGrainTex(src: ImageData) {
+interface VDonor {
+  x0: number; x1: number; y0: number; y1: number;
+  tex?: Int8Array; // per-pixel luma deltas vs column mean (built once)
+}
+// clean left-rail wood: of the GAME frame / of the SELECT border
+const VD_GAME: VDonor = { x0: 8, x1: 44, y0: 941, y1: 1075 };
+const VD_SEL: VDonor = { x0: 8, x1: 90, y0: 825, y1: 962 };
+
+function buildVDonor(d: VDonor, src: ImageData) {
   const S = src.data;
-  grainTex = new Int8Array(DW * DH);
-  for (let c = 0; c < DW; c++) {
+  const dw = d.x1 - d.x0;
+  const dh = d.y1 - d.y0;
+  d.tex = new Int8Array(dw * dh);
+  for (let c = 0; c < dw; c++) {
     let sum = 0;
     let cnt = 0;
-    for (let r = 0; r < DH; r++) {
-      const si = ((DONOR.y0 + r) * AW + DONOR.x0 + c) * 4;
+    for (let r = 0; r < dh; r++) {
+      const si = ((d.y0 + r) * AW + d.x0 + c) * 4;
       if (S[si + 3] > 200) {
         sum += 0.3 * S[si] + 0.6 * S[si + 1] + 0.1 * S[si + 2];
         cnt++;
       }
     }
     const mean = sum / Math.max(1, cnt);
-    for (let r = 0; r < DH; r++) {
-      const si = ((DONOR.y0 + r) * AW + DONOR.x0 + c) * 4;
-      let d = 0;
+    for (let r = 0; r < dh; r++) {
+      const si = ((d.y0 + r) * AW + d.x0 + c) * 4;
+      let dl = 0;
       if (S[si + 3] > 200)
-        d = 0.3 * S[si] + 0.6 * S[si + 1] + 0.1 * S[si + 2] - mean;
-      grainTex[r * DW + c] = Math.max(-GRAIN_CLAMP, Math.min(GRAIN_CLAMP, Math.round(d)));
+        dl = 0.3 * S[si] + 0.6 * S[si + 1] + 0.1 * S[si + 2] - mean;
+      d.tex[r * dw + c] = Math.max(-GRAIN_CLAMP, Math.min(GRAIN_CLAMP, Math.round(dl)));
     }
   }
 }
 
 /** donor fiber delta at (cross position, run position) — mirror-wrapped both
  * ways so the texture continues seamlessly at any size. CROSS positions must
- * be LOCAL to one piece of wood (≈ the donor's own 36px width): a wrap inside
+ * be LOCAL to one piece of wood (≈ the donor's own width): a wrap inside
  * one wide face mirrors the fiber and reads as the tile drawn twice. */
-function grainAt(cross: number, i: number): number {
-  if (!grainTex.length) return 0;
-  const mc = cross % (2 * DW - 2);
-  const mr = i % (2 * DH - 2);
-  const c = mc < DW ? mc : 2 * DW - 2 - mc;
-  const r = mr < DH ? mr : 2 * DH - 2 - mr;
-  return grainTex[r * DW + c];
+function vGrainAt(d: VDonor, cross: number, i: number): number {
+  if (!d.tex) return 0;
+  const dw = d.x1 - d.x0;
+  const dh = d.y1 - d.y0;
+  const mc = cross % (2 * dw - 2);
+  const mr = i % (2 * dh - 2);
+  const c = mc < dw ? mc : 2 * dw - 2 - mc;
+  const r = mr < dh ? mr : 2 * dh - 2 - mr;
+  return d.tex[r * dw + c];
 }
 
 function buildHDonor(d: HDonor, src: ImageData) {
@@ -324,7 +332,7 @@ function heighten(wideImg: ImageData, h0: number, g1: number, g2: number): Image
       const d = base + x * 4;
       if (O[d + 3] > 0) {
         const cross = x >= w0 - 64 ? x - (w0 - 64) : x;
-        const g = grainAt(cross, r);
+        const g = vGrainAt(VD_GAME, cross, r);
         if (g) { O[d] += g; O[d + 1] += g; O[d + 2] += g; }
       }
     }
@@ -398,114 +406,91 @@ function compose() {
   layoutCb?.(layout);
 }
 
-// ---- character-select RING frame v2 ---------------------------------------
-// Composed from the maintainer's AUTHORED ring art (2026-07-17), cut into
-// pieces by scripts/extract-select2.mjs (/ui2/select2/): four decorated
-// corners pinned to the screen corners + a repeatable plain-beam strip tiled
-// per side between them. Pieces render at TRUE 1:1 art pixels: the canvas
-// backing is sized in real CSS px (virtual px × the overlay's uiZoom), so
-// the art never resamples even though the canvas element lives inside the
-// zoomed overlay. If a viewport is too narrow for two corners side by side
-// (a real device-width phone), everything drops to an exact half scale.
+// ---- character-select BORDER v3 -------------------------------------------
+// The maintainer's vine-wrapped border (2026-07-18, /ui2/select-frame.png:
+// his 768x1376 magenta-keyed art — keyed, sparkle dropped, soft edges) is
+// composed EXACTLY like the in-game frame: stretch cuts through plain wood
+// insert pixels on both axes (single-slice extrusion + own-face fiber — the
+// full grain treatment), and the result renders at the SAME "1.5x" scale as
+// the in-game frame: sv = min(vw/768, vh/1376) * HUD_SCALE in the overlay's
+// virtual px, which lands on the identical real-px-per-art-px factor once
+// the uiZoom multiplies in. Replaces the piece-based select2 ring.
 
-interface Sel2Geo {
-  art: { w: number; h: number };
-  beams: {
-    top: { y: number; h: number };
-    bottom: { y: number; h: number };
-    left: { x: number; w: number };
-    right: { x: number; w: number };
-  };
-  corners: Record<"tl" | "tr" | "bl" | "br", { w: number; h: number }>;
-  inner: { top: number; bottom: number; left: number; right: number };
-  /** empty outer margin per corner edge — the ring shifts outward by the
-   * min of each side's two corners so the beams hug the screen edge
-   * (maintainer: the border sat far inside) without clipping any art */
-  margins: {
-    tl: { top: number; left: number };
-    tr: { top: number; right: number };
-    bl: { bottom: number; left: number };
-    br: { bottom: number; right: number };
-  };
-}
+// measured off the keyed art (2026-07-18 scans):
+const SEL_CUT = { top: 300, bot: 285, interior: 384, midRow: 890 };
+const SEL_BAND = { top: 200, bot: 1200 }; // rows above/below use the beam cuts
+const SEL_INNER = { left: 91, right: 687, top: 94, bottom: 1319 };
+const HD_SEL_TOP: HDonor = { aux: false, x0: 263, x1: 344, y0: 16, y1: 96 };
+const HD_SEL_BOT: HDonor = { aux: false, x0: 249, x1: 322, y0: 1318, y1: 1376 };
+const SEL_RAIL_R = 72; // right rail width: local fiber cross = x - (w0 - 72)
 
 let selCanvas: HTMLCanvasElement | null = null;
 let selParent: HTMLElement | null = null;
-let sel2Geo: Sel2Geo | null = null;
-let sel2Imgs: Record<string, HTMLImageElement> | null = null;
+let selFrameData: ImageData | null = null;
 
 function composeSelect() {
-  if (!selCanvas || !selParent || !sel2Geo || !sel2Imgs || !selCanvas.isConnected) return;
+  if (!selCanvas || !selParent || !selFrameData || !selCanvas.isConnected) return;
   const vw = selParent.clientWidth; // virtual px (inside the uiZoom)
   const vh = selParent.clientHeight;
   if (!vw || !vh) return;
-  const zoom = parseFloat(getComputedStyle(selParent).zoom as string) || 1;
-  const bw = Math.round(vw * zoom); // backing = real CSS px → 1 art px = 1 px
-  const bh = Math.round(vh * zoom);
-  const g = sel2Geo, I = sel2Imgs;
-  const s = bw >= (g.corners.tl.w + g.corners.tr.w) * 1.05 ? 1 : 0.5;
-  selCanvas.width = bw;
-  selCanvas.height = bh;
+  const sv = Math.min(vw / AW, vh / AH) * HUD_SCALE;
+  const w0 = Math.ceil(vw / sv);
+  const h0 = Math.ceil(vh / sv);
+  const insW = w0 - AW;
+  const insH = h0 - AH;
+  const S = selFrameData.data;
+  // widen: one cut per band — through the top/bottom beam's plain wood, or
+  // through the transparent interior for the middle rows
+  const wide = new Uint8ClampedArray(w0 * AH * 4);
+  for (let y = 0; y < AH; y++) {
+    const inTop = y < SEL_BAND.top;
+    const inBot = y >= SEL_BAND.bot;
+    const cut = inTop ? SEL_CUT.top : inBot ? SEL_CUT.bot : SEL_CUT.interior;
+    wide.set(S.subarray(y * AW * 4, (y * AW + cut) * 4), y * w0 * 4);
+    wide.set(S.subarray((y * AW + cut) * 4, (y + 1) * AW * 4), (y * w0 + cut + insW) * 4);
+    const si = (y * AW + cut) * 4;
+    if (S[si + 3] > 0) {
+      const hd = inTop ? HD_SEL_TOP : HD_SEL_BOT;
+      for (let r = 0; r < insW; r++) {
+        const g = hGrainAt(hd, selFrameData, y, r);
+        const d = (y * w0 + cut + r) * 4;
+        wide[d] = S[si] + g; wide[d + 1] = S[si + 1] + g; wide[d + 2] = S[si + 2] + g;
+        wide[d + 3] = S[si + 3];
+      }
+    }
+  }
+  // heighten: repeat the plain rail row + fiber (per-rail local cross)
+  const out = new ImageData(w0, h0);
+  const O = out.data;
+  let dy = 0;
+  const row = (sy: number) => {
+    O.set(wide.subarray(sy * w0 * 4, (sy + 1) * w0 * 4), dy * w0 * 4);
+    dy++;
+  };
+  for (let y = 0; y < SEL_CUT.midRow; y++) row(y);
+  for (let r = 0; r < insH; r++) {
+    row(SEL_CUT.midRow);
+    const base = (dy - 1) * w0 * 4;
+    for (let x = 0; x < w0; x++) {
+      const d = base + x * 4;
+      if (O[d + 3] > 0) {
+        const cross = x >= w0 - SEL_RAIL_R ? x - (w0 - SEL_RAIL_R) : x;
+        const g = vGrainAt(VD_SEL, cross, r);
+        if (g) { O[d] += g; O[d + 1] += g; O[d + 2] += g; }
+      }
+    }
+  }
+  for (let y = SEL_CUT.midRow; y < AH; y++) row(y);
+  selCanvas.width = w0;
+  selCanvas.height = h0;
   selCanvas.style.width = `${vw}px`;
   selCanvas.style.height = `${vh}px`;
-  const ctx = selCanvas.getContext("2d")!;
-  ctx.imageSmoothingEnabled = false;
-  ctx.clearRect(0, 0, bw, bh);
-  // pull the whole ring outward until each beam's OUTER FACE sits EDGE_GAP
-  // from the screen edge (maintainer: "I don't care if half the crystal is
-  // outside the frame — move the border outwards"); the corner decor's
-  // overhang clips off-screen by design. Corners shift diagonally by their
-  // two sides, so all beam stubs stay aligned.
-  const EDGE_GAP = 8;
-  const shT = Math.max(0, g.beams.top.y - EDGE_GAP) * s;
-  const shB = Math.max(0, g.art.h - (g.beams.bottom.y + g.beams.bottom.h) - EDGE_GAP) * s;
-  const shL = Math.max(0, g.beams.left.x - EDGE_GAP) * s;
-  const shR = Math.max(0, g.art.w - (g.beams.right.x + g.beams.right.w) - EDGE_GAP) * s;
-  const yBot = (artY: number) => bh - (g.art.h - artY) * s + shB; // bottom-anchored
-  const xRight = (artX: number) => bw - (g.art.w - artX) * s + shR;
-  // beams first (corners overdraw their stubs), tiled along each side
-  const tileH = (img: HTMLImageElement, y: number, x0: number, x1: number) => {
-    for (let x = x0; x < x1; x += img.width * s)
-      ctx.drawImage(img, 0, 0, Math.min(img.width, (x1 - x) / s), img.height,
-        x, y, Math.min(img.width * s, x1 - x), img.height * s);
-  };
-  const tileV = (img: HTMLImageElement, x: number, y0: number, y1: number) => {
-    for (let y = y0; y < y1; y += img.height * s)
-      ctx.drawImage(img, 0, 0, img.width, Math.min(img.height, (y1 - y) / s),
-        x, y, img.width * s, Math.min(img.height * s, y1 - y));
-  };
-  // Beams run the FULL rectangle — corner to corner, UNDER the corners —
-  // so the corners (drawn on top) can be h-MIRRORED to point their crystals
-  // INWARD (maintainer 2026-07-17) without exposing a seam: flipping moves
-  // each corner's beam stub to its outer side, and the continuous beam
-  // underneath covers the gap that would otherwise open on the inner side.
-  const leftBeamX = g.beams.left.x * s - shL;
-  const rightBeamX = xRight(g.beams.right.x);
-  const topBeamY = g.beams.top.y * s - shT;
-  const botBeamY = yBot(g.beams.bottom.y);
-  tileH(I.beamTop, topBeamY, leftBeamX, rightBeamX + g.beams.right.w * s);
-  tileH(I.beamBottom, botBeamY, leftBeamX, rightBeamX + g.beams.right.w * s);
-  tileV(I.beamLeft, leftBeamX, topBeamY, botBeamY + g.beams.bottom.h * s);
-  tileV(I.beamRight, rightBeamX, topBeamY, botBeamY + g.beams.bottom.h * s);
-  // corners drawn h-MIRRORED (crystals point inward)
-  const drawF = (img: HTMLImageElement, x: number, y: number) => {
-    ctx.save();
-    ctx.translate(x + img.width * s, y);
-    ctx.scale(-1, 1);
-    ctx.drawImage(img, 0, 0, img.width * s, img.height * s);
-    ctx.restore();
-  };
-  drawF(I.tl, -shL, -shT);
-  drawF(I.tr, bw - g.corners.tr.w * s + shR, -shT);
-  drawF(I.bl, -shL, bh - g.corners.bl.h * s + shB);
-  drawF(I.br, bw - g.corners.br.w * s + shR, bh - g.corners.br.h * s + shB);
-  // content stays inside the beams' inner faces (overlay padding is in
-  // VIRTUAL px — divide the backing-px band depth by the zoom)
-  const pad = (v: number, sh: number) =>
-    `${Math.max(0, Math.round((v * s - sh) / zoom)) + 4}px`;
+  selCanvas.getContext("2d")!.putImageData(out, 0, 0);
+  // content stays inside the border's inner window (virtual px)
+  const pad = (v: number) => `${Math.round(v * sv) + 4}px`;
   selParent.style.padding =
-    `${pad(g.inner.top, shT)} ${pad(g.art.w - g.inner.right, shR)} ` +
-    `${pad(g.art.h - g.inner.bottom, shB)} ${pad(g.inner.left, shL)}`;
+    `${pad(SEL_INNER.top)} ${pad(AW - SEL_INNER.right)} ` +
+    `${pad(AH - SEL_INNER.bottom)} ${pad(SEL_INNER.left)}`;
 }
 
 /** Mount the select ring into the (uiZoom'd) select overlay. Idempotent per
@@ -526,23 +511,14 @@ export function mountSelectFrame(parent: HTMLElement) {
     });
   }
   parent.appendChild(selCanvas);
-  if (sel2Geo && sel2Imgs) {
+  if (selFrameData) {
     composeSelect();
   } else {
-    const load = (name: string) =>
-      new Promise<HTMLImageElement>((res, rej) => {
-        const img = new Image();
-        img.onload = () => res(img);
-        img.onerror = rej;
-        img.src = `/ui2/select2/${name}.png`;
-      });
-    Promise.all([
-      fetch("/ui2/select2/select2.json").then((r) => r.json()),
-      load("corner-tl"), load("corner-tr"), load("corner-bl"), load("corner-br"),
-      load("beam-top"), load("beam-bottom"), load("beam-left"), load("beam-right"),
-    ]).then(([geo, tl, tr, bl, br, beamTop, beamBottom, beamLeft, beamRight]) => {
-      sel2Geo = geo as Sel2Geo;
-      sel2Imgs = { tl, tr, bl, br, beamTop, beamBottom, beamLeft, beamRight };
+    loadImageData("/ui2/select-frame.png").then((d) => {
+      selFrameData = d;
+      buildVDonor(VD_SEL, d);
+      buildHDonor(HD_SEL_TOP, d);
+      buildHDonor(HD_SEL_BOT, d);
       composeSelect();
     });
   }
@@ -573,7 +549,7 @@ export function mountFrame2(onLayout: (l: FrameLayout) => void) {
     ]).then(([f, a]) => {
       frameData = f;
       auxData = a;
-      buildGrainTex(f);
+      buildVDonor(VD_GAME, f);
       buildHDonor(HD_BEAM_L, a);
       buildHDonor(HD_BEAM_R, a);
       buildHDonor(HD_RAIL_A, f);
