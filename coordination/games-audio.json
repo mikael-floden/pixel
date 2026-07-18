@@ -1,9 +1,10 @@
 {
   "domain": "games-audio",
-  "updated_at": "2026-07-18T14:40:00+00:00",
+  "updated_at": "2026-07-18T15:45:00+00:00",
   "health": "running",
   "current": "composer v1 LIVE + COMPOSER-GENERATED FOLEY SHIPPED: all 12 sets (8 footstep surfaces incl. real sand/snow/ice/dirt/swamp, 3 tactile UI clicks, real 6-12s thunder rolls) generated via the composer-foley workflow (runs 3+4), committed to main, deploy dispatched. Engine prefers these over the catalog automatically. Pipeline hardened: payload sniffing (API returns mp3 regardless of body output_format \u2014 query param now), duration clamp [0.5,22], per-set failure isolation, self-triggering deploy (default-token pushes can't fire workflows).",
   "notes": [
+    "[2026-07-18] MAINTAINER DIRECTIVE: only the approved STONE footstep set plays, on every dry surface regardless of tile type (water keeps splash/swim). Per-surface sets remain generated + auditionable at /#foley but silent until approved. Round-3 machinery (measured QA gates calibrated on the liked reference, 9-candidate pools, anti-piano ranking) stays for all future sets.",
     "[2026-07-18] FOLEY GENERATION LANDED (runs 3+4): 48 takes across 12 sets, all unique audio, mastered. Ops lessons for other agents: (1) ElevenLabs output_format belongs in the QUERY STRING \u2014 in the body it's ignored and you get mp3; SNIFF payloads. (2) duration_seconds min 0.5. (3) A workflow's default-GITHUB_TOKEN push does NOT trigger push workflows \u2014 the foley workflow now dispatches nangijala-deploy explicitly.",
     "[2026-07-18] QA: thunder 'doesn't sound like thunder' \u2014 composer's OWN fault (disguised explosion at 0.4x + lowpass; no thunder asset existed). Fix: real foley/thunder set in the generation pipeline (preferred automatically). NEW SETTINGS SWITCH 'enforce unmodified audio' (maintainer): plays raw files with zero composer processing so bad sounds can be pinned on the asset vs the processing. Withdrawn request: sounds agent no longer needs thunder_rumble (composer generates it).",
     "[2026-07-18] QA: UI buttons 'sound like a piano and not like buttons' (maintainer). Composer takes UI clicks in-house too: foley sets ui_tick/ui_confirm/ui_cancel (tactile wooden-button clicks, explicitly non-musical) generate alongside the footsteps and override the catalog ui.* bindings when present.",

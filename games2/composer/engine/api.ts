@@ -51,19 +51,12 @@ export interface FieldSample {
 const WALK_STEP_WU = 25;
 const RUN_STEP_WU = 38;
 
-// Surface sound id (shared/SURFACES) → catalog footstep + character tweak.
-// Only three foley sets exist yet; the tweaks keep sand/snow/swamp from
-// reading as plain grass until the sound actor ships dedicated sets.
-const FOOTSTEPS: Record<string, { id: string; rate?: number; gainDb?: number; lowpassHz?: number }> = {
-  grass: { id: "footstep_grass" },
-  dirt: { id: "footstep_grass", rate: 0.94 },
-  sand: { id: "footstep_grass", rate: 0.9, gainDb: -2 },
-  snow: { id: "footstep_grass", rate: 0.8, gainDb: -1, lowpassHz: 2600 },
-  swamp: { id: "footstep_grass", rate: 0.72, gainDb: 1 },
-  stone: { id: "footstep_stone" },
-  ice: { id: "footstep_stone", rate: 1.12, gainDb: -4 },
-  wood: { id: "footstep_wood" },
-};
+// MAINTAINER DIRECTIVE 2026-07-18: ONE footstep for every dry surface —
+// the approved STONE set (the black_mountain verdict), regardless of tile
+// type. Water stays different (splash + swim states, no dry footfall).
+// The per-surface sets stay generated/bundled for a future opt-in, but
+// playback routes everything to stone until something else earns approval.
+const FOOTSTEP_SET = "stone";
 
 const SETTINGS_KEY = "ml-audio";
 
@@ -264,12 +257,12 @@ export class GameAudio {
     if (g.travelled < stepLen) return;
     g.travelled = 0;
 
-    // Composer-generated per-surface foley wins (maintainer QA rated the
-    // catalog sets bad/okeyish); catalog mapping is the fallback until every
-    // surface is regenerated.
-    const own = composerFoley(f.surface);
+    // Water/void/unknown surfaces: no dry footfall (splash/swim handle water).
+    if (!f.surface || f.surface === "water") return;
+    // Every dry surface plays the ONE approved set (see FOOTSTEP_SET).
+    const own = composerFoley(FOOTSTEP_SET);
     if (own) {
-      this.oneShots.play(this.foleyEntry(f.surface, own, "step"), "sfx", {
+      this.oneShots.play(this.foleyEntry(FOOTSTEP_SET, own, "step"), "sfx", {
         pan: f.pan,
         dist: f.dist,
         rate: f.running ? 1.05 : 1,
@@ -277,14 +270,12 @@ export class GameAudio {
       });
       return;
     }
-    const foot = FOOTSTEPS[f.surface];
-    if (!foot) return; // water/void/unknown: no dry footfall
-    this.play(foot.id, "sfx", {
+    // Fallback if the stone set isn't bundled: the catalog's stone foley.
+    this.play("footstep_stone", "sfx", {
       pan: f.pan,
       dist: f.dist,
-      rate: (foot.rate ?? 1) * (f.running ? 1.06 : 1),
-      gainDb: (foot.gainDb ?? 0) + (f.running ? 1.5 : 0),
-      lowpassHz: foot.lowpassHz,
+      rate: f.running ? 1.06 : 1,
+      gainDb: f.running ? 1.5 : 0,
     });
   }
 
