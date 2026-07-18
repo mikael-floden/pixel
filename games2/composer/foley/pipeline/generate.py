@@ -258,7 +258,7 @@ def main() -> int:
     if not key:
         print("ELEVENLABS_API_KEY not set — refusing to run (no low-fi fallbacks).")
         return 1
-    wanted = sys.argv[1:] or list(BRIEFS)
+    wanted = sys.argv[1:] or list(SETS)
     session = requests.Session()
     session.headers.update({"xi-api-key": key})
 
