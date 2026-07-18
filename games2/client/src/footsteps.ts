@@ -66,7 +66,7 @@ export class Footsteps {
   private styleFor(sound: string): { key: string; tint: number; alpha: number } | null {
     switch (sound) {
       case "grass":
-        return { key: "fs-pair", tint: 0x2f2610, alpha: 0.6 }; // soil through crushed blades
+        return { key: "fs-pair", tint: 0x281f0d, alpha: 0.74 }; // soil through crushed blades
       case "dirt":
         return { key: "fs-oval", tint: 0x1c1206, alpha: 0.72 };
       case "sand":
@@ -88,8 +88,12 @@ export class Footsteps {
     }
   }
 
-  /** Stamp a mark at world (x, y) for the given SURFACES sound id. */
-  spawn(x: number, y: number, sound: string, scale = 1) {
+  /** Stamp a mark at screen (x, y) for the given SURFACES sound id. `depth`
+   * is the painter y-sort value: it must come from the avatar's FLAT ground
+   * row (its own `sprite.depth`), NOT from the lifted screen y — on raised
+   * terrain those diverge and a lifted-y depth sorts the mark under the block
+   * it sits on, hiding it. Falls back to `y` when no depth is given. */
+  spawn(x: number, y: number, sound: string, scale = 1, depth = y) {
     const st = this.styleFor(sound);
     if (!st) return;
     let m: Mark | undefined;
@@ -115,7 +119,7 @@ export class Footsteps {
       .setPosition(Math.round(x), Math.round(y))
       .setScale(scale)
       .setAlpha(st.alpha)
-      .setDepth(y - 0.5) // y-sorts with the world, just under bodies at the same line
+      .setDepth(depth - 0.5) // just under the body that stands on it
       .setVisible(true);
   }
 

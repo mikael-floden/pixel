@@ -3673,7 +3673,9 @@ export class WorldScene extends Phaser.Scene {
       const r = Math.floor(av.fy / CELL_WU);
       const cell = this.world.rows[r]?.[c];
       if (!cell) return;
-      this.footsteps.spawn(wx, wy, surfaceFor(cell.t).sound, sprite.scaleX);
+      // Draw AT the lifted foot (wx, wy) but SORT by the avatar's flat-ground
+      // depth — on raised terrain the lifted y sorts the mark under its block.
+      this.footsteps.spawn(wx, wy, surfaceFor(cell.t).sound, sprite.scaleX, sprite.depth);
     }
   }
 
