@@ -79,6 +79,10 @@ const FOOTSTEP_DEFAULT = "stone";
 // −1 ("maybe 90% of current"). Keyed by surface sound id so e.g. grass
 // can be trimmed without touching stone-on-stone tiles.
 const FOOTSTEP_TRIM_DB: Record<string, number> = { snow: -12, grass: -1 };
+// The wet shoreline step is the catalog splash played like the water-EXIT
+// sound the maintainer approved: pitched up ~15% (brighter, lighter than
+// the duller entry splosh). A fixed character choice, not per-step drift.
+const WET_STEP_RATE = 1.15;
 // Walk plays softer than run by this penalty (default −3 dB ≈ 70%). Snow's
 // walk penalty is ZERO: at −3 on top of its deep trim the maintainer heard
 // "nothing at all" — snow walking now sits just under snow running.
@@ -345,6 +349,7 @@ export class GameAudio {
         this.oneShots.play(this.catalogStepEntry(splash), "sfx", {
           pan: f.pan,
           dist: f.dist,
+          rate: WET_STEP_RATE, // the water-EXIT character (the approved one)
           gainDb: -8 + (FOOTSTEP_TRIM_DB.wet ?? 0) + (f.running ? 0.8 : walkPenalty),
         });
         return;
