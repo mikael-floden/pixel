@@ -118,14 +118,15 @@ function showUpdateBanner(sha: string) {
   el.textContent = `New version out ${sha.slice(0, 9)}`;
   // Non-selectable on purpose (belt and braces with the global rule): a long
   // press used to text-select the hash and pop Chrome's search sheet mid-game.
-  // Sizing has bounced twice (maintainer: first "super small and hard to
-  // click", then "a little bit too big") — a comfortable thumb pill, not a
-  // billboard. Goes through applyUiZoom like every other overlay — without
-  // it, phone desktop-site mode shrank it ~3x along with the layout viewport.
+  // Sizing has bounced (maintainer: first "super small and hard to click",
+  // then "a little bit too big", now "bigger and a little further down") —
+  // a comfortable thumb pill, not a billboard. Goes through applyUiZoom like
+  // every other overlay — without it, phone desktop-site mode shrank it ~3x
+  // along with the layout viewport.
   el.style.cssText =
-    "position:fixed;top:160px;left:50%;transform:translateX(-50%);z-index:100;cursor:pointer;" +
-    "padding:10px 18px;border-radius:10px;background:#111114f2;color:#ffd678;" +
-    "border:2px solid #ffd678aa;font:bold 15px system-ui,sans-serif;box-shadow:0 6px 24px #000c;" +
+    "position:fixed;top:260px;left:50%;transform:translateX(-50%);z-index:100;cursor:pointer;" +
+    "padding:14px 26px;border-radius:12px;background:#111114f2;color:#ffd678;" +
+    "border:2px solid #ffd678aa;font:bold 19px system-ui,sans-serif;box-shadow:0 6px 24px #000c;" +
     "white-space:nowrap;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;" +
     "-webkit-tap-highlight-color:transparent";
   el.addEventListener("click", () => location.reload());
