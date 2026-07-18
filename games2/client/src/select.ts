@@ -46,7 +46,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
           <button id="ml-enter" class="ml-btn ml-plated"><span>Enter world</span></button>
         </div>
       </div>
-      <button id="ml-install" class="ml-install ml-plated" hidden><span>📱 Install as an app on your home screen</span></button>`;
+      <button id="ml-install" class="ml-install ml-plated" hidden><span>Install game</span></button>`;
     document.body.appendChild(overlay);
     applyUiZoom(overlay); // "Desktop site" must not shrink the menu
     injectStyles();
@@ -418,11 +418,14 @@ function injectStyles() {
   .ml-btn.press{color:#f4e3c2}
   /* install prompt: PINNED to the screen bottom (maintainer), full column
      width, clear of the version badge. Outside the panel, so the panel's
-     overflow scroll can't clip or move it. */
+     overflow scroll can't clip or move it. Label styled EXACTLY like the
+     Enter world button (maintainer: "INSTALL GAME", same font). */
   .ml-install{position:absolute;bottom:44px;left:50%;transform:translateX(-50%);z-index:2;
     border:none;padding:0 24px;width:var(--ml-col);height:120px;
-    image-rendering:pixelated;color:#fff;font:700 13px system-ui,sans-serif;cursor:pointer;
-    display:inline-flex;align-items:center;justify-content:center;text-shadow:0 1px 0 rgba(0,0,0,.35)}`;
+    image-rendering:pixelated;cursor:pointer;
+    font:700 17px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#fff;
+    display:inline-flex;align-items:center;justify-content:center;text-shadow:0 1px 0 rgba(0,0,0,.35)}
+  .ml-install.press{color:#f4e3c2}`;
   const s = document.createElement("style");
   s.textContent = css;
   document.head.appendChild(s);
