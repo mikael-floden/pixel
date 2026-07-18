@@ -124,3 +124,34 @@ export function dressPlate(el: HTMLElement, kindFor: (el: HTMLElement) => PlateK
 export function repaintPlates(root: ParentNode) {
   root.querySelectorAll<Dressed>("[data-plate]").forEach((el) => el._paintPlate?.());
 }
+
+// ---- the kit's empty item slot (fixed art, no 9-slice) --------------------
+const SLOT_SRC = "/ui2/kit-slot.png";
+let slotImg: HTMLImageElement | null = null;
+let slotReady: Promise<void> | null = null;
+
+/** Dress a backpack slot with the kit's empty-slot square, drawn at the
+ * largest INTEGER multiple that fits the element and centred — the art is a
+ * fixed icon, so it only ever scales by whole blocks (nearest-neighbour). */
+export function dressSlot(el: HTMLElement) {
+  if (!slotReady) {
+    slotReady = new Promise((res) => {
+      const im = new Image();
+      im.onload = () => {
+        slotImg = im;
+        res();
+      };
+      im.src = SLOT_SRC;
+    });
+  }
+  const paint = () => {
+    if (!slotImg || !el.clientWidth) return;
+    const k = Math.max(1, Math.floor(Math.min(el.clientWidth / slotImg.width, el.clientHeight / slotImg.height)));
+    el.style.backgroundImage = `url(${SLOT_SRC})`;
+    el.style.backgroundSize = `${slotImg.width * k}px ${slotImg.height * k}px`;
+  };
+  (el as Dressed)._paintPlate = paint;
+  el.setAttribute("data-plate", "");
+  slotReady.then(paint);
+  new ResizeObserver(paint).observe(el);
+}

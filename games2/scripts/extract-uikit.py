@@ -13,6 +13,9 @@ Current cuts (extend this script as more elements are adopted):
   Selected, Down"): mid-brown / cream / dark-brown bars, dark outline,
   used for every HUD button (settings toggles: OFF=normal, ON=sel,
   held=down; one-shot buttons: normal + down).
+- kit-slot.png (16x14) the small dark rounded square below the segmented
+  bar (maintainer circled it) — the backpack's empty item slot, displayed
+  at an integer multiple, centred.
 
 Backdrop/panel colours become transparency. These plates are FLAT pixel
 art: they 9-slice losslessly (plate.ts scales corners by an integer factor
@@ -55,6 +58,7 @@ def main():
         ("kit-btn-normal", (784, 568, 882, 596)),
         ("kit-btn-sel", (784, 594, 882, 622)),
         ("kit-btn-down", (784, 622, 882, 648)),
+        ("kit-slot", (958, 160, 994, 192)),
     ):
         b = cut(im, box, {BG})
         b = b.crop(b.getbbox())

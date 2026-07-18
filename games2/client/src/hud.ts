@@ -25,7 +25,7 @@
 
 import { mountFrame2, FrameLayout, HUD_SCALE } from "./frame2";
 import { setClockMount } from "./clock";
-import { dressPlate, repaintPlates } from "./plate";
+import { dressPlate, dressSlot, repaintPlates } from "./plate";
 import { gameAudio } from "../../composer/index";
 
 export interface HudActions {
@@ -208,7 +208,11 @@ export class HudBar {
     // as the concept page. Real inventory comes later.
     const bp = this.pages.get("backpack")!;
     const slots = mk("div", "ml-slots");
-    for (let i = 0; i < 15; i++) slots.appendChild(mk("i", "ml-slot"));
+    for (let i = 0; i < 15; i++) {
+      const sl = mk("i", "ml-slot");
+      dressSlot(sl); // the kit's empty-slot square, integer-scaled + centred
+      slots.appendChild(sl);
+    }
     bp.append(slots);
 
     // Equipment + Map pages: bare stone until their real content lands
@@ -327,18 +331,16 @@ function injectStyles() {
     background-image:url(/ui2/stone.png);background-size:100% auto;
     background-repeat:repeat-y;background-attachment:local;image-rendering:pixelated}
   .ml-page.show{display:flex}
-  /* backpack slots are the round-2 concept's mossy recesses (slot2.png,
-     native 128² in FRAME space) — they ride the frame's scale factor
-     (--ml-fs, published from FrameLayout.scale) so 1 slot px scales exactly
-     like 1 frame px, the same proportion as the concept page. Fixed size,
-     no 9-slice: the art never stretches, only the frame-wide uniform scale
-     applies (nearest-neighbour via image-rendering:pixelated). */
+  /* backpack slots: the kit's empty-slot square (maintainer circled it —
+     kit-slot.png, 16x14 native), painted by dressSlot at the largest whole
+     multiple that fits the box, centred. The box still rides the frame's
+     scale (--ml-fs) so the 5x3 grid keeps the concept page's proportions. */
   .ml-slots{display:grid;grid-template-columns:repeat(5,calc(128px * var(--ml-fs,0.75)));
     grid-template-rows:repeat(3,calc(128px * var(--ml-fs,0.75)));
     justify-content:space-evenly;align-content:space-evenly;width:100%;height:100%}
   .ml-slot{width:calc(128px * var(--ml-fs,0.75));height:calc(128px * var(--ml-fs,0.75));
     image-rendering:pixelated;border:none;box-sizing:border-box;
-    background:url(/ui2/slot2.png) no-repeat;background-size:100% 100%}
+    background-repeat:no-repeat;background-position:center}
   /* settings "menu buttons" also opt into x2 (native) so they stay tappable.
      GRID with equal columns (not flex-wrap): every button is the SAME fixed
      size, so a state label changing on press ("time speed: frozen" -> "x2",
