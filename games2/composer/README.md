@@ -106,8 +106,10 @@ is a whisper.**
 
 - UI clicks: NO take rotation — the approved primary take every press, with
   micro-jitter only (±0.12 semitones, −0.5/+0.3 dB).
-- Footsteps: takes still alternate (a walker's two feet), jitter small
-  (±0.5 semitones, ±1.2 dB, ≤8 ms timing).
+- Footsteps: SAME rule (maintainer approved the raw step too) — the primary
+  stone take every footfall, micro-jitter ±0.2 semitones / −0.7/+0.4 dB, no
+  timing jitter, no run rate-change (faster cadence IS the run signal; run
+  adds only +0.8 dB of weight).
 - Catalog-recommended jitter ranges from `sounds/viewer_data.json` are
   scaled ×0.35 at playback — the composer overrides the producer's ranges.
 - When tuning any future effect: start from imperceptible and increase only
