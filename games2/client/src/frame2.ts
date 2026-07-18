@@ -215,7 +215,7 @@ function splitInsH(insH: number, h0: number): [number, number] {
 // the SAME factor via --ml-hud-scale to shrink the plates in lockstep so
 // they keep filling the (now smaller) windows. 1 = today's look; 0.5 = half.
 // Rollback = set back to 1 (or revert the commit).
-export const HUD_SCALE = 0.5;
+export const HUD_SCALE = 0.75;
 
 function compose() {
   if (!canvas || !frameData || !auxData) return;
