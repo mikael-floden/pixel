@@ -9,7 +9,7 @@ golden-hour mood — prefers **Evening**.
   its world-y, so it drifts behind higher terrain and in front of nearer
   ground, dimmed by night like any physical thing.
 - Hand-pixelled 7×8 leaf (body + a darker midrib that survives the tint),
-  one of five warm autumn tints, 2–3.5× scale. A per-leaf **flutter**
+  one of five warm autumn tints, small (1–1.9× scale). A per-leaf **flutter**
   narrows the sprite edge-on and fills it again, faking a tumbling 3D leaf
   from a flat sprite; a slow roll spins it as it falls.
 - Sparse by design (~5–26 by view area) — leaves drift, they don't

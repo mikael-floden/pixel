@@ -83,7 +83,7 @@ export function leavesFeature(): AmbientFeature {
     lf.spinV = (rnd() - 0.5) * 2.4;
     lf.flutF = 1.5 + rnd() * 2.5;
     lf.t = rnd() * 10;
-    lf.scale = 2 + rnd() * 1.5;
+    lf.scale = 1 + rnd() * 0.9; // small — a leaf, not a dinner plate (maintainer)
     lf.sprite.setTint(TINTS[(Math.floor(rnd() * 1000) % TINTS.length + TINTS.length) % TINTS.length]);
   };
 
