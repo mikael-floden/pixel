@@ -198,6 +198,14 @@ try {
   if (label !== "ambient: leaves") fail(`button click must advance tumbleweed -> leaves (got ${JSON.stringify(label)})`);
   else ok("button click advances the ring (tumbleweed -> leaves)");
 
+  // Leaves must FALL in world-height, LAND, and REST on the ground (not slide
+  // down-screen forever). Give them time for the low ones to touch down.
+  await page.waitForTimeout(9000);
+  const lvd = await dbg("leaves");
+  if (lvd.count < 3) fail(`leaves must be falling (${lvd.count})`);
+  if ((lvd.resting ?? 0) < 1) fail(`some leaves must LAND and rest on the ground (resting ${lvd.resting} of ${lvd.count})`);
+  else ok(`leaves fall + land: ${lvd.falling} falling, ${lvd.resting} resting, ${lvd.fading} fading`);
+
   // AUTO shows the LIVE active effect: at night with nothing pinned,
   // fireflies self-gate on and the label reports "auto (fireflies)".
   await page.evaluate(() => { window.__ml.timeOfDay("night", true); window.__mlAmbient.demo("auto"); });
