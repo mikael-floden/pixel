@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { gameAudio } from "../../composer/index";
 
 /** Precipitation weather (Drizzle / Rain / Heavy rain / Storm / Snowing).
  *
@@ -319,10 +320,14 @@ export class WeatherFX {
         .setRotation(rot);
     }
 
-    // Storm lightning: camera flash, occasionally double-striking.
+    // Storm lightning: camera flash, occasionally double-striking. The
+    // composer's thunder roll fires IN SYNC with the flash (audio hook by
+    // the games-audio agent — these weather flashes are separate from the
+    // ambient thunder episode's, and used to be silent).
     if (cfg.lightning && this.scene.time.now >= this.nextFlash) {
       this.flashes++;
       cam.flash(110, 255, 255, 245);
+      gameAudio.thunder(1);
       if (this.rand() < 0.35) {
         this.scene.time.delayedCall(160, () => cam.flash(70, 255, 255, 245));
       }

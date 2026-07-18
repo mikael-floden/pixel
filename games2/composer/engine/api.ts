@@ -144,6 +144,12 @@ export class GameAudio {
         const s = cat.sounds.get(id);
         if (s) void this.buffers.get(soundUrl(s.file));
       }
+      // Warm the composer's own primary takes too — thunder especially must
+      // not miss its first flash on a fetch+decode.
+      for (const set of ["stone", "ui_tick", "thunder"]) {
+        const urls = composerFoley(set);
+        if (urls) void this.buffers.get(urls[0]);
+      }
       if (this.musicWanted) void this.music.start(cat.music);
     });
 
@@ -209,23 +215,17 @@ export class GameAudio {
     if (sound) this.oneShots.play(sound, bus, opts);
   }
 
-  /** Distant thunder to accompany a lightning flash, arriving 0.8-2.3s
-   * after the light (the storm is beyond the horizon — the delay is
-   * physics, not sound modification). GENTLENESS: the primary real roll
-   * (take01) every strike, micro pitch jitter only, near-center pan, and
-   * a small strength-driven level range (−7…−4 dB into the sfx bus). */
+  /** Thunder roll, IN SYNC with the lightning flash (maintainer 2026-07-18:
+   * "I want it in sync with the flashes" — the earlier 0.8-2.3s realism
+   * delay read as silence). GENTLENESS: the primary real roll (take01)
+   * every strike, micro pitch jitter, near-center pan, level with real
+   * presence (the roll's low end barely reproduces on small speakers). */
   thunder(strength = 1): void {
     if (!this.ready()) return;
     const own = composerFoley("thunder");
     if (own) {
-      // Level, not processing: at the old −7..−4 dB the roll sat ~3 dB over
-      // the ambience beds — and thunder's 30-150 Hz energy barely exists on
-      // phone/laptop speakers, so it vanished entirely (maintainer: "I see
-      // flashes but hear nothing"). ~10 dB up gives it real presence while
-      // peaks stay well under the limiter.
       this.oneShots.play(this.foleyEntry("thunder", own, "click"), "sfx", {
         gainDb: 6 * Math.min(1, strength),
-        delayS: 0.8 + Math.random() * 1.5,
         pan: (Math.random() - 0.5) * 0.16,
       });
       return;
