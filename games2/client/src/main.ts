@@ -75,7 +75,7 @@ function showVersion() {
   const sha = (import.meta.env.VITE_GIT_SHA as string | undefined) || "dev";
   console.log(`[nangijala] build ${sha}`);
   const el = document.createElement("div");
-  el.textContent = sha.slice(0, 8); // 8 chars — matches the short hashes used in dev chat
+  el.textContent = sha.slice(0, 9); // 9 chars — matches git's abbreviated hash (what's written in dev chat)
   // ONE fixed spot on ALL screens (maintainer 2026-07-18 red mark): centred
   // at the very bottom of the page, over the frame's bottom rail — never
   // lifted above the HUD, never part of any screen fade (the badge lives on
@@ -110,12 +110,12 @@ function showUpdateBanner(sha: string) {
   if (updateBannerShown) return;
   updateBannerShown = true;
   const el = document.createElement("div");
-  // 8 hash chars — the SAME short form as the version badge and the dev
-  // chat, so the two are comparable at a glance (maintainer 2026-07-18:
-  // one less than the old 9 so it matches the chat checksum).
+  // 9 hash chars — the SAME short form as the version badge and git's own
+  // abbreviated hash (what's referenced in dev chat), so the two are
+  // comparable at a glance.
   // Wording is maintainer-fixed: JUST "New version out <hash>" — no arrow,
   // no "tap to reload" (2026-07-17). Tapping still reloads.
-  el.textContent = `New version out ${sha.slice(0, 8)}`;
+  el.textContent = `New version out ${sha.slice(0, 9)}`;
   // Non-selectable on purpose (belt and braces with the global rule): a long
   // press used to text-select the hash and pop Chrome's search sheet mid-game.
   // Sizing has bounced twice (maintainer: first "super small and hard to
