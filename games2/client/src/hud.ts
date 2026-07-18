@@ -313,12 +313,21 @@ function injectStyles() {
     justify-content:space-evenly;align-content:space-evenly;width:100%;height:100%}
   .ml-slot{width:var(--ml-tab);height:var(--ml-tab);image-rendering:pixelated;border-style:solid;border-width:var(--ml-sbw);
     border-image:url(/ui2/slot.png) 10 fill / var(--ml-sbw);box-sizing:border-box}
-  /* settings "menu buttons" also opt into x2 (native) so they stay tappable */
+  /* settings "menu buttons" also opt into x2 (native) so they stay tappable.
+     GRID with equal columns (not flex-wrap): every button is the SAME fixed
+     size, so a state label changing on press ("time speed: frozen" -> "x2",
+     "weather: clear sky" -> "cloudy at times") can't resize a button and
+     reflow the row — the buttons no longer move around (maintainer). The
+     column is wide enough for the longest possible label so it never wraps. */
   .ml-btnrow{--ml-hud-scale:var(--ml-hud-scale-2x);
-    display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:100%}
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(18rem,1fr));
+    gap:12px;justify-content:center;align-items:stretch;width:100%;max-width:820px;margin:0 auto}
   /* settings buttons must never be SHORTER than the menu tabs / backpack
-     slots (maintainer) — same --ml-tab height, width still fits the label */
-  .ml-plate-btn{padding:10px 20px;min-height:var(--ml-tab);box-sizing:border-box;
+     slots (maintainer) — same --ml-tab height, width fills the grid cell,
+     label centred and single-line so it never changes the button size */
+  .ml-plate-btn{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    display:flex;align-items:center;justify-content:center;
+    padding:10px 20px;min-height:var(--ml-tab);box-sizing:border-box;
     cursor:pointer;image-rendering:pixelated;background:none;touch-action:manipulation;
     border-style:solid;border-width:var(--ml-bw);border-image:url(/ui2/plate-normal.png) 56 fill / var(--ml-bw);
     font:700 14px system-ui,sans-serif;letter-spacing:.4px;text-transform:uppercase;color:#e8e8ec;
