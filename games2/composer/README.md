@@ -37,6 +37,19 @@ decides what sounds.
 | footstep ice (pitched stone) | okey-ish, not great | composer generates a real ice set |
 | footstep wood | unrated | regenerated alongside the rest |
 | UI buttons (menu_select/confirm/cancel) | **"sound like a piano, not like buttons"** (2026-07-18) | composer generates tactile mechanical clicks (foley/ui_tick, ui_confirm, ui_cancel) — wooden-button thocks matching the carved HUD, explicitly non-musical |
+| thunder | **"doesn't sound like thunder"** (2026-07-18) | verdict: the COMPOSER's fault, not an asset — there was no thunder asset, so the composer disguised `explosion` (0.4× rate + lowpass) and the disguise reads as mush. Fix: real generated `foley/thunder` set (6 s natural rolls), preferred automatically; the disguise stays only as fallback |
+
+### ENFORCE UNMODIFIED AUDIO (Settings switch)
+
+The maintainer's A/B test switch (requested 2026-07-18, exactly for cases
+like the thunder): when ON, every one-shot plays the **raw file** — no
+pitch/gain/start jitter, no scale-snap, no rate changes, no lowpass, no
+pan/distance attenuation, no delays or beat-quantize, no ducking, no night
+dip/mode scaling, no underwater insert. Kept: which sound plays for which
+event, static level balance (bus fader + per-sound mix gain), ambience
+looping/bed selection. So: sounds bad with the switch ON → the asset is bad
+(producer/generation problem); sounds fine ON but bad OFF → the composer's
+processing is at fault. Persisted; probe: `__ml.audio().pure`.
 
 ## Architecture (WebAudio, zero dependencies)
 

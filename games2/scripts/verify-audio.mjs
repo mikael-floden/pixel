@@ -60,6 +60,14 @@ try {
   await page.waitForFunction(() => window.__ml.audio().played >= 1, { timeout: 8000 });
   console.log("One-shot OK (ui.confirm played)");
 
+  // ---- 3b. ENFORCE UNMODIFIED AUDIO: engages, still plays, disengages ----
+  if (!(await page.evaluate(() => window.__ml.audioPure()))) fail("pure toggle didn't engage");
+  const pureBefore = await page.evaluate(() => window.__ml.audio().played);
+  await page.evaluate(() => window.__ml.audioEvent("ui.confirm"));
+  await page.waitForFunction((n) => window.__ml.audio().played > n, pureBefore, { timeout: 8000 });
+  if (await page.evaluate(() => window.__ml.audioPure())) fail("pure toggle didn't disengage");
+  console.log("Pure-audio toggle OK (raw playback path works, switch round-trips)");
+
   // ---- 4. Footsteps: run somewhere, the gait tracker must emit steps ----
   const before = await page.evaluate(() => window.__ml.audio().played);
   await page.evaluate(() => {

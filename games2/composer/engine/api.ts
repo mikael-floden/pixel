@@ -96,18 +96,22 @@ export class GameAudio {
     hushed: 0.25,
   };
 
-  // User settings (persisted): master sound + music independently.
+  // User settings (persisted): master sound + music independently, plus the
+  // maintainer's ENFORCE UNMODIFIED AUDIO testing switch (pure).
   private soundOn = true;
   private musicOn = true;
+  private pureOn = false;
 
   constructor() {
     try {
       const s = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}") as {
         sound?: boolean;
         music?: boolean;
+        pure?: boolean;
       };
       this.soundOn = s.sound !== false;
       this.musicOn = s.music !== false;
+      this.pureOn = s.pure === true;
     } catch {}
   }
 
@@ -124,6 +128,7 @@ export class GameAudio {
     this.buffers = new BufferCache(this.graph.ctx);
     this.music = new MusicDirector(this.graph, this.buffers);
     this.oneShots = new OneShotPlayer(this.graph, this.buffers, this.music);
+    this.oneShots.pure = this.pureOn;
     this.applyMasterGain();
 
     void loadCatalog().then((cat) => {
@@ -196,17 +201,28 @@ export class GameAudio {
     if (sound) this.oneShots.play(sound, bus, opts);
   }
 
-  /** Distant thunder to accompany a lightning flash: the explosion take
-   * slowed to a rumble, muffled, arriving 1-2.5s after the light (the
-   * storm is beyond the horizon). */
+  /** Distant thunder to accompany a lightning flash, arriving 0.8-2.3s
+   * after the light (the storm is beyond the horizon). Prefers the
+   * composer's REAL generated thunder set (foley/thunder — maintainer QA:
+   * the disguised explosion "doesn't sound like thunder"); until it's
+   * generated, the fallback is the explosion take slowed + muffled. */
   thunder(strength = 1): void {
     if (!this.ready()) return;
+    const own = composerFoley("thunder");
+    if (own) {
+      this.oneShots.play(this.foleyEntry("thunder", own, "click"), "sfx", {
+        gainDb: -8 + 5 * Math.min(1, strength),
+        delayS: 0.8 + Math.random() * 1.5,
+        pan: (Math.random() - 0.5) * 0.6,
+      });
+      return;
+    }
     const sound = this.catalog!.sounds.get("explosion");
     if (!sound) return;
-    this.oneShots.play(sound, "ambience", {
+    this.oneShots.play(sound, "sfx", {
       rate: 0.38 + Math.random() * 0.14,
       lowpassHz: 300 + Math.random() * 200,
-      gainDb: 14 + 6 * Math.min(1, strength), // beds run quiet; a rumble must not
+      gainDb: 2 + 5 * Math.min(1, strength),
       delayS: 1.0 + Math.random() * 1.5,
       pan: (Math.random() - 0.5) * 0.8,
     });
@@ -344,10 +360,12 @@ export class GameAudio {
   }
 
   /** Underwater: ease the full-mix lowpass down while the player swims —
-   * the whole world (music, birds, other players' steps) muffles together. */
+   * the whole world (music, birds, other players' steps) muffles together.
+   * Suppressed entirely in pure mode (the insert IS a modification). */
   setUnderwater(on: boolean): void {
     if (on === this.underwater || !this.graph) return;
     this.underwater = on;
+    if (this.pureOn) return;
     this.graph.setInsertCutoff(on ? 900 : 20000, on ? 0.15 : 0.35);
   }
 
@@ -378,12 +396,15 @@ export class GameAudio {
     });
 
     // The score dips into the night — Nangijala's nights belong to the
-    // crickets and the fires; music returns with the light.
+    // crickets and the fires; music returns with the light. Pure mode
+    // freezes ALL level automation at unity (the score plays as authored).
     const modeMul = GameAudio.MODE_MUSIC[this.mode] ?? 1;
-    this.music.setLevel(this.musicOn ? (0.45 + 0.55 * sun) * modeMul : 0);
+    const level = this.pureOn ? 1 : (0.45 + 0.55 * sun) * modeMul;
+    this.music.setLevel(this.musicOn ? level : 0);
   }
 
   private duck(): void {
+    if (this.pureOn) return; // ducking is level automation — frozen in pure mode
     const d = this.catalog?.bindings.ducking;
     this.graph?.duckMusic(d?.music_duck_db ?? -5, d?.release_ms ?? 300);
   }
@@ -395,6 +416,27 @@ export class GameAudio {
   }
   get musicEnabled(): boolean {
     return this.musicOn;
+  }
+  get pureEnabled(): boolean {
+    return this.pureOn;
+  }
+
+  /** ENFORCE UNMODIFIED AUDIO — the maintainer's A/B switch: raw files
+   * only, so a bad sound can be pinned on the asset OR on the composer's
+   * processing. Bypasses: pitch/gain/start jitter, scale-snap, rate
+   * changes, lowpass, pan, distance attenuation, delays/beat-quantize,
+   * ducking, night dip, mode scaling, the underwater insert. Keeps: which
+   * sound plays, static level balance (bus + per-sound mix gain), looping. */
+  togglePure(): void {
+    this.pureOn = !this.pureOn;
+    if (this.graph) {
+      this.oneShots.pure = this.pureOn;
+      // Pure opens the full-mix insert; leaving pure re-applies underwater.
+      this.graph.setInsertCutoff(this.pureOn || !this.underwater ? 20000 : 900, 0.1);
+      this.graph.duckMusic(0, 100); // release any in-flight duck
+      this.slowTick(); // re-settle the music level immediately
+    }
+    this.persist();
   }
 
   toggleSound(): void {
@@ -420,7 +462,10 @@ export class GameAudio {
 
   private persist(): void {
     try {
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify({ sound: this.soundOn, music: this.musicOn }));
+      localStorage.setItem(
+        SETTINGS_KEY,
+        JSON.stringify({ sound: this.soundOn, music: this.musicOn, pure: this.pureOn }),
+      );
     } catch {}
   }
 
@@ -437,6 +482,7 @@ export class GameAudio {
       played: this.graph ? this.oneShots.played : 0,
       sound: this.soundOn,
       musicOn: this.musicOn,
+      pure: this.pureOn,
       foley: composerFoleySurfaces(),
       mode: this.mode,
       underwater: this.underwater,

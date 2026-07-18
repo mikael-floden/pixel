@@ -44,6 +44,13 @@ export class OneShotPlayer {
   private lastTake = new Map<string, number>();
   private lastPlayedAt = new Map<string, number>();
   played = 0;
+  /** ENFORCE UNMODIFIED AUDIO (maintainer testing switch): when true every
+   * one-shot plays the raw file — no pitch/gain/start jitter, no scale-snap,
+   * no rate change, no lowpass, no pan, no distance attenuation, no delay.
+   * Only static level balance survives (per-sound mix gain + bus fader), so
+   * the maintainer can hear the ASSET itself and judge whether a bad sound
+   * is the audio or the composer's processing. */
+  pure = false;
 
   constructor(
     private graph: AudioGraph,
@@ -86,6 +93,21 @@ export class OneShotPlayer {
 
   private start(sound: SoundEntry, bus: BusName, buf: AudioBuffer, opts: PlayOpts): void {
     const ctx = this.graph.ctx;
+
+    if (this.pure) {
+      // Raw playback: source → static gain → bus. Nothing else touches it.
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      const g = ctx.createGain();
+      g.gain.value = dbToGain((sound.mix_gain_db ?? 0) + (opts.gainDb ?? 0));
+      src.connect(g);
+      g.connect(this.graph.bus(bus));
+      src.start();
+      src.onended = () => g.disconnect();
+      this.played++;
+      return;
+    }
+
     const v = sound.variation;
 
     // ---- pitch: scale-snap (tonal) or random jitter (foley) ----

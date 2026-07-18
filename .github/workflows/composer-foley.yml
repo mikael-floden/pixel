@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       surfaces:
-        description: "Space-separated sets (empty = all: grass sand snow stone ice wood dirt swamp ui_tick ui_confirm ui_cancel)"
+        description: "Space-separated sets (empty = all: grass sand snow stone ice wood dirt swamp thunder ui_tick ui_confirm ui_cancel)"
         default: ""
 
 permissions:

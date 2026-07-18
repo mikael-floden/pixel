@@ -63,6 +63,7 @@ export interface MusicTrackRef {
   bpm?: number;
   key?: { root: string; mode: string };
   loopable?: boolean;
+  use?: string; // the musician's intent prose ("Main overworld background bed…")
   metadata: string; // path to the track's metadata.json under music/
 }
 

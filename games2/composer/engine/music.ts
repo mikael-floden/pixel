@@ -48,9 +48,20 @@ export class MusicDirector implements MusicalContext {
   }
 
   /** Load + start the default background track (lazy — the score is a few
-   * MB of WAV, so it streams in after the world is already playable). */
+   * MB of WAV, so it streams in after the world is already playable).
+   * The catalog now carries REGION themes too (canyon etc.) — the default
+   * bed is the track the musician marked as the main/overworld one, never
+   * just whichever sorts first. */
   async start(tracks: MusicTrackRef[]): Promise<void> {
-    const track = tracks.find((t) => t.loopable) ?? tracks[0];
+    const score = (t: MusicTrackRef): number => {
+      const use = (t.use ?? "").toLowerCase();
+      let s = 0;
+      if (/\b(main|default)\b/.test(use)) s += 4;
+      if (use.includes("overworld") || use.includes("background bed")) s += 2;
+      if (t.loopable) s += 1;
+      return s;
+    };
+    const track = [...tracks].sort((a, b) => score(b) - score(a))[0];
     if (!track || this.track) return;
     this.track = track;
     this.meta = await loadMusicMetadata(track);

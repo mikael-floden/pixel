@@ -138,6 +138,23 @@ SETS: dict[str, dict] = {
         "duration_s": 0.8,
         "variants": GAIT_VARIANTS,
     },
+    # ---- world/weather (real sources, not disguises: the maintainer heard
+    # straight through the slowed-explosion "thunder") ----
+    "thunder": {
+        "brief": (
+            "distant rolling thunder from a storm beyond the horizon: a deep "
+            "natural low-frequency rumble rolling and echoing across a wide "
+            "open valley sky, real outdoor storm recording, no rain, no wind"
+        ),
+        "duration_s": 6.0,
+        "takes": 4,
+        "variants": [
+            "one long slow roll fading out",
+            "a double rumble with a late soft tail",
+            "slightly closer, a low crack then a long roll",
+            "very far away, soft and very deep",
+        ],
+    },
     # ---- UI buttons (the game's HUD is chunky carved wood + stone plates;
     # the clicks are physical mechanisms, NEVER notes) ----
     "ui_tick": {
@@ -256,13 +273,14 @@ def main() -> int:
         out_dir.mkdir(parents=True, exist_ok=True)
         takes = []
         variants = spec["variants"]
-        for i in range(TAKES):
+        n_takes = spec.get("takes", TAKES)
+        for i in range(n_takes):
             prompt = f"{spec['brief']}, {variants[i % len(variants)]}. {STYLE}"
             x = _master(_generate(session, prompt, spec["duration_s"]))
             path = out_dir / f"{name}__take{i + 1:02d}.wav"
             dur = _write_wav(x, path)
             takes.append({"file": f"{name}/{path.name}", "duration_seconds": dur})
-            print(f"{name} take {i + 1}/{TAKES}: {dur}s")
+            print(f"{name} take {i + 1}/{n_takes}: {dur}s")
             time.sleep(0.5)  # be polite to the API
         manifest[name] = {
             "takes": [t["file"] for t in takes],
