@@ -25,7 +25,8 @@
 
 import { mountFrame2, FrameLayout, HUD_SCALE } from "./frame2";
 import { setClockMount } from "./clock";
-import { dressPlate, dressSlot, repaintPlates } from "./plate";
+import { dressPlate, dressSlot, readyPlates, repaintPlates } from "./plate";
+import { holdLoading } from "./loading";
 import { gameAudio } from "../../composer/index";
 
 export interface HudActions {
@@ -61,8 +62,16 @@ type TabId = (typeof TABS)[number]["id"];
 export function mountPageFrame() {
   injectStyles();
   document.getElementById("ml-pageframe")?.remove(); // old overlay, if any
+  // first-render gates for the loading fade: the black must not lift until
+  // the frame has actually composed (its art comes over the network on a
+  // fresh deploy) and the kit plate art is in (tabs/buttons/slots)
+  let composed: (() => void) | null = null;
+  holdLoading(new Promise<void>((r) => (composed = r)));
+  holdLoading(readyPlates());
   mountFrame2((l) => {
     lastLayout = l;
+    composed?.();
+    composed = null;
     applyFrameLayout();
   });
 }

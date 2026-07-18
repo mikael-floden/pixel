@@ -29,6 +29,17 @@ let bar: HTMLElement | null = null;
 let failsafe: ReturnType<typeof setTimeout> | null = null;
 let hiding = false;
 
+// First-render gates: the black fade-out additionally waits for these
+// (the composed page frame, the kit plate art, …). On a FRESH DEPLOY those
+// assets come over the network and used to lose the race against the
+// frame counter — the black lifted onto a half-drawn border (maintainer:
+// "feels buggy/laggy"). Capped in hideLoading so a stuck promise can
+// never trap the player behind the black.
+const holds: Promise<unknown>[] = [];
+export function holdLoading(p: Promise<unknown>) {
+  holds.push(p);
+}
+
 // The LOADING banner's interior within logo-load.png (percent of image box).
 const FILL_RECT = { left: 33.82, top: 87.26, width: 28.87, height: 3.62 };
 
@@ -121,7 +132,11 @@ export function hideLoading(instant = false) {
     if (frames >= 6 && performance.now() - start >= 700) fadeOut();
     else requestAnimationFrame(tick);
   };
-  requestAnimationFrame(tick);
+  // start counting frames only once every registered first-render gate has
+  // settled (5s cap — the black must never trap the player)
+  Promise.race([Promise.allSettled(holds), new Promise((r) => setTimeout(r, 5000))]).then(() =>
+    requestAnimationFrame(tick),
+  );
 }
 
 function teardown() {
