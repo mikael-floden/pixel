@@ -98,20 +98,18 @@ SETS: dict[str, dict] = {
     # shipped take had a crest of 18, a sharp metallic spike). Sand is a SOFT
     # granular crunch, no hard tap: the 'grain' judge caps crest (rejects
     # the metallic spike) and the brief bans every metal/click cue.
-    # ROUND 3 (maintainer: round-2 grain sand is 'better, not metal, but still
-    # not sand'). Hypothesis: a footstep on sand is NOT a crisp impact — it's
-    # a soft SCUFF with a granular slide/hiss as grains shift. Earlier rounds
-    # (and the max_ms tightener) forced a tight crunch and chopped the very
-    # sandiness. This one: soft scuff framing, longer, NO tightening (keep the
-    # grain-slide tail); grain judge still rejects metallic spikes.
+    # ROUND 4 (maintainer insight): NEGATIVE prompts backfire — repeating
+    # "no metal, no crunch, no click" makes the model weight those very words
+    # (like "don't draw a blue jacket" → blue jacket). PURELY POSITIVE and
+    # SHORT now: describe only what sand is. Also a short positive `style`
+    # override (the global STYLE carries its own negatives). Grain judge (a
+    # SELECTION safeguard, prompt-independent) still gates metallic spikes.
     "sand": {
-        "brief": (
-            "one soft footstep scuffing into loose dry sand, fine grains "
-            "hissing and sliding as the foot settles, a gentle sandy shuffle, "
-            "soft and grainy, no crunch, no metal, no click, one step"
-        ),
-        "duration_s": 0.7,
+        "brief": "a single soft footstep in fine dry sand, a gentle grainy shuffle of loose grains",
+        "style": "clean close-miked foley, natural, one isolated sound",
+        "duration_s": 0.6,
         "variants": GAIT_VARIANTS,
+        "max_ms": 700,
         "judge": "grain",
         "pool": 12,
     },
@@ -586,7 +584,10 @@ def main() -> int:
             ref_profile = _load_ref_profile(spec["ref"]) if "ref" in spec else None
             cands: list[tuple[bool, float, np.ndarray, dict]] = []
             for i in range(pool_n):
-                prompt = f"{spec['brief']}, {variants[i % len(variants)]}. {STYLE}"
+                # A set may override the shared STYLE with its own (positive,
+                # per the maintainer's negative-prompt-backfire insight).
+                style = spec.get("style", STYLE)
+                prompt = f"{spec['brief']}, {variants[i % len(variants)]}. {style}"
                 if len(prompt) > MAX_PROMPT_CHARS:
                     # The API rejects >450 chars (text_too_long). Drop the
                     # shared STYLE suffix — the brief carries the intent.
