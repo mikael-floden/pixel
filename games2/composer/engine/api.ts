@@ -55,12 +55,13 @@ export interface FieldSample {
 const WALK_STEP_WU = 25;
 const RUN_STEP_WU = 38;
 
-// MAINTAINER DIRECTIVE 2026-07-18: ONE footstep for every dry surface —
-// the approved STONE set (the black_mountain verdict), regardless of tile
-// type. Water stays different (splash + swim states, no dry footfall).
-// The per-surface sets stay generated/bundled for a future opt-in, but
-// playback routes everything to stone until something else earns approval.
-const FOOTSTEP_SET = "stone";
+// Footstep routing (maintainer directives 2026-07-18): the approved STONE
+// set is the default for every dry surface; per-surface sets are enabled
+// ONE AT A TIME with explicit approval. Snow re-enabled for trial ("let's
+// try the snow version") — same gentleness as stone: primary take every
+// step, micro-jitter only. Water stays splash/swim, no dry footfall.
+const FOOTSTEP_SETS: Record<string, string> = { snow: "snow" };
+const FOOTSTEP_DEFAULT = "stone";
 
 const SETTINGS_KEY = "ml-audio";
 
@@ -146,7 +147,7 @@ export class GameAudio {
       }
       // Warm the composer's own primary takes too — thunder especially must
       // not miss its first flash on a fetch+decode.
-      for (const set of ["stone", "ui_tick", "ui_cancel", "thunder"]) {
+      for (const set of ["stone", "snow", "ui_tick", "ui_cancel", "thunder"]) {
         const urls = composerFoley(set);
         if (urls) void this.buffers.get(urls[0]);
       }
@@ -285,13 +286,13 @@ export class GameAudio {
 
     // Water/void/unknown surfaces: no dry footfall (splash/swim handle water).
     if (!f.surface || f.surface === "water") return;
-    // Every dry surface plays the ONE approved set (see FOOTSTEP_SET).
-    const own = composerFoley(FOOTSTEP_SET);
+    const setName = FOOTSTEP_SETS[f.surface] ?? FOOTSTEP_DEFAULT;
+    const own = composerFoley(setName) ?? composerFoley(FOOTSTEP_DEFAULT);
     if (own) {
       // Gentleness: no rate change for running — the faster CADENCE is the
       // run signal; the footfall itself stays the approved sound (+0.8 dB
       // of weight only). Pan/dist only ever apply to OTHER players.
-      this.oneShots.play(this.foleyEntry(FOOTSTEP_SET, own, "step"), "sfx", {
+      this.oneShots.play(this.foleyEntry(setName, own, "step"), "sfx", {
         pan: f.pan,
         dist: f.dist,
         gainDb: -8 + (f.running ? 0.8 : 0),
