@@ -346,11 +346,13 @@ function injectStyles() {
      line up. */
   .ml-panel{width:min(920px,100%);max-height:100%;overflow:auto;padding:16px 8px 12px;text-align:center;
     display:flex;flex-direction:column;align-items:center;gap:20px}
-  /* 2x logo (maintainer), with a soft BLACK GLOW hugging the silhouette:
-     drop-shadow follows the png alpha, two soft layers fading 0 -> ~0.5
-     black max (maintainer: "fade from BG to black more gentle, max 50%") */
+  /* 2x logo (maintainer), with a BLACK GLOW hugging the silhouette:
+     drop-shadow follows the png alpha. Strengthened twice on request
+     ("can't see the glow", then "more dark/black, bigger glow") — four
+     stacked layers: a dense core plus a wide soft halo. */
   .ml-logo{display:block;width:min(840px,96%);margin:0 auto;user-select:none;-webkit-user-drag:none;
-    filter:drop-shadow(0 0 6px rgba(0,0,0,.5)) drop-shadow(0 0 16px rgba(0,0,0,.5)) drop-shadow(0 0 36px rgba(0,0,0,.4))}
+    filter:drop-shadow(0 0 10px rgba(0,0,0,.65)) drop-shadow(0 0 28px rgba(0,0,0,.6))
+      drop-shadow(0 0 64px rgba(0,0,0,.55)) drop-shadow(0 0 110px rgba(0,0,0,.45))}
   /* UI-KIT plates (plate.ts dressPlate): Normal / cream Selected / dark
      Down — same trio and block scale as the HUD. */
   .ml-plated{border:none;background:none;background-repeat:no-repeat;background-size:100% 100%;
