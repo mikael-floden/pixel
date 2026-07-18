@@ -1,25 +1,29 @@
 /**
  * Runtime-composed button plates — the SAME philosophy as the page frame
- * (frame2.ts) and exactly what the maintainer asked for: "cut the button in
- * half and use texture from the button to fill it out" + "always use nearest
- * neighbour".
+ * (frame2.ts): a 9-slice that draws the decorated corners once and extrudes a
+ * single plain column/row for the straight runs, so wide buttons never smear
+ * the wood grain / inner engraved line the way a stretched border-image did.
  *
- * CRUCIAL: the plate PNG is NOT full-bleed — the 224² canvas holds the plate
- * floating inside a wide transparent margin (real art at x≈26..197, y≈20..207;
- * TRIM below). Composing the raw 224² quarters floated the rounded corner in
- * the MIDDLE of the button edge with the page gap bleeding through and the
- * outline breaking apart (maintainer marked exactly those corners in red).
- * So we work in the TIGHT plate rect: cut IT down the middle, seat the four
- * corner blocks flush against the canvas edges, and extrude the single plain
- * column/row at the cut across the inserted gap. The black outline now runs
- * straight to the button's real corners — the crisp continuous 1px border the
- * maintainer marked in blue on the frame rail.
+ * Two things the maintainer's zoom-ins nailed:
  *
- * Composed at 2× the CSS box (DS=2), then the button's
- * `background-size:100% 100%` shows it at ÷2 — a CLEAN integer nearest-
- * neighbour step (image-rendering:pixelated). That puts the plate at 0.5×
- * native, the same scale as the middle-menu tab plates, so the ~2px outline
- * reads as a ~1px CSS border. imageSmoothingEnabled stays off throughout.
+ * 1) The plate PNG is NOT full-bleed — the 224² canvas floats the plate in a
+ *    wide transparent margin (real art at x≈26..197, y≈20..207; TRIM below).
+ *    So we slice from the TIGHT rect and seat the corner blocks FLUSH to the
+ *    button edges; the outline runs straight into the button's real corners
+ *    (an earlier version floated the rounded corner mid-edge with the page gap
+ *    bleeding through — the corners he marked in red).
+ *
+ * 2) Render at 1× NATIVE, not shrunk. Composing at 2× and showing at ÷2 put
+ *    the plate at 0.5× native, which collapsed its ~3px outline to a thin ~1px
+ *    line — the "ugly 1px black border" he marked in blue. The tab plates read
+ *    as a chunky beveled border because they're at ~1× native; matching that
+ *    means drawing the corners 1:1 into a CSS-sized canvas (the browser's
+ *    devicePixelRatio upscale is nearest-neighbour via image-rendering:
+ *    pixelated, exactly as the tabs upscale). A literal half-cut can't do this
+ *    — its 93px half-corners won't fit a 150px button at 1× — so the corner is
+ *    a fixed CS slice and the plain middle is extruded from the plate centre.
+ *
+ * imageSmoothingEnabled stays off throughout — nearest-neighbour, always.
  */
 
 export type PlateKind = "normal" | "pressed" | "selected";
@@ -41,9 +45,10 @@ const TRIM: Record<PlateKind, [number, number, number, number]> = {
   selected: [26, 20, 197, 207],
 };
 
-const DS = 2; // display downscale: compose at NATIVE res then show at ÷2, a
-// CLEAN integer (nearest-neighbour) step. Non-integer scales (the old 0.46×
-// corner) jaggy the outline + 1px engraved line.
+// Corner slice (native px) taken from each tight edge — big enough to hold the
+// rounded corner, the outline+bevel AND the inner engraved-line corner, small
+// enough that two stack inside a 150px button at 1× native.
+const CS = 54;
 
 const imgs: Partial<Record<PlateKind, HTMLImageElement>> = {};
 const cache = new Map<string, string>();
@@ -70,53 +75,46 @@ export function readyPlates(): Promise<void> {
   return readyP;
 }
 
-/** A data-URL plate composed at NATIVE plate resolution (×DS the CSS box) so
- * the button's `background-size:100% 100%` shows it at a clean integer ÷DS.
- * null until the art has loaded — callers re-run after readyPlates(). */
+/** A data-URL plate composed at 1× NATIVE into a CSS-sized canvas (shown 1:1
+ * via background-size:100% 100%; the DPR upscale is nearest-neighbour). null
+ * until the art has loaded — callers re-run after readyPlates(). */
 export function plateUrl(kind: PlateKind, w: number, h: number): string | null {
   const img = imgs[kind];
   if (!img) return null;
   const [tl, tt, tr, tb] = TRIM[kind];
-  const pw = tr - tl; // tight plate width  (source px)
-  const ph = tb - tt; // tight plate height (source px)
-  const hx = tl + (pw >> 1); // cut column: the plate's own centre
-  const hy = tt + (ph >> 1); // cut row
-  const lw = hx - tl; // left / right half widths (sum = pw)
-  const rw = tr - hx;
-  const th = hy - tt; // top / bottom half heights (sum = ph)
-  const bh = tb - hy;
-  // Never smaller than the tight plate at ÷DS, so the two halves can't overlap.
-  w = Math.max(pw / DS, Math.round(w));
-  h = Math.max(ph / DS, Math.round(h));
-  const cw = w * DS;
-  const ch = h * DS;
-  const mw = cw - pw; // inserted middle width  (extruded plain span)
-  const mh = ch - ph; // inserted middle height
+  const mx = tl + ((tr - tl) >> 1); // plate centre — the plain extrude source
+  const my = tt + ((tb - tt) >> 1);
+  w = Math.max(2 * CS, Math.round(w)); // room for two corners side by side
+  h = Math.max(2 * CS, Math.round(h));
+  const csx = Math.min(CS, w >> 1); // corner slice, clamped on tiny boxes
+  const csy = Math.min(CS, h >> 1);
+  const mw = w - 2 * csx; // extruded plain span between the corners
+  const mh = h - 2 * csy;
   const key = `${kind}:${w}x${h}`;
   const hit = cache.get(key);
   if (hit) return hit;
   const cv = document.createElement("canvas");
-  cv.width = cw;
-  cv.height = ch;
+  cv.width = w;
+  cv.height = h;
   const g = cv.getContext("2d")!;
   g.imageSmoothingEnabled = false; // nearest-neighbour, always
-  // Four TIGHT corner blocks, drawn 1:1 flush to the canvas corners — outline,
-  // gold bevel, rounded corner AND the inner engraved-line corner, no scale.
-  g.drawImage(img, tl, tt, lw, th, 0, 0, lw, th); // TL
-  g.drawImage(img, hx, tt, rw, th, cw - rw, 0, rw, th); // TR
-  g.drawImage(img, tl, hy, lw, bh, 0, ch - bh, lw, bh); // BL
-  g.drawImage(img, hx, hy, rw, bh, cw - rw, ch - bh, rw, bh); // BR
-  // Extrude the single plain column/row at the cut across the inserted gap —
+  // Four corner blocks, drawn 1:1 flush to the canvas corners — outline, gold
+  // bevel, rounded corner AND the inner engraved-line corner, at full scale.
+  g.drawImage(img, tl, tt, csx, csy, 0, 0, csx, csy); // TL
+  g.drawImage(img, tr - csx, tt, csx, csy, w - csx, 0, csx, csy); // TR
+  g.drawImage(img, tl, tb - csy, csx, csy, 0, h - csy, csx, csy); // BL
+  g.drawImage(img, tr - csx, tb - csy, csx, csy, w - csx, h - csy, csx, csy); // BR
+  // Extrude the single plain column/row at the plate centre across the gap —
   // a seamless texture stretch (the outline runs straight through), no smear.
   if (mw > 0) {
-    g.drawImage(img, hx, tt, 1, th, lw, 0, mw, th); // top edge
-    g.drawImage(img, hx, hy, 1, bh, lw, ch - bh, mw, bh); // bottom edge
+    g.drawImage(img, mx, tt, 1, csy, csx, 0, mw, csy); // top edge
+    g.drawImage(img, mx, tb - csy, 1, csy, csx, h - csy, mw, csy); // bottom edge
   }
   if (mh > 0) {
-    g.drawImage(img, tl, hy, lw, 1, 0, th, lw, mh); // left edge
-    g.drawImage(img, hx, hy, rw, 1, cw - rw, th, rw, mh); // right edge
+    g.drawImage(img, tl, my, csx, 1, 0, csy, csx, mh); // left edge
+    g.drawImage(img, tr - csx, my, csx, 1, w - csx, csy, csx, mh); // right edge
   }
-  if (mw > 0 && mh > 0) g.drawImage(img, hx, hy, 1, 1, lw, th, mw, mh); // centre
+  if (mw > 0 && mh > 0) g.drawImage(img, mx, my, 1, 1, csx, csy, mw, mh); // centre
   const url = cv.toDataURL();
   cache.set(key, url);
   return url;
