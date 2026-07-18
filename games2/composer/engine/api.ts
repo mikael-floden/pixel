@@ -418,8 +418,10 @@ export class GameAudio {
    * only, so a bad sound can be pinned on the asset OR on the composer's
    * processing. Bypasses: pitch/gain/start jitter, scale-snap, rate
    * changes, lowpass, pan, distance attenuation, delays/beat-quantize,
-   * ducking, night dip, mode scaling, the underwater insert. Keeps: which
-   * sound plays, static level balance (bus + per-sound mix gain), looping. */
+   * ducking, night dip, mode scaling, the underwater insert, AND take
+   * round-robin (always the first take — deterministic: same event, same
+   * file). Keeps: which sound an event maps to, static level balance
+   * (bus + per-sound mix gain), looping. */
   togglePure(): void {
     this.pureOn = !this.pureOn;
     if (this.graph) {

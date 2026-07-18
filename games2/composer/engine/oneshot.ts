@@ -76,10 +76,16 @@ export class OneShotPlayer {
 
   /** Round-robin across takes, never repeating the last one (the sound
    * actor's variation contract — repeating foley reads as a machine gun).
-   * Returns a ready URL: composer-bundled `urls` win over catalog paths. */
+   * Returns a ready URL: composer-bundled `urls` win over catalog paths.
+   * PURE mode plays the FIRST take always — take selection is itself an
+   * effect (maintainer heard different sounds per press with the switch
+   * on); unmodified means deterministic: same event, same file. */
   private pickTake(sound: SoundEntry): string {
-    if (sound.urls && sound.urls.length > 0) return this.pickFrom(sound.id, sound.urls);
-    return soundUrl(this.pickFrom(sound.id, sound.takes?.length ? sound.takes : [sound.file]));
+    if (sound.urls && sound.urls.length > 0) {
+      return this.pure ? sound.urls[0] : this.pickFrom(sound.id, sound.urls);
+    }
+    const takes = sound.takes?.length ? sound.takes : [sound.file];
+    return soundUrl(this.pure ? takes[0] : this.pickFrom(sound.id, takes));
   }
 
   private pickFrom(id: string, takes: string[]): string {

@@ -47,7 +47,10 @@ The maintainer's A/B test switch (requested 2026-07-18, exactly for cases
 like the thunder): when ON, every one-shot plays the **raw file** — no
 pitch/gain/start jitter, no scale-snap, no rate changes, no lowpass, no
 pan/distance attenuation, no delays or beat-quantize, no ducking, no night
-dip/mode scaling, no underwater insert. Kept: which sound plays for which
+dip/mode scaling, no underwater insert — and no take round-robin: always
+the FIRST take, so the same event plays the same file every time (take
+selection is itself an effect; the maintainer heard "a different sound per
+press" with the switch on, 2026-07-18). Kept: which sound plays for which
 event, static level balance (bus fader + per-sound mix gain), ambience
 looping/bed selection. So: sounds bad with the switch ON → the asset is bad
 (producer/generation problem); sounds fine ON but bad OFF → the composer's
