@@ -50,72 +50,61 @@ const TOP_FILL_ROWS = 100; // rows that carry beam art at the top cuts
 interface HMember {
   y0: number; y1: number; cx: number; p: number; s0: number;
   flat?: [number, number][]; fc?: number;
-  /** grain window (offset range around cx) for bounce-walk fills — replaces
-   * the p-periodic unit, which repeated its plank tick every 12px */
-  win?: [number, number];
 }
 const H_MEMBERS: HMember[] = [
-  // rail A: clean wood face spans x 434..569 -> walk up to +110 right of the cut
-  { y0: 630, y1: 760, cx: 451, p: 12, s0: 445, flat: [[669, 686]], fc: 451, win: [0, 110] },
-  { y0: 760, y1: 905, cx: 392, p: 100, s0: 292 }, // rail B's 100px unit tiles invisibly
-  // bottom rail: clean span x 280..489 -> walk up to +100 right of the cut
-  { y0: 1280, y1: 1376, cx: 383, p: 12, s0: 377, flat: [[1362, 1370]], fc: 383, win: [0, 100] },
+  { y0: 630, y1: 760, cx: 451, p: 12, s0: 445, flat: [[669, 686]], fc: 451 },
+  { y0: 760, y1: 905, cx: 392, p: 100, s0: 292 },
+  { y0: 1280, y1: 1376, cx: 383, p: 12, s0: 377, flat: [[1362, 1370]], fc: 383 },
 ];
 const WIN_CUT = 384; // window bands: cut through transparency
 
 const VCUT1 = 326; // vertical cut row (rune-free on both rails)
 const VCUT2 = { y: 1035, s0: 992, p: 86 }; // winding-bark unit
 
-// ---- grain windows (measured 2026-07-18) ----
-// Single-slice extrusion repeats ONE colour column/row for the whole insert,
-// and long runs read as flat plastic (maintainer: "the wood doesn't look
-// real when we have repeated the same color over and over"). Instead the
-// fills BOUNCE-WALK through a window of REAL texture around each cut: the
-// sample position moves ±1 slice per output slice and reflects at the window
-// edges, so every joint is STILL a pair of originally-adjacent pixels and
-// each slice keeps its own cross profile (no decorated-art mirroring — the
-// order of plain slices reverses, each slice itself is untouched), but the
-// run picks up the source's true grain striations and tonal drift. Windows
-// are the largest spans free of bright decoration (runes/leaves/crystals):
-const TOP_WIN_L = -96; // beam cols left of CUT_L (clean span x 100..196)
-const TOP_WIN_R = 60; // beam cols right of cutR (clean to x ~686, all rows)
-const VWIN = { lo: -5, hi: 7 }; // rail rows 321..333 around VCUT1 — runes
-// crowd both rails just outside this window (that's why VCUT1 was a single
-// row); 13 rows still carry a real knot-shade drift (luma 61->71).
+// ---- grain shading (maintainer-directed, 2026-07-18) ----
+// Single-slice extrusion repeats ONE colour for the whole insert and long
+// runs read flat ("the wood doesn't look real when we have repeated the same
+// color over and over"). A bounce-walk through neighbouring slices was tried
+// and REJECTED — real neighbouring slices carry knots/edges, and repeating
+// them read as "cuts" in the graphics. The maintainer's direction: keep the
+// old seamless 1px stripe, but make it "a bit longer" using texture from the
+// clean rail wood he circled. So the stripe stays THE SAME slice (perfect
+// cross-profile, no cuts ever) and only its BRIGHTNESS drifts along the run,
+// following a sequence sampled from that clean donor wood (left rail rows
+// 979..1027 — 48 rows of plain grain, luma drift ±6). The sequence ping-pongs
+// (continuous, loops forever), so the fill reads as one long piece of simple
+// clean wood instead of a colour-frozen bar.
+const DONOR = { x0: 8, x1: 44, y0: 979, y1: 1027 }; // clean left-rail wood
+let grainSeq: Int8Array = new Int8Array(0);
 
-/** Bounce-walk offsets: n inserted slices sample a [lo..hi] window of real
- * texture around the cut. Consecutive offsets differ by <=1 (adjacency at
- * every joint); starts at 0 so the first slice continues the cut exactly.
- * Turn points are picked pseudo-randomly (seeded — reproducible builds)
- * inside each half of the window: a fixed-period triangle wave turned the
- * small rail window into a visible ladder rhythm; irregular turns read as
- * natural knot spacing instead. */
-function walkOffsets(n: number, lo: number, hi: number): Int16Array {
-  const out = new Int16Array(n);
-  if (n < 4 || hi - lo < 2) return out;
-  let s = (n * 2654435761) >>> 0 || 1; // seed from n alone — deterministic
-  const rnd = () => ((s = (s * 1103515245 + 12345) >>> 0), s / 2 ** 32);
-  // sqrt-skewed: most turns are shallow (mid-window), full-depth reaches are
-  // occasional — the window-edge rows carry the strongest features (knot
-  // ridges), and touching them every cycle repeated the knot too densely
-  const turnHi = () => (hi > 0 ? hi - Math.floor(Math.sqrt(rnd()) * (hi / 2 + 1)) : 0);
-  const turnLo = () => (lo < 0 ? lo + Math.floor(Math.sqrt(rnd()) * (-lo / 2 + 1)) : 0);
-  let pos = 0;
-  let dir = hi > 0 ? 1 : -1;
-  let up = turnHi();
-  let dn = turnLo();
+function buildGrainSeq(src: ImageData) {
+  const S = src.data;
+  const n = DONOR.y1 - DONOR.y0;
+  const means = new Float32Array(n);
   for (let i = 0; i < n; i++) {
-    out[i] = pos;
-    if (dir > 0 && pos + 1 > up) {
-      dir = -1;
-      dn = Math.min(turnLo(), pos - 2); // must actually travel back down
-    } else if (dir < 0 && pos - 1 < dn) {
-      dir = 1;
-      up = Math.max(turnHi(), pos + 2);
+    let sum = 0;
+    let cnt = 0;
+    for (let x = DONOR.x0; x < DONOR.x1; x++) {
+      const si = ((DONOR.y0 + i) * AW + x) * 4;
+      if (S[si + 3] > 200) {
+        sum += 0.3 * S[si] + 0.6 * S[si + 1] + 0.1 * S[si + 2];
+        cnt++;
+      }
     }
-    pos += dir;
+    means[i] = sum / Math.max(1, cnt);
   }
-  return out;
+  const avg = means.reduce((a, b) => a + b, 0) / n;
+  grainSeq = new Int8Array(n);
+  for (let i = 0; i < n; i++)
+    grainSeq[i] = Math.max(-6, Math.min(6, Math.round(means[i] - avg)));
+}
+
+/** the donor's brightness delta at run position i (ping-pong, seamless) */
+function grainAt(i: number): number {
+  const P = grainSeq.length;
+  if (P < 2) return 0;
+  const m = i % (2 * P - 2);
+  return grainSeq[m < P ? m : 2 * P - 2 - m];
 }
 
 // where the animated clock hand's pivot hangs, just below the strap stub
@@ -203,19 +192,15 @@ function widen(src: ImageData, aux: ImageData, w0: number): ImageData {
       O[d] = buf[si]; O[d + 1] = buf[si + 1]; O[d + 2] = buf[si + 2]; O[d + 3] = buf[si + 3];
     }
   };
-  // grain-walk fill: column i samples source column sx0+off[i] of row y
-  const putWalk = (buf: Uint8ClampedArray, y: number, dx0: number, off: Int16Array, sx0: number) => {
-    for (let i = 0; i < off.length; i++) {
-      const si = (y * AW + sx0 + off[i]) * 4;
+  // the same extruded slice, shade-drifted along the run (see grainAt)
+  const putGrain = (buf: Uint8ClampedArray, si: number, y: number, dx0: number, n: number) => {
+    for (let i = 0; i < n; i++) {
       const d = (y * w0 + dx0 + i) * 4;
-      O[d] = buf[si]; O[d + 1] = buf[si + 1]; O[d + 2] = buf[si + 2]; O[d + 3] = buf[si + 3];
+      const g = buf[si + 3] > 0 ? grainAt(i) : 0;
+      O[d] = buf[si] + g; O[d + 1] = buf[si + 1] + g; O[d + 2] = buf[si + 2] + g;
+      O[d + 3] = buf[si + 3];
     }
   };
-  const offL = walkOffsets(gl, TOP_WIN_L, 0);
-  const offR = walkOffsets(gr, 0, TOP_WIN_R);
-  const memberOff = new Map<HMember, Int16Array>();
-  for (const m of H_MEMBERS)
-    if (m.win) memberOff.set(m, walkOffsets(insW, m.win[0], m.win[1]));
   for (let y = 0; y < AH; y++) {
     if (y < 630) {
       const cr = cutR(y);
@@ -223,8 +208,8 @@ function widen(src: ImageData, aux: ImageData, w0: number): ImageData {
       copy(y, CUT_L, cr, CUT_L + gl);
       copy(y, cr, AW, cr + insW);
       if (y < TOP_FILL_ROWS) {
-        putWalk(A, y, CUT_L, offL, CUT_L); // beam grain left of the cut
-        putWalk(A, y, cr + gl, offR, cr); // beam grain right of the cut
+        putGrain(A, (y * AW + CUT_L) * 4, y, CUT_L, gl); // extrude cut column
+        putGrain(A, (y * AW + cr) * 4, y, cr + gl, gr); // extrude cut-line pixel
       }
     } else {
       let m: HMember | undefined;
@@ -235,16 +220,16 @@ function widen(src: ImageData, aux: ImageData, w0: number): ImageData {
       if (m) {
         const inflat = m.flat?.some(([a, b]) => y >= a && y < b);
         if (inflat) {
-          // grooves/undersides stay single-pixel — a long groove IS uniform
+          // grooves/undersides stay UNdrifted — a long groove IS uniform
           put(S, (y * AW + m.fc!) * 4, y, cx, insW);
-        } else if (m.win) {
-          putWalk(S, y, cx, memberOff.get(m)!, cx); // rail-face wood grain
         } else {
           for (let r = 0; r < insW; r++) {
             const sx = m.s0 + ((cx - m.s0 + r) % m.p);
             const si = (y * AW + sx) * 4;
             const d = (y * w0 + cx + r) * 4;
-            O[d] = S[si]; O[d + 1] = S[si + 1]; O[d + 2] = S[si + 2]; O[d + 3] = S[si + 3];
+            const g = m.p <= 12 && S[si + 3] > 0 ? grainAt(r) : 0; // planks drift; rail B's 100px unit has its own grain
+            O[d] = S[si] + g; O[d + 1] = S[si + 1] + g; O[d + 2] = S[si + 2] + g;
+            O[d + 3] = S[si + 3];
           }
         }
       }
@@ -262,9 +247,19 @@ function heighten(wideImg: ImageData, h0: number, g1: number, g2: number): Image
     O.set(S.subarray(sy * w0 * 4, (sy + 1) * w0 * 4), dy * w0 * 4);
   let dy = 0;
   for (let y = 0; y < VCUT1; y++) row(y, dy++);
-  // g1 walks the rails' 13-row rune-free window instead of repeating one row
-  const offV = walkOffsets(g1, VWIN.lo, VWIN.hi);
-  for (let r = 0; r < g1; r++) row(VCUT1 + offV[r], dy++);
+  // g1 repeats the seamless cut row, shade-drifted along the run (grainAt)
+  for (let r = 0; r < g1; r++) {
+    row(VCUT1, dy);
+    const g = grainAt(r);
+    if (g) {
+      const base = dy * w0 * 4;
+      for (let x = 0; x < w0; x++) {
+        const d = base + x * 4;
+        if (O[d + 3] > 0) { O[d] += g; O[d + 1] += g; O[d + 2] += g; }
+      }
+    }
+    dy++;
+  }
   for (let y = VCUT1; y < VCUT2.y; y++) row(y, dy++);
   for (let r = 0; r < g2; r++) row(VCUT2.s0 + ((VCUT2.y - VCUT2.s0 + r) % VCUT2.p), dy++);
   for (let y = VCUT2.y; y < AH; y++) row(y, dy++);
@@ -508,6 +503,7 @@ export function mountFrame2(onLayout: (l: FrameLayout) => void) {
     ]).then(([f, a]) => {
       frameData = f;
       auxData = a;
+      buildGrainSeq(f);
       compose();
     });
   } else {
