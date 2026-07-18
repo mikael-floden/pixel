@@ -177,12 +177,12 @@ export class GameAudio {
     const ownSet = GameAudio.EVENT_FOLEY[name];
     const own = ownSet ? composerFoley(ownSet) : null;
     if (ownSet && own) {
-      // −6 dB static trim = half amplitude (maintainer 2026-07-18: "the
-      // button sound is too loud, lower it 50%"). Static level balance, so
-      // it applies in pure mode too.
+      // −12 dB static trim = quarter amplitude (maintainer 2026-07-18:
+      // "lower 50%" twice — first −6 dB, then "still too loud, remove 50%
+      // again"). Static level balance, so it applies in pure mode too.
       this.oneShots.play(this.foleyEntry(ownSet, own, "click"), "ui", {
         ...opts,
-        gainDb: (opts.gainDb ?? 0) - 6,
+        gainDb: (opts.gainDb ?? 0) - 12,
       });
       return;
     }
