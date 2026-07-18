@@ -72,7 +72,7 @@ const FOOT_PHASES = [0.05, 0.55];
 // ONE AT A TIME with explicit approval. Snow re-enabled for trial ("let's
 // try the snow version") — same gentleness as stone: primary take every
 // step, micro-jitter only. Water stays splash/swim, no dry footfall.
-const FOOTSTEP_SETS: Record<string, string> = { snow: "snow" };
+const FOOTSTEP_SETS: Record<string, string> = { snow: "snow", ice: "ice" };
 // Surfaces mapped to a CATALOG sound played as a footstep, when the
 // maintainer picks an existing sound over a generated set. sand → the
 // `jump` sound ("closest we have to sand", 2026-07-18, after 4 sand
@@ -182,7 +182,7 @@ export class GameAudio {
       }
       // Warm the composer's own primary takes too — thunder especially must
       // not miss its first flash on a fetch+decode.
-      for (const set of ["stone", "snow", "ui_tick", "ui_cancel", "thunder"]) {
+      for (const set of ["stone", "snow", "ice", "ui_tick", "ui_cancel", "thunder"]) {
         const urls = composerFoley(set);
         if (urls) void this.buffers.get(urls[0]);
       }

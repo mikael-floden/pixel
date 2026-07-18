@@ -135,17 +135,16 @@ SETS: dict[str, dict] = {
         "duration_s": 0.8,
         "variants": GAIT_VARIANTS,
     },
+    # Positive + short (the sand lesson: negatives backfire). Ice = walking
+    # on glass, brittle and crisp (maintainer's words).
     "ice": {
-        "brief": (
-            "one single compact footstep on solid frozen ice: a hard boot tap "
-            "like on stone with a brief thin glassy crackle, tight and dry, "
-            "exactly one step, no walking sequence, no ambience"
-        ),
-        "duration_s": 0.6,
+        "brief": "a single footstep on thin brittle ice, a crisp glassy crackle as the surface cracks under the boot, sharp and clear",
+        "style": "clean close-miked foley, natural, one isolated sound",
+        "duration_s": 0.5,
         "variants": GAIT_VARIANTS,
-        "max_ms": 600,
+        "max_ms": 500,
         "judge": "step",
-        "pool": 9,
+        "pool": 12,
     },
     "wood": {
         "brief": (
