@@ -505,12 +505,12 @@ function injectStyles() {
   /* ENTER WORLD = a kit button with a REAL label (the plaque art with the
      baked label is retired) */
   .ml-btn{display:flex;align-items:center;justify-content:center;flex:none;border:none;padding:0 20px;
-    width:200px;height:70px;image-rendering:pixelated;
+    width:200px;height:60px;image-rendering:pixelated;
     font:700 17px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#fff;
     text-shadow:0 1px 0 rgba(0,0,0,.35)}
   .ml-btn.press{color:#f4e3c2}
   /* the dice on a kit plate */
-  .ml-ghost{width:70px;height:70px;background:none;color:#e8e8ec;font-size:22px;padding:0}
+  .ml-ghost{width:60px;height:60px;background:none;color:#e8e8ec;font-size:22px;padding:0}
   /* install prompt = a kit button with visible text */
   .ml-install{margin-top:12px;border:none;padding:0 18px;width:auto;min-width:260px;height:56px;
     image-rendering:pixelated;color:#fff;font:700 13px system-ui,sans-serif;cursor:pointer;
