@@ -173,7 +173,7 @@ export class GameAudio {
       }
       // Warm the composer's own primary takes too — thunder especially must
       // not miss its first flash on a fetch+decode.
-      for (const set of ["stone", "snow", "water_step", "ui_tick", "ui_cancel", "thunder"]) {
+      for (const set of ["stone", "snow", "ui_tick", "ui_cancel", "thunder"]) {
         const urls = composerFoley(set);
         if (urls) void this.buffers.get(urls[0]);
       }
@@ -333,20 +333,35 @@ export class GameAudio {
 
     // Water/void/unknown surfaces: no dry footfall (splash/swim handle water).
     if (!f.surface || f.surface === "water") return;
-    // The wet shoreline band overrides the material: wet steps take over
-    // when walking/running next to water (maintainer 2026-07-18).
-    const setName = f.wetGround ? "water_step" : FOOTSTEP_SETS[f.surface] ?? FOOTSTEP_DEFAULT;
+
+    // WET SHORELINE band: the catalog `splash` IS the wet footstep the
+    // maintainer approved ("perfect footstep sound", 2026-07-18) — the
+    // generated water_step set is retired from playback. Played under the
+    // gentleness step profile (primary take, micro-jitter, walk/run level).
+    if (f.wetGround) {
+      const splash = this.catalog?.sounds.get("splash");
+      if (splash) {
+        const walkPenalty = FOOTSTEP_WALK_PENALTY_DB.wet ?? WALK_PENALTY_DEFAULT_DB;
+        this.oneShots.play(this.catalogStepEntry(splash), "sfx", {
+          pan: f.pan,
+          dist: f.dist,
+          gainDb: -8 + (FOOTSTEP_TRIM_DB.wet ?? 0) + (f.running ? 0.8 : walkPenalty),
+        });
+        return;
+      }
+    }
+
+    const setName = FOOTSTEP_SETS[f.surface] ?? FOOTSTEP_DEFAULT;
     const own = composerFoley(setName) ?? composerFoley(FOOTSTEP_DEFAULT);
     if (own) {
       // Gentleness: no rate change for running — the faster CADENCE is the
       // run signal; walking is the SAME sound with a small per-surface
       // penalty (see the tables above).
-      const trimKey = f.wetGround ? "wet" : f.surface;
-      const walkPenalty = FOOTSTEP_WALK_PENALTY_DB[trimKey] ?? WALK_PENALTY_DEFAULT_DB;
+      const walkPenalty = FOOTSTEP_WALK_PENALTY_DB[f.surface] ?? WALK_PENALTY_DEFAULT_DB;
       this.oneShots.play(this.foleyEntry(setName, own, "step"), "sfx", {
         pan: f.pan,
         dist: f.dist,
-        gainDb: -8 + (FOOTSTEP_TRIM_DB[trimKey] ?? 0) + (f.running ? 0.8 : walkPenalty),
+        gainDb: -8 + (FOOTSTEP_TRIM_DB[f.surface] ?? 0) + (f.running ? 0.8 : walkPenalty),
       });
       return;
     }
@@ -360,6 +375,37 @@ export class GameAudio {
   }
 
   private foleyCache = new Map<string, SoundEntry>();
+  private stepCache = new Map<string, SoundEntry>();
+
+  /** A CATALOG sound (e.g. `splash`) played as a footstep: its primary take
+   * every step (no rotation) with the gentle step micro-jitter — the same
+   * doctrine as the composer foley sets, but sourced from the catalog. */
+  private catalogStepEntry(base: SoundEntry): SoundEntry {
+    let e = this.stepCache.get(base.id);
+    if (!e) {
+      e = {
+        ...base,
+        id: `wetstep_${base.id}`,
+        mix_gain_db: 0, // level decided per-play
+        variation: {
+          round_robin: false, // the approved primary take, every step
+          no_immediate_repeat: false,
+          pitch_jitter_semitones: [-0.2, 0.2],
+          gain_jitter_db: [-0.7, 0.4],
+          start_jitter_ms: [0, 0],
+        },
+        music: {
+          tonal: false,
+          root_midi: null,
+          pitch_confidence: 0,
+          max_shift_semitones: 0,
+          scale_snap_replaces_jitter: false,
+        },
+      };
+      this.stepCache.set(base.id, e);
+    }
+    return e;
+  }
 
   /** Synthetic catalog entry for a composer-generated foley set (bundled
    * absolute URLs). GENTLENESS DOCTRINE (maintainer 2026-07-18, after
