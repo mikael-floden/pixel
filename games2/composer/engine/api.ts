@@ -73,7 +73,7 @@ const FOOTSTEP_SETS: Record<string, string> = { snow: "snow" };
 const FOOTSTEP_DEFAULT = "stone";
 // Per-set trims/variation on top of the step profile (maintainer 2026-07-18:
 // snow "too loud — lower 50%, allow tiny tiny more variations").
-const FOOTSTEP_TRIM_DB: Record<string, number> = { snow: -6 };
+const FOOTSTEP_TRIM_DB: Record<string, number> = { snow: -12 }; // "still too loud" → another 50%
 const FOOTSTEP_JITTER: Record<string, { pitch: [number, number]; gain: [number, number] }> = {
   snow: { pitch: [-0.35, 0.35], gain: [-1.0, 0.6] },
 };
@@ -325,12 +325,12 @@ export class GameAudio {
     const own = composerFoley(setName) ?? composerFoley(FOOTSTEP_DEFAULT);
     if (own) {
       // Gentleness: no rate change for running — the faster CADENCE is the
-      // run signal. WALKING plays the same sound at 25% volume (−12 dB —
-      // maintainer 2026-07-18: soft strolling steps, full weight running).
+      // run signal. WALKING plays the same sound at 50% volume (−6 dB —
+      // maintainer 2026-07-18, revised from 25%).
       this.oneShots.play(this.foleyEntry(setName, own, "step"), "sfx", {
         pan: f.pan,
         dist: f.dist,
-        gainDb: -8 + (FOOTSTEP_TRIM_DB[setName] ?? 0) + (f.running ? 0.8 : -12),
+        gainDb: -8 + (FOOTSTEP_TRIM_DB[setName] ?? 0) + (f.running ? 0.8 : -6),
       });
       return;
     }
