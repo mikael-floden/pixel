@@ -62,6 +62,12 @@ const RUN_STEP_WU = 38;
 // step, micro-jitter only. Water stays splash/swim, no dry footfall.
 const FOOTSTEP_SETS: Record<string, string> = { snow: "snow" };
 const FOOTSTEP_DEFAULT = "stone";
+// Per-set trims/variation on top of the step profile (maintainer 2026-07-18:
+// snow "too loud — lower 50%, allow tiny tiny more variations").
+const FOOTSTEP_TRIM_DB: Record<string, number> = { snow: -6 };
+const FOOTSTEP_JITTER: Record<string, { pitch: [number, number]; gain: [number, number] }> = {
+  snow: { pitch: [-0.35, 0.35], gain: [-1.0, 0.6] },
+};
 
 const SETTINGS_KEY = "ml-audio";
 
@@ -295,7 +301,7 @@ export class GameAudio {
       this.oneShots.play(this.foleyEntry(setName, own, "step"), "sfx", {
         pan: f.pan,
         dist: f.dist,
-        gainDb: -8 + (f.running ? 0.8 : 0),
+        gainDb: -8 + (FOOTSTEP_TRIM_DB[setName] ?? 0) + (f.running ? 0.8 : 0),
       });
       return;
     }
@@ -330,8 +336,10 @@ export class GameAudio {
         variation: {
           round_robin: false, // the approved primary take, every play
           no_immediate_repeat: false,
-          pitch_jitter_semitones: step ? [-0.2, 0.2] : [-0.12, 0.12],
-          gain_jitter_db: step ? [-0.7, 0.4] : [-0.5, 0.3],
+          pitch_jitter_semitones: step
+            ? FOOTSTEP_JITTER[set]?.pitch ?? [-0.2, 0.2]
+            : [-0.12, 0.12],
+          gain_jitter_db: step ? FOOTSTEP_JITTER[set]?.gain ?? [-0.7, 0.4] : [-0.5, 0.3],
           start_jitter_ms: [0, 0],
         },
         music: {
