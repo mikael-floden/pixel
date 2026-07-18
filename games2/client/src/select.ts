@@ -371,7 +371,7 @@ function injectStyles() {
      gap — logo / world dropdown / characters / action row / install — and
      the dropdown + action row share ONE width (--ml-col) so their edges
      line up. */
-  .ml-panel{width:min(920px,100%);margin:auto;padding:16px 8px 12px;text-align:center;
+  .ml-panel{width:min(920px,100%);margin:auto;padding:16px 8px 110px;text-align:center;
     display:flex;flex-direction:column;align-items:center;gap:20px}
   /* 2x logo (maintainer), with a BLACK GLOW hugging the silhouette:
      drop-shadow follows the png alpha. Strengthened twice on request
@@ -434,7 +434,7 @@ function injectStyles() {
   /* ENTER WORLD: full-column bar PINNED near the screen bottom (the
      maintainer's blue band), above the version badge. Outside the panel so
      scroll can't move it; it still fades with the overlay. */
-  .ml-btn{position:fixed;bottom:44px;left:50%;transform:translateX(-50%);z-index:2;
+  .ml-btn{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:2;
     display:flex;align-items:center;justify-content:center;border:none;padding:0 20px;
     width:var(--ml-col);height:120px;image-rendering:pixelated;
     font:700 22px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#fff;
