@@ -96,6 +96,23 @@ buses: music / sfx / ui / ambience               ┘
 | `toggleSound() / toggleMusic()` | HUD settings switches (persisted in localStorage) |
 | `debug()` | QA probe (`__ml.audio()`) |
 
+## The GENTLENESS doctrine (maintainer, 2026-07-18 — supersedes older ranges)
+
+After weeks of "the sound is bad" verdicts, the raw takes heard through
+ENFORCE UNMODIFIED AUDIO were judged GOOD — the fault was the variation
+ranges: ±1.5 semitones turns one good recording into four different-sounding
+ones. Standing rule for ALL playback: **the raw take is the truth; variation
+is a whisper.**
+
+- UI clicks: NO take rotation — the approved primary take every press, with
+  micro-jitter only (±0.12 semitones, −0.5/+0.3 dB).
+- Footsteps: takes still alternate (a walker's two feet), jitter small
+  (±0.5 semitones, ±1.2 dB, ≤8 ms timing).
+- Catalog-recommended jitter ranges from `sounds/viewer_data.json` are
+  scaled ×0.35 at playback — the composer overrides the producer's ranges.
+- When tuning any future effect: start from imperceptible and increase only
+  with explicit approval, never the reverse.
+
 ## Mixing decisions (composer authority)
 
 - Bus floors: ui −12 dB, sfx −14, music −20, ambience −24 (from the sound

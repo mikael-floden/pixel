@@ -282,8 +282,11 @@ export class GameAudio {
   private foleyCache = new Map<string, SoundEntry>();
 
   /** Synthetic catalog entry for a composer-generated foley set (bundled
-   * absolute URLs). Profiles: "step" varies like foley footfalls; "click"
-   * stays tight — a button must sound like the SAME button every press. */
+   * absolute URLs). GENTLENESS DOCTRINE (maintainer 2026-07-18, after
+   * approving the raw click): the primary take IS the sound; variation is
+   * a whisper. Clicks: NO take rotation — always the approved take, with
+   * barely-perceptible micro-jitter on repeat presses. Steps: takes still
+   * alternate (a walker's two feet) but jitter is small. */
   private foleyEntry(set: string, urls: string[], profile: "step" | "click"): SoundEntry {
     let e = this.foleyCache.get(set);
     if (!e) {
@@ -296,11 +299,11 @@ export class GameAudio {
         urls,
         mix_gain_db: 0, // level is decided per-play by the caller
         variation: {
-          round_robin: true,
-          no_immediate_repeat: true,
-          pitch_jitter_semitones: step ? [-1.5, 1.5] : [-0.4, 0.4],
-          gain_jitter_db: step ? [-2.5, 2.5] : [-1, 0.5],
-          start_jitter_ms: step ? [0, 15] : [0, 0],
+          round_robin: step, // clicks: the primary take, every press
+          no_immediate_repeat: step,
+          pitch_jitter_semitones: step ? [-0.5, 0.5] : [-0.12, 0.12],
+          gain_jitter_db: step ? [-1.2, 1.2] : [-0.5, 0.3],
+          start_jitter_ms: step ? [0, 8] : [0, 0],
         },
         music: {
           tonal: false,

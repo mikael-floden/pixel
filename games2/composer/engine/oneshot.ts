@@ -81,11 +81,15 @@ export class OneShotPlayer {
    * effect (maintainer heard different sounds per press with the switch
    * on); unmodified means deterministic: same event, same file. */
   private pickTake(sound: SoundEntry): string {
+    // round_robin: false = the entry's PRIMARY take is the sound (maintainer:
+    // the approved raw take is the base; variation must be a whisper, not a
+    // different recording). Pure mode is deterministic for everything.
+    const fixed = this.pure || sound.variation?.round_robin === false;
     if (sound.urls && sound.urls.length > 0) {
-      return this.pure ? sound.urls[0] : this.pickFrom(sound.id, sound.urls);
+      return fixed ? sound.urls[0] : this.pickFrom(sound.id, sound.urls);
     }
     const takes = sound.takes?.length ? sound.takes : [sound.file];
-    return soundUrl(this.pure ? takes[0] : this.pickFrom(sound.id, takes));
+    return soundUrl(fixed ? takes[0] : this.pickFrom(sound.id, takes));
   }
 
   private pickFrom(id: string, takes: string[]): string {
@@ -116,6 +120,13 @@ export class OneShotPlayer {
 
     const v = sound.variation;
 
+    // GENTLENESS (maintainer 2026-07-18: "when you do changes to a sound it
+    // should be very very gentle. The range you modify is too big"): the
+    // catalog's recommended jitter ranges are scaled way down — the raw
+    // take is the truth, variation is a whisper. Composer-authored entries
+    // (bundled urls) already carry final small ranges.
+    const gentle = sound.urls ? 1 : 0.35;
+
     // ---- pitch: scale-snap (tonal) or random jitter (foley) ----
     let semis = 0;
     let snapped = false;
@@ -126,12 +137,12 @@ export class OneShotPlayer {
       snapped = true;
     }
     if (!(snapped && (m?.scale_snap_replaces_jitter ?? true)) && v?.pitch_jitter_semitones) {
-      semis += rand(v.pitch_jitter_semitones[0], v.pitch_jitter_semitones[1]);
+      semis += rand(v.pitch_jitter_semitones[0], v.pitch_jitter_semitones[1]) * gentle;
     }
 
     // ---- gain ----
     let db = (sound.mix_gain_db ?? 0) + (opts.gainDb ?? 0);
-    if (v?.gain_jitter_db) db += rand(v.gain_jitter_db[0], v.gain_jitter_db[1]);
+    if (v?.gain_jitter_db) db += rand(v.gain_jitter_db[0], v.gain_jitter_db[1]) * gentle;
     const dist = Math.min(1, Math.max(0, opts.dist ?? 0));
     let gain = dbToGain(db) * (1 - 0.85 * dist * dist);
     if (gain <= 0.001) return;
