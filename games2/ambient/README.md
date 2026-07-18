@@ -153,9 +153,21 @@ live in git history.
 
 `node ambient/scripts/verify-ambient.mjs` against a running dev stack
 (`npm run dev`): forces night/day/weather via `__ml` probes and asserts each
-feature's gain, population and motion through `__mlAmbient`. Keep
-`npm test` + `npm run typecheck` green — ambient code is typechecked through
-the client's tsconfig via the import chain.
+feature's gain, population and motion through `__mlAmbient`. That script runs
+at the small 480×320 movement-timing viewport — fine for numeric assertions,
+but it is NOT what the maintainer's phone looks like.
+
+**Look-and-feel / framing checks MUST render in the phone geometry** (desktop-
+site layout on a phone screen — innerWidth 980, screen 393, camZoom 2, big HUD,
+zoomed clock/chat). A 480×320 screenshot does not match the phone at all
+(different sky framing, HUD, overlap with the chat/clock), so judging an effect
+there is misleading. Use `node ambient/scripts/shoot-phone.mjs <effect>
+[phase] [weather] [out.png]` — it opens the exact phone context from games2/
+CLAUDE.md and shoots the effect mid-flight. Always eyeball a new visual effect
+this way before shipping.
+
+Keep `npm test` + `npm run typecheck` green — ambient code is typechecked
+through the client's tsconfig via the import chain.
 
 ## Don't
 
