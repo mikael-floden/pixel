@@ -163,7 +163,7 @@ SETS: dict[str, dict] = {
             "pressed once, a single short dry click, purely mechanical, "
             "NOT musical, no chime, no piano, no tone"
         ),
-        "duration_s": 0.4,
+        "duration_s": 0.5,  # API minimum — 0.4 got a 400 (run 2)
         "variants": PRESS_VARIANTS,
     },
     "ui_confirm": {
@@ -189,9 +189,7 @@ SETS: dict[str, dict] = {
 
 # ---- minimal decode + mastering (port of the sound domain's recipe) ----
 
-def _decode(raw: bytes, fmt: str) -> np.ndarray:
-    if fmt.startswith("pcm_"):
-        return np.frombuffer(raw, dtype="<i2").astype(np.float32) / 32768.0
+def _ffmpeg_decode(raw: bytes) -> np.ndarray:
     if not shutil.which("ffmpeg"):
         raise RuntimeError("ffmpeg needed to decode compressed audio")
     p = subprocess.run(
@@ -200,6 +198,23 @@ def _decode(raw: bytes, fmt: str) -> np.ndarray:
         input=raw, capture_output=True, check=True,
     )
     return np.frombuffer(p.stdout, dtype="<i2").astype(np.float32) / 32768.0
+
+
+def _decode(raw: bytes, fmt: str) -> np.ndarray:
+    # SNIFF the actual payload — never trust the requested format. Run 2
+    # requested pcm_48000 in the BODY (the API wants it as a query param),
+    # got mp3 back, and the byte-blind pcm decode turned every take into
+    # identical-length garbage noise. Container magic wins over `fmt`.
+    is_mp3 = raw[:3] == b"ID3" or (len(raw) > 1 and raw[0] == 0xFF and (raw[1] & 0xE0) == 0xE0)
+    if raw[:4] == b"RIFF" or is_mp3:
+        x = _ffmpeg_decode(raw)
+    elif fmt.startswith("pcm_"):
+        x = np.frombuffer(raw, dtype="<i2").astype(np.float32) / 32768.0
+    else:
+        x = _ffmpeg_decode(raw)
+    if x.size < SR * 0.05:
+        raise RuntimeError(f"decoded audio too short ({x.size} samples) — bad payload?")
+    return x
 
 
 def _master(x: np.ndarray) -> np.ndarray:
@@ -231,17 +246,20 @@ def _write_wav(x: np.ndarray, path: Path) -> float:
 
 
 def _generate(session: requests.Session, prompt: str, duration_s: float) -> np.ndarray:
-    # Lossless first (Pro tier); compressed fallback keeps free tiers working.
+    # Lossless first (Pro tier); compressed fallback keeps free tiers
+    # working. output_format goes in the QUERY STRING — in the body the API
+    # silently ignores it and returns mp3 (run 2's garbage-audio bug).
+    duration_s = max(0.5, min(22.0, duration_s))  # API-enforced bounds; 0.4 → 400
     for fmt in (f"pcm_{SR}", "mp3_44100_128"):
         r = session.post(
             GEN_URL,
+            params={"output_format": fmt},
             json={
                 "text": prompt,
                 "duration_seconds": duration_s,
                 "prompt_influence": PROMPT_INFLUENCE,
                 "loop": False,
                 "model_id": MODEL_ID,
-                "output_format": fmt,
             },
             timeout=120,
         )
@@ -264,34 +282,49 @@ def main() -> int:
 
     manifest_path = FOLEY_DIR / "foley.json"
     manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
+    done: list[str] = []
+    failed: list[str] = []
     for name in wanted:
         spec = SETS.get(name)
         if not spec:
             print(f"unknown set {name!r} (have: {', '.join(SETS)})")
             continue
-        out_dir = FOLEY_DIR / name
-        out_dir.mkdir(parents=True, exist_ok=True)
-        takes = []
-        variants = spec["variants"]
-        n_takes = spec.get("takes", TAKES)
-        for i in range(n_takes):
-            prompt = f"{spec['brief']}, {variants[i % len(variants)]}. {STYLE}"
-            x = _master(_generate(session, prompt, spec["duration_s"]))
-            path = out_dir / f"{name}__take{i + 1:02d}.wav"
-            dur = _write_wav(x, path)
-            takes.append({"file": f"{name}/{path.name}", "duration_seconds": dur})
-            print(f"{name} take {i + 1}/{n_takes}: {dur}s")
-            time.sleep(0.5)  # be polite to the API
-        manifest[name] = {
-            "takes": [t["file"] for t in takes],
-            "durations_s": [t["duration_seconds"] for t in takes],
-            "brief": spec["brief"],
-            "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-            "model_id": MODEL_ID,
-        }
-        manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
+        # One bad set must not zero out the whole run (run 2: ui_tick's 400
+        # threw away nine already-generated sets) — isolate per set, commit
+        # whatever succeeded.
+        try:
+            out_dir = FOLEY_DIR / name
+            out_dir.mkdir(parents=True, exist_ok=True)
+            takes = []
+            variants = spec["variants"]
+            n_takes = spec.get("takes", TAKES)
+            prev_raw_len = -1
+            for i in range(n_takes):
+                prompt = f"{spec['brief']}, {variants[i % len(variants)]}. {STYLE}"
+                x = _master(_generate(session, prompt, spec["duration_s"]))
+                if x.size == prev_raw_len:
+                    print(f"  WARNING: {name} take {i + 1} same length as previous — variation suspect")
+                prev_raw_len = x.size
+                path = out_dir / f"{name}__take{i + 1:02d}.wav"
+                dur = _write_wav(x, path)
+                takes.append({"file": f"{name}/{path.name}", "duration_seconds": dur})
+                print(f"{name} take {i + 1}/{n_takes}: {dur}s")
+                time.sleep(0.5)  # be polite to the API
+            manifest[name] = {
+                "takes": [t["file"] for t in takes],
+                "durations_s": [t["duration_seconds"] for t in takes],
+                "brief": spec["brief"],
+                "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                "model_id": MODEL_ID,
+            }
+            manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
+            done.append(name)
+        except Exception as e:  # noqa: BLE001 — isolate, report, continue
+            print(f"FAILED set {name}: {e}")
+            failed.append(name)
+    print(f"generated: {', '.join(done) or 'none'}; failed: {', '.join(failed) or 'none'}")
     print(f"manifest → {manifest_path}")
-    return 0
+    return 0 if done else 1
 
 
 if __name__ == "__main__":
