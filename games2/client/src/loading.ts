@@ -51,6 +51,25 @@ export function showLoading(text = "Entering Nangijala…") {
   document.body.appendChild(overlay);
   applyUiZoom(overlay); // "Desktop site" must not shrink the loading logo
   bar = overlay.querySelector("#ml-load-bar");
+  // STAGED ENTRANCE (mirror of the staged exit): first the black overlay
+  // fades in over whatever screen is up (the select screen "fades out to
+  // 100% black"), then the logo emerges out of the black.
+  const inBox = overlay.querySelector<HTMLElement>(".ml-load-box");
+  overlay.style.opacity = "0";
+  if (inBox) inBox.style.opacity = "0";
+  requestAnimationFrame(() =>
+    requestAnimationFrame(() => {
+      if (!overlay) return;
+      overlay.style.transition = "opacity .4s ease";
+      overlay.style.opacity = "1";
+    }),
+  );
+  setTimeout(() => {
+    // hiding may already be underway on ultra-fast loads — never re-show
+    if (!overlay || hiding || !inBox) return;
+    inBox.style.transition = "opacity .45s ease";
+    inBox.style.opacity = "1";
+  }, 430);
   setLoadingProgress(0.03, text); // a visible sliver right away — it's alive
   // Failsafe: never trap the player behind the overlay (slow nets still get
   // the world once it arrives; the overlay is cosmetic).

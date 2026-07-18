@@ -64,6 +64,7 @@ import { WeatherFX } from "../weatherfx";
 import { setClockPhase, setClockAngle, clockStar } from "../clock";
 import { HudBar, mountPageFrame } from "../hud";
 import { setLoadingProgress, hideLoading } from "../loading";
+import { fadeToBlack } from "../fade";
 import { applyUiZoom } from "../uiscale";
 import {
   World,
@@ -1933,7 +1934,9 @@ export class WorldScene extends Phaser.Scene {
     try {
       this.room?.leave();
     } catch {}
-    location.reload();
+    // fade the whole page to black before the reload; the select screen
+    // fades back in from black on the other side (fade.ts)
+    fadeToBlack(() => location.reload());
   }
 
   private toggleCollision() {

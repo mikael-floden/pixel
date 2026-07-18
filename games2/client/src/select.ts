@@ -50,6 +50,23 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     document.body.appendChild(overlay);
     applyUiZoom(overlay); // "Desktop site" must not shrink the menu
     injectStyles();
+    // FADE IN FROM BLACK (maintainer: every screen assumes the previous one
+    // faded to 100% black — page boot and logout both land here on the #000
+    // body). Wait for the logo + forest art so the reveal is complete, with
+    // a cap so a slow asset can't hold the screen black.
+    overlay.style.opacity = "0";
+    const logoImg = overlay.querySelector<HTMLImageElement>(".ml-logo");
+    const bgImg = new Image();
+    bgImg.src = "/ui2/select-bg.png";
+    const artReady = Promise.allSettled([logoImg?.decode(), bgImg.decode()]);
+    Promise.race([artReady, new Promise((r) => setTimeout(r, 1200))]).then(() => {
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          overlay.style.transition = "opacity .5s ease";
+          overlay.style.opacity = "1";
+        }),
+      );
+    });
     // No border frame on the select screen (maintainer 2026-07-18: "just use
     // the background without the frame") — the forest art carries the screen
     // alone. The composed vine border (frame2.ts mountSelectFrame +
@@ -167,11 +184,12 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
           JSON.stringify({ world, characterUid: chars[selected].uid, name }),
         );
       } catch {}
-      // Show the loading overlay BEFORE tearing this screen down so slow
-      // phones never sit on a black page while the world downloads
-      // (WorldScene hides it once the player's avatar is in).
+      // The loading overlay's black FADES IN over this screen (the select
+      // screen "fades out to 100% black", maintainer) — keep the select
+      // mounted beneath it until the black is opaque, then drop it. The
+      // world starts loading immediately (resolve is not delayed).
       showLoading();
-      overlay.remove();
+      setTimeout(() => overlay.remove(), 500);
       resolve({ world, character: chars[selected], name });
     }
 

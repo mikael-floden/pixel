@@ -41,6 +41,10 @@
     {
       "date": "2026-07-18",
       "note": "Mechanical touch in WorldScene.ts: the connection-error path now calls hideLoading(true) (instant). hideLoading() without args now runs a staged cinematic fade (logo fades to black, black holds until real frames rendered, then fades out) \u2014 keep using the no-arg form on the happy path, pass true anywhere an error/panel must appear immediately."
+    },
+    {
+      "date": "2026-07-18",
+      "note": "Second mechanical WorldScene touch: logout() now wraps location.reload() in fadeToBlack() (client/src/fade.ts, games-ui owned) so the page fades to 100% black before reloading \u2014 part of the maintainer's screen-transition pass (every screen fades via black; select and loading fade themselves)."
     }
   ]
 }
