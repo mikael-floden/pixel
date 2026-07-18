@@ -164,6 +164,37 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   foot-slip reported as info — the art glides a little by design,
   cadence-true playback keeps a residual).
 
+## Footstep marks (client/src/footsteps.ts)
+
+- Every foot PLANT stamps a tiny ground mark at the EXACT drawn spot the foot
+  came down; different tile types leave different marks; they fade over ~5s.
+- Plants are measured OFFLINE by `build-manifest.mjs:plantsOf()` — reuses the
+  sole/blob machinery: a grounded blob (size ≥6, maxY within 2px of the sole
+  line) is a PLANT at frame `i` when NO grounded blob sits within ±6px x at
+  frame `i-1` (cyclic) but one DOES at `i+1` (a real stance persists — this
+  `i+1` check killed the 6-7/cycle over-detection down to the true ~2-4).
+  Shipped as `plants: {walk|run: {dir: [{f, x, y}]}}` (frame-pixel coords) in
+  characters.json. Both feet emit (a dir can list the same frame twice = both
+  feet down, e.g. NW f1 left + f1 right).
+- Runtime: WorldScene listens to `ANIMATION_UPDATE` per avatar sprite
+  (`onPlantFrame`), parses the `f:<uid>:<state>:<dir>:<n>` texture key, and for
+  each plant whose `f===n` converts the frame pixel to world coords THROUGH
+  the sprite origin/scale — `wx = sprite.x + (px - originX·frameW)·scaleX`,
+  `wy = sprite.y + (py+1 - originY·frameH)·scaleY` — so the mark lands under
+  the DRAWN foot, not the body anchor. Surface = `surfaceFor(cell.t).sound` at
+  the avatar's cell; swimming avatars leave none (water → ripples idea, TBD).
+  Remote players stamp too.
+- Style per SURFACES sound id (`styleFor`): tints are chosen for CONTRAST, not
+  to match — a dark-green mark on dark-green grass is INVISIBLE, so grass reads
+  as soil pressed through the blades (`fs-pair`, warm brown), dirt/sand/snow
+  press an oval pad (`fs-oval`), stone/wood a faint scuff (`fs-dot`). Stamps
+  are foot-width (~7px) and short (iso ground is shallow-angle). Marks
+  y-sort at depth `y-0.5`; pooled + capped (240, oldest recycles); peak alpha
+  held ~2s then quadratic ease-out. Probes: `__ml.footprints()` (live count),
+  `__ml.footprintsList()` (world pos + style), `__ml.myScreen()` (anchors QA
+  crops). QA lands on flat `trans_demo` material bands (grass/dirt/stone/snow/
+  ice) — headless GL starvation is fine here since marks are instant, not eased.
+
 ## Living camera (WorldScene.updateChaseCam)
 
 - The camera CHASES the player instead of pinning them dead-centre:

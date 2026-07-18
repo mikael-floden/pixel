@@ -279,6 +279,50 @@ function gaitFpsOf(animsDir, animations, animSrc) {
   return out;
 }
 
+/**
+ * FOOT-PLANT extraction (footstep marks): find the frames where a foot
+ * TOUCHES DOWN and the exact pixel it lands on, per (gait, direction).
+ *
+ * A foot blob is GROUNDED when its lowest row reaches the frame's sole line
+ * (within 2px). A PLANT event at frame i is a grounded blob with NO grounded
+ * blob near the same x (±6px) in the PREVIOUS frame (cyclic) — i.e. this
+ * foot just arrived on the ground. In-place gait art keeps the stance foot
+ * still, so each foot yields exactly one plant per cycle (walk: 2 plants).
+ * Position = the blob's centre x + its own ground row, in FRAME pixels —
+ * the runtime converts through the sprite's origin/scale, so the mark lands
+ * on the exact drawn spot (maintainer: "the exact spot the foot was down").
+ */
+function plantsOf(animsDir, src, dir, n) {
+  const grounded = []; // per frame: [{x, y}]
+  for (let i = 0; i < n; i++) {
+    const png = pngAlpha(join(animsDir, src, dir, `${i}.png`));
+    if (!png) return [];
+    const sole = soleOf(png);
+    if (sole < 0) return [];
+    grounded.push(
+      bandBlobs(png, sole, 12)
+        .filter((b) => b.size >= 6 && b.maxY >= sole - 2)
+        .map((b) => ({ x: +blobCenter(b).toFixed(1), y: b.maxY })),
+    );
+  }
+  // A real touchdown STAYS planted: the foot must be absent at i-1 (it was
+  // swinging) AND still grounded near the same spot at i+1 (stance persists).
+  // Without the persistence check, side views over-detected 6-7 "plants" per
+  // 8-frame cycle from blob jitter/splits — a cycle has exactly two.
+  const near = (list, x, r) => list.some((q) => Math.abs(q.x - x) <= r);
+  const plants = [];
+  for (let i = 0; i < n; i++) {
+    const prev = grounded[(i - 1 + n) % n];
+    const next = grounded[(i + 1) % n];
+    for (const g of grounded[i]) {
+      if (!near(prev, g.x, 6) && near(next, g.x, 6)) {
+        plants.push({ f: i, x: g.x, y: g.y });
+      }
+    }
+  }
+  return plants;
+}
+
 function displayName(look, fallback) {
   let s = (look || fallback || "").trim();
   for (const sep of [",", ";", " with ", " glowing", " wearing"]) {
@@ -346,6 +390,19 @@ function scan() {
       }
     }
     const gaitFps = gaitFpsOf(animsDir, animations, animSrc);
+    // Footstep plants for the moving gaits (walk/run; jump lands too).
+    const plants = {};
+    for (const state of ["walk", "run"]) {
+      const src = animSrc[state];
+      const perDir = animations[state];
+      if (!src || !perDir) continue;
+      const byDir = {};
+      for (const [d, n] of Object.entries(perDir)) {
+        const ev = plantsOf(animsDir, src, d, n);
+        if (ev.length) byDir[d] = ev;
+      }
+      if (Object.keys(byDir).length) plants[state] = byDir;
+    }
     const webRoot = "/assets/" + relative(ASSETS_ROOT, charDir).split("\\").join("/");
     characters.push({
       uid: id,
@@ -361,6 +418,7 @@ function scan() {
       animSrc,
       anchors,
       gaitFps,
+      plants,
     });
   }
   return characters;

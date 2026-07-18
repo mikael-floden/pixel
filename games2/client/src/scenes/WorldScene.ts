@@ -61,6 +61,7 @@ import {
 import { joinWorld } from "../net";
 import { ChatUI } from "../chat";
 import { WeatherFX } from "../weatherfx";
+import { Footsteps } from "../footsteps";
 import { setClockPhase, setClockAngle, clockStar } from "../clock";
 import { HudBar, mountPageFrame } from "../hud";
 import { setLoadingProgress, hideLoading } from "../loading";
@@ -489,6 +490,7 @@ export class WorldScene extends Phaser.Scene {
   private curMist = 0;
   private curPrecipDim = 0;
   private weatherFX?: WeatherFX;
+  private footsteps?: Footsteps;
   private timeFrozen = true; // synced mirror of WorldState.frozen (switch state)
   private timeSpeed = 0; // synced mirror of WorldState.timeSpeed (button label)
   private phaseT = 0.5; // synced mirror of WorldState.phaseT (continuous progress)
@@ -877,6 +879,20 @@ export class WorldScene extends Phaser.Scene {
       },
       cloudAt: (wx: number, wy: number) => this.night?.cloudFactorAt(wx, wy, this.curCloud, this.curSun[3]) ?? 1,
       mistAt: (wx: number, wy: number) => this.night?.mistAt(wx, wy, this.curMist) ?? 0,
+      // Footstep-mark probes: live count + per-mark world pos/style.
+      footprints: () => this.footsteps?.count() ?? 0,
+      footprintsList: () => this.footsteps?.list() ?? [],
+      // My avatar's on-screen position (CSS px) — anchors QA screenshot crops.
+      myScreen: () => {
+        const av = this.avatars.get(this.room?.sessionId ?? "");
+        if (!av) return null;
+        const cam = this.cameras.main;
+        return {
+          sx: (av.sprite.x - cam.worldView.x) * cam.zoom,
+          sy: (av.sprite.y - cam.worldView.y) * cam.zoom,
+          zoom: cam.zoom,
+        };
+      },
       // World-state setters (games-ambient's demo button): jump the SHARED
       // time/weather straight to a value via the messages' {v} extension —
       // without {v} those messages keep their legacy cycle semantics.
@@ -1466,6 +1482,11 @@ export class WorldScene extends Phaser.Scene {
     const sprite = this.add.sprite(p0.x, p0.y, hasArt ? key : PLACEHOLDER_TEX);
     const baseTint = hasArt ? 0xffffff : colorForName(player.name || id);
     sprite.setTint(baseTint);
+    // Footstep marks: stamp on the measured foot-plant frames (see
+    // footsteps.ts). Listener per avatar sprite — remote players stamp too.
+    sprite.on(Phaser.Animations.Events.ANIMATION_UPDATE, (_a: unknown, frame: Phaser.Animations.AnimationFrame) =>
+      this.onPlantFrame(uid, sprite, frame),
+    );
     // Pin the sprite at the measured foot anchor (sole line) so the drawn feet
     // sit exactly on the collision position; fall back to a sane default.
     this.applyAnchor(sprite, uid, DEFAULT_DIRECTION, hasArt);
@@ -1947,6 +1968,7 @@ export class WorldScene extends Phaser.Scene {
       lights.push(...this.emissiveLights);
     }
     this.applyObjectLights();
+    this.footsteps?.update(this.time.now);
     this.atmo.update(lights, this.cameras.main, dt);
   }
 
@@ -3618,6 +3640,41 @@ export class WorldScene extends Phaser.Scene {
     // Light at flame height: full fire flicker for the shader; a warm glow
     // for the canvas fallback (drawn in update()).
     this.campfire = { col: cell.col + 0.5, row: cell.row + 0.5, z: lvl + 0.5, x: p.x, y: p.y - 4, depth };
+  }
+
+  /** ANIMATION_UPDATE handler: if this (state, dir, frame) is a measured
+   * foot-plant, stamp a mark at the frame-pixel the foot landed on,
+   * converted through the sprite's origin/scale to world coords. */
+  private onPlantFrame(uid: string, sprite: Phaser.GameObjects.Sprite, frame: Phaser.Animations.AnimationFrame) {
+    if (!this.world) return;
+    if (!this.footsteps) this.footsteps = new Footsteps(this);
+    // frame texture key: f:<uid>:<state>:<dir>:<n> (see manifest frameKey)
+    const parts = String(frame.textureKey).split(":");
+    if (parts.length !== 5 || parts[0] !== "f") return;
+    const state = parts[2];
+    if (state !== "walk" && state !== "run") return;
+    const def = this.manifest.characters.find((c) => c.uid === uid);
+    const ev = def?.plants?.[state]?.[parts[3]];
+    if (!ev || !def) return;
+    const n = Number(parts[4]);
+    let av: { fx: number; fy: number; swimming?: boolean } | undefined;
+    for (const pEv of ev) {
+      if (pEv.f !== n) continue;
+      if (!av) {
+        for (const a of this.avatars.values()) if (a.sprite === sprite) { av = a; break; }
+        if (!av || av.swimming) return;
+      }
+      // frame pixel -> world: through the sprite's origin (the measured foot
+      // anchor) and scale, so the mark lands under the DRAWN foot
+      const wx = sprite.x + (pEv.x - sprite.originX * def.frameW) * sprite.scaleX;
+      const wy = sprite.y + (pEv.y + 1 - sprite.originY * def.frameH) * sprite.scaleY;
+      // ground type at the avatar's cell (marks differ per tile type)
+      const c = Math.floor(av.fx / CELL_WU);
+      const r = Math.floor(av.fy / CELL_WU);
+      const cell = this.world.rows[r]?.[c];
+      if (!cell) return;
+      this.footsteps.spawn(wx, wy, surfaceFor(cell.t).sound, sprite.scaleX);
+    }
   }
 
   /** Project an authoritative world position (flat x,y) onto the iso ground —

@@ -13,6 +13,10 @@ export interface CharacterDef {
   // walk -> walking, run -> running-8-frames, jump -> jumping-1, kick ->
   // high-kick). Frames: <root>/animations/<animSrc[state]>/<dir>/<n>.png.
   animSrc?: Record<string, string>;
+  // Foot-plant events per gait/direction (footstep marks): the frame index
+  // where a foot touches down + the landing pixel in FRAME coords (see
+  // build-manifest.mjs plantsOf).
+  plants?: Record<string, Record<string, { f: number; x: number; y: number }[]>>;
   // Foot anchor per direction: where the sole line (centre point between the
   // feet) sits inside the frame, as origin fractions. Pinning the sprite there
   // makes the drawn feet meet the collision position exactly. `top` is the
