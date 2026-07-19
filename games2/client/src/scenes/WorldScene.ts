@@ -116,6 +116,7 @@ const INPUT_HZ = 20;
 const BUBBLE_MS = 5000;
 const PLACEHOLDER_TEX = "placeholder:wanderer";
 const SHADOW_TEX = "avatar:shadow";
+const FOAM_TEX = "avatar:foam"; // 1px white crest + 2px dark water (swim waterline)
 // Tile self-emission is data-driven: tiles/emission.json (owned by the tiles
 // agent — every category has an entry, null = does not glow). Each glowing
 // category gets (a) a self-glow FLOOR on its own pixels (shader, nightlight.ts)
@@ -307,6 +308,7 @@ interface Avatar {
   bobPhase: number; // per-avatar swim bob phase
   waterMaskG?: Phaser.GameObjects.Graphics; // half-plane-above-shoulders mask shape
   waterMask?: Phaser.Display.Masks.GeometryMask; // the reusable geometry mask
+  foam?: Phaser.GameObjects.Image; // waterline foam strip (1px white + 2px dark water)
   baseTint: number;
   bubble?: Phaser.GameObjects.Text;
   bubbleUntil?: number;
@@ -582,6 +584,7 @@ export class WorldScene extends Phaser.Scene {
   async create() {
     this.ensurePlaceholderTexture();
     this.ensureShadowTexture();
+    this.ensureFoamTexture();
     this.buildAnimations();
     if (this.world) this.setupStreamingGround();
     else this.drawGround();
@@ -1282,6 +1285,7 @@ export class WorldScene extends Phaser.Scene {
     av.label.destroy();
     av.waterMask?.destroy();
     av.waterMaskG?.destroy();
+    av.foam?.destroy();
     av.bubble?.destroy();
     this.avatars.delete(id);
     gameAudio.dropAvatar(id);
@@ -2736,6 +2740,7 @@ export class WorldScene extends Phaser.Scene {
     const sp = av.sprite;
     if (!av.swimming || swimT <= 0.001) {
       if (sp.mask) sp.clearMask();
+      av.foam?.setVisible(false);
       return;
     }
     const { def, s } = this.waterlineFor(av.character, dir);
@@ -2771,6 +2776,18 @@ export class WorldScene extends Phaser.Scene {
     g.fillStyle(0xffffff);
     g.fillPoints([p1, p2, p3, p4], true);
     sp.setMask(av.waterMask!);
+
+    // Waterline foam: a 1px white crest + 2px darker water along the clip line
+    // (where the water intersects the body). The 1×3 texture is stretched to
+    // the shoulder width and rotated to the line — nearest-neighbour, so it
+    // reads as pixel art at the character's own pixel size, not a soft border.
+    if (!av.foam) av.foam = this.add.image(0, 0, FOAM_TEX).setOrigin(0, 0);
+    av.foam
+      .setPosition(L.x, L.y)
+      .setRotation(Math.atan2(dy, dx))
+      .setDisplaySize(len, 3 * sp.scaleY)
+      .setDepth(sp.depth + 0.1)
+      .setVisible(true);
   }
 
   /** Pick an existing animation, falling back run→walk→idle then default dir. */
@@ -3872,6 +3889,21 @@ export class WorldScene extends Phaser.Scene {
     ctx.fillStyle = grd;
     ctx.fillRect(0, 0, w, w);
     ctx.restore();
+    tex!.refresh();
+  }
+
+  /** Waterline foam strip: 1px WHITE line + 2px darker water, at native
+   * (1 game-pixel = 1 texture row) resolution. Stretched along the clip line
+   * and tinted per pixel via the texture, so it scales/tilts exactly like the
+   * character's own pixels (nearest-neighbour) — no CSS-border softness. */
+  private ensureFoamTexture() {
+    if (this.textures.exists(FOAM_TEX)) return;
+    const tex = this.textures.createCanvas(FOAM_TEX, 1, 3);
+    const ctx = tex!.getContext();
+    ctx.fillStyle = "rgba(236,248,255,0.92)"; // foam crest (near-white)
+    ctx.fillRect(0, 0, 1, 1);
+    ctx.fillStyle = "rgba(6,26,34,0.42)"; // 2px darker water beneath the crest
+    ctx.fillRect(0, 1, 1, 2);
     tex!.refresh();
   }
 
