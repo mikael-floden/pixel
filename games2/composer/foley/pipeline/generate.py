@@ -150,22 +150,25 @@ SETS: dict[str, dict] = {
     # No max_ms (a grunt's vowel IS the sound — transient-tightening would cut
     # it) and no judge (measurable gates can't grade a voice; ears decide via
     # /#foley). A small POSITIVE brief per the negative-prompt-backfire lesson.
-    # The avatar is a GIRL (maintainer 2026-07-19: round-1 came back a male
-    # orc grunt — "she is a girl you know"). Brief now names a young girl /
-    # high feminine voice in EVERY clause (the model latches onto voice
-    # gender from the whole phrase, not one word).
+    # The avatar is female (maintainer 2026-07-19: round-1 came back a male
+    # orc grunt — "she is a girl you know"). CAREFUL: "young girl / small
+    # girl / little girl" wording gets HARD-BLOCKED by ElevenLabs moderation
+    # (request_blocked_due_to_moderation, 403 — child-voice ToS). Say "young
+    # WOMAN / female heroine" instead: still light, bright and high-pitched,
+    # but an adult voice that passes moderation. Feminine in every clause
+    # (the model reads gender from the whole phrase, positive per the lesson).
     "jump_voice": {
         "brief": (
-            "a young girl's short light vocal effort as she jumps, a cute "
-            "high-pitched 'hyah', a small girl's bright feminine voice"
+            "a young woman's short light vocal effort as she jumps, a quick "
+            "bright high 'hyah', an energetic female adventure heroine's voice"
         ),
-        "style": "clean close-miked dry vocal, a single short isolated girl's grunt",
+        "style": "clean close-miked dry vocal, a single short isolated female grunt",
         "duration_s": 0.5,
         "variants": [
-            "a short bright girly hyah",
-            "a lighter cute hup",
-            "a soft high heh",
-            "a quick little huh",
+            "a short bright hyah",
+            "a lighter quick hup",
+            "a higher soft heh",
+            "a quick light huh",
         ],
         "takes": 4,
         "pool": 8,
