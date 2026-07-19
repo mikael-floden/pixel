@@ -48,18 +48,19 @@ const ROT4 = [0, 90, 180, 270]; // whole-quarter turns keep pixels grid-aligned
 
 const WAVE_FRAMES = ["amb-wave0", "amb-wave1", "amb-wave2", "amb-wave3"];
 const GLINT_FRAMES = ["amb-glint0", "amb-glint1", "amb-glint2"];
-// Wavelet — a HORIZONTAL line (maintainer liked these over the diagonals): a
-// 5px crest of a dim MID highlight (m) with a bright SHIMMER pair (B) that
-// travels along it a pixel per frame, over a TONED-DOWN thin shadow (d). The
-// shimmer is the animation — an in-place glint marching along the line, not the
-// object sliding. 7×2, no rotation (kept horizontal).
-type WMap = { d: number[][]; m: number[][]; B: number[][] };
-const WTROUGH: number[][] = [[2, 1], [3, 1], [4, 1]]; // subtle shadow under the middle
+// Wavelet — a HORIZONTAL line (maintainer liked these over the diagonals),
+// drawn ADDITIVE like the spark glints so it reads with the same CRISP WHITE
+// PUNCH (maintainer: "the white lines lack the crisp punchiness the spark
+// brings"). A 5px bright cyan-white crest (m) with a pure-WHITE shimmer pair
+// (B) marching along it a pixel per frame — an in-place animated glint, not the
+// object sliding. No dark trough (additive can't darken, and it wanted toning
+// down anyway). 7×1, no rotation (kept horizontal).
+type WMap = { m: number[][]; B: number[][] };
 const wshimmer = (b: number): WMap => {
   const m: number[][] = [];
   const B: number[][] = [];
   for (let x = 1; x <= 5; x++) (x === b || x === b + 1 ? B : m).push([x, 0]);
-  return { d: WTROUGH, m, B };
+  return { m, B };
 };
 const WF = [wshimmer(1), wshimmer(2), wshimmer(3), wshimmer(4)]; // shimmer travels right
 // Glint "tetromino" — a plus with ONE arm pixel missing (asymmetric), so a
@@ -68,9 +69,8 @@ const WF = [wshimmer(1), wshimmer(2), wshimmer(3), wshimmer(4)]; // shimmer trav
 const G0 = [[1, 0], [1, 1], [1, 2], [2, 1]]; // full T (missing left)
 const G1 = [[1, 1], [2, 1]]; // shrunk
 const G2 = [[1, 1]]; // point
-const WAVE_BRIGHT = 0xeafafc; // travelling shimmer glint (brightest point on the line)
-const WAVE_MID = 0xbfe6ea; // the crest LINE itself — visible cyan (the look the maintainer liked)
-const WAVE_DIM = 0x3d6a72; // trough shadow — toned DOWN (barely darker than the water)
+const WAVE_BRIGHT = 0xffffff; // pure-white shimmer glint — crisp, exactly like the spark
+const WAVE_MID = 0xcdeef2; // the crest LINE — bright cyan-white (additive → crisp punch)
 const WAVE_NIGHT_TINT = 0x9db6d6; // multiplies the crest toward moonlit blue at night
 
 const lerpC = (a: number, b: number, t: number) => {
@@ -141,8 +141,7 @@ export function waterFeature(): AmbientFeature {
       g.destroy();
     };
     WF.forEach((f, i) =>
-      paint(WAVE_FRAMES[i], 7, 2, [
-        { c: WAVE_DIM, px: f.d },
+      paint(WAVE_FRAMES[i], 7, 1, [
         { c: WAVE_MID, px: f.m },
         { c: WAVE_BRIGHT, px: f.B },
       ]),
@@ -266,7 +265,7 @@ export function waterFeature(): AmbientFeature {
         ? 0
         : Math.min(MAX_GLINT, Math.round((area / AREA_PER_GLINT) * waterFrac * refl.strength));
 
-      while (waves.length < wantWave) waves.push(makeMark(ctx.scene, WAVE_FRAMES, DEPTH_WAVE, false));
+      while (waves.length < wantWave) waves.push(makeMark(ctx.scene, WAVE_FRAMES, DEPTH_WAVE, true));
       while (glints.length < wantGlint) glints.push(makeMark(ctx.scene, GLINT_FRAMES, DEPTH_GLINT, true));
       while (waves.length > wantWave) waves.pop()!.sprite.destroy();
       while (glints.length > wantGlint) glints.pop()!.sprite.destroy();
