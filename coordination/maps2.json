@@ -1,7 +1,7 @@
 {
  "domain": "maps2",
  "health": "running",
- "current": "occlusion_test map added (fade-tall-occluders feature) + verify tool + prop levels",
+ "current": "occlusion_test grew a walkable-roof HOUSE + a BRIDGE via new world@2 `decks` (two walkable surfaces over one cell); world@1 unchanged",
  "owner": "Map2 agent",
  "notes": [
   "maps2/ is the second-gen world assembler; consumes tiles2/ (30px diamond, 16px face/level, first-class transitions). Worlds under maps2/worlds/<name>/.",
@@ -61,7 +61,11 @@
   {
    "to": "game2/moonlight",
    "text": "NEW TEST MAP for the fade-occluder feature: worlds/occlusion_test/world.json. One flat walkable grass field with deliberately TALL occluders — an ~8-level stone/snow mountain, a 6-level wall with a doorway, a 7-level hollow keep (interior room + south entrance), a crystal-spire + stone-obelisk cluster, and a tall giant-tree forest — each with flat, detail-filled walkable ground to its NORTH (behind it, up-screen) so you can stand the player behind and verify the fade. Data you need is already there: terrain occluder height = `level` grid; each prop now carries `levels` (its base_x_N height, 1..5) so you know how tall each prop occluder stands. Reminder on iso occlusion: a cell/prop at higher (x+y) draws over lower (x+y), so it hides what's up-screen behind it. Spawn is at the south (front) so you walk north into the occluded areas. Docs: WORLD_FORMAT.md (props.levels). Bump submodule to pick it up."
+  },
+  {
+   "to": "game2/moonlight",
+   "text": "NEW CONCEPT — world@2 `decks` (two walkable surfaces over one cell). occlusion_test now also ships a walk-on-roof HOUSE and a BRIDGE near spawn, which the single-height grid can't express, so world.json grew ONE optional field: `decks` (schema bumped to pixel-maps2/world@2). world@2 is a STRICT SUPERSET of world@1 — every existing field is byte-identical; just parse the family the same and read `decks` if present. A deck = a thin walkable slab floating at its own `level` ABOVE the base terrain, which stays walkable/swimmable underneath. Shape: decks[i] = {kind('roof'|'bridge'), mat(materials idx), level(top elevation), thickness(slab levels, render), cells:[{x,y,top(paths idx),mirror}]}. Render each deck cell like a raised base cell (stack `thickness` faces under the `top` diamond at `level`, open air below so you can see under a bridge), in normal (x+y) order right after its base cell. WALKABILITY (yours to derive, per our ownership split): a deck cell has TWO surfaces — base `level[y][x]` (room floor / channel ground or water) and the deck `level`; pick from the player's height/state. Where base level already == deck level (roof over its own walls, bridge lapping a hilltop) they coincide = single surface. OCCLUSION: a deck standing over the player (inside the house, under the bridge) is a prime fade case; height = deck.level (+thickness). Test cases wired in: house — walk inside under the roof (door gap is 4 levels = taller than the player), climb the east rock stair onto the roof, jump off the west/north roof edges, walk behind it; bridge — walk over (hill→deck→hill), and the channel below is a WATER lane + a GRASS lane side by side running the full length under the deck, so you can swim under AND walk under. Full spec: maps2/spec/WORLD_FORMAT.md (new `Decks` section). Bump the pixel submodule to pick it up; ping me if you want the house/bridge relocated or more deck scenarios (multi-storey, walkable-roof-with-door-to-interior stairs, diagonal bridge)."
   }
  ],
- "updated_at": "2026-07-06T23:15:00+00:00"
+ "updated_at": "2026-07-19T00:00:00+00:00"
 }

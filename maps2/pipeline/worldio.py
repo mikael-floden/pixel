@@ -56,7 +56,7 @@ def _is_emissive(rel_path: str) -> bool:
 
 
 def save_world(path, *, name, mat, top, mirror=None, level=None, spawn,
-               props=None, water=("clear_water",), meta=None):
+               props=None, water=("clear_water",), decks=None, meta=None):
     """Serialize a grid world to `path`.
 
     mat    : 2D array of material-id strings ("" = void).
@@ -65,6 +65,13 @@ def save_world(path, *, name, mat, top, mirror=None, level=None, spawn,
     level  : 2D int array of elevation levels or None (flat).
     spawn  : (x, y) start cell.
     props  : dict {(x, y): path} or iterable of (x, y, path).
+    decks  : optional list of elevated walkable slabs (roofs, bridge spans) that
+             sit ABOVE the base terrain (which stays walkable/swimmable beneath) —
+             the only place the map carries TWO surfaces at one (x, y). Each deck:
+             {"kind", "mat", "level", "thickness", "cells":[{"x","y","top","mirror"}]}
+             where `top` is an absolute tile path. Presence bumps schema to world@2
+             (a strict superset of world@1); absence leaves the doc byte-for-byte
+             world@1, so nothing changes for the roof-less maps.
     """
     mat = np.asarray(mat, object)
     H, W = mat.shape
@@ -72,8 +79,10 @@ def save_world(path, *, name, mat, top, mirror=None, level=None, spawn,
     mirror = np.zeros((H, W), bool) if mirror is None else np.asarray(mirror, bool)
     waterset = set(water)
 
-    # material legend: "" -> 0, then stable order of appearance
-    mats = ["" ] + sorted({m for m in mat.ravel() if m})
+    # material legend: "" -> 0, then stable order of appearance (deck materials,
+    # which may not appear in the base grid, are unioned in so `mat` indices resolve)
+    deck_mats = {dk["mat"] for dk in decks} if decks else set()
+    mats = ["" ] + sorted({m for m in mat.ravel() if m} | deck_mats)
     matid = {m: i for i, m in enumerate(mats)}
 
     paths: list[str] = []
@@ -114,6 +123,20 @@ def save_world(path, *, name, mat, top, mirror=None, level=None, spawn,
                               "levels": _levels(p)})
             prop_cell.add((int(x), int(y)))
 
+    # decks (world@2): elevated walkable slabs over the base terrain. Intern each
+    # cell's top tile into the same `paths` table; store `mat` as a legend index.
+    deck_list = []
+    if decks:
+        for dk in decks:
+            cells = [{"x": int(c["x"]), "y": int(c["y"]),
+                      "top": intern(c["top"]), "mirror": int(c.get("mirror", 0))}
+                     for c in dk["cells"]]
+            deck_list.append({"kind": dk.get("kind", "deck"),
+                              "mat": matid[dk["mat"]],
+                              "level": int(dk["level"]),
+                              "thickness": int(dk.get("thickness", 1)),
+                              "cells": cells})
+
     # collision: water, void, or a prop cell blocks
     collide = [[1 if (mat[y, x] == "" or mat[y, x] in waterset
                       or (x, y) in prop_cell) else 0
@@ -153,6 +176,11 @@ def save_world(path, *, name, mat, top, mirror=None, level=None, spawn,
         "emissive": [1 if _is_emissive(p) else 0 for p in paths],
         "props": prop_list,
     }
+    # decks are the sole world@2 addition: a strict superset, so emit them (and the
+    # bumped schema) only when present — roof-less maps stay exactly world@1.
+    if deck_list:
+        doc["schema"] = "pixel-maps2/world@2"
+        doc["decks"] = deck_list
     if meta:
         doc["meta"] = meta
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -182,6 +210,7 @@ class World:
         self.collision = np.array(d["collision"], np.uint8)
         self.emissive = d.get("emissive", [0] * len(self.paths))
         self.props = d.get("props", [])
+        self.decks = d.get("decks", [])       # world@2: elevated walkable slabs
         self.meta = d.get("meta", {})
 
 

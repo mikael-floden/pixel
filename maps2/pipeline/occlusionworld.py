@@ -7,9 +7,24 @@ mountain, a long wall with a doorway, a hollow keep, tower clusters, and a tall
 forest — each with flat, walkable, detail-filled ground to its NORTH (behind it,
 up-screen). Walk the player up behind any of them and the structure should fade.
 
-Nothing exotic in the data: terrain height is in `level`, props carry `levels`
-(their base_x_N height) in world.json — enough for the game to know how tall each
-occluder stands. One flat walkable field, so the player can reach behind them all.
+Near spawn it also carries two structures that need a SECOND walkable surface over
+the same footprint — expressed with the new world@2 `decks` concept (elevated
+walkable slabs floating over the base terrain, which stays walkable/swimmable
+underneath):
+
+  * a flat-roofed HOUSE — walls stand 4 levels high with a door gap TALLER than the
+    player in the south (front) wall so you can walk into the room; a rock
+    staircase on the RIGHT (east) climbs onto the roof deck; the LEFT (west) and
+    BACK (north) roof edges are open drops. Tests: walk inside under the roof, walk
+    on the roof, jump off the left/back edges, walk behind the house.
+  * a stone BRIDGE between two grassy hills — climb either hill's ramp and walk
+    OVER the deck; the channel beneath is half grass, half water, so you can walk
+    UNDER the deck and swim UNDER it too.
+
+Nothing exotic in the base data: terrain height is in `level`, props carry `levels`
+(their base_x_N height); the house roof and bridge span are `decks` entries in
+world.json (kind/level/thickness/cells). One connected walkable field, so the
+player can reach every structure — and behind/under all of them.
 """
 
 from __future__ import annotations
@@ -48,9 +63,14 @@ class Occlude:
         self.top = np.full((n, n), None, object)
         self.mirror = np.zeros((n, n), bool)
         self.props = {}
+        self.decks = []                # elevated walkable slabs (roof, bridge span)
+        self.reserved = set()          # cells the house/bridge own (keep props off)
         self.spawn = (n // 2, n - 6)                            # front (down-screen)
         self._structures()
+        self._house()                  # flat-roof house: room + walkable roof deck
+        self._bridge()                 # bridge over a half-grass/half-water channel
         self._paint()
+        self.deck_at = {(x, y): dk for dk in self.decks for (x, y) in dk["cells"]}
         self._decorate()
 
     def _wall(self, x0, y0, x1, y1, lvl, mat="stone_mountain"):
@@ -113,6 +133,82 @@ class Occlude:
         self._wall(int(n * 0.30), int(n * 0.30), int(n * 0.46), int(n * 0.32), 12)
         self._wall(int(n * 0.60), int(n * 0.68), int(n * 0.62), int(n * 0.82), 12)
 
+    # -- house + bridge (need a second walkable surface: world@2 decks) --------
+
+    def _reserve(self, x0, x1, y0, y1):
+        for y in range(max(0, y0), min(self.n, y1)):
+            for x in range(max(0, x0), min(self.n, x1)):
+                self.reserved.add((x, y))
+
+    def _house(self):
+        """A flat-roofed stone house near spawn. Walls stand ROOF levels high; the
+        SOUTH (front) wall has a full-height door gap — taller than the player — so
+        you walk into the room, whose floor stays at ground level. A rock staircase
+        on the RIGHT (east) climbs to the roof, a walkable deck flush with the wall
+        tops; its LEFT (west) and BACK (north) edges are open drops to the grass."""
+        x0, y0, w, d = 54, 104, 10, 8
+        x1, y1 = x0 + w, y0 + d
+        ROOF = 4                                     # 4 levels = 64px: door > player
+        wall = "stone_mountain"
+        for y in range(y0, y1):
+            for x in range(x0, x1):
+                if x in (x0, x1 - 1) or y in (y0, y1 - 1):
+                    self.mat[y, x] = wall            # perimeter wall column
+                    self.level[y, x] = ROOF
+                # interior stays grass @ level 0: a walkable room under the roof
+        # tall door gap in the SOUTH wall (front, down-screen) — two cells, full height
+        dcx = x0 + w // 2
+        for x in (dcx - 1, dcx):
+            self.mat[y1 - 1, x] = "saturated_grass"
+            self.level[y1 - 1, x] = 0
+        # rock STAIRCASE on the right (east): steps 4,3,2,1 down to the ground, so
+        # the player climbs it up onto the roof; its top step is flush with the roof
+        for k, lvl in enumerate((4, 3, 2, 1)):
+            x = x1 + k
+            for y in range(y0 + 1, y1 - 1):
+                self.mat[y, x] = wall
+                self.level[y, x] = lvl
+        # ROOF DECK: a walkable slab over the whole footprint, flush with wall tops
+        cells = [(x, y) for y in range(y0, y1) for x in range(x0, x1)]
+        self.decks.append({"kind": "roof", "mat": wall, "level": ROOF,
+                           "thickness": 1, "cells": cells})
+        self._reserve(x0 - 1, x1 + 5, y0 - 1, y1 + 1)
+
+    def _bridge(self):
+        """A stone bridge spanning a channel between two grassy hills, near spawn.
+        Each hill rises to DECK level with a south ramp you climb; the deck connects
+        the two hilltops (walk OVER). The channel below stays at ground level and is
+        HALF grass / HALF water, so you can walk UNDER the deck on the grass and swim
+        UNDER it in the water — a second walkable surface over one footprint."""
+        DECK = 4
+        y0, y1 = 104, 119                    # hills + channel span (near spawn)
+        ax0, ax1 = 34, 40                    # west hill x-range
+        gx0, gx1 = 40, 46                    # channel (the gap) x-range
+        bx0, bx1 = 46, 52                    # east hill x-range
+        plateau = y1 - 4                     # last flat row before the south ramp
+        # two grassy hills: flat at DECK, ramping down to ground on the south side
+        for hx0, hx1 in ((ax0, ax1), (bx0, bx1)):
+            for y in range(y0, y1):
+                for x in range(hx0, hx1):
+                    self.mat[y, x] = "saturated_grass"
+                    self.level[y, x] = (DECK if y < plateau
+                                        else max(0, DECK - (y - plateau + 1)))
+        # channel floor at ground level, running the FULL length between the hills:
+        # a WATER lane on the west and a GRASS lane on the east, side by side, so a
+        # player can swim UNDER the deck (water lane) and walk UNDER it (grass lane),
+        # each passing all the way through beneath the bridge.
+        wmid = (gx0 + gx1) // 2
+        for y in range(y0, y1):
+            for x in range(gx0, gx1):
+                self.level[y, x] = 0
+                self.mat[y, x] = "clear_water" if x < wmid else "saturated_grass"
+        # the DECK: spans the gap and laps both hilltops, covering water AND grass
+        cells = [(x, y) for y in range(108, 113)
+                 for x in range(ax1 - 1, bx0 + 1)]
+        self.decks.append({"kind": "bridge", "mat": "stone_mountain", "level": DECK,
+                           "thickness": 1, "cells": cells})
+        self._reserve(ax0 - 1, bx1 + 1, y0 - 1, y1 + 1)
+
     # -- auto-tile -------------------------------------------------------------
 
     def _paint(self):
@@ -133,7 +229,9 @@ class Occlude:
         for (x, y) in cells:
             if any(abs(px - x) < spacing and abs(py - y) < spacing for px, py in placed):
                 continue
-            if (x, y) in self.props:
+            if (x, y) in self.props or (x, y) in self.reserved:
+                continue
+            if (x, y) in self.deck_at:                 # never under/on a deck
                 continue
             if on_ground and self.level[y, x] > 0:     # flat ground only
                 continue
@@ -210,6 +308,15 @@ class Occlude:
             if p is not None:
                 pr = self.lib.img(p)
                 canvas.alpha_composite(pr, (bx, (by - L * LEVEL_PX) + GROUND_BOTTOM - self._ymax(pr)))
+            # DECK slab (roof / bridge span): a thin walkable slab floating at its
+            # own level over the base cell, with open air beneath (see under it).
+            dk = self.deck_at.get((x, y))
+            if dk is not None:
+                dl, dth = dk["level"], dk["thickness"]
+                dimg = self.lib.img(self.lib.region_base(dk["mat"], x, y))
+                for lvl in range(dl - dth, dl):
+                    canvas.alpha_composite(dimg, (bx, by - lvl * LEVEL_PX))
+                canvas.alpha_composite(dimg, (bx, by - dl * LEVEL_PX - (dimg.height - 64)))
         if scale != 1.0:
             canvas = canvas.resize((int(W * scale), int(H * scale)), Image.LANCZOS)
         return canvas
@@ -219,17 +326,26 @@ def build(out=None, n=128, seed=3):
     d = Occlude(n=n, seed=seed)
     out = out or os.path.join(MAPS2, "worlds", "occlusion_test")
     os.makedirs(out, exist_ok=True)
+    # expand each deck's cells with an explicit (region-coherent) top tile path
+    decks_out = []
+    for dk in d.decks:
+        m = dk["mat"]
+        cells = [{"x": x, "y": y, "top": d.lib.region_base(m, x, y), "mirror": 0}
+                 for (x, y) in dk["cells"]]
+        decks_out.append({"kind": dk["kind"], "mat": m, "level": dk["level"],
+                          "thickness": dk["thickness"], "cells": cells})
     worldio.save_world(os.path.join(out, "world.json"), name="occlusion_test",
                        mat=d.mat, top=d.top, mirror=d.mirror, level=d.level,
-                       spawn=d.spawn, props=d.props)
+                       spawn=d.spawn, props=d.props, decks=decks_out)
     img = d.render()
     img.convert("RGB").save(os.path.join(out, "demo.png"))
     w = 2200
     img.resize((w, round(img.height * w / img.width)), Image.LANCZOS).convert("RGB").save(
         os.path.join(out, "preview.png"))
     tall = int((d.level >= 5).sum())
+    dcells = sum(len(dk["cells"]) for dk in d.decks)
     print(f"occlusion_test {n}x{n}: {len(d.props)} props, max level {int(d.level.max())}, "
-          f"{tall} tall (>=5) terrain cells")
+          f"{tall} tall (>=5) terrain cells, {len(d.decks)} decks / {dcells} deck cells")
     return d
 
 

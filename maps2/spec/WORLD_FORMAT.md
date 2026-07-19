@@ -1,9 +1,16 @@
-# maps2 world format (`pixel-maps2/world@1`)
+# maps2 world format (`pixel-maps2/world@1`, superset `world@2`)
 
 Every world under `maps2/worlds/<name>/` ships a **`world.json`** — the loadable,
 engine-neutral description a client needs to render and walk the map without
 re-running the generator. Written by `maps2/pipeline/worldio.py`
 (`save_world` / `load_world`).
+
+Most worlds are **`world@1`**. A world that carries **decks** (elevated walkable
+slabs — roofs, bridge spans) declares **`world@2`**, which is a strict *superset*:
+every `world@1` field is present and unchanged, plus one optional `decks` array.
+A consumer that ignores unknown fields renders a `world@2` map exactly as a
+`world@1` one (just without the overpasses). Only `occlusion_test` uses `world@2`
+today. See *Decks* below.
 
 ## Coordinate + tile model
 
@@ -64,12 +71,61 @@ stacking `top` reproduces the coherent wall for free.
   landmark tile anchored content-bottom on that cell. `levels` is its height in
   elevation levels (`base_x_N` → N; 1 otherwise) — a hint for occlusion/fade
   logic (how tall the occluder stands). Terrain occluder height is `level`.
+- `decks[]` — **`world@2` only** (optional). Elevated walkable slabs; see *Decks*.
 - `meta` — optional generator metadata (not needed to render).
+
+## Decks (`world@2`)
+
+The base grid is a **heightfield**: one elevation and one surface per `(x, y)`.
+That can't express a **roof you walk under *and* on top of**, or a **bridge you
+walk under, swim under, and walk over** — those need a *second* walkable surface
+floating over the same cell. `decks` adds exactly that, and nothing more.
+
+A deck is a thin horizontal slab sitting at its own elevation **above** the base
+terrain, which stays whatever it was (walkable ground, or water you swim in)
+*underneath*. Fields:
+
+```jsonc
+"decks": [
+  {
+    "kind": "roof",          // or "bridge" — a label; not semantically load-bearing
+    "mat": 5,                 // index into `materials` (the slab's surface material)
+    "level": 4,               // elevation of the slab's WALKABLE TOP, in levels
+    "thickness": 1,           // levels of slab drawn below the top (render only)
+    "cells": [
+      {"x": 58, "y": 105, "top": 12, "mirror": 0}   // top indexes `paths`
+    ]
+  }
+]
+```
+
+Render it like a base cell raised to `level`: stack `thickness` face tiles just
+under the top (leaving **open air** below, so you see under a bridge) and draw the
+`top` diamond at `level`. Draw a deck cell in the normal back-to-front `(x+y)`
+order, right after its base cell.
+
+**Two surfaces, one cell.** For a cell a deck covers, the player can be on the
+**base** surface (`level[y][x]` — the room floor, the ground/water in the channel)
+*or* on the **deck** surface (`deck.level`). The game decides which from the
+player's height/state; the map just states both exist. Where a deck cell's base
+terrain is already at `deck.level` (e.g. the roof over its own walls, or the
+bridge lapping onto a hilltop), the two coincide — a single surface, no overpass.
+
+**Occlusion.** A deck is a tall occluder: standing under the roof or under the
+bridge deck puts the slab between the camera and the player, so it's a prime case
+for the fade-the-occluder system. `level` (+ `thickness`) is how tall it stands.
+
+`occlusion_test` is the reference: a flat-roof **house** (roof deck over a walled
+room with a tall door; a rock stair on the east climbs onto the roof; west/north
+roof edges are open drops) and a **bridge** deck spanning two hills over a channel
+that is half water (swim under) and half grass (walk under).
 
 ## Notes for consumers
 
 - The map is authoritative: `top`/`mirror` are the exact seamless tiles the
   generator chose; don't re-derive transitions.
+- `decks` (world@2) is the *only* place two walkable surfaces share a cell; a
+  world@1 renderer that ignores it still draws a correct (deck-less) ground map.
 - `collision` is the minimal walk mask. Elevation cliffs (large `level` jumps
   between neighbours) are for the client to gate if it wants step limits.
 - All four current worlds validate: `ring_test`, `trans_demo`, `prop_demo`,
@@ -94,8 +150,14 @@ statement.)
 ## Stability
 
 `world@1` is **stable** — this replaced the old ring-only `ringworld@1`
-(which used `matids` + everything under `meta`). New info will be added only as
-**optional** fields under a bumped schema (`world@2`), never by changing or
-removing an existing `world@1` field, so a parser written against this doc keeps
-working. `worldio.load_world()` in `maps2/pipeline/worldio.py` is the reference
-decoder if you want to diff behaviour.
+(which used `matids` + everything under `meta`). New info is added only as
+**optional** fields under a bumped schema, never by changing or removing an
+existing field, so a parser written against this doc keeps working.
+
+`world@2` is the first such bump: it is `world@1` **plus** the optional `decks`
+array — a strict superset. A world only declares `world@2` when it actually ships
+decks; every other field is identical. So a consumer can treat the schema family
+uniformly (parse `world@1` and `world@2` the same, read `decks` if present) and a
+strict `world@1`-only renderer still gets a valid ground map by ignoring `decks`.
+`worldio.load_world()` in `maps2/pipeline/worldio.py` is the reference decoder
+(it reads both) if you want to diff behaviour.
