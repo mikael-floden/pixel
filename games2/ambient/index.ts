@@ -2,6 +2,7 @@ import type Phaser from "phaser";
 import { mountAmbient as mount } from "./runtime/mount";
 import { firefliesFeature } from "./fireflies/fireflies";
 import { pollenFeature } from "./pollen/pollen";
+import { waterFeature } from "./water/water";
 import { batsFeature } from "./bats/bats";
 import { birdsFeature } from "./birds/birds";
 import { thunderFeature } from "./thunder/thunder";
@@ -9,8 +10,9 @@ import { sandstormFeature } from "./sandstorm/sandstorm";
 import { leavesFeature } from "./leaves/leaves";
 
 /** The ambient-life registry — one entry per feature folder. FIELD features
- * (fireflies, pollen) gate themselves on the environment; EPISODE features
- * are rolled by the director on every time-of-day/weather change. Adding an
+ * (fireflies, pollen, water) gate themselves on the environment/terrain;
+ * EPISODE features are rolled by the director on every time-of-day/weather
+ * change. Adding an
  * ambient system = new folder + one line here; nothing outside ambient/
  * changes (see ambient/README.md).
  *
@@ -24,6 +26,7 @@ export function mountAmbient(game: Phaser.Game) {
   mount(game, [
     firefliesFeature(),
     pollenFeature(),
+    waterFeature(),
     batsFeature(),
     birdsFeature(),
     thunderFeature(),

@@ -1,11 +1,11 @@
 {
   "domain": "games-ambient",
-  "updated_at": "2026-07-19T10:00:00+00:00",
+  "updated_at": "2026-07-19T13:30:00+00:00",
   "health": "running",
-  "current": "7 features: fireflies, pollen (fields) + bats, birds, thunder, sandstorm, leaves (episodes). birds + bats are now living TOP-DOWN flocks (boids: cohesion/alignment/separation + wander, moving ANY direction at altitude, scatter/flush from the player with cooldown, one flock at a time that arrives→roams→departs). BIRDS (day, pale gulls) also LAND on dry ground (never water — surface-probed) to peck. BATS (night, dim silhouettes, erratic jink) stay airborne (no landing). bats dimmed + 1.5x (smaller/less bright). night ×0.05 birds / day ×0.01 bats. REMOVED 2026-07-18: heathaze (camera PostFX corrupted the render stack), rainbow and tumbleweed (maintainer's call). leaves fall/land/rest/fade in world coords. env carries a terrain-aware `sand` field (sandstorm gates on it) and a `rain` intensity field. Demo button (Settings) ONLY changes the effect (AUTO/NONE/each effect); AUTO prints the live active effect.",
+  "current": "8 features: fireflies, pollen, water (fields) + bats, birds, thunder, sandstorm, leaves (episodes). NEW water/: living water on lakes/sea — pixel-art wavelets (rolling crests, full-pixel frame animation, NO sub-px slide, cyan not foam-white) + sun/moon REFLECTION glints, time-of-day aware (warm sun sparkles by day, cool dim moon by night). Self-gates on visible water via the game's __ml.waterAtScreen iso probe; both layers above the darkness overlay, driven by env.sun/night. Pixel-perfect (scale 1 = world pixel grid). birds + bats are now living TOP-DOWN flocks (boids: cohesion/alignment/separation + wander, moving ANY direction at altitude, scatter/flush from the player with cooldown, one flock at a time that arrives→roams→departs). BIRDS (day, pale gulls) also LAND on dry ground (never water — surface-probed) to peck. BATS (night, dim silhouettes, erratic jink) stay airborne (no landing). bats dimmed + 1.5x (smaller/less bright). night ×0.05 birds / day ×0.01 bats. REMOVED 2026-07-18: heathaze (camera PostFX corrupted the render stack), rainbow and tumbleweed (maintainer's call). leaves fall/land/rest/fade in world coords. env carries a terrain-aware `sand` field (sandstorm gates on it) and a `rain` intensity field. Demo button (Settings) ONLY changes the effect (AUTO/NONE/each effect); AUTO prints the live active effect.",
   "progress": {
-    "features": 7,
-    "fields": 2,
+    "features": 8,
+    "fields": 3,
     "episodes": 5
   },
   "budget_remaining": null,
@@ -43,6 +43,11 @@
       "to": "games",
       "text": "[2026-07-18b] Follow-up on the same MAINTAINER-AUTHORISED weatherfx.ts access: SNOW (kind 7) now LANDS on the ground like the rain/leaves (maintainer: it had the same 'never hits ground' issue). Each flake gets a landY + a small state machine on the Drop struct (state 0 falling / 1 resting / 2 fading, restT timer): it sways down to its ground height, SETTLES there as a still flake for SNOW_REST 2.5-6s (staying put in WORLD coords so the camera scrolls over it), then melts/fades over SNOW_FADE 1.5s and recycles to the top. Falling twinkle unchanged; resting flakes are steady; a resting flake scrolled far off-screen recycles. Rain's splash path and Windy's bottom-recycle are untouched (snow handled in its own branch). info() now also returns `rest` (count of settled/melting flakes) so QA can confirm snow lands \u2014 surfaced via weatherInfo().precip.rest. Self-contained/additive; typecheck + 60/60 server tests green; browser QA confirmed ~40 flakes settle. Happy to hand the snow block over if you'd rather own it.",
       "at": "2026-07-18T20:10:00+00:00"
+    },
+    {
+      "to": "games",
+      "text": "[2026-07-19] FYI new ambient FIELD games2/ambient/water/ (living water: pixel-art wavelets + sun/moon reflection glints on lakes/sea, maintainer request). It's purely my layer (display objects above the darkness overlay, no edits to your files), but it READS your `__ml.waterAtScreen(wx,wy)` probe (the one you added for the snow melt) to find visible water, plus sunInfo/weatherInfo for time-of-day. Same defensive contract as my other probe reads \u2014 if it's missing the layer just shows nothing. If you ever rename/reshape waterAtScreen (or camView), a ping is appreciated and I'll follow. Thanks for exposing it \u2014 reused verbatim.",
+      "at": "2026-07-19T13:30:00+00:00"
     }
   ]
 }

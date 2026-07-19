@@ -106,8 +106,8 @@ The **"ambient"** settings button picks WHICH ambient effect is on. It
 **never changes time-of-day or weather** — the player owns those
 (maintainer 2026-07-18). The ring is:
 
-  `AUTO → NONE → fireflies → pollen → bats → birds → thunder → sandstorm →
-  leaves → AUTO`
+  `AUTO → NONE → fireflies → pollen → water → bats → birds → thunder →
+  sandstorm → leaves → AUTO`
 
 - **AUTO** — the director + fields run normally; the button prints
   `ambient: auto (<current effect>)`, live — the active episode, else the
@@ -136,6 +136,7 @@ name, or null = auto.
 |--------|------|---------|--------------------------|
 | `fireflies/` | field | Warm, mystical night — tiny wandering lanterns | Night (fades with sun strength), thinned by cloud |
 | `pollen/` | field | Sunbeam dust / drifting pollen in forest air | Sunlit hours, clear-ish sky, drifts on the cloud wind |
+| `water/` | field | Living water — pixel-art wavelets + sun/moon reflection glints on lakes/sea (frame-animated, full-pixel, no sub-px slide) | Wherever water is on screen (found via the iso water probe); glints tint + thin by time-of-day (warm sun by day, cool dim moon at night) |
 | `bats/` | episode | A night colony wheeling through the air: boids flocking in any direction (top-down), erratic jinking, and scattering when the player gets close (no landing — bats stay airborne) | base 1.0; day ×0.01 |
 | `birds/` | episode | A living day flock: boids flocking over the world in any direction (top-down), landing on dry ground to peck, and flushing/scattering when the player gets close | base 1.0; night ×0.05 (the daytime mirror of bats) |
 | `thunder/` | episode | Distant sheet lightning beyond the horizon | base 0.35 × (1 + rain + night); cloud/mist as weak proxies until a rain weather ships |

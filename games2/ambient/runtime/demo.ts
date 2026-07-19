@@ -5,8 +5,8 @@ import { Director } from "./director";
 // 2026-07-18). It ONLY chooses which ambient effect is on; it never touches
 // time-of-day or weather (the player owns those). The ring is:
 //
-//   AUTO → NONE → fireflies → pollen → bats → birds → thunder → sandstorm →
-//   leaves → AUTO
+//   AUTO → NONE → fireflies → pollen → water → bats → birds → thunder →
+//   sandstorm → leaves → AUTO
 //
 // - AUTO  — the game runs the director + fields normally; the button prints
 //           "auto (<current active effect>)" so you can see what's playing.

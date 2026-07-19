@@ -27,7 +27,7 @@ try {
 
   // ---- registry ----
   const list = await page.evaluate(() => window.__mlAmbient.list());
-  for (const want of ["fireflies", "pollen", "bats", "birds", "thunder", "sandstorm", "leaves"])
+  for (const want of ["fireflies", "pollen", "water", "bats", "birds", "thunder", "sandstorm", "leaves"])
     if (!list.includes(want)) fail(`feature ${want} not mounted (got ${list})`);
   if (list.includes("heathaze") || list.includes("rainbow") || list.includes("tumbleweed"))
     fail(`heathaze/rainbow/tumbleweed were removed but still mounted (${list})`);
