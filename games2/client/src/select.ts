@@ -53,50 +53,92 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     applyUiZoom(overlay); // "Desktop site" must not shrink the menu
     // Arm the title theme the moment the screen mounts — NOT only on a button
     // press (maintainer 2026-07-19). Browser autoplay still needs one gesture,
-    // but now ANY first tap (anywhere) unlocks the context and slowTick brings
-    // the theme in; you don't have to hit a button.
+    // but ANY first tap (anywhere) unlocks the context and the theme comes in.
     gameAudio.startTitleTheme();
     injectStyles();
-    // TITLE SCREEN + reveal (maintainer). The select overlay opens behind a
-    // solid black VEIL with ONLY the logo showing (the logo is raised ABOVE the
-    // veil, at its final select-screen position). On boot the logo emerges out
-    // of the black (a from-black fade, like every screen). A tap ANYWHERE fades
-    // the veil out — the select screen appears while the logo never moves (it's
-    // the same element at the same spot), so it reads as "select fades in under
-    // a stationary logo" without ever fading the logo itself. The tap is ALSO
-    // the user gesture that unlocks WebAudio (browsers block sound before the
-    // first touch) — the whole reason for a title screen — so the theme starts.
+    // ── TITLE SCREEN → SELECT (maintainer 2026-07-19) ───────────────────
+    // The select overlay opens behind a solid-black VEIL with ONLY the logo
+    // showing (the logo is z 101, ABOVE the veil). Two entrances:
+    //
+    //  • FIRST LAUNCH (the title beat): the logo emerges on black at the
+    //    LOADING-SCREEN placement (balanced, ~45% down — nicer than sitting at
+    //    the select top). It AUTO-advances (maintainer: "do the click for me")
+    //    after a short hold; on advance the veil lifts to reveal the select
+    //    screen WHILE the logo TRANSLATES up to its final select position. The
+    //    move is a CSS transform on the ONE <img> — no DOM is swapped
+    //    mid-reveal (that would flash during the fade).
+    //
+    //  • FROM THE GAME (logout → reload; the ml-from-game flag): the logo is
+    //    already at its final select position; the screen just fades in from
+    //    black — no title beat, no translate.
+    //
+    // A real tap still advances early (and that gesture unlocks WebAudio — the
+    // point of the title screen). commit()/__mlSelect bypass all of this (they
+    // never touch the veil), so verify-select/-smoke stay green.
+    const fromGame = (() => {
+      try {
+        const f = sessionStorage.getItem("ml-from-game") === "1";
+        sessionStorage.removeItem("ml-from-game");
+        return f;
+      } catch {
+        return false;
+      }
+    })();
     const veil = el("div", "ml-title-veil");
     overlay.appendChild(veil);
-    const logoImg = overlay.querySelector<HTMLImageElement>(".ml-logo");
-    if (logoImg) logoImg.style.opacity = "0";
+    const logoImg = overlay.querySelector<HTMLImageElement>(".ml-logo")!;
+    logoImg.style.opacity = "0";
     const bgImg = new Image();
     bgImg.src = "/ui2/select-bg.png";
-    // Emerge the logo from the black once it's decoded (capped so a slow net
-    // can't hold it black).
-    Promise.race([logoImg?.decode().catch(() => {}), new Promise((r) => setTimeout(r, 1000))]).then(() =>
-      requestAnimationFrame(() =>
-        requestAnimationFrame(() => {
-          if (!logoImg) return;
-          logoImg.style.transition = "opacity .6s ease";
-          logoImg.style.opacity = "1";
-        }),
-      ),
-    );
+    const decode = (im?: HTMLImageElement) => (im ? im.decode().catch(() => {}) : Promise.resolve());
+    const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
+    const twoFrames = (fn: () => void) => requestAnimationFrame(() => requestAnimationFrame(fn));
+
     let revealed = false;
     const reveal = () => {
       if (revealed) return;
       revealed = true;
-      gameAudio.startTitleTheme(); // this gesture unlocks audio + starts music
+      gameAudio.startTitleTheme(); // a real tap here unlocks WebAudio + music
       veil.style.pointerEvents = "none";
-      // Lift the black once the forest art is ready so the reveal lands on real
-      // pixels, not a half-loaded backdrop (capped).
-      Promise.race([bgImg.decode().catch(() => {}), new Promise((r) => setTimeout(r, 450))]).then(() => {
-        veil.style.opacity = "0";
-        setTimeout(() => veil.remove(), 750);
-      });
+      // Slide the logo home (fresh boot; already home from the game) and lift
+      // the black — both once the forest art is ready (capped). The transform
+      // + veil fade run together, so the logo settles as the select appears.
+      Promise.race([decode(bgImg), delay(450)]).then(() =>
+        twoFrames(() => {
+          logoImg.style.transition = "transform .8s cubic-bezier(.22,.61,.36,1), opacity .6s ease";
+          logoImg.style.transform = "translateY(0)";
+          logoImg.style.opacity = "1";
+          veil.style.opacity = "0";
+          setTimeout(() => veil.remove(), 800);
+        }),
+      );
     };
     veil.addEventListener("pointerdown", reveal);
+
+    if (fromGame) {
+      // no title beat — reveal straight away; the logo fades in at its final
+      // select spot together with the screen, from 100% black
+      decode(logoImg).then(() => delay(150).then(reveal));
+    } else {
+      // title beat: drop the logo to the balanced loading placement, fade it in
+      // on black, hold, then AUTO-reveal (slide up + lift the veil). The rest
+      // of chooseCharacter() runs synchronously before this decode resolves, so
+      // the panel is fully laid out and the logo's final spot measures true.
+      decode(logoImg).then(() => {
+        const r = logoImg.getBoundingClientRect();
+        const shift = Math.round(0.45 * window.innerHeight - (r.top + r.height / 2));
+        if (r.height >= 10 && shift > 8) {
+          logoImg.style.transition = "none";
+          logoImg.style.transform = `translateY(${shift}px)`;
+          logoImg.getBoundingClientRect(); // commit the balanced start position
+        }
+        twoFrames(() => {
+          logoImg.style.transition = "opacity .5s ease";
+          logoImg.style.opacity = "1"; // the logo emerges alone on black
+          delay(1000).then(reveal); // auto-advance after a short title hold
+        });
+      });
+    }
     // No border frame on the select screen (maintainer 2026-07-18: "just use
     // the background without the frame") — the forest art carries the screen
     // alone. The composed vine border (frame2.ts mountSelectFrame +
@@ -420,7 +462,7 @@ function injectStyles() {
      ("can't see the glow", then "more dark/black, bigger glow") — four
      stacked layers: a dense core plus a wide soft halo. */
   .ml-logo{display:block;width:min(840px,96%);margin:0 auto;user-select:none;-webkit-user-drag:none;
-    position:relative;z-index:101; /* ABOVE the title veil so it stays visible while the black lifts */
+    position:relative;z-index:101;will-change:transform,opacity; /* ABOVE the title veil so it stays visible while the black lifts (and translates title→select) */
     filter:drop-shadow(0 0 10px rgba(0,0,0,.65)) drop-shadow(0 0 28px rgba(0,0,0,.6))
       drop-shadow(0 0 64px rgba(0,0,0,.55)) drop-shadow(0 0 110px rgba(0,0,0,.45))}
   /* TITLE veil: a solid-black cover over the whole select screen; only the logo

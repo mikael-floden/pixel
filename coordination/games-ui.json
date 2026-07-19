@@ -49,6 +49,10 @@
     {
       "date": "2026-07-18",
       "note": "Mechanical styling touch in WorldScene.showReconnectToast(): the 'Reconnecting\u2026' toast was tiny at the very top; maintainer marked a 'perfect spot' for transient status texts \u2014 the open playfield just below the clock. Bumped it to top:150px, bold 19px, pill styling to match main.ts's update banner (both share that spot now). No behaviour change."
+    },
+    {
+      "date": "2026-07-19",
+      "note": "Title screen (your ef1d30464, in select.ts) reworked per maintainer: it AUTO-advances now (no tap needed \u2014 'do the click for me'), and on fresh boot the logo starts at the balanced loading-screen placement and TRANSLATES up to its select spot as the veil lifts (same <img>, CSS transform, no DOM swap). Mechanical touch in YOUR WorldScene.logout(): it now sets sessionStorage 'ml-from-game'='1' so the select screen skips the title beat when returning FROM the game (logo already at final, fades in from black). A tap still advances early + unlocks audio; commit()/__mlSelect still bypass the veil."
     }
   ]
 }

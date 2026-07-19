@@ -2127,6 +2127,10 @@ export class WorldScene extends Phaser.Scene {
     try {
       localStorage.removeItem("ml-last-choice");
       sessionStorage.removeItem("ml-rejoin");
+      // tell the select screen we're arriving FROM the game: skip its
+      // first-launch title beat and land the logo already at its final spot,
+      // just fading in from black (select.ts reads + clears this flag).
+      sessionStorage.setItem("ml-from-game", "1");
     } catch {}
     try {
       this.room?.leave();
