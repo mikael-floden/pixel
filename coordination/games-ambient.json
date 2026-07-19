@@ -1,8 +1,8 @@
 {
   "domain": "games-ambient",
-  "updated_at": "2026-07-18T21:30:00+00:00",
+  "updated_at": "2026-07-19T09:00:00+00:00",
   "health": "running",
-  "current": "7 features: fireflies, pollen (fields) + bats, birds, thunder, sandstorm, leaves (episodes). birds are the DAYTIME mirror of bats — pale gull silhouettes crossing in a loose V, anchored to a world GROUND point + ALTITUDE (high in Z, parallax with the world), night ×0.05. bats dimmed + 1.5x (smaller/less bright). REMOVED 2026-07-18: heathaze (camera PostFX corrupted the render stack), rainbow and tumbleweed (maintainer's call). leaves fall/land/rest/fade in world coords. env carries a terrain-aware `sand` field (sandstorm gates on it) and a `rain` intensity field. Demo button (Settings) ONLY changes the effect (AUTO/NONE/each effect); AUTO prints the live active effect.",
+  "current": "7 features: fireflies, pollen (fields) + bats, birds, thunder, sandstorm, leaves (episodes). birds are the DAYTIME mirror of bats, now a living TOP-DOWN flock: boids (cohesion/alignment/separation + wander) roaming over the world in ANY direction at altitude, LANDING on dry ground (never water — surface-probed) to peck, and FLUSHING (scatter + climb, with cooldown) when the player gets within range; a flock arrives, wanders/lands/rests, then departs. Pale gull silhouettes; night ×0.05. bats dimmed + 1.5x (smaller/less bright). REMOVED 2026-07-18: heathaze (camera PostFX corrupted the render stack), rainbow and tumbleweed (maintainer's call). leaves fall/land/rest/fade in world coords. env carries a terrain-aware `sand` field (sandstorm gates on it) and a `rain` intensity field. Demo button (Settings) ONLY changes the effect (AUTO/NONE/each effect); AUTO prints the live active effect.",
   "progress": {
     "features": 7,
     "fields": 2,
