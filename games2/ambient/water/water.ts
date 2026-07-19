@@ -8,12 +8,11 @@ import { AmbientCtx, AmbientFeature } from "../runtime/types";
 // tiny hand-pixelled marks are scattered over the VISIBLE WATER (found through
 // the game's `waterAtScreen` iso probe — the same one the snow uses):
 //
-//   • WAVELETS — a DIAGONAL pixel crest (iso staircase) that ROLLS up its
-//     diagonal a whole step per frame; each wave is turned a random quarter-
-//     turn so crests sit at four angles rolling four ways (not one horizontal
-//     back-and-forth). Then it fades and RESPAWNS elsewhere. All snapped to
-//     whole world pixels (integer positions, scale 1, nearest) — never a
-//     sub-pixel slide.
+//   • WAVELETS — a HORIZONTAL line (a dim crest over a toned-down thin shadow)
+//     with a bright SHIMMER that marches along it a pixel per frame — an
+//     in-place animated glint, not the object sliding. Then it fades and
+//     RESPAWNS elsewhere. All snapped to whole world pixels (integer positions,
+//     scale 1, nearest) — never a sub-pixel slide.
 //   • GLINTS — sun/moon reflection sparkles, ADDITIVE, shaped like a plus with
 //     one arm missing (a "tetromino") and turned a random quarter-turn for four
 //     orientations. Colour + count + brightness come from the time of day: warm
@@ -47,23 +46,31 @@ const MIN_DIST = 24; // marks keep at least this far apart (Chebyshev)
 const PLACE_TRIES = 12; // attempts to find an interior, spaced spot before giving up
 const ROT4 = [0, 90, 180, 270]; // whole-quarter turns keep pixels grid-aligned
 
-const WAVE_FRAMES = ["amb-wave0", "amb-wave1", "amb-wave2"];
+const WAVE_FRAMES = ["amb-wave0", "amb-wave1", "amb-wave2", "amb-wave3"];
 const GLINT_FRAMES = ["amb-glint0", "amb-glint1", "amb-glint2"];
-// Wavelet pixel maps — a DIAGONAL crest (B) over a darker trough (d), a 2:1 iso
-// staircase, that ROLLS up the diagonal a whole step each frame (10×6). Each
-// wave is then turned a random quarter-turn, so crests sit at four angles and
-// roll four directions — not one horizontal back-and-forth (maintainer).
-const W0 = { B: [[0, 4], [1, 4], [2, 3], [3, 3], [4, 2], [5, 2]], d: [[0, 5], [1, 5], [2, 4], [3, 4], [4, 3], [5, 3]] };
-const W1 = { B: [[2, 3], [3, 3], [4, 2], [5, 2], [6, 1], [7, 1]], d: [[2, 4], [3, 4], [4, 3], [5, 3], [6, 2], [7, 2]] };
-const W2 = { B: [[4, 2], [5, 2], [6, 1], [7, 1], [8, 0], [9, 0]], d: [[4, 3], [5, 3], [6, 2], [7, 2], [8, 1], [9, 1]] };
+// Wavelet — a HORIZONTAL line (maintainer liked these over the diagonals): a
+// 5px crest of a dim MID highlight (m) with a bright SHIMMER pair (B) that
+// travels along it a pixel per frame, over a TONED-DOWN thin shadow (d). The
+// shimmer is the animation — an in-place glint marching along the line, not the
+// object sliding. 7×2, no rotation (kept horizontal).
+type WMap = { d: number[][]; m: number[][]; B: number[][] };
+const WTROUGH: number[][] = [[2, 1], [3, 1], [4, 1]]; // subtle shadow under the middle
+const wshimmer = (b: number): WMap => {
+  const m: number[][] = [];
+  const B: number[][] = [];
+  for (let x = 1; x <= 5; x++) (x === b || x === b + 1 ? B : m).push([x, 0]);
+  return { d: WTROUGH, m, B };
+};
+const WF = [wshimmer(1), wshimmer(2), wshimmer(3), wshimmer(4)]; // shimmer travels right
 // Glint "tetromino" — a plus with ONE arm pixel missing (asymmetric), so a
 // random quarter-turn gives four distinct sparkles (maintainer). 3×3; the
 // twinkle steps down the shape. White, tinted per mark to sun/moon.
-const G0 = { B: [[1, 0], [1, 1], [1, 2], [2, 1]], d: [] as number[][] }; // full T (missing left)
-const G1 = { B: [[1, 1], [2, 1]], d: [] as number[][] }; // shrunk
-const G2 = { B: [[1, 1]], d: [] as number[][] }; // point
-const WAVE_BRIGHT = 0xcdeef2; // crest highlight — cyan, NOT white (avoid a foam read)
-const WAVE_DIM = 0x274d51; // trough shadow (darker than the water)
+const G0 = [[1, 0], [1, 1], [1, 2], [2, 1]]; // full T (missing left)
+const G1 = [[1, 1], [2, 1]]; // shrunk
+const G2 = [[1, 1]]; // point
+const WAVE_BRIGHT = 0xeafafc; // travelling shimmer glint (brightest point on the line)
+const WAVE_MID = 0xbfe6ea; // the crest LINE itself — visible cyan (the look the maintainer liked)
+const WAVE_DIM = 0x3d6a72; // trough shadow — toned DOWN (barely darker than the water)
 const WAVE_NIGHT_TINT = 0x9db6d6; // multiplies the crest toward moonlit blue at night
 
 const lerpC = (a: number, b: number, t: number) => {
@@ -123,22 +130,25 @@ export function waterFeature(): AmbientFeature {
 
   const ensureTextures = (scene: Phaser.Scene) => {
     if (scene.textures.exists(WAVE_FRAMES[0])) return;
-    const paint = (key: string, w: number, h: number, map: { B: number[][]; d: number[][] }, bright: number, dim: number) => {
+    // Paint painted-in-order colour LAYERS (later layers draw on top).
+    const paint = (key: string, w: number, h: number, layers: { c: number; px: number[][] }[]) => {
       const g = scene.make.graphics({ x: 0, y: 0 }, false);
-      g.fillStyle(dim, 1);
-      for (const [x, y] of map.d) g.fillRect(x, y, 1, 1);
-      g.fillStyle(bright, 1);
-      for (const [x, y] of map.B) g.fillRect(x, y, 1, 1);
+      for (const { c, px } of layers) {
+        g.fillStyle(c, 1);
+        for (const [x, y] of px) g.fillRect(x, y, 1, 1);
+      }
       g.generateTexture(key, w, h);
       g.destroy();
     };
-    paint(WAVE_FRAMES[0], 10, 6, W0, WAVE_BRIGHT, WAVE_DIM);
-    paint(WAVE_FRAMES[1], 10, 6, W1, WAVE_BRIGHT, WAVE_DIM);
-    paint(WAVE_FRAMES[2], 10, 6, W2, WAVE_BRIGHT, WAVE_DIM);
+    WF.forEach((f, i) =>
+      paint(WAVE_FRAMES[i], 7, 2, [
+        { c: WAVE_DIM, px: f.d },
+        { c: WAVE_MID, px: f.m },
+        { c: WAVE_BRIGHT, px: f.B },
+      ]),
+    );
     // Glints are pure white — tinted per mark to the sun/moon colour.
-    paint(GLINT_FRAMES[0], 3, 3, G0, 0xffffff, 0xffffff);
-    paint(GLINT_FRAMES[1], 3, 3, G1, 0xffffff, 0xffffff);
-    paint(GLINT_FRAMES[2], 3, 3, G2, 0xffffff, 0xffffff);
+    [G0, G1, G2].forEach((px, i) => paint(GLINT_FRAMES[i], 3, 3, [{ c: 0xffffff, px }]));
   };
 
   const tooClose = (x: number, y: number, self: Mark): boolean => {
@@ -187,10 +197,10 @@ export function waterFeature(): AmbientFeature {
   const resetWave = (m: Mark) => {
     m.fi = (rnd() * WAVE_FRAMES.length) | 0;
     m.seqT = 0;
-    m.frameDur = 150 + rnd() * 140; // slow roll
-    m.maxLife = m.life = 1400 + rnd() * 2200;
+    m.frameDur = 110 + rnd() * 90; // shimmer travel speed
+    m.maxLife = m.life = 1500 + rnd() * 2400;
     m.base = 0.5 + rnd() * 0.4;
-    m.sprite.setAngle(ROT4[(rnd() * 4) | 0]); // random quarter-turn → 4 crest angles
+    m.sprite.setAngle(0); // HORIZONTAL only (maintainer preferred these)
   };
   const resetGlint = (m: Mark, tint: number) => {
     m.fi = (rnd() * GLINT_FRAMES.length) | 0;
