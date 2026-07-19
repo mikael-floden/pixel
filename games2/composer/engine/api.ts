@@ -102,12 +102,12 @@ const FOOTSTEP_RATE: Record<string, number> = { grass: 0.95 };
 const WET_STEP_RATE = 1.15;
 // The jump grunt plays pitched UP: the raw female takes still read a touch
 // dark/low (maintainer 2026-07-19: "still too dark, increase pitch a bit",
-// then "higher still", then "more"; at 1.33 the orc read as a human MAN,
-// now climbing toward a GIRL). 1.45 ≈ +6.5 semitones. NOTE: rate-pitching
-// also speeds the clip up, so far above here it thins into a sped-up
-// chipmunk — once the target pitch is found, regenerate the voice natively
-// high (see jump_voice brief). Bypassed by ENFORCE UNMODIFIED AUDIO.
-const JUMP_VOICE_RATE = 1.45;
+// then "higher still", "more", "another bump"; at 1.33 the orc read as a
+// human MAN, now climbing toward a GIRL). 1.58 ≈ +8 semitones. NOTE: rate-
+// pitching also speeds the clip up, so far above here it thins into a sped-
+// up chipmunk — once the target pitch is found, regenerate the voice
+// natively high (see jump_voice brief). Bypassed by ENFORCE UNMODIFIED AUDIO.
+const JUMP_VOICE_RATE = 1.58;
 // The jump grunt also plays on fall-start; this gap dedupes jump→fall (a
 // jump OFF a ledge fires both within a few frames) and any double-trigger.
 const JUMP_VOICE_MIN_GAP_S = 0.28;
