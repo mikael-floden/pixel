@@ -59,14 +59,19 @@ export class Footsteps {
   }
 
   /** sound id -> visual. Unknown/empty ids get a neutral faint press.
-   * Tints are chosen for CONTRAST against the surface, not to match it:
-   * a dark-green mark on dark-green grass is invisible, so grass reads as
-   * soil pressed through the blades; snow/ice read cool; dirt/sand press a
-   * darker pit. Alphas are the peak (held ~2s, then eased out). */
+   * Tints are chosen for CONTRAST against the surface, not to match it: on a
+   * DARK ground the print reveals a lighter SUB-material so the step reads
+   * regardless of ground type (maintainer). Grass is dark, so the step shows
+   * the DIRT pressed through the blades (dirt tile ≈ #a3865c); black_mountain /
+   * stone is dark, so the scuff shows lighter STONE dust (stone tile ≈ #585658,
+   * brightened to carry on the near-black mountain). Sand/snow/ice already sit
+   * on light ground, so a darker/cool press reads there. Marks draw below the
+   * night overlay, so they dim with the ground and the contrast holds at night.
+   * Alphas are the peak (held ~2s, then eased out). */
   private styleFor(sound: string): { key: string; tint: number; alpha: number } | null {
     switch (sound) {
       case "grass":
-        return { key: "fs-pair", tint: 0x281f0d, alpha: 0.74 }; // soil through crushed blades
+        return { key: "fs-pair", tint: 0x9c7d4f, alpha: 0.72 }; // dirt through crushed blades
       case "dirt":
         return { key: "fs-oval", tint: 0x1c1206, alpha: 0.72 };
       case "sand":
@@ -78,7 +83,7 @@ export class Footsteps {
       case "ice":
         return { key: "fs-dot", tint: 0x7fb0cc, alpha: 0.5 };
       case "stone":
-        return { key: "fs-dot", tint: 0x141418, alpha: 0.5 };
+        return { key: "fs-dot", tint: 0x9a9aa0, alpha: 0.58 }; // stone dust (visible on black_mountain)
       case "wood":
         return { key: "fs-dot", tint: 0x1b1206, alpha: 0.46 };
       case "water":

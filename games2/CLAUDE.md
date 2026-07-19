@@ -216,9 +216,13 @@ visible head/shoulders are ABOVE the surface).
   the avatar's cell; swimming avatars leave none (water → ripples idea, TBD).
   Remote players stamp too.
 - Style per SURFACES sound id (`styleFor`): tints are chosen for CONTRAST, not
-  to match — a dark-green mark on dark-green grass is INVISIBLE, so grass reads
-  as soil pressed through the blades (`fs-pair`, warm brown), dirt/sand/snow
-  press an oval pad (`fs-oval`), stone/wood a faint scuff (`fs-dot`). Stamps
+  to match — on a DARK ground the print reveals a lighter SUB-material so it
+  reads regardless of ground type (maintainer). Grass is dark → the step shows
+  DIRT through the blades (`fs-pair`, dirt tint ≈ `#9c7d4f`, from the
+  `lightdark_dirt` tile); stone/`black_mountain` is near-black → the scuff shows
+  lighter STONE dust (`fs-dot`, ≈ `#9a9aa0`); sand/snow/ice sit on light ground
+  so a darker/cool press reads. Marks draw below the night overlay, so they dim
+  with the ground and the contrast holds at night. Stamps
   are foot-width (~7px) and short (iso ground is shallow-angle). Marks
   y-sort at depth `y-0.5`; pooled + capped (240, oldest recycles); peak alpha
   held ~2s then quadratic ease-out. Probes: `__ml.footprints()` (live count),
