@@ -100,6 +100,11 @@ const FOOTSTEP_RATE: Record<string, number> = { grass: 0.95 };
 // sound the maintainer approved: pitched up ~15% (brighter, lighter than
 // the duller entry splosh). A fixed character choice, not per-step drift.
 const WET_STEP_RATE = 1.15;
+// The jump grunt plays pitched UP: the raw female takes still read a touch
+// dark/low (maintainer 2026-07-19: "still too dark, increase pitch a bit").
+// 1.12 ≈ +2 semitones — brighter/higher, and it shortens the ~0.9s takes a
+// little too. Bypassed by ENFORCE UNMODIFIED AUDIO like all rate changes.
+const JUMP_VOICE_RATE = 1.12;
 // Walk plays softer than run by this penalty (default −3 dB ≈ 70%). Snow's
 // walk penalty is ZERO: at −3 on top of its deep trim the maintainer heard
 // "nothing at all" — snow walking now sits just under snow running.
@@ -250,7 +255,10 @@ export class GameAudio {
     if (name === "player.jump") {
       const voice = composerFoley("jump_voice");
       if (voice) {
-        this.oneShots.play(this.foleyEntry("jump_voice", voice, "voice"), "sfx", opts);
+        this.oneShots.play(this.foleyEntry("jump_voice", voice, "voice"), "sfx", {
+          ...opts,
+          rate: (opts.rate ?? 1) * JUMP_VOICE_RATE,
+        });
         return;
       }
     }
