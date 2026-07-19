@@ -148,12 +148,6 @@ export function emissionSelfPulse(anim: number, t: number, ph: number): number {
   return Math.max(0.5, Math.min(1, 0.66 + 0.34 * (0.5 + 0.5 * Math.sin(t * 1.2 + ph)) + tw));
 }
 
-// Anti-tiling ground wash defaults (tunable live via __ml.groundDetail()).
-// Strength = peak-to-peak brightness swing; freq = base noise frequency in
-// world-px^-1 (≈ 1/wavelength; 0.02 ⇒ ~50px ≈ a tile). Set to 0 to disable.
-const GROUND_DETAIL = 0.35;
-const GROUND_FREQ = 0.025;
-
 const FRAG = `
 precision highp float;
 
@@ -178,8 +172,6 @@ uniform float uEmitN;       // number of palette entries (0 = no emission)
 uniform sampler2D uGlow;    // world-anchored glow-halo field (same window as uCam)
 uniform float uGlowOn;      // 1 when the glow field is bound (unbound sampler = unit 0!)
 uniform float uGlowFlip;    // render-target y orientation (calibrated numerically)
-uniform float uGroundDetail; // strength of the anti-tiling ground wash (0 = off)
-uniform float uGroundFreq;   // base spatial frequency of that wash (world-px^-1)
 
 // Bilinear height for the LOS march ONLY: blockers ramp in over ~a cell, so
 // cast-shadow edges get a natural penumbra instead of cell-quantized 1px
@@ -485,19 +477,6 @@ void main() {
     cloudF = 1.0 - cover * 0.62 * uCloud * mix(0.13, 1.0, uSun.w);
   }
   vec3 light = uAmbient * sunF * cloudF;
-  // ANTI-TILING GROUND WASH (maintainer: repeated base tiles read as a grid;
-  // the mist's noise "merges" them nicely — bake that in, permanently, on the
-  // ground). A subtle world-anchored 2-octave value-noise brightness wash,
-  // lightly POSTERISED into bands so it reads as pixel-art terrain variation,
-  // not a soft blur. TOP surfaces ONLY (skip wall faces) — so the wall is
-  // never smeared with the top. Static (no time drift) = terrain
-  // character, not weather. Off when uGroundDetail == 0 (easy rollback).
-  if (!isFace && uGroundDetail > 0.001) {
-    vec2 gp = vec2(wx, wy) * uGroundFreq;
-    float gn = cwNoise(gp) * 0.6 + cwNoise(gp * 2.7 + 41.3) * 0.4; // 0..1 organic blobs
-    gn = (floor(gn * 5.0) + 0.5) / 5.0;      // 5 pixel-art bands (hard-edged regions)
-    light *= 1.0 + (gn - 0.5) * uGroundDetail; // ±uGroundDetail/2 around neutral
-  }
   // AURORA NIGHTS: some nights the northern lights dance over Nangijala —
   // slow drifting curtains of arctic green/violet ADDED to the ambient (the
   // ground and everyone standing on it glows with the sky), auto-fading as
@@ -886,9 +865,6 @@ export class NightLights {
   // y-flip — same family of ground truth as fieldFlip above.
   glowFlip = 0;
   active = false;
-  // Anti-tiling ground wash — live-tunable (probe __ml.groundDetail(str,freq)).
-  groundDetail = GROUND_DETAIL;
-  groundFreq = GROUND_FREQ;
   // Live calibration (debug keys): rendering-path differences between GPUs
   // showed up as flipped/scaled fields that headless verification could not
   // reproduce — let the tester find the correct combo on THEIR machine.
@@ -954,9 +930,6 @@ export class NightLights {
       uEmitN: { type: "1f", value: 0 },
       uGlowOn: { type: "1f", value: 0 },
       uGlowFlip: { type: "1f", value: 1 },
-      // Anti-tiling ground wash (declared so it binds — see the uSun lesson).
-      uGroundDetail: { type: "1f", value: GROUND_DETAIL },
-      uGroundFreq: { type: "1f", value: GROUND_FREQ },
       uHeight: { type: "sampler2D", value: null },
       uHeightL: { type: "sampler2D", value: null },
       uEmit: { type: "sampler2D", value: null },
@@ -1565,11 +1538,6 @@ export class NightLights {
       s.setUniform("uGlowOn.value", 0);
     }
     s.setUniform("uFlip.value", this.fieldFlip);
-    // The anti-tiling wash is decorative ground texture, not lighting — keep it
-    // OUT of the calibration reads (pattern 5 runs the normal maths opaque; the
-    // night-verify scripts assert on the raw light field, which must stay clean).
-    s.setUniform("uGroundDetail.value", this.testPattern === 0 ? this.groundDetail : 0);
-    s.setUniform("uGroundFreq.value", this.groundFreq);
     // Pattern 5 (probe-only): NORMAL lighting maths but composited opaque
     // (blend rule below keys off >= 3) — a screenshot then reads the RAW
     // light field, free of the art underneath.

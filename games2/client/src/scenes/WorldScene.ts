@@ -819,15 +819,6 @@ export class WorldScene extends Phaser.Scene {
     (window as any).__ml = {
       players: () => this.avatars.size,
       myId: () => this.room?.sessionId,
-      // Anti-tiling ground wash — live tuning: __ml.groundDetail(strength, freq).
-      // strength = brightness swing (0 disables), freq = noise freq (world-px^-1).
-      groundDetail: (strength?: number, freq?: number) => {
-        if (this.night) {
-          if (strength !== undefined) this.night.groundDetail = strength;
-          if (freq !== undefined) this.night.groundFreq = freq;
-        }
-        return { strength: this.night?.groundDetail, freq: this.night?.groundFreq };
-      },
       // world@2 decks: parsed summary + cells indexed for the ground/occluder loop.
       deckInfo: () => ({
         decks: (this.world?.decks ?? []).map((d) => ({ kind: d.kind, mat: d.mat, level: d.level, thickness: d.thickness, cells: d.cells.length })),
