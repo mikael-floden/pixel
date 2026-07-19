@@ -215,14 +215,16 @@ visible head/shoulders are ABOVE the surface).
   the DRAWN foot, not the body anchor. Surface = `surfaceFor(cell.t).sound` at
   the avatar's cell; swimming avatars leave none (water → ripples idea, TBD).
   Remote players stamp too.
-- Style per SURFACES sound id (`styleFor`): tints are chosen for CONTRAST, not
-  to match — on a DARK ground the print reveals a lighter SUB-material so it
-  reads regardless of ground type (maintainer). Grass is dark → the step shows
-  DIRT through the blades (`fs-pair`, dirt tint ≈ `#9c7d4f`, from the
-  `lightdark_dirt` tile); stone/`black_mountain` is near-black → the scuff shows
-  lighter STONE dust (`fs-dot`, ≈ `#9a9aa0`); sand/snow/ice sit on light ground
-  so a darker/cool press reads. Marks draw below the night overlay, so they dim
-  with the ground and the contrast holds at night. Stamps
+- Style per SURFACES sound id + MATERIAL (`styleFor(sound, material)`): tints
+  are chosen for CONTRAST, not to match — on a DARK ground the print reveals a
+  lighter SUB-material so it reads regardless of ground type (maintainer). The
+  SOUND is the default; a near-black material that shares a sound with lighter
+  siblings OVERRIDES by name. Grass is dark → DIRT through the blades (`fs-pair`,
+  ≈ `#9c7d4f`, from the `lightdark_dirt` tile). Ordinary `stone` keeps its dark
+  scuff (`fs-dot`, `#141418` — reads fine on grey stone); only `black_mountain`
+  (near-black) overrides to lighter STONE dust (≈ `#9a9aa0`). Sand/snow/ice sit
+  on light ground so a darker/cool press reads. Marks draw below the night
+  overlay, so they dim with the ground and the contrast holds at night. Stamps
   are foot-width (~7px) and short (iso ground is shallow-angle). Marks
   y-sort at depth `y-0.5`; pooled + capped (240, oldest recycles); peak alpha
   held ~2s then quadratic ease-out. Probes: `__ml.footprints()` (live count),

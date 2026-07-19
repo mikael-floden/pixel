@@ -58,17 +58,20 @@ export class Footsteps {
     mk("fs-dot", 4, 2, [[1, 0], [2, 0], [0, 1], [1, 1], [2, 1], [3, 1]]); // scuff (stone/wood)
   }
 
-  /** sound id -> visual. Unknown/empty ids get a neutral faint press.
-   * Tints are chosen for CONTRAST against the surface, not to match it: on a
-   * DARK ground the print reveals a lighter SUB-material so the step reads
-   * regardless of ground type (maintainer). Grass is dark, so the step shows
-   * the DIRT pressed through the blades (dirt tile ≈ #a3865c); black_mountain /
-   * stone is dark, so the scuff shows lighter STONE dust (stone tile ≈ #585658,
-   * brightened to carry on the near-black mountain). Sand/snow/ice already sit
-   * on light ground, so a darker/cool press reads there. Marks draw below the
-   * night overlay, so they dim with the ground and the contrast holds at night.
-   * Alphas are the peak (held ~2s, then eased out). */
-  private styleFor(sound: string): { key: string; tint: number; alpha: number } | null {
+  /** (sound id, material) -> visual. Unknown/empty ids get a neutral faint
+   * press. Tints are chosen for CONTRAST against the surface, not to match it.
+   * The SOUND drives the default; a few near-black MATERIALS that share a sound
+   * with lighter ones override it so the step still reads (maintainer). Grass is
+   * dark, so the step shows the DIRT pressed through the blades (dirt tile ≈
+   * #a3865c). Ordinary `stone` reads fine as a dark scuff and keeps it; only
+   * `black_mountain` (near-black stone) overrides to lighter STONE dust. Sand/
+   * snow/ice sit on light ground, so a darker/cool press reads there. Marks draw
+   * below the night overlay, so they dim with the ground and contrast holds at
+   * night. Alphas are the peak (held ~2s, then eased out). */
+  private styleFor(sound: string, material?: string): { key: string; tint: number; alpha: number } | null {
+    // Material overrides: same sound as a lighter sibling, but too dark for the
+    // sound's default mark.
+    if (material === "black_mountain") return { key: "fs-dot", tint: 0x9a9aa0, alpha: 0.58 }; // light stone dust
     switch (sound) {
       case "grass":
         return { key: "fs-pair", tint: 0x9c7d4f, alpha: 0.72 }; // dirt through crushed blades
@@ -83,7 +86,7 @@ export class Footsteps {
       case "ice":
         return { key: "fs-dot", tint: 0x7fb0cc, alpha: 0.5 };
       case "stone":
-        return { key: "fs-dot", tint: 0x9a9aa0, alpha: 0.58 }; // stone dust (visible on black_mountain)
+        return { key: "fs-dot", tint: 0x141418, alpha: 0.5 }; // dark scuff (good on ordinary stone)
       case "wood":
         return { key: "fs-dot", tint: 0x1b1206, alpha: 0.46 };
       case "water":
@@ -98,8 +101,8 @@ export class Footsteps {
    * row (its own `sprite.depth`), NOT from the lifted screen y — on raised
    * terrain those diverge and a lifted-y depth sorts the mark under the block
    * it sits on, hiding it. Falls back to `y` when no depth is given. */
-  spawn(x: number, y: number, sound: string, scale = 1, depth = y) {
-    const st = this.styleFor(sound);
+  spawn(x: number, y: number, sound: string, scale = 1, depth = y, material?: string) {
+    const st = this.styleFor(sound, material);
     if (!st) return;
     let m: Mark | undefined;
     for (const cand of this.pool) {
