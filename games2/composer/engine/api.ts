@@ -96,6 +96,14 @@ const FOOTSTEP_TRIM_DB: Record<string, number> = { snow: -12, grass: -4, ice: -4
 // hi-hat" per the maintainer.
 const FOOTSTEP_LOWPASS_HZ: Record<string, number> = { grass: 3600 };
 const FOOTSTEP_RATE: Record<string, number> = { grass: 0.95 };
+// Surfaces that ALSO play a SECOND surface's step layered underneath, at a
+// relative dB trim vs that surface's own level (maintainer 2026-07-19: on
+// grass, play the grass sound AND the dirt sound, "dirt at 50% of what dirt
+// plays at" → −6 dB under dirt's own footstep level). The primary sound
+// still plays as normal; this just adds the layer.
+const FOOTSTEP_LAYER: Record<string, { surface: string; relDb: number }> = {
+  grass: { surface: "dirt", relDb: -6 },
+};
 // The wet shoreline step is the catalog splash played like the water-EXIT
 // sound the maintainer approved: pitched up ~15% (brighter, lighter than
 // the duller entry splosh). A fixed character choice, not per-step drift.
@@ -416,6 +424,13 @@ export class GameAudio {
       }
     }
 
+    // LAYERING: some surfaces play a SECOND surface's step underneath the
+    // primary (grass also gets the dirt step at half dirt's level — the
+    // primary grass sound still plays below). Not on the wet band (returns
+    // above) — a wet shoreline step is its own thing.
+    const layer = FOOTSTEP_LAYER[f.surface];
+    if (layer) this.playFootstepFor(layer.surface, f, layer.relDb);
+
     // Surfaces mapped to a catalog sound (sand → jump) — played as a
     // footstep under the gentleness step profile, like the wet band.
     const catId = FOOTSTEP_CATALOG[f.surface];
@@ -455,6 +470,38 @@ export class GameAudio {
       rate: f.running ? 1.06 : 1,
       gainDb: f.running ? 1.5 : 0,
     });
+  }
+
+  /** Play ONE surface's footstep at its own computed level plus `extraDb` —
+   * the same catalog/foley-set resolution the primary step uses, so a layered
+   * sound (e.g. dirt under grass) matches exactly "what that surface plays at"
+   * shifted by the trim. Silent if the surface has no bundled sound. */
+  private playFootstepFor(surface: string, f: AvatarFrame, extraDb: number): void {
+    const walkPenalty = FOOTSTEP_WALK_PENALTY_DB[surface] ?? WALK_PENALTY_DEFAULT_DB;
+    const level = -8 + (FOOTSTEP_TRIM_DB[surface] ?? 0) + (f.running ? 0.8 : walkPenalty) + extraDb;
+    const catId = FOOTSTEP_CATALOG[surface];
+    if (catId) {
+      const base = this.catalog?.sounds.get(catId);
+      if (base) {
+        this.oneShots.play(this.catalogStepEntry(base), "sfx", {
+          pan: f.pan,
+          dist: f.dist,
+          gainDb: level,
+        });
+      }
+      return;
+    }
+    const setName = FOOTSTEP_SETS[surface] ?? FOOTSTEP_DEFAULT;
+    const own = composerFoley(setName) ?? composerFoley(FOOTSTEP_DEFAULT);
+    if (own) {
+      this.oneShots.play(this.foleyEntry(setName, own, "step"), "sfx", {
+        pan: f.pan,
+        dist: f.dist,
+        gainDb: level,
+        lowpassHz: FOOTSTEP_LOWPASS_HZ[surface],
+        rate: FOOTSTEP_RATE[surface],
+      });
+    }
   }
 
   private foleyCache = new Map<string, SoundEntry>();
