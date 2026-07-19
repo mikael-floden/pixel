@@ -266,10 +266,11 @@ const EXIT_JUMP_MS = 500; // ms window to rise out of the water on exit (matches
 // slightly different line ANGLE per frame. The tiny tilt tips some columns over
 // their rounding boundary, so the crest hops in WHOLE pixels (never subpixel) —
 // reads as gentle water movement. Pivoted at the shoulder midpoint, so the ends
-// wobble ±~1px while the centre stays put. 3 tilts, rocked back and forth.
+// wobble ±~1px while the centre stays put. Three variants — left(-1)/normal(0)/
+// right(+1) — and each frame jumps to a RANDOM different one (no fixed loop), so
+// it reads as chaotic lapping rather than a metronome.
 const FOAM_TILT = 0.05; // extra crest slope (rows/col) per tilt step, at the pivot
 const FOAM_ANIM_MS = 230; // ms each foam frame holds (~4 fps — slow, watery)
-const FOAM_TILT_SEQ = [-1, 0, 1, 0]; // ping-pong through the 3 tilt variants
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
 // Living camera (maintainer): the camera CHASES the player instead of pinning
 // them dead-centre — exponential ease toward the sprite with the trail capped,
@@ -319,6 +320,8 @@ interface Avatar {
   waterMaskG?: Phaser.GameObjects.Graphics; // half-plane-above-shoulders mask shape
   waterMask?: Phaser.Display.Masks.GeometryMask; // the reusable geometry mask
   foam?: Phaser.GameObjects.Image; // waterline foam (per-frame texture, sprite-aligned)
+  foamTilt?: number; // current foam crest tilt variant (-1/0/+1), the lapping frame
+  foamNextAt?: number; // time.now when the foam rolls to a new tilt
   baseTint: number;
   bubble?: Phaser.GameObjects.Text;
   bubbleUntil?: number;
@@ -2859,10 +2862,16 @@ export class WorldScene extends Phaser.Scene {
     // half-pixel), and painting per opaque column makes the crest respect the
     // character's alpha: it breaks across transparent gaps (hair↔body) instead
     // of bridging them, and reaches every opaque column (no missed edge pixel).
-    // Animate by rocking the crest angle in whole-pixel steps (see FOAM_TILT).
-    // Per-avatar phase (bobPhase) so swimmers don't lap in lockstep.
-    const tilt = FOAM_TILT_SEQ[Math.floor((this.time.now + av.bobPhase * 11) / FOAM_ANIM_MS) % FOAM_TILT_SEQ.length];
-    const foamKey = this.foamTexture(sp, s, feetY, swimT, tilt);
+    // Animate by rocking the crest angle in whole-pixel steps (see FOAM_TILT):
+    // every FOAM_ANIM_MS jump to a RANDOM different tilt (left/normal/right), so
+    // there's always a visible hop and no metronome loop. Per-avatar state, so
+    // swimmers lap out of sync.
+    if (av.foamNextAt === undefined || this.time.now >= av.foamNextAt) {
+      const others = [-1, 0, 1].filter((t) => t !== av.foamTilt);
+      av.foamTilt = others[(Math.random() * others.length) | 0];
+      av.foamNextAt = this.time.now + FOAM_ANIM_MS;
+    }
+    const foamKey = this.foamTexture(sp, s, feetY, swimT, av.foamTilt ?? 0);
     if (!foamKey) {
       av.foam?.setVisible(false);
       return;
