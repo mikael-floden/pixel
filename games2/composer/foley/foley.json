@@ -14,44 +14,44 @@
     ],
     "features": [
       {
-        "mid_peak_db": -33.3,
-        "duration_s": 0.6,
-        "attack_ms": 18.8,
-        "tail_ratio": 0.074,
-        "tonality": 0.991,
-        "crest": 2.79,
-        "centroid_hz": 3495,
-        "mid_ratio": 0.003
-      },
-      {
-        "mid_peak_db": -34.9,
+        "mid_peak_db": -37.1,
         "duration_s": 0.6,
         "attack_ms": 30.0,
-        "tail_ratio": 0.009,
-        "tonality": 0.986,
-        "crest": 3.59,
-        "centroid_hz": 4388,
-        "mid_ratio": 0.003
-      },
-      {
-        "mid_peak_db": -36.4,
-        "duration_s": 0.6,
-        "attack_ms": 2.9,
-        "tail_ratio": 0.023,
-        "tonality": 0.985,
-        "crest": 4.91,
-        "centroid_hz": 4444,
+        "tail_ratio": 0.001,
+        "tonality": 0.974,
+        "crest": 5.08,
+        "centroid_hz": 4207,
         "mid_ratio": 0.004
       },
       {
-        "mid_peak_db": -22.2,
+        "mid_peak_db": -33.6,
         "duration_s": 0.6,
-        "attack_ms": 22.2,
-        "tail_ratio": 0.006,
-        "tonality": 0.929,
-        "crest": 6.5,
-        "centroid_hz": 4906,
-        "mid_ratio": 0.164
+        "attack_ms": 30.0,
+        "tail_ratio": 0.015,
+        "tonality": 0.969,
+        "crest": 4.68,
+        "centroid_hz": 5685,
+        "mid_ratio": 0.009
+      },
+      {
+        "mid_peak_db": -37.6,
+        "duration_s": 0.6,
+        "attack_ms": 30.0,
+        "tail_ratio": 0.001,
+        "tonality": 0.941,
+        "crest": 5.22,
+        "centroid_hz": 6444,
+        "mid_ratio": 0.003
+      },
+      {
+        "mid_peak_db": -27.3,
+        "duration_s": 0.6,
+        "attack_ms": 23.6,
+        "tail_ratio": 0.073,
+        "tonality": 0.839,
+        "crest": 5.69,
+        "centroid_hz": 7025,
+        "mid_ratio": 0.048
       }
     ],
     "qa": {
@@ -64,186 +64,186 @@
       {
         "file": "grass/pool/grass__cand01.wav",
         "passed_gates": false,
-        "rank": 16.85,
+        "rank": 14.5,
         "features": {
-          "mid_peak_db": -33.3,
+          "mid_peak_db": -37.1,
           "duration_s": 0.6,
-          "attack_ms": 18.8,
-          "tail_ratio": 0.074,
-          "tonality": 0.991,
-          "crest": 2.79,
-          "centroid_hz": 3495,
-          "mid_ratio": 0.003
+          "attack_ms": 30.0,
+          "tail_ratio": 0.001,
+          "tonality": 0.974,
+          "crest": 5.08,
+          "centroid_hz": 4207,
+          "mid_ratio": 0.004
         }
       },
       {
         "file": "grass/pool/grass__cand02.wav",
         "passed_gates": false,
-        "rank": 34.04,
+        "rank": 75.67,
         "features": {
-          "mid_peak_db": -34.9,
+          "mid_peak_db": -33.6,
           "duration_s": 0.6,
           "attack_ms": 30.0,
-          "tail_ratio": 0.009,
-          "tonality": 0.986,
-          "crest": 3.59,
-          "centroid_hz": 4388,
-          "mid_ratio": 0.003
+          "tail_ratio": 0.015,
+          "tonality": 0.969,
+          "crest": 4.68,
+          "centroid_hz": 5685,
+          "mid_ratio": 0.009
         }
       },
       {
         "file": "grass/pool/grass__cand03.wav",
         "passed_gates": false,
-        "rank": 37.39,
+        "rank": 106.71,
         "features": {
-          "mid_peak_db": -36.4,
+          "mid_peak_db": -37.6,
           "duration_s": 0.6,
-          "attack_ms": 2.9,
-          "tail_ratio": 0.023,
-          "tonality": 0.985,
-          "crest": 4.91,
-          "centroid_hz": 4444,
-          "mid_ratio": 0.004
+          "attack_ms": 30.0,
+          "tail_ratio": 0.001,
+          "tonality": 0.941,
+          "crest": 5.22,
+          "centroid_hz": 6444,
+          "mid_ratio": 0.003
         }
       },
       {
         "file": "grass/pool/grass__cand04.wav",
         "passed_gates": false,
-        "rank": 56.77,
+        "rank": 130.44,
         "features": {
-          "mid_peak_db": -22.2,
+          "mid_peak_db": -27.3,
           "duration_s": 0.6,
-          "attack_ms": 22.2,
-          "tail_ratio": 0.006,
-          "tonality": 0.929,
-          "crest": 6.5,
-          "centroid_hz": 4906,
-          "mid_ratio": 0.164
+          "attack_ms": 23.6,
+          "tail_ratio": 0.073,
+          "tonality": 0.839,
+          "crest": 5.69,
+          "centroid_hz": 7025,
+          "mid_ratio": 0.048
         }
       },
       {
         "file": "grass/pool/grass__cand05.wav",
         "passed_gates": false,
-        "rank": 73.27,
+        "rank": 132.25,
         "features": {
-          "mid_peak_db": -37.9,
+          "mid_peak_db": -18.8,
           "duration_s": 0.6,
-          "attack_ms": 21.1,
-          "tail_ratio": 0.019,
-          "tonality": 0.981,
-          "crest": 4.16,
-          "centroid_hz": 5330,
-          "mid_ratio": 0.002
+          "attack_ms": 30.0,
+          "tail_ratio": 0.053,
+          "tonality": 0.104,
+          "crest": 7.98,
+          "centroid_hz": 7073,
+          "mid_ratio": 0.563
         }
       },
       {
         "file": "grass/pool/grass__cand06.wav",
         "passed_gates": false,
-        "rank": 128.23,
+        "rank": 151.56,
         "features": {
-          "mid_peak_db": -30.5,
+          "mid_peak_db": -22.2,
           "duration_s": 0.6,
-          "attack_ms": 39.3,
-          "tail_ratio": 0.024,
-          "tonality": 0.942,
-          "crest": 4.85,
-          "centroid_hz": 6665,
-          "mid_ratio": 0.014
+          "attack_ms": 30.0,
+          "tail_ratio": 0.061,
+          "tonality": 0.276,
+          "crest": 7.41,
+          "centroid_hz": 7548,
+          "mid_ratio": 0.241
         }
       },
       {
         "file": "grass/pool/grass__cand07.wav",
         "passed_gates": false,
-        "rank": 142.79,
+        "rank": 152.86,
         "features": {
-          "mid_peak_db": -37.7,
+          "mid_peak_db": -32.7,
           "duration_s": 0.6,
-          "attack_ms": 32.9,
-          "tail_ratio": 0.002,
-          "tonality": 0.989,
-          "crest": 4.22,
-          "centroid_hz": 7011,
-          "mid_ratio": 0.002
+          "attack_ms": 30.0,
+          "tail_ratio": 0.29,
+          "tonality": 0.938,
+          "crest": 3.22,
+          "centroid_hz": 7463,
+          "mid_ratio": 0.005
         }
       },
       {
         "file": "grass/pool/grass__cand08.wav",
         "passed_gates": false,
-        "rank": 261.25,
+        "rank": 187.99,
         "features": {
-          "mid_peak_db": -28.6,
+          "mid_peak_db": -28.9,
           "duration_s": 0.6,
-          "attack_ms": 26.2,
-          "tail_ratio": 0.023,
-          "tonality": 0.912,
-          "crest": 5.01,
-          "centroid_hz": 9899,
-          "mid_ratio": 0.028
+          "attack_ms": 28.1,
+          "tail_ratio": 0.01,
+          "tonality": 0.882,
+          "crest": 6.17,
+          "centroid_hz": 8426,
+          "mid_ratio": 0.035
         }
       },
       {
         "file": "grass/pool/grass__cand09.wav",
         "passed_gates": false,
-        "rank": 291.62,
+        "rank": 213.19,
         "features": {
-          "mid_peak_db": -43.3,
+          "mid_peak_db": -20.8,
           "duration_s": 0.6,
           "attack_ms": 30.0,
-          "tail_ratio": 0.101,
-          "tonality": 0.991,
-          "crest": 4.79,
-          "centroid_hz": 10607,
-          "mid_ratio": 0.001
+          "tail_ratio": 0.12,
+          "tonality": 0.535,
+          "crest": 5.42,
+          "centroid_hz": 9028,
+          "mid_ratio": 0.215
         }
       },
       {
         "file": "grass/pool/grass__cand10.wav",
         "passed_gates": false,
-        "rank": 298.4,
+        "rank": 221.01,
         "features": {
-          "mid_peak_db": -39.7,
+          "mid_peak_db": -27.5,
           "duration_s": 0.6,
-          "attack_ms": 17.0,
-          "tail_ratio": 0.009,
-          "tonality": 0.985,
-          "crest": 5.25,
-          "centroid_hz": 10765,
-          "mid_ratio": 0.003
+          "attack_ms": 118.0,
+          "tail_ratio": 0.214,
+          "tonality": 0.625,
+          "crest": 4.8,
+          "centroid_hz": 9210,
+          "mid_ratio": 0.04
         }
       },
       {
         "file": "grass/pool/grass__cand11.wav",
         "passed_gates": false,
-        "rank": 374.0,
+        "rank": 255.77,
         "features": {
-          "mid_peak_db": -42.3,
+          "mid_peak_db": -31.5,
           "duration_s": 0.6,
-          "attack_ms": 30.0,
-          "tail_ratio": 0.013,
-          "tonality": 0.979,
-          "crest": 4.64,
-          "centroid_hz": 12612,
-          "mid_ratio": 0.001
+          "attack_ms": 26.2,
+          "tail_ratio": 0.042,
+          "tonality": 0.93,
+          "crest": 5.25,
+          "centroid_hz": 10058,
+          "mid_ratio": 0.014
         }
       },
       {
         "file": "grass/pool/grass__cand12.wav",
         "passed_gates": false,
-        "rank": 432.78,
+        "rank": 333.95,
         "features": {
-          "mid_peak_db": -46.4,
+          "mid_peak_db": -28.4,
           "duration_s": 0.6,
           "attack_ms": 30.0,
-          "tail_ratio": 0.003,
-          "tonality": 0.989,
-          "crest": 4.73,
-          "centroid_hz": 14031,
-          "mid_ratio": 0.0
+          "tail_ratio": 0.043,
+          "tonality": 0.679,
+          "crest": 6.71,
+          "centroid_hz": 11971,
+          "mid_ratio": 0.05
         }
       }
     ],
-    "brief": "a single soft dull footstep on grass, a low muffled thud with a faint gentle rustle, deep and soft",
-    "generated_at": "2026-07-19T00:21:05+00:00",
+    "brief": "a soft footstep on grass, a muffled thud with a soft rustle of grass blades",
+    "generated_at": "2026-07-19T00:26:23+00:00",
     "model_id": "eleven_text_to_sound_v2"
   },
   "sand": {
