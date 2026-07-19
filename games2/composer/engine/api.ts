@@ -102,16 +102,16 @@ const FOOTSTEP_RATE: Record<string, number> = { grass: 0.95 };
 const WET_STEP_RATE = 1.15;
 // The jump grunt plays pitched UP: the raw female takes still read a touch
 // dark/low (maintainer 2026-07-19: "still too dark, increase pitch a bit",
-// then "a little bit higher again", then "higher still"). 1.26 ≈ +4
-// semitones — brighter/higher, and it shortens the ~0.9s takes a little
+// then "a little bit higher again", then "higher still", then "more"). 1.33
+// ≈ +5 semitones — brighter/higher, and it shortens the ~0.9s takes a little
 // too. Bypassed by ENFORCE UNMODIFIED AUDIO like all rate changes.
-const JUMP_VOICE_RATE = 1.26;
+const JUMP_VOICE_RATE = 1.33;
 // The jump grunt also plays on fall-start; this gap dedupes jump→fall (a
 // jump OFF a ledge fires both within a few frames) and any double-trigger.
 const JUMP_VOICE_MIN_GAP_S = 0.28;
-// −6 dB ≈ half amplitude (maintainer 2026-07-19: "lower the volume by 50% on
-// all voice grunts"). A static level balance → applies in pure mode too.
-const JUMP_VOICE_GAIN_DB = -6;
+// −12 dB ≈ quarter amplitude (maintainer 2026-07-19: "lower by 50%" twice —
+// first −6, then "lower again"). A static level balance → pure mode too.
+const JUMP_VOICE_GAIN_DB = -12;
 // Walk plays softer than run by this penalty (default −3 dB ≈ 70%). Snow's
 // walk penalty is ZERO: at −3 on top of its deep trim the maintainer heard
 // "nothing at all" — snow walking now sits just under snow running.
