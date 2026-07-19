@@ -105,6 +105,9 @@ const WET_STEP_RATE = 1.15;
 // 1.12 ≈ +2 semitones — brighter/higher, and it shortens the ~0.9s takes a
 // little too. Bypassed by ENFORCE UNMODIFIED AUDIO like all rate changes.
 const JUMP_VOICE_RATE = 1.12;
+// The jump grunt also plays on fall-start; this gap dedupes jump→fall (a
+// jump OFF a ledge fires both within a few frames) and any double-trigger.
+const JUMP_VOICE_MIN_GAP_S = 0.28;
 // Walk plays softer than run by this penalty (default −3 dB ≈ 70%). Snow's
 // walk penalty is ZERO: at −3 on top of its deep trim the maintainer heard
 // "nothing at all" — snow walking now sits just under snow running.
@@ -249,12 +252,18 @@ export class GameAudio {
     if (!this.ready()) return;
     // The jump grunt (maintainer 2026-07-19: a Link-style vocal effort) is a
     // composer set on the SFX bus, spatialized, NOT a −12 dB UI click — so it
-    // gets its own branch. Falls through to the catalog `jump` binding if the
-    // vocal set isn't bundled yet. NOTE: the catalog `jump` sound stays the
-    // sand/dirt footstep — this only changes the jump ACTION.
-    if (name === "player.jump") {
+    // gets its own branch. The SAME grunt plays when she starts to FALL off a
+    // ledge (maintainer 2026-07-19: "same sound when she starts to fall").
+    // A short debounce dedupes jump→fall (jumping OFF a cliff would otherwise
+    // grunt on the hop and again as the drop begins). Falls through to the
+    // catalog `jump` binding if the vocal set isn't bundled yet. NOTE: the
+    // catalog `jump` sound stays the sand/dirt footstep — voice only here.
+    if (name === "player.jump" || name === "player.fall") {
       const voice = composerFoley("jump_voice");
       if (voice) {
+        const now = this.graph!.ctx.currentTime;
+        if (now - this.lastJumpVoiceT < JUMP_VOICE_MIN_GAP_S) return;
+        this.lastJumpVoiceT = now;
         this.oneShots.play(this.foleyEntry("jump_voice", voice, "voice"), "sfx", {
           ...opts,
           rate: (opts.rate ?? 1) * JUMP_VOICE_RATE,
@@ -436,6 +445,7 @@ export class GameAudio {
 
   private foleyCache = new Map<string, SoundEntry>();
   private stepCache = new Map<string, SoundEntry>();
+  private lastJumpVoiceT = 0; // ctx-time of the last jump/fall grunt (debounce)
 
   /** A CATALOG sound (e.g. `splash`) played as a footstep: its primary take
    * every step (no rotation) with the gentle step micro-jitter — the same

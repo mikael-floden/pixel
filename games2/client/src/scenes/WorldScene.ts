@@ -291,6 +291,7 @@ interface Avatar {
   elev: number; // current elevation lift (px); eases/falls toward cell level×lh
   fallV: number; // downward velocity (px/s) while a cliff fall is in progress
   falling: boolean;
+  wasFalling?: boolean; // prev-frame falling, for the fall-start grunt edge
   // Flat authoritative world position (pre-projection) — terrain queries and
   // the night-shader lights need THIS space, never the projected lx/ly.
   fx: number;
@@ -1627,6 +1628,7 @@ export class WorldScene extends Phaser.Scene {
         av.elev = targetElev;
         av.fallV = 0;
         av.falling = false;
+        av.wasFalling = false; // a teleport landing must not swallow the next fall grunt
         av.spdWu = undefined; // a teleport is not a speed sample
       } else {
         const px0 = av.lx;
@@ -1635,6 +1637,14 @@ export class WorldScene extends Phaser.Scene {
         av.lx += (g.x - av.lx) * k;
         av.lyFlat += (g.y - av.lyFlat) * k;
         this.stepElevation(av, targetElev, dt);
+        // Fall-start grunt: the SAME voice as a jump when she steps off a
+        // ledge into a gravity fall (maintainer). Rising edge only; the
+        // engine debounce dedupes a jump that flows into a fall.
+        if (av.falling && !av.wasFalling) {
+          const sp = this.avatarSpatial(id);
+          gameAudio.event("player.fall", { pan: sp.pan, dist: sp.dist });
+        }
+        av.wasFalling = av.falling;
         // Ground speed in WORLD units/s, back-projected from the EASED flat
         // screen delta (smooth for remote 20Hz-stepped targets too):
         // Δsx = Δ(x−y)·dx/CELL_WU, Δsy = Δ(x+y)·dy/CELL_WU — invert, so a
