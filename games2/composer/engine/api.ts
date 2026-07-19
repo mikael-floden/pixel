@@ -72,17 +72,15 @@ const FOOT_PHASES = [0.05, 0.55];
 // ONE AT A TIME with explicit approval. Snow re-enabled for trial ("let's
 // try the snow version") — same gentleness as stone: primary take every
 // step, micro-jitter only. Water stays splash/swim, no dry footfall.
-const FOOTSTEP_SETS: Record<string, string> = { snow: "snow", ice: "ice" };
+const FOOTSTEP_SETS: Record<string, string> = { snow: "snow", ice: "ice", grass: "grass" };
 // Surfaces mapped to a CATALOG sound played as a footstep, when the
 // maintainer picks an existing sound over a generated set. sand/dirt → the
 // `jump` sound ("closest we have to sand", 2026-07-18, after 4 sand
-// generations failed to read as sand). grass → catalog `footstep_wood`
-// (2026-07-19): 3 grass generations all came back bright/metal + tonal
-// hum (centroid >4kHz, no transient); of the whole catalog only jump
-// (868Hz) and footstep_wood (1287Hz, crest 7.2) are warm with a real
-// thud — wood is the soft muffled step grass wants, and stays distinct
-// from sand/dirt's jump. Overrides FOOTSTEP_SETS.
-const FOOTSTEP_CATALOG: Record<string, string> = { sand: "jump", dirt: "jump", grass: "footstep_wood" };
+// generations failed to read as sand). grass stays on its generated
+// composer set (2026-07-19): the maintainer played the round-3 grass set
+// and preferred it ("kinda nice, not metal") over the footstep_wood
+// swap. Overrides FOOTSTEP_SETS.
+const FOOTSTEP_CATALOG: Record<string, string> = { sand: "jump", dirt: "jump" };
 const FOOTSTEP_DEFAULT = "stone";
 // Per-SURFACE trims on top of the step base (maintainer verdicts
 // 2026-07-18): snow −12 ("too loud" ×2, run level then approved), grass
@@ -187,7 +185,7 @@ export class GameAudio {
       }
       // Warm the composer's own primary takes too — thunder especially must
       // not miss its first flash on a fetch+decode.
-      for (const set of ["stone", "snow", "ice", "ui_tick", "ui_cancel", "thunder"]) {
+      for (const set of ["stone", "snow", "ice", "grass", "ui_tick", "ui_cancel", "thunder"]) {
         const urls = composerFoley(set);
         if (urls) void this.buffers.get(urls[0]);
       }
