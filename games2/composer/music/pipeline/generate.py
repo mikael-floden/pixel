@@ -32,22 +32,25 @@ DEFAULT_SECONDS = 90
 # bad_prompt ToS block). Describe the STYLE and FEELING only — no brand or
 # artist names. Positive, evocative, one clear singable melody over warm
 # orchestral color.
+# DIRECTION (maintainer 2026-07-19): the soft version was "too much lullaby."
+# Aim for the SWEEP of a classic online-RPG login overture + the warm
+# hearth-and-HOME feeling of an epic fantasy film score — a grand adventure
+# beginning, proud and hopeful, with forward momentum and a strong folk
+# melody, NOT a slow tender lullaby. (No brand/artist names — ElevenLabs ToS.)
 PROMPT = (
-    "A nostalgic orchestral fantasy game title theme for an enchanted, "
-    "bioluminescent ancient forest at night — glowing wisps and fireflies, "
-    "vast mythic trees, a starlit portal, a whole world about to open. It "
-    "OPENS IMMEDIATELY with a soft, warm, beautiful invitation — a gentle harp "
-    "or music-box figure and the main melody already singing in the first two "
-    "seconds; NO long silent or ambient lead-in, no abrupt, harsh or "
-    "dissonant start, lovely from the very first note even if you only hear a "
-    "few seconds. Warm strings, gentle harp and piano carry one hopeful, "
-    "singable, memorable melody; a soft solo flute answers it; distant "
-    "wordless choir pads and glimmering celesta and bell accents shimmer like "
-    "fairy lights. A feeling of wonder, adventure, belonging and homecoming — "
-    "tender, cinematic, gently swelling then settling for a seamless loop. "
-    "Warm, magical, timeless, heartfelt. D major, around 72 BPM, soft "
-    "dynamics that never fatigue on loop, no heavy percussion, no vocals with "
-    "words, no sound effects. A title screen you never want to leave."
+    "A sweeping, nostalgic orchestral fantasy game title theme — a grand "
+    "adventure about to begin and the warmth of coming home, at once. It OPENS "
+    "IMMEDIATELY with the main melody already singing in the first two seconds "
+    "— no silent or ambient lead-in, no abrupt start. A proud, hopeful, "
+    "memorable folk melody on tin whistle, flute and fiddle, answered by warm "
+    "strings and a noble French horn; harp, piano and light glimmering bells "
+    "underneath. Pastoral hearth-and-home warmth with the uplifting swell of a "
+    "great journey — cinematic and heartfelt, with gentle FORWARD MOMENTUM and "
+    "a light walking pulse, NOT a slow lullaby. Builds to a hopeful, soaring "
+    "climax, then settles for a seamless loop. Warm, magical, timeless, "
+    "adventurous. Around 92 BPM, major key, rich orchestration, no heavy "
+    "percussion, no vocals with words, no sound effects. A title screen that "
+    "makes you want to set out on an adventure."
 )
 
 
