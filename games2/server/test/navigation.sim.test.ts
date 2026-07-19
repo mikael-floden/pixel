@@ -17,8 +17,6 @@ import {
   screenToWorldVector,
   autoJumpWanted,
   findSpawn,
-  stepStamina,
-  MAX_STAMINA,
   TerrainGrid,
   CELL_WU,
   WALK_CLIMB,
@@ -68,7 +66,6 @@ function makeRand(seed: number): () => number {
 }
 
 interface TripResult {
-  drownings: number;
   arrived: boolean;
   simSeconds: number;
   endDist: number;
@@ -95,8 +92,6 @@ function simTrips(
   let now = 0; // simulated ms
   let jumpUntil = -Infinity;
   let jumpReadyAt = 0;
-  let stamina = MAX_STAMINA;
-  let drownings = 0;
   const results: TripResult[] = [];
 
   const integrate = (ax: number, ay: number, running: boolean, dtMs: number) => {
@@ -120,19 +115,8 @@ function simTrips(
       );
       x = r.x;
       y = r.y;
-      // Swim stamina, exactly like WorldRoom.update: drain in water, recover
-      // on land; at 0 you drown and respawn on the nearest land. An autopilot
-      // that routes long swims turns trips into drown-teleports — the browser
-      // caught this on glow_test before the sim modelled it.
-      const st = stepStamina(stamina, surfaceAtWorld(grid, x, y).swimmable, eff);
-      stamina = st.stamina;
-      if (st.drowned) {
-        const spot = findSpawn(grid, x, y);
-        x = spot.x;
-        y = spot.y;
-        stamina = MAX_STAMINA;
-        drownings++;
-      }
+      // Swimming is free now — no stamina drain, no drowning. Water is just
+      // slower terrain; the autopilot routes through it freely.
     }
   };
 
@@ -151,10 +135,9 @@ function simTrips(
       const s = surfaceAtWorld(grid, tx, ty);
       if (!s.standable && !s.swimmable) continue;
       run = rand() > 0.5;
-      trip = startTrip(grid, x, y, tx, ty, run, now, { swimBudget: stamina });
+      trip = startTrip(grid, x, y, tx, ty, run, now);
     }
     if (!trip) continue; // hemmed in — same as the e2e's "no target found, skip"
-    drownings = 0;
 
     const budgetMs = 120_000; // simulated: any healthy trip is far shorter
     const t0 = now;
@@ -178,7 +161,6 @@ function simTrips(
       now += opts.frameMs;
     }
     results.push({
-      drownings,
       arrived,
       simSeconds: (now - t0) / 1000,
       endDist: Math.hypot(trip.target.x - x, trip.target.y - y),
@@ -193,8 +175,6 @@ function simTrips(
 
 function assertAllArrive(results: TripResult[], label: string) {
   assert.ok(results.length >= 1, `${label}: at least one trip ran`);
-  const totalDrownings = results.reduce((a, r) => a + r.drownings, 0);
-  assert.equal(totalDrownings, 0, `${label}: the autopilot drowned the player ${totalDrownings} time(s) — routes must avoid lethal swims`);
   const fails = results.filter((r) => !(r.arrived && r.endDist < 40));
   const detail = fails
     .map((f) => `at (${f.at.x.toFixed(0)},${f.at.y.toFixed(0)}) target (${f.target.x.toFixed(0)},${f.target.y.toFixed(0)}) endDist=${f.endDist.toFixed(0)}wu run=${f.run} ${f.simSeconds.toFixed(1)}s`)

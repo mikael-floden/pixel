@@ -22,13 +22,11 @@ import {
   surfaceAtWorld,
   isStandableAtWorld,
   findSpawn,
-  stepStamina,
   WALK_CLIMB,
   JUMP_CLIMB,
   JUMP_SPEED_FACTOR,
   JUMP_MS,
   JUMP_COOLDOWN_MS,
-  MAX_STAMINA,
   TIME_PHASE_COUNT,
   TIME_PHASE_SECONDS,
   TIME_SPEEDS,
@@ -402,21 +400,11 @@ export class WorldRoom extends Room<WorldState> {
       player.running = running;
       player.lastMoving = moving;
 
-      // Swimming + stamina: draining in water, recovering on land. Run out and
-      // you drown — respawn on the nearest solid ground with stamina restored.
+      // Swimming is free, sustainable locomotion — no stamina drain, no
+      // drowning. Just mirror whether the feet are in swimmable water so the
+      // client can render the swim look (shoulder-line waterline, no shadow).
       if (terrain) {
-        const swimming = surfaceAtWorld(terrain, player.x, player.y).swimmable;
-        player.swimming = swimming;
-        const s = stepStamina(player.stamina, swimming, dt);
-        player.stamina = s.stamina;
-        if (s.drowned) {
-          const spot = findSpawn(terrain, player.x, player.y);
-          player.x = spot.x;
-          player.y = spot.y;
-          player.stamina = MAX_STAMINA;
-          player.swimming = false;
-          this.broadcast("drown", { id, name: player.name });
-        }
+        player.swimming = surfaceAtWorld(terrain, player.x, player.y).swimmable;
       }
     });
   }

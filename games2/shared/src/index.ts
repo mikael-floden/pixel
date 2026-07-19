@@ -1181,7 +1181,7 @@ export function findPath(
   fromY: number,
   toX: number,
   toY: number,
-  opts?: { canSwim?: boolean; maxNodes?: number; swimBudget?: number },
+  opts?: { canSwim?: boolean; maxNodes?: number },
 ): { x: number; y: number }[] | null {
   const W = grid.width;
   const H = grid.height;
@@ -1243,23 +1243,14 @@ export function findPath(
 
   const gScore = new Map<number, number>();
   const cameFrom = new Map<number, number>();
-  // Node state = (cell, consecutive routed WATER cells). Swimming drains
-  // stamina (~5s of continuous water = drown + respawn), so a route may only
-  // ford up to SWIM_RUN_MAX cells of water in a row (~3s at swim speed) —
-  // a soft cost can be beaten by geography (a long THIN lake is depth-legal
-  // but lethal lengthwise); a run cap can't. START_WET marks "in water since
-  // the start": a player already swimming may path to land at ANY distance
-  // (they're already at risk; refusing them a route home would be worse).
-  // The cap scales with the player's stamina at PLAN time (swimBudget,
-  // default full): ~17 stamina per water cell, keep a ~30 safety floor. A
-  // player who just swam re-plans with a smaller (possibly zero) water
-  // allowance until they recover. Land cells decay the run by 1 instead of
-  // resetting it, so chained fords with 1-cell breathers can't out-run the
-  // real recovery rate.
-  const SWIM_RUN_HARD = 3;
-  const budget = opts?.swimBudget ?? MAX_STAMINA;
-  const SWIM_RUN_MAX = Math.max(0, Math.min(SWIM_RUN_HARD, Math.floor((budget - 30) / 17)));
-  const RUNS = SWIM_RUN_HARD + 2;
+  // Swimming is free, sustainable locomotion now (no drown, no stamina cap),
+  // so water is just NORMAL terrain that happens to be ~1.8x slower to cross
+  // (surface speed 0.55). No consecutive-water run cap, no per-node water-run
+  // state — plain A* over cells. Water still carries a cost multiplier so a
+  // route only cuts through a lake when that's genuinely shorter than walking
+  // around; a tap ON water is a valid swim destination (see goal handling).
+  const WATER_COST_MULT = 1.8;
+  const RUNS = 1; // vestigial state dimension (kept so sid == cell id)
   const id = (c: number, r: number) => r * W + c;
   const sid = (c: number, r: number, run: number) => (r * W + c) * RUNS + run;
   const sidCell = (n: number) => Math.floor(n / RUNS);
@@ -1301,16 +1292,13 @@ export function findPath(
   };
 
   const start = id(c0, r0);
-  // A tap on/into a solid area (or an enclosed pocket) has no reachable goal
-  // cell: retarget to the nearest non-solid cell around it so the search has
-  // something to aim at; the best-effort fallback below covers the rest.
-  // Retarget goals the body cannot SAFELY occupy: solid cells (can't stand
-  // in a prop) and WATER cells (standing in water drains stamina until you
-  // drown — arrival must end on land). Route to the nearest standable cell
-  // around the tap; a mid-lake tap with no shore within reach keeps the
-  // original goal and best-efforts to the land rim below.
-  if (cellSolid(grid, c1, r1) || isSwim(c1, r1)) {
-    const mustEscapeSolid = cellSolid(grid, c1, r1);
+  // A tap INTO a solid (a prop / structure / non-enterable surface) has no
+  // reachable goal cell: retarget to the nearest cell the body can occupy
+  // (standable OR swimmable — you can now finish a route in the water) so the
+  // search has something to aim at. A tap ON water is NOT retargeted anymore:
+  // it's a valid swim destination. A sealed solid with no free neighbour →
+  // null (nowhere to go).
+  if (cellSolid(grid, c1, r1)) {
     let bestCell: { c: number; r: number; d: number } | null = null;
     for (let rad = 1; rad <= 4 && !bestCell; rad++)
       for (let dr = -rad; dr <= rad; dr++)
@@ -1318,7 +1306,7 @@ export function findPath(
           if (Math.max(Math.abs(dc), Math.abs(dr)) !== rad) continue;
           const c = c1 + dc;
           const r = r1 + dr;
-          if (c < 0 || r < 0 || c >= W || r >= H || cellSolid(grid, c, r) || isSwim(c, r)) continue;
+          if (c < 0 || r < 0 || c >= W || r >= H || cellSolid(grid, c, r)) continue;
           const d = Math.hypot(c - c0, r - r0);
           if (!bestCell || d < bestCell.d) bestCell = { c, r, d };
         }
@@ -1328,12 +1316,12 @@ export function findPath(
       toX = cx(c1);
       toY = cy(r1);
       if (c0 === c1 && r0 === r1) return [clearanceAdjust(grid, toX, toY)];
-    } else if (mustEscapeSolid) {
+    } else {
       return null;
     }
   }
   const goalCell = id(c1, r1);
-  const startSid = sid(c0, r0, isSwim(c0, r0) ? 1 : 0);
+  const startSid = sid(c0, r0, 0);
   gScore.set(startSid, 0);
   push(hx(c0, r0), startSid);
   let expanded = 0;
@@ -1362,7 +1350,6 @@ export function findPath(
       }
     }
     if (++expanded > maxNodes) break;
-    const run = cur - curCell * RUNS;
     const g0 = gScore.get(cur)!;
     for (let dr = -1; dr <= 1; dr++) {
       for (let dc = -1; dc <= 1; dc++) {
@@ -1384,17 +1371,10 @@ export function findPath(
         }
         // Prefer a 1-cell buffer around solids when one exists nearby.
         if (nearSolid(nc, nr)) cost += 0.6;
-        // Water: extend the swim run (capped — see SWIM_RUN_MAX above) and
-        // make even legal fords cost ~4 walked cells so land detours win.
-        let nrun = Math.max(0, run - 1); // land: decay, not reset
-        if (isSwim(nc, nr)) {
-          nrun = run + 1;
-          // A wet START may always step to run 2 (one more cell to escape by)
-          // even on an empty budget — refusing a swimmer any route is worse.
-          if (nrun > Math.max(SWIM_RUN_MAX, isSwim(c0, r0) ? 2 : 0)) continue;
-          cost += 3;
-        }
-        const n = sid(nc, nr, nrun);
+        // Water is swimmable but ~1.8x slower — a route only cuts through it
+        // when that's genuinely shorter than the land detour.
+        if (isSwim(nc, nr)) cost *= WATER_COST_MULT;
+        const n = sid(nc, nr, 0);
         const g = g0 + cost;
         if (g < (gScore.get(n) ?? Infinity)) {
           gScore.set(n, g);
@@ -1494,9 +1474,6 @@ export interface AutopilotTrip {
    * axis — their lateral components cancel and the player vibrates in place
    * at a gap's mouth forever (found by the trip simulator, 60fps frames). */
   steer: { ax: number; ay: number } | null;
-  /** Swim-stamina budget captured when the trip was planned — replans reuse
-   * it so a drained player is not routed into water they cannot survive. */
-  swimBudget: number;
   /** Sticky run→walk demotion: once one frame's displacement exceeds a CELL
    * the control rate can no longer steer a run (70wu per decision at 2.5fps
    * — two cells blind between choices). The rest of the trip walks; manual
@@ -1515,10 +1492,8 @@ export function startTrip(
   toY: number,
   run: boolean,
   nowMs: number,
-  opts?: { swimBudget?: number },
 ): AutopilotTrip | null {
-  const swimBudget = opts?.swimBudget ?? MAX_STAMINA;
-  const path = grid ? (findPath(grid, fromX, fromY, toX, toY, { swimBudget }) ?? []) : [{ x: toX, y: toY }];
+  const path = grid ? (findPath(grid, fromX, fromY, toX, toY) ?? []) : [{ x: toX, y: toY }];
   if (path.length === 0) return null;
   const end = path[path.length - 1];
   return {
@@ -1529,7 +1504,6 @@ export function startTrip(
     lastPos: null,
     steer: null,
     slow: false,
-    swimBudget,
   };
 }
 
@@ -1622,7 +1596,7 @@ export function stepAutopilot(
     if (Math.hypot(t.x - x, t.y - y) < CELL_WU * 1.25) return AUTOPILOT_IDLE;
     if (!trip.repathed && grid) {
       trip.repathed = true;
-      trip.path = findPath(grid, x, y, t.x, t.y, { swimBudget: trip.swimBudget }) ?? [];
+      trip.path = findPath(grid, x, y, t.x, t.y) ?? [];
       trip.progress = { d: Infinity, t: nowMs };
       trip.steer = null;
       if (trip.path.length === 0) return AUTOPILOT_IDLE;

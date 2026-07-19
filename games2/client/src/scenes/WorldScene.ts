@@ -34,7 +34,6 @@ import {
   JUMP_SPEED_FACTOR,
   JUMP_MS,
   JUMP_COOLDOWN_MS,
-  MAX_STAMINA,
   WALK_SPEED,
   RUN_SPEED,
   DEFAULT_TIME_IDX,
@@ -439,7 +438,6 @@ export class WorldScene extends Phaser.Scene {
   private jumpUntil = 0;
   private jumpReadyAt = 0;
   private jumpQueued = false;
-  private staminaBar?: Phaser.GameObjects.Graphics;
   // It is ALWAYS night in Nangijala (for now): the per-pixel shader when
   // WebGL is available, the multiply grade as the canvas fallback.
   private atmo!: Atmosphere;
@@ -1026,7 +1024,6 @@ export class WorldScene extends Phaser.Scene {
       // Fire the thunder rumble on demand (storms are rare episodes — this
       // lets QA/the maintainer hear it without waiting for the weather).
       audioThunder: (strength = 1) => gameAudio.thunder(strength),
-      stamina: () => this.room?.state.players.get(this.room!.sessionId)?.stamina ?? null,
       swimming: () => !!this.room?.state.players.get(this.room!.sessionId)?.swimming,
       surfaceAt: (x: number, y: number) => (this.terrain ? surfaceAtWorld(this.terrain, x, y) : null),
       blockedAt: (x: number, y: number) => (this.terrain ? isBlockedAtWorld(this.terrain, x, y) : null),
@@ -1224,12 +1221,6 @@ export class WorldScene extends Phaser.Scene {
       this.chat.addLog(msg.name, msg.text);
       this.showBubble(msg.id, msg.text);
       if (msg.id !== room.sessionId) gameAudio.event("ui.notify", { gainDb: -9 });
-    });
-    room.onMessage("drown", (msg: { id: string; name: string }) => {
-      this.showBubble(msg.id, "blub… 🫧");
-      this.chat.addLog("—", `${msg.name} nearly drowned and washed ashore.`);
-      const s = this.avatarSpatial(msg.id);
-      gameAudio.play("splash", "sfx", { rate: 0.75, gainDb: 2, pan: s.pan, dist: s.dist });
     });
     // Every arrival in Nangijala is a shooting star everyone sees at the
     // same moment; the night sky also throws wild ones (no name).
@@ -1849,10 +1840,6 @@ export class WorldScene extends Phaser.Scene {
     // See-through tall geometry above the player's level (occlusion fade).
     this.updateOcclusionFade();
 
-    // Local player's swim-stamina HUD.
-    const me = state.players.get(myId);
-    if (me) this.drawStaminaBar(me.stamina ?? MAX_STAMINA, !!me.swimming);
-
     // Night lighting (always on): per-pixel point lights with heightmap
     // line-of-sight when WebGL is available; the multiply grade otherwise.
     const shaderNight = !!this.night;
@@ -2331,10 +2318,7 @@ export class WorldScene extends Phaser.Scene {
     // margin, or the reachable rim when the goal is walled off. Null →
     // nowhere to go (tap into a sealed area) — ignore (a hold-drag passing
     // over a sealed spot keeps the current trip alive).
-    const stamina = this.room?.state.players.get(this.room.sessionId)?.stamina;
-    const trip = startTrip(this.terrain, me.fx, me.fy, x, y, run, this.time.now, {
-      swimBudget: typeof stamina === "number" ? stamina : undefined,
-    });
+    const trip = startTrip(this.terrain, me.fx, me.fy, x, y, run, this.time.now);
     if (!trip) return;
     // A hold-drag retarget carries the sticky run→walk demotion: fresh trips
     // reset it, and at ~7 retargets/s a throttled tab would re-arm the run
@@ -2937,22 +2921,6 @@ export class WorldScene extends Phaser.Scene {
 
   /** Draw the local player's swim-stamina bar (bottom-centre HUD), shown only
    * while swimming or recovering. */
-  private drawStaminaBar(stamina: number, swimming: boolean) {
-    if (!this.staminaBar) this.staminaBar = this.add.graphics().setScrollFactor(0).setDepth(2_000_000);
-    const g = this.staminaBar;
-    g.clear();
-    const frac = Math.max(0, Math.min(1, stamina / MAX_STAMINA));
-    if (!swimming && frac >= 1) return; // hide when full and on land
-    const w = 220;
-    const h = 12;
-    const x = this.scale.width / 2 - w / 2;
-    const y = this.scale.height - 34;
-    g.fillStyle(0x0d0d18, 0.75).fillRoundedRect(x - 3, y - 3, w + 6, h + 6, 5);
-    g.fillStyle(0x2a2f45, 1).fillRoundedRect(x, y, w, h, 4);
-    const col = frac > 0.5 ? 0x57c7ff : frac > 0.25 ? 0xffcf4a : 0xff5a5a;
-    g.fillStyle(col, 1).fillRoundedRect(x, y, w * frac, h, 4);
-  }
-
   /** First stack level to DRAW for a DEMO station column: the lvl-0 copy is
    * underground — drawing it pushed the column's base one full block below
    * its grid diamond (and past its hitbox; playtester overlay check).
