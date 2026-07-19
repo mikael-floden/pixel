@@ -84,8 +84,8 @@ SETS: dict[str, dict] = {
     # Positive + short (sand lesson). Grass = a soft muffled thud with a
     # gentle rustle of blades — soft, not a sharp crack, so the grain judge.
     "grass": {
-        "brief": "a single soft footstep on grass, a gentle muffled thud with a light rustle of grass blades",
-        "style": "clean close-miked foley, natural, one isolated sound",
+        "brief": "a single soft dull footstep on grass, a low muffled thud with a faint gentle rustle, deep and soft",
+        "style": "clean close-miked foley, natural, warm, one isolated sound",
         "duration_s": 0.6,
         "variants": GAIT_VARIANTS,
         "max_ms": 600,
@@ -401,9 +401,16 @@ GATES: dict[str, dict[str, tuple[float, float, float]]] = {
     # Sand is a SOFT crunch — low crest (a spike reads as a metallic tick;
     # the round-1 sand primary measured crest 18, spikier than a hard stone
     # tap) and no ring. High-frequency energy is FINE (grains hiss).
+    # 'grain' = soft dull surfaces (sand/grass). THE metal fix (maintainer:
+    # "why do we get metal steps all the time"): metal = BRIGHTNESS, not
+    # spikiness/ring. Every approved footstep is warm (<2000 Hz centroid);
+    # every 'metal' one measured 8000-12000 Hz. So a hard brightness cap.
+    # Tonality relaxed — it does NOT predict metal (the loved jump sound is
+    # 0.96 tonal but warm at 1235 Hz, and sounds perfect).
     "grain": {
+        "centroid_hz": (0.0, 4000.0, 0.04),  # bright = tinny/metal; soft surfaces are warm
         "crest": (2.0, 12.0, 5),
-        "tonality": (0.0, 0.4, 40),
+        "tonality": (0.0, 0.55, 12),
         "tail_ratio": (0.0, 0.65, 10),  # a granular SLIDE is meant to sustain
     },
     # Wet steps: candidates must be WETNESS-class (band-profile distance to
@@ -429,7 +436,7 @@ RANK = {
     # Wet: most reference-like candidate wins.
     "wet": lambda f: f.get("ref_dist", 9.9) * 3,
     # Grain: softest (lowest crest) + least ringy wins — the anti-metal sort.
-    "grain": lambda f: f["crest"] * 1.5 + f["tonality"] * 8,
+    "grain": lambda f: f["centroid_hz"] / 800 + f["crest"] * 0.8 + f["tonality"] * 5,
 }
 
 
