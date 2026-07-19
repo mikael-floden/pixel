@@ -51,6 +51,11 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
         <img src="/ui2/kit-icon-down.png" alt="" draggable="false" /></button>`;
     document.body.appendChild(overlay);
     applyUiZoom(overlay); // "Desktop site" must not shrink the menu
+    // Arm the title theme the moment the screen mounts — NOT only on a button
+    // press (maintainer 2026-07-19). Browser autoplay still needs one gesture,
+    // but now ANY first tap (anywhere) unlocks the context and slowTick brings
+    // the theme in; you don't have to hit a button.
+    gameAudio.startTitleTheme();
     injectStyles();
     // FADE IN FROM BLACK (maintainer: every screen assumes the previous one
     // faded to 100% black — page boot and logout both land here on the #000

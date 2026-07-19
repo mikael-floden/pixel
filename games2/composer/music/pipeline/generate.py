@@ -35,15 +35,19 @@ DEFAULT_SECONDS = 90
 PROMPT = (
     "A nostalgic orchestral fantasy game title theme for an enchanted, "
     "bioluminescent ancient forest at night — glowing wisps and fireflies, "
-    "vast mythic trees, a starlit portal, a whole world about to open. Warm "
-    "strings and gentle harp and piano carry one hopeful, singable, memorable "
-    "melody; a soft solo flute answers it; distant wordless choir pads and "
-    "glimmering celesta and bell accents shimmer like fairy lights. A feeling "
-    "of wonder, adventure, belonging and homecoming — tender, cinematic, "
-    "gently swelling then settling for a seamless loop. Warm, magical, "
-    "timeless, heartfelt. D major, around 72 BPM, soft dynamics that never "
-    "fatigue on loop, no heavy percussion, no vocals with words, no sound "
-    "effects. A title screen you never want to leave."
+    "vast mythic trees, a starlit portal, a whole world about to open. It "
+    "OPENS IMMEDIATELY with a soft, warm, beautiful invitation — a gentle harp "
+    "or music-box figure and the main melody already singing in the first two "
+    "seconds; NO long silent or ambient lead-in, no abrupt, harsh or "
+    "dissonant start, lovely from the very first note even if you only hear a "
+    "few seconds. Warm strings, gentle harp and piano carry one hopeful, "
+    "singable, memorable melody; a soft solo flute answers it; distant "
+    "wordless choir pads and glimmering celesta and bell accents shimmer like "
+    "fairy lights. A feeling of wonder, adventure, belonging and homecoming — "
+    "tender, cinematic, gently swelling then settling for a seamless loop. "
+    "Warm, magical, timeless, heartfelt. D major, around 72 BPM, soft "
+    "dynamics that never fatigue on loop, no heavy percussion, no vocals with "
+    "words, no sound effects. A title screen you never want to leave."
 )
 
 
