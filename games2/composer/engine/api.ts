@@ -9,7 +9,7 @@
  * gesture, missing catalogs → silence, never a throw into the game loop.
  */
 
-import { Bindings, Catalog, SoundEntry, loadCatalog, soundUrl } from "./catalog";
+import { Bindings, Catalog, SoundEntry, dbToGain, loadCatalog, soundUrl } from "./catalog";
 import { AudioGraph, BufferCache, BusName } from "./context";
 import { AmbienceMixer } from "./ambience";
 import { MusicDirector } from "./music";
@@ -69,17 +69,18 @@ const RUN_STEP_WU = 38;
 // The two foot plants within one walk/run animation loop (0..1 phase).
 // Tunable: if the plant reads early/late on screen, nudge both together.
 const FOOT_PHASES = [0.05, 0.55];
-// SWIMMING (a new locomotion, maintainer 2026-07-19): the catalog swim_stroke
-// played as speed-driven water strokes — NOT footfalls. Cadence is distance-
-// based (one stroke per SWIM_STROKE_WU of water covered, so a faster swim
-// strokes more often); level scales with the CURRENT swim speed (a lazy float
-// is near-silent, a fast crawl fuller). SWIM_REF_SPEED_WU ≈ a brisk swim
-// (water is ~1.8× slower than the ~49.5 wu/s walk ref) → speed 0..that maps to
-// the MIN..MAX stroke level. Floating still makes no stroke at all.
-const SWIM_STROKE_WU = 30;
+// SWIMMING (a new locomotion, maintainer 2026-07-19): ONE looping water
+// source (the catalog swim_stroke is a 6s loop) per swimming avatar, whose
+// VOLUME is driven in real time by the swim speed — NOT a shower of
+// overlapping one-shots (maintainer: "use 1 effect ... realtime control the
+// volume based on speed"). SWIM_REF_SPEED_WU ≈ a brisk swim (water is ~1.8×
+// slower than the ~49.5 wu/s walk ref) → speed 0..that maps MIN..MAX level.
+// Floating still sits at MIN (a faint water lap), a fast crawl at MAX. The
+// loop also brightens/quickens slightly with speed (the "alter it slightly").
 const SWIM_REF_SPEED_WU = 28;
-const SWIM_STROKE_MIN_DB = -17; // barely-moving float
-const SWIM_STROKE_MAX_DB = -8; // full-speed crawl
+const SWIM_LOOP_MIN_DB = -24; // floating still — a faint lap
+const SWIM_LOOP_MAX_DB = -7; // full-speed crawl
+const SWIM_GAIN_TAU_S = 0.12; // real-time volume follow (responsive, no zipper)
 // Enter/exit water splashes: a fuller plunge going IN, a lighter, brighter
 // splash climbing OUT (maintainer 2026-07-19).
 const SWIM_ENTER_DB = 1;
@@ -161,7 +162,17 @@ interface AvatarGait {
   travelled: number; // wu since last footfall (fallback cadence only)
   lastPhase?: number; // last seen walk/run animation phase (sync source)
   swimming: boolean;
-  swimTravelled?: number; // wu since last swim stroke (distance-based cadence)
+}
+
+/** One persistent looping water source per swimming avatar — gain + pan +
+ * playbackRate driven live from swim speed (see updateSwim). */
+interface SwimVoice {
+  gain: GainNode;
+  pan: StereoPannerNode | null;
+  src: AudioBufferSourceNode | null;
+  loading: boolean;
+  active: boolean; // currently swimming
+  silentSince: number; // performance.now() when it went idle (-1 = live)
 }
 
 export class GameAudio {
@@ -173,6 +184,7 @@ export class GameAudio {
   private catalog: Catalog | null = null;
   private bindings = new Map<string, { sound: string; bus: BusName; duck: boolean }>();
   private gaits = new Map<string, AvatarGait>();
+  private swimVoices = new Map<string, SwimVoice>();
   private env: EnvState = {
     sun: 1, cloud: 0, mist: 0, rain: 0, storm: false, snow: false, windy: false,
   };
@@ -385,7 +397,6 @@ export class GameAudio {
     // lighter + brighter (pitched-up) splash climbing OUT.
     if (f.swimming !== g.swimming) {
       g.swimming = f.swimming;
-      g.swimTravelled = 0;
       this.play("splash", "sfx", {
         pan: f.pan,
         dist: f.dist,
@@ -394,28 +405,10 @@ export class GameAudio {
       });
     }
 
-    // SWIMMING: speed-driven water strokes (not footfalls). Floating still is
-    // silent; while moving, one swim_stroke per SWIM_STROKE_WU covered, its
-    // level scaled by the current swim speed.
-    if (f.swimming) {
-      if (!f.moving) {
-        g.swimTravelled = 0;
-        return;
-      }
-      const stroke = this.catalog?.sounds.get("swim_stroke");
-      if (!stroke) return;
-      g.swimTravelled = (g.swimTravelled ?? 0) + Math.max(0, f.distWu);
-      if (g.swimTravelled < SWIM_STROKE_WU) return;
-      g.swimTravelled = 0;
-      const t = Math.min(1, Math.max(0, (f.speedWu ?? 0) / SWIM_REF_SPEED_WU));
-      this.oneShots.play(this.catalogStepEntry(stroke), "sfx", {
-        pan: f.pan,
-        dist: f.dist,
-        gainDb: SWIM_STROKE_MIN_DB + (SWIM_STROKE_MAX_DB - SWIM_STROKE_MIN_DB) * t,
-        rate: 0.96 + 0.12 * t, // a touch brisker at speed
-      });
-      return;
-    }
+    // SWIMMING: ONE looping water source whose volume follows swim speed in
+    // real time (updated every frame). No per-stroke one-shots to pile up.
+    this.updateSwim(id, f.swimming, f.speedWu ?? 0, f.pan ?? 0, f.dist ?? 0);
+    if (f.swimming) return; // no footfalls while swimming
 
     if (!f.moving || !f.grounded) {
       g.travelled = Math.min(g.travelled, WALK_STEP_WU * 0.55); // next start-step comes quickly
@@ -546,6 +539,73 @@ export class GameAudio {
     }
   }
 
+  /** Drive the per-avatar swim loop: one persistent looping water source whose
+   * GAIN follows the swim speed in real time (and a slight rate lift with
+   * speed). Ramps up on entering water, down to silence on leaving; the source
+   * is reclaimed once it's been idle a while (buffer stays cached). */
+  private updateSwim(id: string, swimming: boolean, speed: number, pan: number, dist: number): void {
+    if (!this.graph) return;
+    let v = this.swimVoices.get(id);
+    // Nothing playing and not swimming → nothing to do (never spin up a voice
+    // just to silence it).
+    if (!v && !swimming) return;
+    if (!v) {
+      const gain = this.graph.ctx.createGain();
+      gain.gain.value = 0.0001;
+      let panNode: StereoPannerNode | null = null;
+      if (typeof this.graph.ctx.createStereoPanner === "function") {
+        panNode = this.graph.ctx.createStereoPanner();
+        panNode.connect(gain);
+      }
+      gain.connect(this.graph.bus("sfx"));
+      v = { gain, pan: panNode, src: null, loading: false, active: true, silentSince: -1 };
+      this.swimVoices.set(id, v);
+    }
+    v.active = swimming;
+
+    // Target level: speed 0..ref → MIN..MAX dB, times distance attenuation for
+    // other players. Not swimming → silence.
+    const t = Math.min(1, Math.max(0, speed / SWIM_REF_SPEED_WU));
+    const d = Math.min(1, Math.max(0, dist));
+    const targetDb = SWIM_LOOP_MIN_DB + (SWIM_LOOP_MAX_DB - SWIM_LOOP_MIN_DB) * t;
+    const target = swimming ? dbToGain(targetDb) * (1 - 0.85 * d * d) : 0;
+    const now = performance.now();
+    v.silentSince = swimming ? -1 : v.silentSince < 0 ? now : v.silentSince;
+
+    if (swimming) this.ensureSwimSource(id, v);
+    v.gain.gain.setTargetAtTime(Math.max(0.0001, target), this.graph.now, SWIM_GAIN_TAU_S);
+    if (v.pan) v.pan.pan.setTargetAtTime(Math.max(-1, Math.min(1, pan)), this.graph.now, 0.1);
+    // Slight character shift with speed: brighten/quicken a touch (the "alter
+    // it slightly" the maintainer asked for), not a pitch sweep.
+    if (v.src) v.src.playbackRate.setTargetAtTime(0.97 + 0.1 * t, this.graph.now, 0.15);
+
+    // Reclaim a long-idle source (keeps the buffer cached for instant restart).
+    if (v.src && v.silentSince >= 0 && now - v.silentSince > 4000) {
+      try {
+        v.src.stop();
+      } catch {}
+      v.src.disconnect();
+      v.src = null;
+    }
+  }
+
+  private ensureSwimSource(id: string, v: SwimVoice): void {
+    if (v.src || v.loading) return;
+    const entry = this.catalog?.sounds.get("swim_stroke");
+    if (!entry) return;
+    v.loading = true;
+    void this.buffers.get(soundUrl(entry.file)).then((buf) => {
+      v.loading = false;
+      if (!buf || v.src || !v.active) return;
+      const src = this.graph!.ctx.createBufferSource();
+      src.buffer = buf;
+      src.loop = true;
+      src.connect(v.pan ?? v.gain);
+      src.start(this.graph!.now, Math.random() * buf.duration); // desync joiners
+      v.src = src;
+    });
+  }
+
   private foleyCache = new Map<string, SoundEntry>();
   private stepCache = new Map<string, SoundEntry>();
   private lastJumpVoiceT = 0; // ctx-time of the last jump/fall grunt (debounce)
@@ -628,6 +688,16 @@ export class GameAudio {
 
   dropAvatar(id: string): void {
     this.gaits.delete(id);
+    const v = this.swimVoices.get(id);
+    if (v) {
+      try {
+        v.src?.stop();
+      } catch {}
+      v.src?.disconnect();
+      v.pan?.disconnect();
+      v.gain.disconnect();
+      this.swimVoices.delete(id);
+    }
   }
 
   // ---- the musical clock (audio → game) ----
