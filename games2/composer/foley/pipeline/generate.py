@@ -81,18 +81,16 @@ SETS: dict[str, dict] = {
     # rustle/crunch texture instead of one step). Round-2 briefs copy stone's
     # "one compact impact + tiny character tail" formula, and max_ms
     # transient-tightening enforces it in post regardless of model rambling.
+    # Positive + short (sand lesson). Grass = a soft muffled thud with a
+    # gentle rustle of blades — soft, not a sharp crack, so the grain judge.
     "grass": {
-        "brief": (
-            "one single compact footstep on short dry grass: a firm boot impact "
-            "thud with a brief crisp blade rustle only at the moment of impact, "
-            "tight and dry, exactly one step, no walking sequence, no ambience, "
-            "no wind, no birds"
-        ),
+        "brief": "a single soft footstep on grass, a gentle muffled thud with a light rustle of grass blades",
+        "style": "clean close-miked foley, natural, one isolated sound",
         "duration_s": 0.6,
         "variants": GAIT_VARIANTS,
         "max_ms": 600,
-        "judge": "step",
-        "pool": 9,
+        "judge": "grain",
+        "pool": 12,
     },
     # ROUND 2 (maintainer: round-1 sand "sounds like metal not sand" — the
     # shipped take had a crest of 18, a sharp metallic spike). Sand is a SOFT
