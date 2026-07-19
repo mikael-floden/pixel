@@ -109,6 +109,9 @@ const JUMP_VOICE_RATE = 1.26;
 // The jump grunt also plays on fall-start; this gap dedupes jump→fall (a
 // jump OFF a ledge fires both within a few frames) and any double-trigger.
 const JUMP_VOICE_MIN_GAP_S = 0.28;
+// −6 dB ≈ half amplitude (maintainer 2026-07-19: "lower the volume by 50% on
+// all voice grunts"). A static level balance → applies in pure mode too.
+const JUMP_VOICE_GAIN_DB = -6;
 // Walk plays softer than run by this penalty (default −3 dB ≈ 70%). Snow's
 // walk penalty is ZERO: at −3 on top of its deep trim the maintainer heard
 // "nothing at all" — snow walking now sits just under snow running.
@@ -268,6 +271,7 @@ export class GameAudio {
         this.oneShots.play(this.foleyEntry("jump_voice", voice, "voice"), "sfx", {
           ...opts,
           rate: (opts.rate ?? 1) * JUMP_VOICE_RATE,
+          gainDb: (opts.gainDb ?? 0) + JUMP_VOICE_GAIN_DB,
         });
         return;
       }
