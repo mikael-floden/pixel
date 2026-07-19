@@ -3118,6 +3118,10 @@ export class WorldScene extends Phaser.Scene {
     if (!w) return false;
     const c = w.rows[row]?.[col];
     if (!c || c.flip || !c.path || !c.path.includes("/base/")) return false;
+    // NEVER scatter water (or any swimmable surface): clean water is meant to
+    // read as ONE uniform sheet — shuffling its many variants wrecks it
+    // (maintainer). Scatter only breaks up repeated LAND fields.
+    if (surfaceFor(c.t).swimmable) return false;
     const t = c.t;
     const n = (cc: number, rr: number) => w.rows[rr]?.[cc];
     return (
