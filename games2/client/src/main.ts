@@ -160,6 +160,13 @@ async function boot() {
   // AND a character.
   const worlds = await loadWorldsList();
 
+  // Audio (games2/composer, its own agent): the engine boots HERE — before the
+  // select screen — so its buttons click, the AudioContext unlocks on the
+  // first tap, and the title theme plays while choosing. (It used to init
+  // after chooseCharacter, so the select screen was silent — maintainer
+  // 2026-07-19.) The scene feeds it events; the world score starts on join.
+  gameAudio.init();
+
   // Dead-connection rejoin fast path: WorldScene sets ml-rejoin before its
   // recovery reload — skip the select screen and re-enter with the remembered
   // choice, so a phone coming back from background is in the world within
@@ -214,11 +221,6 @@ async function boot() {
   // world scene from outside and only ever ADDS display objects — zero
   // gameplay impact by charter (see ambient/README.md).
   mountAmbient(game);
-
-  // Audio (games2/composer, its own agent): the engine boots now — buses +
-  // catalogs + preloads — and unlocks on the select screen's first tap. The
-  // scene feeds it semantic events; music starts once the world is joined.
-  gameAudio.init();
 }
 
 boot();
