@@ -8,15 +8,22 @@ import { AmbientCtx, AmbientFeature } from "../runtime/types";
 // tiny hand-pixelled marks are scattered over the VISIBLE WATER (found through
 // the game's `waterAtScreen` iso probe — the same one the snow uses):
 //
-//   • WAVELETS — a small light crest that ANIMATES in place through a few
-//     pixel frames (a bob), then fades and RESPAWNS at another random water
-//     spot. The "movement" is the flicker + the respawns, all snapped to whole
-//     world pixels (integer positions, scale 1, nearest) — never a sub-pixel
-//     slide. Drawn below the night overlay so night water stays calm/dark.
-//   • GLINTS — sun/moon reflection sparkles, ADDITIVE and ABOVE the darkness
-//     overlay so they shine even at night. Colour + count + brightness come
-//     from the time of day: warm white when the sun is up (whiter at noon,
-//     amber at dawn/dusk), and a cooler, dimmer, sparser MOON glint at night.
+//   • WAVELETS — a DIAGONAL pixel crest (iso staircase) that ROLLS up its
+//     diagonal a whole step per frame; each wave is turned a random quarter-
+//     turn so crests sit at four angles rolling four ways (not one horizontal
+//     back-and-forth). Then it fades and RESPAWNS elsewhere. All snapped to
+//     whole world pixels (integer positions, scale 1, nearest) — never a
+//     sub-pixel slide.
+//   • GLINTS — sun/moon reflection sparkles, ADDITIVE, shaped like a plus with
+//     one arm missing (a "tetromino") and turned a random quarter-turn for four
+//     orientations. Colour + count + brightness come from the time of day: warm
+//     white when the sun is up (whiter at noon, amber at dawn/dusk), a cooler,
+//     dimmer, sparser MOON glint at night.
+//
+// Marks only land on INTERIOR water (all sides water — off shorelines/hillside
+// faces), keep MIN_DIST apart (no two on top of each other), and their fade is
+// STEPPED into a few levels so they pop like animated pixel art, not a smooth
+// dissolve.
 //
 // Pixel-perfect: 1 art-px == 1 world-px (scale 1), integer positions, so the
 // marks share the exact pixel grid as the characters/world. Self-gates on
@@ -30,24 +37,31 @@ const DEPTH_WAVE = 900_000.4;
 const DEPTH_GLINT = 900_000.45;
 const GAIN_TAU = 1200;
 const SAMPLE_MS = 150; // how often we re-scan the view for water
-const GRID = 6; // GRID×GRID water probe samples across the view
-const AREA_PER_WAVE = 4200; // ~ waves per water on a phone view
-const AREA_PER_GLINT = 6400;
-const MAX_WAVE = 46;
-const MAX_GLINT = 40;
+const GRID = 8; // GRID×GRID water probe samples across the view (spawn candidates)
+const AREA_PER_WAVE = 8000; // ~ waves per water on a phone view (sparse — spacing matters)
+const AREA_PER_GLINT = 11000;
+const MAX_WAVE = 26;
+const MAX_GLINT = 18;
+const INTERIOR = 18; // a mark must have water this far out on all sides (off shorelines/cliffs)
+const MIN_DIST = 24; // marks keep at least this far apart (Chebyshev)
+const PLACE_TRIES = 12; // attempts to find an interior, spaced spot before giving up
+const ROT4 = [0, 90, 180, 270]; // whole-quarter turns keep pixels grid-aligned
 
 const WAVE_FRAMES = ["amb-wave0", "amb-wave1", "amb-wave2"];
 const GLINT_FRAMES = ["amb-glint0", "amb-glint1", "amb-glint2"];
-// Wavelet pixel maps — a bright crest (B) over a darker TROUGH shadow (d) that
-// together read as a little wave; the crest slides a pixel each frame so the
-// wave ROLLS in whole pixels. 7×2.
-const W0 = { B: [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0]], d: [[2, 1], [3, 1], [4, 1]] };
-const W1 = { B: [[2, 0], [3, 0], [4, 0], [5, 0], [6, 0]], d: [[3, 1], [4, 1], [5, 1]] };
-const W2 = { B: [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0]], d: [[1, 1], [2, 1], [3, 1]] };
-// Glint sparkle pixel maps (white, tinted at runtime). 5×3.
-const G0 = { B: [[1, 1], [2, 1], [3, 1]], d: [[0, 1], [4, 1]] };
-const G1 = { B: [[2, 0], [2, 1], [2, 2], [1, 1], [3, 1]], d: [] as number[][] };
-const G2 = { B: [[2, 1]], d: [] as number[][] };
+// Wavelet pixel maps — a DIAGONAL crest (B) over a darker trough (d), a 2:1 iso
+// staircase, that ROLLS up the diagonal a whole step each frame (10×6). Each
+// wave is then turned a random quarter-turn, so crests sit at four angles and
+// roll four directions — not one horizontal back-and-forth (maintainer).
+const W0 = { B: [[0, 4], [1, 4], [2, 3], [3, 3], [4, 2], [5, 2]], d: [[0, 5], [1, 5], [2, 4], [3, 4], [4, 3], [5, 3]] };
+const W1 = { B: [[2, 3], [3, 3], [4, 2], [5, 2], [6, 1], [7, 1]], d: [[2, 4], [3, 4], [4, 3], [5, 3], [6, 2], [7, 2]] };
+const W2 = { B: [[4, 2], [5, 2], [6, 1], [7, 1], [8, 0], [9, 0]], d: [[4, 3], [5, 3], [6, 2], [7, 2], [8, 1], [9, 1]] };
+// Glint "tetromino" — a plus with ONE arm pixel missing (asymmetric), so a
+// random quarter-turn gives four distinct sparkles (maintainer). 3×3; the
+// twinkle steps down the shape. White, tinted per mark to sun/moon.
+const G0 = { B: [[1, 0], [1, 1], [1, 2], [2, 1]], d: [] as number[][] }; // full T (missing left)
+const G1 = { B: [[1, 1], [2, 1]], d: [] as number[][] }; // shrunk
+const G2 = { B: [[1, 1]], d: [] as number[][] }; // point
 const WAVE_BRIGHT = 0xcdeef2; // crest highlight — cyan, NOT white (avoid a foam read)
 const WAVE_DIM = 0x274d51; // trough shadow (darker than the water)
 const WAVE_NIGHT_TINT = 0x9db6d6; // multiplies the crest toward moonlit blue at night
@@ -118,31 +132,46 @@ export function waterFeature(): AmbientFeature {
       g.generateTexture(key, w, h);
       g.destroy();
     };
-    paint(WAVE_FRAMES[0], 7, 2, W0, WAVE_BRIGHT, WAVE_DIM);
-    paint(WAVE_FRAMES[1], 7, 2, W1, WAVE_BRIGHT, WAVE_DIM);
-    paint(WAVE_FRAMES[2], 7, 2, W2, WAVE_BRIGHT, WAVE_DIM);
+    paint(WAVE_FRAMES[0], 10, 6, W0, WAVE_BRIGHT, WAVE_DIM);
+    paint(WAVE_FRAMES[1], 10, 6, W1, WAVE_BRIGHT, WAVE_DIM);
+    paint(WAVE_FRAMES[2], 10, 6, W2, WAVE_BRIGHT, WAVE_DIM);
     // Glints are pure white — tinted per mark to the sun/moon colour.
-    paint(GLINT_FRAMES[0], 5, 3, G0, 0xffffff, 0xffffff);
-    paint(GLINT_FRAMES[1], 5, 3, G1, 0xffffff, 0xffffff);
-    paint(GLINT_FRAMES[2], 5, 3, G2, 0xffffff, 0xffffff);
+    paint(GLINT_FRAMES[0], 3, 3, G0, 0xffffff, 0xffffff);
+    paint(GLINT_FRAMES[1], 3, 3, G1, 0xffffff, 0xffffff);
+    paint(GLINT_FRAMES[2], 3, 3, G2, 0xffffff, 0xffffff);
   };
 
-  // Drop a mark onto a random visible water point (integer world px). Returns
-  // false when there's no water to land on (the mark stays hidden).
+  const tooClose = (x: number, y: number, self: Mark): boolean => {
+    for (const o of waves)
+      if (o !== self && o.sprite.visible && Math.abs(o.x - x) < MIN_DIST && Math.abs(o.y - y) < MIN_DIST) return true;
+    for (const o of glints)
+      if (o !== self && o.sprite.visible && Math.abs(o.x - x) < MIN_DIST && Math.abs(o.y - y) < MIN_DIST) return true;
+    return false;
+  };
+
+  // Drop a mark onto INTERIOR visible water (all four sides water — never on a
+  // shoreline or a tile's hillside face) with SPACING from other marks (integer
+  // world px). Returns false when no good spot is found (the mark stays hidden).
   const placeOnWater = (m: Mark): boolean => {
     if (!waterPts.length) return false;
-    const p = waterPts[(rnd() * waterPts.length) | 0];
-    const jx = Math.round((rnd() - 0.5) * 22);
-    const jy = Math.round((rnd() - 0.5) * 14);
-    let x = Math.round(p.x + jx);
-    let y = Math.round(p.y + jy);
-    if (!waterAt(x, y)) {
-      x = Math.round(p.x);
-      y = Math.round(p.y);
+    for (let tries = 0; tries < PLACE_TRIES; tries++) {
+      const p = waterPts[(rnd() * waterPts.length) | 0];
+      const x = Math.round(p.x + (rnd() - 0.5) * 26);
+      const y = Math.round(p.y + (rnd() - 0.5) * 18);
+      if (
+        !waterAt(x, y) ||
+        !waterAt(x + INTERIOR, y) ||
+        !waterAt(x - INTERIOR, y) ||
+        !waterAt(x, y + INTERIOR) ||
+        !waterAt(x, y - INTERIOR)
+      )
+        continue; // on/near an edge — the hillside bug
+      if (tooClose(x, y, m)) continue; // overlapping another mark
+      m.x = x;
+      m.y = y;
+      return true;
     }
-    m.x = x;
-    m.y = y;
-    return true;
+    return false;
   };
 
   const makeMark = (scene: Phaser.Scene, frames: string[], depth: number, additive: boolean): Mark => {
@@ -161,6 +190,7 @@ export function waterFeature(): AmbientFeature {
     m.frameDur = 150 + rnd() * 140; // slow roll
     m.maxLife = m.life = 1400 + rnd() * 2200;
     m.base = 0.5 + rnd() * 0.4;
+    m.sprite.setAngle(ROT4[(rnd() * 4) | 0]); // random quarter-turn → 4 crest angles
   };
   const resetGlint = (m: Mark, tint: number) => {
     m.fi = (rnd() * GLINT_FRAMES.length) | 0;
@@ -168,7 +198,7 @@ export function waterFeature(): AmbientFeature {
     m.frameDur = 70 + rnd() * 90; // quick twinkle
     m.maxLife = m.life = 500 + rnd() * 1100;
     m.base = 0.45 + rnd() * 0.5;
-    m.sprite.setTint(tint);
+    m.sprite.setAngle(ROT4[(rnd() * 4) | 0]).setTint(tint); // 4 tetromino orientations
   };
 
   // Advance a mark's animation + fade; returns the envelope alpha (0 = dead).
@@ -181,9 +211,12 @@ export function waterFeature(): AmbientFeature {
       m.sprite.setTexture(frames[m.fi]);
     }
     const p = 1 - m.life / m.maxLife; // 0..1 over life
-    // Fade in over the first 20%, hold, fade out over the last 30%.
-    const env = p < 0.2 ? p / 0.2 : p > 0.7 ? Math.max(0, (1 - p) / 0.3) : 1;
-    return env * m.base;
+    // Fade in over the first 18%, hold, fade out over the last 28% — but STEP
+    // the envelope into a few discrete levels so it pops in/out like animated
+    // pixel art, not a smooth CSS-style dissolve (maintainer).
+    const raw = p < 0.18 ? p / 0.18 : p > 0.72 ? (1 - p) / 0.28 : 1;
+    const stepped = Math.ceil(Math.max(0, Math.min(1, raw)) * 3) / 3; // 0, ⅓, ⅔, 1
+    return stepped * m.base;
   };
 
   return {
