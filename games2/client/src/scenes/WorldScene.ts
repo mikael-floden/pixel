@@ -263,6 +263,7 @@ const litDepth = (baseDepth: number) => 900_001 + baseDepth * 1e-5;
 const JUMP_HEIGHT = 28; // px peak of the jump hop (a tall, floaty arc)
 const SWIM_BOB = 2.2; // px amplitude of the gentle head bob while swimming
 const EXIT_JUMP_MS = 500; // ms window to rise out of the water on exit (matches the hop)
+const FOAM_SCROLL = 6; // source-px/sec the foam crest pattern drifts (water lapping)
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
 // Living camera (maintainer): the camera CHASES the player instead of pinning
 // them dead-centre — exponential ease toward the sprite with the trail capped,
@@ -311,7 +312,7 @@ interface Avatar {
   bobPhase: number; // per-avatar swim bob phase
   waterMaskG?: Phaser.GameObjects.Graphics; // half-plane-above-shoulders mask shape
   waterMask?: Phaser.Display.Masks.GeometryMask; // the reusable geometry mask
-  foam?: Phaser.GameObjects.Image; // waterline foam strip (1px white + 2px dark water)
+  foam?: Phaser.GameObjects.TileSprite; // waterline foam strip (scrolls for life)
   baseTint: number;
   bubble?: Phaser.GameObjects.Text;
   bubbleUntil?: number;
@@ -2724,6 +2725,37 @@ export class WorldScene extends Phaser.Scene {
     return b;
   }
 
+  private alphaMapCache = new Map<string, { w: number; h: number; a: Uint8Array }>();
+
+  /** Per-pixel alpha of the sprite's current FRAME (cutWidth×cutHeight), cached
+   * per texture+frame. Used to clamp the waterline foam to the character's
+   * actual opaque silhouette so the crest never spills into transparent pixels. */
+  private alphaMap(sprite: Phaser.GameObjects.Sprite): { w: number; h: number; a: Uint8Array } {
+    const frame = sprite.frame;
+    const key = `${frame.texture.key}#${frame.name}`;
+    let m = this.alphaMapCache.get(key);
+    if (m) return m;
+    const w = frame.cutWidth, h = frame.cutHeight;
+    const a = new Uint8Array(w * h);
+    try {
+      const src = frame.source.image as CanvasImageSource;
+      const cnv = document.createElement("canvas");
+      cnv.width = w;
+      cnv.height = h;
+      const ctx = cnv.getContext("2d", { willReadFrequently: true });
+      if (src && ctx) {
+        ctx.drawImage(src, frame.cutX, frame.cutY, w, h, 0, 0, w, h);
+        const d = ctx.getImageData(0, 0, w, h).data;
+        for (let i = 0; i < w * h; i++) a[i] = d[i * 4 + 3];
+      }
+    } catch {
+      // Unreadable source (shouldn't happen same-origin) — leave all-transparent.
+    }
+    m = { w, h, a };
+    this.alphaMapCache.set(key, m);
+    return m;
+  }
+
   /** Set the sprite origin to the measured foot anchor for this direction and
    * remember the head-top fraction for label placement. */
   private applyAnchor(sprite: Phaser.GameObjects.Sprite, uid: string, dir: string, hasArt: boolean) {
@@ -2802,17 +2834,51 @@ export class WorldScene extends Phaser.Scene {
     g.fillPoints([p1, p2, p3, p4], true);
     sp.setMask(av.waterMask!);
 
-    // Waterline foam: a 1px white crest + 2px darker water along the clip line
-    // (where the water intersects the body). The 1×3 texture is stretched to
-    // the shoulder width and rotated to the line — nearest-neighbour, so it
-    // reads as pixel art at the character's own pixel size, not a soft border.
-    if (!av.foam) av.foam = this.add.image(0, 0, FOAM_TEX).setOrigin(0, 0);
+    // Waterline foam: a 1px white crest + 2px darker water where the water cuts
+    // across the BODY. The clip line spans the full shoulder width, but at a
+    // partial swimT it sits low (near the legs) where the silhouette is much
+    // narrower — so we walk the line in frame space and clamp the foam to the
+    // outermost opaque columns, keeping it off the transparent pixels beyond
+    // the character. A short patterned strip scrolled over time gives it a
+    // gentle lapping motion instead of a dead-straight rule.
+    const am = this.alphaMap(sp);
+    const steps = Math.max(2, Math.round(len / sp.scaleX));
+    let t0 = -1, t1 = -1;
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      const fx = Math.round((s.lx + (s.rx - s.lx) * t) * fw);
+      const fyLine = (lyC + (ryC - lyC) * t) * fh;
+      let opaque = false;
+      for (let up = 0; up <= 3 && !opaque; up++) {
+        const fy = Math.round(fyLine - up);
+        if (fx >= 0 && fx < am.w && fy >= 0 && fy < am.h && am.a[fy * am.w + fx] > 24) opaque = true;
+      }
+      if (opaque) {
+        if (t0 < 0) t0 = t;
+        t1 = t;
+      }
+    }
+    if (t0 < 0) {
+      av.foam?.setVisible(false); // no body crossing the line (shouldn't happen)
+      return;
+    }
+    const Lc = toWorld(s.lx + (s.rx - s.lx) * t0, lyC + (ryC - lyC) * t0);
+    const Rc = toWorld(s.lx + (s.rx - s.lx) * t1, lyC + (ryC - lyC) * t1);
+    const foamLen = Math.max(1, Math.hypot(Rc.x - Lc.x, Rc.y - Lc.y));
+    if (!av.foam) av.foam = this.add.tileSprite(0, 0, 1, 3, FOAM_TEX).setOrigin(0, 0);
     av.foam
-      .setPosition(L.x, L.y)
-      .setRotation(Math.atan2(dy, dx))
-      .setDisplaySize(len, 3 * sp.scaleY)
-      .setDepth(sp.depth + 0.1)
+      .setSize(Math.max(1, Math.round(foamLen / sp.scaleX)), 3)
+      .setScale(sp.scaleX, sp.scaleY)
+      .setPosition(Lc.x, Lc.y)
+      .setRotation(Math.atan2(Rc.y - Lc.y, Rc.x - Lc.x))
+      // Sit ABOVE the night overlay (900_000) and the lit avatar copies
+      // (litDepth ~900_001+) so the crest reads ON TOP of the character's head,
+      // not behind it; the +sp.depth term keeps swimmers' foam in relative
+      // draw order. Stays under the campfire light halos (900_005).
+      .setDepth(litDepth(sp.depth) + 2)
       .setVisible(true);
+    // Drift the crest pattern (source-px space) so the line shimmers/laps.
+    av.foam.tilePositionX = (this.time.now / 1000) * FOAM_SCROLL + av.bobPhase;
   }
 
   /** Pick an existing animation, falling back run→walk→idle then default dir. */
@@ -3923,12 +3989,21 @@ export class WorldScene extends Phaser.Scene {
    * character's own pixels (nearest-neighbour) — no CSS-border softness. */
   private ensureFoamTexture() {
     if (this.textures.exists(FOAM_TEX)) return;
-    const tex = this.textures.createCanvas(FOAM_TEX, 1, 3);
+    // A short repeating strip (not a flat 1px line): the crest brightness and
+    // the dark-water alpha wobble per column, so scrolling the tile (see
+    // updateWaterClip) reads as gently lapping water instead of a dead rule.
+    // 1px white crest + 2px darker water, all at the character's pixel scale.
+    const W = 12;
+    const tex = this.textures.createCanvas(FOAM_TEX, W, 3);
     const ctx = tex!.getContext();
-    ctx.fillStyle = "rgba(236,248,255,0.92)"; // foam crest (near-white)
-    ctx.fillRect(0, 0, 1, 1);
-    ctx.fillStyle = "rgba(6,26,34,0.42)"; // 2px darker water beneath the crest
-    ctx.fillRect(0, 1, 1, 2);
+    const crestA = [0.95, 0.78, 0.98, 0.7, 0.9, 1.0, 0.74, 0.92, 0.84, 0.99, 0.72, 0.88];
+    for (let x = 0; x < W; x++) {
+      ctx.fillStyle = `rgba(236,248,255,${crestA[x]})`; // foam crest (near-white)
+      ctx.fillRect(x, 0, 1, 1);
+      const d = 0.34 + (crestA[x] - 0.7) * 0.12; // 2px darker water, subtle per-column shift
+      ctx.fillStyle = `rgba(6,26,34,${d.toFixed(3)})`;
+      ctx.fillRect(x, 1, 1, 2);
+    }
     tex!.refresh();
   }
 
