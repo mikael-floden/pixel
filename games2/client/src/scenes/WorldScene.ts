@@ -2832,8 +2832,13 @@ export class WorldScene extends Phaser.Scene {
     // Raise the clip line from the feet (anchor y) toward the shoulders by
     // swimT — the visible cut climbs the body as it sinks through the surface.
     const feetY = def?.anchors?.[dir]?.y ?? def?.anchors?.[DEFAULT_DIRECTION]?.y ?? sp.originY;
-    const lyC = feetY + (s.ly - feetY) * swimT;
-    const ryC = feetY + (s.ry - feetY) * swimT;
+    // Quantise swimT ONCE and use it for the clip, the span, AND the foam bake.
+    // The foam is a texture cached per quantised swimT; if the clip used the RAW
+    // (continuously easing) swimT it would drift away from the frozen foam within
+    // a bucket — up to ~3px — leaving a visible gap between the cut and the foam.
+    const swimTq = Math.round(swimT * 8) / 8;
+    const lyC = feetY + (s.ly - feetY) * swimTq;
+    const ryC = feetY + (s.ry - feetY) * swimTq;
     const toWorld = (fx: number, fy: number) => ({
       x: sp.x + (fx * fw - sp.originX * fw) * sp.scaleX,
       y: sp.y + (fy * fh - sp.originY * fh) * sp.scaleY,
@@ -2847,7 +2852,7 @@ export class WorldScene extends Phaser.Scene {
     // crosses — so it's a symmetric smile under the character in every view (the
     // shoulder points can sit wider than the visible body in profile). The foam
     // bake uses the SAME span, so cut + crest stay glued.
-    const span = this.waterlineSpan(sp, s, feetY, swimT);
+    const span = this.waterlineSpan(sp, s, feetY, swimTq);
     if (!span) {
       if (sp.mask) sp.clearMask();
       av.foam?.setVisible(false);
@@ -2896,7 +2901,7 @@ export class WorldScene extends Phaser.Scene {
       av.foamTilt = others[(Math.random() * others.length) | 0];
       av.foamNextAt = this.time.now + FOAM_ANIM_MS;
     }
-    const foamKey = this.foamTexture(sp, s, feetY, swimT, av.foamTilt ?? 0, span);
+    const foamKey = this.foamTexture(sp, s, feetY, swimTq, av.foamTilt ?? 0, span);
     if (!foamKey) {
       av.foam?.setVisible(false);
       return;
@@ -2984,7 +2989,8 @@ export class WorldScene extends Phaser.Scene {
     const lo = Math.max(0, spanMin - EXT), hi = Math.min(fw - 1, spanMax + EXT);
     const cx = (spanMin + spanMax) / 2;
     const half = Math.max(1, (spanMax - spanMin) / 2);
-    const dSlope = tilt / (half * 1.3); // slightly gentler rotation than ±1px
+    const dSlope = tilt / (half * 1.5); // gentle rotation; the ±≤1px lives only
+    // at the outer columns, which fade out — so it can't open a visible gap
     const cnv = document.createElement("canvas");
     cnv.width = fw;
     cnv.height = fh;
