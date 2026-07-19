@@ -265,11 +265,11 @@ const EXIT_JUMP_MS = 500; // ms window to rise out of the water on exit (matches
 // Foam "lapping" animation (maintainer's idea): re-bake the SAME crest at a
 // slightly different line ANGLE per frame. The tiny tilt tips some columns over
 // their rounding boundary, so the crest hops in WHOLE pixels (never subpixel) —
-// reads as gentle water movement. Pivoted at the shoulder midpoint, so the ends
-// wobble ±~1px while the centre stays put. Three variants — left(-1)/normal(0)/
-// right(+1) — and each frame jumps to a RANDOM different one (no fixed loop), so
-// it reads as chaotic lapping rather than a metronome.
-const FOAM_TILT = 0.05; // extra crest slope (rows/col) per tilt step, at the pivot
+// reads as gentle water movement. The rock is SYMMETRIC (±) about the opaque
+// span's centre and ADAPTIVE (normalised by span width in foamTexture), so the
+// span ends move only ±1px however long/steep the line is — no rotating away.
+// Three variants — left(-1)/normal(0)/right(+1) — each frame jumps to a RANDOM
+// different one (no fixed loop), so it reads as lapping rather than a metronome.
 const FOAM_ANIM_MS = 230; // ms each foam frame holds (~4 fps — slow, watery)
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
 // Living camera (maintainer): the camera CHASES the player instead of pinning
@@ -2895,9 +2895,10 @@ export class WorldScene extends Phaser.Scene {
    * shoulder line crosses, and — only if the body is opaque just above that row
    * — paint 1px white then 2px darker water. Drawn later with the sprite's exact
    * transform, so it's pixel-perfect and honours the character's alpha (gaps
-   * where the silhouette is transparent). `tilt` rocks the crest ANGLE a hair
-   * around the shoulder midpoint (the lapping animation) — same bake, whole-pixel
-   * shifts. Cached per texture+frame+swimT+tilt. */
+   * where the silhouette is transparent). `tilt` (-1/0/+1) rocks the crest ANGLE
+   * a hair, symmetric about the opaque span's centre and normalised by its width
+   * so the ends move only ±1px (the lapping animation). Cached per
+   * texture+frame+swimT+tilt. */
   private foamTexture(
     sp: Phaser.GameObjects.Sprite,
     s: { lx: number; ly: number; rx: number; ry: number },
@@ -2914,21 +2915,37 @@ export class WorldScene extends Phaser.Scene {
     const lineY1 = (feetY + (s.ry - feetY) * swimT) * fh; // crest row at column s.rx
     const x0 = s.lx * fw, x1 = s.rx * fw;
     const slope = (lineY1 - lineY0) / ((x1 - x0) || 1);
-    const xm = (x0 + x1) / 2; // pivot: rock the angle around the shoulder midpoint
-    const dSlope = tilt * FOAM_TILT; // extra slope for this animation frame
+    const baseY = (x: number) => lineY0 + slope * (x - x0); // the crest (clip) row
+    const opaqueAbove = (x: number, cy: number) =>
+      cy >= 1 && cy < fh && (am.a[(cy - 1) * fw + x] > 40 || (cy >= 2 && am.a[(cy - 2) * fw + x] > 40));
+    // Pass 1: the opaque span the crest crosses (where the body meets the line).
+    let spanMin = fw, spanMax = -1;
+    for (let x = 0; x < fw; x++) {
+      const cy0 = Math.round(baseY(x));
+      if (!opaqueAbove(x, cy0)) continue;
+      if (x < spanMin) spanMin = x;
+      if (x > spanMax) spanMax = x;
+    }
+    if (spanMax < spanMin) return null;
+    // Animate by rocking the crest ANGLE symmetrically (±) around the span's
+    // CENTRE. ADAPTIVE: the swing is normalised by the span half-width, so the
+    // span ENDS move exactly ±1px whatever the line's length or base tilt — a
+    // long ponytail no longer rotates away, and the wobble stays ≤1px (never a
+    // gap below the body cut, which the static clip holds).
+    const cx = (spanMin + spanMax) / 2;
+    const half = Math.max(1, (spanMax - spanMin) / 2);
+    const dSlope = tilt / half; // ±1 tilt step → ±1px at the span ends
     const cnv = document.createElement("canvas");
     cnv.width = fw;
     cnv.height = fh;
     const ctx = cnv.getContext("2d");
     if (!ctx) return null;
     let any = false;
-    for (let x = 0; x < fw; x++) {
-      const cy = Math.round(lineY0 + slope * (x - x0) + dSlope * (x - xm)); // first underwater row here
-      if (cy < 1 || cy >= fh) continue;
-      // The body meets the surface at this column iff the last visible pixel
-      // (just above the cut) is opaque. Check the two rows above so a curved
-      // edge (e.g. the far shoulder) still gets its crest pixel.
-      if (am.a[(cy - 1) * fw + x] <= 40 && (cy < 2 || am.a[(cy - 2) * fw + x] <= 40)) continue;
+    for (let x = spanMin; x <= spanMax; x++) {
+      const cy0 = Math.round(baseY(x));
+      if (!opaqueAbove(x, cy0)) continue; // break across transparent gaps (hair↔body)
+      const cy = cy0 + Math.round(dSlope * (x - cx)); // ≤1px symmetric wobble
+      if (cy < 0 || cy >= fh) continue;
       ctx.fillStyle = "rgba(236,248,255,0.92)"; // 1px white crest
       ctx.fillRect(x, cy, 1, 1);
       ctx.fillStyle = "rgba(6,26,34,0.42)"; // 2px darker water below
