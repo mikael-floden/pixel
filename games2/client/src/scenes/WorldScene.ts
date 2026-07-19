@@ -262,6 +262,7 @@ const TIME_TRANSITION_S = 2.5;
 const litDepth = (baseDepth: number) => 900_001 + baseDepth * 1e-5;
 const JUMP_HEIGHT = 28; // px peak of the jump hop (a tall, floaty arc)
 const SWIM_BOB = 2.2; // px amplitude of the gentle head bob while swimming
+const EXIT_JUMP_MS = 500; // ms window to rise out of the water on exit (matches the hop)
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
 // Living camera (maintainer): the camera CHASES the player instead of pinning
 // them dead-centre — exponential ease toward the sprite with the trail capped,
@@ -304,6 +305,8 @@ interface Avatar {
   hopUntil: number;
   wasJumping?: boolean; // last synced jumping flag (hop re-arms on rising edge only)
   swimming: boolean;
+  wasSwimming?: boolean; // last frame's swimming — detects the swim→land exit
+  exitJumpUntil?: number; // while >now, ease the elevation UP (leap out of water)
   swimT: number; // 0..1 submerge amount (0 = feet on ground, 1 = shoulders at surface)
   bobPhase: number; // per-avatar swim bob phase
   waterMaskG?: Phaser.GameObjects.Graphics; // half-plane-above-shoulders mask shape
@@ -1676,6 +1679,18 @@ export class WorldScene extends Phaser.Scene {
         swimDrop = Math.max(0, (anchor.y - waterYFrac) * fh * av.sprite.scaleY);
       }
       const targetElev = swimming ? -swimDrop : g.lvl * MAP_GEOMETRY.lh;
+      // JUMP OUT of the water, don't teleport: reaching land from a swim means
+      // the feet must rise ~swimDrop back to the surface. Ease that rise over a
+      // short arc + a hop so it reads as leaping out instead of snapping up.
+      if (av.wasSwimming && !swimming && av.elev < targetElev - 1) {
+        av.exitJumpUntil = this.time.now + EXIT_JUMP_MS;
+        if (av.hopUntil <= this.time.now) {
+          av.hopUntil = this.time.now + JUMP_MS;
+          const sp = this.avatarSpatial(id);
+          gameAudio.event("player.jump", { pan: sp.pan, dist: sp.dist, voice: av.character });
+        }
+      }
+      av.wasSwimming = swimming;
       // A big horizontal jump (respawn/teleport) is not a walk — snap, don't
       // ease or fall, so the character doesn't skate/plummet across the map.
       if (Math.abs(g.x - av.lx) > CELL_WU * 2 || Math.abs(g.y - av.lyFlat) > CELL_WU * 2) {
@@ -1685,6 +1700,7 @@ export class WorldScene extends Phaser.Scene {
         av.fallV = 0;
         av.falling = false;
         av.wasFalling = false; // a teleport landing must not swallow the next fall grunt
+        av.exitJumpUntil = 0; // a teleport cancels any in-progress leap-out
         av.spdWu = undefined; // a teleport is not a speed sample
       } else {
         const px0 = av.lx;
@@ -1692,7 +1708,16 @@ export class WorldScene extends Phaser.Scene {
         const k = Math.min(1, dt * (id === myId ? 45 : 12));
         av.lx += (g.x - av.lx) * k;
         av.lyFlat += (g.y - av.lyFlat) * k;
-        this.stepElevation(av, targetElev, dt);
+        if (this.time.now < (av.exitJumpUntil ?? 0)) {
+          // Leaping out of the water: rise smoothly to land (matched to the hop
+          // arc) instead of the gravity snap.
+          av.elev += (targetElev - av.elev) * (1 - Math.exp(-dt / 0.08));
+          if (Math.abs(av.elev - targetElev) < 0.5) av.elev = targetElev;
+          av.fallV = 0;
+          av.falling = false;
+        } else {
+          this.stepElevation(av, targetElev, dt);
+        }
         // Fall-start grunt: the SAME voice as a jump when she steps off a
         // ledge into a gravity fall (maintainer). Rising edge only; the
         // engine debounce dedupes a jump that flows into a fall.
