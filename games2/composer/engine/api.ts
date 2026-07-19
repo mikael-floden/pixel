@@ -194,7 +194,7 @@ export class GameAudio {
       }
       // Warm the composer's own primary takes too — thunder especially must
       // not miss its first flash on a fetch+decode.
-      for (const set of ["stone", "snow", "ice", "grass", "ui_tick", "ui_cancel", "thunder"]) {
+      for (const set of ["stone", "snow", "ice", "grass", "jump_voice", "ui_tick", "ui_cancel", "thunder"]) {
         const urls = composerFoley(set);
         if (urls) void this.buffers.get(urls[0]);
       }
@@ -242,6 +242,18 @@ export class GameAudio {
    * "player.jump", ...). Unknown events are silent no-ops. */
   event(name: string, opts: PlayOpts = {}): void {
     if (!this.ready()) return;
+    // The jump grunt (maintainer 2026-07-19: a Link-style vocal effort) is a
+    // composer set on the SFX bus, spatialized, NOT a −12 dB UI click — so it
+    // gets its own branch. Falls through to the catalog `jump` binding if the
+    // vocal set isn't bundled yet. NOTE: the catalog `jump` sound stays the
+    // sand/dirt footstep — this only changes the jump ACTION.
+    if (name === "player.jump") {
+      const voice = composerFoley("jump_voice");
+      if (voice) {
+        this.oneShots.play(this.foleyEntry("jump_voice", voice, "voice"), "sfx", opts);
+        return;
+      }
+    }
     const ownSet = GameAudio.EVENT_FOLEY[name];
     const own = ownSet ? composerFoley(ownSet) : null;
     if (ownSet && own) {
@@ -453,24 +465,31 @@ export class GameAudio {
    * sound for clicks and steps alike — no take rotation; repeat plays get
    * only barely-perceptible micro-jitter (steps a touch more than clicks,
    * so a walk doesn't read as a machine gun). */
-  private foleyEntry(set: string, urls: string[], profile: "step" | "click"): SoundEntry {
+  private foleyEntry(set: string, urls: string[], profile: "step" | "click" | "voice"): SoundEntry {
     let e = this.foleyCache.get(set);
     if (!e) {
       const step = profile === "step";
+      // A VOICE (the jump grunt) is the one set that ROTATES: hearing the
+      // exact same waveform every jump reads as robotic — real games (OoT's
+      // Link) rotate a few efforts. Round-robin, no immediate repeat, plus a
+      // natural pitch spread (a voice never lands twice at the same pitch).
+      const voice = profile === "voice";
       e = {
         id: `composer_foley_${set}`,
-        category: step ? "movement" : "ui",
+        category: voice ? "movement" : step ? "movement" : "ui",
         loop: false,
         file: urls[0],
         urls,
         mix_gain_db: 0, // level is decided per-play by the caller
         variation: {
-          round_robin: false, // the approved primary take, every play
-          no_immediate_repeat: false,
-          pitch_jitter_semitones: step
-            ? FOOTSTEP_JITTER[set]?.pitch ?? [-0.2, 0.2]
-            : [-0.12, 0.12],
-          gain_jitter_db: step ? FOOTSTEP_JITTER[set]?.gain ?? [-0.7, 0.4] : [-0.5, 0.3],
+          round_robin: voice, // steps/clicks: primary take; voice: rotate
+          no_immediate_repeat: voice,
+          pitch_jitter_semitones: voice
+            ? [-0.4, 0.4]
+            : step
+              ? FOOTSTEP_JITTER[set]?.pitch ?? [-0.2, 0.2]
+              : [-0.12, 0.12],
+          gain_jitter_db: voice ? [-1.0, 0.5] : step ? FOOTSTEP_JITTER[set]?.gain ?? [-0.7, 0.4] : [-0.5, 0.3],
           start_jitter_ms: [0, 0],
         },
         music: {

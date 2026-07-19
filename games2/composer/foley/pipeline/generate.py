@@ -144,6 +144,28 @@ SETS: dict[str, dict] = {
         "judge": "step",
         "pool": 12,
     },
+    # A VOCAL jump effort (maintainer 2026-07-19: "like Link in Ocarina of
+    # Time — his voice, he moans" on jumping). This is the ONE set that must
+    # ALLOW a voice, so it OVERRIDES the global STYLE (which bans "no voice").
+    # No max_ms (a grunt's vowel IS the sound — transient-tightening would cut
+    # it) and no judge (measurable gates can't grade a voice; ears decide via
+    # /#foley). A small POSITIVE brief per the negative-prompt-backfire lesson.
+    "jump_voice": {
+        "brief": (
+            "a young man's short vocal effort as he jumps, a quick light "
+            "'hyah' grunt, energetic heroic adventure-game hero voice"
+        ),
+        "style": "clean close-miked dry vocal, a single short isolated grunt",
+        "duration_s": 0.5,
+        "variants": [
+            "a short sharp hyah",
+            "a lighter quick hup",
+            "a slightly higher heh",
+            "a soft quick huh",
+        ],
+        "takes": 4,
+        "pool": 8,
+    },
     "wood": {
         "brief": (
             "one single compact footstep on a thick wooden plank: a boot heel "
