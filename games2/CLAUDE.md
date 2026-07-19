@@ -187,9 +187,19 @@ visible head/shoulders are ABOVE the surface).
   line — so dropping in from a ledge submerges progressively. `swimT` (0..1) =
   `-elev/swimDrop` drives the clip: it raises the cut from the FEET (just
   entered) to the SHOULDERS (afloat).
-- CLIP: `updateWaterClip` builds a geometry mask over the half-plane ABOVE the
-  (tilted) shoulder line and applies it to the base sprite AND its lit night-
-  copy. Uses `av.dispDir` (the DISPLAYED facing) so the line matches the frame.
+- CLIP: `updateWaterClip` builds a geometry mask ABOVE the waterline and applies
+  it to the base sprite AND its lit night-copy. The waterline is a shallow
+  downward BOW (a "smile", `BOW_FRAC` × body span), centred on the OPAQUE span
+  the line crosses (`waterlineSpan`), so the cut wraps the body's volume — the
+  centre-front pokes through, sides sit higher. The mask polygon samples the
+  curve (concave — Phaser's `fillPoints` earcut-triangulates it) with straight
+  baseline extensions beyond the body. Uses `av.dispDir` (the DISPLAYED facing).
+- FOAM (`foamTexture`): a per-frame frame-space texture baked on the SAME curve
+  — 1px white crest + 2px dark water per column, honouring the silhouette
+  (breaks over hair↔body gaps), extended a few px past each end and faded to
+  transparent so it reads as wrapping the volume. Tinted by the local night
+  light (drawn above the overlay). Animated by rocking the whole curve ±≤1px in
+  a random non-looping tilt (`FOAM_ANIM_MS`); light-only.
 - QA: `__ml.swimming/swimT/myDispDir/swimDebug` (swimDebug returns the clip
   line in SCREEN coords — overlay it to confirm clip==line). NOTE: measure the
   clip AT REST — a mid-motion capture skews the position probe vs the

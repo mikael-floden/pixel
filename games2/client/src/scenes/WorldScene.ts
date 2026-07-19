@@ -271,6 +271,11 @@ const EXIT_JUMP_MS = 500; // ms window to rise out of the water on exit (matches
 // Three variants — left(-1)/normal(0)/right(+1) — each frame jumps to a RANDOM
 // different one (no fixed loop), so it reads as lapping rather than a metronome.
 const FOAM_ANIM_MS = 230; // ms each foam frame holds (~4 fps — slow, watery)
+// The waterline is a shallow downward BOW (a "smile"), not a straight line, so
+// the cut + foam wrap around the character's volume: lowest at the centre-front
+// (body nearest the viewer), rising to the sides. Dip = BOW_FRAC × the shoulder
+// span, in px. Both the clip mask and the foam crest follow it.
+const BOW_FRAC = 0.14;
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
 // Living camera (maintainer): the camera CHASES the player instead of pinning
 // them dead-centre — exponential ease toward the sprite with the trail capped,
@@ -2833,18 +2838,37 @@ export class WorldScene extends Phaser.Scene {
       x: sp.x + (fx * fw - sp.originX * fw) * sp.scaleX,
       y: sp.y + (fy * fh - sp.originY * fh) * sp.scaleY,
     });
-    const L = toWorld(s.lx, lyC);
-    const R = toWorld(s.rx, ryC);
-    const dx = R.x - L.x;
-    const dy = R.y - L.y;
-    const len = Math.hypot(dx, dy) || 1;
-    const ux = dx / len;
-    const uy = dy / len;
-    const E = 4000; // extend the line far past the sprite in both directions + up
-    const p1 = { x: L.x - ux * E, y: L.y - uy * E };
-    const p2 = { x: R.x + ux * E, y: R.y + uy * E };
-    const p3 = { x: p2.x, y: p2.y - E };
-    const p4 = { x: p1.x, y: p1.y - E };
+    // The waterline is a CURVE (shallow downward bow), not a straight line, so
+    // everything under the curve is clipped and the body's volume pokes through
+    // at the centre. Build the mask polygon: the bottom edge samples the curve
+    // across the shoulder span (bow) and runs straight (baseline) beyond it; the
+    // top edge is far above. Both the clip here and the foam bake use this curve.
+    // The bow is centred on and scaled to the BODY — the opaque span the line
+    // crosses — so it's a symmetric smile under the character in every view (the
+    // shoulder points can sit wider than the visible body in profile). The foam
+    // bake uses the SAME span, so cut + crest stay glued.
+    const span = this.waterlineSpan(sp, s, feetY, swimT);
+    if (!span) {
+      if (sp.mask) sp.clearMask();
+      av.foam?.setVisible(false);
+      return;
+    }
+    const baseYf = (xf: number) => lyC + (ryC - lyC) * ((xf - s.lx) / ((s.rx - s.lx) || 1));
+    const spanLf = span.min / fw, spanRf = span.max / fw;
+    const bowF = (BOW_FRAC * (span.max - span.min)) / fh; // centre dip, y-fraction
+    const uf = (xf: number) => Math.max(0, Math.min(1, (xf - spanLf) / ((spanRf - spanLf) || 1)));
+    const crestYf = (xf: number) => baseYf(xf) + bowF * 4 * uf(xf) * (1 - uf(xf));
+    const E = 4000; // extend far above to cover the whole kept half
+    const pts: { x: number; y: number }[] = [];
+    pts.push(toWorld(spanLf - 1, baseYf(spanLf - 1))); // straight baseline, far left
+    const K = 24;
+    for (let i = 0; i <= K; i++) {
+      const xf = spanLf + (spanRf - spanLf) * (i / K);
+      pts.push(toWorld(xf, crestYf(xf))); // the bowed body span
+    }
+    pts.push(toWorld(spanRf + 1, baseYf(spanRf + 1))); // straight baseline, far right
+    const first = pts[0], last = pts[pts.length - 1];
+    pts.push({ x: last.x, y: last.y - E }, { x: first.x, y: first.y - E }); // top edge
     if (!av.waterMaskG) {
       av.waterMaskG = this.make.graphics({});
       av.waterMask = av.waterMaskG.createGeometryMask();
@@ -2852,7 +2876,7 @@ export class WorldScene extends Phaser.Scene {
     const g = av.waterMaskG;
     g.clear();
     g.fillStyle(0xffffff);
-    g.fillPoints([p1, p2, p3, p4], true);
+    g.fillPoints(pts, true);
     sp.setMask(av.waterMask!);
 
     // Waterline foam: a crisp 1-character-pixel WHITE crest + 2px darker water,
@@ -2872,7 +2896,7 @@ export class WorldScene extends Phaser.Scene {
       av.foamTilt = others[(Math.random() * others.length) | 0];
       av.foamNextAt = this.time.now + FOAM_ANIM_MS;
     }
-    const foamKey = this.foamTexture(sp, s, feetY, swimT, av.foamTilt ?? 0);
+    const foamKey = this.foamTexture(sp, s, feetY, swimT, av.foamTilt ?? 0, span);
     if (!foamKey) {
       av.foam?.setVisible(false);
       return;
@@ -2891,21 +2915,47 @@ export class WorldScene extends Phaser.Scene {
       .setVisible(true);
   }
 
+  /** The opaque column span the (straight) waterline crosses for the current
+   * frame — the body's extent at the surface. Both the clip curve and the foam
+   * bake centre the bow on this span. Null if the body doesn't reach the line. */
+  private waterlineSpan(
+    sp: Phaser.GameObjects.Sprite,
+    s: { lx: number; ly: number; rx: number; ry: number },
+    feetY: number,
+    swimT: number,
+  ): { min: number; max: number } | null {
+    const am = this.alphaMap(sp);
+    const fw = am.w, fh = am.h;
+    const lineY0 = (feetY + (s.ly - feetY) * swimT) * fh;
+    const lineY1 = (feetY + (s.ry - feetY) * swimT) * fh;
+    const x0 = s.lx * fw, x1 = s.rx * fw;
+    const slope = (lineY1 - lineY0) / ((x1 - x0) || 1);
+    let mn = fw, mx = -1;
+    for (let x = 0; x < fw; x++) {
+      const cy = Math.round(lineY0 + slope * (x - x0));
+      if (cy >= 1 && cy < fh && (am.a[(cy - 1) * fw + x] > 40 || (cy >= 2 && am.a[(cy - 2) * fw + x] > 40))) {
+        if (x < mn) mn = x;
+        if (x > mx) mx = x;
+      }
+    }
+    return mx >= mn ? { min: mn, max: mx } : null;
+  }
+
   /** Bake the waterline foam for the sprite's CURRENT frame into a frame-space
-   * (fw×fh) texture: for every column, find the crest row where the (tilted)
-   * shoulder line crosses, and — only if the body is opaque just above that row
-   * — paint 1px white then 2px darker water. Drawn later with the sprite's exact
-   * transform, so it's pixel-perfect and honours the character's alpha (gaps
-   * where the silhouette is transparent). `tilt` (-1/0/+1) rocks the crest ANGLE
-   * a hair, symmetric about the opaque span's centre and normalised by its width
-   * so the ends move only ±1px (the lapping animation). Cached per
-   * texture+frame+swimT+tilt. */
+   * (fw×fh) texture: for every column find the crest row on the bowed CURVE (the
+   * same one the clip mask uses), and paint 1px white + 2px darker water. Inside
+   * the body it honours the silhouette (breaks over hair↔body gaps); it also
+   * runs a few px PAST each end and fades those tips to transparent, so the foam
+   * reads as wrapping the volume. Drawn with the sprite's exact transform, so
+   * it's pixel-perfect. `tilt` (-1/0/+1) rocks the whole curve ±≤1px about the
+   * span centre (the lapping animation). Cached per texture+frame+swimT+tilt. */
   private foamTexture(
     sp: Phaser.GameObjects.Sprite,
     s: { lx: number; ly: number; rx: number; ry: number },
     feetY: number,
     swimT: number,
     tilt = 0,
+    span: { min: number; max: number },
   ): string | null {
     const am = this.alphaMap(sp);
     const fw = am.w, fh = am.h;
@@ -2916,40 +2966,43 @@ export class WorldScene extends Phaser.Scene {
     const lineY1 = (feetY + (s.ry - feetY) * swimT) * fh; // crest row at column s.rx
     const x0 = s.lx * fw, x1 = s.rx * fw;
     const slope = (lineY1 - lineY0) / ((x1 - x0) || 1);
-    const baseY = (x: number) => lineY0 + slope * (x - x0); // the crest (clip) row
+    const spanMin = span.min, spanMax = span.max;
+    const bowPx = BOW_FRAC * (spanMax - spanMin); // centre dip of the smile
+    const uu = (x: number) => Math.max(0, Math.min(1, (x - spanMin) / ((spanMax - spanMin) || 1)));
+    // Downward-bowed crest (matches the clip curve): baseline + a parabola that
+    // is 0 at the body-span ends and dips `bowPx` at the centre, so the foam
+    // wraps the body's volume instead of cutting a flat line.
+    const curveY = (x: number) => lineY0 + slope * (x - x0) + bowPx * 4 * uu(x) * (1 - uu(x));
     const opaqueAbove = (x: number, cy: number) =>
       cy >= 1 && cy < fh && (am.a[(cy - 1) * fw + x] > 40 || (cy >= 2 && am.a[(cy - 2) * fw + x] > 40));
-    // Pass 1: the opaque span the crest crosses (where the body meets the line).
-    let spanMin = fw, spanMax = -1;
-    for (let x = 0; x < fw; x++) {
-      const cy0 = Math.round(baseY(x));
-      if (!opaqueAbove(x, cy0)) continue;
-      if (x < spanMin) spanMin = x;
-      if (x > spanMax) spanMax = x;
-    }
-    if (spanMax < spanMin) return null;
-    // Animate by rocking the crest ANGLE symmetrically (±) around the span's
-    // CENTRE. ADAPTIVE: the swing is normalised by the span half-width, so the
-    // span ENDS move exactly ±1px whatever the line's length or base tilt — a
-    // long ponytail no longer rotates away, and the wobble stays ≤1px (never a
-    // gap below the body cut, which the static clip holds).
+    // Extend the crest a few px PAST the body at each end so it reads as wrapping
+    // around the volume even where the silhouette is transparent (maintainer);
+    // those tips fade to nothing. Rock the whole curve ±≤1px (adaptive, softened
+    // a touch) about the span centre for the lapping animation.
+    const EXT = 3; // px the foam runs beyond the body at each end
+    const FADE = EXT + 3; // outer columns over which the tips fade to transparent
+    const lo = Math.max(0, spanMin - EXT), hi = Math.min(fw - 1, spanMax + EXT);
     const cx = (spanMin + spanMax) / 2;
     const half = Math.max(1, (spanMax - spanMin) / 2);
-    const dSlope = tilt / half; // ±1 tilt step → ±1px at the span ends
+    const dSlope = tilt / (half * 1.3); // slightly gentler rotation than ±1px
     const cnv = document.createElement("canvas");
     cnv.width = fw;
     cnv.height = fh;
     const ctx = cnv.getContext("2d");
     if (!ctx) return null;
     let any = false;
-    for (let x = spanMin; x <= spanMax; x++) {
-      const cy0 = Math.round(baseY(x));
-      if (!opaqueAbove(x, cy0)) continue; // break across transparent gaps (hair↔body)
-      const cy = cy0 + Math.round(dSlope * (x - cx)); // ≤1px symmetric wobble
+    for (let x = lo; x <= hi; x++) {
+      const cy0 = Math.round(curveY(x));
+      // Inside the body respect the silhouette (break over hair↔body gaps); in
+      // the extension tips always draw (the wrap-around past the edge).
+      if (x >= spanMin && x <= spanMax && !opaqueAbove(x, cy0)) continue;
+      const cy = cy0 + Math.round(dSlope * (x - cx));
       if (cy < 0 || cy >= fh) continue;
-      ctx.fillStyle = "rgba(236,248,255,0.92)"; // 1px white crest
+      const fade = Math.max(0, Math.min(1, Math.min(x - lo, hi - x) / FADE)); // fade both ends
+      if (fade <= 0.02) continue;
+      ctx.fillStyle = `rgba(236,248,255,${(0.92 * fade).toFixed(3)})`; // 1px white crest
       ctx.fillRect(x, cy, 1, 1);
-      ctx.fillStyle = "rgba(6,26,34,0.42)"; // 2px darker water below
+      ctx.fillStyle = `rgba(6,26,34,${(0.42 * fade).toFixed(3)})`; // 2px darker water below
       ctx.fillRect(x, cy + 1, 1, Math.min(2, fh - cy - 1));
       any = true;
     }
