@@ -136,7 +136,7 @@ name, or null = auto.
 |--------|------|---------|--------------------------|
 | `fireflies/` | field | Warm, mystical night — tiny wandering lanterns | Night (fades with sun strength), thinned by cloud |
 | `pollen/` | field | Sunbeam dust / drifting pollen in forest air | Sunlit hours, clear-ish sky, drifts on the cloud wind |
-| `bats/` | episode | Flocks crossing the night sky | base 1.0; day ×0.01 |
+| `bats/` | episode | A night colony wheeling through the air: boids flocking in any direction (top-down), erratic jinking, and scattering when the player gets close (no landing — bats stay airborne) | base 1.0; day ×0.01 |
 | `birds/` | episode | A living day flock: boids flocking over the world in any direction (top-down), landing on dry ground to peck, and flushing/scattering when the player gets close | base 1.0; night ×0.05 (the daytime mirror of bats) |
 | `thunder/` | episode | Distant sheet lightning beyond the horizon | base 0.35 × (1 + rain + night); cloud/mist as weak proxies until a rain weather ships |
 | `sandstorm/` | episode | Warm dust veil + wind-driven sand streaks that swallow the player | base 0.6 × **sand** (terrain-aware: only rolls while the player stands in sandy ground) × dryness |
