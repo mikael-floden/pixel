@@ -26,22 +26,24 @@ DEFAULT_SECONDS = 90
 # The brief IS the theme. The character-select art is a bioluminescent ancient
 # forest at night — glowing wisps and fairies, giant mythic trees, mushrooms,
 # crystals, a starry portal — captioned "A thousand paths, one life." The
-# maintainer wants a login/title theme that "makes you just want to play,"
-# in the spirit of the Ragnarok Online title music. Positive, evocative, one
-# clear singable melody over warm orchestral color — film-score-grade.
+# maintainer wants a login/title theme that "makes you just want to play."
+# CAREFUL: ElevenLabs Music REJECTS prompts that name real IP or artists
+# (2026-07-19: "Ragnarok Online / Studio Ghibli / Joe Hisaishi" tripped a
+# bad_prompt ToS block). Describe the STYLE and FEELING only — no brand or
+# artist names. Positive, evocative, one clear singable melody over warm
+# orchestral color.
 PROMPT = (
-    "A nostalgic orchestral fantasy MMORPG title theme for an enchanted, "
+    "A nostalgic orchestral fantasy game title theme for an enchanted, "
     "bioluminescent ancient forest at night — glowing wisps and fireflies, "
-    "vast mythic trees, a starlit portal, a world about to open. Warm strings "
-    "and gentle harp and piano carry one hopeful, singable, memorable melody; "
-    "a soft solo flute answers it; distant wordless choir pads and glimmering "
-    "celesta/bell accents shimmer like fairy lights. A feeling of wonder, "
-    "adventure, belonging and homecoming — tender, cinematic, gently swelling "
-    "then settling for a seamless loop. Studio-Ghibli / Joe Hisaishi warmth "
-    "and the beloved login-theme spirit of Ragnarok Online. D major, around "
-    "72 BPM, soft dynamics that never fatigue on loop, no heavy percussion, "
-    "no vocals with words, no sound effects. A title screen you never want to "
-    "leave."
+    "vast mythic trees, a starlit portal, a whole world about to open. Warm "
+    "strings and gentle harp and piano carry one hopeful, singable, memorable "
+    "melody; a soft solo flute answers it; distant wordless choir pads and "
+    "glimmering celesta and bell accents shimmer like fairy lights. A feeling "
+    "of wonder, adventure, belonging and homecoming — tender, cinematic, "
+    "gently swelling then settling for a seamless loop. Warm, magical, "
+    "timeless, heartfelt. D major, around 72 BPM, soft dynamics that never "
+    "fatigue on loop, no heavy percussion, no vocals with words, no sound "
+    "effects. A title screen you never want to leave."
 )
 
 
