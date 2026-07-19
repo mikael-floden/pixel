@@ -16,7 +16,9 @@ import {
   TerrainGrid,
   buildTerrainGrid,
   parseWorld,
-  makeBlocked,
+  makeBlockedElev,
+  resolveElevAt,
+  levelAtWorld,
   makeSideBlocked,
   unstickFromSolids,
   surfaceAtWorld,
@@ -316,6 +318,9 @@ export class WorldRoom extends Room<WorldState> {
       player.x = c.x + rand(-120, 120);
       player.y = c.y + rand(-120, 120);
     }
+    // Start on the base ground surface at the spawn cell (a player never spawns
+    // ON a deck — decks are reached by walking; base level = the ground here).
+    player.elev = this.terrain ? levelAtWorld(this.terrain, player.x, player.y) : 0;
     this.state.players.set(client.sessionId, player);
     // Every arrival in Nangijala is announced by a shooting star crossing
     // the sky — the same streak for every player in the world.
@@ -379,7 +384,11 @@ export class WorldRoom extends Room<WorldState> {
             inp.ay,
             inp.running,
             eff,
-            makeBlocked(terrain, ctx),
+            // world@2: the forward probe carries the player's live elevation so a
+            // deck cell offers its deck OR its base depending on which surface
+            // they're on (walk ON the bridge/roof vs UNDER it). Non-deck cells
+            // resolve exactly as canEnter, so all other worlds are unaffected.
+            makeBlockedElev(terrain, ctx, () => player.elev),
             surf.speed * (jumping ? JUMP_SPEED_FACTOR : 1),
             true, // iso world → input is screen-relative (Up walks up on screen)
             this.worldW,
@@ -391,6 +400,11 @@ export class WorldRoom extends Room<WorldState> {
         }
         player.x = r.x;
         player.y = r.y;
+        // Update the surface elevation the player now stands on (deck vs base).
+        if (terrain) {
+          const ctx2 = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
+          player.elev = resolveElevAt(terrain, player.elev, player.x, player.y, ctx2);
+        }
         moving = r.moving;
         running = r.moving && inp.running;
         if (r.dir) player.dir = r.dir;
@@ -450,7 +464,7 @@ function loadWorldGrid(name: string): LoadedWorld {
     const world = parseWorld(JSON.parse(readFileSync(path, "utf8")));
     if (!world) return open;
     return {
-      terrain: buildTerrainGrid(world.width, world.height, world.rows, world.props),
+      terrain: buildTerrainGrid(world.width, world.height, world.rows, world.props, world.decks),
       spawn: world.spawn
         ? { x: world.spawn[0] * CELL_WU, y: world.spawn[1] * CELL_WU }
         : { x: (world.width * CELL_WU) / 2, y: (world.height * CELL_WU) / 2 },

@@ -827,6 +827,11 @@ export interface TerrainGrid {
    * unaffected), but movement into the cell is refused — a prop is an obstacle
    * the player collides with, like a tree or boulder. */
   blocked: boolean[];
+  /** world@2 decks: a SECOND walkable surface at some cells (roofs, bridges).
+   * `deck[i]` = the deck's walkable level, or -1 for none. The base terrain
+   * (level/type) stays walkable underneath; which surface a player is on is
+   * resolved from their current elevation (see canEnterElev/resolveElevAt). */
+  deck: number[];
 }
 
 export function buildTerrainGrid(
@@ -834,16 +839,29 @@ export function buildTerrainGrid(
   height: number,
   rows: { t: string; l?: number }[][],
   props: { col: number; row: number }[] = [],
+  decks: { level: number; cells: { col: number; row: number }[] }[] = [],
 ): TerrainGrid {
   const level: number[] = new Array(width * height).fill(0);
   const type: string[] = new Array(width * height).fill("");
   const blocked: boolean[] = new Array(width * height).fill(false);
+  const deck: number[] = new Array(width * height).fill(-1);
   for (let r = 0; r < height; r++) {
     for (let c = 0; c < width; c++) {
       const cell = rows[r]?.[c];
       const i = r * width + c;
       level[i] = cell?.l ?? 0;
       type[i] = cell?.t ?? "";
+    }
+  }
+  // Decks: mark the deck level per covered cell. When a deck lies at/below its
+  // base terrain (roof lapping its own walls, deck on a hilltop) it's one
+  // surface, not an overpass — keep only the higher of the two as the deck so
+  // "under" makes sense (the base is still the lower walkable surface).
+  for (const d of decks) {
+    for (const cc of d.cells) {
+      if (cc.col < 0 || cc.row < 0 || cc.col >= width || cc.row >= height) continue;
+      const i = cc.row * width + cc.col;
+      if (d.level > level[i]) deck[i] = Math.max(deck[i], d.level);
     }
   }
   // A placed prop makes its cell solid: the game owns collision (derived from
@@ -854,7 +872,7 @@ export function buildTerrainGrid(
     if (p.col >= 0 && p.row >= 0 && p.col < width && p.row < height)
       blocked[p.row * width + p.col] = true;
   }
-  return { width, height, level, type, blocked };
+  return { width, height, level, type, blocked, deck };
 }
 
 // World units per cell is a FIXED constant (CELL_WU), so a world's extent is
@@ -935,6 +953,75 @@ export function canEnter(
 /** Adapt canEnter into stepMovement's blocked() predicate for a given context. */
 export function makeBlocked(grid: TerrainGrid, ctx: MoveContext): BlockedFn {
   return (toX, toY, fromX, fromY) => !canEnter(grid, fromX, fromY, toX, toY, ctx);
+}
+
+/** world@2 "current layer" movement: like canEnter, but the player carries an
+ * ELEVATION (`elev`, the level of the surface they're on) instead of inferring
+ * it from the from-cell — so a deck cell offers TWO surfaces (its base and its
+ * deck), and the player stays on whichever is reachable and closest to their
+ * current elevation. For a cell WITHOUT a deck this is identical to canEnter
+ * (the single base surface, compared against elev == the from-cell's level), so
+ * non-deck worlds are unaffected. Returns the destination's chosen elevation. */
+export function canEnterElev(
+  grid: TerrainGrid,
+  elev: number,
+  fromX: number,
+  fromY: number,
+  toX: number,
+  toY: number,
+  ctx: MoveContext,
+): { ok: boolean; elev: number } {
+  const i = cellIndex(grid, toX, toY);
+  if (i < 0) return { ok: false, elev };
+  const to = surfaceAtWorld(grid, toX, toY);
+  const from = surfaceAtWorld(grid, fromX, fromY);
+  // Stairs act as ramps: a full 1-level climb is allowed stepping on/off one.
+  const maxClimb = from.stairs || to.stairs ? Math.max(ctx.maxClimb, 1) : ctx.maxClimb;
+  let best: number | null = null;
+  let bestDist = Infinity;
+  const consider = (lvl: number, enterable: boolean) => {
+    if (!enterable) return;
+    if (lvl > elev + maxClimb + 1e-9) return; // too high to climb from here (drops are free)
+    const d = Math.abs(lvl - elev);
+    if (d < bestDist) { bestDist = d; best = lvl; } // stay on your own layer
+  };
+  // BASE surface: walkable ground / swimmable water, UNLESS a solid prop blocks it.
+  // (No deck → this is the ONLY candidate and the check reduces to canEnter.)
+  const baseOpen = !grid.blocked[i] && (to.standable || (to.swimmable && ctx.canSwim));
+  consider(grid.level[i], baseOpen);
+  // DECK surface (world@2): a solid slab ABOVE the base — walkable even over a
+  // blocked base (a bridge spans water/chasm; a roof caps furniture below).
+  if (grid.deck[i] >= 0) consider(grid.deck[i], true);
+  if (best === null) return { ok: false, elev };
+  return { ok: true, elev: best };
+}
+
+/** The elevation a player at `elev` lands on when they end up standing at
+ * (x,y) — the reachable surface (base or deck) closest to their current level.
+ * Falls back to the base level (a climb/stair that exceeded the small-step
+ * limit still lands you on the ground you reached). */
+export function resolveElevAt(grid: TerrainGrid, elev: number, x: number, y: number, ctx: MoveContext): number {
+  const i = cellIndex(grid, x, y);
+  if (i < 0) return elev;
+  const s = surfaceAtWorld(grid, x, y);
+  let best: number | null = null;
+  let bestDist = Infinity;
+  const consider = (lvl: number, enterable: boolean) => {
+    if (!enterable) return;
+    if (lvl > elev + ctx.maxClimb + 1e-9) return;
+    const d = Math.abs(lvl - elev);
+    if (d < bestDist) { bestDist = d; best = lvl; }
+  };
+  const baseOpen = !grid.blocked[i] && (s.standable || (s.swimmable && ctx.canSwim));
+  consider(grid.level[i], baseOpen);
+  if (grid.deck[i] >= 0) consider(grid.deck[i], true);
+  return best === null ? grid.level[i] : best;
+}
+
+/** stepMovement blocked() predicate that carries the player's live elevation
+ * (via getElev, read each probe) so decks resolve correctly. */
+export function makeBlockedElev(grid: TerrainGrid, ctx: MoveContext, getElev: () => number): BlockedFn {
+  return (toX, toY, fromX, fromY) => !canEnterElev(grid, getElev(), fromX, fromY, toX, toY, ctx).ok;
 }
 
 /**

@@ -21,6 +21,7 @@ export class Player extends Schema {
   declare swimming: boolean; // currently in water
   declare stamina: number; // swim stamina 0..MAX_STAMINA
   declare torch: boolean; // player's torch lit (visible to everyone)
+  declare elev: number; // current surface elevation in LEVELS (world@2 decks: on the deck vs under it)
 
   // Server-only (not synced): queued inputs + rate-limit bookkeeping. The
   // server integrates each input's dt (client-reported, budget-bounded) so
@@ -47,6 +48,7 @@ export class Player extends Schema {
     this.swimming = false;
     this.stamina = MAX_STAMINA;
     this.torch = true;
+    this.elev = 0;
   }
 }
 
@@ -63,6 +65,7 @@ defineTypes(Player, {
   swimming: "boolean",
   stamina: "number",
   torch: "boolean",
+  elev: "number",
 });
 
 /** The whole shared world. Everyone connected is in this one state. */

@@ -65,9 +65,18 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   deck cell right after its base cell in (x+y) order — `thickness` face tiles
   then the `top` diamond at `level`, open air below. Only `occlusion_test` ships
   decks (a flat-roof house + a bridge). Spec: `maps2/spec/WORLD_FORMAT.md`.
-  DONE: parse + render. TODO: deck OCCLUDERS (so under-walkers are covered) and
-  server "current layer" movement (which surface you're on) — see
-  `__ml.deckInfo()`.
+  DONE: parse + render + occluders (under-walkers are covered) + **"current
+  layer" movement**. Each `Player` carries an explicit `elev` (surface LEVEL);
+  `shared/canEnterElev`+`resolveElevAt` offer a deck cell TWO surfaces (base and
+  deck) and keep you on whichever is reachable and closest to your current elev —
+  so you walk ACROSS the bridge/roof (elev stays 4) instead of falling to the
+  water/floor, and walking UNDER stays on the base. Non-deck cells resolve
+  exactly as `canEnter`, so world@1 is unaffected. A deck stays walkable even
+  over a blocked base (water/chasm/prop). Gate: `scripts/verify-deckwalk.mjs`
+  (in `npm test`) drives the real occlusion_test grid; probes `__ml.deckInfo()`,
+  `__ml.me().elev`. TODO: occlusion-FADE when standing under a deck (see yourself
+  inside the house), and deck-aware autopilot pathfinding (tap-to-move across a
+  bridge — base pathfinding can't route over the gap yet).
 - `stairs` tiles act as ramps (crossing one allows a full 1-level step without
   jumping); solid structure tiles (trees, boulders, obelisks, watchtower, cactus,
   lava) are impassable — see `SURFACES`/`surfaceFor` (road_* matched by prefix).

@@ -13,6 +13,8 @@ import {
   TerrainGrid,
   buildTerrainGrid,
   makeBlocked,
+  makeBlockedElev,
+  resolveElevAt,
   makeSideBlocked,
   unstickFromSolids,
   autoJumpWanted,
@@ -546,7 +548,7 @@ export class WorldScene extends Phaser.Scene {
       // size renders/collides right (see shared: WORLD_WIDTH is only a default).
       this.worldW = this.world.width * CELL_WU;
       this.worldH = this.world.height * CELL_WU;
-      this.terrain = buildTerrainGrid(this.world.width, this.world.height, this.world.rows, this.world.props);
+      this.terrain = buildTerrainGrid(this.world.width, this.world.height, this.world.rows, this.world.props, this.world.decks);
       // Surface-contract watchdog: categories missing from SURFACES default
       // to walkable ground, which ALSO makes the night lighting treat them
       // as terrain (walls + face shadows) instead of solid objects (art +
@@ -1639,6 +1641,7 @@ export class WorldScene extends Phaser.Scene {
       let moving: boolean;
       let running: boolean;
       let dir: string;
+      let surfLevel: number; // the surface LEVEL the avatar stands on (deck vs base)
 
       if (id === myId) {
         // Reconcile: start from the authoritative position and replay every
@@ -1651,6 +1654,10 @@ export class WorldScene extends Phaser.Scene {
         if (this.pending.length > 400) this.pending.splice(0, this.pending.length - 400);
         let rx = player.x;
         let ry = player.y;
+        // world@2 decks: predict the surface elevation alongside x,y so the local
+        // player walks ON a deck (not through it) and renders at the right height
+        // — mirrors the server's canEnterElev/resolveElevAt exactly.
+        let predElev = player.elev ?? 0;
         const jumpingNow = this.time.now < this.jumpUntil;
         // Each input replays with the jump state it was ORIGINALLY integrated
         // under (see the `pending` field note) — using "jumping right now" for
@@ -1665,7 +1672,7 @@ export class WorldScene extends Phaser.Scene {
             rx = u.x;
             ry = u.y;
             const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
-            blocked = makeBlocked(this.terrain, ctx);
+            blocked = makeBlockedElev(this.terrain, ctx, () => predElev);
             sideBlocked = makeSideBlocked(this.terrain, ctx); // corner probes: solids only
             speed = surfaceAtWorld(this.terrain, rx, ry).speed * (jumping ? JUMP_SPEED_FACTOR : 1);
           }
@@ -1673,6 +1680,10 @@ export class WorldScene extends Phaser.Scene {
           const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain, this.worldW, this.worldH, sideBlocked);
           rx = r.x;
           ry = r.y;
+          if (this.terrain) {
+            const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
+            predElev = resolveElevAt(this.terrain, predElev, rx, ry, ctx);
+          }
         };
         for (const p of this.pending) stepLocal(p.ax, p.ay, p.running, p.dt, p.jumping);
         // Integrate the not-yet-sent input tail too, so the local player moves
@@ -1681,6 +1692,7 @@ export class WorldScene extends Phaser.Scene {
           stepLocal(this.lastInput.ax, this.lastInput.ay, this.lastInput.running, this.sendAccum, jumpingNow);
         tx = rx;
         ty = ry;
+        surfLevel = predElev;
         // Animate from live input for instant turn/walk feedback.
         const li = this.lastInput;
         moving = li.ax !== 0 || li.ay !== 0;
@@ -1689,6 +1701,7 @@ export class WorldScene extends Phaser.Scene {
       } else {
         tx = player.x;
         ty = player.y;
+        surfLevel = player.elev ?? 0;
         moving = player.moving;
         running = player.running;
         dir = player.dir;
@@ -1720,7 +1733,9 @@ export class WorldScene extends Phaser.Scene {
         const waterYFrac = s.ly + (s.ry - s.ly) * Math.max(0, Math.min(1, t));
         swimDrop = Math.max(0, (anchor.y - waterYFrac) * fh * av.sprite.scaleY);
       }
-      const targetElev = swimming ? -swimDrop : g.lvl * MAP_GEOMETRY.lh;
+      // world@2: lift by the SURFACE level (deck when standing on it, else base),
+      // not the cell's base level — so a player on the roof/bridge draws up there.
+      const targetElev = swimming ? -swimDrop : surfLevel * MAP_GEOMETRY.lh;
       // JUMP OUT of the water, don't teleport: reaching land from a swim means
       // the feet must rise ~swimDrop back to the surface. Ease that rise over a
       // short arc + a hop so it reads as leaping out instead of snapping up.
