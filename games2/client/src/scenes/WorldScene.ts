@@ -642,8 +642,6 @@ export class WorldScene extends Phaser.Scene {
       if (this.night) {
         this.lastGround = { x: NaN, y: NaN };
         this.lastOccl = { x: NaN, y: NaN };
-        // Hand the ground RT to the seam-smear overlay (anti-tiling post).
-        if (this.groundRT) this.night.setGroundRT(this.groundRT);
       }
     }
 
@@ -829,19 +827,6 @@ export class WorldScene extends Phaser.Scene {
           if (freq !== undefined) this.night.groundFreq = freq;
         }
         return { strength: this.night?.groundDetail, freq: this.night?.groundFreq };
-      },
-      // Anti-tiling seam SMEAR (ground domain-warp displayed via a RenderTexture
-      // below the actors) — live tuning + toggle: __ml.groundWarp(amp, freq, on).
-      // amp = displacement in world/art px, freq = noise freq (world-px^-1),
-      // on = enable (false = instant rollback). flip = RT sampling y-orientation.
-      groundWarp: (amp?: number, freq?: number, on?: boolean, flip?: number) => {
-        if (this.night) {
-          if (amp !== undefined) this.night.warpAmp = amp;
-          if (freq !== undefined) this.night.warpFreq = freq;
-          if (on !== undefined) this.night.warpOn = on;
-          if (flip !== undefined) this.night.groundFlip = flip;
-        }
-        return this.night?.warpInfo() ?? null;
       },
       // world@2 decks: parsed summary + cells indexed for the ground/occluder loop.
       deckInfo: () => ({
@@ -3138,8 +3123,6 @@ export class WorldScene extends Phaser.Scene {
       .setOrigin(0, 0)
       .setDepth(-1_000_000);
     this.lastGround = { x: NaN, y: NaN };
-    // Re-bind the seam-smear display to the fresh ground RT (it samples it).
-    this.night?.setGroundRT(this.groundRT);
   }
 
   private redrawGround() {

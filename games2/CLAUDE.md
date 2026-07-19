@@ -52,10 +52,11 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   redrawn only when the camera nears its edge. `MapPreviewScene` (`/#map`) shows
   a maps2 world's pre-rendered `minimap.png` when it ships one. `project()`s each
   player's flat `(x,y)` onto the grid (feet lifted by elevation).
-- **Anti-tiling** is post-process only (see the ground wash / seam smear below).
-  Picking or varying the actual tiles is the **maps agent's** job — this repo
-  never swaps a cell's art. We only dissolve the seams the maps agent's clean
-  tiles still leave behind.
+- **Anti-tiling** is post-process only (the ground wash below). Picking or
+  varying the actual tiles is the **maps agent's** job — this repo never swaps a
+  cell's art. (A shader seam-smear was attempted and fully rolled back; a fresh
+  repetition approach is TBD — do NOT reintroduce it while overpass work is in
+  flight.)
 - **world@2 decks** (elevated walkable slabs — roofs, bridge spans): a strict
   superset of world@1 (`shared/parseWorld` reads the optional `decks` array;
   `Deck`/`DeckCell`). A deck is a SECOND surface at some cells, floating over
@@ -63,9 +64,9 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   deck cell right after its base cell in (x+y) order — `thickness` face tiles
   then the `top` diamond at `level`, open air below. Only `occlusion_test` ships
   decks (a flat-roof house + a bridge). Spec: `maps2/spec/WORLD_FORMAT.md`.
-  DONE: parse + render. TODO: deck OCCLUDERS (so under-walkers are covered),
-  the seam-warp on deck tops, and server "current layer" movement (which surface
-  you're on) — see `__ml.deckInfo()`.
+  DONE: parse + render. TODO: deck OCCLUDERS (so under-walkers are covered) and
+  server "current layer" movement (which surface you're on) — see
+  `__ml.deckInfo()`.
 - `stairs` tiles act as ramps (crossing one allows a full 1-level step without
   jumping); solid structure tiles (trees, boulders, obelisks, watchtower, cactus,
   lava) are impassable — see `SURFACES`/`surfaceFor` (road_* matched by prefix).
