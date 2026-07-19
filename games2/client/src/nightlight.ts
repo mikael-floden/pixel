@@ -781,6 +781,149 @@ void main() {
 }
 `;
 
+// Anti-tiling seam SMEAR defaults (tunable live via __ml.groundWarp()).
+// A world-anchored domain-warp of the composited ground: each TOP pixel is
+// resampled from a position nudged by a low-frequency noise field, so the
+// regular lattice of repeated tile features is pushed off its grid and tile
+// seams wobble organically instead of ruling dead-straight lines. Snapped to
+// whole world-px so the pixel-art stays crisp. amp = displacement in world px
+// (≈ art px); freq = noise frequency (world-px^-1, ~1/wavelength).
+const WARP_AMP = 6.0;
+const WARP_FREQ = 0.02;
+
+/** GROUND SEAM-SMEAR shader (anti-tiling post-process).
+ *
+ * The maintainer's brief: the maps agent already uses clean tiles, but a big
+ * field of one base tile still reads as a repeating grid; dissolve the seams
+ * in POST — "smear the tiles together, but in a pixel-art style, like how the
+ * mist makes it look non-tily" — while RESPECTING what is up vs side (never
+ * smear a wall face onto the ground).
+ *
+ * It runs the SAME exact-crossing surface resolve as the night shader (each
+ * pixel finds the terrain cell + height it shows) so it can tell a flat TOP
+ * from a wall FACE. Only tops are warped; faces pass through untouched. The
+ * displacement is world-anchored (no swim) and pixel-snapped (crisp), and is
+ * GUARDED so it never samples across a height change (a displaced sample that
+ * would land on a different level — a wall, a terrace, water at another level
+ * — is rejected and the pixel falls back to its true position). Drawn opaque
+ * just above the ground RT and BELOW everyone, so it restyles only the ground.
+ * uGround is the world-anchored ground RenderTexture (1 texel = 1 world px). */
+const WARP_FRAG = `
+precision highp float;
+
+uniform vec2 resolution;
+uniform vec4 uCam;        // world view x, y, w, h (same mapping as the night shader)
+uniform vec4 uIsoA;       // ox, oy, dx, dy
+uniform vec4 uIsoB;       // lh, gridW, gridH, maxLevel
+uniform float uFlip;      // world-y orientation (calibrated == night's fieldFlip)
+uniform sampler2D uHeight;
+uniform sampler2D uGround;   // composited ground RT (world-anchored)
+uniform vec4 uGroundRect;    // rt.x, rt.y, rt.width, rt.height (world px)
+uniform float uGroundFlip;   // RT framebuffer sampling y-orientation
+uniform float uAmp;          // displacement amplitude, world px
+uniform float uFreq;         // noise base frequency, world-px^-1
+uniform float uOn;           // 0 = pass-through (rollback / QA)
+
+float heightAt(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  return texture2D(uHeight, uv).r * 255.0 / 16.0;
+}
+
+// value noise — precision-exact integer hash, twin of the night shader's cwNoise.
+float cwHash(vec2 i) {
+  float a = mod(i.x * 113.0 + i.y * 271.0, 971.0);
+  a = mod(a * a + 113.0, 971.0);
+  a = mod(a * a + i.x, 971.0);
+  a = mod(a * a + i.y, 971.0);
+  return a / 971.0;
+}
+float cwNoise(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(cwHash(i), cwHash(i + vec2(1.0, 0.0)), u.x),
+             mix(cwHash(i + vec2(0.0, 1.0)), cwHash(i + vec2(1.0, 1.0)), u.x), u.y);
+}
+
+// world point -> ground RT uv (RT is origin(0,0) at uGroundRect.xy, world-sized)
+vec2 groundUV(vec2 wp) {
+  vec2 g = (wp - uGroundRect.xy) / uGroundRect.zw;
+  g.y = mix(g.y, 1.0 - g.y, uGroundFlip);
+  return g;
+}
+
+void main() {
+  vec2 suv = gl_FragCoord.xy / resolution;
+  float wx = uCam.x + suv.x * uCam.z;
+  float wy = uCam.y + mix(suv.y, 1.0 - suv.y, uFlip) * uCam.w;
+
+  vec4 baseCol = texture2D(uGround, groundUV(vec2(wx, wy)));
+  if (uAmp > 1900.0) { gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0); return; } // DEBUG composite test
+  if (uOn < 0.5) { gl_FragColor = baseCol; return; }
+
+  // --- surface resolve (exact cell-boundary walk, identical to night) ---
+  float u = (wx - uIsoA.x) / uIsoA.z - 1.0;
+  float v0 = (wy - uIsoA.y) / uIsoA.w;
+  float kk = uIsoB.x / uIsoA.w;
+  float vTop = v0 + uIsoB.w * kk;
+  float z = 0.0;
+  vec2 cell = vec2(0.0);
+  bool found = false;
+  float vHi = vTop;
+  for (int s = 0; s < 36; s++) {
+    if (found || vHi <= v0 - 1.5) continue;
+    float vColB = 2.0 * floor((vHi + u) * 0.5 - 0.0001) - u;
+    float vRowB = 2.0 * floor((vHi - u) * 0.5 - 0.0001) + u;
+    float vLo = max(vColB, vRowB);
+    float vMid = (vHi + vLo) * 0.5;
+    vec2 cr = vec2((u + vMid) * 0.5, (vMid - u) * 0.5);
+    float H = heightAt(cr);
+    if (H < 90.0) {
+      float vSurf = v0 + H * kk;
+      if (vSurf >= vLo - 0.0001) { z = max((min(vHi, vSurf) - v0) / kk, 0.0); cell = cr; found = true; }
+    }
+    vHi = vLo;
+  }
+  float Ha = heightAt(cell);
+  bool isFace = (Ha < 90.0 && Ha - z > 0.05);
+  if (uAmp > 900.0) { // DEBUG classify (groundWarp(999,...)): B=unresolved R=face G=top
+    if (!found) { gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0); return; }
+    gl_FragColor = isFace ? vec4(1.0, 0.0, 0.0, 1.0) : vec4(0.0, 1.0, 0.0, 1.0);
+    return;
+  }
+  if (!found) { gl_FragColor = baseCol; return; }
+  if (isFace) { gl_FragColor = baseCol; return; } // NEVER warp wall faces
+
+  // Wall-proximity fade: if any orthogonal neighbour is TALLER, this top is at
+  // a wall base — keep a clean unwarped margin so a face is never dragged onto
+  // the ground beside it (the 2.5D occlusion case the height guard can't see).
+  vec2 cc = floor(cell) + 0.5;
+  float hMax = max(max(heightAt(cc + vec2(1.0, 0.0)), heightAt(cc + vec2(-1.0, 0.0))),
+                   max(heightAt(cc + vec2(0.0, 1.0)), heightAt(cc + vec2(0.0, -1.0))));
+  if (hMax < 90.0 && hMax > z + 0.5) { gl_FragColor = baseCol; return; }
+
+  // --- world-anchored, pixel-snapped domain warp ---
+  vec2 gp = vec2(wx, wy) * uFreq;
+  float nx = cwNoise(gp) * 0.6 + cwNoise(gp * 2.3 + 11.7) * 0.4;
+  float ny = cwNoise(gp + 37.2) * 0.6 + cwNoise(gp * 2.3 - 5.3) * 0.4;
+  float dx = floor((nx - 0.5) * 2.0 * uAmp + 0.5); // snap to whole world px
+  float dy = floor((ny - 0.5) * 2.0 * uAmp + 0.5);
+  vec2 wp2 = vec2(wx + dx, wy + dy);
+
+  // Guard: reject a displacement that would sample a DIFFERENT level. Project
+  // the target onto THIS pixel's height plane and read the heightmap there;
+  // only a same-level top (|dH| < 0.5) is a safe source.
+  float u2 = (wp2.x - uIsoA.x) / uIsoA.z - 1.0;
+  float v0t = (wp2.y - uIsoA.y) / uIsoA.w;
+  float sd = v0t + z * kk;            // diagonal of a same-height point at wp2
+  float Ht = heightAt(vec2((u2 + sd) * 0.5, (sd - u2) * 0.5));
+  if (Ht > 90.0 || abs(Ht - z) > 0.5) { gl_FragColor = baseCol; return; }
+
+  gl_FragColor = texture2D(uGround, groundUV(wp2));
+}
+`;
+
 /** Glow stamps for every visible emission source (tile-emission@2).
  *
  * For each cell whose category+variant has per-pixel sources: `up` sources
@@ -866,6 +1009,17 @@ export class NightLights {
   private mistBase?: Phaser.Display.BaseShader;
   private mistShader?: Phaser.GameObjects.Shader;
   private mistOverlay?: Phaser.GameObjects.Image;
+  // Anti-tiling seam smear (domain-warp of the composited ground). Its own
+  // A fullscreen shader renders the warped ground to a texture; a RenderTexture
+  // (the ONE GO type Phaser renders at the ground's extreme-negative depth —
+  // plain Images/Shaders don't) composites it just above the ground RT and
+  // below every actor, so it restyles ONLY the ground and never the characters.
+  private warpBase?: Phaser.Display.BaseShader;
+  private warpShader?: Phaser.GameObjects.Shader;
+  private warpDisplay?: Phaser.GameObjects.RenderTexture;
+  private warpFboKey = ""; // the shader's render-target texture (drawn into warpDisplay)
+  private groundRT?: Phaser.GameObjects.RenderTexture; // the ground to restyle
+  private groundKey = ""; // its saved texture key (sampler source)
   private posArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private colArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private fieldCount = 0;
@@ -889,6 +1043,15 @@ export class NightLights {
   // Anti-tiling ground wash — live-tunable (probe __ml.groundDetail(str,freq)).
   groundDetail = GROUND_DETAIL;
   groundFreq = GROUND_FREQ;
+  // Anti-tiling seam smear — WIP, DORMANT by default (probe __ml.groundWarp to
+  // enable). The display path works; the occluder-reads-warped-surface coupling
+  // (so raised terrain + deck tops smear too) is still to come, so it ships off.
+  warpAmp = WARP_AMP;
+  warpFreq = WARP_FREQ;
+  warpOn = false;
+  // RT framebuffer y-orientation (calibrated numerically like glowFlip): a
+  // saved RenderTexture reads bottom-up, so the ground sampler needs the flip.
+  groundFlip = 1;
   // Live calibration (debug keys): rendering-path differences between GPUs
   // showed up as flipped/scaled fields that headless verification could not
   // reproduce — let the tester find the correct combo on THEIR machine.
@@ -984,13 +1147,79 @@ export class NightLights {
       .setVisible(false);
     this.buildShader(this.scene.scale.width, this.scene.scale.height);
     this.buildMistShader(this.scene.scale.width, this.scene.scale.height);
+    this.createWarp();
     // The render target does NOT follow setSize — a resized window left a
     // stale wrong-scale light field (bright rectangles, pools that ignore
     // zoom). Rebuild the shader + target at the new size instead.
     this.scene.scale.on("resize", (sz: Phaser.Structs.Size) => {
       this.buildShader(sz.width, sz.height);
       this.buildMistShader(sz.width, sz.height);
+      this.buildWarpShader(sz.width, sz.height);
     });
+  }
+
+  /** Build the anti-tiling seam-smear shader + its opaque overlay Image. The
+   * shader renders to a texture; the Image composites it just above the ground
+   * RT and below every actor, so it restyles ONLY the ground. uGround binds
+   * once WorldScene hands us the ground RT via setGroundRT. */
+  private createWarp() {
+    this.warpBase = new Phaser.Display.BaseShader("ground-warp", WARP_FRAG, undefined, {
+      uCam: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
+      uIsoA: { type: "4f", value: { x: 0, y: 0, z: ISO_DX, w: ISO_DY } },
+      uIsoB: { type: "4f", value: { x: MAP_GEOMETRY.lh, y: 1, z: 1, w: 0 } },
+      uFlip: { type: "1f", value: 0 },
+      uGroundRect: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
+      uGroundFlip: { type: "1f", value: 1 },
+      uAmp: { type: "1f", value: WARP_AMP },
+      uFreq: { type: "1f", value: WARP_FREQ },
+      uOn: { type: "1f", value: 1 },
+      uHeight: { type: "sampler2D", value: null },
+      uGround: { type: "sampler2D", value: null },
+    });
+    this.warpDisplay = this.scene.make
+      .renderTexture({ x: 0, y: 0, width: this.scene.scale.width, height: this.scene.scale.height }, true)
+      .setOrigin(0, 0)
+      .setScrollFactor(0)
+      .setDepth(-999_999) // just above the ground RT (-1e6), below occReveal + actors
+      .setVisible(false);
+    this.buildWarpShader(this.scene.scale.width, this.scene.scale.height);
+  }
+
+  /** (Re)create the warp shader + its render target. Rebuilt on resize AND
+   * whenever the ground RT is (re)bound (fresh sampler binding). The shader
+   * renders the warped ground to a texture; update() draws that texture into
+   * warpDisplay each frame (a RenderTexture renders at the ground depth). */
+  private buildWarpShader(width: number, height: number) {
+    if (!this.warpBase || width <= 0 || height <= 0) return;
+    this.warpShader?.destroy();
+    const key = `ground-warp-${this.fieldCount++}`;
+    const s = this.scene.add
+      .shader(this.warpBase, 0, 0, width, height)
+      .setOrigin(0, 0)
+      .setVisible(false);
+    s.setSampler2D("uHeight", "world-heightmap");
+    if (this.groundKey && this.scene.textures.exists(this.groundKey))
+      s.setSampler2D("uGround", this.groundKey, 1);
+    s.setRenderToTexture(key);
+    this.warpShader = s;
+    this.warpFboKey = key;
+    if (this.warpDisplay && (this.warpDisplay.width !== width || this.warpDisplay.height !== height)) {
+      this.warpDisplay.setSize(width, height);
+    }
+  }
+
+  /** WorldScene hands us its ground RenderTexture to restyle. Saved under a
+   * stable-per-instance key so the warp shader can sample it; rebuilt whenever
+   * the RT is recreated (resize). */
+  setGroundRT(rt: Phaser.GameObjects.RenderTexture) {
+    this.groundRT = rt;
+    const prev = this.groundKey;
+    this.groundKey = `ground-src-${this.fieldCount++}`;
+    rt.saveTexture(this.groundKey);
+    if (prev && prev !== this.groundKey && this.scene.textures.exists(prev)) {
+      this.scene.textures.remove(prev);
+    }
+    this.buildWarpShader(this.scene.scale.width, this.scene.scale.height);
   }
 
   /** White radial gradient — the halo brush, tinted per stamp. */
@@ -1466,7 +1695,27 @@ export class NightLights {
     if (!on) {
       this.mistShader?.setVisible(false);
       this.mistOverlay?.setVisible(false);
+      this.warpShader?.setVisible(false);
+      this.warpDisplay?.setVisible(false);
+      this.groundRT?.setVisible(true); // update() early-returns; restore the ground
     }
+  }
+
+  /** Headless-debug: seam-smear wiring state. */
+  warpInfo() {
+    return {
+      active: this.active,
+      warpOn: this.warpOn,
+      hasGroundRT: !!this.groundRT,
+      groundKeyExists: this.groundKey ? this.scene.textures.exists(this.groundKey) : false,
+      shaderVisible: this.warpShader?.visible ?? null,
+      displayVisible: this.warpDisplay?.visible ?? null,
+      fboKeyExists: this.warpFboKey ? this.scene.textures.exists(this.warpFboKey) : false,
+      amp: this.warpAmp,
+      freq: this.warpFreq,
+      groundFlip: this.groundFlip,
+      groundVisible: this.groundRT?.visible ?? null,
+    };
   }
 
   /** Headless-debug: real dimensions of the render target vs the screen. */
@@ -1636,6 +1885,44 @@ export class NightLights {
       m.setUniform("uAmbient.value.x", ambient[0]);
       m.setUniform("uAmbient.value.y", ambient[1]);
       m.setUniform("uAmbient.value.z", ambient[2]);
+    }
+
+    // GROUND SEAM-SMEAR — same world window as the light field. The shader
+    // (samples the ground RT, warps tops) renders to a texture; we composite
+    // that via warpDisplay (a RenderTexture, which — unlike an Image — renders
+    // at the ground's depth). Hidden during test patterns so the night-verify
+    // readbacks stay clean; the raw ground RT is hidden while it's on.
+    const showWarp = this.active && this.warpOn && !!this.groundRT && this.testPattern === 0;
+    this.warpShader?.setVisible(showWarp); // render its FBO
+    this.warpDisplay?.setVisible(showWarp);
+    if (this.groundRT) this.groundRT.setVisible(!showWarp); // warpDisplay draws its content instead
+    if (showWarp && this.warpShader && this.groundRT && this.warpDisplay) {
+      const wp = this.warpShader;
+      const rt = this.groundRT;
+      wp.setUniform("uCam.value.x", camX);
+      wp.setUniform("uCam.value.y", camY);
+      wp.setUniform("uCam.value.z", wv.width * k);
+      wp.setUniform("uCam.value.w", wv.height * k);
+      wp.setUniform("uFlip.value", this.fieldFlip);
+      wp.setUniform("uIsoA.value.x", this.iso.ox);
+      wp.setUniform("uIsoA.value.y", this.iso.oy + 8);
+      wp.setUniform("uIsoB.value.y", this.world.width);
+      wp.setUniform("uIsoB.value.z", this.world.height);
+      wp.setUniform("uIsoB.value.w", this.maxLevel);
+      wp.setUniform("uGroundRect.value.x", rt.x);
+      wp.setUniform("uGroundRect.value.y", rt.y);
+      wp.setUniform("uGroundRect.value.z", rt.width);
+      wp.setUniform("uGroundRect.value.w", rt.height);
+      wp.setUniform("uGroundFlip.value", this.groundFlip);
+      wp.setUniform("uAmp.value", this.warpAmp);
+      wp.setUniform("uFreq.value", this.warpFreq);
+      wp.setUniform("uOn.value", 1);
+      // Composite the shader's render target into the display RT (one frame of
+      // lag; the shader's FBO for this frame renders during the render pass).
+      if (this.warpFboKey && this.scene.textures.exists(this.warpFboKey)) {
+        this.warpDisplay.clear();
+        this.warpDisplay.draw(this.warpFboKey, 0, 0);
+      }
     }
   }
 

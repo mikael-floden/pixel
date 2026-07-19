@@ -525,6 +525,9 @@ export interface ParsedWorld {
   /** maps2 world@1: decorative objects placed on cells (grass tufts, rocks,
    * …). Each is a TALL 64×128 tile PNG standing on its cell's ground. */
   props?: WorldProp[];
+  /** maps2 world@2: elevated walkable slabs (roofs, bridge spans) floating over
+   * the unchanged base terrain — a SECOND walkable surface at some cells. */
+  decks?: Deck[];
 }
 
 /** A placed decoration: its cell (col,row) + tall (64×128) tile PNG path.
@@ -535,6 +538,24 @@ export interface WorldProp {
   row: number;
   path: string;
   levels?: number;
+}
+
+/** world@2 deck: a thin walkable slab at `level`, floating over the base
+ * terrain (which stays walkable/swimmable underneath). Rendered like a raised
+ * ground cell — `thickness` face tiles under the top, then the top diamond at
+ * `level`, with OPEN AIR below (so you can see/walk/swim under it). */
+export interface DeckCell {
+  col: number;
+  row: number;
+  path?: string; // the slab's TOP tile PNG (paths[top])
+  flip: boolean;
+}
+export interface Deck {
+  kind: string; // "roof" | "bridge" — a label, not load-bearing
+  mat: string; // material NAME (its face tile builds the slab's underside/sides)
+  level: number; // elevation of the walkable top, in levels
+  thickness: number; // levels of slab drawn below the top (render only)
+  cells: DeckCell[];
 }
 
 /**
@@ -642,7 +663,20 @@ function parseRingworld(json: any): ParsedWorld {
         }))
         .filter((p: WorldProp) => !!p.path)
     : [];
-  return { width, height, rows, pois: [], spawn, faceTiles, props };
+  // Decks (world@2): elevated walkable slabs. Resolve mat id → name and each
+  // cell's top index → PNG path so the client can render them like ground.
+  const decks: Deck[] = Array.isArray(json.decks)
+    ? json.decks.map((d: any) => ({
+        kind: String(d.kind ?? "deck"),
+        mat: idToMat[d.mat ?? 0] ?? "",
+        level: d.level ?? 0,
+        thickness: Math.max(1, d.thickness ?? 1),
+        cells: (Array.isArray(d.cells) ? d.cells : [])
+          .map((c: any) => ({ col: c.x, row: c.y, path: paths[c.top], flip: !!c.mirror }))
+          .filter((c: DeckCell) => !!c.path),
+      }))
+    : [];
+  return { width, height, rows, pois: [], spawn, faceTiles, props, decks: decks.length ? decks : undefined };
 }
 
 /**

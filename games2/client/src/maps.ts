@@ -23,11 +23,13 @@ export interface World {
   faceTiles?: Record<string, string>;
   /** maps2 world@1: decorative objects (tall 64×128 tiles) placed on cells. */
   props?: WorldProp[];
+  /** maps2 world@2: elevated walkable slabs (roofs, bridge decks). */
+  decks?: Deck[];
 }
 
-import { ISO_DX, ISO_DY, LEVEL_PX, WorldCell, WorldProp, parseWorld } from "@nangijala/shared";
+import { ISO_DX, ISO_DY, LEVEL_PX, WorldCell, WorldProp, Deck, parseWorld } from "@nangijala/shared";
 
-export type { WorldProp };
+export type { WorldProp, Deck };
 
 // maps2/tiles2 geometry: top diamond 30px×64px, grid steps dx=32/dy=15, one
 // elevation level = 16px face (LEVEL_PX). dx/dy live in shared/ (ISO_DX/ISO_DY)
@@ -115,6 +117,9 @@ export function distinctTilePaths(world: World): string[] {
   for (const row of world.rows)
     for (const c of row) if (c?.path) set.add(c.path);
   for (const p of Object.values(world.faceTiles ?? {})) set.add(p);
+  // world@2 decks: their top tiles (the face uses the material's faceTile).
+  for (const d of world.decks ?? [])
+    for (const c of d.cells) if (c.path) set.add(c.path);
   return [...set];
 }
 

@@ -84,6 +84,7 @@ import {
   TileBases,
   artLift,
   DEFAULT_WORLD,
+  Deck,
 } from "../maps";
 
 // jump/runjump play ONCE, timed to span the ~500ms hop (JUMP_MS): 9 frames→18fps,
@@ -415,6 +416,8 @@ export class WorldScene extends Phaser.Scene {
   private camDetached = false;
   private lastGround = { x: NaN, y: NaN };
   private maxLevel = 0;
+  // world@2 decks (elevated walkable slabs): cell key (row*width+col) → slab.
+  private deckIndex = new Map<number, { deck: Deck; cell: Deck["cells"][number] }>();
   // Occlusion: raised/solid tiles near the camera drawn as depth-sorted images
   // so they cover characters standing BEHIND them (the ground RT is flat).
   private occluders: Phaser.GameObjects.Image[] = [];
@@ -639,6 +642,8 @@ export class WorldScene extends Phaser.Scene {
       if (this.night) {
         this.lastGround = { x: NaN, y: NaN };
         this.lastOccl = { x: NaN, y: NaN };
+        // Hand the ground RT to the seam-smear overlay (anti-tiling post).
+        if (this.groundRT) this.night.setGroundRT(this.groundRT);
       }
     }
 
@@ -825,6 +830,24 @@ export class WorldScene extends Phaser.Scene {
         }
         return { strength: this.night?.groundDetail, freq: this.night?.groundFreq };
       },
+      // Anti-tiling seam SMEAR (ground domain-warp displayed via a RenderTexture
+      // below the actors) — live tuning + toggle: __ml.groundWarp(amp, freq, on).
+      // amp = displacement in world/art px, freq = noise freq (world-px^-1),
+      // on = enable (false = instant rollback). flip = RT sampling y-orientation.
+      groundWarp: (amp?: number, freq?: number, on?: boolean, flip?: number) => {
+        if (this.night) {
+          if (amp !== undefined) this.night.warpAmp = amp;
+          if (freq !== undefined) this.night.warpFreq = freq;
+          if (on !== undefined) this.night.warpOn = on;
+          if (flip !== undefined) this.night.groundFlip = flip;
+        }
+        return this.night?.warpInfo() ?? null;
+      },
+      // world@2 decks: parsed summary + cells indexed for the ground/occluder loop.
+      deckInfo: () => ({
+        decks: (this.world?.decks ?? []).map((d) => ({ kind: d.kind, mat: d.mat, level: d.level, thickness: d.thickness, cells: d.cells.length })),
+        indexed: this.deckIndex.size,
+      }),
       myX: () => {
         const id = this.room?.sessionId;
         const av = id ? this.avatars.get(id) : undefined;
@@ -3090,8 +3113,22 @@ export class WorldScene extends Phaser.Scene {
     const cs = canvasSize(world);
     this.iso = { ox: cs.ox, oy: cs.oy, w: cs.w, h: cs.h };
     this.maxLevel = cs.maxLevel;
+    // world@2 decks: index by cell for O(1) lookup in the ground/occluder loops,
+    // and lift maxLevel so the streamed window + shader ray cover raised slabs.
+    this.deckIndex.clear();
+    for (const d of world.decks ?? []) {
+      this.maxLevel = Math.max(this.maxLevel, d.level);
+      for (const c of d.cells) this.deckIndex.set(c.row * world.width + c.col, { deck: d, cell: c });
+    }
     this.makeGroundRT();
     this.scale.on("resize", () => this.makeGroundRT());
+  }
+
+  /** Face tile key for a deck's underside/sides (the material's plain face, like
+   * a raised ground cell), falling back to the slab's own top art. */
+  private deckFaceKey(deck: Deck, topKey: string): string {
+    const fp = this.world?.faceTiles?.[deck.mat];
+    return fp && this.textures.exists(pathTileKey(fp)) ? pathTileKey(fp) : topKey;
   }
 
   private makeGroundRT() {
@@ -3101,6 +3138,8 @@ export class WorldScene extends Phaser.Scene {
       .setOrigin(0, 0)
       .setDepth(-1_000_000);
     this.lastGround = { x: NaN, y: NaN };
+    // Re-bind the seam-smear display to the fresh ground RT (it samples it).
+    this.night?.setGroundRT(this.groundRT);
   }
 
   private redrawGround() {
@@ -3163,6 +3202,20 @@ export class WorldScene extends Phaser.Scene {
           const fk = faceKey && this.textures.exists(faceKey) ? faceKey : topKey0;
           for (let lvl = 0; lvl < cell.l; lvl++) rt.batchDraw(fk, bx, by - lvl * lh);
           rt.batchDraw(topKey, bx, by - cell.l * lh);
+          // world@2 deck slab (roof / bridge span) at this cell, drawn right
+          // after its base in (x+y) order: `thickness` face tiles below the top
+          // with OPEN AIR beneath (so you see under it), then the top diamond.
+          const dk = this.deckIndex.get(row * world.width + col);
+          if (dk && dk.cell.path) {
+            const dTop0 = pathTileKey(dk.cell.path);
+            if (this.textures.exists(dTop0)) {
+              const dTop = dk.cell.flip ? this.flippedKey(dTop0) : dTop0;
+              const dFace = this.deckFaceKey(dk.deck, dTop0);
+              const lvl0 = Math.max(0, dk.deck.level - dk.deck.thickness);
+              for (let lvl = lvl0; lvl < dk.deck.level; lvl++) rt.batchDraw(dFace, bx, by - lvl * lh);
+              rt.batchDraw(dTop, bx, by - dk.deck.level * lh);
+            }
+          }
           continue;
         }
         const key = tileKey(cell.t, cell.v);
