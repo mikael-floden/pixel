@@ -415,12 +415,6 @@ export class WorldScene extends Phaser.Scene {
   private camDetached = false;
   private lastGround = { x: NaN, y: NaN };
   private maxLevel = 0;
-  // Anti-tiling: re-scatter INTERIOR base-ground tiles across the same
-  // material's already-loaded fill variants (+ a hash flip) so identical tiles
-  // stop lining up into a visible grid. Pool = base tiles the maps agent itself
-  // used on interior cells (proven interchangeable fill). Toggle __ml.tileScatter.
-  private tileScatter = true;
-  private fillPool = new Map<string, string[]>();
   // Occlusion: raised/solid tiles near the camera drawn as depth-sorted images
   // so they cover characters standing BEHIND them (the ground RT is flat).
   private occluders: Phaser.GameObjects.Image[] = [];
@@ -822,14 +816,6 @@ export class WorldScene extends Phaser.Scene {
     (window as any).__ml = {
       players: () => this.avatars.size,
       myId: () => this.room?.sessionId,
-      // Anti-tiling tile RE-SCATTER (interior base tiles) — toggle live.
-      tileScatter: (on?: boolean) => {
-        if (on !== undefined) {
-          this.tileScatter = on;
-          this.lastGround = { x: NaN, y: NaN }; // force a full ground redraw
-        }
-        return { on: this.tileScatter, pools: [...this.fillPool].map(([m, p]) => `${m}:${p.length}`) };
-      },
       // Anti-tiling ground wash — live tuning: __ml.groundDetail(strength, freq).
       // strength = brightness swing (0 disables), freq = noise freq (world-px^-1).
       groundDetail: (strength?: number, freq?: number) => {
@@ -3104,60 +3090,8 @@ export class WorldScene extends Phaser.Scene {
     const cs = canvasSize(world);
     this.iso = { ox: cs.ox, oy: cs.oy, w: cs.w, h: cs.h };
     this.maxLevel = cs.maxLevel;
-    this.buildTileScatter();
     this.makeGroundRT();
     this.scale.on("resize", () => this.makeGroundRT());
-  }
-
-  /** A cell is an INTERIOR base-fill cell when it and its 4 orthogonal
-   * neighbours are the same material AND it draws a plain `/base/` tile (not a
-   * transition/prop) and isn't already world-flipped — i.e. it's part of a
-   * uniform field where re-picking the fill art is seamless. */
-  private isInteriorFill(col: number, row: number): boolean {
-    const w = this.world;
-    if (!w) return false;
-    const c = w.rows[row]?.[col];
-    if (!c || c.flip || !c.path || !c.path.includes("/base/")) return false;
-    // NEVER scatter water (or any swimmable surface): clean water is meant to
-    // read as ONE uniform sheet — shuffling its many variants wrecks it
-    // (maintainer). Scatter only breaks up repeated LAND fields.
-    if (surfaceFor(c.t).swimmable) return false;
-    const t = c.t;
-    const n = (cc: number, rr: number) => w.rows[rr]?.[cc];
-    return (
-      n(col - 1, row)?.t === t && n(col + 1, row)?.t === t && n(col, row - 1)?.t === t && n(col, row + 1)?.t === t
-    );
-  }
-
-  /** Build per-material pools of interchangeable fill tiles: every DISTINCT base
-   * tile the maps agent placed on an interior cell of that material. Re-scatter
-   * (redrawGround) then reassigns interior cells across the pool, breaking the
-   * dominant-tile grid without touching edges/transitions. One-time O(cells). */
-  private buildTileScatter() {
-    this.fillPool.clear();
-    const w = this.world;
-    if (!w || !this.maps2) return;
-    const sets = new Map<string, Set<string>>();
-    for (let row = 0; row < w.height; row++) {
-      for (let col = 0; col < w.width; col++) {
-        if (!this.isInteriorFill(col, row)) continue;
-        const cell = w.rows[row][col];
-        const k = topKeyFor(cell);
-        if (!k) continue;
-        let s = sets.get(cell.t);
-        if (!s) sets.set(cell.t, (s = new Set()));
-        s.add(k);
-      }
-    }
-    for (const [mat, s] of sets) if (s.size > 1) this.fillPool.set(mat, [...s]);
-  }
-
-  /** Deterministic per-cell hash (stable across redraws so a cell never flickers
-   * between variants) — drives the fill pick + the scatter flip. */
-  private tileHash(c: number, r: number): number {
-    let h = (Math.imul(c, 374761393) + Math.imul(r, 668265263)) | 0;
-    h = Math.imul(h ^ (h >>> 13), 1274126177);
-    return (h ^ (h >>> 16)) >>> 0;
   }
 
   private makeGroundRT() {
@@ -3221,24 +3155,10 @@ export class WorldScene extends Phaser.Scene {
           // (LEVEL_PX), with the cell's top tile last (like maps2 render2.py).
           const topKey0 = topKeyFor(cell);
           if (!topKey0 || !this.textures.exists(topKey0)) continue; // void cell
-          // ANTI-TILING: on an interior base-fill cell, swap the TOP art for a
-          // hash-picked variant from the material's fill pool (+ a hash flip),
-          // so the dominant tile stops repeating on a grid. Edges/transitions
-          // (not interior) keep their exact tile; faces keep the ORIGINAL.
-          let baseTop = topKey0;
-          let scatterFlip = false;
-          if (this.tileScatter && this.isInteriorFill(col, row)) {
-            const pool = this.fillPool.get(cell.t);
-            if (pool && pool.length > 1) {
-              const h = this.tileHash(col, row);
-              baseTop = pool[h % pool.length];
-              scatterFlip = (h & 8) !== 0;
-            }
-          }
           // world@1 mirror: some transition tiles are placed flipped; honour it
           // or borders face the wrong way. RT batchDraw can't flip, so draw a
-          // lazily-mirrored texture copy for flipped (or hash-flipped) cells.
-          const topKey = cell.flip || scatterFlip ? this.flippedKey(baseTop) : baseTop;
+          // lazily-mirrored texture copy for flipped cells.
+          const topKey = cell.flip ? this.flippedKey(topKey0) : topKey0;
           const faceKey = faceKeyFor(world, cell);
           const fk = faceKey && this.textures.exists(faceKey) ? faceKey : topKey0;
           for (let lvl = 0; lvl < cell.l; lvl++) rt.batchDraw(fk, bx, by - lvl * lh);

@@ -52,17 +52,10 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   redrawn only when the camera nears its edge. `MapPreviewScene` (`/#map`) shows
   a maps2 world's pre-rendered `minimap.png` when it ships one. `project()`s each
   player's flat `(x,y)` onto the grid (feet lifted by elevation).
-- **Anti-tiling tile re-scatter** (maintainer: repeated base tiles read as a
-  grid). At draw time an INTERIOR base-fill cell (it + its 4 ortho neighbours
-  same material, a `/base/` tile, not world-flipped) swaps its TOP art for a
-  hash-picked variant from that material's FILL POOL — every distinct base tile
-  the maps agent itself placed on an interior cell of the material (proven
-  interchangeable; e.g. 30 saturated_grass, 43 clear_water). Plus a per-cell
-  hash flip (reuses `flippedKey`). Faces + transitions/edges keep their exact
-  tile. Pool built once at `setupStreamingGround` (`buildTileScatter`, O(cells));
-  `tileHash(col,row)` is stable so a cell never flickers. Toggle live
-  `__ml.tileScatter(false)` (forces a ground redraw); pairs with the ground
-  wash below.
+- **Anti-tiling** is post-process only (see the ground wash / seam smear below).
+  Picking or varying the actual tiles is the **maps agent's** job — this repo
+  never swaps a cell's art. We only dissolve the seams the maps agent's clean
+  tiles still leave behind.
 - `stairs` tiles act as ramps (crossing one allows a full 1-level step without
   jumping); solid structure tiles (trees, boulders, obelisks, watchtower, cactus,
   lava) are impassable — see `SURFACES`/`surfaceFor` (road_* matched by prefix).
