@@ -83,10 +83,19 @@ const FOOTSTEP_SETS: Record<string, string> = { snow: "snow", ice: "ice", grass:
 const FOOTSTEP_CATALOG: Record<string, string> = { sand: "jump", dirt: "jump" };
 const FOOTSTEP_DEFAULT = "stone";
 // Per-SURFACE trims on top of the step base (maintainer verdicts
-// 2026-07-18): snow −12 ("too loud" ×2, run level then approved), grass
-// −1 ("maybe 90% of current"). Keyed by surface sound id so e.g. grass
-// can be trimmed without touching stone-on-stone tiles.
-const FOOTSTEP_TRIM_DB: Record<string, number> = { snow: -12, grass: -1, ice: -4 };
+// 2026-07-18): snow −12 ("too loud" ×2, run level then approved). grass
+// −4 (2026-07-19: the generated grass set was liked but "a bit less
+// volume", down from the earlier −1). Keyed by surface sound id so e.g.
+// grass can be trimmed without touching stone-on-stone tiles.
+const FOOTSTEP_TRIM_DB: Record<string, number> = { snow: -12, grass: -4, ice: -4 };
+// Per-SURFACE tone shaping (a FIXED darkening character, not per-step
+// drift — bypassed by ENFORCE UNMODIFIED AUDIO like all processing).
+// grass (2026-07-19): the liked generated set still read a touch like a
+// hi-hat, so a gentle lowpass shaves the top sizzle and a small pitch-
+// down lowers the tone — both "very small, just a push away from a
+// hi-hat" per the maintainer.
+const FOOTSTEP_LOWPASS_HZ: Record<string, number> = { grass: 3600 };
+const FOOTSTEP_RATE: Record<string, number> = { grass: 0.95 };
 // The wet shoreline step is the catalog splash played like the water-EXIT
 // sound the maintainer approved: pitched up ~15% (brighter, lighter than
 // the duller entry splosh). A fixed character choice, not per-step drift.
@@ -391,6 +400,8 @@ export class GameAudio {
         pan: f.pan,
         dist: f.dist,
         gainDb: -8 + (FOOTSTEP_TRIM_DB[f.surface] ?? 0) + (f.running ? 0.8 : walkPenalty),
+        lowpassHz: FOOTSTEP_LOWPASS_HZ[f.surface],
+        rate: FOOTSTEP_RATE[f.surface],
       });
       return;
     }
