@@ -824,6 +824,26 @@ export class WorldScene extends Phaser.Scene {
         decks: (this.world?.decks ?? []).map((d) => ({ kind: d.kind, mat: d.mat, level: d.level, thickness: d.thickness, cells: d.cells.length })),
         indexed: this.deckIndex.size,
       }),
+      // Per-deck render diagnosis: how many cells have a VOID base (deck skipped
+      // by the void `continue`), a missing deck-top texture, or render OK.
+      deckDiag: () => {
+        const w = this.world;
+        if (!w) return null;
+        return (w.decks ?? []).map((d) => {
+          let voidBase = 0, deckTopMissing = 0, ok = 0;
+          for (const c of d.cells) {
+            const base = w.rows[c.row]?.[c.col];
+            const bk = base ? topKeyFor(base) : null;
+            const baseVoid = !bk || !this.textures.exists(bk);
+            const dt = c.path ? pathTileKey(c.path) : null;
+            const dtMissing = !dt || !this.textures.exists(dt);
+            if (baseVoid) voidBase++;
+            if (dtMissing) deckTopMissing++;
+            if (!baseVoid && !dtMissing) ok++;
+          }
+          return { kind: d.kind, level: d.level, cells: d.cells.length, voidBase, deckTopMissing, ok };
+        });
+      },
       myX: () => {
         const id = this.room?.sessionId;
         const av = id ? this.avatars.get(id) : undefined;
@@ -3564,6 +3584,38 @@ export class WorldScene extends Phaser.Scene {
         if (!cell) continue;
         const s = surfaceFor(cell.t);
         if (this.maps2) {
+          // world@2 DECK occluder: a slab floating ABOVE its base (deck.level >
+          // base level) must occlude whoever walks/swims under it, and must draw
+          // on top of the ground RT so it's visible over the walls it roofs.
+          // Built regardless of the base cell's own level (the interior floor is
+          // l=0, which the terrain branch below skips). Where the deck coincides
+          // with its base top (deck.level == base l — a roof lapping its own
+          // walls), the terrain occluder already covers it, so skip.
+          const dk = this.deckIndex.get(row * this.world.width + col);
+          if (dk && dk.cell.path && dk.deck.level > cell.l) {
+            const dTop0 = pathTileKey(dk.cell.path);
+            if (this.textures.exists(dTop0)) {
+              const dFace = this.deckFaceKey(dk.deck, dTop0);
+              const bx0 = this.iso.ox + u * dx;
+              const by0 = this.iso.oy + v * dy;
+              const dDepth = by0 + dy;
+              const lvl0 = Math.max(0, dk.deck.level - dk.deck.thickness);
+              for (let lvl = lvl0; lvl < dk.deck.level; lvl++)
+                this.occluders.push(
+                  this.tagOccluder(this.add.image(bx0, by0 - lvl * lh, dFace).setOrigin(0, 0).setDepth(dDepth), col, row, dk.deck.level, dDepth),
+                );
+              this.occluders.push(
+                this.tagOccluder(
+                  this.add.image(bx0, by0 - dk.deck.level * lh, dTop0).setOrigin(0, 0).setFlipX(!!dk.cell.flip).setDepth(dDepth),
+                  col, row, dk.deck.level, dDepth,
+                ),
+              );
+              this.occluderMeta.push({
+                col, row, top: dk.deck.level, solid: false, depth: dDepth,
+                x0: bx0, x1: bx0 + tileSize, y0: by0 - dk.deck.level * lh, y1: by0 + tileSize,
+              });
+            }
+          }
           // maps2 cells bake an explicit tile PNG path (loaded under
           // pathTileKey), NOT the legacy tile:(t,v) key — so the legacy branch
           // below finds no texture and builds ZERO occluders, leaving every
