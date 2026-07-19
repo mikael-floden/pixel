@@ -101,10 +101,11 @@ const FOOTSTEP_RATE: Record<string, number> = { grass: 0.95 };
 // the duller entry splosh). A fixed character choice, not per-step drift.
 const WET_STEP_RATE = 1.15;
 // The jump grunt plays pitched UP: the raw female takes still read a touch
-// dark/low (maintainer 2026-07-19: "still too dark, increase pitch a bit").
-// 1.12 ≈ +2 semitones — brighter/higher, and it shortens the ~0.9s takes a
-// little too. Bypassed by ENFORCE UNMODIFIED AUDIO like all rate changes.
-const JUMP_VOICE_RATE = 1.12;
+// dark/low (maintainer 2026-07-19: "still too dark, increase pitch a bit",
+// then "a little bit higher again, not very much — getting closer"). 1.18 ≈
+// +2.9 semitones — brighter/higher, and it shortens the ~0.9s takes a little
+// too. Bypassed by ENFORCE UNMODIFIED AUDIO like all rate changes.
+const JUMP_VOICE_RATE = 1.18;
 // The jump grunt also plays on fall-start; this gap dedupes jump→fall (a
 // jump OFF a ledge fires both within a few frames) and any double-trigger.
 const JUMP_VOICE_MIN_GAP_S = 0.28;
