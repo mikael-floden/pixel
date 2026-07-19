@@ -544,6 +544,18 @@ visible head/shoulders are ABOVE the surface).
   its `demo` room + `buildDemoWorld`, per-cell glow floors/pools for v1
   categories, `analyze-emission.mjs`, `demo-shots.mjs`, `verify-emission*`,
   and `tile-bases.json`. History in git if the techniques are needed again.)
+- **Anti-tiling ground wash** (maintainer: repeated clean base tiles read as a
+  grid; the mist "merges" them nicely — bake that in permanently). In FRAG,
+  after `light = uAmbient*sunF*cloudF`, a subtle world-anchored 2-octave
+  `cwNoise` brightness wash is folded into `light` on TOP surfaces ONLY
+  (`!isFace` — never wall faces, so the wall is never smeared with the top),
+  posterised into 5 bands so it reads as pixel-art terrain variation. Static
+  (no time drift). Uniforms `uGroundDetail` (peak-to-peak swing) / `uGroundFreq`
+  (≈1/wavelength) — DECLARED in the config (uSun lesson) and set each frame from
+  `night.groundDetail`/`groundFreq` (defaults `GROUND_DETAIL`/`GROUND_FREQ`).
+  Live-tunable via `__ml.groundDetail(strength, freq)`; rollback = strength 0.
+  Held OUT of calibration reads (uniform forced 0 when `testPattern !== 0`) so
+  the night-verify pattern-5 field stays clean.
 - Debug: `__ml.nightCal(flip,span,test)` drives the field test patterns
   (gradient/grid/uv/classification/raw field — headless probes only; the
   old [6]-[9] calibration keys are retired);
