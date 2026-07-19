@@ -57,23 +57,46 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     // the theme in; you don't have to hit a button.
     gameAudio.startTitleTheme();
     injectStyles();
-    // FADE IN FROM BLACK (maintainer: every screen assumes the previous one
-    // faded to 100% black — page boot and logout both land here on the #000
-    // body). Wait for the logo + forest art so the reveal is complete, with
-    // a cap so a slow asset can't hold the screen black.
-    overlay.style.opacity = "0";
+    // TITLE SCREEN + reveal (maintainer). The select overlay opens behind a
+    // solid black VEIL with ONLY the logo showing (the logo is raised ABOVE the
+    // veil, at its final select-screen position). On boot the logo emerges out
+    // of the black (a from-black fade, like every screen). A tap ANYWHERE fades
+    // the veil out — the select screen appears while the logo never moves (it's
+    // the same element at the same spot), so it reads as "select fades in under
+    // a stationary logo" without ever fading the logo itself. The tap is ALSO
+    // the user gesture that unlocks WebAudio (browsers block sound before the
+    // first touch) — the whole reason for a title screen — so the theme starts.
+    const veil = el("div", "ml-title-veil");
+    overlay.appendChild(veil);
     const logoImg = overlay.querySelector<HTMLImageElement>(".ml-logo");
+    if (logoImg) logoImg.style.opacity = "0";
     const bgImg = new Image();
     bgImg.src = "/ui2/select-bg.png";
-    const artReady = Promise.allSettled([logoImg?.decode(), bgImg.decode()]);
-    Promise.race([artReady, new Promise((r) => setTimeout(r, 1200))]).then(() => {
+    // Emerge the logo from the black once it's decoded (capped so a slow net
+    // can't hold it black).
+    Promise.race([logoImg?.decode().catch(() => {}), new Promise((r) => setTimeout(r, 1000))]).then(() =>
       requestAnimationFrame(() =>
         requestAnimationFrame(() => {
-          overlay.style.transition = "opacity .5s ease";
-          overlay.style.opacity = "1";
+          if (!logoImg) return;
+          logoImg.style.transition = "opacity .6s ease";
+          logoImg.style.opacity = "1";
         }),
-      );
-    });
+      ),
+    );
+    let revealed = false;
+    const reveal = () => {
+      if (revealed) return;
+      revealed = true;
+      gameAudio.startTitleTheme(); // this gesture unlocks audio + starts music
+      veil.style.pointerEvents = "none";
+      // Lift the black once the forest art is ready so the reveal lands on real
+      // pixels, not a half-loaded backdrop (capped).
+      Promise.race([bgImg.decode().catch(() => {}), new Promise((r) => setTimeout(r, 450))]).then(() => {
+        veil.style.opacity = "0";
+        setTimeout(() => veil.remove(), 750);
+      });
+    };
+    veil.addEventListener("pointerdown", reveal);
     // No border frame on the select screen (maintainer 2026-07-18: "just use
     // the background without the frame") — the forest art carries the screen
     // alone. The composed vine border (frame2.ts mountSelectFrame +
@@ -397,8 +420,14 @@ function injectStyles() {
      ("can't see the glow", then "more dark/black, bigger glow") — four
      stacked layers: a dense core plus a wide soft halo. */
   .ml-logo{display:block;width:min(840px,96%);margin:0 auto;user-select:none;-webkit-user-drag:none;
+    position:relative;z-index:101; /* ABOVE the title veil so it stays visible while the black lifts */
     filter:drop-shadow(0 0 10px rgba(0,0,0,.65)) drop-shadow(0 0 28px rgba(0,0,0,.6))
       drop-shadow(0 0 64px rgba(0,0,0,.55)) drop-shadow(0 0 110px rgba(0,0,0,.45))}
+  /* TITLE veil: a solid-black cover over the whole select screen; only the logo
+     (z 101) pokes through. z 100 clears every control (the dropdown is z 20).
+     Tap fades it out (opacity → 0) to reveal select. */
+  .ml-title-veil{position:absolute;inset:0;z-index:100;background:#05070d;opacity:1;
+    transition:opacity .7s ease;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
   /* UI-KIT plates (plate.ts dressPlate): Normal / cream Selected / dark
      Down — same trio and block scale as the HUD. */
   .ml-plated{border:none;background:none;background-repeat:no-repeat;background-size:100% 100%;
