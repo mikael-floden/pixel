@@ -262,6 +262,14 @@ const litDepth = (baseDepth: number) => 900_001 + baseDepth * 1e-5;
 const JUMP_HEIGHT = 28; // px peak of the jump hop (a tall, floaty arc)
 const SWIM_BOB = 2.2; // px amplitude of the gentle head bob while swimming
 const EXIT_JUMP_MS = 500; // ms window to rise out of the water on exit (matches the hop)
+// Foam "lapping" animation (maintainer's idea): re-bake the SAME crest at a
+// slightly different line ANGLE per frame. The tiny tilt tips some columns over
+// their rounding boundary, so the crest hops in WHOLE pixels (never subpixel) —
+// reads as gentle water movement. Pivoted at the shoulder midpoint, so the ends
+// wobble ±~1px while the centre stays put. 3 tilts, rocked back and forth.
+const FOAM_TILT = 0.05; // extra crest slope (rows/col) per tilt step, at the pivot
+const FOAM_ANIM_MS = 230; // ms each foam frame holds (~4 fps — slow, watery)
+const FOAM_TILT_SEQ = [-1, 0, 1, 0]; // ping-pong through the 3 tilt variants
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
 // Living camera (maintainer): the camera CHASES the player instead of pinning
 // them dead-centre — exponential ease toward the sprite with the trail capped,
@@ -2236,6 +2244,7 @@ export class WorldScene extends Phaser.Scene {
       }
       if (!on || !a.sprite.visible) {
         a.lit.setVisible(false);
+        if (!on) a.foam?.clearTint(); // day: foam at full brightness
         continue;
       }
       const lvl = this.terrain ? levelAtWorld(this.terrain, a.fx, a.fy) : 0;
@@ -2265,6 +2274,17 @@ export class WorldScene extends Phaser.Scene {
       // overlay (composes with the wall crop above).
       if (a.swimming && a.swimT > 0.001 && a.waterMask) a.lit.setMask(a.waterMask);
       else if (a.lit.mask) a.lit.clearMask();
+      // Foam draws ABOVE the night overlay (like the lit copy), so tint its
+      // white crest by the same LOCAL light — otherwise it stays bright white
+      // at full night. Light-only (the texture already carries its colours), so
+      // it fades into the dark and warms up under a nearby torch, matching the
+      // character.
+      if (a.foam?.visible) {
+        const fr = Math.min(255, Math.round(255 * Math.min(1, l[0])));
+        const fg = Math.min(255, Math.round(255 * Math.min(1, l[1])));
+        const fb = Math.min(255, Math.round(255 * Math.min(1, l[2])));
+        a.foam.setTint((fr << 16) | (fg << 8) | fb);
+      }
     }
     if (this.campfireSprite) {
       if (!this.campfireLit) {
@@ -2839,7 +2859,10 @@ export class WorldScene extends Phaser.Scene {
     // half-pixel), and painting per opaque column makes the crest respect the
     // character's alpha: it breaks across transparent gaps (hair↔body) instead
     // of bridging them, and reaches every opaque column (no missed edge pixel).
-    const foamKey = this.foamTexture(sp, s, feetY, swimT);
+    // Animate by rocking the crest angle in whole-pixel steps (see FOAM_TILT).
+    // Per-avatar phase (bobPhase) so swimmers don't lap in lockstep.
+    const tilt = FOAM_TILT_SEQ[Math.floor((this.time.now + av.bobPhase * 11) / FOAM_ANIM_MS) % FOAM_TILT_SEQ.length];
+    const foamKey = this.foamTexture(sp, s, feetY, swimT, tilt);
     if (!foamKey) {
       av.foam?.setVisible(false);
       return;
@@ -2863,22 +2886,27 @@ export class WorldScene extends Phaser.Scene {
    * shoulder line crosses, and — only if the body is opaque just above that row
    * — paint 1px white then 2px darker water. Drawn later with the sprite's exact
    * transform, so it's pixel-perfect and honours the character's alpha (gaps
-   * where the silhouette is transparent). Cached per texture+frame+swimT. */
+   * where the silhouette is transparent). `tilt` rocks the crest ANGLE a hair
+   * around the shoulder midpoint (the lapping animation) — same bake, whole-pixel
+   * shifts. Cached per texture+frame+swimT+tilt. */
   private foamTexture(
     sp: Phaser.GameObjects.Sprite,
     s: { lx: number; ly: number; rx: number; ry: number },
     feetY: number,
     swimT: number,
+    tilt = 0,
   ): string | null {
     const am = this.alphaMap(sp);
     const fw = am.w, fh = am.h;
     const swimTq = Math.round(swimT * 8) / 8; // quantise so a fall reuses ~8 bakes
-    const key = `${sp.frame.texture.key}#${sp.frame.name}#foam${swimTq}`;
+    const key = `${sp.frame.texture.key}#${sp.frame.name}#foam${swimTq}#t${tilt}`;
     if (this.textures.exists(key)) return key;
     const lineY0 = (feetY + (s.ly - feetY) * swimT) * fh; // crest row at column s.lx
     const lineY1 = (feetY + (s.ry - feetY) * swimT) * fh; // crest row at column s.rx
     const x0 = s.lx * fw, x1 = s.rx * fw;
     const slope = (lineY1 - lineY0) / ((x1 - x0) || 1);
+    const xm = (x0 + x1) / 2; // pivot: rock the angle around the shoulder midpoint
+    const dSlope = tilt * FOAM_TILT; // extra slope for this animation frame
     const cnv = document.createElement("canvas");
     cnv.width = fw;
     cnv.height = fh;
@@ -2886,7 +2914,7 @@ export class WorldScene extends Phaser.Scene {
     if (!ctx) return null;
     let any = false;
     for (let x = 0; x < fw; x++) {
-      const cy = Math.round(lineY0 + slope * (x - x0)); // first underwater row here
+      const cy = Math.round(lineY0 + slope * (x - x0) + dSlope * (x - xm)); // first underwater row here
       if (cy < 1 || cy >= fh) continue;
       // The body meets the surface at this column iff the last visible pixel
       // (just above the cut) is opaque. Check the two rows above so a curved
