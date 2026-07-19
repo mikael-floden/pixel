@@ -3,6 +3,7 @@ import { WorldInfo, DEFAULT_WORLD } from "./maps";
 import { showLoading } from "./loading";
 import { applyUiZoom } from "./uiscale";
 import { dressPlate, repaintPlates } from "./plate";
+import { gameAudio } from "../../composer/index";
 
 const NAMES = ["Ari", "Bex", "Cyl", "Dax", "Eir", "Fen", "Gio", "Hana", "Ivo", "Juno", "Kira", "Lio"];
 
@@ -265,9 +266,22 @@ function el(tag: string, cls: string): HTMLElement {
  * on the last tap — .press goes on at finger-down, off the moment the finger
  * lifts or leaves, so it can never stick. */
 function pressFx(b: HTMLElement) {
-  b.addEventListener("pointerdown", () => b.classList.add("press"));
+  // Same tactile down/up sounds as the in-game HUD buttons (hud.ts) — the
+  // select screen is the FIRST thing the player touches, so it also unlocks
+  // the AudioContext (init() armed it) and starts the title theme.
+  let down = false;
+  b.addEventListener("pointerdown", () => {
+    down = true;
+    b.classList.add("press");
+    gameAudio.event("ui.press");
+    gameAudio.startTitleTheme();
+  });
   for (const ev of ["pointerup", "pointercancel", "pointerleave"])
-    b.addEventListener(ev, () => b.classList.remove("press"));
+    b.addEventListener(ev, () => {
+      if (down) gameAudio.event("ui.release");
+      down = false;
+      b.classList.remove("press");
+    });
 }
 
 const SPIN_MS = 220; // per 45° rotation step ≈ 1.8s per full revolution

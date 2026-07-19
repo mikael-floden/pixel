@@ -15,6 +15,7 @@ import { AmbienceMixer } from "./ambience";
 import { MusicDirector } from "./music";
 import { OneShotPlayer, PlayOpts } from "./oneshot";
 import { composerFoley, composerFoleySurfaces } from "./foley";
+import { titleThemeUrl } from "./titleTheme";
 
 /** Per-avatar, per-frame movement sample — the scene reports what the body
  * is doing; the composer turns it into footsteps at gait cadence. */
@@ -85,6 +86,9 @@ const SWIM_GAIN_TAU_S = 0.12; // real-time volume follow (responsive, no zipper)
 // splash climbing OUT (maintainer 2026-07-19).
 const SWIM_ENTER_DB = 1;
 const SWIM_EXIT_DB = -4;
+// The character-select TITLE THEME plays on the music bus (respects the music
+// toggle); trimmed a touch so it sits under the SFX, never blaring on load.
+const TITLE_THEME_DB = -4;
 
 // Footstep routing (maintainer directives 2026-07-18): the approved STONE
 // set is the default for every dry surface; per-surface sets are enabled
@@ -192,6 +196,12 @@ export class GameAudio {
   private tick: ReturnType<typeof setInterval> | null = null;
   private musicWanted = false;
   private underwater = false;
+  // Title-theme (select screen): a looping music source, started on the first
+  // gesture and handed off to the world score on join.
+  private titleWanted = false;
+  private titleSrc: AudioBufferSourceNode | null = null;
+  private titleGain: GainNode | null = null;
+  private titleLoading = false;
   private storm = false;
   private musicToggleFast = false;
   private mode = "overworld";
@@ -271,10 +281,68 @@ export class GameAudio {
     }
   }
 
-  /** The world is live — bring the score in. */
+  /** The world is live — bring the score in (and retire the title theme). */
   startMusic(): void {
     this.musicWanted = true;
+    this.stopTitleTheme();
     if (this.catalog && this.graph) void this.music.start(this.catalog.music);
+  }
+
+  /** Start the character-select TITLE THEME (composer-generated, looping on the
+   * music bus). Called from the select screen's first gesture; safe to call
+   * repeatedly. No-ops until the AudioContext is unlocked and a theme is
+   * bundled — slowTick retries so it starts the moment both are true. */
+  startTitleTheme(): void {
+    this.titleWanted = true;
+    this.ensureTitleTheme();
+  }
+
+  /** Retire the title theme (world join / music-off): fade out, then reclaim. */
+  stopTitleTheme(): void {
+    this.titleWanted = false;
+    const src = this.titleSrc;
+    const gain = this.titleGain;
+    this.titleSrc = null;
+    this.titleGain = null;
+    if (!this.graph || !gain) return;
+    gain.gain.setTargetAtTime(0.0001, this.graph.now, 0.5);
+    setTimeout(() => {
+      try {
+        src?.stop();
+      } catch {}
+      src?.disconnect();
+      gain.disconnect();
+    }, 1400);
+  }
+
+  private ensureTitleTheme(): void {
+    if (!this.graph || !this.graph.running || this.titleSrc || this.titleLoading || !this.titleWanted) return;
+    const url = titleThemeUrl();
+    if (!url) return; // not generated yet
+    if (!this.titleGain) {
+      this.titleGain = this.graph.ctx.createGain();
+      this.titleGain.gain.value = 0.0001;
+      this.titleGain.connect(this.graph.bus("music"));
+    }
+    this.titleLoading = true;
+    void this.buffers.get(url).then((buf) => {
+      this.titleLoading = false;
+      if (!buf || !this.graph || !this.titleGain || this.titleSrc || !this.titleWanted) return;
+      const src = this.graph.ctx.createBufferSource();
+      src.buffer = buf;
+      src.loop = true;
+      src.connect(this.titleGain);
+      src.start();
+      this.titleSrc = src;
+      this.applyTitleLevel(2.0); // gentle fade-in on the select screen
+    });
+  }
+
+  /** Ease the title gain toward its target (0 when music is off). */
+  private applyTitleLevel(tauS: number): void {
+    if (!this.titleGain || !this.graph) return;
+    const target = this.titleWanted && this.musicOn ? dbToGain(TITLE_THEME_DB) : 0.0001;
+    this.titleGain.gain.setTargetAtTime(Math.max(0.0001, target), this.graph.now, tauS);
   }
 
   // ---- semantic events ----
@@ -756,7 +824,15 @@ export class GameAudio {
    * with the sound switch OFF — the music has its own switch and must keep
    * following the day/night level (its bus is unaffected by the sfx mute). */
   private slowTick(): void {
-    if (!this.graph || !this.catalog || !this.ambience || !this.graph.running) return;
+    if (!this.graph || !this.graph.running) return;
+    // Title theme: start once the context is unlocked + a theme is bundled
+    // (retries the async unlock), and keep its level tracking the music toggle.
+    // Runs before the catalog guard — the select screen has no world yet.
+    if (this.titleWanted) {
+      this.ensureTitleTheme();
+      this.applyTitleLevel(0.4);
+    }
+    if (!this.catalog || !this.ambience) return;
     const { sun, cloud, mist, rain, snow, windy } = this.env;
     const night = 1 - sun;
     const field = this.fieldSampler?.() ?? { forest: 0, water: 0, town: 0, fire: 0 };
@@ -840,6 +916,7 @@ export class GameAudio {
   toggleMusic(): void {
     this.musicOn = !this.musicOn;
     this.musicToggleFast = true;
+    this.applyTitleLevel(0.06); // the title theme snaps with the toggle too
     this.slowTickSoon();
     this.persist();
   }
