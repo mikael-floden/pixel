@@ -173,7 +173,8 @@ surface — no stamina/drown.
 
 The swim LOOK: the character FLOATS with a per-direction SHOULDER WATERLINE at
 the water surface — head + shoulders above, everything below the line clipped
-(underwater), no shadow, gentle head bob, blue tint, idle clip.
+(underwater), no shadow, gentle head bob, idle clip (no water tint — the
+visible head/shoulders are ABOVE the surface).
 - Waterline data: `shoulders[dir]={lx,ly,rx,ry}` (two shoulder points, frame
   fractions; the line can TILT). The MAINTAINER hand-drew them (finger →
   least-squares straight-line fit, registered to frame space via the auto-detect

@@ -1737,11 +1737,12 @@ export class WorldScene extends Phaser.Scene {
       const hopLeft = av.hopUntil - this.time.now;
       const hop = hopLeft > 0 ? Math.sin((1 - hopLeft / JUMP_MS) * Math.PI) * JUMP_HEIGHT : 0;
 
-      // Blue tint + gentle head bob while afloat; the float depth is already
-      // baked into av.ly (via the negative water elevation), so only the bob
-      // is added here. Everything below the shoulder line is clipped by
-      // updateWaterClip, which raises the waterline feet→shoulders with swimT.
-      av.sprite.setTint(swimming ? 0x6fb3ff : av.baseTint);
+      // Gentle head bob while afloat; the float depth is already baked into
+      // av.ly (via the negative water elevation), so only the bob is added
+      // here. Everything below the shoulder line is clipped by updateWaterClip,
+      // which raises the waterline feet→shoulders with swimT. No blue tint —
+      // only the head/shoulders show and they're ABOVE the water.
+      av.sprite.setTint(av.baseTint);
       av.sprite.x = av.lx;
       const bob = swimming ? Math.sin(this.time.now / 850 + av.bobPhase) * SWIM_BOB * av.swimT : 0;
       av.sprite.y = av.ly - (swimming ? 0 : hop) + bob;
@@ -2212,7 +2213,7 @@ export class WorldScene extends Phaser.Scene {
       }
       const lvl = this.terrain ? levelAtWorld(this.terrain, a.fx, a.fy) : 0;
       const l = night!.lightAt(a.fx / CELL_WU, a.fy / CELL_WU, lvl, false);
-      const base = a.swimming ? 0x6fb3ff : a.baseTint;
+      const base = a.baseTint;
       const r = Math.min(255, Math.round(((base >> 16) & 0xff) * Math.min(1, l[0])));
       const g = Math.min(255, Math.round(((base >> 8) & 0xff) * Math.min(1, l[1])));
       const bl = Math.min(255, Math.round((base & 0xff) * Math.min(1, l[2])));
