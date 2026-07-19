@@ -36,6 +36,9 @@ export interface PlayOpts {
   delayS?: number;
   /** Quantize the start to the music's next beat (stingers, magic). */
   onBeat?: boolean;
+  /** Character uid for a per-character vocal pitch (jump/fall grunt only);
+   * ignored by every other path. */
+  voice?: string;
 }
 
 const rand = (a: number, b: number) => a + Math.random() * (b - a);

@@ -1650,7 +1650,7 @@ export class WorldScene extends Phaser.Scene {
         // engine debounce dedupes a jump that flows into a fall.
         if (av.falling && !av.wasFalling) {
           const sp = this.avatarSpatial(id);
-          gameAudio.event("player.fall", { pan: sp.pan, dist: sp.dist });
+          gameAudio.event("player.fall", { pan: sp.pan, dist: sp.dist, voice: av.character });
         }
         av.wasFalling = av.falling;
         // Ground speed in WORLD units/s, back-projected from the EASED flat
@@ -1682,7 +1682,7 @@ export class WorldScene extends Phaser.Scene {
         // Sound exactly when the visual hop starts (synced flag = same
         // trigger for every client), spatialized for other players.
         const sp = this.avatarSpatial(id);
-        gameAudio.event("player.jump", { pan: sp.pan, dist: sp.dist });
+        gameAudio.event("player.jump", { pan: sp.pan, dist: sp.dist, voice: av.character });
       }
       av.wasJumping = !!player.jumping;
       const hopLeft = av.hopUntil - this.time.now;
