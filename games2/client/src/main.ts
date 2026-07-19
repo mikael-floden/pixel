@@ -120,13 +120,15 @@ function showUpdateBanner(sha: string) {
   // press used to text-select the hash and pop Chrome's search sheet mid-game.
   // Sizing has bounced (maintainer: first "super small and hard to click",
   // then "a little bit too big", now "bigger and a little further down") —
-  // a comfortable thumb pill, not a billboard. Goes through applyUiZoom like
-  // every other overlay — without it, phone desktop-site mode shrank it ~3x
-  // along with the layout viewport.
-  // top:150px is the maintainer's "perfect spot" — the open playfield just
-  // below the clock (shared with the reconnect toast, WorldScene).
+  // a comfortable thumb pill, not a billboard.
+  // "perfect spot" = the open playfield just below the clock (shared with
+  // the reconnect toast, WorldScene). top:340px is FRAME layout-px: with
+  // the UI_ZOOM_X1 experiment (uiscale.ts) the overlay is NOT zoom'd, so it
+  // shares the frame's coordinate space and 340px lands below the clock disc
+  // (a plain top:150px sat on the disc). The /var(--ml-uizoom) keeps it
+  // frame-aligned if that experiment is ever turned back off.
   el.style.cssText =
-    "position:fixed;top:150px;left:50%;transform:translateX(-50%);z-index:100;cursor:pointer;" +
+    "position:fixed;top:calc(340px / var(--ml-uizoom, 1));left:50%;transform:translateX(-50%);z-index:100;cursor:pointer;" +
     "padding:14px 26px;border-radius:12px;background:#111114f2;color:#ffd678;" +
     "border:2px solid #ffd678aa;font:bold 19px system-ui,sans-serif;box-shadow:0 6px 24px #000c;" +
     "white-space:nowrap;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;" +

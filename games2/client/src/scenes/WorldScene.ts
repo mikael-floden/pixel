@@ -1361,11 +1361,12 @@ export class WorldScene extends Phaser.Scene {
     const el = document.createElement("div");
     el.textContent = "Reconnecting…";
     // Same SPOT and size family as main.ts's update banner (maintainer's
-    // "perfect spot" for transient status texts — the open playfield just
-    // below the clock, not crammed at the very top). top:150px is uiZoom'd
-    // to land there on the real phone.
+    // "perfect spot" — the open playfield just below the clock). top:340px is
+    // FRAME layout-px: with UI_ZOOM_X1 (uiscale.ts) the overlay is NOT zoom'd,
+    // so 340px shares the frame's coordinate space and lands below the clock
+    // disc (a plain top:150px sat on the disc on the real phone).
     el.style.cssText =
-      "position:fixed;top:150px;left:50%;transform:translateX(-50%);z-index:100;" +
+      "position:fixed;top:calc(340px / var(--ml-uizoom, 1));left:50%;transform:translateX(-50%);z-index:100;" +
       "padding:14px 26px;border-radius:12px;background:#111114f2;border:2px solid #ffd678aa;" +
       "color:#ffd678;font:bold 19px system-ui,sans-serif;box-shadow:0 6px 24px #000c;" +
       "white-space:nowrap;pointer-events:none";
