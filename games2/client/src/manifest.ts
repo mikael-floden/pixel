@@ -22,6 +22,11 @@ export interface CharacterDef {
   // makes the drawn feet meet the collision position exactly. `top` is the
   // crown of the head — labels hug it instead of the transparent frame top.
   anchors?: Record<string, { x: number; y: number; top?: number }>;
+  // Shoulder line per direction (swimming waterline): the left/right shoulder
+  // points as frame fractions. When swimming the character floats with this
+  // line at the water surface and everything below it is clipped (underwater);
+  // the two points can differ in y so the line tilts (build-manifest shoulderLine).
+  shoulders?: Record<string, { lx: number; ly: number; rx: number; ry: number }>;
   // Anti-moonwalk playback rates measured from the art (build-manifest):
   // the fps at which each gait's feet track the ground at the gait's BASE
   // speed (WALK_SPEED/RUN_SPEED). One rate per gait — every direction keeps

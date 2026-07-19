@@ -95,6 +95,76 @@ function pngAlpha(p) {
   return { w, h, opaque };
 }
 
+/**
+ * SHOULDER LINE (swimming waterline): the two shoulder points, so the swim
+ * renderer can float the character with head+shoulders above the water and
+ * clip everything below the line between them (maintainer: "a line between the
+ * shoulders... everything below is under the water"). The two points may sit
+ * at different heights (side/diagonal views), so the line can tilt.
+ *
+ * Method: take the figure's silhouette extent per row. Below the head there's
+ * a NECK (narrowest row in the upper head zone); the shoulders flare out just
+ * under it. In the band right below the neck, the LEFT shoulder is the
+ * leftmost-reaching opaque pixel (with its own y) and the RIGHT shoulder the
+ * rightmost-reaching one — so a side view whose front shoulder is drawn lower
+ * yields a tilted line. Returned normalized (0..1) in frame space.
+ */
+function shoulderLine(png) {
+  const { w, h, opaque } = png;
+  let top = -1;
+  let bottom = -1;
+  const ext = []; // per row: {y, mn, mx} silhouette left/right edge
+  for (let y = 0; y < h; y++) {
+    let mn = -1;
+    let mx = -1;
+    for (let x = 0; x < w; x++)
+      if (opaque(x, y)) {
+        if (mn < 0) mn = x;
+        mx = x;
+      }
+    if (mn >= 0) {
+      if (top < 0) top = y;
+      bottom = y;
+    }
+    ext.push({ y, mn, mx });
+  }
+  if (top < 0) return null;
+  const figH = bottom - top;
+  const wid = (y) => (ext[y].mn < 0 ? 0 : ext[y].mx - ext[y].mn);
+  // Neck = the pinch just below the head: narrowest row in the UPPER third
+  // only (searching lower catches the waist when the arms flare the torso).
+  let neck = top + Math.round(0.22 * figH);
+  let neckW = Infinity;
+  for (let y = top + Math.round(0.12 * figH); y <= top + Math.round(0.34 * figH); y++) {
+    const wv = wid(y);
+    if (wv > 0 && wv <= neckW) {
+      neckW = wv;
+      neck = y;
+    }
+  }
+  // Shoulders sit a fixed bit BELOW the neck pinch (the head is often as wide
+  // as the shoulders, so a width-flare test lands on the jaw — offset instead).
+  const shoulderRow = Math.min(bottom, neck + Math.round(0.11 * figH));
+  // Left/right shoulder = outermost edges in a tight band at the shoulder tops,
+  // each with its OWN y so the line tilts as much as the two sides differ.
+  const b1 = Math.min(bottom, shoulderRow + Math.max(2, Math.round(0.05 * figH)));
+  let ls = null;
+  let rs = null;
+  for (let y = shoulderRow; y <= b1; y++) {
+    const e = ext[y];
+    if (e.mn < 0) continue;
+    if (!ls || e.mn < ls.x) ls = { x: e.mn, y };
+    if (!rs || e.mx > rs.x) rs = { x: e.mx, y };
+  }
+  if (!ls || !rs) return null;
+  return {
+    lx: +(ls.x / w).toFixed(4),
+    ly: +(ls.y / h).toFixed(4),
+    rx: +(rs.x / w).toFixed(4),
+    ry: +(rs.y / h).toFixed(4),
+  };
+}
+
 /** Lowest row of the figure with real mass (>=3 opaque px) — the ground line.
  * NOT the single lowest pixel: a 1-2px toe tip / anti-alias speck dragged the
  * old anchor below the soles, so characters read as hovering. */
@@ -389,6 +459,22 @@ function scan() {
         anchors[d] = { x: xs[xs.length >> 1], y: ys[ys.length >> 1], top };
       }
     }
+    // Shoulder line per direction (swimming waterline) — component-wise median
+    // across the idle frames, same robustness idea as the foot anchor.
+    const shoulders = {};
+    for (const [d, n] of Object.entries(animations.idle)) {
+      const keys = ["lx", "ly", "rx", "ry"];
+      const acc = { lx: [], ly: [], rx: [], ry: [] };
+      for (let i = 0; i < n; i++) {
+        const png = pngAlpha(join(animsDir, ANIM_MAP.idle, d, `${i}.png`));
+        const s = png && shoulderLine(png);
+        if (s) for (const k of keys) acc[k].push(s[k]);
+      }
+      if (acc.lx.length) {
+        const med = (a) => (a.sort((p, q) => p - q), a[a.length >> 1]);
+        shoulders[d] = { lx: med(acc.lx), ly: med(acc.ly), rx: med(acc.rx), ry: med(acc.ry) };
+      }
+    }
     const gaitFps = gaitFpsOf(animsDir, animations, animSrc);
     // Footstep plants for the moving gaits (walk/run; jump lands too).
     const plants = {};
@@ -417,6 +503,7 @@ function scan() {
       animations,
       animSrc,
       anchors,
+      shoulders,
       gaitFps,
       plants,
     });
