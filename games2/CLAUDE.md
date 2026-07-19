@@ -164,6 +164,36 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   foot-slip reported as info — the art glides a little by design,
   cadence-true playback keeps a residual).
 
+## Swimming (WorldScene + shared nav + build-manifest)
+
+Water is free, sustainable locomotion (NOT a hazard). `findPath` treats water
+as normal ~1.8x-slower terrain (no drown, no run cap); a tap ON water is a
+valid swim destination. The server only mirrors `player.swimming` from the
+surface — no stamina/drown.
+
+The swim LOOK: the character FLOATS with a per-direction SHOULDER WATERLINE at
+the water surface — head + shoulders above, everything below the line clipped
+(underwater), no shadow, gentle head bob, blue tint, idle clip.
+- Waterline data: `shoulders[dir]={lx,ly,rx,ry}` (two shoulder points, frame
+  fractions; the line can TILT). The MAINTAINER hand-drew them (finger →
+  least-squares straight-line fit, registered to frame space via the auto-detect
+  dot markers); committed in `data/waterlines.json`, merged by build-manifest
+  (override wins; `shoulderLine()` silhouette auto-detect is the fallback for
+  un-annotated characters). Regenerate the manifest after editing waterlines.
+- FLOAT: for a water cell the fall target is `-swimDrop` (feet sink below the
+  surface so the shoulder line lands at `av.ly`). The existing gravity fall
+  carries the body THROUGH the surface and STOPS (buoyancy) at the shoulder
+  line — so dropping in from a ledge submerges progressively. `swimT` (0..1) =
+  `-elev/swimDrop` drives the clip: it raises the cut from the FEET (just
+  entered) to the SHOULDERS (afloat).
+- CLIP: `updateWaterClip` builds a geometry mask over the half-plane ABOVE the
+  (tilted) shoulder line and applies it to the base sprite AND its lit night-
+  copy. Uses `av.dispDir` (the DISPLAYED facing) so the line matches the frame.
+- QA: `__ml.swimming/swimT/myDispDir/swimDebug` (swimDebug returns the clip
+  line in SCREEN coords — overlay it to confirm clip==line). NOTE: measure the
+  clip AT REST — a mid-motion capture skews the position probe vs the
+  screenshot by a few frames and fakes an offset.
+
 ## Footstep marks (client/src/footsteps.ts)
 
 - Every foot PLANT stamps a tiny ground mark at the EXACT drawn spot the foot

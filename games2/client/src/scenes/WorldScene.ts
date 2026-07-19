@@ -1030,6 +1030,32 @@ export class WorldScene extends Phaser.Scene {
       // lets QA/the maintainer hear it without waiting for the weather).
       audioThunder: (strength = 1) => gameAudio.thunder(strength),
       swimming: () => !!this.room?.state.players.get(this.room!.sessionId)?.swimming,
+      myDispDir: () => this.avatars.get(this.room?.sessionId ?? "")?.dispDir ?? null,
+      swimT: () => this.avatars.get(this.room?.sessionId ?? "")?.swimT ?? 0,
+      swimDebug: () => {
+        const av = this.avatars.get(this.room?.sessionId ?? "");
+        if (!av) return null;
+        const sp = av.sprite;
+        const dir = av.dispDir ?? DEFAULT_DIRECTION;
+        const { def, s } = this.waterlineFor(av.character, dir);
+        const fw = def?.frameW ?? sp.frame.realWidth;
+        const fh = def?.frameH ?? sp.frame.realHeight;
+        const cam = this.cameras.main;
+        const toScreen = (fx: number, fy: number) => ({
+          x: (sp.x + (fx * fw - sp.originX * fw) * sp.scaleX - cam.worldView.x) * cam.zoom,
+          y: (sp.y + (fy * fh - sp.originY * fh) * sp.scaleY - cam.worldView.y) * cam.zoom,
+        });
+        return {
+          dir,
+          swimT: av.swimT,
+          L: toScreen(s.lx, s.ly),
+          R: toScreen(s.rx, s.ry),
+          frame: { cutX: sp.frame.cutX, cutY: sp.frame.cutY, cutW: sp.frame.cutWidth, cutH: sp.frame.cutHeight, realW: sp.frame.realWidth, realH: sp.frame.realHeight },
+          origin: { x: sp.originX, y: sp.originY },
+          scale: { x: sp.scaleX, y: sp.scaleY },
+          def: { fw, fh },
+        };
+      },
       surfaceAt: (x: number, y: number) => (this.terrain ? surfaceAtWorld(this.terrain, x, y) : null),
       blockedAt: (x: number, y: number) => (this.terrain ? isBlockedAtWorld(this.terrain, x, y) : null),
       propCount: () => this.propImgs.length,
@@ -1627,7 +1653,25 @@ export class WorldScene extends Phaser.Scene {
       av.fx = tx;
       av.fy = ty;
       const g = this.projectFlat(tx, ty);
-      const targetElev = g.lvl * MAP_GEOMETRY.lh;
+      // Swimming FLOAT depth: while over water the fall settles BELOW the
+      // surface so this direction's shoulder waterline lands at the water
+      // level — the feet sink `swimDrop` px under. Falling in from a ledge
+      // then submerges progressively (gravity carries the body through the
+      // surface) and STOPS (buoyancy) at the shoulder line. swimDir = the
+      // DISPLAYED facing, so the waterline matches the drawn frame.
+      const swimming = !!player.swimming;
+      av.swimming = swimming;
+      const swimDir = av.dispDir ?? dir;
+      let swimDrop = 0;
+      if (swimming) {
+        const { def, s } = this.waterlineFor(av.character, swimDir);
+        const anchor = def?.anchors?.[swimDir] ?? def?.anchors?.[DEFAULT_DIRECTION] ?? { x: 0.5, y: 0.9 };
+        const fh = def?.frameH ?? 112;
+        const t = s.rx !== s.lx ? (anchor.x - s.lx) / (s.rx - s.lx) : 0.5;
+        const waterYFrac = s.ly + (s.ry - s.ly) * Math.max(0, Math.min(1, t));
+        swimDrop = Math.max(0, (anchor.y - waterYFrac) * fh * av.sprite.scaleY);
+      }
+      const targetElev = swimming ? -swimDrop : g.lvl * MAP_GEOMETRY.lh;
       // A big horizontal jump (respawn/teleport) is not a walk — snap, don't
       // ease or fall, so the character doesn't skate/plummet across the map.
       if (Math.abs(g.x - av.lx) > CELL_WU * 2 || Math.abs(g.y - av.lyFlat) > CELL_WU * 2) {
@@ -1672,6 +1716,11 @@ export class WorldScene extends Phaser.Scene {
       }
       av.ly = av.lyFlat - av.elev;
 
+      // Submerge amount: 0 = feet at the surface, 1 = shoulders at the surface
+      // (fully floating). Tied to how far the fall has sunk the feet below the
+      // surface, so a ledge drop submerges progressively then floats.
+      av.swimT = swimDrop > 0 ? Math.max(0, Math.min(1, -av.elev / swimDrop)) : swimming ? 1 : 0;
+
       // Jump hop: a short parabola driven by the synced `jumping` flag —
       // RISING-EDGE triggered. Re-arming whenever the flag was still true
       // after the hop expired replayed a whole second hop when a state patch
@@ -1688,28 +1737,15 @@ export class WorldScene extends Phaser.Scene {
       const hopLeft = av.hopUntil - this.time.now;
       const hop = hopLeft > 0 ? Math.sin((1 - hopLeft / JUMP_MS) * Math.PI) * JUMP_HEIGHT : 0;
 
-      // Swimming: FLOAT with the shoulder waterline at the water surface
-      // (av.ly), so the head + shoulders sit above and everything below the
-      // line is clipped underwater (see updateWaterClip). A gentle bob + a
-      // blue tint sell "in water". Otherwise the feet stand on the ground.
-      av.swimming = !!player.swimming;
-      let swimOff = 0;
-      if (av.swimming) {
-        const { def, s } = this.waterlineFor(av.character, dir);
-        const fh = def?.frameH ?? av.sprite.frame.realHeight;
-        // waterline y (frame fraction) at the character's vertical axis
-        const t = s.rx !== s.lx ? (av.sprite.originX - s.lx) / (s.rx - s.lx) : 0.5;
-        const waterYFrac = s.ly + (s.ry - s.ly) * Math.max(0, Math.min(1, t));
-        // drop the sprite so that point sits at av.ly (body sinks below)
-        const drop = (av.sprite.originY - waterYFrac) * fh * av.sprite.scaleY;
-        const bob = Math.sin(this.time.now / 850 + av.bobPhase) * SWIM_BOB;
-        swimOff = drop + bob;
-      }
-      av.sprite.setTint(av.swimming ? 0x6fb3ff : av.baseTint);
-
+      // Blue tint + gentle head bob while afloat; the float depth is already
+      // baked into av.ly (via the negative water elevation), so only the bob
+      // is added here. Everything below the shoulder line is clipped by
+      // updateWaterClip, which raises the waterline feet→shoulders with swimT.
+      av.sprite.setTint(swimming ? 0x6fb3ff : av.baseTint);
       av.sprite.x = av.lx;
-      av.sprite.y = (av.swimming ? av.ly : av.ly - hop) + swimOff;
-      this.updateWaterClip(av, dir);
+      const bob = swimming ? Math.sin(this.time.now / 850 + av.bobPhase) * SWIM_BOB * av.swimT : 0;
+      av.sprite.y = av.ly - (swimming ? 0 : hop) + bob;
+      this.updateWaterClip(av, swimDir, av.swimT);
       // Depth vs occluding columns: a single painter scalar can't resolve
       // every sprite-vs-column case (diagonals, same-level, lower columns),
       // so refine per frame with the EXACT test — a column truly hides the
@@ -2199,7 +2235,7 @@ export class WorldScene extends Phaser.Scene {
       // Underwater clip: the lit copy follows the same shoulder-waterline mask
       // as the base sprite so the submerged body doesn't show above the night
       // overlay (composes with the wall crop above).
-      if (a.swimming && a.waterMask) a.lit.setMask(a.waterMask);
+      if (a.swimming && a.swimT > 0.001 && a.waterMask) a.lit.setMask(a.waterMask);
       else if (a.lit.mask) a.lit.clearMask();
     }
     if (this.campfireSprite) {
@@ -2689,25 +2725,32 @@ export class WorldScene extends Phaser.Scene {
     return { def, s };
   }
 
-  /** Clip everything below the shoulder waterline (underwater) while swimming,
-   * via a geometry mask covering the half-plane ABOVE the (possibly tilted)
-   * line through the two shoulder points — applied to both the base sprite and
-   * (in the night-light pass) its lit copy. Cleared when not swimming. */
-  private updateWaterClip(av: Avatar, dir: string) {
+  /** Clip everything below the water surface (underwater) while swimming, via
+   * a geometry mask covering the half-plane ABOVE the (possibly tilted) line
+   * through the two shoulder points — applied to both the base sprite and (in
+   * the night-light pass) its lit copy. `swimT` (0..1) raises the clip line
+   * from the FEET (just entered / falling in) to the SHOULDERS (fully afloat),
+   * so a ledge drop submerges progressively. Cleared when not swimming. */
+  private updateWaterClip(av: Avatar, dir: string, swimT: number) {
     const sp = av.sprite;
-    if (!av.swimming) {
+    if (!av.swimming || swimT <= 0.001) {
       if (sp.mask) sp.clearMask();
       return;
     }
     const { def, s } = this.waterlineFor(av.character, dir);
     const fw = def?.frameW ?? sp.frame.realWidth;
     const fh = def?.frameH ?? sp.frame.realHeight;
+    // Raise the clip line from the feet (anchor y) toward the shoulders by
+    // swimT — the visible cut climbs the body as it sinks through the surface.
+    const feetY = def?.anchors?.[dir]?.y ?? def?.anchors?.[DEFAULT_DIRECTION]?.y ?? sp.originY;
+    const lyC = feetY + (s.ly - feetY) * swimT;
+    const ryC = feetY + (s.ry - feetY) * swimT;
     const toWorld = (fx: number, fy: number) => ({
       x: sp.x + (fx * fw - sp.originX * fw) * sp.scaleX,
       y: sp.y + (fy * fh - sp.originY * fh) * sp.scaleY,
     });
-    const L = toWorld(s.lx, s.ly);
-    const R = toWorld(s.rx, s.ry);
+    const L = toWorld(s.lx, lyC);
+    const R = toWorld(s.rx, ryC);
     const dx = R.x - L.x;
     const dy = R.y - L.y;
     const len = Math.hypot(dx, dy) || 1;
