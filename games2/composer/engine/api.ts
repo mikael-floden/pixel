@@ -30,6 +30,9 @@ export interface AvatarFrame {
   wetGround?: boolean;
   /** World-units moved since last frame (the gait EMA's raw distance). */
   distWu: number;
+  /** Current world speed (wu/s, the gait EMA). Drives the swim-stroke level:
+   * a fast crawl is louder than a lazy float. */
+  speedWu?: number;
   /** 0..1 progress of the walk/run animation cycle, when one is playing.
    * THE sync source: footfalls trigger at fixed phases of the visible
    * stride (maintainer: distance-guessed walking steps were out of sync
@@ -66,6 +69,21 @@ const RUN_STEP_WU = 38;
 // The two foot plants within one walk/run animation loop (0..1 phase).
 // Tunable: if the plant reads early/late on screen, nudge both together.
 const FOOT_PHASES = [0.05, 0.55];
+// SWIMMING (a new locomotion, maintainer 2026-07-19): the catalog swim_stroke
+// played as speed-driven water strokes — NOT footfalls. Cadence is distance-
+// based (one stroke per SWIM_STROKE_WU of water covered, so a faster swim
+// strokes more often); level scales with the CURRENT swim speed (a lazy float
+// is near-silent, a fast crawl fuller). SWIM_REF_SPEED_WU ≈ a brisk swim
+// (water is ~1.8× slower than the ~49.5 wu/s walk ref) → speed 0..that maps to
+// the MIN..MAX stroke level. Floating still makes no stroke at all.
+const SWIM_STROKE_WU = 30;
+const SWIM_REF_SPEED_WU = 28;
+const SWIM_STROKE_MIN_DB = -17; // barely-moving float
+const SWIM_STROKE_MAX_DB = -8; // full-speed crawl
+// Enter/exit water splashes: a fuller plunge going IN, a lighter, brighter
+// splash climbing OUT (maintainer 2026-07-19).
+const SWIM_ENTER_DB = 1;
+const SWIM_EXIT_DB = -4;
 
 // Footstep routing (maintainer directives 2026-07-18): the approved STONE
 // set is the default for every dry surface; per-surface sets are enabled
@@ -143,6 +161,7 @@ interface AvatarGait {
   travelled: number; // wu since last footfall (fallback cadence only)
   lastPhase?: number; // last seen walk/run animation phase (sync source)
   swimming: boolean;
+  swimTravelled?: number; // wu since last swim stroke (distance-based cadence)
 }
 
 export class GameAudio {
@@ -214,7 +233,7 @@ export class GameAudio {
       this.indexBindings(cat.bindings);
       // Warm what fires constantly, so the first step isn't late.
       for (const id of [
-        "footstep_grass", "footstep_stone", "footstep_wood", "jump", "splash",
+        "footstep_grass", "footstep_stone", "footstep_wood", "jump", "splash", "swim_stroke",
         "menu_select", "menu_confirm", "menu_cancel", "notification", "gem_pickup",
       ]) {
         const s = cat.sounds.get(id);
@@ -362,20 +381,43 @@ export class GameAudio {
       this.gaits.set(id, g);
     }
 
-    // Water edges (server owns swimming): the catalog splash, as before.
-    // (Maintainer 2026-07-18: swim-entry sounds are LATER scope — the
-    // composer wet set is for walking the wet shoreline band, below.)
+    // Enter/exit water: a catalog `splash`. A fuller plunge going IN, a
+    // lighter + brighter (pitched-up) splash climbing OUT.
     if (f.swimming !== g.swimming) {
       g.swimming = f.swimming;
+      g.swimTravelled = 0;
       this.play("splash", "sfx", {
         pan: f.pan,
         dist: f.dist,
-        gainDb: f.swimming ? 0 : -6,
-        rate: f.swimming ? 1 : 1.15,
+        gainDb: f.swimming ? SWIM_ENTER_DB : SWIM_EXIT_DB,
+        rate: f.swimming ? 1 : 1.2,
       });
     }
 
-    if (!f.moving || !f.grounded || f.swimming) {
+    // SWIMMING: speed-driven water strokes (not footfalls). Floating still is
+    // silent; while moving, one swim_stroke per SWIM_STROKE_WU covered, its
+    // level scaled by the current swim speed.
+    if (f.swimming) {
+      if (!f.moving) {
+        g.swimTravelled = 0;
+        return;
+      }
+      const stroke = this.catalog?.sounds.get("swim_stroke");
+      if (!stroke) return;
+      g.swimTravelled = (g.swimTravelled ?? 0) + Math.max(0, f.distWu);
+      if (g.swimTravelled < SWIM_STROKE_WU) return;
+      g.swimTravelled = 0;
+      const t = Math.min(1, Math.max(0, (f.speedWu ?? 0) / SWIM_REF_SPEED_WU));
+      this.oneShots.play(this.catalogStepEntry(stroke), "sfx", {
+        pan: f.pan,
+        dist: f.dist,
+        gainDb: SWIM_STROKE_MIN_DB + (SWIM_STROKE_MAX_DB - SWIM_STROKE_MIN_DB) * t,
+        rate: 0.96 + 0.12 * t, // a touch brisker at speed
+      });
+      return;
+    }
+
+    if (!f.moving || !f.grounded) {
       g.travelled = Math.min(g.travelled, WALK_STEP_WU * 0.55); // next start-step comes quickly
       g.lastPhase = undefined;
       return;

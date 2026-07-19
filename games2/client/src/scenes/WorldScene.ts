@@ -1941,6 +1941,7 @@ export class WorldScene extends Phaser.Scene {
         surface: this.terrain ? surfaceAtWorld(this.terrain, tx, ty).sound : "grass",
         wetGround,
         distWu: (av.spdWu ?? 0) * dt,
+        speedWu: av.spdWu ?? 0,
         animPhase: inGait ? av.sprite.anims.getProgress() : undefined,
         pan: sp.pan,
         dist: sp.dist,
