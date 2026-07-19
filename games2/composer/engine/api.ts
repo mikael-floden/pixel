@@ -111,7 +111,7 @@ const WET_STEP_RATE = 1.15;
 // her voice natively high. Bypassed by ENFORCE UNMODIFIED AUDIO.
 const JUMP_VOICE_RATE: Record<string, number> = {
   default_boy: 1.33,
-  default_girl: 1.7,
+  default_girl: 1.75, // APPROVED FINAL 2026-07-19 ("a real female now, not sped up, perfect")
 };
 const JUMP_VOICE_RATE_DEFAULT = 1.58; // unknown character → the girl pitch
 // The jump grunt also plays on fall-start; this gap dedupes jump→fall (a
