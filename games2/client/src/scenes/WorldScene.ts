@@ -260,7 +260,7 @@ const TIME_TRANSITION_S = 2.5;
 // too. Base depths are screen-y scalars (< ~20k px), compressed into the band.
 const litDepth = (baseDepth: number) => 900_001 + baseDepth * 1e-5;
 const JUMP_HEIGHT = 28; // px peak of the jump hop (a tall, floaty arc)
-const SWIM_SINK = 6; // px the sprite sinks while swimming
+const SWIM_BOB = 2.2; // px amplitude of the gentle head bob while swimming
 const GROUND_MARGIN = 512; // extra ground drawn beyond the screen (px per side)
 // Living camera (maintainer): the camera CHASES the player instead of pinning
 // them dead-centre — exponential ease toward the sprite with the trail capped,
@@ -303,6 +303,10 @@ interface Avatar {
   hopUntil: number;
   wasJumping?: boolean; // last synced jumping flag (hop re-arms on rising edge only)
   swimming: boolean;
+  swimT: number; // 0..1 submerge amount (0 = feet on ground, 1 = shoulders at surface)
+  bobPhase: number; // per-avatar swim bob phase
+  waterMaskG?: Phaser.GameObjects.Graphics; // half-plane-above-shoulders mask shape
+  waterMask?: Phaser.Display.Masks.GeometryMask; // the reusable geometry mask
   baseTint: number;
   bubble?: Phaser.GameObjects.Text;
   bubbleUntil?: number;
@@ -1250,6 +1254,8 @@ export class WorldScene extends Phaser.Scene {
     av.lit?.destroy();
     av.shadow.destroy();
     av.label.destroy();
+    av.waterMask?.destroy();
+    av.waterMaskG?.destroy();
     av.bubble?.destroy();
     this.avatars.delete(id);
     gameAudio.dropAvatar(id);
@@ -1516,6 +1522,8 @@ export class WorldScene extends Phaser.Scene {
       fy: player.y,
       hopUntil: 0,
       swimming: false,
+      swimT: 0,
+      bobPhase: (uid.charCodeAt(0) + uid.length * 7) % 100, // deterministic per char
       baseTint,
     });
     this.applyAnimState(this.avatars.get(id)!, player.moving, player.running, player.dir, false);
@@ -1680,13 +1688,28 @@ export class WorldScene extends Phaser.Scene {
       const hopLeft = av.hopUntil - this.time.now;
       const hop = hopLeft > 0 ? Math.sin((1 - hopLeft / JUMP_MS) * Math.PI) * JUMP_HEIGHT : 0;
 
-      // Swimming: sink slightly and tint blue so it reads as being in water.
+      // Swimming: FLOAT with the shoulder waterline at the water surface
+      // (av.ly), so the head + shoulders sit above and everything below the
+      // line is clipped underwater (see updateWaterClip). A gentle bob + a
+      // blue tint sell "in water". Otherwise the feet stand on the ground.
       av.swimming = !!player.swimming;
-      const sink = av.swimming ? SWIM_SINK : 0;
+      let swimOff = 0;
+      if (av.swimming) {
+        const { def, s } = this.waterlineFor(av.character, dir);
+        const fh = def?.frameH ?? av.sprite.frame.realHeight;
+        // waterline y (frame fraction) at the character's vertical axis
+        const t = s.rx !== s.lx ? (av.sprite.originX - s.lx) / (s.rx - s.lx) : 0.5;
+        const waterYFrac = s.ly + (s.ry - s.ly) * Math.max(0, Math.min(1, t));
+        // drop the sprite so that point sits at av.ly (body sinks below)
+        const drop = (av.sprite.originY - waterYFrac) * fh * av.sprite.scaleY;
+        const bob = Math.sin(this.time.now / 850 + av.bobPhase) * SWIM_BOB;
+        swimOff = drop + bob;
+      }
       av.sprite.setTint(av.swimming ? 0x6fb3ff : av.baseTint);
 
       av.sprite.x = av.lx;
-      av.sprite.y = av.ly - hop + sink;
+      av.sprite.y = (av.swimming ? av.ly : av.ly - hop) + swimOff;
+      this.updateWaterClip(av, dir);
       // Depth vs occluding columns: a single painter scalar can't resolve
       // every sprite-vs-column case (diagonals, same-level, lower columns),
       // so refine per frame with the EXACT test — a column truly hides the
@@ -1811,7 +1834,10 @@ export class WorldScene extends Phaser.Scene {
           av.bubble = undefined;
         }
       }
-      this.applyAnimState(av, moving, running, dir, hopLeft > 0 || av.falling);
+      // Swimming plays the idle clip ("swim = modified idle", maintainer): the
+      // legs are underwater/clipped, so a gait would just churn invisibly — the
+      // visible head + shoulders bob (float offset above), reading as swimming.
+      this.applyAnimState(av, moving && !av.swimming, running && !av.swimming, dir, hopLeft > 0 || av.falling);
 
       // Feed the composer's gait tracker: footfalls trigger on the walk/run
       // clip's plant phases (animPhase) so sound locks to the VISIBLE
@@ -2170,6 +2196,11 @@ export class WorldScene extends Phaser.Scene {
         if (cropH <= ab.y0 + 2) a.lit.setVisible(false); // wall covers the whole figure
         else a.lit.setCrop(0, 0, a.sprite.frame.cutWidth, cropH);
       } else if (a.lit.isCropped) a.lit.setCrop();
+      // Underwater clip: the lit copy follows the same shoulder-waterline mask
+      // as the base sprite so the submerged body doesn't show above the night
+      // overlay (composes with the wall crop above).
+      if (a.swimming && a.waterMask) a.lit.setMask(a.waterMask);
+      else if (a.lit.mask) a.lit.clearMask();
     }
     if (this.campfireSprite) {
       if (!this.campfireLit) {
@@ -2644,6 +2675,58 @@ export class WorldScene extends Phaser.Scene {
       sprite.setOrigin(0.5, 0.9);
       sprite.setData("topFrac", 0.25);
     }
+  }
+
+  /** The swim WATERLINE (shoulder line) for a character+direction: the two
+   * shoulder points as frame fractions (maintainer-specified / auto-detected).
+   * Falls back to a flat chest-height line when unmeasured. */
+  private waterlineFor(
+    uid: string,
+    dir: string,
+  ): { def?: CharacterDef; s: { lx: number; ly: number; rx: number; ry: number } } {
+    const def = this.manifest.characters.find((c) => c.uid === uid);
+    const s = def?.shoulders?.[dir] ?? def?.shoulders?.[DEFAULT_DIRECTION] ?? { lx: 0.4, ly: 0.42, rx: 0.6, ry: 0.42 };
+    return { def, s };
+  }
+
+  /** Clip everything below the shoulder waterline (underwater) while swimming,
+   * via a geometry mask covering the half-plane ABOVE the (possibly tilted)
+   * line through the two shoulder points — applied to both the base sprite and
+   * (in the night-light pass) its lit copy. Cleared when not swimming. */
+  private updateWaterClip(av: Avatar, dir: string) {
+    const sp = av.sprite;
+    if (!av.swimming) {
+      if (sp.mask) sp.clearMask();
+      return;
+    }
+    const { def, s } = this.waterlineFor(av.character, dir);
+    const fw = def?.frameW ?? sp.frame.realWidth;
+    const fh = def?.frameH ?? sp.frame.realHeight;
+    const toWorld = (fx: number, fy: number) => ({
+      x: sp.x + (fx * fw - sp.originX * fw) * sp.scaleX,
+      y: sp.y + (fy * fh - sp.originY * fh) * sp.scaleY,
+    });
+    const L = toWorld(s.lx, s.ly);
+    const R = toWorld(s.rx, s.ry);
+    const dx = R.x - L.x;
+    const dy = R.y - L.y;
+    const len = Math.hypot(dx, dy) || 1;
+    const ux = dx / len;
+    const uy = dy / len;
+    const E = 4000; // extend the line far past the sprite in both directions + up
+    const p1 = { x: L.x - ux * E, y: L.y - uy * E };
+    const p2 = { x: R.x + ux * E, y: R.y + uy * E };
+    const p3 = { x: p2.x, y: p2.y - E };
+    const p4 = { x: p1.x, y: p1.y - E };
+    if (!av.waterMaskG) {
+      av.waterMaskG = this.make.graphics({});
+      av.waterMask = av.waterMaskG.createGeometryMask();
+    }
+    const g = av.waterMaskG;
+    g.clear();
+    g.fillStyle(0xffffff);
+    g.fillPoints([p1, p2, p3, p4], true);
+    sp.setMask(av.waterMask!);
   }
 
   /** Pick an existing animation, falling back run→walk→idle then default dir. */

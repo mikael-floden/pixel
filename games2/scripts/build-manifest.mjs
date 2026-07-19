@@ -15,6 +15,18 @@ const ASSETS_ROOT = process.env.ASSETS_ROOT || join(SCRIPT_DIR, "..", "..");
 // frame FOLDERS (animations/<srcAnim>/<dir>/N.png, unpadded N) — NOT strips.
 const HUMANS = join(ASSETS_ROOT, "characters2", "humans");
 
+// Hand-specified swim waterlines (maintainer, per character/direction). These
+// OVERRIDE the auto-detected shoulder line where present — a finger-drawn line
+// is truer than the silhouette heuristic. See data/waterlines.json.
+const WATERLINES = (() => {
+  const p = join(GAME_ROOT, "data", "waterlines.json");
+  try {
+    return existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : {};
+  } catch {
+    return {};
+  }
+})();
+
 // Game movement state -> characters2 source animation folder name. The client
 // keeps using idle/walk/run/jump as state names; animSrc (below) tells it the
 // folder to build frame URLs from.
@@ -459,10 +471,16 @@ function scan() {
         anchors[d] = { x: xs[xs.length >> 1], y: ys[ys.length >> 1], top };
       }
     }
-    // Shoulder line per direction (swimming waterline) — component-wise median
-    // across the idle frames, same robustness idea as the foot anchor.
+    // Shoulder line per direction (swimming waterline). A hand-specified line
+    // (data/waterlines.json) wins; otherwise auto-detect from the silhouette
+    // (component-wise median across the idle frames, like the foot anchor).
     const shoulders = {};
+    const override = WATERLINES[id] || {};
     for (const [d, n] of Object.entries(animations.idle)) {
+      if (override[d]) {
+        shoulders[d] = override[d];
+        continue;
+      }
       const keys = ["lx", "ly", "rx", "ry"];
       const acc = { lx: [], ly: [], rx: [], ry: [] };
       for (let i = 0; i < n; i++) {
