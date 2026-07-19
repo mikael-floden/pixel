@@ -2088,50 +2088,50 @@
     ],
     "durations_s": [
       0.96,
-      0.96,
+      0.898,
       0.96,
       0.96
     ],
     "features": [
       {
-        "mid_peak_db": -9.1,
+        "mid_peak_db": -7.3,
         "duration_s": 0.96,
-        "attack_ms": 156.5,
-        "tail_ratio": 0.009,
-        "tonality": 0.649,
-        "crest": 4.24,
-        "centroid_hz": 2983,
-        "mid_ratio": 0.9
+        "attack_ms": 191.8,
+        "tail_ratio": 0.034,
+        "tonality": 0.296,
+        "crest": 3.62,
+        "centroid_hz": 3620,
+        "mid_ratio": 0.98
       },
       {
-        "mid_peak_db": -10.8,
-        "duration_s": 0.96,
-        "attack_ms": 15.8,
-        "tail_ratio": 0.0,
-        "tonality": 0.542,
-        "crest": 5.49,
-        "centroid_hz": 2837,
-        "mid_ratio": 0.996
+        "mid_peak_db": -6.5,
+        "duration_s": 0.898,
+        "attack_ms": 207.4,
+        "tail_ratio": 0.311,
+        "tonality": 0.849,
+        "crest": 3.09,
+        "centroid_hz": 3578,
+        "mid_ratio": 0.987
       },
       {
-        "mid_peak_db": -8.5,
+        "mid_peak_db": -8.7,
         "duration_s": 0.96,
-        "attack_ms": 380.5,
-        "tail_ratio": 0.555,
-        "tonality": 0.703,
-        "crest": 4.01,
-        "centroid_hz": 2883,
-        "mid_ratio": 0.917
+        "attack_ms": 69.2,
+        "tail_ratio": 0.001,
+        "tonality": 0.454,
+        "crest": 4.27,
+        "centroid_hz": 3874,
+        "mid_ratio": 0.982
       },
       {
-        "mid_peak_db": -9.3,
+        "mid_peak_db": -9.2,
         "duration_s": 0.96,
-        "attack_ms": 123.0,
-        "tail_ratio": 0.004,
-        "tonality": 0.428,
-        "crest": 4.48,
-        "centroid_hz": 4337,
-        "mid_ratio": 0.972
+        "attack_ms": 49.2,
+        "tail_ratio": 0.002,
+        "tonality": 0.581,
+        "crest": 4.39,
+        "centroid_hz": 5988,
+        "mid_ratio": 0.958
       }
     ],
     "qa": {
@@ -2146,14 +2146,14 @@
         "passed_gates": true,
         "rank": 0.0,
         "features": {
-          "mid_peak_db": -9.1,
+          "mid_peak_db": -7.3,
           "duration_s": 0.96,
-          "attack_ms": 156.5,
-          "tail_ratio": 0.009,
-          "tonality": 0.649,
-          "crest": 4.24,
-          "centroid_hz": 2983,
-          "mid_ratio": 0.9
+          "attack_ms": 191.8,
+          "tail_ratio": 0.034,
+          "tonality": 0.296,
+          "crest": 3.62,
+          "centroid_hz": 3620,
+          "mid_ratio": 0.98
         }
       },
       {
@@ -2161,14 +2161,14 @@
         "passed_gates": true,
         "rank": 0.0,
         "features": {
-          "mid_peak_db": -10.8,
-          "duration_s": 0.96,
-          "attack_ms": 15.8,
-          "tail_ratio": 0.0,
-          "tonality": 0.542,
-          "crest": 5.49,
-          "centroid_hz": 2837,
-          "mid_ratio": 0.996
+          "mid_peak_db": -6.5,
+          "duration_s": 0.898,
+          "attack_ms": 207.4,
+          "tail_ratio": 0.311,
+          "tonality": 0.849,
+          "crest": 3.09,
+          "centroid_hz": 3578,
+          "mid_ratio": 0.987
         }
       },
       {
@@ -2176,14 +2176,14 @@
         "passed_gates": true,
         "rank": 0.0,
         "features": {
-          "mid_peak_db": -8.5,
+          "mid_peak_db": -8.7,
           "duration_s": 0.96,
-          "attack_ms": 380.5,
-          "tail_ratio": 0.555,
-          "tonality": 0.703,
-          "crest": 4.01,
-          "centroid_hz": 2883,
-          "mid_ratio": 0.917
+          "attack_ms": 69.2,
+          "tail_ratio": 0.001,
+          "tonality": 0.454,
+          "crest": 4.27,
+          "centroid_hz": 3874,
+          "mid_ratio": 0.982
         }
       },
       {
@@ -2191,14 +2191,14 @@
         "passed_gates": true,
         "rank": 0.0,
         "features": {
-          "mid_peak_db": -9.3,
+          "mid_peak_db": -9.2,
           "duration_s": 0.96,
-          "attack_ms": 123.0,
-          "tail_ratio": 0.004,
-          "tonality": 0.428,
-          "crest": 4.48,
-          "centroid_hz": 4337,
-          "mid_ratio": 0.972
+          "attack_ms": 49.2,
+          "tail_ratio": 0.002,
+          "tonality": 0.581,
+          "crest": 4.39,
+          "centroid_hz": 5988,
+          "mid_ratio": 0.958
         }
       },
       {
@@ -2206,14 +2206,14 @@
         "passed_gates": true,
         "rank": 0.0,
         "features": {
-          "mid_peak_db": -11.8,
+          "mid_peak_db": -7.6,
           "duration_s": 0.96,
-          "attack_ms": 8.5,
-          "tail_ratio": 0.001,
-          "tonality": 0.392,
-          "crest": 6.1,
-          "centroid_hz": 4263,
-          "mid_ratio": 0.975
+          "attack_ms": 275.5,
+          "tail_ratio": 0.26,
+          "tonality": 0.514,
+          "crest": 3.76,
+          "centroid_hz": 3886,
+          "mid_ratio": 0.989
         }
       },
       {
@@ -2221,14 +2221,14 @@
         "passed_gates": true,
         "rank": 0.0,
         "features": {
-          "mid_peak_db": -11.5,
-          "duration_s": 0.96,
-          "attack_ms": 78.8,
-          "tail_ratio": 0.047,
-          "tonality": 0.58,
-          "crest": 4.51,
-          "centroid_hz": 3474,
-          "mid_ratio": 0.621
+          "mid_peak_db": -7.6,
+          "duration_s": 0.711,
+          "attack_ms": 258.6,
+          "tail_ratio": 0.265,
+          "tonality": 0.438,
+          "crest": 3.16,
+          "centroid_hz": 3722,
+          "mid_ratio": 0.976
         }
       },
       {
@@ -2236,14 +2236,14 @@
         "passed_gates": true,
         "rank": 0.0,
         "features": {
-          "mid_peak_db": -12.1,
-          "duration_s": 0.96,
-          "attack_ms": 253.4,
-          "tail_ratio": 0.03,
-          "tonality": 0.492,
-          "crest": 6.13,
-          "centroid_hz": 2617,
-          "mid_ratio": 0.958
+          "mid_peak_db": -11.3,
+          "duration_s": 0.516,
+          "attack_ms": 150.5,
+          "tail_ratio": 0.0,
+          "tonality": 0.814,
+          "crest": 4.25,
+          "centroid_hz": 3887,
+          "mid_ratio": 0.983
         }
       },
       {
@@ -2251,19 +2251,19 @@
         "passed_gates": true,
         "rank": 0.0,
         "features": {
-          "mid_peak_db": -10.7,
-          "duration_s": 0.656,
-          "attack_ms": 173.0,
-          "tail_ratio": 0.086,
-          "tonality": 0.337,
-          "crest": 3.72,
-          "centroid_hz": 2275,
-          "mid_ratio": 0.779
+          "mid_peak_db": -8.1,
+          "duration_s": 0.796,
+          "attack_ms": 281.9,
+          "tail_ratio": 0.141,
+          "tonality": 0.458,
+          "crest": 3.55,
+          "centroid_hz": 3840,
+          "mid_ratio": 0.98
         }
       }
     ],
-    "brief": "a young man's short vocal effort as he jumps, a quick light 'hyah' grunt, energetic heroic adventure-game hero voice",
-    "generated_at": "2026-07-19T01:07:26+00:00",
+    "brief": "a young woman's short light vocal effort as she jumps, a quick bright high 'hyah', an energetic female adventure heroine's voice",
+    "generated_at": "2026-07-19T01:34:50+00:00",
     "model_id": "eleven_text_to_sound_v2"
   }
 }
