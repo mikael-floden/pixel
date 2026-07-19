@@ -150,18 +150,22 @@ SETS: dict[str, dict] = {
     # No max_ms (a grunt's vowel IS the sound — transient-tightening would cut
     # it) and no judge (measurable gates can't grade a voice; ears decide via
     # /#foley). A small POSITIVE brief per the negative-prompt-backfire lesson.
+    # The avatar is a GIRL (maintainer 2026-07-19: round-1 came back a male
+    # orc grunt — "she is a girl you know"). Brief now names a young girl /
+    # high feminine voice in EVERY clause (the model latches onto voice
+    # gender from the whole phrase, not one word).
     "jump_voice": {
         "brief": (
-            "a young man's short vocal effort as he jumps, a quick light "
-            "'hyah' grunt, energetic heroic adventure-game hero voice"
+            "a young girl's short light vocal effort as she jumps, a cute "
+            "high-pitched 'hyah', a small girl's bright feminine voice"
         ),
-        "style": "clean close-miked dry vocal, a single short isolated grunt",
+        "style": "clean close-miked dry vocal, a single short isolated girl's grunt",
         "duration_s": 0.5,
         "variants": [
-            "a short sharp hyah",
-            "a lighter quick hup",
-            "a slightly higher heh",
-            "a soft quick huh",
+            "a short bright girly hyah",
+            "a lighter cute hup",
+            "a soft high heh",
+            "a quick little huh",
         ],
         "takes": 4,
         "pool": 8,
