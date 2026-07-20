@@ -810,15 +810,21 @@ uniform float uFog;       // master strength 0..1 (0 = pass outputs nothing)
 uniform float uFlip;
 uniform sampler2D uHeight;
 
-// Tunables (kept as named consts so the look is easy to dial):
-const vec3  FOG_HAZE = vec3(0.34, 0.62, 0.60); // teal haze — layers BELOW
-const vec3  FOG_DARK = vec3(0.02, 0.05, 0.06); // near-black cool — layers ABOVE (darken,
-                                               // don't lift-to-grey: keeps their contrast)
-const float BELOW_PER = 0.40;  // opacity gained per level going DOWN
-const float BELOW_MAX = 0.50;  // deepest haze
-const float ABOVE_PER = 0.42;  // opacity gained per level going UP
-const float ABOVE_MAX = 0.60;  // darkest (before the night scale-down)
-const float DEAD = 0.16;        // dead-zone (levels) so the player's plane is clean
+// Tunables (named consts so the look is easy to dial). ONE cohesive cool palette
+// (the enchanted-forest depth tones), traversed as a RAMP by distance from the
+// player's plane — each layer a NEW tone, not the same colour getting denser.
+// Both directions build opacity the SAME way; the tone is INVERTED: BELOW leans
+// warm teal -> bright cyan (receding into misty depth), ABOVE leans cool teal ->
+// pale misty blue (aerial perspective). Both LIFT into luminous haze — never a
+// flat black (the maintainer disliked the darkening).
+const vec3  BELOW_NEAR = vec3(0.32, 0.55, 0.53); // one level DOWN
+const vec3  BELOW_FAR  = vec3(0.66, 0.86, 0.84); // deep down: pale misty cyan
+const vec3  ABOVE_NEAR = vec3(0.34, 0.48, 0.60); // one level UP
+const vec3  ABOVE_FAR  = vec3(0.56, 0.70, 0.92); // high up: pale misty blue
+const float FOG_PER   = 0.24;  // opacity gained per level (SAME both directions)
+const float FOG_MAX   = 0.60;  // deepest opacity
+const float FOG_RANGE = 5.0;   // levels to reach the FAR tone (the tonal spread)
+const float DEAD      = 0.15;  // dead-zone (levels) so the player's plane is clean
 
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
@@ -858,24 +864,18 @@ void main() {
   }
   if (!found) { gl_FragColor = vec4(0.0); return; }
 
-  float dz = z - uPlayerZ; // >0 above the player, <0 below
-  float ambLum = (uAmbient.r + uAmbient.g + uAmbient.b) / 3.0;
-  vec3 col;
-  float a;
-  if (dz < 0.0) {
-    // BELOW: teal atmospheric haze. Dims with the night but keeps a floor so
-    // the depth cue still reads in the dark (the maintainer plays at night).
-    a = clamp((-dz - DEAD) * BELOW_PER, 0.0, BELOW_MAX);
-    col = FOG_HAZE * clamp(0.42 + 0.75 * ambLum, 0.0, 1.0);
-  } else {
-    // ABOVE: darken toward near-black. SCALED DOWN at night — a dark cliff has
-    // no brightness to remove, and flattening it only hides it (structure lost);
-    // the darken is a DAYLIGHT separation, the below-haze carries the night.
-    a = clamp((dz - DEAD) * ABOVE_PER, 0.0, ABOVE_MAX) * clamp(0.16 + 0.95 * ambLum, 0.0, 1.0);
-    col = FOG_DARK;
-  }
-  a *= uFog;
+  float dz = z - uPlayerZ;   // >0 above the player, <0 below
+  float d = abs(dz);         // levels AWAY from the player's plane (either way)
+  // Opacity builds symmetrically with distance — the SAME ramp up and down.
+  float a = clamp((d - DEAD) * FOG_PER, 0.0, FOG_MAX) * uFog;
   if (a <= 0.002) { gl_FragColor = vec4(0.0); return; }
+  // Tone = position along the palette ramp (0 at the player's plane, 1 by
+  // FOG_RANGE levels away), sampled from the BELOW or the INVERTED-ABOVE half.
+  float p = clamp((d - DEAD) / FOG_RANGE, 0.0, 1.0);
+  vec3 col = (dz < 0.0) ? mix(BELOW_NEAR, BELOW_FAR, p) : mix(ABOVE_NEAR, ABOVE_FAR, p);
+  // Dim with the night, but keep a floor so the tones still read in the dark.
+  float ambLum = (uAmbient.r + uAmbient.g + uAmbient.b) / 3.0;
+  col *= clamp(0.45 + 0.7 * ambLum, 0.0, 1.0);
   gl_FragColor = vec4(col * a, a); // premultiplied for Phaser's NORMAL blend
 }
 `;
