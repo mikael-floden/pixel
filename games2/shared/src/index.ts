@@ -1229,12 +1229,53 @@ export function autoJumpWanted(
 
 const JUMP_EDGE_COST = 3; // a 1-level climb costs ~3 walked cells — prefer short detours
 
-/** Is this CELL a solid obstacle (prop / structure / non-enterable surface)? */
+/** Is this CELL a solid obstacle (prop / structure / non-enterable surface)? A
+ * world@2 deck makes its cell walkable ON TOP regardless of the base, so a
+ * decked cell is never a solid obstacle. */
 function cellSolid(grid: TerrainGrid, c: number, r: number): boolean {
   if (c < 0 || r < 0 || c >= grid.width || r >= grid.height) return false;
+  if (grid.deck[r * grid.width + c] >= 0) return false; // walkable deck overhead
   if (grid.blocked[r * grid.width + c]) return true;
   const s = surfaceAtWorld(grid, (c + 0.5) * CELL_WU, (r + 0.5) * CELL_WU);
   return !s.standable && !s.swimmable;
+}
+
+/**
+ * world@2 layered navigation: the surfaces a mover at elevation `elev` in cell
+ * (ac,ar) can step onto in the neighbour cell (bc,br). A plain cell offers just
+ * its base ground/water; a DECK cell offers its base AND its deck slab. Each
+ * result carries the destination LEVEL, its LAYER (0 = base, 1 = deck) and
+ * whether the step needs a 1-level jump (climb beyond the walk limit). For a
+ * cell with no deck this reduces to exactly canEnter's single-surface rule, so
+ * non-deck worlds path identically. */
+function stepReach(
+  grid: TerrainGrid,
+  elev: number,
+  ac: number,
+  ar: number,
+  bc: number,
+  br: number,
+  canSwim: boolean,
+): { level: number; layer: number; jump: boolean }[] {
+  const W = grid.width;
+  if (bc < 0 || br < 0 || bc >= W || br >= grid.height) return [];
+  const bi = br * W + bc;
+  const to = surfaceAtWorld(grid, (bc + 0.5) * CELL_WU, (br + 0.5) * CELL_WU);
+  const from = surfaceAtWorld(grid, (ac + 0.5) * CELL_WU, (ar + 0.5) * CELL_WU);
+  const stair = from.stairs || to.stairs;
+  const walkMax = stair ? Math.max(WALK_CLIMB, 1) : WALK_CLIMB;
+  const out: { level: number; layer: number; jump: boolean }[] = [];
+  const consider = (level: number, layer: number, open: boolean) => {
+    if (!open) return;
+    const climb = level - elev;
+    if (climb <= walkMax + 1e-9) out.push({ level, layer, jump: false }); // walk (drops are free)
+    else if (climb <= JUMP_CLIMB + 1e-9) out.push({ level, layer, jump: true }); // 1-level auto-jump
+    // else too high to reach from here
+  };
+  const baseOpen = !grid.blocked[bi] && (to.standable || (to.swimmable && canSwim));
+  consider(grid.level[bi], 0, baseOpen);
+  if (grid.deck[bi] >= 0) consider(grid.deck[bi], 1, true); // deck slab: solid walkable
+  return out;
 }
 
 /**
@@ -1302,7 +1343,7 @@ export function findPath(
   fromY: number,
   toX: number,
   toY: number,
-  opts?: { canSwim?: boolean; maxNodes?: number },
+  opts?: { canSwim?: boolean; maxNodes?: number; fromElev?: number; goalLevel?: number },
 ): { x: number; y: number }[] | null {
   const W = grid.width;
   const H = grid.height;
@@ -1319,17 +1360,24 @@ export function findPath(
   let c1 = clamp(Math.floor(toX / CELL_WU), 0, W - 1);
   let r1 = clamp(Math.floor(toY / CELL_WU), 0, H - 1);
   if (c0 === c1 && r0 === r1) return [clearanceAdjust(grid, toX, toY)];
-  const walk = { maxClimb: WALK_CLIMB, canSwim: opts?.canSwim ?? true };
-  const jump = { maxClimb: JUMP_CLIMB, canSwim: opts?.canSwim ?? true };
+  const canSwim = opts?.canSwim ?? true;
   const maxNodes = opts?.maxNodes ?? 4000;
   const cx = (c: number) => (c + 0.5) * CELL_WU;
   const cy = (r: number) => (r + 0.5) * CELL_WU;
-  const canWalk = (ac: number, ar: number, bc: number, br: number) =>
-    bc >= 0 && br >= 0 && bc < W && br < H && inBandX(bc) && inBandY(br) &&
-    canEnter(grid, cx(ac), cy(ar), cx(bc), cy(br), walk);
-  const canJump = (ac: number, ar: number, bc: number, br: number) =>
-    bc >= 0 && br >= 0 && bc < W && br < H && inBandX(bc) && inBandY(br) &&
-    canEnter(grid, cx(ac), cy(ar), cx(bc), cy(br), jump);
+  // world@2 layered search: a node is (cell, layer) where layer 0 = base ground
+  // and layer 1 = a deck slab. `elevOf` is the node's surface elevation, `reach`
+  // the surfaces you can step onto in a neighbour from a given elevation. For a
+  // world with no decks every cell has only layer 0 and reach() reduces to
+  // canEnter, so the search is byte-for-byte the old flat A*.
+  const inBand = (bc: number, br: number) =>
+    bc >= 0 && br >= 0 && bc < W && br < H && inBandX(bc) && inBandY(br);
+  const elevOf = (i: number, layer: number) => (layer === 1 ? grid.deck[i] : grid.level[i]);
+  const reach = (elev: number, ac: number, ar: number, bc: number, br: number) =>
+    inBand(bc, br) ? stepReach(grid, elev, ac, ar, bc, br, canSwim) : [];
+  // A WALK-reachable surface exists into (bc,br)? — diagonal flanking clearance
+  // (the round body can't cut a corner past a wall).
+  const canWalkFrom = (elev: number, ac: number, ar: number, bc: number, br: number) =>
+    reach(elev, ac, ar, bc, br).some((s) => !s.jump);
   // SOLID cells (props / structures / non-enterable surfaces) need clearance:
   // the mover's collision reaches PLAYER_RADIUS ahead and 0.75R sideways, and
   // the path follower turns up to a waypoint-radius early — a route hugging a
@@ -1371,10 +1419,11 @@ export function findPath(
   // route only cuts through a lake when that's genuinely shorter than walking
   // around; a tap ON water is a valid swim destination (see goal handling).
   const WATER_COST_MULT = 1.8;
-  const RUNS = 1; // vestigial state dimension (kept so sid == cell id)
+  const LAYERS = 2; // state dimension: base surface (0) or deck slab (1)
   const id = (c: number, r: number) => r * W + c;
-  const sid = (c: number, r: number, run: number) => (r * W + c) * RUNS + run;
-  const sidCell = (n: number) => Math.floor(n / RUNS);
+  const sid = (c: number, r: number, layer: number) => (r * W + c) * LAYERS + layer;
+  const sidCell = (n: number) => Math.floor(n / LAYERS);
+  const sidLayer = (n: number) => n % LAYERS;
   const hx = (c: number, r: number) => {
     const dc = Math.abs(c - c1);
     const dr = Math.abs(r - r1);
@@ -1442,7 +1491,19 @@ export function findPath(
     }
   }
   const goalCell = id(c1, r1);
-  const startSid = sid(c0, r0, 0);
+  // Which surface the mover STARTS on: the one closest to its live elevation
+  // (a player already up on a deck routes from the deck; default = base).
+  const startI = id(c0, r0);
+  const fromElev = opts?.fromElev ?? grid.level[startI];
+  const startLayer =
+    grid.deck[startI] >= 0 && Math.abs(grid.deck[startI] - fromElev) < Math.abs(grid.level[startI] - fromElev) ? 1 : 0;
+  // Which surface to arrive ON at the goal cell (the tapped surface's level:
+  // the deck when you tapped a bridge/roof top, else the base). Undefined →
+  // any surface at the goal cell counts (flat callers / tests).
+  const goalLevel = opts?.goalLevel;
+  const atGoal = (n: number) =>
+    sidCell(n) === goalCell && (goalLevel === undefined || Math.abs(elevOf(goalCell, sidLayer(n)) - goalLevel) < 0.5);
+  const startSid = sid(c0, r0, startLayer);
   gScore.set(startSid, 0);
   push(hx(c0, r0), startSid);
   let expanded = 0;
@@ -1458,7 +1519,7 @@ export function findPath(
     const curCell = sidCell(cur);
     const cc = curCell % W;
     const cr = (curCell - cc) / W;
-    if (curCell === goalCell) {
+    if (atGoal(cur)) {
       found = true;
       foundSid = cur;
       break;
@@ -1472,35 +1533,38 @@ export function findPath(
     }
     if (++expanded > maxNodes) break;
     const g0 = gScore.get(cur)!;
+    const curElev = elevOf(curCell, sidLayer(cur));
     for (let dr = -1; dr <= 1; dr++) {
       for (let dc = -1; dc <= 1; dc++) {
         if (dc === 0 && dr === 0) continue;
         const nc = cc + dc;
         const nr = cr + dr;
-        let cost: number;
-        if (dc !== 0 && dr !== 0) {
-          // Diagonal: walk only, and both flanking cardinals must be walkable
-          // (the body is round — no squeezing through touching corners).
-          if (!canWalk(cc, cr, nc, nr) || !canWalk(cc, cr, nc, cr) || !canWalk(cc, cr, cc, nr)) continue;
-          cost = 1.4142;
-        } else if (canWalk(cc, cr, nc, nr)) {
-          cost = 1;
-        } else if (canJump(cc, cr, nc, nr)) {
-          cost = JUMP_EDGE_COST; // a 1-level auto-jump climb
-        } else {
-          continue;
-        }
-        // Prefer a 1-cell buffer around solids when one exists nearby.
-        if (nearSolid(nc, nr)) cost += 0.6;
-        // Water is swimmable but ~1.8x slower — a route only cuts through it
-        // when that's genuinely shorter than the land detour.
-        if (isSwim(nc, nr)) cost *= WATER_COST_MULT;
-        const n = sid(nc, nr, 0);
-        const g = g0 + cost;
-        if (g < (gScore.get(n) ?? Infinity)) {
-          gScore.set(n, g);
-          cameFrom.set(n, cur);
-          push(g + hx(nc, nr), n);
+        const diag = dc !== 0 && dr !== 0;
+        // Each reachable surface in the neighbour (base and/or deck) is its own
+        // node — the search picks the layer that gets it where it's going.
+        for (const s of reach(curElev, cc, cr, nc, nr)) {
+          let cost: number;
+          if (diag) {
+            // Diagonal: walk only, and both flanking cardinals must be walk-
+            // reachable (round body — no squeezing through touching corners).
+            if (s.jump) continue;
+            if (!canWalkFrom(curElev, cc, cr, nc, cr) || !canWalkFrom(curElev, cc, cr, cc, nr)) continue;
+            cost = 1.4142;
+          } else {
+            cost = s.jump ? JUMP_EDGE_COST : 1; // 1-level auto-jump climb
+          }
+          // Prefer a 1-cell buffer around solids when one exists nearby.
+          if (nearSolid(nc, nr)) cost += 0.6;
+          // Base water is swimmable but ~1.8x slower — a route only cuts through
+          // it when shorter than the land detour. (A deck slab is dry ground.)
+          if (s.layer === 0 && isSwim(nc, nr)) cost *= WATER_COST_MULT;
+          const n = sid(nc, nr, s.layer);
+          const g = g0 + cost;
+          if (g < (gScore.get(n) ?? Infinity)) {
+            gScore.set(n, g);
+            cameFrom.set(n, cur);
+            push(g + hx(nc, nr), n);
+          }
         }
       }
     }
@@ -1586,6 +1650,7 @@ export interface AutopilotTrip {
    * margins (or the reachable rim for walled-off goals) — see findPath. */
   target: { x: number; y: number; run: boolean };
   path: { x: number; y: number }[];
+  goalLevel?: number; // world@2: the surface LEVEL to arrive on (deck vs base); carried so a stall replan keeps routing onto the deck
   repathed: boolean; // one re-route per trip when progress stalls
   progress: { d: number; t: number }; // best waypoint distance so far + when
   lastPos: { x: number; y: number } | null; // last step's position (segment sweep)
@@ -1613,13 +1678,19 @@ export function startTrip(
   toY: number,
   run: boolean,
   nowMs: number,
+  // world@2: the mover's live elevation (LEVELS) and the tapped surface's level,
+  // so a route can climb onto and cross a deck (bridge/roof) instead of routing
+  // under it. Omitted → flat base-terrain routing (every world@1 map).
+  fromElev?: number,
+  goalLevel?: number,
 ): AutopilotTrip | null {
-  const path = grid ? (findPath(grid, fromX, fromY, toX, toY) ?? []) : [{ x: toX, y: toY }];
+  const path = grid ? (findPath(grid, fromX, fromY, toX, toY, { fromElev, goalLevel }) ?? []) : [{ x: toX, y: toY }];
   if (path.length === 0) return null;
   const end = path[path.length - 1];
   return {
     target: { x: end.x, y: end.y, run },
     path,
+    goalLevel,
     repathed: false,
     progress: { d: Infinity, t: nowMs },
     lastPos: null,
@@ -1664,6 +1735,7 @@ export function stepAutopilot(
   nowMs: number,
   worldW: number = WORLD_WIDTH,
   worldH: number = WORLD_HEIGHT,
+  fromElev?: number, // world@2: live elevation for a deck-aware stall replan
 ): AutopilotDrive {
   const t = trip.target;
   // A waypoint counts as reached when the position lands within the radius OR
@@ -1717,7 +1789,7 @@ export function stepAutopilot(
     if (Math.hypot(t.x - x, t.y - y) < CELL_WU * 1.25) return AUTOPILOT_IDLE;
     if (!trip.repathed && grid) {
       trip.repathed = true;
-      trip.path = findPath(grid, x, y, t.x, t.y) ?? [];
+      trip.path = findPath(grid, x, y, t.x, t.y, { fromElev, goalLevel: trip.goalLevel }) ?? [];
       trip.progress = { d: Infinity, t: nowMs };
       trip.steer = null;
       if (trip.path.length === 0) return AUTOPILOT_IDLE;

@@ -11,7 +11,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { parseWorld, buildTerrainGrid, canEnterElev, resolveElevAt, CELL_WU } from "../shared/src/index.ts";
+import { parseWorld, buildTerrainGrid, canEnterElev, resolveElevAt, findPath, CELL_WU } from "../shared/src/index.ts";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const worldPath = join(here, "..", "..", "maps2", "worlds", "occlusion_test", "world.json");
@@ -72,6 +72,32 @@ ok(deckCells > 0, `terrain grid has deck cells (got ${deckCells})`);
 {
   const r = walk(0, 107, [58, 59, 60]);
   ok(r.allEnter && r.maxElev === 0, `inside the house (under the roof) stays at elev 0 (${r.trace.join(" ")})`);
+}
+
+// (5) TAP-TO-MOVE (layered findPath): tapping the bridge DECK from the south
+// plain must route OVER the top (up a plateau) — not swim under it. Regression
+// guard for "I fall down when I click the bridge".
+{
+  const [sx, sy] = wc(37, 122); // south plain below the left ramp, level 0
+  const [gx, gy] = wc(42, 110); // mid-bridge deck cell, level 4
+  const path = findPath(grid, sx, sy, gx, gy, { fromElev: 0, goalLevel: 4, canSwim: true });
+  ok(Array.isArray(path) && path.length > 0, "findPath to the bridge deck returns a route");
+  if (Array.isArray(path) && path.length) {
+    const cells = path.map((wp) => ({ c: Math.floor(wp.x / CELL_WU), r: Math.floor(wp.y / CELL_WU) }));
+    const overPlateau = cells.some(({ c, r }) => grid.level[r * grid.width + c] === 4 && grid.deck[r * grid.width + c] < 0);
+    ok(overPlateau, "bridge-tap route climbs over a level-4 plateau (goes OVER, not under)");
+    const last = cells[cells.length - 1];
+    ok(Math.abs(last.c - 42) <= 1 && Math.abs(last.r - 110) <= 1, `bridge-tap route ends at the deck cell (got ${last.c},${last.r})`);
+  }
+}
+
+// (6) A tap on the FLAT south plain still routes normally at ground level
+// (no deck involvement) — sanity that the layered search didn't distort flats.
+{
+  const [sx, sy] = wc(64, 124);
+  const [gx, gy] = wc(70, 124);
+  const path = findPath(grid, sx, sy, gx, gy, { canSwim: true });
+  ok(Array.isArray(path) && path.length > 0, "flat-ground tap still routes normally");
 }
 
 if (fails) { console.log(`check-deckwalk: ${fails} FAILURE(S)`); process.exit(1); }

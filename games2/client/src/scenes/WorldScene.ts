@@ -396,7 +396,7 @@ export class WorldScene extends Phaser.Scene {
   // would eat whole frames on phones; each replan schedules the next at
   // cost×8, floored at 50ms).
   private holdPointerId: number | null = null;
-  private holdGround: { x: number; y: number } | null = null;
+  private holdGround: { x: number; y: number; lvl: number } | null = null;
   private holdRepathAt = 0;
   private keysActive = false;
   private tapMarker?: Phaser.GameObjects.Container;
@@ -676,7 +676,7 @@ export class WorldScene extends Phaser.Scene {
       this.holdGround = this.pickGround(p.worldX, p.worldY);
       // Fresh gesture = fresh trip (hold=false: reset the sticky slow, build
       // the beacon); subsequent drag replans go through holdRepath's budget.
-      if (this.holdGround) this.setMoveTarget(this.holdGround.x, this.holdGround.y, true);
+      if (this.holdGround) this.setMoveTarget(this.holdGround.x, this.holdGround.y, true, false, this.holdGround.lvl);
       this.holdRepathAt = performance.now() + 50;
     });
     this.input.on("pointermove", (p: Phaser.Input.Pointer) => {
@@ -689,7 +689,7 @@ export class WorldScene extends Phaser.Scene {
       // the drag never *feels* throttled even when a replan is deferred.
       if (this.tapMarker) {
         const pr = this.projectFlat(g.x, g.y);
-        this.tapMarker.setPosition(pr.x, pr.y - pr.lvl * MAP_GEOMETRY.lh);
+        this.tapMarker.setPosition(pr.x, pr.y - Math.max(pr.lvl, g.lvl) * MAP_GEOMETRY.lh);
       }
       this.holdRepath(performance.now());
     });
@@ -862,8 +862,15 @@ export class WorldScene extends Phaser.Scene {
       bubbles: () => [...this.avatars.values()].filter((a) => a.bubble).map((a) => a.bubble!.text),
       jump: () => this.tryJump(),
       // Tap-to-move probes: set/inspect the autopilot target directly, and
-      // run the same screen-point picking a real tap uses.
-      tapTo: (x: number, y: number, run = false) => this.setMoveTarget(x, y, !!run),
+      // run the same screen-point picking a real tap uses. A tap on a world cell
+      // that carries a deck (bridge/roof) targets the DECK — same as a real
+      // screen-tap's pickGround, so headless tests can drive deck routes.
+      tapTo: (x: number, y: number, run = false) => {
+        const col = Math.floor(x / CELL_WU);
+        const row = Math.floor(y / CELL_WU);
+        const deckL = this.terrain && this.world ? this.terrain.deck[row * this.world.width + col] : -1;
+        return this.setMoveTarget(x, y, !!run, false, deckL >= 0 ? deckL : undefined);
+      },
       target: () => this.trip?.target ?? null,
       path: () => this.trip?.path ?? [],
       navLog: (n = 40) => this.navLog.slice(-n),
@@ -2444,23 +2451,31 @@ export class WorldScene extends Phaser.Scene {
     return false;
   }
 
-  private pickGround(wx: number, wy: number): { x: number; y: number } | null {
-    const clampW = (x: number, y: number) => ({
+  private pickGround(wx: number, wy: number): { x: number; y: number; lvl: number } | null {
+    const clampW = (x: number, y: number, lvl: number) => ({
       x: Math.max(1, Math.min(this.worldW - 1, x)),
       y: Math.max(1, Math.min(this.worldH - 1, y)),
+      lvl,
     });
-    if (!this.world) return clampW(wx, wy); // plain-ground fallback: screen == flat world
+    if (!this.world) return clampW(wx, wy, 0); // plain-ground fallback: screen == flat world
     const { dx, dy, lh, tile } = MAP_GEOMETRY;
     const u = (wx - this.iso.ox - tile / 2) / dx;
     for (let l = this.maxLevel; l >= 0; l--) {
       const v = (wy - this.iso.oy - dy + l * lh) / dy;
       const col = (u + v) / 2;
       const row = (v - u) / 2;
-      const cell = this.world.rows[Math.floor(row)]?.[Math.floor(col)];
-      if (!cell || cell.l !== l) continue;
+      const ci = Math.floor(col);
+      const ri = Math.floor(row);
+      const cell = this.world.rows[ri]?.[ci];
+      if (!cell) continue;
+      // world@2: a deck slab drawn at level l here is the TOP surface — tapping
+      // it targets the deck (bridge/roof), not the base underneath.
+      const deckL = this.terrain?.deck[ri * this.world.width + ci] ?? -1;
+      if (deckL === l) return clampW(col * CELL_WU, row * CELL_WU, l);
+      if (cell.l !== l) continue;
       const s = surfaceFor(cell.t);
       if (!s.standable && !s.swimmable) return null; // tapped a solid prop/structure
-      return clampW(col * CELL_WU, row * CELL_WU);
+      return clampW(col * CELL_WU, row * CELL_WU, l);
     }
     return null; // void (outside the drawn world)
   }
@@ -2487,20 +2502,24 @@ export class WorldScene extends Phaser.Scene {
       if (me && Math.hypot(g.x - me.fx, g.y - me.fy) < CELL_WU * 0.75) return;
     }
     const t0 = performance.now();
-    this.setMoveTarget(g.x, g.y, true, true);
+    this.setMoveTarget(g.x, g.y, true, true, g.lvl);
     const cost = performance.now() - t0;
     this.holdRepathAt = nowMs + Math.min(400, Math.max(50, cost * 8));
   }
 
-  private setMoveTarget(x: number, y: number, run: boolean, hold = false) {
+  private setMoveTarget(x: number, y: number, run: boolean, hold = false, goalLevel?: number) {
     const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
     if (!me) return;
+    // world@2: route from the player's live surface elevation toward the tapped
+    // surface's level, so a tap on a bridge/roof climbs onto and crosses the
+    // deck instead of routing under it (undefined on flat worlds → base terrain).
+    const fromElev = this.room?.state?.players?.get(this.room.sessionId)?.elev;
     // startTrip routes with the shared findPath; the trip's destination is
     // the route's END — the tapped point pushed out of any solid's collision
     // margin, or the reachable rim when the goal is walled off. Null →
     // nowhere to go (tap into a sealed area) — ignore (a hold-drag passing
     // over a sealed spot keeps the current trip alive).
-    const trip = startTrip(this.terrain, me.fx, me.fy, x, y, run, this.time.now);
+    const trip = startTrip(this.terrain, me.fx, me.fy, x, y, run, this.time.now, fromElev, goalLevel);
     if (!trip) return;
     // A hold-drag retarget carries the sticky run→walk demotion: fresh trips
     // reset it, and at ~7 retargets/s a throttled tab would re-arm the run
@@ -2510,7 +2529,9 @@ export class WorldScene extends Phaser.Scene {
     const end = trip.target;
     this.ensureTapAssets();
     const p = this.projectFlat(end.x, end.y);
-    const my = p.y - p.lvl * MAP_GEOMETRY.lh;
+    // Sit the beacon ON the tapped surface: a deck target lifts to its deck
+    // level (projectFlat returns the BASE level, which is lower).
+    const my = p.y - Math.max(p.lvl, goalLevel ?? 0) * MAP_GEOMETRY.lh;
     // Hold replans never touch the beacon: while the finger is down the
     // beacon tracks the FINGER per frame (pointermove/releaseHold own it) —
     // rebuilding the container + tween per replan also made the pulse
@@ -2558,7 +2579,8 @@ export class WorldScene extends Phaser.Scene {
     const idle = { ax: 0, ay: 0, running: false };
     const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
     if (!me || !this.trip) return idle;
-    const d = stepAutopilot(this.terrain, this.trip, me.fx, me.fy, this.time.now, this.worldW, this.worldH);
+    const myElev = this.room?.state?.players?.get(this.room.sessionId)?.elev;
+    const d = stepAutopilot(this.terrain, this.trip, me.fx, me.fy, this.time.now, this.worldW, this.worldH, myElev);
     if (d.done) {
       this.clearMoveTarget();
       return idle;
