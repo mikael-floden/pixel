@@ -43,6 +43,22 @@ export function holdLoading(p: Promise<unknown>) {
 // The LOADING banner's interior within logo-load.png (percent of image box).
 const FILL_RECT = { left: 33.82, top: 87.26, width: 28.87, height: 3.62 };
 
+const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+// Resolve once the logo bitmap is decoded and safe to paint (not merely
+// "src assigned"). img.decode() is the reliable signal — it settles only when
+// the image is ready to render; we fall back to load/error events (and treat
+// a broken image as "ready" so the reveal never hangs on it).
+function whenDecoded(img: HTMLImageElement | null): Promise<void> {
+  if (!img) return Promise.resolve();
+  if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+  if (typeof img.decode === "function") return img.decode().catch(() => {});
+  return new Promise((res) => {
+    img.addEventListener("load", () => res(), { once: true });
+    img.addEventListener("error", () => res(), { once: true });
+  });
+}
+
 export function showLoading(text = "Entering Nangijala…") {
   if (overlay && hiding) teardown(); // mid-fade re-show (rejoin): start fresh
   if (overlay) {
@@ -66,6 +82,7 @@ export function showLoading(text = "Entering Nangijala…") {
   // fades in over whatever screen is up (the select screen "fades out to
   // 100% black"), then the logo emerges out of the black.
   const inBox = overlay.querySelector<HTMLElement>(".ml-load-box");
+  const logoImg = overlay.querySelector<HTMLImageElement>(".ml-load-logo");
   overlay.style.opacity = "0";
   if (inBox) inBox.style.opacity = "0";
   requestAnimationFrame(() =>
@@ -75,12 +92,19 @@ export function showLoading(text = "Entering Nangijala…") {
       overlay.style.opacity = "1";
     }),
   );
-  setTimeout(() => {
+  // The logo only emerges once it's actually DECODED. On a FRESH DEPLOY the
+  // logo PNG is re-fetched over the network, and the old fixed 430ms timer
+  // fired the fade-in whether or not the bitmap had arrived — so the logo
+  // painted IN during the fade, the exact "page is 50% loaded" flash the
+  // black fade exists to hide (maintainer). Still gated behind the ~430ms
+  // black-in so the staging order holds, and capped (4s) so a stuck/broken
+  // image can never trap the reveal behind the black.
+  Promise.all([delay(430), Promise.race([whenDecoded(logoImg), delay(4000)])]).then(() => {
     // hiding may already be underway on ultra-fast loads — never re-show
     if (!overlay || hiding || !inBox) return;
     inBox.style.transition = "opacity .45s ease";
     inBox.style.opacity = "1";
-  }, 430);
+  });
   setLoadingProgress(0.03, text); // a visible sliver right away — it's alive
   // Failsafe: never trap the player behind the overlay (slow nets still get
   // the world once it arrives; the overlay is cosmetic).
