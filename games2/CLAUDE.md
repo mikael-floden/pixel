@@ -570,29 +570,31 @@ visible head/shoulders are ABOVE the surface).
 - Always-night per-pixel shader: MULTIPLY overlay; per-pixel surface resolve
   (cell + height) → point lights with attenuation, LOS cast shadows, Lambert
   face gating with penumbras at both ends of every wall band.
-- **ELEVATION DEPTH-FOG** (`DEPTHFOG_FRAG`, maintainer: "make it easier to see the
-  different ground levels"): a THIRD, always-on NORMAL-blend overlay keyed to each
-  ground pixel's resolved level MINUS the local player's level (`uPlayerZ`). Opacity
-  builds SYMMETRICALLY with distance from the player's plane (same ramp up and down);
-  the player's own plane is untouched (a `DEAD` dead-zone). The colour is a RAMP
-  along ONE cohesive cool palette (the enchanted-forest / character-screen depth
-  tones) — each layer a NEW tone, not the same colour getting denser — and the ramp
-  is INVERTED between directions: BELOW leans warm teal → bright cyan (receding into
-  misty depth), ABOVE leans cool teal → pale misty blue (aerial perspective). BOTH
-  LIFT into luminous haze — never a flat black. (The FIRST cut darkened the layers
-  above toward near-black; the maintainer disliked it — a dark cliff has no bright-
-  ness to remove, so at night it just flattened/vanished. Lifting BOTH ways into
-  tinted haze reads day AND night and is prettier.) Uses the SAME exact surface
-  resolve as the light + mist passes, so cliff FACES get a smooth per-pixel gradient
-  (clean tonal bands between tops). Composited at depth **900_000.2** — ABOVE the
-  multiply light overlay (900_000) but BELOW the tap marker (900_000.5) and the lit
-  avatar copies (900_001): it fogs the WORLD, never the characters. Dims with the
-  night but floored so the tones still read in the dark. Master strength
-  `nightlight.fogStrength` (0 = off = instant rollback); tune/QA via
-  `__ml.depthFog(strength?, testZ?)` (testZ forces the player level headlessly).
-  Regression: `scripts/verify-depthfog.mjs` (fog ON adds a clear teal cast to the
-  layers below). All tunables (the two ramps' near/far tones, per-level opacity,
-  tonal spread) are named GLSL consts at the top of `DEPTHFOG_FRAG`.
+- **DEPTH-FOG — cel-shaded DISTANCE fog** (`DEPTHFOG_FRAG`, maintainer: "make it
+  easier to see the different ground levels"): a THIRD, always-on NORMAL-blend
+  overlay. Every ground pixel is fogged by its **3D distance to the local player**
+  (`uPlayerXY` cell + `uPlayerZ` level), with the ELEVATION axis STRETCHED — `ZW`
+  cells of distance per level vs `HW` per horizontal cell — so a level jump reads as
+  much farther than a sideways step (cliffs separate HARD, flat ground fades slowly).
+  The distance is POSTERIZED into `BANDS` snappy cel-shaded steps (the reference
+  forest's depth that "suddenly snaps"), coloured along ONE cool palette (`FOG_NEAR`
+  teal → `FOG_FAR` pale misty cyan). Distance is symmetric in z (dz²), so a cliff N
+  levels ABOVE and a valley N BELOW land on the SAME band + tone (maintainer: "4 and
+  6 the same, 3 and 7 the same" — treat up/down equal, NOT inverted colours; and NOT
+  the earlier darken-above, which flattened dark cliffs at night). Band 0 is a clear
+  near bubble; `VIEW` is the radius to the farthest/full band — so it doubles as a
+  **MAX VIEW DISTANCE** (a natural handle for future network cull radius). Uses the
+  SAME exact surface resolve as the light + mist passes (saves the resolved `cell`
+  for the horizontal term). Composited at depth **900_000.2** — ABOVE the multiply
+  light overlay (900_000) but BELOW the tap marker (900_000.5) and the lit avatar
+  copies (900_001): it fogs the WORLD, never the characters. Dims with the night but
+  floored so the bands still read in the dark. Master strength `nightlight.fogStrength`
+  (0 = off = instant rollback); tune/QA via `__ml.depthFog(strength?, testZ?, testCol?,
+  testRow?)` (testZ/testCol/testRow plant a virtual player anywhere headlessly — the
+  fog radiates from it). Pairs with the maps agent never placing same-tile-vs-same-
+  tile across a hidden downslope. Regression: `scripts/verify-depthfog.mjs`. All
+  tunables (`VIEW`/`BANDS`/`ZW`/`HW`/`FOG_MAX`/`FOG_NEAR`/`FOG_FAR`) are named GLSL
+  consts at the top of `DEPTHFOG_FRAG`.
 - **Two geometries, never merge them**: `world-heightmap` (NEAREST) holds
   TERRAIN levels only and drives the resolve + wall-face classification;
   `world-heightmap-linear` (LINEAR) holds terrain + solid objects and drives

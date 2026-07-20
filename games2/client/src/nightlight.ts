@@ -806,25 +806,26 @@ uniform vec4 uIsoA;       // ox, oy, dx, dy
 uniform vec4 uIsoB;       // lh, gridW, gridH, maxLevel
 uniform vec3 uAmbient;    // current grade — the haze dims with the night
 uniform float uPlayerZ;   // the local player's current surface LEVEL
+uniform vec2  uPlayerXY;  // the local player's cell (col, row)
 uniform float uFog;       // master strength 0..1 (0 = pass outputs nothing)
 uniform float uFlip;
 uniform sampler2D uHeight;
 
-// Tunables (named consts so the look is easy to dial). ONE cohesive cool palette
-// (the enchanted-forest depth tones), traversed as a RAMP by distance from the
-// player's plane — each layer a NEW tone, not the same colour getting denser.
-// Both directions build opacity the SAME way; the tone is INVERTED: BELOW leans
-// warm teal -> bright cyan (receding into misty depth), ABOVE leans cool teal ->
-// pale misty blue (aerial perspective). Both LIFT into luminous haze — never a
-// flat black (the maintainer disliked the darkening).
-const vec3  BELOW_NEAR = vec3(0.32, 0.55, 0.53); // one level DOWN
-const vec3  BELOW_FAR  = vec3(0.66, 0.86, 0.84); // deep down: pale misty cyan
-const vec3  ABOVE_NEAR = vec3(0.34, 0.48, 0.60); // one level UP
-const vec3  ABOVE_FAR  = vec3(0.56, 0.70, 0.92); // high up: pale misty blue
-const float FOG_PER   = 0.24;  // opacity gained per level (SAME both directions)
-const float FOG_MAX   = 0.60;  // deepest opacity
-const float FOG_RANGE = 5.0;   // levels to reach the FAR tone (the tonal spread)
-const float DEAD      = 0.15;  // dead-zone (levels) so the player's plane is clean
+// Tunables (named consts). DISTANCE FOG, CEL-SHADED (maintainer's idea): every
+// ground pixel is fogged by its 3D distance to the player, with the ELEVATION
+// axis STRETCHED (a level jump "counts as longer" than a horizontal step, ZW>HW)
+// so cliffs separate hard while flat ground fades slowly. That distance is
+// POSTERIZED into snappy bands — the reference forest's cel-shaded depth, tones
+// that "suddenly snap". SAME treatment up and down (distance is symmetric): a
+// cliff N levels above and a valley N below land on the SAME band + tone. Doubles
+// as a MAX VIEW DISTANCE (a natural handle for future network cull radius).
+const vec3  FOG_NEAR = vec3(0.30, 0.52, 0.50); // first band: teal
+const vec3  FOG_FAR  = vec3(0.72, 0.88, 0.90); // farthest band: pale misty cyan
+const float VIEW   = 26.0;  // (weighted) cells to the farthest/full band = view radius
+const float BANDS  = 6.0;   // cel-shade steps — band 0 is the clear near bubble
+const float ZW     = 7.0;   // cells of distance PER ELEVATION LEVEL (z counts MUCH more)
+const float HW     = 1.0;   // cells of distance per horizontal cell
+const float FOG_MAX = 0.78; // opacity of the farthest band (the cull edge)
 
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
@@ -843,6 +844,7 @@ void main() {
   // Surface resolve — the SAME exact cell-boundary walk as the night/mist shaders.
   float vTop = v0 + uIsoB.w * kk;
   float z = 0.0;
+  vec2 cell = vec2(0.0); // resolved surface cell (col,row) — for the horizontal dist
   bool found = false;
   float vHi = vTop;
   for (int s = 0; s < 36; s++) {
@@ -857,6 +859,7 @@ void main() {
       float vSurf = v0 + H * kk;
       if (vSurf >= vLo - 0.0001) {
         z = max((min(vHi, vSurf) - v0) / kk, 0.0);
+        cell = cr;
         found = true;
       }
     }
@@ -864,15 +867,20 @@ void main() {
   }
   if (!found) { gl_FragColor = vec4(0.0); return; }
 
-  float dz = z - uPlayerZ;   // >0 above the player, <0 below
-  float d = abs(dz);         // levels AWAY from the player's plane (either way)
-  // Opacity builds symmetrically with distance — the SAME ramp up and down.
-  float a = clamp((d - DEAD) * FOG_PER, 0.0, FOG_MAX) * uFog;
+  // 3D distance from this ground pixel to the player, with the ELEVATION axis
+  // stretched (ZW cells per level vs HW per horizontal cell) so a level jump
+  // reads as much farther than a sideways step. Symmetric in z (dz is squared),
+  // so up and down at the same level distance land identically.
+  vec2 dxy = (cell - uPlayerXY) * HW;
+  float dzc = (z - uPlayerZ) * ZW;
+  float dist = sqrt(dot(dxy, dxy) + dzc * dzc);
+  // Cel-shade: snap the distance into BANDS steps that "suddenly snap" (band 0 is
+  // the clear near bubble; the farthest band is full misty).
+  float t = clamp(dist / VIEW, 0.0, 1.0);
+  float bf = min(floor(t * BANDS), BANDS - 1.0) / (BANDS - 1.0);
+  float a = bf * FOG_MAX * uFog;
   if (a <= 0.002) { gl_FragColor = vec4(0.0); return; }
-  // Tone = position along the palette ramp (0 at the player's plane, 1 by
-  // FOG_RANGE levels away), sampled from the BELOW or the INVERTED-ABOVE half.
-  float p = clamp((d - DEAD) / FOG_RANGE, 0.0, 1.0);
-  vec3 col = (dz < 0.0) ? mix(BELOW_NEAR, BELOW_FAR, p) : mix(ABOVE_NEAR, ABOVE_FAR, p);
+  vec3 col = mix(FOG_NEAR, FOG_FAR, bf); // same palette both directions
   // Dim with the night, but keep a floor so the tones still read in the dark.
   float ambLum = (uAmbient.r + uAmbient.g + uAmbient.b) / 3.0;
   col *= clamp(0.45 + 0.7 * ambLum, 0.0, 1.0);
@@ -972,9 +980,11 @@ export class NightLights {
   /** Master strength of the elevation depth-fog (0 = off). Tunable via
    *  `__ml.depthFog(v)`; the maintainer may roll it to 0 to disable. */
   fogStrength = 1;
-  /** Headless QA only: force the player level the fog keys off (null = live). */
+  /** Headless QA only: force the player level / cell the fog keys off (null = live). */
   fogTestZ: number | null = null;
+  fogTestXY: [number, number] | null = null;
   private curPlayerZ = 0;
+  private curPlayerXY: [number, number] = [0, 0];
   private posArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private colArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private fieldCount = 0;
@@ -1039,6 +1049,7 @@ export class NightLights {
       uIsoB: { type: "4f", value: { x: MAP_GEOMETRY.lh, y: 1, z: 1, w: 0 } },
       uAmbient: { type: "3f", value: { x: 1, y: 1, z: 1 } },
       uPlayerZ: { type: "1f", value: 0 },
+      uPlayerXY: { type: "2f", value: { x: 0, y: 0 } },
       uFog: { type: "1f", value: 0 },
       uFlip: { type: "1f", value: 1 },
       uHeight: { type: "sampler2D", value: null },
@@ -1670,6 +1681,8 @@ export class NightLights {
     aurora = 0,
     mist = 0,
     playerZ = 0,
+    playerCol = 0,
+    playerRow = 0,
   ) {
     this.curLights = lights;
     this.curStamps = stamps;
@@ -1679,6 +1692,7 @@ export class NightLights {
     this.curAurora = aurora;
     this.curMist = mist;
     this.curPlayerZ = this.fogTestZ ?? playerZ;
+    this.curPlayerXY = this.fogTestXY ?? [playerCol, playerRow];
     if (!this.shader || !this.active) return;
     const s = this.shader;
     // Ground-truth calibrated by raw suv readback: the zoomed overlay shows
@@ -1822,6 +1836,8 @@ export class NightLights {
       f.setUniform("uIsoB.value.z", this.world.height);
       f.setUniform("uIsoB.value.w", this.maxLevel);
       f.setUniform("uPlayerZ.value", this.curPlayerZ);
+      f.setUniform("uPlayerXY.value.x", this.curPlayerXY[0]);
+      f.setUniform("uPlayerXY.value.y", this.curPlayerXY[1]);
       f.setUniform("uFog.value", this.fogStrength);
       f.setUniform("uAmbient.value.x", ambient[0]);
       f.setUniform("uAmbient.value.y", ambient[1]);

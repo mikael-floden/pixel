@@ -981,13 +981,16 @@ export class WorldScene extends Phaser.Scene {
         this.night?.sunFactorAt(col + 0.5, row + 0.5, z, this.curSun as [number, number, number, number]) ?? 1,
       // Elevation depth-fog: set the master strength (0 = off) for tuning /
       // rollback; returns the current value + the player's level driving it.
-      depthFog: (v?: number, testZ?: number) => {
+      depthFog: (v?: number, testZ?: number, testCol?: number, testRow?: number) => {
         if (this.night && typeof v === "number") this.night.fogStrength = Math.max(0, v);
         if (this.night && testZ !== undefined) this.night.fogTestZ = testZ === -1 ? null : testZ;
+        if (this.night && testCol !== undefined && testRow !== undefined)
+          this.night.fogTestXY = testCol === -1 ? null : [testCol, testRow];
         const av = this.avatars.get(this.room?.sessionId ?? "");
         return {
           strength: this.night?.fogStrength ?? 0,
           testZ: this.night?.fogTestZ ?? null,
+          testXY: this.night?.fogTestXY ?? null,
           playerZ: av ? +Math.max(0, av.elev / MAP_GEOMETRY.lh).toFixed(2) : 0,
         };
       },
@@ -2131,10 +2134,13 @@ export class WorldScene extends Phaser.Scene {
         const clouded = v + (grey * 0.94 - v) * this.curCloud * 0.22;
         return clouded * (1 - this.curPrecipDim);
       }) as [number, number, number];
-      // Local player's current surface LEVEL drives the elevation depth-fog
-      // (its own rendered elevation, so the fog eases as it climbs/falls).
+      // Local player drives the cel-shaded distance fog: its rendered elevation
+      // (so the fog eases as it climbs/falls) + its cell (col,row) for the
+      // horizontal distance term.
       const meAv = this.avatars.get(this.room?.sessionId ?? "");
       const playerZ = meAv ? Math.max(0, meAv.elev / MAP_GEOMETRY.lh) : 0;
+      const playerCol = meAv ? meAv.fx / CELL_WU : 0;
+      const playerRow = meAv ? meAv.fy / CELL_WU : 0;
       this.night!.update(
         this.cameras.main,
         sl,
@@ -2145,6 +2151,8 @@ export class WorldScene extends Phaser.Scene {
         this.curAurora,
         this.curMist,
         playerZ,
+        playerCol,
+        playerRow,
       );
     }
 
