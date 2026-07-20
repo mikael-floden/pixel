@@ -91,6 +91,22 @@ ok(deckCells > 0, `terrain grid has deck cells (got ${deckCells})`);
   }
 }
 
+// (5b) Standing UNDER a bridge cell, a route to that SAME cell's deck top must
+// go up-and-over (not a trivial same-cell no-op) — this is the stall-replan that
+// recovers when the follower drifts under the bridge.
+{
+  const [ux, uy] = wc(42, 110); // under the bridge (base water, elev 0)
+  const path = findPath(grid, ux, uy, ux, uy, { fromElev: 0, goalLevel: 4, canSwim: true });
+  ok(Array.isArray(path) && path.length > 1, `under→deck reroute is a real over-route, not a same-cell no-op (len ${path?.length})`);
+  if (Array.isArray(path)) {
+    const overPlateau = path.some((wp) => {
+      const c = Math.floor(wp.x / CELL_WU), r = Math.floor(wp.y / CELL_WU);
+      return grid.level[r * grid.width + c] === 4 && grid.deck[r * grid.width + c] < 0;
+    });
+    ok(overPlateau, "under→deck reroute climbs over a plateau");
+  }
+}
+
 // (6) A tap on the FLAT south plain still routes normally at ground level
 // (no deck involvement) — sanity that the layered search didn't distort flats.
 {

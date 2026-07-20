@@ -72,11 +72,20 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   so you walk ACROSS the bridge/roof (elev stays 4) instead of falling to the
   water/floor, and walking UNDER stays on the base. Non-deck cells resolve
   exactly as `canEnter`, so world@1 is unaffected. A deck stays walkable even
-  over a blocked base (water/chasm/prop). Gate: `scripts/verify-deckwalk.mjs`
-  (in `npm test`) drives the real occlusion_test grid; probes `__ml.deckInfo()`,
-  `__ml.me().elev`. TODO: occlusion-FADE when standing under a deck (see yourself
-  inside the house), and deck-aware autopilot pathfinding (tap-to-move across a
-  bridge — base pathfinding can't route over the gap yet).
+  over a blocked base (water/chasm/prop). **Tap-to-move is deck-aware**: `pickGround`
+  returns the deck when you tap a bridge/roof top, and `findPath` searches a
+  LAYERED graph (a node is (cell, base|deck)) so it routes UP a ramp and over —
+  threaded through `startTrip`/`stepAutopilot` as `fromElev`/`goalLevel`. **Deck
+  LIGHTING**: the night shader's SURFACE heightmap reports the deck level (not the
+  base) so a deck-top pixel resolves to its real height — no phantom cast shadow
+  from the plateau/walls, and the player's torch (z anchored to the avatar's
+  rendered elevation) lights the deck it stands on. Gate: `scripts/verify-deckwalk.mjs`
+  (in `npm test`) drives the real occlusion_test grid incl. layered findPath;
+  probes `__ml.deckInfo()`, `__ml.me().elev`. KNOWN RESIDUAL: the (x,y)-only
+  autopilot FOLLOWER can still occasionally slide off the narrow ramp into the gap
+  and "arrive" under the bridge (~1 in 6) — a proper elevation-aware follower is
+  the fix (manual keyboard crossing is reliable). TODO: occlusion-FADE when
+  standing under a deck (see yourself inside the house); harden the follower.
 - `stairs` tiles act as ramps (crossing one allows a full 1-level step without
   jumping); solid structure tiles (trees, boulders, obelisks, watchtower, cactus,
   lava) are impassable — see `SURFACES`/`surfaceFor` (road_* matched by prefix).

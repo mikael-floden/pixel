@@ -2040,8 +2040,11 @@ export class WorldScene extends Phaser.Scene {
           col: a.fx / CELL_WU,
           row: a.fy / CELL_WU,
           // Held low (waist height): a high torch grazes over ledge lips and
-          // lights ground far below cliffs, which reads as leakage.
-          z: (this.terrain ? levelAtWorld(this.terrain, a.fx, a.fy) : 0) + 0.55,
+          // lights ground far below cliffs, which reads as leakage. Anchor to the
+          // avatar's RENDERED elevation (a.elev px → levels) so a torch carried
+          // ONTO a deck (bridge/roof) sits at the deck's height and lights the
+          // deck around it — not the base ground 4 levels below.
+          z: Math.max(0, a.elev / MAP_GEOMETRY.lh) + 0.55,
           radius: 6,
           // Colour scales with the day-fade: the light's whole contribution
           // is linear in it, so the pool melts out smoothly.

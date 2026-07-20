@@ -1103,6 +1103,21 @@ export class NightLights {
     // shadow the torch casts, from the same march.
     const propLvl = new Map<number, number>();
     for (const pr of this.world.props ?? []) propLvl.set(pr.row * w + pr.col, 1);
+    // world@2 decks (bridges, roofs): the SURFACE height at a decked cell is the
+    // deck slab's level — so the shader resolves a deck-top screen pixel to its
+    // real height (4) and lights it as that surface, instead of the base ground
+    // 4 levels below (which sat in the plateau/wall's cast shadow and was out of
+    // the torch's reach). Only the surface map is bumped; the occlusion map keeps
+    // the base heights, so a thin deck with open air below casts no phantom
+    // full-height shadow on the ground.
+    const deckH = new Float32Array(w * h);
+    for (const d of this.world.decks ?? []) {
+      for (const cc of d.cells) {
+        if (cc.col < 0 || cc.row < 0 || cc.col >= w || cc.row >= h) continue;
+        const di = cc.row * w + cc.col;
+        if (d.level > deckH[di]) deckH[di] = d.level;
+      }
+    }
     for (let r = 0; r < h; r++) {
       for (let c = 0; c < w; c++) {
         const i = (r * w + c) * 4;
@@ -1111,12 +1126,15 @@ export class NightLights {
         const solid = !s.standable && !s.swimmable;
         const pl = propLvl.get(r * w + c) ?? 0;
         const occH = cell.l + Math.max(solid ? 1 : 0, pl);
+        // The lit SURFACE height: the deck slab when one caps this cell, else the
+        // terrain. (Occlusion below keeps the base terrain height.)
+        const surfL = Math.max(cell.l, deckH[r * w + c]);
         // CPU twin marches LOS only → occlusion heights (solids/props +1).
         this.hArr[r * w + c] = occH;
-        this.tArr[r * w + c] = cell.l;
+        this.tArr[r * w + c] = surfL;
         this.oArr[r * w + c] = solid ? 1 : 0;
         this.pArr[r * w + c] = pl;
-        img.data[i] = Math.min(255, cell.l * 16);
+        img.data[i] = Math.min(255, surfL * 16);
         imgL.data[i] = Math.min(255, occH * 16);
         // G = the prop share: props get their own smooth shade patch while
         // TERRAIN keeps the byte-identical march (cliffs are locked).

@@ -1359,7 +1359,18 @@ export function findPath(
   const r0 = clamp(Math.floor(fromY / CELL_WU), 0, H - 1);
   let c1 = clamp(Math.floor(toX / CELL_WU), 0, W - 1);
   let r1 = clamp(Math.floor(toY / CELL_WU), 0, H - 1);
-  if (c0 === c1 && r0 === r1) return [clearanceAdjust(grid, toX, toY)];
+  // Same cell → you're already there — EXCEPT when the goal is a different LAYER
+  // of that cell (standing UNDER a bridge/roof whose deck top is the target):
+  // then the destination is up-and-over, so fall through to the layered search.
+  if (c0 === c1 && r0 === r1) {
+    const gi = r1 * W + c1;
+    const sameLayer =
+      opts?.goalLevel === undefined ||
+      opts?.fromElev === undefined ||
+      grid.deck[gi] < 0 ||
+      Math.abs(opts.fromElev - opts.goalLevel) < 0.5;
+    if (sameLayer) return [clearanceAdjust(grid, toX, toY)];
+  }
   const canSwim = opts?.canSwim ?? true;
   const maxNodes = opts?.maxNodes ?? 4000;
   const cx = (c: number) => (c + 0.5) * CELL_WU;
