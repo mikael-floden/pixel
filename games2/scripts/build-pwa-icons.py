@@ -1,54 +1,69 @@
 #!/usr/bin/env python3
-"""Generate the PWA icons (client/public/icons/) — a pixel-art crescent moon
-over a night sky, drawn on a 32x32 grid and nearest-neighbour upscaled so it
-stays crisp. Deterministic: re-running produces identical files.
+"""Generate the PWA icons (client/public/icons/) from the Nangijala emblem —
+the maintainer's rune-ringed medallion (scripts/assets/icon-medallion-src.png),
+the standalone icon form of the title logo. Baked onto a square near-black field
+(matching the emblem's own backdrop) so it reads as the home-screen icon AND the
+Android launch splash (which centres the 512 icon on background_color).
+
+Two framings:
+  * STANDARD (192 / 512 / apple-touch) — emblem ~92% of the width, a slim margin;
+    shown un-cropped, so it fills the tile.
+  * MASKABLE (icon-maskable-512) — emblem ~70% of the width, centred, so a
+    launcher's circular / squircle crop keeps the whole ring + sword + staff
+    inside the safe zone.
+
+PIXEL ART rule (maintainer): downscaling the ~1172px master to the final icon
+sizes is a BAKE to display resolution, so box-average (Image.BOX) is the right,
+sanctioned filter — never a smoothing upscale. Deterministic: re-running with the
+same source produces identical files.
 
 Run from games2/:  python3 scripts/build-pwa-icons.py
 """
 from pathlib import Path
 
-from PIL import Image, ImageDraw
+import numpy as np
+from PIL import Image
 
-OUT = Path(__file__).resolve().parent.parent / "client" / "public" / "icons"
-
-BG = (18, 18, 28, 255)  # #12121c — the game's background
-MOON = (207, 224, 255, 255)  # #cfe0ff — the title colour
-MOON_SHADE = (138, 155, 205, 255)
-STAR = (255, 214, 120, 255)  # #ffd678 — the accent colour
-
-
-def draw_base(size: int = 32, pad: int = 0) -> Image.Image:
-    """The 32px master. `pad` insets the artwork (maskable icons need ~20%
-    safe zone so launchers can crop to circles without clipping the moon)."""
-    img = Image.new("RGBA", (size, size), BG)
-    d = ImageDraw.Draw(img)
-    cx, cy, r = 16, 16, 10 - pad
-    # Crescent = full disc minus an offset disc (classic).
-    d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=MOON)
-    d.ellipse([cx - r + 5, cy - r - 2, cx + r + 5, cy + r - 2], fill=BG)
-    # A little terminator shading along the inner edge.
-    d.ellipse([cx - r + 4, cy - r - 1, cx + r + 4, cy + r - 1], outline=MOON_SHADE)
-    d.ellipse([cx - r + 5, cy - r - 2, cx + r + 5, cy + r - 2], fill=BG)
-    # Stars (fixed positions, inside the safe zone).
-    for x, y in [(7, 6), (24, 5), (26, 24), (6, 25), (22, 12)]:
-        d.point((x, y), fill=STAR)
-    d.point((7, 5), fill=STAR)
-    d.point((24, 4), fill=STAR)
-    return img
+ROOT = Path(__file__).resolve().parent.parent
+SRC = ROOT / "scripts" / "assets" / "icon-medallion-src.png"
+OUT = ROOT / "client" / "public" / "icons"
+BG = (6, 8, 15, 255)  # #06080f — the emblem's own near-black backdrop
 
 
-def save(img: Image.Image, size: int, name: str) -> None:
+def emblem() -> Image.Image:
+    """The source cropped tight to its visible art (ring + weapons + glow),
+    trimming the dead near-black border so framing is predictable."""
+    im = Image.open(SRC).convert("RGBA")
+    lum = np.array(im)[:, :, :3].astype(int).sum(axis=2)
+    ys, xs = np.where(lum > 60)
+    return im.crop((int(xs.min()), int(ys.min()), int(xs.max()) + 1, int(ys.max()) + 1))
+
+
+def framed(art: Image.Image, frac: float) -> Image.Image:
+    """Centre `art` on a square near-black field, sized so the art's WIDTH is
+    `frac` of the side (the emblem is widest across the sword<->staff)."""
+    ew, eh = art.size
+    side = round(ew / frac)
+    canvas = Image.new("RGBA", (side, side), BG)
+    canvas.alpha_composite(art, ((side - ew) // 2, (side - eh) // 2))
+    return canvas
+
+
+def bake(master: Image.Image, size: int, name: str) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
-    img.resize((size, size), Image.NEAREST).save(OUT / name)
+    master.resize((size, size), Image.BOX).save(OUT / name)
     print(f"  icons/{name} ({size}x{size})")
 
 
 def main() -> None:
-    base = draw_base()
-    save(base, 192, "icon-192.png")
-    save(base, 512, "icon-512.png")
-    save(base, 180, "apple-touch-icon.png")
-    save(draw_base(pad=3), 512, "icon-maskable-512.png")
+    art = emblem()
+    print(f"emblem art {art.size} from {SRC.name}")
+    std = framed(art, 0.92)   # fills the tile
+    mask = framed(art, 0.70)  # safe zone for circular crops
+    bake(std, 512, "icon-512.png")
+    bake(std, 192, "icon-192.png")
+    bake(std, 180, "apple-touch-icon.png")
+    bake(mask, 512, "icon-maskable-512.png")
 
 
 if __name__ == "__main__":
