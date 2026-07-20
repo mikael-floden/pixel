@@ -115,6 +115,12 @@ bridge lapping onto a hilltop), the two coincide — a single surface, no overpa
 bridge deck puts the slab between the camera and the player, so it's a prime case
 for the fade-the-occluder system. `level` (+ `thickness`) is how tall it stands.
 
+**Clearance.** A deck you pass *under* (bridge, doorway, roofed room) must out-top
+the player: the headroom beneath it is `(level - thickness) * level_px`. The
+player sprite is ~5 levels (~80px) tall, so a low deck traps or clips them — the
+reference map sits its house and bridge at **level 7** (96px of clearance) for
+that reason. Size walk-under decks (and full-height door gaps) to the sprite.
+
 `occlusion_test` is the reference: a flat-roof **house** (roof deck over a walled
 room with a tall door; a rock stair on the east climbs onto the roof; west/north
 roof edges are open drops) and a **bridge** deck spanning two hills over a channel

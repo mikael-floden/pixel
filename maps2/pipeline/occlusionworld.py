@@ -148,31 +148,32 @@ class Occlude:
         tops; its LEFT (west) and BACK (north) edges are open drops to the grass."""
         x0, y0, w, d = 54, 104, 10, 8
         x1, y1 = x0 + w, y0 + d
-        ROOF = 4                                     # 4 levels = 64px: door > player
-        wall = "stone_mountain"
+        ROOF = 7                    # 7 levels = 112px: the player sprite is ~5 levels
+        wall = "stone_mountain"     # tall, so a 4-level door left its head over the roof
         for y in range(y0, y1):
             for x in range(x0, x1):
                 if x in (x0, x1 - 1) or y in (y0, y1 - 1):
                     self.mat[y, x] = wall            # perimeter wall column
                     self.level[y, x] = ROOF
                 # interior stays grass @ level 0: a walkable room under the roof
-        # tall door gap in the SOUTH wall (front, down-screen) — two cells, full height
+        # door gap in the SOUTH wall (front, down-screen): ONE cell wide but FULL
+        # height (0..ROOF), so the opening clears the tall player with headroom
         dcx = x0 + w // 2
-        for x in (dcx - 1, dcx):
-            self.mat[y1 - 1, x] = "saturated_grass"
-            self.level[y1 - 1, x] = 0
-        # rock STAIRCASE on the right (east): steps 4,3,2,1 down to the ground, so
-        # the player climbs it up onto the roof; its top step is flush with the roof
-        for k, lvl in enumerate((4, 3, 2, 1)):
+        self.mat[y1 - 1, dcx] = "saturated_grass"
+        self.level[y1 - 1, dcx] = 0
+        # rock STAIRCASE on the right (east): unit steps ROOF..1 down to the ground,
+        # so the player climbs all the way up onto the (now taller) roof; kept a few
+        # rows deep so it reads as a stair, not a solid block
+        for k in range(ROOF):
             x = x1 + k
-            for y in range(y0 + 1, y1 - 1):
+            for y in range(y0 + 2, y1 - 2):
                 self.mat[y, x] = wall
-                self.level[y, x] = lvl
+                self.level[y, x] = ROOF - k
         # ROOF DECK: a walkable slab over the whole footprint, flush with wall tops
         cells = [(x, y) for y in range(y0, y1) for x in range(x0, x1)]
         self.decks.append({"kind": "roof", "mat": wall, "level": ROOF,
                            "thickness": 1, "cells": cells})
-        self._reserve(x0 - 1, x1 + 5, y0 - 1, y1 + 1)
+        self._reserve(x0 - 1, x1 + ROOF + 1, y0 - 1, y1 + 1)
 
     def _bridge(self):
         """A stone bridge spanning a channel between two grassy hills, near spawn.
@@ -180,12 +181,12 @@ class Occlude:
         the two hilltops (walk OVER). The channel below stays at ground level and is
         HALF grass / HALF water, so you can walk UNDER the deck on the grass and swim
         UNDER it in the water — a second walkable surface over one footprint."""
-        DECK = 4
-        y0, y1 = 104, 119                    # hills + channel span (near spawn)
+        DECK = 7                    # 7 levels: leaves ~96px of headroom UNDER the deck
+        y0, y1 = 104, 119                    # so the tall (~5-level) player fits beneath
         ax0, ax1 = 34, 40                    # west hill x-range
         gx0, gx1 = 40, 46                    # channel (the gap) x-range
         bx0, bx1 = 46, 52                    # east hill x-range
-        plateau = y1 - 4                     # last flat row before the south ramp
+        plateau = y1 - 7                     # last flat row before the south ramp
         # two grassy hills: flat at DECK, ramping down to ground on the south side
         for hx0, hx1 in ((ax0, ax1), (bx0, bx1)):
             for y in range(y0, y1):
@@ -203,7 +204,7 @@ class Occlude:
                 self.level[y, x] = 0
                 self.mat[y, x] = "clear_water" if x < wmid else "saturated_grass"
         # the DECK: spans the gap and laps both hilltops, covering water AND grass
-        cells = [(x, y) for y in range(108, 113)
+        cells = [(x, y) for y in range(107, 112)
                  for x in range(ax1 - 1, bx0 + 1)]
         self.decks.append({"kind": "bridge", "mat": "stone_mountain", "level": DECK,
                            "thickness": 1, "cells": cells})
