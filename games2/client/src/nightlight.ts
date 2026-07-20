@@ -1103,13 +1103,14 @@ export class NightLights {
     // shadow the torch casts, from the same march.
     const propLvl = new Map<number, number>();
     for (const pr of this.world.props ?? []) propLvl.set(pr.row * w + pr.col, 1);
-    // world@2 decks (bridges, roofs): the SURFACE height at a decked cell is the
-    // deck slab's level — so the shader resolves a deck-top screen pixel to its
-    // real height (4) and lights it as that surface, instead of the base ground
-    // 4 levels below (which sat in the plateau/wall's cast shadow and was out of
-    // the torch's reach). Only the surface map is bumped; the occlusion map keeps
-    // the base heights, so a thin deck with open air below casts no phantom
-    // full-height shadow on the ground.
+    // world@2 decks (bridges, roofs): the deck slab's level feeds BOTH heightmaps.
+    // SURFACE (uHeight): so the shader resolves a deck-top screen pixel to its real
+    // height (4) and lights it as that surface, not the base ground 4 levels below.
+    // OCCLUSION (uHeightL): so the slab CASTS a sun shadow like any raised terrain —
+    // a roof shades the ground under its eaves (incl. across the doorway where there
+    // is no wall, only roof), a bridge shades the water. The deck top itself stays
+    // lit: the sun march starts at the resolved surface height (4), so neighbouring
+    // level-4 cells never rise above it.
     const deckH = new Float32Array(w * h);
     for (const d of this.world.decks ?? []) {
       for (const cc of d.cells) {
@@ -1125,10 +1126,12 @@ export class NightLights {
         const s = surfaceFor(cell.t);
         const solid = !s.standable && !s.swimmable;
         const pl = propLvl.get(r * w + c) ?? 0;
-        const occH = cell.l + Math.max(solid ? 1 : 0, pl);
-        // The lit SURFACE height: the deck slab when one caps this cell, else the
-        // terrain. (Occlusion below keeps the base terrain height.)
-        const surfL = Math.max(cell.l, deckH[r * w + c]);
+        const deckL = deckH[r * w + c];
+        // Occlusion: the taller of the terrain (+ solid/prop bump) and any deck
+        // slab, so a roof/bridge casts a real cast shadow on the ground below.
+        const occH = Math.max(cell.l + Math.max(solid ? 1 : 0, pl), deckL);
+        // The lit SURFACE height: the deck slab when one caps this cell, else the terrain.
+        const surfL = Math.max(cell.l, deckL);
         // CPU twin marches LOS only → occlusion heights (solids/props +1).
         this.hArr[r * w + c] = occH;
         this.tArr[r * w + c] = surfL;
