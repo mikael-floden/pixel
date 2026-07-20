@@ -979,6 +979,22 @@ export class WorldScene extends Phaser.Scene {
 
       sunAt: (col: number, row: number, z = -1) =>
         this.night?.sunFactorAt(col + 0.5, row + 0.5, z, this.curSun as [number, number, number, number]) ?? 1,
+      // Local avatar's lit-copy light sample. `l` is what SHIPS: the light at
+      // the avatar's RENDERED surface height (a.elev px → levels), so a deck top
+      // (roof/bridge) is lit. `lBase` is the OLD base-terrain sample — dark under
+      // a roof. QA for the "character shaded on the roof in daylight" deck bug.
+      litInfo: () => {
+        const av = this.avatars.get(this.room?.sessionId ?? "");
+        if (!av || !this.night) return null;
+        const lvl = Math.max(0, av.elev / MAP_GEOMETRY.lh);
+        const baseLvl = this.terrain ? levelAtWorld(this.terrain, av.fx, av.fy) : 0;
+        return {
+          elevLvl: +lvl.toFixed(2),
+          baseLvl,
+          l: this.night.lightAt(av.fx / CELL_WU, av.fy / CELL_WU, lvl, false).map((v) => +v.toFixed(3)),
+          lBase: this.night.lightAt(av.fx / CELL_WU, av.fy / CELL_WU, baseLvl, false).map((v) => +v.toFixed(3)),
+        };
+      },
       // Chase-cam probe: eased zoom vs base, and how far the camera trails
       // the avatar (scene px).
       camInfo: () => {
@@ -2318,7 +2334,14 @@ export class WorldScene extends Phaser.Scene {
         if (!on) a.foam?.clearTint(); // day: foam at full brightness
         continue;
       }
-      const lvl = this.terrain ? levelAtWorld(this.terrain, a.fx, a.fy) : 0;
+      // Sample the light at the avatar's ACTUAL rendered surface height, NOT
+      // the base terrain level. On a deck (roof/bridge) the base level is the
+      // floor UNDER the deck, so lightAt marches the sun ray from down there,
+      // the roof/walls occlude it, and the character renders in shadow in full
+      // daylight — until a step onto a wall (base genuinely at deck level) pops
+      // it bright. a.elev px → levels is the same basis the torch z uses, so a
+      // deck-top avatar is lit and an under-deck avatar stays (correctly) shaded.
+      const lvl = Math.max(0, a.elev / MAP_GEOMETRY.lh);
       const l = night!.lightAt(a.fx / CELL_WU, a.fy / CELL_WU, lvl, false);
       const base = a.baseTint;
       const r = Math.min(255, Math.round(((base >> 16) & 0xff) * Math.min(1, l[0])));

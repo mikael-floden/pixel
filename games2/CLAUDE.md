@@ -79,9 +79,20 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   LIGHTING**: the night shader's SURFACE heightmap reports the deck level (not the
   base) so a deck-top pixel resolves to its real height — no phantom cast shadow
   from the plateau/walls, and the player's torch (z anchored to the avatar's
-  rendered elevation) lights the deck it stands on. Gate: `scripts/verify-deckwalk.mjs`
-  (in `npm test`) drives the real occlusion_test grid incl. layered findPath;
-  probes `__ml.deckInfo()`, `__ml.me().elev`. KNOWN RESIDUAL: the (x,y)-only
+  rendered elevation) lights the deck it stands on. The avatar's LIT-COPY tint
+  (its day/night brightness) also samples the light field at the avatar's
+  RENDERED elevation (`a.elev` px → levels, same basis as the torch z) — NOT the
+  base terrain level: on a roof/bridge the base is the floor UNDER the deck, so
+  sampling there marched the sun ray up into the roof and the character rendered
+  SHADED in full daylight (until a step onto a wall, whose base genuinely reaches
+  the deck level, popped it bright). An under-deck walker (elev = base) still
+  samples the base and stays correctly shaded beneath the roof. Gates:
+  `scripts/verify-deckwalk.mjs` (in `npm test`) drives the real occlusion_test
+  grid incl. layered findPath; `scripts/verify-decklight.mjs` (dev-stack browser,
+  data-driven) asserts every deck TOP is lit at Day while the base under it is
+  shaded — so the avatar must sample at its own elevation. Probes:
+  `__ml.deckInfo()`, `__ml.me().elev`, `__ml.litInfo()` (avatar's lit sample: `l`
+  at its elevation = ships, `lBase` = the old base-level shade). KNOWN RESIDUAL: the (x,y)-only
   autopilot FOLLOWER can still occasionally slide off the narrow ramp into the gap
   and "arrive" under the bridge (~1 in 6) — a proper elevation-aware follower is
   the fix (manual keyboard crossing is reliable). TODO: occlusion-FADE when
