@@ -187,15 +187,6 @@ float propAtSoft(vec2 cr) {
   return texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).g * 255.0 / 16.0;
 }
 
-// TERRAIN occlusion height (deck/terrain minus the prop share) in ONE bilinear
-// read — used by the cast-shadow march's lateral anti-alias taps (fewer texture
-// fetches than heightAtSoft + propAtSoft separately).
-float terrHeightSoft(vec2 cr) {
-  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
-  vec2 rg = texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).rg;
-  return (rg.r - rg.g) * 255.0 / 16.0;
-}
-
 
 
 float heightAt(vec2 cr) {
@@ -428,31 +419,13 @@ void main() {
     // approved cliff look (maintainer: cliffs are PERFECT — locked). The
     // prop share is subtracted so props don't feed this path.
     float sunVis = 1.0;
-    // Cast-shadow edge quality: the occlusion map is one texel per tile, so a
-    // HARD-topped occluder (a wall, a tower, a stair riser) throws an edge that
-    // staircases across the grid ("zigzag"), while a gently ramped occluder (a
-    // pyramid/mountain) already reads smooth. Two combined softeners tighten the
-    // hard case toward the smooth one WITHOUT mushing the ramps:
-    //   • FINER STEPS (0.42-cell, was 0.6) — less along-ray quantisation of where
-    //     the shadow begins.
-    //   • LATERAL ANTI-ALIAS — at each step, average the terrain height across a
-    //     small spread PERPENDICULAR to the sun ray (i.e. along the shadow edge),
-    //     so a hard edge fades over ~a tile of penumbra instead of snapping tile
-    //     to tile. A smooth ramp is unchanged (its neighbours already agree).
-    vec2 sPerp = normalize(vec2(-uSun.y, uSun.x)); // along the shadow edge, in grid cells
-    for (int s = 1; s <= 24; s++) {
-      float dc = float(s) * 0.5; // finer than the old 0.6 (reach ~12 cells kept)
+    for (int s = 1; s <= 20; s++) {
+      float dc = float(s) * 0.6;
       vec2 p = pos - uSun.xy * dc;
       if (floor(p.x) == floor(pos.x) && floor(p.y) == floor(pos.y)) continue;
       float hRay = z + dc * uSun.z + 0.15;
-      // Penumbra WIDENS with distance from the caster (real soft shadows do),
-      // so far edges get the most smoothing where the staircase is worst, while
-      // near edges stay reasonably crisp — and it keeps the tap spread modest.
-      float sp = 0.55 + dc * 0.085; // lateral tap spread (cells): tight near the caster, wide far out
-      float H = (terrHeightSoft(p) + terrHeightSoft(p + sPerp * sp) + terrHeightSoft(p - sPerp * sp)) / 3.0;
-      // Slightly softer floor (0.38 vs 0.35) and gentler onset (×0.9 vs ×1.2) so
-      // the penumbra the taps create reads as a smooth gradient, not a step.
-      if (H < 90.0 && H > hRay) sunVis *= mix(0.82, 0.38, clamp((H - hRay) * 0.9, 0.0, 1.0));
+      float H = heightAtSoft(p) - propAtSoft(p);
+      if (H < 90.0 && H > hRay) sunVis *= mix(0.80, 0.35, clamp((H - hRay) * 1.2, 0.0, 1.0));
     }
     // PROPS: one smooth max-margin patch (fine 0.35 steps). Per-sample
     // multiplication scalloped these small shadows into "x-mas trees" —
