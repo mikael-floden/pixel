@@ -703,7 +703,9 @@ export class WorldScene extends Phaser.Scene {
       if (this.trip && this.tapMarker) {
         const e = this.trip.target;
         const pr = this.projectFlat(e.x, e.y);
-        this.tapMarker.setPosition(pr.x, pr.y - pr.lvl * MAP_GEOMETRY.lh);
+        // Lift the beacon onto the tapped surface — a deck target sits at its
+        // deck level (projectFlat returns the lower BASE level).
+        this.tapMarker.setPosition(pr.x, pr.y - Math.max(pr.lvl, this.trip.goalLevel ?? 0) * MAP_GEOMETRY.lh);
       }
       this.holdPointerId = null;
       this.holdGround = null;
@@ -1846,7 +1848,10 @@ export class WorldScene extends Phaser.Scene {
       // sprite only if its top is strictly higher than the sprite's ground
       // AND it lies on the camera ray (grid interval test). Place the sprite
       // above every falsely-deeper column and below every true occluder.
-      const lvl = this.terrain ? levelAtWorld(this.terrain, tx, ty) : 0;
+      // The SURFACE level the sprite stands on (the deck when on a bridge/roof,
+      // else the base terrain). Using the base here made a deck the player walks
+      // ON count as a "higher" occluder that drew over their legs.
+      const lvl = surfLevel;
       let depth = av.lyFlat + 0.5; // painter y at the flat (unlifted) ground
       if (this.world) {
         const colf = tx / CELL_WU; // 1 cell = CELL_WU world units (any world size)

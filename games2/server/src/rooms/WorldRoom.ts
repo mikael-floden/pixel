@@ -417,8 +417,12 @@ export class WorldRoom extends Room<WorldState> {
       // Swimming is free, sustainable locomotion — no stamina drain, no
       // drowning. Just mirror whether the feet are in swimmable water so the
       // client can render the swim look (shoulder-line waterline, no shadow).
+      // world@2: only when the feet are actually IN the water — NOT when on a
+      // DECK (bridge) whose base is water. A deck lifts the player's surface
+      // elevation clear of the base, so compare against the base level.
       if (terrain) {
-        player.swimming = surfaceAtWorld(terrain, player.x, player.y).swimmable;
+        const surf = surfaceAtWorld(terrain, player.x, player.y);
+        player.swimming = surf.swimmable && player.elev <= levelAtWorld(terrain, player.x, player.y) + 0.5;
       }
     });
   }
