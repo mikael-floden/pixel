@@ -679,6 +679,7 @@ void main() {
 
 const FIELD_KEY = "night-light-field";
 const MIST_KEY = "mist-field";
+const DEPTHFOG_KEY = "depthfog-field";
 
 /** MIST weather (WorldState.weather === 2) — a creeping ground fog.
  *
@@ -785,6 +786,100 @@ void main() {
 }
 `;
 
+// ELEVATION DEPTH-FOG (maintainer: "make it easier to see the different ground
+// levels"). A NORMAL-blend overlay keyed to each ground pixel's resolved level
+// RELATIVE TO THE PLAYER (uPlayerZ): the player's own plane stays untouched, the
+// layers BELOW fade into a teal atmospheric HAZE (the enchanted-forest look on
+// the character screen), the layers ABOVE sink into a DARK fog of the SAME palette
+// — so a cliff edge that used to vanish (looking down off a plateau, or a wall
+// rising behind you) now separates by depth. Uses the SAME exact surface resolve
+// as the light + mist passes, so faces get a smooth per-pixel gradient (clean
+// bands between tops, a soft ramp down/up each cliff face). Composited ABOVE the
+// light overlay but BELOW the lit avatar copies, so it fogs the WORLD, not the
+// characters. Tunable: uFog is a 0..1 master strength (0 = off = instant rollback).
+const DEPTHFOG_FRAG = `
+precision highp float;
+
+uniform vec2 resolution;
+uniform vec4 uCam;        // worldView x, y, w, h (world-render px)
+uniform vec4 uIsoA;       // ox, oy, dx, dy
+uniform vec4 uIsoB;       // lh, gridW, gridH, maxLevel
+uniform vec3 uAmbient;    // current grade — the haze dims with the night
+uniform float uPlayerZ;   // the local player's current surface LEVEL
+uniform float uFog;       // master strength 0..1 (0 = pass outputs nothing)
+uniform float uFlip;
+uniform sampler2D uHeight;
+
+// Tunables (kept as named consts so the look is easy to dial):
+const vec3  FOG_HAZE = vec3(0.34, 0.62, 0.60); // teal haze — layers BELOW
+const vec3  FOG_DARK = vec3(0.02, 0.05, 0.06); // near-black cool — layers ABOVE (darken,
+                                               // don't lift-to-grey: keeps their contrast)
+const float BELOW_PER = 0.40;  // opacity gained per level going DOWN
+const float BELOW_MAX = 0.50;  // deepest haze
+const float ABOVE_PER = 0.42;  // opacity gained per level going UP
+const float ABOVE_MAX = 0.60;  // darkest (before the night scale-down)
+const float DEAD = 0.16;        // dead-zone (levels) so the player's plane is clean
+
+float heightAt(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  return texture2D(uHeight, uv).r * 255.0 / 16.0;
+}
+
+void main() {
+  if (uFog <= 0.003) { gl_FragColor = vec4(0.0); return; }
+  vec2 suv = gl_FragCoord.xy / resolution;
+  float wx = uCam.x + suv.x * uCam.z;
+  float wy = uCam.y + mix(suv.y, 1.0 - suv.y, uFlip) * uCam.w;
+  float u = (wx - uIsoA.x) / uIsoA.z - 1.0;
+  float v0 = (wy - uIsoA.y) / uIsoA.w;
+  float kk = uIsoB.x / uIsoA.w;
+  // Surface resolve — the SAME exact cell-boundary walk as the night/mist shaders.
+  float vTop = v0 + uIsoB.w * kk;
+  float z = 0.0;
+  bool found = false;
+  float vHi = vTop;
+  for (int s = 0; s < 36; s++) {
+    if (found || vHi <= v0 - 1.5) continue;
+    float vColB = 2.0 * floor((vHi + u) * 0.5 - 0.0001) - u;
+    float vRowB = 2.0 * floor((vHi - u) * 0.5 - 0.0001) + u;
+    float vLo = max(vColB, vRowB);
+    float vMid = (vHi + vLo) * 0.5;
+    vec2 cr = vec2((u + vMid) * 0.5, (vMid - u) * 0.5);
+    float H = heightAt(cr);
+    if (H < 90.0) {
+      float vSurf = v0 + H * kk;
+      if (vSurf >= vLo - 0.0001) {
+        z = max((min(vHi, vSurf) - v0) / kk, 0.0);
+        found = true;
+      }
+    }
+    vHi = vLo;
+  }
+  if (!found) { gl_FragColor = vec4(0.0); return; }
+
+  float dz = z - uPlayerZ; // >0 above the player, <0 below
+  float ambLum = (uAmbient.r + uAmbient.g + uAmbient.b) / 3.0;
+  vec3 col;
+  float a;
+  if (dz < 0.0) {
+    // BELOW: teal atmospheric haze. Dims with the night but keeps a floor so
+    // the depth cue still reads in the dark (the maintainer plays at night).
+    a = clamp((-dz - DEAD) * BELOW_PER, 0.0, BELOW_MAX);
+    col = FOG_HAZE * clamp(0.42 + 0.75 * ambLum, 0.0, 1.0);
+  } else {
+    // ABOVE: darken toward near-black. SCALED DOWN at night — a dark cliff has
+    // no brightness to remove, and flattening it only hides it (structure lost);
+    // the darken is a DAYLIGHT separation, the below-haze carries the night.
+    a = clamp((dz - DEAD) * ABOVE_PER, 0.0, ABOVE_MAX) * clamp(0.16 + 0.95 * ambLum, 0.0, 1.0);
+    col = FOG_DARK;
+  }
+  a *= uFog;
+  if (a <= 0.002) { gl_FragColor = vec4(0.0); return; }
+  gl_FragColor = vec4(col * a, a); // premultiplied for Phaser's NORMAL blend
+}
+`;
+
 /** Glow stamps for every visible emission source (tile-emission@2).
  *
  * For each cell whose category+variant has per-pixel sources: `up` sources
@@ -870,6 +965,16 @@ export class NightLights {
   private mistBase?: Phaser.Display.BaseShader;
   private mistShader?: Phaser.GameObjects.Shader;
   private mistOverlay?: Phaser.GameObjects.Image;
+  // Elevation depth-fog (separate NORMAL pass, below the lit avatar copies).
+  private depthFogBase?: Phaser.Display.BaseShader;
+  private depthFogShader?: Phaser.GameObjects.Shader;
+  private depthFogOverlay?: Phaser.GameObjects.Image;
+  /** Master strength of the elevation depth-fog (0 = off). Tunable via
+   *  `__ml.depthFog(v)`; the maintainer may roll it to 0 to disable. */
+  fogStrength = 1;
+  /** Headless QA only: force the player level the fog keys off (null = live). */
+  fogTestZ: number | null = null;
+  private curPlayerZ = 0;
   private posArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private colArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private fieldCount = 0;
@@ -927,6 +1032,17 @@ export class NightLights {
       uAnimTime: { type: "1f", value: 0 },
       uHeight: { type: "sampler2D", value: null },
     });
+    // Elevation depth-fog shader (declared uniforms only — the uSun lesson).
+    this.depthFogBase = new Phaser.Display.BaseShader("depthfog-field", DEPTHFOG_FRAG, undefined, {
+      uCam: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
+      uIsoA: { type: "4f", value: { x: 0, y: 0, z: ISO_DX, w: ISO_DY } },
+      uIsoB: { type: "4f", value: { x: MAP_GEOMETRY.lh, y: 1, z: 1, w: 0 } },
+      uAmbient: { type: "3f", value: { x: 1, y: 1, z: 1 } },
+      uPlayerZ: { type: "1f", value: 0 },
+      uFog: { type: "1f", value: 0 },
+      uFlip: { type: "1f", value: 1 },
+      uHeight: { type: "sampler2D", value: null },
+    });
     this.base = new Phaser.Display.BaseShader("night-lights", FRAG, undefined, {
       uCam: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
       uIsoA: { type: "4f", value: { x: 0, y: 0, z: ISO_DX, w: ISO_DY } },
@@ -980,14 +1096,27 @@ export class NightLights {
       .setDepth(1_000_000)
       .setBlendMode(Phaser.BlendModes.NORMAL)
       .setVisible(false);
+    // Elevation depth-fog rides ABOVE the multiply light overlay (900_000) but
+    // BELOW the tap marker (900_000.5) and the lit avatar copies (900_001): it
+    // fogs the lit WORLD by depth, while the characters (drawn on top) stay
+    // crisp — the effect is a terrain depth cue, not a screen wash on players.
+    this.depthFogOverlay = this.scene.add
+      .image(0, 0, "__WHITE")
+      .setOrigin(0.5, 0.5)
+      .setScrollFactor(0)
+      .setDepth(900_000.2)
+      .setBlendMode(Phaser.BlendModes.NORMAL)
+      .setVisible(false);
     this.buildShader(this.scene.scale.width, this.scene.scale.height);
     this.buildMistShader(this.scene.scale.width, this.scene.scale.height);
+    this.buildDepthFogShader(this.scene.scale.width, this.scene.scale.height);
     // The render target does NOT follow setSize — a resized window left a
     // stale wrong-scale light field (bright rectangles, pools that ignore
     // zoom). Rebuild the shader + target at the new size instead.
     this.scene.scale.on("resize", (sz: Phaser.Structs.Size) => {
       this.buildShader(sz.width, sz.height);
       this.buildMistShader(sz.width, sz.height);
+      this.buildDepthFogShader(sz.width, sz.height);
     });
   }
 
@@ -1044,6 +1173,25 @@ export class NightLights {
       .setPosition(width / 2, height / 2)
       .setScale(1);
     if (old.startsWith(MIST_KEY) && this.scene.textures.exists(old)) {
+      this.scene.textures.remove(old);
+    }
+  }
+
+  /** (Re)create the depth-fog shader + render target (same lifecycle rules). */
+  private buildDepthFogShader(width: number, height: number) {
+    if (!this.depthFogBase || width <= 0 || height <= 0) return;
+    this.depthFogShader?.destroy();
+    const key = `${DEPTHFOG_KEY}-${this.fieldCount++}`;
+    const s = this.scene.add
+      .shader(this.depthFogBase, 0, 0, width, height)
+      .setOrigin(0, 0)
+      .setVisible(false);
+    s.setSampler2D("uHeight", "world-heightmap");
+    s.setRenderToTexture(key);
+    this.depthFogShader = s;
+    const old = this.depthFogOverlay!.texture.key;
+    this.depthFogOverlay!.setTexture(key).setPosition(width / 2, height / 2).setScale(1);
+    if (old.startsWith(DEPTHFOG_KEY) && this.scene.textures.exists(old)) {
       this.scene.textures.remove(old);
     }
   }
@@ -1485,6 +1633,8 @@ export class NightLights {
     if (!on) {
       this.mistShader?.setVisible(false);
       this.mistOverlay?.setVisible(false);
+      this.depthFogShader?.setVisible(false);
+      this.depthFogOverlay?.setVisible(false);
     }
   }
 
@@ -1519,6 +1669,7 @@ export class NightLights {
     cloud = 0,
     aurora = 0,
     mist = 0,
+    playerZ = 0,
   ) {
     this.curLights = lights;
     this.curStamps = stamps;
@@ -1527,6 +1678,7 @@ export class NightLights {
     this.curCloud = cloud;
     this.curAurora = aurora;
     this.curMist = mist;
+    this.curPlayerZ = this.fogTestZ ?? playerZ;
     if (!this.shader || !this.active) return;
     const s = this.shader;
     // Ground-truth calibrated by raw suv readback: the zoomed overlay shows
@@ -1650,6 +1802,30 @@ export class NightLights {
       m.setUniform("uAmbient.value.x", ambient[0]);
       m.setUniform("uAmbient.value.y", ambient[1]);
       m.setUniform("uAmbient.value.z", ambient[2]);
+    }
+
+    // ELEVATION DEPTH-FOG overlay — same world window as the light field. Only
+    // drawn when the master strength is on (0 = disabled, costs nothing).
+    const showFog = this.fogStrength > 0.003;
+    this.depthFogShader?.setVisible(showFog);
+    this.depthFogOverlay?.setVisible(showFog);
+    if (showFog && this.depthFogShader) {
+      const f = this.depthFogShader;
+      f.setUniform("uCam.value.x", camX);
+      f.setUniform("uCam.value.y", camY);
+      f.setUniform("uCam.value.z", wv.width * k);
+      f.setUniform("uCam.value.w", wv.height * k);
+      f.setUniform("uFlip.value", this.fieldFlip);
+      f.setUniform("uIsoA.value.x", this.iso.ox);
+      f.setUniform("uIsoA.value.y", this.iso.oy + 8);
+      f.setUniform("uIsoB.value.y", this.world.width);
+      f.setUniform("uIsoB.value.z", this.world.height);
+      f.setUniform("uIsoB.value.w", this.maxLevel);
+      f.setUniform("uPlayerZ.value", this.curPlayerZ);
+      f.setUniform("uFog.value", this.fogStrength);
+      f.setUniform("uAmbient.value.x", ambient[0]);
+      f.setUniform("uAmbient.value.y", ambient[1]);
+      f.setUniform("uAmbient.value.z", ambient[2]);
     }
   }
 

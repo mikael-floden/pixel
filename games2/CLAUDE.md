@@ -570,6 +570,25 @@ visible head/shoulders are ABOVE the surface).
 - Always-night per-pixel shader: MULTIPLY overlay; per-pixel surface resolve
   (cell + height) → point lights with attenuation, LOS cast shadows, Lambert
   face gating with penumbras at both ends of every wall band.
+- **ELEVATION DEPTH-FOG** (`DEPTHFOG_FRAG`, maintainer: "make it easier to see the
+  different ground levels"): a THIRD, always-on NORMAL-blend overlay keyed to each
+  ground pixel's resolved level MINUS the local player's level (`uPlayerZ`). Layers
+  BELOW fade into a teal atmospheric HAZE (the enchanted-forest / character-screen
+  look); layers ABOVE darken toward near-black; the player's own plane is untouched
+  (a `DEAD` dead-zone). Uses the SAME exact surface resolve as the light + mist
+  passes, so cliff FACES get a smooth per-pixel gradient (clean bands between tops).
+  Composited at depth **900_000.2** — ABOVE the multiply light overlay (900_000) but
+  BELOW the tap marker (900_000.5) and the lit avatar copies (900_001): it fogs the
+  WORLD, never the characters (a terrain depth cue, not a screen wash). KEY LESSON:
+  "above = darken" only SEPARATES when there's brightness to remove — at NIGHT a
+  dark cliff has none, and blending it toward a lifted mid-grey just FLATTENS it
+  (structure lost). So ABOVE darkens toward NEAR-BLACK (preserves the cliff's own
+  contrast) and is SCALED DOWN by ambient (nearly off at night); the below-haze
+  (floored so it still reads in the dark) carries the night. Master strength
+  `nightlight.fogStrength` (0 = off = instant rollback); tune/QA via
+  `__ml.depthFog(strength?, testZ?)` (testZ forces the player level headlessly).
+  Regression: `scripts/verify-depthfog.mjs` (fog ON adds a clear teal cast to the
+  layers below). All tunables are named GLSL consts at the top of `DEPTHFOG_FRAG`.
 - **Two geometries, never merge them**: `world-heightmap` (NEAREST) holds
   TERRAIN levels only and drives the resolve + wall-face classification;
   `world-heightmap-linear` (LINEAR) holds terrain + solid objects and drives

@@ -979,6 +979,18 @@ export class WorldScene extends Phaser.Scene {
 
       sunAt: (col: number, row: number, z = -1) =>
         this.night?.sunFactorAt(col + 0.5, row + 0.5, z, this.curSun as [number, number, number, number]) ?? 1,
+      // Elevation depth-fog: set the master strength (0 = off) for tuning /
+      // rollback; returns the current value + the player's level driving it.
+      depthFog: (v?: number, testZ?: number) => {
+        if (this.night && typeof v === "number") this.night.fogStrength = Math.max(0, v);
+        if (this.night && testZ !== undefined) this.night.fogTestZ = testZ === -1 ? null : testZ;
+        const av = this.avatars.get(this.room?.sessionId ?? "");
+        return {
+          strength: this.night?.fogStrength ?? 0,
+          testZ: this.night?.fogTestZ ?? null,
+          playerZ: av ? +Math.max(0, av.elev / MAP_GEOMETRY.lh).toFixed(2) : 0,
+        };
+      },
       // Local avatar's lit-copy light sample. `l` is what SHIPS: the light at
       // the avatar's RENDERED surface height (a.elev px → levels), so a deck top
       // (roof/bridge) is lit. `lBase` is the OLD base-terrain sample — dark under
@@ -2119,6 +2131,10 @@ export class WorldScene extends Phaser.Scene {
         const clouded = v + (grey * 0.94 - v) * this.curCloud * 0.22;
         return clouded * (1 - this.curPrecipDim);
       }) as [number, number, number];
+      // Local player's current surface LEVEL drives the elevation depth-fog
+      // (its own rendered elevation, so the fog eases as it climbs/falls).
+      const meAv = this.avatars.get(this.room?.sessionId ?? "");
+      const playerZ = meAv ? Math.max(0, meAv.elev / MAP_GEOMETRY.lh) : 0;
       this.night!.update(
         this.cameras.main,
         sl,
@@ -2128,6 +2144,7 @@ export class WorldScene extends Phaser.Scene {
         this.curCloud,
         this.curAurora,
         this.curMist,
+        playerZ,
       );
     }
 
