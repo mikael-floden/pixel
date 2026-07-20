@@ -8,11 +8,12 @@ Android launch splash (which centres the 512 icon on background_color).
 Two framings:
   * STANDARD (192 / 512 / apple-touch) — emblem ~92% of the WIDTH (sword<->staff),
     a slim margin; shown un-cropped as a square, so the whole emblem fills the tile.
-  * MASKABLE (icon-maskable-512) — sized by the circular DISC (the emblem's HEIGHT
-    ≈ the rune ring's diameter) so the ring fills ~88% of the tile and a launcher's
-    circle mask reads FULL, like a normal app icon — not a small medallion floating
-    in a dark disc. The sword/staff tips (which jut past the ring) soft-clip at the
-    rim; the scene stays well inside the safe zone.
+  * MASKABLE (icon-maskable-512) — sized so the emblem's FARTHEST point (the sword
+    tip / wand tip, which jut past the rune ring) lands just inside the launcher's
+    circle: the WHOLE emblem fits the circle, nothing clipped. The ring ends up a
+    little smaller than the circle with the sword/wand reaching toward the rim — it
+    still reads full (content touches the edge) without shaving the weapons off
+    (the maintainer: keep the sword & wand whole, a small shrink is fine).
 
 PIXEL ART rule (maintainer): downscaling the ~1172px master to the final icon
 sizes is a BAKE to display resolution, so box-average (Image.BOX) is the right,
@@ -41,14 +42,26 @@ def emblem() -> Image.Image:
     return im.crop((int(xs.min()), int(ys.min()), int(xs.max()) + 1, int(ys.max()) + 1))
 
 
-def framed(art: Image.Image, frac: float, by: str = "w") -> Image.Image:
-    """Centre `art` on a square near-black field. `by="w"` sizes so the art's
-    WIDTH (sword<->staff) is `frac` of the side — the whole emblem in a square.
-    `by="h"` sizes by the art's HEIGHT (≈ the circular rune-ring diameter) so the
-    RING fills `frac` of the tile under a circular mask; the wider sword/staff
-    then overhang and soft-clip at the rim."""
+def framed(art: Image.Image, frac: float) -> Image.Image:
+    """Centre `art` on a square near-black field, sized so the art's WIDTH
+    (sword<->staff) is `frac` of the side — the whole emblem, filling a square."""
     ew, eh = art.size
-    side = round((ew if by == "w" else eh) / frac)
+    side = round(ew / frac)
+    canvas = Image.new("RGBA", (side, side), BG)
+    canvas.alpha_composite(art, ((side - ew) // 2, (side - eh) // 2))
+    return canvas
+
+
+def framed_fit(art: Image.Image, frac: float) -> Image.Image:
+    """Centre `art` on a square near-black field, sized so the emblem's FARTHEST
+    solid pixel from centre (the sword/wand tip) lands at `frac` of the
+    inscribed-circle radius. So a launcher's circle mask contains the WHOLE
+    emblem — the ring AND the weapons that jut past it — with nothing clipped."""
+    ew, eh = art.size
+    lum = np.array(art)[:, :, :3].astype(int).sum(axis=2)
+    sy, sx = np.where(lum > 110)  # solid art, not the faint outer glow
+    maxr = float(np.hypot(sx - (ew - 1) / 2, sy - (eh - 1) / 2).max())
+    side = round(2 * maxr / frac)
     canvas = Image.new("RGBA", (side, side), BG)
     canvas.alpha_composite(art, ((side - ew) // 2, (side - eh) // 2))
     return canvas
@@ -63,8 +76,8 @@ def bake(master: Image.Image, size: int, name: str) -> None:
 def main() -> None:
     art = emblem()
     print(f"emblem art {art.size} from {SRC.name}")
-    std = framed(art, 0.92, "w")   # whole emblem fills the square tile
-    mask = framed(art, 0.88, "h")  # ring fills the circular mask (like a normal icon)
+    std = framed(art, 0.92)       # whole emblem fills the square tile
+    mask = framed_fit(art, 0.92)  # whole emblem (incl. sword/wand) fits the circle
     bake(std, 512, "icon-512.png")
     bake(std, 192, "icon-192.png")
     bake(std, 180, "apple-touch-icon.png")
