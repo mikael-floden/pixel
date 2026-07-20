@@ -6,11 +6,13 @@ the standalone icon form of the title logo. Baked onto a square near-black field
 Android launch splash (which centres the 512 icon on background_color).
 
 Two framings:
-  * STANDARD (192 / 512 / apple-touch) — emblem ~92% of the width, a slim margin;
-    shown un-cropped, so it fills the tile.
-  * MASKABLE (icon-maskable-512) — emblem ~70% of the width, centred, so a
-    launcher's circular / squircle crop keeps the whole ring + sword + staff
-    inside the safe zone.
+  * STANDARD (192 / 512 / apple-touch) — emblem ~92% of the WIDTH (sword<->staff),
+    a slim margin; shown un-cropped as a square, so the whole emblem fills the tile.
+  * MASKABLE (icon-maskable-512) — sized by the circular DISC (the emblem's HEIGHT
+    ≈ the rune ring's diameter) so the ring fills ~88% of the tile and a launcher's
+    circle mask reads FULL, like a normal app icon — not a small medallion floating
+    in a dark disc. The sword/staff tips (which jut past the ring) soft-clip at the
+    rim; the scene stays well inside the safe zone.
 
 PIXEL ART rule (maintainer): downscaling the ~1172px master to the final icon
 sizes is a BAKE to display resolution, so box-average (Image.BOX) is the right,
@@ -39,11 +41,14 @@ def emblem() -> Image.Image:
     return im.crop((int(xs.min()), int(ys.min()), int(xs.max()) + 1, int(ys.max()) + 1))
 
 
-def framed(art: Image.Image, frac: float) -> Image.Image:
-    """Centre `art` on a square near-black field, sized so the art's WIDTH is
-    `frac` of the side (the emblem is widest across the sword<->staff)."""
+def framed(art: Image.Image, frac: float, by: str = "w") -> Image.Image:
+    """Centre `art` on a square near-black field. `by="w"` sizes so the art's
+    WIDTH (sword<->staff) is `frac` of the side — the whole emblem in a square.
+    `by="h"` sizes by the art's HEIGHT (≈ the circular rune-ring diameter) so the
+    RING fills `frac` of the tile under a circular mask; the wider sword/staff
+    then overhang and soft-clip at the rim."""
     ew, eh = art.size
-    side = round(ew / frac)
+    side = round((ew if by == "w" else eh) / frac)
     canvas = Image.new("RGBA", (side, side), BG)
     canvas.alpha_composite(art, ((side - ew) // 2, (side - eh) // 2))
     return canvas
@@ -58,8 +63,8 @@ def bake(master: Image.Image, size: int, name: str) -> None:
 def main() -> None:
     art = emblem()
     print(f"emblem art {art.size} from {SRC.name}")
-    std = framed(art, 0.92)   # fills the tile
-    mask = framed(art, 0.70)  # safe zone for circular crops
+    std = framed(art, 0.92, "w")   # whole emblem fills the square tile
+    mask = framed(art, 0.88, "h")  # ring fills the circular mask (like a normal icon)
     bake(std, 512, "icon-512.png")
     bake(std, 192, "icon-192.png")
     bake(std, 180, "apple-touch-icon.png")
