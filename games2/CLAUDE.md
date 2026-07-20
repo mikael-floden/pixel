@@ -500,9 +500,21 @@ visible head/shoulders are ABOVE the surface).
   x/y, slope levels-per-cell, strength). The sun march is TWO passes
   over the same field (maintainer: "the shadow on cliffs looks perfect
   — don't change that part"): TERRAIN keeps the original multiplicative
-  march LOCKED (20×0.6-cell samples, mix(0.80,0.35) ramp — the approved
-  cliff look, byte-identical; the prop share is subtracted from its
-  heights so props can't perturb it), while PROPS shade through one
+  ramp (20×0.6-cell samples, mix(0.80,0.35) — the approved cliff
+  DARKNESS, byte-identical; the prop share is subtracted from its heights
+  so props can't perturb it) but now AVERAGES 3 complete marches jittered
+  ±0.5 cell PERPENDICULAR to the sun ray (= along the shadow edge) to
+  anti-alias the one-texel-per-tile staircase (maintainer wanted the
+  straight "pyramid" shadow on hard structures too): a straight edge (the
+  mountain/pyramid) samples the SAME transition at every perp offset so
+  the average leaves it UNCHANGED — the "perfect" cliff is preserved
+  (verified Δluma≈0.1/255, max 10) — while a staircased hard edge
+  (wall/tower) straddles different zigzag phases and smooths. True
+  supersampling of the real smooth field (each march complete), so it
+  can't alias like sparse in-loop taps and never shortens a thin shadow
+  — the earlier lateral-tap attempt aliased into a BIGGER zigzag and was
+  reverted (`terrHeightSoft` = the per-sample terrain height helper).
+  Meanwhile PROPS shade through one
   smooth MAX-MARGIN patch (fine 0.35 steps, margin = max over samples —
   per-sample multiplication scalloped small footprints into "x-mas
   trees"/"stacked circles"). Props occlude +1 level flat in the LINEAR

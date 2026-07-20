@@ -187,6 +187,14 @@ float propAtSoft(vec2 cr) {
   return texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).g * 255.0 / 16.0;
 }
 
+// TERRAIN occlusion height (terrain/deck minus the prop share) in ONE bilinear
+// read — the cast-shadow march's per-sample height, used by its edge multi-sample.
+float terrHeightSoft(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
+  vec2 rg = texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).rg;
+  return (rg.r - rg.g) * 255.0 / 16.0;
+}
+
 
 
 float heightAt(vec2 cr) {
@@ -418,15 +426,32 @@ void main() {
     // TERRAIN: the original multiplicative march, byte-identical to the
     // approved cliff look (maintainer: cliffs are PERFECT — locked). The
     // prop share is subtracted so props don't feed this path.
-    float sunVis = 1.0;
-    for (int s = 1; s <= 20; s++) {
-      float dc = float(s) * 0.6;
-      vec2 p = pos - uSun.xy * dc;
-      if (floor(p.x) == floor(pos.x) && floor(p.y) == floor(pos.y)) continue;
-      float hRay = z + dc * uSun.z + 0.15;
-      float H = heightAtSoft(p) - propAtSoft(p);
-      if (H < 90.0 && H > hRay) sunVis *= mix(0.80, 0.35, clamp((H - hRay) * 1.2, 0.0, 1.0));
+    // Anti-alias the cast-shadow EDGE. The occlusion map is one texel per tile,
+    // so a hard-topped occluder (wall/tower/stair) throws an edge that staircases
+    // across the grid. Average N COMPLETE marches, each offset a little PERP to
+    // the sun ray (= along the shadow edge). Every march reads the real smooth
+    // height field, so this is true supersampling — it can't alias (unlike sparse
+    // in-loop taps) and never shortens a thin occluder's shadow.
+    vec2 sPerp = normalize(vec2(-uSun.y, uSun.x));
+    float jit = 0.5; // perp offset of the outer samples (cells)
+    float visSum = 0.0;
+    for (int k = -1; k <= 1; k++) {
+      vec2 p0 = pos + sPerp * (float(k) * jit);
+      float vis = 1.0;
+      for (int s = 1; s <= 20; s++) {
+        float dc = float(s) * 0.6;
+        vec2 p = p0 - uSun.xy * dc;
+        if (floor(p.x) == floor(pos.x) && floor(p.y) == floor(pos.y)) continue;
+        float hRay = z + dc * uSun.z + 0.15;
+        // Ramp BYTE-IDENTICAL to the locked cliff look — a straight edge (the
+        // mountain/pyramid) is unchanged by the perp average, so cliffs stay
+        // exactly as approved; only staircased edges (walls/towers) smooth.
+        float H = terrHeightSoft(p);
+        if (H < 90.0 && H > hRay) vis *= mix(0.80, 0.35, clamp((H - hRay) * 1.2, 0.0, 1.0));
+      }
+      visSum += vis;
     }
+    float sunVis = visSum / 3.0;
     // PROPS: one smooth max-margin patch (fine 0.35 steps). Per-sample
     // multiplication scalloped these small shadows into "x-mas trees" —
     // a single margin has no sample structure. Shape (maintainer: "the
