@@ -83,6 +83,10 @@ def main():
         import lostworld
         lostworld.build(os.path.join(MAPS2, "worlds", "demo_lost"))
         return
+    if args.name == "the_island":
+        import islandworld
+        islandworld.build(os.path.join(MAPS2, "worlds", "the_island"))
+        return
     if args.name == "glow_test":
         import glowdemo
         glowdemo.build(os.path.join(MAPS2, "worlds", "glow_test"))

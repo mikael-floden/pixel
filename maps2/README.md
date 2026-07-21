@@ -46,7 +46,9 @@ Enforce it in code (`pipeline/autotile.py`):
   coasts) so only the near-shore beaches survive.
 - **`occlusion_violations(mat, level)`** — returns every remaining hidden
   same-material lip (drops >10 ignored as fog-safe). A generator must print/assert
-  this is **empty**. `pipeline/lostworld.py` (`demo_lost`) is the reference.
+  this is **empty**. `pipeline/islandworld.py` (`the_island`) is the reference.
+  (`demo_lost` is the *older* grass island, kept as-is and NOT under this rule —
+  don't use it as the pattern.)
 
 ## Geometry (tiles2)
 
