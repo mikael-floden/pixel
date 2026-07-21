@@ -181,12 +181,12 @@ class Occlude:
         the two hilltops (walk OVER). The channel below stays at ground level and is
         HALF grass / HALF water, so you can walk UNDER the deck on the grass and swim
         UNDER it in the water — a second walkable surface over one footprint."""
-        DECK = 7                    # 7 levels: leaves ~96px of headroom UNDER the deck
+        DECK = 10                   # 10 levels: raised bridge, ~144px of headroom beneath
         y0, y1 = 104, 119                    # so the tall (~5-level) player fits beneath
         ax0, ax1 = 34, 40                    # west hill x-range
         gx0, gx1 = 40, 46                    # channel (the gap) x-range
         bx0, bx1 = 46, 52                    # east hill x-range
-        plateau = y1 - 7                     # last flat row before the south ramp
+        plateau = y1 - DECK                  # ramp spans DECK rows so it still reaches ground
         # two grassy hills: flat at DECK, ramping down to ground on the south side
         for hx0, hx1 in ((ax0, ax1), (bx0, bx1)):
             for y in range(y0, y1):
@@ -203,8 +203,8 @@ class Occlude:
             for x in range(gx0, gx1):
                 self.level[y, x] = 0
                 self.mat[y, x] = "clear_water" if x < wmid else "saturated_grass"
-        # the DECK: spans the gap and laps both hilltops, covering water AND grass
-        cells = [(x, y) for y in range(107, 112)
+        # the DECK: spans the gap and laps both flat hilltops, covering water AND grass
+        cells = [(x, y) for y in range(y0, plateau)
                  for x in range(ax1 - 1, bx0 + 1)]
         self.decks.append({"kind": "bridge", "mat": "stone_mountain", "level": DECK,
                            "thickness": 1, "cells": cells})
