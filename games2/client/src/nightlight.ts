@@ -824,8 +824,10 @@ uniform sampler2D uHeightL; // terrain height, LINEAR — smooth (bilinear) samp
 // MAX VIEW DISTANCE (a handle for future network cull radius).
 const vec3  FOG_NEAR = vec3(0.30, 0.52, 0.50); // first band: teal
 const vec3  FOG_FAR  = vec3(0.72, 0.88, 0.90); // farthest band: pale misty cyan
-const float VIEW   = 16.0;  // cells (3D) to the farthest/full band = sphere radius
 const float BANDS  = 6.0;   // cel-shade steps — band 0 is the clear near bubble
+const float FOG_D0 = 9.5;   // ONSET: clear-bubble radius (cells, 3D) — no fog closer than this
+const float FOG_DW = 2.2;   // width of each cel band past the onset (cells) → full fog at
+                            // FOG_D0 + (BANDS-2)*FOG_DW ≈ 18.3 cells (also the max view dist)
 const float ZW     = 0.5;   // 3D distance per elevation LEVEL vs per horizontal CELL —
                             // world-true: a level is ~0.46 cell tall (dx=32,dy=13,lh=19),
                             // = the art's ~50% block thickness. (Was 1.0 = vertically squashed.)
@@ -924,11 +926,11 @@ void main() {
   float srow = (sv - u) * 0.5;
   vec3 d3 = vec3(scol - uPlayerXY.x, srow - uPlayerXY.y, (sz - uPlayerZ) * ZW);
   float dist = length(d3);
-  // Cel-shade: snap the distance into BANDS steps that "suddenly snap" (band 0 is
-  // the clear near bubble; the farthest band is full misty). A smooth dist() alone
-  // makes each band edge a smooth curve — do NOT add band-edge AA.
-  float t = clamp(dist / VIEW, 0.0, 1.0);
-  float bf = min(floor(t * BANDS), BANDS - 1.0) / (BANDS - 1.0);
+  // Cel-shade: CLEAR out to FOG_D0 (the near bubble), then snap one step every FOG_DW
+  // cells until full fog — band 0 = clear, band BANDS-1 = full misty. A smooth dist()
+  // alone makes each band edge a smooth curve — do NOT add band-edge AA.
+  float band = clamp(floor((dist - FOG_D0) / FOG_DW) + 1.0, 0.0, BANDS - 1.0);
+  float bf = band / (BANDS - 1.0);
   float a = bf * FOG_MAX * uFog;
   if (a <= 0.002) { gl_FragColor = vec4(0.0); return; }
   vec3 col = mix(FOG_NEAR, FOG_FAR, bf); // same palette both directions

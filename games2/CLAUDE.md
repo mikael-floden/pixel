@@ -601,18 +601,22 @@ visible head/shoulders are ABOVE the surface).
   a circle"); darken-above = flattened dark cliffs at night; inverted up/down colours =
   wrong (treat up/down EQUAL). Distance
   POSTERIZED into `BANDS` snappy cel steps (teal `FOG_NEAR` → pale misty `FOG_FAR`);
-  band 0 a clear near bubble, `VIEW` the full-fog radius — doubles as a **MAX VIEW
-  DISTANCE** (future network cull handle). Composited at depth **900_000.2** — ABOVE
+  band 0 is a CLEAR near bubble of radius `FOG_D0` (9.5 cells — no fog closer than
+  that), then one step every `FOG_DW` (2.2) cells until full fog at ≈18 cells — which
+  doubles as a **MAX VIEW DISTANCE** (future network cull handle). (`FOG_D0`/`FOG_DW`
+  replaced the old single `VIEW` radius so the onset and band spacing tune separately —
+  maintainer wanted the fog to start further out and its bands packed tighter.) Composited at depth **900_000.2** — ABOVE
   the multiply light overlay but BELOW the tap marker (900_000.5) and lit avatar
   copies (900_001): fogs the WORLD, never the characters. Dims with night, floored so
   bands read in the dark. Master strength `nightlight.fogStrength` (0 = off = instant
   rollback); tune/QA via `__ml.depthFog(strength?, testZ?, testCol?, testRow?)` (plants
   a virtual player anywhere headlessly — the fog radiates from it). Pairs with the maps
   agent never placing same-tile-vs-same-tile across a hidden downslope. Regression:
-  `scripts/verify-depthfog.mjs`. Tunables `VIEW`/`BANDS`/`ZW`/`DRAPE_RS`/`FOG_MAX`/
-  `FOG_NEAR`/`FOG_FAR` are named GLSL consts atop `DEPTHFOG_FRAG` (raise `ZW` above the
-  0.5 world-true baseline if elevation should read MORE pronounced; raise `DRAPE_RS` to
-  smooth harder at the cost of pinning the fog less tightly to a cliff foot).
+  `scripts/verify-depthfog.mjs`. Tunables `FOG_D0`/`FOG_DW`/`BANDS`/`ZW`/`DRAPE_RS`/
+  `FOG_MAX`/`FOG_NEAR`/`FOG_FAR` are named GLSL consts atop `DEPTHFOG_FRAG` (`FOG_D0` =
+  onset/clear radius, `FOG_DW` = per-band width; raise `ZW` above the 0.5 world-true
+  baseline if elevation should read MORE pronounced; raise `DRAPE_RS` to smooth harder
+  at the cost of pinning the fog less tightly to a cliff foot).
 - **Two geometries, never merge them**: `world-heightmap` (NEAREST) holds
   TERRAIN levels only and drives the resolve + wall-face classification;
   `world-heightmap-linear` (LINEAR) holds terrain + solid objects and drives
