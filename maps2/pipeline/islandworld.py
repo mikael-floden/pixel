@@ -208,20 +208,31 @@ class Island:
                 + (_fbm(X, Y, s + 3, n * 0.13, 3) - 0.5) * 12
                 + (_fbm(X, Y, s + 8, n * 0.06, 2) - 0.5) * 4)
         uplift = _fbm(X, Y, s + 5, n * 0.42, 3) * 8
-        px, py = 0.42 * n, 0.16 * n
-        self.peak_c = (px, py)
-        massif = 30 * np.exp(-(((X - px) ** 2 / (2 * (n * 0.20) ** 2)) + ((Y - py) ** 2 / (2 * (n * 0.13) ** 2))))
-        depth = u - arm + warp - uplift - massif
+        # MULTI-PEAK RIDGE of VARYING height (replaces the single dome) — several
+        # summits of different heights near the up-screen edge + on the arms, taken as
+        # an envelope (max) so peaks stay distinct with saddles between => a jagged
+        # mountain skyline, not one flat mesa. Pinned up-screen so monotone barely fills.
+        PEAKS = [(0.28, 0.13, 34, 0.10), (0.44, 0.09, 25, 0.09), (0.58, 0.15, 40, 0.11),
+                 (0.71, 0.11, 22, 0.08), (0.17, 0.30, 20, 0.09), (0.85, 0.31, 26, 0.09)]
+        ridge = np.zeros_like(u)
+        for fx, fy, h, sg in PEAKS:
+            ridge = np.maximum(ridge, h * np.exp(-(((X - fx * n) ** 2) / (2 * (sg * n) ** 2)
+                                                   + ((Y - fy * n) ** 2) / (2 * (sg * 0.85 * n) ** 2))))
+        self.peak_c = (0.58 * n, 0.15 * n)
+        depth = u - arm + warp - uplift - ridge
         depth[~land] = 1e9
         self._camera_max_float(depth, land)          # continuous closure -> antitone
         dland = depth[land]
         d = (depth - dland.min()) / (dland.max() - dland.min() + 1e-6)
+        MAX = 30
         level = np.zeros((n, n), np.int16)
-        for thr, lv in ((0.82, 3), (0.62, 8), (0.44, 14), (0.26, 22)):
+        # LOW tiers stay flat + gated (dramatic cliffs); the HIGHLAND (d<0.44) is
+        # CONTINUOUS so the ridge's varying heights survive as a jagged, rolling range.
+        for thr, lv in ((0.82, 3), (0.62, 8), (0.44, 14)):
             level[d < thr] = lv
-        bump = np.rint(2 * np.exp(-(((X - px) ** 2 + (Y - py) ** 2) / (2 * (n * 0.09) ** 2)))).astype(np.int16)
-        level[d < 0.26] += bump[d < 0.26]
-        level = np.clip(level, 0, 24)
+        hi = d < 0.44
+        level[hi] = np.clip(np.rint(14 + (0.44 - d[hi]) / 0.44 * MAX), 14, MAX).astype(np.int16)
+        level = np.clip(level, 0, MAX)
         level[~land] = 0
         self.level = level
         self.d = d
@@ -627,19 +638,22 @@ class Island:
         n, X, Y, s = self.n, self.X, self.Y, self.seed
         mat, level = self.mat, self.level
         g = mat == "saturated_grass"
+        # STONE dominates the range (14..); SNOW only high up (>=24); ICE caps the
+        # tallest peaks — so the taller, rolling highland reads as rock with snowy
+        # summits, not one white sheet.
         mat[g & (level >= 14)] = "stone_mountain"
-        mat[(mat == "stone_mountain") & (level >= 20)] = "regular_snow"
+        mat[(mat == "stone_mountain") & (level >= 24)] = "regular_snow"
         # a second, independent warp for lateral biomes (organic borders)
         bx = X + n * 0.09 * (_fbm(X, Y, s + 40, n * 0.26, 3) - 0.5) * 2
         by = Y + n * 0.09 * (_fbm(X, Y, s + 41, n * 0.26, 3) - 0.5) * 2
         glac = _fbm(bx, by, s + 13, n * 0.13, 3)
-        mat[(mat == "regular_snow") & (glac > 0.56) & (level >= 20)] = "crystal_ice"
-        # OBSIDIAN black_mountain: a caldera at the summit AND a scar on the stone
+        mat[(mat == "regular_snow") & (glac > 0.52) & (level >= 26)] = "crystal_ice"
+        # OBSIDIAN black_mountain: a caldera near the summit AND a scar on the stone
         # shelf (west), each dirt-collared so it never abuts grass — big organic blobs.
         cald = _fbm(bx, by, s + 9, n * 0.11, 4)
         scar = _fbm(bx, by, s + 50, n * 0.085, 3)
-        black = (((mat == "regular_snow") & (cald > 0.60) & (level >= 22))
-                 | ((mat == "stone_mountain") & (level >= 12) & (level < 20)
+        black = (((mat == "regular_snow") & (cald > 0.60) & (level >= 26))
+                 | ((mat == "stone_mountain") & (level >= 14) & (level < 24)
                     & (X < n * 0.56) & (scar > 0.58)))
         mat[_dilate(black, 2) & ((mat == "stone_mountain") | (mat == "regular_snow"))] = "lightdark_dirt"
         mat[black] = "black_mountain"
