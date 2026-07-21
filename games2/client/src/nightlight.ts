@@ -825,9 +825,9 @@ uniform sampler2D uHeightL; // terrain height, LINEAR — smooth (bilinear) samp
 const vec3  FOG_NEAR = vec3(0.30, 0.52, 0.50); // first band: teal
 const vec3  FOG_FAR  = vec3(0.72, 0.88, 0.90); // farthest band: pale misty cyan
 const float BANDS  = 6.0;   // cel-shade steps — band 0 is the clear near bubble
-const float FOG_D0 = 11.5;  // ONSET: clear-bubble radius (cells) — no distance fog closer than this
-const float FOG_DW = 1.5;   // width of each cel band past the onset (cells) → full fog at
-                            // FOG_D0 + (BANDS-2)*FOG_DW ≈ 17.5 cells (also the max view dist).
+const float FOG_D0 = 14.5;  // ONSET: clear-bubble radius (cells) — no distance fog closer than this
+const float FOG_DW = 1.2;   // width of each cel band past the onset (cells) → full fog at
+                            // FOG_D0 + (BANDS-2)*FOG_DW ≈ 19.3 cells (also the max view dist).
                             // Smaller = fog INTENSIFIES faster once it starts (tighter bands).
 const float FOG_MAX = 0.78; // opacity of the farthest band (the cull edge)
 const float DRAPE_RS = 2.5; // drape blur half-width along the col+row fold axis (s-units)
@@ -835,7 +835,7 @@ const float ELEV_STEP = 1.5; // fog BANDS added per LEVEL of player↔surface se
                              // EDGE-contrast strength: higher = cliff edges pop harder and
                              // ground below / walls above deepen faster. Drives the highlight.
 const float ELEV_EPS  = 0.05;// tiny FP dead-zone absorbing the resolve's jitter in z.
-const float ELEV_D0   = 5.0; // ELEVATION DEAD-ZONE: no edge fog until the surface is this many
+const float ELEV_D0   = 7.0; // ELEVATION DEAD-ZONE: no edge fog until the surface is this many
                              // LEVELS from the player — a regular house/roof stays CLEAR (its
                              // small step is read from the map's distinct tiles); only a real
                              // MOUNTAIN climb fogs (maintainer). Raise = fog fires only on taller

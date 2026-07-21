@@ -575,8 +575,8 @@ visible head/shoulders are ABOVE the surface).
   overlay. Its JOB is to make cliff EDGES readable. TWO channels, summed then POSTERIZED
   once into snappy cel bands (teal `FOG_NEAR` → pale misty `FOG_FAR`):
   1. **SMOOTH horizontal DISTANCE** — 2D distance of the drape-reconstructed `scol/srow`
-     to the player. `distBand`: CLEAR bubble to `FOG_D0` (11.5 cells), then +1 band every
-     `FOG_DW` (1.5) cells to full fog ≈17.5 cells = the **MAX VIEW DISTANCE** (cull handle).
+     to the player. `distBand`: CLEAR bubble to `FOG_D0` (14.5 cells), then +1 band every
+     `FOG_DW` (1.2) cells to full fog ≈19.3 cells = the **MAX VIEW DISTANCE** (cull handle).
      Reconstruction is smooth (seed `sz=uPlayerZ`, iterate ×3 `sz=drape(cell(u,v0,sz))`;
      `drape()` = anisotropic blur of `terrH=uHeightL.R−G` along the col+row FOLD axis,
      half-width `DRAPE_RS=2.5`), so flat ground reads as clean concentric bands — NO

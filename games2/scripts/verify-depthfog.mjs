@@ -21,7 +21,10 @@ await page.waitForFunction(() => window.__ml && window.__ml.players?.() >= 1, nu
 await page.waitForTimeout(9000);
 await page.evaluate(() => window.__ml.timeOfDay("Day"));
 await page.evaluate(() => window.__ml.lookAt(60, 110)); // the plateau + surrounding low ground
-await page.evaluate(() => window.__ml.depthFog(0, 7)); // force player level 7: view is all "below"
+// Force the virtual player WAY above the terrain (level 20; occlusion_test tops out at 7),
+// so every ground pixel is far below the ELEV_D0 dead-zone → the elevation-edge fog fires
+// regardless of the tuned FOG_D0 / ELEV_D0 (this gate proves the pass RENDERS, not its tuning).
+await page.evaluate(() => window.__ml.depthFog(0, 20));
 await page.waitForTimeout(700);
 
 // Mean "teal-ness" = (G+B)/2 - R over the central game area (avoid frame + HUD).
