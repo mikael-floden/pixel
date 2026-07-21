@@ -833,9 +833,12 @@ const float DRAPE_RS = 2.5; // drape blur half-width along the col+row fold axis
 const float ELEV_STEP = 1.5; // fog BANDS added per LEVEL of player↔surface separation — the
                              // EDGE-contrast strength: higher = cliff edges pop harder and
                              // ground below / walls above deepen faster. Drives the highlight.
-const float ELEV_EPS  = 0.05;// dead-zone (levels·ELEV_STEP) keeping a flat tread at band 0 —
-                             // absorbs the resolve's tiny FP jitter in z; band 1 still snaps
-                             // <1px past the cliff lip.
+const float ELEV_EPS  = 0.05;// tiny FP dead-zone absorbing the resolve's jitter in z.
+const float ELEV_D0   = 8.0; // ELEVATION DEAD-ZONE: no edge fog until the surface is this many
+                             // LEVELS from the player. Small elevation changes (< ELEV_D0) are
+                             // left to the map's distinct tiles (maintainer: tiles handle small
+                             // steps, fog is for BIG cliffs, diff > ~10). Raise = fog fires only
+                             // on taller cliffs; lower = fires on smaller drops.
 
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
@@ -937,13 +940,15 @@ void main() {
   // a pixel is past the lip, so the {z == player level} boundary IS the drawn top edge.
   // Round the eased fractional player elevation to its LEVEL so a jump/fall can't pulse
   // the field. abs() ⇒ symmetric both ways (ground below AND a wall above fog the same,
-  // same palette). ceil() with a sub-pixel dead-zone keeps the flat top perfectly clear
-  // (band 0) yet snaps to band ≥1 the first pixel past the lip — the contrast lands ON
-  // the edge at ANY range (NOT gated by the near bubble). z is constant across same-level
+  // same palette). The ELEV_D0 DEAD-ZONE means SMALL elevation changes get NO fog — the
+  // map's distinct tiles make those edges clear; fog is reserved for BIG cliffs (the
+  // maintainer designs cliffs > ~10 levels for it). Past the dead-zone the fog snaps up,
+  // and because the dead-zone eats the near part of a rising face, the contrast on a cliff
+  // ABOVE the player moves UP toward its real top edge. z is constant across same-level
   // ground, so this adds ZERO contour on flats: it can't recreate the flat-ground zigzag.
   float pLev = floor(uPlayerZ + 0.5);              // player LEVEL (anti-shimmer)
   float dLev = abs(pLev - z);                      // levels of separation
-  float elevBand = ceil(dLev * ELEV_STEP - ELEV_EPS); // 0 on the tread, ≥1 past the lip
+  float elevBand = ceil(max(0.0, dLev - ELEV_D0) * ELEV_STEP - ELEV_EPS); // 0 until |Δlvl|>ELEV_D0
 
   // COMBINE + CEL-SNAP. Additive (NOT max) so a mid-range edge ALWAYS adds its step on
   // top of a nonzero distance band — exactly the "can't see the edge behind a cliff"

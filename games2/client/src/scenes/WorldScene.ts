@@ -1989,7 +1989,9 @@ export class WorldScene extends Phaser.Scene {
             .setDepth(900_100);
         this.posLabel
           .setPosition(av.lx, av.ly + 4)
-          .setText(`${(av.fx / CELL_WU).toFixed(1)}, ${(av.fy / CELL_WU).toFixed(1)}`);
+          // World id on a 2nd line — so it's always obvious WHICH world you're on
+          // (worlds differ in scale: occlusion_test tops out at level 7, the_island 19).
+          .setText(`${(av.fx / CELL_WU).toFixed(1)}, ${(av.fy / CELL_WU).toFixed(1)}\n${this.worldName}`);
       }
       if (av.bubble) {
         av.bubble.setPosition(av.lx, topY - 18);
