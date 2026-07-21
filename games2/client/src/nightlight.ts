@@ -949,7 +949,11 @@ void main() {
   // and because the dead-zone eats the near part of a rising face, the contrast on a cliff
   // ABOVE the player moves UP toward its real top edge. z is constant across same-level
   // ground, so this adds ZERO contour on flats: it can't recreate the flat-ground zigzag.
-  float pLev = floor(uPlayerZ + 0.5);              // player LEVEL (anti-shimmer)
+  float pLev = uPlayerZ;                           // player's EASED elevation (NOT rounded) — so
+                                                   // the fog FOLLOWS a jump/fall's z smoothly as
+                                                   // it animates, instead of snapping at the
+                                                   // half-level. Standing still it's a stable
+                                                   // integer, so flats/edges are unaffected.
   float dLev = abs(pLev - z);                      // levels of separation
   float elevBand = ceil(max(0.0, dLev - ELEV_D0) * ELEV_STEP - ELEV_EPS); // 0 until |Δlvl|>ELEV_D0
 

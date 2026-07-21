@@ -589,8 +589,9 @@ visible head/shoulders are ABOVE the surface).
      FACE pixel resolves to the HIGH cell, so heightAt is constant across top+face and only
      steps at the FOOT — z instead equals the player's level on the tread and DROPS the
      instant a pixel is past the lip, so the `{z==playerLevel}` boundary lands ON the drawn
-     cliff-top edge). `pLev = floor(uPlayerZ+0.5)` rounds the eased elevation so a jump/fall
-     can't pulse the field; `abs()` ⇒ symmetric both ways (ground below AND a wall above
+     cliff-top edge). `pLev = uPlayerZ` is the EASED (un-rounded) player elevation, so the fog
+     FOLLOWS a jump/fall's z smoothly as it animates (no snap at the half-level); standing still
+     it's a stable integer so flats/edges are unaffected. `abs()` ⇒ symmetric both ways (below AND above
      foggier, same palette); the `ELEV_EPS` dead-zone keeps a flat tread perfectly clear.
      `z` is constant across same-level ground ⇒ this term adds ZERO contour on flats (can't
      recreate the old zigzag) and is NOT gated by `FOG_D0` (edges pop even at the feet).
