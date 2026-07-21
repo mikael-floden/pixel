@@ -846,9 +846,11 @@ const float ELEV_D0   = 7.0; // ELEVATION DEAD-ZONE: no edge fog until the surfa
                              // cliffs; lower = fires on smaller drops.
 const float SAME_LEVEL_FOG  = 0.10; // OPACITY multiplier on the player's OWN level — the fog there
                                     // is faded to 10% (maintainer), NOT removed.
-const float LEVEL_FADE_SPAN = 10.3; // levels of |Δz| over which that fade ramps back to FULL
-                                    // opacity. Set so the per-level increase stays ~0.088/level
-                                    // (unchanged) while the floor drops 30%→10% (maintainer).
+const float LEVEL_FADE_SPAN = 15.0; // levels of |Δz| over which that fade ramps back to FULL
+                                    // opacity. Set so the per-level opacity increase is ~0.06/level
+                                    // ((1−SAME_LEVEL_FOG)/SPAN = 0.90/15) — a GENTLER climb than the
+                                    // old 0.088/level, which went too opaque too fast up a tall wall
+                                    // (maintainer: "6% each Z-step"); floor stays 10% on your level.
 
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
@@ -970,10 +972,10 @@ void main() {
   // took that back).
   float band = clamp(distBand + elevBand, 0.0, BANDS - 1.0);
   float bf = band / (BANDS - 1.0);
-  // PER-LEVEL TRANSPARENCY (maintainer's new knob): scale the fog OPACITY by |Δlevel| — faded to
-  // SAME_LEVEL_FOG (30%) on the player's OWN level, ramping linearly back to FULL by
-  // LEVEL_FADE_SPAN (8) levels of separation. So your own level barely hazes, ~1 level off a
-  // touch more … and 8+ levels away reads at full strength (a bridge high in the air).
+  // PER-LEVEL TRANSPARENCY (maintainer's knob): scale the fog OPACITY by |Δlevel| — faded to
+  // SAME_LEVEL_FOG (10%) on the player's OWN level, ramping linearly (~6%/level) back to FULL by
+  // LEVEL_FADE_SPAN (15) levels of separation. So your own level barely hazes, ~1 level off a
+  // touch more … and 15+ levels away reads at full strength (a bridge high in the air).
   float levelFade = clamp(SAME_LEVEL_FOG + (1.0 - SAME_LEVEL_FOG) * (dLev / LEVEL_FADE_SPAN),
                           SAME_LEVEL_FOG, 1.0);
   float a = bf * FOG_MAX * uFog * levelFade;

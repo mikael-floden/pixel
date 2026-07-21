@@ -603,8 +603,9 @@ visible head/shoulders are ABOVE the surface).
   `band = clamp(distBand + elevBand, 0, BANDS−1)` (ADDITIVE), then the fog OPACITY is scaled by a
   PER-LEVEL TRANSPARENCY: `a *= clamp(SAME_LEVEL_FOG + (1−SAME_LEVEL_FOG)·|Δz|/LEVEL_FADE_SPAN,
   SAME_LEVEL_FOG, 1)` — 10% opacity on the player's OWN level (a soft fade NOT the old hard gate,
-  which was taken back), rising ~0.088/level to FULL by `LEVEL_FADE_SPAN` (~10) levels of
-  separation — a bridge high in the air reads at full strength. (`ELEV_STEP=0.5` also makes the Z
+  which was taken back), rising ~0.06/level to FULL by `LEVEL_FADE_SPAN` (15) levels of
+  separation — a bridge high in the air reads at full strength (maintainer tuned the climb from
+  ~0.088 to 0.06/level: it went too opaque too fast partway up a tall wall). (`ELEV_STEP=0.5` also makes the Z
   ramp gentle: +1 band every ~2 levels.) HISTORY of rejected tries: elevation-banded (v1) → then a TRUE 3D-distance
   SPHERE with drape-smoothing + `ZW` weight (killed the zigzag AND, fatally, the edge
   contrast — its bands were iso-distance rings that floated across the terrain and NEVER
