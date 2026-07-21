@@ -605,11 +605,12 @@ visible head/shoulders are ABOVE the surface).
   strength `nightlight.fogStrength` (0 = off = instant rollback); tune/QA via
   `__ml.depthFog(strength?, testZ?, testCol?, testRow?)` (plants a virtual player anywhere
   headlessly — the fog radiates from it). Regression: `scripts/verify-depthfog.mjs`. Tunables
-  are named GLSL consts atop `DEPTHFOG_FRAG`: **`ELEV_D0`** (=8) = elevation DEAD-ZONE — no edge
-  fog until the surface is this many LEVELS from the player, so small steps rely on the map's
-  distinct tiles and fog is reserved for BIG cliffs (NB: `occlusion_test` tops out at level 7 so
-  at 8 it shows only the distance rings, no edge highlight; `the_island` goes to 19 — the
-  player's coord label prints the world id); **`ELEV_STEP`** (=1.5) = edge-contrast strength /
+  are named GLSL consts atop `DEPTHFOG_FRAG`: **`ELEV_D0`** (=7) = elevation DEAD-ZONE — no edge
+  fog until the surface is this many LEVELS from the player, so a house/roof stays clear (its
+  small step is read from the map's distinct tiles) and only a real mountain fogs (NB: a drop of
+  exactly `ELEV_D0` sits at the boundary — `occlusion_test` tops out at level 7 so at 7 it shows
+  only the distance rings; `the_island` goes to 19 — the player's coord label prints the world
+  id); **`ELEV_STEP`** (=1.5) = edge-contrast strength /
   bands per level past the dead-zone; `FOG_D0`/`FOG_DW`/`BANDS` = the horizontal distance
   onset/width/cull; `DRAPE_RS` = flat-ground smoothing; `FOG_MAX`/`FOG_NEAR`/`FOG_FAR` = look.
 - **Two geometries, never merge them**: `world-heightmap` (NEAREST) holds

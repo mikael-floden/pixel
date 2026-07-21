@@ -834,11 +834,11 @@ const float ELEV_STEP = 1.5; // fog BANDS added per LEVEL of player↔surface se
                              // EDGE-contrast strength: higher = cliff edges pop harder and
                              // ground below / walls above deepen faster. Drives the highlight.
 const float ELEV_EPS  = 0.05;// tiny FP dead-zone absorbing the resolve's jitter in z.
-const float ELEV_D0   = 8.0; // ELEVATION DEAD-ZONE: no edge fog until the surface is this many
-                             // LEVELS from the player. Small elevation changes (< ELEV_D0) are
-                             // left to the map's distinct tiles (maintainer: tiles handle small
-                             // steps, fog is for BIG cliffs, diff > ~10). Raise = fog fires only
-                             // on taller cliffs; lower = fires on smaller drops.
+const float ELEV_D0   = 7.0; // ELEVATION DEAD-ZONE: no edge fog until the surface is this many
+                             // LEVELS from the player — a regular house/roof stays CLEAR (its
+                             // small step is read from the map's distinct tiles); only a real
+                             // MOUNTAIN climb fogs (maintainer). Raise = fog fires only on taller
+                             // cliffs; lower = fires on smaller drops.
 
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
