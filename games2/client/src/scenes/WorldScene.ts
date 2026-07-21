@@ -409,7 +409,6 @@ export class WorldScene extends Phaser.Scene {
   private iso = { ox: 0, oy: 0, w: WORLD_WIDTH, h: WORLD_HEIGHT };
   // Terrain (elevation + surface) — same grid the server uses, so prediction matches.
   private terrain: TerrainGrid | null = null;
-  private collisionOverlay?: Phaser.GameObjects.Graphics;
   // Streaming ground renderer state.
   private groundRT?: Phaser.GameObjects.RenderTexture;
   // Chase-cam state: eased world centre + eased zoom; detached while a debug
@@ -735,7 +734,6 @@ export class WorldScene extends Phaser.Scene {
       this.hud?.refreshSettings(); // keys flip the same state the switches show
     };
     this.input.keyboard!.on("keydown-ONE", () => this.cycleTimeOfDay());
-    this.input.keyboard!.on("keydown-FOUR", sync(() => this.toggleCollision()));
     this.input.keyboard!.on("keydown-FIVE", sync(() => this.toggleTorch()));
     this.input.keyboard!.on("keydown-SIX", sync(() => this.toggleBonfire()));
     this.input.keyboard!.on("keydown-SEVEN", sync(() => this.toggleWalls()));
@@ -776,7 +774,7 @@ export class WorldScene extends Phaser.Scene {
           act: () => gameAudio.togglePure(),
           get: () => gameAudio.pureEnabled,
         },
-        { label: "collision", act: () => this.toggleCollision(), get: () => !!this.collisionOverlay },
+        { label: "respawn", act: () => this.room?.send("respawn") },
         { label: "torch", act: () => this.toggleTorch(), get: () => this.torchOn },
         { label: "bonfire", act: () => this.toggleBonfire(), get: () => this.fireOn },
         { label: "see-through walls", act: () => this.toggleWalls(), get: () => this.occFadeOn },
@@ -2211,11 +2209,6 @@ export class WorldScene extends Phaser.Scene {
     fadeToBlack(() => location.reload());
   }
 
-  private toggleCollision() {
-    this.toggleCollisionOverlay();
-    this.chat.addLog("—", `[4] Collision overlay: ${this.collisionOverlay ? "on" : "off"}`);
-  }
-
   /** Torch is PLAYER state everyone sees: local mirror flips instantly (my
    * own light + the switch), and the server broadcasts it to the world. */
   private toggleTorch() {
@@ -3384,74 +3377,6 @@ export class WorldScene extends Phaser.Scene {
     this.jumpUntil = now + JUMP_MS;
     this.jumpReadyAt = now + JUMP_MS + JUMP_COOLDOWN_MS;
     this.jumpQueued = true;
-  }
-
-  /** Toggle a debug overlay marking non-standable cells around the camera
-   * (blue = swimmable water, red = solid). Redrawn for the CURRENT view each
-   * time it's toggled on — the world is far too large to mark everywhere. */
-  private toggleCollisionOverlay() {
-    if (this.collisionOverlay) {
-      this.collisionOverlay.destroy();
-      this.collisionOverlay = undefined;
-      return;
-    }
-    if (!this.world) return;
-    const { dx, dy, lh } = MAP_GEOMETRY;
-    const cam = this.cameras.main;
-    const g = this.add.graphics().setDepth(1_000_000);
-    const u0 = Math.floor((cam.worldView.x - this.iso.ox) / dx) - 2;
-    const u1 = Math.ceil((cam.worldView.right - this.iso.ox) / dx) + 2;
-    const v0 = Math.max(0, Math.floor((cam.worldView.y - this.iso.oy) / dy) - 2);
-    const v1 = Math.ceil((cam.worldView.bottom - this.iso.oy + this.maxLevel * lh) / dy) + 2;
-    for (let v = v0; v <= v1; v++) {
-      for (let u = u0; u <= u1; u++) {
-        if ((u + v) & 1) continue;
-        const col = (u + v) / 2;
-        const row = (v - u) / 2;
-        const cell = this.world.rows[row]?.[col];
-        if (!cell) continue;
-        const s = surfaceFor(cell.t);
-        if (s.standable) continue;
-        // Water reads soft blue; solid blockers pop in strong red.
-        if (s.swimmable) g.fillStyle(0x3bb0ff, 0.3);
-        else g.fillStyle(0xff0000, 0.55);
-        const bx = this.iso.ox + u * dx;
-        // A solid blocker stops the player on the surrounding WALKABLE
-        // ground — draw its footprint there (the base of the obstacle),
-        // not on the obstacle's own raised surface: on the demo's l:1
-        // lava blocks the diamond floated on the top face. Water keeps
-        // its own level (you collide/swim AT the water surface), and so
-        // do fully enclosed solids (forest interiors, no ground nearby).
-        let lvl = cell.l;
-        if (!s.swimmable) {
-          let ground = Infinity;
-          for (const [dc, dr] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
-            const n = this.world.rows[row + dr]?.[col + dc];
-            if (!n) continue;
-            const ns = surfaceFor(n.t);
-            if (ns.standable || ns.swimmable) ground = Math.min(ground, n.l);
-          }
-          if (ground !== Infinity) lvl = Math.min(lvl, ground);
-        }
-        // The tile ART paints its surface diamond groundTop px below its
-        // canvas top — without the shift the overlay hovered 8px above the
-        // drawn ground (playtester: "why is the collision box not at ground
-        // level where the wall begins?"). Pure visualization; the collision
-        // math itself is grid-space and has no such offset.
-        const by =
-          this.iso.oy + v * dy - lvl * lh + (this.tileBases?.groundTop ?? 8);
-        g.fillPoints(
-          [
-            new Phaser.Geom.Point(bx + dx, by),
-            new Phaser.Geom.Point(bx + dx * 2, by + dy),
-            new Phaser.Geom.Point(bx + dx, by + dy * 2),
-            new Phaser.Geom.Point(bx, by + dy),
-          ],
-          true,
-        );
-      }
-    }
-    this.collisionOverlay = g;
   }
 
   /** Draw the local player's swim-stamina bar (bottom-centre HUD), shown only

@@ -206,6 +206,18 @@ export class WorldRoom extends Room<WorldState> {
       if (player) player.torch = !!message?.on;
     });
 
+    // Respawn: send the player back to a fresh spawn point (settings button /
+    // stuck recovery). Clear queued movement + any jump so they don't drift off
+    // spawn; the client snaps to the teleport (its >2-cell jump threshold).
+    this.onMessage("respawn", (client) => {
+      const player = this.state.players.get(client.sessionId);
+      if (!player) return;
+      this.placeAtSpawn(player);
+      player.inputQueue.length = 0;
+      player.timeCredit = 0;
+      player.jumpUntil = 0;
+    });
+
     // Time-of-day is world state, and it RUNS: the server's world clock
     // advances the phase on its own (TIME_PHASE_SECONDS; the day/night
     // cycle is a core rhythm of the game). The settings button still sends
@@ -294,6 +306,23 @@ export class WorldRoom extends Room<WorldState> {
     this.setSimulationInterval((delta) => this.update(delta / 1000), dtMs);
   }
 
+  /** Put a player on a FRESH spawn point: open walkable land near the world's
+   * spawn (jittered so arrivals don't stack), on the base ground surface — never
+   * on a deck. Used by onJoin for new arrivals and by the "respawn" message. */
+  private placeAtSpawn(player: Player) {
+    const c = this.worldSpawn ?? { x: this.worldW / 2, y: this.worldH / 2 };
+    if (this.terrain) {
+      const s = findSpawn(this.terrain, c.x + rand(-120, 120), c.y + rand(-120, 120));
+      player.x = s.x;
+      player.y = s.y;
+    } else {
+      // No map loaded → open world; spawn near centre so newcomers meet quickly.
+      player.x = c.x + rand(-120, 120);
+      player.y = c.y + rand(-120, 120);
+    }
+    player.elev = this.terrain ? levelAtWorld(this.terrain, player.x, player.y) : 0;
+  }
+
   onJoin(client: Client, options: JoinOptions = {}) {
     const player = new Player();
     player.token = (options.token || "").slice(0, 64);
@@ -304,23 +333,13 @@ export class WorldRoom extends Room<WorldState> {
     // but rescue anyone whose saved spot is now blocked (terrain can change).
     const saved = player.token ? this.store.load(player.token) : undefined;
     if (saved && !(this.terrain && !isStandableAtWorld(this.terrain, saved.x, saved.y))) {
+      // Returning player: restore their last position on the base ground there.
       player.x = saved.x;
       player.y = saved.y;
-    } else if (this.terrain) {
-      // Spawn on open walkable land near the world's spawn point.
-      const c = this.worldSpawn ?? { x: this.worldW / 2, y: this.worldH / 2 };
-      const s = findSpawn(this.terrain, c.x + rand(-120, 120), c.y + rand(-120, 120));
-      player.x = s.x;
-      player.y = s.y;
+      player.elev = this.terrain ? levelAtWorld(this.terrain, player.x, player.y) : 0;
     } else {
-      // No map loaded → open world; spawn near centre so newcomers meet quickly.
-      const c = this.worldSpawn ?? { x: this.worldW / 2, y: this.worldH / 2 };
-      player.x = c.x + rand(-120, 120);
-      player.y = c.y + rand(-120, 120);
+      this.placeAtSpawn(player);
     }
-    // Start on the base ground surface at the spawn cell (a player never spawns
-    // ON a deck — decks are reached by walking; base level = the ground here).
-    player.elev = this.terrain ? levelAtWorld(this.terrain, player.x, player.y) : 0;
     this.state.players.set(client.sessionId, player);
     // Every arrival in Nangijala is announced by a shooting star crossing
     // the sky — the same streak for every player in the world.
