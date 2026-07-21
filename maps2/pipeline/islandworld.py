@@ -1,30 +1,32 @@
-"""the_island ("The Island") — the WIP production island, built on the new
-CAMERA-FACING elevation rule. Kept separate from demo_lost (the older grass island,
-preserved untouched) so we can iterate on this one until it's right.
+"""the_island ("The Island") — the WIP production island, organic + ALttP-shaped.
 
-A grass-dominant island that showcases every base tile: a stone_mountain rising to
-a regular_snow cap with a crystal_ice glacier, a light_sand beach on the near
-shore, a clear_water tarn, a winding lightdark_dirt path, and a black_mountain
-volcanic nook.
+Kept separate from demo_lost (the older grass island, preserved) so we can iterate
+here. Built to look like a REAL island with a Zelda-ALttP sense of journey, under
+our camera-facing elevation rules.
 
-CAMERA-FACING TERRAIN (see maps2/README.md "Elevation & occlusion rules"): the
-island is TILTED — high on the up-screen side (the mountain), sloping DOWN toward
-the camera. So every land slope faces the camera (its cliff faces are visible) and
-the up-screen coast is a sheer sea-cliff you fall off, never a walk-behind. That
-kills the "hidden lip eats the player's legs" bug WITHOUT resorting to stripes:
-`camera_monotone` enforces it and `occlusion_violations` proves the map clean.
-Beaches stay on the near (camera) shore only; the mountain caps the top.
+Design (see scratchpad master blueprint / maps2/README.md):
 
-Everything else we learned is still applied: seamless corner+edge Wang transitions
-with a sparse fade, solid on-target region-coherent base tiles (coherent cliff
-walls), elevation-correct near-shore beaches, props from every terrain set, full
-walkability, and a loadable world.json.
+  * ORGANIC COASTLINE — domain-warped fbm x an anisotropic falloff x a small table
+    of explicit lobe attractors (harbor bay, coves, headlands, a north cape, an
+    offshore islet). No ellipse, no `hypot < r`.
+  * A SOUTH-FACING STAIRCASE of a FEW flat tiers (levels 0/3/8/14/22) separated by
+    TALL multi-level cliffs (Δ5/Δ6/Δ8 = 80/96/128px) you cannot climb — so you must
+    walk around and find the one RAMP up each tier (descending dirt spurs, R1..R4).
+    A localised massif (Embercrown) caps the top; its back is the sheer sea-cliff.
+  * DYNAMIC REGIONS — materials from elevation bands on warped tier contours plus
+    warped-fbm blobs (glacier, obsidian caldera, dry-dirt meadow). No circular
+    region anywhere.
+  * CAMERA-FACING is guaranteed: the depth field is antitone by construction (a
+    continuous closure before quantizing), `camera_monotone` is the backstop, and
+    `occlusion_violations` is asserted == [] every build. Reachability (every tier
+    from spawn over |Δlevel|<=1 steps) is asserted too.
 """
 
 from __future__ import annotations
 
 import math
 import os
+from collections import deque
 
 import numpy as np
 from PIL import Image
@@ -37,7 +39,7 @@ from tiles2lib import DX, DY, LEVEL_PX, Tiles2
 GROUND_BOTTOM = 54
 PLAIN_PROB = 0.90
 SPECIAL_PROB = 0.10
-SAND_W = 3                       # beach width (cells) inland from the water
+SAND_W = 3
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 MAPS2 = os.path.dirname(_HERE)
@@ -83,8 +85,44 @@ def _dilate(mask, r):
     return m
 
 
+def _erode(mask, r):
+    m = mask.copy()
+    for _ in range(r):
+        nn = m.copy()
+        nn[:, :-1] &= m[:, 1:]; nn[:, 1:] &= m[:, :-1]
+        nn[:-1, :] &= m[1:, :]; nn[1:, :] &= m[:-1, :]
+        m = nn
+    return m
+
+
+def _largest_component(mask):
+    """Keep only the largest 4-connected True component of a boolean mask."""
+    H, W = mask.shape
+    seen = np.zeros((H, W), bool)
+    best = None
+    for y in range(H):
+        for x in range(W):
+            if mask[y, x] and not seen[y, x]:
+                q, cells = deque([(x, y)]), []
+                seen[y, x] = True
+                while q:
+                    cx, cy = q.popleft()
+                    cells.append((cx, cy))
+                    for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                        xx, yy = cx + i, cy + j
+                        if 0 <= xx < W and 0 <= yy < H and mask[yy, xx] and not seen[yy, xx]:
+                            seen[yy, xx] = True
+                            q.append((xx, yy))
+                if best is None or len(cells) > len(best):
+                    best = cells
+    out = np.zeros((H, W), bool)
+    for x, y in (best or []):
+        out[y, x] = True
+    return out
+
+
 class Island:
-    def __init__(self, n=120, seed=11):
+    def __init__(self, n=140, seed=11):
         self.n, self.seed = n, seed
         self.lib = Tiles2()
         self.mat = np.full((n, n), "", object)
@@ -92,105 +130,426 @@ class Island:
         self.top = np.full((n, n), None, object)
         self.mirror = np.zeros((n, n), bool)
         self.props = {}
-        self.spawn = (int(n * 0.5), int(n * 0.80))     # south beach
-        self._terrain()
+        self.decks = []
+        self.reserved = set()
+        self.links = []          # virtual walkable edges (bridge decks span these)
+        self.spawn = (int(n * 0.52), int(n * 0.90))
+        self._coastline()
+        self._elevation()
+        self._tarn()
+        flatten_shores(self.mat, self.level)
+        camera_monotone(self.level, self.mat)     # true antitone before we read components
+        self.level_before = self.level.copy()
+        self._connect_tiers()                     # sparse descending-spur ramps merge tiers
+        camera_monotone(self.level, self.mat)     # backstop the ramps
+        # (river gorge machinery — _river/_cross_river/_ford_stranded — is kept for a
+        #  focused follow-up; it needs more work to guarantee both-bank reachability)
+        self._materials()
+        self._pick_spawn()
         self._paint()
+        self.deck_at = {(x, y): dk for dk in self.decks for (x, y) in dk["cells"]}
         self._decorate()
 
-    # -- terrain ---------------------------------------------------------------
+    # -- A. organic coastline --------------------------------------------------
 
-    def _terrain(self):
+    def _coastline(self):
         n = self.n
         Y, X = np.mgrid[0:n, 0:n].astype(np.float32)
-        cx, cy = n * 0.5, n * 0.5
-        MAX = 12
+        self.X, self.Y = X, Y
+        s = self.seed
+        cx, cy = n * 0.50, n * 0.56
+        # domain warp — breaks radial symmetry into lobes, not a fringe
+        wx = X + n * 0.11 * (_fbm(X, Y, s + 11, n * 0.28, 4) - 0.5) * 2
+        wy = Y + n * 0.11 * (_fbm(X, Y, s + 12, n * 0.28, 4) - 0.5) * 2
+        # anisotropic, noise-wobbled falloff (never a clean ellipse)
+        r = np.hypot((wx - cx) / (0.46 * n), (wy - cy) / (0.42 * n))
+        r += 0.14 * (_fbm(X, Y, s + 13, n * 0.5, 2) - 0.5)
+        coast = (1.0 - r) + (_fbm(wx, wy, s + 2, n * 0.30, 5) - 0.5) * 1.05
+        # explicit named lobes: (+)=peninsula/spit, (-)=bay/cove
+        LOBES = [(0.52, 0.96, -0.55, 0.14),   # harbor bay (near shore) -> spawn
+                 (0.34, 0.90, -0.30, 0.06),   # west marsh cove
+                 (0.70, 0.93, -0.28, 0.06),   # east cove
+                 (0.12, 0.58, +0.34, 0.10),   # west headland
+                 (0.90, 0.50, +0.32, 0.10),   # east headland -> lighthouse
+                 (0.44, 0.09, +0.24, 0.09)]   # north cape -> sheer sea-cliff
+        for fx, fy, amp, rad in LOBES:
+            coast += amp * np.exp(-(((X - fx * n) ** 2 + (Y - fy * n) ** 2) / (2 * (rad * n) ** 2)))
+        land = coast > 0.0
+        land = _largest_component(land)
+        # one intentional offshore islet (small, decorative)
+        islet = np.exp(-(((X - 0.82 * n) ** 2 + (Y - 0.86 * n) ** 2) / (2 * (0.045 * n) ** 2))) > 0.5
+        land |= islet
+        # de-sliver the coast
+        land = _erode(_dilate(land, 1), 1)
+        self.land = land
+        self.mat[land] = "saturated_grass"
+        self.mat[~land] = "clear_water"
 
-        # CAMERA-FACING height field. sxy runs 0 (up-screen corner) -> 1 (camera
-        # corner); a strong tilt makes land high up-screen and low toward the
-        # camera, so slopes face the camera by construction. A radial falloff sinks
-        # the left/right/near edges into the sea; the mountain is pinned up-screen
-        # so ALL its slopes face the camera and its back is the top-edge sea-cliff.
-        sxy = (X + Y) / (2.0 * n)
-        h = (0.58 - sxy) * 7.0                               # GENTLE camera-facing tilt
-        rr = np.hypot((X - cx) / (n * 0.60), (Y - cy) / (n * 0.60))
-        h -= np.clip(rr - 0.60, 0, None) * 30.0              # taper edges to sea
-        h += 3.0                                             # keep the meadow above water
-        # the mountain is a LOCALISED tall feature pinned to the up-screen edge, so
-        # its back is the top-edge sea-cliff and the grass meadow stays dominant
-        self.peak_c = (n * 0.44, n * 0.14)
-        dm = np.hypot(X - self.peak_c[0], Y - self.peak_c[1])
-        h += 11.0 * np.exp(-(dm / (n * 0.155)) ** 2)
-        # modest noise — kept small so the gentle tilt still dominates (few local
-        # bumps for camera_monotone to iron out, so the island stays organic)
-        h += (_fbm(X, Y, self.seed, n * 0.16, 4) - 0.5) * 2.2
-        h += (_fbm(X, Y, self.seed + 3, n * 0.06, 3) - 0.5) * 0.9
+    # -- B. tiered elevation (antitone by construction) ------------------------
 
-        mat = np.full((n, n), "", object)
-        land = h > 0.7
-        mat[land] = "saturated_grass"
-        mat[~land] = "clear_water"
-        # a clear_water TARN low on the near (camera) side, well clear of the cliff
-        self.lake_c = (n * 0.58, n * 0.66, n * 0.070)
-        dl = np.hypot(X - self.lake_c[0], Y - self.lake_c[1])
-        mat[dl < self.lake_c[2] * 0.9] = "clear_water"
-        level = np.clip(np.rint(h), 0, MAX).astype(np.int16)
-        level[mat == "clear_water"] = 0
+    def _elevation(self):
+        n, X, Y, s, land = self.n, self.X, self.Y, self.seed, self.land
+        # camera depth: strictly increasing toward camera (+x,+y); its decreasing
+        # quantization is antitone. Organic cliff-line wiggle + NW uplift; a massif
+        # FOLDED IN (lowers depth -> a camera-facing wedge, steep legal lateral flanks).
+        u = (X + Y)
+        warp = (_fbm(X, Y, s, n * 0.16, 4) - 0.5) * 11 + (_fbm(X, Y, s + 3, n * 0.08, 3) - 0.5) * 5
+        uplift = _fbm(X, Y, s + 5, n * 0.42, 3) * 8
+        px, py = 0.42 * n, 0.16 * n
+        self.peak_c = (px, py)
+        massif = 30 * np.exp(-(((X - px) ** 2 / (2 * (n * 0.20) ** 2)) + ((Y - py) ** 2 / (2 * (n * 0.13) ** 2))))
+        depth = u + warp - uplift - massif
+        depth[~land] = 1e9
+        self._camera_max_float(depth, land)          # continuous closure -> antitone
+        dland = depth[land]
+        d = (depth - dland.min()) / (dland.max() - dland.min() + 1e-6)
+        level = np.zeros((n, n), np.int16)
+        for thr, lv in ((0.82, 3), (0.62, 8), (0.44, 14), (0.26, 22)):
+            level[d < thr] = lv
+        bump = np.rint(2 * np.exp(-(((X - px) ** 2 + (Y - py) ** 2) / (2 * (n * 0.09) ** 2)))).astype(np.int16)
+        level[d < 0.26] += bump[d < 0.26]
+        level = np.clip(level, 0, 24)
+        level[~land] = 0
+        self.level = level
+        self.d = d
 
-        # SHORES: beach every coast down to the waterline, THEN enforce the
-        # camera-facing rule — which re-cliffs the up-screen coasts into sheer
-        # sea-cliffs (no walk-behind) and leaves only the near-shore beaches low.
-        flatten_shores(mat, level)
-        self.mat, self.level = mat, level
-        camera_monotone(self.level, self.mat)
+    @staticmethod
+    def _camera_max_float(E, land):
+        """Continuous closure: make depth NON-DECREASING toward the camera (running
+        MIN of depth over the toward-camera quadrant) so the quantised LEVEL is
+        antitone and no cliff is half-clipped. Processed camera -> up-screen."""
+        H, W = E.shape
+        for x, y in sorted(((x, y) for y in range(H) for x in range(W)),
+                           key=lambda p: -(p[0] + p[1])):
+            if not land[y, x]:
+                continue
+            v = E[y, x]
+            if x + 1 < W and land[y, x + 1]:
+                v = min(v, E[y, x + 1])
+            if y + 1 < H and land[y + 1, x]:
+                v = min(v, E[y + 1, x])
+            E[y, x] = v
 
-        # MATERIALS on the FINAL levels (big regions, never stripes):
-        level = self.level
-        # near-shore BEACH = low land touching the sea (up-screen coast is now a
-        # tall cliff, so sand lands only on the near shore, as intended)
-        near_sea = _dilate(mat == "clear_water", SAND_W)
-        mat[near_sea & (mat == "saturated_grass") & (level <= 1)] = "light_sand"
-        # mountain bands: grass -> stone -> snow, with a crystal-ice glacier
-        mat[(mat == "saturated_grass") & (level >= 6)] = "stone_mountain"
-        mat[(mat == "stone_mountain") & (level >= 9)] = "regular_snow"
-        di = np.hypot(X - self.peak_c[0] + n * 0.02, Y - self.peak_c[1] - n * 0.03)
-        mat[(mat == "regular_snow") & (di < n * 0.06)] = "crystal_ice"
-        # a black volcanic nook in the upland, buffered by dirt from the grass
-        self.nook_c = (n * 0.70, n * 0.40)
-        vb = np.hypot(X - self.nook_c[0], Y - self.nook_c[1])
-        mat[(mat == "saturated_grass") & (vb < n * 0.11)] = "lightdark_dirt"
-        mat[(mat == "lightdark_dirt") & (vb < n * 0.075)] = "black_mountain"
+    # -- E. tarn (organic depression on the shelf) -----------------------------
 
-        # a dirt PATH from the near beach up toward the mountain foot
-        self._carve_path([(0.50, 0.82), (0.49, 0.68), (0.47, 0.54),
-                           (0.45, 0.42), (0.44, 0.30)])
+    def _tarn(self):
+        n, X, Y, s = self.n, self.X, self.Y, self.seed
+        bx = X + n * 0.09 * (_fbm(X, Y, s + 40, n * 0.26, 3) - 0.5) * 2
+        by = Y + n * 0.09 * (_fbm(X, Y, s + 41, n * 0.26, 3) - 0.5) * 2
+        tar = _fbm(bx, by, s + 22, n * 0.10, 3)
+        sink = (self.level >= 14) & (self.level < 22) & (tar > 0.72)
+        self.mat[sink] = "clear_water"
+        self.level[sink] = 0
 
-    def _carve_path(self, pts):
+    # -- C. ramps: sparse descending-spur connectors that gate the cliffs ------
+
+    def _carve_connector(self, hx, hy, lx, ly, w=3):
+        """Carve a climbable dirt RAMP that merges the plateau at (hx,hy) [higher]
+        with the tier at (lx,ly) [lower, toward-camera-adjacent]. It is a DESCENDING
+        SPUR: a finger jutting from the high plateau toward the camera, stepping down
+        one level per cell to the low tier — antitone by construction, and dirt, so
+        its lateral edges are different-material (legal) lips, not leg-eaters."""
         n = self.n
-        P = [(fx * n, fy * n) for fx, fy in pts]
-        for (ax, ay), (bx, by) in zip(P, P[1:]):
+        H, L = int(self.level[hy, hx]), int(self.level[ly, lx])
+        if H <= L + 1:
+            return False
+        dx, dy = lx - hx, ly - hy
+        if (dx, dy) not in ((1, 0), (0, 1)):     # lo must be toward-camera of hi
+            return False
+        perp = (dy, dx)
+        for k in range(H - L + 1):
+            lv = H - k
+            cx, cy = hx + dx * k, hy + dy * k
+            for t in range(-(w // 2), w - w // 2):
+                x, y = cx + perp[0] * t, cy + perp[1] * t
+                if 0 <= x < n and 0 <= y < n and self.land[y, x] and self.mat[y, x] != "clear_water":
+                    self.level[y, x] = lv
+                    self.mat[y, x] = "lightdark_dirt"
+                    self.reserved.add((x, y))
+        return True
+
+    def _ford_stranded(self, thresh=60, max_iter=10):
+        """Merge any big walkable component still cut off by RIVER water (no cliff to
+        ramp) by carving a low dirt causeway across the shortest river gap to the
+        main piece. Only crosses river cells (water on land), never the open sea."""
+        n = self.n
+        for _ in range(max_iter):
+            comps = self._walk_components()
+            big = [c for c in comps if len(c) >= thresh]
+            if len(big) <= 1:
+                return
+            main = set(big[0])
+            best = None
+            for cand in big[1:]:
+                for (tx, ty) in cand:
+                    for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                        gap = 0
+                        for step in range(1, 7):
+                            mx, my = tx + i * step, ty + j * step
+                            if not (0 <= mx < n and 0 <= my < n):
+                                break
+                            if (mx, my) in main:
+                                if best is None or gap < best[0]:
+                                    best = (gap, (tx, ty), (i, j), step,
+                                            int(self.level[my, mx]))
+                                break
+                            if self.mat[my, mx] == "clear_water" and self.land[my, mx]:
+                                gap += 1
+                            else:
+                                break
+            if best is None:
+                return
+            gap, (tx, ty), (i, j), step, mlv = best
+            lvl = max(1, min(int(self.level[ty, tx]), mlv))
+            for s in range(step):
+                cx, cy = tx + i * s, ty + j * s
+                for w in (-1, 0, 1):
+                    x, y = cx + (w if j else 0), cy + (w if i else 0)
+                    if 0 <= x < n and 0 <= y < n:
+                        self.mat[y, x] = "lightdark_dirt"
+                        self.level[y, x] = lvl
+                        self.land[y, x] = True
+                        self.reserved.add((x, y))
+
+    def _connect_tiers(self, thresh=40, max_iter=30):
+        """Greedily carve the FEWEST descending-spur ramps that make the island one
+        walkable piece: merge the largest component with an adjacent one across a
+        cliff, repeat. Result: each tier/region reachable by a sparse, deliberate set
+        of ramps (the ALttP 'find the way up' feel), reachability guaranteed."""
+        n = self.n
+        for _ in range(max_iter):
+            comps = self._walk_components()
+            big = [c for c in comps if len(c) >= thresh]
+            if len(big) <= 1:
+                return
+            main = set(big[0])
+            done = False
+            for cand in big[1:]:
+                edge = None
+                for (cx, cy) in cand:
+                    for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                        mx, my = cx + i, cy + j
+                        if (mx, my) in main and abs(int(self.level[cy, cx]) - int(self.level[my, mx])) > 1:
+                            if int(self.level[cy, cx]) < int(self.level[my, mx]):
+                                edge = ((mx, my), (cx, cy))   # (higher main, lower cand)
+                            else:
+                                edge = ((cx, cy), (mx, my))   # (higher cand, lower main)
+                            break
+                    if edge:
+                        break
+                if edge and self._carve_connector(*edge[0], *edge[1]):
+                    done = True
+                    break
+            if not done:
+                return
+
+    # -- river gorge (carved AFTER camera_monotone; water is always legal) -----
+
+    def _river(self):
+        """The Silverrun: a gorge from the shelf tarn down to the sea. Carved after
+        camera_monotone (land->water never raises a neighbour, so it's always legal
+        and the banks keep full height = a deep gorge). It bisects the island E-W;
+        crossable only at a FORD (low reach) and a BRIDGE (deep reach) => a gate."""
+        n = self.n
+        RIVER = [(0.46, 0.26), (0.50, 0.40), (0.52, 0.54), (0.53, 0.68),
+                 (0.52, 0.82), (0.52, 0.95)]
+        pts = [(fx * n, fy * n) for fx, fy in RIVER]
+        for (ax, ay), (bx, by) in zip(pts, pts[1:]):
             steps = int(math.hypot(bx - ax, by - ay)) + 1
             for i in range(steps + 1):
-                x = int(round(ax + (bx - ax) * i / steps))
-                y = int(round(ay + (by - ay) * i / steps))
-                for dx in (-1, 0, 1):
-                    for dy in (-1, 0, 1):
-                        xx, yy = x + dx, y + dy
-                        if 0 <= xx < n and 0 <= yy < n and self.mat[yy, xx] == "saturated_grass":
-                            self.mat[yy, xx] = "lightdark_dirt"
+                t = i / steps
+                wob = (_fbm(np.float32(ax + (bx - ax) * t), np.float32(ay), self.seed + 7,
+                            n * 0.06, 3) - 0.5) * 5
+                cx = int(ax + (bx - ax) * t + wob)
+                cy = int(ay + (by - ay) * t)
+                wr = 2 if t < 0.72 else 3
+                for dx in range(-wr, wr + 1):
+                    for dy in range(-wr, wr + 1):
+                        x, y = cx + dx, cy + dy
+                        if 0 <= x < n and 0 <= y < n and self.land[y, x]:
+                            self.mat[y, x] = "clear_water"
+                            self.level[y, x] = 0
+        self._cross_river()
+
+    def _cross_river(self):
+        """A FORD (low reach) + a BRIDGE deck (deep reach): the only two E-W crossings."""
+        n = self.n
+        riverw = (self.mat == "clear_water") & self.land
+
+        def run_at(cy):
+            xs = [x for x in range(n) if riverw[cy, x]]
+            if not xs:
+                return None
+            # longest contiguous x-run at this row (the main channel)
+            best, cur = [], [xs[0]]
+            for x in xs[1:]:
+                if x == cur[-1] + 1:
+                    cur.append(x)
+                else:
+                    if len(cur) > len(best):
+                        best = cur
+                    cur = [x]
+            if len(cur) > len(best):
+                best = cur
+            return best
+
+        def bank_level(cy, x0, x1):
+            lv = []
+            for bx in (x0 - 1, x1 + 1):
+                if 0 <= bx < n and self.land[cy, bx] and self.mat[cy, bx] != "clear_water":
+                    lv.append(int(self.level[cy, bx]))
+            return lv
+
+        # FORD: the narrowest low-bank reach in the lower third → a 3-row dirt causeway
+        ford = None
+        for cy in range(int(n * 0.58), int(n * 0.90)):
+            run = run_at(cy)
+            if not run:
+                continue
+            bl = bank_level(cy, run[0], run[-1])
+            if len(bl) == 2 and abs(bl[0] - bl[1]) <= 1 and max(bl) <= 4:
+                if ford is None or len(run) < ford[1]:
+                    ford = (cy, len(run), run, min(bl))
+        if ford:
+            cy, _, run, fl = ford
+            for x in range(run[0], run[-1] + 1):
+                for dy in (-1, 0, 1):
+                    y = cy + dy
+                    if 0 <= y < n and self.mat[y, x] == "clear_water" and self.land[y, x]:
+                        self.mat[y, x] = "lightdark_dirt"
+                        self.level[y, x] = max(1, fl)
+                        self.reserved.add((x, y))
+
+        # BRIDGE: a deep reach up in the gorge → a stone deck (world@2) at bank height,
+        # linking the two banks (a second walkable surface; water passes beneath).
+        bridge = None
+        for cy in range(int(n * 0.36), int(n * 0.58)):
+            run = run_at(cy)
+            if not run or len(run) > 8:
+                continue
+            bl = bank_level(cy, run[0], run[-1])
+            if len(bl) == 2 and abs(bl[0] - bl[1]) <= 2 and min(bl) >= 6:
+                bridge = (cy, run, min(bl))
+                break
+        if bridge:
+            cy, run, bl = bridge
+            cells = [(x, y) for x in range(run[0] - 1, run[-1] + 2) for y in (cy - 1, cy, cy + 1)
+                     if 0 <= x < n and 0 <= y < n]
+            self.decks.append({"kind": "bridge", "mat": "stone_mountain", "level": bl,
+                               "thickness": 1, "cells": cells})
+            for y in (cy - 1, cy, cy + 1):
+                if run[0] - 1 >= 0 and run[-1] + 1 < n:
+                    self.links.append(((run[0] - 1, y), (run[-1] + 1, y)))
+
+    # -- D. dynamic (non-circular) region materials ----------------------------
+
+    def _materials(self):
+        n, X, Y, s = self.n, self.X, self.Y, self.seed
+        mat, level = self.mat, self.level
+        g = mat == "saturated_grass"
+        mat[g & (level >= 14)] = "stone_mountain"
+        mat[(mat == "stone_mountain") & (level >= 20)] = "regular_snow"
+        # a second, independent warp for lateral biomes (organic borders)
+        bx = X + n * 0.09 * (_fbm(X, Y, s + 40, n * 0.26, 3) - 0.5) * 2
+        by = Y + n * 0.09 * (_fbm(X, Y, s + 41, n * 0.26, 3) - 0.5) * 2
+        glac = _fbm(bx, by, s + 13, n * 0.13, 3)
+        mat[(mat == "regular_snow") & (glac > 0.58) & (level >= 20)] = "crystal_ice"
+        cald = _fbm(bx, by, s + 9, n * 0.11, 4)
+        buf = (mat == "stone_mountain") & (cald > 0.66) & (level >= 20)
+        mat[_dilate(buf, 2) & (mat == "stone_mountain")] = "lightdark_dirt"   # ash collar
+        mat[buf] = "black_mountain"
+        dry = _fbm(bx, by, s + 15, n * 0.10, 3)
+        mat[(mat == "saturated_grass") & (level <= 8) & (dry > 0.72)] = "lightdark_dirt"
+        # near-shore beach (up-screen coasts are sheer, so sand lands only near-camera)
+        near_sea = _dilate(mat == "clear_water", SAND_W)
+        mat[near_sea & (mat == "saturated_grass") & (level <= 1)] = "light_sand"
+
+    # -- connectivity ----------------------------------------------------------
+
+    def _walk_components(self):
+        """4-connected components over land where a step is walkable iff
+        |Δlevel| <= 1 (the movement model). Returns list of cell-lists, largest first."""
+        n, mat, level = self.n, self.mat, self.level
+        land = lambda x, y: mat[y, x] != "" and mat[y, x] != "clear_water"
+        ladj = self._link_adj()
+        seen = np.zeros((n, n), bool)
+        comps = []
+        for y in range(n):
+            for x in range(n):
+                if land(x, y) and not seen[y, x]:
+                    q, comp = deque([(x, y)]), []
+                    seen[y, x] = True
+                    while q:
+                        a, b = q.popleft()
+                        comp.append((a, b))
+                        nbrs = [(a + i, b + j) for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1))]
+                        for (xx, yy) in nbrs:
+                            if (0 <= xx < n and 0 <= yy < n and land(xx, yy) and not seen[yy, xx]
+                                    and abs(int(level[yy, xx]) - int(level[b, a])) <= 1):
+                                seen[yy, xx] = True
+                                q.append((xx, yy))
+                        for (xx, yy) in ladj.get((a, b), ()):       # bridge links
+                            if 0 <= xx < n and 0 <= yy < n and land(xx, yy) and not seen[yy, xx]:
+                                seen[yy, xx] = True
+                                q.append((xx, yy))
+                    comps.append(comp)
+        comps.sort(key=len, reverse=True)
+        return comps
+
+    def _link_adj(self):
+        adj = {}
+        for a, b in self.links:
+            adj.setdefault(a, []).append(b)
+            adj.setdefault(b, []).append(a)
+        return adj
+
+    def _pick_spawn(self):
+        """Spawn in the LARGEST walkable component, at its lowest / most camera-ward
+        cell (a beach/meadow landing you can walk inland from)."""
+        comps = self._walk_components()
+        if comps:
+            self.main_comp = set(comps[0])
+            self.spawn = min(comps[0], key=lambda c: (int(self.level[c[1], c[0]]), -(c[0] + c[1])))
+
+    # -- reachability proof ----------------------------------------------------
+
+    def _reachable(self):
+        n, mat, level = self.n, self.mat, self.level
+        land = lambda x, y: mat[y, x] != "" and mat[y, x] != "clear_water"
+        sx, sy = self.spawn
+        if not land(sx, sy):
+            # snap spawn to nearest land
+            cand = [(x, y) for y in range(n) for x in range(n) if land(x, y)]
+            sx, sy = min(cand, key=lambda c: (c[0] - self.spawn[0]) ** 2 + (c[1] - self.spawn[1]) ** 2)
+            self.spawn = (sx, sy)
+        ladj = self._link_adj()
+        seen = np.zeros((n, n), bool)
+        q = deque([(sx, sy)]); seen[sy, sx] = True
+        while q:
+            x, y = q.popleft()
+            for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                xx, yy = x + i, y + j
+                if (0 <= xx < n and 0 <= yy < n and land(xx, yy) and not seen[yy, xx]
+                        and abs(int(level[yy, xx]) - int(level[y, x])) <= 1):
+                    seen[yy, xx] = True
+                    q.append((xx, yy))
+            for (xx, yy) in ladj.get((x, y), ()):
+                if 0 <= xx < n and 0 <= yy < n and land(xx, yy) and not seen[yy, xx]:
+                    seen[yy, xx] = True
+                    q.append((xx, yy))
+        return seen
 
     # -- auto-tile -------------------------------------------------------------
 
     def _paint(self):
         at = AutoTiler(self.mat, self.lib, self.seed, priority=PRIORITY,
-                       level=self.level, plain_prob=PLAIN_PROB,
-                       special_prob=SPECIAL_PROB)
+                       level=self.level, plain_prob=PLAIN_PROB, special_prob=SPECIAL_PROB)
         self.top, self.mirror = at.top, at.mirror
 
-    # -- props (every terrain set) ---------------------------------------------
+    # -- F. landmarks & props --------------------------------------------------
 
     def _place(self, cells, terrain, heights, count, spacing, seedoff):
-        lib = self.lib
-        pool = [p for hh in heights for p in lib.elev(terrain, hh)]
+        pool = [p for hh in heights for p in self.lib.elev(terrain, hh)]
         if not pool or not cells:
             return
         cells = sorted(cells, key=lambda c: _h01(c[0], c[1], self.seed + seedoff))
@@ -198,7 +557,7 @@ class Island:
         for (x, y) in cells:
             if any(abs(px - x) < spacing and abs(py - y) < spacing for px, py in placed):
                 continue
-            if (x, y) in self.props:
+            if (x, y) in self.props or (x, y) in self.reserved:
                 continue
             self.props[(x, y)] = pool[int(_h01(x, y, self.seed + seedoff + 9) * len(pool)) % len(pool)]
             placed.append((x, y))
@@ -212,49 +571,42 @@ class Island:
         n, mat, level = self.n, self.mat, self.level
         is_m = lambda m: (lambda x, y: mat[y, x] == m)
         g, s, sn = is_m("saturated_grass"), is_m("stone_mountain"), is_m("regular_snow")
-
-        # PEAK: a towering stone landmark at the very top
-        peak = self._cells(lambda x, y: (sn(x, y) or mat[y, x] == "crystal_ice") and level[y, x] >= 9)
+        # SUMMIT CAIRN beacon: tallest stone prop at the highest up-screen snow/ice cell
+        peak = self._cells(lambda x, y: (sn(x, y) or mat[y, x] == "crystal_ice") and level[y, x] >= 20)
         if peak:
-            t = min(peak, key=lambda c: c[1])
-            self.props[t] = self.lib.elev("stone_mountain", 5)[
-                int(_h01(*t, 1) * len(self.lib.elev("stone_mountain", 5)))]
-        # crystal ICE glacier: ice spires + crystals
-        self._place(self._cells(is_m("crystal_ice")), "crystal_ice", [4, 5], 4, 2, 30)
-        self._place(self._cells(is_m("crystal_ice")), "crystal_ice", [2, 3], 4, 2, 31)
-        # SNOW: snowmen/drifts + snow pines
-        self._place(self._cells(sn), "regular_snow", [2, 3], 6, 3, 11)
-        self._place(self._cells(sn), "regular_snow", [4], 4, 4, 12)
-        # STONE slopes: cairns, boulders, obelisks
-        self._place(self._cells(lambda x, y: s(x, y) and level[y, x] <= 7),
-                    "stone_mountain", [2, 3], 7, 3, 13)
-        self._place(self._cells(s), "stone_mountain", [4, 5], 3, 5, 14)
-        # GRASS: a forest grove in the east meadow + lone trees
-        grove = self._cells(lambda x, y: g(x, y) and x > n * 0.6 and 0.45 * n < y < 0.7 * n
-                            and level[y, x] <= 5)
-        self._place(grove, "saturated_grass", [3, 4], 9, 2, 15)
-        self._place(grove, "saturated_grass", [5], 3, 4, 16)
-        self._place(self._cells(lambda x, y: g(x, y) and level[y, x] <= 4),
-                    "saturated_grass", [4, 5], 7, 7, 17)
-        # a STANDING-STONE ring on a central knoll
-        kx, ky = int(n * 0.52), int(n * 0.50)
-        ring = [(int(kx + 3 * math.cos(k * math.tau / 6)), int(ky + 3 * math.sin(k * math.tau / 6)))
-                for k in range(6)]
+            t = min(peak, key=lambda c: c[0] + c[1])
+            pool = self.lib.elev("stone_mountain", 5)
+            if pool:
+                self.props[t] = pool[int(_h01(*t, 1) * len(pool)) % len(pool)]
+        # glacier + caldera
+        self._place(self._cells(is_m("crystal_ice")), "crystal_ice", [4, 5], 5, 2, 30)
+        self._place(self._cells(is_m("crystal_ice")), "crystal_ice", [2, 3], 5, 2, 31)
+        self._place(self._cells(is_m("black_mountain")), "black_mountain", [3, 4], 6, 2, 24)
+        # snow + stone slopes
+        self._place(self._cells(sn), "regular_snow", [2, 3], 7, 3, 11)
+        self._place(self._cells(lambda x, y: s(x, y) and level[y, x] <= 20),
+                    "stone_mountain", [2, 3], 10, 3, 13)
+        self._place(self._cells(s), "stone_mountain", [4, 5], 4, 5, 14)
+        # WEALDWOOD grove (forest bench, T2 grass around level 8)
+        grove = self._cells(lambda x, y: g(x, y) and 6 <= level[y, x] <= 9)
+        self._place(grove, "saturated_grass", [4, 5], 14, 2, 15)
+        self._place(grove, "saturated_grass", [3], 10, 3, 16)
+        # meadow lone trees + a perturbed standing-stone ring
+        self._place(self._cells(lambda x, y: g(x, y) and level[y, x] <= 5),
+                    "saturated_grass", [4, 5], 8, 6, 17)
+        kx, ky = int(n * 0.30), int(n * 0.74)
+        ring = [(int(kx + (4 + 1.4 * _h01(k, 0, 7)) * math.cos(k * math.tau / 7)),
+                 int(ky + (4 + 1.4 * _h01(k, 1, 7)) * math.sin(k * math.tau / 7))) for k in range(7)]
         self._place([c for c in ring if 0 <= c[0] < n and 0 <= c[1] < n and g(*c)],
-                    "stone_mountain", [3], 6, 1, 19)
-        # LAKESIDE: willow + reeds
-        lx, ly, lr = self.lake_c
-        lakeside = self._cells(lambda x, y: g(x, y) and abs(math.hypot(x - lx, y - ly) - lr) < 2.5)
-        self._place(lakeside, "saturated_grass", [4, 5], 3, 4, 20)
-        self._place(lakeside, "saturated_grass", [2], 4, 3, 21)
-        # SAND beach: palms / dune props, sparse, back from the waterline
-        sand = self._cells(lambda x, y: mat[y, x] == "light_sand")
-        self._place(sand, "light_sand", [3, 4], 7, 5, 22)
-        self._place(sand, "light_sand", [2], 6, 4, 23)
-        # BLACK nook: obsidian spires
-        self._place(self._cells(is_m("black_mountain")), "black_mountain", [3, 4], 5, 3, 24)
-        # DIRT path: a couple of low markers
-        self._place(self._cells(is_m("lightdark_dirt")), "lightdark_dirt", [2, 3], 3, 5, 25)
+                    "stone_mountain", [3], 7, 1, 19)
+        # SAND: palms + a shipwreck cluster; LIGHTHOUSE on the east headland
+        sand = self._cells(is_m("light_sand"))
+        self._place(sand, "light_sand", [3, 4], 8, 5, 22)
+        self._place(sand, "light_sand", [2], 7, 4, 23)
+        head = self._cells(lambda x, y: s(x, y) and x > n * 0.8 and level[y, x] <= 8)
+        self._place(head, "stone_mountain", [5], 1, 1, 26)      # lighthouse
+        # DIRT trails / marsh
+        self._place(self._cells(is_m("lightdark_dirt")), "lightdark_dirt", [2, 3], 5, 5, 25)
 
     # -- render ----------------------------------------------------------------
 
@@ -266,9 +618,9 @@ class Island:
     def render(self, scale=1.0):
         n = self.n
         ox = (n - 1) * DX + 24
-        oy = int(self.level.max()) * LEVEL_PX + 150
+        oy = int(self.level.max()) * LEVEL_PX + 160
         W = (n + n) * DX + 48
-        H = (n + n) * DY + 64 + int(self.level.max()) * LEVEL_PX + 220
+        H = (n + n) * DY + 64 + int(self.level.max()) * LEVEL_PX + 240
         wc = self.lib.target_color("clear_water")
         canvas = Image.new("RGBA", (W, H), tuple(int(c) for c in wc) + (255,))
         order = sorted(((x, y) for y in range(n) for x in range(n)),
@@ -291,18 +643,32 @@ class Island:
             if p is not None:
                 pr = self.lib.img(p)
                 canvas.alpha_composite(pr, (bx, (by - L * LEVEL_PX) + GROUND_BOTTOM - self._ymax(pr)))
+            dk = self.deck_at.get((x, y))
+            if dk is not None:
+                dl, dth = dk["level"], dk["thickness"]
+                dimg = self.lib.img(self.lib.region_base(dk["mat"], x, y))
+                for lvl in range(dl - dth, dl):
+                    canvas.alpha_composite(dimg, (bx, by - lvl * LEVEL_PX))
+                canvas.alpha_composite(dimg, (bx, by - dl * LEVEL_PX - (dimg.height - 64)))
         if scale != 1.0:
             canvas = canvas.resize((int(W * scale), int(H * scale)), Image.LANCZOS)
         return canvas
 
 
-def build(out=None, n=120, seed=11):
+def build(out=None, n=140, seed=11):
     d = Island(n=n, seed=seed)
     out = out or os.path.join(MAPS2, "worlds", "the_island")
     os.makedirs(out, exist_ok=True)
+    decks_out = []
+    for dk in d.decks:
+        m = dk["mat"]
+        cells = [{"x": x, "y": y, "top": d.lib.region_base(m, x, y), "mirror": 0}
+                 for (x, y) in dk["cells"]]
+        decks_out.append({"kind": dk["kind"], "mat": m, "level": dk["level"],
+                          "thickness": dk["thickness"], "cells": cells})
     worldio.save_world(os.path.join(out, "world.json"), name="the_island",
                        mat=d.mat, top=d.top, mirror=d.mirror, level=d.level,
-                       spawn=d.spawn, props=d.props)
+                       spawn=d.spawn, props=d.props, decks=decks_out)
     img = d.render()
     img.convert("RGB").save(os.path.join(out, "demo.png"))
     w = 2200
@@ -310,13 +676,26 @@ def build(out=None, n=120, seed=11):
         os.path.join(out, "preview.png"))
     from collections import Counter
     terr = Counter(m for m in d.mat.ravel() if m)
-    # PROVE the camera-facing rule holds: no hidden same-material lips that would
-    # swallow the player's legs (drops >10 are fog-safe and ignored).
     viol = occlusion_violations(d.mat, d.level)
+    assert not viol, f"camera-facing rule broken: {viol[:5]}"
+    changed = int((d.level_before != d.level).sum())
+    seen = d._reachable()
+    land_cells = int((d.mat != "") .sum() - (d.mat == "clear_water").sum())
+    reach = int(seen.sum())
+    # per-tier reachability
+    tiers = {}
+    for lv in (0, 3, 8, 14, 22):
+        band = (d.level >= lv) & (d.mat != "clear_water") & (d.mat != "")
+        if lv < 22:
+            band &= d.level < lv + 6 if lv else d.level <= 2
+        tiers[lv] = (int((band & seen).sum()), int(band.sum()))
+    comps = d._walk_components()
     print(f"the_island {n}x{n}: {len(d.props)} props; max level {int(d.level.max())}; "
           f"materials=" + ", ".join(f"{k.split('_')[0]}:{v}" for k, v in terr.most_common()))
-    print(f"  occlusion check: {len(viol)} hidden same-material lip(s) "
-          + ("[CLEAN]" if not viol else f"[FIX NEEDED] e.g. {viol[:3]}"))
+    print(f"  occlusion lips: {len(viol)} {'[CLEAN]' if not viol else viol[:3]}")
+    print(f"  monotone touched {changed} cells (light-touch); reachable {reach}/{land_cells} land")
+    print(f"  walkable components (top 6 sizes): {[len(c) for c in comps[:6]]}")
+    print(f"  tier reach (reached/total): " + ", ".join(f"L{lv}:{a}/{b}" for lv, (a, b) in tiers.items()))
     return d
 
 
