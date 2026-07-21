@@ -825,10 +825,12 @@ uniform sampler2D uHeightL; // terrain height, LINEAR — smooth (bilinear) samp
 const vec3  FOG_NEAR = vec3(0.30, 0.52, 0.50); // first band: teal
 const vec3  FOG_FAR  = vec3(0.72, 0.88, 0.90); // farthest band: pale misty cyan
 const float BANDS  = 6.0;   // cel-shade steps — band 0 is the clear near bubble
-const float FOG_D0 = 14.5;  // ONSET: clear-bubble radius (cells) — no distance fog closer than this
-const float FOG_DW = 1.2;   // width of each cel band past the onset (cells) → full fog at
-                            // FOG_D0 + (BANDS-2)*FOG_DW ≈ 19.3 cells (also the max view dist).
-                            // Smaller = fog INTENSIFIES faster once it starts (tighter bands).
+const float FOG_D0 = 6.0;   // ONSET (cells): distance fog starts this far out — but ONLY on
+                            // ground that is a DIFFERENT level than the player (the distance
+                            // term is gated off the player's OWN level entirely). So it can sit
+                            // closer again — it never rings the flat ground you stand on.
+const float FOG_DW = 1.2;   // width of each cel band past the onset (cells) — smaller = the
+                            // distance haze on other levels INTENSIFIES faster (tighter bands).
 const float FOG_MAX = 0.78; // opacity of the farthest band (the cull edge)
 const float DRAPE_RS = 2.5; // drape blur half-width along the col+row fold axis (s-units)
 const float ELEV_STEP = 1.5; // fog BANDS added per LEVEL of player↔surface separation — the
@@ -951,10 +953,13 @@ void main() {
   float dLev = abs(pLev - z);                      // levels of separation
   float elevBand = ceil(max(0.0, dLev - ELEV_D0) * ELEV_STEP - ELEV_EPS); // 0 until |Δlvl|>ELEV_D0
 
-  // COMBINE + CEL-SNAP. Additive (NOT max) so a mid-range edge ALWAYS adds its step on
-  // top of a nonzero distance band — exactly the "can't see the edge behind a cliff"
-  // case. On the player's own level elevBand == 0 → pure smooth distance depth.
-  float band = clamp(distBand + elevBand, 0.0, BANDS - 1.0);
+  // COMBINE + CEL-SNAP. The distance term is GATED OFF the player's OWN level: fog must
+  // NEVER show on same-level ground, however far (maintainer) — step(0.5, dLev) is 0 when the
+  // surface is the player's level and 1 on any OTHER level. So flat ground you stand on stays
+  // clear to the horizon, while OTHER levels still get the distance haze (depth) PLUS the
+  // elevation step. Additive, so a big drop (elevBand already full) reads as full fog straight
+  // away — the intended "you're up on a bridge" cue.
+  float band = clamp(distBand * step(0.5, dLev) + elevBand, 0.0, BANDS - 1.0);
   float bf = band / (BANDS - 1.0);
   float a = bf * FOG_MAX * uFog;
   if (a <= 0.002) { gl_FragColor = vec4(0.0); return; }
