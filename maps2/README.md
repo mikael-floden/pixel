@@ -98,21 +98,30 @@ Enforce it in code (`pipeline/autotile.py`):
     benches joined by up-screen risers (climb only rises away from camera → antitone/legal),
     preferred by `_merge_ramp` for Δ≥4 cliffs, falling back to the straight spur where a Z
     won't fit (so the connectivity guarantee holds).
-  - **Dirt is ROADS, not borders** (`_dirt_roads`): an organic **meandering, branching**
-    network — a wander-biased trunk (`_wander_field` + jittered waypoints) spawn→summit with
-    landmark **spurs that fork off at Y-junctions** (`_road_attach`), fused onto the ascent
-    ramps — the ALttP red path; everything else is grass tops + rock faces. No dirt
-    speckle/collars.
-  - **Multi-level water** (`_ponds`, `_tarn`): besides the ocean, small **flush** inland
-    lakes at maze tiers `{4,12}` and mountain benches `{20,24}` (water painted at the
-    surrounding land level so it renders as a filled pool, not a well), placed transactionally
-    so they can never seal a region.
-  - **Tidy ascents, clean cliffs** (`_mountain_stairs`/`_climb_corridor`): exactly 2 tidy
-    Trollstigen corridors up the mountain; `_connect_all`'s `_merge_ramp` then uses only clean
-    straight connectors (no new zigzags), so the rest of the foot stays a sheer rock cliff.
-  - **Ocean margin**: the island is **inset** into a 10-cell water frame (`n=220`, `nd=200`
-    via the `_coastline` override) so it's fully surrounded by sea — `build()` asserts no land
-    on the map border.
+  - **Material policy — dirt=roads, rock=stairs**: cliff-climbing ramps/switchbacks are
+    `stone_mountain` (`STAIR_MAT`, tracked in `self._ascent`); flat paths are `lightdark_dirt`.
+    No dirt staircases, no dirt borders/collars.
+  - **8-direction dirt ROADS** (`_dirt_roads`): an organic meandering, branching network that
+    runs in all 8 SCREEN directions — the router (`_road_graph_bfs`) adds grid-diagonal moves
+    (which render screen-vertical/horizontal) on flat Δ0 land, each gated by a same-level
+    **elbow** cell so the painted road stays 4-connected-walkable; the √2 diagonal weight beats
+    the 2.0 cardinal zigzag. Held a **margin** off beach/water and the mountain foot and biased
+    to corridor **centres** via a cached `_road_cost_field` (distance fields); trunk
+    spawn→summit + landmark/stair-foot spurs fork at Y-junctions. Mat-only; grass→dirt only.
+  - **Full-height rock Z-stairs** (`_mountain_stairs`/`_climb_corridor`/`_next_bench_step`):
+    a couple of tidy stone Trollstigen ribbons zigzag the whole massif (16→40); the rest of
+    the foot stays a sheer cliff; `_merge_ramp` uses only clean rock connectors otherwise.
+  - **Multi-level water** (`_ponds`/`_tarn`/`_mtn_gorge`): besides the ocean, small **flush**
+    lakes at maze tiers `{4,12}` and mountain benches `{20,24}`, a flush alpine tarn, and an
+    internal mountain **gorge** (descend-then-climb) — all transactional so they never seal a
+    region.
+  - **Spiky massif**: benches `{16,20,24,28,32,36,40}`, ~10 sharp varied-height peaks with deep
+    saddles + camera-fanning grooves → a jagged skyline (max level 40), not a smooth pyramid.
+  - **Bigger beaches** + a wide **ocean margin** (`M=24`, `n=248`; island inset via `_coastline`,
+    `nd` stays 200). `build()` asserts no land on the border. NOTE: a finite frame only pushes
+    the edge out of view; to *never* show an "end of world" the **game client** must clamp the
+    camera to world bounds or fill out-of-bounds with `clear_water` — that's the engine's job,
+    not the generator's.
 
   Reachability is **prop-aware** (props set `collision=1`). `demo_lost` and `the_island`
   are preserved unchanged.
