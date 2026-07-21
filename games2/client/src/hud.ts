@@ -29,6 +29,57 @@ import { dressPlate, dressSlot, readyPlates, repaintPlates } from "./plate";
 import { holdLoading } from "./loading";
 import { gameAudio } from "../../composer/index";
 
+// ── Ambient-effect switches (Settings) ───────────────────────────────────
+// The ambient-life agent (ambient/) exposes a per-effect TOGGLE controller on
+// window.__mlAmbient: several COMPATIBLE effects can run at once, but an effect
+// can't switch on while an incompatible one is active (each declares its
+// `conflicts`). We render a checkbox list from it — data-driven, so a conflict
+// the ambient agent adds/drops updates the UI with no code change here. See
+// ambient/README.md "Toggling effects independently".
+const CHECK_ON = "/ui2/kit-check-on.png";
+const CHECK_OFF = "/ui2/kit-check-off.png";
+type AmbientEffect = {
+  name: string;
+  kind: "field" | "episode";
+  conflicts: string[];
+  on: boolean; // running right now (AUTO: director/field; MANUAL: enabled)
+  enabled: boolean; // manually switched on
+  blocked: string | null; // the enabled effect that forbids switching this on
+};
+interface AmbientApi {
+  effects: () => AmbientEffect[];
+  toggle: (name: string) => { ok: boolean; blockedBy: string | null };
+  setEnabled: (name: string, on: boolean) => { ok: boolean; blockedBy: string | null };
+  auto: (on?: boolean) => "auto" | "manual";
+  compatible: (a: string, b: string) => boolean;
+}
+/** The ambient controller, or null if it hasn't mounted yet (or on the #map
+ * preview where it never does). Everything reads through this so the switches
+ * degrade gracefully — no ambient layer means no section, never an error. */
+function ambientApi(): AmbientApi | null {
+  const a = (window as unknown as { __mlAmbient?: Partial<AmbientApi> }).__mlAmbient;
+  return a && typeof a.effects === "function" ? (a as AmbientApi) : null;
+}
+function ambSafe<T>(fn: () => T, fallback: T): T {
+  try {
+    return fn();
+  } catch {
+    return fallback;
+  }
+}
+const capWords = (s: string) => s.replace(/(^|[\s-])\w/g, (c) => c.toUpperCase());
+// Set a checkbox img to on/off, skipping the write when unchanged (the 700ms
+// poll re-runs constantly while Settings is open — don't re-touch src needlessly).
+function setCheck(img: HTMLImageElement, on: boolean) {
+  const src = on ? CHECK_ON : CHECK_OFF;
+  if (!img.src.endsWith(src)) img.src = src;
+}
+// One shared refresh poll for the live ambient state (the director rolls
+// episodes + fields gate on time-of-day, so the switches must track a moving
+// target while Settings is open). Module-level so a HUD rebuild on re-join
+// replaces it instead of leaking a second timer.
+let ambPoll: ReturnType<typeof setInterval> | null = null;
+
 export interface HudActions {
   onLogout: () => void;
   /** Settings-tab controls (the keyboard digits' mobile home). Entries with
@@ -143,6 +194,12 @@ export class HudBar {
   private tabs = new Map<TabId, HTMLButtonElement>();
   private switches: [HTMLButtonElement, () => boolean][] = [];
   private stateful: [HTMLButtonElement, HudActions["settings"][number]][] = [];
+  // ambient-effect checklist (populated once window.__mlAmbient is up)
+  private ambSection: HTMLElement | null = null;
+  private ambList: HTMLElement | null = null;
+  private ambRows = new Map<string, { el: HTMLButtonElement; img: HTMLImageElement; label: HTMLElement }>();
+  private ambAuto: { el: HTMLButtonElement; img: HTMLImageElement } | null = null;
+  private ambBuilt = false;
 
   constructor(private actions: HudActions) {
     injectStyles();
@@ -185,6 +242,12 @@ export class HudBar {
     document.body.appendChild(hud);
     this.select("backpack");
     applyFrameLayout(); // adopt the frame windows if the frame is already composed
+
+    // Keep the ambient switches tracking live state while Settings is open
+    // (director rolls, fields gate on time-of-day). Replaces any prior timer
+    // so a HUD rebuild on re-join never leaves two running.
+    if (ambPoll) clearInterval(ambPoll);
+    ambPoll = setInterval(() => this.tickAmbient(), 700);
   }
 
   private select(id: TabId) {
@@ -198,6 +261,9 @@ export class HudBar {
     // Plates built while the page was display:none measured 0×0 — repaint
     // them now that the page has a real size (next frame, after layout).
     if (shown) requestAnimationFrame(() => repaintPlates(shown!));
+    // Build/refresh the ambient switches the moment Settings is opened (don't
+    // wait up to a poll interval).
+    if (id === "settings") this.tickAmbient();
   }
 
   /** Re-read every switch's pressed state AND every live state label
@@ -206,6 +272,107 @@ export class HudBar {
     for (const [b, get] of this.switches) b.classList.toggle("on", !!get());
     for (const [b, entry] of this.stateful)
       (b.firstElementChild ?? b).textContent = `${entry.label}: ${entry.state!()}`;
+  }
+
+  // ── Ambient-effect switches ────────────────────────────────────────────
+  /** Called by the poll + on opening Settings: build the rows once the
+   * ambient controller is up, then keep them in sync with live state. */
+  private tickAmbient() {
+    const st = this.pages.get("settings");
+    if (!st || !st.classList.contains("show")) return; // only work while visible
+    if (!this.ambBuilt) this.buildAmbient();
+    else this.refreshAmbient();
+  }
+
+  private buildAmbient() {
+    const list = this.ambList;
+    const api = ambientApi();
+    if (!list || this.ambBuilt || !api) return;
+    const effects = ambSafe(() => api.effects(), [] as AmbientEffect[]);
+    if (effects.length === 0) return; // controller up but not ready — retry
+    this.ambBuilt = true;
+    if (this.ambSection) this.ambSection.style.display = ""; // reveal now it has rows
+    // AUTO first (the living-world default: director rolls, fields self-gate),
+    // then one row per effect in registry order.
+    this.ambAuto = this.ambRow(null, "Auto");
+    for (const e of effects) this.ambRow(e.name, capWords(e.name));
+    this.refreshAmbient();
+    requestAnimationFrame(() => repaintPlates(list));
+  }
+
+  /** A checkbox row (kit plate bar + checkbox img + label). name=null → the
+   * AUTO row. Returns its element refs for state updates. */
+  private ambRow(name: string | null, label: string) {
+    const b = mk("button", "ml-plate-btn ml-amb-row") as HTMLButtonElement;
+    if (name === null) b.classList.add("ml-amb-auto");
+    const img = mk("img", "ml-amb-check") as HTMLImageElement;
+    img.src = CHECK_OFF;
+    img.alt = "";
+    img.draggable = false;
+    const t = mk("span", "ml-amb-label");
+    t.textContent = label;
+    b.append(img, t);
+    b.addEventListener("click", () => this.onAmbient(name));
+    pressFx(b);
+    dressPlate(b, kindForState);
+    this.ambList!.appendChild(b);
+    const refs = { el: b, img, label: t };
+    if (name !== null) this.ambRows.set(name, refs);
+    return refs;
+  }
+
+  /** Handle a row tap. AUTO toggles director mode; an effect toggles itself
+   * (enabling refused when an incompatible effect is active). Tapping an
+   * effect while in AUTO takes manual control while PRESERVING the scene the
+   * director is currently showing, so only the tapped effect changes. */
+  private onAmbient(name: string | null) {
+    const api = ambientApi();
+    if (!api) return;
+    if (name === null) {
+      const mode = ambSafe(() => api.auto(), "manual");
+      ambSafe(() => api.auto(mode !== "auto"), "manual");
+    } else {
+      const effects = ambSafe(() => api.effects(), [] as AmbientEffect[]);
+      const cur = effects.find((e) => e.name === name);
+      if (cur?.blocked) return this.refreshAmbient(); // can't enable — no-op
+      const mode = ambSafe(() => api.auto(), "manual");
+      if (mode === "auto") {
+        const running = effects.filter((e) => e.on).map((e) => e.name);
+        const wasOn = !!cur?.on;
+        ambSafe(() => api.auto(false), "manual"); // → manual, empty set
+        // Apply the TAP first (guaranteed — the set is empty, nothing blocks
+        // it), THEN re-seed the rest of the scene the director was showing so
+        // only the tapped effect changed. Any seeded effect that conflicts
+        // with the tap is silently refused (dropped) — e.g. tapping fireflies
+        // during the day drops the running pollen (its day/night opposite).
+        if (!wasOn) ambSafe(() => api.setEnabled(name, true), null);
+        for (const r of running) if (r !== name) ambSafe(() => api.setEnabled(r, true), null);
+      } else {
+        ambSafe(() => api.toggle(name), null);
+      }
+    }
+    this.refreshAmbient();
+  }
+
+  private refreshAmbient() {
+    const api = ambientApi();
+    if (!api || !this.ambBuilt) return;
+    const mode = ambSafe(() => api.auto(), "manual");
+    if (this.ambAuto) {
+      const on = mode === "auto";
+      this.ambAuto.el.classList.toggle("on", on);
+      setCheck(this.ambAuto.img, on);
+    }
+    for (const e of ambSafe(() => api.effects(), [] as AmbientEffect[])) {
+      const row = this.ambRows.get(e.name);
+      if (!row) continue;
+      row.el.classList.toggle("on", e.on); // on → the cream "selected" plate
+      row.el.classList.toggle("blocked", !!e.blocked);
+      setCheck(row.img, e.on);
+      // when blocked, say which active effect forbids it
+      const text = e.blocked ? `${capWords(e.name)} — ${capWords(e.blocked)} on` : capWords(e.name);
+      if (row.label.textContent !== text) row.label.textContent = text;
+    }
   }
 
   private buildPages() {
@@ -225,8 +392,13 @@ export class HudBar {
     // Equipment + Map pages: bare stone until their real content lands
     // (maintainer 2026-07-17: no placeholder text).
 
-    // Settings: home of ALL the toggles mobile can't reach by keyboard.
+    // Settings: home of ALL the toggles mobile can't reach by keyboard. The
+    // page now stacks the games button grid OVER the ambient-effect checklist
+    // inside one scrolling column (.ml-set) — with ~12 buttons + 8 effects it
+    // overflows a phone, so .ml-page scrolls from the top (see injectStyles:
+    // "safe center").
     const st = this.pages.get("settings")!;
+    const wrap = mk("div", "ml-set");
     const row = mk("div", "ml-btnrow");
     for (const t of this.actions.settings) {
       const b = plateButton(t.label, () => {
@@ -239,7 +411,7 @@ export class HudBar {
       row.appendChild(b);
     }
     this.refreshSettings();
-    st.appendChild(row);
+    wrap.appendChild(row);
     // Restore the .ml-plate-btn class CONTRACT for foreign buttons: the
     // ambient agent injects its cycler into this row from outside
     // (ambient/runtime/hudbutton.ts) relying on the class to bring the plate
@@ -258,6 +430,21 @@ export class HudBar {
         dressPlate(el, kindForState);
       });
     }).observe(row, { childList: true });
+
+    // Ambient-effect checklist: one checkbox row per effect (+ an AUTO row).
+    // Rows are built lazily once window.__mlAmbient is up (tickAmbient); the
+    // whole section stays hidden until then, so an absent/failed ambient layer
+    // shows no empty header (graceful degradation — the ambient charter's rule).
+    const amb = mk("div", "ml-amb");
+    amb.style.display = "none";
+    const title = mk("div", "ml-amb-title");
+    title.textContent = "Ambient effects";
+    const list = mk("div", "ml-amb-list");
+    amb.append(title, list);
+    wrap.appendChild(amb);
+    this.ambSection = amb;
+    this.ambList = list;
+    st.appendChild(wrap);
 
     // Logout: deliberate two-step (a stray tap must not eject anyone) —
     // just the button, no explainer text (maintainer 2026-07-17).
@@ -357,8 +544,14 @@ function injectStyles() {
      (maintainer 2026-07-18: no more stone backdrop — "the same plain
      bg-color as we have under the menu buttons"); /ui2/stone.png stays
      shipped if the cobble look is ever wanted back */
-  .ml-page{display:none;height:100%;overflow:auto;flex-direction:column;align-items:center;
-    justify-content:center;gap:14px;text-align:center;box-sizing:border-box;
+  /* 'safe center' keeps a short page centred but FALLS BACK to top-anchored
+     the instant the content is taller than the page (settings: ~12 buttons +
+     the ambient checklist overflow a phone). A plain justify-content:center
+     clips the top row OUT of scroll range — the maintainer: "always see the
+     top UI on that page before we scroll." overflow-y:auto then scrolls it. */
+  .ml-page{display:none;height:100%;overflow-y:auto;overflow-x:hidden;
+    -webkit-overflow-scrolling:touch;flex-direction:column;align-items:center;
+    justify-content:safe center;gap:14px;text-align:center;box-sizing:border-box;
     padding:var(--ml-page-padtop,14px) var(--ml-page-pad,44px) var(--ml-page-padbot,14px);
     background:#503c33;image-rendering:pixelated}
   .ml-page.show{display:flex}
@@ -404,6 +597,33 @@ function injectStyles() {
      dressPlate); the cream SELECTED bar needs a dark label */
   .ml-plate-btn.on{color:#4a2a1c;text-shadow:none}
   .ml-plate-btn.press{color:#f4e3c2}
+  /* SETTINGS SCROLL COLUMN: the games button grid stacked over the ambient
+     checklist. When it fits, .ml-page 'safe center' centres this column; when
+     it overflows it top-anchors + scrolls (rows above stay reachable). */
+  .ml-set{display:flex;flex-direction:column;align-items:stretch;gap:20px;width:100%}
+  /* the games button grid keeps its 3-col horizontal spacing but now sizes to
+     its content (was height:100% to fill+space-evenly the whole page) so the
+     ambient list can sit below it and the PAGE — not the grid — scrolls */
+  .ml-set .ml-btnrow{height:auto;row-gap:14px}
+  /* ambient-effect checklist */
+  .ml-amb{display:flex;flex-direction:column;gap:12px;width:100%}
+  .ml-amb-title{border-top:2px solid rgba(0,0,0,.28);padding-top:14px;
+    color:#f0e2c6;font:700 18px system-ui,sans-serif;letter-spacing:1px;
+    text-transform:uppercase;text-align:center}
+  .ml-amb-list{display:flex;flex-direction:column;gap:12px;width:100%}
+  /* a checkbox row: kit plate bar, checkbox on the LEFT, label left-aligned.
+     Overrides .ml-plate-btn's centred/tall defaults (declared after it so the
+     equal-specificity rules win by source order). */
+  .ml-amb-row{justify-content:flex-start;gap:18px;height:72px;text-align:left;
+    padding:8px 22px;white-space:nowrap;text-transform:uppercase}
+  /* the kit checkbox (8px native): integer 5× so every pixel stays crisp */
+  .ml-amb-check{width:40px;height:40px;flex:none;image-rendering:pixelated;
+    -webkit-user-drag:none;pointer-events:none}
+  .ml-amb-label{overflow:hidden;text-overflow:ellipsis}
+  /* blocked = an incompatible effect is on: greyed + not-tappable-looking (the
+     tap is a harmless no-op; the label already says which effect blocks it) */
+  .ml-amb-row.blocked{opacity:.5;cursor:not-allowed}
+  .ml-amb-auto{margin-bottom:2px}
   /* Narrow phones: five square tabs must still fit between the outer rails;
      icons drop to exactly HALF the file (= the art's true 1x) so the scale
      stays integer-crisp in the smaller tabs. */
@@ -417,6 +637,13 @@ function injectStyles() {
     :root{--ml-tab:min(84px,calc((100vw - 200px)/5))}
     .ml-page{gap:8px}
     .ml-plate-btn{padding:4px 12px;height:48px;font-size:13px}
+    .ml-set{gap:12px}
+    .ml-set .ml-btnrow{row-gap:8px}
+    .ml-amb{gap:8px}
+    .ml-amb-list{gap:8px}
+    .ml-amb-title{padding-top:8px;font-size:14px}
+    .ml-amb-row{height:44px;gap:12px;padding:4px 12px}
+    .ml-amb-check{width:28px;height:28px}
   }`;
   const s = document.createElement("style");
   s.textContent = css;

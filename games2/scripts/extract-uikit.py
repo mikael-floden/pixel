@@ -97,6 +97,21 @@ def main():
         b.save(OUT + name + ".png")
         print(name, b.size)
 
+    # CHECKBOX (UI ELEMENTS, the stacked square pair right of the sliders):
+    # an EMPTY dark box (OFF) and the SAME box with a bright centre (ON) —
+    # the maintainer's checkbox states. Used by the Settings ambient-effect
+    # switches (games-ui: each ambient effect toggles on/off on its own,
+    # several compatible ones at once). 8x8 native, hard-edged like every
+    # other flat kit plate (no soft alpha needed).
+    for name, box in (
+        ("kit-check-off", (1088, 366, 1104, 382)),
+        ("kit-check-on", (1088, 386, 1104, 402)),
+    ):
+        b = cut(im, box, {BG})
+        b = b.crop(b.getbbox())
+        b.save(OUT + name + ".png")
+        print(name, b.size)
+
 
 if __name__ == "__main__":
     main()
