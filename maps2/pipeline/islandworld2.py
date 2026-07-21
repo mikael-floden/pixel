@@ -444,15 +444,17 @@ class Island2(Island):
         mat, level = self.mat, self.level
         g = mat == "saturated_grass"
         mat[g & (level >= 14)] = "stone_mountain"
-        mat[(mat == "stone_mountain") & (level >= 24)] = "regular_snow"
+        # snow only near the PEAKS (benches 28,32) so the massif reads as ROCK with snowy
+        # caps, not a white sheet; ice/obsidian cap only the very top.
+        mat[(mat == "stone_mountain") & (level >= 28)] = "regular_snow"
         bx = X + n * 0.09 * (_fbm(X, Y, s + 40, n * 0.26, 3) - 0.5) * 2
         by = Y + n * 0.09 * (_fbm(X, Y, s + 41, n * 0.26, 3) - 0.5) * 2
         glac = _fbm(bx, by, s + 13, n * 0.13, 3)
-        mat[(mat == "regular_snow") & (glac > 0.52) & (level >= 26)] = "crystal_ice"
+        mat[(mat == "regular_snow") & (glac > 0.52) & (level >= 32)] = "crystal_ice"
         cald = _fbm(bx, by, s + 9, n * 0.11, 4)
         scar = _fbm(bx, by, s + 50, n * 0.085, 3)
-        black = (((mat == "regular_snow") & (cald > 0.60) & (level >= 26))
-                 | ((mat == "stone_mountain") & (level >= 14) & (level < 24)
+        black = (((mat == "regular_snow") & (cald > 0.60) & (level >= 30))
+                 | ((mat == "stone_mountain") & (level >= 16) & (level < 28)
                     & (X < n * 0.56) & (scar > 0.58)))
         black = black & ~_dilate(mat == "saturated_grass", 2)        # STONE collar, not dirt
         mat[black] = "black_mountain"
