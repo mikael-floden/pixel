@@ -1234,6 +1234,19 @@ export class WorldScene extends Phaser.Scene {
         cam.centerOn(wx, wy);
         return { x: wx, y: wy, t: cell?.t ?? null, l: cell?.l ?? 0 };
       },
+      // Teleport the player to an exact world coordinate — the SAME (col,row)
+      // numbers shown under the avatar's name (fx/CELL_WU, fy/CELL_WU). Server-
+      // authoritative, so this asks the room to move the player; the camera
+      // re-attaches and snaps onto the avatar. Reproduce a spot from a screenshot:
+      //   __ml.teleport(114.9, 13.7)  // e.g. the_island2 peak
+      teleport: (col?: number, row?: number) => {
+        if (col === undefined || row === undefined) return null;
+        this.camDetached = false;
+        this.camChase.init = false; // snap the camera back onto the avatar
+        this.room?.send("teleport", { x: col * CELL_WU, y: row * CELL_WU });
+        const cell = this.world?.rows[Math.floor(row)]?.[Math.floor(col)];
+        return { col, row, sent: !!this.room, t: cell?.t ?? null, l: cell?.l ?? 0 };
+      },
       // My sprite depth vs every occluder column near it — z-order probes.
       depthProbe: () => {
         const id = this.room?.sessionId;

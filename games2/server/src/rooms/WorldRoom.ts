@@ -218,6 +218,24 @@ export class WorldRoom extends Room<WorldState> {
       player.jumpUntil = 0;
     });
 
+    // Teleport: drop the player at an EXACT world coordinate (debug tool —
+    // reproduce a spot from a screenshot). Unlike respawn it does NOT snap to a
+    // standable spawn; it places precisely where asked (clamped to world bounds)
+    // so a reported bug at a known (x,y) can be re-observed. Clears queued
+    // movement + jump so they hold the mark; client snaps via its jump threshold.
+    this.onMessage("teleport", (client, message: { x?: number; y?: number }) => {
+      const player = this.state.players.get(client.sessionId);
+      if (!player) return;
+      const w = this.terrain ? this.terrain.width * CELL_WU : this.worldW;
+      const h = this.terrain ? this.terrain.height * CELL_WU : this.worldH;
+      player.x = clamp(message?.x ?? player.x, 0, w - 1);
+      player.y = clamp(message?.y ?? player.y, 0, h - 1);
+      player.elev = this.terrain ? levelAtWorld(this.terrain, player.x, player.y) : 0;
+      player.inputQueue.length = 0;
+      player.timeCredit = 0;
+      player.jumpUntil = 0;
+    });
+
     // Time-of-day is world state, and it RUNS: the server's world clock
     // advances the phase on its own (TIME_PHASE_SECONDS; the day/night
     // cycle is a core rhythm of the game). The settings button still sends

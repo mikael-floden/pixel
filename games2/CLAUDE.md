@@ -303,6 +303,12 @@ visible head/shoulders are ABOVE the surface).
   Probe: `__ml.camInfo()` → {zoom, base, trail, detached}; regression
   lives in verify-smoke (trail>6px + zoom dip while running, settles to
   base within 8px).
+- **`__ml.teleport(col, row)`** — drop the player at an EXACT world coordinate:
+  the SAME numbers shown under the avatar's name (`fx/CELL_WU, fy/CELL_WU`), so a
+  bug reported on a screenshot is one call to reproduce. Server-authoritative (a
+  `"teleport"` message clamps to the world, sets `elev`, clears queued
+  movement/jump); the camera re-attaches and snaps. Precise placement, NOT a
+  spawn snap — it lands where asked even off standable ground. Debug only.
 
 ## Time-of-day (server-owned world state)
 
@@ -621,7 +627,16 @@ visible head/shoulders are ABOVE the surface).
 - **Two geometries, never merge them**: `world-heightmap` (NEAREST) holds
   TERRAIN levels only and drives the resolve + wall-face classification;
   `world-heightmap-linear` (LINEAR) holds terrain + solid objects and drives
-  ONLY the LOS march. Solid objects (trees, boulders… `!standable &&
+  ONLY the LOS march. A cell's LEVEL is packed into ONE 8-bit channel as
+  `level*hScale`; the shaders decode with `*255/uHScale`. `hScale` is chosen
+  PER WORLD in `buildHeightmap` (=16 for worlds ≤15 levels — byte-identical to
+  the historical encoding — smaller when a world is taller). The old fixed *16
+  SATURATED at 255/16 = 15.9 levels: `the_island2` (peak 32) clamped every high
+  cell to a phantom ~16-level ceiling, so the depth-fog resolve read a bogus low
+  `z` against the player's true 32 and painted a hard jagged fog SEAM across the
+  whole flat peak (and night/occlusion read wrong heights too). Regression:
+  `scripts/verify-heightscale.mjs` (stands on the level-32 peak via
+  `__ml.teleport`, asserts the flat ground beside the player is NOT fogged). Solid objects (trees, boulders… `!standable &&
   !swimmable` in SURFACES) are ART, not walls: they block light and cast a
   soft shadow but must NEVER get a wall-face band — modelling them as blocks
   painted knife-edged phantom shadows outside their drawn art (the

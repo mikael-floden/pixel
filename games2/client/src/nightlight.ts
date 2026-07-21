@@ -156,6 +156,7 @@ uniform float uAnimTime;
 uniform vec4 uCam;        // worldView x, y, w, h (world-render px)
 uniform vec4 uIsoA;       // ox, oy, dx, dy
 uniform vec4 uIsoB;       // lh, gridW, gridH, maxLevel
+uniform float uHScale;    // levels→byte pack scale (per-world; 16 unless the world tops ~15 levels)
 uniform vec3 uAmbient;    // night grade (what unlit white becomes)
 uniform vec4 uSun;        // directional sun: cast dir (grid x,y), slope (levels/cell), strength
 uniform float uCloud;     // weather: cloud cover 0..1 (world-anchored drifting shadow field)
@@ -178,13 +179,13 @@ uniform float uGlowFlip;    // render-target y orientation (calibrated numerical
 // cliffs. The surface resolve keeps exact nearest-cell reads (uHeight).
 float heightAtSoft(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
-  return texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).r * 255.0 / 16.0;
+  return texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).r * 255.0 / uHScale;
 }
 
 // The prop share of the occlusion height (G of the same map).
 float propAtSoft(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
-  return texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).g * 255.0 / 16.0;
+  return texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).g * 255.0 / uHScale;
 }
 
 // TERRAIN occlusion height (terrain/deck minus the prop share) in ONE bilinear
@@ -192,7 +193,7 @@ float propAtSoft(vec2 cr) {
 float terrHeightSoft(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
   vec2 rg = texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).rg;
-  return (rg.r - rg.g) * 255.0 / 16.0;
+  return (rg.r - rg.g) * 255.0 / uHScale;
 }
 
 
@@ -200,7 +201,7 @@ float terrHeightSoft(vec2 cr) {
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
-  return texture2D(uHeight, uv).r * 255.0 / 16.0;
+  return texture2D(uHeight, uv).r * 255.0 / uHScale;
 }
 
 // Solid-object flag (bush, boulder, tree...): G channel of the heightmap.
@@ -710,6 +711,7 @@ uniform float uAnimTime;
 uniform vec4 uCam;        // worldView x, y, w, h (world-render px)
 uniform vec4 uIsoA;       // ox, oy, dx, dy
 uniform vec4 uIsoB;       // lh, gridW, gridH, maxLevel
+uniform float uHScale;    // levels→byte pack scale (per-world; 16 unless the world tops ~15 levels)
 uniform vec3 uAmbient;    // current grade — mist dims with the night
 uniform float uMist;      // eased cover 0..1
 uniform float uFlip;
@@ -718,7 +720,7 @@ uniform sampler2D uHeight;
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
-  return texture2D(uHeight, uv).r * 255.0 / 16.0;
+  return texture2D(uHeight, uv).r * 255.0 / uHScale;
 }
 // Same precision-exact hash as cwHash (see there) — twin of mistAt().
 float mHash(vec2 i) {
@@ -804,6 +806,7 @@ uniform vec2 resolution;
 uniform vec4 uCam;        // worldView x, y, w, h (world-render px)
 uniform vec4 uIsoA;       // ox, oy, dx, dy
 uniform vec4 uIsoB;       // lh, gridW, gridH, maxLevel
+uniform float uHScale;    // levels→byte pack scale (per-world; 16 unless the world tops ~15 levels)
 uniform vec3 uAmbient;    // current grade — the haze dims with the night
 uniform float uPlayerZ;   // the local player's current surface LEVEL
 uniform vec2  uPlayerXY;  // the local player's cell (col, row)
@@ -850,7 +853,7 @@ const float LEVEL_FADE_SPAN = 10.3; // levels of |Δz| over which that fade ramp
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
-  return texture2D(uHeight, uv).r * 255.0 / 16.0;
+  return texture2D(uHeight, uv).r * 255.0 / uHScale;
 }
 // TERRAIN-ONLY surface height (levels), bilinear + edge-clamped. uHeightL packs
 // R = occlusion height (terrain + solid/prop bump, or a deck slab) and G = the
@@ -862,7 +865,7 @@ float terrH(vec2 cr) {
   vec2 g = vec2(uIsoB.y, uIsoB.z);
   vec2 c = clamp(cr, vec2(0.5), g - vec2(0.5));
   vec2 rg = texture2D(uHeightL, c / g).rg;
-  return (rg.r - rg.g) * 255.0 / 16.0;
+  return (rg.r - rg.g) * 255.0 / uHScale;
 }
 // DRAPE: anisotropic blur of the terrain height, WIDE along the iso depth axis
 // s = col+row (one s-step = (0.5,0.5) in col,row — the ONLY screen axis the surface
@@ -1062,6 +1065,10 @@ export class NightLights {
   private world: World;
   private iso: { ox: number; oy: number };
   private maxLevel: number;
+  /** Per-world level→byte pack scale for the heightmaps (set in buildHeightmap).
+   *  16 for worlds ≤15 levels (byte-identical to the historical encoding), less
+   *  for taller worlds so their peaks don't clamp the 8-bit channel. */
+  private hScale = 16;
   private base?: Phaser.Display.BaseShader;
   private shader?: Phaser.GameObjects.Shader;
   private overlay?: Phaser.GameObjects.Image;
@@ -1135,6 +1142,7 @@ export class NightLights {
       uMist: { type: "1f", value: 0 },
       uFlip: { type: "1f", value: 1 },
       uAnimTime: { type: "1f", value: 0 },
+      uHScale: { type: "1f", value: 16 },
       uHeight: { type: "sampler2D", value: null },
     });
     // Elevation depth-fog shader (declared uniforms only — the uSun lesson).
@@ -1147,6 +1155,7 @@ export class NightLights {
       uPlayerXY: { type: "2f", value: { x: 0, y: 0 } },
       uFog: { type: "1f", value: 0 },
       uFlip: { type: "1f", value: 1 },
+      uHScale: { type: "1f", value: 16 },
       uHeight: { type: "sampler2D", value: null },
       uHeightL: { type: "sampler2D", value: null },
     });
@@ -1178,6 +1187,7 @@ export class NightLights {
       uEmitN: { type: "1f", value: 0 },
       uGlowOn: { type: "1f", value: 0 },
       uGlowFlip: { type: "1f", value: 1 },
+      uHScale: { type: "1f", value: 16 },
       uHeight: { type: "sampler2D", value: null },
       uHeightL: { type: "sampler2D", value: null },
       uEmit: { type: "sampler2D", value: null },
@@ -1401,6 +1411,27 @@ export class NightLights {
         if (d.level > deckH[di]) deckH[di] = d.level;
       }
     }
+    // Levels are packed into a single 8-bit channel as level*hScale. The
+    // historical scale was 16, which SATURATES at 255/16 = 15.9 levels: any
+    // world taller than that (the_island 19, the_island2 32) clamped every high
+    // cell to a phantom ~16-level ceiling, so the surface resolve read a bogus
+    // low z and the depth-fog painted the whole peak (and night/occlusion read
+    // wrong heights too). Shrink the scale JUST enough that the tallest occluder
+    // fits — worlds that already fit keep the exact *16 bytes (byte-identical,
+    // zero regression). One cheap pre-scan of the tallest packed height.
+    let maxH = 1;
+    for (let r = 0; r < h; r++) {
+      for (let c = 0; c < w; c++) {
+        const cell = this.world.rows[r][c];
+        const s = surfaceFor(cell.t);
+        const solid = !s.standable && !s.swimmable;
+        const pl = propLvl.get(r * w + c) ?? 0;
+        const occH = Math.max(cell.l + Math.max(solid ? 1 : 0, pl), deckH[r * w + c]);
+        if (occH > maxH) maxH = occH;
+      }
+    }
+    const hScale = maxH * 16 <= 255 ? 16 : 255 / maxH;
+    this.hScale = hScale;
     for (let r = 0; r < h; r++) {
       for (let c = 0; c < w; c++) {
         const i = (r * w + c) * 4;
@@ -1419,11 +1450,11 @@ export class NightLights {
         this.tArr[r * w + c] = surfL;
         this.oArr[r * w + c] = solid ? 1 : 0;
         this.pArr[r * w + c] = pl;
-        img.data[i] = Math.min(255, surfL * 16);
-        imgL.data[i] = Math.min(255, occH * 16);
+        img.data[i] = Math.min(255, surfL * hScale);
+        imgL.data[i] = Math.min(255, occH * hScale);
         // G = the prop share: props get their own smooth shade patch while
         // TERRAIN keeps the byte-identical march (cliffs are locked).
-        imgL.data[i + 1] = Math.min(255, pl * 16);
+        imgL.data[i + 1] = Math.min(255, pl * hScale);
         // G flags solid OBJECTS (bush, boulder, tree…): they keep full LOS
         // occlusion — the billboard compromise is for players, who can never
         // stand on these cells.
@@ -1865,6 +1896,7 @@ export class NightLights {
     s.setUniform("uIsoB.value.y", this.world.width);
     s.setUniform("uIsoB.value.z", this.world.height);
     s.setUniform("uIsoB.value.w", this.maxLevel);
+    s.setUniform("uHScale.value", this.hScale);
     s.setUniform("uCloud.value", cloud);
     s.setUniform("uAurora.value", aurora);
     s.setUniform("uSun.value.x", sun[0]);
@@ -1910,6 +1942,7 @@ export class NightLights {
       m.setUniform("uIsoB.value.y", this.world.width);
       m.setUniform("uIsoB.value.z", this.world.height);
       m.setUniform("uIsoB.value.w", this.maxLevel);
+      m.setUniform("uHScale.value", this.hScale);
       m.setUniform("uMist.value", mist);
       m.setUniform("uAmbient.value.x", ambient[0]);
       m.setUniform("uAmbient.value.y", ambient[1]);
@@ -1933,6 +1966,7 @@ export class NightLights {
       f.setUniform("uIsoB.value.y", this.world.width);
       f.setUniform("uIsoB.value.z", this.world.height);
       f.setUniform("uIsoB.value.w", this.maxLevel);
+      f.setUniform("uHScale.value", this.hScale);
       f.setUniform("uPlayerZ.value", this.curPlayerZ);
       f.setUniform("uPlayerXY.value.x", this.curPlayerXY[0]);
       f.setUniform("uPlayerXY.value.y", this.curPlayerXY[1]);
