@@ -1,13 +1,22 @@
 """demo_lost — a lost tropical island that showcases EVERY base tile.
 
 A grass-dominant island (the look we liked most) with room made for all the
-others: a light_sand BEACH ringing the whole coast, a stone_mountain rising to a
-regular_snow cap with a crystal_ice glacier set into the snow, a clear_water lake,
-a winding lightdark_dirt path, and a black_mountain volcanic nook. Everything we
-learned is applied: seamless corner+edge Wang transitions with a sparse fade,
-solid on-target region-coherent base tiles (coherent cliff walls that vary across
-the map), elevation-correct shores (beaches, never raised water), props from every
-terrain set, full walkability, and a loadable world.json.
+others: a stone_mountain rising to a regular_snow cap with a crystal_ice glacier,
+a light_sand beach on the near shore, a clear_water tarn, a winding lightdark_dirt
+path, and a black_mountain volcanic nook.
+
+CAMERA-FACING TERRAIN (see maps2/README.md "Elevation & occlusion rules"): the
+island is TILTED — high on the up-screen side (the mountain), sloping DOWN toward
+the camera. So every land slope faces the camera (its cliff faces are visible) and
+the up-screen coast is a sheer sea-cliff you fall off, never a walk-behind. That
+kills the "hidden lip eats the player's legs" bug WITHOUT resorting to stripes:
+`camera_monotone` enforces it and `occlusion_violations` proves the map clean.
+Beaches stay on the near (camera) shore only; the mountain caps the top.
+
+Everything else we learned is still applied: seamless corner+edge Wang transitions
+with a sparse fade, solid on-target region-coherent base tiles (coherent cliff
+walls), elevation-correct near-shore beaches, props from every terrain set, full
+walkability, and a loadable world.json.
 """
 
 from __future__ import annotations
@@ -19,7 +28,8 @@ import numpy as np
 from PIL import Image
 
 import worldio
-from autotile import PRIORITY, AutoTiler, connect_walkable, flatten_shores
+from autotile import (PRIORITY, AutoTiler, camera_monotone, connect_walkable,
+                      flatten_shores, occlusion_violations)
 from tiles2lib import DX, DY, LEVEL_PX, Tiles2
 
 GROUND_BOTTOM = 54
@@ -91,53 +101,66 @@ class Lost:
         n = self.n
         Y, X = np.mgrid[0:n, 0:n].astype(np.float32)
         cx, cy = n * 0.5, n * 0.5
-        d = np.hypot((X - cx) / (n * 0.44), (Y - cy) / (n * 0.44))
-        h = (1.0 - d) * 7.0
-        # stone/snow massif in the north-west
-        self.peak_c = (n * 0.36, n * 0.30)
+        MAX = 12
+
+        # CAMERA-FACING height field. sxy runs 0 (up-screen corner) -> 1 (camera
+        # corner); a strong tilt makes land high up-screen and low toward the
+        # camera, so slopes face the camera by construction. A radial falloff sinks
+        # the left/right/near edges into the sea; the mountain is pinned up-screen
+        # so ALL its slopes face the camera and its back is the top-edge sea-cliff.
+        sxy = (X + Y) / (2.0 * n)
+        h = (0.58 - sxy) * 7.0                               # GENTLE camera-facing tilt
+        rr = np.hypot((X - cx) / (n * 0.60), (Y - cy) / (n * 0.60))
+        h -= np.clip(rr - 0.60, 0, None) * 30.0              # taper edges to sea
+        h += 3.0                                             # keep the meadow above water
+        # the mountain is a LOCALISED tall feature pinned to the up-screen edge, so
+        # its back is the top-edge sea-cliff and the grass meadow stays dominant
+        self.peak_c = (n * 0.44, n * 0.14)
         dm = np.hypot(X - self.peak_c[0], Y - self.peak_c[1])
-        h += 8.5 * np.exp(-(dm / (n * 0.17)) ** 2)
-        # an inland lake in the south-east meadow (kept well clear of the coast)
-        self.lake_c = (n * 0.60, n * 0.58, n * 0.075)
-        dl = np.hypot(X - self.lake_c[0], Y - self.lake_c[1])
-        h -= 5.0 * np.exp(-(dl / self.lake_c[2]) ** 2)
-        h += (_fbm(X, Y, self.seed, n * 0.14, 4) - 0.5) * 3.0
-        h += (_fbm(X, Y, self.seed + 3, n * 0.05, 3) - 0.5) * 1.2
-        MAX = 10
-        level = np.clip(np.rint(h), 0, MAX).astype(np.int16)
+        h += 11.0 * np.exp(-(dm / (n * 0.155)) ** 2)
+        # modest noise — kept small so the gentle tilt still dominates (few local
+        # bumps for camera_monotone to iron out, so the island stays organic)
+        h += (_fbm(X, Y, self.seed, n * 0.16, 4) - 0.5) * 2.2
+        h += (_fbm(X, Y, self.seed + 3, n * 0.06, 3) - 0.5) * 0.9
 
         mat = np.full((n, n), "", object)
-        land = h > 0.9
+        land = h > 0.7
         mat[land] = "saturated_grass"
         mat[~land] = "clear_water"
-        mat[dl < self.lake_c[2] * 0.9] = "clear_water"      # the lake
+        # a clear_water TARN low on the near (camera) side, well clear of the cliff
+        self.lake_c = (n * 0.58, n * 0.66, n * 0.070)
+        dl = np.hypot(X - self.lake_c[0], Y - self.lake_c[1])
+        mat[dl < self.lake_c[2] * 0.9] = "clear_water"
+        level = np.clip(np.rint(h), 0, MAX).astype(np.int16)
         level[mat == "clear_water"] = 0
 
-        # SAND beach: low land within SAND_W of any water (sea or lake)
-        near_water = _dilate(mat == "clear_water", SAND_W)
-        beach = near_water & (mat == "saturated_grass") & (level <= 1)
-        mat[beach] = "light_sand"
-
-        # mountain: stone slopes -> snow cap, with a crystal-ice glacier in the snow
-        mat[(mat == "saturated_grass") & (level >= 5)] = "stone_mountain"
-        mat[(mat == "stone_mountain") & (level >= 8)] = "regular_snow"
-        di = np.hypot(X - self.peak_c[0] - n * 0.02, Y - self.peak_c[1] + n * 0.04)
-        mat[(mat == "regular_snow") & (di < n * 0.055)] = "crystal_ice"
-
-        # a black volcanic nook in the east upland, buffered by dirt from the grass
-        self.nook_c = (n * 0.76, n * 0.44)
-        vb = np.hypot(X - self.nook_c[0], Y - self.nook_c[1])
-        buf = (mat == "saturated_grass") & (vb < n * 0.12)
-        mat[buf] = "lightdark_dirt"
-        nook = (mat == "lightdark_dirt") & (vb < n * 0.085)
-        mat[nook] = "black_mountain"
-
+        # SHORES: beach every coast down to the waterline, THEN enforce the
+        # camera-facing rule — which re-cliffs the up-screen coasts into sheer
+        # sea-cliffs (no walk-behind) and leaves only the near-shore beaches low.
+        flatten_shores(mat, level)
         self.mat, self.level = mat, level
-        # a dirt PATH from the south beach up toward the mountain foot
-        self._carve_path([(0.50, 0.80), (0.47, 0.66), (0.44, 0.54),
-                           (0.40, 0.44), (0.37, 0.38)])
-        # bring the coast down to the waterline so it BEACHES, never cliffs, in
-        flatten_shores(self.mat, self.level)
+        camera_monotone(self.level, self.mat)
+
+        # MATERIALS on the FINAL levels (big regions, never stripes):
+        level = self.level
+        # near-shore BEACH = low land touching the sea (up-screen coast is now a
+        # tall cliff, so sand lands only on the near shore, as intended)
+        near_sea = _dilate(mat == "clear_water", SAND_W)
+        mat[near_sea & (mat == "saturated_grass") & (level <= 1)] = "light_sand"
+        # mountain bands: grass -> stone -> snow, with a crystal-ice glacier
+        mat[(mat == "saturated_grass") & (level >= 6)] = "stone_mountain"
+        mat[(mat == "stone_mountain") & (level >= 9)] = "regular_snow"
+        di = np.hypot(X - self.peak_c[0] + n * 0.02, Y - self.peak_c[1] - n * 0.03)
+        mat[(mat == "regular_snow") & (di < n * 0.06)] = "crystal_ice"
+        # a black volcanic nook in the upland, buffered by dirt from the grass
+        self.nook_c = (n * 0.70, n * 0.40)
+        vb = np.hypot(X - self.nook_c[0], Y - self.nook_c[1])
+        mat[(mat == "saturated_grass") & (vb < n * 0.11)] = "lightdark_dirt"
+        mat[(mat == "lightdark_dirt") & (vb < n * 0.075)] = "black_mountain"
+
+        # a dirt PATH from the near beach up toward the mountain foot
+        self._carve_path([(0.50, 0.82), (0.49, 0.68), (0.47, 0.54),
+                           (0.45, 0.42), (0.44, 0.30)])
 
     def _carve_path(self, pts):
         n = self.n
@@ -285,8 +308,13 @@ def build(out=None, n=120, seed=11):
         os.path.join(out, "preview.png"))
     from collections import Counter
     terr = Counter(m for m in d.mat.ravel() if m)
-    print(f"demo_lost {n}x{n}: {len(d.props)} props; materials="
-          + ", ".join(f"{k.split('_')[0]}:{v}" for k, v in terr.most_common()))
+    # PROVE the camera-facing rule holds: no hidden same-material lips that would
+    # swallow the player's legs (drops >10 are fog-safe and ignored).
+    viol = occlusion_violations(d.mat, d.level)
+    print(f"demo_lost {n}x{n}: {len(d.props)} props; max level {int(d.level.max())}; "
+          f"materials=" + ", ".join(f"{k.split('_')[0]}:{v}" for k, v in terr.most_common()))
+    print(f"  occlusion check: {len(viol)} hidden same-material lip(s) "
+          + ("[CLEAN]" if not viol else f"[FIX NEEDED] e.g. {viol[:3]}"))
     return d
 
 

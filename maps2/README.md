@@ -5,6 +5,49 @@ with specifically-named ground types and first-class transitions) and produces
 **worlds** under `maps2/worlds/<name>/`. Built to support **several** maps —
 test maps for evaluating tiles + (eventually) the one production world.
 
+## Elevation & occlusion rules — ALWAYS apply when shaping terrain
+
+Read this every time, the same way you always run the transition auto-tiler.
+
+The camera looks from the **south**, so a tile toward the camera (larger `x+y`)
+draws **over** whatever is up-screen behind it. If a player stands with **higher
+ground on their camera-facing (`+x`/`+y`) side**, that ground swallows their legs —
+and its cliff face points *away* from the camera (invisible), so with the **same
+material** on both sides it reads as a rendering bug, not a hill. **Never ship
+that.** (It's fine where the hill's face IS visible — a rise descending toward the
+camera — so the fix is not "change material at every level".)
+
+**The rule, one line:** land elevation must never step **up toward the camera**
+with the same material. Equivalently — make terrain **camera-facing**: high
+up-screen, sloping **down toward the camera**, so every cliff face is visible.
+
+Consequences to honour:
+
+- **Slopes face the camera.** A rise whose face is visible (it descends toward the
+  camera) is fine with one material over a big area. The forbidden case is the
+  far/back side of a hill *descending away from the camera*.
+- **Up-screen coasts are sheer sea-cliffs, not beaches.** The top of the map drops
+  abruptly to water so the player falls off / can't walk behind it (à la Zelda
+  *A Link to the Past*'s northern mountains). Beaches live only on the **near
+  (camera) shore.** This also limits where walk-behind valleys can occur — which is
+  fine, valleys/cliffs are still allowed, just make their faces camera-visible.
+- **Change material only across a genuine away-step, and only as a BIG region** —
+  the whole far side becomes a different type, **never a 1-cell stripe.** (Usually
+  unnecessary: camera-facing terrain + always-different water boundaries cover it.)
+- **Fog exception:** a drop of **more than 10 levels** is separated by the game's
+  fog, so the same material MAY be reused across it (an alternative to changing
+  type — just make sure the z-distance is >10 and let the fog do the work).
+
+Enforce it in code (`pipeline/autotile.py`):
+
+- **`camera_monotone(level, mat)`** — reshapes land so no cell is lower than its
+  toward-camera neighbours: every slope becomes camera-facing and every up-screen
+  coast becomes a sea-cliff. Run it **after `flatten_shores`** (which beaches all
+  coasts) so only the near-shore beaches survive.
+- **`occlusion_violations(mat, level)`** — returns every remaining hidden
+  same-material lip (drops >10 ignored as fog-safe). A generator must print/assert
+  this is **empty**. `pipeline/lostworld.py` (`demo_lost`) is the reference.
+
 ## Geometry (tiles2)
 
 - top diamond **30px** tall × 64px wide (grid steps DX=32, DY=15)

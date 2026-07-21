@@ -152,6 +152,66 @@ def connect_walkable(mat, water=("clear_water",), *, set_bridge, min_size=60,
     return bridges
 
 
+def camera_monotone(level, mat, water=("clear_water",)):
+    """Reshape LAND so elevation never rises TOWARD the camera — the single rule
+    that kills leg-eating "hidden lips".
+
+    In this iso the camera looks from the south: a cell's toward-camera neighbours
+    are (x+1, y) and (x, y+1) (larger x+y, drawn on top). If either is HIGHER, its
+    cliff face points away from the camera (invisible) yet it draws over the player
+    standing behind it — so the ground silently swallows the player's legs, and if
+    it is the same material it reads as a bug, not a hill.
+
+    We forbid that by making every land cell at least as high as its two
+    toward-camera neighbours (processed camera->up-screen so neighbours are final).
+    The result: every land slope now DESCENDS toward the camera (all cliff faces
+    visible), and any up-screen coast becomes a sheer sea-cliff (high land meeting
+    low water) instead of a gentle walk-behind beach. Water stays at 0. Run this
+    AFTER flatten_shores (which beaches every coast) so it re-cliffs only the
+    up-screen coasts and leaves the camera-side beaches low. Mutates + returns
+    `level`."""
+    H, W = level.shape
+    ws = set(water)
+    land = lambda x, y: mat[y, x] != "" and mat[y, x] not in ws
+    for x, y in sorted(((x, y) for y in range(H) for x in range(W)),
+                       key=lambda p: -(p[0] + p[1])):        # camera -> up-screen
+        if not land(x, y):
+            continue
+        v = int(level[y, x])
+        if x + 1 < W and land(x + 1, y):
+            v = max(v, int(level[y, x + 1]))
+        if y + 1 < H and land(x, y + 1):
+            v = max(v, int(level[y + 1, x]))
+        level[y, x] = v
+    return level
+
+
+def occlusion_violations(mat, level, water=("clear_water",), fog_z=10):
+    """Every RED edge left in a map: a toward-camera neighbour ((x+1,y) or (x,y+1))
+    that is HIGHER than this land cell by 1..fog_z levels AND the SAME material — a
+    hidden lip that occludes the player and reads as a bug (see `camera_monotone`).
+
+    Water edges are ignored (water is always a different material and a visible
+    shoreline). Drops of MORE than `fog_z` (default 10) are ignored too: at that
+    z-distance the game's fog visibly separates the two surfaces, so reusing one
+    material is allowed. Returns a list of ((x,y),(x2,y2),dh); empty == clean. Call
+    it in a generator's build (like `audit_transition_metadata`) to fail loudly."""
+    H, W = mat.shape
+    ws = set(water)
+    bad = []
+    for y in range(H):
+        for x in range(W):
+            m = mat[y, x]
+            if m == "" or m in ws:
+                continue
+            for x2, y2 in ((x + 1, y), (x, y + 1)):
+                if 0 <= x2 < W and 0 <= y2 < H and mat[y2, x2] == m:
+                    dh = int(level[y2, x2]) - int(level[y, x])
+                    if 1 <= dh <= fog_z:
+                        bad.append(((x, y), (x2, y2), dh))
+    return bad
+
+
 class AutoTiler:
     def __init__(self, mat, lib: Tiles2, seed: int, *, priority=None, level=None,
                  water=("clear_water",), fade_width: int = 5,
