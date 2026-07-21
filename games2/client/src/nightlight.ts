@@ -821,9 +821,9 @@ uniform sampler2D uHeight;
 // as a MAX VIEW DISTANCE (a natural handle for future network cull radius).
 const vec3  FOG_NEAR = vec3(0.30, 0.52, 0.50); // first band: teal
 const vec3  FOG_FAR  = vec3(0.72, 0.88, 0.90); // farthest band: pale misty cyan
-const float VIEW   = 26.0;  // (weighted) cells to the farthest/full band = view radius
+const float VIEW   = 14.0;  // (weighted) cells to the farthest/full band = view radius
 const float BANDS  = 6.0;   // cel-shade steps — band 0 is the clear near bubble
-const float ZW     = 7.0;   // cells of distance PER ELEVATION LEVEL (z counts MUCH more)
+const float ZW     = 1.0;   // cells of distance PER ELEVATION LEVEL (== horizontal now)
 const float HW     = 1.0;   // cells of distance per horizontal cell
 const float FOG_MAX = 0.78; // opacity of the farthest band (the cull edge)
 

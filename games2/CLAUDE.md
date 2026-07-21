@@ -573,9 +573,11 @@ visible head/shoulders are ABOVE the surface).
 - **DEPTH-FOG — cel-shaded DISTANCE fog** (`DEPTHFOG_FRAG`, maintainer: "make it
   easier to see the different ground levels"): a THIRD, always-on NORMAL-blend
   overlay. Every ground pixel is fogged by its **3D distance to the local player**
-  (`uPlayerXY` cell + `uPlayerZ` level), with the ELEVATION axis STRETCHED — `ZW`
-  cells of distance per level vs `HW` per horizontal cell — so a level jump reads as
-  much farther than a sideways step (cliffs separate HARD, flat ground fades slowly).
+  (`uPlayerXY` cell + `uPlayerZ` level). `ZW` (cells of distance per elevation level)
+  vs `HW` (per horizontal cell) is the KEY tunable the maintainer is dialing: `ZW`>
+  `HW` makes cliffs separate HARD (a level jump reads as farther than a sideways
+  step); `ZW`==`HW` (current) is a plain radial distance haze — elevation counts the
+  same as horizontal, soft concentric cel bands, cliffs no longer specially pop.
   The distance is POSTERIZED into `BANDS` snappy cel-shaded steps (the reference
   forest's depth that "suddenly snaps"), coloured along ONE cool palette (`FOG_NEAR`
   teal → `FOG_FAR` pale misty cyan). Distance is symmetric in z (dz²), so a cliff N
