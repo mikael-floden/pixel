@@ -589,6 +589,13 @@ visible head/shoulders are ABOVE the surface).
      half-width `DRAPE_RS=2.5`), so flat ground reads as clean concentric bands — NO
      per-tile zigzag. `terrH` uses R−G = occlusion height with PLACED PROPS removed
      (a boulder never haloes flat ground; edge-clamped so the map rim doesn't darken).
+     FACE-SMOOTH: a near-vertical cliff FACE compresses those concentric rings into a few
+     screen pixels, so the cel-snap (floor) STAIRCASES into diagonal bands that CHEVRON where
+     two faces meet (maintainer: the "blue zigzag" vs the loved organic "red" on flats). Fix:
+     `faceDepth = heightAt(cell) − z` is 0 on every flat/tread but grows DOWN a face (the pixel
+     resolves to its high lip cell while the marched `z` drops); as it passes ½ level, LERP the
+     distance band from `floor(distCont)` to the raw `distCont` — the face fades to the smooth
+     ring value (a clean gradient, no staircase) while flats keep the crisp rings BYTE-for-byte.
   2. **HARD elevation EDGE** — `elevBand = ceil(|pLev − z|·ELEV_STEP − ELEV_EPS)` where `z`
      is the MARCH's OWN resolved fractional surface level (NOT `heightAt(cell)`: a cliff-
      FACE pixel resolves to the HIGH cell, so heightAt is constant across top+face and only

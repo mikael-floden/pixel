@@ -942,8 +942,19 @@ void main() {
   float srow = (sv - u) * 0.5;
   float distH = length(vec2(scol - uPlayerXY.x, srow - uPlayerXY.y)); // 2D only
   // Same onset/spacing/cull as before: band 1 at FOG_D0, +1 every FOG_DW cells, full
-  // fog (= the max view distance) at FOG_D0 + (BANDS-2)*FOG_DW ≈ 18.3 cells.
-  float distBand = clamp(floor((distH - FOG_D0) / FOG_DW) + 1.0, 0.0, BANDS - 1.0);
+  // fog (= the max view distance) at FOG_D0 + (BANDS-2)*FOG_DW ≈ 18.3 cells. The floor()
+  // CEL-SNAPS it into crisp concentric rings — the organic look on flat ground.
+  float distCont = (distH - FOG_D0) / FOG_DW + 1.0;
+  // BUT a near-vertical cliff FACE compresses many rings into a few screen pixels, so those
+  // hard rings STAIRCASE — the diagonal bands that CHEVRON where two faces meet (the
+  // maintainer's zigzag). A face pixel resolves to its HIGH lip cell, so heightAt(cell)
+  // sits well above the marched surface z: use that gap as "how far DOWN a face this pixel
+  // is" and, as it grows, DROP the cel-snap so the face fades to the SMOOTH ring value — a
+  // clean gradient, no hard staircase. On every flat/tread heightAt(cell)==z ⇒ faceDepth 0
+  // ⇒ full cel-snap ⇒ the crisp rings are byte-for-byte unchanged.
+  float faceDepth = max(0.0, heightAt(cell) - z);
+  float faceMix = clamp(faceDepth - 0.5, 0.0, 1.0); // skip the ≤½-level resolve jitter at the lip
+  float distBand = clamp(mix(floor(distCont), distCont, faceMix), 0.0, BANDS - 1.0);
 
   // (2) HARD ELEVATION EDGE — the core goal. Use the march's OWN resolved surface
   // height z (NOT heightAt(cell)): a cliff-FACE pixel resolves to the HIGH cell, so
