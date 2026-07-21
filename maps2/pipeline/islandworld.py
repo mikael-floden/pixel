@@ -386,14 +386,15 @@ class Island:
                 return
 
     def _place_bridges(self, count=3):
-        """Deliberate STONE BRIDGES (world@2 decks) across the gorge — the crossings
-        the player uses. THE GAP FIX: a bridge is placed only where the two banks sit
-        at the SAME level (+-1), and the deck is set to that level, so BOTH ends meet
-        their bank within one step (walkable). No `max(bank)` deck floating above a
-        low far bank. The deck also LAPS one cell onto each bank so it physically
-        abuts walkable ground on both sides. Water still passes beneath."""
+        """Deliberate STONE BRIDGES (world@2 decks) across the gorge. THE CONNECT FIX:
+        a bridge is laid only across rows where, at THAT row, the whole span is river
+        water AND both banks are land within 1 level of the deck — so every deck row
+        meets walkable ground on BOTH ends (no row dead-ends against a cliff). The
+        deck sits at that shared bank level; both banks must additionally lead into
+        the main walkable area (not a 1-cell ledge)."""
         n = self.n
         riverw = (self.mat == "clear_water") & self.land
+        main = set(self._walk_components()[0])
 
         def channel(cy):
             xs = sorted(x for x in range(n) if riverw[cy, x])
@@ -409,39 +410,50 @@ class Island:
             run = min(runs, key=lambda r: abs((r[0] + r[-1]) / 2 - n / 2))
             return run[0], run[-1]
 
+        def row_ok(r, x0, x1, dlv):
+            if not all(0 <= x < n and riverw[r, x] for x in range(x0, x1 + 1)):
+                return False
+            for bx in (x0 - 1, x1 + 1):
+                if not (0 <= bx < n and self.mat[r, bx] not in ("", "clear_water")):
+                    return False
+                if abs(int(self.level[r, bx]) - dlv) > 1:      # a cliff intrudes -> no
+                    return False
+                if (bx, r) not in main:                        # bank must lead somewhere
+                    return False
+            return True
+
         cands = []
         for cy in range(int(n * 0.30), int(n * 0.92)):
             ch = channel(cy)
             if not ch:
                 continue
             x0, x1 = ch
-            if x0 - 1 < 0 or x1 + 1 >= n:
+            if x0 - 1 < 0 or x1 + 1 >= n or x1 - x0 > 11:
                 continue
             la, lb = self.mat[cy, x0 - 1], self.mat[cy, x1 + 1]
             if la in ("", "clear_water") or lb in ("", "clear_water"):
                 continue
             va, vb = int(self.level[cy, x0 - 1]), int(self.level[cy, x1 + 1])
-            width = x1 - x0 + 1
-            if abs(va - vb) <= 1 and 1 <= width <= 12:       # LEVEL-MATCHED banks only
-                cands.append((width, cy, x0, x1, min(va, vb)))
-        cands.sort()                                          # narrowest crossings first
+            if abs(va - vb) > 1:
+                continue
+            dlv = min(va, vb)
+            rows = [r for r in (cy - 1, cy, cy + 1) if row_ok(r, x0, x1, dlv)]
+            if len(rows) >= 2:                                 # a solid, connecting bridge
+                cands.append((x1 - x0, cy, x0, x1, dlv, rows))
+        cands.sort()
         chosen = []
         for c in cands:
-            if all(abs(c[1] - ch[1]) > 10 for ch in chosen):  # spread out along the gorge
+            if all(abs(c[1] - ch[1]) > 10 for ch in chosen):
                 chosen.append(c)
             if len(chosen) >= count:
                 break
 
-        for _w, cy, x0, x1, dlv in chosen:
-            # deck at dlv (== the lower bank), lapping one cell onto EACH bank so both
-            # ends abut walkable ground within one step; middle spans the water.
-            cells = [(x, y) for x in range(x0 - 1, x1 + 2) for y in (cy - 1, cy, cy + 1)
-                     if 0 <= y < n]
+        for _w, cy, x0, x1, dlv, rows in chosen:
+            cells = [(x, r) for r in rows for x in range(x0, x1 + 1)]   # water span only
             self.decks.append({"kind": "bridge", "mat": "stone_mountain", "level": dlv,
                                "thickness": 1, "cells": cells})
-            for y in (cy - 1, cy, cy + 1):
-                if 0 <= y < n:
-                    self.links.append(((x0 - 1, y), (x1 + 1, y)))
+            for r in rows:
+                self.links.append(((x0 - 1, r), (x1 + 1, r)))
             self.reserved.update(cells)
 
     def _merge_ramp(self, main, cands):
@@ -904,6 +916,16 @@ def build(out=None, n=140, seed=11):
                 if any((x + i, y + j) in mainset for (x, y) in c
                        for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1))))
     assert traps == 0, f"pit trap: {traps} walkable cells cut off yet land-adjacent to main"
+    # every bridge must meet walkable ground (within 1 level, in main) on BOTH ends,
+    # on every deck row — else it dead-ends against a cliff and you can't cross it.
+    for dk in d.decks:
+        xs = [c[0] for c in dk["cells"]]
+        x0, x1, dlv = min(xs), max(xs), dk["level"]
+        for r in sorted({c[1] for c in dk["cells"]}):
+            for bx in (x0 - 1, x1 + 1):
+                assert (d.mat[r, bx] not in ("", "clear_water")
+                        and abs(int(d.level[r, bx]) - dlv) <= 1
+                        and (bx, r) in mainset), f"bridge end not walkable at ({bx},{r})"
     print(f"the_island {n}x{n}: {len(d.props)} props; max level {int(d.level.max())}; "
           f"materials=" + ", ".join(f"{k.split('_')[0]}:{v}" for k, v in terr.most_common()))
     print(f"  occlusion lips: {len(viol)} {'[CLEAN]' if not viol else viol[:3]}")
