@@ -452,8 +452,8 @@ export const JUMP_SPEED_FACTOR = 0.6; // slower ground travel while airborne (ta
 // Stepping DOWN a ledge is a gravity fall, not a teleport. The client renderer
 // keeps an elevation lift (px) per avatar and integrates it toward the cell's
 // level each frame; this pure step encodes the feel so it can be unit-tested.
-export const FALL_GRAVITY = 600; // px/s²: a 1-level (≈19px) drop lands in ~0.25s. Kept gentle
-                                 // (was 1400) so a fall reads as a visible descent and the
+export const FALL_GRAVITY = 400; // px/s²: a 1-level (≈19px) drop lands in ~0.31s. Kept gentle
+                                 // (was 1400) so a fall reads as a slow visible descent and the
                                  // depth-fog can interpolate its z during the drop, not snap.
 export const FALL_TRIGGER_FRAC = 0.75; // down-steps beyond this × level height fall
 export const STEP_EASE_RATE = 14; // gentle down-steps (stairs) ease at this rate

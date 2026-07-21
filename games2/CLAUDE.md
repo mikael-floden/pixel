@@ -575,10 +575,9 @@ visible head/shoulders are ABOVE the surface).
   overlay. Its JOB is to make cliff EDGES readable. TWO channels, summed then POSTERIZED
   once into snappy cel bands (teal `FOG_NEAR` → pale misty `FOG_FAR`):
   1. **SMOOTH horizontal DISTANCE** — 2D distance of the drape-reconstructed `scol/srow`
-     to the player, GATED OFF the player's OWN level (see the combine): onset at `FOG_D0`
-     (6 cells), then +1 band every `FOG_DW` (1.2) cells. Fog must NEVER ring the flat ground
-     you STAND on (maintainer), so this only hazes OTHER levels — near-clear, deepening with
-     distance for depth.
+     to the player: onset at `FOG_D0` (11 cells), then +1 band every `FOG_DW` (1.2) cells.
+     Fires on ALL ground, but the per-level TRANSPARENCY (below) fades it near the player's own
+     level so it isn't a hard ring on the flat you stand on.
      Reconstruction is smooth (seed `sz=uPlayerZ`, iterate ×3 `sz=drape(cell(u,v0,sz))`;
      `drape()` = anisotropic blur of `terrH=uHeightL.R−G` along the col+row FOLD axis,
      half-width `DRAPE_RS=2.5`), so flat ground reads as clean concentric bands — NO
@@ -595,11 +594,12 @@ visible head/shoulders are ABOVE the surface).
      foggier, same palette); the `ELEV_EPS` dead-zone keeps a flat tread perfectly clear.
      `z` is constant across same-level ground ⇒ this term adds ZERO contour on flats (can't
      recreate the old zigzag) and is NOT gated by `FOG_D0` (edges pop even at the feet).
-  `band = clamp(distBand·step(0.5,|pLev−z|) + elevBand, 0, BANDS−1)` — the `step()` GATES the
-  distance haze OFF the player's OWN level (0 when the surface is the player's level, 1 on any
-  OTHER level), so same-level ground is clear to the horizon while other levels haze with
-  distance; the elevBand adds on top so a big drop reads as full fog straight away (the
-  "you're up on a bridge" cue). ADDITIVE (not max) so a mid-range edge still adds its step. HISTORY of rejected tries: elevation-banded (v1) → then a TRUE 3D-distance
+  `band = clamp(distBand + elevBand, 0, BANDS−1)` (ADDITIVE), then the fog OPACITY is scaled by a
+  PER-LEVEL TRANSPARENCY: `a *= clamp(SAME_LEVEL_FOG + (1−SAME_LEVEL_FOG)·|Δz|/LEVEL_FADE_SPAN,
+  SAME_LEVEL_FOG, 1)` — 30% opacity on the player's OWN level (maintainer "lower it 70%", a soft
+  fade NOT the old hard gate, which was taken back), ramping linearly to FULL by `LEVEL_FADE_SPAN`
+  (8) levels of separation — a bridge high in the air reads at full strength. (`ELEV_STEP=0.5` also
+  makes the Z ramp gentle: +1 band every ~2 levels.) HISTORY of rejected tries: elevation-banded (v1) → then a TRUE 3D-distance
   SPHERE with drape-smoothing + `ZW` weight (killed the zigzag AND, fatally, the edge
   contrast — its bands were iso-distance rings that floated across the terrain and NEVER
   landed on an edge; maintainer: "makes it even harder to see the real edge"). So the sphere

@@ -825,23 +825,26 @@ uniform sampler2D uHeightL; // terrain height, LINEAR — smooth (bilinear) samp
 const vec3  FOG_NEAR = vec3(0.30, 0.52, 0.50); // first band: teal
 const vec3  FOG_FAR  = vec3(0.72, 0.88, 0.90); // farthest band: pale misty cyan
 const float BANDS  = 6.0;   // cel-shade steps — band 0 is the clear near bubble
-const float FOG_D0 = 6.0;   // ONSET (cells): distance fog starts this far out — but ONLY on
-                            // ground that is a DIFFERENT level than the player (the distance
-                            // term is gated off the player's OWN level entirely). So it can sit
-                            // closer again — it never rings the flat ground you stand on.
+const float FOG_D0 = 11.0;  // ONSET (cells): distance fog starts this far out. Fires on ALL ground,
+                            // but the per-level TRANSPARENCY below fades it to SAME_LEVEL_FOG on
+                            // the player's own level, so it isn't a hard ring on the flat you're on.
 const float FOG_DW = 1.2;   // width of each cel band past the onset (cells) — smaller = the
                             // distance haze on other levels INTENSIFIES faster (tighter bands).
 const float FOG_MAX = 0.78; // opacity of the farthest band (the cull edge)
 const float DRAPE_RS = 2.5; // drape blur half-width along the col+row fold axis (s-units)
-const float ELEV_STEP = 1.5; // fog BANDS added per LEVEL of player↔surface separation — the
-                             // EDGE-contrast strength: higher = cliff edges pop harder and
-                             // ground below / walls above deepen faster. Drives the highlight.
+const float ELEV_STEP = 0.5; // fog BANDS added per LEVEL of player↔surface separation past the
+                             // dead-zone. 0.5 ⇒ +1 band every ~2 levels (gentle Z ramp — maintainer
+                             // "don't increase it so rapidly, ~every 2nd level"). Raise = steeper.
 const float ELEV_EPS  = 0.05;// tiny FP dead-zone absorbing the resolve's jitter in z.
 const float ELEV_D0   = 7.0; // ELEVATION DEAD-ZONE: no edge fog until the surface is this many
                              // LEVELS from the player — a regular house/roof stays CLEAR (its
                              // small step is read from the map's distinct tiles); only a real
                              // MOUNTAIN climb fogs (maintainer). Raise = fog fires only on taller
                              // cliffs; lower = fires on smaller drops.
+const float SAME_LEVEL_FOG  = 0.30; // OPACITY multiplier on the player's OWN level — the fog there
+                                    // is faded to 30% (maintainer: "lower it 70%"), NOT removed.
+const float LEVEL_FADE_SPAN = 8.0;  // levels of |Δz| over which that fade ramps back to FULL
+                                    // opacity (Δ8 = today's strength). New tuning knob.
 
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
@@ -957,15 +960,19 @@ void main() {
   float dLev = abs(pLev - z);                      // levels of separation
   float elevBand = ceil(max(0.0, dLev - ELEV_D0) * ELEV_STEP - ELEV_EPS); // 0 until |Δlvl|>ELEV_D0
 
-  // COMBINE + CEL-SNAP. The distance term is GATED OFF the player's OWN level: fog must
-  // NEVER show on same-level ground, however far (maintainer) — step(0.5, dLev) is 0 when the
-  // surface is the player's level and 1 on any OTHER level. So flat ground you stand on stays
-  // clear to the horizon, while OTHER levels still get the distance haze (depth) PLUS the
-  // elevation step. Additive, so a big drop (elevBand already full) reads as full fog straight
-  // away — the intended "you're up on a bridge" cue.
-  float band = clamp(distBand * step(0.5, dLev) + elevBand, 0.0, BANDS - 1.0);
+  // COMBINE + CEL-SNAP. Additive (NOT max) so a mid-range edge always adds its step on top of
+  // the distance band. Both channels fire on ALL ground; the per-level TRANSPARENCY (below) is
+  // what keeps the player's own level subtle — a soft fade, NOT the old hard gate (maintainer
+  // took that back).
+  float band = clamp(distBand + elevBand, 0.0, BANDS - 1.0);
   float bf = band / (BANDS - 1.0);
-  float a = bf * FOG_MAX * uFog;
+  // PER-LEVEL TRANSPARENCY (maintainer's new knob): scale the fog OPACITY by |Δlevel| — faded to
+  // SAME_LEVEL_FOG (30%) on the player's OWN level, ramping linearly back to FULL by
+  // LEVEL_FADE_SPAN (8) levels of separation. So your own level barely hazes, ~1 level off a
+  // touch more … and 8+ levels away reads at full strength (a bridge high in the air).
+  float levelFade = clamp(SAME_LEVEL_FOG + (1.0 - SAME_LEVEL_FOG) * (dLev / LEVEL_FADE_SPAN),
+                          SAME_LEVEL_FOG, 1.0);
+  float a = bf * FOG_MAX * uFog * levelFade;
   if (a <= 0.002) { gl_FragColor = vec4(0.0); return; }
   vec3 col = mix(FOG_NEAR, FOG_FAR, bf); // same palette both directions
   // Dim with the night, but keep a floor so the tones still read in the dark.
