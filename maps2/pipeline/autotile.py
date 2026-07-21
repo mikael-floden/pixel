@@ -186,6 +186,31 @@ def camera_monotone(level, mat, water=("clear_water",)):
     return level
 
 
+def camera_monotone_masked(level, mat, mask, water=("clear_water",)):
+    """`camera_monotone`, but only RAISE cells where `mask` is True, and only
+    against toward-camera neighbours that are ALSO in `mask`.
+
+    Used by the_island2 to keep the UPPER mountain strictly antitone (occlusion-
+    clean for free) while leaving the LOWER relief maze — which deliberately goes
+    both up AND down — completely untouched (its legality is enforced instead by
+    the wall-material rule + lip-cover, which change material, never level).
+    Mutates + returns `level`."""
+    H, W = level.shape
+    ws = set(water)
+    land = lambda x, y: mat[y, x] != "" and mat[y, x] not in ws
+    for x, y in sorted(((x, y) for y in range(H) for x in range(W)),
+                       key=lambda p: -(p[0] + p[1])):        # camera -> up-screen
+        if not (mask[y, x] and land(x, y)):
+            continue
+        v = int(level[y, x])
+        if x + 1 < W and mask[y, x + 1] and land(x + 1, y):
+            v = max(v, int(level[y, x + 1]))
+        if y + 1 < H and mask[y + 1, x] and land(x, y + 1):
+            v = max(v, int(level[y + 1, x]))
+        level[y, x] = v
+    return level
+
+
 def occlusion_violations(mat, level, water=("clear_water",), fog_z=10):
     """Every RED edge left in a map: a toward-camera neighbour ((x+1,y) or (x,y+1))
     that is HIGHER than this land cell by 1..fog_z levels AND the SAME material — a

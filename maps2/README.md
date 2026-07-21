@@ -75,3 +75,19 @@ Enforce it in code (`pipeline/autotile.py`):
   (spawn), 5 pizza slices (saturated_grass, lightdark_dirt, stone_mountain,
   black_mountain, regular_snow), elevation rising outward. See `INSIGHTS.md` for
   what the transitions taught us for the real game.
+- `worlds/the_island/` (`islandworld.py`) — the WIP production island: organic
+  warped coastline, a camera-facing staircase of gated cliffs, a jagged multi-peak
+  mountain (max level 30), a gorge with connected stone bridges. The reference for
+  the elevation/occlusion rules above.
+- `worlds/the_island2/` (`islandworld2.py`) — a ~2×-bigger island that pairs
+  **two worlds**: `the_island`'s antitone **mountain** (upper, climbs up-up-up to
+  level 30, `camera_monotone` masked to it) with a new *A Link to the Past*-style
+  relief **maze** (lower — flat chambers at tiers 0..10 that go up *and* down,
+  winding cliff/water corridors, a river + bridge). The maze can't be antitone (a
+  strictly-antitone field only makes one connected lowest sheet, so it could never
+  separate two equal-level floors laterally), so it uses genuine relief kept
+  occlusion-legal by the **wall-material rule**: any same-material toward-camera
+  up-step has its higher rim recoloured to a wall material (stone/obsidian,
+  band-parity), via `_wall_rim` + an iterated `mat`-only `_lip_cover`. Reachability
+  is **prop-aware** (props set `collision=1`). All invariants hard-asserted (see the
+  build's assert battery). `demo_lost` and `the_island` are preserved unchanged.
