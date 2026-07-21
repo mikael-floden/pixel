@@ -572,12 +572,19 @@ visible head/shoulders are ABOVE the surface).
   face gating with penumbras at both ends of every wall band.
 - **DEPTH-FOG — cel-shaded DISTANCE fog** (`DEPTHFOG_FRAG`, maintainer: "make it
   easier to see the different ground levels"): a THIRD, always-on NORMAL-blend
-  overlay. Every ground pixel is fogged by its **3D distance to the local player**
-  (`uPlayerXY` cell + `uPlayerZ` level). `ZW` (cells of distance per elevation level)
-  vs `HW` (per horizontal cell) is the KEY tunable the maintainer is dialing: `ZW`>
-  `HW` makes cliffs separate HARD (a level jump reads as farther than a sideways
-  step); `ZW`==`HW` (current) is a plain radial distance haze — elevation counts the
-  same as horizontal, soft concentric cel bands, cliffs no longer specially pop.
+  overlay. Every ground pixel is fogged by its distance to the local player,
+  measured in **SCREEN space** — from the player's DRAWN position (derived in-shader
+  from `uPlayerXY` cell + `uPlayerZ` level via the iso projection), normalised by
+  `ISO_DX`/`ISO_DY`. This gives smooth concentric **ovals** (a ground circle under
+  the iso squish). CRUCIAL: do NOT measure in (col,row,level) grid space — a raised
+  tile is DRAWN shifted up-screen while its grid distance came from its flat cell,
+  and the level term is discrete per tile, so the band edge pinned to the tile/level
+  staircase = a bad ZIGZAG (maintainer flagged it, expecting a clean oval). In screen
+  space elevation STILL counts (a raised tile sits higher on screen ⇒ farther ⇒ more
+  fog) but SMOOTHLY, and ≈ equal to x/y (one level's ~lh lift ≈ one cell's screen
+  span). Distance is POSTERIZED into `BANDS` snappy cel steps (teal `FOG_NEAR` → pale
+  misty `FOG_FAR`); band 0 is a clear near bubble, `VIEW` the full-fog radius — so it
+  doubles as a **MAX VIEW DISTANCE** (a handle for future network cull radius).
   The distance is POSTERIZED into `BANDS` snappy cel-shaded steps (the reference
   forest's depth that "suddenly snaps"), coloured along ONE cool palette (`FOG_NEAR`
   teal → `FOG_FAR` pale misty cyan). Distance is symmetric in z (dz²), so a cliff N

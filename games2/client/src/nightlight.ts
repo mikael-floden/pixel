@@ -821,10 +821,8 @@ uniform sampler2D uHeight;
 // as a MAX VIEW DISTANCE (a natural handle for future network cull radius).
 const vec3  FOG_NEAR = vec3(0.30, 0.52, 0.50); // first band: teal
 const vec3  FOG_FAR  = vec3(0.72, 0.88, 0.90); // farthest band: pale misty cyan
-const float VIEW   = 14.0;  // (weighted) cells to the farthest/full band = view radius
+const float VIEW   = 14.0;  // iso-cells (screen units) to the farthest/full band
 const float BANDS  = 6.0;   // cel-shade steps — band 0 is the clear near bubble
-const float ZW     = 1.0;   // cells of distance PER ELEVATION LEVEL (== horizontal now)
-const float HW     = 1.0;   // cells of distance per horizontal cell
 const float FOG_MAX = 0.78; // opacity of the farthest band (the cull edge)
 
 float heightAt(vec2 cr) {
@@ -867,13 +865,19 @@ void main() {
   }
   if (!found) { gl_FragColor = vec4(0.0); return; }
 
-  // 3D distance from this ground pixel to the player, with the ELEVATION axis
-  // stretched (ZW cells per level vs HW per horizontal cell) so a level jump
-  // reads as much farther than a sideways step. Symmetric in z (dz is squared),
-  // so up and down at the same level distance land identically.
-  vec2 dxy = (cell - uPlayerXY) * HW;
-  float dzc = (z - uPlayerZ) * ZW;
-  float dist = sqrt(dot(dxy, dxy) + dzc * dzc);
+  // Distance measured in SCREEN space, centred on the player's DRAWN position, so
+  // the bands are smooth concentric OVALS (a ground circle under the iso squish) —
+  // NOT the jagged grid contour that measuring in (col,row,level) produced. There,
+  // a raised tile is DRAWN shifted up-screen but its distance came from its flat
+  // cell, and the level term was discrete per tile — both pinned the band edge to
+  // the tile/level staircase (the zigzag). Here z STILL counts (a raised tile sits
+  // higher on screen ⇒ farther ⇒ more fog) but SMOOTHLY, and ≈ equal to x/y (one
+  // level's lift ≈ one cell's screen span). Normalise by ISO_DX/ISO_DY (uIsoA.zw)
+  // so a screen circle reads as the wide iso oval.
+  float ppx = uIsoA.x + (uPlayerXY.x - uPlayerXY.y + 1.0) * uIsoA.z;
+  float ppy = uIsoA.y + (uPlayerXY.x + uPlayerXY.y) * uIsoA.w - uPlayerZ * uIsoB.x;
+  vec2 ds = vec2((wx - ppx) / uIsoA.z, (wy - ppy) / uIsoA.w);
+  float dist = length(ds);
   // Cel-shade: snap the distance into BANDS steps that "suddenly snap" (band 0 is
   // the clear near bubble; the farthest band is full misty).
   float t = clamp(dist / VIEW, 0.0, 1.0);
