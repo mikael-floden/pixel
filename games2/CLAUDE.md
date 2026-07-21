@@ -574,20 +574,32 @@ visible head/shoulders are ABOVE the surface).
   "make it easier to see the different ground levels"): a THIRD, always-on NORMAL-
   blend overlay. Every ground pixel is fogged by its TRUE 3D distance to the player
   in `(col,row,level)` — a SPHERE, so flat ground reads as circles/ovals but where
-  the terrain rises/drops the contour WARPS over it (respects Z; `ZW` weights a level
-  vs a horizontal cell — 1 = equal). Symmetric in z. The whole trick to a SMOOTH
-  sphere (no per-tile ZIGZAG — the long saga): rebuild this pixel's world pos from a
-  SMOOTH height, not the hard resolve. `sz = min(heightSoft(cell), z)` — `heightSoft`
-  is the bilinear (LINEAR) terrain map so terrace TOPS ramp instead of stepping, and
-  `min` with the resolved per-pixel `z` keeps cliff FACES ramping down (not faceted
-  flat); then `col,row` are rebuilt from `sz` (screen `u`/`v0` are already smooth, so
-  a smooth height ⇒ smooth col/row/z ⇒ smooth distance). Residual stepping only
-  survives at genuine occlusion silhouettes (a tall wall's top edge over the far
-  ground behind it) and on EXTREME multi-level vertical walls (each column a distinct
-  cell) — real terraces/slopes are clean. HISTORY of rejected tries: grid distance
-  with hard z = pervasive zigzag; pure SCREEN-space distance = smooth but a FLAT oval
-  that ignored Z ("I wanted a sphere, not a circle"); darken-above = flattened dark
-  cliffs at night; inverted up/down colours = wrong (treat up/down EQUAL). Distance
+  the terrain rises/drops the contour WARPS over it (respects Z). `ZW` weights a level
+  vs a horizontal cell: **0.5** — the world-TRUE ratio (a level is ~0.46 cell tall given
+  `dx=32,dy=13,lh=19`, i.e. the art's ~50% block thickness), NOT 1.0 (that squashed the
+  sphere vertically and doubled every elevation-driven band excursion). Symmetric in z.
+  The whole trick to a SMOOTH sphere (no per-tile ZIGZAG — the long saga): the col/row/z
+  reconstruction `col=(u+sv)/2, row=(sv-u)/2, sv=v0+sz·kk` is the EXACT iso inverse
+  (`u`,`v0` already smooth in screen space), so ALL the zigzag lived in how the surface
+  height `sz` was sampled. Fix = make `sz` a SMOOTH SCREEN-SPACE field via a **drape**:
+  seed `sz = uPlayerZ` (a constant ⇒ exactly smooth + up/down symmetric), then iterate
+  ×3 `sz = drape(cell(u,v0,sz))`. `drape()` is an anisotropic blur of `terrH` widened
+  along the col+row FOLD axis (`e=(0.5,0.5)`, half-width `DRAPE_RS=2.5`) — the only screen
+  axis terrain folds along — dropping a 1–3-level cliff's blurred slope below the fold
+  threshold `1/kk`, so faces ramp instead of stepping. `terrH = uHeightL.R − uHeightL.G`
+  = the LINEAR occlusion height with PLACED PROPS removed (so a boulder never haloes the
+  bands on flat ground; edge-clamped so the map rim doesn't darken). Every iterate is a
+  composition of smooth fns ⇒ `sz` (hence dist) is smooth REGARDLESS of convergence, so
+  the posterized band edges are smooth CURVES even on tall walls the fixed point can't
+  fully converge on (those just slightly under-report height — bounded, never a step).
+  Residual hard edges survive ONLY at genuine occlusion silhouettes (a tall wall's top
+  edge over the far ground behind it) — a real visibility edge that MUST show an edge,
+  and it now coincides with the art's own pixel silhouette. HISTORY of rejected tries:
+  grid distance with hard z = pervasive zigzag; `min(heightSoft(cell),z)` = faces ramped
+  but tops/edges still per-tile stepped (the zigzag the maintainer red-marked); pure
+  SCREEN-space distance = smooth but a FLAT oval that ignored Z ("I wanted a sphere, not
+  a circle"); darken-above = flattened dark cliffs at night; inverted up/down colours =
+  wrong (treat up/down EQUAL). Distance
   POSTERIZED into `BANDS` snappy cel steps (teal `FOG_NEAR` → pale misty `FOG_FAR`);
   band 0 a clear near bubble, `VIEW` the full-fog radius — doubles as a **MAX VIEW
   DISTANCE** (future network cull handle). Composited at depth **900_000.2** — ABOVE
@@ -597,8 +609,10 @@ visible head/shoulders are ABOVE the surface).
   rollback); tune/QA via `__ml.depthFog(strength?, testZ?, testCol?, testRow?)` (plants
   a virtual player anywhere headlessly — the fog radiates from it). Pairs with the maps
   agent never placing same-tile-vs-same-tile across a hidden downslope. Regression:
-  `scripts/verify-depthfog.mjs`. Tunables `VIEW`/`BANDS`/`ZW`/`FOG_MAX`/`FOG_NEAR`/
-  `FOG_FAR` are named GLSL consts atop `DEPTHFOG_FRAG`.
+  `scripts/verify-depthfog.mjs`. Tunables `VIEW`/`BANDS`/`ZW`/`DRAPE_RS`/`FOG_MAX`/
+  `FOG_NEAR`/`FOG_FAR` are named GLSL consts atop `DEPTHFOG_FRAG` (raise `ZW` above the
+  0.5 world-true baseline if elevation should read MORE pronounced; raise `DRAPE_RS` to
+  smooth harder at the cost of pinning the fog less tightly to a cliff foot).
 - **Two geometries, never merge them**: `world-heightmap` (NEAREST) holds
   TERRAIN levels only and drives the resolve + wall-face classification;
   `world-heightmap-linear` (LINEAR) holds terrain + solid objects and drives

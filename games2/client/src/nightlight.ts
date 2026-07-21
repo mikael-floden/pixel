@@ -826,18 +826,45 @@ const vec3  FOG_NEAR = vec3(0.30, 0.52, 0.50); // first band: teal
 const vec3  FOG_FAR  = vec3(0.72, 0.88, 0.90); // farthest band: pale misty cyan
 const float VIEW   = 16.0;  // cells (3D) to the farthest/full band = sphere radius
 const float BANDS  = 6.0;   // cel-shade steps — band 0 is the clear near bubble
-const float ZW     = 1.0;   // distance per elevation LEVEL vs per horizontal cell
+const float ZW     = 0.5;   // 3D distance per elevation LEVEL vs per horizontal CELL —
+                            // world-true: a level is ~0.46 cell tall (dx=32,dy=13,lh=19),
+                            // = the art's ~50% block thickness. (Was 1.0 = vertically squashed.)
 const float FOG_MAX = 0.78; // opacity of the farthest band (the cull edge)
+const float DRAPE_RS = 2.5; // drape blur half-width along the col+row fold axis (s-units)
 
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
   return texture2D(uHeight, uv).r * 255.0 / 16.0;
 }
-// Smooth (bilinear) terrain height — terraces ramp, no per-tile steps.
-float heightSoft(vec2 cr) {
-  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
-  return texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).r * 255.0 / 16.0;
+// TERRAIN-ONLY surface height (levels), bilinear + edge-clamped. uHeightL packs
+// R = occlusion height (terrain + solid/prop bump, or a deck slab) and G = the
+// PLACED-PROP share, so R-G is the walkable ground/deck height with scattered props
+// REMOVED — the field the fog sphere should measure against, so a boulder never
+// bulges the bands on flat ground. Clamp a half-texel inside the grid so wide drape
+// taps at the map border repeat the edge value (no rim darkening).
+float terrH(vec2 cr) {
+  vec2 g = vec2(uIsoB.y, uIsoB.z);
+  vec2 c = clamp(cr, vec2(0.5), g - vec2(0.5));
+  vec2 rg = texture2D(uHeightL, c / g).rg;
+  return (rg.r - rg.g) * 255.0 / 16.0;
+}
+// DRAPE: anisotropic blur of the terrain height, WIDE along the iso depth axis
+// s = col+row (one s-step = (0.5,0.5) in col,row — the ONLY screen axis the surface
+// folds/steps along; every single-cell terrain edge has a nonzero s component, so a
+// fold-axis blur smooths them all). Half-width DRAPE_RS drops a 1/2/3-level cliff's
+// blurred slope below the fold threshold 1/kk = dy/lh = 0.68, so faces become smooth
+// ramps. Weights sum to 1 (a flat region returns its exact level → flat ground stays
+// clean circles). 5 taps.
+float drape(vec2 cr) {
+  vec2 e = vec2(0.5, 0.5);            // +1 in s = col+row = the depth/fold axis
+  float R = DRAPE_RS;
+  float h  = 0.24 * terrH(cr);
+  h += 0.22 * terrH(cr + (0.5 * R) * e);
+  h += 0.22 * terrH(cr - (0.5 * R) * e);
+  h += 0.16 * terrH(cr + R * e);
+  h += 0.16 * terrH(cr - R * e);
+  return h;
 }
 
 void main() {
@@ -874,24 +901,32 @@ void main() {
   }
   if (!found) { gl_FragColor = vec4(0.0); return; }
 
-  // TRUE 3D distance to the player. Rebuild this pixel's world position (col,row,z)
-  // from the SMOOTH surface height: screen u & v0 are already smooth, so taking the
-  // height from the bilinear map (heightSoft) — instead of the hard per-tile resolve
-  // — makes col, row AND z all smooth. Result: a real SPHERE that warps over the
-  // terrain (respects Z) yet never staircases (the old zigzag was the hard per-tile
-  // height stepping the distance). Symmetric in z, weighted ZW per level.
-  // Height field: bilinear (smooth) on tops so terraces RAMP, but the resolved z
-  // (which ramps DOWN a cliff face) wherever a face is lower than the smooth top —
-  // min() gives a CONTINUOUS surface across the whole staircase (top→riser→top),
-  // so no per-tile step and faces aren't faceted flat.
-  float sz = min(heightSoft(cell), z);
-  float sv = v0 + sz * kk;           // col+row at that smooth height
-  float scol = (u + sv) * 0.5;
+  // SMOOTH SURFACE HEIGHT — this is what kills the zigzag. The hard resolve z/cell
+  // above is a per-TILE STEP function of screen position; feeding it to the sphere is
+  // what staircased the bands. Instead solve the surface height as a fixed point of the
+  // iso "drape": SEED at the player's own level (a CONSTANT → exactly smooth in screen
+  // space, and symmetric for terrain above vs below the player), then re-project the
+  // sample centre from the current smooth height and re-read the wide terrain blur.
+  // Every iterate is a composition of smooth functions of screen position, so sz is
+  // smooth REGARDLESS of whether the fixed point fully converges — and a smooth sz makes
+  // col, row AND z (hence dist) smooth, so the posterized band edges become smooth CURVES
+  // instead of a tile staircase. Converges to the draped surface on flat/gentle terrain
+  // (clean circles); on sheer 4+ level walls it stays smooth but slightly under-reports
+  // height (a documented, bounded residual — never a step). z/cell above now feed only
+  // the found/off-grid gate.
+  float sz = uPlayerZ;
+  for (int i = 0; i < 3; i++) {
+    float svi = v0 + sz * kk;
+    sz = drape(vec2((u + svi) * 0.5, (svi - u) * 0.5));
+  }
+  float sv = v0 + sz * kk;           // col+row at the smooth surface height
+  float scol = (u + sv) * 0.5;       // EXACT iso inverse given sz (u, v0 already smooth)
   float srow = (sv - u) * 0.5;
   vec3 d3 = vec3(scol - uPlayerXY.x, srow - uPlayerXY.y, (sz - uPlayerZ) * ZW);
   float dist = length(d3);
   // Cel-shade: snap the distance into BANDS steps that "suddenly snap" (band 0 is
-  // the clear near bubble; the farthest band is full misty).
+  // the clear near bubble; the farthest band is full misty). A smooth dist() alone
+  // makes each band edge a smooth curve — do NOT add band-edge AA.
   float t = clamp(dist / VIEW, 0.0, 1.0);
   float bf = min(floor(t * BANDS), BANDS - 1.0) / (BANDS - 1.0);
   float a = bf * FOG_MAX * uFog;
