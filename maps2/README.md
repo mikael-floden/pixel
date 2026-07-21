@@ -80,14 +80,27 @@ Enforce it in code (`pipeline/autotile.py`):
   mountain (max level 30), a gorge with connected stone bridges. The reference for
   the elevation/occlusion rules above.
 - `worlds/the_island2/` (`islandworld2.py`) — a ~2×-bigger island that pairs
-  **two worlds**: `the_island`'s antitone **mountain** (upper, climbs up-up-up to
-  level 30, `camera_monotone` masked to it) with a new *A Link to the Past*-style
-  relief **maze** (lower — flat chambers at tiers 0..10 that go up *and* down,
-  winding cliff/water corridors, a river + bridge). The maze can't be antitone (a
-  strictly-antitone field only makes one connected lowest sheet, so it could never
-  separate two equal-level floors laterally), so it uses genuine relief kept
-  occlusion-legal by the **wall-material rule**: any same-material toward-camera
-  up-step has its higher rim recoloured to a wall material (stone/obsidian,
-  band-parity), via `_wall_rim` + an iterated `mat`-only `_lip_cover`. Reachability
-  is **prop-aware** (props set `collision=1`). All invariants hard-asserted (see the
-  build's assert battery). `demo_lost` and `the_island` are preserved unchanged.
+  **two worlds**: an antitone **mountain** (upper) with a new *A Link to the Past*-style
+  relief **maze** (lower). The maze can't be antitone (a strictly-antitone field only
+  makes one connected lowest sheet, so it could never separate two equal-level floors
+  laterally), so it uses genuine relief kept occlusion-legal by the **wall-material
+  rule**: any same-material toward-camera up-step has its higher rim recoloured to a wall
+  material (stone/obsidian) via `_wall_rim` + an iterated, neighbour-aware, all-zones
+  `mat`-only `_lip_cover` (a Δ>10 step is fog-exempt, so tier-12 keeps its grass top).
+  Design details (all four hard-asserted):
+  - **Mountain** is TERRACED onto flat benches `{16,20,24,28,32}` (Δ4 cliffs, `camera_monotone`
+    masked to it), with varied peak heights + a carved valley/tarn so it climbs in steps and
+    undulates up *and* down (mostly up); rock with snowy/ice/obsidian peaks. Floor 16 sits a
+    gated Δ4 above the maze cap 12.
+  - **Maze** tiers are `{0,4,12}` — deltas mostly Δ4, sometimes Δ8, rarely Δ12 (dramatic cliffs,
+    no timid Δ2). Winding cliff/water corridors, a river + bridges.
+  - **Ascents** are Trollstigen **switchbacks** (`_carve_switchback`): Z-roads of flat dirt
+    benches joined by up-screen risers (climb only rises away from camera → antitone/legal),
+    preferred by `_merge_ramp` for Δ≥4 cliffs, falling back to the straight spur where a Z
+    won't fit (so the connectivity guarantee holds).
+  - **Dirt is ROADS, not borders** (`_dirt_roads`): a deliberate dirt trunk (Dijkstra
+    spawn→maze landmarks→summit, fused onto the switchbacks) — the ALttP red path — plus the
+    ascent ramps; everything else is grass tops + rock faces. No dirt speckle/collars.
+
+  Reachability is **prop-aware** (props set `collision=1`). `demo_lost` and `the_island`
+  are preserved unchanged.
