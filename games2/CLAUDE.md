@@ -596,10 +596,10 @@ visible head/shoulders are ABOVE the surface).
      recreate the old zigzag) and is NOT gated by `FOG_D0` (edges pop even at the feet).
   `band = clamp(distBand + elevBand, 0, BANDS−1)` (ADDITIVE), then the fog OPACITY is scaled by a
   PER-LEVEL TRANSPARENCY: `a *= clamp(SAME_LEVEL_FOG + (1−SAME_LEVEL_FOG)·|Δz|/LEVEL_FADE_SPAN,
-  SAME_LEVEL_FOG, 1)` — 30% opacity on the player's OWN level (maintainer "lower it 70%", a soft
-  fade NOT the old hard gate, which was taken back), ramping linearly to FULL by `LEVEL_FADE_SPAN`
-  (8) levels of separation — a bridge high in the air reads at full strength. (`ELEV_STEP=0.5` also
-  makes the Z ramp gentle: +1 band every ~2 levels.) HISTORY of rejected tries: elevation-banded (v1) → then a TRUE 3D-distance
+  SAME_LEVEL_FOG, 1)` — 10% opacity on the player's OWN level (a soft fade NOT the old hard gate,
+  which was taken back), rising ~0.088/level to FULL by `LEVEL_FADE_SPAN` (~10) levels of
+  separation — a bridge high in the air reads at full strength. (`ELEV_STEP=0.5` also makes the Z
+  ramp gentle: +1 band every ~2 levels.) HISTORY of rejected tries: elevation-banded (v1) → then a TRUE 3D-distance
   SPHERE with drape-smoothing + `ZW` weight (killed the zigzag AND, fatally, the edge
   contrast — its bands were iso-distance rings that floated across the terrain and NEVER
   landed on an edge; maintainer: "makes it even harder to see the real edge"). So the sphere

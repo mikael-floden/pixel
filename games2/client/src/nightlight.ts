@@ -841,10 +841,11 @@ const float ELEV_D0   = 7.0; // ELEVATION DEAD-ZONE: no edge fog until the surfa
                              // small step is read from the map's distinct tiles); only a real
                              // MOUNTAIN climb fogs (maintainer). Raise = fog fires only on taller
                              // cliffs; lower = fires on smaller drops.
-const float SAME_LEVEL_FOG  = 0.30; // OPACITY multiplier on the player's OWN level — the fog there
-                                    // is faded to 30% (maintainer: "lower it 70%"), NOT removed.
-const float LEVEL_FADE_SPAN = 8.0;  // levels of |Δz| over which that fade ramps back to FULL
-                                    // opacity (Δ8 = today's strength). New tuning knob.
+const float SAME_LEVEL_FOG  = 0.10; // OPACITY multiplier on the player's OWN level — the fog there
+                                    // is faded to 10% (maintainer), NOT removed.
+const float LEVEL_FADE_SPAN = 10.3; // levels of |Δz| over which that fade ramps back to FULL
+                                    // opacity. Set so the per-level increase stays ~0.088/level
+                                    // (unchanged) while the floor drops 30%→10% (maintainer).
 
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
