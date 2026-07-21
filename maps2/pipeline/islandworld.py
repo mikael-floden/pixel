@@ -139,12 +139,12 @@ class Island:
         self._tarn()
         flatten_shores(self.mat, self.level)
         camera_monotone(self.level, self.mat)     # true antitone before we read components
+        self._river()                             # carve the gorge (banks keep full height)
         self.level_before = self.level.copy()
-        self._connect_tiers()                     # sparse descending-spur ramps merge tiers
+        self._connect_all()                       # ramps within banks + bridges across gorge
         camera_monotone(self.level, self.mat)     # backstop the ramps
-        # (river gorge machinery — _river/_cross_river/_ford_stranded — is kept for a
-        #  focused follow-up; it needs more work to guarantee both-bank reachability)
         self._materials()
+        self._place_bridges([0.44, 0.66, 0.85])   # deliberate stone bridges over the gorge
         self._pick_spawn()
         self._paint()
         self.deck_at = {(x, y): dk for dk in self.decks for (x, y) in dk["cells"]}
@@ -193,12 +193,22 @@ class Island:
         # quantization is antitone. Organic cliff-line wiggle + NW uplift; a massif
         # FOLDED IN (lowers depth -> a camera-facing wedge, steep legal lateral flanks).
         u = (X + Y)
-        warp = (_fbm(X, Y, s, n * 0.16, 4) - 0.5) * 11 + (_fbm(X, Y, s + 3, n * 0.08, 3) - 0.5) * 5
+        # BOWL / CHEVRON structure: subtract a term in |x-y| (screen-horizontal), so
+        # screen-LEFT and screen-RIGHT rise into highland arms and screen-CENTRE stays
+        # a valley funnelling toward the camera. This bends every tier contour into a
+        # chevron (V opening at the camera) instead of a straight left-to-right band.
+        # beta<1 keeps the front-back ramp dominant => still antitone => occlusion-clean.
+        arm = 0.62 * np.abs(X - Y)
+        arm += (_fbm(X, Y, s + 20, n * 0.30, 3) - 0.5) * 10   # wander the valley walls
+        # strong, multi-scale warp so the chevron cliff-lines also meander (not clean V's).
+        warp = ((_fbm(X, Y, s, n * 0.30, 4) - 0.5) * 22
+                + (_fbm(X, Y, s + 3, n * 0.13, 3) - 0.5) * 12
+                + (_fbm(X, Y, s + 8, n * 0.06, 2) - 0.5) * 4)
         uplift = _fbm(X, Y, s + 5, n * 0.42, 3) * 8
         px, py = 0.42 * n, 0.16 * n
         self.peak_c = (px, py)
         massif = 30 * np.exp(-(((X - px) ** 2 / (2 * (n * 0.20) ** 2)) + ((Y - py) ** 2 / (2 * (n * 0.13) ** 2))))
-        depth = u + warp - uplift - massif
+        depth = u - arm + warp - uplift - massif
         depth[~land] = 1e9
         self._camera_max_float(depth, land)          # continuous closure -> antitone
         dland = depth[land]
@@ -311,6 +321,117 @@ class Island:
                         self.land[y, x] = True
                         self.reserved.add((x, y))
 
+    def _connect_all(self, thresh=45, max_iter=90):
+        """Make the island one walkable piece: each round, merge the largest
+        component with another either by a cliff RAMP (adjacent across a cliff) or,
+        if only WATER separates them (the gorge), by a stone BRIDGE deck + a walk
+        link across a short, similar-level reach. Guarantees reachability while
+        preserving the gorge the player crosses at a few deliberate bridges."""
+        for _ in range(max_iter):
+            comps = self._walk_components()
+            big = [c for c in comps if len(c) >= thresh]
+            if len(big) <= 1:
+                return
+            main = set(big[0])
+            if self._merge_ramp(main, big[1:]):
+                continue
+            if self._merge_span(main, big[1:]):
+                continue
+            return
+
+    def _place_bridges(self, y_fracs):
+        """Deliberate stone bridges spanning the central gorge — the crossings the
+        player uses instead of the long way round. At each row, find the main river
+        channel nearest screen-centre and lay a stone deck (world@2) + a walk link
+        across it at bank height (water passes beneath)."""
+        n = self.n
+        riverw = (self.mat == "clear_water") & self.land
+        for yf in y_fracs:
+            cy = int(n * yf)
+            xs = sorted(x for x in range(n) if riverw[cy, x])
+            if not xs:
+                continue
+            runs, cur = [], [xs[0]]
+            for x in xs[1:]:
+                if x == cur[-1] + 1:
+                    cur.append(x)
+                else:
+                    runs.append(cur); cur = [x]
+            runs.append(cur)
+            run = min(runs, key=lambda r: abs((r[0] + r[-1]) / 2 - n / 2))
+            x0, x1 = run[0], run[-1]
+            if x0 - 1 < 0 or x1 + 1 >= n or not self.land[cy, x0 - 1] or not self.land[cy, x1 + 1]:
+                continue
+            if self.mat[cy, x0 - 1] == "clear_water" or self.mat[cy, x1 + 1] == "clear_water":
+                continue
+            blv = max(int(self.level[cy, x0 - 1]), int(self.level[cy, x1 + 1]), 2)
+            cells = [(x, y) for x in range(x0 - 1, x1 + 2) for y in (cy - 1, cy, cy + 1)
+                     if 0 <= y < n]
+            self.decks.append({"kind": "bridge", "mat": "stone_mountain", "level": blv,
+                               "thickness": 1, "cells": cells})
+            for y in (cy - 1, cy, cy + 1):
+                self.links.append(((x0 - 1, y), (x1 + 1, y)))
+            self.reserved.update(cells)
+
+    def _merge_ramp(self, main, cands):
+        for cand in cands:
+            for (cx, cy) in cand:
+                for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    mx, my = cx + i, cy + j
+                    if (mx, my) in main and abs(int(self.level[cy, cx]) - int(self.level[my, mx])) > 1:
+                        if int(self.level[cy, cx]) < int(self.level[my, mx]):
+                            hi, lo = (mx, my), (cx, cy)
+                        else:
+                            hi, lo = (cx, cy), (mx, my)
+                        if self._carve_connector(*hi, *lo):
+                            return True
+        return False
+
+    def _merge_span(self, main, cands):
+        n = self.n
+        best = None
+        for cand in cands:
+            for (tx, ty) in cand:
+                if self.mat[ty, tx] == "clear_water":
+                    continue
+                for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    gap = 0
+                    for step in range(1, 8):
+                        mx, my = tx + i * step, ty + j * step
+                        if not (0 <= mx < n and 0 <= my < n):
+                            break
+                        if (mx, my) in main:
+                            if (self.mat[my, mx] != "clear_water"
+                                    and abs(int(self.level[ty, tx]) - int(self.level[my, mx])) <= 1):
+                                if best is None or gap < best[0]:
+                                    best = (gap, (tx, ty), (i, j), step)
+                            break
+                        if self.mat[my, mx] == "clear_water":
+                            gap += 1
+                        else:
+                            break
+        if best is None or best[0] == 0:
+            return False
+        gap, (tx, ty), (i, j), step = best
+        blv = int(self.level[ty, tx])
+        perp = (j, i)
+        cells = []
+        for s in range(1, step):
+            cxx, cyy = tx + i * s, ty + j * s
+            for w in (-1, 0, 1):
+                x, y = cxx + perp[0] * w, cyy + perp[1] * w
+                if 0 <= x < n and 0 <= y < n:
+                    cells.append((x, y))
+        self.decks.append({"kind": "bridge", "mat": "stone_mountain", "level": max(2, blv),
+                           "thickness": 1, "cells": cells})
+        mx, my = tx + i * step, ty + j * step
+        for w in (-1, 0, 1):
+            a = (tx + perp[0] * w, ty + perp[1] * w)
+            b = (mx + perp[0] * w, my + perp[1] * w)
+            if all(0 <= v < n for v in (a[0], a[1], b[0], b[1])):
+                self.links.append((a, b))
+        return True
+
     def _connect_tiers(self, thresh=40, max_iter=30):
         """Greedily carve the FEWEST descending-spur ramps that make the island one
         walkable piece: merge the largest component with an adjacent one across a
@@ -369,7 +490,6 @@ class Island:
                         if 0 <= x < n and 0 <= y < n and self.land[y, x]:
                             self.mat[y, x] = "clear_water"
                             self.level[y, x] = 0
-        self._cross_river()
 
     def _cross_river(self):
         """A FORD (low reach) + a BRIDGE deck (deep reach): the only two E-W crossings."""
@@ -453,16 +573,31 @@ class Island:
         bx = X + n * 0.09 * (_fbm(X, Y, s + 40, n * 0.26, 3) - 0.5) * 2
         by = Y + n * 0.09 * (_fbm(X, Y, s + 41, n * 0.26, 3) - 0.5) * 2
         glac = _fbm(bx, by, s + 13, n * 0.13, 3)
-        mat[(mat == "regular_snow") & (glac > 0.58) & (level >= 20)] = "crystal_ice"
+        mat[(mat == "regular_snow") & (glac > 0.56) & (level >= 20)] = "crystal_ice"
+        # OBSIDIAN black_mountain: a caldera at the summit AND a scar on the stone
+        # shelf (west), each dirt-collared so it never abuts grass — big organic blobs.
         cald = _fbm(bx, by, s + 9, n * 0.11, 4)
-        buf = (mat == "stone_mountain") & (cald > 0.66) & (level >= 20)
-        mat[_dilate(buf, 2) & (mat == "stone_mountain")] = "lightdark_dirt"   # ash collar
-        mat[buf] = "black_mountain"
+        scar = _fbm(bx, by, s + 50, n * 0.085, 3)
+        black = (((mat == "regular_snow") & (cald > 0.60) & (level >= 22))
+                 | ((mat == "stone_mountain") & (level >= 12) & (level < 20)
+                    & (X < n * 0.56) & (scar > 0.58)))
+        mat[_dilate(black, 2) & ((mat == "stone_mountain") | (mat == "regular_snow"))] = "lightdark_dirt"
+        mat[black] = "black_mountain"
         dry = _fbm(bx, by, s + 15, n * 0.10, 3)
         mat[(mat == "saturated_grass") & (level <= 8) & (dry > 0.72)] = "lightdark_dirt"
-        # near-shore beach (up-screen coasts are sheer, so sand lands only near-camera)
-        near_sea = _dilate(mat == "clear_water", SAND_W)
-        mat[near_sea & (mat == "saturated_grass") & (level <= 1)] = "light_sand"
+        # VARIED beaches: sand reaches inland by a NOISE-modulated depth, so some
+        # coves are broad strands and headlands are thin (up-screen coasts stay sheer).
+        water = mat == "clear_water"
+        d2w = np.full((n, n), 99, np.int16)
+        ring = water.copy()
+        for dist in range(1, 8):
+            nd = _dilate(ring, 1) & ~ring
+            d2w[nd & (d2w == 99)] = dist
+            ring = ring | nd
+        sd = _fbm(bx, by, s + 60, n * 0.12, 3)
+        sand_depth = (1 + np.rint(sd * sd * 7)).astype(np.int16)      # 1..~6, mostly small
+        beach = (mat == "saturated_grass") & (level <= 2) & (d2w < 99) & (d2w <= sand_depth)
+        mat[beach] = "light_sand"
 
     # -- connectivity ----------------------------------------------------------
 
