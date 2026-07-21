@@ -149,7 +149,7 @@ function simTrips(
         break;
       }
       // Auto-jump mirror (WorldScene.maybeAutoJump): grounded + off cooldown,
-      // walking INTO a 1-level ledge a jump could climb → hop.
+      // walking INTO a 2-level ledge a jump could climb → hop.
       if ((drive.ax !== 0 || drive.ay !== 0) && now >= jumpUntil && now >= jumpReadyAt) {
         const wv = screenToWorldVector(drive.ax, drive.ay);
         if (autoJumpWanted(grid, x, y, wv.x, wv.y)) {

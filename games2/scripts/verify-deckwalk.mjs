@@ -16,7 +16,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { parseWorld, buildTerrainGrid, canEnterElev, resolveElevAt, findPath, CELL_WU } from "../shared/src/index.ts";
+import { parseWorld, buildTerrainGrid, canEnterElev, resolveElevAt, findPath, CELL_WU, WALK_CLIMB } from "../shared/src/index.ts";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const worldPath = join(here, "..", "..", "maps2", "worlds", "occlusion_test", "world.json");
@@ -25,7 +25,7 @@ if (!w) throw new Error("parseWorld returned null for occlusion_test");
 const grid = buildTerrainGrid(w.width, w.height, w.rows, w.props, w.decks);
 const W = grid.width;
 
-const ctx = { maxClimb: 0.5, canSwim: true }; // WALK_CLIMB; the server passes canSwim:true
+const ctx = { maxClimb: WALK_CLIMB, canSwim: true }; // the server passes canSwim:true
 const wc = (col, row) => [(col + 0.5) * CELL_WU, (row + 0.5) * CELL_WU];
 const idx = (c, r) => r * W + c;
 const baseLvl = (c, r) => grid.level[idx(c, r)];
@@ -94,15 +94,17 @@ for (const d of decks) {
 
   // (d) TAP-TO-MOVE: from an interior cell's BASE (as if you tapped its deck top
   // while standing under/near it), findPath with the deck goalLevel must route
-  // UP-AND-OVER — a real multi-step route that climbs to the deck level somewhere
-  // (an entry cell) — not a same-cell no-op that leaves you under it.
+  // UP-AND-OVER — a real multi-step route that climbs a ramp to deck height and
+  // steps onto it — not a same-cell no-op that leaves you under it. You step onto
+  // the deck from ground within WALK_CLIMB of the deck level, so "climbed" = the
+  // route reaches base ≥ L − WALK_CLIMB (an entry ledge, or one step below it).
   {
     const mid = interior[Math.floor(interior.length / 2)];
     const [mx, my] = wc(mid.c, mid.r);
     const path = findPath(grid, mx, my, mx, my, { fromElev: baseLvl(mid.c, mid.r), goalLevel: L, canSwim: true });
     ok(Array.isArray(path) && path.length > 1, `${kind}: tap-onto-deck reroute is a real over-route (len ${path?.length})`);
     if (Array.isArray(path)) {
-      const climbs = path.some((wp) => baseLvl(Math.floor(wp.x / CELL_WU), Math.floor(wp.y / CELL_WU)) >= L - 0.5);
+      const climbs = path.some((wp) => baseLvl(Math.floor(wp.x / CELL_WU), Math.floor(wp.y / CELL_WU)) >= L - WALK_CLIMB - 1e-9);
       ok(climbs, `${kind}: tap-onto-deck route climbs to the deck level (goes OVER, not under)`);
     }
   }

@@ -2701,10 +2701,11 @@ export class WorldScene extends Phaser.Scene {
 
   /**
    * If the player is walking INTO a ledge that a jump could climb but a walk
-   * can't — i.e. exactly a 1-level wall (`WALK_CLIMB < step ≤ JUMP_CLIMB`) —
-   * fire the jump automatically. A 2-level+ wall fails the jump check too, so
-   * it's left alone; solid props (trees/boulders) are impassable at any climb,
-   * so they never auto-jump either. `tryJump` still gates on grounded+cooldown.
+   * can't — i.e. a 2-level wall (`WALK_CLIMB < step ≤ JUMP_CLIMB`, now 1 < step ≤ 2;
+   * a 1-level step just walks up) — fire the jump automatically. A 3-level+ wall
+   * fails the jump check too, so it's left alone; solid props (trees/boulders) are
+   * impassable at any climb, so they never auto-jump either. `tryJump` still gates
+   * on grounded+cooldown.
    */
   private maybeAutoJump(ax: number, ay: number) {
     if (ax === 0 && ay === 0) return;
@@ -2715,7 +2716,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /** The terrain predicate behind auto-jump: from world (fromX,fromY), moving
-   * in screen direction (ax,ay), is the terrain just past the feet a 1-level
+   * in screen direction (ax,ay), is the terrain just past the feet a 2-level
    * ledge a jump would clear? Delegates to the shared `autoJumpWanted` (which
    * also handles the concave-corner probe geometry). Exposed via __ml.autoJumpAt. */
   private wouldAutoJump(fromX: number, fromY: number, ax: number, ay: number): boolean {
@@ -4213,9 +4214,10 @@ export class WorldScene extends Phaser.Scene {
 
   /**
    * Advance an avatar's elevation lift one frame toward the target (cell
-   * level×lh) via the shared `integrateFall`: up-steps snap (the hop sells the
-   * arc), gentle down-steps ease, and real cliff down-steps fall under gravity
-   * so walking off a ledge drops to the ground below instead of teleporting.
+   * level×lh) via the shared `integrateFall`: up-steps EASE (a 1-level walk-up
+   * rises like a stair; a jump's hop arcs on top), gentle down-steps ease, and
+   * real cliff down-steps fall under gravity so walking off a ledge drops to the
+   * ground below instead of teleporting.
    */
   private stepElevation(av: Avatar, target: number, dt: number): void {
     const s = integrateFall({ elev: av.elev, fallV: av.fallV, falling: av.falling }, target, dt, MAP_GEOMETRY.lh);

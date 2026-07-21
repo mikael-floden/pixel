@@ -440,10 +440,12 @@ export function isKnownSurface(t: string): boolean {
   return t in SURFACES || t.startsWith("road_");
 }
 
-// Elevation traversal (design "Option 2B"): you can walk between cells within
-// WALK_CLIMB of each other; crossing a full 1-level ledge needs a timed JUMP.
-export const WALK_CLIMB = 0.5; // step you can walk up/down passively
-export const JUMP_CLIMB = 1; // step you can cross while jumping
+// Elevation traversal: you can WALK up/down a full 1-level step effortlessly (a
+// staircase step — no jump, no slowdown); a 2-level ledge needs a timed JUMP;
+// 3+ levels is an unclimbable cliff. (Was "Option 2B": walk 0.5 / jump 1 — the
+// maintainer moved the jump up a level so single steps run smooth.)
+export const WALK_CLIMB = 1; // step you can walk up/down passively (a 1-level staircase step)
+export const JUMP_CLIMB = 2; // step you can cross while jumping (a 2-level ledge)
 export const JUMP_MS = 500; // active jump window (climb allowance + hop visual)
 export const JUMP_COOLDOWN_MS = 180; // after landing, before you can jump again
 export const JUMP_SPEED_FACTOR = 0.6; // slower ground travel while airborne (taller, not farther)
@@ -467,8 +469,9 @@ export interface FallState {
 /**
  * Integrate an avatar's elevation lift one frame toward `target` (cell level ×
  * level-height px). Rules, matched to `makeDrops`:
- *  • stepping UP (or level) snaps — the jump hop already sells the up arc, and
- *    easing up would sink the sprite into the step;
+ *  • stepping UP (or level) EASES up smoothly — walking a 1-level staircase step
+ *    should rise like a stair, not snap 19px; a 2-level jump's hop arc plays on
+ *    top and the lift just settles under it;
  *  • a gentle down-step (≤ FALL_TRIGGER_FRAC of a level: stairs/ramps) eases
  *    smoothly;
  *  • a real CLIFF down-step falls under gravity until it reaches the ground.
@@ -477,7 +480,14 @@ export interface FallState {
 export function integrateFall(s: FallState, target: number, dt: number, lh: number): FallState {
   const trigger = lh * FALL_TRIGGER_FRAC;
   const diff = target - s.elev; // + up, − down
-  if (diff >= -0.01) return { elev: target, fallV: 0, falling: false };
+  if (diff >= -0.01) {
+    // UP (or level): ease the lift up at the same gentle rate as a down-step, so
+    // walking up a 1-level ledge reads as a staircase step (no jump) instead of a
+    // 19px pop. Deadband the last fraction so we settle exactly on target.
+    if (diff <= 0.01) return { elev: target, fallV: 0, falling: false };
+    const elev = s.elev + diff * Math.min(1, dt * STEP_EASE_RATE);
+    return { elev: target - elev < 0.5 ? target : elev, fallV: 0, falling: false };
+  }
   if (-diff <= trigger && !s.falling) {
     let elev = s.elev + diff * Math.min(1, dt * STEP_EASE_RATE);
     if (elev - target < 0.5) elev = target;
@@ -1271,7 +1281,7 @@ function stepReach(
     if (!open) return;
     const climb = level - elev;
     if (climb <= walkMax + 1e-9) out.push({ level, layer, jump: false }); // walk (drops are free)
-    else if (climb <= JUMP_CLIMB + 1e-9) out.push({ level, layer, jump: true }); // 1-level auto-jump
+    else if (climb <= JUMP_CLIMB + 1e-9) out.push({ level, layer, jump: true }); // 2-level auto-jump
     // else too high to reach from here
   };
   const baseOpen = !grid.blocked[bi] && (to.standable || (to.swimmable && canSwim));

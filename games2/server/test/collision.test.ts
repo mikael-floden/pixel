@@ -32,17 +32,18 @@ import {
 } from "@nangijala/shared";
 
 // A 3×3 world. Centre column is grass; left column water; the right column is a
-// raised grass wall (elevation 1) — a 1-level ledge you can't walk up.
-//   W  g   G1
-//   W  g   G1
-//   W  g   G1
+// raised grass wall (elevation 2) — a 2-level ledge you can't walk up. (A single
+// 1-level step is now an effortless walk; the jump is reserved for 2 levels.)
+//   W  g   G2
+//   W  g   G2
+//   W  g   G2
 function grid3x3() {
   const g = (l = 0) => ({ t: "grass", l });
   const w = { t: "water", l: 0 };
   const rows = [
-    [w, g(0), g(1)],
-    [w, g(0), g(1)],
-    [w, g(0), g(1)],
+    [w, g(0), g(2)],
+    [w, g(0), g(2)],
+    [w, g(0), g(2)],
   ];
   return buildTerrainGrid(3, 3, rows);
 }
@@ -66,22 +67,26 @@ test("surfaceAtWorld / levelAtWorld map world coords to cells", () => {
   const g = grid3x3();
   assert.equal(surfaceAtWorld(g, midX, midY).standable, true);
   assert.equal(surfaceAtWorld(g, CELL_W * 0.5, midY).swimmable, true); // water column
-  assert.equal(levelAtWorld(g, rightX, midY), 1); // raised column
+  assert.equal(levelAtWorld(g, rightX, midY), 2); // raised column
   assert.equal(isStandableAtWorld(g, CELL_W * 0.5, midY), false); // water not standable
 });
 
-test("walking cannot climb a 1-level ledge (Option 2B)", () => {
+test("a 1-level step walks; a 2-level ledge needs a jump", () => {
   const g = grid3x3();
   const walk = { maxClimb: WALK_CLIMB, canSwim: false };
-  assert.equal(canEnter(g, midX, midY, rightX, midY, walk), false); // l0 -> l1 blocked
+  // The raised column is 2 levels up: too tall to walk...
+  assert.equal(canEnter(g, midX, midY, rightX, midY, walk), false); // l0 -> l2 blocked
   const jump = { maxClimb: JUMP_CLIMB, canSwim: false };
-  assert.equal(canEnter(g, midX, midY, rightX, midY, jump), true); // jump crosses it
+  assert.equal(canEnter(g, midX, midY, rightX, midY, jump), true); // ...but a jump crosses a 2-level
+  // Lower it to a single 1-level step: now it's an effortless walk (no jump).
+  g.level[g.width * 1 + 2] = 1;
+  assert.equal(canEnter(g, midX, midY, rightX, midY, walk), true); // l0 -> l1 walks up
 });
 
 test("falling down is always allowed — only climbing needs the jump", () => {
   const g = grid3x3();
   const walk = { maxClimb: WALK_CLIMB, canSwim: false };
-  // Standing on the l1 wall, walking off the edge down to l0 just works.
+  // Standing on the l2 wall, walking off the edge down to l0 just works.
   assert.equal(canEnter(g, rightX, midY, midX, midY, walk), true);
   // Even a big drop is fine (raise the wall to l3 and step down).
   g.level[g.width * 1 + 2] = 3; // middle-right cell -> l3
@@ -105,7 +110,7 @@ test("stepMovement stops at the ledge when walking, slides along it", () => {
   const blocked = makeBlocked(g, { maxClimb: WALK_CLIMB, canSwim: false });
   // Walk east into the raised wall with a big dt: X blocked, stays in mid column.
   const r = stepMovement(midX, midY, 1, 0, true, 5, blocked);
-  assert.ok(r.x < CELL_W * 2, "did not climb onto the l1 wall");
+  assert.ok(r.x < CELL_W * 2, "did not climb onto the l2 wall");
 });
 
 test("collision probes the leading edge: feet stop PLAYER_RADIUS before a wall", () => {
@@ -214,7 +219,7 @@ test("stairs allow walking a full 1-level step without a jump", () => {
   const walk = { maxClimb: WALK_CLIMB, canSwim: false };
   const cw = CELL_WU;
   const ch = CELL_WU;
-  // grass l0 -> stairs l1: allowed while walking (the stairs are the ramp).
+  // grass l0 -> stairs l1: a 1-level step, walkable (now true of any 1-level step).
   assert.equal(canEnter(g, cw * 0.5, ch * 0.5, cw * 1.5, ch * 0.5, walk), true);
   // stairs l1 -> grass l1: flat, fine.
   assert.equal(canEnter(g, cw * 1.5, ch * 0.5, cw * 2.5, ch * 0.5, walk), true);
@@ -249,16 +254,19 @@ test("walking off a ledge is forgiving: reach the rim, no early snap, no telepor
   assert.ok(r.x >= edge, "one more step walks off the ledge onto the lower ground");
 });
 
-test("makeDrops: the canonical fall predicate (cliff yes, stairs/small step no)", () => {
-  // grass l2 | grass l1 | stairs l1 | grass l0
-  const rows = [[{ t: "grass", l: 2 }, { t: "grass", l: 1 }, { t: "stairs", l: 1 }, { t: "grass", l: 0 }]];
-  const g = buildTerrainGrid(4, 1, rows);
+test("makeDrops: a 2-level cliff falls; a 1-level step / stairs / climb do not", () => {
+  // grass l3 | grass l1 | grass l0 | stairs l1 | grass l0
+  const rows = [
+    [{ t: "grass", l: 3 }, { t: "grass", l: 1 }, { t: "grass", l: 0 }, { t: "stairs", l: 1 }, { t: "grass", l: 0 }],
+  ];
+  const g = buildTerrainGrid(5, 1, rows);
   const drops = makeDrops(g);
   const c = (n: number) => CELL_WU * (n + 0.5);
   const y = CELL_WU / 2;
-  assert.equal(drops(c(1), y, c(0), y), true, "l2→l1 is a fall"); // full level down
-  assert.equal(drops(c(3), y, c(2), y), false, "stepping OFF stairs to l0 is a ramp, not a fall");
-  assert.equal(drops(c(0), y, c(1), y), false, "l1→l2 is a climb up, never a fall");
+  assert.equal(drops(c(1), y, c(0), y), true, "l3→l1 (2-level) is a fall");
+  assert.equal(drops(c(2), y, c(1), y), false, "l1→l0 (1-level) is a smooth step now, not a fall");
+  assert.equal(drops(c(4), y, c(3), y), false, "stepping OFF stairs to l0 is a ramp, not a fall");
+  assert.equal(drops(c(0), y, c(1), y), false, "l1→l3 is a climb up, never a fall");
 });
 
 test("integrateFall: a cliff drop falls under gravity (animated, not a snap)", () => {
@@ -284,11 +292,16 @@ test("integrateFall: a cliff drop falls under gravity (animated, not a snap)", (
   assert.ok(frames < 30, `a 2-level fall should land quickly, took ${frames} frames`);
 });
 
-test("integrateFall: up-steps snap, gentle down-steps ease (stairs are not falls)", () => {
+test("integrateFall: up-steps EASE up (staircase step), gentle down-steps ease, no fall", () => {
   const lh = 16;
-  // Climbing up (e.g. landing a jump on a higher cell) snaps instantly.
-  const up = integrateFall({ elev: 0, fallV: 0, falling: false }, lh, 1 / 60, lh);
-  assert.deepEqual(up, { elev: lh, fallV: 0, falling: false });
+  // Walking up a 1-level step eases up smoothly (a stair), not an instant snap...
+  const up1 = integrateFall({ elev: 0, fallV: 0, falling: false }, lh, 1 / 60, lh);
+  assert.ok(up1.elev > 0 && up1.elev < lh, `first frame eases partway up (got ${up1.elev})`);
+  assert.equal(up1.falling, false);
+  // ...and settles exactly on the higher step within a fraction of a second.
+  let u = { elev: 0, fallV: 0, falling: false };
+  for (let i = 0; i < 30; i++) u = integrateFall(u, lh, 1 / 60, lh);
+  assert.equal(u.elev, lh, "reaches the step top exactly");
   // A half-level step down (stairs) eases smoothly and never enters free-fall.
   let s = { elev: 0.5 * lh, fallV: 0, falling: false };
   for (let i = 0; i < 30; i++) s = integrateFall(s, 0, 1 / 60, lh);
@@ -296,20 +309,23 @@ test("integrateFall: up-steps snap, gentle down-steps ease (stairs are not falls
   assert.ok(Math.abs(s.elev) < 0.5, "eases down onto the lower step");
 });
 
-test("auto-jump rule: a 1-level wall auto-hops; a 2-level wall / prop / flat do not", () => {
-  // cells: l0 | l1 | l2 | l0(+prop). The client auto-jumps exactly when a walk
+test("auto-jump rule: a 2-level wall auto-hops; a 1-level step / 3-level / prop / flat do not", () => {
+  // cells: l0 | l1 | l2 | l3 | l0(+prop). The client auto-jumps exactly when a walk
   // is blocked by height but a jump would clear it: !canEnter(walk)&&canEnter(jump).
-  const rows = [[{ t: "grass", l: 0 }, { t: "grass", l: 1 }, { t: "grass", l: 2 }, { t: "grass", l: 0 }]];
-  const g = buildTerrainGrid(4, 1, rows, [{ col: 3, row: 0 }]); // prop on the last cell
+  const rows = [
+    [{ t: "grass", l: 0 }, { t: "grass", l: 1 }, { t: "grass", l: 2 }, { t: "grass", l: 3 }, { t: "grass", l: 0 }],
+  ];
+  const g = buildTerrainGrid(5, 1, rows, [{ col: 4, row: 0 }]); // prop on the last cell
   const y = CELL_WU / 2;
   const walk = { maxClimb: WALK_CLIMB, canSwim: true };
   const jump = { maxClimb: JUMP_CLIMB, canSwim: true };
   const c = (n: number) => CELL_WU * (n + 0.5);
   const autoJump = (fromCell: number, toCell: number) =>
     !canEnter(g, c(fromCell), y, c(toCell), y, walk) && canEnter(g, c(fromCell), y, c(toCell), y, jump);
-  assert.equal(autoJump(0, 1), true, "l0→l1 (1-level wall) auto-jumps");
-  assert.equal(autoJump(0, 2), false, "l0→l2 (2-level wall) does NOT auto-jump");
-  assert.equal(autoJump(0, 3), false, "into a solid prop does NOT auto-jump");
+  assert.equal(autoJump(0, 1), false, "l0→l1 (1-level step) just walks up — no auto-jump");
+  assert.equal(autoJump(0, 2), true, "l0→l2 (2-level wall) auto-jumps");
+  assert.equal(autoJump(0, 3), false, "l0→l3 (3-level wall) is too tall to jump — no auto-jump");
+  assert.equal(autoJump(0, 4), false, "into a solid prop does NOT auto-jump");
   assert.equal(autoJump(1, 1), false, "flat ground does NOT auto-jump");
 });
 
@@ -387,9 +403,9 @@ test("no wedging at an inside cliff corner (stuck-walking-downhill bug)", () => 
   // path and the player froze; lateral probes are solids-only now.
   const g = (l = 0) => ({ t: "grass", l });
   const rows = [
-    [g(0), g(0), g(1)],
-    [g(0), g(0), g(1)],
-    [g(1), g(1), g(1)],
+    [g(0), g(0), g(2)],
+    [g(0), g(0), g(2)],
+    [g(2), g(2), g(2)],
   ];
   const grid = buildTerrainGrid(3, 3, rows);
   const ctx = { maxClimb: WALK_CLIMB, canSwim: true };
@@ -417,22 +433,22 @@ test("auto-jump fires in a concave corner (upside-down V notch)", () => {
   // axis — it stayed on the player's own cell and the jump never fired.
   const g = (l = 0) => ({ t: "grass", l });
   const rows = [
-    [g(1), g(1), g(0)],
-    [g(1), g(0), g(0)],
+    [g(2), g(2), g(0)],
+    [g(2), g(0), g(0)],
     [g(0), g(0), g(0)],
   ];
   const grid = buildTerrainGrid(3, 3, rows);
   // Player wedged into the corner of cell (1,1): PLAYER_RADIUS from both walls.
   const px = CELL_WU + PLAYER_RADIUS;
   const py = CELL_WU + PLAYER_RADIUS;
-  assert.equal(autoJumpWanted(grid, px, py, -1, -1), true, "diagonal push into the notch auto-jumps");
-  assert.equal(autoJumpWanted(grid, px, py, -1, 0), true, "straight push into the west wall auto-jumps");
+  assert.equal(autoJumpWanted(grid, px, py, -1, -1), true, "diagonal push into the 2-level notch auto-jumps");
+  assert.equal(autoJumpWanted(grid, px, py, -1, 0), true, "straight push into the 2-level west wall auto-jumps");
   assert.equal(autoJumpWanted(grid, px, py, 1, 1), false, "walking away from the notch does not");
-  // A 2-level notch must NOT auto-jump (a jump can't clear it either).
-  grid.level[0] = 2; // (0,0)
-  grid.level[1] = 2; // (1,0)
-  grid.level[3] = 2; // (0,1)
-  assert.equal(autoJumpWanted(grid, px, py, -1, -1), false, "2-level notch never auto-jumps");
+  // A 3-level notch must NOT auto-jump (a jump can't clear it either).
+  grid.level[0] = 3; // (0,0)
+  grid.level[1] = 3; // (1,0)
+  grid.level[3] = 3; // (0,1)
+  assert.equal(autoJumpWanted(grid, px, py, -1, -1), false, "3-level notch never auto-jumps");
 });
 
 test("findPath routes around a solid prop wall instead of into it", () => {
@@ -458,21 +474,22 @@ test("findPath routes around a solid prop wall instead of into it", () => {
   assert.deepEqual(path[path.length - 1], { x: c(6), y: c(1) });
 });
 
-test("findPath climbs a 1-level ledge when there is no way around", () => {
-  // A full-height 1-level wall on column 3 of a 7×5 world: the only way
-  // east is jumping it (no way around — the wall spans every routable row).
+test("findPath jumps a 2-level ledge when there is no way around", () => {
+  // A full-height 2-level wall on column 3 of a 7×5 world: the only way east is
+  // JUMPING it (a 1-level would just be walked; no way around — the wall spans
+  // every routable row).
   const g = (l = 0) => ({ t: "grass", l });
-  const rows = Array.from({ length: 5 }, () => Array.from({ length: 7 }, (_, c) => g(c === 3 ? 1 : 0)));
+  const rows = Array.from({ length: 5 }, () => Array.from({ length: 7 }, (_, c) => g(c === 3 ? 2 : 0)));
   const grid = buildTerrainGrid(7, 5, rows);
   const c = (n: number) => (n + 0.5) * CELL_WU;
   const y = c(2);
   const path = findPath(grid, c(1), y, c(5), y);
   assert.ok(path, "path exists via the jumpable ledge");
   assert.equal(path[path.length - 1].x, c(5));
-  // Unreachable: raise the wall to 2 levels (jump can't clear it). From the
+  // Unreachable: raise the wall to 3 levels (jump can't clear it). From the
   // wall's base cell there is no closer rim, so the tap is a true dead end.
-  for (let r = 0; r < 5; r++) grid.level[r * 7 + 3] = 2;
-  assert.equal(findPath(grid, c(2), y, c(5), y), null, "2-level wall is a dead end");
+  for (let r = 0; r < 5; r++) grid.level[r * 7 + 3] = 3;
+  assert.equal(findPath(grid, c(2), y, c(5), y), null, "3-level wall is a dead end");
 });
 
 test("findPath keeps hitbox clearance around props (buffer + nudged corners)", () => {
@@ -616,11 +633,11 @@ test("unstickFromSolids frees overlapped bodies, leaves clean ones alone", () =>
 });
 
 test("findPath best-effort: unreachable goal routes to the reachable rim", () => {
-  // A full-height 2-level wall on column 4 seals the east half of a 9×5
-  // world; tapping beyond it must walk to the rim and stop cleanly (not
-  // beeline into the wall, not fail outright).
+  // A full-height 3-level wall on column 4 seals the east half of a 9×5
+  // world (a 2-level would be jumpable now); tapping beyond it must walk to the
+  // rim and stop cleanly (not beeline into the wall, not fail outright).
   const g = (l = 0) => ({ t: "grass", l });
-  const rows = Array.from({ length: 5 }, () => Array.from({ length: 9 }, (_, c) => g(c === 4 ? 2 : 0)));
+  const rows = Array.from({ length: 5 }, () => Array.from({ length: 9 }, (_, c) => g(c === 4 ? 3 : 0)));
   const grid = buildTerrainGrid(9, 5, rows);
   const c = (n: number) => (n + 0.5) * CELL_WU;
   const y = c(2);
