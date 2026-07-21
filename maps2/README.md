@@ -98,9 +98,21 @@ Enforce it in code (`pipeline/autotile.py`):
     benches joined by up-screen risers (climb only rises away from camera → antitone/legal),
     preferred by `_merge_ramp` for Δ≥4 cliffs, falling back to the straight spur where a Z
     won't fit (so the connectivity guarantee holds).
-  - **Dirt is ROADS, not borders** (`_dirt_roads`): a deliberate dirt trunk (Dijkstra
-    spawn→maze landmarks→summit, fused onto the switchbacks) — the ALttP red path — plus the
-    ascent ramps; everything else is grass tops + rock faces. No dirt speckle/collars.
+  - **Dirt is ROADS, not borders** (`_dirt_roads`): an organic **meandering, branching**
+    network — a wander-biased trunk (`_wander_field` + jittered waypoints) spawn→summit with
+    landmark **spurs that fork off at Y-junctions** (`_road_attach`), fused onto the ascent
+    ramps — the ALttP red path; everything else is grass tops + rock faces. No dirt
+    speckle/collars.
+  - **Multi-level water** (`_ponds`, `_tarn`): besides the ocean, small **flush** inland
+    lakes at maze tiers `{4,12}` and mountain benches `{20,24}` (water painted at the
+    surrounding land level so it renders as a filled pool, not a well), placed transactionally
+    so they can never seal a region.
+  - **Tidy ascents, clean cliffs** (`_mountain_stairs`/`_climb_corridor`): exactly 2 tidy
+    Trollstigen corridors up the mountain; `_connect_all`'s `_merge_ramp` then uses only clean
+    straight connectors (no new zigzags), so the rest of the foot stays a sheer rock cliff.
+  - **Ocean margin**: the island is **inset** into a 10-cell water frame (`n=220`, `nd=200`
+    via the `_coastline` override) so it's fully surrounded by sea — `build()` asserts no land
+    on the map border.
 
   Reachability is **prop-aware** (props set `collision=1`). `demo_lost` and `the_island`
   are preserved unchanged.
