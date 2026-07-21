@@ -69,11 +69,9 @@ MTN_VALLEYS = [(0.37, 0.14, 26, 0.050), (0.39, 0.22, 26, 0.055), (0.41, 0.30, 24
                (0.43, 0.38, 22, 0.070), (0.62, 0.16, 24, 0.050), (0.63, 0.24, 24, 0.055),
                (0.64, 0.32, 22, 0.060), (0.65, 0.40, 20, 0.070)]
 
-# Switchbacks / mountain ascents.
+# Mountain ascents: a few TIDY corridors climb the terraced benches by short rock ramps
+# cut into each cliff at alternating ends (the benches are the long legs).
 SWITCH_MIN = 4
-SWITCH_MAX = 6
-MAX_SWITCH_CLIMB = 16
-SWITCH_LEG = 8
 STAIR_CORRIDORS = 2
 STAIR_SPACING = 0.16
 
@@ -86,6 +84,12 @@ CENTER_AMP = 0.35
 ASCENT_BONUS = 0.5
 DIRT_BONUS = 0.5
 WANDER_AMP = 0.9
+ROAD_MAGNET = 1.2          # pull a new spur onto the existing road -> tight Y-merges
+ROAD_ATTRACT_R = 2
+
+# Sunken walk-in lagoon (water 2 levels down, walkable Δ1 shore).
+LAGOON_SITES = [(0.20, 0.66), (0.26, 0.80), (0.14, 0.58)]
+LAGOON_RW = 2
 
 
 class Island2(Island):
@@ -106,6 +110,9 @@ class Island2(Island):
         self.reserved = set()
         self.links = []
         self.roads = set()
+        self._gorge_cells = set()
+        self._road_now = None
+        self._road_attract = None
         self._ascent = set()              # rock stair/ramp cells (road cost prefers them)
         self._nswitch = 0
         self._stairs_done = False
@@ -122,21 +129,23 @@ class Island2(Island):
         self._maze_river()                # a winding water channel across the lowland (bridged)
         flatten_shores(self.mat, self.level)
         camera_monotone_masked(self.level, self.mat, self.upper)   # mountain antitone ONLY
+        self._mtn_gorge()                 # DEEP gorge down the massif (banks keep full height)
         self.level_before = self.level.copy()
         self._materials()                 # mountain caps + BIGGER beaches
         self._wall_rim()                  # Pass A: recolour maze up-step rims -> wall material
         self._mountain_stairs()           # a few TIDY full-height ROCK ascents; rest sheer cliff
-        self._connect_all(thresh=5)       # reuse: clean rock connectors -> one piece
+        self._connect_all(thresh=5)       # reuse: rock connectors + span the gorge -> one piece
         self._ford_stranded()
-        self._place_bridges(count=5)
+        self._place_bridges(count=8)
+        self._bridge_over_gorge(self._gorge_cells, count=1)   # deliberate high stone bridge
         for _ in range(10):               # guarantee loop -> converge to no pit AND no lip
             camera_monotone_masked(self.level, self.mat, self.upper)
             self._fill_traps()
             self._lip_cover()
             if self._trap_count() == 0 and not occlusion_violations(self.mat, self.level):
                 break
-        self._mtn_gorge()                 # internal water valley (post-connection, transactional)
         self._ponds()                     # flush multi-level lakes (before spawn -> post-pond main)
+        self._sunken_lagoon()             # a walk-in lagoon sunk 2 levels (transactional)
         self._pick_spawn()
         self._dirt_roads()                # 8-direction meandering, margined, centred dirt roads
         self._paint()
@@ -348,103 +357,105 @@ class Island2(Island):
             mat[y, x] = self._wall_mat(x, y)
 
     def _lip_cover(self, max_iter=8):
+        """Recolour the HIGHER cell of every residual same-material toward-camera lip to a wall
+        material that DIFFERS from ALL its up-screen lower neighbours (the cells it could form a
+        lip with). If BOTH stone and obsidian sit up-screen of it (an un-2-colourable corner
+        where a ramp meets terrain diagonally), fall back to DIRT — which differs from both — and
+        drop the cell from the rock-ascent set. mat-only, so it never changes a level; always
+        converges (dirt is a third escape)."""
+        n = self.n
         for _ in range(max_iter):
             viol = occlusion_violations(self.mat, self.level)
             if not viol:
                 return True
-            for ((lx, ly), (hx, hy), _dh) in sorted(viol, key=lambda v: v[1][0] + v[1][1]):
-                lo = self.mat[ly, lx]
-                self.mat[hy, hx] = "black_mountain" if lo == "stone_mountain" else "stone_mountain"
+            for (_lo, (hx, hy), _dh) in sorted(viol, key=lambda v: v[1][0] + v[1][1]):
+                L = int(self.level[hy, hx])
+                clash = set()
+                for i, j in ((-1, 0), (0, -1)):               # up-screen neighbours (lower -> lip)
+                    ux, uy = hx + i, hy + j
+                    if (0 <= ux < n and 0 <= uy < n and self.mat[uy, ux] not in ("", "clear_water")
+                            and int(self.level[uy, ux]) < L):
+                        clash.add(self.mat[uy, ux])
+                if "stone_mountain" not in clash:
+                    self.mat[hy, hx] = "stone_mountain"
+                elif "black_mountain" not in clash:
+                    self.mat[hy, hx] = "black_mountain"
+                else:
+                    self.mat[hy, hx] = "lightdark_dirt"        # both walls clash -> dirt differs
+                    self._ascent.discard((hx, hy))
         return not occlusion_violations(self.mat, self.level)
 
-    # -- ROCK Trollstigen switchback ascents (full-height) ---------------------
+    # -- mountain-HUGGING ascent (cut-in ramps; the benches are the legs) -------
 
-    def _carve_switchback(self, hx, hy, lx, ly, leg=SWITCH_LEG, min_climb=SWITCH_MIN):
-        """A tidy ROCK Z-road up a cliff: flat benches (uniform rise 4) + up-screen risers, so
-        the climb only rises away from camera (antitone/legal). Carves STAIR_MAT and records
-        the cells in self._ascent. All-or-nothing; caller falls back to a straight spur."""
+    def _flood_bench(self, cx, cy, L, cap=6000):
+        """4-connected flood over walkable non-water cells at level L reachable from (cx,cy)
+        — the bench actually reachable from where the last ramp landed (connectivity backbone)."""
         n = self.n
-        H, L = int(self.level[hy, hx]), int(self.level[ly, lx])
-        if not (min_climb <= H - L <= MAX_SWITCH_CLIMB):
-            return False
-        dx, dy = lx - hx, ly - hy
-        if (dx, dy) not in ((1, 0), (0, 1)):
-            return False
-        px, py = dy, dx
-        rise = 4
-        gap = rise + 1
-        levels = list(range(L, H, rise)) + [H]
-        B = len(levels)
-        for sgn in (1, -1):
-            cells = []
-            for k, lvl in enumerate(levels):
-                up = gap * (B - 1 - k)
-                bx, by = hx + dx * up, hy + dy * up
-                rng = range(0, leg + 1) if k % 2 == 0 else range(leg, -1, -1)
-                end = (bx, by)
-                for t in rng:
-                    end = (bx + sgn * px * t, by + sgn * py * t)
-                    cells.append((end[0], end[1], lvl))
-                if k < B - 1:
-                    for g in range(1, gap):
-                        cells.append((end[0] - dx * g, end[1] - dy * g, lvl + g))
-            if all(0 <= x < n and 0 <= y < n and self.land[y, x]
-                   and self.mat[y, x] != "clear_water" and (x, y) not in self.reserved
-                   for (x, y, _l) in cells):
-                for (x, y, lvl) in cells:
-                    self.level[y, x] = lvl
-                    self.mat[y, x] = STAIR_MAT
-                    self.upper[y, x] = False
-                    self.reserved.add((x, y))
-                    self._ascent.add((x, y))
-                self.road_feet.append((lx, ly))
-                self._nswitch += 1
-                return True
-        return False
+        seen = {(cx, cy)}
+        q = deque([(cx, cy)])
+        out = []
+        while q and len(out) < cap:
+            x, y = q.popleft()
+            out.append((x, y))
+            for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                xx, yy = x + i, y + j
+                if (0 <= xx < n and 0 <= yy < n and (xx, yy) not in seen
+                        and self.mat[yy, xx] not in ("", "clear_water")
+                        and int(self.level[yy, xx]) == L):
+                    seen.add((xx, yy))
+                    q.append((xx, yy))
+        return out
 
-    def _next_bench_step(self, cx, cy, R=6):
-        """Window search (up-screen quadrant) for the nearest cliff to continue a ribbon: a
-        cell `lo` on ~the current bench whose up-screen neighbour `hi` rises Δ4..16. Nearest
-        wins, so successive switchbacks stack into one narrow ribbon."""
-        n, up, level, mat = self.n, self.upper, self.level, self.mat
-        Lc = int(level[cy, cx])
+    def _lateral_cliff_step(self, cx, cy, L, side):
+        """Over the bench reachable from (cx,cy) at level L, find the L->L+4 cliff whose foot
+        `lo` sits at the FAR lateral end in screen-x direction `side` (key=side*(lxx-lyy)); its
+        up-screen neighbour `hi` is the next bench (L+4). Alternating `side` makes each leg run
+        the full bench width -> long screen-horizontal legs. Returns ((hx,hy),(lx,ly)) or None."""
+        n = self.n
         best = None
-        for dyy in range(-R, 1):
-            for dxx in range(-R, 1):
-                lxx, lyy = cx + dxx, cy + dyy
-                if not (0 <= lxx < n and 0 <= lyy < n):
+        for (lxx, lyy) in self._flood_bench(cx, cy, L):
+            if (lxx, lyy) in self.reserved:
+                continue
+            for i, j in ((-1, 0), (0, -1)):          # up-screen (higher) neighbour
+                hxx, hyy = lxx + i, lyy + j
+                if not (0 <= hxx < n and 0 <= hyy < n):
                     continue
-                if not (up[lyy, lxx] and mat[lyy, lxx] != "clear_water"):
+                if not (self.upper[hyy, hxx] and self.mat[hyy, hxx] != "clear_water"):
                     continue
-                if abs(int(level[lyy, lxx]) - Lc) > 1:
+                if int(self.level[hyy, hxx]) != L + 4 or (hxx, hyy) in self.reserved:
                     continue
-                for i, j in ((-1, 0), (0, -1)):
-                    hxx, hyy = lxx + i, lyy + j
-                    if not (0 <= hxx < n and 0 <= hyy < n):
-                        continue
-                    if not (up[hyy, hxx] and mat[hyy, hxx] != "clear_water"):
-                        continue
-                    diff = int(level[hyy, hxx]) - int(level[lyy, lxx])
-                    if SWITCH_MIN <= diff <= MAX_SWITCH_CLIMB and (hxx, hyy) not in self.reserved:
-                        d = dxx * dxx + dyy * dyy
-                        if best is None or d < best[0]:
-                            best = (d, hxx, hyy, lxx, lyy)
-        return (best[1], best[2], best[3], best[4]) if best else None
+                key = side * (lxx - lyy)
+                if best is None or key > best[0]:
+                    best = (key, (hxx, hyy), (lxx, lyy))
+        return (best[1], best[2]) if best else None
 
-    def _climb_corridor(self, hx, hy, lx, ly):
-        """One narrow ROCK ribbon: a foot switchback then a switchback per bench up to the
-        summit, each next cliff found by _next_bench_step so a flat stretch doesn't stall it."""
-        if not self._carve_switchback(hx, hy, lx, ly):
+    def _climb_hugging(self, hx, hy, lx, ly):
+        """A mountain-HUGGING ascent: a foot ramp (bench 16 -> maze), then bench-by-bench a SHORT
+        rock ramp cut into each Δ4 cliff at ALTERNATING lateral ends. The benches themselves are
+        the long screen-horizontal LEGS — each ramp has the higher bench as an uphill WALL and
+        drops one bench toward camera (the single fall direction): a Trollstigen read, no holes,
+        no free-standing ribbon. Only the ramps are carved (rock); the summit is reached bench
+        by bench (else _connect_all/_fill_traps finish reachability, as before)."""
+        if not self._carve_connector(hx, hy, lx, ly):   # foot ramp: bench16 -> maze foot
             return False
+        self.road_feet.append((lx, ly))                 # dirt spur leads to the stair foot
+        self._nswitch += 1
         cx, cy = hx, hy
-        top_bench = int(BENCHES.max())
-        for _ in range(8):
-            if int(self.level[cy, cx]) >= top_bench:
+        side = 1
+        top = int(BENCHES.max())
+        for _ in range(len(BENCHES)):
+            L = int(self.level[cy, cx])
+            if L >= top:
                 break
-            nxt = self._next_bench_step(cx, cy)
-            if not nxt or not self._carve_switchback(*nxt):
+            step = self._lateral_cliff_step(cx, cy, L, side)
+            if step is None:
                 break
-            cx, cy = nxt[0], nxt[1]
+            (hxx, hyy), (lxx, lyy) = step
+            if not self._carve_connector(hxx, hyy, lxx, lyy):
+                break
+            cx, cy = hxx, hyy                            # now on bench L+4
+            side = -side                                # alternate the hairpin end
+            self._nswitch += 1
         return True
 
     def _mountain_stairs(self, k=STAIR_CORRIDORS):
@@ -472,7 +483,7 @@ class Island2(Island):
             if any((hx - cx) ** 2 + (hy - cy) ** 2 < (STAIR_SPACING * n) ** 2
                    for cx, cy in chosen):
                 continue
-            if self._climb_corridor(hx, hy, lx, ly):
+            if self._climb_hugging(hx, hy, lx, ly):
                 chosen.append((hx, hy))
         self._stairs_done = True
 
@@ -498,10 +509,6 @@ class Island2(Island):
                     edges.append(((is_foot, drop), hi, lo))
         edges.sort(key=lambda e: e[0])
         for _key, hi, lo in edges:
-            drop = abs(int(self.level[hi[1], hi[0]]) - int(self.level[lo[1], lo[0]]))
-            if (not self._stairs_done and drop >= SWITCH_MIN
-                    and self._nswitch < SWITCH_MAX and self._carve_switchback(*hi, *lo)):
-                return True
             if self._carve_connector(*hi, *lo):
                 return True
         return False
@@ -627,31 +634,116 @@ class Island2(Island):
         return False
 
     def _mtn_gorge(self):
-        """An internal mountain water VALLEY (concern: descend then climb). Carves a deep
-        gorge (water at level 0) through a LOW mountain saddle, transactionally, so it can
-        never seal the massif. Runs AFTER _connect_all so the main-piece test is meaningful."""
-        n, s = self.n, self.seed
+        """A PROMINENT DEEP water gorge down the massif spine (bring back The Island 1's mountain
+        gorge). Carved AFTER camera_monotone so the banks keep full bench height = a deep canyon;
+        the downstream _connect_all/_merge_span/_place_bridges reconnect the flanks, and
+        _bridge_over_gorge lays a deliberate high stone bridge you stand on. Water at level 0 is
+        occlusion-legal (different material + a >10 fog-exempt drop)."""
         PATH = [self._to_grid(fx, fy) for fx, fy in
-                ((0.30, 0.30), (0.37, 0.33), (0.45, 0.34), (0.53, 0.33), (0.60, 0.31))]
-        chan = np.zeros((n, n), bool)
+                ((0.50, 0.04), (0.49, 0.12), (0.485, 0.20), (0.485, 0.28))]
+        chan = self._gorge_channel(PATH, wob_amp=4, half=1, straight=(0.14, 0.26))
+        if len(chan) < 12:
+            self._gorge_cells = set()
+            return
+        for (x, y) in chan:
+            self.mat[y, x] = "clear_water"
+            self.level[y, x] = 0
+        self._gorge_cells = chan
+
+    def _gorge_channel(self, PATH, wob_amp=4, half=1, straight=None):
+        """Deep-gorge rasteriser down the massif. Cells kept only where upper & land & not
+        reserved (so it stops at the maze foot and skips ascent ramps). `straight`=(fy0,fy1) in
+        design-fraction zeroes the x-wobble -> x-aligned rows for the bridge. Returns a set."""
+        n, s, M, nd = self.n, self.seed, self.M, self.nd
+        chan = set()
         for (ax, ay), (bx, by) in zip(PATH, PATH[1:]):
             steps = int(math.hypot(bx - ax, by - ay)) + 1
             for i in range(steps + 1):
                 t = i / steps
-                wob = (_fbm(np.float32(ax + (bx - ax) * t), np.float32(ay),
-                            s + 79, n * 0.06, 3) - 0.5) * 5
+                yy_f = ay + (by - ay) * t
+                fy = (yy_f - M) / nd
+                if straight and straight[0] <= fy <= straight[1]:
+                    wob = 0.0
+                else:
+                    wob = (_fbm(np.float32(ax), np.float32(yy_f), s + 79, n * 0.06, 3) - 0.5) * 2 * wob_amp
                 cx = int(ax + (bx - ax) * t + wob)
-                cy = int(ay + (by - ay) * t)
-                for dx in range(-1, 2):
-                    for dy in range(-1, 2):
-                        x, y = cx + dx, cy + dy
-                        if (0 <= x < n and 0 <= y < n and self.upper[y, x]
-                                and self.mat[y, x] not in ("", "clear_water")
-                                and int(self.level[y, x]) <= 24 and (x, y) not in self.reserved):
-                            chan[y, x] = True
-        for comp in self._mask_components(chan):
-            if len(comp) >= 3:
-                self._commit_pond_if_safe(comp, 0)
+                cy = int(yy_f)
+                for dx in range(-half, half + 1):
+                    x, y = cx + dx, cy
+                    if (0 <= x < n and 0 <= y < n and self.upper[y, x]
+                            and self.mat[y, x] not in ("", "clear_water")
+                            and (x, y) not in self.reserved):
+                        chan.add((x, y))
+        return chan
+
+    def _bridge_over_gorge(self, chan, count=1):
+        """Lay a deliberate STONE bridge deck across the mountain gorge `chan`, reusing
+        _place_bridges' per-row both-bank-walkable test scoped to the gorge water. Deck at the
+        shared bench level; a walk-link per row spans the water. Returns #laid."""
+        n = self.n
+        riverw = np.zeros((n, n), bool)
+        for (x, y) in chan:
+            riverw[y, x] = True
+        main = set(self._walk_components()[0])
+
+        def channel(cy):
+            xs = sorted(x for x in range(n) if riverw[cy, x])
+            if not xs:
+                return None
+            runs, cur = [], [xs[0]]
+            for x in xs[1:]:
+                if x == cur[-1] + 1:
+                    cur.append(x)
+                else:
+                    runs.append(cur); cur = [x]
+            runs.append(cur)
+            run = min(runs, key=lambda r: r[-1] - r[0])
+            return run[0], run[-1]
+
+        def row_ok(r, x0, x1, dlv):
+            if not all(0 <= x < n and riverw[r, x] for x in range(x0, x1 + 1)):
+                return False
+            for bx in (x0 - 1, x1 + 1):
+                if not (0 <= bx < n and self.mat[r, bx] not in ("", "clear_water")):
+                    return False
+                if abs(int(self.level[r, bx]) - dlv) > 1:
+                    return False
+                if (bx, r) not in main:
+                    return False
+            return True
+
+        cands = []
+        for cy in sorted({y for (_x, y) in chan}):
+            ch = channel(cy)
+            if not ch:
+                continue
+            x0, x1 = ch
+            if x0 - 1 < 0 or x1 + 1 >= n or x1 - x0 > 6:
+                continue
+            la, lb = self.mat[cy, x0 - 1], self.mat[cy, x1 + 1]
+            if la in ("", "clear_water") or lb in ("", "clear_water"):
+                continue
+            va, vb = int(self.level[cy, x0 - 1]), int(self.level[cy, x1 + 1])
+            if abs(va - vb) > 1:
+                continue
+            dlv = min(va, vb)
+            rows3 = [r for r in (cy - 1, cy, cy + 1) if row_ok(r, x0, x1, dlv)]
+            rows = rows3 if len(rows3) >= 2 else ([cy] if row_ok(cy, x0, x1, dlv) else [])
+            if rows:
+                cands.append(((x1 - x0), -len(rows), -dlv, cy, x0, x1, dlv, rows))
+        cands.sort()
+        laid = 0
+        for _w, _nr, _nl, cy, x0, x1, dlv, rows in cands:
+            cells = [(x, r) for r in rows for x in range(x0, x1 + 1)]
+            self.decks.append({"kind": "bridge", "mat": "stone_mountain", "level": dlv,
+                               "thickness": 1, "cells": cells})
+            for r in rows:
+                self.links.append(((x0 - 1, r), (x1 + 1, r)))
+            self.reserved.update(cells)
+            laid += 1
+            if laid >= count:
+                break
+        return laid
 
     def _ponds(self):
         n, X, Y, s = self.n, self.X, self.Y, self.seed
@@ -674,6 +766,83 @@ class Island2(Island):
                         continue
                 self._commit_pond_if_safe(comp, L)
 
+    def _sunken_lagoon(self, rw=LAGOON_RW):
+        """A small WALK-IN lagoon: a bowl sunk 2 levels below its flat surroundings with a Δ1
+        walkable shore ring you descend to and climb back from. Water at L-2 (barrier), shore
+        at L-1, rim at L. Placed in the MAZE/foothill (not the antitone mountain) AFTER the
+        guarantee loop; camera-facing (+x/+y) rim lips made legal by _lip_cover. Whole-bbox
+        transactional so it can never seal a region or strand the shore."""
+        for (fx, fy) in LAGOON_SITES:
+            if self._try_lagoon(*self._to_grid(fx, fy), rw):
+                return True
+        return False
+
+    def _try_lagoon(self, tx, ty, rw):
+        n = self.n
+        lo, hi = self.M + rw + 2, n - self.M - rw - 2
+        best = None
+        for y in range(max(lo, ty - 18), min(hi, ty + 19)):
+            for x in range(max(lo, tx - 18), min(hi, tx + 19)):
+                if not (self.maze[y, x] and self.mat[y, x] not in ("", "clear_water")):
+                    continue
+                L = int(self.level[y, x])
+                if L < 2:
+                    continue
+                flat = True
+                for j in range(-(rw + 1), rw + 2):
+                    for i in range(-(rw + 1), rw + 2):
+                        xx, yy = x + i, y + j
+                        if (not self.maze[yy, xx] or self.mat[yy, xx] in ("", "clear_water")
+                                or int(self.level[yy, xx]) != L or (xx, yy) in self.reserved):
+                            flat = False
+                            break
+                    if not flat:
+                        break
+                if flat:
+                    d = (x - tx) ** 2 + (y - ty) ** 2
+                    if best is None or d < best[0]:
+                        best = (d, x, y, L)
+        if best is None:
+            return False
+        _d, cx, cy, L = best
+        water, ring = [], []
+        for j in range(-(rw + 1), rw + 2):
+            for i in range(-(rw + 1), rw + 2):
+                md = abs(i) + abs(j)
+                if md <= rw:
+                    water.append((cx + i, cy + j))
+                elif md == rw + 1:
+                    ring.append((cx + i, cy + j))
+        bbox = [(cx + i, cy + j) for j in range(-(rw + 2), rw + 3)
+                for i in range(-(rw + 2), rw + 3)]
+        saved = [(x, y, self.mat[y, x], int(self.level[y, x]), bool(self.upper[y, x]))
+                 for (x, y) in bbox]
+        for (x, y) in water:
+            self.mat[y, x] = "clear_water"
+            self.level[y, x] = L - 2
+        for (x, y) in ring:
+            self.level[y, x] = L - 1        # material stays grass; camera-side lip fixed next
+        ok = self._lip_cover()
+        walk = (self.mat != "") & (self.mat != "clear_water")
+        land = int(walk.sum())
+        comps = self._walk_components()
+        mainset = set(comps[0]) if comps else set()
+        maze_land = int((self.maze & (self.mat != "clear_water")).sum())
+        upper_land = int((self.upper & (self.mat != "clear_water")).sum())
+        if (ok and not occlusion_violations(self.mat, self.level)
+                and self._trap_count() == 0
+                and len(mainset) >= 0.98 * land
+                and all((x, y) in mainset for (x, y) in ring)
+                and maze_land >= 1.6 * upper_land):
+            self.reserved.update(water)
+            self.reserved.update(ring)
+            return True
+        for (x, y, m, lv, up) in saved:
+            self.mat[y, x] = m
+            self.level[y, x] = lv
+            self.upper[y, x] = up
+        return False
+
     # -- dirt ROADS: 8-direction, margined off beach/mountain, corridor-centred --
 
     def _wander_field(self):
@@ -694,6 +863,17 @@ class Island2(Island):
             d[grow & (d == cap)] = dist
             ring = ring | grow
         return d
+
+    def _set_road_now(self, road):
+        """Cache a distance-to-current-road field so _road_graph_bfs pulls a new spur ONTO the
+        existing network (a tight Y-merge) instead of running parallel to it. Rebuilt after the
+        trunk and after each accepted spur."""
+        n = self.n
+        m = np.zeros((n, n), bool)
+        for (x, y) in road:
+            m[y, x] = True
+        self._road_now = set(road)
+        self._road_attract = self._dist_field(m, cap=ROAD_ATTRACT_R + 1)
 
     def _mtn_foot_mask(self):
         """Maze/land cells at the foot of an UNCARVED sheer mountain cliff (ascent ribbons
@@ -754,6 +934,7 @@ class Island2(Island):
         n, mat, level = self.n, self.mat, self.level
         land = lambda x, y: mat[y, x] != "" and mat[y, x] != "clear_water"
         ladj, wf, wc = self._link_adj(), self._wander_field(), self._road_cost_field()
+        ra = self._road_attract          # pull spurs onto the existing road (early Y-merge)
         dist, parent, elbow, pq = {}, {}, {}, []
         src = [sources] if isinstance(sources, tuple) else list(sources)
         for (sx, sy) in src:
@@ -794,6 +975,10 @@ class Island2(Island):
                 w += float(wc[yy, xx]) * step
                 if E is not None:
                     w += float(wc[E[1], E[0]])
+                if ra is not None:
+                    b = (ROAD_ATTRACT_R + 1 - int(ra[yy, xx])) / (ROAD_ATTRACT_R + 1)
+                    if b > 0:
+                        w -= ROAD_MAGNET * b * step
                 w = max(0.05, w)
                 nd = dd + w
                 if nd < dist.get((xx, yy), 1e18):
@@ -880,27 +1065,42 @@ class Island2(Island):
                     cur = w
         if not road:
             road = {self.spawn}
+        self._set_road_now(road)                         # magnet: later spurs Y-merge onto this
         targets = [near(fx, fy) for fx, fy in
                    ((0.50, 0.62), (0.30, 0.74), (0.62, 0.86), (0.76, 0.62),
                     (0.15, 0.58), (0.85, 0.60), (0.66, 0.40))]
-        # lead a dirt spur to the FOOT of each rock staircase (grid coords)
-        for (fx, fy) in dict.fromkeys(self.road_feet):
+        for (fx, fy) in dict.fromkeys(self.road_feet):   # to the foot of each rock staircase
             targets.append(min(reach, key=lambda c: (c[0] - fx) ** 2 + (c[1] - fy) ** 2, default=None))
+        for dk in self.decks:                            # to each bridge's banks -> roads cross it
+            xs = [c[0] for c in dk["cells"]]
+            x0, x1 = min(xs), max(xs)
+            rows = sorted({c[1] for c in dk["cells"]})
+            r = rows[len(rows) // 2]
+            for bx in (x0 - 1, x1 + 1):
+                targets.append(min(reach, key=lambda c: (c[0] - bx) ** 2 + (c[1] - r) ** 2, default=None))
+        sx, sy = self.spawn
+        targets = [t for t in dict.fromkeys(targets) if t is not None]
+        targets.sort(key=lambda c: (c[0] - sx) ** 2 + (c[1] - sy) ** 2)   # grow outward
         for d in targets:
-            if d is None or d in road:
+            if d in road:
                 continue
             spur = self._road_attach(d, road)
             if len(spur) >= 2:
                 road.update(spur)
+                self._set_road_now(road)                 # rebuild magnet after each spur
+        self._road_now = self._road_attract = None
         wide = set(road)
         for (x, y) in road:
-            for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            for i, j in ((1, 0), (0, 1)):                # widen TOWARD CAMERA only
                 xx, yy = x + i, y + j
-                if (0 <= xx < n and 0 <= yy < n and (xx, yy) in reach
+                if not (0 <= xx < n and 0 <= yy < n and (xx, yy) in reach
                         and int(level[yy, xx]) == int(level[y, x])
                         and mat[yy, xx] in ("saturated_grass", "lightdark_dirt")
                         and d2edge[yy, xx] > ROAD_BEACH_MARGIN):
-                    wide.add((xx, yy))
+                    continue
+                if (xx + i, yy + j) in road:              # gap between two parallel strands -> skip
+                    continue
+                wide.add((xx, yy))
         for (x, y) in wide:
             if mat[y, x] == "saturated_grass":
                 mat[y, x] = "lightdark_dirt"
@@ -1057,6 +1257,10 @@ def build(out=None, seed=21, M=24):
                 assert (d.mat[r, bx] not in ("", "clear_water")
                         and abs(int(d.level[r, bx]) - dlv) <= 1
                         and (bx, r) in mainset), f"bridge end not walkable at ({bx},{r})"
+
+    # the massif gorge crossing must have shipped (maze-river decks sit at bank level <=12)
+    gorge_bridges = [dk for dk in d.decks if dk["kind"] == "bridge" and int(dk["level"]) >= 16]
+    assert gorge_bridges, "mountain gorge bridge missing (concern 4 failed to commit at this seed)"
 
     print(f"the_island2 {n}x{n} (M={M}): {len(d.props)} props; max level {int(d.level.max())}; "
           f"switchbacks {d._nswitch}/{STAIR_CORRIDORS} corr; ascent {len(d._ascent)}; road {len(d.roads)}")
