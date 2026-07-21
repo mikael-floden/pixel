@@ -143,6 +143,9 @@ class Island:
         self.level_before = self.level.copy()
         self._connect_all()                       # ramps within banks + bridges across gorge
         camera_monotone(self.level, self.mat)     # backstop the ramps
+        for _ in range(4):                        # drive pits to zero (fill can perturb monotone)
+            self._fill_traps()                    # raise any cliff-locked pit flush
+            camera_monotone(self.level, self.mat) # re-assert antitone after filling
         self._materials()
         self._place_bridges(count=3)              # deliberate stone bridges over the gorge
         self._pick_spawn()
@@ -321,12 +324,13 @@ class Island:
                         self.land[y, x] = True
                         self.reserved.add((x, y))
 
-    def _connect_all(self, thresh=45, max_iter=90):
+    def _connect_all(self, thresh=5, max_iter=200):
         """Make the island one walkable piece: each round, merge the largest
         component with another either by a cliff RAMP (adjacent across a cliff) or,
         if only WATER separates them (the gorge), by a stone BRIDGE deck + a walk
-        link across a short, similar-level reach. Guarantees reachability while
-        preserving the gorge the player crosses at a few deliberate bridges."""
+        link across a short, similar-level reach. A LOW threshold is deliberate: even
+        a small cliff-locked pocket gets a ramp OUT, so the player can never fall into
+        a pit and be stranded. Water-locked specks (the offshore islet) are left."""
         for _ in range(max_iter):
             comps = self._walk_components()
             big = [c for c in comps if len(c) >= thresh]
@@ -338,6 +342,37 @@ class Island:
             if self._merge_span(main, big[1:]):
                 continue
             return
+
+    def _fill_traps(self, max_iter=40):
+        """Belt-and-braces against PITS: any walkable pocket still cut off from the
+        main piece AND touching it by land (a cliff you fell down / can't climb) is
+        raised FLUSH to that main neighbour's level, so it merges and can't trap the
+        player. Pockets touching main only across water (the offshore islet) are left
+        — you can't fall into those. Run before a final camera_monotone."""
+        n = self.n
+        for _ in range(max_iter):
+            comps = self._walk_components()
+            if len(comps) <= 1:
+                return
+            main = set(comps[0])
+            changed = False
+            for comp in comps[1:]:
+                adj = None
+                for (x, y) in comp:
+                    for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                        if (x + i, y + j) in main:
+                            adj = (x + i, y + j)
+                            break
+                    if adj:
+                        break
+                if adj is None:
+                    continue                      # water-locked (islet): not a fall-in trap
+                tgt = int(self.level[adj[1], adj[0]])
+                for (x, y) in comp:
+                    self.level[y, x] = tgt         # fill the pit flush -> walkable, merges
+                changed = True
+            if not changed:
+                return
 
     def _place_bridges(self, count=3):
         """Deliberate STONE BRIDGES (world@2 decks) across the gorge — the crossings
@@ -850,6 +885,11 @@ def build(out=None, n=140, seed=11):
             band &= d.level < lv + 6 if lv else d.level <= 2
         tiers[lv] = (int((band & seen).sum()), int(band.sum()))
     comps = d._walk_components()
+    mainset = set(comps[0])
+    traps = sum(len(c) for c in comps[1:]
+                if any((x + i, y + j) in mainset for (x, y) in c
+                       for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1))))
+    assert traps == 0, f"pit trap: {traps} walkable cells cut off yet land-adjacent to main"
     print(f"the_island {n}x{n}: {len(d.props)} props; max level {int(d.level.max())}; "
           f"materials=" + ", ".join(f"{k.split('_')[0]}:{v}" for k, v in terr.most_common()))
     print(f"  occlusion lips: {len(viol)} {'[CLEAN]' if not viol else viol[:3]}")
