@@ -812,27 +812,30 @@ uniform float uFlip;
 uniform sampler2D uHeight;
 uniform sampler2D uHeightL; // terrain height, LINEAR — smooth (bilinear) sampling
 
-// Tunables (named consts). TRUE 3D DISTANCE FOG, CEL-SHADED (maintainer's idea):
-// every ground pixel is fogged by its 3D distance to the player in (col,row,LEVEL)
-// — a SPHERE, so on flat ground the bands read as circles/ovals but where the
-// terrain rises or drops the contour WARPS over it (respects Z). The surface
-// height is sampled SMOOTHLY (bilinear uHeightL) so terraces RAMP instead of
-// stepping — that (plus rebuilding col/row FROM the smooth height, since screen u/v
-// are already smooth) is what keeps the sphere clean, no per-tile zigzag. Distance
-// POSTERIZED into snappy cel bands (teal FOG_NEAR → pale misty FOG_FAR). Symmetric
-// in z, so a cliff N up and a valley N down land on the SAME band. Doubles as a
-// MAX VIEW DISTANCE (a handle for future network cull radius).
+// Tunables (named consts). CEL-SHADED DEPTH FOG whose JOB is to HIGHLIGHT CLIFF EDGES
+// (maintainer: "see the exact edge where the cliff starts / the ground ends"). TWO
+// channels, summed then POSTERIZED once into snappy cel bands (teal FOG_NEAR → pale misty
+// FOG_FAR): (1) a SMOOTH horizontal-DISTANCE term — flat ground reads as clean concentric
+// bands (drape-reconstructed col/row, no per-tile zigzag) and it doubles as a MAX VIEW
+// DISTANCE (network cull handle); (2) a HARD ELEVATION term keyed to the march's resolved
+// surface level vs the player's, that snaps a band boundary ONTO the drawn cliff-top edge
+// — the clear-top → hazy-below contrast IS the edge. Symmetric both ways (ground below AND
+// a wall above foggier, same palette). (A pure 3D-distance SPHERE was tried and rejected:
+// its bands are iso-distance rings that float across the terrain, never landing on an edge.)
 const vec3  FOG_NEAR = vec3(0.30, 0.52, 0.50); // first band: teal
 const vec3  FOG_FAR  = vec3(0.72, 0.88, 0.90); // farthest band: pale misty cyan
 const float BANDS  = 6.0;   // cel-shade steps — band 0 is the clear near bubble
 const float FOG_D0 = 9.5;   // ONSET: clear-bubble radius (cells, 3D) — no fog closer than this
 const float FOG_DW = 2.2;   // width of each cel band past the onset (cells) → full fog at
                             // FOG_D0 + (BANDS-2)*FOG_DW ≈ 18.3 cells (also the max view dist)
-const float ZW     = 0.5;   // 3D distance per elevation LEVEL vs per horizontal CELL —
-                            // world-true: a level is ~0.46 cell tall (dx=32,dy=13,lh=19),
-                            // = the art's ~50% block thickness. (Was 1.0 = vertically squashed.)
 const float FOG_MAX = 0.78; // opacity of the farthest band (the cull edge)
 const float DRAPE_RS = 2.5; // drape blur half-width along the col+row fold axis (s-units)
+const float ELEV_STEP = 1.5; // fog BANDS added per LEVEL of player↔surface separation — the
+                             // EDGE-contrast strength: higher = cliff edges pop harder and
+                             // ground below / walls above deepen faster. Drives the highlight.
+const float ELEV_EPS  = 0.05;// dead-zone (levels·ELEV_STEP) keeping a flat tread at band 0 —
+                             // absorbs the resolve's tiny FP jitter in z; band 1 still snaps
+                             // <1px past the cliff lip.
 
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
@@ -903,33 +906,49 @@ void main() {
   }
   if (!found) { gl_FragColor = vec4(0.0); return; }
 
-  // SMOOTH SURFACE HEIGHT — this is what kills the zigzag. The hard resolve z/cell
-  // above is a per-TILE STEP function of screen position; feeding it to the sphere is
-  // what staircased the bands. Instead solve the surface height as a fixed point of the
-  // iso "drape": SEED at the player's own level (a CONSTANT → exactly smooth in screen
-  // space, and symmetric for terrain above vs below the player), then re-project the
-  // sample centre from the current smooth height and re-read the wide terrain blur.
-  // Every iterate is a composition of smooth functions of screen position, so sz is
-  // smooth REGARDLESS of whether the fixed point fully converges — and a smooth sz makes
-  // col, row AND z (hence dist) smooth, so the posterized band edges become smooth CURVES
-  // instead of a tile staircase. Converges to the draped surface on flat/gentle terrain
-  // (clean circles); on sheer 4+ level walls it stays smooth but slightly under-reports
-  // height (a documented, bounded residual — never a step). z/cell above now feed only
-  // the found/off-grid gate.
+  // ==== DEPTH FOG: SMOOTH horizontal distance + HARD elevation EDGE ============
+  // The fog's JOB is to make cliff EDGES readable (maintainer). Two channels, one
+  // cel-snap: (1) a SMOOTH 2D-distance term = flat-ground depth + the max-view cull
+  // (drape reconstruction, zigzag-free); (2) a HARD elevation-difference term that
+  // puts the fog CONTRAST exactly on the drawn cliff TOP edge. Summed, posterized once.
+
+  // (1) SMOOTH HORIZONTAL POSITION. Seed the surface height at the player's own level
+  // (a CONSTANT → exactly smooth in screen space), iterate the anisotropic terrain
+  // blur ×3, take the EXACT iso inverse. scol/srow are smooth screen fields, so their
+  // 2D distance reads as clean concentric bands on flat ground (no per-tile staircase)
+  // and doubles as the far cull. Elevation is handled HARD below — nothing draped.
   float sz = uPlayerZ;
   for (int i = 0; i < 3; i++) {
     float svi = v0 + sz * kk;
     sz = drape(vec2((u + svi) * 0.5, (svi - u) * 0.5));
   }
-  float sv = v0 + sz * kk;           // col+row at the smooth surface height
-  float scol = (u + sv) * 0.5;       // EXACT iso inverse given sz (u, v0 already smooth)
+  float sv = v0 + sz * kk;            // col+row at the smooth surface height
+  float scol = (u + sv) * 0.5;        // EXACT iso inverse (u, v0 already smooth)
   float srow = (sv - u) * 0.5;
-  vec3 d3 = vec3(scol - uPlayerXY.x, srow - uPlayerXY.y, (sz - uPlayerZ) * ZW);
-  float dist = length(d3);
-  // Cel-shade: CLEAR out to FOG_D0 (the near bubble), then snap one step every FOG_DW
-  // cells until full fog — band 0 = clear, band BANDS-1 = full misty. A smooth dist()
-  // alone makes each band edge a smooth curve — do NOT add band-edge AA.
-  float band = clamp(floor((dist - FOG_D0) / FOG_DW) + 1.0, 0.0, BANDS - 1.0);
+  float distH = length(vec2(scol - uPlayerXY.x, srow - uPlayerXY.y)); // 2D only
+  // Same onset/spacing/cull as before: band 1 at FOG_D0, +1 every FOG_DW cells, full
+  // fog (= the max view distance) at FOG_D0 + (BANDS-2)*FOG_DW ≈ 18.3 cells.
+  float distBand = clamp(floor((distH - FOG_D0) / FOG_DW) + 1.0, 0.0, BANDS - 1.0);
+
+  // (2) HARD ELEVATION EDGE — the core goal. Use the march's OWN resolved surface
+  // height z (NOT heightAt(cell)): a cliff-FACE pixel resolves to the HIGH cell, so
+  // heightAt(cell) is constant across the top AND face and only steps at the FOOT —
+  // but z equals the player's integer level exactly on the tread and drops the instant
+  // a pixel is past the lip, so the {z == player level} boundary IS the drawn top edge.
+  // Round the eased fractional player elevation to its LEVEL so a jump/fall can't pulse
+  // the field. abs() ⇒ symmetric both ways (ground below AND a wall above fog the same,
+  // same palette). ceil() with a sub-pixel dead-zone keeps the flat top perfectly clear
+  // (band 0) yet snaps to band ≥1 the first pixel past the lip — the contrast lands ON
+  // the edge at ANY range (NOT gated by the near bubble). z is constant across same-level
+  // ground, so this adds ZERO contour on flats: it can't recreate the flat-ground zigzag.
+  float pLev = floor(uPlayerZ + 0.5);              // player LEVEL (anti-shimmer)
+  float dLev = abs(pLev - z);                      // levels of separation
+  float elevBand = ceil(dLev * ELEV_STEP - ELEV_EPS); // 0 on the tread, ≥1 past the lip
+
+  // COMBINE + CEL-SNAP. Additive (NOT max) so a mid-range edge ALWAYS adds its step on
+  // top of a nonzero distance band — exactly the "can't see the edge behind a cliff"
+  // case. On the player's own level elevBand == 0 → pure smooth distance depth.
+  float band = clamp(distBand + elevBand, 0.0, BANDS - 1.0);
   float bf = band / (BANDS - 1.0);
   float a = bf * FOG_MAX * uFog;
   if (a <= 0.002) { gl_FragColor = vec4(0.0); return; }
