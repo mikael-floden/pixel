@@ -810,25 +810,34 @@ uniform vec2  uPlayerXY;  // the local player's cell (col, row)
 uniform float uFog;       // master strength 0..1 (0 = pass outputs nothing)
 uniform float uFlip;
 uniform sampler2D uHeight;
+uniform sampler2D uHeightL; // terrain height, LINEAR — smooth (bilinear) sampling
 
-// Tunables (named consts). DISTANCE FOG, CEL-SHADED (maintainer's idea): every
-// ground pixel is fogged by its 3D distance to the player, with the ELEVATION
-// axis STRETCHED (a level jump "counts as longer" than a horizontal step, ZW>HW)
-// so cliffs separate hard while flat ground fades slowly. That distance is
-// POSTERIZED into snappy bands — the reference forest's cel-shaded depth, tones
-// that "suddenly snap". SAME treatment up and down (distance is symmetric): a
-// cliff N levels above and a valley N below land on the SAME band + tone. Doubles
-// as a MAX VIEW DISTANCE (a natural handle for future network cull radius).
+// Tunables (named consts). TRUE 3D DISTANCE FOG, CEL-SHADED (maintainer's idea):
+// every ground pixel is fogged by its 3D distance to the player in (col,row,LEVEL)
+// — a SPHERE, so on flat ground the bands read as circles/ovals but where the
+// terrain rises or drops the contour WARPS over it (respects Z). The surface
+// height is sampled SMOOTHLY (bilinear uHeightL) so terraces RAMP instead of
+// stepping — that (plus rebuilding col/row FROM the smooth height, since screen u/v
+// are already smooth) is what keeps the sphere clean, no per-tile zigzag. Distance
+// POSTERIZED into snappy cel bands (teal FOG_NEAR → pale misty FOG_FAR). Symmetric
+// in z, so a cliff N up and a valley N down land on the SAME band. Doubles as a
+// MAX VIEW DISTANCE (a handle for future network cull radius).
 const vec3  FOG_NEAR = vec3(0.30, 0.52, 0.50); // first band: teal
 const vec3  FOG_FAR  = vec3(0.72, 0.88, 0.90); // farthest band: pale misty cyan
-const float VIEW   = 14.0;  // iso-cells (screen units) to the farthest/full band
+const float VIEW   = 16.0;  // cells (3D) to the farthest/full band = sphere radius
 const float BANDS  = 6.0;   // cel-shade steps — band 0 is the clear near bubble
+const float ZW     = 1.0;   // distance per elevation LEVEL vs per horizontal cell
 const float FOG_MAX = 0.78; // opacity of the farthest band (the cull edge)
 
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
   return texture2D(uHeight, uv).r * 255.0 / 16.0;
+}
+// Smooth (bilinear) terrain height — terraces ramp, no per-tile steps.
+float heightSoft(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
+  return texture2D(uHeightL, cr / vec2(uIsoB.y, uIsoB.z)).r * 255.0 / 16.0;
 }
 
 void main() {
@@ -865,19 +874,22 @@ void main() {
   }
   if (!found) { gl_FragColor = vec4(0.0); return; }
 
-  // Distance measured in SCREEN space, centred on the player's DRAWN position, so
-  // the bands are smooth concentric OVALS (a ground circle under the iso squish) —
-  // NOT the jagged grid contour that measuring in (col,row,level) produced. There,
-  // a raised tile is DRAWN shifted up-screen but its distance came from its flat
-  // cell, and the level term was discrete per tile — both pinned the band edge to
-  // the tile/level staircase (the zigzag). Here z STILL counts (a raised tile sits
-  // higher on screen ⇒ farther ⇒ more fog) but SMOOTHLY, and ≈ equal to x/y (one
-  // level's lift ≈ one cell's screen span). Normalise by ISO_DX/ISO_DY (uIsoA.zw)
-  // so a screen circle reads as the wide iso oval.
-  float ppx = uIsoA.x + (uPlayerXY.x - uPlayerXY.y + 1.0) * uIsoA.z;
-  float ppy = uIsoA.y + (uPlayerXY.x + uPlayerXY.y) * uIsoA.w - uPlayerZ * uIsoB.x;
-  vec2 ds = vec2((wx - ppx) / uIsoA.z, (wy - ppy) / uIsoA.w);
-  float dist = length(ds);
+  // TRUE 3D distance to the player. Rebuild this pixel's world position (col,row,z)
+  // from the SMOOTH surface height: screen u & v0 are already smooth, so taking the
+  // height from the bilinear map (heightSoft) — instead of the hard per-tile resolve
+  // — makes col, row AND z all smooth. Result: a real SPHERE that warps over the
+  // terrain (respects Z) yet never staircases (the old zigzag was the hard per-tile
+  // height stepping the distance). Symmetric in z, weighted ZW per level.
+  // Height field: bilinear (smooth) on tops so terraces RAMP, but the resolved z
+  // (which ramps DOWN a cliff face) wherever a face is lower than the smooth top —
+  // min() gives a CONTINUOUS surface across the whole staircase (top→riser→top),
+  // so no per-tile step and faces aren't faceted flat.
+  float sz = min(heightSoft(cell), z);
+  float sv = v0 + sz * kk;           // col+row at that smooth height
+  float scol = (u + sv) * 0.5;
+  float srow = (sv - u) * 0.5;
+  vec3 d3 = vec3(scol - uPlayerXY.x, srow - uPlayerXY.y, (sz - uPlayerZ) * ZW);
+  float dist = length(d3);
   // Cel-shade: snap the distance into BANDS steps that "suddenly snap" (band 0 is
   // the clear near bubble; the farthest band is full misty).
   float t = clamp(dist / VIEW, 0.0, 1.0);
@@ -1057,6 +1069,7 @@ export class NightLights {
       uFog: { type: "1f", value: 0 },
       uFlip: { type: "1f", value: 1 },
       uHeight: { type: "sampler2D", value: null },
+      uHeightL: { type: "sampler2D", value: null },
     });
     this.base = new Phaser.Display.BaseShader("night-lights", FRAG, undefined, {
       uCam: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
@@ -1202,6 +1215,8 @@ export class NightLights {
       .setOrigin(0, 0)
       .setVisible(false);
     s.setSampler2D("uHeight", "world-heightmap");
+    if (this.scene.textures.exists("world-heightmap-linear"))
+      s.setSampler2D("uHeightL", "world-heightmap-linear", 1);
     s.setRenderToTexture(key);
     this.depthFogShader = s;
     const old = this.depthFogOverlay!.texture.key;

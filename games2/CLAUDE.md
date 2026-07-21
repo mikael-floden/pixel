@@ -570,40 +570,35 @@ visible head/shoulders are ABOVE the surface).
 - Always-night per-pixel shader: MULTIPLY overlay; per-pixel surface resolve
   (cell + height) → point lights with attenuation, LOS cast shadows, Lambert
   face gating with penumbras at both ends of every wall band.
-- **DEPTH-FOG — cel-shaded DISTANCE fog** (`DEPTHFOG_FRAG`, maintainer: "make it
-  easier to see the different ground levels"): a THIRD, always-on NORMAL-blend
-  overlay. Every ground pixel is fogged by its distance to the local player,
-  measured in **SCREEN space** — from the player's DRAWN position (derived in-shader
-  from `uPlayerXY` cell + `uPlayerZ` level via the iso projection), normalised by
-  `ISO_DX`/`ISO_DY`. This gives smooth concentric **ovals** (a ground circle under
-  the iso squish). CRUCIAL: do NOT measure in (col,row,level) grid space — a raised
-  tile is DRAWN shifted up-screen while its grid distance came from its flat cell,
-  and the level term is discrete per tile, so the band edge pinned to the tile/level
-  staircase = a bad ZIGZAG (maintainer flagged it, expecting a clean oval). In screen
-  space elevation STILL counts (a raised tile sits higher on screen ⇒ farther ⇒ more
-  fog) but SMOOTHLY, and ≈ equal to x/y (one level's ~lh lift ≈ one cell's screen
-  span). Distance is POSTERIZED into `BANDS` snappy cel steps (teal `FOG_NEAR` → pale
-  misty `FOG_FAR`); band 0 is a clear near bubble, `VIEW` the full-fog radius — so it
-  doubles as a **MAX VIEW DISTANCE** (a handle for future network cull radius).
-  The distance is POSTERIZED into `BANDS` snappy cel-shaded steps (the reference
-  forest's depth that "suddenly snaps"), coloured along ONE cool palette (`FOG_NEAR`
-  teal → `FOG_FAR` pale misty cyan). Distance is symmetric in z (dz²), so a cliff N
-  levels ABOVE and a valley N BELOW land on the SAME band + tone (maintainer: "4 and
-  6 the same, 3 and 7 the same" — treat up/down equal, NOT inverted colours; and NOT
-  the earlier darken-above, which flattened dark cliffs at night). Band 0 is a clear
-  near bubble; `VIEW` is the radius to the farthest/full band — so it doubles as a
-  **MAX VIEW DISTANCE** (a natural handle for future network cull radius). Uses the
-  SAME exact surface resolve as the light + mist passes (saves the resolved `cell`
-  for the horizontal term). Composited at depth **900_000.2** — ABOVE the multiply
-  light overlay (900_000) but BELOW the tap marker (900_000.5) and the lit avatar
-  copies (900_001): it fogs the WORLD, never the characters. Dims with the night but
-  floored so the bands still read in the dark. Master strength `nightlight.fogStrength`
-  (0 = off = instant rollback); tune/QA via `__ml.depthFog(strength?, testZ?, testCol?,
-  testRow?)` (testZ/testCol/testRow plant a virtual player anywhere headlessly — the
-  fog radiates from it). Pairs with the maps agent never placing same-tile-vs-same-
-  tile across a hidden downslope. Regression: `scripts/verify-depthfog.mjs`. All
-  tunables (`VIEW`/`BANDS`/`ZW`/`HW`/`FOG_MAX`/`FOG_NEAR`/`FOG_FAR`) are named GLSL
-  consts at the top of `DEPTHFOG_FRAG`.
+- **DEPTH-FOG — cel-shaded 3D-SPHERE distance fog** (`DEPTHFOG_FRAG`, maintainer:
+  "make it easier to see the different ground levels"): a THIRD, always-on NORMAL-
+  blend overlay. Every ground pixel is fogged by its TRUE 3D distance to the player
+  in `(col,row,level)` — a SPHERE, so flat ground reads as circles/ovals but where
+  the terrain rises/drops the contour WARPS over it (respects Z; `ZW` weights a level
+  vs a horizontal cell — 1 = equal). Symmetric in z. The whole trick to a SMOOTH
+  sphere (no per-tile ZIGZAG — the long saga): rebuild this pixel's world pos from a
+  SMOOTH height, not the hard resolve. `sz = min(heightSoft(cell), z)` — `heightSoft`
+  is the bilinear (LINEAR) terrain map so terrace TOPS ramp instead of stepping, and
+  `min` with the resolved per-pixel `z` keeps cliff FACES ramping down (not faceted
+  flat); then `col,row` are rebuilt from `sz` (screen `u`/`v0` are already smooth, so
+  a smooth height ⇒ smooth col/row/z ⇒ smooth distance). Residual stepping only
+  survives at genuine occlusion silhouettes (a tall wall's top edge over the far
+  ground behind it) and on EXTREME multi-level vertical walls (each column a distinct
+  cell) — real terraces/slopes are clean. HISTORY of rejected tries: grid distance
+  with hard z = pervasive zigzag; pure SCREEN-space distance = smooth but a FLAT oval
+  that ignored Z ("I wanted a sphere, not a circle"); darken-above = flattened dark
+  cliffs at night; inverted up/down colours = wrong (treat up/down EQUAL). Distance
+  POSTERIZED into `BANDS` snappy cel steps (teal `FOG_NEAR` → pale misty `FOG_FAR`);
+  band 0 a clear near bubble, `VIEW` the full-fog radius — doubles as a **MAX VIEW
+  DISTANCE** (future network cull handle). Composited at depth **900_000.2** — ABOVE
+  the multiply light overlay but BELOW the tap marker (900_000.5) and lit avatar
+  copies (900_001): fogs the WORLD, never the characters. Dims with night, floored so
+  bands read in the dark. Master strength `nightlight.fogStrength` (0 = off = instant
+  rollback); tune/QA via `__ml.depthFog(strength?, testZ?, testCol?, testRow?)` (plants
+  a virtual player anywhere headlessly — the fog radiates from it). Pairs with the maps
+  agent never placing same-tile-vs-same-tile across a hidden downslope. Regression:
+  `scripts/verify-depthfog.mjs`. Tunables `VIEW`/`BANDS`/`ZW`/`FOG_MAX`/`FOG_NEAR`/
+  `FOG_FAR` are named GLSL consts atop `DEPTHFOG_FRAG`.
 - **Two geometries, never merge them**: `world-heightmap` (NEAREST) holds
   TERRAIN levels only and drives the resolve + wall-face classification;
   `world-heightmap-linear` (LINEAR) holds terrain + solid objects and drives
