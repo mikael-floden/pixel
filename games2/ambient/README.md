@@ -130,6 +130,46 @@ HudBar rebuilds on re-joins, so the runtime re-injects on a poll). QA
 probe: `__mlAmbient.demo(name? | null)` — `"auto"`/`"none"`/a feature
 name, or null = auto.
 
+## Toggling effects independently (compatibility)
+
+Effects toggle **on/off on their own** (maintainer 2026-07-19): several
+COMPATIBLE effects can run at once, but an effect **can't be switched on while
+an incompatible one is active**. Two modes (`runtime/toggles.ts`):
+
+- **AUTO** — the director rolls episodes + fields self-gate (the game's default
+  living behaviour).
+- **MANUAL** — a SET of enabled effects drives everything; enabled fields are
+  forced on, enabled episodes activated, everything else off, director parked.
+  Any per-effect toggle leaves AUTO; `auto(true)` returns (and clears the set).
+
+Each feature declares `conflicts: string[]` (default = compatible with
+everything — the goal is to play many at once). The runtime makes it symmetric
+(`conflictClosure`). Current conflicts (day/night "same-role" pairs):
+
+| Pair | Why |
+|------|-----|
+| `birds` ⟷ `bats` | day vs night sky creatures |
+| `fireflies` ⟷ `pollen` | day vs night floating motes |
+
+`water`, `thunder`, `sandstorm`, `leaves` are compatible with **everything**.
+(Rain "one-at-a-time" is the games agent's WEATHER system — a single index —
+not an ambient toggle.)
+
+**API for the Settings UI** (the games-ui agent builds the switches on these;
+all on `window.__mlAmbient`):
+
+- `effects()` → `[{ name, kind:"field"|"episode", conflicts:[…], on, enabled,
+  blocked }]`. `on` = running now; `enabled` = manually switched on; `blocked`
+  = the enabled effect that forbids switching this one on (grey the switch and
+  say why), else `null`.
+- `toggle(name)` / `setEnabled(name, on)` → `{ ok, blockedBy }`. Enabling is
+  REFUSED (no state change) when `blockedBy` names an active conflict.
+- `auto(on?)` → get/set AUTO vs MANUAL (returns the mode).
+- `compatible(a, b)` → boolean (symmetric).
+
+The Settings **"ambient"** button (above) still works — it's a thin cursor over
+this same controller (AUTO / NONE / solo-each).
+
 ## Current features
 
 | Folder | Kind | Feeling | Likeliness / active when |

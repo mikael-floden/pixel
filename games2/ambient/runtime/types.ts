@@ -80,6 +80,13 @@ export interface AmbientFeature {
    * (fireflies by day, pollen at night), so "select fireflies" actually
    * shows fireflies. The player's own time-of-day still grades the lighting. */
   setForced?(on: boolean): void;
+  /** Effects this one CANNOT run alongside (maintainer 2026-07-19: toggle each
+   * effect on/off independently, but an effect can't be enabled while an
+   * incompatible one is active). Default = compatible with everything (the
+   * goal is to play many at once). Declared one-directionally; the runtime
+   * makes it symmetric (conflictClosure). Reasonable conflicts are day/night
+   * "same-role" pairs — birds⟷bats (sky creatures), fireflies⟷pollen (motes). */
+  conflicts?: string[];
 }
 
 export const PHASE_NIGHT = 0;
@@ -88,6 +95,23 @@ export const PHASE_DAY = 2;
 export const PHASE_EVENING = 3;
 export const WEATHER_CLEAR = 0;
 export const WEATHER_CLOUDY = 1;
+
+/** Build the SYMMETRIC conflict map from features' one-directional `conflicts`
+ * lists: name → set of effect names it can't be active WITH. A UI can then
+ * check either direction. Anything not listed is compatible with everything. */
+export function conflictClosure(features: AmbientFeature[]): Map<string, Set<string>> {
+  const m = new Map<string, Set<string>>();
+  const link = (a: string, b: string) => {
+    if (!m.has(a)) m.set(a, new Set());
+    m.get(a)!.add(b);
+  };
+  for (const f of features)
+    for (const c of f.conflicts ?? []) {
+      link(f.name, c);
+      link(c, f.name);
+    }
+  return m;
+}
 
 export function defaultEnv(): AmbientEnv {
   // Default to a clear full day: with no probes nothing glows oddly, and

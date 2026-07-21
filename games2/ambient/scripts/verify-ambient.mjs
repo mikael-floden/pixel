@@ -141,15 +141,16 @@ try {
   if (todAfter !== todBefore) fail(`demo must NOT change time-of-day (${todBefore} -> ${todAfter})`);
   else ok(`demo leaves time-of-day alone (stayed ${todAfter})`);
 
-  // Demo thunder: episode pinned on, fields suppressed (solo).
-  const dirDemo = await page.evaluate(() => window.__mlAmbient.director());
-  if (dirDemo.pinned !== "thunder" || dirDemo.active !== "thunder")
-    fail(`demo(thunder) must pin thunder (got ${JSON.stringify(dirDemo)})`);
+  // Demo thunder (solo): the thunder episode is ON, fields suppressed. (Manual
+  // mode drives episodes directly now, so the DIRECTOR is parked, not pinned.)
+  const thEff = await page.evaluate(() => window.__mlAmbient.effects().find((e) => e.name === "thunder"));
+  if (!thEff || !thEff.on || !thEff.enabled)
+    fail(`demo(thunder) must switch thunder on (got ${JSON.stringify(thEff)})`);
   await page.waitForTimeout(3500);
   const ffSolo = await dbg("fireflies");
   if (!ffSolo.suppressed || ffSolo.gain > 0.15)
     fail(`demoing thunder must suppress fireflies (suppressed=${ffSolo.suppressed}, gain ${ffSolo.gain.toFixed(2)})`);
-  else ok("solo: fireflies suppressed while thunder is selected");
+  else ok("solo: thunder on, fireflies suppressed");
 
   // Demo a FIELD (fireflies): FORCED on at full regardless of the daytime
   // env gate, episodes quiet — "select fireflies" actually shows fireflies.
@@ -194,6 +195,38 @@ try {
   if (lvd.count < 3) fail(`leaves must be falling (${lvd.count})`);
   if ((lvd.resting ?? 0) < 1) fail(`some leaves must LAND and rest on the ground (resting ${lvd.resting} of ${lvd.count})`);
   else ok(`leaves fall + land: ${lvd.falling} falling, ${lvd.resting} resting, ${lvd.fading} fading`);
+
+  // ---- per-effect toggles + compatibility (maintainer 2026-07-19): play
+  // several compatible effects at once; block incompatible ones ----
+  await page.evaluate(() => window.__mlAmbient.demo("none")); // clean manual slate
+  const en1 = await page.evaluate(() => window.__mlAmbient.toggle("water")); // universal
+  const en2 = await page.evaluate(() => window.__mlAmbient.toggle("birds")); // compatible w/ water
+  if (!en1.ok || !en2.ok) fail(`water+birds must both enable (got ${JSON.stringify([en1, en2])})`);
+  const batTry = await page.evaluate(() => window.__mlAmbient.toggle("bats")); // conflicts birds
+  if (batTry.ok || batTry.blockedBy !== "birds")
+    fail(`bats must be BLOCKED while birds is on (got ${JSON.stringify(batTry)})`);
+  const eff = await page.evaluate(() => window.__mlAmbient.effects());
+  const onNames = eff.filter((e) => e.on).map((e) => e.name).sort();
+  if (!(onNames.includes("water") && onNames.includes("birds") && !onNames.includes("bats")))
+    fail(`expected water+birds ON, bats OFF (got ${onNames.join(",")})`);
+  const batsSwitch = eff.find((e) => e.name === "bats");
+  if (batsSwitch.blocked !== "birds") fail(`bats switch must report blocked-by birds (got ${JSON.stringify(batsSwitch)})`);
+  else ok(`toggles: multiple compatible ON (${onNames.join("+")}), bats blocked by birds`);
+  // Turn birds off → bats frees up.
+  await page.evaluate(() => window.__mlAmbient.setEnabled("birds", false));
+  const batNow = await page.evaluate(() => window.__mlAmbient.toggle("bats"));
+  if (!batNow.ok) fail(`bats must enable once birds is off (got ${JSON.stringify(batNow)})`);
+  else ok("toggles: bats frees up once birds is switched off");
+  // compatible() helper: water universal; the two day/night pairs exclusive.
+  const comp = await page.evaluate(() => ({
+    waterBats: window.__mlAmbient.compatible("water", "bats"),
+    waterLeaves: window.__mlAmbient.compatible("water", "leaves"),
+    birdsBats: window.__mlAmbient.compatible("birds", "bats"),
+    ffPollen: window.__mlAmbient.compatible("fireflies", "pollen"),
+  }));
+  if (!comp.waterBats || !comp.waterLeaves || comp.birdsBats || comp.ffPollen)
+    fail(`compatible() wrong: ${JSON.stringify(comp)}`);
+  else ok("compatible(): water universal; birds/bats + fireflies/pollen exclusive");
 
   // AUTO shows the LIVE active effect: at night with nothing pinned,
   // fireflies self-gate on and the label reports "auto (fireflies)".

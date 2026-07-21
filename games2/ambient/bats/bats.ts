@@ -144,6 +144,7 @@ export function batsFeature(): AmbientFeature {
   return {
     name: "bats",
     preferred: { time: PHASE_NIGHT, weather: WEATHER_CLEAR },
+    conflicts: ["birds"], // night vs day sky creatures — never both
     weight(env) {
       // Smooth between the maintainer's two anchors: night ×1, day ×0.01.
       return BASE_WEIGHT * (DAY_MULT + (1 - DAY_MULT) * env.night);

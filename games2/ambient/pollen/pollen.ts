@@ -76,6 +76,7 @@ export function pollenFeature(): AmbientFeature {
   return {
     name: "pollen",
     preferred: { time: PHASE_DAY, weather: WEATHER_CLEAR },
+    conflicts: ["fireflies"], // day/night floating-mote pair — one at a time
     init(ctx) {
       ensureTexture(ctx.scene);
     },

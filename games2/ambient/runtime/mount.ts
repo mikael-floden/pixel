@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { AmbientCtx, AmbientEnv, AmbientFeature, defaultEnv } from "./types";
 import { sampleEnv } from "./env";
 import { Director } from "./director";
+import { Toggles } from "./toggles";
 import { Demo } from "./demo";
 import { DemoButton } from "./hudbutton";
 
@@ -29,7 +30,8 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       zoom: 1,
     };
     const director = new Director(features);
-    const demo = new Demo(features, director);
+    const toggles = new Toggles(features, director);
+    const demo = new Demo(features, toggles);
     const demoButton = new DemoButton(demo);
     let inited = false;
     let envAge = ENV_SAMPLE_MS; // sample on the first tick
@@ -93,6 +95,32 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
         demoButton.sync();
         return label;
       },
+      // ---- per-effect toggles (the games-ui agent builds the Settings
+      // switches on these; see ambient/README.md "Toggling effects") ----
+      // Every effect + its live state for rendering switches: { name, kind,
+      // conflicts, on, enabled, blocked }. `blocked` = the enabled effect that
+      // forbids switching this one on (grey the switch), else null.
+      effects: () => toggles.effects(),
+      // Flip one effect. Enabling is REFUSED (no state change) when an
+      // incompatible effect is active — returns { ok, blockedBy }.
+      toggle: (name: string) => {
+        const r = toggles.toggle(name);
+        demoButton.sync();
+        return r;
+      },
+      setEnabled: (name: string, on: boolean) => {
+        const r = toggles.setEnabled(name, on);
+        demoButton.sync();
+        return r;
+      },
+      // AUTO (director rolls) vs MANUAL (the enabled set drives). No arg reads.
+      auto: (on?: boolean) => {
+        if (on !== undefined) toggles.setAuto(on);
+        demoButton.sync();
+        return toggles.getMode();
+      },
+      // Can two effects run together? (symmetric)
+      compatible: (a: string, b: string) => toggles.compatible(a, b),
       weights: (envOverride?: Partial<AmbientEnv>) => {
         const env = { ...ctx.env, ...envOverride };
         const out: Record<string, number> = {};

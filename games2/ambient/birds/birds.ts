@@ -208,6 +208,7 @@ export function birdsFeature(): AmbientFeature {
   return {
     name: "birds",
     preferred: { time: PHASE_DAY, weather: WEATHER_CLEAR },
+    conflicts: ["bats"], // day vs night sky creatures — never both
     weight(env) {
       return BASE_WEIGHT * (NIGHT_MULT + (1 - NIGHT_MULT) * env.sun);
     },
