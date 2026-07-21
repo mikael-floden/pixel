@@ -144,7 +144,7 @@ class Island:
         self._connect_all()                       # ramps within banks + bridges across gorge
         camera_monotone(self.level, self.mat)     # backstop the ramps
         self._materials()
-        self._place_bridges([0.44, 0.66, 0.85])   # deliberate stone bridges over the gorge
+        self._place_bridges(count=3)              # deliberate stone bridges over the gorge
         self._pick_spawn()
         self._paint()
         self.deck_at = {(x, y): dk for dk in self.decks for (x, y) in dk["cells"]}
@@ -339,18 +339,20 @@ class Island:
                 continue
             return
 
-    def _place_bridges(self, y_fracs):
-        """Deliberate stone bridges spanning the central gorge — the crossings the
-        player uses instead of the long way round. At each row, find the main river
-        channel nearest screen-centre and lay a stone deck (world@2) + a walk link
-        across it at bank height (water passes beneath)."""
+    def _place_bridges(self, count=3):
+        """Deliberate STONE BRIDGES (world@2 decks) across the gorge — the crossings
+        the player uses. THE GAP FIX: a bridge is placed only where the two banks sit
+        at the SAME level (+-1), and the deck is set to that level, so BOTH ends meet
+        their bank within one step (walkable). No `max(bank)` deck floating above a
+        low far bank. The deck also LAPS one cell onto each bank so it physically
+        abuts walkable ground on both sides. Water still passes beneath."""
         n = self.n
         riverw = (self.mat == "clear_water") & self.land
-        for yf in y_fracs:
-            cy = int(n * yf)
+
+        def channel(cy):
             xs = sorted(x for x in range(n) if riverw[cy, x])
             if not xs:
-                continue
+                return None
             runs, cur = [], [xs[0]]
             for x in xs[1:]:
                 if x == cur[-1] + 1:
@@ -359,18 +361,41 @@ class Island:
                     runs.append(cur); cur = [x]
             runs.append(cur)
             run = min(runs, key=lambda r: abs((r[0] + r[-1]) / 2 - n / 2))
-            x0, x1 = run[0], run[-1]
-            if x0 - 1 < 0 or x1 + 1 >= n or not self.land[cy, x0 - 1] or not self.land[cy, x1 + 1]:
+            return run[0], run[-1]
+
+        cands = []
+        for cy in range(int(n * 0.30), int(n * 0.92)):
+            ch = channel(cy)
+            if not ch:
                 continue
-            if self.mat[cy, x0 - 1] == "clear_water" or self.mat[cy, x1 + 1] == "clear_water":
+            x0, x1 = ch
+            if x0 - 1 < 0 or x1 + 1 >= n:
                 continue
-            blv = max(int(self.level[cy, x0 - 1]), int(self.level[cy, x1 + 1]), 2)
+            la, lb = self.mat[cy, x0 - 1], self.mat[cy, x1 + 1]
+            if la in ("", "clear_water") or lb in ("", "clear_water"):
+                continue
+            va, vb = int(self.level[cy, x0 - 1]), int(self.level[cy, x1 + 1])
+            width = x1 - x0 + 1
+            if abs(va - vb) <= 1 and 1 <= width <= 12:       # LEVEL-MATCHED banks only
+                cands.append((width, cy, x0, x1, min(va, vb)))
+        cands.sort()                                          # narrowest crossings first
+        chosen = []
+        for c in cands:
+            if all(abs(c[1] - ch[1]) > 10 for ch in chosen):  # spread out along the gorge
+                chosen.append(c)
+            if len(chosen) >= count:
+                break
+
+        for _w, cy, x0, x1, dlv in chosen:
+            # deck at dlv (== the lower bank), lapping one cell onto EACH bank so both
+            # ends abut walkable ground within one step; middle spans the water.
             cells = [(x, y) for x in range(x0 - 1, x1 + 2) for y in (cy - 1, cy, cy + 1)
                      if 0 <= y < n]
-            self.decks.append({"kind": "bridge", "mat": "stone_mountain", "level": blv,
+            self.decks.append({"kind": "bridge", "mat": "stone_mountain", "level": dlv,
                                "thickness": 1, "cells": cells})
             for y in (cy - 1, cy, cy + 1):
-                self.links.append(((x0 - 1, y), (x1 + 1, y)))
+                if 0 <= y < n:
+                    self.links.append(((x0 - 1, y), (x1 + 1, y)))
             self.reserved.update(cells)
 
     def _merge_ramp(self, main, cands):
