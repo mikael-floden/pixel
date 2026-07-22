@@ -703,23 +703,35 @@ export class WorldScene extends Phaser.Scene {
     });
     const releaseHold = (p: Phaser.Input.Pointer) => {
       if (p.id !== this.holdPointerId) return;
-      // Commit the final finger position even if the budget deferred it, then
-      // land the beacon on the trip's TRUE end (the finger point clearance-
-      // adjusted out of solids — they can differ while dragging).
-      this.holdRepathAt = 0;
-      this.holdRepath(performance.now());
-      if (this.trip && this.tapMarker) {
-        const e = this.trip.target;
-        const pr = this.projectFlat(e.x, e.y);
-        // Lift the beacon onto the tapped surface — a deck target sits at its
-        // deck level (projectFlat returns the lower BASE level).
-        this.tapMarker.setPosition(pr.x, pr.y - Math.max(pr.lvl, this.trip.goalLevel ?? 0) * MAP_GEOMETRY.lh);
-      }
-      this.holdPointerId = null;
-      this.holdGround = null;
+      this.commitReleaseHold();
     };
     this.input.on("pointerup", releaseHold);
     this.input.on("pointerupoutside", releaseHold);
+    // WEDGE-PROOFING (maintainer: tap racing the join/reconnect → the player
+    // runs to the stale point forever and NO new tap registers — pointerdown
+    // ignores everything while holdPointerId is set). The scene's pointerup
+    // can be swallowed: a DOM overlay (loading screen, reconnect toast, HUD)
+    // racing the gesture, or an OS touchcancel Phaser doesn't re-emit. Listen
+    // at the WINDOW in capture phase — the DOM's ground truth about fingers —
+    // and heal: all fingers up → commit the release exactly like pointerup
+    // would have; a NEW first finger while a stale hold is armed → drop the
+    // stale hold so the fresh tap (dispatched right after capture) wins.
+    // (The frame-loop isDown self-heal in predictAndSend covers the paths
+    // where Phaser itself processed the loss.)
+    const touchAllUp = (e: TouchEvent) => {
+      if (this.holdPointerId !== null && e.touches.length === 0) this.commitReleaseHold();
+    };
+    const touchFresh = (e: TouchEvent) => {
+      if (this.holdPointerId !== null && e.touches.length === 1) this.dropHold();
+    };
+    window.addEventListener("touchend", touchAllUp, { capture: true, passive: true });
+    window.addEventListener("touchcancel", touchAllUp, { capture: true, passive: true });
+    window.addEventListener("touchstart", touchFresh, { capture: true, passive: true });
+    this.events.once("shutdown", () => {
+      window.removeEventListener("touchend", touchAllUp, { capture: true } as any);
+      window.removeEventListener("touchcancel", touchAllUp, { capture: true } as any);
+      window.removeEventListener("touchstart", touchFresh, { capture: true } as any);
+    });
 
     // Chat: Enter opens the input; while typing, Phaser keyboard is disabled so
     // movement keys don't leak through, and re-enabled when the box closes.
@@ -1129,6 +1141,22 @@ export class WorldScene extends Phaser.Scene {
       swimming: () => !!this.room?.state.players.get(this.room!.sessionId)?.swimming,
       myDispDir: () => this.avatars.get(this.room?.sessionId ?? "")?.dispDir ?? null,
       swimT: () => this.avatars.get(this.room?.sessionId ?? "")?.swimT ?? 0,
+      // Hold-gesture/trip state — QA for the wedged-hold self-heal (a swallowed
+      // pointerup must not leave holdPointerId armed forever).
+      holdInfo: () => ({
+        held: this.holdPointerId,
+        ground: this.holdGround ? [this.holdGround.x, this.holdGround.y] : null,
+        trip: this.trip ? { x: this.trip.target.x, y: this.trip.target.y } : null,
+        marker: !!this.tapMarker,
+      }),
+      // QA-only: arm the exact WEDGED hold state a swallowed release leaves
+      // behind (hold keyed to a pointer slot that is not down, stale ground
+      // point at flat world (x,y)) — the frame-loop self-heal must clear it.
+      wedgeHold: (x: number, y: number) => {
+        this.holdPointerId = 1;
+        this.holdGround = { x, y, lvl: this.terrain ? levelAtWorld(this.terrain, x, y) : 0 };
+        this.holdRepathAt = 0;
+      },
       swimDebug: () => {
         const av = this.avatars.get(this.room?.sessionId ?? "");
         if (!av) return null;
@@ -1829,6 +1857,14 @@ export class WorldScene extends Phaser.Scene {
         av.wasFalling = false; // a teleport landing must not swallow the next fall grunt
         av.exitJumpUntil = 0; // a teleport cancels any in-progress leap-out
         av.spdWu = undefined; // a teleport is not a speed sample
+        // A respawn/teleport also cancels MY tap trip + hold gesture: the
+        // autopilot must never run the player back toward the pre-jump target
+        // (maintainer: after respawn she ran straight back to the stale
+        // tapped point and wedged again).
+        if (id === myId && (this.trip || this.holdPointerId !== null)) {
+          this.clearMoveTarget();
+          this.dropHold();
+        }
       } else {
         const px0 = av.lx;
         const py0 = av.lyFlat;
@@ -2501,6 +2537,16 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private predictAndSend(dt: number) {
+    // Self-heal a wedged hold gesture: if Phaser's own pointer slot says the
+    // finger is no longer down but the scene never got its pointerup (overlay
+    // races, touchcancel), the hold would otherwise persist forever — every
+    // new tap ignored and the stale ground point re-arming the trip each
+    // frame (the "runs to the same spot and gets stuck" report). Drop it
+    // WITHOUT the release commit: the ground point is stale by definition.
+    if (this.holdPointerId !== null) {
+      const held = this.input.manager.pointers.find((pt) => pt.id === this.holdPointerId);
+      if (!held || !held.isDown) this.dropHold();
+    }
     const k = this.keys;
     let ax = (down(k.D) || down(k.RIGHT) ? 1 : 0) - (down(k.A) || down(k.LEFT) ? 1 : 0);
     let ay = (down(k.S) || down(k.DOWN) ? 1 : 0) - (down(k.W) || down(k.UP) ? 1 : 0);
@@ -2601,6 +2647,32 @@ export class WorldScene extends Phaser.Scene {
    * pathological drag (sealed target → exhaustive search, ~20-40ms) backs
    * off by itself. Skipped while keyboard movement is active (keys win) and
    * when the finger rests on the player/current target. */
+  /** Forget the hold gesture WITHOUT committing a final replan — for healing a
+   * wedged hold (stale ground point) and for teleport/respawn cancels. */
+  private dropHold() {
+    this.holdPointerId = null;
+    this.holdGround = null;
+    this.holdRepathAt = 0;
+  }
+
+  /** Normal end-of-hold: commit the final finger position even if the budget
+   * deferred it, land the beacon on the trip's TRUE end (the finger point
+   * clearance-adjusted out of solids — they can differ while dragging), then
+   * forget the gesture. Shared by the scene pointerup and the window-capture
+   * touch healers so both paths behave identically. */
+  private commitReleaseHold() {
+    this.holdRepathAt = 0;
+    this.holdRepath(performance.now());
+    if (this.trip && this.tapMarker) {
+      const e = this.trip.target;
+      const pr = this.projectFlat(e.x, e.y);
+      // Lift the beacon onto the tapped surface — a deck target sits at its
+      // deck level (projectFlat returns the lower BASE level).
+      this.tapMarker.setPosition(pr.x, pr.y - Math.max(pr.lvl, this.trip.goalLevel ?? 0) * MAP_GEOMETRY.lh);
+    }
+    this.dropHold();
+  }
+
   private holdRepath(nowMs: number) {
     if (this.holdPointerId === null || !this.holdGround || this.keysActive) return;
     if (nowMs < this.holdRepathAt) return;

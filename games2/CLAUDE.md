@@ -839,6 +839,21 @@ visible head/shoulders are ABOVE the surface).
   used to vanish (maintainer) — the dark outline carries the shape on
   bright terrain, the glow carries it in the dark. Probes: `__ml.tapTo`, `__ml.target`,
   `__ml.path`, `__ml.navLog`, `__ml.gridAround`, `__ml.pickAt`.
+  **WEDGE-PROOFED HOLDS**: pointerdown ignores new touches while `holdPointerId`
+  is armed, so a swallowed release (DOM overlays — loading screen/reconnect
+  toast — racing the gesture, or an OS touchcancel Phaser doesn't re-emit)
+  used to wedge the client permanently: the stale `holdGround` re-armed the
+  trip every frame (player "runs to the tapped spot and gets stuck", respawn
+  ran straight BACK to it) and every new tap was ignored (maintainer report).
+  Three healing layers, all funnelling into `dropHold()`/`commitReleaseHold()`:
+  (1) frame-loop self-heal in `predictAndSend` — hold armed but Phaser's
+  pointer slot no longer down → drop (no final commit: the ground point is
+  stale); (2) window-CAPTURE touchend/touchcancel (all fingers up → commit the
+  release exactly like pointerup) and touchstart (fresh first finger while a
+  stale hold is armed → drop, letting the new tap win); (3) a teleport/respawn
+  snap cancels MY trip + hold outright — never run back toward the pre-jump
+  target. Probes: `__ml.holdInfo()`, `__ml.wedgeHold(x,y)` (QA: arm the wedged
+  state); gate: `scripts/verify-tapwedge.mjs` (dev stack, mouse pipeline).
 
 ## Audio (games2/composer — the games-audio agent's module)
 
