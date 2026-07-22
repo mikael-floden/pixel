@@ -94,27 +94,41 @@ Enforce it in code (`pipeline/autotile.py`):
     gated Δ4 above the maze cap 12.
   - **Maze** tiers are `{0,4,12}` — deltas mostly Δ4, sometimes Δ8, rarely Δ12 (dramatic cliffs,
     no timid Δ2). Winding cliff/water corridors, a river + bridges.
-  - **Ascents** are Trollstigen **switchbacks** (`_carve_switchback`): Z-roads of flat dirt
-    benches joined by up-screen risers (climb only rises away from camera → antitone/legal),
-    preferred by `_merge_ramp` for Δ≥4 cliffs, falling back to the straight spur where a Z
-    won't fit (so the connectivity guarantee holds).
-  - **Material policy — dirt=roads, rock=stairs**: cliff-climbing ramps/switchbacks are
-    `stone_mountain` (`STAIR_MAT`, tracked in `self._ascent`); flat paths are `lightdark_dirt`.
-    No dirt staircases, no dirt borders/collars.
+  - **Trollstigen mountain ROAD** (`_mountain_stairs`→`_climb_hugging`→`_foot_switchback` +
+    `_dirt_roads`): the ascent is a *contour-following* road, not a straight ribbon. `_foot_switchback`
+    HAIRPINS down the sheer toe (short Δ4 rock legs that alternate cardinal — screen-left/right —
+    each widened UP-SCREEN into the hillside so the mountain wall is always uphill and the only fall
+    is toward the camera, with a fattened corner "so two cars can pass"); above the toe short rock
+    ramps cut into each Δ4 cliff at alternating ends. The `_dirt_roads` router then PAVES the benches
+    it crosses (a `PAVE` set: grass/snow/rock/ice→`lightdark_dirt`, but never the rock ascent ramps
+    in `self._ascent`), so the visible road is dirt LEGS curving along the terrace rims joined by rock
+    STAIR ramps — the road bends with the mountain's outline instead of projecting out over low ground.
+  - **Material policy — dirt=road surface, rock=climbing ramps**: cliff-climbing ramps/switchbacks
+    stay `stone_mountain` (`STAIR_MAT`, tracked in `self._ascent`); the flat road surface is
+    `lightdark_dirt`. The road may repaint bench tops to dirt but never a rock ascent cell.
   - **8-direction dirt ROADS** (`_dirt_roads`): an organic meandering, branching network that
     runs in all 8 SCREEN directions — the router (`_road_graph_bfs`) adds grid-diagonal moves
     (which render screen-vertical/horizontal) on flat Δ0 land, each gated by a same-level
     **elbow** cell so the painted road stays 4-connected-walkable; the √2 diagonal weight beats
     the 2.0 cardinal zigzag. Held a **margin** off beach/water and the mountain foot and biased
     to corridor **centres** via a cached `_road_cost_field` (distance fields); trunk
-    spawn→summit + landmark/stair-foot spurs fork at Y-junctions. Mat-only; grass→dirt only.
-  - **Full-height rock Z-stairs** (`_mountain_stairs`/`_climb_corridor`/`_next_bench_step`):
-    a couple of tidy stone Trollstigen ribbons zigzag the whole massif (16→40); the rest of
-    the foot stays a sheer cliff; `_merge_ramp` uses only clean rock connectors otherwise.
-  - **Multi-level water** (`_ponds`/`_tarn`/`_mtn_gorge`): besides the ocean, small **flush**
-    lakes at maze tiers `{4,12}` and mountain benches `{20,24}`, a flush alpine tarn, and an
-    internal mountain **gorge** (descend-then-climb) — all transactional so they never seal a
-    region.
+    spawn→summit + landmark/stair-foot spurs fork at Y-junctions.
+  - **The MOUNTAIN GORGE that cuts the massif in two** (`_mtn_gorge`/`_gorge_channel`): a water
+    channel carved to the LOWEST level (0) straight down the massif. A level-0 slot inside a 40-tall
+    massif is invisible if it runs N–S (the tall east wall sits toward-camera of it), so the channel
+    runs along the grid **(1,1) diagonal** = straight down the screen toward the camera, then keeps
+    flowing through the low toe/maze (`level < 16`) so it exits into the lowland. Then every water
+    cell's toward-camera neighbour is also water — the near wall vanishes and the level-0 surface
+    reads the whole way, visibly splitting the mountain, crossed by a deliberate HIGH (`≥16`) stone
+    bridge (`_bridge_over_gorge`).
+  - **Multi-level water** (`_ponds`/`_tarn`/`_sunken_lagoon`): besides the ocean + the gorge, small
+    **flush** lakes at maze tiers `{4,12}` and mountain benches `{20,24}`, a flush alpine tarn, and a
+    **sunken walk-in lagoon on the mountain snow** (`LAGOON_SITES`, water 2 levels down inside a Δ1
+    walkable rim you descend into) — all transactional so they never seal a region.
+  - **Raised-valley MAZE RIVER** (`_maze_river`, carved AFTER `flatten_shores`): the river runs in a
+    tier-4 valley (shoulders lifted to 4, water cut to 0) so `_place_bridges` spans it with decks that
+    stand a bench ABOVE the water and meet tier-4/12 GROUND on both banks — raised bridges you cross,
+    not flat slabs flush on the water.
   - **Spiky massif**: benches `{16,20,24,28,32,36,40}`, ~10 sharp varied-height peaks with deep
     saddles + camera-fanning grooves → a jagged skyline (max level 40), not a smooth pyramid.
   - **Bigger beaches** + a wide **ocean margin** (`M=24`, `n=248`; island inset via `_coastline`,
