@@ -1196,8 +1196,21 @@ class Island2(Island):
         # Trollstigen. Sand and water are never paved.
         PAVE = ("saturated_grass", "lightdark_dirt", "stone_mountain", "regular_snow",
                 "black_mountain", "crystal_ice")
+        # SCREEN-VERTICAL runs (grid (1,1) steps) must NOT widen: for them the two toward-camera
+        # directions are lateral LEFT and RIGHT, so widening fattened the road on BOTH flanks on
+        # top of the elbow that already doubles it (4 strands ~160px vs the approved 3-strand
+        # ~60px horizontal road — the maintainer's width complaint). The (1,1) chain + its elbow
+        # alone is the slim 2-strand vertical road that matches. Mark chain cells AND elbows.
+        vert = set()
+        for (x, y) in road:
+            if (x + 1, y + 1) in road:
+                for ex, ey in ((x + 1, y), (x, y + 1)):
+                    if (ex, ey) in road:
+                        vert.update(((x, y), (x + 1, y + 1), (ex, ey)))
         wide = set(road)
         for (x, y) in road:
+            if (x, y) in vert:                           # vertical run: elbow IS the width
+                continue
             for i, j in ((1, 0), (0, 1)):                # widen TOWARD CAMERA only
                 xx, yy = x + i, y + j
                 if not (0 <= xx < n and 0 <= yy < n and (xx, yy) in reach
