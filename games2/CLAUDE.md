@@ -658,7 +658,22 @@ visible head/shoulders are ABOVE the surface).
   id); **`ELEV_STEP`** (=1.5) = edge-contrast strength /
   bands per level past the dead-zone; `FOG_D0`/`FOG_DW`/`BANDS` = the horizontal distance
   onset/width/cull; `DRAPE_RS` = flat-ground smoothing; `FOG_MAX`/`FOG_NEAR`/`FOG_FAR` = look.
-- **Two geometries, never merge them**: `world-heightmap` (NEAREST) holds
+- **Bridge underside line = the ground AO seam, NOT the walk** (maintainer
+  2026-07-23): bridges showed a static dark band + hard line on the water in
+  front of every span, identical at all times of day. First theory (phantom
+  wall-face from the resolve) led to a `uDeck` walk-divert that broke the
+  night field into per-cell plates ("chess pattern") — REVERTED; do not
+  re-attempt attribution changes casually. Real cause (maintainer's catch):
+  the night shader's ground-side **ambient-occlusion seam term** reads the
+  up-screen neighbour via `heightAt` (surface map = deck-inflated), so a
+  floating span read as a tall WALL and stamped seam AO on the water. Fix:
+  `baseTerrAt()` — B channel of `world-heightmap-linear` carries the BASE
+  terrain level (never deck-inflated, texel-centre read), and only the AO
+  seam term (+ its CPU sprite twin, `bArr`) uses it. Same packing expression
+  as the surface R ⇒ non-deck cells byte-identical, cliffs stay locked. The
+  faint 1-2px contact edge that remains under spans is the face-sliver
+  attribution — known, subtle, and NOT worth another walk change without a
+  pixel-proven plan.
   TERRAIN levels only and drives the resolve + wall-face classification;
   `world-heightmap-linear` (LINEAR) holds terrain + solid objects and drives
   ONLY the LOS march. A cell's LEVEL is packed into ONE 8-bit channel as

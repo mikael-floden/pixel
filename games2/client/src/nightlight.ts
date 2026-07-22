@@ -196,6 +196,18 @@ float terrHeightSoft(vec2 cr) {
   return (rg.r - rg.g) * 255.0 / uHScale;
 }
 
+// BASE terrain level (B of the linear map): the real ground, NEVER a floating
+// deck slab. Sampled at the texel centre so the bilinear filter returns the
+// exact cell value. The AO seam term must see TERRAIN here — a bridge/roof
+// span floating over open water/air is not a concave corner, and reading the
+// deck-inflated surface height painted a static dark band on the ground in
+// front of every span (maintainer: the underside line was the ground AO).
+float baseTerrAt(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  return texture2D(uHeightL, uv).b * 255.0 / uHScale;
+}
+
 
 
 float heightAt(vec2 cr) {
@@ -413,9 +425,12 @@ void main() {
     vec2 bg = floor(cell);
     float vColLo = 2.0 * bg.x - u;
     float vRowLo = 2.0 * bg.y + u;
-    // Neighbour across the pixel's up-screen cell boundary (terrain heights
-    // only — solid objects are art, they don't create corner seams).
-    float hb = (vColLo >= vRowLo) ? heightAt(bg + vec2(-0.5, 0.5)) : heightAt(bg + vec2(0.5, -0.5));
+    // Neighbour across the pixel's up-screen cell boundary. BASE terrain
+    // heights only: solid objects are art and floating deck slabs are open
+    // air at seam height — neither creates a concave corner, and the deck-
+    // inflated surface read stamped a static dark AO band on the water in
+    // front of every bridge span (same at all times of day).
+    float hb = (vColLo >= vRowLo) ? baseTerrAt(bg + vec2(-0.5, 0.5)) : baseTerrAt(bg + vec2(0.5, -0.5));
     if (hb < 90.0 && hb > z + 0.5) {
       float dBase = max((v0 + z * kk - max(vColLo, vRowLo)) * uIsoA.w, 0.0);
       ao = mix(0.72, 1.0, smoothstep(0.0, 6.0, dBase));
@@ -1141,7 +1156,8 @@ export class NightLights {
   private fieldCount = 0;
   private hArr!: Float32Array; // CPU occlusion heights (terrain + solid objects)
   private pArr!: Float32Array; // CPU prop share (props get their own shade patch)
-  private tArr!: Float32Array; // CPU terrain-only heights (walls/AO seams)
+  private tArr!: Float32Array; // CPU surface heights (terrain or deck slab)
+  private bArr!: Float32Array; // CPU BASE terrain heights (AO seam twin — no decks)
   private oArr!: Uint8Array;   // CPU solid-object flags
   private curLights: ShaderLight[] = [];
   private curStamps: GlowStamp[] = [];
@@ -1414,7 +1430,8 @@ export class NightLights {
    * world-heightmap-linear (LINEAR, drives the LOS march only):
    * R = (terrain + solid)*16 — objects still BLOCK light and cast their
    * soft, bounce-floored shadow. The bilinear read rounds the block into a
-   * plausible blob. */
+   * plausible blob. B = BASE terrain level (never deck-inflated), read at
+   * texel centres by the AO seam term so floating slabs don't fake walls. */
   private buildHeightmap() {
     if (this.scene.textures.exists("world-heightmap")) return;
     const w = this.world.width;
@@ -1435,6 +1452,7 @@ export class NightLights {
     const imgL = ctx.createImageData(w, h); // occlusion (terrain + solids)
     this.hArr = new Float32Array(w * h);
     this.tArr = new Float32Array(w * h);
+    this.bArr = new Float32Array(w * h);
     this.oArr = new Uint8Array(w * h);
     this.pArr = new Float32Array(w * h);
     // Placed props occlude EXACTLY like solid terrain categories: +1 level,
@@ -1497,6 +1515,7 @@ export class NightLights {
         // CPU twin marches LOS only → occlusion heights (solids/props +1).
         this.hArr[r * w + c] = occH;
         this.tArr[r * w + c] = surfL;
+        this.bArr[r * w + c] = cell.l;
         this.oArr[r * w + c] = solid ? 1 : 0;
         this.pArr[r * w + c] = pl;
         img.data[i] = Math.min(255, surfL * hScale);
@@ -1504,6 +1523,12 @@ export class NightLights {
         // G = the prop share: props get their own smooth shade patch while
         // TERRAIN keeps the byte-identical march (cliffs are locked).
         imgL.data[i + 1] = Math.min(255, pl * hScale);
+        // B = the BASE terrain level, never deck-inflated: the AO seam term
+        // reads this (baseTerrAt) so a floating bridge/roof slab doesn't
+        // masquerade as a tall wall next to the ground drawn under it. Same
+        // packing expression as the surface R so non-deck cells stay
+        // byte-identical to what heightAt would have returned.
+        imgL.data[i + 2] = Math.min(255, cell.l * hScale);
         // G flags solid OBJECTS (bush, boulder, tree…): they keep full LOS
         // occlusion — the billboard compromise is for players, who can never
         // stand on these cells.
@@ -1771,11 +1796,13 @@ export class NightLights {
     }
     // Ambient occlusion twin (ground side): a body tucked against a HIGHER
     // terrain wall darkens toward the seam with the ground it stands on.
+    // BASE terrain heights, like the shader's baseTerrAt: a bridge span
+    // overhead is not a wall — swimmers next to it must not phantom-darken.
     {
       const W2 = this.world.width;
       const H2 = this.world.height;
       const tAt = (ci: number, ri: number) =>
-        ci < 0 || ri < 0 || ci >= W2 || ri >= H2 ? 99 : this.tArr[ri * W2 + ci];
+        ci < 0 || ri < 0 || ci >= W2 || ri >= H2 ? 99 : this.bArr[ri * W2 + ci];
       const ci = Math.floor(col);
       const ri = Math.floor(row);
       const vColLo = 2 * ci - (col - row);
