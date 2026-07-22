@@ -6,21 +6,29 @@ Source: client/ui-src/gamepad/stick2-source.png — the 128x128 redraw
 cap on a visible SHAFT standing in a dished socket. Binary alpha, no
 backdrop to key.
 
-The MOVING piece is cap + shaft; the socket dish (with its hole) stays.
-Where they meet everything is near-black, so the split walks each column:
+The MOVING piece is the mushroom CAP ALONE — round 2 of his marks
+(2026-07-23, "You cut the graphics wrong. The red should have been the
+cut"): the red line runs along the cap's underside, so the SHAFT stays
+with the socket. (The green mark on the same screenshot flagged the 1px
+transparent slit of the FIRST preview in the work log — already healed by
+the median pass below; the shipped tiles never had it.)
+
+Where cap and socket meet everything is near-black, so the split walks
+each column:
 
   cap columns (topmost opaque row <= CAP_T): skip the dome's own top
-  outline, run through the cap body, then keep at most CAP_EDGE rows of
-  the underside outline run — deeper black is the socket-hole edge BEHIND
-  the cap and stays with the base (it lands in the Gemini hole anyway).
-  shaft columns (SHAFT_L..SHAFT_R): continue below the cap boundary down
-  to the column's LAST black pixel at or above SHAFT_BOT_MAX — that traces
-  the side outlines, the bottom outline and its corner bevels in one rule;
-  the socket hole's dark interior beside/below the shaft stays base.
+  outline, run through the cap body (median-smoothed against face-speck
+  false stops), then keep at most CAP_EDGE rows of the underside outline
+  run — deeper black is the socket-hole edge BEHIND the cap and stays
+  with the base (it lands in the Gemini hole anyway).
+
+Everything else — dish, hole, AND the shaft standing in it — is the base
+tile; the Gemini fill only has to invent what the cap occludes (the dish
+back rim and the shaft's top).
 
 Outputs (same canvas, so the pieces stack 1:1 like the first-gen split):
-  client/ui-src/gamepad/stick2-top.png          the moving cap+shaft
-  client/ui-src/gamepad/stick2-base-holed.png   the socket, hole exposed
+  client/ui-src/gamepad/stick2-top.png          the moving cap
+  client/ui-src/gamepad/stick2-base-holed.png   shaft + socket, cap hole
 Invariant: top ∪ base == source, byte-exact, zero overlap (asserted).
 """
 
@@ -33,8 +41,6 @@ BASE = "client/ui-src/gamepad/stick2-base-holed.png"
 BLACK_V = 22      # mean-luma below this = outline black
 CAP_T = 58        # columns whose art starts above this row carry the cap
 CAP_EDGE = 2      # underside outline rows the cap keeps per column
-SHAFT_L, SHAFT_R = 49, 78
-SHAFT_BOT_MAX = 86  # the shaft's bottom outline lives at/above this row
 
 
 def main():
@@ -100,15 +106,8 @@ def main():
     for x in cap_cols:
         for y in final_rows[x]:
             top[y][x] = True
-        if SHAFT_L <= x <= SHAFT_R:
-            # the shaft owns everything down to its last outline pixel
-            y0 = final_rows[x][-1] + 1
-            bot = max((yy for yy in range(y0, SHAFT_BOT_MAX + 1) if black(p[x, yy])),
-                      default=None)
-            if bot is not None:
-                for yy in range(y0, bot + 1):
-                    if p[x, yy][3]:
-                        top[yy][x] = True
+        # the SHAFT below the cap boundary stays with the base ("the red
+        # should have been the cut") — nothing more to mark here
 
     # sweep: a tiny stranded island (the cap tips' outline crumbs — nothing
     # sits behind the tips, so "deeper black -> base" leaves floating dots)
