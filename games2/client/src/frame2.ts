@@ -186,6 +186,30 @@ function hGrainAt(d: HDonor, src: ImageData, y: number, i: number): number {
 // shifts by the left insert half; above VCUT1, so no vertical shift.
 const CLOCK_ANCHOR = { x: 385, y: 88 };
 
+// The zodiac CLOCK DISC is its OWN asset now (maintainer 2026-07-22: "the
+// clock should not be part of the frame graphics, but the location is
+// perfect as it is") — scripts/extract-clock.py splits it out of the frame
+// along his red-marked border. /ui2/clock-disc.png is pasted back HERE at
+// load, before compose: the split is a strict partition, so the composed
+// output stays byte-identical to the baked original. The disc sits between
+// the top-rail cuts and above VCUT1, so the compose shifts it exactly like
+// the clock anchor. A future DYNAMIC disc (phases, swaps) would instead
+// blit post-compose at (DISC_POS.x + (insW >> 1), DISC_POS.y).
+const DISC_POS = { x: 217, y: 60 };
+
+function pasteClockDisc(frame: ImageData, disc: ImageData) {
+  const F = frame.data;
+  const D = disc.data;
+  for (let y = 0; y < disc.height; y++) {
+    for (let x = 0; x < disc.width; x++) {
+      const si = (y * disc.width + x) * 4;
+      if (D[si + 3] === 0) continue;
+      const di = ((DISC_POS.y + y) * AW + DISC_POS.x + x) * 4;
+      F[di] = D[si]; F[di + 1] = D[si + 1]; F[di + 2] = D[si + 2]; F[di + 3] = D[si + 3];
+    }
+  }
+}
+
 // ---- interior windows (asset coords, MEASURED off frame.png's alpha) ----
 const RAIL_TOP_Y = 648;                   // rail A's visual top edge (ragged)
 const RAIL_SOLID_Y = 676;                 // inside rail A's full-width-opaque
@@ -546,7 +570,9 @@ export function mountFrame2(onLayout: (l: FrameLayout) => void) {
     Promise.all([
       loadImageData("/ui2/frame.png"),
       loadImageData("/ui2/frame-top-runefree.png"),
-    ]).then(([f, a]) => {
+      loadImageData("/ui2/clock-disc.png"),
+    ]).then(([f, a, d]) => {
+      pasteClockDisc(f, d); // the separated disc, back at its exact spot
       frameData = f;
       auxData = a;
       buildVDonor(VD_GAME, f);
