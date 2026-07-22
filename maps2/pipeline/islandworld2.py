@@ -108,7 +108,7 @@ STAIR_SPACING = 0.16
 TROLL_DROP = 4
 TROLL_WLEG = (3, 2)
 TROLL_QMAX, TROLL_QMIN = 44, 14
-TROLL_QMIN_MINI = 9
+TROLL_QMIN_MINI = 7
 TROLL_PADQ = 4
 # The maintainer's chosen window for the PRIMARY Trollstigen (blue marks, 2026-07-22
 # screenshots): the bench-20/24 south face x~63-89 west of the toe lake. Island fracs,
@@ -177,7 +177,10 @@ class Island2(Island):
         self._troll_raw = {}              # (x,y) -> level as carved (mutation detector)
         self._troll_pads = set()          # hairpin noses: lateral exposure allowed there
         self._troll_ends = []             # (foot, entry) per structure: trunk road via-points
+        self._troll_floor = {}            # (x,y) -> its structure's floor (assert exemption)
+        self._troll_top = {}              # (x,y) -> its structure's TOPL (assert exemption)
         self._troll_fallbacks = 0         # bench climbs that had to use a straight connector
+        self._troll_mini_fail = Counter() # why mini carves bailed (diagnostics)
         self._troll_road = set()          # the PRIMARY structure's BAND cells: the ONLY
                                           # paintable ascent (the secondary stays a grass
                                           # trail; the wall-fill stays grass shoulder)
@@ -557,6 +560,14 @@ class Island2(Island):
                     if m in ("stone_mountain", "black_mountain") and m not in clash:
                         choice = m
                         break
+                # The beach law is ABSOLUTE (no dirt within Chebyshev 2 of sand — build
+                # assert); a deck-clash is only a readability preference. Near sand the
+                # dirt escape is forbidden, so take stone even if it clashes.
+                if choice == "lightdark_dirt" and any(
+                        self.mat[hy + j, hx + i] == "light_sand"
+                        for i in (-2, -1, 0, 1, 2) for j in (-2, -1, 0, 1, 2)
+                        if 0 <= hx + i < self.n and 0 <= hy + j < self.n):
+                    choice = "stone_mountain"
                 self.mat[hy, hx] = choice
                 painted[(hx, hy)] = choice
                 self._linework.add((hx, hy))
@@ -608,7 +619,7 @@ class Island2(Island):
                     best = (key, (hxx, hyy), (lxx, lyy))
         return (best[1], best[2]) if best else None
 
-    def _foot_switchback(self, bx, by, mini=False):
+    def _foot_switchback(self, bx, by, mini=False, floor=None, min_drop=None):
         """TROLLSTIGEN: a wall-hugging stacked-leg switchback down the sheer mountain toe
         (maintainer 2026-07-22, spelled out after every straight staircase failed him):
         the legs run ALONG the cliff and at every turn the slope MIRRORS and continues one
@@ -642,13 +653,16 @@ class Island2(Island):
             if (p + q) % 2:
                 return False
             x, y = cellpq(p, q)
-            return (0 <= x < n and 0 <= y < n and self.upper[y, x]
+            return (0 <= x < n and 0 <= y < n
+                    and (self.upper[y, x] or mini)
+                    and (x, y) not in self._troll
                     and self.mat[y, x] not in ("", "clear_water")
                     and int(self.level[y, x]) >= TOPL)
 
         # -- rim contour: the outermost wall p-layer per screen-horizontal column q --
         start = next((p for p in range(P0 + 4, P0 - 5, -1) if is_wall(p, Q0)), None)
         if start is None:
+            self._troll_mini_fail["rim"] += 1
             return None
         rimp = {Q0: start}
         for dq in (1, -1):
@@ -664,10 +678,11 @@ class Island2(Island):
 
         win = None
         for wleg in TROLL_WLEG:                   # wide road first, then narrower
-            win = self._troll_window(rimp, cellpq, TOPL, Q0, wleg, mini)
+            win = self._troll_window(rimp, cellpq, TOPL, Q0, wleg, mini, floor)
             if win:
                 break
         if not win:
+            self._troll_mini_fail["window"] += 1
             return None
         qa, qb, FLOOR, entry_right = win
         qs = list(range(qa, qb + 1))
@@ -743,7 +758,7 @@ class Island2(Island):
                     continue
                 for wx, wy in ((cx2 - 1, cy2), (cx2, cy2 - 1)):
                     if ((wx, wy) in carved or not (0 <= wx < n and 0 <= wy < n)
-                            or self.mat[wy, wx] in ("", "clear_water")
+                            or self.mat[wy, wx] in ("", "clear_water", "light_sand")
                             or (wx, wy) in self.reserved):
                         continue
                     if int(self.level[wy, wx]) < lv - 1:
@@ -759,6 +774,8 @@ class Island2(Island):
             self.reserved.add((x, y))
             self._ascent.add((x, y))
             self._troll.add((x, y))
+            self._troll_floor[(x, y)] = FLOOR
+            self._troll_top[(x, y)] = TOPL
         self._troll_raw.update(carved)            # as-carved levels (debug/verify probes)
         if not mini and not self._troll_road:     # first TOE carve = the anchored PRIMARY; only
             # its BAND cells are the paintable road — the wall-fill stays grass shoulder
@@ -782,7 +799,7 @@ class Island2(Island):
                 for pp, qq in ((p + 1, q + 1), (p + 1, q - 1)):
                     x, y = cellpq(pp, qq)
                     if (0 <= x < n and 0 <= y < n and (x, y) not in carved
-                            and self.mat[y, x] not in ("", "clear_water")
+                            and self.mat[y, x] not in ("", "clear_water", "light_sand")
                             and (x, y) not in self.reserved
                             and abs(int(self.level[y, x]) - carved[c]) <= 1):
                         landed = (x, y)
@@ -805,10 +822,10 @@ class Island2(Island):
     def _troll_apron_ok(self, xy, floor):
         x, y = xy
         return (0 <= x < self.n and 0 <= y < self.n
-                and self.mat[y, x] not in ("", "clear_water")
+                and self.mat[y, x] not in ("", "clear_water", "light_sand")
                 and (x, y) not in self.reserved and int(self.level[y, x]) == floor)
 
-    def _troll_window(self, rimp, cellpq, TOPL, Q0, wleg, mini=False):
+    def _troll_window(self, rimp, cellpq, TOPL, Q0, wleg, mini=False, floor=None):
         """Best contiguous q-window along the rim for a Trollstigen: smooth contour
         (|d rimp| <= 2 per column), a clean UNIFORM low apron deep enough for the whole
         stack in every column, and a bench cell at exactly TOPL at one end (the entry,
@@ -827,7 +844,7 @@ class Island2(Island):
                     continue
                 x, y = cellpq(p, q)
                 if not (0 <= x < n and 0 <= y < n
-                        and self.mat[y, x] not in ("", "clear_water")
+                        and self.mat[y, x] not in ("", "clear_water", "light_sand")
                         and (x, y) not in self.reserved):
                     break
                 lv = int(self.level[y, x])
@@ -840,21 +857,24 @@ class Island2(Island):
             # a MINI climbs exactly one Δ4 bench (its apron IS the next bench down);
             # the TOE descends the full face onto the low maze floor.
             accept = (fl is not None and uniform
-                      and ((fl == TOPL - 4) if mini
+                      and ((fl == floor) if floor is not None
+                           else (fl == TOPL - 4) if mini
                            else (fl <= 4 and TOPL - fl >= 2 * TROLL_DROP)))
             if accept:
                 nl = max(2, -(-(TOPL - fl) // TROLL_DROP))
-                if maxd >= nl * wleg + 2:
+                if maxd >= nl * wleg + (1 if mini else 2):
                     ok[q], floor_of[q] = True, fl
 
         def entry_at(q, right):
-            # the entry must sit INBOARD of the wall: the rim continues 2 columns past it
-            # (an entry at a rim corner leaves the road's first cells with floor behind).
+            # the entry must sit INBOARD of the wall: the rim continues past it (an entry
+            # at a rim corner leaves the road's first cells with floor behind). Minis
+            # tolerate a 1-level rim step (auto-jump) and 1 column of continuation.
             step = 1 if right else -1
-            if q + step not in rimp or q + 2 * step not in rimp:
+            deep = 1 if mini else 2
+            if any(q + k * step not in rimp for k in range(1, deep + 1)):
                 return False
             x, y = cellpq(rimp[q], q)
-            return int(self.level[y, x]) == TOPL
+            return TOPL <= int(self.level[y, x]) <= TOPL + (1 if mini else 0)
 
         qmin = TROLL_QMIN_MINI if mini else TROLL_QMIN
         runs, cur = [], []
@@ -907,9 +927,15 @@ class Island2(Island):
             # crossed connector ramps are gone). The straight connector remains only as a
             # last-resort fallback so the summit can never be disconnected.
             if self._foot_switchback(hxx, hyy, mini=True) is None:
-                self._troll_fallbacks += 1
-                if not self._carve_connector(hxx, hyy, lxx, lyy):
-                    break
+                alt = self._lateral_cliff_step(cx, cy, L, -side)
+                done = (alt is not None
+                        and self._foot_switchback(alt[0][0], alt[0][1], mini=True) is not None)
+                if done:
+                    (hxx, hyy), (lxx, lyy) = alt
+                else:
+                    self._troll_fallbacks += 1
+                    if not self._carve_connector(hxx, hyy, lxx, lyy):
+                        break
             cx, cy = hxx, hyy                            # now on bench L+4
             side = -side                                # alternate the hairpin end
         return True
@@ -953,9 +979,22 @@ class Island2(Island):
                 chosen.append((hx, hy))
         self._stairs_done = True
 
+    def _fill_traps(self, max_iter=40):
+        """Override: after the parent's flush-raise of sealed pockets, any SAND lifted off
+        the shore stops being beach (sand is a SHORE material — at altitude it violates
+        the beach laws: dirt-distance, rock collar). Raised sand becomes grass terrace."""
+        super()._fill_traps(max_iter)
+        lifted = (self.mat == "light_sand") & (self.level >= 3)
+        self.mat[lifted] = "saturated_grass"
+
     def _merge_ramp(self, main, cands):
-        """Post-stairs mop-up: connect residual pockets with short ROCK straight connectors,
-        least-intrusive first (away from the pristine foot). Never carves a new switchback."""
+        """Post-stairs mop-up: connect residual pockets with MINI-TROLLSTIGENS (maintainer
+        2026-07-23: "this was your goal — remove the need for a traditional staircase";
+        the zigzag system is THE way up every elevation, maze tiers included). For each
+        candidate edge, carve a mini from the HIGH rim down to the LOW side's exact floor.
+        The straight _carve_connector survives only as a counted last resort — and the
+        build asserts the count stays ZERO, so a resistant pocket fails loudly instead of
+        shipping a staircase."""
         edges = []
         n = self.n
         for cand in cands:
@@ -975,7 +1014,9 @@ class Island2(Island):
                     edges.append(((is_foot, drop), hi, lo))
         edges.sort(key=lambda e: e[0])
         for _key, hi, lo in edges:
-            if self._carve_connector(*hi, *lo):
+            fl = int(self.level[lo[1], lo[0]])
+            if self._foot_switchback(hi[0], hi[1], mini=True, floor=fl,
+                                     min_drop=2) is not None:
                 return True
         return False
 
@@ -2226,11 +2267,24 @@ def build(out=None, seed=21, M=24):
     assert d._troll, "no Trollstigen was carved (toe descent missing)"
     hug_bad = []
     for (x, y) in d._troll - d._troll_pads:
+        lv_ = int(d.level[y, x])
+        if lv_ <= d._troll_floor.get((x, y), -1) or lv_ >= d._troll_top.get((x, y), 99):
+            continue        # flush with a natural tier (entry/landing) = ordinary ground;
+                            # the strict only-outward law governs the ELEVATED ramp between
         for wx, wy in ((x - 1, y), (x, y - 1)):
             if not (0 <= wx < n and 0 <= wy < n) or d.mat[wy, wx] in ("", "clear_water") \
                     or int(d.level[wy, wx]) < int(d.level[y, x]) - 1:
                 hug_bad.append((x, y, wx, wy))
     assert not hug_bad, f"Trollstigen hug broken (inward drop) at {hug_bad[:6]}"
+
+    # NO TRADITIONAL STAIRCASES (maintainer 2026-07-23: "this was your goal — remove the
+    # need for a traditional staircase up towards high elevations"): every ascent cell
+    # belongs to a Trollstigen; a straight _carve_connector may not ship.
+    straight = d._ascent - d._troll
+    assert not straight, \
+        f"traditional staircase cells remain ({len(straight)}): {sorted(straight)[:5]}"
+    assert d._troll_fallbacks == 0, \
+        f"{d._troll_fallbacks} straight-connector fallback(s) used"
 
     print(f"the_island2 {n}x{n} (M={M}): {len(d.props)} props; max level {int(d.level.max())}; "
           f"switchbacks {d._nswitch}/{STAIR_CORRIDORS} corr; ascent {len(d._ascent)}; road {len(d.roads)}")
