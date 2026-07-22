@@ -5,6 +5,41 @@ with specifically-named ground types and first-class transitions) and produces
 **worlds** under `maps2/worlds/<name>/`. Built to support **several** maps —
 test maps for evaluating tiles + (eventually) the one production world.
 
+## Releasing — deploy YOURSELF, always push to `main`
+
+**`main` is the release channel.** The game reads worlds from the repo at
+runtime and every push to `main` under `maps2/**` auto-deploys nangijala.online
+(`.github/workflows/nangijala-deploy.yml`). Work on a side branch is invisible
+to the game — a map change is only "delivered" when it's on `main` (learned the
+hard way 2026-07-22: v6 sat on a session branch while the maintainer waited).
+
+The deploy ships only if games2's `test` job is green. For a maps2 push the only
+gate that normally trips is **`check-surfaces`**: a world uses a tile category
+with no gameplay classification, so prod silently stays on the previous map.
+**Standing authorisation from the game agent (2026-07-22, runbook
+`games2/SURFACES.md`, confirmed on the coordination board): fix it yourself —
+never wait.** The recipe:
+
+1. `cd games2 && npx tsx scripts/check-surfaces.mjs` — prints the flagged
+   categories with a ready-to-paste proposal (same output as the red CI log).
+2. Add one line per category to `SURFACES` in **`games2/shared/src/surfaces.ts`**
+   — the ONLY games2 file we may edit. You decide the shape: standable ground
+   (`ground(speed, "sound")`), swimmable water, `solid` object, or
+   `stairs: true` ramp. Append near similar entries, don't reflow.
+3. `cd games2 && npm ci && npm run typecheck && npm test` — must be GREEN.
+   **Never push red** — a red push blocks every domain's deploy.
+4. Commit + push to `main` (rebase on reject). That re-triggers the deploy and
+   prod rolls forward with the world + the entry together.
+5. Conflict in `surfaces.ts`? Keep both sides' new entries (it's a plain map).
+
+Even better: when adopting a brand-new tiles2 material, ask tiles2 to classify
+it at creation (`python coordination/board.py post maps2 --to tiles2 --text
+"classify <cat> please"`) so the gate never goes red — but don't block on them.
+
+If a **different** gate fails (navigation sim, `check-deckwalk`, a unit test),
+that's a real defect in the map (walled-in spawn, deck with no entry, …): fix it
+HERE in maps2 — do not touch anything else under `games2/`.
+
 ## Elevation & occlusion rules — ALWAYS apply when shaping terrain
 
 Read this every time, the same way you always run the transition auto-tiler.
