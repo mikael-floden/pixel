@@ -1145,6 +1145,11 @@ export class WorldScene extends Phaser.Scene {
         return {
           dir,
           swimT: av.swimT,
+          // Render lift QA (elevated-pool float): elev must settle at the
+          // POOL surface (surfLevel·lh) − swimDrop, not at absolute −swimDrop.
+          elev: av.elev,
+          lyFlat: av.lyFlat,
+          ly: av.ly,
           L: toScreen(s.lx, s.ly),
           R: toScreen(s.rx, s.ry),
           frame: { cutX: sp.frame.cutX, cutY: sp.frame.cutY, cutW: sp.frame.cutWidth, cutH: sp.frame.cutHeight, realW: sp.frame.realWidth, realH: sp.frame.realHeight },
@@ -1777,9 +1782,12 @@ export class WorldScene extends Phaser.Scene {
       const g = this.projectFlat(tx, ty);
       // Swimming FLOAT depth: while over water the fall settles BELOW the
       // surface so this direction's shoulder waterline lands at the water
-      // level — the feet sink `swimDrop` px under. Falling in from a ledge
-      // then submerges progressively (gravity carries the body through the
-      // surface) and STOPS (buoyancy) at the shoulder line. swimDir = the
+      // level — the feet sink `swimDrop` px under THE POOL'S OWN surface
+      // (surfLevel·lh): an elevated mountain lagoon floats you at ITS rim, not
+      // at sea level (the old absolute -swimDrop target sank a level-4 pool's
+      // swimmer 4 whole levels — she vanished into the cliff). Falling in from
+      // a ledge still submerges progressively (gravity carries the body through
+      // the surface) and STOPS (buoyancy) at the shoulder line. swimDir = the
       // DISPLAYED facing, so the waterline matches the drawn frame.
       const swimming = !!player.swimming;
       av.swimming = swimming;
@@ -1795,7 +1803,7 @@ export class WorldScene extends Phaser.Scene {
       }
       // world@2: lift by the SURFACE level (deck when standing on it, else base),
       // not the cell's base level — so a player on the roof/bridge draws up there.
-      const targetElev = swimming ? -swimDrop : surfLevel * MAP_GEOMETRY.lh;
+      const targetElev = surfLevel * MAP_GEOMETRY.lh - (swimming ? swimDrop : 0);
       // JUMP OUT of the water, don't teleport: reaching land from a swim means
       // the feet must rise ~swimDrop back to the surface. Ease that rise over a
       // short arc + a hop so it reads as leaping out instead of snapping up.
@@ -1889,8 +1897,12 @@ export class WorldScene extends Phaser.Scene {
 
       // Submerge amount: 0 = feet at the surface, 1 = shoulders at the surface
       // (fully floating). Tied to how far the fall has sunk the feet below the
-      // surface, so a ledge drop submerges progressively then floats.
-      av.swimT = swimDrop > 0 ? Math.max(0, Math.min(1, -av.elev / swimDrop)) : swimming ? 1 : 0;
+      // POOL'S OWN surface (surfLevel·lh — not absolute 0, or an elevated
+      // lagoon would read as instantly/never submerged), so a ledge drop
+      // submerges progressively then floats.
+      av.swimT = swimDrop > 0
+        ? Math.max(0, Math.min(1, (surfLevel * MAP_GEOMETRY.lh - av.elev) / swimDrop))
+        : swimming ? 1 : 0;
 
       // Jump hop: a short parabola driven by the synced `jumping` flag —
       // RISING-EDGE triggered. Re-arming whenever the flag was still true

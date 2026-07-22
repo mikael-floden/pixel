@@ -226,11 +226,17 @@ visible head/shoulders are ABOVE the surface).
   dot markers); committed in `data/waterlines.json`, merged by build-manifest
   (override wins; `shoulderLine()` silhouette auto-detect is the fallback for
   un-annotated characters). Regenerate the manifest after editing waterlines.
-- FLOAT: for a water cell the fall target is `-swimDrop` (feet sink below the
-  surface so the shoulder line lands at `av.ly`). The existing gravity fall
-  carries the body THROUGH the surface and STOPS (buoyancy) at the shoulder
-  line — so dropping in from a ledge submerges progressively. `swimT` (0..1) =
-  `-elev/swimDrop` drives the clip: it raises the cut from the FEET (just
+- FLOAT: for a water cell the fall target is `surfLevel·lh − swimDrop` — the
+  feet sink `swimDrop` px below the POOL'S OWN surface so the shoulder line
+  lands at the water level. RELATIVE to the pool, never absolute: water can sit
+  at any elevation (the_island2's plateau lagoons are level-4+ `clear_water`),
+  and the original absolute `-swimDrop` target sank an elevated pool's swimmer
+  the whole pool height below its surface (maintainer: "lowered too low when
+  walking into the water"; for level-0 seas the two are identical). The
+  existing gravity fall carries the body THROUGH the surface and STOPS
+  (buoyancy) at the shoulder line — so dropping in from a ledge submerges
+  progressively. `swimT` (0..1) = `(surfLevel·lh − elev)/swimDrop` (same
+  pool-relative basis) drives the clip: it raises the cut from the FEET (just
   entered) to the SHOULDERS (afloat).
 - CLIP: `updateWaterClip` builds a geometry mask ABOVE the waterline and applies
   it to the base sprite AND its lit night-copy. The waterline is a shallow
