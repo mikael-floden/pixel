@@ -87,9 +87,15 @@ WANDER_AMP = 0.9
 ROAD_MAGNET = 1.2          # pull a new spur onto the existing road -> tight Y-merges
 ROAD_ATTRACT_R = 2
 
-# Sunken walk-in lagoon (water 2 levels down, walkable Δ1 shore).
-LAGOON_SITES = [(0.20, 0.66), (0.26, 0.80), (0.14, 0.58)]
+# Sunken walk-in lagoon (water 2 levels down, walkable Δ1 shore) — on the MOUNTAIN snow.
+LAGOON_SITES = [(0.36, 0.17), (0.44, 0.14), (0.30, 0.22), (0.52, 0.16), (0.24, 0.30)]
 LAGOON_RW = 2
+
+# Mountain gorge: a WIDE water channel carved to the LOWEST level (0) straight down the massif,
+# running toward the camera so its water surface reads the whole way (each water cell's toward-
+# camera neighbour is water, never a wall) — the channel that "cuts the mountain in two", crossed
+# by deliberate HIGH stone bridges. GORGE_HALF sets the half-width (a width-(2*half+1) trench).
+GORGE_HALF = 2
 
 
 class Island2(Island):
@@ -406,56 +412,115 @@ class Island2(Island):
                     q.append((xx, yy))
         return out
 
-    def _lateral_cliff_step(self, cx, cy, L, side):
-        """Over the bench reachable from (cx,cy) at level L, find the L->L+4 cliff whose foot
-        `lo` sits at the FAR lateral end in screen-x direction `side` (key=side*(lxx-lyy)); its
-        up-screen neighbour `hi` is the next bench (L+4). Alternating `side` makes each leg run
-        the full bench width -> long screen-horizontal legs. Returns ((hx,hy),(lx,ly)) or None."""
+    def _cut_stair(self, x, y, orient, commit=True):
+        """Cut ONE mountain-HUGGING staircase INTO a cliff edge at a convex corner of the high
+        bench, so it reads as a Trollstigen ledge notched into the rock — never a free-standing
+        ramp. The staircase drops Δ1 per cell TOWARD the camera; the up-screen row/col stays the
+        high WALL (uphill), the toward-camera row/col stays the low bench (the SINGLE fall side),
+        and the +camera end sits at a corner so nothing taller is toward-camera of any step.
+          orient 'H': edge runs along a row; low bench is toward +y; stair descends along row y
+                      climbing in -x; wall on row y-1; drop on row y+1; corner needs (x+1,y) low.
+          orient 'V': mirror — low bench toward +x; stair along col x climbing -y; wall on col
+                      x-1; drop on col x+1; corner needs (x,y+1) low.
+        Returns the TOP (high-bench) cell, or None if a clean legal run isn't available."""
         n = self.n
-        best = None
-        for (lxx, lyy) in self._flood_bench(cx, cy, L):
-            if (lxx, lyy) in self.reserved:
+        du = (-1, 0) if orient == 'H' else (0, -1)        # up-screen climb (into the bench)
+        lo = (0, 1) if orient == 'H' else (1, 0)          # toward-camera drop side
+        wl = (0, -1) if orient == 'H' else (-1, 0)        # up-screen wall side
+        H = int(self.level[y, x])
+        lx, ly = x + lo[0], y + lo[1]                     # the low bench just toward camera
+        if not (0 <= lx < n and 0 <= ly < n) or self.mat[ly, lx] in ("", "clear_water"):
+            return None
+        L = int(self.level[ly, lx])
+        if H - L < 2:
+            return None
+        # convex corner: the toward-camera continuation of the edge (the +cam end) must be low
+        cx0, cy0 = x - du[0], y - du[1]                   # +camera end (before the run starts)
+        if 0 <= cx0 < n and 0 <= cy0 < n and self.mat[cy0, cx0] not in ("", "clear_water") \
+                and int(self.level[cy0, cx0]) > L + 1:
+            return None                                   # something tall is toward-camera -> lip
+        cells = []
+        for k in range(H - L):                            # levels L+1 .. H along the edge run
+            cx, cy = x + du[0] * k, y + du[1] * k
+            lv = L + 1 + k
+            if not (0 <= cx < n and 0 <= cy < n):
+                return None
+            if (cx, cy) in self.reserved or self.mat[cy, cx] in ("", "clear_water"):
+                return None
+            if int(self.level[cy, cx]) != H:              # the carved run must be the high-bench edge
+                return None
+            wx, wy = cx + wl[0], cy + wl[1]               # uphill wall
+            if not (0 <= wx < n and 0 <= wy < n) or int(self.level[wy, wx]) < lv:
+                return None
+            dx2, dy2 = cx + lo[0], cy + lo[1]             # drop side must stay <= this step (legal)
+            if not (0 <= dx2 < n and 0 <= dy2 < n) or self.mat[dy2, dx2] in ("", "clear_water") \
+                    or int(self.level[dy2, dx2]) > lv:
+                return None
+            cells.append((cx, cy, lv))
+        if not commit:
+            return cells[-1][:2]
+        for (cx, cy, lv) in cells:
+            self.level[cy, cx] = lv
+            self.mat[cy, cx] = STAIR_MAT
+            self.upper[cy, cx] = False
+            self.reserved.add((cx, cy))
+            self._ascent.add((cx, cy))
+        self._nswitch += 1
+        return cells[-1][:2]
+
+    def _cut_next(self, cx, cy, maxr=60):
+        """From the bench reached at (cx,cy), flood it and cut the NEAREST clean hugging stair up
+        the next cliff (either orientation). Nearest-first keeps the corridor tight; the flat
+        bench between stairs is the long sideways traverse. Returns the new top or None."""
+        n = self.n
+        L = int(self.level[cy, cx])
+        bench = self._flood_bench(cx, cy, L)
+        cand = []
+        for (x, y) in bench:
+            if (x, y) in self.reserved:
                 continue
-            for i, j in ((-1, 0), (0, -1)):          # up-screen (higher) neighbour
-                hxx, hyy = lxx + i, lyy + j
-                if not (0 <= hxx < n and 0 <= hyy < n):
+            for orient, up in (('H', (0, -1)), ('V', (-1, 0))):   # cell just up-screen = high bench
+                ux, uy = x + up[0], y + up[1]
+                if not (0 <= ux < n and 0 <= uy < n):
                     continue
-                if not (self.upper[hyy, hxx] and self.mat[hyy, hxx] != "clear_water"):
+                if not (self.upper[uy, ux] and self.mat[uy, ux] not in ("", "clear_water")):
                     continue
-                if int(self.level[hyy, hxx]) != L + 4 or (hxx, hyy) in self.reserved:
+                if int(self.level[uy, ux]) <= L + 1:
                     continue
-                key = side * (lxx - lyy)
-                if best is None or key > best[0]:
-                    best = (key, (hxx, hyy), (lxx, lyy))
-        return (best[1], best[2]) if best else None
+                if self._cut_stair(ux, uy, orient, commit=False) is not None:
+                    cand.append(((x - cx) ** 2 + (y - cy) ** 2, ux, uy, orient))
+        cand.sort()
+        for _d, ux, uy, orient in cand:
+            top = self._cut_stair(ux, uy, orient)
+            if top is not None:
+                return top
+        return None
 
     def _climb_hugging(self, hx, hy, lx, ly):
-        """A mountain-HUGGING ascent: a foot ramp (bench 16 -> maze), then bench-by-bench a SHORT
-        rock ramp cut into each Δ4 cliff at ALTERNATING lateral ends. The benches themselves are
-        the long screen-horizontal LEGS — each ramp has the higher bench as an uphill WALL and
-        drops one bench toward camera (the single fall direction): a Trollstigen read, no holes,
-        no free-standing ribbon. Only the ramps are carved (rock); the summit is reached bench
-        by bench (else _connect_all/_fill_traps finish reachability, as before)."""
-        if not self._carve_connector(hx, hy, lx, ly):   # foot ramp: bench16 -> maze foot
+        """A mountain-HUGGING ascent (Trollstigen): a chain of short rock staircases each NOTCHED
+        into a cliff edge (via _cut_stair), climbing bench by bench from the maze foot to the
+        summit. Every stair has the mountain as its up-screen WALL and a single drop toward the
+        camera — no free-standing ribbon, no holes on both sides. The flat benches between the
+        stairs are the long sideways legs. _connect_all/_fill_traps finish residual reachability."""
+        up = (hx - lx, hy - ly)                          # maze foot -> mountain (up-screen)
+        if up not in ((-1, 0), (0, -1)):
             return False
-        self.road_feet.append((lx, ly))                 # dirt spur leads to the stair foot
-        self._nswitch += 1
-        cx, cy = hx, hy
-        side = 1
-        top = int(BENCHES.max())
-        for _ in range(len(BENCHES)):
-            L = int(self.level[cy, cx])
-            if L >= top:
+        self.road_feet.append((lx, ly))                  # a dirt spur leads to the stair foot
+        orient = 'H' if up == (0, -1) else 'V'
+        top = self._cut_stair(hx, hy, orient)            # foot stair: maze -> mountain foot bench
+        if top is None:
+            top = self._cut_next(lx, ly)                 # fall back to the nearest clean corner
+            if top is None:
+                return False
+        summit = int(BENCHES.max())
+        cx, cy = top
+        for _ in range(4 * len(BENCHES)):
+            if int(self.level[cy, cx]) >= summit:
                 break
-            step = self._lateral_cliff_step(cx, cy, L, side)
-            if step is None:
+            nxt = self._cut_next(cx, cy)
+            if nxt is None:
                 break
-            (hxx, hyy), (lxx, lyy) = step
-            if not self._carve_connector(hxx, hyy, lxx, lyy):
-                break
-            cx, cy = hxx, hyy                            # now on bench L+4
-            side = -side                                # alternate the hairpin end
-            self._nswitch += 1
+            cx, cy = nxt
         return True
 
     def _mountain_stairs(self, k=STAIR_CORRIDORS):
@@ -634,20 +699,23 @@ class Island2(Island):
         return False
 
     def _mtn_gorge(self):
-        """A PROMINENT DEEP water gorge down the massif spine (bring back The Island 1's mountain
-        gorge). Carved AFTER camera_monotone so the banks keep full bench height = a deep canyon;
-        the downstream _connect_all/_merge_span/_place_bridges reconnect the flanks, and
-        _bridge_over_gorge lays a deliberate high stone bridge you stand on. Water at level 0 is
+        """The water channel that CUTS THE MOUNTAIN IN TWO (The Island 1's gorge, per the user's
+        red mark): a WIDE trench carved to the LOWEST level (0) straight down the massif spine.
+        Carved AFTER camera_monotone (banks keep full bench height = sheer canyon walls) and
+        BEFORE _connect_all, so the flanks are reconnected by the downstream machinery and by the
+        deliberate HIGH stone bridges (_bridge_over_gorge). It runs TOWARD the camera the whole
+        way, so every water cell's toward-camera neighbour is water (never a wall) -> the water
+        surface reads all the way down instead of hiding behind the massif. Level-0 water is
         occlusion-legal (different material + a >10 fog-exempt drop)."""
         PATH = [self._to_grid(fx, fy) for fx, fy in
-                ((0.50, 0.04), (0.49, 0.12), (0.485, 0.20), (0.485, 0.28))]
-        chan = self._gorge_channel(PATH, wob_amp=4, half=1, straight=(0.14, 0.26))
+                ((0.50, 0.03), (0.49, 0.11), (0.485, 0.19), (0.485, 0.27), (0.48, 0.35))]
+        chan = self._gorge_channel(PATH, wob_amp=4, half=GORGE_HALF, straight=(0.12, 0.30))
         if len(chan) < 12:
             self._gorge_cells = set()
             return
         for (x, y) in chan:
             self.mat[y, x] = "clear_water"
-            self.level[y, x] = 0
+            self.level[y, x] = 0                     # lowest level: water cuts clean through
         self._gorge_cells = chan
 
     def _gorge_channel(self, PATH, wob_amp=4, half=1, straight=None):
@@ -779,11 +847,12 @@ class Island2(Island):
 
     def _try_lagoon(self, tx, ty, rw):
         n = self.n
+        zone = self.maze | self.upper          # a lagoon may sit on the mountain OR in the maze
         lo, hi = self.M + rw + 2, n - self.M - rw - 2
         best = None
-        for y in range(max(lo, ty - 18), min(hi, ty + 19)):
-            for x in range(max(lo, tx - 18), min(hi, tx + 19)):
-                if not (self.maze[y, x] and self.mat[y, x] not in ("", "clear_water")):
+        for y in range(max(lo, ty - 22), min(hi, ty + 23)):
+            for x in range(max(lo, tx - 22), min(hi, tx + 23)):
+                if not (zone[y, x] and self.mat[y, x] not in ("", "clear_water")):
                     continue
                 L = int(self.level[y, x])
                 if L < 2:
@@ -792,7 +861,7 @@ class Island2(Island):
                 for j in range(-(rw + 1), rw + 2):
                     for i in range(-(rw + 1), rw + 2):
                         xx, yy = x + i, y + j
-                        if (not self.maze[yy, xx] or self.mat[yy, xx] in ("", "clear_water")
+                        if (not zone[yy, xx] or self.mat[yy, xx] in ("", "clear_water")
                                 or int(self.level[yy, xx]) != L or (xx, yy) in self.reserved):
                             flat = False
                             break
@@ -820,8 +889,10 @@ class Island2(Island):
         for (x, y) in water:
             self.mat[y, x] = "clear_water"
             self.level[y, x] = L - 2
+            self.upper[y, x] = False        # water is barrier-governed, not mountain-antitone
         for (x, y) in ring:
-            self.level[y, x] = L - 1        # material stays grass; camera-side lip fixed next
+            self.level[y, x] = L - 1        # walkable Δ1 shore; camera-side lip fixed next
+            self.upper[y, x] = False
         ok = self._lip_cover()
         walk = (self.mat != "") & (self.mat != "clear_water")
         land = int(walk.sum())
