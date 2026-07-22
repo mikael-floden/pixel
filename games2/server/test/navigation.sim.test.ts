@@ -332,9 +332,11 @@ function deckClimbSetup(grid: TerrainGrid, decks: { level: number; cells: { col?
   const L = best.level;
   const interior = best.cells.filter(({ c, r }) => deckLvl(c, r) >= 0);
   if (!interior.length) return null;
-  // Goal: the interior cell NEAREST the deck's high entry edge (max base among
-  // the footprint) — that's where the reported corner-cut happened, next to the
-  // stairs. Fall back to the footprint centroid if there is no clear edge.
+  // Goal: the interior cell nearest the footprint CENTROID — deep in the span,
+  // over the gap, so every ground approach must climb the stairs and cross ONTO
+  // the deck (the reported corner-cut is on that final approach beside the
+  // cliff). Centroid, not a hardcoded cell, so a reshaped bridge still targets
+  // its middle.
   const cen = best.cells.reduce((a, p) => ({ c: a.c + p.c / best!.cells.length, r: a.r + p.r / best!.cells.length }), { c: 0, r: 0 });
   interior.sort((a, b) => Math.hypot(a.c - cen.c, a.r - cen.r) - Math.hypot(b.c - cen.c, b.r - cen.r));
   const goal = interior[0];
