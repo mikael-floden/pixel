@@ -263,6 +263,12 @@ const TIME_TRANSITION_S = 2.5;
 // too. Base depths are screen-y scalars (< ~20k px), compressed into the band.
 const litDepth = (baseDepth: number) => 900_001 + baseDepth * 1e-5;
 const JUMP_HEIGHT = 28; // px peak of the jump hop (a tall, floaty arc)
+// A 1-level STEP (up or down) plays a QUICK little hop — the jump animation + jump
+// sound — while the player keeps FULL walk/run speed (this is purely cosmetic: the
+// movement/collision is untouched, so a single step never slows you). Shorter +
+// lower than the real 2-level jump, which stays a taller, slower, deliberate arc.
+const STEP_HOP_MS = 240; // duration of the quick step-hop arc
+const STEP_HOP_HEIGHT = 12; // px peak of the quick step-hop arc
 const SWIM_BOB = 2.2; // px amplitude of the gentle head bob while swimming
 const EXIT_JUMP_MS = 500; // ms window to rise out of the water on exit (matches the hop)
 // Foam "lapping" animation (maintainer's idea): re-bake the SAME crest at a
@@ -319,6 +325,9 @@ interface Avatar {
   // undefined when nothing covers it — the lit copy is cropped BELOW this line.
   coverY?: number;
   hopUntil: number;
+  hopDur?: number; // duration (ms) of the CURRENT hop arc (JUMP_MS jump vs STEP_HOP_MS step)
+  hopH?: number; // peak height (px) of the current hop arc
+  stepLvl?: number; // last frame's rounded surface level — detects a 1-level step to hop over
   wasJumping?: boolean; // last synced jumping flag (hop re-arms on rising edge only)
   swimming: boolean;
   wasSwimming?: boolean; // last frame's swimming — detects the swim→land exit
@@ -1801,7 +1810,9 @@ export class WorldScene extends Phaser.Scene {
       av.wasSwimming = swimming;
       // A big horizontal jump (respawn/teleport) is not a walk — snap, don't
       // ease or fall, so the character doesn't skate/plummet across the map.
+      let snapped = false;
       if (Math.abs(g.x - av.lx) > CELL_WU * 2 || Math.abs(g.y - av.lyFlat) > CELL_WU * 2) {
+        snapped = true;
         av.lx = g.x;
         av.lyFlat = g.y;
         av.elev = targetElev;
@@ -1853,6 +1864,29 @@ export class WorldScene extends Phaser.Scene {
       }
       av.ly = av.lyFlat - av.elev;
 
+      // STEP-HOP: a 1-level surface-level change (up or down) that ISN'T a real jump
+      // (a ≥2-level climb is player.jumping, handled below) fires the QUICK cosmetic
+      // hop — jump anim + jump sound + a small arc — so a single step reads as a
+      // lively hop while the player keeps FULL walk/run speed (movement untouched).
+      // Driven off the SYNCED surface level, so every client plays the same hop for
+      // every avatar; teleports (snapped) and swimming don't hop.
+      const lvlNow = Math.round(surfLevel);
+      if (
+        !snapped &&
+        !swimming &&
+        av.stepLvl !== undefined &&
+        Math.abs(lvlNow - av.stepLvl) === 1 &&
+        !player.jumping &&
+        av.hopUntil <= this.time.now
+      ) {
+        av.hopUntil = this.time.now + STEP_HOP_MS;
+        av.hopDur = STEP_HOP_MS;
+        av.hopH = STEP_HOP_HEIGHT;
+        const sp = this.avatarSpatial(id);
+        gameAudio.event("player.jump", { pan: sp.pan, dist: sp.dist, voice: av.character });
+      }
+      av.stepLvl = lvlNow;
+
       // Submerge amount: 0 = feet at the surface, 1 = shoulders at the surface
       // (fully floating). Tied to how far the fall has sunk the feet below the
       // surface, so a ledge drop submerges progressively then floats.
@@ -1865,6 +1899,8 @@ export class WorldScene extends Phaser.Scene {
       // jittery links): the "jumps again after landing on the hill" bug.
       if (player.jumping && !av.wasJumping && av.hopUntil <= this.time.now) {
         av.hopUntil = this.time.now + JUMP_MS;
+        av.hopDur = JUMP_MS;
+        av.hopH = JUMP_HEIGHT;
         // Sound exactly when the visual hop starts (synced flag = same
         // trigger for every client), spatialized for other players.
         const sp = this.avatarSpatial(id);
@@ -1872,7 +1908,7 @@ export class WorldScene extends Phaser.Scene {
       }
       av.wasJumping = !!player.jumping;
       const hopLeft = av.hopUntil - this.time.now;
-      const hop = hopLeft > 0 ? Math.sin((1 - hopLeft / JUMP_MS) * Math.PI) * JUMP_HEIGHT : 0;
+      const hop = hopLeft > 0 ? Math.sin((1 - hopLeft / (av.hopDur ?? JUMP_MS)) * Math.PI) * (av.hopH ?? JUMP_HEIGHT) : 0;
 
       // Gentle head bob while afloat; the float depth is already baked into
       // av.ly (via the negative water elevation), so only the bob is added
