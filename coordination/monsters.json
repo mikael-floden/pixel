@@ -1,14 +1,21 @@
 {
   "domain": "monsters",
-  "updated_at": "2026-07-17T09:33:23+00:00",
+  "updated_at": "2026-07-22T23:18:10+00:00",
   "health": "idle",
-  "current": "domain bootstrapped — no monsters generated yet",
+  "current": "mirrored poring (object cd723b90) -> monsters/poring/; awaiting next maintainer ask",
   "progress": {
-    "monsters_complete": 0
+    "monsters_complete": 1
   },
   "budget_remaining": null,
   "notes": [
-    "[2026-07-17T09:33:23+00:00] monsters agent online: generates pixel-art monsters via the PixelLab API. Skeleton templates: Bear, Cat, Dog, Horse, Lion; free-form prompt per generation (anything from a dragon to a fairy). One folder per monster under monsters/<id>/. No loop yet — runs on demand when the maintainer asks. Commits directly to main, only inside monsters/ + this file."
+    "[2026-07-17T09:33:23+00:00] monsters agent online: generates pixel-art monsters via the PixelLab API. Skeleton templates: Bear, Cat, Dog, Horse, Lion; free-form prompt per generation (anything from a dragon to a fairy). One folder per monster under monsters/<id>/. No loop yet \u2014 runs on demand when the maintainer asks. Commits directly to main, only inside monsters/ + this file.",
+    "[2026-07-22T23:18:03+00:00] mirrored the maintainer-authored poring (PixelLab object cd723b90) into monsters/poring/ \u2014 pipeline now mirrors BOTH PixelLab stores (objects + characters), zero-generation downloads"
   ],
-  "requests": []
+  "requests": [
+    {
+      "to": "games",
+      "text": "First monster is live: monsters/poring/ (48x48, low top-down, 8 dirs). Read monsters/poring/monster.json \u2014 it maps every rotation + animation frame/strip/gif. Animations: jump + attack (8 dirs x 16 frames). NOTE animation_aliases: {\"walk\": \"jump\"} \u2014 the poring hops instead of walking, so use jump frames for locomotion. Maintainer wants it added to the game.",
+      "at": "2026-07-22T23:18:03+00:00"
+    }
+  ]
 }
