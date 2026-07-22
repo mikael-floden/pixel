@@ -21,13 +21,34 @@ export interface JoinChoice {
 export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): Promise<JoinChoice> {
   return new Promise((resolve) => {
     const chars = manifest.characters;
-    // Maintainer defaults for fast join-and-iterate: the girl on Demo Lost
-    // (the current day-look playground). Fall back to the first entry when
-    // either is missing; the 🎲 button still randomizes.
-    let selected = Math.max(0, chars.findIndex((c) => c.uid === "default_girl"));
-    let selectedWorld = Math.max(0, worlds.findIndex((w) => w.name === "demo_lost"));
-
     const showWorlds = worlds.length > 0;
+
+    // PRESELECT the player's last map + character. The choice is persisted in
+    // localStorage under ml-last-choice (written on every commit, and read by
+    // the dead-connection rejoin in main.ts) — it SURVIVES a version upgrade:
+    // the deploy's service worker caches nothing and localStorage is never
+    // cleared, so a returning player lands on what they picked last time
+    // (maintainer 2026-07-22). If the stored world or character no longer
+    // exists in THIS build, the stale record is removed and a valid default is
+    // chosen instead — a fresh, valid record is written on the next commit.
+    const stored = readLastChoice();
+    const storedCharIdx =
+      stored?.characterUid != null ? chars.findIndex((c) => c.uid === stored.characterUid) : -1;
+    const storedWorldIdx =
+      stored?.world != null ? worlds.findIndex((w) => w.name === stored.world) : -1;
+    const staleChar = stored?.characterUid != null && storedCharIdx < 0;
+    const staleWorld = showWorlds && stored?.world != null && storedWorldIdx < 0;
+    if (stored && (staleChar || staleWorld)) {
+      try {
+        localStorage.removeItem("ml-last-choice");
+      } catch {}
+    }
+    // Defaults when there's no valid stored pick (maintainer's fast join-and-
+    // iterate: the girl on Demo Lost). A valid stored value wins over these.
+    let selected =
+      storedCharIdx >= 0 ? storedCharIdx : Math.max(0, chars.findIndex((c) => c.uid === "default_girl"));
+    let selectedWorld =
+      storedWorldIdx >= 0 ? storedWorldIdx : Math.max(0, worlds.findIndex((w) => w.name === "demo_lost"));
     const overlay = el("div", "ml-overlay");
     overlay.innerHTML = `
       <div class="ml-panel">
@@ -210,6 +231,9 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
 
     const grid = overlay.querySelector("#ml-grid") as HTMLElement;
     const nameInput = overlay.querySelector("#ml-name") as HTMLInputElement;
+    // Restore the last-used name too (part of the same remembered choice) —
+    // overrides the random placeholder the template seeded.
+    if (stored?.name && stored.name.trim()) nameInput.value = stored.name.slice(0, 24);
     const cells: HTMLElement[] = [];
     const spins: ((on: boolean) => void)[] = [];
 
@@ -329,6 +353,23 @@ function el(tag: string, cls: string): HTMLElement {
   const e = document.createElement(tag);
   e.className = cls;
   return e;
+}
+
+interface LastChoice {
+  world?: string;
+  characterUid?: string;
+  name?: string;
+}
+/** Read the persisted last map/character/name (localStorage ml-last-choice,
+ * written by commit() and read by the rejoin fast path in main.ts). Never
+ * throws — a missing or corrupt value returns null. */
+function readLastChoice(): LastChoice | null {
+  try {
+    const v = JSON.parse(localStorage.getItem("ml-last-choice") || "null");
+    return v && typeof v === "object" ? (v as LastChoice) : null;
+  } catch {
+    return null;
+  }
 }
 
 /** Momentary pressed-plate feedback via pointer events (same pattern as
