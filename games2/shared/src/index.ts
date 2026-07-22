@@ -1397,10 +1397,17 @@ export function findPath(
   const elevOf = (i: number, layer: number) => (layer === 1 ? grid.deck[i] : grid.level[i]);
   const reach = (elev: number, ac: number, ar: number, bc: number, br: number) =>
     inBand(bc, br) ? stepReach(grid, elev, ac, ar, bc, br, canSwim) : [];
-  // A WALK-reachable surface exists into (bc,br)? — diagonal flanking clearance
-  // (the round body can't cut a corner past a wall).
-  const canWalkFrom = (elev: number, ac: number, ar: number, bc: number, br: number) =>
-    reach(elev, ac, ar, bc, br).some((s) => !s.jump);
+  // A DIAGONAL needs both flanking cardinals walk-reachable (the round body
+  // can't squeeze a corner past a wall) AND near this level: a walk surface
+  // into (bc,br) that is NOT a real drop below here (within WALK_CLIMB). A
+  // plain "can I walk there" test accepts a descent (walking off a ledge is
+  // free), so a diagonal whose flanking corner is a cliff used to pass — the
+  // round body clips that lower CORNER cell mid-segment and walks off the ledge
+  // (falls: maintainer "doesn't respect sharp corners... shortcuts and falls").
+  // Requiring the flank to stay near this level keeps the corner ON the high
+  // ground; a bigger drop routes cardinally instead.
+  const canWalkFlank = (elev: number, ac: number, ar: number, bc: number, br: number) =>
+    reach(elev, ac, ar, bc, br).some((s) => !s.jump && s.level >= elev - WALK_CLIMB - 1e-9);
   // SOLID cells (props / structures / non-enterable surfaces) need clearance:
   // the mover's collision reaches PLAYER_RADIUS ahead and 0.75R sideways, and
   // the path follower turns up to a waypoint-radius early — a route hugging a
@@ -1568,10 +1575,14 @@ export function findPath(
         for (const s of reach(curElev, cc, cr, nc, nr)) {
           let cost: number;
           if (diag) {
-            // Diagonal: walk only, and both flanking cardinals must be walk-
-            // reachable (round body — no squeezing through touching corners).
+            // Diagonal: walk only, near-level only. No jump-climb across a
+            // corner; the destination itself can't be a real drop below here
+            // (the centre clips the shared corner cell and falls); and both
+            // flanking cardinals must be walk-reachable AND near this level
+            // (round body — no squeezing OR shortcut-falling past a corner).
             if (s.jump) continue;
-            if (!canWalkFrom(curElev, cc, cr, nc, cr) || !canWalkFrom(curElev, cc, cr, cc, nr)) continue;
+            if (s.level < curElev - WALK_CLIMB - 1e-9) continue;
+            if (!canWalkFlank(curElev, cc, cr, nc, cr) || !canWalkFlank(curElev, cc, cr, cc, nr)) continue;
             cost = 1.4142;
           } else {
             cost = s.jump ? JUMP_EDGE_COST : 1; // 1-level auto-jump climb

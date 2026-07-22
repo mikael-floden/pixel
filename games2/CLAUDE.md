@@ -768,9 +768,19 @@ visible head/shoulders are ABOVE the surface).
   movement key cancels (keys also pause hold replanning; it resumes on
   release).
   Routes come from the shared **`findPath`** (A*
-  over the terrain grid: walk edges, no-corner-cut diagonals, CARDINAL
+  over the terrain grid: walk edges, NEAR-LEVEL-ONLY diagonals, CARDINAL
   1-level jump climbs at ~3× cost, +0.6 for cells hugging solids) so the
   character walks AROUND props and ALONG walls to a head-on jump approach.
+  A diagonal is allowed only when its destination AND both flanking cardinals
+  stay within WALK_CLIMB of the current level — the round body's centre clips
+  the shared CORNER cell mid-segment, so a diagonal onto/past a real drop (a
+  cliff beside a bridge staircase) used to walk the body off that corner and
+  FALL into the gap (maintainer: "doesn't respect sharp corners... shortcuts
+  and falls"); a bigger drop now routes cardinally. Jump-climb diagonals are
+  disallowed too (jumps are cardinal only). Gate: the occlusion_test
+  bridge-climb trip in server/test/navigation.sim.test.ts drives the real
+  follower up onto the deck and asserts the surface elevation never collapses
+  to the base.
   The route is HITBOX-aware end to end: waypoints come one per cell (NOT
   merged into long legs — a quantized follower drifts off long legs into
   prop margins), each nudged away from adjacent solids; the FINAL point is

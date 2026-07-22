@@ -11,12 +11,16 @@ import {
   stepMovement,
   unstickFromSolids,
   makeBlocked,
+  makeBlockedElev,
   makeSideBlocked,
   surfaceAtWorld,
+  resolveElevAt,
+  levelAtWorld,
   isBlockedAtWorld,
   screenToWorldVector,
   autoJumpWanted,
   findSpawn,
+  findPath,
   TerrainGrid,
   CELL_WU,
   WALK_CLIMB,
@@ -203,5 +207,182 @@ for (const frameMs of [16, 133]) {
     for (const seed of [5, 21]) {
       assertAllArrive(simTrips(w, { seed, trips: 10, frameMs }), `glow_test seed=${seed} frame=${frameMs}`);
     }
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Corner-cut fall gate (world@2 decks): tapping the top of a raised bridge/roof
+// from the ground below must route the body UP the staircase and ONTO the deck
+// — never let it cut a diagonal corner across the cliff beside the stairs and
+// FALL into the gap under the bridge (maintainer: "the character doesn't
+// respect sharp corners... tries to shortcut and falls"). The planned route no
+// longer allows a diagonal whose destination OR flank drops >1 level, so the
+// body follows a safe cardinal climb. This drives the REAL follower + body
+// (unstick + stepMovement + resolveElevAt + auto-jump) tracking the surface
+// ELEVATION every tick — the fall is `elev` collapsing to the base. All start
+// cells + the deck are DERIVED from the world so the maps agent can reshape the
+// bridge without editing this gate.
+// ---------------------------------------------------------------------------
+
+interface DeckClimbResult {
+  arrived: boolean;
+  endElev: number;
+  fell: boolean; // dropped to the base gap AFTER starting the climb
+  endDist: number;
+  from: { c: number; r: number };
+}
+
+/** Drive one deck-aware trip from (fromX,fromY) onto the deck at `goalLevel`,
+ *  tracking the surface elevation the SERVER would resolve each tick. `fell` =
+ *  after climbing above L-2, the elevation ever collapsed back near the base. */
+function simDeckClimb(
+  grid: TerrainGrid,
+  fromX: number,
+  fromY: number,
+  toX: number,
+  toY: number,
+  goalLevel: number,
+  frameMs: number,
+): DeckClimbResult {
+  const worldW = grid.width * CELL_WU;
+  const worldH = grid.height * CELL_WU;
+  let x = fromX;
+  let y = fromY;
+  let elev = levelAtWorld(grid, x, y);
+  let now = 0;
+  let jumpUntil = -Infinity;
+  let jumpReadyAt = 0;
+  const trip = startTrip(grid, x, y, toX, toY, true, now, elev, goalLevel);
+  if (!trip) return { arrived: false, endElev: elev, fell: false, endDist: Infinity, from: { c: Math.floor(fromX / CELL_WU), r: Math.floor(fromY / CELL_WU) } };
+  const climbTo = goalLevel - 2; // "has committed to the climb" threshold
+  const fallFloor = 1.5; // elevation this low after climbing = fell into the gap
+  let maxElev = elev;
+  let fell = false;
+  const integrate = (ax: number, ay: number, running: boolean, dtMs: number) => {
+    let left = dtMs / 1000;
+    while (left > 1e-9) {
+      const eff = Math.min(left, MAX_INPUT_DT);
+      left -= eff;
+      const jumping = now < jumpUntil;
+      const u = unstickFromSolids(grid, x, y, 80 * eff);
+      x = u.x;
+      y = u.y;
+      const surf = surfaceAtWorld(grid, x, y);
+      const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
+      const r = stepMovement(
+        x, y, ax, ay, running, eff,
+        makeBlockedElev(grid, ctx, () => elev),
+        surf.speed * (jumping ? JUMP_SPEED_FACTOR : 1),
+        true, worldW, worldH,
+        makeSideBlocked(grid, ctx),
+      );
+      x = r.x;
+      y = r.y;
+      elev = resolveElevAt(grid, elev, x, y, ctx);
+      maxElev = Math.max(maxElev, elev);
+      if (maxElev >= climbTo && elev <= fallFloor) fell = true;
+    }
+  };
+  const budget = 60_000;
+  const t0 = now;
+  let arrived = false;
+  while (now - t0 < budget) {
+    const drive = stepAutopilot(grid, trip, x, y, now, worldW, worldH, elev);
+    if (drive.done) {
+      arrived = true;
+      break;
+    }
+    if ((drive.ax !== 0 || drive.ay !== 0) && now >= jumpUntil && now >= jumpReadyAt) {
+      const wv = screenToWorldVector(drive.ax, drive.ay);
+      if (autoJumpWanted(grid, x, y, wv.x, wv.y)) {
+        jumpUntil = now + JUMP_MS;
+        jumpReadyAt = jumpUntil + JUMP_COOLDOWN_MS;
+      }
+    }
+    integrate(drive.ax, drive.ay, drive.running, frameMs);
+    now += frameMs;
+  }
+  return {
+    arrived,
+    endElev: elev,
+    fell,
+    endDist: Math.hypot(trip.target.x - x, trip.target.y - y),
+    from: { c: Math.floor(fromX / CELL_WU), r: Math.floor(fromY / CELL_WU) },
+  };
+}
+
+/** Derive from a world: the highest deck's level, an interior goal cell (a deck
+ *  cell floating over a lower base — the span, not a wall you step on from), and
+ *  ground approach cells low enough to have climbed up (base ≤ 1) from which
+ *  findPath actually climbs onto the deck. Returns null if the world has no such
+ *  deck+approach (skip). */
+function deckClimbSetup(grid: TerrainGrid, decks: { level: number; cells: { col?: number; row?: number; x?: number; y?: number }[] }[]) {
+  const W = grid.width;
+  const idx = (c: number, r: number) => r * W + c;
+  const baseLvl = (c: number, r: number) => grid.level[idx(c, r)];
+  const deckLvl = (c: number, r: number) => grid.deck[idx(c, r)];
+  const wc = (c: number, r: number): [number, number] => [(c + 0.5) * CELL_WU, (r + 0.5) * CELL_WU];
+  // Highest deck = the airborne bridge over the gap.
+  let best: { level: number; cells: { c: number; r: number }[] } | null = null;
+  for (const d of decks) {
+    const cells = d.cells.map((c) => ({ c: (c.col ?? c.x)!, r: (c.row ?? c.y)! }));
+    if (!best || d.level > best.level) best = { level: d.level, cells };
+  }
+  if (!best) return null;
+  const L = best.level;
+  const interior = best.cells.filter(({ c, r }) => deckLvl(c, r) >= 0);
+  if (!interior.length) return null;
+  // Goal: the interior cell NEAREST the deck's high entry edge (max base among
+  // the footprint) — that's where the reported corner-cut happened, next to the
+  // stairs. Fall back to the footprint centroid if there is no clear edge.
+  const cen = best.cells.reduce((a, p) => ({ c: a.c + p.c / best!.cells.length, r: a.r + p.r / best!.cells.length }), { c: 0, r: 0 });
+  interior.sort((a, b) => Math.hypot(a.c - cen.c, a.r - cen.r) - Math.hypot(b.c - cen.c, b.r - cen.r));
+  const goal = interior[0];
+  const [gx, gy] = wc(goal.c, goal.r);
+  // Approach starts: low ground (base ≤ 1, walkable, not on a deck) within 16
+  // cells of the goal, from which findPath climbs onto the deck (route reaches
+  // ≥ L-WALK_CLIMB). Take the nearest handful — the different angles include the
+  // corner-cutting diagonal approach that used to fall.
+  const cand: { c: number; r: number; d: number }[] = [];
+  let minC = W, maxC = 0, minR = grid.height, maxR = 0;
+  for (const p of best.cells) { minC = Math.min(minC, p.c); maxC = Math.max(maxC, p.c); minR = Math.min(minR, p.r); maxR = Math.max(maxR, p.r); }
+  for (let r = Math.max(1, minR - 16); r <= Math.min(grid.height - 2, maxR + 16); r++)
+    for (let c = Math.max(1, minC - 16); c <= Math.min(W - 2, maxC + 16); c++) {
+      if (deckLvl(c, r) >= 0 || grid.blocked[idx(c, r)] || baseLvl(c, r) > 1) continue;
+      cand.push({ c, r, d: Math.hypot(c - goal.c, r - goal.r) });
+    }
+  cand.sort((a, b) => a.d - b.d);
+  const starts: { c: number; r: number }[] = [];
+  for (const s of cand) {
+    if (starts.length >= 6) break;
+    const [sx, sy] = wc(s.c, s.r);
+    const path = findPath(grid, sx, sy, gx, gy, { canSwim: true, fromElev: 0, goalLevel: L });
+    if (!path || path.length < 5) continue;
+    const climbs = path.some((wp) => baseLvl(Math.floor(wp.x / CELL_WU), Math.floor(wp.y / CELL_WU)) >= L - WALK_CLIMB - 1e-9);
+    if (climbs) starts.push({ c: s.c, r: s.r });
+  }
+  return starts.length ? { L, goal, gx, gy, starts } : null;
+}
+
+for (const frameMs of [16, 33, 133]) {
+  test(`sim: occlusion_test climb onto bridge without falling (frame ${frameMs}ms)`, (t) => {
+    const path = join(REPO, "maps2", "worlds", "occlusion_test", "world.json");
+    if (!existsSync(path)) return t.skip("maps2/worlds/occlusion_test missing");
+    const world = parseWorld(JSON.parse(readFileSync(path, "utf8")));
+    if (!world) return t.skip("occlusion_test failed to parse");
+    const grid = buildTerrainGrid(world.width, world.height, world.rows, world.props, world.decks);
+    const setup = deckClimbSetup(grid, (world.decks ?? []) as any);
+    if (!setup) return t.skip("occlusion_test has no deck+ground-approach to climb");
+    const fails: string[] = [];
+    for (const s of setup.starts) {
+      const [sx, sy] = [(s.c + 0.5) * CELL_WU, (s.r + 0.5) * CELL_WU];
+      const res = simDeckClimb(grid, sx, sy, setup.gx, setup.gy, setup.L, frameMs);
+      const ok = res.arrived && !res.fell && res.endElev >= setup.L - 0.5 && res.endDist < 40;
+      if (!ok)
+        fails.push(
+          `from (${s.c},${s.r}) -> deck (${setup.goal.c},${setup.goal.r})@${setup.L}: arrived=${res.arrived} fell=${res.fell} endElev=${res.endElev.toFixed(1)} endDist=${res.endDist.toFixed(0)}`,
+        );
+    }
+    assert.equal(fails.length, 0, `${setup.starts.length} bridge approaches, ${fails.length} fell/failed — ${fails.join("; ")}`);
   });
 }
