@@ -47,6 +47,21 @@ from islandworld import (Island, _dilate, _erode, _fbm, _h01, _largest_component
                         MAPS2)
 from tiles2lib import DX, DY, LEVEL_PX, Tiles2
 
+def _dilate8(mask, r):
+    """Chebyshev (8-neighbour, square-kernel) dilation — the metric of tile neighbourhoods.
+    The cross-kernel _dilate gives Manhattan balls; transition legality needs Chebyshev:
+    two materials at Manhattan 3 can still be diagonal neighbours of the SAME tile."""
+    m = mask.copy()
+    for _ in range(r):
+        nn = m.copy()
+        nn[:, :-1] |= m[:, 1:]; nn[:, 1:] |= m[:, :-1]
+        nn[:-1, :] |= m[1:, :]; nn[1:, :] |= m[:-1, :]
+        nn[:-1, :-1] |= m[1:, 1:]; nn[1:, 1:] |= m[:-1, :-1]
+        nn[:-1, 1:] |= m[1:, :-1]; nn[1:, :-1] |= m[:-1, 1:]
+        m = nn
+    return m
+
+
 # LOWER-world named features (fx,fy in [0,1], amp signed, radius in map-fraction).
 FEATURES = [
     (0.62, 0.86, -2.0, 0.10),   # Sunken Hollow — a dry stone-rimmed canyon (tier 0)
@@ -752,14 +767,14 @@ class Island2(Island):
         # summit obsidian inside snow (and >=2 from ice), scar obsidian inside stone. The parent
         # then always separates them from any third material.
         snowm = mat == "regular_snow"
-        ice = snowm & (glac > 0.52) & (level >= 32) & ~_dilate(~snowm, 1)
+        ice = snowm & (glac > 0.52) & (level >= 32) & ~_dilate8(~snowm, 2)
         mat[ice] = "crystal_ice"
         snow2 = mat == "regular_snow"
         black_hi = (snow2 & (cald > 0.60) & (level >= 30)
-                    & ~_dilate(~(snow2 | ice), 1) & ~_dilate(ice, 2))
+                    & ~_dilate8(~(snow2 | ice), 2) & ~_dilate8(ice, 3))
         stonem = mat == "stone_mountain"
         black_lo = (stonem & (level >= 16) & (level < 28) & (X < n * 0.56) & (scar > 0.58)
-                    & ~_dilate(~stonem, 1))
+                    & ~_dilate8(~stonem, 2))
         mat[black_hi | black_lo] = "black_mountain"
         # BIGGER beaches: a deeper distance sweep + a wider, cove/camera-biased sand depth.
         water = mat == "clear_water"
@@ -776,7 +791,7 @@ class Island2(Island):
                       + np.rint(3.0 * dcam)).astype(np.int16)
         rock = np.isin(mat, np.array(["stone_mountain", "black_mountain"], object))
         beach = ((mat == "saturated_grass") & (level <= 2) & (d2w < 99) & (d2w <= sand_depth)
-                 & ~_dilate(rock, 1))          # grass collar: sand never touches rock directly
+                 & ~_dilate8(rock, 2))         # grass collar: sand >= Chebyshev 3 from rock
         mat[beach] = "light_sand"
 
     # -- multi-level lakes (flush inland ponds/tarns + an internal gorge) -------
@@ -1292,8 +1307,7 @@ class Island2(Island):
         # and a beach is always >=2 wide and no tile needs transitions to two different grounds.
         # Enforced three ways: a HARD routing keep-out (with soft fallback so no target is ever
         # unreachable), the widen margin, and a final paint skip for fallback remnants.
-        d2sand = self._dist_field(mat == "light_sand", cap=8)
-        self._sand_forbid = (d2sand <= 2)
+        self._sand_forbid = _dilate8(mat == "light_sand", 2)   # Chebyshev: covers diagonals
 
         def near(fx, fy):
             tx, ty = self._to_grid(fx, fy)
@@ -1406,22 +1420,28 @@ class Island2(Island):
                         or (x, y) in self._ascent):         # stairs too: local-ground line
                     continue
                 foreign = set()
-                for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-                    xx, yy = x + i, y + j
-                    if 0 <= xx < n and 0 <= yy < n:
-                        fm = self.mat[yy, xx]
-                        # Only NEAR-LEVEL neighbours pair for transitions: across a cliff
-                        # (|Δlevel|>1) the wall face renders between the two tops, so the tiles
-                        # never blend and no transition pair is needed. INFRASTRUCTURE is an
-                        # overlay, never a terrain partner: where a road or stair strip crosses
-                        # a biome boundary its flank cells unavoidably see line+other (the same
-                        # forcing as the line cell itself); the maintainer's dirt-grass-sand
-                        # beach case is guarded STRUCTURALLY by the padding rule instead
-                        # (no dirt within 2 of sand — build asserts).
-                        if (fm in gs and fm != m and fm != "lightdark_dirt"
-                                and (xx, yy) not in self._ascent
-                                and abs(int(self.level[yy, xx]) - int(self.level[y, x])) <= 1):
-                            foreign.add(fm)
+                for i in (-1, 0, 1):
+                    for j in (-1, 0, 1):
+                        if i == 0 and j == 0:
+                            continue
+                        xx, yy = x + i, y + j
+                        if 0 <= xx < n and 0 <= yy < n:
+                            fm = self.mat[yy, xx]
+                            # The FULL 8-neighbourhood pairs for transitions (the auto-tiler
+                            # measures composition over all 8 — a diagonal foreign breaks a tile
+                            # exactly like a cardinal one). Only NEAR-LEVEL neighbours count:
+                            # across a cliff (|Δlevel|>1) the wall face renders between the two
+                            # tops, so they never blend. INFRASTRUCTURE is an overlay, never a
+                            # terrain partner: where a road or stair strip crosses a biome
+                            # boundary its flank cells unavoidably see line+other (the same
+                            # forcing as the line cell itself); the maintainer's dirt-grass-sand
+                            # beach case is guarded STRUCTURALLY by the Chebyshev padding rule
+                            # instead (no dirt within Chebyshev 2 of sand — build asserts,
+                            # unconditionally).
+                            if (fm in gs and fm != m and fm != "lightdark_dirt"
+                                    and (xx, yy) not in self._ascent
+                                    and abs(int(self.level[yy, xx]) - int(self.level[y, x])) <= 1):
+                                foreign.add(fm)
                 if len(foreign) >= 2:
                     out.append((x, y, m, tuple(sorted(foreign))))
         return out
@@ -1636,10 +1656,14 @@ def build(out=None, seed=21, M=24):
 
     slivers = d._material_slivers()
     assert not slivers, f"material sliver (tile borders 2+ foreign grounds): {slivers[:5]}"
-    d2sand = d._dist_field(d.mat == "light_sand", cap=8)
-    near_sand_dirt = int(((d.mat == "lightdark_dirt") & (d2sand <= 2)).sum())
+    sand_halo = _dilate8(d.mat == "light_sand", 2)
+    near_sand_dirt = int(((d.mat == "lightdark_dirt") & sand_halo).sum())
     assert near_sand_dirt == 0, \
-        f"beach padding broken: {near_sand_dirt} dirt cell(s) within 2 of sand"
+        f"beach padding broken: {near_sand_dirt} dirt cell(s) within Chebyshev 2 of sand"
+    both = _dilate8(d.mat == "lightdark_dirt", 1) & _dilate8(d.mat == "light_sand", 1)
+    both &= (d.mat != "") & (d.mat != "clear_water")
+    assert int(both.sum()) == 0, \
+        f"{int(both.sum())} tile(s) see BOTH dirt and sand in their 8-neighbourhood"
 
     # the massif gorge crossing must have shipped (maze-river decks sit at bank level <=12)
     gorge_bridges = [dk for dk in d.decks if dk["kind"] == "bridge" and int(dk["level"]) >= 16]
