@@ -27,6 +27,7 @@ import { mountFrame2, FrameLayout, HUD_SCALE } from "./frame2";
 import { setClockMount } from "./clock";
 import { dressPlate, dressSlot, readyPlates, repaintPlates } from "./plate";
 import { holdLoading } from "./loading";
+import { mountGamepadStick } from "./gamepad";
 import { gameAudio } from "../../composer/index";
 
 // ── Ambient-effect switches (Settings) ───────────────────────────────────
@@ -381,6 +382,11 @@ export class HudBar {
   }
 
   private buildPages() {
+    // Gamepad: the on-screen analog stick (right-thumb spot the maintainer
+    // marked). It synthesizes real WASD key events — movement identical to
+    // the keyboard, jump button TBD.
+    mountGamepadStick(this.pages.get("gamepad")!);
+
     // Backpack: 5×3 empty item slots — the REAL slot art from the round-2
     // concept (twig frame + moss rim over a dark recess, extracted at native
     // 128² in frame space; scripts/extract-slot2.py). Same count and layout
@@ -561,6 +567,8 @@ function injectStyles() {
     padding:var(--ml-page-padtop,14px) var(--ml-page-pad,44px) var(--ml-page-padbot,14px);
     background:#503c33;image-rendering:pixelated}
   .ml-page.show{display:flex}
+  /* gamepad page: the analog stick positions absolutely inside it */
+  .ml-page[data-page=gamepad]{position:relative;overflow:hidden}
   /* backpack slots: the kit's empty-slot square (maintainer circled it),
      9-sliced by dressSlot to fill the box at the SAME KIT_PX block size as
      the buttons ("this slot should look very much like an empty button").

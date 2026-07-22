@@ -82,6 +82,7 @@ def main():
             assert rp[x, y] == want, f"reassembly mismatch at {x},{y}"
 
     top_im.save(G + "stick-top.png")
+    top_im.save("client/public/ui2/pad-stick-top.png")  # the served copy (gamepad.ts)
     base_im.save(G + "stick-base-holed.png")
     print("stick-top.png", top_im.getbbox(), "/ stick-base-holed.png", base_im.getbbox())
 

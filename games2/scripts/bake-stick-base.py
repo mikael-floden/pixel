@@ -109,6 +109,7 @@ def main():
     for x, y in BORDER_ADD:
         q2[x, y] = (*BORDER_RGB, 255)
     out.save(G + "stick-base-filled.png")
+    out.save("client/public/ui2/pad-stick-base.png")  # the served copy (gamepad.ts)
     print(f"stick-base-filled.png {out.getbbox()} (specks dropped: {specks}, "
           f"edits: -{len(RED_REMOVE)} +{len(BORDER_ADD)} border)")
 
