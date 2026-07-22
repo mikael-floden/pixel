@@ -56,7 +56,13 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
   });
   if (!geom) { fail("stick not mounted"); }
   else {
-    ok(`stick mounted k=${geom.k} well=(${geom.cx.toFixed(0)},${geom.cy.toFixed(0)})`);
+    // LOOK vs FEEL split (2026-07-23): at 480 wide the FEEL tier is the old
+    // k=2 (travel 28 css px, dead 9.8, run 21) but the ART renders at k=1 —
+    // half the pixels, same distances under the finger.
+    const travel = 28;
+    geom.k === 1
+      ? ok(`stick mounted k=${geom.k} (halved art) well=(${geom.cx.toFixed(0)},${geom.cy.toFixed(0)})`)
+      : fail(`stick art k=${geom.k}, want 1 at 480 wide`);
     const topTf = () => page.evaluate(() => document.querySelector(".ml-pad-top").style.transform);
 
     // 2) drag EAST → moves; direction ≈ screen-east (world +x,+y)
@@ -79,9 +85,11 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     if (!m) fail(`no snap transform (${tf})`);
     else {
       const [dx, dy] = [+m[1], +m[2]];
-      const wantX = 14 * geom.k, wantY = 14 * geom.k; // MAX_ART east + REST_ART
+      // full gate = the FEEL tier's css travel (unchanged by the art
+      // halving); the rest drop stays art-tied (REST_ART * k)
+      const wantX = travel, wantY = 14 * geom.k;
       Math.abs(dx - wantX) < 1 && Math.abs(dy - wantY) < 1
-        ? ok(`cap snapped at full E deflection (${dx},${dy}) = (MAX,REST)·k`)
+        ? ok(`cap snapped at full E deflection (${dx},${dy}) = (travel, REST·k)`)
         : fail(`cap at (${dx},${dy}), want (${wantX},${wantY})`);
     }
     a = await pos(page);
@@ -100,7 +108,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     const trans = await page.evaluate(() => getComputedStyle(document.querySelector(".ml-pad-top")).transitionDuration);
     parseFloat(trans) > 0 ? ok(`snap glide animated (${trans})`) : fail("no snap transition");
     // ANALOG amplitude: a half-tilt parks the cap at ~the finger distance
-    // (angle snapped, amplitude NOT) — radius ≈ 16px at k=2, not full 28
+    // (angle snapped, amplitude NOT) — radius ≈ 16 css px, not the full 28
     await page.mouse.move(geom.cx + 16, geom.cy, { steps: 2 });
     await page.waitForTimeout(250);
     const tMid = await topTf();
@@ -136,7 +144,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     }
     const walkCases = [[90, "s"], [10, "d"], [-140, "a+w"]];
     for (const [deg, want] of walkCases) {
-      const got = await heldAt(deg, 16); // between dead (9.8) and run (21) at k=2
+      const got = await heldAt(deg, 16); // between dead (9.8) and run (21), feel tier 2
       got === want ? ok(`walk ${deg}° mid -> [${got}]`) : fail(`walk ${deg}° mid: held [${got}] want [${want}]`);
     }
 
@@ -169,6 +177,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     return { cx: r.left + 46.5 * k, cy: r.top + 60.5 * k, k };
   });
   console.log("phone stick:", JSON.stringify(g));
+  g.k === 2 ? ok("phone art at k=2 (halved from 4)") : fail(`phone art k=${g.k}, want 2`);
   await page.mouse.move(g.cx, g.cy);
   await page.mouse.down();
   await page.mouse.move(g.cx + 200, g.cy + 140, { steps: 4 });

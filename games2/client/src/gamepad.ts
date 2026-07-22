@@ -29,9 +29,16 @@
  *    the side the cap tilts away from, like a real stick.
  *  - Dead zone around the centre releases all keys (rest = no input).
  *
- * Pixel art scales nearest-neighbour at INTEGER factors only: 4x at the 980
- * design width, 3x / 2x on narrower viewports (same stepping idiom as the
- * HUD tab icons — the HUD layer is never uiZoom'd).
+ * Pixel art scales nearest-neighbour at INTEGER factors only — 2x at the
+ * 980 design width, 1x on small viewports (same stepping idiom as the HUD
+ * tab icons; the HUD layer is never uiZoom'd). LOOK vs FEEL (maintainer
+ * 2026-07-23: "the pixels on the analog stick are twice as big as all
+ * other pixels — half the size, but allow the top to move twice as long
+ * so the gameplay doesn't change"): the art renders at HALF the original
+ * scale, while the finger/cap TRAVEL keeps the original tier's css
+ * distances (dead zone, run threshold, full gate) — so in art units the
+ * cap now deflects up to twice as far past the socket, and under the
+ * finger nothing changed.
  */
 
 import { gameAudio } from "../../composer/index";
@@ -39,7 +46,10 @@ import { gameAudio } from "../../composer/index";
 const CANVAS = 96; // the art canvas (both pngs)
 const CX = 46.5; // the socket well centre, art px
 const CY = 60.5;
-const MAX_ART = 14; // cap deflection radius, art px (maintainer: "drag the top longer")
+// full-gate travel in FEEL-TIER units: css travel = TRAVEL * feelK, where
+// feelK is the ORIGINAL 4/3/2 stepping — the gameplay contract that must
+// not change while the art renders at half that scale
+const TRAVEL = 14;
 const REST_ART = 14; // resting cap drop, art px — covers the well's crystals when centered
 // the assembly's VISIBLE vertical span at rest (cap top … base bottom), used
 // to centre the whole stick in the page (maintainer's red line: equal
@@ -95,11 +105,13 @@ export function mountGamepadStick(page: HTMLElement) {
 
   // ── layout: integer art scale + the maintainer's marked anchor spot ──
   // (his red circle: the well centre at ~70.5% across, ~42% down the page)
-  let k = 4;
+  let k = 2;
+  let maxCss = TRAVEL * 4; // full-gate travel in css px (feel tier, not k)
   // the cap's VISUAL state: the ANGLE snaps to the active octant (-1 =
   // centred, resting on the socket) but the AMPLITUDE is analog — the cap
-  // follows the finger's distance up to MAX_ART ("only snap the angle, not
-  // the amplitude"). Radius kept in ART units so a scale change re-derives.
+  // follows the finger's distance up to the css travel clamp ("only snap
+  // the angle, not the amplitude"). Radius kept in ART units so a scale
+  // change re-derives.
   let visSector = -1;
   let visRadius = 0;
   const setCap = (sector: number, radiusArt: number) => {
@@ -111,7 +123,11 @@ export function mountGamepadStick(page: HTMLElement) {
     top.style.transform = `translate(${dx}px, ${REST_ART * k + dy}px)`;
   };
   const layout = () => {
-    k = window.innerWidth >= 780 ? 4 : window.innerWidth >= 585 ? 3 : 2;
+    // FEEL tier: the original scale stepping — anchors the css travel
+    const feelK = window.innerWidth >= 780 ? 4 : window.innerWidth >= 585 ? 3 : 2;
+    // LOOK: render the art at half that, integer only (2x / 2x / 1x)
+    k = Math.max(1, Math.round(feelK / 2));
+    maxCss = TRAVEL * feelK;
     const size = CANVAS * k;
     pad.style.width = pad.style.height = `${size}px`;
     pad.style.left = `${Math.round(page.clientWidth * 0.705 - CX * k)}px`;
@@ -157,8 +173,9 @@ export function mountGamepadStick(page: HTMLElement) {
     const dy = ev.clientY - (r.top + CY * k);
     const len = Math.hypot(dx, dy);
     // the ANGLE keeps working at any finger distance — only the cap's drawn
-    // deflection is fixed (full gate travel along the snapped octant)
-    const max = MAX_ART * k;
+    // deflection is clamped. All thresholds are CSS px (the feel tier), so
+    // halving the art did not change what the finger does.
+    const max = maxCss;
     const sector = len < max * DEAD_FRAC ? -1 : (Math.round(Math.atan2(dy, dx) / (Math.PI / 4)) + 8) % 8;
     // amplitude → gait: a light tilt WALKS, past RUN_FRAC it RUNS
     setKeys(sector, len >= max * RUN_FRAC);
