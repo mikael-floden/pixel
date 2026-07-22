@@ -975,7 +975,15 @@ void main() {
                                                    // half-level. Standing still it's a stable
                                                    // integer, so flats/edges are unaffected.
   float dLev = abs(pLev - z);                      // levels of separation
-  float elevBand = ceil(max(0.0, dLev - ELEV_D0) * ELEV_STEP - ELEV_EPS); // 0 until |Δlvl|>ELEV_D0
+  // Cel-snapped on flats — but FACE-SMOOTHED like the distance channel: on a
+  // tall face the ceil() boundaries land at different screen rows per wall
+  // column (z varies laterally), so every interior band edge SAWTOOTHS along
+  // the column diamonds (maintainer's red zigzag, the_island2 v6's 30-40 level
+  // gorges). As faceMix rises past the lip, LERP to the continuous value — the
+  // face becomes a smooth vertical gradient while every flat/tread keeps the
+  // crisp ceil() band (faceMix 0 ⇒ byte-identical, edge pop at the lip intact).
+  float elevCont = max(0.0, dLev - ELEV_D0) * ELEV_STEP;
+  float elevBand = max(0.0, mix(ceil(elevCont - ELEV_EPS), elevCont, faceMix));
 
   // COMBINE + CEL-SNAP. Additive (NOT max) so a mid-range edge always adds its step on top of
   // the distance band. Both channels fire on ALL ground; the per-level TRANSPARENCY (below) is
