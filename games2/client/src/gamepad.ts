@@ -40,7 +40,12 @@ const CANVAS = 96; // the art canvas (both pngs)
 const CX = 46.5; // the socket well centre, art px
 const CY = 60.5;
 const MAX_ART = 14; // cap deflection radius, art px (maintainer: "drag the top longer")
-const REST_ART = 12; // resting cap drop, art px — covers the well's crystals when centered
+const REST_ART = 14; // resting cap drop, art px — covers the well's crystals when centered
+// the assembly's VISIBLE vertical span at rest (cap top … base bottom), used
+// to centre the whole stick in the page (maintainer's red line: equal
+// margin above and below)
+const CAP_TOP_ART = 16;
+const BASE_BOT_ART = 79;
 const DEAD_FRAC = 0.35; // of the max: inside this, all keys are up
 const RUN_FRAC = 0.75; // of the max: past this amplitude the gait is RUN (Shift), else walk
 const SNAP_MS = 80; // the fast (not instant) glide between snap positions
@@ -110,7 +115,17 @@ export function mountGamepadStick(page: HTMLElement) {
     const size = CANVAS * k;
     pad.style.width = pad.style.height = `${size}px`;
     pad.style.left = `${Math.round(page.clientWidth * 0.705 - CX * k)}px`;
-    pad.style.top = `${Math.round(page.clientHeight * 0.42 - CY * k)}px`;
+    // vertically CENTRE the resting assembly: equal margin above the cap and
+    // below the base (maintainer's red-line round, 2026-07-22). The page
+    // element runs on under the bottom frame rail with asymmetric padding
+    // (--ml-page-padtop/-padbot are the frame's inner window), so centre in
+    // the VISIBLE content box, not the raw clientHeight.
+    const cs = getComputedStyle(page);
+    const padTop = parseFloat(cs.paddingTop) || 0;
+    const padBot = parseFloat(cs.paddingBottom) || 0;
+    const visH = page.clientHeight - padTop - padBot;
+    const centreArt = (CAP_TOP_ART + REST_ART + BASE_BOT_ART) / 2;
+    pad.style.top = `${Math.round(padTop + visH * 0.5 - centreArt * k)}px`;
     setCap(visSector, visRadius); // re-derive the k-scaled transform
   };
   layout();

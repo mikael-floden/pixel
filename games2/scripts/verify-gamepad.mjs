@@ -79,7 +79,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     if (!m) fail(`no snap transform (${tf})`);
     else {
       const [dx, dy] = [+m[1], +m[2]];
-      const wantX = 14 * geom.k, wantY = 12 * geom.k; // MAX_ART east + REST_ART
+      const wantX = 14 * geom.k, wantY = 14 * geom.k; // MAX_ART east + REST_ART
       Math.abs(dx - wantX) < 1 && Math.abs(dy - wantY) < 1
         ? ok(`cap snapped at full E deflection (${dx},${dy}) = (MAX,REST)·k`)
         : fail(`cap at (${dx},${dy}), want (${wantX},${wantY})`);
@@ -105,7 +105,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     await page.waitForTimeout(250);
     const tMid = await topTf();
     const mm = /translate\(([-\d.]+)px, ([-\d.]+)px\)/.exec(tMid);
-    mm && Math.abs(+mm[1] - 16) < 2 && Math.abs(+mm[2] - 12 * geom.k) < 2
+    mm && Math.abs(+mm[1] - 16) < 2 && Math.abs(+mm[2] - 14 * geom.k) < 2
       ? ok(`amplitude analog: half-tilt cap at ${mm[1]}px (finger 16px)`)
       : fail(`amplitude snapped? cap at ${tMid}, finger at 16px`);
 
@@ -150,7 +150,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     drift < 1.5 ? ok(`release stops movement (drift ${drift.toFixed(2)}wu)`) : fail(`still moving after release (${drift.toFixed(1)}wu)`);
     const tfAfter = await topTf();
     const mr = /translate\(0px, ([-\d.]+)px\)/.exec(tfAfter);
-    mr && Math.abs(+mr[1] - 12 * geom.k) < 1
+    mr && Math.abs(+mr[1] - 14 * geom.k) < 1
       ? ok(`cap re-seated on the socket (rest ${mr[1]}px)`)
       : fail(`cap not re-seated (${tfAfter})`);
   }
