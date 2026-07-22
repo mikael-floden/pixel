@@ -7,15 +7,17 @@ gamepad tab's on-screen analog stick: the TOP is the piece that moves
 under the thumb; the BASE (dome ring, with a transparent hole) goes to an
 AI fill round-trip for the pixels the top occluded.
 
-THE BOUNDARY IS THE MAINTAINER'S, PIXEL-EXACT (2026-07-22): he marked the
-"not part of the top" pixels in red on the 16x grid render; the screenshot
-was registered back to art coordinates via the orange grid (pitch 93.4
-shot-px per 4 art-px) plus content correlation (line0 = art (26,40), SSD
-0.4 — unambiguous). The decoded staircase is MARKED below, verbatim: it
-sweeps around the WHOLE under-cap region, so the top = cap + stalk + its
-socket shadow (they move together when the stick tilts) and the base is
-the dome ring only. An earlier heuristic cut (border-valley tracing, git
-history) put the seam at the cap's lip — superseded by this marking.
+THE BOUNDARY IS THE MAINTAINER'S, PIXEL-EXACT (2026-07-22, round 3): on
+the 16x grid render he marked the not-top boundary as RED flank staircases
+plus a BLUE mid line (rows 49/50) — "the blue line and not the green line"
+— replacing his earlier GREEN deep sweep (git history), which would have
+taken the stalk + shadow well with the top. Both screenshots register back
+to art coordinates identically (orange grid pitch ~93.4 shot-px per 4 art
+px + content correlation, line0 = art (26,40), SSD 0.4-0.5 — unambiguous).
+MARKED below is the decoded red+blue set verbatim (min row per column is
+what cuts): the top = the mushroom cap incl. its under-lip shading down to
+the shadow's first rows; the stalk, shadow well and dome stay base. The
+first heuristic cut (border-valley tracing) is also in git history.
 
 Per column: top = art pixels from the silhouette top down to (first marked
 row) - 1; marked pixels and everything below stay base. The sheet's
@@ -37,7 +39,7 @@ MARKED = {
     37: [23],
     38: [23, 24],
     39: [24, 68],
-    40: [24, 25, 68],
+    40: [24, 25, 67, 68],
     41: [25, 67],
     42: [25, 26, 66, 67],
     43: [26, 27, 65, 66],
@@ -46,15 +48,8 @@ MARKED = {
     46: [29, 30, 31, 62, 63],
     47: [31, 32, 33, 59, 60, 61],
     48: [33, 34, 58, 59],
-    49: [34, 58],
-    50: [34, 58],
-    51: [34, 58],
-    52: [34, 35, 57, 58],
-    53: [35, 36, 56, 57],
-    54: [36, 37, 55, 56],
-    55: [37, 38, 39, 53, 54, 55],
-    56: [39, 40, 41, 42, 50, 51, 52, 53],
-    57: [42, 43, 44, 45, 46, 47, 48, 49, 50],
+    49: [34, 35, 36, 37, 38, 54, 55, 56, 57, 58],
+    50: [38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54],
 }
 
 
