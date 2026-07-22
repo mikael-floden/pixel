@@ -1350,12 +1350,14 @@ class Island2(Island):
                 road.update(spur)
                 self._set_road_now(road)                 # rebuild magnet after each spur
         self._road_now = self._road_attract = None
-        # Materials the road may PAVE (turn to dirt) so the winding ascent reads as a ROAD even on
-        # the bare rock/snow mountain benches. The rock ASCENT ramps (self._ascent) stay rock — so
-        # the visible road is dirt LEGS along the contoured benches joined by rock STAIR ramps: a
-        # Trollstigen. Sand and water are never paved.
-        PAVE = ("saturated_grass", "lightdark_dirt", "stone_mountain", "regular_snow",
-                "black_mountain", "crystal_ice")
+        # Materials the road may PAVE (turn to dirt). GRASS ONLY (maintainer 2026-07-22: "if you
+        # can't make the road as wide as it needs to be — don't make a road at that location at
+        # all"): dirt over stone/snow/obsidian renders as patchy eroded stains in this tileset,
+        # so a mountain-cap road never FEELS like the solid lowland band no matter how many
+        # cells wide it is painted. Roads therefore live where they render solid — on grass —
+        # and the mountain is traversed by its stairs and open benches; road spurs still lead
+        # to every staircase foot at the mountain base.
+        PAVE = ("saturated_grass", "lightdark_dirt")
         # SCREEN-VERTICAL runs (grid (1,1) steps) must NOT widen: for them the two toward-camera
         # directions are lateral LEFT and RIGHT, so widening fattened the road on BOTH flanks on
         # top of the elbow that already doubles it (4 strands ~160px vs the approved 3-strand

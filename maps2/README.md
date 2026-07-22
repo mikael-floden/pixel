@@ -110,13 +110,16 @@ Consequences to honour:
   - `_material_slivers` (the detector) must be EMPTY at build time — `_fix_material_slivers`
     repairs stragglers by flipping them to the dominant adjacent terrain (never to dirt,
     never to stone at the shore) in a joint fixpoint with `_lip_cover`.
-- **Same road width regardless of elevation** (maintainer 2026-07-22): on a bench rim the
-  toward-camera side is the cliff, so the widen step falls back to the UP-SCREEN strand
-  there — and a WIDTH NORMALIZER then enforces a minimum of 3 strands on every linear
-  run at every altitude (screen-vertical runs keep their approved 2-column elbow form;
-  1-cell gaps to parallel strands are never bridged so switchback legs don't merge).
-  The opportunistic widen alone left width to local luck (2 on one bench, 3 in the
-  lowland) — a uniform look needs a uniform floor, not a best effort.
+- **A road is full-width and solid, or it doesn't exist** (maintainer 2026-07-22: "if you
+  can't make the road as wide as it needs to be — don't make a road at that location at
+  all"). Roads PAVE **grass only**: dirt over stone/snow/obsidian renders as patchy eroded
+  stains in this tileset, so a mountain-cap road never feels like the solid lowland band
+  no matter how many cells wide it is painted. The mountain is traversed by its stairs
+  and open benches; road spurs still lead to every staircase foot at the base. Where
+  roads DO exist, a WIDTH NORMALIZER enforces a minimum of 3 strands on every linear run
+  (screen-vertical runs keep their approved 2-column elbow form; 1-cell gaps to parallel
+  strands are never bridged so close legs don't merge) — a uniform look needs a uniform
+  floor, not the opportunistic widen's local luck.
 - **Fog exception:** a drop of **more than 10 levels** is separated by the game's
   fog, so the same material MAY be reused across it (an alternative to changing
   type — just make sure the z-distance is >10 and let the fog do the work).
