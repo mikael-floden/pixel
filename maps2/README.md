@@ -69,6 +69,15 @@ Consequences to honour:
 - **Change material only across a genuine away-step, and only as a BIG region** —
   the whole far side becomes a different type, **never a 1-cell stripe.** (Usually
   unnecessary: camera-facing terrain + always-different water boundaries cover it.)
+- **The wall-material recolour is a LAST RESORT** (maintainer 2026-07-22: "it looks
+  ugly — only use this trick when absolutely needed"). A same-material toward-camera
+  up-step is FINE — leave it — when the elevation change is legible anyway:
+  (a) a **visible cliff face nearby** (the edge turns a corner and draws its face)
+  already reveals the step; or (b) the ground the player **actually sees behind the
+  seam differs** from the high top — and for a tall step that visible ground is
+  several ROWS up-screen (15px/row vs 16px/level), NOT the grid-adjacent tile: a
+  rock band, dirt road or water back there makes the edge read even when the
+  adjacent cell is grass. Recolour ONLY the lips that fail both.
 - **Fog exception:** a drop of **more than 10 levels** is separated by the game's
   fog, so the same material MAY be reused across it (an alternative to changing
   type — just make sure the z-distance is >10 and let the fog do the work).
@@ -80,8 +89,11 @@ Enforce it in code (`pipeline/autotile.py`):
   coast becomes a sea-cliff. Run it **after `flatten_shores`** (which beaches all
   coasts) so only the near-shore beaches survive.
 - **`occlusion_violations(mat, level)`** — returns every remaining hidden
-  same-material lip (drops >10 ignored as fog-safe). A generator must print/assert
-  this is **empty**. `pipeline/islandworld.py` (`the_island`) is the reference.
+  same-material lip (drops >10 ignored as fog-safe). the_island2 filters this
+  through `Island2._lip_needed` (the legibility test above) and asserts the
+  **illegible** subset (`_bad_lips`) is empty — legible same-material lips are
+  allowed and preferred. `pipeline/islandworld.py` (`the_island`) still asserts
+  the raw list empty.
   (`demo_lost` is the *older* grass island, kept as-is and NOT under this rule —
   don't use it as the pattern.)
 
@@ -118,10 +130,13 @@ Enforce it in code (`pipeline/autotile.py`):
   **two worlds**: an antitone **mountain** (upper) with a new *A Link to the Past*-style
   relief **maze** (lower). The maze can't be antitone (a strictly-antitone field only
   makes one connected lowest sheet, so it could never separate two equal-level floors
-  laterally), so it uses genuine relief kept occlusion-legal by the **wall-material
-  rule**: any same-material toward-camera up-step has its higher rim recoloured to a wall
-  material (stone/obsidian) via `_wall_rim` + an iterated, neighbour-aware, all-zones
-  `mat`-only `_lip_cover` (a Δ>10 step is fog-exempt, so tier-12 keeps its grass top).
+  laterally), so it uses genuine relief kept legible by the **only-where-needed
+  wall-material rule**: `_lip_cover` recolours a same-material toward-camera up-step's
+  higher rim to a wall material (stone/obsidian) ONLY when `_lip_needed` says the step
+  would otherwise be illegible — no nearby visible cliff face AND the same ground
+  visible behind the seam (several rows up-screen for a tall step). Legible lips stay
+  natural grass; `_bad_lips` (the illegible subset) is the must-be-empty gate
+  (a Δ>10 step is fog-exempt, so tier-12 keeps its grass top).
   Design details (all four hard-asserted):
   - **Mountain** is TERRACED onto flat benches `{16,20,24,28,32}` (Δ4 cliffs, `camera_monotone`
     masked to it), with varied peak heights + a carved valley/tarn so it climbs in steps and

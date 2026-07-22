@@ -9,7 +9,9 @@ step UP toward the camera with the SAME material):
     camera-fanning grooves + an internal water valley make it JAGGED and undulating (down-
     then-up), not a smooth pyramid. camera_monotone masked to it -> occlusion-clean.
   * LOWER (the maze) uses genuine RELIEF at BIG tiers {0,4,12} (deltas Δ4/Δ8/Δ12), legal by
-    the wall-material rule (_wall_rim + neighbour-aware all-zones mat-only _lip_cover).
+    the wall-material rule, applied ONLY WHERE NEEDED (_lip_needed gates _lip_cover: a lip is
+    left alone when a nearby visible cliff or a different ground visible behind the seam
+    already makes the elevation change legible — maintainer 2026-07-22).
   * ASCENTS/RAMPS that climb cliffs are ROCK (STAIR_MAT): a few tidy full-height Trollstigen
     switchback ribbons up the massif (_mountain_stairs/_climb_corridor/_next_bench_step) and
     short rock connectors for maze pockets. ROADS are flat DIRT only.
@@ -132,7 +134,6 @@ class Island2(Island):
         self._mtn_gorge()                 # DEEP gorge down the massif (banks keep full height)
         self.level_before = self.level.copy()
         self._materials()                 # mountain caps + BIGGER beaches
-        self._wall_rim()                  # Pass A: recolour maze up-step rims -> wall material
         self._mountain_stairs()           # a few TIDY full-height ROCK ascents; rest sheer cliff
         self._connect_all(thresh=5)       # reuse: rock connectors + span the gorge -> one piece
         self._ford_stranded()
@@ -142,7 +143,7 @@ class Island2(Island):
             camera_monotone_masked(self.level, self.mat, self.upper)
             self._fill_traps()
             self._lip_cover()
-            if self._trap_count() == 0 and not occlusion_violations(self.mat, self.level):
+            if self._trap_count() == 0 and not self._bad_lips():
                 break
         self._ponds()                     # flush multi-level lakes (before spawn -> post-pond main)
         self._sunken_lagoon()             # a walk-in lagoon sunk 2 levels (transactional)
@@ -352,38 +353,68 @@ class Island2(Island):
 
     # -- occlusion legality for the maze ---------------------------------------
 
-    def _wall_mat(self, x, y):
-        return "stone_mountain" if int(self.level[y, x]) < 8 else "black_mountain"
+    def _lip_needed(self, lx, ly, hx, hy, dh=None):
+        """Is the wall-material trick actually NEEDED for this same-material toward-camera lip?
+        Maintainer rule (2026-07-22): the recolour is a LAST RESORT — it looks ugly — used only
+        when the elevation change would otherwise be illegible. It is NOT needed when:
+          (a) a VISIBLE cliff face nearby already reveals the step (the edge turns a corner and
+              draws its face) — the player sees the height there; or
+          (b) the ground the player SEES just behind the seam differs from the high cell's top.
+              For a tall step that visible ground is several ROWS up-screen (15px/row vs 16px/
+              level), NOT the grid-adjacent tile — a rock band / dirt road / water back there
+              already makes the edge read."""
+        n = self.n
+        Lh = int(self.level[hy, hx])
+        hm = self.mat[hy, hx]
+        # (a) nearby visible cliff at this rim height (a >=2-level toward-camera drop is a
+        # clearly drawn face) -> the elevation change is already easy to see
+        R = 3
+        for yy in range(max(0, hy - R), min(n, hy + R + 1)):
+            for xx in range(max(0, hx - R), min(n, hx + R + 1)):
+                if int(self.level[yy, xx]) != Lh or self.mat[yy, xx] in ("", "clear_water"):
+                    continue
+                for i, j in ((1, 0), (0, 1)):
+                    ax, ay = xx + i, yy + j
+                    if (0 <= ax < n and 0 <= ay < n
+                            and int(self.level[ay, ax]) <= Lh - 2):
+                        return False
+        # (b) walk straight UP-SCREEN from the seam (alternating the U-column and H-column of
+        # the screen line, one row = 15px) until a top surface pokes above the lip's height;
+        # that's the ground actually visible at the edge. Different material -> edge reads.
+        i, j = hx - lx, hy - ly                          # this lip's toward-camera step
+        for rowdist in range(1, 26):
+            m = (rowdist - 1) // 2
+            if rowdist % 2 == 1:
+                cx, cy = lx - m, ly - m                  # U-column cells (odd rows behind)
+            else:
+                cx, cy = hx - m, hy - m                  # H-column cells (even rows behind)
+            if not (0 <= cx < n and 0 <= cy < n) or self.mat[cy, cx] == "":
+                return False                             # open ocean/void behind -> edge reads
+            if 15 * rowdist + 16 * int(self.level[cy, cx]) >= 16 * Lh:
+                return self.mat[cy, cx] == hm            # same ground behind -> illegible -> paint
+        return False
 
-    def _wall_rim(self):
-        n, mat, level = self.n, self.mat, self.level
-        land = (mat != "") & (mat != "clear_water")
-        lv = level.astype(np.int32)
-        same_hi = np.zeros((n, n), bool)
-        dhx = lv[:, 1:] - lv[:, :-1]
-        same_hi[:, 1:] |= (land[:, 1:] & land[:, :-1] & (dhx >= 1) & (dhx <= 10)
-                           & (mat[:, 1:] == mat[:, :-1]))
-        dhy = lv[1:, :] - lv[:-1, :]
-        same_hi[1:, :] |= (land[1:, :] & land[:-1, :] & (dhy >= 1) & (dhy <= 10)
-                           & (mat[1:, :] == mat[:-1, :]))
-        rim = same_hi & self.maze & land
-        floor = np.isin(mat, np.array(["saturated_grass", "light_sand", "lightdark_dirt"], object))
-        for (y, x) in np.argwhere(rim & floor):
-            mat[y, x] = self._wall_mat(x, y)
+    def _bad_lips(self):
+        """The lips that actually need covering: same-material toward-camera up-steps that are
+        ILLEGIBLE (no nearby visible cliff, same ground visible behind the seam). This — not the
+        raw occlusion_violations list — is the_island2's must-be-empty gate; legible same-material
+        steps are ALLOWED (maintainer prefers them over the ugly wall-material stripes)."""
+        return [v for v in occlusion_violations(self.mat, self.level)
+                if self._lip_needed(v[0][0], v[0][1], v[1][0], v[1][1], v[2])]
 
     def _lip_cover(self, max_iter=8):
-        """Recolour the HIGHER cell of every residual same-material toward-camera lip to a wall
-        material that DIFFERS from ALL its up-screen lower neighbours (the cells it could form a
-        lip with). If BOTH stone and obsidian sit up-screen of it (an un-2-colourable corner
-        where a ramp meets terrain diagonally), fall back to DIRT — which differs from both — and
-        drop the cell from the rock-ascent set. mat-only, so it never changes a level; always
-        converges (dirt is a third escape)."""
+        """Recolour the HIGHER cell of every ILLEGIBLE same-material toward-camera lip (see
+        _lip_needed — legible lips are left alone) to a wall material that DIFFERS from ALL its
+        up-screen lower neighbours. If BOTH stone and obsidian sit up-screen of it (an un-2-
+        colourable corner where a ramp meets terrain diagonally), fall back to DIRT — which
+        differs from both — and drop the cell from the rock-ascent set. mat-only, so it never
+        changes a level; always converges (dirt is a third escape)."""
         n = self.n
         for _ in range(max_iter):
-            viol = occlusion_violations(self.mat, self.level)
-            if not viol:
+            bad = self._bad_lips()
+            if not bad:
                 return True
-            for (_lo, (hx, hy), _dh) in sorted(viol, key=lambda v: v[1][0] + v[1][1]):
+            for (_lo, (hx, hy), _dh) in sorted(bad, key=lambda v: v[1][0] + v[1][1]):
                 L = int(self.level[hy, hx])
                 clash = set()
                 for i, j in ((-1, 0), (0, -1)):               # up-screen neighbours (lower -> lip)
@@ -398,7 +429,7 @@ class Island2(Island):
                 else:
                     self.mat[hy, hx] = "lightdark_dirt"        # both walls clash -> dirt differs
                     self._ascent.discard((hx, hy))
-        return not occlusion_violations(self.mat, self.level)
+        return not self._bad_lips()
 
     # -- mountain-HUGGING ascent (cut-in ramps; the benches are the legs) -------
 
@@ -930,7 +961,7 @@ class Island2(Island):
         mainset = set(comps[0]) if comps else set()
         maze_land = int((self.maze & (self.mat != "clear_water")).sum())
         upper_land = int((self.upper & (self.mat != "clear_water")).sum())
-        if (ok and not occlusion_violations(self.mat, self.level)
+        if (ok and not self._bad_lips()
                 and self._trap_count() == 0
                 and len(mainset) >= 0.98 * land
                 and all((x, y) in mainset for (x, y) in ring)
@@ -1327,8 +1358,9 @@ def build(out=None, seed=21, M=24):
 
     # --- assert battery ---
     terr = Counter(m for m in d.mat.ravel() if m)
-    viol = occlusion_violations(d.mat, d.level)
-    assert not viol, f"camera-facing rule broken: {viol[:5]}"
+    viol = occlusion_violations(d.mat, d.level)   # raw same-material lips (legible ones ALLOWED)
+    bad = d._bad_lips()                           # illegible ones — these must be zero
+    assert not bad, f"camera-facing rule broken (illegible lips): {bad[:5]}"
 
     upper_land = int((d.upper & (d.mat != "clear_water")).sum())
     maze_land = int((d.maze & (d.mat != "clear_water")).sum())
@@ -1386,7 +1418,8 @@ def build(out=None, seed=21, M=24):
           f"switchbacks {d._nswitch}/{STAIR_CORRIDORS} corr; ascent {len(d._ascent)}; road {len(d.roads)}")
     print(f"  zones: upper(mtn) {upper_land} land, maze {maze_land} land "
           f"(maze/upper = {maze_land / max(1, upper_land):.2f}x)")
-    print(f"  occlusion lips: {len(viol)} {'[CLEAN]' if not viol else viol[:3]}")
+    print(f"  occlusion lips: {len(viol)} legible allowed / {len(bad)} illegible "
+          f"{'[CLEAN]' if not bad else bad[:3]}")
     print(f"  reachable (prop-aware) {reach}/{land_cells} land "
           f"({unreachable} water-locked islet); traps {traps}; decks {len(d.decks)}")
     print(f"  walkable components (top 6 sizes): {[len(c) for c in comps[:6]]}")
