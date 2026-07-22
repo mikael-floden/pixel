@@ -471,9 +471,34 @@ def main():
                 trimmed += 1
     print(f"round4: divider stub px trimmed={trimmed}")
 
+    # ── output with DE-FRINGE (maintainer 2026-07-22 #2: on the game's dark
+    # HUD the rim showed LIGHT GREY — "in reality the pixels was black with a
+    # percentage transparency"). The old soft-edge pass kept each edge
+    # pixel's OBSERVED colour — art blended over the grey backdrop — so the
+    # backdrop stayed baked into the fringe and glowed on dark backgrounds.
+    # UNMIX instead: an edge pixel is a mix C = a·F + (1-a)·B of its true
+    # foreground F over the local backdrop B. For every kept pixel within
+    # DEFRINGE_R of transparency that is either backdrop-family or inside
+    # the old soft ramp, estimate F from nearby SOLID art (the vine outline
+    # / leaf / wood the fringe belongs to; near-black fallback = his model),
+    # solve for a, and emit (F, a). Over the original grey that renders back
+    # to ~C; over the dark HUD the fringe now fades into the background.
+    # Round-3 pinned pixels stay exactly as pinned. Applied along the WHOLE
+    # silhouette — his red marks are examples ("we might have more pixels
+    # like this on the other side").
+    DEFRINGE_R = 2
+    SOLID = 110          # |C-B| at/above which a pixel is solid art
+    FALLBACK_F = (14, 16, 18)
+
+    def fam2(c):
+        r, g, b = c
+        v = (r + g + b) / 3
+        return abs(r - g) <= 20 and (g - 10) <= b <= (g + 34) and 60 <= v <= 238
+
     out = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     o = out.load()
     soft = 0
+    unmixed = 0
     for y in range(H):
         for x in range(W):
             if cleared[y][x]:
@@ -482,25 +507,52 @@ def main():
             if (x, y) in pin:
                 o[x, y] = (*c, 255)
                 continue
-            a = 255
-            near = any(
+            # local backdrop over the de-fringe window
+            ns = [p[x + dx, y + dy]
+                  for dx in range(-DEFRINGE_R, DEFRINGE_R + 1)
+                  for dy in range(-DEFRINGE_R, DEFRINGE_R + 1)
+                  if 0 <= x + dx < W and 0 <= y + dy < H and cleared[y + dy][x + dx]]
+            if not ns:
+                o[x, y] = (*c, 255)
+                continue
+            lr = sum(n[0] for n in ns) / len(ns)
+            lg = sum(n[1] for n in ns) / len(ns)
+            lb = sum(n[2] for n in ns) / len(ns)
+            d = ((c[0] - lr) ** 2 + (c[1] - lg) ** 2 + (c[2] - lb) ** 2) ** 0.5
+            near1 = any(
                 0 <= x + dx < W and 0 <= y + dy < H and cleared[y + dy][x + dx]
                 for dx in (-1, 0, 1) for dy in (-1, 0, 1)
             )
-            if near:
-                # soften vs the LOCAL cleared colour (the backdrop is shaded)
-                ns = [p[x + dx, y + dy] for dx in (-1, 0, 1) for dy in (-1, 0, 1)
-                      if 0 <= x + dx < W and 0 <= y + dy < H and cleared[y + dy][x + dx]]
-                lr = sum(n[0] for n in ns) / len(ns)
-                lg = sum(n[1] for n in ns) / len(ns)
-                lb = sum(n[2] for n in ns) / len(ns)
-                d = ((c[0] - lr) ** 2 + (c[1] - lg) ** 2 + (c[2] - lb) ** 2) ** 0.5
-                if d < EDGE_SOFT:
-                    a = max(0, min(255, round(255 * d / EDGE_SOFT)))
-                    soft += 1
-            o[x, y] = (*c, a)
+            if not (fam2(c) or (near1 and d < EDGE_SOFT)):
+                o[x, y] = (*c, 255)
+                continue
+            # true foreground: mean of solid art in the window (else black-ish)
+            fs = [p[x + dx, y + dy]
+                  for dx in range(-DEFRINGE_R, DEFRINGE_R + 1)
+                  for dy in range(-DEFRINGE_R, DEFRINGE_R + 1)
+                  if 0 <= x + dx < W and 0 <= y + dy < H
+                  and not cleared[y + dy][x + dx]
+                  and ((p[x + dx, y + dy][0] - lr) ** 2
+                       + (p[x + dx, y + dy][1] - lg) ** 2
+                       + (p[x + dx, y + dy][2] - lb) ** 2) ** 0.5 >= SOLID]
+            if fs:
+                F = (round(sum(n[0] for n in fs) / len(fs)),
+                     round(sum(n[1] for n in fs) / len(fs)),
+                     round(sum(n[2] for n in fs) / len(fs)))
+            else:
+                F = FALLBACK_F
+            fb = ((F[0] - lr) ** 2 + (F[1] - lg) ** 2 + (F[2] - lb) ** 2) ** 0.5
+            a = max(0.0, min(1.0, d / fb)) if fb >= 1 else min(1.0, d / SOLID)
+            if a >= 0.99:
+                o[x, y] = (*c, 255)
+                continue
+            o[x, y] = (*F, max(0, min(255, round(255 * a))))
+            unmixed += 1
+            if near1 and d < EDGE_SOFT:
+                soft += 1
     out.save(OUT)
-    print(f"keyed: bg={bg}, pocket px cleared={pockets}, soft-edge px={soft}")
+    print(f"keyed: bg={bg}, pocket px cleared={pockets}, "
+          f"defringed px={unmixed} (of which old-soft {soft})")
     print("bbox:", out.getbbox())
 
 

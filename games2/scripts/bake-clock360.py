@@ -52,6 +52,12 @@ print(f"frame paste top-left=({px0},{py0}), source clip row sy0={sy0}")
 # coverage report: old-disc pixels the new wheel does NOT cover would show
 # page background where art used to be — expect only outer-wreath fringe
 # (the redrawn wreath legitimately differs), nothing inside the face.
+# (one-time migration check — the retired asset is gone after the switch)
+import os
+
+if not os.path.exists(OLD):
+    print("old disc asset retired — coverage report skipped")
+    raise SystemExit(0)
 old = Image.open(OLD).convert("RGBA")
 op = old.load()
 np_ = out.load()
