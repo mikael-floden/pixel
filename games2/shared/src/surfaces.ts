@@ -71,11 +71,13 @@ export const SURFACES: Record<string, Surface> = {
   sand_bank: ground(0.8, "sand"),
   coral_sand: ground(0.8, "sand"),
   desert: ground(0.75, "sand"),
-  snow: ground(0.7, "snow"),
-  cliff_snow: ground(0.7, "snow"),
+  // Winter speeds (maintainer 2026-07-22): snow a little faster, ice a
+  // little slower — keeping the ordering snow (0.8) < rock (1.0) < ice (1.05).
+  snow: ground(0.8, "snow"),
+  cliff_snow: ground(0.8, "snow"),
   tundra: ground(0.8, "snow"),
   permafrost: ground(0.9, "snow"),
-  ice: ground(1.15, "ice"),
+  ice: ground(1.05, "ice"),
   crystal_ground: ground(1.0, "stone"),
   bog: ground(0.55, "swamp"),
   swamp: ground(0.5, "swamp"),
@@ -111,12 +113,12 @@ export const SURFACES: Record<string, Surface> = {
   // drives walls, not solidity); clear_water is swimmable like `water`.
   clear_water: { standable: false, swimmable: true, speed: 0.55, sound: "water" },
   saturated_grass: ground(1.0, "grass"),
-  regular_snow: ground(0.7, "snow"),
+  regular_snow: ground(0.8, "snow"),
   light_sand: ground(0.8, "sand"),
   lightdark_dirt: ground(0.95, "dirt"),
   stone_mountain: ground(1.0, "stone"),
   black_mountain: ground(1.0, "stone"),
-  crystal_ice: ground(1.15, "ice"),
+  crystal_ice: ground(1.05, "ice"),
   wooden_balcony: ground(1.0, "wood"),
 };
 export const DEFAULT_SURFACE: Surface = ground(1.0, "grass");
