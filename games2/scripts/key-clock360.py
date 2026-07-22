@@ -43,6 +43,18 @@ graphics"), registered onto the source (uniform scale 980/1069, offset
    same house rules from pure-grey seeds, bounded to the marked
    neighbourhood (RED_BOX) so the clear cannot creep along the disc rim.
 
+ROUND 4 — trim the divide line: with the extraction approved ("The
+extracted click is now perfect!") he red-marked the divider's OUTBOARD
+stubs — the black line originally runs the full canvas width, floating
+past the wreath silhouette on both sides. His strokes (decoded like round
+3, kept in clock360-marks-r4.json) span x[0..78] and x[980..1067] over
+the line body; the cut clears the line BAND rows only (LINE_BAND — the
+full-width fringe+core rows) across those column ranges, right stub
+extended to the canvas edge his stroke fell one pixel short of. Row 493
+and below are wreath art at both junctions (a leaf under x72..78, a vine
+ledge under x980..991) and are never touched — the line INSIDE the disc
+stays, per his call.
+
 ROUND 3 — "This is on individual pixel level now": his second marked
 screenshot (a ~0.94x viewer shot of the corrected art, registered via the
 magenta content bbox) is applied LITERALLY, pixel for pixel, from
@@ -82,6 +94,9 @@ RED_BOX = 50     # the RED re-flood may only act this close to a red mark
 CLOSE_REACH = 3  # enclosed-pocket rule: reach around a pinned green pixel
 CLOSE_MAX = 40   # ...max pocket size
 CLOSE_ART = 60   # art-colour rule: srcdist beyond any backdrop/halo grey
+# round-4 divider trim (derived from clock360-marks-r4.json)
+LINE_BAND = (486, 492)             # the divider's full-width rows: fringe + core
+LINE_CUT = ((0, 78), (980, 1068))  # his red strokes; right stub to the canvas edge
 
 
 def main():
@@ -439,6 +454,22 @@ def main():
             origin[y][x] = 0
             healed_b += 1
     print(f"round3 closure: enclosed-pocket px={healed_a}, art-colour px={healed_b}")
+
+    # ── round 4: trim the divider's outboard stubs (line band only) ──
+    trimmed = 0
+    for cx0, cx1 in LINE_CUT:
+        for y in range(LINE_BAND[0], LINE_BAND[1] + 1):
+            for x in range(cx0, min(cx1, W - 1) + 1):
+                if cleared[y][x]:
+                    continue
+                v = sum(p[x, y]) / 3
+                # the band here is line fringe/core (dark) by construction; a
+                # bright pixel would mean the cut is misaligned — refuse it
+                assert v < 130, f"round4: non-line pixel at ({x},{y}) v={v:.0f}"
+                cleared[y][x] = True
+                origin[y][x] = 6
+                trimmed += 1
+    print(f"round4: divider stub px trimmed={trimmed}")
 
     out = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     o = out.load()
