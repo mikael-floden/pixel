@@ -214,9 +214,11 @@ function blendPhases(u: number): {
 
 /** The clock hand's continuous position, weighted by the PHASE DURATIONS:
  * the sunlit phases (morning+day+evening) share ONE sweep of the 12-hour
- * face in proportion to their length, the night is the other sweep — with
- * night = the sunlit sum (shared TIME_PHASE_SECONDS) both sweeps run at
- * the same constant speed. Angle: degrees from straight DOWN, + = left. */
+ * face in proportion to their length, the night is the other sweep. Each
+ * sweep spans its phase set's real duration — night ticks 3x as fast
+ * (40s vs the sunlit 120s, maintainer), so the night sweep covers the
+ * same full half-circle at 3x the angular speed. Angle: degrees from
+ * straight DOWN, + = left. */
 function handAngle(u: number): { deg: number; night: boolean; f: number } {
   const N = TIME_PHASE_SECONDS.length;
   const idx = ((Math.floor(u) % N) + N) % N;

@@ -321,9 +321,10 @@ visible head/shoulders are ABOVE the surface).
 - The phase index lives in WorldState.timeIdx (shared DEFAULT_TIME_IDX /
   TIME_PHASE_COUNT) and the cycle RUNS BY ITSELF (maintainer: the
   day/night cycle is a core rhythm of the game): the server's world
-  clock advances the phase per TIME_PHASE_SECONDS ([120, 25, 70, 25] —
-  NIGHT lasts as long as morning+day+evening combined, short dawn/dusk,
-  long day; 4 min full cycle). Time is CONTINUOUS (maintainer: "the clock arrow
+  clock advances the phase per TIME_PHASE_SECONDS ([40, 25, 70, 25] —
+  NIGHT TICKS 3x AS FAST (maintainer 2026-07-22): a third of the sunlit
+  sum in wall time so darkness doesn't dominate play, short dawn/dusk,
+  long day; 160s full cycle). Time is CONTINUOUS (maintainer: "the clock arrow
   and the shadow should move continuously... not swap from day to
   evening that sudden" — the discrete jumps were why time kept LOOKING
   frozen): WorldState.phaseT (0..1 progress, written by the 20Hz sim
@@ -339,8 +340,9 @@ visible head/shoulders are ABOVE the surface).
   marking): the SUNLIT sweep spans morning+day+evening — phases share
   the -90..+90 arc IN PROPORTION TO THEIR DURATIONS (handAngle), "12"
   straight down at day's middle — and the NIGHT sweep spans the night
-  phase ("12" at midnight); with night = the sunlit sum both sweeps
-  run at one constant speed. At each hand-off (sunset = evening's
+  phase ("12" at midnight) over its OWN duration: with night now a third
+  of the sunlit sum the night sweep runs the same full half-circle at 3x
+  the angular speed. At each hand-off (sunset = evening's
   end; night's end) the hand JUMPS from 100% left back to 100% right
   (setClockAngle snaps backward deltas). THE SUN IS THE HAND
   (maintainer: "directional light always points in the clock arrow
