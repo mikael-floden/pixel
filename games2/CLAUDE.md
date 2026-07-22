@@ -602,11 +602,6 @@ visible head/shoulders are ABOVE the surface).
      resolves to its high lip cell while the marched `z` drops); as it passes ½ level, LERP the
      distance band from `floor(distCont)` to the raw `distCont` — the face fades to the smooth
      ring value (a clean gradient, no staircase) while flats keep the crisp rings BYTE-for-byte.
-     The SAME `faceMix` lerp also un-posterizes the ELEVATION band (channel 2) on faces: its
-     `ceil()` boundaries land at different screen rows per wall column (z varies laterally), so
-     on the 30-40-level the_island2 v6 gorges every interior band edge SAWTOOTHED along the
-     column diamonds (maintainer's second red-zigzag report, at (89,99)+(109,95)); on faces the
-     term lerps to its continuous value (smooth vertical gradient), flats keep the crisp `ceil()`.
   2. **HARD elevation EDGE** — `elevBand = ceil(|pLev − z|·ELEV_STEP − ELEV_EPS)` where `z`
      is the MARCH's OWN resolved fractional surface level (NOT `heightAt(cell)`: a cliff-
      FACE pixel resolves to the HIGH cell, so heightAt is constant across top+face and only
