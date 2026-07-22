@@ -6,8 +6,8 @@
  *   /ui2/frame-top-runefree.png rows 0-99 with both rune glyphs inpainted
  *                               away (the stretch fills sample this so no
  *                               rune pixel ever repeats)
- *   /ui2/clock360.png           the 360° zodiac wheel, hung behind the top
- *                               beam at the hand pivot (see CLOCK360)
+ *   (the 360° zodiac wheel is NOT baked in — clock.ts hangs it behind this
+ *   canvas as a live, rotating layer; see the CLOCK note below)
  *
  * The compose is a pixel-exact port of the maintainer-approved dummy
  * builder (scratchpad hud2-tilespec.json, 2026-07-17): every stretchable
@@ -188,57 +188,14 @@ function hGrainAt(d: HDonor, src: ImageData, y: number, i: number): number {
 // shifts by the left insert half; above VCUT1, so no vertical shift.
 const CLOCK_ANCHOR = { x: 385, y: 88 };
 
-// The CLOCK is the maintainer's full 360° zodiac WHEEL now (2026-07-22,
-// "replace the clock in the game with this new clock"): night face on the
-// top half, the familiar day face below, divide line through the centre —
-// /ui2/clock360.png, baked to game scale by scripts/bake-clock360.py (the
-// keyed source art NEAREST-resized by s=0.338, the content-registered match
-// against the old extracted half-disc). The wheel CENTRE is pinned exactly
-// to CLOCK_ANCHOR — the same point the animated hand pivots on, and the
-// pivot a future day/night rotation would turn around; the old half-disc
-// asset (/ui2/clock-disc.png) is retired.
-//
-// It pastes UNDER the frame art (frame-over-wheel compositing) at load,
-// before compose: the top beam and its vines keep covering it, which hides
-// the divide line and the night half (except through the beam's vine gaps —
-// glimpses of night sky above the horizon, as designed) and clips the day
-// half's top exactly where the old disc tucked under the beam. Nothing
-// pastes above CLOCK360.clipY (the old disc box top) so the sky above the
-// beam stays clear. The wheel sits between the top-rail cuts and above
-// VCUT1, so the compose shifts it exactly like the clock anchor.
-const CLOCK360 = { x: 205, y: -77, clipY: 60 }; // frame px of the wheel's top-left
-
-function pasteClock360(frame: ImageData, wheel: ImageData) {
-  const F = frame.data;
-  const D = wheel.data;
-  const sy0 = CLOCK360.clipY - CLOCK360.y;
-  for (let sy = sy0; sy < wheel.height; sy++) {
-    const fy = CLOCK360.y + sy;
-    if (fy >= AH) break;
-    for (let sx = 0; sx < wheel.width; sx++) {
-      const fx = CLOCK360.x + sx;
-      if (fx < 0 || fx >= AW) continue;
-      const si = (sy * wheel.width + sx) * 4;
-      const wa = D[si + 3];
-      if (wa === 0) continue;
-      const di = (fy * AW + fx) * 4;
-      const fa = F[di + 3];
-      if (fa === 255) continue; // frame art fully covers the wheel here
-      if (fa === 0) {
-        F[di] = D[si]; F[di + 1] = D[si + 1]; F[di + 2] = D[si + 2]; F[di + 3] = wa;
-        continue;
-      }
-      // partial frame edge px: frame OVER wheel
-      const oa = fa + (wa * (255 - fa)) / 255;
-      for (let c = 0; c < 3; c++) {
-        F[di + c] = Math.round(
-          (F[di + c] * fa + (D[si + c] * wa * (255 - fa)) / 255) / oa,
-        );
-      }
-      F[di + 3] = Math.round(oa);
-    }
-  }
-}
+// The CLOCK is the maintainer's full 360° zodiac WHEEL — a LIVE LAYER now,
+// not baked art (2026-07-22: it rotates 180° at each day/night hand-off).
+// clock.ts hangs /ui2/clock360.png (bake-clock360.py) plus the hand on the
+// clockAnchor BEHIND this canvas (z 5 vs 6): the browser composites
+// frame-over-wheel, so the beam and its vines cover the divide line, the
+// resting upstairs half, and the hand as it flips over the top. The frame
+// itself keeps the transparent hole the old disc extraction left — the
+// wheel shows through it from behind.
 
 // ---- interior windows (asset coords, MEASURED off frame.png's alpha) ----
 const RAIL_TOP_Y = 648;                   // rail A's visual top edge (ragged)
@@ -600,9 +557,7 @@ export function mountFrame2(onLayout: (l: FrameLayout) => void) {
     Promise.all([
       loadImageData("/ui2/frame.png"),
       loadImageData("/ui2/frame-top-runefree.png"),
-      loadImageData("/ui2/clock360.png"),
-    ]).then(([f, a, d]) => {
-      pasteClock360(f, d); // the 360° wheel, hung behind the frame at the pivot
+    ]).then(([f, a]) => {
       frameData = f;
       auxData = a;
       buildVDonor(VD_GAME, f);

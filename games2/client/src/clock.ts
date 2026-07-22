@@ -1,18 +1,33 @@
 /**
- * Celestial clock — now ONLY the animated hand (plus the shooting-star echo),
- * hung on the frame's strap stub over the frame's own BAKED zodiac disc.
+ * Celestial clock — the 360° zodiac WHEEL plus the animated hand, both hung
+ * on the frame's strap stub and both drawn BEHIND the frame (maintainer
+ * 2026-07-22: "Both the clock and the arrow/time handle should be drawn
+ * behind the frame").
  *
- * The old sheet-3 sky-disc dials + dot arc (/ui/clock_*.png, cross-faded per
- * phase) are RETIRED (maintainer 2026-07-17: the frame-v2 HUD has a built-in
- * clock — the baked disc — and rendering the dial stack over it read as
- * "double clocks"). setClockPhase stays exported as a no-op so WorldScene's
- * phase listener keeps its contract; the phase look lives in the ambient
- * grade, and the hand angle alone tells the time on the disc.
+ * The wheel (/ui2/clock360.png, baked by scripts/bake-clock360.py on a
+ * canvas symmetric about the wheel centre) hangs with its centre pinned to
+ * the hand pivot. At rest the DAY face fills the half below the top beam;
+ * the beam art covers the divide line and the upstairs half, save for
+ * glimpses through its vine gaps.
+ *
+ * THE HAND-OFF (the reason this layer exists): WorldScene's hand angle
+ * always sweeps -90°..+90° — a right-to-left pass for the day
+ * (morning+day+evening) and another for the night — so at each boundary the
+ * raw angle jumps BACK by 180° (the old dial teleported the hand to the
+ * right rail). Now the jump is absorbed by rotating the WHOLE ASSEMBLY
+ * +180° instead: wheel and hand turn together (same duration, same easing —
+ * a rigid body) with the hand passing up over the top where the beam and
+ * the layer clip hide it — "you can't see the arrow for a while". After the
+ * flip the hand is at the right rail again and the OTHER face hangs below
+ * the beam: night always shows the night clock, morning/day/evening the
+ * day clock. Visual angle = raw + flips*360 (the raw jump is -180, so each
+ * flip nets +180); wheel angle = flips*180; flips is odd exactly during
+ * night (TIME_PHASES[0]).
  *
  * Angle convention (careful — this shipped wrong once): CSS rotate() is
  * clockwise on screen, so rotating a DOWN-pointing hand by a POSITIVE angle
- * sweeps its tip toward screen-LEFT. All angles below are "degrees from
- * straight down, positive = left".
+ * sweeps its tip toward screen-LEFT. All angles are "degrees from straight
+ * down, positive = left".
  */
 
 // The maintainer's v2 handle (/ui2/clock-hand.png): vine-wrapped blade WITH
@@ -22,23 +37,35 @@
 // uiZoom'd — it lives in the frame's own px space and is sized by the frame
 // scale.
 const HAND = { w: 45, h: 163, hubX: 23, hubY: 18, baseDeg: 0 };
+// The wheel asset: centre EXACTLY at the canvas middle (bake-clock360.py),
+// art px — multiplied by the frame scale at mount time.
+const WHEEL = { w: 365, h: 353, cx: 182.5, cy: 176.5 };
+const CLIP_Y = 60; // frame art row: the layer shows nothing above this
 const FADE_S = 2.5; // keep in step with WorldScene's TIME_TRANSITION_S
+const NIGHT_IDX = 0; // TIME_PHASES[0] = Night (odd flips = night face down)
 
-// The frame's baked disc, relative to the clock anchor (the strap stub at
-// frame art (385,88)): the disc face spans roughly art rows 100..290 centred
-// on the strap's x — the star echo orbits inside it.
+// The wheel's day face, relative to the clock anchor (the strap stub at
+// frame art (385,88)): the face spans roughly art rows 100..290 centred on
+// the strap's x — the star echo orbits inside it.
 const DISC = { cx: 0, cy: 78, rMin: 42, rMax: 78 };
 
-let handRoot: HTMLDivElement | null = null;
+let root: HTMLDivElement | null = null; // clipped plane BEHIND the frame (z 5 vs 6)
+let wheelImg: HTMLImageElement | null = null;
 let hand: HTMLImageElement | null = null;
-// Current CSS rotation. Continuous ticks and the mid-phase hand-off jump
-// snap; only large forward skips ride the CSS transition.
+// Current CSS rotations. Continuous ticks snap; hand-offs glide both
+// transforms together; large forward skips ride the transition.
 let handDeg: number | null = null;
-// Frame mount for the hand (set by hud.ts after every frame compose):
+let flips = 0; // +1 per hand-off, never rewinds — the wheel keeps turning forward
+let flipHoldUntil = 0; // while gliding, per-frame ticks are frozen out
+// A LIVE phase change arms the flip here; the next angle tick consumes it,
+// so wheel and hand retarget in the same call with the new phase's angle.
+let pendingNight: boolean | null = null;
+let lastPhaseNight = false;
+// Frame mount for the layer (set by hud.ts after every frame compose):
 // anchor in layout px + the frame's css-per-art-px scale.
 let mountPt = { x: 0, y: 0, s: 1, has: false };
 
-/** Hang the hand's pivot on the frame's strap stub (called on every frame
+/** Hang the layer on the frame's strap stub (called on every frame
  * compose/resize — the anchor moves with the width insert and the scale). */
 export function setClockMount(x: number, y: number, s: number) {
   mountPt = { x, y, s, has: true };
@@ -46,8 +73,14 @@ export function setClockMount(x: number, y: number, s: number) {
 }
 
 function applyMount() {
-  if (!hand || !mountPt.has) return;
+  if (!root || !hand || !wheelImg || !mountPt.has) return;
   const { x, y, s } = mountPt;
+  // nothing of the wheel or hand may show above the beam band
+  root.style.clipPath = `inset(${CLIP_Y * s}px 0 0 0)`;
+  wheelImg.style.width = `${WHEEL.w * s}px`;
+  wheelImg.style.left = `${x - WHEEL.cx * s}px`;
+  wheelImg.style.top = `${y - WHEEL.cy * s}px`;
+  wheelImg.style.transformOrigin = `${WHEEL.cx * s}px ${WHEEL.cy * s}px`;
   hand.style.width = `${HAND.w * s}px`;
   hand.style.left = `${x - HAND.hubX * s}px`;
   hand.style.top = `${y - HAND.hubY * s}px`;
@@ -55,33 +88,51 @@ function applyMount() {
 }
 
 function mount() {
-  if (handRoot) return;
+  if (root) return;
   const style = document.createElement("style");
-  // the hand layer is a full-viewport plane in FRAME px space (no uiZoom,
-  // no centring transform) — the img inside is placed by applyMount. It
-  // sits ABOVE the page-frame art (z 7 vs the frame's 6): at the
-  // 100%-horizontal night/morning stops the hand lies along the frame rail
-  // and would vanish behind it otherwise.
+  // The layer is a full-viewport plane in FRAME px space (no uiZoom, no
+  // centring transform), BEHIND the frame canvas (z 5 vs the frame's 6) so
+  // the beam, medallion and vines cover both wheel and hand — during a
+  // hand-off flip the hand vanishes behind the rail on its way over the
+  // top. clip-path keeps the sky above the beam clear of the wheel.
   style.textContent = `
-  .ml-clock-hand{position:fixed;inset:0;z-index:7;pointer-events:none}
+  .ml-clock-hand{position:fixed;inset:0;z-index:5;pointer-events:none}
   .ml-clock-hand img{position:absolute;top:0;left:0;
     opacity:1;image-rendering:pixelated;transition:transform ${FADE_S}s ease}
-  .ml-clock-hand.snap img{transition:none}`;
+  .ml-clock-hand img.snap{transition:none}`;
   document.head.appendChild(style);
-  handRoot = document.createElement("div");
-  handRoot.className = "ml-clock-hand";
+  root = document.createElement("div");
+  root.className = "ml-clock-hand";
+  wheelImg = document.createElement("img");
+  wheelImg.src = "/ui2/clock360.png";
   hand = document.createElement("img");
   hand.src = "/ui2/clock-hand.png";
-  hand.alt = "";
-  hand.draggable = false;
-  handRoot.appendChild(hand);
-  document.body.appendChild(handRoot);
+  for (const im of [wheelImg, hand]) {
+    im.alt = "";
+    im.draggable = false;
+  }
+  root.append(wheelImg, hand); // hand above the wheel, both under the frame
+  document.body.appendChild(root);
+  applyWheel(true);
   applyMount(); // if the frame composed before the first clock call
 }
 
-/** A tiny star twinkles across the frame's baked disc — the HUD echo of a
+function setTransform(el: HTMLImageElement, deg: number, snap: boolean) {
+  if (snap) el.classList.add("snap");
+  el.style.transform = `rotate(${deg}deg)`;
+  if (snap) {
+    el.offsetWidth; // commit without transition
+    el.classList.remove("snap");
+  }
+}
+
+function applyWheel(snap: boolean) {
+  if (wheelImg) setTransform(wheelImg, flips * 180, snap);
+}
+
+/** A tiny star twinkles across the wheel's face — the HUD echo of a
  * shooting star in the world (arrivals + wild night stars). Lives in the
- * hand's frame-px plane and orbits below the strap anchor. */
+ * clock's frame-px plane and orbits below the strap anchor. */
 export function clockStar() {
   mount();
   if (!mountPt.has) return; // no frame yet — nothing to echo on
@@ -90,7 +141,7 @@ export function clockStar() {
   st.style.cssText =
     "position:absolute;width:2px;height:2px;background:#fff;" +
     "box-shadow:0 0 3px 1px rgba(255,255,240,.9);pointer-events:none";
-  handRoot!.appendChild(st);
+  root!.appendChild(st);
   const dur = 900;
   const t0 = performance.now();
   const dir = Math.random() < 0.5 ? 1 : -1; // which horizon it falls toward
@@ -99,7 +150,7 @@ export function clockStar() {
   const cy = y + DISC.cy * s;
   const step = (t: number) => {
     const k = (t - t0) / dur;
-    if (k >= 1 || !handRoot) {
+    if (k >= 1 || !root) {
       st.remove();
       return;
     }
@@ -112,30 +163,68 @@ export function clockStar() {
   requestAnimationFrame(step);
 }
 
-/** RETIRED no-op (the dial stack is gone — the frame's baked disc is the
- * clock face). Kept so WorldScene's phase listener contract is unchanged;
- * still mounts the hand so joining mid-phase shows it immediately. */
-export function setClockPhase(_idx: number, _instant = false) {
+/** Phase sync — the AUTHORITY on which face hangs down (parity of flips).
+ * Instant / pre-hand states pin the parity with a snap (the hand's screen
+ * angle is unchanged mod 360, the wheel jumps to the right face — joins and
+ * probe resets don't animate). A LIVE phase change only ARMS the flip:
+ * the next angle tick consumes it, so the wheel turns in the same call
+ * that retargets the hand with the new phase's angle — one rigid motion. */
+export function setClockPhase(idx: number, instant = false) {
   mount();
+  const night = idx === NIGHT_IDX;
+  lastPhaseNight = night;
+  const want = night ? 1 : 0;
+  if ((flips & 1) === want) {
+    pendingNight = null;
+    return;
+  }
+  if (instant || handDeg === null) {
+    flips += 1;
+    pendingNight = null;
+    applyWheel(true);
+    if (handDeg !== null && hand) {
+      handDeg += 360; // same screen angle, new winding — keep them consistent
+      setTransform(hand, handDeg, true);
+    }
+    return;
+  }
+  pendingNight = night;
 }
 
-/** Point the hand at an absolute angle (degrees from straight down,
- * positive = screen-left) — WorldScene computes it from the duration-
- * weighted sweeps and the SUN derives from the same angle, so the arrow
- * and the directional light can never disagree (maintainer). The hand-off
- * jump and continuous ticks SNAP; forward skips (freeze-mode phase
- * testing) ride the CSS transition. */
+/** Point the hand at the raw time angle (degrees from straight down,
+ * positive = screen-left, always in -90..+90) — WorldScene computes it from
+ * the duration-weighted sweeps and the SUN derives from the same angle, so
+ * the arrow and the directional light can never disagree (maintainer). At a
+ * day/night hand-off (armed by setClockPhase, or a raw -180° jump if the
+ * phase event went missing) the wheel-and-hand assembly rotates FORWARD
+ * together instead of teleporting — +180 on the natural cycle, further on
+ * mid-phase skips, never backwards. Continuous ticks SNAP; forward skips
+ * (freeze-mode phase testing) ride the CSS transition. */
 export function setClockAngle(deg: number, instant = false) {
   mount();
-  const target = deg - HAND.baseDeg;
+  const now = performance.now();
+  let target = deg - HAND.baseDeg + flips * 360;
+  if (!instant && handDeg !== null) {
+    const wantFlip =
+      (pendingNight !== null && (flips & 1) !== (pendingNight ? 1 : 0)) ||
+      // fallback: the raw hand-off jump, only when it lands the right face
+      (target - handDeg <= -90 && ((flips + 1) & 1) === (lastPhaseNight ? 1 : 0));
+    if (wantFlip) {
+      flips += 1;
+      pendingNight = null;
+      target += 360; // natural hand-off: net +180, up over the top, behind the beam
+      flipHoldUntil = now + FADE_S * 1000;
+      handDeg = target;
+      applyWheel(false);
+      setTransform(hand!, target, false);
+      return;
+    }
+    if (now < flipHoldUntil) return; // gliding: per-frame ticks wait their turn
+  }
+  pendingNight = null;
   if (handDeg !== null && Math.abs(target - handDeg) < 0.01) return;
   const delta = handDeg === null ? 0 : target - handDeg;
-  const snap = instant || handDeg === null || delta < 3; // backwards = the hand-off jump
-  if (snap) handRoot!.classList.add("snap");
+  const snap = instant || handDeg === null || delta < 3; // small/backward = tick
   handDeg = target;
-  hand!.style.transform = `rotate(${handDeg}deg)`;
-  if (snap) {
-    handRoot!.offsetWidth;
-    handRoot!.classList.remove("snap");
-  }
+  setTransform(hand!, target, snap);
 }
