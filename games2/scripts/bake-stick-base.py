@@ -41,6 +41,27 @@ BOX = (49, 116, 1048, 843)          # registered art rect in the Gemini image
 BX0, BY0, AW, AH = 19, 43, 55, 36   # the base art box on the 96x96 canvas
 
 
+# ── Maintainer's pixel-exact edits (2026-07-22 red/green marking round) ──
+# RED = remove the exact pixels (left-edge blob remnant + a floating speck);
+# GREEN = ADD THE BLACK BORDER pixels the bake dropped ("no black line on the
+# green pixels — add the black border pixels instead of sampling"): the
+# silhouette outline closed along the socket's top rim, the right edge and
+# the bottom edge. Border colour = the art's own modal silhouette dark.
+RED_REMOVE = [
+    (19, 55), (19, 56), (19, 57), (19, 58), (19, 59), (19, 60), (20, 53),
+    (70, 76), (71, 76),
+]
+BORDER_ADD = [
+    (41, 42), (42, 42), (43, 42), (44, 42), (45, 42), (46, 42), (47, 42),
+    (48, 42), (49, 42), (50, 42), (51, 42),
+    (73, 53), (73, 54), (74, 55), (74, 56), (74, 57), (74, 58), (74, 59),
+    (74, 60), (74, 61), (74, 62), (73, 63), (72, 65), (72, 66),
+    (39, 78), (40, 78), (41, 78), (42, 78), (43, 78), (44, 78), (45, 78),
+    (46, 78), (47, 78), (48, 78), (49, 78), (50, 78), (51, 78), (52, 78),
+]
+BORDER_RGB = (3, 4, 8)
+
+
 def isbg(c):
     r, g, b = c
     return (b - r) > 10 and (g - r) > 8 and b >= g - 6 and r < 90
@@ -82,8 +103,14 @@ def main():
                 round(sum(c[2] for c in mem) / len(mem)),
                 255,
             )
+    q2 = out.load()
+    for x, y in RED_REMOVE:
+        q2[x, y] = (0, 0, 0, 0)
+    for x, y in BORDER_ADD:
+        q2[x, y] = (*BORDER_RGB, 255)
     out.save(G + "stick-base-filled.png")
-    print(f"stick-base-filled.png {out.getbbox()} (specks dropped: {specks})")
+    print(f"stick-base-filled.png {out.getbbox()} (specks dropped: {specks}, "
+          f"edits: -{len(RED_REMOVE)} +{len(BORDER_ADD)} border)")
 
 
 if __name__ == "__main__":
