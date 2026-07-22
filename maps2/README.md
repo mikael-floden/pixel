@@ -162,9 +162,13 @@ Enforce it in code (`pipeline/autotile.py`):
     it crosses (a `PAVE` set: grass/snow/rock/ice→`lightdark_dirt`, but never the rock ascent ramps
     in `self._ascent`), so the visible road is dirt LEGS curving along the terrace rims joined by rock
     STAIR ramps — the road bends with the mountain's outline instead of projecting out over low ground.
-  - **Material policy — dirt=road surface, rock=climbing ramps**: cliff-climbing ramps/switchbacks
-    stay `stone_mountain` (`STAIR_MAT`, tracked in `self._ascent`); the flat road surface is
-    `lightdark_dirt`. The road may repaint bench tops to dirt but never a rock ascent cell.
+  - **Material policy — stairs KEEP the local ground; dirt=road surface** (maintainer
+    2026-07-22: "Don't always use stone. Use the ground type that is already present at that
+    location"): carved stairs/ramps (`self._ascent`) keep whatever ground they cut through —
+    snow steps on the snow benches, grass steps in the maze, stone only where the ground IS
+    stone. Their step faces point at the camera, so they read in any material. Bridge DECKS
+    stay stone. The flat road surface is `lightdark_dirt`; the road may repaint bench tops to
+    dirt but never an ascent cell.
   - **8-direction dirt ROADS** (`_dirt_roads`): an organic meandering, branching network that
     runs in all 8 SCREEN directions — the router (`_road_graph_bfs`) adds grid-diagonal moves
     (which render screen-vertical/horizontal) on flat Δ0 land, each gated by a same-level

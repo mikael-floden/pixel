@@ -12,7 +12,9 @@ step UP toward the camera with the SAME material):
     the wall-material rule, applied ONLY WHERE NEEDED (_lip_needed gates _lip_cover: a lip is
     left alone when a nearby visible cliff or a different ground visible behind the seam
     already makes the elevation change legible — maintainer 2026-07-22).
-  * ASCENTS/RAMPS that climb cliffs are ROCK (STAIR_MAT): a few tidy full-height Trollstigen
+  * ASCENTS/RAMPS that climb cliffs KEEP the LOCAL ground type (maintainer 2026-07-22 —
+    snow stairs on snow, grass stairs in the maze; steps face the camera so they read in any
+    material): a few tidy full-height Trollstigen
     switchback ribbons up the massif (_mountain_stairs/_climb_corridor/_next_bench_step) and
     short rock connectors for maze pockets. ROADS are flat DIRT only.
   * ROADS (_dirt_roads) are an organic MEANDERING, BRANCHING dirt network that can run in all
@@ -56,7 +58,8 @@ FEATURES = [
 # UPPER benches (uniform Δ4 so the fixed switchback carver can climb the whole height).
 BENCHES = np.array([16, 20, 24, 28, 32, 36, 40], np.int16)
 BENCH_HI = 40
-STAIR_MAT = "stone_mountain"    # ramps/stairs that CLIMB cliffs are rock (roads are dirt)
+# Stairs/ramps KEEP the ground type already present where they are carved (no forced rock);
+# bridge DECKS stay stone. Flat ROADS are dirt.
 
 # Sharper massif: ~10 narrow gaussians of widely varied height -> distinct spiky summits
 # (topping 32/36/40) with deep saddles, taken as a max-envelope.
@@ -554,14 +557,16 @@ class Island2(Island):
                 ramp.append((x, y, L - kk))
             if not ok or not ramp:
                 break
-            # carve the ramp (start cell too), 3 wide biased up-screen
+            # carve the ramp (start cell too), 3 wide biased up-screen. The steps KEEP the
+            # ground type already present (maintainer 2026-07-22: don't always use stone) —
+            # snow stairs on the snow bench, grass stairs in the maze; faces point at the
+            # camera so the steps stay legible in any material.
             for (x, y, lv) in [(cx, cy, L)] + ramp:
                 for t in (0, 1, 2):
                     xx, yy = x + wdx * t, y + wdy * t
                     if (0 <= xx < n and 0 <= yy < n and self.land[yy, xx]
                             and self.mat[yy, xx] != "clear_water"):
                         self.level[yy, xx] = lv
-                        self.mat[yy, xx] = STAIR_MAT
                         self.upper[yy, xx] = False
                         self.reserved.add((xx, yy))
                         self._ascent.add((xx, yy))
@@ -577,8 +582,7 @@ class Island2(Island):
                     if (0 <= xx < n and 0 <= yy < n and self.land[yy, xx]
                             and self.mat[yy, xx] != "clear_water"
                             and int(self.level[yy, xx]) >= L):      # only cut down higher wall cells
-                        self.level[yy, xx] = L
-                        self.mat[yy, xx] = STAIR_MAT
+                        self.level[yy, xx] = L                      # landing keeps the local ground
                         self.upper[yy, xx] = False
                         self.reserved.add((xx, yy))
                         self._ascent.add((xx, yy))
@@ -676,7 +680,9 @@ class Island2(Island):
         return False
 
     def _carve_connector(self, hx, hy, lx, ly, w=3):
-        """Override: straight descending ROCK spur (cliff-climbing ramps are rock, not dirt);
+        """Override: straight descending stair spur that KEEPS the ground type already present
+        at each cell (maintainer 2026-07-22: don't always use stone — a stair through snow is
+        snow, through grass is grass; the steps face the camera so they read in any material);
         clears self.upper and records the cells in self._ascent."""
         n = self.n
         H, L = int(self.level[hy, hx]), int(self.level[ly, lx])
@@ -693,7 +699,6 @@ class Island2(Island):
                 x, y = cx + perp[0] * t, cy + perp[1] * t
                 if 0 <= x < n and 0 <= y < n and self.land[y, x] and self.mat[y, x] != "clear_water":
                     self.level[y, x] = lv
-                    self.mat[y, x] = STAIR_MAT
                     self.upper[y, x] = False
                     self.reserved.add((x, y))
                     self._ascent.add((x, y))
@@ -1422,8 +1427,6 @@ def build(out=None, seed=21, M=24):
     border[:M, :] = border[-M:, :] = border[:, :M] = border[:, -M:] = True
     assert int((land_mask & border).sum()) == 0, "island touches map border (no water margin)"
 
-    assert not any(d.mat[y, x] == "lightdark_dirt" for (x, y) in d._ascent), \
-        "a rock stair/ramp cell is dirt (material policy broken)"
     assert all(d.mat[y, x] != "light_sand" for (x, y) in d.roads), \
         "a road cell is on sand (beach margin broken)"
 
