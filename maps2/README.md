@@ -112,7 +112,11 @@ Consequences to honour:
     never to stone at the shore) in a joint fixpoint with `_lip_cover`.
 - **Same road width regardless of elevation** (maintainer 2026-07-22): on a bench rim the
   toward-camera side is the cliff, so the widen step falls back to the UP-SCREEN strand
-  there (`_dirt_roads`) — mountain roads read the same 2-3 strands as lowland roads.
+  there — and a WIDTH NORMALIZER then enforces a minimum of 3 strands on every linear
+  run at every altitude (screen-vertical runs keep their approved 2-column elbow form;
+  1-cell gaps to parallel strands are never bridged so switchback legs don't merge).
+  The opportunistic widen alone left width to local luck (2 on one bench, 3 in the
+  lowland) — a uniform look needs a uniform floor, not a best effort.
 - **Fog exception:** a drop of **more than 10 levels** is separated by the game's
   fog, so the same material MAY be reused across it (an alternative to changing
   type — just make sure the z-distance is >10 and let the fog do the work).

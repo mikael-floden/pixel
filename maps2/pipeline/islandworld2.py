@@ -1388,6 +1388,50 @@ class Island2(Island):
                         continue
                     wide.add((xx, yy))
                     break                                 # one strand per axis
+
+        def _can_pave(xx, yy, rx, ry):
+            return (0 <= xx < n and 0 <= yy < n and (xx, yy) in reach
+                    and int(level[yy, xx]) == int(level[ry, rx])
+                    and mat[yy, xx] in PAVE and (xx, yy) not in self._ascent
+                    and d2edge[yy, xx] > ROAD_BEACH_MARGIN
+                    and not self._sand_forbid[yy, xx])
+
+        # WIDTH NORMALIZER (maintainer: same road width regardless of elevation). The widen
+        # above is opportunistic, so segment width varied 2-3 with local luck — on a bench that
+        # read as a thinner road than the approved 3-strand lowland look. Enforce a MINIMUM of
+        # 3 strands across every LINEAR run (along-run >= 3 and wider than the cross run — end
+        # caps and junction blobs excluded; screen-vertical runs keep their approved 2-column
+        # elbow form), trying toward-camera first, then up-screen, same paint rules, and still
+        # skipping 1-cell gaps to parallel strands so close switchback legs never merge.
+        for _pass in range(3):
+            grown = False
+            for (x, y) in sorted(wide):
+                if (x, y) in vert:
+                    continue
+                runs = {}
+                for ax, ay in ((1, 0), (0, 1)):
+                    w = 1
+                    for sgn in (1, -1):
+                        k = 1
+                        while (x + ax * sgn * k, y + ay * sgn * k) in wide:
+                            w += 1
+                            k += 1
+                    runs[(ax, ay)] = w
+                (wax, way) = min(runs, key=runs.get)      # the cross (width) axis
+                if runs[(wax, way)] >= 3 or max(runs.values()) < 3:
+                    continue                              # wide enough / an end cap or blob
+                for sgn in (1, -1):
+                    i, j = wax * sgn, way * sgn
+                    xx, yy = x + i, y + j
+                    if (xx, yy) in wide or not _can_pave(xx, yy, x, y):
+                        continue
+                    if (xx + i, yy + j) in wide:          # would bridge to a parallel strand
+                        continue
+                    wide.add((xx, yy))
+                    grown = True
+                    break
+            if not grown:
+                break
         for (x, y) in wide:
             if (mat[y, x] in PAVE and (x, y) not in self._ascent
                     and not self._sand_forbid[y, x]):     # padding: dirt never within 2 of sand
