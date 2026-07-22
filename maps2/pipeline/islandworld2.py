@@ -119,6 +119,13 @@ STRIPE_MATS = ("saturated_grass", "lightdark_dirt", "stone_mountain",
 LAGOON_SITES = [(0.36, 0.17), (0.44, 0.14), (0.30, 0.22), (0.52, 0.16), (0.24, 0.30)]
 LAGOON_RW = 2
 
+# Deliberate BRIDGE SITES (maintainer 2026-07-22, red/blue overview marks), as design-fraction
+# fy targets like PATH/LAGOON_SITES. Gorge/waterway crossings: the very top of the massif gap,
+# a HIGH bench-24 span mid-massif, the foot crossing where the channel exits into the maze, and
+# one mid-channel. Maze-river crossings: the maintainer kept 5 of the original 8.
+GORGE_BRIDGE_FRACS = (0.10, 0.235, 0.4175, 0.515)
+RIVER_BRIDGE_FRACS = (0.47, 0.53, 0.595, 0.7275, 0.7925)
+
 
 class Island2(Island):
     def __init__(self, seed=21, M=24):
@@ -159,13 +166,13 @@ class Island2(Island):
         self._maze_river()                # raised-valley river (AFTER shores so banks stay tier 4)
         camera_monotone_masked(self.level, self.mat, self.upper)   # mountain antitone ONLY
         self._mtn_gorge()                 # DEEP gorge down the massif (banks keep full height)
-        self.level_before = self.level.copy()
+        self._bridge_over_gorge(self._gorge_cells)   # maintainer's waterway crossings (early:
+        self.level_before = self.level.copy()        # links exist before _connect_all runs)
         self._materials()                 # mountain caps + BIGGER beaches
         self._mountain_stairs()           # a few TIDY full-height ROCK ascents; rest sheer cliff
         self._connect_all(thresh=5)       # reuse: rock connectors + span the gorge -> one piece
         self._ford_stranded()
-        self._place_bridges(count=8)
-        self._bridge_over_gorge(self._gorge_cells, count=3)   # high/foot/maze bridges (blue marks)
+        self._place_bridges()             # maze-river crossings at the maintainer's 5 sites
         for _ in range(10):               # guarantee loop -> converge to no pit AND no lip
             camera_monotone_masked(self.level, self.mat, self.upper)
             self._fill_traps()
@@ -920,15 +927,22 @@ class Island2(Island):
                         chan.add((x, y))
         return chan
 
-    def _bridge_over_gorge(self, chan, count=1):
-        """Lay a deliberate STONE bridge deck across the mountain gorge `chan`, reusing
-        _place_bridges' per-row both-bank-walkable test scoped to the gorge water. Deck at the
-        shared bench level; a walk-link per row spans the water. Returns #laid."""
+    def _bridge_over_gorge(self, chan, sites=GORGE_BRIDGE_FRACS):
+        """Lay the maintainer's deliberate STONE crossings over the massif-to-ocean waterway at
+        the `sites` design fractions (nearest clean candidate row per site). Runs EARLY — before
+        _connect_all — so the flanks are linked by REAL bridges and the connectivity pass never
+        improvises a make-shift span; bank membership therefore checks 'in a sizeable walkable
+        component' rather than 'in THE main component'. Deck at the shared bank level; a
+        walk-link per row spans the water. Returns #laid."""
         n = self.n
         riverw = np.zeros((n, n), bool)
         for (x, y) in chan:
             riverw[y, x] = True
-        main = set(self._walk_components()[0])
+        main = set()
+        for comp in self._walk_components():
+            if len(comp) >= 8:               # pre-connect pockets count: the bridge's own links
+                main.update(comp)            # merge them into main, and the final deck-bank
+                                             # assert still guarantees real connectivity
 
         def channel(cy):
             xs = sorted(x for x in range(n) if riverw[cy, x])
@@ -977,26 +991,21 @@ class Island2(Island):
                 cands.append(((x1 - x0), -len(rows), -dlv, cy, x0, x1, dlv, rows))
         if not cands:
             return 0
-        # SPREAD the bridges along the passage (maintainer's blue marks: one high on the massif,
-        # one at the foot, one down on the southern reach): bucket candidates into `count` equal
-        # bands over the CHANNEL's full y-extent and lay the best crossing per band — preferring
-        # RAISED decks (higher bank level) over flush level-0 slabs, per the raised-bridge
-        # doctrine — skipping spans that already carry a deck from _place_bridges.
-        cys = [y for (_x, y) in chan]
-        lo, hi = min(cys), max(cys) + 1
+        # One crossing per SITE: nearest clean candidate row to each design-fraction target
+        # (within 10 rows), never two crossings closer than 8 rows, never on cells that already
+        # carry a deck.
         laid = 0
         laid_cys = []
-        for b in range(count):
-            b0 = lo + (hi - lo) * b // count
-            b1 = lo + (hi - lo) * (b + 1) // count
-            band = sorted((c for c in cands if b0 <= c[3] < b1),
-                          key=lambda c: (c[0], c[2], c[1]))   # width, -dlv (raised first), -rows
-            for _w, _nr, _nl, cy, x0, x1, dlv, rows in band:
-                if any(abs(cy - lc) < 12 for lc in laid_cys):
-                    continue                              # keep the crossings SPREAD apart
+        for frac in sites:
+            gy = self.M + frac * self.nd
+            near = sorted((c for c in cands if abs(c[3] - gy) <= 10),
+                          key=lambda c: (abs(c[3] - gy), c[0], c[2]))
+            for _w, _nr, _nl, cy, x0, x1, dlv, rows in near:
+                if any(abs(cy - lc) < 8 for lc in laid_cys):
+                    continue
                 cells = [(x, r) for r in rows for x in range(x0, x1 + 1)]
                 if any((x, r) in self.reserved for (x, r) in cells):
-                    continue                              # a deck already spans here
+                    continue
                 self.decks.append({"kind": "bridge", "mat": "stone_mountain", "level": dlv,
                                    "thickness": 1, "cells": cells})
                 for r in rows:
@@ -1006,6 +1015,80 @@ class Island2(Island):
                 laid += 1
                 break
         return laid
+
+    def _place_bridges(self, count=None):
+        """Override: maze-river crossings at the maintainer's RIVER_BRIDGE_FRACS sites (nearest
+        clean row per site), scoped to the RIVER water only — the massif waterway has its own
+        deliberate crossings (_bridge_over_gorge) and must not attract extra decks here."""
+        n = self.n
+        riverw = (self.mat == "clear_water") & self.land
+        for (x, y) in self._gorge_cells:
+            riverw[y, x] = False
+        main = set(self._walk_components()[0])
+
+        def channel(cy):
+            xs = sorted(x for x in range(n) if riverw[cy, x])
+            if not xs:
+                return None
+            runs, cur = [], [xs[0]]
+            for x in xs[1:]:
+                if x == cur[-1] + 1:
+                    cur.append(x)
+                else:
+                    runs.append(cur); cur = [x]
+            runs.append(cur)
+            run = min(runs, key=lambda r: r[-1] - r[0])
+            return run[0], run[-1]
+
+        def row_ok(r, x0, x1, dlv):
+            if not all(0 <= x < n and riverw[r, x] for x in range(x0, x1 + 1)):
+                return False
+            for bx in (x0 - 1, x1 + 1):
+                if not (0 <= bx < n and self.mat[r, bx] not in ("", "clear_water")):
+                    return False
+                if abs(int(self.level[r, bx]) - dlv) > 1:
+                    return False
+                if (bx, r) not in main:
+                    return False
+            return True
+
+        cands = []
+        for cy in range(int(n * 0.30), int(n * 0.92)):
+            ch = channel(cy)
+            if not ch:
+                continue
+            x0, x1 = ch
+            if x0 - 1 < 0 or x1 + 1 >= n or x1 - x0 > 6:
+                continue
+            la, lb = self.mat[cy, x0 - 1], self.mat[cy, x1 + 1]
+            if la in ("", "clear_water") or lb in ("", "clear_water"):
+                continue
+            va, vb = int(self.level[cy, x0 - 1]), int(self.level[cy, x1 + 1])
+            if abs(va - vb) > 1:
+                continue
+            dlv = min(va, vb)
+            rows3 = [r for r in (cy - 1, cy, cy + 1) if row_ok(r, x0, x1, dlv)]
+            rows = rows3 if len(rows3) >= 2 else ([cy] if row_ok(cy, x0, x1, dlv) else [])
+            if rows:
+                cands.append(((x1 - x0), -len(rows), -dlv, cy, x0, x1, dlv, rows))
+        laid_cys = []
+        for frac in RIVER_BRIDGE_FRACS:
+            gy = self.M + frac * self.nd
+            near = sorted((c for c in cands if abs(c[3] - gy) <= 8),
+                          key=lambda c: (abs(c[3] - gy), c[0], c[1]))
+            for _w, _nr, _nl, cy, x0, x1, dlv, rows in near:
+                if any(abs(cy - lc) < 8 for lc in laid_cys):
+                    continue
+                cells = [(x, r) for r in rows for x in range(x0, x1 + 1)]
+                if any((x, r) in self.reserved for (x, r) in cells):
+                    continue
+                self.decks.append({"kind": "bridge", "mat": "stone_mountain", "level": dlv,
+                                   "thickness": 1, "cells": cells})
+                for r in rows:
+                    self.links.append(((x0 - 1, r), (x1 + 1, r)))
+                self.reserved.update(cells)
+                laid_cys.append(cy)
+                break
 
     def _merge_span(self, main, cands):
         """Override: like Island's connectivity water-span bridge, but a side lane (w=±1) is
