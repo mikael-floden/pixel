@@ -87,6 +87,32 @@ Consequences to honour:
   fail both — and the stripe material must ALSO differ from any bridge DECK
   rendering nearby (screen-space test: a low deck a few cells up-screen lands on
   the same pixels as a high rim, and stone-on-stone-deck was unreadable).
+- **Ground types never change "this fast" (maintainer 2026-07-22).** A ground tile can
+  carry a transition to only ONE partner, so a tile may border at most one foreign ground
+  type — no 1-tile slivers (grass squeezed between dirt and sand), no three-ground junction
+  points. How the_island2 enforces it, all as GENERATOR RULES (never spot edits):
+  - **Containment collars** (`_materials`): accents live strictly INSIDE their parent —
+    ice inside snow, obsidian inside snow/stone (≥2 from ice), sand collared off rock by
+    grass — so pure-terrain pairs always meet two-by-two.
+  - **Road padding**: dirt never comes within 2 cells of sand — a HARD routing keep-out
+    with soft fallback (`_road_path`/`_road_attach` two-pass), the widen margin, a paint
+    skip, and a build assert. The buffer between a road and a beach is always ≥2 GRASS
+    cells (maintainer: extra space stays grass — never stone).
+  - **Infrastructure is an overlay, not terrain**: dirt roads/fords and the local-ground
+    stair strips (`_ascent`) are exempt subjects AND don't count as transition partners —
+    where a line crosses a biome boundary some tile must see both sides, and the line cell
+    is the least-bad place for it.
+  - **Only near-level neighbours pair** (|Δlevel|≤1): across a cliff the wall face renders
+    between the tops, so no transition is needed.
+  - **Fewer stripes**: lips within 2 of sand/water (the coastline marks the drop — rims by
+    the beach stay grass) or beside a dirt road (a contrasting line on the edge) are
+    legible and never striped; stripes are wall materials only, never local-ground reuse.
+  - `_material_slivers` (the detector) must be EMPTY at build time — `_fix_material_slivers`
+    repairs stragglers by flipping them to the dominant adjacent terrain (never to dirt,
+    never to stone at the shore) in a joint fixpoint with `_lip_cover`.
+- **Same road width regardless of elevation** (maintainer 2026-07-22): on a bench rim the
+  toward-camera side is the cliff, so the widen step falls back to the UP-SCREEN strand
+  there (`_dirt_roads`) — mountain roads read the same 2-3 strands as lowland roads.
 - **Fog exception:** a drop of **more than 10 levels** is separated by the game's
   fog, so the same material MAY be reused across it (an alternative to changing
   type — just make sure the z-distance is >10 and let the fog do the work).

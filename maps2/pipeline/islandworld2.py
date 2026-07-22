@@ -92,6 +92,14 @@ WANDER_AMP = 0.9
 ROAD_MAGNET = 1.2          # pull a new spur onto the existing road -> tight Y-merges
 ROAD_ATTRACT_R = 2
 
+# Walkable GROUND types under the no-sliver rule (a tile borders at most ONE foreign ground;
+# water/void exempt). Order = deterministic tie-break for the absorb repair.
+GROUND_MATS = ("saturated_grass", "light_sand", "lightdark_dirt", "stone_mountain",
+               "black_mountain", "regular_snow", "crystal_ice")
+# Materials a legibility STRIPE may use (never sand — beaches only — and never water).
+STRIPE_MATS = ("saturated_grass", "lightdark_dirt", "stone_mountain",
+               "black_mountain", "regular_snow", "crystal_ice")
+
 # Sunken walk-in lagoon (water 2 levels down, walkable Δ1 shore) — on the MOUNTAIN snow.
 LAGOON_SITES = [(0.36, 0.17), (0.44, 0.14), (0.30, 0.22), (0.52, 0.16), (0.24, 0.30)]
 LAGOON_RW = 2
@@ -115,6 +123,7 @@ class Island2(Island):
         self.reserved = set()
         self.links = []
         self.roads = set()
+        self._linework = set()           # painted line features (stripes/roads): sliver-exempt
         self._gorge_cells = set()
         self._road_now = None
         self._road_attract = None
@@ -152,6 +161,7 @@ class Island2(Island):
         self._sunken_lagoon()             # a walk-in lagoon sunk 2 levels (transactional)
         self._pick_spawn()
         self._dirt_roads()                # 8-direction meandering, margined, centred dirt roads
+        self._fix_material_slivers()      # NEW RULE: no tile borders two different foreign grounds
         self._paint()
         self.deck_at = {(x, y): dk for dk in self.decks for (x, y) in dk["cells"]}
         self._decorate()
@@ -375,6 +385,20 @@ class Island2(Island):
         Lh = int(self.level[hy, hx])
         hm = self.mat[hy, hx]
         i, j = hx - lx, hy - ly                          # this lip's toward-camera step
+        # (0) SHORE CONTEXT (maintainer: no stone at the beach — "that space should have stayed
+        # grass"): within 2 cells of sand or open water the coastline itself marks the drop, so
+        # the lip is legible and the rim stays natural grass.
+        for yy in range(max(0, hy - 2), min(n, hy + 3)):
+            for xx in range(max(0, hx - 2), min(n, hx + 3)):
+                if self.mat[yy, xx] in ("light_sand", "clear_water"):
+                    return False
+        # (0b) a DIRT ROAD hugging this edge is itself a contrasting line that marks it
+        # (and striping beside the road is what turned the summit into a dirt mountain):
+        for (cx, cy) in ((hx, hy), (lx, ly)):
+            for di, dj in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                ax, ay = cx + di, cy + dj
+                if 0 <= ax < n and 0 <= ay < n and self.mat[ay, ax] == "lightdark_dirt":
+                    return False
         # (a) walk this lip's OWN boundary laterally (both ways, up to 2 cells). Legible only
         # if some cell TOUCHING the walked boundary (its 8-neighbourhood — includes the corner
         # turn and the stacked lower walls right below a corner) shows a drawn >=2-level
@@ -465,8 +489,11 @@ class Island2(Island):
                     if (abs((dx2 - dy2) * 32 - sx) <= 96
                             and abs((dx2 + dy2) * 15 - 16 * dl - sy) <= 64):
                         clash.add(dm)
-                # prefer the material an ADJACENT already-painted stripe cell got, so one
-                # continuous rim band stays one material instead of zebra-striping
+                # prefer the material an ADJACENT already-painted stripe cell got (one
+                # continuous band, no zebra), then the wall materials, then the dirt escape.
+                # Stripes are WALL materials only — reusing arbitrary local grounds (grass on
+                # the summit) leaked foreign pairs into the collared regions and fed the
+                # sliver repair endless work.
                 prefer = [painted[(hx + i, hy + j)]
                           for i in (-1, 0, 1) for j in (-1, 0, 1)
                           if (hx + i, hy + j) in painted]
@@ -477,6 +504,7 @@ class Island2(Island):
                         break
                 self.mat[hy, hx] = choice
                 painted[(hx, hy)] = choice
+                self._linework.add((hx, hy))
                 if choice == "lightdark_dirt":
                     self._ascent.discard((hx, hy))
         return not self._bad_lips()
@@ -715,14 +743,24 @@ class Island2(Island):
         bx = X + n * 0.09 * (_fbm(X, Y, s + 40, n * 0.26, 3) - 0.5) * 2
         by = Y + n * 0.09 * (_fbm(X, Y, s + 41, n * 0.26, 3) - 0.5) * 2
         glac = _fbm(bx, by, s + 13, n * 0.13, 3)
-        mat[(mat == "regular_snow") & (glac > 0.52) & (level >= 32)] = "crystal_ice"
         cald = _fbm(bx, by, s + 9, n * 0.11, 4)
         scar = _fbm(bx, by, s + 50, n * 0.085, 3)
-        black = (((mat == "regular_snow") & (cald > 0.60) & (level >= 30))
-                 | ((mat == "stone_mountain") & (level >= 16) & (level < 28)
-                    & (X < n * 0.56) & (scar > 0.58)))
-        black = black & ~_dilate(mat == "saturated_grass", 2)
-        mat[black] = "black_mountain"
+        # CONTAINMENT COLLARS (the no-sliver rule at the SOURCE): every pure-terrain material
+        # pair must meet cleanly two-by-two — a point where three grounds all touch always
+        # leaves some tile bordering two different foreigns, which a tile can't transition to.
+        # So the accent materials are kept STRICTLY INTERIOR to their parent: ice inside snow,
+        # summit obsidian inside snow (and >=2 from ice), scar obsidian inside stone. The parent
+        # then always separates them from any third material.
+        snowm = mat == "regular_snow"
+        ice = snowm & (glac > 0.52) & (level >= 32) & ~_dilate(~snowm, 1)
+        mat[ice] = "crystal_ice"
+        snow2 = mat == "regular_snow"
+        black_hi = (snow2 & (cald > 0.60) & (level >= 30)
+                    & ~_dilate(~(snow2 | ice), 1) & ~_dilate(ice, 2))
+        stonem = mat == "stone_mountain"
+        black_lo = (stonem & (level >= 16) & (level < 28) & (X < n * 0.56) & (scar > 0.58)
+                    & ~_dilate(~stonem, 1))
+        mat[black_hi | black_lo] = "black_mountain"
         # BIGGER beaches: a deeper distance sweep + a wider, cove/camera-biased sand depth.
         water = mat == "clear_water"
         d2w = np.full((n, n), 99, np.int16)
@@ -736,7 +774,9 @@ class Island2(Island):
         cove = np.exp(-(((X - 0.50 * n) ** 2 + (Y - 0.90 * n) ** 2) / (2 * (0.14 * n) ** 2)))
         sand_depth = (2 + np.rint(sd * sd * 10) + np.rint(6.0 * cove)
                       + np.rint(3.0 * dcam)).astype(np.int16)
-        beach = (mat == "saturated_grass") & (level <= 2) & (d2w < 99) & (d2w <= sand_depth)
+        rock = np.isin(mat, np.array(["stone_mountain", "black_mountain"], object))
+        beach = ((mat == "saturated_grass") & (level <= 2) & (d2w < 99) & (d2w <= sand_depth)
+                 & ~_dilate(rock, 1))          # grass collar: sand never touches rock directly
         mat[beach] = "light_sand"
 
     # -- multi-level lakes (flush inland ponds/tarns + an internal gorge) -------
@@ -1119,6 +1159,7 @@ class Island2(Island):
         land = lambda x, y: mat[y, x] != "" and mat[y, x] != "clear_water"
         ladj, wf, wc = self._link_adj(), self._wander_field(), self._road_cost_field()
         ra = self._road_attract          # pull spurs onto the existing road (early Y-merge)
+        fb = getattr(self, "_road_forbid", None)   # HARD keep-out (beach padding); soft pass: None
         dist, parent, elbow, pq = {}, {}, {}, []
         src = [sources] if isinstance(sources, tuple) else list(sources)
         for (sx, sy) in src:
@@ -1134,7 +1175,8 @@ class Island2(Island):
             for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
                 xx, yy = x + i, y + j
                 if 0 <= xx < n and 0 <= yy < n and land(xx, yy) and abs(int(level[yy, xx]) - L) <= 1:
-                    moves.append(((xx, yy), None))
+                    if fb is None or not fb[yy, xx]:
+                        moves.append(((xx, yy), None))
             for v in ladj.get((x, y), ()):
                 if 0 <= v[0] < n and 0 <= v[1] < n and land(*v):
                     moves.append((v, None))
@@ -1143,9 +1185,13 @@ class Island2(Island):
                     xx, yy = x + dx, y + dy
                     if not (0 <= xx < n and 0 <= yy < n and land(xx, yy) and int(level[yy, xx]) == L):
                         continue
+                    if fb is not None and fb[yy, xx]:
+                        continue
                     E = None
                     for ex, ey in ((x + dx, y), (x, y + dy)):
-                        if 0 <= ex < n and 0 <= ey < n and land(ex, ey) and int(level[ey, ex]) == L:
+                        if (0 <= ex < n and 0 <= ey < n and land(ex, ey)
+                                and int(level[ey, ex]) == L
+                                and (fb is None or not fb[ey, ex])):
                             E = (ex, ey)
                             break
                     if E is not None:
@@ -1173,18 +1219,24 @@ class Island2(Island):
         return dist, parent, elbow
 
     def _road_path(self, a, b):
-        dist, parent, elbow = self._road_graph_bfs(a)
-        if b not in dist:
-            return []
-        path, cur = [], b
-        while cur != a:
-            path.append(cur)
-            e = elbow.get(cur)
-            if e is not None:
-                path.append(e)
-            cur = parent[cur]
-        path.append(a)
-        return path
+        """Two-pass routing: first with the HARD beach keep-out (the padding rule — a road must
+        never run close enough to sand to squeeze a 1-tile grass sliver), falling back to the
+        soft-penalty-only graph when the hard pass can't reach (a target inside the margin)."""
+        for fb in (getattr(self, "_sand_forbid", None), None):
+            self._road_forbid = fb
+            dist, parent, elbow = self._road_graph_bfs(a)
+            self._road_forbid = None
+            if b in dist:
+                path, cur = [], b
+                while cur != a:
+                    path.append(cur)
+                    e = elbow.get(cur)
+                    if e is not None:
+                        path.append(e)
+                    cur = parent[cur]
+                path.append(a)
+                return path
+        return []
 
     def _jitter_waypoints(self, a, b, reach, k=3, amp=0.10):
         n, s = self.n, self.seed
@@ -1206,18 +1258,21 @@ class Island2(Island):
     def _road_attach(self, dest, road):
         if not road or dest in road:
             return []
-        dist, parent, elbow = self._road_graph_bfs(list(road))
-        if dest not in dist:
-            return []
-        path, cur = [], dest
-        while cur not in road:
-            path.append(cur)
-            e = elbow.get(cur)
-            if e is not None:
-                path.append(e)
-            cur = parent[cur]
-        path.append(cur)
-        return path
+        for fb in (getattr(self, "_sand_forbid", None), None):   # hard beach padding, then soft
+            self._road_forbid = fb
+            dist, parent, elbow = self._road_graph_bfs(list(road))
+            self._road_forbid = None
+            if dest in dist:
+                path, cur = [], dest
+                while cur not in road:
+                    path.append(cur)
+                    e = elbow.get(cur)
+                    if e is not None:
+                        path.append(e)
+                    cur = parent[cur]
+                path.append(cur)
+                return path
+        return []
 
     def _dirt_roads(self):
         """An 8-direction MEANDERING, BRANCHING dirt trunk (the ALttP red path): a wander-
@@ -1226,11 +1281,19 @@ class Island2(Island):
         to corridor centres. Widened ~2-3 on flats off the beach; mat-only (grass->dirt only,
         never sand/stone), reserved, occlusion-safe (trailing _lip_cover)."""
         n, mat, level = self.n, self.mat, self.level
+        self._road_forbid = None
         dist0, _, _ = self._road_graph_bfs(self.spawn)
         reach = set(dist0)
         if not reach:
             return
         d2edge = self._dist_field((mat == "clear_water") | (mat == "light_sand"), cap=8)
+        # PADDING vs the beach (maintainer: ground types must never change dirt->grass->sand in
+        # 2 tiles): dirt may never come within 2 cells of sand, so the grass band between a road
+        # and a beach is always >=2 wide and no tile needs transitions to two different grounds.
+        # Enforced three ways: a HARD routing keep-out (with soft fallback so no target is ever
+        # unreachable), the widen margin, and a final paint skip for fallback remnants.
+        d2sand = self._dist_field(mat == "light_sand", cap=8)
+        self._sand_forbid = (d2sand <= 2)
 
         def near(fx, fy):
             tx, ty = self._to_grid(fx, fy)
@@ -1294,22 +1357,133 @@ class Island2(Island):
         for (x, y) in road:
             if (x, y) in vert:                           # vertical run: elbow IS the width
                 continue
-            for i, j in ((1, 0), (0, 1)):                # widen TOWARD CAMERA only
-                xx, yy = x + i, y + j
-                if not (0 <= xx < n and 0 <= yy < n and (xx, yy) in reach
-                        and int(level[yy, xx]) == int(level[y, x])
-                        and mat[yy, xx] in PAVE and (xx, yy) not in self._ascent
-                        and d2edge[yy, xx] > ROAD_BEACH_MARGIN):
-                    continue
-                if (xx + i, yy + j) in road:              # gap between two parallel strands -> skip
-                    continue
-                wide.add((xx, yy))
+            for ax, ay in ((1, 0), (0, 1)):              # per axis: toward camera, ELSE up-screen
+                for sgn in (1, -1):
+                    # On a mountain bench rim the toward-camera side is the CLIFF (level differs),
+                    # which left mountain roads 1 cell wide (maintainer: same road width applies
+                    # regardless of elevation) — so fall back to the up-screen strand there.
+                    i, j = ax * sgn, ay * sgn
+                    xx, yy = x + i, y + j
+                    if not (0 <= xx < n and 0 <= yy < n and (xx, yy) in reach
+                            and int(level[yy, xx]) == int(level[y, x])
+                            and mat[yy, xx] in PAVE and (xx, yy) not in self._ascent
+                            and d2edge[yy, xx] > ROAD_BEACH_MARGIN
+                            and not self._sand_forbid[yy, xx]):
+                        continue
+                    if (xx + i, yy + j) in road:          # gap between two parallel strands -> skip
+                        continue
+                    wide.add((xx, yy))
+                    break                                 # one strand per axis
         for (x, y) in wide:
-            if mat[y, x] in PAVE and (x, y) not in self._ascent:
+            if (mat[y, x] in PAVE and (x, y) not in self._ascent
+                    and not self._sand_forbid[y, x]):     # padding: dirt never within 2 of sand
                 mat[y, x] = "lightdark_dirt"
             self.reserved.add((x, y))
         self.roads = {(x, y) for (x, y) in wide if mat[y, x] == "lightdark_dirt"}
+        self._linework.update(self.roads)
         self._lip_cover()
+
+    # -- NEW RULE: ground types never change "this fast" (no transition slivers) --
+
+    def _material_slivers(self):
+        """Cells that break the maintainer's rule (2026-07-22): a ground tile may border at most
+        ONE foreign ground type, because a tile can only carry a transition to a single partner —
+        a 1-tile grass strip between dirt and sand needs transitions to BOTH on one tile and
+        renders broken. Water/void neighbours are exempt (shore transitions are first-class and
+        every approved beach has sand touching grass on one side and water on the other). ROAD
+        cells are exempt AS SUBJECTS: where a road crosses a biome boundary some tile must border
+        both biomes — topologically unavoidable — and the road's own dirt is the least-bad place
+        for it (dirt contrasts with everything it crosses); road cells still count as a FOREIGN
+        type for their neighbours, which keeps the original dirt-grass-sand sliver illegal."""
+        n = self.n
+        gs = set(GROUND_MATS)
+        out = []
+        for y in range(n):
+            for x in range(n):
+                m = self.mat[y, x]
+                if (m not in gs or m == "lightdark_dirt"    # all dirt = infrastructure
+                        or (x, y) in self.roads or (x, y) in self._linework
+                        or (x, y) in self._ascent):         # stairs too: local-ground line
+                    continue
+                foreign = set()
+                for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    xx, yy = x + i, y + j
+                    if 0 <= xx < n and 0 <= yy < n:
+                        fm = self.mat[yy, xx]
+                        # Only NEAR-LEVEL neighbours pair for transitions: across a cliff
+                        # (|Δlevel|>1) the wall face renders between the two tops, so the tiles
+                        # never blend and no transition pair is needed. INFRASTRUCTURE is an
+                        # overlay, never a terrain partner: where a road or stair strip crosses
+                        # a biome boundary its flank cells unavoidably see line+other (the same
+                        # forcing as the line cell itself); the maintainer's dirt-grass-sand
+                        # beach case is guarded STRUCTURALLY by the padding rule instead
+                        # (no dirt within 2 of sand — build asserts).
+                        if (fm in gs and fm != m and fm != "lightdark_dirt"
+                                and (xx, yy) not in self._ascent
+                                and abs(int(self.level[yy, xx]) - int(self.level[y, x])) <= 1):
+                            foreign.add(fm)
+                if len(foreign) >= 2:
+                    out.append((x, y, m, tuple(sorted(foreign))))
+        return out
+
+    def _fix_material_slivers(self, max_pass=80):
+        """Repair pass for _material_slivers, by THICKENING: assign each violating cell the 3x3
+        MAJORITY ground material (own material included; deterministic tie-break by GROUND_MATS
+        order). Absorbing a sliver into one neighbour merely SHIFTS a three-region junction — at
+        any point where three grounds all pairwise touch, some cell borders two foreigners — but
+        majority smoothing widens the middle band to >=2 cells, which is exactly the maintainer's
+        padding rule and the only stable shape. mat-only — walkability/levels untouched; a
+        repainted dirt cell leaves self.roads; ends with _lip_cover since materials moved."""
+        n = self.n
+        gs = set(GROUND_MATS)
+        prio = {m: k for k, m in enumerate(GROUND_MATS)}
+        # dirt NEVER occurs naturally in this generator — every dirt cell is infrastructure
+        # (roads, fords, stripe fallbacks), i.e. linework: exempt subject, flanks flip aside
+        for (yy, xx) in np.argwhere(self.mat == "lightdark_dirt"):
+            self._linework.add((int(xx), int(yy)))
+        for _round in range(6):
+            self._sliver_passes(max_pass, gs, prio)
+            self._lip_cover()                    # may paint NEW stripes -> new junctions...
+            if not self._material_slivers():     # ...so iterate the PAIR to a joint fixpoint
+                break
+
+    def _sliver_passes(self, max_pass, gs, prio):
+        n = self.n
+        for _ in range(max_pass):
+            viol = self._material_slivers()
+            if not viol:
+                break
+            progressed = False
+            for (x, y, m, _f) in viol:
+                # Count the 8-neighbour foreign grounds, split into TERRAIN cells and LINEWORK
+                # cells (roads/stripes). A violated flank beside a line crossing flips to the
+                # DOMINANT TERRAIN side — pushing the biome boundary one cell off the line, a
+                # stable shape — never into the line itself: absorbing flanks into dirt/stripe
+                # material snowballed the road across the whole summit patchwork.
+                tvotes, lvotes = {}, {}
+                for i in (-1, 0, 1):
+                    for j in (-1, 0, 1):
+                        xx, yy = x + i, y + j
+                        if 0 <= xx < n and 0 <= yy < n:
+                            fm = self.mat[yy, xx]
+                            if fm in gs and fm != m:
+                                if (xx, yy) in self._linework or (xx, yy) in self.roads:
+                                    lvotes[fm] = lvotes.get(fm, 0) + 1
+                                else:
+                                    tvotes[fm] = tvotes.get(fm, 0) + 1
+                tvotes.pop("lightdark_dirt", None)        # dirt is infrastructure, not terrain
+                if tvotes:
+                    best = sorted(tvotes.items(), key=lambda kv: (-kv[1], prio[kv[0]]))[0][0]
+                elif lvotes:                              # enclosed by linework only: join it
+                    best = sorted(lvotes.items(), key=lambda kv: (-kv[1], prio.get(kv[0], 99)))[0][0]
+                else:
+                    continue
+                self.mat[y, x] = best
+                if best != "lightdark_dirt":
+                    self.roads.discard((x, y))
+                progressed = True
+            if not progressed:
+                break
 
     def _trap_count(self):
         comps = self._walk_components()
@@ -1460,6 +1634,13 @@ def build(out=None, seed=21, M=24):
                         and abs(int(d.level[r, bx]) - dlv) <= 1
                         and (bx, r) in mainset), f"bridge end not walkable at ({bx},{r})"
 
+    slivers = d._material_slivers()
+    assert not slivers, f"material sliver (tile borders 2+ foreign grounds): {slivers[:5]}"
+    d2sand = d._dist_field(d.mat == "light_sand", cap=8)
+    near_sand_dirt = int(((d.mat == "lightdark_dirt") & (d2sand <= 2)).sum())
+    assert near_sand_dirt == 0, \
+        f"beach padding broken: {near_sand_dirt} dirt cell(s) within 2 of sand"
+
     # the massif gorge crossing must have shipped (maze-river decks sit at bank level <=12)
     gorge_bridges = [dk for dk in d.decks if dk["kind"] == "bridge" and int(dk["level"]) >= 16]
     assert gorge_bridges, "mountain gorge bridge missing (concern 4 failed to commit at this seed)"
@@ -1469,7 +1650,7 @@ def build(out=None, seed=21, M=24):
     print(f"  zones: upper(mtn) {upper_land} land, maze {maze_land} land "
           f"(maze/upper = {maze_land / max(1, upper_land):.2f}x)")
     print(f"  occlusion lips: {len(viol)} legible allowed / {len(bad)} illegible "
-          f"{'[CLEAN]' if not bad else bad[:3]}")
+          f"{'[CLEAN]' if not bad else bad[:3]}; material slivers {len(slivers)}")
     print(f"  reachable (prop-aware) {reach}/{land_cells} land "
           f"({unreachable} water-locked islet); traps {traps}; decks {len(d.decks)}")
     print(f"  walkable components (top 6 sizes): {[len(c) for c in comps[:6]]}")
