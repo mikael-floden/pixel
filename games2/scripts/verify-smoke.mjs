@@ -123,10 +123,20 @@ try {
     console.log(`tap-to-move OK (${d0.toFixed(0)} → ${dEnd.toFixed(0)}wu, arrived)`);
     if (chasePeak.trail < 6) fail(`chase-cam never trailed the runner (peak ${chasePeak.trail.toFixed(1)}px)`);
     if (chasePeak.dip < 0.02) fail(`chase-cam never zoomed out while running (dip ${chasePeak.dip.toFixed(3)})`);
-    await page.waitForTimeout(2600); // settle
-    const rest = await page.evaluate(() => window.__ml.camInfo());
-    if (Math.abs(rest.zoom - rest.base) > 0.01 || (rest.trail ?? 99) > 8)
-      fail(`chase-cam did not settle (zoom ${rest.zoom.toFixed(3)}/${rest.base}, trail ${(rest.trail ?? -1).toFixed(1)}px)`);
+    // Settle is FRAME-time ease (CAM_ZOOM_TAU_IN 0.85s), and a starved
+    // headless-GL loop fits fewer frames per wall second — a fixed wait is
+    // environment-marginal (measured: this settle takes ~5.6s wall on a slow
+    // container, ~2s on a fast one). Poll until settled; a REAL regression
+    // (e.g. a speed-EMA leak holding the zoom out) never converges and still
+    // fails at the deadline.
+    let rest = null;
+    for (let i = 0; i < 30; i++) {
+      await page.waitForTimeout(400);
+      rest = await page.evaluate(() => window.__ml.camInfo());
+      if (Math.abs(rest.zoom - rest.base) <= 0.01 && (rest.trail ?? 99) <= 8) break;
+    }
+    if (!rest || Math.abs(rest.zoom - rest.base) > 0.01 || (rest.trail ?? 99) > 8)
+      fail(`chase-cam did not settle (zoom ${rest?.zoom.toFixed(3)}/${rest?.base}, trail ${(rest?.trail ?? -1).toFixed(1)}px)`);
     console.log(
       `chase-cam OK (peak trail ${chasePeak.trail.toFixed(0)}px, zoom dip ${chasePeak.dip.toFixed(2)}, settles to ${rest.base})`,
     );
@@ -186,8 +196,14 @@ try {
       return true;
     });
     if (!clicked) fail("HUD time-of-day button missing");
-    await page.waitForTimeout(150);
-    const t1 = await page.evaluate(() => window.__ml.timeOfDay().name);
+    // The button is a SERVER round-trip ("timeofday" message → state patch →
+    // local phase name): one fixed 150ms sample is starvation-marginal on a
+    // slow container. Poll for the change; a dead button still fails.
+    let t1 = t0;
+    for (let i = 0; i < 25 && t1 === t0; i++) {
+      await page.waitForTimeout(200);
+      t1 = await page.evaluate(() => window.__ml.timeOfDay().name);
+    }
     if (t0 === t1) fail(`HUD time-of-day button did not cycle (${t0})`);
     console.log(`HUD tabs OK (5 tabs; settings time button ${t0} → ${t1})`);
   }
