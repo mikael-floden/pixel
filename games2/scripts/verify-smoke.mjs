@@ -178,11 +178,11 @@ try {
     );
   }
 
-  // ---- HUD: five tabs, and Settings hosts the time-of-day button (mobile
-  // has no keyboard for the [1] toggle) ----
+  // ---- HUD: six tabs (gamepad first, 2026-07-22), and Settings hosts the
+  // time-of-day button (mobile has no keyboard for the [1] toggle) ----
   {
     const tabs = await page.$$eval(".ml-tab", (els) => els.map((e) => e.dataset.tab));
-    if (tabs.length !== 5) fail(`want 5 HUD tabs, got ${JSON.stringify(tabs)}`);
+    if (tabs.length !== 6) fail(`want 6 HUD tabs, got ${JSON.stringify(tabs)}`);
     await page.click('[data-tab="settings"]');
     await page.waitForTimeout(120);
     const t0 = await page.evaluate(() => window.__ml.timeOfDay().name);
@@ -205,7 +205,7 @@ try {
       t1 = await page.evaluate(() => window.__ml.timeOfDay().name);
     }
     if (t0 === t1) fail(`HUD time-of-day button did not cycle (${t0})`);
-    console.log(`HUD tabs OK (5 tabs; settings time button ${t0} → ${t1})`);
+    console.log(`HUD tabs OK (6 tabs; settings time button ${t0} → ${t1})`);
   }
 
   // ---- keyboard cancels the trip ----

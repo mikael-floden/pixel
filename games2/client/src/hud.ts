@@ -97,7 +97,12 @@ export interface HudActions {
   }[];
 }
 
+// Tab icons: the maintainer's 1x pixel-art set (client/ui-src/icons/, baked
+// 2x by scripts/bake-tab-icons.py). GAMEPAD is FIRST by his order (2026-07-22
+// — a new menu button; its page is bare until its content lands). Backpack
+// stays the tab that opens selected.
 const TABS = [
+  { id: "gamepad", label: "Gamepad" },
   { id: "backpack", label: "Backpack" },
   { id: "equipment", label: "Equipment" },
   { id: "map", label: "Map" },
@@ -517,9 +522,10 @@ function injectStyles() {
   // segment strips stretched between fixed junctions (see build-ui-tiles).
   const css = `
   :root{--ml-hud-scale:1;
-    /* one shared button height (maintainer: both 120px), guarded so five
-       tabs still fit between the rails on narrow real-device viewports */
-    --ml-tab:min(120px,calc((100vw - 200px)/5));
+    /* one shared button height (maintainer: both 120px), guarded so SIX
+       tabs (gamepad joined 2026-07-22) still fit between the rails on
+       narrow real-device viewports */
+    --ml-tab:min(120px,calc((100vw - 200px)/6));
     --ml-bw:calc(26px * var(--ml-hud-scale))}   /* plate border render width */
   /* HUD sections: base props only — position/size come from applyFrameLayout
      (the frame-v2 windows), set inline after every compose. */
@@ -633,23 +639,31 @@ function injectStyles() {
   .ml-amb-row.blocked{opacity:.5;cursor:not-allowed}
   .ml-amb-auto{margin-bottom:2px}
   /* Narrower-than-design viewports: the tab plates already shrink via the
-     --ml-tab formula, but the ICON files (2x bakes, up to 80px) overflow
-     once a tab drops under ~90px — i.e. below a ~650px viewport. Icons then
-     drop to exactly HALF the file (= the art's true 1x): the only other
-     integer-crisp scale. Same step for the ambient checkboxes (8px native):
-     5x → 3x → 2x, never fractional. */
-  @media (max-width:650px){
+     --ml-tab formula, but the ICON files (uniform 96px 2x bakes) overflow
+     once a tab drops under 96px — with six tabs that's below a ~780px
+     viewport. Icons then drop to exactly HALF the file (= the art's true
+     1x, 48px): the only other integer-crisp scale. The ambient checkboxes
+     (8px native) step on their own proportional breaks: 5x → 3x → 2x,
+     never fractional. */
+  @media (max-width:780px){
     .ml-tab-icon{zoom:0.5}
+  }
+  @media (max-width:650px){
     .ml-amb-check{width:24px;height:24px}
   }
   @media (max-width:460px){
+    /* six 48px half-scale icons need more row than the 200px side allowance
+       leaves — widen the row (40px insets) and size tabs to it */
     .ml-tabrow{left:40px;right:40px}
+    :root{--ml-tab:min(120px,calc((100vw - 100px)/6))}
     .ml-amb-check{width:16px;height:16px}
   }
   /* Short viewports (small desktop windows): compact everything. Height 48
      keeps the kit rows on an exact integer scale (48 = 4 blocks of 12). */
   @media (max-height:640px){
-    :root{--ml-tab:min(84px,calc((100vw - 200px)/5))}
+    :root{--ml-tab:min(84px,calc((100vw - 200px)/6))}
+    /* compact tabs (≤84px) can't hold the full 96px icon files either */
+    .ml-tab-icon{zoom:0.5}
     .ml-page{gap:8px}
     .ml-plate-btn{padding:4px 12px;height:48px;font-size:13px}
     .ml-set{gap:12px}
