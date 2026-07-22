@@ -18,6 +18,7 @@ import {
   makeSideBlocked,
   unstickFromSolids,
   autoJumpWanted,
+  steerAssist,
   startTrip,
   stepAutopilot,
   AutopilotTrip,
@@ -1113,6 +1114,10 @@ export class WorldScene extends Phaser.Scene {
       // Would auto-jump fire from world (x,y) moving in screen dir (ax,ay)?
       // Headless probe for the auto-hop rule against real map geometry.
       autoJumpAt: (x: number, y: number, ax: number, ay: number) => this.wouldAutoJump(x, y, ax, ay),
+      // Steer-assist probe: what would direct input (ax,ay) at world (x,y)
+      // deflect to (null = no assist)? Headless QA for the prop corner-dodge.
+      steerAt: (x: number, y: number, ax: number, ay: number) =>
+        this.terrain ? steerAssist(this.terrain, x, y, ax, ay) : null,
       // Current animation key of the local avatar's sprite — headless probe for
       // verifying jump/runjump selection.
       anim: () => {
@@ -2560,6 +2565,22 @@ export class WorldScene extends Phaser.Scene {
     this.keysActive = ax !== 0 || ay !== 0;
     if (this.keysActive) {
       if (this.trip) this.clearMoveTarget();
+      // STEER ASSIST: an accidental run into a solid prop's corner slips
+      // around it when the tiles right beside the blocked cell allow it —
+      // strictly local, no pathfinding (shared steerAssist). Applies to
+      // DIRECT input only (keys + the HUD analog stick, which synthesizes
+      // keys); the autopilot has real findPath. Like auto-jump, the deflected
+      // input is what gets predicted AND sent — the server stays untouched.
+      if (this.terrain) {
+        const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+        if (me) {
+          const assist = steerAssist(this.terrain, me.fx, me.fy, ax, ay);
+          if (assist) {
+            ax = assist.ax;
+            ay = assist.ay;
+          }
+        }
+      }
     } else {
       // Held finger at rest: pointermove stops firing, so commit any
       // budget-deferred drag retarget from the frame loop instead.

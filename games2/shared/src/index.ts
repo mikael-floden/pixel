@@ -1126,6 +1126,118 @@ export function autoJumpWanted(
   return !canEnter(grid, x, y, tx, ty, walk) && canEnter(grid, x, y, tx, ty, jump);
 }
 
+// --- Steer assist: slip around a solid prop's corner on direct input ---------
+// Running with WASD / the analog stick into a SOLID OBJECT dead-stops the
+// player even when they obviously meant to pass beside it (the wall-slide
+// only helps when the input still has a free axis component). The assist is
+// deliberately NOT navigation: it looks ONLY at the tiles beside the ONE cell
+// being run into. If the object's perpendicular neighbour is open ground the
+// player could walk through, the input is deflected to the CLOSEST such side
+// until the body physically clears the corner; if neither side helps (a wall
+// of solids, a dead end) the input is left alone and the player runs into the
+// object exactly as before. Elevation ledges are excluded — that's
+// auto-jump's domain. The client synthesizes the deflected input exactly like
+// auto-jump synthesizes jumps: the server just sees normal input, and the
+// prediction uses the same vector, so nothing ever rubber-bands.
+
+/** All 8 inputs a keyboard could hold — the assist deflects onto one of these
+ * so the synthesized input is indistinguishable from real keys. */
+const EIGHT_WAY: readonly [number, number][] = [
+  [1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1],
+];
+
+/**
+ * Direct-input steer assist. From world (x,y) with SCREEN input (ax,ay):
+ * returns the screen input to substitute this tick (a pure perpendicular
+ * dodge around the solid object being run into), or null to leave the input
+ * alone. Pure and stateless — call it every input tick; once the body clears
+ * the corner the forward probe moves again and the assist stops by itself.
+ */
+export function steerAssist(
+  grid: TerrainGrid,
+  x: number,
+  y: number,
+  ax: number,
+  ay: number,
+): { ax: number; ay: number } | null {
+  if (ax === 0 && ay === 0) return null;
+  const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+  const worldW = worldWidthOf(grid);
+  const worldH = worldHeightOf(grid);
+  const dt = 0.08; // probe step ≈ 5.6wu at walk speed — spans a substep + margin
+  const sim = (iax: number, iay: number) =>
+    stepMovement(
+      x, y, iax, iay, false, dt,
+      makeBlocked(grid, walk), 1, true, worldW, worldH,
+      makeSideBlocked(grid, walk),
+    );
+  const moved = (r: { x: number; y: number }) => Math.hypot(r.x - x, r.y - y);
+  // Only assist a real STALL. A wall-slide (diagonal input with one free axis)
+  // still moves at ≥~0.7 of speed and must stay untouched.
+  if (moved(sim(ax, ay)) > WALK_SPEED * dt * 0.35) return null;
+  const w = screenToWorldVector(ax, ay);
+  const len = Math.hypot(w.x, w.y);
+  if (len < 1e-6) return null;
+  const ux = w.x / len;
+  const uy = w.y / len;
+  // What solid cell is the body stalled on? The centre leading edge first;
+  // if that landed on free ground the catch is a body CORNER — mirror the
+  // side probes' ±0.75R lateral points.
+  const d = (PLAYER_RADIUS + 3) / Math.max(Math.abs(ux), Math.abs(uy));
+  const px = x + ux * d;
+  const py = y + uy * d;
+  let bc = -1;
+  let br = -1;
+  for (const lat of [0, 0.75 * PLAYER_RADIUS, -0.75 * PLAYER_RADIUS]) {
+    const c = Math.floor((px - uy * lat) / CELL_WU);
+    const r = Math.floor((py + ux * lat) / CELL_WU);
+    if (cellSolid(grid, c, r)) {
+      bc = c;
+      br = r;
+      break;
+    }
+  }
+  if (bc < 0) return null; // stalled on elevation/water/border — not an object
+  // Perpendicular axis relative to the DOMINANT world axis of the intent.
+  const domX = Math.abs(w.x) >= Math.abs(w.y);
+  const perp = domX ? { x: 0, y: 1 } : { x: 1, y: 0 };
+  // Closest side first: whichever side of the object's centreline the body
+  // already leans toward is the shorter way around.
+  const myPerp = domX ? y : x;
+  const objPerp = domX ? (br + 0.5) * CELL_WU : (bc + 0.5) * CELL_WU;
+  const firstSgn = myPerp <= objPerp ? -1 : 1;
+  for (const sgn of [firstSgn, -firstSgn]) {
+    // THE LOCAL TILE INVESTIGATION (the whole point — no pathfinding):
+    // the object's perpendicular neighbour must be open passable ground…
+    const nc = bc + perp.x * sgn;
+    const nr = br + perp.y * sgn;
+    if (cellSolid(grid, nc, nr)) continue;
+    // …reachable at walk elevation from beside the player (the lane the body
+    // will pass through), and the immediate sideways step must be walkable…
+    const sx = x + perp.x * sgn * CELL_WU;
+    const sy = y + perp.y * sgn * CELL_WU;
+    if (!canEnter(grid, x, y, sx, sy, walk)) continue;
+    if (!canEnter(grid, sx, sy, (nc + 0.5) * CELL_WU, (nr + 0.5) * CELL_WU, walk)) continue;
+    // …and physically free right now (another prop may pin the body).
+    const target = { x: perp.x * sgn, y: perp.y * sgn };
+    let best: { ax: number; ay: number } | null = null;
+    let bestDot = 0.5; // must clearly point the right way
+    for (const [cax, cay] of EIGHT_WAY) {
+      const cw = screenToWorldVector(cax, cay);
+      const cl = Math.hypot(cw.x, cw.y) || 1;
+      const dot = (cw.x * target.x + cw.y * target.y) / cl;
+      if (dot > bestDot) {
+        bestDot = dot;
+        best = { ax: cax, ay: cay };
+      }
+    }
+    if (!best) continue;
+    if (moved(sim(best.ax, best.ay)) < WALK_SPEED * dt * 0.35) continue;
+    return best;
+  }
+  return null;
+}
+
 // --- Navigation: A* pathfinding over the terrain grid ------------------------
 // Used by the client's tap-to-move autopilot so the character walks AROUND
 // solid props and ALONG cliff walls to a clean jump approach, instead of

@@ -108,6 +108,24 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   `WALK_CLIMB = 0.5` (you can't walk up a full 1-level ledge), but a **timed
   jump** (`JUMP_CLIMB = 1`, Space) climbs it. `stepMovement` resolves axis-
   separated (wall-slide) and scales by the current **surface** speed.
+- **Steer assist** (`shared/steerAssist`, maintainer 2026-07-22): running with
+  DIRECT input (WASD or the HUD analog stick, which synthesizes keys) into a
+  SOLID PROP dead-stopped the player even when they obviously meant to pass
+  beside it (wall-slide only helps while an input axis is still free).
+  Deliberately NOT navigation: on a real stall it inspects ONLY the tiles
+  beside the ONE blocked cell — if the object's perpendicular neighbour is
+  open walkable ground (tile not solid, elevation-reachable, sideways step
+  physically free), the input is deflected to the CLOSEST such side until the
+  body clears the corner, then the held keys resume forward naturally. A wall
+  of solids / dead end → no assist, honest collision. Elevation ledges are
+  excluded (auto-jump's domain); the autopilot never uses it (findPath).
+  Client-only input synthesis exactly like auto-jump — prediction and server
+  get the same deflected vector, so nothing rubber-bands. Grounded in REAL
+  `stepMovement` sims so trigger/release can't disagree with the collision
+  probes (incl. the 0.75R corner probes — it keeps sliding until forward
+  truly moves). Probe: `__ml.steerAt(x,y,ax,ay)`; tests:
+  `server/test/steering.test.ts` (closest-side, fallback side, wall stays
+  stuck, ledge untouched, wall-slide untouched, end-to-end corner round).
 - **Auto-jump**: walking INTO a 1-level wall auto-fires the jump so you don't
   tap Space at every ledge (`WorldScene.maybeAutoJump`/`wouldAutoJump`, called
   from `predictAndSend`). The rule is exactly `!canEnter(walk) && canEnter(jump)`
