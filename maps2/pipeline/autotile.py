@@ -289,9 +289,16 @@ class AutoTiler:
                 drop_water = (land and wat
                               and max(lvl[y, x] for x, y in land)
                               > max(lvl[y, x] for x, y in wat))
+                # NEAR-LEVEL rule (2026-07-22, twin of the no-sliver pairing law): a cell
+                # >=2 levels BELOW the corner's top cannot claim it — the cliff separates
+                # the surfaces, and a high-priority material at a cliff FOOT used to paint
+                # floating fringe flecks onto the plain top 2-10 levels above it.
+                maxl = max((lvl[y, x] for x, y in land), default=0)
                 best, bp = "", -2
                 for x, y in quad:
                     if drop_water and m[y, x] in self.water:
+                        continue
+                    if m[y, x] not in self.water and lvl[y, x] < maxl - 1:
                         continue
                     if self._p(m[y, x]) > bp:
                         bp, best = self._p(m[y, x]), m[y, x]

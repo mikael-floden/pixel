@@ -192,15 +192,33 @@ Enforce it in code (`pipeline/autotile.py`):
     gated Δ4 above the maze cap 12.
   - **Maze** tiers are `{0,4,12}` — deltas mostly Δ4, sometimes Δ8, rarely Δ12 (dramatic cliffs,
     no timid Δ2). Winding cliff/water corridors, a river + bridges.
-  - **Trollstigen mountain ROAD** (`_mountain_stairs`→`_climb_hugging`→`_foot_switchback` +
-    `_dirt_roads`): the ascent is a *contour-following* road, not a straight ribbon. `_foot_switchback`
-    HAIRPINS down the sheer toe (short Δ4 rock legs that alternate cardinal — screen-left/right —
-    each widened UP-SCREEN into the hillside so the mountain wall is always uphill and the only fall
-    is toward the camera, with a fattened corner "so two cars can pass"); above the toe short rock
-    ramps cut into each Δ4 cliff at alternating ends. The `_dirt_roads` router then PAVES the benches
-    it crosses (a `PAVE` set: grass/snow/rock/ice→`lightdark_dirt`, but never the rock ascent ramps
-    in `self._ascent`), so the visible road is dirt LEGS curving along the terrace rims joined by rock
-    STAIR ramps — the road bends with the mountain's outline instead of projecting out over low ground.
+  - **The TROLLSTIGEN** (`_foot_switchback`, rebuilt 2026-07-22 to the maintainer's own
+    design after every axis-aligned attempt failed): the descent down the sheer toe is a
+    wall-hugging stack of MIRRORED slope legs. His spec, verbatim rules: legs run ALONG the
+    cliff; at a turn you MIRROR the slope and continue down in both Z and Y — the top of the
+    new leg aligns with the bottom of the old (Z) and the new leg draws IN FRONT of the old
+    (Y) — so the previous leg becomes the next leg's inner wall and *you can only fall down
+    outwards*; give up "perfect straight line" (legs follow the wall contour); vary the road
+    width where needed; hairpin corners are bigger ("two cars can meet").
+    THE GEOMETRY INSIGHT that made it work: a screen-horizontal wall is a GRID-DIAGONAL
+    line, so the whole structure lives on the skew lattice `p=x+y` (screen depth), `q=x−y`
+    (screen horizontal). A leg = a zip-band of `wleg` consecutive p-layers; stacking
+    outward = +p; the stand-off `o(q)` is the 1-Lipschitz envelope of the rim (bands shift
+    ≤1 p-layer per column; the innermost leg WIDENS back to the wall where it recedes).
+    Levels are scheduled on the diagonal `t = dir·q − p` (dir = the leg's ascend direction):
+    constant-t lines run along `(p+1, q+dir)`, so every 1-level step edge FACES the camera —
+    a same-material occluded up-step is impossible by construction — and leg k's minimum
+    equals leg k+1's maximum, so the stack is monotone toward the camera. HARD-ASSERTED
+    **hug invariant**: no structure cell may drop ≥2 on an up-screen side (hairpin noses
+    exempt — they hang free like real switchback noses). The PRIMARY sits at the
+    maintainer's chosen window (`TROLL_SITE_FRAC`, his blue marks — a design constant like
+    the bridge fracs); `_carve_connector` must never slice a Trollstigen (guard in code —
+    it once flattened carved legs via `_fill_traps` after slicing them apart).
+  - **The Trollstigen IS the road** (maintainer: "I want a zigzag ROAD"): the trunk
+    spawn→summit is routed through the primary's foot→entry via-points and PAVE may paint
+    Trollstigen grass cells dirt (the general no-paint-ascent guard still protects rock/snow
+    stairs; PAVE stays grass-only, and the width normalizer works ON the legs) — same
+    doctrine as bridge decks wearing dirt where the road runs onto them.
   - **Material policy — stairs KEEP the local ground; dirt=road surface** (maintainer
     2026-07-22: "Don't always use stone. Use the ground type that is already present at that
     location"): carved stairs/ramps (`self._ascent`) keep whatever ground they cut through —
@@ -219,7 +237,8 @@ Enforce it in code (`pipeline/autotile.py`):
     finalize pass so it covers every bridge creator, inherited ones included (the game's
     `parseWorld` accepts thickness 0 since 2026-07-22 — it used to clamp to >=1).
     The flat road surface is `lightdark_dirt`; the road may repaint bench tops to
-    dirt but never an ascent cell.
+    dirt but never an ascent cell — EXCEPT Trollstigen cells, which are grass and ARE
+    the road (see the Trollstigen bullet; rock/snow stairs stay unpainted).
   - **8-direction dirt ROADS** (`_dirt_roads`): an organic meandering, branching network that
     runs in all 8 SCREEN directions — the router (`_road_graph_bfs`) adds grid-diagonal moves
     (which render screen-vertical/horizontal) on flat Δ0 land, each gated by a same-level
