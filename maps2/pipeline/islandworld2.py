@@ -357,8 +357,13 @@ class Island2(Island):
         """Is the wall-material trick actually NEEDED for this same-material toward-camera lip?
         Maintainer rule (2026-07-22): the recolour is a LAST RESORT — it looks ugly — used only
         when the elevation change would otherwise be illegible. It is NOT needed when:
-          (a) a VISIBLE cliff face nearby already reveals the step (the edge turns a corner and
-              draws its face) — the player sees the height there; or
+          (a) THIS SAME EDGE draws a cliff face within 2 cells ALONG the boundary: walking the
+              lip's own contour laterally, a boundary cell whose toward-camera neighbour drops
+              >=2 levels shows a visible wall that pins down exactly where this edge runs (the
+              zigzag-corner case). A cliff that is merely NEARBY — a staircase beside the seam,
+              some other boundary — does NOT count: it says "there is elevation around here",
+              not where THIS edge is (the grass-on-grass seam report: a radius test accepted
+              the adjacent stairs and left a long invisible seam unpainted); or
           (b) the ground the player SEES just behind the seam differs from the high cell's top.
               For a tall step that visible ground is several ROWS up-screen (15px/row vs 16px/
               level), NOT the grid-adjacent tile — a rock band / dirt road / water back there
@@ -366,22 +371,43 @@ class Island2(Island):
         n = self.n
         Lh = int(self.level[hy, hx])
         hm = self.mat[hy, hx]
-        # (a) nearby visible cliff at this rim height (a >=2-level toward-camera drop is a
-        # clearly drawn face) -> the elevation change is already easy to see
-        R = 3
-        for yy in range(max(0, hy - R), min(n, hy + R + 1)):
-            for xx in range(max(0, hx - R), min(n, hx + R + 1)):
-                if int(self.level[yy, xx]) != Lh or self.mat[yy, xx] in ("", "clear_water"):
-                    continue
-                for i, j in ((1, 0), (0, 1)):
-                    ax, ay = xx + i, yy + j
-                    if (0 <= ax < n and 0 <= ay < n
-                            and int(self.level[ay, ax]) <= Lh - 2):
-                        return False
+        i, j = hx - lx, hy - ly                          # this lip's toward-camera step
+        # (a) walk this lip's OWN boundary laterally (both ways, up to 2 cells). Legible only
+        # if some cell TOUCHING the walked boundary (its 8-neighbourhood — includes the corner
+        # turn and the stacked lower walls right below a corner) shows a drawn >=2-level
+        # toward-camera face whose material CONTRASTS with the seam's ground: a face renders in
+        # its cell's own material, so a grass face marking a grass seam is itself camouflage
+        # and reveals nothing (the maintainer's grass-on-grass seam — its corner face was
+        # grass too). A contrasting wall at the corner (feedback #1's grey cliffs) counts.
+        for p, q in ((j, i), (-j, -i)):
+            cx, cy = hx, hy
+            for _t in range(3):                          # t=0 is H itself, then 2 lateral steps
+                for ni in (-1, 0, 1):
+                    for nj in (-1, 0, 1):
+                        dx2, dy2 = cx + ni, cy + nj
+                        if not (0 <= dx2 < n and 0 <= dy2 < n):
+                            continue
+                        dm = self.mat[dy2, dx2]
+                        if dm in ("", "clear_water") or dm == hm:
+                            continue                     # no face, or camouflaged face
+                        Ld = int(self.level[dy2, dx2])
+                        for fi, fj in ((1, 0), (0, 1)):
+                            fx2, fy2 = dx2 + fi, dy2 + fj
+                            if (0 <= fx2 < n and 0 <= fy2 < n
+                                    and int(self.level[fy2, fx2]) <= Ld - 2):
+                                return False             # contrasting drawn face marks this edge
+                nx2, ny2 = cx + p, cy + q
+                if not (0 <= nx2 < n and 0 <= ny2 < n) or self.mat[ny2, nx2] == "":
+                    break
+                if int(self.level[ny2, nx2]) < Lh:       # high side ends
+                    break
+                ux2, uy2 = nx2 - i, ny2 - j              # low side must continue too (same lip)
+                if not (0 <= ux2 < n and 0 <= uy2 < n) or int(self.level[uy2, ux2]) >= Lh:
+                    break
+                cx, cy = nx2, ny2
         # (b) walk straight UP-SCREEN from the seam (alternating the U-column and H-column of
         # the screen line, one row = 15px) until a top surface pokes above the lip's height;
         # that's the ground actually visible at the edge. Different material -> edge reads.
-        i, j = hx - lx, hy - ly                          # this lip's toward-camera step
         for rowdist in range(1, 26):
             m = (rowdist - 1) // 2
             if rowdist % 2 == 1:

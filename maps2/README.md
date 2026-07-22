@@ -72,15 +72,21 @@ Consequences to honour:
 - **The wall-material recolour is a LAST RESORT** (maintainer 2026-07-22: "it looks
   ugly — only use this trick when absolutely needed"). A same-material toward-camera
   up-step is FINE — leave it — when the elevation change is legible anyway:
-  (a) a **visible cliff face nearby** (the edge turns a corner and draws its face)
-  already reveals the step; or (b) the ground the player **actually sees behind the
-  seam differs** from the high top — and for a tall step that visible ground is
-  several ROWS up-screen (15px/row vs 16px/level), NOT the grid-adjacent tile: a
-  rock band, dirt road or water back there makes the edge read even when the
-  adjacent cell is grass. Recolour ONLY the lips that fail both — and the stripe
-  material must ALSO differ from any bridge DECK rendering nearby (screen-space
-  test: a low deck a few cells up-screen lands on the same pixels as a high rim,
-  and stone-on-stone-deck was unreadable — maintainer report 2026-07-22).
+  (a) a **CONTRASTING cliff face marks THIS SAME EDGE** — walking the lip's own
+  boundary ≤2 cells laterally, a cell touching it draws a ≥2-level toward-camera
+  face whose material differs from the seam's ground (a corner's grey wall, the
+  stacked stone tier below it). Two traps learned the hard way: a cliff that is
+  merely NEARBY (a staircase beside the seam, another boundary) does NOT count —
+  it says "there is elevation around here", not where THIS edge runs; and a
+  SAME-material face is itself camouflage (a grass wall marking a grass seam
+  reveals nothing) — contrast is required. Or (b) the ground the player
+  **actually sees behind the seam differs** from the high top — and for a tall
+  step that visible ground is several ROWS up-screen (15px/row vs 16px/level),
+  NOT the grid-adjacent tile: a rock band, dirt road or water back there makes
+  the edge read even when the adjacent cell is grass. Recolour ONLY the lips that
+  fail both — and the stripe material must ALSO differ from any bridge DECK
+  rendering nearby (screen-space test: a low deck a few cells up-screen lands on
+  the same pixels as a high rim, and stone-on-stone-deck was unreadable).
 - **Fog exception:** a drop of **more than 10 levels** is separated by the game's
   fog, so the same material MAY be reused across it (an alternative to changing
   type — just make sure the z-distance is >10 and let the fog do the work).
