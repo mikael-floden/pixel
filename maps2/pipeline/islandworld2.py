@@ -165,7 +165,7 @@ class Island2(Island):
         self._connect_all(thresh=5)       # reuse: rock connectors + span the gorge -> one piece
         self._ford_stranded()
         self._place_bridges(count=8)
-        self._bridge_over_gorge(self._gorge_cells, count=1)   # deliberate high stone bridge
+        self._bridge_over_gorge(self._gorge_cells, count=3)   # high/foot/maze bridges (blue marks)
         for _ in range(10):               # guarantee loop -> converge to no pit AND no lip
             camera_monotone_masked(self.level, self.mat, self.upper)
             self._fill_traps()
@@ -868,10 +868,16 @@ class Island2(Island):
         # camera. Then a water cell's toward-camera neighbours (+x,+y) are inside the channel
         # (not a tall bank), so nothing occludes the surface; the tall walls sit to screen-left/
         # right and merely frame it. A short near-vertical reach up high hosts the high bridge.
+        # The passage then CONTINUES SOUTH through the maze all the way to the OCEAN (maintainer
+        # 2026-07-22, red mark): the carver stops by itself when it meets sea water, so the
+        # channel joins the ocean through the south beach — one waterway from massif to sea.
         PATH = [(90, 30), (100, 40), (108, 50),          # diagonal approach from the ridge
                 (110, 62), (112, 74),                     # near-vertical bridge reach (banks tall)
-                (124, 88), (138, 102), (150, 114)]        # open diagonal exit toward the camera/toe
-        chan = self._gorge_channel(PATH, wob_amp=2, half=3, straight=(0.19, 0.25))
+                (124, 88), (138, 102), (150, 114),        # open diagonal exit through the toe
+                (152, 134), (149, 154), (151, 174),       # south through the maze tiers...
+                (149, 194), (150, 222)]                   # ...across the beach into the sea
+        chan = self._gorge_channel(PATH, wob_amp=2, half=3,
+                                   straight=((0.19, 0.25), (0.60, 0.68)))
         if len(chan) < 12:
             self._gorge_cells = set()
             return
@@ -888,6 +894,8 @@ class Island2(Island):
         `straight`=(fy0,fy1) zeroes the x-wobble -> x-aligned rows for the high bridge. Returns a
         set."""
         n, s, M, nd = self.n, self.seed, self.M, self.nd
+        if straight and isinstance(straight[0], (int, float)):
+            straight = (straight,)                       # single band -> list of bands
         chan = set()
         for (ax, ay), (bx, by) in zip(PATH, PATH[1:]):
             steps = int(math.hypot(bx - ax, by - ay)) + 1
@@ -895,7 +903,7 @@ class Island2(Island):
                 t = i / steps
                 yy_f = ay + (by - ay) * t
                 fy = (yy_f - M) / nd
-                if straight and straight[0] <= fy <= straight[1]:
+                if straight and any(b0 <= fy <= b1 for (b0, b1) in straight):
                     wob = 0.0
                 else:
                     wob = (_fbm(np.float32(ax), np.float32(yy_f), s + 79, n * 0.06, 3) - 0.5) * 2 * wob_amp
@@ -967,19 +975,97 @@ class Island2(Island):
             rows = rows3 if len(rows3) >= 2 else ([cy] if row_ok(cy, x0, x1, dlv) else [])
             if rows:
                 cands.append(((x1 - x0), -len(rows), -dlv, cy, x0, x1, dlv, rows))
-        cands.sort()
+        if not cands:
+            return 0
+        # SPREAD the bridges along the passage (maintainer's blue marks: one high on the massif,
+        # one at the foot, one down on the southern reach): bucket candidates into `count` equal
+        # bands over the CHANNEL's full y-extent and lay the best crossing per band — preferring
+        # RAISED decks (higher bank level) over flush level-0 slabs, per the raised-bridge
+        # doctrine — skipping spans that already carry a deck from _place_bridges.
+        cys = [y for (_x, y) in chan]
+        lo, hi = min(cys), max(cys) + 1
         laid = 0
-        for _w, _nr, _nl, cy, x0, x1, dlv, rows in cands:
-            cells = [(x, r) for r in rows for x in range(x0, x1 + 1)]
-            self.decks.append({"kind": "bridge", "mat": "stone_mountain", "level": dlv,
-                               "thickness": 1, "cells": cells})
-            for r in rows:
-                self.links.append(((x0 - 1, r), (x1 + 1, r)))
-            self.reserved.update(cells)
-            laid += 1
-            if laid >= count:
+        laid_cys = []
+        for b in range(count):
+            b0 = lo + (hi - lo) * b // count
+            b1 = lo + (hi - lo) * (b + 1) // count
+            band = sorted((c for c in cands if b0 <= c[3] < b1),
+                          key=lambda c: (c[0], c[2], c[1]))   # width, -dlv (raised first), -rows
+            for _w, _nr, _nl, cy, x0, x1, dlv, rows in band:
+                if any(abs(cy - lc) < 12 for lc in laid_cys):
+                    continue                              # keep the crossings SPREAD apart
+                cells = [(x, r) for r in rows for x in range(x0, x1 + 1)]
+                if any((x, r) in self.reserved for (x, r) in cells):
+                    continue                              # a deck already spans here
+                self.decks.append({"kind": "bridge", "mat": "stone_mountain", "level": dlv,
+                                   "thickness": 1, "cells": cells})
+                for r in rows:
+                    self.links.append(((x0 - 1, r), (x1 + 1, r)))
+                self.reserved.update(cells)
+                laid_cys.append(cy)
+                laid += 1
                 break
         return laid
+
+    def _merge_span(self, main, cands):
+        """Override: like Island's connectivity water-span bridge, but a side lane (w=±1) is
+        laid ONLY when BOTH of its own bank endpoints are walkable land within 1 level of the
+        deck — the parent laid all three lanes blindly, which on a span crossing a wide channel
+        left side lanes ending in open water (deck rows with no walkable bank; the build's
+        bank assert rightly rejects that). The centre lane is guaranteed by construction."""
+        n = self.n
+        best = None
+        for cand in cands:
+            for (tx, ty) in cand:
+                if self.mat[ty, tx] == "clear_water":
+                    continue
+                for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    gap = 0
+                    for step in range(1, 8):
+                        mx, my = tx + i * step, ty + j * step
+                        if not (0 <= mx < n and 0 <= my < n):
+                            break
+                        if (mx, my) in main:
+                            if (self.mat[my, mx] != "clear_water"
+                                    and abs(int(self.level[ty, tx]) - int(self.level[my, mx])) <= 1):
+                                if best is None or gap < best[0]:
+                                    best = (gap, (tx, ty), (i, j), step)
+                            break
+                        if self.mat[my, mx] == "clear_water":
+                            gap += 1
+                        else:
+                            break
+        if best is None or best[0] == 0:
+            return False
+        gap, (tx, ty), (i, j), step = best
+        blv = int(self.level[ty, tx])
+        perp = (j, i)
+        mx, my = tx + i * step, ty + j * step
+        lanes = []
+        for w in (-1, 0, 1):
+            a = (tx + perp[0] * w, ty + perp[1] * w)
+            b = (mx + perp[0] * w, my + perp[1] * w)
+            if not all(0 <= v < n for v in (a[0], a[1], b[0], b[1])):
+                continue
+            if w != 0:
+                ok = all(self.mat[p[1], p[0]] not in ("", "clear_water")
+                         and abs(int(self.level[p[1], p[0]]) - blv) <= 1
+                         for p in (a, b))
+                if not ok:
+                    continue
+            lanes.append((w, a, b))
+        cells = []
+        for s in range(1, step):
+            cxx, cyy = tx + i * s, ty + j * s
+            for (w, _a, _b) in lanes:
+                x, y = cxx + perp[0] * w, cyy + perp[1] * w
+                if 0 <= x < n and 0 <= y < n:
+                    cells.append((x, y))
+        self.decks.append({"kind": "bridge", "mat": "stone_mountain", "level": max(2, blv),
+                           "thickness": 1, "cells": cells})
+        for (_w, a, b) in lanes:
+            self.links.append((a, b))
+        return True
 
     def _ponds(self):
         n, X, Y, s = self.n, self.X, self.Y, self.seed
@@ -1693,12 +1779,20 @@ def build(out=None, seed=21, M=24):
 
     for dk in d.decks:
         xs = [c[0] for c in dk["cells"]]
-        x0, x1, dlv = min(xs), max(xs), dk["level"]
-        for r in sorted({c[1] for c in dk["cells"]}):
-            for bx in (x0 - 1, x1 + 1):
-                assert (d.mat[r, bx] not in ("", "clear_water")
-                        and abs(int(d.level[r, bx]) - dlv) <= 1
-                        and (bx, r) in mainset), f"bridge end not walkable at ({bx},{r})"
+        ys = [c[1] for c in dk["cells"]]
+        x0, x1, y0, y1, dlv = min(xs), max(xs), min(ys), max(ys), dk["level"]
+        if x1 - x0 >= y1 - y0:                # horizontal span: banks sit E/W of every row
+            for r in sorted(set(ys)):
+                for bx in (x0 - 1, x1 + 1):
+                    assert (d.mat[r, bx] not in ("", "clear_water")
+                            and abs(int(d.level[r, bx]) - dlv) <= 1
+                            and (bx, r) in mainset), f"bridge end not walkable at ({bx},{r})"
+        else:                                  # vertical span: banks sit N/S of every column
+            for c in sorted(set(xs)):
+                for by in (y0 - 1, y1 + 1):
+                    assert (d.mat[by, c] not in ("", "clear_water")
+                            and abs(int(d.level[by, c]) - dlv) <= 1
+                            and (c, by) in mainset), f"bridge end not walkable at ({c},{by})"
 
     slivers = d._material_slivers()
     assert not slivers, f"material sliver (tile borders 2+ foreign grounds): {slivers[:5]}"
