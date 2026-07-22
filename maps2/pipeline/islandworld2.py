@@ -402,14 +402,20 @@ class Island2(Island):
         return [v for v in occlusion_violations(self.mat, self.level)
                 if self._lip_needed(v[0][0], v[0][1], v[1][0], v[1][1], v[2])]
 
-    def _lip_cover(self, max_iter=8):
+    def _lip_cover(self, max_iter=8, deck_r=4):
         """Recolour the HIGHER cell of every ILLEGIBLE same-material toward-camera lip (see
         _lip_needed — legible lips are left alone) to a wall material that DIFFERS from ALL its
-        up-screen lower neighbours. If BOTH stone and obsidian sit up-screen of it (an un-2-
-        colourable corner where a ramp meets terrain diagonally), fall back to DIRT — which
-        differs from both — and drop the cell from the rock-ascent set. mat-only, so it never
-        changes a level; always converges (dirt is a third escape)."""
+        up-screen lower neighbours AND from any BRIDGE DECK rendering nearby: a deck floats at
+        its own level in a separate overlay, so a stone stripe beside a stone deck merged into
+        one unreadable grey band (maintainer's stone-on-stone bridge report) — deck materials
+        within deck_r cells join the clash set. If stone AND obsidian both clash (an un-2-
+        colourable corner), fall back to DIRT — which differs from both — and drop the cell from
+        the rock-ascent set. mat-only, so it never changes a level; always converges (dirt is a
+        third escape)."""
         n = self.n
+        deck_cells = [(x, y, dk["mat"], int(dk["level"]))
+                      for dk in self.decks for (x, y) in dk["cells"]]
+        painted = {}
         for _ in range(max_iter):
             bad = self._bad_lips()
             if not bad:
@@ -422,12 +428,27 @@ class Island2(Island):
                     if (0 <= ux < n and 0 <= uy < n and self.mat[uy, ux] not in ("", "clear_water")
                             and int(self.level[uy, ux]) < L):
                         clash.add(self.mat[uy, ux])
-                if "stone_mountain" not in clash:
-                    self.mat[hy, hx] = "stone_mountain"
-                elif "black_mountain" not in clash:
-                    self.mat[hy, hx] = "black_mountain"
-                else:
-                    self.mat[hy, hx] = "lightdark_dirt"        # both walls clash -> dirt differs
+                # deck adjacency is a SCREEN-space test: a low deck a few cells up-screen renders
+                # at nearly the same pixels as a high stripe (screen y = 15*(x+y) - 16*level), so
+                # grid distance lies about what sits "against" the bridge.
+                sx, sy = (hx - hy) * 32, (hx + hy) * 15 - 16 * L
+                for (dx2, dy2, dm, dl) in deck_cells:
+                    if (abs((dx2 - dy2) * 32 - sx) <= 96
+                            and abs((dx2 + dy2) * 15 - 16 * dl - sy) <= 64):
+                        clash.add(dm)
+                # prefer the material an ADJACENT already-painted stripe cell got, so one
+                # continuous rim band stays one material instead of zebra-striping
+                prefer = [painted[(hx + i, hy + j)]
+                          for i in (-1, 0, 1) for j in (-1, 0, 1)
+                          if (hx + i, hy + j) in painted]
+                choice = "lightdark_dirt"                      # fallback: differs from both walls
+                for m in prefer + ["stone_mountain", "black_mountain"]:
+                    if m in ("stone_mountain", "black_mountain") and m not in clash:
+                        choice = m
+                        break
+                self.mat[hy, hx] = choice
+                painted[(hx, hy)] = choice
+                if choice == "lightdark_dirt":
                     self._ascent.discard((hx, hy))
         return not self._bad_lips()
 
