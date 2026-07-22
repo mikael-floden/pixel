@@ -10,7 +10,7 @@
  * equal size reproduces the source art with zero alignment math. The cap
  * moves by CSS transform only.
  *
- * Feel (maintainer's spec):
+ * Feel (maintainer's spec, tuned 2026-07-22):
  *  - The stick SNAPS TO 8 DIRECTIONS — it simulates the keyboard (WASD),
  *    nothing else: each octant maps to the same key set a keyboard player
  *    would hold (NE = W+D …), synthesized as real window KeyboardEvents.
@@ -18,10 +18,15 @@
  *    (prediction, server validation, keyboard-cancels-tap all identical) —
  *    no games-agent file is touched. Phaser reads event.keyCode, which the
  *    KeyboardEvent init dict can't set — defineProperty fills it in.
- *  - The cap's VISUAL travel is clamped (MAX_ART px — a real stick doesn't
- *    stretch), but the FINGER keeps steering at ANY distance past the max
- *    without losing the input: setPointerCapture keeps the drag alive far
- *    outside the well, only the drawn offset clamps.
+ *  - The CAP ITSELF snaps to the 8 directions too: engaged, it sits at
+ *    FULL deflection along the active octant (like an arcade gate), and
+ *    octant changes glide there through a FAST transition — "the snap
+ *    should not be instant, but have a fast animation". The finger keeps
+ *    steering at ANY distance past the travel radius without losing input
+ *    (setPointerCapture keeps the drag alive far outside the well).
+ *  - At REST the cap sits LOWERED onto the socket (REST_ART) so the well's
+ *    crystals are hidden when centered; deflections reveal them only on
+ *    the side the cap tilts away from, like a real stick.
  *  - Dead zone around the centre releases all keys (rest = no input).
  *
  * Pixel art scales nearest-neighbour at INTEGER factors only: 4x at the 980
@@ -34,8 +39,10 @@ import { gameAudio } from "../../composer/index";
 const CANVAS = 96; // the art canvas (both pngs)
 const CX = 46.5; // the socket well centre, art px
 const CY = 60.5;
-const MAX_ART = 9; // cap travel radius, art px ("should not drag the top too long")
+const MAX_ART = 14; // cap deflection radius, art px (maintainer: "drag the top longer")
+const REST_ART = 10; // resting cap drop, art px — covers the well's crystals when centered
 const DEAD_FRAC = 0.35; // of the max: inside this, all keys are up
+const SNAP_MS = 80; // the fast (not instant) glide between snap positions
 // Octants counter-clockwise from screen-east with y DOWN → index = round(angle/45°)
 // mod 8 over atan2(dy,dx): E, SE, S, SW, W, NW, N, NE — each holds the keys a
 // keyboard player would.
@@ -78,12 +85,23 @@ export function mountGamepadStick(page: HTMLElement) {
   // ── layout: integer art scale + the maintainer's marked anchor spot ──
   // (his red circle: the well centre at ~70.5% across, ~42% down the page)
   let k = 4;
+  // the cap's snapped VISUAL state: -1 = centred (resting on the socket),
+  // else the active octant at full deflection
+  let visSector = -1;
+  const setCap = (sector: number) => {
+    visSector = sector;
+    const a = (sector * Math.PI) / 4;
+    const dx = sector < 0 ? 0 : Math.cos(a) * MAX_ART * k;
+    const dy = sector < 0 ? 0 : Math.sin(a) * MAX_ART * k;
+    top.style.transform = `translate(${dx}px, ${REST_ART * k + dy}px)`;
+  };
   const layout = () => {
     k = window.innerWidth >= 780 ? 4 : window.innerWidth >= 585 ? 3 : 2;
     const size = CANVAS * k;
     pad.style.width = pad.style.height = `${size}px`;
     pad.style.left = `${Math.round(page.clientWidth * 0.705 - CX * k)}px`;
     pad.style.top = `${Math.round(page.clientHeight * 0.42 - CY * k)}px`;
+    setCap(visSector); // re-derive the k-scaled transform
   };
   layout();
   window.addEventListener("resize", layout);
@@ -112,19 +130,18 @@ export function mountGamepadStick(page: HTMLElement) {
     const dx = ev.clientX - (r.left + CX * k);
     const dy = ev.clientY - (r.top + CY * k);
     const len = Math.hypot(dx, dy);
-    const max = MAX_ART * k;
-    // visual: clamp the cap to the well; input: the ANGLE keeps working at
-    // any finger distance (the whole point of the clamp split)
-    const f = len > max ? max / len : 1;
-    top.style.transform = `translate(${dx * f}px, ${dy * f}px)`;
-    if (len < max * DEAD_FRAC) setKeys(-1);
-    else setKeys((Math.round(Math.atan2(dy, dx) / (Math.PI / 4)) + 8) % 8);
+    // the ANGLE keeps working at any finger distance — only the cap's drawn
+    // deflection is fixed (full gate travel along the snapped octant)
+    const sector =
+      len < MAX_ART * k * DEAD_FRAC ? -1 : (Math.round(Math.atan2(dy, dx) / (Math.PI / 4)) + 8) % 8;
+    setKeys(sector);
+    if (sector !== visSector) setCap(sector); // the SNAP_MS transition glides it
   };
   const release = () => {
     if (!dragging) return;
     dragging = false;
     setKeys(-1);
-    top.style.transform = "";
+    setCap(-1); // glide back onto the socket
     gameAudio.event("ui.release");
   };
   pad.addEventListener("pointerdown", (ev) => {
@@ -160,6 +177,8 @@ function injectStyles() {
   .ml-pad-stick{position:absolute;touch-action:none;cursor:pointer;
     -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
   .ml-pad-img{position:absolute;inset:0;width:100%;height:100%;
-    image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}`;
+    image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
+  /* the cap glides between its snap positions — fast, not instant */
+  .ml-pad-top{transition:transform ${SNAP_MS}ms ease-out}`;
   document.head.appendChild(s);
 }

@@ -70,20 +70,35 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     len > 3 ? ok(`E drag moves (${len.toFixed(1)}wu, dir ${(Math.atan2(dy,dx)*180/Math.PI).toFixed(0)}°)`) : fail("E drag: no movement");
     const eDir = Math.atan2(dy, dx);
 
-    // 3) beyond max: fling the finger FAR — input keeps working, cap clamps
+    // 3) beyond max: fling the finger FAR — input keeps working; the cap
+    // sits SNAPPED at full deflection (+ the rest baseline on y)
     await page.mouse.move(geom.cx + 300, geom.cy, { steps: 3 });
-    await page.waitForTimeout(150);
+    await page.waitForTimeout(250);
     const tf = await topTf();
     const m = /translate\(([-\d.]+)px, ([-\d.]+)px\)/.exec(tf);
-    if (!m) fail(`no clamp transform (${tf})`);
+    if (!m) fail(`no snap transform (${tf})`);
     else {
-      const off = Math.hypot(+m[1], +m[2]);
-      off <= 9 * geom.k + 0.5 ? ok(`cap clamped at ${off.toFixed(1)}px (max ${9*geom.k})`) : fail(`cap over-travelled: ${off.toFixed(1)} > ${9*geom.k}`);
+      const [dx, dy] = [+m[1], +m[2]];
+      const wantX = 14 * geom.k, wantY = 10 * geom.k; // MAX_ART east + REST_ART
+      Math.abs(dx - wantX) < 1 && Math.abs(dy - wantY) < 1
+        ? ok(`cap snapped at full E deflection (${dx},${dy}) = (MAX,REST)·k`)
+        : fail(`cap at (${dx},${dy}), want (${wantX},${wantY})`);
     }
     a = await pos(page);
     await page.waitForTimeout(600);
     b = await pos(page);
     Math.hypot(b.x-a.x, b.y-a.y) > 3 ? ok("input alive beyond max offset") : fail("input died past max offset");
+    // visual snap: a 100° park lands the cap at the SAME spot as 90° (S gate)
+    await page.mouse.move(geom.cx - 21, geom.cy + 118, { steps: 2 });
+    await page.waitForTimeout(250);
+    const t100 = await topTf();
+    await page.mouse.move(geom.cx, geom.cy + 120, { steps: 2 });
+    await page.waitForTimeout(250);
+    const t90 = await topTf();
+    t100 === t90 ? ok(`cap visual snaps to the octant (${t90})`) : fail(`cap not snapped: 100°=${t100} vs 90°=${t90}`);
+    // and the glide is animated, not instant
+    const trans = await page.evaluate(() => getComputedStyle(document.querySelector(".ml-pad-top")).transitionDuration);
+    parseFloat(trans) > 0 ? ok(`snap glide animated (${trans})`) : fail("no snap transition");
 
     // 4) 8-way snap — probe the HELD KEY SET directly (world-heading
     // comparisons bend at walls/props): install a key listener, then park
@@ -93,6 +108,10 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
       window.addEventListener("keydown", (e) => window.__qaKeys.add(e.key));
       window.addEventListener("keyup", (e) => window.__qaKeys.delete(e.key));
     });
+    // reset to the dead zone so every case re-fires its keydowns (keys held
+    // from the earlier visual checks predate the listener)
+    await page.mouse.move(geom.cx, geom.cy, { steps: 2 });
+    await page.waitForTimeout(150);
     const heldAt = async (deg, dist = 120) => {
       const rad = (deg * Math.PI) / 180;
       await page.mouse.move(geom.cx + Math.cos(rad) * dist, geom.cy + Math.sin(rad) * dist, { steps: 2 });
@@ -114,7 +133,10 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     const drift = Math.hypot(b.x - a.x, b.y - a.y);
     drift < 1.5 ? ok(`release stops movement (drift ${drift.toFixed(2)}wu)`) : fail(`still moving after release (${drift.toFixed(1)}wu)`);
     const tfAfter = await topTf();
-    tfAfter === "" ? ok("cap re-centred on release") : fail(`cap not re-centred (${tfAfter})`);
+    const mr = /translate\(0px, ([-\d.]+)px\)/.exec(tfAfter);
+    mr && Math.abs(+mr[1] - 10 * geom.k) < 1
+      ? ok(`cap re-seated on the socket (rest ${mr[1]}px)`)
+      : fail(`cap not re-seated (${tfAfter})`);
   }
   await page.context().close();
 }
