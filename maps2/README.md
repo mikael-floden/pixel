@@ -214,11 +214,20 @@ Enforce it in code (`pipeline/autotile.py`):
     maintainer's chosen window (`TROLL_SITE_FRAC`, his blue marks — a design constant like
     the bridge fracs); `_carve_connector` must never slice a Trollstigen (guard in code —
     it once flattened carved legs via `_fill_traps` after slicing them apart).
-  - **The Trollstigen IS the road** (maintainer: "I want a zigzag ROAD"): the trunk
-    spawn→summit is routed through the primary's foot→entry via-points and PAVE may paint
-    Trollstigen grass cells dirt (the general no-paint-ascent guard still protects rock/snow
-    stairs; PAVE stays grass-only, and the width normalizer works ON the legs) — same
-    doctrine as bridge decks wearing dirt where the road runs onto them.
+  - **The Trollstigen IS the road, and the mountain road is STONE** (maintainer
+    2026-07-22: "should have been in stone and not dirt"): the trunk spawn→summit is
+    routed through the primary's foot→entry via-points; on the structure the ribbon is
+    painted `stone_mountain` (linework-exempt, sand-guarded, band-column completion for a
+    solid ribbon), off the structure the lowland road stays dirt. The SECONDARY toe stays
+    a pure grass trail (maintainer: "you fucking nailed it" — no paint, no foot spur).
+  - **EVERY bench climb is a mini-Trollstigen** (maintainer: "why do you keep drawing
+    straight staircases when we have a better system"): `_climb_hugging` carves a
+    2-leg mirrored mini (D=4, dP=2, same carver via `mini=True` — apron = the next bench
+    down, uniform-floor window, smaller TROLL_QMIN_MINI) at the far lateral end of each
+    bench; the straight `_carve_connector` survives ONLY as a last-resort fallback so the
+    summit can never disconnect (`_troll_fallbacks` counts uses — keep it at ~0-1).
+    A HUG-REPAIR sweep fills wall notches (groove cracks, jogged rims) to road level as
+    grass shoulder so the only-outward-falls law holds against any wall shape.
   - **Material policy — stairs KEEP the local ground; dirt=road surface** (maintainer
     2026-07-22: "Don't always use stone. Use the ground type that is already present at that
     location"): carved stairs/ramps (`self._ascent`) keep whatever ground they cut through —

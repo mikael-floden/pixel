@@ -108,6 +108,7 @@ STAIR_SPACING = 0.16
 TROLL_DROP = 4
 TROLL_WLEG = (3, 2)
 TROLL_QMAX, TROLL_QMIN = 44, 14
+TROLL_QMIN_MINI = 9
 TROLL_PADQ = 4
 # The maintainer's chosen window for the PRIMARY Trollstigen (blue marks, 2026-07-22
 # screenshots): the bench-20/24 south face x~63-89 west of the toe lake. Island fracs,
@@ -176,6 +177,7 @@ class Island2(Island):
         self._troll_raw = {}              # (x,y) -> level as carved (mutation detector)
         self._troll_pads = set()          # hairpin noses: lateral exposure allowed there
         self._troll_ends = []             # (foot, entry) per structure: trunk road via-points
+        self._troll_fallbacks = 0         # bench climbs that had to use a straight connector
         self._troll_road = set()          # the PRIMARY structure's BAND cells: the ONLY
                                           # paintable ascent (the secondary stays a grass
                                           # trail; the wall-fill stays grass shoulder)
@@ -606,7 +608,7 @@ class Island2(Island):
                     best = (key, (hxx, hyy), (lxx, lyy))
         return (best[1], best[2]) if best else None
 
-    def _foot_switchback(self, bx, by):
+    def _foot_switchback(self, bx, by, mini=False):
         """TROLLSTIGEN: a wall-hugging stacked-leg switchback down the sheer mountain toe
         (maintainer 2026-07-22, spelled out after every straight staircase failed him):
         the legs run ALONG the cliff and at every turn the slope MIRRORS and continues one
@@ -662,7 +664,7 @@ class Island2(Island):
 
         win = None
         for wleg in TROLL_WLEG:                   # wide road first, then narrower
-            win = self._troll_window(rimp, cellpq, TOPL, Q0, wleg)
+            win = self._troll_window(rimp, cellpq, TOPL, Q0, wleg, mini)
             if win:
                 break
         if not win:
@@ -672,8 +674,6 @@ class Island2(Island):
         D = TOPL - FLOOR
         nlegs = max(2, -(-D // TROLL_DROP))
         dP = -(-D // nlegs)
-        WQ = qb - qa
-        R = max(2, 2 * (max(2, WQ - TROLL_PADQ) // (2 * dP)))   # t-units per level step
 
         # 1-Lipschitz stand-off: bands shift <= 1 p-layer per q-column, never on the wall.
         o = {q: max(rimp[z] + 1 - abs(q - z) for z in qs) for q in qs}
@@ -732,6 +732,27 @@ class Island2(Island):
                         pads.add(cellpq(p, q_b))
                         bandof.setdefault(cellpq(p, q_b), (k, q_b))
 
+        # HUG REPAIR: a ragged wall (groove crack, jogged rim) can leave an up-screen
+        # neighbour of the structure >=2 BELOW it — an inward fall. Fill such notches to
+        # road level (grass shoulder, unpainted) so "you can only fall outwards" holds
+        # against any wall shape; iterate since a fill can expose the next notch cell.
+        for _ in range(4):
+            grew = False
+            for (cx2, cy2), lv in list(carved.items()):
+                if (cx2, cy2) in pads:
+                    continue
+                for wx, wy in ((cx2 - 1, cy2), (cx2, cy2 - 1)):
+                    if ((wx, wy) in carved or not (0 <= wx < n and 0 <= wy < n)
+                            or self.mat[wy, wx] in ("", "clear_water")
+                            or (wx, wy) in self.reserved):
+                        continue
+                    if int(self.level[wy, wx]) < lv - 1:
+                        carved[(wx, wy)] = lv
+                        fill_cells.add((wx, wy))
+                        grew = True
+            if not grew:
+                break
+
         for (x, y), lv in carved.items():         # commit: raise, keep local ground
             self.level[y, x] = lv
             self.upper[y, x] = False
@@ -739,7 +760,7 @@ class Island2(Island):
             self._ascent.add((x, y))
             self._troll.add((x, y))
         self._troll_raw.update(carved)            # as-carved levels (debug/verify probes)
-        if not self._troll_road:                  # first carve = the anchored PRIMARY; only
+        if not mini and not self._troll_road:     # first TOE carve = the anchored PRIMARY; only
             # its BAND cells are the paintable road — the wall-fill stays grass shoulder
             # (painting the fill made the whole face one tan blob at map scale)
             self._troll_road.update(c for c in carved if c not in fill_cells)
@@ -761,7 +782,6 @@ class Island2(Island):
                 for pp, qq in ((p + 1, q + 1), (p + 1, q - 1)):
                     x, y = cellpq(pp, qq)
                     if (0 <= x < n and 0 <= y < n and (x, y) not in carved
-                            and self.maze[y, x]
                             and self.mat[y, x] not in ("", "clear_water")
                             and (x, y) not in self.reserved
                             and abs(int(self.level[y, x]) - carved[c]) <= 1):
@@ -771,7 +791,7 @@ class Island2(Island):
                     break
             if landed:
                 break
-        if landed:
+        if landed and not mini:
             self.road_feet.append(landed)
             # the bench entry cell (leg 0's flat start) — the trunk road is routed
             # foot -> entry so the Trollstigen IS the road up the massif
@@ -784,11 +804,11 @@ class Island2(Island):
 
     def _troll_apron_ok(self, xy, floor):
         x, y = xy
-        return (0 <= x < self.n and 0 <= y < self.n and self.maze[y, x]
+        return (0 <= x < self.n and 0 <= y < self.n
                 and self.mat[y, x] not in ("", "clear_water")
                 and (x, y) not in self.reserved and int(self.level[y, x]) == floor)
 
-    def _troll_window(self, rimp, cellpq, TOPL, Q0, wleg):
+    def _troll_window(self, rimp, cellpq, TOPL, Q0, wleg, mini=False):
         """Best contiguous q-window along the rim for a Trollstigen: smooth contour
         (|d rimp| <= 2 per column), a clean UNIFORM low apron deep enough for the whole
         stack in every column, and a bench cell at exactly TOPL at one end (the entry,
@@ -806,7 +826,7 @@ class Island2(Island):
                     maxd = d
                     continue
                 x, y = cellpq(p, q)
-                if not (0 <= x < n and 0 <= y < n and self.maze[y, x]
+                if not (0 <= x < n and 0 <= y < n
                         and self.mat[y, x] not in ("", "clear_water")
                         and (x, y) not in self.reserved):
                     break
@@ -817,7 +837,12 @@ class Island2(Island):
                     uniform = False
                     break
                 maxd = d
-            if fl is not None and uniform and fl <= 4 and TOPL - fl >= 2 * TROLL_DROP:
+            # a MINI climbs exactly one Δ4 bench (its apron IS the next bench down);
+            # the TOE descends the full face onto the low maze floor.
+            accept = (fl is not None and uniform
+                      and ((fl == TOPL - 4) if mini
+                           else (fl <= 4 and TOPL - fl >= 2 * TROLL_DROP)))
+            if accept:
                 nl = max(2, -(-(TOPL - fl) // TROLL_DROP))
                 if maxd >= nl * wleg + 2:
                     ok[q], floor_of[q] = True, fl
@@ -831,6 +856,7 @@ class Island2(Island):
             x, y = cellpq(rimp[q], q)
             return int(self.level[y, x]) == TOPL
 
+        qmin = TROLL_QMIN_MINI if mini else TROLL_QMIN
         runs, cur = [], []
         for q in qs:
             if ok[q] and (not cur or (q - cur[-1] == 1
@@ -838,10 +864,10 @@ class Island2(Island):
                                       and floor_of[q] == floor_of[cur[0]])):
                 cur.append(q)
             else:
-                if len(cur) > TROLL_QMIN:
+                if len(cur) > qmin:
                     runs.append(cur)
                 cur = [q] if ok[q] else []
-        if len(cur) > TROLL_QMIN:
+        if len(cur) > qmin:
             runs.append(cur)
         best = None
         for run in runs:
@@ -876,11 +902,16 @@ class Island2(Island):
             if step is None:
                 break
             (hxx, hyy), (lxx, lyy) = step
-            if not self._carve_connector(hxx, hyy, lxx, lyy):
-                break
+            # Every bench climb is a MINI-Trollstigen (maintainer 2026-07-22: "why do you
+            # keep drawing straight staircases when we have a better system" — the red-
+            # crossed connector ramps are gone). The straight connector remains only as a
+            # last-resort fallback so the summit can never be disconnected.
+            if self._foot_switchback(hxx, hyy, mini=True) is None:
+                self._troll_fallbacks += 1
+                if not self._carve_connector(hxx, hyy, lxx, lyy):
+                    break
             cx, cy = hxx, hyy                            # now on bench L+4
             side = -side                                # alternate the hairpin end
-            self._nswitch += 1
         return True
 
     def _mountain_stairs(self, k=STAIR_CORRIDORS):
@@ -1881,26 +1912,30 @@ class Island2(Island):
             if not grown:
                 break
         for (x, y) in wide:
-            # The Trollstigen is a ROAD, so its grass cells ARE pavable (the general ascent
-            # guard protects the rock/snow stairs; PAVE keeps everything grass-only).
-            if (mat[y, x] in PAVE
-                    and ((x, y) not in self._ascent or (x, y) in self._troll_road)
-                    and not self._sand_forbid[y, x]):     # padding: dirt never within 2 of sand
-                mat[y, x] = "lightdark_dirt"
+            # The Trollstigen is a ROAD: on the structure the route paints STONE
+            # (maintainer 2026-07-22: "should have been in stone and not dirt") — a paved
+            # mountain road, linework-exempt like the stripes; off the structure the
+            # lowland road stays dirt. PAVE keeps both grass-only; sand padding holds.
+            if mat[y, x] in PAVE and not self._sand_forbid[y, x]:
+                if (x, y) in self._troll_road:
+                    mat[y, x] = "stone_mountain"
+                    self._linework.add((x, y))
+                elif (x, y) not in self._ascent:
+                    mat[y, x] = "lightdark_dirt"
             self.reserved.add((x, y))
         # SOLID Trollstigen ribbon: if the route painted any cell of a leg's band-column,
-        # paint the whole column — the zip parity otherwise leaves a dirt/grass
-        # checkerboard whose transition tiles smear the face tan at map scale.
+        # pave the whole column — the zip parity otherwise leaves a paved/grass
+        # checkerboard whose transition tiles smear the face at map scale.
         cols_hit = {self._troll_band[c] for c in self._troll_road
-                    if c in self._troll_band and mat[c[1], c[0]] == "lightdark_dirt"}
+                    if c in self._troll_band and mat[c[1], c[0]] == "stone_mountain"}
         for c in self._troll_road:
             if self._troll_band.get(c) in cols_hit:
                 x, y = c
                 if mat[y, x] in PAVE and not self._sand_forbid[y, x]:
-                    mat[y, x] = "lightdark_dirt"
+                    mat[y, x] = "stone_mountain"
+                    self._linework.add((x, y))
                     self.reserved.add((x, y))
-        self.roads = {(x, y) for (x, y) in (wide | self._troll_road)
-                      if mat[y, x] == "lightdark_dirt"}
+        self.roads = {(x, y) for (x, y) in wide if mat[y, x] == "lightdark_dirt"}
         self._linework.update(self.roads)
         self._lip_cover()
 
