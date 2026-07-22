@@ -459,7 +459,8 @@ export interface Deck {
   kind: string; // "roof" | "bridge" — a label, not load-bearing
   mat: string; // material NAME (its face tile builds the slab's underside/sides)
   level: number; // elevation of the walkable top, in levels
-  thickness: number; // levels of slab drawn below the top (render only)
+  thickness: number; // EXTRA face tiles below the top (render only; 0 = the top
+  // tile alone — its baked face is a 1-level slab, how bridges ship since 2026-07-22)
   cells: DeckCell[];
 }
 
@@ -575,7 +576,7 @@ function parseRingworld(json: any): ParsedWorld {
         kind: String(d.kind ?? "deck"),
         mat: idToMat[d.mat ?? 0] ?? "",
         level: d.level ?? 0,
-        thickness: Math.max(1, d.thickness ?? 1),
+        thickness: Math.max(0, d.thickness ?? 1),
         cells: (Array.isArray(d.cells) ? d.cells : [])
           .map((c: any) => ({ col: c.x, row: c.y, path: paths[c.top], flip: !!c.mirror }))
           .filter((c: DeckCell) => !!c.path),

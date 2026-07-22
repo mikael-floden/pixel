@@ -206,6 +206,12 @@ Enforce it in code (`pipeline/autotile.py`):
     the span. Laying-time mats are provisional (the gorge crossings are laid before
     `_materials` paints the caps); `_resolve_deck_mats` re-reads every deck's final banks
     (majority ground among adjacent walkable land within 1 level) just before `_paint`.
+    Bridges are **1-LEVEL slabs** (maintainer 2026-07-22: "draw all bridges 1 level in
+    height... remove the bottom tile so it still lines up with the ground"): deck
+    `thickness` 0 = the top tile alone, whose baked cube face IS the one visible level;
+    the walk surface stays at deck level, flush with the banks. Enforced in the same
+    finalize pass so it covers every bridge creator, inherited ones included (the game's
+    `parseWorld` accepts thickness 0 since 2026-07-22 — it used to clamp to >=1).
     The flat road surface is `lightdark_dirt`; the road may repaint bench tops to
     dirt but never an ascent cell.
   - **8-direction dirt ROADS** (`_dirt_roads`): an organic meandering, branching network that

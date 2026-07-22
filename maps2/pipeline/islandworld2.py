@@ -945,8 +945,16 @@ class Island2(Island):
         """Re-resolve every deck's material from its FINAL banks: majority ground among the
         walkable land cells orthogonally adjacent to the deck within 1 level of it. Must run
         after _materials/_fix_material_slivers/_dirt_roads so a massif crossing reads its real
-        snow/stone banks (and a bridge a road actually runs onto may wear the road)."""
+        snow/stone banks (and a bridge a road actually runs onto may wear the road).
+
+        Also slims every BRIDGE to a 1-level slab (maintainer 2026-07-22: 'draw all bridges
+        1 level in height... remove the bottom tile so the bridge still lines up with the
+        ground'): thickness 0 = the top tile alone, whose baked face IS the one visible
+        level; the walk surface stays at deck level, flush with the banks. Applied here so
+        it covers bridges laid by ANY creator, including inherited ones."""
         for dk in self.decks:
+            if dk.get("kind") == "bridge":
+                dk["thickness"] = 0
             cells = set(dk["cells"])
             dlv = int(dk["level"])
             votes = Counter()
@@ -1043,7 +1051,7 @@ class Island2(Island):
                     continue
                 dm = self._deck_mat(self.mat[cy, x0 - 1], self.mat[cy, x1 + 1])
                 self.decks.append({"kind": "bridge", "mat": dm, "level": dlv,
-                                   "thickness": 1, "cells": cells})
+                                   "thickness": 0, "cells": cells})
                 for r in rows:
                     self.links.append(((x0 - 1, r), (x1 + 1, r)))
                 self.reserved.update(cells)
@@ -1120,7 +1128,7 @@ class Island2(Island):
                     continue
                 dm = self._deck_mat(self.mat[cy, x0 - 1], self.mat[cy, x1 + 1])
                 self.decks.append({"kind": "bridge", "mat": dm, "level": dlv,
-                                   "thickness": 1, "cells": cells})
+                                   "thickness": 0, "cells": cells})
                 for r in rows:
                     self.links.append(((x0 - 1, r), (x1 + 1, r)))
                 self.reserved.update(cells)
@@ -1183,7 +1191,7 @@ class Island2(Island):
                     cells.append((x, y))
         self.decks.append({"kind": "bridge", "mat": self._deck_mat(self.mat[ty, tx],
                                                                     self.mat[my, mx]),
-                           "level": max(2, blv), "thickness": 1, "cells": cells})
+                           "level": max(2, blv), "thickness": 0, "cells": cells})
         for (_w, a, b) in lanes:
             self.links.append((a, b))
         return True

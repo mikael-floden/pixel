@@ -206,8 +206,10 @@ class Occlude:
         # the DECK: spans the gap and laps both flat hilltops, covering water AND grass
         cells = [(x, y) for y in range(y0, plateau)
                  for x in range(ax1 - 1, bx0 + 1)]
+        # Bridges are 1-LEVEL slabs (maintainer 2026-07-22): thickness 0 = the top tile
+        # alone; its baked face is the one visible level, top flush with the hilltops.
         self.decks.append({"kind": "bridge", "mat": "stone_mountain", "level": DECK,
-                           "thickness": 1, "cells": cells})
+                           "thickness": 0, "cells": cells})
         self._reserve(ax0 - 1, bx1 + 1, y0 - 1, y1 + 1)
 
     # -- auto-tile -------------------------------------------------------------

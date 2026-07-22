@@ -91,7 +91,9 @@ terrain, which stays whatever it was (walkable ground, or water you swim in)
     "kind": "roof",          // or "bridge" — a label; not semantically load-bearing
     "mat": 5,                 // index into `materials` (the slab's surface material)
     "level": 4,               // elevation of the slab's WALKABLE TOP, in levels
-    "thickness": 1,           // levels of slab drawn below the top (render only)
+    "thickness": 1,           // EXTRA face tiles below the top (render only). 0 is
+                              // legal: the top tile alone — its baked face makes a
+                              // 1-LEVEL slab. BRIDGES ship 0 (maintainer 2026-07-22)
     "cells": [
       {"x": 58, "y": 105, "top": 12, "mirror": 0}   // top indexes `paths`
     ]
@@ -102,7 +104,9 @@ terrain, which stays whatever it was (walkable ground, or water you swim in)
 Render it like a base cell raised to `level`: stack `thickness` face tiles just
 under the top (leaving **open air** below, so you see under a bridge) and draw the
 `top` diamond at `level`. Draw a deck cell in the normal back-to-front `(x+y)`
-order, right after its base cell.
+order, right after its base cell. With `thickness: 0` only the top tile draws —
+since every tile's art is a full cube (diamond + one face), the slab still shows
+exactly one level of side face, and the walkable top stays flush with the banks.
 
 **Two surfaces, one cell.** For a cell a deck covers, the player can be on the
 **base** surface (`level[y][x]` — the room floor, the ground/water in the channel)
