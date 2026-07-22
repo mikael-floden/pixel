@@ -323,8 +323,20 @@ void main() {
   // cell. Fixed-width segments straddled cells, attributing wall pixels to
   // the wrong column — every face rule downstream then judged the wrong wall.
   float vHi = vTop;
-  for (int s = 0; s < 36; s++) {
-    if (found || vHi <= v0 - 1.5) continue;
+  // WALK BUDGET: sweeping from the max-level candidate down to level 0 needs
+  // about maxLevel*(lh/dy) iterations (~1.07 per level on maps2 geometry; the
+  // per-pixel step phase makes it vary by screen column). The old cap of 36
+  // was sized for the <=15-level worlds: on the_island2 (max level 40) every
+  // pixel whose true surface sits deeper than the budget NEVER RESOLVED, and
+  // the !found fallback painted it flat-ambient (no sun/shadows), fog-less
+  // and mist-less — the maintainer's "shadows don't work on low elevation,
+  // fine on other maps" report, measured at 100% of pixels starved on a
+  // level-0 gorge floor via the uTest=4 classification. 128 covers ~85-level
+  // worlds; break-on-found keeps the cost proportional to each pixel's real
+  // depth (a plain continue guard would tick all 128 iterations per fragment
+  // — that alone stalled the software-GL harness across 3 fullscreen passes).
+  for (int s = 0; s < 128; s++) {
+    if (found || vHi <= v0 - 1.5) break;
     float vColB = 2.0 * floor((vHi + u) * 0.5 - 0.0001) - u;
     float vRowB = 2.0 * floor((vHi - u) * 0.5 - 0.0001) + u;
     float vLo = max(vColB, vRowB);
@@ -750,8 +762,20 @@ void main() {
   float z = 0.0;
   bool found = false;
   float vHi = vTop;
-  for (int s = 0; s < 36; s++) {
-    if (found || vHi <= v0 - 1.5) continue;
+  // WALK BUDGET: sweeping from the max-level candidate down to level 0 needs
+  // about maxLevel*(lh/dy) iterations (~1.07 per level on maps2 geometry; the
+  // per-pixel step phase makes it vary by screen column). The old cap of 36
+  // was sized for the <=15-level worlds: on the_island2 (max level 40) every
+  // pixel whose true surface sits deeper than the budget NEVER RESOLVED, and
+  // the !found fallback painted it flat-ambient (no sun/shadows), fog-less
+  // and mist-less — the maintainer's "shadows don't work on low elevation,
+  // fine on other maps" report, measured at 100% of pixels starved on a
+  // level-0 gorge floor via the uTest=4 classification. 128 covers ~85-level
+  // worlds; break-on-found keeps the cost proportional to each pixel's real
+  // depth (a plain continue guard would tick all 128 iterations per fragment
+  // — that alone stalled the software-GL harness across 3 fullscreen passes).
+  for (int s = 0; s < 128; s++) {
+    if (found || vHi <= v0 - 1.5) break;
     float vColB = 2.0 * floor((vHi + u) * 0.5 - 0.0001) - u;
     float vRowB = 2.0 * floor((vHi - u) * 0.5 - 0.0001) + u;
     float vLo = max(vColB, vRowB);
@@ -901,8 +925,20 @@ void main() {
   vec2 cell = vec2(0.0); // resolved surface cell (col,row) — for the horizontal dist
   bool found = false;
   float vHi = vTop;
-  for (int s = 0; s < 36; s++) {
-    if (found || vHi <= v0 - 1.5) continue;
+  // WALK BUDGET: sweeping from the max-level candidate down to level 0 needs
+  // about maxLevel*(lh/dy) iterations (~1.07 per level on maps2 geometry; the
+  // per-pixel step phase makes it vary by screen column). The old cap of 36
+  // was sized for the <=15-level worlds: on the_island2 (max level 40) every
+  // pixel whose true surface sits deeper than the budget NEVER RESOLVED, and
+  // the !found fallback painted it flat-ambient (no sun/shadows), fog-less
+  // and mist-less — the maintainer's "shadows don't work on low elevation,
+  // fine on other maps" report, measured at 100% of pixels starved on a
+  // level-0 gorge floor via the uTest=4 classification. 128 covers ~85-level
+  // worlds; break-on-found keeps the cost proportional to each pixel's real
+  // depth (a plain continue guard would tick all 128 iterations per fragment
+  // — that alone stalled the software-GL harness across 3 fullscreen passes).
+  for (int s = 0; s < 128; s++) {
+    if (found || vHi <= v0 - 1.5) break;
     float vColB = 2.0 * floor((vHi + u) * 0.5 - 0.0001) - u;
     float vRowB = 2.0 * floor((vHi - u) * 0.5 - 0.0001) + u;
     float vLo = max(vColB, vRowB);
