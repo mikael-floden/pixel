@@ -202,3 +202,39 @@ test("time speed: the switch cycles x0->x0.5->x1->x2->x5->x10 and scales the clo
     await gameServer.gracefullyShutdown(false);
   }
 });
+
+test("hand-off hold: a natural entry into night pins phaseT at 0 for WALL time", async () => {
+  const port = 2994;
+  const gameServer = new Server({
+    transport: new WebSocketTransport({ server: createServer() }),
+  });
+  gameServer.define(ROOM_NAME, WorldRoom);
+  await gameServer.listen(port);
+
+  try {
+    const c1 = new Client(`ws://localhost:${port}`);
+    // x10 makes the phases fly (30ms each) but the hold is WALL milliseconds
+    // — the point of the feature: the clients' 180° wheel rotation takes the
+    // same real seconds at any time-speed multiplier, so the clock must
+    // stand still for real seconds too, and the hand always resumes from
+    // the phase start (the right rail).
+    const r1 = await c1.joinOrCreate(ROOM_NAME, {
+      name: "A",
+      character: "c",
+      phaseSeconds: [0.3, 0.3, 0.3, 0.3],
+      handoffHoldMs: 900,
+    });
+    await waitFor(() => r1.state.players?.size === 1);
+    r1.send("timespeed", { v: 10 });
+    await waitFor(() => r1.state.timeSpeed === 10);
+    await waitFor(() => r1.state.timeIdx === 0, 3000); // NATURAL rollover into night
+    await new Promise((r) => setTimeout(r, 450)); // mid-hold (a 30ms phase would be long gone)
+    assert.equal(r1.state.timeIdx, 0); // the hold defers the next rollover...
+    assert.equal(r1.state.phaseT, 0); // ...and parks the hand at the phase start
+    // afterwards the clock flows again on its own
+    await waitFor(() => r1.state.timeIdx !== 0 || r1.state.phaseT > 0.2, 2000);
+    await r1.leave();
+  } finally {
+    await gameServer.gracefullyShutdown(false);
+  }
+});

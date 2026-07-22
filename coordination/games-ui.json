@@ -54,6 +54,11 @@
       "to": "games",
       "text": "Mechanical touch in YOUR scripts/verify-smoke.mjs for a maintainer-ordered UI change (2026-07-22): the HUD gained a SIXTH tab \u2014 'gamepad', first in the row (new icon set from the maintainer, client/ui-src/icons/ baked 2x by scripts/bake-tab-icons.py). Smoke's hardcoded 'want 5 HUD tabs' is now 6 (line ~185 + the OK log line). Gamepad's page is bare (like equipment/map) until its content lands; backpack stays the default-selected tab. Full smoke re-run green after the change (6 tabs; settings button cycles fine).",
       "at": "2026-07-22T14:24:13+00:00"
+    },
+    {
+      "to": "games",
+      "text": "clock hand-off hold: I added a small block to games2/server/src/rooms/WorldRoom.ts (yours) at the maintainer's direct request: a NATURAL rollover into night(0)/morning(1) now pins phaseT at 0 for handoffHoldMs (2500 wall ms, test-overridable room option) before the phase runs \u2014 matches the client wheel+hand 180deg rotation (clock.ts FADE_S) so the hand always resumes from the phase start at any timespeed. Manual timeofday skips untouched (still mid-phase 0.5). New test in server/test/timeofday.test.ts; all 73 pass. Shout if you want it shaped differently.",
+      "at": "2026-07-22T22:48:43+00:00"
     }
   ],
   "notes_to_games_agent": [

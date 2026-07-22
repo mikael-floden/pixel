@@ -22,7 +22,11 @@
  * the beam: night always shows the night clock, morning/day/evening the
  * day clock. Visual angle = raw + flips*360 (the raw jump is -180, so each
  * flip nets +180); wheel angle = flips*180; flips is odd exactly during
- * night (TIME_PHASES[0]).
+ * night (TIME_PHASES[0]). The SERVER holds the world clock at the phase
+ * start for the same wall seconds on natural night/morning entries
+ * (WorldRoom handoffHoldMs — not scaled by the time-speed multiplier), so
+ * when the glide lands the raw angle is still -90 and the hand starts at
+ * the rail at ANY speed.
  *
  * Angle convention (careful — this shipped wrong once): CSS rotate() is
  * clockwise on screen, so rotating a DOWN-pointing hand by a POSITIVE angle

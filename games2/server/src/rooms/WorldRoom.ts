@@ -87,6 +87,16 @@ export class WorldRoom extends Room<WorldState> {
   // so the phase tick can't stall independently of it.
   private nextPhaseAt: number | null = null;
   private phaseSeconds: readonly number[] = TIME_PHASE_SECONDS;
+  // HAND-OFF HOLD (games-ui, 2026-07-23): a NATURAL rollover into NIGHT or
+  // MORNING freezes the clock — phaseT pinned at 0 — for the 2.5s the
+  // clients' wheel+hand 180° rotation takes (clock.ts FADE_S). WALL seconds,
+  // deliberately NOT scaled by timeSpeed, so at any speed multiplier the
+  // hand resumes from the phase start (the right rail) when the flip lands
+  // (maintainer: "time freezed on the server and all clients during the
+  // animation"). Manual "timeofday" skips stay untouched: they pin the
+  // mid-phase keyframe look, and frozen-time testing depends on that.
+  private handoffHoldMs = 2500;
+  private handoffHoldUntil = 0;
   private worldName = ""; // set in onCreate; keys the worldClocks registry
   // Wild shooting stars streak the night sky at random (arrivals get their
   // own star in onJoin, any hour).
@@ -115,6 +125,9 @@ export class WorldRoom extends Room<WorldState> {
     // (hand on the phase position, approved grade), so frozen phase-testing
     // shows exactly the discrete-era look.
     this.state.phaseT = skip ? 0.5 : 0;
+    // natural entry into a hand-off phase: hold for the clients' rotation
+    if (!skip && (this.state.timeIdx === 0 || this.state.timeIdx === 1))
+      this.handoffHoldUntil = Date.now() + this.handoffHoldMs;
     this.scheduleTimeOfDay();
   }
 
@@ -130,8 +143,10 @@ export class WorldRoom extends Room<WorldState> {
     } else {
       // Resume from the CURRENT progress — speed changes and unfreezing
       // must not restart the phase or the continuously-swept hand/shadows
-      // would snap backwards.
-      this.nextPhaseAt = Date.now() + (1 - this.state.phaseT) * this.effPhaseMs();
+      // would snap backwards. Any remaining hand-off hold extends the
+      // deadline so the phase runs FULL length after the flip lands.
+      const holdLeft = Math.max(0, this.handoffHoldUntil - Date.now());
+      this.nextPhaseAt = Date.now() + holdLeft + (1 - this.state.phaseT) * this.effPhaseMs();
     }
     this.saveClock();
   }
@@ -158,7 +173,12 @@ export class WorldRoom extends Room<WorldState> {
     });
   }
 
-  onCreate(options?: { world?: string; phaseSeconds?: number[]; auroraChance?: number }) {
+  onCreate(options?: {
+    world?: string;
+    phaseSeconds?: number[];
+    auroraChance?: number;
+    handoffHoldMs?: number; // test-only override of the hand-off hold
+  }) {
     if (typeof options?.auroraChance === "number") this.auroraChance = options.auroraChance;
     {
       // Load the maps2 world the client asked for (default ring_test). Rooms are
@@ -272,6 +292,7 @@ export class WorldRoom extends Room<WorldState> {
     // Back-compat alias (the old freeze switch): same cycle.
     this.onMessage("freezetime", () => cycleSpeed());
     if (options?.phaseSeconds) this.phaseSeconds = options.phaseSeconds;
+    if (typeof options?.handoffHoldMs === "number") this.handoffHoldMs = options.handoffHoldMs;
     // Resume this world's clock if the process has seen it before (rooms are
     // disposable, the world's time is not), fast-forwarding any phases that
     // elapsed while no room was open so time flows even with nobody online.
@@ -386,7 +407,10 @@ export class WorldRoom extends Room<WorldState> {
     if (this.nextPhaseAt !== null) {
       const now = Date.now();
       if (now >= this.nextPhaseAt) this.advanceTime();
-      else this.state.phaseT = Math.min(1, Math.max(0, 1 - (this.nextPhaseAt - now) / this.effPhaseMs()));
+      else if (now >= this.handoffHoldUntil)
+        this.state.phaseT = Math.min(1, Math.max(0, 1 - (this.nextPhaseAt - now) / this.effPhaseMs()));
+      // else: hand-off hold — the clock stands still at the phase start
+      // while every client's wheel turns
     }
 
     const now = Date.now();
