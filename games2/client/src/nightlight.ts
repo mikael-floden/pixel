@@ -167,7 +167,6 @@ uniform float uNumLights;
 uniform vec4 uLightPos[${MAX_SHADER_LIGHTS}];  // col, row, z, radius(cells)
 uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
 uniform sampler2D uHeight;
-uniform sampler2D uDeck;  // world@2 floating slabs: R = base level, G = thickness (byte 255 = no deck)
 uniform sampler2D uHeightL; // occlusion heightmap, LINEAR-filtered (LOS march)
 uniform sampler2D uEmit;    // emission palette: 2 texels/entry (colour; params)
 uniform float uEmitN;       // number of palette entries (0 = no emission)
@@ -203,26 +202,6 @@ float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
   return texture2D(uHeight, uv).r * 255.0 / uHScale;
-}
-
-// world@2 FLOATING SLABS (bridges, roofs): the surface heightmap reports the
-// DECK level at deck cells (so slab tops light right), which alone makes the
-// resolve treat the span as a solid terrain COLUMN — its phantom "wall face"
-// shading landed on the open water under bridges as a static dark band + hard
-// seam line (maintainer report). uDeck carries what the R channel can't: the
-// BASE level beneath the slab (x) and the slab's drawn thickness in levels
-// (y); raw byte 255 = no deck here. The walk uses it to let pixels below the
-// slab's drawn extent fall through to the base surface.
-float deckBaseAt(vec2 cr) {
-  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
-  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
-  float raw = texture2D(uDeck, uv).r;
-  if (raw > 0.996) return 99.0; // no deck
-  return raw * 255.0 / uHScale;
-}
-float deckThickAt(vec2 cr) {
-  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
-  return texture2D(uDeck, uv).g * 255.0 / uHScale;
 }
 
 // Solid-object flag (bush, boulder, tree...): G channel of the heightmap.
@@ -338,10 +317,6 @@ void main() {
   float vTop = v0 + uIsoB.w * kk;
   float z = 0.0;
   vec2 cell = vec2(0.0);
-  float hitH = 99.0; // the HIT's surface height: slab top for slab hits, the
-                     // BASE level for pixels seen under a floating deck — the
-                     // face rules must judge the surface the pixel SHOWS, not
-                     // the tallest thing in its cell.
   bool found = false;
   // Walk the ray over EXACT cell-boundary crossings (col crosses integers at
   // v = 2m - u, row at v = 2n + u) so every interval lies inside exactly one
@@ -371,27 +346,10 @@ void main() {
     if (H < 90.0) {
       float vSurf = v0 + H * kk; // this column's top along the ray
       if (vSurf >= vLo - 0.0001) {
-        // FLOATING SLAB (bridge/roof): a pixel interval fully below the
-        // slab's drawn extent shows the OPEN AIR under the span — resolve to
-        // the cell's own BASE surface (the water/ground drawn there) instead
-        // of shading it as a phantom wall face; if even the base sits below
-        // this interval, keep walking to the terrain behind.
-        float dkB = deckBaseAt(cr);
-        if (dkB < 90.0 && vHi < v0 + (H - deckThickAt(cr)) * kk - 0.0001) {
-          float vSurfB = v0 + dkB * kk;
-          if (vSurfB >= vLo - 0.0001) {
-            z = max((min(vHi, vSurfB) - v0) / kk, 0.0);
-            cell = cr;
-            hitH = dkB;
-            found = true;
-          }
-        } else {
-          float vHit = min(vHi, vSurf);
-          z = max((vHit - v0) / kk, 0.0);
-          cell = cr;
-          hitH = H;
-          found = true;
-        }
+        float vHit = min(vHi, vSurf);
+        z = max((vHit - v0) / kk, 0.0);
+        cell = cr;
+        found = true;
       }
     }
     vHi = vLo;
@@ -402,10 +360,7 @@ void main() {
     return;
   }
 
-  // The surface the pixel actually SHOWS: the slab top on a deck, the BASE
-  // ground for pixels seen under a floating span (heightAt(cell) would report
-  // the slab and re-create the phantom wall face there).
-  float Ha = hitH;
+  float Ha = heightAt(cell);
   if (uTest > 3.5) {
     // Calibration 4: final surface classification — wall-face pixels RED,
     // top pixels GREEN (probed numerically by the verify scripts).
@@ -773,32 +728,11 @@ uniform vec3 uAmbient;    // current grade — mist dims with the night
 uniform float uMist;      // eased cover 0..1
 uniform float uFlip;
 uniform sampler2D uHeight;
-uniform sampler2D uDeck;  // world@2 floating slabs: R = base level, G = thickness (byte 255 = no deck)
 
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
   return texture2D(uHeight, uv).r * 255.0 / uHScale;
-}
-
-// world@2 FLOATING SLABS (bridges, roofs): the surface heightmap reports the
-// DECK level at deck cells (so slab tops light right), which alone makes the
-// resolve treat the span as a solid terrain COLUMN — its phantom "wall face"
-// shading landed on the open water under bridges as a static dark band + hard
-// seam line (maintainer report). uDeck carries what the R channel can't: the
-// BASE level beneath the slab (x) and the slab's drawn thickness in levels
-// (y); raw byte 255 = no deck here. The walk uses it to let pixels below the
-// slab's drawn extent fall through to the base surface.
-float deckBaseAt(vec2 cr) {
-  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
-  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
-  float raw = texture2D(uDeck, uv).r;
-  if (raw > 0.996) return 99.0; // no deck
-  return raw * 255.0 / uHScale;
-}
-float deckThickAt(vec2 cr) {
-  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
-  return texture2D(uDeck, uv).g * 255.0 / uHScale;
 }
 // Same precision-exact hash as cwHash (see there) — twin of mistAt().
 float mHash(vec2 i) {
@@ -851,19 +785,8 @@ void main() {
     if (H < 90.0) {
       float vSurf = v0 + H * kk;
       if (vSurf >= vLo - 0.0001) {
-        // Floating slab: under-span pixels resolve to the BASE surface (see
-        // the night shader's walk) so mist pools on the water under bridges.
-        float dkB = deckBaseAt(cr);
-        if (dkB < 90.0 && vHi < v0 + (H - deckThickAt(cr)) * kk - 0.0001) {
-          float vSurfB = v0 + dkB * kk;
-          if (vSurfB >= vLo - 0.0001) {
-            z = max((min(vHi, vSurfB) - v0) / kk, 0.0);
-            found = true;
-          }
-        } else {
-          z = max((min(vHi, vSurf) - v0) / kk, 0.0);
-          found = true;
-        }
+        z = max((min(vHi, vSurf) - v0) / kk, 0.0);
+        found = true;
       }
     }
     vHi = vLo;
@@ -914,7 +837,6 @@ uniform vec2  uPlayerXY;  // the local player's cell (col, row)
 uniform float uFog;       // master strength 0..1 (0 = pass outputs nothing)
 uniform float uFlip;
 uniform sampler2D uHeight;
-uniform sampler2D uDeck;  // world@2 floating slabs: R = base level, G = thickness (byte 255 = no deck)
 uniform sampler2D uHeightL; // terrain height, LINEAR — smooth (bilinear) sampling
 
 // Tunables (named consts). CEL-SHADED DEPTH FOG whose JOB is to HIGHLIGHT CLIFF EDGES
@@ -959,26 +881,6 @@ float heightAt(vec2 cr) {
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
   return texture2D(uHeight, uv).r * 255.0 / uHScale;
 }
-
-// world@2 FLOATING SLABS (bridges, roofs): the surface heightmap reports the
-// DECK level at deck cells (so slab tops light right), which alone makes the
-// resolve treat the span as a solid terrain COLUMN — its phantom "wall face"
-// shading landed on the open water under bridges as a static dark band + hard
-// seam line (maintainer report). uDeck carries what the R channel can't: the
-// BASE level beneath the slab (x) and the slab's drawn thickness in levels
-// (y); raw byte 255 = no deck here. The walk uses it to let pixels below the
-// slab's drawn extent fall through to the base surface.
-float deckBaseAt(vec2 cr) {
-  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
-  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
-  float raw = texture2D(uDeck, uv).r;
-  if (raw > 0.996) return 99.0; // no deck
-  return raw * 255.0 / uHScale;
-}
-float deckThickAt(vec2 cr) {
-  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
-  return texture2D(uDeck, uv).g * 255.0 / uHScale;
-}
 // TERRAIN-ONLY surface height (levels), bilinear + edge-clamped. uHeightL packs
 // R = occlusion height (terrain + solid/prop bump, or a deck slab) and G = the
 // PLACED-PROP share, so R-G is the walkable ground/deck height with scattered props
@@ -1021,7 +923,6 @@ void main() {
   float vTop = v0 + uIsoB.w * kk;
   float z = 0.0;
   vec2 cell = vec2(0.0); // resolved surface cell (col,row) — for the horizontal dist
-  float hitH = 99.0;     // the hit's surface height (slab top, or the BASE under a floating deck)
   bool found = false;
   float vHi = vTop;
   // WALK BUDGET: sweeping from the max-level candidate down to level 0 needs
@@ -1047,24 +948,9 @@ void main() {
     if (H < 90.0) {
       float vSurf = v0 + H * kk;
       if (vSurf >= vLo - 0.0001) {
-        // Floating slab: under-span pixels resolve to the BASE surface (see
-        // the night shader's walk) — the fog's z under a bridge is the water,
-        // not the slab, and faceDepth judges the surface the pixel shows.
-        float dkB = deckBaseAt(cr);
-        if (dkB < 90.0 && vHi < v0 + (H - deckThickAt(cr)) * kk - 0.0001) {
-          float vSurfB = v0 + dkB * kk;
-          if (vSurfB >= vLo - 0.0001) {
-            z = max((min(vHi, vSurfB) - v0) / kk, 0.0);
-            cell = cr;
-            hitH = dkB;
-            found = true;
-          }
-        } else {
-          z = max((min(vHi, vSurf) - v0) / kk, 0.0);
-          cell = cr;
-          hitH = H;
-          found = true;
-        }
+        z = max((min(vHi, vSurf) - v0) / kk, 0.0);
+        cell = cr;
+        found = true;
       }
     }
     vHi = vLo;
@@ -1102,7 +988,7 @@ void main() {
   // is" and, as it grows, DROP the cel-snap so the face fades to the SMOOTH ring value — a
   // clean gradient, no hard staircase. On every flat/tread heightAt(cell)==z ⇒ faceDepth 0
   // ⇒ full cel-snap ⇒ the crisp rings are byte-for-byte unchanged.
-  float faceDepth = max(0.0, hitH - z); // hitH: the surface the pixel SHOWS (deck-aware)
+  float faceDepth = max(0.0, heightAt(cell) - z);
   float faceMix = clamp(faceDepth - 0.5, 0.0, 1.0); // skip the ≤½-level resolve jitter at the lip
   float distBand = clamp(mix(floor(distCont), distCont, faceMix), 0.0, BANDS - 1.0);
 
@@ -1307,7 +1193,6 @@ export class NightLights {
       uAnimTime: { type: "1f", value: 0 },
       uHScale: { type: "1f", value: 16 },
       uHeight: { type: "sampler2D", value: null },
-      uDeck: { type: "sampler2D", value: null },
     });
     // Elevation depth-fog shader (declared uniforms only — the uSun lesson).
     this.depthFogBase = new Phaser.Display.BaseShader("depthfog-field", DEPTHFOG_FRAG, undefined, {
@@ -1321,7 +1206,6 @@ export class NightLights {
       uFlip: { type: "1f", value: 1 },
       uHScale: { type: "1f", value: 16 },
       uHeight: { type: "sampler2D", value: null },
-      uDeck: { type: "sampler2D", value: null },
       uHeightL: { type: "sampler2D", value: null },
     });
     this.base = new Phaser.Display.BaseShader("night-lights", FRAG, undefined, {
@@ -1354,7 +1238,6 @@ export class NightLights {
       uGlowFlip: { type: "1f", value: 1 },
       uHScale: { type: "1f", value: 16 },
       uHeight: { type: "sampler2D", value: null },
-      uDeck: { type: "sampler2D", value: null },
       uHeightL: { type: "sampler2D", value: null },
       uEmit: { type: "sampler2D", value: null },
       uGlow: { type: "sampler2D", value: null },
@@ -1448,8 +1331,6 @@ export class NightLights {
       .setOrigin(0, 0)
       .setVisible(false);
     s.setSampler2D("uHeight", "world-heightmap");
-    if (this.scene.textures.exists("world-heightmap-deck"))
-      s.setSampler2D("uDeck", "world-heightmap-deck", 1);
     s.setRenderToTexture(key);
     this.mistShader = s;
     const old = this.mistOverlay!.texture.key;
@@ -1474,8 +1355,6 @@ export class NightLights {
     s.setSampler2D("uHeight", "world-heightmap");
     if (this.scene.textures.exists("world-heightmap-linear"))
       s.setSampler2D("uHeightL", "world-heightmap-linear", 1);
-    if (this.scene.textures.exists("world-heightmap-deck"))
-      s.setSampler2D("uDeck", "world-heightmap-deck", 2);
     s.setRenderToTexture(key);
     this.depthFogShader = s;
     const old = this.depthFogOverlay!.texture.key;
@@ -1501,8 +1380,6 @@ export class NightLights {
       s.setSampler2D("uHeightL", "world-heightmap-linear", 1);
     if (this.scene.textures.exists("emission-palette"))
       s.setSampler2D("uEmit", "emission-palette", 2);
-    if (this.scene.textures.exists("world-heightmap-deck"))
-      s.setSampler2D("uDeck", "world-heightmap-deck", 4);
     // Glow field RT: the shader's world window is ALWAYS screen-sized in
     // world px (view * zoom = screen), so 1 RT texel = 1 world px.
     this.glowRT?.destroy();
@@ -1556,7 +1433,6 @@ export class NightLights {
     const ctx = tex!.getContext();
     const img = ctx.createImageData(w, h); // surface (terrain-only heights)
     const imgL = ctx.createImageData(w, h); // occlusion (terrain + solids)
-    const imgD = ctx.createImageData(w, h); // floating decks (base level + slab thickness)
     this.hArr = new Float32Array(w * h);
     this.tArr = new Float32Array(w * h);
     this.oArr = new Uint8Array(w * h);
@@ -1577,15 +1453,11 @@ export class NightLights {
     // lit: the sun march starts at the resolved surface height (4), so neighbouring
     // level-4 cells never rise above it.
     const deckH = new Float32Array(w * h);
-    const deckT = new Float32Array(w * h); // drawn slab thickness (levels) of the winning deck
     for (const d of this.world.decks ?? []) {
       for (const cc of d.cells) {
         if (cc.col < 0 || cc.row < 0 || cc.col >= w || cc.row >= h) continue;
         const di = cc.row * w + cc.col;
-        if (d.level > deckH[di]) {
-          deckH[di] = d.level;
-          deckT[di] = d.thickness ?? 0;
-        }
+        if (d.level > deckH[di]) deckH[di] = d.level;
       }
     }
     // Levels are packed into a single 8-bit channel as level*hScale. The
@@ -1648,15 +1520,6 @@ export class NightLights {
         img.data[i + 2] = ei === undefined ? 0 : Math.min(255, ei + 1);
         img.data[i + 3] = 255;
         imgL.data[i + 3] = 255;
-        // Deck map: only cells where a slab FLOATS above the terrain (a
-        // bridge span, a roof over a lower floor) carry data — R = the BASE
-        // level under the slab, G = the slab's drawn thickness; byte 255 in R
-        // = no deck (the shaders' walk then behaves exactly as before).
-        const floating = deckL > cell.l;
-        imgD.data[i] = floating ? Math.min(254, Math.round(cell.l * hScale)) : 255;
-        imgD.data[i + 1] = floating ? Math.min(255, Math.round(deckT[r * w + c] * hScale)) : 255;
-        imgD.data[i + 2] = 0;
-        imgD.data[i + 3] = 255;
       }
     }
     ctx.putImageData(img, 0, 0);
@@ -1666,14 +1529,6 @@ export class NightLights {
       texL.getContext().putImageData(imgL, 0, 0);
       texL.refresh();
       texL.setFilter(Phaser.Textures.FilterMode.LINEAR);
-    }
-    // Floating-deck map (NEAREST like the surface map — exact cell reads):
-    // lets the shaders' surface resolve see THROUGH the open air under a
-    // bridge/roof slab to the base ground instead of shading a phantom wall.
-    const texD = this.scene.textures.createCanvas("world-heightmap-deck", w, h);
-    if (texD) {
-      texD.getContext().putImageData(imgD, 0, 0);
-      texD.refresh();
     }
     // Palette texture: 2 texels per entry — texel 0 = colour, texel 1 =
     // (strength, self, anim mode 0/100/200). NEAREST so indices read exact.

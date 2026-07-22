@@ -658,22 +658,6 @@ visible head/shoulders are ABOVE the surface).
   id); **`ELEV_STEP`** (=1.5) = edge-contrast strength /
   bands per level past the dead-zone; `FOG_D0`/`FOG_DW`/`BANDS` = the horizontal distance
   onset/width/cull; `DRAPE_RS` = flat-ground smoothing; `FOG_MAX`/`FOG_NEAR`/`FOG_FAR` = look.
-- **Floating slabs see-through** (maintainer 2026-07-23): the surface
-  heightmap reporting the DECK level at bridge/roof cells (the decklight fix)
-  made the resolve treat a span as a solid terrain COLUMN — its phantom "wall
-  face" shading landed on the open water under bridges as a static dark band
-  ending in a hard seam line, identical at every time of day (proven by a
-  base-level heightmap experiment). A third NEAREST texture
-  `world-heightmap-deck` (`uDeck`: R = the BASE level under the slab, G = the
-  slab's drawn thickness, raw byte 255 = no deck) lets the exact-crossing walk
-  in ALL THREE shaders detect a pixel interval below the slab's drawn extent
-  and resolve it to the cell's own BASE surface (or walk on past) — under-span
-  water lights/fogs/mists as water. `hitH` (the hit's effective surface
-  height) replaces `heightAt(cell)` for the night shader's face rules and the
-  fog's `faceDepth`, so the surface judged is the one the pixel SHOWS.
-  Non-deck cells hit the 255 sentinel and take the exact old path
-  (byte-parity). Gate: verify-decklight must stay green (deck tops lit, base
-  under shaded) — it does.
 - **Two geometries, never merge them**: `world-heightmap` (NEAREST) holds
   TERRAIN levels only and drives the resolve + wall-face classification;
   `world-heightmap-linear` (LINEAR) holds terrain + solid objects and drives
