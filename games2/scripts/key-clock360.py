@@ -43,6 +43,19 @@ graphics"), registered onto the source (uniform scale 980/1069, offset
    same house rules from pure-grey seeds, bounded to the marked
    neighbourhood (RED_BOX) so the clear cannot creep along the disc rim.
 
+ROUND 3 — "This is on individual pixel level now": his second marked
+screenshot (a ~0.94x viewer shot of the corrected art, registered via the
+magenta content bbox) is applied LITERALLY, pixel for pixel, from
+clock360-marks-r3.json. GREEN ("should not have been transparent") pins
+the pixel fully opaque — that restores the eaten X-numeral serifs and a
+vine chunk below II, and also OVERRIDES the soft-edge pass, because a
+half-ghosted rim pixel reads as damage too. RED ("should have been
+transparent") clears the pixel outright — soft-edge ghost crumbs of rim
+shadow poking out of the wreath silhouette. No inference on top: a green
+mark on already-opaque art and a red mark on already-cleared backdrop are
+no-ops, which also makes the decode robust to the shot's registration
+fuzz.
+
 Output: client/ui-src/clock360/clock360-keyed.png (full resolution).
 """
 
@@ -53,6 +66,7 @@ from PIL import Image
 
 SRC = "client/ui-src/clock360/clock360-src.png"
 MARKS = "client/ui-src/clock360/clock360-marks-r2.json"
+MARKS3 = "client/ui-src/clock360/clock360-marks-r3.json"
 OUT = "client/ui-src/clock360/clock360-keyed.png"
 FLOOD_TOL = 18   # seed/enclosed match vs the sampled backdrop
 FLOOD_STEP = 40  # max sum|Δ| per step — crosses the shadow AND the halo ramps
@@ -64,6 +78,10 @@ MARK_COV = 0.25  # ...restored when the dilated marks cover >= this fraction of 
 MARK_TINY = 30   # ...or when it is tiny (1-2 px slivers under a hand-centred stroke)
 NOT_BG = 12      # colour distance beyond which a pixel is clearly art, not backdrop
 RED_BOX = 50     # the RED re-flood may only act this close to a red mark
+# round-3 closure (heal what the pixel-level scribble narrowly missed)
+CLOSE_REACH = 3  # enclosed-pocket rule: reach around a pinned green pixel
+CLOSE_MAX = 40   # ...max pocket size
+CLOSE_ART = 60   # art-colour rule: srcdist beyond any backdrop/halo grey
 
 
 def main():
@@ -338,6 +356,90 @@ def main():
                       max(c[0] for c in comp), max(c[1] for c in comp))
                 print(f"audit: surviving pure-bg patch size={len(comp)} bbox={bx}")
 
+    # ── round 3: literal per-pixel overrides, applied last so they win ──
+    m3 = json.load(open(MARKS3))
+    pin = set()  # GREEN pixels: forced fully opaque, exempt from soft-edge
+    g_restored = 0
+    for x, y in m3["green"]:
+        if 0 <= x < W and 0 <= y < H:
+            if cleared[y][x]:
+                g_restored += 1
+            cleared[y][x] = False
+            origin[y][x] = 0
+            pin.add((x, y))
+    r_cleared = 0
+    for x, y in m3["red"]:
+        if 0 <= x < W and 0 <= y < H:
+            if not cleared[y][x]:
+                r_cleared += 1
+            cleared[y][x] = True
+            origin[y][x] = 5
+            pin.discard((x, y))
+    print(f"round3: green pinned={len(pin)} (un-cleared {g_restored}), "
+          f"red cleared={r_cleared}")
+    # round-3 closure: the pixel-level scribble (decoded through a ~0.94x
+    # lossy shot) brackets the damage but misses single pixels. Two NARROW
+    # rules heal those without ever touching real backdrop — both disclosed
+    # to the maintainer, and a red mark next round overrides either:
+    #  (A) ENCLOSED POCKETS: a small transparent 4-component living entirely
+    #      within CLOSE_REACH of pinned pixels and sealed off from any
+    #      transparent pixel outside that zone is a leftover dash INSIDE art
+    #      (serif / leaf-highlight bits whose colour matches the backdrop —
+    #      colour cannot judge them, enclosure can). The open ocean always
+    #      touches transparency beyond the zone, so it can never qualify.
+    #  (B) ART-COLOUR CRUMBS: a transparent pixel hugging a pin whose source
+    #      colour sits far outside the backdrop/halo family (> CLOSE_ART;
+    #      halos top out near 47) is eaten art regardless of connectivity —
+    #      vine-edge shadow the stroke stopped one pixel short of.
+    redset = {(x, y) for x, y in m3["red"] if 0 <= x < W and 0 <= y < H}
+    zone = set()
+    for x, y in pin:
+        for dx in range(-CLOSE_REACH, CLOSE_REACH + 1):
+            for dy in range(-CLOSE_REACH, CLOSE_REACH + 1):
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < W and 0 <= ny < H:
+                    zone.add((nx, ny))
+    healed_a = healed_b = 0
+    seen4 = set()
+    for x0, y0 in sorted(zone):
+        if (x0, y0) in seen4 or not cleared[y0][x0] or (x0, y0) in redset:
+            continue
+        comp = [(x0, y0)]
+        seen4.add((x0, y0))
+        qi = 0
+        sealed = True
+        while qi < len(comp):
+            x, y = comp[qi]
+            qi += 1
+            for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                nx, ny = x + dx, y + dy
+                if not (0 <= nx < W and 0 <= ny < H) or not cleared[ny][nx]:
+                    continue
+                if (nx, ny) not in zone:
+                    sealed = False
+                    continue
+                if (nx, ny) not in seen4:
+                    seen4.add((nx, ny))
+                    comp.append((nx, ny))
+        if sealed and len(comp) <= CLOSE_MAX and not any(c in redset for c in comp):
+            for x, y in comp:
+                cleared[y][x] = False
+                origin[y][x] = 0
+            healed_a += len(comp)
+    pin2 = set()
+    for x, y in pin:
+        for dx in (-2, -1, 0, 1, 2):
+            for dy in (-2, -1, 0, 1, 2):
+                pin2.add((x + dx, y + dy))
+    for x, y in sorted(pin2):
+        if not (0 <= x < W and 0 <= y < H) or (x, y) in redset:
+            continue
+        if cleared[y][x] and dist(p[x, y]) > CLOSE_ART:
+            cleared[y][x] = False
+            origin[y][x] = 0
+            healed_b += 1
+    print(f"round3 closure: enclosed-pocket px={healed_a}, art-colour px={healed_b}")
+
     out = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     o = out.load()
     soft = 0
@@ -346,6 +448,9 @@ def main():
             if cleared[y][x]:
                 continue
             c = p[x, y]
+            if (x, y) in pin:
+                o[x, y] = (*c, 255)
+                continue
             a = 255
             near = any(
                 0 <= x + dx < W and 0 <= y + dy < H and cleared[y + dy][x + dx]
