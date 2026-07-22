@@ -200,7 +200,13 @@ Enforce it in code (`pipeline/autotile.py`):
     location"): carved stairs/ramps (`self._ascent`) keep whatever ground they cut through —
     snow steps on the snow benches, grass steps in the maze, stone only where the ground IS
     stone. Their step faces point at the camera, so they read in any material. Bridge DECKS
-    stay stone. The flat road surface is `lightdark_dirt`; the road may repaint bench tops to
+    follow the same law (maintainer 2026-07-22: "create it in the same ground type, not
+    always switch"): a deck wears its BANKS' ground — snow spans on the snow benches, stone
+    on the stone bench, grass over the maze river, dirt only where the road itself runs onto
+    the span. Laying-time mats are provisional (the gorge crossings are laid before
+    `_materials` paints the caps); `_resolve_deck_mats` re-reads every deck's final banks
+    (majority ground among adjacent walkable land within 1 level) just before `_paint`.
+    The flat road surface is `lightdark_dirt`; the road may repaint bench tops to
     dirt but never an ascent cell.
   - **8-direction dirt ROADS** (`_dirt_roads`): an organic meandering, branching network that
     runs in all 8 SCREEN directions — the router (`_road_graph_bfs`) adds grid-diagonal moves

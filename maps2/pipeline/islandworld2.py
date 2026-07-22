@@ -184,6 +184,7 @@ class Island2(Island):
         self._pick_spawn()
         self._dirt_roads()                # 8-direction meandering, margined, centred dirt roads
         self._fix_material_slivers()      # NEW RULE: no tile borders two different foreign grounds
+        self._resolve_deck_mats()         # bridges wear their banks' FINAL ground (maintainer)
         self._paint()
         self.deck_at = {(x, y): dk for dk in self.decks for (x, y) in dk["cells"]}
         self._decorate()
@@ -927,6 +928,40 @@ class Island2(Island):
                         chan.add((x, y))
         return chan
 
+    def _deck_mat(self, wm, em):
+        """A bridge wears the ground it connects (maintainer 2026-07-22: 'create it in the same
+        ground type, not always switch') — deck material = the bank's ground: grass decks over
+        the maze river, snow up on the massif, stone only where the banks ARE stone. The value
+        picked at laying time is PROVISIONAL — _resolve_deck_mats re-reads the banks once all
+        ground painting is final (the gorge bridges are laid before _materials paints the
+        mountain caps, so at that moment every bank still reads grass)."""
+        if wm in GROUND_MATS:
+            return wm
+        if em in GROUND_MATS:
+            return em
+        return "stone_mountain"
+
+    def _resolve_deck_mats(self):
+        """Re-resolve every deck's material from its FINAL banks: majority ground among the
+        walkable land cells orthogonally adjacent to the deck within 1 level of it. Must run
+        after _materials/_fix_material_slivers/_dirt_roads so a massif crossing reads its real
+        snow/stone banks (and a bridge a road actually runs onto may wear the road)."""
+        for dk in self.decks:
+            cells = set(dk["cells"])
+            dlv = int(dk["level"])
+            votes = Counter()
+            for (x, y) in cells:
+                for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    bx, by = x + dx, y + dy
+                    if not (0 <= bx < self.n and 0 <= by < self.n) or (bx, by) in cells:
+                        continue
+                    m = self.mat[by, bx]
+                    if m not in GROUND_MATS or abs(int(self.level[by, bx]) - dlv) > 1:
+                        continue
+                    votes[m] += 1
+            if votes:
+                dk["mat"] = max(votes, key=lambda m: (votes[m], -GROUND_MATS.index(m)))
+
     def _bridge_over_gorge(self, chan, sites=GORGE_BRIDGE_FRACS):
         """Lay the maintainer's deliberate STONE crossings over the massif-to-ocean waterway at
         the `sites` design fractions (nearest clean candidate row per site). Runs EARLY — before
@@ -1006,7 +1041,8 @@ class Island2(Island):
                 cells = [(x, r) for r in rows for x in range(x0, x1 + 1)]
                 if any((x, r) in self.reserved for (x, r) in cells):
                     continue
-                self.decks.append({"kind": "bridge", "mat": "stone_mountain", "level": dlv,
+                dm = self._deck_mat(self.mat[cy, x0 - 1], self.mat[cy, x1 + 1])
+                self.decks.append({"kind": "bridge", "mat": dm, "level": dlv,
                                    "thickness": 1, "cells": cells})
                 for r in rows:
                     self.links.append(((x0 - 1, r), (x1 + 1, r)))
@@ -1082,7 +1118,8 @@ class Island2(Island):
                 cells = [(x, r) for r in rows for x in range(x0, x1 + 1)]
                 if any((x, r) in self.reserved for (x, r) in cells):
                     continue
-                self.decks.append({"kind": "bridge", "mat": "stone_mountain", "level": dlv,
+                dm = self._deck_mat(self.mat[cy, x0 - 1], self.mat[cy, x1 + 1])
+                self.decks.append({"kind": "bridge", "mat": dm, "level": dlv,
                                    "thickness": 1, "cells": cells})
                 for r in rows:
                     self.links.append(((x0 - 1, r), (x1 + 1, r)))
@@ -1144,8 +1181,9 @@ class Island2(Island):
                 x, y = cxx + perp[0] * w, cyy + perp[1] * w
                 if 0 <= x < n and 0 <= y < n:
                     cells.append((x, y))
-        self.decks.append({"kind": "bridge", "mat": "stone_mountain", "level": max(2, blv),
-                           "thickness": 1, "cells": cells})
+        self.decks.append({"kind": "bridge", "mat": self._deck_mat(self.mat[ty, tx],
+                                                                    self.mat[my, mx]),
+                           "level": max(2, blv), "thickness": 1, "cells": cells})
         for (_w, a, b) in lanes:
             self.links.append((a, b))
         return True
