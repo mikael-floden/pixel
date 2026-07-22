@@ -79,11 +79,13 @@ function showVersion() {
   // ONE fixed spot on ALL screens (maintainer 2026-07-18 red mark): centred
   // at the very bottom of the page, over the frame's bottom rail — never
   // lifted above the HUD, never part of any screen fade (the badge lives on
-  // body, outside every fading overlay). The badge is uiZoom'd while the
-  // offset is real CSS px — divide by the zoom or it double-counts.
+  // body, outside every fading overlay). The badge is uiZoom'd (design-width
+  // normalization, uiscale.ts) and the offset is PLAIN design px on purpose:
+  // inside the zoomed root it scales with k and keeps tracking the frame's
+  // bottom rail, which shrinks with the viewport the same way.
   el.style.cssText =
     "position:fixed;left:50%;transform:translateX(-50%);" +
-    "bottom:calc(14px / var(--ml-uizoom, 1));z-index:50;" +
+    "bottom:14px;z-index:50;" +
     "font:700 24px system-ui,sans-serif;letter-spacing:1px;color:#cfd6ff;text-shadow:0 1px 2px #000,0 0 3px #000;" +
     "pointer-events:none;user-select:none";
   document.body.appendChild(el);
@@ -122,13 +124,13 @@ function showUpdateBanner(sha: string) {
   // then "a little bit too big", now "bigger and a little further down") —
   // a comfortable thumb pill, not a billboard.
   // "perfect spot" = the open playfield just below the clock (shared with
-  // the reconnect toast, WorldScene). top:340px is FRAME layout-px: with
-  // the UI_ZOOM_X1 experiment (uiscale.ts) the overlay is NOT zoom'd, so it
-  // shares the frame's coordinate space and 340px lands below the clock disc
-  // (a plain top:150px sat on the disc). The /var(--ml-uizoom) keeps it
-  // frame-aligned if that experiment is ever turned back off.
+  // the reconnect toast, WorldScene). top:340px is DESIGN px (the 980-wide
+  // reference layout): the banner root is uiZoom'd (design-width
+  // normalization, uiscale.ts), so on narrower clients the plain px scales
+  // with k and keeps landing below the clock disc, which shrinks with the
+  // frame the same way (a plain top:150px sat ON the disc).
   el.style.cssText =
-    "position:fixed;top:calc(340px / var(--ml-uizoom, 1));left:50%;transform:translateX(-50%);z-index:100;cursor:pointer;" +
+    "position:fixed;top:340px;left:50%;transform:translateX(-50%);z-index:100;cursor:pointer;" +
     "padding:14px 26px;border-radius:12px;background:#111114f2;color:#ffd678;" +
     "border:2px solid #ffd678aa;font:bold 19px system-ui,sans-serif;box-shadow:0 6px 24px #000c;" +
     "white-space:nowrap;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;" +

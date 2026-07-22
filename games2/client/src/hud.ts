@@ -586,12 +586,19 @@ function injectStyles() {
      Height 120 is the maintainer's shared button height, same as the tabs.
      Labels wrap to a second line when the 3-per-row column narrows. White
      uppercase labels like the kit's pop-up rows. */
+  /* Design-width normalization (uiscale.ts): the HUD root is NOT uiZoom'd
+     (frame-glued geometry), so its fixed sizes scale themselves with
+     min(design-px, vw) — exactly the design value at the 980 reference
+     layout (the maintainer's desktop-site phone), proportionally smaller on
+     device-width viewports (2026-07-22: buttons/fonts read 2x too big
+     there). vw is safe here BECAUSE the HUD is never zoomed. */
   .ml-plate-btn{width:100%;white-space:normal;overflow:hidden;
     display:flex;align-items:center;justify-content:center;text-align:center;
-    padding:8px 24px;height:120px;box-sizing:border-box;border:none;
+    padding:8px min(24px,2.449vw);height:min(120px,12.245vw);box-sizing:border-box;border:none;
     cursor:pointer;image-rendering:pixelated;touch-action:manipulation;
     background:none;background-repeat:no-repeat;background-size:100% 100%;
-    font:700 24px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#fff;
+    font:700 24px system-ui,sans-serif;font-size:min(24px,2.449vw);
+    letter-spacing:.6px;text-transform:uppercase;color:#fff;
     text-shadow:0 1px 0 rgba(0,0,0,.35)}
   /* state = the plate art (the kit's Normal/Selected/Down trio via
      dressPlate); the cream SELECTED bar needs a dark label */
@@ -608,15 +615,16 @@ function injectStyles() {
   /* ambient-effect checklist */
   .ml-amb{display:flex;flex-direction:column;gap:12px;width:100%}
   .ml-amb-title{border-top:2px solid rgba(0,0,0,.28);padding-top:14px;
-    color:#f0e2c6;font:700 18px system-ui,sans-serif;letter-spacing:1px;
-    text-transform:uppercase;text-align:center}
+    color:#f0e2c6;font:700 18px system-ui,sans-serif;font-size:min(18px,1.837vw);
+    letter-spacing:1px;text-transform:uppercase;text-align:center}
   .ml-amb-list{display:flex;flex-direction:column;gap:12px;width:100%}
   /* a checkbox row: kit plate bar, checkbox on the LEFT, label left-aligned.
      Overrides .ml-plate-btn's centred/tall defaults (declared after it so the
      equal-specificity rules win by source order). */
-  .ml-amb-row{justify-content:flex-start;gap:18px;height:72px;text-align:left;
+  .ml-amb-row{justify-content:flex-start;gap:18px;height:min(72px,7.347vw);text-align:left;
     padding:8px 22px;white-space:nowrap;text-transform:uppercase}
-  /* the kit checkbox (8px native): integer 5× so every pixel stays crisp */
+  /* the kit checkbox (8px native): INTEGER multiples only (5x/3x/2x — see the
+     narrow-viewport media queries) so every art pixel stays crisp */
   .ml-amb-check{width:40px;height:40px;flex:none;image-rendering:pixelated;
     -webkit-user-drag:none;pointer-events:none}
   .ml-amb-label{overflow:hidden;text-overflow:ellipsis}
@@ -624,12 +632,19 @@ function injectStyles() {
      tap is a harmless no-op; the label already says which effect blocks it) */
   .ml-amb-row.blocked{opacity:.5;cursor:not-allowed}
   .ml-amb-auto{margin-bottom:2px}
-  /* Narrow phones: five square tabs must still fit between the outer rails;
-     icons drop to exactly HALF the file (= the art's true 1x) so the scale
-     stays integer-crisp in the smaller tabs. */
+  /* Narrower-than-design viewports: the tab plates already shrink via the
+     --ml-tab formula, but the ICON files (2x bakes, up to 80px) overflow
+     once a tab drops under ~90px — i.e. below a ~650px viewport. Icons then
+     drop to exactly HALF the file (= the art's true 1x): the only other
+     integer-crisp scale. Same step for the ambient checkboxes (8px native):
+     5x → 3x → 2x, never fractional. */
+  @media (max-width:650px){
+    .ml-tab-icon{zoom:0.5}
+    .ml-amb-check{width:24px;height:24px}
+  }
   @media (max-width:460px){
     .ml-tabrow{left:40px;right:40px}
-    .ml-tab-icon{zoom:0.5}
+    .ml-amb-check{width:16px;height:16px}
   }
   /* Short viewports (small desktop windows): compact everything. Height 48
      keeps the kit rows on an exact integer scale (48 = 4 blocks of 12). */
@@ -643,7 +658,8 @@ function injectStyles() {
     .ml-amb-list{gap:8px}
     .ml-amb-title{padding-top:8px;font-size:14px}
     .ml-amb-row{height:44px;gap:12px;padding:4px 12px}
-    .ml-amb-check{width:28px;height:28px}
+    /* 24 = 3x the 8px art — integer; the earlier 28 was a fractional 3.5x */
+    .ml-amb-check{width:24px;height:24px}
   }`;
   const s = document.createElement("style");
   s.textContent = css;
