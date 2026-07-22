@@ -52,7 +52,9 @@ if (!unknownUsed.length) {
 console.error(`\ncheck-surfaces: FAIL — the maps2 worlds use ${unknownUsed.length} categories with NO SURFACES entry.`);
 console.error(`They default to walkable ground: players walk through them AND the night shader`);
 console.error(`gives them phantom block shadows outside their art.`);
-console.error(`Add entries to SURFACES in games2/shared/src/index.ts. Name-hinted proposals:\n`);
+console.error(`Add entries to the SURFACES table in games2/shared/src/surfaces.ts, then re-run`);
+console.error(`npm test. The tiles2/maps2 agents are cleared to do this themselves so an art`);
+console.error(`push is never blocked — full runbook: games2/SURFACES.md. Name-hinted proposals:\n`);
 for (const cat of unknownUsed) {
   const hint = SOLID_NAMES.test(cat)
     ? "name suggests SOLID (impassable object)"

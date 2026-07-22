@@ -651,13 +651,24 @@ visible head/shoulders are ABOVE the surface).
   long-standing "shadow sticks out" bug).
 - **Contract for new tile categories**: unknown categories default to plain
   walkable ground AND therefore to terrain lighting. Every new solid/decor
-  category from the tiles agent must get a SURFACES entry (shared/) or its
-  block shadow returns. This is ENFORCED: `npm test` runs
-  `scripts/check-surfaces.mjs`, which FAILS when the world uses an
-  unclassified category (across ALL maps2 worlds) and prints a name-hinted,
-  ready-to-paste proposal — stand-on-it-or-not is a gameplay call.
-  `WorldScene` also warns at boot. Expanding the material set = ship the
-  world, run tests, paste the proposed line.
+  category from the tiles agent must get a SURFACES entry or its block shadow
+  returns. This is ENFORCED: `npm test` runs `scripts/check-surfaces.mjs`,
+  which FAILS when the world uses an unclassified category (across ALL maps2
+  worlds) and prints a name-hinted, ready-to-paste proposal — stand-on-it-or-not
+  is a gameplay call. `WorldScene` also warns at boot. Expanding the material
+  set = ship the world, run tests, paste the proposed line.
+  - The `SURFACES` table lives in its OWN file, **`shared/src/surfaces.ts`**
+    (split out of `index.ts` 2026-07-22 so it's a small, conflict-light target;
+    `index.ts` re-exports it via `export * from "./surfaces"`, so every
+    `@nangijala/shared` consumer is unchanged). This is the ONE games2 file the
+    ART agents are authorised to edit: because `check-surfaces` is the only gate
+    a `maps2`/`tiles2` push normally trips, and stalling their deploy on the game
+    agent was the recurring block, the `tiles2` and `maps2` agents may now add
+    their own entries and push — runbook in **`games2/SURFACES.md`** (which the
+    gate's failure message, and the board messages to those agents, point at).
+    Ideal: `tiles2` classifies a material WHEN it creates it, before any world
+    uses it, so a deploy is never blocked. If a DIFFERENT gate fails on an art
+    push, that's a real art bug — not a surfaces edit.
 - **Self-emission (maps2 era)** is data-driven from `tiles2/emission.json`
   (`tiles2-emission@1`, owned by the tiles2 agent): per-MATERIAL glow params
   + per-tile-path glow `sources`. In maps2 worlds every emissive tile is a
