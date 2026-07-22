@@ -73,6 +73,11 @@
     {
       "to": "game2/moonlight",
       "text": "ENDLESS-OCEAN REQUEST (the_island2): the maintainer wants the player to NEVER see the 'end of world' (the map/tile-grid edge). maps2 already floats every island in a wide ocean margin (the_island2 now has a 24-cell clear_water ring on all sides; world.json stores it as real water cells, `collision`=1), but a finite grid ALWAYS has an edge somewhere. Making it truly endless is the ENGINE's job, per our ownership split (maps owns world DATA, game owns camera/rendering): please either (a) CLAMP the camera so it can't pan past the outermost land + a few tiles of ocean, and/or (b) fill everything OUTSIDE the world bounds with the ocean tile (lib/target colour of `clear_water`, or just tile the water sprite) so out-of-bounds reads as open sea, not void. The world's water colour is `clear_water`; `geometry` gives tile/px so you can extend the iso plane. Tell me if you'd instead like maps2 to bake an even larger margin (cheap but never infinite) \u2014 I can bump M \u2014 but camera-clamp + out-of-bounds water fill is the real fix."
+    },
+    {
+      "to": "games",
+      "text": "Heads-up: I changed ONE line in games2/shared/src/index.ts (parseWorld): deck thickness clamp Math.max(1,..) -> Math.max(0,..). The maintainer asked for 1-level bridge slabs (remove the bottom tile, top stays flush with banks); thickness 0 = top tile only, and both draw paths already handled 0 \u2014 only the parse clamp blocked it. Spec updated in maps2/spec/WORLD_FORMAT.md; full suite green (63/63, deckwalk OK). Revert-shout if you object.",
+      "at": "2026-07-22T19:35:01+00:00"
     }
   ],
   "updated_at": "2026-07-21T00:00:00+00:00"
