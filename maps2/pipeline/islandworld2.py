@@ -132,8 +132,8 @@ class Island2(Island):
         self._relief()                    # big maze tiers {0,4,12} + a lake
         self._rooms()                     # snap the maze into flat chambers
         self._majority()                  # despeckle the maze level field
-        self._maze_river()                # a winding water channel across the lowland (bridged)
         flatten_shores(self.mat, self.level)
+        self._maze_river()                # raised-valley river (AFTER shores so banks stay tier 4)
         camera_monotone_masked(self.level, self.mat, self.upper)   # mountain antitone ONLY
         self._mtn_gorge()                 # DEEP gorge down the massif (banks keep full height)
         self.level_before = self.level.copy()
@@ -305,23 +305,38 @@ class Island2(Island):
                     self.level[y, x] = mode
 
     def _maze_river(self):
+        """A winding river across the maze that runs in a RAISED VALLEY: its shoulders are lifted
+        to tier 4 while the water is cut to level 0, so the river sits in a Δ4 trench and the stone
+        bridges laid across it (_place_bridges, deck at the shared bank level) stand a full bench
+        ABOVE the water and meet tier-4 GROUND on both banks (IMG4: raised bridges that connect to
+        grounds, not flat slabs flush on the water). Wall-material rims + _connect_all keep it
+        occlusion-legal and reachable."""
         n, s = self.n, self.seed
         PATH = [self._to_grid(fx, fy) for fx, fy in
                 ((0.44, 0.42), (0.47, 0.55), (0.45, 0.68), (0.48, 0.80), (0.46, 0.95))]
+        center = []
         for (ax, ay), (bx, by) in zip(PATH, PATH[1:]):
             steps = int(math.hypot(bx - ax, by - ay)) + 1
             for i in range(steps + 1):
                 t = i / steps
                 wob = (_fbm(np.float32(ax + (bx - ax) * t), np.float32(ay),
                             s + 77, n * 0.06, 3) - 0.5) * 6
-                cx = int(ax + (bx - ax) * t + wob)
-                cy = int(ay + (by - ay) * t)
-                for dx in range(-1, 2):
-                    for dy in range(-1, 2):
-                        x, y = cx + dx, cy + dy
-                        if 0 <= x < n and 0 <= y < n and self.maze[y, x] and self.land[y, x]:
-                            self.mat[y, x] = "clear_water"
-                            self.level[y, x] = 0
+                center.append((int(ax + (bx - ax) * t + wob), int(ay + (by - ay) * t)))
+        RV = 3                                            # valley half-width (raised shoulders)
+        for (cx, cy) in center:                           # 1) lift the shoulders to >= tier 4
+            for dx in range(-RV, RV + 1):
+                for dy in range(-RV, RV + 1):
+                    x, y = cx + dx, cy + dy
+                    if (0 <= x < n and 0 <= y < n and self.maze[y, x] and self.land[y, x]
+                            and self.mat[y, x] != "clear_water" and int(self.level[y, x]) < 4):
+                        self.level[y, x] = 4
+        for (cx, cy) in center:                           # 2) cut the water channel to level 0
+            for dx in range(-1, 2):
+                for dy in range(-1, 2):
+                    x, y = cx + dx, cy + dy
+                    if 0 <= x < n and 0 <= y < n and self.maze[y, x] and self.land[y, x]:
+                        self.mat[y, x] = "clear_water"
+                        self.level[y, x] = 0
 
     def _majority(self, passes=2):
         n = self.n
