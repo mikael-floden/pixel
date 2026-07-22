@@ -79,7 +79,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     if (!m) fail(`no snap transform (${tf})`);
     else {
       const [dx, dy] = [+m[1], +m[2]];
-      const wantX = 14 * geom.k, wantY = 10 * geom.k; // MAX_ART east + REST_ART
+      const wantX = 14 * geom.k, wantY = 12 * geom.k; // MAX_ART east + REST_ART
       Math.abs(dx - wantX) < 1 && Math.abs(dy - wantY) < 1
         ? ok(`cap snapped at full E deflection (${dx},${dy}) = (MAX,REST)·k`)
         : fail(`cap at (${dx},${dy}), want (${wantX},${wantY})`);
@@ -99,6 +99,15 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     // and the glide is animated, not instant
     const trans = await page.evaluate(() => getComputedStyle(document.querySelector(".ml-pad-top")).transitionDuration);
     parseFloat(trans) > 0 ? ok(`snap glide animated (${trans})`) : fail("no snap transition");
+    // ANALOG amplitude: a half-tilt parks the cap at ~the finger distance
+    // (angle snapped, amplitude NOT) — radius ≈ 16px at k=2, not full 28
+    await page.mouse.move(geom.cx + 16, geom.cy, { steps: 2 });
+    await page.waitForTimeout(250);
+    const tMid = await topTf();
+    const mm = /translate\(([-\d.]+)px, ([-\d.]+)px\)/.exec(tMid);
+    mm && Math.abs(+mm[1] - 16) < 2 && Math.abs(+mm[2] - 12 * geom.k) < 2
+      ? ok(`amplitude analog: half-tilt cap at ${mm[1]}px (finger 16px)`)
+      : fail(`amplitude snapped? cap at ${tMid}, finger at 16px`);
 
     // 4) 8-way snap — probe the HELD KEY SET directly (world-heading
     // comparisons bend at walls/props): install a key listener, then park
@@ -116,12 +125,19 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
       const rad = (deg * Math.PI) / 180;
       await page.mouse.move(geom.cx + Math.cos(rad) * dist, geom.cy + Math.sin(rad) * dist, { steps: 2 });
       await page.waitForTimeout(120);
-      return (await page.evaluate(() => [...window.__qaKeys].sort())).join("");
+      return (await page.evaluate(() => [...window.__qaKeys].sort())).join("+");
     };
-    const cases = [[100, "s"], [90, "s"], [50, "ds"], [10, "d"], [170, "a"], [-100, "w"], [-50, "dw"], [-140, "aw"]];
-    for (const [deg, want] of cases) {
+    // FAR park = RUN (Shift held); MID park = WALK (plain keys)
+    const runCases = [[100, "Shift+s"], [90, "Shift+s"], [50, "Shift+d+s"], [10, "Shift+d"],
+                      [170, "Shift+a"], [-100, "Shift+w"], [-50, "Shift+d+w"], [-140, "Shift+a+w"]];
+    for (const [deg, want] of runCases) {
       const got = await heldAt(deg);
-      got === want ? ok(`snap ${deg}° -> [${got}]`) : fail(`snap ${deg}°: held [${got}] want [${want}]`);
+      got === want ? ok(`snap ${deg}° far -> [${got}]`) : fail(`snap ${deg}° far: held [${got}] want [${want}]`);
+    }
+    const walkCases = [[90, "s"], [10, "d"], [-140, "a+w"]];
+    for (const [deg, want] of walkCases) {
+      const got = await heldAt(deg, 16); // between dead (9.8) and run (21) at k=2
+      got === want ? ok(`walk ${deg}° mid -> [${got}]`) : fail(`walk ${deg}° mid: held [${got}] want [${want}]`);
     }
 
     // 5) release stops everything
@@ -134,7 +150,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     drift < 1.5 ? ok(`release stops movement (drift ${drift.toFixed(2)}wu)`) : fail(`still moving after release (${drift.toFixed(1)}wu)`);
     const tfAfter = await topTf();
     const mr = /translate\(0px, ([-\d.]+)px\)/.exec(tfAfter);
-    mr && Math.abs(+mr[1] - 10 * geom.k) < 1
+    mr && Math.abs(+mr[1] - 12 * geom.k) < 1
       ? ok(`cap re-seated on the socket (rest ${mr[1]}px)`)
       : fail(`cap not re-seated (${tfAfter})`);
   }
