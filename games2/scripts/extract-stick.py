@@ -1,92 +1,94 @@
 #!/usr/bin/env python3
-"""Split the maintainer's analog-stick art into TOP (cap) and BASE.
+"""Split the maintainer's analog-stick art into TOP and BASE.
 
 Source: client/ui-src/gamepad/stick-source.png — the "Classic Stock"
-thumbstick (96x96, binary alpha, 2026-07-22 upload; his red-circle marking
-was a hand hint, not a boundary). The split feeds the gamepad tab's
-on-screen analog stick: the cap is the piece that moves under the thumb;
-the base goes to an AI fill round-trip for the pixels hidden by the cap.
+thumbstick (96x96, binary alpha, 2026-07-22 upload). The split feeds the
+gamepad tab's on-screen analog stick: the TOP is the piece that moves
+under the thumb; the BASE (dome ring, with a transparent hole) goes to an
+AI fill round-trip for the pixels the top occluded.
 
-The cut respects the art's 1px border (maintainer: "hard to see" — it is
-dark-on-dark): per column, the cap keeps its pixels down to the FIRST
-border-family pixel (brightness <=35 reached from >=36), which is the 1px
-outline; everything below is base. Where the shapes touch tangentially and
-share a silhouette (no drawn border), explicit per-column guards stop the
-scan at the base's surface row: left dome top y44 (x26-35), right lip
-x60-64 y42 / x65-67 y43. The fused tangent outline px (26,43) goes to the
-cap (border priority — it closes the cap's silhouette). The sheet's
+THE BOUNDARY IS THE MAINTAINER'S, PIXEL-EXACT (2026-07-22): he marked the
+"not part of the top" pixels in red on the 16x grid render; the screenshot
+was registered back to art coordinates via the orange grid (pitch 93.4
+shot-px per 4 art-px) plus content correlation (line0 = art (26,40), SSD
+0.4 — unambiguous). The decoded staircase is MARKED below, verbatim: it
+sweeps around the WHOLE under-cap region, so the top = cap + stalk + its
+socket shadow (they move together when the stick tilts) and the base is
+the dome ring only. An earlier heuristic cut (border-valley tracing, git
+history) put the seam at the cap's lip — superseded by this marking.
+
+Per column: top = art pixels from the silhouette top down to (first marked
+row) - 1; marked pixels and everything below stay base. The sheet's
 "Classic Stock" caption (y>=84) is stripped from both outputs.
 
-Invariant (asserted): cap ∪ base == source above the caption, cap ∩ base
-== ∅ — compositing the cap back over the base reproduces the original
+Invariant (asserted): top ∪ base == source above the caption, top ∩ base
+== ∅ — compositing the top back over the base reproduces the original
 byte-for-byte.
 """
 
 from PIL import Image
 
 G = "client/ui-src/gamepad/"
-CAP_SCAN_TOP, BORDER_MIN_Y, CAPTION_Y = 14, 43, 84
+CAPTION_Y = 84
+
+# The maintainer's marked NOT-top pixels (art coords), decoded from his red
+# staircase. dict: y -> sorted x list.
+MARKED = {
+    37: [23],
+    38: [23, 24],
+    39: [24, 68],
+    40: [24, 25, 68],
+    41: [25, 67],
+    42: [25, 26, 66, 67],
+    43: [26, 27, 65, 66],
+    44: [27, 28, 64, 65],
+    45: [28, 29, 63],
+    46: [29, 30, 31, 62, 63],
+    47: [31, 32, 33, 59, 60, 61],
+    48: [33, 34, 58, 59],
+    49: [34, 58],
+    50: [34, 58],
+    51: [34, 58],
+    52: [34, 35, 57, 58],
+    53: [35, 36, 56, 57],
+    54: [36, 37, 55, 56],
+    55: [37, 38, 39, 53, 54, 55],
+    56: [39, 40, 41, 42, 50, 51, 52, 53],
+    57: [42, 43, 44, 45, 46, 47, 48, 49, 50],
+}
 
 
 def main():
     im = Image.open(G + "stick-source.png").convert("RGBA")
     W, H = im.size
     p = im.load()
-    v = lambda x, y: (p[x, y][0] + p[x, y][1] + p[x, y][2]) // 3
     art = lambda x, y: p[x, y][3] > 0
 
-    base_top = {}
-    for x in range(26, 36):
-        base_top[x] = 44
-    for x in range(60, 65):
-        base_top[x] = 42
-    for x in range(65, 68):
-        base_top[x] = 43
+    # first marked row per column = the top's exclusive lower bound
+    stop = {}
+    for y, xs in MARKED.items():
+        for x in xs:
+            stop[x] = min(stop.get(x, H), y)
 
-    cap = [[False] * W for _ in range(H)]
-    for x in range(W):
-        ys = next((y for y in range(CAP_SCAN_TOP, 41) if art(x, y)), None)
-        if ys is None:
-            continue
-        y = ys
-        yb = None
-        while y < H - 1:
-            ny = y + 1
-            if not art(x, ny):
-                yb = y
-                break
-            if x in base_top and ny >= base_top[x]:
-                yb = y
-                break
-            if ny >= BORDER_MIN_Y and v(x, ny) <= 35 and v(x, y) >= 36:
-                yb = ny
-                break
-            y = ny
-        if yb is None:
-            yb = y
-        for yy in range(ys, yb + 1):
-            if art(x, yy):
-                cap[yy][x] = True
-    if art(26, 43) and v(26, 43) < 26:
-        cap[43][26] = True
-
-    cap_im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    top_im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     base_im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    cp, bp = cap_im.load(), base_im.load()
+    tp, bp = top_im.load(), base_im.load()
     for y in range(min(H, CAPTION_Y)):
         for x in range(W):
-            if art(x, y):
-                (cp if cap[y][x] else bp)[x, y] = p[x, y]
+            if not art(x, y):
+                continue
+            is_top = x in stop and y < stop[x]
+            (tp if is_top else bp)[x, y] = p[x, y]
 
-    rp = Image.alpha_composite(base_im, cap_im).load()
+    rp = Image.alpha_composite(base_im, top_im).load()
     for y in range(CAPTION_Y):
         for x in range(W):
             want = p[x, y] if art(x, y) else (0, 0, 0, 0)
             assert rp[x, y] == want, f"reassembly mismatch at {x},{y}"
 
-    cap_im.save(G + "stick-top.png")
+    top_im.save(G + "stick-top.png")
     base_im.save(G + "stick-base-holed.png")
-    print("stick-top.png", cap_im.getbbox(), "/ stick-base-holed.png", base_im.getbbox())
+    print("stick-top.png", top_im.getbbox(), "/ stick-base-holed.png", base_im.getbbox())
 
 
 if __name__ == "__main__":
