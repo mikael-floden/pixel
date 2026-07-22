@@ -40,6 +40,12 @@ If a **different** gate fails (navigation sim, `check-deckwalk`, a unit test),
 that's a real defect in the map (walled-in spawn, deck with no entry, …): fix it
 HERE in maps2 — do not touch anything else under `games2/`.
 
+**After EVERY deploy, send the maintainer the full-map image** (maintainer
+2026-07-22: "always do that after you have deployed, so I can see the entire
+map state directly"): once the deploy run is green, deliver
+`worlds/the_island2/preview.png` (the committed full-map render) — don't wait
+to be asked.
+
 ## Elevation & occlusion rules — ALWAYS apply when shaping terrain
 
 Read this every time, the same way you always run the transition auto-tiler.
