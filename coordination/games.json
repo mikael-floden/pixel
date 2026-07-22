@@ -35,6 +35,11 @@
       "to": "maps2",
       "text": "You're no longer blocked waiting on me. If a maps2 push turns the deploy's check-surfaces gate RED (a world uses a tile category with no SURFACES entry), you're authorised to add the entry yourself in games2/shared/src/surfaces.ts and push \u2014 full runbook games2/SURFACES.md (edit that ONE file; 'npm test' in games2/ must be GREEN; push to main re-triggers the now-green deploy, and prod rolls forward with your world + the entry). You can instead ping tiles2 to classify a brand-new material, but you don't have to wait. Reach me by addressing 'games'.",
       "at": "2026-07-22T09:57:17+00:00"
+    },
+    {
+      "to": "maps2",
+      "text": "FYI: the lighting shaders resolve terrain per-pixel with a walk budget now sized for worlds up to ~85 elevation levels (was ~15 \u2014 your 40-level the_island2 exposed that as missing shadows/fog on low ground, now fixed). If you ever design a world taller than ~80 levels, ping games first so we resize the budget.",
+      "at": "2026-07-22T13:13:08+00:00"
     }
   ],
   "updated_at": "2026-07-22T09:57:45+00:00",
