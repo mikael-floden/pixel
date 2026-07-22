@@ -6,6 +6,8 @@
  *   /ui2/frame-top-runefree.png rows 0-99 with both rune glyphs inpainted
  *                               away (the stretch fills sample this so no
  *                               rune pixel ever repeats)
+ *   /ui2/clock360.png           the 360° zodiac wheel, hung behind the top
+ *                               beam at the hand pivot (see CLOCK360)
  *
  * The compose is a pixel-exact port of the maintainer-approved dummy
  * builder (scratchpad hud2-tilespec.json, 2026-07-17): every stretchable
@@ -186,26 +188,54 @@ function hGrainAt(d: HDonor, src: ImageData, y: number, i: number): number {
 // shifts by the left insert half; above VCUT1, so no vertical shift.
 const CLOCK_ANCHOR = { x: 385, y: 88 };
 
-// The zodiac CLOCK DISC is its OWN asset now (maintainer 2026-07-22: "the
-// clock should not be part of the frame graphics, but the location is
-// perfect as it is") — scripts/extract-clock.py splits it out of the frame
-// along his red-marked border. /ui2/clock-disc.png is pasted back HERE at
-// load, before compose: the split is a strict partition, so the composed
-// output stays byte-identical to the baked original. The disc sits between
-// the top-rail cuts and above VCUT1, so the compose shifts it exactly like
-// the clock anchor. A future DYNAMIC disc (phases, swaps) would instead
-// blit post-compose at (DISC_POS.x + (insW >> 1), DISC_POS.y).
-const DISC_POS = { x: 217, y: 60 };
+// The CLOCK is the maintainer's full 360° zodiac WHEEL now (2026-07-22,
+// "replace the clock in the game with this new clock"): night face on the
+// top half, the familiar day face below, divide line through the centre —
+// /ui2/clock360.png, baked to game scale by scripts/bake-clock360.py (the
+// keyed source art NEAREST-resized by s=0.338, the content-registered match
+// against the old extracted half-disc). The wheel CENTRE is pinned exactly
+// to CLOCK_ANCHOR — the same point the animated hand pivots on, and the
+// pivot a future day/night rotation would turn around; the old half-disc
+// asset (/ui2/clock-disc.png) is retired.
+//
+// It pastes UNDER the frame art (frame-over-wheel compositing) at load,
+// before compose: the top beam and its vines keep covering it, which hides
+// the divide line and the night half (except through the beam's vine gaps —
+// glimpses of night sky above the horizon, as designed) and clips the day
+// half's top exactly where the old disc tucked under the beam. Nothing
+// pastes above CLOCK360.clipY (the old disc box top) so the sky above the
+// beam stays clear. The wheel sits between the top-rail cuts and above
+// VCUT1, so the compose shifts it exactly like the clock anchor.
+const CLOCK360 = { x: 205, y: -77, clipY: 60 }; // frame px of the wheel's top-left
 
-function pasteClockDisc(frame: ImageData, disc: ImageData) {
+function pasteClock360(frame: ImageData, wheel: ImageData) {
   const F = frame.data;
-  const D = disc.data;
-  for (let y = 0; y < disc.height; y++) {
-    for (let x = 0; x < disc.width; x++) {
-      const si = (y * disc.width + x) * 4;
-      if (D[si + 3] === 0) continue;
-      const di = ((DISC_POS.y + y) * AW + DISC_POS.x + x) * 4;
-      F[di] = D[si]; F[di + 1] = D[si + 1]; F[di + 2] = D[si + 2]; F[di + 3] = D[si + 3];
+  const D = wheel.data;
+  const sy0 = CLOCK360.clipY - CLOCK360.y;
+  for (let sy = sy0; sy < wheel.height; sy++) {
+    const fy = CLOCK360.y + sy;
+    if (fy >= AH) break;
+    for (let sx = 0; sx < wheel.width; sx++) {
+      const fx = CLOCK360.x + sx;
+      if (fx < 0 || fx >= AW) continue;
+      const si = (sy * wheel.width + sx) * 4;
+      const wa = D[si + 3];
+      if (wa === 0) continue;
+      const di = (fy * AW + fx) * 4;
+      const fa = F[di + 3];
+      if (fa === 255) continue; // frame art fully covers the wheel here
+      if (fa === 0) {
+        F[di] = D[si]; F[di + 1] = D[si + 1]; F[di + 2] = D[si + 2]; F[di + 3] = wa;
+        continue;
+      }
+      // partial frame edge px: frame OVER wheel
+      const oa = fa + (wa * (255 - fa)) / 255;
+      for (let c = 0; c < 3; c++) {
+        F[di + c] = Math.round(
+          (F[di + c] * fa + (D[si + c] * wa * (255 - fa)) / 255) / oa,
+        );
+      }
+      F[di + 3] = Math.round(oa);
     }
   }
 }
@@ -570,9 +600,9 @@ export function mountFrame2(onLayout: (l: FrameLayout) => void) {
     Promise.all([
       loadImageData("/ui2/frame.png"),
       loadImageData("/ui2/frame-top-runefree.png"),
-      loadImageData("/ui2/clock-disc.png"),
+      loadImageData("/ui2/clock360.png"),
     ]).then(([f, a, d]) => {
-      pasteClockDisc(f, d); // the separated disc, back at its exact spot
+      pasteClock360(f, d); // the 360° wheel, hung behind the frame at the pivot
       frameData = f;
       auxData = a;
       buildVDonor(VD_GAME, f);
