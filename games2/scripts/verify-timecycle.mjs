@@ -23,28 +23,54 @@ await page.keyboard.press("Enter");
 await page.waitForFunction(() => window.__ml?.nightShader?.() === true, null, { timeout: 20000 });
 await page.waitForTimeout(1500);
 await page.evaluate(() => window.__ml.probeLight()); // no extra light
+await page.evaluate(() => window.__ml.weather(0, true)); // pin Clear — the server's
+// per-world weather clock persists per process and a rolled-in cloud dims the field
+await page.evaluate(() => window.__ml.lookAt(60, 88)); // PIN the camera: joins spawn
+// at DIFFERENT offsets as players accumulate on the dev server, so a fixed pixel
+// sampled a lottery of terrain (open flat one run, sun-shaded wall the next — the
+// "Day 0.60 vs 1.0" flake). A detached camera views identical world content always.
 await page.evaluate(() => window.__ml.nightCal(0, 1, 5)); // raw field
 
-// Sample an ambient-only spot: far corner of the view (no fire/torch there —
-// campfire radius 7 covers the centre; corners at zoom 2 are ~14 cells out).
-async function sampleField() {
+// The gate's claim: an UNLIT, UNSHADED spot's field equals the ambient grade at
+// EVERY phase. No single hand-picked pixel is reliably that spot (glow halos at
+// night, sun shadows by day, and terrain varies) — so sample a GRID and assert
+// that a consistent set of pixels tracks the grade across ALL FOUR phases. A
+// grade-table drift, a shader regression on flats, or a resolve failure leaves
+// no pixel matching everywhere and the gate goes red.
+let fail = 0;
+const grids = {};
+for (const name of Object.keys(PHASES)) {
+  await page.evaluate((n) => window.__ml.timeOfDay(n), name);
   await page.waitForTimeout(350);
   const shot = PNG.sync.read(await page.screenshot());
-  const i = ((160 * shot.width) + 260) * 4;
-  return [shot.data[i] / 255, shot.data[i + 1] / 255, shot.data[i + 2] / 255];
+  const px = [];
+  for (let y = 80; y < 780; y += 50)
+    for (let x = 120; x < 2300; x += 80) {
+      const i = (y * shot.width + x) * 4;
+      px.push([shot.data[i] / 255, shot.data[i + 1] / 255, shot.data[i + 2] / 255]);
+    }
+  grids[name] = px;
 }
-
-let fail = 0;
-for (const [name, amb] of Object.entries(PHASES)) {
-  await page.evaluate((n) => window.__ml.timeOfDay(n), name);
-  const rgb = await sampleField();
-  const err = Math.max(...rgb.map((v, k) => Math.abs(v - amb[k])));
-  const ok = err <= 0.05;
-  console.log(
-    `${name.padEnd(8)} field [${rgb.map((v) => v.toFixed(2)).join(",")}] vs ambient [${amb.join(",")}] err ${err.toFixed(3)} ${ok ? "OK" : "FAIL"}`,
-  );
-  if (!ok) fail++;
+const names = Object.keys(PHASES);
+const n = grids[names[0]].length;
+let allPhaseHits = 0;
+const bestByPhase = Object.fromEntries(names.map((p) => [p, 1]));
+for (let i = 0; i < n; i++) {
+  let worst = 0;
+  for (const p of names) {
+    const err = Math.max(...grids[p][i].map((v, k) => Math.abs(v - PHASES[p][k])));
+    worst = Math.max(worst, err);
+    bestByPhase[p] = Math.min(bestByPhase[p], err);
+  }
+  if (worst <= 0.05) allPhaseHits++;
 }
+for (const p of names)
+  console.log(`${p.padEnd(8)} best-pixel err ${bestByPhase[p].toFixed(3)} (grade [${PHASES[p].join(",")}])`);
+const gridOk = allPhaseHits >= 15;
+console.log(
+  `ambient-tracking pixels across ALL phases: ${allPhaseHits}/${n} (need >=15) ${gridOk ? "OK" : "FAIL"}`,
+);
+if (!gridOk) fail++;
 
 // Interpolation: reset to Night, press [1], then poll the CPU-side grade
 // (field == grade is proven by the phase checks above; a headless screenshot
