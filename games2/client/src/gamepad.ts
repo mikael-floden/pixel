@@ -132,6 +132,14 @@ export function mountGamepadStick(page: HTMLElement) {
   jump.appendChild(jumpImg);
   page.appendChild(jump);
 
+  // labels over each control (maintainer 2026-07-23: "write JUMP over it…
+  // WALK over the button to the right", settings-menu font)
+  const jumpLabel = mk("div", "ml-pad-label");
+  jumpLabel.textContent = "Jump";
+  const walkLabel = mk("div", "ml-pad-label");
+  walkLabel.textContent = "Walk";
+  page.append(jumpLabel, walkLabel);
+
   // ── layout: integer art scale + the maintainer's marked anchor spot ──
   // (his red circle: the well centre at ~70.5% across, ~42% down the page)
   let k = 2;
@@ -175,12 +183,21 @@ export function mountGamepadStick(page: HTMLElement) {
     const centreArt = (CAP_TOP_ART + REST_ART + BASE_BOT_ART) / 2;
     const padTopPx = Math.round(padTop + visH * 0.5 - (centreArt + RAISE_ART) * k);
     pad.style.top = `${padTopPx}px`;
-    // jump button: cap-face centre at 25% across, level with the stick's
-    // control centre (the tile's cap centre is at art y 39; the stick's
-    // seated centre is CY)
+    // jump button: cap-face centre at 25% across, centred on the stick
+    // ASSEMBLY's midline (his red line through both controls; the tile's
+    // cap centre is at art y 39)
     jump.style.width = jump.style.height = `${CANVAS * k}px`;
     jump.style.left = `${Math.round(page.clientWidth * 0.25 - CX * k)}px`;
-    jump.style.top = `${padTopPx + (CY - 39) * k}px`;
+    jump.style.top = `${padTopPx + Math.round((centreArt - 39) * k)}px`;
+    // labels share one row, floating over the taller control's cap top
+    const labelY = padTopPx + (CAP_TOP_ART + REST_ART) * k - 10;
+    for (const [el, fx] of [
+      [jumpLabel, 0.25],
+      [walkLabel, 0.705],
+    ] as const) {
+      el.style.left = `${Math.round(page.clientWidth * fx)}px`;
+      el.style.top = `${labelY}px`;
+    }
     setCap(visSector, visRadius); // re-derive the k-scaled transform
   };
   layout();
@@ -292,6 +309,10 @@ function injectStyles() {
   .ml-pad-jump{position:absolute;touch-action:none;cursor:pointer;
     -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
   .ml-pad-jump .ml-pad-img{transition:transform 60ms ease}
+  /* the settings-menu label look (.ml-amb-title family/colour) */
+  .ml-pad-label{position:absolute;transform:translate(-50%,-100%);
+    color:#f0e2c6;font:700 18px system-ui,sans-serif;letter-spacing:1px;
+    text-transform:uppercase;pointer-events:none;user-select:none}
   /* the cap glides between its snap positions — fast, not instant */
   .ml-pad-top{transition:transform ${SNAP_MS}ms ease-out}`;
   document.head.appendChild(s);
