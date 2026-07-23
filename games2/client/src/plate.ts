@@ -60,8 +60,14 @@ export function readyPlates(): Promise<void> {
   return readyP;
 }
 
-/** A data-URL plate composed to exactly w×h CSS px: corners at integer k,
- * flat runs extruded. null until the art has loaded. */
+/** A data-URL plate for a box of w×h CSS px: corners at integer k, flat runs
+ * extruded. The canvas is baked at DEVICE resolution (× devicePixelRatio) and
+ * pinned to the box with background-size:100% 100%, so it maps 1:1 to physical
+ * pixels — a plate baked at CSS px was upscaled bilinear by the phone's
+ * desktop-site zoom and rendered BLURRY (maintainer 2026-07-23: kit slots read
+ * soft while the health bar — an <img> — stayed crisp; "that blurryness comes
+ * from rendering"). imageSmoothingEnabled stays off so every block is hard.
+ * null until the art has loaded. */
 export function plateUrl(kind: PlateKind, w: number, h: number): string | null {
   const img = imgs[kind];
   if (!img) return null;
@@ -70,7 +76,9 @@ export function plateUrl(kind: PlateKind, w: number, h: number): string | null {
   if (w < 2 || h < 2) return null;
   const k = Math.min(KIT_PX, Math.max(1, Math.floor(h / img.height)));
   const cs = Math.min(CS * k, w >> 1, h >> 1);
-  const key = `${kind}:${w}x${h}`;
+  // device scale: bake at physical resolution so there's no upscale to blur.
+  const dpr = Math.max(1, window.devicePixelRatio || 1);
+  const key = `${kind}:${w}x${h}@${dpr}`;
   const hit = cache.get(key);
   if (hit) return hit;
   const nw = img.width;
@@ -78,26 +86,30 @@ export function plateUrl(kind: PlateKind, w: number, h: number): string | null {
   const mx = nw >> 1; // flat mid slices
   const my = nh >> 1;
   const c = Math.ceil(cs / k); // native slice size backing the k-scaled corner
+  // device-space destination geometry (canvas px); source slices stay native
+  const W = Math.round(w * dpr);
+  const H = Math.round(h * dpr);
+  const CSd = Math.round(cs * dpr);
   const cv = document.createElement("canvas");
-  cv.width = w;
-  cv.height = h;
+  cv.width = W;
+  cv.height = H;
   const g = cv.getContext("2d")!;
   g.imageSmoothingEnabled = false; // nearest-neighbour, always
-  g.drawImage(img, 0, 0, c, c, 0, 0, cs, cs); // TL
-  g.drawImage(img, nw - c, 0, c, c, w - cs, 0, cs, cs); // TR
-  g.drawImage(img, 0, nh - c, c, c, 0, h - cs, cs, cs); // BL
-  g.drawImage(img, nw - c, nh - c, c, c, w - cs, h - cs, cs, cs); // BR
-  const mw = w - 2 * cs;
-  const mh = h - 2 * cs;
+  g.drawImage(img, 0, 0, c, c, 0, 0, CSd, CSd); // TL
+  g.drawImage(img, nw - c, 0, c, c, W - CSd, 0, CSd, CSd); // TR
+  g.drawImage(img, 0, nh - c, c, c, 0, H - CSd, CSd, CSd); // BL
+  g.drawImage(img, nw - c, nh - c, c, c, W - CSd, H - CSd, CSd, CSd); // BR
+  const mw = W - 2 * CSd;
+  const mh = H - 2 * CSd;
   if (mw > 0) {
-    g.drawImage(img, mx, 0, 1, c, cs, 0, mw, cs); // top
-    g.drawImage(img, mx, nh - c, 1, c, cs, h - cs, mw, cs); // bottom
+    g.drawImage(img, mx, 0, 1, c, CSd, 0, mw, CSd); // top
+    g.drawImage(img, mx, nh - c, 1, c, CSd, H - CSd, mw, CSd); // bottom
   }
   if (mh > 0) {
-    g.drawImage(img, 0, my, c, 1, 0, cs, cs, mh); // left
-    g.drawImage(img, nw - c, my, c, 1, w - cs, cs, cs, mh); // right
+    g.drawImage(img, 0, my, c, 1, 0, CSd, CSd, mh); // left
+    g.drawImage(img, nw - c, my, c, 1, W - CSd, CSd, CSd, mh); // right
   }
-  if (mw > 0 && mh > 0) g.drawImage(img, mx, my, 1, 1, cs, cs, mw, mh); // centre
+  if (mw > 0 && mh > 0) g.drawImage(img, mx, my, 1, 1, CSd, CSd, mw, mh); // centre
   const url = cv.toDataURL();
   cache.set(key, url);
   return url;
@@ -117,7 +129,12 @@ function injectPlateCss() {
   if (plateCssInjected) return;
   plateCssInjected = true;
   const s = document.createElement("style");
-  s.textContent = `[data-plate].press>*{translate:0 calc(var(--ml-kitpx,5px) / 2)}`;
+  // Every plate's composed image fills its box exactly (it is baked to the
+  // element's size); pin background-size so a DEVICE-resolution bake — bigger
+  // than the CSS box — still fits instead of tiling/overflowing.
+  s.textContent =
+    `[data-plate]{background-size:100% 100%;background-repeat:no-repeat}` +
+    `[data-plate].press>*{translate:0 calc(var(--ml-kitpx,5px) / 2)}`;
   document.head.appendChild(s);
 }
 
