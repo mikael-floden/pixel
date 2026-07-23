@@ -54,6 +54,7 @@ live example):
 |---|---|---|---|---|
 | [`poring/`](poring/) | object — "The round Poring blob from Ragnarök Online" | 48×48, low top-down | `jump`, `attack` (8 dirs × 16 frames each) | `walk` → `jump` |
 | [`lava_poring/`](lava_poring/) | object — the poring "but in black and lava" | 48×48, low top-down | `jump`, `attack` (with flames; 8 dirs × 6 frames each) | `walk` → `jump` |
+| [`ice_poring/`](ice_poring/) | object — the poring "but in ice" | 48×48, low top-down | `jump` (8 dirs × 16 frames), `attack` (magic ice; 8 dirs × 6 frames) | `walk` → `jump` |
 
 ## Tooling
 

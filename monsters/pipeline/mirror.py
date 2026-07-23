@@ -205,9 +205,12 @@ def _exists(rel):
 
 # --- mirror one monster ------------------------------------------------------
 
-def mirror(client, mid, kind, pixellab_id, aliases=None, name=None):
+def mirror(client, mid, kind, pixellab_id, aliases=None, name=None, renames=None):
     """Pull rotations + all animations for one monster from PixelLab into
-    monsters/<mid>/ and write its manifest. Idempotent + change-detected."""
+    monsters/<mid>/ and write its manifest. Idempotent + change-detected.
+    `renames` maps auto-derived animation keys to canonical ones (e.g.
+    {'jumping': 'jump'}) so keys stay uniform across the catalog; it is
+    persisted in the manifest so `--all` re-mirrors keep the same keys."""
     detail = client.get_source(kind, pixellab_id)
     size = detail.get("size") or {}
     w = int(size.get("width", 64)) if isinstance(size, dict) else int(size or 64)
@@ -233,10 +236,11 @@ def mirror(client, mid, kind, pixellab_id, aliases=None, name=None):
     # animations (change-detected via If-Modified-Since)
     groups = _best_groups(detail)
     keys = _short_keys(groups)
+    renames = renames if renames is not None else (prev.get("animation_renames") or {})
     prev_anims = prev.get("animations") or {}
     anims = {}
     for raw, g in groups.items():
-        key = keys[raw]
+        key = renames.get(keys[raw], keys[raw])
         prev_dirs = (prev_anims.get(key) or {}).get("directions") or {}
         saved = {}
         for direction, urls in sorted(g["dirs"].items()):
@@ -287,6 +291,7 @@ def mirror(client, mid, kind, pixellab_id, aliases=None, name=None):
         # walk animation should play this monster's jump frames.
         "animation_aliases": aliases if aliases is not None
                              else (prev.get("animation_aliases") or {}),
+        "animation_renames": renames,
         "synced_from_pixellab": True,
     }
     write_manifest(mid, meta)
@@ -314,6 +319,8 @@ def main():
     ap.add_argument("--name", help="display name for the manifest")
     ap.add_argument("--alias", action="append", metavar="GAME_KEY=REAL_KEY",
                     help="animation alias, e.g. walk=jump (repeatable)")
+    ap.add_argument("--rename", action="append", metavar="AUTO_KEY=CANON_KEY",
+                    help="rename an auto-derived animation key, e.g. jumping=jump (repeatable)")
     ap.add_argument("--all", action="store_true", help="re-mirror every tracked monster instead")
     args = ap.parse_args()
 
@@ -333,7 +340,8 @@ def main():
         mid = _slug(d.get("name") or d.get("prompt") or d.get("description")) or args.pixellab_id[:8]
     print(f"mirror {mid} ({args.kind} {args.pixellab_id})")
     meta = mirror(client, mid, args.kind, args.pixellab_id,
-                  aliases=_parse_aliases(args.alias), name=detail_name)
+                  aliases=_parse_aliases(args.alias), name=detail_name,
+                  renames=_parse_aliases(args.rename) if args.rename else None)
     n_anim = len(meta["animations"])
     n_dirs = {k: len(v["directions"]) for k, v in meta["animations"].items()}
     print(f"done: {len(meta['rotations'])} rotations, {n_anim} animation(s) {n_dirs}, "

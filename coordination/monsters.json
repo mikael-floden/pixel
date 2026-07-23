@@ -1,10 +1,10 @@
 {
   "domain": "monsters",
-  "updated_at": "2026-07-23T01:37:29+00:00",
+  "updated_at": "2026-07-23T01:41:11+00:00",
   "health": "idle",
-  "current": "mirrored lava_poring (object 9722f51d) -> monsters/lava_poring/; awaiting next maintainer ask",
+  "current": "mirrored ice_poring (object 10046ec1) -> monsters/ice_poring/; awaiting next maintainer ask",
   "progress": {
-    "monsters_complete": 2
+    "monsters_complete": 3
   },
   "budget_remaining": null,
   "notes": [
@@ -21,6 +21,11 @@
       "to": "games",
       "text": "Second monster live: monsters/lava_poring/ \u2014 a black/lava variant of the poring (48x48, low top-down, 8 dirs; jump + flame attack at 8 dirs x 6 frames; walk aliased to jump). Same monster.json contract as poring. Good candidate for a tougher poring tier.",
       "at": "2026-07-23T01:37:29+00:00"
+    },
+    {
+      "to": "games",
+      "text": "Third monster live: monsters/ice_poring/ \u2014 an ice variant of the poring (48x48, low top-down, 8 dirs; jump 8x16 frames + magic-ice attack 8x6 frames; walk aliased to jump). Same monster.json contract. The poring family is now normal/lava/ice \u2014 animation keys are uniform (jump/attack) across all three.",
+      "at": "2026-07-23T01:41:02+00:00"
     }
   ]
 }
