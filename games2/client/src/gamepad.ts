@@ -66,9 +66,9 @@ const RAISE_ART = 8;
 // the jump button rides this far below the stick midline ("move the jump
 // button a bit down", 2026-07-23) — art px, scales with k
 const JUMP_DROP_ART = 8;
-// the JUMP/WALK labels ride this far above the cap top ("a bit higher up",
-// 2026-07-23) — art px, scales with k
-const LABEL_LIFT_ART = 6;
+// the JUMP/WALK labels ride this far above the cap top (raised twice on
+// 2026-07-23, "a bit higher up" then "again a bit higher") — art px, k-scaled
+const LABEL_LIFT_ART = 14;
 const DEAD_FRAC = 0.35; // of the max: inside this, all keys are up
 const RUN_FRAC = 0.75; // of the max: past this amplitude the gait is RUN (Shift), else walk
 const SNAP_MS = 80; // the fast (not instant) glide between snap positions
