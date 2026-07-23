@@ -60,6 +60,9 @@ const TRAVEL = 9;
 // margin above and below)
 const CAP_TOP_ART = 10;
 const BASE_BOT_ART = 120;
+// lift the whole assembly off dead-centre ("put the entire controller a
+// little bit higher up", 2026-07-23) — art px, scales with k
+const RAISE_ART = 8;
 const DEAD_FRAC = 0.35; // of the max: inside this, all keys are up
 const RUN_FRAC = 0.75; // of the max: past this amplitude the gait is RUN (Shift), else walk
 const SNAP_MS = 80; // the fast (not instant) glide between snap positions
@@ -154,7 +157,7 @@ export function mountGamepadStick(page: HTMLElement) {
     const padBot = parseFloat(cs.paddingBottom) || 0;
     const visH = page.clientHeight - padTop - padBot;
     const centreArt = (CAP_TOP_ART + REST_ART + BASE_BOT_ART) / 2;
-    pad.style.top = `${Math.round(padTop + visH * 0.5 - centreArt * k)}px`;
+    pad.style.top = `${Math.round(padTop + visH * 0.5 - (centreArt + RAISE_ART) * k)}px`;
     setCap(visSector, visRadius); // re-derive the k-scaled transform
   };
   layout();
