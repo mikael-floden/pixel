@@ -113,6 +113,19 @@ Consequences to honour:
   - **Fewer stripes**: lips within 2 of sand/water (the coastline marks the drop — rims by
     the beach stay grass) or beside a dirt road (a contrasting line on the edge) are
     legible and never striped; stripes are wall materials only, never local-ground reuse.
+  - **No FALL-IN WELLS** (`_fill_water_traps`, maintainer 2026-07-23 "a hole you fall down
+    in and get stuck"): a non-ocean water pocket with NO swim-out — no shore within 1 level
+    of its surface — is filled to its low rim. Runs AFTER the guarantee loop (that loop's
+    antitone raises can seal a lagoon's walk-in shore into a well, so the swim-out test is
+    only meaningful once levels are final); the designed gorge (`_gorge_cells`) is exempt.
+  - **No THIN TOWERS** (`_deprickle` + `_dechunk_maze`, maintainer 2026-07-23 "two hills
+    not wide/big enough and look weird"): a raised MAZE blob that is thin (bbox min-dim ≤ 2),
+    tall (stands ≥ 3) and small is dissolved flush to what it sits on — a whole mini-
+    Trollstigen at once if it is one, never a fragment (else the surviving legs lose their
+    inner wall). Runs BEFORE `_place_bridges` so no bridge bank ever depends on a dissolved
+    cell; bridge banks + the big mountain descent (>30-cell structures) are protected.
+    Both passes only LOWER/flush terrain, so occlusion stays clean without re-running
+    camera_monotone (which would nudge the sensitive gorge-bridge banks).
   - `_material_slivers` (the detector) must be EMPTY at build time — `_fix_material_slivers`
     repairs stragglers by flipping them to the dominant adjacent terrain (never to dirt,
     never to stone at the shore) in a joint fixpoint with `_lip_cover`.

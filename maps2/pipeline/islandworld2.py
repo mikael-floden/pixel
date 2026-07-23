@@ -110,6 +110,9 @@ TROLL_WLEG = (3, 2)
 TROLL_QMAX, TROLL_QMIN = 44, 14
 TROLL_QMIN_MINI = 7
 TROLL_PADQ = 4
+# A raised maze pocket smaller than this is DISSOLVED flush (not ramped): a mini on a
+# tiny pocket reads as a weird thin pillar (maintainer 2026-07-23 "not wide/big enough").
+TROLL_MIN_BASE = 16
 # The maintainer's chosen window for the PRIMARY Trollstigen (blue marks, 2026-07-22
 # screenshots): the bench-20/24 south face x~63-89 west of the toe lake. Island fracs,
 # same convention as GORGE_BRIDGE_FRACS; the nearest foot candidate within
@@ -197,6 +200,7 @@ class Island2(Island):
         self._relief()                    # big maze tiers {0,4,12} + a lake
         self._rooms()                     # snap the maze into flat chambers
         self._majority()                  # despeckle the maze level field
+        self._dechunk_maze()              # dissolve thin/tiny raised relief -> broad hills only
         flatten_shores(self.mat, self.level)
         self._maze_river()                # raised-valley river (AFTER shores so banks stay tier 4)
         camera_monotone_masked(self.level, self.mat, self.upper)   # mountain antitone ONLY
@@ -207,6 +211,9 @@ class Island2(Island):
         self._mountain_stairs()           # a few TIDY full-height ROCK ascents; rest sheer cliff
         self._connect_all(thresh=5)       # reuse: rock connectors + span the gorge -> one piece
         self._ford_stranded()
+        self._deprickle()                 # dissolve thin maze TOWERS before river bridges are
+                                          # placed, so no bridge bank ever depends on a cell
+                                          # this later removes (maintainer: "not wide/big enough")
         self._place_bridges()             # maze-river crossings at the maintainer's 5 sites
         self._beach_access()              # no dead-end shores: slope tongues up from stranded beaches
         for _ in range(10):               # guarantee loop -> converge to no pit AND no lip
@@ -215,6 +222,14 @@ class Island2(Island):
             self._lip_cover()
             if self._trap_count() == 0 and not self._bad_lips():
                 break
+        # AFTER the loop: fill fall-in wells (a lake whose walk-in shore the loop raised into
+        # a wall). Filling only raises water to its rim (flush) — no toward-camera up-step —
+        # so occlusion stays clean without re-running camera_monotone (which nudges the
+        # sensitive gorge-bridge banks). A second dechunk catches any tower the loop reshaped.
+        self._fill_water_traps()
+        self._deprickle()
+        self._fill_traps()
+        self._lip_cover()
         self._ponds()                     # flush multi-level lakes (before spawn -> post-pond main)
         self._sunken_lagoon()             # a walk-in lagoon sunk 2 levels (transactional)
         self._pick_spawn()
@@ -422,6 +437,221 @@ class Island2(Island):
                                 vals.append(int(lv[yy, xx]))
                     if vals:
                         self.level[y, x] = Counter(vals).most_common(1)[0][0]
+
+    def _fill_water_traps(self):
+        """NO FALL-IN WELLS (maintainer 2026-07-23: "a hole you fall down in and get
+        stuck"). A water pocket that (a) does NOT reach the ocean and (b) has NO swim-out
+        — no shore cell where the surrounding land sits within 1 level of the water surface
+        — is a trap: you fall off a rim into deep water walled by tall cliffs and can never
+        climb out. Every such pocket is FILLED to the lowest surrounding land level (its
+        dominant material), erasing the well. Designed walk-in lagoons/ponds are exempt by
+        construction — their rim sits at water+1, an exit. Ocean-connected water is exempt.
+        Runs before _materials so filled cells become ordinary terrain."""
+        n = self.n
+        filled = False
+        water = (self.mat == "clear_water")
+        border = np.zeros((n, n), bool)
+        border[0, :] = border[-1, :] = border[:, 0] = border[:, -1] = True
+        # ocean = water reachable from the map border (flood over water only)
+        ocean = set()
+        st = [(x, y) for y in range(n) for x in range(n) if water[y, x] and border[y, x]]
+        st = [c for c in st]
+        seen = set(st)
+        while st:
+            x, y = st.pop()
+            ocean.add((x, y))
+            for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                xx, yy = x + i, y + j
+                if (0 <= xx < n and 0 <= yy < n and water[yy, xx] and (xx, yy) not in seen):
+                    seen.add((xx, yy))
+                    st.append((xx, yy))
+        done = set(ocean)
+        for y in range(n):
+            for x in range(n):
+                if not water[y, x] or (x, y) in done:
+                    continue
+                comp, st = set(), [(x, y)]
+                while st:
+                    p = st.pop()
+                    if p in comp:
+                        continue
+                    comp.add(p)
+                    done.add(p)
+                    for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                        q = (p[0] + i, p[1] + j)
+                        if (0 <= q[0] < n and 0 <= q[1] < n and water[q[1], q[0]]
+                                and q not in comp):
+                            st.append(q)
+                if comp & self._gorge_cells:
+                    continue                        # the designed waterway is never a "trap"
+                surf = int(self.level[y, x])
+                rim = []
+                for (cx, cy) in comp:
+                    for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                        rx, ry = cx + i, cy + j
+                        if (0 <= rx < n and 0 <= ry < n
+                                and self.mat[ry, rx] not in ("", "clear_water")):
+                            rim.append((int(self.level[ry, rx]), self.mat[ry, rx]))
+                if not rim:
+                    continue
+                if any(lv - surf <= 1 for lv, _ in rim):
+                    continue                        # has a swim-out shore: a real lagoon
+                floor = min(lv for lv, _ in rim)     # dissolve the well up to its low rim
+                fillmat = Counter(m for lv, m in rim if lv == floor).most_common(1)[0][0]
+                for (cx, cy) in comp:
+                    self.level[cy, cx] = floor
+                    self.mat[cy, cx] = fillmat
+                    self.upper[cy, cx] = self.upper[cy, cx] or floor >= 14
+                filled = True
+        return filled
+
+    def _deprickle(self, max_cells=12, max_iter=6):
+        """DISSOLVE THIN TOWERS (maintainer 2026-07-23: "two hills that are not wide/big
+        enough and look weird"). After connectors are carved, a mini-Trollstigen forced
+        onto a small maze cliff can come out a 1-2-cell-wide column standing many levels —
+        a weird pillar, not a hill. Any raised MAZE blob (same level) that is thin
+        (bbox min-dim <= 2), tall (stands >= 3 over a lower land neighbour) and small
+        (<= max_cells) is lowered flush to the level it sits on. Runs after the guarantee
+        loop so it sees the final carved terrain; dissolved cells are stripped from all
+        Trollstigen/ascent bookkeeping (they are no longer a ramp). The re-run guarantee
+        loop re-flushes anything this strands. Restricted to the MAZE — the mountain's big
+        wall-hugging Trollstigens (upper zone, broad) are never touched."""
+        n = self.n
+        removed_any = False
+        # bridge banks must never be dissolved (they carry deck endpoints within +-1 level):
+        # every cell adjacent to a deck cell, plus every link endpoint.
+        bank_guard = set()
+        for dk in self.decks:
+            for (cx, cy) in dk["cells"]:
+                for i in (-1, 0, 1):
+                    for j in (-1, 0, 1):
+                        bank_guard.add((cx + i, cy + j))
+        for a, b in self.links:
+            bank_guard.add(a)
+            bank_guard.add(b)
+        for _ in range(max_iter):
+            # gate on the FIXED maze mask, not `not upper`: gorge carving clears `upper` on
+            # massif banks, and those must never be dissolved (they hold high bridge decks).
+            land = {(x, y) for y in range(n) for x in range(n)
+                    if self.maze[y, x] and self.mat[y, x] not in ("", "clear_water")}
+            seen, changed = set(), False
+            for c0 in sorted(land):
+                if c0 in seen:
+                    continue
+                L = int(self.level[c0[1], c0[0]])
+                comp, st = set(), [c0]
+                while st:
+                    p = st.pop()
+                    if p in comp:
+                        continue
+                    comp.add(p)
+                    seen.add(p)
+                    for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                        q = (p[0] + i, p[1] + j)
+                        if q in land and q not in comp and int(self.level[q[1], q[0]]) == L:
+                            st.append(q)
+                if len(comp) > max_cells or comp & bank_guard:
+                    continue
+                lowers = [int(self.level[b + j, a + i])
+                          for (a, b) in comp for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1))
+                          if (a + i, b + j) not in comp and 0 <= a + i < n and 0 <= b + j < n
+                          and self.mat[b + j, a + i] not in ("", "clear_water")
+                          and int(self.level[b + j, a + i]) < L]
+                if not lowers:
+                    continue
+                xs = [x for x, y in comp]
+                ys = [y for x, y in comp]
+                bbmin = min(max(xs) - min(xs) + 1, max(ys) - min(ys) + 1)
+                if bbmin > 2 or L - min(lowers) < 3:
+                    continue                        # broad or short: a real hill, keep it
+                # A thin tower that is part of a mini-Trollstigen must be removed WHOLE, else
+                # the surviving legs lose their inner wall (hug invariant). Grow the dissolve
+                # set over the full 8-connected _troll structure touching this blob.
+                dissolve = set(comp)
+                if comp & self._troll:
+                    stt = [c for c in comp if c in self._troll]
+                    while stt:
+                        p = stt.pop()
+                        for i in (-1, 0, 1):
+                            for j in (-1, 0, 1):
+                                q = (p[0] + i, p[1] + j)
+                                if (q in self._troll and q not in dissolve
+                                        and self.maze[q[1], q[0]]):
+                                    dissolve.add(q)
+                                    stt.append(q)
+                    if len(dissolve) > 30 or (dissolve & bank_guard):
+                        continue                    # too big / touches a bridge: leave it
+                floornb = [int(self.level[b + j, a + i])
+                           for (a, b) in dissolve for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1))
+                           if (a + i, b + j) not in dissolve and 0 <= a + i < n and 0 <= b + j < n
+                           and self.mat[b + j, a + i] not in ("", "clear_water")
+                           and int(self.level[b + j, a + i]) < L]
+                floor = max(floornb) if floornb else max(lowers)
+                for (x, y) in dissolve:
+                    self.level[y, x] = floor
+                    for s in (self._troll, self._troll_pads, self._troll_road,
+                              self._ascent, self.reserved):
+                        s.discard((x, y))
+                    self._troll_raw.pop((x, y), None)
+                    self._troll_floor.pop((x, y), None)
+                    self._troll_top.pop((x, y), None)
+                    self._troll_band.pop((x, y), None)
+                changed = removed_any = True
+            if not changed:
+                break
+        return removed_any
+
+    def _dechunk_maze(self, min_dim=3, min_area=12, max_iter=8):
+        """NO THIN/TINY RAISED RELIEF (maintainer 2026-07-23: "two hills that are not
+        wide/big enough and look weird"). A narrow tier finger or a few-cell nub renders
+        as a weird tower AND forces a thin pillar-shaped mini-Trollstigen when a connector
+        must climb it. So every RAISED same-level maze blob that stands >=2 above a land
+        neighbour must be CHUNKY: bbox min-dimension >= min_dim AND area >= min_area. Any
+        blob that fails is dissolved DOWN to the level it sits on (the highest strictly-
+        lower land neighbour), iterated to a fixpoint — leaving only broad, readable
+        hills that the mini-Trollstigen system then climbs as proper wide ramps."""
+        n = self.n
+        for _ in range(max_iter):
+            land = {(x, y) for y in range(n) for x in range(n)
+                    if self.maze[y, x] and self.mat[y, x] not in ("", "clear_water")}
+            seen, changed = set(), False
+            for c0 in sorted(land):
+                if c0 in seen:
+                    continue
+                L = int(self.level[c0[1], c0[0]])
+                comp, st = set(), [c0]
+                while st:
+                    p = st.pop()
+                    if p in comp:
+                        continue
+                    comp.add(p)
+                    seen.add(p)
+                    for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                        q = (p[0] + i, p[1] + j)
+                        if q in land and q not in comp and int(self.level[q[1], q[0]]) == L:
+                            st.append(q)
+                lowers = []
+                for (x, y) in comp:
+                    for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                        xx, yy = x + i, y + j
+                        if ((xx, yy) not in comp and 0 <= xx < n and 0 <= yy < n
+                                and self.mat[yy, xx] not in ("", "clear_water")):
+                            lv = int(self.level[yy, xx])
+                            if lv < L:
+                                lowers.append(lv)
+                if not lowers:
+                    continue                        # sits on nothing lower: not a raised blob
+                xs = [x for x, y in comp]
+                ys = [y for x, y in comp]
+                bbmin = min(max(xs) - min(xs) + 1, max(ys) - min(ys) + 1)
+                if bbmin >= min_dim and len(comp) >= min_area:
+                    continue                        # broad enough: a real hill, keep it
+                floor = max(lowers)                 # dissolve down onto what it sits on
+                for (x, y) in comp:
+                    self.level[y, x] = floor
+                changed = True
+            if not changed:
+                break
 
     # -- occlusion legality for the maze ---------------------------------------
 
@@ -993,12 +1223,18 @@ class Island2(Island):
         2026-07-23: "this was your goal — remove the need for a traditional staircase";
         the zigzag system is THE way up every elevation, maze tiers included). For each
         candidate edge, carve a mini from the HIGH rim down to the LOW side's exact floor.
-        The straight _carve_connector survives only as a counted last resort — and the
-        build asserts the count stays ZERO, so a resistant pocket fails loudly instead of
-        shipping a staircase."""
+
+        SIZE GATE (maintainer 2026-07-23: "two hills that are not wide/big enough and look
+        weird"): a mini on a SMALL raised pocket comes out a thin pillar. So a pocket
+        smaller than TROLL_MIN_BASE cells is NOT ramped here — it is left for the
+        guarantee loop's _fill_traps to DISSOLVE flush (lower/raise to its main
+        neighbour), which reads as ground, not a tower. Only broad mesas get a mini.
+        The straight _carve_connector survives only as a counted last resort."""
         edges = []
         n = self.n
         for cand in cands:
+            if len(cand) < TROLL_MIN_BASE:
+                continue                     # small pocket: fill_traps dissolves it flush
             for (cx, cy) in cand:
                 for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
                     mx, my = cx + i, cy + j
