@@ -44,6 +44,12 @@ const HAND = { w: 45, h: 163, hubX: 23, hubY: 18, baseDeg: 0 };
 // The wheel asset: centre EXACTLY at the canvas middle (bake-clock360.py),
 // art px — multiplied by the frame scale at mount time.
 const WHEEL = { w: 365, h: 353, cx: 182.5, cy: 176.5 };
+// shrink the whole clock (wheel AND hand) about the shared pivot so it gets
+// left/right breathing room from the frame's top-rail rune tablets
+// (maintainer 2026-07-23: "not enough left/right margin between frame and
+// clock"). Scaling about the pivot keeps the wheel-centre = hand-ring = flip
+// origin identity, so alignment and the 180° hand-off are unchanged.
+const CLOCK_SCALE = 0.83;
 const CLIP_Y = 60; // frame art row: the layer shows nothing above this
 const FADE_S = 2.5; // keep in step with WorldScene's TIME_TRANSITION_S
 const NIGHT_IDX = 0; // TIME_PHASES[0] = Night (odd flips = night face down)
@@ -78,9 +84,10 @@ export function setClockMount(x: number, y: number, s: number) {
 
 function applyMount() {
   if (!root || !hand || !wheelImg || !mountPt.has) return;
-  const { x, y, s } = mountPt;
+  const { x, y } = mountPt;
+  const s = mountPt.s * CLOCK_SCALE; // shrink about the pivot (x,y)
   // nothing of the wheel or hand may show above the beam band
-  root.style.clipPath = `inset(${CLIP_Y * s}px 0 0 0)`;
+  root.style.clipPath = `inset(${CLIP_Y * mountPt.s}px 0 0 0)`;
   wheelImg.style.width = `${WHEEL.w * s}px`;
   wheelImg.style.left = `${x - WHEEL.cx * s}px`;
   wheelImg.style.top = `${y - WHEEL.cy * s}px`;
