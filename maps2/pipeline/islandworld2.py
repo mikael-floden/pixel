@@ -1118,53 +1118,93 @@ class Island2(Island):
         return out
 
 
-    def _beach_access(self, maxd=30):
-        """NO DEAD-END SHORES (maintainer 2026-07-23: "you can't walk up from the beach"):
-        every stretch of beach must reach interior ground without a long detour. Multi-
-        source BFS over the sand from every existing up-exit (a step of <=1 level onto
-        walkable non-sand land); every stranded cluster (all cells farther than `maxd`)
-        gets ONE graded TONGUE -- a 2-wide slope notch cut INTO the adjacent shelf,
-        stepping 1 level per cell inward (up-screen only, so every face stays visible),
-        keeping the shelf's local ground. No sand is ever raised; no staircase drawn."""
+    def _beach_access(self, maxd=30, rounds=6):
+        """NO LOW-GROUND DEAD ZONES (maintainer 2026-07-23, twice: "you can't walk up the
+        spot I highlighted" — the first cut measured distance to ANY non-sand land, and a
+        flat step onto a walled-in level-0 plain satisfied it). The real metric: every
+        walkable LOW cell (level <= 1, sand or grass) must be within `maxd` walk-cells
+        (4-conn, |dlevel|<=1, no water) of ELEVATED ground (level >= 2). Iterate: BFS from
+        all elevated cells; cluster the stranded low cells; carve ONE graded tongue per
+        cluster (farthest cell first, then nearer candidates); repeat until clean or no
+        tongue fits. Tongues cut INTO the bordering shelf, 1 level per cell, up-screen
+        only (faces visible), local ground; no sand raised, no staircase drawn."""
         n = self.n
-        sand = self.mat == "light_sand"
-        cells = [(x, y) for y in range(n) for x in range(n) if sand[y, x]]
-        sandset = set(cells)
-        dist, q = {}, deque()
-        for (x, y) in cells:
-            for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-                xx, yy = x + i, y + j
-                if (0 <= xx < n and 0 <= yy < n and not sand[yy, xx]
-                        and self.mat[yy, xx] not in ("", "clear_water")
-                        and abs(int(self.level[yy, xx]) - int(self.level[y, x])) <= 1):
+        for _ in range(rounds):
+            walk = [(x, y) for y in range(n) for x in range(n)
+                    if self.mat[y, x] not in ("", "clear_water")]
+            wset = set(walk)
+            dist, q = {}, deque()
+            for (x, y) in walk:
+                if int(self.level[y, x]) >= 2:
                     dist[(x, y)] = 0
                     q.append((x, y))
-                    break
-        while q:
-            x, y = q.popleft()
-            for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-                c = (x + i, y + j)
-                if (c in sandset and c not in dist
-                        and abs(int(self.level[y, x]) - int(self.level[c[1], c[0]])) <= 1):
-                    dist[c] = dist[(x, y)] + 1
-                    q.append(c)
-        far = lambda c: dist.get(c, 10 ** 9) > maxd
-        seen = set()
-        for c0 in sorted((c for c in cells if far(c)), key=lambda c: -dist.get(c, 10 ** 9)):
-            if c0 in seen:
-                continue
-            comp, st = {c0}, [c0]
-            while st:
-                px, py = st.pop()
-                seen.add((px, py))
+            while q:
+                x, y = q.popleft()
                 for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-                    cc = (px + i, py + j)
-                    if cc in sandset and cc not in seen and far(cc):
-                        comp.add(cc)
-                        st.append(cc)
-            for (sx, sy) in sorted(comp, key=lambda c: -dist.get(c, 10 ** 9)):
-                if self._carve_tongue(sx, sy):
-                    break
+                    c = (x + i, y + j)
+                    if (c in wset and c not in dist
+                            and abs(int(self.level[y, x])
+                                    - int(self.level[c[1], c[0]])) <= 1):
+                        dist[c] = dist[(x, y)] + 1
+                        q.append(c)
+            far = lambda c: dist.get(c, 10 ** 9) > maxd
+
+            def at_wall(c):
+                # only cells that can SEE an unclimbable ledge count as trapped —
+                # being mid-plain far from any hill is ordinary walking, not a trap
+                x0, y0 = c
+                for jj in (-2, -1, 0, 1, 2):
+                    for ii in (-2, -1, 0, 1, 2):
+                        xx, yy = x0 + ii, y0 + jj
+                        if (0 <= xx < n and 0 <= yy < n
+                                and self.mat[yy, xx] not in ("", "clear_water")
+                                and int(self.level[yy, xx])
+                                    - int(self.level[y0, x0]) >= 2):
+                            return True
+                return False
+            stranded = [c for c in walk if int(self.level[c[1], c[0]]) <= 1
+                        and far(c) and at_wall(c)]
+            if not stranded:
+                return
+            carved_any = False
+            seen = set()
+            for c0 in sorted(stranded, key=lambda c: -dist.get(c, 10 ** 9)):
+                if c0 in seen:
+                    continue
+                comp, st = {c0}, [c0]
+                while st:
+                    px, py = st.pop()
+                    seen.add((px, py))
+                    for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                        cc = (px + i, py + j)
+                        if cc in wset and cc not in seen and far(cc):
+                            comp.add(cc)
+                            st.append(cc)
+                carved = False
+                for (sx, sy) in sorted(comp, key=lambda c: -dist.get(c, 10 ** 9)):
+                    if self._carve_tongue(sx, sy):
+                        carved = carved_any = True
+                        break
+                if not carved:
+                    # no in-cluster wall is tongue-legal (hidden faces) — a tongue NEAR
+                    # the cluster still shortens its way up: ring-expand over low ground
+                    seenr = set(comp)
+                    dq2 = deque((c, 0) for c in comp)
+                    while dq2:
+                        (cx3, cy3), dd = dq2.popleft()
+                        if dd and self._carve_tongue(cx3, cy3):
+                            carved_any = True
+                            break
+                        if dd >= 15:
+                            continue
+                        for i3, j3 in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                            cc = (cx3 + i3, cy3 + j3)
+                            if (cc in wset and cc not in seenr
+                                    and int(self.level[cc[1], cc[0]]) <= 1):
+                                seenr.add(cc)
+                                dq2.append((cc, dd + 1))
+            if not carved_any:
+                break
 
     def _carve_tongue(self, sx, sy):
         n = self.n
@@ -2370,6 +2410,37 @@ def build(out=None, seed=21, M=24):
         f"traditional staircase cells remain ({len(straight)}): {sorted(straight)[:5]}"
     assert d._troll_fallbacks == 0, \
         f"{d._troll_fallbacks} straight-connector fallback(s) used"
+
+    # NO LOW-GROUND DEAD ZONES (maintainer 2026-07-23): standing at an unclimbable ledge
+    # (a >=2 wall within Chebyshev 2), elevated ground must be reachable within 30 cells.
+    from collections import deque as _dq
+    wset2 = {(x, y) for y in range(n) for x in range(n)
+             if d.mat[y, x] not in ("", "clear_water")}
+    dist2, q2 = {}, _dq()
+    for (x, y) in wset2:
+        if int(d.level[y, x]) >= 2:
+            dist2[(x, y)] = 0
+            q2.append((x, y))
+    while q2:
+        x, y = q2.popleft()
+        for i2, j2 in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            c2 = (x + i2, y + j2)
+            if (c2 in wset2 and c2 not in dist2
+                    and abs(int(d.level[y, x]) - int(d.level[c2[1], c2[0]])) <= 1):
+                dist2[c2] = dist2[(x, y)] + 1
+                q2.append(c2)
+    dead = []
+    for (x, y) in wset2:
+        if int(d.level[y, x]) > 1 or dist2.get((x, y), 10 ** 9) <= 30:
+            continue
+        if (x, y) not in dist2:
+            continue                       # water-locked islet: unreachable by design
+        if any(0 <= x + i2 < n and 0 <= y + j2 < n
+               and d.mat[y + j2, x + i2] not in ("", "clear_water")
+               and int(d.level[y + j2, x + i2]) - int(d.level[y, x]) >= 2
+               for i2 in (-2, -1, 0, 1, 2) for j2 in (-2, -1, 0, 1, 2)):
+            dead.append((x, y))
+    assert not dead, f"low-ground dead zone at a wall ({len(dead)}): {dead[:5]}"
 
     print(f"the_island2 {n}x{n} (M={M}): {len(d.props)} props; max level {int(d.level.max())}; "
           f"switchbacks {d._nswitch}/{STAIR_CORRIDORS} corr; ascent {len(d._ascent)}; road {len(d.roads)}")
