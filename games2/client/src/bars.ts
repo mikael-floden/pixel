@@ -19,15 +19,15 @@
 
 import { applyUiZoom } from "./uiscale";
 
-const ART_W = 90; // crisp UI-kit bar (client/ui-src/uikit.png), native px
+const ART_W = 86; // crisp UI-kit bar, narrowed by bake-bars.py (interior trim)
 const ART_H = 20;
 const SCALE = 3; // integer nearest-neighbour render scale
 const NUM_PX = 22; // number font size, DESIGN px (decoupled from art scale)
 // top-left anchor + row gap, DESIGN px (tuned on the maintainer's phone view).
 // LEFT clears the frame's left vine rail (maintainer 2026-07-23: the bars were
 // drawn OVER the frame); GAP separates the two bar+number groups.
-const LEFT = 88;
-const TOP = 146;
+const LEFT = 90;
+const TOP = 108;
 const GAP = 14;
 
 type Kind = "hp" | "mp";
