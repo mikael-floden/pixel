@@ -27,10 +27,15 @@ const SRC: Record<PlateKind, string> = {
   slot: "/ui2/kit-slot.png", // the empty item slot — an "empty button" square
 };
 
-// ONE art-pixel block size for every kit graphic (maintainer: slots had
-// bigger pixels than buttons — "should be same when you use UI-kit
-// graphics"). Small boxes (compact mode) drop to whatever fits.
-const KIT_PX = 5;
+// ONE art-pixel block size (CSS px) for every kit graphic — the plate art is
+// low-res (extract-uikit downscales the 2x-grid sheet to 48x12 / 16x14), so
+// this is the render block scale. Dropped 5 -> 2 so the kit graphics stop
+// reading ~2x bigger than the high-res icons (maintainer 2026-07-23: "the
+// UI-kit pixels look ~2x as big ... make all graphics from UI-kit half the
+// current pixel size, while still drawing the button area the same size" — the
+// box size is set by layout, only the block scale changes). Small boxes drop
+// to whatever fits.
+const KIT_PX = 2;
 
 // native corner slice: covers the rounding + ring/outline of every plate
 const CS = 4;
@@ -134,7 +139,7 @@ function injectPlateCss() {
   // than the CSS box — still fits instead of tiling/overflowing.
   s.textContent =
     `[data-plate]{background-size:100% 100%;background-repeat:no-repeat}` +
-    `[data-plate].press>*{translate:0 calc(var(--ml-kitpx,5px) / 2)}`;
+    `[data-plate].press>*{translate:0 calc(var(--ml-kitpx,2px) / 2)}`;
   document.head.appendChild(s);
 }
 
