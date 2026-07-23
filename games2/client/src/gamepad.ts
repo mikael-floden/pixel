@@ -26,9 +26,9 @@
  *    should not be instant, but have a fast animation". The finger keeps
  *    steering at ANY distance past the travel radius without losing input
  *    (setPointerCapture keeps the drag alive far outside the well).
- *  - The art is AUTHORED IN THE REST POSE (cap seated on its shaft): a
- *    centered stick draws both tiles untransformed; deflections slide the
- *    cap off and reveal the AI-completed rim and shaft top beneath.
+ *  - At rest the cap rides REST_ART below its authored pose — seated
+ *    close to the socket with a hint of shaft ("put the top lower");
+ *    deflections slide it off and reveal the AI-completed rim beneath.
  *  - Dead zone around the centre releases all keys (rest = no input).
  *
  * Pixel art renders nearest-neighbour at INTEGER factors: 2x at >=585 css
@@ -40,17 +40,21 @@
 
 import { gameAudio } from "../../composer/index";
 
-// The SECOND-GEN art (2026-07-23): authored at true 1x for the thumb —
-// 128x128 canvas, cap tile + socket tile (shaft stays with the socket, his
-// red-line cut; the AI-filled rim/shaft-top hides behind the cap at rest).
-// Drawn IN THE REST POSE, so the cap needs no seating offset at all.
+// The SECOND-GEN art (2026-07-23): 128x128 canvas, cap tile + socket tile
+// (shaft stays with the socket, his red-line cut; the AI-filled
+// rim/shaft-top hides behind the cap). Authored with the cap raised on the
+// shaft; in-game it rides REST_ART lower.
 const CANVAS = 128; // the art canvas (both pngs)
-const CX = 64; // the cap's rest centre, art px — the finger's neutral point
-const CY = 39;
+const CX = 64; // the SEATED cap's centre, art px — the finger's neutral point
+const CY = 49;
+// the cap sits REST_ART below its authored pose ("put the top lower,
+// closer to the bottom graphic", 2026-07-23) — a hint of shaft stays
+// visible; deflections carry the seat with them
+const REST_ART = 10;
 // full-gate travel in FEEL-TIER units: css travel = TRAVEL * feelK, where
-// feelK is the ORIGINAL 4/3/2 stepping — the gameplay contract that has
-// survived both art swaps unchanged
-const TRAVEL = 14;
+// feelK is the ORIGINAL 4/3/2 stepping. Trimmed 14 -> 11 (same round:
+// "make the radius max distance offset a little smaller")
+const TRAVEL = 11;
 // the assembly's VISIBLE vertical span at rest (cap top … base bottom), used
 // to centre the whole stick in the page (maintainer's red line: equal
 // margin above and below)
@@ -120,8 +124,7 @@ export function mountGamepadStick(page: HTMLElement) {
     const a = (sector * Math.PI) / 4;
     const dx = sector < 0 ? 0 : Math.cos(a) * visRadius * k;
     const dy = sector < 0 ? 0 : Math.sin(a) * visRadius * k;
-    // authored at rest — no seating offset, deflection is the whole story
-    top.style.transform = `translate(${dx}px, ${dy}px)`;
+    top.style.transform = `translate(${dx}px, ${REST_ART * k + dy}px)`;
   };
   const layout = () => {
     // FEEL tier: the original scale stepping — anchors the css travel
@@ -144,7 +147,7 @@ export function mountGamepadStick(page: HTMLElement) {
     const padTop = parseFloat(cs.paddingTop) || 0;
     const padBot = parseFloat(cs.paddingBottom) || 0;
     const visH = page.clientHeight - padTop - padBot;
-    const centreArt = (CAP_TOP_ART + BASE_BOT_ART) / 2;
+    const centreArt = (CAP_TOP_ART + REST_ART + BASE_BOT_ART) / 2;
     pad.style.top = `${Math.round(padTop + visH * 0.5 - centreArt * k)}px`;
     setCap(visSector, visRadius); // re-derive the k-scaled transform
   };

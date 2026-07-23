@@ -51,15 +51,14 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     const pad = document.querySelector(".ml-pad-stick");
     if (!pad) return null;
     const r = pad.getBoundingClientRect();
-    const k = Math.round(r.width / 128); // 2nd-gen art: 128 canvas, true 1x
-    return { cx: r.left + 64 * k, cy: r.top + 39 * k, k, w: r.width };
+    const k = Math.round(r.width / 128); // 2nd-gen art: 128 canvas
+    return { cx: r.left + 64 * k, cy: r.top + 49 * k, k, w: r.width };
   });
   if (!geom) { fail("stick not mounted"); }
   else {
-    // LOOK vs FEEL split (2026-07-23): at 480 wide the FEEL tier is the old
-    // k=2 (travel 28 css px, dead 9.8, run 21) but the ART renders at k=1 —
-    // half the pixels, same distances under the finger.
-    const travel = 28;
+    // FEEL tier at 480 wide = 2 -> travel 22 css px (TRAVEL 11, the
+    // "a little smaller" round), dead 7.7, run 16.5; ART renders k=1.
+    const travel = 22;
     geom.k === 1
       ? ok(`stick mounted k=${geom.k} (true 1x art) centre=(${geom.cx.toFixed(0)},${geom.cy.toFixed(0)})`)
       : fail(`stick art k=${geom.k}, want 1`);
@@ -85,11 +84,11 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     if (!m) fail(`no snap transform (${tf})`);
     else {
       const [dx, dy] = [+m[1], +m[2]];
-      // full gate = the FEEL tier's css travel; the 2nd-gen art is
-      // authored at rest, so the cap carries NO seating offset
-      const wantX = travel, wantY = 0;
+      // full gate = the FEEL tier's css travel; the cap carries its
+      // REST seat (10 art px) on y
+      const wantX = travel, wantY = 10 * geom.k;
       Math.abs(dx - wantX) < 1 && Math.abs(dy - wantY) < 1
-        ? ok(`cap snapped at full E deflection (${dx},${dy}) = (travel, 0)`)
+        ? ok(`cap snapped at full E deflection (${dx},${dy}) = (travel, REST)`)
         : fail(`cap at (${dx},${dy}), want (${wantX},${wantY})`);
     }
     a = await pos(page);
@@ -108,12 +107,12 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     const trans = await page.evaluate(() => getComputedStyle(document.querySelector(".ml-pad-top")).transitionDuration);
     parseFloat(trans) > 0 ? ok(`snap glide animated (${trans})`) : fail("no snap transition");
     // ANALOG amplitude: a half-tilt parks the cap at ~the finger distance
-    // (angle snapped, amplitude NOT) — radius ≈ 16 css px, not the full 28
+    // (angle snapped, amplitude NOT) — radius ≈ 16 css px, not the full 22
     await page.mouse.move(geom.cx + 16, geom.cy, { steps: 2 });
     await page.waitForTimeout(250);
     const tMid = await topTf();
     const mm = /translate\(([-\d.]+)px, ([-\d.]+)px\)/.exec(tMid);
-    mm && Math.abs(+mm[1] - 16) < 2 && Math.abs(+mm[2]) < 2
+    mm && Math.abs(+mm[1] - 16) < 2 && Math.abs(+mm[2] - 10 * geom.k) < 2
       ? ok(`amplitude analog: half-tilt cap at ${mm[1]}px (finger 16px)`)
       : fail(`amplitude snapped? cap at ${tMid}, finger at 16px`);
 
@@ -144,7 +143,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     }
     const walkCases = [[90, "s"], [10, "d"], [-140, "a+w"]];
     for (const [deg, want] of walkCases) {
-      const got = await heldAt(deg, 16); // between dead (9.8) and run (21), feel tier 2
+      const got = await heldAt(deg, 12); // between dead (7.7) and run (16.5), feel tier 2
       got === want ? ok(`walk ${deg}° mid -> [${got}]`) : fail(`walk ${deg}° mid: held [${got}] want [${want}]`);
     }
 
@@ -158,8 +157,8 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     drift < 1.5 ? ok(`release stops movement (drift ${drift.toFixed(2)}wu)`) : fail(`still moving after release (${drift.toFixed(1)}wu)`);
     const tfAfter = await topTf();
     const mr = /translate\(0px, ([-\d.]+)px\)/.exec(tfAfter);
-    mr && Math.abs(+mr[1]) < 1
-      ? ok(`cap re-seated at its authored rest (${mr[1]}px)`)
+    mr && Math.abs(+mr[1] - 10 * geom.k) < 1
+      ? ok(`cap re-seated (rest ${mr[1]}px)`)
       : fail(`cap not re-seated (${tfAfter})`);
   }
   await page.context().close();
@@ -174,7 +173,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
   const g = await page.evaluate(() => {
     const r = document.querySelector(".ml-pad-stick").getBoundingClientRect();
     const k = Math.round(r.width / 128);
-    return { cx: r.left + 64 * k, cy: r.top + 39 * k, k };
+    return { cx: r.left + 64 * k, cy: r.top + 49 * k, k };
   });
   console.log("phone stick:", JSON.stringify(g));
   g.k === 2 ? ok("phone art at 2x (scaled-up round)") : fail(`phone art k=${g.k}, want 2`);
