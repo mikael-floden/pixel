@@ -208,6 +208,7 @@ class Island2(Island):
         self._connect_all(thresh=5)       # reuse: rock connectors + span the gorge -> one piece
         self._ford_stranded()
         self._place_bridges()             # maze-river crossings at the maintainer's 5 sites
+        self._beach_access()              # no dead-end shores: slope tongues up from stranded beaches
         for _ in range(10):               # guarantee loop -> converge to no pit AND no lip
             camera_monotone_masked(self.level, self.mat, self.upper)
             self._fill_traps()
@@ -1115,6 +1116,90 @@ class Island2(Island):
                                 q.append((xx, yy))
                     out.append(comp)
         return out
+
+
+    def _beach_access(self, maxd=30):
+        """NO DEAD-END SHORES (maintainer 2026-07-23: "you can't walk up from the beach"):
+        every stretch of beach must reach interior ground without a long detour. Multi-
+        source BFS over the sand from every existing up-exit (a step of <=1 level onto
+        walkable non-sand land); every stranded cluster (all cells farther than `maxd`)
+        gets ONE graded TONGUE -- a 2-wide slope notch cut INTO the adjacent shelf,
+        stepping 1 level per cell inward (up-screen only, so every face stays visible),
+        keeping the shelf's local ground. No sand is ever raised; no staircase drawn."""
+        n = self.n
+        sand = self.mat == "light_sand"
+        cells = [(x, y) for y in range(n) for x in range(n) if sand[y, x]]
+        sandset = set(cells)
+        dist, q = {}, deque()
+        for (x, y) in cells:
+            for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                xx, yy = x + i, y + j
+                if (0 <= xx < n and 0 <= yy < n and not sand[yy, xx]
+                        and self.mat[yy, xx] not in ("", "clear_water")
+                        and abs(int(self.level[yy, xx]) - int(self.level[y, x])) <= 1):
+                    dist[(x, y)] = 0
+                    q.append((x, y))
+                    break
+        while q:
+            x, y = q.popleft()
+            for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                c = (x + i, y + j)
+                if (c in sandset and c not in dist
+                        and abs(int(self.level[y, x]) - int(self.level[c[1], c[0]])) <= 1):
+                    dist[c] = dist[(x, y)] + 1
+                    q.append(c)
+        far = lambda c: dist.get(c, 10 ** 9) > maxd
+        seen = set()
+        for c0 in sorted((c for c in cells if far(c)), key=lambda c: -dist.get(c, 10 ** 9)):
+            if c0 in seen:
+                continue
+            comp, st = {c0}, [c0]
+            while st:
+                px, py = st.pop()
+                seen.add((px, py))
+                for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    cc = (px + i, py + j)
+                    if cc in sandset and cc not in seen and far(cc):
+                        comp.add(cc)
+                        st.append(cc)
+            for (sx, sy) in sorted(comp, key=lambda c: -dist.get(c, 10 ** 9)):
+                if self._carve_tongue(sx, sy):
+                    break
+
+    def _carve_tongue(self, sx, sy):
+        n = self.n
+        b = int(self.level[sy, sx])
+        for i, j in ((0, -1), (-1, 0)):          # inward must be UP-SCREEN: faces visible
+            wx, wy = sx + i, sy + j
+            if not (0 <= wx < n and 0 <= wy < n):
+                continue
+            m = self.mat[wy, wx]
+            if m in ("", "clear_water", "light_sand"):
+                continue
+            L = int(self.level[wy, wx])
+            if not (2 <= L - b <= 8):
+                continue
+            perp = (j, i)
+            plan, ok = [], True
+            for k in range(L - b - 1):           # tongue levels b+1 .. L-1, stepping inward
+                for t in (0, 1):
+                    x, y = wx + i * k + perp[0] * t, wy + j * k + perp[1] * t
+                    if not (0 <= x < n and 0 <= y < n and self.mat[y, x] == m
+                            and (x, y) not in self.reserved
+                            and int(self.level[y, x]) == L):
+                        ok = False
+                        break
+                    plan.append((x, y, b + 1 + k))
+                if not ok:
+                    break
+            if not ok:
+                continue
+            for (x, y, lv) in plan:
+                self.level[y, x] = lv
+                self.upper[y, x] = False
+                self.reserved.add((x, y))
+            return True
+        return False
 
     def _reserved_np(self):
         n = self.n
