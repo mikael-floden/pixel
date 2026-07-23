@@ -19,13 +19,14 @@
 
 import { applyUiZoom } from "./uiscale";
 
-const ART_W = 136;
-const ART_H = 31;
-const SCALE = 2; // integer nearest-neighbour render scale
+const ART_W = 90; // crisp UI-kit bar (client/ui-src/uikit.png), native px
+const ART_H = 20;
+const SCALE = 3; // integer nearest-neighbour render scale
+const NUM_PX = 22; // number font size, DESIGN px (decoupled from art scale)
 // top-left anchor + row gap, DESIGN px (tuned on the maintainer's phone view)
 const LEFT = 30;
 const TOP = 96;
-const GAP = 8;
+const GAP = 10;
 
 type Kind = "hp" | "mp";
 interface Bar {
@@ -120,12 +121,12 @@ function injectStyles() {
   s.textContent = `
   .ml-bars{position:fixed;z-index:8;pointer-events:none;display:flex;
     flex-direction:column;gap:${GAP}px}
-  .ml-bar-row{display:flex;align-items:center;gap:${SCALE * 6}px}
+  .ml-bar-row{display:flex;align-items:center;gap:14px}
   .ml-bar-gauge{position:relative;width:${w}px;height:${h}px;flex:none}
   .ml-bar-gauge img{position:absolute;inset:0;width:100%;height:100%;
     image-rendering:pixelated;-webkit-user-drag:none}
   .ml-bar-fill{will-change:clip-path}
-  .ml-bar-num{font:700 ${SCALE * 11}px system-ui,sans-serif;letter-spacing:.5px;
+  .ml-bar-num{font:700 ${NUM_PX}px system-ui,sans-serif;letter-spacing:.5px;
     color:#f0e2c6;text-shadow:0 1px 2px #000,0 0 3px #000;white-space:nowrap}`;
   document.head.appendChild(s);
 }
