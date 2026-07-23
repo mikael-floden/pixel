@@ -51,8 +51,8 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     const pad = document.querySelector(".ml-pad-stick");
     if (!pad) return null;
     const r = pad.getBoundingClientRect();
-    const k = Math.round(r.width / 96);
-    return { cx: r.left + 46.5 * k, cy: r.top + 60.5 * k, k, w: r.width };
+    const k = Math.round(r.width / 128); // 2nd-gen art: 128 canvas, true 1x
+    return { cx: r.left + 64 * k, cy: r.top + 39 * k, k, w: r.width };
   });
   if (!geom) { fail("stick not mounted"); }
   else {
@@ -61,8 +61,8 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     // half the pixels, same distances under the finger.
     const travel = 28;
     geom.k === 1
-      ? ok(`stick mounted k=${geom.k} (halved art) well=(${geom.cx.toFixed(0)},${geom.cy.toFixed(0)})`)
-      : fail(`stick art k=${geom.k}, want 1 at 480 wide`);
+      ? ok(`stick mounted k=${geom.k} (true 1x art) centre=(${geom.cx.toFixed(0)},${geom.cy.toFixed(0)})`)
+      : fail(`stick art k=${geom.k}, want 1`);
     const topTf = () => page.evaluate(() => document.querySelector(".ml-pad-top").style.transform);
 
     // 2) drag EAST → moves; direction ≈ screen-east (world +x,+y)
@@ -85,11 +85,11 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     if (!m) fail(`no snap transform (${tf})`);
     else {
       const [dx, dy] = [+m[1], +m[2]];
-      // full gate = the FEEL tier's css travel (unchanged by the art
-      // halving); the rest drop stays art-tied (REST_ART * k)
-      const wantX = travel, wantY = 14 * geom.k;
+      // full gate = the FEEL tier's css travel; the 2nd-gen art is
+      // authored at rest, so the cap carries NO seating offset
+      const wantX = travel, wantY = 0;
       Math.abs(dx - wantX) < 1 && Math.abs(dy - wantY) < 1
-        ? ok(`cap snapped at full E deflection (${dx},${dy}) = (travel, REST·k)`)
+        ? ok(`cap snapped at full E deflection (${dx},${dy}) = (travel, 0)`)
         : fail(`cap at (${dx},${dy}), want (${wantX},${wantY})`);
     }
     a = await pos(page);
@@ -113,7 +113,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     await page.waitForTimeout(250);
     const tMid = await topTf();
     const mm = /translate\(([-\d.]+)px, ([-\d.]+)px\)/.exec(tMid);
-    mm && Math.abs(+mm[1] - 16) < 2 && Math.abs(+mm[2] - 14 * geom.k) < 2
+    mm && Math.abs(+mm[1] - 16) < 2 && Math.abs(+mm[2]) < 2
       ? ok(`amplitude analog: half-tilt cap at ${mm[1]}px (finger 16px)`)
       : fail(`amplitude snapped? cap at ${tMid}, finger at 16px`);
 
@@ -158,8 +158,8 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     drift < 1.5 ? ok(`release stops movement (drift ${drift.toFixed(2)}wu)`) : fail(`still moving after release (${drift.toFixed(1)}wu)`);
     const tfAfter = await topTf();
     const mr = /translate\(0px, ([-\d.]+)px\)/.exec(tfAfter);
-    mr && Math.abs(+mr[1] - 14 * geom.k) < 1
-      ? ok(`cap re-seated on the socket (rest ${mr[1]}px)`)
+    mr && Math.abs(+mr[1]) < 1
+      ? ok(`cap re-seated at its authored rest (${mr[1]}px)`)
       : fail(`cap not re-seated (${tfAfter})`);
   }
   await page.context().close();
@@ -173,11 +173,11 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
   await page.screenshot({ path: `${OUT}/stick-idle.png` });
   const g = await page.evaluate(() => {
     const r = document.querySelector(".ml-pad-stick").getBoundingClientRect();
-    const k = Math.round(r.width / 96);
-    return { cx: r.left + 46.5 * k, cy: r.top + 60.5 * k, k };
+    const k = Math.round(r.width / 128);
+    return { cx: r.left + 64 * k, cy: r.top + 39 * k, k };
   });
   console.log("phone stick:", JSON.stringify(g));
-  g.k === 2 ? ok("phone art at k=2 (halved from 4)") : fail(`phone art k=${g.k}, want 2`);
+  g.k === 1 ? ok("phone art at true 1x") : fail(`phone art k=${g.k}, want 1`);
   await page.mouse.move(g.cx, g.cy);
   await page.mouse.down();
   await page.mouse.move(g.cx + 200, g.cy + 140, { steps: 4 });

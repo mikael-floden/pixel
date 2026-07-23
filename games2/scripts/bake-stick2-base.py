@@ -28,9 +28,10 @@ from collections import Counter
 
 from PIL import Image
 
-FILL = "/root/.claude/uploads/acbf8e56-1a5a-520e-a01f-328c70374792/79236130-1784764712026.png"
+FILL = "client/ui-src/gamepad/stick2-base-fill-src.png"
 BASE = "client/ui-src/gamepad/stick2-base-holed.png"
 OUT = "client/ui-src/gamepad/stick2-base-filled.png"
+PUB = "client/public/ui2/pad-stick2-base.png"
 BG = (232, 231, 227)
 BG_TOL = 30          # colour distance to BG that still counts as backdrop
 WORK = (14, 38, 114, 123)  # x0,y0,x1,y1 — where additions may appear
@@ -152,6 +153,7 @@ def main():
         if (x, y) in keep:
             op[x, y] = (*c, 255)
     out.save(OUT)
+    out.save(PUB)
 
     # invariants: originals byte-identical, additions only in the work box
     for y in range(H):

@@ -2,11 +2,13 @@
  * On-screen ANALOG STICK — the gamepad tab's controller (maintainer
  * 2026-07-22: play without tapping the world).
  *
- * Art: the maintainer's "Classic Stock" thumbstick, split pixel-exactly into
- * /ui2/pad-stick-base.png (the socket well, Gemini-filled + his red/green
- * pixel edits) and /ui2/pad-stick-top.png (the movable cap) — both on the
- * same registered 96x96 canvas (client/ui-src/gamepad/, scripts
- * extract-stick.py + bake-stick-base.py), so stacking the two <img>s at
+ * Art: the maintainer's SECOND-GEN thumbstick (2026-07-23, authored at 2x
+ * pixel density so it renders at true 1x), split pixel-exactly along his
+ * red-line cut into /ui2/pad-stick2-base.png (shaft + socket, its
+ * cap-occluded rim and shaft top AI-filled and baked) and
+ * /ui2/pad-stick2-top.png (the movable mushroom cap) — both on the same
+ * registered 128x128 canvas (client/ui-src/gamepad/, scripts
+ * extract-stick2.py + bake-stick2-base.py), so stacking the two <img>s at
  * equal size reproduces the source art with zero alignment math. The cap
  * moves by CSS transform only.
  *
@@ -24,38 +26,37 @@
  *    should not be instant, but have a fast animation". The finger keeps
  *    steering at ANY distance past the travel radius without losing input
  *    (setPointerCapture keeps the drag alive far outside the well).
- *  - At REST the cap sits LOWERED onto the socket (REST_ART) so the well's
- *    crystals are hidden when centered; deflections reveal them only on
- *    the side the cap tilts away from, like a real stick.
+ *  - The art is AUTHORED IN THE REST POSE (cap seated on its shaft): a
+ *    centered stick draws both tiles untransformed; deflections slide the
+ *    cap off and reveal the AI-completed rim and shaft top beneath.
  *  - Dead zone around the centre releases all keys (rest = no input).
  *
- * Pixel art scales nearest-neighbour at INTEGER factors only — 2x at the
- * 980 design width, 1x on small viewports (same stepping idiom as the HUD
- * tab icons; the HUD layer is never uiZoom'd). LOOK vs FEEL (maintainer
- * 2026-07-23: "the pixels on the analog stick are twice as big as all
- * other pixels — half the size, but allow the top to move twice as long
- * so the gameplay doesn't change"): the art renders at HALF the original
- * scale, while the finger/cap TRAVEL keeps the original tier's css
- * distances (dead zone, run threshold, full gate) — so in art units the
- * cap now deflects up to twice as far past the socket, and under the
- * finger nothing changed.
+ * Pixel art renders nearest-neighbour at true 1x — the 2x-density art IS
+ * the thumb-perfect size (maintainer). LOOK vs FEEL: the finger/cap
+ * TRAVEL keeps the ORIGINAL 4/3/2 tier's css distances (dead zone, run
+ * threshold, full gate) — the gameplay contract has survived both the
+ * half-size round and this art swap unchanged; in art units the cap
+ * deflects up to 56 px past the socket on the design-width tier.
  */
 
 import { gameAudio } from "../../composer/index";
 
-const CANVAS = 96; // the art canvas (both pngs)
-const CX = 46.5; // the socket well centre, art px
-const CY = 60.5;
+// The SECOND-GEN art (2026-07-23): authored at true 1x for the thumb —
+// 128x128 canvas, cap tile + socket tile (shaft stays with the socket, his
+// red-line cut; the AI-filled rim/shaft-top hides behind the cap at rest).
+// Drawn IN THE REST POSE, so the cap needs no seating offset at all.
+const CANVAS = 128; // the art canvas (both pngs)
+const CX = 64; // the cap's rest centre, art px — the finger's neutral point
+const CY = 39;
 // full-gate travel in FEEL-TIER units: css travel = TRAVEL * feelK, where
-// feelK is the ORIGINAL 4/3/2 stepping — the gameplay contract that must
-// not change while the art renders at half that scale
+// feelK is the ORIGINAL 4/3/2 stepping — the gameplay contract that has
+// survived both art swaps unchanged
 const TRAVEL = 14;
-const REST_ART = 14; // resting cap drop, art px — covers the well's crystals when centered
 // the assembly's VISIBLE vertical span at rest (cap top … base bottom), used
 // to centre the whole stick in the page (maintainer's red line: equal
 // margin above and below)
-const CAP_TOP_ART = 16;
-const BASE_BOT_ART = 79;
+const CAP_TOP_ART = 10;
+const BASE_BOT_ART = 120;
 const DEAD_FRAC = 0.35; // of the max: inside this, all keys are up
 const RUN_FRAC = 0.75; // of the max: past this amplitude the gait is RUN (Shift), else walk
 const SNAP_MS = 80; // the fast (not instant) glide between snap positions
@@ -93,9 +94,9 @@ export function mountGamepadStick(page: HTMLElement) {
   injectStyles();
   const pad = mk("div", "ml-pad-stick");
   const base = mk("img", "ml-pad-img") as HTMLImageElement;
-  base.src = "/ui2/pad-stick-base.png";
+  base.src = "/ui2/pad-stick2-base.png";
   const top = mk("img", "ml-pad-img ml-pad-top") as HTMLImageElement;
-  top.src = "/ui2/pad-stick-top.png";
+  top.src = "/ui2/pad-stick2-top.png";
   for (const im of [base, top]) {
     im.alt = "";
     im.draggable = false;
@@ -120,13 +121,14 @@ export function mountGamepadStick(page: HTMLElement) {
     const a = (sector * Math.PI) / 4;
     const dx = sector < 0 ? 0 : Math.cos(a) * visRadius * k;
     const dy = sector < 0 ? 0 : Math.sin(a) * visRadius * k;
-    top.style.transform = `translate(${dx}px, ${REST_ART * k + dy}px)`;
+    // authored at rest — no seating offset, deflection is the whole story
+    top.style.transform = `translate(${dx}px, ${dy}px)`;
   };
   const layout = () => {
     // FEEL tier: the original scale stepping — anchors the css travel
     const feelK = window.innerWidth >= 780 ? 4 : window.innerWidth >= 585 ? 3 : 2;
-    // LOOK: render the art at half that, integer only (2x / 2x / 1x)
-    k = Math.max(1, Math.round(feelK / 2));
+    // LOOK: the 2x-density art renders at true 1x everywhere
+    k = 1;
     maxCss = TRAVEL * feelK;
     const size = CANVAS * k;
     pad.style.width = pad.style.height = `${size}px`;
@@ -140,7 +142,7 @@ export function mountGamepadStick(page: HTMLElement) {
     const padTop = parseFloat(cs.paddingTop) || 0;
     const padBot = parseFloat(cs.paddingBottom) || 0;
     const visH = page.clientHeight - padTop - padBot;
-    const centreArt = (CAP_TOP_ART + REST_ART + BASE_BOT_ART) / 2;
+    const centreArt = (CAP_TOP_ART + BASE_BOT_ART) / 2;
     pad.style.top = `${Math.round(padTop + visH * 0.5 - centreArt * k)}px`;
     setCap(visSector, visRadius); // re-derive the k-scaled transform
   };

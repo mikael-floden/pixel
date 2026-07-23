@@ -29,6 +29,7 @@ back rim and the shaft's top).
 Outputs (same canvas, so the pieces stack 1:1 like the first-gen split):
   client/ui-src/gamepad/stick2-top.png          the moving cap
   client/ui-src/gamepad/stick2-base-holed.png   shaft + socket, cap hole
+  client/public/ui2/pad-stick2-top.png          the cap, published in-game
 Invariant: top ∪ base == source, byte-exact, zero overlap (asserted).
 """
 
@@ -36,6 +37,7 @@ from PIL import Image
 
 SRC = "client/ui-src/gamepad/stick2-source.png"
 TOP = "client/ui-src/gamepad/stick2-top.png"
+PUB_TOP = "client/public/ui2/pad-stick2-top.png"
 BASE = "client/ui-src/gamepad/stick2-base-holed.png"
 
 BLACK_V = 22      # mean-luma below this = outline black
@@ -157,6 +159,7 @@ def main():
                 continue
             (tp if top[y][x] else bp)[x, y] = p[x, y]
     top_im.save(TOP)
+    top_im.save(PUB_TOP)
     base_im.save(BASE)
 
     # byte-exact partition
