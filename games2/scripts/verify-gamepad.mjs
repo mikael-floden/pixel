@@ -84,9 +84,9 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     if (!m) fail(`no snap transform (${tf})`);
     else {
       const [dx, dy] = [+m[1], +m[2]];
-      // full gate DRAWS damped by CAP_VISUAL_FRAC (0.75); the cap
+      // full gate DRAWS damped by CAP_VISUAL_FRAC (0.65); the cap
       // carries its REST seat (14 art px) on y
-      const wantX = travel * 0.75, wantY = 14 * geom.k;
+      const wantX = travel * 0.65, wantY = 14 * geom.k;
       Math.abs(dx - wantX) < 1 && Math.abs(dy - wantY) < 1
         ? ok(`cap snapped at full E deflection (${dx},${dy}) = (travel, REST)`)
         : fail(`cap at (${dx},${dy}), want (${wantX},${wantY})`);
@@ -112,8 +112,8 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     await page.waitForTimeout(250);
     const tMid = await topTf();
     const mm = /translate\(([-\d.]+)px, ([-\d.]+)px\)/.exec(tMid);
-    mm && Math.abs(+mm[1] - 12) < 2 && Math.abs(+mm[2] - 14 * geom.k) < 2
-      ? ok(`amplitude analog: half-tilt cap at ${mm[1]}px (finger 16px, 0.75 damp)`)
+    mm && Math.abs(+mm[1] - 10.4) < 2 && Math.abs(+mm[2] - 14 * geom.k) < 2
+      ? ok(`amplitude analog: half-tilt cap at ${mm[1]}px (finger 16px, 0.65 damp)`)
       : fail(`amplitude snapped? cap at ${tMid}, finger at 16px`);
 
     // 4) 8-way snap — probe the HELD KEY SET directly (world-heading

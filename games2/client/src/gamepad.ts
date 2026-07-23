@@ -64,10 +64,11 @@ const DEAD_FRAC = 0.35; // of the max: inside this, all keys are up
 const RUN_FRAC = 0.75; // of the max: past this amplitude the gait is RUN (Shift), else walk
 const SNAP_MS = 80; // the fast (not instant) glide between snap positions
 // the cap DRAWS at this fraction of the input radius ("make the radius
-// translation on the top part a little bit lower", 2026-07-23) — like a
-// real thumbstick, the cap's centre moves less than the thumb; the input
-// circle (dead zone, run, full gate) is untouched
-const CAP_VISUAL_FRAC = 0.75;
+// translation on the top part a little bit lower", then "just a few
+// pixels shorter", 2026-07-23) — like a real thumbstick, the cap's centre
+// moves less than the thumb; the input circle (dead zone, run, full
+// gate) is untouched. 0.65 = full tilt draws ~23 css px on the phone tier.
+const CAP_VISUAL_FRAC = 0.65;
 // Octants counter-clockwise from screen-east with y DOWN → index = round(angle/45°)
 // mod 8 over atan2(dy,dx): E, SE, S, SW, W, NW, N, NE — each holds the keys a
 // keyboard player would.
