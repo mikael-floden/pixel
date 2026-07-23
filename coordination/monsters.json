@@ -1,10 +1,10 @@
 {
   "domain": "monsters",
-  "updated_at": "2026-07-22T23:18:10+00:00",
+  "updated_at": "2026-07-23T01:37:29+00:00",
   "health": "idle",
-  "current": "mirrored poring (object cd723b90) -> monsters/poring/; awaiting next maintainer ask",
+  "current": "mirrored lava_poring (object 9722f51d) -> monsters/lava_poring/; awaiting next maintainer ask",
   "progress": {
-    "monsters_complete": 1
+    "monsters_complete": 2
   },
   "budget_remaining": null,
   "notes": [
@@ -16,6 +16,11 @@
       "to": "games",
       "text": "First monster is live: monsters/poring/ (48x48, low top-down, 8 dirs). Read monsters/poring/monster.json \u2014 it maps every rotation + animation frame/strip/gif. Animations: jump + attack (8 dirs x 16 frames). NOTE animation_aliases: {\"walk\": \"jump\"} \u2014 the poring hops instead of walking, so use jump frames for locomotion. Maintainer wants it added to the game.",
       "at": "2026-07-22T23:18:03+00:00"
+    },
+    {
+      "to": "games",
+      "text": "Second monster live: monsters/lava_poring/ \u2014 a black/lava variant of the poring (48x48, low top-down, 8 dirs; jump + flame attack at 8 dirs x 6 frames; walk aliased to jump). Same monster.json contract as poring. Good candidate for a tougher poring tier.",
+      "at": "2026-07-23T01:37:29+00:00"
     }
   ]
 }

@@ -1,0 +1,294 @@
+{
+  "id": "lava_poring",
+  "name": "Lava Poring",
+  "source": {
+    "kind": "object",
+    "pixellab_id": "9722f51d-0f7a-4753-8516-2b210be96ee0",
+    "url": "https://www.pixellab.ai/create-object/9722f51d-0f7a-4753-8516-2b210be96ee0",
+    "prompt": "The round Poring blob from Ragnar\u00f6k Online, but in black and lava",
+    "view": "low top-down"
+  },
+  "size": {
+    "width": 48,
+    "height": 48
+  },
+  "sprite": "lava_poring/sprite.png",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "lava_poring/rotations/south.png",
+    "west": "lava_poring/rotations/west.png",
+    "east": "lava_poring/rotations/east.png",
+    "north": "lava_poring/rotations/north.png",
+    "south-east": "lava_poring/rotations/south-east.png",
+    "south-west": "lava_poring/rotations/south-west.png",
+    "north-east": "lava_poring/rotations/north-east.png",
+    "north-west": "lava_poring/rotations/north-west.png"
+  },
+  "animations": {
+    "jump": {
+      "group_id": "da369d0e-c0e2-4b81-be5d-a3f65d66224a",
+      "description": "Jump",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "lava_poring/animations/jump__east.png",
+          "gif": "lava_poring/animations/jump__east.gif",
+          "frame_paths": [
+            "lava_poring/animations/jump/east/00.png",
+            "lava_poring/animations/jump/east/01.png",
+            "lava_poring/animations/jump/east/02.png",
+            "lava_poring/animations/jump/east/03.png",
+            "lava_poring/animations/jump/east/04.png",
+            "lava_poring/animations/jump/east/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 01:36:26 GMT",
+          "src_frames": 6
+        },
+        "north": {
+          "frames": 6,
+          "strip": "lava_poring/animations/jump__north.png",
+          "gif": "lava_poring/animations/jump__north.gif",
+          "frame_paths": [
+            "lava_poring/animations/jump/north/00.png",
+            "lava_poring/animations/jump/north/01.png",
+            "lava_poring/animations/jump/north/02.png",
+            "lava_poring/animations/jump/north/03.png",
+            "lava_poring/animations/jump/north/04.png",
+            "lava_poring/animations/jump/north/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 01:36:29 GMT",
+          "src_frames": 6
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "lava_poring/animations/jump__north-east.png",
+          "gif": "lava_poring/animations/jump__north-east.gif",
+          "frame_paths": [
+            "lava_poring/animations/jump/north-east/00.png",
+            "lava_poring/animations/jump/north-east/01.png",
+            "lava_poring/animations/jump/north-east/02.png",
+            "lava_poring/animations/jump/north-east/03.png",
+            "lava_poring/animations/jump/north-east/04.png",
+            "lava_poring/animations/jump/north-east/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 01:36:32 GMT",
+          "src_frames": 6
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "lava_poring/animations/jump__north-west.png",
+          "gif": "lava_poring/animations/jump__north-west.gif",
+          "frame_paths": [
+            "lava_poring/animations/jump/north-west/00.png",
+            "lava_poring/animations/jump/north-west/01.png",
+            "lava_poring/animations/jump/north-west/02.png",
+            "lava_poring/animations/jump/north-west/03.png",
+            "lava_poring/animations/jump/north-west/04.png",
+            "lava_poring/animations/jump/north-west/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 01:36:36 GMT",
+          "src_frames": 6
+        },
+        "south": {
+          "frames": 6,
+          "strip": "lava_poring/animations/jump__south.png",
+          "gif": "lava_poring/animations/jump__south.gif",
+          "frame_paths": [
+            "lava_poring/animations/jump/south/00.png",
+            "lava_poring/animations/jump/south/01.png",
+            "lava_poring/animations/jump/south/02.png",
+            "lava_poring/animations/jump/south/03.png",
+            "lava_poring/animations/jump/south/04.png",
+            "lava_poring/animations/jump/south/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 01:36:39 GMT",
+          "src_frames": 6
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "lava_poring/animations/jump__south-east.png",
+          "gif": "lava_poring/animations/jump__south-east.gif",
+          "frame_paths": [
+            "lava_poring/animations/jump/south-east/00.png",
+            "lava_poring/animations/jump/south-east/01.png",
+            "lava_poring/animations/jump/south-east/02.png",
+            "lava_poring/animations/jump/south-east/03.png",
+            "lava_poring/animations/jump/south-east/04.png",
+            "lava_poring/animations/jump/south-east/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 01:36:41 GMT",
+          "src_frames": 6
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "lava_poring/animations/jump__south-west.png",
+          "gif": "lava_poring/animations/jump__south-west.gif",
+          "frame_paths": [
+            "lava_poring/animations/jump/south-west/00.png",
+            "lava_poring/animations/jump/south-west/01.png",
+            "lava_poring/animations/jump/south-west/02.png",
+            "lava_poring/animations/jump/south-west/03.png",
+            "lava_poring/animations/jump/south-west/04.png",
+            "lava_poring/animations/jump/south-west/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 01:36:44 GMT",
+          "src_frames": 6
+        },
+        "west": {
+          "frames": 6,
+          "strip": "lava_poring/animations/jump__west.png",
+          "gif": "lava_poring/animations/jump__west.gif",
+          "frame_paths": [
+            "lava_poring/animations/jump/west/00.png",
+            "lava_poring/animations/jump/west/01.png",
+            "lava_poring/animations/jump/west/02.png",
+            "lava_poring/animations/jump/west/03.png",
+            "lava_poring/animations/jump/west/04.png",
+            "lava_poring/animations/jump/west/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 01:36:47 GMT",
+          "src_frames": 6
+        }
+      }
+    },
+    "attack": {
+      "group_id": "37d50605-09c3-4dd3-851c-0e45b79c905e",
+      "description": "Attack with flames",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "lava_poring/animations/attack__east.png",
+          "gif": "lava_poring/animations/attack__east.gif",
+          "frame_paths": [
+            "lava_poring/animations/attack/east/00.png",
+            "lava_poring/animations/attack/east/01.png",
+            "lava_poring/animations/attack/east/02.png",
+            "lava_poring/animations/attack/east/03.png",
+            "lava_poring/animations/attack/east/04.png",
+            "lava_poring/animations/attack/east/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 01:36:50 GMT",
+          "src_frames": 6
+        },
+        "north": {
+          "frames": 6,
+          "strip": "lava_poring/animations/attack__north.png",
+          "gif": "lava_poring/animations/attack__north.gif",
+          "frame_paths": [
+            "lava_poring/animations/attack/north/00.png",
+            "lava_poring/animations/attack/north/01.png",
+            "lava_poring/animations/attack/north/02.png",
+            "lava_poring/animations/attack/north/03.png",
+            "lava_poring/animations/attack/north/04.png",
+            "lava_poring/animations/attack/north/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 01:36:53 GMT",
+          "src_frames": 6
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "lava_poring/animations/attack__north-east.png",
+          "gif": "lava_poring/animations/attack__north-east.gif",
+          "frame_paths": [
+            "lava_poring/animations/attack/north-east/00.png",
+            "lava_poring/animations/attack/north-east/01.png",
+            "lava_poring/animations/attack/north-east/02.png",
+            "lava_poring/animations/attack/north-east/03.png",
+            "lava_poring/animations/attack/north-east/04.png",
+            "lava_poring/animations/attack/north-east/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 01:36:55 GMT",
+          "src_frames": 6
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "lava_poring/animations/attack__north-west.png",
+          "gif": "lava_poring/animations/attack__north-west.gif",
+          "frame_paths": [
+            "lava_poring/animations/attack/north-west/00.png",
+            "lava_poring/animations/attack/north-west/01.png",
+            "lava_poring/animations/attack/north-west/02.png",
+            "lava_poring/animations/attack/north-west/03.png",
+            "lava_poring/animations/attack/north-west/04.png",
+            "lava_poring/animations/attack/north-west/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 01:36:58 GMT",
+          "src_frames": 6
+        },
+        "south": {
+          "frames": 6,
+          "strip": "lava_poring/animations/attack__south.png",
+          "gif": "lava_poring/animations/attack__south.gif",
+          "frame_paths": [
+            "lava_poring/animations/attack/south/00.png",
+            "lava_poring/animations/attack/south/01.png",
+            "lava_poring/animations/attack/south/02.png",
+            "lava_poring/animations/attack/south/03.png",
+            "lava_poring/animations/attack/south/04.png",
+            "lava_poring/animations/attack/south/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 01:37:01 GMT",
+          "src_frames": 6
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "lava_poring/animations/attack__south-east.png",
+          "gif": "lava_poring/animations/attack__south-east.gif",
+          "frame_paths": [
+            "lava_poring/animations/attack/south-east/00.png",
+            "lava_poring/animations/attack/south-east/01.png",
+            "lava_poring/animations/attack/south-east/02.png",
+            "lava_poring/animations/attack/south-east/03.png",
+            "lava_poring/animations/attack/south-east/04.png",
+            "lava_poring/animations/attack/south-east/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 01:37:05 GMT",
+          "src_frames": 6
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "lava_poring/animations/attack__south-west.png",
+          "gif": "lava_poring/animations/attack__south-west.gif",
+          "frame_paths": [
+            "lava_poring/animations/attack/south-west/00.png",
+            "lava_poring/animations/attack/south-west/01.png",
+            "lava_poring/animations/attack/south-west/02.png",
+            "lava_poring/animations/attack/south-west/03.png",
+            "lava_poring/animations/attack/south-west/04.png",
+            "lava_poring/animations/attack/south-west/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 01:37:08 GMT",
+          "src_frames": 6
+        },
+        "west": {
+          "frames": 6,
+          "strip": "lava_poring/animations/attack__west.png",
+          "gif": "lava_poring/animations/attack__west.gif",
+          "frame_paths": [
+            "lava_poring/animations/attack/west/00.png",
+            "lava_poring/animations/attack/west/01.png",
+            "lava_poring/animations/attack/west/02.png",
+            "lava_poring/animations/attack/west/03.png",
+            "lava_poring/animations/attack/west/04.png",
+            "lava_poring/animations/attack/west/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 01:37:11 GMT",
+          "src_frames": 6
+        }
+      }
+    }
+  },
+  "animation_aliases": {
+    "walk": "jump"
+  },
+  "synced_from_pixellab": true
+}
