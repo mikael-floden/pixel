@@ -6,9 +6,11 @@
  *
  * The wheel (/ui2/clock360.png, baked by scripts/bake-clock360.py on a
  * canvas symmetric about the wheel centre) hangs with its centre pinned to
- * the hand pivot. At rest the DAY face fills the half below the top beam;
- * the beam art covers the divide line and the upstairs half, save for
- * glimpses through its vine gaps.
+ * the hand pivot, then the whole assembly is raised LIFT art-px and CLIPPED
+ * at that centre so ONLY the active hanging half shows below the beam. At
+ * rest the DAY face fills that half; the divide and the inactive upstairs
+ * half sit behind the beam — no rim of the other face ever peeks (maintainer
+ * 2026-07-23: "no part of the night clock during the day and vice-versa").
  *
  * THE HAND-OFF (the reason this layer exists): WorldScene's hand angle
  * always sweeps -90°..+90° — a right-to-left pass for the day
@@ -50,8 +52,17 @@ const WHEEL = { w: 365, h: 353, cx: 182.5, cy: 176.5 };
 // clock"). Scaling about the pivot keeps the wheel-centre = hand-ring = flip
 // origin identity, so alignment and the 180° hand-off are unchanged.
 const CLOCK_SCALE = 0.83;
-const CLIP_Y = 60; // frame art row: the layer shows nothing above this
-const FADE_S = 2.5; // keep in step with WorldScene's TIME_TRANSITION_S
+// Lift the whole assembly UP by this many frame-art px so the wheel's
+// day/night DIVIDE (its centre) tucks just behind the beam's wood edge —
+// then only the active hanging half is ever visible below the beam: no
+// night-face rim during the day, no day-face rim at night (maintainer
+// 2026-07-23). The clip is pinned to the (lifted) divide as a hard backstop
+// so nothing above it can leak through the beam's vine gaps either. In
+// UNSHRUNK px: the divide sits at the pivot, so CLOCK_SCALE doesn't move it.
+const LIFT = 24;
+const FADE_S = 1.25; // day<->night wheel spin; MUST equal WorldRoom.handoffHoldMs
+// and stay in step with WorldScene's TIME_TRANSITION_S (halved 2.5->1.25s:
+// the hand-off rotation + its server time-freeze now run twice as fast).
 const NIGHT_IDX = 0; // TIME_PHASES[0] = Night (odd flips = night face down)
 
 // The wheel's day face, relative to the clock anchor (the strap stub at
@@ -85,16 +96,21 @@ export function setClockMount(x: number, y: number, s: number) {
 function applyMount() {
   if (!root || !hand || !wheelImg || !mountPt.has) return;
   const { x, y } = mountPt;
-  const s = mountPt.s * CLOCK_SCALE; // shrink about the pivot (x,y)
-  // nothing of the wheel or hand may show above the beam band
-  root.style.clipPath = `inset(${CLIP_Y * mountPt.s}px 0 0 0)`;
+  const s = mountPt.s * CLOCK_SCALE; // shrink wheel+hand about the pivot (x,y)
+  // The day/night divide = the wheel centre, which sits at the pivot y and is
+  // UNAFFECTED by CLOCK_SCALE (we scale about it). Raise it LIFT art-px (in
+  // UNSHRUNK px) so it tucks behind the beam's wood edge, and pin the clip
+  // there: only the active hanging half below cy ever renders — no inactive
+  // rim leaks, and the hand's over-the-top flip stays hidden behind the beam.
+  const cy = y - LIFT * mountPt.s;
+  root.style.clipPath = `inset(${cy}px 0 0 0)`;
   wheelImg.style.width = `${WHEEL.w * s}px`;
   wheelImg.style.left = `${x - WHEEL.cx * s}px`;
-  wheelImg.style.top = `${y - WHEEL.cy * s}px`;
+  wheelImg.style.top = `${cy - WHEEL.cy * s}px`;
   wheelImg.style.transformOrigin = `${WHEEL.cx * s}px ${WHEEL.cy * s}px`;
   hand.style.width = `${HAND.w * s}px`;
   hand.style.left = `${x - HAND.hubX * s}px`;
-  hand.style.top = `${y - HAND.hubY * s}px`;
+  hand.style.top = `${cy - HAND.hubY * s}px`;
   hand.style.transformOrigin = `${HAND.hubX * s}px ${HAND.hubY * s}px`;
 }
 

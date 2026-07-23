@@ -254,7 +254,7 @@ function sunFromHand(deg: number, night: boolean, f: number): [number, number, n
   return [cx / n, cy / n, slope, strength];
 }
 
-const TIME_TRANSITION_S = 2.5;
+const TIME_TRANSITION_S = 1.25; // in step with clock.ts FADE_S + WorldRoom.handoffHoldMs (day<->night 2x faster)
 // The starting phase + count live in shared/ — time-of-day is WORLD STATE
 // (server-owned, synced): [1] / the HUD button send "timeofday" and the
 // state listener applies the change for everyone. TIME_PHASES must stay in

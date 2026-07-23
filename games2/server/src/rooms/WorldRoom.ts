@@ -88,14 +88,16 @@ export class WorldRoom extends Room<WorldState> {
   private nextPhaseAt: number | null = null;
   private phaseSeconds: readonly number[] = TIME_PHASE_SECONDS;
   // HAND-OFF HOLD (games-ui, 2026-07-23): a NATURAL rollover into NIGHT or
-  // MORNING freezes the clock — phaseT pinned at 0 — for the 2.5s the
-  // clients' wheel+hand 180° rotation takes (clock.ts FADE_S). WALL seconds,
-  // deliberately NOT scaled by timeSpeed, so at any speed multiplier the
-  // hand resumes from the phase start (the right rail) when the flip lands
-  // (maintainer: "time freezed on the server and all clients during the
-  // animation"). Manual "timeofday" skips stay untouched: they pin the
+  // MORNING freezes the clock — phaseT pinned at 0 — for the 1.25s the
+  // clients' wheel+hand 180° rotation takes (clock.ts FADE_S; halved from
+  // 2.5s so day<->night is twice as fast — this MUST stay equal to FADE_S*1000
+  // or the hand won't resume from the rail exactly when the flip lands). WALL
+  // milliseconds, deliberately NOT scaled by timeSpeed, so at any speed
+  // multiplier the hand resumes from the phase start (the right rail) when the
+  // flip lands (maintainer: "time freezed on the server and all clients during
+  // the animation"). Manual "timeofday" skips stay untouched: they pin the
   // mid-phase keyframe look, and frozen-time testing depends on that.
-  private handoffHoldMs = 2500;
+  private handoffHoldMs = 1250;
   private handoffHoldUntil = 0;
   private worldName = ""; // set in onCreate; keys the worldClocks registry
   // Wild shooting stars streak the night sky at random (arrivals get their
