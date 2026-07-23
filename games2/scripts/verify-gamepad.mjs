@@ -160,6 +160,28 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     mr && Math.abs(+mr[1] - 14 * geom.k) < 1
       ? ok(`cap re-seated (rest ${mr[1]}px)`)
       : fail(`cap not re-seated (${tfAfter})`);
+
+    // 6) JUMP button: press -> SPACE -> the player actually jumps
+    const jb = await page.evaluate(() => {
+      const j = document.querySelector(".ml-pad-jump");
+      if (!j) return null;
+      const r = j.getBoundingClientRect();
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    });
+    if (!jb) fail("jump button not mounted");
+    else {
+      await page.mouse.move(jb.x, jb.y);
+      await page.mouse.down();
+      await page.waitForTimeout(150);
+      const held = await page.evaluate(() => [...window.__qaKeys]);
+      held.includes(" ") ? ok("jump press holds SPACE") : fail(`jump press keys [${held}]`);
+      const jumping = await page.evaluate(() => !!window.__ml.me().jumping);
+      await page.mouse.up();
+      await page.waitForTimeout(100);
+      jumping ? ok("player jumps on button press") : fail("player did not jump");
+      const upHeld = await page.evaluate(() => [...window.__qaKeys]);
+      !upHeld.includes(" ") ? ok("jump release lets go of SPACE") : fail("SPACE stuck after release");
+    }
   }
   await page.context().close();
 }

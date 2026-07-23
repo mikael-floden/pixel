@@ -85,14 +85,16 @@ const SECTOR_KEYS: string[][] = [
   ["W"],
   ["W", "D"],
 ];
-const KEYCODE: Record<string, number> = { W: 87, A: 65, S: 83, D: 68, SHIFT: 16 };
+const KEYCODE: Record<string, number> = { W: 87, A: 65, S: 83, D: 68, SHIFT: 16, SPACE: 32 };
 
 function synthKey(kind: "keydown" | "keyup", k: string) {
   const e = new KeyboardEvent(
     kind,
     k === "SHIFT"
       ? { key: "Shift", code: "ShiftLeft", bubbles: true }
-      : { key: k.toLowerCase(), code: `Key${k}`, bubbles: true },
+      : k === "SPACE"
+        ? { key: " ", code: "Space", bubbles: true }
+        : { key: k.toLowerCase(), code: `Key${k}`, bubbles: true },
   );
   // Phaser's KeyboardPlugin routes by event.keyCode — not settable via the
   // init dict, so define it on the instance.
@@ -115,6 +117,20 @@ export function mountGamepadStick(page: HTMLElement) {
   }
   pad.append(base, top);
   page.appendChild(pad);
+
+  // ── JUMP BUTTON (maintainer 2026-07-23: his red box, left side at the
+  // stick's mirror height): the cap tile doubles as the button face — same
+  // rubber look, zero new art. A press synthesizes SPACE (WorldScene:
+  // keydown-SPACE -> tryJump), so the button jumps exactly like the
+  // keyboard; it owns its own pointer, so steering and jumping work at
+  // the same time.
+  const jump = mk("div", "ml-pad-jump");
+  const jumpImg = mk("img", "ml-pad-img") as HTMLImageElement;
+  jumpImg.src = "/ui2/pad-stick2-top.png";
+  jumpImg.alt = "";
+  jumpImg.draggable = false;
+  jump.appendChild(jumpImg);
+  page.appendChild(jump);
 
   // ── layout: integer art scale + the maintainer's marked anchor spot ──
   // (his red circle: the well centre at ~70.5% across, ~42% down the page)
@@ -157,7 +173,14 @@ export function mountGamepadStick(page: HTMLElement) {
     const padBot = parseFloat(cs.paddingBottom) || 0;
     const visH = page.clientHeight - padTop - padBot;
     const centreArt = (CAP_TOP_ART + REST_ART + BASE_BOT_ART) / 2;
-    pad.style.top = `${Math.round(padTop + visH * 0.5 - (centreArt + RAISE_ART) * k)}px`;
+    const padTopPx = Math.round(padTop + visH * 0.5 - (centreArt + RAISE_ART) * k);
+    pad.style.top = `${padTopPx}px`;
+    // jump button: cap-face centre at 25% across, level with the stick's
+    // control centre (the tile's cap centre is at art y 39; the stick's
+    // seated centre is CY)
+    jump.style.width = jump.style.height = `${CANVAS * k}px`;
+    jump.style.left = `${Math.round(page.clientWidth * 0.25 - CX * k)}px`;
+    jump.style.top = `${padTopPx + (CY - 39) * k}px`;
     setCap(visSector, visRadius); // re-derive the k-scaled transform
   };
   layout();
@@ -218,10 +241,35 @@ export function mountGamepadStick(page: HTMLElement) {
   });
   pad.addEventListener("pointerup", release);
   pad.addEventListener("pointercancel", release);
+
+  let jumpHeld = false;
+  const jumpDown = (ev: PointerEvent) => {
+    jump.setPointerCapture(ev.pointerId);
+    if (jumpHeld) return;
+    jumpHeld = true;
+    jumpImg.style.transform = `translate(0px, ${2 * k}px)`; // pressed-in look
+    gameAudio.event("ui.press");
+    synthKey("keydown", "SPACE");
+  };
+  const jumpUp = () => {
+    if (!jumpHeld) return;
+    jumpHeld = false;
+    jumpImg.style.transform = "";
+    synthKey("keyup", "SPACE");
+  };
+  jump.addEventListener("pointerdown", jumpDown);
+  jump.addEventListener("pointerup", jumpUp);
+  jump.addEventListener("pointercancel", jumpUp);
   // never leave keys stuck if the tab/page goes away mid-drag
-  window.addEventListener("blur", release);
+  window.addEventListener("blur", () => {
+    release();
+    jumpUp();
+  });
   document.addEventListener("visibilitychange", () => {
-    if (document.hidden) release();
+    if (document.hidden) {
+      release();
+      jumpUp();
+    }
   });
 }
 
@@ -241,6 +289,9 @@ function injectStyles() {
     -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
   .ml-pad-img{position:absolute;inset:0;width:100%;height:100%;
     image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
+  .ml-pad-jump{position:absolute;touch-action:none;cursor:pointer;
+    -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+  .ml-pad-jump .ml-pad-img{transition:transform 60ms ease}
   /* the cap glides between its snap positions — fast, not instant */
   .ml-pad-top{transition:transform ${SNAP_MS}ms ease-out}`;
   document.head.appendChild(s);
