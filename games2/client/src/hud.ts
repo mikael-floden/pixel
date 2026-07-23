@@ -109,7 +109,9 @@ const TABS = [
   { id: "equipment", label: "Equipment" },
   { id: "map", label: "Map" },
   { id: "settings", label: "Settings" },
-  { id: "logout", label: "Logout" },
+  // Chat replaced Logout as a tab (maintainer 2026-07-23); Log out moved into
+  // Settings. The chat page is empty for now.
+  { id: "chat", label: "Chat" },
 ] as const;
 type TabId = (typeof TABS)[number]["id"];
 
@@ -411,6 +413,12 @@ export class HudBar {
     // overflows a phone, so .ml-page scrolls from the top (see injectStyles:
     // "safe center").
     const st = this.pages.get("settings")!;
+    // Log out lives at the TOP of Settings now (maintainer 2026-07-23: moved off
+    // its own tab, which Chat replaced). As a direct child of the settings
+    // .ml-page it inherits the .ml-page>.ml-plate-btn WIDE full-row width — the
+    // same width its old page gave it. Still a deliberate two-step (open Settings
+    // then press), so a stray tap can't eject anyone.
+    st.appendChild(plateButton("Log out", () => this.actions.onLogout()));
     const wrap = mk("div", "ml-set");
     const row = mk("div", "ml-btnrow");
     for (const t of this.actions.settings) {
@@ -458,11 +466,8 @@ export class HudBar {
     this.ambSection = amb;
     this.ambList = list;
     st.appendChild(wrap);
-
-    // Logout: deliberate two-step (a stray tap must not eject anyone) —
-    // just the button, no explainer text (maintainer 2026-07-17).
-    const lo = this.pages.get("logout")!;
-    lo.append(plateButton("Log out", () => this.actions.onLogout()));
+    // Chat page: intentionally empty for now (maintainer 2026-07-23 — "an empty
+    // page for now"). Its tab lives where Logout used to be.
   }
 }
 
@@ -593,10 +598,13 @@ function injectStyles() {
   .ml-btnrow{display:grid;width:100%;height:100%;
     grid-template-columns:repeat(3,calc((100% - 4*(100% - 640px*var(--ml-fs,0.75))/6)/3));
     justify-content:space-evenly;align-content:space-evenly}
-  /* a lone page-level button (Logout): wide is fine (maintainer), but it
-     respects the SAME outer margin g as the backpack/settings grids —
-     full width minus a slot-gap on each side */
-  .ml-page>.ml-plate-btn{width:calc(100% - (100% - 640px*var(--ml-fs,0.75))/3)}
+  /* the wide Log out button at the top of Settings (maintainer 2026-07-23):
+     a full ROW — width respects the SAME outer margin g as the backpack/settings
+     grids (full width minus a slot-gap each side), and flex-shrink:0 keeps its
+     full row height (min(120px,12.245vw)) instead of collapsing when the
+     scrolling settings column overflows */
+  .ml-page>.ml-plate-btn{width:calc(100% - (100% - 640px*var(--ml-fs,0.75))/3);
+    flex-shrink:0}
   /* UI-KIT plates (maintainer's pack, plate.ts): flat pixel plates composed
      at an INTEGER block scale (floor(h/native/2) — 5px blocks at h=120).
      Height 120 is the maintainer's shared button height, same as the tabs.

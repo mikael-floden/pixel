@@ -27,7 +27,7 @@ const shoot = async (tab, name) => {
 };
 await shoot("backpack", "page-backpack");
 await shoot("settings", "page-settings");
-await shoot("logout", "page-logout");
+await shoot("chat", "page-chat");
 await page.click('.ml-tab[data-tab="settings"]');
 await page.waitForTimeout(400);
 

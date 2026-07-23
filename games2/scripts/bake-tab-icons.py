@@ -22,7 +22,7 @@ from PIL import Image
 
 SRC = Path("client/ui-src/icons")
 OUT = Path("client/public/ui2")
-TABS = ["gamepad", "backpack", "equipment", "map", "settings", "logout"]
+TABS = ["gamepad", "backpack", "equipment", "map", "settings", "logout", "chat"]
 
 
 def main():
