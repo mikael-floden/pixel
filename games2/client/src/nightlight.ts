@@ -1034,16 +1034,6 @@ void main() {
                                                    // integer, so flats/edges are unaffected.
   float dLev = abs(pLev - z);                      // levels of separation
   float elevBand = ceil(max(0.0, dLev - ELEV_D0) * ELEV_STEP - ELEV_EPS); // 0 until |Δlvl|>ELEV_D0
-  // NEAR-PLAYER HORIZONTAL FADE for a wall ABOVE you only (maintainer 2026-07-24: standing at the
-  // FOOT of a tall cliff read as a WALL OF FOG). The elevation term is horizontal-player-position
-  // INVARIANT, so a fully-fogged tall face fills the follow-camera up close yet recedes far away —
-  // "more fog when closer". Fade the elevation band in from 0 at your feet to FULL by FOG_D0 (the
-  // SAME near-clear bubble the distance channel uses), reusing its own distH. Gated z > pLev so it
-  // can ONLY clear a wall rising ABOVE you when CLOSE: ground/edges at or BELOW you (look-down edge
-  // highlight, ground-below) are byte-identical, a DISTANT wall (distH ≥ FOG_D0 ⇒ factor 1) is
-  // unchanged, flats have elevBand 0 already, and only elevBand is written (distance channel
-  // untouched). The factor is in [0,1] — this can only ever REMOVE fog near you, never add any.
-  if (z > pLev) elevBand *= clamp(distH / FOG_D0, 0.0, 1.0);
 
   // COMBINE + CEL-SNAP. Additive (NOT max) so a mid-range edge always adds its step on top of
   // the distance band. Both channels fire on ALL ground; the per-level TRANSPARENCY (below) is
