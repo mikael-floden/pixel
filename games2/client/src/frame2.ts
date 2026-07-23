@@ -210,8 +210,18 @@ const RAIL_SOLID_Y = 676;                 // inside rail A's full-width-opaque
 // tab window: the brown band between rail A and rail B — its true side span
 // (rows 703-845) matches the page window's rail edges, so the tab row's
 // outer margins come out equal to its inter-button gaps (maintainer: "the
-// menu buttons are still not spaced correctly")
-const TAB_WIN = { x0: 48, x1: 720, y0: 714, y1: 844 };
+// menu buttons are still not spaced correctly"). The tab row centres its
+// buttons in this window, so the window must be CENTRED between the two rails
+// or the buttons read low. y0/y1 was 714/844 — 4px off rail B's top (848) but
+// ~18px off rail A's ragged bottom (~696), so the button sat well below rail A
+// yet nearly touching rail B (maintainer 2026-07-23: "the button is not centred
+// between the top and bottom frame — it's the MARGIN, outside the button").
+// Centred on the true rail gap: rail A's beam bottom is asset rows 693-701
+// (median 696, MEASURED off frame.png alpha) and rail B's top edge is 848, so
+// the midline is row 772 — the 130-tall window centres there, giving the button
+// equal margin to each beam at every viewport (the split is asset-space, so it
+// holds under any scale).
+const TAB_WIN = { x0: 48, x1: 720, y0: 707, y1: 837 };
 // page window = where the stone is actually exposed: rail B's art ends at
 // row 869 (center span), the bottom rail's ragged art starts at 1310, and
 // the vertical rails' inner edges sit at x 42/725 (median) — the old
