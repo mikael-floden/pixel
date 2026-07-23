@@ -63,6 +63,9 @@ const BASE_BOT_ART = 120;
 // lift the whole assembly off dead-centre ("put the entire controller a
 // little bit higher up", 2026-07-23) — art px, scales with k
 const RAISE_ART = 8;
+// the jump button rides this far below the stick midline ("move the jump
+// button a bit down", 2026-07-23) — art px, scales with k
+const JUMP_DROP_ART = 8;
 const DEAD_FRAC = 0.35; // of the max: inside this, all keys are up
 const RUN_FRAC = 0.75; // of the max: past this amplitude the gait is RUN (Shift), else walk
 const SNAP_MS = 80; // the fast (not instant) glide between snap positions
@@ -188,7 +191,8 @@ export function mountGamepadStick(page: HTMLElement) {
     // cap centre is at art y 39)
     jump.style.width = jump.style.height = `${CANVAS * k}px`;
     jump.style.left = `${Math.round(page.clientWidth * 0.25 - CX * k)}px`;
-    jump.style.top = `${padTopPx + Math.round((centreArt - 39) * k)}px`;
+    // JUMP_DROP: nudged below the midline ("move the jump button a bit down")
+    jump.style.top = `${padTopPx + Math.round((centreArt - 39 + JUMP_DROP_ART) * k)}px`;
     // labels share one row, floating over the taller control's cap top
     const labelY = padTopPx + (CAP_TOP_ART + REST_ART) * k - 10;
     for (const [el, fx] of [
