@@ -15,7 +15,7 @@ import { AmbienceMixer } from "./ambience";
 import { MusicDirector } from "./music";
 import { OneShotPlayer, PlayOpts } from "./oneshot";
 import { composerFoley, composerFoleySurfaces } from "./foley";
-import { titleThemeUrl } from "./titleTheme";
+import { titleThemeUrl, nightMusicUrl } from "./titleTheme";
 
 /** Per-avatar, per-frame movement sample — the scene reports what the body
  * is doing; the composer turns it into footsteps at gait cadence. */
@@ -89,6 +89,12 @@ const SWIM_EXIT_DB = -4;
 // The character-select TITLE THEME plays on the music bus (respects the music
 // toggle); trimmed a touch so it sits under the SFX, never blaring on load.
 const TITLE_THEME_DB = -4;
+// The mystical NIGHT bed: a second looping music layer cross-faded IN as the
+// sun sets and OUT at dawn (maintainer 2026-07-19). It loops CONTINUOUSLY —
+// never stopped on the day/night flip — so each night you hear a different
+// stretch, not just its opening. Level at full night; the day score fades to
+// a low floor so the night bed takes over.
+const NIGHT_MUSIC_DB = -5;
 
 // Footstep routing (maintainer directives 2026-07-18): the approved STONE
 // set is the default for every dry surface; per-surface sets are enabled
@@ -202,6 +208,11 @@ export class GameAudio {
   private titleSrc: AudioBufferSourceNode | null = null;
   private titleGain: GainNode | null = null;
   private titleLoading = false;
+  // Night music bed (in-world): a second looping layer, cross-faded by the sun.
+  private nightWanted = false;
+  private nightSrc: AudioBufferSourceNode | null = null;
+  private nightGain: GainNode | null = null;
+  private nightLoading = false;
   private storm = false;
   private musicToggleFast = false;
   private mode = "overworld";
@@ -284,8 +295,42 @@ export class GameAudio {
   /** The world is live — bring the score in (and retire the title theme). */
   startMusic(): void {
     this.musicWanted = true;
+    this.nightWanted = true; // arm the night bed; slowTick cross-fades it
     this.stopTitleTheme();
+    this.ensureNightMusic();
     if (this.catalog && this.graph) void this.music.start(this.catalog.music);
+  }
+
+  private ensureNightMusic(): void {
+    if (!this.graph || !this.graph.running || this.nightSrc || this.nightLoading || !this.nightWanted) return;
+    const url = nightMusicUrl();
+    if (!url) return; // not generated yet
+    if (!this.nightGain) {
+      this.nightGain = this.graph.ctx.createGain();
+      this.nightGain.gain.value = 0.0001;
+      this.nightGain.connect(this.graph.bus("music"));
+    }
+    this.nightLoading = true;
+    void this.buffers.get(url).then((buf) => {
+      this.nightLoading = false;
+      if (!buf || !this.graph || !this.nightGain || this.nightSrc || !this.nightWanted) return;
+      const src = this.graph.ctx.createBufferSource();
+      src.buffer = buf;
+      src.loop = true; // loops FOREVER — never restarted on the day/night flip
+      src.connect(this.nightGain);
+      // Start anywhere in the bed so it isn't always heard from its opening.
+      src.start(this.graph.now, 0);
+      this.nightSrc = src;
+    });
+  }
+
+  /** Cross-fade the night bed by how dark it is (0 day → 1 night); silent when
+   * music is off or in pure mode. Called from slowTick with the live sun. */
+  private applyNightLevel(night: number, tauS: number): void {
+    if (!this.nightGain || !this.graph) return;
+    const amt = this.pureOn ? 0 : Math.min(1, Math.max(0, night));
+    const target = this.musicOn && this.nightWanted ? dbToGain(NIGHT_MUSIC_DB) * amt : 0;
+    this.nightGain.gain.setTargetAtTime(Math.max(0.0001, target), this.graph.now, tauS);
   }
 
   /** Start the character-select TITLE THEME (composer-generated, looping on the
@@ -872,14 +917,22 @@ export class GameAudio {
       fire_crackle: field.fire,
     });
 
-    // The score dips into the night — Nangijala's nights belong to the
-    // crickets and the fires; music returns with the light. Pure mode
-    // freezes ALL level automation at unity (the score plays as authored).
+    // DAY/NIGHT MUSIC CROSS-FADE (maintainer 2026-07-19: "more mystical bg
+    // music during night"). When a night bed exists the DAY score fades to a
+    // low floor at night while the mystical NIGHT bed cross-fades UP, so nights
+    // belong to the night track — which loops CONTINUOUSLY (a new stretch each
+    // cycle, never just its opening). Without a night bed yet, keep the old
+    // gentle dip so nights aren't silent. Pure mode freezes at the authored
+    // score. The toggle snaps; mood changes keep the slow ease.
     const modeMul = GameAudio.MODE_MUSIC[this.mode] ?? 1;
-    const level = this.pureOn ? 1 : (0.45 + 0.55 * sun) * modeMul;
-    // The user's toggle snaps (a switch must feel like a switch); mood
-    // changes keep the slow ease.
-    this.music.setLevel(this.musicOn ? level : 0, this.musicToggleFast ? 0.06 : 0.4);
+    const nightAmt = Math.min(1, Math.max(0, 1 - sun));
+    const haveNight = !!this.nightGain || !!nightMusicUrl();
+    const dayFloor = haveNight ? 0.12 : 0.45;
+    const dayLevel = this.pureOn ? 1 : (dayFloor + (1 - dayFloor) * sun) * modeMul;
+    const tau = this.musicToggleFast ? 0.06 : 0.4;
+    this.music.setLevel(this.musicOn ? dayLevel : 0, tau);
+    if (this.nightWanted) this.ensureNightMusic(); // covers the async unlock/load
+    this.applyNightLevel(nightAmt, tau);
     this.musicToggleFast = false;
   }
 

@@ -9,9 +9,12 @@ name: Composer title theme
 on:
   workflow_dispatch:
     inputs:
+      track:
+        description: "Which track: title | night | all"
+        default: "title"
       seconds:
-        description: "Theme length in seconds (default 90)"
-        default: "90"
+        description: "Length in seconds (blank = the track's default)"
+        default: ""
 
 permissions:
   contents: write
@@ -40,10 +43,10 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
-      - name: Compose the title theme
+      - name: Compose the track(s)
         env:
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
-        run: python games2/composer/music/pipeline/generate.py ${{ github.event.inputs.seconds }}
+        run: python games2/composer/music/pipeline/generate.py ${{ github.event.inputs.track || 'title' }} ${{ github.event.inputs.seconds }}
 
       - name: Commit + push
         id: push
