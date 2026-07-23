@@ -177,7 +177,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     return { cx: r.left + 64 * k, cy: r.top + 39 * k, k };
   });
   console.log("phone stick:", JSON.stringify(g));
-  g.k === 1 ? ok("phone art at true 1x") : fail(`phone art k=${g.k}, want 1`);
+  g.k === 2 ? ok("phone art at 2x (scaled-up round)") : fail(`phone art k=${g.k}, want 2`);
   await page.mouse.move(g.cx, g.cy);
   await page.mouse.down();
   await page.mouse.move(g.cx + 200, g.cy + 140, { steps: 4 });

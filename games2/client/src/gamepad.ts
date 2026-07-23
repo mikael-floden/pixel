@@ -31,12 +31,11 @@
  *    cap off and reveal the AI-completed rim and shaft top beneath.
  *  - Dead zone around the centre releases all keys (rest = no input).
  *
- * Pixel art renders nearest-neighbour at true 1x — the 2x-density art IS
- * the thumb-perfect size (maintainer). LOOK vs FEEL: the finger/cap
- * TRAVEL keeps the ORIGINAL 4/3/2 tier's css distances (dead zone, run
- * threshold, full gate) — the gameplay contract has survived both the
- * half-size round and this art swap unchanged; in art units the cap
- * deflects up to 56 px past the socket on the design-width tier.
+ * Pixel art renders nearest-neighbour at INTEGER factors: 2x at >=585 css
+ * width ("the pixelart is now twice as big, the graphics can be too"), 1x
+ * on small viewports. LOOK vs FEEL: the finger/cap TRAVEL keeps the
+ * ORIGINAL 4/3/2 tier's css distances (dead zone, run threshold, full
+ * gate) — the gameplay contract has survived every art round unchanged.
  */
 
 import { gameAudio } from "../../composer/index";
@@ -127,8 +126,11 @@ export function mountGamepadStick(page: HTMLElement) {
   const layout = () => {
     // FEEL tier: the original scale stepping — anchors the css travel
     const feelK = window.innerWidth >= 780 ? 4 : window.innerWidth >= 585 ? 3 : 2;
-    // LOOK: the 2x-density art renders at true 1x everywhere
-    k = 1;
+    // LOOK (maintainer 2026-07-23: "the pixelart is now twice as big, the
+    // graphics can be too — scale it up by 2x"): the 2x-density art renders
+    // at 2x on phones/desktop — double the on-screen stick, pixel grain in
+    // step with the HUD art — and 1x on small viewports.
+    k = window.innerWidth >= 585 ? 2 : 1;
     maxCss = TRAVEL * feelK;
     const size = CANVAS * k;
     pad.style.width = pad.style.height = `${size}px`;
