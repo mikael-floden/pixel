@@ -36,11 +36,13 @@ export type { WorldProp, Deck };
 // because screen-relative input math on the server must use the same ratio.
 export const MAP_GEOMETRY = { tile: 64, dx: ISO_DX, dy: ISO_DY, lh: LEVEL_PX, margin: 8 };
 
-// The default world when the player hasn't picked one (matches the server's
-// DEFAULT_WORLD). The maps agent adds worlds under maps2/worlds/<name>/; a world
+// The default world when the player hasn't picked one — the_island2, the world
+// closest to the real game (maintainer 2026-07-23). It's the preselected pick on
+// a fresh join (no stored choice) AND the top row of the picker (see
+// orderWorlds). The maps agent adds worlds under maps2/worlds/<name>/; a world
 // becomes playable + selectable once it has a world.json (see worlds.json,
 // built by scripts/build-worlds.mjs).
-export const DEFAULT_WORLD = "ring_test";
+export const DEFAULT_WORLD = "the_island2";
 
 export function worldUrl(name: string): string {
   return `/assets/maps2/worlds/${name.replace(/[^a-z0-9_-]/gi, "")}/world.json`;
@@ -66,17 +68,26 @@ export interface WorldInfo {
   preview?: string | null;
 }
 
-/** The list of playable worlds for the selector. Falls back to just the default
- * when the manifest is missing (older build / maps agent hasn't run yet). */
+/** The list of playable worlds for the selector, DEFAULT_WORLD first. Falls back
+ * to just the default when the manifest is missing (older build / maps agent
+ * hasn't run yet). */
 export async function loadWorldsList(): Promise<WorldInfo[]> {
   try {
     const res = await fetch("/worlds.json", { cache: "no-cache" });
     if (res.ok) {
       const list = (await res.json()) as WorldInfo[];
-      if (Array.isArray(list) && list.length) return list;
+      if (Array.isArray(list) && list.length) return orderWorlds(list);
     }
   } catch {}
-  return [{ name: DEFAULT_WORLD, label: "Ring Test" }];
+  return [{ name: DEFAULT_WORLD, label: "The Island2" }];
+}
+
+/** Put DEFAULT_WORLD (the world closest to the real game) at the TOP of the
+ * picker, keeping every other world in its manifest order. No-op if it's already
+ * first or absent. */
+function orderWorlds(list: WorldInfo[]): WorldInfo[] {
+  const i = list.findIndex((w) => w.name === DEFAULT_WORLD);
+  return i <= 0 ? list : [list[i], ...list.slice(0, i), ...list.slice(i + 1)];
 }
 
 /** Texture key for a cell's tile. maps2 bakes an explicit PNG path per cell, so

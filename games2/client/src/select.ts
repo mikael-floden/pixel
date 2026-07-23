@@ -43,12 +43,14 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
         localStorage.removeItem("ml-last-choice");
       } catch {}
     }
-    // Defaults when there's no valid stored pick (maintainer's fast join-and-
-    // iterate: the girl on Demo Lost). A valid stored value wins over these.
+    // Defaults when there's no valid stored pick: the girl on DEFAULT_WORLD
+    // (the_island2, the world closest to the real game). A valid stored value
+    // wins over these. worlds is DEFAULT_WORLD-first (loadWorldsList), so this
+    // resolves to the top row.
     let selected =
       storedCharIdx >= 0 ? storedCharIdx : Math.max(0, chars.findIndex((c) => c.uid === "default_girl"));
     let selectedWorld =
-      storedWorldIdx >= 0 ? storedWorldIdx : Math.max(0, worlds.findIndex((w) => w.name === "demo_lost"));
+      storedWorldIdx >= 0 ? storedWorldIdx : Math.max(0, worlds.findIndex((w) => w.name === DEFAULT_WORLD));
     const overlay = el("div", "ml-overlay");
     overlay.innerHTML = `
       <div class="ml-panel">
