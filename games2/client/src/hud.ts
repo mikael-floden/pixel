@@ -28,6 +28,7 @@ import { setClockMount } from "./clock";
 import { dressPlate, dressSlot, readyPlates, repaintPlates } from "./plate";
 import { holdLoading } from "./loading";
 import { mountGamepadStick } from "./gamepad";
+import { mountBars } from "./bars";
 import { gameAudio } from "../../composer/index";
 
 // ── Ambient-effect switches (Settings) ───────────────────────────────────
@@ -118,6 +119,7 @@ type TabId = (typeof TABS)[number]["id"];
  * canvas that stretches its plain sections to any viewport. */
 export function mountPageFrame() {
   injectStyles();
+  mountBars(); // HP/MP gauges, top-left of the game view
   document.getElementById("ml-pageframe")?.remove(); // old overlay, if any
   // first-render gates for the loading fade: the black must not lift until
   // the frame has actually composed (its art comes over the network on a
