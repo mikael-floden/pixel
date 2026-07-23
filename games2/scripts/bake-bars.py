@@ -36,32 +36,24 @@ RED = (198, 72, 58)          # HEALTH — a warm brick red in the gold's palette
 # KEYED OUT (maintainer 2026-07-23 green marks: "you didn't cut out the UI
 # graphics correctly"), or they bake in as teal nubs on a dark background.
 BG = (129, 151, 150)
-# The kit bar is 90px, but at SCALE 3 (=270 CSS px) it can't sit high in the
-# top-left with even margins: the left vine curls inward at the very top and
-# the clock disc bulges in from the right, so a 270px bar has to drop below the
-# curl — leaving an "enormous" top gap (maintainer 2026-07-23). The track's
-# interior (cols ~5..84) is a UNIFORM vertical slice (top border / dark / bottom
-# border), so we can delete interior columns to shorten the bar seamlessly while
-# keeping BOTH rounded end caps. NARROW_TO trims it to a width that clears the
-# disc bulge up high; the runtime clip-path fill is percentage-based so a shorter
-# track fills correctly and bars.ts' ART_W just tracks this number.
-NARROW_TO = 86
-CUT_AT = 42  # first interior column to drop (well inside the uniform run)
 
 
-def narrow(img, target):
-    """Delete interior columns from the middle to reach `target` width, keeping
-    the caps. Interior is uniform so any contiguous middle run is seamless."""
+def downscale2x(img):
+    """2x -> 1x, NEAREST (drop every other pixel). The kit sheet is authored on
+    a 2x pixel grid (every 2x2 block uniform — extract-uikit.py downscales the
+    buttons/slots the same way), so this is EXACT, not a resample. It recovers
+    the bar's true logical resolution (45x10, 1-px borders) so that when bars.ts
+    9-slices it at the shared kit block scale (plate.ts nineSlice / KIT_PX) the
+    bar's borders come out the SAME 2px as the buttons — on the 2x-grid art they
+    would render 2x thick. The 9-slice extrudes the uniform track to any width,
+    so no narrowing is needed anymore (the bar keeps its box, only the pixels
+    shrink — maintainer 2026-07-23: "do what we did with the UI KIT buttons")."""
     W, H = img.size
-    drop = W - target
-    if drop <= 0:
-        return img
-    keep = [x for x in range(W) if not (CUT_AT <= x < CUT_AT + drop)]
-    out = Image.new("RGBA", (target, H), (0, 0, 0, 0))
-    op, ip = out.load(), img.load()
-    for nx, ox in enumerate(keep):
-        for y in range(H):
-            op[nx, y] = ip[ox, y]
+    out = Image.new("RGBA", (W // 2, H // 2), (0, 0, 0, 0))
+    ip, op = img.load(), out.load()
+    for y in range(H // 2):
+        for x in range(W // 2):
+            op[x, y] = ip[2 * x, 2 * y]
     return out
 
 
@@ -98,13 +90,13 @@ def main():
             else:
                 fp[x, y] = (*c, 255)           # border/chrome (dark + brown)
 
-    frame, fred, fyellow = (narrow(im2, NARROW_TO) for im2 in (frame, fred, fyellow))
+    frame, fred, fyellow = (downscale2x(im2) for im2 in (frame, fred, fyellow))
     frame.save("client/public/ui2/bar-frame.png")
     fred.save("client/public/ui2/bar-fill-red.png")
     fyellow.save("client/public/ui2/bar-fill-yellow.png")
     fcols = {c for c in frame.getdata() if c[3]}
     assert BG not in {(c[0], c[1], c[2]) for c in fcols}, "backdrop leaked into the frame"
-    print(f"baked {W}x{H} -> narrowed {frame.size[0]}x{frame.size[1]} from crisp kit: "
+    print(f"baked {W}x{H} -> downscaled {frame.size[0]}x{frame.size[1]} from crisp kit: "
           f"gold px {gold_px}, keyed backdrop px {bg_px}")
     print("frame colours:", sorted(fcols), "bbox", frame.getbbox())
 

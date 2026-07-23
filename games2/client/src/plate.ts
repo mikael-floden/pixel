@@ -65,36 +65,34 @@ export function readyPlates(): Promise<void> {
   return readyP;
 }
 
-/** A data-URL plate for a box of w×h CSS px: corners at integer k, flat runs
- * extruded. The canvas is baked at DEVICE resolution (× devicePixelRatio) and
- * pinned to the box with background-size:100% 100%, so it maps 1:1 to physical
- * pixels — a plate baked at CSS px was upscaled bilinear by the phone's
- * desktop-site zoom and rendered BLURRY (maintainer 2026-07-23: kit slots read
- * soft while the health bar — an <img> — stayed crisp; "that blurryness comes
- * from rendering"). imageSmoothingEnabled stays off so every block is hard.
- * null until the art has loaded. */
-export function plateUrl(kind: PlateKind, w: number, h: number): string | null {
-  const img = imgs[kind];
-  if (!img) return null;
+/** 9-slice `img` to a w×h CSS box: corners at the integer block scale k, flat
+ * runs extruded — the same lossless composition every kit graphic uses. Baked
+ * at `scale`× resolution: pass the DEVICE pixel ratio for a background-image
+ * plate (maps 1:1 to physical px so the phone's desktop-site zoom can't blur
+ * it), or 1 for an <img> that upscales itself crisply with image-rendering:
+ * pixelated (the health bar — bars.ts — 9-slices its frame/fill this way so it
+ * keeps its box while the blocks shrink to KIT_PX, exactly like the buttons).
+ * imageSmoothingEnabled stays off so every block is hard. */
+export function nineSlice(
+  img: HTMLImageElement,
+  w: number,
+  h: number,
+  scale = Math.max(1, window.devicePixelRatio || 1),
+): string | null {
   w = Math.round(w);
   h = Math.round(h);
   if (w < 2 || h < 2) return null;
   const k = Math.min(KIT_PX, Math.max(1, Math.floor(h / img.height)));
   const cs = Math.min(CS * k, w >> 1, h >> 1);
-  // device scale: bake at physical resolution so there's no upscale to blur.
-  const dpr = Math.max(1, window.devicePixelRatio || 1);
-  const key = `${kind}:${w}x${h}@${dpr}`;
-  const hit = cache.get(key);
-  if (hit) return hit;
   const nw = img.width;
   const nh = img.height;
   const mx = nw >> 1; // flat mid slices
   const my = nh >> 1;
   const c = Math.ceil(cs / k); // native slice size backing the k-scaled corner
-  // device-space destination geometry (canvas px); source slices stay native
-  const W = Math.round(w * dpr);
-  const H = Math.round(h * dpr);
-  const CSd = Math.round(cs * dpr);
+  // destination geometry in canvas px (× scale); source slices stay native
+  const W = Math.round(w * scale);
+  const H = Math.round(h * scale);
+  const CSd = Math.round(cs * scale);
   const cv = document.createElement("canvas");
   cv.width = W;
   cv.height = H;
@@ -115,8 +113,22 @@ export function plateUrl(kind: PlateKind, w: number, h: number): string | null {
     g.drawImage(img, nw - c, my, c, 1, W - CSd, CSd, CSd, mh); // right
   }
   if (mw > 0 && mh > 0) g.drawImage(img, mx, my, 1, 1, CSd, CSd, mw, mh); // centre
-  const url = cv.toDataURL();
-  cache.set(key, url);
+  return cv.toDataURL();
+}
+
+/** A data-URL plate for a box of w×h CSS px (background-image path — device
+ * resolution). null until the art has loaded. */
+export function plateUrl(kind: PlateKind, w: number, h: number): string | null {
+  const img = imgs[kind];
+  if (!img) return null;
+  const rw = Math.round(w);
+  const rh = Math.round(h);
+  const scale = Math.max(1, window.devicePixelRatio || 1);
+  const key = `${kind}:${rw}x${rh}@${scale}`;
+  const hit = cache.get(key);
+  if (hit) return hit;
+  const url = nineSlice(img, rw, rh, scale);
+  if (url) cache.set(key, url);
   return url;
 }
 

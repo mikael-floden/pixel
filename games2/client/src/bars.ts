@@ -18,11 +18,16 @@
  */
 
 import { applyUiZoom } from "./uiscale";
+import { nineSlice } from "./plate";
 
-const ART_W = 86; // crisp UI-kit bar, narrowed by bake-bars.py (interior trim)
-const ART_H = 20;
-const SCALE = 3; // integer nearest-neighbour render scale
-const NUM_PX = 22; // number font size, DESIGN px (decoupled from art scale)
+// The bar's DISPLAY box (CSS px) — the maintainer's tuned size, KEPT while the
+// pixel blocks shrink: the low-res kit bar art (bar-*.png, 45x10) is 9-sliced
+// into this box at the shared kit block scale (plate.ts nineSlice / KIT_PX),
+// exactly like the buttons, so the bar stays this size but its pixels match
+// them instead of reading ~2x the icons (maintainer 2026-07-23).
+const GAUGE_W = 258;
+const GAUGE_H = 60;
+const NUM_PX = 22; // number font size, DESIGN px (decoupled from block scale)
 // top-left anchor + row gap, DESIGN px (tuned on the maintainer's phone view).
 // LEFT clears the frame's left vine rail (maintainer 2026-07-23: the bars were
 // drawn OVER the frame); GAP separates the two bar+number groups.
@@ -59,6 +64,7 @@ export function mountBars() {
     const frame = img("/ui2/bar-frame.png");
     const fill = img(`/ui2/bar-fill-${colour}.png`);
     fill.classList.add("ml-bar-fill");
+    fill.dataset.color = colour; // HP=red / MP=yellow (the gate checks this)
     gauge.append(frame, fill);
     const num = document.createElement("span");
     num.className = "ml-bar-num";
@@ -107,9 +113,20 @@ export function setBar(kind: Kind, cur: number, max: number) {
 
 function img(src: string): HTMLImageElement {
   const e = document.createElement("img");
-  e.src = src;
   e.alt = "";
   e.draggable = false;
+  // 9-slice the low-res kit bar art into the SAME box at the kit block scale
+  // (plate.ts nineSlice / KIT_PX) so the bar keeps its size while its pixels
+  // shrink to match the buttons — scaling the whole <img> coupled size to grain
+  // and read ~2x the icons (maintainer 2026-07-23: "do what we did with the UI
+  // KIT buttons"). scale=1: an <img> upscales itself crisply with
+  // image-rendering:pixelated (kept in the CSS).
+  const s = new Image();
+  s.onload = () => {
+    const u = nineSlice(s, GAUGE_W, GAUGE_H, 1);
+    if (u) e.src = u;
+  };
+  s.src = src;
   return e;
 }
 
@@ -117,8 +134,8 @@ let injected = false;
 function injectStyles() {
   if (injected) return;
   injected = true;
-  const w = ART_W * SCALE;
-  const h = ART_H * SCALE;
+  const w = GAUGE_W;
+  const h = GAUGE_H;
   const s = document.createElement("style");
   s.textContent = `
   .ml-bars{position:fixed;z-index:8;pointer-events:none;display:flex;

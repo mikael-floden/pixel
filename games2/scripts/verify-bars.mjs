@@ -20,19 +20,21 @@ try {
   await page.evaluate(() => window.__mlSelect.commit());
   await page.waitForSelector(".ml-bars", { timeout: 30000 });
 
-  // structure: two rows, hp=red fill, mp=blue fill, both frames + numbers
+  // structure: two rows; frame + fill are 9-sliced into the box (data-URL srcs,
+  // like the kit buttons), fill colour tagged via data-color, plus numbers
   const s = await page.evaluate(() => {
     const rows = [...document.querySelectorAll(".ml-bar-row")];
     return rows.map((r) => ({
-      fill: r.querySelector(".ml-bar-fill")?.getAttribute("src") || "",
-      hasFrame: !!r.querySelector('img[src*="bar-frame"]'),
+      color: r.querySelector(".ml-bar-fill")?.dataset.color || "",
+      imgs: r.querySelectorAll(".ml-bar-gauge img").length,
+      fillData: (r.querySelector(".ml-bar-fill")?.getAttribute("src") || "").startsWith("data:"),
       num: r.querySelector(".ml-bar-num")?.textContent || "",
     }));
   });
   if (s.length !== 2) fail(`want 2 bar rows, got ${s.length}`);
   else {
-    s[0].fill.includes("red") && s[0].hasFrame ? ok("health = red fill over the track") : fail(`hp row ${JSON.stringify(s[0])}`);
-    s[1].fill.includes("yellow") && s[1].hasFrame ? ok("mana = yellow fill over the track") : fail(`mp row ${JSON.stringify(s[1])}`);
+    s[0].color === "red" && s[0].imgs === 2 && s[0].fillData ? ok("health = red 9-sliced fill over the track") : fail(`hp row ${JSON.stringify(s[0])}`);
+    s[1].color === "yellow" && s[1].imgs === 2 && s[1].fillData ? ok("mana = yellow 9-sliced fill over the track") : fail(`mp row ${JSON.stringify(s[1])}`);
     /^\d+ \/ \d+ HP$/.test(s[0].num) ? ok(`hp number "${s[0].num}"`) : fail(`hp number "${s[0].num}"`);
     /^\d+ \/ \d+ MP$/.test(s[1].num) ? ok(`mp number "${s[1].num}"`) : fail(`mp number "${s[1].num}"`);
   }

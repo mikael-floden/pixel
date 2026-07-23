@@ -526,9 +526,10 @@ function injectStyles() {
     color:#fff;font:700 22px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;
     text-shadow:0 1px 0 rgba(0,0,0,.35)}
   .ml-ddhead.press,.ml-ddhead.open{color:#f4e3c2}
-  /* the 6x6 caret at 5x = 30px; top/margin centering, NOT translate — the
-     plate press rule owns the children's translate channel */
-  .ml-ddchev{position:absolute;right:25px;top:50%;margin-top:-15px;width:30px;height:30px;
+  /* the 6x6 caret at 2x = 12px (matches the kit block scale, plate.ts KIT_PX);
+     top/margin centering, NOT translate — the plate press rule owns the
+     children's translate channel */
+  .ml-ddchev{position:absolute;right:25px;top:50%;margin-top:-6px;width:12px;height:12px;
     image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
   .ml-ddlist{position:absolute;top:calc(100% + 6px);left:0;right:0;display:flex;flex-direction:column;
     gap:6px;max-height:520px;overflow-y:auto;overscroll-behavior:contain}
@@ -573,12 +574,12 @@ function injectStyles() {
   .ml-btn.press{color:#f4e3c2}
   /* install prompt: ICON ONLY in the top-RIGHT corner (maintainer's red
      circle) — the kit's download arrow, a complete square icon button at
-     the shared 5x block scale. */
-  .ml-install{position:fixed;top:16px;right:16px;z-index:2;width:80px;height:80px;padding:0;
+     the shared 2x block scale (matches KIT_PX). */
+  .ml-install{position:fixed;top:16px;right:16px;z-index:2;width:32px;height:32px;padding:0;
     border:none;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
   .ml-install img{width:100%;height:100%;image-rendering:pixelated;-webkit-user-drag:none}
   .ml-install[hidden]{display:none}
-  .ml-install.press img{translate:0 2.5px;filter:brightness(.85)}`;
+  .ml-install.press img{translate:0 1px;filter:brightness(.85)}`;
   const s = document.createElement("style");
   s.textContent = css;
   document.head.appendChild(s);
