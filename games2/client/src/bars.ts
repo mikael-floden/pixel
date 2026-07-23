@@ -12,9 +12,10 @@
  * the percent (the dark interior shows through the cut). The layer is uiZoom'd
  * on <body> like the version badge, so it tracks the frame under "Desktop site".
  *
- * For now each fill sweeps so we can see the look ("connected to the players
- * real health ... but for now"); the number to the right tracks it. setBar(kind,
- * cur, max) is the seam the real player state plugs into later; it ends the demo.
+ * The bars show STATIC placeholder values for now (maintainer 2026-07-23: HP
+ * 10/10 full, Energy 0/0 empty, XP 0/10 empty — "don't want to see the animation
+ * anymore"); the number to the right shows the value. setBar(kind, cur, max) is
+ * the seam the real player state plugs into later.
  */
 
 import { applyUiZoom } from "./uiscale";
@@ -43,8 +44,6 @@ interface Bar {
 let root: HTMLDivElement | null = null; // left group: HP + Energy
 let rootR: HTMLDivElement | null = null; // right group: Experience
 const bars: Record<Kind, Bar> = {} as any;
-let raf = 0;
-let demo = true;
 
 export function mountBars() {
   if (root) return;
@@ -80,29 +79,19 @@ export function mountBars() {
     container.appendChild(row);
     return { fill, num, max, suffix };
   };
-  bars.hp = make(root, "hp", "red", 500, "HP");
-  bars.ep = make(root, "ep", "yellow", 500, "EP");
-  bars.xp = make(rootR, "xp", "blue", 2000, "XP");
+  bars.hp = make(root, "hp", "red", 10, "HP");
+  bars.ep = make(root, "ep", "yellow", 0, "EP");
+  bars.xp = make(rootR, "xp", "blue", 10, "XP");
   document.body.append(root, rootR);
   applyUiZoom(root);
   applyUiZoom(rootR);
 
-  demo = true;
-  const t0 = performance.now();
-  const loop = (t: number) => {
-    // HP/Energy: triangle wave 0..1..0 over ~4.4s (energy half a period out of
-    // phase so the two breathe independently). XP: fills UP like real experience
-    // (sawtooth over ~10s) then rolls over — faked for now.
-    const tri = (ph: number) => {
-      const u = ((t - t0) / 4400 + ph) % 1;
-      return u < 0.5 ? u * 2 : 2 - u * 2;
-    };
-    apply("hp", tri(0));
-    apply("ep", tri(0.5));
-    apply("xp", ((t - t0) / 10000) % 1);
-    raf = requestAnimationFrame(loop);
-  };
-  raf = requestAnimationFrame(loop);
+  // Static placeholder values — no animation (maintainer 2026-07-23: "set hp to
+  // stable 10/10, energy to 0/0 empty, xp to 0/10 also empty; don't want to see
+  // the animation anymore"). setBar() replaces these once real state is wired.
+  apply("hp", 1); // 10 / 10 — full
+  apply("ep", 0); // 0 / 0  — empty
+  apply("xp", 0); // 0 / 10 — empty
 }
 
 function apply(kind: Kind, pct: number) {
@@ -112,13 +101,9 @@ function apply(kind: Kind, pct: number) {
   b.num.textContent = `${cur} / ${b.max} ${b.suffix}`;
 }
 
-/** The seam the real player state plugs into (ends the demo sweep). */
+/** The seam the real player state plugs into. */
 export function setBar(kind: Kind, cur: number, max: number) {
   if (!root) return;
-  if (demo) {
-    demo = false;
-    cancelAnimationFrame(raf);
-  }
   bars[kind].max = max;
   apply(kind, max > 0 ? Math.max(0, Math.min(1, cur / max)) : 0);
 }
