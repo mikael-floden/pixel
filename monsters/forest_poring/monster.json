@@ -1,0 +1,378 @@
+{
+  "id": "forest_poring",
+  "name": "Forest Poring",
+  "source": {
+    "kind": "object",
+    "pixellab_id": "538729d4-51ed-4ae4-950e-131ee599c56f",
+    "url": "https://www.pixellab.ai/create-object/538729d4-51ed-4ae4-950e-131ee599c56f",
+    "prompt": "The round Poring blob from Ragnar\u00f6k Online, but in green like a forset poring",
+    "view": "low top-down"
+  },
+  "size": {
+    "width": 48,
+    "height": 48
+  },
+  "sprite": "forest_poring/sprite.png",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "forest_poring/rotations/south.png",
+    "west": "forest_poring/rotations/west.png",
+    "east": "forest_poring/rotations/east.png",
+    "north": "forest_poring/rotations/north.png",
+    "south-east": "forest_poring/rotations/south-east.png",
+    "south-west": "forest_poring/rotations/south-west.png",
+    "north-east": "forest_poring/rotations/north-east.png",
+    "north-west": "forest_poring/rotations/north-west.png"
+  },
+  "animations": {
+    "attack": {
+      "group_id": "1edc17bc-7906-40bc-8e6f-3eadffdbf0b7",
+      "description": "projectile vomit",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "forest_poring/animations/attack__east.png",
+          "gif": "forest_poring/animations/attack__east.gif",
+          "frame_paths": [
+            "forest_poring/animations/attack/east/00.png",
+            "forest_poring/animations/attack/east/01.png",
+            "forest_poring/animations/attack/east/02.png",
+            "forest_poring/animations/attack/east/03.png",
+            "forest_poring/animations/attack/east/04.png",
+            "forest_poring/animations/attack/east/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 08:20:41 GMT",
+          "src_frames": 6
+        },
+        "north": {
+          "frames": 6,
+          "strip": "forest_poring/animations/attack__north.png",
+          "gif": "forest_poring/animations/attack__north.gif",
+          "frame_paths": [
+            "forest_poring/animations/attack/north/00.png",
+            "forest_poring/animations/attack/north/01.png",
+            "forest_poring/animations/attack/north/02.png",
+            "forest_poring/animations/attack/north/03.png",
+            "forest_poring/animations/attack/north/04.png",
+            "forest_poring/animations/attack/north/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 08:20:44 GMT",
+          "src_frames": 6
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "forest_poring/animations/attack__north-east.png",
+          "gif": "forest_poring/animations/attack__north-east.gif",
+          "frame_paths": [
+            "forest_poring/animations/attack/north-east/00.png",
+            "forest_poring/animations/attack/north-east/01.png",
+            "forest_poring/animations/attack/north-east/02.png",
+            "forest_poring/animations/attack/north-east/03.png",
+            "forest_poring/animations/attack/north-east/04.png",
+            "forest_poring/animations/attack/north-east/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 08:20:47 GMT",
+          "src_frames": 6
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "forest_poring/animations/attack__north-west.png",
+          "gif": "forest_poring/animations/attack__north-west.gif",
+          "frame_paths": [
+            "forest_poring/animations/attack/north-west/00.png",
+            "forest_poring/animations/attack/north-west/01.png",
+            "forest_poring/animations/attack/north-west/02.png",
+            "forest_poring/animations/attack/north-west/03.png",
+            "forest_poring/animations/attack/north-west/04.png",
+            "forest_poring/animations/attack/north-west/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 08:20:50 GMT",
+          "src_frames": 6
+        },
+        "south": {
+          "frames": 6,
+          "strip": "forest_poring/animations/attack__south.png",
+          "gif": "forest_poring/animations/attack__south.gif",
+          "frame_paths": [
+            "forest_poring/animations/attack/south/00.png",
+            "forest_poring/animations/attack/south/01.png",
+            "forest_poring/animations/attack/south/02.png",
+            "forest_poring/animations/attack/south/03.png",
+            "forest_poring/animations/attack/south/04.png",
+            "forest_poring/animations/attack/south/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 08:20:53 GMT",
+          "src_frames": 6
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "forest_poring/animations/attack__south-east.png",
+          "gif": "forest_poring/animations/attack__south-east.gif",
+          "frame_paths": [
+            "forest_poring/animations/attack/south-east/00.png",
+            "forest_poring/animations/attack/south-east/01.png",
+            "forest_poring/animations/attack/south-east/02.png",
+            "forest_poring/animations/attack/south-east/03.png",
+            "forest_poring/animations/attack/south-east/04.png",
+            "forest_poring/animations/attack/south-east/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 08:20:56 GMT",
+          "src_frames": 6
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "forest_poring/animations/attack__south-west.png",
+          "gif": "forest_poring/animations/attack__south-west.gif",
+          "frame_paths": [
+            "forest_poring/animations/attack/south-west/00.png",
+            "forest_poring/animations/attack/south-west/01.png",
+            "forest_poring/animations/attack/south-west/02.png",
+            "forest_poring/animations/attack/south-west/03.png",
+            "forest_poring/animations/attack/south-west/04.png",
+            "forest_poring/animations/attack/south-west/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 08:20:59 GMT",
+          "src_frames": 6
+        },
+        "west": {
+          "frames": 6,
+          "strip": "forest_poring/animations/attack__west.png",
+          "gif": "forest_poring/animations/attack__west.gif",
+          "frame_paths": [
+            "forest_poring/animations/attack/west/00.png",
+            "forest_poring/animations/attack/west/01.png",
+            "forest_poring/animations/attack/west/02.png",
+            "forest_poring/animations/attack/west/03.png",
+            "forest_poring/animations/attack/west/04.png",
+            "forest_poring/animations/attack/west/05.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 08:21:01 GMT",
+          "src_frames": 6
+        }
+      }
+    },
+    "jump": {
+      "group_id": "157f3f94-a04f-43e8-95a7-c6d9f043cf57",
+      "description": "Jumping",
+      "directions": {
+        "east": {
+          "frames": 16,
+          "strip": "forest_poring/animations/jump__east.png",
+          "gif": "forest_poring/animations/jump__east.gif",
+          "frame_paths": [
+            "forest_poring/animations/jump/east/00.png",
+            "forest_poring/animations/jump/east/01.png",
+            "forest_poring/animations/jump/east/02.png",
+            "forest_poring/animations/jump/east/03.png",
+            "forest_poring/animations/jump/east/04.png",
+            "forest_poring/animations/jump/east/05.png",
+            "forest_poring/animations/jump/east/06.png",
+            "forest_poring/animations/jump/east/07.png",
+            "forest_poring/animations/jump/east/08.png",
+            "forest_poring/animations/jump/east/09.png",
+            "forest_poring/animations/jump/east/10.png",
+            "forest_poring/animations/jump/east/11.png",
+            "forest_poring/animations/jump/east/12.png",
+            "forest_poring/animations/jump/east/13.png",
+            "forest_poring/animations/jump/east/14.png",
+            "forest_poring/animations/jump/east/15.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 08:21:04 GMT",
+          "src_frames": 16
+        },
+        "north": {
+          "frames": 16,
+          "strip": "forest_poring/animations/jump__north.png",
+          "gif": "forest_poring/animations/jump__north.gif",
+          "frame_paths": [
+            "forest_poring/animations/jump/north/00.png",
+            "forest_poring/animations/jump/north/01.png",
+            "forest_poring/animations/jump/north/02.png",
+            "forest_poring/animations/jump/north/03.png",
+            "forest_poring/animations/jump/north/04.png",
+            "forest_poring/animations/jump/north/05.png",
+            "forest_poring/animations/jump/north/06.png",
+            "forest_poring/animations/jump/north/07.png",
+            "forest_poring/animations/jump/north/08.png",
+            "forest_poring/animations/jump/north/09.png",
+            "forest_poring/animations/jump/north/10.png",
+            "forest_poring/animations/jump/north/11.png",
+            "forest_poring/animations/jump/north/12.png",
+            "forest_poring/animations/jump/north/13.png",
+            "forest_poring/animations/jump/north/14.png",
+            "forest_poring/animations/jump/north/15.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 08:21:13 GMT",
+          "src_frames": 16
+        },
+        "north-east": {
+          "frames": 16,
+          "strip": "forest_poring/animations/jump__north-east.png",
+          "gif": "forest_poring/animations/jump__north-east.gif",
+          "frame_paths": [
+            "forest_poring/animations/jump/north-east/00.png",
+            "forest_poring/animations/jump/north-east/01.png",
+            "forest_poring/animations/jump/north-east/02.png",
+            "forest_poring/animations/jump/north-east/03.png",
+            "forest_poring/animations/jump/north-east/04.png",
+            "forest_poring/animations/jump/north-east/05.png",
+            "forest_poring/animations/jump/north-east/06.png",
+            "forest_poring/animations/jump/north-east/07.png",
+            "forest_poring/animations/jump/north-east/08.png",
+            "forest_poring/animations/jump/north-east/09.png",
+            "forest_poring/animations/jump/north-east/10.png",
+            "forest_poring/animations/jump/north-east/11.png",
+            "forest_poring/animations/jump/north-east/12.png",
+            "forest_poring/animations/jump/north-east/13.png",
+            "forest_poring/animations/jump/north-east/14.png",
+            "forest_poring/animations/jump/north-east/15.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 08:21:22 GMT",
+          "src_frames": 16
+        },
+        "north-west": {
+          "frames": 16,
+          "strip": "forest_poring/animations/jump__north-west.png",
+          "gif": "forest_poring/animations/jump__north-west.gif",
+          "frame_paths": [
+            "forest_poring/animations/jump/north-west/00.png",
+            "forest_poring/animations/jump/north-west/01.png",
+            "forest_poring/animations/jump/north-west/02.png",
+            "forest_poring/animations/jump/north-west/03.png",
+            "forest_poring/animations/jump/north-west/04.png",
+            "forest_poring/animations/jump/north-west/05.png",
+            "forest_poring/animations/jump/north-west/06.png",
+            "forest_poring/animations/jump/north-west/07.png",
+            "forest_poring/animations/jump/north-west/08.png",
+            "forest_poring/animations/jump/north-west/09.png",
+            "forest_poring/animations/jump/north-west/10.png",
+            "forest_poring/animations/jump/north-west/11.png",
+            "forest_poring/animations/jump/north-west/12.png",
+            "forest_poring/animations/jump/north-west/13.png",
+            "forest_poring/animations/jump/north-west/14.png",
+            "forest_poring/animations/jump/north-west/15.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 08:21:30 GMT",
+          "src_frames": 16
+        },
+        "south": {
+          "frames": 16,
+          "strip": "forest_poring/animations/jump__south.png",
+          "gif": "forest_poring/animations/jump__south.gif",
+          "frame_paths": [
+            "forest_poring/animations/jump/south/00.png",
+            "forest_poring/animations/jump/south/01.png",
+            "forest_poring/animations/jump/south/02.png",
+            "forest_poring/animations/jump/south/03.png",
+            "forest_poring/animations/jump/south/04.png",
+            "forest_poring/animations/jump/south/05.png",
+            "forest_poring/animations/jump/south/06.png",
+            "forest_poring/animations/jump/south/07.png",
+            "forest_poring/animations/jump/south/08.png",
+            "forest_poring/animations/jump/south/09.png",
+            "forest_poring/animations/jump/south/10.png",
+            "forest_poring/animations/jump/south/11.png",
+            "forest_poring/animations/jump/south/12.png",
+            "forest_poring/animations/jump/south/13.png",
+            "forest_poring/animations/jump/south/14.png",
+            "forest_poring/animations/jump/south/15.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 08:21:41 GMT",
+          "src_frames": 16
+        },
+        "south-east": {
+          "frames": 16,
+          "strip": "forest_poring/animations/jump__south-east.png",
+          "gif": "forest_poring/animations/jump__south-east.gif",
+          "frame_paths": [
+            "forest_poring/animations/jump/south-east/00.png",
+            "forest_poring/animations/jump/south-east/01.png",
+            "forest_poring/animations/jump/south-east/02.png",
+            "forest_poring/animations/jump/south-east/03.png",
+            "forest_poring/animations/jump/south-east/04.png",
+            "forest_poring/animations/jump/south-east/05.png",
+            "forest_poring/animations/jump/south-east/06.png",
+            "forest_poring/animations/jump/south-east/07.png",
+            "forest_poring/animations/jump/south-east/08.png",
+            "forest_poring/animations/jump/south-east/09.png",
+            "forest_poring/animations/jump/south-east/10.png",
+            "forest_poring/animations/jump/south-east/11.png",
+            "forest_poring/animations/jump/south-east/12.png",
+            "forest_poring/animations/jump/south-east/13.png",
+            "forest_poring/animations/jump/south-east/14.png",
+            "forest_poring/animations/jump/south-east/15.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 08:21:50 GMT",
+          "src_frames": 16
+        },
+        "south-west": {
+          "frames": 16,
+          "strip": "forest_poring/animations/jump__south-west.png",
+          "gif": "forest_poring/animations/jump__south-west.gif",
+          "frame_paths": [
+            "forest_poring/animations/jump/south-west/00.png",
+            "forest_poring/animations/jump/south-west/01.png",
+            "forest_poring/animations/jump/south-west/02.png",
+            "forest_poring/animations/jump/south-west/03.png",
+            "forest_poring/animations/jump/south-west/04.png",
+            "forest_poring/animations/jump/south-west/05.png",
+            "forest_poring/animations/jump/south-west/06.png",
+            "forest_poring/animations/jump/south-west/07.png",
+            "forest_poring/animations/jump/south-west/08.png",
+            "forest_poring/animations/jump/south-west/09.png",
+            "forest_poring/animations/jump/south-west/10.png",
+            "forest_poring/animations/jump/south-west/11.png",
+            "forest_poring/animations/jump/south-west/12.png",
+            "forest_poring/animations/jump/south-west/13.png",
+            "forest_poring/animations/jump/south-west/14.png",
+            "forest_poring/animations/jump/south-west/15.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 08:21:59 GMT",
+          "src_frames": 16
+        },
+        "west": {
+          "frames": 16,
+          "strip": "forest_poring/animations/jump__west.png",
+          "gif": "forest_poring/animations/jump__west.gif",
+          "frame_paths": [
+            "forest_poring/animations/jump/west/00.png",
+            "forest_poring/animations/jump/west/01.png",
+            "forest_poring/animations/jump/west/02.png",
+            "forest_poring/animations/jump/west/03.png",
+            "forest_poring/animations/jump/west/04.png",
+            "forest_poring/animations/jump/west/05.png",
+            "forest_poring/animations/jump/west/06.png",
+            "forest_poring/animations/jump/west/07.png",
+            "forest_poring/animations/jump/west/08.png",
+            "forest_poring/animations/jump/west/09.png",
+            "forest_poring/animations/jump/west/10.png",
+            "forest_poring/animations/jump/west/11.png",
+            "forest_poring/animations/jump/west/12.png",
+            "forest_poring/animations/jump/west/13.png",
+            "forest_poring/animations/jump/west/14.png",
+            "forest_poring/animations/jump/west/15.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 08:22:07 GMT",
+          "src_frames": 16
+        }
+      }
+    }
+  },
+  "animation_aliases": {
+    "walk": "jump"
+  },
+  "animation_renames": {
+    "jumping": "jump",
+    "projectile": "attack"
+  },
+  "synced_from_pixellab": true
+}
