@@ -111,6 +111,9 @@ let updateBannerShown = false;
 function showUpdateBanner(sha: string) {
   if (updateBannerShown) return;
   updateBannerShown = true;
+  // A star-shimmer chime so a new build is AUDIBLE with the tab backgrounded
+  // (maintainer 2026-07-19) — you hear the deploy land without watching.
+  gameAudio.notifyNewVersion();
   const el = document.createElement("div");
   // 9 hash chars — the SAME short form as the version badge and git's own
   // abbreviated hash (what's referenced in dev chat), so the two are

@@ -419,6 +419,20 @@ export class GameAudio {
     if (sound) this.oneShots.play(sound, bus, opts);
   }
 
+  /** A STAR-SHIMMER chime for "a new build just went live" (maintainer
+   * 2026-07-19: an audible cue while the game sits in a background tab, so
+   * you know a deploy landed). Three ascending sparkle notes from the star
+   * chime = a shimmer. Respects the sound toggle; needs the AudioContext
+   * running (desktop keeps a backgrounded tab's audio alive). */
+  notifyNewVersion(): void {
+    if (!this.ready()) return;
+    const s = this.catalog!.sounds.get("gem_pickup");
+    if (!s) return;
+    this.oneShots.play(s, "ui", { gainDb: -2, rate: 1.0 });
+    this.oneShots.play(s, "ui", { gainDb: -4, rate: 1.33, delayS: 0.12 });
+    this.oneShots.play(s, "ui", { gainDb: -6, rate: 1.6, delayS: 0.24 });
+  }
+
   /** Thunder roll, IN SYNC with the lightning flash (maintainer 2026-07-18:
    * "I want it in sync with the flashes" — the earlier 0.8-2.3s realism
    * delay read as silence). GENTLENESS: the primary real roll (take01)
