@@ -31,10 +31,19 @@ BAR = (928, 102, 1018, 122)  # full gold bar bbox (x0,y0,x1,y1), exclusive hi
 FILL_DARK = (39, 22, 24)     # the empty track's interior
 GOLD = (237, 173, 95)        # the (single, flat) fill colour = MANA yellow
 RED = (198, 72, 58)          # HEALTH — a warm brick red in the gold's palette
+# the kit's teal backdrop. The bar has ROUNDED corners, so the rectangular
+# crop clips a few backdrop pixels into the corner notches — they must be
+# KEYED OUT (maintainer 2026-07-23 green marks: "you didn't cut out the UI
+# graphics correctly"), or they bake in as teal nubs on a dark background.
+BG = (129, 151, 150)
 
 
 def is_gold(c):
     return abs(c[0] - GOLD[0]) < 30 and abs(c[1] - GOLD[1]) < 30 and abs(c[2] - GOLD[2]) < 30
+
+
+def is_bg(c):
+    return abs(c[0] - BG[0]) < 24 and abs(c[1] - BG[1]) < 24 and abs(c[2] - BG[2]) < 24
 
 
 def main():
@@ -48,11 +57,13 @@ def main():
     fyellow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     fp, rp, yp = frame.load(), fred.load(), fyellow.load()
 
-    gold_px = 0
+    gold_px = bg_px = 0
     for y in range(H):
         for x in range(W):
             c = p[x0 + x, y0 + y]
-            if is_gold(c):
+            if is_bg(c):
+                bg_px += 1                     # corner backdrop -> transparent
+            elif is_gold(c):
                 gold_px += 1
                 fp[x, y] = (*FILL_DARK, 255)   # hollow the track
                 rp[x, y] = (*RED, 255)
@@ -63,8 +74,10 @@ def main():
     frame.save("client/public/ui2/bar-frame.png")
     fred.save("client/public/ui2/bar-fill-red.png")
     fyellow.save("client/public/ui2/bar-fill-yellow.png")
-    print(f"baked {W}x{H} from crisp kit: gold px {gold_px}")
-    print("frame bbox", frame.getbbox(), "fill bbox", fred.getbbox())
+    fcols = {c for c in frame.getdata() if c[3]}
+    assert BG not in {(c[0], c[1], c[2]) for c in fcols}, "backdrop leaked into the frame"
+    print(f"baked {W}x{H} from crisp kit: gold px {gold_px}, keyed backdrop px {bg_px}")
+    print("frame colours:", sorted(fcols), "bbox", frame.getbbox())
 
 
 if __name__ == "__main__":
