@@ -63,6 +63,11 @@ const BASE_BOT_ART = 120;
 const DEAD_FRAC = 0.35; // of the max: inside this, all keys are up
 const RUN_FRAC = 0.75; // of the max: past this amplitude the gait is RUN (Shift), else walk
 const SNAP_MS = 80; // the fast (not instant) glide between snap positions
+// the cap DRAWS at this fraction of the input radius ("make the radius
+// translation on the top part a little bit lower", 2026-07-23) — like a
+// real thumbstick, the cap's centre moves less than the thumb; the input
+// circle (dead zone, run, full gate) is untouched
+const CAP_VISUAL_FRAC = 0.75;
 // Octants counter-clockwise from screen-east with y DOWN → index = round(angle/45°)
 // mod 8 over atan2(dy,dx): E, SE, S, SW, W, NW, N, NE — each holds the keys a
 // keyboard player would.
@@ -186,9 +191,10 @@ export function mountGamepadStick(page: HTMLElement) {
     const sector = len < max * DEAD_FRAC ? -1 : (Math.round(Math.atan2(dy, dx) / (Math.PI / 4)) + 8) % 8;
     // amplitude → gait: a light tilt WALKS, past RUN_FRAC it RUNS
     setKeys(sector, len >= max * RUN_FRAC);
-    // angle snapped, amplitude analog (clamped to the travel radius); the
-    // SNAP_MS transition smooths both the octant glide and the radius
-    setCap(sector, Math.min(len, max) / k);
+    // angle snapped, amplitude analog (clamped to the travel radius, drawn
+    // damped by CAP_VISUAL_FRAC); the SNAP_MS transition smooths both the
+    // octant glide and the radius
+    setCap(sector, (Math.min(len, max) * CAP_VISUAL_FRAC) / k);
   };
   const release = () => {
     if (!dragging) return;
