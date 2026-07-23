@@ -211,22 +211,22 @@ class Island2(Island):
         self._mountain_stairs()           # a few TIDY full-height ROCK ascents; rest sheer cliff
         self._connect_all(thresh=5)       # reuse: rock connectors + span the gorge -> one piece
         self._ford_stranded()
-        self._widen_hills()               # thin maze hills are too thin -> widen toward the camera
-                                          # (maintainer: hill too thin, make it bigger)
+        self._widen_hills()               # thin maze ridges are absurd 1-cell walls -> widen
+                                          # (maintainer: "the hill I stand on looks ridiculous")
         self._place_bridges()             # maze-river crossings at the maintainer's 5 sites
-        self._beach_access()              # no dead-end shores: slope tongues up from stranded beaches
         for _ in range(10):               # guarantee loop -> converge to no pit AND no lip
             camera_monotone_masked(self.level, self.mat, self.upper)
-            self._fill_traps()
+            self._fill_traps()            # cleans any small trap the widen left
             self._lip_cover()
             if self._trap_count() == 0 and not self._bad_lips():
                 break
         # AFTER the loop: fill fall-in wells (a lake whose walk-in shore the loop raised into
         # a wall). Filling only raises water to its rim (flush) — no toward-camera up-step —
         # so occlusion stays clean without re-running camera_monotone (which nudges the
-        # sensitive gorge-bridge banks). A second dechunk catches any tower the loop reshaped.
-        self._fill_water_traps()
-        self._widen_hills()
+        # sensitive gorge-bridge banks). Then guarantee beach access against the final walls.
+        if self._fill_water_traps():
+            self._fill_traps()
+        self._beach_access()              # no dead-end shores (sees the widened walls)
         self._fill_traps()
         self._lip_cover()
         self._ponds()                     # flush multi-level lakes (before spawn -> post-pond main)
@@ -504,16 +504,19 @@ class Island2(Island):
                 filled = True
         return filled
 
-    def _widen_hills(self, widen_to=4, max_span=10, max_iter=4):
-        """WIDEN THIN HILLS (maintainer 2026-07-23: "the hill is very thin — should be
-        bigger"). A raised MAZE blob that is thin (bbox min-dim <= 2) and tall (stands >= 3)
-        reads as a weird sliver. Grow it along its THIN axis, TOWARD the camera (+x / +y),
-        raising the adjacent lower cells up to the blob's level until it is `widen_to`
-        deep. Toward-camera is the ONLY occlusion-safe growth direction: the new front edge
-        drops toward the camera (a visible face), and the new cells' up-screen neighbour is
-        the hill itself (equal) — extending up-screen instead would bury a hidden back-wall.
-        Never grows over water/reserved/bridge cells, off the maze, or past `max_span`.
-        Occlusion is re-checked by the build; _fill_traps/_lip_cover follow."""
+    def _widen_hills(self, widen_to=4, max_iter=5):
+        """WIDEN THIN RIDGES (maintainer 2026-07-23, said repeatedly: "the hill I stand on
+        looks ridiculous — widen it, make it look like real landscape"). A raised low blob
+        that is thin (bbox min-dim <= 2) and stands >= 3 above a neighbour reads as an
+        absurd 1-cell wall/levee (e.g. the grass strip between the maze water and the
+        beach). Grow it along its THIN axis TOWARD the camera (+x / +y) — the ONLY
+        occlusion-safe direction: the new front edge drops toward the camera (a visible
+        face) and the new cells' up-screen neighbour is the ridge itself (equal), whereas
+        growing up-screen would bury a hidden back-wall — until it is `widen_to` cells
+        wide. Any LENGTH qualifies (a long 1-wide levee is the worst offender). Only PLAIN
+        terrain ridges (no Trollstigen cell — a mini's legs descend toward the camera and
+        must not be buried); grows only into LOWER, non-water, non-reserved, non-bank land
+        below level 14 (never the mountain). fill_traps/lip_cover follow; build re-checks."""
         n = self.n
         bank_guard = set()
         for dk in self.decks:
@@ -525,16 +528,27 @@ class Island2(Island):
             bank_guard.add(a)
             bank_guard.add(b)
 
-        def free(x, y, L):
-            return (0 <= x < n and 0 <= y < n and self.maze[y, x]
-                    and self.mat[y, x] not in ("", "clear_water")
-                    and (x, y) not in self.reserved and (x, y) not in bank_guard
-                    and int(self.level[y, x]) < L)
+        ocean = self._ocean_cells()           # never fill the open sea
+
+        def fillable(x, y, L, into_water):
+            # grow into LOWER land (toward camera) or, when the land side would strand a
+            # beach, into the flanking WATER (narrow the channel) — never the open ocean,
+            # never a bridge/ramp/mountain cell.
+            if not (0 <= x < n and 0 <= y < n) or (x, y) in self.reserved \
+                    or (x, y) in bank_guard or (x, y) in self._troll or self.upper[y, x]:
+                return False
+            m = self.mat[y, x]
+            if m == "":
+                return False
+            if m == "clear_water":
+                return into_water and (x, y) not in ocean and int(self.level[y, x]) < L
+            return int(self.level[y, x]) < L        # grass or beach: grow onto it (a headland);
+            #                                         beach_access re-cuts a ramp to the shore
 
         grew_any = False
         for _ in range(max_iter):
             land = {(x, y) for y in range(n) for x in range(n)
-                    if self.maze[y, x] and self.mat[y, x] not in ("", "clear_water")}
+                    if not self.upper[y, x] and self.mat[y, x] not in ("", "clear_water")}
             seen, changed = set(), False
             for c0 in sorted(land):
                 if c0 in seen:
@@ -551,11 +565,13 @@ class Island2(Island):
                         q = (p[0] + i, p[1] + j)
                         if q in land and q not in comp and int(self.level[q[1], q[0]]) == L:
                             st.append(q)
+                if L >= 14 or comp & self._troll:
+                    continue                        # mountain, or a Trollstigen ramp: skip
                 xs = [x for x, y in comp]
                 ys = [y for x, y in comp]
                 w, h = max(xs) - min(xs) + 1, max(ys) - min(ys) + 1
-                if min(w, h) > 2 or max(w, h) > max_span:
-                    continue                        # already broad, or a long ridge: leave
+                if min(w, h) > 2:
+                    continue                        # already broad enough
                 lowers = [int(self.level[b + j, a + i])
                           for (a, b) in comp for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1))
                           if (a + i, b + j) not in comp and 0 <= a + i < n and 0 <= b + j < n
@@ -563,27 +579,50 @@ class Island2(Island):
                           and int(self.level[b + j, a + i]) < L]
                 if not lowers or L - min(lowers) < 3:
                     continue
-                axis = (0, 1) if h <= w else (1, 0)   # grow along the THIN axis, toward camera
+                # thin axis; try BOTH directions along it, prefer the one that grows most
+                # (a water-flanked side is fine; a beach-strander stalls when beach_access
+                # can't keep up). Toward-camera land first, then water fill.
+                thin = (0, 1) if h <= w else (1, 0)
                 mat0 = Counter(self.mat[y, x] for (x, y) in comp).most_common(1)[0][0]
-                depth = min(w, h)
-                added = set()
-                while depth < widen_to:
-                    front = [(x + axis[0], y + axis[1]) for (x, y) in (comp | added)
-                             if (x + axis[0], y + axis[1]) not in (comp | added)]
-                    step = [c for c in set(front) if free(c[0], c[1], L)]
-                    if len(step) < max(1, len(set(front)) - 1):
-                        break                         # ragged front: stop (keeps faces clean)
-                    for (x, y) in step:
-                        added.add((x, y))
-                    depth += 1
-                for (x, y) in added:
+                best_added = set()
+                for sgn, into_water in (((thin[0], thin[1]), False),
+                                        ((-thin[0], -thin[1]), True),
+                                        ((thin[0], thin[1]), True),
+                                        ((-thin[0], -thin[1]), False)):
+                    added = set()
+                    for _step in range(widen_to - min(w, h)):
+                        front = {(x + sgn[0], y + sgn[1]) for (x, y) in (comp | added)
+                                 if (x + sgn[0], y + sgn[1]) not in (comp | added)}
+                        step = [c for c in front if fillable(c[0], c[1], L, into_water)]
+                        if len(step) < len(front) - 1:
+                            break
+                        added.update(step)
+                    if len(added) > len(best_added):
+                        best_added = added
+                for (x, y) in best_added:
                     self.level[y, x] = L
                     self.mat[y, x] = mat0
-                    self.reserved.add((x, y))
-                    changed = grew_any = True
+                    self.upper[y, x] = False       # NOT reserved: it is plain terrain, so
+                    changed = grew_any = True      # beach_access may cut a ramp through it
             if not changed:
                 break
         return grew_any
+
+    def _ocean_cells(self):
+        n = self.n
+        water = (self.mat == "clear_water")
+        seen = set()
+        st = [(x, y) for y in range(n) for x in range(n)
+              if water[y, x] and (x == 0 or y == 0 or x == n - 1 or y == n - 1)]
+        seen.update(st)
+        while st:
+            x, y = st.pop()
+            for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                xx, yy = x + i, y + j
+                if 0 <= xx < n and 0 <= yy < n and water[yy, xx] and (xx, yy) not in seen:
+                    seen.add((xx, yy))
+                    st.append((xx, yy))
+        return seen
 
     def _dechunk_maze(self, min_dim=3, min_area=12, max_iter=8):
         """NO THIN/TINY RAISED RELIEF (maintainer 2026-07-23: "two hills that are not

@@ -118,14 +118,20 @@ Consequences to honour:
     of its surface — is filled to its low rim. Runs AFTER the guarantee loop (that loop's
     antitone raises can seal a lagoon's walk-in shore into a well, so the swim-out test is
     only meaningful once levels are final); the designed gorge (`_gorge_cells`) is exempt.
-  - **No THIN TOWERS** (`_deprickle` + `_dechunk_maze`, maintainer 2026-07-23 "two hills
-    not wide/big enough and look weird"): a raised MAZE blob that is thin (bbox min-dim ≤ 2),
-    tall (stands ≥ 3) and small is dissolved flush to what it sits on — a whole mini-
-    Trollstigen at once if it is one, never a fragment (else the surviving legs lose their
-    inner wall). Runs BEFORE `_place_bridges` so no bridge bank ever depends on a dissolved
-    cell; bridge banks + the big mountain descent (>30-cell structures) are protected.
-    Both passes only LOWER/flush terrain, so occlusion stays clean without re-running
-    camera_monotone (which would nudge the sensitive gorge-bridge banks).
+  - **WIDEN thin ridges — don't remove them** (`_widen_hills` + `_dechunk_maze`, maintainer
+    2026-07-23, emphatically: "the hill I stand on looks ridiculous — WIDEN it, make it look
+    like real landscape", NOT dissolve it). A raised low blob (level < 14, no Trollstigen
+    cell) that is thin (bbox min-dim ≤ 2) and stands ≥ 3 above a neighbour is an absurd
+    1-cell wall/levee (e.g. a grass strip between the maze water and the beach). Grow it
+    along its THIN axis until `widen_to` (4) cells wide, TOWARD the camera (the only
+    occlusion-safe direction — the new front drops toward the camera, a visible face;
+    growing up-screen would bury a hidden back-wall). Growth targets, in order: lower land /
+    beach toward the camera; else the flanking WATER (narrow the channel — but NEVER the
+    open ocean, `_ocean_cells`). Widened cells are plain terrain (NOT reserved) so
+    `_beach_access` can still cut a ramp down to any beach the new headland walls off.
+    `_dechunk_maze` keeps raw relief chunky. Trollstigen ramps are left alone (their legs
+    descend toward the camera and must not be buried). Runs before `_place_bridges` so no
+    bank depends on a moved cell; the guarantee loop then fixes traps/occlusion.
   - `_material_slivers` (the detector) must be EMPTY at build time — `_fix_material_slivers`
     repairs stragglers by flipping them to the dominant adjacent terrain (never to dirt,
     never to stone at the shore) in a joint fixpoint with `_lip_cover`.
