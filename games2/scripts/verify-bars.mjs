@@ -32,7 +32,7 @@ try {
   if (s.length !== 2) fail(`want 2 bar rows, got ${s.length}`);
   else {
     s[0].fill.includes("red") && s[0].hasFrame ? ok("health = red fill over the track") : fail(`hp row ${JSON.stringify(s[0])}`);
-    s[1].fill.includes("blue") && s[1].hasFrame ? ok("mana = blue fill over the track") : fail(`mp row ${JSON.stringify(s[1])}`);
+    s[1].fill.includes("yellow") && s[1].hasFrame ? ok("mana = yellow fill over the track") : fail(`mp row ${JSON.stringify(s[1])}`);
     /^\d+ \/ \d+ HP$/.test(s[0].num) ? ok(`hp number "${s[0].num}"`) : fail(`hp number "${s[0].num}"`);
     /^\d+ \/ \d+ MP$/.test(s[1].num) ? ok(`mp number "${s[1].num}"`) : fail(`mp number "${s[1].num}"`);
   }

@@ -9,12 +9,17 @@ mistakenly used a soft, upscaled SCREENSHOT of the kit — the bars read
 smeared; the maintainer flagged it: use the crisp tilesheet.)
 
 Everything is derived from the one full-gold-bar crop so the pieces align:
-  bar-frame.png      the EMPTY track — gold interior replaced by the dark
-                     fill colour, border kept.
-  bar-fill-red.png   the gold interior alone (rest transparent), recoloured
-  bar-fill-blue.png  flat to health-red / mana-blue (his legend "Red =
-                     Health, Blue = Mana"). The kit fill is a FLAT single
-                     gold, so the recolour is flat too — crisp, no gradient.
+  bar-frame.png        the EMPTY track — gold interior replaced by the dark
+                       fill colour, border kept.
+  bar-fill-yellow.png  MANA = the kit's own gold, untouched (maintainer
+                       2026-07-23: "I also want the mana in that nice
+                       looking yellow").
+  bar-fill-red.png     HEALTH = the gold interior recoloured to a warm brick
+                       red picked from the SAME palette as the gold ("the
+                       red ... should be in the same colour palette as the
+                       yellow") — a sibling of the kit's brown/gold ramp,
+                       not an off-palette red. The kit fill is a FLAT single
+                       gold, so the recolour is flat too — crisp, no gradient.
 At runtime bars.ts stacks a fill over the track and CLIPS it to the percent;
 the dark interior shows through the cut. Alpha is binary (pixel art).
 """
@@ -24,9 +29,8 @@ from PIL import Image
 SRC = "client/ui-src/uikit.png"
 BAR = (928, 102, 1018, 122)  # full gold bar bbox (x0,y0,x1,y1), exclusive hi
 FILL_DARK = (39, 22, 24)     # the empty track's interior
-GOLD = (237, 173, 95)        # the (single, flat) fill colour
-RED = (196, 66, 58)          # health
-BLUE = (74, 128, 196)        # mana
+GOLD = (237, 173, 95)        # the (single, flat) fill colour = MANA yellow
+RED = (198, 72, 58)          # HEALTH — a warm brick red in the gold's palette
 
 
 def is_gold(c):
@@ -41,8 +45,8 @@ def main():
 
     frame = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     fred = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    fblue = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    fp, rp, bp = frame.load(), fred.load(), fblue.load()
+    fyellow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    fp, rp, yp = frame.load(), fred.load(), fyellow.load()
 
     gold_px = 0
     for y in range(H):
@@ -52,13 +56,13 @@ def main():
                 gold_px += 1
                 fp[x, y] = (*FILL_DARK, 255)   # hollow the track
                 rp[x, y] = (*RED, 255)
-                bp[x, y] = (*BLUE, 255)
+                yp[x, y] = (*GOLD, 255)        # mana keeps the kit gold
             else:
                 fp[x, y] = (*c, 255)           # border/chrome (dark + brown)
 
     frame.save("client/public/ui2/bar-frame.png")
     fred.save("client/public/ui2/bar-fill-red.png")
-    fblue.save("client/public/ui2/bar-fill-blue.png")
+    fyellow.save("client/public/ui2/bar-fill-yellow.png")
     print(f"baked {W}x{H} from crisp kit: gold px {gold_px}")
     print("frame bbox", frame.getbbox(), "fill bbox", fred.getbbox())
 

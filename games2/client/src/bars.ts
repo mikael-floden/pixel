@@ -65,7 +65,7 @@ export function mountBars() {
     return { fill, num, max, suffix };
   };
   bars.hp = make("hp", "red", 500, "HP");
-  bars.mp = make("mp", "blue", 500, "MP");
+  bars.mp = make("mp", "yellow", 500, "MP");
   document.body.appendChild(root);
   applyUiZoom(root);
 
