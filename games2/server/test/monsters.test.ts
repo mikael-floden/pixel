@@ -43,7 +43,7 @@ test("6 server-authoritative roaming monsters: shared, capped, area-confined, mo
   // Deterministic spawns/roam; 3 monsters per area (the SPAWN_AREAS default cap).
   const COUNT = 3;
   const opts = {
-    world: "the_island2",
+    world: "ring_test", // the prod DEFAULT world the SPAWN_AREAS are placed on
     monsterSeed: 12345,
     monsterCount: COUNT,
   };
@@ -52,7 +52,7 @@ test("6 server-authoritative roaming monsters: shared, capped, area-confined, mo
   try {
     const c1 = new Client(`ws://localhost:${port}`);
     const c2 = new Client(`ws://localhost:${port}`);
-    // Both joinOrCreate the SAME the_island2 room; the first creates it with the
+    // Both joinOrCreate the SAME ring_test room; the first creates it with the
     // monster options, the second joins the already-created shared world.
     const r1 = await c1.joinOrCreate(ROOM_NAME, { name: "A", character: "char_a", ...opts });
     const r2 = await c2.joinOrCreate(ROOM_NAME, { name: "B", character: "char_b", ...opts });

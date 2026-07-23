@@ -4,9 +4,14 @@
 // monster kinds, spawn-area geometry, and roam tuning can never drift.
 //
 // This round is WALK/ROAM ONLY. Monsters (the poring family) hop around inside
-// fixed rectangular spawn areas placed on walkable LAND near the player spawn of
-// the_island2 (grid spawn cell [218,135]). The rectangles are fake debug areas
-// for now — later the maps agent owns real spawn areas.
+// fixed rectangular spawn areas placed on walkable LAND right next to the player
+// spawn of ring_test — the DEFAULT world the server loads (WorldRoom
+// DEFAULT_WORLD; grid spawn cell [63,75]). The maintainer wants every area close
+// to spawn and off the water so all 6 kinds are testable at once. The rectangles
+// are fake debug areas for now — later the maps agent owns real spawn areas.
+// NOTE: these coords are ring_test-specific; if the default world changes, the
+// areas must be re-placed on that world's land (server/test/monsters.sim.test.ts
+// gates that they stay on standable land and never leave the area).
 
 // Source CELL_WU from the dependency-free leaf, NOT the ./index barrel: index.ts
 // re-exports THIS module at the end of its body, so importing ./index here would
@@ -45,20 +50,23 @@ export interface SpawnArea {
 // cheap to simulate.
 const MAX_PER_AREA = 3;
 
-// The 6 verified spawn rectangles. Computed from the_island2/world.json by
-// scanning collision/mat grids near the player spawn cell [218,135]: every cell
-// of every rect is collision==0 AND material != clear_water (24/24 standable
-// land each, verified). Laid out as a tidy 3-wide x 2-tall grid of 6x4-cell
-// rects with 1-cell gaps, so all 6 are visible together. World-unit bounds use
-// cell corners: x0=c0*CELL_WU, x1=(c1+1)*CELL_WU (likewise rows for y).
+// The 6 verified spawn rectangles. Computed from ring_test/world.json by
+// scanning the terrain grid near the player spawn cell [63,75]: every cell of
+// every rect (plus a 1-cell margin) is standable LAND — not clear_water, not a
+// solid prop — verified headlessly. ring_test's spawn sits on the WEST shore of
+// the central lake, so the areas cluster on the land just NW/W of it. Laid out
+// as a tidy 3-wide x 2-tall grid of 6x4-cell rects with 1-cell gaps (block cells
+// 43..62 x 66..74, centre ~11 cells from spawn) so all 6 are visible together.
+// World-unit bounds use cell corners: x0=c0*CELL_WU, x1=(c1+1)*CELL_WU (likewise
+// rows for y).
 //
-// grid cells (col,row inclusive) -> world units:
-//   poring        cols 196..201 rows 127..130  -> (6272,4064,6464,4192)
-//   forest_poring cols 203..208 rows 127..130  -> (6496,4064,6688,4192)
-//   ice_poring    cols 210..215 rows 127..130  -> (6720,4064,6912,4192)
-//   lava_poring   cols 196..201 rows 131..134  -> (6272,4192,6464,4320)
-//   sand_poring   cols 203..208 rows 131..134  -> (6496,4192,6688,4320)
-//   water_poring  cols 210..215 rows 131..134  -> (6720,4192,6912,4320)
+// grid cells (col,row inclusive):
+//   poring        cols 43..48 rows 66..69
+//   forest_poring cols 50..55 rows 66..69
+//   ice_poring    cols 57..62 rows 66..69
+//   lava_poring   cols 43..48 rows 71..74
+//   sand_poring   cols 50..55 rows 71..74
+//   water_poring  cols 57..62 rows 71..74
 function areaFromCells(
   id: string,
   kind: MonsterKind,
@@ -79,12 +87,12 @@ function areaFromCells(
 }
 
 export const SPAWN_AREAS: SpawnArea[] = [
-  areaFromCells("area_poring", "poring", 196, 127, 201, 130),
-  areaFromCells("area_forest_poring", "forest_poring", 203, 127, 208, 130),
-  areaFromCells("area_ice_poring", "ice_poring", 210, 127, 215, 130),
-  areaFromCells("area_lava_poring", "lava_poring", 196, 131, 201, 134),
-  areaFromCells("area_sand_poring", "sand_poring", 203, 131, 208, 134),
-  areaFromCells("area_water_poring", "water_poring", 210, 131, 215, 134),
+  areaFromCells("area_poring", "poring", 43, 66, 48, 69),
+  areaFromCells("area_forest_poring", "forest_poring", 50, 66, 55, 69),
+  areaFromCells("area_ice_poring", "ice_poring", 57, 66, 62, 69),
+  areaFromCells("area_lava_poring", "lava_poring", 43, 71, 48, 74),
+  areaFromCells("area_sand_poring", "sand_poring", 50, 71, 55, 74),
+  areaFromCells("area_water_poring", "water_poring", 57, 71, 62, 74),
 ];
 
 // Roam tuning ---------------------------------------------------------------

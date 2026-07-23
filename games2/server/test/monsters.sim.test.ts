@@ -148,8 +148,11 @@ test("SPAWN_AREAS: 6 non-overlapping land rects, one per monster kind", () => {
 // ---------------------------------------------------------------------------
 // Headless roam: run ONE monster through the SAME brain+body loop the server
 // uses (startTrip / stepAutopilot / stepMovement) for many trips on the REAL
-// the_island2 world, and prove it never leaves its area and never lands on
-// non-standable / water ground.
+// ring_test world — the world WorldRoom.DEFAULT_WORLD loads in prod, so the
+// SPAWN_AREAS coords are validated against the terrain players actually see —
+// and prove it never leaves its area and never lands on non-standable / water
+// ground. (Placing the areas on any OTHER world's coords would spawn monsters
+// off-map or in water on the default world — the bug this test now guards.)
 // ---------------------------------------------------------------------------
 
 function roamOneMonster(
@@ -255,8 +258,9 @@ function roamOneMonster(
 }
 
 test("headless roam: a monster never leaves its area, never lands on water/non-standable (all 6 areas)", () => {
-  const w = loadMaps2World("the_island2");
-  assert.ok(w, "the_island2 world loads");
+  // MUST match WorldRoom.DEFAULT_WORLD — the world the areas are placed on.
+  const w = loadMaps2World("ring_test");
+  assert.ok(w, "ring_test world loads");
 
   for (let ai = 0; ai < SPAWN_AREAS.length; ai++) {
     const area = SPAWN_AREAS[ai];
