@@ -33,8 +33,16 @@ import {
   TIME_PHASE_SECONDS,
   TIME_SPEEDS,
   WEATHER_COUNT,
+  SPAWN_AREAS,
+  SpawnArea,
+  MONSTER_SPEED_SCALE,
+  randomPointInArea,
+  clampToArea,
+  randomPauseMs,
+  startTrip,
+  stepAutopilot,
 } from "@nangijala/shared";
-import { WorldState, Player } from "../schema/WorldState.js";
+import { WorldState, Player, Monster } from "../schema/WorldState.js";
 import { JsonPlayerStore, PlayerStore } from "../store.js";
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
@@ -100,6 +108,12 @@ export class WorldRoom extends Room<WorldState> {
   private handoffHoldMs = 1250;
   private handoffHoldUntil = 0;
   private worldName = ""; // set in onCreate; keys the worldClocks registry
+
+  // Monsters (server-authoritative roaming). Per-area cap override + a seedable
+  // RNG so tests get deterministic spawns/roams. `monsterRng` defaults to
+  // Math.random; a `monsterSeed` room option swaps in a seeded PRNG.
+  private monsterCount: number | null = null; // null → each area's own `max`
+  private monsterRng: () => number = Math.random;
   // Wild shooting stars streak the night sky at random (arrivals get their
   // own star in onJoin, any hour).
   private starTimer: ReturnType<typeof setTimeout> | null = null;
@@ -180,8 +194,13 @@ export class WorldRoom extends Room<WorldState> {
     phaseSeconds?: number[];
     auroraChance?: number;
     handoffHoldMs?: number; // test-only override of the hand-off hold
+    monsterCount?: number; // per-area monster cap override (default: each area's own `max`)
+    monsterSeed?: number; // seed a deterministic PRNG for spawns/roam (tests)
   }) {
     if (typeof options?.auroraChance === "number") this.auroraChance = options.auroraChance;
+    if (typeof options?.monsterCount === "number")
+      this.monsterCount = Math.max(0, Math.floor(options.monsterCount));
+    if (typeof options?.monsterSeed === "number") this.monsterRng = mulberry32(options.monsterSeed);
     {
       // Load the maps2 world the client asked for (default ring_test). Rooms are
       // matched by this name (filterBy in index.ts), so everyone who picks the
@@ -346,8 +365,45 @@ export class WorldRoom extends Room<WorldState> {
       this.broadcast("chat", out);
     });
 
+    // Seed the roaming monsters (one poring kind per fake spawn area). Only
+    // meaningful when a terrain grid is loaded — findSpawn nudges each onto
+    // standable land and the roam AI needs the grid to route/confine them.
+    this.seedMonsters();
+
     const dtMs = 1000 / TICK_RATE;
     this.setSimulationInterval((delta) => this.update(delta / 1000), dtMs);
+  }
+
+  /** Populate this.state.monsters from SPAWN_AREAS: `count` monsters per area
+   * (area.max, or the monsterCount override), keyed "<areaId>#<n>". Each is
+   * findSpawn-nudged onto standable land at a random in-area point and given a
+   * first roam target + immediate nextMoveAt so it starts hopping right away. */
+  private seedMonsters() {
+    const grid = this.terrain;
+    if (!grid) return; // open world → no terrain to confine/route monsters on
+    const now = Date.now();
+    for (const area of SPAWN_AREAS) {
+      const count = this.monsterCount ?? area.max;
+      for (let n = 0; n < count; n++) {
+        const m = new Monster();
+        m.kind = area.kind;
+        m.areaId = area.id;
+        // Random in-area point, then snap to the nearest standable cell so a
+        // monster never starts inside water/a prop.
+        const p = randomPointInArea(area, this.monsterRng);
+        const s = findSpawn(grid, p.x, p.y);
+        // findSpawn can nudge outside the rect near an edge; pull it back in.
+        const c = clampToArea(area, s.x, s.y);
+        m.x = c.x;
+        m.y = c.y;
+        m.elev = levelAtWorld(grid, m.x, m.y);
+        m.dir = "south";
+        m.moving = false;
+        // Stagger first departure a touch so they don't all leave in lockstep.
+        m.nextMoveAt = now + Math.floor(this.monsterRng() * 600);
+        this.state.monsters.set(`${area.id}#${n}`, m);
+      }
+    }
   }
 
   /** Put a player on a FRESH spawn point: open walkable land near the world's
@@ -491,6 +547,117 @@ export class WorldRoom extends Room<WorldState> {
         player.swimming = surf.swimmable && player.elev <= levelAtWorld(terrain, player.x, player.y) + 0.5;
       }
     });
+
+    // Roaming monsters are integrated AFTER players, on the same tick, sharing
+    // none of the player state (separate MapSchema) — they can't collide-break
+    // player movement.
+    this.stepMonsters(dt, now);
+  }
+
+  /** Advance every roaming monster one tick. Each monster owns an area; while
+   * paused it waits out `nextMoveAt`, then picks a random standable in-area
+   * target and startTrip()s toward it; while a trip is active it stepAutopilot()s
+   * (screen-space 8-way input) fed through the SAME stepMovement the players use,
+   * so facing/animation come out right. Movement is confined to the area (target
+   * clamp + a hard clamp-back after writeback), and blocked from water/props by
+   * makeBlockedElev, so a monster can never wander off its land rectangle. */
+  private stepMonsters(dt: number, now: number) {
+    const grid = this.terrain;
+    if (!grid) {
+      // Open world (no terrain): monsters are inert but still synced.
+      this.state.monsters.forEach((m) => {
+        m.moving = false;
+      });
+      return;
+    }
+    const areaById = this.areaIndex();
+    this.state.monsters.forEach((m) => {
+      const area = areaById.get(m.areaId);
+      if (!area) {
+        m.moving = false;
+        return;
+      }
+      const ctx = { maxClimb: WALK_CLIMB, canSwim: false };
+
+      // Idle → pick the next target once the pause has elapsed.
+      if (!m.tripActive) {
+        m.moving = false;
+        if (now < m.nextMoveAt) return; // still pausing
+        const t = this.pickMonsterTarget(area, m.x, m.y);
+        m.targetX = t.x;
+        m.targetY = t.y;
+        m.trip = startTrip(grid, m.x, m.y, t.x, t.y, false, now, m.elev);
+        m.tripActive = !!m.trip;
+        if (!m.tripActive) {
+          // No route (rare — target boxed in): pause and retry shortly.
+          m.nextMoveAt = now + Math.floor(randomPauseMs(this.monsterRng));
+          return;
+        }
+      }
+
+      // Active trip → autopilot toward the target, integrated like a player.
+      const trip = m.trip!;
+      const a = stepAutopilot(grid, trip, m.x, m.y, now, this.worldW, this.worldH, m.elev);
+      if (a.done) {
+        m.tripActive = false;
+        m.trip = null;
+        m.moving = false;
+        m.nextMoveAt = now + Math.floor(randomPauseMs(this.monsterRng));
+        return;
+      }
+
+      const surf = surfaceAtWorld(grid, m.x, m.y);
+      const r = stepMovement(
+        m.x,
+        m.y,
+        a.ax,
+        a.ay,
+        false, // never run
+        dt,
+        makeBlockedElev(grid, ctx, () => m.elev),
+        surf.speed * MONSTER_SPEED_SCALE,
+        true, // iso world → screen-relative input (matches players/autopilot)
+        this.worldW,
+        this.worldH,
+        makeSideBlocked(grid, ctx),
+      );
+      m.x = r.x;
+      m.y = r.y;
+      if (r.dir) m.dir = r.dir;
+      m.moving = r.moving;
+      m.elev = resolveElevAt(grid, m.elev, m.x, m.y, ctx);
+
+      // Safety net: never let a monster leave its rectangle (autopilot/steer
+      // assist could nudge a hair past the inset edge on a corner).
+      const c = clampToArea(area, m.x, m.y);
+      m.x = c.x;
+      m.y = c.y;
+    });
+  }
+
+  /** Pick a random standable roam target inside `area`, away from the current
+   * spot. Tries a few random in-area points and prefers one on standable land;
+   * clamps into the area either way (makeBlockedElev still blocks non-standable
+   * mid-trip, so a stray water pick just stalls harmlessly). */
+  private pickMonsterTarget(area: SpawnArea, fromX: number, fromY: number): { x: number; y: number } {
+    const grid = this.terrain!;
+    let fallback: { x: number; y: number } | null = null;
+    for (let i = 0; i < 6; i++) {
+      const raw = randomPointInArea(area, this.monsterRng);
+      const p = clampToArea(area, raw.x, raw.y);
+      if (!fallback) fallback = p;
+      // Skip a target essentially on top of the current position.
+      if (Math.hypot(p.x - fromX, p.y - fromY) < CELL_WU) continue;
+      if (isStandableAtWorld(grid, p.x, p.y)) return p;
+    }
+    return fallback ?? clampToArea(area, fromX, fromY);
+  }
+
+  /** areaId → SpawnArea lookup (built once per tick; SPAWN_AREAS is tiny). */
+  private areaIndex(): Map<string, SpawnArea> {
+    const m = new Map<string, SpawnArea>();
+    for (const a of SPAWN_AREAS) m.set(a.id, a);
+    return m;
   }
 
   onDispose() {
@@ -504,6 +671,19 @@ function clamp(v: number, lo: number, hi: number): number {
 
 function rand(lo: number, hi: number): number {
   return lo + Math.random() * (hi - lo);
+}
+
+/** Tiny seedable PRNG (mulberry32) → () => [0,1). Deterministic monster
+ * spawns/roam for tests (monsterSeed room option); production uses Math.random. */
+function mulberry32(seed: number): () => number {
+  let a = seed >>> 0;
+  return () => {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
 }
 
 /** A loaded world: its collision grid, spawn point, and extent (world units).

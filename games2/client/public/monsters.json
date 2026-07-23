@@ -1,0 +1,465 @@
+{
+  "generatedFrom": "monsters/config/roster.json",
+  "directions": [
+    "south",
+    "south-west",
+    "west",
+    "north-west",
+    "north",
+    "north-east",
+    "east",
+    "south-east"
+  ],
+  "monsters": [
+    {
+      "id": "poring",
+      "name": "Poring",
+      "frameW": 48,
+      "frameH": 48,
+      "root": "poring",
+      "walkAnim": "jump",
+      "animations": {
+        "attack": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "die": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "jump": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        }
+      },
+      "strips": {
+        "attack": {
+          "south": "/assets/monsters/poring/animations/attack__south.png",
+          "south-west": "/assets/monsters/poring/animations/attack__south-west.png",
+          "west": "/assets/monsters/poring/animations/attack__west.png",
+          "north-west": "/assets/monsters/poring/animations/attack__north-west.png",
+          "north": "/assets/monsters/poring/animations/attack__north.png",
+          "north-east": "/assets/monsters/poring/animations/attack__north-east.png",
+          "east": "/assets/monsters/poring/animations/attack__east.png",
+          "south-east": "/assets/monsters/poring/animations/attack__south-east.png"
+        },
+        "die": {
+          "south": "/assets/monsters/poring/animations/die__south.png",
+          "south-west": "/assets/monsters/poring/animations/die__south-west.png",
+          "west": "/assets/monsters/poring/animations/die__west.png",
+          "north-west": "/assets/monsters/poring/animations/die__north-west.png",
+          "north": "/assets/monsters/poring/animations/die__north.png",
+          "north-east": "/assets/monsters/poring/animations/die__north-east.png",
+          "east": "/assets/monsters/poring/animations/die__east.png",
+          "south-east": "/assets/monsters/poring/animations/die__south-east.png"
+        },
+        "jump": {
+          "south": "/assets/monsters/poring/animations/jump__south.png",
+          "south-west": "/assets/monsters/poring/animations/jump__south-west.png",
+          "west": "/assets/monsters/poring/animations/jump__west.png",
+          "north-west": "/assets/monsters/poring/animations/jump__north-west.png",
+          "north": "/assets/monsters/poring/animations/jump__north.png",
+          "north-east": "/assets/monsters/poring/animations/jump__north-east.png",
+          "east": "/assets/monsters/poring/animations/jump__east.png",
+          "south-east": "/assets/monsters/poring/animations/jump__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "jump"
+      }
+    },
+    {
+      "id": "forest_poring",
+      "name": "Forest Poring",
+      "frameW": 48,
+      "frameH": 48,
+      "root": "forest_poring",
+      "walkAnim": "jump",
+      "animations": {
+        "attack": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "die": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "jump": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        }
+      },
+      "strips": {
+        "attack": {
+          "south": "/assets/monsters/forest_poring/animations/attack__south.png",
+          "south-west": "/assets/monsters/forest_poring/animations/attack__south-west.png",
+          "west": "/assets/monsters/forest_poring/animations/attack__west.png",
+          "north-west": "/assets/monsters/forest_poring/animations/attack__north-west.png",
+          "north": "/assets/monsters/forest_poring/animations/attack__north.png",
+          "north-east": "/assets/monsters/forest_poring/animations/attack__north-east.png",
+          "east": "/assets/monsters/forest_poring/animations/attack__east.png",
+          "south-east": "/assets/monsters/forest_poring/animations/attack__south-east.png"
+        },
+        "die": {
+          "south": "/assets/monsters/forest_poring/animations/die__south.png",
+          "south-west": "/assets/monsters/forest_poring/animations/die__south-west.png",
+          "west": "/assets/monsters/forest_poring/animations/die__west.png",
+          "north-west": "/assets/monsters/forest_poring/animations/die__north-west.png",
+          "north": "/assets/monsters/forest_poring/animations/die__north.png",
+          "north-east": "/assets/monsters/forest_poring/animations/die__north-east.png",
+          "east": "/assets/monsters/forest_poring/animations/die__east.png",
+          "south-east": "/assets/monsters/forest_poring/animations/die__south-east.png"
+        },
+        "jump": {
+          "south": "/assets/monsters/forest_poring/animations/jump__south.png",
+          "south-west": "/assets/monsters/forest_poring/animations/jump__south-west.png",
+          "west": "/assets/monsters/forest_poring/animations/jump__west.png",
+          "north-west": "/assets/monsters/forest_poring/animations/jump__north-west.png",
+          "north": "/assets/monsters/forest_poring/animations/jump__north.png",
+          "north-east": "/assets/monsters/forest_poring/animations/jump__north-east.png",
+          "east": "/assets/monsters/forest_poring/animations/jump__east.png",
+          "south-east": "/assets/monsters/forest_poring/animations/jump__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "jump"
+      }
+    },
+    {
+      "id": "ice_poring",
+      "name": "Ice Poring",
+      "frameW": 48,
+      "frameH": 48,
+      "root": "ice_poring",
+      "walkAnim": "jump",
+      "animations": {
+        "attack": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "die": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "jump": {
+          "south": 6,
+          "south-west": 6,
+          "west": 6,
+          "north-west": 6,
+          "north": 6,
+          "north-east": 6,
+          "east": 6,
+          "south-east": 6
+        }
+      },
+      "strips": {
+        "attack": {
+          "south": "/assets/monsters/ice_poring/animations/attack__south.png",
+          "south-west": "/assets/monsters/ice_poring/animations/attack__south-west.png",
+          "west": "/assets/monsters/ice_poring/animations/attack__west.png",
+          "north-west": "/assets/monsters/ice_poring/animations/attack__north-west.png",
+          "north": "/assets/monsters/ice_poring/animations/attack__north.png",
+          "north-east": "/assets/monsters/ice_poring/animations/attack__north-east.png",
+          "east": "/assets/monsters/ice_poring/animations/attack__east.png",
+          "south-east": "/assets/monsters/ice_poring/animations/attack__south-east.png"
+        },
+        "die": {
+          "south": "/assets/monsters/ice_poring/animations/die__south.png",
+          "south-west": "/assets/monsters/ice_poring/animations/die__south-west.png",
+          "west": "/assets/monsters/ice_poring/animations/die__west.png",
+          "north-west": "/assets/monsters/ice_poring/animations/die__north-west.png",
+          "north": "/assets/monsters/ice_poring/animations/die__north.png",
+          "north-east": "/assets/monsters/ice_poring/animations/die__north-east.png",
+          "east": "/assets/monsters/ice_poring/animations/die__east.png",
+          "south-east": "/assets/monsters/ice_poring/animations/die__south-east.png"
+        },
+        "jump": {
+          "south": "/assets/monsters/ice_poring/animations/jump__south.png",
+          "south-west": "/assets/monsters/ice_poring/animations/jump__south-west.png",
+          "west": "/assets/monsters/ice_poring/animations/jump__west.png",
+          "north-west": "/assets/monsters/ice_poring/animations/jump__north-west.png",
+          "north": "/assets/monsters/ice_poring/animations/jump__north.png",
+          "north-east": "/assets/monsters/ice_poring/animations/jump__north-east.png",
+          "east": "/assets/monsters/ice_poring/animations/jump__east.png",
+          "south-east": "/assets/monsters/ice_poring/animations/jump__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "jump"
+      }
+    },
+    {
+      "id": "lava_poring",
+      "name": "Lava Poring",
+      "frameW": 48,
+      "frameH": 48,
+      "root": "lava_poring",
+      "walkAnim": "jump",
+      "animations": {
+        "die": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "jump": {
+          "south": 6,
+          "south-west": 6,
+          "west": 6,
+          "north-west": 6,
+          "north": 6,
+          "north-east": 6,
+          "east": 6,
+          "south-east": 6
+        },
+        "attack": {
+          "south": 6,
+          "south-west": 6,
+          "west": 6,
+          "north-west": 6,
+          "north": 6,
+          "north-east": 6,
+          "east": 6,
+          "south-east": 6
+        }
+      },
+      "strips": {
+        "die": {
+          "south": "/assets/monsters/lava_poring/animations/die__south.png",
+          "south-west": "/assets/monsters/lava_poring/animations/die__south-west.png",
+          "west": "/assets/monsters/lava_poring/animations/die__west.png",
+          "north-west": "/assets/monsters/lava_poring/animations/die__north-west.png",
+          "north": "/assets/monsters/lava_poring/animations/die__north.png",
+          "north-east": "/assets/monsters/lava_poring/animations/die__north-east.png",
+          "east": "/assets/monsters/lava_poring/animations/die__east.png",
+          "south-east": "/assets/monsters/lava_poring/animations/die__south-east.png"
+        },
+        "jump": {
+          "south": "/assets/monsters/lava_poring/animations/jump__south.png",
+          "south-west": "/assets/monsters/lava_poring/animations/jump__south-west.png",
+          "west": "/assets/monsters/lava_poring/animations/jump__west.png",
+          "north-west": "/assets/monsters/lava_poring/animations/jump__north-west.png",
+          "north": "/assets/monsters/lava_poring/animations/jump__north.png",
+          "north-east": "/assets/monsters/lava_poring/animations/jump__north-east.png",
+          "east": "/assets/monsters/lava_poring/animations/jump__east.png",
+          "south-east": "/assets/monsters/lava_poring/animations/jump__south-east.png"
+        },
+        "attack": {
+          "south": "/assets/monsters/lava_poring/animations/attack__south.png",
+          "south-west": "/assets/monsters/lava_poring/animations/attack__south-west.png",
+          "west": "/assets/monsters/lava_poring/animations/attack__west.png",
+          "north-west": "/assets/monsters/lava_poring/animations/attack__north-west.png",
+          "north": "/assets/monsters/lava_poring/animations/attack__north.png",
+          "north-east": "/assets/monsters/lava_poring/animations/attack__north-east.png",
+          "east": "/assets/monsters/lava_poring/animations/attack__east.png",
+          "south-east": "/assets/monsters/lava_poring/animations/attack__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "jump"
+      }
+    },
+    {
+      "id": "sand_poring",
+      "name": "Sand Poring",
+      "frameW": 48,
+      "frameH": 48,
+      "root": "sand_poring",
+      "walkAnim": "jump",
+      "animations": {
+        "die": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "attack": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "jump": {
+          "south": 6,
+          "south-west": 6,
+          "west": 6,
+          "north-west": 6,
+          "north": 6,
+          "north-east": 6,
+          "east": 6,
+          "south-east": 6
+        }
+      },
+      "strips": {
+        "die": {
+          "south": "/assets/monsters/sand_poring/animations/die__south.png",
+          "south-west": "/assets/monsters/sand_poring/animations/die__south-west.png",
+          "west": "/assets/monsters/sand_poring/animations/die__west.png",
+          "north-west": "/assets/monsters/sand_poring/animations/die__north-west.png",
+          "north": "/assets/monsters/sand_poring/animations/die__north.png",
+          "north-east": "/assets/monsters/sand_poring/animations/die__north-east.png",
+          "east": "/assets/monsters/sand_poring/animations/die__east.png",
+          "south-east": "/assets/monsters/sand_poring/animations/die__south-east.png"
+        },
+        "attack": {
+          "south": "/assets/monsters/sand_poring/animations/attack__south.png",
+          "south-west": "/assets/monsters/sand_poring/animations/attack__south-west.png",
+          "west": "/assets/monsters/sand_poring/animations/attack__west.png",
+          "north-west": "/assets/monsters/sand_poring/animations/attack__north-west.png",
+          "north": "/assets/monsters/sand_poring/animations/attack__north.png",
+          "north-east": "/assets/monsters/sand_poring/animations/attack__north-east.png",
+          "east": "/assets/monsters/sand_poring/animations/attack__east.png",
+          "south-east": "/assets/monsters/sand_poring/animations/attack__south-east.png"
+        },
+        "jump": {
+          "south": "/assets/monsters/sand_poring/animations/jump__south.png",
+          "south-west": "/assets/monsters/sand_poring/animations/jump__south-west.png",
+          "west": "/assets/monsters/sand_poring/animations/jump__west.png",
+          "north-west": "/assets/monsters/sand_poring/animations/jump__north-west.png",
+          "north": "/assets/monsters/sand_poring/animations/jump__north.png",
+          "north-east": "/assets/monsters/sand_poring/animations/jump__north-east.png",
+          "east": "/assets/monsters/sand_poring/animations/jump__east.png",
+          "south-east": "/assets/monsters/sand_poring/animations/jump__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "jump"
+      }
+    },
+    {
+      "id": "water_poring",
+      "name": "Water Poring",
+      "frameW": 48,
+      "frameH": 48,
+      "root": "water_poring",
+      "walkAnim": "jump",
+      "animations": {
+        "attack": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "die": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "jump": {
+          "south": 6,
+          "south-west": 6,
+          "west": 6,
+          "north-west": 6,
+          "north": 6,
+          "north-east": 6,
+          "east": 6,
+          "south-east": 6
+        }
+      },
+      "strips": {
+        "attack": {
+          "south": "/assets/monsters/water_poring/animations/attack__south.png",
+          "south-west": "/assets/monsters/water_poring/animations/attack__south-west.png",
+          "west": "/assets/monsters/water_poring/animations/attack__west.png",
+          "north-west": "/assets/monsters/water_poring/animations/attack__north-west.png",
+          "north": "/assets/monsters/water_poring/animations/attack__north.png",
+          "north-east": "/assets/monsters/water_poring/animations/attack__north-east.png",
+          "east": "/assets/monsters/water_poring/animations/attack__east.png",
+          "south-east": "/assets/monsters/water_poring/animations/attack__south-east.png"
+        },
+        "die": {
+          "south": "/assets/monsters/water_poring/animations/die__south.png",
+          "south-west": "/assets/monsters/water_poring/animations/die__south-west.png",
+          "west": "/assets/monsters/water_poring/animations/die__west.png",
+          "north-west": "/assets/monsters/water_poring/animations/die__north-west.png",
+          "north": "/assets/monsters/water_poring/animations/die__north.png",
+          "north-east": "/assets/monsters/water_poring/animations/die__north-east.png",
+          "east": "/assets/monsters/water_poring/animations/die__east.png",
+          "south-east": "/assets/monsters/water_poring/animations/die__south-east.png"
+        },
+        "jump": {
+          "south": "/assets/monsters/water_poring/animations/jump__south.png",
+          "south-west": "/assets/monsters/water_poring/animations/jump__south-west.png",
+          "west": "/assets/monsters/water_poring/animations/jump__west.png",
+          "north-west": "/assets/monsters/water_poring/animations/jump__north-west.png",
+          "north": "/assets/monsters/water_poring/animations/jump__north.png",
+          "north-east": "/assets/monsters/water_poring/animations/jump__north-east.png",
+          "east": "/assets/monsters/water_poring/animations/jump__east.png",
+          "south-east": "/assets/monsters/water_poring/animations/jump__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "jump"
+      }
+    }
+  ]
+}

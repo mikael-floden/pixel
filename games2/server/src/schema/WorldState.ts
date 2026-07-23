@@ -1,5 +1,6 @@
 import { Schema, MapSchema, defineTypes } from "@colyseus/schema";
 import { DEFAULT_DIRECTION, DEFAULT_TIME_IDX, MAX_STAMINA } from "@nangijala/shared";
+import type { AutopilotTrip } from "@nangijala/shared";
 
 /**
  * One connected player. Synced fields are declared with `declare` (so no class
@@ -68,9 +69,55 @@ defineTypes(Player, {
   elev: "number",
 });
 
+/**
+ * One server-authoritative roaming monster (the poring family, WALK/ROAM this
+ * round). Same decorator-free style as Player: synced fields `declare`d +
+ * initialized in the ctor + wired via `defineTypes` below. Every connected
+ * client sees the same monsters at the same positions — the server owns all
+ * movement (see WorldRoom.stepMonsters). AI state (which area it belongs to,
+ * the current roam target and autopilot trip, the pause deadline) is
+ * SERVER-ONLY: plain class fields NOT in defineTypes, so they never sync.
+ */
+export class Monster extends Schema {
+  declare kind: string; // one of MONSTER_KINDS (drives which sprite/strip to draw)
+  declare x: number; // authoritative world-unit position
+  declare y: number;
+  declare dir: string; // Direction name (from stepMovement) — 8-dir facing
+  declare moving: boolean; // true while hopping — drives walk anim vs freeze on pause
+  declare elev: number; // surface elevation in LEVELS (client lift + y-sort, like Player)
+
+  // Server-only AI state (NOT synced). ------------------------------------
+  areaId = ""; // which SpawnArea this monster roams inside
+  targetX = 0; // current roam goal (world units)
+  targetY = 0;
+  tripActive = false; // true while an autopilot trip is in flight
+  trip: AutopilotTrip | null = null; // handle from startTrip(); stepped via stepAutopilot
+  nextMoveAt = 0; // Date.now() ms deadline: when paused, pick the next target after this
+
+  constructor() {
+    super();
+    this.kind = "";
+    this.x = 0;
+    this.y = 0;
+    this.dir = DEFAULT_DIRECTION;
+    this.moving = false;
+    this.elev = 0;
+  }
+}
+
+defineTypes(Monster, {
+  kind: "string",
+  x: "number",
+  y: "number",
+  dir: "string",
+  moving: "boolean",
+  elev: "number",
+});
+
 /** The whole shared world. Everyone connected is in this one state. */
 export class WorldState extends Schema {
   declare players: MapSchema<Player>;
+  declare monsters: MapSchema<Monster>;
   declare timeIdx: number; // shared time-of-day phase (server-owned)
   declare phaseT: number; // continuous progress 0..1 through the phase (clock hand/sun sweep smoothly)
   declare weather: number; // shared weather layer (server-owned; 0 = clear)
@@ -81,6 +128,7 @@ export class WorldState extends Schema {
   constructor() {
     super();
     this.players = new MapSchema<Player>();
+    this.monsters = new MapSchema<Monster>();
     this.timeIdx = DEFAULT_TIME_IDX;
     this.phaseT = 0.5; // mid-phase: the exact "characteristic" look of the phase
     this.weather = 0;
@@ -92,6 +140,7 @@ export class WorldState extends Schema {
 
 defineTypes(WorldState, {
   players: { map: Player },
+  monsters: { map: Monster },
   timeIdx: "number",
   phaseT: "number",
   weather: "number",

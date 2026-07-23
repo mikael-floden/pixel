@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { loadManifest } from "./manifest";
+import { loadMonsterManifest } from "./monsterManifest";
 import { withFallback } from "./placeholder";
 import { chooseCharacter } from "./select";
 import { WorldScene } from "./scenes/WorldScene";
@@ -155,6 +156,13 @@ async function boot() {
   }
   if (await bootMapPreview()) return;
   const manifest = await loadManifest();
+  // Monster catalog (the poring family) — served in parallel. Optional: a
+  // missing/failed manifest just means no monsters render (never dead-end the
+  // player over debug creatures).
+  const monsterManifest = await loadMonsterManifest().catch((e) => {
+    console.warn("[nangijala] monster manifest unavailable — no monsters will render:", e);
+    return null;
+  });
   // The art agents periodically reset/regenerate the roster, so it can be empty.
   // Never dead-end the player: fall back to a built-in "Wanderer" so the shared
   // world is always joinable (the world scene draws it procedurally).
@@ -217,6 +225,7 @@ async function boot() {
   });
 
   game.registry.set("manifest", manifest);
+  game.registry.set("monsterManifest", monsterManifest);
   game.registry.set("character", character);
   game.registry.set("name", name);
   game.registry.set("world", world);

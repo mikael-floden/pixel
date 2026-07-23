@@ -8,7 +8,7 @@
     "client"
   ],
   "scripts": {
-    "manifest": "node scripts/build-manifest.mjs && node scripts/build-worlds.mjs",
+    "manifest": "node scripts/build-manifest.mjs && node scripts/build-worlds.mjs && node scripts/build-monsters-manifest.mjs",
     "dev": "npm run manifest && concurrently -n server,client -c cyan,magenta \"npm:dev -w server\" \"npm:dev -w client\"",
     "dev:server": "npm run dev -w server",
     "dev:client": "npm run manifest && npm run dev -w client",

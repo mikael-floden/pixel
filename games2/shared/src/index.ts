@@ -11,7 +11,12 @@
 // correctly and the server can host several differently-sized worlds at once.
 // WORLD_WIDTH/HEIGHT survive only as the DEFAULT extent for the open-world
 // fallback (no map loaded) and the movement tests — a nominal 160×160.
-export const CELL_WU = 32;
+// CELL_WU lives in the dependency-free leaf ./units so ./monsters (re-exported
+// at the bottom of this file) can read it at module-init without importing this
+// barrel — that cycle would TDZ-crash SPAWN_AREAS. Re-exported here so the
+// public @nangijala/shared surface is unchanged.
+export { CELL_WU } from "./units";
+import { CELL_WU } from "./units";
 export const WORLD_GRID = 160;
 export const WORLD_WIDTH = WORLD_GRID * CELL_WU;
 export const WORLD_HEIGHT = WORLD_GRID * CELL_WU;
@@ -1920,3 +1925,5 @@ export function stepAutopilot(
     usedOpen: best !== rawBest,
   };
 }
+
+export * from "./monsters";

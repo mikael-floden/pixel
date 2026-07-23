@@ -43,8 +43,10 @@ import {
   TIME_PHASE_SECONDS,
   WEATHER_NAMES,
   WEATHER_COUNT,
+  SPAWN_AREAS,
 } from "@nangijala/shared";
 import { CharacterDef, Manifest, frameUrl, frameKey } from "../manifest";
+import { MonsterManifest, MonsterDef, monsterWalkKey } from "../monsterManifest";
 import { colorForName } from "../placeholder";
 import { gameAudio } from "../../../composer/index";
 import { Atmosphere, LightSource } from "../lighting";
@@ -367,12 +369,41 @@ interface Avatar {
 // invisible on a deliberate turn but longer than any boundary wobble period.
 const DIR_STICK_MS = 160;
 
+// A roaming MONSTER (the poring family) rendered from the authoritative
+// server-synced Monster schema. Much lighter than an Avatar: no swim/torch/
+// footstep/label machinery — porings just hop (walk == jump), so we ease the
+// projected position exactly like a remote player and play the 8-dir jump
+// strip while `moving`. `lx/lyFlat/ly/elev/fallV/falling` mirror the avatar
+// easing fields; `dispDir` is the last-played facing, `fx/fy` the flat
+// authoritative world position (for depth/debug).
+interface MonsterAvatar {
+  sprite: Phaser.GameObjects.Sprite;
+  shadow: Phaser.GameObjects.Image;
+  kind: string;
+  lx: number;
+  lyFlat: number;
+  ly: number;
+  elev: number; // current elevation lift (px); eases/falls toward cell level×lh
+  fallV: number;
+  falling: boolean;
+  dispDir: string;
+  fx: number;
+  fy: number;
+}
+
 export class WorldScene extends Phaser.Scene {
   private manifest!: Manifest;
   private myCharacter!: CharacterDef;
   private myName!: string;
   private room?: Room;
   private avatars = new Map<string, Avatar>();
+  // Roaming monsters (server-authoritative, all clients see the same ones).
+  private monsters = new Map<string, MonsterAvatar>();
+  // Monster catalog (null when /monsters.json was unavailable → no monsters).
+  private monsterManifest: MonsterManifest | null = null;
+  // Faint debug outline of each fake SPAWN_AREA rectangle (WIP placeholder,
+  // later the maps agent owns real areas). World-anchored via this.project.
+  private spawnAreaGfx?: Phaser.GameObjects.Graphics;
   private keys!: Record<string, Phaser.Input.Keyboard.Key>;
   private lastSent = "";
   private chat!: ChatUI;
@@ -548,6 +579,7 @@ export class WorldScene extends Phaser.Scene {
 
   init() {
     this.manifest = this.registry.get("manifest") as Manifest;
+    this.monsterManifest = (this.registry.get("monsterManifest") as MonsterManifest | null) ?? null;
     this.myCharacter = this.registry.get("character") as CharacterDef;
     this.myName = this.registry.get("name") as string;
     this.world = (this.registry.get("world") as World | null) ?? null;
@@ -589,6 +621,20 @@ export class WorldScene extends Phaser.Scene {
         }
       }
     }
+    // Monster art: 48x48 HORIZONTAL strips, loaded as spritesheets (campfire
+    // pattern). WALK/ROAM only this round — load just the resolved walk (jump)
+    // strip per (kind, direction); attack/die are deferred.
+    for (const def of this.monsterManifest?.monsters ?? []) {
+      const walk = monsterWalkKey(def);
+      const dirStrips = def.strips?.[walk] ?? {};
+      for (const [dir, url] of Object.entries(dirStrips)) {
+        if (!url) continue; // guard a missing strip
+        this.load.spritesheet(monsterSheetKey(def.id, walk, dir), url, {
+          frameWidth: def.frameW,
+          frameHeight: def.frameH,
+        });
+      }
+    }
     // Isometric ground tiles.
     if (this.world) {
       if (this.maps2) {
@@ -619,6 +665,7 @@ export class WorldScene extends Phaser.Scene {
     this.ensurePlaceholderTexture();
     this.ensureShadowTexture();
     this.buildAnimations();
+    this.buildMonsterAnimations();
     if (this.world) this.setupStreamingGround();
     else this.drawGround();
     this.placeCampfire();
@@ -1324,6 +1371,38 @@ export class WorldScene extends Phaser.Scene {
         this.night.testPattern = test;
         return { flip, span, test };
       },
+      // Roaming monsters (headless QA): live count + a dump of every rendered
+      // monster's synced state, and the nearest monster to a world point.
+      monsters: () => this.monsters.size,
+      monstersDump: () => {
+        const st = (this.room?.state as any)?.monsters;
+        const out: Record<string, unknown>[] = [];
+        this.monsters.forEach((mv, id) => {
+          const m = st?.get(id);
+          out.push({
+            id,
+            kind: mv.kind,
+            x: m?.x ?? mv.fx,
+            y: m?.y ?? mv.fy,
+            dir: m?.dir ?? mv.dispDir,
+            moving: !!m?.moving,
+            elev: m?.elev ?? 0,
+          });
+        });
+        return out;
+      },
+      monsterAt: (x: number, y: number) => {
+        const st = (this.room?.state as any)?.monsters;
+        let best: { id: string; kind: string; x: number; y: number; d: number } | null = null;
+        this.monsters.forEach((mv, id) => {
+          const m = st?.get(id);
+          const mx = m?.x ?? mv.fx;
+          const my = m?.y ?? mv.fy;
+          const d = Math.hypot(mx - x, my - y);
+          if (!best || d < best.d) best = { id, kind: mv.kind, x: mx, y: my, d };
+        });
+        return best;
+      },
     };
   }
 
@@ -1398,6 +1477,11 @@ export class WorldScene extends Phaser.Scene {
       this.removeAvatar(id);
       this.refreshRoster();
     });
+    // Roaming monsters — server-authoritative, so every client renders the same
+    // ones at the same positions. Poll state.monsters.get(id) each frame and
+    // ease like a remote player (see the monster loop in update()).
+    $(room.state).monsters.onAdd((m: any, id: string) => this.addMonster(id, m));
+    $(room.state).monsters.onRemove((_m: any, id: string) => this.removeMonster(id));
     room.onMessage("chat", (msg: ChatBroadcast) => {
       this.chat.addLog(msg.name, msg.text);
       this.showBubble(msg.id, msg.text);
@@ -1436,6 +1520,76 @@ export class WorldScene extends Phaser.Scene {
     av.bubble?.destroy();
     this.avatars.delete(id);
     gameAudio.dropAvatar(id);
+  }
+
+  /** Spawn a roaming-monster sprite. Mirrors the essential parts of addAvatar:
+   * project the authoritative flat (x,y) onto the iso ground (feet lifted by
+   * the cell/surface elevation), a squashed drop shadow, and the south walk
+   * frame as the initial texture. No label/torch/footstep machinery. */
+  private addMonster(id: string, m: any) {
+    const def = this.monsterManifest?.monsters.find((d) => d.id === m.kind);
+    const f0 = this.projectFlat(m.x, m.y);
+    const elev0 = (m.elev ?? f0.lvl) * MAP_GEOMETRY.lh;
+    const p0 = { x: f0.x, y: f0.y - elev0 };
+    const walk = def ? monsterWalkKey(def) : "jump";
+    const initKey = monsterSheetKey(m.kind, walk, DEFAULT_DIRECTION);
+    const hasArt = this.textures.exists(initKey);
+    // 48px art, drawn at scale 1 (the camera zoom already scales the world);
+    // origin near the feet so it y-sorts and lifts like a player. Fall back to
+    // the wanderer placeholder if a monster's strip failed to load.
+    const sprite = this.add.sprite(p0.x, p0.y, hasArt ? initKey : PLACEHOLDER_TEX);
+    if (hasArt) sprite.setFrame(0);
+    sprite.setOrigin(0.5, 0.85).setScale(1);
+    const shadow = this.add.image(p0.x, p0.y, SHADOW_TEX).setOrigin(0.5, 0.5).setDisplaySize(26, 10);
+    const mv: MonsterAvatar = {
+      sprite,
+      shadow,
+      kind: m.kind,
+      lx: p0.x,
+      ly: p0.y,
+      lyFlat: f0.y,
+      elev: elev0,
+      fallV: 0,
+      falling: false,
+      dispDir: DEFAULT_DIRECTION,
+      fx: m.x,
+      fy: m.y,
+    };
+    this.monsters.set(id, mv);
+    this.playMonsterAnim(mv, !!m.moving, m.dir);
+  }
+
+  private removeMonster(id: string) {
+    const mv = this.monsters.get(id);
+    if (!mv) return;
+    mv.sprite.destroy();
+    mv.shadow.destroy();
+    this.monsters.delete(id);
+  }
+
+  /** Drive a monster's 8-dir WALK (jump) clip: loop it while `moving`, else
+   * freeze on the first frame of the current facing (idle pause between hops).
+   * A direction-only change keeps the loop progress so the hop doesn't restart. */
+  private playMonsterAnim(mv: MonsterAvatar, moving: boolean, dir: string) {
+    const d = DIRECTIONS.includes(dir as never) ? dir : DEFAULT_DIRECTION;
+    mv.dispDir = d;
+    const key = monsterAnimKey(mv.kind, "jump", d);
+    if (moving) {
+      if (!this.anims.exists(key)) return;
+      if (mv.sprite.anims.getName() !== key || !mv.sprite.anims.isPlaying) {
+        const prev = mv.sprite.anims.getName();
+        const sameState = !!prev && mv.sprite.anims.isPlaying && prev.split(":").at(-2) === "jump";
+        const progress = sameState ? mv.sprite.anims.getProgress() : 0;
+        mv.sprite.play(key, true);
+        if (progress > 0) mv.sprite.anims.setProgress(progress);
+      }
+    } else {
+      // Paused between hops: stop and hold the first frame of the facing strip
+      // (also turns the resting monster to face its last heading).
+      mv.sprite.anims.stop();
+      const sk = monsterSheetKey(mv.kind, "jump", d);
+      if (this.textures.exists(sk)) mv.sprite.setTexture(sk, 0);
+    }
   }
 
   /** Stereo position of an avatar relative to the camera view — pan (-1..1)
@@ -1517,6 +1671,7 @@ export class WorldScene extends Phaser.Scene {
         // Clean slate: the new room's full state re-adds every player (new
         // sessionIds), so drop all old sprites + prediction/input state.
         for (const id of [...this.avatars.keys()]) this.removeAvatar(id);
+        for (const id of [...this.monsters.keys()]) this.removeMonster(id);
         this.pending = [];
         this.inputSeq = 0;
         this.sendAccum = 0;
@@ -2143,6 +2298,53 @@ export class WorldScene extends Phaser.Scene {
         dist: sp.dist,
       });
     });
+
+    // Roaming monsters: authoritative server positions, eased exactly like a
+    // remote player (rate 12, snap on a big jump). Server owns the movement —
+    // the client only interpolates + renders the hop.
+    const monsterState = state.monsters;
+    if (monsterState) {
+      this.monsters.forEach((mv, id) => {
+        const m = monsterState.get(id);
+        if (!m) return;
+        mv.fx = m.x;
+        mv.fy = m.y;
+        const g = this.projectFlat(m.x, m.y);
+        const targetElev = (m.elev ?? g.lvl) * MAP_GEOMETRY.lh;
+        if (Math.abs(g.x - mv.lx) > CELL_WU * 2 || Math.abs(g.y - mv.lyFlat) > CELL_WU * 2) {
+          // A respawn/reslot teleport — snap, don't ease across the map.
+          mv.lx = g.x;
+          mv.lyFlat = g.y;
+          mv.elev = targetElev;
+          mv.fallV = 0;
+          mv.falling = false;
+        } else {
+          const k = Math.min(1, dt * 12);
+          mv.lx += (g.x - mv.lx) * k;
+          mv.lyFlat += (g.y - mv.lyFlat) * k;
+          // Elevation eases/falls via the shared integrator, like avatars.
+          const s = integrateFall(
+            { elev: mv.elev, fallV: mv.fallV, falling: mv.falling },
+            targetElev,
+            dt,
+            MAP_GEOMETRY.lh,
+          );
+          mv.elev = s.elev;
+          mv.fallV = s.fallV;
+          mv.falling = s.falling;
+        }
+        mv.ly = mv.lyFlat - mv.elev;
+        mv.sprite.x = mv.lx;
+        mv.sprite.y = mv.ly;
+        // Depth/y-sort at the flat ground point, same basis as players; the
+        // shadow rests on the landing ground just beneath.
+        const depth = g.y + 0.5;
+        mv.sprite.setDepth(depth);
+        const landY = mv.lyFlat - targetElev;
+        mv.shadow.setPosition(mv.lx, landY).setDepth(depth - 0.1);
+        this.playMonsterAnim(mv, !!m.moving, m.dir);
+      });
+    }
 
     this.updateChaseCam(delta);
 
@@ -3347,6 +3549,29 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
+  /** Build the looping WALK (jump) animation for every monster + direction from
+   * its strip spritesheet. Frame counts vary per (kind, dir) — read them from
+   * the manifest (poring/forest = 16, ice/lava/sand/water = 6), never hardcode.
+   * Slow 6-frame hops read better at ~6fps, the longer 16-frame ones at ~10. */
+  private buildMonsterAnimations() {
+    for (const def of this.monsterManifest?.monsters ?? []) {
+      const walk = monsterWalkKey(def);
+      const dirCounts = def.animations?.[walk] ?? {};
+      for (const [dir, frames] of Object.entries(dirCounts)) {
+        const sk = monsterSheetKey(def.id, walk, dir);
+        if (!this.textures.exists(sk) || frames <= 0) continue; // strip missing
+        const key = monsterAnimKey(def.id, walk, dir);
+        if (this.anims.exists(key)) continue;
+        this.anims.create({
+          key,
+          frames: this.anims.generateFrameNumbers(sk, { start: 0, end: frames - 1 }),
+          frameRate: frames <= 6 ? 6 : 10,
+          repeat: -1,
+        });
+      }
+    }
+  }
+
   /**
    * Streaming ground: the world is far too large to bake into one texture
    * (512×448 cells ≈ 30k px wide). Instead a world-anchored RenderTexture
@@ -3368,6 +3593,34 @@ export class WorldScene extends Phaser.Scene {
     }
     this.makeGroundRT();
     this.scale.on("resize", () => this.makeGroundRT());
+    // Fake debug spawn-area rectangles depend on the iso origin — (re)draw them
+    // now that this.iso is set.
+    this.drawSpawnAreas();
+  }
+
+  /** Faint iso outline of each fake monster SPAWN_AREA (WIP placeholder — the
+   * maps agent owns real areas later). Drawn in WORLD space (via this.project,
+   * which reads this.iso) at a depth just above the ground RT (-1e6) and below
+   * every sprite, so it never occludes a monster. Redrawn whenever the iso
+   * origin is (re)built. Kept subtle on purpose. */
+  private drawSpawnAreas() {
+    if (!this.world) return;
+    if (!this.spawnAreaGfx) this.spawnAreaGfx = this.add.graphics().setDepth(-800_000);
+    const g = this.spawnAreaGfx;
+    g.clear();
+    for (const area of SPAWN_AREAS) {
+      // Project the 4 AABB corners onto the iso grid (elevation-aware).
+      const pts = [
+        this.project(area.x0, area.y0),
+        this.project(area.x1, area.y0),
+        this.project(area.x1, area.y1),
+        this.project(area.x0, area.y1),
+      ].map((p) => ({ x: p.x, y: p.y }));
+      g.fillStyle(0x66ccff, 0.05);
+      g.fillPoints(pts, true);
+      g.lineStyle(1, 0x8fd6ff, 0.3);
+      g.strokePoints(pts, true);
+    }
   }
 
   /** Face tile key for a deck's underside/sides (the material's plain face, like
@@ -4450,4 +4703,14 @@ function sheetKey(uid: string, anim: string, dir: string): string {
 
 function animKey(uid: string, anim: string, dir: string): string {
   return `anim:${uid}:${anim}:${dir}`;
+}
+
+// Monster texture/anim keys are namespaced apart from character keys so a
+// monster id can never collide with a character uid.
+function monsterSheetKey(id: string, anim: string, dir: string): string {
+  return `msheet:${id}:${anim}:${dir}`;
+}
+
+function monsterAnimKey(id: string, anim: string, dir: string): string {
+  return `manim:${id}:${anim}:${dir}`;
 }

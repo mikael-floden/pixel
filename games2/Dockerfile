@@ -26,6 +26,7 @@ COPY tiles2/ /assets/tiles2/
 COPY maps2/ /assets/maps2/
 COPY sounds/ /assets/sounds/
 COPY music/ /assets/music/
+COPY monsters/ /assets/monsters/
 ENV ASSETS_ROOT=/assets
 
 # Game source (changes every deploy — keep below the art layers).
