@@ -29,8 +29,12 @@ from PIL import Image
 SRC = "client/ui-src/uikit.png"
 BAR = (928, 102, 1018, 122)  # full gold bar bbox (x0,y0,x1,y1), exclusive hi
 FILL_DARK = (39, 22, 24)     # the empty track's interior
-GOLD = (237, 173, 95)        # the (single, flat) fill colour = MANA yellow
+GOLD = (237, 173, 95)        # the (single, flat) fill colour = ENERGY yellow
 RED = (198, 72, 58)          # HEALTH — a warm brick red in the gold's palette
+# EXPERIENCE — a blue in the SAME palette (maintainer 2026-07-23: "a blue color
+# in the same palette"): mirrors the health red's saturation/value at a blue
+# hue, so it reads as a sibling of the kit ramp, not an off-palette blue.
+BLUE = (58, 120, 198)
 # the kit's teal backdrop. The bar has ROUNDED corners, so the rectangular
 # crop clips a few backdrop pixels into the corner notches — they must be
 # KEYED OUT (maintainer 2026-07-23 green marks: "you didn't cut out the UI
@@ -74,7 +78,8 @@ def main():
     frame = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     fred = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     fyellow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    fp, rp, yp = frame.load(), fred.load(), fyellow.load()
+    fblue = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    fp, rp, yp, bp = frame.load(), fred.load(), fyellow.load(), fblue.load()
 
     gold_px = bg_px = 0
     for y in range(H):
@@ -86,14 +91,16 @@ def main():
                 gold_px += 1
                 fp[x, y] = (*FILL_DARK, 255)   # hollow the track
                 rp[x, y] = (*RED, 255)
-                yp[x, y] = (*GOLD, 255)        # mana keeps the kit gold
+                yp[x, y] = (*GOLD, 255)        # energy keeps the kit gold
+                bp[x, y] = (*BLUE, 255)        # experience = palette blue
             else:
                 fp[x, y] = (*c, 255)           # border/chrome (dark + brown)
 
-    frame, fred, fyellow = (downscale2x(im2) for im2 in (frame, fred, fyellow))
+    frame, fred, fyellow, fblue = (downscale2x(im2) for im2 in (frame, fred, fyellow, fblue))
     frame.save("client/public/ui2/bar-frame.png")
     fred.save("client/public/ui2/bar-fill-red.png")
     fyellow.save("client/public/ui2/bar-fill-yellow.png")
+    fblue.save("client/public/ui2/bar-fill-blue.png")
     fcols = {c for c in frame.getdata() if c[3]}
     assert BG not in {(c[0], c[1], c[2]) for c in fcols}, "backdrop leaked into the frame"
     print(f"baked {W}x{H} -> downscaled {frame.size[0]}x{frame.size[1]} from crisp kit: "

@@ -1,41 +1,38 @@
 /**
- * HP / MP bars — top-left of the game view (maintainer 2026-07-23, his
- * red/blue placement marks: "Red = Health, Blue = Mana").
+ * HP / Energy / XP bars — HP + Energy top-LEFT, Experience top-RIGHT (maintainer
+ * 2026-07-23: "add a blue experience bar to the right ... to the right of the
+ * clock"; "rename mana to energy"; "half the current height"; "EP not MP").
  *
- * Art from his UI kit (scripts/bake-bars.py): /ui2/bar-frame.png is the empty
- * track; /ui2/bar-fill-red.png and -blue.png are the same gold fill recoloured
- * to a health-red / mana-blue luminance ramp. A fill stacks over the track and
- * is CLIPPED left-to-right to the percent (the dark interior shows through the
- * cut), so a bar is pure CSS over two <img>s — nearest-neighbour, integer
- * scale, no canvas.
+ * Art from his UI kit (scripts/bake-bars.py): bar-frame.png is the empty track;
+ * bar-fill-{red,yellow,blue}.png are the same gold fill recoloured to a
+ * health-red / energy-gold / experience-blue ramp, all in the kit palette. The
+ * frame and fill are 9-SLICED into the box at the shared kit block scale
+ * (plate.ts nineSlice / KIT_PX) so the bar keeps its size while its pixels match
+ * the buttons; the fill stacks over the track and is CLIPPED left-to-right to
+ * the percent (the dark interior shows through the cut). The layer is uiZoom'd
+ * on <body> like the version badge, so it tracks the frame under "Desktop site".
  *
- * For now the fill sweeps 0%<->100% back and forth so we can see the look
- * ("connected to the players real health and mana ... but for now"), and the
- * number to the right tracks it ("300 / 500 HP"). setBar(kind, cur, max) is
- * the seam the real player state plugs into later; stopBarDemo() ends the
- * sweep. The layer is uiZoom'd on <body> like the version badge, so it tracks
- * the frame under "Desktop site".
+ * For now each fill sweeps so we can see the look ("connected to the players
+ * real health ... but for now"); the number to the right tracks it. setBar(kind,
+ * cur, max) is the seam the real player state plugs into later; it ends the demo.
  */
 
 import { applyUiZoom } from "./uiscale";
 import { nineSlice } from "./plate";
 
-// The bar's DISPLAY box (CSS px) — the maintainer's tuned size, KEPT while the
-// pixel blocks shrink: the low-res kit bar art (bar-*.png, 45x10) is 9-sliced
-// into this box at the shared kit block scale (plate.ts nineSlice / KIT_PX),
-// exactly like the buttons, so the bar stays this size but its pixels match
-// them instead of reading ~2x the icons (maintainer 2026-07-23).
 const GAUGE_W = 258;
-const GAUGE_H = 60;
+const GAUGE_H = 30; // HALF the old 60 (maintainer 2026-07-23: "half the height")
 const NUM_PX = 22; // number font size, DESIGN px (decoupled from block scale)
-// top-left anchor + row gap, DESIGN px (tuned on the maintainer's phone view).
-// LEFT clears the frame's left vine rail (maintainer 2026-07-23: the bars were
-// drawn OVER the frame); GAP separates the two bar+number groups.
-const LEFT = 90;
 const TOP = 108;
-const GAP = 14;
+const GAP = 14; // between the HP and Energy rows on the left
+// DESIGN-px anchors, tuned on the maintainer's phone view. LEFT clears the left
+// vine rail; RIGHT (from the viewport's right edge) puts the Experience bar in
+// the gap between the clock disc (ends ~x616) and the right vine rail (inner
+// ~x900) — measured, ~13px clear on each side.
+const LEFT = 90;
+const RIGHT = 93;
 
-type Kind = "hp" | "mp";
+type Kind = "hp" | "ep" | "xp";
 interface Bar {
   fill: HTMLImageElement;
   num: HTMLElement;
@@ -43,7 +40,8 @@ interface Bar {
   suffix: string;
 }
 
-let root: HTMLDivElement | null = null;
+let root: HTMLDivElement | null = null; // left group: HP + Energy
+let rootR: HTMLDivElement | null = null; // right group: Experience
 const bars: Record<Kind, Bar> = {} as any;
 let raf = 0;
 let demo = true;
@@ -55,8 +53,18 @@ export function mountBars() {
   root.className = "ml-bars";
   root.style.top = `${TOP}px`;
   root.style.left = `${LEFT}px`;
+  rootR = document.createElement("div");
+  rootR.className = "ml-bars";
+  rootR.style.top = `${TOP}px`;
+  rootR.style.right = `${RIGHT}px`;
 
-  const make = (kind: Kind, colour: string, max: number, suffix: string): Bar => {
+  const make = (
+    container: HTMLElement,
+    kind: Kind,
+    colour: string,
+    max: number,
+    suffix: string,
+  ): Bar => {
     const row = document.createElement("div");
     row.className = "ml-bar-row";
     const gauge = document.createElement("div");
@@ -64,30 +72,34 @@ export function mountBars() {
     const frame = img("/ui2/bar-frame.png");
     const fill = img(`/ui2/bar-fill-${colour}.png`);
     fill.classList.add("ml-bar-fill");
-    fill.dataset.color = colour; // HP=red / MP=yellow (the gate checks this)
+    fill.dataset.color = colour; // HP=red / EP=yellow / XP=blue (gate checks this)
     gauge.append(frame, fill);
     const num = document.createElement("span");
     num.className = "ml-bar-num";
     row.append(gauge, num);
-    root!.appendChild(row);
+    container.appendChild(row);
     return { fill, num, max, suffix };
   };
-  bars.hp = make("hp", "red", 500, "HP");
-  bars.mp = make("mp", "yellow", 500, "MP");
-  document.body.appendChild(root);
+  bars.hp = make(root, "hp", "red", 500, "HP");
+  bars.ep = make(root, "ep", "yellow", 500, "EP");
+  bars.xp = make(rootR, "xp", "blue", 2000, "XP");
+  document.body.append(root, rootR);
   applyUiZoom(root);
+  applyUiZoom(rootR);
 
   demo = true;
   const t0 = performance.now();
   const loop = (t: number) => {
-    // triangle wave 0..1..0 over ~4.4s; mana half a period out of phase so the
-    // two bars breathe independently
+    // HP/Energy: triangle wave 0..1..0 over ~4.4s (energy half a period out of
+    // phase so the two breathe independently). XP: fills UP like real experience
+    // (sawtooth over ~10s) then rolls over — faked for now.
     const tri = (ph: number) => {
       const u = ((t - t0) / 4400 + ph) % 1;
       return u < 0.5 ? u * 2 : 2 - u * 2;
     };
     apply("hp", tri(0));
-    apply("mp", tri(0.5));
+    apply("ep", tri(0.5));
+    apply("xp", ((t - t0) / 10000) % 1);
     raf = requestAnimationFrame(loop);
   };
   raf = requestAnimationFrame(loop);

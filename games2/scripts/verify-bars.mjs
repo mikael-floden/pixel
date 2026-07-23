@@ -31,12 +31,14 @@ try {
       num: r.querySelector(".ml-bar-num")?.textContent || "",
     }));
   });
-  if (s.length !== 2) fail(`want 2 bar rows, got ${s.length}`);
+  if (s.length !== 3) fail(`want 3 bar rows (HP, EP, XP), got ${s.length}`);
   else {
     s[0].color === "red" && s[0].imgs === 2 && s[0].fillData ? ok("health = red 9-sliced fill over the track") : fail(`hp row ${JSON.stringify(s[0])}`);
-    s[1].color === "yellow" && s[1].imgs === 2 && s[1].fillData ? ok("mana = yellow 9-sliced fill over the track") : fail(`mp row ${JSON.stringify(s[1])}`);
+    s[1].color === "yellow" && s[1].imgs === 2 && s[1].fillData ? ok("energy = yellow 9-sliced fill over the track") : fail(`ep row ${JSON.stringify(s[1])}`);
+    s[2].color === "blue" && s[2].imgs === 2 && s[2].fillData ? ok("experience = blue 9-sliced fill over the track") : fail(`xp row ${JSON.stringify(s[2])}`);
     /^\d+ \/ \d+ HP$/.test(s[0].num) ? ok(`hp number "${s[0].num}"`) : fail(`hp number "${s[0].num}"`);
-    /^\d+ \/ \d+ MP$/.test(s[1].num) ? ok(`mp number "${s[1].num}"`) : fail(`mp number "${s[1].num}"`);
+    /^\d+ \/ \d+ EP$/.test(s[1].num) ? ok(`ep number "${s[1].num}"`) : fail(`ep number "${s[1].num}"`);
+    /^\d+ \/ \d+ XP$/.test(s[2].num) ? ok(`xp number "${s[2].num}"`) : fail(`xp number "${s[2].num}"`);
   }
 
   // the fill sweeps: clip-path inset changes over time, and stays within 0..100
