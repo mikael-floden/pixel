@@ -1,0 +1,54 @@
+{
+  "_comment": "Authoritative roster of monsters the maintainer wants to exist. `sync.py` reconciles monsters/ against this list: mirrors each entry from PixelLab and PRUNES any monster folder not listed here. Each monster ends up with the canonical animation keys jump/attack/die (8 directions each); `renames` maps the key auto-derived from each PixelLab animation description to that canonical key, and `aliases` exposes game-facing synonyms (walk -> jump). To retire a monster, delete its entry and run sync.",
+  "canonical_animations": ["jump", "attack", "die"],
+  "monsters": [
+    {
+      "id": "poring",
+      "kind": "object",
+      "pixellab_id": "cd723b90-837b-4b92-8776-1aad8c4d17f3",
+      "name": "Poring",
+      "aliases": { "walk": "jump" },
+      "renames": { "spit": "attack", "melting": "die" }
+    },
+    {
+      "id": "lava_poring",
+      "kind": "object",
+      "pixellab_id": "9722f51d-0f7a-4753-8516-2b210be96ee0",
+      "name": "Lava Poring",
+      "aliases": { "walk": "jump" },
+      "renames": { "melts": "die" }
+    },
+    {
+      "id": "forest_poring",
+      "kind": "object",
+      "pixellab_id": "538729d4-51ed-4ae4-950e-131ee599c56f",
+      "name": "Forest Poring",
+      "aliases": { "walk": "jump" },
+      "renames": { "wooden": "attack", "melts": "die", "jumping": "jump" }
+    },
+    {
+      "id": "sand_poring",
+      "kind": "object",
+      "pixellab_id": "ecbd2d74-cb4b-4f4d-a3e0-4ea50640f469",
+      "name": "Sand Poring",
+      "aliases": { "walk": "jump" },
+      "renames": { "sand": "attack", "melting": "die", "jumping": "jump" }
+    },
+    {
+      "id": "water_poring",
+      "kind": "object",
+      "pixellab_id": "46daa78a-a606-479b-830c-f2e4eed36592",
+      "name": "Water Poring",
+      "aliases": { "walk": "jump" },
+      "renames": { "water": "attack", "melting": "die", "jumping": "jump" }
+    },
+    {
+      "id": "ice_poring",
+      "kind": "object",
+      "pixellab_id": "520e6bf5-265f-41cf-9ab7-05094ef4fc48",
+      "name": "Ice Poring",
+      "aliases": { "walk": "jump" },
+      "renames": { "snow": "attack", "melting": "die" }
+    }
+  ]
+}

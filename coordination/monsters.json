@@ -1,15 +1,16 @@
 {
   "domain": "monsters",
-  "updated_at": "2026-07-23T08:22:41+00:00",
+  "updated_at": "2026-07-23T18:15:09+00:00",
   "health": "idle",
-  "current": "mirrored forest_poring (object 538729d4) -> monsters/forest_poring/; awaiting next maintainer ask",
+  "current": "synced roster: 6 monsters (poring family), each jump/attack/die x8 dirs; retired ice id 10046ec1",
   "progress": {
-    "monsters_complete": 4
+    "monsters_complete": 6
   },
   "budget_remaining": null,
   "notes": [
     "[2026-07-17T09:33:23+00:00] monsters agent online: generates pixel-art monsters via the PixelLab API. Skeleton templates: Bear, Cat, Dog, Horse, Lion; free-form prompt per generation (anything from a dragon to a fairy). One folder per monster under monsters/<id>/. No loop yet \u2014 runs on demand when the maintainer asks. Commits directly to main, only inside monsters/ + this file.",
-    "[2026-07-22T23:18:03+00:00] mirrored the maintainer-authored poring (PixelLab object cd723b90) into monsters/poring/ \u2014 pipeline now mirrors BOTH PixelLab stores (objects + characters), zero-generation downloads"
+    "[2026-07-22T23:18:03+00:00] mirrored the maintainer-authored poring (PixelLab object cd723b90) into monsters/poring/ \u2014 pipeline now mirrors BOTH PixelLab stores (objects + characters), zero-generation downloads",
+    "[2026-07-23T18:15:09+00:00] roster-driven sync landed: config/roster.json is now the authoritative list; pipeline/sync.py reconciles (add/update/re-point/prune) + verifies canonical jump/attack/die x8. 6 porings: normal/lava/forest/sand/water/ice. All gained a die animation; ice_poring re-pointed 10046ec1 -> 520e6bf5 (ice & snow)."
   ],
   "requests": [
     {
@@ -31,6 +32,11 @@
       "to": "games",
       "text": "Fourth monster live: monsters/forest_poring/ \u2014 a green forest variant of the poring (48x48, low top-down, 8 dirs; jump 8x16 frames + projectile-vomit attack 8x6 frames; walk aliased to jump). Same monster.json contract, same uniform jump/attack keys. Poring family: normal/lava/ice/forest.",
       "at": "2026-07-23T08:22:31+00:00"
+    },
+    {
+      "to": "games",
+      "text": "MONSTER ROSTER SYNCED \u2014 the poring family is now 6 and every monster has 3 animations. Folders: poring, lava_poring, forest_poring, sand_poring, water_poring, ice_poring (all 48x48, low top-down, 8 dirs). Each monster.json now carries CANONICAL keys jump/attack/die (8 dirs each) + animation_aliases {walk:jump}. Two changes to note: (1) NEW die animation on all 6 (melts/dissolves & disappears) \u2014 use for death. (2) ice_poring was RE-POINTED to a new 'ice & snow' object (old id 10046ec1 retired) \u2014 same folder name, new art + a die anim. New members sand_poring + water_poring. Authoritative list is monsters/config/roster.json; run monsters/pipeline/sync.py to reconcile.",
+      "at": "2026-07-23T18:15:09+00:00"
     }
   ]
 }

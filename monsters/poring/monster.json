@@ -35,8 +35,8 @@
   },
   "animations": {
     "attack": {
-      "group_id": "8dfc5fed-9322-49ab-bd44-f82c49a40fc5",
-      "description": "Attack, swing the tail/droppet on it's head",
+      "group_id": "b2f989aa-bcf6-4c1a-bf99-d2e31c5a6497",
+      "description": "Spit pink balls",
       "directions": {
         "east": {
           "frames": 16,
@@ -60,7 +60,7 @@
             "poring/animations/attack/east/14.png",
             "poring/animations/attack/east/15.png"
           ],
-          "lm": "Wed, 22 Jul 2026 23:14:33 GMT",
+          "lm": "Thu, 23 Jul 2026 17:58:08 GMT",
           "src_frames": 16
         },
         "north": {
@@ -85,7 +85,7 @@
             "poring/animations/attack/north/14.png",
             "poring/animations/attack/north/15.png"
           ],
-          "lm": "Wed, 22 Jul 2026 23:14:43 GMT",
+          "lm": "Thu, 23 Jul 2026 17:58:17 GMT",
           "src_frames": 16
         },
         "north-east": {
@@ -110,7 +110,7 @@
             "poring/animations/attack/north-east/14.png",
             "poring/animations/attack/north-east/15.png"
           ],
-          "lm": "Wed, 22 Jul 2026 23:14:51 GMT",
+          "lm": "Thu, 23 Jul 2026 17:58:24 GMT",
           "src_frames": 16
         },
         "north-west": {
@@ -135,7 +135,7 @@
             "poring/animations/attack/north-west/14.png",
             "poring/animations/attack/north-west/15.png"
           ],
-          "lm": "Wed, 22 Jul 2026 23:15:00 GMT",
+          "lm": "Thu, 23 Jul 2026 17:58:33 GMT",
           "src_frames": 16
         },
         "south": {
@@ -160,7 +160,7 @@
             "poring/animations/attack/south/14.png",
             "poring/animations/attack/south/15.png"
           ],
-          "lm": "Wed, 22 Jul 2026 23:15:12 GMT",
+          "lm": "Thu, 23 Jul 2026 17:58:40 GMT",
           "src_frames": 16
         },
         "south-east": {
@@ -185,7 +185,7 @@
             "poring/animations/attack/south-east/14.png",
             "poring/animations/attack/south-east/15.png"
           ],
-          "lm": "Wed, 22 Jul 2026 23:15:22 GMT",
+          "lm": "Thu, 23 Jul 2026 17:58:48 GMT",
           "src_frames": 16
         },
         "south-west": {
@@ -210,7 +210,7 @@
             "poring/animations/attack/south-west/14.png",
             "poring/animations/attack/south-west/15.png"
           ],
-          "lm": "Wed, 22 Jul 2026 23:15:32 GMT",
+          "lm": "Thu, 23 Jul 2026 17:58:56 GMT",
           "src_frames": 16
         },
         "west": {
@@ -235,7 +235,213 @@
             "poring/animations/attack/west/14.png",
             "poring/animations/attack/west/15.png"
           ],
-          "lm": "Wed, 22 Jul 2026 23:15:41 GMT",
+          "lm": "Thu, 23 Jul 2026 17:59:04 GMT",
+          "src_frames": 16
+        }
+      }
+    },
+    "die": {
+      "group_id": "aa6151e8-8b5a-4839-8c74-a4669f16d28d",
+      "description": "Melting and disappears",
+      "directions": {
+        "east": {
+          "frames": 16,
+          "strip": "poring/animations/die__east.png",
+          "gif": "poring/animations/die__east.gif",
+          "frame_paths": [
+            "poring/animations/die/east/00.png",
+            "poring/animations/die/east/01.png",
+            "poring/animations/die/east/02.png",
+            "poring/animations/die/east/03.png",
+            "poring/animations/die/east/04.png",
+            "poring/animations/die/east/05.png",
+            "poring/animations/die/east/06.png",
+            "poring/animations/die/east/07.png",
+            "poring/animations/die/east/08.png",
+            "poring/animations/die/east/09.png",
+            "poring/animations/die/east/10.png",
+            "poring/animations/die/east/11.png",
+            "poring/animations/die/east/12.png",
+            "poring/animations/die/east/13.png",
+            "poring/animations/die/east/14.png",
+            "poring/animations/die/east/15.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 17:59:11 GMT",
+          "src_frames": 16
+        },
+        "north": {
+          "frames": 16,
+          "strip": "poring/animations/die__north.png",
+          "gif": "poring/animations/die__north.gif",
+          "frame_paths": [
+            "poring/animations/die/north/00.png",
+            "poring/animations/die/north/01.png",
+            "poring/animations/die/north/02.png",
+            "poring/animations/die/north/03.png",
+            "poring/animations/die/north/04.png",
+            "poring/animations/die/north/05.png",
+            "poring/animations/die/north/06.png",
+            "poring/animations/die/north/07.png",
+            "poring/animations/die/north/08.png",
+            "poring/animations/die/north/09.png",
+            "poring/animations/die/north/10.png",
+            "poring/animations/die/north/11.png",
+            "poring/animations/die/north/12.png",
+            "poring/animations/die/north/13.png",
+            "poring/animations/die/north/14.png",
+            "poring/animations/die/north/15.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 17:59:19 GMT",
+          "src_frames": 16
+        },
+        "north-east": {
+          "frames": 16,
+          "strip": "poring/animations/die__north-east.png",
+          "gif": "poring/animations/die__north-east.gif",
+          "frame_paths": [
+            "poring/animations/die/north-east/00.png",
+            "poring/animations/die/north-east/01.png",
+            "poring/animations/die/north-east/02.png",
+            "poring/animations/die/north-east/03.png",
+            "poring/animations/die/north-east/04.png",
+            "poring/animations/die/north-east/05.png",
+            "poring/animations/die/north-east/06.png",
+            "poring/animations/die/north-east/07.png",
+            "poring/animations/die/north-east/08.png",
+            "poring/animations/die/north-east/09.png",
+            "poring/animations/die/north-east/10.png",
+            "poring/animations/die/north-east/11.png",
+            "poring/animations/die/north-east/12.png",
+            "poring/animations/die/north-east/13.png",
+            "poring/animations/die/north-east/14.png",
+            "poring/animations/die/north-east/15.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 17:59:28 GMT",
+          "src_frames": 16
+        },
+        "north-west": {
+          "frames": 16,
+          "strip": "poring/animations/die__north-west.png",
+          "gif": "poring/animations/die__north-west.gif",
+          "frame_paths": [
+            "poring/animations/die/north-west/00.png",
+            "poring/animations/die/north-west/01.png",
+            "poring/animations/die/north-west/02.png",
+            "poring/animations/die/north-west/03.png",
+            "poring/animations/die/north-west/04.png",
+            "poring/animations/die/north-west/05.png",
+            "poring/animations/die/north-west/06.png",
+            "poring/animations/die/north-west/07.png",
+            "poring/animations/die/north-west/08.png",
+            "poring/animations/die/north-west/09.png",
+            "poring/animations/die/north-west/10.png",
+            "poring/animations/die/north-west/11.png",
+            "poring/animations/die/north-west/12.png",
+            "poring/animations/die/north-west/13.png",
+            "poring/animations/die/north-west/14.png",
+            "poring/animations/die/north-west/15.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 17:59:37 GMT",
+          "src_frames": 16
+        },
+        "south": {
+          "frames": 16,
+          "strip": "poring/animations/die__south.png",
+          "gif": "poring/animations/die__south.gif",
+          "frame_paths": [
+            "poring/animations/die/south/00.png",
+            "poring/animations/die/south/01.png",
+            "poring/animations/die/south/02.png",
+            "poring/animations/die/south/03.png",
+            "poring/animations/die/south/04.png",
+            "poring/animations/die/south/05.png",
+            "poring/animations/die/south/06.png",
+            "poring/animations/die/south/07.png",
+            "poring/animations/die/south/08.png",
+            "poring/animations/die/south/09.png",
+            "poring/animations/die/south/10.png",
+            "poring/animations/die/south/11.png",
+            "poring/animations/die/south/12.png",
+            "poring/animations/die/south/13.png",
+            "poring/animations/die/south/14.png",
+            "poring/animations/die/south/15.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 17:59:46 GMT",
+          "src_frames": 16
+        },
+        "south-east": {
+          "frames": 16,
+          "strip": "poring/animations/die__south-east.png",
+          "gif": "poring/animations/die__south-east.gif",
+          "frame_paths": [
+            "poring/animations/die/south-east/00.png",
+            "poring/animations/die/south-east/01.png",
+            "poring/animations/die/south-east/02.png",
+            "poring/animations/die/south-east/03.png",
+            "poring/animations/die/south-east/04.png",
+            "poring/animations/die/south-east/05.png",
+            "poring/animations/die/south-east/06.png",
+            "poring/animations/die/south-east/07.png",
+            "poring/animations/die/south-east/08.png",
+            "poring/animations/die/south-east/09.png",
+            "poring/animations/die/south-east/10.png",
+            "poring/animations/die/south-east/11.png",
+            "poring/animations/die/south-east/12.png",
+            "poring/animations/die/south-east/13.png",
+            "poring/animations/die/south-east/14.png",
+            "poring/animations/die/south-east/15.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 17:59:56 GMT",
+          "src_frames": 16
+        },
+        "south-west": {
+          "frames": 16,
+          "strip": "poring/animations/die__south-west.png",
+          "gif": "poring/animations/die__south-west.gif",
+          "frame_paths": [
+            "poring/animations/die/south-west/00.png",
+            "poring/animations/die/south-west/01.png",
+            "poring/animations/die/south-west/02.png",
+            "poring/animations/die/south-west/03.png",
+            "poring/animations/die/south-west/04.png",
+            "poring/animations/die/south-west/05.png",
+            "poring/animations/die/south-west/06.png",
+            "poring/animations/die/south-west/07.png",
+            "poring/animations/die/south-west/08.png",
+            "poring/animations/die/south-west/09.png",
+            "poring/animations/die/south-west/10.png",
+            "poring/animations/die/south-west/11.png",
+            "poring/animations/die/south-west/12.png",
+            "poring/animations/die/south-west/13.png",
+            "poring/animations/die/south-west/14.png",
+            "poring/animations/die/south-west/15.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 18:00:05 GMT",
+          "src_frames": 16
+        },
+        "west": {
+          "frames": 16,
+          "strip": "poring/animations/die__west.png",
+          "gif": "poring/animations/die__west.gif",
+          "frame_paths": [
+            "poring/animations/die/west/00.png",
+            "poring/animations/die/west/01.png",
+            "poring/animations/die/west/02.png",
+            "poring/animations/die/west/03.png",
+            "poring/animations/die/west/04.png",
+            "poring/animations/die/west/05.png",
+            "poring/animations/die/west/06.png",
+            "poring/animations/die/west/07.png",
+            "poring/animations/die/west/08.png",
+            "poring/animations/die/west/09.png",
+            "poring/animations/die/west/10.png",
+            "poring/animations/die/west/11.png",
+            "poring/animations/die/west/12.png",
+            "poring/animations/die/west/13.png",
+            "poring/animations/die/west/14.png",
+            "poring/animations/die/west/15.png"
+          ],
+          "lm": "Thu, 23 Jul 2026 18:00:13 GMT",
           "src_frames": 16
         }
       }
@@ -449,6 +655,10 @@
   },
   "animation_aliases": {
     "walk": "jump"
+  },
+  "animation_renames": {
+    "spit": "attack",
+    "melting": "die"
   },
   "synced_from_pixellab": true
 }

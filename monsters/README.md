@@ -46,16 +46,37 @@ live example):
   per-direction frame counts.
 - `animation_aliases` — game-facing indirection, e.g. `{"walk": "jump"}` means
   *a game asking for the walk animation should play this monster's jump frames*
-  (the poring hops instead of walking).
+  (a poring hops instead of walking).
 
-## The catalog
+## Canonical animations
 
-| id | source | size | animations | aliases |
-|---|---|---|---|---|
-| [`poring/`](poring/) | object — "The round Poring blob from Ragnarök Online" | 48×48, low top-down | `jump`, `attack` (8 dirs × 16 frames each) | `walk` → `jump` |
-| [`lava_poring/`](lava_poring/) | object — the poring "but in black and lava" | 48×48, low top-down | `jump`, `attack` (with flames; 8 dirs × 6 frames each) | `walk` → `jump` |
-| [`ice_poring/`](ice_poring/) | object — the poring "but in ice" | 48×48, low top-down | `jump` (8 dirs × 16 frames), `attack` (magic ice; 8 dirs × 6 frames) | `walk` → `jump` |
-| [`forest_poring/`](forest_poring/) | object — the poring "in green like a forest poring" | 48×48, low top-down | `jump` (8 dirs × 16 frames), `attack` (projectile vomit; 8 dirs × 6 frames) | `walk` → `jump` |
+Every monster carries the **same three animation keys**, each across all **8
+directions**, so the game can drive any monster with one code path (only the art
+differs). The keys are normalized in `monster.json` regardless of how the
+animation was worded in the PixelLab UI:
+
+| key | meaning | game use |
+|---|---|---|
+| `jump` | the hop | locomotion — also exposed as `walk` via `animation_aliases` |
+| `attack` | the monster's offense (spit, flames, snow spike, water splash…) | attacking |
+| `die` | melts / dissolves and disappears | death |
+
+Frame counts per animation vary by monster (recorded per-direction in each
+manifest — the game reads them, never assumes). `×N` below is frames/direction.
+
+## The catalog — the poring family (all 48×48, low top-down, 8 dirs)
+
+| id | flavor | animations (frames/dir) |
+|---|---|---|
+| [`poring/`](poring/) | the original pink poring | `jump` ×16, `attack` ×16, `die` ×16 |
+| [`lava_poring/`](lava_poring/) | black & lava | `jump` ×6, `attack` ×6, `die` ×16 |
+| [`forest_poring/`](forest_poring/) | green forest | `jump` ×16, `attack` ×16, `die` ×16 |
+| [`sand_poring/`](sand_poring/) | sand | `jump` ×6, `attack` ×16, `die` ×16 |
+| [`water_poring/`](water_poring/) | water | `jump` ×6, `attack` ×16, `die` ×16 |
+| [`ice_poring/`](ice_poring/) | ice & snow | `jump` ×6, `attack` ×16, `die` ×16 |
+
+All carry `animation_aliases: {"walk": "jump"}`. The authoritative membership of
+this list lives in [`config/roster.json`](config/roster.json).
 
 ## Tooling
 
@@ -63,20 +84,35 @@ live example):
 pip install -r requirements.txt          # repo root
 export PIXELLAB_API_KEY=...              # gitignored .env; never committed
 
-# Mirror a monster the maintainer authored in the PixelLab UI (ZERO generations):
-python monsters/pipeline/mirror.py object <id-from-url> --id poring --alias walk=jump
-python monsters/pipeline/mirror.py character <id-from-url> --id forest_dragon
+# THE usual command: reconcile monsters/ against config/roster.json —
+# mirrors every listed monster, re-points replaced ones, PRUNES anything
+# not listed. ZERO generations (download only).
+python monsters/pipeline/sync.py --dry-run     # show the plan, touch nothing
+python monsters/pipeline/sync.py               # incremental (skips unchanged frames)
+python monsters/pipeline/sync.py --fresh       # wipe each folder, full re-download
 
-# Re-mirror everything tracked (skips unchanged frames via If-Modified-Since):
-python monsters/pipeline/mirror.py --all
+# Mirror a single monster ad hoc (bypasses the roster):
+python monsters/pipeline/mirror.py object <id-from-url> --id poring \
+    --alias walk=jump --rename spit=attack --rename melting=die
+python monsters/pipeline/mirror.py --all       # re-mirror every tracked monster
 ```
 
+- `config/roster.json` — **the authoritative list** of which monsters exist.
+  Each entry pins a folder `id`, its PixelLab `kind`+`pixellab_id`, `aliases`
+  (e.g. `walk`→`jump`), and `renames` mapping each PixelLab animation's
+  auto-derived key to a canonical `jump`/`attack`/`die`. **To add or retire a
+  monster, edit this file and run `sync.py`.**
+- `pipeline/sync.py` — reconciles the repo to the roster (add / update /
+  re-point / **prune**) and verifies each monster ends up with the canonical
+  animations across 8 directions. Does not commit — the caller commits the
+  reconciled tree as one atomic change.
+- `pipeline/mirror.py` — downloads + packages one monster (or `--all`) into the
+  layout above and writes `monster.json`. `--rename AUTO=CANON` normalizes an
+  animation key; `--alias GAME=REAL` adds a game-facing synonym.
 - `pipeline/pixellab_client.py` — this domain's own PixelLab client (per the
   fleet protocol): reads both stores, object create/animate for generation,
   balance/budget. Character *creation* gets ported from `characters2/` when
   first needed.
-- `pipeline/mirror.py` — downloads + packages one monster (or `--all`) into the
-  layout above and writes `monster.json`.
 
 ## How this agent runs
 
