@@ -46,15 +46,15 @@ import { gameAudio } from "../../composer/index";
 // shaft; in-game it rides REST_ART lower.
 const CANVAS = 128; // the art canvas (both pngs)
 const CX = 64; // the SEATED cap's centre, art px — the finger's neutral point
-const CY = 49;
+const CY = 53;
 // the cap sits REST_ART below its authored pose ("put the top lower,
-// closer to the bottom graphic", 2026-07-23) — a hint of shaft stays
-// visible; deflections carry the seat with them
-const REST_ART = 10;
+// closer to the bottom graphic"; deepened again 2026-07-23: "lower the
+// top even more") — a sliver of shaft stays; deflections carry the seat
+const REST_ART = 14;
 // full-gate travel in FEEL-TIER units: css travel = TRAVEL * feelK, where
-// feelK is the ORIGINAL 4/3/2 stepping. Trimmed 14 -> 11 (same round:
-// "make the radius max distance offset a little smaller")
-const TRAVEL = 11;
+// feelK is the ORIGINAL 4/3/2 stepping. Trimmed 14 -> 11 -> 9 across his
+// "make the circle smaller" rounds
+const TRAVEL = 9;
 // the assembly's VISIBLE vertical span at rest (cap top … base bottom), used
 // to centre the whole stick in the page (maintainer's red line: equal
 // margin above and below)
