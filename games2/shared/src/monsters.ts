@@ -86,6 +86,9 @@ function areaFromCells(
   };
 }
 
+// Static fallback ONLY (open/gridless worlds): the tidy ring_test cluster. The
+// REAL areas are computed per-world by spawnAreasNear() below so monsters always
+// appear next to the player whatever world loads — see the note above.
 export const SPAWN_AREAS: SpawnArea[] = [
   areaFromCells("area_poring", "poring", 43, 66, 48, 69),
   areaFromCells("area_forest_poring", "forest_poring", 50, 66, 55, 69),
@@ -94,6 +97,118 @@ export const SPAWN_AREAS: SpawnArea[] = [
   areaFromCells("area_sand_poring", "sand_poring", 50, 71, 55, 74),
   areaFromCells("area_water_poring", "water_poring", 57, 71, 62, 74),
 ];
+
+// Area geometry used by spawnAreasNear: six 6x4-cell rects laid out as a tidy
+// 3-wide x 2-tall grid with 1-cell gaps (block = 20x9 cells).
+const AREA_W = 6;
+const AREA_H = 4;
+const AREA_GAP = 1;
+const GRID_COLS = 3;
+const GRID_ROWS = 2;
+
+// Compute the 6 spawn areas on standable LAND clustered right next to a world's
+// spawn point, so the monsters always appear near the player REGARDLESS of which
+// world loads (demo_lost, ring_test, the_island2, …). Deterministic — a fixed
+// grid scan, no RNG — so the server and any mirror agree exactly.
+//
+// `isLand(x,y)` (WORLD UNITS) must be true only for standable, non-water,
+// non-solid ground. Strategy, best-first:
+//   1. a tidy 3x2 block whose every cell (+1-cell margin) is land, closest to spawn;
+//   2. else the 6 closest non-overlapping all-land 6x4 rects (greedy);
+//   3. else (little/no land, e.g. an open world) a tidy grid centred on spawn,
+//      unchecked — keeps monsters visible instead of off-map.
+export function spawnAreasNear(
+  spawnX: number,
+  spawnY: number,
+  worldW: number,
+  worldH: number,
+  isLand: (x: number, y: number) => boolean,
+): SpawnArea[] {
+  const sc = Math.floor(spawnX / CELL_WU);
+  const sr = Math.floor(spawnY / CELL_WU);
+  const wCells = Math.max(1, Math.round(worldW / CELL_WU));
+  const hCells = Math.max(1, Math.round(worldH / CELL_WU));
+  const kinds = MONSTER_KINDS;
+
+  const cellLand = (c: number, r: number): boolean =>
+    c >= 0 &&
+    r >= 0 &&
+    c < wCells &&
+    r < hCells &&
+    isLand((c + 0.5) * CELL_WU, (r + 0.5) * CELL_WU);
+
+  const fromTopLefts = (tl: Array<{ c: number; r: number }>): SpawnArea[] =>
+    tl.map((p, i) =>
+      areaFromCells(
+        `area_${kinds[i]}`,
+        kinds[i],
+        p.c,
+        p.r,
+        p.c + AREA_W - 1,
+        p.r + AREA_H - 1,
+      ),
+    );
+
+  const gridTopLefts = (C: number, R: number): Array<{ c: number; r: number }> => {
+    const out: Array<{ c: number; r: number }> = [];
+    for (let rr = 0; rr < GRID_ROWS; rr++)
+      for (let cc = 0; cc < GRID_COLS; cc++)
+        out.push({ c: C + cc * (AREA_W + AREA_GAP), r: R + rr * (AREA_H + AREA_GAP) });
+    return out;
+  };
+
+  // A rectangle of W x H cells at (c0,r0) is all-land including a 1-cell margin.
+  const rectLand = (c0: number, r0: number, W: number, H: number): boolean => {
+    for (let c = c0 - 1; c < c0 + W + 1; c++)
+      for (let r = r0 - 1; r < r0 + H + 1; r++) if (!cellLand(c, r)) return false;
+    return true;
+  };
+
+  // 1) Tidy 3x2 block closest to spawn.
+  const BW = GRID_COLS * AREA_W + (GRID_COLS - 1) * AREA_GAP; // 20
+  const BH = GRID_ROWS * AREA_H + (GRID_ROWS - 1) * AREA_GAP; // 9
+  {
+    const RAD = 48;
+    let best: { C: number; R: number; d: number } | null = null;
+    for (let C = sc - RAD; C <= sc + 2; C++)
+      for (let R = sr - RAD; R <= sr + RAD; R++) {
+        if (!rectLand(C, R, BW, BH)) continue;
+        const d = Math.hypot(C + BW / 2 - sc, R + BH / 2 - sr);
+        if (!best || d < best.d) best = { C, R, d };
+      }
+    if (best) return fromTopLefts(gridTopLefts(best.C, best.R));
+  }
+
+  // 2) Greedy: the 6 closest non-overlapping all-land 6x4 rects to spawn.
+  {
+    const RAD = 64;
+    const cands: Array<{ c: number; r: number; d: number }> = [];
+    for (let c0 = sc - RAD; c0 <= sc + RAD; c0++)
+      for (let r0 = sr - RAD; r0 <= sr + RAD; r0++) {
+        if (!rectLand(c0, r0, AREA_W, AREA_H)) continue;
+        cands.push({ c: c0, r: r0, d: Math.hypot(c0 + AREA_W / 2 - sc, r0 + AREA_H / 2 - sr) });
+      }
+    cands.sort((a, b) => a.d - b.d || a.c - b.c || a.r - b.r);
+    const overlap = (a: { c: number; r: number }, b: { c: number; r: number }): boolean =>
+      !(
+        a.c + AREA_W + AREA_GAP <= b.c ||
+        b.c + AREA_W + AREA_GAP <= a.c ||
+        a.r + AREA_H + AREA_GAP <= b.r ||
+        b.r + AREA_H + AREA_GAP <= a.r
+      );
+    const picked: Array<{ c: number; r: number }> = [];
+    for (const cd of cands) {
+      if (picked.length >= kinds.length) break;
+      if (picked.every((p) => !overlap(p, cd))) picked.push({ c: cd.c, r: cd.r });
+    }
+    if (picked.length === kinds.length) return fromTopLefts(picked);
+  }
+
+  // 3) Last resort: a tidy grid centred on spawn, land unchecked.
+  const C0 = Math.max(0, Math.min(wCells - BW, sc - Math.floor(BW / 2)));
+  const R0 = Math.max(0, Math.min(hCells - BH, sr - Math.floor(BH / 2)));
+  return fromTopLefts(gridTopLefts(C0, R0));
+}
 
 // Roam tuning ---------------------------------------------------------------
 

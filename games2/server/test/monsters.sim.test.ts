@@ -20,7 +20,7 @@ import {
   TerrainGrid,
   CELL_WU,
   WALK_CLIMB,
-  SPAWN_AREAS,
+  spawnAreasNear,
   MONSTER_KINDS,
   MONSTER_SPEED_SCALE,
   randomPointInArea,
@@ -40,6 +40,8 @@ interface SimWorld {
   grid: TerrainGrid;
   worldW: number;
   worldH: number;
+  spawn: { x: number; y: number };
+  areas: SpawnArea[];
 }
 
 function loadMaps2World(name: string): SimWorld | null {
@@ -47,11 +49,17 @@ function loadMaps2World(name: string): SimWorld | null {
   if (!existsSync(path)) return null;
   const world = parseWorld(JSON.parse(readFileSync(path, "utf8")));
   if (!world) return null;
-  return {
-    grid: buildTerrainGrid(world.width, world.height, world.rows, world.props, world.decks),
-    worldW: world.width * CELL_WU,
-    worldH: world.height * CELL_WU,
-  };
+  const grid = buildTerrainGrid(world.width, world.height, world.rows, world.props, world.decks);
+  const worldW = world.width * CELL_WU;
+  const worldH = world.height * CELL_WU;
+  const spawn = world.spawn
+    ? { x: world.spawn[0] * CELL_WU, y: world.spawn[1] * CELL_WU }
+    : { x: worldW / 2, y: worldH / 2 };
+  // Exactly what the server computes at room create.
+  const areas = spawnAreasNear(spawn.x, spawn.y, worldW, worldH, (x, y) =>
+    isStandableAtWorld(grid, x, y),
+  );
+  return { grid, worldW, worldH, spawn, areas };
 }
 
 /** Deterministic mulberry32 — the SAME PRNG the server seeds from monsterSeed. */
@@ -70,8 +78,13 @@ function mulberry32(seed: number): () => number {
 // Pure helper unit tests — randomPointInArea / clampToArea / areaContains
 // ---------------------------------------------------------------------------
 
+// A concrete area set for the pure-helper tests: what spawnAreasNear lays out on
+// open (all-land) ground around a spawn — six non-overlapping rects, one per
+// kind, the SAME geometry the server computes per world.
+const SAMPLE_AREAS: SpawnArea[] = spawnAreasNear(2000, 2000, 8000, 8000, () => true);
+
 test("randomPointInArea: stays strictly inside the inset bounds", () => {
-  const area = SPAWN_AREAS[0];
+  const area = SAMPLE_AREAS[0];
   const rng = mulberry32(7);
   const inset = Math.min(
     MONSTER_AREA_INSET,
@@ -87,7 +100,7 @@ test("randomPointInArea: stays strictly inside the inset bounds", () => {
 });
 
 test("randomPointInArea: uses the injected rng edges (min→low, max→high)", () => {
-  const area = SPAWN_AREAS[0];
+  const area = SAMPLE_AREAS[0];
   const inset = MONSTER_AREA_INSET;
   const low = randomPointInArea(area, () => 0);
   assert.ok(Math.abs(low.x - (area.x0 + inset)) < 1e-9);
@@ -98,7 +111,7 @@ test("randomPointInArea: uses the injected rng edges (min→low, max→high)", (
 });
 
 test("clampToArea: pulls outside points back into the inset rect", () => {
-  const area = SPAWN_AREAS[2];
+  const area = SAMPLE_AREAS[2];
   const inset = MONSTER_AREA_INSET;
   const c1 = clampToArea(area, area.x0 - 1000, area.y0 - 1000);
   assert.equal(c1.x, area.x0 + inset);
@@ -113,7 +126,7 @@ test("clampToArea: pulls outside points back into the inset rect", () => {
 });
 
 test("areaContains: AABB edges inclusive, outside excluded", () => {
-  const area = SPAWN_AREAS[0];
+  const area = SAMPLE_AREAS[0];
   assert.ok(areaContains(area, area.x0, area.y0));
   assert.ok(areaContains(area, area.x1, area.y1));
   assert.ok(!areaContains(area, area.x0 - 0.01, area.y0));
@@ -130,15 +143,15 @@ test("randomPauseMs: within the configured range", () => {
   }
 });
 
-test("SPAWN_AREAS: 6 non-overlapping land rects, one per monster kind", () => {
-  assert.equal(SPAWN_AREAS.length, 6);
-  const kinds = new Set(SPAWN_AREAS.map((a) => a.kind));
+test("spawnAreasNear: 6 non-overlapping rects, one per monster kind", () => {
+  assert.equal(SAMPLE_AREAS.length, 6);
+  const kinds = new Set(SAMPLE_AREAS.map((a) => a.kind));
   for (const k of MONSTER_KINDS) assert.ok(kinds.has(k), `area for ${k}`);
   // Non-overlapping AABBs.
-  for (let i = 0; i < SPAWN_AREAS.length; i++) {
-    for (let j = i + 1; j < SPAWN_AREAS.length; j++) {
-      const a = SPAWN_AREAS[i];
-      const b = SPAWN_AREAS[j];
+  for (let i = 0; i < SAMPLE_AREAS.length; i++) {
+    for (let j = i + 1; j < SAMPLE_AREAS.length; j++) {
+      const a = SAMPLE_AREAS[i];
+      const b = SAMPLE_AREAS[j];
       const overlap = a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
       assert.ok(!overlap, `${a.id} and ${b.id} do not overlap`);
     }
@@ -148,11 +161,11 @@ test("SPAWN_AREAS: 6 non-overlapping land rects, one per monster kind", () => {
 // ---------------------------------------------------------------------------
 // Headless roam: run ONE monster through the SAME brain+body loop the server
 // uses (startTrip / stepAutopilot / stepMovement) for many trips on the REAL
-// ring_test world — the world WorldRoom.DEFAULT_WORLD loads in prod, so the
-// SPAWN_AREAS coords are validated against the terrain players actually see —
-// and prove it never leaves its area and never lands on non-standable / water
-// ground. (Placing the areas on any OTHER world's coords would spawn monsters
-// off-map or in water on the default world — the bug this test now guards.)
+// maps2 worlds, using each world's OWN spawnAreasNear placement (what the server
+// computes at room create), and prove a monster never leaves its area and never
+// lands on non-standable / water ground. Runs on several worlds incl. demo_lost
+// (the client's default pick) — hardcoded single-world coords put monsters
+// off-map or in water on the others, the bug this now guards across the board.
 // ---------------------------------------------------------------------------
 
 function roamOneMonster(
@@ -257,37 +270,52 @@ function roamOneMonster(
   return { moved, violations, trips };
 }
 
-test("headless roam: a monster never leaves its area, never lands on water/non-standable (all 6 areas)", () => {
-  // MUST match WorldRoom.DEFAULT_WORLD — the world the areas are placed on.
-  const w = loadMaps2World("ring_test");
-  assert.ok(w, "ring_test world loads");
+// Validate the PER-WORLD placement on several maps2 worlds — critically
+// demo_lost (the client's default pick) plus ring_test / the_island2 — proving
+// spawnAreasNear always lands the 6 areas on standable ground NEAR that world's
+// spawn, and a monster roaming there never leaves its area or touches water.
+// (Hardcoded single-world coords put monsters off-map / in water on the OTHER
+// worlds — the bug this now guards across the board.)
+for (const worldName of ["demo_lost", "ring_test", "the_island2"]) {
+  test(`headless roam on ${worldName}: 6 areas on land near spawn, monsters stay in-area off-water`, () => {
+    const w = loadMaps2World(worldName);
+    assert.ok(w, `${worldName} world loads`);
+    assert.equal(w!.areas.length, MONSTER_KINDS.length, "one area per monster kind");
 
-  for (let ai = 0; ai < SPAWN_AREAS.length; ai++) {
-    const area = SPAWN_AREAS[ai];
-    // Sanity: the whole inset rect is standable land (no water) to begin with.
-    // Sample a grid of points across the inset area.
-    const inset = MONSTER_AREA_INSET;
-    for (let gx = area.x0 + inset; gx <= area.x1 - inset; gx += CELL_WU / 2) {
-      for (let gy = area.y0 + inset; gy <= area.y1 - inset; gy += CELL_WU / 2) {
-        assert.ok(
-          isStandableAtWorld(w!.grid, gx, gy) && !surfaceAtWorld(w!.grid, gx, gy).swimmable,
-          `${area.id} sample (${gx},${gy}) is standable land`,
-        );
-        assert.ok(!isBlockedAtWorld(w!.grid, gx, gy), `${area.id} sample not blocked`);
+    // Every area sits near the spawn (a screenful, not off-map).
+    for (const area of w!.areas as SpawnArea[]) {
+      const cx = (area.x0 + area.x1) / 2;
+      const cy = (area.y0 + area.y1) / 2;
+      const cells = Math.hypot(cx - w!.spawn.x, cy - w!.spawn.y) / CELL_WU;
+      assert.ok(cells < 40, `${area.id} centre ${cells.toFixed(1)} cells from spawn (near)`);
+    }
+
+    for (let ai = 0; ai < w!.areas.length; ai++) {
+      const area: SpawnArea = w!.areas[ai];
+      // Sanity: the whole inset rect is standable land (no water) to begin with.
+      const inset = MONSTER_AREA_INSET;
+      for (let gx = area.x0 + inset; gx <= area.x1 - inset; gx += CELL_WU / 2) {
+        for (let gy = area.y0 + inset; gy <= area.y1 - inset; gy += CELL_WU / 2) {
+          assert.ok(
+            isStandableAtWorld(w!.grid, gx, gy) && !surfaceAtWorld(w!.grid, gx, gy).swimmable,
+            `${worldName} ${area.id} sample (${gx},${gy}) is standable land`,
+          );
+          assert.ok(!isBlockedAtWorld(w!.grid, gx, gy), `${worldName} ${area.id} sample not blocked`);
+        }
       }
-    }
 
-    // Roam three seeds × ~600 ticks (30s sim) each.
-    let anyMoved = false;
-    for (const seed of [1, 2, 3]) {
-      const res = roamOneMonster(w!, area, seed * 100 + ai, 600);
-      assert.equal(
-        res.violations.length,
-        0,
-        `${area.id} seed ${seed}: ${res.violations.slice(0, 3).join("; ")}`,
-      );
-      if (res.moved) anyMoved = true;
+      // Roam three seeds × ~600 ticks (30s sim) each.
+      let anyMoved = false;
+      for (const seed of [1, 2, 3]) {
+        const res = roamOneMonster(w!, area, seed * 100 + ai, 600);
+        assert.equal(
+          res.violations.length,
+          0,
+          `${worldName} ${area.id} seed ${seed}: ${res.violations.slice(0, 3).join("; ")}`,
+        );
+        if (res.moved) anyMoved = true;
+      }
+      assert.ok(anyMoved, `${worldName} ${area.id}: monster roamed over the window`);
     }
-    assert.ok(anyMoved, `${area.id}: monster roamed over the window`);
-  }
-});
+  });
+}

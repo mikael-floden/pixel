@@ -1,4 +1,4 @@
-import { Schema, MapSchema, defineTypes } from "@colyseus/schema";
+import { Schema, MapSchema, ArraySchema, defineTypes } from "@colyseus/schema";
 import { DEFAULT_DIRECTION, DEFAULT_TIME_IDX, MAX_STAMINA } from "@nangijala/shared";
 import type { AutopilotTrip } from "@nangijala/shared";
 
@@ -114,10 +114,47 @@ defineTypes(Monster, {
   elev: "number",
 });
 
+/**
+ * One monster spawn area (a rectangle in world units) synced to every client so
+ * the client can draw the debug area overlay and reason about confinement
+ * without duplicating the server's per-world placement math. Computed once at
+ * room create (spawnAreasNear) from the loaded world's spawn + terrain; static
+ * for the room's lifetime. Later the maps agent will own these as world data —
+ * they flow to the client the same way.
+ */
+export class MonsterArea extends Schema {
+  declare id: string;
+  declare kind: string;
+  declare x0: number;
+  declare y0: number;
+  declare x1: number;
+  declare y1: number;
+
+  constructor() {
+    super();
+    this.id = "";
+    this.kind = "";
+    this.x0 = 0;
+    this.y0 = 0;
+    this.x1 = 0;
+    this.y1 = 0;
+  }
+}
+
+defineTypes(MonsterArea, {
+  id: "string",
+  kind: "string",
+  x0: "number",
+  y0: "number",
+  x1: "number",
+  y1: "number",
+});
+
 /** The whole shared world. Everyone connected is in this one state. */
 export class WorldState extends Schema {
   declare players: MapSchema<Player>;
   declare monsters: MapSchema<Monster>;
+  declare spawnAreas: ArraySchema<MonsterArea>; // monster areas for this world (synced for the client overlay)
   declare timeIdx: number; // shared time-of-day phase (server-owned)
   declare phaseT: number; // continuous progress 0..1 through the phase (clock hand/sun sweep smoothly)
   declare weather: number; // shared weather layer (server-owned; 0 = clear)
@@ -129,6 +166,7 @@ export class WorldState extends Schema {
     super();
     this.players = new MapSchema<Player>();
     this.monsters = new MapSchema<Monster>();
+    this.spawnAreas = new ArraySchema<MonsterArea>();
     this.timeIdx = DEFAULT_TIME_IDX;
     this.phaseT = 0.5; // mid-phase: the exact "characteristic" look of the phase
     this.weather = 0;
@@ -141,6 +179,7 @@ export class WorldState extends Schema {
 defineTypes(WorldState, {
   players: { map: Player },
   monsters: { map: Monster },
+  spawnAreas: { array: MonsterArea },
   timeIdx: "number",
   phaseT: "number",
   weather: "number",

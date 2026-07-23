@@ -6,9 +6,9 @@ import { WebSocketTransport } from "@colyseus/ws-transport";
 import { Client } from "colyseus.js";
 import {
   ROOM_NAME,
-  SPAWN_AREAS,
   MONSTER_KINDS,
   areaContains,
+  type SpawnArea,
 } from "@nangijala/shared";
 import { WorldRoom } from "../src/rooms/WorldRoom.js";
 
@@ -47,7 +47,7 @@ test("6 server-authoritative roaming monsters: shared, capped, area-confined, mo
     monsterSeed: 12345,
     monsterCount: COUNT,
   };
-  const expectedTotal = SPAWN_AREAS.length * COUNT; // 6 areas × 3
+  const expectedTotal = MONSTER_KINDS.length * COUNT; // 6 areas (one per kind) × 3
 
   try {
     const c1 = new Client(`ws://localhost:${port}`);
@@ -63,9 +63,16 @@ test("6 server-authoritative roaming monsters: shared, capped, area-confined, mo
       () => r1.state.monsters.size === expectedTotal && r2.state.monsters.size === expectedTotal,
     );
 
-    const areaById = new Map(SPAWN_AREAS.map((a) => [a.id, a]));
+    // The spawn areas are computed per-world by the server and SYNCED — both
+    // clients must receive the same set the monsters are keyed to.
+    assert.equal(r1.state.spawnAreas.length, MONSTER_KINDS.length, "6 areas synced to client 1");
+    assert.equal(r2.state.spawnAreas.length, MONSTER_KINDS.length, "6 areas synced to client 2");
+    const areaById = new Map<string, SpawnArea>();
+    r1.state.spawnAreas.forEach((a: any) =>
+      areaById.set(a.id, { id: a.id, kind: a.kind, x0: a.x0, y0: a.y0, x1: a.x1, y1: a.y1, max: 0 }),
+    );
 
-    // (b) Count matches SPAWN_AREAS caps (COUNT per area).
+    // (b) Count matches the per-area cap (COUNT per area).
     assert.equal(r1.state.monsters.size, expectedTotal, "monster count == 6 areas × cap");
 
     // (a) Both clients see the SAME set of monsters (ids + kinds).

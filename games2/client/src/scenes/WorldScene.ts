@@ -43,7 +43,6 @@ import {
   TIME_PHASE_SECONDS,
   WEATHER_NAMES,
   WEATHER_COUNT,
-  SPAWN_AREAS,
 } from "@nangijala/shared";
 import { CharacterDef, Manifest, frameUrl, frameKey } from "../manifest";
 import { MonsterManifest, MonsterDef, monsterWalkKey } from "../monsterManifest";
@@ -1482,6 +1481,9 @@ export class WorldScene extends Phaser.Scene {
     // ease like a remote player (see the monster loop in update()).
     $(room.state).monsters.onAdd((m: any, id: string) => this.addMonster(id, m));
     $(room.state).monsters.onRemove((_m: any, id: string) => this.removeMonster(id));
+    // Spawn areas are server-computed per world and synced once — redraw the
+    // debug overlay as they arrive (they land after the first iso build).
+    $(room.state).spawnAreas.onAdd(() => this.drawSpawnAreas());
     room.onMessage("chat", (msg: ChatBroadcast) => {
       this.chat.addLog(msg.name, msg.text);
       this.showBubble(msg.id, msg.text);
@@ -3608,7 +3610,10 @@ export class WorldScene extends Phaser.Scene {
     if (!this.spawnAreaGfx) this.spawnAreaGfx = this.add.graphics().setDepth(-800_000);
     const g = this.spawnAreaGfx;
     g.clear();
-    for (const area of SPAWN_AREAS) {
+    // The server computes the areas per world (near the world's spawn) and syncs
+    // them; before the first patch arrives the list is simply empty (no draw).
+    const areas = (this.room?.state as any)?.spawnAreas ?? [];
+    for (const area of areas) {
       // Project the 4 AABB corners onto the iso grid (elevation-aware).
       const pts = [
         this.project(area.x0, area.y0),

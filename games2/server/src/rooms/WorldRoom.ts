@@ -35,6 +35,7 @@ import {
   WEATHER_COUNT,
   SPAWN_AREAS,
   SpawnArea,
+  spawnAreasNear,
   MONSTER_SPEED_SCALE,
   randomPointInArea,
   clampToArea,
@@ -42,7 +43,7 @@ import {
   startTrip,
   stepAutopilot,
 } from "@nangijala/shared";
-import { WorldState, Player, Monster } from "../schema/WorldState.js";
+import { WorldState, Player, Monster, MonsterArea } from "../schema/WorldState.js";
 import { JsonPlayerStore, PlayerStore } from "../store.js";
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
@@ -114,6 +115,10 @@ export class WorldRoom extends Room<WorldState> {
   // Math.random; a `monsterSeed` room option swaps in a seeded PRNG.
   private monsterCount: number | null = null; // null → each area's own `max`
   private monsterRng: () => number = Math.random;
+  // The monster spawn areas for THIS world, placed on land next to the loaded
+  // world's spawn (spawnAreasNear) so monsters always appear near the player
+  // whatever world is picked. Computed at onCreate; static for the room's life.
+  private spawnAreas: SpawnArea[] = SPAWN_AREAS;
   // Wild shooting stars streak the night sky at random (arrivals get their
   // own star in onJoin, any hour).
   private starTimer: ReturnType<typeof setTimeout> | null = null;
@@ -214,8 +219,27 @@ export class WorldRoom extends Room<WorldState> {
       this.setMetadata({ world });
       this.worldName = world;
       this.store = new JsonPlayerStore(join(process.cwd(), ".data", `players-${world}.json`));
+      // Place the monster areas on land next to THIS world's spawn, so monsters
+      // always appear near the player whatever world loads (the static
+      // SPAWN_AREAS are a single-world fallback for open/gridless worlds only).
+      const grid = this.terrain;
+      const sp = this.worldSpawn ?? { x: this.worldW / 2, y: this.worldH / 2 };
+      this.spawnAreas = grid
+        ? spawnAreasNear(sp.x, sp.y, this.worldW, this.worldH, (x, y) => isStandableAtWorld(grid, x, y))
+        : SPAWN_AREAS;
     }
     this.setState(new WorldState());
+    // Publish the computed areas so every client draws the same debug overlay.
+    for (const a of this.spawnAreas) {
+      const ma = new MonsterArea();
+      ma.id = a.id;
+      ma.kind = a.kind;
+      ma.x0 = a.x0;
+      ma.y0 = a.y0;
+      ma.x1 = a.x1;
+      ma.y1 = a.y1;
+      this.state.spawnAreas.push(ma);
+    }
 
     this.onMessage("input", (client, message: InputMessage) => {
       const player = this.state.players.get(client.sessionId);
@@ -382,7 +406,7 @@ export class WorldRoom extends Room<WorldState> {
     const grid = this.terrain;
     if (!grid) return; // open world → no terrain to confine/route monsters on
     const now = Date.now();
-    for (const area of SPAWN_AREAS) {
+    for (const area of this.spawnAreas) {
       const count = this.monsterCount ?? area.max;
       for (let n = 0; n < count; n++) {
         const m = new Monster();
@@ -653,10 +677,10 @@ export class WorldRoom extends Room<WorldState> {
     return fallback ?? clampToArea(area, fromX, fromY);
   }
 
-  /** areaId → SpawnArea lookup (built once per tick; SPAWN_AREAS is tiny). */
+  /** areaId → SpawnArea lookup (built once per tick; the area list is tiny). */
   private areaIndex(): Map<string, SpawnArea> {
     const m = new Map<string, SpawnArea>();
-    for (const a of SPAWN_AREAS) m.set(a.id, a);
+    for (const a of this.spawnAreas) m.set(a.id, a);
     return m;
   }
 
