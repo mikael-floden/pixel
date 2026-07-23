@@ -59,7 +59,7 @@ const CLOCK_SCALE = 0.83;
 // 2026-07-23). The clip is pinned to the (lifted) divide as a hard backstop
 // so nothing above it can leak through the beam's vine gaps either. In
 // UNSHRUNK px: the divide sits at the pivot, so CLOCK_SCALE doesn't move it.
-const LIFT = 27;
+const LIFT = 28;
 const FADE_S = 1.25; // day<->night wheel spin; MUST equal WorldRoom.handoffHoldMs
 // and stay in step with WorldScene's TIME_TRANSITION_S (halved 2.5->1.25s:
 // the hand-off rotation + its server time-freeze now run twice as fast).
