@@ -26,8 +26,8 @@ const NUM_PX = 22; // number font size, DESIGN px (decoupled from art scale)
 // top-left anchor + row gap, DESIGN px (tuned on the maintainer's phone view).
 // LEFT clears the frame's left vine rail (maintainer 2026-07-23: the bars were
 // drawn OVER the frame); GAP separates the two bar+number groups.
-const LEFT = 72;
-const TOP = 96;
+const LEFT = 88;
+const TOP = 146;
 const GAP = 14;
 
 type Kind = "hp" | "mp";
