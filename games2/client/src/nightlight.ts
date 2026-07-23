@@ -417,7 +417,14 @@ void main() {
   if (isFace) {
     gateFade = smoothstep(0.0, 6.0, max((Ha - z) * uIsoB.x, 0.0));
     float hFront = mix(hD, hR, pickR);
-    if (hFront < 90.0) {
+    // Face-seam AO only on REAL walls: a deck-capped column (surface height
+    // above BASE terrain) has open air under the slab, not a wall foot - the
+    // phantom face the walk attributes there must not stamp contact AO on the
+    // water/ground in front of the span (the static thin line under every
+    // bridge, identical at all times of day). Non-deck cells: Ha equals
+    // baseTerrAt exactly (identical byte packing), so the guard is true and
+    // shading is bit-identical everywhere else.
+    if (hFront < 90.0 && Ha - baseTerrAt(cell) < 0.5) {
       float dAbove = max((z - hFront) * uIsoB.x, 0.0);
       ao = mix(0.75, 1.0, smoothstep(0.0, 5.0, dAbove));
     }
