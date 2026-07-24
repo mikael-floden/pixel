@@ -777,34 +777,54 @@ function mk(tag: string, cls: string): HTMLElement {
 }
 
 let kbInit = false;
-/** Ride the focused chat input UP with the phone keyboard as it slides open
- * (maintainer: "pressed up by the keyboard", not snapped), while the world + HUD
- * stay put. interactive-widget=resizes-visual makes the keyboard shrink ONLY the
- * VISUAL viewport — the layout viewport (window.innerHeight / dvh, which the game
- * height rides) is untouched, so nothing reflows — and visualViewport reports the
- * shrink. keyboard height = layout viewport − visual viewport. We float the input
- * only once a real keyboard is up (shrink > 80px), so desktop (no shrink) never
- * lifts — independent of pointer/desktop-site quirks. On the FIRST detection we
- * PIN the input at its current resting spot (no jump), then next frame raise
- * --ml-kb to the keyboard height so the CSS transition GLIDES it up with the
- * keyboard — smooth even when the browser reports the shrink in one coarse step;
- * after that it tracks each visualViewport update. */
+/** Detach ONLY the focused chat input and float it just above the phone keyboard,
+ * gliding up as the keyboard opens (maintainer), while the world + HUD stay
+ * EXACTLY put with the keyboard drawn on top of them.
+ *
+ * The mechanism is virtualKeyboard.overlaysContent = true: the keyboard OVERLAYS
+ * the page, so Chromium never resizes the viewport NOR scrolls the game to reveal
+ * the focused box (that scroll — from the default/resizes-visual behaviour — is
+ * exactly what dragged the whole game up). Its `geometrychange` event reports the
+ * keyboard rectangle, so we read boundingRect.height (a JS value — the CSS
+ * env(keyboard-inset-*) vars did NOT populate on the maintainer's device) and
+ * float only the chat input to bottom:--ml-kb. On the FIRST report we pin the
+ * input at its resting spot (no jump), then raise --ml-kb next frame so the CSS
+ * transition glides it up with the keyboard (smooth even if geometrychange fires
+ * once). Enabled from the HUD (injectStyles), so it only affects in-game screens:
+ * the select-screen name field keeps the browser's normal scroll-into-view. */
 function mountChatKeyboardLift() {
   if (kbInit) return;
   kbInit = true;
-  const vv = window.visualViewport;
-  if (!vv) return; // no visual-viewport API → leave the input in the HUD (no lift)
+  const vk = (
+    navigator as unknown as {
+      virtualKeyboard?: {
+        overlaysContent: boolean;
+        boundingRect: DOMRectReadOnly;
+        addEventListener: (t: string, cb: () => void) => void;
+      };
+    }
+  ).virtualKeyboard;
+  if (!vk) return; // no VirtualKeyboard API → leave the input in the HUD (no lift)
+  vk.overlaysContent = true; // keyboard overlays; the browser never scrolls/reflows the game
   const root = document.documentElement;
+  const vv = window.visualViewport;
   let input: HTMLElement | null = null; // the focused chat input
   let lifted = false; // currently floated above the keyboard
-  const kbHeight = () => Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+  // Keyboard height from the VirtualKeyboard API (primary), OR a visual-viewport
+  // shrink (fallback) — some devices report one but not the other. overlaysContent
+  // (not this read) is what keeps the game from scrolling, so this max() is safe.
+  const kbHeight = () => Math.max(
+    0,
+    Math.round(vk.boundingRect.height),
+    vv ? Math.round(window.innerHeight - vv.height - vv.offsetTop) : 0,
+  );
   const setKb = (px: number) => root.style.setProperty("--ml-kb", `${px}px`);
   const drop = () => { lifted = false; root.classList.remove("ml-kb-up"); setKb(0); };
-  const update = () => {
+  const sync = () => {
     if (!input) return;
     const kb = kbHeight();
     if (!lifted) {
-      if (kb <= 80) return; // no keyboard yet (or address-bar jitter) — stay in the HUD
+      if (kb <= 80) return; // keyboard not up yet — stay in the HUD
       // Pin the input where it currently rests (fixed at the same spot, no jump)…
       const gap = Math.max(0, Math.round(window.innerHeight - input.getBoundingClientRect().bottom));
       setKb(Math.max(0, gap - 10));
@@ -820,13 +840,13 @@ function mountChatKeyboardLift() {
   const isChatInput = (t: EventTarget | null) =>
     t instanceof HTMLElement && t.classList.contains("ml-chat-input");
   document.addEventListener("focusin", (e) => {
-    if (isChatInput(e.target)) { input = e.target as HTMLElement; update(); }
+    if (isChatInput(e.target)) { input = e.target as HTMLElement; sync(); }
   });
   document.addEventListener("focusout", (e) => {
     if (isChatInput(e.target)) { input = null; drop(); }
   });
-  vv.addEventListener("resize", update);
-  vv.addEventListener("scroll", update);
+  vk.addEventListener("geometrychange", sync);
+  vv?.addEventListener("resize", sync); // fallback signal (see kbHeight)
 }
 
 let injected = false;
@@ -1010,13 +1030,14 @@ function injectStyles() {
     border-radius:8px;border:1px solid #2c2c31;background:#0a0a0cee;color:#fff;
     font:400 22px system-ui,sans-serif;font-size:min(22px,2.245vw)}
   .ml-chat-input::placeholder{color:#8a8a96}
-  /* Phone keyboard: the world + HUD never reflow (interactive-widget=resizes-
-     visual). While a chat input is focused and the keyboard is up (.ml-kb-up,
-     driven by mountChatKeyboardLift from visualViewport), float ONLY that input
+  /* Phone keyboard: the world + HUD stay put (virtualKeyboard.overlaysContent —
+     the keyboard is drawn on top, the browser doesn't scroll/reflow the game).
+     While a chat input is focused and the keyboard is up (.ml-kb-up, driven by
+     mountChatKeyboardLift from the keyboard's boundingRect), float ONLY that input
      to just above the keyboard — bottom tracks --ml-kb (the live keyboard height)
-     so it's PRESSED UP with the keyboard, not snapped. Its left/right match the
-     in-HUD input inset, so it rises straight up without changing width. Never
-     fires on desktop (--ml-kb stays 0, the class is never set). */
+     and the transition GLIDES it up with the keyboard, not a snap. Its left/right
+     match the in-HUD input inset, so it rises straight up without changing width.
+     Never fires on desktop (no keyboard → --ml-kb stays 0, the class never sets). */
   .ml-kb-up .ml-chat-input:focus{position:fixed;z-index:50;width:auto;
     left:calc(var(--ml-page-pad,44px) + min(40px,5vw));
     right:calc(var(--ml-page-pad,44px) + min(40px,5vw));

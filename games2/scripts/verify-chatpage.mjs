@@ -82,13 +82,19 @@ try {
   inp && inp.wide ? ok("input still spans most of the width") : fail(`input too narrow (${JSON.stringify(inp)})`);
   inp && inp.belowLog ? ok("input sits below the log (bottom)") : fail("input not at the bottom");
 
-  // ── keyboard: the world+HUD must not reflow (interactive-widget=resizes-visual),
-  //    and the focused chat input rides UP with the keyboard (visualViewport). ──
+  // ── keyboard: overlaysContent keeps the world+HUD FIXED (keyboard drawn on top,
+  //    no scroll/reflow); only the focused input detaches and floats up. The
+  //    viewport meta must NOT force resizes-visual (that scrolls the whole game). ──
   const meta = await page.evaluate(() => document.querySelector('meta[name=viewport]')?.getAttribute("content") || "");
-  /interactive-widget=resizes-visual/.test(meta)
-    ? ok("viewport: keyboard shrinks only the visual viewport (no reflow)") : fail(`viewport meta missing resizes-visual: ${meta}`);
-  await page.evaluate(() => !!window.visualViewport)
-    ? ok("visualViewport available (drives the input lift)") : fail("no visualViewport API");
+  !/interactive-widget/.test(meta)
+    ? ok("viewport meta leaves the keyboard to overlaysContent (no forced scroll)") : fail(`viewport meta forces interactive-widget: ${meta}`);
+  const vk = await page.evaluate(() => {
+    const api = navigator.virtualKeyboard;
+    return { present: !!api, overlays: api ? api.overlaysContent : null };
+  });
+  vk.present
+    ? (vk.overlays === true ? ok("VirtualKeyboard overlaysContent enabled (game stays put)") : fail(`overlaysContent=${vk.overlays}`))
+    : ok("VirtualKeyboard API absent (skipped — non-Chromium)");
   // lift: while a chat input is focused AND the keyboard is up (.ml-kb-up +
   // --ml-kb from visualViewport), the input floats fixed at bottom = keyboard
   // height, ANIMATED (transition on bottom) so it isn't a snap. No real keyboard

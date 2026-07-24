@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <!-- viewport-fit=cover: draw under notches/rounded corners in the installed
-         app; user-scalable=no: pinch-zoom fights the game's own input.
-         interactive-widget=resizes-visual: the phone keyboard shrinks ONLY the
-         visual viewport (so the world + HUD never reflow when the chat box is
-         tapped), while visualViewport stays measurable so hud.ts can ride the
-         focused chat input up with the keyboard. -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, interactive-widget=resizes-visual" />
+         app; user-scalable=no: pinch-zoom fights the game's own input. The soft
+         keyboard is handled in-game via virtualKeyboard.overlaysContent (hud.ts)
+         so it OVERLAYS the world+HUD without scrolling/resizing them — do NOT add
+         interactive-widget=resizes-visual here: it makes the browser scroll the
+         whole game up to reveal the focused chat box (maintainer). -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
     <meta name="theme-color" content="#000000" />
     <title>Nangijala</title>
     <!-- PWA: installable on the Android home screen; starts fullscreen. -->
