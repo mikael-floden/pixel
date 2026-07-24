@@ -1033,7 +1033,16 @@ void main() {
                                                    // half-level. Standing still it's a stable
                                                    // integer, so flats/edges are unaffected.
   float dLev = abs(pLev - z);                      // levels of separation
-  float elevBand = ceil(max(0.0, dLev - ELEV_D0) * ELEV_STEP - ELEV_EPS); // 0 until |Δlvl|>ELEV_D0
+  // elevBand's hard ceil() staircase was the residual "fog sawtooth on cliff faces" (#62):
+  // constant-z lines run diagonally across the iso side-face, so every ceil step drew a hard
+  // diagonal fog contour that the follow-camera slid across the wall (maintainer 2026-07-24).
+  // Mirror EXACTLY the face-smoothing distBand already has (line above, mix(floor,cont,faceMix)):
+  // cel-snap only where faceMix<1 (flats, treads, the ≤1.5-level lip), and pass the SMOOTH ramp on
+  // the face body (faceMix=1) so the face is one continuous gradient — no staircase, nothing to
+  // slide. faceMix=0 ⇒ ceil(elevCont-ELEV_EPS) == the old expression float-for-float, so flats and
+  // the cliff-top edge highlight are byte-identical; only the mid-face steps are smoothed.
+  float elevCont = max(0.0, dLev - ELEV_D0) * ELEV_STEP;                    // smooth pre-snap ramp (0 in the dead-zone)
+  float elevBand = mix(ceil(elevCont - ELEV_EPS), elevCont, faceMix);
 
   // COMBINE + CEL-SNAP. Additive (NOT max) so a mid-range edge always adds its step on top of
   // the distance band. Both channels fire on ALL ground; the per-level TRANSPARENCY (below) is
