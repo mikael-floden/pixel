@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature, PHASE_NIGHT, WEATHER_CLEAR } from "../runtime/types";
-import { FLY_FRAMES, SheetSpec, dirFromVel, dirGap, queueSheets, sheetsReady } from "../runtime/critters";
+import { FLY_FRAMES, SheetSpec, dirFromVel, flyFrame, queueSheets, sheetsReady, stepFlapDir } from "../runtime/critters";
 import batFly from "./art/fly.png";
 
 // Bats — an EPISODE feature and the night counterpart to the birds. Like the
@@ -101,7 +101,7 @@ export function batsFeature(): AmbientFeature {
     const dir0 = dirFromVel(inx, iny) ?? 0;
     for (let i = 0; i < n; i++) {
       const sprite = ctx.scene.add
-        .sprite(0, 0, FLY_KEY, dir0 * FLY_FRAMES)
+        .sprite(0, 0, FLY_KEY, flyFrame(dir0))
         .setDepth(DEPTH + i * 0.001)
         .setAlpha(BAT_ALPHA)
         .setScale(BAT_SCALE);
@@ -277,27 +277,8 @@ export function batsFeature(): AmbientFeature {
         b.gy += b.vy * dts;
 
         // Face (hysteretic 8-way from velocity) + flap + draw (a quick bob).
-        const cand = dirFromVel(b.vx, b.vy);
-        if (cand !== null && cand !== b.dir) {
-          if (dirGap(cand, b.dir) >= 2) {
-            b.dir = cand;
-            b.dirHoldT = 0;
-          } else {
-            b.dirHoldT += dt;
-            if (b.dirHoldT >= DIR_STICK) {
-              b.dir = cand;
-              b.dirHoldT = 0;
-            }
-          }
-        } else {
-          b.dirHoldT = 0;
-        }
-        b.flapT += dt;
-        if (b.flapT >= b.flapMs) {
-          b.flapT -= b.flapMs;
-          b.frame = (b.frame + 1) % FLY_FRAMES;
-        }
-        b.sprite.setFrame(b.dir * FLY_FRAMES + b.frame);
+        stepFlapDir(b, dt, DIR_STICK);
+        b.sprite.setFrame(flyFrame(b.dir, b.frame));
         const bob = Math.sin(b.t * 7 + b.bobPhase) * 2.5;
         b.sprite.setPosition(b.gx, b.gy - b.alt + bob).setDepth(DEPTH + i * 0.001);
 

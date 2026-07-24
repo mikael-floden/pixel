@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature, PHASE_DAY, WEATHER_CLEAR } from "../runtime/types";
-import { FLY_FRAMES, SheetSpec, dirFromVel, dirGap, queueSheets, sheetsReady } from "../runtime/critters";
+import { FLY_FRAMES, SheetSpec, dirFromVel, flyFrame, queueSheets, sheetsReady, stepFlapDir } from "../runtime/critters";
 // 8 hand-made PixelLab bird TYPES, each an 8-direction object with a flapping
 // fly animation and a still base (for perching). Packed one folder per type.
 import bird1Fly from "./art/bird1/fly.png";
@@ -154,7 +154,7 @@ export function birdsFeature(): AmbientFeature {
   const drawFrame = (b: Bird, perched: boolean) => {
     const key = perched ? stillKey(b.type) : flyKey(b.type);
     if (b.sprite.texture.key !== key) b.sprite.setTexture(key);
-    b.sprite.setFrame(perched ? b.dir : b.dir * FLY_FRAMES + b.frame);
+    b.sprite.setFrame(perched ? b.dir : flyFrame(b.dir, b.frame));
   };
 
   const launchFlock = (ctx: AmbientCtx) => {
@@ -174,7 +174,7 @@ export function birdsFeature(): AmbientFeature {
     for (let i = 0; i < n; i++) {
       const type = Math.floor(rnd() * TYPES);
       const sprite = ctx.scene.add
-        .sprite(0, 0, flyKey(type), dir0 * FLY_FRAMES)
+        .sprite(0, 0, flyKey(type), flyFrame(dir0))
         .setDepth(DEPTH + i * 0.001)
         .setAlpha(BIRD_ALPHA)
         .setScale(BIRD_SCALE);
@@ -481,26 +481,7 @@ export function birdsFeature(): AmbientFeature {
 
         // Face (hysteretic 8-way from the boid's velocity) + flap + draw
         // (a gentle bob only while airborne).
-        const cand = dirFromVel(b.vx, b.vy);
-        if (cand !== null && cand !== b.dir) {
-          if (dirGap(cand, b.dir) >= 2) {
-            b.dir = cand; // a real turn — snap immediately
-            b.dirHoldT = 0;
-          } else {
-            b.dirHoldT += dt; // an adjacent flip — only turn if it persists
-            if (b.dirHoldT >= DIR_STICK) {
-              b.dir = cand;
-              b.dirHoldT = 0;
-            }
-          }
-        } else {
-          b.dirHoldT = 0;
-        }
-        b.flapT += dt;
-        if (b.flapT >= b.flapMs) {
-          b.flapT -= b.flapMs;
-          b.frame = (b.frame + 1) % FLY_FRAMES;
-        }
+        stepFlapDir(b, dt, DIR_STICK);
         drawFrame(b, false);
         const bob = b.alt > 4 ? Math.sin(b.t * 5 + b.bobPhase) * 2 : 0;
         b.sprite.setPosition(b.gx, b.gy - b.alt + bob).setDepth(DEPTH + i * 0.001);
