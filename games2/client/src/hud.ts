@@ -778,7 +778,16 @@ function mk(tag: string, cls: string): HTMLElement {
 
 // Chat-input keyboard lift (see mountChatKeyboardLift).
 const KB_MIN = 80; // below this: no keyboard (address-bar-sized jitter)
-const KB_GUESS_FRAC = 0.45; // assumed keyboard height (fraction of the viewport)
+// Assumed keyboard height when nothing reports one. Erring HIGH is nearly free
+// (the box floats a little above the keys) while erring low HIDES the box, so
+// these lean generous: half the viewport, but never less than 0.9×WIDTH — a
+// keyboard's height tracks the screen's WIDTH (its key rows keep their aspect),
+// so a pure height fraction undershoots on tall/narrow (16:9) phones — and never
+// more than 0.6×height. All three are ratios, so they hold identically under
+// Chrome's "desktop site" (a uniform CSS-px rescale of the same screen).
+const KB_GUESS_FRAC = 0.5;
+const KB_GUESS_W_FRAC = 0.9;
+const KB_GUESS_MAX_FRAC = 0.6;
 let kbInit = false;
 /** Detach ONLY the focused chat input and float it just above the phone keyboard,
  * gliding up as the keyboard opens, while the world + HUD stay EXACTLY put with
@@ -848,14 +857,28 @@ function mountChatKeyboardLift() {
     // Nothing reported — and on the maintainer's phone nothing ever is. Focusing a
     // text box on a TOUCH device always opens the keyboard, so don't wait for a
     // number that may never arrive: estimate and lift NOW (the box then rides the
-    // real height the moment any source does report one). Never on desktop.
-    return navigator.maxTouchPoints > 0 ? Math.round(window.innerHeight * KB_GUESS_FRAC) : 0;
+    // real height the moment any source does report one). Never on desktop —
+    // though a touchSCREEN laptop does qualify, where the box floats with no
+    // keyboard under it: cosmetic, and deliberately not "fixed" with a
+    // pointer:coarse gate, which is exactly the query Chrome's desktop-site mode
+    // makes unreliable (getting it wrong re-hides the box on the target phone).
+    const ih = window.innerHeight;
+    if (!navigator.maxTouchPoints) return 0;
+    return Math.min(
+      Math.round(ih * KB_GUESS_MAX_FRAC),
+      Math.max(Math.round(ih * KB_GUESS_FRAC), Math.round(window.innerWidth * KB_GUESS_W_FRAC)),
+    );
   };
   const setKb = (px: number) => root.style.setProperty("--ml-kb", `${px}px`);
+  let barEl: HTMLElement | null = null; // the HUD row the input floats out of
   const drop = () => {
     lifted = false;
     root.classList.remove("ml-kb-up");
     setKb(0);
+    if (barEl) {
+      barEl.style.height = "";
+      barEl = null;
+    }
   };
   const sync = () => {
     if (!input) return;
@@ -865,6 +888,11 @@ function mountChatKeyboardLift() {
       // Pin the input where it currently rests (fixed at the same spot, no jump)…
       const gap = Math.max(0, Math.round(window.innerHeight - input.getBoundingClientRect().bottom));
       setKb(Math.max(0, gap - 10));
+      // …and hold its HUD row open at the height it has NOW: going position:fixed
+      // takes the box out of flow, which would otherwise collapse the row and slide
+      // the chat log's lines down. ONLY the input may move (maintainer).
+      barEl = input.parentElement;
+      if (barEl) barEl.style.height = `${Math.round(barEl.getBoundingClientRect().height)}px`;
       root.classList.add("ml-kb-up");
       lifted = true;
       // …then next frame raise it to the keyboard top so the transition rides up.

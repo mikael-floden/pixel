@@ -101,9 +101,15 @@ try {
   ok(`harness reports no keyboard geometry (vk=${rep.vk} shrink=${rep.shrink}, touch=${rep.touch}) — same blind spot as the device`);
 
   // Geometry of the game BEFORE focus, so we can prove nothing moved after.
+  // …including the CHAT PAGE's own boxes: floating the input out of flow used to
+  // collapse its row and slide every chat line down (only the input may move).
   const frameBefore = await page.evaluate(() => {
     const r = (s) => { const e = document.querySelector(s); return e ? Math.round(e.getBoundingClientRect().top) : null; };
-    return { game: r("#game"), hud: r(".ml-hud"), tabs: r(".ml-tabrow"), h: window.innerHeight, sy: window.scrollY };
+    const h = (s) => { const e = document.querySelector(s); return e ? Math.round(e.getBoundingClientRect().height) : null; };
+    const first = document.querySelector(".ml-chat-log > *");
+    return { game: r("#game"), hud: r(".ml-hud"), tabs: r(".ml-tabrow"), h: window.innerHeight, sy: window.scrollY,
+             barH: h(".ml-chat-inputbar"), logH: h(".ml-chat-log"),
+             firstLine: first ? Math.round(first.getBoundingClientRect().top) : null };
   });
 
   // FOCUS the input for real, and let the lift settle (estimate path ~350ms).
@@ -132,6 +138,9 @@ try {
       vh: window.innerHeight,
       game: g("#game"), hud: g(".ml-hud"), tabs: g(".ml-tabrow"), sy: window.scrollY,
       dbg: window.__kbdbg, focused: el.matches(":focus"), active: document.activeElement?.className,
+      barH: (() => { const e = document.querySelector(".ml-chat-inputbar"); return e ? Math.round(e.getBoundingClientRect().height) : null; })(),
+      logH: (() => { const e = document.querySelector(".ml-chat-log"); return e ? Math.round(e.getBoundingClientRect().height) : null; })(),
+      firstLine: (() => { const e = document.querySelector(".ml-chat-log > *"); return e ? Math.round(e.getBoundingClientRect().top) : null; })(),
     };
   });
   // (2) the box actually left its bottom slot and sits ON SCREEN, clear of the keyboard
@@ -154,6 +163,10 @@ try {
   moved.length === 0 && lifted.sy === frameBefore.sy && lifted.vh === frameBefore.h
     ? ok(`game/HUD unmoved while the input floats (game=${lifted.game} hud=${lifted.hud} tabs=${lifted.tabs}, scrollY=${lifted.sy})`)
     : fail(`the game moved: ${moved.join(",")} shifted; scrollY ${frameBefore.sy}->${lifted.sy}; vh ${frameBefore.h}->${lifted.vh}`);
+  const reflowed = ["barH", "logH", "firstLine"].filter((k) => frameBefore[k] !== lifted[k]);
+  reflowed.length === 0
+    ? ok(`chat page didn't reflow (row=${lifted.barH}px log=${lifted.logH}px, lines put)`)
+    : fail(`chat page reflowed when the input floated: ${reflowed.map((k) => `${k} ${frameBefore[k]}->${lifted[k]}`).join(", ")}`);
   // blur → the box returns to its HUD slot
   await page.evaluate(() => document.querySelector(".ml-chat-input").blur());
   await page.waitForTimeout(150);
