@@ -1,7 +1,9 @@
 /**
- * HP / Energy / XP bars — HP + Energy top-LEFT, Experience top-RIGHT (maintainer
- * 2026-07-23: "add a blue experience bar to the right ... to the right of the
- * clock"; "rename mana to energy"; "half the current height"; "EP not MP").
+ * HP / Energy / XP bars + a Gold counter — HP + Energy top-LEFT, Experience
+ * top-RIGHT, Gold UNDER Experience (maintainer 2026-07-23: "add a blue experience
+ * bar to the right ... to the right of the clock"; "rename mana to energy"; "half
+ * the current height"; "EP not MP"; 2026-07-24: "put the gold UI under the XP bar
+ * so it aligns nicely with the energy bar").
  *
  * Art from his UI kit (scripts/bake-bars.py): bar-frame.png is the empty track;
  * bar-fill-{red,yellow,blue}.png are the same gold fill recoloured to a
@@ -12,10 +14,15 @@
  * the percent (the dark interior shows through the cut). The layer is uiZoom'd
  * on <body> like the version badge, so it tracks the frame under "Desktop site".
  *
+ * The GOLD counter is the NORTH-facing rotation of his "Gold" PixelLab object
+ * (/ui2/gold-icon.png) with the amount to its left — both RIGHT-aligned to the XP
+ * bar's right edge, so the row sits opposite the Energy bar (maintainer).
+ *
  * The bars show STATIC placeholder values for now (maintainer 2026-07-23: HP
  * 10/10 full, Energy 0/0 empty, XP 0/10 empty — "don't want to see the animation
- * anymore"); the number to the right shows the value. setBar(kind, cur, max) is
- * the seam the real player state plugs into later.
+ * anymore") and gold shows 0; the number to the right shows the value.
+ * setBar(kind, cur, max) / setGold(n) are the seams the real player state plugs
+ * into later.
  */
 
 import { applyUiZoom } from "./uiscale";
@@ -42,8 +49,10 @@ interface Bar {
 }
 
 let root: HTMLDivElement | null = null; // left group: HP + Energy
-let rootR: HTMLDivElement | null = null; // right group: Experience
+let rootR: HTMLDivElement | null = null; // right group: Experience + Gold
 const bars: Record<Kind, Bar> = {} as any;
+let goldNumEl: HTMLElement | null = null; // the gold amount label
+let gold = 0; // how much gold the player has (0 until real state is wired)
 
 export function mountBars() {
   if (root) return;
@@ -82,9 +91,28 @@ export function mountBars() {
   bars.hp = make(root, "hp", "red", 10, "HP");
   bars.ep = make(root, "ep", "yellow", 0, "EP");
   bars.xp = make(rootR, "xp", "blue", 10, "XP");
+
+  // Gold counter UNDER the Experience bar (maintainer 2026-07-24). Not a gauge:
+  // the north-facing "Gold" nugget icon at the RIGHT, its amount RIGHT-aligned
+  // just to its left, the row the same width as the bar so its right edge lines
+  // up with XP — and, as the 2nd row on the right, it sits opposite the Energy
+  // bar (2nd row on the left).
+  const goldRow = document.createElement("div");
+  goldRow.className = "ml-gold-row";
+  goldNumEl = document.createElement("span");
+  goldNumEl.className = "ml-gold-num";
+  const goldIcon = document.createElement("img");
+  goldIcon.className = "ml-gold-icon";
+  goldIcon.src = "/ui2/gold-icon.png";
+  goldIcon.alt = "";
+  goldIcon.draggable = false;
+  goldRow.append(goldNumEl, goldIcon); // amount left, icon right (both flush right)
+  rootR.appendChild(goldRow);
+
   document.body.append(root, rootR);
   applyUiZoom(root);
   applyUiZoom(rootR);
+  renderGold();
 
   // Static placeholder values — no animation (maintainer 2026-07-23: "set hp to
   // stable 10/10, energy to 0/0 empty, xp to 0/10 also empty; don't want to see
@@ -106,6 +134,16 @@ export function setBar(kind: Kind, cur: number, max: number) {
   if (!root) return;
   bars[kind].max = max;
   apply(kind, max > 0 ? Math.max(0, Math.min(1, cur / max)) : 0);
+}
+
+function renderGold() {
+  if (goldNumEl) goldNumEl.textContent = gold.toLocaleString("en-US");
+}
+
+/** The seam the real player gold plugs into (0 until wired to server state). */
+export function setGold(n: number) {
+  gold = Math.max(0, Math.round(n) || 0);
+  renderGold();
 }
 
 function img(src: string): HTMLImageElement {
@@ -147,6 +185,15 @@ function injectStyles() {
   .ml-bar-fill{will-change:clip-path}
   .ml-bar-num{margin-top:4px;text-align:right;
     font:700 ${NUM_PX}px system-ui,sans-serif;letter-spacing:.5px;
-    color:#f0e2c6;text-shadow:0 1px 2px #000,0 0 3px #000;white-space:nowrap}`;
+    color:#f0e2c6;text-shadow:0 1px 2px #000,0 0 3px #000;white-space:nowrap}
+  /* Gold row: amount then icon, BOTH flush to the right edge (= the bar's right
+     edge, so it lines up with XP above and the Energy bar opposite). row width =
+     bar width; justify-content:flex-end pins the [amount][icon] pair right. */
+  .ml-gold-row{display:flex;justify-content:flex-end;align-items:center;gap:10px;
+    width:${w}px}
+  .ml-gold-num{font:700 ${NUM_PX}px system-ui,sans-serif;letter-spacing:.5px;
+    color:#f0e2c6;text-shadow:0 1px 2px #000,0 0 3px #000;white-space:nowrap}
+  .ml-gold-icon{height:36px;width:auto;image-rendering:pixelated;
+    -webkit-user-drag:none;display:block}`;
   document.head.appendChild(s);
 }

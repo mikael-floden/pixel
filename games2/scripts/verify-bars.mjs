@@ -1,6 +1,8 @@
-// QA: HP/Energy/XP bars — HP+Energy top-left, XP top-right; STATIC placeholder
-// values (HP 10/10 full, Energy 0/0 empty, XP 0/10 empty), no animation
-// (maintainer 2026-07-23). Runs at the maintainer's phone geometry.
+// QA: HP/Energy/XP bars + Gold — HP+Energy top-left, XP top-right, Gold under XP;
+// STATIC placeholder values (HP 10/10 full, Energy 0/0 empty, XP 0/10 empty, Gold
+// 0), no animation (maintainer 2026-07-23/24). Runs at the maintainer's phone
+// geometry. Gold: icon + amount RIGHT-aligned to the XP bar's edge, the row
+// opposite the Energy bar.
 import { chromium } from "playwright-core";
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const BASE = process.env.BASE || "http://localhost:5173";
@@ -58,6 +60,35 @@ try {
   Math.abs(pa[0] - 100) < 1 ? ok(`hp full (${pa[0]}%)`) : fail(`hp fill ${pa[0]}% (want 100)`);
   Math.abs(pa[1] - 0) < 1 ? ok(`energy empty (${pa[1]}%)`) : fail(`ep fill ${pa[1]}% (want 0)`);
   Math.abs(pa[2] - 0) < 1 ? ok(`experience empty (${pa[2]}%)`) : fail(`xp fill ${pa[2]}% (want 0)`);
+
+  // ── Gold counter under the XP bar (maintainer 2026-07-24) ──
+  const g = await page.evaluate(() => {
+    const box = (e) => { if (!e) return null; const b = e.getBoundingClientRect(); return { l: Math.round(b.left), r: Math.round(b.right), t: Math.round(b.top), b: Math.round(b.bottom) }; };
+    const groups = [...document.querySelectorAll(".ml-bars")];
+    const rightGroup = groups.find((gr) => gr.querySelector(".ml-gold-row"));
+    const leftGroup = groups.find((gr) => !gr.querySelector(".ml-gold-row"));
+    const goldRow = rightGroup?.querySelector(".ml-gold-row");
+    const num = goldRow?.querySelector(".ml-gold-num");
+    const icon = goldRow?.querySelector(".ml-gold-icon");
+    const xpRow = rightGroup?.querySelector(".ml-bar-row"); // XP is the only bar in the right group
+    const epRow = leftGroup ? leftGroup.querySelectorAll(".ml-bar-row")[1] : null; // Energy = 2nd left row
+    return {
+      exists: !!goldRow, numText: num?.textContent ?? null,
+      iconSrc: icon?.getAttribute("src") || "", iconLoaded: icon ? icon.naturalWidth > 0 : false,
+      goldRow: box(goldRow), num: box(num), icon: box(icon), xpRow: box(xpRow), epRow: box(epRow),
+    };
+  });
+  g.exists ? ok("gold row present under the right group") : fail("no gold row");
+  if (g.exists) {
+    g.numText === "0" ? ok(`gold amount defaults to "0"`) : fail(`gold amount "${g.numText}" (want "0")`);
+    /gold-icon\.png/.test(g.iconSrc) && g.iconLoaded ? ok(`gold icon loaded (${g.iconSrc})`) : fail(`gold icon missing/broken (src="${g.iconSrc}" loaded=${g.iconLoaded})`);
+    // right edge lines up with the XP bar (both right-aligned to the same edge)
+    Math.abs(g.goldRow.r - g.xpRow.r) <= 2 ? ok(`gold row right-aligned to XP (${g.goldRow.r} ≈ ${g.xpRow.r})`) : fail(`gold row right edge ${g.goldRow.r} vs XP ${g.xpRow.r}`);
+    // icon at the far right, amount just to its left (both flush right)
+    g.icon.r >= g.goldRow.r - 2 && g.num.r <= g.icon.l + 1 ? ok(`amount left of the right-aligned icon (num.r=${g.num.r} icon.l=${g.icon.l} icon.r=${g.icon.r})`) : fail(`gold layout wrong: num=${JSON.stringify(g.num)} icon=${JSON.stringify(g.icon)}`);
+    // sits opposite the Energy bar (2nd row each side → same top)
+    Math.abs(g.goldRow.t - g.epRow.t) <= 3 ? ok(`gold row aligns with the Energy bar (top ${g.goldRow.t} ≈ ${g.epRow.t})`) : fail(`gold row top ${g.goldRow.t} vs Energy ${g.epRow.t}`);
+  }
 
   if (errors.length) fail(`page errors: ${errors.join(" | ")}`);
 } finally { await browser.close(); }
