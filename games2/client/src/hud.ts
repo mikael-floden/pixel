@@ -843,6 +843,23 @@ function mountChatKeyboardLift() {
   let lifted = false; // currently floated above the keyboard
   let poll = 0;
   let focusedAt = 0;
+  let sawReport = false; // a source has, at least once, given a real keyboard height
+
+  // "Is this a phone (so focusing a text box opens a soft keyboard)?" — the crux
+  // of the last failure. Chrome's "Request Desktop Site" masquerades as a mouse
+  // desktop: navigator.maxTouchPoints reads 0 and pointer:coarse/hover:none flip,
+  // so gating the estimate on those hid the box on the maintainer's phone. TWO
+  // signals that DO survive desktop-site: (1) a real touch event still fires;
+  // (2) screen.width stays the PHYSICAL screen (≈393 on his phone) — the very
+  // value uiscale.ts already trusts for the desktop-site zoom. A real desktop has
+  // maxTouchPoints 0, no touch events, and a screen ≥ ~768 short-side, so it
+  // never floats the box.
+  let hadTouch = navigator.maxTouchPoints > 0;
+  addEventListener("touchstart", () => { hadTouch = true; }, { capture: true, passive: true });
+  addEventListener("pointerdown", (e) => {
+    if ((e as PointerEvent).pointerType === "touch") hadTouch = true;
+  }, { capture: true, passive: true });
+  const looksLikePhone = () => hadTouch || Math.min(screen.width, screen.height) <= 700;
 
   /** Keyboard height in CSS px from whichever source actually reports one. */
   const reported = () =>
@@ -853,17 +870,14 @@ function mountChatKeyboardLift() {
     );
   const kbHeight = () => {
     const r = reported();
-    if (r >= KB_MIN) return r;
-    // Nothing reported — and on the maintainer's phone nothing ever is. Focusing a
-    // text box on a TOUCH device always opens the keyboard, so don't wait for a
-    // number that may never arrive: estimate and lift NOW (the box then rides the
-    // real height the moment any source does report one). Never on desktop —
-    // though a touchSCREEN laptop does qualify, where the box floats with no
-    // keyboard under it: cosmetic, and deliberately not "fixed" with a
-    // pointer:coarse gate, which is exactly the query Chrome's desktop-site mode
-    // makes unreliable (getting it wrong re-hides the box on the target phone).
+    if (r >= KB_MIN) { sawReport = true; return r; }
+    // Nothing reported — and on the maintainer's phone nothing EVER is. Focusing a
+    // text box on a phone always opens the keyboard, so don't wait for a number
+    // that may never come: ESTIMATE and lift now (the box then rides the real
+    // height the instant any source reports one). Gated on looksLikePhone(), so a
+    // mouse desktop never floats it.
+    if (!looksLikePhone()) return 0;
     const ih = window.innerHeight;
-    if (!navigator.maxTouchPoints) return 0;
     return Math.min(
       Math.round(ih * KB_GUESS_MAX_FRAC),
       Math.max(Math.round(ih * KB_GUESS_FRAC), Math.round(window.innerWidth * KB_GUESS_W_FRAC)),
@@ -899,18 +913,24 @@ function mountChatKeyboardLift() {
       requestAnimationFrame(() => {
         if (lifted) setKb(kbHeight());
       });
-    } else if (kb >= KB_MIN) {
-      setKb(kb); // track the keyboard (and swap an estimate for a real report)
+    } else if (sawReport && reported() < KB_MIN) {
+      // A source that DID report a keyboard now says it's gone → a real close.
+      drop();
     } else {
-      drop(); // keyboard dismissed while still focused → back into the HUD
+      // Stay lifted while focused. On the maintainer's device NOTHING ever
+      // reports, so hold the estimate up the whole time (dropping only on blur)
+      // instead of flickering the box away on a transient 0 — that flicker, plus
+      // a stray report at dismissal, was why the box appeared only AFTER close.
+      setKb(kb);
     }
   };
   // QA probe: why the box did (or didn't) lift — the two shipped attempts failed
   // precisely because nothing could see this state from outside.
   (window as unknown as { __mlKb?: () => unknown }).__mlKb = () => ({
     hasInput: !!input, lifted, reported: reported(), kb: kbHeight(),
-    touch: navigator.maxTouchPoints, sinceFocus: focusedAt ? Date.now() - focusedAt : null,
-    polling: poll !== 0,
+    touch: navigator.maxTouchPoints, hadTouch, phone: looksLikePhone(),
+    screen: [screen.width, screen.height], sawReport,
+    sinceFocus: focusedAt ? Date.now() - focusedAt : null, polling: poll !== 0,
   });
   const isChatInput = (t: EventTarget | null) =>
     t instanceof HTMLElement && t.classList.contains("ml-chat-input");

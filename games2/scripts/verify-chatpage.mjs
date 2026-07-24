@@ -53,6 +53,12 @@ try {
     isMobile: true, hasTouch: true, deviceScaleFactor: 2,
     timezoneId: "Europe/Stockholm", // deterministic day boundaries for the divider test
   });
+  // Reproduce the maintainer's REAL condition: Chrome "Request Desktop Site"
+  // reports navigator.maxTouchPoints === 0 (a mouse desktop), which is what hid
+  // the keyboard lift on his phone. Force it 0 for the whole session so the lift
+  // MUST work via the physical screen size (screen.width 393), not maxTouchPoints.
+  // Without this override the gate passed while his device failed.
+  await ctx.addInitScript(() => Object.defineProperty(navigator, "maxTouchPoints", { get: () => 0, configurable: true }));
   const page = await ctx.newPage();
   await enter(page, "ring_test");
   await openChat(page);
@@ -92,13 +98,22 @@ try {
   const meta = await page.evaluate(() => document.querySelector('meta[name=viewport]')?.getAttribute("content") || "");
   !/interactive-widget/.test(meta)
     ? ok("viewport meta doesn't force interactive-widget (that panned the whole game)") : fail(`viewport meta forces interactive-widget: ${meta}`);
-  // this harness reports no keyboard rect — exactly the maintainer's device
+  // This harness now reproduces the maintainer's phone under "Request Desktop
+  // Site": NO keyboard rect from any source AND navigator.maxTouchPoints === 0
+  // (the very thing that hid the lift). The lift MUST still work — via the
+  // physical screen size — or this fails, unlike the old gate.
   const rep = await page.evaluate(() => ({
     vk: navigator.virtualKeyboard ? navigator.virtualKeyboard.boundingRect.height : null,
     shrink: window.visualViewport ? Math.round(window.innerHeight - window.visualViewport.height) : null,
-    touch: navigator.maxTouchPoints,
+    touch: navigator.maxTouchPoints, phone: window.__mlKb ? window.__mlKb().phone : null,
+    screen: [screen.width, screen.height],
   }));
-  ok(`harness reports no keyboard geometry (vk=${rep.vk} shrink=${rep.shrink}, touch=${rep.touch}) — same blind spot as the device`);
+  rep.touch === 0
+    ? ok(`reproducing desktop-site: maxTouchPoints=0, no keyboard rect (vk=${rep.vk} shrink=${rep.shrink}) — the device's blind spot`)
+    : fail(`harness not reproducing desktop-site: maxTouchPoints=${rep.touch} (override failed)`);
+  rep.phone === true
+    ? ok(`still detected as a phone via screen ${JSON.stringify(rep.screen)} (survives desktop-site)`)
+    : fail(`phone detection failed with maxTouchPoints=0 — the lift would not arm (screen=${JSON.stringify(rep.screen)})`);
 
   // Geometry of the game BEFORE focus, so we can prove nothing moved after.
   // …including the CHAT PAGE's own boxes: floating the input out of flow used to
