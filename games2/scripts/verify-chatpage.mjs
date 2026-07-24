@@ -91,28 +91,37 @@ try {
     ? ok("visualViewport available (drives the input lift)") : fail("no visualViewport API");
   // lift: while a chat input is focused AND the keyboard is up (.ml-kb-up +
   // --ml-kb from visualViewport), the input floats fixed at bottom = keyboard
-  // height. No real keyboard headless, so drive --ml-kb + the class and check the
-  // box tracks it; without the class the input stays in the HUD flow.
-  const lift = await page.evaluate(() => {
+  // height, ANIMATED (transition on bottom) so it isn't a snap. No real keyboard
+  // headless, so drive --ml-kb + the class; without the class it stays in flow.
+  const down = await page.evaluate(() => {
     const el = document.querySelector(".ml-chat-input");
-    const root = document.documentElement;
     el.focus();
-    const down = getComputedStyle(el).position;                 // keyboard down
-    root.style.setProperty("--ml-kb", "300px");
-    root.classList.add("ml-kb-up");                             // keyboard up (300px tall)
-    const cs = getComputedStyle(el);
-    const up = { position: cs.position, bottom: cs.bottom };
-    root.classList.remove("ml-kb-up");
-    root.style.removeProperty("--ml-kb");
-    const after = getComputedStyle(el).position;                // keyboard down again
-    el.blur();
-    return { down, up, after };
+    return getComputedStyle(el).position; // keyboard down → in-HUD flow
   });
-  lift.down !== "fixed" && lift.up.position === "fixed" && lift.after !== "fixed"
-    ? ok(`input lifts (fixed) only while keyboard up (${lift.down}->${lift.up.position}->${lift.after})`)
-    : fail(`lift wrong: ${JSON.stringify(lift)}`);
-  Math.abs(parseFloat(lift.up.bottom) - 310) < 3
-    ? ok(`input rides just above the keyboard (bottom=${lift.up.bottom} at kb=300)`) : fail(`input bottom ${lift.up.bottom} != ~310px`);
+  await page.evaluate(() => {
+    document.documentElement.style.setProperty("--ml-kb", "300px");
+    document.documentElement.classList.add("ml-kb-up"); // keyboard up (300px tall)
+  });
+  await page.waitForTimeout(280); // let the bottom-transition settle before measuring
+  const up = await page.evaluate(() => {
+    const cs = getComputedStyle(document.querySelector(".ml-chat-input"));
+    return { position: cs.position, bottom: cs.bottom, tprop: cs.transitionProperty, tdur: cs.transitionDuration };
+  });
+  const after = await page.evaluate(() => {
+    const el = document.querySelector(".ml-chat-input");
+    document.documentElement.classList.remove("ml-kb-up");
+    document.documentElement.style.removeProperty("--ml-kb");
+    const p = getComputedStyle(el).position; // keyboard down again
+    el.blur();
+    return p;
+  });
+  down !== "fixed" && up.position === "fixed" && after !== "fixed"
+    ? ok(`input lifts (fixed) only while keyboard up (${down}->${up.position}->${after})`)
+    : fail(`lift wrong: down=${down} up=${up.position} after=${after}`);
+  Math.abs(parseFloat(up.bottom) - 310) < 3
+    ? ok(`input rides just above the keyboard (bottom=${up.bottom} at kb=300)`) : fail(`input bottom ${up.bottom} != ~310px`);
+  /bottom|all/.test(up.tprop) && parseFloat(up.tdur) > 0
+    ? ok(`lift is animated, not snapped (transition ${up.tprop} ${up.tdur})`) : fail(`no bottom transition (${up.tprop} ${up.tdur})`);
 
   // ── req 1 (system side) + req 6: on login the world logs system events
   //    immediately (time-of-day sync, the join "star"). Wait for one, then the

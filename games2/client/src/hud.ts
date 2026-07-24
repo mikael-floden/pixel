@@ -779,37 +779,51 @@ function mk(tag: string, cls: string): HTMLElement {
 let kbInit = false;
 /** Ride the focused chat input UP with the phone keyboard as it slides open
  * (maintainer: "pressed up by the keyboard", not snapped), while the world + HUD
- * stay put. With interactive-widget=resizes-visual the keyboard shrinks ONLY the
+ * stay put. interactive-widget=resizes-visual makes the keyboard shrink ONLY the
  * VISUAL viewport — the layout viewport (window.innerHeight / dvh, which the game
- * height rides) is untouched, so nothing reflows — and visualViewport keeps
- * reporting the shrink as it animates. So: keyboard height = layout viewport −
- * visual viewport; publish it as --ml-kb and flag .ml-kb-up while a chat input is
- * focused, and the CSS floats that input to bottom:--ml-kb. visualViewport fires
- * through the whole slide, so the input tracks the keyboard frame by frame.
- * Desktop / no keyboard: the shrink is 0, the class never sets, input stays put. */
+ * height rides) is untouched, so nothing reflows — and visualViewport reports the
+ * shrink. keyboard height = layout viewport − visual viewport. We float the input
+ * only once a real keyboard is up (shrink > 80px), so desktop (no shrink) never
+ * lifts — independent of pointer/desktop-site quirks. On the FIRST detection we
+ * PIN the input at its current resting spot (no jump), then next frame raise
+ * --ml-kb to the keyboard height so the CSS transition GLIDES it up with the
+ * keyboard — smooth even when the browser reports the shrink in one coarse step;
+ * after that it tracks each visualViewport update. */
 function mountChatKeyboardLift() {
   if (kbInit) return;
   kbInit = true;
   const vv = window.visualViewport;
   if (!vv) return; // no visual-viewport API → leave the input in the HUD (no lift)
   const root = document.documentElement;
-  let active = false; // a chat input currently holds focus
+  let input: HTMLElement | null = null; // the focused chat input
+  let lifted = false; // currently floated above the keyboard
+  const kbHeight = () => Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+  const setKb = (px: number) => root.style.setProperty("--ml-kb", `${px}px`);
+  const drop = () => { lifted = false; root.classList.remove("ml-kb-up"); setKb(0); };
   const update = () => {
-    const kb = active ? Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop)) : 0;
-    root.style.setProperty("--ml-kb", `${kb}px`);
-    root.classList.toggle("ml-kb-up", kb > 80); // ignore address-bar-sized jitters
+    if (!input) return;
+    const kb = kbHeight();
+    if (!lifted) {
+      if (kb <= 80) return; // no keyboard yet (or address-bar jitter) — stay in the HUD
+      // Pin the input where it currently rests (fixed at the same spot, no jump)…
+      const gap = Math.max(0, Math.round(window.innerHeight - input.getBoundingClientRect().bottom));
+      setKb(Math.max(0, gap - 10));
+      root.classList.add("ml-kb-up");
+      lifted = true;
+      // …then next frame raise it to the keyboard top so the transition rides up.
+      requestAnimationFrame(() => { if (lifted) setKb(kbHeight()); });
+    } else {
+      setKb(kb);
+      if (kb <= 80) drop(); // keyboard dismissed while still focused → back to the HUD
+    }
   };
   const isChatInput = (t: EventTarget | null) =>
     t instanceof HTMLElement && t.classList.contains("ml-chat-input");
   document.addEventListener("focusin", (e) => {
-    if (isChatInput(e.target)) { active = true; update(); }
+    if (isChatInput(e.target)) { input = e.target as HTMLElement; update(); }
   });
   document.addEventListener("focusout", (e) => {
-    if (isChatInput(e.target)) {
-      active = false;
-      root.classList.remove("ml-kb-up");
-      root.style.setProperty("--ml-kb", "0px");
-    }
+    if (isChatInput(e.target)) { input = null; drop(); }
   });
   vv.addEventListener("resize", update);
   vv.addEventListener("scroll", update);
@@ -1006,7 +1020,8 @@ function injectStyles() {
   .ml-kb-up .ml-chat-input:focus{position:fixed;z-index:50;width:auto;
     left:calc(var(--ml-page-pad,44px) + min(40px,5vw));
     right:calc(var(--ml-page-pad,44px) + min(40px,5vw));
-    bottom:calc(var(--ml-kb,0px) + 10px);box-shadow:0 -2px 16px rgba(0,0,0,.55)}
+    bottom:calc(var(--ml-kb,0px) + 10px);box-shadow:0 -2px 16px rgba(0,0,0,.55);
+    transition:bottom .15s ease-out}
   /* Narrower-than-design viewports: the tab plates already shrink via the
      --ml-tab formula, but the ICON files (uniform 96px 2x bakes) overflow
      once a tab drops under 96px — with six tabs that's below a ~780px
