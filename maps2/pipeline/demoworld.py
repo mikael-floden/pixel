@@ -223,14 +223,15 @@ class Demo:
         ys = np.where((a[:, :, 3] > 20).any(axis=1))[0]
         return int(ys.max()) if len(ys) else 63
 
-    def render(self, scale=1.0):
+    def render(self, scale=1.0, transparent=False):
         n = self.n
         ox = (n-1)*DX + 24
         oy = int(self.level.max())*LEVEL_PX + 150
         W = (n+n)*DX + 48
         H = (n+n)*DY + 64 + int(self.level.max())*LEVEL_PX + 220
         wc = self.lib.target_color("clear_water")
-        canvas = Image.new("RGBA", (W, H), tuple(int(c) for c in wc)+(255,))
+        bg = (0, 0, 0, 0) if transparent else tuple(int(c) for c in wc) + (255,)
+        canvas = Image.new("RGBA", (W, H), bg)
         order = sorted(((x, y) for y in range(n) for x in range(n)),
                        key=lambda p: (p[0]+p[1], p[1]))
         for x, y in order:
@@ -265,13 +266,10 @@ def build(out=None, n=104, seed=6):
     worldio.save_world(os.path.join(out, "world.json"), name="demo_isle",
                        mat=d.mat, top=d.top, mirror=d.mirror, level=d.level,
                        spawn=d.spawn, props=d.props)
-    img = d.render()
-    img.convert("RGB").save(os.path.join(out, "demo.png"))
-    # a capped preview for quick viewing / sharing
-    w = 2200
-    img.resize((w, round(img.height*w/img.width)), Image.LANCZOS).convert("RGB").save(
-        os.path.join(out, "preview.png"))
-    print(f"demo_isle {n}x{n}: {len(d.props)} props; wrote demo.png {img.size}")
+    # normalized transparent map-tab image (maintainer 2026-07-23)
+    import render2
+    render2.save_minimap(out, d.render(transparent=True), width=2200)
+    print(f"demo_isle {n}x{n}: {len(d.props)} props; wrote minimap.png")
     return d
 
 

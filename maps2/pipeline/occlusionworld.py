@@ -283,14 +283,15 @@ class Occlude:
         ys = np.where((a[:, :, 3] > 20).any(axis=1))[0]
         return int(ys.max()) if len(ys) else 63
 
-    def render(self, scale=1.0):
+    def render(self, scale=1.0, transparent=False):
         n = self.n
         ox = (n - 1) * DX + 24
         oy = int(self.level.max()) * LEVEL_PX + 170
         W = (n + n) * DX + 48
         H = (n + n) * DY + 64 + int(self.level.max()) * LEVEL_PX + 240
         wc = self.lib.target_color("clear_water")
-        canvas = Image.new("RGBA", (W, H), tuple(int(c) for c in wc) + (255,))
+        bg = (0, 0, 0, 0) if transparent else tuple(int(c) for c in wc) + (255,)
+        canvas = Image.new("RGBA", (W, H), bg)
         order = sorted(((x, y) for y in range(n) for x in range(n)),
                        key=lambda p: (p[0] + p[1], p[1]))
         for x, y in order:
@@ -340,11 +341,9 @@ def build(out=None, n=128, seed=3):
     worldio.save_world(os.path.join(out, "world.json"), name="occlusion_test",
                        mat=d.mat, top=d.top, mirror=d.mirror, level=d.level,
                        spawn=d.spawn, props=d.props, decks=decks_out)
-    img = d.render()
-    img.convert("RGB").save(os.path.join(out, "demo.png"))
-    w = 2200
-    img.resize((w, round(img.height * w / img.width)), Image.LANCZOS).convert("RGB").save(
-        os.path.join(out, "preview.png"))
+    # normalized transparent map-tab image (maintainer 2026-07-23)
+    import render2
+    render2.save_minimap(out, d.render(transparent=True), width=2200)
     tall = int((d.level >= 5).sum())
     dcells = sum(len(dk["cells"]) for dk in d.decks)
     print(f"occlusion_test {n}x{n}: {len(d.props)} props, max level {int(d.level.max())}, "

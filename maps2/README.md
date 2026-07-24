@@ -43,8 +43,26 @@ HERE in maps2 — do not touch anything else under `games2/`.
 **After EVERY deploy, send the maintainer the full-map image** (maintainer
 2026-07-22: "always do that after you have deployed, so I can see the entire
 map state directly"): once the deploy run is green, deliver
-`worlds/the_island2/preview.png` (the committed full-map render) — don't wait
+`worlds/the_island2/minimap.png` (the committed full-map render) — don't wait
 to be asked.
+
+## Map images — ONE normalized `minimap.png` per world
+
+Every world ships exactly one map image, **`minimap.png`** (maintainer
+2026-07-23: "normalize how you save/store the map"): the isometric view with
+**every NON-MAP pixel transparent** (the game draws it under the Map tab, and
+`games2/scripts/build-worlds.mjs` captures it into `worlds.json`'s `preview`
+field). The old ad-hoc names — `preview.png`, `demo.png`, `overview.png` (and
+the 17MB full-res demos) — are retired. Transparency is done at RENDER time
+(the iso canvas starts fully transparent, then tiles composite over it) because
+the corner filler and the ocean are the SAME water colour and can't be
+separated after the fact. `render()`/`render_overview(..., transparent=True)`
+produce it; `render2.save_minimap()` caps the width and saves it **without
+`convert('RGB')`** (that would flatten the alpha back to a solid rectangle).
+Each builder writes its own (island builders keep props/decks in the picture);
+**`python maps2/pipeline/minimaps.py`** backfills/refreshes every world's
+`minimap.png` from its committed `world.json` (no world regeneration) and
+deletes the stale names — run it after touching the renderer.
 
 ## Elevation & occlusion rules — ALWAYS apply when shaping terrain
 

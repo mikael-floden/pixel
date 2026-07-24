@@ -24,7 +24,7 @@ sys.path.insert(0, _HERE)
 
 import worldio                                               # noqa: E402
 from ringworld import SLICES, WATER, generate                # noqa: E402
-from render2 import Ctx, render_minimap, render_overview, render_window  # noqa: E402
+from render2 import Ctx, render_overview, render_window, save_minimap  # noqa: E402
 from tiles2lib import Tiles2                                  # noqa: E402
 
 MAPS2 = os.path.dirname(_HERE)
@@ -121,11 +121,11 @@ def main():
         print(f"wrote {wpath} ({os.path.getsize(wpath)//1024}KB)")
 
     ctx = Ctx(world, lib)
-    render_minimap(world).save(os.path.join(out, "minimap.png"))
-    print("minimap ok")
+    # NORMALIZED (maintainer 2026-07-23): one transparent `minimap.png` per world (the
+    # map-tab image), the isometric view with every non-map pixel see-through.
     t0 = time.time()
-    render_overview(world, scale=0.42).save(os.path.join(out, "overview.png"))
-    print(f"overview {time.time()-t0:.1f}s")
+    save_minimap(out, render_overview(world, scale=0.5, transparent=True))
+    print(f"minimap {time.time()-t0:.1f}s")
 
     if not args.no_borders:
         for name, (x0, y0, x1, y1) in border_windows(world).items():

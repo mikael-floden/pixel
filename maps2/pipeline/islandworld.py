@@ -836,14 +836,18 @@ class Island:
         ys = np.where((a[:, :, 3] > 20).any(axis=1))[0]
         return int(ys.max()) if len(ys) else 63
 
-    def render(self, scale=1.0):
+    def render(self, scale=1.0, transparent=False):
+        # transparent=True leaves every NON-MAP pixel (the iso-diamond corners + void
+        # cells) fully transparent for the minimap; the ocean itself is drawn (opaque),
+        # only the empty frame around the world is see-through (maintainer 2026-07-23).
         n = self.n
         ox = (n - 1) * DX + 24
         oy = int(self.level.max()) * LEVEL_PX + 160
         W = (n + n) * DX + 48
         H = (n + n) * DY + 64 + int(self.level.max()) * LEVEL_PX + 240
         wc = self.lib.target_color("clear_water")
-        canvas = Image.new("RGBA", (W, H), tuple(int(c) for c in wc) + (255,))
+        bg = (0, 0, 0, 0) if transparent else tuple(int(c) for c in wc) + (255,)
+        canvas = Image.new("RGBA", (W, H), bg)
         order = sorted(((x, y) for y in range(n) for x in range(n)),
                        key=lambda p: (p[0] + p[1], p[1]))
         for x, y in order:

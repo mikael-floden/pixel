@@ -51,8 +51,13 @@ class Ctx:
         return im
 
 
+def _wh(world):
+    return getattr(world, "W", world.n), getattr(world, "H", world.n)
+
+
 def _origin(world):
-    ox = (world.n - 1) * DX + MARGIN
+    _W, H = _wh(world)
+    ox = (H - 1) * DX + MARGIN                     # min screen-x is (0 - (H-1))*DX
     oy = int(world.level.max()) * LEVEL_PX + 40 + MARGIN
     return ox, oy
 
@@ -87,23 +92,30 @@ def render_window(world, x0, y0, x1, y1, ctx: Ctx | None = None) -> Image.Image:
     return canvas
 
 
-def render_overview(world, scale: float = 0.32, band_px: int = 1400) -> Image.Image:
+def render_overview(world, scale: float = 0.32, band_px: int = 1400,
+                    transparent: bool = False) -> Image.Image:
+    # transparent=True: every NON-MAP pixel (the iso-diamond corners + void cells)
+    # stays fully transparent, the ocean/land is drawn opaque — the normalized minimap
+    # look (maintainer 2026-07-23). Output is RGBA when transparent, else RGB (as before).
     ctx = Ctx(world)
-    n = world.n
+    W, H = _wh(world)                               # supports NON-SQUARE worlds
     ox, oy = _origin(world)
     maxL = int(world.level.max())
-    full_w = (n + n) * DX + MARGIN * 2
-    full_h = (n + n) * DY + 64 + maxL * LEVEL_PX + 80
-    out = Image.new("RGB", (int(full_w * scale), int(full_h * scale)), ctx.bg[:3])
+    full_w = (W + H) * DX + MARGIN * 2
+    full_h = (W + H) * DY + 64 + maxL * LEVEL_PX + 80
+    band_bg = (0, 0, 0, 0) if transparent else ctx.bg
+    out = (Image.new("RGBA", (int(full_w * scale), int(full_h * scale)), (0, 0, 0, 0))
+           if transparent else
+           Image.new("RGB", (int(full_w * scale), int(full_h * scale)), ctx.bg[:3]))
     reach_up = maxL * LEVEL_PX + 80
     for b0 in range(0, full_h, band_px):
         b1 = min(full_h, b0 + band_px)
-        band = Image.new("RGBA", (full_w, b1 - b0), ctx.bg)
+        band = Image.new("RGBA", (full_w, b1 - b0), band_bg)
         s_lo = max(0, (b0 - 80 - oy) // DY)
-        s_hi = min(2 * n - 1, (b1 + reach_up - oy) // DY + 1)
+        s_hi = min(W + H - 1, (b1 + reach_up - oy) // DY + 1)
         for s in range(int(s_lo), int(s_hi)):
             base_y = oy + s * DY
-            for x in range(max(0, s - n + 1), min(n, s + 1)):
+            for x in range(max(0, s - H + 1), min(W, s + 1)):
                 y = s - x
                 if ctx.skip[y, x]:
                     continue
@@ -114,10 +126,23 @@ def render_overview(world, scale: float = 0.32, band_px: int = 1400) -> Image.Im
                     band.alpha_composite(f, (base_x, base_y - lvl * LEVEL_PX - b0))
                 t = ctx.top_tile(y, x)
                 band.alpha_composite(t, (base_x, base_y - L * LEVEL_PX - b0 - (t.height - 64)))
-        band = band.convert("RGB").resize(
-            (int(full_w * scale), max(1, int((b1 - b0) * scale))), Image.LANCZOS)
-        out.paste(band, (0, int(b0 * scale)))
+        bw, bh = int(full_w * scale), max(1, int((b1 - b0) * scale))
+        if transparent:
+            out.alpha_composite(band.resize((bw, bh), Image.LANCZOS), (0, int(b0 * scale)))
+        else:
+            out.paste(band.convert("RGB").resize((bw, bh), Image.LANCZOS), (0, int(b0 * scale)))
     return out
+
+
+def save_minimap(out_dir, img, width: int = 2000):
+    """Normalized map-tab image (maintainer 2026-07-23: "normalize how you save/store the
+    map"): every world writes exactly one `minimap.png` — the world's isometric view with
+    all NON-MAP pixels transparent, capped to `width` px. Keeps alpha (RGBA); NEVER
+    convert('RGB') (that would flatten the transparency back onto a solid rectangle)."""
+    import os
+    if img.width > width:
+        img = img.resize((width, max(1, round(img.height * width / img.width))), Image.LANCZOS)
+    img.save(os.path.join(out_dir, "minimap.png"))
 
 
 def render_minimap(world, px: int = 4) -> Image.Image:

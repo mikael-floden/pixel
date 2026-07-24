@@ -2563,11 +2563,11 @@ def build(out=None, seed=21, M=24):
     worldio.save_world(os.path.join(out, "world.json"), name="the_island2",
                        mat=d.mat, top=d.top, mirror=d.mirror, level=d.level,
                        spawn=d.spawn, props=d.props, decks=decks_out)
-    img = d.render()
-    img.convert("RGB").save(os.path.join(out, "demo.png"))
-    w = 2400
-    img.resize((w, round(img.height * w / img.width)), Image.LANCZOS).convert("RGB").save(
-        os.path.join(out, "preview.png"))
+    # NORMALIZED map image (maintainer 2026-07-23): one `minimap.png` per world — the
+    # isometric view with every non-map pixel transparent (the game draws it under the Map
+    # tab). No more 17MB demo.png / preview.png.
+    import render2
+    render2.save_minimap(out, d.render(transparent=True), width=2400)
 
     # --- assert battery ---
     terr = Counter(m for m in d.mat.ravel() if m)
