@@ -881,7 +881,10 @@ const float FOG_DW = 1.2;   // width of each cel band past the onset (cells) —
                             // distance haze on other levels INTENSIFIES faster (tighter bands).
 const float FOG_MAX = 0.78; // opacity of the farthest band (the cull edge)
 const float FOG_DEEP_MAX  = 1.0;  // opacity ceiling for the DEEP zone (elevation past band saturation)
-const float FOG_DEEP_RATE = 0.5; // thickening speed per overflow band once the cel bands max out
+const float FOG_DEEP_RATE = 0.15;// thickening speed per overflow band once the cel bands max out. GENTLE
+                                 // on purpose (maintainer 2026-07-24: "span the fog increase over a longer
+                                 // distance" — 0.5 hit apparent-max a third of the way down a gorge, a hard
+                                 // "very heavy" LINE; at 0.15 deep keeps climbing to the gorge floor, no line).
 const float DRAPE_RS = 2.5; // drape blur half-width along the col+row fold axis (s-units)
 const float ELEV_STEP = 0.5; // fog BANDS added per LEVEL of player↔surface separation past the
                              // dead-zone. 0.5 ⇒ +1 band every ~2 levels (gentle Z ramp — maintainer
