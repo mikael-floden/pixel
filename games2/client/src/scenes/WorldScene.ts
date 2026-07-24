@@ -891,6 +891,21 @@ export class WorldScene extends Phaser.Scene {
     (window as any).__ml = {
       players: () => this.avatars.size,
       myId: () => this.room?.sessionId,
+      // Live feed for the HUD Map tab (hud.ts polls per rAF): the current world
+      // id + grid size (cells) and the LOCAL player's SMOOTH predicted cell —
+      // av.fx/fy is the same client-predicted position the sprite + coord label
+      // use, so the minimap dot tracks the avatar (using me()/server 20Hz state
+      // instead would stutter). col=fx/CELL_WU, row=fy/CELL_WU.
+      minimap: () => {
+        const av = this.avatars.get(this.room?.sessionId ?? "");
+        return {
+          world: this.worldName,
+          w: this.world?.width ?? 0,
+          h: this.world?.height ?? 0,
+          col: av ? av.fx / CELL_WU : 0,
+          row: av ? av.fy / CELL_WU : 0,
+        };
+      },
       // world@2 decks: parsed summary + cells indexed for the ground/occluder loop.
       deckInfo: () => ({
         decks: (this.world?.decks ?? []).map((d) => ({ kind: d.kind, mat: d.mat, level: d.level, thickness: d.thickness, cells: d.cells.length })),

@@ -199,6 +199,15 @@ function applyFrameLayout() {
     "--ml-page-padbot", `${Math.round(window.innerHeight - (l.pageRect.top + l.pageRect.height))}px`);
 }
 
+/** The live feed the Map tab reads from window.__ml.minimap() (WorldScene). */
+interface MinimapFeed {
+  world: string; // maps2 world id (folder name) -> /assets/maps2/worlds/<id>/minimap.png
+  w: number; // grid width in cells
+  h: number; // grid height in cells
+  col: number; // local player's fractional cell (fx / CELL_WU)
+  row: number; // local player's fractional cell (fy / CELL_WU)
+}
+
 export class HudBar {
   private pages = new Map<TabId, HTMLElement>();
   private tabs = new Map<TabId, HTMLButtonElement>();
@@ -210,6 +219,13 @@ export class HudBar {
   private ambRows = new Map<string, { el: HTMLButtonElement; img: HTMLImageElement; label: HTMLElement }>();
   private ambAuto: { el: HTMLButtonElement; img: HTMLImageElement } | null = null;
   private ambBuilt = false;
+  // Map tab: minimap <img> + a red "you are here" dot, driven by a rAF loop
+  // that reads window.__ml.minimap() while the tab is visible.
+  private mapEls: {
+    wrap: HTMLElement; frame: HTMLElement; img: HTMLImageElement; dot: HTMLElement; empty: HTMLElement;
+  } | null = null;
+  private mapRaf: number | null = null;
+  private mapSrcWorld = ""; // which world's minimap.png is currently loaded
 
   constructor(private actions: HudActions) {
     injectStyles();
@@ -274,6 +290,107 @@ export class HudBar {
     // Build/refresh the ambient switches the moment Settings is opened (don't
     // wait up to a poll interval).
     if (id === "settings") this.tickAmbient();
+    // The Map tab drives a live dot; only run its rAF loop while it's visible.
+    if (id === "map") this.startMapLoop();
+    else this.stopMapLoop();
+  }
+
+  // ── Map tab ────────────────────────────────────────────────────────────
+  /** Build the Map page: a fitted top-down minimap <img> plus a red "you are
+   * here" dot positioned by PERCENT (so it stays correct at any display size),
+   * over a fallback message for worlds whose maps agent hasn't shipped a
+   * top-down minimap.png yet. The dot + image are driven by startMapLoop(). */
+  private buildMap() {
+    const page = this.pages.get("map")!;
+    const wrap = mk("div", "ml-map");
+    const frame = mk("div", "ml-map-frame");
+    const img = mk("img", "ml-map-img") as HTMLImageElement;
+    img.alt = "";
+    img.draggable = false;
+    const dot = mk("i", "ml-map-dot");
+    frame.append(img, dot);
+    const empty = mk("div", "ml-map-empty");
+    empty.textContent = "No minimap for this world yet.";
+    empty.hidden = true;
+    wrap.append(frame, empty);
+    page.append(wrap);
+    // A real (top-down) minimap loaded → size the frame to it and show it;
+    // a 404 (world with no minimap.png) → fall back to the message.
+    img.addEventListener("load", () => {
+      frame.hidden = false;
+      empty.hidden = true;
+      this.fitMap();
+    });
+    img.addEventListener("error", () => {
+      frame.hidden = true;
+      empty.hidden = false;
+    });
+    this.mapEls = { wrap, frame, img, dot, empty };
+    // Refit when the page window changes (orientation / frame recompose).
+    new ResizeObserver(() => this.fitMap()).observe(wrap);
+  }
+
+  /** Size the minimap frame to fit its box while preserving the image's aspect
+   * ratio, so the frame box EQUALS the displayed image and the dot's percent
+   * offsets land on the right pixel (no letterbox skew). */
+  private fitMap() {
+    const els = this.mapEls;
+    if (!els) return;
+    const nw = els.img.naturalWidth, nh = els.img.naturalHeight;
+    const box = els.wrap.getBoundingClientRect();
+    if (!nw || !nh || box.width < 2 || box.height < 2) return;
+    const ar = nw / nh;
+    let w = box.width, h = w / ar;
+    if (h > box.height) { h = box.height; w = h * ar; }
+    els.frame.style.width = `${Math.floor(w)}px`;
+    els.frame.style.height = `${Math.floor(h)}px`;
+  }
+
+  private startMapLoop() {
+    if (this.mapRaf != null) return;
+    const tick = () => {
+      // Self-heal: a reconnect builds a fresh HudBar and removes the old .ml-hud
+      // from the DOM, but never calls the old instance's select() again — so
+      // stop once our page has detached, instead of looping on a dead dot.
+      if (!this.mapEls || !this.mapEls.wrap.isConnected) {
+        this.stopMapLoop();
+        return;
+      }
+      this.updateMap();
+      this.mapRaf = requestAnimationFrame(tick);
+    };
+    this.mapRaf = requestAnimationFrame(tick);
+  }
+
+  private stopMapLoop() {
+    if (this.mapRaf != null) {
+      cancelAnimationFrame(this.mapRaf);
+      this.mapRaf = null;
+    }
+  }
+
+  /** One frame of the Map tab: (re)point the <img> at the current world's
+   * minimap and move the dot to the player's cell. Reads the live scene feed
+   * window.__ml.minimap() the same null-safe way the ambient switches do. */
+  private updateMap() {
+    const els = this.mapEls;
+    if (!els) return;
+    const ml = (window as unknown as { __ml?: { minimap?: () => MinimapFeed } }).__ml;
+    const m = ml && typeof ml.minimap === "function" ? ml.minimap() : null;
+    if (!m || !m.w || !m.h) return;
+    // Load the world's minimap once (and again if the world changed on rejoin).
+    if (m.world && m.world !== this.mapSrcWorld) {
+      this.mapSrcWorld = m.world;
+      els.frame.hidden = false;
+      els.empty.hidden = true;
+      els.img.src = `/assets/maps2/worlds/${m.world}/minimap.png`;
+    }
+    // Dot at the player's fractional cell, clamped to the map (fx/fy can ease a
+    // hair past the rim). Percent of the frame == percent of the image.
+    const left = Math.max(0, Math.min(1, m.col / m.w)) * 100;
+    const top = Math.max(0, Math.min(1, m.row / m.h)) * 100;
+    els.dot.style.left = `${left.toFixed(3)}%`;
+    els.dot.style.top = `${top.toFixed(3)}%`;
   }
 
   /** Re-read every switch's pressed state AND every live state label
@@ -404,8 +521,11 @@ export class HudBar {
     }
     bp.append(slots);
 
-    // Equipment + Map pages: bare stone until their real content lands
+    // Equipment page: bare stone until its real content lands
     // (maintainer 2026-07-17: no placeholder text).
+
+    // Map page: the world's top-down minimap with a live red player dot.
+    this.buildMap();
 
     // Settings: home of ALL the toggles mobile can't reach by keyboard. The
     // page now stacks the games button grid OVER the ambient-effect checklist
@@ -576,6 +696,24 @@ function injectStyles() {
   .ml-page.show{display:flex}
   /* gamepad page: the analog stick positions absolutely inside it */
   .ml-page[data-page=gamepad]{position:relative;overflow:hidden}
+  /* map page: a top-down minimap centred in the page with a red "you are here"
+     dot. .ml-map-frame is JS-sized to the fitted image (buildMap.fitMap) so it
+     equals the displayed image box — the dot's percent offsets then land on the
+     right pixel with no letterbox skew. Pixel-art: nearest-neighbour. */
+  .ml-page[data-page=map]{overflow:hidden}
+  .ml-map{flex:1 1 auto;min-height:0;width:100%;display:flex;
+    align-items:center;justify-content:center;overflow:hidden}
+  .ml-map-frame{position:relative;line-height:0;flex:none}
+  .ml-map-frame[hidden]{display:none}
+  .ml-map-img{display:block;width:100%;height:100%;image-rendering:pixelated;
+    -webkit-user-drag:none;pointer-events:none}
+  .ml-map-dot{position:absolute;left:50%;top:50%;width:14px;height:14px;
+    transform:translate(-50%,-50%);border-radius:50%;background:#e8382c;
+    border:2px solid #fff;box-sizing:border-box;pointer-events:none;
+    box-shadow:0 0 5px rgba(0,0,0,.7);z-index:1}
+  .ml-map-empty{color:#f0e2c6;font:700 16px system-ui,sans-serif;
+    text-align:center;padding:24px;line-height:1.5}
+  .ml-map-empty[hidden]{display:none}
   /* backpack slots: the kit's empty-slot square (maintainer circled it),
      9-sliced by dressSlot to fill the box at the SAME KIT_PX block size as
      the buttons ("this slot should look very much like an empty button").
