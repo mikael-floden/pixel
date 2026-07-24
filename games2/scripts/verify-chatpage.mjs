@@ -82,33 +82,37 @@ try {
   inp && inp.wide ? ok("input still spans most of the width") : fail(`input too narrow (${JSON.stringify(inp)})`);
   inp && inp.belowLog ? ok("input sits below the log (bottom)") : fail("input not at the bottom");
 
-  // ── keyboard overlay: in-game we opt the soft keyboard into OVERLAY mode so
-  //    the world+HUD don't reflow when it appears (maintainer). ──
-  const vk = await page.evaluate(() => {
-    const api = navigator.virtualKeyboard;
-    return { present: !!api, overlays: api ? api.overlaysContent : null };
-  });
-  vk.present
-    ? (vk.overlays === true ? ok("VirtualKeyboard overlaysContent enabled in-game") : fail(`overlaysContent=${vk.overlays}`))
-    : ok("VirtualKeyboard API absent (skipped — non-Chromium)");
-  // lift: the focused input goes position:fixed ONLY while the keyboard is up
-  // (.ml-kb-up); otherwise it stays in the HUD flow. (No real keyboard headless,
-  // so drive the class directly and check the computed position flips.)
+  // ── keyboard: the world+HUD must not reflow (interactive-widget=resizes-visual),
+  //    and the focused chat input rides UP with the keyboard (visualViewport). ──
+  const meta = await page.evaluate(() => document.querySelector('meta[name=viewport]')?.getAttribute("content") || "");
+  /interactive-widget=resizes-visual/.test(meta)
+    ? ok("viewport: keyboard shrinks only the visual viewport (no reflow)") : fail(`viewport meta missing resizes-visual: ${meta}`);
+  await page.evaluate(() => !!window.visualViewport)
+    ? ok("visualViewport available (drives the input lift)") : fail("no visualViewport API");
+  // lift: while a chat input is focused AND the keyboard is up (.ml-kb-up +
+  // --ml-kb from visualViewport), the input floats fixed at bottom = keyboard
+  // height. No real keyboard headless, so drive --ml-kb + the class and check the
+  // box tracks it; without the class the input stays in the HUD flow.
   const lift = await page.evaluate(() => {
     const el = document.querySelector(".ml-chat-input");
     const root = document.documentElement;
     el.focus();
-    const before = getComputedStyle(el).position;   // keyboard down
-    root.classList.add("ml-kb-up");
-    const during = getComputedStyle(el).position;    // keyboard up
+    const down = getComputedStyle(el).position;                 // keyboard down
+    root.style.setProperty("--ml-kb", "300px");
+    root.classList.add("ml-kb-up");                             // keyboard up (300px tall)
+    const cs = getComputedStyle(el);
+    const up = { position: cs.position, bottom: cs.bottom };
     root.classList.remove("ml-kb-up");
-    const after = getComputedStyle(el).position;     // keyboard down again
+    root.style.removeProperty("--ml-kb");
+    const after = getComputedStyle(el).position;                // keyboard down again
     el.blur();
-    return { before, during, after };
+    return { down, up, after };
   });
-  lift.before !== "fixed" && lift.during === "fixed" && lift.after !== "fixed"
-    ? ok(`focused input lifts only while keyboard up (${lift.before}->${lift.during}->${lift.after})`)
+  lift.down !== "fixed" && lift.up.position === "fixed" && lift.after !== "fixed"
+    ? ok(`input lifts (fixed) only while keyboard up (${lift.down}->${lift.up.position}->${lift.after})`)
     : fail(`lift wrong: ${JSON.stringify(lift)}`);
+  Math.abs(parseFloat(lift.up.bottom) - 310) < 3
+    ? ok(`input rides just above the keyboard (bottom=${lift.up.bottom} at kb=300)`) : fail(`input bottom ${lift.up.bottom} != ~310px`);
 
   // ── req 1 (system side) + req 6: on login the world logs system events
   //    immediately (time-of-day sync, the join "star"). Wait for one, then the

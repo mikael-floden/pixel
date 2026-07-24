@@ -776,38 +776,50 @@ function mk(tag: string, cls: string): HTMLElement {
   return e;
 }
 
-let vkInit = false;
-/** Make the phone's soft keyboard OVERLAY the game instead of resizing/scrolling
- * it, so the world + HUD keep their size when you tap the chat box (maintainer),
- * and expose env(keyboard-inset-*) so the focused input can lift above the
- * keyboard. Chromium/Android only (the maintainer's phone) — a no-op elsewhere.
- * Enabled from the HUD (injectStyles), so it only takes effect in-game: the
- * select screen's name field keeps the browser's normal scroll-into-view. */
-function enableVirtualKeyboardOverlay() {
-  if (vkInit) return;
-  vkInit = true;
-  const vk = (
-    navigator as unknown as {
-      virtualKeyboard?: {
-        overlaysContent: boolean;
-        boundingRect: DOMRectReadOnly;
-        addEventListener: (t: string, cb: () => void) => void;
-      };
+let kbInit = false;
+/** Ride the focused chat input UP with the phone keyboard as it slides open
+ * (maintainer: "pressed up by the keyboard", not snapped), while the world + HUD
+ * stay put. With interactive-widget=resizes-visual the keyboard shrinks ONLY the
+ * VISUAL viewport — the layout viewport (window.innerHeight / dvh, which the game
+ * height rides) is untouched, so nothing reflows — and visualViewport keeps
+ * reporting the shrink as it animates. So: keyboard height = layout viewport −
+ * visual viewport; publish it as --ml-kb and flag .ml-kb-up while a chat input is
+ * focused, and the CSS floats that input to bottom:--ml-kb. visualViewport fires
+ * through the whole slide, so the input tracks the keyboard frame by frame.
+ * Desktop / no keyboard: the shrink is 0, the class never sets, input stays put. */
+function mountChatKeyboardLift() {
+  if (kbInit) return;
+  kbInit = true;
+  const vv = window.visualViewport;
+  if (!vv) return; // no visual-viewport API → leave the input in the HUD (no lift)
+  const root = document.documentElement;
+  let active = false; // a chat input currently holds focus
+  const update = () => {
+    const kb = active ? Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop)) : 0;
+    root.style.setProperty("--ml-kb", `${kb}px`);
+    root.classList.toggle("ml-kb-up", kb > 80); // ignore address-bar-sized jitters
+  };
+  const isChatInput = (t: EventTarget | null) =>
+    t instanceof HTMLElement && t.classList.contains("ml-chat-input");
+  document.addEventListener("focusin", (e) => {
+    if (isChatInput(e.target)) { active = true; update(); }
+  });
+  document.addEventListener("focusout", (e) => {
+    if (isChatInput(e.target)) {
+      active = false;
+      root.classList.remove("ml-kb-up");
+      root.style.setProperty("--ml-kb", "0px");
     }
-  ).virtualKeyboard;
-  if (!vk) return;
-  vk.overlaysContent = true; // keyboard overlays content; no layout reflow / auto-scroll
-  // Flag the "keyboard up" state so the focused input lifts only while it's shown.
-  const sync = () => document.documentElement.classList.toggle("ml-kb-up", vk.boundingRect.height > 0);
-  vk.addEventListener("geometrychange", sync);
-  sync();
+  });
+  vv.addEventListener("resize", update);
+  vv.addEventListener("scroll", update);
 }
 
 let injected = false;
 function injectStyles() {
   if (injected) return;
   injected = true;
-  enableVirtualKeyboardOverlay();
+  mountChatKeyboardLift();
   // --ml-hud-scale (the frame's HUD_SCALE, frame2) still scales the tab
   // label font + legacy border width; button SIZES are fixed px now
   // (maintainer: tabs and settings buttons both 120px).
@@ -984,16 +996,17 @@ function injectStyles() {
     border-radius:8px;border:1px solid #2c2c31;background:#0a0a0cee;color:#fff;
     font:400 22px system-ui,sans-serif;font-size:min(22px,2.245vw)}
   .ml-chat-input::placeholder{color:#8a8a96}
-  /* Phone keyboard: virtualKeyboard.overlaysContent (enabled in-game only) makes
-     the soft keyboard OVERLAY the world+HUD instead of resizing/scrolling them —
-     nothing reflows (maintainer). While the keyboard is up (.ml-kb-up), lift ONLY
-     the focused input to just above it via env(keyboard-inset-height), so you can
-     see what you type. Never fires on desktop (no VK → the class is never set);
-     safe-area insets dodge a side notch. */
+  /* Phone keyboard: the world + HUD never reflow (interactive-widget=resizes-
+     visual). While a chat input is focused and the keyboard is up (.ml-kb-up,
+     driven by mountChatKeyboardLift from visualViewport), float ONLY that input
+     to just above the keyboard — bottom tracks --ml-kb (the live keyboard height)
+     so it's PRESSED UP with the keyboard, not snapped. Its left/right match the
+     in-HUD input inset, so it rises straight up without changing width. Never
+     fires on desktop (--ml-kb stays 0, the class is never set). */
   .ml-kb-up .ml-chat-input:focus{position:fixed;z-index:50;width:auto;
-    left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));
-    bottom:calc(env(keyboard-inset-height,0px) + 10px);
-    box-shadow:0 -2px 16px rgba(0,0,0,.55);transition:bottom .18s ease}
+    left:calc(var(--ml-page-pad,44px) + min(40px,5vw));
+    right:calc(var(--ml-page-pad,44px) + min(40px,5vw));
+    bottom:calc(var(--ml-kb,0px) + 10px);box-shadow:0 -2px 16px rgba(0,0,0,.55)}
   /* Narrower-than-design viewports: the tab plates already shrink via the
      --ml-tab formula, but the ICON files (uniform 96px 2x bakes) overflow
      once a tab drops under 96px — with six tabs that's below a ~780px
