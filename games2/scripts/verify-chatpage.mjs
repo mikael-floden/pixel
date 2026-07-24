@@ -82,52 +82,87 @@ try {
   inp && inp.wide ? ok("input still spans most of the width") : fail(`input too narrow (${JSON.stringify(inp)})`);
   inp && inp.belowLog ? ok("input sits below the log (bottom)") : fail("input not at the bottom");
 
-  // ── keyboard: overlaysContent keeps the world+HUD FIXED (keyboard drawn on top,
-  //    no scroll/reflow); only the focused input detaches and floats up. The
-  //    viewport meta must NOT force resizes-visual (that scrolls the whole game). ──
+  // ── keyboard behaviour. TWO requirements, tested by REAL GEOMETRY (not by
+  //    "the API is enabled" — the previous gate asserted that and still shipped a
+  //    build where the box stayed hidden on the maintainer's phone):
+  //      1. the game must not move/resize/scroll when the keyboard opens;
+  //      2. the focused chat input must END UP ON SCREEN above the keyboard —
+  //         and it must do so even though this harness, like his device, reports
+  //         NO keyboard geometry at all (that blind spot WAS the bug). ──
   const meta = await page.evaluate(() => document.querySelector('meta[name=viewport]')?.getAttribute("content") || "");
   !/interactive-widget/.test(meta)
-    ? ok("viewport meta leaves the keyboard to overlaysContent (no forced scroll)") : fail(`viewport meta forces interactive-widget: ${meta}`);
-  const vk = await page.evaluate(() => {
-    const api = navigator.virtualKeyboard;
-    return { present: !!api, overlays: api ? api.overlaysContent : null };
+    ? ok("viewport meta doesn't force interactive-widget (that panned the whole game)") : fail(`viewport meta forces interactive-widget: ${meta}`);
+  // this harness reports no keyboard rect — exactly the maintainer's device
+  const rep = await page.evaluate(() => ({
+    vk: navigator.virtualKeyboard ? navigator.virtualKeyboard.boundingRect.height : null,
+    shrink: window.visualViewport ? Math.round(window.innerHeight - window.visualViewport.height) : null,
+    touch: navigator.maxTouchPoints,
+  }));
+  ok(`harness reports no keyboard geometry (vk=${rep.vk} shrink=${rep.shrink}, touch=${rep.touch}) — same blind spot as the device`);
+
+  // Geometry of the game BEFORE focus, so we can prove nothing moved after.
+  const frameBefore = await page.evaluate(() => {
+    const r = (s) => { const e = document.querySelector(s); return e ? Math.round(e.getBoundingClientRect().top) : null; };
+    return { game: r("#game"), hud: r(".ml-hud"), tabs: r(".ml-tabrow"), h: window.innerHeight, sy: window.scrollY };
   });
-  vk.present
-    ? (vk.overlays === true ? ok("VirtualKeyboard overlaysContent enabled (game stays put)") : fail(`overlaysContent=${vk.overlays}`))
-    : ok("VirtualKeyboard API absent (skipped — non-Chromium)");
-  // lift: while a chat input is focused AND the keyboard is up (.ml-kb-up +
-  // --ml-kb from visualViewport), the input floats fixed at bottom = keyboard
-  // height, ANIMATED (transition on bottom) so it isn't a snap. No real keyboard
-  // headless, so drive --ml-kb + the class; without the class it stays in flow.
-  const down = await page.evaluate(() => {
-    const el = document.querySelector(".ml-chat-input");
-    el.focus();
-    return getComputedStyle(el).position; // keyboard down → in-HUD flow
-  });
+
+  // FOCUS the input for real, and let the lift settle (estimate path ~350ms).
+  // Count the focus events the lift listens for, so a failure says WHY.
   await page.evaluate(() => {
-    document.documentElement.style.setProperty("--ml-kb", "300px");
-    document.documentElement.classList.add("ml-kb-up"); // keyboard up (300px tall)
+    window.__kbdbg = { fin: 0, fout: 0 };
+    document.addEventListener("focusin", (e) => { if (e.target.classList?.contains("ml-chat-input")) window.__kbdbg.fin++; });
+    document.addEventListener("focusout", (e) => { if (e.target.classList?.contains("ml-chat-input")) window.__kbdbg.fout++; });
   });
-  await page.waitForTimeout(280); // let the bottom-transition settle before measuring
-  const up = await page.evaluate(() => {
-    const cs = getComputedStyle(document.querySelector(".ml-chat-input"));
-    return { position: cs.position, bottom: cs.bottom, tprop: cs.transitionProperty, tdur: cs.transitionDuration };
-  });
-  const after = await page.evaluate(() => {
+  await page.evaluate(() => document.querySelector(".ml-chat-input").focus());
+  // Wait for the lift to arm rather than assuming a budget — this harness's WebGL
+  // load can starve timers (which once hid a WORKING fix behind a 700ms timeout).
+  const armed = await page.waitForFunction(() => document.documentElement.classList.contains("ml-kb-up"), { timeout: 5000 })
+    .then(() => true).catch(() => false);
+  armed ? ok("lift arms on focus (no keyboard geometry needed)") : fail(`lift never armed: ${JSON.stringify(await page.evaluate(() => window.__mlKb?.()))}`);
+  await page.waitForTimeout(500); // let the glide transition settle before measuring
+  const lifted = await page.evaluate(() => {
     const el = document.querySelector(".ml-chat-input");
-    document.documentElement.classList.remove("ml-kb-up");
-    document.documentElement.style.removeProperty("--ml-kb");
-    const p = getComputedStyle(el).position; // keyboard down again
-    el.blur();
-    return p;
+    const cs = getComputedStyle(el), r = el.getBoundingClientRect();
+    const g = (s) => { const e = document.querySelector(s); return e ? Math.round(e.getBoundingClientRect().top) : null; };
+    return {
+      position: cs.position, tprop: cs.transitionProperty, tdur: cs.transitionDuration,
+      rectBottom: Math.round(r.bottom), rectTop: Math.round(r.top), width: Math.round(r.width),
+      kb: getComputedStyle(document.documentElement).getPropertyValue("--ml-kb").trim(),
+      up: document.documentElement.classList.contains("ml-kb-up"),
+      vh: window.innerHeight,
+      game: g("#game"), hud: g(".ml-hud"), tabs: g(".ml-tabrow"), sy: window.scrollY,
+      dbg: window.__kbdbg, focused: el.matches(":focus"), active: document.activeElement?.className,
+    };
   });
-  down !== "fixed" && up.position === "fixed" && after !== "fixed"
-    ? ok(`input lifts (fixed) only while keyboard up (${down}->${up.position}->${after})`)
-    : fail(`lift wrong: down=${down} up=${up.position} after=${after}`);
-  Math.abs(parseFloat(up.bottom) - 310) < 3
-    ? ok(`input rides just above the keyboard (bottom=${up.bottom} at kb=300)`) : fail(`input bottom ${up.bottom} != ~310px`);
-  /bottom|all/.test(up.tprop) && parseFloat(up.tdur) > 0
-    ? ok(`lift is animated, not snapped (transition ${up.tprop} ${up.tdur})`) : fail(`no bottom transition (${up.tprop} ${up.tdur})`);
+  // (2) the box actually left its bottom slot and sits ON SCREEN, clear of the keyboard
+  lifted.up && lifted.position === "fixed"
+    ? ok(`input detached from the HUD (fixed, --ml-kb=${lifted.kb})`)
+    : fail(`input did not detach: up=${lifted.up} position=${lifted.position} kb="${lifted.kb}" ` +
+           `focusEvents=${JSON.stringify(lifted.dbg)} focused=${lifted.focused} active="${lifted.active}"`);
+  const clearance = lifted.vh - lifted.rectBottom;
+  clearance > 200
+    ? ok(`input rides clear of the keyboard (${clearance}px above the viewport bottom)`)
+    : fail(`input only ${clearance}px above the bottom — it would sit under the keyboard`);
+  lifted.rectTop >= 0 && lifted.rectBottom <= lifted.vh
+    ? ok(`input is fully ON SCREEN (top=${lifted.rectTop} bottom=${lifted.rectBottom} of ${lifted.vh})`)
+    : fail(`input off screen: top=${lifted.rectTop} bottom=${lifted.rectBottom} vh=${lifted.vh}`);
+  lifted.width > 200 ? ok(`input keeps its width while floated (${lifted.width}px)`) : fail(`floated input too narrow (${lifted.width}px)`);
+  /bottom|all/.test(lifted.tprop) && parseFloat(lifted.tdur) > 0
+    ? ok(`lift is animated, not snapped (transition ${lifted.tprop} ${lifted.tdur})`) : fail(`no bottom transition (${lifted.tprop} ${lifted.tdur})`);
+  // (1) NOTHING else moved: same tops, same scroll, same viewport height
+  const moved = ["game", "hud", "tabs"].filter((k) => frameBefore[k] !== lifted[k]);
+  moved.length === 0 && lifted.sy === frameBefore.sy && lifted.vh === frameBefore.h
+    ? ok(`game/HUD unmoved while the input floats (game=${lifted.game} hud=${lifted.hud} tabs=${lifted.tabs}, scrollY=${lifted.sy})`)
+    : fail(`the game moved: ${moved.join(",")} shifted; scrollY ${frameBefore.sy}->${lifted.sy}; vh ${frameBefore.h}->${lifted.vh}`);
+  // blur → the box returns to its HUD slot
+  await page.evaluate(() => document.querySelector(".ml-chat-input").blur());
+  await page.waitForTimeout(150);
+  const restored = await page.evaluate(() => {
+    const cs = getComputedStyle(document.querySelector(".ml-chat-input"));
+    return { position: cs.position, up: document.documentElement.classList.contains("ml-kb-up") };
+  });
+  restored.position !== "fixed" && !restored.up
+    ? ok("input returns to the HUD when the box loses focus") : fail(`not restored on blur: ${JSON.stringify(restored)}`);
 
   // ── req 1 (system side) + req 6: on login the world logs system events
   //    immediately (time-of-day sync, the join "star"). Wait for one, then the

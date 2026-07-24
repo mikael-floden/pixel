@@ -776,25 +776,38 @@ function mk(tag: string, cls: string): HTMLElement {
   return e;
 }
 
+// Chat-input keyboard lift (see mountChatKeyboardLift).
+const KB_MIN = 80; // below this: no keyboard (address-bar-sized jitter)
+const KB_GUESS_FRAC = 0.45; // assumed keyboard height (fraction of the viewport)
 let kbInit = false;
 /** Detach ONLY the focused chat input and float it just above the phone keyboard,
- * gliding up as the keyboard opens (maintainer), while the world + HUD stay
- * EXACTLY put with the keyboard drawn on top of them.
+ * gliding up as the keyboard opens, while the world + HUD stay EXACTLY put with
+ * the keyboard drawn on top of them (maintainer).
  *
- * The mechanism is virtualKeyboard.overlaysContent = true: the keyboard OVERLAYS
- * the page, so Chromium never resizes the viewport NOR scrolls the game to reveal
- * the focused box (that scroll — from the default/resizes-visual behaviour — is
- * exactly what dragged the whole game up). Its `geometrychange` event reports the
- * keyboard rectangle, so we read boundingRect.height (a JS value — the CSS
- * env(keyboard-inset-*) vars did NOT populate on the maintainer's device) and
- * float only the chat input to bottom:--ml-kb. On the FIRST report we pin the
- * input at its resting spot (no jump), then raise --ml-kb next frame so the CSS
- * transition glides it up with the keyboard (smooth even if geometrychange fires
- * once). Enabled from the HUD (injectStyles), so it only affects in-game screens:
- * the select-screen name field keeps the browser's normal scroll-into-view. */
+ * TWO INDEPENDENT HALVES — the earlier attempts each got one and broke the other:
+ *
+ * 1. THE GAME MUST NOT MOVE. We never set `interactive-widget` in the viewport
+ *    meta: `resizes-visual` made Chrome PAN the visual viewport to reveal the
+ *    focused box, dragging the whole game up ("the entire game moves up"). The
+ *    default already overlays on the maintainer's phone; `overlaysContent = true`
+ *    reinforces it where the API exists. Once the box is floated ABOVE the
+ *    keyboard the browser has nothing to reveal, so it has no reason to pan.
+ *
+ * 2. THE INPUT MUST RISE — even when the browser won't say how tall the keyboard
+ *    is. That was the real bug: BOTH earlier tries gated the lift on a reported
+ *    height (vk.boundingRect, then env(keyboard-inset-height)) and his device
+ *    reports NEITHER, so the lift silently never ran. So we read EVERY source
+ *    (VirtualKeyboard rect, env() via a hidden probe, visual-viewport shrink),
+ *    POLL instead of trusting one event to fire — and if nothing reports within
+ *    KB_GUESS_MS on a touch device, we ESTIMATE the height and lift anyway. A
+ *    slightly-too-high box is a cosmetic miss; a hidden box is the actual bug.
+ *
+ * Mounted from the HUD (injectStyles), so it only affects in-game screens — the
+ * select-screen name field keeps the browser's normal scroll-into-view. */
 function mountChatKeyboardLift() {
   if (kbInit) return;
   kbInit = true;
+  const root = document.documentElement;
   const vk = (
     navigator as unknown as {
       virtualKeyboard?: {
@@ -804,49 +817,95 @@ function mountChatKeyboardLift() {
       };
     }
   ).virtualKeyboard;
-  if (!vk) return; // no VirtualKeyboard API → leave the input in the HUD (no lift)
-  vk.overlaysContent = true; // keyboard overlays; the browser never scrolls/reflows the game
-  const root = document.documentElement;
+  // Keyboard OVERLAYS the page where supported: the browser must never resize or
+  // scroll the game to reveal the focused box. (Absent → Chrome's default, which
+  // already overlays here; the lift below no longer depends on this API.)
+  if (vk) vk.overlaysContent = true;
   const vv = window.visualViewport;
+  // Hidden probe: the only way to READ env(keyboard-inset-height) from JS.
+  const probe = mk("i", "");
+  probe.setAttribute("aria-hidden", "true");
+  probe.style.cssText =
+    "position:fixed;left:0;bottom:0;width:0;pointer-events:none;visibility:hidden;" +
+    "height:env(keyboard-inset-height,0px)";
+  document.body.appendChild(probe);
+
   let input: HTMLElement | null = null; // the focused chat input
   let lifted = false; // currently floated above the keyboard
-  // Keyboard height from the VirtualKeyboard API (primary), OR a visual-viewport
-  // shrink (fallback) — some devices report one but not the other. overlaysContent
-  // (not this read) is what keeps the game from scrolling, so this max() is safe.
-  const kbHeight = () => Math.max(
-    0,
-    Math.round(vk.boundingRect.height),
-    vv ? Math.round(window.innerHeight - vv.height - vv.offsetTop) : 0,
-  );
+  let poll = 0;
+  let focusedAt = 0;
+
+  /** Keyboard height in CSS px from whichever source actually reports one. */
+  const reported = () =>
+    Math.max(
+      vk ? Math.round(vk.boundingRect.height) : 0,
+      Math.round(probe.getBoundingClientRect().height),
+      vv ? Math.round(window.innerHeight - vv.height - vv.offsetTop) : 0,
+    );
+  const kbHeight = () => {
+    const r = reported();
+    if (r >= KB_MIN) return r;
+    // Nothing reported — and on the maintainer's phone nothing ever is. Focusing a
+    // text box on a TOUCH device always opens the keyboard, so don't wait for a
+    // number that may never arrive: estimate and lift NOW (the box then rides the
+    // real height the moment any source does report one). Never on desktop.
+    return navigator.maxTouchPoints > 0 ? Math.round(window.innerHeight * KB_GUESS_FRAC) : 0;
+  };
   const setKb = (px: number) => root.style.setProperty("--ml-kb", `${px}px`);
-  const drop = () => { lifted = false; root.classList.remove("ml-kb-up"); setKb(0); };
+  const drop = () => {
+    lifted = false;
+    root.classList.remove("ml-kb-up");
+    setKb(0);
+  };
   const sync = () => {
     if (!input) return;
     const kb = kbHeight();
     if (!lifted) {
-      if (kb <= 80) return; // keyboard not up yet — stay in the HUD
+      if (kb < KB_MIN) return; // keyboard not up yet — stay in the HUD
       // Pin the input where it currently rests (fixed at the same spot, no jump)…
       const gap = Math.max(0, Math.round(window.innerHeight - input.getBoundingClientRect().bottom));
       setKb(Math.max(0, gap - 10));
       root.classList.add("ml-kb-up");
       lifted = true;
       // …then next frame raise it to the keyboard top so the transition rides up.
-      requestAnimationFrame(() => { if (lifted) setKb(kbHeight()); });
+      requestAnimationFrame(() => {
+        if (lifted) setKb(kbHeight());
+      });
+    } else if (kb >= KB_MIN) {
+      setKb(kb); // track the keyboard (and swap an estimate for a real report)
     } else {
-      setKb(kb);
-      if (kb <= 80) drop(); // keyboard dismissed while still focused → back to the HUD
+      drop(); // keyboard dismissed while still focused → back into the HUD
     }
   };
+  // QA probe: why the box did (or didn't) lift — the two shipped attempts failed
+  // precisely because nothing could see this state from outside.
+  (window as unknown as { __mlKb?: () => unknown }).__mlKb = () => ({
+    hasInput: !!input, lifted, reported: reported(), kb: kbHeight(),
+    touch: navigator.maxTouchPoints, sinceFocus: focusedAt ? Date.now() - focusedAt : null,
+    polling: poll !== 0,
+  });
   const isChatInput = (t: EventTarget | null) =>
     t instanceof HTMLElement && t.classList.contains("ml-chat-input");
   document.addEventListener("focusin", (e) => {
-    if (isChatInput(e.target)) { input = e.target as HTMLElement; sync(); }
+    if (!isChatInput(e.target)) return;
+    input = e.target as HTMLElement;
+    focusedAt = Date.now();
+    sync();
+    // POLL: geometrychange/visualViewport don't fire on every device (that's how
+    // the lift died twice) — a cheap timer while the box is focused can't miss.
+    window.clearInterval(poll);
+    poll = window.setInterval(sync, 100);
   });
   document.addEventListener("focusout", (e) => {
-    if (isChatInput(e.target)) { input = null; drop(); }
+    if (!isChatInput(e.target)) return;
+    input = null;
+    window.clearInterval(poll);
+    poll = 0;
+    drop();
   });
-  vk.addEventListener("geometrychange", sync);
-  vv?.addEventListener("resize", sync); // fallback signal (see kbHeight)
+  vk?.addEventListener("geometrychange", sync);
+  vv?.addEventListener("resize", sync);
+  vv?.addEventListener("scroll", sync);
 }
 
 let injected = false;
