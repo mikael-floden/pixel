@@ -859,7 +859,10 @@ function mountChatKeyboardLift() {
   addEventListener("pointerdown", (e) => {
     if ((e as PointerEvent).pointerType === "touch") hadTouch = true;
   }, { capture: true, passive: true });
-  const looksLikePhone = () => hadTouch || Math.min(screen.width, screen.height) <= 700;
+  const looksLikePhone = () =>
+    hadTouch ||
+    Math.min(screen.width, screen.height) <= 700 || // physical screen (survives desktop-site)
+    window.innerHeight >= window.innerWidth * 1.4;  // a tall portrait viewport (touch-free hedge)
 
   /** Keyboard height in CSS px from whichever source actually reports one. */
   const reported = () =>
@@ -894,34 +897,38 @@ function mountChatKeyboardLift() {
       barEl = null;
     }
   };
+  const armLift = () => {
+    if (!input) return;
+    // Pin the input where it currently rests (fixed at the same spot, no jump)…
+    const gap = Math.max(0, Math.round(window.innerHeight - input.getBoundingClientRect().bottom));
+    setKb(Math.max(0, gap - 10));
+    // …and hold its HUD row open at the height it has NOW: going position:fixed
+    // takes the box out of flow, which would otherwise collapse the row and slide
+    // the chat log's lines down. ONLY the input may move (maintainer).
+    barEl = input.parentElement;
+    if (barEl) barEl.style.height = `${Math.round(barEl.getBoundingClientRect().height)}px`;
+    root.classList.add("ml-kb-up");
+    lifted = true;
+    // …then next frame raise it to the keyboard top so the transition rides up.
+    requestAnimationFrame(() => {
+      if (lifted) setKb(kbHeight());
+    });
+  };
   const sync = () => {
     if (!input) return;
-    const kb = kbHeight();
-    if (!lifted) {
-      if (kb < KB_MIN) return; // keyboard not up yet — stay in the HUD
-      // Pin the input where it currently rests (fixed at the same spot, no jump)…
-      const gap = Math.max(0, Math.round(window.innerHeight - input.getBoundingClientRect().bottom));
-      setKb(Math.max(0, gap - 10));
-      // …and hold its HUD row open at the height it has NOW: going position:fixed
-      // takes the box out of flow, which would otherwise collapse the row and slide
-      // the chat log's lines down. ONLY the input may move (maintainer).
-      barEl = input.parentElement;
-      if (barEl) barEl.style.height = `${Math.round(barEl.getBoundingClientRect().height)}px`;
-      root.classList.add("ml-kb-up");
-      lifted = true;
-      // …then next frame raise it to the keyboard top so the transition rides up.
-      requestAnimationFrame(() => {
-        if (lifted) setKb(kbHeight());
-      });
-    } else if (sawReport && reported() < KB_MIN) {
-      // A source that DID report a keyboard now says it's gone → a real close.
+    const r = reported();
+    if (r >= KB_MIN) sawReport = true;
+    // Is the keyboard up right now? A real report is authoritative. A device that
+    // has NEVER reported one (the maintainer's, under desktop-site) can't tell, so
+    // assume it's up while a phone chat input holds focus. Once a device HAS
+    // reported (sawReport), trust it BOTH ways — so a real ▼/Back close drops the
+    // box AND the estimate never re-floats it (which flickered it down-then-up).
+    const open = r >= KB_MIN || (!sawReport && looksLikePhone());
+    if (open) {
+      if (!lifted) armLift();
+      else setKb(kbHeight()); // track the keyboard (swap an estimate for a real report)
+    } else if (lifted) {
       drop();
-    } else {
-      // Stay lifted while focused. On the maintainer's device NOTHING ever
-      // reports, so hold the estimate up the whole time (dropping only on blur)
-      // instead of flickering the box away on a transient 0 — that flicker, plus
-      // a stray report at dismissal, was why the box appeared only AFTER close.
-      setKb(kb);
     }
   };
   // QA probe: why the box did (or didn't) lift — the two shipped attempts failed
@@ -951,6 +958,14 @@ function mountChatKeyboardLift() {
     poll = 0;
     drop();
   });
+  // Android ▼/Back hides the keyboard WITHOUT blurring the field, and on a device
+  // that reports no keyboard height we can't detect that — the floated box would
+  // hover over the game with no keyboard beneath it. The user's next tap OUTSIDE
+  // the box means they're done: blur it (→ focusout → drop). Tapping the box
+  // itself keeps focus so you can keep typing.
+  addEventListener("pointerdown", (e) => {
+    if (lifted && input && e.target !== input) input.blur();
+  }, { capture: true, passive: true });
   vk?.addEventListener("geometrychange", sync);
   vv?.addEventListener("resize", sync);
   vv?.addEventListener("scroll", sync);

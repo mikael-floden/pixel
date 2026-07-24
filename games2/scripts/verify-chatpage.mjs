@@ -192,6 +192,23 @@ try {
   restored.position !== "fixed" && !restored.up
     ? ok("input returns to the HUD when the box loses focus") : fail(`not restored on blur: ${JSON.stringify(restored)}`);
 
+  // A tap OUTSIDE the floating box retires it — the only way to hide the box on a
+  // no-geometry device after the keyboard is dismissed with ▼/Back (which doesn't
+  // blur). Re-focus, confirm it floats, then pointerdown elsewhere → it drops.
+  await page.evaluate(() => document.querySelector(".ml-chat-input").focus());
+  await page.waitForFunction(() => document.documentElement.classList.contains("ml-kb-up"), { timeout: 5000 }).catch(() => {});
+  await page.evaluate(() => {
+    const t = document.querySelector("#game") || document.body;
+    t.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, pointerType: "touch" }));
+  });
+  await page.waitForTimeout(200);
+  const outside = await page.evaluate(() => ({
+    up: document.documentElement.classList.contains("ml-kb-up"),
+    focused: document.querySelector(".ml-chat-input").matches(":focus"),
+  }));
+  !outside.up && !outside.focused
+    ? ok("a tap outside the box retires the float (Android ▼/Back has no blur)") : fail(`outside tap didn't retire: ${JSON.stringify(outside)}`);
+
   // ── req 1 (system side) + req 6: on login the world logs system events
   //    immediately (time-of-day sync, the join "star"). Wait for one, then the
   //    FIRST row must be a date divider (so the first message shows its date). ──
