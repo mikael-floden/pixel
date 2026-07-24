@@ -192,11 +192,12 @@ function injectStyles() {
      margin-top drops the row toward the Energy bar's NUMBER line: the Energy bar
      has its value UNDER the gauge, so the gold — a single line — must sink past
      the gauge to read as "on the same line" as that text (maintainer 2026-07-24:
-     "account for that height as well"). Tuned on his phone view to sit a HAIR
-     ABOVE that number line — sitting exactly on it read a touch too low ("a tiny
-     bit up again, not as much as the original placement"). */
+     "account for that height as well"). Tuned on his phone view to sit ABOVE
+     that number line, around the Energy bar's vertical centre — on the line, and
+     even a hair above it, both read too low ("a tiny bit up again", then "a
+     little bit higher up still"). Still well below the original gauge-top spot. */
   .ml-gold-row{display:flex;justify-content:flex-end;align-items:center;gap:10px;
-    width:${w}px;margin-top:22px}
+    width:${w}px;margin-top:16px}
   .ml-gold-num{font:700 ${NUM_PX}px system-ui,sans-serif;letter-spacing:.5px;
     color:#f0e2c6;text-shadow:0 1px 2px #000,0 0 3px #000;white-space:nowrap}
   .ml-gold-icon{height:36px;width:auto;image-rendering:pixelated;

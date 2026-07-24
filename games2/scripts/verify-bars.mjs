@@ -94,10 +94,11 @@ try {
     // the same line" as that text — landing a HAIR ABOVE the number line
     // (maintainer 2026-07-24: exactly on it read a touch too low). So the gold is
     // well below the EP gauge top, and its centre is just above / at the EP number.
-    g.goldRow.t > g.epRow.t + 8 ? ok(`gold row dropped below the Energy gauge top (${g.goldRow.t} > ${g.epRow.t})`) : fail(`gold row not dropped: top ${g.goldRow.t} vs Energy gauge top ${g.epRow.t}`);
-    (g.goldMid <= g.epNumMid + 3 && g.goldMid >= g.epNumMid - 16)
-      ? ok(`gold sits by the Energy number line, a hair above (${g.goldMid} vs ${g.epNumMid})`)
-      : fail(`gold centre ${g.goldMid} not near/above Energy number ${g.epNumMid}`);
+    const epRowMid = Math.round((g.epRow.t + g.epRow.b) / 2);
+    g.goldRow.t > g.epRow.t + 4 ? ok(`gold row dropped below the Energy gauge top (${g.goldRow.t} > ${g.epRow.t})`) : fail(`gold row not dropped: top ${g.goldRow.t} vs Energy gauge top ${g.epRow.t}`);
+    (g.goldMid <= g.epNumMid + 4 && g.goldMid >= epRowMid - 8)
+      ? ok(`gold sits between the Energy row centre and its number line (${g.goldMid}; row mid ${epRowMid}, num ${g.epNumMid})`)
+      : fail(`gold centre ${g.goldMid} outside [${epRowMid - 8}, ${g.epNumMid + 4}]`);
   }
 
   if (errors.length) fail(`page errors: ${errors.join(" | ")}`);
