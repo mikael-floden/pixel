@@ -880,6 +880,8 @@ const float FOG_D0 = 11.0;  // ONSET (cells): distance fog starts this far out. 
 const float FOG_DW = 1.2;   // width of each cel band past the onset (cells) — smaller = the
                             // distance haze on other levels INTENSIFIES faster (tighter bands).
 const float FOG_MAX = 0.78; // opacity of the farthest band (the cull edge)
+const float FOG_DEEP_MAX  = 1.0;  // opacity ceiling for the DEEP zone (elevation past band saturation)
+const float FOG_DEEP_RATE = 0.5; // thickening speed per overflow band once the cel bands max out
 const float DRAPE_RS = 2.5; // drape blur half-width along the col+row fold axis (s-units)
 const float ELEV_STEP = 0.5; // fog BANDS added per LEVEL of player↔surface separation past the
                              // dead-zone. 0.5 ⇒ +1 band every ~2 levels (gentle Z ramp — maintainer
@@ -1048,7 +1050,8 @@ void main() {
   // the distance band. Both channels fire on ALL ground; the per-level TRANSPARENCY (below) is
   // what keeps the player's own level subtle — a soft fade, NOT the old hard gate (maintainer
   // took that back).
-  float band = clamp(distBand + elevBand, 0.0, BANDS - 1.0);
+  float rawBand = distBand + elevBand;           // UNCLAMPED: elevBand grows past the cap for deep |Δlevel|
+  float band = clamp(rawBand, 0.0, BANDS - 1.0); // downstream bf/colour/levelFade unchanged
   float bf = band / (BANDS - 1.0);
   // PER-LEVEL TRANSPARENCY (maintainer's knob): scale the fog OPACITY by |Δlevel| — faded to
   // SAME_LEVEL_FOG (10%) on the player's OWN level, ramping linearly (~6%/level) back to FULL by
@@ -1056,7 +1059,17 @@ void main() {
   // touch more … and 15+ levels away reads at full strength (a bridge high in the air).
   float levelFade = clamp(SAME_LEVEL_FOG + (1.0 - SAME_LEVEL_FOG) * (dLev / LEVEL_FADE_SPAN),
                           SAME_LEVEL_FOG, 1.0);
-  float a = bf * FOG_MAX * uFog * levelFade;
+  // DEEP-THICKEN: the cel bands saturate at BANDS-1, so the z-elevation fog stopped densifying past
+  // that point (maintainer 2026-07-24: a deep gorge/tall wall should keep thickening below the max-out
+  // line). Capture the overflow past the cap and push OPACITY from FOG_MAX toward FOG_DEEP_MAX. distBand
+  // is individually clamped to [0,BANDS-1] (above), so overflow is driven ONLY by elevation — flat ground
+  // maxed by horizontal distance is untouched. The ternary keeps deep an EXACT 0 at/below saturation, so
+  // everything up to the max-out line is byte-identical (no dependence on exp(0) rounding) and there's no
+  // seam. Colour stays FOG_FAR (bf clamped) — only opacity thickens. levelFade still governs.
+  float overflow = max(0.0, rawBand - (BANDS - 1.0));
+  float deep = overflow > 0.0 ? (1.0 - exp(-overflow * FOG_DEEP_RATE)) : 0.0;
+  float density = mix(bf * FOG_MAX, FOG_DEEP_MAX, deep); // == bf*FOG_MAX where deep==0
+  float a = density * uFog * levelFade;
   if (a <= 0.002) { gl_FragColor = vec4(0.0); return; }
   vec3 col = mix(FOG_NEAR, FOG_FAR, bf); // same palette both directions
   // Dim with the night, but keep a floor so the tones still read in the dark.
