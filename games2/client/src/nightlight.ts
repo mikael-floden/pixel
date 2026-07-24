@@ -1044,7 +1044,14 @@ void main() {
   // slide. faceMix=0 ⇒ ceil(elevCont-ELEV_EPS) == the old expression float-for-float, so flats and
   // the cliff-top edge highlight are byte-identical; only the mid-face steps are smoothed.
   float elevCont = max(0.0, dLev - ELEV_D0) * ELEV_STEP;                    // smooth pre-snap ramp (0 in the dead-zone)
-  float elevBand = mix(ceil(elevCont - ELEV_EPS), elevCont, faceMix);
+  // NO ceil-snap (maintainer 2026-07-24): the elevation band is the SMOOTH elevCont EVERYWHERE. The old
+  // mix(ceil(elevCont-ELEV_EPS), elevCont, faceMix) snapped the flat mountain TOP (faceMix=0) up a fraction of a
+  // band above the smooth face (faceMix=1), which drew a HARD step in band/a right at the cliff-top rim — the
+  // "sharp line" (a yellow->white jump the maintainer marked on the fog debug heatmap) while every other transition
+  // interpolated. Using elevCont on the top too makes it grade into the face identically (proven: the a-map's
+  // vertical step at the rim vanished). Same-level flats are byte-identical (elevCont=0 in the dead-zone), the face
+  // body is byte-identical (it was already elevCont at faceMix=1), and the distBand distance-rings are untouched.
+  float elevBand = elevCont;
 
   // COMBINE + CEL-SNAP. Additive (NOT max) so a mid-range edge always adds its step on top of
   // the distance band. Both channels fire on ALL ground; the per-level TRANSPARENCY (below) is
