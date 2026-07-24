@@ -683,6 +683,11 @@ export class HudBar {
   private renderChat(toBottom: boolean) {
     const log = this.chatLogEl;
     if (!log) return;
+    // Follow the newest only when forced (on open) or already near the bottom;
+    // otherwise HOLD the reader's position across the rebuild. `textContent=""`
+    // snaps scrollTop to 0, so capture it first and restore it — new lines are
+    // appended at the bottom, so the same offset keeps the same view in sight.
+    const keep = log.scrollTop;
     const nearBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 48;
     log.textContent = "";
     let lastDay = "";
@@ -704,7 +709,7 @@ export class HudBar {
       line.append(time, who, document.createTextNode(m.text));
       log.appendChild(line);
     }
-    if (toBottom || nearBottom) log.scrollTop = log.scrollHeight;
+    log.scrollTop = toBottom || nearBottom ? log.scrollHeight : keep;
   }
 }
 
@@ -938,7 +943,7 @@ function injectStyles() {
      a top rule with a centred label, here the real-clock date (YYYY-MM-DD). */
   .ml-chat-day{border-top:2px solid rgba(0,0,0,.28);padding-top:14px;margin-top:6px;
     color:#f0e2c6;font:700 18px system-ui,sans-serif;font-size:min(18px,1.837vw);
-    letter-spacing:1px;text-transform:uppercase;text-align:center}
+    letter-spacing:1px;text-transform:uppercase;text-align:center;text-shadow:none}
   .ml-chat-line{overflow-wrap:anywhere}
   /* fixed-width time so names line up; muted so it doesn't fight the message */
   .ml-chat-time{color:#9a9aa8;margin-right:8px;font-variant-numeric:tabular-nums}
@@ -986,7 +991,9 @@ function injectStyles() {
     .ml-amb-check{width:24px;height:24px}
     .ml-chat{gap:8px}
     .ml-chat-log{font-size:15px;gap:3px}
-    .ml-chat-day{padding-top:8px;font-size:13px}
+    /* match .ml-amb-title's compact size (padding-top:8px;font-size:14px) so the
+       day divider still looks like the Settings header on short viewports */
+    .ml-chat-day{padding-top:8px;font-size:14px}
     .ml-chat-input{font-size:15px;padding:8px 12px}
   }`;
   const s = document.createElement("style");

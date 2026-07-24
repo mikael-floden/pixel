@@ -125,7 +125,9 @@ try {
   const look = await page.evaluate(() => {
     const key = (el) => {
       const c = getComputedStyle(el);
-      return { bt: c.borderTopWidth, bs: c.borderTopStyle, ta: c.textAlign, tt: c.textTransform, ls: c.letterSpacing };
+      // include text-shadow: .ml-chat-log sets one that inherits, so the divider
+      // must reset it to truly match the (shadowless) Settings header.
+      return { bt: c.borderTopWidth, bs: c.borderTopStyle, ta: c.textAlign, tt: c.textTransform, ls: c.letterSpacing, sh: c.textShadow };
     };
     const day = document.querySelector(".ml-chat-day");
     const title = document.querySelector(".ml-amb-title");
@@ -133,7 +135,7 @@ try {
   });
   if (!look) fail("could not compare divider styles");
   else {
-    const same = ["bt", "bs", "ta", "tt", "ls"].filter((k) => look.day[k] !== look.title[k]);
+    const same = ["bt", "bs", "ta", "tt", "ls", "sh"].filter((k) => look.day[k] !== look.title[k]);
     same.length === 0 ? ok(`divider matches Settings header style (${JSON.stringify(look.day)})`)
       : fail(`divider style differs on ${same.join(",")}: ${JSON.stringify(look)}`);
   }
@@ -176,6 +178,19 @@ try {
   cap.count === 1000 ? ok(`history capped at exactly 1000 lines`) : fail(`line count ${cap.count} (want 1000)`);
   !cap.hasFirst ? ok("oldest lines dropped past the cap") : fail("oldest line survived the cap");
   cap.hasBulkLast && !cap.hasBulk0 ? ok("newest kept, oldest bulk dropped") : fail(`cap window wrong (last=${cap.hasBulkLast} bulk0=${cap.hasBulk0})`);
+
+  // ── scroll preservation: scrolled UP reading history, an arriving line must
+  //    NOT yank the view to the top (the rebuild wipe resets scrollTop to 0). ──
+  const scr = await page.evaluate(() => {
+    const log = document.querySelector(".ml-chat-log");
+    log.scrollTop = 300;              // 1000 lines → well within range, not near bottom
+    const before = log.scrollTop, max = log.scrollHeight - log.clientHeight;
+    window.__ml.chatPush("Zed", "scroll-preserve probe", Date.now()); // renderChat(false)
+    return { before, after: log.scrollTop, max };
+  });
+  scr.before > 100 && scr.max > 400 && Math.abs(scr.after - scr.before) < 60
+    ? ok(`scroll position held on a new line (${scr.before} -> ${scr.after})`)
+    : fail(`scroll not held (before=${scr.before} after=${scr.after} max=${scr.max})`);
 
   // ── req 7/8: type in the box + Enter → it round-trips through the server
   //    back into the log (proves the input actually sends). ──
