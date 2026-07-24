@@ -803,13 +803,19 @@ let kbInit = false;
  *    keyboard the browser has nothing to reveal, so it has no reason to pan.
  *
  * 2. THE INPUT MUST RISE — even when the browser won't say how tall the keyboard
- *    is. That was the real bug: BOTH earlier tries gated the lift on a reported
- *    height (vk.boundingRect, then env(keyboard-inset-height)) and his device
- *    reports NEITHER, so the lift silently never ran. So we read EVERY source
- *    (VirtualKeyboard rect, env() via a hidden probe, visual-viewport shrink),
- *    POLL instead of trusting one event to fire — and if nothing reports within
- *    KB_GUESS_MS on a touch device, we ESTIMATE the height and lift anyway. A
- *    slightly-too-high box is a cosmetic miss; a hidden box is the actual bug.
+ *    is. That was the real bug: earlier tries gated the lift on a reported height
+ *    (vk.boundingRect, then env(keyboard-inset-height)) and his phone reports
+ *    NEITHER — the keyboard overlays and shrinks no viewport JS can read. So we
+ *    read EVERY source (VirtualKeyboard rect, env() via a hidden probe,
+ *    visual-viewport shrink) and POLL rather than trust one event; and when a
+ *    touch device reports nothing we ESTIMATE the height and lift anyway (a
+ *    slightly-too-high box is cosmetic; a hidden box is the actual bug).
+ *
+ * 3. THE BOX MUST CLEAR THE FRAME. Floating it just above the keyboard dropped it
+ *    into the frame's bottom-rail art (maintainer: "too low, renders under the
+ *    frame"). So kbHeight() floors --ml-kb so the box lands above the rail's
+ *    visible top, and the on-screen chat log is pushed up above it — see kbHeight's
+ *    railFloor and the .ml-kb-up CSS.
  *
  * Mounted from the HUD (injectStyles), so it only affects in-game screens — the
  * select-screen name field keeps the browser's normal scroll-into-view. */
@@ -845,24 +851,15 @@ function mountChatKeyboardLift() {
   let focusedAt = 0;
   let sawReport = false; // a source has, at least once, given a real keyboard height
 
-  // "Is this a phone (so focusing a text box opens a soft keyboard)?" — the crux
-  // of the last failure. Chrome's "Request Desktop Site" masquerades as a mouse
-  // desktop: navigator.maxTouchPoints reads 0 and pointer:coarse/hover:none flip,
-  // so gating the estimate on those hid the box on the maintainer's phone. TWO
-  // signals that DO survive desktop-site: (1) a real touch event still fires;
-  // (2) screen.width stays the PHYSICAL screen (≈393 on his phone) — the very
-  // value uiscale.ts already trusts for the desktop-site zoom. A real desktop has
-  // maxTouchPoints 0, no touch events, and a screen ≥ ~768 short-side, so it
-  // never floats the box.
-  let hadTouch = navigator.maxTouchPoints > 0;
-  addEventListener("touchstart", () => { hadTouch = true; }, { capture: true, passive: true });
-  addEventListener("pointerdown", (e) => {
-    if ((e as PointerEvent).pointerType === "touch") hadTouch = true;
-  }, { capture: true, passive: true });
-  const looksLikePhone = () =>
-    hadTouch ||
-    Math.min(screen.width, screen.height) <= 700 || // physical screen (survives desktop-site)
-    window.innerHeight >= window.innerWidth * 1.4;  // a tall portrait viewport (touch-free hedge)
+  // A REAL touch device (finger keyboard is coming). The maintainer runs the
+  // game in normal mobile mode now, where this is reliable — it only reads 0 /
+  // false under Chrome's "Request Desktop Site", which the maintainer has
+  // accepted won't get the lift ("if that's what they want they should blame
+  // themselves"). So this is exactly the right gate: it floats the box on every
+  // phone, and leaves a real mouse desktop (no keyboard) alone.
+  const touchDevice = () =>
+    (navigator.maxTouchPoints || 0) > 0 ||
+    window.matchMedia?.("(pointer: coarse)").matches === true;
 
   /** Keyboard height in CSS px from whichever source actually reports one. */
   const reported = () =>
@@ -871,20 +868,28 @@ function mountChatKeyboardLift() {
       Math.round(probe.getBoundingClientRect().height),
       vv ? Math.round(window.innerHeight - vv.height - vv.offsetTop) : 0,
     );
+  // The box floats at --ml-kb + 10; to CLEAR the frame's bottom rail it must land
+  // above the rail's visible top (--hud-h up from the bottom), so --ml-kb is
+  // floored at hud-h + 2 (⇒ box bottom ≥ hud-h + 12). Flooring HERE (not in CSS)
+  // keeps the initial arm at the box's resting spot, so it GLIDES up from rest
+  // instead of snapping to the rail (maintainer: "pressed up by the keyboard… not
+  // snap"). Read live so it tracks the frame across resizes.
+  const railFloor = () =>
+    Math.round(parseFloat(getComputedStyle(root).getPropertyValue("--hud-h")) || 0) + 2;
   const kbHeight = () => {
     const r = reported();
-    if (r >= KB_MIN) { sawReport = true; return r; }
-    // Nothing reported — and on the maintainer's phone nothing EVER is. Focusing a
-    // text box on a phone always opens the keyboard, so don't wait for a number
-    // that may never come: ESTIMATE and lift now (the box then rides the real
-    // height the instant any source reports one). Gated on looksLikePhone(), so a
-    // mouse desktop never floats it.
-    if (!looksLikePhone()) return 0;
+    if (r >= KB_MIN) { sawReport = true; return Math.max(r, railFloor()); }
+    // Nothing reported — and on the maintainer's phone nothing EVER is (the
+    // keyboard overlays the page without shrinking any viewport JS can read). So
+    // ESTIMATE the height from THIS device's real innerHeight/innerWidth. The
+    // caller (sync) only asks once it knows a keyboard is coming (touchDevice),
+    // so this never floats a mouse desktop.
     const ih = window.innerHeight;
-    return Math.min(
+    const est = Math.min(
       Math.round(ih * KB_GUESS_MAX_FRAC),
       Math.max(Math.round(ih * KB_GUESS_FRAC), Math.round(window.innerWidth * KB_GUESS_W_FRAC)),
     );
+    return Math.max(est, railFloor());
   };
   const setKb = (px: number) => root.style.setProperty("--ml-kb", `${px}px`);
   let barEl: HTMLElement | null = null; // the HUD row the input floats out of
@@ -919,11 +924,14 @@ function mountChatKeyboardLift() {
     const r = reported();
     if (r >= KB_MIN) sawReport = true;
     // Is the keyboard up right now? A real report is authoritative. A device that
-    // has NEVER reported one (the maintainer's, under desktop-site) can't tell, so
-    // assume it's up while a phone chat input holds focus. Once a device HAS
-    // reported (sawReport), trust it BOTH ways — so a real ▼/Back close drops the
-    // box AND the estimate never re-floats it (which flickered it down-then-up).
-    const open = r >= KB_MIN || (!sawReport && looksLikePhone());
+    // has NEVER reported one (the maintainer's phone: the keyboard overlays and
+    // shrinks nothing) can't tell — but this handler only runs while the chat box
+    // HOLDS FOCUS, and the only way to focus it is to TAP it, which on a touch
+    // device always opens the keyboard. So on a touch device that has never
+    // reported, ASSUME it's up and float. Once a device HAS reported (sawReport),
+    // trust it BOTH ways — so a real ▼/Back close drops the box AND the estimate
+    // never re-floats it (which flickered it down-then-up).
+    const open = r >= KB_MIN || (!sawReport && touchDevice());
     if (open) {
       if (!lifted) armLift();
       else setKb(kbHeight()); // track the keyboard (swap an estimate for a real report)
@@ -935,7 +943,8 @@ function mountChatKeyboardLift() {
   // precisely because nothing could see this state from outside.
   (window as unknown as { __mlKb?: () => unknown }).__mlKb = () => ({
     hasInput: !!input, lifted, reported: reported(), kb: kbHeight(),
-    touch: navigator.maxTouchPoints, hadTouch, phone: looksLikePhone(),
+    touch: navigator.maxTouchPoints, touchDevice: touchDevice(),
+    innerH: window.innerHeight, innerW: window.innerWidth,
     screen: [screen.width, screen.height], sawReport,
     sinceFocus: focusedAt ? Date.now() - focusedAt : null, polling: poll !== 0,
   });
@@ -1155,16 +1164,30 @@ function injectStyles() {
   /* Phone keyboard: the world + HUD stay put (virtualKeyboard.overlaysContent —
      the keyboard is drawn on top, the browser doesn't scroll/reflow the game).
      While a chat input is focused and the keyboard is up (.ml-kb-up, driven by
-     mountChatKeyboardLift from the keyboard's boundingRect), float ONLY that input
-     to just above the keyboard — bottom tracks --ml-kb (the live keyboard height)
-     and the transition GLIDES it up with the keyboard, not a snap. Its left/right
-     match the in-HUD input inset, so it rises straight up without changing width.
-     Never fires on desktop (no keyboard → --ml-kb stays 0, the class never sets). */
+     mountChatKeyboardLift), float ONLY that input up so you can SEE what you type
+     (maintainer). Its left/right match the in-HUD input inset, so it rises straight
+     up without changing width, and the transition GLIDES it up, not a snap.
+
+     WHERE it lands: --ml-inputlift = --ml-kb + 10 (just above the keyboard).
+     --ml-kb itself is floored (kbHeight, JS) so the box always clears the frame's
+     bottom rail — at --ml-kb+10 alone it sat DOWN IN the rail art (maintainer:
+     "too low, renders under the frame"). The on-screen chat log is pushed up above
+     it (.ml-kb-up .ml-chatlog below) to make room. Never fires on desktop (no
+     keyboard → --ml-kb stays 0, the class never sets). */
+  :root{--ml-inputlift:calc(var(--ml-kb,0px) + 10px)}
   .ml-kb-up .ml-chat-input:focus{position:fixed;z-index:50;width:auto;
     left:calc(var(--ml-page-pad,44px) + min(40px,5vw));
     right:calc(var(--ml-page-pad,44px) + min(40px,5vw));
-    bottom:calc(var(--ml-kb,0px) + 10px);box-shadow:0 -2px 16px rgba(0,0,0,.55);
+    bottom:var(--ml-inputlift);box-shadow:0 -2px 16px rgba(0,0,0,.55);
     transition:bottom .15s ease-out}
+  /* The on-screen "game-view" chat log (chat.ts .ml-chatlog) is pushed up above
+     the floated input box so the box doesn't cover it (maintainer: "translate the
+     game-view chat higher up to make room for the text-input"). Two-class
+     specificity beats chat.ts's .ml-chatlog rule; only active while lifted.
+     --ml-inputlift + the box height + a gap = the box's top edge in LAYOUT px;
+     .ml-chatlog carries the compensating uiZoom (uiscale.ts) so its bottom is in
+     PRE-zoom space — divide by --ml-uizoom, matching chat.ts's own bottom calc. */
+  .ml-kb-up .ml-chatlog{bottom:calc((var(--ml-inputlift) + 64px) / var(--ml-uizoom, 1))}
   /* Narrower-than-design viewports: the tab plates already shrink via the
      --ml-tab formula, but the ICON files (uniform 96px 2x bakes) overflow
      once a tab drops under 96px — with six tabs that's below a ~780px

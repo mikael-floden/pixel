@@ -53,12 +53,14 @@ try {
     isMobile: true, hasTouch: true, deviceScaleFactor: 2,
     timezoneId: "Europe/Stockholm", // deterministic day boundaries for the divider test
   });
-  // Reproduce the maintainer's REAL condition: Chrome "Request Desktop Site"
-  // reports navigator.maxTouchPoints === 0 (a mouse desktop), which is what hid
-  // the keyboard lift on his phone. Force it 0 for the whole session so the lift
-  // MUST work via the physical screen size (screen.width 393), not maxTouchPoints.
-  // Without this override the gate passed while his device failed.
-  await ctx.addInitScript(() => Object.defineProperty(navigator, "maxTouchPoints", { get: () => 0, configurable: true }));
+  // Reproduce the maintainer's REAL condition (normal mobile mode, "Request
+  // Desktop Site" OFF — he accepts the lift not working under desktop-site): a
+  // TOUCH device (maxTouchPoints > 0) whose soft keyboard OVERLAYS the page and
+  // shrinks NO viewport JS can read (no vk.boundingRect, no visualViewport
+  // shrink). That blind spot is the whole difficulty — the lift MUST arm from the
+  // touch signal alone and ESTIMATE the height. Force a realistic touch count so
+  // the gate is deterministic regardless of Playwright's default.
+  await ctx.addInitScript(() => Object.defineProperty(navigator, "maxTouchPoints", { get: () => 5, configurable: true }));
   const page = await ctx.newPage();
   await enter(page, "ring_test");
   await openChat(page);
@@ -98,22 +100,22 @@ try {
   const meta = await page.evaluate(() => document.querySelector('meta[name=viewport]')?.getAttribute("content") || "");
   !/interactive-widget/.test(meta)
     ? ok("viewport meta doesn't force interactive-widget (that panned the whole game)") : fail(`viewport meta forces interactive-widget: ${meta}`);
-  // This harness now reproduces the maintainer's phone under "Request Desktop
-  // Site": NO keyboard rect from any source AND navigator.maxTouchPoints === 0
-  // (the very thing that hid the lift). The lift MUST still work — via the
-  // physical screen size — or this fails, unlike the old gate.
+  // This harness reproduces the maintainer's phone in normal mobile mode: a touch
+  // device (maxTouchPoints>0) with NO keyboard rect from ANY source (vk + visual
+  // viewport both silent). The lift MUST arm from the touch signal + estimate the
+  // height, or this fails.
   const rep = await page.evaluate(() => ({
     vk: navigator.virtualKeyboard ? navigator.virtualKeyboard.boundingRect.height : null,
     shrink: window.visualViewport ? Math.round(window.innerHeight - window.visualViewport.height) : null,
-    touch: navigator.maxTouchPoints, phone: window.__mlKb ? window.__mlKb().phone : null,
+    touch: navigator.maxTouchPoints, touchDevice: window.__mlKb ? window.__mlKb().touchDevice : null,
     screen: [screen.width, screen.height],
   }));
-  rep.touch === 0
-    ? ok(`reproducing desktop-site: maxTouchPoints=0, no keyboard rect (vk=${rep.vk} shrink=${rep.shrink}) — the device's blind spot`)
-    : fail(`harness not reproducing desktop-site: maxTouchPoints=${rep.touch} (override failed)`);
-  rep.phone === true
-    ? ok(`still detected as a phone via screen ${JSON.stringify(rep.screen)} (survives desktop-site)`)
-    : fail(`phone detection failed with maxTouchPoints=0 — the lift would not arm (screen=${JSON.stringify(rep.screen)})`);
+  rep.touch > 0 && !rep.vk && !rep.shrink
+    ? ok(`reproducing mobile mode: touch device (maxTouchPoints=${rep.touch}), no keyboard rect (vk=${rep.vk} shrink=${rep.shrink}) — the device's blind spot`)
+    : fail(`harness not reproducing mobile mode: touch=${rep.touch} vk=${rep.vk} shrink=${rep.shrink}`);
+  rep.touchDevice === true
+    ? ok(`detected as a touch device (lift arms without any keyboard geometry)`)
+    : fail(`touch detection failed — the lift would not arm (touch=${rep.touch})`);
 
   // Geometry of the game BEFORE focus, so we can prove nothing moved after.
   // …including the CHAT PAGE's own boxes: floating the input out of flow used to
@@ -121,9 +123,11 @@ try {
   const frameBefore = await page.evaluate(() => {
     const r = (s) => { const e = document.querySelector(s); return e ? Math.round(e.getBoundingClientRect().top) : null; };
     const h = (s) => { const e = document.querySelector(s); return e ? Math.round(e.getBoundingClientRect().height) : null; };
+    const cssBottom = (s) => { const e = document.querySelector(s); return e ? Math.round(parseFloat(getComputedStyle(e).bottom)) : null; };
     const first = document.querySelector(".ml-chat-log > *");
     return { game: r("#game"), hud: r(".ml-hud"), tabs: r(".ml-tabrow"), h: window.innerHeight, sy: window.scrollY,
              barH: h(".ml-chat-inputbar"), logH: h(".ml-chat-log"),
+             chatlogBottom: cssBottom(".ml-chatlog"), // the on-screen "game-view" chat overlay
              firstLine: first ? Math.round(first.getBoundingClientRect().top) : null };
   });
 
@@ -145,16 +149,20 @@ try {
     const el = document.querySelector(".ml-chat-input");
     const cs = getComputedStyle(el), r = el.getBoundingClientRect();
     const g = (s) => { const e = document.querySelector(s); return e ? Math.round(e.getBoundingClientRect().top) : null; };
+    const rootCss = getComputedStyle(document.documentElement);
+    const hudH = Math.round(parseFloat(rootCss.getPropertyValue("--hud-h")) || 0);
     return {
       position: cs.position, tprop: cs.transitionProperty, tdur: cs.transitionDuration,
       rectBottom: Math.round(r.bottom), rectTop: Math.round(r.top), width: Math.round(r.width),
-      kb: getComputedStyle(document.documentElement).getPropertyValue("--ml-kb").trim(),
+      kb: rootCss.getPropertyValue("--ml-kb").trim(),
+      hudH, railTop: window.innerHeight - hudH, // the frame's VISIBLE bottom-rail top
       up: document.documentElement.classList.contains("ml-kb-up"),
       vh: window.innerHeight,
       game: g("#game"), hud: g(".ml-hud"), tabs: g(".ml-tabrow"), sy: window.scrollY,
       dbg: window.__kbdbg, focused: el.matches(":focus"), active: document.activeElement?.className,
       barH: (() => { const e = document.querySelector(".ml-chat-inputbar"); return e ? Math.round(e.getBoundingClientRect().height) : null; })(),
       logH: (() => { const e = document.querySelector(".ml-chat-log"); return e ? Math.round(e.getBoundingClientRect().height) : null; })(),
+      chatlogBottom: (() => { const e = document.querySelector(".ml-chatlog"); return e ? Math.round(parseFloat(getComputedStyle(e).bottom)) : null; })(),
       firstLine: (() => { const e = document.querySelector(".ml-chat-log > *"); return e ? Math.round(e.getBoundingClientRect().top) : null; })(),
     };
   });
@@ -170,6 +178,18 @@ try {
   lifted.rectTop >= 0 && lifted.rectBottom <= lifted.vh
     ? ok(`input is fully ON SCREEN (top=${lifted.rectTop} bottom=${lifted.rectBottom} of ${lifted.vh})`)
     : fail(`input off screen: top=${lifted.rectTop} bottom=${lifted.rectBottom} vh=${lifted.vh}`);
+  // (3) the box CLEARS the frame's bottom rail — it must not sit down IN the rail
+  //     art (maintainer: "too low, renders under the frame"). Its bottom edge is
+  //     at least a hair above the visible rail top.
+  lifted.railTop != null && lifted.rectBottom <= lifted.railTop + 2
+    ? ok(`input clears the frame's bottom rail (box bottom=${lifted.rectBottom} ≤ railTop=${lifted.railTop})`)
+    : fail(`input sits in the frame rail: box bottom=${lifted.rectBottom} vs railTop=${lifted.railTop} (hudH=${lifted.hudH})`);
+  // (4) the on-screen "game-view" chat log is pushed UP above the floated box so
+  //     the box doesn't cover it (maintainer: "translate the game-view chat higher
+  //     up"). Its CSS bottom rises when .ml-kb-up is active.
+  frameBefore.chatlogBottom != null && lifted.chatlogBottom != null && lifted.chatlogBottom > frameBefore.chatlogBottom + 20
+    ? ok(`game-view chat log lifted to make room (bottom ${frameBefore.chatlogBottom} -> ${lifted.chatlogBottom})`)
+    : fail(`game-view chat log not lifted: bottom ${frameBefore.chatlogBottom} -> ${lifted.chatlogBottom}`);
   lifted.width > 200 ? ok(`input keeps its width while floated (${lifted.width}px)`) : fail(`floated input too narrow (${lifted.width}px)`);
   /bottom|all/.test(lifted.tprop) && parseFloat(lifted.tdur) > 0
     ? ok(`lift is animated, not snapped (transition ${lifted.tprop} ${lifted.tdur})`) : fail(`no bottom transition (${lifted.tprop} ${lifted.tdur})`);
