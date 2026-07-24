@@ -58,24 +58,57 @@ try {
   await openChat(page);
   await page.waitForSelector(".ml-chat-log", { timeout: 10000 });
 
-  // ── the input: full width, at the bottom, chat maxlen + placeholder ──
+  // ── the input: inset from the rails, wide, centered, at the bottom ──
   const inp = await page.evaluate(() => {
     const wrap = document.querySelector(".ml-chat");
     const log = document.querySelector(".ml-chat-log");
     const el = document.querySelector(".ml-chat-input");
     if (!wrap || !log || !el) return null;
     const wr = wrap.getBoundingClientRect(), er = el.getBoundingClientRect(), lr = log.getBoundingClientRect();
+    const leftGap = er.left - wr.left, rightGap = wr.right - er.right;
     return {
       exists: true, maxLength: el.maxLength, placeholder: el.placeholder,
-      fullWidth: Math.abs(er.width - wr.width) <= 2, // spans the content column
+      leftGap, rightGap,
+      inset: leftGap > 12 && rightGap > 12,          // clears the vine rails both sides
+      centered: Math.abs(leftGap - rightGap) <= 2,   // equal L/R space
+      wide: er.width > wr.width * 0.6,               // still a wide box
       belowLog: er.top >= lr.bottom - 2,             // pinned under the scrolling log
     };
   });
   inp && inp.exists ? ok("chat input present") : fail(`no chat input (${JSON.stringify(inp)})`);
   inp && inp.maxLength === 140 ? ok("input maxLength = MAX_CHAT_LEN (140)") : fail(`maxLength ${inp?.maxLength}`);
   inp && inp.placeholder === "say something…" ? ok("input placeholder matches") : fail(`placeholder "${inp?.placeholder}"`);
-  inp && inp.fullWidth ? ok("input is full width") : fail("input not full width");
+  inp && inp.inset && inp.centered ? ok(`input inset from the rails (L=${inp.leftGap.toFixed(0)} R=${inp.rightGap.toFixed(0)})`) : fail(`input not inset/centered (${JSON.stringify(inp)})`);
+  inp && inp.wide ? ok("input still spans most of the width") : fail(`input too narrow (${JSON.stringify(inp)})`);
   inp && inp.belowLog ? ok("input sits below the log (bottom)") : fail("input not at the bottom");
+
+  // ── keyboard overlay: in-game we opt the soft keyboard into OVERLAY mode so
+  //    the world+HUD don't reflow when it appears (maintainer). ──
+  const vk = await page.evaluate(() => {
+    const api = navigator.virtualKeyboard;
+    return { present: !!api, overlays: api ? api.overlaysContent : null };
+  });
+  vk.present
+    ? (vk.overlays === true ? ok("VirtualKeyboard overlaysContent enabled in-game") : fail(`overlaysContent=${vk.overlays}`))
+    : ok("VirtualKeyboard API absent (skipped — non-Chromium)");
+  // lift: the focused input goes position:fixed ONLY while the keyboard is up
+  // (.ml-kb-up); otherwise it stays in the HUD flow. (No real keyboard headless,
+  // so drive the class directly and check the computed position flips.)
+  const lift = await page.evaluate(() => {
+    const el = document.querySelector(".ml-chat-input");
+    const root = document.documentElement;
+    el.focus();
+    const before = getComputedStyle(el).position;   // keyboard down
+    root.classList.add("ml-kb-up");
+    const during = getComputedStyle(el).position;    // keyboard up
+    root.classList.remove("ml-kb-up");
+    const after = getComputedStyle(el).position;     // keyboard down again
+    el.blur();
+    return { before, during, after };
+  });
+  lift.before !== "fixed" && lift.during === "fixed" && lift.after !== "fixed"
+    ? ok(`focused input lifts only while keyboard up (${lift.before}->${lift.during}->${lift.after})`)
+    : fail(`lift wrong: ${JSON.stringify(lift)}`);
 
   // ── req 1 (system side) + req 6: on login the world logs system events
   //    immediately (time-of-day sync, the join "star"). Wait for one, then the

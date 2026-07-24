@@ -776,10 +776,38 @@ function mk(tag: string, cls: string): HTMLElement {
   return e;
 }
 
+let vkInit = false;
+/** Make the phone's soft keyboard OVERLAY the game instead of resizing/scrolling
+ * it, so the world + HUD keep their size when you tap the chat box (maintainer),
+ * and expose env(keyboard-inset-*) so the focused input can lift above the
+ * keyboard. Chromium/Android only (the maintainer's phone) — a no-op elsewhere.
+ * Enabled from the HUD (injectStyles), so it only takes effect in-game: the
+ * select screen's name field keeps the browser's normal scroll-into-view. */
+function enableVirtualKeyboardOverlay() {
+  if (vkInit) return;
+  vkInit = true;
+  const vk = (
+    navigator as unknown as {
+      virtualKeyboard?: {
+        overlaysContent: boolean;
+        boundingRect: DOMRectReadOnly;
+        addEventListener: (t: string, cb: () => void) => void;
+      };
+    }
+  ).virtualKeyboard;
+  if (!vk) return;
+  vk.overlaysContent = true; // keyboard overlays content; no layout reflow / auto-scroll
+  // Flag the "keyboard up" state so the focused input lifts only while it's shown.
+  const sync = () => document.documentElement.classList.toggle("ml-kb-up", vk.boundingRect.height > 0);
+  vk.addEventListener("geometrychange", sync);
+  sync();
+}
+
 let injected = false;
 function injectStyles() {
   if (injected) return;
   injected = true;
+  enableVirtualKeyboardOverlay();
   // --ml-hud-scale (the frame's HUD_SCALE, frame2) still scales the tab
   // label font + legacy border width; button SIZES are fixed px now
   // (maintainer: tabs and settings buttons both 120px).
@@ -948,11 +976,24 @@ function injectStyles() {
   /* fixed-width time so names line up; muted so it doesn't fight the message */
   .ml-chat-time{color:#9a9aa8;margin-right:8px;font-variant-numeric:tabular-nums}
   .ml-chat-who{color:#ffd678;font-weight:600}
-  .ml-chat-inputbar{flex:none;width:100%}
+  /* inset the input from the content edges so its box clears the vine rails and
+     bottom-corner art (maintainer: "needs more space to the left and right").
+     box-sizing:border-box keeps the padding inside the 100% width. */
+  .ml-chat-inputbar{flex:none;width:100%;box-sizing:border-box;padding:0 min(40px,5vw)}
   .ml-chat-input{width:100%;box-sizing:border-box;padding:min(14px,1.5vw) min(18px,1.9vw);
     border-radius:8px;border:1px solid #2c2c31;background:#0a0a0cee;color:#fff;
     font:400 22px system-ui,sans-serif;font-size:min(22px,2.245vw)}
   .ml-chat-input::placeholder{color:#8a8a96}
+  /* Phone keyboard: virtualKeyboard.overlaysContent (enabled in-game only) makes
+     the soft keyboard OVERLAY the world+HUD instead of resizing/scrolling them —
+     nothing reflows (maintainer). While the keyboard is up (.ml-kb-up), lift ONLY
+     the focused input to just above it via env(keyboard-inset-height), so you can
+     see what you type. Never fires on desktop (no VK → the class is never set);
+     safe-area insets dodge a side notch. */
+  .ml-kb-up .ml-chat-input:focus{position:fixed;z-index:50;width:auto;
+    left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));
+    bottom:calc(env(keyboard-inset-height,0px) + 10px);
+    box-shadow:0 -2px 16px rgba(0,0,0,.55);transition:bottom .18s ease}
   /* Narrower-than-design viewports: the tab plates already shrink via the
      --ml-tab formula, but the ICON files (uniform 96px 2x bakes) overflow
      once a tab drops under 96px — with six tabs that's below a ~780px
