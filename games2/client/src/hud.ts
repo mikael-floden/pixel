@@ -30,6 +30,7 @@ import { holdLoading } from "./loading";
 import { mountGamepadStick } from "./gamepad";
 import { mountBars } from "./bars";
 import { gameAudio } from "../../composer/index";
+import { MAX_CHAT_LEN } from "@nangijala/shared";
 
 // ── Ambient-effect switches (Settings) ───────────────────────────────────
 // The ambient-life agent (ambient/) exposes a per-effect TOGGLE controller on
@@ -84,6 +85,9 @@ let ambPoll: ReturnType<typeof setInterval> | null = null;
 
 export interface HudActions {
   onLogout: () => void;
+  /** Send a line from the Chat page's bottom input (same server path as the
+   * on-screen chat box). */
+  onChat: (text: string) => void;
   /** Settings-tab controls (the keyboard digits' mobile home). Entries with
    * `get` are SWITCHES: the plate renders pressed-down while get() is true
    * (down = ON, up = OFF — maintainer); plain entries are one-shot buttons.
@@ -249,6 +253,13 @@ export class HudBar {
   } | null = null;
   private mapRaf: number | null = null;
   private mapSrcWorld = ""; // which world's minimap.png is currently loaded
+  // Chat tab: a persistent history of the last CHAT_HISTORY_MAX log lines (the
+  // SAME stream as the bottom-left log — system events + player chat, fed via
+  // pushChat). Each carries its RECEIVE time so the page can print HH:MM and
+  // draw a YYYY-MM-DD divider whenever the real-clock day changes.
+  private chatMsgs: { name: string; text: string; t: Date }[] = [];
+  private chatLogEl: HTMLElement | null = null;
+  private chatShown = false; // is the Chat tab currently visible? (skip renders otherwise)
 
   constructor(private actions: HudActions) {
     injectStyles();
@@ -316,6 +327,10 @@ export class HudBar {
     // The Map tab drives a live dot; only run its rAF loop while it's visible.
     if (id === "map") this.startMapLoop();
     else this.stopMapLoop();
+    // Chat catches up any lines that arrived while it was hidden, and lands
+    // scrolled to the newest.
+    this.chatShown = id === "chat";
+    if (this.chatShown) this.renderChat(true);
   }
 
   // ── Map tab ────────────────────────────────────────────────────────────
@@ -611,9 +626,99 @@ export class HudBar {
     this.ambSection = amb;
     this.ambList = list;
     st.appendChild(wrap);
-    // Chat page: intentionally empty for now (maintainer 2026-07-23 — "an empty
-    // page for now"). Its tab lives where Logout used to be.
+
+    // Chat page: the persistent message history + a full-width input.
+    this.buildChat();
   }
+
+  // ── Chat tab ─────────────────────────────────────────────────────────────
+  /** Build the Chat page: a scrolling message log over a full-width input bar.
+   * The log mirrors the on-screen chat (system events + player chat) but keeps
+   * history; the input sends through the same rate-limited server path. */
+  private buildChat() {
+    const page = this.pages.get("chat")!;
+    const wrap = mk("div", "ml-chat");
+    const log = mk("div", "ml-chat-log");
+    this.chatLogEl = log;
+    const bar = mk("div", "ml-chat-inputbar");
+    const input = mk("input", "ml-chat-input") as HTMLInputElement;
+    input.type = "text";
+    input.maxLength = MAX_CHAT_LEN;
+    input.placeholder = "say something…";
+    input.setAttribute("aria-label", "Write a chat message");
+    // enterkeyhint tells mobile keyboards to show a "send" affordance
+    input.setAttribute("enterkeyhint", "send");
+    input.addEventListener("keydown", (e) => {
+      // While the box is focused, keep movement keys (WASD/Space) from leaking
+      // through the DOM to Phaser's global keyboard — exactly like ChatUI.
+      e.stopPropagation();
+      if (e.key === "Enter") {
+        const text = input.value.trim();
+        if (text) this.actions.onChat(text);
+        input.value = "";
+      } else if (e.key === "Escape") {
+        input.blur();
+      }
+    });
+    bar.appendChild(input);
+    wrap.append(log, bar);
+    page.appendChild(wrap);
+  }
+
+  /** Append a log line to the persistent Chat history (called for EVERY line the
+   * on-screen chat shows — system + player). Caps at CHAT_HISTORY_MAX, dropping
+   * the oldest, and re-renders if the Chat tab is currently visible. */
+  pushChat(name: string, text: string, t: Date = new Date()) {
+    this.chatMsgs.push({ name, text, t });
+    if (this.chatMsgs.length > CHAT_HISTORY_MAX)
+      this.chatMsgs.splice(0, this.chatMsgs.length - CHAT_HISTORY_MAX);
+    if (this.chatShown) this.renderChat(false);
+  }
+
+  /** Rebuild the Chat log from the history: one line per message (HH:MM time +
+   * name + text), with a Settings-style divider before the FIRST message and
+   * whenever the real-clock day changes (YYYY-MM-DD). `toBottom` forces a scroll
+   * to the newest (on open); otherwise it only follows if already near the end,
+   * so reading back through history isn't yanked away by an arriving line. */
+  private renderChat(toBottom: boolean) {
+    const log = this.chatLogEl;
+    if (!log) return;
+    const nearBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 48;
+    log.textContent = "";
+    let lastDay = "";
+    for (const m of this.chatMsgs) {
+      const day = fmtDay(m.t);
+      if (day !== lastDay) {
+        // New day (and always before the first message, since lastDay starts "")
+        // → a divider that looks like the Settings section header.
+        lastDay = day;
+        const div = mk("div", "ml-chat-day");
+        div.textContent = day;
+        log.appendChild(div);
+      }
+      const line = mk("div", "ml-chat-line");
+      const time = mk("span", "ml-chat-time");
+      time.textContent = fmtTime(m.t);
+      const who = mk("span", "ml-chat-who");
+      who.textContent = `${m.name}: `;
+      line.append(time, who, document.createTextNode(m.text));
+      log.appendChild(line);
+    }
+    if (toBottom || nearBottom) log.scrollTop = log.scrollHeight;
+  }
+}
+
+/** Most recent chat/system lines kept for the Chat page (maintainer: last 1000,
+ * drop the oldest past that). */
+const CHAT_HISTORY_MAX = 1000;
+const p2 = (n: number) => String(n).padStart(2, "0");
+/** Local real-clock day, e.g. "2026-07-24" — the day-divider label. */
+function fmtDay(d: Date): string {
+  return `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`;
+}
+/** Local wall-clock time, e.g. "14:27" — the per-message timestamp. */
+function fmtTime(d: Date): string {
+  return `${p2(d.getHours())}:${p2(d.getMinutes())}`;
 }
 
 function plateButton(label: string, onPress: () => void): HTMLButtonElement {
@@ -819,6 +924,30 @@ function injectStyles() {
      tap is a harmless no-op; the label already says which effect blocks it) */
   .ml-amb-row.blocked{opacity:.5;cursor:not-allowed}
   .ml-amb-auto{margin-bottom:2px}
+  /* CHAT page: a scrolling message history over a full-width input pinned to
+     the bottom. The PAGE itself doesn't scroll (like the map page) — the log
+     inside it does, so the input bar stays put. px/vw sizes only (the HUD root
+     is never uiZoom'd; vw is safe here, same as the plate buttons). */
+  .ml-page[data-page=chat]{overflow:hidden;justify-content:flex-start}
+  .ml-chat{flex:1 1 auto;min-height:0;width:100%;display:flex;flex-direction:column;gap:12px}
+  .ml-chat-log{flex:1 1 auto;min-height:0;width:100%;overflow-y:auto;overflow-x:hidden;
+    -webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:5px;
+    text-align:left;font:400 22px system-ui,sans-serif;font-size:min(22px,2.245vw);
+    color:#e8e8f0;line-height:1.4;text-shadow:0 1px 2px #000}
+  /* day divider — the SAME look as the Settings section header (.ml-amb-title):
+     a top rule with a centred label, here the real-clock date (YYYY-MM-DD). */
+  .ml-chat-day{border-top:2px solid rgba(0,0,0,.28);padding-top:14px;margin-top:6px;
+    color:#f0e2c6;font:700 18px system-ui,sans-serif;font-size:min(18px,1.837vw);
+    letter-spacing:1px;text-transform:uppercase;text-align:center}
+  .ml-chat-line{overflow-wrap:anywhere}
+  /* fixed-width time so names line up; muted so it doesn't fight the message */
+  .ml-chat-time{color:#9a9aa8;margin-right:8px;font-variant-numeric:tabular-nums}
+  .ml-chat-who{color:#ffd678;font-weight:600}
+  .ml-chat-inputbar{flex:none;width:100%}
+  .ml-chat-input{width:100%;box-sizing:border-box;padding:min(14px,1.5vw) min(18px,1.9vw);
+    border-radius:8px;border:1px solid #2c2c31;background:#0a0a0cee;color:#fff;
+    font:400 22px system-ui,sans-serif;font-size:min(22px,2.245vw)}
+  .ml-chat-input::placeholder{color:#8a8a96}
   /* Narrower-than-design viewports: the tab plates already shrink via the
      --ml-tab formula, but the ICON files (uniform 96px 2x bakes) overflow
      once a tab drops under 96px — with six tabs that's below a ~780px
@@ -855,6 +984,10 @@ function injectStyles() {
     .ml-amb-row{height:44px;gap:12px;padding:4px 12px}
     /* 24 = 3x the 8px art — integer; the earlier 28 was a fractional 3.5x */
     .ml-amb-check{width:24px;height:24px}
+    .ml-chat{gap:8px}
+    .ml-chat-log{font-size:15px;gap:3px}
+    .ml-chat-day{padding-top:8px;font-size:13px}
+    .ml-chat-input{font-size:15px;padding:8px 12px}
   }`;
   const s = document.createElement("style");
   s.textContent = css;

@@ -811,6 +811,9 @@ export class WorldScene extends Phaser.Scene {
     // game viewport itself gets the matching pixel frame overlay.
     this.hud = new HudBar({
       onLogout: () => this.logout(),
+      // The Chat page's bottom input sends through the SAME rate-limited path
+      // as the on-screen chat box.
+      onChat: (text) => this.room?.send("chat", { text }),
       settings: [
         // Time-of-day is the one plain BUTTON; the rest are switches
         // (down = ON) — no keyboard-digit prefixes (maintainer).
@@ -857,6 +860,9 @@ export class WorldScene extends Phaser.Scene {
       ],
     });
     mountPageFrame();
+    // Feed EVERY on-screen log line into the Chat page's persistent history
+    // (system events + other players' chat — the same stream, kept 1000 deep).
+    this.chat.onLog = (name, text) => this.hud?.pushChat(name, text);
 
     const cam = this.cameras.main;
     cam.setBounds(0, 0, this.iso.w, this.iso.h);
@@ -953,6 +959,11 @@ export class WorldScene extends Phaser.Scene {
         return av ? av.character : null;
       },
       say: (text: string) => this.room?.send("chat", { text }),
+      // Chat-page QA: push a history line directly (bypassing the server), at an
+      // optional controlled receive-time (ms epoch) so the day-divider + cap
+      // logic can be verified deterministically. verify-chatpage.mjs drives this.
+      chatPush: (name: string, text: string, tMs?: number) =>
+        this.hud?.pushChat(name, text, tMs != null ? new Date(tMs) : undefined),
       // Debug: occluder build state (maps2 z-order verification).
       occCount: () => ({ maps2: this.maps2, occluders: this.occluders.length, meta: this.occluderMeta.length }),
       bubbles: () => [...this.avatars.values()].filter((a) => a.bubble).map((a) => a.bubble!.text),

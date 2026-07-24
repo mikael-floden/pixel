@@ -10,6 +10,10 @@ const CHAT_LINE_TTL_MS = 20_000;
  */
 export class ChatUI {
   open = false;
+  /** Mirror of EVERY log line (system events AND player chat — the same stream
+   * shown in the bottom-left log) to the persistent Chat page (hud.ts keeps the
+   * last 1000). Set by WorldScene once the HUD exists; null before then. */
+  onLog: ((name: string, text: string) => void) | null = null;
   private input: HTMLInputElement;
   private log: HTMLDivElement;
 
@@ -58,6 +62,9 @@ export class ChatUI {
   }
 
   addLog(name: string, text: string) {
+    // Mirror to the Chat page's history BEFORE the transient line so the two
+    // stay in the same order even if a listener throws.
+    this.onLog?.(name, text);
     const line = document.createElement("div");
     line.className = "ml-chatline";
     const who = document.createElement("span");
