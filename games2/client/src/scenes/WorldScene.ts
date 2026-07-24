@@ -2856,8 +2856,18 @@ export class WorldScene extends Phaser.Scene {
    * Returns flat world coords (the same space the server moves players in).
    */
   /** Is the ground point drawn at world/screen (wx, wy) open water? Same iso
-   * inverse-projection as pickGround, but reports the topmost hit cell's
-   * swimmable-ness — used by the snow FX so flakes melt on lakes, not rest. */
+   * inverse-projection as pickGround, but reports the FRONT-MOST drawn cell's
+   * swimmable-ness — used by the water/snow FX so glimmer/melt land on visible
+   * lake surface only, never on a cliff FACE with a lake hidden behind it.
+   *
+   * Scanning level high→low walks candidate cells strictly front-to-back (v =
+   * col+row grows with the hypothesised level l, and higher col+row draws in
+   * front). A cell stacks face tiles for levels 0..cell.l then its top, so its
+   * drawn column covers this screen point whenever `cell.l >= l` — top OR face.
+   * The first such cell is the surface actually visible here: stopping on the
+   * cliff's FACE (cell.l > l) instead of only its TOP (the old `cell.l === l`)
+   * is what stops water glinting THROUGH the wall (the lake behind resolves at
+   * a lower l, reached only after the occluding face). */
   private isWaterAtScreen(wx: number, wy: number): boolean {
     if (!this.world) return false;
     const { dx, dy, lh, tile } = MAP_GEOMETRY;
@@ -2867,9 +2877,9 @@ export class WorldScene extends Phaser.Scene {
       const col = (u + v) / 2;
       const row = (v - u) / 2;
       const cell = this.world.rows[Math.floor(row)]?.[Math.floor(col)];
-      if (!cell || cell.l !== l) continue;
+      if (!cell || cell.l < l) continue; // this cell draws no top/face at level l
       const s = surfaceFor(cell.t);
-      return !s.standable && s.swimmable; // a lake surface (not a walkable bank)
+      return !s.standable && s.swimmable; // front-most drawn surface (top or face)
     }
     return false;
   }
