@@ -119,6 +119,17 @@ export class Atmosphere {
   update(lights: LightSource[], cam: Phaser.Cameras.Scene2D.Camera, _dt: number) {
     const p = this.preset;
 
+    // The dark grade + vignette are setScrollFactor(0) but Phaser STILL scales them by the
+    // camera zoom, so at zoom<1 (the speed zoom-OUT on a phone, base zoom 1) they render
+    // SMALLER than the screen and leave the newly revealed edges un-darkened (maintainer
+    // 2026-07-24; the vignette is the "second layer" — the shader night keeps it on even
+    // though `this.dark` stands down). Counter-scale by 1/zoom so each ALWAYS fills the
+    // screen exactly — same fix as the WebGL night overlays in nightlight.ts. The dark's
+    // erase uses screen px (sx below), which now maps 1:1 to the RT texel, so pools stay put.
+    const invZoom = 1 / (cam.zoom || 1);
+    this.dark.setScale(invZoom);
+    this.vignette.setScale(invZoom);
+
     const dark = p.darkness > 0 && !this.suppressGrade;
     if (!dark) {
       this.dark.setVisible(false);
