@@ -204,8 +204,31 @@ interface MinimapFeed {
   world: string; // maps2 world id (folder name) -> /assets/maps2/worlds/<id>/minimap.png
   w: number; // grid width in cells
   h: number; // grid height in cells
+  maxL: number; // world's tallest terrain level (the iso render's origin lifts by this)
   col: number; // local player's fractional cell (fx / CELL_WU)
   row: number; // local player's fractional cell (fy / CELL_WU)
+  level: number; // terrain level at the player's cell (the iso dot lifts with it)
+}
+
+// maps2 ISOMETRIC minimap projection — a REPLICA of maps2/pipeline/render2.py
+// (render_overview / _origin), so the "you are here" dot lands on the player's
+// cell on the iso minimap.png. The minimaps are transparent iso renders (not
+// top-down), verified to share this transform across every world incl.
+// the_island2's custom builder. DX/DY/LEVEL_PX match shared ISO_DX/ISO_DY/
+// LEVEL_PX; MARGIN + the 40/64/80 canvas pads are render2.py's. Percentages are
+// scale-invariant, so the 0.5 render scale + 2000px save cap drop out.
+const MM_DX = 32, MM_DY = 15, MM_LEVEL_PX = 16, MM_MARGIN = 12;
+/** Player cell (col,row) at terrain `level` -> [x%, y%] on the iso minimap. */
+function minimapDotPct(m: MinimapFeed): [number, number] {
+  const ox = (m.h - 1) * MM_DX + MM_MARGIN;
+  const oy = m.maxL * MM_LEVEL_PX + 40 + MM_MARGIN;
+  const fullW = (m.w + m.h) * MM_DX + MM_MARGIN * 2;
+  const fullH = (m.w + m.h) * MM_DY + 64 + m.maxL * MM_LEVEL_PX + 80;
+  // +MM_DX/+MM_DY: centre of the cell's 64-wide, 30-tall top diamond.
+  const x = ox + (m.col - m.row) * MM_DX + MM_DX;
+  const y = oy + (m.col + m.row) * MM_DY - m.level * MM_LEVEL_PX + MM_DY;
+  const clamp = (v: number) => Math.max(0, Math.min(1, v));
+  return [clamp(x / fullW) * 100, clamp(y / fullH) * 100];
 }
 
 export class HudBar {
@@ -296,10 +319,10 @@ export class HudBar {
   }
 
   // ── Map tab ────────────────────────────────────────────────────────────
-  /** Build the Map page: a fitted top-down minimap <img> plus a red "you are
-   * here" dot positioned by PERCENT (so it stays correct at any display size),
-   * over a fallback message for worlds whose maps agent hasn't shipped a
-   * top-down minimap.png yet. The dot + image are driven by startMapLoop(). */
+  /** Build the Map page: a fitted minimap <img> plus a red "you are here" dot
+   * positioned by PERCENT via the iso projection (so it stays correct at any
+   * display size), over a fallback message for worlds that ship no minimap.png.
+   * The dot + image are driven by startMapLoop(). */
   private buildMap() {
     const page = this.pages.get("map")!;
     const wrap = mk("div", "ml-map");
@@ -314,17 +337,20 @@ export class HudBar {
     empty.hidden = true;
     wrap.append(frame, empty);
     page.append(wrap);
-    // A real (top-down) minimap loaded → size the frame to it and show it;
+    // A real minimap loaded → size the frame to it and show it;
     // a 404 (world with no minimap.png) → fall back to the message.
+    const showFallback = () => { frame.hidden = true; empty.hidden = false; };
     img.addEventListener("load", () => {
+      // A real minimap → size the frame to it and show it. A 200 that isn't an
+      // image (e.g. a dev-server SPA fallback for a missing minimap.png) fires
+      // load with naturalWidth 0 — treat that as "no minimap" too, so the
+      // fallback isn't limited to a hard 404.
+      if (!img.naturalWidth || !img.naturalHeight) return showFallback();
       frame.hidden = false;
       empty.hidden = true;
       this.fitMap();
     });
-    img.addEventListener("error", () => {
-      frame.hidden = true;
-      empty.hidden = false;
-    });
+    img.addEventListener("error", showFallback);
     this.mapEls = { wrap, frame, img, dot, empty };
     // Refit when the page window changes (orientation / frame recompose).
     new ResizeObserver(() => this.fitMap()).observe(wrap);
@@ -385,10 +411,9 @@ export class HudBar {
       els.empty.hidden = true;
       els.img.src = `/assets/maps2/worlds/${m.world}/minimap.png`;
     }
-    // Dot at the player's fractional cell, clamped to the map (fx/fy can ease a
-    // hair past the rim). Percent of the frame == percent of the image.
-    const left = Math.max(0, Math.min(1, m.col / m.w)) * 100;
-    const top = Math.max(0, Math.min(1, m.row / m.h)) * 100;
+    // Dot at the player's cell, projected onto the ISO minimap. Percent of the
+    // frame == percent of the image (the frame is fit to the image by fitMap).
+    const [left, top] = minimapDotPct(m);
     els.dot.style.left = `${left.toFixed(3)}%`;
     els.dot.style.top = `${top.toFixed(3)}%`;
   }
@@ -524,7 +549,7 @@ export class HudBar {
     // Equipment page: bare stone until its real content lands
     // (maintainer 2026-07-17: no placeholder text).
 
-    // Map page: the world's top-down minimap with a live red player dot.
+    // Map page: the world's minimap with a live red player dot.
     this.buildMap();
 
     // Settings: home of ALL the toggles mobile can't reach by keyboard. The
@@ -696,7 +721,7 @@ function injectStyles() {
   .ml-page.show{display:flex}
   /* gamepad page: the analog stick positions absolutely inside it */
   .ml-page[data-page=gamepad]{position:relative;overflow:hidden}
-  /* map page: a top-down minimap centred in the page with a red "you are here"
+  /* map page: the world's iso minimap centred in the page with a red "you are here"
      dot. .ml-map-frame is JS-sized to the fitted image (buildMap.fitMap) so it
      equals the displayed image box — the dot's percent offsets then land on the
      right pixel with no letterbox skew. Pixel-art: nearest-neighbour. */

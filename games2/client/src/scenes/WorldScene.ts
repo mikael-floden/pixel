@@ -898,12 +898,23 @@ export class WorldScene extends Phaser.Scene {
       // instead would stutter). col=fx/CELL_WU, row=fy/CELL_WU.
       minimap: () => {
         const av = this.avatars.get(this.room?.sessionId ?? "");
+        const w = this.world;
+        const col = av ? av.fx / CELL_WU : 0;
+        const row = av ? av.fy / CELL_WU : 0;
+        // The minimaps are ISO renders (maps2 render_overview), so hud.ts needs
+        // maxL (the render origin lifts by the world's tallest level) and the
+        // player's own cell level (the iso dot lifts with the terrain it stands
+        // on). Clamp the cell index — fx/fy can ease a hair past the rim.
+        const ci = w ? Math.max(0, Math.min(w.width - 1, Math.floor(col))) : 0;
+        const ri = w ? Math.max(0, Math.min(w.height - 1, Math.floor(row))) : 0;
         return {
           world: this.worldName,
-          w: this.world?.width ?? 0,
-          h: this.world?.height ?? 0,
-          col: av ? av.fx / CELL_WU : 0,
-          row: av ? av.fy / CELL_WU : 0,
+          w: w?.width ?? 0,
+          h: w?.height ?? 0,
+          maxL: this.maxLevel,
+          col,
+          row,
+          level: w?.rows[ri]?.[ci]?.l ?? 0,
         };
       },
       // world@2 decks: parsed summary + cells indexed for the ground/occluder loop.
