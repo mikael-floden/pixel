@@ -87,6 +87,24 @@ export function stepFlapDir(b: FlapState, dt: number, stick: number): void {
   }
 }
 
+const CELL_WU = 32; // world px per cell (shared CELL_WU; kept local to avoid a cross-import)
+const SKY_Z = 48; // sample the light well ABOVE any terrain → open-sky light, no false valley shadow on a high flyer
+
+/** The world's light where a flying creature sits — sampled once per frame at
+ * the view centre, high in the air, through the game's CPU light probe (the
+ * same lightAt() the character lit-copies use). Returned as a Phaser tint so
+ * birds & bats GRADE with day/night/cloud instead of popping at full brightness
+ * against a dark night sky. Falls back to white (full brightness) if the probe
+ * is missing — degrade gracefully, never break the flock. */
+export function skyTint(view: Phaser.Geom.Rectangle): number {
+  const ml = (window as unknown as { __ml?: Record<string, (...a: never[]) => unknown> }).__ml;
+  const at = ml?.lightAtCell as undefined | ((c: number, r: number, z: number) => number[] | null);
+  const l = at?.(view.centerX / CELL_WU, view.centerY / CELL_WU, SKY_Z);
+  if (!l) return 0xffffff;
+  const ch = (v: number) => Math.max(0, Math.min(255, Math.round(v * 255)));
+  return (ch(l[0]) << 16) | (ch(l[1]) << 8) | ch(l[2]);
+}
+
 export interface SheetSpec {
   key: string;
   url: string;

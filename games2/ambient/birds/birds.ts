@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature, PHASE_DAY, WEATHER_CLEAR } from "../runtime/types";
-import { FLY_FRAMES, SheetSpec, dirFromVel, flyFrame, queueSheets, sheetsReady, stepFlapDir } from "../runtime/critters";
+import { FLY_FRAMES, SheetSpec, dirFromVel, flyFrame, queueSheets, sheetsReady, skyTint, stepFlapDir } from "../runtime/critters";
 // 8 hand-made PixelLab bird TYPES, each an 8-direction object with a flapping
 // fly animation and a still base (for perching). Packed one folder per type.
 import bird1Fly from "./art/bird1/fly.png";
@@ -151,10 +151,10 @@ export function birdsFeature(): AmbientFeature {
   };
 
   // Show the right frame: the flap clip while airborne, the still base perched.
-  const drawFrame = (b: Bird, perched: boolean) => {
+  const drawFrame = (b: Bird, perched: boolean, tint: number) => {
     const key = perched ? stillKey(b.type) : flyKey(b.type);
     if (b.sprite.texture.key !== key) b.sprite.setTexture(key);
-    b.sprite.setFrame(perched ? b.dir : flyFrame(b.dir, b.frame));
+    b.sprite.setFrame(perched ? b.dir : flyFrame(b.dir, b.frame)).setTint(tint);
   };
 
   const launchFlock = (ctx: AmbientCtx) => {
@@ -193,7 +193,7 @@ export function birdsFeature(): AmbientFeature {
         wander: rnd() * Math.PI * 2,
         dir: dir0,
         dirHoldT: 0,
-        flapMs: 30 + rnd() * 12, // per-frame; 16 frames ≈ 0.5-0.7s wingbeat
+        flapMs: 15 + rnd() * 6, // per-frame; 16 frames ≈ 0.25-0.35s wingbeat (2× the first cut)
         flapT: rnd() * 200,
         frame: Math.floor(rnd() * FLY_FRAMES), // desync the flock's wingbeats
         bobPhase: rnd() * Math.PI * 2,
@@ -267,6 +267,7 @@ export function birdsFeature(): AmbientFeature {
 
       const view = ctx.view;
       const player = playerAt(ctx);
+      const tint = skyTint(view); // grade the whole flock with the day/night sky light
 
       // ---- flock-level decisions ---------------------------------------
       // FLUSH: player gets CLOSE (within FLEE_R of any bird) → the whole flock
@@ -359,7 +360,7 @@ export function birdsFeature(): AmbientFeature {
             b.vy = (rnd() - 0.5) * 24;
           }
           b.alt += (0 - b.alt) * Math.min(1, dts * 8);
-          drawFrame(b, true);
+          drawFrame(b, true, tint);
           b.sprite.setPosition(b.gx, b.gy - b.alt).setDepth(DEPTH + i * 0.001);
           continue;
         }
@@ -482,7 +483,7 @@ export function birdsFeature(): AmbientFeature {
         // Face (hysteretic 8-way from the boid's velocity) + flap + draw
         // (a gentle bob only while airborne).
         stepFlapDir(b, dt, DIR_STICK);
-        drawFrame(b, false);
+        drawFrame(b, false, tint);
         const bob = b.alt > 4 ? Math.sin(b.t * 5 + b.bobPhase) * 2 : 0;
         b.sprite.setPosition(b.gx, b.gy - b.alt + bob).setDepth(DEPTH + i * 0.001);
 
@@ -516,7 +517,9 @@ export function birdsFeature(): AmbientFeature {
         flocks,
         flushing: flushUntil > lastNow,
         leaving,
-        sample: s ? { type: s.type, dir: s.dir, frame: s.frame, key: s.sprite.texture.key, x: s.sprite.x, y: s.sprite.y } : null,
+        sample: s
+          ? { type: s.type, dir: s.dir, frame: s.frame, key: s.sprite.texture.key, tint: s.sprite.tintTopLeft, x: s.sprite.x, y: s.sprite.y }
+          : null,
       };
     },
     dispose() {

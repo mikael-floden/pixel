@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature, PHASE_NIGHT, WEATHER_CLEAR } from "../runtime/types";
-import { FLY_FRAMES, SheetSpec, dirFromVel, flyFrame, queueSheets, sheetsReady, stepFlapDir } from "../runtime/critters";
+import { FLY_FRAMES, SheetSpec, dirFromVel, flyFrame, queueSheets, sheetsReady, skyTint, stepFlapDir } from "../runtime/critters";
 import batFly from "./art/fly.png";
 
 // Bats — an EPISODE feature and the night counterpart to the birds. Like the
@@ -115,7 +115,7 @@ export function batsFeature(): AmbientFeature {
         wander: rnd() * Math.PI * 2,
         dir: dir0,
         dirHoldT: 0,
-        flapMs: 16 + rnd() * 8, // per-frame; fast wingbeat (16 frames ≈ 0.25-0.4s)
+        flapMs: 8 + rnd() * 4, // per-frame; very fast wingbeat (16 frames ≈ 0.13-0.2s, 2× the first cut)
         flapT: rnd() * 100,
         frame: Math.floor(rnd() * FLY_FRAMES),
         bobPhase: rnd() * Math.PI * 2,
@@ -166,6 +166,7 @@ export function batsFeature(): AmbientFeature {
 
       const view = ctx.view;
       const player = playerAt(ctx);
+      const tint = skyTint(view); // grade the colony with the day/night sky light
 
       // FLUSH: player gets within FLEE_R → panic scatter away, with a cooldown
       // so it doesn't re-trigger every frame while you stand near.
@@ -278,7 +279,7 @@ export function batsFeature(): AmbientFeature {
 
         // Face (hysteretic 8-way from velocity) + flap + draw (a quick bob).
         stepFlapDir(b, dt, DIR_STICK);
-        b.sprite.setFrame(flyFrame(b.dir, b.frame));
+        b.sprite.setFrame(flyFrame(b.dir, b.frame)).setTint(tint);
         const bob = Math.sin(b.t * 7 + b.bobPhase) * 2.5;
         b.sprite.setPosition(b.gx, b.gy - b.alt + bob).setDepth(DEPTH + i * 0.001);
 
@@ -315,7 +316,7 @@ export function batsFeature(): AmbientFeature {
         flocks,
         flushing: flushUntil > lastNow,
         leaving,
-        sample: s ? { dir: s.dir, frame: s.frame, key: s.sprite.texture.key, x: s.sprite.x, y: s.sprite.y } : null,
+        sample: s ? { dir: s.dir, frame: s.frame, key: s.sprite.texture.key, tint: s.sprite.tintTopLeft, x: s.sprite.x, y: s.sprite.y } : null,
       };
     },
     dispose() {
