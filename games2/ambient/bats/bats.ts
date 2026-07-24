@@ -1,5 +1,7 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature, PHASE_NIGHT, WEATHER_CLEAR } from "../runtime/types";
+import { FLY_FRAMES, SheetSpec, dirFromVel, dirGap, queueSheets, sheetsReady } from "../runtime/critters";
+import batFly from "./art/fly.png";
 
 // Bats — an EPISODE feature and the night counterpart to the birds. Like the
 // birds this is a TOP-DOWN flock (maintainer 2026-07-18: bats can fly in any
@@ -12,18 +14,16 @@ import { AmbientCtx, AmbientFeature, PHASE_NIGHT, WEATHER_CLEAR } from "../runti
 // example, verbatim). Each bat has a ground position (gx, gy — world px in the
 // iso-projected space) and a flight altitude; it draws at (gx, gy − alt).
 //
-// TWO-TONE, not a flat dark tint (maintainer round 1: "the bats look like
-// fireflies" — a near-black bat over near-black night ground was invisible, so
-// only the firefly dots read): a muted moonlit rim on the wing tops over a dark
-// violet body, so the shape contrasts against dark ground. Dimmed + a bit
-// smaller since (maintainer: "not as bright", "a bit smaller").
+// The art is the maintainer's hand-made PixelLab bat — an 8-direction object
+// with a flap clip — rendered as a real directional sprite (facing from the
+// boid's velocity). Kept DIM + a bit SMALLER than a bird (maintainer: "not as
+// bright", "a bit smaller"); the dark bat reads against the night sky.
 const DEPTH = 1_499_800;
-const FRAMES = ["amb-bat0", "amb-bat1"];
-// 9×5 / 9×4 two-colour pixel maps: P = pale moonlit rim, D = dark body.
-const PIX0 = ["P.......P", "PP.....PP", ".PDD.DDP.", "...DDD...", "....D...."];
-const PIX1 = [".........", "...PP.PP.", "PDDDDDDDP", ".D..D..D."];
-const RIM = 0x676c81; // muted moonlight on the wing edge (dim)
-const BODY = 0x161326; // dark violet body
+const FLY_KEY = "amb-bat-fly"; // bats never perch, so only the flap sheet is loaded
+const SHEETS: SheetSpec[] = [{ key: FLY_KEY, url: batFly }];
+const BAT_SCALE = 0.5; // smaller than the birds (0.6)
+const BAT_ALPHA = 0.82; // dim / soft, not a bright cut-out
+const DIR_STICK = 90; // ms an adjacent-sector heading flip must hold before turning
 
 const BASE_WEIGHT = 1.0;
 const DAY_MULT = 0.01; // "1% times the base-likeliness during the day"
@@ -50,16 +50,18 @@ const FLUSH_COOLDOWN = 5000;
 const FLOCK_LIFE: [number, number] = [20_000, 38_000]; // then the colony leaves the view
 
 interface Bat {
-  sprite: Phaser.GameObjects.Image;
+  sprite: Phaser.GameObjects.Sprite;
   gx: number; // GROUND position in world px (the point it flies over)
   gy: number;
   alt: number; // flight altitude px above the ground
   vx: number; // ground-plane velocity (any direction)
   vy: number;
   wander: number; // wander heading (rad), random-walks
-  flapMs: number;
+  dir: number; // current facing (PixelLab index 0..7), hysteretic
+  dirHoldT: number;
+  flapMs: number; // ms per flap frame
   flapT: number;
-  frame: number;
+  frame: number; // flap frame 0..FLY_FRAMES-1
   bobPhase: number;
   t: number;
 }
@@ -67,6 +69,7 @@ interface Bat {
 export function batsFeature(): AmbientFeature {
   const bats: Bat[] = [];
   let active = false;
+  let ready = false; // fly spritesheet loaded (runtime load, see init)
   let nextFlockIn = 3000;
   let flocks = 0;
   let flushUntil = 0;
@@ -76,25 +79,6 @@ export function batsFeature(): AmbientFeature {
   let lastNow = 0;
   let seed = 13;
   const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 0xffffffff;
-
-  const ensureTextures = (scene: Phaser.Scene) => {
-    if (scene.textures.exists(FRAMES[0])) return;
-    for (const [key, pix] of [
-      [FRAMES[0], PIX0],
-      [FRAMES[1], PIX1],
-    ] as const) {
-      const g = scene.make.graphics({ x: 0, y: 0 }, false);
-      pix.forEach((row, y) => {
-        for (let x = 0; x < row.length; x++) {
-          if (row[x] === ".") continue;
-          g.fillStyle(row[x] === "P" ? RIM : BODY, 1);
-          g.fillRect(x, y, 1, 1);
-        }
-      });
-      g.generateTexture(key, PIX0[0].length, pix.length);
-      g.destroy();
-    }
-  };
 
   // Player world position (iso-projected px) via the game's myScreen probe.
   const playerAt = (ctx: AmbientCtx): { x: number; y: number } | null => {
@@ -114,13 +98,13 @@ export function batsFeature(): AmbientFeature {
     const inx = view.centerX - ex;
     const iny = view.centerY - ey;
     const inl = Math.hypot(inx, iny) || 1;
+    const dir0 = dirFromVel(inx, iny) ?? 0;
     for (let i = 0; i < n; i++) {
       const sprite = ctx.scene.add
-        .image(0, 0, FRAMES[0])
+        .sprite(0, 0, FLY_KEY, dir0 * FLY_FRAMES)
         .setDepth(DEPTH + i * 0.001)
-        .setAlpha(0.8) // dim / soft, not a bright cut-out
-        .setScale(1.5) // a bit smaller (maintainer 2026-07-18)
-        .setFlipX(inx < 0);
+        .setAlpha(BAT_ALPHA)
+        .setScale(BAT_SCALE);
       bats.push({
         sprite,
         gx: ex + (rnd() - 0.5) * 44,
@@ -129,9 +113,11 @@ export function batsFeature(): AmbientFeature {
         vx: (inx / inl) * SPD_CRUISE,
         vy: (iny / inl) * SPD_CRUISE,
         wander: rnd() * Math.PI * 2,
-        flapMs: 60 + rnd() * 55, // fast wingbeat
+        dir: dir0,
+        dirHoldT: 0,
+        flapMs: 16 + rnd() * 8, // per-frame; fast wingbeat (16 frames ≈ 0.25-0.4s)
         flapT: rnd() * 100,
-        frame: 0,
+        frame: Math.floor(rnd() * FLY_FRAMES),
         bobPhase: rnd() * Math.PI * 2,
         t: rnd() * 5,
       });
@@ -155,9 +141,13 @@ export function batsFeature(): AmbientFeature {
       // off: no new flocks; in-flight bats finish and leave (graceful).
     },
     init(ctx) {
-      ensureTextures(ctx.scene);
+      queueSheets(ctx.scene, SHEETS); // runtime-load the PixelLab art (see critters.ts)
     },
     update(ctx, dt) {
+      if (!ready) {
+        ready = sheetsReady(ctx.scene, SHEETS);
+        if (!ready) return;
+      }
       const dts = Math.min(dt, 100) / 1000;
       const now = ctx.scene.time.now;
       lastNow = now;
@@ -286,14 +276,28 @@ export function batsFeature(): AmbientFeature {
         b.gx += b.vx * dts;
         b.gy += b.vy * dts;
 
-        // Flap + face + draw (a quick bob).
+        // Face (hysteretic 8-way from velocity) + flap + draw (a quick bob).
+        const cand = dirFromVel(b.vx, b.vy);
+        if (cand !== null && cand !== b.dir) {
+          if (dirGap(cand, b.dir) >= 2) {
+            b.dir = cand;
+            b.dirHoldT = 0;
+          } else {
+            b.dirHoldT += dt;
+            if (b.dirHoldT >= DIR_STICK) {
+              b.dir = cand;
+              b.dirHoldT = 0;
+            }
+          }
+        } else {
+          b.dirHoldT = 0;
+        }
         b.flapT += dt;
         if (b.flapT >= b.flapMs) {
           b.flapT -= b.flapMs;
-          b.frame = 1 - b.frame;
-          b.sprite.setTexture(FRAMES[b.frame]);
+          b.frame = (b.frame + 1) % FLY_FRAMES;
         }
-        if (Math.abs(b.vx) > 4) b.sprite.setFlipX(b.vx < 0);
+        b.sprite.setFrame(b.dir * FLY_FRAMES + b.frame);
         const bob = Math.sin(b.t * 7 + b.bobPhase) * 2.5;
         b.sprite.setPosition(b.gx, b.gy - b.alt + bob).setDepth(DEPTH + i * 0.001);
 
@@ -316,12 +320,22 @@ export function batsFeature(): AmbientFeature {
             const l = Math.hypot(inx, iny) || 1;
             b.vx = (inx / l) * SPD_CRUISE;
             b.vy = (iny / l) * SPD_CRUISE;
+            b.dir = dirFromVel(b.vx, b.vy) ?? b.dir;
           }
         }
       }
     },
     debug() {
-      return { active, inFlight: bats.length, flocks, flushing: flushUntil > lastNow, leaving };
+      const s = bats[0];
+      return {
+        active,
+        ready,
+        inFlight: bats.length,
+        flocks,
+        flushing: flushUntil > lastNow,
+        leaving,
+        sample: s ? { dir: s.dir, frame: s.frame, key: s.sprite.texture.key, x: s.sprite.x, y: s.sprite.y } : null,
+      };
     },
     dispose() {
       for (const b of bats) b.sprite.destroy();

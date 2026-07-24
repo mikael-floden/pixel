@@ -1,5 +1,24 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature, PHASE_DAY, WEATHER_CLEAR } from "../runtime/types";
+import { FLY_FRAMES, SheetSpec, dirFromVel, dirGap, queueSheets, sheetsReady } from "../runtime/critters";
+// 8 hand-made PixelLab bird TYPES, each an 8-direction object with a flapping
+// fly animation and a still base (for perching). Packed one folder per type.
+import bird1Fly from "./art/bird1/fly.png";
+import bird1Still from "./art/bird1/still.png";
+import bird2Fly from "./art/bird2/fly.png";
+import bird2Still from "./art/bird2/still.png";
+import bird3Fly from "./art/bird3/fly.png";
+import bird3Still from "./art/bird3/still.png";
+import bird4Fly from "./art/bird4/fly.png";
+import bird4Still from "./art/bird4/still.png";
+import bird5Fly from "./art/bird5/fly.png";
+import bird5Still from "./art/bird5/still.png";
+import bird6Fly from "./art/bird6/fly.png";
+import bird6Still from "./art/bird6/still.png";
+import bird7Fly from "./art/bird7/fly.png";
+import bird7Still from "./art/bird7/still.png";
+import bird8Fly from "./art/bird8/fly.png";
+import bird8Still from "./art/bird8/still.png";
 
 // Birds — an EPISODE feature and the DAYTIME counterpart to bats. This is a
 // TOP-DOWN world (maintainer 2026-07-18: "stop thinking as if this is a
@@ -10,26 +29,30 @@ import { AmbientCtx, AmbientFeature, PHASE_DAY, WEATHER_CLEAR } from "../runtime
 //     the flock keeps changing.
 //   • They LAND. A wandering flock every so often settles onto the ground
 //     (never onto water — checked through the surface probe), pecks around for a
-//     while, then lifts off again.
+//     while, then lifts off again. A landed bird shows its STILL base sprite;
+//     an airborne one flaps.
 //   • They FLEE THE PLAYER. Walk close to the flock — in the air or on the
 //     ground — and the whole flock FLUSHES: it takes off and scatters away from
 //     you (the classic "spook the pigeons" beat).
 // Altitude is real (high in Z): each bird has a ground position (gx, gy — world
 // px in the iso-projected space) and an altitude lifted above it; it draws at
-// (gx, gy − alt). Pale gull-grey silhouettes (dark wingtips) read over the dark
-// terrain the way the dark bats read over the night; a small folded body shows
-// while perched. Drawn in the sky band, above the world + darkness overlay.
+// (gx, gy − alt). The art is the maintainer's hand-made PixelLab set — 8 bird
+// TYPES, each with 8 rotations + a flap clip — rendered as a real directional
+// sprite (facing derived from the boid's velocity). Drawn in the sky band,
+// above the world + darkness overlay.
 const DEPTH = 1_499_805;
-const FRAMES = ["amb-bird0", "amb-bird1"]; // wings up / wings down (flying, top-down)
-const PERCH = "amb-bird-perch"; // folded body (landed, seen from above)
-// 7×3 flight maps: P = dark wingtip accent, D = pale body.
-const PIX0 = ["P.....P", ".D...D.", "..DDD.."]; // up-stroke (shallow "V")
-const PIX1 = ["..DDD..", ".D...D.", "P.....P"]; // down-stroke (inverted "V")
-// 5×3 perched map — a compact little body from above (P = a lighter back).
-const PIXP = [".DPD.", "DDDDD", ".DDD."];
-const TIP = 0x4a4854; // dark wingtip / body outline (reads over bright sand)
-const BODY = 0xbfc2cd; // pale gull-grey body (reads over dark ground/water)
-const BACK = 0xd7dae2; // lighter back highlight on the perched body
+const TYPES = 8;
+const flyKey = (t: number) => `amb-bird${t}-fly`;
+const stillKey = (t: number) => `amb-bird${t}-still`;
+const FLY_URLS = [bird1Fly, bird2Fly, bird3Fly, bird4Fly, bird5Fly, bird6Fly, bird7Fly, bird8Fly];
+const STILL_URLS = [bird1Still, bird2Still, bird3Still, bird4Still, bird5Still, bird6Still, bird7Still, bird8Still];
+const SHEETS: SheetSpec[] = FLY_URLS.flatMap((url, t) => [
+  { key: flyKey(t), url },
+  { key: stillKey(t), url: STILL_URLS[t] },
+]);
+const BIRD_SCALE = 0.6; // 34px art → a small-but-readable bird in the flock
+const BIRD_ALPHA = 0.95;
+const DIR_STICK = 110; // ms an adjacent-sector heading flip must hold before the sprite turns
 
 const BASE_WEIGHT = 1.0;
 const NIGHT_MULT = 0.05; // ~5% as likely at night (the mirror of the bats' day cut)
@@ -66,7 +89,8 @@ const LANDED = 2;
 const TAKEOFF = 3;
 
 interface Bird {
-  sprite: Phaser.GameObjects.Image;
+  sprite: Phaser.GameObjects.Sprite;
+  type: number; // which of the 8 bird designs
   gx: number; // GROUND position in world px (the point on the map it is over)
   gy: number;
   alt: number; // altitude px above the ground
@@ -77,9 +101,11 @@ interface Bird {
   ty: number;
   cruise: number; // this bird's flying altitude
   wander: number; // wander heading (rad), random-walks
-  flapMs: number;
+  dir: number; // current facing (PixelLab index 0..7), hysteretic
+  dirHoldT: number; // ms an adjacent new heading has persisted
+  flapMs: number; // ms per flap frame
   flapT: number;
-  frame: number;
+  frame: number; // flap frame 0..FLY_FRAMES-1
   bobPhase: number;
   t: number;
 }
@@ -87,6 +113,7 @@ interface Bird {
 export function birdsFeature(): AmbientFeature {
   const birds: Bird[] = [];
   let active = false;
+  let ready = false; // fly/still spritesheets loaded (runtime load, see init)
   let nextFlockIn = 3000;
   let flocks = 0;
   // Flock-level timers (ms clock in scene.time.now).
@@ -101,27 +128,6 @@ export function birdsFeature(): AmbientFeature {
   let lastNow = 0; // last scene clock seen (for debug())
   let seed = 29;
   const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 0xffffffff;
-
-  const ensureTextures = (scene: Phaser.Scene) => {
-    if (scene.textures.exists(FRAMES[0])) return;
-    const paint = (key: string, pix: string[]) => {
-      const g = scene.make.graphics({ x: 0, y: 0 }, false);
-      pix.forEach((row, y) => {
-        for (let x = 0; x < row.length; x++) {
-          const c = row[x];
-          if (c === ".") continue;
-          g.fillStyle(c === "P" ? TIP : c === "B" ? BACK : BODY, 1);
-          g.fillRect(x, y, 1, 1);
-        }
-      });
-      g.generateTexture(key, pix[0].length, pix.length);
-      g.destroy();
-    };
-    paint(FRAMES[0], PIX0);
-    paint(FRAMES[1], PIX1);
-    // Encode the back highlight as "B" so it uses BACK, not TIP.
-    paint(PERCH, PIXP.map((r) => r.replace(/P/g, "B")));
-  };
 
   // Player's world position (iso-projected px) via the game's myScreen probe.
   const playerAt = (ctx: AmbientCtx): { x: number; y: number } | null => {
@@ -144,6 +150,13 @@ export function birdsFeature(): AmbientFeature {
     return !s || s.sound !== "water";
   };
 
+  // Show the right frame: the flap clip while airborne, the still base perched.
+  const drawFrame = (b: Bird, perched: boolean) => {
+    const key = perched ? stillKey(b.type) : flyKey(b.type);
+    if (b.sprite.texture.key !== key) b.sprite.setTexture(key);
+    b.sprite.setFrame(perched ? b.dir : b.dir * FLY_FRAMES + b.frame);
+  };
+
   const launchFlock = (ctx: AmbientCtx) => {
     flocks++;
     const view = ctx.view;
@@ -157,15 +170,17 @@ export function birdsFeature(): AmbientFeature {
     const inl = Math.hypot(inx, iny) || 1;
     const dirx = inx / inl;
     const diry = iny / inl;
+    const dir0 = dirFromVel(dirx, diry) ?? 0;
     for (let i = 0; i < n; i++) {
+      const type = Math.floor(rnd() * TYPES);
       const sprite = ctx.scene.add
-        .image(0, 0, FRAMES[0])
+        .sprite(0, 0, flyKey(type), dir0 * FLY_FRAMES)
         .setDepth(DEPTH + i * 0.001)
-        .setAlpha(0.85)
-        .setScale(1.5) // small distant birds; nearest-filtered
-        .setFlipX(dirx < 0);
+        .setAlpha(BIRD_ALPHA)
+        .setScale(BIRD_SCALE);
       birds.push({
         sprite,
+        type,
         gx: ex + (rnd() - 0.5) * 40,
         gy: ey + (rnd() - 0.5) * 40,
         alt: CRUISE_ALT[0] + rnd() * (CRUISE_ALT[1] - CRUISE_ALT[0]),
@@ -176,9 +191,11 @@ export function birdsFeature(): AmbientFeature {
         ty: 0,
         cruise: CRUISE_ALT[0] + rnd() * (CRUISE_ALT[1] - CRUISE_ALT[0]),
         wander: rnd() * Math.PI * 2,
-        flapMs: 130 + rnd() * 120,
+        dir: dir0,
+        dirHoldT: 0,
+        flapMs: 30 + rnd() * 12, // per-frame; 16 frames ≈ 0.5-0.7s wingbeat
         flapT: rnd() * 200,
-        frame: 0,
+        frame: Math.floor(rnd() * FLY_FRAMES), // desync the flock's wingbeats
         bobPhase: rnd() * Math.PI * 2,
         t: rnd() * 5,
       });
@@ -203,6 +220,7 @@ export function birdsFeature(): AmbientFeature {
     b.vy = (iny / l) * SPD_CRUISE;
     b.alt = b.cruise;
     b.state = FLYING;
+    b.dir = dirFromVel(b.vx, b.vy) ?? b.dir;
   };
 
   return {
@@ -217,9 +235,15 @@ export function birdsFeature(): AmbientFeature {
       if (on) nextFlockIn = 1200 + Math.random() * 2000;
     },
     init(ctx) {
-      ensureTextures(ctx.scene);
+      queueSheets(ctx.scene, SHEETS); // runtime-load the PixelLab art (see critters.ts)
     },
     update(ctx, dt) {
+      // The art loads asynchronously after the scene is live — idle until ready
+      // (so a flock never launches without its sprites). Cheap existence poll.
+      if (!ready) {
+        ready = sheetsReady(ctx.scene, SHEETS);
+        if (!ready) return;
+      }
       const dts = Math.min(dt, 100) / 1000;
       const now = ctx.scene.time.now;
       lastNow = now;
@@ -324,7 +348,8 @@ export function birdsFeature(): AmbientFeature {
         b.t += dts;
 
         if (b.state === LANDED && !flushing) {
-          // Perched: sit still with the odd tiny hop; hold the folded sprite.
+          // Perched: sit still with the odd tiny hop; hold the still base sprite
+          // (facing whichever way it landed — vx is ~0 now, so keep b.dir).
           b.vx *= 0.8;
           b.vy *= 0.8;
           b.gx += b.vx * dts;
@@ -334,7 +359,7 @@ export function birdsFeature(): AmbientFeature {
             b.vy = (rnd() - 0.5) * 24;
           }
           b.alt += (0 - b.alt) * Math.min(1, dts * 8);
-          if (b.sprite.texture.key !== PERCH) b.sprite.setTexture(PERCH);
+          drawFrame(b, true);
           b.sprite.setPosition(b.gx, b.gy - b.alt).setDepth(DEPTH + i * 0.001);
           continue;
         }
@@ -454,15 +479,29 @@ export function birdsFeature(): AmbientFeature {
         b.gx += b.vx * dts;
         b.gy += b.vy * dts;
 
-        // Flap + face + draw (a gentle bob only while airborne).
+        // Face (hysteretic 8-way from the boid's velocity) + flap + draw
+        // (a gentle bob only while airborne).
+        const cand = dirFromVel(b.vx, b.vy);
+        if (cand !== null && cand !== b.dir) {
+          if (dirGap(cand, b.dir) >= 2) {
+            b.dir = cand; // a real turn — snap immediately
+            b.dirHoldT = 0;
+          } else {
+            b.dirHoldT += dt; // an adjacent flip — only turn if it persists
+            if (b.dirHoldT >= DIR_STICK) {
+              b.dir = cand;
+              b.dirHoldT = 0;
+            }
+          }
+        } else {
+          b.dirHoldT = 0;
+        }
         b.flapT += dt;
         if (b.flapT >= b.flapMs) {
           b.flapT -= b.flapMs;
-          b.frame = 1 - b.frame;
+          b.frame = (b.frame + 1) % FLY_FRAMES;
         }
-        if (b.sprite.texture.key === PERCH) b.frame = 0;
-        b.sprite.setTexture(FRAMES[b.frame]);
-        if (Math.abs(b.vx) > 4) b.sprite.setFlipX(b.vx < 0);
+        drawFrame(b, false);
         const bob = b.alt > 4 ? Math.sin(b.t * 5 + b.bobPhase) * 2 : 0;
         b.sprite.setPosition(b.gx, b.gy - b.alt + bob).setDepth(DEPTH + i * 0.001);
 
@@ -485,7 +524,19 @@ export function birdsFeature(): AmbientFeature {
       const flying = birds.filter((b) => b.state === FLYING || b.state === TAKEOFF).length;
       const landed = birds.filter((b) => b.state === LANDED).length;
       const landing = birds.filter((b) => b.state === LANDING).length;
-      return { active, inFlight: birds.length, flying, landing, landed, flocks, flushing: flushUntil > lastNow, leaving };
+      const s = birds[0];
+      return {
+        active,
+        ready,
+        inFlight: birds.length,
+        flying,
+        landing,
+        landed,
+        flocks,
+        flushing: flushUntil > lastNow,
+        leaving,
+        sample: s ? { type: s.type, dir: s.dir, frame: s.frame, key: s.sprite.texture.key, x: s.sprite.x, y: s.sprite.y } : null,
+      };
     },
     dispose() {
       for (const b of birds) b.sprite.destroy();

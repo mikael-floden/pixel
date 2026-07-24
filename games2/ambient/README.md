@@ -68,9 +68,17 @@ them; folder isolation beats DRY here).
 
 Free choice per feature — PixelLab sprites, procedural Phaser textures,
 custom shaders — whatever serves the feeling best at the lowest complexity.
-Current features are procedural (a 3-px glow needs no PixelLab budget).
-If a feature does call PixelLab, it keeps its own copy of the client and
-respects the shared budget floors (`coordination/PROTOCOL.md`).
+Most features are procedural (a 3-px glow needs no PixelLab budget). The
+**birds** and **bats** flocks render the maintainer's hand-made PixelLab art:
+8 bird TYPES + a bat, each an 8-direction object (`low top-down`) with a
+flap animation and a still base, committed as packed spritesheets under
+`birds/art/` + `bats/art/` and loaded at runtime (`runtime/critters.ts`;
+`fly.png` = 16 flap frames × 8 facings, `still.png` = 8 facings). The boids
+sim stays the same — it just drives a directional sprite (facing from the
+boid velocity via the shared `vectorToDirection`) instead of a flip-mirrored
+2-frame texture; a landed bird shows its still base. If a feature calls the
+PixelLab API directly, it keeps its own client copy and respects the shared
+budget floors (`coordination/PROTOCOL.md`).
 
 ## Performance budget
 

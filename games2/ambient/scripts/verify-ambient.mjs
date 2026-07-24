@@ -228,6 +228,53 @@ try {
     fail(`compatible() wrong: ${JSON.stringify(comp)}`);
   else ok("compatible(): water universal; birds/bats + fireflies/pollen exclusive");
 
+  // ---- sprite-art birds/bats (maintainer 2026-07-24): the procedural flocks
+  // were replaced with the maintainer's PixelLab art — 8 bird TYPES + a bat,
+  // each an 8-direction object with a flap animation; a landed bird shows its
+  // still base. The boids sim is unchanged; these assert the RENDER swap. ----
+  await page.evaluate(() => { window.__ml.timeOfDay("day", true); window.__mlAmbient.demo("birds"); });
+  await page
+    .waitForFunction(() => { const d = window.__mlAmbient.debug("birds"); return d && d.ready && d.inFlight >= 1; }, null, { timeout: 20000 })
+    .catch(() => fail("birds sprite art never loaded / no flock launched"));
+  const bSeen = { dirs: new Set(), frames: new Set(), keys: new Set() };
+  for (let i = 0; i < 16; i++) {
+    await page.waitForTimeout(300);
+    const s = (await dbg("birds"))?.sample;
+    if (s) { bSeen.dirs.add(s.dir); bSeen.frames.add(s.frame); bSeen.keys.add(s.key); }
+  }
+  if (bSeen.frames.size < 4) fail(`birds fly clip must advance frames (saw ${bSeen.frames.size})`);
+  if (bSeen.dirs.size < 2) fail(`birds must face different directions as they wheel (saw ${[...bSeen.dirs]})`);
+  if (![...bSeen.keys].every((k) => /^amb-bird\d-fly$/.test(k))) fail(`airborne birds must use a fly spritesheet (saw ${[...bSeen.keys]})`);
+  else ok(`birds: art loaded, flap animates (${bSeen.frames.size} frames), faces ${bSeen.dirs.size} dirs (${[...bSeen.keys]})`);
+
+  // Land on the still base: point the CAMERA at dry ground far from the spawn
+  // player (so no flush, and LAND_CLEAR is satisfied) and wait out the settle.
+  await page.evaluate(() => window.__ml.lookAt(165, 42)); // dry the_island2 plateau, far from spawn
+  let perch = null;
+  for (let i = 0; i < 50 && !perch; i++) {
+    await page.waitForTimeout(500);
+    const d = await dbg("birds");
+    if (d && d.landed >= 1 && /^amb-bird\d-still$/.test(d.sample?.key || "")) perch = d.sample.key;
+  }
+  if (!perch) fail("a landed bird must show the still base sprite (amb-bird<n>-still)");
+  else ok(`birds land on the still base (${perch})`);
+  await page.evaluate(() => window.__ml.lookAt()); // re-attach the camera
+
+  // Bats: night sprite art — a flapping directional bat (never lands).
+  await page.evaluate(() => { window.__ml.timeOfDay("night", true); window.__mlAmbient.demo("bats"); });
+  await page
+    .waitForFunction(() => { const d = window.__mlAmbient.debug("bats"); return d && d.ready && d.inFlight >= 1; }, null, { timeout: 20000 })
+    .catch(() => fail("bats sprite art never loaded / no colony launched"));
+  const tSeen = { dirs: new Set(), frames: new Set(), keys: new Set() };
+  for (let i = 0; i < 16; i++) {
+    await page.waitForTimeout(300);
+    const s = (await dbg("bats"))?.sample;
+    if (s) { tSeen.dirs.add(s.dir); tSeen.frames.add(s.frame); tSeen.keys.add(s.key); }
+  }
+  if (tSeen.frames.size < 4) fail(`bats fly clip must advance frames (saw ${tSeen.frames.size})`);
+  if (![...tSeen.keys].every((k) => k === "amb-bat-fly")) fail(`bats must use the bat fly spritesheet (saw ${[...tSeen.keys]})`);
+  else ok(`bats: art loaded, flap animates (${tSeen.frames.size} frames), faces ${tSeen.dirs.size} dirs`);
+
   // AUTO shows the LIVE active effect: at night with nothing pinned,
   // fireflies self-gate on and the label reports "auto (fireflies)".
   await page.evaluate(() => { window.__ml.timeOfDay("night", true); window.__mlAmbient.demo("auto"); });
