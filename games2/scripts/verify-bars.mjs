@@ -72,10 +72,13 @@ try {
     const icon = goldRow?.querySelector(".ml-gold-icon");
     const xpRow = rightGroup?.querySelector(".ml-bar-row"); // XP is the only bar in the right group
     const epRow = leftGroup ? leftGroup.querySelectorAll(".ml-bar-row")[1] : null; // Energy = 2nd left row
+    const epNum = epRow?.querySelector(".ml-bar-num"); // the "0 / 0 EP" text under the gauge
+    const mid = (b) => (b ? Math.round((b.t + b.b) / 2) : null);
     return {
       exists: !!goldRow, numText: num?.textContent ?? null,
       iconSrc: icon?.getAttribute("src") || "", iconLoaded: icon ? icon.naturalWidth > 0 : false,
       goldRow: box(goldRow), num: box(num), icon: box(icon), xpRow: box(xpRow), epRow: box(epRow),
+      goldMid: mid(box(goldRow)), epNumMid: mid(box(epNum)),
     };
   });
   g.exists ? ok("gold row present under the right group") : fail("no gold row");
@@ -86,8 +89,12 @@ try {
     Math.abs(g.goldRow.r - g.xpRow.r) <= 2 ? ok(`gold row right-aligned to XP (${g.goldRow.r} ≈ ${g.xpRow.r})`) : fail(`gold row right edge ${g.goldRow.r} vs XP ${g.xpRow.r}`);
     // icon at the far right, amount just to its left (both flush right)
     g.icon.r >= g.goldRow.r - 2 && g.num.r <= g.icon.l + 1 ? ok(`amount left of the right-aligned icon (num.r=${g.num.r} icon.l=${g.icon.l} icon.r=${g.icon.r})`) : fail(`gold layout wrong: num=${JSON.stringify(g.num)} icon=${JSON.stringify(g.icon)}`);
-    // sits opposite the Energy bar (2nd row each side → same top)
-    Math.abs(g.goldRow.t - g.epRow.t) <= 3 ? ok(`gold row aligns with the Energy bar (top ${g.goldRow.t} ≈ ${g.epRow.t})`) : fail(`gold row top ${g.goldRow.t} vs Energy ${g.epRow.t}`);
+    // sits opposite the Energy bar, DROPPED to its number line: the Energy value
+    // is under the gauge, so the gold's single line centers on that text to read
+    // as "on the same line" (maintainer 2026-07-24). Gold is BELOW the EP gauge
+    // top and its centre matches the EP number's centre.
+    g.goldRow.t > g.epRow.t + 8 ? ok(`gold row dropped below the Energy gauge top (${g.goldRow.t} > ${g.epRow.t})`) : fail(`gold row not dropped: top ${g.goldRow.t} vs Energy gauge top ${g.epRow.t}`);
+    Math.abs(g.goldMid - g.epNumMid) <= 6 ? ok(`gold centres on the Energy number line (${g.goldMid} ≈ ${g.epNumMid})`) : fail(`gold centre ${g.goldMid} vs Energy number ${g.epNumMid}`);
   }
 
   if (errors.length) fail(`page errors: ${errors.join(" | ")}`);
