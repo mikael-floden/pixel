@@ -26,14 +26,16 @@ import bird8Still from "./art/bird8/still.png";
 // sprite crossing the screen:
 //   • BOIDS flocking — cohesion, alignment, separation + a wander drift, so the
 //     birds move together in any direction over the terrain and the shape of
-//     the flock keeps changing.
-//   • They LAND. A wandering flock every so often settles onto the ground
-//     (never onto water — checked through the surface probe), pecks around for a
-//     while, then lifts off again. A landed bird shows its STILL base sprite;
-//     an airborne one flaps.
-//   • They FLEE THE PLAYER. Walk close to the flock — in the air or on the
-//     ground — and the whole flock FLUSHES: it takes off and scatters away from
-//     you (the classic "spook the pigeons" beat).
+//     the flock keeps changing. A flock is a small MIX of 1-3 bird TYPES and
+//     each kind PREFERS ITS OWN (same-type cohesion/alignment dominate).
+//   • They LAND OFTEN. A wandering flock soon settles onto the ground (never
+//     onto water — checked through the surface probe), pecks around FACING ANY
+//     DIRECTION for a while, then lifts off. A landed bird shows its STILL base
+//     sprite; an airborne one flaps.
+//   • They FLEE THE PLAYER — but only when LOW. Walk close to a landed/low flock
+//     and it FLUSHES: takes off and scatters away (the "spook the pigeons"
+//     beat). A HIGH cruising flock isn't scared — it drifts, and sometimes flies,
+//     right over the player.
 // Altitude is real (high in Z): each bird has a ground position (gx, gy — world
 // px in the iso-projected space) and an altitude lifted above it; it draws at
 // (gx, gy − alt). The art is the maintainer's hand-made PixelLab set — 8 bird
@@ -66,18 +68,26 @@ const SPD_CRUISE = 92;
 const SPD_MAX = 155;
 const NEIGHBOR_R = 74; // boids neighbourhood
 const SEP_R = 24; // personal space
-// Two tiers of player wariness: a GENTLE avoidance keeps a loose distance
-// while calm, and a close approach PANICS the whole flock into a scatter.
+// Two tiers of player wariness, both ALTITUDE-GATED (maintainer: birds high in
+// the sky aren't scared — they fly right over you): a GENTLE avoidance keeps a
+// loose distance while low, and a close approach PANICS the whole flock into a
+// scatter — but only birds BELOW FEAR_ALT (landing/perched/just-off) react. A
+// high cruising flock ignores the player and passes over.
 const AVOID_R = 190; // gentle steer-away radius
-const FLEE_R = 92; // this close → panic flush
+const FLEE_R = 92; // this close → panic flush (a LOW bird only)
+const FEAR_ALT = 40; // px — below this a bird is "low" and wary; above it, fearless
 const W_SEP = 1.7;
 const W_ALI = 0.65;
 const W_COH = 0.6;
 const W_WANDER = 0.5;
 const W_BOUND = 0.5; // soft pull back toward the visible area
-const W_AVOID = 0.9; // gentle keep-your-distance steer
+const W_AVOID = 0.9; // gentle keep-your-distance steer (scaled down with altitude)
+// Type affinity: same-type birds pull together, different types only loosely —
+// a mixed flock still flocks, but each kind clusters with its own (maintainer).
+const DIFF_TYPE_W = 0.3; // a different-type neighbour's weight in cohesion/alignment
+const FLOCK_TYPES: [number, number] = [1, 3]; // distinct bird types per flock (kept low)
 const LAND_REST: [number, number] = [4500, 10_000]; // time perched before lift-off
-const SETTLE_AFTER: [number, number] = [7_000, 15_000]; // wandering time before trying to land
+const SETTLE_AFTER: [number, number] = [3_000, 7_000]; // wandering time before trying to land (land often)
 const TAKEOFF_MS = 1400; // flush / lift-off climb duration
 const FLUSH_COOLDOWN = 6000; // after a scatter, stay calm this long (no re-panic)
 const FLOCK_LIFE: [number, number] = [34_000, 58_000]; // then the flock departs the view
@@ -171,8 +181,18 @@ export function birdsFeature(): AmbientFeature {
     const dirx = inx / inl;
     const diry = iny / inl;
     const dir0 = dirFromVel(dirx, diry) ?? 0;
+    // This flock's palette: 1-3 distinct types, weighted LOW (mostly one or
+    // two). Birds draw their type from it, so a flock is a small mix rather
+    // than all 8 kinds at once — and same-type birds cluster (see the boids loop).
+    const r = rnd();
+    const nTypes = r < 0.4 ? FLOCK_TYPES[0] : r < 0.75 ? 2 : FLOCK_TYPES[1];
+    const palette: number[] = [];
+    while (palette.length < nTypes) {
+      const t = Math.floor(rnd() * TYPES);
+      if (!palette.includes(t)) palette.push(t);
+    }
     for (let i = 0; i < n; i++) {
-      const type = Math.floor(rnd() * TYPES);
+      const type = palette[Math.floor(rnd() * palette.length)];
       const sprite = ctx.scene.add
         .sprite(0, 0, flyKey(type), flyFrame(dir0))
         .setDepth(DEPTH + i * 0.001)
@@ -270,14 +290,21 @@ export function birdsFeature(): AmbientFeature {
       const tint = skyTint(view); // grade the whole flock with the day/night sky light
 
       // ---- flock-level decisions ---------------------------------------
-      // FLUSH: player gets CLOSE (within FLEE_R of any bird) → the whole flock
-      // panics, takes off and scatters AWAY from you with a real outward impulse
-      // (landed or flying, doesn't matter — you spooked them). A cooldown after
-      // keeps them from re-panicking every frame while you stand near.
+      // FLUSH: the player gets CLOSE to a LOW bird → the whole flock panics,
+      // takes off and scatters AWAY with a real outward impulse (you spooked
+      // them). A cooldown keeps them from re-panicking every frame while you
+      // stand near. A high cruising flock is fearless (see below).
       if (flushUntil <= now && now >= flushCooldownUntil && player) {
-        let nearest = Infinity;
-        for (const b of birds) nearest = Math.min(nearest, Math.hypot(player.x - b.gx, player.y - b.gy));
-        if (nearest < FLEE_R) {
+        // Only a LOW bird (landed / landing / just off the ground) is close
+        // enough to the ground to be spooked; a high cruising flock passing
+        // overhead ignores the player entirely and flies right over.
+        let spooked = false;
+        for (const b of birds)
+          if (b.alt < FEAR_ALT && Math.hypot(player.x - b.gx, player.y - b.gy) < FLEE_R) {
+            spooked = true;
+            break;
+          }
+        if (spooked) {
           flushUntil = now + TAKEOFF_MS;
           flushCooldownUntil = now + TAKEOFF_MS + FLUSH_COOLDOWN;
           groundUntil = 0;
@@ -349,8 +376,9 @@ export function birdsFeature(): AmbientFeature {
         b.t += dts;
 
         if (b.state === LANDED && !flushing) {
-          // Perched: sit still with the odd tiny hop; hold the still base sprite
-          // (facing whichever way it landed — vx is ~0 now, so keep b.dir).
+          // Perched: sit still with the odd tiny hop, facing a RANDOM direction
+          // (rolled on landing, re-rolled on a hop) — perched birds don't all
+          // face the camera. Holds the still base sprite.
           b.vx *= 0.8;
           b.vy *= 0.8;
           b.gx += b.vx * dts;
@@ -358,6 +386,7 @@ export function birdsFeature(): AmbientFeature {
           if (rnd() < 0.01) {
             b.vx = (rnd() - 0.5) * 24;
             b.vy = (rnd() - 0.5) * 24;
+            b.dir = Math.floor(rnd() * 8); // a little hop/turn — re-face any direction
           }
           b.alt += (0 - b.alt) * Math.min(1, dts * 8);
           drawFrame(b, true, tint);
@@ -387,6 +416,7 @@ export function birdsFeature(): AmbientFeature {
             b.alt = 0;
             b.vx *= 0.3;
             b.vy *= 0.3;
+            b.dir = Math.floor(rnd() * 8); // perch facing ANY way — birds don't all face the camera
           }
         } else {
           // FLYING or TAKEOFF: boids + wander (+ flee, + climb on takeoff).
@@ -397,6 +427,7 @@ export function birdsFeature(): AmbientFeature {
           let cohx = 0;
           let cohy = 0;
           let nn = 0;
+          let wsum = 0; // affinity-weighted neighbour count (same-type 1, other DIFF_TYPE_W)
           for (const o of birds) {
             if (o === b) continue;
             const dx = o.gx - b.gx;
@@ -404,10 +435,15 @@ export function birdsFeature(): AmbientFeature {
             const d = Math.hypot(dx, dy);
             if (d > NEIGHBOR_R) continue;
             nn++;
-            alix += o.vx;
-            aliy += o.vy;
-            cohx += o.gx;
-            cohy += o.gy;
+            // Prefer own kind: same-type neighbours dominate cohesion + alignment
+            // (each type clusters within a mixed flock); separation stays
+            // universal so nobody collides regardless of type.
+            const w = o.type === b.type ? 1 : DIFF_TYPE_W;
+            wsum += w;
+            alix += o.vx * w;
+            aliy += o.vy * w;
+            cohx += o.gx * w;
+            cohy += o.gy * w;
             if (d < SEP_R && d > 0) {
               sepx -= dx / d;
               sepy -= dy / d;
@@ -416,10 +452,10 @@ export function birdsFeature(): AmbientFeature {
           if (nn > 0) {
             ax += sepx * W_SEP * SPD_CRUISE;
             ay += sepy * W_SEP * SPD_CRUISE;
-            ax += (alix / nn - b.vx) * W_ALI;
-            ay += (aliy / nn - b.vy) * W_ALI;
-            ax += (cohx / nn - b.gx) * W_COH;
-            ay += (cohy / nn - b.gy) * W_COH;
+            ax += (alix / wsum - b.vx) * W_ALI; // wsum > 0 whenever nn > 0
+            ay += (aliy / wsum - b.vy) * W_ALI;
+            ax += (cohx / wsum - b.gx) * W_COH;
+            ay += (cohy / wsum - b.gy) * W_COH;
           }
           // Wander: a slowly turning heading nudges the flock's drift.
           b.wander += (rnd() - 0.5) * 2.2 * dts * 3;
@@ -445,15 +481,17 @@ export function birdsFeature(): AmbientFeature {
             if (b.gy < view.y + my) ay += (view.y + my - b.gy) * W_BOUND;
             else if (b.gy > view.bottom - my) ay += (view.bottom - my - b.gy) * W_BOUND;
           }
-          // Gentle avoidance: keep a loose distance from the player (the real
-          // panic-scatter is the flock-level FLUSH above; this just stops them
-          // drifting right onto you between flushes).
-          if (player) {
+          // Gentle avoidance — but ONLY while low: a bird near the ground keeps
+          // its distance, a high cruiser fearlessly drifts (and sometimes flies)
+          // straight over the player. Scales from full at the ground to nil at
+          // FEAR_ALT. The real panic-scatter is the flock-level FLUSH above.
+          if (player && b.alt < FEAR_ALT) {
             const dx = b.gx - player.x;
             const dy = b.gy - player.y;
             const d = Math.hypot(dx, dy);
             if (d < AVOID_R && d > 0) {
-              const push = (1 - d / AVOID_R) * W_AVOID * SPD_CRUISE;
+              const altScale = 1 - b.alt / FEAR_ALT; // 1 at ground → 0 at FEAR_ALT
+              const push = (1 - d / AVOID_R) * W_AVOID * SPD_CRUISE * altScale;
               ax += (dx / d) * push;
               ay += (dy / d) * push;
             }
@@ -520,6 +558,8 @@ export function birdsFeature(): AmbientFeature {
         sample: s
           ? { type: s.type, dir: s.dir, frame: s.frame, key: s.sprite.texture.key, tint: s.sprite.tintTopLeft, x: s.sprite.x, y: s.sprite.y }
           : null,
+        // Per-bird snapshot for flock QA (on-demand only, like footprintsList).
+        all: birds.map((b) => ({ type: b.type, dir: b.dir, state: b.state, alt: Math.round(b.alt), gx: Math.round(b.gx), gy: Math.round(b.gy) })),
       };
     },
     dispose() {
