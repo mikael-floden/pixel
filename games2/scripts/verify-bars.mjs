@@ -89,12 +89,15 @@ try {
     Math.abs(g.goldRow.r - g.xpRow.r) <= 2 ? ok(`gold row right-aligned to XP (${g.goldRow.r} ≈ ${g.xpRow.r})`) : fail(`gold row right edge ${g.goldRow.r} vs XP ${g.xpRow.r}`);
     // icon at the far right, amount just to its left (both flush right)
     g.icon.r >= g.goldRow.r - 2 && g.num.r <= g.icon.l + 1 ? ok(`amount left of the right-aligned icon (num.r=${g.num.r} icon.l=${g.icon.l} icon.r=${g.icon.r})`) : fail(`gold layout wrong: num=${JSON.stringify(g.num)} icon=${JSON.stringify(g.icon)}`);
-    // sits opposite the Energy bar, DROPPED to its number line: the Energy value
-    // is under the gauge, so the gold's single line centers on that text to read
-    // as "on the same line" (maintainer 2026-07-24). Gold is BELOW the EP gauge
-    // top and its centre matches the EP number's centre.
+    // sits opposite the Energy bar, DROPPED toward its number line: the Energy
+    // value is under the gauge, so the gold's single line sinks to read as "on
+    // the same line" as that text — landing a HAIR ABOVE the number line
+    // (maintainer 2026-07-24: exactly on it read a touch too low). So the gold is
+    // well below the EP gauge top, and its centre is just above / at the EP number.
     g.goldRow.t > g.epRow.t + 8 ? ok(`gold row dropped below the Energy gauge top (${g.goldRow.t} > ${g.epRow.t})`) : fail(`gold row not dropped: top ${g.goldRow.t} vs Energy gauge top ${g.epRow.t}`);
-    Math.abs(g.goldMid - g.epNumMid) <= 6 ? ok(`gold centres on the Energy number line (${g.goldMid} ≈ ${g.epNumMid})`) : fail(`gold centre ${g.goldMid} vs Energy number ${g.epNumMid}`);
+    (g.goldMid <= g.epNumMid + 3 && g.goldMid >= g.epNumMid - 16)
+      ? ok(`gold sits by the Energy number line, a hair above (${g.goldMid} vs ${g.epNumMid})`)
+      : fail(`gold centre ${g.goldMid} not near/above Energy number ${g.epNumMid}`);
   }
 
   if (errors.length) fail(`page errors: ${errors.join(" | ")}`);

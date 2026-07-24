@@ -189,13 +189,14 @@ function injectStyles() {
   /* Gold row: amount then icon, BOTH flush to the right edge (= the bar's right
      edge, so it lines up with XP above and the Energy bar opposite). row width =
      bar width; justify-content:flex-end pins the [amount][icon] pair right.
-     margin-top drops the row to the Energy bar's NUMBER line: the Energy bar has
-     its value UNDER the gauge, so the gold — a single line — must sink past the
-     gauge to read as "on the same line" as that text (maintainer 2026-07-24:
-     "account for that height as well ... a little lower"). ~= GAUGE_H(30) + the
-     number's margin(4) − half the icon's overhang, tuned on his phone view. */
+     margin-top drops the row toward the Energy bar's NUMBER line: the Energy bar
+     has its value UNDER the gauge, so the gold — a single line — must sink past
+     the gauge to read as "on the same line" as that text (maintainer 2026-07-24:
+     "account for that height as well"). Tuned on his phone view to sit a HAIR
+     ABOVE that number line — sitting exactly on it read a touch too low ("a tiny
+     bit up again, not as much as the original placement"). */
   .ml-gold-row{display:flex;justify-content:flex-end;align-items:center;gap:10px;
-    width:${w}px;margin-top:28px}
+    width:${w}px;margin-top:22px}
   .ml-gold-num{font:700 ${NUM_PX}px system-ui,sans-serif;letter-spacing:.5px;
     color:#f0e2c6;text-shadow:0 1px 2px #000,0 0 3px #000;white-space:nowrap}
   .ml-gold-icon{height:36px;width:auto;image-rendering:pixelated;
