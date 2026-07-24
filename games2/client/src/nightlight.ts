@@ -1936,11 +1936,22 @@ export class NightLights {
     this.curPlayerXY = this.fogTestXY ?? [playerCol, playerRow];
     if (!this.shader || !this.active) return;
     const s = this.shader;
-    // Ground-truth calibrated by raw suv readback: the zoomed overlay shows
-    // the CENTRED 1/zoom portion of the fragment range (measured: screen ↔
-    // suv [0.25, 0.75] at zoom 2, window-size independent). The world window
-    // is therefore the camera view inflated by zoom AROUND ITS CENTRE.
-    const k = this.spanScale * (cam.zoom || 1);
+    // The overlay Images are setScrollFactor(0) but Phaser STILL scales them by the
+    // camera zoom. Counter that here: scale each overlay by 1/zoom so its on-screen
+    // size is ALWAYS exactly the screen. Previously the code left the overlays at
+    // scale 1 and instead INFLATED the world window by zoom (so the visible centred
+    // 1/zoom portion showed the view) — that only covers the screen for zoom >= 1. The
+    // speed-coupled zoom-OUT drops the zoom BELOW the base, and on a phone (base zoom 1)
+    // below 1, so the screen-sized overlay rendered SMALLER than the screen and left the
+    // newly revealed margins UNSHADED (maintainer 2026-07-24, mobile-only). With the
+    // counter-scale the overlay fills the screen at any zoom, so uCam is just the plain
+    // camera view (× spanScale) and the field maps 1:1 to what the camera shows.
+    const zoom = cam.zoom || 1;
+    const invZoom = 1 / zoom;
+    this.overlay?.setScale(invZoom);
+    this.mistOverlay?.setScale(invZoom);
+    this.depthFogOverlay?.setScale(invZoom);
+    const k = this.spanScale;
     const wv = cam.worldView;
     const camX = wv.x - (wv.width * (k - 1)) / 2;
     const camY = wv.y - (wv.height * (k - 1)) / 2;
