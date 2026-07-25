@@ -110,7 +110,14 @@ const LAND_SCATTER = 70; // ± spread of each bird's personal perch spot around 
 // varying size and — most important — varied FORMATIONS (V / echelon / line /
 // skein / cluster). They keep the sky alive now the ground flock settles longer,
 // and BOTH flocks scale with the player's density slider (runtime/density.ts).
-const MIGR_ALT: [number, number] = [150, 240]; // well above the ground cruise (70-120) and FEAR_ALT
+// Cruise in the depth-fog's FOG-FREE band: the elevation-edge fog has a ~7-level
+// (=112px) dead-zone, so a bird any higher HAZES OVER even when it's right above
+// the player (maintainer 2026-07-25: "so high they are in fog ... use the lower
+// altitude span"). 120px caps at the same ~0.02 haze the ground flock's ceiling
+// already reaches without complaint; the higher floor keeps them a steady cruise
+// over the low, wandering ground flock. Their determined straight-line formations
+// (not altitude) are what set them apart.
+const MIGR_ALT: [number, number] = [90, 120];
 const MIGR_SPD: [number, number] = [60, 84]; // steady crossing speed, one value per group
 const MIGR_EVERY_MS: [number, number] = [9_000, 22_000]; // gap between group launches (÷ density)
 const MIGR_SPRING = 2.6; // 1/s pull of each bird toward its formation slot (loose → alive, not rigid)
