@@ -106,9 +106,14 @@ def _dir_key(order, d):
 
 # --- mirroring one character ------------------------------------------------
 
-def sync_character(client, name, cid):
+def sync_character(client, name, cid, force=False):
     """Mirror one PixelLab character (base rotations + all animations) into
-    humans/<name>/. Returns a short summary dict."""
+    humans/<name>/. Returns a short summary dict.
+
+    force=True re-downloads every frame even when the group-id / URL looks
+    unchanged. PixelLab can update an animation IN PLACE (same animation_group_id
+    and same frame URLs, new pixels), which the normal fast-skip cannot see, so a
+    forced pass is how you pull such edits."""
     root = os.path.join(HUMANS, name)
     os.makedirs(root, exist_ok=True)
     prev = _read_json(os.path.join(root, "character.json"), {}) or {}
@@ -127,7 +132,7 @@ def sync_character(client, name, cid):
     saved_rot = {}
     for d, url in rotation_urls.items():
         dst = os.path.join(base_dir, f"{d}.png")
-        if prev_rot.get(d) == url and os.path.exists(dst):
+        if prev_rot.get(d) == url and os.path.exists(dst) and not force:
             saved_rot[d] = url
             stats["rot_skip"] += 1
             continue
@@ -173,7 +178,7 @@ def sync_character(client, name, cid):
                 want[dd] = frames
 
         prev_a = prev_by_type.get(atype) or {}
-        unchanged = (prev_a.get("animation_group_id") == gid and gid is not None
+        unchanged = (not force and prev_a.get("animation_group_id") == gid and gid is not None
                      and _anim_on_disk(adir, want))
         if unchanged:
             saved_anims[slug] = {**prev_a, "animation_type": atype}
@@ -321,6 +326,9 @@ def main():
     ap = argparse.ArgumentParser(description="Mirror the two heroes (+ animations) from PixelLab.")
     ap.add_argument("names", nargs="*", help="Which heroes to sync (default: all pinned).")
     ap.add_argument("--no-push", action="store_true")
+    ap.add_argument("--force", action="store_true",
+                    help="Re-download every frame even if group-id/URL look unchanged "
+                         "(catches PixelLab IN-PLACE animation edits).")
     args = ap.parse_args()
 
     cfg = load_config()
@@ -335,8 +343,8 @@ def main():
         if not cid:
             print(f"! {name}: not pinned in config, skipping")
             continue
-        print(f"+ syncing {name} <- {cid}")
-        s = sync_character(client, name, cid)
+        print(f"+ syncing {name} <- {cid}{' (FORCE)' if args.force else ''}")
+        s = sync_character(client, name, cid, force=args.force)
         print(f"  {name}: rotations +{s['rot_new']}/skip {s['rot_skip']} | "
               f"animations +{s['anim_new']}/skip {s['anim_skip']} | {s['frames']} frames downloaded")
         commit_push(f"characters2: sync {name} from PixelLab "
