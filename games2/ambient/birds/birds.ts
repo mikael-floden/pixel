@@ -461,7 +461,7 @@ export function birdsFeature(): AmbientFeature {
         // shading is identical — only the wash opacity drops. The settling flock
         // and bats keep full fog (their own calls).
         applyFog(ctx.scene, b, { ...grade, fog: grade.fog * MIGR_FOG_K }, BIRD_ALPHA);
-        applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade.groundL, grade.topL);
+        applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade.groundL, grade.topL, grade.shadowDepth);
         // Cull once the bird has CROSSED and exited on the far side (its
         // projection on the heading passes the view). A bird still flying IN has
         // a negative projection, so this never deletes an entering bird.
@@ -674,7 +674,7 @@ export function birdsFeature(): AmbientFeature {
           drawFrame(b, true, tint);
           b.sprite.setPosition(b.gx, b.gy - b.alt).setDepth(DEPTH + i * 0.001);
           applyFog(ctx.scene, b, grade, BIRD_ALPHA);
-          applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade.groundL, grade.topL);
+          applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade.groundL, grade.topL, grade.shadowDepth);
           continue;
         }
 
@@ -711,7 +711,7 @@ export function birdsFeature(): AmbientFeature {
             drawFrame(b, true, tint);
             b.sprite.setPosition(b.gx, b.gy - b.alt).setDepth(DEPTH + i * 0.001);
             applyFog(ctx.scene, b, grade, BIRD_ALPHA);
-            applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade.groundL, grade.topL);
+            applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade.groundL, grade.topL, grade.shadowDepth);
             continue;
           }
         } else {
@@ -830,7 +830,7 @@ export function birdsFeature(): AmbientFeature {
         const bob = b.alt > 4 ? Math.sin(b.t * 5 + b.bobPhase) * 2 : 0;
         b.sprite.setPosition(b.gx, b.gy - b.alt + bob).setDepth(DEPTH + i * 0.001);
         applyFog(ctx.scene, b, grade, BIRD_ALPHA);
-        applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade.groundL, grade.topL); // ground drop-shadow (no bob → the gap reads as height)
+        applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade.groundL, grade.topL, grade.shadowDepth); // ground drop-shadow (no bob → the gap reads as height)
 
         // Off the view (plus slack)?
         const off =

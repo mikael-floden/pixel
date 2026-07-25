@@ -136,8 +136,9 @@ export interface CritterGrade {
   tint: number;
   fog: number;
   fogTint: number;
-  groundL: number; // resolved DRAWN terrain level under the creature (ramps up a face) — for the shadow's DEPTH sort
+  groundL: number; // resolved DRAWN terrain level under the creature (ramps up a face) — for the shadow's face-lift/hide test
   topL: number; // the column's TOP level (cell.l) — for the shadow's POSITION lift off a face onto the top
+  shadowDepth: number; // occluder-stable DEPTH to sort the ground shadow at (kills the per-cell flicker)
 }
 
 /** Per-creature EASED lighting state (see gradeCritter). Both Bird and Bat carry
@@ -156,6 +157,7 @@ interface CritterProbe {
   fogCol: [number, number, number];
   L: number; // resolved DRAWN terrain level under the ground point (ramps up a face)
   cellL: number; // the resolved column's TOP level (cell.l) — lifts the shadow off a face onto the top
+  shadowDepth: number; // occluder-stable depth to sort the ground shadow at (no per-cell flicker)
 }
 
 const LEVEL_PX = 16; // MAP_GEOMETRY.lh — px per elevation level (kept local, no cross-import)
@@ -230,8 +232,9 @@ export function gradeCritter(
     tint: (ch(st.gl[0]) << 16) | (ch(st.gl[1]) << 8) | ch(st.gl[2]),
     fog: st.gfa ?? 0,
     fogTint: (ch(st.gfc[0]) << 16) | (ch(st.gfc[1]) << 8) | ch(st.gfc[2]),
-    groundL: p ? p.L : 0, // RAW (un-eased) DRAWN level — for the shadow's DEPTH sort
+    groundL: p ? p.L : 0, // RAW (un-eased) DRAWN level — for the shadow's face-lift/hide test
     topL: p ? p.cellL : 0, // RAW column TOP level — for the shadow's POSITION lift (top vs face)
+    shadowDepth: p ? p.shadowDepth : gy + 3, // RAW occluder-stable shadow depth (gy+3 fallback = old flat behaviour)
   };
 }
 
@@ -266,11 +269,13 @@ function ensureCritterShadow(scene: Phaser.Scene): void {
  * wall in front still occludes it). critterLight resolves the FRONT-MOST DRAWN
  * surface at (gx,gy), which gives the identity flatY == gy + groundL*LEVEL_PX
  * (i.e. gy = flatY − drawnLevel*lh). Two consequences:
- *  • DEPTH stays on that flat-y basis (gy + groundL*LEVEL_PX + 3 == flatY + 3) so
- *    it sits just above its OWN column's occluder (a column's top+face tiles all
- *    share depth flatY) while any NEARER column (a wall in front, larger col+row →
- *    larger flatY) still draws over it. Level-INDEPENDENT — the +groundL*LEVEL_PX
- *    term is load-bearing and must stay in the DEPTH, never move to the position.
+ *  • DEPTH is `shadowDepth`, computed by critterLight against the DISCRETE per-cell
+ *    terrain occluders so it can't blink: over an elevated flat top it sorts at the
+ *    resolved cell's anchor + 2*dy + 3 (clears the front-neighbour occluders, stable
+ *    per cell — the naive `gy + groundL*LEVEL_PX + 3` used the continuous gy and
+ *    swung behind the front tile every cell = the flicker); flat level-0 / a cliff
+ *    FACE keep `gy + groundL*LEVEL_PX + 3`. A genuinely taller wall in front still
+ *    out-sorts and hides it.
  *  • POSITION lifts off the FACE. `groundL` is the DRAWN level, which RAMPS UP a
  *    cliff face, so on a face `gy` is a WALL pixel — the old code drew the shadow
  *    right there. `topL` (cell.l) is the column's real TOP. On a real top (flat
@@ -289,6 +294,7 @@ export function applyShadow(
   alt: number,
   groundL: number,
   topL: number,
+  shadowDepth: number,
 ): void {
   ensureCritterShadow(scene);
   const f = Math.min(1, Math.max(0, alt / 130)); // 0 on the ground → 1 at high cruise
@@ -307,7 +313,7 @@ export function applyShadow(
     return;
   }
   s.setPosition(gx, gy - lift) // on the terrain TOP under the flyer (== gy on a real top / landed bird), never inside a face
-    .setDepth(gy + groundL * LEVEL_PX + 3) // flat-y basis (== flatY + 3): a wall in front still out-sorts and hides it
+    .setDepth(shadowDepth) // occluder-STABLE (discrete per cell over elevated flats) so it can't blink behind a front tile
     .setDisplaySize(16 - f * 6, 6.4 - f * 2.6) // much smaller than the player's ~34×14
     .setAlpha(0.58 - f * 0.24) // reads on bright sand; fainter the higher it climbs
     .setVisible(true);

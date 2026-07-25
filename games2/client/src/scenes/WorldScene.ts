@@ -2963,7 +2963,7 @@ export class WorldScene extends Phaser.Scene {
     gx: number,
     gy: number,
     altPx: number,
-  ): { l: [number, number, number]; fog: number; fogCol: [number, number, number]; col: number; row: number; L: number; cellL: number; z: number } | null {
+  ): { l: [number, number, number]; fog: number; fogCol: [number, number, number]; col: number; row: number; L: number; cellL: number; shadowDepth: number; z: number } | null {
     if (!this.world || !this.night) return null;
     const { dx, dy, lh, tile } = MAP_GEOMETRY;
     const u = (gx - this.iso.ox - tile / 2) / dx;
@@ -2980,7 +2980,21 @@ export class WorldScene extends Phaser.Scene {
     const z = L + altPx / lh;
     const lgt = this.night.lightAt(col, row, z, false);
     const f = this.night.depthFogAt(col, row, z);
-    return { l: [lgt[0], lgt[1], lgt[2]], fog: f.a, fogCol: [f.r, f.g, f.b], col, row, L, cellL, z };
+    // Depth to sort a critter's ground SHADOW at. The naive `gy + L*lh + 3` uses
+    // the CONTINUOUS gy, so over an ELEVATED FLAT top it swings across a ~2*dy
+    // band vs the DISCRETE per-cell terrain occluders (top images at oDepth =
+    // by+dy) and dips BEHIND the front cell's top every cell as the flyer crosses
+    // it — a flicker (maintainer: bird shadows blink on the snow plateau). On an
+    // elevated flat top (L==cellL>0) sort at the DISCRETE resolved-cell anchor +
+    // 2*dy + 3: 2*dy clears the immediate front-neighbour occluders (at by+2*dy),
+    // and being DISCRETE (per cell, no frac term) it can't swing → no flicker.
+    // Flat level-0 (cell.l<=0 builds NO occluders) and a cliff FACE (L<cellL, the
+    // shadow is lifted onto the top) keep the byte-identical `gy + L*lh + 3`.
+    const shadowDepth =
+      L === cellL && cellL > 0
+        ? this.iso.oy + (Math.floor(col) + Math.floor(row) + 2) * dy + 3
+        : gy + L * lh + 3;
+    return { l: [lgt[0], lgt[1], lgt[2]], fog: f.a, fogCol: [f.r, f.g, f.b], col, row, L, cellL, shadowDepth, z };
   }
 
   private pickGround(wx: number, wy: number): { x: number; y: number; lvl: number } | null {
