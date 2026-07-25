@@ -150,6 +150,27 @@ def verify_character(client, name, cid):
     return problems
 
 
+def verify_animation_map(name):
+    """The game maps stable state names (idle/walk/run/…) to art folders via
+    characters2/animation_map.json. Check every state resolves to a real folder
+    for this hero — a rename that isn't reflected there silently drops the move
+    from the game manifest (exactly the bug this guards against)."""
+    problems = []
+    mpath = os.path.join(os.path.dirname(HUMANS), "animation_map.json")
+    if not os.path.exists(mpath):
+        return [f"{name}: animation_map.json missing (game state->folder mapping)"]
+    m = json.load(open(mpath))
+    resolved = {**(m.get("states") or {}), **((m.get("overrides") or {}).get(name) or {})}
+    adir_root = os.path.join(HUMANS, name, "animations")
+    for state, folder in resolved.items():
+        south = os.path.join(adir_root, folder, "south")
+        if not (os.path.isdir(os.path.join(adir_root, folder)) and os.path.isdir(south)
+                and any(f.endswith(".png") for f in os.listdir(south))):
+            problems.append(f"{name}: state '{state}' -> folder '{folder}' MISSING "
+                            f"(update animation_map.json)")
+    return problems
+
+
 def main():
     cfg = load_config()
     pins = cfg.get("pixellab_characters") or {}
@@ -165,6 +186,7 @@ def main():
         detail = client.get_character(cid)
         exp_rot, exp_anims = _expected_from_api(detail)
         probs = verify_character(client, name, cid)
+        probs += verify_animation_map(name)
         all_problems[name] = probs
         tf = sum(sum(d["dirs"].values()) for d in exp_anims.values())
         status = "PASS" if not probs else f"FAIL ({len(probs)} problems)"

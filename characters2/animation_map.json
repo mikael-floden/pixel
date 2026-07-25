@@ -1,0 +1,27 @@
+{
+  "_comment": "Stable GAME-STATE -> art-FOLDER mapping for the two heroes. The game (games2/scripts/build-manifest.mjs) reads THIS file instead of hardcoding PixelLab folder names, so when an animation is renamed on PixelLab the game keeps working and ONLY this file changes. Maintained by the characters2 agent and validated on every sync by characters2/pipeline/verify_sync.py (which fails if any mapped folder is missing). Keys under `states` are the game's logical animation names; values are the folder under humans/<hero>/animations/. `overrides.<hero>` wins where that hero's folder name differs from the default.",
+  "_maintenance": "After a sync, run: python characters2/pipeline/verify_sync.py  (it checks every hero x state resolves to a real folder). If PixelLab renames a move, update the value here — nothing in games2 needs to change.",
+  "states": {
+    "idle": "breathing-idle",
+    "walk": "walking",
+    "run": "running-8-frames",
+    "jump": "custom-high-jump",
+    "runjump": "custom-running-steeplechase-jump-one-leg-front-one-leg",
+    "kick": "custom-high-kick",
+    "punch": "custom-punch",
+    "sword": "custom-swing-a-sword",
+    "bow": "custom-shot-arrow-with-bow",
+    "spell_wand": "custom-spell-attack-with-magic-wand",
+    "spell_channel": "custom-channeled-spell-between-hands-with-both-hands",
+    "hurt": "custom-got-punched-in-stomach-takes",
+    "pickup": "custom-pick-up-item-from-ground",
+    "die": "custom-fall-dead-to-the-floor"
+  },
+  "overrides": {
+    "default_boy": {
+      "walk": "walking-6-frames",
+      "runjump": "custom-fast-running-steeplechase-jump",
+      "spell_wand": "custom-spell-with-magic-wand"
+    }
+  }
+}

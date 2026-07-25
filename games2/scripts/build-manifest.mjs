@@ -28,16 +28,56 @@ const WATERLINES = (() => {
 })();
 
 // Game movement state -> characters2 source animation folder name. The client
-// keeps using idle/walk/run/jump as state names; animSrc (below) tells it the
+// keeps using idle/walk/run/jump… as state names; animSrc (below) tells it the
 // folder to build frame URLs from.
-const ANIM_MAP = {
-  idle: "breathing-idle",
-  walk: "walking",
-  run: "running-8-frames",
-  jump: "jumping-1",
-  runjump: "running-jump",
-  kick: "high-kick",
+//
+// PixelLab renames animation folders (e.g. "high-kick" -> "custom-high-kick"),
+// and the two heroes can differ (boy "walking-6-frames" vs girl "walking"), so
+// this mapping is OWNED BY THE ART DOMAIN in characters2/animation_map.json and
+// loaded here. When a folder is renamed, only that file changes — no game edit.
+// The built-in below is a fallback that matches the file's current contents so a
+// missing/broken file never fully breaks the build.
+const ANIM_MAP_FALLBACK = {
+  states: {
+    idle: "breathing-idle",
+    walk: "walking",
+    run: "running-8-frames",
+    jump: "custom-high-jump",
+    runjump: "custom-running-steeplechase-jump-one-leg-front-one-leg",
+    kick: "custom-high-kick",
+    punch: "custom-punch",
+    sword: "custom-swing-a-sword",
+    bow: "custom-shot-arrow-with-bow",
+    spell_wand: "custom-spell-attack-with-magic-wand",
+    spell_channel: "custom-channeled-spell-between-hands-with-both-hands",
+    hurt: "custom-got-punched-in-stomach-takes",
+    pickup: "custom-pick-up-item-from-ground",
+    die: "custom-fall-dead-to-the-floor",
+  },
+  overrides: {
+    default_boy: {
+      walk: "walking-6-frames",
+      runjump: "custom-fast-running-steeplechase-jump",
+      spell_wand: "custom-spell-with-magic-wand",
+    },
+  },
 };
+const ANIM_MAP_DATA = (() => {
+  const p = join(HUMANS, "..", "animation_map.json");
+  try {
+    if (existsSync(p)) {
+      const j = JSON.parse(readFileSync(p, "utf8"));
+      if (j && j.states) return { states: j.states, overrides: j.overrides || {} };
+    }
+  } catch (e) {
+    console.warn(`[manifest] could not read animation_map.json (${e.message}); using built-in fallback`);
+  }
+  return ANIM_MAP_FALLBACK;
+})();
+// The resolved game-state -> folder map FOR ONE hero (per-hero override wins).
+function animMapFor(id) {
+  return { ...ANIM_MAP_DATA.states, ...(ANIM_MAP_DATA.overrides[id] || {}) };
+}
 // Friendly display name per character id (character.json names are prompt junk).
 const DISPLAY = { default_boy: "Man", default_girl: "Woman" };
 const DIRECTIONS = ["south", "south-west", "west", "north-west", "north", "north-east", "east", "south-east"];
@@ -429,7 +469,8 @@ function scan() {
     const animSrc = {};
     let frameW = 0;
     let frameH = 0;
-    for (const [state, src] of Object.entries(ANIM_MAP)) {
+    const animMap = animMapFor(id);
+    for (const [state, src] of Object.entries(animMap)) {
       const perDir = {};
       for (const d of DIRECTIONS) {
         const frameDir = join(animsDir, src, d);
@@ -443,6 +484,10 @@ function scan() {
       if (Object.keys(perDir).length) {
         animations[state] = perDir;
         animSrc[state] = src;
+      } else if (!existsSync(join(animsDir, src))) {
+        // Loud, not silent: a mapped folder that doesn't exist means the art was
+        // renamed on PixelLab and characters2/animation_map.json is stale.
+        console.warn(`[manifest] ${id}: state "${state}" -> folder "${src}" is MISSING — update characters2/animation_map.json`);
       }
     }
     if (!animations.idle) continue; // unplayable without an idle
@@ -458,7 +503,7 @@ function scan() {
       const ys = [];
       let top;
       for (let i = 0; i < n; i++) {
-        const a = footAnchor(join(animsDir, ANIM_MAP.idle, d, `${i}.png`));
+        const a = footAnchor(join(animsDir, animMap.idle, d, `${i}.png`));
         if (a) {
           xs.push(a.x);
           ys.push(a.y);
@@ -484,7 +529,7 @@ function scan() {
       const keys = ["lx", "ly", "rx", "ry"];
       const acc = { lx: [], ly: [], rx: [], ry: [] };
       for (let i = 0; i < n; i++) {
-        const png = pngAlpha(join(animsDir, ANIM_MAP.idle, d, `${i}.png`));
+        const png = pngAlpha(join(animsDir, animMap.idle, d, `${i}.png`));
         const s = png && shoulderLine(png);
         if (s) for (const k of keys) acc[k].push(s[k]);
       }

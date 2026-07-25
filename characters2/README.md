@@ -30,6 +30,28 @@ PixelLab animation names can contain spaces, commas, even newlines (especially
 The exact PixelLab `animation_type` is preserved in `character.json` for matching,
 so the slug is only ever the folder name.
 
+## Game-state → folder mapping (`animation_map.json`)
+
+The game refers to animations by **stable logical names** (`idle`, `walk`, `run`,
+`jump`, `runjump`, `kick`, `sword`, …), but PixelLab's folder names change on a
+whim and the two heroes can differ (boy `walking-6-frames` vs girl `walking`).
+`animation_map.json` is the **contract** between the art and the game:
+
+```jsonc
+{ "states":    { "walk": "walking", "kick": "custom-high-kick", … },
+  "overrides": { "default_boy": { "walk": "walking-6-frames", … } } }
+```
+
+`games2/scripts/build-manifest.mjs` reads this file (per-hero override wins) to
+build the character manifest, so **when PixelLab renames a move, only this file
+changes — no game code touches**. Previously the game hard-coded folder names and
+silently dropped any that didn't match (renamed `high-kick`→`custom-high-kick`
+etc. broke `jump`/`runjump`/`kick`/boy-`walk`).
+
+**Maintain it:** after a sync, `verify_sync.py` checks every hero×state resolves
+to a real folder and FAILS if one is missing (so a rename can't silently break
+the game again). If PixelLab renames a move, update its value here and re-verify.
+
 ## Staying in sync
 
 The user keeps adding **animations** in the PixelLab UI (and later outfits /
