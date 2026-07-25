@@ -1,8 +1,9 @@
-// QA: HP/Energy/XP bars + Gold — HP+Energy top-left, XP top-right, Gold under XP;
-// STATIC placeholder values (HP 10/10 full, Energy 0/0 empty, XP 0/10 empty, Gold
-// 0), no animation (maintainer 2026-07-23/24). Runs at the maintainer's phone
-// geometry. Gold: icon + amount RIGHT-aligned to the XP bar's edge, the row
-// opposite the Energy bar.
+// QA: HP/Energy/XP bars + Gold + LEVEL — HP+Energy top-left, XP top-right, Gold
+// under XP; STATIC placeholder values (HP 10/10 full, Energy 0/0 empty, XP 0/10
+// empty, Gold 0, Level 1), no animation (maintainer 2026-07-23/24/25). Runs at
+// the maintainer's phone geometry. Gold: icon + amount RIGHT-aligned to the XP
+// bar's edge, opposite the Energy bar. LEVEL: "LEVEL n" LEFT-aligned on the XP
+// number line, opposite the right-aligned XP count.
 import { chromium } from "playwright-core";
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const BASE = process.env.BASE || "http://localhost:5173";
@@ -60,6 +61,24 @@ try {
   Math.abs(pa[0] - 100) < 1 ? ok(`hp full (${pa[0]}%)`) : fail(`hp fill ${pa[0]}% (want 100)`);
   Math.abs(pa[1] - 0) < 1 ? ok(`energy empty (${pa[1]}%)`) : fail(`ep fill ${pa[1]}% (want 0)`);
   Math.abs(pa[2] - 0) < 1 ? ok(`experience empty (${pa[2]}%)`) : fail(`xp fill ${pa[2]}% (want 0)`);
+
+  // ── LEVEL label on the XP row (maintainer 2026-07-25): "LEVEL n" LEFT-aligned
+  //    on the XP number line, opposite the right-aligned XP count. ──
+  const lv = await page.evaluate(() => {
+    const box = (e) => { if (!e) return null; const b = e.getBoundingClientRect(); return { l: Math.round(b.left), r: Math.round(b.right), t: Math.round(b.top) }; };
+    const level = document.querySelector(".ml-bar-level");
+    const numRow = document.querySelector(".ml-bar-numrow");
+    const xpNum = numRow?.querySelector(".ml-bar-num");
+    const gauge = document.querySelector('.ml-bar-fill[data-color="blue"]')?.closest(".ml-bar-gauge");
+    return { text: level?.textContent ?? null, level: box(level), num: box(xpNum), gauge: box(gauge) };
+  });
+  lv.text === "LEVEL 1" ? ok(`level label reads "LEVEL 1"`) : fail(`level label "${lv.text}" (want "LEVEL 1")`);
+  lv.level && lv.gauge && Math.abs(lv.level.l - lv.gauge.l) <= 2
+    ? ok(`LEVEL left-aligned to the XP bar's left edge (${lv.level.l} ≈ ${lv.gauge.l})`)
+    : fail(`LEVEL left ${lv.level?.l} vs XP bar left ${lv.gauge?.l}`);
+  lv.level && lv.num && lv.level.r < lv.num.l && Math.abs(lv.level.t - lv.num.t) <= 3
+    ? ok(`LEVEL sits opposite the XP count on one line (level ends ${lv.level.r}, count starts ${lv.num.l})`)
+    : fail(`LEVEL/XP count not opposed on one line: ${JSON.stringify({ level: lv.level, num: lv.num })}`);
 
   // ── Gold counter under the XP bar (maintainer 2026-07-24) ──
   const g = await page.evaluate(() => {

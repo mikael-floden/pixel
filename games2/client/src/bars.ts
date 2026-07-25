@@ -18,11 +18,13 @@
  * (/ui2/gold-icon.png) with the amount to its left — both RIGHT-aligned to the XP
  * bar's right edge, so the row sits opposite the Energy bar (maintainer).
  *
+ * The XP row also carries "LEVEL n" LEFT-aligned on its number line, opposite the
+ * right-aligned XP count (maintainer 2026-07-25).
+ *
  * The bars show STATIC placeholder values for now (maintainer 2026-07-23: HP
  * 10/10 full, Energy 0/0 empty, XP 0/10 empty — "don't want to see the animation
- * anymore") and gold shows 0; the number to the right shows the value.
- * setBar(kind, cur, max) / setGold(n) are the seams the real player state plugs
- * into later.
+ * anymore"); gold shows 0 and level shows 1. setBar(kind, cur, max) / setGold(n) /
+ * setLevel(n) are the seams the real player state plugs into later.
  */
 
 import { applyUiZoom } from "./uiscale";
@@ -53,6 +55,8 @@ let rootR: HTMLDivElement | null = null; // right group: Experience + Gold
 const bars: Record<Kind, Bar> = {} as any;
 let goldNumEl: HTMLElement | null = null; // the gold amount label
 let gold = 0; // how much gold the player has (0 until real state is wired)
+let levelEl: HTMLElement | null = null; // the "LEVEL n" label on the XP row
+let level = 1; // player level (1 until real state is wired)
 
 export function mountBars() {
   if (root) return;
@@ -92,6 +96,18 @@ export function mountBars() {
   bars.ep = make(root, "ep", "yellow", 0, "EP");
   bars.xp = make(rootR, "xp", "blue", 10, "XP");
 
+  // "LEVEL n" on the XP row's number line, LEFT-aligned opposite the
+  // right-aligned XP count (maintainer 2026-07-25: red-marked at the XP bar's
+  // lower-left). Swap the lone XP number for a [level ⟷ count] row that spans
+  // the bar width. Binds to the real player level via setLevel().
+  const xpRow = bars.xp.num.parentElement!;
+  const numRow = document.createElement("div");
+  numRow.className = "ml-bar-numrow";
+  levelEl = document.createElement("span");
+  levelEl.className = "ml-bar-level";
+  xpRow.replaceChild(numRow, bars.xp.num);
+  numRow.append(levelEl, bars.xp.num);
+
   // Gold counter UNDER the Experience bar (maintainer 2026-07-24). Not a gauge:
   // the north-facing "Gold" nugget icon at the RIGHT, its amount RIGHT-aligned
   // just to its left, the row the same width as the bar so its right edge lines
@@ -113,6 +129,7 @@ export function mountBars() {
   applyUiZoom(root);
   applyUiZoom(rootR);
   renderGold();
+  renderLevel();
 
   // Static placeholder values — no animation (maintainer 2026-07-23: "set hp to
   // stable 10/10, energy to 0/0 empty, xp to 0/10 also empty; don't want to see
@@ -144,6 +161,16 @@ function renderGold() {
 export function setGold(n: number) {
   gold = Math.max(0, Math.round(n) || 0);
   renderGold();
+}
+
+function renderLevel() {
+  if (levelEl) levelEl.textContent = `LEVEL ${level}`;
+}
+
+/** The seam the real player level plugs into (1 until wired to server state). */
+export function setLevel(n: number) {
+  level = Math.max(1, Math.round(n) || 1);
+  renderLevel();
 }
 
 function img(src: string): HTMLImageElement {
@@ -186,6 +213,14 @@ function injectStyles() {
   .ml-bar-num{margin-top:4px;text-align:right;
     font:700 ${NUM_PX}px system-ui,sans-serif;letter-spacing:.5px;
     color:#f0e2c6;text-shadow:0 1px 2px #000,0 0 3px #000;white-space:nowrap}
+  /* XP row only: "LEVEL n" LEFT + the XP count RIGHT share one line under the
+     gauge (maintainer 2026-07-25). The numrow carries the num's usual 4px top
+     gap; the num inside it drops its own margin so both labels sit on one line. */
+  .ml-bar-numrow{margin-top:4px;display:flex;justify-content:space-between;
+    align-items:baseline;width:100%;gap:12px}
+  .ml-bar-numrow .ml-bar-num{margin-top:0}
+  .ml-bar-level{font:700 ${NUM_PX}px system-ui,sans-serif;letter-spacing:.5px;
+    color:#f0e2c6;text-shadow:0 1px 2px #000,0 0 3px #000;white-space:nowrap;text-align:left}
   /* Gold row: amount then icon, BOTH flush to the right edge (= the bar's right
      edge, so it lines up with XP above and the Energy bar opposite). row width =
      bar width; justify-content:flex-end pins the [amount][icon] pair right.
