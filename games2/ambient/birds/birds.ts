@@ -412,11 +412,19 @@ export function birdsFeature(): AmbientFeature {
           const targetAlt = Math.min(b.cruise, d * 0.35); // lower as we approach
           b.alt += (targetAlt - b.alt) * Math.min(1, dts * 4);
           if (d < 12 && b.alt < 8) {
+            // Touchdown: stop dead, commit a RANDOM facing, draw the still frame
+            // and CONTINUE. The continue is load-bearing — falling through to the
+            // airborne integrate/clamp would re-boost the damped glide velocity to
+            // SPD_MIN and stepFlapDir would snap the facing back to the glide
+            // heading, defeating "perch any way" (birds don't all face the camera).
             b.state = LANDED;
             b.alt = 0;
-            b.vx *= 0.3;
-            b.vy *= 0.3;
-            b.dir = Math.floor(rnd() * 8); // perch facing ANY way — birds don't all face the camera
+            b.vx = 0;
+            b.vy = 0;
+            b.dir = Math.floor(rnd() * 8);
+            drawFrame(b, true, tint);
+            b.sprite.setPosition(b.gx, b.gy - b.alt).setDepth(DEPTH + i * 0.001);
+            continue;
           }
         } else {
           // FLYING or TAKEOFF: boids + wander (+ flee, + climb on takeoff).
