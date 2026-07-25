@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { vectorToDirection } from "@nangijala/shared";
+import { ISO_DX, ISO_DY, vectorToDirection } from "@nangijala/shared";
 
 // Shared helpers for the SPRITE-ART flocks (birds, bats). The creatures are
 // PixelLab "low top-down" 8-direction objects packed into two spritesheets per
@@ -38,6 +38,45 @@ export function dirFromVel(vx: number, vy: number): number | null {
   if (Math.abs(vx) < 0.01 && Math.abs(vy) < 0.01) return null;
   const name = vectorToDirection(vx, vy);
   return name ? DIR_INDEX[name] ?? null : null;
+}
+
+// The 8 canonical FACING screen directions (unit vectors) the flock art depicts.
+// Cardinals are the screen axes; the DIAGONALS are the shallow ISO tile axes
+// (±ISO_DX, ±ISO_DY) — NOT screen-45° — because this is an iso world: a bird's
+// "north-east" sprite shows it flying along the tile axis, exactly like the
+// player's grid-axis-locked diagonal walk, so the 8 directions are UNEVENLY
+// spaced on screen. A velocity landing on any of these classifies (via
+// vectorToDirection) to a distinct one of the 8 facings, so steering toward the
+// nearest makes a creature fly the way its sprite faces.
+const _DIAG = Math.hypot(ISO_DX, ISO_DY);
+const FACING_DIRS: ReadonlyArray<readonly [number, number]> = [
+  [1, 0], // east
+  [ISO_DX / _DIAG, -ISO_DY / _DIAG], // up-right (shallow iso)
+  [0, -1], // north
+  [-ISO_DX / _DIAG, -ISO_DY / _DIAG], // up-left
+  [-1, 0], // west
+  [-ISO_DX / _DIAG, ISO_DY / _DIAG], // down-left
+  [0, 1], // south
+  [ISO_DX / _DIAG, ISO_DY / _DIAG], // down-right
+];
+
+/** The nearest canonical FACING direction (a unit vector) to a velocity, by max
+ * dot product. Steer a flyer's velocity toward this so it moves the way its
+ * 8-direction sprite faces. Zero velocity → east (arbitrary; callers are moving). */
+export function nearestFacingDir(vx: number, vy: number): readonly [number, number] {
+  const sp = Math.hypot(vx, vy) || 1;
+  const ux = vx / sp;
+  const uy = vy / sp;
+  let best = FACING_DIRS[0];
+  let bestDot = -Infinity;
+  for (const d of FACING_DIRS) {
+    const dot = ux * d[0] + uy * d[1];
+    if (dot > bestDot) {
+      bestDot = dot;
+      best = d;
+    }
+  }
+  return best;
 }
 
 /** Shortest step count between two 8-way facings (0..4) — a 1-step change is an

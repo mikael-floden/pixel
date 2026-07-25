@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature, PHASE_DAY, WEATHER_CLEAR } from "../runtime/types";
-import { FLY_FRAMES, SheetSpec, applyFog, applyShadow, dirFromVel, flyFrame, gradeCritter, queueSheets, sheetsReady, stepFlapDir } from "../runtime/critters";
+import { FLY_FRAMES, SheetSpec, applyFog, applyShadow, dirFromVel, flyFrame, gradeCritter, nearestFacingDir, queueSheets, sheetsReady, stepFlapDir } from "../runtime/critters";
 import { birdDensity } from "../runtime/density";
 // 8 hand-made PixelLab bird TYPES, each an 8-direction object with a flapping
 // fly animation and a still base (for perching). Packed one folder per type.
@@ -80,9 +80,15 @@ const FEAR_ALT = 40; // px — below this a bird is "low" and wary; above it, fe
 const W_SEP = 1.7;
 const W_ALI = 0.65;
 const W_COH = 0.6;
-const W_WANDER = 0.5;
+const W_WANDER = 0.35; // gentler now the facing pull adds structure (was 0.5)
 const W_BOUND = 0.5; // soft pull back toward the visible area
 const W_AVOID = 0.9; // gentle keep-your-distance steer (scaled down with altitude)
+// Pull toward the nearest of the 8 iso FACING directions the birds have art for,
+// so a cruising bird flies the way its sprite faces (maintainer 2026-07-25: "try
+// their best to fly in the direction they're facing"). Strong enough to hold a
+// facing heading most of the time, but wander + boids still turn them between
+// directions (smooth turns, "not an absolute must").
+const W_FACING = 2.0;
 // Type affinity: same-type birds pull together, different types only loosely —
 // a mixed flock still flocks, but each kind clusters with its own (maintainer).
 const DIFF_TYPE_W = 0.3; // a different-type neighbour's weight in cohesion/alignment
@@ -360,8 +366,10 @@ export function birdsFeature(): AmbientFeature {
     // DETERMINED heading straight across the view; the group enters from the
     // up-heading side (offscreen) and exits the far side.
     const ang = rnd() * Math.PI * 2;
-    const fx = Math.cos(ang);
-    const fy = Math.sin(ang);
+    // Fly along one of the 8 iso FACING directions so the whole formation moves
+    // the way its sprites face (migratory birds hold a determined straight
+    // heading — snapping it to a facing direction is exact, not just preferred).
+    const [fx, fy] = nearestFacingDir(Math.cos(ang), Math.sin(ang));
     const rightX = -fy; // heading rotated +90° (screen y down)
     const rightY = fx;
     const halfDiag = Math.hypot(view.width, view.height) / 2;
@@ -749,6 +757,15 @@ export function birdsFeature(): AmbientFeature {
           b.wander += (rnd() - 0.5) * 2.2 * dts * 3;
           ax += Math.cos(b.wander) * W_WANDER * SPD_CRUISE;
           ay += Math.sin(b.wander) * W_WANDER * SPD_CRUISE;
+          // Prefer flying along one of the 8 iso FACING directions the birds have
+          // art for (soft — wander/boids still turn them), so a cruising bird
+          // moves the way its sprite faces. Steers the HEADING toward the nearest
+          // facing while preserving the bird's current speed; the diagonals are
+          // the shallow iso tile axes, not screen-45° (see nearestFacingDir).
+          const [fdx, fdy] = nearestFacingDir(b.vx, b.vy);
+          const fsp = Math.hypot(b.vx, b.vy) || SPD_CRUISE;
+          ax += (fdx * fsp - b.vx) * W_FACING;
+          ay += (fdy * fsp - b.vy) * W_FACING;
           if (leaving) {
             // Departing: steer OUT toward the nearest edge and go.
             const dl = b.gx - view.x;
@@ -859,6 +876,8 @@ export function birdsFeature(): AmbientFeature {
           alt: Math.round(g.members[0]?.alt ?? 0),
           dir: g.members[0]?.dir ?? 0,
           type: g.members[0]?.type ?? 0,
+          hx: +g.fx.toFixed(3), // snapped heading unit (one of the 8 iso facing dirs)
+          hy: +g.fy.toFixed(3),
         })),
         sample: s
           ? { type: s.type, dir: s.dir, frame: s.frame, key: s.sprite.texture.key, tint: s.sprite.tintTopLeft, x: s.sprite.x, y: s.sprite.y }
@@ -873,6 +892,8 @@ export function birdsFeature(): AmbientFeature {
           alt: Math.round(b.alt),
           gx: Math.round(b.gx),
           gy: Math.round(b.gy),
+          vx: +b.vx.toFixed(1), // velocity (for facing-alignment QA)
+          vy: +b.vy.toFixed(1),
           tint: b.sprite.tintTopLeft,
           fog: b.fog?.visible ? +b.fog.alpha.toFixed(2) : 0,
           fogTint: b.fog?.visible ? b.fog.tintTopLeft : 0,
