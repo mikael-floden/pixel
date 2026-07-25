@@ -87,22 +87,65 @@ export function stepFlapDir(b: FlapState, dt: number, stick: number): void {
   }
 }
 
-const CELL_WU = 32; // world px per cell (shared CELL_WU; kept local to avoid a cross-import)
-const SKY_Z = 48; // sample the light well ABOVE any terrain → open-sky light, no false valley shadow on a high flyer
+/** The world light + depth-fog haze for one flock creature, PER BIRD, at its own
+ * ground point + altitude. `tint` is a MULTIPLY tint (day/night + cloud +
+ * directional-sun CAST SHADOW + point lights — so a bird sitting in a cliff's
+ * shadow darkens while one in the sun stays bright); `fog`/`fogTint` are the
+ * depth-fog opacity + colour so a far/high bird hazes into the fog like the
+ * terrain does. */
+export interface CritterGrade {
+  tint: number;
+  fog: number;
+  fogTint: number;
+}
 
-/** The world's light where a flying creature sits — sampled once per frame at
- * the view centre, high in the air, through the game's CPU light probe (the
- * same lightAt() the character lit-copies use). Returned as a Phaser tint so
- * birds & bats GRADE with day/night/cloud instead of popping at full brightness
- * against a dark night sky. Falls back to white (full brightness) if the probe
- * is missing — degrade gracefully, never break the flock. */
-export function skyTint(view: Phaser.Geom.Rectangle): number {
+/** Probe the world light + depth-fog for a flyer whose GROUND point is drawn at
+ * iso-screen (gx,gy) and lifted `alt` px above it — through the game's
+ * face-aware __ml.critterLight (the flat flock sim can't do the iso inverse
+ * itself: it has no terrain heights). Cast-shadow-aware AND altitude-aware; the
+ * probe never reads screen pixels. Falls back to full brightness + no fog if the
+ * probe is missing — degrade gracefully, never break the flock. */
+export function gradeCritter(gx: number, gy: number, alt: number): CritterGrade {
   const ml = (window as unknown as { __ml?: Record<string, (...a: never[]) => unknown> }).__ml;
-  const at = ml?.lightAtCell as undefined | ((c: number, r: number, z: number) => number[] | null);
-  const l = at?.(view.centerX / CELL_WU, view.centerY / CELL_WU, SKY_Z);
-  if (!l) return 0xffffff;
-  const ch = (v: number) => Math.max(0, Math.min(255, Math.round(v * 255)));
-  return (ch(l[0]) << 16) | (ch(l[1]) << 8) | ch(l[2]);
+  const at = ml?.critterLight as undefined | ((x: number, y: number, a: number) => CritterGrade | null);
+  return at?.(gx, gy, alt) ?? { tint: 0xffffff, fog: 0, fogTint: 0xffffff };
+}
+
+const FOG_MIN = 0.012; // below this the haze is invisible — skip the overlay sprite entirely
+
+/** Wash a flock creature into the depth-fog. Phaser can't LIGHTEN a sprite with
+ * a single multiply tint (the base tint already carries the day/night + shadow
+ * grade), so the pale fog wash rides a SECOND same-frame sprite: a tint-FILLED
+ * copy at the fog opacity, composited just above the base — base·(1−a) +
+ * fogColour·a over every opaque pixel, exactly the shader's NORMAL-blend fog.
+ * The overlay is created lazily on first need and hidden (never destroyed) when
+ * there's no fog, so a bird flying in and out of a bank costs nothing extra.
+ * Mirrors the base's current frame/pos/scale/flip so it must be called AFTER the
+ * base sprite is positioned for the frame. */
+export function applyFog(
+  scene: Phaser.Scene,
+  holder: { sprite: Phaser.GameObjects.Sprite; fog?: Phaser.GameObjects.Sprite },
+  grade: CritterGrade,
+  alpha: number,
+): void {
+  const base = holder.sprite;
+  if (grade.fog < FOG_MIN) {
+    holder.fog?.setVisible(false);
+    return;
+  }
+  let f = holder.fog;
+  if (!f) {
+    f = scene.add.sprite(base.x, base.y, base.texture.key, base.frame.name);
+    holder.fog = f;
+  }
+  f.setTexture(base.texture.key, base.frame.name)
+    .setPosition(base.x, base.y)
+    .setScale(base.scaleX, base.scaleY)
+    .setFlipX(base.flipX)
+    .setDepth(base.depth + 0.0004) // just above this creature's base, below the next one (0.001 apart)
+    .setTintFill(grade.fogTint)
+    .setAlpha(Math.min(1, grade.fog) * alpha)
+    .setVisible(true);
 }
 
 export interface SheetSpec {

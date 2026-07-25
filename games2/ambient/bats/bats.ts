@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature, PHASE_NIGHT, WEATHER_CLEAR } from "../runtime/types";
-import { FLY_FRAMES, SheetSpec, dirFromVel, flyFrame, queueSheets, sheetsReady, skyTint, stepFlapDir } from "../runtime/critters";
+import { FLY_FRAMES, SheetSpec, applyFog, dirFromVel, flyFrame, gradeCritter, queueSheets, sheetsReady, stepFlapDir } from "../runtime/critters";
 import batFly from "./art/fly.png";
 
 // Bats — an EPISODE feature and the night counterpart to the birds. Like the
@@ -51,6 +51,7 @@ const FLOCK_LIFE: [number, number] = [20_000, 38_000]; // then the colony leaves
 
 interface Bat {
   sprite: Phaser.GameObjects.Sprite;
+  fog?: Phaser.GameObjects.Sprite; // lazily-created depth-fog wash overlay (see applyFog)
   gx: number; // GROUND position in world px (the point it flies over)
   gy: number;
   alt: number; // flight altitude px above the ground
@@ -166,7 +167,9 @@ export function batsFeature(): AmbientFeature {
 
       const view = ctx.view;
       const player = playerAt(ctx);
-      const tint = skyTint(view); // grade the colony with the day/night sky light
+      // Lighting/fog is graded PER BAT (own position + altitude) just before the
+      // draw below — cloud shadows, aurora, and torch/glow pickup vary across the
+      // colony (the sun is off at night, so no cast-shadow variation then).
 
       // FLUSH: player gets within FLEE_R → panic scatter away, with a cooldown
       // so it doesn't re-trigger every frame while you stand near.
@@ -279,9 +282,11 @@ export function batsFeature(): AmbientFeature {
 
         // Face (hysteretic 8-way from velocity) + flap + draw (a quick bob).
         stepFlapDir(b, dt, DIR_STICK);
-        b.sprite.setFrame(flyFrame(b.dir, b.frame)).setTint(tint);
+        const grade = gradeCritter(b.gx, b.gy, b.alt); // this bat's own light + fog
+        b.sprite.setFrame(flyFrame(b.dir, b.frame)).setTint(grade.tint);
         const bob = Math.sin(b.t * 7 + b.bobPhase) * 2.5;
         b.sprite.setPosition(b.gx, b.gy - b.alt + bob).setDepth(DEPTH + i * 0.001);
+        applyFog(ctx.scene, b, grade, BAT_ALPHA);
 
         // Off the view (plus slack)?
         const off =
@@ -289,6 +294,7 @@ export function batsFeature(): AmbientFeature {
         if (off) {
           if (leaving) {
             b.sprite.destroy();
+            b.fog?.destroy();
             bats.splice(i, 1);
             continue;
           }
@@ -316,11 +322,16 @@ export function batsFeature(): AmbientFeature {
         flocks,
         flushing: flushUntil > lastNow,
         leaving,
-        sample: s ? { dir: s.dir, frame: s.frame, key: s.sprite.texture.key, tint: s.sprite.tintTopLeft, x: s.sprite.x, y: s.sprite.y } : null,
+        sample: s
+          ? { dir: s.dir, frame: s.frame, key: s.sprite.texture.key, tint: s.sprite.tintTopLeft, fog: s.fog?.visible ? +s.fog.alpha.toFixed(2) : 0, x: s.sprite.x, y: s.sprite.y }
+          : null,
       };
     },
     dispose() {
-      for (const b of bats) b.sprite.destroy();
+      for (const b of bats) {
+        b.sprite.destroy();
+        b.fog?.destroy();
+      }
       bats.length = 0;
     },
   };

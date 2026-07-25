@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature, PHASE_DAY, WEATHER_CLEAR } from "../runtime/types";
-import { FLY_FRAMES, SheetSpec, dirFromVel, flyFrame, queueSheets, sheetsReady, skyTint, stepFlapDir } from "../runtime/critters";
+import { FLY_FRAMES, SheetSpec, applyFog, dirFromVel, flyFrame, gradeCritter, queueSheets, sheetsReady, stepFlapDir } from "../runtime/critters";
 // 8 hand-made PixelLab bird TYPES, each an 8-direction object with a flapping
 // fly animation and a still base (for perching). Packed one folder per type.
 import bird1Fly from "./art/bird1/fly.png";
@@ -101,6 +101,7 @@ const TAKEOFF = 3;
 
 interface Bird {
   sprite: Phaser.GameObjects.Sprite;
+  fog?: Phaser.GameObjects.Sprite; // lazily-created depth-fog wash overlay (see applyFog)
   type: number; // which of the 8 bird designs
   gx: number; // GROUND position in world px (the point on the map it is over)
   gy: number;
@@ -287,7 +288,8 @@ export function birdsFeature(): AmbientFeature {
 
       const view = ctx.view;
       const player = playerAt(ctx);
-      const tint = skyTint(view); // grade the whole flock with the day/night sky light
+      // Lighting/fog is now graded PER BIRD (each bird's own position + altitude),
+      // computed at the top of the per-bird loop — see gradeCritter below.
 
       // ---- flock-level decisions ---------------------------------------
       // FLUSH: the player gets CLOSE to a LOW bird → the whole flock panics,
@@ -395,6 +397,12 @@ export function birdsFeature(): AmbientFeature {
       for (let i = birds.length - 1; i >= 0; i--) {
         const b = birds[i];
         b.t += dts;
+        // Grade THIS bird by the world light + depth-fog at its own ground point
+        // and altitude: cast shadows darken a bird in a cliff's shade, fog hazes
+        // a far/high one. (gx,gy pre-integration here is <2px stale vs the draw —
+        // negligible against the CELL_WU=32px scale the fields vary over.)
+        const grade = gradeCritter(b.gx, b.gy, b.alt);
+        const tint = grade.tint;
 
         if (b.state === LANDED && !flushing) {
           // Perched: sit still with the odd tiny hop, facing a RANDOM direction
@@ -412,6 +420,7 @@ export function birdsFeature(): AmbientFeature {
           b.alt += (0 - b.alt) * Math.min(1, dts * 8);
           drawFrame(b, true, tint);
           b.sprite.setPosition(b.gx, b.gy - b.alt).setDepth(DEPTH + i * 0.001);
+          applyFog(ctx.scene, b, grade, BIRD_ALPHA);
           continue;
         }
 
@@ -447,6 +456,7 @@ export function birdsFeature(): AmbientFeature {
             b.dir = Math.floor(rnd() * 8);
             drawFrame(b, true, tint);
             b.sprite.setPosition(b.gx, b.gy - b.alt).setDepth(DEPTH + i * 0.001);
+            applyFog(ctx.scene, b, grade, BIRD_ALPHA);
             continue;
           }
         } else {
@@ -555,6 +565,7 @@ export function birdsFeature(): AmbientFeature {
         drawFrame(b, false, tint);
         const bob = b.alt > 4 ? Math.sin(b.t * 5 + b.bobPhase) * 2 : 0;
         b.sprite.setPosition(b.gx, b.gy - b.alt + bob).setDepth(DEPTH + i * 0.001);
+        applyFog(ctx.scene, b, grade, BIRD_ALPHA);
 
         // Off the view (plus slack)?
         const off =
@@ -563,6 +574,7 @@ export function birdsFeature(): AmbientFeature {
           if (leaving) {
             // Departing flock: this bird is gone. Last one out clears the sky.
             b.sprite.destroy();
+            b.fog?.destroy();
             birds.splice(i, 1);
             continue;
           }
@@ -590,11 +602,25 @@ export function birdsFeature(): AmbientFeature {
           ? { type: s.type, dir: s.dir, frame: s.frame, key: s.sprite.texture.key, tint: s.sprite.tintTopLeft, x: s.sprite.x, y: s.sprite.y }
           : null,
         // Per-bird snapshot for flock QA (on-demand only, like footprintsList).
-        all: birds.map((b) => ({ type: b.type, dir: b.dir, state: b.state, alt: Math.round(b.alt), gx: Math.round(b.gx), gy: Math.round(b.gy) })),
+        // tint = the per-bird light multiplier (shadow variation), fog = the haze
+        // overlay's live alpha (0 when none) — both drive the per-bird lighting QA.
+        all: birds.map((b) => ({
+          type: b.type,
+          dir: b.dir,
+          state: b.state,
+          alt: Math.round(b.alt),
+          gx: Math.round(b.gx),
+          gy: Math.round(b.gy),
+          tint: b.sprite.tintTopLeft,
+          fog: b.fog?.visible ? +b.fog.alpha.toFixed(2) : 0,
+        })),
       };
     },
     dispose() {
-      for (const b of birds) b.sprite.destroy();
+      for (const b of birds) {
+        b.sprite.destroy();
+        b.fog?.destroy();
+      }
       birds.length = 0;
     },
   };
