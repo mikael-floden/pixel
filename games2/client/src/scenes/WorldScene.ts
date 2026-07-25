@@ -1048,6 +1048,8 @@ export class WorldScene extends Phaser.Scene {
       mistAt: (wx: number, wy: number) => this.night?.mistAt(wx, wy, this.curMist) ?? 0,
       // Is the ground drawn at this world/screen point open water? (snow-melt QA)
       waterAtScreen: (wx: number, wy: number) => this.isWaterAtScreen(wx, wy),
+      // Is it walkable dry TOP ground (not a cliff face / water)? (ambient bird landing)
+      landableAtScreen: (wx: number, wy: number) => this.landableAtScreen(wx, wy),
       // Camera world-view rect (QA: sample effects across the visible world).
       camView: () => {
         const w = this.cameras.main.worldView;
@@ -2880,6 +2882,29 @@ export class WorldScene extends Phaser.Scene {
       if (!cell || cell.l < l) continue; // this cell draws no top/face at level l
       const s = surfaceFor(cell.t);
       return !s.standable && s.swimmable; // front-most drawn surface (top or face)
+    }
+    return false;
+  }
+
+  /** Is the point drawn at world (wx, wy) walkable DRY GROUND a creature could
+   * perch on? Face-aware like isWaterAtScreen: it resolves the FRONT-MOST drawn
+   * surface and returns true only when that surface is the standable, non-water
+   * TOP of a cell (cell.l === l) — NOT a cliff FACE (cell.l > l → the point is on
+   * the vertical wall) and NOT water. The ambient bird flock lands in a flat
+   * plane with no knowledge of terrain height, so it validates each perch spot
+   * through this to avoid landing on cliff walls or in the water. */
+  private landableAtScreen(wx: number, wy: number): boolean {
+    if (!this.world) return false;
+    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    const u = (wx - this.iso.ox - tile / 2) / dx;
+    for (let l = this.maxLevel; l >= 0; l--) {
+      const v = (wy - this.iso.oy - dy + l * lh) / dy;
+      const col = Math.floor((u + v) / 2);
+      const row = Math.floor((v - u) / 2);
+      const cell = this.world.rows[row]?.[col];
+      if (!cell || cell.l < l) continue; // this cell draws no top/face here
+      const s = surfaceFor(cell.t);
+      return cell.l === l && s.standable && !s.swimmable; // a walkable TOP, not a face/water
     }
     return false;
   }

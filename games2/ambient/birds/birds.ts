@@ -92,6 +92,7 @@ const TAKEOFF_MS = 1400; // flush / lift-off climb duration
 const FLUSH_COOLDOWN = 6000; // after a scatter, stay calm this long (no re-panic)
 const FLOCK_LIFE: [number, number] = [34_000, 58_000]; // then the flock departs the view
 const LAND_CLEAR = FLEE_R * 1.9; // only settle when the flock is this far from the player
+const LAND_SCATTER = 70; // ± spread of each bird's personal perch spot around the flock centre
 
 const FLYING = 0;
 const LANDING = 1;
@@ -147,17 +148,16 @@ export function birdsFeature(): AmbientFeature {
     return { x: ctx.view.x + ms.sx / ms.zoom, y: ctx.view.y + ms.sy / ms.zoom };
   };
 
-  // Is this world point standable ground (not water)? Reuses the surface probe
-  // the way env.ts samples sand — world → screen → pickAt (flat grid) → surfaceAt.
-  const isGround = (ctx: AmbientCtx, wx: number, wy: number): boolean => {
+  // Is world point (wx, wy) a walkable DRY TOP the flock can perch on? Uses the
+  // game's FACE-AWARE landableAtScreen probe: the FRONT-MOST drawn surface must
+  // be a standable, non-water TOP — never a cliff FACE (a bird would cling to
+  // the vertical wall) or water. The flat plane the flock flies in can't tell a
+  // wall/lake from ground on its own, so every perch spot is validated here.
+  // Missing probe → don't block landing (degrade gracefully).
+  const isGround = (wx: number, wy: number): boolean => {
     const ml = (window as unknown as { __ml?: Record<string, (...a: never[]) => unknown> }).__ml;
-    const pick = ml?.pickAt as undefined | ((x: number, y: number) => { x: number; y: number } | null);
-    const at = ml?.surfaceAt as undefined | ((x: number, y: number) => { sound?: string } | null);
-    if (!pick || !at) return true; // no probe → don't block landing
-    const p = pick((wx - ctx.view.x) * ctx.zoom, (wy - ctx.view.y) * ctx.zoom);
-    if (!p) return true;
-    const s = at(p.x, p.y);
-    return !s || s.sound !== "water";
+    const at = ml?.landableAtScreen as undefined | ((x: number, y: number) => boolean);
+    return at ? at(wx, wy) === true : true;
   };
 
   // Show the right frame: the flap clip while airborne, the still base perched.
@@ -335,7 +335,7 @@ export function birdsFeature(): AmbientFeature {
           const lx = view.x + 40 + rnd() * (view.width - 80);
           const ly = view.y + 40 + rnd() * (view.height - 80);
           if (Math.hypot(lx - px, ly - py) < LAND_CLEAR) continue; // too close to the player
-          if (isGround(ctx, lx, ly)) {
+          if (isGround(lx, ly)) {
             landCx = lx;
             landCy = ly;
             found = true;
@@ -344,8 +344,29 @@ export function birdsFeature(): AmbientFeature {
         if (found) {
           for (const b of birds) {
             b.state = LANDING;
-            b.tx = landCx + (rnd() - 0.5) * 70; // personal spot around the centre
-            b.ty = landCy + (rnd() - 0.5) * 70;
+            // Each bird gets its OWN validated landable spot near the centre. The
+            // flat top can be a narrow strip by a cliff edge, so a raw ±35px
+            // scatter would drop birds onto the wall FACE or into the water
+            // (maintainer report). Re-roll until landable; else use the (landable)
+            // centre with a tiny jitter so they don't all stack on one pixel.
+            let sx = landCx;
+            let sy = landCy;
+            let spot = false;
+            for (let t = 0; t < 8 && !spot; t++) {
+              const cx = landCx + (rnd() - 0.5) * LAND_SCATTER;
+              const cy = landCy + (rnd() - 0.5) * LAND_SCATTER;
+              if (isGround(cx, cy)) {
+                sx = cx;
+                sy = cy;
+                spot = true;
+              }
+            }
+            if (!spot) {
+              sx = landCx + (rnd() - 0.5) * 12;
+              sy = landCy + (rnd() - 0.5) * 12;
+            }
+            b.tx = sx;
+            b.ty = sy;
           }
         } else {
           settleAt = now + 3000; // no dry clearing right here — try again shortly
@@ -418,6 +439,8 @@ export function birdsFeature(): AmbientFeature {
             // SPD_MIN and stepFlapDir would snap the facing back to the glide
             // heading, defeating "perch any way" (birds don't all face the camera).
             b.state = LANDED;
+            b.gx = b.tx; // snap to the VALIDATED landable spot (drop the ≤12px glide slop)
+            b.gy = b.ty;
             b.alt = 0;
             b.vx = 0;
             b.vy = 0;
