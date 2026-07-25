@@ -388,3 +388,108 @@ for (const frameMs of [16, 33, 133]) {
     assert.equal(fails.length, 0, `${setup.starts.length} bridge approaches, ${fails.length} fell/failed — ${fails.join("; ")}`);
   });
 }
+
+// ---------------------------------------------------------------------------
+// Leave-the-bridge gate (world@2 decks): standing ON a bridge/roof DECK and
+// tapping same-level ground OFF the deck must let the follower step off — it
+// used to read the base cell UNDER the span (a gap/water at level 0) as its
+// "from" level, so every step onto the same-level land looked like a cliff and
+// ALL leftward headings probed blocked; the follower could only steer up/down
+// and never left the bridge (maintainer 2026-07-25: "runs up and down, can't
+// get over the bridge"). The follower now probes with the deck-aware rule the
+// body integrates with. Derived from the world so a reshaped bridge still
+// guards it. Frame 16ms (healthy phone) is where the trap bit hardest.
+// ---------------------------------------------------------------------------
+
+/** Drive a trip that STARTS on a deck (elev = the deck level) toward an
+ *  off-deck same-level ground target, tracking the surface elevation. */
+function simDeckLeave(grid: TerrainGrid, sx: number, sy: number, tx: number, ty: number, startElev: number, goalLevel: number, frameMs: number) {
+  const worldW = grid.width * CELL_WU;
+  const worldH = grid.height * CELL_WU;
+  let x = sx, y = sy, elev = startElev, now = 0, jumpUntil = -Infinity, jumpReadyAt = 0;
+  const trip = startTrip(grid, x, y, tx, ty, true, now, elev, goalLevel);
+  if (!trip) return { arrived: false, endDist: Infinity };
+  const integrate = (ax: number, ay: number, running: boolean, dtMs: number) => {
+    let left = dtMs / 1000;
+    while (left > 1e-9) {
+      const eff = Math.min(left, MAX_INPUT_DT);
+      left -= eff;
+      const jumping = now < jumpUntil;
+      const u = unstickFromSolids(grid, x, y, 80 * eff);
+      x = u.x; y = u.y;
+      const surf = surfaceAtWorld(grid, x, y);
+      const ctx = { maxClimb: jumping ? JUMP_CLIMB : WALK_CLIMB, canSwim: true };
+      const r = stepMovement(x, y, ax, ay, running, eff, makeBlockedElev(grid, ctx, () => elev), surf.speed * (jumping ? JUMP_SPEED_FACTOR : 1), true, worldW, worldH, makeSideBlocked(grid, ctx));
+      x = r.x; y = r.y;
+      elev = resolveElevAt(grid, elev, x, y, ctx);
+    }
+  };
+  const t0 = now;
+  while (now - t0 < 60_000) {
+    const drive = stepAutopilot(grid, trip, x, y, now, worldW, worldH, elev);
+    if (drive.done) break;
+    if ((drive.ax !== 0 || drive.ay !== 0) && now >= jumpUntil && now >= jumpReadyAt) {
+      const wv = screenToWorldVector(drive.ax, drive.ay);
+      if (autoJumpWanted(grid, x, y, wv.x, wv.y)) { jumpUntil = now + JUMP_MS; jumpReadyAt = jumpUntil + JUMP_COOLDOWN_MS; }
+    }
+    integrate(drive.ax, drive.ay, drive.running, frameMs);
+    now += frameMs;
+  }
+  return { arrived: Math.hypot(tx - x, ty - y) < 40, endDist: Math.hypot(tx - x, ty - y) };
+}
+
+interface LeaveCase { sx: number; sy: number; gx: number; gy: number; L: number; deck: { c: number; r: number }; tgt: { c: number; r: number } }
+
+/** EVERY bridge/roof span cell (a deck whose base is ≥2 levels below it) paired
+ *  with a same-level off-deck ground target it can reach — the "step off onto
+ *  the land at the bridge's own level" move. Start offset toward the target (the
+ *  reported 140.3,108.8 sat near the cell edge; that offset is what made the base
+ *  probe read the neighbouring cliff and block every leftward heading). */
+function deckLeaveCases(grid: TerrainGrid): LeaveCase[] {
+  const W = grid.width, H = grid.height;
+  const idx = (c: number, r: number) => r * W + c;
+  const wc = (c: number, r: number): [number, number] => [(c + 0.5) * CELL_WU, (r + 0.5) * CELL_WU];
+  const cases: LeaveCase[] = [];
+  for (let dr = 1; dr < H - 1; dr++)
+    for (let dc = 1; dc < W - 1; dc++) {
+      const i = idx(dc, dr);
+      const L = grid.deck[i];
+      if (L < 0 || grid.level[i] > L - 2) continue; // a real span, base well below the deck
+      let picked: LeaveCase | null = null;
+      for (let rad = 4; rad <= 9 && !picked; rad++)
+        for (let a = 0; a < 360 && !picked; a += 30) {
+          const tc = Math.round(dc + Math.cos(a * Math.PI / 180) * rad);
+          const tr = Math.round(dr + Math.sin(a * Math.PI / 180) * rad);
+          if (tc < 1 || tr < 1 || tc >= W - 1 || tr >= H - 1) continue;
+          const j = idx(tc, tr);
+          if (grid.deck[j] >= 0 || grid.blocked[j] || grid.level[j] !== L) continue;
+          if (!surfaceAtWorld(grid, ...wc(tc, tr)).standable) continue;
+          const [gx, gy] = wc(tc, tr);
+          const path = findPath(grid, ...wc(dc, dr), gx, gy, { canSwim: true, fromElev: L, goalLevel: L });
+          if (!path || path.length < 3) continue;
+          const [cx, cy] = wc(dc, dr);
+          const dx = gx - cx, dy = gy - cy, dl = Math.hypot(dx, dy) || 1;
+          picked = { sx: cx + (dx / dl) * CELL_WU * 0.3, sy: cy + (dy / dl) * CELL_WU * 0.3, gx, gy, L, deck: { c: dc, r: dr }, tgt: { c: tc, r: tr } };
+        }
+      if (picked) cases.push(picked);
+      if (cases.length >= 40) return cases;
+    }
+  return cases;
+}
+
+for (const frameMs of [16, 133]) {
+  test(`sim: the_island2 leave the bridge onto same-level ground (frame ${frameMs}ms)`, (t) => {
+    const path = join(REPO, "maps2", "worlds", "the_island2", "world.json");
+    if (!existsSync(path)) return t.skip("maps2/worlds/the_island2 missing");
+    const world = parseWorld(JSON.parse(readFileSync(path, "utf8")));
+    if (!world) return t.skip("the_island2 failed to parse");
+    const grid = buildTerrainGrid(world.width, world.height, world.rows, world.props, world.decks);
+    const cases = deckLeaveCases(grid);
+    if (!cases.length) return t.skip("the_island2 has no bridge-over-gap + same-level ground to leave onto");
+    const fails = cases
+      .map((s) => ({ s, r: simDeckLeave(grid, s.sx, s.sy, s.gx, s.gy, s.L, s.L, frameMs) }))
+      .filter((o) => !o.r.arrived)
+      .map((o) => `deck (${o.s.deck.c},${o.s.deck.r})@${o.s.L} -> ground (${o.s.tgt.c},${o.s.tgt.r}) endDist=${o.r.endDist.toFixed(0)}wu`);
+    assert.equal(fails.length, 0, `${cases.length} bridge-exit trips, ${fails.length} stuck on the bridge — ${fails.join("; ")}`);
+  });
+}
