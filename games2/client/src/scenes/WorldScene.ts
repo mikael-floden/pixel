@@ -1296,6 +1296,9 @@ export class WorldScene extends Phaser.Scene {
       // grid cell — headless probe for emission monotonicity/colour.
       lightAtCell: (col: number, row: number, z = 0) =>
         this.night ? this.night.lightAt(col, row, z, false) : null,
+      // Light + depth-fog for an ambient flyer at iso-screen ground point (gx,gy)
+      // lifted alt px — face-aware inverse + altitude-aware sample (see critterLight).
+      critterLight: (gx: number, gy: number, alt: number) => this.critterLight(gx, gy, alt),
       levelAt: (x: number, y: number) => (this.terrain ? levelAtWorld(this.terrain, x, y) : 0),
       nightShader: () => !!this.night && this.night.active,
       // Get/set the time-of-day phase (by index or name); instant when set —
@@ -2923,6 +2926,47 @@ export class WorldScene extends Phaser.Scene {
       return cell.l === l && s.standable && !s.swimmable; // a walkable TOP, not a face/water
     }
     return false;
+  }
+
+  /** Light + depth-fog haze for an ambient FLYER (bird/bat) whose GROUND point
+   * is drawn at iso-screen (gx,gy) and lifted `altPx` above it. The flat flock
+   * sim has no terrain awareness, so this does the face-aware iso inverse of the
+   * GROUND point → the front-most drawn surface (col,row,L) — exactly like
+   * landableAtScreen — then the flyer's ABSOLUTE height z = L + altPx/lh. It
+   * samples the CPU light field (day/night + cloud + directional-sun CAST
+   * SHADOW + point lights, the same lightAt the avatar lit-copy uses) AND the
+   * depth-fog band math at that 3D point. NEVER a framebuffer read — the shadow
+   * and haze come from the light field at the bird's own position+altitude
+   * (the maintainer's requirement). Invert the GROUND point, NOT the lifted
+   * sprite point (gy-alt): the altitude is a pure vertical screen shift, so the
+   * sprite overlaps terrain the bird isn't actually over. A high flyer's large
+   * alt lifts z clear of terrain into open-sky light; a landed bird (alt=0)
+   * gets z=L and catches its surface's sun/shadow. Returns the packed
+   * light-multiplier tint, the fog opacity, and the packed fog colour; null
+   * before the world/night field exist. */
+  private critterLight(gx: number, gy: number, altPx: number): { tint: number; fog: number; fogTint: number } | null {
+    if (!this.world || !this.night) return null;
+    const { dx, dy, lh, tile } = MAP_GEOMETRY;
+    const u = (gx - this.iso.ox - tile / 2) / dx;
+    // Front-most drawn surface under the ground point, falling back to the
+    // level-0 projection when nothing is hit (off-map / over a gap).
+    const v0 = (gy - this.iso.oy - dy) / dy;
+    let col = (u + v0) / 2, row = (v0 - u) / 2, L = 0;
+    for (let l = this.maxLevel; l >= 1; l--) {
+      const v = (gy - this.iso.oy - dy + l * lh) / dy;
+      const c = (u + v) / 2, r = (v - u) / 2;
+      const cell = this.world.rows[Math.floor(r)]?.[Math.floor(c)];
+      if (cell && cell.l >= l) { col = c; row = r; L = cell.l; break; }
+    }
+    const z = L + altPx / lh;
+    const lgt = this.night.lightAt(col, row, z, false);
+    const ch = (v: number) => Math.max(0, Math.min(255, Math.round(v * 255)));
+    const f = this.night.depthFogAt(col, row, z);
+    return {
+      tint: (ch(lgt[0]) << 16) | (ch(lgt[1]) << 8) | ch(lgt[2]),
+      fog: f.a,
+      fogTint: (ch(f.r) << 16) | (ch(f.g) << 8) | ch(f.b),
+    };
   }
 
   private pickGround(wx: number, wy: number): { x: number; y: number; lvl: number } | null {

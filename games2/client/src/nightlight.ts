@@ -2152,4 +2152,52 @@ export class NightLights {
     const pool = Math.min(1, Math.max(0, 1 - (z - 0.4) * 0.5));
     return Math.min(1, banks * roil * 1.55) * pool * mist;
   }
+
+  /** CPU DEPTH-FOG for a POINT already at grid (col,row) + level z — the
+   * altitude-aware twin the DEPTHFOG_FRAG shader has none of. The shader spends
+   * most of its length reconstructing the smooth col/row/z a screen PIXEL maps
+   * to (drape + iso march); a known point (an ambient flyer) skips all of that
+   * and just runs the player-relative band arithmetic. Returns the fog OPACITY
+   * `a` (0..1) and its ambient-dimmed colour r,g,b (0..1) so a far/high bird
+   * hazes into the fog exactly like the terrain behind it. Two deliberate
+   * differences from the fragment, both because the point MOVES: the distance
+   * band is NOT cel-snapped (floor()) — a flyer crossing a band edge would
+   * strobe — so both channels stay smooth; and faceMix is irrelevant (a point
+   * has no cliff-face compression). Everything else mirrors DEPTHFOG_FRAG and
+   * MUST be kept in sync with the GLSL consts atop it. */
+  depthFogAt(col: number, row: number, z: number): { a: number; r: number; g: number; b: number } {
+    const uFog = this.fogStrength;
+    const NONE = { a: 0, r: 0, g: 0, b: 0 };
+    if (uFog <= 0.003) return NONE;
+    // MUST MATCH the GLSL consts atop DEPTHFOG_FRAG.
+    const BANDS = 6, FOG_D0 = 11, FOG_DW = 1.2, FOG_MAX = 0.78, FOG_DEEP_MAX = 1.0, FOG_DEEP_RATE = 0.5;
+    const ELEV_D0 = 7, ELEV_STEP = 0.5, SAME_LEVEL_FOG = 0.1, LEVEL_FADE_SPAN = 15;
+    const NEAR = [0.3, 0.52, 0.5], FAR = [0.72, 0.88, 0.9];
+    const px = this.curPlayerXY[0], py = this.curPlayerXY[1], pz = this.curPlayerZ;
+    // (1) SMOOTH horizontal distance from the player (2D cells) — no cel-snap.
+    const distH = Math.hypot(col - px, row - py);
+    const distBand = Math.max(0, Math.min((distH - FOG_D0) / FOG_DW + 1, BANDS - 1));
+    // (2) HARD elevation edge — |Δlevel| from the player past the ELEV_D0 dead-zone.
+    const dLev = Math.abs(pz - z);
+    const elevBand = Math.max(0, dLev - ELEV_D0) * ELEV_STEP;
+    const rawBand = distBand + elevBand; // unclamped: elevBand overflows the cap for deep |Δz|
+    const band = Math.max(0, Math.min(rawBand, BANDS - 1));
+    const bf = band / (BANDS - 1);
+    const levelFade = Math.max(SAME_LEVEL_FOG, Math.min(SAME_LEVEL_FOG + (1 - SAME_LEVEL_FOG) * (dLev / LEVEL_FADE_SPAN), 1));
+    const overflow = Math.max(0, rawBand - (BANDS - 1));
+    const deep = overflow > 0 ? 1 - Math.exp(-overflow * FOG_DEEP_RATE) : 0;
+    const density = bf * FOG_MAX * (1 - deep) + FOG_DEEP_MAX * deep;
+    const a = density * uFog * levelFade;
+    if (a <= 0.002) return NONE;
+    // Dim the fog tone with the ambient, same floor as the fragment.
+    const amb = this.curAmbient;
+    const ambLum = (amb[0] + amb[1] + amb[2]) / 3;
+    const dim = Math.max(0, Math.min(0.45 + 0.7 * ambLum, 1));
+    return {
+      a,
+      r: (NEAR[0] + (FAR[0] - NEAR[0]) * bf) * dim,
+      g: (NEAR[1] + (FAR[1] - NEAR[1]) * bf) * dim,
+      b: (NEAR[2] + (FAR[2] - NEAR[2]) * bf) * dim,
+    };
+  }
 }
