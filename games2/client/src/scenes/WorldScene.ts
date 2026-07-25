@@ -337,6 +337,10 @@ interface Avatar {
   wasSwimming?: boolean; // last frame's swimming — detects the swim→land exit
   exitJumpUntil?: number; // while >now, ease the elevation UP (leap out of water)
   swimT: number; // 0..1 submerge amount (0 = feet on ground, 1 = shoulders at surface)
+  // The SURFACE level the avatar stands (deck/base) or floats (pool) on. While
+  // swimming the rendered `elev` sinks `swimDrop` px BELOW this, so lighting must
+  // sample HERE (the visible head/shoulders float at the surface) — see litLevelOf.
+  surfLevel?: number;
   bobPhase: number; // per-avatar swim bob phase
   waterMaskG?: Phaser.GameObjects.Graphics; // half-plane-above-shoulders mask shape
   waterMask?: Phaser.Display.Masks.GeometryMask; // the reusable geometry mask
@@ -1108,12 +1112,19 @@ export class WorldScene extends Phaser.Scene {
       litInfo: () => {
         const av = this.avatars.get(this.room?.sessionId ?? "");
         if (!av || !this.night) return null;
-        const lvl = Math.max(0, av.elev / MAP_GEOMETRY.lh);
+        const rendLvl = Math.max(0, av.elev / MAP_GEOMETRY.lh); // sunk while swimming
+        const litLvl = this.litLevelOf(av); // where lighting SHIPS (surface when swimming)
         const baseLvl = this.terrain ? levelAtWorld(this.terrain, av.fx, av.fy) : 0;
         return {
-          elevLvl: +lvl.toFixed(2),
+          elevLvl: +litLvl.toFixed(2),
+          rendLvl: +rendLvl.toFixed(2), // the sunk render elevation (swimming)
+          surfLevel: av.surfLevel ?? null,
+          swimming: av.swimming,
           baseLvl,
-          l: this.night.lightAt(av.fx / CELL_WU, av.fy / CELL_WU, lvl, false).map((v) => +v.toFixed(3)),
+          // l = what SHIPS (sampled at litLvl); lSunk = the OLD buggy sample at the
+          // sunk render elevation; lBase = base-terrain sample (deck QA).
+          l: this.night.lightAt(av.fx / CELL_WU, av.fy / CELL_WU, litLvl, false).map((v) => +v.toFixed(3)),
+          lSunk: this.night.lightAt(av.fx / CELL_WU, av.fy / CELL_WU, rendLvl, false).map((v) => +v.toFixed(3)),
           lBase: this.night.lightAt(av.fx / CELL_WU, av.fy / CELL_WU, baseLvl, false).map((v) => +v.toFixed(3)),
         };
       },
@@ -2182,6 +2193,7 @@ export class WorldScene extends Phaser.Scene {
       // else the base terrain). Using the base here made a deck the player walks
       // ON count as a "higher" occluder that drew over their legs.
       const lvl = surfLevel;
+      av.surfLevel = surfLevel; // for lighting: swimmers sample HERE, not the sunk elev
       let depth = av.lyFlat + 0.5; // painter y at the flat (unlifted) ground
       if (this.world) {
         const colf = tx / CELL_WU; // 1 cell = CELL_WU world units (any world size)
@@ -2425,10 +2437,12 @@ export class WorldScene extends Phaser.Scene {
           row: a.fy / CELL_WU,
           // Held low (waist height): a high torch grazes over ledge lips and
           // lights ground far below cliffs, which reads as leakage. Anchor to the
-          // avatar's RENDERED elevation (a.elev px → levels) so a torch carried
-          // ONTO a deck (bridge/roof) sits at the deck's height and lights the
-          // deck around it — not the base ground 4 levels below.
-          z: Math.max(0, a.elev / MAP_GEOMETRY.lh) + 0.55,
+          // avatar's RENDERED elevation (litLevelOf: a.elev px → levels, or the
+          // pool surface while swimming) so a torch carried ONTO a deck
+          // (bridge/roof) sits at the deck's height and lights the deck around it
+          // — not the base ground 4 levels below, nor the pool floor a swimmer
+          // is sunk to (its head + the torch it holds float at the surface).
+          z: this.litLevelOf(a) + 0.55,
           radius: 6,
           // Colour scales with the day-fade: the light's whole contribution
           // is linear in it, so the pool melts out smoothly.
@@ -2707,9 +2721,11 @@ export class WorldScene extends Phaser.Scene {
       // floor UNDER the deck, so lightAt marches the sun ray from down there,
       // the roof/walls occlude it, and the character renders in shadow in full
       // daylight — until a step onto a wall (base genuinely at deck level) pops
-      // it bright. a.elev px → levels is the same basis the torch z uses, so a
-      // deck-top avatar is lit and an under-deck avatar stays (correctly) shaded.
-      const lvl = Math.max(0, a.elev / MAP_GEOMETRY.lh);
+      // it bright. litLevelOf gives a.elev px → levels (same basis as the torch
+      // z), so a deck-top avatar is lit and an under-deck avatar stays (correctly)
+      // shaded — and a SWIMMER samples at the pool surface its head floats on, not
+      // the sunk elev whose underwater sun-march the pool edges wrongly shadow.
+      const lvl = this.litLevelOf(a);
       const l = night!.lightAt(a.fx / CELL_WU, a.fy / CELL_WU, lvl, false);
       const base = a.baseTint;
       const r = Math.min(255, Math.round(((base >> 16) & 0xff) * Math.min(1, l[0])));
@@ -3365,6 +3381,19 @@ export class WorldScene extends Phaser.Scene {
     const def = this.manifest.characters.find((c) => c.uid === uid);
     const s = def?.shoulders?.[dir] ?? def?.shoulders?.[DEFAULT_DIRECTION] ?? { lx: 0.4, ly: 0.42, rx: 0.6, ry: 0.42 };
     return { def, s };
+  }
+
+  /** The elevation (in levels) at which to sample lighting for the VISIBLE
+   * character — its torch and its lit-copy day/night tint. Normally the avatar's
+   * RENDERED height (`elev` px → levels, follows falls/hops onto decks). But a
+   * SWIMMER's `elev` sinks `swimDrop` px BELOW the pool surface while the head +
+   * shoulders float AT the surface: sampling down there marches the sun ray into
+   * the pool's own raised edges and the swimmer renders shaded in full daylight
+   * (maintainer 2026-07-25 — only bit ELEVATED pools; a sea's sunk elev clamps to
+   * 0 = its own surface). So float swimmers sample at the pool surface `surfLevel`. */
+  private litLevelOf(a: Avatar): number {
+    if (a.swimming && a.surfLevel !== undefined) return a.surfLevel;
+    return Math.max(0, a.elev / MAP_GEOMETRY.lh);
   }
 
   /** Clip everything below the water surface (underwater) while swimming, via
