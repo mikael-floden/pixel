@@ -429,7 +429,7 @@ export function birdsFeature(): AmbientFeature {
           drawFrame(b, true, tint);
           b.sprite.setPosition(b.gx, b.gy - b.alt).setDepth(DEPTH + i * 0.001);
           applyFog(ctx.scene, b, grade, BIRD_ALPHA);
-          applyShadow(ctx.scene, b, b.gx, b.gy, b.alt);
+          applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade.groundL);
           continue;
         }
 
@@ -466,7 +466,7 @@ export function birdsFeature(): AmbientFeature {
             drawFrame(b, true, tint);
             b.sprite.setPosition(b.gx, b.gy - b.alt).setDepth(DEPTH + i * 0.001);
             applyFog(ctx.scene, b, grade, BIRD_ALPHA);
-            applyShadow(ctx.scene, b, b.gx, b.gy, b.alt);
+            applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade.groundL);
             continue;
           }
         } else {
@@ -576,7 +576,7 @@ export function birdsFeature(): AmbientFeature {
         const bob = b.alt > 4 ? Math.sin(b.t * 5 + b.bobPhase) * 2 : 0;
         b.sprite.setPosition(b.gx, b.gy - b.alt + bob).setDepth(DEPTH + i * 0.001);
         applyFog(ctx.scene, b, grade, BIRD_ALPHA);
-        applyShadow(ctx.scene, b, b.gx, b.gy, b.alt); // ground drop-shadow (no bob → the gap reads as height)
+        applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade.groundL); // ground drop-shadow (no bob → the gap reads as height)
 
         // Off the view (plus slack)?
         const off =
@@ -627,6 +627,7 @@ export function birdsFeature(): AmbientFeature {
           fog: b.fog?.visible ? +b.fog.alpha.toFixed(2) : 0,
           fogTint: b.fog?.visible ? b.fog.tintTopLeft : 0,
           shadow: b.shadow ? +b.shadow.displayWidth.toFixed(1) : 0,
+          shadowDepth: b.shadow ? Math.round(b.shadow.depth) : 0, // vs gy: elevation-raised over occluders
         })),
       };
     },

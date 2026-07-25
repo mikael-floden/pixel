@@ -97,6 +97,7 @@ export interface CritterGrade {
   tint: number;
   fog: number;
   fogTint: number;
+  groundL: number; // resolved terrain level under the creature (for the shadow's depth)
 }
 
 /** Per-creature EASED lighting state (see gradeCritter). Both Bird and Bat carry
@@ -108,12 +109,15 @@ export interface CritterGradeState {
   gfc?: [number, number, number]; // eased fog colour (r,g,b), 0..1
 }
 
-// The raw floats __ml.critterLight returns (light multipliers + fog).
+// The raw floats __ml.critterLight returns (light multipliers + fog + resolved terrain).
 interface CritterProbe {
   l: [number, number, number];
   fog: number;
   fogCol: [number, number, number];
+  L: number; // resolved DRAWN terrain level under the ground point
 }
+
+const LEVEL_PX = 16; // MAP_GEOMETRY.lh — px per elevation level (kept local, no cross-import)
 
 // Ease time-constants (ms). critterLight now resolves the bird's ground level as
 // the DRAWN level up a cliff face (not the wall top), so the raw grade already
@@ -185,6 +189,7 @@ export function gradeCritter(
     tint: (ch(st.gl[0]) << 16) | (ch(st.gl[1]) << 8) | ch(st.gl[2]),
     fog: st.gfa ?? 0,
     fogTint: (ch(st.gfc[0]) << 16) | (ch(st.gfc[1]) << 8) | ch(st.gfc[2]),
+    groundL: p ? p.L : 0, // RAW (un-eased) terrain level — for the shadow's depth sort
   };
 }
 
@@ -212,7 +217,14 @@ function ensureCritterShadow(scene: Phaser.Scene): void {
  * vertical GAP up to the bird (alt px above) reads as flight height — and the
  * shadow itself shrinks + fades a little as it climbs (Mario-64 style). Drawn at
  * a WORLD-Y depth (like footsteps), NOT the bird's sky depth, so it lies on the
- * ground and DIMS with the night overlay instead of glowing over it. Created
+ * ground and DIMS with the night overlay instead of glowing over it.
+ *
+ * The ground point (gx,gy) already sits ON the resolved terrain SURFACE (raised
+ * cells draw their top at gy), but ELEVATED terrain draws its top/face tiles as
+ * separate occluder images at depth `oy+dy+(col+row)*dy == gy + L*lh` — ABOVE a
+ * plain `gy` depth — so over a hill the terrain tile covered the shadow (it was
+ * only visible on level-0 ground with no occluder). Raise the shadow's depth by
+ * the resolved level so it sits just above its own cell's occluder. Created
  * lazily; the caller destroys it on removal. */
 export function applyShadow(
   scene: Phaser.Scene,
@@ -220,6 +232,7 @@ export function applyShadow(
   gx: number,
   gy: number,
   alt: number,
+  groundL: number,
 ): void {
   ensureCritterShadow(scene);
   const f = Math.min(1, Math.max(0, alt / 130)); // 0 on the ground → 1 at high cruise
@@ -229,7 +242,7 @@ export function applyShadow(
     holder.shadow = s;
   }
   s.setPosition(gx, gy)
-    .setDepth(gy) // ground-plane y-sort: on the ground, below the night overlay
+    .setDepth(gy + groundL * LEVEL_PX + 3) // just above this cell's terrain occluder; below the night overlay
     .setDisplaySize(16 - f * 6, 6.4 - f * 2.6) // much smaller than the player's ~34×14
     .setAlpha(0.58 - f * 0.24) // reads on bright sand; fainter the higher it climbs
     .setVisible(true);
