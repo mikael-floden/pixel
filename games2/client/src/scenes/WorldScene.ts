@@ -2936,26 +2936,34 @@ export class WorldScene extends Phaser.Scene {
   /** Light + depth-fog haze for an ambient FLYER (bird/bat) whose GROUND point
    * is drawn at iso-screen (gx,gy) and lifted `altPx` above it. The flat flock
    * sim has no terrain awareness, so this does the face-aware iso inverse of the
-   * GROUND point → the front-most drawn surface (col,row,L) — exactly like
-   * landableAtScreen — then the flyer's ABSOLUTE height z = L + altPx/lh. It
-   * samples the CPU light field (day/night + cloud + directional-sun CAST
-   * SHADOW + point lights, the same lightAt the avatar lit-copy uses) AND the
-   * depth-fog band math at that 3D point. NEVER a framebuffer read — the shadow
-   * and haze come from the light field at the bird's own position+altitude
-   * (the maintainer's requirement). Invert the GROUND point, NOT the lifted
-   * sprite point (gy-alt): the altitude is a pure vertical screen shift, so the
-   * sprite overlaps terrain the bird isn't actually over. A high flyer's large
-   * alt lifts z clear of terrain into open-sky light; a landed bird (alt=0)
-   * gets z=L and catches its surface's sun/shadow. Returns RAW floats — the
-   * light multipliers `l` (0..~N, clamp before tinting), the fog opacity, and
-   * the fog colour (0..1) — so the ambient layer can EASE them per creature (L
-   * jumps discretely at a cliff foot, which would snap the fog/shadow; the
-   * flock smooths that over ~0.15s). null before the world/night field exist. */
+   * GROUND point → the front-most drawn surface, then the flyer's ABSOLUTE
+   * height z = L + altPx/lh. It samples the CPU light field (day/night + cloud +
+   * directional-sun CAST SHADOW + point lights, the same lightAt the avatar
+   * lit-copy uses) AND the depth-fog band math at that 3D point. NEVER a
+   * framebuffer read — the shadow and haze come from the light field at the
+   * bird's own position+altitude (the maintainer's requirement).
+   *
+   * L is the DRAWN level at the resolved screen row (the loop's `l`), NOT the
+   * cell's TOP level (cell.l). On a flat top the two are equal (so flat ground,
+   * plateaus and landed birds are unchanged), but on a cliff FACE `l` RAMPS
+   * smoothly from the foot (0) to the top (cell.l) as the point climbs the wall.
+   * The old cell.l pinned every bird flying in FRONT of a tall wall to the wall
+   * TOP — so a bird cruising up the face SNAPPED to max fog the instant its
+   * ground point touched the sheer face (maintainer: "they fly into the wall and
+   * get the fog from the ground layer that is over the bird"). With the drawn
+   * level the fog now ramps with the bird's screen height up the face. A high
+   * flyer's large alt still lifts z clear into open-sky light; a landed bird
+   * (alt=0) gets z=L and catches its surface's sun/shadow.
+   *
+   * Returns RAW floats — the light multipliers `l` (0..~N, clamp before tinting),
+   * the fog opacity, the fog colour (0..1), and the resolved col/row/L/z (debug)
+   * — so the ambient layer can EASE the grade per creature (any residual 1-level
+   * step smooths over ~0.15s). null before the world/night field exist. */
   private critterLight(
     gx: number,
     gy: number,
     altPx: number,
-  ): { l: [number, number, number]; fog: number; fogCol: [number, number, number] } | null {
+  ): { l: [number, number, number]; fog: number; fogCol: [number, number, number]; col: number; row: number; L: number; z: number } | null {
     if (!this.world || !this.night) return null;
     const { dx, dy, lh, tile } = MAP_GEOMETRY;
     const u = (gx - this.iso.ox - tile / 2) / dx;
@@ -2967,12 +2975,12 @@ export class WorldScene extends Phaser.Scene {
       const v = (gy - this.iso.oy - dy + l * lh) / dy;
       const c = (u + v) / 2, r = (v - u) / 2;
       const cell = this.world.rows[Math.floor(r)]?.[Math.floor(c)];
-      if (cell && cell.l >= l) { col = c; row = r; L = cell.l; break; }
+      if (cell && cell.l >= l) { col = c; row = r; L = l; break; } // DRAWN level (ramps up a face), not cell.l (the top)
     }
     const z = L + altPx / lh;
     const lgt = this.night.lightAt(col, row, z, false);
     const f = this.night.depthFogAt(col, row, z);
-    return { l: [lgt[0], lgt[1], lgt[2]], fog: f.a, fogCol: [f.r, f.g, f.b] };
+    return { l: [lgt[0], lgt[1], lgt[2]], fog: f.a, fogCol: [f.r, f.g, f.b], col, row, L, z };
   }
 
   private pickGround(wx: number, wy: number): { x: number; y: number; lvl: number } | null {

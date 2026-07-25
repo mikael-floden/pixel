@@ -115,11 +115,12 @@ interface CritterProbe {
   fogCol: [number, number, number];
 }
 
-// Ease time-constants (ms). The bird's ABSOLUTE height z = groundLevel + alt/lh,
-// and groundLevel JUMPS ~20 levels the instant its ground point crosses a cliff
-// foot — snapping the cast-shadow tint and the fog. Easing turns that jump into a
-// smooth ~0.15s ramp (the same trick the avatar uses for elevation snaps). Fog
-// swings are bigger, so it eases a touch slower than the tint.
+// Ease time-constants (ms). critterLight now resolves the bird's ground level as
+// the DRAWN level up a cliff face (not the wall top), so the raw grade already
+// ramps smoothly instead of snapping ~20 levels at a wall. Easing is the safety
+// net: it smooths any residual per-frame step (a fast bird stepping 1-2 levels,
+// or crossing a cell/occlusion boundary) — the same trick the avatar uses for
+// elevation snaps. Fog swings are bigger, so it eases a touch slower than the tint.
 const GRADE_TAU = 130;
 const FOG_TAU = 165;
 const FOG_EPS = 0.01; // "is there real fog?" threshold for the colour track (see gradeCritter)
