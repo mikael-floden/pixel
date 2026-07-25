@@ -149,6 +149,25 @@ class PixelLabClient:
         """Full character record: rotation_urls + animations (frame URLs) + meta."""
         return self._request("GET", f"{V2}/characters/{character_id}")
 
+    def last_modified(self, url):
+        """Last-Modified datetime for a CDN asset (None if unavailable). Used to
+        pick the newest frames when PixelLab returns duplicate direction entries
+        for an animation it just regenerated in place."""
+        from email.utils import parsedate_to_datetime
+        for _ in range(3):
+            try:
+                r = self._session.head(url, timeout=self.timeout, allow_redirects=True)
+            except requests.RequestException:
+                time.sleep(1); continue
+            lm = r.headers.get("Last-Modified")
+            if lm:
+                try:
+                    return parsedate_to_datetime(lm)
+                except (TypeError, ValueError):
+                    return None
+            return None
+        return None
+
     def download_image(self, url):
         """Download one CDN image -> PIL (RGBA), retrying brief post-generation 404s."""
         return self._download(url)

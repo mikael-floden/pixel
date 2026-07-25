@@ -169,13 +169,29 @@ def sync_character(client, name, cid, force=False):
         gid = a.get("animation_group_id")
         adir = os.path.join(anims_dir, slug)
         dirs_payload = a.get("directions") or []
-        # map direction -> list of frame urls
-        want = {}
+        # map direction -> list of frame urls. PixelLab can transiently return
+        # DUPLICATE entries for a direction while it regenerates an animation in
+        # place (an old copy + a new one); when that happens, keep the NEWEST by
+        # Last-Modified rather than whatever came last in the list.
+        entries = {}
         for dp in dirs_payload:
             dd = dp.get("direction")
             frames = [u for u in (dp.get("frames") or []) if u]
             if dd and frames:
-                want[dd] = frames
+                entries.setdefault(dd, []).append(frames)
+        want = {}
+        for dd, cands in entries.items():
+            if len(cands) == 1:
+                want[dd] = cands[0]
+            else:
+                best, best_lm = cands[0], None
+                for fr in cands:
+                    lm = client.last_modified(fr[0])
+                    if lm is not None and (best_lm is None or lm > best_lm):
+                        best, best_lm = fr, lm
+                want[dd] = best
+                print(f"    · {slug}/{dd}: {len(cands)} duplicate entries — kept newest "
+                      f"({best_lm})")
 
         prev_a = prev_by_type.get(atype) or {}
         unchanged = (not force and prev_a.get("animation_group_id") == gid and gid is not None
