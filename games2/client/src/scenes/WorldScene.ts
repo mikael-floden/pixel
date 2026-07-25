@@ -1134,8 +1134,8 @@ export class WorldScene extends Phaser.Scene {
         const id = this.room?.sessionId;
         const av = id ? this.avatars.get(id) : undefined;
         const cam = this.cameras.main;
-        const cx = cam.scrollX + cam.width / 2;
-        const cy = cam.scrollY + cam.height / 2;
+        const cx = cam.worldView.centerX; // zoom-correct world centre
+        const cy = cam.worldView.centerY;
         return {
           zoom: cam.zoom,
           base: this.zoomFor(),
@@ -1778,7 +1778,12 @@ export class WorldScene extends Phaser.Scene {
   private showConnectionError(err: unknown) {
     const cx = this.scale.width / 2;
     const cy = this.scale.height / 2;
-    const panel = this.add.rectangle(cx, cy, Math.min(560, this.scale.width - 40), 150, 0x12121c, 0.92)
+    // This panel is scrollFactor(0), so Phaser scales it by the camera zoom
+    // (base·rs) — its size is in ZOOM-LOCAL units. Cap by the ON-SCREEN width
+    // (scale.width / zoom), not the device backing, or it overflows the screen
+    // at rs>1 (device DPI) or base>1 (desktop). rs=1 phone base 1 = unchanged.
+    const screenW = this.scale.width / (this.cameras.main.zoom || 1);
+    const panel = this.add.rectangle(cx, cy, Math.min(560, screenW - 40), 150, 0x12121c, 0.92)
       .setScrollFactor(0).setStrokeStyle(2, 0xff6b6b).setDepth(1e9);
     const msg =
       "Can't reach the world server.\n\n" +
@@ -2941,10 +2946,16 @@ export class WorldScene extends Phaser.Scene {
    * sprite point (gy-alt): the altitude is a pure vertical screen shift, so the
    * sprite overlaps terrain the bird isn't actually over. A high flyer's large
    * alt lifts z clear of terrain into open-sky light; a landed bird (alt=0)
-   * gets z=L and catches its surface's sun/shadow. Returns the packed
-   * light-multiplier tint, the fog opacity, and the packed fog colour; null
-   * before the world/night field exist. */
-  private critterLight(gx: number, gy: number, altPx: number): { tint: number; fog: number; fogTint: number } | null {
+   * gets z=L and catches its surface's sun/shadow. Returns RAW floats — the
+   * light multipliers `l` (0..~N, clamp before tinting), the fog opacity, and
+   * the fog colour (0..1) — so the ambient layer can EASE them per creature (L
+   * jumps discretely at a cliff foot, which would snap the fog/shadow; the
+   * flock smooths that over ~0.15s). null before the world/night field exist. */
+  private critterLight(
+    gx: number,
+    gy: number,
+    altPx: number,
+  ): { l: [number, number, number]; fog: number; fogCol: [number, number, number] } | null {
     if (!this.world || !this.night) return null;
     const { dx, dy, lh, tile } = MAP_GEOMETRY;
     const u = (gx - this.iso.ox - tile / 2) / dx;
@@ -2960,13 +2971,8 @@ export class WorldScene extends Phaser.Scene {
     }
     const z = L + altPx / lh;
     const lgt = this.night.lightAt(col, row, z, false);
-    const ch = (v: number) => Math.max(0, Math.min(255, Math.round(v * 255)));
     const f = this.night.depthFogAt(col, row, z);
-    return {
-      tint: (ch(lgt[0]) << 16) | (ch(lgt[1]) << 8) | ch(lgt[2]),
-      fog: f.a,
-      fogTint: (ch(f.r) << 16) | (ch(f.g) << 8) | ch(f.b),
-    };
+    return { l: [lgt[0], lgt[1], lgt[2]], fog: f.a, fogCol: [f.r, f.g, f.b] };
   }
 
   private pickGround(wx: number, wy: number): { x: number; y: number; lvl: number } | null {
@@ -3782,8 +3788,12 @@ export class WorldScene extends Phaser.Scene {
 
   private makeGroundRT() {
     this.groundRT?.destroy();
+    const rs = this.renderScale();
+    // World-space texture (1 texel = 1 world px): size it in WORLD px so it
+    // covers the same view regardless of the device render scale — scale.width
+    // is device px (= CSS·rs), so /rs gives the CSS/world width. rs=1 → unchanged.
     this.groundRT = this.add
-      .renderTexture(0, 0, this.scale.width + GROUND_MARGIN * 2, this.scale.height + GROUND_MARGIN * 2)
+      .renderTexture(0, 0, this.scale.width / rs + GROUND_MARGIN * 2, this.scale.height / rs + GROUND_MARGIN * 2)
       .setOrigin(0, 0)
       .setDepth(-1_000_000);
     this.lastGround = { x: NaN, y: NaN };
@@ -3792,8 +3802,12 @@ export class WorldScene extends Phaser.Scene {
   private redrawGround() {
     if (!this.world || !this.groundRT) return;
     const cam = this.cameras.main;
-    const ccx = cam.scrollX + cam.width / 2;
-    const ccy = cam.scrollY + cam.height / 2;
+    // The WORLD centre of the view. `scrollX + width/2` only equals this at zoom
+    // 1; the device-DPI zoom (base·rs) makes it fractional, so use worldView,
+    // which is zoom-correct (and identical at zoom 1). Without this the ground RT
+    // anchors off-centre and its edge shows through at rs>1.
+    const ccx = cam.worldView.centerX;
+    const ccy = cam.worldView.centerY;
     // Only redraw when the camera centre strays GROUND_MARGIN/2 from the last
     // anchor — everything in between scrolls the already-drawn texture.
     if (
@@ -3930,8 +3944,18 @@ export class WorldScene extends Phaser.Scene {
     cam.centerOn(this.camChase.x, this.camChase.y);
   }
 
+  /** Device-pixel render scale (window.devicePixelRatio, clamped): the canvas
+   * backing is RS× the CSS size. 1 on standard-DPI / desktop / tests. */
+  private renderScale(): number {
+    return (this.registry.get("renderScale") as number) || 1;
+  }
+
   private zoomFor(): number {
-    return Math.max(1, Math.round(this.scale.width / 520));
+    // Pick the base zoom from the CSS width (scale.width / rs), then × rs so the
+    // camera renders at DEVICE pixels while the visible world extent is unchanged
+    // (1 world px still = base·rs backing px = base device px). rs=1 → byte-identical.
+    const rs = this.renderScale();
+    return Math.max(1, Math.round(this.scale.width / (520 * rs))) * rs;
   }
 
   private tryJump() {
@@ -4072,16 +4096,17 @@ export class WorldScene extends Phaser.Scene {
     this.ensureOccAssets();
     const { dx, dy, lh, tile } = MAP_GEOMETRY;
     if (!this.occRevealRT) {
+      const rs = this.renderScale(); // world-space RT — size in world px (see makeGroundRT)
       this.occRevealRT = this.add
-        .renderTexture(0, 0, this.scale.width + GROUND_MARGIN * 2, this.scale.height + GROUND_MARGIN * 2)
+        .renderTexture(0, 0, this.scale.width / rs + GROUND_MARGIN * 2, this.scale.height / rs + GROUND_MARGIN * 2)
         .setOrigin(0, 0)
         .setDepth(-900_000);
     }
     const rt = this.occRevealRT;
     rt.setVisible(true);
     const cam = this.cameras.main;
-    const ccx = cam.scrollX + cam.width / 2;
-    const ccy = cam.scrollY + cam.height / 2;
+    const ccx = cam.worldView.centerX; // zoom-correct world centre (see redrawGround)
+    const ccy = cam.worldView.centerY;
     // Redraw only when the player or camera drifts — otherwise the texture holds.
     if (
       !Number.isNaN(this.lastReveal.x) &&

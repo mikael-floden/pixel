@@ -52,6 +52,10 @@ const FLOCK_LIFE: [number, number] = [20_000, 38_000]; // then the colony leaves
 interface Bat {
   sprite: Phaser.GameObjects.Sprite;
   fog?: Phaser.GameObjects.Sprite; // lazily-created depth-fog wash overlay (see applyFog)
+  // Eased lighting state (CritterGradeState) — smooths the cliff-foot terrain jump.
+  gl?: [number, number, number];
+  gfa?: number;
+  gfc?: [number, number, number];
   gx: number; // GROUND position in world px (the point it flies over)
   gy: number;
   alt: number; // flight altitude px above the ground
@@ -150,6 +154,7 @@ export function batsFeature(): AmbientFeature {
         if (!ready) return;
       }
       const dts = Math.min(dt, 100) / 1000;
+      const dtMs = Math.min(dt, 100); // for the eased per-bat grade (see gradeCritter)
       const now = ctx.scene.time.now;
       lastNow = now;
       // One flock at a time: only count down to the next once the sky is clear.
@@ -282,7 +287,7 @@ export function batsFeature(): AmbientFeature {
 
         // Face (hysteretic 8-way from velocity) + flap + draw (a quick bob).
         stepFlapDir(b, dt, DIR_STICK);
-        const grade = gradeCritter(b.gx, b.gy, b.alt); // this bat's own light + fog
+        const grade = gradeCritter(b, b.gx, b.gy, b.alt, dtMs); // eased light + fog
         b.sprite.setFrame(flyFrame(b.dir, b.frame)).setTint(grade.tint);
         const bob = Math.sin(b.t * 7 + b.bobPhase) * 2.5;
         b.sprite.setPosition(b.gx, b.gy - b.alt + bob).setDepth(DEPTH + i * 0.001);
@@ -309,6 +314,7 @@ export function batsFeature(): AmbientFeature {
             b.vx = (inx / l) * SPD_CRUISE;
             b.vy = (iny / l) * SPD_CRUISE;
             b.dir = dirFromVel(b.vx, b.vy) ?? b.dir;
+            b.gl = undefined; // snap the eased grade to the new spot (don't ramp across the teleport)
           }
         }
       }

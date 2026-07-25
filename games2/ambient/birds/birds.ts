@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature, PHASE_DAY, WEATHER_CLEAR } from "../runtime/types";
-import { FLY_FRAMES, SheetSpec, applyFog, dirFromVel, flyFrame, gradeCritter, queueSheets, sheetsReady, stepFlapDir } from "../runtime/critters";
+import { FLY_FRAMES, SheetSpec, applyFog, applyShadow, dirFromVel, flyFrame, gradeCritter, queueSheets, sheetsReady, stepFlapDir } from "../runtime/critters";
 // 8 hand-made PixelLab bird TYPES, each an 8-direction object with a flapping
 // fly animation and a still base (for perching). Packed one folder per type.
 import bird1Fly from "./art/bird1/fly.png";
@@ -102,6 +102,11 @@ const TAKEOFF = 3;
 interface Bird {
   sprite: Phaser.GameObjects.Sprite;
   fog?: Phaser.GameObjects.Sprite; // lazily-created depth-fog wash overlay (see applyFog)
+  shadow?: Phaser.GameObjects.Image; // lazily-created ground drop-shadow (see applyShadow)
+  // Eased lighting state (CritterGradeState) — smooths the cliff-foot terrain jump.
+  gl?: [number, number, number];
+  gfa?: number;
+  gfc?: [number, number, number];
   type: number; // which of the 8 bird designs
   gx: number; // GROUND position in world px (the point on the map it is over)
   gy: number;
@@ -242,6 +247,7 @@ export function birdsFeature(): AmbientFeature {
     b.alt = b.cruise;
     b.state = FLYING;
     b.dir = dirFromVel(b.vx, b.vy) ?? b.dir;
+    b.gl = undefined; // snap the eased grade to the new spot (don't ramp across the teleport)
   };
 
   return {
@@ -266,6 +272,7 @@ export function birdsFeature(): AmbientFeature {
         if (!ready) return;
       }
       const dts = Math.min(dt, 100) / 1000;
+      const dtMs = Math.min(dt, 100); // for the eased per-bird grade (see gradeCritter)
       const now = ctx.scene.time.now;
       lastNow = now;
       // One flock at a time: only count down to the next once the sky is clear
@@ -399,9 +406,10 @@ export function birdsFeature(): AmbientFeature {
         b.t += dts;
         // Grade THIS bird by the world light + depth-fog at its own ground point
         // and altitude: cast shadows darken a bird in a cliff's shade, fog hazes
-        // a far/high one. (gx,gy pre-integration here is <2px stale vs the draw —
-        // negligible against the CELL_WU=32px scale the fields vary over.)
-        const grade = gradeCritter(b.gx, b.gy, b.alt);
+        // a far/high one. EASED (except when perched) so the terrain-level jump at
+        // a cliff foot doesn't snap the shadow/fog. (gx,gy pre-integration here is
+        // <2px stale vs the draw — negligible against the CELL_WU=32px field scale.)
+        const grade = gradeCritter(b, b.gx, b.gy, b.alt, dtMs);
         const tint = grade.tint;
 
         if (b.state === LANDED && !flushing) {
@@ -421,6 +429,7 @@ export function birdsFeature(): AmbientFeature {
           drawFrame(b, true, tint);
           b.sprite.setPosition(b.gx, b.gy - b.alt).setDepth(DEPTH + i * 0.001);
           applyFog(ctx.scene, b, grade, BIRD_ALPHA);
+          applyShadow(ctx.scene, b, b.gx, b.gy, b.alt);
           continue;
         }
 
@@ -457,6 +466,7 @@ export function birdsFeature(): AmbientFeature {
             drawFrame(b, true, tint);
             b.sprite.setPosition(b.gx, b.gy - b.alt).setDepth(DEPTH + i * 0.001);
             applyFog(ctx.scene, b, grade, BIRD_ALPHA);
+            applyShadow(ctx.scene, b, b.gx, b.gy, b.alt);
             continue;
           }
         } else {
@@ -566,6 +576,7 @@ export function birdsFeature(): AmbientFeature {
         const bob = b.alt > 4 ? Math.sin(b.t * 5 + b.bobPhase) * 2 : 0;
         b.sprite.setPosition(b.gx, b.gy - b.alt + bob).setDepth(DEPTH + i * 0.001);
         applyFog(ctx.scene, b, grade, BIRD_ALPHA);
+        applyShadow(ctx.scene, b, b.gx, b.gy, b.alt); // ground drop-shadow (no bob → the gap reads as height)
 
         // Off the view (plus slack)?
         const off =
@@ -575,6 +586,7 @@ export function birdsFeature(): AmbientFeature {
             // Departing flock: this bird is gone. Last one out clears the sky.
             b.sprite.destroy();
             b.fog?.destroy();
+            b.shadow?.destroy();
             birds.splice(i, 1);
             continue;
           }
@@ -613,6 +625,8 @@ export function birdsFeature(): AmbientFeature {
           gy: Math.round(b.gy),
           tint: b.sprite.tintTopLeft,
           fog: b.fog?.visible ? +b.fog.alpha.toFixed(2) : 0,
+          fogTint: b.fog?.visible ? b.fog.tintTopLeft : 0,
+          shadow: b.shadow ? +b.shadow.displayWidth.toFixed(1) : 0,
         })),
       };
     },
@@ -620,6 +634,7 @@ export function birdsFeature(): AmbientFeature {
       for (const b of birds) {
         b.sprite.destroy();
         b.fog?.destroy();
+        b.shadow?.destroy();
       }
       birds.length = 0;
     },

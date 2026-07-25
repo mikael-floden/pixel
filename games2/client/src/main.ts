@@ -211,18 +211,45 @@ async function boot() {
   // scene then falls back to a plain ground).
   const world = await loadWorld(worldName);
 
+  // Render at the DEVICE's real pixels, not CSS pixels. The canvas backing store
+  // is RS× the CSS size; the camera zoom is RS× higher to keep the SAME view.
+  // The speed zoom-OUT's fractional camera zoom then steps at device-pixel
+  // granularity instead of coarse CSS pixels, so the pixels stop shimmering as
+  // the zoom settles on a high-DPI phone (maintainer 2026-07-25). RS=1 (desktop,
+  // standard-DPI, tests) is byte-identical to before — a built-in kill switch.
+  // Phaser's Scale.RESIZE renders 1:1 CSS with no DPR knob, so we drive the fit
+  // manually under Scale.NONE: backing = #game size × RS, canvas CSS = #game size.
+  const RS = Math.min(4, Math.max(1, window.devicePixelRatio || 1));
   const game = new Phaser.Game({
     type: Phaser.AUTO,
     parent: "game",
     backgroundColor: "#12121c",
     pixelArt: true,
     scale: {
-      mode: Phaser.Scale.RESIZE,
-      width: window.innerWidth,
-      height: window.innerHeight,
+      mode: Phaser.Scale.NONE,
+      width: Math.round(window.innerWidth * RS),
+      height: Math.round(window.innerHeight * RS),
     },
     scene: [WorldScene],
   });
+  game.registry.set("renderScale", RS);
+  const fitCanvas = () => {
+    const el = document.getElementById("game");
+    const cv = game.canvas;
+    if (!el || !cv) return;
+    const cssW = el.clientWidth;
+    const cssH = el.clientHeight;
+    if (cssW < 1 || cssH < 1) return;
+    const bw = Math.round(cssW * RS);
+    const bh = Math.round(cssH * RS);
+    if (game.scale.width !== bw || game.scale.height !== bh) game.scale.resize(bw, bh);
+    cv.style.width = cssW + "px";
+    cv.style.height = cssH + "px";
+  };
+  game.events.once(Phaser.Core.Events.READY, fitCanvas);
+  window.addEventListener("resize", fitCanvas);
+  const gameEl = document.getElementById("game");
+  if (gameEl && "ResizeObserver" in window) new ResizeObserver(fitCanvas).observe(gameEl);
 
   game.registry.set("manifest", manifest);
   game.registry.set("monsterManifest", monsterManifest);
