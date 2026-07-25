@@ -899,6 +899,8 @@ export function birdsFeature(): AmbientFeature {
           fogTint: b.fog?.visible ? b.fog.tintTopLeft : 0,
           shadow: b.shadow ? +b.shadow.displayWidth.toFixed(1) : 0,
           shadowDepth: b.shadow ? Math.round(b.shadow.depth) : 0, // vs gy: elevation-raised over occluders
+          sVis: b.shadow ? b.shadow.visible : false, // shadow currently drawn? (flicker QA)
+          sy: b.shadow ? Math.round(b.shadow.y) : 0, // shadow screen-y (lift applied)
         })),
       };
     },
