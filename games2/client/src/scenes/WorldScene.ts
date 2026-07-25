@@ -1134,8 +1134,8 @@ export class WorldScene extends Phaser.Scene {
         const id = this.room?.sessionId;
         const av = id ? this.avatars.get(id) : undefined;
         const cam = this.cameras.main;
-        const cx = cam.scrollX + cam.width / 2;
-        const cy = cam.scrollY + cam.height / 2;
+        const cx = cam.worldView.centerX; // zoom-correct world centre
+        const cy = cam.worldView.centerY;
         return {
           zoom: cam.zoom,
           base: this.zoomFor(),
@@ -3782,8 +3782,12 @@ export class WorldScene extends Phaser.Scene {
 
   private makeGroundRT() {
     this.groundRT?.destroy();
+    const rs = this.renderScale();
+    // World-space texture (1 texel = 1 world px): size it in WORLD px so it
+    // covers the same view regardless of the device render scale — scale.width
+    // is device px (= CSS·rs), so /rs gives the CSS/world width. rs=1 → unchanged.
     this.groundRT = this.add
-      .renderTexture(0, 0, this.scale.width + GROUND_MARGIN * 2, this.scale.height + GROUND_MARGIN * 2)
+      .renderTexture(0, 0, this.scale.width / rs + GROUND_MARGIN * 2, this.scale.height / rs + GROUND_MARGIN * 2)
       .setOrigin(0, 0)
       .setDepth(-1_000_000);
     this.lastGround = { x: NaN, y: NaN };
@@ -3792,8 +3796,12 @@ export class WorldScene extends Phaser.Scene {
   private redrawGround() {
     if (!this.world || !this.groundRT) return;
     const cam = this.cameras.main;
-    const ccx = cam.scrollX + cam.width / 2;
-    const ccy = cam.scrollY + cam.height / 2;
+    // The WORLD centre of the view. `scrollX + width/2` only equals this at zoom
+    // 1; the device-DPI zoom (base·rs) makes it fractional, so use worldView,
+    // which is zoom-correct (and identical at zoom 1). Without this the ground RT
+    // anchors off-centre and its edge shows through at rs>1.
+    const ccx = cam.worldView.centerX;
+    const ccy = cam.worldView.centerY;
     // Only redraw when the camera centre strays GROUND_MARGIN/2 from the last
     // anchor — everything in between scrolls the already-drawn texture.
     if (
@@ -3930,8 +3938,18 @@ export class WorldScene extends Phaser.Scene {
     cam.centerOn(this.camChase.x, this.camChase.y);
   }
 
+  /** Device-pixel render scale (window.devicePixelRatio, clamped): the canvas
+   * backing is RS× the CSS size. 1 on standard-DPI / desktop / tests. */
+  private renderScale(): number {
+    return (this.registry.get("renderScale") as number) || 1;
+  }
+
   private zoomFor(): number {
-    return Math.max(1, Math.round(this.scale.width / 520));
+    // Pick the base zoom from the CSS width (scale.width / rs), then × rs so the
+    // camera renders at DEVICE pixels while the visible world extent is unchanged
+    // (1 world px still = base·rs backing px = base device px). rs=1 → byte-identical.
+    const rs = this.renderScale();
+    return Math.max(1, Math.round(this.scale.width / (520 * rs))) * rs;
   }
 
   private tryJump() {
@@ -4072,16 +4090,17 @@ export class WorldScene extends Phaser.Scene {
     this.ensureOccAssets();
     const { dx, dy, lh, tile } = MAP_GEOMETRY;
     if (!this.occRevealRT) {
+      const rs = this.renderScale(); // world-space RT — size in world px (see makeGroundRT)
       this.occRevealRT = this.add
-        .renderTexture(0, 0, this.scale.width + GROUND_MARGIN * 2, this.scale.height + GROUND_MARGIN * 2)
+        .renderTexture(0, 0, this.scale.width / rs + GROUND_MARGIN * 2, this.scale.height / rs + GROUND_MARGIN * 2)
         .setOrigin(0, 0)
         .setDepth(-900_000);
     }
     const rt = this.occRevealRT;
     rt.setVisible(true);
     const cam = this.cameras.main;
-    const ccx = cam.scrollX + cam.width / 2;
-    const ccy = cam.scrollY + cam.height / 2;
+    const ccx = cam.worldView.centerX; // zoom-correct world centre (see redrawGround)
+    const ccy = cam.worldView.centerY;
     // Redraw only when the player or camera drifts — otherwise the texture holds.
     if (
       !Number.isNaN(this.lastReveal.x) &&
