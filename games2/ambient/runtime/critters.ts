@@ -99,16 +99,139 @@ export interface CritterGrade {
   fogTint: number;
 }
 
+/** Per-creature EASED lighting state (see gradeCritter). Both Bird and Bat carry
+ * these fields so the grade can smooth the discrete terrain jump at a cliff.
+ * Undefined until the first sample (then snapped, never ramped from black). */
+export interface CritterGradeState {
+  gl?: [number, number, number]; // eased light multiplier (r,g,b), 0..~N
+  gfa?: number; // eased fog alpha, 0..1
+  gfc?: [number, number, number]; // eased fog colour (r,g,b), 0..1
+}
+
+// The raw floats __ml.critterLight returns (light multipliers + fog).
+interface CritterProbe {
+  l: [number, number, number];
+  fog: number;
+  fogCol: [number, number, number];
+}
+
+// Ease time-constants (ms). The bird's ABSOLUTE height z = groundLevel + alt/lh,
+// and groundLevel JUMPS ~20 levels the instant its ground point crosses a cliff
+// foot — snapping the cast-shadow tint and the fog. Easing turns that jump into a
+// smooth ~0.15s ramp (the same trick the avatar uses for elevation snaps). Fog
+// swings are bigger, so it eases a touch slower than the tint.
+const GRADE_TAU = 130;
+const FOG_TAU = 165;
+const FOG_EPS = 0.01; // "is there real fog?" threshold for the colour track (see gradeCritter)
+
 /** Probe the world light + depth-fog for a flyer whose GROUND point is drawn at
  * iso-screen (gx,gy) and lifted `alt` px above it — through the game's
  * face-aware __ml.critterLight (the flat flock sim can't do the iso inverse
- * itself: it has no terrain heights). Cast-shadow-aware AND altitude-aware; the
- * probe never reads screen pixels. Falls back to full brightness + no fog if the
- * probe is missing — degrade gracefully, never break the flock. */
-export function gradeCritter(gx: number, gy: number, alt: number): CritterGrade {
+ * itself: it has no terrain heights) — then EASE the result into the creature's
+ * own `st` so a discrete terrain-level jump at a cliff foot doesn't snap the
+ * shadow/fog. Cast-shadow-aware AND altitude-aware; never reads screen pixels.
+ * Both the light multiplier AND the fog (opacity + colour) ease, so neither the
+ * cast-shadow tint nor the haze ever snaps — including a LANDED bird (a stationary
+ * bird's grade just converges and stays; the ~0.1s lag is imperceptible, and
+ * NOT easing it snapped the fog on the touchdown frame when there was residual
+ * lag). Falls back to full brightness + no fog if the probe is missing. Pass the
+ * SAME dtMs the frame stepped; reset st.gl to undefined to snap on the next call
+ * (first sample, or a recycled creature that just teleported across the map). */
+export function gradeCritter(
+  st: CritterGradeState,
+  gx: number,
+  gy: number,
+  alt: number,
+  dtMs: number,
+): CritterGrade {
   const ml = (window as unknown as { __ml?: Record<string, (...a: never[]) => unknown> }).__ml;
-  const at = ml?.critterLight as undefined | ((x: number, y: number, a: number) => CritterGrade | null);
-  return at?.(gx, gy, alt) ?? { tint: 0xffffff, fog: 0, fogTint: 0xffffff };
+  const at = ml?.critterLight as undefined | ((x: number, y: number, a: number) => CritterProbe | null);
+  const p = at?.(gx, gy, alt);
+  const tl = p ? p.l : [1, 1, 1];
+  const tf = p ? p.fog : 0;
+  const fc = p ? p.fogCol : [1, 1, 1];
+  if (!st.gl || !st.gfc) {
+    st.gl ??= [0, 0, 0];
+    st.gfc ??= [0, 0, 0];
+    st.gl[0] = tl[0]; st.gl[1] = tl[1]; st.gl[2] = tl[2];
+    st.gfa = tf;
+    st.gfc[0] = fc[0]; st.gfc[1] = fc[1]; st.gfc[2] = fc[2];
+  } else {
+    const kt = 1 - Math.exp(-dtMs / GRADE_TAU);
+    const kf = 1 - Math.exp(-dtMs / FOG_TAU);
+    st.gl[0] += (tl[0] - st.gl[0]) * kt;
+    st.gl[1] += (tl[1] - st.gl[1]) * kt;
+    st.gl[2] += (tl[2] - st.gl[2]) * kt;
+    const prevFa = st.gfa ?? tf;
+    st.gfa = prevFa + (tf - prevFa) * kf;
+    // Fog COLOUR tracks only REAL fog. depthFogAt returns a BLACK sentinel
+    // ([0,0,0]) when there's no fog, so easing gfc toward it would ramp the wash
+    // through black — a dark FLASH on the next fog-in (opposite of the pale haze).
+    // Hold gfc while fog is negligible (invisible at ~0 alpha), snap it to the
+    // real colour the instant fog starts, then ease between real fog colours.
+    if (tf >= FOG_EPS) {
+      if (prevFa < FOG_EPS) {
+        st.gfc[0] = fc[0]; st.gfc[1] = fc[1]; st.gfc[2] = fc[2];
+      } else {
+        st.gfc[0] += (fc[0] - st.gfc[0]) * kf;
+        st.gfc[1] += (fc[1] - st.gfc[1]) * kf;
+        st.gfc[2] += (fc[2] - st.gfc[2]) * kf;
+      }
+    }
+  }
+  const ch = (v: number) => Math.max(0, Math.min(255, Math.round(v * 255)));
+  return {
+    tint: (ch(st.gl[0]) << 16) | (ch(st.gl[1]) << 8) | ch(st.gl[2]),
+    fog: st.gfa ?? 0,
+    fogTint: (ch(st.gfc[0]) << 16) | (ch(st.gfc[1]) << 8) | ch(st.gfc[2]),
+  };
+}
+
+const SHADOW_KEY = "amb-critter-shadow";
+/** Bake a small soft-ellipse drop shadow once (the avatar's look, smaller). */
+function ensureCritterShadow(scene: Phaser.Scene): void {
+  if (scene.textures.exists(SHADOW_KEY)) return;
+  const w = 48, h = 20; // squashed to the iso ground ratio; sized down at draw time
+  const tex = scene.textures.createCanvas(SHADOW_KEY, w, h);
+  if (!tex) return;
+  const ctx = tex.getContext();
+  ctx.save();
+  ctx.scale(1, h / w); // draw a circle in squashed space → ellipse
+  const grd = ctx.createRadialGradient(w / 2, w / 2, 0, w / 2, w / 2, w / 2);
+  grd.addColorStop(0, "rgba(0,0,0,0.55)");
+  grd.addColorStop(0.6, "rgba(0,0,0,0.34)");
+  grd.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = grd;
+  ctx.fillRect(0, 0, w, w);
+  ctx.restore();
+  tex.refresh();
+}
+
+/** A SMALL ground drop-shadow under a flyer at its ground point (gx,gy), so the
+ * vertical GAP up to the bird (alt px above) reads as flight height — and the
+ * shadow itself shrinks + fades a little as it climbs (Mario-64 style). Drawn at
+ * a WORLD-Y depth (like footsteps), NOT the bird's sky depth, so it lies on the
+ * ground and DIMS with the night overlay instead of glowing over it. Created
+ * lazily; the caller destroys it on removal. */
+export function applyShadow(
+  scene: Phaser.Scene,
+  holder: { shadow?: Phaser.GameObjects.Image },
+  gx: number,
+  gy: number,
+  alt: number,
+): void {
+  ensureCritterShadow(scene);
+  const f = Math.min(1, Math.max(0, alt / 130)); // 0 on the ground → 1 at high cruise
+  let s = holder.shadow;
+  if (!s) {
+    s = scene.add.image(gx, gy, SHADOW_KEY).setOrigin(0.5, 0.5);
+    holder.shadow = s;
+  }
+  s.setPosition(gx, gy)
+    .setDepth(gy) // ground-plane y-sort: on the ground, below the night overlay
+    .setDisplaySize(16 - f * 6, 6.4 - f * 2.6) // much smaller than the player's ~34×14
+    .setAlpha(0.58 - f * 0.24) // reads on bright sand; fainter the higher it climbs
+    .setVisible(true);
 }
 
 const FOG_MIN = 0.012; // below this the haze is invisible — skip the overlay sprite entirely

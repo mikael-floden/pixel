@@ -2941,10 +2941,16 @@ export class WorldScene extends Phaser.Scene {
    * sprite point (gy-alt): the altitude is a pure vertical screen shift, so the
    * sprite overlaps terrain the bird isn't actually over. A high flyer's large
    * alt lifts z clear of terrain into open-sky light; a landed bird (alt=0)
-   * gets z=L and catches its surface's sun/shadow. Returns the packed
-   * light-multiplier tint, the fog opacity, and the packed fog colour; null
-   * before the world/night field exist. */
-  private critterLight(gx: number, gy: number, altPx: number): { tint: number; fog: number; fogTint: number } | null {
+   * gets z=L and catches its surface's sun/shadow. Returns RAW floats — the
+   * light multipliers `l` (0..~N, clamp before tinting), the fog opacity, and
+   * the fog colour (0..1) — so the ambient layer can EASE them per creature (L
+   * jumps discretely at a cliff foot, which would snap the fog/shadow; the
+   * flock smooths that over ~0.15s). null before the world/night field exist. */
+  private critterLight(
+    gx: number,
+    gy: number,
+    altPx: number,
+  ): { l: [number, number, number]; fog: number; fogCol: [number, number, number] } | null {
     if (!this.world || !this.night) return null;
     const { dx, dy, lh, tile } = MAP_GEOMETRY;
     const u = (gx - this.iso.ox - tile / 2) / dx;
@@ -2960,13 +2966,8 @@ export class WorldScene extends Phaser.Scene {
     }
     const z = L + altPx / lh;
     const lgt = this.night.lightAt(col, row, z, false);
-    const ch = (v: number) => Math.max(0, Math.min(255, Math.round(v * 255)));
     const f = this.night.depthFogAt(col, row, z);
-    return {
-      tint: (ch(lgt[0]) << 16) | (ch(lgt[1]) << 8) | ch(lgt[2]),
-      fog: f.a,
-      fogTint: (ch(f.r) << 16) | (ch(f.g) << 8) | ch(f.b),
-    };
+    return { l: [lgt[0], lgt[1], lgt[2]], fog: f.a, fogCol: [f.r, f.g, f.b] };
   }
 
   private pickGround(wx: number, wy: number): { x: number; y: number; lvl: number } | null {
