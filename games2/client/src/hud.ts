@@ -995,10 +995,13 @@ function injectStyles() {
   // segment strips stretched between fixed junctions (see build-ui-tiles).
   const css = `
   :root{--ml-hud-scale:1;
-    /* one shared button height (maintainer: both 120px), guarded so SIX
-       tabs (gamepad joined 2026-07-22) still fit between the rails on
-       narrow real-device viewports */
-    --ml-tab:min(120px,calc((100vw - 200px)/6));
+    /* tab plate side == the backpack SLOT side (128px * --ml-fs, the frame
+       scale) so the menu buttons are the SAME SIZE as the slots at EVERY
+       viewport (maintainer 2026-07-25: they diverged in mobile view — the old
+       min(120px, vw-formula) tracked neither the frame nor the slots). Six
+       fit the tab-row window at any width: it and the 5-slot window are the
+       same width, and 6*128*fs stays ~83% of it (the rest is gaps). */
+    --ml-tab:calc(128px * var(--ml-fs, 0.75));
     --ml-bw:calc(26px * var(--ml-hud-scale))}   /* plate border render width */
   /* HUD sections: base props only — position/size come from applyFrameLayout
      (the frame-v2 windows), set inline after every compose. */
@@ -1013,11 +1016,15 @@ function injectStyles() {
     padding:2px 0;cursor:pointer;image-rendering:pixelated;box-sizing:border-box;
     touch-action:manipulation;-webkit-touch-callout:none;border:none;
     background:none;background-repeat:no-repeat;background-size:100% 100%}
-  /* icon-only tabs (maintainer: "icon is enough"). The icon files are
-     exact 2x bakes of the true pixel art — render them 1:1 CSS px (= 2x
-     zoom of the art, maintainer). The old contain-fit scaled each icon
-     ~1.4x non-integer ("half pixel offset" mush). */
-  .ml-tab-icon{image-rendering:pixelated;-webkit-user-drag:none;pointer-events:none}
+  /* icon-only tabs (maintainer: "icon is enough"). The icon SCALES WITH THE
+     PLATE — 78% of --ml-tab — so it tracks the frame like the slot art does and
+     keeps the SAME icon-to-plate ratio at every viewport (at the design width
+     that's the 96px 2x bake rendered ~1:1, the approved look). A FIXED 96px icon
+     (halved to 48px under 780px) read "too small and wrong" in mobile view
+     (maintainer 2026-07-25): it OVERFLOWED a small plate and shrank to a
+     thick-bordered dot on a wide-mobile one — it never tracked the plate. */
+  .ml-tab-icon{width:calc(var(--ml-tab) * 0.78);height:calc(var(--ml-tab) * 0.78);
+    image-rendering:pixelated;-webkit-user-drag:none;pointer-events:none}
   .ml-pages{position:absolute;overflow:hidden;image-rendering:pixelated}
   /* pages sit on the SAME plain kit-panel brown as the tab-row band
      (maintainer 2026-07-18: no more stone backdrop — "the same plain
@@ -1188,32 +1195,22 @@ function injectStyles() {
      .ml-chatlog carries the compensating uiZoom (uiscale.ts) so its bottom is in
      PRE-zoom space — divide by --ml-uizoom, matching chat.ts's own bottom calc. */
   .ml-kb-up .ml-chatlog{bottom:calc((var(--ml-inputlift) + 64px) / var(--ml-uizoom, 1))}
-  /* Narrower-than-design viewports: the tab plates already shrink via the
-     --ml-tab formula, but the ICON files (uniform 96px 2x bakes) overflow
-     once a tab drops under 96px — with six tabs that's below a ~780px
-     viewport. Icons then drop to exactly HALF the file (= the art's true
-     1x, 48px): the only other integer-crisp scale. The ambient checkboxes
-     (8px native) step on their own proportional breaks: 5x → 3x → 2x,
-     never fractional. */
-  @media (max-width:780px){
-    .ml-tab-icon{zoom:0.5}
-  }
+  /* Narrower-than-design viewports: the tab plate + icon now BOTH scale with
+     --ml-fs (the frame scale), so they shrink smoothly with the slots — no
+     icon-halving / tab-cap breakpoints are needed any more (those made the
+     icon stop tracking the plate). The ambient checkboxes (8px native) still
+     step on their own proportional breaks: 5x → 3x → 2x, never fractional. */
   @media (max-width:650px){
     .ml-amb-check{width:24px;height:24px}
   }
   @media (max-width:460px){
-    /* six 48px half-scale icons need more row than the 200px side allowance
-       leaves — widen the row (40px insets) and size tabs to it */
-    .ml-tabrow{left:40px;right:40px}
-    :root{--ml-tab:min(120px,calc((100vw - 100px)/6))}
     .ml-amb-check{width:16px;height:16px}
   }
   /* Short viewports (small desktop windows): compact everything. Height 48
      keeps the kit rows on an exact integer scale (48 = 4 blocks of 12). */
   @media (max-height:640px){
-    :root{--ml-tab:min(84px,calc((100vw - 200px)/6))}
-    /* compact tabs (≤84px) can't hold the full 96px icon files either */
-    .ml-tab-icon{zoom:0.5}
+    /* tab plate/icon scale with --ml-fs (height-constrained here → small frame
+       → small plate), so no --ml-tab cap or icon-halving is needed. */
     .ml-page{gap:8px}
     .ml-plate-btn{padding:4px 12px;height:48px;font-size:13px}
     .ml-set{gap:12px}
