@@ -2963,24 +2963,24 @@ export class WorldScene extends Phaser.Scene {
     gx: number,
     gy: number,
     altPx: number,
-  ): { l: [number, number, number]; fog: number; fogCol: [number, number, number]; col: number; row: number; L: number; z: number } | null {
+  ): { l: [number, number, number]; fog: number; fogCol: [number, number, number]; col: number; row: number; L: number; cellL: number; z: number } | null {
     if (!this.world || !this.night) return null;
     const { dx, dy, lh, tile } = MAP_GEOMETRY;
     const u = (gx - this.iso.ox - tile / 2) / dx;
     // Front-most drawn surface under the ground point, falling back to the
     // level-0 projection when nothing is hit (off-map / over a gap).
     const v0 = (gy - this.iso.oy - dy) / dy;
-    let col = (u + v0) / 2, row = (v0 - u) / 2, L = 0;
+    let col = (u + v0) / 2, row = (v0 - u) / 2, L = 0, cellL = 0;
     for (let l = this.maxLevel; l >= 1; l--) {
       const v = (gy - this.iso.oy - dy + l * lh) / dy;
       const c = (u + v) / 2, r = (v - u) / 2;
       const cell = this.world.rows[Math.floor(r)]?.[Math.floor(c)];
-      if (cell && cell.l >= l) { col = c; row = r; L = l; break; } // DRAWN level (ramps up a face), not cell.l (the top)
+      if (cell && cell.l >= l) { col = c; row = r; L = l; cellL = cell.l; break; } // L = DRAWN level (ramps up a face); cellL = the column's TOP (cell.l) — lifts a flyer's shadow off the face onto the flat top
     }
     const z = L + altPx / lh;
     const lgt = this.night.lightAt(col, row, z, false);
     const f = this.night.depthFogAt(col, row, z);
-    return { l: [lgt[0], lgt[1], lgt[2]], fog: f.a, fogCol: [f.r, f.g, f.b], col, row, L, z };
+    return { l: [lgt[0], lgt[1], lgt[2]], fog: f.a, fogCol: [f.r, f.g, f.b], col, row, L, cellL, z };
   }
 
   private pickGround(wx: number, wy: number): { x: number; y: number; lvl: number } | null {

@@ -5,6 +5,7 @@ import { Director } from "./director";
 import { Toggles } from "./toggles";
 import { Demo } from "./demo";
 import { DemoButton } from "./hudbutton";
+import { birdDensity, setBirdDensity } from "./density";
 
 const SCENE_KEY = "world"; // WorldScene's key
 const ENV_SAMPLE_MS = 100; // mood changes are seconds-long fades; 10 Hz is plenty
@@ -121,6 +122,11 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       },
       // Can two effects run together? (symmetric)
       compatible: (a: string, b: string) => toggles.compatible(a, b),
+      // Bird DENSITY ratio (0.1×–10× of today's amount): no arg reads, a number
+      // writes (clamped + persisted). Read by BOTH bird flocks; driven by the
+      // games-ui Settings slider. Lives outside the director so it survives
+      // re-rolls and effect toggles. Returns the stored value.
+      birdDensity: (v?: number) => (v === undefined ? birdDensity() : setBirdDensity(v)),
       weights: (envOverride?: Partial<AmbientEnv>) => {
         const env = { ...ctx.env, ...envOverride };
         const out: Record<string, number> = {};

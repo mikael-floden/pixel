@@ -92,11 +92,20 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   data-driven) asserts every deck TOP is lit at Day while the base under it is
   shaded — so the avatar must sample at its own elevation. Probes:
   `__ml.deckInfo()`, `__ml.me().elev`, `__ml.litInfo()` (avatar's lit sample: `l`
-  at its elevation = ships, `lBase` = the old base-level shade). KNOWN RESIDUAL: the (x,y)-only
-  autopilot FOLLOWER can still occasionally slide off the narrow ramp into the gap
-  and "arrive" under the bridge (~1 in 6) — a proper elevation-aware follower is
-  the fix (manual keyboard crossing is reliable). TODO: occlusion-FADE when
-  standing under a deck (see yourself inside the house); harden the follower.
+  at its elevation = ships, `lBase` = the old base-level shade). DECK-AWARE
+  FOLLOWER (maintainer 2026-07-25 "runs up and down, can't get over the bridge"):
+  the follower's per-heading OPENNESS PROBE now builds its blocked predicate with
+  the deck-aware `makeBlockedElev` carrying the player's surface `elev` (resolved
+  from the passed `fromElev`), the SAME rule the body integrates with — it used
+  the base-only `makeBlocked`, so a player on a bridge DECK read the base cell
+  UNDER the span (gap/water at level 0) as their "from" level and EVERY step off
+  onto same-level land looked like a multi-level cliff (all headings probed
+  blocked → steer up/down, never leave). Non-deck cells reduce to `canEnter`
+  (byte-identical). The stall-replan is already deck-aware (`findPath` with
+  `fromElev`/`goalLevel`). Gate: `server/test/navigation.sim.test.ts` "leave the
+  bridge onto same-level ground" scans every the_island2 span cell and drives the
+  real follower off it (fails on the base-only baseline, 4/40 stuck). TODO:
+  occlusion-FADE when standing under a deck (see yourself inside the house).
 - `stairs` tiles act as ramps (crossing one allows a full 1-level step without
   jumping); solid structure tiles (trees, boulders, obelisks, watchtower, cactus,
   lava) are impassable — see `SURFACES`/`surfaceFor` (road_* matched by prefix).

@@ -25,7 +25,7 @@
 
 import { mountFrame2, FrameLayout, HUD_SCALE } from "./frame2";
 import { setClockMount } from "./clock";
-import { dressPlate, dressSlot, readyPlates, repaintPlates } from "./plate";
+import { dressPlate, dressSlot, nineSlice, readyPlates, repaintPlates } from "./plate";
 import { holdLoading } from "./loading";
 import { mountGamepadStick } from "./gamepad";
 import { mountBars } from "./bars";
@@ -41,6 +41,12 @@ import { MAX_CHAT_LEN } from "@nangijala/shared";
 // ambient/README.md "Toggling effects independently".
 const CHECK_ON = "/ui2/kit-check-on.png";
 const CHECK_OFF = "/ui2/kit-check-off.png";
+// Bird-density slider art: the SAME UI-kit bar the HP/EP/XP gauges use (bars.ts)
+// — its frame is the track, a fill shows the filled portion, and a kit plate is
+// the draggable knob (maintainer 2026-07-25: "This slider should use UI-kit to
+// extract its graphics").
+const BAR_FRAME = "/ui2/bar-frame.png";
+const BAR_FILL = "/ui2/bar-fill-yellow.png";
 type AmbientEffect = {
   name: string;
   kind: "field" | "episode";
@@ -55,6 +61,10 @@ interface AmbientApi {
   setEnabled: (name: string, on: boolean) => { ok: boolean; blockedBy: string | null };
   auto: (on?: boolean) => "auto" | "manual";
   compatible: (a: string, b: string) => boolean;
+  /** Bird DENSITY ratio (0.1×–10×, 1 = today's amount). No arg reads; a number
+   * writes (clamped + persisted) and returns the stored value. Optional so an
+   * older ambient layer without it degrades to "no slider". */
+  birdDensity?: (v?: number) => number;
 }
 /** The ambient controller, or null if it hasn't mounted yet (or on the #map
  * preview where it never does). Everything reads through this so the switches
@@ -463,6 +473,13 @@ export class HudBar {
     // then one row per effect in registry order.
     this.ambAuto = this.ambRow(null, "Auto");
     for (const e of effects) this.ambRow(e.name, capWords(e.name));
+    // Bird-density slider under the checklist — scales BOTH bird flocks 0.1×–10×
+    // (maintainer 2026-07-25). Only when the ambient layer exposes birdDensity
+    // (older layers degrade to no slider).
+    const bd = api.birdDensity;
+    if (this.ambSection && typeof bd === "function") {
+      this.ambSection.appendChild(birdSlider(() => bd(), (v) => bd(v)));
+    }
     this.refreshAmbient();
     requestAnimationFrame(() => repaintPlates(list));
   }
@@ -748,6 +765,115 @@ function kindForState(el: HTMLElement): "normal" | "sel" | "down" {
   return "normal";
 }
 
+/** A Settings slider for the bird-density ratio, built from the UI-kit bar art:
+ * the bar FRAME is the track, a clipped FILL shows the level, and a kit PLATE is
+ * the draggable knob. LOG scale 0.1×–10× with 1× centred and a soft detent that
+ * snaps to exactly 1×. `get` reads the current ratio; `set` writes it live (the
+ * ambient layer persists it). Pointer-drag + resize aware. The frame/fill are
+ * 9-sliced to the box like the HP/EP/XP gauges (bars.ts) so their pixels match
+ * the buttons; the knob is dressed by plate.ts. */
+function birdSlider(get: () => number, set: (v: number) => void): HTMLElement {
+  const MINV = 0.1;
+  const MAXV = 10;
+  const clampV = (v: number) => Math.max(MINV, Math.min(MAXV, v));
+  const clamp01 = (p: number) => Math.max(0, Math.min(1, p));
+  // p (0..1) ↔ value on a LOG axis: 0 → 0.1×, 0.5 → 1×, 1 → 10×.
+  const toP = (v: number) => (Math.log10(clampV(v)) + 1) / 2;
+  const toV = (p: number) => Math.pow(10, p * 2 - 1);
+  const fmt = (v: number) => (v >= 9.95 ? "×10" : v < 1 ? `×${v.toFixed(2)}` : `×${v.toFixed(1)}`);
+
+  const wrap = mk("div", "ml-amb-slider");
+  const head = mk("div", "ml-amb-slider-head");
+  const label = mk("span", "ml-amb-slider-label");
+  label.textContent = "Bird flocks";
+  const valEl = mk("span", "ml-amb-slider-val");
+  head.append(label, valEl);
+  const track = mk("div", "ml-slider");
+  const frame = mk("img", "ml-slider-frame") as HTMLImageElement;
+  const fill = mk("img", "ml-slider-fill") as HTMLImageElement;
+  frame.alt = fill.alt = "";
+  frame.draggable = fill.draggable = false;
+  const knob = mk("div", "ml-slider-knob");
+  track.append(frame, fill, knob);
+  wrap.append(head, track);
+  // the cream "selected" plate normally; the pressed DOWN plate while grabbing
+  dressPlate(knob, () => (knob.classList.contains("grabbing") ? "down" : "sel"));
+
+  let curP = toP(get());
+  const render = (p: number) => {
+    curP = p;
+    // fill's right edge lands on the knob CENTRE (the value position)
+    fill.style.clipPath = `inset(0 ${((1 - p) * 100).toFixed(2)}% 0 0)`;
+    const trackW = track.clientWidth;
+    const kw = knob.offsetWidth || 44;
+    knob.style.left = `${Math.round(Math.max(0, Math.min(trackW - kw, p * trackW - kw / 2)))}px`;
+    valEl.textContent = fmt(toV(p));
+  };
+
+  // 9-slice the frame/fill into the track box (device-resolution, crisp) and
+  // re-bake + reposition the knob on any size change.
+  const frameImg = new Image();
+  const fillImg = new Image();
+  const bakeInto = (el: HTMLImageElement, im: HTMLImageElement) => {
+    const w = track.clientWidth;
+    const h = track.clientHeight;
+    if (w < 2 || h < 2 || !im.complete || !im.naturalWidth) return;
+    const u = nineSlice(im, w, h, Math.max(1, window.devicePixelRatio || 1));
+    if (u) el.src = u;
+  };
+  const rebake = () => {
+    bakeInto(frame, frameImg);
+    bakeInto(fill, fillImg);
+    render(curP);
+  };
+  frameImg.onload = rebake;
+  fillImg.onload = rebake;
+  frameImg.src = BAR_FRAME;
+  fillImg.src = BAR_FILL;
+  new ResizeObserver(rebake).observe(track);
+
+  // ---- drag (pointer-capture; knob is pointer-events:none so the track owns
+  // every event, and a tap anywhere on the track jumps there) ----
+  const clientToP = (clientX: number) => {
+    const rect = track.getBoundingClientRect();
+    return rect.width > 0 ? clamp01((clientX - rect.left) / rect.width) : curP;
+  };
+  const applyP = (p: number) => {
+    if (Math.abs(p - 0.5) < 0.03) p = 0.5; // soft detent → exactly 1×
+    render(p);
+    set(toV(p));
+  };
+  let dragging = false;
+  track.addEventListener("pointerdown", (e) => {
+    dragging = true;
+    knob.classList.add("grabbing");
+    try {
+      track.setPointerCapture(e.pointerId);
+    } catch {
+      /* capture unsupported — moves still work via the track listener */
+    }
+    applyP(clientToP(e.clientX));
+    e.preventDefault();
+  });
+  track.addEventListener("pointermove", (e) => {
+    if (dragging) applyP(clientToP(e.clientX));
+  });
+  for (const ev of ["pointerup", "pointercancel"] as const)
+    track.addEventListener(ev, (e) => {
+      if (!dragging) return;
+      dragging = false;
+      knob.classList.remove("grabbing");
+      try {
+        track.releasePointerCapture(e.pointerId);
+      } catch {
+        /* nothing captured */
+      }
+    });
+
+  render(curP);
+  return wrap;
+}
+
 /** Momentary pressed-plate feedback via pointer events: CSS :active is
  * hover-only (mobile Chrome keeps it sticky on the last tap), so touch needs
  * its own press state — added on finger-down, gone the instant the finger
@@ -995,10 +1121,13 @@ function injectStyles() {
   // segment strips stretched between fixed junctions (see build-ui-tiles).
   const css = `
   :root{--ml-hud-scale:1;
-    /* one shared button height (maintainer: both 120px), guarded so SIX
-       tabs (gamepad joined 2026-07-22) still fit between the rails on
-       narrow real-device viewports */
-    --ml-tab:min(120px,calc((100vw - 200px)/6));
+    /* tab plate side == the backpack SLOT side (128px * --ml-fs, the frame
+       scale) so the menu buttons are the SAME SIZE as the slots at EVERY
+       viewport (maintainer 2026-07-25: they diverged in mobile view — the old
+       min(120px, vw-formula) tracked neither the frame nor the slots). Six
+       fit the tab-row window at any width: it and the 5-slot window are the
+       same width, and 6*128*fs stays ~83% of it (the rest is gaps). */
+    --ml-tab:calc(128px * var(--ml-fs, 0.75));
     --ml-bw:calc(26px * var(--ml-hud-scale))}   /* plate border render width */
   /* HUD sections: base props only — position/size come from applyFrameLayout
      (the frame-v2 windows), set inline after every compose. */
@@ -1013,11 +1142,15 @@ function injectStyles() {
     padding:2px 0;cursor:pointer;image-rendering:pixelated;box-sizing:border-box;
     touch-action:manipulation;-webkit-touch-callout:none;border:none;
     background:none;background-repeat:no-repeat;background-size:100% 100%}
-  /* icon-only tabs (maintainer: "icon is enough"). The icon files are
-     exact 2x bakes of the true pixel art — render them 1:1 CSS px (= 2x
-     zoom of the art, maintainer). The old contain-fit scaled each icon
-     ~1.4x non-integer ("half pixel offset" mush). */
-  .ml-tab-icon{image-rendering:pixelated;-webkit-user-drag:none;pointer-events:none}
+  /* icon-only tabs (maintainer: "icon is enough"). The icon SCALES WITH THE
+     PLATE — 78% of --ml-tab — so it tracks the frame like the slot art does and
+     keeps the SAME icon-to-plate ratio at every viewport (at the design width
+     that's the 96px 2x bake rendered ~1:1, the approved look). A FIXED 96px icon
+     (halved to 48px under 780px) read "too small and wrong" in mobile view
+     (maintainer 2026-07-25): it OVERFLOWED a small plate and shrank to a
+     thick-bordered dot on a wide-mobile one — it never tracked the plate. */
+  .ml-tab-icon{width:calc(var(--ml-tab) * 0.78);height:calc(var(--ml-tab) * 0.78);
+    image-rendering:pixelated;-webkit-user-drag:none;pointer-events:none}
   .ml-pages{position:absolute;overflow:hidden;image-rendering:pixelated}
   /* pages sit on the SAME plain kit-panel brown as the tab-row band
      (maintainer 2026-07-18: no more stone backdrop — "the same plain
@@ -1134,6 +1267,22 @@ function injectStyles() {
      tap is a harmless no-op; the label already says which effect blocks it) */
   .ml-amb-row.blocked{opacity:.5;cursor:not-allowed}
   .ml-amb-auto{margin-bottom:2px}
+  /* Bird-density slider (kit bar art track + plate knob). Sits under the
+     checklist; scales both bird flocks 0.1×–10×. */
+  .ml-amb-slider{display:flex;flex-direction:column;gap:10px;width:100%}
+  .ml-amb-slider-head{display:flex;justify-content:space-between;align-items:baseline;
+    color:#f0e2c6;font:700 16px system-ui,sans-serif;font-size:min(16px,1.633vw);
+    letter-spacing:1px;text-transform:uppercase}
+  .ml-amb-slider-val{color:#ffd678;font-variant-numeric:tabular-nums}
+  /* touch-action:none so a horizontal drag never scrolls the settings page */
+  .ml-slider{position:relative;width:100%;height:30px;touch-action:none;cursor:pointer}
+  .ml-slider-frame,.ml-slider-fill{position:absolute;inset:0;width:100%;height:100%;
+    image-rendering:pixelated;-webkit-user-drag:none;pointer-events:none}
+  .ml-slider-fill{will-change:clip-path}
+  /* the knob is purely visual (the track owns all pointer events); JS sets left */
+  .ml-slider-knob{position:absolute;top:50%;left:0;width:44px;height:44px;translate:0 -50%;
+    background-size:100% 100%;background-repeat:no-repeat;image-rendering:pixelated;
+    pointer-events:none}
   /* CHAT page: a scrolling message history over a full-width input pinned to
      the bottom. The PAGE itself doesn't scroll (like the map page) — the log
      inside it does, so the input bar stays put. px/vw sizes only (the HUD root
@@ -1188,32 +1337,22 @@ function injectStyles() {
      .ml-chatlog carries the compensating uiZoom (uiscale.ts) so its bottom is in
      PRE-zoom space — divide by --ml-uizoom, matching chat.ts's own bottom calc. */
   .ml-kb-up .ml-chatlog{bottom:calc((var(--ml-inputlift) + 64px) / var(--ml-uizoom, 1))}
-  /* Narrower-than-design viewports: the tab plates already shrink via the
-     --ml-tab formula, but the ICON files (uniform 96px 2x bakes) overflow
-     once a tab drops under 96px — with six tabs that's below a ~780px
-     viewport. Icons then drop to exactly HALF the file (= the art's true
-     1x, 48px): the only other integer-crisp scale. The ambient checkboxes
-     (8px native) step on their own proportional breaks: 5x → 3x → 2x,
-     never fractional. */
-  @media (max-width:780px){
-    .ml-tab-icon{zoom:0.5}
-  }
+  /* Narrower-than-design viewports: the tab plate + icon now BOTH scale with
+     --ml-fs (the frame scale), so they shrink smoothly with the slots — no
+     icon-halving / tab-cap breakpoints are needed any more (those made the
+     icon stop tracking the plate). The ambient checkboxes (8px native) still
+     step on their own proportional breaks: 5x → 3x → 2x, never fractional. */
   @media (max-width:650px){
     .ml-amb-check{width:24px;height:24px}
   }
   @media (max-width:460px){
-    /* six 48px half-scale icons need more row than the 200px side allowance
-       leaves — widen the row (40px insets) and size tabs to it */
-    .ml-tabrow{left:40px;right:40px}
-    :root{--ml-tab:min(120px,calc((100vw - 100px)/6))}
     .ml-amb-check{width:16px;height:16px}
   }
   /* Short viewports (small desktop windows): compact everything. Height 48
      keeps the kit rows on an exact integer scale (48 = 4 blocks of 12). */
   @media (max-height:640px){
-    :root{--ml-tab:min(84px,calc((100vw - 200px)/6))}
-    /* compact tabs (≤84px) can't hold the full 96px icon files either */
-    .ml-tab-icon{zoom:0.5}
+    /* tab plate/icon scale with --ml-fs (height-constrained here → small frame
+       → small plate), so no --ml-tab cap or icon-halving is needed. */
     .ml-page{gap:8px}
     .ml-plate-btn{padding:4px 12px;height:48px;font-size:13px}
     .ml-set{gap:12px}
@@ -1224,6 +1363,10 @@ function injectStyles() {
     .ml-amb-row{height:44px;gap:12px;padding:4px 12px}
     /* 24 = 3x the 8px art — integer; the earlier 28 was a fractional 3.5x */
     .ml-amb-check{width:24px;height:24px}
+    .ml-amb-slider{gap:6px}
+    .ml-amb-slider-head{font-size:14px}
+    .ml-slider{height:24px}
+    .ml-slider-knob{width:36px;height:36px}
     .ml-chat{gap:8px}
     .ml-chat-log{font-size:15px;gap:3px}
     /* match .ml-amb-title's compact size (padding-top:8px;font-size:14px) so the

@@ -1,0 +1,6 @@
+{
+  "note": "PixelLab create-object IDs backing the ambient birds. These objects are the SOURCE OF TRUTH for art/<bird>/{fly,still}.png — regenerate the packed sheets with birds/resync.py after upgrading a bird in the PixelLab UI. Only the birds whose IDs are known are listed; add the rest as they're identified.",
+  "objects": {
+    "bird1": "636e194a-2fa3-4c4a-973b-038975c75d34"
+  }
+}

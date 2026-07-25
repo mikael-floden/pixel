@@ -1854,7 +1854,19 @@ export function stepAutopilot(
   // steer with the best open heading unless everything open points away
   // (then keep pushing: unstick or the stall-replan resolves it).
   const walkCtx = { maxClimb: WALK_CLIMB, canSwim: true };
-  const probeBlocked = grid ? makeBlocked(grid, walkCtx) : undefined;
+  // Openness must use the SAME rule the body integrates with — the world@2
+  // DECK-aware `makeBlockedElev`, carrying the player's current surface level.
+  // With the base `makeBlocked`, a player on a bridge/roof DECK reads the base
+  // cell UNDER the span (a gap/water at level 0) as their "from" level, so every
+  // step off the deck onto same-level land looks like a multi-level cliff and
+  // ALL those headings probe as blocked — the follower can't leave the bridge
+  // and just steers up/down (maintainer 2026-07-25: "runs up and down, can't get
+  // over the bridge"). Resolve the current elevation at (x,y) from the passed
+  // `fromElev` (server elev; base level when absent) so it snaps to the real
+  // surface. For a NON-deck cell canEnterElev reduces to canEnter, so worlds
+  // without decks are byte-identical.
+  const probeElev = grid ? resolveElevAt(grid, fromElev ?? levelAtWorld(grid, x, y), x, y, walkCtx) : 0;
+  const probeBlocked = grid ? makeBlockedElev(grid, walkCtx, () => probeElev) : undefined;
   const probeSide = grid ? makeSideBlocked(grid, walkCtx) : undefined;
   const PROBE_DT = 0.15; // one honest walk step (~10.5wu): reaches past the next cell edge
   const cand: { ax: number; ay: number; dot: number; open: boolean }[] = [];
