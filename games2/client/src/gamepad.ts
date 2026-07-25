@@ -318,10 +318,15 @@ function injectStyles() {
   .ml-pad-jump{position:absolute;touch-action:none;cursor:pointer;
     -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
   .ml-pad-jump .ml-pad-img{transition:transform 60ms ease}
-  /* the settings-menu label look (.ml-amb-title family/colour) */
+  /* the settings-menu label look — MATCHES .ml-amb-title (Settings "Ambient
+     effects" header) family/colour AND its font-size clamp: min(18px, 1.837vw).
+     The clamp is what makes it shrink on a narrow (device-width / mobile) view
+     instead of staying a fixed 18px — a plain 18px read "really big" on the
+     phone in mobile view while the ambient header stayed small (maintainer
+     2026-07-24). Keep the vw factor identical to .ml-amb-title so the two match. */
   .ml-pad-label{position:absolute;transform:translate(-50%,-100%);
-    color:#f0e2c6;font:700 18px system-ui,sans-serif;letter-spacing:1px;
-    text-transform:uppercase;pointer-events:none;user-select:none}
+    color:#f0e2c6;font:700 18px system-ui,sans-serif;font-size:min(18px,1.837vw);
+    letter-spacing:1px;text-transform:uppercase;pointer-events:none;user-select:none}
   /* the cap glides between its snap positions — fast, not instant */
   .ml-pad-top{transition:transform ${SNAP_MS}ms ease-out}`;
   document.head.appendChild(s);

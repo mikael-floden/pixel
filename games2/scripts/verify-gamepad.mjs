@@ -210,6 +210,38 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
   await page.mouse.up();
   await page.context().close();
 }
+// ── JUMP/WALK label SIZE matches the Settings "Ambient effects" header and
+//    SHRINKS on a narrow (device-width / mobile) viewport instead of staying a
+//    fixed 18px (maintainer 2026-07-24: a plain 18px read "really big" on the
+//    phone in mobile view while the ambient header stayed small). Both use
+//    min(18px, 1.837vw), so at 393 wide both clamp to ~7px and must be equal. ──
+{
+  const page = await joinWorld({ viewport: { width: 393, height: 851 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2.75 });
+  // Settings tab builds the ambient header (needs window.__mlAmbient up)
+  await page.evaluate(() => document.querySelector('[data-tab="settings"]')?.click());
+  const ambFs = await page.waitForFunction(() => {
+    const t = document.querySelector(".ml-amb-title");
+    return t ? getComputedStyle(t).fontSize : null;
+  }, { timeout: 8000 }).then((h) => h.jsonValue()).catch(() => null);
+  await page.evaluate(() => document.querySelector('[data-tab="gamepad"]')?.click());
+  await page.waitForTimeout(300);
+  const padFs = await page.evaluate(() => {
+    const l = document.querySelector(".ml-pad-label");
+    return l ? getComputedStyle(l).fontSize : null;
+  });
+  padFs && parseFloat(padFs) < 17
+    ? ok(`JUMP/WALK label clamps on mobile (${padFs}, not a fixed 18px)`)
+    : fail(`JUMP/WALK label not clamped on mobile (${padFs}) — it would read "really big"`);
+  if (ambFs) {
+    Math.abs(parseFloat(padFs) - parseFloat(ambFs)) < 0.5
+      ? ok(`JUMP/WALK label size == Ambient header (${padFs} ≈ ${ambFs})`)
+      : fail(`JUMP/WALK ${padFs} != Ambient header ${ambFs}`);
+  } else {
+    ok("ambient header not built (ambient layer down) — size-match check skipped");
+  }
+  await page.context().close();
+}
+
 console.log(bad ? "\n=== FAIL ===" : "\n=== PASS ===");
 await browser.close();
 process.exit(bad ? 1 : 0);
