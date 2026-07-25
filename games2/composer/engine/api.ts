@@ -137,20 +137,25 @@ const FOOTSTEP_LAYER: Record<string, { surface: string; relDb: number }> = {
 // sound the maintainer approved: pitched up ~15% (brighter, lighter than
 // the duller entry splosh). A fixed character choice, not per-step drift.
 const WET_STEP_RATE = 1.15;
-// The jump grunt plays pitched UP: the raw female takes read a touch dark/low
-// (maintainer 2026-07-19: "still too dark, increase pitch a bit", then
-// "higher still", "more", "another bump"). The SAME grunt takes are pitched
-// PER CHARACTER ("use that config as the man … same audio with different
-// settings"): default_boy sits at 1.33 ("a good pitch for the man" — the orc
-// turned human there), default_girl keeps climbing (1.58 ≈ +8 semis, still
-// tuned up by ear). NOTE: rate-pitching speeds the clip up, so far above here
-// it thins into a sped-up chipmunk — once the girl pitch is found, regenerate
-// her voice natively high. Bypassed by ENFORCE UNMODIFIED AUDIO.
-const JUMP_VOICE_RATE: Record<string, number> = {
-  default_boy: 1.33,
-  default_girl: 1.75, // APPROVED FINAL 2026-07-19 ("a real female now, not sped up, perfect")
+// Per-CHARACTER jump/fall VOICE. Each character has its OWN vocal takes now —
+// not one recording pitch-shifted (maintainer 2026-07-20: "new jump sound for
+// the boy … their own voice, not just pitched down"). default_girl uses the
+// `jump_voice` set (a young-woman recording) pitched to 1.75 (APPROVED FINAL
+// 2026-07-19: "a real female now, not sped up, perfect"). default_boy uses his
+// OWN male set `jump_voice_boy` at a natural rate. Until that set is generated
+// he FALLS BACK to the girl takes pitched DOWN to 1.33 (the old shared
+// behavior, "a good pitch for the man") so he's never silent mid-deploy.
+// The rate-pitch is bypassed by ENFORCE UNMODIFIED AUDIO; the set choice is not.
+interface JumpVoiceCfg {
+  set: string;
+  rate: number;
+  fallbackRate: number; // pitch for the shared `jump_voice` set if `set` is absent
+}
+const JUMP_VOICE: Record<string, JumpVoiceCfg> = {
+  default_boy: { set: "jump_voice_boy", rate: 1.0, fallbackRate: 1.33 },
+  default_girl: { set: "jump_voice", rate: 1.75, fallbackRate: 1.75 },
 };
-const JUMP_VOICE_RATE_DEFAULT = 1.58; // unknown character → the girl pitch
+const JUMP_VOICE_DEFAULT: JumpVoiceCfg = { set: "jump_voice", rate: 1.58, fallbackRate: 1.58 };
 // The jump grunt also plays on fall-start; this gap dedupes jump→fall (a
 // jump OFF a ledge fires both within a few frames) and any double-trigger.
 const JUMP_VOICE_MIN_GAP_S = 0.28;
@@ -274,7 +279,7 @@ export class GameAudio {
       }
       // Warm the composer's own primary takes too — thunder especially must
       // not miss its first flash on a fetch+decode.
-      for (const set of ["stone", "snow", "ice", "grass", "jump_voice", "ui_tick", "ui_cancel", "thunder"]) {
+      for (const set of ["stone", "snow", "ice", "grass", "jump_voice", "jump_voice_boy", "ui_tick", "ui_cancel", "thunder"]) {
         const urls = composerFoley(set);
         if (urls) void this.buffers.get(urls[0]);
       }
@@ -423,13 +428,22 @@ export class GameAudio {
     // catalog `jump` binding if the vocal set isn't bundled yet. NOTE: the
     // catalog `jump` sound stays the sand/dirt footstep — voice only here.
     if (name === "player.jump" || name === "player.fall") {
-      const voice = composerFoley("jump_voice");
+      const cfg = (opts.voice && JUMP_VOICE[opts.voice]) || JUMP_VOICE_DEFAULT;
+      let set = cfg.set;
+      let pitch = cfg.rate;
+      let voice = composerFoley(set);
+      if (!voice && set !== "jump_voice") {
+        // The character's OWN set isn't bundled yet — fall back to the shared
+        // (girl) takes at this character's fallback pitch (never silent).
+        set = "jump_voice";
+        pitch = cfg.fallbackRate;
+        voice = composerFoley("jump_voice");
+      }
       if (voice) {
         const now = this.graph!.ctx.currentTime;
         if (now - this.lastJumpVoiceT < JUMP_VOICE_MIN_GAP_S) return;
         this.lastJumpVoiceT = now;
-        const pitch = (opts.voice && JUMP_VOICE_RATE[opts.voice]) || JUMP_VOICE_RATE_DEFAULT;
-        this.oneShots.play(this.foleyEntry("jump_voice", voice, "voice"), "sfx", {
+        this.oneShots.play(this.foleyEntry(set, voice, "voice"), "sfx", {
           ...opts,
           rate: (opts.rate ?? 1) * pitch,
           gainDb: (opts.gainDb ?? 0) + JUMP_VOICE_GAIN_DB,

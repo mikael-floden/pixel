@@ -173,6 +173,29 @@ SETS: dict[str, dict] = {
         "takes": 4,
         "pool": 8,
     },
+    # The BOY's OWN jump voice (maintainer 2026-07-20: "new jump sound for the
+    # boy … their own voice, not just pitched down"). CAREFUL, two lessons:
+    # (1) round-1 jump_voice came back a deep ORC grunt — so lean YOUNG, LIGHT,
+    # BRIGHT, HUMAN, energetic (never deep/gruff/monstrous; no "orc"). (2)
+    # "boy / young boy / little boy" risks the same child-voice moderation
+    # block that "girl" hit — say "young MAN / youthful", an adult male voice
+    # that still reads youthful. Positive only (negatives backfire).
+    "jump_voice_boy": {
+        "brief": (
+            "a young man's short bright vocal effort as he jumps, a quick light "
+            "energetic 'hup', a youthful heroic adventurer's voice, clean and human"
+        ),
+        "style": "clean close-miked dry vocal, a single short isolated male voice",
+        "duration_s": 0.5,
+        "variants": [
+            "a short bright hup",
+            "a lighter quick heh",
+            "a soft quick huh",
+            "a quick energetic hyah",
+        ],
+        "takes": 4,
+        "pool": 8,
+    },
     "wood": {
         "brief": (
             "one single compact footstep on a thick wooden plank: a boot heel "
