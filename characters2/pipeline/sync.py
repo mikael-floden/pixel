@@ -38,10 +38,13 @@ Efficiency / staying in sync:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
+from collections import Counter
 
 from PIL import Image
 
@@ -56,6 +59,26 @@ CONFIG = os.path.join(ROOT, "config.json")
 def load_config():
     with open(CONFIG) as f:
         return json.load(f)
+
+
+def _slug(name):
+    """Filesystem-safe folder slug for a PixelLab animation_type. Animation names
+    can contain spaces, commas, NEWLINES and trailing spaces (esp. custom-* ones),
+    none of which belong in a directory name."""
+    s = re.sub(r"[^a-z0-9]+", "-", (name or "").strip().lower())
+    return s.strip("-") or "anim"
+
+
+def _assign_slugs(anim_types):
+    """Map each raw animation_type -> a stable, unique folder slug. If two distinct
+    types slugify to the same base, ALL colliding types get a short content hash
+    suffix (deterministic, order-independent) so folder names never churn."""
+    bases = {t: _slug(t) for t in anim_types}
+    counts = Counter(bases.values())
+    out = {}
+    for t, b in bases.items():
+        out[t] = f"{b}-{hashlib.sha1(t.encode()).hexdigest()[:6]}" if counts[b] > 1 else b
+    return out
 
 
 def _read_json(path, default=None):
@@ -126,14 +149,20 @@ def sync_character(client, name, cid):
     anims_dir = os.path.join(root, "animations")
     os.makedirs(anims_dir, exist_ok=True)
     saved_anims = {}
-    seen_types = set()
+    seen_slugs = set()
+    # PixelLab animation_type is the truth; a slug is only the folder name.
+    slug_by_type = _assign_slugs([a.get("animation_type") for a in api_anims
+                                  if a.get("animation_type") or a.get("animation_group_id")])
+    # prev manifest is keyed by slug; index it by animation_type for skip-detection.
+    prev_by_type = {v.get("animation_type", k): v for k, v in prev_anims.items()}
     for a in api_anims:
         atype = a.get("animation_type") or a.get("animation_group_id")
         if not atype:
             continue
-        seen_types.add(atype)
+        slug = slug_by_type.get(atype) or _slug(atype)
+        seen_slugs.add(slug)
         gid = a.get("animation_group_id")
-        adir = os.path.join(anims_dir, atype)
+        adir = os.path.join(anims_dir, slug)
         dirs_payload = a.get("directions") or []
         # map direction -> list of frame urls
         want = {}
@@ -143,11 +172,11 @@ def sync_character(client, name, cid):
             if dd and frames:
                 want[dd] = frames
 
-        prev_a = prev_anims.get(atype) or {}
+        prev_a = prev_by_type.get(atype) or {}
         unchanged = (prev_a.get("animation_group_id") == gid and gid is not None
                      and _anim_on_disk(adir, want))
         if unchanged:
-            saved_anims[atype] = prev_a
+            saved_anims[slug] = {**prev_a, "animation_type": atype}
             stats["anim_skip"] += 1
             _write_anim_preview(adir, want.keys())
             continue
@@ -177,7 +206,8 @@ def sync_character(client, name, cid):
             if os.path.isdir(p) and fn not in want:
                 shutil.rmtree(p)
         _write_anim_preview(adir, want.keys())
-        saved_anims[atype] = {
+        saved_anims[slug] = {
+            "animation_type": atype,
             "animation_group_id": gid,
             "display_name": a.get("display_name"),
             "directions": rec_dirs,
@@ -187,7 +217,7 @@ def sync_character(client, name, cid):
     # drop animation folders no longer on PixelLab (true mirror)
     for fn in os.listdir(anims_dir):
         p = os.path.join(anims_dir, fn)
-        if os.path.isdir(p) and fn not in seen_types:
+        if os.path.isdir(p) and fn not in seen_slugs:
             shutil.rmtree(p)
 
     _write_json(os.path.join(root, "character.json"), {
