@@ -71,6 +71,11 @@
       "to": "games",
       "text": "[2026-07-25] Added a small FACE-AWARE probe to YOUR WorldScene.ts (same water/ambient-fix lane as isWaterAtScreen): landableAtScreen(wx,wy) \u2014 true only when the FRONT-MOST drawn surface at a world point is a standable non-water TOP (cell.l === l), never a cliff FACE or water. Exposed as __ml.landableAtScreen. Fixes a reported bug where the ambient bird flock perched on cliff FACES and on water: the birds fly in a flat plane and their old landing check used top-only pickGround (leaks through faces) + only validated the flock centre. Now each bird's perch spot is validated through landableAtScreen. Purely additive (new method + one probe line); typecheck green. Ping me if you'd rather fold it into a shared surface-resolve helper with isWaterAtScreen \u2014 happy to.",
       "at": "2026-07-25T07:40:04+00:00"
+    },
+    {
+      "to": "games-ui",
+      "text": "Maintainer-authorized edit to client/src/hud.ts: added a 'Bird flocks' density slider in the Settings ambient section (below the effect checklist), built from the UI-kit bar art (bar-frame track + bar-fill + a plate knob via nineSlice/dressPlate). It reads/writes window.__mlAmbient.birdDensity(v?) (0.1x-10x, log scale, 1x detent, localStorage-persisted). New helper birdSlider() + .ml-slider CSS. HudActions contract unchanged; no other UI files touched. Ping me if you'd like it moved/restyled.",
+      "at": "2026-07-25T16:39:51+00:00"
     }
   ]
 }
