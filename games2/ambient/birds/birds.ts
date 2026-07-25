@@ -110,13 +110,18 @@ const LAND_SCATTER = 70; // ± spread of each bird's personal perch spot around 
 // varying size and — most important — varied FORMATIONS (V / echelon / line /
 // skein / cluster). They keep the sky alive now the ground flock settles longer,
 // and BOTH flocks scale with the player's density slider (runtime/density.ts).
-// Cruise altitude band the maintainer settled on (2026-07-25): high enough to
-// read as "up in the sky, above the wandering ground flock", low enough that the
-// depth-fog stays gentle. The elevation-edge fog has a ~7-level (=112px) dead-zone
-// then ramps, so a bird right over the player reads ~0.02 haze at the 120px floor
-// and ~0.2 at the 170px ceiling — the original 150-240 band went full-fog (~0.5+)
-// and "hazed over even when almost over the player", which this replaces.
-const MIGR_ALT: [number, number] = [120, 170];
+// Cruise altitude band (2026-07-25, raised): high in the sky, clearly above the
+// wandering ground flock. 190-250px ≈ 12-15.6 levels — well PAST the depth-fog's
+// ~7-level (ELEV_D0) dead-zone, so the RAW haze up here is heavy (~0.4-0.6). We
+// deliberately DON'T cap the altitude to dodge that; instead a migratory-only fog
+// rule (MIGR_FOG_K, in updateMigration) scales the depth-fog WASH down so a bird
+// crossing right over the player stays a readable silhouette while still reading
+// as "way up high". The TINT (day/night + cloud + cast-shadow) is untouched.
+const MIGR_ALT: [number, number] = [190, 250];
+// Migratory-only: multiply the depth-fog wash by this before applyFog so high
+// cruisers don't haze into the sky over the player. ~0.5 raw × 0.35 ≈ 0.17 —
+// back in the comfortable range of the old 120-170 band, keeping a hint of haze.
+const MIGR_FOG_K = 0.35;
 const MIGR_SPD: [number, number] = [60, 84]; // steady crossing speed, one value per group
 const MIGR_EVERY_MS: [number, number] = [9_000, 22_000]; // gap between group launches (÷ density)
 const MIGR_SPRING = 2.6; // 1/s pull of each bird toward its formation slot (loose → alive, not rigid)
@@ -442,8 +447,13 @@ export function birdsFeature(): AmbientFeature {
         b.sprite.setFrame(flyFrame(b.dir, b.frame)).setTint(grade.tint);
         b.sprite.setPosition(b.gx, b.gy - b.alt).setDepth(DEPTH + 1 + di * 0.001);
         di++;
-        applyFog(ctx.scene, b, grade, BIRD_ALPHA);
-        applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade.groundL);
+        // Migratory-only: scale the depth-fog WASH down (MIGR_FOG_K) so a high
+        // cruiser stays visible OVER the player instead of hazing into the sky.
+        // The base sprite's setTint(grade.tint) above is UNTOUCHED, so light/shadow
+        // shading is identical — only the wash opacity drops. The settling flock
+        // and bats keep full fog (their own calls).
+        applyFog(ctx.scene, b, { ...grade, fog: grade.fog * MIGR_FOG_K }, BIRD_ALPHA);
+        applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade.groundL, grade.topL);
         // Cull once the bird has CROSSED and exited on the far side (its
         // projection on the heading passes the view). A bird still flying IN has
         // a negative projection, so this never deletes an entering bird.
@@ -656,7 +666,7 @@ export function birdsFeature(): AmbientFeature {
           drawFrame(b, true, tint);
           b.sprite.setPosition(b.gx, b.gy - b.alt).setDepth(DEPTH + i * 0.001);
           applyFog(ctx.scene, b, grade, BIRD_ALPHA);
-          applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade.groundL);
+          applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade.groundL, grade.topL);
           continue;
         }
 
@@ -693,7 +703,7 @@ export function birdsFeature(): AmbientFeature {
             drawFrame(b, true, tint);
             b.sprite.setPosition(b.gx, b.gy - b.alt).setDepth(DEPTH + i * 0.001);
             applyFog(ctx.scene, b, grade, BIRD_ALPHA);
-            applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade.groundL);
+            applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade.groundL, grade.topL);
             continue;
           }
         } else {
@@ -803,7 +813,7 @@ export function birdsFeature(): AmbientFeature {
         const bob = b.alt > 4 ? Math.sin(b.t * 5 + b.bobPhase) * 2 : 0;
         b.sprite.setPosition(b.gx, b.gy - b.alt + bob).setDepth(DEPTH + i * 0.001);
         applyFog(ctx.scene, b, grade, BIRD_ALPHA);
-        applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade.groundL); // ground drop-shadow (no bob → the gap reads as height)
+        applyShadow(ctx.scene, b, b.gx, b.gy, b.alt, grade.groundL, grade.topL); // ground drop-shadow (no bob → the gap reads as height)
 
         // Off the view (plus slack)?
         const off =
