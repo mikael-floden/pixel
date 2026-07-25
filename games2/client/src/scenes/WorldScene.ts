@@ -1778,7 +1778,12 @@ export class WorldScene extends Phaser.Scene {
   private showConnectionError(err: unknown) {
     const cx = this.scale.width / 2;
     const cy = this.scale.height / 2;
-    const panel = this.add.rectangle(cx, cy, Math.min(560, this.scale.width - 40), 150, 0x12121c, 0.92)
+    // This panel is scrollFactor(0), so Phaser scales it by the camera zoom
+    // (base·rs) — its size is in ZOOM-LOCAL units. Cap by the ON-SCREEN width
+    // (scale.width / zoom), not the device backing, or it overflows the screen
+    // at rs>1 (device DPI) or base>1 (desktop). rs=1 phone base 1 = unchanged.
+    const screenW = this.scale.width / (this.cameras.main.zoom || 1);
+    const panel = this.add.rectangle(cx, cy, Math.min(560, screenW - 40), 150, 0x12121c, 0.92)
       .setScrollFactor(0).setStrokeStyle(2, 0xff6b6b).setDepth(1e9);
     const msg =
       "Can't reach the world server.\n\n" +
