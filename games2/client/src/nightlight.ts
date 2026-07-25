@@ -695,7 +695,8 @@ void main() {
   // stamped each frame with one radial halo per visible glowing pixel
   // cluster. ADDED after floor/AO — emission is not subject to corner
   // occlusion, and adding (not max) lets halos ride on top of pools/floors.
-  // The field shares uCam's window exactly (1 world px = 1 texel).
+  // The field shares uCam's window exactly (stamps are placed by the same
+  // world->texel mapping in update(), so a halo stays on its source at any zoom).
   if (uGlowOn > 0.5) {
     vec2 guv = vec2((wx - uCam.x) / uCam.z, (wy - uCam.y) / uCam.w);
     if (guv.x > 0.0 && guv.x < 1.0 && guv.y > 0.0 && guv.y < 1.0) {
@@ -1432,8 +1433,8 @@ export class NightLights {
       s.setSampler2D("uHeightL", "world-heightmap-linear", 1);
     if (this.scene.textures.exists("emission-palette"))
       s.setSampler2D("uEmit", "emission-palette", 2);
-    // Glow field RT: the shader's world window is ALWAYS screen-sized in
-    // world px (view * zoom = screen), so 1 RT texel = 1 world px.
+    // Glow field RT: canvas-sized. The shader samples it normalized over uCam's
+    // window, so stamps are placed by that same mapping (see gscale in update()).
     this.glowRT?.destroy();
     if (this.glowKey && this.scene.textures.exists(this.glowKey)) this.scene.textures.remove(this.glowKey);
     this.glowRT = this.scene.make.renderTexture({ width, height }, false);
@@ -1967,6 +1968,15 @@ export class NightLights {
     // stamp per visible emission source, animated by per-source phase.
     if (this.glowRT && this.stampImg) {
       const rt = this.glowRT;
+      // World px -> glow-RT texel. The shader samples uGlow normalized over
+      // uCam's window (guv = (world-camX)/uCam.z), so a source at world g lands
+      // at texel (g-camX)*rt.width/uCam.z. Scale every stamp by that factor so
+      // the halos stay ON their sources at ANY zoom. It equals 1 only when
+      // uCam.z == rt.width (world window == canvas px); the overlay-coverage fix
+      // set uCam.z to the PLAIN view (= canvas/zoom), so at zoom!=1 this is
+      // zoom/k — without it the glow slid off its source by 1/zoom when the
+      // camera zoomed out while running (maintainer 2026-07-25).
+      const gscale = rt.width / (wv.width * k);
       rt.clear();
       if (stamps.length) {
         const t = this.scene.time.now / 1000;
@@ -1991,8 +2001,8 @@ export class NightLights {
           const pulse = emissionSelfPulse(g.anim, t, g.phase);
           const amp = isPool ? 0.6 + 0.4 * pulse : pulse;
           img.setAlpha(Math.min(1, g.alpha * amp));
-          img.setDisplaySize(g.radius * 2, (g.ry ?? g.radius) * 2);
-          rt.batchDraw(img, g.x - camX, g.y - camY);
+          img.setDisplaySize(g.radius * 2 * gscale, (g.ry ?? g.radius) * 2 * gscale);
+          rt.batchDraw(img, (g.x - camX) * gscale, (g.y - camY) * gscale);
         }
         rt.endDraw();
       }
