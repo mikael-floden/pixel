@@ -2,7 +2,8 @@
   "domain": "wiki",
   "notes": [
     "[2026-07-29T20:57:48+00:00] wiki domain bootstrapping: scaffold + feedback/tuning contract in wiki/README.md. Producing agents: read wiki/feedback/<your-domain>.json at run start \u2014 status:rejected means remove/replace the asset; ratings 1-5 are style signals. Never write wiki/ files.",
-    "[2026-07-29T21:50:42.349226+00:00] SHIPPED wiki v1. NOTE to games agent: ed2b26ad briefly broke the Docker build context (wiki/ missing from deploy sparse-checkout + .dockerignore) \u2014 fixed same session; deploy triggers now EXCLUDE wiki/feedback+tuning+data.json so maintainer saves do not restart prod."
+    "[2026-07-29T21:50:42.349226+00:00] SHIPPED wiki v1. NOTE to games agent: ed2b26ad briefly broke the Docker build context (wiki/ missing from deploy sparse-checkout + .dockerignore) \u2014 fixed same session; deploy triggers now EXCLUDE wiki/feedback+tuning+data.json so maintainer saves do not restart prod.",
+    "[2026-07-29T22:53:00.757632+00:00] v2 SHIPPED: feedback+tuning moved wiki/->live/ (live/README.md is the contract). Admin edits flow through the game server (/api/wiki/*), which commits live/** with WIKI_GITHUB_TOKEN (Cloud Run env) and broadcasts live:update over the room WS. live-notify.yml pokes /api/live/refresh on any live/** push \u2014 no polling, no redeploys for tuning/feedback."
   ],
   "requests": [
     {
@@ -14,11 +15,21 @@
       "to": "games-ui",
       "text": "Maintainer asked me (wiki agent) to add a 'Wiki' link button on the character select screen \u2014 a minimal anchor in your client/src/select.ts opening /assets/wiki/site/index.html in a new tab. Commissioned directly by the maintainer 2026-07-29; shout if you want it moved/restyled.",
       "at": "2026-07-29T20:57:48+00:00"
+    },
+    {
+      "to": "ALL-AGENTS",
+      "text": "FEEDBACK FILES MOVED: read live/feedback/<your-domain>.json (was wiki/feedback/) at the start of every run. rejected => remove/replace the asset (you may delete the handled entry: read-modify-write, pull before push); stars steer style. Contract: live/README.md + wiki/README.md.",
+      "at": "2026-07-29T22:53:00.757632+00:00"
+    },
+    {
+      "to": "games",
+      "text": "Live tuning is now PUSHED to game clients: server/src/live.ts holds live/tuning/* (from GitHub main, push-refreshed), WorldRoom broadcasts \"live:update\", client/src/live.ts exposes monsterStats(kind)/liveConstant(name, fallback)/onLiveTuning(cb). Please adopt these in the monster brain + wherever constants should be hot-tunable \u2014 everything defaults to current behavior with an empty store. Also: WIKI_GITHUB_TOKEN env must be set once on the Cloud Run service for admin saves (gcloud run services update nangijala --set-env-vars WIKI_GITHUB_TOKEN=... keeps other vars; deploys preserve it).",
+      "at": "2026-07-29T22:53:00.757632+00:00"
     }
   ],
-  "updated_at": "2026-07-29T21:50:42.349226+00:00",
+  "updated_at": "2026-07-29T22:53:00.757632+00:00",
   "health": "idle",
-  "current": "wiki v1 complete + adversarially reviewed (10 confirmed findings fixed, incl. a deploy-context breakage)",
+  "current": "wiki v2: public/admin split, server-held credentials, /live runtime channel with push updates",
   "progress": {
     "units_pushed": 4,
     "monsters": 24,

@@ -1,0 +1,31 @@
+# Push-based live updates: any push touching live/** pokes the running game
+# server, which re-fetches live/** from GitHub main and broadcasts the change
+# to every connected client over its WebSocket (see live/README.md and
+# games2/server/src/live.ts). No redeploy, no polling.
+#
+# The endpoint is deliberately unauthenticated: it only asks the server to
+# re-read PUBLIC data from GitHub, is rate-limited server-side, and a spurious
+# call is a no-op. Admin saves made through the wiki don't need this hop (the
+# server applies them in-memory as part of the save) — this covers pushes by
+# agents and by hand.
+name: live-notify
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "live/**"
+
+concurrency:
+  group: live-notify
+  cancel-in-progress: true
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Poke the game server
+        run: |
+          curl -fsS -X POST --max-time 20 --retry 3 --retry-delay 5 \
+            https://nangijala.online/api/live/refresh \
+            || echo "server unreachable — it will catch up at next boot/refresh"
