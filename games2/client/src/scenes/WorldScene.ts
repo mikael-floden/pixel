@@ -2976,7 +2976,7 @@ export class WorldScene extends Phaser.Scene {
     gx: number,
     gy: number,
     altPx: number,
-  ): { l: [number, number, number]; fog: number; fogCol: [number, number, number]; col: number; row: number; L: number; cellL: number; shadowDepth: number; z: number } | null {
+  ): { l: [number, number, number]; fog: number; fogCol: [number, number, number]; col: number; row: number; L: number; cellL: number; lift: number; shadowDepth: number; z: number } | null {
     if (!this.world || !this.night) return null;
     const { dx, dy, lh, tile } = MAP_GEOMETRY;
     const u = (gx - this.iso.ox - tile / 2) / dx;
@@ -3013,7 +3013,18 @@ export class WorldScene extends Phaser.Scene {
       cellL > 0
         ? this.iso.oy + (Math.floor(col) + Math.floor(row) + 3) * dy + 0.25
         : gy + L * lh + 3;
-    return { l: [lgt[0], lgt[1], lgt[2]], fog: f.a, fogCol: [f.r, f.g, f.b], col, row, L, cellL, shadowDepth, z };
+    // CONTINUOUS face-lift for the critter shadow. The resolved column's top
+    // LIP line on screen is lipY = flat cell-bottom anchor − cellL*lh; a face
+    // pixel's lift is simply how far gy sits BELOW that line (0 on any top /
+    // flat / level-0), so the lifted shadow y = gy − lift = min(gy, lipY) —
+    // pinned at the lip across the whole face band and continuous at the
+    // face↔top handover. The INTEGER drawn-level version ((cellL−L)*lh) stepped
+    // 16px once per level as gy swept a face, so the shadow SAW-TOOTHED around
+    // the lip during every hill crossing (maintainer: "jitters for a while
+    // until it settles on the new elevation level").
+    const lipY = this.iso.oy + (Math.floor(col) + Math.floor(row) + 3) * dy - cellL * lh;
+    const lift = cellL > 0 ? Math.max(0, gy - lipY) : 0;
+    return { l: [lgt[0], lgt[1], lgt[2]], fog: f.a, fogCol: [f.r, f.g, f.b], col, row, L, cellL, lift, shadowDepth, z };
   }
 
   private pickGround(wx: number, wy: number): { x: number; y: number; lvl: number } | null {

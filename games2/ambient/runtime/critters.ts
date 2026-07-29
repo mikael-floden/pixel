@@ -136,8 +136,8 @@ export interface CritterGrade {
   tint: number;
   fog: number;
   fogTint: number;
-  groundL: number; // resolved DRAWN terrain level under the creature (ramps up a face) — for the shadow's face-lift/hide test
-  topL: number; // the column's TOP level (cell.l) — for the shadow's POSITION lift off a face onto the top
+  lift: number; // EASED face-lift px — the shadow draws at (gx, gy − lift), gliding between elevation levels
+  shadowHide: boolean; // RAW lift > alt: the flyer is below the resolved clifftop — draw no shadow
   shadowDepth: number; // occluder-stable DEPTH to sort the ground shadow at (kills the per-cell flicker)
 }
 
@@ -148,6 +148,7 @@ export interface CritterGradeState {
   gl?: [number, number, number]; // eased light multiplier (r,g,b), 0..~N
   gfa?: number; // eased fog alpha, 0..1
   gfc?: [number, number, number]; // eased fog colour (r,g,b), 0..1
+  sLift?: number; // eased shadow face-lift px (see gradeCritter's LIFT_TAU glide)
 }
 
 // The raw floats __ml.critterLight returns (light multipliers + fog + resolved terrain).
@@ -156,11 +157,10 @@ interface CritterProbe {
   fog: number;
   fogCol: [number, number, number];
   L: number; // resolved DRAWN terrain level under the ground point (ramps up a face)
-  cellL: number; // the resolved column's TOP level (cell.l) — lifts the shadow off a face onto the top
+  cellL: number; // the resolved column's TOP level (cell.l)
+  lift: number; // CONTINUOUS face-lift px: how far gy sits below the column's top LIP (0 on any top/flat)
   shadowDepth: number; // occluder-stable depth to sort the ground shadow at (no per-cell flicker)
 }
-
-const LEVEL_PX = 16; // MAP_GEOMETRY.lh — px per elevation level (kept local, no cross-import)
 
 // Ease time-constants (ms). critterLight now resolves the bird's ground level as
 // the DRAWN level up a cliff face (not the wall top), so the raw grade already
@@ -171,6 +171,13 @@ const LEVEL_PX = 16; // MAP_GEOMETRY.lh — px per elevation level (kept local, 
 const GRADE_TAU = 130;
 const FOG_TAU = 165;
 const FOG_EPS = 0.01; // "is there real fog?" threshold for the colour track (see gradeCritter)
+// Shadow face-lift glide (ms). The raw lift is CONTINUOUS in gy (critterLight
+// pins it to the resolved column's lip line) but still JUMPS once when the
+// resolve hands over from a low cell to a wall column at the foot — the
+// elevation change itself. Easing the applied lift turns that hop into a quick
+// glide up/down the edge (maintainer: the transition "jitters for a while
+// until it settles on the new elevation level").
+const LIFT_TAU = 130;
 
 /** Probe the world light + depth-fog for a flyer whose GROUND point is drawn at
  * iso-screen (gx,gy) and lifted `alt` px above it — through the game's
@@ -198,6 +205,7 @@ export function gradeCritter(
   const tl = p ? p.l : [1, 1, 1];
   const tf = p ? p.fog : 0;
   const fc = p ? p.fogCol : [1, 1, 1];
+  const snapped = !st.gl || !st.gfc; // first sample / recycled critter → no easing this frame
   if (!st.gl || !st.gfc) {
     st.gl ??= [0, 0, 0];
     st.gfc ??= [0, 0, 0];
@@ -227,13 +235,24 @@ export function gradeCritter(
       }
     }
   }
+  // Shadow face-lift GLIDE. rawLift is continuous within a column (pinned to the
+  // lip across a face) but hops once at the foot handover; ease it (LIFT_TAU) so
+  // the shadow slides between elevation levels. While HIDDEN (raw > alt — flyer
+  // below the resolved clifftop) track the raw value so a reveal never glides
+  // from a stale lift; snap alongside the light grade's first-sample/recycle snap.
+  const rawLift = p ? p.lift : 0;
+  const shadowHide = rawLift > alt;
+  if (shadowHide || snapped || st.sLift === undefined) st.sLift = rawLift;
+  else st.sLift += (rawLift - st.sLift) * (1 - Math.exp(-dtMs / LIFT_TAU));
   const ch = (v: number) => Math.max(0, Math.min(255, Math.round(v * 255)));
   return {
     tint: (ch(st.gl[0]) << 16) | (ch(st.gl[1]) << 8) | ch(st.gl[2]),
     fog: st.gfa ?? 0,
     fogTint: (ch(st.gfc[0]) << 16) | (ch(st.gfc[1]) << 8) | ch(st.gfc[2]),
-    groundL: p ? p.L : 0, // RAW (un-eased) DRAWN level — for the shadow's face-lift/hide test
-    topL: p ? p.cellL : 0, // RAW column TOP level — for the shadow's POSITION lift (top vs face)
+    // Clamped to alt so a mid-glide shadow can never sit ABOVE its own sprite
+    // (e.g. the first visible frame after a reveal eases from ~alt downward).
+    lift: Math.min(st.sLift, Math.max(0, alt)),
+    shadowHide,
     shadowDepth: p ? p.shadowDepth : gy + 3, // RAW occluder-stable shadow depth (gy+3 fallback = old flat behaviour)
   };
 }
@@ -270,31 +289,28 @@ function ensureCritterShadow(scene: Phaser.Scene): void {
  * surface at (gx,gy), which gives the identity flatY == gy + groundL*LEVEL_PX
  * (i.e. gy = flatY − drawnLevel*lh). Two consequences:
  *  • DEPTH is `shadowDepth`, computed by critterLight against the DISCRETE per-cell
- *    terrain occluders so it can't blink: over an elevated flat top it sorts at the
- *    resolved cell's anchor + 2*dy + 3 (clears the front-neighbour occluders, stable
- *    per cell — the naive `gy + groundL*LEVEL_PX + 3` used the continuous gy and
- *    swung behind the front tile every cell = the flicker); flat level-0 / a cliff
- *    FACE keep `gy + groundL*LEVEL_PX + 3`. A genuinely taller wall in front still
- *    out-sorts and hides it.
- *  • POSITION lifts off the FACE. `groundL` is the DRAWN level, which RAMPS UP a
- *    cliff face, so on a face `gy` is a WALL pixel — the old code drew the shadow
- *    right there. `topL` (cell.l) is the column's real TOP. On a real top (flat
- *    ground, a plateau, a LANDED bird's landableAtScreen-validated perch)
- *    groundL==topL → lift 0 → shadow at gy, unchanged. On a face groundL<topL →
- *    lift the shadow up the face remainder onto the flat top, never the wall.
- * If that lift would exceed the flyer's own altitude the flyer is BELOW this
- * clifftop (cruising in FRONT of the wall); there's no real ground under it and
- * lifting would float the shadow ABOVE the sprite — so draw nothing that frame.
- * Created lazily; the caller destroys it on removal. */
+ *    terrain occluders so it can't blink: any resolved elevated column sorts at the
+ *    resolved cell's anchor + 3*dy + 0.25 (clears its own images, the cardinal
+ *    fronts AND the front-diagonal whose diamond apex the shadow straddles — the
+ *    naive continuous-gy depth swung behind covering tiles = the flicker); flat
+ *    level-0 keeps `gy + 3`. A genuinely taller wall in front still out-sorts
+ *    and hides it.
+ *  • POSITION lifts off the FACE via `grade.lift` — the CONTINUOUS, per-critter
+ *    EASED face-lift (see gradeCritter): 0 on any top/flat/landed perch (shadow
+ *    at gy, unchanged), and across a face it pins the shadow to the column's top
+ *    LIP line, GLIDING through elevation handovers instead of saw-toothing 16px
+ *    per level like the old integer (topL−groundL)*LEVEL_PX lift did (maintainer:
+ *    the low↔hill transition "jitters for a while until it settles").
+ * `grade.shadowHide` (RAW lift > alt: the flyer is below the resolved clifftop,
+ * cruising in FRONT of the wall) draws nothing — never a wall shadow, never a
+ * shadow floating above its own sprite. Created lazily; caller destroys it. */
 export function applyShadow(
   scene: Phaser.Scene,
   holder: { shadow?: Phaser.GameObjects.Image },
   gx: number,
   gy: number,
   alt: number,
-  groundL: number,
-  topL: number,
-  shadowDepth: number,
+  grade: CritterGrade,
 ): void {
   ensureCritterShadow(scene);
   const f = Math.min(1, Math.max(0, alt / 130)); // 0 on the ground → 1 at high cruise
@@ -303,17 +319,12 @@ export function applyShadow(
     s = scene.add.image(gx, gy, SHADOW_KEY).setOrigin(0.5, 0.5);
     holder.shadow = s;
   }
-  const lift = (topL - groundL) * LEVEL_PX; // face remainder: 0 on a real TOP, >0 up a wall
-  if (lift > alt) {
-    // The resolved clifftop is higher on screen than the flyer itself — it's
-    // cruising BELOW the top, in front of the face. No real ground under it, and
-    // lifting to the top would float the shadow above the sprite. Hide it: never
-    // a wall shadow, never an inversion.
+  if (grade.shadowHide) {
     s.setVisible(false);
     return;
   }
-  s.setPosition(gx, gy - lift) // on the terrain TOP under the flyer (== gy on a real top / landed bird), never inside a face
-    .setDepth(shadowDepth) // occluder-STABLE (discrete per cell over elevated flats) so it can't blink behind a front tile
+  s.setPosition(gx, gy - grade.lift) // on the terrain surface under the flyer (lip-pinned + eased across faces), never inside a wall
+    .setDepth(grade.shadowDepth) // occluder-STABLE (discrete per cell over elevated flats) so it can't blink behind a front tile
     .setDisplaySize(16 - f * 6, 6.4 - f * 2.6) // much smaller than the player's ~34×14
     .setAlpha(0.58 - f * 0.24) // reads on bright sand; fainter the higher it climbs
     .setVisible(true);
