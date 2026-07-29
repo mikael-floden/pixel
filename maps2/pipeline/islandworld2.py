@@ -152,6 +152,31 @@ LAGOON_RW = 2
 GORGE_BRIDGE_FRACS = (0.10, 0.235, 0.4175, 0.515)
 RIVER_BRIDGE_FRACS = (0.47, 0.53, 0.595, 0.7275, 0.7925)
 
+# THE CAVE (maintainer 2026-07-29): a Diablo-style room-and-corridor dungeon under
+# (almost) the ENTIRE east massif, entered ONLY through the pinned doorway below.
+# The carve-out protocol INVERTS the deck idea: the cave floor becomes the BASE
+# terrain (level 0, dark tops) and the mountain above it becomes kind:"cave" roof
+# DECKS that carry the pre-carve surface VERBATIM — per-cell top/mirror, deck level
+# = the old surface level, deck mat = the old cell mat (faces keep their art, and
+# the game reads surface speed/sound from the base mat, which the carve KEEPS).
+# thickness = level - CAVE_CEIL leaves a uniform air gap over the floor: the slab
+# underside IS the cave ceiling (the game treats [level-thickness, level] as solid
+# rock — nothing falls through a roof), and at the pinned rim cells the missing
+# wall faces [0, CAVE_CEIL) are the visible DOOR. The pass is transactional and
+# build() proves it: every pre-carve law re-runs on the pre-carve SURFACE VIEW,
+# and the cave battery asserts containment (the redraw reminder), a single mouth,
+# headroom, floor reach, and a full-render byte-diff confined to the doorway.
+CAVE_MOUTH = ((141, 68), (142, 67), (143, 66))  # the maintainer's doorway (s=209)
+CAVE_CEIL = 8          # levels of air between floor and slab underside (door height)
+CAVE_DEPTH_MIN = 3     # interior cells sit >= this Chebyshev depth inside the massif
+CAVE_MASSIF_LVL = 16   # "the mountain" = the connected component of level >= this
+CAVE_ROOMS_MAX = 9
+CAVE_ROOM_R = 5        # max Chebyshev room radius (11x11 chambers)
+CAVE_ROOM_SEP = 4      # minimum rock kept between rooms
+CAVE_TURN_PEN = 3      # corridor A* turn penalty -> straight Diablo halls
+CAVE_FLOOR_TOP = "black_mountain"   # floor LOOK only; the cell MAT keeps the roof
+                                    # material (snow stays snow for the roof walker)
+
 
 class Island2(Island):
     def __init__(self, seed=21, M=24):
@@ -190,6 +215,13 @@ class Island2(Island):
         self._troll_band = {}             # (x,y) -> (leg, q) for the ribbon completion
         self._nswitch = 0
         self._stairs_done = False
+        self._deck_top = {}               # (x,y) -> (top path, mirror): cave roofs carry
+                                          # the ORIGINAL surface tile (render honors it)
+        self._cave = set()                # cave floor footprint (rooms+corridors+door)
+        self._cave_rooms = []
+        self._cave_tunnel = set()
+        self._precave = None              # full pre-carve surface snapshot (build()'s
+                                          # legacy battery runs on this SURFACE VIEW)
         self.road_feet = []
         self.spawn = self._to_grid(0.50, 0.90)
 
@@ -239,6 +271,9 @@ class Island2(Island):
         self.deck_at = {(x, y): dk for dk in self.decks for (x, y) in dk["cells"]}
         self._decorate()
         self._reconnect_after_props()
+        self._carve_cave()                # LAST: hollow the east massif into the Diablo
+                                          # cave (transactional; the surface above it is
+                                          # preserved verbatim in kind:"cave" roof decks)
 
     # -- inset coordinate transform --------------------------------------------
 
@@ -2547,6 +2582,259 @@ class Island2(Island):
                 self.props.pop(cur, None)
                 cur = parent[cur]
 
+    # ---- THE CAVE (maintainer 2026-07-29) ------------------------------------
+    # Carve-out under the east massif: floor = base terrain, mountain = verbatim
+    # roof decks, one pinned doorway. See the CAVE_* constants for the doctrine.
+
+    def _cave_massif(self):
+        """The east mountain: the connected component of level >= CAVE_MASSIF_LVL
+        holding the pinned mouth, plus every member's Chebyshev depth from the
+        outside. If the mouth is no longer mountain rim, the mountain changed —
+        fail loudly so the cave gets REDRAWN, never mis-carved."""
+        n = self.n
+        mx, my = CAVE_MOUTH[0]
+        hi = self.level >= CAVE_MASSIF_LVL
+        assert hi[my, mx], \
+            f"cave mouth {CAVE_MOUTH[0]} is no longer mountain rim — redraw the cave"
+        E, seen = set(), np.zeros((n, n), bool)
+        q = deque([(mx, my)]); seen[my, mx] = True
+        while q:
+            x, y = q.popleft(); E.add((x, y))
+            for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < n and 0 <= ny < n and hi[ny, nx] and not seen[ny, nx]:
+                    seen[ny, nx] = True; q.append((nx, ny))
+        depth, q = {}, deque()
+        for c in sorted(E):
+            x, y = c
+            if any((x + dx, y + dy) not in E for dx in (-1, 0, 1) for dy in (-1, 0, 1)):
+                depth[c] = 1; q.append(c)
+        while q:
+            x, y = q.popleft()
+            for dx in (-1, 0, 1):
+                for dy in (-1, 0, 1):
+                    c = (x + dx, y + dy)
+                    if c in E and c not in depth:
+                        depth[c] = depth[(x, y)] + 1; q.append(c)
+        return E, depth
+
+    def _cave_astar(self, srcs, goals, allowed):
+        """Turn-penalised A* through `allowed` — corridors run straight (Diablo
+        halls), turning only when the rock forces it. Deterministic."""
+        goalset = set(goals)
+        DIRS = ((1, 0), (-1, 0), (0, 1), (0, -1))
+        pq, seen, tick = [], {}, 0
+        for s in srcs:
+            for dd in range(4):
+                pq.append((0, tick, s, dd, None)); tick += 1
+        heapq.heapify(pq)
+        while pq:
+            g, _, cur, dd, par = heapq.heappop(pq)
+            if (cur, dd) in seen:
+                continue
+            seen[(cur, dd)] = par
+            if cur in goalset:
+                path, key = [cur], (cur, dd)
+                while seen[key] is not None:
+                    key = seen[key]; path.append(key[0])
+                return path
+            for nd, (dx, dy) in enumerate(DIRS):
+                c2 = (cur[0] + dx, cur[1] + dy)
+                if c2 in allowed and (c2, nd) not in seen:
+                    heapq.heappush(pq, (g + 1 + (0 if nd == dd else CAVE_TURN_PEN),
+                                        tick, c2, nd, (cur, dd)))
+                    tick += 1
+        return None
+
+    def _cave_layout(self, E, depth):
+        """Rooms at clearance maxima + straight corridors + the mouth tunnel.
+        Fully deterministic (greedy, no RNG). Returns (footprint, rooms, tunnel)."""
+        # Keep clear of everything with its own surface law: Trollstigen ramps,
+        # props (they'd ride down onto the floor), roads, the gorge, bridge banks.
+        excl = set()
+        for s, r in ((self._troll | self._ascent, 1), (set(self.props), 1),
+                     (self.roads, 1), (self._gorge_cells, 2),
+                     ({(x, y) for dk in self.decks for (x, y) in dk["cells"]}, 2)):
+            for (x, y) in s:
+                for dx in range(-r, r + 1):
+                    for dy in range(-r, r + 1):
+                        excl.add((x + dx, y + dy))
+        ok = {c for c in E if depth[c] >= CAVE_DEPTH_MIN and c not in excl}
+        # The mouth TUNNEL: shift the pinned rim diagonal inward (screen-up) until
+        # a full line sits in the open interior.
+        mouth = list(CAVE_MOUTH)
+        tunnel, k = set(), 1
+        while True:
+            line = [(x, y - k) for (x, y) in mouth]
+            if all(c in ok for c in line):
+                entry = line
+                break
+            for c in line:
+                assert c in E and c not in excl, \
+                    f"cave tunnel blocked at {c} — redraw the cave"
+            tunnel.update(line); k += 1
+            assert k <= 10, "cave tunnel cannot reach the interior — redraw the cave"
+        # Clearance transform inside the open interior -> fat rooms in fat rock.
+        cl, q = {}, deque()
+        for c in sorted(ok):
+            x, y = c
+            if any((x + dx, y + dy) not in ok for dx in (-1, 0, 1) for dy in (-1, 0, 1)):
+                cl[c] = 1; q.append(c)
+        while q:
+            x, y = q.popleft()
+            for dx in (-1, 0, 1):
+                for dy in (-1, 0, 1):
+                    c = (x + dx, y + dy)
+                    if c in ok and c not in cl:
+                        cl[c] = cl[(x, y)] + 1; q.append(c)
+        rooms, taken = [], set()
+        for c in sorted(ok, key=lambda c: (-cl[c], c)):
+            if c in taken or cl[c] < 3:
+                continue
+            r = min(cl[c] - 1, CAVE_ROOM_R)
+            cx, cy = c
+            cells = {(cx + dx, cy + dy)
+                     for dx in range(-r, r + 1) for dy in range(-r, r + 1)} & ok
+            rooms.append((c, cells))
+            for (x, y) in cells:
+                for dx in range(-CAVE_ROOM_SEP, CAVE_ROOM_SEP + 1):
+                    for dy in range(-CAVE_ROOM_SEP, CAVE_ROOM_SEP + 1):
+                        taken.add((x + dx, y + dy))
+            if len(rooms) >= CAVE_ROOMS_MAX:
+                break
+        assert len(rooms) >= 5, f"only {len(rooms)} cave rooms fit — redraw the cave"
+        corridors = set()
+
+        def cheb(a, b):
+            return max(abs(a[0] - b[0]), abs(a[1] - b[1]))
+
+        def link(A, B):
+            path = self._cave_astar(sorted(A), sorted(B), ok)
+            assert path is not None, "cave corridor failed — redraw the cave"
+            for c in path:
+                corridors.add(c)
+                for dx, dy in ((1, 0), (0, 1)):        # widen toward the camera
+                    c2 = (c[0] + dx, c[1] + dy)
+                    if c2 in ok:
+                        corridors.add(c2)
+
+        centres = [c for c, _ in rooms]
+        first = min(range(len(rooms)),
+                    key=lambda i: min(cheb(entry[1], c) for c in rooms[i][1]))
+        connected = {first}
+        while len(connected) < len(rooms):
+            _, i, j = min((cheb(centres[i], centres[j]), i, j)
+                          for i in connected for j in range(len(rooms))
+                          if j not in connected)
+            link(rooms[i][1], rooms[j][1]); connected.add(j)
+        link(set(entry), rooms[first][1])
+        pairs = sorted((cheb(centres[i], centres[j]), i, j)
+                       for i in range(len(rooms)) for j in range(i + 1, len(rooms)))
+        if len(pairs) > len(rooms):        # one loop edge: Diablo floors circle back
+            _, i, j = pairs[len(rooms) - 1]
+            link(rooms[i][1], rooms[j][1])
+        foot = set().union(*(cells for _, cells in rooms))
+        foot |= corridors | tunnel | set(mouth)
+        return foot, rooms, tunnel
+
+    _CAVE_STRIP = 512
+
+    def _cave_bbox(self):
+        """Screen-space window that is ALLOWED to change: the doorway columns (the
+        pinned mouth + its tunnel), padded up-screen for the telescoping view
+        through the gap. Every other pixel must stay byte-identical."""
+        ox = (self.n - 1) * DX + 24
+        oy = int(self.level.max()) * LEVEL_PX + 160
+        cells = set(CAVE_MOUTH) | self._cave_tunnel
+        x0 = min(ox + (x - y) * DX for (x, y) in cells) - 16
+        x1 = max(ox + (x - y) * DX for (x, y) in cells) + 64 + 16
+        y1 = max(oy + (x + y) * DY for (x, y) in cells) + 96
+        y0 = min(oy + (x + y) * DY for (x, y) in cells) - 32 * LEVEL_PX
+        return x0, y0, x1, y1
+
+    def _cave_digest(self, img):
+        """Strip digest of the pre-carve render: hashes everywhere, raw pixels for
+        the strips the doorway window touches (so the diff can be masked there)."""
+        import hashlib
+        w, h = img.size
+        x0, y0, x1, y1 = self._cave_bbox()
+        strips = []
+        for top in range(0, h, self._CAVE_STRIP):
+            crop = img.crop((0, top, w, min(top + self._CAVE_STRIP, h)))
+            arr = np.asarray(crop)
+            if top + crop.height <= y0 or top >= y1:
+                strips.append(("hash", hashlib.sha1(arr.tobytes()).hexdigest()))
+            else:
+                strips.append(("raw", arr.copy()))
+        return {"size": img.size, "strips": strips, "bbox": (x0, y0, x1, y1)}
+
+    def _cave_check_render(self, img):
+        """CAVE LAW: outside the doorway window, not ONE pixel of the island may
+        differ from the pre-carve render. The roof decks must repaint the mountain
+        exactly; the only visible change is the door."""
+        import hashlib
+        ref = self._cave_prerender
+        assert img.size == ref["size"], \
+            f"render canvas changed {ref['size']} -> {img.size} — redraw the cave"
+        x0, y0, x1, y1 = ref["bbox"]
+        bad = []
+        for si, (kind, val) in enumerate(ref["strips"]):
+            top = si * self._CAVE_STRIP
+            crop = img.crop((0, top, img.size[0],
+                             min(top + self._CAVE_STRIP, img.size[1])))
+            arr = np.asarray(crop)
+            if kind == "hash":
+                if hashlib.sha1(arr.tobytes()).hexdigest() != val:
+                    bad.append((top, "strip outside the doorway changed"))
+            else:
+                diff = (arr != val).any(axis=2)
+                ay0 = max(0, y0 - top)
+                ay1 = max(0, min(arr.shape[0], y1 - top))
+                diff[ay0:ay1, max(0, x0):x1] = False
+                if diff.any():
+                    yy, xx = np.argwhere(diff)[0]
+                    bad.append((top, f"pixel ({int(xx)},{int(yy) + top})"))
+        assert not bad, (f"CAVE RENDERED OUTSIDE THE MOUNTAIN: {bad[:3]} — redraw "
+                         f"the cave (maps2/README.md, The Cave)")
+
+    def _carve_cave(self):
+        """Hollow the east massif into the Diablo cave WITHOUT changing how the
+        mountain looks or walks from outside. Transactional: snapshots the whole
+        surface (and a reference render) first; build() proves the result."""
+        E, depth = self._cave_massif()
+        foot, rooms, tunnel = self._cave_layout(E, depth)
+        self._cave, self._cave_rooms, self._cave_tunnel = foot, rooms, tunnel
+        self._precave = {
+            "level": self.level.copy(), "mat": self.mat.copy(),
+            "top": self.top.copy(), "mirror": self.mirror.copy(),
+            "props": dict(self.props), "decks": list(self.decks),
+        }
+        self._cave_prerender = self._cave_digest(self.render(transparent=True))
+        # Roof decks: the old surface, verbatim, grouped by (level, mat) so faces
+        # keep their material art and every cell's walk level is exactly the old one.
+        groups = defaultdict(list)
+        for (x, y) in sorted(foot):
+            groups[(int(self.level[y, x]), self.mat[y, x])].append((x, y))
+        for (lvl, m), cells in sorted(groups.items()):
+            dk = {"kind": "cave", "mat": m, "level": lvl,
+                  "thickness": lvl - CAVE_CEIL,
+                  "cells": [{"x": x, "y": y, "top": self.top[y, x],
+                             "mirror": int(bool(self.mirror[y, x]))}
+                            for (x, y) in cells]}
+            self.decks.append(dk)
+            for (x, y) in cells:
+                self.deck_at[(x, y)] = dk
+                self._deck_top[(x, y)] = (self.top[y, x], bool(self.mirror[y, x]))
+        # The carve: floor at level 0 with dark tops. The MAT stays — the game
+        # reads surface speed/sound/category from the base mat, so the roof keeps
+        # snow-on-snow behaviour, and collision derives walkable land as before.
+        for (x, y) in sorted(foot):
+            self.level[y, x] = 0
+            self.top[y, x] = self.lib.region_base(CAVE_FLOOR_TOP, x, y)
+            self.mirror[y, x] = False
+        self.reserved |= foot
+        self._reconnect_after_props()   # a prop pinching the doorway would seal the cave
+
 
 def build(out=None, seed=21, M=24):
     d = Island2(seed=seed, M=M)
@@ -2555,6 +2843,9 @@ def build(out=None, seed=21, M=24):
     os.makedirs(out, exist_ok=True)
     decks_out = []
     for dk in d.decks:
+        if dk["kind"] == "cave":
+            decks_out.append(dk)   # cells already carry the VERBATIM surface {x,y,top,mirror}
+            continue
         m = dk["mat"]
         cells = [{"x": x, "y": y, "top": d.lib.region_base(m, x, y), "mirror": 0}
                  for (x, y) in dk["cells"]]
@@ -2567,9 +2858,19 @@ def build(out=None, seed=21, M=24):
     # isometric view with every non-map pixel transparent (the game draws it under the Map
     # tab). No more 17MB demo.png / preview.png.
     import render2
-    render2.save_minimap(out, d.render(transparent=True), width=2400)
+    post_render = d.render(transparent=True)
+    # CAVE LAW 1: byte-identical outside the doorway (checked BEFORE anything else).
+    d._cave_check_render(post_render)
+    render2.save_minimap(out, post_render, width=2400)
+    del post_render
 
-    # --- assert battery ---
+    # --- legacy assert battery — on the PRE-CARVE SURFACE VIEW -------------------
+    # The carve preserves the surface verbatim in the roof decks, so the surface
+    # laws keep governing the pre-carve grids; the cave has its own battery below.
+    _live = (d.level, d.mat, d.top, d.mirror, d.props, d.decks)
+    pv = d._precave
+    d.level, d.mat, d.top, d.mirror = pv["level"], pv["mat"], pv["top"], pv["mirror"]
+    d.props, d.decks = pv["props"], pv["decks"]
     terr = Counter(m for m in d.mat.ravel() if m)
     viol = occlusion_violations(d.mat, d.level)   # raw same-material lips (legible ones ALLOWED)
     bad = d._bad_lips()                           # illegible ones — these must be zero
@@ -2711,6 +3012,122 @@ def build(out=None, seed=21, M=24):
           f"({unreachable} water-locked islet); traps {traps}; decks {len(d.decks)}")
     print(f"  walkable components (top 6 sizes): {[len(c) for c in comps[:6]]}")
     print(f"  materials=" + ", ".join(f"{k.split('_')[0]}:{v}" for k, v in terr.most_common()))
+
+    # restore the LIVE (post-carve) state: the surface view above was pre-carve
+    d.level, d.mat, d.top, d.mirror, d.props, d.decks = _live
+
+    # --- CAVE battery (maintainer 2026-07-29) ------------------------------------
+    foot = d._cave
+    assert foot and len(foot) >= 300, f"cave too small ({len(foot)} cells) — redraw the cave"
+    assert len(d._cave_rooms) >= 5, f"only {len(d._cave_rooms)} cave rooms — redraw the cave"
+    fm = np.zeros((n, n), bool)
+    for (x, y) in foot:
+        fm[y, x] = True
+    # 0) OUTSIDE the footprint the surface grids are untouched, entry for entry;
+    #    materials are untouched EVERYWHERE (the floor keeps the roof's mat).
+    assert bool((np.asarray(d.mat == pv["mat"])).all()), \
+        "the carve changed a material — redraw the cave"
+    for name, arr, ref in (("level", d.level, pv["level"]), ("top", d.top, pv["top"]),
+                           ("mirror", d.mirror, pv["mirror"])):
+        chg = np.asarray(arr != ref).astype(bool)
+        assert not bool((chg & ~fm).any()), \
+            f"the carve changed {name} outside its footprint — redraw the cave"
+    assert set(d.props) <= set(pv["props"]) and \
+        all(pv["props"][k] == v for k, v in d.props.items()), \
+        "the carve added or moved a prop"
+    assert not (set(d.props) & foot), "a prop stands inside the cave — redraw the cave"
+    assert int(d.level.max()) == int(pv["level"].max()), \
+        "the carve lowered the summit — redraw the cave"
+    # 1) CONTAINMENT (the maintainer's redraw reminder): every cave cell lies
+    #    strictly INSIDE the mountain volume, recomputed INDEPENDENTLY from the
+    #    pre-carve grid. If the mountain ever changes shape and part of the cave
+    #    ends up outside it, THIS is the assert that fails the build and reminds
+    #    us to redraw that part of the cave.
+    hi2 = pv["level"] >= CAVE_MASSIF_LVL
+    E2, seen2 = set(), np.zeros((n, n), bool)
+    q2b = deque([CAVE_MOUTH[0]]); seen2[CAVE_MOUTH[0][1], CAVE_MOUTH[0][0]] = True
+    while q2b:
+        x, y = q2b.popleft(); E2.add((x, y))
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < n and 0 <= ny < n and hi2[ny, nx] and not seen2[ny, nx]:
+                seen2[ny, nx] = True; q2b.append((nx, ny))
+    dep2, q2b = {}, deque()
+    for c in sorted(E2):
+        x, y = c
+        if any((x + dx, y + dy) not in E2 for dx in (-1, 0, 1) for dy in (-1, 0, 1)):
+            dep2[c] = 1; q2b.append(c)
+    while q2b:
+        x, y = q2b.popleft()
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                c = (x + dx, y + dy)
+                if c in E2 and c not in dep2:
+                    dep2[c] = dep2[(x, y)] + 1; q2b.append(c)
+    door = set(CAVE_MOUTH) | d._cave_tunnel
+    for (x, y) in sorted(foot):
+        L0 = int(pv["level"][y, x])
+        assert L0 >= CAVE_CEIL + 6, (f"CAVE OUTSIDE THE MOUNTAIN at ({x},{y}): only "
+                                     f"{L0} levels of rock above the floor — redraw the cave")
+        if (x, y) not in door:
+            assert dep2.get((x, y), 0) >= CAVE_DEPTH_MIN, \
+                (f"CAVE OUTSIDE THE MOUNTAIN at ({x},{y}): depth "
+                 f"{dep2.get((x, y), 0)} < {CAVE_DEPTH_MIN} — redraw the cave")
+        dk = d.deck_at.get((x, y))
+        assert (dk is not None and dk["kind"] == "cave" and int(dk["level"]) == L0
+                and int(dk["thickness"]) == L0 - CAVE_CEIL), f"cave roof wrong at ({x},{y})"
+        assert d._deck_top[(x, y)] == (pv["top"][y, x], bool(pv["mirror"][y, x])), \
+            f"cave roof does not carry the original surface tile at ({x},{y})"
+    # the SERIALIZED roof cells (what the game consumes) must carry the original
+    # surface too — independent of _deck_top, which only the minimap render reads
+    for dk in d.decks:
+        if dk["kind"] != "cave":
+            continue
+        for c in dk["cells"]:
+            assert (c["top"] == pv["top"][c["y"], c["x"]]
+                    and int(c["mirror"]) == int(bool(pv["mirror"][c["y"], c["x"]]))), \
+                f"serialized cave roof tile wrong at ({c['x']},{c['y']})"
+    # 2) SINGLE ENTRANCE: the only cells where the floor meets outside walkable
+    #    ground at grade are exactly the pinned doorway cells.
+    openings = set()
+    for (x, y) in sorted(foot):
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            cx2, cy2 = x + dx, y + dy
+            if (cx2, cy2) in foot or not (0 <= cx2 < n and 0 <= cy2 < n):
+                continue
+            if d.mat[cy2, cx2] in ("", "clear_water"):
+                continue
+            if int(d.level[cy2, cx2]) <= 1:
+                openings.add((x, y))
+    assert openings == set(CAVE_MOUTH), \
+        f"cave entrances wrong: {sorted(openings ^ set(CAVE_MOUTH))[:6]} — redraw the cave"
+    # 3) headroom + full floor reach from the mouth
+    for dk in d.decks:
+        if dk["kind"] == "cave":
+            assert int(dk["level"]) - int(dk["thickness"]) >= 6, "cave headroom < 6 levels"
+    seenf, qf = set(CAVE_MOUTH), deque(CAVE_MOUTH)
+    while qf:
+        x, y = qf.popleft()
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            c2 = (x + dx, y + dy)
+            if c2 in foot and c2 not in seenf:
+                seenf.add(c2); qf.append(c2)
+    assert seenf == foot, \
+        f"{len(foot) - len(seenf)} cave cells unreachable from the mouth — redraw the cave"
+    # 4) "almost the entire right mountain": the cave spans most of the massif
+    exs = [c[0] for c in E2]; eys = [c[1] for c in E2]
+    fxs = [c[0] for c in foot]; fys = [c[1] for c in foot]
+    spanx = (max(fxs) - min(fxs)) / max(1, max(exs) - min(exs))
+    spany = (max(fys) - min(fys)) / max(1, max(eys) - min(eys))
+    assert spanx >= 0.55 and spany >= 0.55, \
+        f"cave spans only {spanx:.0%} x {spany:.0%} of the mountain — redraw the cave"
+    seam2 = sum(1 for (x, y) in foot for dx, dy in ((1, 0), (0, 1))
+                if (x + dx, y + dy) in foot
+                and abs(int(pv["level"][y, x]) - int(pv["level"][y + dy, x + dx])) == 2)
+    print(f"  cave: {len(foot)} cells ({len(d._cave_rooms)} rooms), mouth at "
+          f"{CAVE_MOUTH[1]}, {sum(1 for dk in d.decks if dk['kind'] == 'cave')} roof "
+          f"decks, ceiling {CAVE_CEIL} levels; 2-level roof seams {seam2} (manual jump); "
+          f"span {spanx:.0%}x{spany:.0%} of the massif")
     return d
 
 

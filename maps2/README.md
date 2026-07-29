@@ -182,6 +182,40 @@ Enforce it in code (`pipeline/autotile.py`):
   (`demo_lost` is the *older* grass island, kept as-is and NOT under this rule —
   don't use it as the pattern.)
 
+## The Cave — the carve-out protocol (maintainer 2026-07-29)
+
+Caves/dungeons live in the SAME seamless world, no transitions: the deck idea
+INVERTED. `Island2._carve_cave()` (the LAST pass; fully transactional) hollows
+the east massif into a Diablo-style dungeon — rooms stamped at clearance maxima
+of the massif interior, straight turn-penalised corridors, ONE pinned doorway
+(`CAVE_MOUTH`, the maintainer's encircled spot at the south wall foot, grid
+(142,67)±diagonal). The **floor becomes the base terrain** (level 0, dark
+`black_mountain` tops — the cell `mat` is KEPT so roof walkers keep snow-on-snow
+speed/sound) and the mountain above becomes `kind:"cave"` roof decks carrying
+the pre-carve surface **verbatim** (per-cell top/mirror; deck level/mat = old
+surface; `thickness = level - CAVE_CEIL` so the slab underside is the ceiling
+and the missing wall faces at the rim ARE the visible dark door). Spec:
+`spec/WORLD_FORMAT.md` → Caves; game physics: a deck slab is SOLID
+(`games2/shared` `deckBot` — nothing falls through a roof).
+
+Iterating on the cave happens from IN-CAVE screenshots (the game prints world
+coords under the avatar) by changing `_carve_cave`/`CAVE_*` **rules** — never
+spot edits — and is risk-free for the mountain top because build() proves:
+
+- **byte-identity**: a full pre/post-carve render diff must be EMPTY outside the
+  doorway window (`_cave_check_render` — "the cave is never rendered outside the
+  mountain");
+- **surface laws**: the whole legacy assert battery re-runs on the pre-carve
+  SURFACE VIEW (the roof decks preserve that surface cell-for-cell, engine-checked
+  as identical walk levels);
+- **CONTAINMENT (the redraw reminder)**: every cave cell must sit ≥3 cells deep
+  inside the INDEPENDENTLY recomputed massif with ≥14 levels of rock above the
+  floor, exactly one mouth (the pinned cells), ≥6 levels of headroom, every floor
+  cell reachable from the mouth, and the footprint spanning ≥55% of the massif.
+  If the mountain ever changes shape under the cave, the build FAILS with
+  "CAVE OUTSIDE THE MOUNTAIN — redraw the cave": update the layout for the new
+  mountain before shipping.
+
 ## Geometry (tiles2)
 
 - top diamond **30px** tall × 64px wide (grid steps DX=32, DY=15)

@@ -874,7 +874,16 @@ class Island:
                 dimg = self.lib.img(self.lib.region_base(dk["mat"], x, y))
                 for lvl in range(dl - dth, dl):
                     canvas.alpha_composite(dimg, (bx, by - lvl * LEVEL_PX))
-                canvas.alpha_composite(dimg, (bx, by - dl * LEVEL_PX - (dimg.height - 64)))
+                # cave roofs carry the ORIGINAL surface tile per cell (byte-identical
+                # mountain top); ordinary decks keep the region base tile.
+                ov = getattr(self, "_deck_top", {}).get((x, y))
+                if ov is None:
+                    dtop = dimg
+                else:
+                    dtop = self.lib.img(ov[0])
+                    if ov[1]:
+                        dtop = dtop.transpose(Image.FLIP_LEFT_RIGHT)
+                canvas.alpha_composite(dtop, (bx, by - dl * LEVEL_PX - (dtop.height - 64)))
         if scale != 1.0:
             canvas = canvas.resize((int(W * scale), int(H * scale)), Image.LANCZOS)
         return canvas
