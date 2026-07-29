@@ -318,6 +318,11 @@ def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None,
             "tags": detail.get("tags"),
         },
         "size": {"width": w, "height": h},
+        # the un-padded PixelLab canvas; postprocess.py grows "size" (and sets
+        # "pad") when wrap-overflow repair needs room — consumers should slice
+        # by "size" and scale/anchor by "native_size"
+        "native_size": {"width": w, "height": h},
+        "pad": {"x": 0, "y": 0},
         "sprite": _rel(os.path.join(mdir, "sprite.png")),
         "directions": sorted(rots),
         "rotations": rots,

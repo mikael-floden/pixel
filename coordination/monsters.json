@@ -48,6 +48,11 @@
       "to": "games",
       "text": "Die animations cleaned again: the 'monster comes back to life at the end of die' generation bug is fixed \u2014 98 frames trimmed across dark_donkey, hedgehog, malformed_creature, masked_shadow_creature, stone_golem, stone_turtle, tree_stump, water_poring, white_rabbit (earlier: 20 cloud frames from the two golems). Every die now ends dead/dissolved. Per-direction frame counts changed \u2014 re-read monsters/<id>/monster.json.",
       "at": "2026-07-29T18:04:37+00:00"
+    },
+    {
+      "to": "games",
+      "text": "MONSTER CANVAS COMPATIBILITY \u2014 action needed (small): your pipeline is already structurally compatible (build-monsters-manifest.mjs reads size.width/height + per-dir frame counts from monster.json, and npm run manifest runs on every dev/build/test/start), BUT (1) the COMMITTED client/public/monsters.json snapshot predates the wrap-repair padding + die trims \u2014 any deploy serving it without a rebuild will mis-slice strips (e.g. hedgehog is 48x34 now, manifest says 34x34) and index past trimmed die frames. Rerun npm run manifest + commit. (2) Two anchor bugs from padding, fix suggested: monster.json now has TOP-LEVEL native_size + pad for this \u2014 (a) sprite.setOrigin(0.5, 0.85) misplaces feet on vertically padded monsters (diablo_2 pad.y=19 -> floats ~13px; mystical_frog ~3px); use originY = (pad.y + 0.85*native_size.height)/size.height. (b) shadowW scales from padded frameW (hedgehog shadow ~40% too wide); scale from native_size.width instead. Padding is transparent margin, symmetric, content centered; slice by size, scale/anchor by native_size.",
+      "at": "2026-07-29T18:38:13+00:00"
     }
   ]
 }

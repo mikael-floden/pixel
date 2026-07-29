@@ -351,6 +351,8 @@ def process_monster(mid, dry_run=False):
             if (key, d, fx["frame"], fx["side"]) not in seen:
                 applied.append({"key": key, "dir": d, **fx})
     meta["size"] = {"width": canvas[0], "height": canvas[1]}
+    meta["native_size"] = {"width": native[0], "height": native[1]}
+    meta["pad"] = {"x": pad[0], "y": pad[1]}
     meta["postprocess"] = {"native_size": list(native), "pad": list(pad),
                            "fixes": applied}
     write_manifest(mid, meta)
