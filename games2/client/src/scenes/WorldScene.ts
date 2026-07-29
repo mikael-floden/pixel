@@ -403,6 +403,8 @@ interface MonsterAvatar {
   surfLevel?: number; // surface level in LEVELS (occluder + light sampling basis)
   shadowW: number; // resting shadow ellipse, scaled from the monster's frame size
   shadowH: number; // (a 48px poring gets 26x10 — the historical size; a 256px mammoth ~120x46)
+  pendDir?: string; // stableDir hysteresis state (same contract as Avatar)
+  pendSince?: number;
   // The manifest-RESOLVED walk anim key for this kind (animation_map.json —
   // "walk" for the 24-roster). NEVER hardcode the anim name here: the poring
   // era's art happened to call its walk "jump", a literal "jump" hid in
@@ -1749,10 +1751,15 @@ export class WorldScene extends Phaser.Scene {
   /** Drive a monster's 8-dir WALK clip (mv.walkKey — the manifest-resolved
    * anim, never a hardcoded name): loop it while `moving`, else freeze on the
    * first frame of the current facing (idle pause between legs). A
-   * direction-only change keeps the loop progress so the gait doesn't restart. */
+   * direction-only change keeps the loop progress so the gait doesn't restart.
+   * Facing goes through the SAME stableDir hysteresis as players (maintainer
+   * 2026-07-30: monsters flip-flopped between adjacent directions walking at
+   * sector-boundary angles — the identical jitter the player fix killed):
+   * a 45° change must persist DIR_STICK_MS before the sprite turns, 90°+
+   * turns switch instantly. */
   private playMonsterAnim(mv: MonsterAvatar, moving: boolean, dir: string) {
-    const d = DIRECTIONS.includes(dir as never) ? dir : DEFAULT_DIRECTION;
-    mv.dispDir = d;
+    const want = DIRECTIONS.includes(dir as never) ? dir : DEFAULT_DIRECTION;
+    const d = this.stableDir(mv, want);
     const key = monsterAnimKey(mv.kind, mv.walkKey, d);
     if (moving) {
       if (!this.anims.exists(key)) return;
@@ -3356,7 +3363,7 @@ export class WorldScene extends Phaser.Scene {
    * (clearing the pending timer) long before that, so the sprite holds one
    * stable orientation; a real 45° turn lands ~160ms later, imperceptibly.
    */
-  private stableDir(av: Avatar, want: string): string {
+  private stableDir(av: { dispDir?: string; pendDir?: string; pendSince?: number }, want: string): string {
     const cur = (av.dispDir ??= want);
     if (want === cur) {
       av.pendDir = undefined;
