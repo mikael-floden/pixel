@@ -68,6 +68,7 @@ import {
   buildGlowStamps,
 } from "../nightlight";
 import { joinWorld } from "../net";
+import { bindLiveTuning, liveTuningSnapshot } from "../live";
 import { ChatUI } from "../chat";
 import { WeatherFX } from "../weatherfx";
 import { Footsteps } from "../footsteps";
@@ -981,6 +982,7 @@ export class WorldScene extends Phaser.Scene {
     (window as any).__ml = {
       players: () => this.avatars.size,
       myId: () => this.room?.sessionId,
+      liveTuning: () => liveTuningSnapshot(),
       // Live feed for the HUD Map tab (hud.ts polls per rAF): the current world
       // id + grid size (cells) and the LOCAL player's SMOOTH predicted cell —
       // av.fx/fy is the same client-predicted position the sprite + coord label
@@ -1696,6 +1698,9 @@ export class WorldScene extends Phaser.Scene {
     // Spawn areas are server-computed per world and synced once — redraw the
     // debug overlay as they arrive (they land after the first iso build).
     $(room.state).spawnAreas.onAdd(() => this.drawSpawnAreas());
+    // Live tuning pushes (monster stats + constant overrides edited in the
+    // wiki) — sent on join and broadcast on every admin save / live/** push.
+    bindLiveTuning(room);
     room.onMessage("chat", (msg: ChatBroadcast) => {
       this.chat.addLog(msg.name, msg.text);
       this.showBubble(msg.id, msg.text);
