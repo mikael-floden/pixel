@@ -2265,5 +2265,192 @@
     "brief": "a young woman's short light vocal effort as she jumps, a quick bright high 'hyah', an energetic female adventure heroine's voice",
     "generated_at": "2026-07-19T01:34:50+00:00",
     "model_id": "eleven_text_to_sound_v2"
+  },
+  "jump_voice_boy": {
+    "takes": [
+      "jump_voice_boy/jump_voice_boy__take01.wav",
+      "jump_voice_boy/jump_voice_boy__take02.wav",
+      "jump_voice_boy/jump_voice_boy__take03.wav",
+      "jump_voice_boy/jump_voice_boy__take04.wav"
+    ],
+    "durations_s": [
+      0.96,
+      0.96,
+      0.96,
+      0.96
+    ],
+    "features": [
+      {
+        "mid_peak_db": -10.0,
+        "duration_s": 0.96,
+        "attack_ms": 21.1,
+        "tail_ratio": 0.151,
+        "tonality": 0.839,
+        "crest": 4.44,
+        "centroid_hz": 3523,
+        "mid_ratio": 0.987
+      },
+      {
+        "mid_peak_db": -8.4,
+        "duration_s": 0.96,
+        "attack_ms": 83.4,
+        "tail_ratio": 0.0,
+        "tonality": 0.502,
+        "crest": 3.95,
+        "centroid_hz": 3351,
+        "mid_ratio": 0.89
+      },
+      {
+        "mid_peak_db": -13.8,
+        "duration_s": 0.96,
+        "attack_ms": 121.2,
+        "tail_ratio": 0.009,
+        "tonality": 0.634,
+        "crest": 6.42,
+        "centroid_hz": 4139,
+        "mid_ratio": 0.697
+      },
+      {
+        "mid_peak_db": -9.1,
+        "duration_s": 0.96,
+        "attack_ms": 49.7,
+        "tail_ratio": 0.002,
+        "tonality": 0.626,
+        "crest": 4.27,
+        "centroid_hz": 3246,
+        "mid_ratio": 0.914
+      }
+    ],
+    "qa": {
+      "judge": null,
+      "pool": 8,
+      "passed_gates": 4,
+      "of": 4
+    },
+    "pool_candidates": [
+      {
+        "file": "jump_voice_boy/pool/jump_voice_boy__cand01.wav",
+        "passed_gates": true,
+        "rank": 0.0,
+        "features": {
+          "mid_peak_db": -10.0,
+          "duration_s": 0.96,
+          "attack_ms": 21.1,
+          "tail_ratio": 0.151,
+          "tonality": 0.839,
+          "crest": 4.44,
+          "centroid_hz": 3523,
+          "mid_ratio": 0.987
+        }
+      },
+      {
+        "file": "jump_voice_boy/pool/jump_voice_boy__cand02.wav",
+        "passed_gates": true,
+        "rank": 0.0,
+        "features": {
+          "mid_peak_db": -8.4,
+          "duration_s": 0.96,
+          "attack_ms": 83.4,
+          "tail_ratio": 0.0,
+          "tonality": 0.502,
+          "crest": 3.95,
+          "centroid_hz": 3351,
+          "mid_ratio": 0.89
+        }
+      },
+      {
+        "file": "jump_voice_boy/pool/jump_voice_boy__cand03.wav",
+        "passed_gates": true,
+        "rank": 0.0,
+        "features": {
+          "mid_peak_db": -13.8,
+          "duration_s": 0.96,
+          "attack_ms": 121.2,
+          "tail_ratio": 0.009,
+          "tonality": 0.634,
+          "crest": 6.42,
+          "centroid_hz": 4139,
+          "mid_ratio": 0.697
+        }
+      },
+      {
+        "file": "jump_voice_boy/pool/jump_voice_boy__cand04.wav",
+        "passed_gates": true,
+        "rank": 0.0,
+        "features": {
+          "mid_peak_db": -9.1,
+          "duration_s": 0.96,
+          "attack_ms": 49.7,
+          "tail_ratio": 0.002,
+          "tonality": 0.626,
+          "crest": 4.27,
+          "centroid_hz": 3246,
+          "mid_ratio": 0.914
+        }
+      },
+      {
+        "file": "jump_voice_boy/pool/jump_voice_boy__cand05.wav",
+        "passed_gates": true,
+        "rank": 0.0,
+        "features": {
+          "mid_peak_db": -14.4,
+          "duration_s": 0.854,
+          "attack_ms": 183.8,
+          "tail_ratio": 0.002,
+          "tonality": 0.618,
+          "crest": 7.17,
+          "centroid_hz": 4130,
+          "mid_ratio": 0.835
+        }
+      },
+      {
+        "file": "jump_voice_boy/pool/jump_voice_boy__cand06.wav",
+        "passed_gates": true,
+        "rank": 0.0,
+        "features": {
+          "mid_peak_db": -8.1,
+          "duration_s": 0.874,
+          "attack_ms": 136.7,
+          "tail_ratio": 0.0,
+          "tonality": 0.48,
+          "crest": 3.62,
+          "centroid_hz": 2870,
+          "mid_ratio": 0.874
+        }
+      },
+      {
+        "file": "jump_voice_boy/pool/jump_voice_boy__cand07.wav",
+        "passed_gates": true,
+        "rank": 0.0,
+        "features": {
+          "mid_peak_db": -7.4,
+          "duration_s": 0.96,
+          "attack_ms": 93.9,
+          "tail_ratio": 0.112,
+          "tonality": 0.902,
+          "crest": 3.44,
+          "centroid_hz": 3603,
+          "mid_ratio": 0.986
+        }
+      },
+      {
+        "file": "jump_voice_boy/pool/jump_voice_boy__cand08.wav",
+        "passed_gates": true,
+        "rank": 0.0,
+        "features": {
+          "mid_peak_db": -6.9,
+          "duration_s": 0.96,
+          "attack_ms": 55.6,
+          "tail_ratio": 0.151,
+          "tonality": 0.514,
+          "crest": 3.01,
+          "centroid_hz": 3144,
+          "mid_ratio": 0.954
+        }
+      }
+    ],
+    "brief": "a young man's short bright vocal effort as he jumps, a quick light energetic 'hup', a youthful heroic adventurer's voice, clean and human",
+    "generated_at": "2026-07-29T09:30:57+00:00",
+    "model_id": "eleven_text_to_sound_v2"
   }
 }
