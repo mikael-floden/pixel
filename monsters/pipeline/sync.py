@@ -232,9 +232,10 @@ def sync(client, fresh=False, dry_run=False, only=None):
         mirror.mirror(client, m["id"], m["kind"], m["pixellab_id"],
                       renames=m.get("renames"), name=m.get("name"),
                       direction_picks=m.get("direction_picks"))
-        # repair wrap-around overflow on freshly mirrored (native-canvas)
-        # frames — see postprocess.py; re-reads the manifest it may rewrite
+        # repair wrap-around overflow + pinned die-tail cloud cuts on freshly
+        # mirrored frames — see postprocess.py; re-reads the manifest they rewrite
         postprocess.process_monster(m["id"])
+        postprocess.trim_die_tails(m["id"])
         metas.append(read_manifest(m["id"]))
 
     if dry_run:

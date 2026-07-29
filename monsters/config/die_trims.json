@@ -1,0 +1,107 @@
+{
+  "_comment": "Human-adjudicated die-animation tail cuts (postprocess.py): frames where PixelLab replaced the fade-out with big off-animation clouds/mist (incl. follow-on garbage like tornado/revived-monster frames after the first cloud). drop = ORIGINAL frame indices to delete; guarded by sub (the direction's take id) + of (original frame count) \u2014 a regenerated animation no longer matches and gets re-reviewed instead of cut. reviewed_ok silences the suspicious-tail flag for tails a human judged intentional.",
+  "cuts": {
+    "ice_crystal_golem/east": {
+      "drop": [
+        8
+      ],
+      "sub": "3407c730-9e8a-47ec-badb-a7835634e635",
+      "of": 9
+    },
+    "ice_crystal_golem/north": {
+      "drop": [
+        7,
+        8
+      ],
+      "sub": "1c506223-0c20-4f8f-9e53-45d7ca96ba80",
+      "of": 9
+    },
+    "ice_crystal_golem/south": {
+      "drop": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "sub": "9175b7cf-c629-4c3d-83f3-8de0be31e97d",
+      "of": 9
+    },
+    "ice_crystal_golem/south-east": {
+      "drop": [
+        7,
+        8
+      ],
+      "sub": "5982f1be-5072-42d2-9767-732fca6c1278",
+      "of": 9
+    },
+    "ice_crystal_golem/south-west": {
+      "drop": [
+        7,
+        8
+      ],
+      "sub": "664092d9-8523-416b-8d11-302a256d246e",
+      "of": 9
+    },
+    "ice_crystal_golem/west": {
+      "drop": [
+        7,
+        8
+      ],
+      "sub": "896b318e-d892-410e-bc06-cf120812c9ee",
+      "of": 9
+    },
+    "ice_crystal_golem/north-east": {
+      "drop": [
+        7
+      ],
+      "sub": "a29b0251-2976-4b0b-84a8-74f179a239fe",
+      "of": 9
+    },
+    "ice_crystal_golem/north-west": {
+      "drop": [
+        7
+      ],
+      "sub": "f74cae57-bb12-4786-9ed7-57b25947453b",
+      "of": 9
+    },
+    "stone_golem/north-east": {
+      "drop": [
+        8
+      ],
+      "sub": "e9382763-18ee-4e6e-966d-063515b0ca4f",
+      "of": 9
+    },
+    "stone_golem/north-west": {
+      "drop": [
+        8
+      ],
+      "sub": "d5d2898f-14c3-44dd-be4b-3a0a4203d112",
+      "of": 9
+    },
+    "stone_golem/south": {
+      "drop": [
+        8
+      ],
+      "sub": "b1fcb1cd-c5c0-4f20-a2ee-e48bd0577d67",
+      "of": 9
+    },
+    "stone_golem/south-east": {
+      "drop": [
+        8
+      ],
+      "sub": "39666e07-9e26-48b9-8ead-f69b66a3c357",
+      "of": 9
+    },
+    "stone_golem/south-west": {
+      "drop": [
+        8
+      ],
+      "sub": "fb05e1cc-6858-4efb-96b3-07b82a6ac734",
+      "of": 9
+    }
+  },
+  "reviewed_ok": [
+    "tree_stump/east",
+    "tree_stump/west"
+  ]
+}

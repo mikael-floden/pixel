@@ -53,6 +53,7 @@ from mirror import ROOT, monster_dir, read_manifest, write_manifest
 from pixellab_client import DIRECTIONS_8
 
 OVERRIDES = os.path.join(ROOT, "config", "wrap_overrides.json")
+DIE_TRIMS = os.path.join(ROOT, "config", "die_trims.json")
 
 ACCEPT_OVERLAP = 0.75
 MIN_STRIP_PX = 3
@@ -356,12 +357,106 @@ def process_monster(mid, dry_run=False):
     return {"fixes": n_fixes, "canvas": canvas}
 
 
+# --- die-tail cloud trim -----------------------------------------------------
+#
+# PixelLab sometimes replaces the end of a fade-away die animation with big
+# off-animation cloud/mist frames (occasionally followed by more garbage: a
+# tornado, or the monster standing alive again). Cuts are HUMAN-ADJUDICATED
+# and pinned in config/die_trims.json — automated metrics cannot reliably
+# separate these clouds from intended dissolve art (same palette, same
+# posterization), so the pipeline only auto-FLAGS suspicious tails for review
+# and applies the pinned cuts. Pins are guarded by the direction's take id
+# (`sub`) and original frame count, so a regenerated animation is re-reviewed
+# instead of blindly cut.
+
+def _die_trim_flag(areas):
+    """True if a die tail looks suspicious (collapse-then-rebound): review it."""
+    if len(areas) < 4:
+        return False
+    base = max(1, int(np.median(areas[:3])))
+    lo = min(areas[2:]) / base
+    return lo < 0.4 and areas[-1] / base > 0.7
+
+
+def trim_die_tails(mid, dry_run=False):
+    meta = read_manifest(mid)
+    if not meta or "die" not in (meta.get("animations") or {}):
+        return 0
+    cuts, reviewed_ok = {}, set()
+    if os.path.exists(DIE_TRIMS):
+        with open(DIE_TRIMS) as f:
+            doc = json.load(f)
+        cuts = doc["cuts"]
+        reviewed_ok = set(doc.get("reviewed_ok") or [])
+    pp = meta.get("postprocess") or {}
+    applied = pp.get("die_trim") or {}
+    mdir = monster_dir(mid)
+    a = meta["animations"]["die"]
+    removed_total = 0
+    touched = False
+    for d, rec in sorted((a.get("directions") or {}).items()):
+        fdir = os.path.join(mdir, "animations", "die", d)
+        files = sorted(f for f in os.listdir(fdir) if f.endswith(".png"))
+        pin = cuts.get(f"{mid}/{d}")
+        if pin:
+            if rec.get("sub") != pin.get("sub"):
+                print(f"  !! {mid}: die/{d} was REGENERATED on PixelLab — trim pin "
+                      f"stale, review the new tail (config/die_trims.json)")
+            elif len(files) == pin["of"]:
+                keep = [f for i, f in enumerate(files) if i not in set(pin["drop"])]
+                print(f"  {mid}: die/{d} cutting frame(s) "
+                      f"{','.join(f'f{i:02d}' for i in pin['drop'])} "
+                      f"({len(files)} -> {len(keep)})")
+                removed_total += len(files) - len(keep)
+                if not dry_run:
+                    frames = [Image.open(os.path.join(fdir, f)).convert("RGBA")
+                              for f in keep]
+                    for f in files:
+                        os.remove(os.path.join(fdir, f))
+                    for i, fr in enumerate(frames):
+                        fr.save(os.path.join(fdir, f"{i:02d}.png"))
+                    rec["frames"] = len(frames)
+                    rec["frame_paths"] = [
+                        os.path.join(mid, "animations", "die", d, f"{i:02d}.png")
+                        for i in range(len(frames))]
+                    mirror._save_strip(frames, os.path.join(
+                        mdir, "animations", f"die__{d}.png"))
+                    mirror._save_gif(frames, os.path.join(
+                        mdir, "animations", f"die__{d}.gif"))
+                    applied[d] = {"dropped": pin["drop"], "sub": pin.get("sub")}
+                    touched = True
+            elif d not in applied:
+                print(f"  !! {mid}: die/{d} has {len(files)} frames, pin expects "
+                      f"{pin['of']} — skipped")
+            continue
+        # no pin: flag suspicious tails for human review
+        areas = []
+        for f in files:
+            im = np.asarray(Image.open(os.path.join(fdir, f)).convert("RGBA"))
+            areas.append(int((im[..., 3] > 8).sum()))
+        if f"{mid}/{d}" not in reviewed_ok and _die_trim_flag(areas):
+            print(f"  !! {mid}: die/{d} tail looks wrong (collapse-then-rebound) — "
+                  f"review and pin a cut in config/die_trims.json if it's garbage")
+    if touched and not dry_run:
+        frames_by_dir = {}
+        for d in a["directions"]:
+            fdir = os.path.join(mdir, "animations", "die", d)
+            frames_by_dir[d] = [Image.open(os.path.join(fdir, f)).convert("RGBA")
+                                for f in sorted(os.listdir(fdir)) if f.endswith(".png")]
+        mirror.save_rotating_gif(frames_by_dir,
+                                 os.path.join(mdir, "animations", "die__rotating.gif"))
+        pp["die_trim"] = applied
+        meta["postprocess"] = pp
+        write_manifest(mid, meta)
+    return removed_total
+
+
 def main():
     ap = argparse.ArgumentParser(description="Repair wrap-around overflow artifacts.")
     ap.add_argument("--monster", help="only this monster id")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
-    total = 0
+    total = trimmed = 0
     for mid in sorted(os.listdir(ROOT)):
         if args.monster and mid != args.monster:
             continue
@@ -370,7 +465,9 @@ def main():
         r = process_monster(mid, dry_run=args.dry_run)
         if r:
             total += r["fixes"]
-    print(f"total: {total} fix(es){' (dry run)' if args.dry_run else ''}")
+        trimmed += trim_die_tails(mid, dry_run=args.dry_run)
+    print(f"total: {total} wrap fix(es), {trimmed} die frame(s) trimmed"
+          f"{' (dry run)' if args.dry_run else ''}")
 
 
 if __name__ == "__main__":
