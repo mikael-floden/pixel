@@ -1,0 +1,414 @@
+#!/usr/bin/env node
+// wiki/build.mjs — the wiki deploy script.
+//
+// Walks the sibling art/audio domains and writes wiki/site/data.json: one
+// registry of everything the game has (monsters, player characters, tiles,
+// objects, sounds, music, items, tunable constants) with repo-relative asset
+// paths. Zero dependencies (plain fs + a 24-byte PNG IHDR read) so it runs
+// anywhere: locally by any agent, and inside games2/Dockerfile at image build
+// time so every deploy ships a wiki that matches the baked art exactly.
+//
+//   node wiki/build.mjs [--root <repo-or-assets-root>] [--out <data.json>]
+//
+// Missing domains are skipped gracefully (future domains — e.g. items/ —
+// appear automatically once their directory exists). Also seeds
+// wiki/tuning/monsters.json with defaults for any monster new to the roster
+// (existing edits are always preserved).
+
+import { readFileSync, writeFileSync, readdirSync, existsSync, statSync, openSync, readSync, closeSync } from "node:fs";
+import { join, dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const WIKI_DIR = dirname(fileURLToPath(import.meta.url));
+const args = process.argv.slice(2);
+function argOf(flag, dflt) {
+  const i = args.indexOf(flag);
+  return i >= 0 && args[i + 1] ? args[i + 1] : dflt;
+}
+// ROOT = the directory that holds the domain dirs (repo root, or /assets in Docker).
+const ROOT = resolve(argOf("--root", resolve(WIKI_DIR, "..")));
+const OUT = resolve(argOf("--out", join(WIKI_DIR, "site", "data.json")));
+// games2 lives next to the domains in the repo, but NOT under /assets in
+// Docker — its files are optional extras (monster metrics, constants).
+const GAMES2 = existsSync(join(ROOT, "games2")) ? join(ROOT, "games2") : resolve(WIKI_DIR, "..", "games2");
+
+// The maintainer's preferred compass order for direction pickers.
+const DIRS = ["south", "south-east", "east", "north-east", "north", "north-west", "west", "south-west"];
+
+const readJson = (p) => { try { return JSON.parse(readFileSync(p, "utf8")); } catch { return null; } };
+const isDir = (p) => { try { return statSync(p).isDirectory(); } catch { return false; } };
+const isFile = (p) => { try { return statSync(p).isFile(); } catch { return false; } };
+const listDirs = (p) => { try { return readdirSync(p).filter((n) => !n.startsWith(".") && !n.startsWith("_") && isDir(join(p, n))).sort(); } catch { return []; } };
+const listFiles = (p, re) => { try { return readdirSync(p).filter((n) => re.test(n)).sort(); } catch { return []; } };
+
+// PNG dimensions from the IHDR chunk — bytes 16..24 of every valid PNG.
+function pngSize(path) {
+  try {
+    const fd = openSync(path, "r");
+    const buf = Buffer.alloc(24);
+    readSync(fd, buf, 0, 24, 0);
+    closeSync(fd);
+    if (buf.readUInt32BE(12) !== 0x49484452) return null; // "IHDR"
+    return { w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) };
+  } catch { return null; }
+}
+
+const titleCase = (id) => id.replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
+// ---------------------------------------------------------------- monsters
+function buildMonsters() {
+  const base = join(ROOT, "monsters");
+  if (!isDir(base)) return null;
+  const roster = readJson(join(base, "config", "roster.json"))?.monsters ?? [];
+  const rosterById = Object.fromEntries(roster.map((m) => [m.id, m]));
+  const animMap = readJson(join(base, "animation_map.json")) ?? { states: {}, overrides: {}, missing: {} };
+  const states = Object.keys(animMap.states ?? {});
+  // Art-measured render metrics (artBottom/footW/bodyW/hoverPx) from the
+  // game's committed manifest, when available.
+  const gameManifest = readJson(join(GAMES2, "client", "public", "monsters.json"));
+  const metricsById = Object.fromEntries((gameManifest?.monsters ?? []).map((m) => [m.id, m]));
+
+  const monsters = [];
+  for (const id of listDirs(base)) {
+    if (["config", "pipeline", "spec", "docs"].includes(id)) continue;
+    const mj = readJson(join(base, id, "monster.json"));
+    if (!mj) continue;
+    const frameW = mj.size?.width ?? null;
+    const frameH = mj.size?.height ?? null;
+    const met = metricsById[id] ?? {};
+    // The game's exact nadir-shadow ellipse (WorldScene formula) so the wiki
+    // previews what the game renders.
+    let shadow = null;
+    if (met.footW != null && met.bodyW != null) {
+      const w = Math.min(150, Math.max(12, Math.max(met.footW, met.bodyW * 0.55) * 1.05));
+      shadow = { w: Math.round(w), h: Math.max(6, Math.round(0.385 * w)) };
+    }
+    const overrides = animMap.overrides?.[id] ?? {};
+    const anims = {};
+    for (const state of states.length ? states : Object.keys(mj.animations ?? {})) {
+      const folder = overrides[state] ?? animMap.states?.[state] ?? state;
+      const dirs = {};
+      for (const dir of DIRS) {
+        const frameDir = join(base, id, "animations", folder, dir);
+        const frames = listFiles(frameDir, /^\d+\.png$/).length;
+        if (!frames) continue;
+        const stripRel = `monsters/${id}/animations/${folder}__${dir}.png`;
+        const stripAbs = join(ROOT, stripRel);
+        const dims = isFile(stripAbs) ? pngSize(stripAbs) : null;
+        dirs[dir] = {
+          frames,
+          strip: isFile(stripAbs) ? stripRel : null,
+          fw: dims ? Math.round(dims.w / frames) : frameW,
+          fh: dims ? dims.h : frameH,
+          framesDir: `monsters/${id}/animations/${folder}/${dir}`,
+          gif: isFile(join(ROOT, `monsters/${id}/animations/${folder}__${dir}.gif`)) ? `monsters/${id}/animations/${folder}__${dir}.gif` : null,
+        };
+      }
+      if (Object.keys(dirs).length) anims[state] = { folder, fallback: overrides[state] && overrides[state] !== state ? overrides[state] : null, dirs };
+    }
+    monsters.push({
+      id,
+      name: rosterById[id]?.name ?? mj.name ?? titleCase(id),
+      kind: rosterById[id]?.kind ?? mj.source?.kind ?? "object",
+      path: `monsters/${id}`,
+      preview: `monsters/${id}/sprite.png`,
+      frameW, frameH,
+      nativeW: mj.native_size?.width ?? frameW,
+      nativeH: mj.native_size?.height ?? frameH,
+      pad: mj.pad ?? { x: 0, y: 0 },
+      artBottom: met.artBottom ?? 0.85,
+      footW: met.footW ?? null,
+      bodyW: met.bodyW ?? null,
+      hoverPx: met.hoverPx ?? 0,
+      shadow,
+      inGame: !!metricsById[id],
+      pixellab: mj.source?.url ?? null,
+      animations: anims,
+    });
+  }
+  return monsters;
+}
+
+// -------------------------------------------------------------- characters
+const HERO_NAMES = { default_boy: "Man", default_girl: "Woman" }; // mirrors games2/scripts/build-manifest.mjs
+function buildCharacters() {
+  const base = join(ROOT, "characters2", "humans");
+  if (!isDir(base)) return null;
+  const animMap = readJson(join(ROOT, "characters2", "animation_map.json")) ?? { states: {}, overrides: {} };
+  const chars = [];
+  for (const id of listDirs(base)) {
+    const cj = readJson(join(base, id, "character.json"));
+    const [frameW, frameH] = cj?.size ?? [112, 112];
+    const overrides = animMap.overrides?.[id] ?? {};
+    const anims = {};
+    for (const [state, dfltFolder] of Object.entries(animMap.states ?? {})) {
+      const folder = overrides[state] ?? dfltFolder;
+      const dirs = {};
+      for (const dir of DIRS) {
+        const frames = listFiles(join(base, id, "animations", folder, dir), /^\d+\.png$/).length;
+        if (frames) dirs[dir] = { frames, framesDir: `characters2/humans/${id}/animations/${folder}/${dir}` };
+      }
+      if (Object.keys(dirs).length) anims[state] = { folder, dirs, gif: isFile(join(base, id, "animations", folder, "preview.gif")) ? `characters2/humans/${id}/animations/${folder}/preview.gif` : null };
+    }
+    chars.push({
+      id,
+      name: HERO_NAMES[id] ?? titleCase(id),
+      path: `characters2/humans/${id}`,
+      preview: `characters2/humans/${id}/base/south.png`,
+      baseStrip: isFile(join(base, id, "base", "preview.png")) ? `characters2/humans/${id}/base/preview.png` : null,
+      frameW, frameH,
+      animations: anims,
+    });
+  }
+  return chars;
+}
+
+// ------------------------------------------------------------------- tiles
+function buildTiles() {
+  const base = join(ROOT, "tiles2");
+  if (!isDir(base)) return null;
+  const configured = readJson(join(base, "config", "tiles2.json"))?.ground_types;
+  const groundTypes = Array.isArray(configured)
+    ? configured.map((g) => (typeof g === "string" ? { id: g } : g))
+    : listDirs(base).filter((d) => !["config", "pipeline", "docs"].includes(d)).map((id) => ({ id }));
+  const types = [];
+  for (const { id: gid, name: cfgName, description: cfgDesc } of groundTypes) {
+    if (!isDir(join(base, gid))) continue;
+    const meta = readJson(join(base, gid, "metadata.json")) ?? {};
+    const groups = [];
+    const addSheets = (kind, relDir, label) => {
+      for (const sheet of listDirs(join(ROOT, relDir))) {
+        const tiles = listFiles(join(ROOT, relDir, sheet), /^tile_\d+\.png$/);
+        if (tiles.length) groups.push({ kind, label, sheet, dir: `${relDir}/${sheet}`, tiles });
+      }
+    };
+    addSheets("base", `tiles2/${gid}/base`, "base");
+    for (const sub of listDirs(join(base, gid)).filter((n) => /^base_x_\d+$/.test(n))) {
+      addSheets("elevation", `tiles2/${gid}/${sub}`, sub.replace("base_", ""));
+    }
+    for (const other of listDirs(join(base, gid, "transitions"))) {
+      addSheets("transition", `tiles2/${gid}/transitions/${other}`, `→ ${other}`);
+    }
+    types.push({
+      id: gid,
+      name: meta.name ?? cfgName ?? titleCase(gid),
+      description: meta.description ?? cfgDesc ?? "",
+      path: `tiles2/${gid}`,
+      tilePx: meta.settings?.size ?? 64,
+      groups,
+      tileCount: groups.reduce((n, g) => n + g.tiles.length, 0),
+    });
+  }
+  return types;
+}
+
+// ----------------------------------------------------------------- objects
+function buildObjects() {
+  const base = join(ROOT, "objects");
+  if (!isDir(base)) return null;
+  const objects = [];
+  for (const id of listDirs(base)) {
+    if (["config", "pipeline"].includes(id)) continue;
+    const oj = readJson(join(base, id, "object.json"));
+    if (!oj) continue;
+    const anims = {};
+    for (const [key, a] of Object.entries(oj.animations ?? {})) {
+      const dirs = {};
+      for (const dir of DIRS) {
+        const d = a.directions?.[dir];
+        if (!d) continue;
+        const stripRel = d.strip ?? `${id}/animations/${key}__${dir}.png`;
+        const strip = `objects/${stripRel.startsWith(id + "/") ? stripRel : `${id}/animations/${key}__${dir}.png`}`;
+        const frames = d.frames ?? a.frame_count ?? 0;
+        if (!frames || !isFile(join(ROOT, strip))) continue;
+        const dims = pngSize(join(ROOT, strip));
+        dirs[dir] = { frames, strip, fw: dims ? Math.round(dims.w / frames) : oj.size, fh: dims ? dims.h : oj.size };
+      }
+      if (Object.keys(dirs).length) anims[key] = { description: a.description ?? "", dirs };
+    }
+    objects.push({
+      id,
+      name: oj.name ?? titleCase(id),
+      category: oj.category ?? "misc",
+      description: oj.description ?? "",
+      path: `objects/${id}`,
+      preview: `objects/${id}/sprite.png`,
+      size: oj.size ?? null,
+      placement: oj.placement ?? null,
+      animations: anims,
+    });
+  }
+  return objects;
+}
+
+// ------------------------------------------------------------------- audio
+function audioSiblings(relWav) {
+  // Every mastered take ships wav + ogg + m4a side by side; the wiki prefers
+  // the small streaming formats.
+  const out = { wav: relWav };
+  for (const ext of ["ogg", "m4a"]) {
+    const p = relWav.replace(/\.wav$/, `.${ext}`);
+    if (isFile(join(ROOT, p))) out[ext] = p;
+  }
+  return out;
+}
+
+function buildSounds() {
+  const base = join(ROOT, "sounds");
+  if (!isDir(base)) return null;
+  const sounds = [];
+  for (const cat of listDirs(base)) {
+    if (["config", "pipeline", "spec"].includes(cat)) continue;
+    for (const id of listDirs(join(base, cat))) {
+      const meta = readJson(join(base, cat, id, "metadata.json"));
+      if (!meta) continue;
+      const takes = (meta.takes ?? [meta.file]).filter(Boolean).map((rel) => {
+        const relPath = `sounds/${rel}`;
+        return {
+          id: rel.replace(/^.*\//, "").replace(/\.wav$/, ""),
+          chosen: rel === meta.file,
+          files: audioSiblings(relPath),
+        };
+      }).filter((t) => isFile(join(ROOT, t.files.wav)));
+      sounds.push({
+        id: meta.id ?? id,
+        name: meta.name ?? titleCase(id),
+        category: meta.category ?? cat,
+        description: meta.description ?? "",
+        usage: meta.usage ?? "",
+        feel: meta.feel ?? "",
+        loop: !!meta.loop,
+        duration_s: meta.audio?.duration_seconds ?? null,
+        path: `sounds/${cat}/${id}`,
+        takes,
+      });
+    }
+  }
+  return sounds;
+}
+
+function buildMusic() {
+  const base = join(ROOT, "music");
+  if (!isDir(base)) return null;
+  const tracks = [];
+  for (const id of listDirs(base)) {
+    if (["config", "pipeline"].includes(id)) continue;
+    const meta = readJson(join(base, id, "metadata.json"));
+    if (!meta) continue;
+    const wav = `music/${meta.file ?? `${id}/${id}.wav`}`;
+    tracks.push({
+      id: meta.id ?? id,
+      name: meta.name ?? titleCase(id),
+      use: meta.use ?? "",
+      feeling: meta.feeling ?? [],
+      duration_s: meta.duration_s ?? null,
+      bpm: meta.bpm ?? null,
+      key: meta.key ?? null,
+      loopable: !!meta.loopable,
+      path: `music/${id}`,
+      files: audioSiblings(wav),
+    });
+  }
+  return tracks;
+}
+
+// -------------------------------------------------------------------- items
+function buildItems() {
+  // Future items domain (loot/drops). The moment items/ ships <id>/item.json
+  // (or a viewer_data.json), entries appear here — nothing else to wire.
+  const base = join(ROOT, "items");
+  if (!isDir(base)) return [];
+  const reg = readJson(join(base, "viewer_data.json"));
+  if (reg?.items) return reg.items;
+  const items = [];
+  for (const id of listDirs(base)) {
+    if (["config", "pipeline"].includes(id)) continue;
+    const ij = readJson(join(base, id, "item.json"));
+    if (ij) items.push({ id, name: ij.name ?? titleCase(id), description: ij.description ?? "", path: `items/${id}`, preview: isFile(join(base, id, "sprite.png")) ? `items/${id}/sprite.png` : null });
+  }
+  return items;
+}
+
+// --------------------------------------------------------------- constants
+function buildConstants() {
+  // Read-only discovery of `export const NAME = <number literal>` in
+  // games2/shared — the catalog the wiki's tuning page lists. Overrides the
+  // maintainer sets live in wiki/tuning/constants.json (advisory until the
+  // games agent wires them in).
+  const rels = ["src/index.ts", "src/surfaces.ts", "src/monsters.ts"];
+  const consts = [];
+  for (const rel of rels) {
+    const file = join(GAMES2, "shared", rel);
+    if (!isFile(file)) continue;
+    const lines = readFileSync(file, "utf8").split("\n");
+    lines.forEach((line, i) => {
+      const m = line.match(/^export const ([A-Z][A-Z0-9_]*)\s*=\s*(-?\d+(?:\.\d+)?)\s*[;,]?\s*(?:\/\/\s*(.*))?$/);
+      if (!m) return;
+      let desc = m[3] ?? "";
+      if (!desc) {
+        const prev = lines[i - 1]?.trim() ?? "";
+        if (prev.startsWith("//")) desc = prev.replace(/^\/\/\s*/, "");
+      }
+      consts.push({ name: m[1], value: Number(m[2]), source: `games2/shared/${rel}`, line: i + 1, description: desc });
+    });
+  }
+  return consts;
+}
+
+// ------------------------------------------------------- tuning seed/merge
+function seedMonsterTuning(monsters) {
+  const path = join(WIKI_DIR, "tuning", "monsters.json");
+  const existing = readJson(path) ?? {};
+  const defaults = existing.defaults ?? {
+    max_hp: 20, damage: 3, speed_wu: 35, aggro_radius_wu: 96,
+    attack_cooldown_ms: 1200, xp: 5, scale: 1.0, loot: [],
+  };
+  const tuned = existing.monsters ?? {};
+  let added = 0;
+  for (const m of monsters ?? []) {
+    if (!tuned[m.id]) { tuned[m.id] = { ...defaults, loot: [] }; added++; }
+  }
+  const out = {
+    format: "pixel-wiki-tuning-monsters@1",
+    updated_at: existing.updated_at ?? new Date().toISOString(),
+    defaults,
+    monsters: Object.fromEntries(Object.entries(tuned).sort(([a], [b]) => a.localeCompare(b))),
+  };
+  try { writeFileSync(path, JSON.stringify(out, null, 2) + "\n"); } catch { /* read-only fs (Docker) is fine */ }
+  return { tuning: out, added };
+}
+
+// -------------------------------------------------------------------- main
+const monsters = buildMonsters();
+const characters = buildCharacters();
+const tiles = buildTiles();
+const objects = buildObjects();
+const sounds = buildSounds();
+const music = buildMusic();
+const items = buildItems();
+const constants = buildConstants();
+const { added } = seedMonsterTuning(monsters);
+
+const data = {
+  format: "pixel-wiki-data@1",
+  generated_at: new Date().toISOString(),
+  root_hint: "asset paths are relative to the directory that serves the domains (/assets in the game, the repo root locally)",
+  directions: DIRS,
+  counts: {
+    monsters: monsters?.length ?? 0,
+    characters: characters?.length ?? 0,
+    tile_types: tiles?.length ?? 0,
+    tiles: tiles?.reduce((n, t) => n + t.tileCount, 0) ?? 0,
+    objects: objects?.length ?? 0,
+    sounds: sounds?.length ?? 0,
+    music: music?.length ?? 0,
+    items: items?.length ?? 0,
+    constants: constants.length,
+  },
+  domains: { monsters, characters, tiles, objects, sounds, music, items },
+  constants,
+};
+
+writeFileSync(OUT, JSON.stringify(data));
+console.log(`[wiki] wrote ${OUT}`);
+console.log(`[wiki] ${JSON.stringify(data.counts)}${added ? ` — seeded ${added} new monster(s) into tuning/monsters.json` : ""}`);
