@@ -1395,6 +1395,19 @@ export class WorldScene extends Phaser.Scene {
         const cell = this.world?.rows[Math.floor(row)]?.[Math.floor(col)];
         return { col, row, sent: !!this.room, t: cell?.t ?? null, l: cell?.l ?? 0 };
       },
+      // Flicker QA: terrain occluder TOPS whose drawn diamond covers a ground
+      // point (gx,gy), with their depth — i.e. what could sort in FRONT of a
+      // critter shadow placed there. The top image is drawn at y0 = by - l*lh
+      // with the diamond APEX at y0 + dy (the art carries ~dy of padding above
+      // the apex), spanning 2*dy — gate on the real diamond rows, not the image
+      // box, or padding rows read as phantom cover. Sorted front-most first.
+      shadowCover: (gx: number, gy: number) => {
+        const dy = MAP_GEOMETRY.dy;
+        return this.occluderMeta
+          .filter((o) => gx >= o.x0 && gx <= o.x1 && gy >= o.y0 + dy - 2 && gy <= o.y0 + dy * 3 + 2)
+          .map((o) => ({ col: o.col, row: o.row, top: o.top, depth: Math.round(o.depth), y0: Math.round(o.y0) }))
+          .sort((a, b) => b.depth - a.depth);
+      },
       // My sprite depth vs every occluder column near it — z-order probes.
       depthProbe: () => {
         const id = this.room?.sessionId;
@@ -2981,18 +2994,24 @@ export class WorldScene extends Phaser.Scene {
     const lgt = this.night.lightAt(col, row, z, false);
     const f = this.night.depthFogAt(col, row, z);
     // Depth to sort a critter's ground SHADOW at. The naive `gy + L*lh + 3` uses
-    // the CONTINUOUS gy, so over an ELEVATED FLAT top it swings across a ~2*dy
-    // band vs the DISCRETE per-cell terrain occluders (top images at oDepth =
-    // by+dy) and dips BEHIND the front cell's top every cell as the flyer crosses
-    // it — a flicker (maintainer: bird shadows blink on the snow plateau). On an
-    // elevated flat top (L==cellL>0) sort at the DISCRETE resolved-cell anchor +
-    // 2*dy + 3: 2*dy clears the immediate front-neighbour occluders (at by+2*dy),
-    // and being DISCRETE (per cell, no frac term) it can't swing → no flicker.
-    // Flat level-0 (cell.l<=0 builds NO occluders) and a cliff FACE (L<cellL, the
-    // shadow is lifted onto the top) keep the byte-identical `gy + L*lh + 3`.
+    // the CONTINUOUS gy, so over ELEVATED terrain it swings across a ~2*dy band
+    // vs the DISCRETE per-cell occluder images (all of a column's face+top tiles
+    // sit at oDepth = by+dy) and dips BEHIND covering tiles as the flyer moves —
+    // the blinking shadows (maintainer). For any resolved ELEVATED column
+    // (cellL>0 — flat top AND cliff face, whose lifted shadow draws on this same
+    // column's top diamond) sort at the DISCRETE resolved-cell anchor + 3*dy:
+    // the shadow ellipse can only ever overlap this column's own images (+1*dy),
+    // the cardinal fronts (+2*dy) and the FRONT-DIAGONAL (col+1,row+1) at +3*dy —
+    // whose diamond APEX the shadow straddles near the cell's bottom corner (the
+    // maintainer's "80% hidden at the top of the tile diamond": the first cut
+    // used +2*dy and sat 12 under that tile). Discrete per cell → cannot swing;
+    // +0.25 (not +3) so decks/avatars at +3*dy+0.4/0.5 still occlude correctly;
+    // columns ≥ +4*dy (genuinely nearer walls) still draw over and hide it.
+    // Flat level-0 (cell.l<=0 builds NO occluders) keeps the byte-identical
+    // `gy + 3` of the original code.
     const shadowDepth =
-      L === cellL && cellL > 0
-        ? this.iso.oy + (Math.floor(col) + Math.floor(row) + 2) * dy + 3
+      cellL > 0
+        ? this.iso.oy + (Math.floor(col) + Math.floor(row) + 3) * dy + 0.25
         : gy + L * lh + 3;
     return { l: [lgt[0], lgt[1], lgt[2]], fog: f.a, fogCol: [f.r, f.g, f.b], col, row, L, cellL, shadowDepth, z };
   }
