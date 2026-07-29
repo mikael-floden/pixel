@@ -18,7 +18,7 @@
     <nav id="nav"></nav>
     <div class="side-foot">
       <button id="theme-toggle" class="ghost-btn" title="Toggle light/dark">◐ theme</button>
-      <button id="gh-settings" class="ghost-btn" title="GitHub token for saving">⚙ saving</button>
+      <button id="admin-btn" class="ghost-btn" title="Game-designer sign in">Admin</button>
     </div>
   </aside>
   <main id="main">
@@ -32,23 +32,22 @@
 </div>
 <div id="savebar" class="hidden">
   <span id="savebar-text"></span>
-  <button id="save-btn" class="primary-btn">Save to repo</button>
+  <button id="save-btn" class="primary-btn">Save</button>
   <button id="export-btn" class="ghost-btn">Export</button>
   <button id="discard-btn" class="ghost-btn">Discard</button>
 </div>
-<dialog id="gh-dialog">
-  <form method="dialog">
-    <h3>Saving to the repo</h3>
-    <p class="muted">The wiki saves your feedback and tuning by committing
-    <code>wiki/feedback/*.json</code> and <code>wiki/tuning/*.json</code> to
-    <code>mikael-floden/pixel@main</code>. Paste a fine-grained GitHub personal
-    access token with <strong>Contents: read &amp; write</strong> on that repo.
-    It is stored only in this browser (localStorage), never in the site.</p>
-    <input id="gh-token" type="password" placeholder="github_pat_…" autocomplete="off">
+<dialog id="login-dialog">
+  <form id="login-form" method="dialog">
+    <h3>Game-designer sign in</h3>
+    <p class="muted">Signing in unlocks rating, approve/remove and live gameplay
+    tuning. Saves are committed by the game server — no credentials live in
+    this browser beyond your session.</p>
+    <input id="login-user" type="text" placeholder="username" autocomplete="username">
+    <input id="login-pass" type="password" placeholder="password" autocomplete="current-password">
+    <p id="login-error" class="login-error"></p>
     <div class="dialog-row">
-      <button value="save" class="primary-btn">Keep token</button>
-      <button value="clear" class="ghost-btn">Forget token</button>
-      <button value="cancel" class="ghost-btn">Close</button>
+      <button id="login-submit" value="signin" class="primary-btn" type="submit">Sign in</button>
+      <button value="cancel" class="ghost-btn" type="button" onclick="this.closest('dialog').close()">Close</button>
     </div>
   </form>
 </dialog>

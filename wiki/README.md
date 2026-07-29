@@ -31,10 +31,22 @@ assets against `../../` so the same build works from prod (`/assets/wiki/site/`
 repo root. `games2/Dockerfile` re-runs the builder at image build time, so
 every deploy ships a wiki that reflects the exact art baked into that image.
 
+## Two audiences, one page
+
+Players get a read-only encyclopedia (browse, watch animations, listen).
+The **admin** (game designer) signs in via the sidebar `Admin` button —
+username+password checked by the game server (`/api/wiki/login`; only a
+SHA-256 digest of the password lives in server source, the repo is public).
+Signing in unlocks stars, approve/remove, notes, monster stats and constant
+overrides. All writes go through the game server, which holds the ONLY
+GitHub credential (`WIKI_GITHUB_TOKEN` env on the Cloud Run service).
+
 ## Feedback files — the contract with the other agents
 
-`wiki/feedback/<domain>.json` (`monsters` `characters` `tiles` `objects`
-`sounds` `music` `items`), format `pixel-wiki-feedback@1`:
+`live/feedback/<domain>.json` (`monsters` `characters` `tiles` `objects`
+`sounds` `music` `items`), format `pixel-wiki-feedback@1` (moved from
+`wiki/feedback/` 2026-07-30 — `live/` is the repo's runtime channel, see
+`live/README.md`):
 
 ```json
 {
@@ -66,31 +78,32 @@ domain's file at the start of every run):
   whose asset has vanished as resolved.
 - `"rating"` → quality signal. Favour the style of 4-5★ assets when
   generating new ones; treat 1-2★ as "don't make more like this".
-- Never **write** these files: one writer per file (PROTOCOL.md) — the wiki
-  owns `wiki/**`. You only read.
+- Agents may **delete an entry they have acted on** (read-modify-write, pull
+  before push) but never rewrite other entries — the wiki/game-server writes
+  per-entry too, so concurrent edits merge cleanly.
 - New assets need **no registration**: `build.mjs` discovers them from your
   domain's existing files/metadata. Ship your art as you already do, and it
   appears in the wiki on the next build/deploy.
 
-The wiki UI saves feedback by **committing these files to `main`** through the
-GitHub contents API (the maintainer authorizes with a fine-grained PAT pasted
-once into the wiki, stored only in the browser's localStorage). There is also
-a "download JSON" fallback for offline edits. The UI reads these files from
-GitHub `main` too (falling back to the copies served next to the site, which
-lag by one deploy), and saves merge only the entries the maintainer actually
-touched onto the freshly-fetched remote file — so a stale tab can never
-clobber earlier verdicts. Feedback/tuning commits deliberately do **not**
-trigger a game deploy (excluded in `nangijala-deploy.yml`).
+**How saves flow**: the wiki POSTs a per-entry delta to the game server
+(`/api/wiki/save`, admin session required). The server merges it into its
+in-memory copy of the file, commits `live/**` to `main` with its own token,
+then pushes new tuning to every connected game client over the Colyseus
+WebSocket (`"live:update"`). Pushes to `live/**` from anyone else (agents)
+reach the running server via `.github/workflows/live-notify.yml` →
+`POST /api/live/refresh` — push-based, no polling anywhere. `live/**` never
+triggers a game deploy. The wiki reads state from `GET /api/live/state`
+(static `/assets/live` files as offline fallback).
 
 ## Tuning files
 
-- `wiki/tuning/monsters.json` (`pixel-wiki-tuning-monsters@1`) — per-monster
+- `live/tuning/monsters.json` (`pixel-wiki-tuning-monsters@1`) — per-monster
   stats (`max_hp` `damage` `speed_wu` `aggro_radius_wu` `attack_cooldown_ms`
   `xp` `scale` `loot[]`). `build.mjs` seeds every monster on the roster with
   `defaults` and PRESERVES existing edits. Monster combat isn't in the game
   yet — this file is written first so the games agent can adopt it as the
   authoritative stat source when the monster brain lands (board request sent).
-- `wiki/tuning/constants.json` (`pixel-wiki-tuning-constants@1`) — overrides
+- `live/tuning/constants.json` (`pixel-wiki-tuning-constants@1`) — overrides
   for game constants. The **catalog** of tunable constants (name, current
   value, source file) is discovered by `build.mjs` from
   `games2/shared/src/index.ts` (read-only toward games2); this file holds only
@@ -100,8 +113,10 @@ trigger a game deploy (excluded in `nangijala-deploy.yml`).
 ## Don't
 
 - Don't edit other domains' files from here. The wiki READS every domain but
-  writes only `wiki/**` and `coordination/wiki.json` (plus the handful of
-  maintainer-authorized games2 integration lines: the `/assets` whitelist,
-  Dockerfile COPY/build, deploy trigger, select-screen link).
-- Don't put secrets in the site. The GitHub PAT lives only in the
-  maintainer's browser.
+  writes only `wiki/**`, `live/**` and `coordination/wiki.json` (plus the
+  maintainer-authorized games2 integration: the `/assets` whitelist,
+  Dockerfile COPY/build, deploy trigger, select-screen link, and the live
+  channel in server/src/live.ts + client/src/live.ts).
+- Don't put secrets in the repo or the site. The only GitHub credential is
+  `WIKI_GITHUB_TOKEN`, set as an env var on the Cloud Run service; the admin
+  password exists in source only as a SHA-256 digest.

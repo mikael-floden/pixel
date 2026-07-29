@@ -1,28 +1,33 @@
-/* Nangijala game wiki — browses everything the art/audio agents produce,
-   collects the maintainer's feedback (stars, approve/reject, notes) and
-   gameplay tuning, and commits both back to the repo via the GitHub API.
-   Vanilla JS, no build step. Data comes from data.json (built by
-   ../build.mjs); feedback/tuning are fetched live from ../feedback and
-   ../tuning so the page always shows the committed state. */
+/* Nangijala game wiki — one page, two audiences.
+   PLAYERS browse everything the art/audio agents produce (read-only).
+   The ADMIN (game designer) additionally rates, approves/removes and tunes —
+   after signing in. All admin writes go through the GAME SERVER's API
+   (/api/wiki/*): the server checks the login, holds the GitHub token, commits
+   to live/** on main and pushes the change to every connected game client
+   over its WebSocket. No GitHub credentials ever live in a browser.
+   Vanilla JS, no build step. Data comes from data.json (built by ../build.mjs);
+   feedback/tuning come from GET /api/live/state (the server's always-fresh
+   copy), with the static /assets/live files as offline fallback. */
 
 "use strict";
 
-const OWNER = "mikael-floden", REPO = "pixel", BRANCH = "main";
 // The directory that serves the art domains: /assets/ in the game (prod +
 // vite dev), the repo root when served locally — always two levels up.
 const ROOT = new URL("../../", location.href);
-const WIKI = new URL("../", location.href);
 const assetUrl = (rel) => new URL(rel, ROOT).href;
+// The game server's API (same origin in prod and dev — vite proxies /api).
+const API = (path) => new URL(path, location.origin).href;
 
 const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items"];
 const state = {
   data: null,
+  admin: false,          // signed in as the game designer? (server-verified)
   feedback: {},          // domain -> parsed pixel-wiki-feedback@1
   tuning: { monsters: null, constants: null },
   dirty: new Set(),      // "feedback/monsters" | "tuning/monsters" | "tuning/constants"
-  // Per file: WHICH ids this session actually edited. Saves merge these onto
-  // the freshly-fetched remote document, so a stale page can never clobber
-  // entries committed earlier (the served copies lag main by one deploy).
+  // Per file: WHICH ids this session actually edited. Saves send exactly
+  // these ids as a delta — the server merges them into the current document,
+  // so a stale page can never clobber entries committed earlier.
   touched: {},           // key -> Set(ids)
   knownIds: new Set(),
   query: "",
@@ -30,6 +35,7 @@ const state = {
 function touch(key, id) {
   (state.touched[key] ?? (state.touched[key] = new Set())).add(id);
 }
+const adminToken = () => localStorage.getItem("wiki-admin-token") ?? "";
 
 /* ---------------------------------------------------------- tiny helpers */
 function h(tag, attrs = {}, ...children) {
@@ -90,7 +96,13 @@ function updateSavebar() {
   $("#savebar-text").textContent = `${state.dirty.size} file${state.dirty.size > 1 ? "s" : ""} with unsaved changes`;
 }
 
-function starsWidget(domain, id, { small = false } = {}) {
+// Every feedback widget has two faces: interactive for the signed-in admin,
+// a quiet read-only badge (or nothing) for players.
+function starsWidget(domain, id) {
+  if (!state.admin) {
+    const val = fb(domain, id).rating ?? 0;
+    return val ? h("span", { class: "stars ro", "aria-label": `${val} stars` }, "★".repeat(val)) : h("span");
+  }
   const wrap = h("span", { class: "stars", role: "radiogroup", "aria-label": "rating" });
   const render = () => {
     const val = fb(domain, id).rating ?? 0;
@@ -104,6 +116,12 @@ function starsWidget(domain, id, { small = false } = {}) {
   return wrap;
 }
 function verdictWidget(domain, id, { onchange } = {}) {
+  if (!state.admin) {
+    const st = fb(domain, id).status;
+    if (st === "approved") return h("span", { class: "pill ok" }, "approved");
+    if (st === "rejected") return h("span", { class: "pill err" }, "slated for removal");
+    return h("span");
+  }
   const wrap = h("span", { class: "verdict" });
   const render = () => {
     const st = fb(domain, id).status;
@@ -116,6 +134,7 @@ function verdictWidget(domain, id, { onchange } = {}) {
   return wrap;
 }
 function noteWidget(domain, id) {
+  if (!state.admin) return null;
   const ta = h("textarea", { class: "fb-note", placeholder: "Note for the producing agent (optional)…", rows: "1" });
   ta.value = fb(domain, id).note ?? "";
   ta.addEventListener("change", () => setFb(domain, id, { note: ta.value.trim() || null }));
@@ -128,101 +147,58 @@ function feedbackRow(domain, id, opts = {}) {
     opts.note === false ? null : noteWidget(domain, id));
 }
 
-/* ------------------------------------------------------- saving (GitHub) */
+/* ---------------------------------------------- saving (game server API) */
+// The browser never talks to GitHub. Saves POST a per-entry DELTA to the
+// game server, which merges it into the current document, commits live/**
+// to main with ITS OWN token, and pushes the change to every game client.
 const FILE_FOR = (key) => key.startsWith("feedback/")
-  ? { path: `wiki/${key}.json`, get: () => state.feedback[key.split("/")[1]] }
-  : { path: `wiki/tuning/${key.split("/")[1]}.json`, get: () => state.tuning[key.split("/")[1]] };
+  ? { path: `live/${key}.json`, get: () => state.feedback[key.split("/")[1]] }
+  : { path: `live/tuning/${key.split("/")[1]}.json`, get: () => state.tuning[key.split("/")[1]] };
 
-const b64 = (s) => btoa(unescape(encodeURIComponent(s)));
-const ghApi = (path) => `https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`;
-function ghHeaders(token) {
-  const hdr = { Accept: "application/vnd.github+json" };
-  if (token) hdr.Authorization = `Bearer ${token}`;
-  return hdr;
+// The current local value of one touched id inside a file (null = deleted).
+function valueOf(key, id) {
+  const doc = FILE_FOR(key).get() ?? {};
+  const bucket = key.startsWith("feedback/") ? doc.entries : key === "tuning/monsters" ? doc.monsters : doc.overrides;
+  const v = bucket?.[id];
+  return v === undefined ? null : v;
 }
-// Fetch a repo file's CURRENT committed content (+ blob sha). Works
-// anonymously on a public repo; uses the PAT when stored. null = missing.
-async function ghGet(path, token) {
-  const res = await fetch(`${ghApi(path)}?ref=${BRANCH}`, { headers: ghHeaders(token), cache: "no-store" });
-  if (res.status === 404) return { obj: null, sha: undefined };
-  if (!res.ok) throw new Error(`GET ${path}: HTTP ${res.status}`);
-  const j = await res.json();
-  const text = decodeURIComponent(escape(atob((j.content ?? "").replace(/\n/g, ""))));
-  try { return { obj: JSON.parse(text), sha: j.sha }; } catch { return { obj: null, sha: j.sha }; }
-}
-// Merge THIS SESSION's touched ids onto the freshly-fetched remote document.
-// Untouched entries always come from remote — a stale page can only ever
-// change what the maintainer actually clicked.
-function mergeForSave(key, remote, local, touchedIds) {
-  const ids = touchedIds ?? new Set();
-  if (key.startsWith("feedback/")) {
-    const out = remote ?? { format: "pixel-wiki-feedback@1", domain: key.split("/")[1], entries: {} };
-    out.entries = out.entries ?? {};
-    for (const id of ids) {
-      if (local.entries?.[id]) out.entries[id] = local.entries[id];
-      else delete out.entries[id];
-    }
-    out.updated_at = new Date().toISOString();
-    return out;
-  }
-  if (key === "tuning/monsters") {
-    const out = remote ?? { format: "pixel-wiki-tuning-monsters@1", defaults: local.defaults ?? {}, monsters: {} };
-    out.monsters = out.monsters ?? {};
-    for (const id of ids) {
-      if (local.monsters?.[id]) out.monsters[id] = local.monsters[id];
-      else delete out.monsters[id];
-    }
-    out.updated_at = new Date().toISOString();
-    return out;
-  }
-  // tuning/constants
-  const out = remote ?? { format: "pixel-wiki-tuning-constants@1", overrides: {} };
-  out.overrides = out.overrides ?? {};
-  for (const name of ids) {
-    if (local.overrides?.[name] !== undefined) out.overrides[name] = local.overrides[name];
-    else delete out.overrides[name];
-  }
-  out.updated_at = new Date().toISOString();
-  return out;
-}
-async function ghSaveFile(key, token) {
-  const { path, get } = FILE_FOR(key);
+async function apiSaveFile(key) {
   const snapshot = new Set(state.touched[key] ?? []);
-  const { obj: remote, sha } = await ghGet(path, token);
-  const merged = mergeForSave(key, remote, get(), snapshot);
-  const body = {
-    message: `wiki: maintainer update — ${path.replace("wiki/", "")}`,
-    content: b64(JSON.stringify(merged, null, 2) + "\n"),
-    branch: BRANCH,
-  };
-  if (sha) body.sha = sha;
-  const res = await fetch(ghApi(path), { method: "PUT", headers: ghHeaders(token), body: JSON.stringify(body) });
-  if (!res.ok) throw new Error(`PUT ${path}: HTTP ${res.status} ${(await res.text()).slice(0, 180)}`);
-  // Adopt the merged truth locally; only forget ids saved in THIS pass so
-  // edits made mid-save stay dirty for the next one.
-  if (key.startsWith("feedback/")) state.feedback[key.split("/")[1]] = merged;
-  else state.tuning[key.split("/")[1]] = merged;
+  if (!snapshot.size) { state.dirty.delete(key); return; }
+  const set = Object.fromEntries([...snapshot].map((id) => [id, valueOf(key, id)]));
+  const res = await fetch(API("/api/wiki/save"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${adminToken()}` },
+    body: JSON.stringify({ file: key, set }),
+  });
+  if (res.status === 401) {
+    localStorage.removeItem("wiki-admin-token");
+    setAdmin(false);
+    throw new Error("session expired — sign in again");
+  }
+  if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? `HTTP ${res.status}`);
+  // Only forget ids saved in THIS pass so edits made mid-save stay dirty.
   const t = state.touched[key];
   if (t) { for (const id of snapshot) t.delete(id); if (!t.size) delete state.touched[key]; }
   if (!state.touched[key]) state.dirty.delete(key);
 }
 async function saveAll() {
-  const token = localStorage.getItem("wiki-gh-token");
-  if (!token) { $("#gh-dialog").showModal(); return; }
+  if (!state.admin) { $("#login-dialog").showModal(); return; }
   const btn = $("#save-btn");
   btn.disabled = true; btn.textContent = "Saving…";
   try {
     for (const key of [...state.dirty]) {
-      await ghSaveFile(key, token);
+      await apiSaveFile(key);
       updateSavebar();
     }
-    toast("Saved to the repo — agents will pick it up on their next run.");
-    route(); // widgets re-read the (possibly remote-merged) state
+    toast("Saved — committed to the repo and pushed live to the game.");
+    route();
   } catch (err) {
     console.error(err);
     toast(`Save failed: ${err.message}`);
+    if (!state.admin) $("#login-dialog").showModal();
   } finally {
-    btn.disabled = false; btn.textContent = "Save to repo";
+    btn.disabled = false; btn.textContent = "Save";
   }
 }
 function exportAll() {
@@ -232,7 +208,7 @@ function exportAll() {
     const a = h("a", { href: URL.createObjectURL(blob), download: path.split("/").pop() });
     document.body.append(a); a.click(); a.remove();
   }
-  toast("Exported — commit the files to wiki/feedback / wiki/tuning.");
+  toast("Exported — commit the files under live/ by hand.");
 }
 async function discardAll() {
   state.dirty.clear();
@@ -476,15 +452,19 @@ function viewHome() {
   }
   return h("div", {},
     h("h1", {}, "Nangijala Wiki"),
-    h("p", { class: "muted" }, "Everything the art and audio agents have made for the game — browse it, rate it, approve or remove it, and tune gameplay. Your verdicts are committed to the repo; every agent reads them at the start of its next run."),
+    h("p", { class: "muted" }, state.admin
+      ? "Everything the art and audio agents have made for the game — browse it, rate it, approve or remove it, and tune gameplay. Saves commit to live/ on main and stream straight into the running game."
+      : "Every creature, hero, sound and song of Nangijala — the living encyclopedia of the world, always as fresh as the game you just played."),
     h("div", { class: "stat-tiles" }, ...tiles.map(([slug, n, label]) =>
       h("a", { class: "stat-tile", href: `#/${slug}` }, h("div", { class: "n" }, String(n)), h("div", { class: "l" }, label)))),
-    h("h2", {}, "How feedback works"),
-    h("p", {}, "★ ratings steer style (no rating is the default). ", h("code", {}, "✕ remove"), " tells the producing agent to delete or replace the asset on its next run. ", h("code", {}, "✓ approve"), " locks in a keeper. Notes travel with the entry. Press ", h("strong", {}, "Save to repo"), " when you're done — it commits ", h("code", {}, "wiki/feedback/*.json"), " and ", h("code", {}, "wiki/tuning/*.json"), " to main."),
-    resolved.length ? h("div", { class: "panel" },
-      h("div", { class: "panel-title" }, "Resolved removals ", h("span", { class: "pill ok" }, String(resolved.length))),
-      h("p", { class: "muted" }, "Assets you rejected that no longer exist in the repo — the agents acted on them."),
-      ...resolved.slice(0, 30).map((r) => h("div", { class: "muted" }, h("code", {}, r.id)))) : null,
+    ...(state.admin ? [
+      h("h2", {}, "How feedback works"),
+      h("p", {}, "★ ratings steer style (no rating is the default). ", h("code", {}, "✕ remove"), " tells the producing agent to delete or replace the asset on its next run. ", h("code", {}, "✓ approve"), " locks in a keeper. Notes travel with the entry. Press ", h("strong", {}, "Save"), " when you're done — the game server commits ", h("code", {}, "live/feedback/*.json"), " and ", h("code", {}, "live/tuning/*.json"), " to main and pushes tuning to every connected player instantly."),
+      resolved.length ? h("div", { class: "panel" },
+        h("div", { class: "panel-title" }, "Resolved removals ", h("span", { class: "pill ok" }, String(resolved.length))),
+        h("p", { class: "muted" }, "Assets you rejected that no longer exist in the repo — the agents acted on them."),
+        ...resolved.slice(0, 30).map((r) => h("div", { class: "muted" }, h("code", {}, r.id)))) : null,
+    ] : []),
   );
 }
 
@@ -494,7 +474,9 @@ function viewMonsters() {
   const list = state.data.domains.monsters.filter((m) => matches(q, m.id, m.name, m.kind));
   return h("div", {},
     h("h1", {}, "Monsters"),
-    h("p", { class: "muted" }, `${list.length} creatures from the monsters agent. Click one to preview every animation, check its nadir shadow, edit its stats and loot.`),
+    h("p", { class: "muted" }, state.admin
+      ? `${list.length} creatures from the monsters agent. Click one to preview every animation, check its nadir shadow, edit its stats and loot.`
+      : `${list.length} creatures roam Nangijala. Click one to watch every animation and study its stats.`),
     h("div", { class: "grid" }, ...list.map((m) =>
       h("a", { class: "card", href: `#/monsters/${m.id}` },
         h("div", { class: "thumb checker" }, h("img", { src: assetUrl(m.preview), alt: m.name, loading: "lazy" })),
@@ -513,6 +495,18 @@ function statsEditor(monsterId) {
   // Render from a copy; only a real edit installs the entry (viewing a page
   // must never sneak an entry into the next save).
   const stats = t.monsters[monsterId] ?? { ...t.defaults, loot: [] };
+  if (!state.admin) {
+    // Players see the creature's stats + drops as wiki lore, read-only.
+    return h("div", {},
+      h("div", { class: "stat-grid ro" }, ...STAT_FIELDS.map(([key, label]) =>
+        h("label", {}, label, h("span", { class: "stat-value" }, String(stats[key] ?? t.defaults[key] ?? 0))))),
+      (stats.loot ?? []).filter((l) => l.item).length
+        ? h("div", { style: "margin-top:14px" },
+            h("div", { class: "panel-title" }, "Drops"),
+            ...stats.loot.filter((l) => l.item).map((l) =>
+              h("div", { class: "loot-row" }, h("code", {}, l.item), h("span", { class: "muted" }, `${+(100 * (l.chance ?? 0)).toFixed(2)}%`))))
+        : null);
+  }
   const edited = () => {
     t.monsters[monsterId] = stats;
     touch("tuning/monsters", monsterId);
@@ -567,7 +561,8 @@ function viewMonster(id) {
       player.el,
       h("div", { style: "margin-top:12px" }, facetBox)),
     h("div", { class: "panel" },
-      h("div", { class: "panel-title" }, "Stats ", h("span", { class: "pill warn" }, "not wired into the game yet — the games agent adopts wiki/tuning/monsters.json when the monster brain lands")),
+      h("div", { class: "panel-title" }, "Stats ",
+        state.admin ? h("span", { class: "pill warn" }, "pushed live to the game — systems adopt them as the monster brain lands") : null),
       statsEditor(m.id)));
 }
 
@@ -625,7 +620,9 @@ function viewTiles() {
   const list = state.data.domains.tiles.filter((t) => matches(state.query, t.id, t.name, t.description));
   return h("div", {},
     h("h1", {}, "Tiles"),
-    h("p", { class: "muted" }, "The tiles2 ground library. Open a type to rate or remove individual tiles — rejected tiles tell the tiles agent (and the maps agent) to retire them."),
+    h("p", { class: "muted" }, state.admin
+      ? "The tiles2 ground library. Open a type to rate or remove individual tiles — rejected tiles tell the tiles agent (and the maps agent) to retire them."
+      : "The ground the world is built from — every tile of every terrain type."),
     h("div", { class: "grid" }, ...list.map((t) => {
       const first = t.groups[0];
       return h("a", { class: "card", href: `#/tiles/${t.id}` },
@@ -646,10 +643,10 @@ function tileCell(group, file) {
   cell.append(
     h("img", { src: assetUrl(`${group.dir}/${file}`), alt: file, loading: "lazy", title: id }),
     starsWidget("tiles", id),
-    h("button", {
+    state.admin ? h("button", {
       class: "tile-x", title: "Reject this tile (toggles)",
       onclick: () => { setFb("tiles", id, { status: fb("tiles", id).status === "rejected" ? null : "rejected" }); sync(); },
-    }, "✕"));
+    }, "✕") : null);
   sync();
   return cell;
 }
@@ -719,7 +716,9 @@ function viewSounds() {
   const cats = [...new Set(list.map((s) => s.category))].sort();
   return h("div", {},
     h("h1", {}, "Sounds"),
-    h("p", { class: "muted" }, "Every take of every sound effect. ▶ to listen, ★ to rate, ✕ to have the sounds agent remove/regenerate that take. The chosen pill marks what the game currently plays."),
+    h("p", { class: "muted" }, state.admin
+      ? "Every take of every sound effect. ▶ to listen, ★ to rate, ✕ to have the sounds agent remove/regenerate that take. The chosen pill marks what the game currently plays."
+      : "Every sound of the world — press ▶ to listen. The chosen pill marks what the game currently plays."),
     ...cats.map((cat) => h("div", {},
       h("h2", {}, cat, " ", h("span", { class: "pill" }, String(list.filter((s) => s.category === cat).length))),
       ...list.filter((s) => s.category === cat).map((s) =>
@@ -771,7 +770,7 @@ function viewItems() {
             feedbackRow("items", it.path, { note: false }))))
       : h("div", { class: "panel" },
           h("div", { class: "panel-title" }, "No items yet"),
-          h("p", { class: "muted" }, "The items agent hasn't shipped anything — the moment an items/ domain lands in the repo, its loot appears here automatically (and monsters will show what they drop, with percentages, from wiki/tuning/monsters.json).")));
+          h("p", { class: "muted" }, "The items agent hasn't shipped anything — the moment an items/ domain lands in the repo, its loot appears here automatically (and monsters will show what they drop, with percentages, from live/tuning/monsters.json).")));
 }
 
 /* --- tuning --- */
@@ -781,25 +780,34 @@ function viewTuning() {
   const rows = state.data.constants.filter((c) => matches(q, c.name, c.description, c.source));
   return h("div", {},
     h("h1", {}, "Tuning"),
-    h("p", { class: "muted" }, "Game constants discovered in games2/shared. Set an override to record your preferred value in ", h("code", {}, "wiki/tuning/constants.json"), " — the games agent wires overrides into the game (they are advisory until then). Monster stats are edited on each monster's page."),
+    h("p", { class: "muted" }, state.admin
+      ? "Game constants discovered in games2/shared. Set an override and Save — it commits to live/tuning/constants.json and is pushed to the running game and every client over the WebSocket, no redeploy. (Each system adopts its overrides as the games agent wires them in.)"
+      : "The knobs behind the game — live values the designer can tune while the world runs."),
     h("div", { class: "panel table-scroll" },
       h("table", { class: "tune" },
         h("thead", {}, h("tr", {},
           h("th", {}, "constant"), h("th", {}, "game value"), h("th", {}, "override"), h("th", {}, "what it does"), h("th", {}, "source"))),
         h("tbody", {}, ...rows.map((c) => {
           const cur = t?.overrides?.[c.name];
-          const input = h("input", { type: "number", step: "any", value: cur !== undefined ? String(cur) : "", placeholder: String(c.value), class: cur !== undefined ? "overridden" : "" });
-          input.addEventListener("change", () => {
-            if (input.value === "" || Number(input.value) === c.value) delete t.overrides[c.name];
-            else t.overrides[c.name] = Number(input.value);
-            input.classList.toggle("overridden", t.overrides[c.name] !== undefined);
-            t.updated_at = new Date().toISOString();
-            markDirty("tuning/constants");
-          });
+          let overrideCell;
+          if (state.admin) {
+            const input = h("input", { type: "number", step: "any", value: cur !== undefined ? String(cur) : "", placeholder: String(c.value), class: cur !== undefined ? "overridden" : "" });
+            input.addEventListener("change", () => {
+              if (input.value === "" || Number(input.value) === c.value) delete t.overrides[c.name];
+              else t.overrides[c.name] = Number(input.value);
+              input.classList.toggle("overridden", t.overrides[c.name] !== undefined);
+              t.updated_at = new Date().toISOString();
+              touch("tuning/constants", c.name);
+              markDirty("tuning/constants");
+            });
+            overrideCell = input;
+          } else {
+            overrideCell = cur !== undefined ? h("span", { class: "pill warn" }, String(cur)) : h("span", { class: "muted" }, "—");
+          }
           return h("tr", {},
             h("td", {}, h("code", {}, c.name)),
             h("td", { class: "num" }, String(c.value)),
-            h("td", {}, input),
+            h("td", {}, overrideCell),
             h("td", { class: "muted" }, c.description ?? ""),
             h("td", { class: "muted" }, h("code", {}, `${c.source.replace("games2/shared/src/", "")}:${c.line}`)));
         })))));
@@ -859,23 +867,19 @@ async function fetchJson(url, fallback = null) {
   } catch { return fallback; }
 }
 async function loadLiveFiles() {
-  // The truth lives on GitHub main; the copies served next to the site are
-  // baked into the game image and lag by one deploy. Read the committed state
-  // first (anonymous works on a public repo, the PAT covers private), fall
-  // back to the served copies when the API is unreachable/rate-limited.
-  const token = localStorage.getItem("wiki-gh-token");
-  const live = async (repoPath, servedUrl) => {
-    try {
-      const { obj } = await ghGet(repoPath, token);
-      if (obj) return obj;
-    } catch { /* fall through to the served copy */ }
-    return fetchJson(servedUrl);
-  };
-  const [monTune, constTune, ...fbs] = await Promise.all([
-    live("wiki/tuning/monsters.json", new URL("tuning/monsters.json", WIKI)),
-    live("wiki/tuning/constants.json", new URL("tuning/constants.json", WIKI)),
-    ...FEEDBACK_DOMAINS.map((d) => live(`wiki/feedback/${d}.json`, new URL(`feedback/${d}.json`, WIKI))),
-  ]);
+  // The game server's live store is the always-fresh copy of live/** on main
+  // (push-refreshed, see live/README.md). Static /assets/live files are the
+  // offline fallback (viewing the wiki without the game server).
+  const apiState = await fetchJson(API("/api/live/state"));
+  const fromApi = (get) => { try { return get(apiState) ?? null; } catch { return null; } };
+  const [monTune, constTune, ...fbs] = apiState
+    ? [fromApi((s) => s.tuning.monsters), fromApi((s) => s.tuning.constants),
+       ...FEEDBACK_DOMAINS.map((d) => fromApi((s) => s.feedback[d]))]
+    : await Promise.all([
+        fetchJson(new URL("live/tuning/monsters.json", ROOT)),
+        fetchJson(new URL("live/tuning/constants.json", ROOT)),
+        ...FEEDBACK_DOMAINS.map((d) => fetchJson(new URL(`live/feedback/${d}.json`, ROOT))),
+      ]);
   state.tuning.monsters = monTune ?? { format: "pixel-wiki-tuning-monsters@1", updated_at: "", defaults: {}, monsters: {} };
   state.tuning.constants = constTune ?? { format: "pixel-wiki-tuning-constants@1", updated_at: "", overrides: {} };
   FEEDBACK_DOMAINS.forEach((d, i) => {
@@ -920,29 +924,77 @@ function initChrome() {
   $("#save-btn").addEventListener("click", saveAll);
   $("#export-btn").addEventListener("click", exportAll);
   $("#discard-btn").addEventListener("click", discardAll);
-  // token dialog
-  const dlg = $("#gh-dialog");
-  $("#gh-settings").addEventListener("click", () => {
-    $("#gh-token").value = localStorage.getItem("wiki-gh-token") ?? "";
-    dlg.showModal();
-  });
-  dlg.addEventListener("close", () => {
-    if (dlg.returnValue === "save") {
-      const v = $("#gh-token").value.trim();
-      if (v) { localStorage.setItem("wiki-gh-token", v); toast("Token stored in this browser."); }
-    } else if (dlg.returnValue === "clear") {
-      localStorage.removeItem("wiki-gh-token");
-      toast("Token forgotten.");
+  // admin login/logout
+  const dlg = $("#login-dialog");
+  $("#admin-btn").addEventListener("click", () => {
+    if (state.admin) {
+      localStorage.removeItem("wiki-admin-token");
+      setAdmin(false);
+      toast("Signed out.");
+    } else {
+      $("#login-error").textContent = "";
+      dlg.showModal();
     }
-    $("#gh-token").value = "";
+  });
+  $("#login-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    $("#login-error").textContent = "";
+    const btn = $("#login-submit");
+    btn.disabled = true;
+    try {
+      const res = await fetch(API("/api/wiki/login"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: $("#login-user").value.trim(), password: $("#login-pass").value }),
+      });
+      if (!res.ok) {
+        $("#login-error").textContent = res.status === 401 ? "Wrong username or password." : `Login failed (HTTP ${res.status}).`;
+        return;
+      }
+      const { token } = await res.json();
+      localStorage.setItem("wiki-admin-token", token);
+      $("#login-pass").value = "";
+      dlg.close();
+      setAdmin(true);
+      toast("Signed in — edit away.");
+    } catch (err) {
+      $("#login-error").textContent = `Login failed: ${err.message}`;
+    } finally {
+      btn.disabled = false;
+    }
   });
   window.addEventListener("hashchange", route);
   window.addEventListener("beforeunload", (e) => { if (state.dirty.size) e.preventDefault(); });
 }
 
+function setAdmin(on) {
+  state.admin = on;
+  document.documentElement.classList.toggle("is-admin", on);
+  const btn = $("#admin-btn");
+  btn.textContent = on ? "Sign out (admin)" : "Admin";
+  btn.title = on ? "Signed in as the game designer" : "Game-designer sign in";
+  if (!on) { state.dirty.clear(); state.touched = {}; updateSavebar(); }
+  if (state.data) route();
+}
+
+// Validate a stored session against the server (tokens expire / restart).
+async function checkAdmin() {
+  if (!adminToken()) return false;
+  try {
+    const res = await fetch(API("/api/wiki/me"), { headers: { Authorization: `Bearer ${adminToken()}` } });
+    if (!res.ok) return false;
+    return !!(await res.json()).admin;
+  } catch { return false; }
+}
+
 (async function boot() {
   initChrome();
-  const data = await fetchJson(new URL("data.json", location.href));
+  const [data, admin] = await Promise.all([
+    fetchJson(new URL("data.json", location.href)),
+    checkAdmin(),
+  ]);
+  if (admin) setAdmin(true); // before first route() so widgets render editable
+  else localStorage.removeItem("wiki-admin-token");
   if (!data) {
     $("#content").replaceChildren(h("p", {}, "data.json missing — run ", h("code", {}, "node wiki/build.mjs"), " and reload."));
     return;
@@ -958,5 +1010,8 @@ function initChrome() {
     counts: () => state.data.counts,
     fb, setFb,
     dirty: () => [...state.dirty],
+    // Static-file QA only: flips the UI to admin (the server still rejects
+    // every save without a real session token).
+    forceAdmin: (on = true) => setAdmin(on),
   };
 })();

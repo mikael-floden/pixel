@@ -349,3 +349,12 @@ a.stat-tile:hover { text-decoration: none; border-color: var(--border-strong); }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
+
+/* ---- public (read-only) faces + admin login ---- */
+.stars.ro { color: var(--star); font-size: 13px; letter-spacing: 1px; }
+.stat-grid.ro .stat-value {
+  font-size: 15px; font-weight: 600; color: var(--fg);
+  padding: 6px 0 2px; font-variant-numeric: tabular-nums;
+}
+.login-error { color: var(--err, #c0392b); font-size: 13px; min-height: 1.2em; margin: 2px 0 0; }
+#login-dialog input { width: 100%; margin-top: 8px; }
