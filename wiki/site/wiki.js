@@ -20,9 +20,16 @@ const state = {
   feedback: {},          // domain -> parsed pixel-wiki-feedback@1
   tuning: { monsters: null, constants: null },
   dirty: new Set(),      // "feedback/monsters" | "tuning/monsters" | "tuning/constants"
+  // Per file: WHICH ids this session actually edited. Saves merge these onto
+  // the freshly-fetched remote document, so a stale page can never clobber
+  // entries committed earlier (the served copies lag main by one deploy).
+  touched: {},           // key -> Set(ids)
   knownIds: new Set(),
   query: "",
 };
+function touch(key, id) {
+  (state.touched[key] ?? (state.touched[key] = new Set())).add(id);
+}
 
 /* ---------------------------------------------------------- tiny helpers */
 function h(tag, attrs = {}, ...children) {
@@ -39,7 +46,12 @@ function h(tag, attrs = {}, ...children) {
   return el;
 }
 const $ = (sel) => document.querySelector(sel);
-const fmtDur = (s) => (s == null ? "" : s >= 60 ? `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, "0")}` : `${s.toFixed(2)}s`);
+const fmtDur = (s) => {
+  if (s == null) return "";
+  if (s < 60) return `${s.toFixed(2)}s`;
+  const total = Math.round(s);
+  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`;
+};
 const DIR_LABEL = { south: "S", "south-east": "SE", east: "E", "north-east": "NE", north: "N", "north-west": "NW", west: "W", "south-west": "SW" };
 let toastTimer = null;
 function toast(msg) {
@@ -64,6 +76,7 @@ function setFb(domain, id, patch) {
   if (Object.keys(entry).length <= 1) delete f.entries[id];
   else f.entries[id] = entry;
   f.updated_at = new Date().toISOString();
+  touch(`feedback/${domain}`, id);
   markDirty(`feedback/${domain}`);
 }
 function markDirty(key) {
@@ -121,17 +134,77 @@ const FILE_FOR = (key) => key.startsWith("feedback/")
   : { path: `wiki/tuning/${key.split("/")[1]}.json`, get: () => state.tuning[key.split("/")[1]] };
 
 const b64 = (s) => btoa(unescape(encodeURIComponent(s)));
-async function ghPut(path, obj, token) {
-  const api = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`;
-  const headers = { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" };
-  let sha;
-  const cur = await fetch(`${api}?ref=${BRANCH}`, { headers });
-  if (cur.ok) sha = (await cur.json()).sha;
-  else if (cur.status !== 404) throw new Error(`GET ${path}: HTTP ${cur.status}`);
-  const body = { message: `wiki: maintainer update — ${path.replace("wiki/", "")}`, content: b64(JSON.stringify(obj, null, 2) + "\n"), branch: BRANCH };
+const ghApi = (path) => `https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`;
+function ghHeaders(token) {
+  const hdr = { Accept: "application/vnd.github+json" };
+  if (token) hdr.Authorization = `Bearer ${token}`;
+  return hdr;
+}
+// Fetch a repo file's CURRENT committed content (+ blob sha). Works
+// anonymously on a public repo; uses the PAT when stored. null = missing.
+async function ghGet(path, token) {
+  const res = await fetch(`${ghApi(path)}?ref=${BRANCH}`, { headers: ghHeaders(token), cache: "no-store" });
+  if (res.status === 404) return { obj: null, sha: undefined };
+  if (!res.ok) throw new Error(`GET ${path}: HTTP ${res.status}`);
+  const j = await res.json();
+  const text = decodeURIComponent(escape(atob((j.content ?? "").replace(/\n/g, ""))));
+  try { return { obj: JSON.parse(text), sha: j.sha }; } catch { return { obj: null, sha: j.sha }; }
+}
+// Merge THIS SESSION's touched ids onto the freshly-fetched remote document.
+// Untouched entries always come from remote — a stale page can only ever
+// change what the maintainer actually clicked.
+function mergeForSave(key, remote, local, touchedIds) {
+  const ids = touchedIds ?? new Set();
+  if (key.startsWith("feedback/")) {
+    const out = remote ?? { format: "pixel-wiki-feedback@1", domain: key.split("/")[1], entries: {} };
+    out.entries = out.entries ?? {};
+    for (const id of ids) {
+      if (local.entries?.[id]) out.entries[id] = local.entries[id];
+      else delete out.entries[id];
+    }
+    out.updated_at = new Date().toISOString();
+    return out;
+  }
+  if (key === "tuning/monsters") {
+    const out = remote ?? { format: "pixel-wiki-tuning-monsters@1", defaults: local.defaults ?? {}, monsters: {} };
+    out.monsters = out.monsters ?? {};
+    for (const id of ids) {
+      if (local.monsters?.[id]) out.monsters[id] = local.monsters[id];
+      else delete out.monsters[id];
+    }
+    out.updated_at = new Date().toISOString();
+    return out;
+  }
+  // tuning/constants
+  const out = remote ?? { format: "pixel-wiki-tuning-constants@1", overrides: {} };
+  out.overrides = out.overrides ?? {};
+  for (const name of ids) {
+    if (local.overrides?.[name] !== undefined) out.overrides[name] = local.overrides[name];
+    else delete out.overrides[name];
+  }
+  out.updated_at = new Date().toISOString();
+  return out;
+}
+async function ghSaveFile(key, token) {
+  const { path, get } = FILE_FOR(key);
+  const snapshot = new Set(state.touched[key] ?? []);
+  const { obj: remote, sha } = await ghGet(path, token);
+  const merged = mergeForSave(key, remote, get(), snapshot);
+  const body = {
+    message: `wiki: maintainer update — ${path.replace("wiki/", "")}`,
+    content: b64(JSON.stringify(merged, null, 2) + "\n"),
+    branch: BRANCH,
+  };
   if (sha) body.sha = sha;
-  const res = await fetch(api, { method: "PUT", headers, body: JSON.stringify(body) });
+  const res = await fetch(ghApi(path), { method: "PUT", headers: ghHeaders(token), body: JSON.stringify(body) });
   if (!res.ok) throw new Error(`PUT ${path}: HTTP ${res.status} ${(await res.text()).slice(0, 180)}`);
+  // Adopt the merged truth locally; only forget ids saved in THIS pass so
+  // edits made mid-save stay dirty for the next one.
+  if (key.startsWith("feedback/")) state.feedback[key.split("/")[1]] = merged;
+  else state.tuning[key.split("/")[1]] = merged;
+  const t = state.touched[key];
+  if (t) { for (const id of snapshot) t.delete(id); if (!t.size) delete state.touched[key]; }
+  if (!state.touched[key]) state.dirty.delete(key);
 }
 async function saveAll() {
   const token = localStorage.getItem("wiki-gh-token");
@@ -140,12 +213,11 @@ async function saveAll() {
   btn.disabled = true; btn.textContent = "Saving…";
   try {
     for (const key of [...state.dirty]) {
-      const { path, get } = FILE_FOR(key);
-      await ghPut(path, get(), token);
-      state.dirty.delete(key);
+      await ghSaveFile(key, token);
       updateSavebar();
     }
     toast("Saved to the repo — agents will pick it up on their next run.");
+    route(); // widgets re-read the (possibly remote-merged) state
   } catch (err) {
     console.error(err);
     toast(`Save failed: ${err.message}`);
@@ -163,8 +235,9 @@ function exportAll() {
   toast("Exported — commit the files to wiki/feedback / wiki/tuning.");
 }
 async function discardAll() {
-  await loadLiveFiles();
   state.dirty.clear();
+  state.touched = {};
+  await loadLiveFiles();
   updateSavebar();
   route();
   toast("Discarded unsaved changes.");
@@ -219,25 +292,29 @@ function makePlayer(entity, kind) {
   function draw() {
     const fw = clip?.fw ?? entity.frameW ?? 64, fh = clip?.fh ?? entity.frameH ?? 64;
     const s = scaleFor(fw, fh);
-    if (canvas.width !== fw * s || canvas.height !== fh * s) {
-      canvas.width = fw * s; canvas.height = fh * s;
+    // A hovering creature (butterfly_dragon) floats hoverPx above the ground
+    // line — give the canvas that extra height so nothing is cropped: the
+    // sprite draws at the top, the shadow sits hoverPx below its frame.
+    const hover = (entity.hoverPx ?? 0) * s;
+    const wantW = fw * s, wantH = fh * s + hover;
+    if (canvas.width !== wantW || canvas.height !== wantH) {
+      canvas.width = wantW; canvas.height = wantH;
     }
     ctx.imageSmoothingEnabled = false;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (!clip) { frameNo.textContent = "—"; return; }
-    const hover = (entity.hoverPx ?? 0) * s;
     if (cur.shadow && entity.shadow) {
       // The game's ground ellipse: centred, sitting at the art-measured foot line.
       ctx.fillStyle = "rgba(20,16,8,0.38)";
       ctx.beginPath();
-      ctx.ellipse(canvas.width / 2, entity.artBottom * fh * s, (entity.shadow.w * s) / 2, (entity.shadow.h * s) / 2, 0, 0, Math.PI * 2);
+      ctx.ellipse(canvas.width / 2, entity.artBottom * fh * s + hover, (entity.shadow.w * s) / 2, (entity.shadow.h * s) / 2, 0, 0, Math.PI * 2);
       ctx.fill();
     }
     const f = Math.min(cur.frame, clip.frames - 1);
     if (img?.complete && img.naturalWidth) {
-      ctx.drawImage(img, f * (img.naturalWidth / clip.frames), 0, img.naturalWidth / clip.frames, img.naturalHeight, 0, -hover, fw * s, fh * s);
+      ctx.drawImage(img, f * (img.naturalWidth / clip.frames), 0, img.naturalWidth / clip.frames, img.naturalHeight, 0, 0, fw * s, fh * s);
     } else if (frameImgs[f]?.complete && frameImgs[f].naturalWidth) {
-      ctx.drawImage(frameImgs[f], 0, -hover, fw * s, fh * s);
+      ctx.drawImage(frameImgs[f], 0, 0, fw * s, fh * s);
     }
     frameNo.textContent = `${f + 1} / ${clip.frames}`;
   }
@@ -255,10 +332,20 @@ function makePlayer(entity, kind) {
   const stateSeg = h("span", { class: "seg" });
   function renderStateSeg() {
     stateSeg.replaceChildren(...stateNames.map((s) =>
-      h("button", { class: s === cur.state ? "on" : "", onclick: () => { cur.state = s; loadClip(); renderStateSeg(); onStateChange?.(s); } },
-        s + (anims[s].fallback ? ` (→${anims[s].fallback})` : ""))));
+      h("button", {
+        class: s === cur.state ? "on" : "",
+        onclick: () => {
+          cur.state = s;
+          // Direction availability differs per state (e.g. stone_golem's
+          // angry ships 5/8 dirs) — refresh the pad and hop to an available
+          // direction if the current one has no clip in this state.
+          if (!anims[s]?.dirs?.[cur.dir]) {
+            cur.dir = state.data.directions.find((d) => anims[s]?.dirs?.[d]) ?? cur.dir;
+          }
+          loadClip(); renderStateSeg(); renderDirPad(); onStateChange?.(s);
+        },
+      }, s + (anims[s].fallback ? ` (→${anims[s].fallback})` : ""))));
   }
-  renderStateSeg();
 
   const dirPad = h("span", { class: "dirpad" });
   function renderDirPad() {
@@ -270,6 +357,7 @@ function makePlayer(entity, kind) {
       }, DIR_LABEL[d])));
   }
   const clipForDir = (d) => anims[cur.state]?.dirs?.[d];
+  renderStateSeg();
   renderDirPad();
 
   const playBtn = h("button", { class: "ghost-btn", onclick: () => { cur.playing = !cur.playing; playBtn.textContent = cur.playing ? "⏸" : "▶"; } }, "⏸");
@@ -290,6 +378,10 @@ function makePlayer(entity, kind) {
   );
 
   let onStateChange = null;
+  if (!anims[cur.state]?.dirs?.[cur.dir]) {
+    cur.dir = state.data.directions.find((d) => anims[cur.state]?.dirs?.[d]) ?? cur.dir;
+    renderDirPad();
+  }
   loadClip();
   const rootEl = h("div", { class: "player" },
     h("div", { class: "player-controls" }, stateSeg),
@@ -418,10 +510,17 @@ const STAT_FIELDS = [
 function statsEditor(monsterId) {
   const t = state.tuning.monsters;
   if (!t) return h("p", { class: "muted" }, "tuning/monsters.json not loaded.");
-  const stats = t.monsters[monsterId] ?? (t.monsters[monsterId] = { ...t.defaults, loot: [] });
+  // Render from a copy; only a real edit installs the entry (viewing a page
+  // must never sneak an entry into the next save).
+  const stats = t.monsters[monsterId] ?? { ...t.defaults, loot: [] };
+  const edited = () => {
+    t.monsters[monsterId] = stats;
+    touch("tuning/monsters", monsterId);
+    markDirty("tuning/monsters");
+  };
   const grid = h("div", { class: "stat-grid" }, ...STAT_FIELDS.map(([key, label, step]) => {
     const input = h("input", { type: "number", step: String(step), value: String(stats[key] ?? t.defaults[key] ?? 0) });
-    input.addEventListener("change", () => { stats[key] = Number(input.value); markDirty("tuning/monsters"); });
+    input.addEventListener("change", () => { stats[key] = Number(input.value); edited(); });
     return h("label", {}, label, input);
   }));
   const lootBox = h("div", {});
@@ -430,11 +529,11 @@ function statsEditor(monsterId) {
       h("div", { class: "panel-title" }, "Loot / drops ", h("span", { class: "pill" }, "items agent: future")),
       ...(stats.loot ?? []).map((entry, i) =>
         h("div", { class: "loot-row" },
-          Object.assign(h("input", { type: "text", placeholder: "item id (e.g. tusk)" , value: entry.item ?? "" }), { onchange: (e) => { entry.item = e.target.value; markDirty("tuning/monsters"); } }),
-          Object.assign(h("input", { type: "number", class: "chance", min: "0", max: "100", step: "1", title: "drop chance %", value: String(Math.round((entry.chance ?? 0) * 100)) }), { onchange: (e) => { entry.chance = Number(e.target.value) / 100; markDirty("tuning/monsters"); } }),
+          Object.assign(h("input", { type: "text", placeholder: "item id (e.g. tusk)" , value: entry.item ?? "" }), { onchange: (e) => { entry.item = e.target.value; edited(); } }),
+          Object.assign(h("input", { type: "number", class: "chance", min: "0", max: "100", step: "0.1", title: "drop chance %", value: String(+(100 * (entry.chance ?? 0)).toFixed(2)) }), { onchange: (e) => { entry.chance = Number(e.target.value) / 100; edited(); } }),
           h("span", { class: "muted" }, "%"),
-          h("button", { class: "ghost-btn", onclick: () => { stats.loot.splice(i, 1); markDirty("tuning/monsters"); renderLoot(); } }, "✕"))),
-      h("button", { class: "ghost-btn", onclick: () => { (stats.loot ?? (stats.loot = [])).push({ item: "", chance: 0.1 }); markDirty("tuning/monsters"); renderLoot(); } }, "+ add drop"));
+          h("button", { class: "ghost-btn", onclick: () => { stats.loot.splice(i, 1); edited(); renderLoot(); } }, "✕"))),
+      h("button", { class: "ghost-btn", onclick: () => { (stats.loot ?? (stats.loot = [])).push({ item: "", chance: 0.1 }); edited(); renderLoot(); } }, "+ add drop"));
   }
   renderLoot();
   return h("div", {}, grid, h("div", { style: "margin-top:14px" }, lootBox));
@@ -649,12 +748,18 @@ function viewMusic() {
           t.loopable ? h("span", { class: "pill ok" }, "loopable") : null),
         h("p", { class: "muted", style: "margin:0 0 8px" }, t.use),
         t.feeling?.length ? h("p", { class: "muted", style: "margin:0 0 8px" }, "feels: ", t.feeling.join(" · ")) : null,
-        takeRow("music", t.path, { id: t.id, chosen: true, files: t.files }))));
+        // Feedback id = the audio file's repo path sans extension (the
+        // README contract), not meta.id — they can diverge.
+        takeRow("music", t.files.wav.split("/").slice(0, -1).join("/"),
+          { id: t.files.wav.split("/").pop().replace(/\.wav$/, ""), chosen: true, files: t.files }))));
 }
 
 /* --- items --- */
 function viewItems() {
-  const list = state.data.domains.items;
+  // A future items agent's registry is foreign data — only render entries
+  // that carry a usable id, and never produce feedback keyed "undefined".
+  const list = (state.data.domains.items ?? []).filter((it) => it && (it.path || it.id))
+    .map((it) => ({ ...it, path: it.path ?? `items/${it.id}`, name: it.name ?? it.id }));
   return h("div", {},
     h("h1", {}, "Items"),
     list.length
@@ -754,10 +859,22 @@ async function fetchJson(url, fallback = null) {
   } catch { return fallback; }
 }
 async function loadLiveFiles() {
+  // The truth lives on GitHub main; the copies served next to the site are
+  // baked into the game image and lag by one deploy. Read the committed state
+  // first (anonymous works on a public repo, the PAT covers private), fall
+  // back to the served copies when the API is unreachable/rate-limited.
+  const token = localStorage.getItem("wiki-gh-token");
+  const live = async (repoPath, servedUrl) => {
+    try {
+      const { obj } = await ghGet(repoPath, token);
+      if (obj) return obj;
+    } catch { /* fall through to the served copy */ }
+    return fetchJson(servedUrl);
+  };
   const [monTune, constTune, ...fbs] = await Promise.all([
-    fetchJson(new URL("tuning/monsters.json", WIKI)),
-    fetchJson(new URL("tuning/constants.json", WIKI)),
-    ...FEEDBACK_DOMAINS.map((d) => fetchJson(new URL(`feedback/${d}.json`, WIKI))),
+    live("wiki/tuning/monsters.json", new URL("tuning/monsters.json", WIKI)),
+    live("wiki/tuning/constants.json", new URL("tuning/constants.json", WIKI)),
+    ...FEEDBACK_DOMAINS.map((d) => live(`wiki/feedback/${d}.json`, new URL(`feedback/${d}.json`, WIKI))),
   ]);
   state.tuning.monsters = monTune ?? { format: "pixel-wiki-tuning-monsters@1", updated_at: "", defaults: {}, monsters: {} };
   state.tuning.constants = constTune ?? { format: "pixel-wiki-tuning-constants@1", updated_at: "", overrides: {} };

@@ -513,7 +513,7 @@ function injectStyles() {
      ("can't see the glow", then "more dark/black, bigger glow") — four
      stacked layers: a dense core plus a wide soft halo. */
   .ml-logo{display:block;width:min(840px,96%);margin:0 auto;user-select:none;-webkit-user-drag:none;
-    position:relative;z-index:101;will-change:transform,opacity; /* ABOVE the title veil so it stays visible while the black lifts (and translates title→select) */
+    position:relative;z-index:101;will-change:transform,opacity;pointer-events:none; /* ABOVE the title veil so it stays visible while the black lifts (and translates title→select); click-transparent so the fixed Wiki link under its box stays tappable */
     filter:drop-shadow(0 0 10px rgba(0,0,0,.65)) drop-shadow(0 0 28px rgba(0,0,0,.6))
       drop-shadow(0 0 64px rgba(0,0,0,.55)) drop-shadow(0 0 110px rgba(0,0,0,.45))}
   /* TITLE veil: a solid-black cover over the whole select screen; only the logo

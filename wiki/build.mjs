@@ -139,7 +139,11 @@ function buildCharacters() {
   const chars = [];
   for (const id of listDirs(base)) {
     const cj = readJson(join(base, id, "character.json"));
-    const [frameW, frameH] = cj?.size ?? [112, 112];
+    // size ships as [w, h] today; tolerate the {width, height} shape the
+    // monsters domain uses so a format change can never break a deploy.
+    const size = cj?.size;
+    const frameW = Array.isArray(size) ? size[0] : size?.width ?? 112;
+    const frameH = Array.isArray(size) ? size[1] : size?.height ?? 112;
     const overrides = animMap.overrides?.[id] ?? {};
     const anims = {};
     for (const [state, dfltFolder] of Object.entries(animMap.states ?? {})) {
@@ -291,21 +295,26 @@ function buildSounds() {
 function buildMusic() {
   const base = join(ROOT, "music");
   if (!isDir(base)) return null;
+  // Prefer the domain's own rollup (viewer_data.json — same source the game's
+  // composer reads); fall back to the nested music.metadata/v1 fields.
+  const rollup = Object.fromEntries(
+    (readJson(join(base, "viewer_data.json"))?.tracks ?? []).map((t) => [t.id, t]));
   const tracks = [];
   for (const id of listDirs(base)) {
     if (["config", "pipeline"].includes(id)) continue;
     const meta = readJson(join(base, id, "metadata.json"));
     if (!meta) continue;
-    const wav = `music/${meta.file ?? `${id}/${id}.wav`}`;
+    const roll = rollup[meta.id ?? id] ?? {};
+    const wav = `music/${roll.file ?? meta.audio?.file ?? `${id}/${id}.wav`}`;
     tracks.push({
       id: meta.id ?? id,
-      name: meta.name ?? titleCase(id),
-      use: meta.use ?? "",
-      feeling: meta.feeling ?? [],
-      duration_s: meta.duration_s ?? null,
-      bpm: meta.bpm ?? null,
-      key: meta.key ?? null,
-      loopable: !!meta.loopable,
+      name: roll.name ?? meta.name ?? titleCase(id),
+      use: roll.use ?? meta.intent?.use ?? "",
+      feeling: roll.feeling ?? meta.intent?.feeling ?? [],
+      duration_s: roll.duration_s ?? meta.audio?.duration_s ?? null,
+      bpm: roll.bpm ?? meta.musical?.tempo_bpm ?? null,
+      key: roll.key ?? meta.musical?.key ?? null,
+      loopable: !!(roll.loopable ?? meta.loop?.loopable),
       path: `music/${id}`,
       files: audioSiblings(wav),
     });
@@ -336,7 +345,7 @@ function buildConstants() {
   // games2/shared — the catalog the wiki's tuning page lists. Overrides the
   // maintainer sets live in wiki/tuning/constants.json (advisory until the
   // games agent wires them in).
-  const rels = ["src/index.ts", "src/surfaces.ts", "src/monsters.ts"];
+  const rels = ["src/index.ts", "src/surfaces.ts", "src/monsters.ts", "src/units.ts"];
   const consts = [];
   for (const rel of rels) {
     const file = join(GAMES2, "shared", rel);
@@ -406,7 +415,12 @@ const data = {
     items: items?.length ?? 0,
     constants: constants.length,
   },
-  domains: { monsters, characters, tiles, objects, sounds, music, items },
+  // Absent domains become empty lists — the site must render, not blank out,
+  // when a domain directory is missing (README contract).
+  domains: {
+    monsters: monsters ?? [], characters: characters ?? [], tiles: tiles ?? [],
+    objects: objects ?? [], sounds: sounds ?? [], music: music ?? [], items: items ?? [],
+  },
   constants,
 };
 

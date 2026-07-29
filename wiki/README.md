@@ -54,8 +54,9 @@ every deploy ships a wiki that reflects the exact art baked into that image.
 
 **Asset ids** are repo-relative file paths without extension for individual
 files (a sound take, a tile variant PNG), the entity's directory path for whole
-entities (`monsters/mammoth`), and `<entity>#<facet>` for a facet of one
-(`monsters/mammoth#walk_S`).
+entities (`monsters/mammoth`), and `<entity>#<state>` for one animation state
+of an entity (`monsters/mammoth#walk` — the verdict covers all 8 directions of
+that state).
 
 **What producing agents MUST do** (this is the whole point — read your
 domain's file at the start of every run):
@@ -74,7 +75,12 @@ domain's file at the start of every run):
 The wiki UI saves feedback by **committing these files to `main`** through the
 GitHub contents API (the maintainer authorizes with a fine-grained PAT pasted
 once into the wiki, stored only in the browser's localStorage). There is also
-a "download JSON" fallback for offline edits.
+a "download JSON" fallback for offline edits. The UI reads these files from
+GitHub `main` too (falling back to the copies served next to the site, which
+lag by one deploy), and saves merge only the entries the maintainer actually
+touched onto the freshly-fetched remote file — so a stale tab can never
+clobber earlier verdicts. Feedback/tuning commits deliberately do **not**
+trigger a game deploy (excluded in `nangijala-deploy.yml`).
 
 ## Tuning files
 
