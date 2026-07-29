@@ -35,7 +35,13 @@ on:
       - "sounds/**"
       - "music/**"
       - "monsters/**"
+      # Wiki SITE changes deploy; feedback/tuning saves and data.json refreshes
+      # must NOT restart prod (the wiki UI commits those on every maintainer
+      # save, and prod rebuilds data.json inside the image anyway).
       - "wiki/**"
+      - "!wiki/feedback/**"
+      - "!wiki/tuning/**"
+      - "!wiki/site/data.json"
       - ".github/workflows/nangijala-deploy.yml"
   workflow_dispatch: {}       # manual: force a roll without any commit
 
@@ -97,6 +103,7 @@ jobs:
             sounds
             music
             monsters
+            wiki
 
       - id: auth
         uses: google-github-actions/auth@v2
