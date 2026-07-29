@@ -378,6 +378,43 @@ def _die_trim_flag(areas):
     return lo < 0.4 and areas[-1] / base > 0.7
 
 
+# A die animation FADES AWAY (maintainer rule): once the monster has
+# substantially dissolved (area below LOWBAR of its starting size), adding
+# pixels back is wrong — the generator re-growing the monster. From that point
+# every frame must keep fading (small tolerance for settling dust); frames
+# that regrow are cut, while later frames that continue the fade (or are
+# empty) are kept so the animation still ends gone.
+DIE_LOWBAR = 0.35
+DIE_EPS_FRAC = 0.015
+DIE_MIN_KEEP = 3
+
+
+def _auto_cut(areas):
+    """Original-index drop list enforcing fade-away monotonicity."""
+    n = len(areas)
+    if n < 4:
+        return []
+    base = max(1, int(np.median(areas[:3])))
+    eps = max(4, int(DIE_EPS_FRAC * base))
+    lowbar = DIE_LOWBAR * base
+    faded = False
+    run_min = None
+    drop = []
+    for i, a in enumerate(areas):
+        if not faded:
+            if i >= 2 and a <= lowbar:
+                faded = True
+                run_min = a
+            continue
+        if a > run_min + eps:
+            drop.append(i)
+        else:
+            run_min = min(run_min, a)
+    while len(areas) - len(drop) < DIE_MIN_KEEP and drop:
+        drop.pop()
+    return drop
+
+
 def trim_die_tails(mid, dry_run=False):
     meta = read_manifest(mid)
     if not meta or "die" not in (meta.get("animations") or {}):
@@ -428,15 +465,40 @@ def trim_die_tails(mid, dry_run=False):
             elif d not in applied:
                 print(f"  !! {mid}: die/{d} has {len(files)} frames, pin expects "
                       f"{pin['of']} — skipped")
+            files = sorted(f for f in os.listdir(fdir) if f.endswith(".png"))
+        # fade-away monotonicity (runs on the current frames, after any pin):
+        # once faded below LOWBAR, frames that ADD pixels are the re-appear
+        # bug and are cut automatically
+        if f"{mid}/{d}" in reviewed_ok:
             continue
-        # no pin: flag suspicious tails for human review
         areas = []
         for f in files:
             im = np.asarray(Image.open(os.path.join(fdir, f)).convert("RGBA"))
             areas.append(int((im[..., 3] > 8).sum()))
-        if f"{mid}/{d}" not in reviewed_ok and _die_trim_flag(areas):
-            print(f"  !! {mid}: die/{d} tail looks wrong (collapse-then-rebound) — "
-                  f"review and pin a cut in config/die_trims.json if it's garbage")
+        drop = _auto_cut(areas)
+        if not drop:
+            continue
+        print(f"  {mid}: die/{d} auto-cut re-appearing frame(s) "
+              f"{','.join(f'f{i:02d}' for i in drop)} "
+              f"({len(files)} -> {len(files) - len(drop)})")
+        removed_total += len(drop)
+        if not dry_run:
+            keep = [f for i, f in enumerate(files) if i not in set(drop)]
+            frames = [Image.open(os.path.join(fdir, f)).convert("RGBA") for f in keep]
+            for f in files:
+                os.remove(os.path.join(fdir, f))
+            for i, fr in enumerate(frames):
+                fr.save(os.path.join(fdir, f"{i:02d}.png"))
+            rec["frames"] = len(frames)
+            rec["frame_paths"] = [
+                os.path.join(mid, "animations", "die", d, f"{i:02d}.png")
+                for i in range(len(frames))]
+            mirror._save_strip(frames, os.path.join(mdir, "animations", f"die__{d}.png"))
+            mirror._save_gif(frames, os.path.join(mdir, "animations", f"die__{d}.gif"))
+            auto = applied.get(d) or {}
+            auto["auto_dropped"] = sorted(set(auto.get("auto_dropped") or []) | set(drop))
+            applied[d] = auto
+            touched = True
     if touched and not dry_run:
         frames_by_dir = {}
         for d in a["directions"]:

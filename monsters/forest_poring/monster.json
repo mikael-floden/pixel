@@ -42,7 +42,7 @@
       "source_name": "Melts into a puddle of water and dissapers",
       "directions": {
         "east": {
-          "frames": 16,
+          "frames": 15,
           "strip": "forest_poring/animations/die__east.png",
           "gif": "forest_poring/animations/die__east.gif",
           "frame_paths": [
@@ -60,8 +60,7 @@
             "forest_poring/animations/die/east/11.png",
             "forest_poring/animations/die/east/12.png",
             "forest_poring/animations/die/east/13.png",
-            "forest_poring/animations/die/east/14.png",
-            "forest_poring/animations/die/east/15.png"
+            "forest_poring/animations/die/east/14.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:45:02 GMT",
           "src_frames": 16,
@@ -224,7 +223,7 @@
           "sub": "8e604a12-53e0-48da-89cf-dfcb0fb51256"
         },
         "west": {
-          "frames": 16,
+          "frames": 15,
           "strip": "forest_poring/animations/die__west.png",
           "gif": "forest_poring/animations/die__west.gif",
           "frame_paths": [
@@ -242,8 +241,7 @@
             "forest_poring/animations/die/west/11.png",
             "forest_poring/animations/die/west/12.png",
             "forest_poring/animations/die/west/13.png",
-            "forest_poring/animations/die/west/14.png",
-            "forest_poring/animations/die/west/15.png"
+            "forest_poring/animations/die/west/14.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:45:19 GMT",
           "src_frames": 16,
@@ -885,6 +883,18 @@
         "strip_px": 32,
         "ext": 4
       }
-    ]
+    ],
+    "die_trim": {
+      "east": {
+        "auto_dropped": [
+          14
+        ]
+      },
+      "west": {
+        "auto_dropped": [
+          14
+        ]
+      }
+    }
   }
 }

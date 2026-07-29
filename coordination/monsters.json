@@ -1,8 +1,8 @@
 {
   "domain": "monsters",
-  "updated_at": "2026-07-29T18:04:37+00:00",
+  "updated_at": "2026-07-29T18:18:38+00:00",
   "health": "idle",
-  "current": "revival-tail trim landed: 98 more die frames cut across 8 monsters (monster no longer comes back to life)",
+  "current": "die animations now FADE-MONOTONIC: automatic re-appear trim in postprocess (23 more frames cut)",
   "progress": {
     "monsters_complete": 24,
     "objects": 21,
@@ -25,7 +25,8 @@
     "[2026-07-29T15:55:24+00:00] resync: butterfly_dragon re-pointed to object adc65dc6 (full 5 states, real angry); snow_demon re-pointed to CHARACTER cb2f48b8; saber_toothed_tiger now HAS die (missing list empty); lava_salamander attack = fire bite, dark_donkey attack = head charge. animation_map.json regenerated. Still partial upstream: stone_golem angry 5/8, diablo_2 angry 1/8.",
     "[2026-07-29T17:28:42+00:00] postprocess.py repairs PixelLab wrap-around overflow (graphics wrapping to the opposite edge, usually one frame late). 56 fixes across 12 monsters; their canvases grew symmetrically (e.g. lava_salamander 48x48->78x48, diablo_2 136x136->136x174). monster.json now carries native_size + postprocess.pad. Runs inside every sync.",
     "[2026-07-29T17:53:51+00:00] postprocess gains a die-tail trim stage: PixelLab sometimes replaces the end of a fade-away die with big off-animation clouds (sometimes + tornado/revived-monster frames). 20 frames cut across ice_crystal_golem (all 8 dirs) + stone_golem (5 dirs); cuts pinned in monsters/config/die_trims.json guarded by take id. DIE FRAME COUNTS CHANGED for those two monsters \u2014 re-read monster.json per-direction counts. Suspicious-but-unpinned tails (hedgehog/water_poring/white_rabbit/stone_turtle revive at the end) are flagged each sync, pending maintainer decision.",
-    "[2026-07-29T18:04:37+00:00] die-tail trim extended to the 'coming back to life' bug (dissolve-then-reappear tails): 98 frames cut across dark_donkey, hedgehog, malformed_creature, masked_shadow_creature, stone_golem, stone_turtle, tree_stump, water_poring, white_rabbit. All cuts pinned in monsters/config/die_trims.json. DIE FRAME COUNTS CHANGED for those monsters \u2014 re-read monster.json per-direction counts."
+    "[2026-07-29T18:04:37+00:00] die-tail trim extended to the 'coming back to life' bug (dissolve-then-reappear tails): 98 frames cut across dark_donkey, hedgehog, malformed_creature, masked_shadow_creature, stone_golem, stone_turtle, tree_stump, water_poring, white_rabbit. All cuts pinned in monsters/config/die_trims.json. DIE FRAME COUNTS CHANGED for those monsters \u2014 re-read monster.json per-direction counts.",
+    "[2026-07-29T18:18:38+00:00] die-trim is now AGGRESSIVE + automatic (maintainer rule: a die fades away, adding pixels after the fade passes 35% of body size is the re-appear bug): postprocess enforces fade-monotonicity and cut 23 more frames (white_rabbit incl. NE/NW specks, tree_stump south mounds, hedgehog SE/SW mounds, forest_poring/forest_poring_2 specks). Deterministic on every sync; pins in config/die_trims.json still take precedence; reviewed_ok exempts. Die frame counts changed again \u2014 re-read manifests."
   ],
   "requests": [
     {

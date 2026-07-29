@@ -737,7 +737,7 @@
           "sub": "97db88f4-2b91-40d6-b9a0-70ef52f3e199"
         },
         "north-east": {
-          "frames": 16,
+          "frames": 15,
           "strip": "tree_stump/animations/die__north-east.png",
           "gif": "tree_stump/animations/die__north-east.gif",
           "frame_paths": [
@@ -755,15 +755,14 @@
             "tree_stump/animations/die/north-east/11.png",
             "tree_stump/animations/die/north-east/12.png",
             "tree_stump/animations/die/north-east/13.png",
-            "tree_stump/animations/die/north-east/14.png",
-            "tree_stump/animations/die/north-east/15.png"
+            "tree_stump/animations/die/north-east/14.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:43:25 GMT",
           "src_frames": 16,
           "sub": "4c8d7a40-82e6-4b86-afc5-e767fa669be9"
         },
         "north-west": {
-          "frames": 16,
+          "frames": 15,
           "strip": "tree_stump/animations/die__north-west.png",
           "gif": "tree_stump/animations/die__north-west.gif",
           "frame_paths": [
@@ -781,15 +780,14 @@
             "tree_stump/animations/die/north-west/11.png",
             "tree_stump/animations/die/north-west/12.png",
             "tree_stump/animations/die/north-west/13.png",
-            "tree_stump/animations/die/north-west/14.png",
-            "tree_stump/animations/die/north-west/15.png"
+            "tree_stump/animations/die/north-west/14.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:43:27 GMT",
           "src_frames": 16,
           "sub": "3fe502ed-db56-41bf-bec5-4d0422d2d6d5"
         },
         "south": {
-          "frames": 16,
+          "frames": 13,
           "strip": "tree_stump/animations/die__south.png",
           "gif": "tree_stump/animations/die__south.gif",
           "frame_paths": [
@@ -805,10 +803,7 @@
             "tree_stump/animations/die/south/09.png",
             "tree_stump/animations/die/south/10.png",
             "tree_stump/animations/die/south/11.png",
-            "tree_stump/animations/die/south/12.png",
-            "tree_stump/animations/die/south/13.png",
-            "tree_stump/animations/die/south/14.png",
-            "tree_stump/animations/die/south/15.png"
+            "tree_stump/animations/die/south/12.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:43:30 GMT",
           "src_frames": 16,
@@ -1133,6 +1128,23 @@
           15
         ],
         "sub": "07cf6eb2-c103-4d99-a934-f8beb9e60773"
+      },
+      "north-east": {
+        "auto_dropped": [
+          14
+        ]
+      },
+      "north-west": {
+        "auto_dropped": [
+          14
+        ]
+      },
+      "south": {
+        "auto_dropped": [
+          12,
+          13,
+          14
+        ]
       }
     }
   }

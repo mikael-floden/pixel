@@ -695,7 +695,7 @@
           "sub": "5c464c3b-72a4-45f3-9f2f-ca6fc149a90c"
         },
         "south": {
-          "frames": 16,
+          "frames": 15,
           "strip": "forest_poring_2/animations/die__south.png",
           "gif": "forest_poring_2/animations/die__south.gif",
           "frame_paths": [
@@ -713,8 +713,7 @@
             "forest_poring_2/animations/die/south/11.png",
             "forest_poring_2/animations/die/south/12.png",
             "forest_poring_2/animations/die/south/13.png",
-            "forest_poring_2/animations/die/south/14.png",
-            "forest_poring_2/animations/die/south/15.png"
+            "forest_poring_2/animations/die/south/14.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:49:36 GMT",
           "src_frames": 16,
@@ -831,6 +830,13 @@
         "strip_px": 54,
         "ext": 6
       }
-    ]
+    ],
+    "die_trim": {
+      "south": {
+        "auto_dropped": [
+          12
+        ]
+      }
+    }
   }
 }

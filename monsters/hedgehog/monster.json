@@ -591,7 +591,7 @@
           "sub": "88d2130e-5861-4304-8c5e-440c4ee41247"
         },
         "south-east": {
-          "frames": 15,
+          "frames": 13,
           "strip": "hedgehog/animations/die__south-east.png",
           "gif": "hedgehog/animations/die__south-east.gif",
           "frame_paths": [
@@ -607,16 +607,14 @@
             "hedgehog/animations/die/south-east/09.png",
             "hedgehog/animations/die/south-east/10.png",
             "hedgehog/animations/die/south-east/11.png",
-            "hedgehog/animations/die/south-east/12.png",
-            "hedgehog/animations/die/south-east/13.png",
-            "hedgehog/animations/die/south-east/14.png"
+            "hedgehog/animations/die/south-east/12.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:30:15 GMT",
           "src_frames": 16,
           "sub": "9e097d01-cf84-4481-aa2d-e4d09be80271"
         },
         "south-west": {
-          "frames": 15,
+          "frames": 13,
           "strip": "hedgehog/animations/die__south-west.png",
           "gif": "hedgehog/animations/die__south-west.gif",
           "frame_paths": [
@@ -632,9 +630,7 @@
             "hedgehog/animations/die/south-west/09.png",
             "hedgehog/animations/die/south-west/10.png",
             "hedgehog/animations/die/south-west/11.png",
-            "hedgehog/animations/die/south-west/12.png",
-            "hedgehog/animations/die/south-west/13.png",
-            "hedgehog/animations/die/south-west/14.png"
+            "hedgehog/animations/die/south-west/12.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:30:17 GMT",
           "src_frames": 16,
@@ -1166,13 +1162,21 @@
         "dropped": [
           15
         ],
-        "sub": "9e097d01-cf84-4481-aa2d-e4d09be80271"
+        "sub": "9e097d01-cf84-4481-aa2d-e4d09be80271",
+        "auto_dropped": [
+          13,
+          14
+        ]
       },
       "south-west": {
         "dropped": [
           15
         ],
-        "sub": "8554a669-5309-4233-8051-350f85b51187"
+        "sub": "8554a669-5309-4233-8051-350f85b51187",
+        "auto_dropped": [
+          13,
+          14
+        ]
       },
       "west": {
         "dropped": [
