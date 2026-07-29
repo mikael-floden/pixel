@@ -151,13 +151,16 @@ interface JumpVoiceCfg {
   rate: number;
   fallbackRate: number; // pitch for the shared `jump_voice` set if `set` is absent
 }
+// 2.0 for BOTH (maintainer 2026-07-25): the generated vocal takes are authored
+// at HALF speed — playing them at 2× lands each character on their true, normal
+// voice ("2.0 sounds like a normal man … put the girl at 2.0 also, I want her
+// real voice"). The earlier girl-at-1.75 was chasing normal pitch by ear before
+// we understood the 2× authoring.
 const JUMP_VOICE: Record<string, JumpVoiceCfg> = {
-  // 2.0 (maintainer 2026-07-25): the generated takes seem authored to play at
-  // DOUBLE rate to sound normal — at 1.0 the man read slow/low.
   default_boy: { set: "jump_voice_boy", rate: 2.0, fallbackRate: 1.33 },
-  default_girl: { set: "jump_voice", rate: 1.75, fallbackRate: 1.75 },
+  default_girl: { set: "jump_voice", rate: 2.0, fallbackRate: 2.0 },
 };
-const JUMP_VOICE_DEFAULT: JumpVoiceCfg = { set: "jump_voice", rate: 1.58, fallbackRate: 1.58 };
+const JUMP_VOICE_DEFAULT: JumpVoiceCfg = { set: "jump_voice", rate: 2.0, fallbackRate: 2.0 };
 // The jump grunt also plays on fall-start; this gap dedupes jump→fall (a
 // jump OFF a ledge fires both within a few frames) and any double-trigger.
 const JUMP_VOICE_MIN_GAP_S = 0.28;
