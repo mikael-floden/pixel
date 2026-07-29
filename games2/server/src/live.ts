@@ -58,6 +58,11 @@ const emptyDoc = (key: string): Doc => {
 
 const docs = new Map<string, Doc>();
 let fetchedAt = "";
+// Boot gate: until initLive finishes, /api/live/state and /api/wiki/save
+// answer 503 (the wiki then uses its static fallback / retries) — a save
+// must never run against an empty store, and an empty state response must
+// never masquerade as "no feedback exists".
+let ready = false;
 const listeners = new Set<(tuning: LiveTuning) => void>();
 
 export type LiveTuning = { monsters: Doc; constants: Doc };
@@ -102,20 +107,64 @@ function readBaked(assetsRoot: string, rel: string): Doc | null {
 
 /** Boot load: GitHub main first, baked copy as fallback, empty as last resort. */
 export async function initLive(assetsRoot: string): Promise<void> {
+  let fromRaw = 0;
   await Promise.all(Object.entries(LIVE_FILES).map(async ([rel, key]) => {
-    const doc = (await fetchRaw(rel)) ?? readBaked(assetsRoot, rel) ?? emptyDoc(key);
+    const raw = await fetchRaw(rel);
+    if (raw) fromRaw++;
+    const doc = raw ?? readBaked(assetsRoot, rel) ?? emptyDoc(key);
     docs.set(key, doc);
   }));
   fetchedAt = new Date().toISOString();
-  console.log(`[live] loaded ${docs.size} live files (repo=${REPO}@${BRANCH})`);
+  ready = true;
+  // Rooms created (and clients joined) during the boot fetch got empty
+  // tuning — push the real state now that it exists.
+  notifyTuning();
+  console.log(`[live] loaded ${docs.size} live files, ${fromRaw} from GitHub (repo=${REPO}@${BRANCH})`);
+  // If GitHub was unreachable we booted on the image-baked copy, which can
+  // be arbitrarily old (live/** pushes never rebuild the image). Keep
+  // retrying until a real refresh lands so the stale window is bounded.
+  if (fromRaw < Object.keys(LIVE_FILES).length) {
+    const retry = setInterval(() => {
+      void refreshLive().then(() => {
+        if (lastRefreshHadRaw) clearInterval(retry);
+      });
+    }, 60_000);
+    retry.unref?.();
+  }
 }
 
-// Refresh: re-fetch raw, apply changed files, notify rooms if tuning moved.
+// Refresh: re-fetch, apply changed files, notify rooms if tuning moved.
 // Coalesced + rate-limited: bursts of pushes trigger one trailing refresh.
+// Uses the contents API when a token is configured (strongly consistent —
+// raw.githubusercontent.com sits behind a ~5-min CDN whose staleness could
+// otherwise REVERT a just-saved admin edit); anonymous raw is the fallback.
 let refreshing = false;
 let refreshQueued = false;
 let lastRefresh = 0;
+let lastRefreshHadRaw = false;
 const REFRESH_MIN_MS = Number(process.env.LIVE_REFRESH_MIN_MS ?? 5000);
+
+async function fetchCurrent(rel: string): Promise<Doc | null> {
+  if (ghToken()) {
+    try {
+      const { doc } = await ghGetContents(rel);
+      if (doc) return doc;
+    } catch { /* fall through to raw */ }
+  }
+  return fetchRaw(rel);
+}
+
+// Adopt a fetched doc only if it isn't OLDER than what we hold — every writer
+// (this server, the wiki-era files, the agents' contract) stamps updated_at,
+// and a CDN-stale raw response must never roll back a newer save.
+function isNewer(doc: Doc, cur: Doc | undefined): boolean {
+  if (!cur) return true;
+  if (JSON.stringify(doc) === JSON.stringify(cur)) return false;
+  const a = Date.parse(String(doc.updated_at ?? ""));
+  const b = Date.parse(String(cur.updated_at ?? ""));
+  if (Number.isFinite(a) && Number.isFinite(b)) return a >= b;
+  return true; // timestamps unusable → different content wins (old behavior)
+}
 
 export async function refreshLive(): Promise<void> {
   if (refreshing) { refreshQueued = true; return; }
@@ -125,14 +174,17 @@ export async function refreshLive(): Promise<void> {
     if (wait > 0) await new Promise((r) => setTimeout(r, wait));
     lastRefresh = Date.now();
     let tuningChanged = false;
+    let sawAny = false;
     await Promise.all(Object.entries(LIVE_FILES).map(async ([rel, key]) => {
-      const doc = await fetchRaw(rel);
+      const doc = await fetchCurrent(rel);
       if (!doc) return; // unreachable/missing → keep what we have
-      if (JSON.stringify(doc) !== JSON.stringify(docs.get(key))) {
+      sawAny = true;
+      if (isNewer(doc, docs.get(key))) {
         docs.set(key, doc);
         if (key.startsWith("tuning/")) tuningChanged = true;
       }
     }));
+    lastRefreshHadRaw = sawAny;
     fetchedAt = new Date().toISOString();
     if (tuningChanged) notifyTuning();
   } finally {
@@ -166,41 +218,64 @@ function isAdmin(req: express.Request): boolean {
 }
 
 // ------------------------------------------------------- GitHub commit path
-// Saves are serialized through one promise chain: the contents API needs the
-// current blob sha per file, and two racing PUTs would 409.
+// Saves are serialized through one promise chain, and each save merges its
+// delta onto the file's CURRENT committed content (contents API = strongly
+// consistent), NOT onto server memory: memory can lag an agent's push by the
+// notify/refresh latency, and a whole-file PUT from a stale base would
+// silently revert the agent's commit. The blob sha from the same GET makes
+// the PUT conditional — a mid-flight racing commit 409s and we re-merge.
 let commitChain: Promise<void> = Promise.resolve();
 
-async function ghCommitFile(rel: string, doc: Doc): Promise<void> {
-  const token = ghToken();
-  if (!token) throw Object.assign(new Error("WIKI_GITHUB_TOKEN is not configured on the server"), { status: 503 });
-  const url = `${GH_API}/repos/${REPO}/contents/live/${rel}`;
-  const headers = {
-    Authorization: `Bearer ${token}`,
+function ghHeaders(): Record<string, string> {
+  return {
+    Authorization: `Bearer ${ghToken()}`,
     Accept: "application/vnd.github+json",
     "Content-Type": "application/json",
     "User-Agent": "nangijala-wiki",
   };
-  let sha: string | undefined;
-  const cur = await fetch(`${url}?ref=${BRANCH}`, { headers, signal: AbortSignal.timeout(10000) });
-  if (cur.ok) sha = ((await cur.json()) as { sha?: string }).sha;
-  else if (cur.status !== 404) throw new Error(`GitHub GET live/${rel}: HTTP ${cur.status}`);
-  const body: Record<string, unknown> = {
-    message: `live: admin update — ${rel}`,
-    content: Buffer.from(JSON.stringify(doc, null, 2) + "\n", "utf8").toString("base64"),
-    branch: BRANCH,
-  };
-  if (sha) body.sha = sha;
-  const res = await fetch(url, { method: "PUT", headers, body: JSON.stringify(body), signal: AbortSignal.timeout(15000) });
-  if (!res.ok) throw new Error(`GitHub PUT live/${rel}: HTTP ${res.status} ${(await res.text()).slice(0, 200)}`);
 }
 
-// Apply a per-entry delta {id: value|null} to a COPY of the current doc.
-function applyDelta(key: string, delta: Record<string, unknown>): Doc {
-  const cur = docs.get(key) ?? emptyDoc(key);
+async function ghGetContents(rel: string): Promise<{ doc: Doc | null; sha?: string }> {
+  const url = `${GH_API}/repos/${REPO}/contents/live/${rel}?ref=${BRANCH}`;
+  const res = await fetch(url, { headers: ghHeaders(), signal: AbortSignal.timeout(10000) });
+  if (res.status === 404) return { doc: null, sha: undefined };
+  if (!res.ok) throw new Error(`GitHub GET live/${rel}: HTTP ${res.status}`);
+  const j = (await res.json()) as { sha?: string; content?: string };
+  try {
+    return { doc: JSON.parse(Buffer.from((j.content ?? "").replace(/\n/g, ""), "base64").toString("utf8")) as Doc, sha: j.sha };
+  } catch {
+    return { doc: null, sha: j.sha };
+  }
+}
+
+/** Merge the delta onto GitHub HEAD and commit; returns the merged doc. */
+async function ghCommitDelta(rel: string, key: string, delta: Record<string, unknown>): Promise<Doc> {
+  if (!ghToken()) throw Object.assign(new Error("WIKI_GITHUB_TOKEN is not configured on the server"), { status: 503 });
+  const url = `${GH_API}/repos/${REPO}/contents/live/${rel}`;
+  for (let attempt = 0; ; attempt++) {
+    const { doc: base, sha } = await ghGetContents(rel);
+    const merged = applyDelta(key, base ?? emptyDoc(key), delta);
+    const body: Record<string, unknown> = {
+      message: `live: admin update — ${rel}`,
+      content: Buffer.from(JSON.stringify(merged, null, 2) + "\n", "utf8").toString("base64"),
+      branch: BRANCH,
+    };
+    if (sha) body.sha = sha;
+    const res = await fetch(url, { method: "PUT", headers: ghHeaders(), body: JSON.stringify(body), signal: AbortSignal.timeout(15000) });
+    if (res.ok) return merged;
+    // 409/422 = someone committed between our GET and PUT — re-merge on top.
+    if ((res.status === 409 || res.status === 422) && attempt < 2) continue;
+    throw new Error(`GitHub PUT live/${rel}: HTTP ${res.status} ${(await res.text()).slice(0, 200)}`);
+  }
+}
+
+// Apply a per-entry delta {id: value|null} to a COPY of the given doc.
+function applyDelta(key: string, cur: Doc, delta: Record<string, unknown>): Doc {
   const next: Doc = JSON.parse(JSON.stringify(cur));
   const bucket = key.startsWith("feedback/") ? "entries" : key === "tuning/monsters" ? "monsters" : "overrides";
   const map = (next[bucket] ?? {}) as Record<string, unknown>;
   for (const [id, value] of Object.entries(delta)) {
+    if (id === "__proto__" || id === "constructor" || id === "prototype") continue;
     if (value === null || value === undefined) delete map[id];
     else map[id] = value;
   }
@@ -213,6 +288,12 @@ function applyDelta(key: string, delta: Record<string, unknown>): Doc {
 export function registerLiveRoutes(app: express.Application): void {
   app.get("/api/live/state", (_req, res) => {
     res.setHeader("Cache-Control", "no-store");
+    if (!ready) {
+      // Booting: an empty 200 would masquerade as "no feedback exists" —
+      // tell callers to fall back / retry instead.
+      res.status(503).json({ error: "live store is still loading" });
+      return;
+    }
     res.json({
       fetched_at: fetchedAt,
       tuning: { monsters: docs.get("tuning/monsters"), constants: docs.get("tuning/constants") },
@@ -254,11 +335,15 @@ export function registerLiveRoutes(app: express.Application): void {
       res.status(400).json({ error: "body must be {file: <live key>, set: {id: value|null}}" });
       return;
     }
+    if (!ready) {
+      res.status(503).json({ error: "live store is still loading — retry in a moment" });
+      return;
+    }
     const rel = Object.entries(LIVE_FILES).find(([, k]) => k === file)![0];
     const run = async () => {
-      const next = applyDelta(file, set);
-      await ghCommitFile(rel, next); // GitHub is the truth — commit FIRST
-      docs.set(file, next);          // then adopt + push to clients
+      // Merge onto GitHub HEAD (not memory) and commit; adopt what landed.
+      const merged = await ghCommitDelta(rel, file, set);
+      docs.set(file, merged);
       fetchedAt = new Date().toISOString();
       if (file.startsWith("tuning/")) notifyTuning();
     };
@@ -280,4 +365,5 @@ export function _resetLiveForTests(): void {
   sessions.clear();
   fetchedAt = "";
   lastRefresh = 0;
+  ready = false;
 }

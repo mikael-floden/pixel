@@ -162,6 +162,63 @@ test("refresh picks up an external push and notifies only on change", async () =
   assert.equal((live.liveTuning().constants.overrides as Record<string, number>).WALK_SPEED, 120);
 });
 
+test("state + save answer 503 until the boot load finishes", async () => {
+  // _resetLiveForTests left ready=false and no initLive has run.
+  const st = await fetch(`${base}/api/live/state`);
+  assert.equal(st.status, 503);
+  const token = await login();
+  const sv = await fetch(`${base}/api/wiki/save`, {
+    method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ file: "tuning/constants", set: { X: 1 } }),
+  });
+  assert.equal(sv.status, 503);
+  assert.equal(ghPuts, 0);
+});
+
+test("save merges onto GitHub HEAD, not server memory (agent push preserved)", async () => {
+  await live.initLive("/nonexistent");
+  // An agent commits directly to GitHub AFTER our boot load — server memory
+  // doesn't know about `agent_added` yet (no refresh ran).
+  ghFiles.set("live/tuning/monsters.json", JSON.stringify({
+    format: "pixel-wiki-tuning-monsters@1", updated_at: "t9",
+    defaults: { max_hp: 20 }, monsters: { mammoth: { max_hp: 50, loot: [] }, agent_added: { max_hp: 7, loot: [] } },
+  }));
+  const token = await login();
+  const res = await fetch(`${base}/api/wiki/save`, {
+    method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ file: "tuning/monsters", set: { mammoth: { max_hp: 99, loot: [] } } }),
+  });
+  assert.equal(res.status, 200);
+  const committed = JSON.parse(ghFiles.get("live/tuning/monsters.json")!) as { monsters: Record<string, { max_hp: number }> };
+  assert.equal(committed.monsters.mammoth.max_hp, 99, "admin edit landed");
+  assert.equal(committed.monsters.agent_added?.max_hp, 7, "concurrent agent entry survived the save");
+  // …and the server adopted the merged truth (agent entry now in memory too).
+  assert.equal((live.liveTuning().monsters.monsters as Record<string, { max_hp: number }>).agent_added.max_hp, 7);
+});
+
+test("refresh never rolls back to an OLDER (CDN-stale) document", async () => {
+  await live.initLive("/nonexistent");
+  const fresh = { format: "pixel-wiki-tuning-constants@1", updated_at: "2026-07-30T10:00:00Z", overrides: { WALK_SPEED: 120 } };
+  ghFiles.set("live/tuning/constants.json", JSON.stringify(fresh));
+  await live.refreshLive();
+  assert.equal((live.liveTuning().constants.overrides as Record<string, number>).WALK_SPEED, 120);
+  // The CDN regresses to an older cached copy — must NOT be adopted.
+  ghFiles.set("live/tuning/constants.json", JSON.stringify({
+    format: "pixel-wiki-tuning-constants@1", updated_at: "2026-07-30T09:00:00Z", overrides: { WALK_SPEED: 80 },
+  }));
+  await live.refreshLive();
+  assert.equal((live.liveTuning().constants.overrides as Record<string, number>).WALK_SPEED, 120, "stale copy rejected");
+  ghFiles.set("live/tuning/constants.json", JSON.stringify(fresh));
+});
+
+test("initLive notifies rooms so boot-window joiners get the real tuning", async () => {
+  let notified = 0;
+  const off = live.onLiveChange(() => notified++);
+  await live.initLive("/nonexistent");
+  off();
+  assert.equal(notified, 1);
+});
+
 test("save with no server token fails closed (memory untouched)", async () => {
   const saveToken = process.env.WIKI_GITHUB_TOKEN;
   delete process.env.WIKI_GITHUB_TOKEN;

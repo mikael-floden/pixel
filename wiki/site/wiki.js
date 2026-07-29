@@ -172,9 +172,11 @@ async function apiSaveFile(key) {
     body: JSON.stringify({ file: key, set }),
   });
   if (res.status === 401) {
+    // Session expired (server restarts wipe sessions — routine). KEEP the
+    // unsaved edits: drop only the dead token; re-login then re-saves them.
     localStorage.removeItem("wiki-admin-token");
-    setAdmin(false);
-    throw new Error("session expired — sign in again");
+    setAdmin(false, { keepEdits: true });
+    throw new Error("session expired — sign in again, your edits are kept");
   }
   if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? `HTTP ${res.status}`);
   // Only forget ids saved in THIS pass so edits made mid-save stay dirty.
@@ -928,6 +930,7 @@ function initChrome() {
   const dlg = $("#login-dialog");
   $("#admin-btn").addEventListener("click", () => {
     if (state.admin) {
+      if (state.dirty.size && !confirm("You have unsaved changes — sign out and discard them?")) return;
       localStorage.removeItem("wiki-admin-token");
       setAdmin(false);
       toast("Signed out.");
@@ -967,13 +970,14 @@ function initChrome() {
   window.addEventListener("beforeunload", (e) => { if (state.dirty.size) e.preventDefault(); });
 }
 
-function setAdmin(on) {
+function setAdmin(on, { keepEdits = false } = {}) {
   state.admin = on;
   document.documentElement.classList.toggle("is-admin", on);
   const btn = $("#admin-btn");
   btn.textContent = on ? "Sign out (admin)" : "Admin";
   btn.title = on ? "Signed in as the game designer" : "Game-designer sign in";
-  if (!on) { state.dirty.clear(); state.touched = {}; updateSavebar(); }
+  if (!on && !keepEdits) { state.dirty.clear(); state.touched = {}; }
+  updateSavebar();
   if (state.data) route();
 }
 

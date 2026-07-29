@@ -17,10 +17,13 @@ game within seconds.
 4. Clients apply the new tuning immediately. The wiki reads the same state
    via `GET /api/live/state`.
 
-Admin saves via the wiki are even faster: the server applies + broadcasts
-**in-memory first**, then commits to GitHub (the later webhook refresh is a
-no-op). The server also loads `live/**` at boot (GitHub raw first, the copy
-baked into the image as fallback), so a restart never loses state.
+Admin saves via the wiki don't need that hop: the server merges the admin's
+per-entry delta onto the file's **current committed content** (GitHub
+contents API, conditional on the blob sha — a racing agent push re-merges,
+never gets reverted), commits, then adopts the result and broadcasts
+immediately. The server also loads `live/**` at boot (GitHub first, the copy
+baked into the image as fallback, with retries until GitHub answers), and
+holds saves/state queries (503) until the store is loaded.
 
 `live/**` is deliberately **excluded from the deploy workflow's trigger
 paths** — changing monster stats or rating a sound never restarts the game.

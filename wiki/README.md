@@ -86,8 +86,9 @@ domain's file at the start of every run):
   appears in the wiki on the next build/deploy.
 
 **How saves flow**: the wiki POSTs a per-entry delta to the game server
-(`/api/wiki/save`, admin session required). The server merges it into its
-in-memory copy of the file, commits `live/**` to `main` with its own token,
+(`/api/wiki/save`, admin session required). The server merges the delta onto
+the file's **current committed content** (contents API + blob-sha-conditional
+PUT, re-merging on a 409), commits `live/**` to `main` with its own token,
 then pushes new tuning to every connected game client over the Colyseus
 WebSocket (`"live:update"`). Pushes to `live/**` from anyone else (agents)
 reach the running server via `.github/workflows/live-notify.yml` →
