@@ -88,12 +88,15 @@ terrain, which stays whatever it was (walkable ground, or water you swim in)
 ```jsonc
 "decks": [
   {
-    "kind": "roof",          // or "bridge" — a label; not semantically load-bearing
+    "kind": "roof",          // or "bridge" or "cave" — a label; not load-bearing
     "mat": 5,                 // index into `materials` (the slab's surface material)
     "level": 4,               // elevation of the slab's WALKABLE TOP, in levels
-    "thickness": 1,           // EXTRA face tiles below the top (render only). 0 is
-                              // legal: the top tile alone — its baked face makes a
-                              // 1-LEVEL slab. BRIDGES ship 0 (maintainer 2026-07-22)
+    "thickness": 1,           // face tiles below the top; the slab occupies
+                              // [level - thickness, level] and that span is SOLID:
+                              // the base beneath is enterable only from strictly
+                              // BELOW `level - thickness` (see Caves). 0 is legal:
+                              // the top tile alone — its baked face makes a 1-LEVEL
+                              // slab. BRIDGES ship 0 (maintainer 2026-07-22)
     "cells": [
       {"x": 58, "y": 105, "top": 12, "mirror": 0}   // top indexes `paths`
     ]
@@ -129,6 +132,39 @@ that reason. Size walk-under decks (and full-height door gaps) to the sprite.
 room with a tall door; a rock stair on the east climbs onto the roof; west/north
 roof edges are open drops) and a **bridge** deck spanning two hills over a channel
 that is half water (swim under) and half grass (walk under).
+
+## Caves (`kind: "cave"` — the carve-out protocol, maintainer 2026-07-29)
+
+A cave/dungeon lives in the SAME seamless world with **no transition**: the deck
+idea inverted. The generator *carves* a finished mountain — the cave **floor
+becomes the base terrain** (level 0, dark tops; the cell's `mat` is kept so
+surface speed/sound on the roof stay what the mountain was), and the mountain
+above it becomes `kind:"cave"` roof decks that carry the pre-carve surface
+**verbatim**: per-cell `top`/`mirror`, deck `level` = the old surface level,
+deck `mat` = the old cell mat (one deck per (level, mat) group). From outside,
+byte-for-byte nothing changes except the doorway.
+
+Two contracts make this safe:
+
+- **The slab is SOLID.** A deck occupies `[level - thickness, level]`. Movers at
+  or above the slab's underside can only interact with the deck top (a too-high
+  step is a WALL, exactly as the uncarved mountain was); the base beneath is
+  enterable only from strictly *below* `level - thickness`. Without this, a
+  walker stepping into a tall roof ledge would "fall through" the rock onto the
+  cave floor. (`games2/shared` implements this as `deckBot`; thickness is
+  therefore no longer render-only.)
+- **The doorway is the thickness gap.** Cave decks ship
+  `thickness = level - ceiling` (the_island2: ceiling 8), so the wall faces
+  `[0, ceiling)` are missing. Everywhere inside the massif those pixels are
+  overdrawn by nearer terrain — invisible; at the pinned rim cells they ARE the
+  visible dark door, and the same gap is the walk-in headroom.
+
+the_island2's build() enforces the whole protocol: the legacy surface laws run
+on the pre-carve surface view, a full-render byte-diff must be empty outside the
+doorway window, and a CONTAINMENT battery (every cave cell deep inside the
+independently-recomputed massif, single mouth, headroom, floor reach) fails the
+build if the mountain ever changes shape under the cave — the "redraw the cave"
+reminder.
 
 ## Notes for consumers
 

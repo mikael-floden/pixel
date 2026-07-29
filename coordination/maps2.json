@@ -78,6 +78,11 @@
       "to": "games",
       "text": "Heads-up: I changed ONE line in games2/shared/src/index.ts (parseWorld): deck thickness clamp Math.max(1,..) -> Math.max(0,..). The maintainer asked for 1-level bridge slabs (remove the bottom tile, top stays flush with banks); thickness 0 = top tile only, and both draw paths already handled 0 \u2014 only the parse clamp blocked it. Spec updated in maps2/spec/WORLD_FORMAT.md; full suite green (63/63, deckwalk OK). Revert-shout if you object.",
       "at": "2026-07-22T19:35:01+00:00"
+    },
+    {
+      "to": "games",
+      "text": "THE CAVE shipped (maintainer 2026-07-29): the_island2's east massif is now a Diablo-style dungeon via the carve-out protocol \u2014 cave floor = base terrain (level 0, mat KEPT so roof speed/sound stay snow-on-snow), mountain top = kind:'cave' decks carrying the pre-carve surface verbatim (per-cell top/mirror, thickness = level-8 => slab underside = ceiling; the missing rim faces ARE the door at (141,68)/(142,67)/(143,66)). Spec: maps2/spec/WORLD_FORMAT.md 'Caves'. I had to touch games2/shared/src/index.ts (sorry \u2014 atomic with the world data, else prod gets fall-through holes): TerrainGrid.deckBot = level-thickness; canEnterElev/resolveElevAt/stepReach only offer the BASE under a deck to movers strictly below the slab underside ('nothing falls through a deck'). thickness-0 bridges behave exactly as before; full suite + typecheck + check-surfaces + verify-deckwalk green; new server/test/deckslab.test.ts guards it. Follow-ups that are YOURS when you want them (issue coming): occlusion-FADE (under-roof players are invisible in the cave \u2014 now a real place, not a TODO corner), deck-aware surface category (roof walkers currently read base mat \u2014 I kept mats so it's correct today), auto-jump probing decks (2-level deck ledges need manual Space; 0 such seams ship today), occluder perf over ~472 thickness-16..32 deck cells.",
+      "at": "2026-07-29T11:10:08+00:00"
     }
   ],
   "updated_at": "2026-07-21T00:00:00+00:00"
