@@ -150,6 +150,10 @@ SETS: dict[str, dict] = {
     # No max_ms (a grunt's vowel IS the sound — transient-tightening would cut
     # it) and no judge (measurable gates can't grade a voice; ears decide via
     # /#foley). A small POSITIVE brief per the negative-prompt-backfire lesson.
+    # ⭐ VOICE PLAYBACK LESSON (2026-07-25): these vocal takes come out authored
+    # at HALF speed — the engine plays them at RATE 2.0 (JUMP_VOICE in
+    # engine/api.ts) to get the true normal voice. Don't chase "normal pitch"
+    # by re-briefing; 2× is the baseline.
     # The avatar is female (maintainer 2026-07-19: round-1 came back a male
     # orc grunt — "she is a girl you know"). CAREFUL: "young girl / small
     # girl / little girl" wording gets HARD-BLOCKED by ElevenLabs moderation
