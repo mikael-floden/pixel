@@ -53,13 +53,20 @@ monsters/<id>/
                                     all the way around (8 plays per loop)
 ```
 
-## Review page
+## Review gallery (chat artifact, NOT in git)
 
-**`monsters/index.html`** is the review gallery: every monster, one line per
-state, each playing its `__rotating.gif` (play → turn one step → play …).
-Fallbacks (`angry → idle`) and MISSING states are labeled. Serve locally with
-`python3 -m http.server` from the repo (or `monsters/`) and open `/monsters/`,
-or use GitHub Pages. Data comes from `viewer_data.json` (built each sync).
+The review gallery is a **claude.ai artifact** the maintainer views in chat —
+every monster, one line per state, each clip playing through then turning one
+45° step, all the way around. Fallbacks (`angry → idle`) and MISSING states
+are labeled. It is deliberately not committed; after a resync, regenerate and
+republish it:
+
+```bash
+python monsters/pipeline/review_artifact.py -o /tmp/monster_review.html
+# then the agent republishes it to the existing artifact URL
+```
+
+(A future wiki is a separate task and not this gallery.)
 
 ## Tooling
 
@@ -69,7 +76,7 @@ export PIXELLAB_API_KEY=...              # gitignored .env; never committed
 
 python monsters/pipeline/sync.py             # THE command: discover by tag,
                                              #   mirror all, prune, rebuild
-                                             #   animation_map + viewer, verify
+                                             #   animation_map, verify
 python monsters/pipeline/sync.py --dry-run   # print the plan only
 python monsters/pipeline/sync.py --fresh     # wipe folders, full re-download
 python monsters/pipeline/sync.py --only <id> # limit mirroring to one monster
@@ -86,7 +93,9 @@ python monsters/pipeline/sync.py --only <id> # limit mirroring to one monster
   above; builds strips, per-direction GIFs and the rotating GIF.
 - `pipeline/states.py` — keyword classifier used only for brand-new monsters
   nobody has mapped yet.
-- `pipeline/viewer_build.py` — builds `viewer_data.json` for the review page.
+- `pipeline/review_artifact.py` — emits the self-contained review gallery HTML
+  (animations embedded as lossless WebP sheets + a canvas animator) for the
+  chat artifact; output stays out of git.
 - `pipeline/pixellab_client.py` — this domain's own client: tag discovery with
   pagination, both stores' animation shapes normalized to one, threaded
   CDN downloads, If-Modified-Since change detection.

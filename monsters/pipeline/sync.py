@@ -13,7 +13,8 @@ store or the characters store). This tool makes the repo match reality:
     ("remove the ones I removed");
   - **mirror** every roster monster (add/update; zero generations);
   - **regenerate** animation_map.json (the game-facing state contract, same
-    shape as characters2/animation_map.json) and viewer_data.json + verify.
+    shape as characters2/animation_map.json) + verify. The review gallery is a
+    chat artifact, rebuilt separately with pipeline/review_artifact.py.
 
 Does NOT commit — the caller commits the reconciled tree as one atomic change.
 
@@ -33,7 +34,6 @@ import shutil
 
 import mirror
 import states as states_mod
-import viewer_build
 from mirror import ROOT, STATES, iter_manifests, monster_dir, read_manifest
 from pixellab_client import PixelLabClient
 
@@ -232,7 +232,6 @@ def sync(client, fresh=False, dry_run=False, only=None):
         return {"pruned": pruned, **report}
 
     build_animation_map(metas)
-    viewer_build.build()
     problems = verify(metas)
 
     print("\n=== sync summary ===")

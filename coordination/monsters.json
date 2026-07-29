@@ -1,8 +1,8 @@
 {
   "domain": "monsters",
-  "updated_at": "2026-07-29T12:19:30+00:00",
+  "updated_at": "2026-07-29T12:40:27+00:00",
   "health": "idle",
-  "current": "full resync done: 24 monsters (21 objects + 3 characters), 5 game states each; review page live",
+  "current": "review gallery moved to a claude.ai artifact; in-repo viewer removed",
   "progress": {
     "monsters_complete": 24,
     "objects": 21,
@@ -20,7 +20,8 @@
     "[2026-07-17T09:33:23+00:00] monsters agent online: generates pixel-art monsters via the PixelLab API. Skeleton templates: Bear, Cat, Dog, Horse, Lion; free-form prompt per generation (anything from a dragon to a fairy). One folder per monster under monsters/<id>/. No loop yet \u2014 runs on demand when the maintainer asks. Commits directly to main, only inside monsters/ + this file.",
     "[2026-07-22T23:18:03+00:00] mirrored the maintainer-authored poring (PixelLab object cd723b90) into monsters/poring/ \u2014 pipeline now mirrors BOTH PixelLab stores (objects + characters), zero-generation downloads",
     "[2026-07-23T18:15:09+00:00] roster-driven sync landed: config/roster.json is now the authoritative list; pipeline/sync.py reconciles (add/update/re-point/prune) + verifies canonical jump/attack/die x8. 6 porings: normal/lava/forest/sand/water/ice. All gained a die animation; ice_poring re-pointed 10046ec1 -> 520e6bf5 (ice & snow).",
-    "[2026-07-29T12:19:30+00:00] CONTRACT CHANGE: the poring-era jump/attack/die keys and animation_aliases are GONE. Ground truth = the MONSTER tag on PixelLab (objects AND characters stores). Every monster now exposes canonical animation keys idle/walk/angry/attack/die; the game-facing mapping incl. angry->idle fallbacks is monsters/animation_map.json (same shape as characters2's). Review gallery: monsters/index.html (+viewer_data.json). Old poring/sand_poring removed by maintainer."
+    "[2026-07-29T12:19:30+00:00] CONTRACT CHANGE: the poring-era jump/attack/die keys and animation_aliases are GONE. Ground truth = the MONSTER tag on PixelLab (objects AND characters stores). Every monster now exposes canonical animation keys idle/walk/angry/attack/die; the game-facing mapping incl. angry->idle fallbacks is monsters/animation_map.json (same shape as characters2's). Review gallery: monsters/index.html (+viewer_data.json). Old poring/sand_poring removed by maintainer.",
+    "[2026-07-29T12:40:27+00:00] review gallery is now a claude.ai artifact (maintainer views it in chat): https://claude.ai/code/artifact/5907a10c-6355-4394-9ec0-5886776ba393 \u2014 rebuild with monsters/pipeline/review_artifact.py and republish to that URL after a resync. monsters/index.html + viewer_data.json + viewer_build.py are REMOVED from the repo; the game contract stays monsters/animation_map.json (unchanged)."
   ],
   "requests": [
     {
