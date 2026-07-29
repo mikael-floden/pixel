@@ -228,6 +228,10 @@ decks at `[24,40]` over the same cells). `num` scales with area (constant
 density). Zones are DERIVED by habitat rules in `pipeline/spawns.py` — rerun it
 after regenerating any world (like `minimaps.py`); it validates every zone
 (simple polygon, ≥num standable cells at the claimed elevation) before writing.
+Two placement laws: **`the_island2` MUST contain every monster** (the endgame
+map — build-asserted, with habitat fallback so it can't silently drop one), and
+the four **feature-test maps** (`prop_demo`, `trans_demo`, `glow_test`,
+`occlusion_test`) carry NO monsters (explicit empty `zones: []`).
 `monster_demo` is the showcase world: a 5×5 habitat-tile pad per monster on a
 stone courtyard (`pipeline/monsterdemo.py`), each pad one zone. The game
 consumes spawns.json to place real monsters (until wired, its fake near-spawn

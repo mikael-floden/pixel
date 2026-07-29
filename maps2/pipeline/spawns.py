@@ -63,6 +63,26 @@ WORLDS = os.path.join(MAPS2, "worlds")
 SCHEMA = "pixel-maps2/spawns@1"
 BUILDER_OWNS = {"monster_demo"}     # writes its own explicit spawns.json
 
+# Test/feature-demo maps used to exercise ONE rendering feature — they get NO
+# monsters (maintainer 2026-07-29: "used for testing different things"): the
+# props showcase, the transition auto-tiler demo, the emission/glow showcase,
+# and the deck occlusion test. They ship an empty `zones: []` so the intent is
+# explicit, not a missing file. (monster_demo is the deliberate exception — it
+# IS the monster showcase and owns its own file.)
+NO_SPAWN_WORLDS = {"prop_demo", "trans_demo", "glow_test", "occlusion_test"}
+
+# Worlds that MUST always contain EVERY roster monster (maintainer 2026-07-29:
+# "The Island 2 should always contain all monsters — this is the map closest to
+# the end game"). Generation guarantees a zone for every monster here (falling
+# back off the habitat threshold, then to a neighbouring habitat, if need be)
+# and the build ASSERTS full coverage — so a future terrain change that erases
+# a monster's habitat fails loudly instead of silently dropping the creature.
+MUST_HAVE_ALL = {"the_island2"}
+# Fallback habitat order when a monster's own habitat has no home on a
+# must-have world (land grounds first, then the wetter/edge ones).
+FALLBACK_HABS = ("grass", "dirt", "stone", "dark", "snow", "forest",
+                 "ice", "sand", "cave", "water")
+
 # -- habitat doctrine ---------------------------------------------------------
 # monsters/config/roster.json is the id authority (the PixelLab MONSTER tag
 # decides membership, so the roster GROWS on its own). Every monster maps to
@@ -451,7 +471,38 @@ def zones_for(w):
         if len(cells) >= BRIDGE_MIN_CELLS:
             zones.append(make_zone(w, BRIDGE_GUARD, set(cells), "bridge-1",
                                    elev=[lvl, lvl], num=1))
+
+    # THE ISLAND 2 must carry EVERY monster (the endgame map). Any monster that
+    # its habitat rules left out gets a guaranteed fallback zone; then we assert.
+    if w.name in MUST_HAVE_ALL:
+        placed = {z["monster"] for z in zones}
+        for mid in ids:
+            if mid in placed:
+                continue
+            z = fallback_zone(w, masks, mid)
+            assert z is not None, \
+                (f"{w.name} MUST contain all monsters but {mid} has NO valid "
+                 f"home anywhere — redraw the habitat rules")
+            zones.append(z)
+        placed = {z["monster"] for z in zones}
+        missing = [m for m in ids if m not in placed]
+        assert not missing, f"{w.name} is missing monster(s): {missing}"
     return zones
+
+
+def fallback_zone(w, masks, mid):
+    """A guaranteed zone for a monster whose habitat rules produced nothing on a
+    MUST_HAVE_ALL world: the largest component (no size threshold) of its own
+    habitat, then of each FALLBACK_HABS habitat, that yields >=1 valid cell."""
+    tried = [habitat_of(mid)] + [h for h in FALLBACK_HABS if h != habitat_of(mid)]
+    for hab in tried:
+        elev = [0, 1] if hab == "cave" else None
+        for comp in comps(masks.get(hab, set())):    # biggest first
+            try:
+                return make_zone(w, mid, comp, f"extra-{mid}", elev=elev, num=1)
+            except AssertionError:
+                continue
+    return None
 
 
 def refresh(name):
@@ -461,6 +512,12 @@ def refresh(name):
     wpath = os.path.join(WORLDS, name, "world.json")
     if not os.path.isfile(wpath):
         return
+    if name in NO_SPAWN_WORLDS:                     # feature-test map: no monsters
+        with open(os.path.join(WORLDS, name, "spawns.json"), "w") as f:
+            json.dump({"schema": SCHEMA, "world": name, "zones": []}, f,
+                      separators=(",", ":"))
+        print(f"{name}: 0 zones (feature-test map — no monsters)")
+        return
     w = W(name)
     zones = zones_for(w)
     doc = {"schema": SCHEMA, "world": name, "zones": zones}
@@ -468,8 +525,9 @@ def refresh(name):
         json.dump(doc, f, separators=(",", ":"))
     kinds = sorted({z["monster"] for z in zones})
     total = sum(z["num"] for z in zones)
-    print(f"{name}: {len(zones)} zone(s), {total} monsters, kinds: "
-          f"{', '.join(kinds) if kinds else '(none)'}")
+    extra = f"  [ALL {len(kinds)} monsters]" if name in MUST_HAVE_ALL else ""
+    print(f"{name}: {len(zones)} zone(s), {total} monsters, "
+          f"{len(kinds)} kind(s){extra}")
 
 
 def validate_file(name):

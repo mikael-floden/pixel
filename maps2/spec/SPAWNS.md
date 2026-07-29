@@ -86,8 +86,23 @@ sharing one component get OVERLAPPING zones with the population split so the
 density stays constant (the four cave dwellers share the dungeon floor this
 way). Diagonal contacts are healed so every traced boundary is provably simple.
 Validation asserts each zone has at least `num` valid standable cells at its
-claimed elevation before the file is written. `monster_demo` is the exception:
-its builder (`monsterdemo.py`) writes explicit pad zones (`BUILDER_OWNS`).
+claimed elevation before the file is written.
+
+Two placement laws (maintainer 2026-07-29):
+
+- **`the_island2` MUST contain every monster** — it is the map closest to the
+  end game (`MUST_HAVE_ALL` in spawns.py). Generation guarantees a zone for
+  every roster id: a monster its habitat rules missed falls back to the biggest
+  component of its own habitat (no size threshold) and then to a neighbouring
+  habitat, and the build ASSERTS full coverage — so a future terrain change
+  that erases a habitat fails the build ("`the_island2` is missing monster(s)")
+  instead of silently dropping the creature.
+- **feature-test maps carry NO monsters** — `prop_demo`, `trans_demo`,
+  `glow_test`, `occlusion_test` each exercise ONE rendering feature, so they
+  ship an explicit empty `zones: []` (`NO_SPAWN_WORLDS`).
+
+`monster_demo` is the third special case: its builder (`monsterdemo.py`) writes
+explicit pad zones (`BUILDER_OWNS`).
 
 ## The demo world — `monster_demo`
 
