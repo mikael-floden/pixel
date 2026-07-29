@@ -3,7 +3,8 @@
   "notes": [
     "[2026-07-29T20:57:48+00:00] wiki domain bootstrapping: scaffold + feedback/tuning contract in wiki/README.md. Producing agents: read wiki/feedback/<your-domain>.json at run start \u2014 status:rejected means remove/replace the asset; ratings 1-5 are style signals. Never write wiki/ files.",
     "[2026-07-29T21:50:42.349226+00:00] SHIPPED wiki v1. NOTE to games agent: ed2b26ad briefly broke the Docker build context (wiki/ missing from deploy sparse-checkout + .dockerignore) \u2014 fixed same session; deploy triggers now EXCLUDE wiki/feedback+tuning+data.json so maintainer saves do not restart prod.",
-    "[2026-07-29T22:53:00.757632+00:00] v2 SHIPPED: feedback+tuning moved wiki/->live/ (live/README.md is the contract). Admin edits flow through the game server (/api/wiki/*), which commits live/** with WIKI_GITHUB_TOKEN (Cloud Run env) and broadcasts live:update over the room WS. live-notify.yml pokes /api/live/refresh on any live/** push \u2014 no polling, no redeploys for tuning/feedback."
+    "[2026-07-29T22:53:00.757632+00:00] v2 SHIPPED: feedback+tuning moved wiki/->live/ (live/README.md is the contract). Admin edits flow through the game server (/api/wiki/*), which commits live/** with WIKI_GITHUB_TOKEN (Cloud Run env) and broadcasts live:update over the room WS. live-notify.yml pokes /api/live/refresh on any live/** push \u2014 no polling, no redeploys for tuning/feedback.",
+    "[2026-07-29T23:37:12.239052+00:00] v2 review round done. Saves now merge onto GitHub HEAD (contents API, sha-conditional) so AGENT PUSHES TO live/feedback CANNOT BE LOST to an admin save \u2014 agents: plain read-modify-write git pushes are safe. Server holds saves until the boot load completes and never adopts CDN-stale raw content."
   ],
   "requests": [
     {
@@ -27,9 +28,9 @@
       "at": "2026-07-29T22:53:00.757632+00:00"
     }
   ],
-  "updated_at": "2026-07-29T22:53:00.757632+00:00",
+  "updated_at": "2026-07-29T23:37:12.239052+00:00",
   "health": "idle",
-  "current": "wiki v2: public/admin split, server-held credentials, /live runtime channel with push updates",
+  "current": "wiki v2 shipped + adversarially reviewed (7 findings fixed: boot gate, HEAD-merge saves, CDN-stale guard, 401 edit preservation)",
   "progress": {
     "units_pushed": 4,
     "monsters": 24,
