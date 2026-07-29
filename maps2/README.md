@@ -216,6 +216,23 @@ spot edits — and is risk-free for the mountain top because build() proves:
   "CAVE OUTSIDE THE MOUNTAIN — redraw the cave": update the layout for the new
   mountain before shipping.
 
+## Monster spawn zones (maintainer 2026-07-29)
+
+maps2 places the monsters: every world ships `worlds/<name>/spawns.json`
+(`pixel-maps2/spawns@1`, spec: `spec/SPAWNS.md`) — a list of polygon spawn
+zones {monster, area, elev, num}. Areas are SIMPLE polygons (concave fine,
+self-intersections build-asserted away), may overlap, and carry the INTENDED
+elevation range so caves, bridge decks and the ground beneath them are
+unambiguous (the cave floor is `elev [0,1]` while snowfields ride the cave-roof
+decks at `[24,40]` over the same cells). `num` scales with area (constant
+density). Zones are DERIVED by habitat rules in `pipeline/spawns.py` — rerun it
+after regenerating any world (like `minimaps.py`); it validates every zone
+(simple polygon, ≥num standable cells at the claimed elevation) before writing.
+`monster_demo` is the showcase world: a 5×5 habitat-tile pad per monster on a
+stone courtyard (`pipeline/monsterdemo.py`), each pad one zone. The game
+consumes spawns.json to place real monsters (until wired, its fake near-spawn
+rectangles remain).
+
 ## Geometry (tiles2)
 
 - top diamond **30px** tall × 64px wide (grid steps DX=32, DY=15)
