@@ -52,21 +52,37 @@ function pngDims(p) {
 // anchor and keeps the nadir shadow ON the ground (the bird pattern).
 const HOVER_PX = { butterfly_dragon: 12 };
 
-/** Measure a monster's WALK art (full pixel decode of every direction strip):
- * - artBottom: the FEET line as a fraction of the TRUE frame height — the p90
- *   of per-frame opaque bottoms (robust to a stray pixel, keeps the ground
- *   contact of a gait whose body bobs);
- * - footW: ground-contact footprint — median opaque row width over the bottom
- *   ~14% of each frame's body;
- * - bodyW: median full opaque width (the mass the shadow should suggest for
- *   creatures that taper to a wisp at the ground).
- * Rows need >= 2 opaque px (alpha > 16) to count, killing lone noise pixels. */
+/** Measure a monster's WALK art with a FULL pixel decode of every direction
+ * strip. v2 — PER-DIRECTION ground data (maintainer 2026-07-30, round 2: the
+ * pooled-p90 single anchor floated whole directions — strips differ in height
+ * and margin after in-place art repairs, per-direction feet lines differ by up
+ * to 9px, and ~90% of frames sit above a p90 line by construction; hop gaits
+ * like the frog floated most of the cycle and PARKED on an airborne frame 0
+ * when pausing — "flying monsters ... a constant theme").
+ *
+ * Per frame: opaque bbox (alpha > 16, rows >= 2px) + `contactW` = the widest
+ * opaque run of the bottom 3 rows. A frame is a GROUND frame when contactW >=
+ * max(4, 0.5 × the direction's widest contact) — planted legs are wide, tail
+ * tips and toe push-offs are slivers and never define the ground.
+ * Per direction:
+ * - anchor = p65 of ground-frame bottoms — the common pose sits flush and a
+ *   landing-squash frame briefly dips INTO the ground (invisible) instead of
+ *   the whole gait floating above the shadow (very visible);
+ * - f = (anchor+1)/stripH  → the client's origin-Y for THIS direction;
+ * - cx = foot-centre X (median over ground frames near the anchor) / frameW →
+ *   origin-X, so feet + shadow stay centred under bodies drawn off-centre in
+ *   the frame (turtle east: 6px off; saber diagonals: 22px off);
+ * - contact = the ground frame nearest the anchor (widest contact on ties) —
+ *   the frame a PAUSED monster parks on (a frog sits; it never levitates).
+ * Monster-level footW/bodyW come from CONTACT frames only (mid-air tucked
+ * feet no longer deflate the shadow width). */
 function measureWalkArt(stripAbsPaths, framesByDir) {
-  const bots = [];
+  const ground = {}; // dir -> {f, cx, contact}
   const foots = [];
   const bodies = [];
   let frameH = 0;
   let frameW = 0;
+  const anchors = []; // (anchor+1)/H per dir — pooled fallback artBottom
   for (const [dir, abs] of Object.entries(stripAbsPaths)) {
     let png;
     try {
@@ -79,11 +95,12 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
     const fw = Math.round(W / n);
     frameH = Math.max(frameH, H);
     frameW = Math.max(frameW, fw);
+    const frames = [];
     for (let f = 0; f < n; f++) {
       const xBase = f * fw;
       let top = -1;
       let bot = -1;
-      const rowW = new Map();
+      const rows = new Map(); // y -> [x0, x1]
       for (let y = 0; y < H; y++) {
         let cnt = 0;
         let x0 = -1;
@@ -98,28 +115,73 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
         if (cnt >= 2) {
           if (top < 0) top = y;
           bot = y;
-          rowW.set(y, x1 - x0 + 1);
+          rows.set(y, [x0, x1]);
         }
       }
       if (bot < 0) continue;
-      bots.push(bot);
-      bodies.push(Math.max(...rowW.values()));
+      let contactW = 0;
+      for (let y = bot - 2; y <= bot; y++) {
+        const r = rows.get(y);
+        if (r) contactW = Math.max(contactW, r[1] - r[0] + 1);
+      }
+      // Foot band = bottom ~14% of the body: horizontal extent + widths.
       const band = Math.max(4, Math.round((bot - top) * 0.14));
+      let fx0 = Infinity;
+      let fx1 = -Infinity;
       const ws = [];
-      for (let y = Math.max(top, bot - band); y <= bot; y++) if (rowW.has(y)) ws.push(rowW.get(y));
+      for (let y = Math.max(top, bot - band); y <= bot; y++) {
+        const r = rows.get(y);
+        if (!r) continue;
+        ws.push(r[1] - r[0] + 1);
+        fx0 = Math.min(fx0, r[0]);
+        fx1 = Math.max(fx1, r[1]);
+      }
       ws.sort((a, b) => a - b);
-      if (ws.length) foots.push(ws[Math.floor(ws.length / 2)]);
+      let bodyW = 0;
+      for (const [x0, x1] of rows.values()) bodyW = Math.max(bodyW, x1 - x0 + 1);
+      frames.push({
+        f,
+        bot,
+        contactW,
+        footCx: (fx0 + fx1 + 1) / 2,
+        footW: ws[Math.floor(ws.length / 2)] ?? 0,
+        bodyW,
+      });
     }
+    if (!frames.length) continue;
+    const widest = Math.max(...frames.map((s) => s.contactW));
+    const grounded = frames.filter((s) => s.contactW >= Math.max(4, widest * 0.5));
+    const gb = grounded.map((s) => s.bot).sort((a, b) => a - b);
+    const anchor = gb[Math.round(0.65 * (gb.length - 1))];
+    // Contact frame: nearest the anchor line; widest planted contact on ties.
+    const contact = [...grounded].sort(
+      (a, b) =>
+        Math.abs(a.bot - anchor) - Math.abs(b.bot - anchor) || b.contactW - a.contactW,
+    )[0];
+    // Foot centre: median over ground frames within 2px of the anchor (leap
+    // frames excluded so the origin doesn't chase a mid-air pose).
+    const nearAnchor = grounded.filter((s) => Math.abs(s.bot - anchor) <= 2);
+    const cxs = nearAnchor.map((s) => s.footCx).sort((a, b) => a - b);
+    const cx = cxs[Math.floor(cxs.length / 2)] ?? fw / 2;
+    ground[dir] = {
+      f: +Math.min(1, (anchor + 1) / H).toFixed(4),
+      cx: +(cx / fw).toFixed(4),
+      contact: contact.f,
+    };
+    anchors.push((anchor + 1) / H);
+    foots.push(contact.footW);
+    bodies.push(Math.max(...frames.map((s) => s.bodyW)));
   }
-  if (!bots.length) return null;
-  bots.sort((a, b) => a - b);
+  if (!anchors.length) return null;
+  anchors.sort((a, b) => a - b);
   foots.sort((a, b) => a - b);
   bodies.sort((a, b) => a - b);
-  const p90bot = bots[Math.min(bots.length - 1, Math.floor(bots.length * 0.9))];
   return {
     frameW,
     frameH,
-    artBottom: +(Math.min(1, (p90bot + 1) / frameH)).toFixed(4),
+    ground,
+    // Pooled fallback (median of per-dir anchors) for defensive client code.
+    artBottom: +anchors[Math.floor(anchors.length / 2)].toFixed(4),
     footW: foots[Math.floor(foots.length / 2)] ?? 0,
     bodyW: bodies[Math.floor(bodies.length / 2)] ?? 0,
   };
@@ -211,6 +273,14 @@ function scan() {
     const walkArt = animations[walkAnim]
       ? measureWalkArt(stripAbs[walkAnim] ?? {}, animations[walkAnim])
       : null;
+    // The monster's PHYSICAL footprint, one formula for everything that needs
+    // a size: nadir shadow (client), body radius for soft collision (server
+    // separation/roam spacing + both dodges). Horizontal iso screen px ≈ 1wu
+    // (screen_x = x - y), so art pixels ARE world units here.
+    const artW = walkArt ? Math.max(walkArt.footW, walkArt.bodyW * 0.55) * 1.05 : 0;
+    const shadowW = Math.round(Math.min(150, Math.max(12, artW || frameW * 0.54)));
+    const shadowH = Math.max(6, Math.round(shadowW * 0.385));
+    const radius = Math.round(shadowW / 2);
 
     monsters.push({
       id,
@@ -225,10 +295,15 @@ function scan() {
       strips,
       stripDims,
       aliases,
-      // Art-measured shadow/anchor data (see measureWalkArt).
+      // Art-measured shadow/anchor data (see measureWalkArt). `ground` is the
+      // per-direction contract: {f: originY, cx: originX, contact: pause frame}.
+      ground: walkArt?.ground,
       artBottom: walkArt?.artBottom,
       footW: walkArt?.footW,
       bodyW: walkArt?.bodyW,
+      shadowW,
+      shadowH,
+      radius, // physical body radius (wu) — soft collision + dodges
       hoverPx: HOVER_PX[id] ?? 0,
     });
   }

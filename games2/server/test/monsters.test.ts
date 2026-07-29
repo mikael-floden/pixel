@@ -199,20 +199,36 @@ test("soft separation: same-pad monsters relax to a comfortable distance", async
     await waitFor(() => r1.state.players.size === 1 && r1.state.monsters.size > 0, 8000);
     // Let the sim run: seeded pairs start close (possibly overlapping).
     await new Promise((res) => setTimeout(res, 3500));
-    // Min pairwise distance per pad (ids are "<zoneId>#n"; same prefix = same pad).
-    const byZone = new Map<string, Array<{ x: number; y: number }>>();
+    // Comfort distances are RADIUS-derived (v2): read the same art-measured
+    // radii the server loads, and require each same-pad pair to keep at least
+    // HALF its own comfort target (rA+rB+margin) — mid-roam crossings dip
+    // below the full target briefly, but a stacked pair (the old fixed-18
+    // threshold never even activated for 42wu mammoths) can't pass this.
+    const manifest = JSON.parse(
+      readFileSync(
+        join(dirname(fileURLToPath(import.meta.url)), "..", "..", "client", "public", "monsters.json"),
+        "utf8",
+      ),
+    ) as { monsters: Array<{ id: string; radius?: number }> };
+    const radius = new Map(manifest.monsters.map((m) => [m.id, m.radius ?? 13]));
+    const byZone = new Map<string, Array<{ x: number; y: number; r: number }>>();
     r1.state.monsters.forEach((m: any, id: string) => {
       const z = id.split("#")[0];
       if (!byZone.has(z)) byZone.set(z, []);
-      byZone.get(z)!.push({ x: m.x, y: m.y });
+      byZone.get(z)!.push({ x: m.x, y: m.y, r: radius.get(m.kind) ?? 13 });
     });
-    let minD = Infinity;
+    let worst = Infinity; // min of (distance / pair target) across all pads
     for (const list of byZone.values())
       for (let i = 0; i < list.length; i++)
-        for (let j = i + 1; j < list.length; j++)
-          minD = Math.min(minD, Math.hypot(list[i].x - list[j].x, list[i].y - list[j].y));
-    // Comfort target is 18wu; 8 is a generous floor for pairs mid-roam.
-    assert.ok(minD >= 8, `same-pad monsters keep distance (min ${minD.toFixed(1)}wu)`);
+        for (let j = i + 1; j < list.length; j++) {
+          const d = Math.hypot(list[i].x - list[j].x, list[i].y - list[j].y);
+          const target = list[i].r + list[j].r + 4;
+          worst = Math.min(worst, d / target);
+        }
+    assert.ok(
+      worst >= 0.5,
+      `same-pad monsters keep radius-scaled distance (worst pair at ${(worst * 100).toFixed(0)}% of its comfort target)`,
+    );
     await r1.leave();
   } finally {
     await gameServer.gracefullyShutdown(false);

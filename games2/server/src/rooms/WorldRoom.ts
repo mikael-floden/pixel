@@ -40,8 +40,12 @@ import {
   canEnterElev,
   MONSTER_SPEED_SCALE,
   MONSTER_ROAM_RADIUS_CELLS,
-  MONSTER_SEPARATION_DIST,
-  MONSTER_SEPARATION_SPEED,
+  MONSTER_SEP_MARGIN,
+  DEFAULT_MONSTER_RADIUS,
+  PLAYER_BODY_RADIUS,
+  separationPush,
+  monsterDodge,
+  MonsterDodgeState,
   randomPauseMs,
   startTrip,
   stepAutopilot,
@@ -123,6 +127,9 @@ export class WorldRoom extends Room<WorldState> {
   // maps2 owns monster placement (maintainer 2026-07-29; the old hardcoded
   // rectangles near the player spawn were fake debug areas and are gone).
   private zones: ZoneRuntime[] = [];
+  // Server half of the monsters' own soft collision: per-monster dodge-side
+  // hysteresis (mirrors the client player's dodgeState) — never synced.
+  private monsterDodgeStates = new Map<string, MonsterDodgeState>();
   // Wild shooting stars streak the night sky at random (arrivals get their
   // own star in onJoin, any hour).
   private starTimer: ReturnType<typeof setTimeout> | null = null;
@@ -407,15 +414,37 @@ export class WorldRoom extends Room<WorldState> {
   private seedMonsters() {
     if (!this.terrain) return; // open world → no terrain to confine/route monsters on
     const now = Date.now();
+    const radii = monsterRadii();
     for (const z of this.zones) {
       const count = Math.min(this.monsterCount ?? z.zone.num, z.cells.length);
+      const r = radii.get(z.zone.monster) ?? DEFAULT_MONSTER_RADIUS;
+      const placed: Array<{ x: number; y: number }> = [];
       for (let n = 0; n < count; n++) {
         const m = new Monster();
         m.kind = z.zone.monster;
         m.areaId = z.zone.id;
-        const cell = z.cells[Math.floor(this.monsterRng() * z.cells.length)];
+        // Radius-aware seeding (v2): try a handful of cells for one clear of
+        // the zone-mates already placed — a pair must not START stacked (the
+        // maintainer's screenshot was two mammoths seeded onto one spot).
+        // Small/crowded zones fall back to the most-spaced attempt.
+        let cell = z.cells[Math.floor(this.monsterRng() * z.cells.length)];
+        let bestD = -Infinity;
+        for (let t = 0; t < 10; t++) {
+          const cand = z.cells[Math.floor(this.monsterRng() * z.cells.length)];
+          const cx = (cand.c + 0.5) * CELL_WU;
+          const cy = (cand.r + 0.5) * CELL_WU;
+          const d = placed.length
+            ? Math.min(...placed.map((p) => Math.hypot(cx - p.x, cy - p.y)))
+            : Infinity;
+          if (d > bestD) {
+            bestD = d;
+            cell = cand;
+          }
+          if (d >= 2 * r + MONSTER_SEP_MARGIN) break; // comfortably clear — done
+        }
         m.x = (cell.c + 0.5 + (this.monsterRng() - 0.5) * 0.5) * CELL_WU;
         m.y = (cell.r + 0.5 + (this.monsterRng() - 0.5) * 0.5) * CELL_WU;
+        placed.push({ x: m.x, y: m.y });
         m.elev = cell.lvl;
         m.dir = "south";
         m.moving = false;
@@ -593,50 +622,59 @@ export class WorldRoom extends Room<WorldState> {
       return;
     }
     const zoneById = new Map(this.zones.map((z) => [z.zone.id, z]));
-    // SOFT SEPARATION (maintainer 2026-07-30): monsters keep a comfortable
-    // distance from each other AND from players via a local steering nudge —
-    // deliberately NOT collision: positions already sync, findPath never sees
-    // it, and the client's input-dodge handles the player's own side. One
-    // snapshot per tick; a one-tick-stale neighbour is fine for a soft force.
-    const bodies: Array<{ x: number; y: number }> = [];
-    this.state.monsters.forEach((o) => bodies.push({ x: o.x, y: o.y }));
-    this.state.players.forEach((p) => bodies.push({ x: p.x, y: p.y }));
-    this.state.monsters.forEach((m) => {
+    // SOFT SEPARATION v2 (maintainer 2026-07-30: two mammoths on one spot —
+    // "can't see monsters avoiding each other even the slightest"): distances
+    // are PER-BODY. Snapshot every body once per tick with its art-measured
+    // radius (monsters first — index-aligned with `mons` — then players at
+    // PLAYER_BODY_RADIUS); entries update in place as monsters move so later
+    // monsters this tick separate against current positions, not stale ones.
+    // Still deliberately NOT collision: positions already sync, findPath
+    // never sees any of it.
+    const radii = monsterRadii();
+    const mons: Array<{ id: string; m: Monster }> = [];
+    this.state.monsters.forEach((m: Monster, id: string) => mons.push({ id, m }));
+    const bodies: Array<{ id: string; x: number; y: number; r: number }> = mons.map(
+      ({ id, m }) => ({ id, x: m.x, y: m.y, r: radii.get(m.kind) ?? DEFAULT_MONSTER_RADIUS }),
+    );
+    this.state.players.forEach((p: Player, sid: string) =>
+      bodies.push({ id: `p:${sid}`, x: p.x, y: p.y, r: PLAYER_BODY_RADIUS }),
+    );
+    // A push/dodge must never shove a monster off its zone polygon into the
+    // snap-back teleport — validate zone membership alongside terrain.
+    const inZone = (zone: ZoneRuntime, x: number, y: number) =>
+      zone.cellSet.has(Math.floor(x / CELL_WU) + Math.floor(y / CELL_WU) * grid.width);
+
+    mons.forEach(({ id, m }, i) => {
       const zone = zoneById.get(m.areaId);
       if (!zone) {
         m.moving = false;
         return;
       }
       const ctx = { maxClimb: WALK_CLIMB, canSwim: zone.canSwim };
+      const rm = bodies[i].r;
 
-      // Separation nudge, axis-validated so a wall/water edge just clips it
-      // (skipping its own snapshot entry via the d≈0 guard).
-      let sepX = 0;
-      let sepY = 0;
-      for (const b of bodies) {
-        const dx = m.x - b.x;
-        const dy = m.y - b.y;
-        const d = Math.hypot(dx, dy);
-        if (d < 1e-6 || d >= MONSTER_SEPARATION_DIST) continue;
-        const f = (MONSTER_SEPARATION_DIST - d) / MONSTER_SEPARATION_DIST;
-        sepX += (dx / d) * f;
-        sepY += (dy / d) * f;
-      }
-      if (sepX !== 0 || sepY !== 0) {
-        const sl = Math.hypot(sepX, sepY);
-        const push = Math.min(sl, 1) * MONSTER_SEPARATION_SPEED * dt;
-        const nx = clamp(m.x + (sepX / sl) * push, 1, this.worldW - 1);
-        const ny = clamp(m.y + (sepY / sl) * push, 1, this.worldH - 1);
-        if (canEnterElev(grid, m.elev, m.x, m.y, nx, m.y, ctx).ok) m.x = nx;
-        if (canEnterElev(grid, m.elev, m.x, m.y, m.x, ny, ctx).ok) m.y = ny;
+      // POSITIONAL separation: overlap beyond (rA+rB+margin) is pushed out at
+      // up to MONSTER_SEP_RELAX_SPEED — a firm, visible shove (stacked
+      // mammoths walk apart in ~a second), per-axis validated so a wall,
+      // water edge or the zone boundary just clips it.
+      const push = separationPush(bodies, i, dt, tieBreakAngle(id));
+      if (push) {
+        const nx = clamp(m.x + push.dx, 1, this.worldW - 1);
+        const ny = clamp(m.y + push.dy, 1, this.worldH - 1);
+        if (inZone(zone, nx, m.y) && canEnterElev(grid, m.elev, m.x, m.y, nx, m.y, ctx).ok)
+          m.x = nx;
+        if (inZone(zone, m.x, ny) && canEnterElev(grid, m.elev, m.x, m.y, m.x, ny, ctx).ok)
+          m.y = ny;
         m.elev = resolveElevAt(grid, m.elev, m.x, m.y, ctx);
+        bodies[i].x = m.x;
+        bodies[i].y = m.y;
       }
 
       // Idle → pick the next target once the pause has elapsed.
       if (!m.tripActive) {
         m.moving = false;
         if (now < m.nextMoveAt) return; // still pausing
-        const t = this.pickMonsterTarget(zone, m.x, m.y);
+        const t = this.pickMonsterTarget(zone, m.x, m.y, id, rm, radii);
         m.targetX = t.x;
         m.targetY = t.y;
         m.trip = startTrip(grid, m.x, m.y, t.x, t.y, false, now, m.elev);
@@ -659,12 +697,43 @@ export class WorldRoom extends Room<WorldState> {
         return;
       }
 
+      // PROACTIVE avoidance (v2): the monster's own 8-way autopilot input
+      // dodges other bodies — monsters AND players — through the SAME shared
+      // radius-aware monsterDodge the player's input uses, with per-monster
+      // side hysteresis. Monsters ARC around each other instead of colliding
+      // and then being pushed apart.
+      let ax = a.ax;
+      let ay = a.ay;
+      if (ax !== 0 || ay !== 0) {
+        const near: Array<{ id: string; x: number; y: number; r: number }> = [];
+        for (let j = 0; j < bodies.length; j++) {
+          if (j === i) continue;
+          const b = bodies[j];
+          if (Math.abs(b.x - m.x) < 140 && Math.abs(b.y - m.y) < 140) near.push(b);
+        }
+        const dodge = near.length
+          ? monsterDodge(m.x, m.y, ax, ay, near, this.monsterDodgeStates.get(id), rm)
+          : null;
+        if (dodge) {
+          // Only take a deflection the zone allows (probe half a cell ahead);
+          // otherwise keep the straight heading and let separation handle it.
+          const v = Math.hypot(dodge.ax, dodge.ay) || 1;
+          const probeX = m.x + (dodge.ax / v) * CELL_WU * 0.5;
+          const probeY = m.y + (dodge.ay / v) * CELL_WU * 0.5;
+          if (inZone(zone, probeX, probeY)) {
+            ax = dodge.ax;
+            ay = dodge.ay;
+            this.monsterDodgeStates.set(id, dodge.state);
+          }
+        } else this.monsterDodgeStates.delete(id);
+      }
+
       const surf = surfaceAtWorld(grid, m.x, m.y);
       const r = stepMovement(
         m.x,
         m.y,
-        a.ax,
-        a.ay,
+        ax,
+        ay,
         false, // never run
         dt,
         makeBlockedElev(grid, ctx, () => m.elev),
@@ -702,26 +771,56 @@ export class WorldRoom extends Room<WorldState> {
         m.trip = null;
         m.nextMoveAt = now + Math.floor(randomPauseMs(this.monsterRng));
       }
+      // Keep the snapshot current for the monsters that step after this one.
+      bodies[i].x = m.x;
+      bodies[i].y = m.y;
     });
   }
 
   /** Pick a random roam target from the zone's PRE-VALIDATED cells, preferring
    * one within MONSTER_ROAM_RADIUS_CELLS of the current spot (local milling,
-   * not cross-zone beelines) and at least a cell away. Falls back to any zone
-   * cell — every candidate is valid ground, so no standability re-check. */
-  private pickMonsterTarget(zone: ZoneRuntime, fromX: number, fromY: number): { x: number; y: number } {
+   * not cross-zone beelines), at least a cell away, AND clear of the other
+   * same-zone monsters' bodies and destinations (radius-aware, v2): arriving
+   * on top of a neighbour just hands the mess to the separation push. Falls
+   * back to the best-spaced candidate — every candidate is valid ground. */
+  private pickMonsterTarget(
+    zone: ZoneRuntime,
+    fromX: number,
+    fromY: number,
+    selfId: string,
+    selfR: number,
+    radii: Map<string, number>,
+  ): { x: number; y: number } {
     const fc = fromX / CELL_WU;
     const fr = fromY / CELL_WU;
-    let fallback: { x: number; y: number } | null = null;
-    for (let i = 0; i < 8; i++) {
+    // Other same-zone monsters: current spot + (if travelling) destination.
+    const avoid: Array<{ x: number; y: number; r: number }> = [];
+    this.state.monsters.forEach((o: Monster, oid: string) => {
+      if (oid === selfId || o.areaId !== zone.zone.id) return;
+      const r = radii.get(o.kind) ?? DEFAULT_MONSTER_RADIUS;
+      avoid.push({ x: o.x, y: o.y, r });
+      if (o.tripActive) avoid.push({ x: o.targetX, y: o.targetY, r });
+    });
+    const clearance = (x: number, y: number) => {
+      let worst = Infinity;
+      for (const a of avoid)
+        worst = Math.min(worst, Math.hypot(x - a.x, y - a.y) - (selfR + a.r + MONSTER_SEP_MARGIN));
+      return worst; // >= 0 → comfortably clear of everyone
+    };
+    let best: { x: number; y: number; clear: number } | null = null;
+    for (let i = 0; i < 12; i++) {
       const cell = zone.cells[Math.floor(this.monsterRng() * zone.cells.length)];
       const p = { x: (cell.c + 0.5) * CELL_WU, y: (cell.r + 0.5) * CELL_WU };
-      if (!fallback) fallback = p;
       const d = Math.hypot(cell.c + 0.5 - fc, cell.r + 0.5 - fr);
       if (d < 1) continue; // essentially on top of the current position
-      if (d <= MONSTER_ROAM_RADIUS_CELLS) return p;
+      const clear = clearance(p.x, p.y);
+      const local = d <= MONSTER_ROAM_RADIUS_CELLS;
+      if (local && clear >= 0) return p; // nearby AND clear — done
+      // Remember the best-spaced candidate (prefer local ones) as fallback.
+      const score = clear + (local ? 1000 : 0);
+      if (!best || score > best.clear) best = { ...p, clear: score };
     }
-    return fallback ?? { x: fromX, y: fromY };
+    return best ?? { x: fromX, y: fromY };
   }
 
   onDispose() {
@@ -788,6 +887,46 @@ function loadWorldGrid(name: string): LoadedWorld {
   } catch {
     return open;
   }
+}
+
+/** kind → art-measured body radius (wu), read from the GENERATED monster
+ * manifest (client/public/monsters.json, dist/ fallback) — the same numbers
+ * the client derives its shadows and input-dodge from, so server spacing and
+ * client rendering can never disagree about how big a monster is. Loaded once
+ * per process; a missing manifest degrades to DEFAULT_MONSTER_RADIUS. */
+let monsterRadiiCache: Map<string, number> | null = null;
+function monsterRadii(): Map<string, number> {
+  if (monsterRadiiCache) return monsterRadiiCache;
+  const out = new Map<string, number>();
+  const srcDir = dirname(fileURLToPath(import.meta.url)); // server/src/rooms
+  const gameRoot = join(srcDir, "..", "..", ".."); // games2
+  for (const p of [
+    join(gameRoot, "client", "public", "monsters.json"),
+    join(gameRoot, "client", "dist", "monsters.json"),
+  ]) {
+    try {
+      if (!existsSync(p)) continue;
+      const doc = JSON.parse(readFileSync(p, "utf8")) as {
+        monsters?: Array<{ id?: string; radius?: number }>;
+      };
+      for (const m of doc.monsters ?? [])
+        if (m.id && typeof m.radius === "number" && m.radius > 0) out.set(m.id, m.radius);
+      break;
+    } catch {
+      /* unreadable candidate — try the next */
+    }
+  }
+  monsterRadiiCache = out;
+  return out;
+}
+
+/** Deterministic per-monster angle (radians) from its id — the direction an
+ * EXACTLY stacked pair splits along. Id-derived so the two members of the
+ * pair get different angles and every tick pushes the same way (no jitter). */
+function tieBreakAngle(id: string): number {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0;
+  return ((h >>> 0) % 360) * (Math.PI / 180);
 }
 
 /** Load the maps2 spawn zones for a world (worlds/<name>/spawns.json,

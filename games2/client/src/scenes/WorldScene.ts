@@ -21,6 +21,7 @@ import {
   steerAssist,
   monsterDodge,
   type MonsterDodgeState,
+  DEFAULT_MONSTER_RADIUS,
   startTrip,
   stepAutopilot,
   AutopilotTrip,
@@ -414,6 +415,7 @@ interface MonsterAvatar {
   surfLevel?: number; // surface level in LEVELS (occluder + light sampling basis)
   shadowW: number; // resting nadir-shadow ellipse, measured from the walk ART
   shadowH: number; // (footprint blended toward body width; see addMonster)
+  radius: number; // physical body radius (wu) — the player's input-dodge clearance
   hoverPx: number; // intentional levitation (winged flyers) above the ground anchor
   pendDir?: string; // stableDir hysteresis state (same contract as Avatar)
   pendSince?: number;
@@ -423,6 +425,11 @@ interface MonsterAvatar {
   // playMonsterAnim behind that coincidence, and the moment the manifest
   // resolved properly every monster froze mid-slide (maintainer 2026-07-30).
   walkKey: string;
+  // PER-DIRECTION ground contract (manifest `ground`): originY feet line,
+  // originX foot centre, and the planted `contact` frame a pause parks on.
+  // One pooled anchor floated whole directions (strips differ per direction
+  // after art repairs) and frame-0 pauses left hop gaits levitating.
+  ground?: Record<string, { f: number; cx: number; contact: number }>;
 }
 
 /** The common body-visual subset the SHARED render helpers operate on —
@@ -1525,6 +1532,9 @@ export class WorldScene extends Phaser.Scene {
           },
         };
       },
+      // The input vector actually predicted+sent this frame (AFTER the
+      // monster-dodge deflection) — dodge QA reads the deflection live.
+      lastInput: () => this.lastInput,
       // Monster render-state probe (shared body pipeline QA): per monster the
       // resolved depth, cover line, shadow anchor and lit-copy state.
       monsterInfo: () =>
@@ -1543,7 +1553,14 @@ export class WorldScene extends Phaser.Scene {
             w: mv.shadowW,
             h: mv.shadowH,
           },
+          originX: +mv.sprite.originX.toFixed(3),
           originY: +mv.sprite.originY.toFixed(3),
+          // The measured ground contract for the CURRENT facing (per-dir feet
+          // line/foot centre/parked contact frame) — null = manifest gap.
+          ground: mv.ground?.[mv.dispDir] ?? null,
+          dir: mv.dispDir,
+          frame: mv.sprite.frame.name,
+          radius: mv.radius,
           hover: mv.hoverPx,
           lit: mv.lit ? { visible: mv.lit.visible, tint: mv.lit.tintTopLeft.toString(16) } : null,
           // Animation state — a headless probe CAN catch "moving but frozen"
@@ -1735,19 +1752,20 @@ export class WorldScene extends Phaser.Scene {
     // origin near the feet so it y-sorts and lifts like a player. Fall back to
     // the wanderer placeholder if a monster's strip failed to load.
     const sprite = this.add.sprite(p0.x, p0.y, hasArt ? initKey : PLACEHOLDER_TEX);
-    if (hasArt) sprite.setFrame(0);
-    // Feet origin = the MEASURED art bottom (build-monsters-manifest scans the
-    // walk strips), so the drawn feet stand exactly on the ground anchor. The
-    // old fixed 0.85 left tall-margined art (mammoth 0.76, donkey 0.77)
-    // floating ~20px above its own shadow (maintainer's BLUE circles).
-    sprite.setOrigin(0.5, def?.artBottom ?? 0.85).setScale(1);
-    // Nadir shadow sized from the ART, not the frame: the ground-contact
-    // footprint, blended up toward the body width for creatures that taper to
-    // a wisp at the ground (shadow creature, dragon tail). Frame-scaled
-    // shadows ran huge on padded frames and tiny on slim bodies (RED/GREEN).
-    const artW = Math.max(def?.footW ?? 0, (def?.bodyW ?? 0) * 0.55) * 1.05;
-    const shadowW = Math.round(Math.min(150, Math.max(12, artW || (def?.frameW ?? 48) * 0.54)));
-    const shadowH = Math.max(6, Math.round(shadowW * 0.385));
+    // Feet origin = the PER-DIRECTION measured ground contract (feet line +
+    // foot centre of the south strip to start; playMonsterAnim re-anchors on
+    // every facing change). One pooled anchor floated whole directions by up
+    // to 9px and off-centre art (turtle east: feet 6px from frame centre) put
+    // the shadow beside the body (maintainer 2026-07-30, round 2). The parked
+    // frame is the direction's planted CONTACT frame, never an airborne f0.
+    const g0 = def?.ground?.[DEFAULT_DIRECTION];
+    if (hasArt) sprite.setFrame(g0?.contact ?? 0);
+    sprite.setOrigin(g0?.cx ?? 0.5, g0?.f ?? def?.artBottom ?? 0.85).setScale(1);
+    // Nadir shadow sized from the ART, not the frame (manifest-emitted:
+    // ground-contact footprint blended toward body width — frame-scaled
+    // shadows ran huge on padded frames and tiny on slim bodies, RED/GREEN).
+    const shadowW = def?.shadowW ?? Math.round((def?.frameW ?? 48) * 0.54);
+    const shadowH = def?.shadowH ?? Math.max(6, Math.round(shadowW * 0.385));
     const shadow = this.add.image(p0.x, p0.y, SHADOW_TEX).setOrigin(0.5, 0.5).setDisplaySize(shadowW, shadowH);
     const mv: MonsterAvatar = {
       sprite,
@@ -1764,8 +1782,10 @@ export class WorldScene extends Phaser.Scene {
       fy: m.y,
       shadowW,
       shadowH,
+      radius: def?.radius ?? DEFAULT_MONSTER_RADIUS,
       hoverPx: def?.hoverPx ?? 0,
       walkKey: walk,
+      ground: def?.ground,
     };
     sprite.y = p0.y - mv.hoverPx;
     this.monsters.set(id, mv);
@@ -1794,6 +1814,13 @@ export class WorldScene extends Phaser.Scene {
     const want = DIRECTIONS.includes(dir as never) ? dir : DEFAULT_DIRECTION;
     const d = this.stableDir(mv, want);
     const key = monsterAnimKey(mv.kind, mv.walkKey, d);
+    // Re-anchor to THIS direction's measured ground contract: strips differ
+    // in height/margins per direction (art repairs), so the feet line AND the
+    // foot-centre X are per-direction — the feet stay planted on the anchor
+    // through a turn (the body pivots around them) and the shadow stays under
+    // the feet of art drawn off-centre in its frame.
+    const g = mv.ground?.[d];
+    if (g) mv.sprite.setOrigin(g.cx, g.f);
     if (moving) {
       if (!this.anims.exists(key)) return;
       if (mv.sprite.anims.getName() !== key || !mv.sprite.anims.isPlaying) {
@@ -1804,11 +1831,13 @@ export class WorldScene extends Phaser.Scene {
         if (progress > 0) mv.sprite.anims.setProgress(progress);
       }
     } else {
-      // Paused between legs: stop and hold the first frame of the facing strip
-      // (also turns the resting monster to face its last heading).
+      // Paused between legs: stop and PARK ON THE PLANTED CONTACT FRAME of
+      // the facing strip (also turns the resting monster to its last
+      // heading). Frame 0 is airborne for hop gaits — parked frogs levitated
+      // above their shadow until the next trip (maintainer 2026-07-30).
       mv.sprite.anims.stop();
       const sk = monsterSheetKey(mv.kind, mv.walkKey, d);
-      if (this.textures.exists(sk)) mv.sprite.setTexture(sk, 0);
+      if (this.textures.exists(sk)) mv.sprite.setTexture(sk, g?.contact ?? 0);
     }
   }
 
@@ -2926,9 +2955,13 @@ export class WorldScene extends Phaser.Scene {
     if ((ax !== 0 || ay !== 0) && this.monsters.size) {
       const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
       if (me) {
-        const near: Array<{ id: string; x: number; y: number }> = [];
+        // Per-monster ART radii (v2): a mammoth deflects the walker from ~4×
+        // the distance a poring does, so the near-filter box must admit the
+        // biggest bodies' lookahead (~140wu), not the old fixed 48.
+        const near: Array<{ id: string; x: number; y: number; r: number }> = [];
         this.monsters.forEach((mv, id) => {
-          if (Math.abs(mv.fx - me.fx) < 48 && Math.abs(mv.fy - me.fy) < 48) near.push({ id, x: mv.fx, y: mv.fy });
+          if (Math.abs(mv.fx - me.fx) < 140 && Math.abs(mv.fy - me.fy) < 140)
+            near.push({ id, x: mv.fx, y: mv.fy, r: mv.radius });
         });
         const dodge = near.length ? monsterDodge(me.fx, me.fy, ax, ay, near, this.dodgeState) : null;
         if (dodge) {

@@ -360,45 +360,74 @@ visible head/shoulders are ABOVE the surface).
   confinement on real zones) and `monsters.test.ts` (live room: per-zone
   seeding, confinement, cross-client agreement). TODO (next): the 5-state
   brain (idle/angry/attack/walk/die) + per-monster display scale.
-- **SOFT COLLISION** (maintainer 2026-07-30): monsters are deliberately NOT
-  in the collision grid — real collision would tax the network and findPath.
-  Two halves, neither touching sync nor the pathfinder: (1) SERVER separation
-  steering in `stepMonsters` — each monster gets a gentle nudge away from
-  monsters AND players within `MONSTER_SEPARATION_DIST` (18wu, capped at
-  `MONSTER_SEPARATION_SPEED`), axis-validated by `canEnterElev` so a wall or
-  water edge just clips it (positions already sync; zero new traffic).
-  (2) CLIENT `monsterDodge` (shared, pure) — the player's 8-way INPUT slips
-  around a monster's personal space (`MONSTER_PERSONAL_RADIUS` 14wu, lookahead
-  26wu) exactly like steer assist slips around a prop corner: candidates are
-  the ±45°/±90° ring rotations SCORED by probe clearance with hysteresis
-  toward the committed side (state on WorldScene.dodgeState), and the
-  deflected vector is what gets predicted AND sent — the server integrates
-  the same move, so nothing rubber-bands. Applies to keys AND the autopilot.
-  A raw client-side position push was rejected up front: it would fight
-  server reconciliation. Tests: monsterDodge geometry + hysteresis
-  (monsters.sim.test.ts), same-pad separation relax (monsters.test.ts);
-  measured live: walking straight through a monster_demo pad keeps ≥~30wu
-  clearance with walk-speed-smooth motion (no reconciliation pops).
-- **ART-MEASURED shadows + anchors** (maintainer 2026-07-30: RED=shadow too
-  big, GREEN=too small, BLUE=monster "flying"; "get the shadow size by
-  analyzing the monster image art"). `build-monsters-manifest.mjs` fully
-  decodes every WALK strip (`measureWalkArt`, pngjs) and emits per monster:
-  `artBottom` (p90 of per-frame opaque bottoms ÷ frame height → the client's
-  sprite ORIGIN-Y, so feet sit on the anchor; the old fixed 0.85 left
-  tall-margined art hovering and low-margined art sunk), `footW` (median
-  opaque row width over the bottom ~14% of the body = ground contact) and
-  `bodyW` (median full width — creatures that taper to a wisp shadow by mass,
-  not toe). Client shadow: `w = clamp(max(footW, bodyW·0.55)·1.05, 12, 150)`,
-  `h = max(6, 0.385·w)` — NEVER frameW-scaled (padded frames made mammoth's
-  120px blob; tapered masked_shadow_creature got a dot). It also emits
-  `stripDims` (per-strip TRUE frame size from IHDR): monster.json `size` goes
-  STALE when art is repaired in place (8+ monsters wrong, e.g. frog 34×34
-  claimed vs 34×42 real) — the client must slice every spritesheet with its
-  strip's own dims or frames bleed. `hoverPx` (builder map `HOVER_PX`) marks
-  INTENTIONAL winged flyers (butterfly_dragon 12): the sprite lifts by it
-  while `placeBodyShadow` gets it as air height, so the shadow stays on the
-  ground and shrinks — the bird pattern; everyone else is pinned to ground.
-  `__ml.monsterInfo()` exposes originY/hover/shadow{w,h} for QA.
+- **SOFT COLLISION v2 — RADIUS-AWARE** (maintainer 2026-07-30, two rounds:
+  round 1 used ONE fixed comfort distance, 18wu — an 84wu-wide mammoth pair
+  fully overlapped before the nudge even ACTIVATED; screenshot of two
+  mammoths on one spot: "can't see monsters avoiding each other even the
+  slightest"). Monsters stay OUT of the collision grid — no network or
+  findPath cost — but every distance is now PER-BODY: the manifest emits an
+  art-measured `radius` per kind (shadowW/2 ≈ half the footprint; horizontal
+  iso px ≈ 1wu), the server loads it via `monsterRadii()` (reads the same
+  monsters.json the client renders from, dist/ fallback), and the comfort
+  target between bodies is `rA + rB + MONSTER_SEP_MARGIN`. Four server
+  pieces in `stepMonsters` (all validated per-axis by `canEnterElev` AND
+  zone membership so a push can't shove a monster off its polygon into the
+  snap-back): (1) `separationPush` (shared, pure) — POSITIONAL relaxation of
+  overlap, clamped to `MONSTER_SEP_RELAX_SPEED`·dt (firm shove, no
+  teleports), exactly-stacked pairs split along an id-hashed `tieBreakAngle`;
+  (2) PROACTIVE dodge — each monster's own autopilot input runs through the
+  SAME shared `monsterDodge` against monsters AND players (per-monster
+  hysteresis in `monsterDodgeStates`), so they arc around each other instead
+  of colliding-then-relaxing, and they YIELD to an approaching player
+  (measured live: a mammoth backed from 98→150wu as the player walked in);
+  (3) radius-aware SEED spacing (pairs must not START stacked); (4)
+  radius-aware roam-TARGET spacing in `pickMonsterTarget` (arriving on a
+  neighbour just hands the mess back to separation). CLIENT `monsterDodge`
+  is the same function with per-monster `r`: personal space = `r +
+  PLAYER_BODY_RADIUS + MONSTER_DODGE_MARGIN` (donkey ≈28wu — double the old
+  14; mammoth ≈57), lookahead `max(26, personal+20)`, probe `max(12,
+  personal/2)`; near-filter box ±140wu (was 48 — must admit mammoth-scale
+  lookahead). Deflected input is still what gets predicted AND sent (no
+  rubber-band); a raw position push stays rejected (fights reconciliation).
+  Measured live on monster_demo: worst same-pad pair of EVERY kind held
+  ≥97% of its comfort target over 77 samples; player minD to a donkey
+  27.3wu vs its 28wu target. Tests: radius-scaled dodge + separationPush
+  suites (monsters.sim.test.ts), radius-fraction pad relax
+  (monsters.test.ts reads the real manifest radii).
+- **ART-MEASURED shadows + anchors, PER DIRECTION** (maintainer 2026-07-30,
+  two rounds: RED=too big, GREEN=too small, BLUE="flying"; round 2 after the
+  first fix STILL floated monsters: "a constant theme ... Why does it still
+  look this bad?"). `build-monsters-manifest.mjs` fully decodes every WALK
+  strip (`measureWalkArt`, pngjs). THE ROUND-1 MISTAKE, do not repeat it: ONE
+  pooled anchor (p90 of all frames' bottoms ÷ pooled max height) is wrong
+  three ways — (a) strips differ in height/margins PER DIRECTION after
+  in-place art repairs, so one fraction floats whole directions (measured up
+  to 9px: lava_salamander e/w; turtle e/w 5px); (b) ~90% of frames sit above
+  a p90 line BY CONSTRUCTION, so hop/bob gaits (frog 12px, diablo 17px)
+  float most of the cycle; (c) bodies drawn off-centre in the frame (saber
+  diagonals 22px, turtle 6px) leave the frame-centred shadow beside the
+  feet. The manifest therefore emits per (walk, DIRECTION) a `ground`
+  contract: `f` = feet-line fraction of THAT strip's height, `cx` =
+  foot-centre-X fraction (origin-X), `contact` = the planted frame index.
+  Ground line rule: a frame is a GROUND frame iff its bottom-3-row contact
+  width ≥ max(4, 0.5×the dir's widest contact) — planted legs are wide, tail
+  tips/toe push-offs are slivers and never define ground (diablo north's
+  bot=84 sliver vs its real 79 line); anchor = p65 of ground-frame bottoms so
+  the common pose sits flush and a landing squash dips INTO the ground
+  briefly (invisible) rather than the gait floating (very visible). The
+  client applies origin(cx,f) on EVERY facing change and parks a paused
+  monster on `contact` — frame-0 parking left frogs levitating mid-hop
+  between trips. footW/bodyW come from CONTACT frames (mid-air tucked feet
+  deflated the shadow); shadow `w = clamp(max(footW, bodyW·0.55)·1.05, 12,
+  150)`, `h = max(6, 0.385·w)`, emitted as `shadowW/shadowH` — NEVER
+  frameW-scaled. `stripDims` (TRUE per-strip frame size from IHDR) slices
+  every spritesheet — monster.json `size` goes stale on in-place repairs (8+
+  wrong, frog 34×34 claimed vs 34×42 real) and frames bleed. `hoverPx`
+  (builder `HOVER_PX`) marks INTENTIONAL winged flyers (butterfly_dragon 12):
+  sprite lifts, `placeBodyShadow` gets it as air height (shadow stays on the
+  ground, shrinks — the bird pattern); everyone else is pinned. QA probe:
+  `__ml.monsterInfo()` → originX/originY, ground (current dir), frame,
+  radius, hover, shadow{w,h}, playing.
 - **Zone DEBUG overlay** — Settings switch "spawn areas", **OFF by default**
   (maintainer 2026-07-30) and persisted in `ml-spawn-areas`. It draws each
   zone's REAL POLYGON, lazy-fetched from the world's `spawns.json` the first

@@ -1974,7 +1974,14 @@ export * from "./monsters";
 // server (WorldRoom) and the headless sim tests both build zones through this
 // one function so spawn validity can't drift.
 
-import { SpawnZone, zonePolygonCells, MONSTER_DODGE_LOOKAHEAD, MONSTER_PERSONAL_RADIUS } from "./monsters";
+import {
+  SpawnZone,
+  zonePolygonCells,
+  MONSTER_DODGE_LOOKAHEAD,
+  MONSTER_DODGE_MARGIN,
+  DEFAULT_MONSTER_RADIUS,
+  PLAYER_BODY_RADIUS,
+} from "./monsters";
 
 /** A spawn zone resolved against a terrain grid: the cells a monster of this
  * zone may actually stand on (centre inside the polygon AND a base-or-deck
@@ -2017,8 +2024,9 @@ export function monsterDodge(
   y: number,
   ax: number,
   ay: number,
-  monsters: Array<{ id: string; x: number; y: number }>,
+  monsters: Array<{ id: string; x: number; y: number; r?: number }>,
   state?: MonsterDodgeState,
+  selfR: number = PLAYER_BODY_RADIUS, // the dodger's own body radius
 ): { ax: number; ay: number; state: MonsterDodgeState } | null {
   const sax = Math.sign(ax);
   const say = Math.sign(ay);
@@ -2028,17 +2036,24 @@ export function monsterDodge(
   if (wl < 1e-9) return null;
   const ux = w.x / wl;
   const uy = w.y / wl;
-  // The closest monster the heading actually runs into within the lookahead:
-  // in front (dot), and the straight line would pass inside the radius.
-  let hit: { id: string; x: number; y: number } | null = null;
+  // Personal space is PER BODY (v2): the obstacle's art-measured radius plus
+  // the dodger's own, plus a comfort margin — an 84wu-wide mammoth deflects a
+  // walker from ~4× the distance a poring does. Lookahead scales to match so
+  // big bodies are reacted to before the walker is already inside them.
+  const personal = (m: { r?: number }) =>
+    (m.r ?? DEFAULT_MONSTER_RADIUS) + selfR + MONSTER_DODGE_MARGIN;
+  // The closest monster the heading actually runs into within its lookahead:
+  // in front (dot), and the straight line would pass inside its personal space.
+  let hit: { id: string; x: number; y: number; r?: number } | null = null;
   let hitD = Infinity;
   for (const m of monsters) {
+    const p = personal(m);
     const tx = m.x - x;
     const ty = m.y - y;
     const d = Math.hypot(tx, ty);
-    if (d < 1e-6 || d > MONSTER_DODGE_LOOKAHEAD) continue;
+    if (d < 1e-6 || d > Math.max(MONSTER_DODGE_LOOKAHEAD, p + 20)) continue;
     if ((tx * ux + ty * uy) / d < 0.35) continue; // beside/behind — free
-    if (Math.abs(tx * uy - ty * ux) > MONSTER_PERSONAL_RADIUS) continue; // misses
+    if (Math.abs(tx * uy - ty * ux) > p) continue; // misses
     if (d < hitD) {
       hitD = d;
       hit = m;
@@ -2047,7 +2062,8 @@ export function monsterDodge(
   if (!hit) return null;
   const idx = DODGE_RING.findIndex(([rx, ry]) => rx === sax && ry === say);
   if (idx < 0) return null;
-  const PROBE = 12; // wu — a couple of walk substeps along the candidate
+  const hitP = personal(hit);
+  const PROBE = Math.max(12, hitP * 0.5); // wu — probe further ahead for bigger bodies
   const clearance = (rot: number): number => {
     const [rx, ry] = DODGE_RING[(idx + rot + 8) % 8];
     const v = screenToWorldVector(rx, ry);
@@ -2057,7 +2073,7 @@ export function monsterDodge(
   const stick = state && state.blocker === hit.id ? state.side : 0;
   const side =
     clearance(1) + (stick === 1 ? 4 : 0) >= clearance(-1) + (stick === -1 ? 4 : 0) ? 1 : -1;
-  const rot = clearance(side) < MONSTER_PERSONAL_RADIUS ? 2 * side : side;
+  const rot = clearance(side) < hitP ? 2 * side : side;
   const [nax, nay] = DODGE_RING[(idx + rot + 8) % 8];
   return { ax: nax, ay: nay, state: { side, blocker: hit.id } };
 }

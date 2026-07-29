@@ -22,9 +22,18 @@ export interface MonsterDef {
   strips: Record<string, Record<string, string>>; // animKey -> dir -> served URL
   stripDims?: Record<string, Record<string, { w: number; h: number }>>; // TRUE per-strip frame size
   aliases: Record<string, string>; // game-facing synonyms, e.g. { walk: "jump" }
-  artBottom?: number; // feet line as a fraction of frameH (sprite originY)
-  footW?: number; // ground-contact footprint width (px)
-  bodyW?: number; // median full body width (px)
+  /** PER-DIRECTION ground contract measured from the walk art: `f` = feet
+   * line fraction of THAT strip's height (sprite originY), `cx` = foot-centre
+   * fraction of the frame width (originX — bodies drawn off-centre keep their
+   * feet on the anchor), `contact` = the planted frame a PAUSED monster parks
+   * on (never an airborne hop frame). */
+  ground?: Record<string, { f: number; cx: number; contact: number }>;
+  artBottom?: number; // pooled fallback feet line (median of per-dir anchors)
+  footW?: number; // ground-contact footprint width (px, contact frames)
+  bodyW?: number; // widest body width (px)
+  shadowW?: number; // nadir shadow ellipse size, derived from footW/bodyW
+  shadowH?: number;
+  radius?: number; // physical body radius (wu) — soft collision + dodges
   hoverPx?: number; // intentional levitation above the ground anchor
 }
 

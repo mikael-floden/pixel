@@ -34,9 +34,14 @@ import {
   zonePolygonCells,
   buildZoneRuntimes,
   monsterDodge,
+  separationPush,
   screenToWorldVector,
   MONSTER_DODGE_LOOKAHEAD,
-  MONSTER_PERSONAL_RADIUS,
+  MONSTER_DODGE_MARGIN,
+  MONSTER_SEP_MARGIN,
+  MONSTER_SEP_RELAX_SPEED,
+  DEFAULT_MONSTER_RADIUS,
+  PLAYER_BODY_RADIUS,
   type SpawnZone,
   type ZoneRuntime,
   type MonsterDodgeState,
@@ -398,19 +403,84 @@ test("monsterDodge: deflects a heading that runs into a monster; leaves free hea
   assert.ok(clearDodged > clearStraight, "dodge opens distance");
   // Behind → free.
   assert.equal(monsterDodge(0, 0, 1, 0, [{ id: "m", x: -ux * 15, y: -uy * 15 }]), null);
+  // Personal space is radius-derived (v2): obstacle r + the dodger's own body
+  // + the comfort margin; lookahead = max(base, personal + 20).
+  const personal = DEFAULT_MONSTER_RADIUS + PLAYER_BODY_RADIUS + MONSTER_DODGE_MARGIN;
+  const lookahead = Math.max(MONSTER_DODGE_LOOKAHEAD, personal + 20);
   // Beyond the lookahead → free.
-  assert.equal(monsterDodge(0, 0, 1, 0, [ahead(MONSTER_DODGE_LOOKAHEAD + 5)]), null);
+  assert.equal(monsterDodge(0, 0, 1, 0, [ahead(lookahead + 5)]), null);
   // Far off the line (lateral miss) → free. Perpendicular of (ux,uy):
   const px = -uy;
   const py = ux;
   assert.equal(
     monsterDodge(0, 0, 1, 0, [
-      { id: "m", x: ux * 16 + px * (MONSTER_PERSONAL_RADIUS + 6), y: uy * 16 + py * (MONSTER_PERSONAL_RADIUS + 6) },
+      { id: "m", x: ux * 16 + px * (personal + 6), y: uy * 16 + py * (personal + 6) },
     ]),
     null,
   );
   // No input → no dodge.
   assert.equal(monsterDodge(0, 0, 0, 0, [ahead(14)]), null);
+});
+
+test("monsterDodge: personal space scales with the obstacle's art radius", () => {
+  const w = screenToWorldVector(1, 0);
+  const wl = Math.hypot(w.x, w.y);
+  const ux = w.x / wl;
+  const uy = w.y / wl;
+  // Same spot 60wu dead ahead: a mammoth-sized body (r=42 → personal 57,
+  // lookahead 77) deflects the walker, a poring-sized one (r=13 → lookahead
+  // 48) is still far enough to walk toward freely.
+  const at60 = (r: number) => [{ id: "m", x: ux * 60, y: uy * 60, r }];
+  assert.ok(monsterDodge(0, 0, 1, 0, at60(42)), "mammoth deflects from 60wu");
+  assert.equal(monsterDodge(0, 0, 1, 0, at60(13)), null, "poring is ignored at 60wu");
+  // Lateral pass: a line that grazes a poring clears a mammoth's flank only
+  // with a real detour — the same offset misses one and hits the other.
+  const px = -uy;
+  const py = ux;
+  const off = 30; // wu — outside poring personal (28), inside mammoth's (57)
+  const graze = (r: number) => [{ id: "m", x: ux * 30 + px * off, y: uy * 30 + py * off, r }];
+  assert.equal(monsterDodge(0, 0, 1, 0, graze(13)), null, "poring graze is free");
+  assert.ok(monsterDodge(0, 0, 1, 0, graze(42)), "mammoth graze deflects");
+});
+
+test("separationPush: radius-aware positional relaxation, clamped, tie-broken", () => {
+  const dt = 1 / 20;
+  const maxStep = MONSTER_SEP_RELAX_SPEED * dt;
+  // Two mammoths 30wu apart (target 42+42+margin): both push straight apart,
+  // clamped to the per-tick cap (they must WALK apart, not teleport).
+  const pair = [
+    { x: 100, y: 100, r: 42 },
+    { x: 130, y: 100, r: 42 },
+  ];
+  const a = separationPush(pair, 0, dt, 0)!;
+  const b = separationPush(pair, 1, dt, 0)!;
+  assert.ok(a && b, "both overlapping bodies push");
+  assert.ok(a.dx < 0 && b.dx > 0, "pushes point apart along the centre line");
+  assert.ok(Math.abs(a.dy) < 1e-9 && Math.abs(b.dy) < 1e-9, "no lateral drift");
+  assert.ok(Math.hypot(a.dx, a.dy) <= maxStep + 1e-9, "push is clamped per tick");
+  // Comfortable pair → no push at all.
+  const far = [
+    { x: 100, y: 100, r: 42 },
+    { x: 100 + 42 + 42 + MONSTER_SEP_MARGIN + 1, y: 100, r: 42 },
+  ];
+  assert.equal(separationPush(far, 0, dt, 0), null);
+  // EXACTLY stacked pair (the maintainer's two-mammoths-one-spot screenshot):
+  // the tieBreak angle splits them deterministically instead of a 0/0 no-op.
+  const stacked = [
+    { x: 50, y: 50, r: 20 },
+    { x: 50, y: 50, r: 20 },
+  ];
+  const s0 = separationPush(stacked, 0, dt, 0)!; // split along +x
+  const s1 = separationPush(stacked, 1, dt, Math.PI)!; // split along -x
+  assert.ok(s0 && s1, "stacked pair still separates");
+  assert.ok(s0.dx > 0 && s1.dx < 0, "tie-break directions split the pair");
+  // Mixed radii: a player body (r=9) inside a mammoth's space still pushes
+  // the MONSTER out (the caller only ever moves monsters).
+  const mixed = [
+    { x: 0, y: 0, r: 42 },
+    { x: 40, y: 0, r: PLAYER_BODY_RADIUS },
+  ];
+  assert.ok(separationPush(mixed, 0, dt, 0), "monster yields to a nearby player");
 });
 
 test("monsterDodge: commits to one side against the same blocker (hysteresis)", () => {

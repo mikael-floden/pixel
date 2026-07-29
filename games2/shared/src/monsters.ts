@@ -128,16 +128,65 @@ export const MONSTER_ROAM_RADIUS_CELLS = 6;
 // Soft collision (maintainer 2026-07-30): monsters are deliberately NOT in
 // the collision grid — syncing real collision would tax the network and the
 // pathfinder. Instead: the SERVER steers monsters to keep a comfortable
-// distance from each other and from players (a local separation nudge — the
+// distance from each other and from players (a local separation push — the
 // positions already sync, so it costs nothing extra), and the CLIENT slips
 // the player's INPUT around a monster's personal space exactly like steer
 // assist slips around a prop corner (the deflected vector is what gets
 // predicted AND sent, so server and prediction integrate the same move and
 // nothing rubber-bands).
-export const MONSTER_SEPARATION_DIST = 18; // wu — comfort distance between bodies
-export const MONSTER_SEPARATION_SPEED = 40; // wu/s — max speed of the separation nudge
-export const MONSTER_PERSONAL_RADIUS = 14; // wu — the player dodge's clearance off a monster centre
-export const MONSTER_DODGE_LOOKAHEAD = 26; // wu — how far ahead the player dodge reacts
+//
+// v2 (maintainer 2026-07-30 screenshot: two mammoths perfectly stacked —
+// "can't see monsters avoiding each other even the slightest"): distances are
+// PER-BODY now, not one constant. Every monster carries an art-measured
+// `radius` (half its footprint width; horizontal iso screen px ≈ 1wu, so art
+// px are world units) in monsters.json; the comfort distance between two
+// bodies is rA + rB + MONSTER_SEP_MARGIN. The old fixed 18wu threshold never
+// even ACTIVATED before an 84wu-wide mammoth pair fully overlapped.
+export const DEFAULT_MONSTER_RADIUS = 13; // wu — fallback when the manifest is absent
+export const PLAYER_BODY_RADIUS = 9; // wu — the player's own footprint half-width
+export const MONSTER_SEP_MARGIN = 4; // wu — breathing room beyond touching radii
+export const MONSTER_SEP_RELAX_SPEED = 90; // wu/s — cap on the positional push (no teleporting)
+export const MONSTER_DODGE_MARGIN = 6; // wu — dodge clearance beyond the radii sum
+export const MONSTER_DODGE_LOOKAHEAD = 26; // wu — MINIMUM dodge lookahead (scales with radius)
+
+/** One tick of positional separation for `bodies[self]` against every other
+ * body. Overlap = (rA + rB + MONSTER_SEP_MARGIN) - distance; each overlapping
+ * pair contributes a push-out along the centre line, the summed push is
+ * CLAMPED to MONSTER_SEP_RELAX_SPEED·dt (a firm shove that never teleports),
+ * and an EXACTLY stacked pair (d≈0 — the maintainer's two-mammoths-one-spot
+ * screenshot) splits along the caller-seeded `tieBreak` direction. Pure — the
+ * caller validates the move against terrain/zone before applying it. */
+export function separationPush(
+  bodies: Array<{ x: number; y: number; r: number }>,
+  self: number,
+  dt: number,
+  tieBreak = 0, // radians — direction to split an exactly stacked pair along
+): { dx: number; dy: number } | null {
+  const me = bodies[self];
+  let px = 0;
+  let py = 0;
+  for (let i = 0; i < bodies.length; i++) {
+    if (i === self) continue;
+    const b = bodies[i];
+    const dx = me.x - b.x;
+    const dy = me.y - b.y;
+    const d = Math.hypot(dx, dy);
+    const target = me.r + b.r + MONSTER_SEP_MARGIN;
+    if (d >= target) continue;
+    if (d < 1e-6) {
+      px += Math.cos(tieBreak) * target;
+      py += Math.sin(tieBreak) * target;
+      continue;
+    }
+    const o = target - d; // penetration depth
+    px += (dx / d) * o;
+    py += (dy / d) * o;
+  }
+  if (px === 0 && py === 0) return null;
+  const l = Math.hypot(px, py);
+  const step = Math.min(l, MONSTER_SEP_RELAX_SPEED * dt);
+  return { dx: (px / l) * step, dy: (py / l) * step };
+}
 
 // Pick a random pause (ms) in the roam range using injected rng.
 export function randomPauseMs(rng: () => number): number {
