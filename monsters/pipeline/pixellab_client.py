@@ -197,7 +197,17 @@ class PixelLabClient:
             return self.get_character(pixellab_id)
         raise PixelLabError(f"unknown source kind {kind!r} (want object|character)")
 
-    def normalized_animations(self, kind, detail):
+    @staticmethod
+    def sub_id(url):
+        """The per-direction sub-animation id embedded in a frame URL. PixelLab
+        generates each direction as its own job, so this identifies WHICH take
+        of a direction a frame belongs to."""
+        try:
+            return url.split("/animations/")[1].split("/")[0]
+        except (IndexError, AttributeError):
+            return None
+
+    def normalized_animations(self, kind, detail, picks=None):
         """Fold both stores' animation shapes into one:
         [{name, group_id, display_name, directions: {direction: [urls]}}].
 
@@ -222,24 +232,36 @@ class PixelLabClient:
                 if d and urls:
                     g["_cands"].setdefault(d, []).append(urls)
         out = []
+        picks = picks or {}
         for g in merged.values():
-            dirs = {}
+            dirs, subs, ambiguous = {}, {}, {}
+            want = picks.get(g["name"]) or {}
             for d, cands in g.pop("_cands").items():
                 if len(cands) == 1:
                     dirs[d] = cands[0]
+                    subs[d] = self.sub_id(cands[0][0])
                     continue
-                # Duplicate entries for one direction = an in-place regeneration
-                # in flight: the NEWEST copy wins (parse Last-Modified — the raw
-                # header sorts by weekday name, not date). Undated candidates
-                # lose to dated ones; no dates at all -> most frames.
-                stamped = [(self._lm_datetime(c[0]), c) for c in cands]
-                dated = [t for t in stamped if t[0] is not None]
-                pool = cands
-                if dated:
-                    newest = max(t[0] for t in dated)
-                    pool = [c for dt, c in dated if dt == newest]
-                dirs[d] = max(pool, key=len)
+                # PixelLab keeps EVERY take of a direction and the API marks
+                # none of them current, so a duplicate is a real choice, not a
+                # transient. An explicit pin (roster: direction_picks) decides
+                # it; otherwise fall back to newest-by-Last-Modified and report
+                # the direction as ambiguous so sync can flag it for review.
+                pinned = want.get(d)
+                chosen = next((c for c in cands if self.sub_id(c[0]) == pinned), None)
+                if chosen is None:
+                    stamped = [(self._lm_datetime(c[0]), c) for c in cands]
+                    dated = [t for t in stamped if t[0] is not None]
+                    pool = cands
+                    if dated:
+                        newest = max(t[0] for t in dated)
+                        pool = [c for dt, c in dated if dt == newest]
+                    chosen = max(pool, key=len)
+                    ambiguous[d] = [self.sub_id(c[0]) for c in cands]
+                dirs[d] = chosen
+                subs[d] = self.sub_id(chosen[0])
             g["directions"] = dirs
+            g["subs"] = subs
+            g["ambiguous"] = ambiguous
             out.append(g)
         return out
 

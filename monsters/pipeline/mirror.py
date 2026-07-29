@@ -204,7 +204,8 @@ def resolve_states(anim_keys):
     return states
 
 
-def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None):
+def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None,
+           direction_picks=None):
     """Pull rotations + all animations for one monster from PixelLab into
     monsters/<mid>/ and write its manifest. Change-detected per direction via
     If-Modified-Since; frames download concurrently. Returns the manifest."""
@@ -233,15 +234,23 @@ def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None)
     prev_anims = prev.get("animations") or {}
     anims = {}
     taken = set()
-    for g in client.normalized_animations(kind, detail):
+    unresolved = []
+    for g in client.normalized_animations(kind, detail, picks=direction_picks):
         key = _key_for(g["name"], renames, taken)
+        for d, subs in (g.get("ambiguous") or {}).items():
+            unresolved.append({"animation": g["name"], "key": key,
+                               "direction": d, "takes": subs})
         prev_dirs = (prev_anims.get(key) or {}).get("directions") or {}
         saved, frames_by_dir = {}, {}
         for direction, urls in sorted(g["directions"].items()):
             pv = prev_dirs.get(direction) or {}
+            sub = client.sub_id(urls[0])
             unchanged = False
-            if pv.get("lm") and pv.get("src_frames") == len(urls) \
-                    and _exists(pv.get("gif")):
+            # A different take of this direction (pin changed) must never be
+            # served from the previous mirror's frames. A record with no `sub`
+            # predates take-tracking and cannot be verified — re-download it.
+            if pv.get("sub") == sub and pv.get("lm") \
+                    and pv.get("src_frames") == len(urls) and _exists(pv.get("gif")):
                 status, _, _ = client.conditional_download(urls[0], pv["lm"])
                 unchanged = status == 304
             if unchanged:
@@ -272,7 +281,7 @@ def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None)
                 "strip": _rel(strip), "gif": _rel(gif),
                 "frame_paths": [_rel(os.path.join(fdir, f"{i:02d}.png"))
                                 for i in range(len(frames))],
-                "lm": lm, "src_frames": len(urls),
+                "lm": lm, "src_frames": len(urls), "sub": sub,
             }
         if not saved:
             if prev_anims.get(key):
@@ -314,6 +323,9 @@ def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None)
         "rotations": rots,
         "animations": anims,
         "states": resolve_states(set(anims)),
+        # directions where PixelLab holds more than one take and no pin says
+        # which is current — pin them in config/roster.json:direction_picks
+        "unresolved_takes": unresolved,
         "synced_from_pixellab": True,
     }
     write_manifest(mid, meta)

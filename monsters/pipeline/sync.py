@@ -190,6 +190,10 @@ def verify(metas):
             if key is None:
                 problems.append(f"{mid}: state '{s}' has NO animation "
                                 f"(generate one on PixelLab and resync)")
+        for u in meta.get("unresolved_takes") or []:
+            problems.append(f"{mid}: '{u['key']}' direction '{u['direction']}' has "
+                            f"{len(u['takes'])} takes on PixelLab and no pin — mirrored a "
+                            f"guess; pin it in config/roster.json:direction_picks")
     return problems
 
 
@@ -225,7 +229,8 @@ def sync(client, fresh=False, dry_run=False, only=None):
         if fresh and os.path.isdir(monster_dir(m["id"])):
             shutil.rmtree(monster_dir(m["id"]), ignore_errors=True)
         metas.append(mirror.mirror(client, m["id"], m["kind"], m["pixellab_id"],
-                                   renames=m.get("renames"), name=m.get("name")))
+                                   renames=m.get("renames"), name=m.get("name"),
+                                   direction_picks=m.get("direction_picks")))
 
     if dry_run:
         print("\n(dry run: nothing written)")
