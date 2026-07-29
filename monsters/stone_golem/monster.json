@@ -12,7 +12,7 @@
     ]
   },
   "size": {
-    "width": 136,
+    "width": 146,
     "height": 136
   },
   "sprite": "stone_golem/sprite.png",
@@ -784,5 +784,47 @@
     "die": "die"
   },
   "unresolved_takes": [],
-  "synced_from_pixellab": true
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "native_size": [
+      136,
+      136
+    ],
+    "pad": [
+      5,
+      0
+    ],
+    "fixes": [
+      {
+        "key": "attack",
+        "dir": "south",
+        "frame": 7,
+        "side": "left",
+        "target": 6,
+        "overlap": 1.0,
+        "strip_px": 14,
+        "ext": 2
+      },
+      {
+        "key": "attack",
+        "dir": "north-east",
+        "frame": 7,
+        "side": "left",
+        "target": 6,
+        "overlap": 1.0,
+        "strip_px": 14,
+        "ext": 3
+      },
+      {
+        "key": "attack",
+        "dir": "north-west",
+        "frame": 7,
+        "side": "right",
+        "target": 6,
+        "overlap": 1.0,
+        "strip_px": 14,
+        "ext": 3
+      }
+    ]
+  }
 }

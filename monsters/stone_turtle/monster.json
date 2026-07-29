@@ -12,7 +12,7 @@
     ]
   },
   "size": {
-    "width": 68,
+    "width": 76,
     "height": 68
   },
   "sprite": "stone_turtle/sprite.png",
@@ -681,5 +681,37 @@
     "die": "die"
   },
   "unresolved_takes": [],
-  "synced_from_pixellab": true
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "native_size": [
+      68,
+      68
+    ],
+    "pad": [
+      4,
+      0
+    ],
+    "fixes": [
+      {
+        "key": "attack",
+        "dir": "north-east",
+        "frame": 3,
+        "side": "left",
+        "target": 2,
+        "overlap": 1.0,
+        "strip_px": 12,
+        "ext": 2
+      },
+      {
+        "key": "attack",
+        "dir": "north-west",
+        "frame": 3,
+        "side": "right",
+        "target": 2,
+        "overlap": 1.0,
+        "strip_px": 12,
+        "ext": 2
+      }
+    ]
+  }
 }

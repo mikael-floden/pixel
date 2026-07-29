@@ -12,7 +12,7 @@
     ]
   },
   "size": {
-    "width": 97,
+    "width": 121,
     "height": 97
   },
   "sprite": "butterfly_dragon/sprite.png",
@@ -657,5 +657,37 @@
     "die": "die"
   },
   "unresolved_takes": [],
-  "synced_from_pixellab": true
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "native_size": [
+      97,
+      97
+    ],
+    "pad": [
+      12,
+      0
+    ],
+    "fixes": [
+      {
+        "key": "attack",
+        "dir": "east",
+        "frame": 3,
+        "side": "left",
+        "target": 2,
+        "overlap": 0.917,
+        "strip_px": 172,
+        "ext": 10
+      },
+      {
+        "key": "attack",
+        "dir": "west",
+        "frame": 3,
+        "side": "right",
+        "target": 2,
+        "overlap": 0.917,
+        "strip_px": 172,
+        "ext": 10
+      }
+    ]
+  }
 }

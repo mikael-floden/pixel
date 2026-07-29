@@ -12,7 +12,7 @@
     ]
   },
   "size": {
-    "width": 48,
+    "width": 64,
     "height": 48
   },
   "sprite": "forest_poring_2/sprite.png",
@@ -810,5 +810,27 @@
     "die": "die"
   },
   "unresolved_takes": [],
-  "synced_from_pixellab": true
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "native_size": [
+      48,
+      48
+    ],
+    "pad": [
+      8,
+      0
+    ],
+    "fixes": [
+      {
+        "key": "attack",
+        "dir": "south",
+        "frame": 6,
+        "side": "left",
+        "target": 5,
+        "overlap": 0.833,
+        "strip_px": 54,
+        "ext": 6
+      }
+    ]
+  }
 }

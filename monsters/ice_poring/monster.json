@@ -12,7 +12,7 @@
     ]
   },
   "size": {
-    "width": 48,
+    "width": 64,
     "height": 48
   },
   "sprite": "ice_poring/sprite.png",
@@ -1041,5 +1041,137 @@
     "die": "die"
   },
   "unresolved_takes": [],
-  "synced_from_pixellab": true
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "native_size": [
+      48,
+      48
+    ],
+    "pad": [
+      8,
+      0
+    ],
+    "fixes": [
+      {
+        "key": "attack",
+        "dir": "south",
+        "frame": 6,
+        "side": "left",
+        "target": 5,
+        "overlap": 1.0,
+        "strip_px": 8,
+        "ext": 2
+      },
+      {
+        "key": "attack",
+        "dir": "south",
+        "frame": 7,
+        "side": "left",
+        "target": 6,
+        "overlap": 1.0,
+        "strip_px": 34,
+        "ext": 5
+      },
+      {
+        "key": "attack",
+        "dir": "east",
+        "frame": 9,
+        "side": "left",
+        "target": 8,
+        "overlap": 1.0,
+        "strip_px": 40,
+        "ext": 6
+      },
+      {
+        "key": "attack",
+        "dir": "east",
+        "frame": 10,
+        "side": "left",
+        "target": 9,
+        "overlap": 1.0,
+        "strip_px": 20,
+        "ext": 5
+      },
+      {
+        "key": "attack",
+        "dir": "east",
+        "frame": 11,
+        "side": "left",
+        "target": 10,
+        "overlap": 1.0,
+        "strip_px": 9,
+        "ext": 3
+      },
+      {
+        "key": "attack",
+        "dir": "east",
+        "frame": 12,
+        "side": "left",
+        "target": 11,
+        "overlap": 1.0,
+        "strip_px": 20,
+        "ext": 5
+      },
+      {
+        "key": "attack",
+        "dir": "north-east",
+        "frame": 5,
+        "side": "right",
+        "target": 4,
+        "overlap": 1.0,
+        "strip_px": 3,
+        "ext": 2
+      },
+      {
+        "key": "attack",
+        "dir": "north-east",
+        "frame": 7,
+        "side": "right",
+        "target": 7,
+        "overlap": 1.0,
+        "strip_px": 11,
+        "ext": 3
+      },
+      {
+        "key": "attack",
+        "dir": "west",
+        "frame": 9,
+        "side": "right",
+        "target": 8,
+        "overlap": 1.0,
+        "strip_px": 40,
+        "ext": 6
+      },
+      {
+        "key": "attack",
+        "dir": "west",
+        "frame": 10,
+        "side": "right",
+        "target": 9,
+        "overlap": 1.0,
+        "strip_px": 20,
+        "ext": 5
+      },
+      {
+        "key": "attack",
+        "dir": "west",
+        "frame": 11,
+        "side": "right",
+        "target": 10,
+        "overlap": 1.0,
+        "strip_px": 9,
+        "ext": 3
+      },
+      {
+        "key": "attack",
+        "dir": "west",
+        "frame": 12,
+        "side": "right",
+        "target": 11,
+        "overlap": 1.0,
+        "strip_px": 20,
+        "ext": 5
+      }
+    ]
+  }
 }

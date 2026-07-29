@@ -13,7 +13,7 @@
   },
   "size": {
     "width": 34,
-    "height": 34
+    "height": 42
   },
   "sprite": "mystical_frog/sprite.png",
   "directions": [
@@ -1121,5 +1121,27 @@
     "die": "die"
   },
   "unresolved_takes": [],
-  "synced_from_pixellab": true
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "native_size": [
+      34,
+      34
+    ],
+    "pad": [
+      0,
+      4
+    ],
+    "fixes": [
+      {
+        "key": "walk",
+        "dir": "north",
+        "frame": 8,
+        "side": "top",
+        "target": 7,
+        "overlap": 1.0,
+        "strip_px": 12,
+        "ext": 2
+      }
+    ]
+  }
 }

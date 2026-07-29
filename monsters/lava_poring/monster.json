@@ -12,7 +12,7 @@
     ]
   },
   "size": {
-    "width": 48,
+    "width": 58,
     "height": 48
   },
   "sprite": "lava_poring/sprite.png",
@@ -810,5 +810,37 @@
     "die": "die"
   },
   "unresolved_takes": [],
-  "synced_from_pixellab": true
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "native_size": [
+      48,
+      48
+    ],
+    "pad": [
+      5,
+      0
+    ],
+    "fixes": [
+      {
+        "key": "attack",
+        "dir": "south-east",
+        "frame": 7,
+        "side": "right",
+        "target": 6,
+        "overlap": 1.0,
+        "strip_px": 28,
+        "ext": 3
+      },
+      {
+        "key": "attack",
+        "dir": "south-west",
+        "frame": 7,
+        "side": "left",
+        "target": 6,
+        "overlap": 1.0,
+        "strip_px": 28,
+        "ext": 3
+      }
+    ]
+  }
 }

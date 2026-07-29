@@ -33,6 +33,7 @@ import os
 import shutil
 
 import mirror
+import postprocess
 import states as states_mod
 from mirror import ROOT, STATES, iter_manifests, monster_dir, read_manifest
 from pixellab_client import PixelLabClient
@@ -228,9 +229,13 @@ def sync(client, fresh=False, dry_run=False, only=None):
             continue
         if fresh and os.path.isdir(monster_dir(m["id"])):
             shutil.rmtree(monster_dir(m["id"]), ignore_errors=True)
-        metas.append(mirror.mirror(client, m["id"], m["kind"], m["pixellab_id"],
-                                   renames=m.get("renames"), name=m.get("name"),
-                                   direction_picks=m.get("direction_picks")))
+        mirror.mirror(client, m["id"], m["kind"], m["pixellab_id"],
+                      renames=m.get("renames"), name=m.get("name"),
+                      direction_picks=m.get("direction_picks"))
+        # repair wrap-around overflow on freshly mirrored (native-canvas)
+        # frames — see postprocess.py; re-reads the manifest it may rewrite
+        postprocess.process_monster(m["id"])
+        metas.append(read_manifest(m["id"]))
 
     if dry_run:
         print("\n(dry run: nothing written)")

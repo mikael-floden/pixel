@@ -1,0 +1,17 @@
+{
+  "_comment": "Human-reviewed verdicts for wrap-around detection (postprocess.py). reject: cases the seam metric flags that are LEGITIMATE art (radial spike/droplet debris, border-spanning piles). accept: confirmed wraps below the auto threshold. Case id = monster/animation/direction/f<strip frame>/<side>.",
+  "accept": [
+    "diablo_2/walk/south/f03/bottom"
+  ],
+  "reject": [
+    "ice_crystal_golem/die/west/f07/right",
+    "ice_crystal_golem/die/west/f08/left",
+    "ice_poring/attack/north-east/f10/left",
+    "ice_poring/attack/north-east/f11/right",
+    "ice_poring/attack/south-east/f10/right",
+    "ice_poring/attack/south-west/f10/left",
+    "water_poring/attack/north-east/f07/right",
+    "water_poring/attack/north-west/f07/left",
+    "water_poring/attack/south/f07/left"
+  ]
+}

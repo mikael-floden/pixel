@@ -13,7 +13,7 @@
   },
   "size": {
     "width": 136,
-    "height": 136
+    "height": 174
   },
   "sprite": "diablo_2/sprite.png",
   "directions": [
@@ -708,5 +708,38 @@
     "die": "die"
   },
   "unresolved_takes": [],
-  "synced_from_pixellab": true
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "native_size": [
+      136,
+      136
+    ],
+    "pad": [
+      0,
+      19
+    ],
+    "fixes": [
+      {
+        "key": "walk",
+        "dir": "south",
+        "frame": 4,
+        "side": "bottom",
+        "target": 3,
+        "overlap": 0.867,
+        "strip_px": 135,
+        "ext": 17
+      },
+      {
+        "key": "walk",
+        "dir": "south",
+        "frame": 3,
+        "side": "bottom",
+        "target": 3,
+        "overlap": 0.684,
+        "strip_px": 88,
+        "ext": 11,
+        "forced": true
+      }
+    ]
+  }
 }

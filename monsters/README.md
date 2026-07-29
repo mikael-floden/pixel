@@ -91,6 +91,14 @@ python monsters/pipeline/sync.py --only <id> # limit mirroring to one monster
   files → verify). Does not commit; the caller commits one atomic change.
 - `pipeline/mirror.py` — mirrors ONE monster (either store) into the layout
   above; builds strips, per-direction GIFs and the rotating GIF.
+- `pipeline/postprocess.py` — repairs PixelLab's wrap-around overflow bug
+  (graphics drawn outside the canvas re-appear wrapped to the opposite edge,
+  usually on the NEXT frame). Detects wrapped strips via seam continuity,
+  grows the monster's canvas symmetrically (manifest keeps `native_size` +
+  `postprocess.pad`), restores the strip beyond the original border on its
+  true frame and cleans the frame it wrapped onto. Human-reviewed exceptions
+  (radial spike/droplet debris that only LOOKS wrapped) live in
+  `config/wrap_overrides.json`. Runs automatically inside sync.
 - `pipeline/states.py` — keyword classifier used only for brand-new monsters
   nobody has mapped yet.
 - `pipeline/review_artifact.py` — emits the self-contained review gallery HTML
