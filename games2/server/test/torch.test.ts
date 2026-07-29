@@ -9,7 +9,19 @@ import { WorldRoom } from "../src/rooms/WorldRoom.js";
 
 async function waitFor(cond: () => boolean, timeout = 3000): Promise<void> {
   const start = Date.now();
-  while (!cond()) {
+  // A predicate that THROWS means "not ready yet", not "fail": room.state and
+  // its MapSchemas are undefined until the first patch lands (see games2
+  // CLAUDE.md), so every `r.state.players.size` poll issued right after
+  // joinOrCreate can raise a TypeError under CI load. Treating that as false
+  // is what the caller means; it used to fail the run and block a deploy.
+  const ready = () => {
+    try {
+      return cond();
+    } catch {
+      return false;
+    }
+  };
+  while (!ready()) {
     if (Date.now() - start > timeout) throw new Error("timeout waiting for condition");
     await new Promise((r) => setTimeout(r, 20));
   }
