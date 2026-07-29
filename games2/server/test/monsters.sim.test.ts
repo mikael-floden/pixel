@@ -33,8 +33,13 @@ import {
   pointInZone,
   zonePolygonCells,
   buildZoneRuntimes,
+  monsterDodge,
+  screenToWorldVector,
+  MONSTER_DODGE_LOOKAHEAD,
+  MONSTER_PERSONAL_RADIUS,
   type SpawnZone,
   type ZoneRuntime,
+  type MonsterDodgeState,
 } from "@nangijala/shared";
 
 const HERE = dirname(fileURLToPath(import.meta.url)); // games2/server/test
@@ -367,3 +372,60 @@ for (const worldName of ["ring_test", "the_island2", "monster_demo"]) {
     assert.ok(anyMoved, "at least one sampled monster actually roamed");
   });
 }
+
+// ---------------------------------------------------------------------------
+// Client-side soft monster collision (monsterDodge): the player's 8-way input
+// slips around a monster's personal space — pure function, tested headlessly.
+// ---------------------------------------------------------------------------
+
+test("monsterDodge: deflects a heading that runs into a monster; leaves free headings alone", () => {
+  const w = screenToWorldVector(1, 0); // screen-east's world direction
+  const wl = Math.hypot(w.x, w.y);
+  const ux = w.x / wl;
+  const uy = w.y / wl;
+  const ahead = (d: number) => ({ id: "m1", x: ux * d, y: uy * d });
+  // Dead ahead inside the lookahead → deflect to a DIFFERENT 8-way input.
+  const d1 = monsterDodge(0, 0, 1, 0, [ahead(18)]);
+  assert.ok(d1, "blocking monster deflects");
+  assert.ok(d1!.ax !== 1 || d1!.ay !== 0, "deflected input differs");
+  assert.ok(Math.abs(d1!.ax) <= 1 && Math.abs(d1!.ay) <= 1, "still an 8-way input");
+  // The deflected direction's probe ends FARTHER from the monster than the
+  // straight line would — that's the whole point.
+  const dv = screenToWorldVector(d1!.ax, d1!.ay);
+  const dvl = Math.hypot(dv.x, dv.y);
+  const clearStraight = Math.hypot(ahead(18).x - ux * 12, ahead(18).y - uy * 12);
+  const clearDodged = Math.hypot(ahead(18).x - (dv.x / dvl) * 12, ahead(18).y - (dv.y / dvl) * 12);
+  assert.ok(clearDodged > clearStraight, "dodge opens distance");
+  // Behind → free.
+  assert.equal(monsterDodge(0, 0, 1, 0, [{ id: "m", x: -ux * 15, y: -uy * 15 }]), null);
+  // Beyond the lookahead → free.
+  assert.equal(monsterDodge(0, 0, 1, 0, [ahead(MONSTER_DODGE_LOOKAHEAD + 5)]), null);
+  // Far off the line (lateral miss) → free. Perpendicular of (ux,uy):
+  const px = -uy;
+  const py = ux;
+  assert.equal(
+    monsterDodge(0, 0, 1, 0, [
+      { id: "m", x: ux * 16 + px * (MONSTER_PERSONAL_RADIUS + 6), y: uy * 16 + py * (MONSTER_PERSONAL_RADIUS + 6) },
+    ]),
+    null,
+  );
+  // No input → no dodge.
+  assert.equal(monsterDodge(0, 0, 0, 0, [ahead(14)]), null);
+});
+
+test("monsterDodge: commits to one side against the same blocker (hysteresis)", () => {
+  const w = screenToWorldVector(0, 1);
+  const wl = Math.hypot(w.x, w.y);
+  const m = { id: "blocker", x: (w.x / wl) * 16, y: (w.y / wl) * 16 }; // dead centre ahead
+  let state: MonsterDodgeState | undefined;
+  const first = monsterDodge(0, 0, 0, 1, [m], state);
+  assert.ok(first);
+  state = first!.state;
+  // Re-decide from slightly wobbled positions — the committed side must hold.
+  for (const jitter of [0.4, -0.4, 0.6, -0.6]) {
+    const again = monsterDodge(jitter, 0, 0, 1, [m], state);
+    assert.ok(again, "still blocking");
+    assert.equal(again!.state.side, state!.side, "side commitment holds through wobble");
+    state = again!.state;
+  }
+});

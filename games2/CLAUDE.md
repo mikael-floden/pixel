@@ -360,6 +360,25 @@ visible head/shoulders are ABOVE the surface).
   confinement on real zones) and `monsters.test.ts` (live room: per-zone
   seeding, confinement, cross-client agreement). TODO (next): the 5-state
   brain (idle/angry/attack/walk/die) + per-monster display scale.
+- **SOFT COLLISION** (maintainer 2026-07-30): monsters are deliberately NOT
+  in the collision grid — real collision would tax the network and findPath.
+  Two halves, neither touching sync nor the pathfinder: (1) SERVER separation
+  steering in `stepMonsters` — each monster gets a gentle nudge away from
+  monsters AND players within `MONSTER_SEPARATION_DIST` (18wu, capped at
+  `MONSTER_SEPARATION_SPEED`), axis-validated by `canEnterElev` so a wall or
+  water edge just clips it (positions already sync; zero new traffic).
+  (2) CLIENT `monsterDodge` (shared, pure) — the player's 8-way INPUT slips
+  around a monster's personal space (`MONSTER_PERSONAL_RADIUS` 14wu, lookahead
+  26wu) exactly like steer assist slips around a prop corner: candidates are
+  the ±45°/±90° ring rotations SCORED by probe clearance with hysteresis
+  toward the committed side (state on WorldScene.dodgeState), and the
+  deflected vector is what gets predicted AND sent — the server integrates
+  the same move, so nothing rubber-bands. Applies to keys AND the autopilot.
+  A raw client-side position push was rejected up front: it would fight
+  server reconciliation. Tests: monsterDodge geometry + hysteresis
+  (monsters.sim.test.ts), same-pad separation relax (monsters.test.ts);
+  measured live: walking straight through a monster_demo pad keeps ≥~30wu
+  clearance with walk-speed-smooth motion (no reconciliation pops).
 - **Zone DEBUG overlay** — Settings switch "spawn areas", **OFF by default**
   (maintainer 2026-07-30) and persisted in `ml-spawn-areas`. It draws each
   zone's REAL POLYGON, lazy-fetched from the world's `spawns.json` the first

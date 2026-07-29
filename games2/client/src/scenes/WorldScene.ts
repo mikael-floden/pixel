@@ -19,6 +19,8 @@ import {
   unstickFromSolids,
   autoJumpWanted,
   steerAssist,
+  monsterDodge,
+  type MonsterDodgeState,
   startTrip,
   stepAutopilot,
   AutopilotTrip,
@@ -570,6 +572,7 @@ export class WorldScene extends Phaser.Scene {
   private jumpReadyAt = 0;
   private jumpQueued = false;
   private deferredAnimsKicked = false; // action-state frames background-load once, after join
+  private dodgeState?: MonsterDodgeState; // soft monster-collision side commitment
   // It is ALWAYS night in Nangijala (for now): the per-pixel shader when
   // WebGL is available, the multiply grade as the canvas fallback.
   private atmo!: Atmosphere;
@@ -2888,6 +2891,27 @@ export class WorldScene extends Phaser.Scene {
         ax = drive.ax;
         ay = drive.ay;
         running = drive.running;
+      }
+    }
+    // SOFT MONSTER COLLISION (maintainer 2026-07-30): monsters are not in the
+    // collision grid — no network or pathfinder cost — so the INPUT slips
+    // around a monster's personal space instead, exactly like steer assist
+    // slips around a prop corner. Applies to keys AND the autopilot; the
+    // deflected vector is what gets predicted AND sent, so the server
+    // integrates the same move and nothing rubber-bands.
+    if ((ax !== 0 || ay !== 0) && this.monsters.size) {
+      const me = this.room ? this.avatars.get(this.room.sessionId) : undefined;
+      if (me) {
+        const near: Array<{ id: string; x: number; y: number }> = [];
+        this.monsters.forEach((mv, id) => {
+          if (Math.abs(mv.fx - me.fx) < 48 && Math.abs(mv.fy - me.fy) < 48) near.push({ id, x: mv.fx, y: mv.fy });
+        });
+        const dodge = near.length ? monsterDodge(me.fx, me.fy, ax, ay, near, this.dodgeState) : null;
+        if (dodge) {
+          ax = dodge.ax;
+          ay = dodge.ay;
+          this.dodgeState = dodge.state;
+        } else this.dodgeState = undefined;
       }
     }
     const sig = `${ax},${ay},${running ? 1 : 0}`;

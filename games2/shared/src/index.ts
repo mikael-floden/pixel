@@ -1974,7 +1974,7 @@ export * from "./monsters";
 // server (WorldRoom) and the headless sim tests both build zones through this
 // one function so spawn validity can't drift.
 
-import { SpawnZone, zonePolygonCells } from "./monsters";
+import { SpawnZone, zonePolygonCells, MONSTER_DODGE_LOOKAHEAD, MONSTER_PERSONAL_RADIUS } from "./monsters";
 
 /** A spawn zone resolved against a terrain grid: the cells a monster of this
  * zone may actually stand on (centre inside the polygon AND a base-or-deck
@@ -1988,6 +1988,78 @@ export interface ZoneRuntime {
   cells: Array<{ c: number; r: number; lvl: number }>;
   cellSet: Set<number>; // c + r*grid.width — O(1) containment for the roam clamp
   canSwim: boolean;
+}
+
+/** Client-side SOFT MONSTER COLLISION for the player (maintainer 2026-07-30):
+ * monsters are not in the collision grid — instead the player's 8-way screen
+ * INPUT slips around a monster's personal space, exactly the steer-assist
+ * pattern (the deflected input is what gets predicted AND sent, so server and
+ * prediction integrate the same move; nothing new syncs, findPath untouched).
+ * Pure and stateless apart from the returned hysteresis state: pass the last
+ * call's `state` back in so a dead-centre approach commits to ONE side
+ * instead of flip-flopping. Returns null when no monster blocks the heading.
+ *
+ * Side selection needs no handedness reasoning: both 45° rotations are
+ * SCORED by how far a probe step along each candidate ends from the blocking
+ * monster, biased toward the committed side; if the better 45° slip still
+ * ends inside the personal radius, the full 90° detour is taken. */
+const DODGE_RING: Array<[number, number]> = [
+  [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1],
+];
+
+export interface MonsterDodgeState {
+  side: number; // committed rotation sign (+1 / -1)
+  blocker: string; // monster id the commitment applies to
+}
+
+export function monsterDodge(
+  x: number,
+  y: number,
+  ax: number,
+  ay: number,
+  monsters: Array<{ id: string; x: number; y: number }>,
+  state?: MonsterDodgeState,
+): { ax: number; ay: number; state: MonsterDodgeState } | null {
+  const sax = Math.sign(ax);
+  const say = Math.sign(ay);
+  if (sax === 0 && say === 0) return null;
+  const w = screenToWorldVector(sax, say);
+  const wl = Math.hypot(w.x, w.y);
+  if (wl < 1e-9) return null;
+  const ux = w.x / wl;
+  const uy = w.y / wl;
+  // The closest monster the heading actually runs into within the lookahead:
+  // in front (dot), and the straight line would pass inside the radius.
+  let hit: { id: string; x: number; y: number } | null = null;
+  let hitD = Infinity;
+  for (const m of monsters) {
+    const tx = m.x - x;
+    const ty = m.y - y;
+    const d = Math.hypot(tx, ty);
+    if (d < 1e-6 || d > MONSTER_DODGE_LOOKAHEAD) continue;
+    if ((tx * ux + ty * uy) / d < 0.35) continue; // beside/behind — free
+    if (Math.abs(tx * uy - ty * ux) > MONSTER_PERSONAL_RADIUS) continue; // misses
+    if (d < hitD) {
+      hitD = d;
+      hit = m;
+    }
+  }
+  if (!hit) return null;
+  const idx = DODGE_RING.findIndex(([rx, ry]) => rx === sax && ry === say);
+  if (idx < 0) return null;
+  const PROBE = 12; // wu — a couple of walk substeps along the candidate
+  const clearance = (rot: number): number => {
+    const [rx, ry] = DODGE_RING[(idx + rot + 8) % 8];
+    const v = screenToWorldVector(rx, ry);
+    const vl = Math.hypot(v.x, v.y) || 1;
+    return Math.hypot(hit!.x - (x + (v.x / vl) * PROBE), hit!.y - (y + (v.y / vl) * PROBE));
+  };
+  const stick = state && state.blocker === hit.id ? state.side : 0;
+  const side =
+    clearance(1) + (stick === 1 ? 4 : 0) >= clearance(-1) + (stick === -1 ? 4 : 0) ? 1 : -1;
+  const rot = clearance(side) < MONSTER_PERSONAL_RADIUS ? 2 * side : side;
+  const [nax, nay] = DODGE_RING[(idx + rot + 8) % 8];
+  return { ax: nax, ay: nay, state: { side, blocker: hit.id } };
 }
 
 export function buildZoneRuntimes(grid: TerrainGrid, zones: SpawnZone[]): ZoneRuntime[] {

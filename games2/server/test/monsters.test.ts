@@ -176,3 +176,45 @@ test("maps2 spawn zones drive the room: shared, per-zone, zone-confined, moving"
     await gameServer.gracefullyShutdown(false);
   }
 });
+
+test("soft separation: same-pad monsters relax to a comfortable distance", async () => {
+  const port = 2996; // unique per test
+  const gameServer = new Server({
+    transport: new WebSocketTransport({ server: createServer() }),
+  });
+  gameServer.define(ROOM_NAME, WorldRoom);
+  await gameServer.listen(port);
+  try {
+    const c1 = new Client(`ws://localhost:${port}`);
+    // monster_demo: one 5x5 pad per monster, TWO monsters per pad — the
+    // worst-case cluster (both seeded on the same few cells). With the
+    // separation nudge they must spread out instead of stacking.
+    const r1 = await c1.joinOrCreate(ROOM_NAME, {
+      name: "S",
+      character: "char_s",
+      world: "monster_demo",
+      monsterSeed: 777,
+      monsterCount: 2,
+    });
+    await waitFor(() => r1.state.players.size === 1 && r1.state.monsters.size > 0, 8000);
+    // Let the sim run: seeded pairs start close (possibly overlapping).
+    await new Promise((res) => setTimeout(res, 3500));
+    // Min pairwise distance per pad (ids are "<zoneId>#n"; same prefix = same pad).
+    const byZone = new Map<string, Array<{ x: number; y: number }>>();
+    r1.state.monsters.forEach((m: any, id: string) => {
+      const z = id.split("#")[0];
+      if (!byZone.has(z)) byZone.set(z, []);
+      byZone.get(z)!.push({ x: m.x, y: m.y });
+    });
+    let minD = Infinity;
+    for (const list of byZone.values())
+      for (let i = 0; i < list.length; i++)
+        for (let j = i + 1; j < list.length; j++)
+          minD = Math.min(minD, Math.hypot(list[i].x - list[j].x, list[i].y - list[j].y));
+    // Comfort target is 18wu; 8 is a generous floor for pairs mid-roam.
+    assert.ok(minD >= 8, `same-pad monsters keep distance (min ${minD.toFixed(1)}wu)`);
+    await r1.leave();
+  } finally {
+    await gameServer.gracefullyShutdown(false);
+  }
+});

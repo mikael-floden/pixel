@@ -37,8 +37,11 @@ import {
   buildZoneRuntimes,
   ZoneRuntime,
   zoneBBox,
+  canEnterElev,
   MONSTER_SPEED_SCALE,
   MONSTER_ROAM_RADIUS_CELLS,
+  MONSTER_SEPARATION_DIST,
+  MONSTER_SEPARATION_SPEED,
   randomPauseMs,
   startTrip,
   stepAutopilot,
@@ -590,6 +593,14 @@ export class WorldRoom extends Room<WorldState> {
       return;
     }
     const zoneById = new Map(this.zones.map((z) => [z.zone.id, z]));
+    // SOFT SEPARATION (maintainer 2026-07-30): monsters keep a comfortable
+    // distance from each other AND from players via a local steering nudge —
+    // deliberately NOT collision: positions already sync, findPath never sees
+    // it, and the client's input-dodge handles the player's own side. One
+    // snapshot per tick; a one-tick-stale neighbour is fine for a soft force.
+    const bodies: Array<{ x: number; y: number }> = [];
+    this.state.monsters.forEach((o) => bodies.push({ x: o.x, y: o.y }));
+    this.state.players.forEach((p) => bodies.push({ x: p.x, y: p.y }));
     this.state.monsters.forEach((m) => {
       const zone = zoneById.get(m.areaId);
       if (!zone) {
@@ -597,6 +608,29 @@ export class WorldRoom extends Room<WorldState> {
         return;
       }
       const ctx = { maxClimb: WALK_CLIMB, canSwim: zone.canSwim };
+
+      // Separation nudge, axis-validated so a wall/water edge just clips it
+      // (skipping its own snapshot entry via the d≈0 guard).
+      let sepX = 0;
+      let sepY = 0;
+      for (const b of bodies) {
+        const dx = m.x - b.x;
+        const dy = m.y - b.y;
+        const d = Math.hypot(dx, dy);
+        if (d < 1e-6 || d >= MONSTER_SEPARATION_DIST) continue;
+        const f = (MONSTER_SEPARATION_DIST - d) / MONSTER_SEPARATION_DIST;
+        sepX += (dx / d) * f;
+        sepY += (dy / d) * f;
+      }
+      if (sepX !== 0 || sepY !== 0) {
+        const sl = Math.hypot(sepX, sepY);
+        const push = Math.min(sl, 1) * MONSTER_SEPARATION_SPEED * dt;
+        const nx = clamp(m.x + (sepX / sl) * push, 1, this.worldW - 1);
+        const ny = clamp(m.y + (sepY / sl) * push, 1, this.worldH - 1);
+        if (canEnterElev(grid, m.elev, m.x, m.y, nx, m.y, ctx).ok) m.x = nx;
+        if (canEnterElev(grid, m.elev, m.x, m.y, m.x, ny, ctx).ok) m.y = ny;
+        m.elev = resolveElevAt(grid, m.elev, m.x, m.y, ctx);
+      }
 
       // Idle → pick the next target once the pause has elapsed.
       if (!m.tripActive) {

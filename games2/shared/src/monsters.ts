@@ -125,6 +125,20 @@ export const MONSTER_ARRIVE_RADIUS = CELL_WU * 0.5;
 // zone that can span half the map.
 export const MONSTER_ROAM_RADIUS_CELLS = 6;
 
+// Soft collision (maintainer 2026-07-30): monsters are deliberately NOT in
+// the collision grid — syncing real collision would tax the network and the
+// pathfinder. Instead: the SERVER steers monsters to keep a comfortable
+// distance from each other and from players (a local separation nudge — the
+// positions already sync, so it costs nothing extra), and the CLIENT slips
+// the player's INPUT around a monster's personal space exactly like steer
+// assist slips around a prop corner (the deflected vector is what gets
+// predicted AND sent, so server and prediction integrate the same move and
+// nothing rubber-bands).
+export const MONSTER_SEPARATION_DIST = 18; // wu — comfort distance between bodies
+export const MONSTER_SEPARATION_SPEED = 40; // wu/s — max speed of the separation nudge
+export const MONSTER_PERSONAL_RADIUS = 14; // wu — the player dodge's clearance off a monster centre
+export const MONSTER_DODGE_LOOKAHEAD = 26; // wu — how far ahead the player dodge reacts
+
 // Pick a random pause (ms) in the roam range using injected rng.
 export function randomPauseMs(rng: () => number): number {
   return (
