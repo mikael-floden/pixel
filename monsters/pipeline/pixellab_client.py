@@ -29,6 +29,7 @@ import os
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
+from email.utils import parsedate_to_datetime
 
 import requests
 from PIL import Image
@@ -227,16 +228,29 @@ class PixelLabClient:
                 if len(cands) == 1:
                     dirs[d] = cands[0]
                     continue
-                # objects: keep most frames; ties (and characters) -> newest
-                best = max(cands, key=len)
-                same_len = [c for c in cands if len(c) == len(best)]
-                if len(same_len) > 1:
-                    stamped = [(self.last_modified(c[0]) or "", c) for c in same_len]
-                    best = max(stamped, key=lambda t: t[0])[1]
-                dirs[d] = best
+                # Duplicate entries for one direction = an in-place regeneration
+                # in flight: the NEWEST copy wins (parse Last-Modified — the raw
+                # header sorts by weekday name, not date). Undated candidates
+                # lose to dated ones; no dates at all -> most frames.
+                stamped = [(self._lm_datetime(c[0]), c) for c in cands]
+                dated = [t for t in stamped if t[0] is not None]
+                pool = cands
+                if dated:
+                    newest = max(t[0] for t in dated)
+                    pool = [c for dt, c in dated if dt == newest]
+                dirs[d] = max(pool, key=len)
             g["directions"] = dirs
             out.append(g)
         return out
+
+    def _lm_datetime(self, url):
+        lm = self.last_modified(url)
+        if not lm:
+            return None
+        try:
+            return parsedate_to_datetime(lm)
+        except (TypeError, ValueError):
+            return None
 
     # -- balance / budget ----------------------------------------------------
 

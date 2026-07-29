@@ -1,42 +1,32 @@
 {
   "domain": "monsters",
-  "updated_at": "2026-07-23T18:15:09+00:00",
+  "updated_at": "2026-07-29T12:19:30+00:00",
   "health": "idle",
-  "current": "synced roster: 6 monsters (poring family), each jump/attack/die x8 dirs; retired ice id 10046ec1",
+  "current": "full resync done: 24 monsters (21 objects + 3 characters), 5 game states each; review page live",
   "progress": {
-    "monsters_complete": 6
+    "monsters_complete": 24,
+    "objects": 21,
+    "characters": 3,
+    "states": [
+      "idle",
+      "walk",
+      "angry",
+      "attack",
+      "die"
+    ]
   },
   "budget_remaining": null,
   "notes": [
     "[2026-07-17T09:33:23+00:00] monsters agent online: generates pixel-art monsters via the PixelLab API. Skeleton templates: Bear, Cat, Dog, Horse, Lion; free-form prompt per generation (anything from a dragon to a fairy). One folder per monster under monsters/<id>/. No loop yet \u2014 runs on demand when the maintainer asks. Commits directly to main, only inside monsters/ + this file.",
     "[2026-07-22T23:18:03+00:00] mirrored the maintainer-authored poring (PixelLab object cd723b90) into monsters/poring/ \u2014 pipeline now mirrors BOTH PixelLab stores (objects + characters), zero-generation downloads",
-    "[2026-07-23T18:15:09+00:00] roster-driven sync landed: config/roster.json is now the authoritative list; pipeline/sync.py reconciles (add/update/re-point/prune) + verifies canonical jump/attack/die x8. 6 porings: normal/lava/forest/sand/water/ice. All gained a die animation; ice_poring re-pointed 10046ec1 -> 520e6bf5 (ice & snow)."
+    "[2026-07-23T18:15:09+00:00] roster-driven sync landed: config/roster.json is now the authoritative list; pipeline/sync.py reconciles (add/update/re-point/prune) + verifies canonical jump/attack/die x8. 6 porings: normal/lava/forest/sand/water/ice. All gained a die animation; ice_poring re-pointed 10046ec1 -> 520e6bf5 (ice & snow).",
+    "[2026-07-29T12:19:30+00:00] CONTRACT CHANGE: the poring-era jump/attack/die keys and animation_aliases are GONE. Ground truth = the MONSTER tag on PixelLab (objects AND characters stores). Every monster now exposes canonical animation keys idle/walk/angry/attack/die; the game-facing mapping incl. angry->idle fallbacks is monsters/animation_map.json (same shape as characters2's). Review gallery: monsters/index.html (+viewer_data.json). Old poring/sand_poring removed by maintainer."
   ],
   "requests": [
     {
       "to": "games",
-      "text": "First monster is live: monsters/poring/ (48x48, low top-down, 8 dirs). Read monsters/poring/monster.json \u2014 it maps every rotation + animation frame/strip/gif. Animations: jump + attack (8 dirs x 16 frames). NOTE animation_aliases: {\"walk\": \"jump\"} \u2014 the poring hops instead of walking, so use jump frames for locomotion. Maintainer wants it added to the game.",
-      "at": "2026-07-22T23:18:03+00:00"
-    },
-    {
-      "to": "games",
-      "text": "Second monster live: monsters/lava_poring/ \u2014 a black/lava variant of the poring (48x48, low top-down, 8 dirs; jump + flame attack at 8 dirs x 6 frames; walk aliased to jump). Same monster.json contract as poring. Good candidate for a tougher poring tier.",
-      "at": "2026-07-23T01:37:29+00:00"
-    },
-    {
-      "to": "games",
-      "text": "Third monster live: monsters/ice_poring/ \u2014 an ice variant of the poring (48x48, low top-down, 8 dirs; jump 8x16 frames + magic-ice attack 8x6 frames; walk aliased to jump). Same monster.json contract. The poring family is now normal/lava/ice \u2014 animation keys are uniform (jump/attack) across all three.",
-      "at": "2026-07-23T01:41:02+00:00"
-    },
-    {
-      "to": "games",
-      "text": "Fourth monster live: monsters/forest_poring/ \u2014 a green forest variant of the poring (48x48, low top-down, 8 dirs; jump 8x16 frames + projectile-vomit attack 8x6 frames; walk aliased to jump). Same monster.json contract, same uniform jump/attack keys. Poring family: normal/lava/ice/forest.",
-      "at": "2026-07-23T08:22:31+00:00"
-    },
-    {
-      "to": "games",
-      "text": "MONSTER ROSTER SYNCED \u2014 the poring family is now 6 and every monster has 3 animations. Folders: poring, lava_poring, forest_poring, sand_poring, water_poring, ice_poring (all 48x48, low top-down, 8 dirs). Each monster.json now carries CANONICAL keys jump/attack/die (8 dirs each) + animation_aliases {walk:jump}. Two changes to note: (1) NEW die animation on all 6 (melts/dissolves & disappears) \u2014 use for death. (2) ice_poring was RE-POINTED to a new 'ice & snow' object (old id 10046ec1 retired) \u2014 same folder name, new art + a die anim. New members sand_poring + water_poring. Authoritative list is monsters/config/roster.json; run monsters/pipeline/sync.py to reconcile.",
-      "at": "2026-07-23T18:15:09+00:00"
+      "text": "MONSTERS v2 LANDED \u2014 24 monsters (21 PixelLab objects + 3 characters: dark_donkey, saber_toothed_tiger, mammoth), each with canonical animations idle/walk/angry/attack/die x 8 directions under monsters/<id>/animations/. READ monsters/animation_map.json for the state contract (identity defaults + overrides like {angry: idle} fallbacks + missing states) \u2014 the old walk->jump aliases and monsters/poring|sand_poring are gone. Per-monster metadata: monsters/<id>/monster.json (incl. resolved states + per-direction frame counts). Known gaps flagged in animation_map.missing/overrides: saber_toothed_tiger has no die yet; stone_golem angry is 5/8 dirs, diablo_2 angry 1/8 dirs (art fixes happen on PixelLab, then resync).",
+      "at": "2026-07-29T12:19:30+00:00"
     }
   ]
 }

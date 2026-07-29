@@ -162,7 +162,12 @@ def _save_gif(frames, path, duration_ms=PREVIEW_MS):
 def save_rotating_gif(frames_by_dir, path, duration_ms=PREVIEW_MS):
     """The review GIF: play the full animation facing one direction, then turn
     one 45° step and play it again, all the way around (8 plays per loop).
-    Directions follow DIRECTIONS_8 so consecutive plays are adjacent headings."""
+    Directions follow DIRECTIONS_8 so consecutive plays are adjacent headings.
+
+    Note: Pillow's GIF writer merges IDENTICAL consecutive frames into one
+    longer-duration frame (common in die animations once the monster has
+    vanished), so the file's physical frame count can be below the logical
+    one while total duration and visuals stay exact."""
     seq = []
     for d in DIRECTIONS_8:
         seq.extend(frames_by_dir.get(d) or [])
@@ -240,10 +245,15 @@ def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None)
                 status, _, _ = client.conditional_download(urls[0], pv["lm"])
                 unchanged = status == 304
             if unchanged:
-                saved[direction] = pv
+                # the 304 skip is only safe when the per-frame PNGs really are
+                # on disk (the rotating gif rebuilds from them) — otherwise
+                # fall through and re-download
                 fdir = os.path.join(mdir, "animations", key, direction)
-                frames_by_dir[direction] = _load_frames(fdir, w, h)
-                continue
+                cached = _load_frames(fdir, w, h)
+                if len(cached) == pv.get("frames"):
+                    saved[direction] = pv
+                    frames_by_dir[direction] = cached
+                    continue
             lm = client.last_modified(urls[0])
             frames = [f for f in client.download_many(urls) if f is not None]
             if not frames:
@@ -265,6 +275,11 @@ def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None)
                 "lm": lm, "src_frames": len(urls),
             }
         if not saved:
+            if prev_anims.get(key):
+                # every direction failed to download (transient CDN outage) —
+                # keep the last-known-good mirror rather than erasing it
+                print(f"  !! {key}: downloads failed entirely — keeping previous mirror")
+                anims[key] = prev_anims[key]
             continue
         rot_gif = os.path.join(mdir, "animations", f"{key}__rotating.gif")
         save_rotating_gif(frames_by_dir, rot_gif)

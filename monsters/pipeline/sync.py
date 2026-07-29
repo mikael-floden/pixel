@@ -92,13 +92,14 @@ def discover_roster(client, verbose=True):
     prev_by_pid = {m["pixellab_id"]: m for m in prev}
 
     kept, added, dropped, flagged = [], [], [], []
-    taken = set()
+    # Reserve EVERY existing roster id up front — a newly tagged monster that
+    # happens to be listed before an existing one must never steal its folder.
+    taken = {m["id"] for m in prev}
     for t in tagged:
         pid = t["id"]
         if pid in prev_by_pid:
             e = dict(prev_by_pid[pid])
             e["kind"] = t["kind"]
-            taken.add(e["id"])
             kept.append(e)
             continue
         detail = client.get_source(t["kind"], pid)
