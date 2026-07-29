@@ -348,6 +348,41 @@ try {
     console.log(`glow_test smoke OK (arrived, ${dEnd.toFixed(0)}wu)`);
   }
 
+  // ---- one reload: monster_demo (every monster pad; walk anims must PLAY) ----
+  // Guards the frozen-slide class: a hardcoded/mis-resolved anim key leaves
+  // every monster gliding as a statue — invisible to screenshots (a stuck walk
+  // frame looks exactly like the freeze-frame idle), so assert the ANIMATION
+  // STATE via __ml.monsterInfo(). Needs a world that actually has zones —
+  // prop_demo/glow_test legitimately ship zero (no habitats), monster_demo is
+  // the showcase with a pad per roster monster.
+  {
+    await page.goto("http://localhost:5173/", { waitUntil: "load" });
+    await page.waitForFunction(() => window.__mlSelect, { timeout: 25000 });
+    await page.evaluate(() => {
+      const i = window.__mlSelect.worlds().findIndex((w) => /monster/i.test(w));
+      if (i >= 0) window.__mlSelect.pickWorld(i);
+      window.__mlSelect.commit();
+    });
+    await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, { timeout: 30000 });
+    await page.waitForTimeout(1500);
+    const count = await page.evaluate(() => window.__ml.monsterInfo().length);
+    if (count === 0) fail("monster_demo has no monsters (zones failed to load)");
+    let playingSeen = 0;
+    let badIdle = 0;
+    const t0 = Date.now();
+    while (Date.now() - t0 < 10000 && playingSeen === 0) {
+      const info = await page.evaluate(() => window.__ml.monsterInfo());
+      for (const m of info) {
+        if (m.playing && m.anim) playingSeen++;
+        if (!m.playing && m.tex.includes("placeholder")) badIdle++;
+      }
+      await page.waitForTimeout(300);
+    }
+    if (playingSeen === 0) fail("no monster ever played its walk clip (frozen-slide regression)");
+    if (badIdle > 0) fail(`${badIdle} resting monster samples on the placeholder texture`);
+    console.log(`monster anims OK (${count} monsters, ${playingSeen} playing samples)`);
+  }
+
   if (errors.length) fail("page errors: " + errors.slice(0, 3).join(" | "));
   console.log("SMOKE OK — all browser-glue checks passed in one session");
 } finally {

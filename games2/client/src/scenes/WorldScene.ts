@@ -401,6 +401,12 @@ interface MonsterAvatar {
   surfLevel?: number; // surface level in LEVELS (occluder + light sampling basis)
   shadowW: number; // resting shadow ellipse, scaled from the monster's frame size
   shadowH: number; // (a 48px poring gets 26x10 — the historical size; a 256px mammoth ~120x46)
+  // The manifest-RESOLVED walk anim key for this kind (animation_map.json —
+  // "walk" for the 24-roster). NEVER hardcode the anim name here: the poring
+  // era's art happened to call its walk "jump", a literal "jump" hid in
+  // playMonsterAnim behind that coincidence, and the moment the manifest
+  // resolved properly every monster froze mid-slide (maintainer 2026-07-30).
+  walkKey: string;
 }
 
 /** The common body-visual subset the SHARED render helpers operate on —
@@ -1475,6 +1481,11 @@ export class WorldScene extends Phaser.Scene {
           coverY: mv.coverY !== undefined ? Math.round(mv.coverY) : null,
           shadow: { x: Math.round(mv.shadow.x), y: Math.round(mv.shadow.y), depth: +mv.shadow.depth.toFixed(1) },
           lit: mv.lit ? { visible: mv.lit.visible, tint: mv.lit.tintTopLeft.toString(16) } : null,
+          // Animation state — a headless probe CAN catch "moving but frozen"
+          // (screenshots can't distinguish a stuck walk from freeze-frame idle).
+          anim: mv.sprite.anims.getName() || null,
+          playing: mv.sprite.anims.isPlaying,
+          tex: mv.sprite.texture.key,
         })),
       // Glow-field RT orientation calibration (headless probes flip + verify).
       glowFlip: (v?: number) => {
@@ -1681,6 +1692,7 @@ export class WorldScene extends Phaser.Scene {
       fy: m.y,
       shadowW,
       shadowH,
+      walkKey: walk,
     };
     this.monsters.set(id, mv);
     this.playMonsterAnim(mv, !!m.moving, m.dir);
@@ -1695,27 +1707,28 @@ export class WorldScene extends Phaser.Scene {
     this.monsters.delete(id);
   }
 
-  /** Drive a monster's 8-dir WALK (jump) clip: loop it while `moving`, else
-   * freeze on the first frame of the current facing (idle pause between hops).
-   * A direction-only change keeps the loop progress so the hop doesn't restart. */
+  /** Drive a monster's 8-dir WALK clip (mv.walkKey — the manifest-resolved
+   * anim, never a hardcoded name): loop it while `moving`, else freeze on the
+   * first frame of the current facing (idle pause between legs). A
+   * direction-only change keeps the loop progress so the gait doesn't restart. */
   private playMonsterAnim(mv: MonsterAvatar, moving: boolean, dir: string) {
     const d = DIRECTIONS.includes(dir as never) ? dir : DEFAULT_DIRECTION;
     mv.dispDir = d;
-    const key = monsterAnimKey(mv.kind, "jump", d);
+    const key = monsterAnimKey(mv.kind, mv.walkKey, d);
     if (moving) {
       if (!this.anims.exists(key)) return;
       if (mv.sprite.anims.getName() !== key || !mv.sprite.anims.isPlaying) {
         const prev = mv.sprite.anims.getName();
-        const sameState = !!prev && mv.sprite.anims.isPlaying && prev.split(":").at(-2) === "jump";
+        const sameState = !!prev && mv.sprite.anims.isPlaying && prev.split(":").at(-2) === mv.walkKey;
         const progress = sameState ? mv.sprite.anims.getProgress() : 0;
         mv.sprite.play(key, true);
         if (progress > 0) mv.sprite.anims.setProgress(progress);
       }
     } else {
-      // Paused between hops: stop and hold the first frame of the facing strip
+      // Paused between legs: stop and hold the first frame of the facing strip
       // (also turns the resting monster to face its last heading).
       mv.sprite.anims.stop();
-      const sk = monsterSheetKey(mv.kind, "jump", d);
+      const sk = monsterSheetKey(mv.kind, mv.walkKey, d);
       if (this.textures.exists(sk)) mv.sprite.setTexture(sk, 0);
     }
   }
