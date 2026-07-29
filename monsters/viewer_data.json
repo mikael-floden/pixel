@@ -1,0 +1,1809 @@
+{
+ "states_order": [
+  "idle",
+  "walk",
+  "angry",
+  "attack",
+  "die"
+ ],
+ "monsters": [
+  {
+   "id": "butterfly_dragon",
+   "name": "Butterfly Dragon",
+   "kind": "object",
+   "pixellab_url": "https://www.pixellab.ai/create-object/254d29b8-03fa-43e7-bf29-f5e08ea41c6d",
+   "prompt": "A tiny dragon with oversized butterfly wings.",
+   "size": {
+    "width": 97,
+    "height": 97
+   },
+   "sprite": "butterfly_dragon/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "butterfly_dragon/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Idle"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "butterfly_dragon/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      6
+     ],
+     "source_name": "Flying hover jump"
+    },
+    {
+     "state": "angry",
+     "key": "idle",
+     "fallback": true,
+     "missing": false,
+     "rotating_gif": "butterfly_dragon/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Idle"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "butterfly_dragon/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Open the mouth and make a fire burst attack, just "
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "butterfly_dragon/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Burns up in a flame and dissapers"
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "dark_donkey",
+   "name": "Dark Donkey",
+   "kind": "character",
+   "pixellab_url": "https://www.pixellab.ai/create-character/54f7383c-d88e-460e-b6d1-c210a02d8592",
+   "prompt": "Dark donkey with dark eyes (still white pupils)",
+   "size": {
+    "width": 124,
+    "height": 124
+   },
+   "sprite": "dark_donkey/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "dark_donkey/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "custom-Calm peiceful idle"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "dark_donkey/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "custom-Walking with all 4 legs like a horse "
+    },
+    {
+     "state": "angry",
+     "key": "angry",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "dark_donkey/animations/angry__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "custom-Angry frustrated idle"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "dark_donkey/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      8
+     ],
+     "source_name": "attack"
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "dark_donkey/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "custom-faints\nand\nfades\naway"
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "diablo",
+   "name": "Diablo",
+   "kind": "object",
+   "pixellab_url": "https://www.pixellab.ai/create-object/a743c13d-7d2a-4e04-8347-306d7cf7b029",
+   "prompt": "Diablo, horror style. Evil eyes and mystical. Thin unpleasant body shape.",
+   "size": {
+    "width": 97,
+    "height": 97
+   },
+   "sprite": "diablo/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "diablo/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Idle"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "diablo/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Jump"
+    },
+    {
+     "state": "angry",
+     "key": "idle",
+     "fallback": true,
+     "missing": false,
+     "rotating_gif": "diablo/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Idle"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "diablo/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Skull attack with the head/forehead"
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "diablo/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      9
+     ],
+     "source_name": "Falls dead to the floor and turns to ash"
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "diablo_2",
+   "name": "Diablo II",
+   "kind": "object",
+   "pixellab_url": "https://www.pixellab.ai/create-object/353c3520-06a8-4456-aa29-acf55858e2a5",
+   "prompt": "Diablo horror style. Evil eyes and myst",
+   "size": {
+    "width": 136,
+    "height": 136
+   },
+   "sprite": "diablo_2/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "diablo_2/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      9
+     ],
+     "source_name": "swirling dark aura,  the animation should look lik"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "diablo_2/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      9
+     ],
+     "source_name": "Moving forward, the swirling dark aura drags flame"
+    },
+    {
+     "state": "angry",
+     "key": "angry",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "diablo_2/animations/angry__rotating.gif",
+     "directions": 1,
+     "frames_per_direction": [
+      9
+     ],
+     "source_name": "Angry idle"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "diablo_2/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      9
+     ],
+     "source_name": "Slam attack, the demon tries to crush the player w"
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "diablo_2/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      9
+     ],
+     "source_name": "Cracks and turns into a pile of stones then dissap"
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "forest_poring",
+   "name": "Forest Poring",
+   "kind": "object",
+   "pixellab_url": "https://www.pixellab.ai/create-object/e17b5c74-894a-4b53-83c3-a530044f04db",
+   "prompt": "The round Poring blob from Ragnar\u00f6k Online, but in green like a forset poring",
+   "size": {
+    "width": 48,
+    "height": 48
+   },
+   "sprite": "forest_poring/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "forest_poring/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Idle"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "forest_poring/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Jumping"
+    },
+    {
+     "state": "angry",
+     "key": "idle",
+     "fallback": true,
+     "missing": false,
+     "rotating_gif": "forest_poring/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Idle"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "forest_poring/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Swings the top water droplet in an angry attack"
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "forest_poring/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Melts into a puddle of water and dissapers"
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "forest_poring_2",
+   "name": "Forest Poring II",
+   "kind": "object",
+   "pixellab_url": "https://www.pixellab.ai/create-object/5996c65a-ed16-4079-a592-88d388110bf5",
+   "prompt": "The round Poring blob from Ragnar\u00f6k Online, but in green like a forset poring",
+   "size": {
+    "width": 48,
+    "height": 48
+   },
+   "sprite": "forest_poring_2/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "forest_poring_2/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Idle"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "forest_poring_2/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Jumping"
+    },
+    {
+     "state": "angry",
+     "key": "idle",
+     "fallback": true,
+     "missing": false,
+     "rotating_gif": "forest_poring_2/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Idle"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "forest_poring_2/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "tiny wooden sword attack with white motion trail"
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "forest_poring_2/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Turns into green smaller balls and dissapers"
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "hedgehog",
+   "name": "Hedgehog",
+   "kind": "object",
+   "pixellab_url": "https://www.pixellab.ai/create-object/80db8ba5-d79a-49ee-889b-14ee3f97c027",
+   "prompt": "A hedgehog. One of the easiest enemies in the MMORPG.",
+   "size": {
+    "width": 34,
+    "height": 34
+   },
+   "sprite": "hedgehog/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "hedgehog/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Calm idle"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "hedgehog/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Walks with both legs"
+    },
+    {
+     "state": "angry",
+     "key": "angry",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "hedgehog/animations/angry__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Angry breathing idle"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "hedgehog/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Flash spike attack. This is a deadly fast spike bu"
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "hedgehog/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "All spikes detach and fall to the ground while the"
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "ice_crystal_golem",
+   "name": "Ice Crystal Golem",
+   "kind": "object",
+   "pixellab_url": "https://www.pixellab.ai/create-object/66edbc4d-682f-4c5b-a8dc-b2d8f667f7b7",
+   "prompt": "Mystical ice crystal golem detailed with dark uneven rocks as detail. Crystal shaped ice. The golem look scary and something you want to run away from.",
+   "size": {
+    "width": 136,
+    "height": 136
+   },
+   "sprite": "ice_crystal_golem/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "ice_crystal_golem/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      9
+     ],
+     "source_name": "Idle"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "ice_crystal_golem/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      5
+     ],
+     "source_name": "Walk with the legs, full cycle, should look good in an animated walking loop"
+    },
+    {
+     "state": "angry",
+     "key": "idle",
+     "fallback": true,
+     "missing": false,
+     "rotating_gif": "ice_crystal_golem/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      9
+     ],
+     "source_name": "Idle"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "ice_crystal_golem/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      9
+     ],
+     "source_name": "Rips up an ice crystal from the ground with one ha"
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "ice_crystal_golem/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      9
+     ],
+     "source_name": "Cracks and turnes into a crystal pile and dissaper"
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "ice_poring",
+   "name": "Ice Poring",
+   "kind": "object",
+   "pixellab_url": "https://www.pixellab.ai/create-object/520e6bf5-265f-41cf-9ab7-05094ef4fc48",
+   "prompt": "The round Poring blob from Ragnar\u00f6k Online, but as ice and snow",
+   "size": {
+    "width": 48,
+    "height": 48
+   },
+   "sprite": "ice_poring/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "ice_poring/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Idle"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "ice_poring/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      6
+     ],
+     "source_name": "Jump"
+    },
+    {
+     "state": "angry",
+     "key": "angry",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "ice_poring/animations/angry__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Angry idle"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "ice_poring/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Snow spike attack"
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "ice_poring/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "melting and disappears"
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "lava_poring",
+   "name": "Lava Poring",
+   "kind": "object",
+   "pixellab_url": "https://www.pixellab.ai/create-object/3bbbeaaa-9bff-4870-bee3-56a8fcb8321d",
+   "prompt": "The round Poring blob from Ragnar\u00f6k Online, but in black and lava",
+   "size": {
+    "width": 48,
+    "height": 48
+   },
+   "sprite": "lava_poring/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "lava_poring/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Idle"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "lava_poring/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Jumping"
+    },
+    {
+     "state": "angry",
+     "key": "idle",
+     "fallback": true,
+     "missing": false,
+     "rotating_gif": "lava_poring/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Idle"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "lava_poring/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Lava rage attack"
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "lava_poring/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Melts to lava and dissapers"
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "lava_salamander",
+   "name": "Lava Salamander",
+   "kind": "object",
+   "pixellab_url": "https://www.pixellab.ai/create-object/4585539d-d732-4734-8139-3eb545f50144",
+   "prompt": "A lava salamander",
+   "size": {
+    "width": 48,
+    "height": 48
+   },
+   "sprite": "lava_salamander/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "lava_salamander/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Idle"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "lava_salamander/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Walk with all 4 legs in an animation that is easy to loop"
+    },
+    {
+     "state": "angry",
+     "key": "angry",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "lava_salamander/animations/angry__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Angry idle"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "lava_salamander/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Attacks with the tail like a scorpion. The tail be"
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "lava_salamander/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Fades unconscious into the ground and dissapers"
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "lava_salamander_2",
+   "name": "Lava Salamander II",
+   "kind": "object",
+   "pixellab_url": "https://www.pixellab.ai/create-object/af436ac4-70b3-499c-a4cf-de682207cd10",
+   "prompt": "A lava salamander",
+   "size": {
+    "width": 48,
+    "height": 48
+   },
+   "sprite": "lava_salamander_2/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "lava_salamander_2/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Idle"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "lava_salamander_2/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      6
+     ],
+     "source_name": "Walk with all 4 legs, full cycle, should look good in an animated walking loop. Should walk like a salamander, moving the entire body while walking"
+    },
+    {
+     "state": "angry",
+     "key": "angry",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "lava_salamander_2/animations/angry__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Angry idle"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "lava_salamander_2/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Big bite attack"
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "lava_salamander_2/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Cut in half, bleeds and dissapers"
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "malformed_creature",
+   "name": "Malformed Creature",
+   "kind": "object",
+   "pixellab_url": "https://www.pixellab.ai/create-object/ace728e2-0cbb-4cc6-9d09-5340f784bdc9",
+   "prompt": "Malformed/dis figured create with human skin and a thin body. Creepy and mystical.",
+   "size": {
+    "width": 85,
+    "height": 85
+   },
+   "sprite": "malformed_creature/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "malformed_creature/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Calm Idle"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "malformed_creature/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      6
+     ],
+     "source_name": "Walk with the legs, full cycle, should look good in an animated walking loop. Drags one's feet like a zoombie."
+    },
+    {
+     "state": "angry",
+     "key": "angry",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "malformed_creature/animations/angry__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Angry frustrated idle"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "malformed_creature/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "One hand slap attack with white motion \"swoosh\""
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "malformed_creature/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      9
+     ],
+     "source_name": "Falls to the floor malformed with the hand on the "
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "mammoth",
+   "name": "Mammoth",
+   "kind": "character",
+   "pixellab_url": "https://www.pixellab.ai/create-character/b87303fd-9a57-4a4c-821b-956f9cf46e41",
+   "prompt": "A gigantic nice looking mammoth with dark dark brown hair and dark eyes with a small white pupil",
+   "size": {
+    "width": 256,
+    "height": 256
+   },
+   "sprite": "mammoth/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "mammoth/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "custom-Vary vary subtile idle. No big movement. Calm stil"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "mammoth/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "custom-Walking both both legs. Move b"
+    },
+    {
+     "state": "angry",
+     "key": "angry",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "mammoth/animations/angry__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "custom-Angry idle"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "mammoth/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "custom-The mammoth swings its head, slashing with its tus"
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "mammoth/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "custom-faints and fades away"
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "masked_shadow_creature",
+   "name": "Masked Shadow Creature",
+   "kind": "object",
+   "pixellab_url": "https://www.pixellab.ai/create-object/bd869d98-0938-4a46-9fcf-22d9719a92ff",
+   "prompt": "A smal thin and detailed shadow creature wearing a mask similar to the one in majoras mask. The mask should draw inspiration from majoras mask, but this mask looks much different",
+   "size": {
+    "width": 68,
+    "height": 68
+   },
+   "sprite": "masked_shadow_creature/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "masked_shadow_creature/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Idle"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "masked_shadow_creature/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "skips along"
+    },
+    {
+     "state": "angry",
+     "key": "angry",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "masked_shadow_creature/animations/angry__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Angry idle"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "masked_shadow_creature/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Round kick"
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "masked_shadow_creature/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      9
+     ],
+     "source_name": "The character dissapers and the mask falls down on"
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "mystical_frog",
+   "name": "Mystical Frog",
+   "kind": "object",
+   "pixellab_url": "https://www.pixellab.ai/create-object/720c978c-30fe-41c2-8ad9-c9b30b5d3983",
+   "prompt": "Green mystical frog. This is a level 1 enemy, but it still look dangerous.",
+   "size": {
+    "width": 34,
+    "height": 34
+   },
+   "sprite": "mystical_frog/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "mystical_frog/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Calm peaceful idle"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "mystical_frog/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Jumps like a frog"
+    },
+    {
+     "state": "angry",
+     "key": "angry",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "mystical_frog/animations/angry__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Angry irritated breathing/idle"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "mystical_frog/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Slams both hands on the ground. Powerful attack mo"
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "mystical_frog/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Turns into dark green slime and dissapers"
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "night_beast",
+   "name": "Night Beast",
+   "kind": "object",
+   "pixellab_url": "https://www.pixellab.ai/create-object/7242eed6-0dcc-4395-b2fb-ff84a4d05e82",
+   "prompt": "A night beast whose bones glow through cracked flesh.",
+   "size": {
+    "width": 97,
+    "height": 97
+   },
+   "sprite": "night_beast/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "night_beast/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Calm idle breathing"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "night_beast/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      6
+     ],
+     "source_name": "Run with all 4 legs. Perfect loop animation."
+    },
+    {
+     "state": "angry",
+     "key": "angry",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "night_beast/animations/angry__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Angry idle frustrated"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "night_beast/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Slash attack with one hand, claws are visible. Ang"
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "night_beast/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      9
+     ],
+     "source_name": "Cut in half, drop too the floor bleeds and dissape"
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "saber_toothed_tiger",
+   "name": "Dark Saber-Toothed Tiger",
+   "kind": "character",
+   "pixellab_url": "https://www.pixellab.ai/create-character/39f3f72b-6d16-4f47-9243-f87f137f80c7",
+   "prompt": "Dark saber-toothed tiger",
+   "size": {
+    "width": 84,
+    "height": 84
+   },
+   "sprite": "saber_toothed_tiger/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "saber_toothed_tiger/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      9
+     ],
+     "source_name": "custom-Calm idle. Peaceful."
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "saber_toothed_tiger/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "custom-Running like a tiger"
+    },
+    {
+     "state": "angry",
+     "key": "angry",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "saber_toothed_tiger/animations/angry__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "custom-Angry idle, breathing "
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "saber_toothed_tiger/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "custom-Big bite attack"
+    },
+    {
+     "state": "die",
+     "key": null,
+     "fallback": false,
+     "missing": true,
+     "rotating_gif": null,
+     "directions": 0,
+     "frames_per_direction": [],
+     "source_name": null
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "snow_demon",
+   "name": "Skinny Snow Demon",
+   "kind": "object",
+   "pixellab_url": "https://www.pixellab.ai/create-object/fde14deb-a5ba-44db-9f3f-1c64a4f55126",
+   "prompt": "skinny snow deamon.",
+   "size": {
+    "width": 113,
+    "height": 113
+   },
+   "sprite": "snow_demon/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "snow_demon/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Idle"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "snow_demon/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      6
+     ],
+     "source_name": "Walk with the legs, full cycle, should look good in an animated walking loop. Long strides/big steps."
+    },
+    {
+     "state": "angry",
+     "key": "angry",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "snow_demon/animations/angry__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Angry idle"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "snow_demon/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Slash attack with one hand, small ice claws are vi"
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "snow_demon/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      9
+     ],
+     "source_name": "Turns into a skeleton that falls into a pile of bo"
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "stone_golem",
+   "name": "Stone Golem",
+   "kind": "object",
+   "pixellab_url": "https://www.pixellab.ai/create-object/d45b26b4-b2a6-427e-aca0-00ab0cd35e9a",
+   "prompt": "Stone golem with moss, uneven rough rocks",
+   "size": {
+    "width": 136,
+    "height": 136
+   },
+   "sprite": "stone_golem/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "stone_golem/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      9
+     ],
+     "source_name": "Idle"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "stone_golem/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      9
+     ],
+     "source_name": "Walk with the legs, full cycle, should look good i"
+    },
+    {
+     "state": "angry",
+     "key": "angry",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "stone_golem/animations/angry__rotating.gif",
+     "directions": 5,
+     "frames_per_direction": [
+      9
+     ],
+     "source_name": "Angry idle"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "stone_golem/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      9
+     ],
+     "source_name": "Rip up the earth with one hand, stones and ground "
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "stone_golem/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      9
+     ],
+     "source_name": "Head falls off first, then the whole body falls in"
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "stone_turtle",
+   "name": "Stone Turtle",
+   "kind": "object",
+   "pixellab_url": "https://www.pixellab.ai/create-object/06c0b794-2cff-4a9a-be40-3a150cf2a824",
+   "prompt": "A grumpy stone turtle with glowing magma cracks.",
+   "size": {
+    "width": 68,
+    "height": 68
+   },
+   "sprite": "stone_turtle/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "stone_turtle/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Idle"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "stone_turtle/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Walk with all 4 legs, full cycle, should look good in an animated walking loop"
+    },
+    {
+     "state": "angry",
+     "key": "angry",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "stone_turtle/animations/angry__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Angry idle"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "stone_turtle/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      4
+     ],
+     "source_name": "Big bite attack"
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "stone_turtle/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      9
+     ],
+     "source_name": "The turtle shell cracks and the turtle melts and d"
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "tree_stump",
+   "name": "Mossy Tree Stump",
+   "kind": "object",
+   "pixellab_url": "https://www.pixellab.ai/create-object/9f84b290-6445-45ac-bdd0-a361ff32571e",
+   "prompt": "A living tree stump covered in moss. Only mysical eyes no mouth.",
+   "size": {
+    "width": 48,
+    "height": 48
+   },
+   "sprite": "tree_stump/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "tree_stump/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Idle"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "tree_stump/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Crawling using the roots"
+    },
+    {
+     "state": "angry",
+     "key": "angry",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "tree_stump/animations/angry__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Angry idle"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "tree_stump/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Angry root attack"
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "tree_stump/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Merges with the ground and dissapers"
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "water_poring",
+   "name": "Water Poring",
+   "kind": "object",
+   "pixellab_url": "https://www.pixellab.ai/create-object/57b9bc64-41b6-429e-9eed-f8aac0f9ebb0",
+   "prompt": "The round Poring blob from Ragnar\u00f6k Online, but as water",
+   "size": {
+    "width": 48,
+    "height": 48
+   },
+   "sprite": "water_poring/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "water_poring/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Idle"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "water_poring/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Jumps"
+    },
+    {
+     "state": "angry",
+     "key": "angry",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "water_poring/animations/angry__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Angry idle"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "water_poring/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Angry water explosion then reappear from the groun"
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "water_poring/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Turns into a puddle and and evaporates"
+    }
+   ],
+   "extras": []
+  },
+  {
+   "id": "white_rabbit",
+   "name": "White Rabbit",
+   "kind": "object",
+   "pixellab_url": "https://www.pixellab.ai/create-object/20fd56a9-0cf2-47d7-b14a-693cd2cfcaf8",
+   "prompt": "A white rabbit. One of the easiest enemies in an MMORPG.",
+   "size": {
+    "width": 48,
+    "height": 48
+   },
+   "sprite": "white_rabbit/sprite.png",
+   "states": [
+    {
+     "state": "idle",
+     "key": "idle",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "white_rabbit/animations/idle__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Calm idle"
+    },
+    {
+     "state": "walk",
+     "key": "walk",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "white_rabbit/animations/walk__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      6
+     ],
+     "source_name": "Jumps forward like a rabbit"
+    },
+    {
+     "state": "angry",
+     "key": "angry",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "white_rabbit/animations/angry__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Angry and breathing idle"
+    },
+    {
+     "state": "attack",
+     "key": "attack",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "white_rabbit/animations/attack__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Bite attack"
+    },
+    {
+     "state": "die",
+     "key": "die",
+     "fallback": false,
+     "missing": false,
+     "rotating_gif": "white_rabbit/animations/die__rotating.gif",
+     "directions": 8,
+     "frames_per_direction": [
+      16
+     ],
+     "source_name": "Faints and fades away by merging with the ground"
+    }
+   ],
+   "extras": []
+  }
+ ]
+}

@@ -1,0 +1,660 @@
+{
+  "id": "malformed_creature",
+  "name": "Malformed Creature",
+  "source": {
+    "kind": "object",
+    "pixellab_id": "ace728e2-0cbb-4cc6-9d09-5340f784bdc9",
+    "url": "https://www.pixellab.ai/create-object/ace728e2-0cbb-4cc6-9d09-5340f784bdc9",
+    "prompt": "Malformed/dis figured create with human skin and a thin body. Creepy and mystical.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 85,
+    "height": 85
+  },
+  "sprite": "malformed_creature/sprite.png",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "malformed_creature/rotations/south.png",
+    "west": "malformed_creature/rotations/west.png",
+    "east": "malformed_creature/rotations/east.png",
+    "north": "malformed_creature/rotations/north.png",
+    "south-east": "malformed_creature/rotations/south-east.png",
+    "south-west": "malformed_creature/rotations/south-west.png",
+    "north-east": "malformed_creature/rotations/north-east.png",
+    "north-west": "malformed_creature/rotations/north-west.png"
+  },
+  "animations": {
+    "die": {
+      "group_id": "bc8e758b-35ee-45ad-ba15-a90870998173",
+      "source_name": "Falls to the floor malformed with the hand on the ",
+      "directions": {
+        "east": {
+          "frames": 9,
+          "strip": "malformed_creature/animations/die__east.png",
+          "gif": "malformed_creature/animations/die__east.gif",
+          "frame_paths": [
+            "malformed_creature/animations/die/east/00.png",
+            "malformed_creature/animations/die/east/01.png",
+            "malformed_creature/animations/die/east/02.png",
+            "malformed_creature/animations/die/east/03.png",
+            "malformed_creature/animations/die/east/04.png",
+            "malformed_creature/animations/die/east/05.png",
+            "malformed_creature/animations/die/east/06.png",
+            "malformed_creature/animations/die/east/07.png",
+            "malformed_creature/animations/die/east/08.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:32:31 GMT",
+          "src_frames": 9
+        },
+        "north": {
+          "frames": 9,
+          "strip": "malformed_creature/animations/die__north.png",
+          "gif": "malformed_creature/animations/die__north.gif",
+          "frame_paths": [
+            "malformed_creature/animations/die/north/00.png",
+            "malformed_creature/animations/die/north/01.png",
+            "malformed_creature/animations/die/north/02.png",
+            "malformed_creature/animations/die/north/03.png",
+            "malformed_creature/animations/die/north/04.png",
+            "malformed_creature/animations/die/north/05.png",
+            "malformed_creature/animations/die/north/06.png",
+            "malformed_creature/animations/die/north/07.png",
+            "malformed_creature/animations/die/north/08.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:32:35 GMT",
+          "src_frames": 9
+        },
+        "north-east": {
+          "frames": 9,
+          "strip": "malformed_creature/animations/die__north-east.png",
+          "gif": "malformed_creature/animations/die__north-east.gif",
+          "frame_paths": [
+            "malformed_creature/animations/die/north-east/00.png",
+            "malformed_creature/animations/die/north-east/01.png",
+            "malformed_creature/animations/die/north-east/02.png",
+            "malformed_creature/animations/die/north-east/03.png",
+            "malformed_creature/animations/die/north-east/04.png",
+            "malformed_creature/animations/die/north-east/05.png",
+            "malformed_creature/animations/die/north-east/06.png",
+            "malformed_creature/animations/die/north-east/07.png",
+            "malformed_creature/animations/die/north-east/08.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:32:36 GMT",
+          "src_frames": 9
+        },
+        "north-west": {
+          "frames": 9,
+          "strip": "malformed_creature/animations/die__north-west.png",
+          "gif": "malformed_creature/animations/die__north-west.gif",
+          "frame_paths": [
+            "malformed_creature/animations/die/north-west/00.png",
+            "malformed_creature/animations/die/north-west/01.png",
+            "malformed_creature/animations/die/north-west/02.png",
+            "malformed_creature/animations/die/north-west/03.png",
+            "malformed_creature/animations/die/north-west/04.png",
+            "malformed_creature/animations/die/north-west/05.png",
+            "malformed_creature/animations/die/north-west/06.png",
+            "malformed_creature/animations/die/north-west/07.png",
+            "malformed_creature/animations/die/north-west/08.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:32:37 GMT",
+          "src_frames": 9
+        },
+        "south": {
+          "frames": 9,
+          "strip": "malformed_creature/animations/die__south.png",
+          "gif": "malformed_creature/animations/die__south.gif",
+          "frame_paths": [
+            "malformed_creature/animations/die/south/00.png",
+            "malformed_creature/animations/die/south/01.png",
+            "malformed_creature/animations/die/south/02.png",
+            "malformed_creature/animations/die/south/03.png",
+            "malformed_creature/animations/die/south/04.png",
+            "malformed_creature/animations/die/south/05.png",
+            "malformed_creature/animations/die/south/06.png",
+            "malformed_creature/animations/die/south/07.png",
+            "malformed_creature/animations/die/south/08.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:32:39 GMT",
+          "src_frames": 9
+        },
+        "south-east": {
+          "frames": 9,
+          "strip": "malformed_creature/animations/die__south-east.png",
+          "gif": "malformed_creature/animations/die__south-east.gif",
+          "frame_paths": [
+            "malformed_creature/animations/die/south-east/00.png",
+            "malformed_creature/animations/die/south-east/01.png",
+            "malformed_creature/animations/die/south-east/02.png",
+            "malformed_creature/animations/die/south-east/03.png",
+            "malformed_creature/animations/die/south-east/04.png",
+            "malformed_creature/animations/die/south-east/05.png",
+            "malformed_creature/animations/die/south-east/06.png",
+            "malformed_creature/animations/die/south-east/07.png",
+            "malformed_creature/animations/die/south-east/08.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:32:40 GMT",
+          "src_frames": 9
+        },
+        "south-west": {
+          "frames": 9,
+          "strip": "malformed_creature/animations/die__south-west.png",
+          "gif": "malformed_creature/animations/die__south-west.gif",
+          "frame_paths": [
+            "malformed_creature/animations/die/south-west/00.png",
+            "malformed_creature/animations/die/south-west/01.png",
+            "malformed_creature/animations/die/south-west/02.png",
+            "malformed_creature/animations/die/south-west/03.png",
+            "malformed_creature/animations/die/south-west/04.png",
+            "malformed_creature/animations/die/south-west/05.png",
+            "malformed_creature/animations/die/south-west/06.png",
+            "malformed_creature/animations/die/south-west/07.png",
+            "malformed_creature/animations/die/south-west/08.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:32:42 GMT",
+          "src_frames": 9
+        },
+        "west": {
+          "frames": 9,
+          "strip": "malformed_creature/animations/die__west.png",
+          "gif": "malformed_creature/animations/die__west.gif",
+          "frame_paths": [
+            "malformed_creature/animations/die/west/00.png",
+            "malformed_creature/animations/die/west/01.png",
+            "malformed_creature/animations/die/west/02.png",
+            "malformed_creature/animations/die/west/03.png",
+            "malformed_creature/animations/die/west/04.png",
+            "malformed_creature/animations/die/west/05.png",
+            "malformed_creature/animations/die/west/06.png",
+            "malformed_creature/animations/die/west/07.png",
+            "malformed_creature/animations/die/west/08.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:32:44 GMT",
+          "src_frames": 9
+        }
+      },
+      "rotating_gif": "malformed_creature/animations/die__rotating.gif"
+    },
+    "attack": {
+      "group_id": "15325bb0-a7d9-44c9-9614-8b7a2f40bd4a",
+      "source_name": "One hand slap attack with white motion \"swoosh\"",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/attack__east.png",
+          "gif": "malformed_creature/animations/attack__east.gif",
+          "frame_paths": [
+            "malformed_creature/animations/attack/east/00.png",
+            "malformed_creature/animations/attack/east/01.png",
+            "malformed_creature/animations/attack/east/02.png",
+            "malformed_creature/animations/attack/east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:32:45 GMT",
+          "src_frames": 4
+        },
+        "north": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/attack__north.png",
+          "gif": "malformed_creature/animations/attack__north.gif",
+          "frame_paths": [
+            "malformed_creature/animations/attack/north/00.png",
+            "malformed_creature/animations/attack/north/01.png",
+            "malformed_creature/animations/attack/north/02.png",
+            "malformed_creature/animations/attack/north/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:32:46 GMT",
+          "src_frames": 4
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/attack__north-east.png",
+          "gif": "malformed_creature/animations/attack__north-east.gif",
+          "frame_paths": [
+            "malformed_creature/animations/attack/north-east/00.png",
+            "malformed_creature/animations/attack/north-east/01.png",
+            "malformed_creature/animations/attack/north-east/02.png",
+            "malformed_creature/animations/attack/north-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:32:48 GMT",
+          "src_frames": 4
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/attack__north-west.png",
+          "gif": "malformed_creature/animations/attack__north-west.gif",
+          "frame_paths": [
+            "malformed_creature/animations/attack/north-west/00.png",
+            "malformed_creature/animations/attack/north-west/01.png",
+            "malformed_creature/animations/attack/north-west/02.png",
+            "malformed_creature/animations/attack/north-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:32:49 GMT",
+          "src_frames": 4
+        },
+        "south": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/attack__south.png",
+          "gif": "malformed_creature/animations/attack__south.gif",
+          "frame_paths": [
+            "malformed_creature/animations/attack/south/00.png",
+            "malformed_creature/animations/attack/south/01.png",
+            "malformed_creature/animations/attack/south/02.png",
+            "malformed_creature/animations/attack/south/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:32:50 GMT",
+          "src_frames": 4
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/attack__south-east.png",
+          "gif": "malformed_creature/animations/attack__south-east.gif",
+          "frame_paths": [
+            "malformed_creature/animations/attack/south-east/00.png",
+            "malformed_creature/animations/attack/south-east/01.png",
+            "malformed_creature/animations/attack/south-east/02.png",
+            "malformed_creature/animations/attack/south-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:32:51 GMT",
+          "src_frames": 4
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/attack__south-west.png",
+          "gif": "malformed_creature/animations/attack__south-west.gif",
+          "frame_paths": [
+            "malformed_creature/animations/attack/south-west/00.png",
+            "malformed_creature/animations/attack/south-west/01.png",
+            "malformed_creature/animations/attack/south-west/02.png",
+            "malformed_creature/animations/attack/south-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:32:53 GMT",
+          "src_frames": 4
+        },
+        "west": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/attack__west.png",
+          "gif": "malformed_creature/animations/attack__west.gif",
+          "frame_paths": [
+            "malformed_creature/animations/attack/west/00.png",
+            "malformed_creature/animations/attack/west/01.png",
+            "malformed_creature/animations/attack/west/02.png",
+            "malformed_creature/animations/attack/west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:32:54 GMT",
+          "src_frames": 4
+        }
+      },
+      "rotating_gif": "malformed_creature/animations/attack__rotating.gif"
+    },
+    "idle": {
+      "group_id": "a06ef6c2-76b1-4877-9eb6-9560f8799790",
+      "source_name": "Calm Idle",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/idle__east.png",
+          "gif": "malformed_creature/animations/idle__east.gif",
+          "frame_paths": [
+            "malformed_creature/animations/idle/east/00.png",
+            "malformed_creature/animations/idle/east/01.png",
+            "malformed_creature/animations/idle/east/02.png",
+            "malformed_creature/animations/idle/east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:32:56 GMT",
+          "src_frames": 4
+        },
+        "north": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/idle__north.png",
+          "gif": "malformed_creature/animations/idle__north.gif",
+          "frame_paths": [
+            "malformed_creature/animations/idle/north/00.png",
+            "malformed_creature/animations/idle/north/01.png",
+            "malformed_creature/animations/idle/north/02.png",
+            "malformed_creature/animations/idle/north/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:32:57 GMT",
+          "src_frames": 4
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/idle__north-east.png",
+          "gif": "malformed_creature/animations/idle__north-east.gif",
+          "frame_paths": [
+            "malformed_creature/animations/idle/north-east/00.png",
+            "malformed_creature/animations/idle/north-east/01.png",
+            "malformed_creature/animations/idle/north-east/02.png",
+            "malformed_creature/animations/idle/north-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:32:58 GMT",
+          "src_frames": 4
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/idle__north-west.png",
+          "gif": "malformed_creature/animations/idle__north-west.gif",
+          "frame_paths": [
+            "malformed_creature/animations/idle/north-west/00.png",
+            "malformed_creature/animations/idle/north-west/01.png",
+            "malformed_creature/animations/idle/north-west/02.png",
+            "malformed_creature/animations/idle/north-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:32:59 GMT",
+          "src_frames": 4
+        },
+        "south": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/idle__south.png",
+          "gif": "malformed_creature/animations/idle__south.gif",
+          "frame_paths": [
+            "malformed_creature/animations/idle/south/00.png",
+            "malformed_creature/animations/idle/south/01.png",
+            "malformed_creature/animations/idle/south/02.png",
+            "malformed_creature/animations/idle/south/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:01 GMT",
+          "src_frames": 4
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/idle__south-east.png",
+          "gif": "malformed_creature/animations/idle__south-east.gif",
+          "frame_paths": [
+            "malformed_creature/animations/idle/south-east/00.png",
+            "malformed_creature/animations/idle/south-east/01.png",
+            "malformed_creature/animations/idle/south-east/02.png",
+            "malformed_creature/animations/idle/south-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:02 GMT",
+          "src_frames": 4
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/idle__south-west.png",
+          "gif": "malformed_creature/animations/idle__south-west.gif",
+          "frame_paths": [
+            "malformed_creature/animations/idle/south-west/00.png",
+            "malformed_creature/animations/idle/south-west/01.png",
+            "malformed_creature/animations/idle/south-west/02.png",
+            "malformed_creature/animations/idle/south-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:04 GMT",
+          "src_frames": 4
+        },
+        "west": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/idle__west.png",
+          "gif": "malformed_creature/animations/idle__west.gif",
+          "frame_paths": [
+            "malformed_creature/animations/idle/west/00.png",
+            "malformed_creature/animations/idle/west/01.png",
+            "malformed_creature/animations/idle/west/02.png",
+            "malformed_creature/animations/idle/west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:05 GMT",
+          "src_frames": 4
+        }
+      },
+      "rotating_gif": "malformed_creature/animations/idle__rotating.gif"
+    },
+    "walk": {
+      "group_id": "4e88e37a-ce6f-4a16-b11d-f25d9a06d316",
+      "source_name": "Walk with the legs, full cycle, should look good in an animated walking loop. Drags one's feet like a zoombie.",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "malformed_creature/animations/walk__east.png",
+          "gif": "malformed_creature/animations/walk__east.gif",
+          "frame_paths": [
+            "malformed_creature/animations/walk/east/00.png",
+            "malformed_creature/animations/walk/east/01.png",
+            "malformed_creature/animations/walk/east/02.png",
+            "malformed_creature/animations/walk/east/03.png",
+            "malformed_creature/animations/walk/east/04.png",
+            "malformed_creature/animations/walk/east/05.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:06 GMT",
+          "src_frames": 6
+        },
+        "north": {
+          "frames": 6,
+          "strip": "malformed_creature/animations/walk__north.png",
+          "gif": "malformed_creature/animations/walk__north.gif",
+          "frame_paths": [
+            "malformed_creature/animations/walk/north/00.png",
+            "malformed_creature/animations/walk/north/01.png",
+            "malformed_creature/animations/walk/north/02.png",
+            "malformed_creature/animations/walk/north/03.png",
+            "malformed_creature/animations/walk/north/04.png",
+            "malformed_creature/animations/walk/north/05.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:08 GMT",
+          "src_frames": 6
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "malformed_creature/animations/walk__north-east.png",
+          "gif": "malformed_creature/animations/walk__north-east.gif",
+          "frame_paths": [
+            "malformed_creature/animations/walk/north-east/00.png",
+            "malformed_creature/animations/walk/north-east/01.png",
+            "malformed_creature/animations/walk/north-east/02.png",
+            "malformed_creature/animations/walk/north-east/03.png",
+            "malformed_creature/animations/walk/north-east/04.png",
+            "malformed_creature/animations/walk/north-east/05.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:09 GMT",
+          "src_frames": 6
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "malformed_creature/animations/walk__north-west.png",
+          "gif": "malformed_creature/animations/walk__north-west.gif",
+          "frame_paths": [
+            "malformed_creature/animations/walk/north-west/00.png",
+            "malformed_creature/animations/walk/north-west/01.png",
+            "malformed_creature/animations/walk/north-west/02.png",
+            "malformed_creature/animations/walk/north-west/03.png",
+            "malformed_creature/animations/walk/north-west/04.png",
+            "malformed_creature/animations/walk/north-west/05.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:10 GMT",
+          "src_frames": 6
+        },
+        "south": {
+          "frames": 6,
+          "strip": "malformed_creature/animations/walk__south.png",
+          "gif": "malformed_creature/animations/walk__south.gif",
+          "frame_paths": [
+            "malformed_creature/animations/walk/south/00.png",
+            "malformed_creature/animations/walk/south/01.png",
+            "malformed_creature/animations/walk/south/02.png",
+            "malformed_creature/animations/walk/south/03.png",
+            "malformed_creature/animations/walk/south/04.png",
+            "malformed_creature/animations/walk/south/05.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:12 GMT",
+          "src_frames": 6
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "malformed_creature/animations/walk__south-east.png",
+          "gif": "malformed_creature/animations/walk__south-east.gif",
+          "frame_paths": [
+            "malformed_creature/animations/walk/south-east/00.png",
+            "malformed_creature/animations/walk/south-east/01.png",
+            "malformed_creature/animations/walk/south-east/02.png",
+            "malformed_creature/animations/walk/south-east/03.png",
+            "malformed_creature/animations/walk/south-east/04.png",
+            "malformed_creature/animations/walk/south-east/05.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:14 GMT",
+          "src_frames": 6
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "malformed_creature/animations/walk__south-west.png",
+          "gif": "malformed_creature/animations/walk__south-west.gif",
+          "frame_paths": [
+            "malformed_creature/animations/walk/south-west/00.png",
+            "malformed_creature/animations/walk/south-west/01.png",
+            "malformed_creature/animations/walk/south-west/02.png",
+            "malformed_creature/animations/walk/south-west/03.png",
+            "malformed_creature/animations/walk/south-west/04.png",
+            "malformed_creature/animations/walk/south-west/05.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:15 GMT",
+          "src_frames": 6
+        },
+        "west": {
+          "frames": 6,
+          "strip": "malformed_creature/animations/walk__west.png",
+          "gif": "malformed_creature/animations/walk__west.gif",
+          "frame_paths": [
+            "malformed_creature/animations/walk/west/00.png",
+            "malformed_creature/animations/walk/west/01.png",
+            "malformed_creature/animations/walk/west/02.png",
+            "malformed_creature/animations/walk/west/03.png",
+            "malformed_creature/animations/walk/west/04.png",
+            "malformed_creature/animations/walk/west/05.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:17 GMT",
+          "src_frames": 6
+        }
+      },
+      "rotating_gif": "malformed_creature/animations/walk__rotating.gif"
+    },
+    "angry": {
+      "group_id": "cdab6ad9-cc03-4573-9be8-4af766892619",
+      "source_name": "Angry frustrated idle",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/angry__east.png",
+          "gif": "malformed_creature/animations/angry__east.gif",
+          "frame_paths": [
+            "malformed_creature/animations/angry/east/00.png",
+            "malformed_creature/animations/angry/east/01.png",
+            "malformed_creature/animations/angry/east/02.png",
+            "malformed_creature/animations/angry/east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:18 GMT",
+          "src_frames": 4
+        },
+        "north": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/angry__north.png",
+          "gif": "malformed_creature/animations/angry__north.gif",
+          "frame_paths": [
+            "malformed_creature/animations/angry/north/00.png",
+            "malformed_creature/animations/angry/north/01.png",
+            "malformed_creature/animations/angry/north/02.png",
+            "malformed_creature/animations/angry/north/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:20 GMT",
+          "src_frames": 4
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/angry__north-east.png",
+          "gif": "malformed_creature/animations/angry__north-east.gif",
+          "frame_paths": [
+            "malformed_creature/animations/angry/north-east/00.png",
+            "malformed_creature/animations/angry/north-east/01.png",
+            "malformed_creature/animations/angry/north-east/02.png",
+            "malformed_creature/animations/angry/north-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:21 GMT",
+          "src_frames": 4
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/angry__north-west.png",
+          "gif": "malformed_creature/animations/angry__north-west.gif",
+          "frame_paths": [
+            "malformed_creature/animations/angry/north-west/00.png",
+            "malformed_creature/animations/angry/north-west/01.png",
+            "malformed_creature/animations/angry/north-west/02.png",
+            "malformed_creature/animations/angry/north-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:23 GMT",
+          "src_frames": 4
+        },
+        "south": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/angry__south.png",
+          "gif": "malformed_creature/animations/angry__south.gif",
+          "frame_paths": [
+            "malformed_creature/animations/angry/south/00.png",
+            "malformed_creature/animations/angry/south/01.png",
+            "malformed_creature/animations/angry/south/02.png",
+            "malformed_creature/animations/angry/south/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:24 GMT",
+          "src_frames": 4
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/angry__south-east.png",
+          "gif": "malformed_creature/animations/angry__south-east.gif",
+          "frame_paths": [
+            "malformed_creature/animations/angry/south-east/00.png",
+            "malformed_creature/animations/angry/south-east/01.png",
+            "malformed_creature/animations/angry/south-east/02.png",
+            "malformed_creature/animations/angry/south-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:26 GMT",
+          "src_frames": 4
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/angry__south-west.png",
+          "gif": "malformed_creature/animations/angry__south-west.gif",
+          "frame_paths": [
+            "malformed_creature/animations/angry/south-west/00.png",
+            "malformed_creature/animations/angry/south-west/01.png",
+            "malformed_creature/animations/angry/south-west/02.png",
+            "malformed_creature/animations/angry/south-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:27 GMT",
+          "src_frames": 4
+        },
+        "west": {
+          "frames": 4,
+          "strip": "malformed_creature/animations/angry__west.png",
+          "gif": "malformed_creature/animations/angry__west.gif",
+          "frame_paths": [
+            "malformed_creature/animations/angry/west/00.png",
+            "malformed_creature/animations/angry/west/01.png",
+            "malformed_creature/animations/angry/west/02.png",
+            "malformed_creature/animations/angry/west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:33:28 GMT",
+          "src_frames": 4
+        }
+      },
+      "rotating_gif": "malformed_creature/animations/angry__rotating.gif"
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "synced_from_pixellab": true
+}

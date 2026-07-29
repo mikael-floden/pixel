@@ -6,7 +6,10 @@
     "pixellab_id": "520e6bf5-265f-41cf-9ab7-05094ef4fc48",
     "url": "https://www.pixellab.ai/create-object/520e6bf5-265f-41cf-9ab7-05094ef4fc48",
     "prompt": "The round Poring blob from Ragnar\u00f6k Online, but as ice and snow",
-    "view": "low top-down"
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
   },
   "size": {
     "width": 48,
@@ -36,7 +39,7 @@
   "animations": {
     "attack": {
       "group_id": "ea01de78-8af0-4bbe-ae25-9f79b79ca4aa",
-      "description": "Snow spike attack",
+      "source_name": "Snow spike attack",
       "directions": {
         "east": {
           "frames": 16,
@@ -60,7 +63,7 @@
             "ice_poring/animations/attack/east/14.png",
             "ice_poring/animations/attack/east/15.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:10:55 GMT",
+          "lm": "Wed, 29 Jul 2026 11:51:28 GMT",
           "src_frames": 16
         },
         "north": {
@@ -85,7 +88,7 @@
             "ice_poring/animations/attack/north/14.png",
             "ice_poring/animations/attack/north/15.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:11:05 GMT",
+          "lm": "Wed, 29 Jul 2026 11:51:30 GMT",
           "src_frames": 16
         },
         "north-east": {
@@ -110,7 +113,7 @@
             "ice_poring/animations/attack/north-east/14.png",
             "ice_poring/animations/attack/north-east/15.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:11:13 GMT",
+          "lm": "Wed, 29 Jul 2026 11:51:32 GMT",
           "src_frames": 16
         },
         "north-west": {
@@ -135,7 +138,7 @@
             "ice_poring/animations/attack/north-west/14.png",
             "ice_poring/animations/attack/north-west/15.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:11:21 GMT",
+          "lm": "Wed, 29 Jul 2026 11:51:34 GMT",
           "src_frames": 16
         },
         "south": {
@@ -160,7 +163,7 @@
             "ice_poring/animations/attack/south/14.png",
             "ice_poring/animations/attack/south/15.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:11:30 GMT",
+          "lm": "Wed, 29 Jul 2026 11:51:36 GMT",
           "src_frames": 16
         },
         "south-east": {
@@ -185,7 +188,7 @@
             "ice_poring/animations/attack/south-east/14.png",
             "ice_poring/animations/attack/south-east/15.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:11:40 GMT",
+          "lm": "Wed, 29 Jul 2026 11:51:39 GMT",
           "src_frames": 16
         },
         "south-west": {
@@ -210,7 +213,7 @@
             "ice_poring/animations/attack/south-west/14.png",
             "ice_poring/animations/attack/south-west/15.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:11:49 GMT",
+          "lm": "Wed, 29 Jul 2026 11:51:41 GMT",
           "src_frames": 16
         },
         "west": {
@@ -235,14 +238,429 @@
             "ice_poring/animations/attack/west/14.png",
             "ice_poring/animations/attack/west/15.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:11:58 GMT",
+          "lm": "Wed, 29 Jul 2026 11:51:43 GMT",
           "src_frames": 16
         }
-      }
+      },
+      "rotating_gif": "ice_poring/animations/attack__rotating.gif"
+    },
+    "angry": {
+      "group_id": "0e630282-f68c-4a4a-9cb3-82a8ec19ee9b",
+      "source_name": "Angry idle",
+      "directions": {
+        "east": {
+          "frames": 16,
+          "strip": "ice_poring/animations/angry__east.png",
+          "gif": "ice_poring/animations/angry__east.gif",
+          "frame_paths": [
+            "ice_poring/animations/angry/east/00.png",
+            "ice_poring/animations/angry/east/01.png",
+            "ice_poring/animations/angry/east/02.png",
+            "ice_poring/animations/angry/east/03.png",
+            "ice_poring/animations/angry/east/04.png",
+            "ice_poring/animations/angry/east/05.png",
+            "ice_poring/animations/angry/east/06.png",
+            "ice_poring/animations/angry/east/07.png",
+            "ice_poring/animations/angry/east/08.png",
+            "ice_poring/animations/angry/east/09.png",
+            "ice_poring/animations/angry/east/10.png",
+            "ice_poring/animations/angry/east/11.png",
+            "ice_poring/animations/angry/east/12.png",
+            "ice_poring/animations/angry/east/13.png",
+            "ice_poring/animations/angry/east/14.png",
+            "ice_poring/animations/angry/east/15.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:45 GMT",
+          "src_frames": 16
+        },
+        "north": {
+          "frames": 16,
+          "strip": "ice_poring/animations/angry__north.png",
+          "gif": "ice_poring/animations/angry__north.gif",
+          "frame_paths": [
+            "ice_poring/animations/angry/north/00.png",
+            "ice_poring/animations/angry/north/01.png",
+            "ice_poring/animations/angry/north/02.png",
+            "ice_poring/animations/angry/north/03.png",
+            "ice_poring/animations/angry/north/04.png",
+            "ice_poring/animations/angry/north/05.png",
+            "ice_poring/animations/angry/north/06.png",
+            "ice_poring/animations/angry/north/07.png",
+            "ice_poring/animations/angry/north/08.png",
+            "ice_poring/animations/angry/north/09.png",
+            "ice_poring/animations/angry/north/10.png",
+            "ice_poring/animations/angry/north/11.png",
+            "ice_poring/animations/angry/north/12.png",
+            "ice_poring/animations/angry/north/13.png",
+            "ice_poring/animations/angry/north/14.png",
+            "ice_poring/animations/angry/north/15.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:47 GMT",
+          "src_frames": 16
+        },
+        "north-east": {
+          "frames": 16,
+          "strip": "ice_poring/animations/angry__north-east.png",
+          "gif": "ice_poring/animations/angry__north-east.gif",
+          "frame_paths": [
+            "ice_poring/animations/angry/north-east/00.png",
+            "ice_poring/animations/angry/north-east/01.png",
+            "ice_poring/animations/angry/north-east/02.png",
+            "ice_poring/animations/angry/north-east/03.png",
+            "ice_poring/animations/angry/north-east/04.png",
+            "ice_poring/animations/angry/north-east/05.png",
+            "ice_poring/animations/angry/north-east/06.png",
+            "ice_poring/animations/angry/north-east/07.png",
+            "ice_poring/animations/angry/north-east/08.png",
+            "ice_poring/animations/angry/north-east/09.png",
+            "ice_poring/animations/angry/north-east/10.png",
+            "ice_poring/animations/angry/north-east/11.png",
+            "ice_poring/animations/angry/north-east/12.png",
+            "ice_poring/animations/angry/north-east/13.png",
+            "ice_poring/animations/angry/north-east/14.png",
+            "ice_poring/animations/angry/north-east/15.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:49 GMT",
+          "src_frames": 16
+        },
+        "north-west": {
+          "frames": 16,
+          "strip": "ice_poring/animations/angry__north-west.png",
+          "gif": "ice_poring/animations/angry__north-west.gif",
+          "frame_paths": [
+            "ice_poring/animations/angry/north-west/00.png",
+            "ice_poring/animations/angry/north-west/01.png",
+            "ice_poring/animations/angry/north-west/02.png",
+            "ice_poring/animations/angry/north-west/03.png",
+            "ice_poring/animations/angry/north-west/04.png",
+            "ice_poring/animations/angry/north-west/05.png",
+            "ice_poring/animations/angry/north-west/06.png",
+            "ice_poring/animations/angry/north-west/07.png",
+            "ice_poring/animations/angry/north-west/08.png",
+            "ice_poring/animations/angry/north-west/09.png",
+            "ice_poring/animations/angry/north-west/10.png",
+            "ice_poring/animations/angry/north-west/11.png",
+            "ice_poring/animations/angry/north-west/12.png",
+            "ice_poring/animations/angry/north-west/13.png",
+            "ice_poring/animations/angry/north-west/14.png",
+            "ice_poring/animations/angry/north-west/15.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:51 GMT",
+          "src_frames": 16
+        },
+        "south": {
+          "frames": 16,
+          "strip": "ice_poring/animations/angry__south.png",
+          "gif": "ice_poring/animations/angry__south.gif",
+          "frame_paths": [
+            "ice_poring/animations/angry/south/00.png",
+            "ice_poring/animations/angry/south/01.png",
+            "ice_poring/animations/angry/south/02.png",
+            "ice_poring/animations/angry/south/03.png",
+            "ice_poring/animations/angry/south/04.png",
+            "ice_poring/animations/angry/south/05.png",
+            "ice_poring/animations/angry/south/06.png",
+            "ice_poring/animations/angry/south/07.png",
+            "ice_poring/animations/angry/south/08.png",
+            "ice_poring/animations/angry/south/09.png",
+            "ice_poring/animations/angry/south/10.png",
+            "ice_poring/animations/angry/south/11.png",
+            "ice_poring/animations/angry/south/12.png",
+            "ice_poring/animations/angry/south/13.png",
+            "ice_poring/animations/angry/south/14.png",
+            "ice_poring/animations/angry/south/15.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:54 GMT",
+          "src_frames": 16
+        },
+        "south-east": {
+          "frames": 16,
+          "strip": "ice_poring/animations/angry__south-east.png",
+          "gif": "ice_poring/animations/angry__south-east.gif",
+          "frame_paths": [
+            "ice_poring/animations/angry/south-east/00.png",
+            "ice_poring/animations/angry/south-east/01.png",
+            "ice_poring/animations/angry/south-east/02.png",
+            "ice_poring/animations/angry/south-east/03.png",
+            "ice_poring/animations/angry/south-east/04.png",
+            "ice_poring/animations/angry/south-east/05.png",
+            "ice_poring/animations/angry/south-east/06.png",
+            "ice_poring/animations/angry/south-east/07.png",
+            "ice_poring/animations/angry/south-east/08.png",
+            "ice_poring/animations/angry/south-east/09.png",
+            "ice_poring/animations/angry/south-east/10.png",
+            "ice_poring/animations/angry/south-east/11.png",
+            "ice_poring/animations/angry/south-east/12.png",
+            "ice_poring/animations/angry/south-east/13.png",
+            "ice_poring/animations/angry/south-east/14.png",
+            "ice_poring/animations/angry/south-east/15.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:56 GMT",
+          "src_frames": 16
+        },
+        "south-west": {
+          "frames": 16,
+          "strip": "ice_poring/animations/angry__south-west.png",
+          "gif": "ice_poring/animations/angry__south-west.gif",
+          "frame_paths": [
+            "ice_poring/animations/angry/south-west/00.png",
+            "ice_poring/animations/angry/south-west/01.png",
+            "ice_poring/animations/angry/south-west/02.png",
+            "ice_poring/animations/angry/south-west/03.png",
+            "ice_poring/animations/angry/south-west/04.png",
+            "ice_poring/animations/angry/south-west/05.png",
+            "ice_poring/animations/angry/south-west/06.png",
+            "ice_poring/animations/angry/south-west/07.png",
+            "ice_poring/animations/angry/south-west/08.png",
+            "ice_poring/animations/angry/south-west/09.png",
+            "ice_poring/animations/angry/south-west/10.png",
+            "ice_poring/animations/angry/south-west/11.png",
+            "ice_poring/animations/angry/south-west/12.png",
+            "ice_poring/animations/angry/south-west/13.png",
+            "ice_poring/animations/angry/south-west/14.png",
+            "ice_poring/animations/angry/south-west/15.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:59 GMT",
+          "src_frames": 16
+        },
+        "west": {
+          "frames": 16,
+          "strip": "ice_poring/animations/angry__west.png",
+          "gif": "ice_poring/animations/angry__west.gif",
+          "frame_paths": [
+            "ice_poring/animations/angry/west/00.png",
+            "ice_poring/animations/angry/west/01.png",
+            "ice_poring/animations/angry/west/02.png",
+            "ice_poring/animations/angry/west/03.png",
+            "ice_poring/animations/angry/west/04.png",
+            "ice_poring/animations/angry/west/05.png",
+            "ice_poring/animations/angry/west/06.png",
+            "ice_poring/animations/angry/west/07.png",
+            "ice_poring/animations/angry/west/08.png",
+            "ice_poring/animations/angry/west/09.png",
+            "ice_poring/animations/angry/west/10.png",
+            "ice_poring/animations/angry/west/11.png",
+            "ice_poring/animations/angry/west/12.png",
+            "ice_poring/animations/angry/west/13.png",
+            "ice_poring/animations/angry/west/14.png",
+            "ice_poring/animations/angry/west/15.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:52:02 GMT",
+          "src_frames": 16
+        }
+      },
+      "rotating_gif": "ice_poring/animations/angry__rotating.gif"
+    },
+    "idle": {
+      "group_id": "80e17f51-479c-430c-891c-8095544eb142",
+      "source_name": "Idle",
+      "directions": {
+        "east": {
+          "frames": 16,
+          "strip": "ice_poring/animations/idle__east.png",
+          "gif": "ice_poring/animations/idle__east.gif",
+          "frame_paths": [
+            "ice_poring/animations/idle/east/00.png",
+            "ice_poring/animations/idle/east/01.png",
+            "ice_poring/animations/idle/east/02.png",
+            "ice_poring/animations/idle/east/03.png",
+            "ice_poring/animations/idle/east/04.png",
+            "ice_poring/animations/idle/east/05.png",
+            "ice_poring/animations/idle/east/06.png",
+            "ice_poring/animations/idle/east/07.png",
+            "ice_poring/animations/idle/east/08.png",
+            "ice_poring/animations/idle/east/09.png",
+            "ice_poring/animations/idle/east/10.png",
+            "ice_poring/animations/idle/east/11.png",
+            "ice_poring/animations/idle/east/12.png",
+            "ice_poring/animations/idle/east/13.png",
+            "ice_poring/animations/idle/east/14.png",
+            "ice_poring/animations/idle/east/15.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:52:04 GMT",
+          "src_frames": 16
+        },
+        "north": {
+          "frames": 16,
+          "strip": "ice_poring/animations/idle__north.png",
+          "gif": "ice_poring/animations/idle__north.gif",
+          "frame_paths": [
+            "ice_poring/animations/idle/north/00.png",
+            "ice_poring/animations/idle/north/01.png",
+            "ice_poring/animations/idle/north/02.png",
+            "ice_poring/animations/idle/north/03.png",
+            "ice_poring/animations/idle/north/04.png",
+            "ice_poring/animations/idle/north/05.png",
+            "ice_poring/animations/idle/north/06.png",
+            "ice_poring/animations/idle/north/07.png",
+            "ice_poring/animations/idle/north/08.png",
+            "ice_poring/animations/idle/north/09.png",
+            "ice_poring/animations/idle/north/10.png",
+            "ice_poring/animations/idle/north/11.png",
+            "ice_poring/animations/idle/north/12.png",
+            "ice_poring/animations/idle/north/13.png",
+            "ice_poring/animations/idle/north/14.png",
+            "ice_poring/animations/idle/north/15.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:52:06 GMT",
+          "src_frames": 16
+        },
+        "north-east": {
+          "frames": 16,
+          "strip": "ice_poring/animations/idle__north-east.png",
+          "gif": "ice_poring/animations/idle__north-east.gif",
+          "frame_paths": [
+            "ice_poring/animations/idle/north-east/00.png",
+            "ice_poring/animations/idle/north-east/01.png",
+            "ice_poring/animations/idle/north-east/02.png",
+            "ice_poring/animations/idle/north-east/03.png",
+            "ice_poring/animations/idle/north-east/04.png",
+            "ice_poring/animations/idle/north-east/05.png",
+            "ice_poring/animations/idle/north-east/06.png",
+            "ice_poring/animations/idle/north-east/07.png",
+            "ice_poring/animations/idle/north-east/08.png",
+            "ice_poring/animations/idle/north-east/09.png",
+            "ice_poring/animations/idle/north-east/10.png",
+            "ice_poring/animations/idle/north-east/11.png",
+            "ice_poring/animations/idle/north-east/12.png",
+            "ice_poring/animations/idle/north-east/13.png",
+            "ice_poring/animations/idle/north-east/14.png",
+            "ice_poring/animations/idle/north-east/15.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:52:09 GMT",
+          "src_frames": 16
+        },
+        "north-west": {
+          "frames": 16,
+          "strip": "ice_poring/animations/idle__north-west.png",
+          "gif": "ice_poring/animations/idle__north-west.gif",
+          "frame_paths": [
+            "ice_poring/animations/idle/north-west/00.png",
+            "ice_poring/animations/idle/north-west/01.png",
+            "ice_poring/animations/idle/north-west/02.png",
+            "ice_poring/animations/idle/north-west/03.png",
+            "ice_poring/animations/idle/north-west/04.png",
+            "ice_poring/animations/idle/north-west/05.png",
+            "ice_poring/animations/idle/north-west/06.png",
+            "ice_poring/animations/idle/north-west/07.png",
+            "ice_poring/animations/idle/north-west/08.png",
+            "ice_poring/animations/idle/north-west/09.png",
+            "ice_poring/animations/idle/north-west/10.png",
+            "ice_poring/animations/idle/north-west/11.png",
+            "ice_poring/animations/idle/north-west/12.png",
+            "ice_poring/animations/idle/north-west/13.png",
+            "ice_poring/animations/idle/north-west/14.png",
+            "ice_poring/animations/idle/north-west/15.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:52:11 GMT",
+          "src_frames": 16
+        },
+        "south": {
+          "frames": 16,
+          "strip": "ice_poring/animations/idle__south.png",
+          "gif": "ice_poring/animations/idle__south.gif",
+          "frame_paths": [
+            "ice_poring/animations/idle/south/00.png",
+            "ice_poring/animations/idle/south/01.png",
+            "ice_poring/animations/idle/south/02.png",
+            "ice_poring/animations/idle/south/03.png",
+            "ice_poring/animations/idle/south/04.png",
+            "ice_poring/animations/idle/south/05.png",
+            "ice_poring/animations/idle/south/06.png",
+            "ice_poring/animations/idle/south/07.png",
+            "ice_poring/animations/idle/south/08.png",
+            "ice_poring/animations/idle/south/09.png",
+            "ice_poring/animations/idle/south/10.png",
+            "ice_poring/animations/idle/south/11.png",
+            "ice_poring/animations/idle/south/12.png",
+            "ice_poring/animations/idle/south/13.png",
+            "ice_poring/animations/idle/south/14.png",
+            "ice_poring/animations/idle/south/15.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:52:13 GMT",
+          "src_frames": 16
+        },
+        "south-east": {
+          "frames": 16,
+          "strip": "ice_poring/animations/idle__south-east.png",
+          "gif": "ice_poring/animations/idle__south-east.gif",
+          "frame_paths": [
+            "ice_poring/animations/idle/south-east/00.png",
+            "ice_poring/animations/idle/south-east/01.png",
+            "ice_poring/animations/idle/south-east/02.png",
+            "ice_poring/animations/idle/south-east/03.png",
+            "ice_poring/animations/idle/south-east/04.png",
+            "ice_poring/animations/idle/south-east/05.png",
+            "ice_poring/animations/idle/south-east/06.png",
+            "ice_poring/animations/idle/south-east/07.png",
+            "ice_poring/animations/idle/south-east/08.png",
+            "ice_poring/animations/idle/south-east/09.png",
+            "ice_poring/animations/idle/south-east/10.png",
+            "ice_poring/animations/idle/south-east/11.png",
+            "ice_poring/animations/idle/south-east/12.png",
+            "ice_poring/animations/idle/south-east/13.png",
+            "ice_poring/animations/idle/south-east/14.png",
+            "ice_poring/animations/idle/south-east/15.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:52:15 GMT",
+          "src_frames": 16
+        },
+        "south-west": {
+          "frames": 16,
+          "strip": "ice_poring/animations/idle__south-west.png",
+          "gif": "ice_poring/animations/idle__south-west.gif",
+          "frame_paths": [
+            "ice_poring/animations/idle/south-west/00.png",
+            "ice_poring/animations/idle/south-west/01.png",
+            "ice_poring/animations/idle/south-west/02.png",
+            "ice_poring/animations/idle/south-west/03.png",
+            "ice_poring/animations/idle/south-west/04.png",
+            "ice_poring/animations/idle/south-west/05.png",
+            "ice_poring/animations/idle/south-west/06.png",
+            "ice_poring/animations/idle/south-west/07.png",
+            "ice_poring/animations/idle/south-west/08.png",
+            "ice_poring/animations/idle/south-west/09.png",
+            "ice_poring/animations/idle/south-west/10.png",
+            "ice_poring/animations/idle/south-west/11.png",
+            "ice_poring/animations/idle/south-west/12.png",
+            "ice_poring/animations/idle/south-west/13.png",
+            "ice_poring/animations/idle/south-west/14.png",
+            "ice_poring/animations/idle/south-west/15.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:52:17 GMT",
+          "src_frames": 16
+        },
+        "west": {
+          "frames": 16,
+          "strip": "ice_poring/animations/idle__west.png",
+          "gif": "ice_poring/animations/idle__west.gif",
+          "frame_paths": [
+            "ice_poring/animations/idle/west/00.png",
+            "ice_poring/animations/idle/west/01.png",
+            "ice_poring/animations/idle/west/02.png",
+            "ice_poring/animations/idle/west/03.png",
+            "ice_poring/animations/idle/west/04.png",
+            "ice_poring/animations/idle/west/05.png",
+            "ice_poring/animations/idle/west/06.png",
+            "ice_poring/animations/idle/west/07.png",
+            "ice_poring/animations/idle/west/08.png",
+            "ice_poring/animations/idle/west/09.png",
+            "ice_poring/animations/idle/west/10.png",
+            "ice_poring/animations/idle/west/11.png",
+            "ice_poring/animations/idle/west/12.png",
+            "ice_poring/animations/idle/west/13.png",
+            "ice_poring/animations/idle/west/14.png",
+            "ice_poring/animations/idle/west/15.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:52:19 GMT",
+          "src_frames": 16
+        }
+      },
+      "rotating_gif": "ice_poring/animations/idle__rotating.gif"
     },
     "die": {
       "group_id": "bba229e2-f63d-41c2-9d4b-fc4a54f8eb92",
-      "description": "melting and disappears",
+      "source_name": "melting and disappears",
       "directions": {
         "east": {
           "frames": 16,
@@ -266,7 +684,7 @@
             "ice_poring/animations/die/east/14.png",
             "ice_poring/animations/die/east/15.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:12:07 GMT",
+          "lm": "Wed, 29 Jul 2026 11:52:21 GMT",
           "src_frames": 16
         },
         "north": {
@@ -291,7 +709,7 @@
             "ice_poring/animations/die/north/14.png",
             "ice_poring/animations/die/north/15.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:12:16 GMT",
+          "lm": "Wed, 29 Jul 2026 11:52:23 GMT",
           "src_frames": 16
         },
         "north-east": {
@@ -316,7 +734,7 @@
             "ice_poring/animations/die/north-east/14.png",
             "ice_poring/animations/die/north-east/15.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:12:26 GMT",
+          "lm": "Wed, 29 Jul 2026 11:52:25 GMT",
           "src_frames": 16
         },
         "north-west": {
@@ -341,7 +759,7 @@
             "ice_poring/animations/die/north-west/14.png",
             "ice_poring/animations/die/north-west/15.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:12:35 GMT",
+          "lm": "Wed, 29 Jul 2026 11:52:27 GMT",
           "src_frames": 16
         },
         "south": {
@@ -366,7 +784,7 @@
             "ice_poring/animations/die/south/14.png",
             "ice_poring/animations/die/south/15.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:12:44 GMT",
+          "lm": "Wed, 29 Jul 2026 11:52:29 GMT",
           "src_frames": 16
         },
         "south-east": {
@@ -391,7 +809,7 @@
             "ice_poring/animations/die/south-east/14.png",
             "ice_poring/animations/die/south-east/15.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:12:53 GMT",
+          "lm": "Wed, 29 Jul 2026 11:52:31 GMT",
           "src_frames": 16
         },
         "south-west": {
@@ -416,7 +834,7 @@
             "ice_poring/animations/die/south-west/14.png",
             "ice_poring/animations/die/south-west/15.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:13:01 GMT",
+          "lm": "Wed, 29 Jul 2026 11:52:34 GMT",
           "src_frames": 16
         },
         "west": {
@@ -441,144 +859,146 @@
             "ice_poring/animations/die/west/14.png",
             "ice_poring/animations/die/west/15.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:13:10 GMT",
+          "lm": "Wed, 29 Jul 2026 11:52:36 GMT",
           "src_frames": 16
         }
-      }
+      },
+      "rotating_gif": "ice_poring/animations/die__rotating.gif"
     },
-    "jump": {
+    "walk": {
       "group_id": "f4040649-64b2-479e-a8cc-3ee398a9afc9",
-      "description": "Jump",
+      "source_name": "Jump",
       "directions": {
         "east": {
           "frames": 6,
-          "strip": "ice_poring/animations/jump__east.png",
-          "gif": "ice_poring/animations/jump__east.gif",
+          "strip": "ice_poring/animations/walk__east.png",
+          "gif": "ice_poring/animations/walk__east.gif",
           "frame_paths": [
-            "ice_poring/animations/jump/east/00.png",
-            "ice_poring/animations/jump/east/01.png",
-            "ice_poring/animations/jump/east/02.png",
-            "ice_poring/animations/jump/east/03.png",
-            "ice_poring/animations/jump/east/04.png",
-            "ice_poring/animations/jump/east/05.png"
+            "ice_poring/animations/walk/east/00.png",
+            "ice_poring/animations/walk/east/01.png",
+            "ice_poring/animations/walk/east/02.png",
+            "ice_poring/animations/walk/east/03.png",
+            "ice_poring/animations/walk/east/04.png",
+            "ice_poring/animations/walk/east/05.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:13:18 GMT",
+          "lm": "Wed, 29 Jul 2026 11:52:38 GMT",
           "src_frames": 6
         },
         "north": {
           "frames": 6,
-          "strip": "ice_poring/animations/jump__north.png",
-          "gif": "ice_poring/animations/jump__north.gif",
+          "strip": "ice_poring/animations/walk__north.png",
+          "gif": "ice_poring/animations/walk__north.gif",
           "frame_paths": [
-            "ice_poring/animations/jump/north/00.png",
-            "ice_poring/animations/jump/north/01.png",
-            "ice_poring/animations/jump/north/02.png",
-            "ice_poring/animations/jump/north/03.png",
-            "ice_poring/animations/jump/north/04.png",
-            "ice_poring/animations/jump/north/05.png"
+            "ice_poring/animations/walk/north/00.png",
+            "ice_poring/animations/walk/north/01.png",
+            "ice_poring/animations/walk/north/02.png",
+            "ice_poring/animations/walk/north/03.png",
+            "ice_poring/animations/walk/north/04.png",
+            "ice_poring/animations/walk/north/05.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:13:22 GMT",
+          "lm": "Wed, 29 Jul 2026 11:52:39 GMT",
           "src_frames": 6
         },
         "north-east": {
           "frames": 6,
-          "strip": "ice_poring/animations/jump__north-east.png",
-          "gif": "ice_poring/animations/jump__north-east.gif",
+          "strip": "ice_poring/animations/walk__north-east.png",
+          "gif": "ice_poring/animations/walk__north-east.gif",
           "frame_paths": [
-            "ice_poring/animations/jump/north-east/00.png",
-            "ice_poring/animations/jump/north-east/01.png",
-            "ice_poring/animations/jump/north-east/02.png",
-            "ice_poring/animations/jump/north-east/03.png",
-            "ice_poring/animations/jump/north-east/04.png",
-            "ice_poring/animations/jump/north-east/05.png"
+            "ice_poring/animations/walk/north-east/00.png",
+            "ice_poring/animations/walk/north-east/01.png",
+            "ice_poring/animations/walk/north-east/02.png",
+            "ice_poring/animations/walk/north-east/03.png",
+            "ice_poring/animations/walk/north-east/04.png",
+            "ice_poring/animations/walk/north-east/05.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:13:25 GMT",
+          "lm": "Wed, 29 Jul 2026 11:52:40 GMT",
           "src_frames": 6
         },
         "north-west": {
           "frames": 6,
-          "strip": "ice_poring/animations/jump__north-west.png",
-          "gif": "ice_poring/animations/jump__north-west.gif",
+          "strip": "ice_poring/animations/walk__north-west.png",
+          "gif": "ice_poring/animations/walk__north-west.gif",
           "frame_paths": [
-            "ice_poring/animations/jump/north-west/00.png",
-            "ice_poring/animations/jump/north-west/01.png",
-            "ice_poring/animations/jump/north-west/02.png",
-            "ice_poring/animations/jump/north-west/03.png",
-            "ice_poring/animations/jump/north-west/04.png",
-            "ice_poring/animations/jump/north-west/05.png"
+            "ice_poring/animations/walk/north-west/00.png",
+            "ice_poring/animations/walk/north-west/01.png",
+            "ice_poring/animations/walk/north-west/02.png",
+            "ice_poring/animations/walk/north-west/03.png",
+            "ice_poring/animations/walk/north-west/04.png",
+            "ice_poring/animations/walk/north-west/05.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:13:29 GMT",
+          "lm": "Wed, 29 Jul 2026 11:52:41 GMT",
           "src_frames": 6
         },
         "south": {
           "frames": 6,
-          "strip": "ice_poring/animations/jump__south.png",
-          "gif": "ice_poring/animations/jump__south.gif",
+          "strip": "ice_poring/animations/walk__south.png",
+          "gif": "ice_poring/animations/walk__south.gif",
           "frame_paths": [
-            "ice_poring/animations/jump/south/00.png",
-            "ice_poring/animations/jump/south/01.png",
-            "ice_poring/animations/jump/south/02.png",
-            "ice_poring/animations/jump/south/03.png",
-            "ice_poring/animations/jump/south/04.png",
-            "ice_poring/animations/jump/south/05.png"
+            "ice_poring/animations/walk/south/00.png",
+            "ice_poring/animations/walk/south/01.png",
+            "ice_poring/animations/walk/south/02.png",
+            "ice_poring/animations/walk/south/03.png",
+            "ice_poring/animations/walk/south/04.png",
+            "ice_poring/animations/walk/south/05.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:13:32 GMT",
+          "lm": "Wed, 29 Jul 2026 11:52:42 GMT",
           "src_frames": 6
         },
         "south-east": {
           "frames": 6,
-          "strip": "ice_poring/animations/jump__south-east.png",
-          "gif": "ice_poring/animations/jump__south-east.gif",
+          "strip": "ice_poring/animations/walk__south-east.png",
+          "gif": "ice_poring/animations/walk__south-east.gif",
           "frame_paths": [
-            "ice_poring/animations/jump/south-east/00.png",
-            "ice_poring/animations/jump/south-east/01.png",
-            "ice_poring/animations/jump/south-east/02.png",
-            "ice_poring/animations/jump/south-east/03.png",
-            "ice_poring/animations/jump/south-east/04.png",
-            "ice_poring/animations/jump/south-east/05.png"
+            "ice_poring/animations/walk/south-east/00.png",
+            "ice_poring/animations/walk/south-east/01.png",
+            "ice_poring/animations/walk/south-east/02.png",
+            "ice_poring/animations/walk/south-east/03.png",
+            "ice_poring/animations/walk/south-east/04.png",
+            "ice_poring/animations/walk/south-east/05.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:13:37 GMT",
+          "lm": "Wed, 29 Jul 2026 11:52:44 GMT",
           "src_frames": 6
         },
         "south-west": {
           "frames": 6,
-          "strip": "ice_poring/animations/jump__south-west.png",
-          "gif": "ice_poring/animations/jump__south-west.gif",
+          "strip": "ice_poring/animations/walk__south-west.png",
+          "gif": "ice_poring/animations/walk__south-west.gif",
           "frame_paths": [
-            "ice_poring/animations/jump/south-west/00.png",
-            "ice_poring/animations/jump/south-west/01.png",
-            "ice_poring/animations/jump/south-west/02.png",
-            "ice_poring/animations/jump/south-west/03.png",
-            "ice_poring/animations/jump/south-west/04.png",
-            "ice_poring/animations/jump/south-west/05.png"
+            "ice_poring/animations/walk/south-west/00.png",
+            "ice_poring/animations/walk/south-west/01.png",
+            "ice_poring/animations/walk/south-west/02.png",
+            "ice_poring/animations/walk/south-west/03.png",
+            "ice_poring/animations/walk/south-west/04.png",
+            "ice_poring/animations/walk/south-west/05.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:13:41 GMT",
+          "lm": "Wed, 29 Jul 2026 11:52:46 GMT",
           "src_frames": 6
         },
         "west": {
           "frames": 6,
-          "strip": "ice_poring/animations/jump__west.png",
-          "gif": "ice_poring/animations/jump__west.gif",
+          "strip": "ice_poring/animations/walk__west.png",
+          "gif": "ice_poring/animations/walk__west.gif",
           "frame_paths": [
-            "ice_poring/animations/jump/west/00.png",
-            "ice_poring/animations/jump/west/01.png",
-            "ice_poring/animations/jump/west/02.png",
-            "ice_poring/animations/jump/west/03.png",
-            "ice_poring/animations/jump/west/04.png",
-            "ice_poring/animations/jump/west/05.png"
+            "ice_poring/animations/walk/west/00.png",
+            "ice_poring/animations/walk/west/01.png",
+            "ice_poring/animations/walk/west/02.png",
+            "ice_poring/animations/walk/west/03.png",
+            "ice_poring/animations/walk/west/04.png",
+            "ice_poring/animations/walk/west/05.png"
           ],
-          "lm": "Thu, 23 Jul 2026 18:13:45 GMT",
+          "lm": "Wed, 29 Jul 2026 11:52:47 GMT",
           "src_frames": 6
         }
-      }
+      },
+      "rotating_gif": "ice_poring/animations/walk__rotating.gif"
     }
   },
-  "animation_aliases": {
-    "walk": "jump"
-  },
-  "animation_renames": {
-    "snow": "attack",
-    "melting": "die"
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
   },
   "synced_from_pixellab": true
 }

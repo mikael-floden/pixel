@@ -1,0 +1,533 @@
+{
+  "id": "diablo",
+  "name": "Diablo",
+  "source": {
+    "kind": "object",
+    "pixellab_id": "a743c13d-7d2a-4e04-8347-306d7cf7b029",
+    "url": "https://www.pixellab.ai/create-object/a743c13d-7d2a-4e04-8347-306d7cf7b029",
+    "prompt": "Diablo, horror style. Evil eyes and mystical. Thin unpleasant body shape.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 97,
+    "height": 97
+  },
+  "sprite": "diablo/sprite.png",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "diablo/rotations/south.png",
+    "west": "diablo/rotations/west.png",
+    "east": "diablo/rotations/east.png",
+    "north": "diablo/rotations/north.png",
+    "south-east": "diablo/rotations/south-east.png",
+    "south-west": "diablo/rotations/south-west.png",
+    "north-east": "diablo/rotations/north-east.png",
+    "north-west": "diablo/rotations/north-west.png"
+  },
+  "animations": {
+    "idle": {
+      "group_id": "82599729-0f82-4ed0-a60a-00464dfe0540",
+      "source_name": "Idle",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "diablo/animations/idle__east.png",
+          "gif": "diablo/animations/idle__east.gif",
+          "frame_paths": [
+            "diablo/animations/idle/east/00.png",
+            "diablo/animations/idle/east/01.png",
+            "diablo/animations/idle/east/02.png",
+            "diablo/animations/idle/east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:50:39 GMT",
+          "src_frames": 4
+        },
+        "north": {
+          "frames": 4,
+          "strip": "diablo/animations/idle__north.png",
+          "gif": "diablo/animations/idle__north.gif",
+          "frame_paths": [
+            "diablo/animations/idle/north/00.png",
+            "diablo/animations/idle/north/01.png",
+            "diablo/animations/idle/north/02.png",
+            "diablo/animations/idle/north/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:50:40 GMT",
+          "src_frames": 4
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "diablo/animations/idle__north-east.png",
+          "gif": "diablo/animations/idle__north-east.gif",
+          "frame_paths": [
+            "diablo/animations/idle/north-east/00.png",
+            "diablo/animations/idle/north-east/01.png",
+            "diablo/animations/idle/north-east/02.png",
+            "diablo/animations/idle/north-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:50:42 GMT",
+          "src_frames": 4
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "diablo/animations/idle__north-west.png",
+          "gif": "diablo/animations/idle__north-west.gif",
+          "frame_paths": [
+            "diablo/animations/idle/north-west/00.png",
+            "diablo/animations/idle/north-west/01.png",
+            "diablo/animations/idle/north-west/02.png",
+            "diablo/animations/idle/north-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:50:43 GMT",
+          "src_frames": 4
+        },
+        "south": {
+          "frames": 4,
+          "strip": "diablo/animations/idle__south.png",
+          "gif": "diablo/animations/idle__south.gif",
+          "frame_paths": [
+            "diablo/animations/idle/south/00.png",
+            "diablo/animations/idle/south/01.png",
+            "diablo/animations/idle/south/02.png",
+            "diablo/animations/idle/south/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:50:45 GMT",
+          "src_frames": 4
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "diablo/animations/idle__south-east.png",
+          "gif": "diablo/animations/idle__south-east.gif",
+          "frame_paths": [
+            "diablo/animations/idle/south-east/00.png",
+            "diablo/animations/idle/south-east/01.png",
+            "diablo/animations/idle/south-east/02.png",
+            "diablo/animations/idle/south-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:50:46 GMT",
+          "src_frames": 4
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "diablo/animations/idle__south-west.png",
+          "gif": "diablo/animations/idle__south-west.gif",
+          "frame_paths": [
+            "diablo/animations/idle/south-west/00.png",
+            "diablo/animations/idle/south-west/01.png",
+            "diablo/animations/idle/south-west/02.png",
+            "diablo/animations/idle/south-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:50:47 GMT",
+          "src_frames": 4
+        },
+        "west": {
+          "frames": 4,
+          "strip": "diablo/animations/idle__west.png",
+          "gif": "diablo/animations/idle__west.gif",
+          "frame_paths": [
+            "diablo/animations/idle/west/00.png",
+            "diablo/animations/idle/west/01.png",
+            "diablo/animations/idle/west/02.png",
+            "diablo/animations/idle/west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:50:49 GMT",
+          "src_frames": 4
+        }
+      },
+      "rotating_gif": "diablo/animations/idle__rotating.gif"
+    },
+    "attack": {
+      "group_id": "c868150c-10a9-40f8-9b9a-a9eadd898da6",
+      "source_name": "Skull attack with the head/forehead",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "diablo/animations/attack__east.png",
+          "gif": "diablo/animations/attack__east.gif",
+          "frame_paths": [
+            "diablo/animations/attack/east/00.png",
+            "diablo/animations/attack/east/01.png",
+            "diablo/animations/attack/east/02.png",
+            "diablo/animations/attack/east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:50:50 GMT",
+          "src_frames": 4
+        },
+        "north": {
+          "frames": 4,
+          "strip": "diablo/animations/attack__north.png",
+          "gif": "diablo/animations/attack__north.gif",
+          "frame_paths": [
+            "diablo/animations/attack/north/00.png",
+            "diablo/animations/attack/north/01.png",
+            "diablo/animations/attack/north/02.png",
+            "diablo/animations/attack/north/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:50:51 GMT",
+          "src_frames": 4
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "diablo/animations/attack__north-east.png",
+          "gif": "diablo/animations/attack__north-east.gif",
+          "frame_paths": [
+            "diablo/animations/attack/north-east/00.png",
+            "diablo/animations/attack/north-east/01.png",
+            "diablo/animations/attack/north-east/02.png",
+            "diablo/animations/attack/north-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:50:53 GMT",
+          "src_frames": 4
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "diablo/animations/attack__north-west.png",
+          "gif": "diablo/animations/attack__north-west.gif",
+          "frame_paths": [
+            "diablo/animations/attack/north-west/00.png",
+            "diablo/animations/attack/north-west/01.png",
+            "diablo/animations/attack/north-west/02.png",
+            "diablo/animations/attack/north-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:50:54 GMT",
+          "src_frames": 4
+        },
+        "south": {
+          "frames": 4,
+          "strip": "diablo/animations/attack__south.png",
+          "gif": "diablo/animations/attack__south.gif",
+          "frame_paths": [
+            "diablo/animations/attack/south/00.png",
+            "diablo/animations/attack/south/01.png",
+            "diablo/animations/attack/south/02.png",
+            "diablo/animations/attack/south/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:50:56 GMT",
+          "src_frames": 4
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "diablo/animations/attack__south-east.png",
+          "gif": "diablo/animations/attack__south-east.gif",
+          "frame_paths": [
+            "diablo/animations/attack/south-east/00.png",
+            "diablo/animations/attack/south-east/01.png",
+            "diablo/animations/attack/south-east/02.png",
+            "diablo/animations/attack/south-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:50:58 GMT",
+          "src_frames": 4
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "diablo/animations/attack__south-west.png",
+          "gif": "diablo/animations/attack__south-west.gif",
+          "frame_paths": [
+            "diablo/animations/attack/south-west/00.png",
+            "diablo/animations/attack/south-west/01.png",
+            "diablo/animations/attack/south-west/02.png",
+            "diablo/animations/attack/south-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:50:59 GMT",
+          "src_frames": 4
+        },
+        "west": {
+          "frames": 4,
+          "strip": "diablo/animations/attack__west.png",
+          "gif": "diablo/animations/attack__west.gif",
+          "frame_paths": [
+            "diablo/animations/attack/west/00.png",
+            "diablo/animations/attack/west/01.png",
+            "diablo/animations/attack/west/02.png",
+            "diablo/animations/attack/west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:01 GMT",
+          "src_frames": 4
+        }
+      },
+      "rotating_gif": "diablo/animations/attack__rotating.gif"
+    },
+    "die": {
+      "group_id": "49cc41b1-f201-43b9-843f-68b20a088141",
+      "source_name": "Falls dead to the floor and turns to ash",
+      "directions": {
+        "east": {
+          "frames": 9,
+          "strip": "diablo/animations/die__east.png",
+          "gif": "diablo/animations/die__east.gif",
+          "frame_paths": [
+            "diablo/animations/die/east/00.png",
+            "diablo/animations/die/east/01.png",
+            "diablo/animations/die/east/02.png",
+            "diablo/animations/die/east/03.png",
+            "diablo/animations/die/east/04.png",
+            "diablo/animations/die/east/05.png",
+            "diablo/animations/die/east/06.png",
+            "diablo/animations/die/east/07.png",
+            "diablo/animations/die/east/08.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:02 GMT",
+          "src_frames": 9
+        },
+        "north": {
+          "frames": 9,
+          "strip": "diablo/animations/die__north.png",
+          "gif": "diablo/animations/die__north.gif",
+          "frame_paths": [
+            "diablo/animations/die/north/00.png",
+            "diablo/animations/die/north/01.png",
+            "diablo/animations/die/north/02.png",
+            "diablo/animations/die/north/03.png",
+            "diablo/animations/die/north/04.png",
+            "diablo/animations/die/north/05.png",
+            "diablo/animations/die/north/06.png",
+            "diablo/animations/die/north/07.png",
+            "diablo/animations/die/north/08.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:04 GMT",
+          "src_frames": 9
+        },
+        "north-east": {
+          "frames": 9,
+          "strip": "diablo/animations/die__north-east.png",
+          "gif": "diablo/animations/die__north-east.gif",
+          "frame_paths": [
+            "diablo/animations/die/north-east/00.png",
+            "diablo/animations/die/north-east/01.png",
+            "diablo/animations/die/north-east/02.png",
+            "diablo/animations/die/north-east/03.png",
+            "diablo/animations/die/north-east/04.png",
+            "diablo/animations/die/north-east/05.png",
+            "diablo/animations/die/north-east/06.png",
+            "diablo/animations/die/north-east/07.png",
+            "diablo/animations/die/north-east/08.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:05 GMT",
+          "src_frames": 9
+        },
+        "north-west": {
+          "frames": 9,
+          "strip": "diablo/animations/die__north-west.png",
+          "gif": "diablo/animations/die__north-west.gif",
+          "frame_paths": [
+            "diablo/animations/die/north-west/00.png",
+            "diablo/animations/die/north-west/01.png",
+            "diablo/animations/die/north-west/02.png",
+            "diablo/animations/die/north-west/03.png",
+            "diablo/animations/die/north-west/04.png",
+            "diablo/animations/die/north-west/05.png",
+            "diablo/animations/die/north-west/06.png",
+            "diablo/animations/die/north-west/07.png",
+            "diablo/animations/die/north-west/08.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:07 GMT",
+          "src_frames": 9
+        },
+        "south": {
+          "frames": 9,
+          "strip": "diablo/animations/die__south.png",
+          "gif": "diablo/animations/die__south.gif",
+          "frame_paths": [
+            "diablo/animations/die/south/00.png",
+            "diablo/animations/die/south/01.png",
+            "diablo/animations/die/south/02.png",
+            "diablo/animations/die/south/03.png",
+            "diablo/animations/die/south/04.png",
+            "diablo/animations/die/south/05.png",
+            "diablo/animations/die/south/06.png",
+            "diablo/animations/die/south/07.png",
+            "diablo/animations/die/south/08.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:09 GMT",
+          "src_frames": 9
+        },
+        "south-east": {
+          "frames": 9,
+          "strip": "diablo/animations/die__south-east.png",
+          "gif": "diablo/animations/die__south-east.gif",
+          "frame_paths": [
+            "diablo/animations/die/south-east/00.png",
+            "diablo/animations/die/south-east/01.png",
+            "diablo/animations/die/south-east/02.png",
+            "diablo/animations/die/south-east/03.png",
+            "diablo/animations/die/south-east/04.png",
+            "diablo/animations/die/south-east/05.png",
+            "diablo/animations/die/south-east/06.png",
+            "diablo/animations/die/south-east/07.png",
+            "diablo/animations/die/south-east/08.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:10 GMT",
+          "src_frames": 9
+        },
+        "south-west": {
+          "frames": 9,
+          "strip": "diablo/animations/die__south-west.png",
+          "gif": "diablo/animations/die__south-west.gif",
+          "frame_paths": [
+            "diablo/animations/die/south-west/00.png",
+            "diablo/animations/die/south-west/01.png",
+            "diablo/animations/die/south-west/02.png",
+            "diablo/animations/die/south-west/03.png",
+            "diablo/animations/die/south-west/04.png",
+            "diablo/animations/die/south-west/05.png",
+            "diablo/animations/die/south-west/06.png",
+            "diablo/animations/die/south-west/07.png",
+            "diablo/animations/die/south-west/08.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:11 GMT",
+          "src_frames": 9
+        },
+        "west": {
+          "frames": 9,
+          "strip": "diablo/animations/die__west.png",
+          "gif": "diablo/animations/die__west.gif",
+          "frame_paths": [
+            "diablo/animations/die/west/00.png",
+            "diablo/animations/die/west/01.png",
+            "diablo/animations/die/west/02.png",
+            "diablo/animations/die/west/03.png",
+            "diablo/animations/die/west/04.png",
+            "diablo/animations/die/west/05.png",
+            "diablo/animations/die/west/06.png",
+            "diablo/animations/die/west/07.png",
+            "diablo/animations/die/west/08.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:14 GMT",
+          "src_frames": 9
+        }
+      },
+      "rotating_gif": "diablo/animations/die__rotating.gif"
+    },
+    "walk": {
+      "group_id": "9b77c9fa-7bb3-4525-ba68-4856c1eac8f5",
+      "source_name": "Jump",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "diablo/animations/walk__east.png",
+          "gif": "diablo/animations/walk__east.gif",
+          "frame_paths": [
+            "diablo/animations/walk/east/00.png",
+            "diablo/animations/walk/east/01.png",
+            "diablo/animations/walk/east/02.png",
+            "diablo/animations/walk/east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:16 GMT",
+          "src_frames": 4
+        },
+        "north": {
+          "frames": 4,
+          "strip": "diablo/animations/walk__north.png",
+          "gif": "diablo/animations/walk__north.gif",
+          "frame_paths": [
+            "diablo/animations/walk/north/00.png",
+            "diablo/animations/walk/north/01.png",
+            "diablo/animations/walk/north/02.png",
+            "diablo/animations/walk/north/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:17 GMT",
+          "src_frames": 4
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "diablo/animations/walk__north-east.png",
+          "gif": "diablo/animations/walk__north-east.gif",
+          "frame_paths": [
+            "diablo/animations/walk/north-east/00.png",
+            "diablo/animations/walk/north-east/01.png",
+            "diablo/animations/walk/north-east/02.png",
+            "diablo/animations/walk/north-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:19 GMT",
+          "src_frames": 4
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "diablo/animations/walk__north-west.png",
+          "gif": "diablo/animations/walk__north-west.gif",
+          "frame_paths": [
+            "diablo/animations/walk/north-west/00.png",
+            "diablo/animations/walk/north-west/01.png",
+            "diablo/animations/walk/north-west/02.png",
+            "diablo/animations/walk/north-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:20 GMT",
+          "src_frames": 4
+        },
+        "south": {
+          "frames": 4,
+          "strip": "diablo/animations/walk__south.png",
+          "gif": "diablo/animations/walk__south.gif",
+          "frame_paths": [
+            "diablo/animations/walk/south/00.png",
+            "diablo/animations/walk/south/01.png",
+            "diablo/animations/walk/south/02.png",
+            "diablo/animations/walk/south/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:21 GMT",
+          "src_frames": 4
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "diablo/animations/walk__south-east.png",
+          "gif": "diablo/animations/walk__south-east.gif",
+          "frame_paths": [
+            "diablo/animations/walk/south-east/00.png",
+            "diablo/animations/walk/south-east/01.png",
+            "diablo/animations/walk/south-east/02.png",
+            "diablo/animations/walk/south-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:22 GMT",
+          "src_frames": 4
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "diablo/animations/walk__south-west.png",
+          "gif": "diablo/animations/walk__south-west.gif",
+          "frame_paths": [
+            "diablo/animations/walk/south-west/00.png",
+            "diablo/animations/walk/south-west/01.png",
+            "diablo/animations/walk/south-west/02.png",
+            "diablo/animations/walk/south-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:24 GMT",
+          "src_frames": 4
+        },
+        "west": {
+          "frames": 4,
+          "strip": "diablo/animations/walk__west.png",
+          "gif": "diablo/animations/walk__west.gif",
+          "frame_paths": [
+            "diablo/animations/walk/west/00.png",
+            "diablo/animations/walk/west/01.png",
+            "diablo/animations/walk/west/02.png",
+            "diablo/animations/walk/west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:51:26 GMT",
+          "src_frames": 4
+        }
+      },
+      "rotating_gif": "diablo/animations/walk__rotating.gif"
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "idle",
+    "attack": "attack",
+    "die": "die"
+  },
+  "synced_from_pixellab": true
+}

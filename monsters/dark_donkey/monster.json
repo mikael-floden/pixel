@@ -1,0 +1,636 @@
+{
+  "id": "dark_donkey",
+  "name": "Dark Donkey",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "54f7383c-d88e-460e-b6d1-c210a02d8592",
+    "url": "https://www.pixellab.ai/create-character/54f7383c-d88e-460e-b6d1-c210a02d8592",
+    "prompt": "Dark donkey with dark eyes (still white pupils)",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 124,
+    "height": 124
+  },
+  "sprite": "dark_donkey/sprite.png",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "dark_donkey/rotations/south.png",
+    "west": "dark_donkey/rotations/west.png",
+    "east": "dark_donkey/rotations/east.png",
+    "north": "dark_donkey/rotations/north.png",
+    "south-east": "dark_donkey/rotations/south-east.png",
+    "north-east": "dark_donkey/rotations/north-east.png",
+    "north-west": "dark_donkey/rotations/north-west.png",
+    "south-west": "dark_donkey/rotations/south-west.png"
+  },
+  "animations": {
+    "attack": {
+      "group_id": "f2e77d12-7a3c-4f5f-9ffc-344f9323f1b0",
+      "source_name": "attack",
+      "directions": {
+        "east": {
+          "frames": 8,
+          "strip": "dark_donkey/animations/attack__east.png",
+          "gif": "dark_donkey/animations/attack__east.gif",
+          "frame_paths": [
+            "dark_donkey/animations/attack/east/00.png",
+            "dark_donkey/animations/attack/east/01.png",
+            "dark_donkey/animations/attack/east/02.png",
+            "dark_donkey/animations/attack/east/03.png",
+            "dark_donkey/animations/attack/east/04.png",
+            "dark_donkey/animations/attack/east/05.png",
+            "dark_donkey/animations/attack/east/06.png",
+            "dark_donkey/animations/attack/east/07.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:52:52 GMT",
+          "src_frames": 8
+        },
+        "north": {
+          "frames": 8,
+          "strip": "dark_donkey/animations/attack__north.png",
+          "gif": "dark_donkey/animations/attack__north.gif",
+          "frame_paths": [
+            "dark_donkey/animations/attack/north/00.png",
+            "dark_donkey/animations/attack/north/01.png",
+            "dark_donkey/animations/attack/north/02.png",
+            "dark_donkey/animations/attack/north/03.png",
+            "dark_donkey/animations/attack/north/04.png",
+            "dark_donkey/animations/attack/north/05.png",
+            "dark_donkey/animations/attack/north/06.png",
+            "dark_donkey/animations/attack/north/07.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:52:53 GMT",
+          "src_frames": 8
+        },
+        "north-east": {
+          "frames": 8,
+          "strip": "dark_donkey/animations/attack__north-east.png",
+          "gif": "dark_donkey/animations/attack__north-east.gif",
+          "frame_paths": [
+            "dark_donkey/animations/attack/north-east/00.png",
+            "dark_donkey/animations/attack/north-east/01.png",
+            "dark_donkey/animations/attack/north-east/02.png",
+            "dark_donkey/animations/attack/north-east/03.png",
+            "dark_donkey/animations/attack/north-east/04.png",
+            "dark_donkey/animations/attack/north-east/05.png",
+            "dark_donkey/animations/attack/north-east/06.png",
+            "dark_donkey/animations/attack/north-east/07.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:52:55 GMT",
+          "src_frames": 8
+        },
+        "north-west": {
+          "frames": 8,
+          "strip": "dark_donkey/animations/attack__north-west.png",
+          "gif": "dark_donkey/animations/attack__north-west.gif",
+          "frame_paths": [
+            "dark_donkey/animations/attack/north-west/00.png",
+            "dark_donkey/animations/attack/north-west/01.png",
+            "dark_donkey/animations/attack/north-west/02.png",
+            "dark_donkey/animations/attack/north-west/03.png",
+            "dark_donkey/animations/attack/north-west/04.png",
+            "dark_donkey/animations/attack/north-west/05.png",
+            "dark_donkey/animations/attack/north-west/06.png",
+            "dark_donkey/animations/attack/north-west/07.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:52:56 GMT",
+          "src_frames": 8
+        },
+        "south": {
+          "frames": 8,
+          "strip": "dark_donkey/animations/attack__south.png",
+          "gif": "dark_donkey/animations/attack__south.gif",
+          "frame_paths": [
+            "dark_donkey/animations/attack/south/00.png",
+            "dark_donkey/animations/attack/south/01.png",
+            "dark_donkey/animations/attack/south/02.png",
+            "dark_donkey/animations/attack/south/03.png",
+            "dark_donkey/animations/attack/south/04.png",
+            "dark_donkey/animations/attack/south/05.png",
+            "dark_donkey/animations/attack/south/06.png",
+            "dark_donkey/animations/attack/south/07.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:52:58 GMT",
+          "src_frames": 8
+        },
+        "south-east": {
+          "frames": 8,
+          "strip": "dark_donkey/animations/attack__south-east.png",
+          "gif": "dark_donkey/animations/attack__south-east.gif",
+          "frame_paths": [
+            "dark_donkey/animations/attack/south-east/00.png",
+            "dark_donkey/animations/attack/south-east/01.png",
+            "dark_donkey/animations/attack/south-east/02.png",
+            "dark_donkey/animations/attack/south-east/03.png",
+            "dark_donkey/animations/attack/south-east/04.png",
+            "dark_donkey/animations/attack/south-east/05.png",
+            "dark_donkey/animations/attack/south-east/06.png",
+            "dark_donkey/animations/attack/south-east/07.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:52:59 GMT",
+          "src_frames": 8
+        },
+        "south-west": {
+          "frames": 8,
+          "strip": "dark_donkey/animations/attack__south-west.png",
+          "gif": "dark_donkey/animations/attack__south-west.gif",
+          "frame_paths": [
+            "dark_donkey/animations/attack/south-west/00.png",
+            "dark_donkey/animations/attack/south-west/01.png",
+            "dark_donkey/animations/attack/south-west/02.png",
+            "dark_donkey/animations/attack/south-west/03.png",
+            "dark_donkey/animations/attack/south-west/04.png",
+            "dark_donkey/animations/attack/south-west/05.png",
+            "dark_donkey/animations/attack/south-west/06.png",
+            "dark_donkey/animations/attack/south-west/07.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:01 GMT",
+          "src_frames": 8
+        },
+        "west": {
+          "frames": 8,
+          "strip": "dark_donkey/animations/attack__west.png",
+          "gif": "dark_donkey/animations/attack__west.gif",
+          "frame_paths": [
+            "dark_donkey/animations/attack/west/00.png",
+            "dark_donkey/animations/attack/west/01.png",
+            "dark_donkey/animations/attack/west/02.png",
+            "dark_donkey/animations/attack/west/03.png",
+            "dark_donkey/animations/attack/west/04.png",
+            "dark_donkey/animations/attack/west/05.png",
+            "dark_donkey/animations/attack/west/06.png",
+            "dark_donkey/animations/attack/west/07.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:02 GMT",
+          "src_frames": 8
+        }
+      },
+      "rotating_gif": "dark_donkey/animations/attack__rotating.gif"
+    },
+    "angry": {
+      "group_id": "dd33b8ae-1189-48de-91ce-1e0eb89da7ee",
+      "source_name": "custom-Angry frustrated idle",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/angry__east.png",
+          "gif": "dark_donkey/animations/angry__east.gif",
+          "frame_paths": [
+            "dark_donkey/animations/angry/east/00.png",
+            "dark_donkey/animations/angry/east/01.png",
+            "dark_donkey/animations/angry/east/02.png",
+            "dark_donkey/animations/angry/east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:04 GMT",
+          "src_frames": 4
+        },
+        "north": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/angry__north.png",
+          "gif": "dark_donkey/animations/angry__north.gif",
+          "frame_paths": [
+            "dark_donkey/animations/angry/north/00.png",
+            "dark_donkey/animations/angry/north/01.png",
+            "dark_donkey/animations/angry/north/02.png",
+            "dark_donkey/animations/angry/north/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:05 GMT",
+          "src_frames": 4
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/angry__north-east.png",
+          "gif": "dark_donkey/animations/angry__north-east.gif",
+          "frame_paths": [
+            "dark_donkey/animations/angry/north-east/00.png",
+            "dark_donkey/animations/angry/north-east/01.png",
+            "dark_donkey/animations/angry/north-east/02.png",
+            "dark_donkey/animations/angry/north-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:07 GMT",
+          "src_frames": 4
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/angry__north-west.png",
+          "gif": "dark_donkey/animations/angry__north-west.gif",
+          "frame_paths": [
+            "dark_donkey/animations/angry/north-west/00.png",
+            "dark_donkey/animations/angry/north-west/01.png",
+            "dark_donkey/animations/angry/north-west/02.png",
+            "dark_donkey/animations/angry/north-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:08 GMT",
+          "src_frames": 4
+        },
+        "south": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/angry__south.png",
+          "gif": "dark_donkey/animations/angry__south.gif",
+          "frame_paths": [
+            "dark_donkey/animations/angry/south/00.png",
+            "dark_donkey/animations/angry/south/01.png",
+            "dark_donkey/animations/angry/south/02.png",
+            "dark_donkey/animations/angry/south/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:10 GMT",
+          "src_frames": 4
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/angry__south-east.png",
+          "gif": "dark_donkey/animations/angry__south-east.gif",
+          "frame_paths": [
+            "dark_donkey/animations/angry/south-east/00.png",
+            "dark_donkey/animations/angry/south-east/01.png",
+            "dark_donkey/animations/angry/south-east/02.png",
+            "dark_donkey/animations/angry/south-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:11 GMT",
+          "src_frames": 4
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/angry__south-west.png",
+          "gif": "dark_donkey/animations/angry__south-west.gif",
+          "frame_paths": [
+            "dark_donkey/animations/angry/south-west/00.png",
+            "dark_donkey/animations/angry/south-west/01.png",
+            "dark_donkey/animations/angry/south-west/02.png",
+            "dark_donkey/animations/angry/south-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:12 GMT",
+          "src_frames": 4
+        },
+        "west": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/angry__west.png",
+          "gif": "dark_donkey/animations/angry__west.gif",
+          "frame_paths": [
+            "dark_donkey/animations/angry/west/00.png",
+            "dark_donkey/animations/angry/west/01.png",
+            "dark_donkey/animations/angry/west/02.png",
+            "dark_donkey/animations/angry/west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:13 GMT",
+          "src_frames": 4
+        }
+      },
+      "rotating_gif": "dark_donkey/animations/angry__rotating.gif"
+    },
+    "idle": {
+      "group_id": "8367fc7e-e7e5-47f7-988f-e44ed06a07d4",
+      "source_name": "custom-Calm peiceful idle",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/idle__east.png",
+          "gif": "dark_donkey/animations/idle__east.gif",
+          "frame_paths": [
+            "dark_donkey/animations/idle/east/00.png",
+            "dark_donkey/animations/idle/east/01.png",
+            "dark_donkey/animations/idle/east/02.png",
+            "dark_donkey/animations/idle/east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:16 GMT",
+          "src_frames": 4
+        },
+        "north": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/idle__north.png",
+          "gif": "dark_donkey/animations/idle__north.gif",
+          "frame_paths": [
+            "dark_donkey/animations/idle/north/00.png",
+            "dark_donkey/animations/idle/north/01.png",
+            "dark_donkey/animations/idle/north/02.png",
+            "dark_donkey/animations/idle/north/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:17 GMT",
+          "src_frames": 4
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/idle__north-east.png",
+          "gif": "dark_donkey/animations/idle__north-east.gif",
+          "frame_paths": [
+            "dark_donkey/animations/idle/north-east/00.png",
+            "dark_donkey/animations/idle/north-east/01.png",
+            "dark_donkey/animations/idle/north-east/02.png",
+            "dark_donkey/animations/idle/north-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:18 GMT",
+          "src_frames": 4
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/idle__north-west.png",
+          "gif": "dark_donkey/animations/idle__north-west.gif",
+          "frame_paths": [
+            "dark_donkey/animations/idle/north-west/00.png",
+            "dark_donkey/animations/idle/north-west/01.png",
+            "dark_donkey/animations/idle/north-west/02.png",
+            "dark_donkey/animations/idle/north-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:20 GMT",
+          "src_frames": 4
+        },
+        "south": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/idle__south.png",
+          "gif": "dark_donkey/animations/idle__south.gif",
+          "frame_paths": [
+            "dark_donkey/animations/idle/south/00.png",
+            "dark_donkey/animations/idle/south/01.png",
+            "dark_donkey/animations/idle/south/02.png",
+            "dark_donkey/animations/idle/south/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:21 GMT",
+          "src_frames": 4
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/idle__south-east.png",
+          "gif": "dark_donkey/animations/idle__south-east.gif",
+          "frame_paths": [
+            "dark_donkey/animations/idle/south-east/00.png",
+            "dark_donkey/animations/idle/south-east/01.png",
+            "dark_donkey/animations/idle/south-east/02.png",
+            "dark_donkey/animations/idle/south-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:23 GMT",
+          "src_frames": 4
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/idle__south-west.png",
+          "gif": "dark_donkey/animations/idle__south-west.gif",
+          "frame_paths": [
+            "dark_donkey/animations/idle/south-west/00.png",
+            "dark_donkey/animations/idle/south-west/01.png",
+            "dark_donkey/animations/idle/south-west/02.png",
+            "dark_donkey/animations/idle/south-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:24 GMT",
+          "src_frames": 4
+        },
+        "west": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/idle__west.png",
+          "gif": "dark_donkey/animations/idle__west.gif",
+          "frame_paths": [
+            "dark_donkey/animations/idle/west/00.png",
+            "dark_donkey/animations/idle/west/01.png",
+            "dark_donkey/animations/idle/west/02.png",
+            "dark_donkey/animations/idle/west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:25 GMT",
+          "src_frames": 4
+        }
+      },
+      "rotating_gif": "dark_donkey/animations/idle__rotating.gif"
+    },
+    "walk": {
+      "group_id": "fdabbbfd-b3c4-464b-9052-6bf6055ab3f1",
+      "source_name": "custom-Walking with all 4 legs like a horse ",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/walk__east.png",
+          "gif": "dark_donkey/animations/walk__east.gif",
+          "frame_paths": [
+            "dark_donkey/animations/walk/east/00.png",
+            "dark_donkey/animations/walk/east/01.png",
+            "dark_donkey/animations/walk/east/02.png",
+            "dark_donkey/animations/walk/east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:26 GMT",
+          "src_frames": 4
+        },
+        "north": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/walk__north.png",
+          "gif": "dark_donkey/animations/walk__north.gif",
+          "frame_paths": [
+            "dark_donkey/animations/walk/north/00.png",
+            "dark_donkey/animations/walk/north/01.png",
+            "dark_donkey/animations/walk/north/02.png",
+            "dark_donkey/animations/walk/north/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:27 GMT",
+          "src_frames": 4
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/walk__north-east.png",
+          "gif": "dark_donkey/animations/walk__north-east.gif",
+          "frame_paths": [
+            "dark_donkey/animations/walk/north-east/00.png",
+            "dark_donkey/animations/walk/north-east/01.png",
+            "dark_donkey/animations/walk/north-east/02.png",
+            "dark_donkey/animations/walk/north-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:29 GMT",
+          "src_frames": 4
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/walk__north-west.png",
+          "gif": "dark_donkey/animations/walk__north-west.gif",
+          "frame_paths": [
+            "dark_donkey/animations/walk/north-west/00.png",
+            "dark_donkey/animations/walk/north-west/01.png",
+            "dark_donkey/animations/walk/north-west/02.png",
+            "dark_donkey/animations/walk/north-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:30 GMT",
+          "src_frames": 4
+        },
+        "south": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/walk__south.png",
+          "gif": "dark_donkey/animations/walk__south.gif",
+          "frame_paths": [
+            "dark_donkey/animations/walk/south/00.png",
+            "dark_donkey/animations/walk/south/01.png",
+            "dark_donkey/animations/walk/south/02.png",
+            "dark_donkey/animations/walk/south/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:32 GMT",
+          "src_frames": 4
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/walk__south-east.png",
+          "gif": "dark_donkey/animations/walk__south-east.gif",
+          "frame_paths": [
+            "dark_donkey/animations/walk/south-east/00.png",
+            "dark_donkey/animations/walk/south-east/01.png",
+            "dark_donkey/animations/walk/south-east/02.png",
+            "dark_donkey/animations/walk/south-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:33 GMT",
+          "src_frames": 4
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/walk__south-west.png",
+          "gif": "dark_donkey/animations/walk__south-west.gif",
+          "frame_paths": [
+            "dark_donkey/animations/walk/south-west/00.png",
+            "dark_donkey/animations/walk/south-west/01.png",
+            "dark_donkey/animations/walk/south-west/02.png",
+            "dark_donkey/animations/walk/south-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:52:50 GMT",
+          "src_frames": 4
+        },
+        "west": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/walk__west.png",
+          "gif": "dark_donkey/animations/walk__west.gif",
+          "frame_paths": [
+            "dark_donkey/animations/walk/west/00.png",
+            "dark_donkey/animations/walk/west/01.png",
+            "dark_donkey/animations/walk/west/02.png",
+            "dark_donkey/animations/walk/west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:35 GMT",
+          "src_frames": 4
+        }
+      },
+      "rotating_gif": "dark_donkey/animations/walk__rotating.gif"
+    },
+    "die": {
+      "group_id": "d39e8b74-b332-49e3-ac1a-65bcf22b3b12",
+      "source_name": "custom-faints\nand\nfades\naway",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/die__east.png",
+          "gif": "dark_donkey/animations/die__east.gif",
+          "frame_paths": [
+            "dark_donkey/animations/die/east/00.png",
+            "dark_donkey/animations/die/east/01.png",
+            "dark_donkey/animations/die/east/02.png",
+            "dark_donkey/animations/die/east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:36 GMT",
+          "src_frames": 4
+        },
+        "north": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/die__north.png",
+          "gif": "dark_donkey/animations/die__north.gif",
+          "frame_paths": [
+            "dark_donkey/animations/die/north/00.png",
+            "dark_donkey/animations/die/north/01.png",
+            "dark_donkey/animations/die/north/02.png",
+            "dark_donkey/animations/die/north/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:52:51 GMT",
+          "src_frames": 4
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/die__north-east.png",
+          "gif": "dark_donkey/animations/die__north-east.gif",
+          "frame_paths": [
+            "dark_donkey/animations/die/north-east/00.png",
+            "dark_donkey/animations/die/north-east/01.png",
+            "dark_donkey/animations/die/north-east/02.png",
+            "dark_donkey/animations/die/north-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:38 GMT",
+          "src_frames": 4
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/die__north-west.png",
+          "gif": "dark_donkey/animations/die__north-west.gif",
+          "frame_paths": [
+            "dark_donkey/animations/die/north-west/00.png",
+            "dark_donkey/animations/die/north-west/01.png",
+            "dark_donkey/animations/die/north-west/02.png",
+            "dark_donkey/animations/die/north-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:39 GMT",
+          "src_frames": 4
+        },
+        "south": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/die__south.png",
+          "gif": "dark_donkey/animations/die__south.gif",
+          "frame_paths": [
+            "dark_donkey/animations/die/south/00.png",
+            "dark_donkey/animations/die/south/01.png",
+            "dark_donkey/animations/die/south/02.png",
+            "dark_donkey/animations/die/south/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:40 GMT",
+          "src_frames": 4
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/die__south-east.png",
+          "gif": "dark_donkey/animations/die__south-east.gif",
+          "frame_paths": [
+            "dark_donkey/animations/die/south-east/00.png",
+            "dark_donkey/animations/die/south-east/01.png",
+            "dark_donkey/animations/die/south-east/02.png",
+            "dark_donkey/animations/die/south-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:42 GMT",
+          "src_frames": 4
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/die__south-west.png",
+          "gif": "dark_donkey/animations/die__south-west.gif",
+          "frame_paths": [
+            "dark_donkey/animations/die/south-west/00.png",
+            "dark_donkey/animations/die/south-west/01.png",
+            "dark_donkey/animations/die/south-west/02.png",
+            "dark_donkey/animations/die/south-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:44 GMT",
+          "src_frames": 4
+        },
+        "west": {
+          "frames": 4,
+          "strip": "dark_donkey/animations/die__west.png",
+          "gif": "dark_donkey/animations/die__west.gif",
+          "frame_paths": [
+            "dark_donkey/animations/die/west/00.png",
+            "dark_donkey/animations/die/west/01.png",
+            "dark_donkey/animations/die/west/02.png",
+            "dark_donkey/animations/die/west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:53:45 GMT",
+          "src_frames": 4
+        }
+      },
+      "rotating_gif": "dark_donkey/animations/die__rotating.gif"
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "synced_from_pixellab": true
+}
