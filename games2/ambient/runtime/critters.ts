@@ -136,9 +136,18 @@ export interface CritterGrade {
   tint: number;
   fog: number;
   fogTint: number;
-  lift: number; // EASED face-lift px — the shadow draws at (gx, gy − lift), gliding between elevation levels
+  lift: number; // RAW face-lift px — applyShadow draws at the CALLER's current (gx, gy − lift), always a ground line
+  shadowA: number; // 0..1 transition alpha multiplier (the elevation cross-fade)
   shadowHide: boolean; // RAW lift > alt: the flyer is below the resolved clifftop — draw no shadow
-  shadowDepth: number; // occluder-stable DEPTH to sort the ground shadow at (kills the per-cell flicker)
+  shadowDepth: number; // occluder-stable DEPTH to sort the drawn shadow at
+  // Fade-OUT phase of an elevation handover: draw the FROZEN departure ground
+  // decal instead of the current surface (position must otherwise come from the
+  // caller's CURRENT gx/gy — the grade is computed pre-integration, and baking
+  // an absolute position here lagged the shadow a frame behind the bird).
+  shadowFrozen: boolean;
+  frozenX: number;
+  frozenY: number;
+  frozenD: number;
 }
 
 /** Per-creature EASED lighting state (see gradeCritter). Both Bird and Bat carry
@@ -148,7 +157,18 @@ export interface CritterGradeState {
   gl?: [number, number, number]; // eased light multiplier (r,g,b), 0..~N
   gfa?: number; // eased fog alpha, 0..1
   gfc?: [number, number, number]; // eased fog colour (r,g,b), 0..1
-  sLift?: number; // eased shadow face-lift px (see gradeCritter's LIFT_TAU glide)
+  // Shadow elevation CROSS-FADE bookkeeping (see gradeCritter): previous frame's
+  // drawn surface + a countdown through the out/in fade phases.
+  pLift?: number; // last raw face-lift (jump detector); undefined while hidden
+  dLift?: number; // DISPLAYED lift: fast-eased for small (≤LIFT_JUMP) steps, snapped through cross-fades
+  pHide?: boolean;
+  pX?: number; // last drawn ground point + its depth (the frozen departure decal)
+  pSy?: number;
+  pDepth?: number;
+  fadeT?: number; // transition countdown ms (2·FADE_HALF → 0); 0 = settled
+  fx?: number; // frozen departure spot (captured at the handover frame)
+  fy?: number;
+  fd?: number;
 }
 
 // The raw floats __ml.critterLight returns (light multipliers + fog + resolved terrain).
@@ -171,13 +191,25 @@ interface CritterProbe {
 const GRADE_TAU = 130;
 const FOG_TAU = 165;
 const FOG_EPS = 0.01; // "is there real fog?" threshold for the colour track (see gradeCritter)
-// Shadow face-lift glide (ms). The raw lift is CONTINUOUS in gy (critterLight
-// pins it to the resolved column's lip line) but still JUMPS once when the
-// resolve hands over from a low cell to a wall column at the foot — the
-// elevation change itself. Easing the applied lift turns that hop into a quick
-// glide up/down the edge (maintainer: the transition "jitters for a while
-// until it settles on the new elevation level").
-const LIFT_TAU = 130;
+// Shadow elevation CROSS-FADE. The raw lift keeps the shadow on a GROUND line
+// at all times (low ground, or pinned at the resolved column's top lip — see
+// critterLight) but HOPS once when the resolve hands over between columns at a
+// wall's foot — the elevation change itself. A first cut EASED the position
+// through that hop, which dragged the shadow across the WALL FACE (maintainer:
+// "freezing on the wall and not on top of the ground tile"). Instead the hop is
+// masked by TRANSPARENCY: fade OUT at the frozen departure ground spot, then
+// fade IN at the arrival surface — the shadow itself never draws on a wall.
+const FADE_HALF = 110; // ms per fade phase (out, then in)
+// Fast ease for SMALL (≤LIFT_JUMP) lift changes — 1-level stair snaps and the
+// resolve flip-flop of a bird skimming along a terrace edge become a quick
+// ≤16px glide instead of a per-frame ±16 flicker. Big changes bypass this (the
+// cross-fade masks them), so the shadow never sweeps a tall wall face.
+const SMALL_TAU = 60;
+// px of single-frame raw-lift change that triggers the cross-fade. Deliberately
+// ABOVE one level (16): a 1-level stair hop is small enough to just snap (the
+// avatar's shadow does the same on stairs), and fading every step of a
+// staircase read as blinking. Only real ≥2-level elevation changes fade.
+const LIFT_JUMP = 24;
 
 /** Probe the world light + depth-fog for a flyer whose GROUND point is drawn at
  * iso-screen (gx,gy) and lifted `alt` px above it — through the game's
@@ -235,25 +267,60 @@ export function gradeCritter(
       }
     }
   }
-  // Shadow face-lift GLIDE. rawLift is continuous within a column (pinned to the
-  // lip across a face) but hops once at the foot handover; ease it (LIFT_TAU) so
-  // the shadow slides between elevation levels. While HIDDEN (raw > alt — flyer
-  // below the resolved clifftop) track the raw value so a reveal never glides
-  // from a stale lift; snap alongside the light grade's first-sample/recycle snap.
+  // Shadow elevation CROSS-FADE. The raw target is always a GROUND point —
+  // sy = gy − lift = min(gy, resolved column's lip line) — so within a column
+  // the shadow tracks smoothly, and the only discontinuity is the single hop at
+  // a column handover (the real elevation change). That hop is masked with
+  // transparency, never position-eased (position-easing dragged the shadow
+  // across the wall face): fade OUT at the frozen departure ground spot, then
+  // fade IN at the arrival surface. A reveal after hidden gets the fade-in half
+  // only; a hide/snap/recycle cancels any transition outright.
   const rawLift = p ? p.lift : 0;
   const shadowHide = rawLift > alt;
-  if (shadowHide || snapped || st.sLift === undefined) st.sLift = rawLift;
-  else st.sLift += (rawLift - st.sLift) * (1 - Math.exp(-dtMs / LIFT_TAU));
+  const sx = gx;
+  const sy = gy - rawLift; // current GROUND line: low ground, or pinned at the column's top lip — never a wall face
+  const sd = p ? p.shadowDepth : gy + 3; // RAW occluder-stable depth (gy+3 fallback = old flat behaviour)
+  if (snapped || shadowHide) {
+    st.fadeT = 0;
+    st.dLift = rawLift;
+  } else if (st.pHide) {
+    st.fadeT = FADE_HALF; // reveal → arrival fade-in only (no stale departure decal)
+    st.dLift = rawLift;
+  } else if (st.pLift !== undefined && Math.abs(rawLift - st.pLift) > LIFT_JUMP) {
+    st.fadeT = FADE_HALF * 2; // column handover → full out+in cross-fade
+    st.fx = st.pX; // freeze the departure spot (last frame's drawn ground point)
+    st.fy = st.pSy;
+    st.fd = st.pDepth;
+    st.dLift = rawLift; // position switches instantly UNDER the fade
+  } else {
+    st.fadeT = Math.max(0, (st.fadeT ?? 0) - dtMs);
+    // small step (≤LIFT_JUMP): quick glide — kills the ±1-level flicker of a
+    // bird skimming a terrace edge; ≤16px of face sweep for ~60ms, invisible
+    const dl = st.dLift ?? rawLift;
+    st.dLift = dl + (rawLift - dl) * (1 - Math.exp(-dtMs / SMALL_TAU));
+  }
+  const ft = st.fadeT ?? 0;
+  const outPhase = ft > FADE_HALF && st.fx !== undefined;
+  st.pHide = shadowHide;
+  if (!shadowHide) {
+    st.pLift = rawLift;
+    st.pX = sx;
+    st.pSy = gy - (st.dLift ?? rawLift); // the drawn line (displayed lift) — the frozen decal must match what was on screen
+    st.pDepth = sd;
+  } else st.pLift = undefined;
   const ch = (v: number) => Math.max(0, Math.min(255, Math.round(v * 255)));
   return {
     tint: (ch(st.gl[0]) << 16) | (ch(st.gl[1]) << 8) | ch(st.gl[2]),
     fog: st.gfa ?? 0,
     fogTint: (ch(st.gfc[0]) << 16) | (ch(st.gfc[1]) << 8) | ch(st.gfc[2]),
-    // Clamped to alt so a mid-glide shadow can never sit ABOVE its own sprite
-    // (e.g. the first visible frame after a reveal eases from ~alt downward).
-    lift: Math.min(st.sLift, Math.max(0, alt)),
+    lift: st.dLift ?? rawLift,
+    shadowDepth: sd,
+    shadowA: ft <= 0 ? 1 : outPhase ? (ft - FADE_HALF) / FADE_HALF : 1 - ft / FADE_HALF,
     shadowHide,
-    shadowDepth: p ? p.shadowDepth : gy + 3, // RAW occluder-stable shadow depth (gy+3 fallback = old flat behaviour)
+    shadowFrozen: outPhase,
+    frozenX: outPhase ? st.fx! : 0,
+    frozenY: outPhase ? st.fy! : 0,
+    frozenD: outPhase ? st.fd! : 0,
   };
 }
 
@@ -295,12 +362,14 @@ function ensureCritterShadow(scene: Phaser.Scene): void {
  *    naive continuous-gy depth swung behind covering tiles = the flicker); flat
  *    level-0 keeps `gy + 3`. A genuinely taller wall in front still out-sorts
  *    and hides it.
- *  • POSITION lifts off the FACE via `grade.lift` — the CONTINUOUS, per-critter
- *    EASED face-lift (see gradeCritter): 0 on any top/flat/landed perch (shadow
- *    at gy, unchanged), and across a face it pins the shadow to the column's top
- *    LIP line, GLIDING through elevation handovers instead of saw-toothing 16px
- *    per level like the old integer (topL−groundL)*LEVEL_PX lift did (maintainer:
- *    the low↔hill transition "jitters for a while until it settles").
+ *  • POSITION is the caller's CURRENT (gx, gy − grade.lift) — ALWAYS a ground
+ *    line (low ground, or pinned at the column's top lip), never a wall face —
+ *    or the frozen departure decal while grade.shadowFrozen. Current-coords on
+ *    purpose: the grade is computed pre-integration, so baking an absolute
+ *    position into it lagged the shadow a frame behind the bird. Elevation
+ *    handovers are masked by `grade.shadowA` — a transparency CROSS-FADE (out at
+ *    the departure ground spot, in at the arrival) instead of a position glide,
+ *    which dragged the shadow across the wall (maintainer).
  * `grade.shadowHide` (RAW lift > alt: the flyer is below the resolved clifftop,
  * cruising in FRONT of the wall) draws nothing — never a wall shadow, never a
  * shadow floating above its own sprite. Created lazily; caller destroys it. */
@@ -323,11 +392,13 @@ export function applyShadow(
     s.setVisible(false);
     return;
   }
-  s.setPosition(gx, gy - grade.lift) // on the terrain surface under the flyer (lip-pinned + eased across faces), never inside a wall
-    .setDepth(grade.shadowDepth) // occluder-STABLE (discrete per cell over elevated flats) so it can't blink behind a front tile
+  s.setPosition(grade.shadowFrozen ? grade.frozenX : gx, grade.shadowFrozen ? grade.frozenY : gy - grade.lift)
+    .setDepth(grade.shadowFrozen ? grade.frozenD : grade.shadowDepth) // occluder-STABLE (discrete per cell) so it can't blink behind a front tile
     .setDisplaySize(16 - f * 6, 6.4 - f * 2.6) // much smaller than the player's ~34×14
-    .setAlpha(0.58 - f * 0.24) // reads on bright sand; fainter the higher it climbs
-    .setVisible(true);
+    .setAlpha((0.58 - f * 0.24) * grade.shadowA) // base look × the elevation cross-fade
+    .setVisible(grade.shadowA > 0.02);
+  // QA probe state (birds debug .all): frozen-decal phase + fade fraction.
+  s.setData("fz", grade.shadowFrozen).setData("fa", grade.shadowA);
 }
 
 const FOG_MIN = 0.012; // below this the haze is invisible — skip the overlay sprite entirely

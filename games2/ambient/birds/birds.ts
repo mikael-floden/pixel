@@ -901,6 +901,9 @@ export function birdsFeature(): AmbientFeature {
           shadowDepth: b.shadow ? Math.round(b.shadow.depth) : 0, // vs gy: elevation-raised over occluders
           sVis: b.shadow ? b.shadow.visible : false, // shadow currently drawn? (flicker QA)
           sy: b.shadow ? Math.round(b.shadow.y) : 0, // shadow screen-y (lift applied)
+          sa: b.shadow ? +b.shadow.alpha.toFixed(2) : 0, // shadow alpha (elevation cross-fade QA)
+          sf: b.shadow ? b.shadow.getData("fz") === true : false, // frozen departure-decal phase?
+          sfa: b.shadow ? +(+(b.shadow.getData("fa") ?? 1)).toFixed(2) : 1, // cross-fade fraction 0..1
         })),
       };
     },
