@@ -205,6 +205,19 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
 
 ## Animation playback (anti-moonwalk)
 
+- **State→art mapping is the art domain's contract**: `build-manifest.mjs`
+  resolves each game state (idle/walk/run/jump/kick/…) to its PixelLab folder
+  via `characters2/animation_map.json` (per-hero `overrides` win; the built-in
+  fallback table mirrors the file). When PixelLab renames a move, only that
+  file changes — regenerate the manifest, no game edit. **ONE jump state**
+  (maintainer 2026-07-29): the separate standing high-jump/`runjump` pair was
+  consolidated — the steeplechase leap plays for standing AND running hops.
+  Its once-through rate is DERIVED per character (`frames / JUMP_MS`) so the
+  clip spans the ~500ms hop whatever the art ships (4 frames now, was 9 —
+  the old fixed 18fps would freeze a 4-frame clip mid-air). Browser gates:
+  `verify-jump.mjs` / the smoke's jump + anim-rate sections (both assert the
+  derived rate; keep e2e viewports SMALL — at 900×600 headless starvation
+  made the sampler miss the whole hop and faked "jump never plays").
 - Walk/run playback rates are MEASURED, not guessed — and it's ONE rate per
   (character, gait), same cadence in all 8 directions (per-direction rates
   were measurement noise and popped on turns). `build-manifest.mjs` finds

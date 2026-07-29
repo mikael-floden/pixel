@@ -1,6 +1,7 @@
-// Verify jump animations: a standing jump plays "jump", a running jump plays
-// "runjump", and the sprite returns to a ground gait after landing. Samples the
-// local avatar's current animation key via __ml.anim() at the hop apex.
+// Verify the jump animation: both a standing and a running jump play the single
+// "jump" clip (the art's steeplechase leap — the separate runjump state was
+// retired 2026-07-29), and the sprite returns to a ground gait after landing.
+// Samples the local avatar's current animation key via __ml.anim() at the apex.
 import { chromium } from "playwright-core";
 
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
@@ -27,7 +28,10 @@ async function sampleWhileJumping(page) {
 }
 
 try {
-  const ctx = await browser.newContext({ viewport: { width: 900, height: 600 } });
+  // Starvation-safe SMALL viewport (see CLAUDE.md): at 900x600 software-GL
+  // throttles the page hard enough that evaluate round-trips straddle the whole
+  // ~500ms hop and the sampler sees only idle — a fake "jump never played".
+  const ctx = await browser.newContext({ viewport: { width: 480, height: 320 } });
   const page = await ctx.newPage();
   page.on("pageerror", (e) => console.log(`[pageerror] ${e.message}`));
   await page.goto(URL, { waitUntil: "load" });
@@ -57,8 +61,8 @@ try {
   const result = { standing, running, afterLand };
   console.log("RESULT " + JSON.stringify(result));
   if (!standing.includes("jump")) throw new Error(`standing jump did not play 'jump' (saw ${standing})`);
-  if (!running.includes("runjump")) throw new Error(`running jump did not play 'runjump' (saw ${running})`);
-  if (afterLand === "jump" || afterLand === "runjump") throw new Error(`did not return to ground gait (stuck at ${afterLand})`);
+  if (!running.includes("jump")) throw new Error(`running jump did not play 'jump' (saw ${running})`);
+  if (afterLand === "jump") throw new Error(`did not return to ground gait (stuck at ${afterLand})`);
   console.log("JUMP-ANIM OK");
 } finally {
   await browser.close();

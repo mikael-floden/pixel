@@ -39,11 +39,10 @@ const WATERLINES = (() => {
 // missing/broken file never fully breaks the build.
 const ANIM_MAP_FALLBACK = {
   states: {
-    idle: "breathing-idle",
-    walk: "walking",
-    run: "running-8-frames",
-    jump: "custom-high-jump",
-    runjump: "custom-running-steeplechase-jump-one-leg-front-one-leg",
+    idle: "custom-calm-idle",
+    walk: "custom-walking-full-cycle-until-the",
+    run: "custom-running-full-cycle-until-the",
+    jump: "custom-running-steeplechase-jump-knees-high-and-close-to",
     kick: "custom-high-kick",
     punch: "custom-punch",
     sword: "custom-swing-a-sword",
@@ -56,8 +55,9 @@ const ANIM_MAP_FALLBACK = {
   },
   overrides: {
     default_boy: {
-      walk: "walking-6-frames",
-      runjump: "custom-fast-running-steeplechase-jump",
+      walk: "custom-full-walk-cycle-walking-until",
+      run: "custom-full-run-cycle-running-until",
+      jump: "custom-fast-running-steeplechase-jump",
       spell_wand: "custom-spell-with-magic-wand",
     },
   },

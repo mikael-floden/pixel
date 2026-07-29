@@ -91,9 +91,12 @@ import {
   Deck,
 } from "../maps";
 
-// jump/runjump play ONCE, timed to span the ~500ms hop (JUMP_MS): 9 frames→18fps,
-// 8 frames→16fps land the character on its feet just as the arc completes.
-const ANIM_FPS: Record<string, number> = { idle: 6, walk: 12, run: 14, jump: 18, runjump: 16 };
+// Fallback loop rates when a state has no measured gaitFps. The jump clip is
+// NOT here: it plays once and its rate is derived per character in
+// buildAnimations (frames / JUMP_MS) so the clip always spans the hop arc —
+// the art agent resizes it freely (the 2026-07-29 overhaul cut it 9→4 frames,
+// and the old fixed 18fps would have frozen a 4-frame clip mid-air at ~222ms).
+const ANIM_FPS: Record<string, number> = { idle: 6, walk: 12, run: 14 };
 // Spawn campfire (objects/campfire, burn/south): 96px frames; per its
 // placement metadata the fire is 0.6m ≈ 23px tall vs a 64px character, and
 // the drawn logs span rows 15..83 of the frame → scale + base anchor below.
@@ -1215,7 +1218,7 @@ export class WorldScene extends Phaser.Scene {
       steerAt: (x: number, y: number, ax: number, ay: number) =>
         this.terrain ? steerAssist(this.terrain, x, y, ax, ay) : null,
       // Current animation key of the local avatar's sprite — headless probe for
-      // verifying jump/runjump selection.
+      // verifying state selection (jump vs gaits).
       anim: () => {
         const id = this.room?.sessionId;
         const av = id ? this.avatars.get(id) : undefined;
@@ -3296,13 +3299,11 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private applyAnimState(av: Avatar, moving: boolean, running: boolean, dir: string, jumping: boolean) {
-    // Airborne overrides ground gait: a moving-fast leap uses running-jump, any
-    // other hop (standing or walking) uses the plain jump. Timed to the hop so
-    // the leap/land poses line up with the visual arc.
+    // Airborne overrides ground gait. ONE jump clip (art overhaul 2026-07-29):
+    // the standing high-jump was retired on PixelLab and the steeplechase leap
+    // now covers standing and running hops alike, timed to the hop arc.
     const state = jumping
-      ? running && moving
-        ? "runjump"
-        : "jump"
+      ? "jump"
       : moving
         ? running
           ? "run"
@@ -3705,11 +3706,9 @@ export class WorldScene extends Phaser.Scene {
   /** Pick an existing animation, falling back run→walk→idle then default dir. */
   private resolveAnim(uid: string, state: string, dir: string): string | null {
     const order =
-      state === "runjump"
-        ? ["runjump", "jump", "run", "walk", "idle"]
-        : state === "jump"
-          ? ["jump", "walk", "idle"]
-          : state === "run"
+      state === "jump"
+        ? ["jump", "walk", "idle"]
+        : state === "run"
             ? ["run", "walk", "idle"]
             : state === "walk"
               ? ["walk", "idle"]
@@ -3741,12 +3740,19 @@ export class WorldScene extends Phaser.Scene {
             if (this.textures.exists(fk)) frames.push({ key: fk });
           }
           if (!frames.length) continue;
-          // idle/walk/run loop; jump/runjump/kick play once.
-          const once = state === "jump" || state === "runjump" || state === "kick";
+          // idle/walk/run loop; jump/kick play once. The jump's rate is derived
+          // from its own frame count so the once-through clip spans the whole
+          // ~JUMP_MS hop and lands on its feet regardless of how many frames
+          // the art ships (currently 4; was 9).
+          const once = state === "jump" || state === "kick";
+          const rate =
+            state === "jump"
+              ? frames.length / (JUMP_MS / 1000)
+              : (def.gaitFps?.[state] ?? ANIM_FPS[state] ?? 10);
           this.anims.create({
             key,
             frames,
-            frameRate: def.gaitFps?.[state] ?? ANIM_FPS[state] ?? 10,
+            frameRate: rate,
             repeat: once ? 0 : -1,
           });
         }

@@ -218,7 +218,7 @@ try {
     console.log("keyboard-cancels-tap OK");
   }
 
-  // ---- jump animations (standing 'jump', running 'runjump', lands clean) ----
+  // ---- jump animation (single 'jump' clip standing AND running, lands clean) ----
   {
     const sample = async () => {
       const seen = new Set();
@@ -243,8 +243,8 @@ try {
     await page.waitForTimeout(500);
     const after = await page.evaluate(() => window.__ml.anim()?.split(":").at(-2) ?? null);
     if (!standing.includes("jump")) fail(`standing jump did not play 'jump' (${standing})`);
-    if (!running.includes("runjump")) fail(`running jump did not play 'runjump' (${running})`);
-    if (after === "jump" || after === "runjump") fail(`stuck in ${after} after landing`);
+    if (!running.includes("jump")) fail(`running jump did not play 'jump' (${running})`);
+    if (after === "jump") fail(`stuck in ${after} after landing`);
     console.log(`jump anims OK (standing=${standing} running=${running})`);
   }
 
@@ -261,8 +261,14 @@ try {
       fail(`walk rate ${def.uid}: want ${def.gaitFps.walk} got ${walk}`);
     if (run === null || Math.abs(run - def.gaitFps.run) > 0.11)
       fail(`run rate ${def.uid}: want ${def.gaitFps.run} got ${run}`);
-    if (idle !== 6 || jump !== 18) fail(`fallback rates wrong (idle=${idle} jump=${jump})`);
-    console.log(`anim rates OK (${def.uid} walk=${walk} run=${run}, idle=6, jump=18)`);
+    // jump's once-through rate is DERIVED (frames / JUMP_MS) so the clip spans
+    // the hop whatever the art ships — assert against the manifest frame count.
+    const boy = manifest.characters.find((c) => c.uid === "default_boy");
+    const wantJump = (boy?.animations?.jump?.south ?? 0) / 0.5;
+    if (idle !== 6) fail(`idle fallback rate wrong (${idle})`);
+    if (jump === null || Math.abs(jump - wantJump) > 0.01)
+      fail(`jump rate: want ${wantJump} (frames/JUMP_MS) got ${jump}`);
+    console.log(`anim rates OK (${def.uid} walk=${walk} run=${run}, idle=6, jump=${jump})`);
   }
 
   // ---- reconnect in place, LAST (swaps the session) ----
