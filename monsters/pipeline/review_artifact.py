@@ -193,6 +193,8 @@ idle. Mirrored from PixelLab by the monsters agent; state contract:
 <script>
 const DATA = __DATA__;
 const FRAME_MS = __FRAME_MS__;
+const ABBR = { 'south':'S', 'south-east':'SE', 'east':'E', 'north-east':'NE',
+               'north':'N', 'north-west':'NW', 'west':'W', 'south-west':'SW' };
 const players = [];
 let playing = !matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -280,7 +282,7 @@ function tick() {
     ctx.clearRect(0, 0, p.sh.w, p.sh.h);
     ctx.drawImage(p.img, p.frame * p.sh.w, p.dir * p.sh.h, p.sh.w, p.sh.h,
                   0, 0, p.sh.w, p.sh.h);
-    p.facing.textContent = 'facing ' + p.sh.dirs[p.dir];
+    p.facing.textContent = 'facing ' + (ABBR[p.sh.dirs[p.dir]] || p.sh.dirs[p.dir]);
     p.frame++;
     if (p.frame >= p.sh.counts[p.dir]) {          // played through -> turn 45°
       p.frame = 0;
