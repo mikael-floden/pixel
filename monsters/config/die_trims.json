@@ -1,5 +1,5 @@
 {
-  "_comment": "Human-adjudicated die-animation tail cuts (postprocess.py): frames where PixelLab replaced the fade-out with big off-animation clouds/mist (incl. follow-on garbage like tornado/revived-monster frames after the first cloud). drop = ORIGINAL frame indices to delete; guarded by sub (the direction's take id) + of (original frame count) \u2014 a regenerated animation no longer matches and gets re-reviewed instead of cut. reviewed_ok silences the suspicious-tail flag for tails a human judged intentional.",
+  "_comment": "Human-adjudicated die-animation tail cuts (postprocess.py): frames where PixelLab replaced the fade-out with big off-animation clouds/mist (incl. follow-on garbage like tornado/revived-monster frames after the first cloud). drop = ORIGINAL frame indices to delete; guarded by sub (the direction's take id) + of (original frame count) \u2014 a regenerated animation no longer matches and gets re-reviewed instead of cut. Covers BOTH tail diseases: big off-animation clouds AND the monster coming back to life at the end of a die (dissolve-then-reappear). reviewed_ok silences the suspicious-tail flag for tails a human judged intentional.",
   "cuts": {
     "ice_crystal_golem/east": {
       "drop": [
@@ -98,10 +98,321 @@
       ],
       "sub": "fb05e1cc-6858-4efb-96b3-07b82a6ac734",
       "of": 9
+    },
+    "dark_donkey/east": {
+      "drop": [
+        3
+      ],
+      "sub": "331866cf-156c-4e3a-b913-adbd2c18712c",
+      "of": 4
+    },
+    "dark_donkey/west": {
+      "drop": [
+        3
+      ],
+      "sub": "8b248510-a61f-4eac-aa2e-516e035add80",
+      "of": 4
+    },
+    "hedgehog/east": {
+      "drop": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "sub": "df3191ac-47c8-425d-b662-611946790de4",
+      "of": 16
+    },
+    "hedgehog/west": {
+      "drop": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "sub": "ba693724-1556-4838-98c2-2da48ea14763",
+      "of": 16
+    },
+    "hedgehog/north": {
+      "drop": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "sub": "8380e885-1dfa-4be8-b222-46a68a0c4ec1",
+      "of": 16
+    },
+    "hedgehog/south": {
+      "drop": [
+        15
+      ],
+      "sub": "88d2130e-5861-4304-8c5e-440c4ee41247",
+      "of": 16
+    },
+    "hedgehog/south-east": {
+      "drop": [
+        15
+      ],
+      "sub": "9e097d01-cf84-4481-aa2d-e4d09be80271",
+      "of": 16
+    },
+    "hedgehog/south-west": {
+      "drop": [
+        15
+      ],
+      "sub": "8554a669-5309-4233-8051-350f85b51187",
+      "of": 16
+    },
+    "malformed_creature/north-east": {
+      "drop": [
+        7,
+        8
+      ],
+      "sub": "84b0ff20-af03-4ce4-bbdf-20624968f920",
+      "of": 9
+    },
+    "malformed_creature/north-west": {
+      "drop": [
+        7,
+        8
+      ],
+      "sub": "75aea3e6-d54e-4dcf-9fcf-f6ed2479a096",
+      "of": 9
+    },
+    "masked_shadow_creature/north": {
+      "drop": [
+        8
+      ],
+      "sub": "edf3e86c-bcdf-41b6-b389-435c23fee071",
+      "of": 9
+    },
+    "stone_golem/east": {
+      "drop": [
+        7,
+        8
+      ],
+      "sub": "679db683-3cc1-4e55-aa83-39c17542264f",
+      "of": 9
+    },
+    "stone_golem/west": {
+      "drop": [
+        7,
+        8
+      ],
+      "sub": "e39d9d08-b387-4df0-8b5a-32bc0b7ae703",
+      "of": 9
+    },
+    "stone_golem/north": {
+      "drop": [
+        8
+      ],
+      "sub": "26086215-254e-487e-b872-d1404fb7aab2",
+      "of": 9
+    },
+    "stone_turtle/north": {
+      "drop": [
+        7,
+        8
+      ],
+      "sub": "dc191aa4-6bd3-4304-8455-45070330567a",
+      "of": 9
+    },
+    "stone_turtle/south": {
+      "drop": [
+        8
+      ],
+      "sub": "f0bb4150-e861-4c1d-a96f-1ef43eaaaa36",
+      "of": 9
+    },
+    "stone_turtle/south-east": {
+      "drop": [
+        7,
+        8
+      ],
+      "sub": "2b413af5-584b-4c8e-be92-25cbfa2d4ac0",
+      "of": 9
+    },
+    "stone_turtle/south-west": {
+      "drop": [
+        7,
+        8
+      ],
+      "sub": "d0b8c806-86b1-41af-b636-ed0fb4b14d4e",
+      "of": 9
+    },
+    "stone_turtle/north-east": {
+      "drop": [
+        8
+      ],
+      "sub": "c7b69850-ff48-4be4-b3e9-5cbe6ad0def3",
+      "of": 9
+    },
+    "stone_turtle/north-west": {
+      "drop": [
+        8
+      ],
+      "sub": "3ffc22a6-a244-4b83-a109-762a3a08ac05",
+      "of": 9
+    },
+    "tree_stump/east": {
+      "drop": [
+        14,
+        15
+      ],
+      "sub": "7232e42b-8b09-4eef-aa4b-e663103c7cac",
+      "of": 16
+    },
+    "tree_stump/west": {
+      "drop": [
+        14,
+        15
+      ],
+      "sub": "07cf6eb2-c103-4d99-a934-f8beb9e60773",
+      "of": 16
+    },
+    "water_poring/east": {
+      "drop": [
+        12,
+        13,
+        14,
+        15
+      ],
+      "sub": "58c722fb-0bf8-4f55-9b43-df5169d6fd41",
+      "of": 16
+    },
+    "water_poring/north": {
+      "drop": [
+        12,
+        13,
+        14,
+        15
+      ],
+      "sub": "ba6deae7-9655-4745-a222-0c9814803de9",
+      "of": 16
+    },
+    "water_poring/north-east": {
+      "drop": [
+        12,
+        13,
+        14,
+        15
+      ],
+      "sub": "a52442e8-fdea-4c39-918d-512a5efe7ec6",
+      "of": 16
+    },
+    "water_poring/north-west": {
+      "drop": [
+        12,
+        13,
+        14,
+        15
+      ],
+      "sub": "365c12f9-72e9-439f-a27a-b892ec5cba2d",
+      "of": 16
+    },
+    "water_poring/south": {
+      "drop": [
+        12,
+        13,
+        14,
+        15
+      ],
+      "sub": "cd884400-13c1-4b53-8233-7ea9e5a05438",
+      "of": 16
+    },
+    "water_poring/south-east": {
+      "drop": [
+        12,
+        13,
+        14,
+        15
+      ],
+      "sub": "1bf5ec47-fbf8-4c98-8ccb-c091ccfea3a9",
+      "of": 16
+    },
+    "water_poring/south-west": {
+      "drop": [
+        12,
+        13,
+        14,
+        15
+      ],
+      "sub": "42319d71-ad0b-4508-95f1-c19275cd9cef",
+      "of": 16
+    },
+    "water_poring/west": {
+      "drop": [
+        12,
+        13,
+        14,
+        15
+      ],
+      "sub": "3777b4f6-f048-45a6-83d1-58040a940b7c",
+      "of": 16
+    },
+    "white_rabbit/east": {
+      "drop": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "sub": "7f10a232-611b-40ec-8a56-0a4fd4bc9cbc",
+      "of": 16
+    },
+    "white_rabbit/west": {
+      "drop": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "sub": "b83da9c7-6dd2-4036-98aa-3d37abef5cc7",
+      "of": 16
+    },
+    "white_rabbit/north": {
+      "drop": [
+        13,
+        14,
+        15
+      ],
+      "sub": "d444a46c-3adc-41e9-b38f-e5b82550cece",
+      "of": 16
+    },
+    "white_rabbit/south": {
+      "drop": [
+        12,
+        13,
+        14,
+        15
+      ],
+      "sub": "261b5a4e-7e51-4452-9a2b-38b8731621aa",
+      "of": 16
+    },
+    "white_rabbit/south-east": {
+      "drop": [
+        13,
+        14,
+        15
+      ],
+      "sub": "5f3ede48-7a99-461f-9f54-5353bc5426a4",
+      "of": 16
+    },
+    "white_rabbit/south-west": {
+      "drop": [
+        13,
+        14,
+        15
+      ],
+      "sub": "8ddb74ec-d95e-43d7-9f49-96c774293744",
+      "of": 16
     }
   },
-  "reviewed_ok": [
-    "tree_stump/east",
-    "tree_stump/west"
-  ]
+  "reviewed_ok": []
 }

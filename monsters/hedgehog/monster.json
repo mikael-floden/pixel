@@ -472,7 +472,7 @@
       "source_name": "All spikes detach and fall to the ground while the",
       "directions": {
         "east": {
-          "frames": 16,
+          "frames": 11,
           "strip": "hedgehog/animations/die__east.png",
           "gif": "hedgehog/animations/die__east.gif",
           "frame_paths": [
@@ -486,19 +486,14 @@
             "hedgehog/animations/die/east/07.png",
             "hedgehog/animations/die/east/08.png",
             "hedgehog/animations/die/east/09.png",
-            "hedgehog/animations/die/east/10.png",
-            "hedgehog/animations/die/east/11.png",
-            "hedgehog/animations/die/east/12.png",
-            "hedgehog/animations/die/east/13.png",
-            "hedgehog/animations/die/east/14.png",
-            "hedgehog/animations/die/east/15.png"
+            "hedgehog/animations/die/east/10.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:30:05 GMT",
           "src_frames": 16,
           "sub": "df3191ac-47c8-425d-b662-611946790de4"
         },
         "north": {
-          "frames": 16,
+          "frames": 11,
           "strip": "hedgehog/animations/die__north.png",
           "gif": "hedgehog/animations/die__north.gif",
           "frame_paths": [
@@ -512,12 +507,7 @@
             "hedgehog/animations/die/north/07.png",
             "hedgehog/animations/die/north/08.png",
             "hedgehog/animations/die/north/09.png",
-            "hedgehog/animations/die/north/10.png",
-            "hedgehog/animations/die/north/11.png",
-            "hedgehog/animations/die/north/12.png",
-            "hedgehog/animations/die/north/13.png",
-            "hedgehog/animations/die/north/14.png",
-            "hedgehog/animations/die/north/15.png"
+            "hedgehog/animations/die/north/10.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:30:07 GMT",
           "src_frames": 16,
@@ -576,7 +566,7 @@
           "sub": "e9536b68-8b31-48f9-8d00-eb2c958a6f73"
         },
         "south": {
-          "frames": 16,
+          "frames": 15,
           "strip": "hedgehog/animations/die__south.png",
           "gif": "hedgehog/animations/die__south.gif",
           "frame_paths": [
@@ -594,15 +584,14 @@
             "hedgehog/animations/die/south/11.png",
             "hedgehog/animations/die/south/12.png",
             "hedgehog/animations/die/south/13.png",
-            "hedgehog/animations/die/south/14.png",
-            "hedgehog/animations/die/south/15.png"
+            "hedgehog/animations/die/south/14.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:30:13 GMT",
           "src_frames": 16,
           "sub": "88d2130e-5861-4304-8c5e-440c4ee41247"
         },
         "south-east": {
-          "frames": 16,
+          "frames": 15,
           "strip": "hedgehog/animations/die__south-east.png",
           "gif": "hedgehog/animations/die__south-east.gif",
           "frame_paths": [
@@ -620,15 +609,14 @@
             "hedgehog/animations/die/south-east/11.png",
             "hedgehog/animations/die/south-east/12.png",
             "hedgehog/animations/die/south-east/13.png",
-            "hedgehog/animations/die/south-east/14.png",
-            "hedgehog/animations/die/south-east/15.png"
+            "hedgehog/animations/die/south-east/14.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:30:15 GMT",
           "src_frames": 16,
           "sub": "9e097d01-cf84-4481-aa2d-e4d09be80271"
         },
         "south-west": {
-          "frames": 16,
+          "frames": 15,
           "strip": "hedgehog/animations/die__south-west.png",
           "gif": "hedgehog/animations/die__south-west.gif",
           "frame_paths": [
@@ -646,15 +634,14 @@
             "hedgehog/animations/die/south-west/11.png",
             "hedgehog/animations/die/south-west/12.png",
             "hedgehog/animations/die/south-west/13.png",
-            "hedgehog/animations/die/south-west/14.png",
-            "hedgehog/animations/die/south-west/15.png"
+            "hedgehog/animations/die/south-west/14.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:30:17 GMT",
           "src_frames": 16,
           "sub": "8554a669-5309-4233-8051-350f85b51187"
         },
         "west": {
-          "frames": 16,
+          "frames": 11,
           "strip": "hedgehog/animations/die__west.png",
           "gif": "hedgehog/animations/die__west.gif",
           "frame_paths": [
@@ -668,12 +655,7 @@
             "hedgehog/animations/die/west/07.png",
             "hedgehog/animations/die/west/08.png",
             "hedgehog/animations/die/west/09.png",
-            "hedgehog/animations/die/west/10.png",
-            "hedgehog/animations/die/west/11.png",
-            "hedgehog/animations/die/west/12.png",
-            "hedgehog/animations/die/west/13.png",
-            "hedgehog/animations/die/west/14.png",
-            "hedgehog/animations/die/west/15.png"
+            "hedgehog/animations/die/west/10.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:30:19 GMT",
           "src_frames": 16,
@@ -1152,6 +1134,56 @@
         "strip_px": 11,
         "ext": 5
       }
-    ]
+    ],
+    "die_trim": {
+      "east": {
+        "dropped": [
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "sub": "df3191ac-47c8-425d-b662-611946790de4"
+      },
+      "north": {
+        "dropped": [
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "sub": "8380e885-1dfa-4be8-b222-46a68a0c4ec1"
+      },
+      "south": {
+        "dropped": [
+          15
+        ],
+        "sub": "88d2130e-5861-4304-8c5e-440c4ee41247"
+      },
+      "south-east": {
+        "dropped": [
+          15
+        ],
+        "sub": "9e097d01-cf84-4481-aa2d-e4d09be80271"
+      },
+      "south-west": {
+        "dropped": [
+          15
+        ],
+        "sub": "8554a669-5309-4233-8051-350f85b51187"
+      },
+      "west": {
+        "dropped": [
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "sub": "ba693724-1556-4838-98c2-2da48ea14763"
+      }
+    }
   }
 }

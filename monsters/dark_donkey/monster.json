@@ -518,14 +518,13 @@
       "source_name": "custom-faints\nand\nfades\naway",
       "directions": {
         "east": {
-          "frames": 4,
+          "frames": 3,
           "strip": "dark_donkey/animations/die__east.png",
           "gif": "dark_donkey/animations/die__east.gif",
           "frame_paths": [
             "dark_donkey/animations/die/east/00.png",
             "dark_donkey/animations/die/east/01.png",
-            "dark_donkey/animations/die/east/02.png",
-            "dark_donkey/animations/die/east/03.png"
+            "dark_donkey/animations/die/east/02.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:53:36 GMT",
           "src_frames": 4,
@@ -616,14 +615,13 @@
           "sub": "41020ef7-e01d-4b78-b986-b0cfe4851a74"
         },
         "west": {
-          "frames": 4,
+          "frames": 3,
           "strip": "dark_donkey/animations/die__west.png",
           "gif": "dark_donkey/animations/die__west.gif",
           "frame_paths": [
             "dark_donkey/animations/die/west/00.png",
             "dark_donkey/animations/die/west/01.png",
-            "dark_donkey/animations/die/west/02.png",
-            "dark_donkey/animations/die/west/03.png"
+            "dark_donkey/animations/die/west/02.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:53:45 GMT",
           "src_frames": 4,
@@ -651,5 +649,21 @@
       ]
     }
   ],
-  "synced_from_pixellab": true
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "die_trim": {
+      "east": {
+        "dropped": [
+          3
+        ],
+        "sub": "331866cf-156c-4e3a-b913-adbd2c18712c"
+      },
+      "west": {
+        "dropped": [
+          3
+        ],
+        "sub": "8b248510-a61f-4eac-aa2e-516e035add80"
+      }
+    }
+  }
 }

@@ -144,7 +144,7 @@
       "source_name": "Head falls off first, then the whole body falls in",
       "directions": {
         "east": {
-          "frames": 9,
+          "frames": 7,
           "strip": "stone_golem/animations/die__east.png",
           "gif": "stone_golem/animations/die__east.gif",
           "frame_paths": [
@@ -154,16 +154,14 @@
             "stone_golem/animations/die/east/03.png",
             "stone_golem/animations/die/east/04.png",
             "stone_golem/animations/die/east/05.png",
-            "stone_golem/animations/die/east/06.png",
-            "stone_golem/animations/die/east/07.png",
-            "stone_golem/animations/die/east/08.png"
+            "stone_golem/animations/die/east/06.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:46:15 GMT",
           "src_frames": 9,
           "sub": "679db683-3cc1-4e55-aa83-39c17542264f"
         },
         "north": {
-          "frames": 9,
+          "frames": 8,
           "strip": "stone_golem/animations/die__north.png",
           "gif": "stone_golem/animations/die__north.gif",
           "frame_paths": [
@@ -174,8 +172,7 @@
             "stone_golem/animations/die/north/04.png",
             "stone_golem/animations/die/north/05.png",
             "stone_golem/animations/die/north/06.png",
-            "stone_golem/animations/die/north/07.png",
-            "stone_golem/animations/die/north/08.png"
+            "stone_golem/animations/die/north/07.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:46:16 GMT",
           "src_frames": 9,
@@ -272,7 +269,7 @@
           "sub": "fb05e1cc-6858-4efb-96b3-07b82a6ac734"
         },
         "west": {
-          "frames": 9,
+          "frames": 7,
           "strip": "stone_golem/animations/die__west.png",
           "gif": "stone_golem/animations/die__west.gif",
           "frame_paths": [
@@ -282,9 +279,7 @@
             "stone_golem/animations/die/west/03.png",
             "stone_golem/animations/die/west/04.png",
             "stone_golem/animations/die/west/05.png",
-            "stone_golem/animations/die/west/06.png",
-            "stone_golem/animations/die/west/07.png",
-            "stone_golem/animations/die/west/08.png"
+            "stone_golem/animations/die/west/06.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:46:27 GMT",
           "src_frames": 9,
@@ -851,6 +846,26 @@
           8
         ],
         "sub": "fb05e1cc-6858-4efb-96b3-07b82a6ac734"
+      },
+      "east": {
+        "dropped": [
+          7,
+          8
+        ],
+        "sub": "679db683-3cc1-4e55-aa83-39c17542264f"
+      },
+      "north": {
+        "dropped": [
+          8
+        ],
+        "sub": "26086215-254e-487e-b872-d1404fb7aab2"
+      },
+      "west": {
+        "dropped": [
+          7,
+          8
+        ],
+        "sub": "e39d9d08-b387-4df0-8b5a-32bc0b7ae703"
       }
     }
   }

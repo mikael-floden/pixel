@@ -1,8 +1,8 @@
 {
   "domain": "monsters",
-  "updated_at": "2026-07-29T17:53:51+00:00",
+  "updated_at": "2026-07-29T18:04:37+00:00",
   "health": "idle",
-  "current": "die-tail cloud trim landed: 20 garbage frames cut from ice_crystal_golem + stone_golem die animations",
+  "current": "revival-tail trim landed: 98 more die frames cut across 8 monsters (monster no longer comes back to life)",
   "progress": {
     "monsters_complete": 24,
     "objects": 21,
@@ -24,7 +24,8 @@
     "[2026-07-29T12:40:27+00:00] review gallery is now a claude.ai artifact (maintainer views it in chat): https://claude.ai/code/artifact/5907a10c-6355-4394-9ec0-5886776ba393 \u2014 rebuild with monsters/pipeline/review_artifact.py and republish to that URL after a resync. monsters/index.html + viewer_data.json + viewer_build.py are REMOVED from the repo; the game contract stays monsters/animation_map.json (unchanged).",
     "[2026-07-29T15:55:24+00:00] resync: butterfly_dragon re-pointed to object adc65dc6 (full 5 states, real angry); snow_demon re-pointed to CHARACTER cb2f48b8; saber_toothed_tiger now HAS die (missing list empty); lava_salamander attack = fire bite, dark_donkey attack = head charge. animation_map.json regenerated. Still partial upstream: stone_golem angry 5/8, diablo_2 angry 1/8.",
     "[2026-07-29T17:28:42+00:00] postprocess.py repairs PixelLab wrap-around overflow (graphics wrapping to the opposite edge, usually one frame late). 56 fixes across 12 monsters; their canvases grew symmetrically (e.g. lava_salamander 48x48->78x48, diablo_2 136x136->136x174). monster.json now carries native_size + postprocess.pad. Runs inside every sync.",
-    "[2026-07-29T17:53:51+00:00] postprocess gains a die-tail trim stage: PixelLab sometimes replaces the end of a fade-away die with big off-animation clouds (sometimes + tornado/revived-monster frames). 20 frames cut across ice_crystal_golem (all 8 dirs) + stone_golem (5 dirs); cuts pinned in monsters/config/die_trims.json guarded by take id. DIE FRAME COUNTS CHANGED for those two monsters \u2014 re-read monster.json per-direction counts. Suspicious-but-unpinned tails (hedgehog/water_poring/white_rabbit/stone_turtle revive at the end) are flagged each sync, pending maintainer decision."
+    "[2026-07-29T17:53:51+00:00] postprocess gains a die-tail trim stage: PixelLab sometimes replaces the end of a fade-away die with big off-animation clouds (sometimes + tornado/revived-monster frames). 20 frames cut across ice_crystal_golem (all 8 dirs) + stone_golem (5 dirs); cuts pinned in monsters/config/die_trims.json guarded by take id. DIE FRAME COUNTS CHANGED for those two monsters \u2014 re-read monster.json per-direction counts. Suspicious-but-unpinned tails (hedgehog/water_poring/white_rabbit/stone_turtle revive at the end) are flagged each sync, pending maintainer decision.",
+    "[2026-07-29T18:04:37+00:00] die-tail trim extended to the 'coming back to life' bug (dissolve-then-reappear tails): 98 frames cut across dark_donkey, hedgehog, malformed_creature, masked_shadow_creature, stone_golem, stone_turtle, tree_stump, water_poring, white_rabbit. All cuts pinned in monsters/config/die_trims.json. DIE FRAME COUNTS CHANGED for those monsters \u2014 re-read monster.json per-direction counts."
   ],
   "requests": [
     {
@@ -41,6 +42,11 @@
       "to": "games",
       "text": "CANVAS CHANGE for 12 monsters: wrap-overflow repair grew their tiles symmetrically (content stays centered). Affected: butterfly_dragon 121x97, diablo_2 136x174, forest_poring 70x48, forest_poring_2 64x48, hedgehog 48x34, ice_poring 64x48, lava_poring 58x48, lava_salamander 78x48, mystical_frog 34x42, stone_golem 146x136, stone_turtle 76x68, water_poring unchanged. If you scale sprites by tile size, use monster.json:postprocess.native_size for world scale \u2014 `size` is now the padded canvas. Padding is transparent margin only; anchor by center is unaffected.",
       "at": "2026-07-29T17:28:42+00:00"
+    },
+    {
+      "to": "games",
+      "text": "Die animations cleaned again: the 'monster comes back to life at the end of die' generation bug is fixed \u2014 98 frames trimmed across dark_donkey, hedgehog, malformed_creature, masked_shadow_creature, stone_golem, stone_turtle, tree_stump, water_poring, white_rabbit (earlier: 20 cloud frames from the two golems). Every die now ends dead/dissolved. Per-direction frame counts changed \u2014 re-read monsters/<id>/monster.json.",
+      "at": "2026-07-29T18:04:37+00:00"
     }
   ]
 }

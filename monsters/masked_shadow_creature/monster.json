@@ -537,7 +537,7 @@
           "sub": "1cc88733-2de1-4938-b4aa-d4b0ce25000a"
         },
         "north": {
-          "frames": 9,
+          "frames": 8,
           "strip": "masked_shadow_creature/animations/die__north.png",
           "gif": "masked_shadow_creature/animations/die__north.gif",
           "frame_paths": [
@@ -548,8 +548,7 @@
             "masked_shadow_creature/animations/die/north/04.png",
             "masked_shadow_creature/animations/die/north/05.png",
             "masked_shadow_creature/animations/die/north/06.png",
-            "masked_shadow_creature/animations/die/north/07.png",
-            "masked_shadow_creature/animations/die/north/08.png"
+            "masked_shadow_creature/animations/die/north/07.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:34:18 GMT",
           "src_frames": 9,
@@ -681,5 +680,15 @@
     "die": "die"
   },
   "unresolved_takes": [],
-  "synced_from_pixellab": true
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "die_trim": {
+      "north": {
+        "dropped": [
+          8
+        ],
+        "sub": "edf3e86c-bcdf-41b6-b389-435c23fee071"
+      }
+    }
+  }
 }

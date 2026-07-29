@@ -257,7 +257,7 @@
       "source_name": "Faints and fades away by merging with the ground",
       "directions": {
         "east": {
-          "frames": 16,
+          "frames": 11,
           "strip": "white_rabbit/animations/die__east.png",
           "gif": "white_rabbit/animations/die__east.gif",
           "frame_paths": [
@@ -271,19 +271,14 @@
             "white_rabbit/animations/die/east/07.png",
             "white_rabbit/animations/die/east/08.png",
             "white_rabbit/animations/die/east/09.png",
-            "white_rabbit/animations/die/east/10.png",
-            "white_rabbit/animations/die/east/11.png",
-            "white_rabbit/animations/die/east/12.png",
-            "white_rabbit/animations/die/east/13.png",
-            "white_rabbit/animations/die/east/14.png",
-            "white_rabbit/animations/die/east/15.png"
+            "white_rabbit/animations/die/east/10.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:31:17 GMT",
           "src_frames": 16,
           "sub": "7f10a232-611b-40ec-8a56-0a4fd4bc9cbc"
         },
         "north": {
-          "frames": 16,
+          "frames": 13,
           "strip": "white_rabbit/animations/die__north.png",
           "gif": "white_rabbit/animations/die__north.gif",
           "frame_paths": [
@@ -299,10 +294,7 @@
             "white_rabbit/animations/die/north/09.png",
             "white_rabbit/animations/die/north/10.png",
             "white_rabbit/animations/die/north/11.png",
-            "white_rabbit/animations/die/north/12.png",
-            "white_rabbit/animations/die/north/13.png",
-            "white_rabbit/animations/die/north/14.png",
-            "white_rabbit/animations/die/north/15.png"
+            "white_rabbit/animations/die/north/12.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:31:19 GMT",
           "src_frames": 16,
@@ -361,7 +353,7 @@
           "sub": "ad905aac-83f5-41e1-9b37-da358b775d37"
         },
         "south": {
-          "frames": 16,
+          "frames": 12,
           "strip": "white_rabbit/animations/die__south.png",
           "gif": "white_rabbit/animations/die__south.gif",
           "frame_paths": [
@@ -376,18 +368,14 @@
             "white_rabbit/animations/die/south/08.png",
             "white_rabbit/animations/die/south/09.png",
             "white_rabbit/animations/die/south/10.png",
-            "white_rabbit/animations/die/south/11.png",
-            "white_rabbit/animations/die/south/12.png",
-            "white_rabbit/animations/die/south/13.png",
-            "white_rabbit/animations/die/south/14.png",
-            "white_rabbit/animations/die/south/15.png"
+            "white_rabbit/animations/die/south/11.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:31:26 GMT",
           "src_frames": 16,
           "sub": "261b5a4e-7e51-4452-9a2b-38b8731621aa"
         },
         "south-east": {
-          "frames": 16,
+          "frames": 13,
           "strip": "white_rabbit/animations/die__south-east.png",
           "gif": "white_rabbit/animations/die__south-east.gif",
           "frame_paths": [
@@ -403,17 +391,14 @@
             "white_rabbit/animations/die/south-east/09.png",
             "white_rabbit/animations/die/south-east/10.png",
             "white_rabbit/animations/die/south-east/11.png",
-            "white_rabbit/animations/die/south-east/12.png",
-            "white_rabbit/animations/die/south-east/13.png",
-            "white_rabbit/animations/die/south-east/14.png",
-            "white_rabbit/animations/die/south-east/15.png"
+            "white_rabbit/animations/die/south-east/12.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:31:28 GMT",
           "src_frames": 16,
           "sub": "5f3ede48-7a99-461f-9f54-5353bc5426a4"
         },
         "south-west": {
-          "frames": 16,
+          "frames": 13,
           "strip": "white_rabbit/animations/die__south-west.png",
           "gif": "white_rabbit/animations/die__south-west.gif",
           "frame_paths": [
@@ -429,17 +414,14 @@
             "white_rabbit/animations/die/south-west/09.png",
             "white_rabbit/animations/die/south-west/10.png",
             "white_rabbit/animations/die/south-west/11.png",
-            "white_rabbit/animations/die/south-west/12.png",
-            "white_rabbit/animations/die/south-west/13.png",
-            "white_rabbit/animations/die/south-west/14.png",
-            "white_rabbit/animations/die/south-west/15.png"
+            "white_rabbit/animations/die/south-west/12.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:31:31 GMT",
           "src_frames": 16,
           "sub": "8ddb74ec-d95e-43d7-9f49-96c774293744"
         },
         "west": {
-          "frames": 16,
+          "frames": 11,
           "strip": "white_rabbit/animations/die__west.png",
           "gif": "white_rabbit/animations/die__west.gif",
           "frame_paths": [
@@ -453,12 +435,7 @@
             "white_rabbit/animations/die/west/07.png",
             "white_rabbit/animations/die/west/08.png",
             "white_rabbit/animations/die/west/09.png",
-            "white_rabbit/animations/die/west/10.png",
-            "white_rabbit/animations/die/west/11.png",
-            "white_rabbit/animations/die/west/12.png",
-            "white_rabbit/animations/die/west/13.png",
-            "white_rabbit/animations/die/west/14.png",
-            "white_rabbit/animations/die/west/15.png"
+            "white_rabbit/animations/die/west/10.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:31:33 GMT",
           "src_frames": 16,
@@ -1041,5 +1018,62 @@
     "die": "die"
   },
   "unresolved_takes": [],
-  "synced_from_pixellab": true
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "die_trim": {
+      "east": {
+        "dropped": [
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "sub": "7f10a232-611b-40ec-8a56-0a4fd4bc9cbc"
+      },
+      "north": {
+        "dropped": [
+          13,
+          14,
+          15
+        ],
+        "sub": "d444a46c-3adc-41e9-b38f-e5b82550cece"
+      },
+      "south": {
+        "dropped": [
+          12,
+          13,
+          14,
+          15
+        ],
+        "sub": "261b5a4e-7e51-4452-9a2b-38b8731621aa"
+      },
+      "south-east": {
+        "dropped": [
+          13,
+          14,
+          15
+        ],
+        "sub": "5f3ede48-7a99-461f-9f54-5353bc5426a4"
+      },
+      "south-west": {
+        "dropped": [
+          13,
+          14,
+          15
+        ],
+        "sub": "8ddb74ec-d95e-43d7-9f49-96c774293744"
+      },
+      "west": {
+        "dropped": [
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "sub": "b83da9c7-6dd2-4036-98aa-3d37abef5cc7"
+      }
+    }
+  }
 }

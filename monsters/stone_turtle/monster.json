@@ -537,7 +537,7 @@
           "sub": "4f0f165a-b5dc-44dc-a5a3-44d5a4c54d34"
         },
         "north": {
-          "frames": 9,
+          "frames": 7,
           "strip": "stone_turtle/animations/die__north.png",
           "gif": "stone_turtle/animations/die__north.gif",
           "frame_paths": [
@@ -547,16 +547,14 @@
             "stone_turtle/animations/die/north/03.png",
             "stone_turtle/animations/die/north/04.png",
             "stone_turtle/animations/die/north/05.png",
-            "stone_turtle/animations/die/north/06.png",
-            "stone_turtle/animations/die/north/07.png",
-            "stone_turtle/animations/die/north/08.png"
+            "stone_turtle/animations/die/north/06.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:42:15 GMT",
           "src_frames": 9,
           "sub": "dc191aa4-6bd3-4304-8455-45070330567a"
         },
         "north-east": {
-          "frames": 9,
+          "frames": 8,
           "strip": "stone_turtle/animations/die__north-east.png",
           "gif": "stone_turtle/animations/die__north-east.gif",
           "frame_paths": [
@@ -567,15 +565,14 @@
             "stone_turtle/animations/die/north-east/04.png",
             "stone_turtle/animations/die/north-east/05.png",
             "stone_turtle/animations/die/north-east/06.png",
-            "stone_turtle/animations/die/north-east/07.png",
-            "stone_turtle/animations/die/north-east/08.png"
+            "stone_turtle/animations/die/north-east/07.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:42:16 GMT",
           "src_frames": 9,
           "sub": "c7b69850-ff48-4be4-b3e9-5cbe6ad0def3"
         },
         "north-west": {
-          "frames": 9,
+          "frames": 8,
           "strip": "stone_turtle/animations/die__north-west.png",
           "gif": "stone_turtle/animations/die__north-west.gif",
           "frame_paths": [
@@ -586,15 +583,14 @@
             "stone_turtle/animations/die/north-west/04.png",
             "stone_turtle/animations/die/north-west/05.png",
             "stone_turtle/animations/die/north-west/06.png",
-            "stone_turtle/animations/die/north-west/07.png",
-            "stone_turtle/animations/die/north-west/08.png"
+            "stone_turtle/animations/die/north-west/07.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:42:18 GMT",
           "src_frames": 9,
           "sub": "3ffc22a6-a244-4b83-a109-762a3a08ac05"
         },
         "south": {
-          "frames": 9,
+          "frames": 8,
           "strip": "stone_turtle/animations/die__south.png",
           "gif": "stone_turtle/animations/die__south.gif",
           "frame_paths": [
@@ -605,15 +601,14 @@
             "stone_turtle/animations/die/south/04.png",
             "stone_turtle/animations/die/south/05.png",
             "stone_turtle/animations/die/south/06.png",
-            "stone_turtle/animations/die/south/07.png",
-            "stone_turtle/animations/die/south/08.png"
+            "stone_turtle/animations/die/south/07.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:42:20 GMT",
           "src_frames": 9,
           "sub": "f0bb4150-e861-4c1d-a96f-1ef43eaaaa36"
         },
         "south-east": {
-          "frames": 9,
+          "frames": 7,
           "strip": "stone_turtle/animations/die__south-east.png",
           "gif": "stone_turtle/animations/die__south-east.gif",
           "frame_paths": [
@@ -623,16 +618,14 @@
             "stone_turtle/animations/die/south-east/03.png",
             "stone_turtle/animations/die/south-east/04.png",
             "stone_turtle/animations/die/south-east/05.png",
-            "stone_turtle/animations/die/south-east/06.png",
-            "stone_turtle/animations/die/south-east/07.png",
-            "stone_turtle/animations/die/south-east/08.png"
+            "stone_turtle/animations/die/south-east/06.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:42:22 GMT",
           "src_frames": 9,
           "sub": "2b413af5-584b-4c8e-be92-25cbfa2d4ac0"
         },
         "south-west": {
-          "frames": 9,
+          "frames": 7,
           "strip": "stone_turtle/animations/die__south-west.png",
           "gif": "stone_turtle/animations/die__south-west.gif",
           "frame_paths": [
@@ -642,9 +635,7 @@
             "stone_turtle/animations/die/south-west/03.png",
             "stone_turtle/animations/die/south-west/04.png",
             "stone_turtle/animations/die/south-west/05.png",
-            "stone_turtle/animations/die/south-west/06.png",
-            "stone_turtle/animations/die/south-west/07.png",
-            "stone_turtle/animations/die/south-west/08.png"
+            "stone_turtle/animations/die/south-west/06.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:42:23 GMT",
           "src_frames": 9,
@@ -712,6 +703,47 @@
         "strip_px": 12,
         "ext": 2
       }
-    ]
+    ],
+    "die_trim": {
+      "north": {
+        "dropped": [
+          7,
+          8
+        ],
+        "sub": "dc191aa4-6bd3-4304-8455-45070330567a"
+      },
+      "north-east": {
+        "dropped": [
+          8
+        ],
+        "sub": "c7b69850-ff48-4be4-b3e9-5cbe6ad0def3"
+      },
+      "north-west": {
+        "dropped": [
+          8
+        ],
+        "sub": "3ffc22a6-a244-4b83-a109-762a3a08ac05"
+      },
+      "south": {
+        "dropped": [
+          8
+        ],
+        "sub": "f0bb4150-e861-4c1d-a96f-1ef43eaaaa36"
+      },
+      "south-east": {
+        "dropped": [
+          7,
+          8
+        ],
+        "sub": "2b413af5-584b-4c8e-be92-25cbfa2d4ac0"
+      },
+      "south-west": {
+        "dropped": [
+          7,
+          8
+        ],
+        "sub": "d0b8c806-86b1-41af-b636-ed0fb4b14d4e"
+      }
+    }
   }
 }

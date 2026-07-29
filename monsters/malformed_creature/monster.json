@@ -80,7 +80,7 @@
           "sub": "ff6baa3c-d1e9-4916-918c-e1d12efae795"
         },
         "north-east": {
-          "frames": 9,
+          "frames": 7,
           "strip": "malformed_creature/animations/die__north-east.png",
           "gif": "malformed_creature/animations/die__north-east.gif",
           "frame_paths": [
@@ -90,16 +90,14 @@
             "malformed_creature/animations/die/north-east/03.png",
             "malformed_creature/animations/die/north-east/04.png",
             "malformed_creature/animations/die/north-east/05.png",
-            "malformed_creature/animations/die/north-east/06.png",
-            "malformed_creature/animations/die/north-east/07.png",
-            "malformed_creature/animations/die/north-east/08.png"
+            "malformed_creature/animations/die/north-east/06.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:32:36 GMT",
           "src_frames": 9,
           "sub": "84b0ff20-af03-4ce4-bbdf-20624968f920"
         },
         "north-west": {
-          "frames": 9,
+          "frames": 7,
           "strip": "malformed_creature/animations/die__north-west.png",
           "gif": "malformed_creature/animations/die__north-west.gif",
           "frame_paths": [
@@ -109,9 +107,7 @@
             "malformed_creature/animations/die/north-west/03.png",
             "malformed_creature/animations/die/north-west/04.png",
             "malformed_creature/animations/die/north-west/05.png",
-            "malformed_creature/animations/die/north-west/06.png",
-            "malformed_creature/animations/die/north-west/07.png",
-            "malformed_creature/animations/die/north-west/08.png"
+            "malformed_creature/animations/die/north-west/06.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:32:37 GMT",
           "src_frames": 9,
@@ -697,5 +693,23 @@
     "die": "die"
   },
   "unresolved_takes": [],
-  "synced_from_pixellab": true
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "die_trim": {
+      "north-east": {
+        "dropped": [
+          7,
+          8
+        ],
+        "sub": "84b0ff20-af03-4ce4-bbdf-20624968f920"
+      },
+      "north-west": {
+        "dropped": [
+          7,
+          8
+        ],
+        "sub": "75aea3e6-d54e-4dcf-9fcf-f6ed2479a096"
+      }
+    }
+  }
 }

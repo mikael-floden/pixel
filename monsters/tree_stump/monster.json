@@ -687,7 +687,7 @@
       "source_name": "Merges with the ground and dissapers",
       "directions": {
         "east": {
-          "frames": 16,
+          "frames": 14,
           "strip": "tree_stump/animations/die__east.png",
           "gif": "tree_stump/animations/die__east.gif",
           "frame_paths": [
@@ -704,9 +704,7 @@
             "tree_stump/animations/die/east/10.png",
             "tree_stump/animations/die/east/11.png",
             "tree_stump/animations/die/east/12.png",
-            "tree_stump/animations/die/east/13.png",
-            "tree_stump/animations/die/east/14.png",
-            "tree_stump/animations/die/east/15.png"
+            "tree_stump/animations/die/east/13.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:43:21 GMT",
           "src_frames": 16,
@@ -869,7 +867,7 @@
           "sub": "9f8cdf2b-f385-4ed9-9494-7d9a019197a8"
         },
         "west": {
-          "frames": 16,
+          "frames": 14,
           "strip": "tree_stump/animations/die__west.png",
           "gif": "tree_stump/animations/die__west.gif",
           "frame_paths": [
@@ -886,9 +884,7 @@
             "tree_stump/animations/die/west/10.png",
             "tree_stump/animations/die/west/11.png",
             "tree_stump/animations/die/west/12.png",
-            "tree_stump/animations/die/west/13.png",
-            "tree_stump/animations/die/west/14.png",
-            "tree_stump/animations/die/west/15.png"
+            "tree_stump/animations/die/west/13.png"
           ],
           "lm": "Wed, 29 Jul 2026 11:43:37 GMT",
           "src_frames": 16,
@@ -1121,5 +1117,23 @@
     "die": "die"
   },
   "unresolved_takes": [],
-  "synced_from_pixellab": true
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "die_trim": {
+      "east": {
+        "dropped": [
+          14,
+          15
+        ],
+        "sub": "7232e42b-8b09-4eef-aa4b-e663103c7cac"
+      },
+      "west": {
+        "dropped": [
+          14,
+          15
+        ],
+        "sub": "07cf6eb2-c103-4d99-a934-f8beb9e60773"
+      }
+    }
+  }
 }
