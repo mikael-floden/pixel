@@ -27,10 +27,15 @@ COPY maps2/ /assets/maps2/
 COPY sounds/ /assets/sounds/
 COPY music/ /assets/music/
 COPY monsters/ /assets/monsters/
+COPY wiki/ /assets/wiki/
 ENV ASSETS_ROOT=/assets
 
 # Game source (changes every deploy — keep below the art layers).
 COPY games2/ ./
+
+# Rebuild the wiki's registry from the art baked into THIS image, so the
+# in-game wiki (/assets/wiki/site/) can never go stale vs the deployed art.
+RUN node /assets/wiki/build.mjs --games2 /app
 
 # Generate the character manifest + build the client bundle.
 # Bake the deployed commit into the bundle so testers can see which version

@@ -7,7 +7,7 @@ import { extname, join, normalize, resolve } from "node:path";
 const REPO_ROOT = resolve(__dirname, "../..");
 const ASSET_DOMAINS = new Set([
   "characters", "tiles", "maps", "objects", "characters2", "tiles2", "maps2",
-  "sounds", "music", "monsters",
+  "sounds", "music", "monsters", "wiki",
 ]);
 const TYPES: Record<string, string> = {
   ".png": "image/png",
@@ -16,6 +16,10 @@ const TYPES: Record<string, string> = {
   ".wav": "audio/wav",
   ".ogg": "audio/ogg",
   ".mp3": "audio/mpeg",
+  ".m4a": "audio/mp4",
+  ".html": "text/html; charset=utf-8",
+  ".css": "text/css; charset=utf-8",
+  ".js": "text/javascript; charset=utf-8",
 };
 
 // Serve the sibling art domains at /assets/<domain>/* in dev. Production does

@@ -29,8 +29,9 @@ function argOf(flag, dflt) {
 const ROOT = resolve(argOf("--root", resolve(WIKI_DIR, "..")));
 const OUT = resolve(argOf("--out", join(WIKI_DIR, "site", "data.json")));
 // games2 lives next to the domains in the repo, but NOT under /assets in
-// Docker — its files are optional extras (monster metrics, constants).
-const GAMES2 = existsSync(join(ROOT, "games2")) ? join(ROOT, "games2") : resolve(WIKI_DIR, "..", "games2");
+// Docker (the game source is at /app) — its files are optional extras
+// (monster metrics, constants), so accept an explicit --games2 path.
+const GAMES2 = resolve(argOf("--games2", existsSync(join(ROOT, "games2")) ? join(ROOT, "games2") : resolve(WIKI_DIR, "..", "games2")));
 
 // The maintainer's preferred compass order for direction pickers.
 const DIRS = ["south", "south-east", "east", "north-east", "north", "north-west", "west", "south-west"];

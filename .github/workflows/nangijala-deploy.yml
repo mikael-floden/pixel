@@ -35,6 +35,7 @@ on:
       - "sounds/**"
       - "music/**"
       - "monsters/**"
+      - "wiki/**"
       - ".github/workflows/nangijala-deploy.yml"
   workflow_dispatch: {}       # manual: force a roll without any commit
 
