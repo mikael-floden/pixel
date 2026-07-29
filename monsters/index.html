@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monsters — review</title>
+<style>
+  :root {
+    --bg: #171a21; --card: #1f2430; --card2: #242a38; --line: #303748;
+    --fg: #e8ecf4; --muted: #93a0b4; --accent: #7ec8ff; --warn: #ffb020; --bad: #ff6b6b;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+         font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { padding: 18px 16px 6px; max-width: 1080px; margin: 0 auto; }
+  h1 { margin: 0 0 4px; font-size: 22px; }
+  .sub { color: var(--muted); font-size: 13px; }
+  #q { width: 100%; max-width: 420px; margin: 12px 0 4px; padding: 8px 12px;
+       border-radius: 8px; border: 1px solid var(--line); background: var(--card);
+       color: var(--fg); font-size: 14px; }
+  main { max-width: 1080px; margin: 0 auto; padding: 8px 16px 60px; }
+  .monster { background: var(--card); border: 1px solid var(--line);
+             border-radius: 12px; margin: 16px 0; overflow: hidden; }
+  .mhead { display: flex; gap: 14px; align-items: center; padding: 12px 14px;
+           background: var(--card2); border-bottom: 1px solid var(--line);
+           flex-wrap: wrap; }
+  .mhead img { width: 56px; height: 56px; image-rendering: pixelated; flex: none; }
+  .mtitle { font-weight: 700; font-size: 17px; }
+  .mmeta { color: var(--muted); font-size: 12.5px; }
+  .mmeta a { color: var(--accent); text-decoration: none; }
+  .kind { display: inline-block; font-size: 11px; letter-spacing: .04em;
+          text-transform: uppercase; padding: 1px 8px; border-radius: 99px;
+          border: 1px solid var(--line); color: var(--muted); margin-left: 8px; }
+  .row { display: flex; gap: 14px; align-items: center; padding: 10px 14px;
+         border-top: 1px solid var(--line); flex-wrap: wrap; }
+  .row:first-of-type { border-top: none; }
+  .label { flex: 0 0 130px; }
+  .state { font-weight: 600; text-transform: capitalize; }
+  .note { font-size: 12px; color: var(--muted); }
+  .note.warn { color: var(--warn); }
+  .note.bad { color: var(--bad); font-weight: 600; }
+  .anim { flex: 1; min-width: 220px; }
+  .anim img { image-rendering: pixelated; display: block;
+              max-width: 100%; }
+  .missing { color: var(--bad); font-size: 13px; padding: 8px 0; }
+  .extra .state { color: var(--muted); font-weight: 500; }
+  footer { max-width: 1080px; margin: 0 auto; padding: 0 16px 40px;
+           color: var(--muted); font-size: 12.5px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Monsters</h1>
+  <div class="sub" id="summary">loading…</div>
+  <input id="q" type="search" placeholder="filter monsters…">
+</header>
+<main id="list"></main>
+<footer>
+  Each clip plays the animation facing one direction, then rotates one step
+  (45°) and plays again — a full loop shows all 8 directions.
+  <em>angry → idle</em> means the monster has no angry animation and the game
+  reuses idle (maintainer rule). Mirrored from PixelLab by
+  <code>monsters/pipeline/sync.py</code>; the state contract is
+  <code>monsters/animation_map.json</code>.
+</footer>
+<script>
+const SCALE_MAX_H = 192;   // biggest on-screen height; small sprites scale up 2x
+async function load() {
+  const data = await (await fetch('viewer_data.json?' + Date.now())).json();
+  const list = document.getElementById('list');
+  let missing = 0, fallbacks = 0;
+  for (const m of data.monsters) {
+    const card = document.createElement('section');
+    card.className = 'monster';
+    card.dataset.name = (m.id + ' ' + m.name + ' ' + (m.prompt || '')).toLowerCase();
+    const native = (m.size && m.size.height) || 48;
+    const h = Math.min(native * 2, SCALE_MAX_H);
+    let rows = '';
+    for (const s of m.states) {
+      let note = '';
+      if (s.missing) {
+        note = `<div class="note bad">MISSING — no ${s.state} animation on PixelLab</div>`;
+        missing++;
+      } else if (s.fallback) {
+        note = `<div class="note warn">→ ${s.key} (fallback)</div>`;
+        fallbacks++;
+      }
+      const dirNote = !s.missing && s.directions !== 8
+        ? `<div class="note bad">${s.directions}/8 directions</div>` : '';
+      const img = s.rotating_gif
+        ? `<img src="${s.rotating_gif}" style="height:${h}px" loading="lazy"
+               alt="${m.id} ${s.state}">`
+        : `<div class="missing">no animation</div>`;
+      rows += `<div class="row">
+        <div class="label"><div class="state">${s.state}</div>${note}${dirNote}</div>
+        <div class="anim">${img}</div></div>`;
+    }
+    for (const e of m.extras || []) {
+      rows += `<div class="row extra">
+        <div class="label"><div class="state">${e.key}</div>
+          <div class="note">extra (no state)</div></div>
+        <div class="anim"><img src="${e.rotating_gif}" style="height:${h}px"
+             loading="lazy" alt="${m.id} ${e.key}"></div></div>`;
+    }
+    card.innerHTML = `
+      <div class="mhead">
+        <img src="${m.sprite}" alt="${m.id}">
+        <div>
+          <div class="mtitle">${m.name}<span class="kind">${m.kind}</span></div>
+          <div class="mmeta">${m.id} · ${m.size.width}×${m.size.height}px ·
+            <a href="${m.pixellab_url}" target="_blank" rel="noopener">open on PixelLab</a></div>
+          <div class="mmeta">${m.prompt || ''}</div>
+        </div>
+      </div>${rows}`;
+    list.appendChild(card);
+  }
+  document.getElementById('summary').textContent =
+    `${data.monsters.length} monsters · states: idle / walk / angry / attack / die` +
+    (fallbacks ? ` · ${fallbacks} fallback(s)` : '') +
+    (missing ? ` · ${missing} MISSING state(s)` : '');
+  document.getElementById('q').addEventListener('input', e => {
+    const q = e.target.value.trim().toLowerCase();
+    for (const c of list.children)
+      c.style.display = !q || c.dataset.name.includes(q) ? '' : 'none';
+  });
+}
+load().catch(e => {
+  document.getElementById('summary').textContent =
+    'could not load viewer_data.json — serve this folder over HTTP (python3 -m http.server)';
+});
+</script>
+</body>
+</html>

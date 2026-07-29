@@ -19,9 +19,11 @@ do not add domain-specific files to the repo root.
 - `objects/` — animated props / map objects (a separate agent).
 - `games2/` — the Nangijala game (consumer of the art domains; see
   `games2/CLAUDE.md`).
-- `monsters/` — pixel-art monsters via PixelLab (its own agent; skeleton
-  templates Bear/Cat/Dog/Horse/Lion + free-form prompt, one folder per
-  monster; no loop yet — runs on demand). See `monsters/README.md`.
+- `monsters/` — pixel-art monsters via PixelLab (its own agent; the MONSTER
+  tag on PixelLab — objects AND characters stores — is the ground truth;
+  one folder per monster with canonical idle/walk/angry/attack/die states in
+  `monsters/animation_map.json`; no loop yet — runs on demand). See
+  `monsters/README.md`.
 - RETIRED 2026-07-14: `characters/`, `maps/`, `games/`, `tiles/` (first-
   generation domains + game, incl. the #emission demo built from the old
   tiles registry) were deleted when the project committed to the 2nd

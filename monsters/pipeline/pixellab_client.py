@@ -1,26 +1,24 @@
 """PixelLab API client for MONSTERS.
 
-A monster can be authored on PixelLab in either of its two persistent stores,
-and this client speaks to both (a maintainer decision — the first monster, the
-poring, was made in the create-object UI):
+Monsters are authored on PixelLab in either of its two persistent stores, and
+this client speaks to both. The maintainer tags every monster with the tag
+"MONSTER" (in whichever store), so discovery = paginate both stores and filter
+by tag — see `tagged_monsters()`.
 
-  - **objects** (`v2/objects`, create-object UI): 8-direction sprites with
-    animation groups. Created via `create-8-direction-object`, animated via
-    `POST v2/objects/<id>/animations`.
-  - **characters** (`v2/characters`, create-character UI): rigged humanoids on
-    skeleton templates (Bear/Cat/Dog/Horse/Lion/humanoid...), animated via
-    skeleton animations.
+  - **objects** (`v2/objects`, create-object UI): animations carry a
+    `description` and per-direction frames under `storage_urls.frames`.
+  - **characters** (`v2/characters`, create-character UI): animations carry an
+    `animation_type` and per-direction frames directly under `frames`; while a
+    regeneration is in flight the API can transiently return DUPLICATE entries
+    for one direction (old + new copy) — the newest by Last-Modified wins.
 
-Both stores expose the same read shape — `rotation_urls` + `animations[]` with
-per-direction `storage_urls.frames` — so `mirror.py` can package either with one
-code path. Downloading is free (zero generations); PixelLab is the source of
-truth for a monster's art and the repo mirrors it.
+`normalized_animations()` folds both shapes into one:
+  [{name, group_id, directions: {direction: [frame_urls]}}]
+so mirror.py has a single code path. Downloading is free (zero generations);
+PixelLab is the source of truth for art and the repo mirrors it.
 
 This is the monsters domain's own copy of the client (full isolation per
-coordination/PROTOCOL.md). Object create/animate is ported from the proven
-objects-agent client; character *creation* is not implemented yet — port it from
-characters2/pipeline/pixellab_client.py when the first character-based monster
-is generated.
+coordination/PROTOCOL.md).
 """
 
 from __future__ import annotations
@@ -28,7 +26,9 @@ from __future__ import annotations
 import base64
 import io
 import os
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 
 import requests
 from PIL import Image
@@ -38,7 +38,10 @@ OBJECTS_URL = f"{V2_BASE}/objects"
 CHARACTERS_URL = f"{V2_BASE}/characters"
 BALANCE_URL = f"{V2_BASE}/balance"
 API_KEY_ENV = "PIXELLAB_API_KEY"
+MONSTER_TAG = "MONSTER"
 
+# Stepwise compass rotation used for the combined "play, then rotate one step"
+# GIFs — each neighbour is one 45° turn.
 DIRECTIONS_8 = ("south", "south-east", "east", "north-east",
                 "north", "north-west", "west", "south-west")
 
@@ -59,10 +62,19 @@ def _image_to_b64obj(img):
 
 
 class PixelLabClient:
-    def __init__(self, api_key=None, timeout=180):
+    def __init__(self, api_key=None, timeout=180, workers=8):
         self.api_key = api_key or os.environ.get(API_KEY_ENV)
         self.timeout = timeout
-        self._session = requests.Session()
+        self._local = threading.local()
+        self.pool = ThreadPoolExecutor(max_workers=workers)
+
+    @property
+    def _session(self):
+        # requests.Session is not guaranteed thread-safe; one per thread.
+        s = getattr(self._local, "session", None)
+        if s is None:
+            s = self._local.session = requests.Session()
+        return s
 
     # -- internals -----------------------------------------------------------
 
@@ -99,20 +111,6 @@ class PixelLabClient:
             return r.json()
         raise PixelLabError(f"{method} {path} failed after {retries} retries: {last}")
 
-    def wait_job(self, job_id, timeout=900, interval=6):
-        """Block until a background job completes; return its payload."""
-        deadline = time.monotonic() + timeout
-        while True:
-            j = self._request("GET", f"background-jobs/{job_id}")
-            st = j.get("status")
-            if st == "completed":
-                return j
-            if st == "failed":
-                raise PixelLabError(f"job {job_id} failed: {str(j.get('last_response'))[:200]}")
-            if time.monotonic() > deadline:
-                raise PixelLabError(f"job {job_id} timed out after {timeout}s")
-            time.sleep(interval)
-
     def _download(self, url, retries=4):
         """One CDN image -> PIL (RGBA). CDN URLs can briefly 404 right after a
         job completes, so retry."""
@@ -126,6 +124,11 @@ class PixelLabClient:
                 return Image.open(io.BytesIO(r.content)).convert("RGBA")
             time.sleep(2)
         return None
+
+    def download_many(self, urls):
+        """Download an ordered list of image URLs concurrently -> [PIL|None],
+        order preserved."""
+        return list(self.pool.map(self._download, urls))
 
     def conditional_download(self, url, if_modified=None):
         """GET an image, optionally conditional on If-Modified-Since. Returns
@@ -142,65 +145,98 @@ class PixelLabClient:
             return 200, Image.open(io.BytesIO(r.content)).convert("RGBA"), r.headers.get("Last-Modified")
         return r.status_code, None, if_modified
 
-    # -- reads: both stores share one shape ----------------------------------
+    def last_modified(self, url):
+        """Last-Modified header of a CDN file (HEAD), or None."""
+        try:
+            r = self._session.head(url, timeout=30)
+            return r.headers.get("Last-Modified")
+        except requests.RequestException:
+            return None
+
+    # -- discovery: the MONSTER tag is the ground truth ----------------------
+
+    def _list_all(self, store):
+        """Every record in a store, following limit/offset pagination."""
+        items, offset = [], 0
+        while True:
+            r = self._request("GET", f"{store}?limit=100&offset={offset}")
+            batch = r if isinstance(r, list) else r.get(store) or r.get("items") or []
+            items += batch
+            offset += len(batch)
+            total = r.get("total") if isinstance(r, dict) else None
+            if not batch or len(batch) < 100 or (total is not None and offset >= total):
+                return items
+
+    def tagged_monsters(self):
+        """All MONSTER-tagged records across BOTH stores ->
+        [{kind: object|character, id, name, tags}]. This is the discovery
+        ground truth: a monster exists iff it carries the tag."""
+        out = []
+        for store, kind in (("objects", "object"), ("characters", "character")):
+            for it in self._list_all(store):
+                tags = [str(t).upper() for t in (it.get("tags") or [])]
+                if MONSTER_TAG in tags:
+                    out.append({"kind": kind, "id": it.get("id"),
+                                "name": it.get("name"), "tags": it.get("tags")})
+        return out
+
+    # -- reads ---------------------------------------------------------------
 
     def get_object(self, object_id):
         return self._request("GET", f"objects/{object_id}")
-
-    def list_objects(self):
-        resp = self._request("GET", OBJECTS_URL)
-        if isinstance(resp, list):
-            return resp
-        return resp.get("objects") or resp.get("items") or []
 
     def get_character(self, character_id):
         return self._request("GET", f"characters/{character_id}")
 
     def get_source(self, kind, pixellab_id):
-        """Fetch the detail record for a monster's source, `kind` in
-        {'object', 'character'}. Both return rotation_urls + animations[]."""
+        """Detail record for a monster, `kind` in {'object', 'character'}."""
         if kind == "object":
             return self.get_object(pixellab_id)
         if kind == "character":
             return self.get_character(pixellab_id)
         raise PixelLabError(f"unknown source kind {kind!r} (want object|character)")
 
-    # -- generation: objects (ported from the objects agent, proven) ---------
+    def normalized_animations(self, kind, detail):
+        """Fold both stores' animation shapes into one:
+        [{name, group_id, display_name, directions: {direction: [urls]}}].
 
-    def create_object(self, description, size=64, view="low top-down",
-                      style_image=None, reference_image=None, job_timeout=900):
-        """Create a persistent 8-direction object (shows in the create-object UI,
-        animatable, syncable). Returns its object_id."""
-        payload = {"description": description, "size": int(size), "view": view}
-        if style_image is not None:
-            payload["style_image"] = _image_to_b64obj(style_image)
-        if reference_image is not None:
-            payload["reference_image"] = _image_to_b64obj(reference_image)
-        resp = self._request("POST", "create-8-direction-object", json=payload)
-        oid = resp.get("object_id") or resp.get("id")
-        job = resp.get("background_job_id")
-        if job:
-            self.wait_job(job, timeout=job_timeout)
-        return oid
-
-    def animate_object(self, object_id, animation_description, frame_count=4,
-                       directions=None, display_name=None, replace_existing=True,
-                       job_timeout=900):
-        """Add an animation to an object across `directions` (default ALL 8 —
-        the API animates only the directions you pass). Returns the
-        animation_group_id."""
-        payload = {"animation_description": animation_description,
-                   "frame_count": int(frame_count), "replace_existing": replace_existing,
-                   "directions": list(directions) if directions else list(DIRECTIONS_8)}
-        if display_name:
-            payload["display_name"] = display_name
-        resp = self._request("POST", f"objects/{object_id}/animations", json=payload)
-        for job in (resp.get("background_job_ids") or []):
-            try:
-                self.wait_job(job, timeout=job_timeout)
-            except PixelLabError as e:
-                print(f"  ! animation job failed: {e}")
-        return resp.get("animation_group_id")
+        Objects: merge duplicate groups per description, keeping the most
+        frames per direction. Characters: `animation_type` names the animation;
+        duplicate direction entries (transient, during in-place regeneration)
+        resolve to the newest by Last-Modified of frame 0."""
+        merged = {}
+        for a in detail.get("animations") or []:
+            name = (a.get("animation_type") if kind == "character" else None) \
+                or a.get("description") or a.get("display_name") or a.get("animation_group_id")
+            if not name:
+                continue
+            g = merged.setdefault(name, {"name": name,
+                                         "group_id": a.get("animation_group_id"),
+                                         "display_name": a.get("display_name"),
+                                         "_cands": {}})
+            for x in a.get("directions") or []:
+                d = x.get("direction")
+                urls = (x.get("storage_urls") or {}).get("frames") or x.get("frames") or []
+                urls = [u for u in urls if u]
+                if d and urls:
+                    g["_cands"].setdefault(d, []).append(urls)
+        out = []
+        for g in merged.values():
+            dirs = {}
+            for d, cands in g.pop("_cands").items():
+                if len(cands) == 1:
+                    dirs[d] = cands[0]
+                    continue
+                # objects: keep most frames; ties (and characters) -> newest
+                best = max(cands, key=len)
+                same_len = [c for c in cands if len(c) == len(best)]
+                if len(same_len) > 1:
+                    stamped = [(self.last_modified(c[0]) or "", c) for c in same_len]
+                    best = max(stamped, key=lambda t: t[0])[1]
+                dirs[d] = best
+            g["directions"] = dirs
+            out.append(g)
+        return out
 
     # -- balance / budget ----------------------------------------------------
 
@@ -211,9 +247,3 @@ class PixelLabClient:
         b = self.balance()
         sub = b.get("subscription", {})
         return float(sub.get("generations", b.get("credits", {}).get("usd", 0)) or 0)
-
-    def ensure_budget(self, minimum):
-        rem = self.generations_remaining()
-        if rem < minimum:
-            raise BudgetExhausted(f"only {rem:.0f} generations left (need >= {minimum})")
-        return rem

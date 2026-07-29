@@ -1,26 +1,27 @@
-"""Reconcile monsters/ against the authoritative roster (config/roster.json).
+"""Reconcile monsters/ against PixelLab — the MONSTER tag is the ground truth.
 
-The roster is the source of truth for *which* monsters exist; PixelLab is the
-source of truth for each monster's *art*. This tool makes the repo match both:
+The maintainer tags every monster with "MONSTER" on PixelLab (in the objects
+store or the characters store). This tool makes the repo match reality:
 
-  - **mirror** every monster in the roster from PixelLab into monsters/<id>/
-    (via mirror.py) — adding new ones and updating changed ones;
-  - **re-point** a folder whose recorded pixellab_id no longer matches the
-    roster (the maintainer replaced that monster) — the folder is wiped and
-    re-mirrored fresh from the new id;
-  - **prune** any monster folder NOT in the roster ("if it isn't listed, remove
-    it"), so retiring a monster is just deleting its roster entry.
+  - **discover**: paginate both stores, keep everything tagged MONSTER;
+  - **reconcile the roster** (config/roster.json): a tagged id already in the
+    roster keeps its folder id / display name / renames; a newly tagged id gets
+    a folder generated from its prompt and best-effort state renames from
+    pipeline/states.py (flagged for review); a roster entry whose id is no
+    longer tagged is dropped;
+  - **prune** every monster folder that is not in the reconciled roster
+    ("remove the ones I removed");
+  - **mirror** every roster monster (add/update; zero generations);
+  - **regenerate** animation_map.json (the game-facing state contract, same
+    shape as characters2/animation_map.json) and viewer_data.json + verify.
 
-After mirroring, it checks each monster carries the roster's canonical animation
-keys (jump/attack/die) across 8 directions and warns loudly otherwise.
-
-Mirroring costs ZERO generations (download only). This tool does NOT commit —
-the caller commits the reconciled tree (keeps history to one atomic change).
+Does NOT commit — the caller commits the reconciled tree as one atomic change.
 
 Usage:
-  python monsters/pipeline/sync.py                 # incremental (skips unchanged frames)
-  python monsters/pipeline/sync.py --fresh         # wipe each folder first, full re-download
-  python monsters/pipeline/sync.py --dry-run       # report the plan, touch nothing
+  python monsters/pipeline/sync.py                 # the usual: discover + mirror + prune
+  python monsters/pipeline/sync.py --dry-run       # print the plan, touch nothing
+  python monsters/pipeline/sync.py --fresh         # wipe each folder first (full re-download)
+  python monsters/pipeline/sync.py --only <id>     # limit mirroring to one monster
 """
 
 from __future__ import annotations
@@ -31,96 +32,228 @@ import os
 import shutil
 
 import mirror
-from mirror import ROOT, monster_dir, read_manifest, iter_manifests
+import states as states_mod
+import viewer_build
+from mirror import ROOT, STATES, iter_manifests, monster_dir, read_manifest
 from pixellab_client import PixelLabClient
 
-CONFIG = os.path.join(ROOT, "config", "roster.json")
+CONFIG_DIR = os.path.join(ROOT, "config")
+ROSTER = os.path.join(CONFIG_DIR, "roster.json")
+ANIMATION_MAP = os.path.join(ROOT, "animation_map.json")
 
 
 def load_roster():
-    with open(CONFIG) as f:
-        r = json.load(f)
-    return r["monsters"], r.get("canonical_animations", ["jump", "attack", "die"])
+    if not os.path.exists(ROSTER):
+        return []
+    with open(ROSTER) as f:
+        return json.load(f)["monsters"]
 
 
-def _verify(mid, meta, canonical):
-    """Return a list of human-readable problems for one mirrored monster."""
+def write_roster(monsters):
+    os.makedirs(CONFIG_DIR, exist_ok=True)
+    doc = {
+        "_comment": "Roster of monsters, reconciled against PixelLab by pipeline/sync.py "
+                    "— the MONSTER tag on PixelLab decides membership; this file just pins "
+                    "each monster's stable folder id, display name and animation renames "
+                    "({exact PixelLab animation name: idle|walk|angry|attack|die}). Hand-"
+                    "tune names/renames freely; sync preserves them across runs. Entries "
+                    "whose pixellab_id loses its tag are dropped (and their folder pruned).",
+        "monsters": monsters,
+    }
+    with open(ROSTER, "w") as f:
+        json.dump(doc, f, indent=2)
+        f.write("\n")
+
+
+def _unique_id(base, taken):
+    mid, n = base or "monster", 1
+    while mid in taken:
+        n += 1
+        mid = f"{base}_{n}"
+    taken.add(mid)
+    return mid
+
+
+def _auto_folder_id(prompt, taken):
+    """Folder id for a newly tagged monster nobody has named yet: a compact
+    slug of the prompt's leading subject words."""
+    words = [w for w in mirror._slug(prompt).split("_")
+             if w not in {"a", "an", "the", "of", "with", "and", "but", "as",
+                          "in", "like", "this", "is", "one"}]
+    return _unique_id("_".join(words[:3]) or "monster", taken)
+
+
+def discover_roster(client, verbose=True):
+    """Reconcile config/roster.json against the MONSTER tags on PixelLab.
+    Returns (roster_entries, report)."""
+    tagged = client.tagged_monsters()
+    tagged_ids = {t["id"] for t in tagged}
+    prev = load_roster()
+    prev_by_pid = {m["pixellab_id"]: m for m in prev}
+
+    kept, added, dropped, flagged = [], [], [], []
+    taken = set()
+    for t in tagged:
+        pid = t["id"]
+        if pid in prev_by_pid:
+            e = dict(prev_by_pid[pid])
+            e["kind"] = t["kind"]
+            taken.add(e["id"])
+            kept.append(e)
+            continue
+        detail = client.get_source(t["kind"], pid)
+        prompt = (detail.get("prompt") or detail.get("description") or "").strip()
+        anims = [g["name"] for g in client.normalized_animations(t["kind"], detail)]
+        renames, unplaced = states_mod.propose_renames(anims)
+        entry = {
+            "id": _auto_folder_id(prompt, taken),
+            "kind": t["kind"],
+            "pixellab_id": pid,
+            "name": None,
+            "renames": renames,
+        }
+        added.append(entry)
+        if unplaced:
+            flagged.append(f"{entry['id']}: could not auto-place animation(s) "
+                           f"{unplaced} — pin them in config/roster.json")
+    for pid, e in prev_by_pid.items():
+        if pid not in tagged_ids:
+            dropped.append(e["id"])
+
+    roster = kept + added
+    if verbose:
+        print(f"discover: {len(tagged)} tagged on PixelLab | kept {len(kept)}, "
+              f"new {len(added)}, dropped {len(dropped)}")
+        for e in added:
+            print(f"  NEW {e['id']} <- {e['kind']} {e['pixellab_id']}")
+        for d in dropped:
+            print(f"  DROP {d} (tag removed / deleted on PixelLab)")
+        for fmsg in flagged:
+            print(f"  !! {fmsg}")
+    return roster, {"added": [e["id"] for e in added], "dropped": dropped, "flagged": flagged}
+
+
+# --- animation_map.json (the game-facing contract) ---------------------------
+
+def build_animation_map(metas):
+    """Same shape as characters2/animation_map.json: `states` holds the default
+    (identity) mapping, `overrides.<monster>` the deviations — e.g. a monster
+    without an angry animation maps angry -> idle (maintainer rule). A state a
+    monster simply cannot serve is listed in `missing` instead of being mapped."""
+    overrides, missing = {}, {}
+    for meta in metas:
+        ov = {}
+        for s, key in (meta.get("states") or {}).items():
+            if key is None:
+                missing.setdefault(meta["id"], []).append(s)
+            elif key != s:
+                ov[s] = key
+        if ov:
+            overrides[meta["id"]] = ov
+    doc = {
+        "_comment": "Stable GAME-STATE -> animation-key mapping for every monster "
+                    "(same contract as characters2/animation_map.json). Keys under "
+                    "`states` are the game's logical names and map to the animation "
+                    "folder under monsters/<id>/animations/; `overrides.<id>` wins "
+                    "where a monster deviates — e.g. {\"angry\": \"idle\"} means this "
+                    "monster has no angry animation and the game should reuse idle "
+                    "(maintainer rule). `missing` lists states a monster cannot serve "
+                    "at all yet. REGENERATED by monsters/pipeline/sync.py from "
+                    "config/roster.json renames — to change a mapping, edit the "
+                    "roster and re-run sync.",
+        "states": {s: s for s in STATES},
+        "overrides": overrides,
+        "missing": missing,
+    }
+    with open(ANIMATION_MAP, "w") as f:
+        json.dump(doc, f, indent=2)
+        f.write("\n")
+    return doc
+
+
+# --- verify ------------------------------------------------------------------
+
+def verify(metas):
     problems = []
-    keys = set(meta.get("animations", {}))
-    missing = [k for k in canonical if k not in keys]
-    extra = [k for k in keys if k not in canonical]
-    if missing:
-        problems.append(f"missing animation(s): {missing}")
-    if extra:
-        problems.append(f"unexpected animation key(s): {extra} (fix renames in roster.json)")
-    for key, a in meta.get("animations", {}).items():
-        ndirs = len(a.get("directions", {}))
-        if ndirs != 8:
-            problems.append(f"{key}: {ndirs}/8 directions")
+    for meta in metas:
+        mid = meta["id"]
+        if len(meta.get("rotations") or {}) != 8:
+            problems.append(f"{mid}: {len(meta.get('rotations') or {})}/8 rotations")
+        for key, a in (meta.get("animations") or {}).items():
+            nd = len(a.get("directions") or {})
+            if nd != 8:
+                problems.append(f"{mid}: animation '{key}' has {nd}/8 directions")
+            if not mirror._exists(a.get("rotating_gif")):
+                problems.append(f"{mid}: animation '{key}' missing rotating gif")
+        for s, key in (meta.get("states") or {}).items():
+            if key is None:
+                problems.append(f"{mid}: state '{s}' has NO animation "
+                                f"(generate one on PixelLab and resync)")
     return problems
 
 
-def sync(client, fresh=False, dry_run=False):
-    monsters, canonical = load_roster()
-    want_ids = {m["id"] for m in monsters}
-    added, updated, repointed, pruned, warned = [], [], [], [], []
+# --- orchestration -----------------------------------------------------------
 
-    # 1) prune folders not in the roster ("if it isn't listed, remove it")
-    for mid, meta in iter_manifests():
-        if mid not in want_ids:
+def sync(client, fresh=False, dry_run=False, only=None):
+    roster, report = discover_roster(client)
+    if not roster:
+        raise SystemExit("discovery returned NO tagged monsters — refusing to prune "
+                         "everything (is the API reachable / the tag right?)")
+    if not dry_run:
+        write_roster(roster)
+    want = {m["id"] for m in roster}
+
+    pruned = []
+    for mid, _meta in iter_manifests():
+        if mid not in want:
             pruned.append(mid)
-            print(f"PRUNE {mid} (pixellab {meta.get('source', {}).get('pixellab_id')}) — not in roster")
+            print(f"PRUNE {mid} — not tagged MONSTER anymore")
             if not dry_run:
                 shutil.rmtree(monster_dir(mid), ignore_errors=True)
 
-    # 2) mirror every roster monster
-    for m in monsters:
-        mid, pid = m["id"], m["pixellab_id"]
-        prev = read_manifest(mid)
-        is_new = prev is None
-        mismatch = (not is_new) and prev.get("source", {}).get("pixellab_id") != pid
-        wipe = fresh or mismatch
-        tag = "NEW" if is_new else ("RE-POINT" if mismatch else "update")
-        print(f"\n{tag} {mid} <- {m['kind']} {pid}" + ("  (wipe+fresh)" if wipe and not is_new else ""))
-        if dry_run:
-            (added if is_new else repointed if mismatch else updated).append(mid)
+    metas = []
+    for m in roster:
+        if only and m["id"] != only:
+            existing = read_manifest(m["id"])
+            if existing:
+                metas.append(existing)
             continue
-        if wipe and os.path.isdir(monster_dir(mid)):
-            shutil.rmtree(monster_dir(mid), ignore_errors=True)
-        meta = mirror.mirror(client, mid, m["kind"], pid,
-                             aliases=m.get("aliases"), name=m.get("name"),
-                             renames=m.get("renames"))
-        problems = _verify(mid, meta, canonical)
-        if problems:
-            warned.append((mid, problems))
-            for p in problems:
-                print(f"  !! {mid}: {p}")
-        (added if is_new else repointed if mismatch else updated).append(mid)
+        print(f"\nmirror {m['id']} <- {m['kind']} {m['pixellab_id']}")
+        if dry_run:
+            continue
+        if fresh and os.path.isdir(monster_dir(m["id"])):
+            shutil.rmtree(monster_dir(m["id"]), ignore_errors=True)
+        metas.append(mirror.mirror(client, m["id"], m["kind"], m["pixellab_id"],
+                                   renames=m.get("renames"), name=m.get("name")))
+
+    if dry_run:
+        print("\n(dry run: nothing written)")
+        return {"pruned": pruned, **report}
+
+    build_animation_map(metas)
+    viewer_build.build()
+    problems = verify(metas)
 
     print("\n=== sync summary ===")
-    print(f"  roster: {len(monsters)} monster(s)")
-    print(f"  added:     {added}")
-    print(f"  re-pointed:{repointed}")
-    print(f"  updated:   {updated}")
-    print(f"  pruned:    {pruned}")
-    if warned:
+    print(f"  roster: {len(roster)} | new: {report['added']} | "
+          f"dropped: {report['dropped']} | pruned folders: {pruned}")
+    if problems:
         print("  WARNINGS:")
-        for mid, ps in warned:
-            print(f"    {mid}: {'; '.join(ps)}")
+        for p in problems:
+            print(f"    !! {p}")
     else:
-        print("  all monsters carry the canonical animations across 8 directions.")
-    return {"added": added, "repointed": repointed, "updated": updated,
-            "pruned": pruned, "warned": warned}
+        print("  every monster serves all 5 states across 8 directions.")
+    return {"pruned": pruned, "problems": problems, **report}
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Reconcile monsters/ against config/roster.json.")
-    ap.add_argument("--fresh", action="store_true",
-                    help="wipe each monster folder before mirroring (full re-download)")
-    ap.add_argument("--dry-run", action="store_true", help="report the plan; change nothing")
+    ap = argparse.ArgumentParser(description="Reconcile monsters/ against PixelLab MONSTER tags.")
+    ap.add_argument("--fresh", action="store_true", help="wipe each folder before mirroring")
+    ap.add_argument("--dry-run", action="store_true", help="print the plan; change nothing")
+    ap.add_argument("--only", help="mirror just this monster id (others keep current files)")
     args = ap.parse_args()
     client = PixelLabClient()
-    sync(client, fresh=args.fresh, dry_run=args.dry_run)
+    sync(client, fresh=args.fresh, dry_run=args.dry_run, only=args.only)
 
 
 if __name__ == "__main__":

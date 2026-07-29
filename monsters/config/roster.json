@@ -1,54 +1,310 @@
 {
-  "_comment": "Authoritative roster of monsters the maintainer wants to exist. `sync.py` reconciles monsters/ against this list: mirrors each entry from PixelLab and PRUNES any monster folder not listed here. Each monster ends up with the canonical animation keys jump/attack/die (8 directions each); `renames` maps the key auto-derived from each PixelLab animation description to that canonical key, and `aliases` exposes game-facing synonyms (walk -> jump). To retire a monster, delete its entry and run sync.",
-  "canonical_animations": ["jump", "attack", "die"],
+  "_comment": "Roster of monsters, reconciled against PixelLab by pipeline/sync.py \u2014 the MONSTER tag on PixelLab decides membership; this file just pins each monster's stable folder id, display name and animation renames ({exact PixelLab animation name: idle|walk|angry|attack|die}). Hand-tune names/renames freely; sync preserves them across runs. Entries whose pixellab_id loses its tag are dropped (and their folder pruned).",
   "monsters": [
     {
-      "id": "poring",
+      "id": "mystical_frog",
       "kind": "object",
-      "pixellab_id": "cd723b90-837b-4b92-8776-1aad8c4d17f3",
-      "name": "Poring",
-      "aliases": { "walk": "jump" },
-      "renames": { "spit": "attack", "melting": "die" }
+      "pixellab_id": "720c978c-30fe-41c2-8ad9-c9b30b5d3983",
+      "name": "Mystical Frog",
+      "renames": {
+        "Calm peaceful idle": "idle",
+        "Jumps like a frog": "walk",
+        "Angry irritated breathing/idle": "angry",
+        "Slams both hands on the ground. Powerful attack mo": "attack",
+        "Turns into dark green slime and dissapers": "die"
+      }
     },
     {
-      "id": "lava_poring",
+      "id": "hedgehog",
       "kind": "object",
-      "pixellab_id": "9722f51d-0f7a-4753-8516-2b210be96ee0",
-      "name": "Lava Poring",
-      "aliases": { "walk": "jump" },
-      "renames": { "melts": "die" }
+      "pixellab_id": "80db8ba5-d79a-49ee-889b-14ee3f97c027",
+      "name": "Hedgehog",
+      "renames": {
+        "Calm idle": "idle",
+        "Walks with both legs": "walk",
+        "Angry breathing idle": "angry",
+        "Flash spike attack. This is a deadly fast spike bu": "attack",
+        "All spikes detach and fall to the ground while the": "die"
+      }
     },
     {
-      "id": "forest_poring",
+      "id": "white_rabbit",
       "kind": "object",
-      "pixellab_id": "538729d4-51ed-4ae4-950e-131ee599c56f",
-      "name": "Forest Poring",
-      "aliases": { "walk": "jump" },
-      "renames": { "wooden": "attack", "melts": "die", "jumping": "jump" }
+      "pixellab_id": "20fd56a9-0cf2-47d7-b14a-693cd2cfcaf8",
+      "name": "White Rabbit",
+      "renames": {
+        "Calm idle": "idle",
+        "Jumps forward like a rabbit": "walk",
+        "Angry and breathing idle": "angry",
+        "Bite attack": "attack",
+        "Faints and fades away by merging with the ground": "die"
+      }
     },
     {
-      "id": "sand_poring",
+      "id": "malformed_creature",
       "kind": "object",
-      "pixellab_id": "ecbd2d74-cb4b-4f4d-a3e0-4ea50640f469",
-      "name": "Sand Poring",
-      "aliases": { "walk": "jump" },
-      "renames": { "sand": "attack", "melting": "die", "jumping": "jump" }
+      "pixellab_id": "ace728e2-0cbb-4cc6-9d09-5340f784bdc9",
+      "name": "Malformed Creature",
+      "renames": {
+        "Calm Idle": "idle",
+        "Walk with the legs, full cycle, should look good in an animated walking loop. Drags one's feet like a zoombie.": "walk",
+        "Angry frustrated idle": "angry",
+        "One hand slap attack with white motion \"swoosh\"": "attack",
+        "Falls to the floor malformed with the hand on the ": "die"
+      }
+    },
+    {
+      "id": "masked_shadow_creature",
+      "kind": "object",
+      "pixellab_id": "bd869d98-0938-4a46-9fcf-22d9719a92ff",
+      "name": "Masked Shadow Creature",
+      "renames": {
+        "Idle": "idle",
+        "skips along": "walk",
+        "Angry idle": "angry",
+        "Round kick": "attack",
+        "The character dissapers and the mask falls down on": "die"
+      }
+    },
+    {
+      "id": "night_beast",
+      "kind": "object",
+      "pixellab_id": "7242eed6-0dcc-4395-b2fb-ff84a4d05e82",
+      "name": "Night Beast",
+      "renames": {
+        "Calm idle breathing": "idle",
+        "Run with all 4 legs. Perfect loop animation.": "walk",
+        "Angry idle frustrated": "angry",
+        "Slash attack with one hand, claws are visible. Ang": "attack",
+        "Cut in half, drop too the floor bleeds and dissape": "die"
+      }
+    },
+    {
+      "id": "lava_salamander_2",
+      "kind": "object",
+      "pixellab_id": "af436ac4-70b3-499c-a4cf-de682207cd10",
+      "name": "Lava Salamander II",
+      "renames": {
+        "Idle": "idle",
+        "Walk with all 4 legs, full cycle, should look good in an animated walking loop. Should walk like a salamander, moving the entire body while walking": "walk",
+        "Angry idle": "angry",
+        "Big bite attack": "attack",
+        "Cut in half, bleeds and dissapers": "die"
+      }
+    },
+    {
+      "id": "butterfly_dragon",
+      "kind": "object",
+      "pixellab_id": "254d29b8-03fa-43e7-bf29-f5e08ea41c6d",
+      "name": "Butterfly Dragon",
+      "renames": {
+        "Idle": "idle",
+        "Flying hover jump": "walk",
+        "Open the mouth and make a fire burst attack, just ": "attack",
+        "Burns up in a flame and dissapers": "die"
+      }
+    },
+    {
+      "id": "lava_salamander",
+      "kind": "object",
+      "pixellab_id": "4585539d-d732-4734-8139-3eb545f50144",
+      "name": "Lava Salamander",
+      "renames": {
+        "Idle": "idle",
+        "Walk with all 4 legs in an animation that is easy to loop": "walk",
+        "Angry idle": "angry",
+        "Attacks with the tail like a scorpion. The tail be": "attack",
+        "Fades unconscious into the ground and dissapers": "die"
+      }
+    },
+    {
+      "id": "ice_crystal_golem",
+      "kind": "object",
+      "pixellab_id": "66edbc4d-682f-4c5b-a8dc-b2d8f667f7b7",
+      "name": "Ice Crystal Golem",
+      "renames": {
+        "Idle": "idle",
+        "Walk with the legs, full cycle, should look good in an animated walking loop": "walk",
+        "Rips up an ice crystal from the ground with one ha": "attack",
+        "Cracks and turnes into a crystal pile and dissaper": "die"
+      }
     },
     {
       "id": "water_poring",
       "kind": "object",
-      "pixellab_id": "46daa78a-a606-479b-830c-f2e4eed36592",
+      "pixellab_id": "57b9bc64-41b6-429e-9eed-f8aac0f9ebb0",
       "name": "Water Poring",
-      "aliases": { "walk": "jump" },
-      "renames": { "water": "attack", "melting": "die", "jumping": "jump" }
+      "renames": {
+        "Idle": "idle",
+        "Jumps": "walk",
+        "Angry idle": "angry",
+        "Angry water explosion then reappear from the groun": "attack",
+        "Turns into a puddle and and evaporates": "die"
+      }
+    },
+    {
+      "id": "stone_turtle",
+      "kind": "object",
+      "pixellab_id": "06c0b794-2cff-4a9a-be40-3a150cf2a824",
+      "name": "Stone Turtle",
+      "renames": {
+        "Idle": "idle",
+        "Walk with all 4 legs, full cycle, should look good in an animated walking loop": "walk",
+        "Angry idle": "angry",
+        "Big bite attack": "attack",
+        "The turtle shell cracks and the turtle melts and d": "die"
+      }
+    },
+    {
+      "id": "tree_stump",
+      "kind": "object",
+      "pixellab_id": "9f84b290-6445-45ac-bdd0-a361ff32571e",
+      "name": "Mossy Tree Stump",
+      "renames": {
+        "Idle": "idle",
+        "Crawling using the roots": "walk",
+        "Angry idle": "angry",
+        "Angry root attack": "attack",
+        "Merges with the ground and dissapers": "die"
+      }
+    },
+    {
+      "id": "snow_demon",
+      "kind": "object",
+      "pixellab_id": "fde14deb-a5ba-44db-9f3f-1c64a4f55126",
+      "name": "Skinny Snow Demon",
+      "renames": {
+        "Idle": "idle",
+        "Walk with the legs, full cycle, should look good in an animated walking loop. Long strides/big steps.": "walk",
+        "Angry idle": "angry",
+        "Slash attack with one hand, small ice claws are vi": "attack",
+        "Turns into a skeleton that falls into a pile of bo": "die"
+      }
+    },
+    {
+      "id": "forest_poring",
+      "kind": "object",
+      "pixellab_id": "e17b5c74-894a-4b53-83c3-a530044f04db",
+      "name": "Forest Poring",
+      "renames": {
+        "Idle": "idle",
+        "Jumping": "walk",
+        "Swings the top water droplet in an angry attack": "attack",
+        "Melts into a puddle of water and dissapers": "die"
+      }
+    },
+    {
+      "id": "stone_golem",
+      "kind": "object",
+      "pixellab_id": "d45b26b4-b2a6-427e-aca0-00ab0cd35e9a",
+      "name": "Stone Golem",
+      "renames": {
+        "Idle": "idle",
+        "Walk with the legs, full cycle, should look good i": "walk",
+        "Angry idle": "angry",
+        "Rip up the earth with one hand, stones and ground ": "attack",
+        "Head falls off first, then the whole body falls in": "die"
+      }
+    },
+    {
+      "id": "lava_poring",
+      "kind": "object",
+      "pixellab_id": "3bbbeaaa-9bff-4870-bee3-56a8fcb8321d",
+      "name": "Lava Poring",
+      "renames": {
+        "Idle": "idle",
+        "Jumping": "walk",
+        "Lava rage attack": "attack",
+        "Melts to lava and dissapers": "die"
+      }
+    },
+    {
+      "id": "forest_poring_2",
+      "kind": "object",
+      "pixellab_id": "5996c65a-ed16-4079-a592-88d388110bf5",
+      "name": "Forest Poring II",
+      "renames": {
+        "Idle": "idle",
+        "Jumping": "walk",
+        "tiny wooden sword attack with white motion trail": "attack",
+        "Turns into green smaller balls and dissapers": "die"
+      }
+    },
+    {
+      "id": "diablo_2",
+      "kind": "object",
+      "pixellab_id": "353c3520-06a8-4456-aa29-acf55858e2a5",
+      "name": "Diablo II",
+      "renames": {
+        "swirling dark aura,  the animation should look lik": "idle",
+        "Moving forward, the swirling dark aura drags flame": "walk",
+        "Angry idle": "angry",
+        "Slam attack, the demon tries to crush the player w": "attack",
+        "Cracks and turns into a pile of stones then dissap": "die"
+      }
+    },
+    {
+      "id": "diablo",
+      "kind": "object",
+      "pixellab_id": "a743c13d-7d2a-4e04-8347-306d7cf7b029",
+      "name": "Diablo",
+      "renames": {
+        "Idle": "idle",
+        "Jump": "walk",
+        "Skull attack with the head/forehead": "attack",
+        "Falls dead to the floor and turns to ash": "die"
+      }
     },
     {
       "id": "ice_poring",
       "kind": "object",
       "pixellab_id": "520e6bf5-265f-41cf-9ab7-05094ef4fc48",
       "name": "Ice Poring",
-      "aliases": { "walk": "jump" },
-      "renames": { "snow": "attack", "melting": "die" }
+      "renames": {
+        "Idle": "idle",
+        "Jump": "walk",
+        "Angry idle": "angry",
+        "Snow spike attack": "attack",
+        "melting and disappears": "die"
+      }
+    },
+    {
+      "id": "dark_donkey",
+      "kind": "character",
+      "pixellab_id": "54f7383c-d88e-460e-b6d1-c210a02d8592",
+      "name": "Dark Donkey",
+      "renames": {
+        "custom-Calm peiceful idle": "idle",
+        "custom-Walking with all 4 legs like a horse ": "walk",
+        "custom-Angry frustrated idle": "angry",
+        "attack": "attack",
+        "custom-faints\nand\nfades\naway": "die"
+      }
+    },
+    {
+      "id": "saber_toothed_tiger",
+      "kind": "character",
+      "pixellab_id": "39f3f72b-6d16-4f47-9243-f87f137f80c7",
+      "name": "Dark Saber-Toothed Tiger",
+      "renames": {
+        "custom-Calm idle. Peaceful.": "idle",
+        "custom-Running like a tiger": "walk",
+        "custom-Angry idle, breathing ": "angry",
+        "custom-Big bite attack": "attack"
+      }
+    },
+    {
+      "id": "mammoth",
+      "kind": "character",
+      "pixellab_id": "b87303fd-9a57-4a4c-821b-956f9cf46e41",
+      "name": "Mammoth",
+      "renames": {
+        "custom-Vary vary subtile idle. No big movement. Calm stil": "idle",
+        "custom-Walking both both legs. Move b": "walk",
+        "custom-Angry idle": "angry",
+        "custom-The mammoth swings its head, slashing with its tus": "attack",
+        "custom-faints and fades away": "die"
+      }
     }
   ]
 }

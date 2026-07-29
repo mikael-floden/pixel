@@ -16,7 +16,7 @@ generates art and pushes it to `main`.
 | [`objects/`](objects/) | Animated props / map objects | see `objects/` |
 | [`sounds/`](sounds/) | AAA game sound effects (UI, items, tools, movement, combat) — ElevenLabs SFX v2, lossless 48 kHz, mastered; needs `ELEVENLABS_API_KEY` | [`sounds/README.md`](sounds/README.md) |
 | [`music/`](music/) | Film-score-grade background music — ElevenLabs Music (`music_v1`); every track ships a sub-second `metadata.json` (sections, beat grid, onsets, loudness curve, key/scale for in-key SFX pitching) so the game can sync effects to the score; needs `ELEVENLABS_API_KEY` | [`music/README.md`](music/README.md) |
-| [`monsters/`](monsters/) | Monsters/creatures — PixelLab skeleton templates (Bear, Cat, Dog, Horse, Lion) + a free-form prompt per generation; one folder per monster | [`monsters/README.md`](monsters/README.md) |
+| [`monsters/`](monsters/) | Monsters/creatures — everything tagged `MONSTER` on PixelLab (objects *and* characters), mirrored one folder per monster with canonical idle/walk/angry/attack/die states (`monsters/animation_map.json`) + a review gallery | [`monsters/README.md`](monsters/README.md) |
 
 Each domain is **independent**: its own config, pipeline, generated art and
 viewer, all inside its directory (the pipelines touch disjoint paths, so their

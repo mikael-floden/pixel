@@ -1,30 +1,37 @@
 """Mirror one PixelLab monster (object OR character) into monsters/<id>/.
 
 PixelLab is the source of truth for a monster's art — monsters are authored /
-regenerated in the web UI or via the API, and this tool downloads the result so
+regenerated in the web UI, tagged MONSTER, and this tool downloads the result so
 the repo holds a full copy of the game data. Downloading costs ZERO generations.
 
-Both PixelLab stores (create-object and create-character) expose the same read
-shape — `rotation_urls` + `animations[]` with per-direction frame URLs — so one
-code path packages either. Re-running is cheap: frames whose Last-Modified is
-unchanged are skipped via If-Modified-Since (304).
+Both PixelLab stores are supported through one code path: the client's
+`normalized_animations()` folds the object shape (description +
+storage_urls.frames) and the character shape (animation_type + frames) into
+{name, group_id, directions:{dir:[urls]}}.
 
-Usage:
-  python monsters/pipeline/mirror.py object <pixellab_id> --id poring \
-      --alias walk=jump                      # game asking for "walk" plays "jump"
-  python monsters/pipeline/mirror.py character <pixellab_id> --id forest_dragon
-  python monsters/pipeline/mirror.py --all    # re-mirror every tracked monster
+Animation keys are CANONICAL GAME STATES. Each monster's roster entry carries
+`renames`: {<exact PixelLab animation name>: idle|walk|angry|attack|die}, so on
+disk every monster exposes the same keys regardless of how the animation was
+worded in the UI ("Jumps like a frog" -> walk). Unmapped animations keep a
+slugged key and are surfaced as extras. The manifest also carries `states`:
+the resolved state->key map with the angry->idle fallback applied.
 
-Output layout (one folder per monster; monster.json is the contract the game
-reads — same spirit as objects/<id>/object.json):
+Usage (sync.py drives this; ad-hoc use):
+  python monsters/pipeline/mirror.py object <id-from-url> --id frog \
+      --rename "Jumps like a frog=walk" --rename "Calm peaceful idle=idle"
+
+Output layout (one folder per monster; monster.json is the contract):
 
   monsters/<id>/
-    monster.json                    manifest: source ids, sizes, animations, aliases
+    monster.json                    manifest: source ids, sizes, animations, states
     sprite.png                      base sprite (south rotation)
     rotations/<dir>.png             8 directions
     animations/<key>/<dir>/NN.png   per-frame PNGs
     animations/<key>__<dir>.png     sprite-sheet strip (all frames in a row)
-    animations/<key>__<dir>.gif     looping preview (plays on GitHub)
+    animations/<key>__<dir>.gif     looping preview of one direction
+    animations/<key>__rotating.gif  plays the full animation in one direction,
+                                    then rotates one step (45°) and plays again,
+                                    through all 8 directions
 """
 
 from __future__ import annotations
@@ -37,14 +44,15 @@ import shutil
 
 from PIL import Image
 
-from pixellab_client import PixelLabClient, PixelLabError
+from pixellab_client import DIRECTIONS_8, PixelLabClient
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RESERVED_DIRS = {"pipeline", "config", "spec"}
-PREVIEW_MS = 100
+STATES = ("idle", "walk", "angry", "attack", "die")
+PREVIEW_MS = 120
 
 
-# --- small helpers (packaging identical to the objects domain) ---------------
+# --- small helpers -----------------------------------------------------------
 
 def _slug(s):
     return re.sub(r"[^a-z0-9]+", "_", (s or "").lower()).strip("_")
@@ -128,12 +136,10 @@ def _save_strip(frames, path):
     _save_png(strip, path)
 
 
-def _save_gif(frames, path, duration_ms=PREVIEW_MS):
-    if not frames:
-        return
+def _gif_quantize(frames):
+    out = []
     w = max(f.width for f in frames)
     h = max(f.height for f in frames)
-    out = []
     for f in frames:
         rgba = Image.new("RGBA", (w, h), (0, 0, 0, 0))
         rgba.alpha_composite(f.convert("RGBA"), ((w - f.width) // 2, (h - f.height) // 2))
@@ -141,77 +147,64 @@ def _save_gif(frames, path, duration_ms=PREVIEW_MS):
         transparent = rgba.getchannel("A").point(lambda a: 255 if a < 128 else 0)
         p.paste(255, mask=transparent)
         out.append(p)
+    return out
+
+
+def _save_gif(frames, path, duration_ms=PREVIEW_MS):
+    if not frames:
+        return
+    out = _gif_quantize(frames)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     out[0].save(path, save_all=True, append_images=out[1:], duration=duration_ms,
                 loop=0, transparency=255, disposal=2, optimize=False)
 
 
-# --- animation-group handling ------------------------------------------------
-
-def _best_groups(detail):
-    """One merged group per display_name/description, unioned across duplicate
-    groups — for each direction keep the version with the most frames (PixelLab
-    sometimes creates duplicate/split groups)."""
-    best = {}
-    for a in detail.get("animations", []):
-        key = a.get("display_name") or _slug(a.get("description")) or a.get("animation_group_id")
-        g = best.setdefault(key, {"group_id": a.get("animation_group_id"),
-                                  "description": a.get("description"), "dirs": {}})
-        for x in a.get("directions", []):
-            d = x.get("direction")
-            fr = (x.get("storage_urls") or {}).get("frames") or []
-            if d and fr and len(fr) > len(g["dirs"].get(d, [])):
-                g["dirs"][d] = fr
-    return best
-
-
-def _short_keys(groups):
-    """Map each raw group key to a short game-facing animation key: the first
-    word of the description ('Attack, swing the tail...' -> 'attack') when that
-    is unique across the monster's animations, else the full slug."""
-    firsts = {}
-    for raw, g in groups.items():
-        first = (_slug(g.get("description")) or raw).split("_")[0]
-        firsts.setdefault(first, []).append(raw)
-    return {raw: (first if len(raws) == 1 else raw)
-            for first, raws in firsts.items() for raw in raws}
-
-
-def _download_series(client, urls, prev=None):
-    """Download frame URLs -> ([PIL], last_modified). Returns (None, lm) when the
-    whole series is unchanged since the last mirror (304 on frame 0)."""
-    prev = prev or {}
-    if prev.get("lm") and prev.get("src_frames") == len(urls):
-        status, _, _ = client.conditional_download(urls[0], prev["lm"])
-        if status == 304:
-            return None, prev.get("lm")
-    frames, lm = [], None
-    for i, u in enumerate(urls):
-        img = None
-        for _ in range(4):
-            status, img, got = client.conditional_download(u)
-            if img is not None:
-                if i == 0:
-                    lm = got
-                break
-        if img is not None:
-            frames.append(img)
-    return frames, lm
-
-
-def _exists(rel):
-    return bool(rel) and os.path.exists(os.path.join(ROOT, rel))
+def save_rotating_gif(frames_by_dir, path, duration_ms=PREVIEW_MS):
+    """The review GIF: play the full animation facing one direction, then turn
+    one 45° step and play it again, all the way around (8 plays per loop).
+    Directions follow DIRECTIONS_8 so consecutive plays are adjacent headings."""
+    seq = []
+    for d in DIRECTIONS_8:
+        seq.extend(frames_by_dir.get(d) or [])
+    if seq:
+        _save_gif(seq, path, duration_ms)
 
 
 # --- mirror one monster ------------------------------------------------------
 
-def mirror(client, mid, kind, pixellab_id, aliases=None, name=None, renames=None):
+def _key_for(name, renames, taken):
+    """Canonical on-disk key for a PixelLab animation name: the roster rename if
+    present, else a slug; de-duped with _2, _3… if two animations collide."""
+    key = renames.get(name) or _slug(name)[:40] or "anim"
+    base, n = key, 1
+    while key in taken:
+        n += 1
+        key = f"{base}_{n}"
+    taken.add(key)
+    return key
+
+
+def resolve_states(anim_keys):
+    """The state->animation-key map for a monster. Identity where the canonical
+    key exists; the maintainer's rule 'no angry -> use idle for both' applied;
+    missing states resolve to None (surfaced by sync's verify)."""
+    states = {}
+    for s in STATES:
+        if s in anim_keys:
+            states[s] = s
+        elif s == "angry" and "idle" in anim_keys:
+            states[s] = "idle"
+        else:
+            states[s] = None
+    return states
+
+
+def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None):
     """Pull rotations + all animations for one monster from PixelLab into
-    monsters/<mid>/ and write its manifest. Idempotent + change-detected.
-    `renames` maps auto-derived animation keys to canonical ones (e.g.
-    {'jumping': 'jump'}) so keys stay uniform across the catalog; it is
-    persisted in the manifest so `--all` re-mirrors keep the same keys."""
-    detail = client.get_source(kind, pixellab_id)
+    monsters/<mid>/ and write its manifest. Change-detected per direction via
+    If-Modified-Since; frames download concurrently. Returns the manifest."""
+    detail = detail or client.get_source(kind, pixellab_id)
+    renames = renames or {}
     size = detail.get("size") or {}
     w = int(size.get("width", 64)) if isinstance(size, dict) else int(size or 64)
     h = int(size.get("height", w)) if isinstance(size, dict) else w
@@ -219,11 +212,10 @@ def mirror(client, mid, kind, pixellab_id, aliases=None, name=None, renames=None
     prev = read_manifest(mid, {}) or {}
 
     # rotations (+ sprite.png = south)
+    rot_urls = {d: u for d, u in (detail.get("rotation_urls") or {}).items() if u}
     rots = {}
-    for d, url in (detail.get("rotation_urls") or {}).items():
-        if not url:
-            continue
-        img = client._download(url)
+    imgs = client.download_many(list(rot_urls.values()))
+    for (d, _), img in zip(rot_urls.items(), imgs):
         if img is None:
             continue
         img = _normalize(img, w, h)
@@ -231,28 +223,34 @@ def mirror(client, mid, kind, pixellab_id, aliases=None, name=None, renames=None
         if d == "south":
             _save_png(img, os.path.join(mdir, "sprite.png"))
         rots[d] = _rel(os.path.join(mdir, "rotations", f"{d}.png"))
-    print(f"  rotations: {len(rots)}")
 
-    # animations (change-detected via If-Modified-Since)
-    groups = _best_groups(detail)
-    keys = _short_keys(groups)
-    renames = renames if renames is not None else (prev.get("animation_renames") or {})
+    # animations
     prev_anims = prev.get("animations") or {}
     anims = {}
-    for raw, g in groups.items():
-        key = renames.get(keys[raw], keys[raw])
+    taken = set()
+    for g in client.normalized_animations(kind, detail):
+        key = _key_for(g["name"], renames, taken)
         prev_dirs = (prev_anims.get(key) or {}).get("directions") or {}
-        saved = {}
-        for direction, urls in sorted(g["dirs"].items()):
-            frames, lm = _download_series(client, urls, prev_dirs.get(direction))
-            if frames is None and _exists((prev_dirs.get(direction) or {}).get("gif")):
-                saved[direction] = prev_dirs[direction]      # unchanged -> reuse
-                print(f"  {key}/{direction}: unchanged, skipped")
+        saved, frames_by_dir = {}, {}
+        for direction, urls in sorted(g["directions"].items()):
+            pv = prev_dirs.get(direction) or {}
+            unchanged = False
+            if pv.get("lm") and pv.get("src_frames") == len(urls) \
+                    and _exists(pv.get("gif")):
+                status, _, _ = client.conditional_download(urls[0], pv["lm"])
+                unchanged = status == 304
+            if unchanged:
+                saved[direction] = pv
+                fdir = os.path.join(mdir, "animations", key, direction)
+                frames_by_dir[direction] = _load_frames(fdir, w, h)
                 continue
+            lm = client.last_modified(urls[0])
+            frames = [f for f in client.download_many(urls) if f is not None]
             if not frames:
-                print(f"  {key}/{direction}: NO frames downloaded")
+                print(f"  !! {key}/{direction}: NO frames downloaded")
                 continue
             frames = [_normalize(f, w, h) for f in frames]
+            frames_by_dir[direction] = frames
             fdir = os.path.join(mdir, "animations", key, direction)
             _save_frames(frames, fdir)
             strip = os.path.join(mdir, "animations", f"{key}__{direction}.png")
@@ -261,91 +259,102 @@ def mirror(client, mid, kind, pixellab_id, aliases=None, name=None, renames=None
             _save_gif(frames, gif)
             saved[direction] = {
                 "frames": len(frames),
-                "strip": _rel(strip),
-                "gif": _rel(gif),
+                "strip": _rel(strip), "gif": _rel(gif),
                 "frame_paths": [_rel(os.path.join(fdir, f"{i:02d}.png"))
                                 for i in range(len(frames))],
                 "lm": lm, "src_frames": len(urls),
             }
-            print(f"  {key}/{direction}: {len(frames)} frames")
-        if saved:
-            anims[key] = {"group_id": g["group_id"], "description": g["description"],
-                          "directions": saved}
+        if not saved:
+            continue
+        rot_gif = os.path.join(mdir, "animations", f"{key}__rotating.gif")
+        save_rotating_gif(frames_by_dir, rot_gif)
+        anims[key] = {
+            "group_id": g.get("group_id"),
+            "source_name": g["name"],
+            "directions": saved,
+            "rotating_gif": _rel(rot_gif),
+        }
+        dirs_n = len(saved)
+        print(f"  {key}: {dirs_n} dir(s) "
+              f"x{sorted({v['frames'] for v in saved.values()})} frames  "
+              f"(from {g['name'][:40]!r})")
+
+    # prune animation folders/files that no longer exist on PixelLab
+    _prune_stale(mdir, set(anims))
 
     meta = {
         "id": mid,
         "name": name or prev.get("name") or detail.get("name") or mid,
         "source": {
-            "kind": kind,                       # object | character
+            "kind": kind,
             "pixellab_id": pixellab_id,
             "url": f"https://www.pixellab.ai/create-{kind}/{pixellab_id}",
-            "prompt": detail.get("prompt") or detail.get("description"),
+            "prompt": (detail.get("prompt") or detail.get("description") or "").strip(),
             "view": detail.get("view"),
+            "tags": detail.get("tags"),
         },
         "size": {"width": w, "height": h},
         "sprite": _rel(os.path.join(mdir, "sprite.png")),
         "directions": sorted(rots),
         "rotations": rots,
         "animations": anims,
-        # game-facing indirection: "walk": "jump" means a game asking for the
-        # walk animation should play this monster's jump frames.
-        "animation_aliases": aliases if aliases is not None
-                             else (prev.get("animation_aliases") or {}),
-        "animation_renames": renames,
+        "states": resolve_states(set(anims)),
         "synced_from_pixellab": True,
     }
     write_manifest(mid, meta)
     return meta
 
 
+def _exists(rel):
+    return bool(rel) and os.path.exists(os.path.join(ROOT, rel))
+
+
+def _load_frames(fdir, w, h):
+    """Frames already on disk (for rebuilding the rotating gif on 304-skips)."""
+    if not os.path.isdir(fdir):
+        return []
+    names = sorted(f for f in os.listdir(fdir) if f.endswith(".png"))
+    return [_normalize(Image.open(os.path.join(fdir, f)), w, h) for f in names]
+
+
+def _prune_stale(mdir, live_keys):
+    """Remove animation folders + derived files whose key vanished upstream."""
+    adir = os.path.join(mdir, "animations")
+    if not os.path.isdir(adir):
+        return
+    for fn in os.listdir(adir):
+        p = os.path.join(adir, fn)
+        key = fn.split("__")[0] if "__" in fn else fn
+        if key not in live_keys:
+            (shutil.rmtree if os.path.isdir(p) else os.remove)(p)
+
+
 # --- CLI ---------------------------------------------------------------------
 
-def _parse_aliases(pairs):
+def _parse_pairs(pairs):
     out = {}
     for p in pairs or []:
         if "=" not in p:
-            raise SystemExit(f"--alias wants game_key=real_key, got {p!r}")
-        k, v = p.split("=", 1)
-        out[k.strip()] = v.strip()
+            raise SystemExit(f"expected NAME=state, got {p!r}")
+        k, v = p.rsplit("=", 1)
+        out[k] = v.strip()
     return out
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Mirror PixelLab monsters into monsters/<id>/.")
-    ap.add_argument("kind", nargs="?", choices=["object", "character"],
-                    help="which PixelLab store the monster lives in")
-    ap.add_argument("pixellab_id", nargs="?", help="PixelLab object/character id (from the UI url)")
-    ap.add_argument("--id", dest="mid", help="folder name under monsters/ (default: slug of the name/prompt)")
+    ap = argparse.ArgumentParser(description="Mirror one PixelLab monster into monsters/<id>/.")
+    ap.add_argument("kind", choices=["object", "character"])
+    ap.add_argument("pixellab_id")
+    ap.add_argument("--id", dest="mid", required=True, help="folder name under monsters/")
     ap.add_argument("--name", help="display name for the manifest")
-    ap.add_argument("--alias", action="append", metavar="GAME_KEY=REAL_KEY",
-                    help="animation alias, e.g. walk=jump (repeatable)")
-    ap.add_argument("--rename", action="append", metavar="AUTO_KEY=CANON_KEY",
-                    help="rename an auto-derived animation key, e.g. jumping=jump (repeatable)")
-    ap.add_argument("--all", action="store_true", help="re-mirror every tracked monster instead")
+    ap.add_argument("--rename", action="append", metavar="ANIM_NAME=state",
+                    help="map an exact PixelLab animation name to a canonical state key")
     args = ap.parse_args()
-
     client = PixelLabClient()
-    if args.all:
-        for mid, meta in iter_manifests():
-            src = meta.get("source") or {}
-            print(f"mirror {mid} ({src.get('kind')} {src.get('pixellab_id')})")
-            mirror(client, mid, src.get("kind"), src.get("pixellab_id"))
-        return
-    if not (args.kind and args.pixellab_id):
-        ap.error("need `kind pixellab_id` (or --all)")
-    detail_name = args.name
-    mid = args.mid
-    if not mid:
-        d = client.get_source(args.kind, args.pixellab_id)
-        mid = _slug(d.get("name") or d.get("prompt") or d.get("description")) or args.pixellab_id[:8]
-    print(f"mirror {mid} ({args.kind} {args.pixellab_id})")
-    meta = mirror(client, mid, args.kind, args.pixellab_id,
-                  aliases=_parse_aliases(args.alias), name=detail_name,
-                  renames=_parse_aliases(args.rename) if args.rename else None)
-    n_anim = len(meta["animations"])
-    n_dirs = {k: len(v["directions"]) for k, v in meta["animations"].items()}
-    print(f"done: {len(meta['rotations'])} rotations, {n_anim} animation(s) {n_dirs}, "
-          f"aliases={meta['animation_aliases']}")
+    meta = mirror(client, args.mid, args.kind, args.pixellab_id,
+                  renames=_parse_pairs(args.rename), name=args.name)
+    print(f"done: {len(meta['rotations'])} rotations, {len(meta['animations'])} animation(s), "
+          f"states={meta['states']}")
 
 
 if __name__ == "__main__":
