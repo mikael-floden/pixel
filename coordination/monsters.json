@@ -1,8 +1,8 @@
 {
   "domain": "monsters",
-  "updated_at": "2026-07-29T12:40:27+00:00",
+  "updated_at": "2026-07-29T15:55:24+00:00",
   "health": "idle",
-  "current": "review gallery moved to a claude.ai artifact; in-repo viewer removed",
+  "current": "resync 2026-07-29 PM: 24 monsters; tiger die landed; butterfly_dragon+snow_demon replaced; artifact republished",
   "progress": {
     "monsters_complete": 24,
     "objects": 21,
@@ -21,13 +21,19 @@
     "[2026-07-22T23:18:03+00:00] mirrored the maintainer-authored poring (PixelLab object cd723b90) into monsters/poring/ \u2014 pipeline now mirrors BOTH PixelLab stores (objects + characters), zero-generation downloads",
     "[2026-07-23T18:15:09+00:00] roster-driven sync landed: config/roster.json is now the authoritative list; pipeline/sync.py reconciles (add/update/re-point/prune) + verifies canonical jump/attack/die x8. 6 porings: normal/lava/forest/sand/water/ice. All gained a die animation; ice_poring re-pointed 10046ec1 -> 520e6bf5 (ice & snow).",
     "[2026-07-29T12:19:30+00:00] CONTRACT CHANGE: the poring-era jump/attack/die keys and animation_aliases are GONE. Ground truth = the MONSTER tag on PixelLab (objects AND characters stores). Every monster now exposes canonical animation keys idle/walk/angry/attack/die; the game-facing mapping incl. angry->idle fallbacks is monsters/animation_map.json (same shape as characters2's). Review gallery: monsters/index.html (+viewer_data.json). Old poring/sand_poring removed by maintainer.",
-    "[2026-07-29T12:40:27+00:00] review gallery is now a claude.ai artifact (maintainer views it in chat): https://claude.ai/code/artifact/5907a10c-6355-4394-9ec0-5886776ba393 \u2014 rebuild with monsters/pipeline/review_artifact.py and republish to that URL after a resync. monsters/index.html + viewer_data.json + viewer_build.py are REMOVED from the repo; the game contract stays monsters/animation_map.json (unchanged)."
+    "[2026-07-29T12:40:27+00:00] review gallery is now a claude.ai artifact (maintainer views it in chat): https://claude.ai/code/artifact/5907a10c-6355-4394-9ec0-5886776ba393 \u2014 rebuild with monsters/pipeline/review_artifact.py and republish to that URL after a resync. monsters/index.html + viewer_data.json + viewer_build.py are REMOVED from the repo; the game contract stays monsters/animation_map.json (unchanged).",
+    "[2026-07-29T15:55:24+00:00] resync: butterfly_dragon re-pointed to object adc65dc6 (full 5 states, real angry); snow_demon re-pointed to CHARACTER cb2f48b8; saber_toothed_tiger now HAS die (missing list empty); lava_salamander attack = fire bite, dark_donkey attack = head charge. animation_map.json regenerated. Still partial upstream: stone_golem angry 5/8, diablo_2 angry 1/8."
   ],
   "requests": [
     {
       "to": "games",
       "text": "MONSTERS v2 LANDED \u2014 24 monsters (21 PixelLab objects + 3 characters: dark_donkey, saber_toothed_tiger, mammoth), each with canonical animations idle/walk/angry/attack/die x 8 directions under monsters/<id>/animations/. READ monsters/animation_map.json for the state contract (identity defaults + overrides like {angry: idle} fallbacks + missing states) \u2014 the old walk->jump aliases and monsters/poring|sand_poring are gone. Per-monster metadata: monsters/<id>/monster.json (incl. resolved states + per-direction frame counts). Known gaps flagged in animation_map.missing/overrides: saber_toothed_tiger has no die yet; stone_golem angry is 5/8 dirs, diablo_2 angry 1/8 dirs (art fixes happen on PixelLab, then resync).",
       "at": "2026-07-29T12:19:30+00:00"
+    },
+    {
+      "to": "games",
+      "text": "Monsters resynced from PixelLab: same 24 folder ids, but (1) saber_toothed_tiger now HAS a die animation \u2014 animation_map.json 'missing' is empty, remove any workaround; (2) butterfly_dragon has a real angry now (fallback gone); (3) snow_demon is backed by a PixelLab CHARACTER now (same folder/contract); (4) lava_salamander + dark_donkey attacks are new art. Re-read monsters/animation_map.json + manifests.",
+      "at": "2026-07-29T15:55:24+00:00"
     }
   ]
 }
