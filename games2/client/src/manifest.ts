@@ -39,6 +39,13 @@ export interface Manifest {
   characters: CharacterDef[];
 }
 
+/** States needed BEFORE the world shows: the movement set the game actually
+ * plays (idle/walk/run + the hop). Everything else in the manifest (kick,
+ * punch, sword, bow, spells, hurt, pickup, die — ~2/3 of all frames) is
+ * DEFERRED: WorldScene background-loads it after the player's avatar is in,
+ * so joining doesn't wait on ~800 PNGs nothing triggers yet. */
+export const BOOT_ANIM_STATES = ["idle", "walk", "run", "jump"];
+
 let cache: Manifest | null = null;
 
 export async function loadManifest(): Promise<Manifest> {

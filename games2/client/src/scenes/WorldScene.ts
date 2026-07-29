@@ -44,7 +44,8 @@ import {
   WEATHER_NAMES,
   WEATHER_COUNT,
 } from "@nangijala/shared";
-import { CharacterDef, Manifest, frameUrl, frameKey } from "../manifest";
+import { CharacterDef, Manifest, frameUrl, frameKey, BOOT_ANIM_STATES } from "../manifest";
+import { withV } from "../assetver";
 import { MonsterManifest, MonsterDef, monsterWalkKey } from "../monsterManifest";
 import { colorForName } from "../placeholder";
 import { gameAudio } from "../../../composer/index";
@@ -516,6 +517,7 @@ export class WorldScene extends Phaser.Scene {
   private jumpUntil = 0;
   private jumpReadyAt = 0;
   private jumpQueued = false;
+  private deferredAnimsKicked = false; // action-state frames background-load once, after join
   // It is ALWAYS night in Nangijala (for now): the per-pixel shader when
   // WebGL is available, the multiply grade as the canvas fallback.
   private atmo!: Atmosphere;
@@ -615,14 +617,20 @@ export class WorldScene extends Phaser.Scene {
   preload() {
     // Drive the post-"Enter world" loading overlay with real asset progress
     // (characters + tiles are hundreds of small PNGs — slow on mobile).
-    this.load.on("progress", (f: number) => setLoadingProgress(0.05 + f * 0.85, "Loading art…"));
+    this.load.on("progress", (f: number) => {
+      if (!this.deferredAnimsKicked) setLoadingProgress(0.05 + f * 0.85, "Loading art…");
+    });
     // characters2 stores animations as frame FOLDERS (one PNG per frame), not
-    // strips — load each frame as its own texture.
+    // strips — load each frame as its own texture. BOOT loads only the
+    // movement states (BOOT_ANIM_STATES); the 9 action states (~800 PNGs the
+    // 2026-07-29 overhaul added, nothing triggers them yet) background-load
+    // AFTER the avatar is in (loadDeferredAnims) so joining stays fast.
     for (const def of this.manifest.characters) {
       for (const [state, dirs] of Object.entries(def.animations)) {
+        if (!BOOT_ANIM_STATES.includes(state)) continue;
         for (const [dir, count] of Object.entries(dirs)) {
           for (let n = 0; n < count; n++) {
-            this.load.image(frameKey(def.uid, state, dir, n), frameUrl(def, state, dir, n));
+            this.load.image(frameKey(def.uid, state, dir, n), withV(frameUrl(def, state, dir, n)));
           }
         }
       }
@@ -635,7 +643,7 @@ export class WorldScene extends Phaser.Scene {
       const dirStrips = def.strips?.[walk] ?? {};
       for (const [dir, url] of Object.entries(dirStrips)) {
         if (!url) continue; // guard a missing strip
-        this.load.spritesheet(monsterSheetKey(def.id, walk, dir), url, {
+        this.load.spritesheet(monsterSheetKey(def.id, walk, dir), withV(url), {
           frameWidth: def.frameW,
           frameHeight: def.frameH,
         });
@@ -647,20 +655,20 @@ export class WorldScene extends Phaser.Scene {
         // maps2 world bakes an explicit tile PNG per cell + per-material face
         // tiles + placed props — load that unique set.
         for (const path of distinctTilePaths(this.world)) {
-          this.load.image(pathTileKey(path), assetUrl(path));
+          this.load.image(pathTileKey(path), withV(assetUrl(path)));
         }
         for (const path of distinctPropPaths(this.world)) {
-          this.load.image(pathTileKey(path), assetUrl(path));
+          this.load.image(pathTileKey(path), withV(assetUrl(path)));
         }
       } else {
         for (const { t, v } of distinctTiles(this.world)) {
-          this.load.image(tileKey(t, v), tileUrl(t, v));
+          this.load.image(tileKey(t, v), withV(tileUrl(t, v)));
         }
       }
       // maps2 worlds get their glow from tiles2/emission.json
       // (per-MATERIAL params + per-TILE-PATH sources — see loadTiles2Emission).
-      if (this.maps2) this.load.json("tiles2-emission", "/assets/tiles2/emission.json");
-      this.load.spritesheet(CAMPFIRE_KEY, CAMPFIRE_URL, {
+      if (this.maps2) this.load.json("tiles2-emission", withV("/assets/tiles2/emission.json"));
+      this.load.spritesheet(CAMPFIRE_KEY, withV(CAMPFIRE_URL), {
         frameWidth: CAMPFIRE_FRAME,
         frameHeight: CAMPFIRE_FRAME,
       });
@@ -1538,6 +1546,7 @@ export class WorldScene extends Phaser.Scene {
         // Re-assert my torch to the fresh player entry (rejoins reset it).
         if (!this.torchOn) room.send("torch", { on: false });
         hideLoading(); // my avatar is in and the camera is on it — world's up
+        this.loadDeferredAnims(); // action states stream in behind the live world
       }
       this.refreshRoster();
     });
@@ -3720,6 +3729,33 @@ export class WorldScene extends Phaser.Scene {
       }
     }
     return null;
+  }
+
+  /** Background-load every manifest state preload skipped (BOOT_ANIM_STATES),
+   * then extend buildAnimations with the new clips. Runs once, kicked when the
+   * player's own avatar joins — the world is already live, so these ~800 PNGs
+   * stream in without holding the loading screen (resolveAnim's fallback covers
+   * any state something might request before its clip lands). */
+  private loadDeferredAnims() {
+    if (this.deferredAnimsKicked) return;
+    this.deferredAnimsKicked = true;
+    let queued = 0;
+    for (const def of this.manifest.characters) {
+      for (const [state, dirs] of Object.entries(def.animations)) {
+        if (BOOT_ANIM_STATES.includes(state)) continue;
+        for (const [dir, count] of Object.entries(dirs)) {
+          for (let n = 0; n < count; n++) {
+            const fk = frameKey(def.uid, state, dir, n);
+            if (this.textures.exists(fk)) continue;
+            this.load.image(fk, withV(frameUrl(def, state, dir, n)));
+            queued++;
+          }
+        }
+      }
+    }
+    if (!queued) return;
+    this.load.once(Phaser.Loader.Events.COMPLETE, () => this.buildAnimations());
+    this.load.start();
   }
 
   private buildAnimations() {

@@ -271,6 +271,21 @@ try {
     console.log(`anim rates OK (${def.uid} walk=${walk} run=${run}, idle=6, jump=${jump})`);
   }
 
+  // ---- deferred action-state anims arrive in the background ----
+  // Boot preloads only idle/walk/run/jump; the other manifest states (kick,
+  // sword, …) stream in after join (loadDeferredAnims). Assert one landed.
+  {
+    const t0 = Date.now();
+    let kick = null;
+    while (Date.now() - t0 < 30000) {
+      kick = await page.evaluate(() => window.__ml.animRate("default_boy", "kick", "south"));
+      if (kick !== null) break;
+      await page.waitForTimeout(500);
+    }
+    if (kick === null) fail("deferred anims did not arrive (kick clip missing after 30s)");
+    console.log(`deferred anims OK (kick rate ${kick})`);
+  }
+
   // ---- reconnect in place, LAST (swaps the session) ----
   {
     const before = await page.evaluate(() => {

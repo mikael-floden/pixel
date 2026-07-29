@@ -988,6 +988,18 @@ visible head/shoulders are ABOVE the surface).
 - **Loading screen** (`loading.ts`): select.ts shows it on "Enter world",
   WorldScene.preload feeds real asset progress, hidden when the player's own
   avatar joins (or on connection error; 60s failsafe so it can't trap).
+- **Asset loading is SPLIT + deploy-pinned cached** (maintainer 2026-07-29:
+  "loading for so long" after the 13-state animation overhaul ballooned boot to
+  ~1200 frame PNGs): (1) preload fetches ONLY `BOOT_ANIM_STATES`
+  (idle/walk/run/jump, `manifest.ts`); the 9 action states background-load via
+  `loadDeferredAnims()` once the avatar joins (smoke's "deferred anims" check).
+  (2) Every Phaser /assets URL is stamped `?v=<build sha>` (`assetver.ts`,
+  VITE_GIT_SHA) and the server grants `immutable` 1y ONLY when the v matches
+  its OWN GIT_SHA (same image bakes bundle+art, so those bytes can never
+  change; mismatch → the old no-cache revalidate). Repeat loads hit the local
+  cache with ~zero art requests; a new deploy = new sha = new URLs = fresh
+  downloads — stale-cache-proof by construction, sw.js still caches nothing.
+  Unversioned requests (dev, old clients) behave exactly as before.
 - **PWA**: `public/manifest.webmanifest` (display: fullscreen — installed app
   has no address bar; orientation: portrait-primary), `public/sw.js`
   (passthrough only, caches NOTHING — this repo fought stale-deploy bugs; the

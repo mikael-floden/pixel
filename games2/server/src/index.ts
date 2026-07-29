@@ -38,14 +38,25 @@ const serveClient = process.env.SERVE_CLIENT === "1" || existsSync(clientDist);
 //   load and gets fresh content the moment a deploy changes it (cheap 304s
 //   otherwise);
 // - Vite's content-hashed bundles → immutable, cache for a year;
-// - art (tiles/characters PNGs) → no-cache too. The path LOOKS content-hashed
-//   (…/base_x_2_161302781/…), but the art agents routinely edit a tile
-//   IN-PLACE (same path, new pixels — e.g. tiles2 softening edges), so a long
-//   cache served the OLD art for up to an hour after a deploy. Revalidate
-//   instead: a plain refresh always shows the latest art (unchanged tiles are
-//   cheap 304s via ETag/Last-Modified).
+// - art (tiles/characters PNGs) → no-cache BY DEFAULT. The path LOOKS
+//   content-hashed (…/base_x_2_161302781/…), but the art agents routinely edit
+//   a tile IN-PLACE (same path, new pixels — e.g. tiles2 softening edges), so a
+//   long cache once served the OLD art for up to an hour after a deploy.
+// - EXCEPT: art requested with ?v=<GIT_SHA> → immutable. The client stamps its
+//   own build sha (VITE_GIT_SHA, baked with the art into the SAME image) onto
+//   every /assets URL (client/src/assetver.ts), and we grant immutable ONLY
+//   when it matches THIS instance's GIT_SHA — for that sha the bytes can never
+//   change (in-place art edits only reach prod via a new deploy = new sha =
+//   new URLs), so the cache entry is stale-proof by construction. During a
+//   rollout a mixed pair (old instance, new sha or vice versa) mismatches and
+//   degrades to no-cache — a revalidated fetch, never a wrongly-frozen one.
+//   Repeat visits then load the world with ~zero art requests instead of ~600
+//   revalidation round-trips (the maintainer's "loading for so long").
+const GIT_SHA = (process.env.GIT_SHA || "").trim();
 function setCacheHeaders(res: express.Response, path: string) {
   if (/-[A-Za-z0-9_-]{8,}\.(js|css)$/.test(path)) {
+    res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+  } else if (GIT_SHA && GIT_SHA !== "dev" && res.req?.query?.v === GIT_SHA) {
     res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
   } else {
     res.setHeader("Cache-Control", "no-cache");
