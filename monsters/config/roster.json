@@ -2,6 +2,19 @@
   "_comment": "Roster of monsters, reconciled against PixelLab by pipeline/sync.py \u2014 the MONSTER tag on PixelLab decides membership; this file just pins each monster's stable folder id, display name and animation renames ({exact PixelLab animation name: idle|walk|angry|attack|die}). Hand-tune names/renames freely; sync preserves them across runs. Entries whose pixellab_id loses its tag are dropped (and their folder pruned).",
   "monsters": [
     {
+      "id": "butterfly_dragon",
+      "kind": "object",
+      "pixellab_id": "adc65dc6-1e76-44ff-80b7-8e086379384d",
+      "name": "Butterfly Dragon",
+      "renames": {
+        "Calm idle": "idle",
+        "Flying hovering jump": "walk",
+        "Angry idle": "angry",
+        "Opens the mouth and make a fire burst attack": "attack",
+        "Burns up in a flame and dissapers": "die"
+      }
+    },
+    {
       "id": "mystical_frog",
       "kind": "object",
       "pixellab_id": "720c978c-30fe-41c2-8ad9-c9b30b5d3983",
@@ -93,18 +106,6 @@
       }
     },
     {
-      "id": "butterfly_dragon",
-      "kind": "object",
-      "pixellab_id": "254d29b8-03fa-43e7-bf29-f5e08ea41c6d",
-      "name": "Butterfly Dragon",
-      "renames": {
-        "Idle": "idle",
-        "Flying hover jump": "walk",
-        "Open the mouth and make a fire burst attack, just ": "attack",
-        "Burns up in a flame and dissapers": "die"
-      }
-    },
-    {
       "id": "lava_salamander",
       "kind": "object",
       "pixellab_id": "4585539d-d732-4734-8139-3eb545f50144",
@@ -113,8 +114,8 @@
         "Idle": "idle",
         "Walk with all 4 legs in an animation that is easy to loop": "walk",
         "Angry idle": "angry",
-        "Attacks with the tail like a scorpion. The tail be": "attack",
-        "Fades unconscious into the ground and dissapers": "die"
+        "Fades unconscious into the ground and dissapers": "die",
+        "Fire bite attack. Attacks by biting with flames.": "attack"
       }
     },
     {
@@ -166,19 +167,6 @@
         "Angry idle": "angry",
         "Angry root attack": "attack",
         "Merges with the ground and dissapers": "die"
-      }
-    },
-    {
-      "id": "snow_demon",
-      "kind": "object",
-      "pixellab_id": "fde14deb-a5ba-44db-9f3f-1c64a4f55126",
-      "name": "Skinny Snow Demon",
-      "renames": {
-        "Idle": "idle",
-        "Walk with the legs, full cycle, should look good in an animated walking loop. Long strides/big steps.": "walk",
-        "Angry idle": "angry",
-        "Slash attack with one hand, small ice claws are vi": "attack",
-        "Turns into a skeleton that falls into a pile of bo": "die"
       }
     },
     {
@@ -269,6 +257,19 @@
       }
     },
     {
+      "id": "snow_demon",
+      "kind": "character",
+      "pixellab_id": "cb2f48b8-d2a8-46ca-9254-25c92eae61b7",
+      "name": "Skinny Snow Demon",
+      "renames": {
+        "custom-Calm idle": "idle",
+        "custom-Walk (full animation cycle), should look good in a": "walk",
+        "custom-Angry idle": "angry",
+        "custom-Slash attack with one hand, small ice claws are vi": "attack",
+        "custom-Cut in half\nbleeding. This\nis the die\nanimation. N": "die"
+      }
+    },
+    {
       "id": "dark_donkey",
       "kind": "character",
       "pixellab_id": "54f7383c-d88e-460e-b6d1-c210a02d8592",
@@ -277,8 +278,8 @@
         "custom-Calm peiceful idle": "idle",
         "custom-Walking with all 4 legs like a horse ": "walk",
         "custom-Angry frustrated idle": "angry",
-        "attack": "attack",
-        "custom-faints\nand\nfades\naway": "die"
+        "custom-faints\nand\nfades\naway": "die",
+        "custom-Head charge attack": "attack"
       }
     },
     {
@@ -290,7 +291,8 @@
         "custom-Calm idle. Peaceful.": "idle",
         "custom-Running like a tiger": "walk",
         "custom-Angry idle, breathing ": "angry",
-        "custom-Big bite attack": "attack"
+        "custom-Big bite attack": "attack",
+        "custom-faints\nand\nfades\naway. this is the die animation.": "die"
       }
     },
     {

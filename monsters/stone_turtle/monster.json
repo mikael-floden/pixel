@@ -37,6 +37,117 @@
     "north-west": "stone_turtle/rotations/north-west.png"
   },
   "animations": {
+    "attack": {
+      "group_id": "5a6a577c-c8b6-4fd2-adb9-80eb6ec39367",
+      "source_name": "Big bite attack",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "stone_turtle/animations/attack__east.png",
+          "gif": "stone_turtle/animations/attack__east.gif",
+          "frame_paths": [
+            "stone_turtle/animations/attack/east/00.png",
+            "stone_turtle/animations/attack/east/01.png",
+            "stone_turtle/animations/attack/east/02.png",
+            "stone_turtle/animations/attack/east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:41:36 GMT",
+          "src_frames": 4
+        },
+        "north": {
+          "frames": 4,
+          "strip": "stone_turtle/animations/attack__north.png",
+          "gif": "stone_turtle/animations/attack__north.gif",
+          "frame_paths": [
+            "stone_turtle/animations/attack/north/00.png",
+            "stone_turtle/animations/attack/north/01.png",
+            "stone_turtle/animations/attack/north/02.png",
+            "stone_turtle/animations/attack/north/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:41:38 GMT",
+          "src_frames": 4
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "stone_turtle/animations/attack__north-east.png",
+          "gif": "stone_turtle/animations/attack__north-east.gif",
+          "frame_paths": [
+            "stone_turtle/animations/attack/north-east/00.png",
+            "stone_turtle/animations/attack/north-east/01.png",
+            "stone_turtle/animations/attack/north-east/02.png",
+            "stone_turtle/animations/attack/north-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:41:39 GMT",
+          "src_frames": 4
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "stone_turtle/animations/attack__north-west.png",
+          "gif": "stone_turtle/animations/attack__north-west.gif",
+          "frame_paths": [
+            "stone_turtle/animations/attack/north-west/00.png",
+            "stone_turtle/animations/attack/north-west/01.png",
+            "stone_turtle/animations/attack/north-west/02.png",
+            "stone_turtle/animations/attack/north-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:51:56 GMT",
+          "src_frames": 4
+        },
+        "south": {
+          "frames": 4,
+          "strip": "stone_turtle/animations/attack__south.png",
+          "gif": "stone_turtle/animations/attack__south.gif",
+          "frame_paths": [
+            "stone_turtle/animations/attack/south/00.png",
+            "stone_turtle/animations/attack/south/01.png",
+            "stone_turtle/animations/attack/south/02.png",
+            "stone_turtle/animations/attack/south/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:41:42 GMT",
+          "src_frames": 4
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "stone_turtle/animations/attack__south-east.png",
+          "gif": "stone_turtle/animations/attack__south-east.gif",
+          "frame_paths": [
+            "stone_turtle/animations/attack/south-east/00.png",
+            "stone_turtle/animations/attack/south-east/01.png",
+            "stone_turtle/animations/attack/south-east/02.png",
+            "stone_turtle/animations/attack/south-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:41:43 GMT",
+          "src_frames": 4
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "stone_turtle/animations/attack__south-west.png",
+          "gif": "stone_turtle/animations/attack__south-west.gif",
+          "frame_paths": [
+            "stone_turtle/animations/attack/south-west/00.png",
+            "stone_turtle/animations/attack/south-west/01.png",
+            "stone_turtle/animations/attack/south-west/02.png",
+            "stone_turtle/animations/attack/south-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 15:51:57 GMT",
+          "src_frames": 4
+        },
+        "west": {
+          "frames": 4,
+          "strip": "stone_turtle/animations/attack__west.png",
+          "gif": "stone_turtle/animations/attack__west.gif",
+          "frame_paths": [
+            "stone_turtle/animations/attack/west/00.png",
+            "stone_turtle/animations/attack/west/01.png",
+            "stone_turtle/animations/attack/west/02.png",
+            "stone_turtle/animations/attack/west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:41:46 GMT",
+          "src_frames": 4
+        }
+      },
+      "rotating_gif": "stone_turtle/animations/attack__rotating.gif"
+    },
     "walk": {
       "group_id": "c97f1f1f-5fa3-48cf-a234-49310402a856",
       "source_name": "Walk with all 4 legs, full cycle, should look good in an animated walking loop",
@@ -147,117 +258,6 @@
         }
       },
       "rotating_gif": "stone_turtle/animations/walk__rotating.gif"
-    },
-    "attack": {
-      "group_id": "5a6a577c-c8b6-4fd2-adb9-80eb6ec39367",
-      "source_name": "Big bite attack",
-      "directions": {
-        "east": {
-          "frames": 4,
-          "strip": "stone_turtle/animations/attack__east.png",
-          "gif": "stone_turtle/animations/attack__east.gif",
-          "frame_paths": [
-            "stone_turtle/animations/attack/east/00.png",
-            "stone_turtle/animations/attack/east/01.png",
-            "stone_turtle/animations/attack/east/02.png",
-            "stone_turtle/animations/attack/east/03.png"
-          ],
-          "lm": "Wed, 29 Jul 2026 11:41:36 GMT",
-          "src_frames": 4
-        },
-        "north": {
-          "frames": 4,
-          "strip": "stone_turtle/animations/attack__north.png",
-          "gif": "stone_turtle/animations/attack__north.gif",
-          "frame_paths": [
-            "stone_turtle/animations/attack/north/00.png",
-            "stone_turtle/animations/attack/north/01.png",
-            "stone_turtle/animations/attack/north/02.png",
-            "stone_turtle/animations/attack/north/03.png"
-          ],
-          "lm": "Wed, 29 Jul 2026 11:41:38 GMT",
-          "src_frames": 4
-        },
-        "north-east": {
-          "frames": 4,
-          "strip": "stone_turtle/animations/attack__north-east.png",
-          "gif": "stone_turtle/animations/attack__north-east.gif",
-          "frame_paths": [
-            "stone_turtle/animations/attack/north-east/00.png",
-            "stone_turtle/animations/attack/north-east/01.png",
-            "stone_turtle/animations/attack/north-east/02.png",
-            "stone_turtle/animations/attack/north-east/03.png"
-          ],
-          "lm": "Wed, 29 Jul 2026 11:41:39 GMT",
-          "src_frames": 4
-        },
-        "north-west": {
-          "frames": 4,
-          "strip": "stone_turtle/animations/attack__north-west.png",
-          "gif": "stone_turtle/animations/attack__north-west.gif",
-          "frame_paths": [
-            "stone_turtle/animations/attack/north-west/00.png",
-            "stone_turtle/animations/attack/north-west/01.png",
-            "stone_turtle/animations/attack/north-west/02.png",
-            "stone_turtle/animations/attack/north-west/03.png"
-          ],
-          "lm": "Wed, 29 Jul 2026 11:41:41 GMT",
-          "src_frames": 4
-        },
-        "south": {
-          "frames": 4,
-          "strip": "stone_turtle/animations/attack__south.png",
-          "gif": "stone_turtle/animations/attack__south.gif",
-          "frame_paths": [
-            "stone_turtle/animations/attack/south/00.png",
-            "stone_turtle/animations/attack/south/01.png",
-            "stone_turtle/animations/attack/south/02.png",
-            "stone_turtle/animations/attack/south/03.png"
-          ],
-          "lm": "Wed, 29 Jul 2026 11:41:42 GMT",
-          "src_frames": 4
-        },
-        "south-east": {
-          "frames": 4,
-          "strip": "stone_turtle/animations/attack__south-east.png",
-          "gif": "stone_turtle/animations/attack__south-east.gif",
-          "frame_paths": [
-            "stone_turtle/animations/attack/south-east/00.png",
-            "stone_turtle/animations/attack/south-east/01.png",
-            "stone_turtle/animations/attack/south-east/02.png",
-            "stone_turtle/animations/attack/south-east/03.png"
-          ],
-          "lm": "Wed, 29 Jul 2026 11:41:43 GMT",
-          "src_frames": 4
-        },
-        "south-west": {
-          "frames": 4,
-          "strip": "stone_turtle/animations/attack__south-west.png",
-          "gif": "stone_turtle/animations/attack__south-west.gif",
-          "frame_paths": [
-            "stone_turtle/animations/attack/south-west/00.png",
-            "stone_turtle/animations/attack/south-west/01.png",
-            "stone_turtle/animations/attack/south-west/02.png",
-            "stone_turtle/animations/attack/south-west/03.png"
-          ],
-          "lm": "Wed, 29 Jul 2026 11:41:45 GMT",
-          "src_frames": 4
-        },
-        "west": {
-          "frames": 4,
-          "strip": "stone_turtle/animations/attack__west.png",
-          "gif": "stone_turtle/animations/attack__west.gif",
-          "frame_paths": [
-            "stone_turtle/animations/attack/west/00.png",
-            "stone_turtle/animations/attack/west/01.png",
-            "stone_turtle/animations/attack/west/02.png",
-            "stone_turtle/animations/attack/west/03.png"
-          ],
-          "lm": "Wed, 29 Jul 2026 11:41:46 GMT",
-          "src_frames": 4
-        }
-      },
-      "rotating_gif": "stone_turtle/animations/attack__rotating.gif"
     },
     "angry": {
       "group_id": "e00918fa-465f-46b5-b90e-ba2db79f4a37",
