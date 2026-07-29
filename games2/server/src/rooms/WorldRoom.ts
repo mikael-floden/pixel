@@ -33,12 +33,12 @@ import {
   TIME_PHASE_SECONDS,
   TIME_SPEEDS,
   WEATHER_COUNT,
-  SPAWN_AREAS,
-  SpawnArea,
-  spawnAreasNear,
+  parseSpawns,
+  buildZoneRuntimes,
+  ZoneRuntime,
+  zoneBBox,
   MONSTER_SPEED_SCALE,
-  randomPointInArea,
-  clampToArea,
+  MONSTER_ROAM_RADIUS_CELLS,
   randomPauseMs,
   startTrip,
   stepAutopilot,
@@ -110,15 +110,16 @@ export class WorldRoom extends Room<WorldState> {
   private handoffHoldUntil = 0;
   private worldName = ""; // set in onCreate; keys the worldClocks registry
 
-  // Monsters (server-authoritative roaming). Per-area cap override + a seedable
+  // Monsters (server-authoritative roaming). Per-zone cap override + a seedable
   // RNG so tests get deterministic spawns/roams. `monsterRng` defaults to
   // Math.random; a `monsterSeed` room option swaps in a seeded PRNG.
-  private monsterCount: number | null = null; // null → each area's own `max`
+  private monsterCount: number | null = null; // null → each zone's own `num`
   private monsterRng: () => number = Math.random;
-  // The monster spawn areas for THIS world, placed on land next to the loaded
-  // world's spawn (spawnAreasNear) so monsters always appear near the player
-  // whatever world is picked. Computed at onCreate; static for the room's life.
-  private spawnAreas: SpawnArea[] = SPAWN_AREAS;
+  // The maps2 SPAWN ZONES for THIS world (worlds/<name>/spawns.json,
+  // pixel-maps2/spawns@1), resolved against the terrain grid at onCreate —
+  // maps2 owns monster placement (maintainer 2026-07-29; the old hardcoded
+  // rectangles near the player spawn were fake debug areas and are gone).
+  private zones: ZoneRuntime[] = [];
   // Wild shooting stars streak the night sky at random (arrivals get their
   // own star in onJoin, any hour).
   private starTimer: ReturnType<typeof setTimeout> | null = null;
@@ -219,25 +220,23 @@ export class WorldRoom extends Room<WorldState> {
       this.setMetadata({ world });
       this.worldName = world;
       this.store = new JsonPlayerStore(join(process.cwd(), ".data", `players-${world}.json`));
-      // Place the monster areas on land next to THIS world's spawn, so monsters
-      // always appear near the player whatever world loads (the static
-      // SPAWN_AREAS are a single-world fallback for open/gridless worlds only).
-      const grid = this.terrain;
-      const sp = this.worldSpawn ?? { x: this.worldW / 2, y: this.worldH / 2 };
-      this.spawnAreas = grid
-        ? spawnAreasNear(sp.x, sp.y, this.worldW, this.worldH, (x, y) => isStandableAtWorld(grid, x, y))
-        : SPAWN_AREAS;
+      // The maps2 spawn zones for THIS world (sidecar next to world.json),
+      // resolved against the grid: which cells are truly standable/swimmable
+      // at each zone's elev band. No grid (open world) → no monsters.
+      this.zones = this.terrain ? loadSpawnZones(world, this.terrain) : [];
     }
     this.setState(new WorldState());
-    // Publish the computed areas so every client draws the same debug overlay.
-    for (const a of this.spawnAreas) {
+    // Publish each zone's bounding box so clients can draw the debug overlay
+    // (the true shape is a polygon; the bbox is plenty for a debug rect).
+    for (const z of this.zones) {
+      const bb = zoneBBox(z.zone);
       const ma = new MonsterArea();
-      ma.id = a.id;
-      ma.kind = a.kind;
-      ma.x0 = a.x0;
-      ma.y0 = a.y0;
-      ma.x1 = a.x1;
-      ma.y1 = a.y1;
+      ma.id = z.zone.id;
+      ma.kind = z.zone.monster;
+      ma.x0 = bb.x0;
+      ma.y0 = bb.y0;
+      ma.x1 = bb.x1;
+      ma.y1 = bb.y1;
       this.state.spawnAreas.push(ma);
     }
 
@@ -389,43 +388,37 @@ export class WorldRoom extends Room<WorldState> {
       this.broadcast("chat", out);
     });
 
-    // Seed the roaming monsters (one poring kind per fake spawn area). Only
-    // meaningful when a terrain grid is loaded — findSpawn nudges each onto
-    // standable land and the roam AI needs the grid to route/confine them.
+    // Seed the roaming monsters from the maps2 spawn zones. Only meaningful
+    // when a terrain grid is loaded (zones resolve against it).
     this.seedMonsters();
 
     const dtMs = 1000 / TICK_RATE;
     this.setSimulationInterval((delta) => this.update(delta / 1000), dtMs);
   }
 
-  /** Populate this.state.monsters from SPAWN_AREAS: `count` monsters per area
-   * (area.max, or the monsterCount override), keyed "<areaId>#<n>". Each is
-   * findSpawn-nudged onto standable land at a random in-area point and given a
-   * first roam target + immediate nextMoveAt so it starts hopping right away. */
+  /** Populate this.state.monsters from the maps2 zones: `num` monsters per
+   * zone (or the monsterCount test override), keyed "<zoneId>#<n>". Spawn
+   * points come straight from the zone's PRE-VALIDATED cell list (centre +
+   * small jitter, elev = that cell's qualifying surface level — base or deck),
+   * so a monster never starts in water/a prop/the wrong layer. */
   private seedMonsters() {
-    const grid = this.terrain;
-    if (!grid) return; // open world → no terrain to confine/route monsters on
+    if (!this.terrain) return; // open world → no terrain to confine/route monsters on
     const now = Date.now();
-    for (const area of this.spawnAreas) {
-      const count = this.monsterCount ?? area.max;
+    for (const z of this.zones) {
+      const count = Math.min(this.monsterCount ?? z.zone.num, z.cells.length);
       for (let n = 0; n < count; n++) {
         const m = new Monster();
-        m.kind = area.kind;
-        m.areaId = area.id;
-        // Random in-area point, then snap to the nearest standable cell so a
-        // monster never starts inside water/a prop.
-        const p = randomPointInArea(area, this.monsterRng);
-        const s = findSpawn(grid, p.x, p.y);
-        // findSpawn can nudge outside the rect near an edge; pull it back in.
-        const c = clampToArea(area, s.x, s.y);
-        m.x = c.x;
-        m.y = c.y;
-        m.elev = levelAtWorld(grid, m.x, m.y);
+        m.kind = z.zone.monster;
+        m.areaId = z.zone.id;
+        const cell = z.cells[Math.floor(this.monsterRng() * z.cells.length)];
+        m.x = (cell.c + 0.5 + (this.monsterRng() - 0.5) * 0.5) * CELL_WU;
+        m.y = (cell.r + 0.5 + (this.monsterRng() - 0.5) * 0.5) * CELL_WU;
+        m.elev = cell.lvl;
         m.dir = "south";
         m.moving = false;
         // Stagger first departure a touch so they don't all leave in lockstep.
         m.nextMoveAt = now + Math.floor(this.monsterRng() * 600);
-        this.state.monsters.set(`${area.id}#${n}`, m);
+        this.state.monsters.set(`${z.zone.id}#${n}`, m);
       }
     }
   }
@@ -578,13 +571,15 @@ export class WorldRoom extends Room<WorldState> {
     this.stepMonsters(dt, now);
   }
 
-  /** Advance every roaming monster one tick. Each monster owns an area; while
-   * paused it waits out `nextMoveAt`, then picks a random standable in-area
-   * target and startTrip()s toward it; while a trip is active it stepAutopilot()s
-   * (screen-space 8-way input) fed through the SAME stepMovement the players use,
-   * so facing/animation come out right. Movement is confined to the area (target
-   * clamp + a hard clamp-back after writeback), and blocked from water/props by
-   * makeBlockedElev, so a monster can never wander off its land rectangle. */
+  /** Advance every roaming monster one tick. Each monster belongs to a maps2
+   * zone; while paused it waits out `nextMoveAt`, then picks a random VALID
+   * zone cell nearby and startTrip()s toward it; while a trip is active it
+   * stepAutopilot()s (screen-space 8-way input) fed through the SAME
+   * stepMovement the players use, so facing/animation come out right.
+   * Confinement: targets only ever come from the zone's pre-validated cell
+   * list, movement is blocked from bad ground by makeBlockedElev (canSwim only
+   * in water zones), and a monster that still drifts off the polygon (body
+   * radius past an edge cell) is snapped back to the nearest zone cell. */
   private stepMonsters(dt: number, now: number) {
     const grid = this.terrain;
     if (!grid) {
@@ -594,20 +589,20 @@ export class WorldRoom extends Room<WorldState> {
       });
       return;
     }
-    const areaById = this.areaIndex();
+    const zoneById = new Map(this.zones.map((z) => [z.zone.id, z]));
     this.state.monsters.forEach((m) => {
-      const area = areaById.get(m.areaId);
-      if (!area) {
+      const zone = zoneById.get(m.areaId);
+      if (!zone) {
         m.moving = false;
         return;
       }
-      const ctx = { maxClimb: WALK_CLIMB, canSwim: false };
+      const ctx = { maxClimb: WALK_CLIMB, canSwim: zone.canSwim };
 
       // Idle → pick the next target once the pause has elapsed.
       if (!m.tripActive) {
         m.moving = false;
         if (now < m.nextMoveAt) return; // still pausing
-        const t = this.pickMonsterTarget(area, m.x, m.y);
+        const t = this.pickMonsterTarget(zone, m.x, m.y);
         m.targetX = t.x;
         m.targetY = t.y;
         m.trip = startTrip(grid, m.x, m.y, t.x, t.y, false, now, m.elev);
@@ -651,37 +646,48 @@ export class WorldRoom extends Room<WorldState> {
       m.moving = r.moving;
       m.elev = resolveElevAt(grid, m.elev, m.x, m.y, ctx);
 
-      // Safety net: never let a monster leave its rectangle (autopilot/steer
-      // assist could nudge a hair past the inset edge on a corner).
-      const c = clampToArea(area, m.x, m.y);
-      m.x = c.x;
-      m.y = c.y;
+      // Safety net: never let a monster leave its zone polygon. Cheap O(1)
+      // membership check; the nearest-cell scan only runs for the rare
+      // offender (a body-radius slide past an edge cell).
+      const mc = Math.floor(m.x / CELL_WU);
+      const mr = Math.floor(m.y / CELL_WU);
+      if (!zone.cellSet.has(mc + mr * grid.width)) {
+        let best = zone.cells[0];
+        let bestD = Infinity;
+        for (const cell of zone.cells) {
+          const d = Math.hypot(cell.c - mc, cell.r - mr);
+          if (d < bestD) {
+            bestD = d;
+            best = cell;
+          }
+        }
+        m.x = (best.c + 0.5) * CELL_WU;
+        m.y = (best.r + 0.5) * CELL_WU;
+        m.elev = best.lvl;
+        m.tripActive = false;
+        m.trip = null;
+        m.nextMoveAt = now + Math.floor(randomPauseMs(this.monsterRng));
+      }
     });
   }
 
-  /** Pick a random standable roam target inside `area`, away from the current
-   * spot. Tries a few random in-area points and prefers one on standable land;
-   * clamps into the area either way (makeBlockedElev still blocks non-standable
-   * mid-trip, so a stray water pick just stalls harmlessly). */
-  private pickMonsterTarget(area: SpawnArea, fromX: number, fromY: number): { x: number; y: number } {
-    const grid = this.terrain!;
+  /** Pick a random roam target from the zone's PRE-VALIDATED cells, preferring
+   * one within MONSTER_ROAM_RADIUS_CELLS of the current spot (local milling,
+   * not cross-zone beelines) and at least a cell away. Falls back to any zone
+   * cell — every candidate is valid ground, so no standability re-check. */
+  private pickMonsterTarget(zone: ZoneRuntime, fromX: number, fromY: number): { x: number; y: number } {
+    const fc = fromX / CELL_WU;
+    const fr = fromY / CELL_WU;
     let fallback: { x: number; y: number } | null = null;
-    for (let i = 0; i < 6; i++) {
-      const raw = randomPointInArea(area, this.monsterRng);
-      const p = clampToArea(area, raw.x, raw.y);
+    for (let i = 0; i < 8; i++) {
+      const cell = zone.cells[Math.floor(this.monsterRng() * zone.cells.length)];
+      const p = { x: (cell.c + 0.5) * CELL_WU, y: (cell.r + 0.5) * CELL_WU };
       if (!fallback) fallback = p;
-      // Skip a target essentially on top of the current position.
-      if (Math.hypot(p.x - fromX, p.y - fromY) < CELL_WU) continue;
-      if (isStandableAtWorld(grid, p.x, p.y)) return p;
+      const d = Math.hypot(cell.c + 0.5 - fc, cell.r + 0.5 - fr);
+      if (d < 1) continue; // essentially on top of the current position
+      if (d <= MONSTER_ROAM_RADIUS_CELLS) return p;
     }
-    return fallback ?? clampToArea(area, fromX, fromY);
-  }
-
-  /** areaId → SpawnArea lookup (built once per tick; the area list is tiny). */
-  private areaIndex(): Map<string, SpawnArea> {
-    const m = new Map<string, SpawnArea>();
-    for (const a of this.spawnAreas) m.set(a.id, a);
-    return m;
+    return fallback ?? { x: fromX, y: fromY };
   }
 
   onDispose() {
@@ -747,5 +753,28 @@ function loadWorldGrid(name: string): LoadedWorld {
     };
   } catch {
     return open;
+  }
+}
+
+/** Load the maps2 spawn zones for a world (worlds/<name>/spawns.json,
+ * pixel-maps2/spawns@1) and resolve them against the terrain grid. Missing
+ * file → no monsters (maps2 owns placement; nothing to invent here). Zones
+ * with no valid cell at their claimed elevation are skipped with a warning —
+ * that's map data disagreeing with itself, worth surfacing. */
+function loadSpawnZones(name: string, grid: TerrainGrid): ZoneRuntime[] {
+  try {
+    const path = join(assetsRoot(), "maps2", "worlds", name, "spawns.json");
+    if (!existsSync(path)) return [];
+    const zones = parseSpawns(JSON.parse(readFileSync(path, "utf8")));
+    const runtimes = buildZoneRuntimes(grid, zones);
+    if (runtimes.length < zones.length) {
+      const kept = new Set(runtimes.map((r) => r.zone.id));
+      const dropped = zones.filter((z) => !kept.has(z.id)).map((z) => `${z.id}(${z.monster})`);
+      console.warn(`[monsters] ${name}: ${dropped.length} zone(s) had no valid cells and were skipped: ${dropped.join(", ")}`);
+    }
+    return runtimes;
+  } catch (e) {
+    console.warn(`[monsters] failed to load spawns.json for ${name}:`, (e as Error).message);
+    return [];
   }
 }

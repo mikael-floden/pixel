@@ -12,98 +12,13 @@
   ],
   "monsters": [
     {
-      "id": "poring",
-      "name": "Poring",
-      "frameW": 48,
-      "frameH": 48,
-      "root": "poring",
-      "walkAnim": "jump",
-      "animations": {
-        "attack": {
-          "south": 16,
-          "south-west": 16,
-          "west": 16,
-          "north-west": 16,
-          "north": 16,
-          "north-east": 16,
-          "east": 16,
-          "south-east": 16
-        },
-        "die": {
-          "south": 16,
-          "south-west": 16,
-          "west": 16,
-          "north-west": 16,
-          "north": 16,
-          "north-east": 16,
-          "east": 16,
-          "south-east": 16
-        },
-        "jump": {
-          "south": 16,
-          "south-west": 16,
-          "west": 16,
-          "north-west": 16,
-          "north": 16,
-          "north-east": 16,
-          "east": 16,
-          "south-east": 16
-        }
-      },
-      "strips": {
-        "attack": {
-          "south": "/assets/monsters/poring/animations/attack__south.png",
-          "south-west": "/assets/monsters/poring/animations/attack__south-west.png",
-          "west": "/assets/monsters/poring/animations/attack__west.png",
-          "north-west": "/assets/monsters/poring/animations/attack__north-west.png",
-          "north": "/assets/monsters/poring/animations/attack__north.png",
-          "north-east": "/assets/monsters/poring/animations/attack__north-east.png",
-          "east": "/assets/monsters/poring/animations/attack__east.png",
-          "south-east": "/assets/monsters/poring/animations/attack__south-east.png"
-        },
-        "die": {
-          "south": "/assets/monsters/poring/animations/die__south.png",
-          "south-west": "/assets/monsters/poring/animations/die__south-west.png",
-          "west": "/assets/monsters/poring/animations/die__west.png",
-          "north-west": "/assets/monsters/poring/animations/die__north-west.png",
-          "north": "/assets/monsters/poring/animations/die__north.png",
-          "north-east": "/assets/monsters/poring/animations/die__north-east.png",
-          "east": "/assets/monsters/poring/animations/die__east.png",
-          "south-east": "/assets/monsters/poring/animations/die__south-east.png"
-        },
-        "jump": {
-          "south": "/assets/monsters/poring/animations/jump__south.png",
-          "south-west": "/assets/monsters/poring/animations/jump__south-west.png",
-          "west": "/assets/monsters/poring/animations/jump__west.png",
-          "north-west": "/assets/monsters/poring/animations/jump__north-west.png",
-          "north": "/assets/monsters/poring/animations/jump__north.png",
-          "north-east": "/assets/monsters/poring/animations/jump__north-east.png",
-          "east": "/assets/monsters/poring/animations/jump__east.png",
-          "south-east": "/assets/monsters/poring/animations/jump__south-east.png"
-        }
-      },
-      "aliases": {
-        "walk": "jump"
-      }
-    },
-    {
       "id": "forest_poring",
       "name": "Forest Poring",
       "frameW": 48,
       "frameH": 48,
       "root": "forest_poring",
-      "walkAnim": "jump",
+      "walkAnim": "walk",
       "animations": {
-        "attack": {
-          "south": 16,
-          "south-west": 16,
-          "west": 16,
-          "north-west": 16,
-          "north": 16,
-          "north-east": 16,
-          "east": 16,
-          "south-east": 16
-        },
         "die": {
           "south": 16,
           "south-west": 16,
@@ -114,7 +29,7 @@
           "east": 16,
           "south-east": 16
         },
-        "jump": {
+        "attack": {
           "south": 16,
           "south-west": 16,
           "west": 16,
@@ -123,19 +38,29 @@
           "north-east": 16,
           "east": 16,
           "south-east": 16
+        },
+        "idle": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "walk": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
         }
       },
       "strips": {
-        "attack": {
-          "south": "/assets/monsters/forest_poring/animations/attack__south.png",
-          "south-west": "/assets/monsters/forest_poring/animations/attack__south-west.png",
-          "west": "/assets/monsters/forest_poring/animations/attack__west.png",
-          "north-west": "/assets/monsters/forest_poring/animations/attack__north-west.png",
-          "north": "/assets/monsters/forest_poring/animations/attack__north.png",
-          "north-east": "/assets/monsters/forest_poring/animations/attack__north-east.png",
-          "east": "/assets/monsters/forest_poring/animations/attack__east.png",
-          "south-east": "/assets/monsters/forest_poring/animations/attack__south-east.png"
-        },
         "die": {
           "south": "/assets/monsters/forest_poring/animations/die__south.png",
           "south-west": "/assets/monsters/forest_poring/animations/die__south-west.png",
@@ -146,19 +71,39 @@
           "east": "/assets/monsters/forest_poring/animations/die__east.png",
           "south-east": "/assets/monsters/forest_poring/animations/die__south-east.png"
         },
-        "jump": {
-          "south": "/assets/monsters/forest_poring/animations/jump__south.png",
-          "south-west": "/assets/monsters/forest_poring/animations/jump__south-west.png",
-          "west": "/assets/monsters/forest_poring/animations/jump__west.png",
-          "north-west": "/assets/monsters/forest_poring/animations/jump__north-west.png",
-          "north": "/assets/monsters/forest_poring/animations/jump__north.png",
-          "north-east": "/assets/monsters/forest_poring/animations/jump__north-east.png",
-          "east": "/assets/monsters/forest_poring/animations/jump__east.png",
-          "south-east": "/assets/monsters/forest_poring/animations/jump__south-east.png"
+        "attack": {
+          "south": "/assets/monsters/forest_poring/animations/attack__south.png",
+          "south-west": "/assets/monsters/forest_poring/animations/attack__south-west.png",
+          "west": "/assets/monsters/forest_poring/animations/attack__west.png",
+          "north-west": "/assets/monsters/forest_poring/animations/attack__north-west.png",
+          "north": "/assets/monsters/forest_poring/animations/attack__north.png",
+          "north-east": "/assets/monsters/forest_poring/animations/attack__north-east.png",
+          "east": "/assets/monsters/forest_poring/animations/attack__east.png",
+          "south-east": "/assets/monsters/forest_poring/animations/attack__south-east.png"
+        },
+        "idle": {
+          "south": "/assets/monsters/forest_poring/animations/idle__south.png",
+          "south-west": "/assets/monsters/forest_poring/animations/idle__south-west.png",
+          "west": "/assets/monsters/forest_poring/animations/idle__west.png",
+          "north-west": "/assets/monsters/forest_poring/animations/idle__north-west.png",
+          "north": "/assets/monsters/forest_poring/animations/idle__north.png",
+          "north-east": "/assets/monsters/forest_poring/animations/idle__north-east.png",
+          "east": "/assets/monsters/forest_poring/animations/idle__east.png",
+          "south-east": "/assets/monsters/forest_poring/animations/idle__south-east.png"
+        },
+        "walk": {
+          "south": "/assets/monsters/forest_poring/animations/walk__south.png",
+          "south-west": "/assets/monsters/forest_poring/animations/walk__south-west.png",
+          "west": "/assets/monsters/forest_poring/animations/walk__west.png",
+          "north-west": "/assets/monsters/forest_poring/animations/walk__north-west.png",
+          "north": "/assets/monsters/forest_poring/animations/walk__north.png",
+          "north-east": "/assets/monsters/forest_poring/animations/walk__north-east.png",
+          "east": "/assets/monsters/forest_poring/animations/walk__east.png",
+          "south-east": "/assets/monsters/forest_poring/animations/walk__south-east.png"
         }
       },
       "aliases": {
-        "walk": "jump"
+        "walk": "walk"
       }
     },
     {
@@ -167,9 +112,29 @@
       "frameW": 48,
       "frameH": 48,
       "root": "ice_poring",
-      "walkAnim": "jump",
+      "walkAnim": "walk",
       "animations": {
         "attack": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "angry": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "idle": {
           "south": 16,
           "south-west": 16,
           "west": 16,
@@ -189,7 +154,7 @@
           "east": 16,
           "south-east": 16
         },
-        "jump": {
+        "walk": {
           "south": 6,
           "south-west": 6,
           "west": 6,
@@ -211,6 +176,26 @@
           "east": "/assets/monsters/ice_poring/animations/attack__east.png",
           "south-east": "/assets/monsters/ice_poring/animations/attack__south-east.png"
         },
+        "angry": {
+          "south": "/assets/monsters/ice_poring/animations/angry__south.png",
+          "south-west": "/assets/monsters/ice_poring/animations/angry__south-west.png",
+          "west": "/assets/monsters/ice_poring/animations/angry__west.png",
+          "north-west": "/assets/monsters/ice_poring/animations/angry__north-west.png",
+          "north": "/assets/monsters/ice_poring/animations/angry__north.png",
+          "north-east": "/assets/monsters/ice_poring/animations/angry__north-east.png",
+          "east": "/assets/monsters/ice_poring/animations/angry__east.png",
+          "south-east": "/assets/monsters/ice_poring/animations/angry__south-east.png"
+        },
+        "idle": {
+          "south": "/assets/monsters/ice_poring/animations/idle__south.png",
+          "south-west": "/assets/monsters/ice_poring/animations/idle__south-west.png",
+          "west": "/assets/monsters/ice_poring/animations/idle__west.png",
+          "north-west": "/assets/monsters/ice_poring/animations/idle__north-west.png",
+          "north": "/assets/monsters/ice_poring/animations/idle__north.png",
+          "north-east": "/assets/monsters/ice_poring/animations/idle__north-east.png",
+          "east": "/assets/monsters/ice_poring/animations/idle__east.png",
+          "south-east": "/assets/monsters/ice_poring/animations/idle__south-east.png"
+        },
         "die": {
           "south": "/assets/monsters/ice_poring/animations/die__south.png",
           "south-west": "/assets/monsters/ice_poring/animations/die__south-west.png",
@@ -221,19 +206,19 @@
           "east": "/assets/monsters/ice_poring/animations/die__east.png",
           "south-east": "/assets/monsters/ice_poring/animations/die__south-east.png"
         },
-        "jump": {
-          "south": "/assets/monsters/ice_poring/animations/jump__south.png",
-          "south-west": "/assets/monsters/ice_poring/animations/jump__south-west.png",
-          "west": "/assets/monsters/ice_poring/animations/jump__west.png",
-          "north-west": "/assets/monsters/ice_poring/animations/jump__north-west.png",
-          "north": "/assets/monsters/ice_poring/animations/jump__north.png",
-          "north-east": "/assets/monsters/ice_poring/animations/jump__north-east.png",
-          "east": "/assets/monsters/ice_poring/animations/jump__east.png",
-          "south-east": "/assets/monsters/ice_poring/animations/jump__south-east.png"
+        "walk": {
+          "south": "/assets/monsters/ice_poring/animations/walk__south.png",
+          "south-west": "/assets/monsters/ice_poring/animations/walk__south-west.png",
+          "west": "/assets/monsters/ice_poring/animations/walk__west.png",
+          "north-west": "/assets/monsters/ice_poring/animations/walk__north-west.png",
+          "north": "/assets/monsters/ice_poring/animations/walk__north.png",
+          "north-east": "/assets/monsters/ice_poring/animations/walk__north-east.png",
+          "east": "/assets/monsters/ice_poring/animations/walk__east.png",
+          "south-east": "/assets/monsters/ice_poring/animations/walk__south-east.png"
         }
       },
       "aliases": {
-        "walk": "jump"
+        "walk": "walk"
       }
     },
     {
@@ -242,9 +227,19 @@
       "frameW": 48,
       "frameH": 48,
       "root": "lava_poring",
-      "walkAnim": "jump",
+      "walkAnim": "walk",
       "animations": {
-        "die": {
+        "walk": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "idle": {
           "south": 16,
           "south-west": 16,
           "west": 16,
@@ -254,47 +249,47 @@
           "east": 16,
           "south-east": 16
         },
-        "jump": {
-          "south": 6,
-          "south-west": 6,
-          "west": 6,
-          "north-west": 6,
-          "north": 6,
-          "north-east": 6,
-          "east": 6,
-          "south-east": 6
-        },
         "attack": {
-          "south": 6,
-          "south-west": 6,
-          "west": 6,
-          "north-west": 6,
-          "north": 6,
-          "north-east": 6,
-          "east": 6,
-          "south-east": 6
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "die": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
         }
       },
       "strips": {
-        "die": {
-          "south": "/assets/monsters/lava_poring/animations/die__south.png",
-          "south-west": "/assets/monsters/lava_poring/animations/die__south-west.png",
-          "west": "/assets/monsters/lava_poring/animations/die__west.png",
-          "north-west": "/assets/monsters/lava_poring/animations/die__north-west.png",
-          "north": "/assets/monsters/lava_poring/animations/die__north.png",
-          "north-east": "/assets/monsters/lava_poring/animations/die__north-east.png",
-          "east": "/assets/monsters/lava_poring/animations/die__east.png",
-          "south-east": "/assets/monsters/lava_poring/animations/die__south-east.png"
+        "walk": {
+          "south": "/assets/monsters/lava_poring/animations/walk__south.png",
+          "south-west": "/assets/monsters/lava_poring/animations/walk__south-west.png",
+          "west": "/assets/monsters/lava_poring/animations/walk__west.png",
+          "north-west": "/assets/monsters/lava_poring/animations/walk__north-west.png",
+          "north": "/assets/monsters/lava_poring/animations/walk__north.png",
+          "north-east": "/assets/monsters/lava_poring/animations/walk__north-east.png",
+          "east": "/assets/monsters/lava_poring/animations/walk__east.png",
+          "south-east": "/assets/monsters/lava_poring/animations/walk__south-east.png"
         },
-        "jump": {
-          "south": "/assets/monsters/lava_poring/animations/jump__south.png",
-          "south-west": "/assets/monsters/lava_poring/animations/jump__south-west.png",
-          "west": "/assets/monsters/lava_poring/animations/jump__west.png",
-          "north-west": "/assets/monsters/lava_poring/animations/jump__north-west.png",
-          "north": "/assets/monsters/lava_poring/animations/jump__north.png",
-          "north-east": "/assets/monsters/lava_poring/animations/jump__north-east.png",
-          "east": "/assets/monsters/lava_poring/animations/jump__east.png",
-          "south-east": "/assets/monsters/lava_poring/animations/jump__south-east.png"
+        "idle": {
+          "south": "/assets/monsters/lava_poring/animations/idle__south.png",
+          "south-west": "/assets/monsters/lava_poring/animations/idle__south-west.png",
+          "west": "/assets/monsters/lava_poring/animations/idle__west.png",
+          "north-west": "/assets/monsters/lava_poring/animations/idle__north-west.png",
+          "north": "/assets/monsters/lava_poring/animations/idle__north.png",
+          "north-east": "/assets/monsters/lava_poring/animations/idle__north-east.png",
+          "east": "/assets/monsters/lava_poring/animations/idle__east.png",
+          "south-east": "/assets/monsters/lava_poring/animations/idle__south-east.png"
         },
         "attack": {
           "south": "/assets/monsters/lava_poring/animations/attack__south.png",
@@ -305,85 +300,20 @@
           "north-east": "/assets/monsters/lava_poring/animations/attack__north-east.png",
           "east": "/assets/monsters/lava_poring/animations/attack__east.png",
           "south-east": "/assets/monsters/lava_poring/animations/attack__south-east.png"
+        },
+        "die": {
+          "south": "/assets/monsters/lava_poring/animations/die__south.png",
+          "south-west": "/assets/monsters/lava_poring/animations/die__south-west.png",
+          "west": "/assets/monsters/lava_poring/animations/die__west.png",
+          "north-west": "/assets/monsters/lava_poring/animations/die__north-west.png",
+          "north": "/assets/monsters/lava_poring/animations/die__north.png",
+          "north-east": "/assets/monsters/lava_poring/animations/die__north-east.png",
+          "east": "/assets/monsters/lava_poring/animations/die__east.png",
+          "south-east": "/assets/monsters/lava_poring/animations/die__south-east.png"
         }
       },
       "aliases": {
-        "walk": "jump"
-      }
-    },
-    {
-      "id": "sand_poring",
-      "name": "Sand Poring",
-      "frameW": 48,
-      "frameH": 48,
-      "root": "sand_poring",
-      "walkAnim": "jump",
-      "animations": {
-        "die": {
-          "south": 16,
-          "south-west": 16,
-          "west": 16,
-          "north-west": 16,
-          "north": 16,
-          "north-east": 16,
-          "east": 16,
-          "south-east": 16
-        },
-        "attack": {
-          "south": 16,
-          "south-west": 16,
-          "west": 16,
-          "north-west": 16,
-          "north": 16,
-          "north-east": 16,
-          "east": 16,
-          "south-east": 16
-        },
-        "jump": {
-          "south": 6,
-          "south-west": 6,
-          "west": 6,
-          "north-west": 6,
-          "north": 6,
-          "north-east": 6,
-          "east": 6,
-          "south-east": 6
-        }
-      },
-      "strips": {
-        "die": {
-          "south": "/assets/monsters/sand_poring/animations/die__south.png",
-          "south-west": "/assets/monsters/sand_poring/animations/die__south-west.png",
-          "west": "/assets/monsters/sand_poring/animations/die__west.png",
-          "north-west": "/assets/monsters/sand_poring/animations/die__north-west.png",
-          "north": "/assets/monsters/sand_poring/animations/die__north.png",
-          "north-east": "/assets/monsters/sand_poring/animations/die__north-east.png",
-          "east": "/assets/monsters/sand_poring/animations/die__east.png",
-          "south-east": "/assets/monsters/sand_poring/animations/die__south-east.png"
-        },
-        "attack": {
-          "south": "/assets/monsters/sand_poring/animations/attack__south.png",
-          "south-west": "/assets/monsters/sand_poring/animations/attack__south-west.png",
-          "west": "/assets/monsters/sand_poring/animations/attack__west.png",
-          "north-west": "/assets/monsters/sand_poring/animations/attack__north-west.png",
-          "north": "/assets/monsters/sand_poring/animations/attack__north.png",
-          "north-east": "/assets/monsters/sand_poring/animations/attack__north-east.png",
-          "east": "/assets/monsters/sand_poring/animations/attack__east.png",
-          "south-east": "/assets/monsters/sand_poring/animations/attack__south-east.png"
-        },
-        "jump": {
-          "south": "/assets/monsters/sand_poring/animations/jump__south.png",
-          "south-west": "/assets/monsters/sand_poring/animations/jump__south-west.png",
-          "west": "/assets/monsters/sand_poring/animations/jump__west.png",
-          "north-west": "/assets/monsters/sand_poring/animations/jump__north-west.png",
-          "north": "/assets/monsters/sand_poring/animations/jump__north.png",
-          "north-east": "/assets/monsters/sand_poring/animations/jump__north-east.png",
-          "east": "/assets/monsters/sand_poring/animations/jump__east.png",
-          "south-east": "/assets/monsters/sand_poring/animations/jump__south-east.png"
-        }
-      },
-      "aliases": {
-        "walk": "jump"
+        "walk": "walk"
       }
     },
     {
@@ -392,9 +322,39 @@
       "frameW": 48,
       "frameH": 48,
       "root": "water_poring",
-      "walkAnim": "jump",
+      "walkAnim": "walk",
       "animations": {
+        "angry": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
         "attack": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "walk": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "idle": {
           "south": 16,
           "south-west": 16,
           "west": 16,
@@ -413,19 +373,19 @@
           "north-east": 16,
           "east": 16,
           "south-east": 16
-        },
-        "jump": {
-          "south": 6,
-          "south-west": 6,
-          "west": 6,
-          "north-west": 6,
-          "north": 6,
-          "north-east": 6,
-          "east": 6,
-          "south-east": 6
         }
       },
       "strips": {
+        "angry": {
+          "south": "/assets/monsters/water_poring/animations/angry__south.png",
+          "south-west": "/assets/monsters/water_poring/animations/angry__south-west.png",
+          "west": "/assets/monsters/water_poring/animations/angry__west.png",
+          "north-west": "/assets/monsters/water_poring/animations/angry__north-west.png",
+          "north": "/assets/monsters/water_poring/animations/angry__north.png",
+          "north-east": "/assets/monsters/water_poring/animations/angry__north-east.png",
+          "east": "/assets/monsters/water_poring/animations/angry__east.png",
+          "south-east": "/assets/monsters/water_poring/animations/angry__south-east.png"
+        },
         "attack": {
           "south": "/assets/monsters/water_poring/animations/attack__south.png",
           "south-west": "/assets/monsters/water_poring/animations/attack__south-west.png",
@@ -436,6 +396,26 @@
           "east": "/assets/monsters/water_poring/animations/attack__east.png",
           "south-east": "/assets/monsters/water_poring/animations/attack__south-east.png"
         },
+        "walk": {
+          "south": "/assets/monsters/water_poring/animations/walk__south.png",
+          "south-west": "/assets/monsters/water_poring/animations/walk__south-west.png",
+          "west": "/assets/monsters/water_poring/animations/walk__west.png",
+          "north-west": "/assets/monsters/water_poring/animations/walk__north-west.png",
+          "north": "/assets/monsters/water_poring/animations/walk__north.png",
+          "north-east": "/assets/monsters/water_poring/animations/walk__north-east.png",
+          "east": "/assets/monsters/water_poring/animations/walk__east.png",
+          "south-east": "/assets/monsters/water_poring/animations/walk__south-east.png"
+        },
+        "idle": {
+          "south": "/assets/monsters/water_poring/animations/idle__south.png",
+          "south-west": "/assets/monsters/water_poring/animations/idle__south-west.png",
+          "west": "/assets/monsters/water_poring/animations/idle__west.png",
+          "north-west": "/assets/monsters/water_poring/animations/idle__north-west.png",
+          "north": "/assets/monsters/water_poring/animations/idle__north.png",
+          "north-east": "/assets/monsters/water_poring/animations/idle__north-east.png",
+          "east": "/assets/monsters/water_poring/animations/idle__east.png",
+          "south-east": "/assets/monsters/water_poring/animations/idle__south-east.png"
+        },
         "die": {
           "south": "/assets/monsters/water_poring/animations/die__south.png",
           "south-west": "/assets/monsters/water_poring/animations/die__south-west.png",
@@ -445,20 +425,2190 @@
           "north-east": "/assets/monsters/water_poring/animations/die__north-east.png",
           "east": "/assets/monsters/water_poring/animations/die__east.png",
           "south-east": "/assets/monsters/water_poring/animations/die__south-east.png"
-        },
-        "jump": {
-          "south": "/assets/monsters/water_poring/animations/jump__south.png",
-          "south-west": "/assets/monsters/water_poring/animations/jump__south-west.png",
-          "west": "/assets/monsters/water_poring/animations/jump__west.png",
-          "north-west": "/assets/monsters/water_poring/animations/jump__north-west.png",
-          "north": "/assets/monsters/water_poring/animations/jump__north.png",
-          "north-east": "/assets/monsters/water_poring/animations/jump__north-east.png",
-          "east": "/assets/monsters/water_poring/animations/jump__east.png",
-          "south-east": "/assets/monsters/water_poring/animations/jump__south-east.png"
         }
       },
       "aliases": {
-        "walk": "jump"
+        "walk": "walk"
+      }
+    },
+    {
+      "id": "mystical_frog",
+      "name": "Mystical Frog",
+      "frameW": 34,
+      "frameH": 34,
+      "root": "mystical_frog",
+      "walkAnim": "walk",
+      "animations": {
+        "attack": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "walk": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "idle": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "die": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "angry": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        }
+      },
+      "strips": {
+        "attack": {
+          "south": "/assets/monsters/mystical_frog/animations/attack__south.png",
+          "south-west": "/assets/monsters/mystical_frog/animations/attack__south-west.png",
+          "west": "/assets/monsters/mystical_frog/animations/attack__west.png",
+          "north-west": "/assets/monsters/mystical_frog/animations/attack__north-west.png",
+          "north": "/assets/monsters/mystical_frog/animations/attack__north.png",
+          "north-east": "/assets/monsters/mystical_frog/animations/attack__north-east.png",
+          "east": "/assets/monsters/mystical_frog/animations/attack__east.png",
+          "south-east": "/assets/monsters/mystical_frog/animations/attack__south-east.png"
+        },
+        "walk": {
+          "south": "/assets/monsters/mystical_frog/animations/walk__south.png",
+          "south-west": "/assets/monsters/mystical_frog/animations/walk__south-west.png",
+          "west": "/assets/monsters/mystical_frog/animations/walk__west.png",
+          "north-west": "/assets/monsters/mystical_frog/animations/walk__north-west.png",
+          "north": "/assets/monsters/mystical_frog/animations/walk__north.png",
+          "north-east": "/assets/monsters/mystical_frog/animations/walk__north-east.png",
+          "east": "/assets/monsters/mystical_frog/animations/walk__east.png",
+          "south-east": "/assets/monsters/mystical_frog/animations/walk__south-east.png"
+        },
+        "idle": {
+          "south": "/assets/monsters/mystical_frog/animations/idle__south.png",
+          "south-west": "/assets/monsters/mystical_frog/animations/idle__south-west.png",
+          "west": "/assets/monsters/mystical_frog/animations/idle__west.png",
+          "north-west": "/assets/monsters/mystical_frog/animations/idle__north-west.png",
+          "north": "/assets/monsters/mystical_frog/animations/idle__north.png",
+          "north-east": "/assets/monsters/mystical_frog/animations/idle__north-east.png",
+          "east": "/assets/monsters/mystical_frog/animations/idle__east.png",
+          "south-east": "/assets/monsters/mystical_frog/animations/idle__south-east.png"
+        },
+        "die": {
+          "south": "/assets/monsters/mystical_frog/animations/die__south.png",
+          "south-west": "/assets/monsters/mystical_frog/animations/die__south-west.png",
+          "west": "/assets/monsters/mystical_frog/animations/die__west.png",
+          "north-west": "/assets/monsters/mystical_frog/animations/die__north-west.png",
+          "north": "/assets/monsters/mystical_frog/animations/die__north.png",
+          "north-east": "/assets/monsters/mystical_frog/animations/die__north-east.png",
+          "east": "/assets/monsters/mystical_frog/animations/die__east.png",
+          "south-east": "/assets/monsters/mystical_frog/animations/die__south-east.png"
+        },
+        "angry": {
+          "south": "/assets/monsters/mystical_frog/animations/angry__south.png",
+          "south-west": "/assets/monsters/mystical_frog/animations/angry__south-west.png",
+          "west": "/assets/monsters/mystical_frog/animations/angry__west.png",
+          "north-west": "/assets/monsters/mystical_frog/animations/angry__north-west.png",
+          "north": "/assets/monsters/mystical_frog/animations/angry__north.png",
+          "north-east": "/assets/monsters/mystical_frog/animations/angry__north-east.png",
+          "east": "/assets/monsters/mystical_frog/animations/angry__east.png",
+          "south-east": "/assets/monsters/mystical_frog/animations/angry__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      }
+    },
+    {
+      "id": "hedgehog",
+      "name": "Hedgehog",
+      "frameW": 34,
+      "frameH": 34,
+      "root": "hedgehog",
+      "walkAnim": "walk",
+      "animations": {
+        "idle": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "attack": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "die": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "angry": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "walk": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        }
+      },
+      "strips": {
+        "idle": {
+          "south": "/assets/monsters/hedgehog/animations/idle__south.png",
+          "south-west": "/assets/monsters/hedgehog/animations/idle__south-west.png",
+          "west": "/assets/monsters/hedgehog/animations/idle__west.png",
+          "north-west": "/assets/monsters/hedgehog/animations/idle__north-west.png",
+          "north": "/assets/monsters/hedgehog/animations/idle__north.png",
+          "north-east": "/assets/monsters/hedgehog/animations/idle__north-east.png",
+          "east": "/assets/monsters/hedgehog/animations/idle__east.png",
+          "south-east": "/assets/monsters/hedgehog/animations/idle__south-east.png"
+        },
+        "attack": {
+          "south": "/assets/monsters/hedgehog/animations/attack__south.png",
+          "south-west": "/assets/monsters/hedgehog/animations/attack__south-west.png",
+          "west": "/assets/monsters/hedgehog/animations/attack__west.png",
+          "north-west": "/assets/monsters/hedgehog/animations/attack__north-west.png",
+          "north": "/assets/monsters/hedgehog/animations/attack__north.png",
+          "north-east": "/assets/monsters/hedgehog/animations/attack__north-east.png",
+          "east": "/assets/monsters/hedgehog/animations/attack__east.png",
+          "south-east": "/assets/monsters/hedgehog/animations/attack__south-east.png"
+        },
+        "die": {
+          "south": "/assets/monsters/hedgehog/animations/die__south.png",
+          "south-west": "/assets/monsters/hedgehog/animations/die__south-west.png",
+          "west": "/assets/monsters/hedgehog/animations/die__west.png",
+          "north-west": "/assets/monsters/hedgehog/animations/die__north-west.png",
+          "north": "/assets/monsters/hedgehog/animations/die__north.png",
+          "north-east": "/assets/monsters/hedgehog/animations/die__north-east.png",
+          "east": "/assets/monsters/hedgehog/animations/die__east.png",
+          "south-east": "/assets/monsters/hedgehog/animations/die__south-east.png"
+        },
+        "angry": {
+          "south": "/assets/monsters/hedgehog/animations/angry__south.png",
+          "south-west": "/assets/monsters/hedgehog/animations/angry__south-west.png",
+          "west": "/assets/monsters/hedgehog/animations/angry__west.png",
+          "north-west": "/assets/monsters/hedgehog/animations/angry__north-west.png",
+          "north": "/assets/monsters/hedgehog/animations/angry__north.png",
+          "north-east": "/assets/monsters/hedgehog/animations/angry__north-east.png",
+          "east": "/assets/monsters/hedgehog/animations/angry__east.png",
+          "south-east": "/assets/monsters/hedgehog/animations/angry__south-east.png"
+        },
+        "walk": {
+          "south": "/assets/monsters/hedgehog/animations/walk__south.png",
+          "south-west": "/assets/monsters/hedgehog/animations/walk__south-west.png",
+          "west": "/assets/monsters/hedgehog/animations/walk__west.png",
+          "north-west": "/assets/monsters/hedgehog/animations/walk__north-west.png",
+          "north": "/assets/monsters/hedgehog/animations/walk__north.png",
+          "north-east": "/assets/monsters/hedgehog/animations/walk__north-east.png",
+          "east": "/assets/monsters/hedgehog/animations/walk__east.png",
+          "south-east": "/assets/monsters/hedgehog/animations/walk__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      }
+    },
+    {
+      "id": "white_rabbit",
+      "name": "White Rabbit",
+      "frameW": 48,
+      "frameH": 48,
+      "root": "white_rabbit",
+      "walkAnim": "walk",
+      "animations": {
+        "attack": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "die": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "walk": {
+          "south": 6,
+          "south-west": 6,
+          "west": 6,
+          "north-west": 6,
+          "north": 6,
+          "north-east": 6,
+          "east": 6,
+          "south-east": 6
+        },
+        "idle": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "angry": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        }
+      },
+      "strips": {
+        "attack": {
+          "south": "/assets/monsters/white_rabbit/animations/attack__south.png",
+          "south-west": "/assets/monsters/white_rabbit/animations/attack__south-west.png",
+          "west": "/assets/monsters/white_rabbit/animations/attack__west.png",
+          "north-west": "/assets/monsters/white_rabbit/animations/attack__north-west.png",
+          "north": "/assets/monsters/white_rabbit/animations/attack__north.png",
+          "north-east": "/assets/monsters/white_rabbit/animations/attack__north-east.png",
+          "east": "/assets/monsters/white_rabbit/animations/attack__east.png",
+          "south-east": "/assets/monsters/white_rabbit/animations/attack__south-east.png"
+        },
+        "die": {
+          "south": "/assets/monsters/white_rabbit/animations/die__south.png",
+          "south-west": "/assets/monsters/white_rabbit/animations/die__south-west.png",
+          "west": "/assets/monsters/white_rabbit/animations/die__west.png",
+          "north-west": "/assets/monsters/white_rabbit/animations/die__north-west.png",
+          "north": "/assets/monsters/white_rabbit/animations/die__north.png",
+          "north-east": "/assets/monsters/white_rabbit/animations/die__north-east.png",
+          "east": "/assets/monsters/white_rabbit/animations/die__east.png",
+          "south-east": "/assets/monsters/white_rabbit/animations/die__south-east.png"
+        },
+        "walk": {
+          "south": "/assets/monsters/white_rabbit/animations/walk__south.png",
+          "south-west": "/assets/monsters/white_rabbit/animations/walk__south-west.png",
+          "west": "/assets/monsters/white_rabbit/animations/walk__west.png",
+          "north-west": "/assets/monsters/white_rabbit/animations/walk__north-west.png",
+          "north": "/assets/monsters/white_rabbit/animations/walk__north.png",
+          "north-east": "/assets/monsters/white_rabbit/animations/walk__north-east.png",
+          "east": "/assets/monsters/white_rabbit/animations/walk__east.png",
+          "south-east": "/assets/monsters/white_rabbit/animations/walk__south-east.png"
+        },
+        "idle": {
+          "south": "/assets/monsters/white_rabbit/animations/idle__south.png",
+          "south-west": "/assets/monsters/white_rabbit/animations/idle__south-west.png",
+          "west": "/assets/monsters/white_rabbit/animations/idle__west.png",
+          "north-west": "/assets/monsters/white_rabbit/animations/idle__north-west.png",
+          "north": "/assets/monsters/white_rabbit/animations/idle__north.png",
+          "north-east": "/assets/monsters/white_rabbit/animations/idle__north-east.png",
+          "east": "/assets/monsters/white_rabbit/animations/idle__east.png",
+          "south-east": "/assets/monsters/white_rabbit/animations/idle__south-east.png"
+        },
+        "angry": {
+          "south": "/assets/monsters/white_rabbit/animations/angry__south.png",
+          "south-west": "/assets/monsters/white_rabbit/animations/angry__south-west.png",
+          "west": "/assets/monsters/white_rabbit/animations/angry__west.png",
+          "north-west": "/assets/monsters/white_rabbit/animations/angry__north-west.png",
+          "north": "/assets/monsters/white_rabbit/animations/angry__north.png",
+          "north-east": "/assets/monsters/white_rabbit/animations/angry__north-east.png",
+          "east": "/assets/monsters/white_rabbit/animations/angry__east.png",
+          "south-east": "/assets/monsters/white_rabbit/animations/angry__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      }
+    },
+    {
+      "id": "malformed_creature",
+      "name": "Malformed Creature",
+      "frameW": 85,
+      "frameH": 85,
+      "root": "malformed_creature",
+      "walkAnim": "walk",
+      "animations": {
+        "die": {
+          "south": 9,
+          "south-west": 9,
+          "west": 9,
+          "north-west": 9,
+          "north": 9,
+          "north-east": 9,
+          "east": 9,
+          "south-east": 9
+        },
+        "attack": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "idle": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "walk": {
+          "south": 6,
+          "south-west": 6,
+          "west": 6,
+          "north-west": 6,
+          "north": 6,
+          "north-east": 6,
+          "east": 6,
+          "south-east": 6
+        },
+        "angry": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        }
+      },
+      "strips": {
+        "die": {
+          "south": "/assets/monsters/malformed_creature/animations/die__south.png",
+          "south-west": "/assets/monsters/malformed_creature/animations/die__south-west.png",
+          "west": "/assets/monsters/malformed_creature/animations/die__west.png",
+          "north-west": "/assets/monsters/malformed_creature/animations/die__north-west.png",
+          "north": "/assets/monsters/malformed_creature/animations/die__north.png",
+          "north-east": "/assets/monsters/malformed_creature/animations/die__north-east.png",
+          "east": "/assets/monsters/malformed_creature/animations/die__east.png",
+          "south-east": "/assets/monsters/malformed_creature/animations/die__south-east.png"
+        },
+        "attack": {
+          "south": "/assets/monsters/malformed_creature/animations/attack__south.png",
+          "south-west": "/assets/monsters/malformed_creature/animations/attack__south-west.png",
+          "west": "/assets/monsters/malformed_creature/animations/attack__west.png",
+          "north-west": "/assets/monsters/malformed_creature/animations/attack__north-west.png",
+          "north": "/assets/monsters/malformed_creature/animations/attack__north.png",
+          "north-east": "/assets/monsters/malformed_creature/animations/attack__north-east.png",
+          "east": "/assets/monsters/malformed_creature/animations/attack__east.png",
+          "south-east": "/assets/monsters/malformed_creature/animations/attack__south-east.png"
+        },
+        "idle": {
+          "south": "/assets/monsters/malformed_creature/animations/idle__south.png",
+          "south-west": "/assets/monsters/malformed_creature/animations/idle__south-west.png",
+          "west": "/assets/monsters/malformed_creature/animations/idle__west.png",
+          "north-west": "/assets/monsters/malformed_creature/animations/idle__north-west.png",
+          "north": "/assets/monsters/malformed_creature/animations/idle__north.png",
+          "north-east": "/assets/monsters/malformed_creature/animations/idle__north-east.png",
+          "east": "/assets/monsters/malformed_creature/animations/idle__east.png",
+          "south-east": "/assets/monsters/malformed_creature/animations/idle__south-east.png"
+        },
+        "walk": {
+          "south": "/assets/monsters/malformed_creature/animations/walk__south.png",
+          "south-west": "/assets/monsters/malformed_creature/animations/walk__south-west.png",
+          "west": "/assets/monsters/malformed_creature/animations/walk__west.png",
+          "north-west": "/assets/monsters/malformed_creature/animations/walk__north-west.png",
+          "north": "/assets/monsters/malformed_creature/animations/walk__north.png",
+          "north-east": "/assets/monsters/malformed_creature/animations/walk__north-east.png",
+          "east": "/assets/monsters/malformed_creature/animations/walk__east.png",
+          "south-east": "/assets/monsters/malformed_creature/animations/walk__south-east.png"
+        },
+        "angry": {
+          "south": "/assets/monsters/malformed_creature/animations/angry__south.png",
+          "south-west": "/assets/monsters/malformed_creature/animations/angry__south-west.png",
+          "west": "/assets/monsters/malformed_creature/animations/angry__west.png",
+          "north-west": "/assets/monsters/malformed_creature/animations/angry__north-west.png",
+          "north": "/assets/monsters/malformed_creature/animations/angry__north.png",
+          "north-east": "/assets/monsters/malformed_creature/animations/angry__north-east.png",
+          "east": "/assets/monsters/malformed_creature/animations/angry__east.png",
+          "south-east": "/assets/monsters/malformed_creature/animations/angry__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      }
+    },
+    {
+      "id": "masked_shadow_creature",
+      "name": "Masked Shadow Creature",
+      "frameW": 68,
+      "frameH": 68,
+      "root": "masked_shadow_creature",
+      "walkAnim": "walk",
+      "animations": {
+        "idle": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "walk": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "angry": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "attack": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "die": {
+          "south": 9,
+          "south-west": 9,
+          "west": 9,
+          "north-west": 9,
+          "north": 9,
+          "north-east": 9,
+          "east": 9,
+          "south-east": 9
+        }
+      },
+      "strips": {
+        "idle": {
+          "south": "/assets/monsters/masked_shadow_creature/animations/idle__south.png",
+          "south-west": "/assets/monsters/masked_shadow_creature/animations/idle__south-west.png",
+          "west": "/assets/monsters/masked_shadow_creature/animations/idle__west.png",
+          "north-west": "/assets/monsters/masked_shadow_creature/animations/idle__north-west.png",
+          "north": "/assets/monsters/masked_shadow_creature/animations/idle__north.png",
+          "north-east": "/assets/monsters/masked_shadow_creature/animations/idle__north-east.png",
+          "east": "/assets/monsters/masked_shadow_creature/animations/idle__east.png",
+          "south-east": "/assets/monsters/masked_shadow_creature/animations/idle__south-east.png"
+        },
+        "walk": {
+          "south": "/assets/monsters/masked_shadow_creature/animations/walk__south.png",
+          "south-west": "/assets/monsters/masked_shadow_creature/animations/walk__south-west.png",
+          "west": "/assets/monsters/masked_shadow_creature/animations/walk__west.png",
+          "north-west": "/assets/monsters/masked_shadow_creature/animations/walk__north-west.png",
+          "north": "/assets/monsters/masked_shadow_creature/animations/walk__north.png",
+          "north-east": "/assets/monsters/masked_shadow_creature/animations/walk__north-east.png",
+          "east": "/assets/monsters/masked_shadow_creature/animations/walk__east.png",
+          "south-east": "/assets/monsters/masked_shadow_creature/animations/walk__south-east.png"
+        },
+        "angry": {
+          "south": "/assets/monsters/masked_shadow_creature/animations/angry__south.png",
+          "south-west": "/assets/monsters/masked_shadow_creature/animations/angry__south-west.png",
+          "west": "/assets/monsters/masked_shadow_creature/animations/angry__west.png",
+          "north-west": "/assets/monsters/masked_shadow_creature/animations/angry__north-west.png",
+          "north": "/assets/monsters/masked_shadow_creature/animations/angry__north.png",
+          "north-east": "/assets/monsters/masked_shadow_creature/animations/angry__north-east.png",
+          "east": "/assets/monsters/masked_shadow_creature/animations/angry__east.png",
+          "south-east": "/assets/monsters/masked_shadow_creature/animations/angry__south-east.png"
+        },
+        "attack": {
+          "south": "/assets/monsters/masked_shadow_creature/animations/attack__south.png",
+          "south-west": "/assets/monsters/masked_shadow_creature/animations/attack__south-west.png",
+          "west": "/assets/monsters/masked_shadow_creature/animations/attack__west.png",
+          "north-west": "/assets/monsters/masked_shadow_creature/animations/attack__north-west.png",
+          "north": "/assets/monsters/masked_shadow_creature/animations/attack__north.png",
+          "north-east": "/assets/monsters/masked_shadow_creature/animations/attack__north-east.png",
+          "east": "/assets/monsters/masked_shadow_creature/animations/attack__east.png",
+          "south-east": "/assets/monsters/masked_shadow_creature/animations/attack__south-east.png"
+        },
+        "die": {
+          "south": "/assets/monsters/masked_shadow_creature/animations/die__south.png",
+          "south-west": "/assets/monsters/masked_shadow_creature/animations/die__south-west.png",
+          "west": "/assets/monsters/masked_shadow_creature/animations/die__west.png",
+          "north-west": "/assets/monsters/masked_shadow_creature/animations/die__north-west.png",
+          "north": "/assets/monsters/masked_shadow_creature/animations/die__north.png",
+          "north-east": "/assets/monsters/masked_shadow_creature/animations/die__north-east.png",
+          "east": "/assets/monsters/masked_shadow_creature/animations/die__east.png",
+          "south-east": "/assets/monsters/masked_shadow_creature/animations/die__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      }
+    },
+    {
+      "id": "night_beast",
+      "name": "Night Beast",
+      "frameW": 97,
+      "frameH": 97,
+      "root": "night_beast",
+      "walkAnim": "walk",
+      "animations": {
+        "walk": {
+          "south": 6,
+          "south-west": 6,
+          "west": 6,
+          "north-west": 6,
+          "north": 6,
+          "north-east": 6,
+          "east": 6,
+          "south-east": 6
+        },
+        "idle": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "die": {
+          "south": 9,
+          "south-west": 9,
+          "west": 9,
+          "north-west": 9,
+          "north": 9,
+          "north-east": 9,
+          "east": 9,
+          "south-east": 9
+        },
+        "attack": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "angry": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        }
+      },
+      "strips": {
+        "walk": {
+          "south": "/assets/monsters/night_beast/animations/walk__south.png",
+          "south-west": "/assets/monsters/night_beast/animations/walk__south-west.png",
+          "west": "/assets/monsters/night_beast/animations/walk__west.png",
+          "north-west": "/assets/monsters/night_beast/animations/walk__north-west.png",
+          "north": "/assets/monsters/night_beast/animations/walk__north.png",
+          "north-east": "/assets/monsters/night_beast/animations/walk__north-east.png",
+          "east": "/assets/monsters/night_beast/animations/walk__east.png",
+          "south-east": "/assets/monsters/night_beast/animations/walk__south-east.png"
+        },
+        "idle": {
+          "south": "/assets/monsters/night_beast/animations/idle__south.png",
+          "south-west": "/assets/monsters/night_beast/animations/idle__south-west.png",
+          "west": "/assets/monsters/night_beast/animations/idle__west.png",
+          "north-west": "/assets/monsters/night_beast/animations/idle__north-west.png",
+          "north": "/assets/monsters/night_beast/animations/idle__north.png",
+          "north-east": "/assets/monsters/night_beast/animations/idle__north-east.png",
+          "east": "/assets/monsters/night_beast/animations/idle__east.png",
+          "south-east": "/assets/monsters/night_beast/animations/idle__south-east.png"
+        },
+        "die": {
+          "south": "/assets/monsters/night_beast/animations/die__south.png",
+          "south-west": "/assets/monsters/night_beast/animations/die__south-west.png",
+          "west": "/assets/monsters/night_beast/animations/die__west.png",
+          "north-west": "/assets/monsters/night_beast/animations/die__north-west.png",
+          "north": "/assets/monsters/night_beast/animations/die__north.png",
+          "north-east": "/assets/monsters/night_beast/animations/die__north-east.png",
+          "east": "/assets/monsters/night_beast/animations/die__east.png",
+          "south-east": "/assets/monsters/night_beast/animations/die__south-east.png"
+        },
+        "attack": {
+          "south": "/assets/monsters/night_beast/animations/attack__south.png",
+          "south-west": "/assets/monsters/night_beast/animations/attack__south-west.png",
+          "west": "/assets/monsters/night_beast/animations/attack__west.png",
+          "north-west": "/assets/monsters/night_beast/animations/attack__north-west.png",
+          "north": "/assets/monsters/night_beast/animations/attack__north.png",
+          "north-east": "/assets/monsters/night_beast/animations/attack__north-east.png",
+          "east": "/assets/monsters/night_beast/animations/attack__east.png",
+          "south-east": "/assets/monsters/night_beast/animations/attack__south-east.png"
+        },
+        "angry": {
+          "south": "/assets/monsters/night_beast/animations/angry__south.png",
+          "south-west": "/assets/monsters/night_beast/animations/angry__south-west.png",
+          "west": "/assets/monsters/night_beast/animations/angry__west.png",
+          "north-west": "/assets/monsters/night_beast/animations/angry__north-west.png",
+          "north": "/assets/monsters/night_beast/animations/angry__north.png",
+          "north-east": "/assets/monsters/night_beast/animations/angry__north-east.png",
+          "east": "/assets/monsters/night_beast/animations/angry__east.png",
+          "south-east": "/assets/monsters/night_beast/animations/angry__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      }
+    },
+    {
+      "id": "lava_salamander_2",
+      "name": "Lava Salamander II",
+      "frameW": 48,
+      "frameH": 48,
+      "root": "lava_salamander_2",
+      "walkAnim": "walk",
+      "animations": {
+        "die": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "attack": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "angry": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "idle": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "walk": {
+          "south": 6,
+          "south-west": 6,
+          "west": 6,
+          "north-west": 6,
+          "north": 6,
+          "north-east": 6,
+          "east": 6,
+          "south-east": 6
+        }
+      },
+      "strips": {
+        "die": {
+          "south": "/assets/monsters/lava_salamander_2/animations/die__south.png",
+          "south-west": "/assets/monsters/lava_salamander_2/animations/die__south-west.png",
+          "west": "/assets/monsters/lava_salamander_2/animations/die__west.png",
+          "north-west": "/assets/monsters/lava_salamander_2/animations/die__north-west.png",
+          "north": "/assets/monsters/lava_salamander_2/animations/die__north.png",
+          "north-east": "/assets/monsters/lava_salamander_2/animations/die__north-east.png",
+          "east": "/assets/monsters/lava_salamander_2/animations/die__east.png",
+          "south-east": "/assets/monsters/lava_salamander_2/animations/die__south-east.png"
+        },
+        "attack": {
+          "south": "/assets/monsters/lava_salamander_2/animations/attack__south.png",
+          "south-west": "/assets/monsters/lava_salamander_2/animations/attack__south-west.png",
+          "west": "/assets/monsters/lava_salamander_2/animations/attack__west.png",
+          "north-west": "/assets/monsters/lava_salamander_2/animations/attack__north-west.png",
+          "north": "/assets/monsters/lava_salamander_2/animations/attack__north.png",
+          "north-east": "/assets/monsters/lava_salamander_2/animations/attack__north-east.png",
+          "east": "/assets/monsters/lava_salamander_2/animations/attack__east.png",
+          "south-east": "/assets/monsters/lava_salamander_2/animations/attack__south-east.png"
+        },
+        "angry": {
+          "south": "/assets/monsters/lava_salamander_2/animations/angry__south.png",
+          "south-west": "/assets/monsters/lava_salamander_2/animations/angry__south-west.png",
+          "west": "/assets/monsters/lava_salamander_2/animations/angry__west.png",
+          "north-west": "/assets/monsters/lava_salamander_2/animations/angry__north-west.png",
+          "north": "/assets/monsters/lava_salamander_2/animations/angry__north.png",
+          "north-east": "/assets/monsters/lava_salamander_2/animations/angry__north-east.png",
+          "east": "/assets/monsters/lava_salamander_2/animations/angry__east.png",
+          "south-east": "/assets/monsters/lava_salamander_2/animations/angry__south-east.png"
+        },
+        "idle": {
+          "south": "/assets/monsters/lava_salamander_2/animations/idle__south.png",
+          "south-west": "/assets/monsters/lava_salamander_2/animations/idle__south-west.png",
+          "west": "/assets/monsters/lava_salamander_2/animations/idle__west.png",
+          "north-west": "/assets/monsters/lava_salamander_2/animations/idle__north-west.png",
+          "north": "/assets/monsters/lava_salamander_2/animations/idle__north.png",
+          "north-east": "/assets/monsters/lava_salamander_2/animations/idle__north-east.png",
+          "east": "/assets/monsters/lava_salamander_2/animations/idle__east.png",
+          "south-east": "/assets/monsters/lava_salamander_2/animations/idle__south-east.png"
+        },
+        "walk": {
+          "south": "/assets/monsters/lava_salamander_2/animations/walk__south.png",
+          "south-west": "/assets/monsters/lava_salamander_2/animations/walk__south-west.png",
+          "west": "/assets/monsters/lava_salamander_2/animations/walk__west.png",
+          "north-west": "/assets/monsters/lava_salamander_2/animations/walk__north-west.png",
+          "north": "/assets/monsters/lava_salamander_2/animations/walk__north.png",
+          "north-east": "/assets/monsters/lava_salamander_2/animations/walk__north-east.png",
+          "east": "/assets/monsters/lava_salamander_2/animations/walk__east.png",
+          "south-east": "/assets/monsters/lava_salamander_2/animations/walk__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      }
+    },
+    {
+      "id": "butterfly_dragon",
+      "name": "Butterfly Dragon",
+      "frameW": 97,
+      "frameH": 97,
+      "root": "butterfly_dragon",
+      "walkAnim": "walk",
+      "animations": {
+        "attack": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "idle": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "walk": {
+          "south": 6,
+          "south-west": 6,
+          "west": 6,
+          "north-west": 6,
+          "north": 6,
+          "north-east": 6,
+          "east": 6,
+          "south-east": 6
+        },
+        "die": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        }
+      },
+      "strips": {
+        "attack": {
+          "south": "/assets/monsters/butterfly_dragon/animations/attack__south.png",
+          "south-west": "/assets/monsters/butterfly_dragon/animations/attack__south-west.png",
+          "west": "/assets/monsters/butterfly_dragon/animations/attack__west.png",
+          "north-west": "/assets/monsters/butterfly_dragon/animations/attack__north-west.png",
+          "north": "/assets/monsters/butterfly_dragon/animations/attack__north.png",
+          "north-east": "/assets/monsters/butterfly_dragon/animations/attack__north-east.png",
+          "east": "/assets/monsters/butterfly_dragon/animations/attack__east.png",
+          "south-east": "/assets/monsters/butterfly_dragon/animations/attack__south-east.png"
+        },
+        "idle": {
+          "south": "/assets/monsters/butterfly_dragon/animations/idle__south.png",
+          "south-west": "/assets/monsters/butterfly_dragon/animations/idle__south-west.png",
+          "west": "/assets/monsters/butterfly_dragon/animations/idle__west.png",
+          "north-west": "/assets/monsters/butterfly_dragon/animations/idle__north-west.png",
+          "north": "/assets/monsters/butterfly_dragon/animations/idle__north.png",
+          "north-east": "/assets/monsters/butterfly_dragon/animations/idle__north-east.png",
+          "east": "/assets/monsters/butterfly_dragon/animations/idle__east.png",
+          "south-east": "/assets/monsters/butterfly_dragon/animations/idle__south-east.png"
+        },
+        "walk": {
+          "south": "/assets/monsters/butterfly_dragon/animations/walk__south.png",
+          "south-west": "/assets/monsters/butterfly_dragon/animations/walk__south-west.png",
+          "west": "/assets/monsters/butterfly_dragon/animations/walk__west.png",
+          "north-west": "/assets/monsters/butterfly_dragon/animations/walk__north-west.png",
+          "north": "/assets/monsters/butterfly_dragon/animations/walk__north.png",
+          "north-east": "/assets/monsters/butterfly_dragon/animations/walk__north-east.png",
+          "east": "/assets/monsters/butterfly_dragon/animations/walk__east.png",
+          "south-east": "/assets/monsters/butterfly_dragon/animations/walk__south-east.png"
+        },
+        "die": {
+          "south": "/assets/monsters/butterfly_dragon/animations/die__south.png",
+          "south-west": "/assets/monsters/butterfly_dragon/animations/die__south-west.png",
+          "west": "/assets/monsters/butterfly_dragon/animations/die__west.png",
+          "north-west": "/assets/monsters/butterfly_dragon/animations/die__north-west.png",
+          "north": "/assets/monsters/butterfly_dragon/animations/die__north.png",
+          "north-east": "/assets/monsters/butterfly_dragon/animations/die__north-east.png",
+          "east": "/assets/monsters/butterfly_dragon/animations/die__east.png",
+          "south-east": "/assets/monsters/butterfly_dragon/animations/die__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      }
+    },
+    {
+      "id": "lava_salamander",
+      "name": "Lava Salamander",
+      "frameW": 48,
+      "frameH": 48,
+      "root": "lava_salamander",
+      "walkAnim": "walk",
+      "animations": {
+        "attack": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "idle": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "angry": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "die": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "walk": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        }
+      },
+      "strips": {
+        "attack": {
+          "south": "/assets/monsters/lava_salamander/animations/attack__south.png",
+          "south-west": "/assets/monsters/lava_salamander/animations/attack__south-west.png",
+          "west": "/assets/monsters/lava_salamander/animations/attack__west.png",
+          "north-west": "/assets/monsters/lava_salamander/animations/attack__north-west.png",
+          "north": "/assets/monsters/lava_salamander/animations/attack__north.png",
+          "north-east": "/assets/monsters/lava_salamander/animations/attack__north-east.png",
+          "east": "/assets/monsters/lava_salamander/animations/attack__east.png",
+          "south-east": "/assets/monsters/lava_salamander/animations/attack__south-east.png"
+        },
+        "idle": {
+          "south": "/assets/monsters/lava_salamander/animations/idle__south.png",
+          "south-west": "/assets/monsters/lava_salamander/animations/idle__south-west.png",
+          "west": "/assets/monsters/lava_salamander/animations/idle__west.png",
+          "north-west": "/assets/monsters/lava_salamander/animations/idle__north-west.png",
+          "north": "/assets/monsters/lava_salamander/animations/idle__north.png",
+          "north-east": "/assets/monsters/lava_salamander/animations/idle__north-east.png",
+          "east": "/assets/monsters/lava_salamander/animations/idle__east.png",
+          "south-east": "/assets/monsters/lava_salamander/animations/idle__south-east.png"
+        },
+        "angry": {
+          "south": "/assets/monsters/lava_salamander/animations/angry__south.png",
+          "south-west": "/assets/monsters/lava_salamander/animations/angry__south-west.png",
+          "west": "/assets/monsters/lava_salamander/animations/angry__west.png",
+          "north-west": "/assets/monsters/lava_salamander/animations/angry__north-west.png",
+          "north": "/assets/monsters/lava_salamander/animations/angry__north.png",
+          "north-east": "/assets/monsters/lava_salamander/animations/angry__north-east.png",
+          "east": "/assets/monsters/lava_salamander/animations/angry__east.png",
+          "south-east": "/assets/monsters/lava_salamander/animations/angry__south-east.png"
+        },
+        "die": {
+          "south": "/assets/monsters/lava_salamander/animations/die__south.png",
+          "south-west": "/assets/monsters/lava_salamander/animations/die__south-west.png",
+          "west": "/assets/monsters/lava_salamander/animations/die__west.png",
+          "north-west": "/assets/monsters/lava_salamander/animations/die__north-west.png",
+          "north": "/assets/monsters/lava_salamander/animations/die__north.png",
+          "north-east": "/assets/monsters/lava_salamander/animations/die__north-east.png",
+          "east": "/assets/monsters/lava_salamander/animations/die__east.png",
+          "south-east": "/assets/monsters/lava_salamander/animations/die__south-east.png"
+        },
+        "walk": {
+          "south": "/assets/monsters/lava_salamander/animations/walk__south.png",
+          "south-west": "/assets/monsters/lava_salamander/animations/walk__south-west.png",
+          "west": "/assets/monsters/lava_salamander/animations/walk__west.png",
+          "north-west": "/assets/monsters/lava_salamander/animations/walk__north-west.png",
+          "north": "/assets/monsters/lava_salamander/animations/walk__north.png",
+          "north-east": "/assets/monsters/lava_salamander/animations/walk__north-east.png",
+          "east": "/assets/monsters/lava_salamander/animations/walk__east.png",
+          "south-east": "/assets/monsters/lava_salamander/animations/walk__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      }
+    },
+    {
+      "id": "ice_crystal_golem",
+      "name": "Ice Crystal Golem",
+      "frameW": 136,
+      "frameH": 136,
+      "root": "ice_crystal_golem",
+      "walkAnim": "walk",
+      "animations": {
+        "attack": {
+          "south": 9,
+          "south-west": 9,
+          "west": 9,
+          "north-west": 9,
+          "north": 9,
+          "north-east": 9,
+          "east": 9,
+          "south-east": 9
+        },
+        "walk": {
+          "south": 5,
+          "south-west": 5,
+          "west": 5,
+          "north-west": 5,
+          "north": 5,
+          "north-east": 5,
+          "east": 5,
+          "south-east": 5
+        },
+        "idle": {
+          "south": 9,
+          "south-west": 9,
+          "west": 9,
+          "north-west": 9,
+          "north": 9,
+          "north-east": 9,
+          "east": 9,
+          "south-east": 9
+        },
+        "die": {
+          "south": 9,
+          "south-west": 9,
+          "west": 9,
+          "north-west": 9,
+          "north": 9,
+          "north-east": 9,
+          "east": 9,
+          "south-east": 9
+        }
+      },
+      "strips": {
+        "attack": {
+          "south": "/assets/monsters/ice_crystal_golem/animations/attack__south.png",
+          "south-west": "/assets/monsters/ice_crystal_golem/animations/attack__south-west.png",
+          "west": "/assets/monsters/ice_crystal_golem/animations/attack__west.png",
+          "north-west": "/assets/monsters/ice_crystal_golem/animations/attack__north-west.png",
+          "north": "/assets/monsters/ice_crystal_golem/animations/attack__north.png",
+          "north-east": "/assets/monsters/ice_crystal_golem/animations/attack__north-east.png",
+          "east": "/assets/monsters/ice_crystal_golem/animations/attack__east.png",
+          "south-east": "/assets/monsters/ice_crystal_golem/animations/attack__south-east.png"
+        },
+        "walk": {
+          "south": "/assets/monsters/ice_crystal_golem/animations/walk__south.png",
+          "south-west": "/assets/monsters/ice_crystal_golem/animations/walk__south-west.png",
+          "west": "/assets/monsters/ice_crystal_golem/animations/walk__west.png",
+          "north-west": "/assets/monsters/ice_crystal_golem/animations/walk__north-west.png",
+          "north": "/assets/monsters/ice_crystal_golem/animations/walk__north.png",
+          "north-east": "/assets/monsters/ice_crystal_golem/animations/walk__north-east.png",
+          "east": "/assets/monsters/ice_crystal_golem/animations/walk__east.png",
+          "south-east": "/assets/monsters/ice_crystal_golem/animations/walk__south-east.png"
+        },
+        "idle": {
+          "south": "/assets/monsters/ice_crystal_golem/animations/idle__south.png",
+          "south-west": "/assets/monsters/ice_crystal_golem/animations/idle__south-west.png",
+          "west": "/assets/monsters/ice_crystal_golem/animations/idle__west.png",
+          "north-west": "/assets/monsters/ice_crystal_golem/animations/idle__north-west.png",
+          "north": "/assets/monsters/ice_crystal_golem/animations/idle__north.png",
+          "north-east": "/assets/monsters/ice_crystal_golem/animations/idle__north-east.png",
+          "east": "/assets/monsters/ice_crystal_golem/animations/idle__east.png",
+          "south-east": "/assets/monsters/ice_crystal_golem/animations/idle__south-east.png"
+        },
+        "die": {
+          "south": "/assets/monsters/ice_crystal_golem/animations/die__south.png",
+          "south-west": "/assets/monsters/ice_crystal_golem/animations/die__south-west.png",
+          "west": "/assets/monsters/ice_crystal_golem/animations/die__west.png",
+          "north-west": "/assets/monsters/ice_crystal_golem/animations/die__north-west.png",
+          "north": "/assets/monsters/ice_crystal_golem/animations/die__north.png",
+          "north-east": "/assets/monsters/ice_crystal_golem/animations/die__north-east.png",
+          "east": "/assets/monsters/ice_crystal_golem/animations/die__east.png",
+          "south-east": "/assets/monsters/ice_crystal_golem/animations/die__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      }
+    },
+    {
+      "id": "stone_turtle",
+      "name": "Stone Turtle",
+      "frameW": 68,
+      "frameH": 68,
+      "root": "stone_turtle",
+      "walkAnim": "walk",
+      "animations": {
+        "walk": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "attack": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "angry": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "idle": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "die": {
+          "south": 9,
+          "south-west": 9,
+          "west": 9,
+          "north-west": 9,
+          "north": 9,
+          "north-east": 9,
+          "east": 9,
+          "south-east": 9
+        }
+      },
+      "strips": {
+        "walk": {
+          "south": "/assets/monsters/stone_turtle/animations/walk__south.png",
+          "south-west": "/assets/monsters/stone_turtle/animations/walk__south-west.png",
+          "west": "/assets/monsters/stone_turtle/animations/walk__west.png",
+          "north-west": "/assets/monsters/stone_turtle/animations/walk__north-west.png",
+          "north": "/assets/monsters/stone_turtle/animations/walk__north.png",
+          "north-east": "/assets/monsters/stone_turtle/animations/walk__north-east.png",
+          "east": "/assets/monsters/stone_turtle/animations/walk__east.png",
+          "south-east": "/assets/monsters/stone_turtle/animations/walk__south-east.png"
+        },
+        "attack": {
+          "south": "/assets/monsters/stone_turtle/animations/attack__south.png",
+          "south-west": "/assets/monsters/stone_turtle/animations/attack__south-west.png",
+          "west": "/assets/monsters/stone_turtle/animations/attack__west.png",
+          "north-west": "/assets/monsters/stone_turtle/animations/attack__north-west.png",
+          "north": "/assets/monsters/stone_turtle/animations/attack__north.png",
+          "north-east": "/assets/monsters/stone_turtle/animations/attack__north-east.png",
+          "east": "/assets/monsters/stone_turtle/animations/attack__east.png",
+          "south-east": "/assets/monsters/stone_turtle/animations/attack__south-east.png"
+        },
+        "angry": {
+          "south": "/assets/monsters/stone_turtle/animations/angry__south.png",
+          "south-west": "/assets/monsters/stone_turtle/animations/angry__south-west.png",
+          "west": "/assets/monsters/stone_turtle/animations/angry__west.png",
+          "north-west": "/assets/monsters/stone_turtle/animations/angry__north-west.png",
+          "north": "/assets/monsters/stone_turtle/animations/angry__north.png",
+          "north-east": "/assets/monsters/stone_turtle/animations/angry__north-east.png",
+          "east": "/assets/monsters/stone_turtle/animations/angry__east.png",
+          "south-east": "/assets/monsters/stone_turtle/animations/angry__south-east.png"
+        },
+        "idle": {
+          "south": "/assets/monsters/stone_turtle/animations/idle__south.png",
+          "south-west": "/assets/monsters/stone_turtle/animations/idle__south-west.png",
+          "west": "/assets/monsters/stone_turtle/animations/idle__west.png",
+          "north-west": "/assets/monsters/stone_turtle/animations/idle__north-west.png",
+          "north": "/assets/monsters/stone_turtle/animations/idle__north.png",
+          "north-east": "/assets/monsters/stone_turtle/animations/idle__north-east.png",
+          "east": "/assets/monsters/stone_turtle/animations/idle__east.png",
+          "south-east": "/assets/monsters/stone_turtle/animations/idle__south-east.png"
+        },
+        "die": {
+          "south": "/assets/monsters/stone_turtle/animations/die__south.png",
+          "south-west": "/assets/monsters/stone_turtle/animations/die__south-west.png",
+          "west": "/assets/monsters/stone_turtle/animations/die__west.png",
+          "north-west": "/assets/monsters/stone_turtle/animations/die__north-west.png",
+          "north": "/assets/monsters/stone_turtle/animations/die__north.png",
+          "north-east": "/assets/monsters/stone_turtle/animations/die__north-east.png",
+          "east": "/assets/monsters/stone_turtle/animations/die__east.png",
+          "south-east": "/assets/monsters/stone_turtle/animations/die__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      }
+    },
+    {
+      "id": "tree_stump",
+      "name": "Mossy Tree Stump",
+      "frameW": 48,
+      "frameH": 48,
+      "root": "tree_stump",
+      "walkAnim": "walk",
+      "animations": {
+        "idle": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "walk": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "angry": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "die": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "attack": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        }
+      },
+      "strips": {
+        "idle": {
+          "south": "/assets/monsters/tree_stump/animations/idle__south.png",
+          "south-west": "/assets/monsters/tree_stump/animations/idle__south-west.png",
+          "west": "/assets/monsters/tree_stump/animations/idle__west.png",
+          "north-west": "/assets/monsters/tree_stump/animations/idle__north-west.png",
+          "north": "/assets/monsters/tree_stump/animations/idle__north.png",
+          "north-east": "/assets/monsters/tree_stump/animations/idle__north-east.png",
+          "east": "/assets/monsters/tree_stump/animations/idle__east.png",
+          "south-east": "/assets/monsters/tree_stump/animations/idle__south-east.png"
+        },
+        "walk": {
+          "south": "/assets/monsters/tree_stump/animations/walk__south.png",
+          "south-west": "/assets/monsters/tree_stump/animations/walk__south-west.png",
+          "west": "/assets/monsters/tree_stump/animations/walk__west.png",
+          "north-west": "/assets/monsters/tree_stump/animations/walk__north-west.png",
+          "north": "/assets/monsters/tree_stump/animations/walk__north.png",
+          "north-east": "/assets/monsters/tree_stump/animations/walk__north-east.png",
+          "east": "/assets/monsters/tree_stump/animations/walk__east.png",
+          "south-east": "/assets/monsters/tree_stump/animations/walk__south-east.png"
+        },
+        "angry": {
+          "south": "/assets/monsters/tree_stump/animations/angry__south.png",
+          "south-west": "/assets/monsters/tree_stump/animations/angry__south-west.png",
+          "west": "/assets/monsters/tree_stump/animations/angry__west.png",
+          "north-west": "/assets/monsters/tree_stump/animations/angry__north-west.png",
+          "north": "/assets/monsters/tree_stump/animations/angry__north.png",
+          "north-east": "/assets/monsters/tree_stump/animations/angry__north-east.png",
+          "east": "/assets/monsters/tree_stump/animations/angry__east.png",
+          "south-east": "/assets/monsters/tree_stump/animations/angry__south-east.png"
+        },
+        "die": {
+          "south": "/assets/monsters/tree_stump/animations/die__south.png",
+          "south-west": "/assets/monsters/tree_stump/animations/die__south-west.png",
+          "west": "/assets/monsters/tree_stump/animations/die__west.png",
+          "north-west": "/assets/monsters/tree_stump/animations/die__north-west.png",
+          "north": "/assets/monsters/tree_stump/animations/die__north.png",
+          "north-east": "/assets/monsters/tree_stump/animations/die__north-east.png",
+          "east": "/assets/monsters/tree_stump/animations/die__east.png",
+          "south-east": "/assets/monsters/tree_stump/animations/die__south-east.png"
+        },
+        "attack": {
+          "south": "/assets/monsters/tree_stump/animations/attack__south.png",
+          "south-west": "/assets/monsters/tree_stump/animations/attack__south-west.png",
+          "west": "/assets/monsters/tree_stump/animations/attack__west.png",
+          "north-west": "/assets/monsters/tree_stump/animations/attack__north-west.png",
+          "north": "/assets/monsters/tree_stump/animations/attack__north.png",
+          "north-east": "/assets/monsters/tree_stump/animations/attack__north-east.png",
+          "east": "/assets/monsters/tree_stump/animations/attack__east.png",
+          "south-east": "/assets/monsters/tree_stump/animations/attack__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      }
+    },
+    {
+      "id": "snow_demon",
+      "name": "Skinny Snow Demon",
+      "frameW": 113,
+      "frameH": 113,
+      "root": "snow_demon",
+      "walkAnim": "walk",
+      "animations": {
+        "angry": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "attack": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "walk": {
+          "south": 6,
+          "south-west": 6,
+          "west": 6,
+          "north-west": 6,
+          "north": 6,
+          "north-east": 6,
+          "east": 6,
+          "south-east": 6
+        },
+        "die": {
+          "south": 9,
+          "south-west": 9,
+          "west": 9,
+          "north-west": 9,
+          "north": 9,
+          "north-east": 9,
+          "east": 9,
+          "south-east": 9
+        },
+        "idle": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        }
+      },
+      "strips": {
+        "angry": {
+          "south": "/assets/monsters/snow_demon/animations/angry__south.png",
+          "south-west": "/assets/monsters/snow_demon/animations/angry__south-west.png",
+          "west": "/assets/monsters/snow_demon/animations/angry__west.png",
+          "north-west": "/assets/monsters/snow_demon/animations/angry__north-west.png",
+          "north": "/assets/monsters/snow_demon/animations/angry__north.png",
+          "north-east": "/assets/monsters/snow_demon/animations/angry__north-east.png",
+          "east": "/assets/monsters/snow_demon/animations/angry__east.png",
+          "south-east": "/assets/monsters/snow_demon/animations/angry__south-east.png"
+        },
+        "attack": {
+          "south": "/assets/monsters/snow_demon/animations/attack__south.png",
+          "south-west": "/assets/monsters/snow_demon/animations/attack__south-west.png",
+          "west": "/assets/monsters/snow_demon/animations/attack__west.png",
+          "north-west": "/assets/monsters/snow_demon/animations/attack__north-west.png",
+          "north": "/assets/monsters/snow_demon/animations/attack__north.png",
+          "north-east": "/assets/monsters/snow_demon/animations/attack__north-east.png",
+          "east": "/assets/monsters/snow_demon/animations/attack__east.png",
+          "south-east": "/assets/monsters/snow_demon/animations/attack__south-east.png"
+        },
+        "walk": {
+          "south": "/assets/monsters/snow_demon/animations/walk__south.png",
+          "south-west": "/assets/monsters/snow_demon/animations/walk__south-west.png",
+          "west": "/assets/monsters/snow_demon/animations/walk__west.png",
+          "north-west": "/assets/monsters/snow_demon/animations/walk__north-west.png",
+          "north": "/assets/monsters/snow_demon/animations/walk__north.png",
+          "north-east": "/assets/monsters/snow_demon/animations/walk__north-east.png",
+          "east": "/assets/monsters/snow_demon/animations/walk__east.png",
+          "south-east": "/assets/monsters/snow_demon/animations/walk__south-east.png"
+        },
+        "die": {
+          "south": "/assets/monsters/snow_demon/animations/die__south.png",
+          "south-west": "/assets/monsters/snow_demon/animations/die__south-west.png",
+          "west": "/assets/monsters/snow_demon/animations/die__west.png",
+          "north-west": "/assets/monsters/snow_demon/animations/die__north-west.png",
+          "north": "/assets/monsters/snow_demon/animations/die__north.png",
+          "north-east": "/assets/monsters/snow_demon/animations/die__north-east.png",
+          "east": "/assets/monsters/snow_demon/animations/die__east.png",
+          "south-east": "/assets/monsters/snow_demon/animations/die__south-east.png"
+        },
+        "idle": {
+          "south": "/assets/monsters/snow_demon/animations/idle__south.png",
+          "south-west": "/assets/monsters/snow_demon/animations/idle__south-west.png",
+          "west": "/assets/monsters/snow_demon/animations/idle__west.png",
+          "north-west": "/assets/monsters/snow_demon/animations/idle__north-west.png",
+          "north": "/assets/monsters/snow_demon/animations/idle__north.png",
+          "north-east": "/assets/monsters/snow_demon/animations/idle__north-east.png",
+          "east": "/assets/monsters/snow_demon/animations/idle__east.png",
+          "south-east": "/assets/monsters/snow_demon/animations/idle__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      }
+    },
+    {
+      "id": "stone_golem",
+      "name": "Stone Golem",
+      "frameW": 136,
+      "frameH": 136,
+      "root": "stone_golem",
+      "walkAnim": "walk",
+      "animations": {
+        "angry": {
+          "south": 9,
+          "north-west": 9,
+          "north": 9,
+          "east": 9,
+          "south-east": 9
+        },
+        "die": {
+          "south": 9,
+          "south-west": 9,
+          "west": 9,
+          "north-west": 9,
+          "north": 9,
+          "north-east": 9,
+          "east": 9,
+          "south-east": 9
+        },
+        "attack": {
+          "south": 9,
+          "south-west": 9,
+          "west": 9,
+          "north-west": 9,
+          "north": 9,
+          "north-east": 9,
+          "east": 9,
+          "south-east": 9
+        },
+        "idle": {
+          "south": 9,
+          "south-west": 9,
+          "west": 9,
+          "north-west": 9,
+          "north": 9,
+          "north-east": 9,
+          "east": 9,
+          "south-east": 9
+        },
+        "walk": {
+          "south": 9,
+          "south-west": 9,
+          "west": 9,
+          "north-west": 9,
+          "north": 9,
+          "north-east": 9,
+          "east": 9,
+          "south-east": 9
+        }
+      },
+      "strips": {
+        "angry": {
+          "south": "/assets/monsters/stone_golem/animations/angry__south.png",
+          "north-west": "/assets/monsters/stone_golem/animations/angry__north-west.png",
+          "north": "/assets/monsters/stone_golem/animations/angry__north.png",
+          "east": "/assets/monsters/stone_golem/animations/angry__east.png",
+          "south-east": "/assets/monsters/stone_golem/animations/angry__south-east.png"
+        },
+        "die": {
+          "south": "/assets/monsters/stone_golem/animations/die__south.png",
+          "south-west": "/assets/monsters/stone_golem/animations/die__south-west.png",
+          "west": "/assets/monsters/stone_golem/animations/die__west.png",
+          "north-west": "/assets/monsters/stone_golem/animations/die__north-west.png",
+          "north": "/assets/monsters/stone_golem/animations/die__north.png",
+          "north-east": "/assets/monsters/stone_golem/animations/die__north-east.png",
+          "east": "/assets/monsters/stone_golem/animations/die__east.png",
+          "south-east": "/assets/monsters/stone_golem/animations/die__south-east.png"
+        },
+        "attack": {
+          "south": "/assets/monsters/stone_golem/animations/attack__south.png",
+          "south-west": "/assets/monsters/stone_golem/animations/attack__south-west.png",
+          "west": "/assets/monsters/stone_golem/animations/attack__west.png",
+          "north-west": "/assets/monsters/stone_golem/animations/attack__north-west.png",
+          "north": "/assets/monsters/stone_golem/animations/attack__north.png",
+          "north-east": "/assets/monsters/stone_golem/animations/attack__north-east.png",
+          "east": "/assets/monsters/stone_golem/animations/attack__east.png",
+          "south-east": "/assets/monsters/stone_golem/animations/attack__south-east.png"
+        },
+        "idle": {
+          "south": "/assets/monsters/stone_golem/animations/idle__south.png",
+          "south-west": "/assets/monsters/stone_golem/animations/idle__south-west.png",
+          "west": "/assets/monsters/stone_golem/animations/idle__west.png",
+          "north-west": "/assets/monsters/stone_golem/animations/idle__north-west.png",
+          "north": "/assets/monsters/stone_golem/animations/idle__north.png",
+          "north-east": "/assets/monsters/stone_golem/animations/idle__north-east.png",
+          "east": "/assets/monsters/stone_golem/animations/idle__east.png",
+          "south-east": "/assets/monsters/stone_golem/animations/idle__south-east.png"
+        },
+        "walk": {
+          "south": "/assets/monsters/stone_golem/animations/walk__south.png",
+          "south-west": "/assets/monsters/stone_golem/animations/walk__south-west.png",
+          "west": "/assets/monsters/stone_golem/animations/walk__west.png",
+          "north-west": "/assets/monsters/stone_golem/animations/walk__north-west.png",
+          "north": "/assets/monsters/stone_golem/animations/walk__north.png",
+          "north-east": "/assets/monsters/stone_golem/animations/walk__north-east.png",
+          "east": "/assets/monsters/stone_golem/animations/walk__east.png",
+          "south-east": "/assets/monsters/stone_golem/animations/walk__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      }
+    },
+    {
+      "id": "forest_poring_2",
+      "name": "Forest Poring II",
+      "frameW": 48,
+      "frameH": 48,
+      "root": "forest_poring_2",
+      "walkAnim": "walk",
+      "animations": {
+        "idle": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "attack": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "walk": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "die": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        }
+      },
+      "strips": {
+        "idle": {
+          "south": "/assets/monsters/forest_poring_2/animations/idle__south.png",
+          "south-west": "/assets/monsters/forest_poring_2/animations/idle__south-west.png",
+          "west": "/assets/monsters/forest_poring_2/animations/idle__west.png",
+          "north-west": "/assets/monsters/forest_poring_2/animations/idle__north-west.png",
+          "north": "/assets/monsters/forest_poring_2/animations/idle__north.png",
+          "north-east": "/assets/monsters/forest_poring_2/animations/idle__north-east.png",
+          "east": "/assets/monsters/forest_poring_2/animations/idle__east.png",
+          "south-east": "/assets/monsters/forest_poring_2/animations/idle__south-east.png"
+        },
+        "attack": {
+          "south": "/assets/monsters/forest_poring_2/animations/attack__south.png",
+          "south-west": "/assets/monsters/forest_poring_2/animations/attack__south-west.png",
+          "west": "/assets/monsters/forest_poring_2/animations/attack__west.png",
+          "north-west": "/assets/monsters/forest_poring_2/animations/attack__north-west.png",
+          "north": "/assets/monsters/forest_poring_2/animations/attack__north.png",
+          "north-east": "/assets/monsters/forest_poring_2/animations/attack__north-east.png",
+          "east": "/assets/monsters/forest_poring_2/animations/attack__east.png",
+          "south-east": "/assets/monsters/forest_poring_2/animations/attack__south-east.png"
+        },
+        "walk": {
+          "south": "/assets/monsters/forest_poring_2/animations/walk__south.png",
+          "south-west": "/assets/monsters/forest_poring_2/animations/walk__south-west.png",
+          "west": "/assets/monsters/forest_poring_2/animations/walk__west.png",
+          "north-west": "/assets/monsters/forest_poring_2/animations/walk__north-west.png",
+          "north": "/assets/monsters/forest_poring_2/animations/walk__north.png",
+          "north-east": "/assets/monsters/forest_poring_2/animations/walk__north-east.png",
+          "east": "/assets/monsters/forest_poring_2/animations/walk__east.png",
+          "south-east": "/assets/monsters/forest_poring_2/animations/walk__south-east.png"
+        },
+        "die": {
+          "south": "/assets/monsters/forest_poring_2/animations/die__south.png",
+          "south-west": "/assets/monsters/forest_poring_2/animations/die__south-west.png",
+          "west": "/assets/monsters/forest_poring_2/animations/die__west.png",
+          "north-west": "/assets/monsters/forest_poring_2/animations/die__north-west.png",
+          "north": "/assets/monsters/forest_poring_2/animations/die__north.png",
+          "north-east": "/assets/monsters/forest_poring_2/animations/die__north-east.png",
+          "east": "/assets/monsters/forest_poring_2/animations/die__east.png",
+          "south-east": "/assets/monsters/forest_poring_2/animations/die__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      }
+    },
+    {
+      "id": "diablo_2",
+      "name": "Diablo II",
+      "frameW": 136,
+      "frameH": 136,
+      "root": "diablo_2",
+      "walkAnim": "walk",
+      "animations": {
+        "angry": {
+          "north": 9
+        },
+        "attack": {
+          "south": 9,
+          "south-west": 9,
+          "west": 9,
+          "north-west": 9,
+          "north": 9,
+          "north-east": 9,
+          "east": 9,
+          "south-east": 9
+        },
+        "die": {
+          "south": 9,
+          "south-west": 9,
+          "west": 9,
+          "north-west": 9,
+          "north": 9,
+          "north-east": 9,
+          "east": 9,
+          "south-east": 9
+        },
+        "walk": {
+          "south": 9,
+          "south-west": 9,
+          "west": 9,
+          "north-west": 9,
+          "north": 9,
+          "north-east": 9,
+          "east": 9,
+          "south-east": 9
+        },
+        "idle": {
+          "south": 9,
+          "south-west": 9,
+          "west": 9,
+          "north-west": 9,
+          "north": 9,
+          "north-east": 9,
+          "east": 9,
+          "south-east": 9
+        }
+      },
+      "strips": {
+        "angry": {
+          "north": "/assets/monsters/diablo_2/animations/angry__north.png"
+        },
+        "attack": {
+          "south": "/assets/monsters/diablo_2/animations/attack__south.png",
+          "south-west": "/assets/monsters/diablo_2/animations/attack__south-west.png",
+          "west": "/assets/monsters/diablo_2/animations/attack__west.png",
+          "north-west": "/assets/monsters/diablo_2/animations/attack__north-west.png",
+          "north": "/assets/monsters/diablo_2/animations/attack__north.png",
+          "north-east": "/assets/monsters/diablo_2/animations/attack__north-east.png",
+          "east": "/assets/monsters/diablo_2/animations/attack__east.png",
+          "south-east": "/assets/monsters/diablo_2/animations/attack__south-east.png"
+        },
+        "die": {
+          "south": "/assets/monsters/diablo_2/animations/die__south.png",
+          "south-west": "/assets/monsters/diablo_2/animations/die__south-west.png",
+          "west": "/assets/monsters/diablo_2/animations/die__west.png",
+          "north-west": "/assets/monsters/diablo_2/animations/die__north-west.png",
+          "north": "/assets/monsters/diablo_2/animations/die__north.png",
+          "north-east": "/assets/monsters/diablo_2/animations/die__north-east.png",
+          "east": "/assets/monsters/diablo_2/animations/die__east.png",
+          "south-east": "/assets/monsters/diablo_2/animations/die__south-east.png"
+        },
+        "walk": {
+          "south": "/assets/monsters/diablo_2/animations/walk__south.png",
+          "south-west": "/assets/monsters/diablo_2/animations/walk__south-west.png",
+          "west": "/assets/monsters/diablo_2/animations/walk__west.png",
+          "north-west": "/assets/monsters/diablo_2/animations/walk__north-west.png",
+          "north": "/assets/monsters/diablo_2/animations/walk__north.png",
+          "north-east": "/assets/monsters/diablo_2/animations/walk__north-east.png",
+          "east": "/assets/monsters/diablo_2/animations/walk__east.png",
+          "south-east": "/assets/monsters/diablo_2/animations/walk__south-east.png"
+        },
+        "idle": {
+          "south": "/assets/monsters/diablo_2/animations/idle__south.png",
+          "south-west": "/assets/monsters/diablo_2/animations/idle__south-west.png",
+          "west": "/assets/monsters/diablo_2/animations/idle__west.png",
+          "north-west": "/assets/monsters/diablo_2/animations/idle__north-west.png",
+          "north": "/assets/monsters/diablo_2/animations/idle__north.png",
+          "north-east": "/assets/monsters/diablo_2/animations/idle__north-east.png",
+          "east": "/assets/monsters/diablo_2/animations/idle__east.png",
+          "south-east": "/assets/monsters/diablo_2/animations/idle__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      }
+    },
+    {
+      "id": "diablo",
+      "name": "Diablo",
+      "frameW": 97,
+      "frameH": 97,
+      "root": "diablo",
+      "walkAnim": "walk",
+      "animations": {
+        "idle": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "attack": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "die": {
+          "south": 9,
+          "south-west": 9,
+          "west": 9,
+          "north-west": 9,
+          "north": 9,
+          "north-east": 9,
+          "east": 9,
+          "south-east": 9
+        },
+        "walk": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        }
+      },
+      "strips": {
+        "idle": {
+          "south": "/assets/monsters/diablo/animations/idle__south.png",
+          "south-west": "/assets/monsters/diablo/animations/idle__south-west.png",
+          "west": "/assets/monsters/diablo/animations/idle__west.png",
+          "north-west": "/assets/monsters/diablo/animations/idle__north-west.png",
+          "north": "/assets/monsters/diablo/animations/idle__north.png",
+          "north-east": "/assets/monsters/diablo/animations/idle__north-east.png",
+          "east": "/assets/monsters/diablo/animations/idle__east.png",
+          "south-east": "/assets/monsters/diablo/animations/idle__south-east.png"
+        },
+        "attack": {
+          "south": "/assets/monsters/diablo/animations/attack__south.png",
+          "south-west": "/assets/monsters/diablo/animations/attack__south-west.png",
+          "west": "/assets/monsters/diablo/animations/attack__west.png",
+          "north-west": "/assets/monsters/diablo/animations/attack__north-west.png",
+          "north": "/assets/monsters/diablo/animations/attack__north.png",
+          "north-east": "/assets/monsters/diablo/animations/attack__north-east.png",
+          "east": "/assets/monsters/diablo/animations/attack__east.png",
+          "south-east": "/assets/monsters/diablo/animations/attack__south-east.png"
+        },
+        "die": {
+          "south": "/assets/monsters/diablo/animations/die__south.png",
+          "south-west": "/assets/monsters/diablo/animations/die__south-west.png",
+          "west": "/assets/monsters/diablo/animations/die__west.png",
+          "north-west": "/assets/monsters/diablo/animations/die__north-west.png",
+          "north": "/assets/monsters/diablo/animations/die__north.png",
+          "north-east": "/assets/monsters/diablo/animations/die__north-east.png",
+          "east": "/assets/monsters/diablo/animations/die__east.png",
+          "south-east": "/assets/monsters/diablo/animations/die__south-east.png"
+        },
+        "walk": {
+          "south": "/assets/monsters/diablo/animations/walk__south.png",
+          "south-west": "/assets/monsters/diablo/animations/walk__south-west.png",
+          "west": "/assets/monsters/diablo/animations/walk__west.png",
+          "north-west": "/assets/monsters/diablo/animations/walk__north-west.png",
+          "north": "/assets/monsters/diablo/animations/walk__north.png",
+          "north-east": "/assets/monsters/diablo/animations/walk__north-east.png",
+          "east": "/assets/monsters/diablo/animations/walk__east.png",
+          "south-east": "/assets/monsters/diablo/animations/walk__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      }
+    },
+    {
+      "id": "dark_donkey",
+      "name": "Dark Donkey",
+      "frameW": 124,
+      "frameH": 124,
+      "root": "dark_donkey",
+      "walkAnim": "walk",
+      "animations": {
+        "attack": {
+          "south": 8,
+          "south-west": 8,
+          "west": 8,
+          "north-west": 8,
+          "north": 8,
+          "north-east": 8,
+          "east": 8,
+          "south-east": 8
+        },
+        "angry": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "idle": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "walk": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "die": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        }
+      },
+      "strips": {
+        "attack": {
+          "south": "/assets/monsters/dark_donkey/animations/attack__south.png",
+          "south-west": "/assets/monsters/dark_donkey/animations/attack__south-west.png",
+          "west": "/assets/monsters/dark_donkey/animations/attack__west.png",
+          "north-west": "/assets/monsters/dark_donkey/animations/attack__north-west.png",
+          "north": "/assets/monsters/dark_donkey/animations/attack__north.png",
+          "north-east": "/assets/monsters/dark_donkey/animations/attack__north-east.png",
+          "east": "/assets/monsters/dark_donkey/animations/attack__east.png",
+          "south-east": "/assets/monsters/dark_donkey/animations/attack__south-east.png"
+        },
+        "angry": {
+          "south": "/assets/monsters/dark_donkey/animations/angry__south.png",
+          "south-west": "/assets/monsters/dark_donkey/animations/angry__south-west.png",
+          "west": "/assets/monsters/dark_donkey/animations/angry__west.png",
+          "north-west": "/assets/monsters/dark_donkey/animations/angry__north-west.png",
+          "north": "/assets/monsters/dark_donkey/animations/angry__north.png",
+          "north-east": "/assets/monsters/dark_donkey/animations/angry__north-east.png",
+          "east": "/assets/monsters/dark_donkey/animations/angry__east.png",
+          "south-east": "/assets/monsters/dark_donkey/animations/angry__south-east.png"
+        },
+        "idle": {
+          "south": "/assets/monsters/dark_donkey/animations/idle__south.png",
+          "south-west": "/assets/monsters/dark_donkey/animations/idle__south-west.png",
+          "west": "/assets/monsters/dark_donkey/animations/idle__west.png",
+          "north-west": "/assets/monsters/dark_donkey/animations/idle__north-west.png",
+          "north": "/assets/monsters/dark_donkey/animations/idle__north.png",
+          "north-east": "/assets/monsters/dark_donkey/animations/idle__north-east.png",
+          "east": "/assets/monsters/dark_donkey/animations/idle__east.png",
+          "south-east": "/assets/monsters/dark_donkey/animations/idle__south-east.png"
+        },
+        "walk": {
+          "south": "/assets/monsters/dark_donkey/animations/walk__south.png",
+          "south-west": "/assets/monsters/dark_donkey/animations/walk__south-west.png",
+          "west": "/assets/monsters/dark_donkey/animations/walk__west.png",
+          "north-west": "/assets/monsters/dark_donkey/animations/walk__north-west.png",
+          "north": "/assets/monsters/dark_donkey/animations/walk__north.png",
+          "north-east": "/assets/monsters/dark_donkey/animations/walk__north-east.png",
+          "east": "/assets/monsters/dark_donkey/animations/walk__east.png",
+          "south-east": "/assets/monsters/dark_donkey/animations/walk__south-east.png"
+        },
+        "die": {
+          "south": "/assets/monsters/dark_donkey/animations/die__south.png",
+          "south-west": "/assets/monsters/dark_donkey/animations/die__south-west.png",
+          "west": "/assets/monsters/dark_donkey/animations/die__west.png",
+          "north-west": "/assets/monsters/dark_donkey/animations/die__north-west.png",
+          "north": "/assets/monsters/dark_donkey/animations/die__north.png",
+          "north-east": "/assets/monsters/dark_donkey/animations/die__north-east.png",
+          "east": "/assets/monsters/dark_donkey/animations/die__east.png",
+          "south-east": "/assets/monsters/dark_donkey/animations/die__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      }
+    },
+    {
+      "id": "saber_toothed_tiger",
+      "name": "Dark Saber-Toothed Tiger",
+      "frameW": 84,
+      "frameH": 84,
+      "root": "saber_toothed_tiger",
+      "walkAnim": "walk",
+      "animations": {
+        "angry": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "attack": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "idle": {
+          "south": 9,
+          "south-west": 9,
+          "west": 9,
+          "north-west": 9,
+          "north": 9,
+          "north-east": 9,
+          "east": 9,
+          "south-east": 9
+        },
+        "walk": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        }
+      },
+      "strips": {
+        "angry": {
+          "south": "/assets/monsters/saber_toothed_tiger/animations/angry__south.png",
+          "south-west": "/assets/monsters/saber_toothed_tiger/animations/angry__south-west.png",
+          "west": "/assets/monsters/saber_toothed_tiger/animations/angry__west.png",
+          "north-west": "/assets/monsters/saber_toothed_tiger/animations/angry__north-west.png",
+          "north": "/assets/monsters/saber_toothed_tiger/animations/angry__north.png",
+          "north-east": "/assets/monsters/saber_toothed_tiger/animations/angry__north-east.png",
+          "east": "/assets/monsters/saber_toothed_tiger/animations/angry__east.png",
+          "south-east": "/assets/monsters/saber_toothed_tiger/animations/angry__south-east.png"
+        },
+        "attack": {
+          "south": "/assets/monsters/saber_toothed_tiger/animations/attack__south.png",
+          "south-west": "/assets/monsters/saber_toothed_tiger/animations/attack__south-west.png",
+          "west": "/assets/monsters/saber_toothed_tiger/animations/attack__west.png",
+          "north-west": "/assets/monsters/saber_toothed_tiger/animations/attack__north-west.png",
+          "north": "/assets/monsters/saber_toothed_tiger/animations/attack__north.png",
+          "north-east": "/assets/monsters/saber_toothed_tiger/animations/attack__north-east.png",
+          "east": "/assets/monsters/saber_toothed_tiger/animations/attack__east.png",
+          "south-east": "/assets/monsters/saber_toothed_tiger/animations/attack__south-east.png"
+        },
+        "idle": {
+          "south": "/assets/monsters/saber_toothed_tiger/animations/idle__south.png",
+          "south-west": "/assets/monsters/saber_toothed_tiger/animations/idle__south-west.png",
+          "west": "/assets/monsters/saber_toothed_tiger/animations/idle__west.png",
+          "north-west": "/assets/monsters/saber_toothed_tiger/animations/idle__north-west.png",
+          "north": "/assets/monsters/saber_toothed_tiger/animations/idle__north.png",
+          "north-east": "/assets/monsters/saber_toothed_tiger/animations/idle__north-east.png",
+          "east": "/assets/monsters/saber_toothed_tiger/animations/idle__east.png",
+          "south-east": "/assets/monsters/saber_toothed_tiger/animations/idle__south-east.png"
+        },
+        "walk": {
+          "south": "/assets/monsters/saber_toothed_tiger/animations/walk__south.png",
+          "south-west": "/assets/monsters/saber_toothed_tiger/animations/walk__south-west.png",
+          "west": "/assets/monsters/saber_toothed_tiger/animations/walk__west.png",
+          "north-west": "/assets/monsters/saber_toothed_tiger/animations/walk__north-west.png",
+          "north": "/assets/monsters/saber_toothed_tiger/animations/walk__north.png",
+          "north-east": "/assets/monsters/saber_toothed_tiger/animations/walk__north-east.png",
+          "east": "/assets/monsters/saber_toothed_tiger/animations/walk__east.png",
+          "south-east": "/assets/monsters/saber_toothed_tiger/animations/walk__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      }
+    },
+    {
+      "id": "mammoth",
+      "name": "Mammoth",
+      "frameW": 256,
+      "frameH": 256,
+      "root": "mammoth",
+      "walkAnim": "walk",
+      "animations": {
+        "angry": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "attack": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "idle": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "walk": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "die": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        }
+      },
+      "strips": {
+        "angry": {
+          "south": "/assets/monsters/mammoth/animations/angry__south.png",
+          "south-west": "/assets/monsters/mammoth/animations/angry__south-west.png",
+          "west": "/assets/monsters/mammoth/animations/angry__west.png",
+          "north-west": "/assets/monsters/mammoth/animations/angry__north-west.png",
+          "north": "/assets/monsters/mammoth/animations/angry__north.png",
+          "north-east": "/assets/monsters/mammoth/animations/angry__north-east.png",
+          "east": "/assets/monsters/mammoth/animations/angry__east.png",
+          "south-east": "/assets/monsters/mammoth/animations/angry__south-east.png"
+        },
+        "attack": {
+          "south": "/assets/monsters/mammoth/animations/attack__south.png",
+          "south-west": "/assets/monsters/mammoth/animations/attack__south-west.png",
+          "west": "/assets/monsters/mammoth/animations/attack__west.png",
+          "north-west": "/assets/monsters/mammoth/animations/attack__north-west.png",
+          "north": "/assets/monsters/mammoth/animations/attack__north.png",
+          "north-east": "/assets/monsters/mammoth/animations/attack__north-east.png",
+          "east": "/assets/monsters/mammoth/animations/attack__east.png",
+          "south-east": "/assets/monsters/mammoth/animations/attack__south-east.png"
+        },
+        "idle": {
+          "south": "/assets/monsters/mammoth/animations/idle__south.png",
+          "south-west": "/assets/monsters/mammoth/animations/idle__south-west.png",
+          "west": "/assets/monsters/mammoth/animations/idle__west.png",
+          "north-west": "/assets/monsters/mammoth/animations/idle__north-west.png",
+          "north": "/assets/monsters/mammoth/animations/idle__north.png",
+          "north-east": "/assets/monsters/mammoth/animations/idle__north-east.png",
+          "east": "/assets/monsters/mammoth/animations/idle__east.png",
+          "south-east": "/assets/monsters/mammoth/animations/idle__south-east.png"
+        },
+        "walk": {
+          "south": "/assets/monsters/mammoth/animations/walk__south.png",
+          "south-west": "/assets/monsters/mammoth/animations/walk__south-west.png",
+          "west": "/assets/monsters/mammoth/animations/walk__west.png",
+          "north-west": "/assets/monsters/mammoth/animations/walk__north-west.png",
+          "north": "/assets/monsters/mammoth/animations/walk__north.png",
+          "north-east": "/assets/monsters/mammoth/animations/walk__north-east.png",
+          "east": "/assets/monsters/mammoth/animations/walk__east.png",
+          "south-east": "/assets/monsters/mammoth/animations/walk__south-east.png"
+        },
+        "die": {
+          "south": "/assets/monsters/mammoth/animations/die__south.png",
+          "south-west": "/assets/monsters/mammoth/animations/die__south-west.png",
+          "west": "/assets/monsters/mammoth/animations/die__west.png",
+          "north-west": "/assets/monsters/mammoth/animations/die__north-west.png",
+          "north": "/assets/monsters/mammoth/animations/die__north.png",
+          "north-east": "/assets/monsters/mammoth/animations/die__north-east.png",
+          "east": "/assets/monsters/mammoth/animations/die__east.png",
+          "south-east": "/assets/monsters/mammoth/animations/die__south-east.png"
+        }
+      },
+      "aliases": {
+        "walk": "walk"
       }
     }
   ]

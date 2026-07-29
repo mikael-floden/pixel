@@ -399,6 +399,8 @@ interface MonsterAvatar {
   lit?: Phaser.GameObjects.Sprite; // lit copy above the night overlay (shared pipeline)
   coverY?: number; // wall-top line covering the sprite (lit copy cropped below it)
   surfLevel?: number; // surface level in LEVELS (occluder + light sampling basis)
+  shadowW: number; // resting shadow ellipse, scaled from the monster's frame size
+  shadowH: number; // (a 48px poring gets 26x10 — the historical size; a 256px mammoth ~120x46)
 }
 
 /** The common body-visual subset the SHARED render helpers operate on —
@@ -1659,7 +1661,11 @@ export class WorldScene extends Phaser.Scene {
     const sprite = this.add.sprite(p0.x, p0.y, hasArt ? initKey : PLACEHOLDER_TEX);
     if (hasArt) sprite.setFrame(0);
     sprite.setOrigin(0.5, 0.85).setScale(1);
-    const shadow = this.add.image(p0.x, p0.y, SHADOW_TEX).setOrigin(0.5, 0.5).setDisplaySize(26, 10);
+    // Shadow scales with the monster's frame size (the 24-roster spans 34px
+    // frogs to a 256px mammoth): a 48px poring keeps its historical 26x10.
+    const shadowW = Math.round(Math.min(120, Math.max(14, (def?.frameW ?? 48) * 0.54)));
+    const shadowH = Math.max(6, Math.round(shadowW * 0.385));
+    const shadow = this.add.image(p0.x, p0.y, SHADOW_TEX).setOrigin(0.5, 0.5).setDisplaySize(shadowW, shadowH);
     const mv: MonsterAvatar = {
       sprite,
       shadow,
@@ -1673,6 +1679,8 @@ export class WorldScene extends Phaser.Scene {
       dispDir: DEFAULT_DIRECTION,
       fx: m.x,
       fy: m.y,
+      shadowW,
+      shadowH,
     };
     this.monsters.set(id, mv);
     this.playMonsterAnim(mv, !!m.moving, m.dir);
@@ -2375,7 +2383,7 @@ export class WorldScene extends Phaser.Scene {
         const sLvl = m.elev ?? g.lvl;
         mv.surfLevel = sLvl; // occluder + light sampling basis (LEVELS)
         this.resolveBodyDepth(mv, sLvl);
-        this.placeBodyShadow(mv, targetElev, 0, 26, 10);
+        this.placeBodyShadow(mv, targetElev, 0, mv.shadowW, mv.shadowH);
         this.playMonsterAnim(mv, !!m.moving, m.dir);
       });
     }

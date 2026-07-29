@@ -20,12 +20,24 @@ const ROSTER = join(MONSTERS, "config", "roster.json");
 // alphabetical/un-normalized), so we key by name and emit in THIS order.
 const DIRECTIONS = ["south", "south-west", "west", "north-west", "north", "north-east", "east", "south-east"];
 
-// Canonical emit order = @nangijala/shared MONSTER_KINDS. This build script runs
-// under plain `node` and can't import the TS shared package, so the order is
-// mirrored here for a DETERMINISTIC manifest (runtime keys monsters by id, so
-// array order is presentation-only). Ids not in this list fall to the end in
-// roster order.
+// Legacy poring-family emit order kept for a stable manifest diff; ids not in
+// this list (the 2026-07-29 24-monster roster) follow in roster order — the
+// runtime keys monsters by id, so array order is presentation-only.
 const KIND_ORDER = ["poring", "forest_poring", "ice_poring", "lava_poring", "sand_poring", "water_poring"];
+
+// The monsters agent's stable GAME-STATE -> animation mapping (same contract
+// as characters2/animation_map.json): states + per-monster overrides. The walk
+// resolution MUST go through this — the old hardcoded {walk:"jump"} predates
+// the 24-monster roster, whose art ships walk/idle/angry/attack/die folders
+// (no "jump"), so every new monster resolved to a missing anim and rendered
+// as a placeholder square.
+const ANIM_MAP = (() => {
+  try {
+    const j = JSON.parse(readFileSync(join(MONSTERS, "animation_map.json"), "utf8"));
+    if (j && j.states) return j;
+  } catch {}
+  return null;
+})();
 
 /** Read a PNG's [width, height] from its IHDR header (no image library). */
 function pngDims(p) {
@@ -56,9 +68,14 @@ function scan() {
     const m = JSON.parse(readFileSync(monJson, "utf8"));
     const frameW = m.size?.width ?? 48;
     const frameH = m.size?.height ?? 48;
-    const aliases = m.animation_aliases || entry.aliases || { walk: "jump" };
-    // Resolve the game-facing "walk" state through aliases to a real anim key.
-    const walkAnim = aliases.walk || "jump";
+    // Game-state -> anim mapping for THIS monster: animation_map.json states
+    // with the per-monster override on top; per-file aliases win if present.
+    const mapped = ANIM_MAP ? { ...ANIM_MAP.states, ...(ANIM_MAP.overrides?.[id] || {}) } : null;
+    const aliases = m.animation_aliases || entry.aliases || (mapped ? { walk: mapped.walk } : { walk: "jump" });
+    // Resolve the game-facing "walk" state to a real anim key (validated
+    // against the scanned animations below — falls back to the first real
+    // anim so a mapping gap can never emit an unrenderable monster).
+    let walkAnim = aliases.walk || mapped?.walk || "jump";
 
     const animations = {}; // <animKey>: { <dir>: frameCount }
     const strips = {}; // <animKey>: { <dir>: served URL }
@@ -76,6 +93,17 @@ function scan() {
       if (Object.keys(perDirFrames).length) {
         animations[animKey] = perDirFrames;
         strips[animKey] = perDirStrip;
+      }
+    }
+
+    // Validate the resolved walk against what actually shipped: a monster with
+    // no anim at the mapped key falls back to its first real anim (and warns —
+    // that's animation_map/roster data disagreeing with the art).
+    if (!animations[walkAnim]) {
+      const first = Object.keys(animations)[0];
+      if (first) {
+        console.warn(`[monsters] ${id}: walk anim "${walkAnim}" not in art — using "${first}"`);
+        walkAnim = first;
       }
     }
 

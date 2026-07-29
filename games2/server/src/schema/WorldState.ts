@@ -79,7 +79,7 @@ defineTypes(Player, {
  * SERVER-ONLY: plain class fields NOT in defineTypes, so they never sync.
  */
 export class Monster extends Schema {
-  declare kind: string; // one of MONSTER_KINDS (drives which sprite/strip to draw)
+  declare kind: string; // monsters roster id (drives which sprite/strip to draw)
   declare x: number; // authoritative world-unit position
   declare y: number;
   declare dir: string; // Direction name (from stepMovement) — 8-dir facing
@@ -115,12 +115,10 @@ defineTypes(Monster, {
 });
 
 /**
- * One monster spawn area (a rectangle in world units) synced to every client so
- * the client can draw the debug area overlay and reason about confinement
- * without duplicating the server's per-world placement math. Computed once at
- * room create (spawnAreasNear) from the loaded world's spawn + terrain; static
- * for the room's lifetime. Later the maps agent will own these as world data —
- * they flow to the client the same way.
+ * One monster spawn zone's debug rect (the zone polygon's bounding box in
+ * world units) synced to every client for the debug overlay. The REAL zones
+ * are maps2 data (worlds/<name>/spawns.json, pixel-maps2/spawns@1) resolved
+ * against the terrain at room create; static for the room's lifetime.
  */
 export class MonsterArea extends Schema {
   declare id: string;

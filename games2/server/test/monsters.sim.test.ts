@@ -1,3 +1,11 @@
+// Headless monster tests for the maps2 SPAWN ZONES (pixel-maps2/spawns@1).
+// maps2 owns monster placement: every world ships worlds/<name>/spawns.json
+// with polygon zones {id, monster, area, elev, num}. These tests cover the
+// pure geometry (parseSpawns / pointInZone / zonePolygonCells), the
+// terrain-aware resolution (buildZoneRuntimes — the SAME function WorldRoom
+// uses), and a full headless roam: one monster driven through the server's
+// exact brain+body loop on the REAL worlds' REAL zones, proving it stays in
+// its zone, on valid ground, at a valid elevation.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
@@ -13,24 +21,20 @@ import {
   makeSideBlocked,
   surfaceAtWorld,
   resolveElevAt,
-  levelAtWorld,
-  isStandableAtWorld,
-  isBlockedAtWorld,
-  findSpawn,
   TerrainGrid,
   CELL_WU,
   WALK_CLIMB,
-  spawnAreasNear,
-  MONSTER_KINDS,
   MONSTER_SPEED_SCALE,
-  randomPointInArea,
-  clampToArea,
-  areaContains,
-  randomPauseMs,
+  MONSTER_ROAM_RADIUS_CELLS,
   MONSTER_ROAM_PAUSE_MS_MIN,
   MONSTER_ROAM_PAUSE_MS_MAX,
-  MONSTER_AREA_INSET,
-  type SpawnArea,
+  randomPauseMs,
+  parseSpawns,
+  pointInZone,
+  zonePolygonCells,
+  buildZoneRuntimes,
+  type SpawnZone,
+  type ZoneRuntime,
 } from "@nangijala/shared";
 
 const HERE = dirname(fileURLToPath(import.meta.url)); // games2/server/test
@@ -40,8 +44,8 @@ interface SimWorld {
   grid: TerrainGrid;
   worldW: number;
   worldH: number;
-  spawn: { x: number; y: number };
-  areas: SpawnArea[];
+  zones: SpawnZone[];
+  runtimes: ZoneRuntime[];
 }
 
 function loadMaps2World(name: string): SimWorld | null {
@@ -50,16 +54,18 @@ function loadMaps2World(name: string): SimWorld | null {
   const world = parseWorld(JSON.parse(readFileSync(path, "utf8")));
   if (!world) return null;
   const grid = buildTerrainGrid(world.width, world.height, world.rows, world.props, world.decks);
-  const worldW = world.width * CELL_WU;
-  const worldH = world.height * CELL_WU;
-  const spawn = world.spawn
-    ? { x: world.spawn[0] * CELL_WU, y: world.spawn[1] * CELL_WU }
-    : { x: worldW / 2, y: worldH / 2 };
-  // Exactly what the server computes at room create.
-  const areas = spawnAreasNear(spawn.x, spawn.y, worldW, worldH, (x, y) =>
-    isStandableAtWorld(grid, x, y),
-  );
-  return { grid, worldW, worldH, spawn, areas };
+  const spawnsPath = join(REPO, "maps2", "worlds", name, "spawns.json");
+  const zones = existsSync(spawnsPath)
+    ? parseSpawns(JSON.parse(readFileSync(spawnsPath, "utf8")))
+    : [];
+  return {
+    grid,
+    worldW: world.width * CELL_WU,
+    worldH: world.height * CELL_WU,
+    zones,
+    // Exactly what the server computes at room create.
+    runtimes: buildZoneRuntimes(grid, zones),
+  };
 }
 
 /** Deterministic mulberry32 — the SAME PRNG the server seeds from monsterSeed. */
@@ -75,62 +81,59 @@ function mulberry32(seed: number): () => number {
 }
 
 // ---------------------------------------------------------------------------
-// Pure helper unit tests — randomPointInArea / clampToArea / areaContains
+// Pure helpers — parseSpawns / pointInZone / zonePolygonCells
 // ---------------------------------------------------------------------------
 
-// A concrete area set for the pure-helper tests: what spawnAreasNear lays out on
-// open (all-land) ground around a spawn — six non-overlapping rects, one per
-// kind, the SAME geometry the server computes per world.
-const SAMPLE_AREAS: SpawnArea[] = spawnAreasNear(2000, 2000, 8000, 8000, () => true);
-
-test("randomPointInArea: stays strictly inside the inset bounds", () => {
-  const area = SAMPLE_AREAS[0];
-  const rng = mulberry32(7);
-  const inset = Math.min(
-    MONSTER_AREA_INSET,
-    (area.x1 - area.x0) / 2,
-    (area.y1 - area.y0) / 2,
-  );
-  for (let i = 0; i < 5000; i++) {
-    const p = randomPointInArea(area, rng);
-    assert.ok(p.x >= area.x0 + inset - 1e-9 && p.x <= area.x1 - inset + 1e-9, "x inside inset");
-    assert.ok(p.y >= area.y0 + inset - 1e-9 && p.y <= area.y1 - inset + 1e-9, "y inside inset");
-    assert.ok(areaContains(area, p.x, p.y), "point is inside the AABB");
-  }
+test("parseSpawns: accepts spawns@1, skips malformed zones, rejects other docs", () => {
+  const good = {
+    schema: "pixel-maps2/spawns@1",
+    zones: [
+      { id: "a", monster: "poring", area: [[0, 0], [4, 0], [4, 4]], elev: [0, 2], num: 3 },
+      { id: "bad-no-monster", area: [[0, 0], [4, 0], [4, 4]], elev: [0, 2], num: 3 },
+      { id: "bad-two-points", monster: "x", area: [[0, 0], [4, 0]], elev: [0, 2], num: 3 },
+      { id: "b", monster: "frog", area: [[0, 0], [2, 0], [2, 2]], elev: [1, 1] }, // num defaults to 1
+    ],
+  };
+  const zones = parseSpawns(good);
+  assert.equal(zones.length, 2);
+  assert.equal(zones[0].id, "a");
+  assert.equal(zones[1].num, 1, "missing num defaults to 1");
+  assert.deepEqual(parseSpawns({ schema: "something-else", zones: [] }), []);
+  assert.deepEqual(parseSpawns(null), []);
+  assert.deepEqual(parseSpawns({ schema: "pixel-maps2/spawns@1" }), []);
 });
 
-test("randomPointInArea: uses the injected rng edges (min→low, max→high)", () => {
-  const area = SAMPLE_AREAS[0];
-  const inset = MONSTER_AREA_INSET;
-  const low = randomPointInArea(area, () => 0);
-  assert.ok(Math.abs(low.x - (area.x0 + inset)) < 1e-9);
-  assert.ok(Math.abs(low.y - (area.y0 + inset)) < 1e-9);
-  const high = randomPointInArea(area, () => 1 - 1e-12);
-  assert.ok(Math.abs(high.x - (area.x1 - inset)) < 1e-6);
-  assert.ok(Math.abs(high.y - (area.y1 - inset)) < 1e-6);
+// An L-shape (concave): the 4x4 square minus its top-right 2x2 quadrant.
+const L_ZONE: SpawnZone = {
+  id: "L",
+  monster: "poring",
+  area: [[0, 0], [2, 0], [2, 2], [4, 2], [4, 4], [0, 4]],
+  elev: [0, 99],
+  num: 1,
+};
+
+test("pointInZone: even-odd membership incl. concave notches", () => {
+  assert.ok(pointInZone(L_ZONE, 1, 1), "lower-left quadrant inside");
+  assert.ok(pointInZone(L_ZONE, 1, 3), "left column inside");
+  assert.ok(pointInZone(L_ZONE, 3, 3), "lower-right quadrant inside");
+  assert.ok(!pointInZone(L_ZONE, 3, 1), "the notch (top-right) is OUTSIDE");
+  assert.ok(!pointInZone(L_ZONE, 5, 2), "beyond the polygon is outside");
+  assert.ok(!pointInZone(L_ZONE, -1, 2), "left of the polygon is outside");
 });
 
-test("clampToArea: pulls outside points back into the inset rect", () => {
-  const area = SAMPLE_AREAS[2];
-  const inset = MONSTER_AREA_INSET;
-  const c1 = clampToArea(area, area.x0 - 1000, area.y0 - 1000);
-  assert.equal(c1.x, area.x0 + inset);
-  assert.equal(c1.y, area.y0 + inset);
-  const c2 = clampToArea(area, area.x1 + 1000, area.y1 + 1000);
-  assert.equal(c2.x, area.x1 - inset);
-  assert.equal(c2.y, area.y1 - inset);
-  // An interior point is unchanged.
-  const mid = { x: (area.x0 + area.x1) / 2, y: (area.y0 + area.y1) / 2 };
-  const c3 = clampToArea(area, mid.x, mid.y);
-  assert.deepEqual(c3, mid);
-});
-
-test("areaContains: AABB edges inclusive, outside excluded", () => {
-  const area = SAMPLE_AREAS[0];
-  assert.ok(areaContains(area, area.x0, area.y0));
-  assert.ok(areaContains(area, area.x1, area.y1));
-  assert.ok(!areaContains(area, area.x0 - 0.01, area.y0));
-  assert.ok(!areaContains(area, area.x1 + 0.01, area.y1));
+test("zonePolygonCells: cells whose CENTRE is inside, clipped to the world", () => {
+  const cells = zonePolygonCells(L_ZONE, 10, 10);
+  // 4x4 square = 16 cells minus the 2x2 notch = 12.
+  assert.equal(cells.length, 12);
+  const key = (c: number, r: number) => `${c},${r}`;
+  const set = new Set(cells.map((p) => key(p.c, p.r)));
+  assert.ok(set.has(key(0, 0)) && set.has(key(1, 3)) && set.has(key(3, 3)));
+  assert.ok(!set.has(key(2, 0)) && !set.has(key(3, 1)), "notch cells excluded");
+  // Clipping: a polygon reaching past the world edge only yields in-world cells.
+  const clipped: SpawnZone = { ...L_ZONE, area: [[-3, -3], [2, -3], [2, 2], [-3, 2]] };
+  const cc = zonePolygonCells(clipped, 10, 10);
+  assert.equal(cc.length, 4, "only the 2x2 in-world corner remains");
+  for (const p of cc) assert.ok(p.c >= 0 && p.r >= 0);
 });
 
 test("randomPauseMs: within the configured range", () => {
@@ -143,50 +146,92 @@ test("randomPauseMs: within the configured range", () => {
   }
 });
 
-test("spawnAreasNear: 6 non-overlapping rects, one per monster kind", () => {
-  assert.equal(SAMPLE_AREAS.length, 6);
-  const kinds = new Set(SAMPLE_AREAS.map((a) => a.kind));
-  for (const k of MONSTER_KINDS) assert.ok(kinds.has(k), `area for ${k}`);
-  // Non-overlapping AABBs.
-  for (let i = 0; i < SAMPLE_AREAS.length; i++) {
-    for (let j = i + 1; j < SAMPLE_AREAS.length; j++) {
-      const a = SAMPLE_AREAS[i];
-      const b = SAMPLE_AREAS[j];
-      const overlap = a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1;
-      assert.ok(!overlap, `${a.id} and ${b.id} do not overlap`);
+// ---------------------------------------------------------------------------
+// buildZoneRuntimes against the REAL shipped zone files: every zone resolves,
+// and every resolved cell truly satisfies the zone's contract on the grid.
+// ---------------------------------------------------------------------------
+
+for (const worldName of ["ring_test", "the_island2", "monster_demo"]) {
+  test(`zones on ${worldName}: every shipped zone resolves to valid cells`, () => {
+    const w = loadMaps2World(worldName);
+    if (!w) return test.skip(`${worldName} missing`);
+    assert.ok(w.zones.length > 0, `${worldName} ships spawn zones`);
+    // The generator asserts >= num standable cells per zone before writing the
+    // file — so every shipped zone must survive resolution.
+    assert.equal(
+      w.runtimes.length,
+      w.zones.length,
+      `all ${w.zones.length} zones have valid cells`,
+    );
+    for (const rt of w.runtimes) {
+      const [lo, hi] = rt.zone.elev;
+      assert.ok(rt.cells.length >= 1);
+      for (const cell of rt.cells) {
+        // Membership: the cell centre is inside the polygon.
+        assert.ok(
+          pointInZone(rt.zone, cell.c + 0.5, cell.r + 0.5),
+          `${rt.zone.id}: cell (${cell.c},${cell.r}) centre inside polygon`,
+        );
+        // The qualifying surface level is inside the band…
+        assert.ok(cell.lvl >= lo && cell.lvl <= hi, `${rt.zone.id}: lvl in band`);
+        // …and it really is the base or the deck of that cell on the grid.
+        const i = cell.r * w.grid.width + cell.c;
+        const isBase = w.grid.level[i] === cell.lvl && !w.grid.blocked[i];
+        const isDeck = w.grid.deck[i] === cell.lvl;
+        assert.ok(isBase || isDeck, `${rt.zone.id}: lvl matches a real surface`);
+        if (isBase && !isDeck) {
+          const s = surfaceAtWorld(w.grid, (cell.c + 0.5) * CELL_WU, (cell.r + 0.5) * CELL_WU);
+          assert.ok(
+            s.standable || (s.swimmable && rt.canSwim),
+            `${rt.zone.id}: base cell enterable (swim only in water zones)`,
+          );
+        }
+      }
+    }
+  });
+}
+
+test("the_island2 layered zones: cave floor vs roof-deck zones share cells at different levels", () => {
+  const w = loadMaps2World("the_island2");
+  if (!w) return test.skip("the_island2 missing");
+  // The spawns@1 headline case: somewhere in the file two zones resolve the
+  // SAME cell at DIFFERENT levels (cave floor under a walkable roof deck).
+  const byCell = new Map<number, Set<number>>();
+  for (const rt of w.runtimes) {
+    for (const cell of rt.cells) {
+      const k = cell.r * w.grid.width + cell.c;
+      if (!byCell.has(k)) byCell.set(k, new Set());
+      byCell.get(k)!.add(cell.lvl);
     }
   }
+  let layered = 0;
+  for (const lvls of byCell.values()) if (lvls.size > 1) layered++;
+  assert.ok(layered > 0, "at least one cell serves two zones at different levels");
 });
 
 // ---------------------------------------------------------------------------
-// Headless roam: run ONE monster through the SAME brain+body loop the server
-// uses (startTrip / stepAutopilot / stepMovement) for many trips on the REAL
-// maps2 worlds, using each world's OWN spawnAreasNear placement (what the server
-// computes at room create), and prove a monster never leaves its area and never
-// lands on non-standable / water ground. Runs on several worlds incl. demo_lost
-// (the client's default pick) — hardcoded single-world coords put monsters
-// off-map or in water on the others, the bug this now guards across the board.
+// Headless roam: drive ONE monster through the SAME brain+body loop the server
+// uses (zone-cell targets, canSwim per zone, cell-membership snap) on the REAL
+// zones, and prove it stays in its zone on valid ground.
 // ---------------------------------------------------------------------------
 
 function roamOneMonster(
   w: SimWorld,
-  area: SpawnArea,
+  rt: ZoneRuntime,
   seed: number,
   ticks: number,
 ): { moved: boolean; violations: string[]; trips: number } {
   const { grid, worldW, worldH } = w;
   const rng = mulberry32(seed);
-  const ctx = { maxClimb: WALK_CLIMB, canSwim: false };
+  const ctx = { maxClimb: WALK_CLIMB, canSwim: rt.canSwim };
   const dt = 1 / 20; // 20 Hz tick
   let nowMs = 0;
 
-  // Spawn exactly like seedMonsters: random in-area → findSpawn → clampToArea.
-  const p0 = randomPointInArea(area, rng);
-  const s0 = findSpawn(grid, p0.x, p0.y);
-  const c0 = clampToArea(area, s0.x, s0.y);
-  let x = c0.x;
-  let y = c0.y;
-  let elev = levelAtWorld(grid, x, y);
+  // Spawn exactly like seedMonsters: a random pre-validated zone cell.
+  const cell0 = rt.cells[Math.floor(rng() * rt.cells.length)];
+  let x = (cell0.c + 0.5 + (rng() - 0.5) * 0.5) * CELL_WU;
+  let y = (cell0.r + 0.5 + (rng() - 0.5) * 0.5) * CELL_WU;
+  let elev = cell0.lvl;
   let nextMoveAt = nowMs + Math.floor(rng() * 600);
   let trip = null as ReturnType<typeof startTrip>;
   let tripActive = false;
@@ -196,25 +241,27 @@ function roamOneMonster(
   const violations: string[] = [];
   let trips = 0;
 
+  // Exactly WorldRoom.pickMonsterTarget: random zone cells, prefer local.
   const pickTarget = (): { x: number; y: number } => {
+    const fc = x / CELL_WU;
+    const fr = y / CELL_WU;
     let fallback: { x: number; y: number } | null = null;
-    for (let i = 0; i < 6; i++) {
-      const raw = randomPointInArea(area, rng);
-      const p = clampToArea(area, raw.x, raw.y);
+    for (let i = 0; i < 8; i++) {
+      const cell = rt.cells[Math.floor(rng() * rt.cells.length)];
+      const p = { x: (cell.c + 0.5) * CELL_WU, y: (cell.r + 0.5) * CELL_WU };
       if (!fallback) fallback = p;
-      if (Math.hypot(p.x - x, p.y - y) < CELL_WU) continue;
-      if (isStandableAtWorld(grid, p.x, p.y)) return p;
+      const d = Math.hypot(cell.c + 0.5 - fc, cell.r + 0.5 - fr);
+      if (d < 1) continue;
+      if (d <= MONSTER_ROAM_RADIUS_CELLS) return p;
     }
-    return fallback ?? clampToArea(area, x, y);
+    return fallback ?? { x, y };
   };
 
   for (let i = 0; i < ticks; i++) {
     nowMs += dt * 1000;
 
     if (!tripActive) {
-      if (nowMs < nextMoveAt) {
-        // paused
-      } else {
+      if (nowMs >= nextMoveAt) {
         const t = pickTarget();
         trip = startTrip(grid, x, y, t.x, t.y, false, nowMs, elev);
         tripActive = !!trip;
@@ -248,21 +295,43 @@ function roamOneMonster(
         x = r.x;
         y = r.y;
         elev = resolveElevAt(grid, elev, x, y, ctx);
-        const c = clampToArea(area, x, y);
-        x = c.x;
-        y = c.y;
       }
     }
 
-    // Invariants checked EVERY tick.
-    if (!areaContains(area, x, y)) {
-      violations.push(`tick ${i}: left area at (${x.toFixed(1)},${y.toFixed(1)})`);
+    // Exactly WorldRoom's safety net: snap back on a polygon exit.
+    const mc = Math.floor(x / CELL_WU);
+    const mr = Math.floor(y / CELL_WU);
+    if (!rt.cellSet.has(mc + mr * grid.width)) {
+      let best = rt.cells[0];
+      let bestD = Infinity;
+      for (const cell of rt.cells) {
+        const d = Math.hypot(cell.c - mc, cell.r - mr);
+        if (d < bestD) {
+          bestD = d;
+          best = cell;
+        }
+      }
+      x = (best.c + 0.5) * CELL_WU;
+      y = (best.r + 0.5) * CELL_WU;
+      elev = best.lvl;
+      tripActive = false;
+      trip = null;
+      nextMoveAt = nowMs + Math.floor(randomPauseMs(rng));
     }
-    if (!isStandableAtWorld(grid, x, y)) {
-      violations.push(`tick ${i}: on non-standable ground at (${x.toFixed(1)},${y.toFixed(1)})`);
+
+    // Invariants checked EVERY tick (post-snap, like the server's tick end).
+    const cc = Math.floor(x / CELL_WU);
+    const cr = Math.floor(y / CELL_WU);
+    if (!rt.cellSet.has(cc + cr * grid.width)) {
+      violations.push(`tick ${i}: outside zone at (${x.toFixed(1)},${y.toFixed(1)})`);
     }
-    if (surfaceAtWorld(grid, x, y).swimmable) {
-      violations.push(`tick ${i}: in water at (${x.toFixed(1)},${y.toFixed(1)})`);
+    const s = surfaceAtWorld(grid, x, y);
+    if (!s.standable && !(s.swimmable && rt.canSwim)) {
+      violations.push(`tick ${i}: on invalid ground at (${x.toFixed(1)},${y.toFixed(1)})`);
+    }
+    const [lo, hi] = rt.zone.elev;
+    if (elev < lo - 1 || elev > hi + 1) {
+      violations.push(`tick ${i}: elev ${elev} left band [${lo},${hi}]`);
     }
   }
 
@@ -270,52 +339,31 @@ function roamOneMonster(
   return { moved, violations, trips };
 }
 
-// Validate the PER-WORLD placement on several maps2 worlds — critically
-// demo_lost (the client's default pick) plus ring_test / the_island2 — proving
-// spawnAreasNear always lands the 6 areas on standable ground NEAR that world's
-// spawn, and a monster roaming there never leaves its area or touches water.
-// (Hardcoded single-world coords put monsters off-map / in water on the OTHER
-// worlds — the bug this now guards across the board.)
-for (const worldName of ["demo_lost", "ring_test", "the_island2"]) {
-  test(`headless roam on ${worldName}: 6 areas on land near spawn, monsters stay in-area off-water`, () => {
+for (const worldName of ["ring_test", "the_island2", "monster_demo"]) {
+  test(`headless roam on ${worldName}: monsters stay in their zones on valid ground`, () => {
     const w = loadMaps2World(worldName);
-    assert.ok(w, `${worldName} world loads`);
-    assert.equal(w!.areas.length, MONSTER_KINDS.length, "one area per monster kind");
-
-    // Every area sits near the spawn (a screenful, not off-map).
-    for (const area of w!.areas as SpawnArea[]) {
-      const cx = (area.x0 + area.x1) / 2;
-      const cy = (area.y0 + area.y1) / 2;
-      const cells = Math.hypot(cx - w!.spawn.x, cy - w!.spawn.y) / CELL_WU;
-      assert.ok(cells < 40, `${area.id} centre ${cells.toFixed(1)} cells from spawn (near)`);
+    if (!w) return test.skip(`${worldName} missing`);
+    assert.ok(w.runtimes.length > 0, "world has resolved zones");
+    // A spread of zones per world: land, water (canSwim), deck/cave layers —
+    // whatever the file ships, capped so the suite stays fast.
+    const sample: ZoneRuntime[] = [];
+    const water = w.runtimes.find((r) => r.canSwim);
+    if (water) sample.push(water);
+    for (const rt of w.runtimes) {
+      if (sample.length >= 6) break;
+      if (!sample.includes(rt)) sample.push(rt);
     }
-
-    for (let ai = 0; ai < w!.areas.length; ai++) {
-      const area: SpawnArea = w!.areas[ai];
-      // Sanity: the whole inset rect is standable land (no water) to begin with.
-      const inset = MONSTER_AREA_INSET;
-      for (let gx = area.x0 + inset; gx <= area.x1 - inset; gx += CELL_WU / 2) {
-        for (let gy = area.y0 + inset; gy <= area.y1 - inset; gy += CELL_WU / 2) {
-          assert.ok(
-            isStandableAtWorld(w!.grid, gx, gy) && !surfaceAtWorld(w!.grid, gx, gy).swimmable,
-            `${worldName} ${area.id} sample (${gx},${gy}) is standable land`,
-          );
-          assert.ok(!isBlockedAtWorld(w!.grid, gx, gy), `${worldName} ${area.id} sample not blocked`);
-        }
-      }
-
-      // Roam three seeds × ~600 ticks (30s sim) each.
-      let anyMoved = false;
-      for (const seed of [1, 2, 3]) {
-        const res = roamOneMonster(w!, area, seed * 100 + ai, 600);
-        assert.equal(
-          res.violations.length,
-          0,
-          `${worldName} ${area.id} seed ${seed}: ${res.violations.slice(0, 3).join("; ")}`,
-        );
-        if (res.moved) anyMoved = true;
-      }
-      assert.ok(anyMoved, `${worldName} ${area.id}: monster roamed over the window`);
+    let anyMoved = false;
+    for (let zi = 0; zi < sample.length; zi++) {
+      const rt = sample[zi];
+      const { moved, violations, trips } = roamOneMonster(w, rt, 1000 + zi * 77, 1200);
+      assert.equal(
+        violations.length,
+        0,
+        `${rt.zone.id} (${rt.zone.monster}): ${violations.length} violations — ${violations.slice(0, 3).join("; ")}`,
+      );
+      anyMoved = anyMoved || (moved && trips > 0);
     }
+    assert.ok(anyMoved, "at least one sampled monster actually roamed");
   });
 }

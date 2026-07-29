@@ -1,14 +1,20 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "http";
+import { readFileSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { Server } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { Client } from "colyseus.js";
 import {
   ROOM_NAME,
-  MONSTER_KINDS,
-  areaContains,
-  type SpawnArea,
+  CELL_WU,
+  parseWorld,
+  buildTerrainGrid,
+  parseSpawns,
+  buildZoneRuntimes,
+  type ZoneRuntime,
 } from "@nangijala/shared";
 import { WorldRoom } from "../src/rooms/WorldRoom.js";
 
@@ -32,7 +38,22 @@ function snapshot(room: {
   return out;
 }
 
-test("6 server-authoritative roaming monsters: shared, capped, area-confined, moving", async () => {
+// The SAME zone resolution the server runs at room create, from the REAL
+// shipped files — so the test knows exactly which zones ring_test carries.
+function ringTestZones(): ZoneRuntime[] {
+  const HERE = dirname(fileURLToPath(import.meta.url));
+  const REPO = join(HERE, "..", "..", "..");
+  const world = parseWorld(
+    JSON.parse(readFileSync(join(REPO, "maps2", "worlds", "ring_test", "world.json"), "utf8")),
+  )!;
+  const grid = buildTerrainGrid(world.width, world.height, world.rows, world.props, world.decks);
+  const zones = parseSpawns(
+    JSON.parse(readFileSync(join(REPO, "maps2", "worlds", "ring_test", "spawns.json"), "utf8")),
+  );
+  return buildZoneRuntimes(grid, zones);
+}
+
+test("maps2 spawn zones drive the room: shared, per-zone, zone-confined, moving", async () => {
   const port = 2997; // unique per test file
   const gameServer = new Server({
     transport: new WebSocketTransport({ server: createServer() }),
@@ -40,14 +61,24 @@ test("6 server-authoritative roaming monsters: shared, capped, area-confined, mo
   gameServer.define(ROOM_NAME, WorldRoom);
   await gameServer.listen(port);
 
-  // Deterministic spawns/roam; 3 monsters per area (the SPAWN_AREAS default cap).
-  const COUNT = 3;
-  const opts = {
-    world: "ring_test", // the prod DEFAULT world the SPAWN_AREAS are placed on
-    monsterSeed: 12345,
-    monsterCount: COUNT,
-  };
-  const expectedTotal = MONSTER_KINDS.length * COUNT; // 6 areas (one per kind) × 3
+  const expected = ringTestZones();
+  assert.ok(expected.length > 0, "ring_test ships spawn zones");
+  // Deterministic spawns/roam; ONE monster per zone keeps the room light.
+  const COUNT = 1;
+  const opts = { world: "ring_test", monsterSeed: 12345, monsterCount: COUNT };
+  const expectedTotal = expected.length * COUNT;
+  const zoneById = new Map(expected.map((z) => [z.zone.id, z]));
+  // Containment tolerance: the synced position can lag a snap by a patch, so
+  // accept the zone's cells plus their 1-cell ring.
+  const okCells = new Map<string, Set<number>>();
+  const width = 999999; // key space; use a wide row stride to avoid collisions
+  for (const z of expected) {
+    const set = new Set<number>();
+    for (const cell of z.cells)
+      for (let dc = -1; dc <= 1; dc++)
+        for (let dr = -1; dr <= 1; dr++) set.add(cell.c + dc + (cell.r + dr) * width);
+    okCells.set(z.zone.id, set);
+  }
 
   try {
     const c1 = new Client(`ws://localhost:${port}`);
@@ -63,88 +94,68 @@ test("6 server-authoritative roaming monsters: shared, capped, area-confined, mo
       () => r1.state.monsters.size === expectedTotal && r2.state.monsters.size === expectedTotal,
     );
 
-    // The spawn areas are computed per-world by the server and SYNCED — both
-    // clients must receive the same set the monsters are keyed to.
-    assert.equal(r1.state.spawnAreas.length, MONSTER_KINDS.length, "6 areas synced to client 1");
-    assert.equal(r2.state.spawnAreas.length, MONSTER_KINDS.length, "6 areas synced to client 2");
-    const areaById = new Map<string, SpawnArea>();
-    r1.state.spawnAreas.forEach((a: any) =>
-      areaById.set(a.id, { id: a.id, kind: a.kind, x0: a.x0, y0: a.y0, x1: a.x1, y1: a.y1, max: 0 }),
-    );
+    // The zones are published (bbox debug rects) — one per resolved zone.
+    assert.equal(r1.state.spawnAreas.length, expected.length, "zones synced to client 1");
+    assert.equal(r2.state.spawnAreas.length, expected.length, "zones synced to client 2");
+    r1.state.spawnAreas.forEach((a: any) => {
+      const z = zoneById.get(a.id);
+      assert.ok(z, `synced area ${a.id} is a shipped zone`);
+      assert.equal(a.kind, z!.zone.monster, `${a.id} carries the zone's monster id`);
+    });
 
-    // (b) Count matches the per-area cap (COUNT per area).
-    assert.equal(r1.state.monsters.size, expectedTotal, "monster count == 6 areas × cap");
-
-    // (a) Both clients see the SAME set of monsters (ids + kinds).
+    // (a) Both clients see the SAME set of monsters (ids + kinds), and each
+    // monster's kind matches its zone.
     const s1 = snapshot(r1);
     const s2 = snapshot(r2);
-    assert.deepEqual(
-      [...s1.keys()].sort(),
-      [...s2.keys()].sort(),
-      "both clients see identical monster ids",
-    );
+    assert.deepEqual([...s1.keys()].sort(), [...s2.keys()].sort(), "identical monster ids");
     for (const [id, m1] of s1) {
-      const m2 = s2.get(id)!;
-      assert.equal(m1.kind, m2.kind, `kind agrees across clients for ${id}`);
-    }
-
-    // Each monster's kind matches its area, and every kind + area is represented.
-    const seenKinds = new Set<string>();
-    for (const [id, m] of s1) {
-      const areaId = id.split("#")[0];
-      const area = areaById.get(areaId)!;
-      assert.ok(area, `monster ${id} belongs to a known area`);
-      assert.equal(m.kind, area.kind, `${id} kind matches its area kind`);
-      seenKinds.add(m.kind);
-    }
-    for (const k of MONSTER_KINDS) {
-      assert.ok(seenKinds.has(k), `kind ${k} is spawned`);
+      assert.equal(m1.kind, s2.get(id)!.kind, `kind agrees across clients for ${id}`);
+      const z = zoneById.get(id.split("#")[0]);
+      assert.ok(z, `monster ${id} belongs to a shipped zone`);
+      assert.equal(m1.kind, z!.zone.monster, `${id} kind matches its zone's monster`);
     }
 
     // Record start positions to prove movement later.
     const startPos = new Map([...s1].map(([id, m]) => [id, { x: m.x, y: m.y }]));
 
-    // (c) Over ~2.5s of ticks, EVERY monster stays inside its area's AABB.
-    // Poll repeatedly so a mid-trip excursion would be caught.
+    // (b) Over ~2.5s of ticks, EVERY monster stays inside its zone polygon
+    // (cells + a 1-cell patch-lag ring). Poll repeatedly so a mid-trip
+    // excursion would be caught.
     const deadline = Date.now() + 2500;
     let samples = 0;
     while (Date.now() < deadline) {
       r1.state.monsters.forEach((m: any, id: string) => {
-        const area = areaById.get(id.split("#")[0])!;
+        const ok = okCells.get(id.split("#")[0])!;
+        const c = Math.floor(m.x / CELL_WU);
+        const r = Math.floor(m.y / CELL_WU);
         assert.ok(
-          areaContains(area, m.x, m.y),
-          `monster ${id} stayed inside its area AABB (at ${m.x.toFixed(1)},${m.y.toFixed(1)})`,
+          ok.has(c + r * width),
+          `monster ${id} stayed inside its zone (at cell ${c},${r})`,
         );
       });
       samples++;
       await new Promise((res) => setTimeout(res, 60));
     }
-    assert.ok(samples > 10, "polled area-confinement many times");
+    assert.ok(samples > 10, "polled zone-confinement many times");
 
-    // (d) At least some monsters MOVED (x or y changed) over the window.
+    // (c) At least some monsters MOVED (x or y changed) over the window.
     const end1 = snapshot(r1);
     let movedCount = 0;
     for (const [id, m] of end1) {
       const s = startPos.get(id)!;
       if (Math.hypot(m.x - s.x, m.y - s.y) > 1) movedCount++;
     }
-    assert.ok(
-      movedCount > 0,
-      `at least one monster roamed (moved: ${movedCount}/${expectedTotal})`,
-    );
+    assert.ok(movedCount > 0, `at least one monster roamed (moved: ${movedCount}/${expectedTotal})`);
 
-    // (e) Both clients' monster positions match (single authoritative sim).
-    // Sample both at one instant; patch timing allows at most a small lag, far
-    // below an area's ~192wu span — independent sims would diverge by hundreds.
+    // (d) Both clients' monster positions match (single authoritative sim).
+    // Sample both at one instant; patch timing allows at most a small lag —
+    // independent sims would diverge by hundreds of units.
     const a1 = snapshot(r1);
     const a2 = snapshot(r2);
     for (const [id, m1] of a1) {
       const m2 = a2.get(id)!;
       const d = Math.hypot(m1.x - m2.x, m1.y - m2.y);
-      assert.ok(
-        d < 32,
-        `client positions agree for ${id} (Δ=${d.toFixed(2)}wu)`,
-      );
+      assert.ok(d < 32, `client positions agree for ${id} (Δ=${d.toFixed(2)}wu)`);
     }
 
     await r1.leave();

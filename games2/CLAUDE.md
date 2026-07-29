@@ -335,6 +335,31 @@ visible head/shoulders are ABOVE the surface).
 
 ## Monsters (client rendering = the SHARED body pipeline)
 
+- **Spawn placement is MAPS2 DATA** (maintainer 2026-07-29): every world ships
+  `maps2/worlds/<name>/spawns.json` (`pixel-maps2/spawns@1`, spec
+  `maps2/spec/SPAWNS.md`) — polygon zones `{id, monster (roster id), area,
+  elev [min,max], num}`. The game's old hardcoded rectangles near the player
+  spawn were fake debug areas and are DELETED. Pipeline: `shared/monsters.ts`
+  parses + does the pure geometry (`parseSpawns`/`pointInZone` even-odd/
+  `zonePolygonCells` centre-inside); `shared/buildZoneRuntimes(grid, zones)`
+  resolves each zone against the terrain (a cell qualifies on whichever
+  surface — base OR deck — has its level in the band and is enterable; a zone
+  whose swimmable cells outnumber standable ones is a WATER zone → its
+  monsters get `canSwim` and only such zones ever include water cells).
+  WorldRoom seeds `num` per zone from the pre-validated cell list, roams via
+  zone-cell targets within `MONSTER_ROAM_RADIUS_CELLS`, and snaps the rare
+  polygon escapee back to the nearest zone cell. Missing spawns.json → no
+  monsters (maps2 owns placement — nothing is invented). Zone bboxes are
+  published as the `spawnAreas` debug rects. `build-monsters-manifest.mjs`
+  resolves each monster's walk clip through `monsters/animation_map.json`
+  (states + overrides — the old hardcoded walk→"jump" predates the 24-monster
+  roster whose art has walk/idle/angry/attack/die). Monster shadows scale with
+  frame size (48px poring 26×10 … 256px mammoth ~120px). Gates:
+  `server/test/monsters.sim.test.ts` (pure geometry + every shipped zone
+  resolves incl. the_island2's layered cave/roof-deck case + headless roam
+  confinement on real zones) and `monsters.test.ts` (live room: per-zone
+  seeding, confinement, cross-client agreement). TODO (next): the 5-state
+  brain (idle/angry/attack/walk/die) + per-monster display scale.
 - Server-authoritative roamers (`WorldRoom` monsters, poring family). The
   client's `MonsterAvatar` renders through the SAME battle-tested body
   pipeline as players — `resolveBodyDepth` (occluder-aware depth: ray test,

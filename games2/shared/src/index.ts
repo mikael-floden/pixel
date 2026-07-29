@@ -1967,3 +1967,54 @@ export function stepAutopilot(
 }
 
 export * from "./monsters";
+
+// ---------------------------------------------------------------------------
+// Spawn-zone runtimes (the terrain-aware half of spawns@1 — the pure geometry
+// lives in ./monsters). Lives HERE because it needs the grid helpers above;
+// server (WorldRoom) and the headless sim tests both build zones through this
+// one function so spawn validity can't drift.
+
+import { SpawnZone, zonePolygonCells } from "./monsters";
+
+/** A spawn zone resolved against a terrain grid: the cells a monster of this
+ * zone may actually stand on (centre inside the polygon AND a base-or-deck
+ * surface whose level is inside the zone's elev band AND enterable), each with
+ * the level of the surface that qualified it. `canSwim` marks water zones
+ * (swimmable cells outnumber standable ones — e.g. a frog's shore water):
+ * their monsters swim, and only their zones include water cells at all, so a
+ * grass zone's odd water speck never becomes a roam target. */
+export interface ZoneRuntime {
+  zone: SpawnZone;
+  cells: Array<{ c: number; r: number; lvl: number }>;
+  cellSet: Set<number>; // c + r*grid.width — O(1) containment for the roam clamp
+  canSwim: boolean;
+}
+
+export function buildZoneRuntimes(grid: TerrainGrid, zones: SpawnZone[]): ZoneRuntime[] {
+  const out: ZoneRuntime[] = [];
+  for (const zone of zones) {
+    const [lo, hi] = zone.elev;
+    const stand: Array<{ c: number; r: number; lvl: number }> = [];
+    const swim: Array<{ c: number; r: number; lvl: number }> = [];
+    const decks: Array<{ c: number; r: number; lvl: number }> = [];
+    for (const { c, r } of zonePolygonCells(zone, grid.width, grid.height)) {
+      const i = r * grid.width + c;
+      const lvl = grid.level[i];
+      if (!grid.blocked[i] && lvl >= lo && lvl <= hi) {
+        const s = surfaceFor(grid.type[i]);
+        if (s.standable) stand.push({ c, r, lvl });
+        else if (s.swimmable) swim.push({ c, r, lvl });
+      }
+      // A deck (bridge span, roof) inside the band is walkable even over a
+      // blocked/water base — the spec's bridge-guard case.
+      const d = grid.deck[i];
+      if (d >= 0 && d >= lo && d <= hi) decks.push({ c, r, lvl: d });
+    }
+    const canSwim = swim.length > stand.length;
+    const cells = canSwim ? [...stand, ...swim, ...decks] : [...stand, ...decks];
+    if (!cells.length) continue; // nothing valid — skip (caller may log)
+    const cellSet = new Set(cells.map((p) => p.c + p.r * grid.width));
+    out.push({ zone, cells, cellSet, canSwim });
+  }
+  return out;
+}
