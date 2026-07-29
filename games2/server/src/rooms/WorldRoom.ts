@@ -51,6 +51,7 @@ import {
   stepAutopilot,
 } from "@nangijala/shared";
 import { WorldState, Player, Monster, MonsterArea } from "../schema/WorldState.js";
+import { onLiveChange, liveTuning } from "../live.js";
 import { JsonPlayerStore, PlayerStore } from "../store.js";
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
@@ -116,6 +117,7 @@ export class WorldRoom extends Room<WorldState> {
   private handoffHoldMs = 1250;
   private handoffHoldUntil = 0;
   private worldName = ""; // set in onCreate; keys the worldClocks registry
+  private offLive?: () => void; // unsubscribe from live-tuning pushes
 
   // Monsters (server-authoritative roaming). Per-zone cap override + a seedable
   // RNG so tests get deterministic spawns/roams. `monsterRng` defaults to
@@ -236,6 +238,10 @@ export class WorldRoom extends Room<WorldState> {
       this.zones = this.terrain ? loadSpawnZones(world, this.terrain) : [];
     }
     this.setState(new WorldState());
+    // Live tuning (live/tuning/* on GitHub main, held by the live store):
+    // push every change to all clients over the room's own WebSocket, and
+    // hand joiners the current state (see live.ts / live/README.md).
+    this.offLive = onLiveChange((tuning) => this.broadcast("live:update", tuning));
     // Publish each zone's bounding box so clients can draw the debug overlay
     // (the true shape is a polygon; the bbox is plenty for a debug rect).
     for (const z of this.zones) {
@@ -473,6 +479,8 @@ export class WorldRoom extends Room<WorldState> {
   }
 
   onJoin(client: Client, options: JoinOptions = {}) {
+    // Current live tuning straight to the joiner (updates arrive as broadcasts).
+    client.send("live:update", liveTuning());
     const player = new Player();
     player.token = (options.token || "").slice(0, 64);
     player.name = (options.name || `wanderer-${client.sessionId.slice(0, 4)}`).slice(0, 24);
@@ -825,6 +833,7 @@ export class WorldRoom extends Room<WorldState> {
 
   onDispose() {
     if (this.starTimer) clearTimeout(this.starTimer);
+    this.offLive?.();
   }
 }
 

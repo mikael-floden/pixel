@@ -7,6 +7,7 @@ import { Server } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { ROOM_NAME } from "@nangijala/shared";
 import { WorldRoom } from "./rooms/WorldRoom.js";
+import { initLive, registerLiveRoutes } from "./live.js";
 
 const PORT = Number(process.env.PORT || 2567);
 // server/src/index.ts → GAME_ROOT is pixel/games2; the art domains are
@@ -21,6 +22,10 @@ const ASSET_DOMAINS = [
 
 const app = express();
 app.get("/health", (_req, res) => res.json({ ok: true }));
+// Live-update channel + wiki admin API (see live.ts / live/README.md).
+app.use("/api", express.json({ limit: "1mb" }));
+registerLiveRoutes(app);
+void initLive(ASSETS_ROOT);
 // Deployed build id — clients poll this to detect a newer deploy and prompt a
 // refresh (see client/src/main.ts).
 app.get("/version", (_req, res) =>
@@ -73,7 +78,7 @@ if (serveClient) {
   if (existsSync(clientDist)) {
     app.use(express.static(clientDist, { setHeaders: setCacheHeaders }));
     // SPA fallback for any non-API, non-asset route.
-    app.get(/^(?!\/(assets|health|matchmake)).*/, (_req, res) =>
+    app.get(/^(?!\/(assets|health|matchmake|api)).*/, (_req, res) =>
       res.sendFile(join(clientDist, "index.html"), { headers: { "Cache-Control": "no-cache" } }),
     );
     console.log(`[nangijala] serving built client from ${clientDist}, assets from ${ASSETS_ROOT}`);
