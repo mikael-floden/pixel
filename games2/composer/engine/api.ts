@@ -152,7 +152,9 @@ interface JumpVoiceCfg {
   fallbackRate: number; // pitch for the shared `jump_voice` set if `set` is absent
 }
 const JUMP_VOICE: Record<string, JumpVoiceCfg> = {
-  default_boy: { set: "jump_voice_boy", rate: 1.0, fallbackRate: 1.33 },
+  // 2.0 (maintainer 2026-07-25): the generated takes seem authored to play at
+  // DOUBLE rate to sound normal — at 1.0 the man read slow/low.
+  default_boy: { set: "jump_voice_boy", rate: 2.0, fallbackRate: 1.33 },
   default_girl: { set: "jump_voice", rate: 1.75, fallbackRate: 1.75 },
 };
 const JUMP_VOICE_DEFAULT: JumpVoiceCfg = { set: "jump_voice", rate: 1.58, fallbackRate: 1.58 };
