@@ -333,6 +333,25 @@ visible head/shoulders are ABOVE the surface).
   crops). QA lands on flat `trans_demo` material bands (grass/dirt/stone/snow/
   ice) — headless GL starvation is fine here since marks are instant, not eased.
 
+## Monsters (client rendering = the SHARED body pipeline)
+
+- Server-authoritative roamers (`WorldRoom` monsters, poring family). The
+  client's `MonsterAvatar` renders through the SAME battle-tested body
+  pipeline as players — `resolveBodyDepth` (occluder-aware depth: ray test,
+  face-over-feet band, solid-art cover → sets depth + `coverY`),
+  `placeBodyShadow` (landing-ground shadow, air-shrink while falling) and
+  `syncLitCopy` (lit copy above the night overlay, tinted by the CPU light at
+  the body's OWN surface height, cropped below `coverY`) — all operate on the
+  structural `BodyVisual` subset both Avatar and MonsterAvatar satisfy. Never
+  hand-roll a second depth/shadow/lighting path for a new entity type: the
+  first monster cut used a naive painter depth + no lit copy and shipped with
+  terrace tiles drawn over monsters, detached shadows and no light response
+  (maintainer screenshots 2026-07-29). Shadow ellipse size is parameterized
+  (avatar 34×14, poring 26×10) — the incoming 24-monster set (varied sizes,
+  some huge; states idle/angry/attack/walk/die + a monsters-agent metadata
+  map) passes its own. Probe: `__ml.monsterInfo()` (per monster: depth,
+  coverY, shadow anchor/depth, lit visible+tint).
+
 ## Living camera (WorldScene.updateChaseCam)
 
 - The camera CHASES the player instead of pinning them dead-centre:

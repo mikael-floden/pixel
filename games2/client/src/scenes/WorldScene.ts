@@ -396,6 +396,31 @@ interface MonsterAvatar {
   dispDir: string;
   fx: number;
   fy: number;
+  lit?: Phaser.GameObjects.Sprite; // lit copy above the night overlay (shared pipeline)
+  coverY?: number; // wall-top line covering the sprite (lit copy cropped below it)
+  surfLevel?: number; // surface level in LEVELS (occluder + light sampling basis)
+}
+
+/** The common body-visual subset the SHARED render helpers operate on —
+ * occluder-aware depth (resolveBodyDepth), landing-ground shadow
+ * (placeBodyShadow) and the lit copy (syncLitCopy). Avatar and MonsterAvatar
+ * both satisfy it structurally, so monsters render through the exact same
+ * battle-tested code path as players (maintainer 2026-07-29: monsters drew
+ * behind terrace tiles with detached shadows and took no lighting — their
+ * first cut had a naive painter depth and no lit copy). */
+interface BodyVisual {
+  sprite: Phaser.GameObjects.Sprite;
+  shadow: Phaser.GameObjects.Image;
+  lx: number;
+  lyFlat: number;
+  ly: number;
+  elev: number;
+  fx: number;
+  fy: number;
+  lit?: Phaser.GameObjects.Sprite;
+  coverY?: number;
+  surfLevel?: number;
+  swimming?: boolean;
 }
 
 export class WorldScene extends Phaser.Scene {
@@ -1435,6 +1460,20 @@ export class WorldScene extends Phaser.Scene {
         };
       },
       nightInfo: () => this.night?.debugInfo(),
+      // Monster render-state probe (shared body pipeline QA): per monster the
+      // resolved depth, cover line, shadow anchor and lit-copy state.
+      monsterInfo: () =>
+        [...this.monsters.entries()].map(([id, mv]) => ({
+          id,
+          kind: mv.kind,
+          col: +(mv.fx / CELL_WU).toFixed(2),
+          row: +(mv.fy / CELL_WU).toFixed(2),
+          surfLevel: mv.surfLevel ?? null,
+          depth: +mv.sprite.depth.toFixed(1),
+          coverY: mv.coverY !== undefined ? Math.round(mv.coverY) : null,
+          shadow: { x: Math.round(mv.shadow.x), y: Math.round(mv.shadow.y), depth: +mv.shadow.depth.toFixed(1) },
+          lit: mv.lit ? { visible: mv.lit.visible, tint: mv.lit.tintTopLeft.toString(16) } : null,
+        })),
       // Glow-field RT orientation calibration (headless probes flip + verify).
       glowFlip: (v?: number) => {
         if (this.night && v !== undefined) this.night.glowFlip = v;
@@ -1644,6 +1683,7 @@ export class WorldScene extends Phaser.Scene {
     if (!mv) return;
     mv.sprite.destroy();
     mv.shadow.destroy();
+    mv.lit?.destroy();
     this.monsters.delete(id);
   }
 
@@ -2216,106 +2256,13 @@ export class WorldScene extends Phaser.Scene {
       const bob = swimming ? Math.sin(this.time.now / 850 + av.bobPhase) * SWIM_BOB * av.swimT : 0;
       av.sprite.y = av.ly - (swimming ? 0 : hop) + bob;
       this.updateWaterClip(av, swimDir, av.swimT);
-      // Depth vs occluding columns: a single painter scalar can't resolve
-      // every sprite-vs-column case (diagonals, same-level, lower columns),
-      // so refine per frame with the EXACT test — a column truly hides the
-      // sprite only if its top is strictly higher than the sprite's ground
-      // AND it lies on the camera ray (grid interval test). Place the sprite
-      // above every falsely-deeper column and below every true occluder.
       // The SURFACE level the sprite stands on (the deck when on a bridge/roof,
       // else the base terrain). Using the base here made a deck the player walks
       // ON count as a "higher" occluder that drew over their legs.
-      const lvl = surfLevel;
       av.surfLevel = surfLevel; // for lighting: swimmers sample HERE, not the sunk elev
-      let depth = av.lyFlat + 0.5; // painter y at the flat (unlifted) ground
-      if (this.world) {
-        const colf = tx / CELL_WU; // 1 cell = CELL_WU world units (any world size)
-        const rowf = ty / CELL_WU;
-        // Sprite bounds = the MEASURED opaque art box (+4px margin for walk
-        // frames dipping past the idle anchor). The drawn figure is ~30x68px
-        // inside a 128px frame — testing the whole frame let raised cells 2-3
-        // tiles away "cover" the sprite via its transparent padding.
-        const ab = this.artBounds(av.sprite);
-        const aLeft = av.sprite.x - av.sprite.displayWidth * av.sprite.originX;
-        const aTop = av.sprite.y - av.sprite.displayHeight * av.sprite.originY;
-        const sx0 = aLeft + ab.x0 * av.sprite.scaleX - 4;
-        const sx1 = aLeft + ab.x1 * av.sprite.scaleX + 4;
-        const sy0 = aTop + ab.y0 * av.sprite.scaleY - 4;
-        const sy1 = aTop + ab.y1 * av.sprite.scaleY + 4;
-        let above = -Infinity;
-        let below = Infinity;
-        let coverY = Infinity;
-        const feetY = av.ly;
-        for (const o of this.occluderMeta) {
-          if (o.x1 < sx0 || o.x0 > sx1 || o.y1 < sy0 || o.y0 > sy1) continue;
-          const higher = o.top > lvl;
-          // (a) Wall genuinely between the camera and the feet point.
-          const t0 = Math.max(o.col - colf, o.row - rowf);
-          const t1 = Math.min(o.col + 1 - colf, o.row + 1 - rowf);
-          const rayBlocked = higher && t1 > Math.max(t0, 0);
-          // (b) A higher column whose LIFTED TOP FACE overlaps the feet band
-          // (the sprite is a billboard — raised corners of side/front
-          // neighbours pass in front of its lower pixels even when the feet
-          // point itself is visible) and whose face is camera-closer.
-          // The upper reach must clear a DIAGONALLY adjacent ledge: a step to
-          // the E/S (same-row/col neighbour) sits one grid diagonal AND one
-          // level up, so its top lands ~lh+dy above the feet — a tighter band
-          // (the old −26) let that ledge's corner poke between the legs with
-          // the foot drawn over it (playtester, standing at a step edge).
-          const faceOverFeet =
-            higher &&
-            o.y0 <= feetY + 6 &&
-            o.y0 >= feetY - (MAP_GEOMETRY.lh + MAP_GEOMETRY.dy + 9) &&
-            o.col + o.row + 1.2 > colf + rowf;
-          // (c) A camera-closer SOLID structure whose (tall, bottom-anchored)
-          // art overlaps the sprite: billboard art covers anything behind
-          // its diagonal regardless of how far its top rises above the feet
-          // — the faceOverFeet band was tuned for 1-level ledges and never
-          // fired for a 100px pillar, so the LIT COPY floated over it.
-          // BEHIND also requires the feet anchor inside the art's x-span:
-          // standing BESIDE the pillar at a smaller diagonal is not behind
-          // it, and forcing the base below the pillar dragged it below the
-          // equal-depth grass tiles too (clipped legs, playtester report).
-          const solidArtOver =
-            higher &&
-            o.solid &&
-            o.col + o.row + 1.2 > colf + rowf &&
-            av.lx >= o.x0 - 6 &&
-            av.lx <= o.x1 + 6;
-          if (rayBlocked || faceOverFeet || solidArtOver) {
-            below = Math.min(below, o.depth);
-            coverY = Math.min(coverY, o.y0);
-          } else if (!o.solid || colf + rowf > o.col + o.row + 1) {
-            // Overlapping, not covering → lift the sprite above it. For
-            // STANDABLE terrain this must stay unconditional: the flat tile
-            // in FRONT of the feet has a higher painter depth and would
-            // otherwise draw over the drop shadow/feet (playtester report).
-            // SOLID structures are gated on the feet being camera-forward
-            // of their front corner — their bottom-anchored tall art
-            // (128px spires) overlaps characters standing well BEHIND
-            // them, and the blanket lift drew those on top of the pillar.
-            above = Math.max(above, o.depth);
-          }
-        }
-        if (above > -Infinity) depth = Math.max(depth, above + 0.6);
-        if (below < Infinity) depth = Math.min(depth, below - 0.3); // walls win conflicts
-        av.coverY = below < Infinity ? coverY : undefined;
-      } else {
-        av.coverY = undefined;
-      }
-      av.sprite.setDepth(depth);
-      // Shadow: cast on the LANDING ground (flat − target elevation), not the
-      // sprite's current lifted feet. It stays put on the lower ground while the
-      // character hops OR falls toward it, shrinking with total air height so a
-      // cliff fall reads as "dropping toward the shadow below".
-      const landY = av.lyFlat - targetElev;
-      const airFrac = Math.min(1, (hop + Math.max(0, landY - av.ly)) / JUMP_HEIGHT);
-      av.shadow
-        .setPosition(av.lx, landY)
-        .setVisible(!av.swimming)
-        .setAlpha(1 - airFrac * 0.35)
-        .setDisplaySize(34 - airFrac * 9, 14 - airFrac * 4)
-        .setDepth(av.sprite.depth - 0.1);
+      this.resolveBodyDepth(av, surfLevel);
+      this.placeBodyShadow(av, targetElev, hop, 34, 14, 9, 4);
+      av.shadow.setVisible(!av.swimming);
       // Head top (measured from the art), not the frame top — labels hug the
       // character instead of floating over transparent padding.
       const topFrac = (av.sprite.getData("topFrac") as number) ?? 0;
@@ -2422,12 +2369,13 @@ export class WorldScene extends Phaser.Scene {
         mv.ly = mv.lyFlat - mv.elev;
         mv.sprite.x = mv.lx;
         mv.sprite.y = mv.ly;
-        // Depth/y-sort at the flat ground point, same basis as players; the
-        // shadow rests on the landing ground just beneath.
-        const depth = g.y + 0.5;
-        mv.sprite.setDepth(depth);
-        const landY = mv.lyFlat - targetElev;
-        mv.shadow.setPosition(mv.lx, landY).setDepth(depth - 0.1);
+        // SHARED body pipeline (same code as players — maintainer 2026-07-29:
+        // the naive painter depth drew terrace tiles over monsters and their
+        // shadows in front): occluder-aware depth + landing-ground shadow.
+        const sLvl = m.elev ?? g.lvl;
+        mv.surfLevel = sLvl; // occluder + light sampling basis (LEVELS)
+        this.resolveBodyDepth(mv, sLvl);
+        this.placeBodyShadow(mv, targetElev, 0, 26, 10);
         this.playMonsterAnim(mv, !!m.moving, m.dir);
       });
     }
@@ -2741,50 +2689,16 @@ export class WorldScene extends Phaser.Scene {
       lo.img.setTint(tint);
     }
     for (const a of this.avatars.values()) {
-      if (!a.lit) {
-        a.lit = this.add.sprite(a.sprite.x, a.sprite.y, a.sprite.texture.key).setDepth(900_001);
-      }
-      if (!on || !a.sprite.visible) {
-        a.lit.setVisible(false);
+      const l = this.syncLitCopy(a, on, a.baseTint);
+      if (!l) {
         if (!on) a.foam?.clearTint(); // day: foam at full brightness
         continue;
       }
-      // Sample the light at the avatar's ACTUAL rendered surface height, NOT
-      // the base terrain level. On a deck (roof/bridge) the base level is the
-      // floor UNDER the deck, so lightAt marches the sun ray from down there,
-      // the roof/walls occlude it, and the character renders in shadow in full
-      // daylight — until a step onto a wall (base genuinely at deck level) pops
-      // it bright. litLevelOf gives a.elev px → levels (same basis as the torch
-      // z), so a deck-top avatar is lit and an under-deck avatar stays (correctly)
-      // shaded — and a SWIMMER samples at the pool surface its head floats on, not
-      // the sunk elev whose underwater sun-march the pool edges wrongly shadow.
-      const lvl = this.litLevelOf(a);
-      const l = night!.lightAt(a.fx / CELL_WU, a.fy / CELL_WU, lvl, false);
-      const base = a.baseTint;
-      const r = Math.min(255, Math.round(((base >> 16) & 0xff) * Math.min(1, l[0])));
-      const g = Math.min(255, Math.round(((base >> 8) & 0xff) * Math.min(1, l[1])));
-      const bl = Math.min(255, Math.round((base & 0xff) * Math.min(1, l[2])));
-      a.lit
-        .setVisible(true)
-        .setTexture(a.sprite.texture.key, a.sprite.frame.name)
-        .setPosition(a.sprite.x, a.sprite.y)
-        .setOrigin(a.sprite.originX, a.sprite.originY)
-        .setScale(a.sprite.scaleX, a.sprite.scaleY)
-        .setDepth(litDepth(a.sprite.depth))
-        .setTint((r << 16) | (g << 8) | bl);
-      if (a.coverY !== undefined) {
-        // Frame-space y of the occluding wall's top line.
-        const frameTop = a.sprite.y - a.sprite.displayHeight * a.sprite.originY;
-        const cropH = (a.coverY - frameTop) / a.sprite.scaleY;
-        const ab = this.artBounds(a.sprite);
-        if (cropH <= ab.y0 + 2) a.lit.setVisible(false); // wall covers the whole figure
-        else a.lit.setCrop(0, 0, a.sprite.frame.cutWidth, cropH);
-      } else if (a.lit.isCropped) a.lit.setCrop();
       // Underwater clip: the lit copy follows the same shoulder-waterline mask
       // as the base sprite so the submerged body doesn't show above the night
-      // overlay (composes with the wall crop above).
-      if (a.swimming && a.swimT > 0.001 && a.waterMask) a.lit.setMask(a.waterMask);
-      else if (a.lit.mask) a.lit.clearMask();
+      // overlay (composes with the wall crop inside syncLitCopy).
+      if (a.swimming && a.swimT > 0.001 && a.waterMask) a.lit!.setMask(a.waterMask);
+      else if (a.lit!.mask) a.lit!.clearMask();
       // Foam draws ABOVE the night overlay (like the lit copy), so tint its
       // white crest by the same LOCAL light — otherwise it stays bright white
       // at full night. Light-only (the texture already carries its colours), so
@@ -2797,6 +2711,10 @@ export class WorldScene extends Phaser.Scene {
         a.foam.setTint((fr << 16) | (fg << 8) | fb);
       }
     }
+    // Monsters ride the SAME lit-copy pipeline (plain white base tint), so
+    // they answer the sun, clouds, night and torches exactly like players —
+    // their first cut had no lit copy at all (maintainer 2026-07-29).
+    for (const mv of this.monsters.values()) this.syncLitCopy(mv, on, 0xffffff);
     if (this.campfireSprite) {
       if (!this.campfireLit) {
         this.campfireLit = this.add
@@ -3503,9 +3421,164 @@ export class WorldScene extends Phaser.Scene {
    * the pool's own raised edges and the swimmer renders shaded in full daylight
    * (maintainer 2026-07-25 — only bit ELEVATED pools; a sea's sunk elev clamps to
    * 0 = its own surface). So float swimmers sample at the pool surface `surfLevel`. */
-  private litLevelOf(a: Avatar): number {
+  private litLevelOf(a: BodyVisual): number {
     if (a.swimming && a.surfLevel !== undefined) return a.surfLevel;
     return Math.max(0, a.elev / MAP_GEOMETRY.lh);
+  }
+
+  /** Depth vs occluding columns for ANY body (player or monster): a single
+   * painter scalar can't resolve every sprite-vs-column case (diagonals,
+   * same-level, lower columns), so refine per frame with the EXACT test — a
+   * column truly hides the sprite only if its top is strictly higher than the
+   * sprite's ground AND it lies on the camera ray (grid interval test). Place
+   * the sprite above every falsely-deeper column and below every true
+   * occluder. `lvl` = the SURFACE level the body stands on, in LEVELS.
+   * Sets sprite depth + b.coverY (wall-top line for the lit-copy crop). */
+  private resolveBodyDepth(b: BodyVisual, lvl: number) {
+    let depth = b.lyFlat + 0.5; // painter y at the flat (unlifted) ground
+    if (this.world) {
+      const colf = b.fx / CELL_WU; // 1 cell = CELL_WU world units (any world size)
+      const rowf = b.fy / CELL_WU;
+      // Sprite bounds = the MEASURED opaque art box (+4px margin for walk
+      // frames dipping past the idle anchor). The drawn figure is ~30x68px
+      // inside a 128px frame — testing the whole frame let raised cells 2-3
+      // tiles away "cover" the sprite via its transparent padding.
+      const ab = this.artBounds(b.sprite);
+      const aLeft = b.sprite.x - b.sprite.displayWidth * b.sprite.originX;
+      const aTop = b.sprite.y - b.sprite.displayHeight * b.sprite.originY;
+      const sx0 = aLeft + ab.x0 * b.sprite.scaleX - 4;
+      const sx1 = aLeft + ab.x1 * b.sprite.scaleX + 4;
+      const sy0 = aTop + ab.y0 * b.sprite.scaleY - 4;
+      const sy1 = aTop + ab.y1 * b.sprite.scaleY + 4;
+      let above = -Infinity;
+      let below = Infinity;
+      let coverY = Infinity;
+      const feetY = b.ly;
+      for (const o of this.occluderMeta) {
+        if (o.x1 < sx0 || o.x0 > sx1 || o.y1 < sy0 || o.y0 > sy1) continue;
+        const higher = o.top > lvl;
+        // (a) Wall genuinely between the camera and the feet point.
+        const t0 = Math.max(o.col - colf, o.row - rowf);
+        const t1 = Math.min(o.col + 1 - colf, o.row + 1 - rowf);
+        const rayBlocked = higher && t1 > Math.max(t0, 0);
+        // (b) A higher column whose LIFTED TOP FACE overlaps the feet band
+        // (the sprite is a billboard — raised corners of side/front
+        // neighbours pass in front of its lower pixels even when the feet
+        // point itself is visible) and whose face is camera-closer.
+        // The upper reach must clear a DIAGONALLY adjacent ledge: a step to
+        // the E/S (same-row/col neighbour) sits one grid diagonal AND one
+        // level up, so its top lands ~lh+dy above the feet — a tighter band
+        // (the old −26) let that ledge's corner poke between the legs with
+        // the foot drawn over it (playtester, standing at a step edge).
+        const faceOverFeet =
+          higher &&
+          o.y0 <= feetY + 6 &&
+          o.y0 >= feetY - (MAP_GEOMETRY.lh + MAP_GEOMETRY.dy + 9) &&
+          o.col + o.row + 1.2 > colf + rowf;
+        // (c) A camera-closer SOLID structure whose (tall, bottom-anchored)
+        // art overlaps the sprite: billboard art covers anything behind
+        // its diagonal regardless of how far its top rises above the feet
+        // — the faceOverFeet band was tuned for 1-level ledges and never
+        // fired for a 100px pillar, so the LIT COPY floated over it.
+        // BEHIND also requires the feet anchor inside the art's x-span:
+        // standing BESIDE the pillar at a smaller diagonal is not behind
+        // it, and forcing the base below the pillar dragged it below the
+        // equal-depth grass tiles too (clipped legs, playtester report).
+        const solidArtOver =
+          higher &&
+          o.solid &&
+          o.col + o.row + 1.2 > colf + rowf &&
+          b.lx >= o.x0 - 6 &&
+          b.lx <= o.x1 + 6;
+        if (rayBlocked || faceOverFeet || solidArtOver) {
+          below = Math.min(below, o.depth);
+          coverY = Math.min(coverY, o.y0);
+        } else if (!o.solid || colf + rowf > o.col + o.row + 1) {
+          // Overlapping, not covering → lift the sprite above it. For
+          // STANDABLE terrain this must stay unconditional: the flat tile
+          // in FRONT of the feet has a higher painter depth and would
+          // otherwise draw over the drop shadow/feet (playtester report).
+          // SOLID structures are gated on the feet being camera-forward
+          // of their front corner — their bottom-anchored tall art
+          // (128px spires) overlaps characters standing well BEHIND
+          // them, and the blanket lift drew those on top of the pillar.
+          above = Math.max(above, o.depth);
+        }
+      }
+      if (above > -Infinity) depth = Math.max(depth, above + 0.6);
+      if (below < Infinity) depth = Math.min(depth, below - 0.3); // walls win conflicts
+      b.coverY = below < Infinity ? coverY : undefined;
+    } else {
+      b.coverY = undefined;
+    }
+    b.sprite.setDepth(depth);
+  }
+
+  /** Shadow for ANY body: cast on the LANDING ground (flat − target
+   * elevation), not the sprite's current lifted feet. It stays put on the
+   * lower ground while the body hops OR falls toward it, shrinking with total
+   * air height so a cliff fall reads as "dropping toward the shadow below".
+   * `w/h` = the resting ellipse size, `shrinkW/H` = how much a full-height
+   * hop shrinks it (sizes differ per body art — parameterized so the incoming
+   * larger monsters can pass their own). */
+  private placeBodyShadow(
+    b: BodyVisual,
+    targetElevPx: number,
+    hopPx: number,
+    w: number,
+    h: number,
+    shrinkW = w * 0.26,
+    shrinkH = h * 0.29,
+  ) {
+    const landY = b.lyFlat - targetElevPx;
+    const airFrac = Math.min(1, (hopPx + Math.max(0, landY - b.ly)) / JUMP_HEIGHT);
+    b.shadow
+      .setPosition(b.lx, landY)
+      .setAlpha(1 - airFrac * 0.35)
+      .setDisplaySize(w - airFrac * shrinkW, h - airFrac * shrinkH)
+      .setDepth(b.sprite.depth - 0.1);
+  }
+
+  /** Lit copy for ANY body (player or monster): the sprite re-drawn ABOVE the
+   * night multiply overlay, tinted by the CPU light sample so it answers the
+   * sun/clouds/night/torches at ITS OWN standing height. Samples at the body's
+   * ACTUAL rendered surface height, NOT the base terrain level: on a deck
+   * (roof/bridge) the base is the floor UNDER it, so lightAt marches the sun
+   * ray from down there and the body renders shaded in full daylight.
+   * litLevelOf gives elev px → levels (same basis as the torch z); a SWIMMER
+   * samples at the pool surface its head floats on. Cropped below b.coverY so
+   * a covering wall cuts the copy exactly where it cuts the sprite. Returns
+   * the light sample for caller extras (foam tint), or null when hidden. */
+  private syncLitCopy(b: BodyVisual, on: boolean, baseTint: number): number[] | null {
+    if (!b.lit) {
+      b.lit = this.add.sprite(b.sprite.x, b.sprite.y, b.sprite.texture.key).setDepth(900_001);
+    }
+    if (!on || !b.sprite.visible) {
+      b.lit.setVisible(false);
+      return null;
+    }
+    const lvl = this.litLevelOf(b);
+    const l = this.night!.lightAt(b.fx / CELL_WU, b.fy / CELL_WU, lvl, false);
+    const r = Math.min(255, Math.round(((baseTint >> 16) & 0xff) * Math.min(1, l[0])));
+    const g = Math.min(255, Math.round(((baseTint >> 8) & 0xff) * Math.min(1, l[1])));
+    const bl = Math.min(255, Math.round((baseTint & 0xff) * Math.min(1, l[2])));
+    b.lit
+      .setVisible(true)
+      .setTexture(b.sprite.texture.key, b.sprite.frame.name)
+      .setPosition(b.sprite.x, b.sprite.y)
+      .setOrigin(b.sprite.originX, b.sprite.originY)
+      .setScale(b.sprite.scaleX, b.sprite.scaleY)
+      .setDepth(litDepth(b.sprite.depth))
+      .setTint((r << 16) | (g << 8) | bl);
+    if (b.coverY !== undefined) {
+      // Frame-space y of the occluding wall's top line.
+      const frameTop = b.sprite.y - b.sprite.displayHeight * b.sprite.originY;
+      const cropH = (b.coverY - frameTop) / b.sprite.scaleY;
+      const ab = this.artBounds(b.sprite);
+      if (cropH <= ab.y0 + 2) b.lit.setVisible(false); // wall covers the whole figure
+      else b.lit.setCrop(0, 0, b.sprite.frame.cutWidth, cropH);
+    } else if (b.lit.isCropped) b.lit.setCrop();
+    return l;
   }
 
   /** Clip everything below the water surface (underwater) while swimming, via
