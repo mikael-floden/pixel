@@ -30,7 +30,11 @@ async function check(label, ctxOpts) {
       const overflow = [...document.querySelectorAll(".ml-tab")].some(
         (t) => { const r = t.getBoundingClientRect(); return r.left < row.left - 1 || r.right > row.right + 1; });
       const iconOverflow = icon.width > tab.width + 1 || icon.height > tab.height + 1;
-      return { tab: Math.round(tab.width), icon: Math.round(icon.width), slot: Math.round(slot.width), overflow, iconOverflow };
+      // the kit block size each dressed plate painted with (--ml-kitpx, plate.ts)
+      const kitpx = (s) => { const e = document.querySelector(s); return e ? parseFloat(e.style.getPropertyValue("--ml-kitpx")) : NaN; };
+      const fs = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--ml-fs"));
+      return { tab: Math.round(tab.width), icon: Math.round(icon.width), slot: Math.round(slot.width), overflow, iconOverflow,
+               tabKitPx: kitpx(".ml-tab"), slotKitPx: kitpx(".ml-slot"), fs, iw: window.innerWidth };
     });
     const plateSlot = m.tab / m.slot, iconPlate = m.icon / m.tab;
     // plate == slot (within 10%: the tab-row and slot windows are the same width)
@@ -43,6 +47,22 @@ async function check(label, ctxOpts) {
       : fail(`${label}: icon ${(iconPlate*100).toFixed(0)}% of plate (${m.icon}/${m.tab}) iconOverflow=${m.iconOverflow} — too small/big or overflowing`);
     // all six tabs fit the tab-row window
     !m.overflow ? ok(`${label}: all tabs fit the tab-row window`) : fail(`${label}: a tab overflows the tab-row window`);
+    // PIXEL GRAIN (maintainer 2026-07-29 "the pixels look twice as big" in
+    // mobile view): the plate/slot kit blocks must track the FRAME —
+    // expected = KIT_PX(2) × fs / FS_REF(0.95703125) — which on these
+    // width-constrained portrait views equals the bars' effective grain
+    // (2 × uiZoom). A fixed 2 CSS px here is the bug.
+    const wantKit = (2 * m.fs) / 0.95703125;
+    const barsGrain = 2 * Math.min(1, m.iw / 980);
+    Number.isFinite(m.tabKitPx) && Math.abs(m.tabKitPx - wantKit) < 0.05
+      ? ok(`${label}: plate blocks track the frame (kitpx ${m.tabKitPx.toFixed(2)} ≈ ${wantKit.toFixed(2)})`)
+      : fail(`${label}: plate kitpx ${m.tabKitPx} (want ${wantKit.toFixed(2)} from fs=${m.fs}) — grain not tracking the frame`);
+    Math.abs(m.tabKitPx - barsGrain) < 0.1
+      ? ok(`${label}: plate grain matches the bars' effective grain (${m.tabKitPx.toFixed(2)} ≈ ${barsGrain.toFixed(2)})`)
+      : fail(`${label}: plate grain ${m.tabKitPx?.toFixed(2)} vs bars ${barsGrain.toFixed(2)} — HUD pixels read bigger than the bars`);
+    Number.isFinite(m.slotKitPx) && Math.abs(m.slotKitPx - m.tabKitPx) < 0.01
+      ? ok(`${label}: slot blocks match the tab blocks (${m.slotKitPx.toFixed(2)})`)
+      : fail(`${label}: slot kitpx ${m.slotKitPx} != tab kitpx ${m.tabKitPx}`);
   } finally { await page.context().close(); }
 }
 

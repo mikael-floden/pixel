@@ -35,7 +35,33 @@ const SRC: Record<PlateKind, string> = {
 // current pixel size, while still drawing the button area the same size" — the
 // box size is set by layout, only the block scale changes). Small boxes drop
 // to whatever fits.
+//
+// KIT_PX is the block size AT THE APPROVED VIEW (the maintainer's desktop-site
+// phone view, innerWidth 980). Art inside a uiZoom'd overlay root (the bars,
+// the select screen) keeps this fixed value — the compensating zoom already
+// shrinks its blocks on device-width viewports. Art in the UN-zoomed HUD
+// (tabs/slots/settings plates, dressed with frameScaled) must instead scale
+// its blocks WITH the frame via hudKitPx(): a fixed 2 CSS px there read ~2.5x
+// too chunky next to the bars in mobile view (maintainer 2026-07-29: "the
+// pixels look twice as big").
 const KIT_PX = 2;
+
+// --ml-fs at the approved view: min(980/768, 2123/1376) × HUD_SCALE(0.75)
+// = 0.95703125. A frozen CALIBRATION constant — deliberately NOT imported
+// from frame2: if HUD_SCALE ever changes, the whole HUD resizes and the
+// blocks should ride along, which only a frozen reference gives.
+const FS_REF = 0.95703125;
+
+/** Kit block size (CSS px) for art in the UN-zoomed HUD: KIT_PX scaled by the
+ * frame's current render scale relative to the approved view, so the plate
+ * grain shrinks/grows exactly like the frame, the icons and the (zoomed) bars.
+ * Falls back to the same 0.75 default the --ml-fs CSS fallbacks use. */
+export function hudKitPx(): number {
+  const fs = parseFloat(
+    getComputedStyle(document.documentElement).getPropertyValue("--ml-fs"),
+  );
+  return (KIT_PX * (fs > 0 ? fs : 0.75)) / FS_REF;
+}
 
 // native corner slice: covers the rounding + ring/outline of every plate
 const CS = 4;
@@ -78,11 +104,12 @@ export function nineSlice(
   w: number,
   h: number,
   scale = Math.max(1, window.devicePixelRatio || 1),
+  kitPx = KIT_PX, // pass hudKitPx() for art in the UN-zoomed HUD
 ): string | null {
   w = Math.round(w);
   h = Math.round(h);
   if (w < 2 || h < 2) return null;
-  const k = Math.min(KIT_PX, Math.max(1, Math.floor(h / img.height)));
+  const k = Math.min(kitPx, Math.max(1, Math.floor(h / img.height)));
   const cs = Math.min(CS * k, w >> 1, h >> 1);
   const nw = img.width;
   const nh = img.height;
@@ -118,16 +145,21 @@ export function nineSlice(
 
 /** A data-URL plate for a box of w×h CSS px (background-image path — device
  * resolution). null until the art has loaded. */
-export function plateUrl(kind: PlateKind, w: number, h: number): string | null {
+export function plateUrl(
+  kind: PlateKind,
+  w: number,
+  h: number,
+  kitPx = KIT_PX,
+): string | null {
   const img = imgs[kind];
   if (!img) return null;
   const rw = Math.round(w);
   const rh = Math.round(h);
   const scale = Math.max(1, window.devicePixelRatio || 1);
-  const key = `${kind}:${rw}x${rh}@${scale}`;
+  const key = `${kind}:${rw}x${rh}@${scale}k${kitPx.toFixed(3)}`;
   const hit = cache.get(key);
   if (hit) return hit;
-  const url = nineSlice(img, rw, rh, scale);
+  const url = nineSlice(img, rw, rh, scale, kitPx);
   if (url) cache.set(key, url);
   return url;
 }
@@ -157,16 +189,23 @@ function injectPlateCss() {
 
 /** Dress a button element with a composed plate that tracks its size and
  * state. The element keeps its own padding/height; we only paint the
- * background. */
-export function dressPlate(el: HTMLElement, kindFor: (el: HTMLElement) => PlateKind) {
+ * background. `frameScaled: true` for elements in the UN-zoomed HUD — their
+ * blocks track the frame scale (hudKitPx); leave false inside a uiZoom'd
+ * overlay root (the select screen), where the zoom scales the blocks. */
+export function dressPlate(
+  el: HTMLElement,
+  kindFor: (el: HTMLElement) => PlateKind,
+  frameScaled = false,
+) {
   injectPlateCss();
   const paint = () => {
     const kind = kindFor(el);
-    const url = plateUrl(kind, el.clientWidth, el.clientHeight);
+    const kp = frameScaled ? hudKitPx() : KIT_PX;
+    const url = plateUrl(kind, el.clientWidth, el.clientHeight, kp);
     if (url) {
       el.style.backgroundImage = `url(${url})`;
       const im = imgs[kind]!;
-      const k = Math.min(KIT_PX, Math.max(1, Math.floor(el.clientHeight / im.height)));
+      const k = Math.min(kp, Math.max(1, Math.floor(el.clientHeight / im.height)));
       el.style.setProperty("--ml-kitpx", `${k}px`);
     }
   };
@@ -188,7 +227,8 @@ export function repaintPlates(root: ParentNode) {
 
 // ---- the kit's empty item slot ------------------------------------------
 /** Dress a backpack slot as an "empty button": the kit slot square 9-sliced
- * to the box at the shared KIT_PX block size, exactly like the buttons. */
+ * to the box at the shared block size, exactly like the buttons. Slots live
+ * in the un-zoomed HUD, so their blocks track the frame (frameScaled). */
 export function dressSlot(el: HTMLElement) {
-  dressPlate(el, () => "slot");
+  dressPlate(el, () => "slot", true);
 }

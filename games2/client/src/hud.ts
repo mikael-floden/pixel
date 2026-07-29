@@ -25,7 +25,7 @@
 
 import { mountFrame2, FrameLayout, HUD_SCALE } from "./frame2";
 import { setClockMount } from "./clock";
-import { dressPlate, dressSlot, nineSlice, readyPlates, repaintPlates } from "./plate";
+import { dressPlate, dressSlot, hudKitPx, nineSlice, readyPlates, repaintPlates } from "./plate";
 import { holdLoading } from "./loading";
 import { mountGamepadStick } from "./gamepad";
 import { mountBars } from "./bars";
@@ -293,7 +293,7 @@ export class HudBar {
       // audio comes from pressFx (down/up pair) — no extra click sound
       b.addEventListener("click", () => this.select(t.id));
       pressFx(b);
-      dressPlate(b, kindForState); // the kit trio, same as the settings rows
+      dressPlate(b, kindForState, true); // the kit trio, frame-scaled blocks
       tabRow.appendChild(b);
       this.tabs.set(t.id, b);
 
@@ -498,7 +498,7 @@ export class HudBar {
     b.append(img, t);
     b.addEventListener("click", () => this.onAmbient(name));
     pressFx(b);
-    dressPlate(b, kindForState);
+    dressPlate(b, kindForState, true);
     this.ambList!.appendChild(b);
     const refs = { el: b, img, label: t };
     if (name !== null) this.ambRows.set(name, refs);
@@ -625,7 +625,7 @@ export class HudBar {
           el.textContent = "";
           el.appendChild(t);
         }
-        dressPlate(el, kindForState);
+        dressPlate(el, kindForState, true);
       });
     }).observe(row, { childList: true });
 
@@ -797,7 +797,7 @@ function birdSlider(get: () => number, set: (v: number) => void): HTMLElement {
   track.append(frame, fill, knob);
   wrap.append(head, track);
   // the cream "selected" plate normally; the pressed DOWN plate while grabbing
-  dressPlate(knob, () => (knob.classList.contains("grabbing") ? "down" : "sel"));
+  dressPlate(knob, () => (knob.classList.contains("grabbing") ? "down" : "sel"), true);
 
   let curP = toP(get());
   const render = (p: number) => {
@@ -818,7 +818,9 @@ function birdSlider(get: () => number, set: (v: number) => void): HTMLElement {
     const w = track.clientWidth;
     const h = track.clientHeight;
     if (w < 2 || h < 2 || !im.complete || !im.naturalWidth) return;
-    const u = nineSlice(im, w, h, Math.max(1, window.devicePixelRatio || 1));
+    // hudKitPx: the slider lives in the un-zoomed HUD — its track/fill blocks
+    // must track the frame like the plates (the bars get this via uiZoom)
+    const u = nineSlice(im, w, h, Math.max(1, window.devicePixelRatio || 1), hudKitPx());
     if (u) el.src = u;
   };
   const rebake = () => {
