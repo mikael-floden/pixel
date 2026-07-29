@@ -377,6 +377,15 @@ interface Avatar {
 // few frames; each flip used to restart the walk cycle ("jitter"). 160ms is
 // invisible on a deliberate turn but longer than any boundary wobble period.
 const DIR_STICK_MS = 160;
+// Where the DRAWN ground diamond's top vertex sits below the tile art box's
+// lattice anchor (world px). The maps2 tile art seats its diamond this far
+// down inside the 64px box — measured by flood-filling monster_demo pads
+// (salamander + sand, two materials agree): the drawn diamond is exactly
+// lattice-sized (640x~298 for a 5x5 pad) but a uniform ~5px lower than the
+// pure (c+r)*dy lattice. The spawn-zone overlay must add this or its outline
+// rides visibly above every pad it traces (maintainer screenshot 2026-07-30 —
+// the residual previously misread as edge-alpha inset).
+const TILE_DIAMOND_TOP = 5;
 
 // A roaming MONSTER (the poring family) rendered from the authoritative
 // server-synced Monster schema. Much lighter than an Avatar: no swim/torch/
@@ -4047,7 +4056,7 @@ export class WorldScene extends Phaser.Scene {
     const lvl = this.world?.rows[Math.floor(r)]?.[Math.floor(c)]?.l ?? 0;
     return {
       x: this.iso.ox + (cornerCol - cornerRow) * dx + MAP_GEOMETRY.tile / 2,
-      y: this.iso.oy + (cornerCol + cornerRow) * dy - lvl * lh,
+      y: this.iso.oy + (cornerCol + cornerRow) * dy - lvl * lh + TILE_DIAMOND_TOP,
     };
   }
 
