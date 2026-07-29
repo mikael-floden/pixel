@@ -743,6 +743,12 @@ export interface TerrainGrid {
    * (level/type) stays walkable underneath; which surface a player is on is
    * resolved from their current elevation (see canEnterElev/resolveElevAt). */
   deck: number[];
+  /** Underside of the deck slab: `deck level - thickness`. The slab occupies
+   * [deckBot, deck] — SOLID: nothing moves through it. The base surface under
+   * a deck is enterable only from strictly BELOW deckBot (see canEnterElev);
+   * without this, walking into a tall cave-roof step "fell through" the rock
+   * onto the cave floor. -1 where there is no deck. */
+  deckBot: number[];
 }
 
 export function buildTerrainGrid(
@@ -750,12 +756,13 @@ export function buildTerrainGrid(
   height: number,
   rows: { t: string; l?: number }[][],
   props: { col: number; row: number }[] = [],
-  decks: { level: number; cells: { col: number; row: number }[] }[] = [],
+  decks: { level: number; thickness?: number; cells: { col: number; row: number }[] }[] = [],
 ): TerrainGrid {
   const level: number[] = new Array(width * height).fill(0);
   const type: string[] = new Array(width * height).fill("");
   const blocked: boolean[] = new Array(width * height).fill(false);
   const deck: number[] = new Array(width * height).fill(-1);
+  const deckBot: number[] = new Array(width * height).fill(-1);
   for (let r = 0; r < height; r++) {
     for (let c = 0; c < width; c++) {
       const cell = rows[r]?.[c];
@@ -772,7 +779,13 @@ export function buildTerrainGrid(
     for (const cc of d.cells) {
       if (cc.col < 0 || cc.row < 0 || cc.col >= width || cc.row >= height) continue;
       const i = cc.row * width + cc.col;
-      if (d.level > level[i]) deck[i] = Math.max(deck[i], d.level);
+      if (d.level > level[i] && d.level > deck[i]) {
+        deck[i] = d.level;
+        // Slab underside. thickness 0 (a bare top slab) leaves deckBot == level,
+        // which reproduces the pre-deckBot behaviour exactly: the base below is
+        // enterable from any elevation under the walk surface.
+        deckBot[i] = Math.max(0, d.level - (d.thickness ?? 0));
+      }
     }
   }
   // A placed prop makes its cell solid: the game owns collision (derived from
@@ -783,7 +796,17 @@ export function buildTerrainGrid(
     if (p.col >= 0 && p.row >= 0 && p.col < width && p.row < height)
       blocked[p.row * width + p.col] = true;
   }
-  return { width, height, level, type, blocked, deck };
+  return { width, height, level, type, blocked, deck, deckBot };
+}
+
+/** Is the BASE surface of cell `i` reachable for a mover at `elev`? A deck's
+ * slab [deckBot, deck] is SOLID rock/planks: the ground beneath it exists only
+ * for movers already strictly BELOW the slab's underside (walking under a
+ * bridge, on a cave floor). Anyone at/above the underside walking "into" the
+ * cell meets the slab, not the floor — without this, a step against a tall
+ * cave-roof ledge fell THROUGH the mountain onto the cave floor. */
+function baseUnderDeckOpen(grid: TerrainGrid, i: number, elev: number): boolean {
+  return grid.deck[i] < 0 || elev < grid.deckBot[i] - 1e-9;
 }
 
 // World units per cell is a FIXED constant (CELL_WU), so a world's extent is
@@ -896,9 +919,12 @@ export function canEnterElev(
     const d = Math.abs(lvl - elev);
     if (d < bestDist) { bestDist = d; best = lvl; } // stay on your own layer
   };
-  // BASE surface: walkable ground / swimmable water, UNLESS a solid prop blocks it.
+  // BASE surface: walkable ground / swimmable water, UNLESS a solid prop blocks
+  // it or a deck slab overhead seals it off (only movers already under the slab
+  // may use the ground beneath — see baseUnderDeckOpen).
   // (No deck → this is the ONLY candidate and the check reduces to canEnter.)
-  const baseOpen = !grid.blocked[i] && (to.standable || (to.swimmable && ctx.canSwim));
+  const baseOpen = !grid.blocked[i] && (to.standable || (to.swimmable && ctx.canSwim))
+    && baseUnderDeckOpen(grid, i, elev);
   consider(grid.level[i], baseOpen);
   // DECK surface (world@2): a solid slab ABOVE the base — walkable even over a
   // blocked base (a bridge spans water/chasm; a roof caps furniture below).
@@ -923,7 +949,8 @@ export function resolveElevAt(grid: TerrainGrid, elev: number, x: number, y: num
     const d = Math.abs(lvl - elev);
     if (d < bestDist) { bestDist = d; best = lvl; }
   };
-  const baseOpen = !grid.blocked[i] && (s.standable || (s.swimmable && ctx.canSwim));
+  const baseOpen = !grid.blocked[i] && (s.standable || (s.swimmable && ctx.canSwim))
+    && baseUnderDeckOpen(grid, i, elev);
   consider(grid.level[i], baseOpen);
   if (grid.deck[i] >= 0) consider(grid.deck[i], true);
   return best === null ? grid.level[i] : best;
@@ -1295,7 +1322,8 @@ function stepReach(
     else if (climb <= JUMP_CLIMB + 1e-9) out.push({ level, layer, jump: true }); // 2-level auto-jump
     // else too high to reach from here
   };
-  const baseOpen = !grid.blocked[bi] && (to.standable || (to.swimmable && canSwim));
+  const baseOpen = !grid.blocked[bi] && (to.standable || (to.swimmable && canSwim))
+    && baseUnderDeckOpen(grid, bi, elev);
   consider(grid.level[bi], 0, baseOpen);
   if (grid.deck[bi] >= 0) consider(grid.deck[bi], 1, true); // deck slab: solid walkable
   return out;
