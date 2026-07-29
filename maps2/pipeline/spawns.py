@@ -133,9 +133,23 @@ NAME_HINTS = (("lava", "dark"), ("shadow", "cave"), ("diablo", "cave"),
               ("tree", "forest"), ("dark", "dark"))
 BRIDGE_GUARD = "stone_turtle"       # the troll under^W on the bridge
 
-DENSITY = {"water": 90}             # cells per monster, by habitat key
-DENSITY_DEFAULT = 60
-NUM_CAP = 12
+# -- population doctrine (maintainer 2026-07-29) -------------------------------
+# Every monster TYPE gets a near-equal share of the world's population — "not a
+# rule that they have to be the same, just similar". Pure per-area density made
+# the roster wildly lopsided (24 butterfly dragons on the plains vs 1 hedgehog
+# in a copse), so the budget is now allocated per MONSTER, not per zone:
+#   1. the world's budget B = land cells / WORLD_CELLS_PER_MONSTER, clamped so
+#      no type is rarer than MON_TOTAL_MIN or commoner than MON_TOTAL_MAX
+#      (the_island2: 21978 land cells -> B = 160, the maintainer's target);
+#   2. B is split EVENLY across the types that live here (largest-remainder —
+#      so with 24 types and B=160, sixteen get 7 and eight get 6); the +1s go
+#      to the types with the most habitat, the only nod left to raw area;
+#   3. each type's own total is then spread across ITS zones in proportion to
+#      zone area (min 1 per zone) — so density still decides WHERE a type is
+#      thickest, never HOW MANY of it exist.
+WORLD_CELLS_PER_MONSTER = 137       # world budget = land cells / this
+MON_TOTAL_MIN = 3                   # per-type floor on a world it lives on
+MON_TOTAL_MAX = 9                   # per-type ceiling
 MIN_ZONE = {"forest": 12}           # smallest component worth a zone (cells)
 MIN_ZONE_DEFAULT = 30
 TOP_K = 4                           # component cap per habitat (>= its members)
@@ -359,7 +373,11 @@ def poly_cells(poly, ctx=""):
 
 # -- zone construction --------------------------------------------------------
 
-def make_zone(w, kind, comp, zid, elev=None, num=None, share=1.0):
+def make_zone(w, kind, comp, zid, elev=None):
+    """Build one zone with a placeholder population of 1. The real `num` is set
+    later by balance_population(), which shares the world budget out per MONSTER
+    (see the population doctrine above) — a zone can't know its own count
+    without knowing how many other zones its monster got."""
     cells = fix_diagonals(comp)
     poly = trace_outer(cells)
     assert_simple(poly, f"{w.name}/{zid}")
@@ -367,14 +385,55 @@ def make_zone(w, kind, comp, zid, elev=None, num=None, share=1.0):
     if elev is None:
         lv = sorted(w.hab_level(x, y) for (x, y) in comp)
         elev = [lv[0], lv[-1]]
-    if num is None:
-        d = DENSITY.get(habitat_of(kind), DENSITY_DEFAULT)
-        num = max(1, min(NUM_CAP, round(len(comp) / d / max(1.0, share))))
     zone = {"id": zid, "monster": kind,
             "area": [[x, y] for (x, y) in poly],
-            "elev": [int(elev[0]), int(elev[1])], "num": int(num)}
-    validate_zone(w, zone, inside)
+            "elev": [int(elev[0]), int(elev[1])], "num": 1}
+    zone["_valid"] = validate_zone(w, zone, inside)   # spawnable cells (the cap)
+    zone["_cells"] = len(comp)                        # habitat size (the weight)
     return zone
+
+
+def balance_population(w, zones):
+    """Share the world's monster budget out so every TYPE ends up with a similar
+    total, then spread each type's total across its own zones by area."""
+    by_mon = {}
+    for z in zones:
+        by_mon.setdefault(z["monster"], []).append(z)
+    n = len(by_mon)
+    if not n:
+        return zones
+    land = sum(1 for y in range(w.h) for x in range(w.w)
+               if w.m(x, y) not in w.water and w.m(x, y) != "")
+    budget = max(n * MON_TOTAL_MIN,
+                 min(n * MON_TOTAL_MAX, round(land / WORLD_CELLS_PER_MONSTER)))
+    base, extra = divmod(budget, n)
+    # the few +1s go to the types with the most habitat (deterministic tie-break)
+    order = sorted(by_mon, key=lambda m: (-sum(z["_cells"] for z in by_mon[m]), m))
+    kept = []
+    for i, mon in enumerate(order):
+        target = base + (1 if i < extra else 0)
+        zs = sorted(by_mon[mon], key=lambda z: (-z["_cells"], z["id"]))
+        if len(zs) > target:            # more zones than monsters: keep the biggest
+            zs = zs[:target]
+        weight = sum(z["_cells"] for z in zs) or 1
+        rest = target - len(zs)         # one each, then area-proportional
+        share = [rest * z["_cells"] / weight for z in zs]
+        for z, s in zip(zs, share):
+            z["num"] = 1 + int(s)
+        for k in sorted(range(len(zs)),
+                        key=lambda k: (-(share[k] % 1), zs[k]["id"]))[
+                            :rest - sum(int(s) for s in share)]:
+            zs[k]["num"] += 1
+        for z in zs:                    # never claim more than the zone can hold
+            z["num"] = min(z["num"], z["_valid"])
+        short = target - sum(z["num"] for z in zs)
+        for z in zs:                    # spill anything that got capped
+            while short > 0 and z["num"] < z["_valid"]:
+                z["num"] += 1
+                short -= 1
+        kept.extend(zs)
+    pos = {id(z): i for i, z in enumerate(zones)}
+    return sorted(kept, key=lambda z: pos[id(z)])
 
 
 def validate_zone(w, zone, inside=None):
@@ -455,22 +514,19 @@ def zones_for(w):
         if not kept:
             continue
         # every member gets a zone; extra components cycle back over members.
-        # Members sharing one component OVERLAP (the design) and split its
-        # population so density stays constant.
+        # Members sharing one component OVERLAP — that is the design.
         count = max(len(mem), len(kept))
-        share = count / len(kept)
         for i in range(count):
             kind = mem[i % len(mem)]
             comp = kept[i % len(kept)]
             elev = [0, 1] if hab == "cave" else None
-            zones.append(make_zone(w, kind, comp, f"{hab}-{i + 1}",
-                                   elev=elev, share=share))
+            zones.append(make_zone(w, kind, comp, f"{hab}-{i + 1}", elev=elev))
     # showcase: a guard on the biggest bridge span (deck-elevation zone)
     if BRIDGE_GUARD in ids and w.bridges:
         lvl, cells = max(w.bridges, key=lambda b: (len(b[1]), b[0]))
         if len(cells) >= BRIDGE_MIN_CELLS:
             zones.append(make_zone(w, BRIDGE_GUARD, set(cells), "bridge-1",
-                                   elev=[lvl, lvl], num=1))
+                                   elev=[lvl, lvl]))
 
     # THE ISLAND 2 must carry EVERY monster (the endgame map). Any monster that
     # its habitat rules left out gets a guaranteed fallback zone; then we assert.
@@ -499,7 +555,7 @@ def fallback_zone(w, masks, mid):
         elev = [0, 1] if hab == "cave" else None
         for comp in comps(masks.get(hab, set())):    # biggest first
             try:
-                return make_zone(w, mid, comp, f"extra-{mid}", elev=elev, num=1)
+                return make_zone(w, mid, comp, f"extra-{mid}", elev=elev)
             except AssertionError:
                 continue
     return None
@@ -519,7 +575,10 @@ def refresh(name):
         print(f"{name}: 0 zones (feature-test map — no monsters)")
         return
     w = W(name)
-    zones = zones_for(w)
+    zones = balance_population(w, zones_for(w))
+    for z in zones:                                 # drop the allocator's scratch
+        z.pop("_valid", None)
+        z.pop("_cells", None)
     doc = {"schema": SCHEMA, "world": name, "zones": zones}
     with open(os.path.join(WORLDS, name, "spawns.json"), "w") as f:
         json.dump(doc, f, separators=(",", ":"))

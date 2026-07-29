@@ -53,10 +53,23 @@ range. This single field disambiguates every layered case:
 
 ## `num` — population
 
-How many of this monster live in the zone. The generator scales it with the
-zone's cell count (`num = clamp(cells / density, 1, 12)`, density ~60 cells per
-monster, water ~90) so a big area holds more monsters at the same density; the
-game may treat it as the concurrent cap per zone.
+How many of this monster live in the zone; the game may treat it as the
+concurrent cap per zone.
+
+Population is budgeted **per monster TYPE, not per zone** (maintainer
+2026-07-29: the roster should be "balanced… not the same, just similar" — pure
+per-area density gave 24 butterfly dragons and 1 hedgehog):
+
+1. the world's budget `B = land cells / 137`, clamped so no type is rarer than
+   3 or commoner than 9 (`the_island2`: 21978 land cells → **B = 160**);
+2. `B` is split **evenly** across the types that live on the world by largest
+   remainder — with 24 types and B=160, sixteen get 7 and eight get 6. The few
+   +1s go to the types with the most habitat, the only nod left to raw area;
+3. each type's own total is then spread across **its** zones in proportion to
+   zone area (min 1 per zone, capped by the zone's spawnable cells).
+
+So density still decides *where* a type is thickest — `butterfly_dragon` puts 5
+of its 7 on the big meadow and 2 on the smaller one — never *how many* exist.
 
 ## Generation (rules, never spot edits)
 

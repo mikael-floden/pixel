@@ -224,8 +224,10 @@ zones {monster, area, elev, num}. Areas are SIMPLE polygons (concave fine,
 self-intersections build-asserted away), may overlap, and carry the INTENDED
 elevation range so caves, bridge decks and the ground beneath them are
 unambiguous (the cave floor is `elev [0,1]` while snowfields ride the cave-roof
-decks at `[24,40]` over the same cells). `num` scales with area (constant
-density). Zones are DERIVED by habitat rules in `pipeline/spawns.py` — rerun it
+decks at `[24,40]` over the same cells). Population is budgeted per monster
+TYPE so the roster stays BALANCED (world budget = land/137, split evenly across
+the types living there, then each type's total spread across its own zones by
+area) — the_island2 ships 160 monsters, 6-7 of every kind. Zones are DERIVED by habitat rules in `pipeline/spawns.py` — rerun it
 after regenerating any world (like `minimaps.py`); it validates every zone
 (simple polygon, ≥num standable cells at the claimed elevation) before writing.
 Two placement laws: **`the_island2` MUST contain every monster** (the endgame
