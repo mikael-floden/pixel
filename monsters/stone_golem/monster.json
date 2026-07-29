@@ -15,6 +15,14 @@
     "width": 146,
     "height": 136
   },
+  "native_size": {
+    "width": 136,
+    "height": 136
+  },
+  "pad": {
+    "x": 5,
+    "y": 0
+  },
   "sprite": "stone_golem/sprite.png",
   "directions": [
     "east",
@@ -815,66 +823,6 @@
         "strip_px": 14,
         "ext": 3
       }
-    ],
-    "die_trim": {
-      "north-east": {
-        "dropped": [
-          8
-        ],
-        "sub": "e9382763-18ee-4e6e-966d-063515b0ca4f"
-      },
-      "north-west": {
-        "dropped": [
-          8
-        ],
-        "sub": "d5d2898f-14c3-44dd-be4b-3a0a4203d112"
-      },
-      "south": {
-        "dropped": [
-          8
-        ],
-        "sub": "b1fcb1cd-c5c0-4f20-a2ee-e48bd0577d67"
-      },
-      "south-east": {
-        "dropped": [
-          8
-        ],
-        "sub": "39666e07-9e26-48b9-8ead-f69b66a3c357"
-      },
-      "south-west": {
-        "dropped": [
-          8
-        ],
-        "sub": "fb05e1cc-6858-4efb-96b3-07b82a6ac734"
-      },
-      "east": {
-        "dropped": [
-          7,
-          8
-        ],
-        "sub": "679db683-3cc1-4e55-aa83-39c17542264f"
-      },
-      "north": {
-        "dropped": [
-          8
-        ],
-        "sub": "26086215-254e-487e-b872-d1404fb7aab2"
-      },
-      "west": {
-        "dropped": [
-          7,
-          8
-        ],
-        "sub": "e39d9d08-b387-4df0-8b5a-32bc0b7ae703"
-      }
-    }
-  },
-  "native_size": {
-    "width": 136,
-    "height": 136
-  },
-  "pad": {
-    "x": 5,
-    "y": 0
+    ]
   }
 }

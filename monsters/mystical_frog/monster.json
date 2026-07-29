@@ -15,6 +15,14 @@
     "width": 34,
     "height": 42
   },
+  "native_size": {
+    "width": 34,
+    "height": 34
+  },
+  "pad": {
+    "x": 0,
+    "y": 4
+  },
   "sprite": "mystical_frog/sprite.png",
   "directions": [
     "east",
@@ -1143,13 +1151,5 @@
         "ext": 2
       }
     ]
-  },
-  "native_size": {
-    "width": 34,
-    "height": 34
-  },
-  "pad": {
-    "x": 0,
-    "y": 4
   }
 }

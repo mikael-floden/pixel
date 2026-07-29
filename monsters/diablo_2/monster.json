@@ -15,6 +15,14 @@
     "width": 136,
     "height": 174
   },
+  "native_size": {
+    "width": 136,
+    "height": 136
+  },
+  "pad": {
+    "x": 0,
+    "y": 19
+  },
   "sprite": "diablo_2/sprite.png",
   "directions": [
     "east",
@@ -37,32 +45,6 @@
     "north-west": "diablo_2/rotations/north-west.png"
   },
   "animations": {
-    "angry": {
-      "group_id": "f307a26b-b6fc-49a7-81a1-fa112c6e591d",
-      "source_name": "Angry eyes idle. Lively and frustrated.",
-      "directions": {
-        "south": {
-          "frames": 9,
-          "strip": "diablo_2/animations/angry__south.png",
-          "gif": "diablo_2/animations/angry__south.gif",
-          "frame_paths": [
-            "diablo_2/animations/angry/south/00.png",
-            "diablo_2/animations/angry/south/01.png",
-            "diablo_2/animations/angry/south/02.png",
-            "diablo_2/animations/angry/south/03.png",
-            "diablo_2/animations/angry/south/04.png",
-            "diablo_2/animations/angry/south/05.png",
-            "diablo_2/animations/angry/south/06.png",
-            "diablo_2/animations/angry/south/07.png",
-            "diablo_2/animations/angry/south/08.png"
-          ],
-          "lm": "Wed, 29 Jul 2026 16:44:56 GMT",
-          "src_frames": 9,
-          "sub": "74bf6828-030e-4e9d-85eb-1bea731de8ea"
-        }
-      },
-      "rotating_gif": "diablo_2/animations/angry__rotating.gif"
-    },
     "attack": {
       "group_id": "b9c097fa-e07f-4527-ba8a-ea9309343318",
       "source_name": "Slam attack, the demon tries to crush the player w",
@@ -703,7 +685,7 @@
   "states": {
     "idle": "idle",
     "walk": "walk",
-    "angry": "angry",
+    "angry": "idle",
     "attack": "attack",
     "die": "die"
   },
@@ -741,13 +723,5 @@
         "forced": true
       }
     ]
-  },
-  "native_size": {
-    "width": 136,
-    "height": 136
-  },
-  "pad": {
-    "x": 0,
-    "y": 19
   }
 }

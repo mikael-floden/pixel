@@ -15,6 +15,14 @@
     "width": 70,
     "height": 48
   },
+  "native_size": {
+    "width": 48,
+    "height": 48
+  },
+  "pad": {
+    "x": 11,
+    "y": 0
+  },
   "sprite": "forest_poring/sprite.png",
   "directions": [
     "east",
@@ -37,6 +45,125 @@
     "north-west": "forest_poring/rotations/north-west.png"
   },
   "animations": {
+    "idle": {
+      "group_id": "e3c5ad1c-dbef-47ad-b67e-18e0e4ddbed1",
+      "source_name": "Idle",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "forest_poring/animations/idle__east.png",
+          "gif": "forest_poring/animations/idle__east.gif",
+          "frame_paths": [
+            "forest_poring/animations/idle/east/00.png",
+            "forest_poring/animations/idle/east/01.png",
+            "forest_poring/animations/idle/east/02.png",
+            "forest_poring/animations/idle/east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:45:41 GMT",
+          "src_frames": 4,
+          "sub": "e3cc6bf2-b1a4-45ac-b082-1fb8fb81318c"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "forest_poring/animations/idle__north.png",
+          "gif": "forest_poring/animations/idle__north.gif",
+          "frame_paths": [
+            "forest_poring/animations/idle/north/00.png",
+            "forest_poring/animations/idle/north/01.png",
+            "forest_poring/animations/idle/north/02.png",
+            "forest_poring/animations/idle/north/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:45:42 GMT",
+          "src_frames": 4,
+          "sub": "af8a08ac-7873-495b-998c-14b87616a753"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "forest_poring/animations/idle__north-east.png",
+          "gif": "forest_poring/animations/idle__north-east.gif",
+          "frame_paths": [
+            "forest_poring/animations/idle/north-east/00.png",
+            "forest_poring/animations/idle/north-east/01.png",
+            "forest_poring/animations/idle/north-east/02.png",
+            "forest_poring/animations/idle/north-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:45:44 GMT",
+          "src_frames": 4,
+          "sub": "19b60d42-aa22-44b7-a1eb-50bd4a29508b"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "forest_poring/animations/idle__north-west.png",
+          "gif": "forest_poring/animations/idle__north-west.gif",
+          "frame_paths": [
+            "forest_poring/animations/idle/north-west/00.png",
+            "forest_poring/animations/idle/north-west/01.png",
+            "forest_poring/animations/idle/north-west/02.png",
+            "forest_poring/animations/idle/north-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:45:45 GMT",
+          "src_frames": 4,
+          "sub": "fef6eadc-a594-4206-9f4b-98a2559a5125"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "forest_poring/animations/idle__south.png",
+          "gif": "forest_poring/animations/idle__south.gif",
+          "frame_paths": [
+            "forest_poring/animations/idle/south/00.png",
+            "forest_poring/animations/idle/south/01.png",
+            "forest_poring/animations/idle/south/02.png",
+            "forest_poring/animations/idle/south/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:45:46 GMT",
+          "src_frames": 4,
+          "sub": "2cb23645-1f8b-4d2e-8479-4a1e61154f4f"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "forest_poring/animations/idle__south-east.png",
+          "gif": "forest_poring/animations/idle__south-east.gif",
+          "frame_paths": [
+            "forest_poring/animations/idle/south-east/00.png",
+            "forest_poring/animations/idle/south-east/01.png",
+            "forest_poring/animations/idle/south-east/02.png",
+            "forest_poring/animations/idle/south-east/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:45:47 GMT",
+          "src_frames": 4,
+          "sub": "bfacdc0f-3341-4b3e-b63b-0d9e47cfd464"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "forest_poring/animations/idle__south-west.png",
+          "gif": "forest_poring/animations/idle__south-west.gif",
+          "frame_paths": [
+            "forest_poring/animations/idle/south-west/00.png",
+            "forest_poring/animations/idle/south-west/01.png",
+            "forest_poring/animations/idle/south-west/02.png",
+            "forest_poring/animations/idle/south-west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 19:46:20 GMT",
+          "src_frames": 4,
+          "sub": "e2297cf3-a493-40b7-91d3-2b3f42f1860b"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "forest_poring/animations/idle__west.png",
+          "gif": "forest_poring/animations/idle__west.gif",
+          "frame_paths": [
+            "forest_poring/animations/idle/west/00.png",
+            "forest_poring/animations/idle/west/01.png",
+            "forest_poring/animations/idle/west/02.png",
+            "forest_poring/animations/idle/west/03.png"
+          ],
+          "lm": "Wed, 29 Jul 2026 11:45:51 GMT",
+          "src_frames": 4,
+          "sub": "6a8ee580-fab6-4d86-a8e0-f0a3af9b5f3b"
+        }
+      },
+      "rotating_gif": "forest_poring/animations/idle__rotating.gif"
+    },
     "die": {
       "group_id": "341ebd45-d41e-46af-bc60-86815be52ddc",
       "source_name": "Melts into a puddle of water and dissapers",
@@ -465,125 +592,6 @@
       },
       "rotating_gif": "forest_poring/animations/attack__rotating.gif"
     },
-    "idle": {
-      "group_id": "e3c5ad1c-dbef-47ad-b67e-18e0e4ddbed1",
-      "source_name": "Idle",
-      "directions": {
-        "east": {
-          "frames": 4,
-          "strip": "forest_poring/animations/idle__east.png",
-          "gif": "forest_poring/animations/idle__east.gif",
-          "frame_paths": [
-            "forest_poring/animations/idle/east/00.png",
-            "forest_poring/animations/idle/east/01.png",
-            "forest_poring/animations/idle/east/02.png",
-            "forest_poring/animations/idle/east/03.png"
-          ],
-          "lm": "Wed, 29 Jul 2026 11:45:41 GMT",
-          "src_frames": 4,
-          "sub": "e3cc6bf2-b1a4-45ac-b082-1fb8fb81318c"
-        },
-        "north": {
-          "frames": 4,
-          "strip": "forest_poring/animations/idle__north.png",
-          "gif": "forest_poring/animations/idle__north.gif",
-          "frame_paths": [
-            "forest_poring/animations/idle/north/00.png",
-            "forest_poring/animations/idle/north/01.png",
-            "forest_poring/animations/idle/north/02.png",
-            "forest_poring/animations/idle/north/03.png"
-          ],
-          "lm": "Wed, 29 Jul 2026 11:45:42 GMT",
-          "src_frames": 4,
-          "sub": "af8a08ac-7873-495b-998c-14b87616a753"
-        },
-        "north-east": {
-          "frames": 4,
-          "strip": "forest_poring/animations/idle__north-east.png",
-          "gif": "forest_poring/animations/idle__north-east.gif",
-          "frame_paths": [
-            "forest_poring/animations/idle/north-east/00.png",
-            "forest_poring/animations/idle/north-east/01.png",
-            "forest_poring/animations/idle/north-east/02.png",
-            "forest_poring/animations/idle/north-east/03.png"
-          ],
-          "lm": "Wed, 29 Jul 2026 11:45:44 GMT",
-          "src_frames": 4,
-          "sub": "19b60d42-aa22-44b7-a1eb-50bd4a29508b"
-        },
-        "north-west": {
-          "frames": 4,
-          "strip": "forest_poring/animations/idle__north-west.png",
-          "gif": "forest_poring/animations/idle__north-west.gif",
-          "frame_paths": [
-            "forest_poring/animations/idle/north-west/00.png",
-            "forest_poring/animations/idle/north-west/01.png",
-            "forest_poring/animations/idle/north-west/02.png",
-            "forest_poring/animations/idle/north-west/03.png"
-          ],
-          "lm": "Wed, 29 Jul 2026 11:45:45 GMT",
-          "src_frames": 4,
-          "sub": "fef6eadc-a594-4206-9f4b-98a2559a5125"
-        },
-        "south": {
-          "frames": 4,
-          "strip": "forest_poring/animations/idle__south.png",
-          "gif": "forest_poring/animations/idle__south.gif",
-          "frame_paths": [
-            "forest_poring/animations/idle/south/00.png",
-            "forest_poring/animations/idle/south/01.png",
-            "forest_poring/animations/idle/south/02.png",
-            "forest_poring/animations/idle/south/03.png"
-          ],
-          "lm": "Wed, 29 Jul 2026 11:45:46 GMT",
-          "src_frames": 4,
-          "sub": "2cb23645-1f8b-4d2e-8479-4a1e61154f4f"
-        },
-        "south-east": {
-          "frames": 4,
-          "strip": "forest_poring/animations/idle__south-east.png",
-          "gif": "forest_poring/animations/idle__south-east.gif",
-          "frame_paths": [
-            "forest_poring/animations/idle/south-east/00.png",
-            "forest_poring/animations/idle/south-east/01.png",
-            "forest_poring/animations/idle/south-east/02.png",
-            "forest_poring/animations/idle/south-east/03.png"
-          ],
-          "lm": "Wed, 29 Jul 2026 11:45:47 GMT",
-          "src_frames": 4,
-          "sub": "bfacdc0f-3341-4b3e-b63b-0d9e47cfd464"
-        },
-        "south-west": {
-          "frames": 4,
-          "strip": "forest_poring/animations/idle__south-west.png",
-          "gif": "forest_poring/animations/idle__south-west.gif",
-          "frame_paths": [
-            "forest_poring/animations/idle/south-west/00.png",
-            "forest_poring/animations/idle/south-west/01.png",
-            "forest_poring/animations/idle/south-west/02.png",
-            "forest_poring/animations/idle/south-west/03.png"
-          ],
-          "lm": "Wed, 29 Jul 2026 11:45:50 GMT",
-          "src_frames": 4,
-          "sub": "2a940dc7-11c6-4feb-a4a4-953e00a5ba02"
-        },
-        "west": {
-          "frames": 4,
-          "strip": "forest_poring/animations/idle__west.png",
-          "gif": "forest_poring/animations/idle__west.gif",
-          "frame_paths": [
-            "forest_poring/animations/idle/west/00.png",
-            "forest_poring/animations/idle/west/01.png",
-            "forest_poring/animations/idle/west/02.png",
-            "forest_poring/animations/idle/west/03.png"
-          ],
-          "lm": "Wed, 29 Jul 2026 11:45:51 GMT",
-          "src_frames": 4,
-          "sub": "6a8ee580-fab6-4d86-a8e0-f0a3af9b5f3b"
-        }
-      },
-      "rotating_gif": "forest_poring/animations/idle__rotating.gif"
-    },
     "walk": {
       "group_id": "7156e1f4-858d-4ebd-bc1f-78233344ad62",
       "source_name": "Jumping",
@@ -883,26 +891,6 @@
         "strip_px": 32,
         "ext": 4
       }
-    ],
-    "die_trim": {
-      "east": {
-        "auto_dropped": [
-          14
-        ]
-      },
-      "west": {
-        "auto_dropped": [
-          14
-        ]
-      }
-    }
-  },
-  "native_size": {
-    "width": 48,
-    "height": 48
-  },
-  "pad": {
-    "x": 11,
-    "y": 0
+    ]
   }
 }

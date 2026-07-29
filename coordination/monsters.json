@@ -1,8 +1,8 @@
 {
   "domain": "monsters",
-  "updated_at": "2026-07-29T18:18:38+00:00",
+  "updated_at": "2026-07-29T20:59:33+00:00",
   "health": "idle",
-  "current": "die animations now FADE-MONOTONIC: automatic re-appear trim in postprocess (23 more frames cut)",
+  "current": "synced with PixelLab (2026-07-29 late): roster unchanged at 24; diablo_2 angry deleted upstream, forest_poring idle/SW regenerated",
   "progress": {
     "monsters_complete": 24,
     "objects": 21,
@@ -26,7 +26,8 @@
     "[2026-07-29T17:28:42+00:00] postprocess.py repairs PixelLab wrap-around overflow (graphics wrapping to the opposite edge, usually one frame late). 56 fixes across 12 monsters; their canvases grew symmetrically (e.g. lava_salamander 48x48->78x48, diablo_2 136x136->136x174). monster.json now carries native_size + postprocess.pad. Runs inside every sync.",
     "[2026-07-29T17:53:51+00:00] postprocess gains a die-tail trim stage: PixelLab sometimes replaces the end of a fade-away die with big off-animation clouds (sometimes + tornado/revived-monster frames). 20 frames cut across ice_crystal_golem (all 8 dirs) + stone_golem (5 dirs); cuts pinned in monsters/config/die_trims.json guarded by take id. DIE FRAME COUNTS CHANGED for those two monsters \u2014 re-read monster.json per-direction counts. Suspicious-but-unpinned tails (hedgehog/water_poring/white_rabbit/stone_turtle revive at the end) are flagged each sync, pending maintainer decision.",
     "[2026-07-29T18:04:37+00:00] die-tail trim extended to the 'coming back to life' bug (dissolve-then-reappear tails): 98 frames cut across dark_donkey, hedgehog, malformed_creature, masked_shadow_creature, stone_golem, stone_turtle, tree_stump, water_poring, white_rabbit. All cuts pinned in monsters/config/die_trims.json. DIE FRAME COUNTS CHANGED for those monsters \u2014 re-read monster.json per-direction counts.",
-    "[2026-07-29T18:18:38+00:00] die-trim is now AGGRESSIVE + automatic (maintainer rule: a die fades away, adding pixels after the fade passes 35% of body size is the re-appear bug): postprocess enforces fade-monotonicity and cut 23 more frames (white_rabbit incl. NE/NW specks, tree_stump south mounds, hedgehog SE/SW mounds, forest_poring/forest_poring_2 specks). Deterministic on every sync; pins in config/die_trims.json still take precedence; reviewed_ok exempts. Die frame counts changed again \u2014 re-read manifests."
+    "[2026-07-29T18:18:38+00:00] die-trim is now AGGRESSIVE + automatic (maintainer rule: a die fades away, adding pixels after the fade passes 35% of body size is the re-appear bug): postprocess enforces fade-monotonicity and cut 23 more frames (white_rabbit incl. NE/NW specks, tree_stump south mounds, hedgehog SE/SW mounds, forest_poring/forest_poring_2 specks). Deterministic on every sync; pins in config/die_trims.json still take precedence; reviewed_ok exempts. Die frame counts changed again \u2014 re-read manifests.",
+    "[2026-07-29T20:59:33+00:00] verification sync: 24 tagged, none added/dropped. Upstream changes mirrored: diablo_2's broken 1-direction 'angry' was DELETED on PixelLab (angry now falls back to idle); forest_poring idle/south-west has a new take. Fixed two pipeline bugs the sync exposed: mirror.py dropped the repo-side postprocess record (padding/trim bookkeeping) when rewriting a manifest, which left a re-mirrored monster with MIXED canvas sizes; postprocess now also re-canvases when any frame is off-size and _recanvas crops instead of crashing. All 24 monsters verified canvas-uniform."
   ],
   "requests": [
     {
@@ -53,6 +54,11 @@
       "to": "games",
       "text": "MONSTER CANVAS COMPATIBILITY \u2014 action needed (small): your pipeline is already structurally compatible (build-monsters-manifest.mjs reads size.width/height + per-dir frame counts from monster.json, and npm run manifest runs on every dev/build/test/start), BUT (1) the COMMITTED client/public/monsters.json snapshot predates the wrap-repair padding + die trims \u2014 any deploy serving it without a rebuild will mis-slice strips (e.g. hedgehog is 48x34 now, manifest says 34x34) and index past trimmed die frames. Rerun npm run manifest + commit. (2) Two anchor bugs from padding, fix suggested: monster.json now has TOP-LEVEL native_size + pad for this \u2014 (a) sprite.setOrigin(0.5, 0.85) misplaces feet on vertically padded monsters (diablo_2 pad.y=19 -> floats ~13px; mystical_frog ~3px); use originY = (pad.y + 0.85*native_size.height)/size.height. (b) shadowW scales from padded frameW (hedgehog shadow ~40% too wide); scale from native_size.width instead. Padding is transparent margin, symmetric, content centered; slice by size, scale/anchor by native_size.",
       "at": "2026-07-29T18:38:13+00:00"
+    },
+    {
+      "to": "games",
+      "text": "Sync check done \u2014 roster still 24, no new/removed monsters. TWO data changes: (1) diablo_2 lost its 'angry' animation (deleted on PixelLab because it only had 1/8 directions) \u2014 animation_map.json now has overrides.diablo_2={angry:idle}, so drive angry through the map, not by assuming the folder exists; (2) forest_poring idle/south-west is new art. Everything else byte-identical. Canvas sizes and die frame counts UNCHANGED from my last message, and I verified all 24 monsters are canvas-uniform (one frame size per monster across every animation/rotation).",
+      "at": "2026-07-29T20:59:33+00:00"
     }
   ]
 }

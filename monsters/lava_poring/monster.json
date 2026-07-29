@@ -15,6 +15,14 @@
     "width": 58,
     "height": 48
   },
+  "native_size": {
+    "width": 48,
+    "height": 48
+  },
+  "pad": {
+    "x": 5,
+    "y": 0
+  },
   "sprite": "lava_poring/sprite.png",
   "directions": [
     "east",
@@ -842,13 +850,5 @@
         "ext": 3
       }
     ]
-  },
-  "native_size": {
-    "width": 48,
-    "height": 48
-  },
-  "pad": {
-    "x": 5,
-    "y": 0
   }
 }

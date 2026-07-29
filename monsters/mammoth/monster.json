@@ -15,6 +15,14 @@
     "width": 256,
     "height": 256
   },
+  "native_size": {
+    "width": 256,
+    "height": 256
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
   "sprite": "mammoth/sprite.png",
   "directions": [
     "east",
@@ -651,13 +659,5 @@
       ]
     }
   ],
-  "synced_from_pixellab": true,
-  "native_size": {
-    "width": 256,
-    "height": 256
-  },
-  "pad": {
-    "x": 0,
-    "y": 0
-  }
+  "synced_from_pixellab": true
 }

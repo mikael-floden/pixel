@@ -15,6 +15,14 @@
     "width": 48,
     "height": 34
   },
+  "native_size": {
+    "width": 34,
+    "height": 34
+  },
+  "pad": {
+    "x": 7,
+    "y": 0
+  },
   "sprite": "hedgehog/sprite.png",
   "directions": [
     "east",
@@ -1130,72 +1138,6 @@
         "strip_px": 11,
         "ext": 5
       }
-    ],
-    "die_trim": {
-      "east": {
-        "dropped": [
-          11,
-          12,
-          13,
-          14,
-          15
-        ],
-        "sub": "df3191ac-47c8-425d-b662-611946790de4"
-      },
-      "north": {
-        "dropped": [
-          11,
-          12,
-          13,
-          14,
-          15
-        ],
-        "sub": "8380e885-1dfa-4be8-b222-46a68a0c4ec1"
-      },
-      "south": {
-        "dropped": [
-          15
-        ],
-        "sub": "88d2130e-5861-4304-8c5e-440c4ee41247"
-      },
-      "south-east": {
-        "dropped": [
-          15
-        ],
-        "sub": "9e097d01-cf84-4481-aa2d-e4d09be80271",
-        "auto_dropped": [
-          13,
-          14
-        ]
-      },
-      "south-west": {
-        "dropped": [
-          15
-        ],
-        "sub": "8554a669-5309-4233-8051-350f85b51187",
-        "auto_dropped": [
-          13,
-          14
-        ]
-      },
-      "west": {
-        "dropped": [
-          11,
-          12,
-          13,
-          14,
-          15
-        ],
-        "sub": "ba693724-1556-4838-98c2-2da48ea14763"
-      }
-    }
-  },
-  "native_size": {
-    "width": 34,
-    "height": 34
-  },
-  "pad": {
-    "x": 7,
-    "y": 0
+    ]
   }
 }

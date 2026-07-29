@@ -15,6 +15,14 @@
     "width": 64,
     "height": 48
   },
+  "native_size": {
+    "width": 48,
+    "height": 48
+  },
+  "pad": {
+    "x": 8,
+    "y": 0
+  },
   "sprite": "forest_poring_2/sprite.png",
   "directions": [
     "east",
@@ -830,21 +838,6 @@
         "strip_px": 54,
         "ext": 6
       }
-    ],
-    "die_trim": {
-      "south": {
-        "auto_dropped": [
-          12
-        ]
-      }
-    }
-  },
-  "native_size": {
-    "width": 48,
-    "height": 48
-  },
-  "pad": {
-    "x": 8,
-    "y": 0
+    ]
   }
 }

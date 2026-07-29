@@ -206,12 +206,33 @@ def _case_id(mid, key, d, fx):
 
 # --- repair ------------------------------------------------------------------
 
+def _has_offsize(mdir, canvas):
+    """True if any frame/rotation/sprite of this monster is not on `canvas`."""
+    for root, _dirs, files in os.walk(mdir):
+        for fn in files:
+            if not fn.endswith(".png") or "__" in fn:
+                continue
+            with Image.open(os.path.join(root, fn)) as im:
+                if im.size != canvas:
+                    return True
+    return False
+
+
 def _recanvas(arr, canvas):
     """Center `arr` onto canvas (cw, ch); canvases share one center."""
     cw, ch = canvas
     h, w = arr.shape[:2]
     if (w, h) == (cw, ch):
         return arr
+    # crop first when the source is larger on an axis (a canvas that shrank),
+    # then center what remains — never let a mismatch raise
+    if w > cw:
+        l = (w - cw) // 2
+        arr = arr[:, l:l + cw]
+    if h > ch:
+        t = (h - ch) // 2
+        arr = arr[t:t + ch, :]
+    h, w = arr.shape[:2]
     out = np.zeros((ch, cw, 4), dtype=np.uint8)
     ox, oy = (cw - w) // 2, (ch - h) // 2
     out[oy:oy + h, ox:ox + w] = arr
@@ -288,9 +309,13 @@ def process_monster(mid, dry_run=False):
     need_y = max([fx["ext"] + PAD_MARGIN for (_, _, fs) in plan.values()
                   for fx in fs if fx["side"] in ("top", "bottom")] or [0])
     pad = (max(prev_pad[0], need_x), max(prev_pad[1], need_y))
-    if not plan and pad == prev_pad:
-        return None
     canvas = (native[0] + 2 * pad[0], native[1] + 2 * pad[1])
+    # A re-mirrored direction comes back at NATIVE size; on an already-padded
+    # monster that would leave mixed canvases (the game slices every strip of a
+    # monster with one frame size), so re-canvas whenever anything is off-size
+    # even when there is no new wrap fix.
+    if not plan and pad == prev_pad and not _has_offsize(mdir, canvas):
+        return None
     n_fixes = sum(len(fs) for (_, _, fs) in plan.values())
     print(f"{mid}: {n_fixes} wrap fix(es), canvas {native[0]}x{native[1]} -> "
           f"{canvas[0]}x{canvas[1]} (pad {pad[0]},{pad[1]})")

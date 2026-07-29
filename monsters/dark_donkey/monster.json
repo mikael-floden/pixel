@@ -15,6 +15,14 @@
     "width": 124,
     "height": 124
   },
+  "native_size": {
+    "width": 124,
+    "height": 124
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
   "sprite": "dark_donkey/sprite.png",
   "directions": [
     "east",
@@ -665,13 +673,5 @@
         "sub": "8b248510-a61f-4eac-aa2e-516e035add80"
       }
     }
-  },
-  "native_size": {
-    "width": 124,
-    "height": 124
-  },
-  "pad": {
-    "x": 0,
-    "y": 0
   }
 }

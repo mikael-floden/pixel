@@ -333,6 +333,17 @@ def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None,
         "unresolved_takes": unresolved,
         "synced_from_pixellab": True,
     }
+    # Carry forward the REPO-SIDE postprocess record (wrap-repair padding, die
+    # trims). It describes local edits, not PixelLab state, and frames on disk
+    # that were not re-downloaded are still padded — dropping it would strand
+    # this monster with mixed canvas sizes until the record was rebuilt.
+    if prev.get("postprocess"):
+        meta["postprocess"] = prev["postprocess"]
+        pad = prev["postprocess"].get("pad") or [0, 0]
+        nat = prev["postprocess"].get("native_size") or [w, h]
+        meta["native_size"] = {"width": nat[0], "height": nat[1]}
+        meta["pad"] = {"x": pad[0], "y": pad[1]}
+        meta["size"] = {"width": nat[0] + 2 * pad[0], "height": nat[1] + 2 * pad[1]}
     write_manifest(mid, meta)
     return meta
 

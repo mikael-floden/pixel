@@ -15,6 +15,14 @@
     "width": 48,
     "height": 48
   },
+  "native_size": {
+    "width": 48,
+    "height": 48
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
   "sprite": "tree_stump/sprite.png",
   "directions": [
     "east",
@@ -1147,13 +1155,5 @@
         ]
       }
     }
-  },
-  "native_size": {
-    "width": 48,
-    "height": 48
-  },
-  "pad": {
-    "x": 0,
-    "y": 0
   }
 }

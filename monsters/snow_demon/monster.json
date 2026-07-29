@@ -15,6 +15,14 @@
     "width": 128,
     "height": 128
   },
+  "native_size": {
+    "width": 128,
+    "height": 128
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
   "sprite": "snow_demon/sprite.png",
   "directions": [
     "east",
@@ -718,13 +726,5 @@
       ]
     }
   ],
-  "synced_from_pixellab": true,
-  "native_size": {
-    "width": 128,
-    "height": 128
-  },
-  "pad": {
-    "x": 0,
-    "y": 0
-  }
+  "synced_from_pixellab": true
 }

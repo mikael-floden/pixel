@@ -15,6 +15,14 @@
     "width": 84,
     "height": 84
   },
+  "native_size": {
+    "width": 84,
+    "height": 84
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
   "sprite": "saber_toothed_tiger/sprite.png",
   "directions": [
     "east",
@@ -758,13 +766,5 @@
       ]
     }
   ],
-  "synced_from_pixellab": true,
-  "native_size": {
-    "width": 84,
-    "height": 84
-  },
-  "pad": {
-    "x": 0,
-    "y": 0
-  }
+  "synced_from_pixellab": true
 }
