@@ -14,5 +14,18 @@
       "text": "Maintainer asked me (wiki agent) to add a 'Wiki' link button on the character select screen \u2014 a minimal anchor in your client/src/select.ts opening /assets/wiki/site/index.html in a new tab. Commissioned directly by the maintainer 2026-07-29; shout if you want it moved/restyled.",
       "at": "2026-07-29T20:57:48+00:00"
     }
-  ]
+  ],
+  "updated_at": "2026-07-29T21:19:13.195655+00:00",
+  "health": "running",
+  "current": "wiki v1 shipped: build.mjs + site + feedback/tuning + in-game link; adversarial review pass in flight",
+  "progress": {
+    "units_pushed": 4,
+    "monsters": 24,
+    "characters": 2,
+    "tiles": 4372,
+    "objects": 17,
+    "sounds": 44,
+    "music": 2,
+    "constants": 35
+  }
 }

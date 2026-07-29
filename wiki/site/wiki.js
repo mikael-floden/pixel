@@ -177,7 +177,6 @@ async function discardAll() {
 function makePlayer(entity, kind) {
   const anims = entity.animations;
   const stateNames = Object.keys(anims);
-  const dirs = (state.data.directions ?? []).filter((d) => Object.values(anims)[0]?.dirs?.[d] || true);
   let cur = {
     state: stateNames.includes("idle") ? "idle" : stateNames[0],
     dir: "south", frame: 0, playing: true, speed: 1, zoom: 0 /* 0 = auto */,
@@ -296,7 +295,6 @@ function makePlayer(entity, kind) {
     h("div", { class: "player-controls" }, stateSeg),
     h("div", { class: "player-controls" }, dirPad),
     stage, controls2);
-  rootEl.addEventListener("DOMNodeRemoved", () => {}); // no-op; cleanup below
   return {
     el: rootEl,
     destroy: () => cancelAnimationFrame(rafTimer),
