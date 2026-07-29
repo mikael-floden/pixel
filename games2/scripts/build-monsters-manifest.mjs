@@ -152,24 +152,101 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
     const widest = Math.max(...frames.map((s) => s.contactW));
     const grounded = frames.filter((s) => s.contactW >= Math.max(4, widest * 0.5));
     const gb = grounded.map((s) => s.bot).sort((a, b) => a - b);
-    const anchor = gb[Math.round(0.65 * (gb.length - 1))];
-    // Contact frame: nearest the anchor line; widest planted contact on ties.
+    const anchorBot = gb[Math.round(0.65 * (gb.length - 1))];
+    // Contact frame: nearest the ground line; widest planted contact on ties.
     const contact = [...grounded].sort(
       (a, b) =>
-        Math.abs(a.bot - anchor) - Math.abs(b.bot - anchor) || b.contactW - a.contactW,
+        Math.abs(a.bot - anchorBot) - Math.abs(b.bot - anchorBot) || b.contactW - a.contactW,
     )[0];
-    // Foot centre: median over ground frames within 2px of the anchor (leap
-    // frames excluded so the origin doesn't chase a mid-air pose).
-    const nearAnchor = grounded.filter((s) => Math.abs(s.bot - anchor) <= 2);
-    const cxs = nearAnchor.map((s) => s.footCx).sort((a, b) => a - b);
-    const cx = cxs[Math.floor(cxs.length / 2)] ?? fw / 2;
+    // ---- CONTACT-CENTROID anchor (maintainer round 3: "the center
+    // coordinate should be between the monsters feet (between the foot
+    // underside). Some monsters have 2 feets, some have 4 and some have 0").
+    // In this low-top-down art the FAR feet stand HIGHER in the frame than
+    // the near feet, so the lowest opaque row is just the front toe — round
+    // 2 anchored there and every quadruped's shadow hugged its front feet
+    // while the body floated behind (red/green screenshots). Instead, on the
+    // planted contact frame: bottom-edge profile per column, contact columns
+    // are those within T = max(6, 8% of frame width) of the deepest row
+    // (feet plateaus; the belly arcs 15-30px higher and stays excluded),
+    // grouped into runs — runs narrower than 3px are tail tips/toe slivers,
+    // runs whose centre sits farther than 0.4·fw from the silhouette's
+    // mass-centre column are detached effects (diablo_2's flame tendril
+    // touches the frame bottom a body-width away from the rock). The anchor
+    // is the kept runs' centre: x = extent midpoint, y = mean bottom row —
+    // the point BETWEEN the foot undersides. Front feet render a few px
+    // below it (inside the shadow ellipse), far feet a few px above: the
+    // same perspective a ground tile's diamond has.
+    const cf = contact.f;
+    const xBase = cf * fw;
+    const bottom = new Array(fw).fill(-1);
+    let massSum = 0;
+    let massCols = 0;
+    for (let x = 0; x < fw; x++) {
+      let colMass = 0;
+      for (let y = 0; y < H; y++) {
+        if (data[(y * W + xBase + x) * 4 + 3] > 16) {
+          bottom[x] = y;
+          colMass++;
+        }
+      }
+      if (colMass > 0) {
+        massSum += x * colMass;
+        massCols += colMass;
+      }
+    }
+    const maxBot = Math.max(...bottom);
+    const massCx = massCols ? massSum / massCols : fw / 2;
+    // Contact tolerance: the feet of a quadruped form a PARALLELOGRAM on the
+    // ground plane — the far corner projects up to ~16px above the near toe
+    // on a mammoth. That projected footprint depth scales with the BODY'S
+    // GIRTH (bodyW), not the frame: 11% of the direction's body width keeps
+    // every foot pair across the roster (mammoth sw rear-right at depth
+    // 14-16 IN, its trunk tip at 20 OUT; donkey/saber ~6-7; turtle rim 0-7)
+    // while bellies (depth 20-30) always stay excluded.
+    const dirBodyW = Math.max(...frames.map((s) => s.bodyW));
+    const T = Math.min(17, Math.max(6, Math.round(dirBodyW * 0.11)));
+    // Contact runs: consecutive columns within T of the deepest row.
+    const runs = [];
+    let runStart = -1;
+    for (let x = 0; x <= fw; x++) {
+      const isContact = x < fw && bottom[x] >= 0 && maxBot - bottom[x] <= T;
+      if (isContact && runStart < 0) runStart = x;
+      else if (!isContact && runStart >= 0) {
+        runs.push([runStart, x - 1]);
+        runStart = -1;
+      }
+    }
+    const kept = runs.filter(
+      ([a, b]) => b - a + 1 >= 3 && Math.abs((a + b) / 2 - massCx) <= fw * 0.4,
+    );
+    let cx = fw / 2;
+    let cyRow = maxBot;
+    let extentW = contact.footW;
+    if (kept.length) {
+      const minX = kept[0][0];
+      const maxX = kept[kept.length - 1][1];
+      cx = (minX + maxX + 1) / 2;
+      let rowSum = 0;
+      let cnt = 0;
+      for (const [a, b] of kept)
+        for (let x = a; x <= b; x++) {
+          rowSum += bottom[x];
+          cnt++;
+        }
+      cyRow = rowSum / cnt;
+      extentW = maxX - minX + 1;
+    }
     ground[dir] = {
-      f: +Math.min(1, (anchor + 1) / H).toFixed(4),
+      f: +Math.min(1, (cyRow + 1) / H).toFixed(4),
       cx: +(cx / fw).toFixed(4),
-      contact: contact.f,
+      contact: cf,
+      // Front-toe distance below the anchor (px): the shadow ellipse is
+      // LIFTED so its south rim kisses the toe line instead of poking a
+      // half-ellipse past the toes (the residual "shadow too low" look).
+      sink: Math.max(0, Math.round(maxBot - cyRow)),
     };
-    anchors.push((anchor + 1) / H);
-    foots.push(contact.footW);
+    anchors.push((cyRow + 1) / H);
+    foots.push(extentW);
     bodies.push(Math.max(...frames.map((s) => s.bodyW)));
   }
   if (!anchors.length) return null;
@@ -280,7 +357,10 @@ function scan() {
     const artW = walkArt ? Math.max(walkArt.footW, walkArt.bodyW * 0.55) * 1.05 : 0;
     const shadowW = Math.round(Math.min(150, Math.max(12, artW || frameW * 0.54)));
     const shadowH = Math.max(6, Math.round(shadowW * 0.385));
-    const radius = Math.round(shadowW / 2);
+    // Collision radius stays gameplay-sane: the shadow may span a mammoth's
+    // whole four-leg footprint (~150px) but bodies can pass a bit closer
+    // than shadow edges suggest — cap so comfort targets fit the habitats.
+    const radius = Math.min(60, Math.round(shadowW * 0.45));
 
     monsters.push({
       id,

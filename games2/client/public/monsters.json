@@ -19,6 +19,16 @@
       "root": "forest_poring",
       "walkAnim": "walk",
       "animations": {
+        "idle": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
         "die": {
           "south": 16,
           "south-west": 16,
@@ -39,16 +49,6 @@
           "east": 16,
           "south-east": 16
         },
-        "idle": {
-          "south": 4,
-          "south-west": 4,
-          "west": 4,
-          "north-west": 4,
-          "north": 4,
-          "north-east": 4,
-          "east": 4,
-          "south-east": 4
-        },
         "walk": {
           "south": 4,
           "south-west": 4,
@@ -61,6 +61,16 @@
         }
       },
       "strips": {
+        "idle": {
+          "south": "/assets/monsters/forest_poring/animations/idle__south.png",
+          "south-west": "/assets/monsters/forest_poring/animations/idle__south-west.png",
+          "west": "/assets/monsters/forest_poring/animations/idle__west.png",
+          "north-west": "/assets/monsters/forest_poring/animations/idle__north-west.png",
+          "north": "/assets/monsters/forest_poring/animations/idle__north.png",
+          "north-east": "/assets/monsters/forest_poring/animations/idle__north-east.png",
+          "east": "/assets/monsters/forest_poring/animations/idle__east.png",
+          "south-east": "/assets/monsters/forest_poring/animations/idle__south-east.png"
+        },
         "die": {
           "south": "/assets/monsters/forest_poring/animations/die__south.png",
           "south-west": "/assets/monsters/forest_poring/animations/die__south-west.png",
@@ -81,16 +91,6 @@
           "east": "/assets/monsters/forest_poring/animations/attack__east.png",
           "south-east": "/assets/monsters/forest_poring/animations/attack__south-east.png"
         },
-        "idle": {
-          "south": "/assets/monsters/forest_poring/animations/idle__south.png",
-          "south-west": "/assets/monsters/forest_poring/animations/idle__south-west.png",
-          "west": "/assets/monsters/forest_poring/animations/idle__west.png",
-          "north-west": "/assets/monsters/forest_poring/animations/idle__north-west.png",
-          "north": "/assets/monsters/forest_poring/animations/idle__north.png",
-          "north-east": "/assets/monsters/forest_poring/animations/idle__north-east.png",
-          "east": "/assets/monsters/forest_poring/animations/idle__east.png",
-          "south-east": "/assets/monsters/forest_poring/animations/idle__south-east.png"
-        },
         "walk": {
           "south": "/assets/monsters/forest_poring/animations/walk__south.png",
           "south-west": "/assets/monsters/forest_poring/animations/walk__south-west.png",
@@ -103,6 +103,40 @@
         }
       },
       "stripDims": {
+        "idle": {
+          "south": {
+            "w": 70,
+            "h": 48
+          },
+          "south-west": {
+            "w": 70,
+            "h": 48
+          },
+          "west": {
+            "w": 70,
+            "h": 48
+          },
+          "north-west": {
+            "w": 70,
+            "h": 48
+          },
+          "north": {
+            "w": 70,
+            "h": 48
+          },
+          "north-east": {
+            "w": 70,
+            "h": 48
+          },
+          "east": {
+            "w": 70,
+            "h": 48
+          },
+          "south-east": {
+            "w": 70,
+            "h": 48
+          }
+        },
         "die": {
           "south": {
             "w": 70,
@@ -138,40 +172,6 @@
           }
         },
         "attack": {
-          "south": {
-            "w": 70,
-            "h": 48
-          },
-          "south-west": {
-            "w": 70,
-            "h": 48
-          },
-          "west": {
-            "w": 70,
-            "h": 48
-          },
-          "north-west": {
-            "w": 70,
-            "h": 48
-          },
-          "north": {
-            "w": 70,
-            "h": 48
-          },
-          "north-east": {
-            "w": 70,
-            "h": 48
-          },
-          "east": {
-            "w": 70,
-            "h": 48
-          },
-          "south-east": {
-            "w": 70,
-            "h": 48
-          }
-        },
-        "idle": {
           "south": {
             "w": 70,
             "h": 48
@@ -245,52 +245,60 @@
       },
       "ground": {
         "south": {
-          "f": 0.875,
+          "f": 0.8438,
           "cx": 0.5143,
-          "contact": 1
+          "contact": 1,
+          "sink": 2
         },
         "south-west": {
-          "f": 0.8542,
-          "cx": 0.4929,
-          "contact": 2
+          "f": 0.8208,
+          "cx": 0.5,
+          "contact": 2,
+          "sink": 2
         },
         "west": {
-          "f": 0.8542,
+          "f": 0.8223,
           "cx": 0.5,
-          "contact": 2
+          "contact": 2,
+          "sink": 2
         },
         "north-west": {
-          "f": 0.8542,
+          "f": 0.8199,
           "cx": 0.5071,
-          "contact": 3
+          "contact": 3,
+          "sink": 2
         },
         "north": {
-          "f": 0.8958,
-          "cx": 0.5071,
-          "contact": 1
+          "f": 0.8665,
+          "cx": 0.5,
+          "contact": 1,
+          "sink": 1
         },
         "north-east": {
-          "f": 0.8542,
-          "cx": 0.5,
-          "contact": 3
+          "f": 0.8212,
+          "cx": 0.5071,
+          "contact": 3,
+          "sink": 2
         },
         "east": {
-          "f": 0.8542,
-          "cx": 0.5071,
-          "contact": 2
+          "f": 0.8223,
+          "cx": 0.5,
+          "contact": 2,
+          "sink": 2
         },
         "south-east": {
-          "f": 0.8542,
-          "cx": 0.5071,
-          "contact": 2
+          "f": 0.8208,
+          "cx": 0.5,
+          "contact": 2,
+          "sink": 2
         }
       },
-      "artBottom": 0.8542,
-      "footW": 26,
+      "artBottom": 0.8223,
+      "footW": 32,
       "bodyW": 34,
-      "shadowW": 27,
-      "shadowH": 10,
-      "radius": 14,
+      "shadowW": 34,
+      "shadowH": 13,
+      "radius": 15,
       "hoverPx": 0
     },
     {
@@ -581,52 +589,60 @@
       },
       "ground": {
         "south": {
-          "f": 0.8542,
-          "cx": 0.5156,
-          "contact": 1
+          "f": 0.8256,
+          "cx": 0.5234,
+          "contact": 1,
+          "sink": 1
         },
         "south-west": {
-          "f": 0.8542,
-          "cx": 0.5156,
-          "contact": 1
+          "f": 0.8174,
+          "cx": 0.5,
+          "contact": 1,
+          "sink": 2
         },
         "west": {
-          "f": 0.875,
-          "cx": 0.5078,
-          "contact": 4
+          "f": 0.8389,
+          "cx": 0.5,
+          "contact": 4,
+          "sink": 2
         },
         "north-west": {
-          "f": 0.875,
+          "f": 0.8394,
           "cx": 0.5078,
-          "contact": 4
+          "contact": 4,
+          "sink": 2
         },
         "north": {
-          "f": 0.875,
-          "cx": 0.4922,
-          "contact": 4
+          "f": 0.8401,
+          "cx": 0.5078,
+          "contact": 4,
+          "sink": 2
         },
         "north-east": {
-          "f": 0.8542,
+          "f": 0.8203,
           "cx": 0.5,
-          "contact": 1
+          "contact": 1,
+          "sink": 2
         },
         "east": {
-          "f": 0.875,
-          "cx": 0.4922,
-          "contact": 4
+          "f": 0.8389,
+          "cx": 0.5,
+          "contact": 4,
+          "sink": 2
         },
         "south-east": {
-          "f": 0.8333,
+          "f": 0.8003,
           "cx": 0.5,
-          "contact": 1
+          "contact": 1,
+          "sink": 2
         }
       },
-      "artBottom": 0.875,
-      "footW": 26,
+      "artBottom": 0.8389,
+      "footW": 32,
       "bodyW": 40,
-      "shadowW": 27,
-      "shadowH": 10,
-      "radius": 14,
+      "shadowW": 34,
+      "shadowH": 13,
+      "radius": 15,
       "hoverPx": 0
     },
     {
@@ -863,52 +879,60 @@
       },
       "ground": {
         "south": {
-          "f": 0.8333,
+          "f": 0.7978,
           "cx": 0.5172,
-          "contact": 3
+          "contact": 3,
+          "sink": 2
         },
         "south-west": {
-          "f": 0.8542,
+          "f": 0.8144,
           "cx": 0.5086,
-          "contact": 0
+          "contact": 0,
+          "sink": 2
         },
         "west": {
-          "f": 0.8333,
+          "f": 0.8033,
           "cx": 0.5,
-          "contact": 1
+          "contact": 1,
+          "sink": 1
         },
         "north-west": {
-          "f": 0.8333,
+          "f": 0.7961,
           "cx": 0.5086,
-          "contact": 3
+          "contact": 3,
+          "sink": 2
         },
         "north": {
-          "f": 0.875,
-          "cx": 0.5,
-          "contact": 0
+          "f": 0.8387,
+          "cx": 0.5086,
+          "contact": 0,
+          "sink": 2
         },
         "north-east": {
-          "f": 0.8333,
+          "f": 0.7961,
           "cx": 0.4914,
-          "contact": 3
+          "contact": 3,
+          "sink": 2
         },
         "east": {
-          "f": 0.8333,
+          "f": 0.8033,
           "cx": 0.5,
-          "contact": 1
+          "contact": 1,
+          "sink": 1
         },
         "south-east": {
-          "f": 0.8542,
+          "f": 0.8144,
           "cx": 0.4914,
-          "contact": 0
+          "contact": 0,
+          "sink": 2
         }
       },
-      "artBottom": 0.8333,
-      "footW": 27,
+      "artBottom": 0.8033,
+      "footW": 33,
       "bodyW": 40,
-      "shadowW": 28,
-      "shadowH": 11,
-      "radius": 14,
+      "shadowW": 35,
+      "shadowH": 13,
+      "radius": 16,
       "hoverPx": 0
     },
     {
@@ -1199,52 +1223,60 @@
       },
       "ground": {
         "south": {
-          "f": 0.7917,
+          "f": 0.7885,
           "cx": 0.5208,
-          "contact": 11
+          "contact": 11,
+          "sink": 0
         },
         "south-west": {
-          "f": 0.8125,
+          "f": 0.804,
           "cx": 0.4896,
-          "contact": 3
+          "contact": 3,
+          "sink": 0
         },
         "west": {
-          "f": 0.8542,
+          "f": 0.851,
           "cx": 0.4792,
-          "contact": 10
+          "contact": 10,
+          "sink": 0
         },
         "north-west": {
-          "f": 0.8542,
+          "f": 0.8458,
           "cx": 0.5104,
-          "contact": 10
+          "contact": 10,
+          "sink": 0
         },
         "north": {
-          "f": 0.8333,
+          "f": 0.8208,
           "cx": 0.5208,
-          "contact": 11
+          "contact": 11,
+          "sink": 1
         },
         "north-east": {
-          "f": 0.8542,
+          "f": 0.8458,
           "cx": 0.4896,
-          "contact": 10
+          "contact": 10,
+          "sink": 0
         },
         "east": {
-          "f": 0.8542,
+          "f": 0.851,
           "cx": 0.5208,
-          "contact": 10
+          "contact": 10,
+          "sink": 0
         },
         "south-east": {
-          "f": 0.8125,
+          "f": 0.804,
           "cx": 0.5104,
-          "contact": 3
+          "contact": 3,
+          "sink": 0
         }
       },
-      "artBottom": 0.8542,
-      "footW": 37,
+      "artBottom": 0.8458,
+      "footW": 40,
       "bodyW": 40,
-      "shadowW": 39,
-      "shadowH": 15,
-      "radius": 20,
+      "shadowW": 42,
+      "shadowH": 16,
+      "radius": 19,
       "hoverPx": 0
     },
     {
@@ -1535,52 +1567,60 @@
       },
       "ground": {
         "south": {
-          "f": 0.6907,
-          "cx": 0.5,
-          "contact": 4
+          "f": 0.6648,
+          "cx": 0.5083,
+          "contact": 4,
+          "sink": 3
         },
         "south-west": {
-          "f": 0.7216,
-          "cx": 0.5248,
-          "contact": 2
+          "f": 0.6942,
+          "cx": 0.4917,
+          "contact": 2,
+          "sink": 3
         },
         "west": {
-          "f": 0.732,
+          "f": 0.711,
           "cx": 0.5331,
-          "contact": 1
+          "contact": 1,
+          "sink": 2
         },
         "north-west": {
-          "f": 0.7423,
-          "cx": 0.5331,
-          "contact": 5
+          "f": 0.7075,
+          "cx": 0.4959,
+          "contact": 5,
+          "sink": 3
         },
         "north": {
-          "f": 0.7113,
+          "f": 0.6629,
           "cx": 0.5083,
-          "contact": 2
+          "contact": 2,
+          "sink": 5
         },
         "north-east": {
-          "f": 0.7423,
-          "cx": 0.4669,
-          "contact": 5
+          "f": 0.7075,
+          "cx": 0.5041,
+          "contact": 5,
+          "sink": 3
         },
         "east": {
-          "f": 0.732,
+          "f": 0.711,
           "cx": 0.4669,
-          "contact": 1
+          "contact": 1,
+          "sink": 2
         },
         "south-east": {
-          "f": 0.7216,
-          "cx": 0.4752,
-          "contact": 2
+          "f": 0.6942,
+          "cx": 0.5083,
+          "contact": 2,
+          "sink": 3
         }
       },
-      "artBottom": 0.732,
-      "footW": 18,
+      "artBottom": 0.7075,
+      "footW": 33,
       "bodyW": 62,
       "shadowW": 36,
       "shadowH": 14,
-      "radius": 18,
+      "radius": 16,
       "hoverPx": 12
     },
     {
@@ -1871,52 +1911,60 @@
       },
       "ground": {
         "south": {
-          "f": 0.8095,
-          "cx": 0.5,
-          "contact": 12
+          "f": 0.7896,
+          "cx": 0.4853,
+          "contact": 12,
+          "sink": 1
         },
         "south-west": {
-          "f": 0.8333,
-          "cx": 0.6029,
-          "contact": 13
+          "f": 0.7835,
+          "cx": 0.5147,
+          "contact": 13,
+          "sink": 2
         },
         "west": {
-          "f": 0.8333,
-          "cx": 0.5735,
-          "contact": 0
+          "f": 0.7683,
+          "cx": 0.5,
+          "contact": 0,
+          "sink": 3
         },
         "north-west": {
-          "f": 0.8571,
-          "cx": 0.4706,
-          "contact": 10
+          "f": 0.842,
+          "cx": 0.5,
+          "contact": 10,
+          "sink": 1
         },
         "north": {
-          "f": 0.8571,
+          "f": 0.8182,
           "cx": 0.5,
-          "contact": 8
+          "contact": 8,
+          "sink": 2
         },
         "north-east": {
-          "f": 0.8571,
-          "cx": 0.5294,
-          "contact": 10
+          "f": 0.842,
+          "cx": 0.5,
+          "contact": 10,
+          "sink": 1
         },
         "east": {
-          "f": 0.8333,
-          "cx": 0.4265,
-          "contact": 0
+          "f": 0.7683,
+          "cx": 0.5,
+          "contact": 0,
+          "sink": 3
         },
         "south-east": {
-          "f": 0.8333,
-          "cx": 0.4412,
-          "contact": 13
+          "f": 0.7835,
+          "cx": 0.4853,
+          "contact": 13,
+          "sink": 2
         }
       },
-      "artBottom": 0.8333,
-      "footW": 18,
+      "artBottom": 0.7896,
+      "footW": 25,
       "bodyW": 28,
-      "shadowW": 19,
-      "shadowH": 7,
-      "radius": 10,
+      "shadowW": 26,
+      "shadowH": 10,
+      "radius": 12,
       "hoverPx": 0
     },
     {
@@ -2207,51 +2255,59 @@
       },
       "ground": {
         "south": {
-          "f": 0.8824,
-          "cx": 0.5,
-          "contact": 3
+          "f": 0.8235,
+          "cx": 0.5208,
+          "contact": 3,
+          "sink": 2
         },
         "south-west": {
-          "f": 0.8824,
+          "f": 0.8069,
           "cx": 0.4896,
-          "contact": 11
+          "contact": 11,
+          "sink": 3
         },
         "west": {
-          "f": 0.8529,
+          "f": 0.8088,
           "cx": 0.5417,
-          "contact": 2
+          "contact": 2,
+          "sink": 2
         },
         "north-west": {
-          "f": 0.8824,
+          "f": 0.8184,
           "cx": 0.5104,
-          "contact": 2
+          "contact": 2,
+          "sink": 2
         },
         "north": {
-          "f": 0.9118,
+          "f": 0.8368,
           "cx": 0.5,
-          "contact": 7
+          "contact": 7,
+          "sink": 3
         },
         "north-east": {
-          "f": 0.8824,
-          "cx": 0.5,
-          "contact": 6
+          "f": 0.8197,
+          "cx": 0.4896,
+          "contact": 6,
+          "sink": 2
         },
         "east": {
-          "f": 0.8529,
+          "f": 0.8088,
           "cx": 0.4583,
-          "contact": 2
+          "contact": 2,
+          "sink": 2
         },
         "south-east": {
-          "f": 0.8824,
+          "f": 0.8069,
           "cx": 0.5104,
-          "contact": 11
+          "contact": 11,
+          "sink": 3
         }
       },
-      "artBottom": 0.8824,
-      "footW": 20,
+      "artBottom": 0.8184,
+      "footW": 23,
       "bodyW": 28,
-      "shadowW": 21,
-      "shadowH": 8,
+      "shadowW": 24,
+      "shadowH": 9,
       "radius": 11,
       "hoverPx": 0
     },
@@ -2543,51 +2599,59 @@
       },
       "ground": {
         "south": {
-          "f": 0.8333,
+          "f": 0.7951,
           "cx": 0.5208,
-          "contact": 4
+          "contact": 4,
+          "sink": 2
         },
         "south-west": {
-          "f": 0.8542,
+          "f": 0.7983,
           "cx": 0.5833,
-          "contact": 5
+          "contact": 5,
+          "sink": 3
         },
         "west": {
-          "f": 0.8333,
+          "f": 0.7967,
           "cx": 0.5104,
-          "contact": 0
+          "contact": 0,
+          "sink": 2
         },
         "north-west": {
-          "f": 0.8958,
-          "cx": 0.6458,
-          "contact": 0
+          "f": 0.8681,
+          "cx": 0.6354,
+          "contact": 0,
+          "sink": 1
         },
         "north": {
-          "f": 0.8333,
+          "f": 0.8163,
           "cx": 0.5208,
-          "contact": 1
+          "contact": 1,
+          "sink": 1
         },
         "north-east": {
-          "f": 0.8958,
+          "f": 0.8681,
           "cx": 0.3646,
-          "contact": 0
+          "contact": 0,
+          "sink": 1
         },
         "east": {
-          "f": 0.8333,
-          "cx": 0.5,
-          "contact": 0
+          "f": 0.7967,
+          "cx": 0.4896,
+          "contact": 0,
+          "sink": 2
         },
         "south-east": {
-          "f": 0.8542,
+          "f": 0.7983,
           "cx": 0.4167,
-          "contact": 5
+          "contact": 5,
+          "sink": 3
         }
       },
-      "artBottom": 0.8542,
-      "footW": 19,
+      "artBottom": 0.7983,
+      "footW": 22,
       "bodyW": 30,
-      "shadowW": 20,
-      "shadowH": 8,
+      "shadowW": 23,
+      "shadowH": 9,
       "radius": 10,
       "hoverPx": 0
     },
@@ -2879,52 +2943,60 @@
       },
       "ground": {
         "south": {
-          "f": 0.8235,
+          "f": 0.8101,
           "cx": 0.5059,
-          "contact": 0
+          "contact": 0,
+          "sink": 1
         },
         "south-west": {
-          "f": 0.8235,
-          "cx": 0.5059,
-          "contact": 0
+          "f": 0.8067,
+          "cx": 0.4941,
+          "contact": 0,
+          "sink": 1
         },
         "west": {
-          "f": 0.8235,
-          "cx": 0.4824,
-          "contact": 5
+          "f": 0.7941,
+          "cx": 0.4706,
+          "contact": 5,
+          "sink": 3
         },
         "north-west": {
-          "f": 0.8118,
+          "f": 0.7862,
           "cx": 0.5118,
-          "contact": 3
+          "contact": 3,
+          "sink": 2
         },
         "north": {
-          "f": 0.8235,
-          "cx": 0.5059,
-          "contact": 5
+          "f": 0.8136,
+          "cx": 0.5235,
+          "contact": 5,
+          "sink": 1
         },
         "north-east": {
-          "f": 0.8118,
-          "cx": 0.5059,
-          "contact": 3
+          "f": 0.7862,
+          "cx": 0.4882,
+          "contact": 3,
+          "sink": 2
         },
         "east": {
-          "f": 0.8235,
-          "cx": 0.5176,
-          "contact": 5
+          "f": 0.7941,
+          "cx": 0.5294,
+          "contact": 5,
+          "sink": 3
         },
         "south-east": {
-          "f": 0.8235,
+          "f": 0.8067,
           "cx": 0.5059,
-          "contact": 0
+          "contact": 0,
+          "sink": 1
         }
       },
-      "artBottom": 0.8235,
-      "footW": 17,
+      "artBottom": 0.8067,
+      "footW": 22,
       "bodyW": 29,
-      "shadowW": 18,
-      "shadowH": 7,
-      "radius": 9,
+      "shadowW": 23,
+      "shadowH": 9,
+      "radius": 10,
       "hoverPx": 0
     },
     {
@@ -3215,52 +3287,60 @@
       },
       "ground": {
         "south": {
-          "f": 0.8971,
+          "f": 0.8842,
           "cx": 0.5074,
-          "contact": 0
+          "contact": 0,
+          "sink": 1
         },
         "south-west": {
-          "f": 0.8676,
-          "cx": 0.5221,
-          "contact": 2
+          "f": 0.8358,
+          "cx": 0.4926,
+          "contact": 2,
+          "sink": 2
         },
         "west": {
-          "f": 0.8382,
-          "cx": 0.4926,
-          "contact": 2
+          "f": 0.8143,
+          "cx": 0.5,
+          "contact": 2,
+          "sink": 3
         },
         "north-west": {
-          "f": 0.8971,
-          "cx": 0.5,
-          "contact": 0
+          "f": 0.873,
+          "cx": 0.5074,
+          "contact": 0,
+          "sink": 2
         },
         "north": {
-          "f": 0.8824,
+          "f": 0.8713,
           "cx": 0.5074,
-          "contact": 0
+          "contact": 0,
+          "sink": 1
         },
         "north-east": {
-          "f": 0.8971,
-          "cx": 0.5,
-          "contact": 0
+          "f": 0.873,
+          "cx": 0.4926,
+          "contact": 0,
+          "sink": 2
         },
         "east": {
-          "f": 0.8382,
-          "cx": 0.5074,
-          "contact": 2
+          "f": 0.8143,
+          "cx": 0.5,
+          "contact": 2,
+          "sink": 3
         },
         "south-east": {
-          "f": 0.8676,
-          "cx": 0.4779,
-          "contact": 2
+          "f": 0.8358,
+          "cx": 0.5074,
+          "contact": 2,
+          "sink": 2
         }
       },
-      "artBottom": 0.8824,
-      "footW": 12,
+      "artBottom": 0.8713,
+      "footW": 13,
       "bodyW": 26,
       "shadowW": 15,
       "shadowH": 6,
-      "radius": 8,
+      "radius": 7,
       "hoverPx": 0
     },
     {
@@ -3551,52 +3631,60 @@
       },
       "ground": {
         "south": {
-          "f": 0.8041,
-          "cx": 0.5,
-          "contact": 0
+          "f": 0.7809,
+          "cx": 0.5052,
+          "contact": 0,
+          "sink": 2
         },
         "south-west": {
-          "f": 0.8041,
-          "cx": 0.5,
-          "contact": 5
+          "f": 0.7675,
+          "cx": 0.5464,
+          "contact": 5,
+          "sink": 4
         },
         "west": {
-          "f": 0.8144,
+          "f": 0.7942,
           "cx": 0.5412,
-          "contact": 0
+          "contact": 0,
+          "sink": 2
         },
         "north-west": {
-          "f": 0.7835,
+          "f": 0.7589,
           "cx": 0.6237,
-          "contact": 4
+          "contact": 4,
+          "sink": 2
         },
         "north": {
-          "f": 0.8247,
+          "f": 0.8121,
           "cx": 0.5052,
-          "contact": 2
+          "contact": 2,
+          "sink": 1
         },
         "north-east": {
-          "f": 0.7835,
-          "cx": 0.4794,
-          "contact": 4
+          "f": 0.7589,
+          "cx": 0.3763,
+          "contact": 4,
+          "sink": 2
         },
         "east": {
-          "f": 0.8144,
+          "f": 0.7942,
           "cx": 0.4588,
-          "contact": 0
+          "contact": 0,
+          "sink": 2
         },
         "south-east": {
-          "f": 0.8041,
-          "cx": 0.5309,
-          "contact": 5
+          "f": 0.7675,
+          "cx": 0.4536,
+          "contact": 5,
+          "sink": 4
         }
       },
-      "artBottom": 0.8041,
-      "footW": 27,
+      "artBottom": 0.7809,
+      "footW": 30,
       "bodyW": 56,
       "shadowW": 32,
       "shadowH": 12,
-      "radius": 16,
+      "radius": 14,
       "hoverPx": 0
     },
     {
@@ -3887,52 +3975,60 @@
       },
       "ground": {
         "south": {
-          "f": 0.8333,
-          "cx": 0.5208,
-          "contact": 1
+          "f": 0.8056,
+          "cx": 0.5104,
+          "contact": 1,
+          "sink": 1
         },
         "south-west": {
-          "f": 0.875,
-          "cx": 0.3854,
-          "contact": 2
+          "f": 0.8051,
+          "cx": 0.375,
+          "contact": 2,
+          "sink": 3
         },
         "west": {
-          "f": 0.7708,
-          "cx": 0.6146,
-          "contact": 5
+          "f": 0.7282,
+          "cx": 0.4583,
+          "contact": 5,
+          "sink": 2
         },
         "north-west": {
-          "f": 0.875,
+          "f": 0.8508,
           "cx": 0.6979,
-          "contact": 0
+          "contact": 0,
+          "sink": 1
         },
         "north": {
-          "f": 0.9583,
-          "cx": 0.5208,
-          "contact": 0
+          "f": 0.9337,
+          "cx": 0.5521,
+          "contact": 0,
+          "sink": 1
         },
         "north-east": {
-          "f": 0.875,
+          "f": 0.8508,
           "cx": 0.3021,
-          "contact": 0
+          "contact": 0,
+          "sink": 1
         },
         "east": {
-          "f": 0.7708,
-          "cx": 0.3958,
-          "contact": 5
+          "f": 0.7282,
+          "cx": 0.5417,
+          "contact": 5,
+          "sink": 2
         },
         "south-east": {
-          "f": 0.875,
-          "cx": 0.6146,
-          "contact": 2
+          "f": 0.8051,
+          "cx": 0.625,
+          "contact": 2,
+          "sink": 3
         }
       },
-      "artBottom": 0.875,
-      "footW": 23,
+      "artBottom": 0.8056,
+      "footW": 24,
       "bodyW": 37,
-      "shadowW": 24,
-      "shadowH": 9,
-      "radius": 12,
+      "shadowW": 25,
+      "shadowH": 10,
+      "radius": 11,
       "hoverPx": 0
     },
     {
@@ -4223,51 +4319,59 @@
       },
       "ground": {
         "south": {
-          "f": 0.8542,
+          "f": 0.8058,
           "cx": 0.5128,
-          "contact": 0
+          "contact": 0,
+          "sink": 2
         },
         "south-west": {
-          "f": 0.8333,
-          "cx": 0.4615,
-          "contact": 0
+          "f": 0.7799,
+          "cx": 0.4423,
+          "contact": 0,
+          "sink": 4
         },
         "west": {
-          "f": 0.7708,
-          "cx": 0.5897,
-          "contact": 1
+          "f": 0.7337,
+          "cx": 0.5833,
+          "contact": 1,
+          "sink": 2
         },
         "north-west": {
-          "f": 0.875,
+          "f": 0.8533,
           "cx": 0.6154,
-          "contact": 0
+          "contact": 0,
+          "sink": 1
         },
         "north": {
-          "f": 0.875,
-          "cx": 0.5128,
-          "contact": 1
+          "f": 0.8375,
+          "cx": 0.5,
+          "contact": 1,
+          "sink": 3
         },
         "north-east": {
-          "f": 0.875,
+          "f": 0.8533,
           "cx": 0.3846,
-          "contact": 0
+          "contact": 0,
+          "sink": 1
         },
         "east": {
-          "f": 0.7708,
+          "f": 0.7337,
           "cx": 0.4167,
-          "contact": 1
+          "contact": 1,
+          "sink": 2
         },
         "south-east": {
-          "f": 0.875,
-          "cx": 0.5641,
-          "contact": 0
+          "f": 0.8014,
+          "cx": 0.5705,
+          "contact": 0,
+          "sink": 4
         }
       },
-      "artBottom": 0.875,
-      "footW": 21,
+      "artBottom": 0.8058,
+      "footW": 24,
       "bodyW": 36,
-      "shadowW": 22,
-      "shadowH": 8,
+      "shadowW": 25,
+      "shadowH": 10,
       "radius": 11,
       "hoverPx": 0
     },
@@ -4505,52 +4609,60 @@
       },
       "ground": {
         "south": {
-          "f": 0.8971,
-          "cx": 0.5,
-          "contact": 0
+          "f": 0.872,
+          "cx": 0.4706,
+          "contact": 0,
+          "sink": 3
         },
         "south-west": {
-          "f": 0.9191,
-          "cx": 0.5588,
-          "contact": 0
+          "f": 0.8906,
+          "cx": 0.6103,
+          "contact": 0,
+          "sink": 4
         },
         "west": {
-          "f": 0.9191,
-          "cx": 0.5,
-          "contact": 0
+          "f": 0.9056,
+          "cx": 0.5257,
+          "contact": 0,
+          "sink": 2
         },
         "north-west": {
-          "f": 0.9118,
-          "cx": 0.4632,
-          "contact": 3
+          "f": 0.888,
+          "cx": 0.5441,
+          "contact": 3,
+          "sink": 3
         },
         "north": {
-          "f": 0.8971,
-          "cx": 0.5074,
-          "contact": 0
+          "f": 0.8778,
+          "cx": 0.5037,
+          "contact": 0,
+          "sink": 3
         },
         "north-east": {
-          "f": 0.9118,
-          "cx": 0.5368,
-          "contact": 3
+          "f": 0.888,
+          "cx": 0.4559,
+          "contact": 3,
+          "sink": 3
         },
         "east": {
-          "f": 0.9191,
-          "cx": 0.5,
-          "contact": 0
+          "f": 0.9056,
+          "cx": 0.4743,
+          "contact": 0,
+          "sink": 2
         },
         "south-east": {
-          "f": 0.9191,
-          "cx": 0.4632,
-          "contact": 0
+          "f": 0.8906,
+          "cx": 0.3897,
+          "contact": 0,
+          "sink": 4
         }
       },
-      "artBottom": 0.9191,
-      "footW": 23,
+      "artBottom": 0.8906,
+      "footW": 26,
       "bodyW": 86,
       "shadowW": 50,
       "shadowH": 19,
-      "radius": 25,
+      "radius": 23,
       "hoverPx": 0
     },
     {
@@ -4841,52 +4953,60 @@
       },
       "ground": {
         "south": {
-          "f": 0.8529,
+          "f": 0.8331,
           "cx": 0.5,
-          "contact": 0
+          "contact": 0,
+          "sink": 1
         },
         "south-west": {
-          "f": 0.8235,
+          "f": 0.7894,
           "cx": 0.3618,
-          "contact": 2
+          "contact": 2,
+          "sink": 2
         },
         "west": {
-          "f": 0.8235,
-          "cx": 0.5855,
-          "contact": 0
+          "f": 0.7786,
+          "cx": 0.5789,
+          "contact": 0,
+          "sink": 3
         },
         "north-west": {
-          "f": 0.8971,
-          "cx": 0.6053,
-          "contact": 0
+          "f": 0.8922,
+          "cx": 0.5263,
+          "contact": 0,
+          "sink": 0
         },
         "north": {
-          "f": 0.8971,
+          "f": 0.8621,
           "cx": 0.5066,
-          "contact": 3
+          "contact": 3,
+          "sink": 2
         },
         "north-east": {
-          "f": 0.8971,
-          "cx": 0.3947,
-          "contact": 0
+          "f": 0.8922,
+          "cx": 0.4737,
+          "contact": 0,
+          "sink": 0
         },
         "east": {
-          "f": 0.8235,
-          "cx": 0.4145,
-          "contact": 0
+          "f": 0.7786,
+          "cx": 0.4211,
+          "contact": 0,
+          "sink": 3
         },
         "south-east": {
-          "f": 0.8235,
+          "f": 0.7894,
           "cx": 0.6382,
-          "contact": 2
+          "contact": 2,
+          "sink": 2
         }
       },
-      "artBottom": 0.8529,
-      "footW": 36,
+      "artBottom": 0.8331,
+      "footW": 38,
       "bodyW": 55,
-      "shadowW": 38,
+      "shadowW": 40,
       "shadowH": 15,
-      "radius": 19,
+      "radius": 18,
       "hoverPx": 0
     },
     {
@@ -5177,52 +5297,60 @@
       },
       "ground": {
         "south": {
-          "f": 0.9375,
-          "cx": 0.6354,
-          "contact": 3
+          "f": 0.8659,
+          "cx": 0.5729,
+          "contact": 3,
+          "sink": 3
         },
         "south-west": {
-          "f": 0.9375,
-          "cx": 0.6354,
-          "contact": 7
+          "f": 0.8668,
+          "cx": 0.6667,
+          "contact": 7,
+          "sink": 3
         },
         "west": {
-          "f": 0.8958,
+          "f": 0.8288,
           "cx": 0.4896,
-          "contact": 0
+          "contact": 0,
+          "sink": 3
         },
         "north-west": {
-          "f": 0.9375,
-          "cx": 0.6354,
-          "contact": 3
+          "f": 0.8659,
+          "cx": 0.5729,
+          "contact": 3,
+          "sink": 3
         },
         "north": {
-          "f": 0.9375,
-          "cx": 0.6146,
-          "contact": 7
+          "f": 0.8767,
+          "cx": 0.5521,
+          "contact": 7,
+          "sink": 3
         },
         "north-east": {
-          "f": 0.9375,
-          "cx": 0.3646,
-          "contact": 3
+          "f": 0.8659,
+          "cx": 0.4271,
+          "contact": 3,
+          "sink": 3
         },
         "east": {
-          "f": 0.8958,
+          "f": 0.8288,
           "cx": 0.5104,
-          "contact": 0
+          "contact": 0,
+          "sink": 3
         },
         "south-east": {
-          "f": 0.9375,
-          "cx": 0.6354,
-          "contact": 3
+          "f": 0.8654,
+          "cx": 0.5729,
+          "contact": 3,
+          "sink": 3
         }
       },
-      "artBottom": 0.9375,
-      "footW": 36,
+      "artBottom": 0.8659,
+      "footW": 39,
       "bodyW": 43,
-      "shadowW": 38,
-      "shadowH": 15,
-      "radius": 19,
+      "shadowW": 41,
+      "shadowH": 16,
+      "radius": 18,
       "hoverPx": 0
     },
     {
@@ -5495,52 +5623,60 @@
       },
       "ground": {
         "south": {
-          "f": 0.8456,
-          "cx": 0.5719,
-          "contact": 6
+          "f": 0.8388,
+          "cx": 0.5068,
+          "contact": 6,
+          "sink": 1
         },
         "south-west": {
-          "f": 0.8382,
-          "cx": 0.5342,
-          "contact": 0
+          "f": 0.8194,
+          "cx": 0.5137,
+          "contact": 0,
+          "sink": 3
         },
         "west": {
-          "f": 0.8456,
-          "cx": 0.5171,
-          "contact": 0
+          "f": 0.8436,
+          "cx": 0.5,
+          "contact": 0,
+          "sink": 0
         },
         "north-west": {
-          "f": 0.8529,
-          "cx": 0.4418,
-          "contact": 6
+          "f": 0.8215,
+          "cx": 0.4623,
+          "contact": 6,
+          "sink": 4
         },
         "north": {
-          "f": 0.8382,
+          "f": 0.8128,
           "cx": 0.5034,
-          "contact": 0
+          "contact": 0,
+          "sink": 3
         },
         "north-east": {
-          "f": 0.8529,
-          "cx": 0.5582,
-          "contact": 6
+          "f": 0.8215,
+          "cx": 0.5377,
+          "contact": 6,
+          "sink": 4
         },
         "east": {
-          "f": 0.8456,
-          "cx": 0.4863,
-          "contact": 4
+          "f": 0.837,
+          "cx": 0.5137,
+          "contact": 4,
+          "sink": 1
         },
         "south-east": {
-          "f": 0.8382,
-          "cx": 0.4829,
-          "contact": 0
+          "f": 0.8194,
+          "cx": 0.4863,
+          "contact": 0,
+          "sink": 3
         }
       },
-      "artBottom": 0.8456,
-      "footW": 53,
+      "artBottom": 0.8215,
+      "footW": 58,
       "bodyW": 85,
-      "shadowW": 56,
-      "shadowH": 22,
-      "radius": 28,
+      "shadowW": 61,
+      "shadowH": 23,
+      "radius": 27,
       "hoverPx": 0
     },
     {
@@ -5777,52 +5913,60 @@
       },
       "ground": {
         "south": {
-          "f": 0.8125,
+          "f": 0.7813,
           "cx": 0.5156,
-          "contact": 1
+          "contact": 1,
+          "sink": 2
         },
         "south-west": {
-          "f": 0.8333,
-          "cx": 0.5078,
-          "contact": 3
+          "f": 0.8021,
+          "cx": 0.5,
+          "contact": 3,
+          "sink": 2
         },
         "west": {
-          "f": 0.8125,
+          "f": 0.7809,
           "cx": 0.5078,
-          "contact": 0
+          "contact": 0,
+          "sink": 2
         },
         "north-west": {
-          "f": 0.8333,
-          "cx": 0.4844,
-          "contact": 0
+          "f": 0.7984,
+          "cx": 0.4766,
+          "contact": 0,
+          "sink": 2
         },
         "north": {
-          "f": 0.7708,
-          "cx": 0.5,
-          "contact": 3
+          "f": 0.7461,
+          "cx": 0.5156,
+          "contact": 3,
+          "sink": 1
         },
         "north-east": {
-          "f": 0.8333,
-          "cx": 0.5156,
-          "contact": 0
+          "f": 0.7984,
+          "cx": 0.5234,
+          "contact": 0,
+          "sink": 2
         },
         "east": {
-          "f": 0.8125,
-          "cx": 0.5,
-          "contact": 0
+          "f": 0.7809,
+          "cx": 0.4922,
+          "contact": 0,
+          "sink": 2
         },
         "south-east": {
-          "f": 0.8333,
-          "cx": 0.5078,
-          "contact": 3
+          "f": 0.8021,
+          "cx": 0.5,
+          "contact": 3,
+          "sink": 2
         }
       },
-      "artBottom": 0.8333,
-      "footW": 22,
+      "artBottom": 0.7984,
+      "footW": 31,
       "bodyW": 34,
-      "shadowW": 23,
-      "shadowH": 9,
-      "radius": 12,
+      "shadowW": 33,
+      "shadowH": 13,
+      "radius": 15,
       "hoverPx": 0
     },
     {
@@ -5833,9 +5977,6 @@
       "root": "diablo_2",
       "walkAnim": "walk",
       "animations": {
-        "angry": {
-          "south": 9
-        },
         "attack": {
           "south": 9,
           "south-west": 9,
@@ -5878,9 +6019,6 @@
         }
       },
       "strips": {
-        "angry": {
-          "south": "/assets/monsters/diablo_2/animations/angry__south.png"
-        },
         "attack": {
           "south": "/assets/monsters/diablo_2/animations/attack__south.png",
           "south-west": "/assets/monsters/diablo_2/animations/attack__south-west.png",
@@ -5923,12 +6061,6 @@
         }
       },
       "stripDims": {
-        "angry": {
-          "south": {
-            "w": 136,
-            "h": 174
-          }
-        },
         "attack": {
           "south": {
             "w": 136,
@@ -6071,52 +6203,60 @@
       },
       "ground": {
         "south": {
-          "f": 0.8908,
-          "cx": 0.7243,
-          "contact": 2
+          "f": 0.8879,
+          "cx": 0.75,
+          "contact": 2,
+          "sink": 1
         },
         "south-west": {
-          "f": 0.7931,
-          "cx": 0.511,
-          "contact": 0
+          "f": 0.7544,
+          "cx": 0.4926,
+          "contact": 0,
+          "sink": 7
         },
         "west": {
-          "f": 0.7759,
-          "cx": 0.6912,
-          "contact": 6
+          "f": 0.7502,
+          "cx": 0.636,
+          "contact": 6,
+          "sink": 4
         },
         "north-west": {
-          "f": 0.7759,
-          "cx": 0.4449,
-          "contact": 6
+          "f": 0.7419,
+          "cx": 0.4485,
+          "contact": 6,
+          "sink": 6
         },
         "north": {
-          "f": 0.7816,
-          "cx": 0.4559,
-          "contact": 0
+          "f": 0.7538,
+          "cx": 0.4485,
+          "contact": 0,
+          "sink": 5
         },
         "north-east": {
-          "f": 0.7759,
-          "cx": 0.5551,
-          "contact": 6
+          "f": 0.7419,
+          "cx": 0.5515,
+          "contact": 6,
+          "sink": 6
         },
         "east": {
-          "f": 0.7759,
-          "cx": 0.3235,
-          "contact": 6
+          "f": 0.7502,
+          "cx": 0.364,
+          "contact": 6,
+          "sink": 4
         },
         "south-east": {
-          "f": 0.7931,
-          "cx": 0.489,
-          "contact": 0
+          "f": 0.7544,
+          "cx": 0.5074,
+          "contact": 0,
+          "sink": 7
         }
       },
-      "artBottom": 0.7816,
-      "footW": 34,
+      "artBottom": 0.7538,
+      "footW": 54,
       "bodyW": 111,
       "shadowW": 64,
       "shadowH": 25,
-      "radius": 32,
+      "radius": 29,
       "hoverPx": 0
     },
     {
@@ -6353,52 +6493,60 @@
       },
       "ground": {
         "south": {
-          "f": 0.8247,
+          "f": 0.8235,
           "cx": 0.5052,
-          "contact": 3
+          "contact": 3,
+          "sink": 0
         },
         "south-west": {
-          "f": 0.8351,
-          "cx": 0.5,
-          "contact": 3
+          "f": 0.8205,
+          "cx": 0.4742,
+          "contact": 3,
+          "sink": 1
         },
         "west": {
           "f": 0.8247,
-          "cx": 0.4897,
-          "contact": 3
+          "cx": 0.4794,
+          "contact": 3,
+          "sink": 0
         },
         "north-west": {
-          "f": 0.8247,
+          "f": 0.8041,
           "cx": 0.5,
-          "contact": 0
+          "contact": 0,
+          "sink": 2
         },
         "north": {
-          "f": 0.8144,
-          "cx": 0.5103,
-          "contact": 0
+          "f": 0.7919,
+          "cx": 0.5052,
+          "contact": 0,
+          "sink": 2
         },
         "north-east": {
-          "f": 0.8247,
+          "f": 0.8041,
           "cx": 0.5,
-          "contact": 0
+          "contact": 0,
+          "sink": 2
         },
         "east": {
           "f": 0.8247,
-          "cx": 0.5155,
-          "contact": 3
+          "cx": 0.5206,
+          "contact": 3,
+          "sink": 0
         },
         "south-east": {
-          "f": 0.8351,
+          "f": 0.8205,
           "cx": 0.5258,
-          "contact": 3
+          "contact": 3,
+          "sink": 1
         }
       },
-      "artBottom": 0.8247,
-      "footW": 16,
+      "artBottom": 0.8205,
+      "footW": 20,
       "bodyW": 34,
-      "shadowW": 20,
+      "shadowW": 21,
       "shadowH": 8,
-      "radius": 10,
+      "radius": 9,
       "hoverPx": 0
     },
     {
@@ -6689,52 +6837,60 @@
       },
       "ground": {
         "south": {
-          "f": 0.7734,
-          "cx": 0.4961,
-          "contact": 1
+          "f": 0.7562,
+          "cx": 0.5117,
+          "contact": 1,
+          "sink": 2
         },
         "south-west": {
-          "f": 0.75,
-          "cx": 0.4727,
-          "contact": 3
+          "f": 0.7309,
+          "cx": 0.4805,
+          "contact": 3,
+          "sink": 2
         },
         "west": {
-          "f": 0.7422,
+          "f": 0.7347,
           "cx": 0.4961,
-          "contact": 0
+          "contact": 0,
+          "sink": 1
         },
         "north-west": {
-          "f": 0.7344,
-          "cx": 0.4922,
-          "contact": 1
+          "f": 0.7262,
+          "cx": 0.4961,
+          "contact": 1,
+          "sink": 1
         },
         "north": {
-          "f": 0.7266,
-          "cx": 0.5,
-          "contact": 0
+          "f": 0.7227,
+          "cx": 0.4961,
+          "contact": 0,
+          "sink": 1
         },
         "north-east": {
-          "f": 0.7344,
-          "cx": 0.5117,
-          "contact": 1
+          "f": 0.7262,
+          "cx": 0.5039,
+          "contact": 1,
+          "sink": 1
         },
         "east": {
-          "f": 0.7422,
+          "f": 0.7199,
           "cx": 0.5078,
-          "contact": 2
+          "contact": 2,
+          "sink": 3
         },
         "south-east": {
-          "f": 0.75,
-          "cx": 0.5273,
-          "contact": 3
+          "f": 0.7309,
+          "cx": 0.5195,
+          "contact": 3,
+          "sink": 2
         }
       },
-      "artBottom": 0.7422,
-      "footW": 33,
+      "artBottom": 0.7309,
+      "footW": 35,
       "bodyW": 56,
-      "shadowW": 35,
-      "shadowH": 13,
-      "radius": 18,
+      "shadowW": 37,
+      "shadowH": 14,
+      "radius": 17,
       "hoverPx": 0
     },
     {
@@ -7025,52 +7181,60 @@
       },
       "ground": {
         "south": {
-          "f": 0.7258,
+          "f": 0.7049,
           "cx": 0.4919,
-          "contact": 0
+          "contact": 0,
+          "sink": 3
         },
         "south-west": {
-          "f": 0.7016,
-          "cx": 0.5242,
-          "contact": 0
+          "f": 0.6879,
+          "cx": 0.5161,
+          "contact": 0,
+          "sink": 2
         },
         "west": {
-          "f": 0.7258,
-          "cx": 0.5323,
-          "contact": 2
+          "f": 0.7202,
+          "cx": 0.5242,
+          "contact": 2,
+          "sink": 1
         },
         "north-west": {
-          "f": 0.7258,
-          "cx": 0.5484,
-          "contact": 0
+          "f": 0.711,
+          "cx": 0.5927,
+          "contact": 0,
+          "sink": 2
         },
         "north": {
-          "f": 0.7823,
+          "f": 0.7742,
           "cx": 0.5081,
-          "contact": 0
+          "contact": 0,
+          "sink": 1
         },
         "north-east": {
-          "f": 0.7258,
-          "cx": 0.4637,
-          "contact": 1
+          "f": 0.7172,
+          "cx": 0.4194,
+          "contact": 1,
+          "sink": 1
         },
         "east": {
-          "f": 0.7258,
+          "f": 0.7202,
           "cx": 0.4758,
-          "contact": 2
+          "contact": 2,
+          "sink": 1
         },
         "south-east": {
-          "f": 0.7339,
-          "cx": 0.5605,
-          "contact": 1
+          "f": 0.7258,
+          "cx": 0.5323,
+          "contact": 1,
+          "sink": 1
         }
       },
-      "artBottom": 0.7258,
-      "footW": 21,
+      "artBottom": 0.7202,
+      "footW": 22,
       "bodyW": 43,
       "shadowW": 25,
       "shadowH": 10,
-      "radius": 13,
+      "radius": 11,
       "hoverPx": 0
     },
     {
@@ -7361,52 +7525,60 @@
       },
       "ground": {
         "south": {
-          "f": 0.7976,
+          "f": 0.7946,
           "cx": 0.4643,
-          "contact": 1
+          "contact": 1,
+          "sink": 0
         },
         "south-west": {
-          "f": 0.75,
+          "f": 0.7222,
           "cx": 0.5357,
-          "contact": 2
+          "contact": 2,
+          "sink": 2
         },
         "west": {
-          "f": 0.6667,
+          "f": 0.6239,
           "cx": 0.4821,
-          "contact": 3
+          "contact": 3,
+          "sink": 4
         },
         "north-west": {
-          "f": 0.8571,
-          "cx": 0.7679,
-          "contact": 1
+          "f": 0.8503,
+          "cx": 0.6964,
+          "contact": 1,
+          "sink": 1
         },
         "north": {
-          "f": 0.7738,
+          "f": 0.7619,
           "cx": 0.506,
-          "contact": 3
+          "contact": 3,
+          "sink": 1
         },
         "north-east": {
-          "f": 0.8571,
-          "cx": 0.256,
-          "contact": 1
+          "f": 0.8503,
+          "cx": 0.3036,
+          "contact": 1,
+          "sink": 1
         },
         "east": {
-          "f": 0.6667,
+          "f": 0.6239,
           "cx": 0.5179,
-          "contact": 3
+          "contact": 3,
+          "sink": 4
         },
         "south-east": {
-          "f": 0.75,
+          "f": 0.7222,
           "cx": 0.4643,
-          "contact": 2
+          "contact": 2,
+          "sink": 2
         }
       },
-      "artBottom": 0.7738,
-      "footW": 19,
+      "artBottom": 0.7619,
+      "footW": 24,
       "bodyW": 53,
       "shadowW": 31,
       "shadowH": 12,
-      "radius": 16,
+      "radius": 14,
       "hoverPx": 0
     },
     {
@@ -7697,52 +7869,60 @@
       },
       "ground": {
         "south": {
-          "f": 0.7383,
+          "f": 0.7284,
           "cx": 0.4941,
-          "contact": 2
+          "contact": 2,
+          "sink": 3
         },
         "south-west": {
-          "f": 0.7266,
+          "f": 0.6983,
           "cx": 0.5137,
-          "contact": 1
+          "contact": 1,
+          "sink": 7
         },
         "west": {
-          "f": 0.7383,
-          "cx": 0.5039,
-          "contact": 3
+          "f": 0.7118,
+          "cx": 0.5078,
+          "contact": 3,
+          "sink": 7
         },
         "north-west": {
-          "f": 0.7422,
+          "f": 0.7165,
           "cx": 0.5645,
-          "contact": 2
+          "contact": 2,
+          "sink": 7
         },
         "north": {
-          "f": 0.75,
+          "f": 0.7427,
           "cx": 0.4961,
-          "contact": 1
+          "contact": 1,
+          "sink": 2
         },
         "north-east": {
-          "f": 0.7422,
+          "f": 0.7165,
           "cx": 0.4355,
-          "contact": 2
+          "contact": 2,
+          "sink": 7
         },
         "east": {
-          "f": 0.7383,
-          "cx": 0.5,
-          "contact": 3
+          "f": 0.7118,
+          "cx": 0.4922,
+          "contact": 3,
+          "sink": 7
         },
         "south-east": {
-          "f": 0.7266,
-          "cx": 0.5645,
-          "contact": 1
+          "f": 0.6983,
+          "cx": 0.4863,
+          "contact": 1,
+          "sink": 7
         }
       },
-      "artBottom": 0.7383,
-      "footW": 69,
+      "artBottom": 0.7165,
+      "footW": 97,
       "bodyW": 146,
-      "shadowW": 84,
-      "shadowH": 32,
-      "radius": 42,
+      "shadowW": 102,
+      "shadowH": 39,
+      "radius": 46,
       "hoverPx": 0
     }
   ]

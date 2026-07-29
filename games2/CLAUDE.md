@@ -407,20 +407,34 @@ visible head/shoulders are ABOVE the surface).
   float most of the cycle; (c) bodies drawn off-centre in the frame (saber
   diagonals 22px, turtle 6px) leave the frame-centred shadow beside the
   feet. The manifest therefore emits per (walk, DIRECTION) a `ground`
-  contract: `f` = feet-line fraction of THAT strip's height, `cx` =
-  foot-centre-X fraction (origin-X), `contact` = the planted frame index.
-  Ground line rule: a frame is a GROUND frame iff its bottom-3-row contact
-  width ≥ max(4, 0.5×the dir's widest contact) — planted legs are wide, tail
-  tips/toe push-offs are slivers and never define ground (diablo north's
-  bot=84 sliver vs its real 79 line); anchor = p65 of ground-frame bottoms so
-  the common pose sits flush and a landing squash dips INTO the ground
-  briefly (invisible) rather than the gait floating (very visible). The
-  client applies origin(cx,f) on EVERY facing change and parks a paused
-  monster on `contact` — frame-0 parking left frogs levitating mid-hop
-  between trips. footW/bodyW come from CONTACT frames (mid-air tucked feet
-  deflated the shadow); shadow `w = clamp(max(footW, bodyW·0.55)·1.05, 12,
-  150)`, `h = max(6, 0.385·w)`, emitted as `shadowW/shadowH` — NEVER
-  frameW-scaled. `stripDims` (TRUE per-strip frame size from IHDR) slices
+  contract: `{f, cx, contact, sink}`. ROUND 3 (maintainer red/green circles:
+  "the center coordinate should be between the monsters feet (between the
+  foot underside). Some monsters have 2 feets, some have 4 and some have
+  0"): `f`/`cx` are the CONTACT CENTROID, not the lowest opaque row — in
+  low-top-down art the FAR feet stand up to ~16px higher in the frame than
+  the near toe (the four feet of a quadruped form a parallelogram on the
+  ground plane), so a lowest-row anchor hugged the front feet and every
+  body floated behind its shadow. On the planted contact frame (chosen as
+  before: bottom-3-row contact width ≥ half the dir's widest — planted legs
+  are wide, tail tips/toe push-offs are slivers; frame nearest the p65 of
+  ground-frame bottoms): bottom-edge profile per column → contact columns
+  are within T = clamp(11% of the dir's bodyW, 6, 17) of the deepest row
+  (feet pairs IN — mammoth sw rear foot at depth 14-16; trunk tips at 20 and
+  bellies at 20-30 OUT); runs <3px wide are dropped (tails), runs farther
+  than 0.4·fw from the silhouette's mass-centre column are dropped
+  (diablo_2's flame tendril touches the frame bottom a body-width from the
+  rock). Anchor = kept-run extent midpoint (cx) × mean bottom row (f);
+  `sink` = px the front toes plant BELOW the anchor. The client applies
+  origin(cx,f) on EVERY facing change, parks a paused monster on `contact`
+  (frame-0 parking left frogs levitating mid-hop), and LIFTS the shadow
+  ellipse `max(0, h/2 − sink − 2)` px so its SOUTH RIM kisses the toe line —
+  centred on the anchor, half the ellipse poked past the toes and still
+  read as "shadow way too low". footW = the contact-run extent (the feet
+  span, e.g. mammoth ~123px across all four legs); shadow `w =
+  clamp(max(footW, bodyW·0.55)·1.05, 12, 150)`, `h = max(6, 0.385·w)`,
+  emitted as `shadowW/shadowH` — NEVER frameW-scaled. Collision `radius =
+  min(60, 0.45·shadowW)` (a footprint-spanning shadow must not double
+  gameplay distances). `stripDims` (TRUE per-strip frame size from IHDR) slices
   every spritesheet — monster.json `size` goes stale on in-place repairs (8+
   wrong, frog 34×34 claimed vs 34×42 real) and frames bleed. `hoverPx`
   (builder `HOVER_PX`) marks INTENTIONAL winged flyers (butterfly_dragon 12):
