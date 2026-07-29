@@ -37,6 +37,12 @@ never spot edits) — rerunning this script is idempotent and deterministic:
     python maps2/pipeline/spawns.py                  # every world
     python maps2/pipeline/spawns.py the_island2 ...  # only the named ones
 
+The roster (monsters/config/roster.json) is the monster-id authority and GROWS
+on its own (the PixelLab MONSTER tag decides membership): every id maps to a
+habitat via MONSTER_HABITAT, with NAME_HINTS guessing a home for ids the table
+doesn't know yet — extend the table when a guess is wrong. Rerun this script
+after the roster changes AND after regenerating any world.
+
 `monster_demo` writes its own explicit pads (monsterdemo.py) and is skipped here.
 """
 
@@ -58,22 +64,61 @@ SCHEMA = "pixel-maps2/spawns@1"
 BUILDER_OWNS = {"monster_demo"}     # writes its own explicit spawns.json
 
 # -- habitat doctrine ---------------------------------------------------------
-# One rule per monster (monsters/config/roster.json is the id authority):
-#   poring        open grass, anywhere low
-#   forest_poring grass within TREE_R of a tall grove prop (base_x_4/5 grass)
-#   ice_poring    the frozen heights: snow + ice (incl. the cave ROOF decks —
-#                 their walk level is the old surface, so the elev range keeps
-#                 them on top of the mountain)
-#   lava_poring   dark rock: black_mountain surfaces, plus THE CAVE floor
-#   sand_poring   beaches
-#   water_poring  water within WATER_SHORE_R of land (shore bands + lakes)
-# plus one showcase zone on the biggest BRIDGE deck (a poring guards the span).
-DENSITY = {"water_poring": 90}      # cells per monster (default below)
+# monsters/config/roster.json is the id authority (the PixelLab MONSTER tag
+# decides membership, so the roster GROWS on its own). Every monster maps to
+# ONE habitat key; several monsters share a habitat, and each still gets its
+# own zone(s) — overlapping areas are the design. Habitat keys:
+#   grass   open saturated_grass
+#   forest  grass within TREE_R of a tall grove prop (base_x_4/5 grass)
+#   dirt    lightdark_dirt (forest floor / the road network)
+#   snow    regular_snow slopes
+#   ice     crystal_ice (tarns, frozen caps)
+#   dark    black_mountain rock
+#   stone   stone_mountain benches and walls
+#   sand    beaches
+#   water   water within WATER_SHORE_R of land (shore bands + lakes)
+#   cave    THE CAVE floor (cells under kind:"cave" decks, elev [0,1])
+# plus one showcase zone on the biggest BRIDGE deck.
+MONSTER_HABITAT = {
+    "mystical_frog": "water",
+    "hedgehog": "forest",
+    "white_rabbit": "snow",
+    "malformed_creature": "dark",
+    "masked_shadow_creature": "cave",
+    "night_beast": "cave",
+    "lava_salamander": "dark",
+    "lava_salamander_2": "dark",
+    "butterfly_dragon": "grass",
+    "ice_crystal_golem": "ice",
+    "water_poring": "water",
+    "stone_turtle": "stone",
+    "tree_stump": "forest",
+    "snow_demon": "snow",
+    "forest_poring": "forest",
+    "forest_poring_2": "forest",
+    "stone_golem": "stone",
+    "lava_poring": "dark",
+    "diablo": "cave",
+    "diablo_2": "cave",
+    "ice_poring": "ice",
+    "dark_donkey": "dirt",
+    "saber_toothed_tiger": "grass",
+    "mammoth": "snow",
+}
+# a NEW roster id without a table entry still gets a sensible home
+NAME_HINTS = (("lava", "dark"), ("shadow", "cave"), ("diablo", "cave"),
+              ("night", "cave"), ("ice", "ice"), ("snow", "snow"),
+              ("water", "water"), ("frog", "water"), ("sand", "sand"),
+              ("stone", "stone"), ("rock", "stone"), ("forest", "forest"),
+              ("tree", "forest"), ("dark", "dark"))
+BRIDGE_GUARD = "stone_turtle"       # the troll under^W on the bridge
+
+DENSITY = {"water": 90}             # cells per monster, by habitat key
 DENSITY_DEFAULT = 60
 NUM_CAP = 12
-MIN_ZONE = {"forest_poring": 12}    # smallest component worth a zone (cells)
+MIN_ZONE = {"forest": 12}           # smallest component worth a zone (cells)
 MIN_ZONE_DEFAULT = 30
-TOP_K = 4                           # biggest K components per habitat
+TOP_K = 4                           # component cap per habitat (>= its members)
 TREE_R = 3
 WATER_SHORE_R = 4
 BRIDGE_MIN_CELLS = 10
@@ -82,6 +127,16 @@ BRIDGE_MIN_CELLS = 10
 def roster_ids():
     j = json.load(open(os.path.join(REPO, "monsters", "config", "roster.json")))
     return [m["id"] for m in j["monsters"]]
+
+
+def habitat_of(mid):
+    h = MONSTER_HABITAT.get(mid)
+    if h is None:
+        for pat, key in NAME_HINTS:
+            if pat in mid:
+                return key
+        return "grass"
+    return h
 
 
 # -- world loading ------------------------------------------------------------
@@ -284,7 +339,7 @@ def poly_cells(poly, ctx=""):
 
 # -- zone construction --------------------------------------------------------
 
-def make_zone(w, kind, comp, zid, elev=None, num=None):
+def make_zone(w, kind, comp, zid, elev=None, num=None, share=1.0):
     cells = fix_diagonals(comp)
     poly = trace_outer(cells)
     assert_simple(poly, f"{w.name}/{zid}")
@@ -293,8 +348,8 @@ def make_zone(w, kind, comp, zid, elev=None, num=None):
         lv = sorted(w.hab_level(x, y) for (x, y) in comp)
         elev = [lv[0], lv[-1]]
     if num is None:
-        d = DENSITY.get(kind, DENSITY_DEFAULT)
-        num = max(1, min(NUM_CAP, round(len(comp) / d)))
+        d = DENSITY.get(habitat_of(kind), DENSITY_DEFAULT)
+        num = max(1, min(NUM_CAP, round(len(comp) / d / max(1.0, share))))
     zone = {"id": zid, "monster": kind,
             "area": [[x, y] for (x, y) in poly],
             "elev": [int(elev[0]), int(elev[1])], "num": int(num)}
@@ -311,7 +366,7 @@ def validate_zone(w, zone, inside=None):
     lo, hi = zone["elev"]
     assert 0 <= lo <= hi <= 64, f"{zone['id']}: bad elev {zone['elev']}"
     assert zone["num"] >= 1, f"{zone['id']}: num < 1"
-    wants_water = kind == "water_poring"
+    wants_water = habitat_of(kind) == "water"
     ok = 0
     for (x, y) in inside:
         if not (0 <= x < w.w and 0 <= y < w.h) or (x, y) in w.props:
@@ -333,62 +388,68 @@ def validate_zone(w, zone, inside=None):
     return ok
 
 
-def habitat_zones(w, kind, mask, zprefix):
-    zones = []
-    min_cells = MIN_ZONE.get(kind, MIN_ZONE_DEFAULT)
-    picked = [c for c in comps(mask) if len(c) >= min_cells][:TOP_K]
-    for i, comp in enumerate(picked):
-        zones.append(make_zone(w, kind, comp, f"{zprefix}-{i + 1}"))
-    return zones
-
-
-def zones_for(w):
-    ids = roster_ids()
+def habitat_masks(w):
+    """The habitat-key -> cell-mask table for one world."""
     land = {(x, y) for y in range(w.h) for x in range(w.w)
             if w.m(x, y) not in w.water and w.m(x, y) != ""}
     water = {(x, y) for y in range(w.h) for x in range(w.w) if w.m(x, y) in w.water}
     grass = {c for c in land if w.m(*c) == "saturated_grass"}
-    zones = []
+    near = set()
+    for (px, py) in w.tall_props:
+        for dx in range(-TREE_R, TREE_R + 1):
+            for dy in range(-TREE_R, TREE_R + 1):
+                near.add((px + dx, py + dy))
+    shore = set()
+    for (x, y) in sorted(water):
+        if any((x + dx, y + dy) in land
+               for dx in range(-WATER_SHORE_R, WATER_SHORE_R + 1)
+               for dy in range(-WATER_SHORE_R, WATER_SHORE_R + 1)):
+            shore.add((x, y))
+    return {
+        "grass": grass,
+        "forest": grass & near,
+        "dirt": {c for c in land if w.m(*c) == "lightdark_dirt"},
+        "snow": {c for c in land if w.m(*c) == "regular_snow"},
+        "ice": {c for c in land if w.m(*c) == "crystal_ice"},
+        "dark": {c for c in land if w.m(*c) == "black_mountain"},
+        "stone": {c for c in land if w.m(*c) == "stone_mountain"},
+        "sand": {c for c in land if w.m(*c) == "light_sand"},
+        "water": shore,
+        "cave": set(w.cave_floor),
+    }
 
-    if "poring" in ids:
-        zones += habitat_zones(w, "poring", grass, "poring")
-    if "forest_poring" in ids and w.tall_props:
-        near = set()
-        for (px, py) in w.tall_props:
-            for dx in range(-TREE_R, TREE_R + 1):
-                for dy in range(-TREE_R, TREE_R + 1):
-                    near.add((px + dx, py + dy))
-        zones += habitat_zones(w, "forest_poring", grass & near, "forest")
-    if "ice_poring" in ids:
-        frozen = {c for c in land if w.m(*c) in ("regular_snow", "crystal_ice")}
-        zones += habitat_zones(w, "ice_poring", frozen, "ice")
-    if "lava_poring" in ids:
-        dark = {c for c in land if w.m(*c) == "black_mountain"}
-        zones += habitat_zones(w, "lava_poring", dark, "lava")
-        if w.cave_floor:
-            # THE CAVE: the floor under the east mountain — base surface [0,1],
-            # while the ice/snow zones above ride the ROOF decks at [24,40]:
-            # overlapping areas, disambiguated purely by `elev`.
-            for i, comp in enumerate(c for c in comps(w.cave_floor)
-                                     if len(c) >= MIN_ZONE_DEFAULT):
-                zones.append(make_zone(w, "lava_poring", comp,
-                                       f"cave-{i + 1}", elev=[0, 1]))
-    if "sand_poring" in ids:
-        sand = {c for c in land if w.m(*c) == "light_sand"}
-        zones += habitat_zones(w, "sand_poring", sand, "sand")
-    if "water_poring" in ids and water:
-        shore = set()
-        for (x, y) in sorted(water):
-            if any((x + dx, y + dy) in land
-                   for dx in range(-WATER_SHORE_R, WATER_SHORE_R + 1)
-                   for dy in range(-WATER_SHORE_R, WATER_SHORE_R + 1)):
-                shore.add((x, y))
-        zones += habitat_zones(w, "water_poring", shore, "shore")
-    # showcase: a poring guards the biggest bridge span (deck-elevation zone)
-    if "poring" in ids and w.bridges:
+
+def zones_for(w):
+    ids = roster_ids()
+    members = {}                     # habitat key -> [monster ids] in roster order
+    for mid in ids:
+        members.setdefault(habitat_of(mid), []).append(mid)
+    masks = habitat_masks(w)
+    zones = []
+    for hab in sorted(members):
+        mask = masks.get(hab, set())
+        mem = members[hab]
+        min_cells = MIN_ZONE.get(hab, MIN_ZONE_DEFAULT)
+        kept = [c for c in comps(mask) if len(c) >= min_cells]
+        kept = kept[:max(TOP_K, len(mem))]
+        if not kept:
+            continue
+        # every member gets a zone; extra components cycle back over members.
+        # Members sharing one component OVERLAP (the design) and split its
+        # population so density stays constant.
+        count = max(len(mem), len(kept))
+        share = count / len(kept)
+        for i in range(count):
+            kind = mem[i % len(mem)]
+            comp = kept[i % len(kept)]
+            elev = [0, 1] if hab == "cave" else None
+            zones.append(make_zone(w, kind, comp, f"{hab}-{i + 1}",
+                                   elev=elev, share=share))
+    # showcase: a guard on the biggest bridge span (deck-elevation zone)
+    if BRIDGE_GUARD in ids and w.bridges:
         lvl, cells = max(w.bridges, key=lambda b: (len(b[1]), b[0]))
         if len(cells) >= BRIDGE_MIN_CELLS:
-            zones.append(make_zone(w, "poring", set(cells), "bridge-1",
+            zones.append(make_zone(w, BRIDGE_GUARD, set(cells), "bridge-1",
                                    elev=[lvl, lvl], num=1))
     return zones
 

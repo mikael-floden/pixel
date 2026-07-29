@@ -1,14 +1,16 @@
 """Monster demo world (maintainer 2026-07-29) — `monster_demo`.
 
-One 5x5 PAD per monster (like prop_demo demos tile props, but bigger so the
-monster can wander), floored with the tile the creature is expected to live on —
-so the spawn area is easy to see/debug and the monster is judged against its
-most likely ground. The pads sit on a neutral stone courtyard (every habitat
-tile contrasts against it); the water pad is a swimmable pond.
+One 5x5 PAD per roster monster (like prop_demo demos tile props, but bigger so
+the monster can wander), floored with the tile that creature is expected to
+live on — so the spawn area is easy to see/debug and the monster is judged
+against its most likely ground. Pads sit on a neutral stone courtyard; a pad
+whose habitat tile IS the courtyard stone gets a 1-cell dirt ring so its area
+still reads. Water habitats become swimmable ponds.
 
 The pads ARE the spawn zones: this builder writes its own explicit
 `spawns.json` (pixel-maps2/spawns@1, one zone per pad, num 2, elev [0,0]) —
-spawns.py skips monster_demo for that reason (BUILDER_OWNS).
+spawns.py skips monster_demo for that reason (BUILDER_OWNS). The roster is the
+authority: a new monster on PixelLab = a new pad on the next rebuild.
 
     python maps2/pipeline/monsterdemo.py
     python maps2/pipeline/build.py monster_demo
@@ -32,38 +34,43 @@ import spawns                                      # noqa: E402
 
 MAPS2 = os.path.dirname(_HERE)
 
-# roster order = pad order (row-major, 3 x 2). Habitat = the tile the creature
-# most likely lives on (the maintainer's ask: see it against that ground).
-HABITAT = {
-    "poring": "saturated_grass",
-    "lava_poring": "black_mountain",
-    "forest_poring": "lightdark_dirt",   # forest floor
-    "sand_poring": "light_sand",
-    "water_poring": "clear_water",       # a pond — porings that swim
-    "ice_poring": "crystal_ice",
+# habitat key (spawns.habitat_of) -> the pad's ground tile
+HABITAT_TILE = {
+    "grass": "saturated_grass",
+    "forest": "lightdark_dirt",      # forest floor
+    "dirt": "lightdark_dirt",
+    "snow": "regular_snow",
+    "ice": "crystal_ice",
+    "dark": "black_mountain",
+    "stone": "stone_mountain",
+    "sand": "light_sand",
+    "water": "clear_water",          # a pond — swimmers
+    "cave": "black_mountain",        # cave-floor look
 }
-BASE = "stone_mountain"                  # neutral courtyard every habitat pops on
+BASE = "stone_mountain"              # neutral courtyard
+RING = "lightdark_dirt"              # frames a pad whose tile == BASE
 PAD = 5
 GAP = 5
 MARGIN = 5
-COLS = 3
+COLS = 5
 NUM_PER_PAD = 2
 
 
 def build(out: str | None = None):
     lib = Tiles2()
     kinds = spawns.roster_ids()
-    for k in kinds:
-        assert k in HABITAT, f"monster {k} has no habitat tile — extend HABITAT"
     rows = (len(kinds) + COLS - 1) // COLS
     W = MARGIN + COLS * PAD + (COLS - 1) * GAP + MARGIN
     H = MARGIN + rows * PAD + (rows - 1) * GAP + MARGIN
     mat = np.full((H, W), BASE, object)
     zones = []
     for i, kind in enumerate(kinds):
+        tile = HABITAT_TILE[spawns.habitat_of(kind)]
         cx = MARGIN + (i % COLS) * (PAD + GAP)
         cy = MARGIN + (i // COLS) * (PAD + GAP)
-        mat[cy:cy + PAD, cx:cx + PAD] = HABITAT[kind]
+        if tile == BASE:             # stone pad on the stone courtyard: ring it
+            mat[cy - 1:cy + PAD + 1, cx - 1:cx + PAD + 1] = RING
+        mat[cy:cy + PAD, cx:cx + PAD] = tile
         zones.append({
             "id": f"demo-{kind}", "monster": kind,
             "area": [[cx, cy], [cx + PAD, cy], [cx + PAD, cy + PAD], [cx, cy + PAD]],
@@ -84,7 +91,7 @@ def build(out: str | None = None):
     world = worldio.load_world(os.path.join(out, "world.json"))
     save_minimap(out, render_overview(world, scale=1.0, transparent=True))
     n = spawns.validate_file("monster_demo")
-    print(f"monster_demo {W}x{H}: {n} pad zone(s) ({', '.join(kinds)}), "
+    print(f"monster_demo {W}x{H}: {n} pad zone(s) for {len(kinds)} monsters, "
           f"spawn {spawn}, base {BASE}")
 
 

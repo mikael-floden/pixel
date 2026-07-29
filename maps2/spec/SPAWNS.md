@@ -61,23 +61,33 @@ game may treat it as the concurrent cap per zone.
 ## Generation (rules, never spot edits)
 
 `maps2/pipeline/spawns.py` derives every world's zones from its `world.json` by
-habitat rules — deterministic and idempotent (`python maps2/pipeline/spawns.py`):
+habitat rules — deterministic and idempotent (`python maps2/pipeline/spawns.py`).
+`monsters/config/roster.json` is the monster-id authority and grows on its own
+(the PixelLab MONSTER tag decides membership — 24 monsters today): every id maps
+to ONE habitat key via `MONSTER_HABITAT` in spawns.py (`NAME_HINTS` guesses a
+home for brand-new ids until the table is extended). Habitat keys:
 
-| monster        | habitat |
-|----------------|---------|
-| poring         | open grass; plus one showcase zone on the biggest bridge deck |
-| forest_poring  | grass within 3 cells of a tall grove prop (`base_x_4/5`) |
-| ice_poring     | snow + ice — including the cave ROOF (its decks carry the surface) |
-| lava_poring    | black_mountain rock, plus THE CAVE floor (`elev [0,1]`) |
-| sand_poring    | beaches |
-| water_poring   | water within 4 cells of land (shores, lakes, the tarn) |
+| habitat | ground | residents (today) |
+|---------|--------|-------------------|
+| grass   | open saturated_grass | butterfly_dragon, saber_toothed_tiger |
+| forest  | grass within 3 of a tall grove prop | hedgehog, tree_stump, forest_poring(+_2) |
+| dirt    | lightdark_dirt (roads, forest floor) | dark_donkey |
+| snow    | regular_snow | white_rabbit, snow_demon, mammoth |
+| ice     | crystal_ice | ice_crystal_golem, ice_poring |
+| dark    | black_mountain rock | malformed_creature, lava_salamander(+_2), lava_poring |
+| stone   | stone_mountain | stone_turtle (also the bridge guard), stone_golem |
+| sand    | beaches | (heuristic home for future `*sand*` ids) |
+| water   | water within 4 cells of land | mystical_frog, water_poring |
+| cave    | THE CAVE floor, `elev [0,1]` | masked_shadow_creature, night_beast, diablo, diablo_2 |
 
-Per habitat: 4-connected components ≥ ~30 cells (forest 12), biggest 4 kept,
-each becoming one polygon zone (diagonal contacts healed so the traced boundary
-is provably simple). Validation asserts every zone has at least `num` valid
-standable cells at its claimed elevation before the file is written.
-`monster_demo` is the exception: its builder (`monsterdemo.py`) writes explicit
-pad zones (`BUILDER_OWNS` in spawns.py).
+Per habitat: 4-connected components ≥ ~30 cells (forest 12), biggest kept;
+every member gets a zone, extra components cycle back over members, and members
+sharing one component get OVERLAPPING zones with the population split so the
+density stays constant (the four cave dwellers share the dungeon floor this
+way). Diagonal contacts are healed so every traced boundary is provably simple.
+Validation asserts each zone has at least `num` valid standable cells at its
+claimed elevation before the file is written. `monster_demo` is the exception:
+its builder (`monsterdemo.py`) writes explicit pad zones (`BUILDER_OWNS`).
 
 ## The demo world — `monster_demo`
 
