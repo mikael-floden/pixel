@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Nangijala Wiki</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128214;</text></svg>">
+<link rel="stylesheet" href="wiki.css">
+</head>
+<body>
+<div id="app">
+  <aside id="sidebar">
+    <div class="brand">
+      <div class="brand-title">Nangijala</div>
+      <div class="brand-sub">game wiki</div>
+    </div>
+    <nav id="nav"></nav>
+    <div class="side-foot">
+      <button id="theme-toggle" class="ghost-btn" title="Toggle light/dark">◐ theme</button>
+      <button id="gh-settings" class="ghost-btn" title="GitHub token for saving">⚙ saving</button>
+    </div>
+  </aside>
+  <main id="main">
+    <header id="topbar">
+      <button id="menu-btn" class="ghost-btn" aria-label="Menu">☰</button>
+      <input id="search" type="search" placeholder="Search everything…" autocomplete="off">
+      <div id="build-stamp" class="muted"></div>
+    </header>
+    <div id="content"><div class="loading">Loading the world…</div></div>
+  </main>
+</div>
+<div id="savebar" class="hidden">
+  <span id="savebar-text"></span>
+  <button id="save-btn" class="primary-btn">Save to repo</button>
+  <button id="export-btn" class="ghost-btn">Export</button>
+  <button id="discard-btn" class="ghost-btn">Discard</button>
+</div>
+<dialog id="gh-dialog">
+  <form method="dialog">
+    <h3>Saving to the repo</h3>
+    <p class="muted">The wiki saves your feedback and tuning by committing
+    <code>wiki/feedback/*.json</code> and <code>wiki/tuning/*.json</code> to
+    <code>mikael-floden/pixel@main</code>. Paste a fine-grained GitHub personal
+    access token with <strong>Contents: read &amp; write</strong> on that repo.
+    It is stored only in this browser (localStorage), never in the site.</p>
+    <input id="gh-token" type="password" placeholder="github_pat_…" autocomplete="off">
+    <div class="dialog-row">
+      <button value="save" class="primary-btn">Keep token</button>
+      <button value="clear" class="ghost-btn">Forget token</button>
+      <button value="cancel" class="ghost-btn">Close</button>
+    </div>
+  </form>
+</dialog>
+<audio id="shared-audio" preload="none"></audio>
+<script src="wiki.js"></script>
+</body>
+</html>
