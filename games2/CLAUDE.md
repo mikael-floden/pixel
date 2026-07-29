@@ -353,8 +353,8 @@ visible head/shoulders are ABOVE the surface).
   published as the `spawnAreas` debug rects. `build-monsters-manifest.mjs`
   resolves each monster's walk clip through `monsters/animation_map.json`
   (states + overrides — the old hardcoded walk→"jump" predates the 24-monster
-  roster whose art has walk/idle/angry/attack/die). Monster shadows scale with
-  frame size (48px poring 26×10 … 256px mammoth ~120px). Gates:
+  roster whose art has walk/idle/angry/attack/die). Shadow/anchor metrics are
+  MEASURED from the walk art (next bullet). Gates:
   `server/test/monsters.sim.test.ts` (pure geometry + every shipped zone
   resolves incl. the_island2's layered cave/roof-deck case + headless roam
   confinement on real zones) and `monsters.test.ts` (live room: per-zone
@@ -379,6 +379,26 @@ visible head/shoulders are ABOVE the surface).
   (monsters.sim.test.ts), same-pad separation relax (monsters.test.ts);
   measured live: walking straight through a monster_demo pad keeps ≥~30wu
   clearance with walk-speed-smooth motion (no reconciliation pops).
+- **ART-MEASURED shadows + anchors** (maintainer 2026-07-30: RED=shadow too
+  big, GREEN=too small, BLUE=monster "flying"; "get the shadow size by
+  analyzing the monster image art"). `build-monsters-manifest.mjs` fully
+  decodes every WALK strip (`measureWalkArt`, pngjs) and emits per monster:
+  `artBottom` (p90 of per-frame opaque bottoms ÷ frame height → the client's
+  sprite ORIGIN-Y, so feet sit on the anchor; the old fixed 0.85 left
+  tall-margined art hovering and low-margined art sunk), `footW` (median
+  opaque row width over the bottom ~14% of the body = ground contact) and
+  `bodyW` (median full width — creatures that taper to a wisp shadow by mass,
+  not toe). Client shadow: `w = clamp(max(footW, bodyW·0.55)·1.05, 12, 150)`,
+  `h = max(6, 0.385·w)` — NEVER frameW-scaled (padded frames made mammoth's
+  120px blob; tapered masked_shadow_creature got a dot). It also emits
+  `stripDims` (per-strip TRUE frame size from IHDR): monster.json `size` goes
+  STALE when art is repaired in place (8+ monsters wrong, e.g. frog 34×34
+  claimed vs 34×42 real) — the client must slice every spritesheet with its
+  strip's own dims or frames bleed. `hoverPx` (builder map `HOVER_PX`) marks
+  INTENTIONAL winged flyers (butterfly_dragon 12): the sprite lifts by it
+  while `placeBodyShadow` gets it as air height, so the shadow stays on the
+  ground and shrinks — the bird pattern; everyone else is pinned to ground.
+  `__ml.monsterInfo()` exposes originY/hover/shadow{w,h} for QA.
 - **Zone DEBUG overlay** — Settings switch "spawn areas", **OFF by default**
   (maintainer 2026-07-30) and persisted in `ml-spawn-areas`. It draws each
   zone's REAL POLYGON, lazy-fetched from the world's `spawns.json` the first
@@ -418,10 +438,9 @@ visible head/shoulders are ABOVE the surface).
   first monster cut used a naive painter depth + no lit copy and shipped with
   terrace tiles drawn over monsters, detached shadows and no light response
   (maintainer screenshots 2026-07-29). Shadow ellipse size is parameterized
-  (avatar 34×14, poring 26×10) — the incoming 24-monster set (varied sizes,
-  some huge; states idle/angry/attack/walk/die + a monsters-agent metadata
-  map) passes its own. Probe: `__ml.monsterInfo()` (per monster: depth,
-  coverY, shadow anchor/depth, lit visible+tint).
+  (avatar 34×14; monsters pass their art-measured size — see the
+  ART-MEASURED bullet). Probe: `__ml.monsterInfo()` (per monster: depth,
+  coverY, originY, hover, shadow anchor/size/depth, lit visible+tint).
 
 ## Living camera (WorldScene.updateChaseCam)
 

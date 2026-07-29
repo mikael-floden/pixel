@@ -2,20 +2,30 @@
  * pixel `monsters/` domain. Mirrors the shared CONTRACT shape (see the Assets
  * track). WALK/ROAM only this round — attack/die strips are present but unused.
  *
- * A monster's art is 48x48, 8-direction, drawn from HORIZONTAL strips
- * (width = frames*48, height = 48). `walk` resolves through `aliases` to the
- * real animation key (porings hop, so walk -> jump). Frame counts vary per
- * (kind, direction) — read them from `animations`, never hardcode. */
+ * Monster art is 8-direction HORIZONTAL strips whose frame size VARIES per
+ * monster AND per strip (art repairs resize in place — always slice with
+ * `stripDims`, never assume the monster.json size). `walk` resolves through
+ * `walkAnim`/`aliases` to the real animation key. Frame counts vary per
+ * (kind, direction) — read them from `animations`, never hardcode.
+ * `artBottom`/`footW`/`bodyW` are MEASURED from the walk art (feet line +
+ * footprint/body widths) — the nadir shadow and the feet origin derive from
+ * these; `hoverPx` marks intentional flyers (winged) that levitate above the
+ * ground anchor with the shadow staying on the ground. */
 export interface MonsterDef {
   id: string; // folder id under monsters/ (also the `kind` on a synced Monster)
   name: string;
-  frameW: number; // 48
-  frameH: number; // 48
+  frameW: number; // measured WALK frame width (display reference)
+  frameH: number;
   root: string; // repo-relative dir under monsters/
-  walkAnim: string; // resolved walk animation key ("jump")
+  walkAnim: string; // resolved walk animation key
   animations: Record<string, Record<string, number>>; // animKey -> dir -> frameCount
   strips: Record<string, Record<string, string>>; // animKey -> dir -> served URL
+  stripDims?: Record<string, Record<string, { w: number; h: number }>>; // TRUE per-strip frame size
   aliases: Record<string, string>; // game-facing synonyms, e.g. { walk: "jump" }
+  artBottom?: number; // feet line as a fraction of frameH (sprite originY)
+  footW?: number; // ground-contact footprint width (px)
+  bodyW?: number; // median full body width (px)
+  hoverPx?: number; // intentional levitation above the ground anchor
 }
 
 export interface MonsterManifest {

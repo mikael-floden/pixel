@@ -7,6 +7,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { PNG } from "pngjs";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const GAME_ROOT = join(SCRIPT_DIR, ".."); // pixel/games2
@@ -45,6 +46,85 @@ function pngDims(p) {
   return [b.readUInt32BE(16), b.readUInt32BE(20)];
 }
 
+// Winged/floating monsters that are MEANT to hover (maintainer 2026-07-30:
+// "no monster is flying unless they have wings and the flying animation is
+// intentional"). The client lifts the sprite by hoverPx above the ground
+// anchor and keeps the nadir shadow ON the ground (the bird pattern).
+const HOVER_PX = { butterfly_dragon: 12 };
+
+/** Measure a monster's WALK art (full pixel decode of every direction strip):
+ * - artBottom: the FEET line as a fraction of the TRUE frame height — the p90
+ *   of per-frame opaque bottoms (robust to a stray pixel, keeps the ground
+ *   contact of a gait whose body bobs);
+ * - footW: ground-contact footprint — median opaque row width over the bottom
+ *   ~14% of each frame's body;
+ * - bodyW: median full opaque width (the mass the shadow should suggest for
+ *   creatures that taper to a wisp at the ground).
+ * Rows need >= 2 opaque px (alpha > 16) to count, killing lone noise pixels. */
+function measureWalkArt(stripAbsPaths, framesByDir) {
+  const bots = [];
+  const foots = [];
+  const bodies = [];
+  let frameH = 0;
+  let frameW = 0;
+  for (const [dir, abs] of Object.entries(stripAbsPaths)) {
+    let png;
+    try {
+      png = PNG.sync.read(readFileSync(abs));
+    } catch {
+      continue;
+    }
+    const { width: W, height: H, data } = png;
+    const n = framesByDir[dir] || 1;
+    const fw = Math.round(W / n);
+    frameH = Math.max(frameH, H);
+    frameW = Math.max(frameW, fw);
+    for (let f = 0; f < n; f++) {
+      const xBase = f * fw;
+      let top = -1;
+      let bot = -1;
+      const rowW = new Map();
+      for (let y = 0; y < H; y++) {
+        let cnt = 0;
+        let x0 = -1;
+        let x1 = -1;
+        for (let x = 0; x < fw; x++) {
+          if (data[(y * W + xBase + x) * 4 + 3] > 16) {
+            cnt++;
+            if (x0 < 0) x0 = x;
+            x1 = x;
+          }
+        }
+        if (cnt >= 2) {
+          if (top < 0) top = y;
+          bot = y;
+          rowW.set(y, x1 - x0 + 1);
+        }
+      }
+      if (bot < 0) continue;
+      bots.push(bot);
+      bodies.push(Math.max(...rowW.values()));
+      const band = Math.max(4, Math.round((bot - top) * 0.14));
+      const ws = [];
+      for (let y = Math.max(top, bot - band); y <= bot; y++) if (rowW.has(y)) ws.push(rowW.get(y));
+      ws.sort((a, b) => a - b);
+      if (ws.length) foots.push(ws[Math.floor(ws.length / 2)]);
+    }
+  }
+  if (!bots.length) return null;
+  bots.sort((a, b) => a - b);
+  foots.sort((a, b) => a - b);
+  bodies.sort((a, b) => a - b);
+  const p90bot = bots[Math.min(bots.length - 1, Math.floor(bots.length * 0.9))];
+  return {
+    frameW,
+    frameH,
+    artBottom: +(Math.min(1, (p90bot + 1) / frameH)).toFixed(4),
+    footW: foots[Math.floor(foots.length / 2)] ?? 0,
+    bodyW: bodies[Math.floor(bodies.length / 2)] ?? 0,
+  };
+}
+
 function scan() {
   const monsters = [];
   if (!existsSync(ROSTER)) {
@@ -79,20 +159,36 @@ function scan() {
 
     const animations = {}; // <animKey>: { <dir>: frameCount }
     const strips = {}; // <animKey>: { <dir>: served URL }
+    const stripDims = {}; // <animKey>: { <dir>: {w, h} } — TRUE per-strip frame size
+    const stripAbs = {}; // <animKey>: { <dir>: absolute path } (for measurement)
     for (const [animKey, anim] of Object.entries(m.animations || {})) {
       const perDirFrames = {};
       const perDirStrip = {};
+      const perDirDims = {};
+      const perDirAbs = {};
       const dirs = anim.directions || {};
       for (const d of DIRECTIONS) {
         const dd = dirs[d];
         if (!dd || !dd.strip) continue;
+        const rel = dd.strip.split("\\").join("/");
+        const abs = join(MONSTERS, rel);
+        if (!existsSync(abs)) continue;
         perDirFrames[d] = dd.frames;
         // strip is repo-relative (e.g. "poring/animations/jump__south.png").
-        perDirStrip[d] = "/assets/monsters/" + dd.strip.split("\\").join("/");
+        perDirStrip[d] = "/assets/monsters/" + rel;
+        perDirAbs[d] = abs;
+        // MEASURED frame size per strip (IHDR only — cheap). The monster.json
+        // `size` field goes stale when art is repaired/resized in place; the
+        // client MUST slice each spritesheet with the strip's real dims or
+        // frames bleed into each other (found 2026-07-30: 8+ monsters stale).
+        const [sw, sh] = pngDims(abs);
+        perDirDims[d] = { w: Math.round(sw / (dd.frames || 1)), h: sh };
       }
       if (Object.keys(perDirFrames).length) {
         animations[animKey] = perDirFrames;
         strips[animKey] = perDirStrip;
+        stripDims[animKey] = perDirDims;
+        stripAbs[animKey] = perDirAbs;
       }
     }
 
@@ -107,16 +203,33 @@ function scan() {
       }
     }
 
+    // Ground-truth the display metrics from the WALK art itself (full pixel
+    // decode): feet line, footprint + body widths — the nadir shadow is
+    // derived from these, not from the frame size (maintainer 2026-07-30:
+    // frame-scaled shadows ran too big on padded frames, too small on tapered
+    // bodies, and one fixed feet-origin left tall-margined art "flying").
+    const walkArt = animations[walkAnim]
+      ? measureWalkArt(stripAbs[walkAnim] ?? {}, animations[walkAnim])
+      : null;
+
     monsters.push({
       id,
       name: m.name || entry.name || id,
-      frameW,
-      frameH,
+      // Display reference = the MEASURED walk frame (monster.json size is the
+      // stale fallback only). Per-strip dims ship in stripDims for slicing.
+      frameW: walkArt?.frameW ?? frameW,
+      frameH: walkArt?.frameH ?? frameH,
       root: id, // repo-relative dir under monsters/
       walkAnim,
       animations,
       strips,
+      stripDims,
       aliases,
+      // Art-measured shadow/anchor data (see measureWalkArt).
+      artBottom: walkArt?.artBottom,
+      footW: walkArt?.footW,
+      bodyW: walkArt?.bodyW,
+      hoverPx: HOVER_PX[id] ?? 0,
     });
   }
   return monsters;

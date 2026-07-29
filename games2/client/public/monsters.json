@@ -14,7 +14,7 @@
     {
       "id": "forest_poring",
       "name": "Forest Poring",
-      "frameW": 48,
+      "frameW": 70,
       "frameH": 48,
       "root": "forest_poring",
       "walkAnim": "walk",
@@ -22,11 +22,11 @@
         "die": {
           "south": 16,
           "south-west": 16,
-          "west": 16,
+          "west": 15,
           "north-west": 16,
           "north": 16,
           "north-east": 16,
-          "east": 16,
+          "east": 15,
           "south-east": 16
         },
         "attack": {
@@ -102,14 +102,156 @@
           "south-east": "/assets/monsters/forest_poring/animations/walk__south-east.png"
         }
       },
+      "stripDims": {
+        "die": {
+          "south": {
+            "w": 70,
+            "h": 48
+          },
+          "south-west": {
+            "w": 70,
+            "h": 48
+          },
+          "west": {
+            "w": 70,
+            "h": 48
+          },
+          "north-west": {
+            "w": 70,
+            "h": 48
+          },
+          "north": {
+            "w": 70,
+            "h": 48
+          },
+          "north-east": {
+            "w": 70,
+            "h": 48
+          },
+          "east": {
+            "w": 70,
+            "h": 48
+          },
+          "south-east": {
+            "w": 70,
+            "h": 48
+          }
+        },
+        "attack": {
+          "south": {
+            "w": 70,
+            "h": 48
+          },
+          "south-west": {
+            "w": 70,
+            "h": 48
+          },
+          "west": {
+            "w": 70,
+            "h": 48
+          },
+          "north-west": {
+            "w": 70,
+            "h": 48
+          },
+          "north": {
+            "w": 70,
+            "h": 48
+          },
+          "north-east": {
+            "w": 70,
+            "h": 48
+          },
+          "east": {
+            "w": 70,
+            "h": 48
+          },
+          "south-east": {
+            "w": 70,
+            "h": 48
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 70,
+            "h": 48
+          },
+          "south-west": {
+            "w": 70,
+            "h": 48
+          },
+          "west": {
+            "w": 70,
+            "h": 48
+          },
+          "north-west": {
+            "w": 70,
+            "h": 48
+          },
+          "north": {
+            "w": 70,
+            "h": 48
+          },
+          "north-east": {
+            "w": 70,
+            "h": 48
+          },
+          "east": {
+            "w": 70,
+            "h": 48
+          },
+          "south-east": {
+            "w": 70,
+            "h": 48
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 70,
+            "h": 48
+          },
+          "south-west": {
+            "w": 70,
+            "h": 48
+          },
+          "west": {
+            "w": 70,
+            "h": 48
+          },
+          "north-west": {
+            "w": 70,
+            "h": 48
+          },
+          "north": {
+            "w": 70,
+            "h": 48
+          },
+          "north-east": {
+            "w": 70,
+            "h": 48
+          },
+          "east": {
+            "w": 70,
+            "h": 48
+          },
+          "south-east": {
+            "w": 70,
+            "h": 48
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.875,
+      "footW": 25,
+      "bodyW": 34,
+      "hoverPx": 0
     },
     {
       "id": "ice_poring",
       "name": "Ice Poring",
-      "frameW": 48,
+      "frameW": 64,
       "frameH": 48,
       "root": "ice_poring",
       "walkAnim": "walk",
@@ -217,14 +359,190 @@
           "south-east": "/assets/monsters/ice_poring/animations/walk__south-east.png"
         }
       },
+      "stripDims": {
+        "attack": {
+          "south": {
+            "w": 64,
+            "h": 48
+          },
+          "south-west": {
+            "w": 64,
+            "h": 48
+          },
+          "west": {
+            "w": 64,
+            "h": 48
+          },
+          "north-west": {
+            "w": 64,
+            "h": 48
+          },
+          "north": {
+            "w": 64,
+            "h": 48
+          },
+          "north-east": {
+            "w": 64,
+            "h": 48
+          },
+          "east": {
+            "w": 64,
+            "h": 48
+          },
+          "south-east": {
+            "w": 64,
+            "h": 48
+          }
+        },
+        "angry": {
+          "south": {
+            "w": 64,
+            "h": 48
+          },
+          "south-west": {
+            "w": 64,
+            "h": 48
+          },
+          "west": {
+            "w": 64,
+            "h": 48
+          },
+          "north-west": {
+            "w": 64,
+            "h": 48
+          },
+          "north": {
+            "w": 64,
+            "h": 48
+          },
+          "north-east": {
+            "w": 64,
+            "h": 48
+          },
+          "east": {
+            "w": 64,
+            "h": 48
+          },
+          "south-east": {
+            "w": 64,
+            "h": 48
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 64,
+            "h": 48
+          },
+          "south-west": {
+            "w": 64,
+            "h": 48
+          },
+          "west": {
+            "w": 64,
+            "h": 48
+          },
+          "north-west": {
+            "w": 64,
+            "h": 48
+          },
+          "north": {
+            "w": 64,
+            "h": 48
+          },
+          "north-east": {
+            "w": 64,
+            "h": 48
+          },
+          "east": {
+            "w": 64,
+            "h": 48
+          },
+          "south-east": {
+            "w": 64,
+            "h": 48
+          }
+        },
+        "die": {
+          "south": {
+            "w": 64,
+            "h": 48
+          },
+          "south-west": {
+            "w": 64,
+            "h": 48
+          },
+          "west": {
+            "w": 64,
+            "h": 48
+          },
+          "north-west": {
+            "w": 64,
+            "h": 48
+          },
+          "north": {
+            "w": 64,
+            "h": 48
+          },
+          "north-east": {
+            "w": 64,
+            "h": 48
+          },
+          "east": {
+            "w": 64,
+            "h": 48
+          },
+          "south-east": {
+            "w": 64,
+            "h": 48
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 64,
+            "h": 48
+          },
+          "south-west": {
+            "w": 64,
+            "h": 48
+          },
+          "west": {
+            "w": 64,
+            "h": 48
+          },
+          "north-west": {
+            "w": 64,
+            "h": 48
+          },
+          "north": {
+            "w": 64,
+            "h": 48
+          },
+          "north-east": {
+            "w": 64,
+            "h": 48
+          },
+          "east": {
+            "w": 64,
+            "h": 48
+          },
+          "south-east": {
+            "w": 64,
+            "h": 48
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.8958,
+      "footW": 25,
+      "bodyW": 39,
+      "hoverPx": 0
     },
     {
       "id": "lava_poring",
       "name": "Lava Poring",
-      "frameW": 48,
+      "frameW": 58,
       "frameH": 48,
       "root": "lava_poring",
       "walkAnim": "walk",
@@ -312,9 +630,151 @@
           "south-east": "/assets/monsters/lava_poring/animations/die__south-east.png"
         }
       },
+      "stripDims": {
+        "walk": {
+          "south": {
+            "w": 58,
+            "h": 48
+          },
+          "south-west": {
+            "w": 58,
+            "h": 48
+          },
+          "west": {
+            "w": 58,
+            "h": 48
+          },
+          "north-west": {
+            "w": 58,
+            "h": 48
+          },
+          "north": {
+            "w": 58,
+            "h": 48
+          },
+          "north-east": {
+            "w": 58,
+            "h": 48
+          },
+          "east": {
+            "w": 58,
+            "h": 48
+          },
+          "south-east": {
+            "w": 58,
+            "h": 48
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 58,
+            "h": 48
+          },
+          "south-west": {
+            "w": 58,
+            "h": 48
+          },
+          "west": {
+            "w": 58,
+            "h": 48
+          },
+          "north-west": {
+            "w": 58,
+            "h": 48
+          },
+          "north": {
+            "w": 58,
+            "h": 48
+          },
+          "north-east": {
+            "w": 58,
+            "h": 48
+          },
+          "east": {
+            "w": 58,
+            "h": 48
+          },
+          "south-east": {
+            "w": 58,
+            "h": 48
+          }
+        },
+        "attack": {
+          "south": {
+            "w": 58,
+            "h": 48
+          },
+          "south-west": {
+            "w": 58,
+            "h": 48
+          },
+          "west": {
+            "w": 58,
+            "h": 48
+          },
+          "north-west": {
+            "w": 58,
+            "h": 48
+          },
+          "north": {
+            "w": 58,
+            "h": 48
+          },
+          "north-east": {
+            "w": 58,
+            "h": 48
+          },
+          "east": {
+            "w": 58,
+            "h": 48
+          },
+          "south-east": {
+            "w": 58,
+            "h": 48
+          }
+        },
+        "die": {
+          "south": {
+            "w": 58,
+            "h": 48
+          },
+          "south-west": {
+            "w": 58,
+            "h": 48
+          },
+          "west": {
+            "w": 58,
+            "h": 48
+          },
+          "north-west": {
+            "w": 58,
+            "h": 48
+          },
+          "north": {
+            "w": 58,
+            "h": 48
+          },
+          "north-east": {
+            "w": 58,
+            "h": 48
+          },
+          "east": {
+            "w": 58,
+            "h": 48
+          },
+          "south-east": {
+            "w": 58,
+            "h": 48
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.875,
+      "footW": 27,
+      "bodyW": 40,
+      "hoverPx": 0
     },
     {
       "id": "water_poring",
@@ -365,14 +825,14 @@
           "south-east": 16
         },
         "die": {
-          "south": 16,
-          "south-west": 16,
-          "west": 16,
-          "north-west": 16,
-          "north": 16,
-          "north-east": 16,
-          "east": 16,
-          "south-east": 16
+          "south": 12,
+          "south-west": 12,
+          "west": 12,
+          "north-west": 12,
+          "north": 12,
+          "north-east": 12,
+          "east": 12,
+          "south-east": 12
         }
       },
       "strips": {
@@ -427,14 +887,190 @@
           "south-east": "/assets/monsters/water_poring/animations/die__south-east.png"
         }
       },
+      "stripDims": {
+        "angry": {
+          "south": {
+            "w": 48,
+            "h": 48
+          },
+          "south-west": {
+            "w": 48,
+            "h": 48
+          },
+          "west": {
+            "w": 48,
+            "h": 48
+          },
+          "north-west": {
+            "w": 48,
+            "h": 48
+          },
+          "north": {
+            "w": 48,
+            "h": 48
+          },
+          "north-east": {
+            "w": 48,
+            "h": 48
+          },
+          "east": {
+            "w": 48,
+            "h": 48
+          },
+          "south-east": {
+            "w": 48,
+            "h": 48
+          }
+        },
+        "attack": {
+          "south": {
+            "w": 48,
+            "h": 48
+          },
+          "south-west": {
+            "w": 48,
+            "h": 48
+          },
+          "west": {
+            "w": 48,
+            "h": 48
+          },
+          "north-west": {
+            "w": 48,
+            "h": 48
+          },
+          "north": {
+            "w": 48,
+            "h": 48
+          },
+          "north-east": {
+            "w": 48,
+            "h": 48
+          },
+          "east": {
+            "w": 48,
+            "h": 48
+          },
+          "south-east": {
+            "w": 48,
+            "h": 48
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 48,
+            "h": 48
+          },
+          "south-west": {
+            "w": 48,
+            "h": 48
+          },
+          "west": {
+            "w": 48,
+            "h": 48
+          },
+          "north-west": {
+            "w": 48,
+            "h": 48
+          },
+          "north": {
+            "w": 48,
+            "h": 48
+          },
+          "north-east": {
+            "w": 48,
+            "h": 48
+          },
+          "east": {
+            "w": 48,
+            "h": 48
+          },
+          "south-east": {
+            "w": 48,
+            "h": 48
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 48,
+            "h": 48
+          },
+          "south-west": {
+            "w": 48,
+            "h": 48
+          },
+          "west": {
+            "w": 48,
+            "h": 48
+          },
+          "north-west": {
+            "w": 48,
+            "h": 48
+          },
+          "north": {
+            "w": 48,
+            "h": 48
+          },
+          "north-east": {
+            "w": 48,
+            "h": 48
+          },
+          "east": {
+            "w": 48,
+            "h": 48
+          },
+          "south-east": {
+            "w": 48,
+            "h": 48
+          }
+        },
+        "die": {
+          "south": {
+            "w": 48,
+            "h": 48
+          },
+          "south-west": {
+            "w": 48,
+            "h": 48
+          },
+          "west": {
+            "w": 48,
+            "h": 48
+          },
+          "north-west": {
+            "w": 48,
+            "h": 48
+          },
+          "north": {
+            "w": 48,
+            "h": 48
+          },
+          "north-east": {
+            "w": 48,
+            "h": 48
+          },
+          "east": {
+            "w": 48,
+            "h": 48
+          },
+          "south-east": {
+            "w": 48,
+            "h": 48
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.8958,
+      "footW": 26,
+      "bodyW": 35,
+      "hoverPx": 0
     },
     {
       "id": "butterfly_dragon",
       "name": "Butterfly Dragon",
-      "frameW": 97,
+      "frameW": 121,
       "frameH": 97,
       "root": "butterfly_dragon",
       "walkAnim": "walk",
@@ -542,15 +1178,191 @@
           "south-east": "/assets/monsters/butterfly_dragon/animations/idle__south-east.png"
         }
       },
+      "stripDims": {
+        "attack": {
+          "south": {
+            "w": 121,
+            "h": 97
+          },
+          "south-west": {
+            "w": 121,
+            "h": 97
+          },
+          "west": {
+            "w": 121,
+            "h": 97
+          },
+          "north-west": {
+            "w": 121,
+            "h": 97
+          },
+          "north": {
+            "w": 121,
+            "h": 97
+          },
+          "north-east": {
+            "w": 121,
+            "h": 97
+          },
+          "east": {
+            "w": 121,
+            "h": 97
+          },
+          "south-east": {
+            "w": 121,
+            "h": 97
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 121,
+            "h": 97
+          },
+          "south-west": {
+            "w": 121,
+            "h": 97
+          },
+          "west": {
+            "w": 121,
+            "h": 97
+          },
+          "north-west": {
+            "w": 121,
+            "h": 97
+          },
+          "north": {
+            "w": 121,
+            "h": 97
+          },
+          "north-east": {
+            "w": 121,
+            "h": 97
+          },
+          "east": {
+            "w": 121,
+            "h": 97
+          },
+          "south-east": {
+            "w": 121,
+            "h": 97
+          }
+        },
+        "die": {
+          "south": {
+            "w": 121,
+            "h": 97
+          },
+          "south-west": {
+            "w": 121,
+            "h": 97
+          },
+          "west": {
+            "w": 121,
+            "h": 97
+          },
+          "north-west": {
+            "w": 121,
+            "h": 97
+          },
+          "north": {
+            "w": 121,
+            "h": 97
+          },
+          "north-east": {
+            "w": 121,
+            "h": 97
+          },
+          "east": {
+            "w": 121,
+            "h": 97
+          },
+          "south-east": {
+            "w": 121,
+            "h": 97
+          }
+        },
+        "angry": {
+          "south": {
+            "w": 121,
+            "h": 97
+          },
+          "south-west": {
+            "w": 121,
+            "h": 97
+          },
+          "west": {
+            "w": 121,
+            "h": 97
+          },
+          "north-west": {
+            "w": 121,
+            "h": 97
+          },
+          "north": {
+            "w": 121,
+            "h": 97
+          },
+          "north-east": {
+            "w": 121,
+            "h": 97
+          },
+          "east": {
+            "w": 121,
+            "h": 97
+          },
+          "south-east": {
+            "w": 121,
+            "h": 97
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 121,
+            "h": 97
+          },
+          "south-west": {
+            "w": 121,
+            "h": 97
+          },
+          "west": {
+            "w": 121,
+            "h": 97
+          },
+          "north-west": {
+            "w": 121,
+            "h": 97
+          },
+          "north": {
+            "w": 121,
+            "h": 97
+          },
+          "north-east": {
+            "w": 121,
+            "h": 97
+          },
+          "east": {
+            "w": 121,
+            "h": 97
+          },
+          "south-east": {
+            "w": 121,
+            "h": 97
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.7526,
+      "footW": 17,
+      "bodyW": 52,
+      "hoverPx": 12
     },
     {
       "id": "mystical_frog",
       "name": "Mystical Frog",
       "frameW": 34,
-      "frameH": 34,
+      "frameH": 42,
       "root": "mystical_frog",
       "walkAnim": "walk",
       "animations": {
@@ -657,14 +1469,190 @@
           "south-east": "/assets/monsters/mystical_frog/animations/angry__south-east.png"
         }
       },
+      "stripDims": {
+        "attack": {
+          "south": {
+            "w": 34,
+            "h": 42
+          },
+          "south-west": {
+            "w": 34,
+            "h": 42
+          },
+          "west": {
+            "w": 34,
+            "h": 42
+          },
+          "north-west": {
+            "w": 34,
+            "h": 42
+          },
+          "north": {
+            "w": 34,
+            "h": 42
+          },
+          "north-east": {
+            "w": 34,
+            "h": 42
+          },
+          "east": {
+            "w": 34,
+            "h": 42
+          },
+          "south-east": {
+            "w": 34,
+            "h": 42
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 34,
+            "h": 42
+          },
+          "south-west": {
+            "w": 34,
+            "h": 42
+          },
+          "west": {
+            "w": 34,
+            "h": 42
+          },
+          "north-west": {
+            "w": 34,
+            "h": 42
+          },
+          "north": {
+            "w": 34,
+            "h": 42
+          },
+          "north-east": {
+            "w": 34,
+            "h": 42
+          },
+          "east": {
+            "w": 34,
+            "h": 42
+          },
+          "south-east": {
+            "w": 34,
+            "h": 42
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 34,
+            "h": 42
+          },
+          "south-west": {
+            "w": 34,
+            "h": 42
+          },
+          "west": {
+            "w": 34,
+            "h": 42
+          },
+          "north-west": {
+            "w": 34,
+            "h": 42
+          },
+          "north": {
+            "w": 34,
+            "h": 42
+          },
+          "north-east": {
+            "w": 34,
+            "h": 42
+          },
+          "east": {
+            "w": 34,
+            "h": 42
+          },
+          "south-east": {
+            "w": 34,
+            "h": 42
+          }
+        },
+        "die": {
+          "south": {
+            "w": 34,
+            "h": 42
+          },
+          "south-west": {
+            "w": 34,
+            "h": 42
+          },
+          "west": {
+            "w": 34,
+            "h": 42
+          },
+          "north-west": {
+            "w": 34,
+            "h": 42
+          },
+          "north": {
+            "w": 34,
+            "h": 42
+          },
+          "north-east": {
+            "w": 34,
+            "h": 42
+          },
+          "east": {
+            "w": 34,
+            "h": 42
+          },
+          "south-east": {
+            "w": 34,
+            "h": 42
+          }
+        },
+        "angry": {
+          "south": {
+            "w": 34,
+            "h": 42
+          },
+          "south-west": {
+            "w": 34,
+            "h": 42
+          },
+          "west": {
+            "w": 34,
+            "h": 42
+          },
+          "north-west": {
+            "w": 34,
+            "h": 42
+          },
+          "north": {
+            "w": 34,
+            "h": 42
+          },
+          "north-east": {
+            "w": 34,
+            "h": 42
+          },
+          "east": {
+            "w": 34,
+            "h": 42
+          },
+          "south-east": {
+            "w": 34,
+            "h": 42
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.9048,
+      "footW": 16,
+      "bodyW": 26,
+      "hoverPx": 0
     },
     {
       "id": "hedgehog",
       "name": "Hedgehog",
-      "frameW": 34,
+      "frameW": 48,
       "frameH": 34,
       "root": "hedgehog",
       "walkAnim": "walk",
@@ -690,14 +1678,14 @@
           "south-east": 16
         },
         "die": {
-          "south": 16,
-          "south-west": 16,
-          "west": 16,
+          "south": 15,
+          "south-west": 13,
+          "west": 11,
           "north-west": 16,
-          "north": 16,
+          "north": 11,
           "north-east": 16,
-          "east": 16,
-          "south-east": 16
+          "east": 11,
+          "south-east": 13
         },
         "angry": {
           "south": 16,
@@ -772,9 +1760,185 @@
           "south-east": "/assets/monsters/hedgehog/animations/walk__south-east.png"
         }
       },
+      "stripDims": {
+        "idle": {
+          "south": {
+            "w": 48,
+            "h": 34
+          },
+          "south-west": {
+            "w": 48,
+            "h": 34
+          },
+          "west": {
+            "w": 48,
+            "h": 34
+          },
+          "north-west": {
+            "w": 48,
+            "h": 34
+          },
+          "north": {
+            "w": 48,
+            "h": 34
+          },
+          "north-east": {
+            "w": 48,
+            "h": 34
+          },
+          "east": {
+            "w": 48,
+            "h": 34
+          },
+          "south-east": {
+            "w": 48,
+            "h": 34
+          }
+        },
+        "attack": {
+          "south": {
+            "w": 48,
+            "h": 34
+          },
+          "south-west": {
+            "w": 48,
+            "h": 34
+          },
+          "west": {
+            "w": 48,
+            "h": 34
+          },
+          "north-west": {
+            "w": 48,
+            "h": 34
+          },
+          "north": {
+            "w": 48,
+            "h": 34
+          },
+          "north-east": {
+            "w": 48,
+            "h": 34
+          },
+          "east": {
+            "w": 48,
+            "h": 34
+          },
+          "south-east": {
+            "w": 48,
+            "h": 34
+          }
+        },
+        "die": {
+          "south": {
+            "w": 48,
+            "h": 34
+          },
+          "south-west": {
+            "w": 48,
+            "h": 34
+          },
+          "west": {
+            "w": 48,
+            "h": 34
+          },
+          "north-west": {
+            "w": 48,
+            "h": 34
+          },
+          "north": {
+            "w": 48,
+            "h": 34
+          },
+          "north-east": {
+            "w": 48,
+            "h": 34
+          },
+          "east": {
+            "w": 48,
+            "h": 34
+          },
+          "south-east": {
+            "w": 48,
+            "h": 34
+          }
+        },
+        "angry": {
+          "south": {
+            "w": 48,
+            "h": 34
+          },
+          "south-west": {
+            "w": 48,
+            "h": 34
+          },
+          "west": {
+            "w": 48,
+            "h": 34
+          },
+          "north-west": {
+            "w": 48,
+            "h": 34
+          },
+          "north": {
+            "w": 48,
+            "h": 34
+          },
+          "north-east": {
+            "w": 48,
+            "h": 34
+          },
+          "east": {
+            "w": 48,
+            "h": 34
+          },
+          "south-east": {
+            "w": 48,
+            "h": 34
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 48,
+            "h": 34
+          },
+          "south-west": {
+            "w": 48,
+            "h": 34
+          },
+          "west": {
+            "w": 48,
+            "h": 34
+          },
+          "north-west": {
+            "w": 48,
+            "h": 34
+          },
+          "north": {
+            "w": 48,
+            "h": 34
+          },
+          "north-east": {
+            "w": 48,
+            "h": 34
+          },
+          "east": {
+            "w": 48,
+            "h": 34
+          },
+          "south-east": {
+            "w": 48,
+            "h": 34
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.8824,
+      "footW": 15,
+      "bodyW": 28,
+      "hoverPx": 0
     },
     {
       "id": "white_rabbit",
@@ -795,14 +1959,14 @@
           "south-east": 16
         },
         "die": {
-          "south": 16,
-          "south-west": 16,
-          "west": 16,
-          "north-west": 16,
-          "north": 16,
-          "north-east": 16,
-          "east": 16,
-          "south-east": 16
+          "south": 9,
+          "south-west": 12,
+          "west": 10,
+          "north-west": 14,
+          "north": 13,
+          "north-east": 14,
+          "east": 10,
+          "south-east": 12
         },
         "walk": {
           "south": 6,
@@ -887,9 +2051,185 @@
           "south-east": "/assets/monsters/white_rabbit/animations/angry__south-east.png"
         }
       },
+      "stripDims": {
+        "attack": {
+          "south": {
+            "w": 48,
+            "h": 48
+          },
+          "south-west": {
+            "w": 48,
+            "h": 48
+          },
+          "west": {
+            "w": 48,
+            "h": 48
+          },
+          "north-west": {
+            "w": 48,
+            "h": 48
+          },
+          "north": {
+            "w": 48,
+            "h": 48
+          },
+          "north-east": {
+            "w": 48,
+            "h": 48
+          },
+          "east": {
+            "w": 48,
+            "h": 48
+          },
+          "south-east": {
+            "w": 48,
+            "h": 48
+          }
+        },
+        "die": {
+          "south": {
+            "w": 48,
+            "h": 48
+          },
+          "south-west": {
+            "w": 48,
+            "h": 48
+          },
+          "west": {
+            "w": 48,
+            "h": 48
+          },
+          "north-west": {
+            "w": 48,
+            "h": 48
+          },
+          "north": {
+            "w": 48,
+            "h": 48
+          },
+          "north-east": {
+            "w": 48,
+            "h": 48
+          },
+          "east": {
+            "w": 48,
+            "h": 48
+          },
+          "south-east": {
+            "w": 48,
+            "h": 48
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 48,
+            "h": 48
+          },
+          "south-west": {
+            "w": 48,
+            "h": 48
+          },
+          "west": {
+            "w": 48,
+            "h": 48
+          },
+          "north-west": {
+            "w": 48,
+            "h": 48
+          },
+          "north": {
+            "w": 48,
+            "h": 48
+          },
+          "north-east": {
+            "w": 48,
+            "h": 48
+          },
+          "east": {
+            "w": 48,
+            "h": 48
+          },
+          "south-east": {
+            "w": 48,
+            "h": 48
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 48,
+            "h": 48
+          },
+          "south-west": {
+            "w": 48,
+            "h": 48
+          },
+          "west": {
+            "w": 48,
+            "h": 48
+          },
+          "north-west": {
+            "w": 48,
+            "h": 48
+          },
+          "north": {
+            "w": 48,
+            "h": 48
+          },
+          "north-east": {
+            "w": 48,
+            "h": 48
+          },
+          "east": {
+            "w": 48,
+            "h": 48
+          },
+          "south-east": {
+            "w": 48,
+            "h": 48
+          }
+        },
+        "angry": {
+          "south": {
+            "w": 48,
+            "h": 48
+          },
+          "south-west": {
+            "w": 48,
+            "h": 48
+          },
+          "west": {
+            "w": 48,
+            "h": 48
+          },
+          "north-west": {
+            "w": 48,
+            "h": 48
+          },
+          "north": {
+            "w": 48,
+            "h": 48
+          },
+          "north-east": {
+            "w": 48,
+            "h": 48
+          },
+          "east": {
+            "w": 48,
+            "h": 48
+          },
+          "south-east": {
+            "w": 48,
+            "h": 48
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.8958,
+      "footW": 18,
+      "bodyW": 29,
+      "hoverPx": 0
     },
     {
       "id": "malformed_creature",
@@ -903,9 +2243,9 @@
           "south": 9,
           "south-west": 9,
           "west": 9,
-          "north-west": 9,
+          "north-west": 7,
           "north": 9,
-          "north-east": 9,
+          "north-east": 7,
           "east": 9,
           "south-east": 9
         },
@@ -1002,9 +2342,185 @@
           "south-east": "/assets/monsters/malformed_creature/animations/angry__south-east.png"
         }
       },
+      "stripDims": {
+        "die": {
+          "south": {
+            "w": 85,
+            "h": 85
+          },
+          "south-west": {
+            "w": 85,
+            "h": 85
+          },
+          "west": {
+            "w": 85,
+            "h": 85
+          },
+          "north-west": {
+            "w": 85,
+            "h": 85
+          },
+          "north": {
+            "w": 85,
+            "h": 85
+          },
+          "north-east": {
+            "w": 85,
+            "h": 85
+          },
+          "east": {
+            "w": 85,
+            "h": 85
+          },
+          "south-east": {
+            "w": 85,
+            "h": 85
+          }
+        },
+        "attack": {
+          "south": {
+            "w": 85,
+            "h": 85
+          },
+          "south-west": {
+            "w": 85,
+            "h": 85
+          },
+          "west": {
+            "w": 85,
+            "h": 85
+          },
+          "north-west": {
+            "w": 85,
+            "h": 85
+          },
+          "north": {
+            "w": 85,
+            "h": 85
+          },
+          "north-east": {
+            "w": 85,
+            "h": 85
+          },
+          "east": {
+            "w": 85,
+            "h": 85
+          },
+          "south-east": {
+            "w": 85,
+            "h": 85
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 85,
+            "h": 85
+          },
+          "south-west": {
+            "w": 85,
+            "h": 85
+          },
+          "west": {
+            "w": 85,
+            "h": 85
+          },
+          "north-west": {
+            "w": 85,
+            "h": 85
+          },
+          "north": {
+            "w": 85,
+            "h": 85
+          },
+          "north-east": {
+            "w": 85,
+            "h": 85
+          },
+          "east": {
+            "w": 85,
+            "h": 85
+          },
+          "south-east": {
+            "w": 85,
+            "h": 85
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 85,
+            "h": 85
+          },
+          "south-west": {
+            "w": 85,
+            "h": 85
+          },
+          "west": {
+            "w": 85,
+            "h": 85
+          },
+          "north-west": {
+            "w": 85,
+            "h": 85
+          },
+          "north": {
+            "w": 85,
+            "h": 85
+          },
+          "north-east": {
+            "w": 85,
+            "h": 85
+          },
+          "east": {
+            "w": 85,
+            "h": 85
+          },
+          "south-east": {
+            "w": 85,
+            "h": 85
+          }
+        },
+        "angry": {
+          "south": {
+            "w": 85,
+            "h": 85
+          },
+          "south-west": {
+            "w": 85,
+            "h": 85
+          },
+          "west": {
+            "w": 85,
+            "h": 85
+          },
+          "north-west": {
+            "w": 85,
+            "h": 85
+          },
+          "north": {
+            "w": 85,
+            "h": 85
+          },
+          "north-east": {
+            "w": 85,
+            "h": 85
+          },
+          "east": {
+            "w": 85,
+            "h": 85
+          },
+          "south-east": {
+            "w": 85,
+            "h": 85
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.8353,
+      "footW": 12,
+      "bodyW": 23,
+      "hoverPx": 0
     },
     {
       "id": "masked_shadow_creature",
@@ -1059,7 +2575,7 @@
           "south-west": 9,
           "west": 9,
           "north-west": 9,
-          "north": 9,
+          "north": 8,
           "north-east": 9,
           "east": 9,
           "south-east": 9
@@ -1117,9 +2633,185 @@
           "south-east": "/assets/monsters/masked_shadow_creature/animations/die__south-east.png"
         }
       },
+      "stripDims": {
+        "idle": {
+          "south": {
+            "w": 68,
+            "h": 68
+          },
+          "south-west": {
+            "w": 68,
+            "h": 68
+          },
+          "west": {
+            "w": 68,
+            "h": 68
+          },
+          "north-west": {
+            "w": 68,
+            "h": 68
+          },
+          "north": {
+            "w": 68,
+            "h": 68
+          },
+          "north-east": {
+            "w": 68,
+            "h": 68
+          },
+          "east": {
+            "w": 68,
+            "h": 68
+          },
+          "south-east": {
+            "w": 68,
+            "h": 68
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 68,
+            "h": 68
+          },
+          "south-west": {
+            "w": 68,
+            "h": 68
+          },
+          "west": {
+            "w": 68,
+            "h": 68
+          },
+          "north-west": {
+            "w": 68,
+            "h": 68
+          },
+          "north": {
+            "w": 68,
+            "h": 68
+          },
+          "north-east": {
+            "w": 68,
+            "h": 68
+          },
+          "east": {
+            "w": 68,
+            "h": 68
+          },
+          "south-east": {
+            "w": 68,
+            "h": 68
+          }
+        },
+        "angry": {
+          "south": {
+            "w": 68,
+            "h": 68
+          },
+          "south-west": {
+            "w": 68,
+            "h": 68
+          },
+          "west": {
+            "w": 68,
+            "h": 68
+          },
+          "north-west": {
+            "w": 68,
+            "h": 68
+          },
+          "north": {
+            "w": 68,
+            "h": 68
+          },
+          "north-east": {
+            "w": 68,
+            "h": 68
+          },
+          "east": {
+            "w": 68,
+            "h": 68
+          },
+          "south-east": {
+            "w": 68,
+            "h": 68
+          }
+        },
+        "attack": {
+          "south": {
+            "w": 68,
+            "h": 68
+          },
+          "south-west": {
+            "w": 68,
+            "h": 68
+          },
+          "west": {
+            "w": 68,
+            "h": 68
+          },
+          "north-west": {
+            "w": 68,
+            "h": 68
+          },
+          "north": {
+            "w": 68,
+            "h": 68
+          },
+          "north-east": {
+            "w": 68,
+            "h": 68
+          },
+          "east": {
+            "w": 68,
+            "h": 68
+          },
+          "south-east": {
+            "w": 68,
+            "h": 68
+          }
+        },
+        "die": {
+          "south": {
+            "w": 68,
+            "h": 68
+          },
+          "south-west": {
+            "w": 68,
+            "h": 68
+          },
+          "west": {
+            "w": 68,
+            "h": 68
+          },
+          "north-west": {
+            "w": 68,
+            "h": 68
+          },
+          "north": {
+            "w": 68,
+            "h": 68
+          },
+          "north-east": {
+            "w": 68,
+            "h": 68
+          },
+          "east": {
+            "w": 68,
+            "h": 68
+          },
+          "south-east": {
+            "w": 68,
+            "h": 68
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.9118,
+      "footW": 6,
+      "bodyW": 26,
+      "hoverPx": 0
     },
     {
       "id": "night_beast",
@@ -1232,9 +2924,185 @@
           "south-east": "/assets/monsters/night_beast/animations/angry__south-east.png"
         }
       },
+      "stripDims": {
+        "walk": {
+          "south": {
+            "w": 97,
+            "h": 97
+          },
+          "south-west": {
+            "w": 97,
+            "h": 97
+          },
+          "west": {
+            "w": 97,
+            "h": 97
+          },
+          "north-west": {
+            "w": 97,
+            "h": 97
+          },
+          "north": {
+            "w": 97,
+            "h": 97
+          },
+          "north-east": {
+            "w": 97,
+            "h": 97
+          },
+          "east": {
+            "w": 97,
+            "h": 97
+          },
+          "south-east": {
+            "w": 97,
+            "h": 97
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 97,
+            "h": 97
+          },
+          "south-west": {
+            "w": 97,
+            "h": 97
+          },
+          "west": {
+            "w": 97,
+            "h": 97
+          },
+          "north-west": {
+            "w": 97,
+            "h": 97
+          },
+          "north": {
+            "w": 97,
+            "h": 97
+          },
+          "north-east": {
+            "w": 97,
+            "h": 97
+          },
+          "east": {
+            "w": 97,
+            "h": 97
+          },
+          "south-east": {
+            "w": 97,
+            "h": 97
+          }
+        },
+        "die": {
+          "south": {
+            "w": 97,
+            "h": 97
+          },
+          "south-west": {
+            "w": 97,
+            "h": 97
+          },
+          "west": {
+            "w": 97,
+            "h": 97
+          },
+          "north-west": {
+            "w": 97,
+            "h": 97
+          },
+          "north": {
+            "w": 97,
+            "h": 97
+          },
+          "north-east": {
+            "w": 97,
+            "h": 97
+          },
+          "east": {
+            "w": 97,
+            "h": 97
+          },
+          "south-east": {
+            "w": 97,
+            "h": 97
+          }
+        },
+        "attack": {
+          "south": {
+            "w": 97,
+            "h": 97
+          },
+          "south-west": {
+            "w": 97,
+            "h": 97
+          },
+          "west": {
+            "w": 97,
+            "h": 97
+          },
+          "north-west": {
+            "w": 97,
+            "h": 97
+          },
+          "north": {
+            "w": 97,
+            "h": 97
+          },
+          "north-east": {
+            "w": 97,
+            "h": 97
+          },
+          "east": {
+            "w": 97,
+            "h": 97
+          },
+          "south-east": {
+            "w": 97,
+            "h": 97
+          }
+        },
+        "angry": {
+          "south": {
+            "w": 97,
+            "h": 97
+          },
+          "south-west": {
+            "w": 97,
+            "h": 97
+          },
+          "west": {
+            "w": 97,
+            "h": 97
+          },
+          "north-west": {
+            "w": 97,
+            "h": 97
+          },
+          "north": {
+            "w": 97,
+            "h": 97
+          },
+          "north-east": {
+            "w": 97,
+            "h": 97
+          },
+          "east": {
+            "w": 97,
+            "h": 97
+          },
+          "south-east": {
+            "w": 97,
+            "h": 97
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.8351,
+      "footW": 22,
+      "bodyW": 48,
+      "hoverPx": 0
     },
     {
       "id": "lava_salamander_2",
@@ -1347,14 +3215,190 @@
           "south-east": "/assets/monsters/lava_salamander_2/animations/walk__south-east.png"
         }
       },
+      "stripDims": {
+        "die": {
+          "south": {
+            "w": 48,
+            "h": 48
+          },
+          "south-west": {
+            "w": 48,
+            "h": 48
+          },
+          "west": {
+            "w": 48,
+            "h": 48
+          },
+          "north-west": {
+            "w": 48,
+            "h": 48
+          },
+          "north": {
+            "w": 48,
+            "h": 48
+          },
+          "north-east": {
+            "w": 48,
+            "h": 48
+          },
+          "east": {
+            "w": 48,
+            "h": 48
+          },
+          "south-east": {
+            "w": 48,
+            "h": 48
+          }
+        },
+        "attack": {
+          "south": {
+            "w": 48,
+            "h": 48
+          },
+          "south-west": {
+            "w": 48,
+            "h": 48
+          },
+          "west": {
+            "w": 48,
+            "h": 48
+          },
+          "north-west": {
+            "w": 48,
+            "h": 48
+          },
+          "north": {
+            "w": 48,
+            "h": 48
+          },
+          "north-east": {
+            "w": 48,
+            "h": 48
+          },
+          "east": {
+            "w": 48,
+            "h": 48
+          },
+          "south-east": {
+            "w": 48,
+            "h": 48
+          }
+        },
+        "angry": {
+          "south": {
+            "w": 48,
+            "h": 48
+          },
+          "south-west": {
+            "w": 48,
+            "h": 48
+          },
+          "west": {
+            "w": 48,
+            "h": 48
+          },
+          "north-west": {
+            "w": 48,
+            "h": 48
+          },
+          "north": {
+            "w": 48,
+            "h": 48
+          },
+          "north-east": {
+            "w": 48,
+            "h": 48
+          },
+          "east": {
+            "w": 48,
+            "h": 48
+          },
+          "south-east": {
+            "w": 48,
+            "h": 48
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 48,
+            "h": 48
+          },
+          "south-west": {
+            "w": 48,
+            "h": 48
+          },
+          "west": {
+            "w": 48,
+            "h": 48
+          },
+          "north-west": {
+            "w": 48,
+            "h": 48
+          },
+          "north": {
+            "w": 48,
+            "h": 48
+          },
+          "north-east": {
+            "w": 48,
+            "h": 48
+          },
+          "east": {
+            "w": 48,
+            "h": 48
+          },
+          "south-east": {
+            "w": 48,
+            "h": 48
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 48,
+            "h": 48
+          },
+          "south-west": {
+            "w": 48,
+            "h": 48
+          },
+          "west": {
+            "w": 48,
+            "h": 48
+          },
+          "north-west": {
+            "w": 48,
+            "h": 48
+          },
+          "north": {
+            "w": 48,
+            "h": 48
+          },
+          "north-east": {
+            "w": 48,
+            "h": 48
+          },
+          "east": {
+            "w": 48,
+            "h": 48
+          },
+          "south-east": {
+            "w": 48,
+            "h": 48
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.9583,
+      "footW": 21,
+      "bodyW": 33,
+      "hoverPx": 0
     },
     {
       "id": "lava_salamander",
       "name": "Lava Salamander",
-      "frameW": 48,
+      "frameW": 78,
       "frameH": 48,
       "root": "lava_salamander",
       "walkAnim": "walk",
@@ -1462,9 +3506,185 @@
           "south-east": "/assets/monsters/lava_salamander/animations/walk__south-east.png"
         }
       },
+      "stripDims": {
+        "attack": {
+          "south": {
+            "w": 78,
+            "h": 48
+          },
+          "south-west": {
+            "w": 78,
+            "h": 48
+          },
+          "west": {
+            "w": 78,
+            "h": 48
+          },
+          "north-west": {
+            "w": 78,
+            "h": 48
+          },
+          "north": {
+            "w": 78,
+            "h": 48
+          },
+          "north-east": {
+            "w": 78,
+            "h": 48
+          },
+          "east": {
+            "w": 78,
+            "h": 48
+          },
+          "south-east": {
+            "w": 78,
+            "h": 48
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 78,
+            "h": 48
+          },
+          "south-west": {
+            "w": 78,
+            "h": 48
+          },
+          "west": {
+            "w": 78,
+            "h": 48
+          },
+          "north-west": {
+            "w": 78,
+            "h": 48
+          },
+          "north": {
+            "w": 78,
+            "h": 48
+          },
+          "north-east": {
+            "w": 78,
+            "h": 48
+          },
+          "east": {
+            "w": 78,
+            "h": 48
+          },
+          "south-east": {
+            "w": 78,
+            "h": 48
+          }
+        },
+        "angry": {
+          "south": {
+            "w": 78,
+            "h": 48
+          },
+          "south-west": {
+            "w": 78,
+            "h": 48
+          },
+          "west": {
+            "w": 78,
+            "h": 48
+          },
+          "north-west": {
+            "w": 78,
+            "h": 48
+          },
+          "north": {
+            "w": 78,
+            "h": 48
+          },
+          "north-east": {
+            "w": 78,
+            "h": 48
+          },
+          "east": {
+            "w": 78,
+            "h": 48
+          },
+          "south-east": {
+            "w": 78,
+            "h": 48
+          }
+        },
+        "die": {
+          "south": {
+            "w": 78,
+            "h": 48
+          },
+          "south-west": {
+            "w": 78,
+            "h": 48
+          },
+          "west": {
+            "w": 78,
+            "h": 48
+          },
+          "north-west": {
+            "w": 78,
+            "h": 48
+          },
+          "north": {
+            "w": 78,
+            "h": 48
+          },
+          "north-east": {
+            "w": 78,
+            "h": 48
+          },
+          "east": {
+            "w": 78,
+            "h": 48
+          },
+          "south-east": {
+            "w": 78,
+            "h": 48
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 78,
+            "h": 48
+          },
+          "south-west": {
+            "w": 78,
+            "h": 48
+          },
+          "west": {
+            "w": 78,
+            "h": 48
+          },
+          "north-west": {
+            "w": 78,
+            "h": 48
+          },
+          "north": {
+            "w": 78,
+            "h": 48
+          },
+          "north-east": {
+            "w": 78,
+            "h": 48
+          },
+          "east": {
+            "w": 78,
+            "h": 48
+          },
+          "south-east": {
+            "w": 78,
+            "h": 48
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.875,
+      "footW": 21,
+      "bodyW": 33,
+      "hoverPx": 0
     },
     {
       "id": "ice_crystal_golem",
@@ -1505,14 +3725,14 @@
           "south-east": 9
         },
         "die": {
-          "south": 9,
-          "south-west": 9,
-          "west": 9,
-          "north-west": 9,
-          "north": 9,
-          "north-east": 9,
-          "east": 9,
-          "south-east": 9
+          "south": 5,
+          "south-west": 7,
+          "west": 7,
+          "north-west": 8,
+          "north": 7,
+          "north-east": 8,
+          "east": 8,
+          "south-east": 7
         }
       },
       "strips": {
@@ -1557,14 +3777,156 @@
           "south-east": "/assets/monsters/ice_crystal_golem/animations/die__south-east.png"
         }
       },
+      "stripDims": {
+        "attack": {
+          "south": {
+            "w": 136,
+            "h": 136
+          },
+          "south-west": {
+            "w": 136,
+            "h": 136
+          },
+          "west": {
+            "w": 136,
+            "h": 136
+          },
+          "north-west": {
+            "w": 136,
+            "h": 136
+          },
+          "north": {
+            "w": 136,
+            "h": 136
+          },
+          "north-east": {
+            "w": 136,
+            "h": 136
+          },
+          "east": {
+            "w": 136,
+            "h": 136
+          },
+          "south-east": {
+            "w": 136,
+            "h": 136
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 136,
+            "h": 136
+          },
+          "south-west": {
+            "w": 136,
+            "h": 136
+          },
+          "west": {
+            "w": 136,
+            "h": 136
+          },
+          "north-west": {
+            "w": 136,
+            "h": 136
+          },
+          "north": {
+            "w": 136,
+            "h": 136
+          },
+          "north-east": {
+            "w": 136,
+            "h": 136
+          },
+          "east": {
+            "w": 136,
+            "h": 136
+          },
+          "south-east": {
+            "w": 136,
+            "h": 136
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 136,
+            "h": 136
+          },
+          "south-west": {
+            "w": 136,
+            "h": 136
+          },
+          "west": {
+            "w": 136,
+            "h": 136
+          },
+          "north-west": {
+            "w": 136,
+            "h": 136
+          },
+          "north": {
+            "w": 136,
+            "h": 136
+          },
+          "north-east": {
+            "w": 136,
+            "h": 136
+          },
+          "east": {
+            "w": 136,
+            "h": 136
+          },
+          "south-east": {
+            "w": 136,
+            "h": 136
+          }
+        },
+        "die": {
+          "south": {
+            "w": 136,
+            "h": 136
+          },
+          "south-west": {
+            "w": 136,
+            "h": 136
+          },
+          "west": {
+            "w": 136,
+            "h": 136
+          },
+          "north-west": {
+            "w": 136,
+            "h": 136
+          },
+          "north": {
+            "w": 136,
+            "h": 136
+          },
+          "north-east": {
+            "w": 136,
+            "h": 136
+          },
+          "east": {
+            "w": 136,
+            "h": 136
+          },
+          "south-east": {
+            "w": 136,
+            "h": 136
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.9265,
+      "footW": 34,
+      "bodyW": 78,
+      "hoverPx": 0
     },
     {
       "id": "stone_turtle",
       "name": "Stone Turtle",
-      "frameW": 68,
+      "frameW": 76,
       "frameH": 68,
       "root": "stone_turtle",
       "walkAnim": "walk",
@@ -1610,14 +3972,14 @@
           "south-east": 4
         },
         "die": {
-          "south": 9,
-          "south-west": 9,
+          "south": 8,
+          "south-west": 7,
           "west": 9,
-          "north-west": 9,
-          "north": 9,
-          "north-east": 9,
+          "north-west": 8,
+          "north": 7,
+          "north-east": 8,
           "east": 9,
-          "south-east": 9
+          "south-east": 7
         }
       },
       "strips": {
@@ -1672,9 +4034,185 @@
           "south-east": "/assets/monsters/stone_turtle/animations/die__south-east.png"
         }
       },
+      "stripDims": {
+        "attack": {
+          "south": {
+            "w": 76,
+            "h": 68
+          },
+          "south-west": {
+            "w": 76,
+            "h": 68
+          },
+          "west": {
+            "w": 76,
+            "h": 68
+          },
+          "north-west": {
+            "w": 76,
+            "h": 68
+          },
+          "north": {
+            "w": 76,
+            "h": 68
+          },
+          "north-east": {
+            "w": 76,
+            "h": 68
+          },
+          "east": {
+            "w": 76,
+            "h": 68
+          },
+          "south-east": {
+            "w": 76,
+            "h": 68
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 76,
+            "h": 68
+          },
+          "south-west": {
+            "w": 76,
+            "h": 68
+          },
+          "west": {
+            "w": 76,
+            "h": 68
+          },
+          "north-west": {
+            "w": 76,
+            "h": 68
+          },
+          "north": {
+            "w": 76,
+            "h": 68
+          },
+          "north-east": {
+            "w": 76,
+            "h": 68
+          },
+          "east": {
+            "w": 76,
+            "h": 68
+          },
+          "south-east": {
+            "w": 76,
+            "h": 68
+          }
+        },
+        "angry": {
+          "south": {
+            "w": 76,
+            "h": 68
+          },
+          "south-west": {
+            "w": 76,
+            "h": 68
+          },
+          "west": {
+            "w": 76,
+            "h": 68
+          },
+          "north-west": {
+            "w": 76,
+            "h": 68
+          },
+          "north": {
+            "w": 76,
+            "h": 68
+          },
+          "north-east": {
+            "w": 76,
+            "h": 68
+          },
+          "east": {
+            "w": 76,
+            "h": 68
+          },
+          "south-east": {
+            "w": 76,
+            "h": 68
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 76,
+            "h": 68
+          },
+          "south-west": {
+            "w": 76,
+            "h": 68
+          },
+          "west": {
+            "w": 76,
+            "h": 68
+          },
+          "north-west": {
+            "w": 76,
+            "h": 68
+          },
+          "north": {
+            "w": 76,
+            "h": 68
+          },
+          "north-east": {
+            "w": 76,
+            "h": 68
+          },
+          "east": {
+            "w": 76,
+            "h": 68
+          },
+          "south-east": {
+            "w": 76,
+            "h": 68
+          }
+        },
+        "die": {
+          "south": {
+            "w": 76,
+            "h": 68
+          },
+          "south-west": {
+            "w": 76,
+            "h": 68
+          },
+          "west": {
+            "w": 76,
+            "h": 68
+          },
+          "north-west": {
+            "w": 76,
+            "h": 68
+          },
+          "north": {
+            "w": 76,
+            "h": 68
+          },
+          "north-east": {
+            "w": 76,
+            "h": 68
+          },
+          "east": {
+            "w": 76,
+            "h": 68
+          },
+          "south-east": {
+            "w": 76,
+            "h": 68
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.8971,
+      "footW": 25,
+      "bodyW": 53,
+      "hoverPx": 0
     },
     {
       "id": "tree_stump",
@@ -1715,13 +4253,13 @@
           "south-east": 16
         },
         "die": {
-          "south": 16,
+          "south": 13,
           "south-west": 16,
-          "west": 16,
-          "north-west": 16,
+          "west": 14,
+          "north-west": 15,
           "north": 16,
-          "north-east": 16,
-          "east": 16,
+          "north-east": 15,
+          "east": 14,
           "south-east": 16
         },
         "attack": {
@@ -1787,14 +4325,190 @@
           "south-east": "/assets/monsters/tree_stump/animations/attack__south-east.png"
         }
       },
+      "stripDims": {
+        "idle": {
+          "south": {
+            "w": 48,
+            "h": 48
+          },
+          "south-west": {
+            "w": 48,
+            "h": 48
+          },
+          "west": {
+            "w": 48,
+            "h": 48
+          },
+          "north-west": {
+            "w": 48,
+            "h": 48
+          },
+          "north": {
+            "w": 48,
+            "h": 48
+          },
+          "north-east": {
+            "w": 48,
+            "h": 48
+          },
+          "east": {
+            "w": 48,
+            "h": 48
+          },
+          "south-east": {
+            "w": 48,
+            "h": 48
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 48,
+            "h": 48
+          },
+          "south-west": {
+            "w": 48,
+            "h": 48
+          },
+          "west": {
+            "w": 48,
+            "h": 48
+          },
+          "north-west": {
+            "w": 48,
+            "h": 48
+          },
+          "north": {
+            "w": 48,
+            "h": 48
+          },
+          "north-east": {
+            "w": 48,
+            "h": 48
+          },
+          "east": {
+            "w": 48,
+            "h": 48
+          },
+          "south-east": {
+            "w": 48,
+            "h": 48
+          }
+        },
+        "angry": {
+          "south": {
+            "w": 48,
+            "h": 48
+          },
+          "south-west": {
+            "w": 48,
+            "h": 48
+          },
+          "west": {
+            "w": 48,
+            "h": 48
+          },
+          "north-west": {
+            "w": 48,
+            "h": 48
+          },
+          "north": {
+            "w": 48,
+            "h": 48
+          },
+          "north-east": {
+            "w": 48,
+            "h": 48
+          },
+          "east": {
+            "w": 48,
+            "h": 48
+          },
+          "south-east": {
+            "w": 48,
+            "h": 48
+          }
+        },
+        "die": {
+          "south": {
+            "w": 48,
+            "h": 48
+          },
+          "south-west": {
+            "w": 48,
+            "h": 48
+          },
+          "west": {
+            "w": 48,
+            "h": 48
+          },
+          "north-west": {
+            "w": 48,
+            "h": 48
+          },
+          "north": {
+            "w": 48,
+            "h": 48
+          },
+          "north-east": {
+            "w": 48,
+            "h": 48
+          },
+          "east": {
+            "w": 48,
+            "h": 48
+          },
+          "south-east": {
+            "w": 48,
+            "h": 48
+          }
+        },
+        "attack": {
+          "south": {
+            "w": 48,
+            "h": 48
+          },
+          "south-west": {
+            "w": 48,
+            "h": 48
+          },
+          "west": {
+            "w": 48,
+            "h": 48
+          },
+          "north-west": {
+            "w": 48,
+            "h": 48
+          },
+          "north": {
+            "w": 48,
+            "h": 48
+          },
+          "north-east": {
+            "w": 48,
+            "h": 48
+          },
+          "east": {
+            "w": 48,
+            "h": 48
+          },
+          "south-east": {
+            "w": 48,
+            "h": 48
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.9375,
+      "footW": 26,
+      "bodyW": 40,
+      "hoverPx": 0
     },
     {
       "id": "stone_golem",
       "name": "Stone Golem",
-      "frameW": 136,
+      "frameW": 146,
       "frameH": 136,
       "root": "stone_golem",
       "walkAnim": "walk",
@@ -1807,14 +4521,14 @@
           "south-east": 9
         },
         "die": {
-          "south": 9,
-          "south-west": 9,
-          "west": 9,
-          "north-west": 9,
-          "north": 9,
-          "north-east": 9,
-          "east": 9,
-          "south-east": 9
+          "south": 8,
+          "south-west": 8,
+          "west": 7,
+          "north-west": 8,
+          "north": 8,
+          "north-east": 8,
+          "east": 7,
+          "south-east": 8
         },
         "attack": {
           "south": 9,
@@ -1896,14 +4610,178 @@
           "south-east": "/assets/monsters/stone_golem/animations/walk__south-east.png"
         }
       },
+      "stripDims": {
+        "angry": {
+          "south": {
+            "w": 146,
+            "h": 136
+          },
+          "north-west": {
+            "w": 146,
+            "h": 136
+          },
+          "north": {
+            "w": 146,
+            "h": 136
+          },
+          "east": {
+            "w": 146,
+            "h": 136
+          },
+          "south-east": {
+            "w": 146,
+            "h": 136
+          }
+        },
+        "die": {
+          "south": {
+            "w": 146,
+            "h": 136
+          },
+          "south-west": {
+            "w": 146,
+            "h": 136
+          },
+          "west": {
+            "w": 146,
+            "h": 136
+          },
+          "north-west": {
+            "w": 146,
+            "h": 136
+          },
+          "north": {
+            "w": 146,
+            "h": 136
+          },
+          "north-east": {
+            "w": 146,
+            "h": 136
+          },
+          "east": {
+            "w": 146,
+            "h": 136
+          },
+          "south-east": {
+            "w": 146,
+            "h": 136
+          }
+        },
+        "attack": {
+          "south": {
+            "w": 146,
+            "h": 136
+          },
+          "south-west": {
+            "w": 146,
+            "h": 136
+          },
+          "west": {
+            "w": 146,
+            "h": 136
+          },
+          "north-west": {
+            "w": 146,
+            "h": 136
+          },
+          "north": {
+            "w": 146,
+            "h": 136
+          },
+          "north-east": {
+            "w": 146,
+            "h": 136
+          },
+          "east": {
+            "w": 146,
+            "h": 136
+          },
+          "south-east": {
+            "w": 146,
+            "h": 136
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 146,
+            "h": 136
+          },
+          "south-west": {
+            "w": 146,
+            "h": 136
+          },
+          "west": {
+            "w": 146,
+            "h": 136
+          },
+          "north-west": {
+            "w": 146,
+            "h": 136
+          },
+          "north": {
+            "w": 146,
+            "h": 136
+          },
+          "north-east": {
+            "w": 146,
+            "h": 136
+          },
+          "east": {
+            "w": 146,
+            "h": 136
+          },
+          "south-east": {
+            "w": 146,
+            "h": 136
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 146,
+            "h": 136
+          },
+          "south-west": {
+            "w": 146,
+            "h": 136
+          },
+          "west": {
+            "w": 146,
+            "h": 136
+          },
+          "north-west": {
+            "w": 146,
+            "h": 136
+          },
+          "north": {
+            "w": 146,
+            "h": 136
+          },
+          "north-east": {
+            "w": 146,
+            "h": 136
+          },
+          "east": {
+            "w": 146,
+            "h": 136
+          },
+          "south-east": {
+            "w": 146,
+            "h": 136
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.8603,
+      "footW": 42,
+      "bodyW": 81,
+      "hoverPx": 0
     },
     {
       "id": "forest_poring_2",
       "name": "Forest Poring II",
-      "frameW": 48,
+      "frameW": 64,
       "frameH": 48,
       "root": "forest_poring_2",
       "walkAnim": "walk",
@@ -1939,7 +4817,7 @@
           "south-east": 4
         },
         "die": {
-          "south": 16,
+          "south": 15,
           "south-west": 16,
           "west": 16,
           "north-west": 16,
@@ -1991,15 +4869,157 @@
           "south-east": "/assets/monsters/forest_poring_2/animations/die__south-east.png"
         }
       },
+      "stripDims": {
+        "idle": {
+          "south": {
+            "w": 64,
+            "h": 48
+          },
+          "south-west": {
+            "w": 64,
+            "h": 48
+          },
+          "west": {
+            "w": 64,
+            "h": 48
+          },
+          "north-west": {
+            "w": 64,
+            "h": 48
+          },
+          "north": {
+            "w": 64,
+            "h": 48
+          },
+          "north-east": {
+            "w": 64,
+            "h": 48
+          },
+          "east": {
+            "w": 64,
+            "h": 48
+          },
+          "south-east": {
+            "w": 64,
+            "h": 48
+          }
+        },
+        "attack": {
+          "south": {
+            "w": 64,
+            "h": 48
+          },
+          "south-west": {
+            "w": 64,
+            "h": 48
+          },
+          "west": {
+            "w": 64,
+            "h": 48
+          },
+          "north-west": {
+            "w": 64,
+            "h": 48
+          },
+          "north": {
+            "w": 64,
+            "h": 48
+          },
+          "north-east": {
+            "w": 64,
+            "h": 48
+          },
+          "east": {
+            "w": 64,
+            "h": 48
+          },
+          "south-east": {
+            "w": 64,
+            "h": 48
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 64,
+            "h": 48
+          },
+          "south-west": {
+            "w": 64,
+            "h": 48
+          },
+          "west": {
+            "w": 64,
+            "h": 48
+          },
+          "north-west": {
+            "w": 64,
+            "h": 48
+          },
+          "north": {
+            "w": 64,
+            "h": 48
+          },
+          "north-east": {
+            "w": 64,
+            "h": 48
+          },
+          "east": {
+            "w": 64,
+            "h": 48
+          },
+          "south-east": {
+            "w": 64,
+            "h": 48
+          }
+        },
+        "die": {
+          "south": {
+            "w": 64,
+            "h": 48
+          },
+          "south-west": {
+            "w": 64,
+            "h": 48
+          },
+          "west": {
+            "w": 64,
+            "h": 48
+          },
+          "north-west": {
+            "w": 64,
+            "h": 48
+          },
+          "north": {
+            "w": 64,
+            "h": 48
+          },
+          "north-east": {
+            "w": 64,
+            "h": 48
+          },
+          "east": {
+            "w": 64,
+            "h": 48
+          },
+          "south-east": {
+            "w": 64,
+            "h": 48
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.8333,
+      "footW": 22,
+      "bodyW": 34,
+      "hoverPx": 0
     },
     {
       "id": "diablo_2",
       "name": "Diablo II",
       "frameW": 136,
-      "frameH": 136,
+      "frameH": 174,
       "root": "diablo_2",
       "walkAnim": "walk",
       "animations": {
@@ -2092,9 +5112,157 @@
           "south-east": "/assets/monsters/diablo_2/animations/idle__south-east.png"
         }
       },
+      "stripDims": {
+        "angry": {
+          "south": {
+            "w": 136,
+            "h": 174
+          }
+        },
+        "attack": {
+          "south": {
+            "w": 136,
+            "h": 174
+          },
+          "south-west": {
+            "w": 136,
+            "h": 174
+          },
+          "west": {
+            "w": 136,
+            "h": 174
+          },
+          "north-west": {
+            "w": 136,
+            "h": 174
+          },
+          "north": {
+            "w": 136,
+            "h": 174
+          },
+          "north-east": {
+            "w": 136,
+            "h": 174
+          },
+          "east": {
+            "w": 136,
+            "h": 174
+          },
+          "south-east": {
+            "w": 136,
+            "h": 174
+          }
+        },
+        "die": {
+          "south": {
+            "w": 136,
+            "h": 174
+          },
+          "south-west": {
+            "w": 136,
+            "h": 174
+          },
+          "west": {
+            "w": 136,
+            "h": 174
+          },
+          "north-west": {
+            "w": 136,
+            "h": 174
+          },
+          "north": {
+            "w": 136,
+            "h": 174
+          },
+          "north-east": {
+            "w": 136,
+            "h": 174
+          },
+          "east": {
+            "w": 136,
+            "h": 174
+          },
+          "south-east": {
+            "w": 136,
+            "h": 174
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 136,
+            "h": 174
+          },
+          "south-west": {
+            "w": 136,
+            "h": 174
+          },
+          "west": {
+            "w": 136,
+            "h": 174
+          },
+          "north-west": {
+            "w": 136,
+            "h": 174
+          },
+          "north": {
+            "w": 136,
+            "h": 174
+          },
+          "north-east": {
+            "w": 136,
+            "h": 174
+          },
+          "east": {
+            "w": 136,
+            "h": 174
+          },
+          "south-east": {
+            "w": 136,
+            "h": 174
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 136,
+            "h": 174
+          },
+          "south-west": {
+            "w": 136,
+            "h": 174
+          },
+          "west": {
+            "w": 136,
+            "h": 174
+          },
+          "north-west": {
+            "w": 136,
+            "h": 174
+          },
+          "north": {
+            "w": 136,
+            "h": 174
+          },
+          "north-east": {
+            "w": 136,
+            "h": 174
+          },
+          "east": {
+            "w": 136,
+            "h": 174
+          },
+          "south-east": {
+            "w": 136,
+            "h": 174
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.7989,
+      "footW": 33,
+      "bodyW": 89,
+      "hoverPx": 0
     },
     {
       "id": "diablo",
@@ -2187,9 +5355,151 @@
           "south-east": "/assets/monsters/diablo/animations/walk__south-east.png"
         }
       },
+      "stripDims": {
+        "idle": {
+          "south": {
+            "w": 97,
+            "h": 97
+          },
+          "south-west": {
+            "w": 97,
+            "h": 97
+          },
+          "west": {
+            "w": 97,
+            "h": 97
+          },
+          "north-west": {
+            "w": 97,
+            "h": 97
+          },
+          "north": {
+            "w": 97,
+            "h": 97
+          },
+          "north-east": {
+            "w": 97,
+            "h": 97
+          },
+          "east": {
+            "w": 97,
+            "h": 97
+          },
+          "south-east": {
+            "w": 97,
+            "h": 97
+          }
+        },
+        "attack": {
+          "south": {
+            "w": 97,
+            "h": 97
+          },
+          "south-west": {
+            "w": 97,
+            "h": 97
+          },
+          "west": {
+            "w": 97,
+            "h": 97
+          },
+          "north-west": {
+            "w": 97,
+            "h": 97
+          },
+          "north": {
+            "w": 97,
+            "h": 97
+          },
+          "north-east": {
+            "w": 97,
+            "h": 97
+          },
+          "east": {
+            "w": 97,
+            "h": 97
+          },
+          "south-east": {
+            "w": 97,
+            "h": 97
+          }
+        },
+        "die": {
+          "south": {
+            "w": 97,
+            "h": 97
+          },
+          "south-west": {
+            "w": 97,
+            "h": 97
+          },
+          "west": {
+            "w": 97,
+            "h": 97
+          },
+          "north-west": {
+            "w": 97,
+            "h": 97
+          },
+          "north": {
+            "w": 97,
+            "h": 97
+          },
+          "north-east": {
+            "w": 97,
+            "h": 97
+          },
+          "east": {
+            "w": 97,
+            "h": 97
+          },
+          "south-east": {
+            "w": 97,
+            "h": 97
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 97,
+            "h": 97
+          },
+          "south-west": {
+            "w": 97,
+            "h": 97
+          },
+          "west": {
+            "w": 97,
+            "h": 97
+          },
+          "north-west": {
+            "w": 97,
+            "h": 97
+          },
+          "north": {
+            "w": 97,
+            "h": 97
+          },
+          "north-east": {
+            "w": 97,
+            "h": 97
+          },
+          "east": {
+            "w": 97,
+            "h": 97
+          },
+          "south-east": {
+            "w": 97,
+            "h": 97
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.8351,
+      "footW": 14,
+      "bodyW": 29,
+      "hoverPx": 0
     },
     {
       "id": "snow_demon",
@@ -2302,9 +5612,185 @@
           "south-east": "/assets/monsters/snow_demon/animations/walk__south-east.png"
         }
       },
+      "stripDims": {
+        "angry": {
+          "south": {
+            "w": 128,
+            "h": 128
+          },
+          "south-west": {
+            "w": 128,
+            "h": 128
+          },
+          "west": {
+            "w": 128,
+            "h": 128
+          },
+          "north-west": {
+            "w": 128,
+            "h": 128
+          },
+          "north": {
+            "w": 128,
+            "h": 128
+          },
+          "north-east": {
+            "w": 128,
+            "h": 128
+          },
+          "east": {
+            "w": 128,
+            "h": 128
+          },
+          "south-east": {
+            "w": 128,
+            "h": 128
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 128,
+            "h": 128
+          },
+          "south-west": {
+            "w": 128,
+            "h": 128
+          },
+          "west": {
+            "w": 128,
+            "h": 128
+          },
+          "north-west": {
+            "w": 128,
+            "h": 128
+          },
+          "north": {
+            "w": 128,
+            "h": 128
+          },
+          "north-east": {
+            "w": 128,
+            "h": 128
+          },
+          "east": {
+            "w": 128,
+            "h": 128
+          },
+          "south-east": {
+            "w": 128,
+            "h": 128
+          }
+        },
+        "die": {
+          "south": {
+            "w": 128,
+            "h": 128
+          },
+          "south-west": {
+            "w": 128,
+            "h": 128
+          },
+          "west": {
+            "w": 128,
+            "h": 128
+          },
+          "north-west": {
+            "w": 128,
+            "h": 128
+          },
+          "north": {
+            "w": 128,
+            "h": 128
+          },
+          "north-east": {
+            "w": 128,
+            "h": 128
+          },
+          "east": {
+            "w": 128,
+            "h": 128
+          },
+          "south-east": {
+            "w": 128,
+            "h": 128
+          }
+        },
+        "attack": {
+          "south": {
+            "w": 128,
+            "h": 128
+          },
+          "south-west": {
+            "w": 128,
+            "h": 128
+          },
+          "west": {
+            "w": 128,
+            "h": 128
+          },
+          "north-west": {
+            "w": 128,
+            "h": 128
+          },
+          "north": {
+            "w": 128,
+            "h": 128
+          },
+          "north-east": {
+            "w": 128,
+            "h": 128
+          },
+          "east": {
+            "w": 128,
+            "h": 128
+          },
+          "south-east": {
+            "w": 128,
+            "h": 128
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 128,
+            "h": 128
+          },
+          "south-west": {
+            "w": 128,
+            "h": 128
+          },
+          "west": {
+            "w": 128,
+            "h": 128
+          },
+          "north-west": {
+            "w": 128,
+            "h": 128
+          },
+          "north": {
+            "w": 128,
+            "h": 128
+          },
+          "north-east": {
+            "w": 128,
+            "h": 128
+          },
+          "east": {
+            "w": 128,
+            "h": 128
+          },
+          "south-east": {
+            "w": 128,
+            "h": 128
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.7734,
+      "footW": 20,
+      "bodyW": 51,
+      "hoverPx": 0
     },
     {
       "id": "dark_donkey",
@@ -2357,11 +5843,11 @@
         "die": {
           "south": 4,
           "south-west": 4,
-          "west": 4,
+          "west": 3,
           "north-west": 4,
           "north": 4,
           "north-east": 4,
-          "east": 4,
+          "east": 3,
           "south-east": 4
         }
       },
@@ -2417,9 +5903,185 @@
           "south-east": "/assets/monsters/dark_donkey/animations/die__south-east.png"
         }
       },
+      "stripDims": {
+        "angry": {
+          "south": {
+            "w": 124,
+            "h": 124
+          },
+          "south-west": {
+            "w": 124,
+            "h": 124
+          },
+          "west": {
+            "w": 124,
+            "h": 124
+          },
+          "north-west": {
+            "w": 124,
+            "h": 124
+          },
+          "north": {
+            "w": 124,
+            "h": 124
+          },
+          "north-east": {
+            "w": 124,
+            "h": 124
+          },
+          "east": {
+            "w": 124,
+            "h": 124
+          },
+          "south-east": {
+            "w": 124,
+            "h": 124
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 124,
+            "h": 124
+          },
+          "south-west": {
+            "w": 124,
+            "h": 124
+          },
+          "west": {
+            "w": 124,
+            "h": 124
+          },
+          "north-west": {
+            "w": 124,
+            "h": 124
+          },
+          "north": {
+            "w": 124,
+            "h": 124
+          },
+          "north-east": {
+            "w": 124,
+            "h": 124
+          },
+          "east": {
+            "w": 124,
+            "h": 124
+          },
+          "south-east": {
+            "w": 124,
+            "h": 124
+          }
+        },
+        "attack": {
+          "south": {
+            "w": 124,
+            "h": 124
+          },
+          "south-west": {
+            "w": 124,
+            "h": 124
+          },
+          "west": {
+            "w": 124,
+            "h": 124
+          },
+          "north-west": {
+            "w": 124,
+            "h": 124
+          },
+          "north": {
+            "w": 124,
+            "h": 124
+          },
+          "north-east": {
+            "w": 124,
+            "h": 124
+          },
+          "east": {
+            "w": 124,
+            "h": 124
+          },
+          "south-east": {
+            "w": 124,
+            "h": 124
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 124,
+            "h": 124
+          },
+          "south-west": {
+            "w": 124,
+            "h": 124
+          },
+          "west": {
+            "w": 124,
+            "h": 124
+          },
+          "north-west": {
+            "w": 124,
+            "h": 124
+          },
+          "north": {
+            "w": 124,
+            "h": 124
+          },
+          "north-east": {
+            "w": 124,
+            "h": 124
+          },
+          "east": {
+            "w": 124,
+            "h": 124
+          },
+          "south-east": {
+            "w": 124,
+            "h": 124
+          }
+        },
+        "die": {
+          "south": {
+            "w": 124,
+            "h": 124
+          },
+          "south-west": {
+            "w": 124,
+            "h": 124
+          },
+          "west": {
+            "w": 124,
+            "h": 124
+          },
+          "north-west": {
+            "w": 124,
+            "h": 124
+          },
+          "north": {
+            "w": 124,
+            "h": 124
+          },
+          "north-east": {
+            "w": 124,
+            "h": 124
+          },
+          "east": {
+            "w": 124,
+            "h": 124
+          },
+          "south-east": {
+            "w": 124,
+            "h": 124
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.7742,
+      "footW": 15,
+      "bodyW": 40,
+      "hoverPx": 0
     },
     {
       "id": "saber_toothed_tiger",
@@ -2532,9 +6194,185 @@
           "south-east": "/assets/monsters/saber_toothed_tiger/animations/die__south-east.png"
         }
       },
+      "stripDims": {
+        "angry": {
+          "south": {
+            "w": 84,
+            "h": 84
+          },
+          "south-west": {
+            "w": 84,
+            "h": 84
+          },
+          "west": {
+            "w": 84,
+            "h": 84
+          },
+          "north-west": {
+            "w": 84,
+            "h": 84
+          },
+          "north": {
+            "w": 84,
+            "h": 84
+          },
+          "north-east": {
+            "w": 84,
+            "h": 84
+          },
+          "east": {
+            "w": 84,
+            "h": 84
+          },
+          "south-east": {
+            "w": 84,
+            "h": 84
+          }
+        },
+        "attack": {
+          "south": {
+            "w": 84,
+            "h": 84
+          },
+          "south-west": {
+            "w": 84,
+            "h": 84
+          },
+          "west": {
+            "w": 84,
+            "h": 84
+          },
+          "north-west": {
+            "w": 84,
+            "h": 84
+          },
+          "north": {
+            "w": 84,
+            "h": 84
+          },
+          "north-east": {
+            "w": 84,
+            "h": 84
+          },
+          "east": {
+            "w": 84,
+            "h": 84
+          },
+          "south-east": {
+            "w": 84,
+            "h": 84
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 84,
+            "h": 84
+          },
+          "south-west": {
+            "w": 84,
+            "h": 84
+          },
+          "west": {
+            "w": 84,
+            "h": 84
+          },
+          "north-west": {
+            "w": 84,
+            "h": 84
+          },
+          "north": {
+            "w": 84,
+            "h": 84
+          },
+          "north-east": {
+            "w": 84,
+            "h": 84
+          },
+          "east": {
+            "w": 84,
+            "h": 84
+          },
+          "south-east": {
+            "w": 84,
+            "h": 84
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 84,
+            "h": 84
+          },
+          "south-west": {
+            "w": 84,
+            "h": 84
+          },
+          "west": {
+            "w": 84,
+            "h": 84
+          },
+          "north-west": {
+            "w": 84,
+            "h": 84
+          },
+          "north": {
+            "w": 84,
+            "h": 84
+          },
+          "north-east": {
+            "w": 84,
+            "h": 84
+          },
+          "east": {
+            "w": 84,
+            "h": 84
+          },
+          "south-east": {
+            "w": 84,
+            "h": 84
+          }
+        },
+        "die": {
+          "south": {
+            "w": 84,
+            "h": 84
+          },
+          "south-west": {
+            "w": 84,
+            "h": 84
+          },
+          "west": {
+            "w": 84,
+            "h": 84
+          },
+          "north-west": {
+            "w": 84,
+            "h": 84
+          },
+          "north": {
+            "w": 84,
+            "h": 84
+          },
+          "north-east": {
+            "w": 84,
+            "h": 84
+          },
+          "east": {
+            "w": 84,
+            "h": 84
+          },
+          "south-east": {
+            "w": 84,
+            "h": 84
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.8571,
+      "footW": 14,
+      "bodyW": 44,
+      "hoverPx": 0
     },
     {
       "id": "mammoth",
@@ -2647,9 +6485,185 @@
           "south-east": "/assets/monsters/mammoth/animations/die__south-east.png"
         }
       },
+      "stripDims": {
+        "angry": {
+          "south": {
+            "w": 256,
+            "h": 256
+          },
+          "south-west": {
+            "w": 256,
+            "h": 256
+          },
+          "west": {
+            "w": 256,
+            "h": 256
+          },
+          "north-west": {
+            "w": 256,
+            "h": 256
+          },
+          "north": {
+            "w": 256,
+            "h": 256
+          },
+          "north-east": {
+            "w": 256,
+            "h": 256
+          },
+          "east": {
+            "w": 256,
+            "h": 256
+          },
+          "south-east": {
+            "w": 256,
+            "h": 256
+          }
+        },
+        "attack": {
+          "south": {
+            "w": 256,
+            "h": 256
+          },
+          "south-west": {
+            "w": 256,
+            "h": 256
+          },
+          "west": {
+            "w": 256,
+            "h": 256
+          },
+          "north-west": {
+            "w": 256,
+            "h": 256
+          },
+          "north": {
+            "w": 256,
+            "h": 256
+          },
+          "north-east": {
+            "w": 256,
+            "h": 256
+          },
+          "east": {
+            "w": 256,
+            "h": 256
+          },
+          "south-east": {
+            "w": 256,
+            "h": 256
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 256,
+            "h": 256
+          },
+          "south-west": {
+            "w": 256,
+            "h": 256
+          },
+          "west": {
+            "w": 256,
+            "h": 256
+          },
+          "north-west": {
+            "w": 256,
+            "h": 256
+          },
+          "north": {
+            "w": 256,
+            "h": 256
+          },
+          "north-east": {
+            "w": 256,
+            "h": 256
+          },
+          "east": {
+            "w": 256,
+            "h": 256
+          },
+          "south-east": {
+            "w": 256,
+            "h": 256
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 256,
+            "h": 256
+          },
+          "south-west": {
+            "w": 256,
+            "h": 256
+          },
+          "west": {
+            "w": 256,
+            "h": 256
+          },
+          "north-west": {
+            "w": 256,
+            "h": 256
+          },
+          "north": {
+            "w": 256,
+            "h": 256
+          },
+          "north-east": {
+            "w": 256,
+            "h": 256
+          },
+          "east": {
+            "w": 256,
+            "h": 256
+          },
+          "south-east": {
+            "w": 256,
+            "h": 256
+          }
+        },
+        "die": {
+          "south": {
+            "w": 256,
+            "h": 256
+          },
+          "south-west": {
+            "w": 256,
+            "h": 256
+          },
+          "west": {
+            "w": 256,
+            "h": 256
+          },
+          "north-west": {
+            "w": 256,
+            "h": 256
+          },
+          "north": {
+            "w": 256,
+            "h": 256
+          },
+          "north-east": {
+            "w": 256,
+            "h": 256
+          },
+          "east": {
+            "w": 256,
+            "h": 256
+          },
+          "south-east": {
+            "w": 256,
+            "h": 256
+          }
+        }
+      },
       "aliases": {
         "walk": "walk"
-      }
+      },
+      "artBottom": 0.7617,
+      "footW": 69,
+      "bodyW": 145,
+      "hoverPx": 0
     }
   ]
 }

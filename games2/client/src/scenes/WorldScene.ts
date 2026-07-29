@@ -412,8 +412,9 @@ interface MonsterAvatar {
   lit?: Phaser.GameObjects.Sprite; // lit copy above the night overlay (shared pipeline)
   coverY?: number; // wall-top line covering the sprite (lit copy cropped below it)
   surfLevel?: number; // surface level in LEVELS (occluder + light sampling basis)
-  shadowW: number; // resting shadow ellipse, scaled from the monster's frame size
-  shadowH: number; // (a 48px poring gets 26x10 — the historical size; a 256px mammoth ~120x46)
+  shadowW: number; // resting nadir-shadow ellipse, measured from the walk ART
+  shadowH: number; // (footprint blended toward body width; see addMonster)
+  hoverPx: number; // intentional levitation (winged flyers) above the ground anchor
   pendDir?: string; // stableDir hysteresis state (same contract as Avatar)
   pendSince?: number;
   // The manifest-RESOLVED walk anim key for this kind (animation_map.json —
@@ -698,9 +699,12 @@ export class WorldScene extends Phaser.Scene {
       const dirStrips = def.strips?.[walk] ?? {};
       for (const [dir, url] of Object.entries(dirStrips)) {
         if (!url) continue; // guard a missing strip
+        // Slice with the STRIP'S OWN measured frame size — art repairs resize
+        // strips in place, so the monster-level size can be stale (frame bleed).
+        const dims = def.stripDims?.[walk]?.[dir];
         this.load.spritesheet(monsterSheetKey(def.id, walk, dir), withV(url), {
-          frameWidth: def.frameW,
-          frameHeight: def.frameH,
+          frameWidth: dims?.w ?? def.frameW,
+          frameHeight: dims?.h ?? def.frameH,
         });
       }
     }
@@ -1532,7 +1536,15 @@ export class WorldScene extends Phaser.Scene {
           surfLevel: mv.surfLevel ?? null,
           depth: +mv.sprite.depth.toFixed(1),
           coverY: mv.coverY !== undefined ? Math.round(mv.coverY) : null,
-          shadow: { x: Math.round(mv.shadow.x), y: Math.round(mv.shadow.y), depth: +mv.shadow.depth.toFixed(1) },
+          shadow: {
+            x: Math.round(mv.shadow.x),
+            y: Math.round(mv.shadow.y),
+            depth: +mv.shadow.depth.toFixed(1),
+            w: mv.shadowW,
+            h: mv.shadowH,
+          },
+          originY: +mv.sprite.originY.toFixed(3),
+          hover: mv.hoverPx,
           lit: mv.lit ? { visible: mv.lit.visible, tint: mv.lit.tintTopLeft.toString(16) } : null,
           // Animation state — a headless probe CAN catch "moving but frozen"
           // (screenshots can't distinguish a stuck walk from freeze-frame idle).
@@ -1724,10 +1736,17 @@ export class WorldScene extends Phaser.Scene {
     // the wanderer placeholder if a monster's strip failed to load.
     const sprite = this.add.sprite(p0.x, p0.y, hasArt ? initKey : PLACEHOLDER_TEX);
     if (hasArt) sprite.setFrame(0);
-    sprite.setOrigin(0.5, 0.85).setScale(1);
-    // Shadow scales with the monster's frame size (the 24-roster spans 34px
-    // frogs to a 256px mammoth): a 48px poring keeps its historical 26x10.
-    const shadowW = Math.round(Math.min(120, Math.max(14, (def?.frameW ?? 48) * 0.54)));
+    // Feet origin = the MEASURED art bottom (build-monsters-manifest scans the
+    // walk strips), so the drawn feet stand exactly on the ground anchor. The
+    // old fixed 0.85 left tall-margined art (mammoth 0.76, donkey 0.77)
+    // floating ~20px above its own shadow (maintainer's BLUE circles).
+    sprite.setOrigin(0.5, def?.artBottom ?? 0.85).setScale(1);
+    // Nadir shadow sized from the ART, not the frame: the ground-contact
+    // footprint, blended up toward the body width for creatures that taper to
+    // a wisp at the ground (shadow creature, dragon tail). Frame-scaled
+    // shadows ran huge on padded frames and tiny on slim bodies (RED/GREEN).
+    const artW = Math.max(def?.footW ?? 0, (def?.bodyW ?? 0) * 0.55) * 1.05;
+    const shadowW = Math.round(Math.min(150, Math.max(12, artW || (def?.frameW ?? 48) * 0.54)));
     const shadowH = Math.max(6, Math.round(shadowW * 0.385));
     const shadow = this.add.image(p0.x, p0.y, SHADOW_TEX).setOrigin(0.5, 0.5).setDisplaySize(shadowW, shadowH);
     const mv: MonsterAvatar = {
@@ -1745,8 +1764,10 @@ export class WorldScene extends Phaser.Scene {
       fy: m.y,
       shadowW,
       shadowH,
+      hoverPx: def?.hoverPx ?? 0,
       walkKey: walk,
     };
+    sprite.y = p0.y - mv.hoverPx;
     this.monsters.set(id, mv);
     this.playMonsterAnim(mv, !!m.moving, m.dir);
   }
@@ -2447,14 +2468,17 @@ export class WorldScene extends Phaser.Scene {
         }
         mv.ly = mv.lyFlat - mv.elev;
         mv.sprite.x = mv.lx;
-        mv.sprite.y = mv.ly;
+        // Winged flyers levitate hoverPx above the ground anchor; the nadir
+        // shadow stays ON the ground (placeBodyShadow gets the hover as air
+        // height, so it shrinks/fades slightly — the bird pattern).
+        mv.sprite.y = mv.ly - mv.hoverPx;
         // SHARED body pipeline (same code as players — maintainer 2026-07-29:
         // the naive painter depth drew terrace tiles over monsters and their
         // shadows in front): occluder-aware depth + landing-ground shadow.
         const sLvl = m.elev ?? g.lvl;
         mv.surfLevel = sLvl; // occluder + light sampling basis (LEVELS)
         this.resolveBodyDepth(mv, sLvl);
-        this.placeBodyShadow(mv, targetElev, 0, mv.shadowW, mv.shadowH);
+        this.placeBodyShadow(mv, targetElev, mv.hoverPx, mv.shadowW, mv.shadowH);
         this.playMonsterAnim(mv, !!m.moving, m.dir);
       });
     }
