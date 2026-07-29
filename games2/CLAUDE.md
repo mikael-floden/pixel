@@ -360,6 +360,33 @@ visible head/shoulders are ABOVE the surface).
   confinement on real zones) and `monsters.test.ts` (live room: per-zone
   seeding, confinement, cross-client agreement). TODO (next): the 5-state
   brain (idle/angry/attack/walk/die) + per-monster display scale.
+- **Zone DEBUG overlay** — Settings switch "spawn areas", **OFF by default**
+  (maintainer 2026-07-30) and persisted in `ml-spawn-areas`. It draws each
+  zone's REAL POLYGON, lazy-fetched from the world's `spawns.json` the first
+  time it's switched on (zero cost while off) — NOT the bbox the server syncs:
+  zones are concave and sprawl across a habitat, so a bbox describes a
+  different region entirely (monster_demo's 5×5 pads are the one case where
+  the two coincide). Corners go through `projectZoneCorner`, NOT
+  `project()`/`projectFlat()`: those append the CHARACTER GROUND ANCHOR
+  (+tile/2, +dy) — the cell-diamond CENTRE a body standing in the cell is
+  drawn at — so feeding them spawns@1 TILE-CORNER vertices drew the outline a
+  half-cell (dy = 15px) down-screen of the zone it describes (maps agent
+  report + maintainer screenshot). A corner is horizontally centred in the
+  tile (+tile/2 stays) but sits at the diamond's TOP vertex, dy ABOVE that
+  centre — hence no +dy. Verified by flood-filling monster_demo's 5×5 sand
+  pad: a 640×296px blob (geometric 640×300) whose top vertex extrapolates to
+  y≈107 vs 98 predicted — the ~4 world-px residual is the documented art inset
+  ("tile edges are drawn slightly inside their geometric diamond", see
+  artLift) — where the OLD code predicted 128, a full half-cell low. Probe:
+  `__ml.spawnOverlay(on?)` → `{on, zones, corner(c,r)}`.
+- **The spawn BONFIRE** (`placeCampfire`) is the gathering spot and the "you
+  are home" landmark, anchored to the world's DECLARED spawn (`world.json`
+  `spawn` — the same cell the server's `placeAtSpawn` scatters arrivals
+  around). It used to look at the world CENTRE, but EVERY maps2 world declares
+  a spawn far from its middle (the_island2 95 cells away, trans_demo 195), so
+  the fire burned alone in unrelated terrain on every map (maintainer
+  2026-07-30). Now 1.6-2.6 cells from spawn everywhere. Probe:
+  `__ml.campfireInfo()` → `{col, row, z, spawn, distCells}`.
 - Server-authoritative roamers (`WorldRoom` monsters, poring family). The
   client's `MonsterAvatar` renders through the SAME battle-tested body
   pipeline as players — `resolveBodyDepth` (occluder-aware depth: ray test,

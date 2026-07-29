@@ -2004,7 +2004,7 @@
       "walkAnim": "walk",
       "animations": {
         "angry": {
-          "north": 9
+          "south": 9
         },
         "attack": {
           "south": 9,
@@ -2049,7 +2049,7 @@
       },
       "strips": {
         "angry": {
-          "north": "/assets/monsters/diablo_2/animations/angry__north.png"
+          "south": "/assets/monsters/diablo_2/animations/angry__south.png"
         },
         "attack": {
           "south": "/assets/monsters/diablo_2/animations/attack__south.png",

@@ -43,6 +43,8 @@ import {
   TIME_PHASE_SECONDS,
   WEATHER_NAMES,
   WEATHER_COUNT,
+  parseSpawns,
+  type SpawnZone,
 } from "@nangijala/shared";
 import { CharacterDef, Manifest, frameUrl, frameKey, BOOT_ANIM_STATES } from "../manifest";
 import { withV } from "../assetver";
@@ -444,6 +446,12 @@ export class WorldScene extends Phaser.Scene {
   // Faint debug outline of each fake SPAWN_AREA rectangle (WIP placeholder,
   // later the maps agent owns real areas). World-anchored via this.project.
   private spawnAreaGfx?: Phaser.GameObjects.Graphics;
+  // Monster spawn-zone overlay: DEBUG, off by default and persisted like the
+  // other switches (maintainer 2026-07-30 — the zones are map data, not part
+  // of the played world).
+  private spawnAreasOn = localStorage.getItem("ml-spawn-areas") === "1";
+  private spawnZones: SpawnZone[] | null = null; // lazily fetched when first shown
+  private spawnZonesLoading = false;
   private keys!: Record<string, Phaser.Input.Keyboard.Key>;
   private lastSent = "";
   private chat!: ChatUI;
@@ -899,6 +907,9 @@ export class WorldScene extends Phaser.Scene {
         { label: "torch", act: () => this.toggleTorch(), get: () => this.torchOn },
         { label: "bonfire", act: () => this.toggleBonfire(), get: () => this.fireOn },
         { label: "see-through walls", act: () => this.toggleWalls(), get: () => this.occFadeOn },
+        // Monster spawn zones (maps2 spawns@1) — a DEBUG overlay, off by
+        // default (maintainer 2026-07-30: "not visible by default").
+        { label: "spawn areas", act: () => this.toggleSpawnAreas(), get: () => this.spawnAreasOn },
         {
           label: "overlay",
           act: () => this.setOverlay((this.overlayIdx + 1) % OVERLAYS.length),
@@ -1468,6 +1479,34 @@ export class WorldScene extends Phaser.Scene {
         };
       },
       nightInfo: () => this.night?.debugInfo(),
+      // Where the spawn bonfire ended up, and how far that is from the world's
+      // declared spawn cell — the "is the home fire actually at home" probe.
+      campfireInfo: () => {
+        if (!this.campfire || !this.world) return null;
+        const sp = this.world.spawn ?? null;
+        return {
+          col: this.campfire.col,
+          row: this.campfire.row,
+          z: this.campfire.z,
+          spawn: sp,
+          distCells: sp ? +Math.hypot(this.campfire.col - sp[0], this.campfire.row - sp[1]).toFixed(2) : null,
+        };
+      },
+      // Spawn-zone debug overlay: toggle + inspect. `corner(c,r)` returns the
+      // SCREEN point the overlay draws a tile corner at, so a probe can compare
+      // it with cellScreen() (the tile art box) without a screenshot.
+      spawnOverlay: (on?: boolean) => {
+        if (on !== undefined) this.toggleSpawnAreas(on);
+        return {
+          on: this.spawnAreasOn,
+          zones: this.spawnZones?.length ?? null,
+          corner: (c: number, r: number) => {
+            const p = this.projectZoneCorner(c, r);
+            const cam = this.cameras.main;
+            return { x: (p.x - cam.worldView.x) * cam.zoom, y: (p.y - cam.worldView.y) * cam.zoom };
+          },
+        };
+      },
       // Monster render-state probe (shared body pipeline QA): per monster the
       // resolved depth, cover line, shadow anchor and lit-copy state.
       monsterInfo: () =>
@@ -2622,6 +2661,18 @@ export class WorldScene extends Phaser.Scene {
   private toggleWalls() {
     this.occFadeOn = !this.occFadeOn;
     this.chat.addLog("—", `[7] See-through walls: ${this.occFadeOn ? "on" : "off"}`);
+  }
+
+  /** Show/hide the maps2 monster spawn-zone outlines (debug). Persisted so a
+   * QA session keeps them on across reloads; OFF for everyone by default. */
+  private toggleSpawnAreas(on = !this.spawnAreasOn) {
+    this.spawnAreasOn = on;
+    try {
+      localStorage.setItem("ml-spawn-areas", on ? "1" : "0");
+    } catch {}
+    this.drawSpawnAreas();
+    this.chat.addLog("—", `Spawn areas: ${on ? "on" : "off"}`);
+    return this.spawnAreasOn;
   }
 
   /** The spawn bonfire on/off — its firelight drowns nearby tiles'
@@ -3939,32 +3990,75 @@ export class WorldScene extends Phaser.Scene {
     this.drawSpawnAreas();
   }
 
-  /** Faint iso outline of each fake monster SPAWN_AREA (WIP placeholder — the
-   * maps agent owns real areas later). Drawn in WORLD space (via this.project,
-   * which reads this.iso) at a depth just above the ground RT (-1e6) and below
-   * every sprite, so it never occludes a monster. Redrawn whenever the iso
-   * origin is (re)built. Kept subtle on purpose. */
+  /** Iso outline of each maps2 monster SPAWN ZONE — a DEBUG overlay, off by
+   * default (settings switch "spawn areas"). Drawn in WORLD space at a depth
+   * just above the ground RT and below every sprite, so it never occludes a
+   * monster. Redrawn whenever the iso origin is (re)built or the switch flips.
+   *
+   * Draws the zone's REAL POLYGON, lazily fetched from the world's spawns.json
+   * the first time the overlay is enabled (zero cost while off) — NOT the
+   * bounding box the server syncs: zones are concave by design and may sprawl
+   * across a habitat, so a bbox rectangle describes a completely different
+   * region (monster_demo's 5x5 pads are the only case where they coincide).
+   * Vertices are TILE CORNERS (spawns@1), projected with projectZoneCorner. */
   private drawSpawnAreas() {
     if (!this.world) return;
     if (!this.spawnAreaGfx) this.spawnAreaGfx = this.add.graphics().setDepth(-800_000);
     const g = this.spawnAreaGfx;
     g.clear();
-    // The server computes the areas per world (near the world's spawn) and syncs
-    // them; before the first patch arrives the list is simply empty (no draw).
-    const areas = (this.room?.state as any)?.spawnAreas ?? [];
-    for (const area of areas) {
-      // Project the 4 AABB corners onto the iso grid (elevation-aware).
-      const pts = [
-        this.project(area.x0, area.y0),
-        this.project(area.x1, area.y0),
-        this.project(area.x1, area.y1),
-        this.project(area.x0, area.y1),
-      ].map((p) => ({ x: p.x, y: p.y }));
+    if (!this.spawnAreasOn) return;
+    if (this.spawnZones === null) {
+      this.loadSpawnZones(); // async; redraws itself when the file lands
+      return;
+    }
+    for (const zone of this.spawnZones) {
+      const pts = zone.area.map(([cx, cy]) => this.projectZoneCorner(cx, cy));
+      if (pts.length < 3) continue;
       g.fillStyle(0x66ccff, 0.05);
       g.fillPoints(pts, true);
-      g.lineStyle(1, 0x8fd6ff, 0.3);
+      g.lineStyle(1, 0x8fd6ff, 0.45);
       g.strokePoints(pts, true);
     }
+  }
+
+  /** Screen point of a spawns@1 TILE CORNER (cell (c,r) spans corners (c,r)..
+   * (c+1,r+1)). NOT project()/projectFlat(): those append the CHARACTER GROUND
+   * ANCHOR — the point a body standing IN a cell is drawn at, i.e. the cell
+   * diamond's CENTRE (+tile/2, +dy) — so feeding them corner coordinates put
+   * the outline half a cell down-screen of the zone it describes (maps agent
+   * report + maintainer's monster_demo screenshot, 2026-07-30). A corner is
+   * horizontally centred in the tile (so +tile/2 stays) but sits at the
+   * diamond's TOP vertex, which is `dy` ABOVE that centre — hence no +dy here.
+   * Elevation: lift by the cell the corner belongs to (its down-right cell,
+   * clamped), so a zone on a plateau traces the plateau's rim. */
+  private projectZoneCorner(cornerCol: number, cornerRow: number): { x: number; y: number } {
+    const { dx, dy, lh } = MAP_GEOMETRY;
+    const W = this.world?.width ?? 1;
+    const H = this.world?.height ?? 1;
+    const c = Math.max(0, Math.min(W - 1, cornerCol));
+    const r = Math.max(0, Math.min(H - 1, cornerRow));
+    const lvl = this.world?.rows[Math.floor(r)]?.[Math.floor(c)]?.l ?? 0;
+    return {
+      x: this.iso.ox + (cornerCol - cornerRow) * dx + MAP_GEOMETRY.tile / 2,
+      y: this.iso.oy + (cornerCol + cornerRow) * dy - lvl * lh,
+    };
+  }
+
+  /** Fetch the world's spawns.json once (debug overlay only). Missing file →
+   * an empty list, so the overlay simply draws nothing and never retries. */
+  private loadSpawnZones() {
+    if (this.spawnZonesLoading) return;
+    this.spawnZonesLoading = true;
+    const name = this.worldName || DEFAULT_WORLD;
+    fetch(`/assets/maps2/worlds/${name.replace(/[^a-z0-9_-]/gi, "")}/spawns.json`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => {
+        this.spawnZones = j ? parseSpawns(j) : [];
+        this.drawSpawnAreas();
+      })
+      .catch(() => {
+        this.spawnZones = [];
+      });
   }
 
   /** Face tile key for a deck's underside/sides (the material's plain face, like
@@ -4855,10 +4949,15 @@ export class WorldScene extends Phaser.Scene {
     return out;
   }
 
-  /** A burning campfire beside the spawn point — the gathering spot. The
-   * server spawns newcomers around findSpawn(world centre), which is a pure
-   * function of the terrain, so the client can find the same cell and dress
-   * it without any server round-trip. Its fire feeds the night shader. */
+  /** A burning campfire beside the spawn point — the gathering spot, and the
+   * "you are home" landmark (maintainer 2026-07-30). Anchored to the WORLD'S
+   * DECLARED SPAWN (world.json `spawn`, the same cell the server places
+   * arrivals around in placeAtSpawn) — NOT the world centre, which is where
+   * this used to look: every maps2 world declares a spawn far from its middle
+   * (the_island2's is 95 cells away, trans_demo's 195), so the fire burned
+   * alone in unrelated terrain on every map. findSpawn then snaps to standable
+   * ground exactly as the server does, so both sides agree without a round
+   * trip. Its fire feeds the night shader. */
   private placeCampfire() {
     if (!this.world || !this.terrain) return;
     if (!this.textures.exists(CAMPFIRE_KEY)) {
@@ -4867,7 +4966,11 @@ export class WorldScene extends Phaser.Scene {
       console.warn(`[nangijala] campfire strip missing (${CAMPFIRE_URL}) — fire not placed`);
       return;
     }
-    const spawn = findSpawn(this.terrain, this.worldW / 2, this.worldH / 2);
+    // Same anchor expression as the server's worldSpawn (cell → world units).
+    const anchor = this.world.spawn
+      ? { x: this.world.spawn[0] * CELL_WU, y: this.world.spawn[1] * CELL_WU }
+      : { x: this.worldW / 2, y: this.worldH / 2 };
+    const spawn = findSpawn(this.terrain, anchor.x, anchor.y);
     const sc = Math.floor(spawn.x / CELL_WU);
     const sr = Math.floor(spawn.y / CELL_WU);
     const sLvl = levelAtWorld(this.terrain, spawn.x, spawn.y);
