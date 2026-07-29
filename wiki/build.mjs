@@ -12,7 +12,7 @@
 //
 // Missing domains are skipped gracefully (future domains — e.g. items/ —
 // appear automatically once their directory exists). Also seeds
-// wiki/tuning/monsters.json with defaults for any monster new to the roster
+// live/tuning/monsters.json with defaults for any monster new to the roster
 // (existing edits are always preserved).
 
 import { readFileSync, writeFileSync, readdirSync, existsSync, statSync, openSync, readSync, closeSync } from "node:fs";
@@ -343,7 +343,7 @@ function buildItems() {
 function buildConstants() {
   // Read-only discovery of `export const NAME = <number literal>` in
   // games2/shared — the catalog the wiki's tuning page lists. Overrides the
-  // maintainer sets live in wiki/tuning/constants.json (advisory until the
+  // maintainer sets live in live/tuning/constants.json (advisory until the
   // games agent wires them in).
   const rels = ["src/index.ts", "src/surfaces.ts", "src/monsters.ts", "src/units.ts"];
   const consts = [];
@@ -367,7 +367,7 @@ function buildConstants() {
 
 // ------------------------------------------------------- tuning seed/merge
 function seedMonsterTuning(monsters) {
-  const path = join(WIKI_DIR, "tuning", "monsters.json");
+  const path = join(ROOT, "live", "tuning", "monsters.json");
   const existing = readJson(path) ?? {};
   const defaults = existing.defaults ?? {
     max_hp: 20, damage: 3, speed_wu: 35, aggro_radius_wu: 96,

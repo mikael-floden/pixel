@@ -16,7 +16,7 @@ const GAME_ROOT = join(SRC_DIR, "..", "..");
 const ASSETS_ROOT = process.env.ASSETS_ROOT || join(GAME_ROOT, "..");
 const ASSET_DOMAINS = [
   "characters", "tiles", "maps", "objects", "characters2", "tiles2", "maps2",
-  "sounds", "music", "monsters", "wiki",
+  "sounds", "music", "monsters", "wiki", "live",
 ];
 
 const app = express();

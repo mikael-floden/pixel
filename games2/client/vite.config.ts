@@ -7,7 +7,7 @@ import { extname, join, normalize, resolve } from "node:path";
 const REPO_ROOT = resolve(__dirname, "../..");
 const ASSET_DOMAINS = new Set([
   "characters", "tiles", "maps", "objects", "characters2", "tiles2", "maps2",
-  "sounds", "music", "monsters", "wiki",
+  "sounds", "music", "monsters", "wiki", "live",
 ]);
 const TYPES: Record<string, string> = {
   ".png": "image/png",
@@ -44,5 +44,11 @@ function serveAssets(): Plugin {
 
 export default defineConfig({
   plugins: [serveAssets()],
-  server: { host: true, port: 5173 },
+  server: {
+    host: true,
+    port: 5173,
+    // The wiki (served at /assets/wiki/site/) talks to the world server's
+    // /api (live state, admin login/save) — same-origin in prod, proxied in dev.
+    proxy: { "/api": "http://localhost:2567" },
+  },
 });
