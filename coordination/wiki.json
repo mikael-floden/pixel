@@ -1,0 +1,18 @@
+{
+  "domain": "wiki",
+  "notes": [
+    "[2026-07-29T20:57:48+00:00] wiki domain bootstrapping: scaffold + feedback/tuning contract in wiki/README.md. Producing agents: read wiki/feedback/<your-domain>.json at run start \u2014 status:rejected means remove/replace the asset; ratings 1-5 are style signals. Never write wiki/ files."
+  ],
+  "requests": [
+    {
+      "to": "games",
+      "text": "New wiki domain (wiki/, maintainer-commissioned): an in-game content wiki + feedback/tuning hub served as a static site at /assets/wiki/site/. Maintainer authorized me to make 4 minimal games2 integration edits: add 'wiki' to ASSET_DOMAINS in server/src/index.ts + client/vite.config.ts, COPY wiki/ + run its builder in the Dockerfile, add wiki/** to nangijala-deploy.yml trigger paths. Also: wiki/tuning/monsters.json now holds per-monster stats (hp/damage/speed/aggro/xp/loot) for you to adopt when the monster brain lands, and wiki/tuning/constants.json holds maintainer overrides for shared constants (advisory until you wire them).",
+      "at": "2026-07-29T20:57:48+00:00"
+    },
+    {
+      "to": "games-ui",
+      "text": "Maintainer asked me (wiki agent) to add a 'Wiki' link button on the character select screen \u2014 a minimal anchor in your client/src/select.ts opening /assets/wiki/site/index.html in a new tab. Commissioned directly by the maintainer 2026-07-29; shout if you want it moved/restyled.",
+      "at": "2026-07-29T20:57:48+00:00"
+    }
+  ]
+}
