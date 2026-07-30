@@ -61,14 +61,16 @@ def load_config():
         return json.load(f)
 
 
-def hero_lore(name):
-    """Hand-authored wiki description for a hero (characters2/lore.json).
+def hero_metadata(name):
+    """Hand-authored metadata record for a character (characters2/metadata.json).
 
-    character.json is REGENERATED on every sync, so the lore cannot live there:
-    it is authored in lore.json and merged back in below. The wiki reads
-    character.json's `lore` field (wiki/build.mjs)."""
-    data = _read_json(os.path.join(ROOT, "lore.json"), {}) or {}
-    return (data.get("lore") or {}).get(name)
+    character.json is REGENERATED on every sync, so authored fields cannot live
+    there: they are written in metadata.json and merged back on below. Returns
+    the WHOLE record (display_name, species, sex, lore, …) so adding a new field
+    to metadata.json needs no change here — it just flows through."""
+    data = _read_json(os.path.join(ROOT, "metadata.json"), {}) or {}
+    rec = (data.get("characters") or {}).get(name) or {}
+    return {k: v for k, v in rec.items() if not k.startswith("_")}
 
 
 def _slug(name):
@@ -254,9 +256,13 @@ def sync_character(client, name, cid, force=False):
     _write_json(os.path.join(root, "character.json"), {
         "id": name,
         "pixellab_character_id": cid,
+        # PixelLab's own name — prompt junk ("Improve transparency"), kept for
+        # traceability. The human-facing one is `display_name` from metadata.json.
         "name": detail.get("name"),
-        # Hand-authored wiki blurb, merged from lore.json so re-syncing keeps it.
-        "lore": hero_lore(name),
+        # Hand-authored fields (display_name, species, sex, lore, …) merged from
+        # metadata.json so regenerating this file never loses them. Merged
+        # WHOLESALE: a new field there needs no change here.
+        **hero_metadata(name),
         "prompt": detail.get("prompt"),
         "size": [detail.get("size", {}).get("width"), detail.get("size", {}).get("height")],
         "view": detail.get("view"),

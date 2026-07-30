@@ -1,7 +1,0 @@
-{
-  "_comment": "Short RPG-wiki descriptions for the playable heroes, hand-authored by the characters2 agent (the monsters domain keeps the same field name, `lore`, and the items domain uses `description`). sync.py MERGES these into humans/<id>/character.json on every sync, so a re-sync can never wipe them — edit them HERE, never in character.json. The wiki reads character.json's `lore` (wiki/build.mjs:buildCharacters) and already prints Species/Sex on its own lines, so keep the text to flavour: 1-2 sentences, ~25 words, no stats.",
-  "lore": {
-    "default_boy": "A young man of the human race — no claws, no scales, no magic in the blood, just nerve and a quick pair of hands. He sets out with nothing but what he stands in.",
-    "default_girl": "A young woman of the human race, level-headed and hard to rattle. She carries no blade yet, only the stubborn confidence that carried humankind this far."
-  }
-}

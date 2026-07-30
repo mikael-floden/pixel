@@ -1,0 +1,19 @@
+{
+  "_comment": "Hand-authored METADATA for each playable character — everything true about a character that cannot be derived from the PixelLab art. `lore` is only the first field; add more (tags, hometown, starting class, voice, …) as records grow. Keyed by the character's humans/<id> folder id. Authored HERE and merged onto humans/<id>/character.json by sync.py, because that file is regenerated on every sync and would otherwise wipe it — so consumers may read either this file or the merged fields on character.json.",
+  "_maintenance": "Edit fields HERE, never in humans/<id>/character.json (generated). New character: add a record under `characters` keyed by its folder id. Every field is optional — absent fields are simply omitted downstream, so adding one never breaks a consumer.",
+  "format": "characters2-metadata@1",
+  "characters": {
+    "default_boy": {
+      "display_name": "Man",
+      "species": "Human",
+      "sex": "Male",
+      "lore": "A young man of the human race — no claws, no scales, no magic in the blood, just nerve and a quick pair of hands. He sets out with nothing but what he stands in."
+    },
+    "default_girl": {
+      "display_name": "Woman",
+      "species": "Human",
+      "sex": "Female",
+      "lore": "A young woman of the human race, level-headed and hard to rattle. She carries no blade yet, only the stubborn confidence that carried humankind this far."
+    }
+  }
+}
