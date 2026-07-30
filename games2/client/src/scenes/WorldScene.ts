@@ -591,6 +591,10 @@ export class WorldScene extends Phaser.Scene {
   // Masked to a soft bubble around the player (distance falloff).
   private occFadeOn = false; // feature toggle ([7]) — WIP prototype, opt-in for now
   private occFocus: { col: number; row: number } | null = null; // debug focus override
+  // Does the CURRENT occluder set carry ghost depth/alpha from a fade pass?
+  // While the feature is OFF (the default) this stays false, which lets
+  // updateOcclusionFade skip its restore sweep entirely — see there.
+  private occGhosted = false;
   private occRevealRT?: Phaser.GameObjects.RenderTexture; // player-level ground + black roots
   private lastReveal = { x: NaN, y: NaN, cx: NaN, cy: NaN };
   private emissiveLights: LightSource[] = [];
@@ -4523,11 +4527,21 @@ export class WorldScene extends Phaser.Scene {
           o.setDepth(od).setAlpha(1);
         }
       }
-    } else {
+      this.occGhosted = true;
+    } else if (this.occGhosted) {
+      // ONE restore sweep, on the frame the feature (or the focus) goes away.
+      // This used to run EVERY frame with the feature OFF — a getData +
+      // setDepth + setAlpha over the whole occluder set, which on the_island2's
+      // cave/mountain region is 6-15k Images, and every setDepth re-queues
+      // Phaser's display-list sort. Measured 1.33ms/frame at (120,32) for a
+      // feature that is off by default (ULTRACODE lag investigation, fix #1).
+      // Fresh occluders are born with their natural depth/alpha, so
+      // rebuildOccluders clears the flag rather than needing a sweep.
       for (const o of this.occluders) {
         const od = o.getData("od") as number | undefined;
         if (od !== undefined) o.setDepth(od).setAlpha(1);
       }
+      this.occGhosted = false;
     }
     this.updateOccReveal(active && fc ? fc : null, pav, R);
   }
@@ -4639,6 +4653,9 @@ export class WorldScene extends Phaser.Scene {
     this.lastOccl = { x: ccx, y: ccy };
     for (const im of this.occluders) im.destroy();
     for (const lo of this.litOccluders) lo.img.destroy();
+    // The new set is built fresh at natural depth/alpha — no ghost state to
+    // restore (updateOcclusionFade re-applies it next frame if the fade is on).
+    this.occGhosted = false;
     this.litOccluders = [];
     this.occluders = [];
     this.occluderMeta = [];
