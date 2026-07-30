@@ -82,14 +82,9 @@ function showVersion() {
     "position:fixed;left:50%;transform:translateX(-50%);" +
     "bottom:6px;z-index:50;" +
     "font:600 11px var(--mono, ui-monospace, monospace);letter-spacing:.06em;" +
-    // A touch more visible than the original muted grey, WITHOUT a web-style
-    // effect (maintainer 2026-07-30: an outline ring + soft glow "doesn't fit
-    // in… this is a pixel art game"). So: the ink colour held back by opacity,
-    // plus ONE hard single-pixel drop shadow — no blur, no ring — which is the
-    // pixel-game idiom for text over art. On a flat backdrop the shadow is
-    // background-on-background and simply invisible.
-    "color:var(--ink, #1f1e1a);opacity:.85;" +
-    "text-shadow:1px 1px 0 var(--bg, #faf9f5);" +
+    // Plain text, no effects (maintainer 2026-07-30). Visibility comes from
+    // the COLOUR alone: the theme's full ink instead of the old muted grey.
+    "color:var(--ink, #1f1e1a);" +
     "pointer-events:none;user-select:none";
   document.body.appendChild(el);
 }
