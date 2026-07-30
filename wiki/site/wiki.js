@@ -776,35 +776,32 @@ function viewMonster(id) {
   renderFacet();
   return h("div", {},
     crumbRow("#/monsters", `← ${label("monsters")}`, "monsters", state.data.domains.monsters, m.id),
-    h("div", { class: "detail-head tight" },
+    h("div", { class: "detail-head" },
       h("div", { class: "portrait-col" },
         h("div", { class: "portrait checker" }, h("img", { src: assetUrl(m.preview), alt: m.name })),
         levelBadge(monsterStats(m.id))),
       h("div", { class: "meta" },
         h("h1", {}, m.name),
+        // How many roam the world, tucked under the name and above the
+        // description (maintainer 2026-07-30).
+        h("div", { class: "spawn-line" }, (() => {
+          const sp = monsterSpawns(m.id);
+          return sp
+            ? h("span", { class: "pill ok" }, `${sp.spawned} roaming the world across ${sp.zones} ${sp.zones === 1 ? "habitat" : "habitats"}`)
+            : h("span", { class: "pill warn", title: "No spawn zone places this creature in the world yet" }, "not spawned in the world");
+        })()),
         // PLAYER-facing lore: the monsters domain's own blurb (monster.json
         // `lore`) when it ships one, else a generic placeholder until the
         // lore agent covers the stragglers (maintainer 2026-07-30). The lore
         // is the LAST thing in this column on purpose — the height it
         // reserves for the longest blurb then falls at the bottom of the
-        // column, where it is invisible, instead of opening a blank line in
-        // the middle of the page (maintainer 2026-07-30).
+        // column, where it reads as the gap before the next panel instead of
+        // opening a blank line in the middle of the page.
         loreSlot(monsterLore(m), state.data.domains.monsters.map(monsterLore)),
         // Art/render tech (resolution, pads, foot metrics) is admin-only.
         state.admin ? h("p", { class: "muted" }, `${m.frameW}×${m.frameH}px (native ${m.nativeW}×${m.nativeH}, pad ${m.pad.x},${m.pad.y}) · kind: ${m.kind} · foot line at ${(m.artBottom * 100).toFixed(0)}% · footW ${m.footW ?? "?"}px · bodyW ${m.bodyW ?? "?"}px${m.hoverPx ? ` · hovers ${m.hoverPx}px` : ""}${m.inGame ? "" : " · not in the game manifest yet"}`) : null,
         state.admin && m.pixellab ? h("p", {}, h("a", { href: m.pixellab, target: "_blank", rel: "noopener" }, "Open in PixelLab ↗")) : null,
         feedbackRow("monsters", m.path))),
-    // How many roam the world, on the strip under the head — it costs NO
-    // extra height (it fills the row the level chip already opened beside
-    // the portrait) and it is out of the text column, so the blurb's
-    // reserved height can't push it around.
-    h("div", { class: "head-strip" },
-      (() => {
-        const sp = monsterSpawns(m.id);
-        return sp
-          ? h("span", { class: "pill ok" }, `${sp.spawned} roaming the world across ${sp.zones} ${sp.zones === 1 ? "habitat" : "habitats"}`)
-          : h("span", { class: "pill warn", title: "No spawn zone places this creature in the world yet" }, "not spawned in the world");
-      })()),
     h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "Animations", h("span", { class: "pill" }, `${Object.keys(m.animations).length} states × 8 directions`)),
       player.el,

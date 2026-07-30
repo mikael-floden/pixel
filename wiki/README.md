@@ -246,14 +246,11 @@ of extra unnecessary space"). Two rules keep it invisible on the monster
 page:
 
 - the blurb is the **last** thing in its column, so its reserve can never
-  open a blank line between two visible elements — it used to sit right
-  above the "N roaming the world" line;
-- the **level chip moved back under the thumbnail**, which makes the left
-  column 167px — taller than the tallest text column that page can produce
-  (title + longest blurb at a phone's ~248px column ≈ 160px). The reserve
-  therefore lands beside a taller neighbour instead of below the text.
-  "N roaming" then rides the row the level chip already opened, on the
-  `.head-strip`, costing nothing.
+  open a blank line between two visible elements. "N roaming the world" sits
+  between the name and the blurb (maintainer's placement), never after it —
+  put anything below the blurb and the reserve becomes a hole;
+- the **level chip lives under the thumbnail**, so the left column carries
+  its own height instead of leaving a void beside the text.
 
 Do NOT try to win that by enlarging the portrait: at 160px it squeezes the
 text under `.meta`'s 240px `min-width`, the columns stack, and the stage
