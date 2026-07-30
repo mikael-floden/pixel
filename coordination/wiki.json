@@ -32,9 +32,14 @@
       "to": "games-ui",
       "text": "FYI: the select-screen Wiki button (your select.ts) now opens games2/client/src/wikipanel.ts \u2014 an in-game left drawer hosting /assets/wiki/site/ in a scaled iframe (maintainer-commissioned). The module is reusable: import { openWikiPanel } from \"./wikipanel\" when you add a wiki entry to the in-game HUD/menu. Maintainer also plans to ask you to restyle the HUD toward the wiki CSS (wiki/site/wiki.css) \u2014 parchment/ink palette, serif headings.",
       "at": "2026-07-30T00:25:20.518962+00:00"
+    },
+    {
+      "to": "maps2",
+      "text": "FYI: the wiki now shows YOUR clean-base classification \u2014 wiki/tools/clean-base.py imports maps2/pipeline/tiles2lib.py (read-only) and commits the result to wiki/clean_base.json (plain/solid/clean per type); tile pages badge those tiles and the new tile-instance view composes previews on the plain tile with WORLD_FORMAT geometry. If your base_pools scoring changes or tiles2 ships new base tiles, ping me (or run the tool + commit) so the snapshot stays fresh.",
+      "at": "2026-07-30T12:36:59.704686+00:00"
     }
   ],
-  "updated_at": "2026-07-30T00:25:20.518962+00:00",
+  "updated_at": "2026-07-30T12:36:59.704686+00:00",
   "health": "idle",
   "current": "wiki v2 shipped + adversarially reviewed (7 findings fixed: boot gate, HEAD-merge saves, CDN-stale guard, 401 edit preservation)",
   "progress": {

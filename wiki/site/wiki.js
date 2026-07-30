@@ -670,18 +670,32 @@ function viewTiles() {
         h("div", { class: "card-badges" }, ...entityBadge("tiles", t.path)));
     })));
 }
-function tileCell(group, file) {
-  const id = `${group.dir}/${file}`.replace(/\.png$/, "");
+// Is this tile one of the maps agent's "clean base" palette for its type?
+// (`solid` = the small set it paints regions + cliff walls with; `plain` =
+// the single canonical one — see wiki/tools/clean-base.py.)
+function cleanBaseRank(type, relPath) {
+  const cb = type.cleanBase;
+  if (!cb) return null;
+  if (cb.plain === relPath) return "plain";
+  if (cb.solid?.includes(relPath)) return "solid";
+  return null;
+}
+function tileCell(type, group, file) {
+  const rel = `${group.dir}/${file}`;
+  const id = rel.replace(/\.png$/, "");
   const cell = h("div", { class: "tile-cell" });
   const sync = () => {
     const e = fb("tiles", id);
     cell.classList.toggle("rejected", e.status === "rejected");
     cell.classList.toggle("approved", e.status === "approved");
   };
+  const rank = cleanBaseRank(type, rel);
   // Skip null children — raw DOM append(null) renders a literal "null" text
   // node (players saw one under every tile, 2026-07-30).
   for (const c of [
-    h("img", { src: assetUrl(`${group.dir}/${file}`), alt: file, loading: "lazy", title: id }),
+    h("a", { href: `#/tiles/${type.id}/${encodeURIComponent(rel)}`, class: "tile-link", title: `${id} — open tile view` },
+      h("img", { src: assetUrl(rel), alt: file, loading: "lazy" })),
+    rank ? h("span", { class: "base-pill", title: "The maps agent paints clean ground and cliff walls with this tile" }, "clean base") : null,
     starsWidget("tiles", id),
     state.admin ? h("button", {
       class: "tile-x", title: "Reject this tile (toggles)",
@@ -708,8 +722,103 @@ function viewTileType(id) {
         ...groups.map((g, i) =>
           h("details", { class: "tile-group", ...(kind === "base" && i < 2 ? { open: "" } : {}) },
             h("summary", {}, `${g.label} · ${g.sheet} `, h("span", { class: "pill" }, String(g.tiles.length))),
-            h("div", { class: "tile-grid" }, ...g.tiles.map((f) => tileCell(g, f))))));
+            h("div", { class: "tile-grid" }, ...g.tiles.map((f) => tileCell(t, g, f))))));
     }));
+}
+
+/* --- tile instance (one tile, composed with the game's real iso geometry) --- */
+// Draw a list of cells {c, r, lvl, img, top} onto a canvas: the WORLD_FORMAT
+// projection (x=(c−r)·dx, y=(c+r)·dy − lvl·levelPx; a cell of elevation L
+// stacks its tile L times, 16px apart, then draws the top). Painter order:
+// back-to-front by (c+r), then by level.
+function isoScene(cells, images, scale = 2) {
+  const iso = state.data.iso ?? { tilePx: 64, dx: 32, dy: 15, levelPx: 16 };
+  const draws = [];
+  for (const cell of cells) {
+    const lvl = cell.lvl ?? 0;
+    for (let i = 0; i < lvl; i++) draws.push({ ...cell, z: i, img: cell.img });
+    draws.push({ ...cell, z: lvl, img: cell.top ?? cell.img });
+  }
+  draws.sort((a, b) => (a.c + a.r) - (b.c + b.r) || a.r - b.r || a.z - b.z);
+  const px = (d) => (d.c - d.r) * iso.dx - iso.tilePx / 2;
+  const py = (d) => (d.c + d.r) * iso.dy - d.z * iso.levelPx - iso.dy;
+  const minX = Math.min(...draws.map(px)), maxX = Math.max(...draws.map((d) => px(d) + iso.tilePx));
+  const minY = Math.min(...draws.map(py)), maxY = Math.max(...draws.map((d) => py(d) + iso.tilePx));
+  const pad = 4;
+  const canvas = h("canvas", {
+    width: (maxX - minX + pad * 2) * scale,
+    height: (maxY - minY + pad * 2) * scale,
+    class: "iso-canvas",
+  });
+  const ctx = canvas.getContext("2d");
+  ctx.imageSmoothingEnabled = false;
+  for (const d of draws) {
+    const im = images[d.img];
+    if (!im) continue;
+    ctx.drawImage(im, (px(d) - minX + pad) * scale, (py(d) - minY + pad) * scale, iso.tilePx * scale, iso.tilePx * scale);
+  }
+  return canvas;
+}
+function loadImages(paths, cb) {
+  // Count UNIQUE paths — the viewed tile can BE the clean base (T === B),
+  // and a duplicate-based countdown would then never reach zero.
+  const uniq = [...new Set(paths)];
+  const out = {};
+  let left = uniq.length;
+  if (!left) { cb(out); return; }
+  for (const p of uniq) {
+    const im = new Image();
+    im.onload = im.onerror = () => { out[p] = im.naturalWidth ? im : null; if (--left <= 0) cb(out); };
+    im.src = assetUrl(p);
+  }
+}
+function viewTileInstance(typeId, rel) {
+  const t = state.data.domains.tiles.find((x) => x.id === typeId);
+  if (!t) return h("p", {}, "Unknown tile type.");
+  const all = t.groups.flatMap((g) => g.tiles.map((f) => ({ id: encodeURIComponent(`${g.dir}/${f}`), name: f, rel: `${g.dir}/${f}`, group: g })));
+  const cur = all.find((x) => x.rel === rel);
+  if (!cur) return h("p", {}, "Unknown tile.");
+  const id = rel.replace(/\.png$/, "");
+  const plain = t.cleanBase?.plain ?? rel; // no classification → self-surround
+  const rank = cleanBaseRank(t, rel);
+
+  // The five composition scenes (maintainer 2026-07-30): clean-ground
+  // surround, self surround, self stack (cliff), and the tile mid-wall with
+  // clean-base flanks — both wall faces.
+  const T = rel, B = plain;
+  const grid3 = (centre, ring) => [
+    ...[0, 1, 2].flatMap((r) => [0, 1, 2].map((c) => ({ c, r, img: c === 1 && r === 1 ? centre : ring }))),
+  ];
+  const scenes = [
+    ["On clean ground", "The tile surrounded by the type's clean base — how it sits in open terrain.", grid3(T, B)],
+    ["Tiled with itself", "A 3×3 field of only this tile — repetition and seams.", grid3(T, T)],
+    ["Stacked — cliff of itself", "The tile stacked on itself (elevation 2 + top) — the wall it builds.", [{ c: 0, r: 0, lvl: 2, img: T, top: T }]],
+    ["In a wall — face ↘", "A clean-base wall running down-right with this tile mid-run.", [0, 1, 2].map((c) => ({ c, r: 0, lvl: 2, img: c === 1 ? T : B, top: c === 1 ? T : B }))],
+    ["In a wall — face ↙", "A clean-base wall running down-left with this tile mid-run.", [0, 1, 2].map((r) => ({ c: 0, r, lvl: 2, img: r === 1 ? T : B, top: r === 1 ? T : B }))],
+  ];
+  const sceneBox = h("div", { class: "iso-scenes" },
+    ...scenes.map(([title, hint]) => h("div", { class: "iso-scene" },
+      h("div", { class: "panel-title" }, title),
+      h("p", { class: "muted iso-hint" }, hint),
+      h("div", { class: "iso-stage checker" }, h("span", { class: "muted" }, "rendering…")))));
+  loadImages([T, B], (imgs) => {
+    sceneBox.querySelectorAll(".iso-stage").forEach((stage, i) => {
+      stage.replaceChildren(isoScene(scenes[i][2], imgs));
+    });
+  });
+
+  return h("div", {},
+    crumbRow(`#/tiles/${t.id}`, `← ${t.name}`, `tiles/${t.id}`, all, cur.id),
+    h("div", { class: "detail-head" },
+      h("div", { class: "portrait checker tile-portrait" }, h("img", { src: assetUrl(rel), alt: cur.name })),
+      h("div", { class: "meta" },
+        h("h1", {}, cur.name.replace(/\.png$/, "")),
+        h("p", { class: "muted" },
+          `${t.name} · ${cur.group.label} · ${cur.group.sheet}`,
+          rank ? h("span", { class: "pill ok", style: "margin-left:8px", title: rank === "plain" ? "THE canonical clean tile of this type" : "In the maps agent's clean-base palette" }, rank === "plain" ? "canonical clean base" : "clean base") : null),
+        state.admin ? h("p", { class: "muted" }, h("code", {}, id)) : null,
+        feedbackRow("tiles", id))),
+    sceneBox);
 }
 
 /* --- objects --- */
@@ -901,12 +1010,12 @@ function route() {
   destroyPlayers();
   const a = audioEl(); if (a && !a.paused) a.pause();
   const hash = location.hash.replace(/^#\/?/, "");
-  const [page, id] = hash.split("/").map(decodeURIComponent);
+  const [page, id, sub] = hash.split("/").map(decodeURIComponent);
   let view;
   if (state.query && !id) view = viewSearch();
   else if (page === "monsters") view = id ? viewMonster(id) : viewMonsters();
   else if (page === "characters") view = id ? viewCharacter(id) : viewCharacters();
-  else if (page === "tiles") view = id ? viewTileType(id) : viewTiles();
+  else if (page === "tiles") view = id ? (sub ? viewTileInstance(id, sub) : viewTileType(id)) : viewTiles();
   else if (page === "objects") view = id ? viewObject(id) : viewObjects();
   else if (page === "sounds") view = viewSounds();
   else if (page === "music") view = viewMusic();

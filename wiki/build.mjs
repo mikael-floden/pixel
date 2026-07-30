@@ -222,6 +222,16 @@ function buildTiles() {
       tileCount: groups.reduce((n, g) => n + g.tiles.length, 0),
     });
   }
+  // The MAPS AGENT's own clean-base classification (wiki/clean_base.json,
+  // exported from maps2/pipeline/tiles2lib.py by wiki/tools/clean-base.py):
+  // `plain` = the one canonical flat tile, `solid` = the small palette it
+  // paints regions + cliff walls with, `clean` = the wider clean pool. The
+  // wiki badges these and composes tile-instance previews on `plain`.
+  const cleanBase = readJson(join(ROOT, "wiki", "clean_base.json"))?.types ?? {};
+  for (const t of types) {
+    const cb = cleanBase[t.id];
+    if (cb) t.cleanBase = { plain: cb.plain, solid: cb.solid ?? [], clean: cb.clean ?? [] };
+  }
   // INCOMING transitions (maintainer 2026-07-30): a type's page must also list
   // the transitions OTHER types generated toward it, rendered exactly like its
   // own. The art stays owned by the source type (same dir, same feedback ids —
@@ -437,6 +447,9 @@ const data = {
   git_sha: gitSha(),
   root_hint: "asset paths are relative to the directory that serves the domains (/assets in the game, the repo root locally)",
   directions: DIRS,
+  // The game's iso projection (maps2/spec/WORLD_FORMAT.md): tile-instance
+  // previews must compose cells with the REAL geometry or the seams lie.
+  iso: { tilePx: 64, dx: 32, dy: 15, levelPx: 16, diamondH: 30 },
   counts: {
     monsters: monsters?.length ?? 0,
     characters: characters?.length ?? 0,

@@ -383,3 +383,18 @@ a.stat-tile:hover { text-decoration: none; border-color: var(--border-strong); }
 }
 .nav-btn:hover { background: var(--surface-2); }
 .mute-game { margin: 0 0 12px; }
+
+/* ---- tile instance view ---- */
+.tile-cell { position: relative; }
+.tile-link { display: block; line-height: 0; cursor: zoom-in; }
+.base-pill {
+  position: absolute; top: 4px; left: 4px; z-index: 1;
+  font-size: 9.5px; letter-spacing: 0.02em; padding: 2px 5px; border-radius: 6px;
+  background: var(--accent); color: #fff; pointer-events: none; opacity: 0.92;
+}
+.tile-portrait img { image-rendering: pixelated; width: 128px; height: 128px; }
+.iso-scenes { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; margin-top: 16px; }
+.iso-scene { border: 1px solid var(--border); border-radius: 12px; background: var(--surface); padding: 12px 14px; }
+.iso-hint { margin: 2px 0 10px; font-size: 12.5px; }
+.iso-stage { display: flex; justify-content: center; align-items: center; min-height: 140px; border-radius: 8px; padding: 10px; overflow-x: auto; }
+.iso-canvas { image-rendering: pixelated; max-width: 100%; }
