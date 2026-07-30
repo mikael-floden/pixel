@@ -383,13 +383,18 @@ function buildMusic() {
 }
 
 // -------------------------------------------------------------------- items
+let itemTypes = null, itemRarities = null;
 function buildItems() {
-  // Future items domain (loot/drops). The moment items/ ships <id>/item.json
-  // (or a viewer_data.json), entries appear here — nothing else to wire.
+  // The items agent's rolled-up registry is the catalog; a per-folder scan is
+  // the fallback so a half-synced domain still shows something.
   const base = join(ROOT, "items");
   if (!isDir(base)) return [];
   const reg = readJson(join(base, "viewer_data.json"));
-  if (reg?.items) return reg.items;
+  if (reg?.items) {
+    itemTypes = reg.types ?? null;
+    itemRarities = reg.rarities ?? null;
+    return reg.items;
+  }
   const items = [];
   for (const id of listDirs(base)) {
     if (["config", "pipeline"].includes(id)) continue;
@@ -397,6 +402,50 @@ function buildItems() {
     if (ij) items.push({ id, name: ij.name ?? titleCase(id), description: ij.description ?? "", path: `items/${id}`, preview: isFile(join(base, id, "sprite.png")) ? `items/${id}/sprite.png` : null });
   }
   return items;
+}
+
+// ------------------------------------------------- the DROP MAPPING (join)
+// Which monster drops which item lives in live/tuning/monsters.json `loot[]`
+// — the maintainer's live-tuning file, edited from the wiki's monster page,
+// and the ONE source of truth (items/ deliberately keeps no copy; see
+// items/README.md). Both directions of the join are precomputed here so no
+// page has to scan 24 monsters × 105 items at render time:
+//   item.droppedBy = [{ monster, name, chance }]  sorted best chance first
+//   monster loot rows resolve to an item name/sprite/value on the page
+// A SOULSTONE is a monster's card, bound 1-to-1 — every stone is literally
+// named "Soulstone", so its bound creature is the only thing that tells two
+// stones apart, and the wiki must always show it. `soulOf` records that
+// binding, and the 1-to-1 rule is VERIFIED here rather than assumed: if the
+// data ever breaks it, the page shows every source instead of silently
+// picking one.
+function joinDrops(items, tuning) {
+  const byId = new Map((items ?? []).map((it) => [it.id, it]));
+  const sources = new Map();   // item id -> [{ monster, chance }]
+  const dangling = [];
+  for (const [mid, stats] of Object.entries(tuning?.monsters ?? {})) {
+    const seen = new Set();
+    for (const row of stats?.loot ?? []) {
+      const id = row?.item;
+      if (!id || seen.has(id)) continue;            // a duplicate row is one drop
+      seen.add(id);
+      if (!byId.has(id)) { dangling.push(`${mid} → ${id}`); continue; }
+      const chance = Number(row.chance);
+      if (!Number.isFinite(chance) || chance <= 0) continue;
+      if (!sources.has(id)) sources.set(id, []);
+      sources.get(id).push({ monster: mid, chance: Math.min(1, chance) });
+    }
+  }
+  let bound = 0, unbound = 0, multi = 0;
+  for (const it of items ?? []) {
+    const src = (sources.get(it.id) ?? []).sort((a, b) => b.chance - a.chance || a.monster.localeCompare(b.monster));
+    it.droppedBy = src;
+    if (it.type === "SOUL") {
+      // 1-to-1 or UNBOUND — asserted, not trusted.
+      it.soulOf = src.length === 1 ? src[0].monster : null;
+      if (src.length === 1) bound++; else if (src.length === 0) unbound++; else multi++;
+    }
+  }
+  return { dangling, bound, unbound, multi, dropped: sources.size };
 }
 
 // --------------------------------------------------------------- constants
@@ -645,7 +694,10 @@ for (const [dom, list] of Object.entries({ monsters, characters, objects })) {
 const world = buildWorldUsage();
 markSoundUsage(sounds);
 markMusicUsage(music);
-const { added, levelled } = seedMonsterTuning(monsters, seedMonsterLevels(monsters, world, artBounds));
+const { added, levelled, tuning } = seedMonsterTuning(monsters, seedMonsterLevels(monsters, world, artBounds));
+// Both directions of "who drops what", precomputed from the SEEDED tuning so
+// a monster added this run is already joined.
+const drops = joinDrops(items, tuning);
 
 const data = {
   format: "pixel-wiki-data@1",
@@ -662,6 +714,11 @@ const data = {
   artScale, artBox,
   // Usage measured on the game's DEFAULT world (see buildWorldUsage).
   world,
+  // The items agent's own type table and rarity ladder (names, stack rules,
+  // colours, sell bands) — the wiki renders THEIR vocabulary, never its own.
+  itemTypes, itemRarities,
+  // Health of the item↔monster join, for the admin view.
+  drops,
   counts: {
     monsters: monsters?.length ?? 0,
     characters: characters?.length ?? 0,
