@@ -131,6 +131,11 @@ const INPUT_HZ = 20;
 const BUBBLE_MS = 5000;
 const PLACEHOLDER_TEX = "placeholder:wanderer";
 const SHADOW_TEX = "avatar:shadow";
+// Monsters use a softer, more diffuse variant (see ensureMonsterShadowTexture):
+// a light core with a long penumbra tail, spread MONSTER_SHADOW_SPREAD beyond
+// the measured footprint so the visible core still matches the contact patch.
+const MONSTER_SHADOW_TEX = "monster:shadow";
+const MONSTER_SHADOW_SPREAD = 1.25;
 // Tile self-emission is data-driven: tiles/emission.json (owned by the tiles
 // agent — every category has an entry, null = does not glow). Each glowing
 // category gets (a) a self-glow FLOOR on its own pixels (shader, nightlight.ts)
@@ -758,6 +763,7 @@ export class WorldScene extends Phaser.Scene {
   async create() {
     this.ensurePlaceholderTexture();
     this.ensureShadowTexture();
+    this.ensureMonsterShadowTexture();
     this.buildAnimations();
     this.buildMonsterAnimations();
     if (this.world) this.setupStreamingGround();
@@ -1784,7 +1790,10 @@ export class WorldScene extends Phaser.Scene {
     // shadows ran huge on padded frames and tiny on slim bodies, RED/GREEN).
     const shadowW = def?.shadowW ?? Math.round((def?.frameW ?? 48) * 0.54);
     const shadowH = def?.shadowH ?? Math.max(6, Math.round(shadowW * 0.385));
-    const shadow = this.add.image(p0.x, p0.y, SHADOW_TEX).setOrigin(0.5, 0.5).setDisplaySize(shadowW, shadowH);
+    const shadow = this.add
+      .image(p0.x, p0.y, MONSTER_SHADOW_TEX)
+      .setOrigin(0.5, 0.5)
+      .setDisplaySize(shadowW * MONSTER_SHADOW_SPREAD, shadowH * MONSTER_SHADOW_SPREAD);
     const mv: MonsterAvatar = {
       sprite,
       shadow,
@@ -2539,8 +2548,8 @@ export class WorldScene extends Phaser.Scene {
         this.resolveBodyDepth(mv, sLvl);
         // Shadow ellipse is PER DIRECTION (an east mammoth's footprint spans
         // ~140px, its south one ~90 — one size can't fit both facings).
-        const gw = gd?.w ?? mv.shadowW;
-        const gh = gd?.h ?? mv.shadowH;
+        const gw = (gd?.w ?? mv.shadowW) * MONSTER_SHADOW_SPREAD;
+        const gh = (gd?.h ?? mv.shadowH) * MONSTER_SHADOW_SPREAD;
         this.placeBodyShadow(mv, targetElev, mv.hoverPx + airPx, gw, gh);
         // The anchor is the CONTACT CENTROID (between the foot undersides);
         // the front toes plant `sink` px below it. Lift the ellipse so its
@@ -5243,6 +5252,36 @@ export class WorldScene extends Phaser.Scene {
     grd.addColorStop(0, "rgba(0,0,0,0.62)");
     grd.addColorStop(0.65, "rgba(0,0,0,0.42)");
     grd.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, w, w);
+    ctx.restore();
+    tex!.refresh();
+  }
+
+  /** DIFFUSE shadow for MONSTERS (maintainer 2026-07-30: "when you draw a
+   * sharp shadow, it must be spot on to look good. A more diffuse shadow is
+   * less sensitive"). Same ellipse geometry, different falloff: a much
+   * lighter core (0.34 vs 0.62) that decays smoothly to nothing instead of
+   * holding ~0.42 out to 65% and then cliffing — so the rim reads as
+   * penumbra rather than a hard disc edge, and a few px of anchor error
+   * stops being visible. Drawn at 2× the avatar texture's resolution so the
+   * gradient stays smooth when a 139px mammoth ellipse scales it up. */
+  private ensureMonsterShadowTexture() {
+    if (this.textures.exists(MONSTER_SHADOW_TEX)) return;
+    const w = 128;
+    const h = 52; // same ISO ground squash as the avatar shadow
+    const tex = this.textures.createCanvas(MONSTER_SHADOW_TEX, w, h);
+    const ctx = tex!.getContext();
+    ctx.save();
+    ctx.scale(1, h / w);
+    const grd = ctx.createRadialGradient(w / 2, w / 2, 0, w / 2, w / 2, w / 2);
+    // Gaussian-ish falloff: dense middle, long soft tail, zero at the rim.
+    grd.addColorStop(0.0, "rgba(0,0,0,0.5)");
+    grd.addColorStop(0.35, "rgba(0,0,0,0.44)");
+    grd.addColorStop(0.6, "rgba(0,0,0,0.3)");
+    grd.addColorStop(0.8, "rgba(0,0,0,0.15)");
+    grd.addColorStop(0.92, "rgba(0,0,0,0.05)");
+    grd.addColorStop(1.0, "rgba(0,0,0,0)");
     ctx.fillStyle = grd;
     ctx.fillRect(0, 0, w, w);
     ctx.restore();

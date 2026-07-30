@@ -468,7 +468,25 @@ visible head/shoulders are ABOVE the surface).
   (monster, direction, frame) tile with the exact client shadow maths +
   a red anchor crosshair — the maintainer's-eye view, offline, exhaustive.
   Round 5 was the first round verified this way (all 24 sheets) and the
-  first whose numbers caught their own bugs before a deploy. footW = the contact-run extent (the feet
+  first whose numbers caught their own bugs before a deploy.
+- **DIFFUSE monster shadows** (maintainer 2026-07-30, closing the shadow
+  arc): "when you draw a sharp shadow, it must be spot on to look good. A
+  more diffuse shadow is less sensitive." Monsters render their own
+  `monster:shadow` texture (`ensureMonsterShadowTexture`, 128×52 = 2× the
+  avatar texture's resolution so a 139px mammoth ellipse upscales cleanly):
+  core alpha 0.5 (was 0.62) decaying smoothly 0.44→0.30→0.15→0.05→0 instead
+  of holding 0.42 to 65% radius and then cliffing, and drawn at
+  `MONSTER_SHADOW_SPREAD` 1.25× the measured footprint so the soft tail
+  falls outside the contact patch while the visible core still matches it.
+  Result: the rim reads as penumbra, so a few px of anchor error stops being
+  visible — deliberately trading precision-sensitivity for robustness as new
+  monsters arrive. The PLAYER keeps the sharp `avatar:shadow` (its nadir is
+  postprocessed in the art and is spot-on). First attempt at core 0.34 +
+  1.3× spread was too weak — the grounding cue nearly vanished on mid-tone
+  ground; 0.5/1.25 keeps it present. A/B tooling: scripts-free
+  `style-ab`-style render (identical pose, only the gradient differs) is the
+  fastest way to judge a shadow-style change; in-game A/B is unreliable
+  because monsters roam between the two captures. footW = the contact-run extent (the feet
   span, e.g. mammoth ~123px across all four legs); shadow `w =
   clamp(max(footW, bodyW·0.55)·1.05, 12, 150)`, `h = max(6, 0.385·w)`,
   emitted as `shadowW/shadowH` — NEVER frameW-scaled. Collision `radius =
