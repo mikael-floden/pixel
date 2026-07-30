@@ -37,19 +37,23 @@ ENV ASSETS_ROOT=/assets
 # Game source (changes every deploy — keep below the art layers).
 COPY games2/ ./
 
+# The deployed commit, baked into the bundle so testers can see which version
+# they're running (bottom-left in-game + console) and into the wiki's build
+# stamp (topbar, under the build date). Also exposed at runtime via GIT_SHA so
+# /version lets clients detect a newer deploy and prompt a refresh. Declared
+# BEFORE the wiki rebuild on purpose — the wiki build layer re-runs per deploy
+# (a few seconds) so its stamp always matches the image.
+ARG GIT_SHA=dev
+ENV VITE_GIT_SHA=$GIT_SHA
+ENV GIT_SHA=$GIT_SHA
+
 # Rebuild the wiki's registry from the art baked into THIS image, so the
 # in-game wiki (/assets/wiki/site/) can never go stale vs the deployed art.
 # Never let a wiki build hiccup brick the game deploy — on failure the image
 # ships the committed data.json instead.
 RUN node /assets/wiki/build.mjs --games2 /app || echo "[wiki] build failed; shipping committed data.json"
 
-# Generate the character manifest + build the client bundle.
-# Bake the deployed commit into the bundle so testers can see which version
-# they're running (bottom-left in-game + console). Also exposed at runtime via
-# GIT_SHA so /version lets clients detect a newer deploy and prompt a refresh.
-ARG GIT_SHA=dev
-ENV VITE_GIT_SHA=$GIT_SHA
-ENV GIT_SHA=$GIT_SHA
+# Build the client bundle.
 RUN npm run build:client
 
 ENV NODE_ENV=production

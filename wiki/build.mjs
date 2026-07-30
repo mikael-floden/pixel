@@ -18,6 +18,7 @@
 import { readFileSync, writeFileSync, readdirSync, existsSync, statSync, openSync, readSync, closeSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { execSync } from "node:child_process";
 
 const WIKI_DIR = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
@@ -55,6 +56,19 @@ function pngSize(path) {
 }
 
 const titleCase = (id) => id.replace(/[_-]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
+// The deployed commit, for the topbar stamp (shown under the build date, same
+// 9-char short form as the game's version badge). Docker passes GIT_SHA (see
+// games2/Dockerfile — the ARG is declared BEFORE this builder runs); local
+// runs fall back to git; neither → null and the wiki just omits the line.
+function gitSha() {
+  const env = process.env.GIT_SHA || process.env.VITE_GIT_SHA;
+  if (env && env !== "dev") return env.slice(0, 9);
+  try {
+    return execSync("git rev-parse --short=9 HEAD", { cwd: WIKI_DIR, stdio: ["ignore", "pipe", "ignore"] })
+      .toString().trim() || null;
+  } catch { return null; }
+}
 
 // ---------------------------------------------------------------- monsters
 function buildMonsters() {
@@ -203,6 +217,20 @@ function buildTiles() {
       groups,
       tileCount: groups.reduce((n, g) => n + g.tiles.length, 0),
     });
+  }
+  // INCOMING transitions (maintainer 2026-07-30): a type's page must also list
+  // the transitions OTHER types generated toward it, rendered exactly like its
+  // own. The art stays owned by the source type (same dir, same feedback ids —
+  // rating a tile on either page writes the same entry); `foreign: true` keeps
+  // it out of tileCount/sheet counts so nothing is counted twice.
+  const byId = Object.fromEntries(types.map((t) => [t.id, t]));
+  for (const t of types) {
+    for (const g of t.groups) {
+      if (g.kind !== "transition" || g.foreign) continue;
+      const parts = g.dir.split("/"); // tiles2/<src>/transitions/<target>/<sheet>
+      const target = parts[2] === "transitions" ? byId[parts[3]] : null;
+      if (target && target !== t) target.groups.push({ ...g, foreign: true, label: `${t.id} →` });
+    }
   }
   return types;
 }
@@ -402,6 +430,7 @@ const { added } = seedMonsterTuning(monsters);
 const data = {
   format: "pixel-wiki-data@1",
   generated_at: new Date().toISOString(),
+  git_sha: gitSha(),
   root_hint: "asset paths are relative to the directory that serves the domains (/assets in the game, the repo root locally)",
   directions: DIRS,
   counts: {

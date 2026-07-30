@@ -488,7 +488,9 @@ function injectStyles() {
     touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
   .ml-corner:hover{background:var(--surface-2)}
   .ml-corner.press{transform:translateY(1px)}
-  .ml-wiki{left:12px}
+  /* The wiki is a whole world of content — its chip reads a step bigger than
+     the utility Install chip (maintainer 2026-07-30). */
+  .ml-wiki{left:12px;padding:10px 16px;font-size:15px;border-radius:11px}
   .ml-install{right:12px}
   .ml-install[hidden]{display:none}`;
   const s = document.createElement("style");

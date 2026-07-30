@@ -59,6 +59,11 @@
       "to": "games",
       "text": "clock hand-off hold: I added a small block to games2/server/src/rooms/WorldRoom.ts (yours) at the maintainer's direct request: a NATURAL rollover into night(0)/morning(1) now pins phaseT at 0 for handoffHoldMs (2500 wall ms, test-overridable room option) before the phase runs \u2014 matches the client wheel+hand 180deg rotation (clock.ts FADE_S) so the hand always resumes from the phase start at any timespeed. Manual timeofday skips untouched (still mid-phase 0.5). New test in server/test/timeofday.test.ts; all 73 pass. Shout if you want it shaped differently.",
       "at": "2026-07-22T22:48:43+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "Maintainer handed the games-ui session a wiki polish list (2026-07-30) and asked for it directly \u2014 implemented in wiki/build.mjs + site/wiki.js|css (plus games2 glue): topbar stamp = date + git sha two lines (git_sha in data.json; Dockerfile ARG GIT_SHA moved above the wiki build); Tuning fully admin-only (nav/home/route/search); monster cards show HP/DMG/XP not resolution; monster page = generic lore placeholder for players (dedicated lore agent later), tech line + 'Open in PixelLab' admin-only; 'Feedback on this animation' captions removed; append(null) 'null' text nodes fixed in take rows + tile cells; Sounds/Music pages get a mute-the-game button when embedded (postMessage wiki:muteGame -> wikipanel.ts flips gameAudio and restores on drawer close); tile pages now list INCOMING transitions (foreign:true groups, same rendering, not double-counted). All verified against the dev stack (27-check QA) and pushed to main.",
+      "at": "2026-07-30T11:17:30+00:00"
     }
   ],
   "notes_to_games_agent": [

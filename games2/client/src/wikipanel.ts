@@ -22,12 +22,39 @@
 // The HUD can reuse this: import { openWikiPanel } from "./wikipanel" and
 // call it from a menu button — nothing here is select-screen specific.
 
+import { gameAudio } from "../../composer/index";
+
 let root: HTMLDivElement | null = null;
 let onResize: (() => void) | null = null;
 let onKey: ((e: KeyboardEvent) => void) | null = null;
 let onMsg: ((e: MessageEvent) => void) | null = null;
 let onTheme: (() => void) | null = null;
 let menuOpen = false; // the wiki's OWN nav drawer inside the iframe
+
+// TEMPORARY game-audio mute while auditioning wiki sounds (maintainer
+// 2026-07-30): the wiki's Sounds/Music pages post {type:"wiki:muteGame", on}
+// and we flip the composer's sound+music switches — remembering which ones WE
+// flipped so closing the drawer (or leaving the page: the toggles persist to
+// localStorage) restores exactly the player's own settings. Never touches a
+// switch the player already had off.
+let mutedByWiki: { sound: boolean; music: boolean } | null = null;
+function setGameMuted(on: boolean): void {
+  if (on && !mutedByWiki) {
+    mutedByWiki = { sound: gameAudio.soundEnabled, music: gameAudio.musicEnabled };
+    if (gameAudio.soundEnabled) gameAudio.toggleSound();
+    if (gameAudio.musicEnabled) gameAudio.toggleMusic();
+    window.addEventListener("pagehide", restoreGameAudio);
+  } else if (!on) {
+    restoreGameAudio();
+  }
+}
+function restoreGameAudio(): void {
+  if (!mutedByWiki) return;
+  if (mutedByWiki.sound && !gameAudio.soundEnabled) gameAudio.toggleSound();
+  if (mutedByWiki.music && !gameAudio.musicEnabled) gameAudio.toggleMusic();
+  mutedByWiki = null;
+  window.removeEventListener("pagehide", restoreGameAudio);
+}
 
 const PANEL_FRAC = 0.88;      // leave ≥~45 physical px of game visible
 const PANEL_MAX_CSS = 1200;   // cap on big desktops — a wall of wiki looks broken
@@ -102,9 +129,12 @@ export function openWikiPanel(): void {
   menuOpen = false;
   onMsg = (e) => {
     if (e.origin !== location.origin || e.source !== frame.contentWindow) return;
-    if ((e.data as { type?: string })?.type === "wiki:menu") {
-      menuOpen = !!(e.data as { open?: boolean }).open;
+    const data = e.data as { type?: string; open?: boolean; on?: boolean };
+    if (data?.type === "wiki:menu") {
+      menuOpen = !!data.open;
       back.classList.toggle("deep", menuOpen);
+    } else if (data?.type === "wiki:muteGame") {
+      setGameMuted(!!data.on);
     }
   };
   window.addEventListener("message", onMsg);
@@ -149,6 +179,7 @@ export function closeWikiPanel(): void {
   if (onKey) { window.removeEventListener("keydown", onKey); onKey = null; }
   if (onMsg) { window.removeEventListener("message", onMsg); onMsg = null; }
   if (onTheme) { window.removeEventListener("ml-theme", onTheme); onTheme = null; }
+  restoreGameAudio(); // leaving the wiki un-mutes the game (temporary by contract)
   menuOpen = false;
   r.querySelector(".ml-wikiback")?.classList.remove("on");
   r.querySelector(".ml-wikipanel")?.classList.remove("on");

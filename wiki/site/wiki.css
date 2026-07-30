@@ -120,7 +120,10 @@ code { font-family: var(--mono); font-size: 0.86em; background: var(--surface-2)
   padding: 7px 12px; font: inherit; outline: none;
 }
 #search:focus { border-color: var(--accent); }
-#build-stamp { margin-left: auto; font-size: 12px; }
+#build-stamp { margin-left: auto; font-size: 12px; text-align: right; line-height: 1.35; }
+#build-stamp .stamp-date { white-space: nowrap; }
+#build-stamp .stamp-sha { font-family: var(--mono); font-size: 10.5px; opacity: 0.85; }
+.mute-game { display: inline-block; margin: 0 0 14px; }
 #content { padding: 24px 26px 120px; max-width: 1180px; }
 .loading { color: var(--muted); padding: 40px 0; }
 

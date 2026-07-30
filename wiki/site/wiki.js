@@ -394,7 +394,9 @@ function takeRow(domain, entityPath, take, extra = []) {
   const row = h("div", { class: "take-row" });
   const sync = () => row.classList.toggle("rejected", fb(domain, id).status === "rejected");
   const btn = h("button", { class: "play-btn", "aria-label": "play", onclick: () => playTake(take.files, btn) }, "▶");
-  row.append(
+  // NB: skip null children explicitly — raw DOM append(null) renders a literal
+  // "null" text node (players saw one on every non-chosen take, 2026-07-30).
+  for (const c of [
     btn,
     h("span", { class: "take-name" }, take.id),
     take.chosen ? h("span", { class: "pill ok", title: "The take the game plays" }, "chosen") : null,
@@ -402,7 +404,7 @@ function takeRow(domain, entityPath, take, extra = []) {
     h("span", { class: "spacer" }),
     starsWidget(domain, id),
     verdictWidget(domain, id, { onchange: sync }),
-  );
+  ]) if (c) row.append(c);
   sync();
   return row;
 }
@@ -417,13 +419,16 @@ const NAV = [
   ["sounds", "Sounds", (d) => d.counts.sounds],
   ["music", "Music", (d) => d.counts.music],
   ["items", "Items", (d) => d.counts.items],
-  ["tuning", "Tuning", (d) => d.counts.constants],
+  // ADMIN-ONLY (maintainer 2026-07-30): tuning is designer machinery, not
+  // encyclopedia — players must not even see the read-only page.
+  ["tuning", "Tuning", (d) => d.counts.constants, true],
 ];
 function renderNav() {
   const cur = location.hash.replace(/^#\/?/, "").split("/")[0];
-  $("#nav").replaceChildren(...NAV.map(([slug, label, count]) =>
-    h("a", { href: `#/${slug}`, class: cur === slug ? "active" : "" },
-      label, h("span", { class: "count" }, String(count(state.data) || "")))));
+  $("#nav").replaceChildren(...NAV.filter(([, , , adminOnly]) => !adminOnly || state.admin)
+    .map(([slug, label, count]) =>
+      h("a", { href: `#/${slug}`, class: cur === slug ? "active" : "" },
+        label, h("span", { class: "count" }, String(count(state.data) || "")))));
 }
 
 function entityBadge(domain, id) {
@@ -443,7 +448,9 @@ function viewHome() {
     ["monsters", c.monsters, "monsters"], ["characters", c.characters, "player characters"],
     ["tiles", c.tiles, "tiles"], ["objects", c.objects, "objects"],
     ["sounds", c.sounds, "sounds"], ["music", c.music, "music tracks"],
-    ["items", c.items, "items"], ["tuning", c.constants, "tunable constants"],
+    ["items", c.items, "items"],
+    // tuning is admin machinery — players don't get the card (2026-07-30)
+    ...(state.admin ? [["tuning", c.constants, "tunable constants"]] : []),
   ];
   // Feedback whose asset no longer exists = the producing agent acted on it.
   const resolved = [];
@@ -479,12 +486,23 @@ function viewMonsters() {
     h("p", { class: "muted" }, state.admin
       ? `${list.length} creatures from the monsters agent. Click one to preview every animation, check its nadir shadow, edit its stats and loot.`
       : `${list.length} creatures roam Nangijala. Click one to watch every animation and study its stats.`),
-    h("div", { class: "grid" }, ...list.map((m) =>
-      h("a", { class: "card", href: `#/monsters/${m.id}` },
+    h("div", { class: "grid" }, ...list.map((m) => {
+      // The card leads with what matters to a PLAYER — the creature's stats
+      // (live/tuning/monsters.json), not image resolution (maintainer
+      // 2026-07-30). "not in game yet" is dev info → admin only.
+      const st = monsterStats(m.id);
+      return h("a", { class: "card", href: `#/monsters/${m.id}` },
         h("div", { class: "thumb checker" }, h("img", { src: assetUrl(m.preview), alt: m.name, loading: "lazy" })),
         h("div", { class: "card-name" }, m.name),
-        h("div", { class: "card-sub" }, `${m.frameW}×${m.frameH} · ${Object.keys(m.animations).length} states${m.inGame ? "" : " · not in game yet"}`),
-        h("div", { class: "card-badges" }, ...entityBadge("monsters", m.path))))));
+        h("div", { class: "card-sub" },
+          `HP ${st.max_hp ?? "?"} · DMG ${st.damage ?? "?"} · XP ${st.xp ?? "?"}${state.admin && !m.inGame ? " · not in game yet" : ""}`),
+        h("div", { class: "card-badges" }, ...entityBadge("monsters", m.path)));
+    })));
+}
+/** A monster's effective stats: its tuned entry over the shared defaults. */
+function monsterStats(id) {
+  const t = state.tuning.monsters;
+  return { ...(t?.defaults ?? {}), ...(t?.monsters?.[id] ?? {}) };
 }
 const STAT_FIELDS = [
   ["max_hp", "Max HP", 1], ["damage", "Damage", 1], ["speed_wu", "Speed (wu/s)", 1],
@@ -540,11 +558,10 @@ function viewMonster(id) {
   const player = makePlayer(m, "monster");
   activePlayers.push(player);
   const facetBox = h("div", {});
+  // Per-animation feedback widgets, WITHOUT the "Feedback on this animation
+  // (state)" caption (maintainer 2026-07-30: remove the text).
   const renderFacet = () => {
-    const st = player.getState();
-    facetBox.replaceChildren(
-      h("div", { class: "panel-title" }, `Feedback on this animation (${st})`),
-      feedbackRow("monsters", `${m.path}#${st}`));
+    facetBox.replaceChildren(feedbackRow("monsters", `${m.path}#${player.getState()}`));
   };
   player.onStateChange = renderFacet;
   renderFacet();
@@ -554,8 +571,13 @@ function viewMonster(id) {
       h("div", { class: "portrait checker" }, h("img", { src: assetUrl(m.preview), alt: m.name })),
       h("div", { class: "meta" },
         h("h1", {}, m.name),
-        h("p", { class: "muted" }, `${m.frameW}×${m.frameH}px (native ${m.nativeW}×${m.nativeH}, pad ${m.pad.x},${m.pad.y}) · kind: ${m.kind} · foot line at ${(m.artBottom * 100).toFixed(0)}% · footW ${m.footW ?? "?"}px · bodyW ${m.bodyW ?? "?"}px${m.hoverPx ? ` · hovers ${m.hoverPx}px` : ""}${m.inGame ? "" : " · not in the game manifest yet"}`),
-        m.pixellab ? h("p", {}, h("a", { href: m.pixellab, target: "_blank", rel: "noopener" }, "Open on PixelLab ↗")) : null,
+        // PLAYER-facing lore. PLACEHOLDER text for every monster until the
+        // dedicated lore agent lands (maintainer 2026-07-30) — keep it short,
+        // MMORPG-flavoured and generic.
+        h("p", { class: "muted lore" }, `Travellers tell of the ${m.name} roaming the wilds of Nangijala. What it wants — and what it guards — no chronicler has written down yet.`),
+        // Art/render tech (resolution, pads, foot metrics) is admin-only.
+        state.admin ? h("p", { class: "muted" }, `${m.frameW}×${m.frameH}px (native ${m.nativeW}×${m.nativeH}, pad ${m.pad.x},${m.pad.y}) · kind: ${m.kind} · foot line at ${(m.artBottom * 100).toFixed(0)}% · footW ${m.footW ?? "?"}px · bodyW ${m.bodyW ?? "?"}px${m.hoverPx ? ` · hovers ${m.hoverPx}px` : ""}${m.inGame ? "" : " · not in the game manifest yet"}`) : null,
+        state.admin && m.pixellab ? h("p", {}, h("a", { href: m.pixellab, target: "_blank", rel: "noopener" }, "Open in PixelLab ↗")) : null,
         h("div", { class: "panel-title" }, "Verdict on the whole monster"),
         feedbackRow("monsters", m.path))),
     h("div", { class: "panel" },
@@ -587,11 +609,9 @@ function viewCharacter(id) {
   const player = makePlayer(c, "character");
   activePlayers.push(player);
   const facetBox = h("div", {});
+  // No "Feedback on this animation (state)" caption — same rule as monsters.
   const renderFacet = () => {
-    const st = player.getState();
-    facetBox.replaceChildren(
-      h("div", { class: "panel-title" }, `Feedback on this animation (${st})`),
-      feedbackRow("characters", `${c.path}#${st}`));
+    facetBox.replaceChildren(feedbackRow("characters", `${c.path}#${player.getState()}`));
   };
   player.onStateChange = renderFacet;
   renderFacet();
@@ -630,7 +650,9 @@ function viewTiles() {
       return h("a", { class: "card", href: `#/tiles/${t.id}` },
         h("div", { class: "thumb checker" }, first ? h("img", { src: assetUrl(`${first.dir}/${first.tiles[0]}`), alt: t.name, loading: "lazy" }) : null),
         h("div", { class: "card-name" }, t.name),
-        h("div", { class: "card-sub" }, `${t.tileCount} tiles · ${t.groups.length} sheets`),
+        // own sheets only — foreign (incoming-transition) groups are another
+        // type's art, listed on this page but never counted as this type's
+        h("div", { class: "card-sub" }, `${t.tileCount} tiles · ${t.groups.filter((g) => !g.foreign).length} sheets`),
         h("div", { class: "card-badges" }, ...entityBadge("tiles", t.path)));
     })));
 }
@@ -642,13 +664,16 @@ function tileCell(group, file) {
     cell.classList.toggle("rejected", e.status === "rejected");
     cell.classList.toggle("approved", e.status === "approved");
   };
-  cell.append(
+  // Skip null children — raw DOM append(null) renders a literal "null" text
+  // node (players saw one under every tile, 2026-07-30).
+  for (const c of [
     h("img", { src: assetUrl(`${group.dir}/${file}`), alt: file, loading: "lazy", title: id }),
     starsWidget("tiles", id),
     state.admin ? h("button", {
       class: "tile-x", title: "Reject this tile (toggles)",
       onclick: () => { setFb("tiles", id, { status: fb("tiles", id).status === "rejected" ? null : "rejected" }); sync(); },
-    }, "✕") : null);
+    }, "✕") : null,
+  ]) if (c) cell.append(c);
   sync();
   return cell;
 }
@@ -712,6 +737,24 @@ function viewObject(id) {
 }
 
 /* --- sounds --- */
+// Temporarily silence the RUNNING GAME while auditioning wiki audio
+// (maintainer 2026-07-30). Only meaningful inside the game's wiki drawer —
+// the parent (wikipanel.ts) flips gameAudio and RESTORES the player's real
+// settings when the drawer closes, so this is never a persistent choice.
+// A full-page wiki tab has no game to mute → no button.
+let gameMuted = false;
+function muteGameBtn() {
+  if (window.parent === window) return null;
+  const btn = h("button", { class: "ghost-btn mute-game" });
+  const render = () => { btn.textContent = gameMuted ? "🔊 Unmute the game" : "🔇 Mute the game while listening"; };
+  btn.addEventListener("click", () => {
+    gameMuted = !gameMuted;
+    window.parent.postMessage({ type: "wiki:muteGame", on: gameMuted }, location.origin);
+    render();
+  });
+  render();
+  return btn;
+}
 function viewSounds() {
   const q = state.query;
   const list = state.data.domains.sounds.filter((s) => matches(q, s.id, s.name, s.category, s.description, s.usage));
@@ -721,6 +764,7 @@ function viewSounds() {
     h("p", { class: "muted" }, state.admin
       ? "Every take of every sound effect. ▶ to listen, ★ to rate, ✕ to have the sounds agent remove/regenerate that take. The chosen pill marks what the game currently plays."
       : "Every sound of the world — press ▶ to listen. The chosen pill marks what the game currently plays."),
+    muteGameBtn(),
     ...cats.map((cat) => h("div", {},
       h("h2", {}, cat, " ", h("span", { class: "pill" }, String(list.filter((s) => s.category === cat).length))),
       ...list.filter((s) => s.category === cat).map((s) =>
@@ -740,6 +784,7 @@ function viewMusic() {
   return h("div", {},
     h("h1", {}, "Music"),
     h("p", { class: "muted" }, "The score, from the music agent."),
+    muteGameBtn(),
     ...list.map((t) =>
       h("div", { class: "panel" },
         h("div", { class: "panel-title" }, t.name,
@@ -827,7 +872,7 @@ function viewSearch() {
   d.objects.forEach((o) => matches(q, o.id, o.name, o.description) && hits.push(["objects", o.name, `#/objects/${o.id}`, o.preview]));
   d.sounds.forEach((s) => matches(q, s.id, s.name, s.description, s.usage) && hits.push(["sounds", s.name, "#/sounds", null]));
   d.music.forEach((t) => matches(q, t.id, t.name, t.use) && hits.push(["music", t.name, "#/music", null]));
-  state.data.constants.forEach((c) => matches(q, c.name, c.description) && hits.push(["tuning", c.name, "#/tuning", null]));
+  if (state.admin) state.data.constants.forEach((c) => matches(q, c.name, c.description) && hits.push(["tuning", c.name, "#/tuning", null]));
   return h("div", {},
     h("h1", {}, `Search: “${q}”`),
     h("p", { class: "muted" }, `${hits.length} hits`),
@@ -853,7 +898,8 @@ function route() {
   else if (page === "sounds") view = viewSounds();
   else if (page === "music") view = viewMusic();
   else if (page === "items") view = viewItems();
-  else if (page === "tuning") view = viewTuning();
+  // Tuning is admin-only INCLUDING by direct link — players get the overview.
+  else if (page === "tuning") view = state.admin ? viewTuning() : viewHome();
   else view = viewHome();
   $("#content").replaceChildren(view);
   renderNav();
@@ -1022,7 +1068,16 @@ async function checkAdmin() {
   state.data = data;
   await loadLiveFiles();
   buildKnownIds();
-  $("#build-stamp").textContent = `built ${new Date(data.generated_at).toLocaleString()}`;
+  // Topbar stamp: the build DATE on one line, the deployed git sha under it —
+  // no "built" prefix (maintainer 2026-07-30). Fixed compact format so the
+  // date can never wrap on a phone (toLocaleString did).
+  {
+    const d = new Date(data.generated_at);
+    const p = (n) => String(n).padStart(2, "0");
+    $("#build-stamp").replaceChildren(
+      h("div", { class: "stamp-date" }, `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`),
+      ...(data.git_sha ? [h("div", { class: "stamp-sha" }, data.git_sha)] : []));
+  }
   route();
   // Headless QA hook (mirrors the games2 __ml convention).
   window.__wiki = {
