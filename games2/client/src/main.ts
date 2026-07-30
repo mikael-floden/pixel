@@ -82,7 +82,20 @@ function showVersion() {
     "position:fixed;left:50%;transform:translateX(-50%);" +
     "bottom:6px;z-index:50;" +
     "font:600 11px var(--mono, ui-monospace, monospace);letter-spacing:.06em;" +
-    "color:var(--muted, #8a887f);opacity:.9;" +
+    // Discrete but legible on ANY backdrop (maintainer 2026-07-30: "hard to
+    // see against some backgrounds… just a little bit more visible"): the ink
+    // colour held back by opacity keeps it quiet, and a soft halo in the PAGE
+    // BACKGROUND colour carries it over the select screen's dark forest art
+    // as well as the HUD's own surface. Theme-symmetric by construction —
+    // light theme = dark text + cream halo, dark theme = light text + dark
+    // halo — so it never needs a chip (that was tried and taken back).
+    // A CRISP 1px ring (plus a soft outer glow) — a blur-only halo washes out
+    // over the select screen's dark forest and left the dark ink unreadable
+    // there (measured 4.1:1); the ring holds full background colour right at
+    // the glyph edge, which is what separates it on busy art.
+    "color:var(--ink, #1f1e1a);opacity:.9;" +
+    "text-shadow:1px 0 0 var(--bg, #faf9f5),-1px 0 0 var(--bg, #faf9f5)," +
+    "0 1px 0 var(--bg, #faf9f5),0 -1px 0 var(--bg, #faf9f5),0 0 5px var(--bg, #faf9f5);" +
     "pointer-events:none;user-select:none";
   document.body.appendChild(el);
 }
