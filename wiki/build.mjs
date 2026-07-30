@@ -149,22 +149,29 @@ function buildMonsters() {
 }
 
 // -------------------------------------------------------------- characters
+// What a PLAYER is told about a hero — display name, species, sex, lore.
+// The characters agent AUTHORS these in characters2/metadata.json
+// (`characters2-metadata@1`) and sync.py merges the record onto the
+// generated humans/<id>/character.json, so either file answers; we prefer
+// the authored one and fall back to the merged copy.
+//
+// NEVER take any of this from character.json's `prompt`: both heroes shipped
+// the same copy-pasted prompt saying "female" for BOTH (reported to the
+// characters agent 2026-07-30, wiki board). The folder ids ("default_boy")
+// are pipeline names and must never reach the page at all — maintainer, same
+// day: "I don't even know what a default_boy is". The last-resort table is
+// only so a brand-new hero without a record still gets a sensible name; an
+// unlisted hero gets NO species/sex line rather than a guessed one.
 const HERO_NAMES = { default_boy: "Man", default_girl: "Woman" }; // mirrors games2/scripts/build-manifest.mjs
-// What a PLAYER is told about a hero. The folder ids ("default_boy") are
-// pipeline names and must never reach the page (maintainer 2026-07-30: "I
-// don't even know what a default_boy is"). Sex is an explicit table, NOT
-// read from character.json's `prompt` — both heroes ship the same
-// copy-pasted prompt text there, which says "female" for BOTH; the art and
-// the ids agree with this table. An unlisted hero simply gets no sex line
-// rather than a guessed one.
-const HERO_SEX = { default_boy: "Male", default_girl: "Female" };
 function buildCharacters() {
   const base = join(ROOT, "characters2", "humans");
   if (!isDir(base)) return null;
   const animMap = readJson(join(ROOT, "characters2", "animation_map.json")) ?? { states: {}, overrides: {} };
+  const authored = readJson(join(ROOT, "characters2", "metadata.json"))?.characters ?? {};
   const chars = [];
   for (const id of listDirs(base)) {
     const cj = readJson(join(base, id, "character.json"));
+    const meta = { ...cj, ...authored[id] };   // authored record wins
     // size ships as [w, h] today; tolerate the {width, height} shape the
     // monsters domain uses so a format change can never break a deploy.
     const size = cj?.size;
@@ -183,12 +190,10 @@ function buildCharacters() {
     }
     chars.push({
       id,
-      name: HERO_NAMES[id] ?? titleCase(id),
-      // characters2 groups heroes by species folder; today there is only
-      // `humans/`, so this reads it from the one we scan.
-      species: "Human",
-      sex: HERO_SEX[id] ?? null,
-      lore: cj?.lore ?? null,   // the characters agent will author these
+      name: meta.display_name ?? HERO_NAMES[id] ?? titleCase(id),
+      species: meta.species ?? null,
+      sex: meta.sex ?? null,
+      lore: meta.lore ?? null,
       path: `characters2/humans/${id}`,
       preview: `characters2/humans/${id}/base/south.png`,
       baseStrip: isFile(join(base, id, "base", "preview.png")) ? `characters2/humans/${id}/base/preview.png` : null,

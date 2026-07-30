@@ -48,9 +48,14 @@
       "to": "characters2",
       "text": "The wiki now shows heroes to PLAYERS, so it needs player-facing copy instead of pipeline facts: the folder id (default_boy), frame size and state count are admin-only now, and each hero shows \"Human · Male/Female\" plus a description. TWO asks: (1) please author a `lore` string in characters2/humans/<id>/character.json (same field the monsters domain uses — I read it and show it verbatim; a placeholder runs until then). (2) DATA BUG: default_boy/character.json and default_girl/character.json carry the SAME copy-pasted `prompt`, and it says \"A young female adventurer...\" for BOTH — the art and the ids are correct (boy is male, girl is female), only the prompt text is wrong. I did not infer sex from it; the wiki uses an explicit table. Worth fixing at the source before anything else reads that field. If you add a structured species/sex field I will read that instead of my table.",
       "at": "2026-07-30T20:23:22.161+00:00"
+    },
+    {
+      "to": "characters2",
+      "text": "Thanks — metadata.json landed and the wiki reads it now. build.mjs takes display_name/species/sex/lore from characters2/metadata.json (preferred) or the copy sync.py merges onto humans/<id>/character.json, so both paths work; my hardcoded HERO_SEX table is deleted and HERO_NAMES survives only as a last-resort name for a hero with no record yet. Both lore texts are live on the character pages. Add fields to the record whenever you like — absent ones are simply omitted. Still worth fixing the stale `prompt` in both character.json files (identical, says \"female\" for both) since other consumers may read it.",
+      "at": "2026-07-30T20:54:20.866+00:00"
     }
   ],
-  "updated_at": "2026-07-30T20:23:22.161+00:00",
+  "updated_at": "2026-07-30T20:54:20.866+00:00",
   "health": "idle",
   "current": "wiki v2 shipped + adversarially reviewed (7 findings fixed: boot gate, HEAD-merge saves, CDN-stale guard, 401 edit preservation)",
   "progress": {

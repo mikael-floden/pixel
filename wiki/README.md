@@ -249,8 +249,28 @@ page:
   open a blank line between two visible elements. "N roaming the world" sits
   between the name and the blurb (maintainer's placement), never after it —
   put anything below the blurb and the reserve becomes a hole;
-- the **level chip lives under the thumbnail**, so the left column carries
-  its own height instead of leaving a void beside the text.
+- the **chip lives under the thumbnail** — a creature's level, a hero's
+  species/sex — so the left column carries its own height instead of leaving
+  a void beside the text.
+
+## Heroes say what they ARE
+
+Folder ids (`default_boy`), frame sizes and state counts are pipeline facts
+and are **admin-only** (maintainer 2026-07-30: "I don't even know what a
+default_boy is"). Players get `Human · Male` under the thumbnail and the
+hero's story beside it.
+
+That copy is the characters agent's to author, in
+**`characters2/metadata.json`** (`characters2-metadata@1`, keyed by folder
+id: `display_name` `species` `sex` `lore`); their `sync.py` also merges the
+record onto the generated `humans/<id>/character.json`, so either file
+answers and `build.mjs` prefers the authored one. Add a field there and the
+wiki picks it up on the next build.
+
+**Never read any of this from `character.json`'s `prompt`** — both heroes
+shipped the same copy-pasted prompt saying "female" for BOTH (checked
+against the sprites; the art and the ids were right). A hero with no record
+gets no species/sex line rather than a guessed one.
 
 Do NOT try to win that by enlarging the portrait: at 160px it squeezes the
 text under `.meta`'s 240px `min-width`, the columns stack, and the stage

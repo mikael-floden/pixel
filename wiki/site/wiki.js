@@ -597,9 +597,10 @@ const monsterLore = (m) => m.lore ?? `Travellers tell of the ${m.name} roaming t
 const objectBlurb = (o) => `${o.description} · ${o.category}${o.placement ? ` · world height ${o.placement.world_height_m}m (${o.placement.world_px_height}px)` : ""}`;
 /** What a hero IS, in words a player understands — "Human · Female", never
  *  the pipeline folder id (maintainer 2026-07-30). */
-const heroKind = (c) => [c.species, c.sex].filter(Boolean).join(" · ") || "Hero of Nangijala";
-/** Placeholder until the characters agent authors real ones. */
-const heroLore = (c) => c.lore ?? `One of the heroes you can set out as. ${c.name === "Woman" ? "Her" : c.name === "Man" ? "His" : "Their"} story has not been written down yet — the chroniclers of Nangijala are still at work.`;
+const heroKind = (c) => [c.species, c.sex].filter(Boolean).join(" · ");
+/** Authored in characters2/metadata.json; the placeholder only runs for a
+ *  hero the characters agent has not written up yet. */
+const heroLore = (c) => c.lore ?? "One of the heroes you can set out as. Their story has not been written down yet — the chroniclers of Nangijala are still at work.";
 /** A lore paragraph that always occupies the height of the LONGEST lore in
  *  its domain, so paging next/next/next can't move the animation viewer
  *  below it (maintainer 2026-07-30: "the animation preview jumps up and
@@ -618,7 +619,7 @@ function loreSlot(text, all) {
  *  height so paging next/next/next doesn't shift the animation (maintainer
  *  2026-07-30). Levels live in live/tuning/monsters.json; see build.mjs. */
 function levelBadge(stats) {
-  return h("div", { class: "level-badge", title: "How hard this creature is to fight" },
+  return h("div", { class: "thumb-chip", title: "How hard this creature is to fight" },
     "Level ", h("b", {}, String(stats.level ?? "?")));
 }
 /** A monster's effective stats: its tuned entry over the shared defaults. */
@@ -851,13 +852,16 @@ function viewCharacter(id) {
   return h("div", {},
     crumbRow("#/characters", `← ${label("characters")}`, "characters", state.data.domains.characters, c.id),
     h("div", { class: "detail-head" },
-      h("div", { class: "portrait checker" }, h("img", { src: assetUrl(c.preview), alt: c.name })),
+      // Species/sex rides under the thumbnail, exactly like a monster's level
+      // chip — it balances the two columns (maintainer 2026-07-30).
+      h("div", { class: "portrait-col" },
+        h("div", { class: "portrait checker" }, h("img", { src: assetUrl(c.preview), alt: c.name })),
+        heroKind(c) ? h("div", { class: "thumb-chip" }, heroKind(c)) : null),
       h("div", { class: "meta" },
         h("h1", {}, c.name),
-        h("div", { class: "spawn-line" }, h("span", { class: "pill" }, heroKind(c))),
         // Folder id, frame size and state count are PIPELINE facts — admin
-        // only (maintainer 2026-07-30). Players get the hero's story; the
-        // characters agent will author it, until then a placeholder.
+        // only (maintainer 2026-07-30). Players get the hero's story, which
+        // the characters agent authors in characters2/metadata.json.
         state.admin ? h("p", { class: "muted" }, `${c.id} · ${c.frameW}×${c.frameH}px · ${Object.keys(c.animations).length} animation states`) : null,
         loreSlot(heroLore(c), state.data.domains.characters.map(heroLore)),
         feedbackRow("characters", c.path))),
