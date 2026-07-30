@@ -423,13 +423,33 @@ visible head/shoulders are ABOVE the surface).
   bellies at 20-30 OUT); runs <3px wide are dropped (tails), runs farther
   than 0.4·fw from the silhouette's mass-centre column are dropped
   (diablo_2's flame tendril touches the frame bottom a body-width from the
-  rock). Anchor = kept-run extent midpoint (cx) × mean bottom row (f);
-  `sink` = px the front toes plant BELOW the anchor. The client applies
-  origin(cx,f) on EVERY facing change, parks a paused monster on `contact`
-  (frame-0 parking left frogs levitating mid-hop), and LIFTS the shadow
-  ellipse `max(0, h/2 − sink − 2)` px so its SOUTH RIM kisses the toe line —
-  centred on the anchor, half the ellipse poked past the toes and still
-  read as "shadow way too low". footW = the contact-run extent (the feet
+  rock). Anchor = kept-run extent midpoint (cx) × mean bottom row (f), then
+  ROUND 4 (maintainer: residuals were small but MIXED-direction across
+  screenshots = per-frame artifacts, and the demon stone "flew"): cx blends
+  50% toward the silhouette's mass-centre column (capped 12% fw) —
+  eccentric contacts (crouched cat paws, a biped whose far foot leaves the
+  band, the leaning monolith) pull the shadow back under the body while
+  symmetric quadrupeds stay put; `sink` = px the front toes plant BELOW the
+  anchor. PER-FRAME drift compensation — the SAFE equivalent of the player
+  art's nadir postprocess ("movement should be handled in the game and not
+  in the animation"; a rewrite script "can easily destroy the animation",
+  so the art is NEVER touched): per (dir, frame) the manifest emits
+  `shift[]` (origin-x per frame from the body's mass-centre column, bounded
+  to the contact band ±15% so flame/effect pixels can't jitter it, clamped
+  ±12% fw — cancels baked horizontal translation, e.g. diablo_2 east slides
+  14px across its cycle) and `air[]` (px the frame's deepest point rose vs
+  the planted frame, 2px gait deadband, cap 24 — fed into placeBodyShadow's
+  hop arg so the demon stone's levitation phase and the frog's leap
+  shrink/fade their shadow: intentionally airborne, never misplaced;
+  vertical bob is REAL animation and is never pinned). Tall figures (figH >
+  bodyW: monoliths, upright golems) use bodyW·0.4 instead of 0.55 in the
+  shadow-width blend — they ground through a compact base, and a
+  mass-scaled ellipse read oversized. The client applies origin(cx,f) on
+  EVERY facing change, per-frame `shift[frameIdx]` each tick, parks a
+  paused monster on `contact` (frame-0 parking left frogs levitating
+  mid-hop), and LIFTS the shadow ellipse `max(0, h/2 − sink − 2)` px so its
+  SOUTH RIM kisses the toe line — centred on the anchor, half the ellipse
+  poked past the toes and still read as "shadow way too low". footW = the contact-run extent (the feet
   span, e.g. mammoth ~123px across all four legs); shadow `w =
   clamp(max(footW, bodyW·0.55)·1.05, 12, 150)`, `h = max(6, 0.385·w)`,
   emitted as `shadowW/shadowH` — NEVER frameW-scaled. Collision `radius =

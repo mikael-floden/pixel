@@ -430,7 +430,10 @@ interface MonsterAvatar {
   // originX foot centre, and the planted `contact` frame a pause parks on.
   // One pooled anchor floated whole directions (strips differ per direction
   // after art repairs) and frame-0 pauses left hop gaits levitating.
-  ground?: Record<string, { f: number; cx: number; contact: number; sink?: number }>;
+  ground?: Record<
+    string,
+    { f: number; cx: number; contact: number; sink?: number; shift?: number[]; air?: number[] }
+  >;
 }
 
 /** The common body-visual subset the SHARED render helpers operate on —
@@ -2511,16 +2514,26 @@ export class WorldScene extends Phaser.Scene {
         // shadows in front): occluder-aware depth + landing-ground shadow.
         const sLvl = m.elev ?? g.lvl;
         mv.surfLevel = sLvl; // occluder + light sampling basis (LEVELS)
+        this.playMonsterAnim(mv, !!m.moving, m.dir);
+        // PER-FRAME drift compensation (the safe equivalent of the player
+        // art's nadir postprocess — measured in the manifest, art untouched):
+        // pin THIS frame's own body-mass origin-x so baked horizontal
+        // translation never slides the body off its shadow; per-frame `air`
+        // (deepest point risen vs the planted frame) feeds the hop shrink so
+        // real levitation (demon stone, hops) reads as airborne on purpose.
+        const gd = mv.ground?.[mv.dispDir];
+        const fi = parseInt(String(mv.sprite.frame.name), 10) || 0;
+        const ox = gd?.shift?.[fi];
+        if (ox !== undefined) mv.sprite.setOrigin(ox, gd!.f);
+        const airPx = gd?.air?.[fi] ?? 0;
         this.resolveBodyDepth(mv, sLvl);
-        this.placeBodyShadow(mv, targetElev, mv.hoverPx, mv.shadowW, mv.shadowH);
+        this.placeBodyShadow(mv, targetElev, mv.hoverPx + airPx, mv.shadowW, mv.shadowH);
         // The anchor is the CONTACT CENTROID (between the foot undersides);
         // the front toes plant `sink` px below it. Lift the ellipse so its
         // south rim kisses the toe line — centred on the anchor, half the
         // ellipse poked past the toes and read as "shadow way too low"
         // (maintainer round 3, red/green screenshots).
-        const gd = mv.ground?.[mv.dispDir];
         mv.shadow.y -= Math.max(0, mv.shadowH / 2 - (gd?.sink ?? 2) - 2);
-        this.playMonsterAnim(mv, !!m.moving, m.dir);
       });
     }
 

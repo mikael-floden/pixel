@@ -28,7 +28,10 @@ export interface MonsterDef {
    * planted frame a PAUSED monster parks on (never an airborne hop frame),
    * `sink` = how far the front toes plant below the anchor (px) — the shadow
    * ellipse lifts so its south rim kisses the toe line. */
-  ground?: Record<string, { f: number; cx: number; contact: number; sink?: number }>;
+  ground?: Record<
+    string,
+    { f: number; cx: number; contact: number; sink?: number; shift?: number[]; air?: number[] }
+  >;
   artBottom?: number; // pooled fallback feet line (median of per-dir anchors)
   footW?: number; // ground-contact footprint width (px, contact frames)
   bodyW?: number; // widest body width (px)

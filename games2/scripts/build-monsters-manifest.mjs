@@ -77,9 +77,10 @@ const HOVER_PX = { butterfly_dragon: 12 };
  * Monster-level footW/bodyW come from CONTACT frames only (mid-air tucked
  * feet no longer deflate the shadow width). */
 function measureWalkArt(stripAbsPaths, framesByDir) {
-  const ground = {}; // dir -> {f, cx, contact}
+  const ground = {}; // dir -> {f, cx, contact, sink, shift[], air[]}
   const foots = [];
   const bodies = [];
+  const figHs = []; // figure heights — tall lean-ers get a tighter shadow
   let frameH = 0;
   let frameW = 0;
   const anchors = []; // (anchor+1)/H per dir — pooled fallback artBottom
@@ -101,6 +102,7 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
       let top = -1;
       let bot = -1;
       const rows = new Map(); // y -> [x0, x1]
+      const colMass = new Array(fw).fill(0); // opaque px per column (drift tracking)
       for (let y = 0; y < H; y++) {
         let cnt = 0;
         let x0 = -1;
@@ -108,6 +110,7 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
         for (let x = 0; x < fw; x++) {
           if (data[(y * W + xBase + x) * 4 + 3] > 16) {
             cnt++;
+            colMass[x]++;
             if (x0 < 0) x0 = x;
             x1 = x;
           }
@@ -142,10 +145,12 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
       frames.push({
         f,
         bot,
+        top,
         contactW,
         footCx: (fx0 + fx1 + 1) / 2,
         footW: ws[Math.floor(ws.length / 2)] ?? 0,
         bodyW,
+        colMass,
       });
     }
     if (!frames.length) continue;
@@ -222,6 +227,8 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
     let cx = fw / 2;
     let cyRow = maxBot;
     let extentW = contact.footW;
+    let winA = 0;
+    let winB = fw - 1;
     if (kept.length) {
       const minX = kept[0][0];
       const maxX = kept[kept.length - 1][1];
@@ -235,6 +242,52 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
         }
       cyRow = rowSum / cnt;
       extentW = maxX - minX + 1;
+      winA = Math.max(0, Math.round(minX - fw * 0.15));
+      winB = Math.min(fw - 1, Math.round(maxX + fw * 0.15));
+    }
+    // BODY-MASS blend (maintainer round 4: greens sit toward the body's
+    // centre when contact is eccentric — a crouched cat's paw cluster, a big
+    // biped whose far foot rises out of the contact band, the leaning demon
+    // stone): nudge the anchor halfway toward the silhouette's mass-centre
+    // column, capped at 12% of the frame so symmetric quadrupeds (mammoth)
+    // stay put.
+    const blend = Math.max(-fw * 0.12, Math.min(fw * 0.12, 0.5 * (massCx - cx)));
+    cx += blend;
+    // PER-FRAME drift compensation (maintainer round 4: the player art
+    // needed a postprocess so animations don't "jump away from nadir";
+    // monsters get the SAFE equivalent — measured at build time, applied at
+    // render time, the art untouched). For every frame: the body's
+    // mass-centre column (bounded to the contact band ±15% so flame/effect
+    // pixels can't jitter it) minus the contact frame's gives the baked
+    // horizontal translation; the client pins each frame's own origin-x so
+    // the body never slides off its shadow. Vertical bob is REAL animation
+    // (hops, the demon stone's levitation) and is NOT pinned — instead
+    // per-frame `air` (how far the deepest point rose vs the planted frame,
+    // 2px gait-noise deadband) feeds the shared hop shadow-shrink so a
+    // levitating body reads as intentionally airborne over a smaller
+    // shadow, never as misplaced.
+    const boundedMass = (fr) => {
+      let s = 0;
+      let m = 0;
+      for (let x = winA; x <= winB; x++) {
+        s += x * fr.colMass[x];
+        m += fr.colMass[x];
+      }
+      return m ? s / m : fw / 2;
+    };
+    const contactMass = boundedMass(contact);
+    const shift = [];
+    const air = [];
+    for (let f = 0; f < n; f++) {
+      const fr = frames.find((s) => s.f === f);
+      if (!fr) {
+        shift.push(+(cx / fw).toFixed(4));
+        air.push(0);
+        continue;
+      }
+      const dx = Math.max(-fw * 0.12, Math.min(fw * 0.12, boundedMass(fr) - contactMass));
+      shift.push(+((cx + dx) / fw).toFixed(4));
+      air.push(Math.min(24, Math.max(0, contact.bot - fr.bot - 2)));
     }
     ground[dir] = {
       f: +Math.min(1, (cyRow + 1) / H).toFixed(4),
@@ -244,15 +297,19 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
       // LIFTED so its south rim kisses the toe line instead of poking a
       // half-ellipse past the toes (the residual "shadow too low" look).
       sink: Math.max(0, Math.round(maxBot - cyRow)),
+      shift,
+      air,
     };
     anchors.push((cyRow + 1) / H);
     foots.push(extentW);
     bodies.push(Math.max(...frames.map((s) => s.bodyW)));
+    figHs.push(Math.max(...frames.map((s) => s.bot - s.top + 1)));
   }
   if (!anchors.length) return null;
   anchors.sort((a, b) => a - b);
   foots.sort((a, b) => a - b);
   bodies.sort((a, b) => a - b);
+  figHs.sort((a, b) => a - b);
   return {
     frameW,
     frameH,
@@ -261,6 +318,7 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
     artBottom: +anchors[Math.floor(anchors.length / 2)].toFixed(4),
     footW: foots[Math.floor(foots.length / 2)] ?? 0,
     bodyW: bodies[Math.floor(bodies.length / 2)] ?? 0,
+    figH: figHs[Math.floor(figHs.length / 2)] ?? 0,
   };
 }
 
@@ -354,7 +412,11 @@ function scan() {
     // a size: nadir shadow (client), body radius for soft collision (server
     // separation/roam spacing + both dodges). Horizontal iso screen px ≈ 1wu
     // (screen_x = x - y), so art pixels ARE world units here.
-    const artW = walkArt ? Math.max(walkArt.footW, walkArt.bodyW * 0.55) * 1.05 : 0;
+    // TALL lean-ers (figure taller than wide: monoliths, upright golems)
+    // ground through a compact base, not their silhouette — a mass-scaled
+    // shadow read oversized and "flying" on the leaning demon stone.
+    const bodyFactor = walkArt && walkArt.figH > walkArt.bodyW ? 0.4 : 0.55;
+    const artW = walkArt ? Math.max(walkArt.footW, walkArt.bodyW * bodyFactor) * 1.05 : 0;
     const shadowW = Math.round(Math.min(150, Math.max(12, artW || frameW * 0.54)));
     const shadowH = Math.max(6, Math.round(shadowW * 0.385));
     // Collision radius stays gameplay-sane: the shadow may span a mammoth's
