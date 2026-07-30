@@ -30,6 +30,18 @@ PixelLab animation names can contain spaces, commas, even newlines (especially
 The exact PixelLab `animation_type` is preserved in `character.json` for matching,
 so the slug is only ever the folder name.
 
+## Wiki descriptions (`lore.json`)
+
+Every domain gives the wiki a short blurb per entity (monsters use `lore`, items
+use `description`). Ours live in **`characters2/lore.json`** — 1–2 sentences of
+RPG flavour per hero, hand-authored here and **merged into
+`humans/<id>/character.json` by `sync.py`** on every sync, because
+`character.json` is regenerated and would otherwise wipe them. The wiki reads
+that `lore` field (`wiki/build.mjs:buildCharacters`) and prints Species/Sex on
+their own lines, so the text stays pure flavour — no stats, no repetition.
+
+**Edit the text in `lore.json`, never in `character.json`.**
+
 ## Game-state → folder mapping (`animation_map.json`)
 
 The game refers to animations by **stable logical names** (`idle`, `walk`, `run`,

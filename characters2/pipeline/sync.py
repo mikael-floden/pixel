@@ -61,6 +61,16 @@ def load_config():
         return json.load(f)
 
 
+def hero_lore(name):
+    """Hand-authored wiki description for a hero (characters2/lore.json).
+
+    character.json is REGENERATED on every sync, so the lore cannot live there:
+    it is authored in lore.json and merged back in below. The wiki reads
+    character.json's `lore` field (wiki/build.mjs)."""
+    data = _read_json(os.path.join(ROOT, "lore.json"), {}) or {}
+    return (data.get("lore") or {}).get(name)
+
+
 def _slug(name):
     """Filesystem-safe folder slug for a PixelLab animation_type. Animation names
     can contain spaces, commas, NEWLINES and trailing spaces (esp. custom-* ones),
@@ -245,6 +255,8 @@ def sync_character(client, name, cid, force=False):
         "id": name,
         "pixellab_character_id": cid,
         "name": detail.get("name"),
+        # Hand-authored wiki blurb, merged from lore.json so re-syncing keeps it.
+        "lore": hero_lore(name),
         "prompt": detail.get("prompt"),
         "size": [detail.get("size", {}).get("width"), detail.get("size", {}).get("height")],
         "view": detail.get("view"),
