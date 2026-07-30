@@ -1032,9 +1032,10 @@ visible head/shoulders are ABOVE the surface).
   1px bottom rule (the page scrolls UNDER it). REJECTED 2026-07-30: a
   screen-edge frame around the whole game view (a `.ml-edge` overlay,
   2px rule + matted rounded corners) — "it looks bad"; the game view
-  goes full-bleed to the screen edge, do not re-propose it. The version badge sits
-  bottom-centre on the select screen and moves to a bordered chip at
-  the GAME VIEW's bottom-right (above --hud-h) once in the world. NO
+  goes full-bleed to the screen edge, do not re-propose it. ALSO
+  REJECTED: an in-game bottom-right chip for the version badge — the
+  badge keeps ONE placement across the whole game, quiet bottom-centre
+  on the select screen and in the world alike. NO
   zoom compensation in the new UI: like the wiki it is plain responsive
   CSS (uiscale.ts survives only for loading.ts + WorldScene's reconnect
   toast). Gates: verify-bars/-hudtabs/-clockflip/-chatpage/-gamepad/

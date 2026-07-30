@@ -69,11 +69,10 @@ async function bootMapPreview(): Promise<boolean> {
 }
 
 /** Build-version badge (git sha) so testers can tell which deploy they're
- * running. On the SELECT screen it sits quietly bottom-centre; once IN the
- * game it moves to the game view's bottom-right corner, just above the HUD
- * (maintainer 2026-07-30 mark) — as a small translucent chip with a border
- * so it reads against any world art. */
-let versionEl: HTMLDivElement | null = null;
+ * running. ONE placement everywhere — bottom-centre on the select screen and
+ * in the game alike (maintainer 2026-07-30: the consistent spot across the
+ * whole game is the one to keep; an in-game bottom-right chip was tried and
+ * taken back). Quiet muted mono, above every overlay, no zoom compensation. */
 function showVersion() {
   const sha = (import.meta.env.VITE_GIT_SHA as string | undefined) || "dev";
   console.log(`[nangijala] build ${sha}`);
@@ -86,23 +85,6 @@ function showVersion() {
     "color:var(--muted, #8a887f);opacity:.9;" +
     "pointer-events:none;user-select:none";
   document.body.appendChild(el);
-  versionEl = el;
-}
-/** In-game placement: right-aligned over the world, above the HUD's top edge
- * (--hud-h is published in real px by hud.ts applyLayout). */
-function versionBadgeIntoGame() {
-  const el = versionEl;
-  if (!el) return;
-  el.style.left = "auto";
-  el.style.transform = "none";
-  el.style.right = "10px";
-  el.style.bottom = "calc(var(--hud-h, 38.2dvh) + 8px)";
-  el.style.padding = "3px 8px";
-  el.style.borderRadius = "8px";
-  el.style.background = "color-mix(in srgb, var(--bg, #faf9f5) 76%, transparent)";
-  el.style.border = "1px solid var(--border, #e6e2d7)";
-  (el.style as CSSStyleDeclaration & { backdropFilter: string }).backdropFilter = "blur(5px)";
-  el.style.opacity = "1";
 }
 
 /** Poll /version and offer a one-click reload when a newer deploy is live. */
@@ -212,7 +194,6 @@ async function boot() {
     } catch {}
   }
   const { world: worldName, character, name } = choice ?? (await chooseCharacter(manifest, worlds));
-  versionBadgeIntoGame(); // leaving the select screen → the in-game corner chip
 
   // select.ts showed the loading overlay on commit; the world JSON is the
   // first slow step (a few MB on mobile), then WorldScene.preload takes over
