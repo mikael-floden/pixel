@@ -10,12 +10,23 @@ mapping anywhere under `items/` would need a deploy to take effect and could not
 be edited from the wiki, so `items/` deliberately keeps **no copy**: one source of
 truth, maintainer-owned.
 
+THE ONE RULE THE DATA STRUCTURE CANNOT EXPRESS: a **Soulstone is a monster's
+card** (the Ragnarök Online sense) and the binding is STRICTLY 1-to-1 in both
+directions — one monster drops exactly one stone, one stone comes from exactly
+one monster — so either page can show the other in a chip. `loot[]` is a plain
+many-to-many list (correct for MISC, where one fang drops off every biter), so
+the constraint is enforced HERE: `SOUL` declares `one_per_monster` in
+`config/types.json` and `verify()` fails on any monster with two stones or any
+stone with two sources. With more stones than monsters the surplus stays
+UNBOUND — reported every run, waiting for a creature of its own — because
+doubling up on a monster that already has a stone would break the mapping.
+
 This tool is the items agent's side of that contract — it never regenerates the
 file (it is durable maintainer state), it only:
 
   - **verifies** every `loot` entry against the item registry — unknown item ids,
-    items nothing drops, soul stones with more than one source monster, chances
-    outside their rarity band, monsters with an empty table;
+    MISC nothing drops, the 1-to-1 Soulstone binding (both directions, plus the
+    unbound surplus), chances outside their band, monsters with an empty table;
   - **applies** an assignment plan (`--apply plan.json`) by writing each monster's
     `loot` array, leaving every other field — stats, defaults, format — untouched;
   - **reports** the resulting loot tables (`--report`).
@@ -95,6 +106,10 @@ def monster_names():
 def verify(live, items, types):
     problems, warnings = [], []
     dropped_by = {}
+    # Types whose items bind 1-to-1 to a monster (SOUL: a stone is a creature's
+    # card — one stone per monster, one monster per stone, both directions).
+    exclusive = {t for t, d in types["types"].items() if d.get("one_per_monster")}
+    per_monster = {}
     for mid, stats in sorted((live.get("monsters") or {}).items()):
         loot = stats.get("loot")
         if loot is None:
@@ -117,6 +132,8 @@ def verify(live, items, types):
                 problems.append(f"{mid}: lists {iid} twice")
             seen.add(iid)
             dropped_by.setdefault(iid, []).append(mid)
+            if items[iid]["type"] in exclusive:
+                per_monster.setdefault(mid, []).append(iid)
             if not isinstance(chance, (int, float)) or not 0 < chance <= 1:
                 problems.append(f"{mid}/{iid}: chance {chance!r} is not a fraction in (0, 1]")
                 continue
@@ -129,13 +146,28 @@ def verify(live, items, types):
             if not lo <= chance <= hi:
                 warnings.append(f"{mid}/{iid}: chance {chance:.3f} outside the "
                                 f"{label} band {lo}-{hi}")
+    # The 1-to-1 binding, both directions.
+    for mid, iids in sorted(per_monster.items()):
+        if len(iids) > 1:
+            problems.append(f"{mid}: drops {len(iids)} soul stones {iids} — a monster "
+                            f"is bound to exactly ONE stone (see types.json:one_per_monster)")
+    unbound = []
     for iid, it in items.items():
         srcs = dropped_by.get(iid, [])
-        if not srcs:
+        if it["type"] in exclusive:
+            if len(srcs) > 1:
+                problems.append(f"{iid}: dropped by {len(srcs)} monsters {srcs} — a soul "
+                                f"stone belongs to exactly ONE monster")
+            elif not srcs:
+                # Not an error: with more stones than monsters the surplus waits
+                # for a creature that does not exist yet. It must never be
+                # doubled up on a monster that already has one.
+                unbound.append(iid)
+        elif not srcs:
             problems.append(f"{iid}: no monster drops it — unobtainable")
-        elif it["type"] == "SOUL" and len(srcs) > 1:
-            problems.append(f"{iid}: SOUL dropped by {len(srcs)} monsters {srcs} "
-                            f"— a soul stone belongs to exactly one monster")
+    if unbound:
+        warnings.append(f"{len(unbound)} soul stone(s) UNBOUND, waiting for a monster of "
+                        f"their own: {sorted(unbound)}")
     return problems, warnings, dropped_by
 
 

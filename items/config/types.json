@@ -13,14 +13,15 @@
     "SOUL": {
       "tag": "SOUL",
       "label": "Soul Stone",
-      "summary": "A soul stone dropped by monsters. Merged into a weapon or a piece of armor to grant it the stone's power; the stone is consumed by the merge.",
+      "summary": "A soul stone dropped by monsters — the card of one specific creature. Merged into a weapon or a piece of armor to grant it the stone's power; the stone is consumed by the merge. `one_per_monster` makes the binding STRICTLY 1-to-1: a stone is dropped by exactly one monster and a monster drops exactly one stone, so the wiki can show the creature on the stone and the stone on the creature. A stone with no monster yet is UNBOUND (it waits for one) — never a second stone on a monster that already has one.",
       "shared_name": "Soulstone",
       "stackable": true,
       "max_stack": 20,
       "equip_slot": null,
       "sellable": true,
       "merge_into": ["weapon", "armor"],
-      "drop_chance_band": [0.004, 0.035]
+      "drop_chance_band": [0.004, 0.035],
+      "one_per_monster": true
     },
     "CONSUMABLE": {
       "tag": "CONSUMABLE",

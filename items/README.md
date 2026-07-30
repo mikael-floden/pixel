@@ -66,8 +66,10 @@ the next run flags "look at this sprite and name it".
 
 > **Every soul stone is called "Soulstone".** `SOUL` declares `shared_name` in
 > `types.json`, so the 28 stones share one display name and differ by their
-> **description**, element and power — sync enforces that instead of the
-> unique-name rule the other types get.
+> **description**, element, power and — above all — the **monster they belong
+> to**: a Soulstone is that creature's card, bound to it
+> [1-to-1](#a-soulstone-belongs-to-exactly-one-monster-and-back). Sync enforces
+> the shared name instead of the unique-name rule the other types get.
 
 ## Where the drop mapping lives: `live/tuning/monsters.json`
 
@@ -97,13 +99,37 @@ maintainer; `item` values are `items/<id>` folder ids, and
 
 The rules the mapping follows:
 
-- a **SOUL** stone is dropped by **exactly one** monster — it is that
-  creature's signature drop;
+- **A Soulstone and a monster are bound 1-to-1** — see below. This is the one
+  rule the generic data structure cannot express, so this domain enforces it;
 - a **MISC** item can drop from **several** monsters (a fang from every biter),
-  and every item is dropped by at least one, or it would be unobtainable;
+  and every MISC item is dropped by at least one, or it would be unobtainable;
 - drop chance follows the item's rarity (common ~15-50 %, uncommon ~6-25 %,
   rare ~1.5-10 %, epic ~0.4-3 %), and valuable loot comes off higher-level
   monsters.
+
+### A Soulstone belongs to exactly one monster (and back)
+
+A Soulstone is that creature's **card** — the *Ragnarök Online* sense of the
+word. The binding is **strictly 1-to-1, in both directions**:
+
+- **one monster → one stone.** A monster never drops two Soulstones.
+- **one stone → one monster.** A stone never drops from two monsters.
+
+So the wiki can show the creature on the stone's page and the stone on the
+creature's page, and either chip is unambiguous. Nothing in the item or loot
+data structure enforces this — `loot[]` is a plain many-to-many list, exactly
+as it should be for MISC — so **the constraint lives here**: `SOUL` declares
+`one_per_monster` in `types.json`, and `pipeline/drops.py` fails on any monster
+holding two stones or any stone with two sources.
+
+There are **28 stones and 24 monsters**, so four stones are currently
+**UNBOUND** — they have no monster and cannot drop. That is deliberate and the
+only correct answer under a 1-to-1 rule: a surplus stone waits for a creature of
+its own rather than doubling up on a monster that already has one. `drops.py`
+reports them every run (a warning, not an error), and their descriptions say as
+much instead of naming a creature. They bind themselves the moment the monsters
+agent ships four more monsters — or you can untag the surplus stones on
+PixelLab and they leave the repo on the next sync.
 
 `pipeline/drops.py` is the items agent's side of that contract — it **verifies**
 those rules against the live file, can **apply** an assignment plan, and prints
