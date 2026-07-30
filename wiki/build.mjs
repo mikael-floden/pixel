@@ -449,7 +449,7 @@ function buildWorldUsage() {
   // lives" map. Only used when it describes THIS world.
   const wm = readJson(join(ROOT, "wiki", "world_map.json"));
   const map = wm?.world === name
-    ? { minimap: wm.minimap, mapW: wm.mapW, mapH: wm.mapH, monsters: wm.monsters ?? {} }
+    ? { minimap: wm.minimap, mapW: wm.mapW, mapH: wm.mapH, proj: wm.proj, monsters: wm.monsters ?? {} }
     : null;
 
   return {

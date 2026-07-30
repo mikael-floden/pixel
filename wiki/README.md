@@ -112,9 +112,18 @@ id. `build.mjs` emits `data.json` `world`:
   plus props. (A raised cell stacks its tile for the cliff faces; that's the
   same placement seen from the side, not a second use.) Tile pages show
   "N of M tiles used", per-tile `×N` badges, and unused tiles render dimmed.
-- `map` — the world's own `minimap.png` plus every monster's spawn zones
-  **already projected into minimap pixels**, so the monster page's "Where it
-  lives" panel just strokes the polygons. Produced by
+- `map` — the world's own `minimap.png` plus every monster's habitat as
+  **cell spans** (`[row, level, col0, col1]`) and the affine cell→pixel
+  transform, so the monster page's "Where it lives" panel fills the true
+  footprint. **Never project a zone's OUTLINE**: a vertex's screen position
+  includes its corner's terrain height, which makes the projection
+  non-linear, so a provably simple polygon tears into self-crossing shards
+  across cliffs (shipped once 2026-07-30; the maps agent proved the data
+  clean and the bug was here). Spans are per-level runs, so they map through
+  the affine transform and can't distort. Cells are filtered to the zone's
+  `elev` band on whichever surface qualifies — base **or deck**, the game's
+  `buildZoneRuntimes` rule — otherwise a bridge habitat (all deck) vanishes
+  and a shoreline zone renders 2.6× too big. Produced by
   `python3 wiki/tools/world-map.py` → `wiki/world_map.json`; re-run it when a
   world's `spawns.json` or `minimap.png` changes (or the default world does).
   The tool derives cell→pixel from `maps2/pipeline/render2.py`'s layout and

@@ -590,18 +590,30 @@ function statsEditor(monsterId) {
   return h("div", {}, grid, h("div", { style: "margin-top:14px" }, lootBox));
 }
 // "Where it lives": the world's own minimap with this monster's spawn zones
-// drawn on it. Polygons arrive already projected into minimap pixels
-// (wiki/tools/world-map.py), so this only scales and strokes them.
+// drawn on it. The zones arrive as CELL SPANS (wiki/tools/world-map.py) —
+// never as an outline. Projecting a zone's OUTLINE is what shipped broken on
+// 2026-07-30: each vertex carries its corner's terrain height, which makes
+// the projection non-linear, so a provably simple polygon tore into
+// self-crossing shards across cliffs. A span is a run of cells at ONE level,
+// so it maps through the affine cell→pixel transform and its union is the
+// true, terrace-hugging footprint.
 function zoneMapPanel(monsterId) {
   const wm = worldInfo()?.map;
   const zones = wm?.monsters?.[monsterId];
-  if (!wm || !zones?.length) return null;
-  const CSS_W = 900, k = CSS_W / wm.mapW, DPR = 2;
+  if (!wm?.proj || !zones?.length) return null;
+  const CSS_W = 900, k = CSS_W / wm.mapW, DPR = 2, s = k * DPR;
+  const P = wm.proj;
   const canvas = h("canvas", {
-    class: "zone-map", width: Math.round(wm.mapW * k * DPR), height: Math.round(wm.mapH * k * DPR),
+    class: "zone-map", width: Math.round(wm.mapW * s), height: Math.round(wm.mapH * s),
     style: `width:${CSS_W}px`,
   });
   const ctx = canvas.getContext("2d");
+  // Cell corner → canvas px. `ax/ay` offset within the tile box (the diamond's
+  // top vertex is at +tile/2, its side vertices at +dy, its bottom at +2dy).
+  const pt = (c, r, lv, ax, ay) => [
+    (P.s * (P.ox + (c - r) * P.dx + ax) + P.offx) * s,
+    (P.s * (P.oy + (c + r) * P.dy - lv * P.levelPx + ay) + P.offy) * s,
+  ];
   const img = new Image();
   img.onload = () => {
     // A 0.15x LANCZOS bake of the whole world — smooth it down, don't
@@ -609,30 +621,53 @@ function zoneMapPanel(monsterId) {
     ctx.imageSmoothingEnabled = true;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    const s = k * DPR;
     const accent = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#d97757";
+
+    // Paint every span SOLID on an offscreen layer first: overlapping
+    // translucent diamonds would blotch at their shared edges.
+    const layer = document.createElement("canvas");
+    layer.width = canvas.width; layer.height = canvas.height;
+    const lx = layer.getContext("2d");
+    lx.fillStyle = accent;
+    lx.beginPath();
     for (const z of zones) {
-      if (!z.poly?.length) continue;
-      ctx.beginPath();
-      z.poly.forEach(([x, y], i) => (i ? ctx.lineTo(x * s, y * s) : ctx.moveTo(x * s, y * s)));
-      ctx.closePath();
-      ctx.fillStyle = accent + "59";        // ~35% — the terrain must stay readable
-      ctx.fill();
-      ctx.strokeStyle = accent;
-      ctx.lineWidth = 2 * DPR;
-      ctx.lineJoin = "round";
-      ctx.stroke();
-      // How many roam this particular habitat, at its centre.
-      const cx = z.poly.reduce((n, p) => n + p[0], 0) / z.poly.length * s;
-      const cy = z.poly.reduce((n, p) => n + p[1], 0) / z.poly.length * s;
-      ctx.font = `600 ${13 * DPR}px system-ui, sans-serif`;
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
+      for (const [r, lv, c0, c1] of z.spans ?? []) {
+        const a = pt(c0, r, lv, P.tile / 2, 0);          // top vertex, first cell
+        const b = pt(c1, r, lv, P.tile, P.dy);           // right vertex, last cell
+        const c = pt(c1, r, lv, P.tile / 2, 2 * P.dy);   // bottom vertex, last cell
+        const d = pt(c0, r, lv, 0, P.dy);                // left vertex, first cell
+        lx.moveTo(a[0], a[1]); lx.lineTo(b[0], b[1]); lx.lineTo(c[0], c[1]); lx.lineTo(d[0], d[1]);
+        lx.closePath();
+      }
+    }
+    lx.fill();
+
+    // A solid rim (the layer nudged 4 ways) under a translucent body, so the
+    // habitat reads at a glance without hiding the terrain inside it.
+    const ring = 2 * DPR;
+    for (const [dx, dy] of [[ring, 0], [-ring, 0], [0, ring], [0, -ring]]) ctx.drawImage(layer, dx, dy);
+    ctx.globalAlpha = 0.42;
+    ctx.drawImage(layer, 0, 0);
+    ctx.globalAlpha = 1;
+
+    // How many roam this particular habitat, at its centre of mass.
+    ctx.font = `600 ${13 * DPR}px system-ui, sans-serif`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    for (const z of zones) {
+      const spans = z.spans ?? [];
+      if (!spans.length) continue;
+      let n = 0, sx = 0, sy = 0;
+      for (const [r, lv, c0, c1] of spans) {
+        const w = c1 - c0 + 1;
+        const [x, y] = pt((c0 + c1) / 2 + 0.5, r + 0.5, lv, P.tile / 2, P.dy);
+        sx += x * w; sy += y * w; n += w;
+      }
       ctx.lineWidth = 4 * DPR;
       ctx.strokeStyle = "rgba(0,0,0,0.65)";
-      ctx.strokeText(String(z.num), cx, cy);
+      ctx.strokeText(String(z.num), sx / n, sy / n);
       ctx.fillStyle = "#fff";
-      ctx.fillText(String(z.num), cx, cy);
+      ctx.fillText(String(z.num), sx / n, sy / n);
     }
   };
   img.src = assetUrl(wm.minimap);
