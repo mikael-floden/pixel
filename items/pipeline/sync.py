@@ -169,6 +169,7 @@ def build_viewer_data(metas, types):
             "equip_slot": m.get("equip_slot"),
             "description": m.get("description") or "",
             "review": m.get("review") or {"status": "unreviewed"},
+            "waiting_for": m.get("waiting_for"),
             "path": f"items/{m['id']}",
             "preview": m["sprite"],
             "sprite": m["sprite"],

@@ -25,8 +25,10 @@ This tool is the items agent's side of that contract — it never regenerates th
 file (it is durable maintainer state), it only:
 
   - **verifies** every `loot` entry against the item registry — unknown item ids,
-    MISC nothing drops, the 1-to-1 Soulstone binding (both directions, plus the
-    unbound surplus), chances outside their band, monsters with an empty table;
+    the 1-to-1 Soulstone binding (both directions, plus the unbound surplus),
+    chances outside their band, monsters with an empty table, and any item that
+    nothing drops WITHOUT a `waiting_for` note explaining which creature it is
+    waiting for;
   - **applies** an assignment plan (`--apply plan.json`) by writing each monster's
     `loot` array, leaving every other field — stats, defaults, format — untouched;
   - **reports** the resulting loot tables (`--report`).
@@ -151,7 +153,7 @@ def verify(live, items, types):
         if len(iids) > 1:
             problems.append(f"{mid}: drops {len(iids)} soul stones {iids} — a monster "
                             f"is bound to exactly ONE stone (see types.json:one_per_monster)")
-    unbound = []
+    unbound, waiting = [], []
     for iid, it in items.items():
         srcs = dropped_by.get(iid, [])
         if it["type"] in exclusive:
@@ -164,8 +166,16 @@ def verify(live, items, types):
                 # doubled up on a monster that already has one.
                 unbound.append(iid)
         elif not srcs:
-            problems.append(f"{iid}: no monster drops it — unobtainable")
-    return problems, warnings, dropped_by, sorted(unbound)
+            # Not a defect: this repo makes art ahead of the world that uses
+            # it, so an item whose creature does not exist yet simply waits.
+            # It IS a defect to have no idea why nothing drops it.
+            if it.get("waiting_for"):
+                waiting.append((iid, it["waiting_for"]))
+            else:
+                warnings.append(f"{iid}: nothing drops it and no `waiting_for` says why — "
+                                f"bind it to a creature it plausibly came off, or record "
+                                f"what it is waiting for in config/roster.json")
+    return problems, warnings, dropped_by, sorted(unbound), sorted(waiting)
 
 
 # --- apply --------------------------------------------------------------------
@@ -228,7 +238,7 @@ def main():
         print(f"applied: {sum(len(v) for v in tables.values())} drop rows across "
               f"{len(tables)} monsters{' (dry run)' if args.dry_run else ''}")
 
-    problems, warnings, dropped_by, unbound = verify(live, items, types)
+    problems, warnings, dropped_by, unbound, waiting = verify(live, items, types)
     if args.report:
         report(live, items, monster_names())
     print(f"\n=== drops ===\n  items: {len(items)} | dropped: {len(dropped_by)} | "
@@ -239,6 +249,10 @@ def main():
     if unbound:
         print(f"  {len(unbound)} soul stone(s) unbound, waiting for a monster of their "
               f"own: {unbound}")
+    if waiting:
+        print(f"  {len(waiting)} item(s) waiting for the creature they were drawn for:")
+        for iid, what in waiting:
+            print(f"      {iid:<28} waits for {what}")
     for w in warnings:
         print(f"  ! {w}")
     for p in problems:

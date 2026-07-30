@@ -146,6 +146,10 @@ def mirror(client, entry, detail=None, types=None, fresh=False):
     # unreviewed, which is the normal state of freshly made content.
     if entry.get("review"):
         meta["review"] = entry["review"]
+    # No creature in the roster is what this came off yet — say what it waits
+    # for instead of pretending some monster drops it.
+    if entry.get("waiting_for"):
+        meta["waiting_for"] = entry["waiting_for"]
     if entry["type"] == "SOUL":
         meta["soul"] = {
             "element": entry.get("category"),

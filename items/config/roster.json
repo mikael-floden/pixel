@@ -317,7 +317,7 @@
       "category": "mineral",
       "rarity": "uncommon",
       "value": 34,
-      "description": "Teal-green crystal with a wicked point, chipped off a Rimeshard mid-swing. Holds an edge and a grudge."
+      "description": "Teal-green crystal with a wicked point, prised out of a Mosscairn's seams. Holds an edge and a grudge."
     },
     {
       "id": "pair_of_molars",
@@ -337,7 +337,8 @@
       "category": "hide",
       "rarity": "common",
       "value": 10,
-      "description": "Tan membrane on pale finger bones, torn free mid-flight. The gaunt things that haunt the drifts fly on these."
+      "description": "Tan membrane on pale finger bones, torn free mid-flight. The gaunt things that haunt the drifts fly on these.",
+      "waiting_for": "a bat"
     },
     {
       "id": "curved_crab_pincer",
@@ -347,7 +348,8 @@
       "category": "claw",
       "rarity": "common",
       "value": 14,
-      "description": "Brown, jointed and hooked at the tip. Whatever the swamp blobs swallowed to get it went down sideways."
+      "description": "Brown, jointed and hooked at the tip. Whatever the swamp blobs swallowed to get it went down sideways.",
+      "waiting_for": "a crab"
     },
     {
       "id": "linen_thread_spool",
@@ -417,7 +419,8 @@
       "category": "plant",
       "rarity": "common",
       "value": 6,
-      "description": "Olive stalks tied off with cord, hauled out of a meadow nest. Poor fodder, but it burns beautifully."
+      "description": "Olive stalks tied off with cord, hauled out of a meadow nest. Poor fodder, but it burns beautifully.",
+      "waiting_for": "a gatherer with hands"
     },
     {
       "id": "rolled_grey_canvas",
@@ -447,7 +450,8 @@
       "category": "shell",
       "rarity": "rare",
       "value": 110,
-      "description": "One flawless sphere, off-white with a lilac sheen. Magmashells grow them, and Frostlings swallow what they find."
+      "description": "One flawless sphere, off-white with a lilac sheen. Nobody will say which water it was brought up out of.",
+      "waiting_for": "shellfish"
     },
     {
       "id": "amber_glazed_root",
@@ -467,7 +471,8 @@
       "category": "insect",
       "rarity": "uncommon",
       "value": 18,
-      "description": "Pale tan and ribbed brown, with a blue sheen at the base. An Emberwing's gaudy wings, minus the fire."
+      "description": "Pale tan and ribbed brown, with a blue sheen at the base. Something big and soft-winged shed it in the dark.",
+      "waiting_for": "a moth"
     },
     {
       "id": "tied_bone_bundle",
@@ -477,7 +482,7 @@
       "category": "bone",
       "rarity": "common",
       "value": 14,
-      "description": "Long pale bones from a Glowbone, bundled and gone dark. The shine leaves them within the hour."
+      "description": "Long pale bones tied off in a bundle. A Palehusk was carrying them, which raises questions about the string."
     },
     {
       "id": "pale_blue_hailstones",
@@ -517,7 +522,8 @@
       "category": "insect",
       "rarity": "uncommon",
       "value": 22,
-      "description": "Four glassy wings over a body like a snapped twig. Shaken loose from whatever swamp thing you flattened."
+      "description": "Four glassy wings over a body like a snapped twig. Shaken loose from whatever swamp thing you flattened.",
+      "waiting_for": "an insect"
     },
     {
       "id": "bronze_camp_knife",
@@ -587,7 +593,8 @@
       "category": "shell",
       "rarity": "common",
       "value": 11,
-      "description": "Scallops and spirals, sun-faded to tan. The tide made them, and the swamp does nothing but carry them about."
+      "description": "Scallops and spirals, sun-faded to tan. The tide made them, and the swamp does nothing but carry them about.",
+      "waiting_for": "shore life"
     },
     {
       "id": "smooth_river_stone",
@@ -607,7 +614,8 @@
       "category": "hide",
       "rarity": "common",
       "value": 13,
-      "description": "Dark membrane on thin bone struts, folded shut. Torn off a Frostwraith, and it still turns rain nicely."
+      "description": "Dark membrane on thin bone struts, folded shut. Leathery, and off nothing anyone has cornered yet.",
+      "waiting_for": "a bat"
     },
     {
       "id": "coiled_hemp_rope",
@@ -677,7 +685,7 @@
       "category": "mineral",
       "rarity": "uncommon",
       "value": 36,
-      "description": "Wedge of near-black glass with a cold blue sheen, cracked from a Slagling's crust. The edge never dulls."
+      "description": "Wedge of near-black glass with a cold blue sheen, cracked out of Rimeshard's rock. The edge never dulls."
     },
     {
       "id": "curved_bone_talon",
@@ -697,7 +705,7 @@
       "category": "claw",
       "rarity": "uncommon",
       "value": 30,
-      "description": "Mottled grey-green hide and three pale curled claws. Emberjaw and Palemaw both leave them, never in pairs."
+      "description": "Mottled grey-green hide and three pale curled claws. A Palemaw leaves them, and never in matching pairs."
     },
     {
       "id": "bound_root_bundle",
@@ -707,7 +715,8 @@
       "category": "plant",
       "rarity": "common",
       "value": 7,
-      "description": "Brown roots tied off with twine and dried brittle. Whatever woodland lump was hauling it does not want it back."
+      "description": "Brown roots tied off with twine and dried brittle. Whatever woodland lump was hauling it does not want it back.",
+      "waiting_for": "a gatherer with hands"
     },
     {
       "id": "pale_armoured_beetle",
@@ -717,13 +726,14 @@
       "category": "insect",
       "rarity": "common",
       "value": 12,
-      "description": "Palm-sized and bone-pale, its plated back mottled tan, six legs tucked under. The valley's small fry all carry one."
+      "description": "Palm-sized and bone-pale, its plated back mottled tan, six legs tucked under. The valley's small fry all carry one.",
+      "waiting_for": "an insect"
     },
     {
       "id": "broken_boar_tusk",
       "pixellab_id": "eda14c51-7045-4c84-8882-fabe1f6e8783",
       "type": "MISC",
-      "name": "Boar Tusk",
+      "name": "Broken Tusk",
       "category": "bone",
       "rarity": "uncommon",
       "value": 19,
@@ -767,7 +777,8 @@
       "category": "shell",
       "rarity": "rare",
       "value": 60,
-      "description": "Turn this flake of shell and it shifts green to violet. The Magmashell that grew it was not asked to hand it over."
+      "description": "Turn this flake of shell and it shifts green to violet. Nothing shelled enough to grow one lives here yet.",
+      "waiting_for": "shellfish"
     },
     {
       "id": "black_glass_slab",
@@ -777,7 +788,7 @@
       "category": "mineral",
       "rarity": "uncommon",
       "value": 38,
-      "description": "Slab of black volcanic glass, faceted and chipped. Rimeshard grows through it, and Slaglings just shed the stuff."
+      "description": "Slab of black volcanic glass, faceted and chipped. It sheds off a Magmashell's plates as the fire cools."
     },
     {
       "id": "clear_quartz_cluster",
@@ -877,7 +888,8 @@
       "category": "feather",
       "rarity": "uncommon",
       "value": 20,
-      "description": "Teal at the base, gold at the tip. Emberwing plumage, or a Quillkin needle that missed you narrowly."
+      "description": "Teal at the base, gold at the tip, and light as nothing. Scribes want the bird; nobody has found the bird.",
+      "waiting_for": "a bird"
     },
     {
       "id": "pitted_silver_band",
@@ -897,7 +909,7 @@
       "category": "claw",
       "rarity": "uncommon",
       "value": 28,
-      "description": "Cream-white and curved to a needle point, the socket left ragged. Duskfangs and Glowbones grow them by the set."
+      "description": "Cream-white and curved to a needle point, the socket left ragged. Glowbones and Frostwraiths grow them in sets."
     },
     {
       "id": "spotted_purple_mushroom",
@@ -927,7 +939,8 @@
       "category": "feather",
       "rarity": "rare",
       "value": 55,
-      "description": "Banded blue to red down a tan quill. An Emberwing sheds a tail of them and still outshines any real dragon."
+      "description": "Banded blue through green to red down a tan quill. Whatever grew a tail of these has not shown itself yet.",
+      "waiting_for": "a bird"
     },
     {
       "id": "golden_broad_fang",
@@ -937,7 +950,7 @@
       "category": "bone",
       "rarity": "uncommon",
       "value": 30,
-      "description": "Broad amber-yellow tooth, split from crown to root. Even a Palemaw loses one on the wrong kind of bone."
+      "description": "Broad amber-yellow tooth, split from crown to root. Even an Emberjaw loses one on the wrong kind of bone."
     },
     {
       "id": "hooked_bat_wing",
@@ -947,7 +960,8 @@
       "category": "hide",
       "rarity": "uncommon",
       "value": 22,
-      "description": "Leathery brown membrane on finger-bones, with a claw at the crown. Emberwings and Frostwraiths both fly on these."
+      "description": "Leathery brown membrane on finger-bones, with a claw at the crown. Whatever flies on these keeps to its cave.",
+      "waiting_for": "a bat"
     },
     {
       "id": "green_slime_glob",
@@ -967,7 +981,7 @@
       "category": "mineral",
       "rarity": "epic",
       "value": 160,
-      "description": "Split grey stone bleeding cold cyan light from every seam. Frostlings hoard them and Rimeshards grow around them."
+      "description": "Split grey stone bleeding cold cyan light from every seam. Golems grow around them and resent the loss."
     },
     {
       "id": "pale_blue_crystal_cluster",
@@ -1007,7 +1021,8 @@
       "category": "feather",
       "rarity": "uncommon",
       "value": 30,
-      "description": "Green, teal, blue and red plumes on a pale cord. Emberwing-gaudy, and whatever wore them is no longer loud."
+      "description": "Green, teal, blue and red plumes lashed to a cord. Nothing in these woods wears feathers like that.",
+      "waiting_for": "a bird"
     },
     {
       "id": "pale_silk_skein",
@@ -1017,7 +1032,8 @@
       "category": "cloth",
       "rarity": "uncommon",
       "value": 26,
-      "description": "Silvery cord wound tight and bound at the waist, cool to the touch. Emberwings and grinning shadows leave it."
+      "description": "Silvery cord wound tight and bound at the waist, cool to the touch. No hand in Nangijala spun this one.",
+      "waiting_for": "a spider"
     },
     {
       "id": "blunt_ivory_tooth",
@@ -1037,7 +1053,8 @@
       "category": "feather",
       "rarity": "common",
       "value": 7,
-      "description": "Barred brown, olive at the tip, shed by an Emberwing or fired from a Quillkin. Fletchers never ask which."
+      "description": "Barred brown with an olive tip, and too big for any bird anyone has flushed out of these woods yet.",
+      "waiting_for": "a bird"
     },
     {
       "id": "stretched_tan_hide",
@@ -1077,7 +1094,8 @@
       "category": "plant",
       "rarity": "common",
       "value": 8,
-      "description": "Long green stalks tied into a sheaf, damp from the ditch some blob had been squatting in."
+      "description": "Long green stalks tied into a sheaf, damp from the ditch some blob had been squatting in.",
+      "waiting_for": "a gatherer with hands"
     }
   ]
 }

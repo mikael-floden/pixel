@@ -99,13 +99,36 @@ maintainer; `item` values are `items/<id>` folder ids, and
 
 The rules the mapping follows:
 
+- **An item binds to a creature only when it is OF that creature** — its body,
+  its own kit, or what its body is literally made of. A player opening the loot
+  window has to think *yes, that came off that thing*. So a bat wing needs a
+  bat, a pincer needs a crab, a feather needs a bird, and something tied with
+  twine needs hands to have tied it. Nothing binds because it "rhymes".
+- **Counts fall out of fit, never out of a target.** A creature with a lot of
+  body ends up with seven drops; a snow blob has two. One mapping is fine, so
+  is none — see `waiting_for` below.
 - **A Soulstone and a monster are bound 1-to-1** — see below. This is the one
-  rule the generic data structure cannot express, so this domain enforces it;
-- a **MISC** item can drop from **several** monsters (a fang from every biter),
-  and every MISC item is dropped by at least one, or it would be unobtainable;
-- drop chance follows the item's rarity (common ~15-50 %, uncommon ~6-25 %,
-  rare ~1.5-10 %, epic ~0.4-3 %), and valuable loot comes off higher-level
-  monsters.
+  rule the generic data structure cannot express, so this domain enforces it.
+- Drop chance follows the item's rarity (common ~26-32 %, uncommon ~13-16 %,
+  rare ~4-6 %, epic ~1 %), a little lower when several creatures share the item.
+
+### `waiting_for`: an item with no creature yet
+
+Most of the art here was drawn before the world that uses it, so plenty of
+items are of creatures the game does not have — bats, birds, a crab, insects, a
+spider, shellfish, someone with hands to tie a bundle. Those items carry
+**`waiting_for`** in the roster (and in `item.json` / `viewer_data.json`), they
+drop from nothing, and their descriptions do not name a creature. **18 of the
+77 MISC items are waiting**, and that is the correct state — binding them to
+whatever roughly rhymed is how you get a bat wing dropping off a snow demon.
+
+`drops.py` lists them every run. What it *does* flag is an item that nothing
+drops **and** has no `waiting_for` — that means nobody decided, which is the
+actual defect.
+
+The reverse gap is worth watching too: **Emberwing** has only one MISC drop,
+because nothing in the item set is a butterfly-dragon's body. That is a request
+for art, not a reason to hand it someone else's feathers.
 
 ### A Soulstone belongs to exactly one monster (and back)
 
