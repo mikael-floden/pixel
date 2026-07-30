@@ -100,8 +100,11 @@ triggers a game deploy. The wiki reads state from `GET /api/live/state`
 
 "Is this actually in the game?" is answered against the world players really
 enter (`DEFAULT_WORLD` in `games2/client/src/maps.ts`, read at build time so
-it can't drift — currently `the_island2`). `build.mjs` emits `data.json`
-`world`:
+it can't drift — currently `the_island2`). The **UI never names the world**:
+the other worlds are a development convenience, and the finished game has a
+single world players never think of as one of several (maintainer
+2026-07-30) — copy says "used 137× in the world" / "unused", never a world
+id. `build.mjs` emits `data.json` `world`:
 
 - `monsters[id] = {spawned, zones}` — summed from that world's `spawns.json`
   zones. Shown on the monster cards ("7 roaming · 2 habitats") and page.

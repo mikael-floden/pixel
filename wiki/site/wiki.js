@@ -442,9 +442,11 @@ function entityBadge(domain, id) {
 
 const matches = (q, ...hay) => !q || hay.some((s) => (s ?? "").toLowerCase().includes(q));
 
-/* --- usage in the game's default world (built by ../build.mjs) --- */
+/* --- usage in the game world (built by ../build.mjs) ---
+   Stats are always measured on the game's default world. That there are
+   OTHER worlds is a development detail — the wiki never names one
+   (maintainer 2026-07-30: the finished game has a single world). */
 const worldInfo = () => state.data.world ?? null;
-const worldName = () => worldInfo()?.name ?? "the world";
 const tileUses = (rel) => worldInfo()?.tiles?.[rel] ?? 0;
 const monsterSpawns = (id) => worldInfo()?.monsters?.[id] ?? null;
 // "Referenced by the game" — bindings.json events / composer lookups for
@@ -530,7 +532,7 @@ function viewMonsters() {
           `HP ${st.max_hp ?? "?"} · DMG ${st.damage ?? "?"} · XP ${st.xp ?? "?"}${state.admin && !m.inGame ? " · not in game yet" : ""}`),
         h("div", { class: "card-sub" }, sp
           ? `${sp.spawned} roaming · ${sp.zones} ${sp.zones === 1 ? "habitat" : "habitats"}`
-          : `not spawned in ${worldName()}`),
+          : "not spawned"),
         h("div", { class: "card-badges" }, ...entityBadge("monsters", m.path)));
     })));
 }
@@ -670,8 +672,8 @@ function viewMonster(id) {
         (() => {
           const sp = monsterSpawns(m.id);
           return h("p", { class: "muted" }, sp
-            ? h("span", { class: "pill ok" }, `${sp.spawned} roaming ${worldName()} across ${sp.zones} ${sp.zones === 1 ? "habitat" : "habitats"}`)
-            : h("span", { class: "pill warn", title: "No spawn zone in the default world names this monster" }, `not spawned in ${worldName()}`));
+            ? h("span", { class: "pill ok" }, `${sp.spawned} roaming the world across ${sp.zones} ${sp.zones === 1 ? "habitat" : "habitats"}`)
+            : h("span", { class: "pill warn", title: "No spawn zone places this creature in the world yet" }, "not spawned in the world"));
         })(),
         // Art/render tech (resolution, pads, foot metrics) is admin-only.
         state.admin ? h("p", { class: "muted" }, `${m.frameW}×${m.frameH}px (native ${m.nativeW}×${m.nativeH}, pad ${m.pad.x},${m.pad.y}) · kind: ${m.kind} · foot line at ${(m.artBottom * 100).toFixed(0)}% · footW ${m.footW ?? "?"}px · bodyW ${m.bodyW ?? "?"}px${m.hoverPx ? ` · hovers ${m.hoverPx}px` : ""}${m.inGame ? "" : " · not in the game manifest yet"}`) : null,
@@ -780,10 +782,10 @@ function tileCell(type, group, file) {
   for (const c of [
     h("a", {
       href: `#/tiles/${type.id}/${encodeURIComponent(rel)}`, class: "tile-link",
-      title: `${id}\n${uses ? `used ${uses.toLocaleString()}× in ${worldName()}` : `unused in ${worldName()}`}`,
+      title: `${id}\n${uses ? `used ${uses.toLocaleString()}× in the world` : "unused"}`,
     }, h("img", { src: assetUrl(rel), alt: file, loading: "lazy" })),
     rank ? h("span", { class: "base-pill", title: "The maps agent paints clean ground and cliff walls with this tile" }, "clean base") : null,
-    uses ? h("span", { class: "use-pill", title: `Placed ${uses.toLocaleString()}× in ${worldName()}` }, `×${uses > 999 ? `${Math.round(uses / 1000)}k` : uses}`) : null,
+    uses ? h("span", { class: "use-pill", title: `Placed ${uses.toLocaleString()}× in the world` }, `×${uses > 999 ? `${Math.round(uses / 1000)}k` : uses}`) : null,
     starsWidget("tiles", id),
     state.admin ? h("button", {
       class: "tile-x", title: "Reject this tile (toggles)",
@@ -810,7 +812,7 @@ function viewTileType(id) {
       const placements = used.reduce((n, rel) => n + tileUses(rel), 0);
       return h("p", { class: "muted" },
         h("span", { class: used.length ? "pill ok" : "pill warn" },
-          `${used.length} of ${all.length} tiles used in ${worldName()}`),
+          `${used.length} of ${all.length} tiles used`),
         placements ? h("span", { class: "pill", style: "margin-left:6px" }, `${placements.toLocaleString()} placements`) : null);
     })(),
     h("div", { class: "fb-row" }, h("span", { class: "muted" }, "Whole type:"), starsWidget("tiles", t.path), verdictWidget("tiles", t.path)),
@@ -929,8 +931,8 @@ function viewTileInstance(typeId, rel) {
         (() => {
           const uses = tileUses(rel);
           return h("p", { class: "muted" }, uses
-            ? h("span", { class: "pill ok" }, `used ${uses.toLocaleString()}× in ${worldName()}`)
-            : h("span", { class: "pill warn", title: `No cell or prop in ${worldName()} uses this tile` }, `unused in ${worldName()}`));
+            ? h("span", { class: "pill ok" }, `used ${uses.toLocaleString()}× in the world`)
+            : h("span", { class: "pill warn", title: "No cell or prop in the world uses this tile" }, "unused"));
         })(),
         state.admin ? h("p", { class: "muted" }, h("code", {}, id)) : null,
         feedbackRow("tiles", id))),
