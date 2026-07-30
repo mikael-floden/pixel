@@ -30,17 +30,32 @@ PixelLab animation names can contain spaces, commas, even newlines (especially
 The exact PixelLab `animation_type` is preserved in `character.json` for matching,
 so the slug is only ever the folder name.
 
-## Wiki descriptions (`lore.json`)
+## Authored metadata (`metadata.json`) — `characters2-metadata@1`
 
-Every domain gives the wiki a short blurb per entity (monsters use `lore`, items
-use `description`). Ours live in **`characters2/lore.json`** — 1–2 sentences of
-RPG flavour per hero, hand-authored here and **merged into
-`humans/<id>/character.json` by `sync.py`** on every sync, because
-`character.json` is regenerated and would otherwise wipe them. The wiki reads
-that `lore` field (`wiki/build.mjs:buildCharacters`) and prints Species/Sex on
-their own lines, so the text stays pure flavour — no stats, no repetition.
+Everything true about a character that **can't be derived from the art** lives in
+**`characters2/metadata.json`**, keyed by the `humans/<id>` folder id:
 
-**Edit the text in `lore.json`, never in `character.json`.**
+```jsonc
+{ "format": "characters2-metadata@1",
+  "characters": {
+    "default_boy": { "display_name": "Man", "species": "Human",
+                     "sex": "Male", "lore": "A young man of the human race — …" } } }
+```
+
+`lore` (the wiki blurb — 1–2 sentences of RPG flavour, no stats) is just the
+first field; **add more as needed** (tags, hometown, starting class, voice…) and
+they flow through automatically — `sync.py` merges the *whole record*, so a new
+field needs no code change.
+
+Why a separate file: `humans/<id>/character.json` is **regenerated on every
+sync**, so authored text can't live there — `sync.py` merges this record onto it
+after each sync. Consumers may read either. PixelLab's own `name` (prompt junk
+like `"Improve transparency"`) is kept there for traceability; `display_name` is
+the human-facing one.
+
+**Edit fields here, never in `character.json` (generated). Every field is
+optional** — absent fields are simply omitted, so adding one can't break a
+consumer.
 
 ## Game-state → folder mapping (`animation_map.json`)
 
