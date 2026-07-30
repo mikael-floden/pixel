@@ -502,10 +502,14 @@ function injectStyles() {
     touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
   .ml-corner:hover{background:var(--surface-2)}
   .ml-corner.press{transform:translateY(1px)}
-  /* The wiki is a whole world of content — its chip reads a step bigger than
-     the utility Install chip (maintainer 2026-07-30). */
-  .ml-wiki{left:12px;padding:10px 16px;font-size:15px;border-radius:11px}
-  .ml-theme{left:12px;top:62px}
+  /* The left-hand pair (Wiki over Theme) reads a step bigger than the utility
+     Install chip, and the two are sized TOGETHER so they can never drift apart
+     (maintainer 2026-07-30: the Theme button must match the Wiki button).
+     min-width equalises the boxes despite the different word lengths — stacked
+     in a column, a matched pair reads deliberate. */
+  .ml-wiki,.ml-theme{left:12px;padding:10px 16px;font-size:15px;border-radius:11px;
+    min-width:118px;text-align:center}
+  .ml-theme{top:62px}
   .ml-install{right:12px}
   .ml-install[hidden]{display:none}`;
   const s = document.createElement("style");
