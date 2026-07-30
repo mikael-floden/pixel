@@ -527,6 +527,39 @@ visible head/shoulders are ABOVE the surface).
   (players keep instant large turns for input feel). QA probe: 25s room
   sweep — all 24 kinds sampled playing idle when stopped, zero frozen,
   worst flip rate 0.76/s.
+- **CAMERA GATE on the body pipeline** (perf, 2026-07-31): the_island2 ships
+  **160 monsters** and every one of them used to run the full shared body
+  pipeline EVERY FRAME regardless of where the camera was — stableDir + anim
+  play, per-frame origin/`shift`, occluder-aware `resolveBodyDepth` (a ray
+  test), `placeBodyShadow`, and a `syncLitCopy` that samples the CPU light AND
+  the depth fog — plus three Phaser draws each (sprite + shadow + lit copy).
+  Now a monster is ACTIVE only while its ART BOX (sprite bounds unioned with
+  the — often wider — shadow ellipse) can touch `cameras.main.worldView` grown
+  by `MONSTER_CULL_SLACK` (64px of pure hysteresis, so a body idling on the rim
+  can't flicker). A culled body is hidden, its `lit` hidden, and its anims
+  PAUSED (Phaser's UpdateList advances clips on invisible sprites too). What
+  culling must NOT break, and doesn't: (a) the position still tracks the server
+  every frame — the player's input-dodge reads `fx/fy` for EVERY monster, and
+  culled bodies SNAP (easing off-screen is invisible work, and snapping means a
+  monster re-enters the view already where it belongs instead of sliding in
+  from a stale spot); (b) un-culling restores everything the same frame —
+  `resolveBodyDepth` runs in the monster loop, `syncLitCopy` later in the same
+  update. Measured on the_island2 at 480×320: monster pipeline self-time
+  **1,587 → 160 µs/frame (−90%)** with 3 of 160 active, and Phaser's
+  `batchSprite` 1,293 → 693 µs/frame. Probe `__ml.monsterGate()` AUDITS the
+  decision against Phaser's own `getBounds()` × the camera's own `worldView`,
+  NOT against the gate's own arithmetic (a wrong formula can't agree with
+  itself): `wrongCulled` — a body that would have been drawn but was parked —
+  is the only number that can be a bug and must be 0 (measured 0 across 160
+  samples: 10 spots standing still at 480×320, plus 100 samples at the
+  maintainer's 393×851 mobile geometry WHILE RUNNING in all four directions,
+  which is when the chase trail + speed zoom-out move the view every frame).
+  `wastedActive` is the harmless direction. `monsterInfo()` carries `culled` so
+  QA skips parked bodies — their `playing`/`depth`/`lit` are deliberately
+  stale. Gate: the monster block of `verify-smoke.mjs` asserts the invariants
+  AND that culling REVERSES (pan away → those bodies drop out; pan back → the
+  same ids are active and animating again) — a gate that never re-opens would
+  strand every monster invisible.
 - **Zone DEBUG overlay** — Settings switch "spawn areas", **OFF by default**
   (maintainer 2026-07-30) and persisted in `ml-spawn-areas`. It draws each
   zone's REAL POLYGON, lazy-fetched from the world's `spawns.json` the first

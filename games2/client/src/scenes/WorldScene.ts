@@ -136,6 +136,20 @@ const SHADOW_TEX = "avatar:shadow";
 // the measured footprint so the visible core still matches the contact patch.
 const MONSTER_SHADOW_TEX = "monster:shadow";
 const MONSTER_SHADOW_SPREAD = 1.35;
+// CAMERA GATE for the monster body pipeline. A world ships ~160 monsters
+// (the_island2) and EVERY one of them used to run the full shared body
+// pipeline each frame — stableDir + anim play, per-frame origin/shift,
+// occluder-aware resolveBodyDepth (a ray test), placeBodyShadow, and a
+// lit-copy sync that samples the CPU light AND the depth fog — plus a Phaser
+// draw for sprite + shadow + lit copy. Off-screen that is all invisible work.
+// A monster is ACTIVE only while its art box can touch the camera view grown
+// by this slack; the slack is pure hysteresis so a body idling on the rim
+// can't flicker in and out (the box itself already uses the real art size).
+// Culled monsters still track their authoritative position every frame — the
+// player's input-dodge reads fx/fy for EVERY monster, and a parked body must
+// re-enter the view already in the right place, never sliding in from a stale
+// spot. See `__ml.monsterGate()`.
+const MONSTER_CULL_SLACK = 64;
 // Tile self-emission is data-driven: tiles/emission.json (owned by the tiles
 // agent — every category has an entry, null = does not glow). Each glowing
 // category gets (a) a self-glow FLOOR on its own pixels (shader, nightlight.ts)
@@ -449,6 +463,9 @@ interface MonsterAvatar {
     }
   >;
   groundIdle?: MonsterAvatar["ground"]; // idle strips are framed independently
+  // CAMERA GATE (see MONSTER_CULL_SLACK): true while the body's art cannot
+  // touch the view, so its render pipeline is parked. Positions keep syncing.
+  culled?: boolean;
 }
 
 /** The common body-visual subset the SHARED render helpers operate on —
@@ -481,6 +498,8 @@ export class WorldScene extends Phaser.Scene {
   private avatars = new Map<string, Avatar>();
   // Roaming monsters (server-authoritative, all clients see the same ones).
   private monsters = new Map<string, MonsterAvatar>();
+  // How many monsters passed the camera gate last frame (QA: __ml.monsterGate).
+  private monstersActive = 0;
   // Monster catalog (null when /monsters.json was unavailable → no monsters).
   private monsterManifest: MonsterManifest | null = null;
   // Faint debug outline of each fake SPAWN_AREA rectangle (WIP placeholder,
@@ -1601,6 +1620,9 @@ export class WorldScene extends Phaser.Scene {
           anim: mv.sprite.anims.getName() || null,
           playing: mv.sprite.anims.isPlaying,
           tex: mv.sprite.texture.key,
+          // Camera-gated (off-screen): its pipeline is parked this frame, so
+          // `playing`/`depth`/`lit` are deliberately stale — QA must skip it.
+          culled: !!mv.culled,
         })),
       // Glow-field RT orientation calibration (headless probes flip + verify).
       glowFlip: (v?: number) => {
@@ -1617,6 +1639,48 @@ export class WorldScene extends Phaser.Scene {
       // Roaming monsters (headless QA): live count + a dump of every rendered
       // monster's synced state, and the nearest monster to a world point.
       monsters: () => this.monsters.size,
+      // CAMERA GATE state + a full AUDIT of the cull decision. `wrongCulled`
+      // is the only number that can be a real BUG: a body Phaser's OWN
+      // getBounds() says overlaps the camera's OWN worldView, yet we parked —
+      // i.e. a monster that visibly popped out at the screen edge. It must be
+      // 0. `wastedActive` is the harmless direction (gated in but off-screen);
+      // it just costs a little. Audited against Phaser/camera geometry rather
+      // than re-running the gate's own arithmetic, so a wrong formula in the
+      // gate cannot agree with itself here.
+      monsterGate: () => {
+        const v = this.cameras.main.worldView;
+        let culled = 0;
+        let visibleCulled = 0;
+        let animatingCulled = 0;
+        let wrongCulled = 0;
+        let wastedActive = 0;
+        this.monsters.forEach((mv) => {
+          const b = mv.sprite.getBounds();
+          const sw = mv.shadow.displayWidth;
+          const sh = mv.shadow.displayHeight;
+          const x0 = Math.min(b.x, mv.sprite.x - sw / 2);
+          const x1 = Math.max(b.right, mv.sprite.x + sw / 2);
+          const y0 = Math.min(b.y, mv.sprite.y - sh / 2);
+          const y1 = Math.max(b.bottom, mv.sprite.y + sh / 2);
+          const hits = x1 >= v.x && x0 <= v.right && y1 >= v.y && y0 <= v.bottom;
+          if (mv.culled) {
+            culled++;
+            if (mv.sprite.visible || mv.lit?.visible || mv.shadow.visible) visibleCulled++;
+            if (mv.sprite.anims.isPlaying) animatingCulled++;
+            if (hits) wrongCulled++;
+          } else if (!hits) wastedActive++;
+        });
+        return {
+          total: this.monsters.size,
+          active: this.monstersActive,
+          culled,
+          visibleCulled,
+          animatingCulled,
+          wrongCulled,
+          wastedActive,
+          slack: MONSTER_CULL_SLACK,
+        };
+      },
       monstersDump: () => {
         const st = (this.room?.state as any)?.monsters;
         const out: Record<string, unknown>[] = [];
@@ -2515,6 +2579,14 @@ export class WorldScene extends Phaser.Scene {
     // the client only interpolates + renders the hop.
     const monsterState = state.monsters;
     if (monsterState) {
+      // CAMERA GATE (see MONSTER_CULL_SLACK): the view in world coords, grown
+      // by the hysteresis slack. Zoom is already baked into worldView.
+      const mview = this.cameras.main.worldView;
+      const vL = mview.x - MONSTER_CULL_SLACK;
+      const vR = mview.right + MONSTER_CULL_SLACK;
+      const vT = mview.y - MONSTER_CULL_SLACK;
+      const vB = mview.bottom + MONSTER_CULL_SLACK;
+      let active = 0;
       this.monsters.forEach((mv, id) => {
         const m = monsterState.get(id);
         if (!m) return;
@@ -2522,6 +2594,49 @@ export class WorldScene extends Phaser.Scene {
         mv.fy = m.y;
         const g = this.projectFlat(m.x, m.y);
         const targetElev = (m.elev ?? g.lvl) * MAP_GEOMETRY.lh;
+        // Is any of this body's art inside the view? The anchor is at the FEET,
+        // so the sprite occupies [y-h, y] and the shadow — which can be WIDER
+        // than the sprite (a mammoth's ellipse spans ~190px) — straddles it.
+        const sp = mv.sprite;
+        const halfW =
+          Math.max(sp.displayWidth, mv.shadowW * MONSTER_SHADOW_SPREAD) * 0.5;
+        const ay = g.y - targetElev - mv.hoverPx; // where it WILL be drawn
+        const onScreen =
+          g.x + halfW >= vL &&
+          g.x - halfW <= vR &&
+          ay + mv.shadowH >= vT &&
+          ay - sp.displayHeight <= vB;
+        if (!onScreen) {
+          // PARKED: no anim, no depth ray, no shadow, no lit copy, no draw.
+          // The position still tracks the server exactly (snapped, not eased —
+          // easing off-screen is invisible work, and snapping guarantees the
+          // body re-enters the view already where it belongs).
+          mv.lx = g.x;
+          mv.lyFlat = g.y;
+          mv.elev = targetElev;
+          mv.fallV = 0;
+          mv.falling = false;
+          mv.ly = mv.lyFlat - mv.elev;
+          sp.x = mv.lx;
+          sp.y = ay;
+          mv.surfLevel = m.elev ?? g.lvl;
+          if (!mv.culled) {
+            mv.culled = true;
+            sp.setVisible(false);
+            mv.shadow.setVisible(false);
+            mv.lit?.setVisible(false);
+            // Phaser's UpdateList advances anims on invisible sprites too.
+            sp.anims.pause();
+          }
+          return;
+        }
+        if (mv.culled) {
+          mv.culled = false;
+          sp.setVisible(true);
+          mv.shadow.setVisible(true);
+          sp.anims.resume();
+        }
+        active++;
         if (Math.abs(g.x - mv.lx) > CELL_WU * 2 || Math.abs(g.y - mv.lyFlat) > CELL_WU * 2) {
           // A respawn/reslot teleport — snap, don't ease across the map.
           mv.lx = g.x;
@@ -2586,6 +2701,7 @@ export class WorldScene extends Phaser.Scene {
           Math.min(gh / 2 - (gd?.sink ?? 2) - 2, (gd?.up ?? 99) + 3),
         );
       });
+      this.monstersActive = active;
     }
 
     this.updateChaseCam(delta);
@@ -2934,7 +3050,10 @@ export class WorldScene extends Phaser.Scene {
     // Monsters ride the SAME lit-copy pipeline (plain white base tint), so
     // they answer the sun, clouds, night and torches exactly like players —
     // their first cut had no lit copy at all (maintainer 2026-07-29).
-    for (const mv of this.monsters.values()) this.syncLitCopy(mv, on, 0xffffff);
+    // Camera-gated bodies are skipped outright: their copy is already hidden,
+    // and syncLitCopy samples the CPU light AND the depth fog per call.
+    for (const mv of this.monsters.values())
+      if (!mv.culled) this.syncLitCopy(mv, on, 0xffffff);
     if (this.campfireSprite) {
       if (!this.campfireLit) {
         this.campfireLit = this.add

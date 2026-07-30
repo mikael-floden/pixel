@@ -371,7 +371,9 @@ try {
     let badIdle = 0;
     const t0 = Date.now();
     while (Date.now() - t0 < 10000 && playingSeen === 0) {
-      const info = await page.evaluate(() => window.__ml.monsterInfo());
+      // Camera-gated monsters are PARKED on purpose (no anim, no draw) — only
+      // on-screen bodies are expected to animate.
+      const info = (await page.evaluate(() => window.__ml.monsterInfo())).filter((m) => !m.culled);
       for (const m of info) {
         if (m.playing && m.anim) playingSeen++;
         if (!m.playing && m.tex.includes("placeholder")) badIdle++;
@@ -381,6 +383,56 @@ try {
     if (playingSeen === 0) fail("no monster ever played its walk clip (frozen-slide regression)");
     if (badIdle > 0) fail(`${badIdle} resting monster samples on the placeholder texture`);
     console.log(`monster anims OK (${count} monsters, ${playingSeen} playing samples)`);
+
+    // CAMERA GATE (perf fix #4): only on-screen monsters run the body
+    // pipeline. Two things must hold or the gate is a rendering bug, not an
+    // optimisation: (a) a culled body is really hidden AND paused — otherwise
+    // we pay for it anyway or draw a stale ghost; (b) culling REVERSES — pan
+    // the camera away and back and the same bodies animate again. (b) is the
+    // regression that would strand every monster invisible.
+    {
+      const activeIds = async () =>
+        (await page.evaluate(() => window.__ml.monsterInfo()))
+          .filter((m) => !m.culled)
+          .map((m) => m.id);
+      const near = await page.evaluate(() => window.__ml.monsterGate());
+      if (near.total === 0) fail("monsterGate: no monsters to gate");
+      if (near.active === 0) fail("monsterGate: nothing active where the player stands");
+      if (near.culled === 0) fail("monsterGate: nothing culled — the gate is not gating");
+      if (near.visibleCulled > 0) fail(`monsterGate: ${near.visibleCulled} culled monsters still drawn`);
+      if (near.animatingCulled > 0) fail(`monsterGate: ${near.animatingCulled} culled monsters still animating`);
+      if (near.wrongCulled > 0) fail(`monsterGate: ${near.wrongCulled} culled monsters overlap the camera view`);
+      const before = await activeIds();
+      // Pan the camera off the player. We assert nothing about what is at the
+      // DESTINATION (a showcase world can have monsters anywhere) — only that
+      // the bodies we were rendering here drop out, and come back when we do.
+      const me = await page.evaluate(() => window.__ml.me());
+      await page.evaluate(({ c, r }) => window.__ml.lookAt(c, r), {
+        c: Math.max(0, Math.round(me.x / 32) - 40),
+        r: Math.max(0, Math.round(me.y / 32) - 40),
+      });
+      await page.waitForTimeout(900);
+      const away = await page.evaluate(() => window.__ml.monsterGate());
+      const stillActive = (await activeIds()).filter((id) => before.includes(id));
+      if (stillActive.length === before.length)
+        fail(`monsterGate: panning away culled none of the ${before.length} local monsters`);
+      if (away.wrongCulled > 0) fail(`monsterGate: ${away.wrongCulled} culled monsters overlap the view off-camera`);
+      if (away.visibleCulled > 0) fail(`monsterGate: ${away.visibleCulled} culled monsters drawn off-camera`);
+      // ...and back: the gate must re-open and those bodies animate again.
+      await page.evaluate(() => window.__ml.lookAt());
+      await page.waitForTimeout(1500);
+      const back = await page.evaluate(() => window.__ml.monsterGate());
+      if (back.wrongCulled > 0) fail(`monsterGate: ${back.wrongCulled} culled monsters overlap the view after panning back`);
+      const revived = (await page.evaluate(() => window.__ml.monsterInfo())).filter(
+        (m) => !m.culled && before.includes(m.id),
+      );
+      if (revived.length === 0) fail("monsterGate: local monsters never came back after panning back");
+      if (!revived.some((m) => m.playing || m.anim))
+        fail("monsterGate: revived monsters never resumed a clip");
+      console.log(
+        `monster camera gate OK (${near.active}/${near.total} active, ${before.length - stillActive.length} culled by panning, ${revived.length} revived)`,
+      );
+    }
   }
 
   if (errors.length) fail("page errors: " + errors.slice(0, 3).join(" | "));
