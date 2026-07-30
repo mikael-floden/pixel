@@ -118,24 +118,11 @@ export function mountPageFrame() {
   injectStyles();
   mountBars(); // HP/EP/XP + gold + level, over the top of the game view
   document.getElementById("ml-pageframe")?.remove(); // ancient overlay, if any
-  mountEdge();
   applyLayout();
   if (!layoutHooked) {
     layoutHooked = true;
     window.addEventListener("resize", applyLayout);
   }
-}
-
-/** The screen-edge FRAME around the whole game view (maintainer 2026-07-30):
- * the same themed rule every surface carries, wrapped around the app with
- * rounded screen corners. ONE pointer-events-none overlay does three jobs
- * through its box-shadows (see the .ml-edge CSS): matte the corners with the
- * page background so the canvas can't poke into the sharp screen corners, then
- * draw the 2px rule whose OUTER pixel is --bg and inner pixel is --border — so
- * the background reads as continuing around the game. */
-function mountEdge() {
-  if (document.querySelector(".ml-edge")) return;
-  document.body.appendChild(mk("div", "ml-edge"));
 }
 
 let layoutHooked = false;
@@ -1024,22 +1011,6 @@ function injectStyles() {
   mountTheme(); // shared wiki tokens + dark-mode sync — everything below uses them
   mountChatKeyboardLift();
   const css = `
-  /* ── the screen-edge frame around the WHOLE game (maintainer 2026-07-30) ──
-     One overlay, three jobs, all from box-shadow so nothing is clipped or
-     duplicated:
-       1. the OUTER shadow (big spread) paints --bg everywhere outside the
-          rounded rect — i.e. the four corner slivers between the arc and the
-          sharp screen corner, so the world canvas never pokes through there;
-       2. inset 1px --bg = the rule's OUTER pixel, the same colour as those
-          corners, so the background reads as wrapping around the game;
-       3. inset 2px --border = the rule's inner pixel, the thin themed line.
-     Inset shadows paint first-on-top, so (2) covers the outer px of (3).
-     z 150: above the HUD/bars/chat/badge, below the cinematic fade (200),
-     loading screen and the wiki drawer. */
-  .ml-edge{position:fixed;inset:0;z-index:150;pointer-events:none;border-radius:16px;
-    box-shadow:0 0 0 40px var(--bg),
-      inset 0 0 0 1px var(--bg),
-      inset 0 0 0 2px var(--border)}
   /* ── shell: golden-ratio split, a plain 1px border where the frame was ── */
   .ml-hud{position:fixed;left:0;right:0;top:var(--hud-h-inv,61.8dvh);bottom:0;z-index:4;
     background:var(--bg);color:var(--ink);border-top:1px solid var(--border);
