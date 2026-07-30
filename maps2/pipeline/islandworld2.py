@@ -177,6 +177,23 @@ CAVE_TURN_PEN = 3      # corridor A* turn penalty -> straight Diablo halls
 CAVE_FLOOR_TOP = "black_mountain"   # floor LOOK only; the cell MAT keeps the roof
                                     # material (snow stays snow for the roof walker)
 
+# A small HOUSE by the spawn (maintainer 2026-07-30), built like occlusion_test's
+# reference: walls are RAISED terrain, the roof is a thickness-0 deck at wall
+# height, and one full-height DOOR gap in the camera-facing wall lets you walk in
+# and stand on the original ground under the slab (solid — games2 `deckBot`).
+# The site is picked by rule, not by hand: the closest flat patch to the spawn
+# whose footprint AND margin are one uniform material/level, clear of roads,
+# props, decks and Trollstigen, at least HOUSE_SPAWN_GAP from the spawn cell, and
+# which still satisfies the low-ground dead-zone law once the walls exist (each
+# candidate is applied, checked, and rolled back if it strands its own doorstep).
+HOUSE_OUT = (6, 5)                  # outer footprint (w, h) -> a 4x3 room
+HOUSE_WALL = 6                      # wall height: 6*16 = 96px of door clearance
+HOUSE_WALL_MAT = "stone_mountain"
+HOUSE_ROOF_MAT = "black_mountain"
+HOUSE_GROUNDS = ("saturated_grass", "light_sand")
+HOUSE_SEARCH_R = 26
+HOUSE_SPAWN_GAP = 2
+
 
 class Island2(Island):
     def __init__(self, seed=21, M=24):
@@ -217,6 +234,7 @@ class Island2(Island):
         self._stairs_done = False
         self._deck_top = {}               # (x,y) -> (top path, mirror): cave roofs carry
                                           # the ORIGINAL surface tile (render honors it)
+        self._house = None                # the spawn house: {foot, walls, door, level}
         self._cave = set()                # cave floor footprint (rooms+corridors+door)
         self._cave_rooms = []
         self._cave_tunnel = set()
@@ -264,6 +282,7 @@ class Island2(Island):
         self._ponds()                     # flush multi-level lakes (before spawn -> post-pond main)
         self._sunken_lagoon()             # a walk-in lagoon sunk 2 levels (transactional)
         self._pick_spawn()
+        self._house_near_spawn()          # a little house by the spawn (walls + roof deck)
         self._dirt_roads()                # 8-direction meandering, margined, centred dirt roads
         self._fix_material_slivers()      # NEW RULE: no tile borders two different foreign grounds
         self._resolve_deck_mats()         # bridges wear their banks' FINAL ground (maintainer)
@@ -1664,6 +1683,8 @@ class Island2(Island):
         level; the walk surface stays at deck level, flush with the banks. Applied here so
         it covers bridges laid by ANY creator, including inherited ones."""
         for dk in self.decks:
+            if dk.get("kind") == "roof":
+                continue          # a house roof wears its own slate, not its banks
             if dk.get("kind") == "bridge":
                 dk["thickness"] = 0
             cells = set(dk["cells"])
@@ -2582,6 +2603,123 @@ class Island2(Island):
                 self.props.pop(cur, None)
                 cur = parent[cur]
 
+    # ---- THE SPAWN HOUSE (maintainer 2026-07-30) -----------------------------
+
+    def _elev_reach_field(self):
+        """Grade-walk distance (|Δlevel| <= 1 steps) from ALL level>=2 land — the
+        exact field build()'s low-ground dead-zone law measures. Cells absent from
+        the result are unreachable from elevated ground by design."""
+        n = self.n
+        wset = {(x, y) for y in range(n) for x in range(n)
+                if self.mat[y, x] not in ("", "clear_water")}
+        dist, q = {}, deque()
+        for c in sorted(wset):
+            if int(self.level[c[1], c[0]]) >= 2:
+                dist[c] = 0
+                q.append(c)
+        while q:
+            x, y = q.popleft()
+            for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                c2 = (x + dx, y + dy)
+                if (c2 in wset and c2 not in dist
+                        and abs(int(self.level[y, x]) - int(self.level[c2[1], c2[0]])) <= 1):
+                    dist[c2] = dist[(x, y)] + 1
+                    q.append(c2)
+        return dist
+
+    def _house_dead_cells(self, foot, walls):
+        """Cells the finished house would strand — the dead-zone law restricted to
+        the house's surroundings. A BUILDING is not a cliff: its own walls don't
+        count as the trapping wall (you walk around a hut), so this only fires if
+        the walls block someone's last route out of a genuinely walled terrain
+        pocket. Same exemption as the pit-trap law in build()."""
+        n = self.n
+        dist = self._elev_reach_field()
+        near = {(x + dx, y + dy) for (x, y) in foot
+                for dx in range(-3, 4) for dy in range(-3, 4)}
+        bad = []
+        for (x, y) in sorted(near):
+            if not (0 <= x < n and 0 <= y < n) or (x, y) in walls:
+                continue
+            if self.mat[y, x] in ("", "clear_water") or int(self.level[y, x]) > 1:
+                continue
+            d = dist.get((x, y))
+            if d is None or d <= 30:
+                continue
+            if any(0 <= x + i < n and 0 <= y + j < n and (x + i, y + j) not in walls
+                   and self.mat[y + j, x + i] not in ("", "clear_water")
+                   and int(self.level[y + j, x + i]) - int(self.level[y, x]) >= 2
+                   for i in (-2, -1, 0, 1, 2) for j in (-2, -1, 0, 1, 2)):
+                bad.append((x, y))
+        return bad
+
+    def _house_sites(self):
+        """Candidate top-left corners, closest to the spawn first: footprint AND a
+        1-cell margin all one material/level, on buildable ground, clear of every
+        other system, and not crowding the spawn cell."""
+        n, (W, H) = self.n, HOUSE_OUT
+        sx, sy = self.spawn
+        deckcells = {(x, y) for dk in self.decks for (x, y) in dk["cells"]}
+        taken = (self.reserved | self._troll | self._ascent | self.roads
+                 | set(self.props) | deckcells | self._gorge_cells | self._linework)
+        out = []
+        for cy in range(max(1, sy - HOUSE_SEARCH_R), min(n - H - 1, sy + HOUSE_SEARCH_R)):
+            for cx in range(max(1, sx - HOUSE_SEARCH_R), min(n - W - 1, sx + HOUSE_SEARCH_R)):
+                m0, l0 = self.mat[cy, cx], int(self.level[cy, cx])
+                if m0 not in HOUSE_GROUNDS:
+                    continue
+                ok = True
+                for y in range(cy - 1, cy + H + 1):
+                    for x in range(cx - 1, cx + W + 1):
+                        if (self.mat[y, x] != m0 or int(self.level[y, x]) != l0
+                                or (x, y) in taken):
+                            ok = False
+                            break
+                    if not ok:
+                        break
+                if not ok:
+                    continue
+                foot = [(x, y) for y in range(cy, cy + H) for x in range(cx, cx + W)]
+                if any(max(abs(x - sx), abs(y - sy)) < HOUSE_SPAWN_GAP for (x, y) in foot):
+                    continue
+                d = min(max(abs(x - sx), abs(y - sy)) for (x, y) in foot)
+                # closest to the spawn wins; a grassy plot beats a sandy one at
+                # equal distance (a cottage on the meadow, not on the beach)
+                out.append((d + (3 if m0 == "light_sand" else 0), d, cx, cy))
+        out.sort()
+        return out
+
+    def _house_near_spawn(self):
+        """Plant the house at the best site that survives the dead-zone law: each
+        candidate is applied, checked, and rolled back if it strands its doorstep."""
+        W, H = HOUSE_OUT
+        for _, _, cx, cy in self._house_sites():
+            foot = [(x, y) for y in range(cy, cy + H) for x in range(cx, cx + W)]
+            door = (cx + W // 2, cy + H - 1)          # camera-facing wall, centred
+            walls = [(x, y) for (x, y) in foot
+                     if (x in (cx, cx + W - 1) or y in (cy, cy + H - 1))
+                     and (x, y) != door]
+            top = int(self.level[cy, cx]) + HOUSE_WALL
+            snap = {(x, y): (self.mat[y, x], int(self.level[y, x])) for (x, y) in foot}
+            for (x, y) in walls:
+                self.mat[y, x] = HOUSE_WALL_MAT
+                self.level[y, x] = top
+            dead = self._house_dead_cells(foot, set(walls))
+            if dead:                                   # would strand its own street
+                for (x, y), (m, l) in snap.items():
+                    self.mat[y, x] = m
+                    self.level[y, x] = l
+                continue
+            deck = {"kind": "roof", "mat": HOUSE_ROOF_MAT, "level": top,
+                    "thickness": 0, "cells": list(foot)}
+            self.decks.append(deck)
+            self.reserved |= set(foot)
+            self._house = {"foot": set(foot), "walls": set(walls), "door": door,
+                           "level": top, "floor": snap[foot[0]][1],
+                           "mat": snap[foot[0]][0]}
+            return
+        raise AssertionError("no buildable house site near the spawn")
+
     # ---- THE CAVE (maintainer 2026-07-29) ------------------------------------
     # Carve-out under the east massif: floor = base terrain, mountain = verbatim
     # roof decks, one pinned doorway. See the CAVE_* constants for the doctrine.
@@ -2906,7 +3044,11 @@ def build(out=None, seed=21, M=24):
 
     comps = d._walk_components()
     mainset = set(comps[0])
+    hwalls = d._house["walls"] if d._house else set()
     traps = sum(len(c) for c in comps[1:]
+                if not set(c) <= hwalls          # a house's WALL TOPS are structure,
+                                                 # not terrain: nothing can get onto
+                                                 # them, so they trap nobody
                 if any((x + i, y + j) in mainset for (x, y) in c
                        for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1))))
     assert traps == 0, f"pit trap: {traps} walkable cells cut off yet land-adjacent to main"
@@ -2914,6 +3056,9 @@ def build(out=None, seed=21, M=24):
         f"main walkable piece covers only {len(comps[0])}/{land_cells} land"
 
     for dk in d.decks:
+        if dk["kind"] != "bridge":
+            continue          # a BRIDGE law: a roof's edges abut its own walls,
+                              # not walkable banks (the house battery covers roofs)
         xs = [c[0] for c in dk["cells"]]
         ys = [c[1] for c in dk["cells"]]
         x0, x1, y0, y1, dlv = min(xs), max(xs), min(ys), max(ys), dk["level"]
@@ -2996,6 +3141,9 @@ def build(out=None, seed=21, M=24):
         if (x, y) not in dist2:
             continue                       # water-locked islet: unreachable by design
         if any(0 <= x + i2 < n and 0 <= y + j2 < n
+               and (x + i2, y + j2) not in hwalls     # a BUILDING is not a cliff:
+                                                      # you walk around a hut, so its
+                                                      # walls never make a dead zone
                and d.mat[y + j2, x + i2] not in ("", "clear_water")
                and int(d.level[y + j2, x + i2]) - int(d.level[y, x]) >= 2
                for i2 in (-2, -1, 0, 1, 2) for j2 in (-2, -1, 0, 1, 2)):
@@ -3012,6 +3160,35 @@ def build(out=None, seed=21, M=24):
           f"({unreachable} water-locked islet); traps {traps}; decks {len(d.decks)}")
     print(f"  walkable components (top 6 sizes): {[len(c) for c in comps[:6]]}")
     print(f"  materials=" + ", ".join(f"{k.split('_')[0]}:{v}" for k, v in terr.most_common()))
+
+    # --- HOUSE battery (maintainer 2026-07-30) ----------------------------------
+    h = d._house
+    assert h, "no house was built near the spawn"
+    roofs = [dk for dk in d.decks if dk["kind"] == "roof"]
+    assert len(roofs) == 1 and set(roofs[0]["cells"]) == h["foot"], \
+        "the house roof does not cover exactly its footprint"
+    assert int(roofs[0]["level"]) == h["level"] and int(roofs[0]["thickness"]) == 0, \
+        "the house roof is not a 1-level slab at wall height"
+    assert h["level"] - h["floor"] >= 6, \
+        f"house door clearance {h['level'] - h['floor']} < 6 levels"
+    # the walls really stand, and the room is open ONLY through the one door
+    for (x, y) in h["walls"]:
+        assert int(d.level[y, x]) == h["level"] and d.mat[y, x] == HOUSE_WALL_MAT, \
+            f"house wall missing at ({x},{y})"
+    room = sorted(h["foot"] - h["walls"] - {h["door"]})
+    assert len(room) >= 6, f"house room too small ({len(room)} cells)"
+    doors = [c for c in h["foot"]
+             if int(d.level[c[1], c[0]]) == h["floor"]
+             and any((c[0] + i, c[1] + j) not in h["foot"]
+                     and d.mat[c[1] + j, c[0] + i] not in ("", "clear_water")
+                     and int(d.level[c[1] + j, c[0] + i]) == h["floor"]
+                     for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)))]
+    assert doors == [h["door"]], f"house has {len(doors)} door(s), expected exactly 1"
+    # you can walk in: floor and doorstep are in the main walkable piece
+    assert h["door"] in mainset and all(c in mainset for c in room), \
+        "the house interior is not reachable from the world"
+    assert max(abs(h["door"][0] - d.spawn[0]), abs(h["door"][1] - d.spawn[1])) <= 30, \
+        "the house is not near the spawn"
 
     # restore the LIVE (post-carve) state: the surface view above was pre-carve
     d.level, d.mat, d.top, d.mirror, d.props, d.decks = _live
