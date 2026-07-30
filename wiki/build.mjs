@@ -124,6 +124,10 @@ function buildMonsters() {
     monsters.push({
       id,
       name: rosterById[id]?.name ?? mj.name ?? titleCase(id),
+      // Player-facing flavour text from the monsters domain (monster.json
+      // `lore`, shipped 2026-07-30); the wiki falls back to its generic
+      // placeholder for monsters that don't carry one yet.
+      lore: mj.lore ?? null,
       kind: rosterById[id]?.kind ?? mj.source?.kind ?? "object",
       path: `monsters/${id}`,
       preview: `monsters/${id}/sprite.png`,

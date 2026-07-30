@@ -571,10 +571,10 @@ function viewMonster(id) {
       h("div", { class: "portrait checker" }, h("img", { src: assetUrl(m.preview), alt: m.name })),
       h("div", { class: "meta" },
         h("h1", {}, m.name),
-        // PLAYER-facing lore. PLACEHOLDER text for every monster until the
-        // dedicated lore agent lands (maintainer 2026-07-30) — keep it short,
-        // MMORPG-flavoured and generic.
-        h("p", { class: "muted lore" }, `Travellers tell of the ${m.name} roaming the wilds of Nangijala. What it wants — and what it guards — no chronicler has written down yet.`),
+        // PLAYER-facing lore: the monsters domain's own blurb (monster.json
+        // `lore`) when it ships one, else a generic placeholder until the
+        // lore agent covers the stragglers (maintainer 2026-07-30).
+        h("p", { class: "muted lore" }, m.lore ?? `Travellers tell of the ${m.name} roaming the wilds of Nangijala. What it wants — and what it guards — no chronicler has written down yet.`),
         // Art/render tech (resolution, pads, foot metrics) is admin-only.
         state.admin ? h("p", { class: "muted" }, `${m.frameW}×${m.frameH}px (native ${m.nativeW}×${m.nativeH}, pad ${m.pad.x},${m.pad.y}) · kind: ${m.kind} · foot line at ${(m.artBottom * 100).toFixed(0)}% · footW ${m.footW ?? "?"}px · bodyW ${m.bodyW ?? "?"}px${m.hoverPx ? ` · hovers ${m.hoverPx}px` : ""}${m.inGame ? "" : " · not in the game manifest yet"}`) : null,
         state.admin && m.pixellab ? h("p", {}, h("a", { href: m.pixellab, target: "_blank", rel: "noopener" }, "Open in PixelLab ↗")) : null,
