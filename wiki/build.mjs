@@ -150,6 +150,14 @@ function buildMonsters() {
 
 // -------------------------------------------------------------- characters
 const HERO_NAMES = { default_boy: "Man", default_girl: "Woman" }; // mirrors games2/scripts/build-manifest.mjs
+// What a PLAYER is told about a hero. The folder ids ("default_boy") are
+// pipeline names and must never reach the page (maintainer 2026-07-30: "I
+// don't even know what a default_boy is"). Sex is an explicit table, NOT
+// read from character.json's `prompt` — both heroes ship the same
+// copy-pasted prompt text there, which says "female" for BOTH; the art and
+// the ids agree with this table. An unlisted hero simply gets no sex line
+// rather than a guessed one.
+const HERO_SEX = { default_boy: "Male", default_girl: "Female" };
 function buildCharacters() {
   const base = join(ROOT, "characters2", "humans");
   if (!isDir(base)) return null;
@@ -176,6 +184,11 @@ function buildCharacters() {
     chars.push({
       id,
       name: HERO_NAMES[id] ?? titleCase(id),
+      // characters2 groups heroes by species folder; today there is only
+      // `humans/`, so this reads it from the one we scan.
+      species: "Human",
+      sex: HERO_SEX[id] ?? null,
+      lore: cj?.lore ?? null,   // the characters agent will author these
       path: `characters2/humans/${id}`,
       preview: `characters2/humans/${id}/base/south.png`,
       baseStrip: isFile(join(base, id, "base", "preview.png")) ? `characters2/humans/${id}/base/preview.png` : null,

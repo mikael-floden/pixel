@@ -595,6 +595,11 @@ function viewMonsters() {
 }
 const monsterLore = (m) => m.lore ?? `Travellers tell of the ${m.name} roaming the wilds of Nangijala. What it wants — and what it guards — no chronicler has written down yet.`;
 const objectBlurb = (o) => `${o.description} · ${o.category}${o.placement ? ` · world height ${o.placement.world_height_m}m (${o.placement.world_px_height}px)` : ""}`;
+/** What a hero IS, in words a player understands — "Human · Female", never
+ *  the pipeline folder id (maintainer 2026-07-30). */
+const heroKind = (c) => [c.species, c.sex].filter(Boolean).join(" · ") || "Hero of Nangijala";
+/** Placeholder until the characters agent authors real ones. */
+const heroLore = (c) => c.lore ?? `One of the heroes you can set out as. ${c.name === "Woman" ? "Her" : c.name === "Man" ? "His" : "Their"} story has not been written down yet — the chroniclers of Nangijala are still at work.`;
 /** A lore paragraph that always occupies the height of the LONGEST lore in
  *  its domain, so paging next/next/next can't move the animation viewer
  *  below it (maintainer 2026-07-30: "the animation preview jumps up and
@@ -824,7 +829,9 @@ function viewCharacters() {
       h("a", { class: "card", href: `#/characters/${c.id}` },
         h("div", { class: "thumb checker" }, h("img", { src: assetUrl(c.preview), alt: c.name, loading: "lazy" })),
         h("div", { class: "card-name" }, c.name),
-        h("div", { class: "card-sub" }, `${c.id} · ${Object.keys(c.animations).length} states`),
+        // What the hero IS, not what the folder is called.
+        h("div", { class: "card-sub" }, heroKind(c)),
+        state.admin ? h("div", { class: "card-sub" }, `${c.id} · ${Object.keys(c.animations).length} states`) : null,
         h("div", { class: "card-badges" }, ...entityBadge("characters", c.path))))));
 }
 function viewCharacter(id) {
@@ -847,7 +854,12 @@ function viewCharacter(id) {
       h("div", { class: "portrait checker" }, h("img", { src: assetUrl(c.preview), alt: c.name })),
       h("div", { class: "meta" },
         h("h1", {}, c.name),
-        h("p", { class: "muted" }, `${c.id} · ${c.frameW}×${c.frameH}px · ${Object.keys(c.animations).length} animation states`),
+        h("div", { class: "spawn-line" }, h("span", { class: "pill" }, heroKind(c))),
+        // Folder id, frame size and state count are PIPELINE facts — admin
+        // only (maintainer 2026-07-30). Players get the hero's story; the
+        // characters agent will author it, until then a placeholder.
+        state.admin ? h("p", { class: "muted" }, `${c.id} · ${c.frameW}×${c.frameH}px · ${Object.keys(c.animations).length} animation states`) : null,
+        loreSlot(heroLore(c), state.data.domains.characters.map(heroLore)),
         feedbackRow("characters", c.path))),
     h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "Animations"),
