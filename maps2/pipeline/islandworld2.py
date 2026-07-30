@@ -205,6 +205,13 @@ HOUSE_MEADOW_R = 6                  # "centered ON THE GRASS": of the land withi
                                     # loses to one out in the open field
 HOUSE_SEARCH_R = 26
 HOUSE_SPAWN_GAP = 2
+HOUSE_ROAD_GAP = 4                  # cells of meadow the dirt ROAD network must keep
+                                    # off the house (maintainer 2026-07-30: "don't
+                                    # connect the big road to the house — that looks
+                                    # like connecting a highway to your doorstep").
+                                    # _dirt_roads runs after the house, and reserving
+                                    # the footprint alone doesn't stop it: the router
+                                    # has its own keep-out mask, so the house joins it.
 HOUSE_WATER_GAP = 6                 # keep this many cells of land between the walls
                                     # and any water — no house on the shoreline
 
@@ -2135,7 +2142,10 @@ class Island2(Island):
         clean screen +/vertical/horizontal roads. Costs from the wander + margin/centre field.
         Returns dist{}, parent{}, elbow{} (elbow None for cardinal moves)."""
         n, mat, level = self.n, self.mat, self.level
-        land = lambda x, y: mat[y, x] != "" and mat[y, x] != "clear_water"
+        ko = getattr(self, "_road_keepout", None)   # the house's clearance: no road, ever
+        land = (lambda x, y: mat[y, x] != "" and mat[y, x] != "clear_water"
+                and not ko[y, x]) if ko is not None else \
+               (lambda x, y: mat[y, x] != "" and mat[y, x] != "clear_water")
         ladj, wf, wc = self._link_adj(), self._wander_field(), self._road_cost_field()
         ra = self._road_attract          # pull spurs onto the existing road (early Y-merge)
         fb = getattr(self, "_road_forbid", None)   # HARD keep-out (beach padding); soft pass: None
@@ -2272,6 +2282,9 @@ class Island2(Island):
         # Enforced three ways: a HARD routing keep-out (with soft fallback so no target is ever
         # unreachable), the widen margin, and a final paint skip for fallback remnants.
         self._sand_forbid = _dilate8(mat == "light_sand", 2)   # Chebyshev: covers diagonals
+        if getattr(self, "_road_keepout", None) is not None:   # ... and the house's clearance,
+            self._sand_forbid = self._sand_forbid | self._road_keepout   # so widening/paving
+                                                                        # can't creep in either
 
         def near(fx, fy):
             tx, ty = self._to_grid(fx, fy)
@@ -2766,6 +2779,10 @@ class Island2(Island):
                     "thickness": 0, "cells": list(foot)}
             self.decks.append(deck)
             self.reserved |= set(foot)
+            keep = np.zeros((self.n, self.n), bool)      # roads keep their distance
+            for (x, y) in foot:
+                keep[y, x] = True
+            self._road_keepout = _dilate8(keep, HOUSE_ROAD_GAP)
             self._house = {"foot": set(foot), "walls": set(walls), "door": door,
                            "level": top, "floor": snap[foot[0]][1],
                            "mat": snap[foot[0]][0]}
@@ -3250,6 +3267,13 @@ def build(out=None, seed=21, M=24):
            and d.mat[y + j, x + i] == "clear_water"]
     assert not wet, \
         f"the house is within {HOUSE_WATER_GAP} cells of water at {sorted(set(wet))[:3]}"
+    # NO HIGHWAY TO THE DOORSTEP (maintainer 2026-07-30)
+    paved = [(x + i, y + j) for (x, y) in h["foot"]
+             for i in range(-HOUSE_ROAD_GAP, HOUSE_ROAD_GAP + 1)
+             for j in range(-HOUSE_ROAD_GAP, HOUSE_ROAD_GAP + 1)
+             if (x + i, y + j) in d.roads]
+    assert not paved, (f"the dirt road runs within {HOUSE_ROAD_GAP} cells of the house "
+                       f"at {sorted(set(paved))[:4]}")
 
     # restore the LIVE (post-carve) state: the surface view above was pre-carve
     d.level, d.mat, d.top, d.mirror, d.props, d.decks = _live
