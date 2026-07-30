@@ -913,22 +913,34 @@ export function canEnterElev(
   const maxClimb = from.stairs || to.stairs ? Math.max(ctx.maxClimb, 1) : ctx.maxClimb;
   let best: number | null = null;
   let bestDist = Infinity;
-  const consider = (lvl: number, enterable: boolean) => {
-    if (!enterable) return;
-    if (lvl > elev + maxClimb + 1e-9) return; // too high to climb from here (drops are free)
-    const d = Math.abs(lvl - elev);
-    if (d < bestDist) { bestDist = d; best = lvl; } // stay on your own layer
-  };
+  // NOTE: the candidate test is INLINED, not a `consider` closure. This is the
+  // hottest predicate on the server (~105k calls/s with 160 monsters roaming
+  // the_island2) and `tsx` compiles through esbuild with keepNames:true, which
+  // wraps every function expression — including a per-call arrow — in an
+  // Object.defineProperty(fn, "name", …). Measured 7-8x on this function alone
+  // (ULTRACODE lag investigation, server fix). Keep it closure-free.
   // BASE surface: walkable ground / swimmable water, UNLESS a solid prop blocks
   // it or a deck slab overhead seals it off (only movers already under the slab
   // may use the ground beneath — see baseUnderDeckOpen).
   // (No deck → this is the ONLY candidate and the check reduces to canEnter.)
   const baseOpen = !grid.blocked[i] && (to.standable || (to.swimmable && ctx.canSwim))
     && baseUnderDeckOpen(grid, i, elev);
-  consider(grid.level[i], baseOpen);
+  if (baseOpen) {
+    const lvl = grid.level[i];
+    if (lvl <= elev + maxClimb + 1e-9) { // too high to climb from here (drops are free)
+      bestDist = Math.abs(lvl - elev);
+      best = lvl; // stay on your own layer
+    }
+  }
   // DECK surface (world@2): a solid slab ABOVE the base — walkable even over a
   // blocked base (a bridge spans water/chasm; a roof caps furniture below).
-  if (grid.deck[i] >= 0) consider(grid.deck[i], true);
+  if (grid.deck[i] >= 0) {
+    const lvl = grid.deck[i];
+    if (lvl <= elev + maxClimb + 1e-9) {
+      const d = Math.abs(lvl - elev);
+      if (d < bestDist) { bestDist = d; best = lvl; }
+    }
+  }
   if (best === null) return { ok: false, elev };
   return { ok: true, elev: best };
 }
@@ -943,16 +955,24 @@ export function resolveElevAt(grid: TerrainGrid, elev: number, x: number, y: num
   const s = surfaceAtWorld(grid, x, y);
   let best: number | null = null;
   let bestDist = Infinity;
-  const consider = (lvl: number, enterable: boolean) => {
-    if (!enterable) return;
-    if (lvl > elev + ctx.maxClimb + 1e-9) return;
-    const d = Math.abs(lvl - elev);
-    if (d < bestDist) { bestDist = d; best = lvl; }
-  };
+  // Inlined candidate test — see the keepNames note in canEnterElev; this runs
+  // once per monster per tick plus once per movement probe.
   const baseOpen = !grid.blocked[i] && (s.standable || (s.swimmable && ctx.canSwim))
     && baseUnderDeckOpen(grid, i, elev);
-  consider(grid.level[i], baseOpen);
-  if (grid.deck[i] >= 0) consider(grid.deck[i], true);
+  if (baseOpen) {
+    const lvl = grid.level[i];
+    if (lvl <= elev + ctx.maxClimb + 1e-9) {
+      bestDist = Math.abs(lvl - elev);
+      best = lvl;
+    }
+  }
+  if (grid.deck[i] >= 0) {
+    const lvl = grid.deck[i];
+    if (lvl <= elev + ctx.maxClimb + 1e-9) {
+      const d = Math.abs(lvl - elev);
+      if (d < bestDist) { bestDist = d; best = lvl; }
+    }
+  }
   return best === null ? grid.level[i] : best;
 }
 
@@ -1315,17 +1335,23 @@ function stepReach(
   const stair = from.stairs || to.stairs;
   const walkMax = stair ? Math.max(WALK_CLIMB, 1) : WALK_CLIMB;
   const out: { level: number; layer: number; jump: boolean }[] = [];
-  const consider = (level: number, layer: number, open: boolean) => {
-    if (!open) return;
-    const climb = level - elev;
-    if (climb <= walkMax + 1e-9) out.push({ level, layer, jump: false }); // walk (drops are free)
-    else if (climb <= JUMP_CLIMB + 1e-9) out.push({ level, layer, jump: true }); // 2-level auto-jump
-    // else too high to reach from here
-  };
+  // Inlined candidate test — see the keepNames note in canEnterElev; this is
+  // the pathfinder's per-neighbour expansion, the hottest loop in findPath.
   const baseOpen = !grid.blocked[bi] && (to.standable || (to.swimmable && canSwim))
     && baseUnderDeckOpen(grid, bi, elev);
-  consider(grid.level[bi], 0, baseOpen);
-  if (grid.deck[bi] >= 0) consider(grid.deck[bi], 1, true); // deck slab: solid walkable
+  if (baseOpen) {
+    const level = grid.level[bi];
+    const climb = level - elev;
+    if (climb <= walkMax + 1e-9) out.push({ level, layer: 0, jump: false }); // walk (drops are free)
+    else if (climb <= JUMP_CLIMB + 1e-9) out.push({ level, layer: 0, jump: true }); // 2-level auto-jump
+    // else too high to reach from here
+  }
+  if (grid.deck[bi] >= 0) { // deck slab: solid walkable
+    const level = grid.deck[bi];
+    const climb = level - elev;
+    if (climb <= walkMax + 1e-9) out.push({ level, layer: 1, jump: false });
+    else if (climb <= JUMP_CLIMB + 1e-9) out.push({ level, layer: 1, jump: true });
+  }
   return out;
 }
 
