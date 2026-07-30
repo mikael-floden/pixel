@@ -1,0 +1,30 @@
+{
+  "id": "green_herb_bundle",
+  "name": "Herb Bundle",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "plant",
+  "rarity": "common",
+  "value": 8,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Wild greens bound with twine, still smelling of the ditch they were pulled from. Alchemists pay; cooks pay more.",
+  "sprite": "items/green_herb_bundle/sprite.png",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "2bccefe3-70d4-409e-a879-d4aba9894c8a",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Item drops from enemies in an MMORPG",
+    "created_at": "2026-07-27T08:56:09.254868+00:00",
+    "last_modified": "Thu, 30 Jul 2026 18:52:52 GMT"
+  },
+  "synced_at": "2026-07-30T19:07:26+00:00"
+}

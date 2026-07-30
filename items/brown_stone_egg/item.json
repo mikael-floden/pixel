@@ -1,0 +1,38 @@
+{
+  "id": "brown_stone_egg",
+  "name": "Stone Soul",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "stone",
+  "rarity": "uncommon",
+  "value": 42,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "A brown egg heavy as a fencepost, veined with old copper. Patient, dependable and thoroughly unexciting.",
+  "sprite": "items/brown_stone_egg/sprite.png",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "5ec6c6db-c521-4e76-86ca-fecfb62aa91b",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "Lots of alternatives",
+    "created_at": "2026-07-27T09:26:27.069102+00:00",
+    "last_modified": "Thu, 30 Jul 2026 18:52:47 GMT"
+  },
+  "synced_at": "2026-07-30T19:07:20+00:00",
+  "soul": {
+    "element": "stone",
+    "power": "+12 armor and 15% knockback resistance",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

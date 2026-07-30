@@ -1,0 +1,38 @@
+{
+  "id": "matte_black_shadow_stone",
+  "name": "Shadow Soul",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "shadow",
+  "rarity": "epic",
+  "value": 230,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Black as a shut door, with the last coals dying inside. Light dislikes it, and the feeling is mutual.",
+  "sprite": "items/matte_black_shadow_stone/sprite.png",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "7cbc7c39-8d2f-4984-8d9b-01d25c0fa22c",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "Lots of alternatives",
+    "created_at": "2026-07-27T09:27:08.864900+00:00",
+    "last_modified": "Thu, 30 Jul 2026 18:52:47 GMT"
+  },
+  "synced_at": "2026-07-30T19:07:19+00:00",
+  "soul": {
+    "element": "shadow",
+    "power": "+14 shadow damage and 15% chance to fade from sight after a kill",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

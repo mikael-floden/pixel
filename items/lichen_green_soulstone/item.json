@@ -1,0 +1,38 @@
+{
+  "id": "lichen_green_soulstone",
+  "name": "Lichen Soul",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "verdant",
+  "rarity": "uncommon",
+  "value": 44,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Lichen-green and quietly growing. Leave it in a drawer for a week and you will find moss on the coins beside it.",
+  "sprite": "items/lichen_green_soulstone/sprite.png",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "c10426cf-9f50-406e-bb8d-a231798231f7",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "Lots of alternatives",
+    "created_at": "2026-07-27T09:28:10.536555+00:00",
+    "last_modified": "Thu, 30 Jul 2026 18:52:46 GMT"
+  },
+  "synced_at": "2026-07-30T19:07:18+00:00",
+  "soul": {
+    "element": "verdant",
+    "power": "+3 health regeneration per second",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

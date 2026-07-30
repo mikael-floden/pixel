@@ -1,0 +1,30 @@
+{
+  "id": "cracked_magma_stone",
+  "name": "Magma Stone",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "mineral",
+  "rarity": "rare",
+  "value": 95,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "A knot of cooled magma still glowing along its cracks. Warm through a glove; warmer through a bad glove.",
+  "sprite": "items/cracked_magma_stone/sprite.png",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "d1bc9fcd-a105-41c5-bb2d-be5f5b3a7159",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Item drops from enemies in an MMORPG. I want mostly stuff you sell in the store for gold. No equipment or weapons. This is usually stuff the enemy is made of, parts of their body or cloths, but it can be anything really. Use your fantasy. I want variety.",
+    "created_at": "2026-07-27T09:11:53.666652+00:00",
+    "last_modified": "Thu, 30 Jul 2026 18:52:48 GMT"
+  },
+  "synced_at": "2026-07-30T19:07:21+00:00"
+}

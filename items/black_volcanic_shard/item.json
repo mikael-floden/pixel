@@ -1,0 +1,30 @@
+{
+  "id": "black_volcanic_shard",
+  "name": "Onyx Shard",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "mineral",
+  "rarity": "uncommon",
+  "value": 36,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "A wedge of black volcanic glass with an edge that never dulls. Handle it with the gloves, not the confidence.",
+  "sprite": "items/black_volcanic_shard/sprite.png",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "8c89c277-78f5-465d-8be0-ff4c9c4499f2",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Item drops from enemies in an MMORPG. I want mostly stuff you sell in the store for gold. No equipment or weapons. This is usually stuff the enemy is made of, parts of their body or cloths, but it can be anything really. Use your fantasy. I want variety.",
+    "created_at": "2026-07-27T09:07:36.761181+00:00",
+    "last_modified": "Thu, 30 Jul 2026 18:52:50 GMT"
+  },
+  "synced_at": "2026-07-30T19:07:23+00:00"
+}

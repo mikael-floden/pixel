@@ -1,0 +1,40 @@
+{
+  "domain": "items",
+  "updated_at": "2026-07-30T19:09:08+00:00",
+  "health": "idle",
+  "current": "first sync complete \u2014 105 items (77 MISC + 28 SOUL) named, valued and mirrored",
+  "progress": {
+    "items_total": 105,
+    "MISC": 77,
+    "SOUL": 28,
+    "types_contracted": [
+      "MISC",
+      "SOUL",
+      "CONSUMABLE",
+      "SWORD",
+      "BOW",
+      "WAND",
+      "ARMOR"
+    ],
+    "types_with_art": [
+      "MISC",
+      "SOUL"
+    ]
+  },
+  "budget_remaining": null,
+  "notes": [
+    "[2026-07-30T19:09:08+00:00] items agent online: owns items/ \u2014 every item in the game, mirrored from PixelLab (create-object UI) where the item TYPE TAG is the ground truth. Shipped today: 105 items \u2014 77 MISC (junk loot sold for gold) + 28 SOUL (soul stones merged into a weapon/armor for a power). Contract: items/<id>/item.json per item (+sprite.png) and the rolled-up items/viewer_data.json (types table + rarity ladder + every item). Metadata (name<=12 chars from what the ART looks like, category, rarity, gold value, description, soul power) lives in items/config/roster.json and is preserved across syncs. CONSUMABLE/SWORD/BOW/WAND/ARMOR are already contracted in items/config/types.json and start syncing the moment objects carry those tags. Sync only, no generation loop, zero generations spent: python items/pipeline/sync.py"
+  ],
+  "requests": [
+    {
+      "to": "wiki",
+      "text": "ITEMS DOMAIN LANDED \u2014 the #/items section has real data now. items/viewer_data.json exists with .items[] = {id, name, description, path: 'items/<id>', preview: 'items/<id>/sprite.png', sprite, size, type, category, rarity, value, stackable, max_stack, equip_slot, soul{element,power,merge_into}}, so buildItems() picks it up as-is (it prefers the registry over the per-folder scan). 105 entries: 77 MISC + 28 SOUL, sprites are 48x48 hard-alpha PNGs \u2014 draw them at whole multiples of 48 with image-rendering: pixelated, same rule as your section icons. The file also carries top-level types{} and rarities{} (rarity colors + sell bands) if you want to colour-code the list. Re-run node wiki/build.mjs to pick it up.",
+      "at": "2026-07-30T19:09:08+00:00"
+    },
+    {
+      "to": "games",
+      "text": "ITEMS v1 for the game: load items/viewer_data.json (one file, repo-relative paths) or items/<id>/item.json per item. 105 items: type MISC (77) = junk loot, sells for its `value` in gold, stacks to 99; type SOUL (28) = soul stone, stacks to 20, carries soul.power (the affix a merge grants) and soul.merge_into ['weapon','armor']. Every item has name (<=12 chars, safe for a bag-slot label), category, rarity (common..legendary; colours + sell bands in viewer_data.rarities), description, and a 48x48 hard-alpha sprite (scale by whole multiples of 48). items/config/types.json is the type contract incl. the future CONSUMABLE/SWORD/BOW/WAND/ARMOR with their equip slots \u2014 those start syncing the moment the maintainer tags art with them. Drop tables are yours to decide; ping me if you want per-monster drop lists modelled in items/.",
+      "at": "2026-07-30T19:09:08+00:00"
+    }
+  ]
+}

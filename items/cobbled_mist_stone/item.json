@@ -1,0 +1,38 @@
+{
+  "id": "cobbled_mist_stone",
+  "name": "Mist Soul",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "mist",
+  "rarity": "rare",
+  "value": 70,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "A cobbled grey stone that hums faintly of wet mornings. Softens the edges of anything it is bound into.",
+  "sprite": "items/cobbled_mist_stone/sprite.png",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "ad7584cd-331f-413f-a179-431c0fb77728",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "Lots of alternatives",
+    "created_at": "2026-07-27T09:27:08.864900+00:00",
+    "last_modified": "Thu, 30 Jul 2026 18:52:48 GMT"
+  },
+  "synced_at": "2026-07-30T19:07:19+00:00",
+  "soul": {
+    "element": "mist",
+    "power": "+8% dodge chance and attackers miss more often in dim light",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

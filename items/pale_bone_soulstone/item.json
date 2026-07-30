@@ -1,0 +1,38 @@
+{
+  "id": "pale_bone_soulstone",
+  "name": "Bone Soul",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "bone",
+  "rarity": "uncommon",
+  "value": 45,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "A chalk-pale stone webbed with dry fissures. It hums like a hollow skull and steadies the bones of whoever carries it.",
+  "sprite": "items/pale_bone_soulstone/sprite.png",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "06dec6a2-89d5-4e25-b01e-a90fed299f8f",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "Lots of alternatives",
+    "created_at": "2026-07-27T09:28:10.536555+00:00",
+    "last_modified": "Thu, 30 Jul 2026 18:52:47 GMT"
+  },
+  "synced_at": "2026-07-30T19:07:18+00:00",
+  "soul": {
+    "element": "bone",
+    "power": "+12 armor and immunity to fracture effects",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

@@ -1,0 +1,1083 @@
+{
+  "_comment": "Roster of items, reconciled against PixelLab by pipeline/sync.py \u2014 the TYPE TAG on a PixelLab object (MISC/SOUL/CONSUMABLE/SWORD/BOW/WAND/ARMOR, see types.json) decides membership and type. This file owns everything PixelLab has no field for: the stable folder `id`, the in-game `name` (max 12 chars, describing what the sprite LOOKS like \u2014 never the generation prompt), `category`, `rarity`, gold `value`, the wiki `description`, and for SOUL items the `power` a merge grants. Hand-tune freely; sync preserves every field across runs. Entries whose pixellab_id loses its tag are dropped (and their folder pruned); newly tagged objects are appended with needs_review=true and a placeholder name.",
+  "items": [
+    {
+      "id": "dark_grain_soulstone",
+      "pixellab_id": "2ecff4be-1af0-48a4-9ead-cd59b6f56912",
+      "type": "SOUL",
+      "name": "Bark Soul",
+      "category": "bark",
+      "rarity": "uncommon",
+      "value": 42,
+      "description": "Dark grain runs through it like a felled trunk. Woodsmen swear it remembers every tree the forest ever lost.",
+      "power": "+8 armor and 5% of damage taken is reflected to the attacker"
+    },
+    {
+      "id": "gold_seamed_teal_soulstone",
+      "pixellab_id": "a094ea1c-f241-4e94-95bc-8afa60430739",
+      "type": "SOUL",
+      "name": "Patina Soul",
+      "category": "gilded",
+      "rarity": "rare",
+      "value": 116,
+      "description": "Sea-green stone mended with seams of gold, as if some patient god glued it back together and charged for it.",
+      "power": "+15% gold found and +6 armor"
+    },
+    {
+      "id": "pale_bone_soulstone",
+      "pixellab_id": "06dec6a2-89d5-4e25-b01e-a90fed299f8f",
+      "type": "SOUL",
+      "name": "Bone Soul",
+      "category": "bone",
+      "rarity": "uncommon",
+      "value": 45,
+      "description": "A chalk-pale stone webbed with dry fissures. It hums like a hollow skull and steadies the bones of whoever carries it.",
+      "power": "+12 armor and immunity to fracture effects"
+    },
+    {
+      "id": "hollow_black_soulstone",
+      "pixellab_id": "98f6d2b6-9e10-42b1-8301-f0a42d9a5c99",
+      "type": "SOUL",
+      "name": "Hollow Soul",
+      "category": "void",
+      "rarity": "rare",
+      "value": 118,
+      "description": "Its cracks go somewhere. Drop a pebble in one and you will wait a long, disappointing while for the sound.",
+      "power": "+14 shadow damage on hit and ignores 10% of enemy armor"
+    },
+    {
+      "id": "rimed_blue_soulstone",
+      "pixellab_id": "1efae46a-e38d-4e13-b78f-c4550981c6bd",
+      "type": "SOUL",
+      "name": "Rime Soul",
+      "category": "frost",
+      "rarity": "rare",
+      "value": 112,
+      "description": "Frost-blue and perpetually cold to the touch. Rimed veins bloom across it whenever someone nearby stops shivering.",
+      "power": "+10 frost damage on hit and 20% chance to slow the target"
+    },
+    {
+      "id": "lichen_green_soulstone",
+      "pixellab_id": "c10426cf-9f50-406e-bb8d-a231798231f7",
+      "type": "SOUL",
+      "name": "Lichen Soul",
+      "category": "verdant",
+      "rarity": "uncommon",
+      "value": 44,
+      "description": "Lichen-green and quietly growing. Leave it in a drawer for a week and you will find moss on the coins beside it.",
+      "power": "+3 health regeneration per second"
+    },
+    {
+      "id": "amethyst_rune_soulstone",
+      "pixellab_id": "d21bfc35-278f-448a-aad2-878ec549553b",
+      "type": "SOUL",
+      "name": "Arcane Soul",
+      "category": "arcane",
+      "rarity": "epic",
+      "value": 275,
+      "description": "Amethyst facets around a single pale rune. Scholars argue over what it means; the rune declines to elaborate.",
+      "power": "+20 arcane damage on hit and -10% spell cooldowns"
+    },
+    {
+      "id": "molten_lava_soulstone",
+      "pixellab_id": "aab182e1-5138-4ea7-8073-cc121c880299",
+      "type": "SOUL",
+      "name": "Molten Soul",
+      "category": "ember",
+      "rarity": "epic",
+      "value": 285,
+      "description": "Molten veins crawl across a charred shell, still warm from whatever furnace spat it out. Smiths pay stupidly well.",
+      "power": "+22 fire damage on hit and burns the target for 4 per second"
+    },
+    {
+      "id": "crimson_vein_mossy_stone",
+      "pixellab_id": "4d13a19e-e890-46f6-a729-762c0078d9b9",
+      "type": "SOUL",
+      "name": "Crimson Soul",
+      "category": "blood",
+      "rarity": "rare",
+      "value": 108,
+      "description": "Mossy stone split by a vivid red artery that pulses faintly. Best not carried in a pocket next to the heart.",
+      "power": "+9 damage on hit and heals you for 8% of damage dealt"
+    },
+    {
+      "id": "matte_black_shadow_stone",
+      "pixellab_id": "7cbc7c39-8d2f-4984-8d9b-01d25c0fa22c",
+      "type": "SOUL",
+      "name": "Shadow Soul",
+      "category": "shadow",
+      "rarity": "epic",
+      "value": 230,
+      "description": "Black as a shut door, with the last coals dying inside. Light dislikes it, and the feeling is mutual.",
+      "power": "+14 shadow damage and 15% chance to fade from sight after a kill"
+    },
+    {
+      "id": "pink_seam_granite_stone",
+      "pixellab_id": "5a117809-e55a-401b-bb25-0b7ad5bd3a14",
+      "type": "SOUL",
+      "name": "Granite Soul",
+      "category": "stone",
+      "rarity": "rare",
+      "value": 55,
+      "description": "A plain grey egg webbed with pink seams. Unglamorous, unbreakable, and heavier than it has any right to be.",
+      "power": "+15 armor and 10% reduced damage from falling and crushing blows"
+    },
+    {
+      "id": "cyan_glacier_seam_stone",
+      "pixellab_id": "7419e2ac-281b-496a-9ebb-6fdc9220d331",
+      "type": "SOUL",
+      "name": "Glacier Soul",
+      "category": "frost",
+      "rarity": "epic",
+      "value": 240,
+      "description": "Cyan light crawls the seams and the air around it turns sharp. Do not carry it in a pocket with your lunch.",
+      "power": "+16 frost damage on hit and slows the target by 30% for 3 seconds"
+    },
+    {
+      "id": "molten_gold_vein_stone",
+      "pixellab_id": "63bef222-8d99-480e-a1bf-7e738fd8c50f",
+      "type": "SOUL",
+      "name": "Gilded Soul",
+      "category": "gilded",
+      "rarity": "epic",
+      "value": 260,
+      "description": "Molten gold runs its cracks like spilled treasure. Merchants weep over it; smiths simply put it to work.",
+      "power": "+18% gold found and each critical hit drops 5 gold"
+    },
+    {
+      "id": "banded_solar_stone",
+      "pixellab_id": "ce928fc6-5187-45c6-be0d-4a52233b510a",
+      "type": "SOUL",
+      "name": "Solar Soul",
+      "category": "solar",
+      "rarity": "epic",
+      "value": 275,
+      "description": "Banded like a beehive and lined with living gold. It warms the hand, the blade, and eventually the whole room.",
+      "power": "+20 radiant damage on hit and blinds undead within three tiles"
+    },
+    {
+      "id": "rusted_slit_stone",
+      "pixellab_id": "6e8b80c2-28b1-4a18-921c-7834b57d3015",
+      "type": "SOUL",
+      "name": "Rust Soul",
+      "category": "rust",
+      "rarity": "rare",
+      "value": 50,
+      "description": "Old iron gone sour, weeping copper from every slit. Whatever it holds has been rotting patiently for ages.",
+      "power": "+9 damage on hit and reduces the target's armor by 6 for 8 seconds"
+    },
+    {
+      "id": "green_venom_vein_stone",
+      "pixellab_id": "bece5042-4d36-4eeb-b427-ef739efb9d0a",
+      "type": "SOUL",
+      "name": "Venom Soul",
+      "category": "venom",
+      "rarity": "epic",
+      "value": 200,
+      "description": "Grey rock split by sickly green light. The glow is pretty; the residue it leaves on your gloves is not.",
+      "power": "+13 poison damage on hit stacking up to five times"
+    },
+    {
+      "id": "mossy_root_stone",
+      "pixellab_id": "bc2a44f5-48bd-4c94-acea-577e72d80411",
+      "type": "SOUL",
+      "name": "Root Soul",
+      "category": "verdant",
+      "rarity": "rare",
+      "value": 110,
+      "description": "Mossed over and threaded with black roots, still growing in your pack. Smells of rain and old forest floor.",
+      "power": "+10 nature damage on hit and regenerates 3 health per second"
+    },
+    {
+      "id": "cobbled_mist_stone",
+      "pixellab_id": "ad7584cd-331f-413f-a179-431c0fb77728",
+      "type": "SOUL",
+      "name": "Mist Soul",
+      "category": "mist",
+      "rarity": "rare",
+      "value": 70,
+      "description": "A cobbled grey stone that hums faintly of wet mornings. Softens the edges of anything it is bound into.",
+      "power": "+8% dodge chance and attackers miss more often in dim light"
+    },
+    {
+      "id": "red_seam_pyre_stone",
+      "pixellab_id": "ea6db9f5-0776-481a-93a7-a24419d7d52b",
+      "type": "SOUL",
+      "name": "Pyre Soul",
+      "category": "ember",
+      "rarity": "rare",
+      "value": 115,
+      "description": "Warm to the touch, then hotter. The red veins pulse like something inside is still trying to finish burning.",
+      "power": "+12 fire damage on hit and burns the target for 4 per second"
+    },
+    {
+      "id": "cyan_lightning_egg",
+      "pixellab_id": "d103b69f-2a43-4549-a338-374440daffe5",
+      "type": "SOUL",
+      "name": "Storm Soul",
+      "category": "storm",
+      "rarity": "epic",
+      "value": 295,
+      "description": "Dark slate cracked by rivers of cyan lightning. It hums before rain and bites anyone who argues with it.",
+      "power": "+15 lightning damage with a 20% chance to chain to a second target"
+    },
+    {
+      "id": "smouldering_dark_egg",
+      "pixellab_id": "4c27418f-167e-4bb8-92c9-4ab701b7c601",
+      "type": "SOUL",
+      "name": "Cinder Soul",
+      "category": "cinder",
+      "rarity": "uncommon",
+      "value": 44,
+      "description": "A burnt-out shell with the last red glow banked deep in its cracks. Not dead, only resting between fires.",
+      "power": "+4 fire damage on hit and 10% burn resistance"
+    },
+    {
+      "id": "starlit_void_stone",
+      "pixellab_id": "d6eae77e-5e58-4248-8ade-b4d015ae0b7a",
+      "type": "SOUL",
+      "name": "Void Soul",
+      "category": "void",
+      "rarity": "epic",
+      "value": 285,
+      "description": "A shard of the night sky sealed in stone; hold it long enough and something out there notices you back.",
+      "power": "+22 void damage on hit and 10% chance to blink behind the target"
+    },
+    {
+      "id": "brown_stone_egg",
+      "pixellab_id": "5ec6c6db-c521-4e76-86ca-fecfb62aa91b",
+      "type": "SOUL",
+      "name": "Stone Soul",
+      "category": "stone",
+      "rarity": "uncommon",
+      "value": 42,
+      "description": "A brown egg heavy as a fencepost, veined with old copper. Patient, dependable and thoroughly unexciting.",
+      "power": "+12 armor and 15% knockback resistance"
+    },
+    {
+      "id": "pale_sand_stone",
+      "pixellab_id": "f7fbf7e2-e3c5-44ae-97e6-7ad9433cce60",
+      "type": "SOUL",
+      "name": "Sand Soul",
+      "category": "sand",
+      "rarity": "rare",
+      "value": 60,
+      "description": "Sun-bleached and mild, with a faint gold heart. Desert-born, and it never quite forgets the heat.",
+      "power": "+8 blunt damage and attacks blind the target for 2 seconds"
+    },
+    {
+      "id": "black_egg_lava_veins",
+      "pixellab_id": "2ee79193-0914-4724-add6-f6a76a29c546",
+      "type": "SOUL",
+      "name": "Ember Soul",
+      "category": "ember",
+      "rarity": "epic",
+      "value": 285,
+      "description": "A cracked black shell over a furnace that never learned to go out. Warm to hold and ruinous to drop.",
+      "power": "+14 fire damage on hit and sets targets burning for 3s"
+    },
+    {
+      "id": "mossy_green_egg",
+      "pixellab_id": "8a301dd6-66c8-49bb-811b-6c9d3e934bf8",
+      "type": "SOUL",
+      "name": "Verdant Soul",
+      "category": "verdant",
+      "rarity": "rare",
+      "value": 110,
+      "description": "Mossed stone split by a green star. Things sprout in the pouch you keep it in, whether you asked or not.",
+      "power": "+10 nature damage and +2 health regeneration per second"
+    },
+    {
+      "id": "blue_slate_ice_egg",
+      "pixellab_id": "48c60df5-b32a-4270-b91b-ac25b752fb28",
+      "type": "SOUL",
+      "name": "Frost Soul",
+      "category": "frost",
+      "rarity": "rare",
+      "value": 115,
+      "description": "A stone of rimed slate with a pale star asleep inside. Your fingers go numb well before you notice.",
+      "power": "+9 frost damage and slows struck targets by 25%"
+    },
+    {
+      "id": "grey_stone_crimson_veins",
+      "pixellab_id": "1029513b-6e5e-4b7b-8add-4727a59a80f4",
+      "type": "SOUL",
+      "name": "Blood Soul",
+      "category": "blood",
+      "rarity": "rare",
+      "value": 118,
+      "description": "A grey stone laced with veins that have not finished clotting. It beats, faintly, if you hold it too long.",
+      "power": "+6 damage and heals for 15% of damage dealt"
+    },
+    {
+      "id": "green_crystal_shard",
+      "pixellab_id": "92c7dbcc-8591-4979-819d-78fd6484a39e",
+      "type": "MISC",
+      "name": "Jade Shard",
+      "category": "mineral",
+      "rarity": "uncommon",
+      "value": 34,
+      "description": "A fractured sliver of green mountain glass. Holds an edge, holds a grudge, and holds its price at market."
+    },
+    {
+      "id": "pair_of_molars",
+      "pixellab_id": "9e3342f5-a093-4b25-a3a5-b73e278ab4c7",
+      "type": "MISC",
+      "name": "Beast Molars",
+      "category": "bone",
+      "rarity": "common",
+      "value": 9,
+      "description": "Two grinders pulled from something that chewed bone for a living. The town dentist pays without asking why."
+    },
+    {
+      "id": "pale_bat_wing",
+      "pixellab_id": "40a6abf9-4e81-4f31-b8c5-b7c42be4ce76",
+      "type": "MISC",
+      "name": "Pale Wing",
+      "category": "hide",
+      "rarity": "common",
+      "value": 10,
+      "description": "Leather stretched over finger-bones, torn free mid-flight. Waterproof, oddly, and sold by the pair."
+    },
+    {
+      "id": "curved_crab_pincer",
+      "pixellab_id": "04489a96-c1fc-4101-a609-6db06e4ccd60",
+      "type": "MISC",
+      "name": "Crab Pincer",
+      "category": "claw",
+      "rarity": "common",
+      "value": 14,
+      "description": "The pincer of something that walked sideways and meant it. Snaps shut on its own if you jostle it."
+    },
+    {
+      "id": "linen_thread_spool",
+      "pixellab_id": "c1ea64a9-c78e-489d-8b56-43bda7bcfadf",
+      "type": "MISC",
+      "name": "Thread Spool",
+      "category": "cloth",
+      "rarity": "common",
+      "value": 12,
+      "description": "A spool of plain linen thread, half unwound. Every tailor swears they have enough and every tailor buys more."
+    },
+    {
+      "id": "purple_flower_petals",
+      "pixellab_id": "a6c8b8f5-3e85-4989-9c8f-e06b4928b95b",
+      "type": "MISC",
+      "name": "Iris Petals",
+      "category": "plant",
+      "rarity": "uncommon",
+      "value": 22,
+      "description": "Petals from a dusk iris, gathered past bloom. Dyers covet the colour and alchemists covet all the rest."
+    },
+    {
+      "id": "black_glass_lump",
+      "pixellab_id": "6cc13275-f528-41e2-b2d5-aa569ac277e8",
+      "type": "MISC",
+      "name": "Obsidian",
+      "category": "mineral",
+      "rarity": "uncommon",
+      "value": 40,
+      "description": "A lump of black volcanic glass, edges keen enough to shave with. Knappers pay well and bleed often."
+    },
+    {
+      "id": "spiky_white_tuft",
+      "pixellab_id": "57343fe8-b939-4ee3-9962-8e40473a0c40",
+      "type": "MISC",
+      "name": "Snow Tuft",
+      "category": "hide",
+      "rarity": "uncommon",
+      "value": 20,
+      "description": "A tuft of frost-stiffened pelt, spiky as a burr. Warm to wear, unsettling to find still twitching."
+    },
+    {
+      "id": "mossy_driftwood_bundle",
+      "pixellab_id": "6e49e379-a634-412a-a2fc-3fb58b5b7c22",
+      "type": "MISC",
+      "name": "Driftwood",
+      "category": "plant",
+      "rarity": "common",
+      "value": 6,
+      "description": "A knot of sea-bleached branches, still furred with moss. Burns poorly, sells fine, and smells of low tide."
+    },
+    {
+      "id": "cracked_magma_stone",
+      "pixellab_id": "d1bc9fcd-a105-41c5-bb2d-be5f5b3a7159",
+      "type": "MISC",
+      "name": "Magma Stone",
+      "category": "mineral",
+      "rarity": "rare",
+      "value": 95,
+      "description": "A knot of cooled magma still glowing along its cracks. Warm through a glove; warmer through a bad glove."
+    },
+    {
+      "id": "dried_grass_bundle",
+      "pixellab_id": "a617cda4-2358-433e-a7f6-cac47f886608",
+      "type": "MISC",
+      "name": "Dry Grass",
+      "category": "plant",
+      "rarity": "common",
+      "value": 6,
+      "description": "Dried marsh grass bound with twine. Worth little, burns well, and every thatcher in the valley wants three."
+    },
+    {
+      "id": "rolled_grey_canvas",
+      "pixellab_id": "bab5bfa5-d764-4c4d-be09-926227fd701f",
+      "type": "MISC",
+      "name": "Cloth Roll",
+      "category": "cloth",
+      "rarity": "common",
+      "value": 12,
+      "description": "A bolt of coarse grey canvas, rolled tight. Not glamorous, but tents and sails do not sew themselves."
+    },
+    {
+      "id": "toothed_jaw_slab",
+      "pixellab_id": "a7367e5b-b98d-4a0a-a7cf-69e935cee30b",
+      "type": "MISC",
+      "name": "Tooth Ridge",
+      "category": "bone",
+      "rarity": "uncommon",
+      "value": 28,
+      "description": "A slab of jaw with the teeth still socketed. The previous owner presumably misses it more than you do."
+    },
+    {
+      "id": "large_white_pearl",
+      "pixellab_id": "a1f5afe1-8234-4dbe-8e0e-3b6a8cbaa383",
+      "type": "MISC",
+      "name": "Great Pearl",
+      "category": "shell",
+      "rarity": "rare",
+      "value": 110,
+      "description": "Prised from a shell the size of a shield. Perfectly round, faintly luminous, and worth a season of turnips."
+    },
+    {
+      "id": "amber_glazed_root",
+      "pixellab_id": "7c5f8ba9-6847-441f-a7fb-30e170616442",
+      "type": "MISC",
+      "name": "Amber Root",
+      "category": "plant",
+      "rarity": "uncommon",
+      "value": 34,
+      "description": "A root that grew through amber and never quite got over it. Sap-slick, warm, and popular with alchemists."
+    },
+    {
+      "id": "pale_moth_wing",
+      "pixellab_id": "7252cfc9-91ce-4500-bffe-44fcc7f06f7a",
+      "type": "MISC",
+      "name": "Moth Wing",
+      "category": "insect",
+      "rarity": "uncommon",
+      "value": 18,
+      "description": "Shed by something the size of a dinner plate. Still faintly dusty, still faintly unsettling to hold."
+    },
+    {
+      "id": "tied_bone_bundle",
+      "pixellab_id": "34c24b95-0214-4084-8cdc-dc80d79942a6",
+      "type": "MISC",
+      "name": "Bone Bundle",
+      "category": "bone",
+      "rarity": "common",
+      "value": 14,
+      "description": "A tied bundle of long pale bones, picked clean. Sold by weight and questioned by nobody at the counter."
+    },
+    {
+      "id": "pale_blue_hailstones",
+      "pixellab_id": "92d3b6e7-4de9-4c5b-8fb6-66bdd49b52ee",
+      "type": "MISC",
+      "name": "Rime Stones",
+      "category": "mineral",
+      "rarity": "uncommon",
+      "value": 22,
+      "description": "A handful of pale hailstones that refuse to melt. Cold enough to keep a lunch fresh, dull enough to sell."
+    },
+    {
+      "id": "gold_veined_ore",
+      "pixellab_id": "52f1651e-3c6e-4487-a1d8-3d411f66e181",
+      "type": "MISC",
+      "name": "Gold Ore",
+      "category": "mineral",
+      "rarity": "rare",
+      "value": 88,
+      "description": "Grey rock veined with bright native gold. Heavy, honest wealth, provided you can find someone to smelt it."
+    },
+    {
+      "id": "grey_rock_pile",
+      "pixellab_id": "ba1e7f13-366f-4c08-be38-ca69c9c7563b",
+      "type": "MISC",
+      "name": "Rock Pile",
+      "category": "mineral",
+      "rarity": "common",
+      "value": 3,
+      "description": "An armful of common field stones. Worth almost nothing, which has never stopped anyone from hauling them."
+    },
+    {
+      "id": "twig_bodied_skimmer",
+      "pixellab_id": "1d348dd4-9682-4ee3-9d20-ae5052994e0d",
+      "type": "MISC",
+      "name": "Twig Skimmer",
+      "category": "insect",
+      "rarity": "uncommon",
+      "value": 22,
+      "description": "Four glassy wings on a body like a snapped twig. Alchemists want them; nobody thought to ask the dragonfly."
+    },
+    {
+      "id": "bronze_camp_knife",
+      "pixellab_id": "b3d476b2-f29a-4ccd-ac64-9b860da51974",
+      "type": "MISC",
+      "name": "Bronze Knife",
+      "category": "trophy",
+      "rarity": "uncommon",
+      "value": 32,
+      "description": "A short bronze blade on a worn wooden grip. Better at cutting rope and rations than at cutting heroes."
+    },
+    {
+      "id": "matted_black_pelt",
+      "pixellab_id": "e5df7ea3-907d-4adf-99ca-0fc0f96121e0",
+      "type": "MISC",
+      "name": "Matted Pelt",
+      "category": "hide",
+      "rarity": "uncommon",
+      "value": 19,
+      "description": "A clump of coarse black fur torn from something large and unhappy. Furriers pay well and never ask what."
+    },
+    {
+      "id": "papery_hornet_nest",
+      "pixellab_id": "9ee2991a-9521-4727-b1b8-256aade21117",
+      "type": "MISC",
+      "name": "Hornet Nest",
+      "category": "insect",
+      "rarity": "uncommon",
+      "value": 26,
+      "description": "A papery sphere with one dark doorway. Empty, the shopkeeper insists, and he is usually right about that."
+    },
+    {
+      "id": "heavy_iron_links",
+      "pixellab_id": "e7e7d83b-d9ac-4401-8430-440d8c3956e4",
+      "type": "MISC",
+      "name": "Iron Chain",
+      "category": "misc",
+      "rarity": "common",
+      "value": 9,
+      "description": "Three heavy iron links from a longer chain. What it once held is not recorded, which is faintly worrying."
+    },
+    {
+      "id": "dark_hardwood_plank",
+      "pixellab_id": "8f732c78-3edf-4b2a-a147-bea1ed72feb7",
+      "type": "MISC",
+      "name": "Oak Plank",
+      "category": "plant",
+      "rarity": "common",
+      "value": 7,
+      "description": "A dense length of dark hardwood, planed flat and true. Every carpenter in Nangijala wants six more of these."
+    },
+    {
+      "id": "cobbled_stone_egg",
+      "pixellab_id": "bb3ab479-e34e-4122-9300-1f05359f9aa8",
+      "type": "MISC",
+      "name": "Stone Egg",
+      "category": "mineral",
+      "rarity": "uncommon",
+      "value": 30,
+      "description": "An egg-shaped knot of fitted stone. Either a fossil nest or a mason's joke, and both fetch the same price."
+    },
+    {
+      "id": "bleached_sea_shells",
+      "pixellab_id": "e483a67a-84cd-47f9-b313-de0ad961fe5a",
+      "type": "MISC",
+      "name": "Sea Shells",
+      "category": "shell",
+      "rarity": "common",
+      "value": 11,
+      "description": "Scallops, spirals and one cone, all bleached by salt. The tide gives them freely and the market does not."
+    },
+    {
+      "id": "smooth_river_stone",
+      "pixellab_id": "e9dba5ac-3d19-4c20-9e2a-1bab5ab847f5",
+      "type": "MISC",
+      "name": "River Stone",
+      "category": "mineral",
+      "rarity": "common",
+      "value": 4,
+      "description": "Worn smooth by a century of river water. Sells for the price of one bad lunch, but skipping stones is free."
+    },
+    {
+      "id": "dark_bat_wing",
+      "pixellab_id": "2bd2a1a0-447a-4790-a080-396cb0f2cb0d",
+      "type": "MISC",
+      "name": "Bat Wing",
+      "category": "hide",
+      "rarity": "common",
+      "value": 13,
+      "description": "A leathery wing of dark membrane stretched over thin bone. Flightless now, but it makes an excellent rain hood."
+    },
+    {
+      "id": "coiled_hemp_rope",
+      "pixellab_id": "2c266018-9ea0-43c6-930a-f0274872f58b",
+      "type": "MISC",
+      "name": "Coiled Rope",
+      "category": "cloth",
+      "rarity": "common",
+      "value": 8,
+      "description": "A coil of braided hemp rope, frayed at one end where something chewed on it. Still holds a knot, mostly."
+    },
+    {
+      "id": "paired_black_claws",
+      "pixellab_id": "bd320c29-d71f-4226-b3a0-21cdbebcc0a7",
+      "type": "MISC",
+      "name": "Shadow Claw",
+      "category": "claw",
+      "rarity": "rare",
+      "value": 58,
+      "description": "A matched pair of black claws, glassy and wickedly curved. Whatever wore them did not part with them willingly."
+    },
+    {
+      "id": "raw_red_meat_slab",
+      "pixellab_id": "be79d40e-dbf4-4550-b4b5-532532acf08f",
+      "type": "MISC",
+      "name": "Raw Meat",
+      "category": "organ",
+      "rarity": "common",
+      "value": 10,
+      "description": "A thick slab of red meat, freshly cut and still dripping. Edible if cooked, tradeable if not, suspect either way."
+    },
+    {
+      "id": "gilded_curved_fang",
+      "pixellab_id": "12940935-9544-4bbb-ba4f-6cedb69cdb28",
+      "type": "MISC",
+      "name": "Gilded Fang",
+      "category": "trophy",
+      "rarity": "rare",
+      "value": 72,
+      "description": "A curved fang plated in soft gold and hollow at the root. Someone gilded a monster's tooth, and nobody asks why."
+    },
+    {
+      "id": "one_eyed_steel_mask",
+      "pixellab_id": "118bab51-47e0-47b7-ac6b-15e4bbdcb92f",
+      "type": "MISC",
+      "name": "Watcher Mask",
+      "category": "relic",
+      "rarity": "rare",
+      "value": 95,
+      "description": "A cold steel visor with a single graven eye above the brow. It watches the shelf it sits on, which is why it sells."
+    },
+    {
+      "id": "bleached_rib_cage",
+      "pixellab_id": "ad5ec2a0-5336-451f-9063-4dbbaa704982",
+      "type": "MISC",
+      "name": "Rib Cage",
+      "category": "bone",
+      "rarity": "uncommon",
+      "value": 26,
+      "description": "A curved cage of bleached ribs, picked clean by patient things. Bone-carvers bid on it; the squeamish do not."
+    },
+    {
+      "id": "black_volcanic_shard",
+      "pixellab_id": "8c89c277-78f5-465d-8be0-ff4c9c4499f2",
+      "type": "MISC",
+      "name": "Onyx Shard",
+      "category": "mineral",
+      "rarity": "uncommon",
+      "value": 36,
+      "description": "A wedge of black volcanic glass with an edge that never dulls. Handle it with the gloves, not the confidence."
+    },
+    {
+      "id": "curved_bone_talon",
+      "pixellab_id": "972d6238-c723-40a9-a499-ce871764a2f7",
+      "type": "MISC",
+      "name": "Bone Talon",
+      "category": "claw",
+      "rarity": "uncommon",
+      "value": 24,
+      "description": "A hooked claw the length of a finger, shed by something that climbed far better than you ever will. Still sharp."
+    },
+    {
+      "id": "severed_scaled_paw",
+      "pixellab_id": "f766a0ec-246e-47c0-8bbf-d59ac2ccb5e7",
+      "type": "MISC",
+      "name": "Scaled Paw",
+      "category": "claw",
+      "rarity": "uncommon",
+      "value": 30,
+      "description": "A severed paw of scaled grey hide, claws still curled inward. Sold by the pair, though rarely found that way."
+    },
+    {
+      "id": "bound_root_bundle",
+      "pixellab_id": "919ad615-7358-4306-9c91-818bb32dc4e4",
+      "type": "MISC",
+      "name": "Root Bundle",
+      "category": "plant",
+      "rarity": "common",
+      "value": 7,
+      "description": "A fistful of pale dried roots lashed with twine; smells of cellar and regret, but alchemists pay for it anyway."
+    },
+    {
+      "id": "pale_armoured_beetle",
+      "pixellab_id": "5c26815e-4c3f-4a99-afde-ef8d1ff09a03",
+      "type": "MISC",
+      "name": "Bone Beetle",
+      "category": "insect",
+      "rarity": "common",
+      "value": 12,
+      "description": "A pale armoured beetle the size of a fist, legs still tucked in. Collectors pay well; entomologists pay better."
+    },
+    {
+      "id": "broken_boar_tusk",
+      "pixellab_id": "eda14c51-7045-4c84-8882-fabe1f6e8783",
+      "type": "MISC",
+      "name": "Boar Tusk",
+      "category": "bone",
+      "rarity": "uncommon",
+      "value": 19,
+      "description": "A stout brown tusk snapped off at the root. The owner probably misses it; the owner is probably no longer around."
+    },
+    {
+      "id": "glossy_brown_seeds",
+      "pixellab_id": "67de5ebc-d295-4785-9747-793a638c22b5",
+      "type": "MISC",
+      "name": "Husked Nuts",
+      "category": "plant",
+      "rarity": "common",
+      "value": 5,
+      "description": "A scatter of glossy brown seeds, hard as knuckles. Roast them, plant them, or sell them to somebody less patient."
+    },
+    {
+      "id": "engraved_bronze_locket",
+      "pixellab_id": "37e4a87e-ea31-41b3-97a1-dbc2014ba701",
+      "type": "MISC",
+      "name": "Rune Locket",
+      "category": "relic",
+      "rarity": "rare",
+      "value": 85,
+      "description": "An oval bronze locket engraved with knotwork nobody can read aloud twice. It hangs heavier than its size suggests."
+    },
+    {
+      "id": "gnarled_mandrake_root",
+      "pixellab_id": "fcd55b90-ebbd-4b74-b40a-ae07c7dc4d1c",
+      "type": "MISC",
+      "name": "Mandrake",
+      "category": "plant",
+      "rarity": "uncommon",
+      "value": 40,
+      "description": "A gnarled root with leggy limbs and a wilted crown. It screamed when pulled, then sulked. Still worth good coin."
+    },
+    {
+      "id": "iridescent_nacre_shard",
+      "pixellab_id": "cfe67543-69c0-4c0d-b3bb-252736bc3ac9",
+      "type": "MISC",
+      "name": "Nacre Shard",
+      "category": "shell",
+      "rarity": "rare",
+      "value": 60,
+      "description": "A shard of nacre swirling green and violet at every angle. Prised from a shell that objected at considerable volume."
+    },
+    {
+      "id": "black_glass_slab",
+      "pixellab_id": "39b29db4-e111-4503-8009-3ea048d75a28",
+      "type": "MISC",
+      "name": "Black Glass",
+      "category": "mineral",
+      "rarity": "uncommon",
+      "value": 38,
+      "description": "A slab of black volcanic glass, edges keen enough to shave with. Do not shave with it. People have tried."
+    },
+    {
+      "id": "clear_quartz_cluster",
+      "pixellab_id": "36dc4fcb-9853-4b6c-bf6f-3d44800a52ec",
+      "type": "MISC",
+      "name": "Quartz Shard",
+      "category": "mineral",
+      "rarity": "uncommon",
+      "value": 30,
+      "description": "A cluster of clear quartz points catching light that is not there. Jewellers call it filler; mages call it Tuesday."
+    },
+    {
+      "id": "grey_sage_leaves",
+      "pixellab_id": "3416beef-5c7b-47c7-9cc3-5e0cede0957c",
+      "type": "MISC",
+      "name": "Sage Leaves",
+      "category": "plant",
+      "rarity": "common",
+      "value": 6,
+      "description": "Grey-green leaves with a bitter herbal scent. Good in stew, better in poultices, fatal in enthusiastic quantities."
+    },
+    {
+      "id": "mint_slime_globule",
+      "pixellab_id": "de44c2ab-2979-48f0-b3b0-a8d20753af9e",
+      "type": "MISC",
+      "name": "Mint Slime",
+      "category": "slime",
+      "rarity": "common",
+      "value": 10,
+      "description": "A quivering globule of mint-green slime that still glows faintly. Warm, oddly polite, and it will not stop wobbling."
+    },
+    {
+      "id": "pale_ridged_horns",
+      "pixellab_id": "a3e374b0-8963-4dc4-be22-7743873f77d1",
+      "type": "MISC",
+      "name": "Ivory Horns",
+      "category": "bone",
+      "rarity": "uncommon",
+      "value": 24,
+      "description": "Three curved horns, pale as old ivory and ridged like bark. The beast grew them for arguments it always won."
+    },
+    {
+      "id": "rough_brown_boulder",
+      "pixellab_id": "c60aa15c-8f2b-4db6-ac27-351d0029af88",
+      "type": "MISC",
+      "name": "Rough Stone",
+      "category": "mineral",
+      "rarity": "common",
+      "value": 4,
+      "description": "An unremarkable brown boulder chip. Every mason swears there is a vein inside; every mason is usually wrong."
+    },
+    {
+      "id": "plucked_beast_eyeball",
+      "pixellab_id": "022eb357-42aa-4e48-b4b0-7a0e073db648",
+      "type": "MISC",
+      "name": "Beast Eye",
+      "category": "organ",
+      "rarity": "uncommon",
+      "value": 16,
+      "description": "A tan eyeball, plucked out whole and still damp. It turns toward the brightest thing in the room, including you."
+    },
+    {
+      "id": "loose_beast_teeth",
+      "pixellab_id": "9e212e63-e7b3-45c4-917b-7cf5482676bc",
+      "type": "MISC",
+      "name": "Loose Teeth",
+      "category": "bone",
+      "rarity": "common",
+      "value": 8,
+      "description": "A handful of teeth pried from something that no longer needs them. Molars, fangs, and one the alchemist won't name."
+    },
+    {
+      "id": "yellowed_beast_molar",
+      "pixellab_id": "5b112e64-63db-43b2-9f5c-5a91135a84a4",
+      "type": "MISC",
+      "name": "Yellow Molar",
+      "category": "bone",
+      "rarity": "common",
+      "value": 12,
+      "description": "A yellowed grinding tooth the size of your thumb. Whatever owned it did not chew its food at all politely."
+    },
+    {
+      "id": "stained_marrow_bone",
+      "pixellab_id": "02646956-4a1c-4c2b-b923-ef0fc2c96b21",
+      "type": "MISC",
+      "name": "Marrow Bone",
+      "category": "bone",
+      "rarity": "common",
+      "value": 6,
+      "description": "Gnawed at both ends and stained where a bone should not be. Someone's dinner, or what was left of someone."
+    },
+    {
+      "id": "teal_gold_quill",
+      "pixellab_id": "20637405-7628-41a0-a8dd-a588ec9721a9",
+      "type": "MISC",
+      "name": "Teal Quill",
+      "category": "feather",
+      "rarity": "uncommon",
+      "value": 20,
+      "description": "A long quill shading from sea green into gold. Scribes swear it writes truer, but scribes swear many things."
+    },
+    {
+      "id": "pitted_silver_band",
+      "pixellab_id": "03a1132d-02f2-46b9-80a5-83acd64328c2",
+      "type": "MISC",
+      "name": "Pitted Ring",
+      "category": "relic",
+      "rarity": "uncommon",
+      "value": 18,
+      "description": "A plain hammered band, worn smooth by a finger long since gone. No magic in it, but the pawnbroker won't ask."
+    },
+    {
+      "id": "ivory_hooked_talon",
+      "pixellab_id": "02e58cda-88db-41cd-9a83-f5ddb6c7bb00",
+      "type": "MISC",
+      "name": "Ivory Talon",
+      "category": "claw",
+      "rarity": "uncommon",
+      "value": 28,
+      "description": "A pale hooked talon with a scrap of its old owner still attached. Sharp enough to open letters, or throats."
+    },
+    {
+      "id": "spotted_purple_mushroom",
+      "pixellab_id": "97463fc9-8651-4a33-b45d-0747f46a0409",
+      "type": "MISC",
+      "name": "Gloom Cap",
+      "category": "plant",
+      "rarity": "uncommon",
+      "value": 24,
+      "description": "A violet cap freckled with pale spots. Edible exactly once, according to the surviving half of the herb guild."
+    },
+    {
+      "id": "purple_venom_claw",
+      "pixellab_id": "a29e3387-c21b-4322-9a0f-ade9af19eb1e",
+      "type": "MISC",
+      "name": "Venom Claw",
+      "category": "claw",
+      "rarity": "rare",
+      "value": 60,
+      "description": "A curved black claw with venom still crusting the point. Handle it with gloves, or you handle it exactly once."
+    },
+    {
+      "id": "rainbow_tail_plume",
+      "pixellab_id": "d7c935c4-3726-4e96-804f-401c40933308",
+      "type": "MISC",
+      "name": "Prism Plume",
+      "category": "feather",
+      "rarity": "rare",
+      "value": 55,
+      "description": "Every colour of a bird that should not exist. Fletchers bid high for it; the bird apparently wants it back."
+    },
+    {
+      "id": "golden_broad_fang",
+      "pixellab_id": "fba3a9ff-8283-41af-a912-38ef7d23b9db",
+      "type": "MISC",
+      "name": "Amber Fang",
+      "category": "bone",
+      "rarity": "uncommon",
+      "value": 30,
+      "description": "A broad golden fang, split along the root. Something very large chewed something very hard to end up like this."
+    },
+    {
+      "id": "hooked_bat_wing",
+      "pixellab_id": "8b2b9820-509e-4b27-9575-ea58bdb0597d",
+      "type": "MISC",
+      "name": "Hooked Wing",
+      "category": "hide",
+      "rarity": "uncommon",
+      "value": 22,
+      "description": "A leathery wing torn off at the joint. Waterproof, oddly durable, and the reason old cloaks smell like caves."
+    },
+    {
+      "id": "green_slime_glob",
+      "pixellab_id": "6fe39c16-11a8-4075-8a8d-782499a20401",
+      "type": "MISC",
+      "name": "Green Slime",
+      "category": "slime",
+      "rarity": "common",
+      "value": 8,
+      "description": "Still faintly quivering, and still faintly warm. Alchemists pay well for it; nobody has ever explained why."
+    },
+    {
+      "id": "blue_veined_rift_geode",
+      "pixellab_id": "e0c7b912-dbdd-43e6-94cc-91f84cd19afd",
+      "type": "MISC",
+      "name": "Rift Geode",
+      "category": "mineral",
+      "rarity": "epic",
+      "value": 160,
+      "description": "A cracked stone geode leaking cold blue light from its core. Heavy, humming, and best carried at arm's length."
+    },
+    {
+      "id": "pale_blue_crystal_cluster",
+      "pixellab_id": "5cbeaf10-c812-4f87-aaa3-c16ec0478432",
+      "type": "MISC",
+      "name": "Frost Quartz",
+      "category": "mineral",
+      "rarity": "rare",
+      "value": 70,
+      "description": "A cluster of pale blue crystal that keeps its chill indoors. Enchanters bid on it, drinks stay cold near it."
+    },
+    {
+      "id": "flame_veined_shard",
+      "pixellab_id": "db224736-3183-4486-910e-b81098012010",
+      "type": "MISC",
+      "name": "Ember Shard",
+      "category": "mineral",
+      "rarity": "rare",
+      "value": 85,
+      "description": "A shard of fire-veined crystal that stays warm in the pouch. Do not store it beside anything you like."
+    },
+    {
+      "id": "bone_flecked_grave_soil",
+      "pixellab_id": "04851845-e3c5-4d99-90f6-b9c5234b1c5a",
+      "type": "MISC",
+      "name": "Grave Dirt",
+      "category": "misc",
+      "rarity": "common",
+      "value": 5,
+      "description": "A clod of graveyard soil studded with bone chips. Sold by weight, questioned by anyone who watches you dig."
+    },
+    {
+      "id": "bright_plume_bundle",
+      "pixellab_id": "0e9715c4-4f03-4d47-974a-2a0061b2a901",
+      "type": "MISC",
+      "name": "Plume Bundle",
+      "category": "feather",
+      "rarity": "uncommon",
+      "value": 30,
+      "description": "Six bright plumes lashed together with cord. Whatever wore them was loud, colourful, and no longer either."
+    },
+    {
+      "id": "pale_silk_skein",
+      "pixellab_id": "df0fe0ac-6fc0-46a9-9dfe-ab21868b9b7c",
+      "type": "MISC",
+      "name": "Silk Skein",
+      "category": "cloth",
+      "rarity": "uncommon",
+      "value": 26,
+      "description": "A tight coil of pale silk cord, oddly cool to the touch. Ropemakers love it, and spiders want it back."
+    },
+    {
+      "id": "blunt_ivory_tooth",
+      "pixellab_id": "b12dfba1-d061-44ce-aa2a-5545b53a3034",
+      "type": "MISC",
+      "name": "Beast Tooth",
+      "category": "bone",
+      "rarity": "uncommon",
+      "value": 18,
+      "description": "A blunt ivory tooth the length of a thumb, root and all. Pulled, not dropped, which explains the smell."
+    },
+    {
+      "id": "barred_brown_feather",
+      "pixellab_id": "bd52a82a-3da1-475f-af04-acdf4aa08743",
+      "type": "MISC",
+      "name": "Hawk Feather",
+      "category": "feather",
+      "rarity": "common",
+      "value": 7,
+      "description": "A barred brown flight feather with a faint green sheen. Fletchers haggle; scribes simply take it and run."
+    },
+    {
+      "id": "stretched_tan_hide",
+      "pixellab_id": "fbf9304f-4a96-4000-8047-5192bc49404c",
+      "type": "MISC",
+      "name": "Rough Hide",
+      "category": "hide",
+      "rarity": "common",
+      "value": 14,
+      "description": "A crudely stretched hide, still pegged at the edges. Smells of the tanner's ambition rather than his skill."
+    },
+    {
+      "id": "scaly_clawed_foot",
+      "pixellab_id": "1172a8a3-e8f1-4234-b448-effa91d953e5",
+      "type": "MISC",
+      "name": "Clawed Foot",
+      "category": "claw",
+      "rarity": "uncommon",
+      "value": 22,
+      "description": "A three-clawed foot severed at the joint. Still curls a little if you press the tendon, which nobody enjoys."
+    },
+    {
+      "id": "curved_ivory_fang",
+      "pixellab_id": "2b8c7d6d-940a-4ca9-a8bf-691a5b6e7e41",
+      "type": "MISC",
+      "name": "Curved Fang",
+      "category": "bone",
+      "rarity": "common",
+      "value": 12,
+      "description": "A single curved fang, worn smooth at the tip from biting things that were, in fairness, mostly adventurers."
+    },
+    {
+      "id": "green_herb_bundle",
+      "pixellab_id": "2bccefe3-70d4-409e-a879-d4aba9894c8a",
+      "type": "MISC",
+      "name": "Herb Bundle",
+      "category": "plant",
+      "rarity": "common",
+      "value": 8,
+      "description": "Wild greens bound with twine, still smelling of the ditch they were pulled from. Alchemists pay; cooks pay more."
+    }
+  ]
+}

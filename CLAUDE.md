@@ -19,6 +19,11 @@ do not add domain-specific files to the repo root.
 - `objects/` — animated props / map objects (a separate agent).
 - `games2/` — the Nangijala game (consumer of the art domains; see
   `games2/CLAUDE.md`).
+- `items/` — game items via PixelLab (its own agent; the item TYPE tags on
+  PixelLab's objects store — `MISC`, `SOUL`, `CONSUMABLE`, `SWORD`, `BOW`,
+  `WAND`, `ARMOR` — are the ground truth; one folder per item holding
+  `item.json` + `sprite.png`, rolled up into `items/viewer_data.json`; sync
+  only, no generation loop). See `items/README.md`.
 - `monsters/` — pixel-art monsters via PixelLab (its own agent; the MONSTER
   tag on PixelLab — objects AND characters stores — is the ground truth;
   one folder per monster with canonical idle/walk/angry/attack/die states in

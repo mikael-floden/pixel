@@ -1,0 +1,38 @@
+{
+  "id": "molten_gold_vein_stone",
+  "name": "Gilded Soul",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "gilded",
+  "rarity": "epic",
+  "value": 260,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Molten gold runs its cracks like spilled treasure. Merchants weep over it; smiths simply put it to work.",
+  "sprite": "items/molten_gold_vein_stone/sprite.png",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "63bef222-8d99-480e-a1bf-7e738fd8c50f",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "Lots of alternatives",
+    "created_at": "2026-07-27T09:27:08.864900+00:00",
+    "last_modified": "Thu, 30 Jul 2026 18:52:47 GMT"
+  },
+  "synced_at": "2026-07-30T19:07:19+00:00",
+  "soul": {
+    "element": "gilded",
+    "power": "+18% gold found and each critical hit drops 5 gold",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

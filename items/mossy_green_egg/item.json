@@ -1,0 +1,38 @@
+{
+  "id": "mossy_green_egg",
+  "name": "Verdant Soul",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "verdant",
+  "rarity": "rare",
+  "value": 110,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Mossed stone split by a green star. Things sprout in the pouch you keep it in, whether you asked or not.",
+  "sprite": "items/mossy_green_egg/sprite.png",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "8a301dd6-66c8-49bb-811b-6c9d3e934bf8",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "Lots of alternatives",
+    "created_at": "2026-07-27T09:26:27.069102+00:00",
+    "last_modified": "Thu, 30 Jul 2026 18:52:48 GMT"
+  },
+  "synced_at": "2026-07-30T19:07:20+00:00",
+  "soul": {
+    "element": "verdant",
+    "power": "+10 nature damage and +2 health regeneration per second",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

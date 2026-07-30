@@ -1,0 +1,30 @@
+{
+  "id": "pitted_silver_band",
+  "name": "Pitted Ring",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "relic",
+  "rarity": "uncommon",
+  "value": 18,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "A plain hammered band, worn smooth by a finger long since gone. No magic in it, but the pawnbroker won't ask.",
+  "sprite": "items/pitted_silver_band/sprite.png",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "03a1132d-02f2-46b9-80a5-83acd64328c2",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Item drops from enemies in an MMORPG. I want mostly stuff you sell in the store for gold. No equipment or weapons. This is usually stuff the enemy is made of, parts of their body or cloths, but it can be anything really. Use your fantasy. I want variety.",
+    "created_at": "2026-07-27T09:05:06.971763+00:00",
+    "last_modified": "Thu, 30 Jul 2026 18:52:50 GMT"
+  },
+  "synced_at": "2026-07-30T19:07:24+00:00"
+}

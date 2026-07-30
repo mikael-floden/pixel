@@ -1,0 +1,30 @@
+{
+  "id": "bleached_rib_cage",
+  "name": "Rib Cage",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "bone",
+  "rarity": "uncommon",
+  "value": 26,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "A curved cage of bleached ribs, picked clean by patient things. Bone-carvers bid on it; the squeamish do not.",
+  "sprite": "items/bleached_rib_cage/sprite.png",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "ad5ec2a0-5336-451f-9063-4dbbaa704982",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Item drops from enemies in an MMORPG. I want mostly stuff you sell in the store for gold. No equipment or weapons. This is usually stuff the enemy is made of, parts of their body or cloths, but it can be anything really. Use your fantasy. I want variety.",
+    "created_at": "2026-07-27T09:07:36.761181+00:00",
+    "last_modified": "Thu, 30 Jul 2026 18:52:49 GMT"
+  },
+  "synced_at": "2026-07-30T19:07:23+00:00"
+}

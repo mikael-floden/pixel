@@ -1,0 +1,38 @@
+{
+  "id": "grey_stone_crimson_veins",
+  "name": "Blood Soul",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "blood",
+  "rarity": "rare",
+  "value": 118,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "A grey stone laced with veins that have not finished clotting. It beats, faintly, if you hold it too long.",
+  "sprite": "items/grey_stone_crimson_veins/sprite.png",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "1029513b-6e5e-4b7b-8add-4727a59a80f4",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "Different soul symbols, should be used as an item from from enemies in a MMORPG",
+    "created_at": "2026-07-27T09:22:34.831886+00:00",
+    "last_modified": "Thu, 30 Jul 2026 18:52:48 GMT"
+  },
+  "synced_at": "2026-07-30T19:07:20+00:00",
+  "soul": {
+    "element": "blood",
+    "power": "+6 damage and heals for 15% of damage dealt",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

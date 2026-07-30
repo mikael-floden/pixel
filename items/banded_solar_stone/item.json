@@ -1,0 +1,38 @@
+{
+  "id": "banded_solar_stone",
+  "name": "Solar Soul",
+  "type": "SOUL",
+  "type_label": "Soul Stone",
+  "category": "solar",
+  "rarity": "epic",
+  "value": 275,
+  "stackable": true,
+  "max_stack": 20,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "Banded like a beehive and lined with living gold. It warms the hand, the blade, and eventually the whole room.",
+  "sprite": "items/banded_solar_stone/sprite.png",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "ce928fc6-5187-45c6-be0d-4a52233b510a",
+    "tags": [
+      "SOUL"
+    ],
+    "prompt": "Lots of alternatives",
+    "created_at": "2026-07-27T09:27:08.864900+00:00",
+    "last_modified": "Thu, 30 Jul 2026 18:52:47 GMT"
+  },
+  "synced_at": "2026-07-30T19:07:19+00:00",
+  "soul": {
+    "element": "solar",
+    "power": "+20 radiant damage on hit and blinds undead within three tiles",
+    "merge_into": [
+      "weapon",
+      "armor"
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "papery_hornet_nest",
+  "name": "Hornet Nest",
+  "type": "MISC",
+  "type_label": "Junk",
+  "category": "insect",
+  "rarity": "uncommon",
+  "value": 26,
+  "stackable": true,
+  "max_stack": 99,
+  "equip_slot": null,
+  "sellable": true,
+  "description": "A papery sphere with one dark doorway. Empty, the shopkeeper insists, and he is usually right about that.",
+  "sprite": "items/papery_hornet_nest/sprite.png",
+  "size": [
+    48,
+    48
+  ],
+  "source": {
+    "store": "objects",
+    "pixellab_id": "9ee2991a-9521-4727-b1b8-256aade21117",
+    "tags": [
+      "MISC"
+    ],
+    "prompt": "Item drops from enemies in an MMORPG. I want mostly stuff you sell in the store for gold. No equipment or weapons. This is usually stuff the enemy is made of, parts of their body or cloths, but it can be anything really. Use your fantasy. I want variety.",
+    "created_at": "2026-07-27T09:11:24.494557+00:00",
+    "last_modified": "Thu, 30 Jul 2026 18:52:49 GMT"
+  },
+  "synced_at": "2026-07-30T19:07:22+00:00"
+}

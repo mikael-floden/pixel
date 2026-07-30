@@ -12,6 +12,7 @@ run in parallel — each owns one top-level domain directory:
 | Sounds | `sounds/` | sounds agent |
 | Music (background score) | `music/` | music agent |
 | Monsters/creatures | `monsters/` | monsters agent |
+| Items (loot, souls, gear) | `items/` | items agent |
 | The game (consumer) | `games2/` | game agent |
 | The game's UI/HUD/menus | `games2/` (UI surfaces) | games-ui agent |
 
