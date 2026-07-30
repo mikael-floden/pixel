@@ -62,7 +62,7 @@ one thing this project never ships.
 ## Two audiences, one page
 
 Players get a read-only encyclopedia (browse, watch animations, listen).
-The **admin** (game designer) signs in via the sidebar `Admin` button —
+The **admin** (game designer) signs in via the sidebar `Game Master` button —
 username+password checked by the game server (`/api/wiki/login`; only a
 SHA-256 digest of the password lives in server source, the repo is public).
 Signing in unlocks stars, approve/remove, notes, monster stats and constant

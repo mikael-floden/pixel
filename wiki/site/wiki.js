@@ -1324,16 +1324,13 @@ function buildKnownIds() {
 }
 
 function initChrome() {
-  // theme
+  // Theme: READ ONLY here. The wiki has no toggle of its own (maintainer
+  // 2026-07-30) — light/dark is picked on the character-select screen, which
+  // writes localStorage["wiki-theme"] and, while the wiki is open in the
+  // game's drawer, mirrors data-theme straight onto this document
+  // (games2/client/src/wikipanel.ts). Unset = follow the OS.
   const saved = localStorage.getItem("wiki-theme");
   if (saved) document.documentElement.dataset.theme = saved;
-  $("#theme-toggle").addEventListener("click", () => {
-    const cur = document.documentElement.dataset.theme
-      || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-    const next = cur === "dark" ? "light" : "dark";
-    document.documentElement.dataset.theme = next;
-    localStorage.setItem("wiki-theme", next);
-  });
   // sidebar (mobile) — a drawer of its own: scrim right of it closes it, and
   // the game drawer hosting us mirrors the state (double-dark game strip that
   // closes the menu first; see wikipanel.ts).
@@ -1403,7 +1400,7 @@ function setAdmin(on, { keepEdits = false } = {}) {
   state.admin = on;
   document.documentElement.classList.toggle("is-admin", on);
   const btn = $("#admin-btn");
-  btn.textContent = on ? "Sign out (admin)" : "Admin";
+  btn.textContent = on ? "Sign out (Game Master)" : "Game Master";
   btn.title = on ? "Signed in as the game designer" : "Game-designer sign in";
   if (!on && !keepEdits) { state.dirty.clear(); state.touched = {}; }
   updateSavebar();
