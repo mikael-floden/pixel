@@ -449,7 +449,26 @@ visible head/shoulders are ABOVE the surface).
   paused monster on `contact` (frame-0 parking left frogs levitating
   mid-hop), and LIFTS the shadow ellipse `max(0, h/2 − sink − 2)` px so its
   SOUTH RIM kisses the toe line — centred on the anchor, half the ellipse
-  poked past the toes and still read as "shadow way too low". footW = the contact-run extent (the feet
+  poked past the toes and still read as "shadow way too low". ROUND 5
+  (maintainer: "just continue iterate until you have fixed the shadows...
+  compare and see if you are done before you give up"): (a) per-frame
+  anchors are FEET-BASED (each frame's own contact analysis, 3px gait
+  dead-band, mass only as airborne fallback) — mass tracking chased a
+  stretching cat's HEAD while its planted feet stayed put; (b) the shadow
+  ellipse is PER DIRECTION (`ground[dir].w/h`): an east mammoth's footprint
+  spans ~140px, its south one ~85 — the body CLASS that picks the blend
+  factor is MONSTER-level (widest facing vs median figure height; per-view
+  classing shrank a south mammoth to 54px): LONG bodies (cats, turtles,
+  salamanders, mammoths) cast 0.8×length side-on and 0.9×girth front-on,
+  TALL lean-ers (monoliths, golems, donkeys) 0.4 + contact extent, else
+  0.55; (c) the toe-kiss lift is CAPPED at the contact band's height
+  (`up`+3) so a monolith's compact base keeps its ellipse ON the base.
+  VERIFY WITH THE CONTACT SHEETS before shipping any shadow change:
+  `node scripts/monster-contact-sheets.mjs [ids] [outDir]` renders EVERY
+  (monster, direction, frame) tile with the exact client shadow maths +
+  a red anchor crosshair — the maintainer's-eye view, offline, exhaustive.
+  Round 5 was the first round verified this way (all 24 sheets) and the
+  first whose numbers caught their own bugs before a deploy. footW = the contact-run extent (the feet
   span, e.g. mammoth ~123px across all four legs); shadow `w =
   clamp(max(footW, bodyW·0.55)·1.05, 12, 150)`, `h = max(6, 0.385·w)`,
   emitted as `shadowW/shadowH` — NEVER frameW-scaled. Collision `radius =

@@ -142,6 +142,17 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
       ws.sort((a, b) => a - b);
       let bodyW = 0;
       for (const [x0, x1] of rows.values()) bodyW = Math.max(bodyW, x1 - x0 + 1);
+      // Bottom-edge profile of THIS frame (per column, its lowest opaque
+      // row) — per-frame contact anchoring reads it.
+      const bottoms = new Array(fw).fill(-1);
+      for (let x = 0; x < fw; x++) {
+        for (let y = H - 1; y >= 0; y--) {
+          if (data[(y * W + xBase + x) * 4 + 3] > 16) {
+            bottoms[x] = y;
+            break;
+          }
+        }
+      }
       frames.push({
         f,
         bot,
@@ -151,6 +162,7 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
         footW: ws[Math.floor(ws.length / 2)] ?? 0,
         bodyW,
         colMass,
+        bottoms,
       });
     }
     if (!frames.length) continue;
@@ -181,26 +193,6 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
     // the point BETWEEN the foot undersides. Front feet render a few px
     // below it (inside the shadow ellipse), far feet a few px above: the
     // same perspective a ground tile's diamond has.
-    const cf = contact.f;
-    const xBase = cf * fw;
-    const bottom = new Array(fw).fill(-1);
-    let massSum = 0;
-    let massCols = 0;
-    for (let x = 0; x < fw; x++) {
-      let colMass = 0;
-      for (let y = 0; y < H; y++) {
-        if (data[(y * W + xBase + x) * 4 + 3] > 16) {
-          bottom[x] = y;
-          colMass++;
-        }
-      }
-      if (colMass > 0) {
-        massSum += x * colMass;
-        massCols += colMass;
-      }
-    }
-    const maxBot = Math.max(...bottom);
-    const massCx = massCols ? massSum / massCols : fw / 2;
     // Contact tolerance: the feet of a quadruped form a PARALLELOGRAM on the
     // ground plane — the far corner projects up to ~16px above the near toe
     // on a mammoth. That projected footprint depth scales with the BODY'S
@@ -210,100 +202,139 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
     // while bellies (depth 20-30) always stay excluded.
     const dirBodyW = Math.max(...frames.map((s) => s.bodyW));
     const T = Math.min(17, Math.max(6, Math.round(dirBodyW * 0.11)));
-    // Contact runs: consecutive columns within T of the deepest row.
-    const runs = [];
-    let runStart = -1;
-    for (let x = 0; x <= fw; x++) {
-      const isContact = x < fw && bottom[x] >= 0 && maxBot - bottom[x] <= T;
-      if (isContact && runStart < 0) runStart = x;
-      else if (!isContact && runStart >= 0) {
-        runs.push([runStart, x - 1]);
-        runStart = -1;
+    /** Contact analysis of ONE frame's bottom profile: kept contact runs
+     * (width >= 3, within 0.4·fw of the frame's silhouette mass-centre —
+     * detached flame tendrils dropped), anchor x = extent midpoint blended
+     * 50% toward the mass centre (capped 12% fw), y = mean bottom row of
+     * contact columns; plus the band's top row and extent for the ellipse. */
+    const analyze = (fr) => {
+      const bottoms = fr.bottoms;
+      let mBot = -1;
+      for (let x = 0; x < fw; x++) if (bottoms[x] > mBot) mBot = bottoms[x];
+      let mSum = 0;
+      let mTot = 0;
+      for (let x = 0; x < fw; x++) {
+        mSum += x * fr.colMass[x];
+        mTot += fr.colMass[x];
       }
-    }
-    const kept = runs.filter(
-      ([a, b]) => b - a + 1 >= 3 && Math.abs((a + b) / 2 - massCx) <= fw * 0.4,
-    );
-    let cx = fw / 2;
-    let cyRow = maxBot;
-    let extentW = contact.footW;
-    let winA = 0;
-    let winB = fw - 1;
-    if (kept.length) {
+      const mCx = mTot ? mSum / mTot : fw / 2;
+      const runs = [];
+      let rs = -1;
+      for (let x = 0; x <= fw; x++) {
+        const isC = x < fw && bottoms[x] >= 0 && mBot - bottoms[x] <= T;
+        if (isC && rs < 0) rs = x;
+        else if (!isC && rs >= 0) {
+          runs.push([rs, x - 1]);
+          rs = -1;
+        }
+      }
+      const kept = runs.filter(
+        ([a, b]) => b - a + 1 >= 3 && Math.abs((a + b) / 2 - mCx) <= fw * 0.4,
+      );
+      if (!kept.length) return null;
       const minX = kept[0][0];
       const maxX = kept[kept.length - 1][1];
-      cx = (minX + maxX + 1) / 2;
       let rowSum = 0;
       let cnt = 0;
+      let topRow = Infinity;
       for (const [a, b] of kept)
         for (let x = a; x <= b; x++) {
-          rowSum += bottom[x];
+          rowSum += bottoms[x];
+          topRow = Math.min(topRow, bottoms[x]);
           cnt++;
         }
-      cyRow = rowSum / cnt;
-      extentW = maxX - minX + 1;
-      winA = Math.max(0, Math.round(minX - fw * 0.15));
-      winB = Math.min(fw - 1, Math.round(maxX + fw * 0.15));
-    }
-    // BODY-MASS blend (maintainer round 4: greens sit toward the body's
-    // centre when contact is eccentric — a crouched cat's paw cluster, a big
-    // biped whose far foot rises out of the contact band, the leaning demon
-    // stone): nudge the anchor halfway toward the silhouette's mass-centre
-    // column, capped at 12% of the frame so symmetric quadrupeds (mammoth)
-    // stay put.
-    const blend = Math.max(-fw * 0.12, Math.min(fw * 0.12, 0.5 * (massCx - cx)));
-    cx += blend;
-    // PER-FRAME drift compensation (maintainer round 4: the player art
-    // needed a postprocess so animations don't "jump away from nadir";
-    // monsters get the SAFE equivalent — measured at build time, applied at
-    // render time, the art untouched). For every frame: the body's
-    // mass-centre column (bounded to the contact band ±15% so flame/effect
-    // pixels can't jitter it) minus the contact frame's gives the baked
-    // horizontal translation; the client pins each frame's own origin-x so
-    // the body never slides off its shadow. Vertical bob is REAL animation
-    // (hops, the demon stone's levitation) and is NOT pinned — instead
-    // per-frame `air` (how far the deepest point rose vs the planted frame,
-    // 2px gait-noise deadband) feeds the shared hop shadow-shrink so a
-    // levitating body reads as intentionally airborne over a smaller
-    // shadow, never as misplaced.
-    const boundedMass = (fr) => {
-      let s = 0;
-      let m = 0;
-      for (let x = winA; x <= winB; x++) {
-        s += x * fr.colMass[x];
-        m += fr.colMass[x];
-      }
-      return m ? s / m : fw / 2;
+      let cx = (minX + maxX + 1) / 2;
+      cx += Math.max(-fw * 0.12, Math.min(fw * 0.12, 0.5 * (mCx - cx)));
+      return {
+        cx,
+        cyRow: rowSum / cnt,
+        topRow,
+        extent: maxX - minX + 1,
+        maxBot: mBot,
+        massCx: mCx,
+      };
     };
-    const contactMass = boundedMass(contact);
+
+    const A = analyze(contact);
+    if (!A) continue; // no measurable contact at all — skip this dir
+    // PER-FRAME drift compensation, FEET-BASED (maintainer round 5: mass
+    // tracking chased a stretching cat's head — the planted FEET are what
+    // must pin; "movement should be handled in the game and not in the
+    // animation" and a strip-rewrite "can easily destroy the animation", so
+    // the art is never touched). Per frame: its own contact anchor vs the
+    // planted frame's, 3px gait dead-band (in-place cycles get NO
+    // compensation), clamp ±12% fw; airborne frames (no contact runs) fall
+    // back to the silhouette mass delta. `air` = px the frame's deepest
+    // point rose vs the planted frame (2px deadband, cap 24) → the shared
+    // hop shadow-shrink: the demon stone's levitation phase and the frog's
+    // leap read as intentionally airborne.
     const shift = [];
     const air = [];
     for (let f = 0; f < n; f++) {
       const fr = frames.find((s) => s.f === f);
       if (!fr) {
-        shift.push(+(cx / fw).toFixed(4));
+        shift.push(+(A.cx / fw).toFixed(4));
         air.push(0);
         continue;
       }
-      const dx = Math.max(-fw * 0.12, Math.min(fw * 0.12, boundedMass(fr) - contactMass));
-      shift.push(+((cx + dx) / fw).toFixed(4));
+      const a = analyze(fr);
+      let dx = a ? a.cx - A.cx : fr.footCx - contact.footCx;
+      if (Math.abs(dx) <= 3) dx = 0; // gait wiggle — leave the animation alone
+      dx = Math.max(-fw * 0.12, Math.min(fw * 0.12, dx));
+      shift.push(+((A.cx + dx) / fw).toFixed(4));
       air.push(Math.min(24, Math.max(0, contact.bot - fr.bot - 2)));
     }
+    const figH = Math.max(...frames.map((s) => s.bot - s.top + 1));
     ground[dir] = {
-      f: +Math.min(1, (cyRow + 1) / H).toFixed(4),
-      cx: +(cx / fw).toFixed(4),
-      contact: cf,
-      // Front-toe distance below the anchor (px): the shadow ellipse is
-      // LIFTED so its south rim kisses the toe line instead of poking a
-      // half-ellipse past the toes (the residual "shadow too low" look).
-      sink: Math.max(0, Math.round(maxBot - cyRow)),
+      f: +Math.min(1, (A.cyRow + 1) / H).toFixed(4),
+      cx: +(A.cx / fw).toFixed(4),
+      contact: contact.f,
+      // Front-toe distance below the anchor (px): the shadow ellipse lifts
+      // so its south rim kisses the toe line — but never above the contact
+      // band (`up` px): a monolith's compact base keeps its ellipse CENTRED
+      // on the base instead of floating half-a-height above it (round 5:
+      // "the big demon stone is flying ... return underneath the monster").
+      sink: Math.max(0, Math.round(A.maxBot - A.cyRow)),
+      up: Math.max(0, Math.round(A.cyRow - A.topRow)),
+      // filled by the class pass below (per-dir ellipse size needs the
+      // MONSTER-level body class — the widest facing — first)
+      w: 0,
+      h: 0,
+      _extent: A.extent,
+      _bodyW: dirBodyW,
       shift,
       air,
     };
-    anchors.push((cyRow + 1) / H);
-    foots.push(extentW);
-    bodies.push(Math.max(...frames.map((s) => s.bodyW)));
-    figHs.push(Math.max(...frames.map((s) => s.bot - s.top + 1)));
+    anchors.push((A.cyRow + 1) / H);
+    foots.push(A.extent);
+    bodies.push(dirBodyW);
+    figHs.push(figH);
+  }
+  // Per-DIRECTION shadow ellipse size (maintainer round 5: an east mammoth's
+  // footprint spans ~140px, its south-facing one ~90 — one size can't fit
+  // both, and the long low bodies kept getting green "enlarge" circles).
+  // The body CLASS is a property of the MONSTER (its widest facing shows the
+  // true length), NOT of the camera angle — classifying per view made a
+  // south-facing mammoth "tall" and shrank its shadow to 54px:
+  // - LONG (max body width >= 1.1 × median figure height — cats, turtles,
+  //   salamanders, mammoths): side views cast ~80% of their LENGTH, narrow
+  //   front/back views ~90% of their GIRTH (the whole visible width is
+  //   footprint there);
+  // - TALL (median figure height > max body width — monoliths, upright
+  //   golems, donkeys): compact base, 40% + the measured contact extent;
+  // - else 55% (porings, frogs, small critters).
+  {
+    const figMedian = figHs.length ? [...figHs].sort((a, b) => a - b)[Math.floor(figHs.length / 2)] : 0;
+    const maxBodyW = bodies.length ? Math.max(...bodies) : 0;
+    const cls = maxBodyW >= 1.1 * figMedian ? "long" : figMedian > maxBodyW ? "tall" : "normal";
+    for (const g of Object.values(ground)) {
+      const factor =
+        cls === "long" ? (g._bodyW >= 0.75 * maxBodyW ? 0.8 : 0.9) : cls === "tall" ? 0.4 : 0.55;
+      g.w = Math.round(Math.min(150, Math.max(12, Math.max(g._extent, g._bodyW * factor) * 1.05)));
+      g.h = Math.max(6, Math.round(g.w * 0.385));
+      delete g._extent;
+      delete g._bodyW;
+    }
   }
   if (!anchors.length) return null;
   anchors.sort((a, b) => a - b);

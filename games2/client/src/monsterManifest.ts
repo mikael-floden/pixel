@@ -30,7 +30,17 @@ export interface MonsterDef {
    * ellipse lifts so its south rim kisses the toe line. */
   ground?: Record<
     string,
-    { f: number; cx: number; contact: number; sink?: number; shift?: number[]; air?: number[] }
+    {
+      f: number;
+      cx: number;
+      contact: number;
+      sink?: number;
+      up?: number;
+      w?: number;
+      h?: number;
+      shift?: number[];
+      air?: number[];
+    }
   >;
   artBottom?: number; // pooled fallback feet line (median of per-dir anchors)
   footW?: number; // ground-contact footprint width (px, contact frames)
