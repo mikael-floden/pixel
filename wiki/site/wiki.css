@@ -370,3 +370,10 @@ a.stat-tile:hover { text-decoration: none; border-color: var(--border-strong); }
 }
 .login-error { color: var(--err, #c0392b); font-size: 13px; min-height: 1.2em; margin: 2px 0 0; }
 #login-dialog input { width: 100%; margin-top: 8px; }
+
+/* ---- detail prev/next navigation ---- */
+.crumb-row { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.detail-nav { margin-left: auto; display: flex; gap: 16px; font-size: 13.5px; }
+.detail-nav a { color: var(--accent); text-decoration: none; white-space: nowrap; }
+.detail-nav a:hover { text-decoration: underline; }
+.mute-game { margin: 0 0 12px; }

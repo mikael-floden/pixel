@@ -1,7 +1,7 @@
 import { CharacterDef, Manifest } from "./manifest";
 import { WorldInfo, DEFAULT_WORLD } from "./maps";
 import { showLoading } from "./loading";
-import { mountTheme } from "./theme";
+import { mountTheme, toggleTheme } from "./theme";
 import { openWikiPanel } from "./wikipanel";
 import { gameAudio } from "../../composer/index";
 
@@ -70,7 +70,9 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       <button id="ml-install" class="ml-corner ml-install" hidden type="button"
         title="Install game" aria-label="Install game">⤓ Install</button>
       <button id="ml-wiki" class="ml-corner ml-wiki" type="button"
-         title="Game wiki — all monsters, characters, tiles, sounds & tuning">&#128214; Wiki</button>`;
+         title="Game wiki — all monsters, characters, tiles, sounds & tuning">&#128214; Wiki</button>
+      <button id="ml-theme-btn" class="ml-corner ml-theme" type="button"
+         title="Switch light/dark — one theme for the game and the wiki">◐ Theme</button>`;
     document.body.appendChild(overlay);
     // Arm the title theme the moment the screen mounts — NOT only on a button
     // press (maintainer 2026-07-19). Browser autoplay still needs one gesture,
@@ -275,6 +277,13 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     const wikiBtn = overlay.querySelector("#ml-wiki") as HTMLButtonElement;
     pressFx(wikiBtn);
     wikiBtn.addEventListener("click", () => openWikiPanel());
+
+    // Dark/light directly from the select screen (maintainer 2026-07-30) —
+    // the SAME shared theme the game HUD and the wiki read (theme.ts), so
+    // one press restyles all three, including an open wiki drawer.
+    const themeBtn = overlay.querySelector("#ml-theme-btn") as HTMLButtonElement;
+    pressFx(themeBtn);
+    themeBtn.addEventListener("click", () => toggleTheme());
 
     // Expose for headless verification.
     (window as any).__mlSelect = {
@@ -491,6 +500,7 @@ function injectStyles() {
   /* The wiki is a whole world of content — its chip reads a step bigger than
      the utility Install chip (maintainer 2026-07-30). */
   .ml-wiki{left:12px;padding:10px 16px;font-size:15px;border-radius:11px}
+  .ml-theme{left:12px;top:62px}
   .ml-install{right:12px}
   .ml-install[hidden]{display:none}`;
   const s = document.createElement("style");

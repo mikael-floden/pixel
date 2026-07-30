@@ -352,7 +352,7 @@ function makePlayer(entity, kind) {
     frameNo, speedSeg, zoomSeg,
     entity.shadow ? h("label", { class: "chk" },
       Object.assign(h("input", { type: "checkbox" }), { checked: cur.shadow, onchange: (e) => { cur.shadow = e.target.checked; draw(); } }),
-      `nadir shadow ${entity.shadow.w}×${entity.shadow.h}px`) : null,
+      "Show shadow") : null,
   );
 
   let onStateChange = null;
@@ -442,6 +442,19 @@ function entityBadge(domain, id) {
 
 const matches = (q, ...hay) => !q || hay.some((s) => (s ?? "").toLowerCase().includes(q));
 
+// ← back crumb + prev/next through the domain's full list (wraps around).
+function crumbRow(backHref, backLabel, base, list, id) {
+  const i = list.findIndex((x) => x.id === id);
+  const nav = i >= 0 && list.length > 1
+    ? h("span", { class: "detail-nav" },
+        h("a", { href: `#/${base}/${list[(i - 1 + list.length) % list.length].id}` },
+          `‹ ${list[(i - 1 + list.length) % list.length].name}`),
+        h("a", { href: `#/${base}/${list[(i + 1) % list.length].id}` },
+          `${list[(i + 1) % list.length].name} ›`))
+    : null;
+  return h("div", { class: "crumb-row" }, h("a", { class: "crumb", href: backHref }, backLabel), nav);
+}
+
 function viewHome() {
   const c = state.data.counts;
   const tiles = [
@@ -484,7 +497,7 @@ function viewMonsters() {
   return h("div", {},
     h("h1", {}, "Monsters"),
     h("p", { class: "muted" }, state.admin
-      ? `${list.length} creatures from the monsters agent. Click one to preview every animation, check its nadir shadow, edit its stats and loot.`
+      ? `${list.length} creatures from the monsters agent. Click one to preview every animation, check its shadow, edit its stats and loot.`
       : `${list.length} creatures roam Nangijala. Click one to watch every animation and study its stats.`),
     h("div", { class: "grid" }, ...list.map((m) => {
       // The card leads with what matters to a PLAYER — the creature's stats
@@ -566,7 +579,7 @@ function viewMonster(id) {
   player.onStateChange = renderFacet;
   renderFacet();
   return h("div", {},
-    h("a", { class: "crumb", href: "#/monsters" }, "← Monsters"),
+    crumbRow("#/monsters", "← Monsters", "monsters", state.data.domains.monsters, m.id),
     h("div", { class: "detail-head" },
       h("div", { class: "portrait checker" }, h("img", { src: assetUrl(m.preview), alt: m.name })),
       h("div", { class: "meta" },
@@ -578,15 +591,13 @@ function viewMonster(id) {
         // Art/render tech (resolution, pads, foot metrics) is admin-only.
         state.admin ? h("p", { class: "muted" }, `${m.frameW}×${m.frameH}px (native ${m.nativeW}×${m.nativeH}, pad ${m.pad.x},${m.pad.y}) · kind: ${m.kind} · foot line at ${(m.artBottom * 100).toFixed(0)}% · footW ${m.footW ?? "?"}px · bodyW ${m.bodyW ?? "?"}px${m.hoverPx ? ` · hovers ${m.hoverPx}px` : ""}${m.inGame ? "" : " · not in the game manifest yet"}`) : null,
         state.admin && m.pixellab ? h("p", {}, h("a", { href: m.pixellab, target: "_blank", rel: "noopener" }, "Open in PixelLab ↗")) : null,
-        h("div", { class: "panel-title" }, "Verdict on the whole monster"),
         feedbackRow("monsters", m.path))),
     h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "Animations", h("span", { class: "pill" }, `${Object.keys(m.animations).length} states × 8 directions`)),
       player.el,
       h("div", { style: "margin-top:12px" }, facetBox)),
     h("div", { class: "panel" },
-      h("div", { class: "panel-title" }, "Stats ",
-        state.admin ? h("span", { class: "pill warn" }, "pushed live to the game — systems adopt them as the monster brain lands") : null),
+      h("div", { class: "panel-title" }, "Stats"),
       statsEditor(m.id)));
 }
 
@@ -618,13 +629,12 @@ function viewCharacter(id) {
   // The character's sounds (e.g. jump) live in the sounds domain — link them in.
   const related = state.data.domains.sounds.filter((s) => ["movement"].includes(s.category));
   return h("div", {},
-    h("a", { class: "crumb", href: "#/characters" }, "← Characters"),
+    crumbRow("#/characters", "← Characters", "characters", state.data.domains.characters, c.id),
     h("div", { class: "detail-head" },
       h("div", { class: "portrait checker" }, h("img", { src: assetUrl(c.preview), alt: c.name })),
       h("div", { class: "meta" },
         h("h1", {}, c.name),
         h("p", { class: "muted" }, `${c.id} · ${c.frameW}×${c.frameH}px · ${Object.keys(c.animations).length} animation states`),
-        h("div", { class: "panel-title" }, "Verdict on the whole character"),
         feedbackRow("characters", c.path))),
     h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "Animations"),
@@ -632,6 +642,7 @@ function viewCharacter(id) {
       h("div", { style: "margin-top:12px" }, facetBox)),
     h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "Movement sounds ", h("span", { class: "pill" }, "from the sounds agent — jump, footsteps, splash")),
+      muteGameBtn(),
       ...related.map((s) => h("div", {},
         h("h3", { style: "margin-top:10px" }, s.name, " ", h("span", { class: "pill" }, s.category)),
         ...s.takes.map((t) => takeRow("sounds", s.path, t))))));
@@ -682,7 +693,7 @@ function viewTileType(id) {
   if (!t) return h("p", {}, "Unknown tile type.");
   const kinds = [["base", "Base tiles"], ["elevation", "Elevation objects"], ["transition", "Transitions"]];
   return h("div", {},
-    h("a", { class: "crumb", href: "#/tiles" }, "← Tiles"),
+    crumbRow("#/tiles", "← Tiles", "tiles", state.data.domains.tiles, t.id),
     h("h1", {}, t.name),
     h("p", { class: "muted" }, `${t.description} · ${t.tilePx}px iso · ${t.tileCount} tiles`),
     h("div", { class: "fb-row" }, h("span", { class: "muted" }, "Whole type:"), starsWidget("tiles", t.path), verdictWidget("tiles", t.path)),
@@ -725,13 +736,12 @@ function viewObject(id) {
     playerEl = player.el;
   }
   return h("div", {},
-    h("a", { class: "crumb", href: "#/objects" }, "← Objects"),
+    crumbRow("#/objects", "← Objects", "objects", state.data.domains.objects, o.id),
     h("div", { class: "detail-head" },
       h("div", { class: "portrait checker" }, h("img", { src: assetUrl(o.preview), alt: o.name })),
       h("div", { class: "meta" },
         h("h1", {}, o.name),
         h("p", { class: "muted" }, `${o.description} · ${o.category}${o.placement ? ` · world height ${o.placement.world_height_m}m (${o.placement.world_px_height}px)` : ""}`),
-        h("div", { class: "panel-title" }, "Verdict"),
         feedbackRow("objects", o.path))),
     hasAnims ? h("div", { class: "panel" }, h("div", { class: "panel-title" }, "Animations"), playerEl) : h("p", { class: "muted" }, "No animations."));
 }
