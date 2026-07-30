@@ -2,6 +2,7 @@ import { CharacterDef, Manifest } from "./manifest";
 import { WorldInfo, DEFAULT_WORLD } from "./maps";
 import { showLoading } from "./loading";
 import { applyUiZoom } from "./uiscale";
+import { openWikiPanel } from "./wikipanel";
 import { dressPlate, repaintPlates } from "./plate";
 import { gameAudio } from "../../composer/index";
 
@@ -72,8 +73,8 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       <button id="ml-enter" class="ml-btn ml-plated"><span>Enter world</span></button>
       <button id="ml-install" class="ml-install" hidden title="Install game" aria-label="Install game">
         <img src="/ui2/kit-icon-down.png" alt="" draggable="false" /></button>
-      <a id="ml-wiki" class="ml-wiki" href="/assets/wiki/site/index.html" target="_blank"
-         rel="noopener" title="Game wiki — all monsters, characters, tiles, sounds & tuning">&#128214; Wiki</a>`;
+      <button id="ml-wiki" class="ml-wiki" type="button"
+         title="Game wiki — all monsters, characters, tiles, sounds & tuning">&#128214; Wiki</button>`;
     document.body.appendChild(overlay);
     applyUiZoom(overlay); // "Desktop site" must not shrink the menu
     // Arm the title theme the moment the screen mounts — NOT only on a button
@@ -322,10 +323,12 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       }
     });
 
-    // The in-game wiki (wiki agent, maintainer-commissioned 2026-07-29): a
-    // plain link so it opens in a new tab and never disturbs the session.
-    const wikiBtn = overlay.querySelector("#ml-wiki") as HTMLAnchorElement;
+    // The in-game wiki (wiki agent): opens the LEFT DRAWER over this screen —
+    // never a browser tab (maintainer 2026-07-30: "the wiki should be part of
+    // the game"). Tap the darkened game strip on the right to come back.
+    const wikiBtn = overlay.querySelector("#ml-wiki") as HTMLButtonElement;
     pressFx(wikiBtn);
+    wikiBtn.addEventListener("click", () => openWikiPanel());
 
     // Expose for headless verification.
     (window as any).__mlSelect = {
@@ -592,7 +595,7 @@ function injectStyles() {
   .ml-install.press img{translate:0 1px;filter:brightness(.85)}
   .ml-wiki{position:fixed;top:16px;left:16px;z-index:2;padding:6px 12px;border-radius:8px;
     background:rgba(20,14,8,.55);border:1px solid rgba(214,178,120,.45);color:#e8d9b0;
-    font:600 13px/1 system-ui,sans-serif;text-decoration:none;user-select:none}
+    font:600 13px/1 system-ui,sans-serif;text-decoration:none;user-select:none;cursor:pointer}
   .ml-wiki:hover{background:rgba(20,14,8,.75)}
   .ml-wiki.press{translate:0 1px;filter:brightness(.85)}`;
   const s = document.createElement("style");
