@@ -190,9 +190,23 @@ HOUSE_OUT = (6, 5)                  # outer footprint (w, h) -> a 4x3 room
 HOUSE_WALL = 6                      # wall height: 6*16 = 96px of door clearance
 HOUSE_WALL_MAT = "stone_mountain"
 HOUSE_ROOF_MAT = "black_mountain"
-HOUSE_GROUNDS = ("saturated_grass", "light_sand")
+HOUSE_GROUND = "saturated_grass"    # a house belongs on the MEADOW, never on the
+                                    # beach (maintainer 2026-07-30: "move the house
+                                    # to the grass, it's way too close to the ocean")
+# The maintainer's chosen plot (red circle, 2026-07-30: "looks better if it's more
+# centered on the grass") — island design fractions, same convention as
+# TROLL_SITE_FRAC / GORGE_BRIDGE_FRACS. The nearest valid plot to this point wins,
+# so the rule keeps its judgement while honouring his placement.
+HOUSE_SITE_FRAC = (0.885, 0.45)     # -> grid (201, 114), open meadow NW of spawn
+HOUSE_SITE_R = 10                   # stay within this many cells of his mark
+HOUSE_MEADOW_R = 6                  # "centered ON THE GRASS": of the land within this
+                                    # ring of the plot, prefer the site with the most
+                                    # grass — a plot pinched between road and beach
+                                    # loses to one out in the open field
 HOUSE_SEARCH_R = 26
 HOUSE_SPAWN_GAP = 2
+HOUSE_WATER_GAP = 6                 # keep this many cells of land between the walls
+                                    # and any water — no house on the shoreline
 
 
 class Island2(Island):
@@ -2654,38 +2668,76 @@ class Island2(Island):
         return bad
 
     def _house_sites(self):
-        """Candidate top-left corners, closest to the spawn first: footprint AND a
-        1-cell margin all one material/level, on buildable ground, clear of every
-        other system, and not crowding the spawn cell."""
+        """Candidate top-left corners, closest to the spawn first. The FOOTPRINT is
+        all grass at one level (a cottage stands on the meadow); the 1-cell margin
+        only has to be flat land at that same level — near a shore the meadow is a
+        strip bordering sand and road, and demanding a uniform margin too is what
+        drove the house onto the beach. Everything else is kept clear: roads,
+        props, decks, Trollstigen, the gorge, painted linework, the spawn cell —
+        and HOUSE_WATER_GAP cells of dry land all round."""
         n, (W, H) = self.n, HOUSE_OUT
         sx, sy = self.spawn
+        tx, ty = self._to_grid(*HOUSE_SITE_FRAC)      # the maintainer's plot
         deckcells = {(x, y) for dk in self.decks for (x, y) in dk["cells"]}
         taken = (self.reserved | self._troll | self._ascent | self.roads
                  | set(self.props) | deckcells | self._gorge_cells | self._linework)
+        G = HOUSE_WATER_GAP
         out = []
-        for cy in range(max(1, sy - HOUSE_SEARCH_R), min(n - H - 1, sy + HOUSE_SEARCH_R)):
-            for cx in range(max(1, sx - HOUSE_SEARCH_R), min(n - W - 1, sx + HOUSE_SEARCH_R)):
-                m0, l0 = self.mat[cy, cx], int(self.level[cy, cx])
-                if m0 not in HOUSE_GROUNDS:
-                    continue
+        for cy in range(max(1, ty - HOUSE_SEARCH_R), min(n - H - 1, ty + HOUSE_SEARCH_R)):
+            for cx in range(max(1, tx - HOUSE_SEARCH_R), min(n - W - 1, tx + HOUSE_SEARCH_R)):
+                l0 = int(self.level[cy, cx])
                 ok = True
-                for y in range(cy - 1, cy + H + 1):
-                    for x in range(cx - 1, cx + W + 1):
-                        if (self.mat[y, x] != m0 or int(self.level[y, x]) != l0
+                for y in range(cy, cy + H):               # the plot itself: grass, flat, free
+                    for x in range(cx, cx + W):
+                        if (self.mat[y, x] != HOUSE_GROUND or int(self.level[y, x]) != l0
                                 or (x, y) in taken):
                             ok = False
                             break
                     if not ok:
                         break
+                if ok:                                    # margin: flat walkable land
+                    for y in range(cy - 1, cy + H + 1):
+                        for x in range(cx - 1, cx + W + 1):
+                            if (self.mat[y, x] in ("", "clear_water")
+                                    or int(self.level[y, x]) != l0 or (x, y) in taken):
+                                ok = False
+                                break
+                        if not ok:
+                            break
+                if ok:                                    # keep well back from the sea
+                    for y in range(cy - G, cy + H + G):
+                        for x in range(cx - G, cx + W + G):
+                            if not (0 <= x < n and 0 <= y < n) or \
+                                    self.mat[y, x] in ("", "clear_water"):
+                                ok = False
+                                break
+                        if not ok:
+                            break
                 if not ok:
                     continue
                 foot = [(x, y) for y in range(cy, cy + H) for x in range(cx, cx + W)]
                 if any(max(abs(x - sx), abs(y - sy)) < HOUSE_SPAWN_GAP for (x, y) in foot):
                     continue
-                d = min(max(abs(x - sx), abs(y - sy)) for (x, y) in foot)
-                # closest to the spawn wins; a grassy plot beats a sandy one at
-                # equal distance (a cottage on the meadow, not on the beach)
-                out.append((d + (3 if m0 == "light_sand" else 0), d, cx, cy))
+                d = abs(cx + (W - 1) / 2 - tx) + abs(cy + (H - 1) / 2 - ty)
+                if d > 2 * HOUSE_SITE_R:              # stay where he pointed
+                    continue
+                # how much MEADOW surrounds this plot: of the land in the ring,
+                # what share is grass (road/sand/water crowding it counts against)
+                R = HOUSE_MEADOW_R
+                land = grass = 0
+                for y in range(cy - R, cy + H + R):
+                    for x in range(cx - R, cx + W + R):
+                        if not (0 <= x < n and 0 <= y < n) or (x, y) in set(foot):
+                            continue
+                        m = self.mat[y, x]
+                        if m in ("", "clear_water"):
+                            continue
+                        land += 1
+                        grass += (m == HOUSE_GROUND)
+                frac = grass / max(1, land)
+                # grassiest surroundings first (5% buckets so near-ties fall back
+                # to his mark), then closest to the spot he circled
+                out.append((-round(frac * 20), d, cx, cy))
         out.sort()
         return out
 
@@ -3189,6 +3241,15 @@ def build(out=None, seed=21, M=24):
         "the house interior is not reachable from the world"
     assert max(abs(h["door"][0] - d.spawn[0]), abs(h["door"][1] - d.spawn[1])) <= 30, \
         "the house is not near the spawn"
+    # ON THE MEADOW, BACK FROM THE SEA (maintainer 2026-07-30)
+    assert h["mat"] == HOUSE_GROUND, f"the house stands on {h['mat']}, not grass"
+    wet = [(x + i, y + j) for (x, y) in h["foot"]
+           for i in range(-HOUSE_WATER_GAP, HOUSE_WATER_GAP + 1)
+           for j in range(-HOUSE_WATER_GAP, HOUSE_WATER_GAP + 1)
+           if 0 <= x + i < n and 0 <= y + j < n
+           and d.mat[y + j, x + i] == "clear_water"]
+    assert not wet, \
+        f"the house is within {HOUSE_WATER_GAP} cells of water at {sorted(set(wet))[:3]}"
 
     # restore the LIVE (post-carve) state: the surface view above was pre-carve
     d.level, d.mat, d.top, d.mirror, d.props, d.decks = _live
