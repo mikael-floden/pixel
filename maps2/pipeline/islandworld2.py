@@ -205,6 +205,9 @@ HOUSE_MEADOW_R = 6                  # "centered ON THE GRASS": of the land withi
                                     # loses to one out in the open field
 HOUSE_SEARCH_R = 26
 HOUSE_SPAWN_GAP = 2
+HOUSE_SPAWN_FRONT = 3               # the player arrives this many cells in FRONT of
+                                    # the door, on the grass (maintainer 2026-07-30:
+                                    # the picked spawn was "too close to the water")
 HOUSE_ROAD_GAP = 4                  # cells of meadow the dirt ROAD network must keep
                                     # off the house (maintainer 2026-07-30: "don't
                                     # connect the big road to the house — that looks
@@ -2271,7 +2274,12 @@ class Island2(Island):
         never sand/stone), reserved, occlusion-safe (trailing _lip_cover)."""
         n, mat, level = self.n, self.mat, self.level
         self._road_forbid = None
-        dist0, _, _ = self._road_graph_bfs(self.spawn)
+        # The trunk is anchored where the world's LANDING is, not where the player
+        # happens to stand: _house_near_spawn moves self.spawn onto the meadow in
+        # front of the house, and without this the highway would follow it right
+        # back to the doorstep (maintainer 2026-07-30). Roads are unchanged.
+        anchor = getattr(self, "_road_anchor", self.spawn)
+        dist0, _, _ = self._road_graph_bfs(anchor)
         reach = set(dist0)
         if not reach:
             return
@@ -2297,7 +2305,7 @@ class Island2(Island):
             # The trunk climbs the PRIMARY Trollstigen (maintainer: the zigzag is a ROAD):
             # via-points foot -> entry force the route up the structure's own legs.
             via = [c for pair in self._troll_ends[:1] for c in pair if c in reach]
-            chain = ([self.spawn] + self._jitter_waypoints(self.spawn, summit, reach, k=3)
+            chain = ([anchor] + self._jitter_waypoints(anchor, summit, reach, k=3)
                      + via + [summit])
             cur = chain[0]
             for w in chain[1:]:
@@ -2306,7 +2314,7 @@ class Island2(Island):
                     road.update(seg)
                     cur = w
         if not road:
-            road = {self.spawn}
+            road = {anchor}
         self._set_road_now(road)                         # magnet: later spurs Y-merge onto this
         targets = [near(fx, fy) for fx, fy in
                    ((0.50, 0.62), (0.30, 0.74), (0.62, 0.86), (0.76, 0.62),
@@ -2322,7 +2330,7 @@ class Island2(Island):
             r = rows[len(rows) // 2]
             for bx in (x0 - 1, x1 + 1):
                 targets.append(min(reach, key=lambda c: (c[0] - bx) ** 2 + (c[1] - r) ** 2, default=None))
-        sx, sy = self.spawn
+        sx, sy = anchor
         targets = [t for t in dict.fromkeys(targets) if t is not None]
         targets.sort(key=lambda c: (c[0] - sx) ** 2 + (c[1] - sy) ** 2)   # grow outward
         for d in targets:
@@ -2786,6 +2794,21 @@ class Island2(Island):
             self._house = {"foot": set(foot), "walls": set(walls), "door": door,
                            "level": top, "floor": snap[foot[0]][1],
                            "mat": snap[foot[0]][0]}
+            # THE PLAYER ARRIVES ON THE GRASS IN FRONT OF THE DOOR (maintainer
+            # 2026-07-30: the picked spawn sat on the beach, "too close to the
+            # water"). The door faces the camera (+y), so "in front" is straight
+            # down-screen from it. The trunk road keeps the ORIGINAL landing as
+            # its anchor (_road_anchor) so the highway doesn't follow us here.
+            self._road_anchor = self.spawn
+            floor = self._house["floor"]
+            for k in range(HOUSE_SPAWN_FRONT, HOUSE_SPAWN_FRONT + 5):
+                c = (door[0], door[1] + k)
+                if (0 <= c[0] < self.n and 0 <= c[1] < self.n
+                        and self.mat[c[1], c[0]] == HOUSE_GROUND
+                        and int(self.level[c[1], c[0]]) == floor
+                        and c not in self.reserved):
+                    self.spawn = c
+                    break
             return
         raise AssertionError("no buildable house site near the spawn")
 
@@ -3274,6 +3297,19 @@ def build(out=None, seed=21, M=24):
              if (x + i, y + j) in d.roads]
     assert not paved, (f"the dirt road runs within {HOUSE_ROAD_GAP} cells of the house "
                        f"at {sorted(set(paved))[:4]}")
+    # THE PLAYER ARRIVES ON THE GRASS IN FRONT OF THE HOUSE (maintainer 2026-07-30)
+    spx, spy = d.spawn
+    assert d.mat[spy, spx] == HOUSE_GROUND and int(d.level[spy, spx]) == h["floor"], \
+        f"the spawn is on {d.mat[spy, spx]} at level {int(d.level[spy, spx])}, not the meadow"
+    assert spx == h["door"][0] and 0 < spy - h["door"][1] <= HOUSE_SPAWN_FRONT + 5, \
+        f"the spawn {d.spawn} is not on the grass in front of the door {h['door']}"
+    assert (spx, spy) in mainset and (spx, spy) not in d.props, \
+        "the spawn is not standable open ground"
+    swet = [(spx + i, spy + j) for i in range(-HOUSE_WATER_GAP, HOUSE_WATER_GAP + 1)
+            for j in range(-HOUSE_WATER_GAP, HOUSE_WATER_GAP + 1)
+            if 0 <= spx + i < n and 0 <= spy + j < n
+            and d.mat[spy + j, spx + i] == "clear_water"]
+    assert not swet, f"the spawn is within {HOUSE_WATER_GAP} cells of water"
 
     # restore the LIVE (post-carve) state: the surface view above was pre-carve
     d.level, d.mat, d.top, d.mirror, d.props, d.decks = _live
