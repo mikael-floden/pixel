@@ -1,6 +1,6 @@
 {
   "id": "rimed_blue_soulstone",
-  "name": "Rime Soul",
+  "name": "Soulstone",
   "type": "SOUL",
   "type_label": "Soul Stone",
   "category": "frost",
@@ -10,7 +10,7 @@
   "max_stack": 20,
   "equip_slot": null,
   "sellable": true,
-  "description": "Frost-blue and perpetually cold to the touch. Rimed veins bloom across it whenever someone nearby stops shivering.",
+  "description": "Pale blue and rimed white, all that survives a Frostling's melt. Hits land cold and sometimes drag the target down.",
   "sprite": "items/rimed_blue_soulstone/sprite.png",
   "size": [
     48,
@@ -26,7 +26,7 @@
     "created_at": "2026-07-27T09:28:10.536555+00:00",
     "last_modified": "Thu, 30 Jul 2026 18:52:47 GMT"
   },
-  "synced_at": "2026-07-30T19:07:18+00:00",
+  "synced_at": "2026-07-30T20:13:35+00:00",
   "soul": {
     "element": "frost",
     "power": "+10 frost damage on hit and 20% chance to slow the target",

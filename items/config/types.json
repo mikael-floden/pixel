@@ -1,5 +1,5 @@
 {
-  "_comment": "The item TYPE contract for the whole game. Each type's `tag` is the PixelLab tag the maintainer puts on an object in the create-object UI — that tag is the ground truth for what an item IS, and pipeline/sync.py discovers items by exactly these tags. Adding a type here (with its tag) is all it takes for a newly tagged batch to start syncing. `rarities` is the shared rarity ladder every item's `rarity` field is drawn from. NOTHING here is generated: edit by hand.",
+  "_comment": "The item TYPE contract for the whole game. Each type's `tag` is the PixelLab tag the maintainer puts on an object in the create-object UI — that tag is the ground truth for what an item IS, and pipeline/sync.py discovers items by exactly these tags. Adding a type here (with its tag) is all it takes for a newly tagged batch to start syncing. `rarities` is the shared rarity ladder every item's `rarity` field is drawn from. A type may declare `shared_name`: every item of that type carries that ONE display name (SOUL -> every stone is a \"Soulstone\"; they differ by their description, element and power, not by name), and sync enforces it instead of the usual unique-name rule. NOTHING here is generated: edit by hand.",
   "types": {
     "MISC": {
       "tag": "MISC",
@@ -14,11 +14,13 @@
       "tag": "SOUL",
       "label": "Soul Stone",
       "summary": "A soul stone dropped by monsters. Merged into a weapon or a piece of armor to grant it the stone's power; the stone is consumed by the merge.",
+      "shared_name": "Soulstone",
       "stackable": true,
       "max_stack": 20,
       "equip_slot": null,
       "sellable": true,
-      "merge_into": ["weapon", "armor"]
+      "merge_into": ["weapon", "armor"],
+      "drop_chance_band": [0.004, 0.035]
     },
     "CONSUMABLE": {
       "tag": "CONSUMABLE",

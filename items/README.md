@@ -64,6 +64,56 @@ the next run flags "look at this sprite and name it".
 > PixelLab `name` field is useless. Every name here was chosen by *looking* at
 > the sprite, and is ≤ 12 characters — same rule the monsters domain uses.
 
+> **Every soul stone is called "Soulstone".** `SOUL` declares `shared_name` in
+> `types.json`, so the 28 stones share one display name and differ by their
+> **description**, element and power — sync enforces that instead of the
+> unique-name rule the other types get.
+
+## Where the drop mapping lives: `live/tuning/monsters.json`
+
+Which monster drops which item is **not** stored in `items/`. It lives in
+[`live/tuning/monsters.json`](../live/tuning/monsters.json), inside each
+monster's entry:
+
+```jsonc
+"stone_turtle": {
+  "level": 13, "max_hp": 20, …,
+  "loot": [
+    { "item": "banded_solar_stone", "chance": 0.012 },   // fraction, not %
+    { "item": "stone_egg",          "chance": 0.18  }
+  ]
+}
+```
+
+That is the file the **maintainer** edits from the wiki's monster page ("Loot /
+drops → + add drop"), and `live/**` is the game's live-update channel: a change
+there is committed to `main` and pushed to the running server and every
+connected client **within seconds, with no rebuild, redeploy or restart** (see
+[`live/README.md`](../live/README.md)). Anything kept under `items/` would need
+a deploy to take effect and could not be edited from the wiki — so this domain
+deliberately keeps **no copy** of the mapping. One source of truth, owned by the
+maintainer; `item` values are `items/<id>` folder ids, and
+`items/viewer_data.json` is what resolves an id to a name, sprite and value.
+
+The rules the mapping follows:
+
+- a **SOUL** stone is dropped by **exactly one** monster — it is that
+  creature's signature drop;
+- a **MISC** item can drop from **several** monsters (a fang from every biter),
+  and every item is dropped by at least one, or it would be unobtainable;
+- drop chance follows the item's rarity (common ~15-50 %, uncommon ~6-25 %,
+  rare ~1.5-10 %, epic ~0.4-3 %), and valuable loot comes off higher-level
+  monsters.
+
+`pipeline/drops.py` is the items agent's side of that contract — it **verifies**
+those rules against the live file, can **apply** an assignment plan, and prints
+the tables. It never regenerates the file: `live/` is durable maintainer state.
+
+```bash
+python items/pipeline/drops.py            # verify (read-only)
+python items/pipeline/drops.py --report   # + print every monster's loot table
+```
+
 ## Layout: one folder per item
 
 ```

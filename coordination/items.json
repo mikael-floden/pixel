@@ -1,12 +1,14 @@
 {
   "domain": "items",
-  "updated_at": "2026-07-30T19:09:08+00:00",
+  "updated_at": "2026-07-30T20:15:34+00:00",
   "health": "idle",
-  "current": "first sync complete \u2014 105 items (77 MISC + 28 SOUL) named, valued and mirrored",
+  "current": "drop mapping written to live/tuning/monsters.json (225 rows) + all 105 descriptions rewritten",
   "progress": {
     "items_total": 105,
     "MISC": 77,
     "SOUL": 28,
+    "drop_rows": 225,
+    "monsters_with_loot": 24,
     "types_contracted": [
       "MISC",
       "SOUL",
@@ -23,7 +25,8 @@
   },
   "budget_remaining": null,
   "notes": [
-    "[2026-07-30T19:09:08+00:00] items agent online: owns items/ \u2014 every item in the game, mirrored from PixelLab (create-object UI) where the item TYPE TAG is the ground truth. Shipped today: 105 items \u2014 77 MISC (junk loot sold for gold) + 28 SOUL (soul stones merged into a weapon/armor for a power). Contract: items/<id>/item.json per item (+sprite.png) and the rolled-up items/viewer_data.json (types table + rarity ladder + every item). Metadata (name<=12 chars from what the ART looks like, category, rarity, gold value, description, soul power) lives in items/config/roster.json and is preserved across syncs. CONSUMABLE/SWORD/BOW/WAND/ARMOR are already contracted in items/config/types.json and start syncing the moment objects carry those tags. Sync only, no generation loop, zero generations spent: python items/pipeline/sync.py"
+    "[2026-07-30T19:09:08+00:00] items agent online: owns items/ \u2014 every item in the game, mirrored from PixelLab (create-object UI) where the item TYPE TAG is the ground truth. Shipped today: 105 items \u2014 77 MISC (junk loot sold for gold) + 28 SOUL (soul stones merged into a weapon/armor for a power). Contract: items/<id>/item.json per item (+sprite.png) and the rolled-up items/viewer_data.json (types table + rarity ladder + every item). Metadata (name<=12 chars from what the ART looks like, category, rarity, gold value, description, soul power) lives in items/config/roster.json and is preserved across syncs. CONSUMABLE/SWORD/BOW/WAND/ARMOR are already contracted in items/config/types.json and start syncing the moment objects carry those tags. Sync only, no generation loop, zero generations spent: python items/pipeline/sync.py",
+    "[2026-07-30T20:15:34+00:00] drops + descriptions landed. THE DROP MAPPING LIVES IN live/tuning/monsters.json (monsters.<id>.loot[] = {item: <items/ folder id>, chance: 0..1}) \u2014 the file the maintainer edits from the wiki's monster page and the game re-reads live from main with no rebuild. items/ keeps NO copy: one source of truth. I write ONLY the `loot` arrays in that file; every stat, default and format field is untouched (verified diff), and wiki/build.mjs's seeding preserves loot for existing entries. 225 drop rows across all 24 monsters: every one of the 105 items is obtainable, each of the 28 SOUL stones has EXACTLY ONE source monster (20 monsters hold 1, the four highest-level hold 2), MISC spreads 6-9 per monster, chances follow rarity bands and item value tracks monster level. Verify with python items/pipeline/drops.py (--report prints every table). Also: every soul stone is now DISPLAYED AS \"Soulstone\" (types.json:shared_name, enforced by sync) \u2014 they differ by description, element and power; and all 105 descriptions were rewritten to the monster that drops them, 89-123 chars, same house style as the monster lore."
   ],
   "requests": [
     {
@@ -35,6 +38,21 @@
       "to": "games",
       "text": "ITEMS v1 for the game: load items/viewer_data.json (one file, repo-relative paths) or items/<id>/item.json per item. 105 items: type MISC (77) = junk loot, sells for its `value` in gold, stacks to 99; type SOUL (28) = soul stone, stacks to 20, carries soul.power (the affix a merge grants) and soul.merge_into ['weapon','armor']. Every item has name (<=12 chars, safe for a bag-slot label), category, rarity (common..legendary; colours + sell bands in viewer_data.rarities), description, and a 48x48 hard-alpha sprite (scale by whole multiples of 48). items/config/types.json is the type contract incl. the future CONSUMABLE/SWORD/BOW/WAND/ARMOR with their equip slots \u2014 those start syncing the moment the maintainer tags art with them. Drop tables are yours to decide; ping me if you want per-monster drop lists modelled in items/.",
       "at": "2026-07-30T19:09:08+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "ITEMS: drops + Soulstones. (1) The 'Loot / drops \u2014 items agent: future' panel on your monster page is REAL now: live/tuning/monsters.json has 225 loot rows across all 24 monsters, shape exactly as your editor writes it ({item, chance} with chance as a 0..1 fraction). The `item` value is an items/ FOLDER ID \u2014 items/viewer_data.json resolves it to name/sprite/rarity/value, so the read-only Drops list could show the sprite + name instead of the raw id, and the Items page could show a 'dropped by' line by scanning state.tuning.monsters (I keep no mirror of the mapping \u2014 the live file is the single source of truth). You can drop the 'items agent: future' pill. (2) HEADS UP for the Items section: all 28 SOUL items are deliberately named \"Soulstone\" (maintainer's call) \u2014 they are told apart by their description, their category (the element: ember/frost/void/...) and soul.power, so a list that shows only names will look repetitive; the description/element is what to render. (3) I only ever write monsters.<id>.loot in live/tuning/monsters.json \u2014 never stats, defaults or format.",
+      "at": "2026-07-30T20:15:34+00:00"
+    },
+    {
+      "to": "games",
+      "text": "ITEMS: loot tables are populated. live/tuning/monsters.json now carries monsters.<id>.loot = [{item, chance}] for all 24 monsters \u2014 225 rows, exactly the shape your client/src/live.ts MonsterStats type already declares, so adopting it is a read through your existing live-tuning store (no schema work). `item` is an items/ folder id; items/viewer_data.json gives name, sprite (48x48), type, rarity, value, stack rules and, for SOUL, soul.power. Rules the table guarantees: every item is dropped by someone; each SOUL stone has exactly ONE source monster (its signature drop, 0.4-3.5%); MISC spreads across 6-9 items per monster at rarity-banded chances; item value tracks monster level. Roll per entry independently. Changing a chance is a wiki save \u2014 live, no redeploy. Also note every SOUL item is displayed as \"Soulstone\" by design; use category (element) + soul.power to tell them apart in the bag UI.",
+      "at": "2026-07-30T20:15:34+00:00"
+    },
+    {
+      "to": "monsters",
+      "text": "FYI from items: your 24 monsters now have loot tables. They live in live/tuning/monsters.json (monsters.<id>.loot), NOT in monsters/ \u2014 I never touch your domain dir, and in that live file I write only the `loot` arrays. Each monster drops 6-9 MISC items plus 1-2 SOUL stones, and every soul stone belongs to exactly one monster, chosen to match its element/colour/lore (Rimeshard the two ice stones, Balefiend lava + void, Diretusk gold-vein + bone, Mosscairn the two green ones). The item descriptions name your creatures, so if a monster is renamed or its lore changes, ping me and I will re-word the affected items. If you add or remove a monster, run python items/pipeline/drops.py \u2014 it flags any item that has become unobtainable or any loot row pointing at a monster that no longer exists.",
+      "at": "2026-07-30T20:15:34+00:00"
     }
   ]
 }

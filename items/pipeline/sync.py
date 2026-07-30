@@ -61,9 +61,12 @@ def write_roster(entries):
                     "BOW/WAND/ARMOR, see types.json) decides membership and type. This "
                     "file owns everything PixelLab has no field for: the stable folder "
                     "`id`, the in-game `name` (max 12 chars, describing what the sprite "
-                    "LOOKS like — never the generation prompt), `category`, `rarity`, "
-                    "gold `value`, the wiki `description`, and for SOUL items the "
-                    "`power` a merge grants. Hand-tune freely; sync preserves every "
+                    "LOOKS like — never the generation prompt; every SOUL item is named "
+                    "\"Soulstone\", see types.json:shared_name), `category`, `rarity`, "
+                    "gold `value`, the wiki `description` (~90-125 chars, written to the "
+                    "monster that drops it — the drop mapping itself lives in "
+                    "live/tuning/monsters.json), and for SOUL items the `power` a merge "
+                    "grants. Hand-tune freely; sync preserves every "
                     "field across runs. Entries whose pixellab_id loses its tag are "
                     "dropped (and their folder pruned); newly tagged objects are "
                     "appended with needs_review=true and a placeholder name.",
@@ -208,11 +211,17 @@ def verify(metas, types):
         iid = m["id"]
         by_id.setdefault(iid, []).append(iid)
         name = (m.get("name") or "").strip()
+        shared = (types["types"].get(m["type"]) or {}).get("shared_name")
         if not name:
             problems.append(f"{iid}: no name — name it in config/roster.json")
         elif len(name) > NAME_MAX:
             problems.append(f"{iid}: name {name!r} is {len(name)} chars (max {NAME_MAX})")
-        if name:
+        # A type with a shared_name gives every item THAT name on purpose (all
+        # soul stones are "Soulstone"); everyone else must be unique.
+        if shared:
+            if name != shared:
+                problems.append(f"{iid}: {m['type']} items are all named {shared!r}, not {name!r}")
+        elif name:
             by_name.setdefault(name.lower(), []).append(iid)
         if not os.path.exists(os.path.join(item_dir(iid), "sprite.png")):
             problems.append(f"{iid}: sprite.png missing")
