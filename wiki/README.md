@@ -96,6 +96,30 @@ reach the running server via `.github/workflows/live-notify.yml` →
 triggers a game deploy. The wiki reads state from `GET /api/live/state`
 (static `/assets/live` files as offline fallback).
 
+## Usage stats — measured on the DEFAULT world
+
+"Is this actually in the game?" is answered against the world players really
+enter (`DEFAULT_WORLD` in `games2/client/src/maps.ts`, read at build time so
+it can't drift — currently `the_island2`). `build.mjs` emits `data.json`
+`world`:
+
+- `monsters[id] = {spawned, zones}` — summed from that world's `spawns.json`
+  zones. Shown on the monster cards ("7 roaming · 2 habitats") and page.
+- `tiles[<repo path>] = placements` — cells whose surface tile is that tile,
+  plus props. (A raised cell stacks its tile for the cliff faces; that's the
+  same placement seen from the side, not a second use.) Tile pages show
+  "N of M tiles used", per-tile `×N` badges, and unused tiles render dimmed.
+
+Audio "used" is **referenced by the game**, not merely present:
+
+- a sound is used when a `sounds/bindings.json` event names it (including
+  `sound_by_surface` / `ambience_by_region` / layer maps) or the composer
+  looks it up directly (`sounds.get("id")` in `games2/composer/**`);
+- exactly one music track is used — the composer's director picks the
+  background bed by scoring `use` text (mirrored from
+  `composer/engine/music.ts`); the title/night beds are the composer's own
+  mp3s, not music-domain tracks.
+
 ## Tuning files
 
 - `live/tuning/monsters.json` (`pixel-wiki-tuning-monsters@1`) — per-monster

@@ -398,3 +398,13 @@ a.stat-tile:hover { text-decoration: none; border-color: var(--border-strong); }
 .iso-hint { margin: 2px 0 10px; font-size: 12.5px; }
 .iso-stage { display: flex; justify-content: center; align-items: center; min-height: 140px; border-radius: 8px; padding: 10px; overflow-x: auto; }
 .iso-canvas { image-rendering: pixelated; max-width: 100%; }
+
+/* ---- usage in the default world ---- */
+.use-pill {
+  position: absolute; top: 4px; right: 4px; z-index: 1;
+  font-size: 9.5px; padding: 2px 5px; border-radius: 6px;
+  background: var(--surface-2); color: var(--muted);
+  border: 1px solid var(--border); pointer-events: none;
+  font-variant-numeric: tabular-nums;
+}
+.tile-cell.unused-tile img { opacity: 0.72; }

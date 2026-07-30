@@ -407,6 +407,106 @@ function buildConstants() {
   return consts;
 }
 
+// -------------------------------------------- usage in the DEFAULT world
+// The world the game actually drops players into is the honest answer to
+// "is this really in the game?" — so every usage stat below is measured on
+// it (games2/client/src/maps.ts DEFAULT_WORLD, read so it can't drift).
+function defaultWorldName() {
+  const src = (() => { try { return readFileSync(join(GAMES2, "client", "src", "maps.ts"), "utf8"); } catch { return ""; } })();
+  return /DEFAULT_WORLD\s*=\s*"([^"]+)"/.exec(src)?.[1] ?? "the_island2";
+}
+function buildWorldUsage() {
+  const name = defaultWorldName();
+  const dir = join(ROOT, "maps2", "worlds", name);
+  const world = readJson(join(dir, "world.json"));
+  if (!world) return null;
+  const paths = world.paths ?? [];
+  // PLACEMENTS per tile: cells whose surface tile is this one, plus props.
+  // (A raised cell also stacks its tile for the cliff faces — that's the same
+  // placement seen from the side, not a second use.)
+  const counts = new Array(paths.length).fill(0);
+  let cells = 0;
+  for (const row of world.top ?? []) {
+    for (const idx of row) if (idx >= 0 && idx < paths.length) { counts[idx]++; cells++; }
+  }
+  let props = 0;
+  for (const p of world.props ?? []) {
+    if (p?.tile >= 0 && p.tile < paths.length) { counts[p.tile]++; props++; }
+  }
+  const tiles = {};
+  paths.forEach((p, i) => { if (counts[i]) tiles[p] = counts[i]; });
+
+  // Monsters: spawns@1 zones carry a roster id + how many to seed.
+  const monsters = {};
+  for (const z of readJson(join(dir, "spawns.json"))?.zones ?? []) {
+    if (!z?.monster) continue;
+    const m = monsters[z.monster] ?? (monsters[z.monster] = { spawned: 0, zones: 0 });
+    m.spawned += Number(z.num) || 0;
+    m.zones += 1;
+  }
+  return {
+    name, w: world.size?.w ?? null, h: world.size?.h ?? null,
+    cells, props, distinctTiles: Object.keys(tiles).length,
+    tiles, monsters,
+  };
+}
+
+// ------------------------------------------------ audio usage (in game?)
+// A sound is IN THE GAME when something references it: a semantic event in
+// sounds/bindings.json (including its per-surface / per-region / layer maps)
+// or a direct catalog lookup in the composer (`sounds.get("id")`).
+function walkTs(dir, out = []) {
+  for (const n of (() => { try { return readdirSync(dir); } catch { return []; } })()) {
+    const p = join(dir, n);
+    if (isDir(p)) walkTs(p, out);
+    else if (/\.ts$/.test(n)) out.push(p);
+  }
+  return out;
+}
+function markSoundUsage(sounds) {
+  if (!sounds?.length) return;
+  const byId = new Map(sounds.map((s) => [s.id, s]));
+  const mark = (id, why) => {
+    const s = byId.get(id);
+    if (!s) return;
+    (s.usedBy ?? (s.usedBy = [])).includes(why) || s.usedBy.push(why);
+  };
+  const SKIP = new Set(["event", "bus", "play", "note", "duck"]);
+  for (const ev of readJson(join(ROOT, "sounds", "bindings.json"))?.events ?? []) {
+    const why = ev.event ?? "event";
+    const walk = (v) => {
+      if (typeof v === "string") mark(v, why);
+      else if (Array.isArray(v)) v.forEach(walk);
+      else if (v && typeof v === "object") Object.values(v).forEach(walk);
+    };
+    for (const [k, v] of Object.entries(ev)) if (!SKIP.has(k)) walk(v);
+  }
+  for (const file of walkTs(join(GAMES2, "composer"))) {
+    const src = (() => { try { return readFileSync(file, "utf8"); } catch { return ""; } })();
+    for (const m of src.matchAll(/sounds\.get\(\s*["']([^"']+)["']/g)) mark(m[1], "composer");
+  }
+  for (const s of sounds) s.usedBy = s.usedBy ?? [];
+}
+// Music: the composer's director plays exactly ONE catalog track as the
+// background bed, chosen by this scoring (engine/music.ts start()) over
+// music/viewer_data.json's order — mirrored here so the wiki reports the
+// track the game REALLY plays. (The title/night beds are the composer's own
+// mp3s, not music-domain tracks.)
+function markMusicUsage(music) {
+  if (!music?.length) return;
+  const tracks = readJson(join(ROOT, "music", "viewer_data.json"))?.tracks ?? [];
+  const score = (t) => {
+    const use = (t.use ?? "").toLowerCase();
+    let s = 0;
+    if (/\b(main|default)\b/.test(use)) s += 4;
+    if (use.includes("overworld") || use.includes("background bed")) s += 2;
+    if (t.loopable) s += 1;
+    return s;
+  };
+  const bed = [...tracks].sort((a, b) => score(b) - score(a))[0];
+  for (const t of music) t.usedBy = bed && t.id === bed.id ? ["background bed"] : [];
+}
+
 // ------------------------------------------------------- tuning seed/merge
 function seedMonsterTuning(monsters) {
   const path = join(ROOT, "live", "tuning", "monsters.json");
@@ -439,6 +539,9 @@ const sounds = buildSounds();
 const music = buildMusic();
 const items = buildItems();
 const constants = buildConstants();
+const world = buildWorldUsage();
+markSoundUsage(sounds);
+markMusicUsage(music);
 const { added } = seedMonsterTuning(monsters);
 
 const data = {
@@ -450,6 +553,8 @@ const data = {
   // The game's iso projection (maps2/spec/WORLD_FORMAT.md): tile-instance
   // previews must compose cells with the REAL geometry or the seams lie.
   iso: { tilePx: 64, dx: 32, dy: 15, levelPx: 16, diamondH: 30 },
+  // Usage measured on the game's DEFAULT world (see buildWorldUsage).
+  world,
   counts: {
     monsters: monsters?.length ?? 0,
     characters: characters?.length ?? 0,

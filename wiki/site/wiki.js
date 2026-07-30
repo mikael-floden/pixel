@@ -442,6 +442,21 @@ function entityBadge(domain, id) {
 
 const matches = (q, ...hay) => !q || hay.some((s) => (s ?? "").toLowerCase().includes(q));
 
+/* --- usage in the game's default world (built by ../build.mjs) --- */
+const worldInfo = () => state.data.world ?? null;
+const worldName = () => worldInfo()?.name ?? "the world";
+const tileUses = (rel) => worldInfo()?.tiles?.[rel] ?? 0;
+const monsterSpawns = (id) => worldInfo()?.monsters?.[id] ?? null;
+// "Referenced by the game" — bindings.json events / composer lookups for
+// sounds, the director's chosen bed for music (see build.mjs).
+function usePill(usedBy, whatUnused) {
+  if (usedBy?.length) {
+    return h("span", { class: "pill ok", title: `Referenced by: ${usedBy.join(", ")}` },
+      usedBy.length === 1 && usedBy[0] === "background bed" ? "plays in game" : `in game · ${usedBy.length}×`);
+  }
+  return h("span", { class: "pill warn", title: whatUnused }, "unused");
+}
+
 // ← back crumb + prev/next through the domain's full list (wraps around).
 // Layout rule (maintainer 2026-07-30): the "X / N" counter sits LEFT of the
 // buttons so they stay in the same spot when the number gets wider.
@@ -507,11 +522,15 @@ function viewMonsters() {
       // (live/tuning/monsters.json), not image resolution (maintainer
       // 2026-07-30). "not in game yet" is dev info → admin only.
       const st = monsterStats(m.id);
+      const sp = monsterSpawns(m.id);
       return h("a", { class: "card", href: `#/monsters/${m.id}` },
         h("div", { class: "thumb checker" }, h("img", { src: assetUrl(m.preview), alt: m.name, loading: "lazy" })),
         h("div", { class: "card-name" }, m.name),
         h("div", { class: "card-sub" },
           `HP ${st.max_hp ?? "?"} · DMG ${st.damage ?? "?"} · XP ${st.xp ?? "?"}${state.admin && !m.inGame ? " · not in game yet" : ""}`),
+        h("div", { class: "card-sub" }, sp
+          ? `${sp.spawned} roaming · ${sp.zones} ${sp.zones === 1 ? "habitat" : "habitats"}`
+          : `not spawned in ${worldName()}`),
         h("div", { class: "card-badges" }, ...entityBadge("monsters", m.path)));
     })));
 }
@@ -591,6 +610,13 @@ function viewMonster(id) {
         // `lore`) when it ships one, else a generic placeholder until the
         // lore agent covers the stragglers (maintainer 2026-07-30).
         h("p", { class: "muted lore" }, m.lore ?? `Travellers tell of the ${m.name} roaming the wilds of Nangijala. What it wants — and what it guards — no chronicler has written down yet.`),
+        // How many of these actually roam the world players enter.
+        (() => {
+          const sp = monsterSpawns(m.id);
+          return h("p", { class: "muted" }, sp
+            ? h("span", { class: "pill ok" }, `${sp.spawned} roaming ${worldName()} across ${sp.zones} ${sp.zones === 1 ? "habitat" : "habitats"}`)
+            : h("span", { class: "pill warn", title: "No spawn zone in the default world names this monster" }, `not spawned in ${worldName()}`));
+        })(),
         // Art/render tech (resolution, pads, foot metrics) is admin-only.
         state.admin ? h("p", { class: "muted" }, `${m.frameW}×${m.frameH}px (native ${m.nativeW}×${m.nativeH}, pad ${m.pad.x},${m.pad.y}) · kind: ${m.kind} · foot line at ${(m.artBottom * 100).toFixed(0)}% · footW ${m.footW ?? "?"}px · bodyW ${m.bodyW ?? "?"}px${m.hoverPx ? ` · hovers ${m.hoverPx}px` : ""}${m.inGame ? "" : " · not in the game manifest yet"}`) : null,
         state.admin && m.pixellab ? h("p", {}, h("a", { href: m.pixellab, target: "_blank", rel: "noopener" }, "Open in PixelLab ↗")) : null,
@@ -690,12 +716,17 @@ function tileCell(type, group, file) {
     cell.classList.toggle("approved", e.status === "approved");
   };
   const rank = cleanBaseRank(type, rel);
+  const uses = tileUses(rel);
+  if (!uses) cell.classList.add("unused-tile");
   // Skip null children — raw DOM append(null) renders a literal "null" text
   // node (players saw one under every tile, 2026-07-30).
   for (const c of [
-    h("a", { href: `#/tiles/${type.id}/${encodeURIComponent(rel)}`, class: "tile-link", title: `${id} — open tile view` },
-      h("img", { src: assetUrl(rel), alt: file, loading: "lazy" })),
+    h("a", {
+      href: `#/tiles/${type.id}/${encodeURIComponent(rel)}`, class: "tile-link",
+      title: `${id}\n${uses ? `used ${uses.toLocaleString()}× in ${worldName()}` : `unused in ${worldName()}`}`,
+    }, h("img", { src: assetUrl(rel), alt: file, loading: "lazy" })),
     rank ? h("span", { class: "base-pill", title: "The maps agent paints clean ground and cliff walls with this tile" }, "clean base") : null,
+    uses ? h("span", { class: "use-pill", title: `Placed ${uses.toLocaleString()}× in ${worldName()}` }, `×${uses > 999 ? `${Math.round(uses / 1000)}k` : uses}`) : null,
     starsWidget("tiles", id),
     state.admin ? h("button", {
       class: "tile-x", title: "Reject this tile (toggles)",
@@ -713,6 +744,18 @@ function viewTileType(id) {
     crumbRow("#/tiles", "← Tiles", "tiles", state.data.domains.tiles, t.id),
     h("h1", {}, t.name),
     h("p", { class: "muted" }, `${t.description} · ${t.tilePx}px iso · ${t.tileCount} tiles`),
+    // How much of this type the DEFAULT world actually uses.
+    (() => {
+      // The type's OWN tiles only — incoming (foreign) transitions belong to
+      // the source type and are excluded from tileCount too.
+      const all = t.groups.filter((g) => !g.foreign).flatMap((g) => g.tiles.map((f) => `${g.dir}/${f}`));
+      const used = all.filter((rel) => tileUses(rel) > 0);
+      const placements = used.reduce((n, rel) => n + tileUses(rel), 0);
+      return h("p", { class: "muted" },
+        h("span", { class: used.length ? "pill ok" : "pill warn" },
+          `${used.length} of ${all.length} tiles used in ${worldName()}`),
+        placements ? h("span", { class: "pill", style: "margin-left:6px" }, `${placements.toLocaleString()} placements`) : null);
+    })(),
     h("div", { class: "fb-row" }, h("span", { class: "muted" }, "Whole type:"), starsWidget("tiles", t.path), verdictWidget("tiles", t.path)),
     ...kinds.map(([kind, label]) => {
       const groups = t.groups.filter((g) => g.kind === kind);
@@ -826,6 +869,12 @@ function viewTileInstance(typeId, rel) {
         h("p", { class: "muted" },
           `${t.name} · ${cur.group.label} · ${cur.group.sheet}`,
           rank ? h("span", { class: "pill ok", style: "margin-left:8px", title: rank === "plain" ? "THE canonical clean tile of this type" : "In the maps agent's clean-base palette" }, rank === "plain" ? "canonical clean base" : "clean base") : null),
+        (() => {
+          const uses = tileUses(rel);
+          return h("p", { class: "muted" }, uses
+            ? h("span", { class: "pill ok" }, `used ${uses.toLocaleString()}× in ${worldName()}`)
+            : h("span", { class: "pill warn", title: `No cell or prop in ${worldName()} uses this tile` }, `unused in ${worldName()}`));
+        })(),
         state.admin ? h("p", { class: "muted" }, h("code", {}, id)) : null,
         feedbackRow("tiles", id))),
     sceneBox);
@@ -904,6 +953,7 @@ function viewSounds() {
           h("div", { class: "panel-title" }, s.name,
             h("span", { class: "pill" }, fmtDur(s.duration_s)),
             s.loop ? h("span", { class: "pill" }, "loop") : null,
+            usePill(s.usedBy, "No game event or composer lookup references this sound yet"),
             h("span", { class: "spacer" }),
             starsWidget("sounds", s.path), verdictWidget("sounds", s.path)),
           h("p", { class: "muted", style: "margin:0 0 6px" }, `${s.description}${s.usage ? ` — ${s.usage}` : ""}`),
@@ -923,7 +973,8 @@ function viewMusic() {
           h("span", { class: "pill" }, fmtDur(t.duration_s)),
           t.bpm ? h("span", { class: "pill" }, `${t.bpm} bpm`) : null,
           t.key ? h("span", { class: "pill" }, `${t.key.root} ${String(t.key.mode).replace(/_/g, " ")}`) : null,
-          t.loopable ? h("span", { class: "pill ok" }, "loopable") : null),
+          t.loopable ? h("span", { class: "pill" }, "loopable") : null,
+          usePill(t.usedBy, "The score's director picks one catalog track as the background bed — this one isn't it")),
         h("p", { class: "muted", style: "margin:0 0 8px" }, t.use),
         t.feeling?.length ? h("p", { class: "muted", style: "margin:0 0 8px" }, "feels: ", t.feeling.join(" · ")) : null,
         // Feedback id = the audio file's repo path sans extension (the
