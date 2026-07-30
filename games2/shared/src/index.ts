@@ -1782,8 +1782,15 @@ export function startTrip(
   // under it. Omitted → flat base-terrain routing (every world@1 map).
   fromElev?: number,
   goalLevel?: number,
+  // A* expansion budget for THIS trip. Omitted → findPath's full default
+  // (4000), which is what player tap-to-move needs to cross the map. Monster
+  // roam legs pass MONSTER_ROAM_MAX_NODES so one unlucky search can't blow the
+  // server tick — see that constant.
+  maxNodes?: number,
 ): AutopilotTrip | null {
-  const path = grid ? (findPath(grid, fromX, fromY, toX, toY, { fromElev, goalLevel }) ?? []) : [{ x: toX, y: toY }];
+  const path = grid
+    ? (findPath(grid, fromX, fromY, toX, toY, { fromElev, goalLevel, ...(maxNodes ? { maxNodes } : {}) }) ?? [])
+    : [{ x: toX, y: toY }];
   if (path.length === 0) return null;
   const end = path[path.length - 1];
   return {

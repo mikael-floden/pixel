@@ -40,6 +40,7 @@ import {
   canEnterElev,
   MONSTER_SPEED_SCALE,
   MONSTER_ROAM_RADIUS_CELLS,
+  MONSTER_ROAM_MAX_NODES,
   MONSTER_SEP_MARGIN,
   DEFAULT_MONSTER_RADIUS,
   PLAYER_BODY_RADIUS,
@@ -685,7 +686,10 @@ export class WorldRoom extends Room<WorldState> {
         const t = this.pickMonsterTarget(zone, m.x, m.y, id, rm, radii);
         m.targetX = t.x;
         m.targetY = t.y;
-        m.trip = startTrip(grid, m.x, m.y, t.x, t.y, false, now, m.elev);
+        // Budgeted A*: a roam leg is a wander, not a commute — cap the search
+        // so one unlucky path can't overrun the 20Hz tick (see
+        // MONSTER_ROAM_MAX_NODES). Player taps are unbudgeted.
+        m.trip = startTrip(grid, m.x, m.y, t.x, t.y, false, now, m.elev, undefined, MONSTER_ROAM_MAX_NODES);
         m.tripActive = !!m.trip;
         if (!m.tripActive) {
           // No route (rare — target boxed in): pause and retry shortly.

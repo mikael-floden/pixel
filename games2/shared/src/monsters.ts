@@ -125,6 +125,18 @@ export const MONSTER_ARRIVE_RADIUS = CELL_WU * 0.5;
 // zone that can span half the map.
 export const MONSTER_ROAM_RADIUS_CELLS = 6;
 
+// A* budget for a ROAM leg (findPath `maxNodes`). Roam targets are arbitrary
+// cells inside a zone — zones on the_island2 average 968 cells and reach 5679,
+// so an unbudgeted search occasionally expanded thousands of nodes and blew
+// through the 50ms tick (measured on the real grid: p99 21.8ms, max 28.9ms).
+// findPath degrades GRACEFULLY: when the budget runs out it returns its
+// best-effort route toward the goal (`closest`), never null, so a capped leg
+// simply walks part of the way and the monster picks a fresh target after its
+// normal pause — indistinguishable from ordinary wandering. Measured with this
+// cap: p99 1.7ms, max 2.1ms, ZERO failed routes.
+// NOT for player taps: tap-to-move relies on the full search to cross the map.
+export const MONSTER_ROAM_MAX_NODES = 300;
+
 // Soft collision (maintainer 2026-07-30): monsters are deliberately NOT in
 // the collision grid — syncing real collision would tax the network and the
 // pathfinder. Instead: the SERVER steers monsters to keep a comfortable
