@@ -345,13 +345,25 @@ dialog input {
 .dialog-row { display: flex; gap: 8px; justify-content: flex-end; }
 
 /* ---- stat tiles (home) ---- */
-.stat-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin: 16px 0; }
+/* ---- section identity (the maintainer's 48x48 pixel-art icons) ----
+   NEVER resample these: they are authored 1x with hard alpha, so they are
+   drawn at 48 or 96 CSS px only (`width`/`height` come from the markup) and
+   `image-rendering: pixelated` — inherited from the global img rule — keeps
+   a phone's 2x/3x device pixels on clean boundaries. No max-width here: a
+   fractional width would soften every edge. */
+.sect-icon { flex: none; display: block; }
+.sect-head { display: flex; align-items: center; gap: 13px; margin: 0 0 4px; }
+.sect-head h1 { margin: 0; }
+
+.stat-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 10px; margin: 16px 0; }
 .stat-tile {
   background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-  padding: 12px 14px;
+  padding: 16px 14px 14px;
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px;
 }
-.stat-tile .n { font-family: var(--serif); font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.stat-tile .l { color: var(--muted); font-size: 12.5px; }
+.stat-tile .sect-icon { margin-bottom: 8px; }
+.stat-tile .n { font-family: var(--serif); font-size: 19px; font-weight: 600; line-height: 1.25; }
+.stat-tile .l { color: var(--muted); font-size: 12.5px; font-variant-numeric: tabular-nums; }
 a.stat-tile { color: var(--ink); }
 a.stat-tile:hover { text-decoration: none; border-color: var(--border-strong); }
 

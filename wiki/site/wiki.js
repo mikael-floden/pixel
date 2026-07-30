@@ -444,25 +444,47 @@ function takeRow(domain, entityPath, take, extra = []) {
 }
 
 /* ----------------------------------------------------------------- views */
-const NAV = [
-  ["", "Overview", () => ""],
-  ["monsters", "Monsters", (d) => d.counts.monsters],
-  ["characters", "Characters", (d) => d.counts.characters],
-  ["tiles", "Tiles", (d) => d.counts.tile_types],
-  ["objects", "Objects", (d) => d.counts.objects],
-  ["sounds", "Sounds", (d) => d.counts.sounds],
-  ["music", "Music", (d) => d.counts.music],
-  ["items", "Items", (d) => d.counts.items],
-  // ADMIN-ONLY (maintainer 2026-07-30): tuning is designer machinery, not
-  // encyclopedia — players must not even see the read-only page.
-  ["tuning", "Tuning", (d) => d.counts.constants, true],
-];
+// ONE table for every section's player-facing NAME, icon and count. The
+// route slugs stay as they are — they're URLs, and the feedback ids are
+// repo paths — but nothing user-visible says "monsters" or "tiles" any more
+// (maintainer 2026-07-30 named these). Add a section here and the nav, the
+// start page, the headings and the back-links all follow.
+const SECTIONS = {
+  monsters:   { label: "Creatures",     noun: "creatures",  icon: "creatures",  count: (d) => d.counts.monsters },
+  characters: { label: "Characters",    noun: "heroes",     icon: "characters", count: (d) => d.counts.characters },
+  tiles:      { label: "World",         noun: "tiles",      icon: "world",      count: (d) => d.counts.tiles, navCount: (d) => d.counts.tile_types },
+  objects:    { label: "Objects",       noun: "props",      icon: "objects",    count: (d) => d.counts.objects },
+  sounds:     { label: "Sound Effects", noun: "sounds",     icon: "sounds",     count: (d) => d.counts.sounds },
+  music:      { label: "Music",         noun: "tracks",     icon: "music",      count: (d) => d.counts.music },
+  items:      { label: "Items",         noun: "items",      icon: "items",      count: (d) => d.counts.items },
+  // ADMIN-ONLY (maintainer 2026-07-30): parameters are designer machinery,
+  // not encyclopedia — players must not even see the read-only page.
+  tuning:     { label: "Parameters",    noun: "constants",  icon: "parameters", count: (d) => d.counts.constants, adminOnly: true },
+};
+const SECTION_ORDER = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "tuning"];
+const label = (slug) => SECTIONS[slug]?.label ?? slug;
+/** The maintainer's 48x48 pixel art, drawn ONLY at whole multiples of 48 and
+ *  never resampled — `image-rendering: pixelated` plus an exact CSS size, so
+ *  a phone's 2x/3x device pixels land on clean pixel boundaries. */
+function sectionIcon(slug, size = 48) {
+  const icon = SECTIONS[slug]?.icon;
+  if (!icon) return null;
+  return h("img", { class: "sect-icon", src: `icons/${icon}.png`, alt: "", width: String(size), height: String(size), loading: "lazy" });
+}
+/** Page heading with its icon beside it. */
+function sectionHead(slug) {
+  return h("div", { class: "sect-head" }, sectionIcon(slug), h("h1", {}, label(slug)));
+}
 function renderNav() {
   const cur = location.hash.replace(/^#\/?/, "").split("/")[0];
-  $("#nav").replaceChildren(...NAV.filter(([, , , adminOnly]) => !adminOnly || state.admin)
-    .map(([slug, label, count]) =>
-      h("a", { href: `#/${slug}`, class: cur === slug ? "active" : "" },
-        label, h("span", { class: "count" }, String(count(state.data) || "")))));
+  const rows = [h("a", { href: "#/", class: cur === "" ? "active" : "" }, "Overview", h("span", { class: "count" }, ""))];
+  for (const slug of SECTION_ORDER) {
+    const s = SECTIONS[slug];
+    if (s.adminOnly && !state.admin) continue;
+    rows.push(h("a", { href: `#/${slug}`, class: cur === slug ? "active" : "" },
+      s.label, h("span", { class: "count" }, String((s.navCount ?? s.count)(state.data) || ""))));
+  }
+  $("#nav").replaceChildren(...rows);
 }
 
 function entityBadge(domain, id) {
@@ -510,15 +532,12 @@ function crumbRow(backHref, backLabel, base, list, id) {
 }
 
 function viewHome() {
-  const c = state.data.counts;
-  const tiles = [
-    ["monsters", c.monsters, "monsters"], ["characters", c.characters, "player characters"],
-    ["tiles", c.tiles, "tiles"], ["objects", c.objects, "objects"],
-    ["sounds", c.sounds, "sounds"], ["music", c.music, "music tracks"],
-    ["items", c.items, "items"],
-    // tuning is admin machinery — players don't get the card (2026-07-30)
-    ...(state.admin ? [["tuning", c.constants, "tunable constants"]] : []),
-  ];
+  // Icon-led section tiles: the maintainer's pixel art carries each section,
+  // the name is the headline and the count is the small print (2026-07-30 —
+  // "the wiki start page looks so boring without icons").
+  const tiles = SECTION_ORDER
+    .filter((slug) => !SECTIONS[slug].adminOnly || state.admin)
+    .map((slug) => [slug, SECTIONS[slug].count(state.data), SECTIONS[slug].noun]);
   // Feedback whose asset no longer exists = the producing agent acted on it.
   const resolved = [];
   for (const [domain, f] of Object.entries(state.feedback)) {
@@ -531,8 +550,11 @@ function viewHome() {
     h("p", { class: "muted" }, state.admin
       ? "Everything the art and audio agents have made for the game — browse it, rate it, approve or remove it, and tune gameplay. Saves commit to live/ on main and stream straight into the running game."
       : "Every creature, hero, sound and song of Nangijala — the living encyclopedia of the world, always as fresh as the game you just played."),
-    h("div", { class: "stat-tiles" }, ...tiles.map(([slug, n, label]) =>
-      h("a", { class: "stat-tile", href: `#/${slug}` }, h("div", { class: "n" }, String(n)), h("div", { class: "l" }, label)))),
+    h("div", { class: "stat-tiles" }, ...tiles.map(([slug, n, noun]) =>
+      h("a", { class: "stat-tile", href: `#/${slug}` },
+        sectionIcon(slug, 96),
+        h("div", { class: "n" }, SECTIONS[slug].label),
+        h("div", { class: "l" }, `${n} ${noun}`)))),
     ...(state.admin ? [
       h("h2", {}, "How feedback works"),
       h("p", {}, "★ ratings steer style (no rating is the default). ", h("code", {}, "✕ remove"), " tells the producing agent to delete or replace the asset on its next run. ", h("code", {}, "✓ approve"), " locks in a keeper. Notes travel with the entry. Press ", h("strong", {}, "Save"), " when you're done — the game server commits ", h("code", {}, "live/feedback/*.json"), " and ", h("code", {}, "live/tuning/*.json"), " to main and pushes tuning to every connected player instantly."),
@@ -549,7 +571,7 @@ function viewMonsters() {
   const q = state.query;
   const list = state.data.domains.monsters.filter((m) => matches(q, m.id, m.name, m.kind));
   return h("div", {},
-    h("h1", {}, "Monsters"),
+    sectionHead("monsters"),
     h("p", { class: "muted" }, state.admin
       ? `${list.length} creatures from the monsters agent. Click one to preview every animation, check its shadow, edit its stats and loot.`
       : `${list.length} creatures roam Nangijala. Click one to watch every animation and study its stats.`),
@@ -753,7 +775,7 @@ function viewMonster(id) {
   player.onStateChange = renderFacet;
   renderFacet();
   return h("div", {},
-    crumbRow("#/monsters", "← Monsters", "monsters", state.data.domains.monsters, m.id),
+    crumbRow("#/monsters", `← ${label("monsters")}`, "monsters", state.data.domains.monsters, m.id),
     h("div", { class: "detail-head" },
       h("div", { class: "portrait-col" },
         h("div", { class: "portrait checker" }, h("img", { src: assetUrl(m.preview), alt: m.name })),
@@ -789,8 +811,10 @@ function viewMonster(id) {
 function viewCharacters() {
   const list = state.data.domains.characters.filter((c) => matches(state.query, c.id, c.name));
   return h("div", {},
-    h("h1", {}, "Player characters"),
-    h("p", { class: "muted" }, "The heroes from characters2 — every game state, all 8 directions."),
+    sectionHead("characters"),
+    h("p", { class: "muted" }, state.admin
+      ? "The heroes from characters2 — every game state, all 8 directions."
+      : "The heroes you can play as — every move, seen from all 8 sides."),
     h("div", { class: "grid" }, ...list.map((c) =>
       h("a", { class: "card", href: `#/characters/${c.id}` },
         h("div", { class: "thumb checker" }, h("img", { src: assetUrl(c.preview), alt: c.name, loading: "lazy" })),
@@ -813,7 +837,7 @@ function viewCharacter(id) {
   // The character's sounds (e.g. jump) live in the sounds domain — link them in.
   const related = state.data.domains.sounds.filter((s) => ["movement"].includes(s.category));
   return h("div", {},
-    crumbRow("#/characters", "← Characters", "characters", state.data.domains.characters, c.id),
+    crumbRow("#/characters", `← ${label("characters")}`, "characters", state.data.domains.characters, c.id),
     h("div", { class: "detail-head" },
       h("div", { class: "portrait checker" }, h("img", { src: assetUrl(c.preview), alt: c.name })),
       h("div", { class: "meta" },
@@ -836,7 +860,7 @@ function viewCharacter(id) {
 function viewTiles() {
   const list = state.data.domains.tiles.filter((t) => matches(state.query, t.id, t.name, t.description));
   return h("div", {},
-    h("h1", {}, "Tiles"),
+    sectionHead("tiles"),
     h("p", { class: "muted" }, state.admin
       ? "The tiles2 ground library. Open a type to rate or remove individual tiles — rejected tiles tell the tiles agent (and the maps agent) to retire them."
       : "The ground the world is built from — every tile of every terrain type."),
@@ -896,7 +920,7 @@ function viewTileType(id) {
   if (!t) return h("p", {}, "Unknown tile type.");
   const kinds = [["base", "Base tiles"], ["elevation", "Elevation objects"], ["transition", "Transitions"]];
   return h("div", {},
-    crumbRow("#/tiles", "← Tiles", "tiles", state.data.domains.tiles, t.id),
+    crumbRow("#/tiles", `← ${label("tiles")}`, "tiles", state.data.domains.tiles, t.id),
     h("h1", {}, t.name),
     h("p", { class: "muted" }, `${t.description} · ${t.tilePx}px iso · ${t.tileCount} tiles`),
     // How much of this type the DEFAULT world actually uses.
@@ -1040,7 +1064,7 @@ function viewObjects() {
   const list = state.data.domains.objects.filter((o) => matches(state.query, o.id, o.name, o.category, o.description));
   const cats = [...new Set(list.map((o) => o.category))].sort();
   return h("div", {},
-    h("h1", {}, "Objects"),
+    sectionHead("objects"),
     h("p", { class: "muted" }, "Animated props and map objects from the objects agent."),
     ...cats.map((cat) => h("div", {},
       h("h2", {}, cat),
@@ -1062,7 +1086,7 @@ function viewObject(id) {
     playerEl = player.el;
   }
   return h("div", {},
-    crumbRow("#/objects", "← Objects", "objects", state.data.domains.objects, o.id),
+    crumbRow("#/objects", `← ${label("objects")}`, "objects", state.data.domains.objects, o.id),
     h("div", { class: "detail-head" },
       h("div", { class: "portrait checker" }, h("img", { src: assetUrl(o.preview), alt: o.name })),
       h("div", { class: "meta" },
@@ -1096,7 +1120,7 @@ function viewSounds() {
   const list = state.data.domains.sounds.filter((s) => matches(q, s.id, s.name, s.category, s.description, s.usage));
   const cats = [...new Set(list.map((s) => s.category))].sort();
   return h("div", {},
-    h("h1", {}, "Sounds"),
+    sectionHead("sounds"),
     h("p", { class: "muted" }, state.admin
       ? "Every take of every sound effect. ▶ to listen, ★ to rate, ✕ to have the sounds agent remove/regenerate that take. The chosen pill marks what the game currently plays."
       : "Every sound of the world — press ▶ to listen. The chosen pill marks what the game currently plays."),
@@ -1119,7 +1143,7 @@ function viewSounds() {
 function viewMusic() {
   const list = state.data.domains.music.filter((t) => matches(state.query, t.id, t.name, t.use));
   return h("div", {},
-    h("h1", {}, "Music"),
+    sectionHead("music"),
     h("p", { class: "muted" }, "The score, from the music agent."),
     muteGameBtn(),
     ...list.map((t) =>
@@ -1145,7 +1169,7 @@ function viewItems() {
   const list = (state.data.domains.items ?? []).filter((it) => it && (it.path || it.id))
     .map((it) => ({ ...it, path: it.path ?? `items/${it.id}`, name: it.name ?? it.id }));
   return h("div", {},
-    h("h1", {}, "Items"),
+    sectionHead("items"),
     list.length
       ? h("div", { class: "grid" }, ...list.map((it) =>
           h("div", { class: "card" },
@@ -1164,7 +1188,7 @@ function viewTuning() {
   const q = state.query;
   const rows = state.data.constants.filter((c) => matches(q, c.name, c.description, c.source));
   return h("div", {},
-    h("h1", {}, "Tuning"),
+    sectionHead("tuning"),
     h("p", { class: "muted" }, state.admin
       ? "Game constants discovered in games2/shared. Set an override and Save — it commits to live/tuning/constants.json and is pushed to the running game and every client over the WebSocket, no redeploy. (Each system adopts its overrides as the games agent wires them in.)"
       : "The knobs behind the game — live values the designer can tune while the world runs."),
@@ -1218,7 +1242,7 @@ function viewSearch() {
       h("a", { class: "card", href },
         img ? h("div", { class: "thumb checker" }, h("img", { src: assetUrl(img), loading: "lazy", alt: name })) : null,
         h("div", { class: "card-name" }, name),
-        h("div", { class: "card-sub" }, domain)))));
+        h("div", { class: "card-sub" }, label(domain))))));
 }
 
 /* ---------------------------------------------------------------- router */
