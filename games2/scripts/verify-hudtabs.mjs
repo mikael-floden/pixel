@@ -8,10 +8,13 @@
 // asserted instead:
 //  - six equal-width .ml-tab buttons FILL the .ml-tabrow content box
 //    (flex:1 + 6px gap), none overflowing the row;
-//  - tab height follows the breakpoints (44px; 40 at ≤480w; 36 at ≤640h);
-//  - the .ml-tab-icon renders at an INTEGER DIVISOR of the 96px bake —
-//    exactly 32px, or 24px under the compact breakpoints (nearest-neighbour
-//    pixel art must not land on a fractional size) — and fits in its tab;
+//  - tab height follows the breakpoints (56px; 48 at ≤640h — the 2026-07-30
+//    "menu buttons too small" round removed the ≤480w tier);
+//  - the .ml-tab-icon renders at its AUTHORED 1x GRID: exactly
+//    naturalWidth/2 × naturalHeight/2 per image (the bakes are exact 2x of
+//    the hand-drawn art on non-square canvases; the old fixed 32/24 square
+//    both distorted the aspect and hit a fractional 48→32 scale) — and fits
+//    in its tab;
 //  - the backpack is a 5-column grid of 15 SQUARE .ml-slot cells sized by
 //    the grid tracks (no per-slot art);
 //  - the clicked tab carries .sel with the accent-soft background (computed
@@ -44,16 +47,19 @@ async function check(label, ctxOpts) {
       const rects = tabs.map((t) => t.getBoundingClientRect());
       const widths = rects.map((r) => r.width);
       const overflow = rects.some((r) => r.left < rowRect.left - 1 || r.right > rowRect.right + 1);
-      const iconEl = document.querySelector(".ml-tab-icon");
-      const icon = iconEl.getBoundingClientRect();
+      // every icon must sit at its authored 1x grid: natural/2 (2x bakes)
+      const icons = [...document.querySelectorAll(".ml-tab-icon")].map((el) => {
+        const r = el.getBoundingClientRect();
+        return { w: r.width, h: r.height, nw: el.naturalWidth, nh: el.naturalHeight };
+      });
+      const icon = icons[0] ? { w: icons[0].w, h: icons[0].h } : { w: 0, h: 0 };
       const tab0 = rects[0];
-      const iconOverflow = icon.width > tab0.width + 1 || icon.height > tab0.height + 1;
-      // compact breakpoints (hud.ts): ≤480w → 40px tab / 24px icon;
-      // ≤640h → 36px tab / 24px icon (later rule, wins when both match)
-      const w480 = matchMedia("(max-width:480px)").matches;
+      const iconOverflow = icons.some((i) => i.w > tab0.width + 1 || i.h > tab0.height + 1);
+      const iconOffGrid = icons.filter((i) => i.nw > 0 &&
+        (Math.abs(i.w - i.nw / 2) > 0.5 || Math.abs(i.h - i.nh / 2) > 0.5));
+      // compact breakpoint (hud.ts): ≤640h → 48px tab; default 56
       const h640 = matchMedia("(max-height:640px)").matches;
-      const wantIcon = w480 || h640 ? 24 : 32;
-      const wantTabH = h640 ? 36 : w480 ? 40 : 44;
+      const wantTabH = h640 ? 48 : 56;
       // selection state: the clicked backpack tab vs any unselected sibling
       const sel = document.querySelector(".ml-tab.sel");
       const unsel = document.querySelector(".ml-tab:not(.sel)");
@@ -71,7 +77,7 @@ async function check(label, ctxOpts) {
         iw: innerWidth, ih: innerHeight,
         tabCount: tabs.length, widths, overflow, iconOverflow,
         tabH: tab0.height, wantTabH,
-        icon: { w: icon.width, h: icon.height }, wantIcon,
+        icon, iconCount: icons.length, iconOffGrid,
         selTab: sel?.dataset.tab ?? null,
         selBg: selCS?.backgroundColor ?? null, unselBg: unselCS?.backgroundColor ?? null,
         selBorder: selCS?.borderTopColor ?? null, unselBorder: unselCS?.borderTopColor ?? null,
@@ -102,13 +108,13 @@ async function check(label, ctxOpts) {
       ? ok(`${label}: tab height ${m.tabH}px matches breakpoint (want ${m.wantTabH})`)
       : fail(`${label}: tab height ${m.tabH}px (want ${m.wantTabH} for this viewport)`);
 
-    // ── icon: exact integer divisor of the 96px bake, inside its tab ──
-    Math.abs(m.icon.w - m.wantIcon) <= 0.5 && Math.abs(m.icon.h - m.wantIcon) <= 0.5 && 96 % m.wantIcon === 0
-      ? ok(`${label}: icon ${m.icon.w}px = ${m.wantIcon} (96/${96 / m.wantIcon}, integer divisor of the bake)`)
-      : fail(`${label}: icon ${m.icon.w}x${m.icon.h}px (want exactly ${m.wantIcon}) — fractional pixel-art scale`);
+    // ── icons: every one at its authored 1x grid (natural/2), inside its tab ──
+    m.iconCount === 6 && m.iconOffGrid.length === 0
+      ? ok(`${label}: all 6 icons at the authored 1x grid (first ${m.icon.w}x${m.icon.h}px = natural/2)`)
+      : fail(`${label}: icons off the 1x grid: ${JSON.stringify(m.iconOffGrid)} (count ${m.iconCount})`);
     !m.iconOverflow
-      ? ok(`${label}: icon fits inside its tab`)
-      : fail(`${label}: icon overflows its tab`);
+      ? ok(`${label}: every icon fits inside its tab`)
+      : fail(`${label}: an icon overflows its tab`);
 
     // ── selected tab carries the accent-soft state ──
     m.selTab === "backpack"

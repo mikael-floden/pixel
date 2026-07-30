@@ -998,9 +998,16 @@ visible head/shoulders are ABOVE the surface).
   follows the wiki drawer via `storage` events, wikipanel.ts mirrors
   game-side toggles onto the live iframe, and Settings gained a
   "theme: light|dark" button. Pixel-art ICONS stay (tab icons, gold
-  nugget) at integer divisors of their bakes, pixelated. NO zoom
-  compensation in the new UI: like the wiki it is plain responsive CSS
-  (uiscale.ts survives only for loading.ts + WorldScene's reconnect
+  nugget), pixelated; TAB icons render at their AUTHORED 1x GRID —
+  hud.ts sizes each img to naturalWidth/2 (the /ui2 bakes are exact 2x
+  of the maintainer's hand-drawn art on non-square canvases; a fixed
+  square box distorted + fractionally scaled them — maintainer
+  2026-07-30 "not pixel perfect"). Tab row + pages share 16px side
+  margins; tabs are 56px tall (48 at ≤640h). The version badge sits
+  bottom-centre on the select screen and moves to a bordered chip at
+  the GAME VIEW's bottom-right (above --hud-h) once in the world. NO
+  zoom compensation in the new UI: like the wiki it is plain responsive
+  CSS (uiscale.ts survives only for loading.ts + WorldScene's reconnect
   toast). Gates: verify-bars/-hudtabs/-clockflip/-chatpage/-gamepad/
   -select all assert the new DOM.
 - **HUD (golden-ratio split)**: the game viewport is the TOP 61.8% of the

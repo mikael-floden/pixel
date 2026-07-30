@@ -22,17 +22,22 @@
  *    (setPointerCapture keeps the drag alive far outside the well).
  *  - Dead zone around the centre releases all keys (rest = no input).
  *
- * FEEL is untouched: the css travel/dead/run distances still come from the
- * original 4/3/2 width tiers (TRAVEL * feelK) — the gameplay contract has
- * survived every visual round unchanged (verify-gamepad.mjs pins it).
+ * FEEL (2026-07-30): the travel/dead/run distances are WELL-derived now
+ * (maxCss = well * TRAVEL_FRAC — the maintainer wanted a longer drag than
+ * the art-era 18-27px feel tiers gave); the KEY CONTRACT — octants, dead
+ * zone fraction, run fraction, synthesized WASD/SHIFT — is unchanged
+ * (verify-gamepad.mjs pins it).
  */
 
 import { gameAudio } from "../../composer/index";
 
-// full-gate travel in FEEL-TIER units: css travel = TRAVEL * feelK, where
-// feelK is the ORIGINAL 4/3/2 stepping. Trimmed 14 -> 11 -> 9 across the
-// maintainer's "make the circle smaller" rounds.
-const TRAVEL = 9;
+// Full-gate travel is derived from the WELL since the wiki remake (maintainer
+// 2026-07-30: "you should be able to drag the thumbstick a longer distance" —
+// the art-era TRAVEL*feelK gave only ~18-27px of drag inside a 104-132px
+// well). travel = well * TRAVEL_FRAC, with TRAVEL_FRAC chosen so the CAP's
+// damped deflection (travel * CAP_VISUAL_FRAC) reaches exactly the well rim
+// at full gate: rim gap = well*0.25 (cap dia = well/2) and 0.38*0.65 ≈ 0.25.
+const TRAVEL_FRAC = 0.38;
 const DEAD_FRAC = 0.35; // of the max: inside this, all keys are up
 const RUN_FRAC = 0.75; // of the max: past this amplitude the gait is RUN (Shift), else walk
 const SNAP_MS = 80; // the fast (not instant) glide between snap positions
@@ -99,8 +104,8 @@ export function mountGamepadStick(page: HTMLElement) {
   // ── layout: sizes step with the FEEL tier; anchors keep the maintainer's
   // marked spots (stick centre ~70.5% across, jump at 25%, both centred on
   // one midline). ──
-  let maxCss = TRAVEL * 4; // full-gate travel in css px (feel tier)
-  let well = 128; // well diameter, css px
+  let maxCss = 56; // full-gate travel in css px (well-derived; see layout)
+  let well = 148; // well diameter, css px
   // the cap's VISUAL state: the ANGLE snaps to the active octant (-1 =
   // centred) but the AMPLITUDE is analog — the cap follows the finger's
   // distance up to the css travel clamp ("only snap the angle, not the
@@ -116,10 +121,9 @@ export function mountGamepadStick(page: HTMLElement) {
     top.style.transform = `translate(${dx}px, ${dy}px)`;
   };
   const layout = () => {
-    // FEEL tier: the original scale stepping — anchors the css travel
-    const feelK = window.innerWidth >= 780 ? 4 : window.innerWidth >= 585 ? 3 : 2;
-    maxCss = TRAVEL * feelK;
-    well = window.innerWidth >= 585 ? 132 : 104;
+    well = window.innerWidth >= 585 ? 148 : 120;
+    // travel rides the well: full gate when the damped cap reaches the rim
+    maxCss = Math.round(well * TRAVEL_FRAC);
     const cap = Math.round(well * 0.5);
     const jumpD = Math.round(well * 0.66);
     pad.style.width = pad.style.height = `${well}px`;

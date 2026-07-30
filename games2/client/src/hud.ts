@@ -212,6 +212,18 @@ export class HudBar {
       icon.src = `/ui2/icon-${t.id}.png`;
       icon.alt = "";
       icon.draggable = false;
+      // TRUE pixel scale (maintainer 2026-07-30: "icons isn't rendered in
+      // pixel perfect scale"): the bakes are EXACT 2x of the maintainer's
+      // authored 1x art on non-square canvases (~42-46 × 34-37) — a fixed
+      // square box both distorted the aspect and landed on a fractional
+      // scale. Render every icon at its authored grid: natural/2, per image.
+      const fit = () => {
+        if (!icon.naturalWidth) return;
+        icon.style.width = `${icon.naturalWidth / 2}px`;
+        icon.style.height = `${icon.naturalHeight / 2}px`;
+      };
+      icon.addEventListener("load", fit);
+      fit();
       b.title = t.label;
       b.setAttribute("aria-label", t.label);
       b.append(icon);
@@ -1004,18 +1016,20 @@ function injectStyles() {
     background:var(--bg);color:var(--ink);border-top:1px solid var(--border);
     font:14px/1.45 var(--sans);display:flex;flex-direction:column;box-sizing:border-box}
   .ml-hud *{box-sizing:border-box}
-  /* ── tab row: six icon buttons on the wiki button recipe ── */
-  .ml-tabrow{flex:none;display:flex;gap:6px;padding:8px 10px 6px}
+  /* ── tab row: six icon buttons on the wiki button recipe. 16px side margins
+     match the pages (maintainer 2026-07-30: "more left and right margin") ── */
+  .ml-tabrow{flex:none;display:flex;gap:6px;padding:10px 16px 6px}
   .ml-tab{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;
-    height:44px;padding:0;cursor:pointer;
-    background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:10px;
+    height:56px;padding:0;cursor:pointer;overflow:hidden;
+    background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:12px;
     touch-action:manipulation;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
   .ml-tab:hover{background:var(--surface-2)}
   .ml-tab.press{transform:translateY(1px);background:var(--surface-2);border-color:var(--border-strong)}
   .ml-tab.sel{background:var(--accent-soft);border-color:var(--accent)}
-  /* icons keep the pixel art (maintainer: "not the icons") — integer downscales
-     of the 96px bakes only (32 / 24), nearest-neighbour */
-  .ml-tab-icon{width:32px;height:32px;image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
+  /* icons keep the pixel art (maintainer: "not the icons") at the AUTHORED 1x
+     grid — JS sizes each img to naturalWidth/2 (the bakes are exact 2x of the
+     hand-drawn art; a fixed square box distorted + fractionally scaled them) */
+  .ml-tab-icon{image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
   /* ── pages ── */
   .ml-pages{flex:1 1 auto;min-height:0;position:relative}
   /* 'safe center' keeps a short page centred but falls back to top-anchored the
@@ -1024,7 +1038,7 @@ function injectStyles() {
   .ml-page{display:none;height:100%;overflow-y:auto;overflow-x:hidden;
     -webkit-overflow-scrolling:touch;flex-direction:column;align-items:center;
     justify-content:safe center;gap:12px;text-align:center;
-    padding:10px 12px 14px;background:var(--bg)}
+    padding:10px 16px 16px;background:var(--bg)}
   .ml-page.show{display:flex}
   /* gamepad page: the analog stick + jump button position absolutely inside it */
   .ml-page[data-page=gamepad]{position:relative;overflow:hidden}
@@ -1112,7 +1126,9 @@ function injectStyles() {
   .ml-chat-time{color:var(--muted);margin-right:7px;font-variant-numeric:tabular-nums;
     font-family:var(--mono);font-size:.85em}
   .ml-chat-who{color:var(--accent-ink);font-weight:600}
-  .ml-chat-inputbar{flex:none;width:100%}
+  /* lifted a step off the page bottom (maintainer 2026-07-30: the input sat
+     on the very edge, over the old badge spot) */
+  .ml-chat-inputbar{flex:none;width:100%;margin-bottom:12px}
   .ml-chat-input{width:100%;background:var(--surface);color:var(--ink);
     border:1px solid var(--border);border-radius:10px;padding:10px 12px;
     font:14px/1.3 var(--sans);outline:none}
@@ -1132,18 +1148,15 @@ function injectStyles() {
     box-shadow:var(--shadow);transition:bottom .15s ease-out}
   /* the on-screen game-view chat log (chat.ts) rises above the floated box */
   .ml-kb-up .ml-chatlog{bottom:calc(var(--ml-inputlift) + 56px)}
-  /* ── compact fits ── */
+  /* ── compact fits (icons stay at their authored 1x grid at every size) ── */
   @media (max-width:480px){
-    .ml-tab{height:40px}
-    .ml-tab-icon{width:24px;height:24px}
     .ml-btnrow{gap:6px}
     .ml-plate-btn{padding:6px 8px;font-size:12px}
   }
   @media (max-height:640px){
-    .ml-tabrow{padding:6px 8px 4px}
-    .ml-tab{height:36px}
-    .ml-tab-icon{width:24px;height:24px}
-    .ml-page{gap:8px;padding:8px 10px 10px}
+    .ml-tabrow{padding:8px 14px 4px}
+    .ml-tab{height:48px}
+    .ml-page{gap:8px;padding:8px 14px 12px}
     .ml-plate-btn{min-height:36px}
     .ml-set{gap:10px}
     .ml-amb-list{gap:6px}

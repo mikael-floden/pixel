@@ -419,11 +419,16 @@ function injectStyles() {
      screen; every CONTROL is a clean wiki card on the shared theme tokens.
      Plain responsive CSS — no zoom compensation (like the wiki itself). */
   const css = `
+  /* ONE shared control width (maintainer 2026-07-30: the card's edges must
+     ALIGN with ENTER WORLD, and the button gets a tiny bit smaller). vw keeps
+     both on the SAME reference — %-widths resolved against different
+     containing blocks for the fixed button vs the flex panel and drifted. */
   .ml-overlay{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;
-    overflow:auto;background:#0d101c;font:14px/1.45 var(--sans);color:var(--ink)}
+    overflow:auto;background:#0d101c;font:14px/1.45 var(--sans);color:var(--ink);
+    --selw:min(400px, 100vw - 56px)}
   .ml-overlay{background-image:linear-gradient(rgba(13,16,28,.28),rgba(13,16,28,.28)),url(/ui2/select-bg.png);
     background-size:auto,cover;background-position:center;background-repeat:repeat,no-repeat;image-rendering:pixelated}
-  .ml-panel{width:min(430px,94%);margin:auto;padding:12px 0 132px;text-align:center;
+  .ml-panel{width:var(--selw);margin:auto;padding:12px 0 132px;text-align:center;
     display:flex;flex-direction:column;align-items:center;gap:14px}
   /* the maintainer's logo with its black silhouette glow — brand art, kept */
   .ml-logo{display:block;width:min(360px,92%);margin:0 auto;user-select:none;-webkit-user-drag:none;
@@ -434,7 +439,7 @@ function injectStyles() {
   .ml-title-veil{position:absolute;inset:0;z-index:100;background:#05070d;opacity:1;
     transition:opacity .7s ease;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
   /* ONE wiki card carries the controls: dropdown / characters / name */
-  .ml-card{width:100%;display:flex;flex-direction:column;gap:12px;
+  .ml-card{width:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;
     background:var(--surface);border:1px solid var(--border);border-radius:14px;
     box-shadow:var(--shadow);padding:14px}
   /* ── world dropdown ── */
@@ -483,7 +488,7 @@ function injectStyles() {
   .ml-name::placeholder{color:var(--muted)}
   /* ── ENTER WORLD: the primary action, pinned above the version badge ── */
   .ml-btn{position:fixed;bottom:64px;left:50%;transform:translateX(-50%);z-index:2;
-    display:flex;align-items:center;justify-content:center;width:min(430px,94%);min-height:50px;
+    display:flex;align-items:center;justify-content:center;width:var(--selw);min-height:50px;
     background:var(--accent);color:#fff;border:none;border-radius:12px;cursor:pointer;
     font:700 15px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;
     box-shadow:var(--shadow);touch-action:manipulation;-webkit-tap-highlight-color:transparent}

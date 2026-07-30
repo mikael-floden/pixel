@@ -107,10 +107,13 @@ from the games agent), #18 (title/landing screen).
 
 ## Hard-won UI rules (inherited — do not relearn these)
 
-- **The remaining pixel art scales nearest-neighbour only, at INTEGER
-  divisors of the bake.** Tab icons render at exactly 96→32 (24 compact);
-  no smoothing upscales, ever. Everything else is plain CSS on the shared
-  wiki tokens (`theme.ts`) — no sprites, no 9-slices.
+- **The remaining pixel art scales nearest-neighbour only, at its TRUE
+  grid.** Tab icons render at the AUTHORED 1x grid — hud.ts sizes each img
+  to naturalWidth/2, since the /ui2 bakes are exact 2x of hand-drawn art on
+  non-square canvases (a fixed square box distorts AND fractionally scales;
+  maintainer 2026-07-30). No smoothing upscales, ever. Everything else is
+  plain CSS on the shared wiki tokens (`theme.ts`) — no sprites, no
+  9-slices.
 - **NO zoom compensation in the wiki-style UI** (2026-07-30 remake): all
   overlays are plain responsive CSS, exactly like the wiki. The old
   `--ml-uizoom` machinery survives ONLY inside `loading.ts` and WorldScene's

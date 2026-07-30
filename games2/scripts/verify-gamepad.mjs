@@ -2,9 +2,12 @@
 // beyond-max steering, release. Mechanics at the small fast viewport
 // (headless-GL rule), looks at the phone geometry.
 // WIKI-STYLE UI (2026-07-30): the pad-stick2 art is gone — the stick is a
-// plain CSS round WELL (104px under 585w, 132px above) with a translating
-// CAP div; centre = bounding rect centre (no 128-art k), cap rest =
-// translate(0,0). FEEL (travel/dead/run) is byte-identical to the art era.
+// plain CSS round WELL (120px under 585w, 148px above) with a translating
+// CAP div; centre = bounding rect centre, cap rest = translate(0,0).
+// LONGER DRAG (maintainer 2026-07-30): travel is WELL-derived now —
+// maxCss = well * 0.38, so the damped cap (×0.65) reaches the well rim at
+// full gate. Key contract (octants, dead 0.35, run 0.75, WASD/SHIFT
+// synthesis) unchanged.
 import { chromium } from "playwright-core";
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const OUT = process.env.OUT || "/tmp";
@@ -65,13 +68,12 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
   });
   if (!geom) { fail("stick not mounted"); }
   else {
-    // FEEL tier at 480 wide = 2 -> travel 18 css px (TRAVEL 9 after two
-    // "smaller circle" rounds), dead 6.3, run 13.5; the WELL div is the
-    // <585w tier's 104px (the 128-art k concept is gone).
-    const travel = 18;
-    Math.abs(geom.w - 104) < 0.5
-      ? ok(`stick well mounted ${geom.w}px (104 tier) centre=(${geom.cx.toFixed(0)},${geom.cy.toFixed(0)})`)
-      : fail(`stick well ${geom.w}px, want 104`);
+    // <585w tier: well 120, travel = round(120*0.38) = 46 css px
+    // (dead 16.1, run 34.5) — the 2026-07-30 longer-drag feel.
+    const travel = 46;
+    Math.abs(geom.w - 120) < 0.5
+      ? ok(`stick well mounted ${geom.w}px (120 tier) centre=(${geom.cx.toFixed(0)},${geom.cy.toFixed(0)})`)
+      : fail(`stick well ${geom.w}px, want 120`);
     const topTf = () => page.evaluate(() => document.querySelector(".ml-pad-top").style.transform);
 
     // 2) drag EAST → moves; direction ≈ screen-east (world +x,+y)
@@ -116,15 +118,16 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     // and the glide is animated, not instant
     const trans = await page.evaluate(() => getComputedStyle(document.querySelector(".ml-pad-top")).transitionDuration);
     parseFloat(trans) > 0 ? ok(`snap glide animated (${trans})`) : fail("no snap transition");
-    // ANALOG amplitude: a half-tilt parks the cap at ~the finger distance
-    // (angle snapped, amplitude NOT) — radius ≈ 16 css px, not the full 22
-    await page.mouse.move(geom.cx + 16, geom.cy, { steps: 2 });
+    // ANALOG amplitude: a mid-tilt parks the cap at ~the finger distance
+    // (angle snapped, amplitude NOT) — 28px sits between dead (16.1) and
+    // full (46); cap draws 28*0.65 = 18.2, not the full 29.9
+    await page.mouse.move(geom.cx + 28, geom.cy, { steps: 2 });
     await page.waitForTimeout(250);
     const tMid = await topTf();
     const mm = /translate\(([-\d.]+)px, ([-\d.]+)px\)/.exec(tMid);
-    mm && Math.abs(+mm[1] - 10.4) < 2 && Math.abs(+mm[2]) < 2
-      ? ok(`amplitude analog: half-tilt cap at ${mm[1]}px (finger 16px, 0.65 damp)`)
-      : fail(`amplitude snapped? cap at ${tMid}, finger at 16px`);
+    mm && Math.abs(+mm[1] - 18.2) < 2 && Math.abs(+mm[2]) < 2
+      ? ok(`amplitude analog: mid-tilt cap at ${mm[1]}px (finger 28px, 0.65 damp)`)
+      : fail(`amplitude snapped? cap at ${tMid}, finger at 28px`);
 
     // 4) 8-way snap — probe the HELD KEY SET directly (world-heading
     // comparisons bend at walls/props): install a key listener, then park
@@ -153,7 +156,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     }
     const walkCases = [[90, "s"], [10, "d"], [-140, "a+w"]];
     for (const [deg, want] of walkCases) {
-      const got = await heldAt(deg, 10); // between dead (6.3) and run (13.5), feel tier 2
+      const got = await heldAt(deg, 24); // between dead (16.1) and run (34.5)
       got === want ? ok(`walk ${deg}° mid -> [${got}]`) : fail(`walk ${deg}° mid: held [${got}] want [${want}]`);
     }
 
@@ -210,8 +213,8 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     return { cx: r.left + r.width / 2, cy: r.top + r.height / 2, w: r.width };
   });
   console.log("phone stick:", JSON.stringify(g));
-  // >=585 css px wide -> the big 132px well (was "art k=2"; k concept gone)
-  Math.abs(g.w - 132) < 0.5 ? ok(`phone well at 132px (>=585w tier)`) : fail(`phone well ${g.w}px, want 132`);
+  // >=585 css px wide -> the big 148px well
+  Math.abs(g.w - 148) < 0.5 ? ok(`phone well at 148px (>=585w tier)`) : fail(`phone well ${g.w}px, want 148`);
   await page.mouse.move(g.cx, g.cy);
   await page.mouse.down();
   await page.mouse.move(g.cx + 200, g.cy + 140, { steps: 4 });
