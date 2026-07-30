@@ -15,6 +15,9 @@ see `config/types.json`). This tool makes the repo match reality:
   - **prune** every item folder that is not in the reconciled roster;
   - **mirror** every roster item (add/update, If-Modified-Since; zero
     generations);
+  - **read the maintainer's verdicts** (`live/feedback/items.json`, see
+    pipeline/feedback.py): rejected items leave the game, approvals and star
+    ratings are recorded on the item;
   - **rebuild `viewer_data.json`** (the rolled-up registry the game and the
     wiki read) and **verify** the metadata.
 
@@ -34,6 +37,7 @@ import json
 import os
 import shutil
 
+import feedback
 import mirror
 from mirror import (CONFIG_DIR, ROOT, item_dir, iter_manifests, load_types,
                     now_iso, read_manifest)
@@ -164,6 +168,7 @@ def build_viewer_data(metas, types):
             "max_stack": m.get("max_stack"),
             "equip_slot": m.get("equip_slot"),
             "description": m.get("description") or "",
+            "review": m.get("review") or {"status": "unreviewed"},
             "path": f"items/{m['id']}",
             "preview": m["sprite"],
             "sprite": m["sprite"],
@@ -248,21 +253,34 @@ def verify(metas, types):
 
 # --- orchestration ------------------------------------------------------------
 
-def sync(client, fresh=False, dry_run=False, only=None):
+def sync(client, fresh=False, dry_run=False, only=None, use_feedback=True):
     types = load_types()
+    # The maintainer's verdicts come first: a rejected item must not be
+    # re-mirrored by the very run that is supposed to remove it.
+    if use_feedback:
+        feedback.ingest(dry_run=dry_run)
     roster, report = discover_roster(client, types)
     if not roster:
         raise SystemExit("discovery returned NO tagged items — refusing to prune "
                          "everything (is the API reachable / are the tags right?)")
     if not dry_run:
         write_roster(roster)
+    # Rejected on the wiki: the entry stays in the roster (so a resync cannot
+    # quietly resurrect it) but the item leaves the game — no folder, no
+    # registry entry, no drops.
+    rejected = feedback.rejected_ids(roster)
+    if rejected:
+        print(f"rejected on the wiki, staying out of the game: {sorted(rejected)} "
+              f"(untag them on PixelLab to drop them for good)")
+    roster = [e for e in roster if e["id"] not in rejected]
     want = {e["id"] for e in roster}
 
     pruned = []
     for iid, _meta in iter_manifests():
         if iid not in want:
             pruned.append(iid)
-            print(f"PRUNE {iid} — no longer tagged on PixelLab")
+            print(f"PRUNE {iid} — " + ("rejected on the wiki" if iid in rejected
+                                       else "no longer tagged on PixelLab"))
             if not dry_run:
                 shutil.rmtree(item_dir(iid), ignore_errors=True)
 
@@ -308,8 +326,11 @@ def main():
     ap.add_argument("--fresh", action="store_true", help="re-download every sprite")
     ap.add_argument("--dry-run", action="store_true", help="print the plan; change nothing")
     ap.add_argument("--only", help="mirror just this item id (others keep current files)")
+    ap.add_argument("--no-feedback", action="store_true",
+                    help="skip reading live/feedback/items.json (the wiki's verdicts)")
     args = ap.parse_args()
-    sync(PixelLabClient(), fresh=args.fresh, dry_run=args.dry_run, only=args.only)
+    sync(PixelLabClient(), fresh=args.fresh, dry_run=args.dry_run, only=args.only,
+         use_feedback=not args.no_feedback)
 
 
 if __name__ == "__main__":

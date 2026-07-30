@@ -123,13 +123,43 @@ as it should be for MISC — so **the constraint lives here**: `SOUL` declares
 holding two stones or any stone with two sources.
 
 There are **28 stones and 24 monsters**, so four stones are currently
-**UNBOUND** — they have no monster and cannot drop. That is deliberate and the
-only correct answer under a 1-to-1 rule: a surplus stone waits for a creature of
-its own rather than doubling up on a monster that already has one. `drops.py`
-reports them every run (a warning, not an error), and their descriptions say as
-much instead of naming a creature. They bind themselves the moment the monsters
-agent ships four more monsters — or you can untag the surplus stones on
-PixelLab and they leave the repo on the next sync.
+**UNBOUND** — they have no monster and cannot drop. That is expected, not a
+defect: **unused is this repo's default state.** Content is made ahead of the
+world that uses it, so a surplus stone simply waits for a creature of its own
+rather than doubling up on a monster that already has one. `drops.py` reports
+them as ordinary status every run, and their descriptions say as much instead
+of naming a creature. They bind themselves the moment the monsters agent ships
+four more monsters — or you can untag them on PixelLab and they leave the repo
+on the next sync.
+
+## Approval: the wiki decides what is a keeper
+
+Everything here starts **unreviewed**, and that is the normal resting state.
+The maintainer's verdicts arrive through `live/feedback/items.json`
+(`pixel-wiki-feedback@1`) — star ratings, `approved` / `rejected`, and notes,
+written from the wiki's admin session and on `main` within seconds. Per
+`live/README.md` every art agent must read its own feedback file at the start
+of each run; `pipeline/feedback.py` is this domain's side of it, and
+`sync.py` calls it **first**, before anything is mirrored:
+
+- **rejected** → the item leaves the game on that same run: folder pruned, out
+  of `viewer_data.json`, and every loot row pointing at it removed from
+  `live/tuning/monsters.json`. The roster keeps the entry with
+  `review.status: "rejected"` so a later resync cannot quietly resurrect it —
+  untag it on PixelLab to be rid of it for good.
+- **approved** / **rating** / **note** → recorded on the item as `review`, and
+  carried into `item.json` and `viewer_data.json`, so the game and the wiki can
+  tell a keeper from something nobody has looked at yet. Unreviewed items
+  report `{"status": "unreviewed"}`.
+
+Handled verdicts are then **cleared** from the live file — the wiki writes
+them, this agent consumes them, and the durable record lives in
+`config/roster.json`.
+
+```bash
+python items/pipeline/feedback.py --dry-run   # what the verdicts would do
+python items/pipeline/sync.py --no-feedback   # sync without reading them
+```
 
 `pipeline/drops.py` is the items agent's side of that contract — it **verifies**
 those rules against the live file, can **apply** an assignment plan, and prints
@@ -194,6 +224,10 @@ python items/pipeline/sync.py --only <id>
   registry → verify). Does not commit; the caller commits one atomic change.
 - `pipeline/mirror.py` — mirrors ONE item and writes its manifest. Unchanged
   art is skipped via `If-Modified-Since`, and a no-op sync leaves an empty diff.
+- `pipeline/feedback.py` — applies the wiki's verdicts (`live/feedback/items.json`)
+  and clears the ones handled. Runs first inside every sync.
+- `pipeline/drops.py` — verifies / applies / reports the drop mapping in
+  `live/tuning/monsters.json` (see above).
 - `pipeline/pixellab_client.py` — this domain's own client (tag discovery with
   pagination, still-sprite resolution, conditional downloads).
 

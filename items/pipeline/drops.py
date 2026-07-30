@@ -165,10 +165,7 @@ def verify(live, items, types):
                 unbound.append(iid)
         elif not srcs:
             problems.append(f"{iid}: no monster drops it — unobtainable")
-    if unbound:
-        warnings.append(f"{len(unbound)} soul stone(s) UNBOUND, waiting for a monster of "
-                        f"their own: {sorted(unbound)}")
-    return problems, warnings, dropped_by
+    return problems, warnings, dropped_by, sorted(unbound)
 
 
 # --- apply --------------------------------------------------------------------
@@ -231,12 +228,17 @@ def main():
         print(f"applied: {sum(len(v) for v in tables.values())} drop rows across "
               f"{len(tables)} monsters{' (dry run)' if args.dry_run else ''}")
 
-    problems, warnings, dropped_by = verify(live, items, types)
+    problems, warnings, dropped_by, unbound = verify(live, items, types)
     if args.report:
         report(live, items, monster_names())
     print(f"\n=== drops ===\n  items: {len(items)} | dropped: {len(dropped_by)} | "
           f"monsters with loot: {sum(1 for s in live['monsters'].values() if s.get('loot'))}"
           f"/{len(live['monsters'])}")
+    # Unbound is a normal resting state, not a defect: content is made ahead of
+    # the world that uses it, so a stone simply waits for its creature.
+    if unbound:
+        print(f"  {len(unbound)} soul stone(s) unbound, waiting for a monster of their "
+              f"own: {unbound}")
     for w in warnings:
         print(f"  ! {w}")
     for p in problems:

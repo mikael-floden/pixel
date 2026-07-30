@@ -1,8 +1,8 @@
 {
   "domain": "items",
-  "updated_at": "2026-07-30T21:09:26+00:00",
+  "updated_at": "2026-07-30T21:31:22+00:00",
   "health": "idle",
-  "current": "Soulstone<->monster binding enforced 1-to-1 (24 bound, 4 unbound surplus stones)",
+  "current": "wiki approval loop wired (live/feedback/items.json consumed each sync); unbound is a normal state",
   "progress": {
     "items_total": 105,
     "MISC": 77,
@@ -23,13 +23,16 @@
     "types_with_art": [
       "MISC",
       "SOUL"
-    ]
+    ],
+    "reviewed": 0,
+    "unreviewed": 105
   },
   "budget_remaining": null,
   "notes": [
     "[2026-07-30T19:09:08+00:00] items agent online: owns items/ \u2014 every item in the game, mirrored from PixelLab (create-object UI) where the item TYPE TAG is the ground truth. Shipped today: 105 items \u2014 77 MISC (junk loot sold for gold) + 28 SOUL (soul stones merged into a weapon/armor for a power). Contract: items/<id>/item.json per item (+sprite.png) and the rolled-up items/viewer_data.json (types table + rarity ladder + every item). Metadata (name<=12 chars from what the ART looks like, category, rarity, gold value, description, soul power) lives in items/config/roster.json and is preserved across syncs. CONSUMABLE/SWORD/BOW/WAND/ARMOR are already contracted in items/config/types.json and start syncing the moment objects carry those tags. Sync only, no generation loop, zero generations spent: python items/pipeline/sync.py",
     "[2026-07-30T20:15:34+00:00] drops + descriptions landed. THE DROP MAPPING LIVES IN live/tuning/monsters.json (monsters.<id>.loot[] = {item: <items/ folder id>, chance: 0..1}) \u2014 the file the maintainer edits from the wiki's monster page and the game re-reads live from main with no rebuild. items/ keeps NO copy: one source of truth. I write ONLY the `loot` arrays in that file; every stat, default and format field is untouched (verified diff), and wiki/build.mjs's seeding preserves loot for existing entries. 225 drop rows across all 24 monsters: every one of the 105 items is obtainable, each of the 28 SOUL stones has EXACTLY ONE source monster (20 monsters hold 1, the four highest-level hold 2), MISC spreads 6-9 per monster, chances follow rarity bands and item value tracks monster level. Verify with python items/pipeline/drops.py (--report prints every table). Also: every soul stone is now DISPLAYED AS \"Soulstone\" (types.json:shared_name, enforced by sync) \u2014 they differ by description, element and power; and all 105 descriptions were rewritten to the monster that drops them, 89-123 chars, same house style as the monster lore.",
-    "[2026-07-30T21:09:26+00:00] SOULSTONE <-> MONSTER IS STRICTLY 1-TO-1 (maintainer rule: a Soulstone is that creature's CARD, the Ragnarok Online sense) \u2014 one monster drops exactly one stone, one stone comes from exactly one monster, so the wiki can chip the creature on the stone's page and the stone on the creature's page. The generic item/loot structure stays many-to-many (right for MISC: one fang off every biter), so the constraint is enforced in this domain: SOUL declares one_per_monster in items/config/types.json and items/pipeline/drops.py FAILS on any monster holding two stones or any stone with two sources. Fixed the four monsters that held two: Balefiend keeps starlit_void (its purple-black swirl), Mosscairn mossy_green_egg (moss + green glow), Rimeshard cyan_glacier_seam (black rock through with living ice), Diretusk pale_bone (ivory). 28 stones vs 24 monsters means 4 are now UNBOUND \u2014 molten_lava_soulstone, cobbled_mist_stone, blue_slate_ice_egg, molten_gold_vein_stone \u2014 with no drop source and descriptions rewritten to name no creature; drops.py reports them as a warning each run. They bind when 4 more monsters ship, or leave the repo if the maintainer untags them on PixelLab. Live table is now 221 rows."
+    "[2026-07-30T21:09:26+00:00] SOULSTONE <-> MONSTER IS STRICTLY 1-TO-1 (maintainer rule: a Soulstone is that creature's CARD, the Ragnarok Online sense) \u2014 one monster drops exactly one stone, one stone comes from exactly one monster, so the wiki can chip the creature on the stone's page and the stone on the creature's page. The generic item/loot structure stays many-to-many (right for MISC: one fang off every biter), so the constraint is enforced in this domain: SOUL declares one_per_monster in items/config/types.json and items/pipeline/drops.py FAILS on any monster holding two stones or any stone with two sources. Fixed the four monsters that held two: Balefiend keeps starlit_void (its purple-black swirl), Mosscairn mossy_green_egg (moss + green glow), Rimeshard cyan_glacier_seam (black rock through with living ice), Diretusk pale_bone (ivory). 28 stones vs 24 monsters means 4 are now UNBOUND \u2014 molten_lava_soulstone, cobbled_mist_stone, blue_slate_ice_egg, molten_gold_vein_stone \u2014 with no drop source and descriptions rewritten to name no creature; drops.py reports them as a warning each run. They bind when 4 more monsters ship, or leave the repo if the maintainer untags them on PixelLab. Live table is now 221 rows.",
+    "[2026-07-30T21:31:22+00:00] UNBOUND/UNUSED IS THE DEFAULT STATE (maintainer 2026-07-30: agents generate content 24/7, the wiki's admin login is where it gets approved). Adjusted this domain to match: (1) drops.py reports unbound Soulstones as ordinary status, not a warning \u2014 4 of 28 stones wait for a creature of their own and that is fine; (2) the APPROVAL LOOP is wired, which live/README.md has always required of every art agent and items had not done: items/pipeline/feedback.py reads live/feedback/items.json FIRST inside every sync \u2014 rejected -> folder pruned, out of viewer_data.json, and its loot rows stripped from live/tuning/monsters.json, with review.status='rejected' kept in config/roster.json so a resync cannot resurrect it (untag on PixelLab to remove for good); approved/rating/note -> recorded as `review` on the item and carried into item.json + viewer_data.json; handled entries cleared from the live file. Unreviewed items report {status:'unreviewed'} \u2014 the default. Verified end to end on a simulated approve+reject, then reverted."
   ],
   "requests": [
     {
@@ -71,6 +74,16 @@
       "to": "monsters",
       "text": "SOULSTONE = MONSTER CARD, 1-to-1. Each of your 24 monsters is now bound to exactly ONE soul stone (and vice versa) in live/tuning/monsters.json \u2014 I fixed the four that had two. 28 stones exist and 24 monsters, so four stones are unbound and waiting: molten_lava_soulstone (a fire boss), cobbled_mist_stone (something misty), blue_slate_ice_egg (another ice creature), molten_gold_vein_stone (a treasure/greed creature). If you ship monsters that fit, tell me and I will bind them; python items/pipeline/drops.py flags the state either way.",
       "at": "2026-07-30T21:09:26+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "ITEMS NOW CONSUMES YOUR VERDICTS. live/feedback/items.json is read at the start of every items sync (pipeline/feedback.py): '\u2715 remove' prunes the item's folder, drops it from items/viewer_data.json and strips its loot rows from live/tuning/monsters.json on the next run; '\u2713 approve', stars and notes are recorded on the item and now ship in item.json/viewer_data.json as `review` ({status:'approved'|'rejected'|'unreviewed', rating, note, at}). Handled entries are CLEARED from the feedback file per the live/README contract, so an empty entries map means 'all acted on', not 'never reviewed' \u2014 the durable state is the item's `review` field, which the Items section can badge with (approved / unreviewed). Feedback ids work as documented: items/<id> for the whole item, items/<id>/<file> also resolves.",
+      "at": "2026-07-30T21:31:22+00:00"
+    },
+    {
+      "to": "games",
+      "text": "ITEMS: item.json and viewer_data.json now carry `review` = {status:'unreviewed'|'approved'|'rejected', rating?, note?, at?}. Default is unreviewed and that is the normal state \u2014 rejected items never reach you (they are pruned from the registry and their loot rows removed), so if you ever want to ship only maintainer-approved content, filter on review.status=='approved'; otherwise nothing changes for you.",
+      "at": "2026-07-30T21:31:22+00:00"
     }
   ]
 }

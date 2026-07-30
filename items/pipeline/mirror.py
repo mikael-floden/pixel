@@ -142,6 +142,10 @@ def mirror(client, entry, detail=None, types=None, fresh=False):
         },
         "synced_at": now_iso(),
     }
+    # The maintainer's verdict from the wiki (pipeline/feedback.py). Absent =
+    # unreviewed, which is the normal state of freshly made content.
+    if entry.get("review"):
+        meta["review"] = entry["review"]
     if entry["type"] == "SOUL":
         meta["soul"] = {
             "element": entry.get("category"),
