@@ -587,6 +587,62 @@ function statsEditor(monsterId) {
   renderLoot();
   return h("div", {}, grid, h("div", { style: "margin-top:14px" }, lootBox));
 }
+// "Where it lives": the world's own minimap with this monster's spawn zones
+// drawn on it. Polygons arrive already projected into minimap pixels
+// (wiki/tools/world-map.py), so this only scales and strokes them.
+function zoneMapPanel(monsterId) {
+  const wm = worldInfo()?.map;
+  const zones = wm?.monsters?.[monsterId];
+  if (!wm || !zones?.length) return null;
+  const CSS_W = 900, k = CSS_W / wm.mapW, DPR = 2;
+  const canvas = h("canvas", {
+    class: "zone-map", width: Math.round(wm.mapW * k * DPR), height: Math.round(wm.mapH * k * DPR),
+    style: `width:${CSS_W}px`,
+  });
+  const ctx = canvas.getContext("2d");
+  const img = new Image();
+  img.onload = () => {
+    // A 0.15x LANCZOS bake of the whole world — smooth it down, don't
+    // nearest-neighbour it (this is a map thumbnail, not 1:1 pixel art).
+    ctx.imageSmoothingEnabled = true;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    const s = k * DPR;
+    const accent = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#d97757";
+    for (const z of zones) {
+      if (!z.poly?.length) continue;
+      ctx.beginPath();
+      z.poly.forEach(([x, y], i) => (i ? ctx.lineTo(x * s, y * s) : ctx.moveTo(x * s, y * s)));
+      ctx.closePath();
+      ctx.fillStyle = accent + "59";        // ~35% — the terrain must stay readable
+      ctx.fill();
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 2 * DPR;
+      ctx.lineJoin = "round";
+      ctx.stroke();
+      // How many roam this particular habitat, at its centre.
+      const cx = z.poly.reduce((n, p) => n + p[0], 0) / z.poly.length * s;
+      const cy = z.poly.reduce((n, p) => n + p[1], 0) / z.poly.length * s;
+      ctx.font = `600 ${13 * DPR}px system-ui, sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.lineWidth = 4 * DPR;
+      ctx.strokeStyle = "rgba(0,0,0,0.65)";
+      ctx.strokeText(String(z.num), cx, cy);
+      ctx.fillStyle = "#fff";
+      ctx.fillText(String(z.num), cx, cy);
+    }
+  };
+  img.src = assetUrl(wm.minimap);
+  const total = zones.reduce((n, z) => n + z.num, 0);
+  return h("div", { class: "panel" },
+    h("div", { class: "panel-title" }, "Where it lives ",
+      h("span", { class: "pill" }, `${total} in ${zones.length} ${zones.length === 1 ? "habitat" : "habitats"}`)),
+    h("div", { class: "zone-map-wrap" }, canvas),
+    state.admin ? h("p", { class: "muted", style: "margin:8px 0 0" },
+      "zones: ", zones.map((z) => `${z.id || "?"} (${z.num})`).join(" · ")) : null);
+}
+
 function viewMonster(id) {
   const m = state.data.domains.monsters.find((x) => x.id === id);
   if (!m) return h("p", {}, "Unknown monster.");
@@ -625,6 +681,7 @@ function viewMonster(id) {
       h("div", { class: "panel-title" }, "Animations", h("span", { class: "pill" }, `${Object.keys(m.animations).length} states × 8 directions`)),
       player.el,
       h("div", { style: "margin-top:12px" }, facetBox)),
+    zoneMapPanel(m.id),
     h("div", { class: "panel" },
       h("div", { class: "panel-title" }, "Stats"),
       statsEditor(m.id)));

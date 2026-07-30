@@ -444,10 +444,18 @@ function buildWorldUsage() {
     m.spawned += Number(z.num) || 0;
     m.zones += 1;
   }
+  // Spawn zones projected onto the world's minimap (wiki/world_map.json,
+  // written by wiki/tools/world-map.py) — the monster pages' "where it
+  // lives" map. Only used when it describes THIS world.
+  const wm = readJson(join(ROOT, "wiki", "world_map.json"));
+  const map = wm?.world === name
+    ? { minimap: wm.minimap, mapW: wm.mapW, mapH: wm.mapH, monsters: wm.monsters ?? {} }
+    : null;
+
   return {
     name, w: world.size?.w ?? null, h: world.size?.h ?? null,
     cells, props, distinctTiles: Object.keys(tiles).length,
-    tiles, monsters,
+    tiles, monsters, map,
   };
 }
 

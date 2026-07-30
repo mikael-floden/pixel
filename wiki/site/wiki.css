@@ -408,3 +408,11 @@ a.stat-tile:hover { text-decoration: none; border-color: var(--border-strong); }
   font-variant-numeric: tabular-nums;
 }
 .tile-cell.unused-tile img { opacity: 0.72; }
+
+/* ---- spawn-zone map (monster pages) ---- */
+.zone-map-wrap { overflow-x: auto; }
+.zone-map {
+  image-rendering: auto;   /* a downscaled world overview, not 1:1 pixel art */
+  max-width: 100%; height: auto; display: block;
+  border-radius: 8px; background: var(--surface-2);
+}

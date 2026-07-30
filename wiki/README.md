@@ -109,6 +109,16 @@ it can't drift — currently `the_island2`). `build.mjs` emits `data.json`
   plus props. (A raised cell stacks its tile for the cliff faces; that's the
   same placement seen from the side, not a second use.) Tile pages show
   "N of M tiles used", per-tile `×N` badges, and unused tiles render dimmed.
+- `map` — the world's own `minimap.png` plus every monster's spawn zones
+  **already projected into minimap pixels**, so the monster page's "Where it
+  lives" panel just strokes the polygons. Produced by
+  `python3 wiki/tools/world-map.py` → `wiki/world_map.json`; re-run it when a
+  world's `spawns.json` or `minimap.png` changes (or the default world does).
+  The tool derives cell→pixel from `maps2/pipeline/render2.py`'s layout and
+  **fits** the minimap's own crop/resize by matching the predicted content
+  bbox to the PNG's opaque bbox — it refuses to write if the x/y scales
+  disagree or if zones project off the drawn map, so a silently-misaligned
+  overlay can't ship.
 
 Audio "used" is **referenced by the game**, not merely present:
 
