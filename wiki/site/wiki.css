@@ -220,9 +220,11 @@ button { font: inherit; cursor: pointer; }
 /* ---- animation player ---- */
 .player { display: flex; flex-direction: column; gap: 10px; }
 .player-stage {
-  align-self: flex-start;
-  border: 1px solid var(--border); border-radius: 10px;
+  align-self: flex-start; border: 1px solid var(--border); border-radius: 10px;
   padding: 8px; max-width: 100%; overflow: auto;
+  /* fixed per-domain stage: the creature is centred in it, so paging
+     through monsters keeps the layout perfectly still */
+  display: flex; align-items: center; justify-content: center;
 }
 .player-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .player-controls .frame-no { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 13px; min-width: 52px; }

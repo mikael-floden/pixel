@@ -117,6 +117,14 @@ describing the creature (measured: an entity union made one salamander 74px
 and the other 48px again). Within a clip the box is fixed, so the animation
 still moves inside it. Re-run the tool when art changes.
 
+The **stage** is fixed per domain (`data.artBox`, e.g. monsters 207×189 art
+px): the widest and tallest pose any of them needs, shadow and hover
+included, with the creature centred in it. Paging next/next/next therefore
+swaps the creature without the layout moving at all. The stage — not the
+canvas — carries that size, so a rare oversized pose can use the stage's own
+scroll instead of inflating every page, and `max-width:100%` keeps it inside
+a phone (measured 331×396 there, identical on all 24 monster pages).
+
 ## Usage stats — measured on the DEFAULT world
 
 "Is this actually in the game?" is answered against the world players really

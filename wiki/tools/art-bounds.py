@@ -76,9 +76,15 @@ data = json.load(open(DATA))
 out: dict[str, list[int]] = {}
 report: list[tuple[str, str, int, int]] = []
 opens: list[tuple[str, int, int]] = []   # the view a page OPENS on (idle/south)
+# One STAGE size per domain: the widest and tallest any pose ever needs
+# (shadow included), so paging through monsters never moves the layout.
+boxes: dict[str, list[int]] = {}
 for dom in ("monsters", "characters", "objects"):
     for e in data["domains"].get(dom) or []:
         base = e.get("path") or f"{dom}/{e['id']}"
+        sh = e.get("shadow") or {}
+        foot_frac = e.get("artBottom") or 1
+        hover = e.get("hoverPx") or 0
         best = None
         for sname, state in (e.get("animations") or {}).items():
             for dname, clip in (state.get("dirs") or {}).items():
@@ -89,6 +95,13 @@ for dom in ("monsters", "characters", "objects"):
                 w, h = bb[2] - bb[0], bb[3] - bb[1]
                 if best is None or w * h > best[0] * best[1]:
                     best = (w, h)
+                # What this pose needs on stage, shadow and hover included.
+                fh = clip.get("fh") or e.get("frameH") or 64
+                need_w = max(w, sh.get("w", 0))
+                need_h = max(h, (foot_frac * fh - bb[1]) + hover + sh.get("h", 0) / 2 + 1)
+                box = boxes.setdefault(dom, [0, 0])
+                box[0] = max(box[0], int(round(need_w)))
+                box[1] = max(box[1], int(round(need_h)))
                 # The default view every page opens on decides the scale.
                 if sname == "idle" and dname == "south" and dom != "objects":
                     opens.append((e["id"], w, h))
@@ -109,6 +122,7 @@ with open(dst, "w") as f:
         "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "note": "per-clip union of opaque pixels, '<entity>|<state>|<dir>' -> [x0,y0,x1,y1] in frame px",
         "scale": scale,
+        "boxes": boxes,
         "clips": out,
     }, f, separators=(",", ":"))
     f.write("\n")
@@ -121,7 +135,9 @@ print("  smallest:     " + ", ".join(f"{r[1]} {r[2]}x{r[3]}" for r in big[-3:]))
 for dom in ("monsters", "characters", "objects"):
     ds = [r for r in report if r[0] == dom]
     if ds:
-        print(f"  {dom}: {len(ds)} entities")
+        bx = boxes.get(dom, [0, 0])
+        print(f"  {dom}: {len(ds)} entities, stage box {bx[0]}x{bx[1]} art px "
+              f"({bx[0] * scale}x{bx[1] * scale} at {scale}x)")
 sal = [o for o in opens if "salamander" in o[0]]
 if sal:
     print("  salamander check (opening view): " + ", ".join(f"{i} {w}x{h} -> {w*scale}x{h*scale}" for i, w, h in sal))

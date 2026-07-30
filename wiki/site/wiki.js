@@ -236,6 +236,19 @@ function makePlayer(entity, kind) {
   const baseFps = 8;
   const canvas = h("canvas", { width: 64, height: 64 });
   const stage = h("div", { class: "player-stage checker" }, canvas);
+  // FIXED STAGE (maintainer 2026-07-30): one chessboard size for the whole
+  // domain — the widest and tallest pose any of its entities needs — with the
+  // creature centred in it. Paging next/next/next then swaps the creature
+  // without the layout moving. The CANVAS stays cropped to the sprite, so a
+  // rare oversized pose can overflow into the stage's own scroll rather than
+  // inflating every page. `max-width:100%` keeps it inside narrow screens.
+  const stageKind = kind === "monster" ? "monsters" : kind === "character" ? "characters" : "objects";
+  function sizeStage(s) {
+    const box = state.data.artBox?.[stageKind];
+    if (!box) return;
+    stage.style.width = `${box[0] * s + 18}px`;   // +18 = padding + border (border-box)
+    stage.style.height = `${box[1] * s + 18}px`;
+  }
   const ctx = canvas.getContext("2d");
   const frameNo = h("span", { class: "frame-no" });
   let img = null, frameImgs = [], clip = null, rafTimer = null, acc = 0, lastT = 0;
@@ -275,6 +288,7 @@ function makePlayer(entity, kind) {
     const fw = clip?.fw ?? entity.frameW ?? 64, fh = clip?.fh ?? entity.frameH ?? 64;
     const bb = clip?.bb ?? [0, 0, fw, fh];   // content box in frame px
     const s = cur.zoom || state.data.artScale || 2;
+    sizeStage(s);
     const cw = Math.max(1, bb[2] - bb[0]), ch = Math.max(1, bb[3] - bb[1]);
     // A hovering creature (butterfly_dragon) floats hoverPx above the ground,
     // so its shadow sits that much BELOW its foot line.

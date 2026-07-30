@@ -553,6 +553,7 @@ const constants = buildConstants();
 // falls back to whole-frame scaling.
 const artBounds = readJson(join(ROOT, "wiki", "art_bounds.json"));
 const artScale = artBounds?.scale ?? 2;
+const artBox = artBounds?.boxes ?? null;
 for (const [dom, list] of Object.entries({ monsters, characters, objects })) {
   for (const e of list ?? []) {
     for (const [sname, st] of Object.entries(e.animations ?? {})) {
@@ -578,8 +579,10 @@ const data = {
   // The game's iso projection (maps2/spec/WORLD_FORMAT.md): tile-instance
   // previews must compose cells with the REAL geometry or the seams lie.
   iso: { tilePx: 64, dx: 32, dy: 15, levelPx: 16, diamondH: 30 },
-  // One px-per-art-px for every creature in the animation viewer.
-  artScale,
+  // One px-per-art-px for every creature in the animation viewer, and one
+  // stage size per domain (the widest/tallest pose any of them needs) so
+  // paging through monsters never moves the layout.
+  artScale, artBox,
   // Usage measured on the game's DEFAULT world (see buildWorldUsage).
   world,
   counts: {
