@@ -431,6 +431,7 @@ interface MonsterAvatar {
   // playMonsterAnim behind that coincidence, and the moment the manifest
   // resolved properly every monster froze mid-slide (maintainer 2026-07-30).
   walkKey: string;
+  idleKey?: string; // resolved idle anim (undefined: no idle art — park on walk contact)
   // PER-DIRECTION ground contract (manifest `ground`): originY feet line,
   // originX foot centre, and the planted `contact` frame a pause parks on.
   // One pooled anchor floated whole directions (strips differ per direction
@@ -449,6 +450,7 @@ interface MonsterAvatar {
       air?: number[];
     }
   >;
+  groundIdle?: MonsterAvatar["ground"]; // idle strips are framed independently
 }
 
 /** The common body-visual subset the SHARED render helpers operate on —
@@ -721,17 +723,23 @@ export class WorldScene extends Phaser.Scene {
     // pattern). WALK/ROAM only this round — load just the resolved walk (jump)
     // strip per (kind, direction); attack/die are deferred.
     for (const def of this.monsterManifest?.monsters ?? []) {
-      const walk = monsterWalkKey(def);
-      const dirStrips = def.strips?.[walk] ?? {};
-      for (const [dir, url] of Object.entries(dirStrips)) {
-        if (!url) continue; // guard a missing strip
-        // Slice with the STRIP'S OWN measured frame size — art repairs resize
-        // strips in place, so the monster-level size can be stale (frame bleed).
-        const dims = def.stripDims?.[walk]?.[dir];
-        this.load.spritesheet(monsterSheetKey(def.id, walk, dir), withV(url), {
-          frameWidth: dims?.w ?? def.frameW,
-          frameHeight: dims?.h ?? def.frameH,
-        });
+      // WALK + IDLE (maintainer 2026-07-30: stopped monsters must PLAY their
+      // idle, not freeze on a walk frame); attack/die stay deferred.
+      const states = [monsterWalkKey(def)];
+      if (def.idleAnim && !states.includes(def.idleAnim)) states.push(def.idleAnim);
+      for (const anim of states) {
+        const dirStrips = def.strips?.[anim] ?? {};
+        for (const [dir, url] of Object.entries(dirStrips)) {
+          if (!url) continue; // guard a missing strip
+          // Slice with the STRIP'S OWN measured frame size — art repairs
+          // resize strips in place, so the monster-level size can be stale
+          // (frame bleed).
+          const dims = def.stripDims?.[anim]?.[dir];
+          this.load.spritesheet(monsterSheetKey(def.id, anim, dir), withV(url), {
+            frameWidth: dims?.w ?? def.frameW,
+            frameHeight: dims?.h ?? def.frameH,
+          });
+        }
       }
     }
     // Isometric ground tiles.
@@ -1812,7 +1820,9 @@ export class WorldScene extends Phaser.Scene {
       radius: def?.radius ?? DEFAULT_MONSTER_RADIUS,
       hoverPx: def?.hoverPx ?? 0,
       walkKey: walk,
+      idleKey: def?.idleAnim ?? undefined,
       ground: def?.ground,
+      groundIdle: def?.groundIdle ?? undefined,
     };
     sprite.y = p0.y - mv.hoverPx;
     this.monsters.set(id, mv);
@@ -1839,29 +1849,37 @@ export class WorldScene extends Phaser.Scene {
    * turns switch instantly. */
   private playMonsterAnim(mv: MonsterAvatar, moving: boolean, dir: string) {
     const want = DIRECTIONS.includes(dir as never) ? dir : DEFAULT_DIRECTION;
-    const d = this.stableDir(mv, want);
-    const key = monsterAnimKey(mv.kind, mv.walkKey, d);
-    // Re-anchor to THIS direction's measured ground contract: strips differ
-    // in height/margins per direction (art repairs), so the feet line AND the
-    // foot-centre X are per-direction — the feet stay planted on the anchor
-    // through a turn (the body pivots around them) and the shadow stays under
-    // the feet of art drawn off-centre in its frame.
-    const g = mv.ground?.[d];
+    // Monsters take EVERY turn (even 90-180°) through hysteresis: they are
+    // remote puppets, so a 160ms facing lag is invisible — while autopilot
+    // thrash near a roam target flipped them "back and forth like crazy"
+    // right before stopping (maintainer 2026-07-30). Players keep instant
+    // large turns for input feel.
+    const d = this.stableDir(mv, want, true);
+    // Re-anchor to the ACTIVE STATE's measured ground contract for this
+    // direction: idle strips are framed independently of walk (their own
+    // stripDims + anchors), and per-direction margins differ after art
+    // repairs. The feet stay planted through turns AND state changes.
+    const g = (!moving && mv.groundIdle?.[d]) || mv.ground?.[d];
     if (g) mv.sprite.setOrigin(g.cx, g.f);
-    if (moving) {
+    const idleKey = !moving && mv.idleKey ? monsterAnimKey(mv.kind, mv.idleKey, d) : null;
+    if (moving || (idleKey && this.anims.exists(idleKey))) {
+      // Walking → walk clip; stopped with idle art → the IDLE clip
+      // (maintainer 2026-07-30: "the idle animation doesn't play when
+      // stopped"). Direction-only changes keep the loop progress.
+      const state = moving ? mv.walkKey : mv.idleKey!;
+      const key = moving ? monsterAnimKey(mv.kind, mv.walkKey, d) : idleKey!;
       if (!this.anims.exists(key)) return;
       if (mv.sprite.anims.getName() !== key || !mv.sprite.anims.isPlaying) {
         const prev = mv.sprite.anims.getName();
-        const sameState = !!prev && mv.sprite.anims.isPlaying && prev.split(":").at(-2) === mv.walkKey;
+        const sameState = !!prev && mv.sprite.anims.isPlaying && prev.split(":").at(-2) === state;
         const progress = sameState ? mv.sprite.anims.getProgress() : 0;
         mv.sprite.play(key, true);
         if (progress > 0) mv.sprite.anims.setProgress(progress);
       }
     } else {
-      // Paused between legs: stop and PARK ON THE PLANTED CONTACT FRAME of
-      // the facing strip (also turns the resting monster to its last
-      // heading). Frame 0 is airborne for hop gaits — parked frogs levitated
-      // above their shadow until the next trip (maintainer 2026-07-30).
+      // No idle art (legacy poring family): park on the walk strip's PLANTED
+      // CONTACT FRAME (frame 0 is airborne for hop gaits — parked frogs
+      // levitated above their shadow until the next trip).
       mv.sprite.anims.stop();
       const sk = monsterSheetKey(mv.kind, mv.walkKey, d);
       if (this.textures.exists(sk)) mv.sprite.setTexture(sk, g?.contact ?? 0);
@@ -2540,7 +2558,7 @@ export class WorldScene extends Phaser.Scene {
         // translation never slides the body off its shadow; per-frame `air`
         // (deepest point risen vs the planted frame) feeds the hop shrink so
         // real levitation (demon stone, hops) reads as airborne on purpose.
-        const gd = mv.ground?.[mv.dispDir];
+        const gd = (!m.moving && mv.groundIdle?.[mv.dispDir]) || mv.ground?.[mv.dispDir];
         const fi = parseInt(String(mv.sprite.frame.name), 10) || 0;
         const ox = gd?.shift?.[fi];
         if (ox !== undefined) mv.sprite.setOrigin(ox, gd!.f);
@@ -3505,7 +3523,11 @@ export class WorldScene extends Phaser.Scene {
    * (clearing the pending timer) long before that, so the sprite holds one
    * stable orientation; a real 45° turn lands ~160ms later, imperceptibly.
    */
-  private stableDir(av: { dispDir?: string; pendDir?: string; pendSince?: number }, want: string): string {
+  private stableDir(
+    av: { dispDir?: string; pendDir?: string; pendSince?: number },
+    want: string,
+    allTurns = false, // monsters: EVERY turn size needs persistence (anti-thrash)
+  ): string {
     const cur = (av.dispDir ??= want);
     if (want === cur) {
       av.pendDir = undefined;
@@ -3514,7 +3536,7 @@ export class WorldScene extends Phaser.Scene {
     const i = DIRECTIONS.indexOf(cur as (typeof DIRECTIONS)[number]);
     const j = DIRECTIONS.indexOf(want as (typeof DIRECTIONS)[number]);
     const ring = Math.abs(i - j);
-    if (Math.min(ring, DIRECTIONS.length - ring) >= 2) {
+    if (!allTurns && Math.min(ring, DIRECTIONS.length - ring) >= 2) {
       av.dispDir = want;
       av.pendDir = undefined;
       return want;
@@ -4097,18 +4119,23 @@ export class WorldScene extends Phaser.Scene {
   private buildMonsterAnimations() {
     for (const def of this.monsterManifest?.monsters ?? []) {
       const walk = monsterWalkKey(def);
-      const dirCounts = def.animations?.[walk] ?? {};
-      for (const [dir, frames] of Object.entries(dirCounts)) {
-        const sk = monsterSheetKey(def.id, walk, dir);
-        if (!this.textures.exists(sk) || frames <= 0) continue; // strip missing
-        const key = monsterAnimKey(def.id, walk, dir);
-        if (this.anims.exists(key)) continue;
-        this.anims.create({
-          key,
-          frames: this.anims.generateFrameNumbers(sk, { start: 0, end: frames - 1 }),
-          frameRate: frames <= 6 ? 6 : 10,
-          repeat: -1,
-        });
+      const states: Array<[string, boolean]> = [[walk, false]];
+      if (def.idleAnim && def.idleAnim !== walk) states.push([def.idleAnim, true]);
+      for (const [anim, isIdle] of states) {
+        const dirCounts = def.animations?.[anim] ?? {};
+        for (const [dir, frames] of Object.entries(dirCounts)) {
+          const sk = monsterSheetKey(def.id, anim, dir);
+          if (!this.textures.exists(sk) || frames <= 0) continue; // strip missing
+          const key = monsterAnimKey(def.id, anim, dir);
+          if (this.anims.exists(key)) continue;
+          this.anims.create({
+            key,
+            frames: this.anims.generateFrameNumbers(sk, { start: 0, end: frames - 1 }),
+            // Idle breathes slower than a gait reads.
+            frameRate: isIdle ? (frames <= 6 ? 4 : 7) : frames <= 6 ? 6 : 10,
+            repeat: -1,
+          });
+        }
       }
     }
   }

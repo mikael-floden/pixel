@@ -257,6 +257,7 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
       };
     };
 
+    if (!contact) continue; // no grounded frame in this strip (wispy art)
     const A = analyze(contact);
     if (!A || A.noContact) continue; // no measurable contact at all — skip this dir
     // COMPACT-BASE override (maintainer round 6, via the wiki: the leaning
@@ -458,6 +459,19 @@ function scan() {
     const walkArt = animations[walkAnim]
       ? measureWalkArt(stripAbs[walkAnim] ?? {}, animations[walkAnim])
       : null;
+    // IDLE state (maintainer 2026-07-30: "the idle animation doesn't play
+    // when stopped"): resolve through the same animation_map contract and
+    // measure ITS ground the same way — idle strips are framed/sized
+    // independently of walk (stripDims differ), so a stopped monster needs
+    // idle's own per-dir anchors/shadow, not walk's. Monsters whose art has
+    // no idle (the legacy poring family) emit null and keep parking on the
+    // walk contact frame.
+    let idleAnim = mapped?.idle ?? "idle";
+    if (!animations[idleAnim]) idleAnim = null;
+    const idleArt =
+      idleAnim && idleAnim !== walkAnim
+        ? measureWalkArt(stripAbs[idleAnim] ?? {}, animations[idleAnim])
+        : null;
     // The monster's PHYSICAL footprint, one formula for everything that needs
     // a size: nadir shadow (client), body radius for soft collision (server
     // separation/roam spacing + both dodges). Horizontal iso screen px ≈ 1wu
@@ -483,6 +497,7 @@ function scan() {
       frameH: walkArt?.frameH ?? frameH,
       root: id, // repo-relative dir under monsters/
       walkAnim,
+      idleAnim,
       animations,
       strips,
       stripDims,
@@ -490,6 +505,10 @@ function scan() {
       // Art-measured shadow/anchor data (see measureWalkArt). `ground` is the
       // per-direction contract: {f: originY, cx: originX, contact: pause frame}.
       ground: walkArt?.ground,
+      // The IDLE state's own per-direction ground contract (its strips are
+      // framed independently of walk). null → no idle art; the client parks
+      // on the walk contact frame instead.
+      groundIdle: idleArt?.ground ?? null,
       artBottom: walkArt?.artBottom,
       footW: walkArt?.footW,
       bodyW: walkArt?.bodyW,

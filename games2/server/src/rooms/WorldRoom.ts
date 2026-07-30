@@ -695,9 +695,18 @@ export class WorldRoom extends Room<WorldState> {
       }
 
       // Active trip → autopilot toward the target, integrated like a player.
+      // Monsters ARRIVE GENEROUSLY (maintainer 2026-07-30: "shaking back and
+      // forth ... when they have walked for a bit and stops"): near the roam
+      // target the separation push jiggles the position every tick, the 8-way
+      // bearing to the waypoint flips sectors, and the autopilot can thrash
+      // for its full 1.5s stall window before bailing. A roam target is an
+      // arbitrary cell — being within 3/4 of one of it IS arrival.
       const trip = m.trip!;
-      const a = stepAutopilot(grid, trip, m.x, m.y, now, this.worldW, this.worldH, m.elev);
-      if (a.done) {
+      const distT = Math.hypot(m.targetX - m.x, m.targetY - m.y);
+      const a = distT < CELL_WU * 0.75
+        ? null // close enough — arrived
+        : stepAutopilot(grid, trip, m.x, m.y, now, this.worldW, this.worldH, m.elev);
+      if (!a || a.done) {
         m.tripActive = false;
         m.trip = null;
         m.moving = false;

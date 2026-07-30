@@ -18,6 +18,7 @@ export interface MonsterDef {
   frameH: number;
   root: string; // repo-relative dir under monsters/
   walkAnim: string; // resolved walk animation key
+  idleAnim?: string | null; // resolved idle key (null: art has no idle)
   animations: Record<string, Record<string, number>>; // animKey -> dir -> frameCount
   strips: Record<string, Record<string, string>>; // animKey -> dir -> served URL
   stripDims?: Record<string, Record<string, { w: number; h: number }>>; // TRUE per-strip frame size
@@ -42,6 +43,9 @@ export interface MonsterDef {
       air?: number[];
     }
   >;
+  /** The idle state's own per-direction ground contract (independent
+   * framing from walk); null when the art ships no idle animation. */
+  groundIdle?: MonsterDef["ground"] | null;
   artBottom?: number; // pooled fallback feet line (median of per-dir anchors)
   footW?: number; // ground-contact footprint width (px, contact frames)
   bodyW?: number; // widest body width (px)

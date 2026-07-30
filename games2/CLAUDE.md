@@ -499,6 +499,24 @@ visible head/shoulders are ABOVE the surface).
   ground, shrinks — the bird pattern); everyone else is pinned. QA probe:
   `__ml.monsterInfo()` → originX/originY, ground (current dir), frame,
   radius, hover, shadow{w,h}, playing.
+- **IDLE STATE + STOP-SHAKE** (maintainer 2026-07-30): stopped monsters PLAY
+  their resolved IDLE clip (animation_map `idle`, validated against the art;
+  the legacy porings have none and park on the walk contact frame). Idle
+  strips are framed INDEPENDENTLY of walk — the manifest measures them
+  separately (`idleAnim` + `groundIdle` per dir, same contract as `ground`)
+  and the client picks the ACTIVE state's map for origin/shift/air/shadow
+  dims every tick. The stop-shake ("switching direction back and forth like
+  crazy ... when they have walked for a bit and stops") had two layers:
+  SERVER — near a roam target the separation push jiggles position every
+  tick, the 8-way bearing flips sectors and the autopilot thrashed its full
+  1.5s stall window; monsters now arrive GENEROUSLY (< 0.75 cell of the
+  target = done — roam targets are arbitrary cells). CLIENT — monster
+  `stableDir` runs EVERY turn size through the 160ms persistence
+  (`allTurns`), not just 45° ones: monsters are remote puppets, facing lag
+  is invisible, and 180° per-tick thrash becomes structurally impossible
+  (players keep instant large turns for input feel). QA probe: 25s room
+  sweep — all 24 kinds sampled playing idle when stopped, zero frozen,
+  worst flip rate 0.76/s.
 - **Zone DEBUG overlay** — Settings switch "spawn areas", **OFF by default**
   (maintainer 2026-07-30) and persisted in `ml-spawn-areas`. It draws each
   zone's REAL POLYGON, lazy-fetched from the world's `spawns.json` the first
