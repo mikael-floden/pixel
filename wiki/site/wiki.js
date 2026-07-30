@@ -561,6 +561,7 @@ function viewMonsters() {
       const sp = monsterSpawns(m.id);
       return h("a", { class: "card", href: `#/monsters/${m.id}` },
         h("div", { class: "thumb checker" }, h("img", { src: assetUrl(m.preview), alt: m.name, loading: "lazy" })),
+        levelBadge(st),
         h("div", { class: "card-name" }, m.name),
         h("div", { class: "card-sub" },
           `HP ${st.max_hp ?? "?"} · DMG ${st.damage ?? "?"} · XP ${st.xp ?? "?"}${state.admin && !m.inGame ? " · not in game yet" : ""}`),
@@ -570,12 +571,36 @@ function viewMonsters() {
         h("div", { class: "card-badges" }, ...entityBadge("monsters", m.path)));
     })));
 }
+const monsterLore = (m) => m.lore ?? `Travellers tell of the ${m.name} roaming the wilds of Nangijala. What it wants — and what it guards — no chronicler has written down yet.`;
+const objectBlurb = (o) => `${o.description} · ${o.category}${o.placement ? ` · world height ${o.placement.world_height_m}m (${o.placement.world_px_height}px)` : ""}`;
+/** A lore paragraph that always occupies the height of the LONGEST lore in
+ *  its domain, so paging next/next/next can't move the animation viewer
+ *  below it (maintainer 2026-07-30: "the animation preview jumps up and
+ *  down constantly"). Blurbs run 2-4 lines and the line count also depends
+ *  on the column width, so a hardcoded min-height would be wrong on some
+ *  phone; instead every blurb is stacked in ONE grid cell with only the real
+ *  one visible — the row is then exactly as tall as the tallest, measured by
+ *  the browser at whatever width it actually has. */
+function loreSlot(text, all) {
+  const ghosts = [...new Set(all)].filter((t) => t !== text)
+    .map((t) => h("p", { class: "muted lore ghost", "aria-hidden": "true" }, t));
+  return h("div", { class: "lore-slot" }, h("p", { class: "muted lore" }, text), ...ghosts);
+}
+/** The level chip that sits under a monster's picture — on the cards AND on
+ *  the monster page, where it also gives the portrait column a constant
+ *  height so paging next/next/next doesn't shift the animation (maintainer
+ *  2026-07-30). Levels live in live/tuning/monsters.json; see build.mjs. */
+function levelBadge(stats) {
+  return h("div", { class: "level-badge", title: "How hard this creature is to fight" },
+    "Level ", h("b", {}, String(stats.level ?? "?")));
+}
 /** A monster's effective stats: its tuned entry over the shared defaults. */
 function monsterStats(id) {
   const t = state.tuning.monsters;
   return { ...(t?.defaults ?? {}), ...(t?.monsters?.[id] ?? {}) };
 }
 const STAT_FIELDS = [
+  ["level", "Level", 1],
   ["max_hp", "Max HP", 1], ["damage", "Damage", 1], ["speed_wu", "Speed (wu/s)", 1],
   ["aggro_radius_wu", "Aggro radius (wu)", 1], ["attack_cooldown_ms", "Attack cooldown (ms)", 10],
   ["xp", "XP reward", 1], ["scale", "Display scale", 0.05],
@@ -730,13 +755,15 @@ function viewMonster(id) {
   return h("div", {},
     crumbRow("#/monsters", "← Monsters", "monsters", state.data.domains.monsters, m.id),
     h("div", { class: "detail-head" },
-      h("div", { class: "portrait checker" }, h("img", { src: assetUrl(m.preview), alt: m.name })),
+      h("div", { class: "portrait-col" },
+        h("div", { class: "portrait checker" }, h("img", { src: assetUrl(m.preview), alt: m.name })),
+        levelBadge(monsterStats(m.id))),
       h("div", { class: "meta" },
         h("h1", {}, m.name),
         // PLAYER-facing lore: the monsters domain's own blurb (monster.json
         // `lore`) when it ships one, else a generic placeholder until the
         // lore agent covers the stragglers (maintainer 2026-07-30).
-        h("p", { class: "muted lore" }, m.lore ?? `Travellers tell of the ${m.name} roaming the wilds of Nangijala. What it wants — and what it guards — no chronicler has written down yet.`),
+        loreSlot(monsterLore(m), state.data.domains.monsters.map(monsterLore)),
         // How many of these actually roam the world players enter.
         (() => {
           const sp = monsterSpawns(m.id);
@@ -1040,7 +1067,7 @@ function viewObject(id) {
       h("div", { class: "portrait checker" }, h("img", { src: assetUrl(o.preview), alt: o.name })),
       h("div", { class: "meta" },
         h("h1", {}, o.name),
-        h("p", { class: "muted" }, `${o.description} · ${o.category}${o.placement ? ` · world height ${o.placement.world_height_m}m (${o.placement.world_px_height}px)` : ""}`),
+        loreSlot(objectBlurb(o), state.data.domains.objects.map(objectBlurb)),
         feedbackRow("objects", o.path))),
     hasAnims ? h("div", { class: "panel" }, h("div", { class: "panel-title" }, "Animations"), playerEl) : h("p", { class: "muted" }, "No animations."));
 }

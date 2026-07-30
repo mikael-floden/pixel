@@ -208,7 +208,27 @@ button { font: inherit; cursor: pointer; }
   display: flex; align-items: center; justify-content: center; overflow: hidden;
 }
 .detail-head .portrait img { max-width: 100%; max-height: 100%; }
+.detail-head .portrait-col { flex: none; display: flex; flex-direction: column; gap: 8px; }
+/* Every blurb in the domain stacked in ONE grid cell, only the real one
+   visible: the row is exactly as tall as the tallest at whatever width the
+   column happens to have, so the panel below never moves between pages. */
+.lore-slot { display: grid; }
+/* Tighter than a paragraph's default 1em top/bottom: reserving the tallest
+   blurb leaves slack on the shorter ones, and the maintainer allowed a few
+   px off the spacing under the name to pay for it (2026-07-30). */
+.lore-slot > * { grid-area: 1 / 1; margin: 10px 0 6px; }
+.lore-slot .ghost { visibility: hidden; pointer-events: none; user-select: none; }
 .detail-head .meta { flex: 1; min-width: 240px; }
+/* The level chip under a monster's picture — the one-glance "how hard is
+   this to fight?" (maintainer 2026-07-30). Same chip on the cards and the
+   monster page, so the eye finds it in the same place either way. */
+.level-badge {
+  text-align: center; font-size: 13px; color: var(--muted);
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 4px 8px; line-height: 1.4;
+}
+.level-badge b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.card .level-badge { margin: 8px 0 2px; }
 .crumb { font-size: 13px; color: var(--muted); margin-bottom: 10px; display: inline-block; }
 
 .panel {

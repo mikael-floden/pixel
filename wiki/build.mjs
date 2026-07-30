@@ -515,18 +515,77 @@ function markMusicUsage(music) {
   for (const t of music) t.usedBy = bed && t.id === bed.id ? ["background bed"] : [];
 }
 
+// ------------------------------------------------------------ monster LEVEL
+// A monster's LEVEL is the wiki's one-glance answer to "how hard is this to
+// fight?" (maintainer 2026-07-30). Nothing in the monsters domain carries a
+// difficulty, so the first pass is DERIVED from the two things this repo can
+// actually measure, and then tuned by hand in the admin Stats panel — the
+// seed NEVER overwrites an entry that already has a level:
+//   SIZE       the biggest the creature ever draws, over every state and
+//              direction (art_bounds.json). Diretusk fills 176 art px of
+//              diagonal, Mirewart 33.
+//   REMOTENESS cells from the player's spawn (the bonfire) to the nearest
+//              cell of its nearest habitat — the classic level gate: what
+//              lives where you arrive is what a level-1 player meets first.
+// Both are taken as RANK percentiles so one outlier can't squash the ladder,
+// weighted 0.7/0.3 toward size, then spread BY RANK over 1..20 so the result
+// reads as a ladder instead of clumping in the middle.
+function seedMonsterLevels(monsters, world, artBounds) {
+  const ids = (monsters ?? []).map((m) => m.id);
+  if (!ids.length) return {};
+  const area = {};
+  for (const [key, bb] of Object.entries(artBounds?.clips ?? {})) {
+    const path = key.split("|")[0];
+    if (!path.startsWith("monsters/")) continue;
+    const id = path.slice("monsters/".length);
+    area[id] = Math.max(area[id] ?? 0, (bb[2] - bb[0]) * (bb[3] - bb[1]));
+  }
+  const spawn = readJson(join(ROOT, "maps2", "worlds", defaultWorldName(), "world.json"))?.spawn;
+  const dist = {};
+  if (Array.isArray(spawn) && world?.map?.monsters) {
+    const [sc, sr] = spawn;
+    for (const [id, zones] of Object.entries(world.map.monsters)) {
+      let best = Infinity;
+      for (const z of zones ?? [])
+        for (const [row, , c0, c1] of z.spans ?? []) {
+          const c = Math.min(Math.max(sc, c0), c1);   // nearest col in the run
+          best = Math.min(best, Math.hypot(c - sc, row - sr));
+        }
+      if (Number.isFinite(best)) dist[id] = best;
+    }
+  }
+  const pctOf = (vals) => {
+    const sorted = [...vals].sort((a, b) => a - b);
+    return (v) => (sorted.length < 2 ? 0 : sorted.filter((x) => x < v).length / (sorted.length - 1));
+  };
+  const pSize = pctOf(ids.map((i) => area[i] ?? 0));
+  const pDist = pctOf(Object.values(dist));
+  const ranked = ids
+    // An unspawned monster has no habitat to measure — score it mid-field
+    // rather than pretending it lives on top of the bonfire.
+    .map((id) => ({ id, score: 0.7 * pSize(area[id] ?? 0) + 0.3 * (id in dist ? pDist(dist[id]) : 0.5) }))
+    .sort((a, b) => a.score - b.score || a.id.localeCompare(b.id));
+  const out = {};
+  ranked.forEach((r, i) => { out[r.id] = Math.round(1 + (19 * i) / Math.max(1, ranked.length - 1)); });
+  return out;
+}
+
 // ------------------------------------------------------- tuning seed/merge
-function seedMonsterTuning(monsters) {
+function seedMonsterTuning(monsters, levels) {
   const path = join(ROOT, "live", "tuning", "monsters.json");
   const existing = readJson(path) ?? {};
-  const defaults = existing.defaults ?? {
+  const defaults = { level: 1, ...(existing.defaults ?? {
     max_hp: 20, damage: 3, speed_wu: 35, aggro_radius_wu: 96,
     attack_cooldown_ms: 1200, xp: 5, scale: 1.0, loot: [],
-  };
+  }) };
   const tuned = existing.monsters ?? {};
-  let added = 0;
+  let added = 0, levelled = 0;
   for (const m of monsters ?? []) {
-    if (!tuned[m.id]) { tuned[m.id] = { ...defaults, loot: [] }; added++; }
+    const lvl = levels?.[m.id] ?? defaults.level;
+    if (!tuned[m.id]) { tuned[m.id] = { level: lvl, ...defaults, loot: [] }; tuned[m.id].level = lvl; added++; }
+    // Backfill entries seeded before levels existed. An entry the maintainer
+    // has already levelled keeps its number — this is a seed, not a rewrite.
+    else if (tuned[m.id].level == null) { tuned[m.id] = { level: lvl, ...tuned[m.id] }; levelled++; }
   }
   const out = {
     format: "pixel-wiki-tuning-monsters@1",
@@ -535,7 +594,7 @@ function seedMonsterTuning(monsters) {
     monsters: Object.fromEntries(Object.entries(tuned).sort(([a], [b]) => a.localeCompare(b))),
   };
   try { writeFileSync(path, JSON.stringify(out, null, 2) + "\n"); } catch { /* read-only fs (Docker) is fine */ }
-  return { tuning: out, added };
+  return { tuning: out, added, levelled };
 }
 
 // -------------------------------------------------------------------- main
@@ -568,7 +627,7 @@ for (const [dom, list] of Object.entries({ monsters, characters, objects })) {
 const world = buildWorldUsage();
 markSoundUsage(sounds);
 markMusicUsage(music);
-const { added } = seedMonsterTuning(monsters);
+const { added, levelled } = seedMonsterTuning(monsters, seedMonsterLevels(monsters, world, artBounds));
 
 const data = {
   format: "pixel-wiki-data@1",
@@ -607,4 +666,4 @@ const data = {
 
 writeFileSync(OUT, JSON.stringify(data));
 console.log(`[wiki] wrote ${OUT}`);
-console.log(`[wiki] ${JSON.stringify(data.counts)}${added ? ` — seeded ${added} new monster(s) into tuning/monsters.json` : ""}`);
+console.log(`[wiki] ${JSON.stringify(data.counts)}${added ? ` — seeded ${added} new monster(s) into tuning/monsters.json` : ""}${levelled ? ` — backfilled ${levelled} monster level(s)` : ""}`);

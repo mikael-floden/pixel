@@ -176,12 +176,56 @@ Audio "used" is **referenced by the game**, not merely present:
   `composer/engine/music.ts`); the title/night beds are the composer's own
   mp3s, not music-domain tracks.
 
+## Monster LEVEL — the one-glance difficulty
+
+Every monster carries a `level` (1-20), shown as a chip **under its picture**
+on the cards AND on the monster page, so the eye finds it in the same place
+either way (maintainer 2026-07-30). Nothing in the monsters domain carries a
+difficulty, so the first pass is DERIVED by `build.mjs` from the two things
+this repo can actually measure, then tuned by hand in the admin Stats panel —
+**the seed never overwrites a level that already exists**:
+
+- **size** — the biggest the creature ever draws over every state and
+  direction (`art_bounds.json`): Diretusk 176 art px of diagonal, Mirewart 33;
+- **remoteness** — cells from the player's spawn (the bonfire) to the nearest
+  cell of its nearest habitat: the classic level gate, what lives where you
+  arrive is what a level-1 player meets first.
+
+Both as RANK percentiles (one outlier can't squash the ladder), weighted
+0.7/0.3 toward size, spread BY RANK over 1-20. Result: Mirewart 1 → the blobs
+2-3 → Quillkin/Fluffang 4-5 → the mid-field cats and salamanders → Frostwraith
+17, Balefiend/Mosscairn 18, Rimeshard 19, Diretusk 20. An unspawned monster
+scores mid-field on remoteness rather than pretending it lives on the bonfire.
+
+## Paging must not move the animation
+
+The maintainer pages monsters with next/next/next and the viewer below must
+not move a pixel. Three things had to be fixed, in this order:
+
+1. the **title** wrapping to two lines — solved by the monsters agent's short
+   in-game names (longest 11 chars; at the drawer's real geometry the title
+   column is only ~248px beside the portrait, where 30px type wraps at ~15);
+2. the **stage** resizing per creature — see the section above;
+3. the **blurb** running 2-4 lines. Line count depends on the column width, so
+   a hardcoded `min-height` is wrong on some phone; instead `loreSlot()` puts
+   every blurb in the domain in ONE css-grid cell with only the real one
+   visible, and the row comes out exactly as tall as the tallest at whatever
+   width it actually has. Reserving the tallest costs slack on short blurbs,
+   paid for by trimming the paragraph's 1em margins to 10/6px (the maintainer
+   allowed "a few pixels" off the spacing under the name).
+
+Measured over all 24 monster pages at 360/380/400/412/426/440/460px: **0px of
+movement** at every width (was 70px at 426px). Objects too (was 38px). Below
+~346px a 20px step remains, from the state-tab row inside the Animations panel
+wrapping for the 6 monsters whose `angry` falls back to idle (`angry (→idle)`
+is a wider label) — not the header.
+
 ## Tuning files
 
 - `live/tuning/monsters.json` (`pixel-wiki-tuning-monsters@1`) — per-monster
-  stats (`max_hp` `damage` `speed_wu` `aggro_radius_wu` `attack_cooldown_ms`
-  `xp` `scale` `loot[]`). `build.mjs` seeds every monster on the roster with
-  `defaults` and PRESERVES existing edits. Monster combat isn't in the game
+  stats (`level` `max_hp` `damage` `speed_wu` `aggro_radius_wu`
+  `attack_cooldown_ms` `xp` `scale` `loot[]`). `build.mjs` seeds every monster
+  on the roster with `defaults` and PRESERVES existing edits. Monster combat isn't in the game
   yet — this file is written first so the games agent can adopt it as the
   authoritative stat source when the monster brain lands (board request sent).
 - `live/tuning/constants.json` (`pixel-wiki-tuning-constants@1`) — overrides
