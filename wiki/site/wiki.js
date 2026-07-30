@@ -443,14 +443,17 @@ function entityBadge(domain, id) {
 const matches = (q, ...hay) => !q || hay.some((s) => (s ?? "").toLowerCase().includes(q));
 
 // ← back crumb + prev/next through the domain's full list (wraps around).
+// Layout rule (maintainer 2026-07-30): the "X / N" counter sits LEFT of the
+// buttons so they stay in the same spot when the number gets wider.
 function crumbRow(backHref, backLabel, base, list, id) {
   const i = list.findIndex((x) => x.id === id);
+  const prev = list[(i - 1 + list.length) % list.length];
+  const next = list[(i + 1) % list.length];
   const nav = i >= 0 && list.length > 1
     ? h("span", { class: "detail-nav" },
-        h("a", { href: `#/${base}/${list[(i - 1 + list.length) % list.length].id}` },
-          `‹ ${list[(i - 1 + list.length) % list.length].name}`),
-        h("a", { href: `#/${base}/${list[(i + 1) % list.length].id}` },
-          `${list[(i + 1) % list.length].name} ›`))
+        h("span", { class: "detail-count" }, `${i + 1} / ${list.length}`),
+        h("a", { class: "nav-btn", href: `#/${base}/${prev.id}`, title: `Previous: ${prev.name}`, "aria-label": `Previous: ${prev.name}` }, "‹"),
+        h("a", { class: "nav-btn", href: `#/${base}/${next.id}`, title: `Next: ${next.name}`, "aria-label": `Next: ${next.name}` }, "›"))
     : null;
   return h("div", { class: "crumb-row" }, h("a", { class: "crumb", href: backHref }, backLabel), nav);
 }
