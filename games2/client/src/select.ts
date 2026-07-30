@@ -70,9 +70,11 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       <button id="ml-install" class="ml-corner ml-install" hidden type="button"
         title="Install game" aria-label="Install game">⤓ Install</button>
       <button id="ml-wiki" class="ml-corner ml-wiki" type="button"
-         title="Game wiki — all monsters, characters, tiles, sounds & tuning">&#128214; Wiki</button>
+         title="Game wiki — all monsters, characters, tiles, sounds &amp; tuning"><span
+         class="ml-cicon">&#128214;</span>Wiki</button>
       <button id="ml-theme-btn" class="ml-corner ml-theme" type="button"
-         title="Switch light/dark — one theme for the game and the wiki">◐ Theme</button>`;
+         title="Switch light/dark — one theme for the game and the wiki"><span
+         class="ml-cicon">&#127767;</span>Theme</button>`;
     document.body.appendChild(overlay);
     // Arm the title theme the moment the screen mounts — NOT only on a button
     // press (maintainer 2026-07-19). Browser autoplay still needs one gesture,
@@ -508,7 +510,13 @@ function injectStyles() {
      min-width equalises the boxes despite the different word lengths — stacked
      in a column, a matched pair reads deliberate. */
   .ml-wiki,.ml-theme{left:12px;padding:10px 16px;font-size:15px;border-radius:11px;
-    min-width:118px;text-align:center}
+    min-width:118px;display:flex;align-items:center;justify-content:flex-start;gap:8px}
+  /* Both leading glyphs are EMOJI in a fixed box, so the pair can't differ in
+     size or baseline (maintainer 2026-07-30: "the icon has different size and
+     is not aligned") — the old ◐ was a thin TEXT glyph next to a colour emoji,
+     which no font pairing renders alike. */
+  .ml-cicon{flex:none;width:19px;height:19px;font-size:16px;line-height:19px;
+    text-align:center;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
   .ml-theme{top:62px}
   .ml-install{right:12px}
   .ml-install[hidden]{display:none}`;
