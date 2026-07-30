@@ -222,6 +222,24 @@ async function discardAll() {
 }
 
 /* --------------------------------------------------------------- player */
+// The ONE box every creature is drawn in, so their sizes can be compared:
+// `art` = the biggest frame on the roster, `scale` = integer px-per-art-px
+// that fits it on screen, `pad` = room under the ground line for the widest
+// shadow's lower half. Frame pixels ARE comparable — the game renders every
+// monster and character at the same zoom with no per-kind display scale.
+let _rosterBox = null;
+function rosterBox() {
+  if (_rosterBox) return _rosterBox;
+  let art = 64, shadowH = 0;
+  for (const dom of ["monsters", "characters"]) {
+    for (const e of state.data?.domains?.[dom] ?? []) {
+      art = Math.max(art, e.frameW ?? 0, e.frameH ?? 0);
+      shadowH = Math.max(shadowH, e.shadow?.h ?? 0);
+    }
+  }
+  const scale = Math.max(1, Math.min(6, Math.floor(380 / art) || 1));
+  return (_rosterBox = { art, scale, pad: Math.ceil(shadowH / 2) + 4 });
+}
 // One animation player: strips (monsters/objects) or per-frame urls
 // (characters). Nearest-neighbour scaling, play/pause, frame-step, speed,
 // and the game's nadir shadow for monsters.
@@ -262,37 +280,49 @@ function makePlayer(entity, kind) {
       });
     }
   }
-  function scaleFor(fw, fh) {
-    if (cur.zoom) return cur.zoom;
-    const target = 260;
-    return Math.max(1, Math.min(6, Math.floor(target / Math.max(fw, fh)) || 1));
-  }
   function draw() {
     const fw = clip?.fw ?? entity.frameW ?? 64, fh = clip?.fh ?? entity.frameH ?? 64;
-    const s = scaleFor(fw, fh);
-    // A hovering creature (butterfly_dragon) floats hoverPx above the ground
-    // line — give the canvas that extra height so nothing is cropped: the
-    // sprite draws at the top, the shadow sits hoverPx below its frame.
+    const rb = rosterBox();
+    // SHARED SCALE by default: one px-per-art-px for every creature, drawn in
+    // a common box on a common ground line, so a frog really looks smaller
+    // than a mammoth. (A per-sprite "fit the stage" zoom shipped once and made
+    // every creature the same size on screen — maintainer 2026-07-30.) The
+    // zoom buttons override it to inspect one sprite up close.
+    const shared = !cur.zoom;
+    const s = cur.zoom || rb.scale;
     const hover = (entity.hoverPx ?? 0) * s;
-    const wantW = fw * s, wantH = fh * s + hover;
+    const artW = shared ? Math.max(rb.art, fw) : fw;
+    const artH = shared ? Math.max(rb.art, fh) : fh;
+    const wantW = Math.max(artW, (entity.shadow?.w ?? 0) + 4) * s;
+    const wantH = (artH + rb.pad) * s + hover;
     if (canvas.width !== wantW || canvas.height !== wantH) {
       canvas.width = wantW; canvas.height = wantH;
     }
     ctx.imageSmoothingEnabled = false;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (!clip) { frameNo.textContent = "—"; return; }
+    // Feet on the ground line; a hovering creature (butterfly_dragon) lifts
+    // off it by hoverPx while its shadow stays down.
+    const ground = artH * s + hover;
+    const footFrac = entity.artBottom ?? 1;
+    const dx = Math.round((canvas.width - fw * s) / 2);
+    const dy = Math.round(ground - footFrac * fh * s - hover);
+    if (shared) {
+      ctx.fillStyle = "rgba(120,110,90,0.25)";
+      ctx.fillRect(0, ground, canvas.width, Math.max(1, Math.round(s / 2)));
+    }
     if (cur.shadow && entity.shadow) {
       // The game's ground ellipse: centred, sitting at the art-measured foot line.
       ctx.fillStyle = "rgba(20,16,8,0.38)";
       ctx.beginPath();
-      ctx.ellipse(canvas.width / 2, entity.artBottom * fh * s + hover, (entity.shadow.w * s) / 2, (entity.shadow.h * s) / 2, 0, 0, Math.PI * 2);
+      ctx.ellipse(canvas.width / 2, ground, (entity.shadow.w * s) / 2, (entity.shadow.h * s) / 2, 0, 0, Math.PI * 2);
       ctx.fill();
     }
     const f = Math.min(cur.frame, clip.frames - 1);
     if (img?.complete && img.naturalWidth) {
-      ctx.drawImage(img, f * (img.naturalWidth / clip.frames), 0, img.naturalWidth / clip.frames, img.naturalHeight, 0, 0, fw * s, fh * s);
+      ctx.drawImage(img, f * (img.naturalWidth / clip.frames), 0, img.naturalWidth / clip.frames, img.naturalHeight, dx, dy, fw * s, fh * s);
     } else if (frameImgs[f]?.complete && frameImgs[f].naturalWidth) {
-      ctx.drawImage(frameImgs[f], 0, 0, fw * s, fh * s);
+      ctx.drawImage(frameImgs[f], dx, dy, fw * s, fh * s);
     }
     frameNo.textContent = `${f + 1} / ${clip.frames}`;
   }
@@ -342,7 +372,8 @@ function makePlayer(entity, kind) {
   const step = (dn) => { cur.playing = false; playBtn.textContent = "▶"; cur.frame = ((cur.frame + dn) % (clip?.frames ?? 1) + (clip?.frames ?? 1)) % (clip?.frames ?? 1); draw(); };
   const speedSeg = h("span", { class: "seg" }, ...[0.25, 0.5, 1, 2].map((sp) =>
     h("button", { class: sp === 1 ? "on" : "", onclick: (e) => { cur.speed = sp; e.target.parentElement.querySelectorAll("button").forEach((b) => b.classList.toggle("on", b === e.target)); } }, `${sp}×`)));
-  const zoomSeg = h("span", { class: "seg" }, ...[["auto", 0], ["1×", 1], ["2×", 2], ["4×", 4]].map(([lbl, z], i) =>
+  const zoomSeg = h("span", { class: "seg", title: "“same” draws every creature at one scale so you can compare sizes" },
+    ...[["same", 0], ["1×", 1], ["2×", 2], ["4×", 4]].map(([lbl, z], i) =>
     h("button", { class: i === 0 ? "on" : "", onclick: (e) => { cur.zoom = z; e.target.parentElement.querySelectorAll("button").forEach((b) => b.classList.toggle("on", b === e.target)); draw(); } }, lbl)));
 
   const controls2 = h("div", { class: "player-controls" },
