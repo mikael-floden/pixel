@@ -90,6 +90,7 @@ def collect():
             "kind": meta.get("source", {}).get("kind"),
             "url": meta.get("source", {}).get("url"),
             "prompt": (meta.get("source", {}).get("prompt") or "").strip(),
+            "lore": meta.get("lore") or "",
             "size": meta.get("size"),
             "sprite": base64.b64encode(buf.getvalue()).decode(),
             "rows": rows,
@@ -153,7 +154,10 @@ PAGE = r"""<meta charset="utf-8">
           background:var(--chip); color:var(--muted); }
   .mmeta { color:var(--muted); font-size:12px; margin-top:2px; }
   .mmeta a { color:var(--accent); text-decoration:none; }
-  .prompt { color:var(--muted); font-size:12.5px; max-width:62ch; }
+  .lore { color:var(--ink); font-size:13px; max-width:62ch; margin-top:3px;
+          font-style:italic; }
+  .prompt { color:var(--muted); font-size:11.5px; max-width:62ch; margin-top:2px;
+            opacity:.75; }
   .row { display:flex; gap:14px; padding:10px 14px; align-items:center;
          border-top:1px solid var(--card-line); }
   .row:first-of-type { border-top:none; }
@@ -212,6 +216,7 @@ for (const m of DATA.monsters) {
       <div class="mtitle">${m.name}<span class="kind">${m.kind}</span></div>
       <div class="mmeta mono">${m.id} · ${m.size.width}×${m.size.height}px ·
         <a href="${m.url}" target="_blank" rel="noopener">PixelLab ↗</a></div>
+      <div class="lore">${m.lore}</div>
       <div class="prompt">${m.prompt}</div>
     </div>`;
   card.appendChild(head);

@@ -1,11 +1,11 @@
 {
-  "_comment": "Roster of monsters, reconciled against PixelLab by pipeline/sync.py \u2014 the MONSTER tag on PixelLab decides membership; this file just pins each monster's stable folder id, display name and animation renames ({exact PixelLab animation name: idle|walk|angry|attack|die}). Hand-tune names/renames freely; sync preserves them across runs. Entries whose pixellab_id loses its tag are dropped (and their folder pruned). Each entry also carries `lore`: a short RPG-flavour description for the wiki, copied into monster.json on every sync (edit it here).",
+  "_comment": "Roster of monsters, reconciled against PixelLab by pipeline/sync.py \u2014 the MONSTER tag on PixelLab decides membership; this file just pins each monster's stable folder id, in-game display `name` (max 12 chars; folder ids keep the original prompt wording and never change) and animation renames ({exact PixelLab animation name: idle|walk|angry|attack|die}). Hand-tune names/renames freely; sync preserves them across runs. Entries whose pixellab_id loses its tag are dropped (and their folder pruned). Each entry also carries `lore`: a short RPG-flavour description for the wiki, copied into monster.json on every sync (edit it here).",
   "monsters": [
     {
       "id": "butterfly_dragon",
       "kind": "object",
       "pixellab_id": "adc65dc6-1e76-44ff-80b7-8e086379384d",
-      "name": "Butterfly Dragon",
+      "name": "Emberwing",
       "renames": {
         "Calm idle": "idle",
         "Flying hovering jump": "walk",
@@ -19,7 +19,7 @@
       "id": "mystical_frog",
       "kind": "object",
       "pixellab_id": "720c978c-30fe-41c2-8ad9-c9b30b5d3983",
-      "name": "Mystical Frog",
+      "name": "Mirewart",
       "renames": {
         "Calm peaceful idle": "idle",
         "Jumps like a frog": "walk",
@@ -33,7 +33,7 @@
       "id": "hedgehog",
       "kind": "object",
       "pixellab_id": "80db8ba5-d79a-49ee-889b-14ee3f97c027",
-      "name": "Hedgehog",
+      "name": "Quillkin",
       "renames": {
         "Calm idle": "idle",
         "Walks with both legs": "walk",
@@ -47,7 +47,7 @@
       "id": "white_rabbit",
       "kind": "object",
       "pixellab_id": "20fd56a9-0cf2-47d7-b14a-693cd2cfcaf8",
-      "name": "White Rabbit",
+      "name": "Fluffang",
       "renames": {
         "Calm idle": "idle",
         "Jumps forward like a rabbit": "walk",
@@ -61,7 +61,7 @@
       "id": "malformed_creature",
       "kind": "object",
       "pixellab_id": "ace728e2-0cbb-4cc6-9d09-5340f784bdc9",
-      "name": "Malformed Creature",
+      "name": "Palehusk",
       "renames": {
         "Calm Idle": "idle",
         "Walk with the legs, full cycle, should look good in an animated walking loop. Drags one's feet like a zoombie.": "walk",
@@ -75,7 +75,7 @@
       "id": "masked_shadow_creature",
       "kind": "object",
       "pixellab_id": "bd869d98-0938-4a46-9fcf-22d9719a92ff",
-      "name": "Masked Shadow Creature",
+      "name": "Grinmask",
       "renames": {
         "Idle": "idle",
         "skips along": "walk",
@@ -89,7 +89,7 @@
       "id": "night_beast",
       "kind": "object",
       "pixellab_id": "7242eed6-0dcc-4395-b2fb-ff84a4d05e82",
-      "name": "Night Beast",
+      "name": "Glowbone",
       "renames": {
         "Calm idle breathing": "idle",
         "Run with all 4 legs. Perfect loop animation.": "walk",
@@ -103,7 +103,7 @@
       "id": "lava_salamander_2",
       "kind": "object",
       "pixellab_id": "af436ac4-70b3-499c-a4cf-de682207cd10",
-      "name": "Lava Salamander II",
+      "name": "Palemaw",
       "renames": {
         "Idle": "idle",
         "Walk with all 4 legs, full cycle, should look good in an animated walking loop. Should walk like a salamander, moving the entire body while walking": "walk",
@@ -111,13 +111,13 @@
         "Big bite attack": "attack",
         "Cut in half, bleeds and dissapers": "die"
       },
-      "lore": "An older, fiercer brood-mate of the fire-biters \u2014 all jaw and scorched scale. It splits open rather than yield."
+      "lore": "A pale cave-dweller with a jaw built for bone. It bites once, hard, and seldom needs to bite twice."
     },
     {
       "id": "lava_salamander",
       "kind": "object",
       "pixellab_id": "4585539d-d732-4734-8139-3eb545f50144",
-      "name": "Lava Salamander",
+      "name": "Emberjaw",
       "renames": {
         "Idle": "idle",
         "Walk with all 4 legs in an animation that is easy to loop": "walk",
@@ -131,7 +131,7 @@
       "id": "ice_crystal_golem",
       "kind": "object",
       "pixellab_id": "66edbc4d-682f-4c5b-a8dc-b2d8f667f7b7",
-      "name": "Ice Crystal Golem",
+      "name": "Rimeshard",
       "renames": {
         "Idle": "idle",
         "Walk with the legs, full cycle, should look good in an animated walking loop": "walk",
@@ -144,7 +144,7 @@
       "id": "water_poring",
       "kind": "object",
       "pixellab_id": "57b9bc64-41b6-429e-9eed-f8aac0f9ebb0",
-      "name": "Water Poring",
+      "name": "Puddling",
       "renames": {
         "Idle": "idle",
         "Jumps": "walk",
@@ -158,7 +158,7 @@
       "id": "stone_turtle",
       "kind": "object",
       "pixellab_id": "06c0b794-2cff-4a9a-be40-3a150cf2a824",
-      "name": "Stone Turtle",
+      "name": "Magmashell",
       "renames": {
         "Idle": "idle",
         "Walk with all 4 legs, full cycle, should look good in an animated walking loop": "walk",
@@ -172,7 +172,7 @@
       "id": "tree_stump",
       "kind": "object",
       "pixellab_id": "9f84b290-6445-45ac-bdd0-a361ff32571e",
-      "name": "Mossy Tree Stump",
+      "name": "Stumpling",
       "renames": {
         "Idle": "idle",
         "Crawling using the roots": "walk",
@@ -186,20 +186,20 @@
       "id": "forest_poring",
       "kind": "object",
       "pixellab_id": "e17b5c74-894a-4b53-83c3-a530044f04db",
-      "name": "Forest Poring",
+      "name": "Dewling",
       "renames": {
         "Idle": "idle",
         "Jumping": "walk",
         "Swings the top water droplet in an angry attack": "attack",
         "Melts into a puddle of water and dissapers": "die"
       },
-      "lore": "A forest-fed blob, sweet-natured until provoked \u2014 then it swings the dewdrop on its head like a flail."
+      "lore": "A pale meadow blob that balances a dewdrop like a crown \u2014 and swings it at whatever wanders too close."
     },
     {
       "id": "stone_golem",
       "kind": "object",
       "pixellab_id": "d45b26b4-b2a6-427e-aca0-00ab0cd35e9a",
-      "name": "Stone Golem",
+      "name": "Mosscairn",
       "renames": {
         "Idle": "idle",
         "Walk with the legs, full cycle, should look good i": "walk",
@@ -213,7 +213,7 @@
       "id": "lava_poring",
       "kind": "object",
       "pixellab_id": "3bbbeaaa-9bff-4870-bee3-56a8fcb8321d",
-      "name": "Lava Poring",
+      "name": "Slagling",
       "renames": {
         "Idle": "idle",
         "Jumping": "walk",
@@ -226,20 +226,20 @@
       "id": "forest_poring_2",
       "kind": "object",
       "pixellab_id": "5996c65a-ed16-4079-a592-88d388110bf5",
-      "name": "Forest Poring II",
+      "name": "Sprigling",
       "renames": {
         "Idle": "idle",
         "Jumping": "walk",
         "tiny wooden sword attack with white motion trail": "attack",
         "Turns into green smaller balls and dissapers": "die"
       },
-      "lore": "The hardier woodland strain, armed with a splinter of oak. Cut it down and it scatters into smaller blobs."
+      "lore": "A green woodland blob armed with a splinter of oak. Cut it down and it scatters into smaller blobs."
     },
     {
       "id": "diablo_2",
       "kind": "object",
       "pixellab_id": "353c3520-06a8-4456-aa29-acf55858e2a5",
-      "name": "Diablo II",
+      "name": "Balefiend",
       "renames": {
         "swirling dark aura,  the animation should look lik": "idle",
         "Moving forward, the swirling dark aura drags flame": "walk",
@@ -253,7 +253,7 @@
       "id": "diablo",
       "kind": "object",
       "pixellab_id": "a743c13d-7d2a-4e04-8347-306d7cf7b029",
-      "name": "Diablo",
+      "name": "Ashfiend",
       "renames": {
         "Idle": "idle",
         "Jump": "walk",
@@ -266,7 +266,7 @@
       "id": "ice_poring",
       "kind": "object",
       "pixellab_id": "520e6bf5-265f-41cf-9ab7-05094ef4fc48",
-      "name": "Ice Poring",
+      "name": "Frostling",
       "renames": {
         "Idle": "idle",
         "Jump": "walk",
@@ -280,7 +280,7 @@
       "id": "snow_demon",
       "kind": "character",
       "pixellab_id": "cb2f48b8-d2a8-46ca-9254-25c92eae61b7",
-      "name": "Skinny Snow Demon",
+      "name": "Frostwraith",
       "renames": {
         "custom-Calm idle": "idle",
         "custom-Walk (full animation cycle), should look good in a": "walk",
@@ -299,7 +299,7 @@
       "id": "dark_donkey",
       "kind": "character",
       "pixellab_id": "54f7383c-d88e-460e-b6d1-c210a02d8592",
-      "name": "Dark Donkey",
+      "name": "Nightmule",
       "renames": {
         "custom-Calm peiceful idle": "idle",
         "custom-Walking with all 4 legs like a horse ": "walk",
@@ -318,7 +318,7 @@
       "id": "saber_toothed_tiger",
       "kind": "character",
       "pixellab_id": "39f3f72b-6d16-4f47-9243-f87f137f80c7",
-      "name": "Dark Saber-Toothed Tiger",
+      "name": "Duskfang",
       "renames": {
         "custom-Calm idle. Peaceful.": "idle",
         "custom-Running like a tiger": "walk",
@@ -332,7 +332,7 @@
       "id": "mammoth",
       "kind": "character",
       "pixellab_id": "b87303fd-9a57-4a4c-821b-956f9cf46e41",
-      "name": "Mammoth",
+      "name": "Diretusk",
       "renames": {
         "custom-Vary vary subtile idle. No big movement. Calm stil": "idle",
         "custom-Walking both both legs. Move b": "walk",
