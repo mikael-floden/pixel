@@ -238,9 +238,26 @@ not move a pixel. Three things had to be fixed, in this order:
    a hardcoded `min-height` is wrong on some phone; instead `loreSlot()` puts
    every blurb in the domain in ONE css-grid cell with only the real one
    visible, and the row comes out exactly as tall as the tallest at whatever
-   width it actually has. Reserving the tallest costs slack on short blurbs,
-   paid for by trimming the paragraph's 1em margins to 10/6px (the maintainer
-   allowed "a few pixels" off the spacing under the name).
+   width it actually has.
+
+Reserving the tallest blurb costs slack on the short ones, and **where that
+slack lands is the whole game** (maintainer 2026-07-30 circled it as "a lot
+of extra unnecessary space"). Two rules keep it invisible on the monster
+page:
+
+- the blurb is the **last** thing in its column, so its reserve can never
+  open a blank line between two visible elements — it used to sit right
+  above the "N roaming the world" line;
+- the **level chip moved back under the thumbnail**, which makes the left
+  column 167px — taller than the tallest text column that page can produce
+  (title + longest blurb at a phone's ~248px column ≈ 160px). The reserve
+  therefore lands beside a taller neighbour instead of below the text.
+  "N roaming" then rides the row the level chip already opened, on the
+  `.head-strip`, costing nothing.
+
+Do NOT try to win that by enlarging the portrait: at 160px it squeezes the
+text under `.meta`'s 240px `min-width`, the columns stack, and the stage
+drops 150px (measured).
 
 Measured over all 24 monster pages at 360/380/400/412/426/440/460px: **0px of
 movement** at every width (was 70px at 426px). Objects too (was 38px). Below

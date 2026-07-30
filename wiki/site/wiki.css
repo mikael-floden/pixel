@@ -208,7 +208,18 @@ button { font: inherit; cursor: pointer; }
   display: flex; align-items: center; justify-content: center; overflow: hidden;
 }
 .detail-head .portrait img { max-width: 100%; max-height: 100%; }
-.detail-head .portrait-col { flex: none; display: flex; flex-direction: column; gap: 8px; }
+/* Monster head. The text column is unavoidably TALLER than the 132px
+   portrait (title + the longest blurb at a phone's ~248px column ≈ 156px),
+   and the blurb's reserved height has to live somewhere — so the level chip
+   goes back under the thumbnail and ABSORBS it into real content. The left
+   column then measures 167px, out-tops the text column, and the reserve
+   lands beside a taller neighbour where it cannot open a blank line
+   (maintainer 2026-07-30 — "a lot of extra unnecessary space"). Growing the
+   portrait instead backfires: it squeezes the text under its wrap threshold
+   and stacks the columns, which costs far more. */
+.detail-head.tight { margin-bottom: 8px; }
+.detail-head .portrait-col { flex: none; display: flex; flex-direction: column; gap: 8px; width: 132px; }
+.head-strip { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 0 0 14px; }
 /* Every blurb in the domain stacked in ONE grid cell, only the real one
    visible: the row is exactly as tall as the tallest at whatever width the
    column happens to have, so the panel below never moves between pages. */
