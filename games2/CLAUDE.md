@@ -1013,7 +1013,14 @@ visible head/shoulders are ABOVE the surface).
   of the maintainer's hand-drawn art on non-square canvases; a fixed
   square box distorted + fractionally scaled them — maintainer
   2026-07-30 "not pixel perfect"). Tab row + pages share 16px side
-  margins; tabs are 56px tall (48 at ≤640h). The version badge sits
+  margins; tabs are 56px tall (48 at ≤640h) and the row closes with a
+  1px bottom rule (the page scrolls UNDER it). The whole game view is
+  framed by `.ml-edge` — ONE pointer-events-none overlay whose three
+  box-shadows (a) matte the sharp screen corners with --bg so the canvas
+  can't poke through the 16px rounded corners, (b) paint the 2px rule's
+  OUTER px in --bg (so the background reads as wrapping the game) and
+  (c) its inner px in --border. z 150: over HUD/bars/chat/badge, under
+  the fade (200), loading and the wiki drawer. The version badge sits
   bottom-centre on the select screen and moves to a bordered chip at
   the GAME VIEW's bottom-right (above --hud-h) once in the world. NO
   zoom compensation in the new UI: like the wiki it is plain responsive
