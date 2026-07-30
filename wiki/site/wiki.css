@@ -359,6 +359,11 @@ a.stat-tile:hover { text-decoration: none; border-color: var(--border-strong); }
   #sidebar.open { transform: translateX(0); }
   #menu-btn { display: inline-block; }
   #content { padding: 16px 14px 130px; }
+  /* Match the content column: the desktop 26px left the menu button with a
+     26px gap to the edge against its own 13px top/bottom, while everything
+     below it — crumb, portrait, the prev/next buttons' right gap — sat at
+     14px (maintainer 2026-07-30). */
+  #topbar { padding: 12px 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
