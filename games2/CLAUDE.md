@@ -570,6 +570,21 @@ visible head/shoulders are ABOVE the surface).
   ART-MEASURED bullet). Probe: `__ml.monsterInfo()` (per monster: depth,
   coverY, originY, hover, shadow anchor/size/depth, lit visible+tint).
 
+## Depth-fog on BODIES (syncLitCopy)
+
+- Monsters and remote players are COLOURED by the elevation depth-fog like
+  the terrain they stand on (maintainer 2026-07-30: a summit turtle rendered
+  crisp inside heavy haze). Mechanism: every body draws twice — the raw
+  sprite UNDER the fog overlay (the shader fogs it exactly like tiles) and
+  the crisp lit copy ABOVE it (night lighting). The copy's alpha is faded by
+  `night.depthFogAt(col,row,lvl).a` at the body's own surface level, which
+  CROSS-FADES crisp→fogged sprite — compositing to exactly a strength-f fog
+  in the terrain's own colours. NOT transparency: at heavy fog you see the
+  fog-painted body, not through it. The local player is fog-0 by definition
+  (the field is relative to their elevation) so their copy stays full-alpha.
+  Probe: monsterInfo() lit.alpha (measured: own level 1.0, below-player teal
+  band 0.735, saturated summit 0.001 — matches the terrain wash).
+
 ## Living camera (WorldScene.updateChaseCam)
 
 - The camera CHASES the player instead of pinning them dead-centre:

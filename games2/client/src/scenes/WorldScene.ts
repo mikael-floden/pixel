@@ -1589,7 +1589,9 @@ export class WorldScene extends Phaser.Scene {
           frame: mv.sprite.frame.name,
           radius: mv.radius,
           hover: mv.hoverPx,
-          lit: mv.lit ? { visible: mv.lit.visible, tint: mv.lit.tintTopLeft.toString(16) } : null,
+          lit: mv.lit
+            ? { visible: mv.lit.visible, tint: mv.lit.tintTopLeft.toString(16), alpha: +mv.lit.alpha.toFixed(3) }
+            : null,
           // Animation state — a headless probe CAN catch "moving but frozen"
           // (screenshots can't distinguish a stuck walk from freeze-frame idle).
           anim: mv.sprite.anims.getName() || null,
@@ -3802,6 +3804,14 @@ export class WorldScene extends Phaser.Scene {
     }
     const lvl = this.litLevelOf(b);
     const l = this.night!.lightAt(b.fx / CELL_WU, b.fy / CELL_WU, lvl, false);
+    // DEPTH-FOG applies to BODIES too (maintainer 2026-07-30: a summit
+    // monster rendered crisp inside heavy fog — and remote players shared
+    // the bug): the lit copy sits ABOVE the overlay, so it bypasses the
+    // shader's fog wash. Fading the copy by the body's own fog amount
+    // cross-fades it into the fogged under-overlay sprite — which composites
+    // to exactly a strength-f fog on the body, same colour/wash as its
+    // terrain (fog 0 → unchanged crisp copy).
+    const fog = this.night!.depthFogAt(b.fx / CELL_WU, b.fy / CELL_WU, lvl);
     const r = Math.min(255, Math.round(((baseTint >> 16) & 0xff) * Math.min(1, l[0])));
     const g = Math.min(255, Math.round(((baseTint >> 8) & 0xff) * Math.min(1, l[1])));
     const bl = Math.min(255, Math.round((baseTint & 0xff) * Math.min(1, l[2])));
@@ -3812,6 +3822,7 @@ export class WorldScene extends Phaser.Scene {
       .setOrigin(b.sprite.originX, b.sprite.originY)
       .setScale(b.sprite.scaleX, b.sprite.scaleY)
       .setDepth(litDepth(b.sprite.depth))
+      .setAlpha(1 - Math.min(1, Math.max(0, fog.a)))
       .setTint((r << 16) | (g << 8) | bl);
     if (b.coverY !== undefined) {
       // Frame-space y of the occluding wall's top line.
