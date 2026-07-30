@@ -337,6 +337,15 @@ a.stat-tile:hover { text-decoration: none; border-color: var(--border-strong); }
 }
 
 /* ---- responsive ---- */
+/* Menu scrim (mobile): everything right of the open nav darkens; tapping it
+   closes the MENU. Embedded in the game drawer, the parent deepens its own
+   backdrop in sync, so the game strip reads double-dark and closes the menu
+   first, the wiki second (see games2/client/src/wikipanel.ts). */
+#menu-scrim {
+  position: fixed; inset: 0; z-index: 40; background: rgba(10, 8, 4, 0.55);
+  opacity: 0; pointer-events: none; transition: opacity 0.18s ease;
+}
+#menu-scrim.on { opacity: 1; pointer-events: auto; cursor: pointer; }
 @media (max-width: 760px) {
   #sidebar {
     position: fixed; z-index: 50; height: 100dvh; transform: translateX(-100%);

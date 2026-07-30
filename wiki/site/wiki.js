@@ -857,7 +857,17 @@ function route() {
   else view = viewHome();
   $("#content").replaceChildren(view);
   renderNav();
-  $("#sidebar").classList.remove("open");
+  setMenu(false);
+}
+
+// Open/close the mobile nav; keep the scrim and the hosting game drawer
+// (when embedded — same-origin iframe) in sync.
+function setMenu(open) {
+  $("#sidebar").classList.toggle("open", open);
+  $("#menu-scrim").classList.toggle("on", open);
+  if (window.parent !== window) {
+    window.parent.postMessage({ type: "wiki:menu", open }, location.origin);
+  }
 }
 
 /* ----------------------------------------------------------------- boot */
@@ -911,8 +921,14 @@ function initChrome() {
     document.documentElement.dataset.theme = next;
     localStorage.setItem("wiki-theme", next);
   });
-  // sidebar (mobile)
-  $("#menu-btn").addEventListener("click", () => $("#sidebar").classList.toggle("open"));
+  // sidebar (mobile) — a drawer of its own: scrim right of it closes it, and
+  // the game drawer hosting us mirrors the state (double-dark game strip that
+  // closes the menu first; see wikipanel.ts).
+  $("#menu-btn").addEventListener("click", () => setMenu(!$("#sidebar").classList.contains("open")));
+  $("#menu-scrim").addEventListener("click", () => setMenu(false));
+  window.addEventListener("message", (e) => {
+    if (e.origin === location.origin && e.data?.type === "wiki:closeMenu") setMenu(false);
+  });
   // search
   let debounce = null;
   $("#search").addEventListener("input", (e) => {

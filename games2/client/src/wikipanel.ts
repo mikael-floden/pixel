@@ -25,6 +25,8 @@
 let root: HTMLDivElement | null = null;
 let onResize: (() => void) | null = null;
 let onKey: ((e: KeyboardEvent) => void) | null = null;
+let onMsg: ((e: MessageEvent) => void) | null = null;
+let menuOpen = false; // the wiki's OWN nav drawer inside the iframe
 
 const PANEL_FRAC = 0.88;      // leave ≥~45 physical px of game visible
 const PANEL_MAX_CSS = 1200;   // cap on big desktops — a wall of wiki looks broken
@@ -39,6 +41,9 @@ function ensureCss(): void {
   .ml-wikiback{position:absolute;inset:0;background:rgba(8,6,3,0);
     transition:background ${ANIM_MS}ms ease;cursor:pointer}
   .ml-wikiback.on{background:rgba(8,6,3,.62)}
+  /* The wiki's own nav is open: the game strip double-darkens — one more
+     "layer back". Tapping it then closes the MENU, not the wiki. */
+  .ml-wikiback.on.deep{background:rgba(8,6,3,.85)}
   .ml-wikipanel{position:absolute;top:0;left:0;height:100%;
     background:#faf9f5;box-shadow:6px 0 28px rgba(0,0,0,.45);
     transform:translateX(-102%);transition:transform ${ANIM_MS}ms cubic-bezier(.22,.61,.36,1);
@@ -89,9 +94,26 @@ export function openWikiPanel(): void {
   layout(panel, frame);
   onResize = () => { if (root) layout(panel, frame); };
   window.addEventListener("resize", onResize);
-  onKey = (e) => { if (e.key === "Escape") closeWikiPanel(); };
+  // Nested-drawer rule (maintainer 2026-07-30): with the wiki's OWN menu
+  // open, the first tap on the game (and Escape) closes the MENU — you stay
+  // in the wiki; the next one closes the wiki. The wiki reports its menu
+  // state via postMessage (same origin, source-checked).
+  menuOpen = false;
+  onMsg = (e) => {
+    if (e.origin !== location.origin || e.source !== frame.contentWindow) return;
+    if ((e.data as { type?: string })?.type === "wiki:menu") {
+      menuOpen = !!(e.data as { open?: boolean }).open;
+      back.classList.toggle("deep", menuOpen);
+    }
+  };
+  window.addEventListener("message", onMsg);
+  const backOut = () => {
+    if (menuOpen) frame.contentWindow?.postMessage({ type: "wiki:closeMenu" }, location.origin);
+    else closeWikiPanel();
+  };
+  onKey = (e) => { if (e.key === "Escape") backOut(); };
   window.addEventListener("keydown", onKey);
-  back.addEventListener("click", () => closeWikiPanel());
+  back.addEventListener("click", backOut);
 
   // Two frames so the initial transform/opacity commit before animating in.
   requestAnimationFrame(() => requestAnimationFrame(() => {
@@ -106,6 +128,8 @@ export function closeWikiPanel(): void {
   root = null;
   if (onResize) { window.removeEventListener("resize", onResize); onResize = null; }
   if (onKey) { window.removeEventListener("keydown", onKey); onKey = null; }
+  if (onMsg) { window.removeEventListener("message", onMsg); onMsg = null; }
+  menuOpen = false;
   r.querySelector(".ml-wikiback")?.classList.remove("on");
   r.querySelector(".ml-wikipanel")?.classList.remove("on");
   setTimeout(() => r.remove(), ANIM_MS + 40);
