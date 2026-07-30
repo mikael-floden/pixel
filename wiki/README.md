@@ -96,6 +96,27 @@ reach the running server via `.github/workflows/live-notify.yml` →
 triggers a game deploy. The wiki reads state from `GET /api/live/state`
 (static `/assets/live` files as offline fallback).
 
+## The animation viewer scales by the CREATURE, not the frame
+
+Sprite frames are mostly transparent padding, and the padding differs per
+export — Lava Salamander and Lava Salamander II are the same 30×35 creature
+in 78×48 and 48×48 frames. Scaling by frame size therefore rendered them
+1.67× apart and drew the 32×23 frog 2.5× wider than the 77×121 mammoth
+(maintainer 2026-07-30; the flaw shipped in the first version of the site).
+
+`python3 wiki/tools/art-bounds.py` measures the union of opaque pixels for
+every clip → `wiki/art_bounds.json`, and picks one `scale` for the whole
+roster (so the view a page OPENS on — idle facing south — fits a 300px
+stage). `build.mjs` folds the per-clip box in as `clip.bb` and publishes
+`data.artScale`; the viewer crops the padding and draws everyone at that one
+scale. Same creature ⇒ same size on screen; bigger creature ⇒ bigger.
+
+The crop is **per clip**, never per entity: a creature sits at different
+offsets in each direction, so an entity-wide union spans that drift and stops
+describing the creature (measured: an entity union made one salamander 74px
+and the other 48px again). Within a clip the box is fixed, so the animation
+still moves inside it. Re-run the tool when art changes.
+
 ## Usage stats — measured on the DEFAULT world
 
 "Is this actually in the game?" is answered against the world players really

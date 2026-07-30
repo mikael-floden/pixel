@@ -262,44 +262,50 @@ function makePlayer(entity, kind) {
       });
     }
   }
-  // The look the maintainer signed off on (restored 2026-07-30 from commit
-  // 7be84f1a, verbatim): "auto" fits THIS sprite to the stage so every page
-  // opens with a big, beautiful animation. To COMPARE two creatures' true
-  // sizes, give both pages the same FIXED zoom (1×/2×/4×) — fixed zooms are
-  // the same px-per-art-px everywhere, and the game applies no per-kind
-  // display scale. Do NOT replace this with a roster-shared default again —
-  // it rendered a 34px frog alone in a 256px box and was rejected.
-  function scaleFor(fw, fh) {
-    if (cur.zoom) return cur.zoom;
-    const target = 260;
-    return Math.max(1, Math.min(6, Math.floor(target / Math.max(fw, fh)) || 1));
-  }
+  // ONE scale for every creature (maintainer 2026-07-30). Scaling by FRAME
+  // size was really scaling by transparent PADDING: Lava Salamander and Lava
+  // Salamander II are the same 30x35 creature but ship 78x48 and 48x48
+  // frames, so they rendered 1.67x apart — and the 32x23 frog came out 2.5x
+  // wider than the 77x121 mammoth. The padding is cropped away with each
+  // clip's measured content box (wiki/tools/art-bounds.py) and everyone
+  // draws at data.artScale: same creature = same size, bigger creature =
+  // bigger. The crop is PER CLIP, so it stays put while a clip plays and the
+  // animation's motion still shows. Zoom buttons override the scale.
   function draw() {
     const fw = clip?.fw ?? entity.frameW ?? 64, fh = clip?.fh ?? entity.frameH ?? 64;
-    const s = scaleFor(fw, fh);
-    // A hovering creature (butterfly_dragon) floats hoverPx above the ground
-    // line — give the canvas that extra height so nothing is cropped: the
-    // sprite draws at the top, the shadow sits hoverPx below its frame.
+    const bb = clip?.bb ?? [0, 0, fw, fh];   // content box in frame px
+    const s = cur.zoom || state.data.artScale || 2;
+    const cw = Math.max(1, bb[2] - bb[0]), ch = Math.max(1, bb[3] - bb[1]);
+    // A hovering creature (butterfly_dragon) floats hoverPx above the ground,
+    // so its shadow sits that much BELOW its foot line.
     const hover = (entity.hoverPx ?? 0) * s;
-    const wantW = fw * s, wantH = fh * s + hover;
+    const foot = (entity.artBottom ?? 1) * fh;          // ground line, frame px
+    const showShadow = cur.shadow && entity.shadow;
+    const shadowY = (foot - bb[1]) * s + hover;
+    const wantW = Math.ceil(Math.max(cw * s, showShadow ? entity.shadow.w * s + 2 : 0));
+    const wantH = Math.ceil(Math.max(ch * s, showShadow ? shadowY + (entity.shadow.h * s) / 2 + 2 : 0));
     if (canvas.width !== wantW || canvas.height !== wantH) {
       canvas.width = wantW; canvas.height = wantH;
     }
     ctx.imageSmoothingEnabled = false;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (!clip) { frameNo.textContent = "—"; return; }
-    if (cur.shadow && entity.shadow) {
+    // The frame is drawn shifted so its content box lands centred at y=0 —
+    // the padding simply falls outside the canvas.
+    const dx = Math.round(canvas.width / 2 - ((bb[0] + bb[2]) / 2) * s);
+    const dy = Math.round(-bb[1] * s);
+    if (showShadow) {
       // The game's ground ellipse: centred, sitting at the art-measured foot line.
       ctx.fillStyle = "rgba(20,16,8,0.38)";
       ctx.beginPath();
-      ctx.ellipse(canvas.width / 2, entity.artBottom * fh * s + hover, (entity.shadow.w * s) / 2, (entity.shadow.h * s) / 2, 0, 0, Math.PI * 2);
+      ctx.ellipse(canvas.width / 2, shadowY, (entity.shadow.w * s) / 2, (entity.shadow.h * s) / 2, 0, 0, Math.PI * 2);
       ctx.fill();
     }
     const f = Math.min(cur.frame, clip.frames - 1);
     if (img?.complete && img.naturalWidth) {
-      ctx.drawImage(img, f * (img.naturalWidth / clip.frames), 0, img.naturalWidth / clip.frames, img.naturalHeight, 0, 0, fw * s, fh * s);
+      ctx.drawImage(img, f * (img.naturalWidth / clip.frames), 0, img.naturalWidth / clip.frames, img.naturalHeight, dx, dy, fw * s, fh * s);
     } else if (frameImgs[f]?.complete && frameImgs[f].naturalWidth) {
-      ctx.drawImage(frameImgs[f], 0, 0, fw * s, fh * s);
+      ctx.drawImage(frameImgs[f], dx, dy, fw * s, fh * s);
     }
     frameNo.textContent = `${f + 1} / ${clip.frames}`;
   }
@@ -349,8 +355,8 @@ function makePlayer(entity, kind) {
   const step = (dn) => { cur.playing = false; playBtn.textContent = "▶"; cur.frame = ((cur.frame + dn) % (clip?.frames ?? 1) + (clip?.frames ?? 1)) % (clip?.frames ?? 1); draw(); };
   const speedSeg = h("span", { class: "seg" }, ...[0.25, 0.5, 1, 2].map((sp) =>
     h("button", { class: sp === 1 ? "on" : "", onclick: (e) => { cur.speed = sp; e.target.parentElement.querySelectorAll("button").forEach((b) => b.classList.toggle("on", b === e.target)); } }, `${sp}×`)));
-  const zoomSeg = h("span", { class: "seg", title: "auto fits this sprite to the stage; pick the same fixed zoom on two pages to compare true sizes" },
-    ...[["auto", 0], ["1×", 1], ["2×", 2], ["4×", 4]].map(([lbl, z], i) =>
+  const zoomSeg = h("span", { class: "seg", title: "“same” draws every creature at one scale, so sizes are comparable between pages" },
+    ...[["same", 0], ["1×", 1], ["2×", 2], ["4×", 4]].map(([lbl, z], i) =>
     h("button", { class: i === 0 ? "on" : "", onclick: (e) => { cur.zoom = z; e.target.parentElement.querySelectorAll("button").forEach((b) => b.classList.toggle("on", b === e.target)); draw(); } }, lbl)));
 
   const controls2 = h("div", { class: "player-controls" },

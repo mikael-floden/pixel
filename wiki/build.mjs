@@ -547,6 +547,23 @@ const sounds = buildSounds();
 const music = buildMusic();
 const items = buildItems();
 const constants = buildConstants();
+// Real creature bounds inside each frame (wiki/tools/art-bounds.py): lets the
+// viewer crop away transparent padding and draw everyone at ONE scale, so the
+// same creature is always the same size on screen. Missing file → the viewer
+// falls back to whole-frame scaling.
+const artBounds = readJson(join(ROOT, "wiki", "art_bounds.json"));
+const artScale = artBounds?.scale ?? 2;
+for (const [dom, list] of Object.entries({ monsters, characters, objects })) {
+  for (const e of list ?? []) {
+    for (const [sname, st] of Object.entries(e.animations ?? {})) {
+      for (const [dname, clip] of Object.entries(st.dirs ?? {})) {
+        const bb = artBounds?.clips?.[`${e.path}|${sname}|${dname}`];
+        if (bb) clip.bb = bb;
+      }
+    }
+  }
+  void dom;
+}
 const world = buildWorldUsage();
 markSoundUsage(sounds);
 markMusicUsage(music);
@@ -561,6 +578,8 @@ const data = {
   // The game's iso projection (maps2/spec/WORLD_FORMAT.md): tile-instance
   // previews must compose cells with the REAL geometry or the seams lie.
   iso: { tilePx: 64, dx: 32, dy: 15, levelPx: 16, diamondH: 30 },
+  // One px-per-art-px for every creature in the animation viewer.
+  artScale,
   // Usage measured on the game's DEFAULT world (see buildWorldUsage).
   world,
   counts: {
