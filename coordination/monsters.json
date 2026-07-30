@@ -1,8 +1,8 @@
 {
   "domain": "monsters",
-  "updated_at": "2026-07-29T20:59:33+00:00",
+  "updated_at": "2026-07-30T11:10:32+00:00",
   "health": "idle",
-  "current": "synced with PixelLab (2026-07-29 late): roster unchanged at 24; diablo_2 angry deleted upstream, forest_poring idle/SW regenerated",
+  "current": "added wiki lore blurbs to all 24 monsters (monster.json:lore)",
   "progress": {
     "monsters_complete": 24,
     "objects": 21,
@@ -27,7 +27,8 @@
     "[2026-07-29T17:53:51+00:00] postprocess gains a die-tail trim stage: PixelLab sometimes replaces the end of a fade-away die with big off-animation clouds (sometimes + tornado/revived-monster frames). 20 frames cut across ice_crystal_golem (all 8 dirs) + stone_golem (5 dirs); cuts pinned in monsters/config/die_trims.json guarded by take id. DIE FRAME COUNTS CHANGED for those two monsters \u2014 re-read monster.json per-direction counts. Suspicious-but-unpinned tails (hedgehog/water_poring/white_rabbit/stone_turtle revive at the end) are flagged each sync, pending maintainer decision.",
     "[2026-07-29T18:04:37+00:00] die-tail trim extended to the 'coming back to life' bug (dissolve-then-reappear tails): 98 frames cut across dark_donkey, hedgehog, malformed_creature, masked_shadow_creature, stone_golem, stone_turtle, tree_stump, water_poring, white_rabbit. All cuts pinned in monsters/config/die_trims.json. DIE FRAME COUNTS CHANGED for those monsters \u2014 re-read monster.json per-direction counts.",
     "[2026-07-29T18:18:38+00:00] die-trim is now AGGRESSIVE + automatic (maintainer rule: a die fades away, adding pixels after the fade passes 35% of body size is the re-appear bug): postprocess enforces fade-monotonicity and cut 23 more frames (white_rabbit incl. NE/NW specks, tree_stump south mounds, hedgehog SE/SW mounds, forest_poring/forest_poring_2 specks). Deterministic on every sync; pins in config/die_trims.json still take precedence; reviewed_ok exempts. Die frame counts changed again \u2014 re-read manifests.",
-    "[2026-07-29T20:59:33+00:00] verification sync: 24 tagged, none added/dropped. Upstream changes mirrored: diablo_2's broken 1-direction 'angry' was DELETED on PixelLab (angry now falls back to idle); forest_poring idle/south-west has a new take. Fixed two pipeline bugs the sync exposed: mirror.py dropped the repo-side postprocess record (padding/trim bookkeeping) when rewriting a manifest, which left a re-mirrored monster with MIXED canvas sizes; postprocess now also re-canvases when any frame is off-size and _recanvas crops instead of crashing. All 24 monsters verified canvas-uniform."
+    "[2026-07-29T20:59:33+00:00] verification sync: 24 tagged, none added/dropped. Upstream changes mirrored: diablo_2's broken 1-direction 'angry' was DELETED on PixelLab (angry now falls back to idle); forest_poring idle/south-west has a new take. Fixed two pipeline bugs the sync exposed: mirror.py dropped the repo-side postprocess record (padding/trim bookkeeping) when rewriting a manifest, which left a re-mirrored monster with MIXED canvas sizes; postprocess now also re-canvases when any frame is off-size and _recanvas crops instead of crashing. All 24 monsters verified canvas-uniform.",
+    "[2026-07-30T11:10:32+00:00] every monster now carries `lore` in monster.json \u2014 a short RPG-flavour description (94-118 chars, sized to the wiki's monster header block) for wiki/UI copy. Authored in config/roster.json (PixelLab has no such field) and carried into manifests by mirror.py on every sync, so it survives re-mirroring."
   ],
   "requests": [
     {
@@ -59,6 +60,11 @@
       "to": "games",
       "text": "Sync check done \u2014 roster still 24, no new/removed monsters. TWO data changes: (1) diablo_2 lost its 'angry' animation (deleted on PixelLab because it only had 1/8 directions) \u2014 animation_map.json now has overrides.diablo_2={angry:idle}, so drive angry through the map, not by assuming the folder exists; (2) forest_poring idle/south-west is new art. Everything else byte-identical. Canvas sizes and die frame counts UNCHANGED from my last message, and I verified all 24 monsters are canvas-uniform (one frame size per monster across every animation/rotation).",
       "at": "2026-07-29T20:59:33+00:00"
+    },
+    {
+      "to": "games",
+      "text": "NEW METADATA: monsters/<id>/monster.json now has a top-level `lore` string \u2014 a short RPG-flavour description (94-118 chars) for the wiki/UI monster header. Present for all 24 monsters, authored in monsters/config/roster.json and preserved across syncs. Nothing else changed; no art, sizes or frame counts touched.",
+      "at": "2026-07-30T11:10:32+00:00"
     }
   ]
 }

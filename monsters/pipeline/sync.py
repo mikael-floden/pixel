@@ -231,7 +231,8 @@ def sync(client, fresh=False, dry_run=False, only=None):
             shutil.rmtree(monster_dir(m["id"]), ignore_errors=True)
         mirror.mirror(client, m["id"], m["kind"], m["pixellab_id"],
                       renames=m.get("renames"), name=m.get("name"),
-                      direction_picks=m.get("direction_picks"))
+                      direction_picks=m.get("direction_picks"),
+                      lore=m.get("lore"))
         # repair wrap-around overflow + pinned die-tail cloud cuts on freshly
         # mirrored frames — see postprocess.py; re-reads the manifest they rewrite
         postprocess.process_monster(m["id"])

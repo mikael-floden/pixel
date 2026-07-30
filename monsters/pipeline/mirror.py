@@ -205,7 +205,7 @@ def resolve_states(anim_keys):
 
 
 def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None,
-           direction_picks=None):
+           direction_picks=None, lore=None):
     """Pull rotations + all animations for one monster from PixelLab into
     monsters/<mid>/ and write its manifest. Change-detected per direction via
     If-Modified-Since; frames download concurrently. Returns the manifest."""
@@ -309,6 +309,9 @@ def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None,
     meta = {
         "id": mid,
         "name": name or prev.get("name") or detail.get("name") or mid,
+        # short RPG-flavour blurb for the wiki; authored in config/roster.json
+        # (PixelLab knows nothing about it, so it must survive re-mirroring)
+        "lore": lore or prev.get("lore"),
         "source": {
             "kind": kind,
             "pixellab_id": pixellab_id,
