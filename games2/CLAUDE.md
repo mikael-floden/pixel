@@ -469,6 +469,16 @@ visible head/shoulders are ABOVE the surface).
   a red anchor crosshair — the maintainer's-eye view, offline, exhaustive.
   Round 5 was the first round verified this way (all 24 sheets) and the
   first whose numbers caught their own bugs before a deploy.
+- **CONSTANT monster shadow size** (maintainer 2026-07-30: "each monster
+  should have a constant shadow size (regardless of animation or direction)
+  ... some sort of average, maybe a bit bigger, more fade to smear it out"):
+  the builder still computes each facing's physical footprint width but only
+  their MEAN survives — `shadowW = min(150, avg(per-dir widths) × 1.12)`,
+  one ellipse per monster, so the shadow never resizes on turns or
+  walk↔idle. Anchors stay per-direction/per-frame (position was never the
+  complaint); the hop/levitation air-shrink stays (game-wide jump pattern).
+  Client spread 1.35× with an extra-soft gradient (core 0.44 →
+  0.39/0.27/0.14/0.05/0.015 → 0).
 - **DIFFUSE monster shadows** (maintainer 2026-07-30, closing the shadow
   arc): "when you draw a sharp shadow, it must be spot on to look good. A
   more diffuse shadow is less sensitive." Monsters render their own

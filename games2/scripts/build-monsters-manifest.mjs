@@ -78,6 +78,8 @@ const HOVER_PX = { butterfly_dragon: 12 };
  * feet no longer deflate the shadow width). */
 function measureWalkArt(stripAbsPaths, framesByDir) {
   const ground = {}; // dir -> {f, cx, contact, sink, shift[], air[]}
+  let shadowW = 0; // ONE constant ellipse per monster (mean of per-dir widths)
+  let shadowH = 0;
   const foots = [];
   const bodies = [];
   const figHs = []; // figure heights — tall lean-ers get a tighter shadow
@@ -316,10 +318,6 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
       // "the big demon stone is flying ... return underneath the monster").
       sink: Math.max(0, Math.round(A.maxBot - A.cyRow)),
       up: Math.max(0, Math.round(A.cyRow - A.topRow)),
-      // filled by the class pass below (per-dir ellipse size needs the
-      // MONSTER-level body class — the widest facing — first)
-      w: 0,
-      h: 0,
       _extent: A.extent,
       _bodyW: dirBodyW,
       shift,
@@ -347,13 +345,25 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
     const figMedian = figHs.length ? [...figHs].sort((a, b) => a - b)[Math.floor(figHs.length / 2)] : 0;
     const maxBodyW = bodies.length ? Math.max(...bodies) : 0;
     const cls = maxBodyW >= 1.1 * figMedian ? "long" : figMedian > maxBodyW ? "tall" : "normal";
+    // ONE CONSTANT ellipse per monster (maintainer 2026-07-30: "each monster
+    // should have a constant shadow size regardless of animation or
+    // direction ... some sort of average, maybe a bit bigger"): the per-dir
+    // physical widths are computed as before but only AVERAGED — the mean
+    // of the facings' footprints, x1.12 — so the shadow never resizes when
+    // a monster turns or switches walk<->idle. Softness (the wider smear)
+    // comes from the client's diffuse texture + spread.
+    const dirWs = [];
     for (const g of Object.values(ground)) {
       const factor =
         cls === "long" ? (g._bodyW >= 0.75 * maxBodyW ? 0.8 : 0.9) : cls === "tall" ? 0.45 : 0.55;
-      g.w = Math.round(Math.min(150, Math.max(12, Math.max(g._extent, g._bodyW * factor) * 1.05)));
-      g.h = Math.max(6, Math.round(g.w * 0.385));
+      dirWs.push(Math.max(12, Math.max(g._extent, g._bodyW * factor) * 1.05));
       delete g._extent;
       delete g._bodyW;
+    }
+    if (dirWs.length) {
+      const avg = dirWs.reduce((a, b) => a + b, 0) / dirWs.length;
+      shadowW = Math.round(Math.min(150, avg * 1.12));
+      shadowH = Math.max(6, Math.round(shadowW * 0.385));
     }
   }
   if (!anchors.length) return null;
@@ -365,6 +375,8 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
     frameW,
     frameH,
     ground,
+    shadowW,
+    shadowH,
     // Pooled fallback (median of per-dir anchors) for defensive client code.
     artBottom: +anchors[Math.floor(anchors.length / 2)].toFixed(4),
     footW: foots[Math.floor(foots.length / 2)] ?? 0,
@@ -479,10 +491,8 @@ function scan() {
     // TALL lean-ers (figure taller than wide: monoliths, upright golems)
     // ground through a compact base, not their silhouette — a mass-scaled
     // shadow read oversized and "flying" on the leaning demon stone.
-    const bodyFactor = walkArt && walkArt.figH > walkArt.bodyW ? 0.4 : 0.55;
-    const artW = walkArt ? Math.max(walkArt.footW, walkArt.bodyW * bodyFactor) * 1.05 : 0;
-    const shadowW = Math.round(Math.min(150, Math.max(12, artW || frameW * 0.54)));
-    const shadowH = Math.max(6, Math.round(shadowW * 0.385));
+    const shadowW = walkArt?.shadowW || Math.round(Math.max(12, frameW * 0.54));
+    const shadowH = walkArt?.shadowH || Math.max(6, Math.round(shadowW * 0.385));
     // Collision radius stays gameplay-sane: the shadow may span a mammoth's
     // whole four-leg footprint (~150px) but bodies can pass a bit closer
     // than shadow edges suggest — cap so comfort targets fit the habitats.

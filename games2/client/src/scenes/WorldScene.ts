@@ -135,7 +135,7 @@ const SHADOW_TEX = "avatar:shadow";
 // a light core with a long penumbra tail, spread MONSTER_SHADOW_SPREAD beyond
 // the measured footprint so the visible core still matches the contact patch.
 const MONSTER_SHADOW_TEX = "monster:shadow";
-const MONSTER_SHADOW_SPREAD = 1.25;
+const MONSTER_SHADOW_SPREAD = 1.35;
 // Tile self-emission is data-driven: tiles/emission.json (owned by the tiles
 // agent — every category has an entry, null = does not glow). Each glowing
 // category gets (a) a self-glow FLOOR on its own pixels (shader, nightlight.ts)
@@ -444,8 +444,6 @@ interface MonsterAvatar {
       contact: number;
       sink?: number;
       up?: number;
-      w?: number;
-      h?: number;
       shift?: number[];
       air?: number[];
     }
@@ -2566,8 +2564,10 @@ export class WorldScene extends Phaser.Scene {
         this.resolveBodyDepth(mv, sLvl);
         // Shadow ellipse is PER DIRECTION (an east mammoth's footprint spans
         // ~140px, its south one ~90 — one size can't fit both facings).
-        const gw = (gd?.w ?? mv.shadowW) * MONSTER_SHADOW_SPREAD;
-        const gh = (gd?.h ?? mv.shadowH) * MONSTER_SHADOW_SPREAD;
+        // ONE constant ellipse per monster (maintainer: no size changes on
+        // turns or walk<->idle) — soft smear comes from texture + spread.
+        const gw = mv.shadowW * MONSTER_SHADOW_SPREAD;
+        const gh = mv.shadowH * MONSTER_SHADOW_SPREAD;
         this.placeBodyShadow(mv, targetElev, mv.hoverPx + airPx, gw, gh);
         // The anchor is the CONTACT CENTROID (between the foot undersides);
         // the front toes plant `sink` px below it. Lift the ellipse so its
@@ -5303,11 +5303,12 @@ export class WorldScene extends Phaser.Scene {
     ctx.scale(1, h / w);
     const grd = ctx.createRadialGradient(w / 2, w / 2, 0, w / 2, w / 2, w / 2);
     // Gaussian-ish falloff: dense middle, long soft tail, zero at the rim.
-    grd.addColorStop(0.0, "rgba(0,0,0,0.5)");
-    grd.addColorStop(0.35, "rgba(0,0,0,0.44)");
-    grd.addColorStop(0.6, "rgba(0,0,0,0.3)");
-    grd.addColorStop(0.8, "rgba(0,0,0,0.15)");
-    grd.addColorStop(0.92, "rgba(0,0,0,0.05)");
+    grd.addColorStop(0.0, "rgba(0,0,0,0.44)");
+    grd.addColorStop(0.3, "rgba(0,0,0,0.39)");
+    grd.addColorStop(0.55, "rgba(0,0,0,0.27)");
+    grd.addColorStop(0.75, "rgba(0,0,0,0.14)");
+    grd.addColorStop(0.9, "rgba(0,0,0,0.05)");
+    grd.addColorStop(0.97, "rgba(0,0,0,0.015)");
     grd.addColorStop(1.0, "rgba(0,0,0,0)");
     ctx.fillStyle = grd;
     ctx.fillRect(0, 0, w, w);

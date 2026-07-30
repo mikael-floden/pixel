@@ -58,7 +58,10 @@ for (const id of IDS) {
     const fh = fhs[k];
     const src = pngs[k];
     const n = d.animations[anim][k];
-    const lift = Math.max(0, Math.min(g.h / 2 - (g.sink ?? 2) - 2, (g.up ?? 99) + 3));
+    // ONE constant ellipse per monster (x1.35 client spread), like the game.
+    const SW = (d.shadowW ?? 24) * 1.35;
+    const SH = (d.shadowH ?? 10) * 1.35;
+    const lift = Math.max(0, Math.min(SH / 2 - (g.sink ?? 2) - 2, (g.up ?? 99) + 3));
     for (let f = 0; f < n; f++) {
       const ox = tileW * f + 4;
       const oy = tileH * row + 6;
@@ -70,8 +73,8 @@ for (const id of IDS) {
       const air = g.air?.[f] ?? 0;
       // 1) shadow ellipse UNDER the art (same shrink/alpha maths as the game)
       const airFrac = Math.min(1, air / 26);
-      const ew = (g.w - airFrac * g.w * 0.26) / 2;
-      const eh = (g.h - airFrac * g.h * 0.29) / 2;
+      const ew = (SW - airFrac * SW * 0.26) / 2;
+      const eh = (SH - airFrac * SH * 0.29) / 2;
       const alpha = Math.round(115 * (1 - airFrac * 0.35));
       const ecy = ay - lift;
       for (let y = Math.round(ecy - eh); y <= ecy + eh; y++)

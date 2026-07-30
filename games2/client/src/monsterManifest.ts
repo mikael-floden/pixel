@@ -37,8 +37,6 @@ export interface MonsterDef {
       contact: number;
       sink?: number;
       up?: number;
-      w?: number;
-      h?: number;
       shift?: number[];
       air?: number[];
     }
