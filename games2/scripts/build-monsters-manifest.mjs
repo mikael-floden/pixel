@@ -231,7 +231,9 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
       const kept = runs.filter(
         ([a, b]) => b - a + 1 >= 3 && Math.abs((a + b) / 2 - mCx) <= fw * 0.4,
       );
-      if (!kept.length) return null;
+      // No ground contact (airborne frame): the mass centre is still valid
+      // and is what compact-base per-frame tracking needs.
+      if (!kept.length) return { noContact: true, massCx: mCx };
       const minX = kept[0][0];
       const maxX = kept[kept.length - 1][1];
       let rowSum = 0;
@@ -256,7 +258,18 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
     };
 
     const A = analyze(contact);
-    if (!A) continue; // no measurable contact at all — skip this dir
+    if (!A || A.noContact) continue; // no measurable contact at all — skip this dir
+    // COMPACT-BASE override (maintainer round 6, via the wiki: the leaning
+    // demon stone's ground contact is its bottom TIP, right of its mass — a
+    // nadir shadow is the projection of the OVERHANGING BODY, not the touch
+    // point, and the wiki's frame-centred X nailed it because PixelLab art
+    // keeps the subject's mass frame-centred). When the contact extent is
+    // small relative to the body (< half its width), anchor X = the
+    // silhouette mass centre outright; wide stances (golems) and leg spans
+    // (donkeys, quadrupeds) keep the contact-based blend that beats the
+    // wiki on off-centre-drawn bodies.
+    const compactBase = A.extent < 0.5 * dirBodyW;
+    if (compactBase) A.cx = A.massCx;
     // PER-FRAME drift compensation, FEET-BASED (maintainer round 5: mass
     // tracking chased a stretching cat's head — the planted FEET are what
     // must pin; "movement should be handled in the game and not in the
@@ -278,7 +291,13 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
         continue;
       }
       const a = analyze(fr);
-      let dx = a ? a.cx - A.cx : fr.footCx - contact.footCx;
+      // Compact-base bodies track their MASS per frame (the stomping tip's
+      // contact clusters jump around); everyone else tracks their feet.
+      let dx = compactBase
+        ? (a?.massCx ?? A.massCx) - A.massCx
+        : a && !a.noContact
+          ? a.cx - A.cx
+          : fr.footCx - contact.footCx;
       if (Math.abs(dx) <= 3) dx = 0; // gait wiggle — leave the animation alone
       dx = Math.max(-fw * 0.12, Math.min(fw * 0.12, dx));
       shift.push(+((A.cx + dx) / fw).toFixed(4));
@@ -329,7 +348,7 @@ function measureWalkArt(stripAbsPaths, framesByDir) {
     const cls = maxBodyW >= 1.1 * figMedian ? "long" : figMedian > maxBodyW ? "tall" : "normal";
     for (const g of Object.values(ground)) {
       const factor =
-        cls === "long" ? (g._bodyW >= 0.75 * maxBodyW ? 0.8 : 0.9) : cls === "tall" ? 0.4 : 0.55;
+        cls === "long" ? (g._bodyW >= 0.75 * maxBodyW ? 0.8 : 0.9) : cls === "tall" ? 0.45 : 0.55;
       g.w = Math.round(Math.min(150, Math.max(12, Math.max(g._extent, g._bodyW * factor) * 1.05)));
       g.h = Math.max(6, Math.round(g.w * 0.385));
       delete g._extent;
