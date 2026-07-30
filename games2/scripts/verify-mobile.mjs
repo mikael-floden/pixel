@@ -94,7 +94,7 @@ try {
   await page.mouse.down();
   await page.waitForTimeout(250);
   const holdSeen = [];
-  // Spots stay inside the TOP 80% of the page — the bottom 20% is the HUD dock.
+  // Spots stay inside the TOP 61.8% of the page — the bottom 38.2% is the DOM HUD (golden split).
   for (const [mx, my] of [[840, 90], [830, 340], [90, 330], [140, 120]]) {
     await page.mouse.move(mx, my, { steps: 6 });
     await page.waitForTimeout(280);

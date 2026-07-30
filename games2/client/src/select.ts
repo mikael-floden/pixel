@@ -1,9 +1,8 @@
 import { CharacterDef, Manifest } from "./manifest";
 import { WorldInfo, DEFAULT_WORLD } from "./maps";
 import { showLoading } from "./loading";
-import { applyUiZoom } from "./uiscale";
+import { mountTheme } from "./theme";
 import { openWikiPanel } from "./wikipanel";
-import { dressPlate, repaintPlates } from "./plate";
 import { gameAudio } from "../../composer/index";
 
 const NAMES = ["Ari", "Bex", "Cyl", "Dax", "Eir", "Fen", "Gio", "Hana", "Ivo", "Juno", "Kira", "Lio"];
@@ -18,20 +17,20 @@ export interface JoinChoice {
  * Show a pre-join screen: pick a WORLD (any playable maps2 world) + a character
  * + a name. `worlds` empty ⇒ no world picker (demo mode fixes the world);
  * resolves once the player commits, then the caller starts the game.
+ *
+ * WIKI-STYLE (maintainer 2026-07-30): the UI-kit plates are gone — the
+ * controls are clean wiki cards/inputs/buttons (theme.ts tokens, dark mode
+ * shared with the wiki). The maintainer's enchanted-forest backdrop + logo
+ * and the title-veil entrance stay: they are brand art, not UI kit.
  */
 export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): Promise<JoinChoice> {
   return new Promise((resolve) => {
     const chars = manifest.characters;
     const showWorlds = worlds.length > 0;
 
-    // PRESELECT the player's last map + character. The choice is persisted in
-    // localStorage under ml-last-choice (written on every commit, and read by
-    // the dead-connection rejoin in main.ts) — it SURVIVES a version upgrade:
-    // the deploy's service worker caches nothing and localStorage is never
-    // cleared, so a returning player lands on what they picked last time
-    // (maintainer 2026-07-22). If the stored world or character no longer
-    // exists in THIS build, the stale record is removed and a valid default is
-    // chosen instead — a fresh, valid record is written on the next commit.
+    // PRESELECT the player's last map + character (localStorage ml-last-choice,
+    // written on every commit, read by the dead-connection rejoin in main.ts).
+    // Stale stored world/character → drop the record, fall back to defaults.
     const stored = readLastChoice();
     const storedCharIdx =
       stored?.characterUid != null ? chars.findIndex((c) => c.uid === stored.characterUid) : -1;
@@ -44,39 +43,35 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
         localStorage.removeItem("ml-last-choice");
       } catch {}
     }
-    // Defaults when there's no valid stored pick: the girl on DEFAULT_WORLD
-    // (the_island2, the world closest to the real game). A valid stored value
-    // wins over these. worlds is DEFAULT_WORLD-first (loadWorldsList), so this
-    // resolves to the top row.
     let selected =
       storedCharIdx >= 0 ? storedCharIdx : Math.max(0, chars.findIndex((c) => c.uid === "default_girl"));
     let selectedWorld =
       storedWorldIdx >= 0 ? storedWorldIdx : Math.max(0, worlds.findIndex((w) => w.name === DEFAULT_WORLD));
+    mountTheme(); // wiki tokens + shared dark mode, before any styled DOM
     const overlay = el("div", "ml-overlay");
     overlay.innerHTML = `
       <div class="ml-panel">
         <img class="ml-logo" src="/logo.png" alt="Nangijala Online — a browser MMORPG" />
-        ${showWorlds ? `
-        <div class="ml-dd" id="ml-worlds">
-          <button id="ml-dd-head" class="ml-ddhead ml-plated">
-            <span id="ml-dd-label"></span>
-            <img class="ml-ddchev" src="/ui2/kit-chevron.png" alt="" draggable="false" />
-          </button>
-          <div class="ml-ddlist" id="ml-dd-list" hidden></div>
-        </div>` : ""}
-        <div class="ml-grid" id="ml-grid"></div>
-        <div class="ml-row">
+        <div class="ml-card">
+          ${showWorlds ? `
+          <div class="ml-dd" id="ml-worlds">
+            <button id="ml-dd-head" class="ml-ddhead" type="button">
+              <span id="ml-dd-label"></span>
+              <span class="ml-ddchev" aria-hidden="true">▾</span>
+            </button>
+            <div class="ml-ddlist" id="ml-dd-list" hidden></div>
+          </div>` : ""}
+          <div class="ml-grid" id="ml-grid"></div>
           <input id="ml-name" class="ml-name" maxlength="24" placeholder="your name"
                  value="${NAMES[Math.floor(Math.random() * NAMES.length)]}" />
         </div>
       </div>
-      <button id="ml-enter" class="ml-btn ml-plated"><span>Enter world</span></button>
-      <button id="ml-install" class="ml-install" hidden title="Install game" aria-label="Install game">
-        <img src="/ui2/kit-icon-down.png" alt="" draggable="false" /></button>
-      <button id="ml-wiki" class="ml-wiki" type="button"
+      <button id="ml-enter" class="ml-btn" type="button"><span>Enter world</span></button>
+      <button id="ml-install" class="ml-corner ml-install" hidden type="button"
+        title="Install game" aria-label="Install game">⤓ Install</button>
+      <button id="ml-wiki" class="ml-corner ml-wiki" type="button"
          title="Game wiki — all monsters, characters, tiles, sounds & tuning">&#128214; Wiki</button>`;
     document.body.appendChild(overlay);
-    applyUiZoom(overlay); // "Desktop site" must not shrink the menu
     // Arm the title theme the moment the screen mounts — NOT only on a button
     // press (maintainer 2026-07-19). Browser autoplay still needs one gesture,
     // but ANY first tap (anywhere) unlocks the context and the theme comes in.
@@ -84,23 +79,12 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     injectStyles();
     // ── TITLE SCREEN → SELECT (maintainer 2026-07-19) ───────────────────
     // The select overlay opens behind a solid-black VEIL with ONLY the logo
-    // showing (the logo is z 101, ABOVE the veil). Two entrances:
-    //
-    //  • FIRST LAUNCH (the title beat): the logo emerges on black at the
-    //    LOADING-SCREEN placement (balanced, ~45% down — nicer than sitting at
-    //    the select top). It AUTO-advances (maintainer: "do the click for me")
-    //    after a short hold; on advance the veil lifts to reveal the select
-    //    screen WHILE the logo TRANSLATES up to its final select position. The
-    //    move is a CSS transform on the ONE <img> — no DOM is swapped
-    //    mid-reveal (that would flash during the fade).
-    //
-    //  • FROM THE GAME (logout → reload; the ml-from-game flag): the logo is
-    //    already at its final select position; the screen just fades in from
-    //    black — no title beat, no translate.
-    //
-    // A real tap still advances early (and that gesture unlocks WebAudio — the
-    // point of the title screen). commit()/__mlSelect bypass all of this (they
-    // never touch the veil), so verify-select/-smoke stay green.
+    // showing (logo z 101, above the veil). FIRST LAUNCH: the logo emerges on
+    // black at the loading-screen placement and AUTO-advances after a short
+    // hold; the veil lifts while the logo translates up to its select spot.
+    // FROM THE GAME (logout → reload; ml-from-game): no title beat — the
+    // screen just fades in from black. A real tap still advances early (and
+    // unlocks WebAudio). commit()/__mlSelect bypass all of this.
     const fromGame = (() => {
       try {
         const f = sessionStorage.getItem("ml-from-game") === "1";
@@ -126,9 +110,6 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       revealed = true;
       gameAudio.startTitleTheme(); // a real tap here unlocks WebAudio + music
       veil.style.pointerEvents = "none";
-      // Slide the logo home (fresh boot; already home from the game) and lift
-      // the black — both once the forest art is ready (capped). The transform
-      // + veil fade run together, so the logo settles as the select appears.
       Promise.race([decode(bgImg), delay(450)]).then(() =>
         twoFrames(() => {
           logoImg.style.transition = "transform .8s cubic-bezier(.22,.61,.36,1), opacity .6s ease";
@@ -142,14 +123,8 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     veil.addEventListener("pointerdown", reveal);
 
     if (fromGame) {
-      // no title beat — reveal straight away; the logo fades in at its final
-      // select spot together with the screen, from 100% black
       decode(logoImg).then(() => delay(150).then(reveal));
     } else {
-      // title beat: drop the logo to the balanced loading placement, fade it in
-      // on black, hold, then AUTO-reveal (slide up + lift the veil). The rest
-      // of chooseCharacter() runs synchronously before this decode resolves, so
-      // the panel is fully laid out and the logo's final spot measures true.
       decode(logoImg).then(() => {
         const r = logoImg.getBoundingClientRect();
         const shift = Math.round(0.45 * window.innerHeight - (r.top + r.height / 2));
@@ -165,54 +140,28 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
         });
       });
     }
-    // No border frame on the select screen (maintainer 2026-07-18: "just use
-    // the background without the frame") — the forest art carries the screen
-    // alone. The composed vine border (frame2.ts mountSelectFrame +
-    // /ui2/select-frame.png) stays available if it's ever wanted back.
     // Android Chrome long-press hit-tests <img>s (thumbnails, portraits) and
     // offers "download image" — suppress at the root, like the HUD does.
     overlay.addEventListener("contextmenu", (e) => e.preventDefault());
-    overlay.querySelectorAll<HTMLElement>(".ml-plated").forEach(pressFx);
-    // every select-screen control wears the UI-kit plates (maintainer):
-    // held = the dark Down bar, selected = the cream bar, else Normal
-    overlay.querySelectorAll<HTMLElement>(".ml-plated").forEach((el) => dressPlate(el, kitKind));
-    const nameBox = overlay.querySelector<HTMLElement>("#ml-name");
-    if (nameBox) dressPlate(nameBox, () => "slot"); // the empty-slot trough
 
-    // World picker: a DROPDOWN SELECT cut from the UI kit (maintainer
-    // 2026-07-18 — "dropdown instead of slider with icons", text only).
-    // Anatomy mirrors the kit sheet's dropdown column: the closed header is
-    // a kit button bar (same art as the trio — verified identical palette)
-    // with the extracted caret overlaid at the shared block scale, and the
-    // open list is a stack of option rows (the trio again: normal rows,
-    // cream = the selected world, dark while pressed). The old icon
-    // carousel is retired — world names render as plain text.
+    // World picker: a clean wiki dropdown (same open/close + .sel mechanics
+    // as the kit era; the ids survive for the QA gates).
     const worldRows: HTMLElement[] = [];
     if (showWorlds) {
       const head = overlay.querySelector("#ml-dd-head") as HTMLElement;
       const label = overlay.querySelector("#ml-dd-label") as HTMLElement;
-      const chev = overlay.querySelector(".ml-ddchev") as HTMLImageElement;
       const list = overlay.querySelector("#ml-dd-list") as HTMLElement;
-      // open ⇒ the kit's dark header state (same bar the pressed state
-      // uses), with the outline-dark caret the kit paints on it
-      dressPlate(head, (e) =>
-        e.classList.contains("press") || e.classList.contains("open") ? "down" : "normal",
-      );
       pressFx(head);
       const setOpen = (open: boolean) => {
         head.classList.toggle("open", open);
-        chev.src = open ? "/ui2/kit-chevron-dark.png" : "/ui2/kit-chevron.png";
         list.hidden = !open;
-        // rows were built display:none at 0×0 — compose their plates at
-        // the real size the moment they first become visible
-        if (open) repaintPlates(list);
       };
       worlds.forEach((w, i) => {
-        const row = el("button", "ml-ddrow ml-plated");
-        const t = el("span", ""); // span, not a bare text node: the press
-        t.textContent = w.label; // rule dips element children only
+        const row = el("button", "ml-ddrow");
+        (row as HTMLButtonElement).type = "button";
+        const t = el("span", "");
+        t.textContent = w.label;
         row.appendChild(t);
-        dressPlate(row, kitKind);
         pressFx(row);
         row.addEventListener("click", () => {
           selectWorld(i);
@@ -236,22 +185,20 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
 
     const grid = overlay.querySelector("#ml-grid") as HTMLElement;
     const nameInput = overlay.querySelector("#ml-name") as HTMLInputElement;
-    // Restore the last-used name too (part of the same remembered choice) —
-    // overrides the random placeholder the template seeded.
+    // Restore the last-used name too (part of the same remembered choice).
     if (stored?.name && stored.name.trim()) nameInput.value = stored.name.slice(0, 24);
     const cells: HTMLElement[] = [];
     const spins: ((on: boolean) => void)[] = [];
 
     // Different skeletons can reuse the same look prompt, so display names
-    // collide (same label, distinct art/uid). Number the repeats so every
-    // character reads as unique in the grid.
+    // collide — number the repeats so every character reads as unique.
     const displayNames = disambiguate(chars.map((c) => c.name));
 
     chars.forEach((c, i) => {
       const label = displayNames[i];
-      const cell = el("button", "ml-cell ml-plated");
+      const cell = el("button", "ml-cell");
+      (cell as HTMLButtonElement).type = "button";
       pressFx(cell);
-      dressPlate(cell, kitKind);
       cell.dataset.index = String(i);
       const preview = spritePreview(c, label, manifest.directions);
       cell.appendChild(preview.img);
@@ -285,16 +232,16 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
           JSON.stringify({ world, characterUid: chars[selected].uid, name }),
         );
       } catch {}
-      // The loading overlay's black FADES IN over this screen (the select
-      // screen "fades out to 100% black", maintainer) — keep the select
-      // mounted beneath it until the black is opaque, then drop it. The
-      // world starts loading immediately (resolve is not delayed).
+      // The loading overlay's black FADES IN over this screen — keep the
+      // select mounted beneath it until the black is opaque, then drop it.
       showLoading();
       setTimeout(() => overlay.remove(), 500);
       resolve({ world, character: chars[selected], name });
     }
 
-    (overlay.querySelector("#ml-enter") as HTMLElement).addEventListener("click", commit);
+    const enterBtn = overlay.querySelector("#ml-enter") as HTMLElement;
+    pressFx(enterBtn);
+    enterBtn.addEventListener("click", commit);
     nameInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") commit();
     });
@@ -303,7 +250,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     // prompt (main.ts stashes it in __mlInstall) and we're not already
     // running as an installed app.
     const installBtn = overlay.querySelector("#ml-install") as HTMLButtonElement;
-    pressFx(installBtn); // not .ml-plated (the icon art IS the button) — wire the press state directly
+    pressFx(installBtn);
     const installed = ["standalone", "fullscreen", "minimal-ui"].some(
       (m) => window.matchMedia?.(`(display-mode: ${m})`).matches,
     );
@@ -324,8 +271,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     });
 
     // The in-game wiki (wiki agent): opens the LEFT DRAWER over this screen —
-    // never a browser tab (maintainer 2026-07-30: "the wiki should be part of
-    // the game"). Tap the darkened game strip on the right to come back.
+    // never a browser tab (maintainer 2026-07-30).
     const wikiBtn = overlay.querySelector("#ml-wiki") as HTMLButtonElement;
     pressFx(wikiBtn);
     wikiBtn.addEventListener("click", () => openWikiPanel());
@@ -347,8 +293,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
 
 /**
  * Append " (2)", " (3)", … to names that appear more than once, so repeated
- * look prompts across skeletons don't render as identical grid entries. Names
- * that are already unique are left untouched.
+ * look prompts across skeletons don't render as identical grid entries.
  */
 function disambiguate(names: string[]): string[] {
   const total = new Map<string, number>();
@@ -385,14 +330,12 @@ function readLastChoice(): LastChoice | null {
   }
 }
 
-/** Momentary pressed-plate feedback via pointer events (same pattern as
- * hud.ts): CSS :active is hover-gated because mobile Chrome keeps it sticky
- * on the last tap — .press goes on at finger-down, off the moment the finger
- * lifts or leaves, so it can never stick. */
+/** Momentary pressed feedback via pointer events (same pattern as hud.ts):
+ * CSS :active is hover-gated and sticky on mobile Chrome — .press goes on at
+ * finger-down, off the moment the finger lifts or leaves. Also the tactile
+ * down/up sounds + the WebAudio unlock (the select screen is the FIRST thing
+ * the player touches). */
 function pressFx(b: HTMLElement) {
-  // Same tactile down/up sounds as the in-game HUD buttons (hud.ts) — the
-  // select screen is the FIRST thing the player touches, so it also unlocks
-  // the AudioContext (init() armed it) and starts the title theme.
   let down = false;
   b.addEventListener("pointerdown", () => {
     down = true;
@@ -413,10 +356,9 @@ const SPIN_MS = 220; // per 45° rotation step ≈ 1.8s per full revolution
 /**
  * Character preview. UNSELECTED characters stand still facing the camera
  * (base/south.png); the SELECTED one pivots through all 8 base rotations in
- * a 360° loop, like a figure on a turntable (the maintainer swapped this in
- * for the old idle-animation preview). Rotations are warmed and the spin
- * only engages once every direction has loaded — a character with missing
- * rotation art (the built-in Wanderer) just stays on its static portrait.
+ * a 360° loop. Rotations are warmed and the spin only engages once every
+ * direction has loaded — a character with missing rotation art just stays on
+ * its static portrait.
  */
 function spritePreview(
   c: CharacterDef,
@@ -424,10 +366,8 @@ function spritePreview(
   directions: string[],
 ): { img: HTMLElement; setSpin: (on: boolean) => void } {
   // The 112×112 portrait canvas is mostly empty — the figure occupies only
-  // ~29×87 px in its centre (measured: x42-71, y10-97) — so the cards read
-  // "too big" (maintainer). Show the art 1:1 (native px — the old 128px box
-  // was a non-integer 1.14× upscale) through a viewport cropped to the
-  // figure; the box is the element the card lays out.
+  // ~29×87 px in its centre (measured: x42-71, y10-97). Show the art at an
+  // integer 2x through a viewport cropped to the figure.
   const box = el("div", "ml-portrait-box");
   const img = el("img", "ml-portrait") as HTMLImageElement;
   box.appendChild(img);
@@ -462,142 +402,95 @@ function spritePreview(
 }
 
 let stylesInjected = false;
-function kitKind(el: HTMLElement): "normal" | "sel" | "down" {
-  if (el.classList.contains("press")) return "down";
-  if (el.classList.contains("sel")) return "sel";
-  return "normal";
-}
 
 function injectStyles() {
   if (stylesInjected) return;
   stylesInjected = true;
-  /* In-game-UI theme (maintainer 2026-07-17: "the character-select looks a
-     bit old" next to the frame-v2 HUD). Built ONLY from the shipped /ui2
-     assets and their palette — the 3-state wooden plates (border-image,
-     13px = the sanctioned exact-half scale from the narrow-phone HUD), the
-     slot socket as the name trough, the cobblestone page backdrop dimmed
-     under a dark wash so the logo still pops, wood #23160d + gold #ffd678.
-     Selection = plate-selected (the pre-blended gold-glow art), NOT a CSS
-     border — same language as the HUD tabs. NO texture from the maintainer's
-     inspiration mock was copied. */
+  /* WIKI-STYLE select: the maintainer's enchanted-forest art + logo carry the
+     screen; every CONTROL is a clean wiki card on the shared theme tokens.
+     Plain responsive CSS — no zoom compensation (like the wiki itself). */
   const css = `
-  /* the maintainer's enchanted-forest select background (768x1376, frame
-     space): fairies, crystals, glowing mushrooms around a mossy clearing.
-     cover + center keeps the clearing on screen at any aspect; a LIGHT navy
-     veil keeps the plaques/text readable over the busy art (the old stone
-     backdrop wore a heavy .84 wash — this art is meant to be SEEN). */
-  /* --ml-col: THE shared column width every row-level control aligns to
-     (dropdown, character cards, action row, install). On the overlay, not
-     the panel — the install button lives outside the panel now. */
-  /* The OVERLAY scrolls, not the panel: an overflow:auto panel clipped the
-     logo's drop-shadow glow at its top edge — a hard horizontal line over
-     the logo (maintainer). The overlay is viewport-sized, so its clip
-     edges are off screen; margin:auto on the panel keeps it centred when
-     short AND reachable when tall (flex centering alone would clip the
-     top of overflowing content). */
   .ml-overlay{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;
-    overflow:auto;background:#0d101c;font-family:system-ui,sans-serif;color:#e8e8ec;--ml-col:min(720px,96%)}
+    overflow:auto;background:#0d101c;font:14px/1.45 var(--sans);color:var(--ink)}
   .ml-overlay{background-image:linear-gradient(rgba(13,16,28,.28),rgba(13,16,28,.28)),url(/ui2/select-bg.png);
     background-size:auto,cover;background-position:center;background-repeat:repeat,no-repeat;image-rendering:pixelated}
-  /* No vw/vh inside this overlay: it may carry a compensating CSS zoom
-     (uiscale.ts) and viewport units would double-count under it. */
-  /* Slim side padding: the ring frame provides the visual margin now, and
-     the phone needs the width — two 152px character tracks + their gap must
-     fit inside ring pads + panel (128px native portraits, never scaled). */
-  /* One vertical RHYTHM for the whole column (maintainer: "add some spacing
-     to align the UI elements"): the panel is a flex column with a uniform
-     gap — logo / world dropdown / characters / action row / install — and
-     the dropdown + action row share ONE width (--ml-col) so their edges
-     line up. */
-  .ml-panel{width:min(920px,100%);margin:auto;padding:16px 8px 110px;text-align:center;
-    display:flex;flex-direction:column;align-items:center;gap:20px}
-  /* 2x logo (maintainer), with a BLACK GLOW hugging the silhouette:
-     drop-shadow follows the png alpha. Strengthened twice on request
-     ("can't see the glow", then "more dark/black, bigger glow") — four
-     stacked layers: a dense core plus a wide soft halo. */
-  .ml-logo{display:block;width:min(840px,96%);margin:0 auto;user-select:none;-webkit-user-drag:none;
-    position:relative;z-index:101;will-change:transform,opacity;pointer-events:none; /* ABOVE the title veil so it stays visible while the black lifts (and translates title→select); click-transparent so the fixed Wiki link under its box stays tappable */
-    filter:drop-shadow(0 0 10px rgba(0,0,0,.65)) drop-shadow(0 0 28px rgba(0,0,0,.6))
-      drop-shadow(0 0 64px rgba(0,0,0,.55)) drop-shadow(0 0 110px rgba(0,0,0,.45))}
-  /* TITLE veil: a solid-black cover over the whole select screen; only the logo
-     (z 101) pokes through. z 100 clears every control (the dropdown is z 20).
-     Tap fades it out (opacity → 0) to reveal select. */
+  .ml-panel{width:min(430px,94%);margin:auto;padding:12px 0 132px;text-align:center;
+    display:flex;flex-direction:column;align-items:center;gap:14px}
+  /* the maintainer's logo with its black silhouette glow — brand art, kept */
+  .ml-logo{display:block;width:min(360px,92%);margin:0 auto;user-select:none;-webkit-user-drag:none;
+    position:relative;z-index:101;will-change:transform,opacity;pointer-events:none;
+    filter:drop-shadow(0 0 8px rgba(0,0,0,.65)) drop-shadow(0 0 22px rgba(0,0,0,.6))
+      drop-shadow(0 0 48px rgba(0,0,0,.5))}
+  /* TITLE veil: a solid-black cover; only the logo (z 101) pokes through. */
   .ml-title-veil{position:absolute;inset:0;z-index:100;background:#05070d;opacity:1;
     transition:opacity .7s ease;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-  /* UI-KIT plates (plate.ts dressPlate): Normal / cream Selected / dark
-     Down — same trio and block scale as the HUD. */
-  .ml-plated{border:none;background:none;background-repeat:no-repeat;background-size:100% 100%;
-    image-rendering:pixelated;box-sizing:border-box;cursor:pointer;
-    touch-action:manipulation;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
-  /* WORLD DROPDOWN (the kit's dropdown column, maintainer: "dropdown
-     instead of slider with icons", text only). Closed head = a kit bar +
-     the extracted caret at the shared block scale; open list = kit option
-     rows stacked below (cream = the selected world). The open head wears
-     the kit's dark header state (the down bar) like the sheet shows. */
-  .ml-dd{position:relative;width:var(--ml-col);z-index:20}
-  .ml-ddhead{position:relative;display:flex;align-items:center;justify-content:center;width:100%;height:120px;
-    color:#fff;font:700 22px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;
-    text-shadow:0 1px 0 rgba(0,0,0,.35)}
-  .ml-ddhead.press,.ml-ddhead.open{color:#f4e3c2}
-  /* the 6x6 caret at 2x = 12px (matches the kit block scale, plate.ts KIT_PX);
-     top/margin centering, NOT translate — the plate press rule owns the
-     children's translate channel */
-  .ml-ddchev{position:absolute;right:25px;top:50%;margin-top:-6px;width:12px;height:12px;
-    image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
+  /* ONE wiki card carries the controls: dropdown / characters / name */
+  .ml-card{width:100%;display:flex;flex-direction:column;gap:12px;
+    background:var(--surface);border:1px solid var(--border);border-radius:14px;
+    box-shadow:var(--shadow);padding:14px}
+  /* ── world dropdown ── */
+  .ml-dd{position:relative;width:100%;z-index:20}
+  .ml-ddhead{display:flex;align-items:center;justify-content:space-between;gap:8px;
+    width:100%;min-height:44px;padding:8px 12px;cursor:pointer;
+    background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:10px;
+    font:600 14px/1.3 var(--sans);
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+  .ml-ddhead:hover{background:var(--surface-2)}
+  .ml-ddhead.press{transform:translateY(1px);background:var(--surface-2)}
+  .ml-ddhead.open{border-color:var(--accent)}
+  .ml-ddchev{color:var(--muted);transition:transform .15s ease}
+  .ml-ddhead.open .ml-ddchev{transform:rotate(180deg)}
   .ml-ddlist{position:absolute;top:calc(100% + 6px);left:0;right:0;display:flex;flex-direction:column;
-    gap:6px;max-height:520px;overflow-y:auto;overscroll-behavior:contain}
-  /* author display:flex would beat the UA's [hidden] rule — restate it */
+    gap:2px;max-height:300px;overflow-y:auto;overscroll-behavior:contain;padding:6px;
+    background:var(--surface);border:1px solid var(--border-strong);border-radius:12px;
+    box-shadow:var(--shadow);z-index:30}
   .ml-ddlist[hidden]{display:none}
-  .ml-ddrow{display:flex;align-items:center;justify-content:center;height:120px;flex:none;
-    color:#fff;font:700 22px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;
-    text-shadow:0 1px 0 rgba(0,0,0,.35)}
-  .ml-ddrow.sel{color:#4a2a1c;text-shadow:none}
-  .ml-ddrow.press{color:#f4e3c2}
-  /* character cards GROW to the shared column (maintainer: "make the
-     character buttons bigger so the UI align with the other UI rows") —
-     two per row, edges flush with the dropdown/action row */
-  .ml-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;width:var(--ml-col)}
-  .ml-cell{flex:1 1 calc(50% - 6px);display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:6px 10px;box-sizing:border-box}
-  .ml-sprite{image-rendering:pixelated;background-repeat:no-repeat;flex:none}
-  /* 2x characters in an UNCHANGED box (maintainer: half the 4x size, keep
-     the button size — the padding does the breathing): the 112 art at an
-     integer 2x = 224, the measured figure (x42-71, y10-97 native; 60x174
-     at 2x) centred in the same 192x368 viewport */
-  .ml-portrait-box{width:192px;height:368px;overflow:hidden;position:relative;flex:none}
-  .ml-portrait{position:absolute;left:-18px;top:77px;width:224px;height:224px;image-rendering:pixelated}
-  /* Action row: ONE height (64px, same as the world chips) for the trough,
-     the trough fills the full column now that Enter world pins to the
-     screen bottom. */
-  .ml-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center;width:var(--ml-col)}
-  /* Name input = the kit's empty-slot trough (dressPlate "slot"); it FILLS
-     the row so its edges line up with the dropdown above. */
-  .ml-name{flex:1 1 170px;min-width:170px;height:120px;padding:0 18px;border:none;
-    image-rendering:pixelated;box-sizing:border-box;background:none;background-repeat:no-repeat;
-    background-size:100% 100%;color:#e8e8ec;font-size:22px;text-align:center;text-shadow:0 1px 2px #000}
-  .ml-name:focus{outline:none;color:#ffd678}
-  /* ENTER WORLD: full-column bar PINNED near the screen bottom (the
-     maintainer's blue band), above the version badge. Outside the panel so
-     scroll can't move it; it still fades with the overlay. */
-  .ml-btn{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:2;
-    display:flex;align-items:center;justify-content:center;border:none;padding:0 20px;
-    width:var(--ml-col);height:120px;image-rendering:pixelated;
-    font:700 22px system-ui,sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#fff;
-    text-shadow:0 1px 0 rgba(0,0,0,.35)}
-  .ml-btn.press{color:#f4e3c2}
-  /* install prompt: ICON ONLY in the top-RIGHT corner (maintainer's red
-     circle) — the kit's download arrow, a complete square icon button at
-     the shared 2x block scale (matches KIT_PX). */
-  .ml-install{position:fixed;top:16px;right:16px;z-index:2;width:32px;height:32px;padding:0;
-    border:none;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
-  .ml-install img{width:100%;height:100%;image-rendering:pixelated;-webkit-user-drag:none}
-  .ml-install[hidden]{display:none}
-  .ml-install.press img{translate:0 1px;filter:brightness(.85)}
-  .ml-wiki{position:fixed;top:16px;left:16px;z-index:2;padding:6px 12px;border-radius:8px;
-    background:rgba(20,14,8,.55);border:1px solid rgba(214,178,120,.45);color:#e8d9b0;
-    font:600 13px/1 system-ui,sans-serif;text-decoration:none;user-select:none;cursor:pointer}
-  .ml-wiki:hover{background:rgba(20,14,8,.75)}
-  .ml-wiki.press{translate:0 1px;filter:brightness(.85)}`;
+  .ml-ddrow{display:flex;align-items:center;justify-content:flex-start;min-height:40px;flex:none;
+    padding:6px 10px;cursor:pointer;background:transparent;color:var(--ink);
+    border:none;border-radius:8px;font:500 14px/1.3 var(--sans);text-align:left;
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+  .ml-ddrow:hover{background:var(--surface-2)}
+  .ml-ddrow.press{background:var(--surface-2)}
+  .ml-ddrow.sel{background:var(--accent-soft);font-weight:700}
+  /* ── character cards: male/female preview ── */
+  .ml-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;width:100%}
+  .ml-cell{flex:1 1 calc(50% - 5px);min-width:130px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;padding:8px;cursor:pointer;
+    background:repeating-conic-gradient(var(--checker-a) 0% 25%, var(--checker-b) 0% 50%) 0 0 / 16px 16px;
+    border:1px solid var(--border);border-radius:12px;
+    touch-action:manipulation;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+  .ml-cell:hover{border-color:var(--border-strong)}
+  .ml-cell.press{transform:translateY(1px)}
+  .ml-cell.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+  /* the figure crop: 112² art at an integer 2x, viewport tight on the body
+     (figure x42-71, y10-97 native → x84-142, y20-194 at 2x) */
+  .ml-portrait-box{width:120px;height:190px;overflow:hidden;position:relative;flex:none}
+  .ml-portrait{position:absolute;left:-53px;top:-12px;width:224px;height:224px;image-rendering:pixelated}
+  /* ── name input ── */
+  .ml-name{width:100%;min-height:44px;padding:8px 12px;text-align:center;
+    background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:10px;
+    font:600 15px/1.3 var(--sans);outline:none;box-sizing:border-box}
+  .ml-name:focus{border-color:var(--accent)}
+  .ml-name::placeholder{color:var(--muted)}
+  /* ── ENTER WORLD: the primary action, pinned above the version badge ── */
+  .ml-btn{position:fixed;bottom:64px;left:50%;transform:translateX(-50%);z-index:2;
+    display:flex;align-items:center;justify-content:center;width:min(430px,94%);min-height:50px;
+    background:var(--accent);color:#fff;border:none;border-radius:12px;cursor:pointer;
+    font:700 15px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;
+    box-shadow:var(--shadow);touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+  .ml-btn:hover{filter:brightness(1.06)}
+  .ml-btn.press{transform:translateX(-50%) translateY(1px);filter:brightness(.97)}
+  /* ── corner ghost buttons: Wiki (left), Install (right) ── */
+  .ml-corner{position:fixed;top:12px;z-index:2;padding:7px 12px;cursor:pointer;
+    background:color-mix(in srgb, var(--surface) 82%, transparent);color:var(--ink);
+    border:1px solid var(--border);border-radius:9px;font:600 13px/1 var(--sans);
+    backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
+  .ml-corner:hover{background:var(--surface-2)}
+  .ml-corner.press{transform:translateY(1px)}
+  .ml-wiki{left:12px}
+  .ml-install{right:12px}
+  .ml-install[hidden]{display:none}`;
   const s = document.createElement("style");
   s.textContent = css;
   document.head.appendChild(s);

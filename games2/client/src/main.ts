@@ -7,7 +7,7 @@ import { WorldScene } from "./scenes/WorldScene";
 import { loadWorld, loadWorldsList } from "./maps";
 import { MapPreviewScene } from "./scenes/MapPreviewScene";
 import { setLoadingProgress, showLoading } from "./loading";
-import { applyUiZoom } from "./uiscale";
+import { mountTheme } from "./theme";
 import { mountAmbient } from "../../ambient/index";
 import { gameAudio } from "../../composer/index";
 
@@ -69,28 +69,20 @@ async function bootMapPreview(): Promise<boolean> {
 }
 
 /** Build-version badge (git sha) so testers can tell which deploy they're
- * running. Centered at the bottom, styled like the in-game coordinate label
- * (light monospace on a dark outline), above every overlay (select screen,
- * loading screen, game HUD alike). */
+ * running. Centered at the bottom on ALL screens, above every overlay —
+ * wiki-style now: quiet muted mono, no zoom compensation. */
 function showVersion() {
   const sha = (import.meta.env.VITE_GIT_SHA as string | undefined) || "dev";
   console.log(`[nangijala] build ${sha}`);
   const el = document.createElement("div");
   el.textContent = sha.slice(0, 9); // 9 chars — matches git's abbreviated hash (what's written in dev chat)
-  // ONE fixed spot on ALL screens (maintainer 2026-07-18 red mark): centred
-  // at the very bottom of the page, over the frame's bottom rail — never
-  // lifted above the HUD, never part of any screen fade (the badge lives on
-  // body, outside every fading overlay). The badge is uiZoom'd (design-width
-  // normalization, uiscale.ts) and the offset is PLAIN design px on purpose:
-  // inside the zoomed root it scales with k and keeps tracking the frame's
-  // bottom rail, which shrinks with the viewport the same way.
   el.style.cssText =
     "position:fixed;left:50%;transform:translateX(-50%);" +
-    "bottom:14px;z-index:50;" +
-    "font:700 24px system-ui,sans-serif;letter-spacing:1px;color:#cfd6ff;text-shadow:0 1px 2px #000,0 0 3px #000;" +
+    "bottom:6px;z-index:50;" +
+    "font:600 11px var(--mono, ui-monospace, monospace);letter-spacing:.06em;" +
+    "color:var(--muted, #8a887f);opacity:.9;" +
     "pointer-events:none;user-select:none";
   document.body.appendChild(el);
-  applyUiZoom(el); // keep it readable under "Desktop site" too
 }
 
 /** Poll /version and offer a one-click reload when a newer deploy is live. */
@@ -124,27 +116,25 @@ function showUpdateBanner(sha: string) {
   el.textContent = `New version out ${sha.slice(0, 9)}`;
   // Non-selectable on purpose (belt and braces with the global rule): a long
   // press used to text-select the hash and pop Chrome's search sheet mid-game.
-  // Sizing has bounced (maintainer: first "super small and hard to click",
-  // then "a little bit too big", now "bigger and a little further down") —
-  // a comfortable thumb pill, not a billboard.
-  // "perfect spot" = the open playfield just below the clock (shared with
-  // the reconnect toast, WorldScene). top:340px is DESIGN px (the 980-wide
-  // reference layout): the banner root is uiZoom'd (design-width
-  // normalization, uiscale.ts), so on narrower clients the plain px scales
-  // with k and keeps landing below the clock disc, which shrinks with the
-  // frame the same way (a plain top:150px sat ON the disc).
+  // Wording is maintainer-fixed: JUST "New version out <hash>". Wiki-style
+  // toast now: a surface pill on the shared tokens, just below the CSS clock,
+  // plain responsive px (no zoom compensation).
   el.style.cssText =
-    "position:fixed;top:340px;left:50%;transform:translateX(-50%);z-index:100;cursor:pointer;" +
-    "padding:14px 26px;border-radius:12px;background:#111114f2;color:#ffd678;" +
-    "border:2px solid #ffd678aa;font:bold 19px system-ui,sans-serif;box-shadow:0 6px 24px #000c;" +
+    "position:fixed;top:74px;left:50%;transform:translateX(-50%);z-index:100;cursor:pointer;" +
+    "padding:9px 16px;border-radius:10px;" +
+    "background:var(--surface, #fff);color:var(--accent-ink, #b45309);" +
+    "border:1px solid var(--accent, #d97757);font:600 13.5px var(--sans, sans-serif);" +
+    "box-shadow:var(--shadow, 0 4px 16px rgba(0,0,0,.2));" +
     "white-space:nowrap;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;" +
     "-webkit-tap-highlight-color:transparent";
   el.addEventListener("click", () => location.reload());
   document.body.appendChild(el);
-  applyUiZoom(el);
 }
 
 async function boot() {
+  // Shared wiki theme FIRST: tokens + the saved light/dark choice land before
+  // any styled surface (badge, select, HUD) so nothing flashes unthemed.
+  mountTheme();
   showVersion();
   watchForUpdates();
   // Composer's audition page (/#foley): every generated foley candidate,

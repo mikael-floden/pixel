@@ -1,12 +1,16 @@
 import { MAX_CHAT_LEN } from "@nangijala/shared";
-import { applyUiZoom } from "./uiscale";
 
 /** How long a log line stays before fading out. */
 const CHAT_LINE_TTL_MS = 20_000;
 
 /**
- * Minimal DOM chat: a bottom-left message log + an input box that opens on Enter.
- * Movement is gated by `open` in the world scene while typing.
+ * Minimal DOM chat: a bottom-left message log + an input box that opens on
+ * Enter. Movement is gated by `open` in the world scene while typing.
+ *
+ * WIKI-STYLE (maintainer 2026-07-30): lines render as translucent theme
+ * chips (the shared tokens from theme.ts) so they read over any world art in
+ * both light and dark mode; the input is a plain wiki input. No zoom
+ * compensation — plain responsive CSS, like the wiki.
  */
 export class ChatUI {
   open = false;
@@ -30,8 +34,6 @@ export class ChatUI {
     this.input.placeholder = "say something…";
     this.input.style.display = "none";
     document.body.append(this.log, this.input);
-    applyUiZoom(this.log); // "Desktop site" must not shrink the HUD
-    applyUiZoom(this.input);
 
     this.input.addEventListener("keydown", (e) => {
       e.stopPropagation();
@@ -88,17 +90,25 @@ function injectStyles() {
   if (injected) return;
   injected = true;
   const css = `
-  /* px (not vw) sizes: these roots may carry a compensating CSS zoom
-     (uiscale.ts) and viewport units would double-count under it. The bottom
-     anchors sit ABOVE the HUD dock (--hud-h; slight double-count under a
-     desktop-site zoom is acceptable) — the dock is real UI now. */
-  .ml-chatlog{position:fixed;left:96px;bottom:calc(var(--hud-h, 0px) / var(--ml-uizoom, 1) + 46px);z-index:5;max-width:840px;
-    font-family:system-ui,sans-serif;font-size:26px;color:#e8e8f0;text-shadow:0 1px 2px #000;pointer-events:none}
-  .ml-chatline{margin:2px 0;line-height:1.3;transition:opacity 1.6s ease}
+  /* Bottom-left, floating just above the HUD (--hud-h is real px, set by
+     hud.ts applyLayout). Lines are translucent theme chips so they stay
+     readable over any world art in either theme. */
+  .ml-chatlog{position:fixed;left:10px;bottom:calc(var(--hud-h, 38.2dvh) + 40px);z-index:5;
+    max-width:min(78vw,460px);display:flex;flex-direction:column;align-items:flex-start;gap:3px;
+    font:13px/1.4 var(--sans);color:var(--ink);pointer-events:none}
+  .ml-chatline{padding:3px 9px;border-radius:9px;max-width:100%;overflow-wrap:anywhere;
+    background:color-mix(in srgb, var(--bg) 78%, transparent);
+    border:1px solid color-mix(in srgb, var(--border) 55%, transparent);
+    backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+    transition:opacity 1.6s ease}
   .ml-chatline.ml-chatfade{opacity:0}
-  .ml-chatwho{color:#ffd678;font-weight:600}
-  .ml-chatinput{position:fixed;left:96px;bottom:calc(var(--hud-h, 0px) / var(--ml-uizoom, 1) + 12px);z-index:6;width:520px;
-    padding:9px 12px;border-radius:8px;border:1px solid #2c2c31;background:#0a0a0cee;color:#fff;font-size:15px}`;
+  .ml-chatwho{color:var(--accent-ink);font-weight:600}
+  .ml-chatinput{position:fixed;left:10px;bottom:calc(var(--hud-h, 38.2dvh) + 10px);z-index:6;
+    width:min(78vw,380px);background:var(--surface);color:var(--ink);
+    border:1px solid var(--border);border-radius:10px;padding:8px 11px;
+    font:14px/1.3 var(--sans);outline:none;box-shadow:var(--shadow)}
+  .ml-chatinput:focus{border-color:var(--accent)}
+  .ml-chatinput::placeholder{color:var(--muted)}`;
   const s = document.createElement("style");
   s.textContent = css;
   document.head.appendChild(s);

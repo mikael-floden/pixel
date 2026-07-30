@@ -967,74 +967,37 @@ visible head/shoulders are ABOVE the surface).
 
 ## Mobile / PWA (client)
 
+- **WIKI-STYLE UI (2026-07-30, the complete HUD remake)**: the pixel-art
+  "UI kit" plates and the vine/crystal page frame are RETIRED (frame2.ts +
+  plate.ts deleted; history in git). Every DOM surface — select screen,
+  HUD tabs/pages/settings/backpack, gamepad stick + jump button, stat
+  bars, day/night clock, chat overlay + chat page, version badge, update
+  banner — is plain HTML/CSS on the SHARED WIKI THEME
+  (`client/src/theme.ts` = a verbatim copy of wiki/site/wiki.css tokens:
+  cream/dark palettes, serif headings, coral #d97757 accent, 1px
+  var(--border) borders, 8-14px radii). DARK MODE is ONE choice for wiki
+  AND game: localStorage["wiki-theme"] -> `<html data-theme>`; theme.ts
+  follows the wiki drawer via `storage` events, wikipanel.ts mirrors
+  game-side toggles onto the live iframe, and Settings gained a
+  "theme: light|dark" button. Pixel-art ICONS stay (tab icons, gold
+  nugget) at integer divisors of their bakes, pixelated. NO zoom
+  compensation in the new UI: like the wiki it is plain responsive CSS
+  (uiscale.ts survives only for loading.ts + WorldScene's reconnect
+  toast). Gates: verify-bars/-hudtabs/-clockflip/-chatpage/-gamepad/
+  -select all assert the new DOM.
 - **HUD (golden-ratio split)**: the game viewport is the TOP 61.8% of the
   page (index.html `#game` = `--hud-h-inv`); the bottom 38.2% (`--hud-h`)
-  is the DOM HUD (`client/src/hud.ts`): a framed TAB ROW (Backpack /
-  Equipment / Map / Settings / Logout) over a framed CONTENT PAGE.
+  is the DOM HUD (`client/src/hud.ts`): a tab row of 6 wiki buttons
+  (button.ml-tab[data-tab] + pixel icon; `.sel` = the accent state) over
+  the content pages. hud.ts applyLayout() publishes --hud-h/--hud-h-inv
+  in REAL px (the keyboard lift + chat overlay parse px values).
   Settings hosts the toggles mobile can't reach by keyboard (the
-  time-of-day button keeps the `.ml-hudbtn` hook for the smoke); Logout
-  is a two-step (tab → confirm) that clears ml-last-choice/ml-rejoin and
-  reloads to the select screen. Pointer events in the HUD never reach
-  Phaser — e2e scripts must keep tap/drag coordinates in the top 61.8%
-  (canvas centre y = `VH*0.309`). Nothing in the HUD is uiZoom'd (its
-  dvh geometry must match the #game split; CSS zoom rescales viewport
-  units). A `max-height:560px` media query compacts it for short
-  windows.
-- **UI frame v2 (`client/src/frame2.ts` + `/ui2/*`)**: the vine/crystal/
-  clock frame from the maintainer's second concept round replaced the old
-  per-tile overlay (its `/ui/corner-*`/rail/divider tiles + the
-  `#ml-pageframe` CSS are retired; the plate/tab/icon tiles remain). The
-  frame is ONE runtime-composed canvas: `/ui2/frame.png` (the pixel-perfect
-  768×1376 extraction, 15 review rounds) + `/ui2/frame-top-runefree.png`
-  (top-rail rows with both rune glyphs inpainted) are stretched to the
-  viewport by inserting pixels at maintainer-marked cut lines
-  (scratchpad hud2-tilespec.json). RULES LEARNED OVER THE DUMMY ROUNDS:
-  every stretch section repeats PLAIN texture only — single-column/row
-  extrusions of the exact cut column, so any pixel count works and every
-  joint is a pair of originally-adjacent pixels; decorated art (wraps,
-  runes, crystals, corners, the zodiac clock disc) lives ONLY in fixed
-  sections; the top rail cuts avoid slicing the runes (vertical x=196
-  left; kinked x=534+y dodging to ≥576 on the right). Vertical stretch:
-  single row 326 + the 86px winding-bark unit at y=1035 (remainder goes
-  to the single row). Scale s = min(W/768, H/1376) CSS-scales the canvas
-  (pixelated); the axis with head-room gets the insert, so the frame
-  never distorts. `mountPageFrame()` (hud.ts) mounts it and glues the
-  layout: the onLayout callback sets `--hud-h-inv` = gameHeight (INSIDE
-  rail A's full-width-opaque band, rows 665-693 — the game canvas renders
-  under the rail's ragged top so the frame art overlays the world;
-  maintainer marked the old hard stop) and `--hud-h` from railTop (the
-  VISIBLE rail top, 648 — chat anchors above it, not under the rail), and
-  positions `.ml-tabrow`/`.ml-pages` into the frame's two lower windows by
-  inline style. The page content box (--ml-page-pad/-padtop/-padbot) is
-  the frame's MEASURED inner window (x 48..720, y 874..1306 — rail-B art
-  ends 869, bottom-rail ragged art starts 1310, side rails' inner edges
-  median 42/725), so grids with space-evenly get outer margins equal to
-  their item gaps ("the spacing should look even" — the old eyeballed
-  window left big dead margins). The pages carry the maintainer's
-  cobblestone backdrop (`/ui2/stone.png`) FULL-BLEED — "from the very
-  left to the very right" (maintainer): .ml-pages spans 100vw under the
-  rails, content insets via --ml-page-pad, and the image sits on each
-  scrolling .ml-page (background-size:100% auto, repeat-y,
-  background-attachment:local so it travels with long scrolled content —
-  the art is deliberately tall for that). The frame's
-  static clock disc sits under the dynamic celestial-clock overlay
-  (clock.ts) top-centre. The disc's baked vine-wrapped wooden HAND was
-  REMOVED (maintainer: the hand must be animated at runtime, never
-  baked): the fill pixels were borrowed from the maintainer's hand-free
-  render of the same art (registered per-band, colour-matched by local
-  means; his AI-regen images never align globally — patch locally).
-  That hand ships separately as `/ui2/clock-hand.png` (the maintainer's
-  v2 sprite WITH its own ring, 45×163 native — extracted from an 11.1×
-  phone upscale by box-downscale, white outline + teal keyed to soft
-  alpha), pivot = sprite (23,18) (the maintainer's blue-dot mark in the
-  ring hole). clock.ts renders it as THE clock hand (replacing the old
-  sheet-3 gold hand): FrameLayout.clockAnchor = frame (385,88) — just
-  below the strap stub, the maintainer's other blue dot — is fed through hud.ts'
-  applyFrameLayout into setClockMount on every compose, and the hand
-  layer lives in FRAME px space (sized by the frame scale, NOT uiZoom'd,
-  unlike the dials) rotating about the ring hole with baseDeg 0 (authored
-  pointing down). Only a short strap stub remains baked in the frame —
-  hand, ring and shackle are runtime elements (four review rounds).
+  time-of-day button keeps the `.ml-hudbtn` hook for the smoke) + the
+  theme button; Log out is a wide two-step button. `.ml-plate-btn`
+  survives as a plain-CSS wiki-button class — the ambient agent injects
+  its cycler expecting it. Pointer events in the HUD never reach Phaser
+  — e2e scripts must keep tap/drag coordinates in the top 61.8% (canvas
+  centre y = `VH*0.309`).
 - **Tap/hold-to-move**: a tap RUNS to the point (there is NO double-tap
   gesture — nobody walks when they can run, maintainer); the autopilot
   eases into a walk inside `APPROACH_WALK_RADIUS` (2.5 cells) of the
@@ -1162,24 +1125,13 @@ visible head/shoulders are ABOVE the surface).
   software-GL at big viewports throttles the frame loop into slow motion
   that fakes "stuck player" bugs (this once cost an hour of ghost-chasing).
   Keep e2e viewports small (480×320); `scripts/debug-speed.mjs` measures.
-- **HUD / visual QA runs in the maintainer's REAL phone view, which is
-  DESKTOP-SITE layout on a phone screen**: Playwright context
-  `{viewport: {width: 980, height: 2123}, screen: {width: 393, height:
-  851}, isMobile: true, hasTouch: true}` → innerWidth 980, screen.width
-  393, uiZoom ≈ 2.49, 150px HUD tabs WITH icons. A plain device-width
-  context (viewport 393) is a DIFFERENT geometry — 39px icon-less tabs,
-  no zoom — and QA screenshots taken there did not match the
-  maintainer's phone at all ("something is wrong when you try to
-  simulate my mobile view"). Check BOTH modes when touching overlay
-  anchors. THE TRAP: two coordinate spaces coexist — the page FRAME is
-  fixed layout px (never uiZoom'd) while overlays (clock, badge,
-  banner, select, chat) get the compensating `zoom`; a px anchor inside
-  a zoomed overlay renders at value×zoom layout px, so anchoring an
-  overlay to a frame feature needs `calc(<px> / var(--ml-uizoom, 1))`
-  (see .ml-clock's top — a plain 33px floated the dial ~20px off the
-  rail on the real phone). Movement-timing e2e (verify-smoke) stays on
-  its small fast viewport — the starvation rule above outranks realism
-  there.
+- **HUD / visual QA runs at DEVICE-WIDTH mobile geometry** (the
+  maintainer plays in normal mobile view since the wiki-style remake):
+  Playwright `{viewport: {width: 393, height: 851}, isMobile: true,
+  hasTouch: true}`. Check light AND dark (localStorage wiki-theme) when
+  touching themed surfaces. Movement-timing e2e (verify-smoke) stays on
+  its small fast viewport — the headless-GL starvation rule outranks
+  realism there.
 - Rule of thumb: if a check doesn't need pixels, pointer events, websockets,
   or Phaser anims, it belongs in `server/test` (3s), not in a browser (min).
 - **Deploy** (push to main → live): the workflow runs a `test` job (typecheck
@@ -1216,13 +1168,11 @@ visible head/shoulders are ABOVE the surface).
   `scripts/build-pwa-icons.py` (committed). main.ts stashes
   `beforeinstallprompt` → select.ts shows "Install as an app" (Android).
   `verify-mobile.mjs` covers all of this headlessly.
-- **"Desktop site" toggle is neutralized** — the game must look the same
-  regardless. Canvas side: camera zoom is dynamic (`WorldScene.zoomFor`),
-  integer, targeting ~520 world-px of visible width (phone→1, desktop→2).
-  DOM side: `uiscale.ts` applies a compensating CSS zoom
-  (innerWidth/screen.width) to every overlay root (select, loading, chat,
-  roster) — overlay CSS must use px/% only, NEVER vw/vh (they double-count
-  under zoom). Probe via `__ml.camZoom()`.
+- **"Desktop site"**: the CANVAS is still neutralized (dynamic integer
+  camera zoom — `WorldScene.zoomFor`, probe `__ml.camZoom()`), but the
+  DOM UI no longer compensates: the wiki-style UI is ordinary responsive
+  CSS, exactly like the wiki page itself (the maintainer plays in normal
+  mobile view). uiscale.ts remains ONLY for loading.ts + the toast.
 - **Portrait-only (for now)**: manifest locks the installed app; in-browser
   landscape on a small touch screen shows the `#ml-rotate` prompt
   (index.html media query — coarse pointer + landscape + max-height 520px).

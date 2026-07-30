@@ -22,26 +22,33 @@ handbook: how the maintainer reviews (annotated screenshots, RED=remove /
 BLUE=restore-or-coordinate / GREEN=keep, apply marks LITERALLY), the
 screenshot-registration recipe, keying recipes per backdrop colour,
 first-upload-is-pixel-source, send verification crops back to his phone,
-and the frame/clock asset contracts. It outranks this file on technique.
+and the frame/clock asset contracts. It outranks this file on technique —
+but note its frame/clock ASSET pipeline is historical since the 2026-07-30
+wiki-style remake (the frame and sprite clock no longer exist at runtime).
 
 ## File ownership (one writer per file, applied inside games2/)
 
 **games-ui owns (the DOM overlay layer + its assets/QA):**
 
 - `client/src/hud.ts` — bottom HUD: tab row, pages (Backpack/Equipment/Map/
-  Settings/Logout), frame-layout glue.
-- `client/src/frame2.ts` — the vine/crystal/clock UI frame (runtime-composed
-  canvas, `/ui2/*`).
-- `client/src/clock.ts` — the celestial clock overlay + animated hand.
+  Settings/Logout), the golden-ratio split layout.
+- `client/src/theme.ts` — the shared wiki theme: design tokens copied from
+  `wiki/site/wiki.css`, the light/dark choice (localStorage `wiki-theme`,
+  shared with the wiki), and the `.ui-*` component recipes.
+- `client/src/clock.ts` — the day/night clock (pure CSS/DOM, no sprites).
 - `client/src/select.ts` — character/world select screen.
 - `client/src/loading.ts` — loading overlay.
-- `client/src/roster.ts` — player roster overlay.
-- `client/src/uiscale.ts` — the compensating CSS zoom for overlays.
+- `client/src/roster.ts` — player roster overlay (currently unmounted).
+- `client/src/uiscale.ts` — LEGACY compensating zoom; only `loading.ts` and
+  WorldScene's reconnect toast still consume it. The wiki-style UI proper is
+  plain responsive CSS with NO zoom compensation.
 - `client/public/ui/`, `client/public/ui2/`, `client/public/logo*.png`,
   `client/public/icons/`, `client/public/manifest.webmanifest` — UI art +
   PWA shell.
-- UI build scripts: `scripts/build-clock.mjs`, `scripts/build-ui-tiles.mjs`,
-  `scripts/build-pwa-icons.py`.
+- UI build scripts: `scripts/build-ui-tiles.mjs`, `scripts/build-pwa-icons.py`
+  (the `/ui2/*` kit PNGs are no longer consumed at runtime — the 2026-07-30
+  wiki-style remake replaced them with CSS; only the baked tab icons and the
+  gold icon remain in use as pixel art).
 - UI verify scripts: `scripts/verify-select.mjs`, `scripts/verify-chat.mjs`,
   `scripts/verify-mobile.mjs`.
 - This file.
@@ -100,18 +107,26 @@ from the games agent), #18 (title/landing screen).
 
 ## Hard-won UI rules (inherited — do not relearn these)
 
-- **Pixel art scales nearest-neighbour only, everywhere, always.** Soft
-  alpha on every keyed cut edge; no smoothing upscales, ever.
-- **Two coordinate spaces coexist**: the page frame is fixed layout px
-  (never uiZoom'd); overlays (clock, badge, banner, select, chat) get the
-  compensating `zoom`. Anchoring an overlay to a frame feature needs
-  `calc(<px> / var(--ml-uizoom, 1))`.
-- **QA in the maintainer's REAL phone geometry** (desktop-site layout on a
-  phone): Playwright `{viewport: 980×2123, screen: 393×851, isMobile: true,
-  hasTouch: true}` → uiZoom ≈ 2.49. Check BOTH this and plain device-width
-  mode when touching overlay anchors.
-- Overlay CSS uses px/% only — never vw/vh (they double-count under zoom).
-- HUD geometry is NOT uiZoom'd (its dvh split must match `#game`).
+- **The remaining pixel art scales nearest-neighbour only, at INTEGER
+  divisors of the bake.** Tab icons render at exactly 96→32 (24 compact);
+  no smoothing upscales, ever. Everything else is plain CSS on the shared
+  wiki tokens (`theme.ts`) — no sprites, no 9-slices.
+- **NO zoom compensation in the wiki-style UI** (2026-07-30 remake): all
+  overlays are plain responsive CSS, exactly like the wiki. The old
+  `--ml-uizoom` machinery survives ONLY inside `loading.ts` and WorldScene's
+  reconnect toast — never reintroduce it elsewhere, and never divide new CSS
+  by `var(--ml-uizoom)`.
+- **One theme, two surfaces**: light/dark lives in localStorage
+  `wiki-theme` + `<html data-theme>`. The game toggles via Settings; the
+  wiki drawer mirrors live (`wikipanel.ts` + the `ml-theme` window event).
+  Any new UI must style BOTH themes via the tokens, never hardcode colours.
+- **QA at DEVICE-WIDTH mobile geometry** (393×851, dpr 2.75), light AND
+  dark. The desktop-site squeeze (viewport 980×2123, screen 393×851) still
+  matters for the CANVAS (WorldScene.zoomFor) and the wiki drawer's iframe
+  scaling — check it when touching those.
+- HUD geometry: `applyLayout()` publishes `--hud-h`/`--hud-h-inv` in REAL px
+  (consumers parseFloat them — keyboard lift, chat anchors). The split must
+  keep matching `#game`'s 61.8/38.2.
 - Pointer events in the HUD must never reach Phaser; e2e taps stay in the
   top 61.8% of the page.
 - Buttons print their state ("time speed: x2"); switches render pressed

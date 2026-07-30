@@ -2,17 +2,12 @@
  * On-screen ANALOG STICK — the gamepad tab's controller (maintainer
  * 2026-07-22: play without tapping the world).
  *
- * Art: the maintainer's SECOND-GEN thumbstick (2026-07-23, authored at 2x
- * pixel density so it renders at true 1x), split pixel-exactly along his
- * red-line cut into /ui2/pad-stick2-base.png (shaft + socket, its
- * cap-occluded rim and shaft top AI-filled and baked) and
- * /ui2/pad-stick2-top.png (the movable mushroom cap) — both on the same
- * registered 128x128 canvas (client/ui-src/gamepad/, scripts
- * extract-stick2.py + bake-stick2-base.py), so stacking the two <img>s at
- * equal size reproduces the source art with zero alignment math. The cap
- * moves by CSS transform only.
+ * WIKI-STYLE (maintainer 2026-07-30): the sprite art (pad-stick2-*.png) is
+ * gone — the stick is now pure HTML/CSS on the shared theme: a round WELL
+ * (surface-2, 1px border, inset shade) with a round CAP that translates, and
+ * the jump control is a plain round wiki button. ONLY the visuals changed —
+ * the input contract is byte-identical to the art era:
  *
- * Feel (maintainer's spec, tuned 2026-07-22):
  *  - The stick SNAPS TO 8 DIRECTIONS — it simulates the keyboard (WASD),
  *    nothing else: each octant maps to the same key set a keyboard player
  *    would hold (NE = W+D …), synthesized as real window KeyboardEvents.
@@ -20,63 +15,30 @@
  *    (prediction, server validation, keyboard-cancels-tap all identical) —
  *    no games-agent file is touched. Phaser reads event.keyCode, which the
  *    KeyboardEvent init dict can't set — defineProperty fills it in.
- *  - The CAP ITSELF snaps to the 8 directions too: engaged, it sits at
- *    FULL deflection along the active octant (like an arcade gate), and
- *    octant changes glide there through a FAST transition — "the snap
- *    should not be instant, but have a fast animation". The finger keeps
+ *  - The CAP's ANGLE snaps to the 8 directions (octant changes glide there
+ *    through a FAST transition — "the snap should not be instant"); its
+ *    AMPLITUDE is analog, drawn damped by CAP_VISUAL_FRAC. The finger keeps
  *    steering at ANY distance past the travel radius without losing input
  *    (setPointerCapture keeps the drag alive far outside the well).
- *  - At rest the cap rides REST_ART below its authored pose — seated
- *    close to the socket with a hint of shaft ("put the top lower");
- *    deflections slide it off and reveal the AI-completed rim beneath.
  *  - Dead zone around the centre releases all keys (rest = no input).
  *
- * Pixel art renders nearest-neighbour at INTEGER factors: 2x at >=585 css
- * width ("the pixelart is now twice as big, the graphics can be too"), 1x
- * on small viewports. LOOK vs FEEL: the finger/cap TRAVEL keeps the
- * ORIGINAL 4/3/2 tier's css distances (dead zone, run threshold, full
- * gate) — the gameplay contract has survived every art round unchanged.
+ * FEEL is untouched: the css travel/dead/run distances still come from the
+ * original 4/3/2 width tiers (TRAVEL * feelK) — the gameplay contract has
+ * survived every visual round unchanged (verify-gamepad.mjs pins it).
  */
 
 import { gameAudio } from "../../composer/index";
 
-// The SECOND-GEN art (2026-07-23): 128x128 canvas, cap tile + socket tile
-// (shaft stays with the socket, his red-line cut; the AI-filled
-// rim/shaft-top hides behind the cap). Authored with the cap raised on the
-// shaft; in-game it rides REST_ART lower.
-const CANVAS = 128; // the art canvas (both pngs)
-const CX = 64; // the SEATED cap's centre, art px — the finger's neutral point
-const CY = 53;
-// the cap sits REST_ART below its authored pose ("put the top lower,
-// closer to the bottom graphic"; deepened again 2026-07-23: "lower the
-// top even more") — a sliver of shaft stays; deflections carry the seat
-const REST_ART = 14;
 // full-gate travel in FEEL-TIER units: css travel = TRAVEL * feelK, where
-// feelK is the ORIGINAL 4/3/2 stepping. Trimmed 14 -> 11 -> 9 across his
-// "make the circle smaller" rounds
+// feelK is the ORIGINAL 4/3/2 stepping. Trimmed 14 -> 11 -> 9 across the
+// maintainer's "make the circle smaller" rounds.
 const TRAVEL = 9;
-// the assembly's VISIBLE vertical span at rest (cap top … base bottom), used
-// to centre the whole stick in the page (maintainer's red line: equal
-// margin above and below)
-const CAP_TOP_ART = 10;
-const BASE_BOT_ART = 120;
-// lift the whole assembly off dead-centre ("put the entire controller a
-// little bit higher up", 2026-07-23) — art px, scales with k
-const RAISE_ART = 8;
-// the jump button rides this far below the stick midline ("move the jump
-// button a bit down", 2026-07-23) — art px, scales with k
-const JUMP_DROP_ART = 8;
-// the JUMP/WALK labels ride this far above the cap top (raised twice on
-// 2026-07-23, "a bit higher up" then "again a bit higher") — art px, k-scaled
-const LABEL_LIFT_ART = 14;
 const DEAD_FRAC = 0.35; // of the max: inside this, all keys are up
 const RUN_FRAC = 0.75; // of the max: past this amplitude the gait is RUN (Shift), else walk
 const SNAP_MS = 80; // the fast (not instant) glide between snap positions
-// the cap DRAWS at this fraction of the input radius ("make the radius
-// translation on the top part a little bit lower", then "just a few
-// pixels shorter", 2026-07-23) — like a real thumbstick, the cap's centre
-// moves less than the thumb; the input circle (dead zone, run, full
-// gate) is untouched. 0.65 = full tilt draws ~23 css px on the phone tier.
+// the cap DRAWS at this fraction of the input radius — like a real thumbstick,
+// the cap's centre moves less than the thumb; the input circle (dead zone,
+// run, full gate) is untouched.
 const CAP_VISUAL_FRAC = 0.65;
 // Octants counter-clockwise from screen-east with y DOWN → index = round(angle/45°)
 // mod 8 over atan2(dy,dx): E, SE, S, SW, W, NW, N, NE — each holds the keys a
@@ -113,93 +75,67 @@ function synthKey(kind: "keydown" | "keyup", k: string) {
 export function mountGamepadStick(page: HTMLElement) {
   injectStyles();
   const pad = mk("div", "ml-pad-stick");
-  const base = mk("img", "ml-pad-img") as HTMLImageElement;
-  base.src = "/ui2/pad-stick2-base.png";
-  const top = mk("img", "ml-pad-img ml-pad-top") as HTMLImageElement;
-  top.src = "/ui2/pad-stick2-top.png";
-  for (const im of [base, top]) {
-    im.alt = "";
-    im.draggable = false;
-  }
-  pad.append(base, top);
+  const top = mk("div", "ml-pad-top");
+  pad.append(top);
   page.appendChild(pad);
 
-  // ── JUMP BUTTON (maintainer 2026-07-23: his red box, left side at the
-  // stick's mirror height): the cap tile doubles as the button face — same
-  // rubber look, zero new art. A press synthesizes SPACE (WorldScene:
+  // ── JUMP BUTTON (maintainer's spot: left side at the stick's mirror
+  // height): a round wiki button. A press synthesizes SPACE (WorldScene:
   // keydown-SPACE -> tryJump), so the button jumps exactly like the
   // keyboard; it owns its own pointer, so steering and jumping work at
   // the same time.
-  const jump = mk("div", "ml-pad-jump");
-  const jumpImg = mk("img", "ml-pad-img") as HTMLImageElement;
-  jumpImg.src = "/ui2/pad-stick2-top.png";
-  jumpImg.alt = "";
-  jumpImg.draggable = false;
-  jump.appendChild(jumpImg);
+  const jump = mk("button", "ml-pad-jump");
   page.appendChild(jump);
 
-  // labels over each control (maintainer 2026-07-23: "write JUMP over it…
-  // WALK over the button to the right", settings-menu font)
+  // labels over each control (maintainer: "write JUMP over it… WALK over
+  // the button to the right") — the wiki section-label look, same as the
+  // Settings "Ambient effects" header.
   const jumpLabel = mk("div", "ml-pad-label");
   jumpLabel.textContent = "Jump";
   const walkLabel = mk("div", "ml-pad-label");
   walkLabel.textContent = "Walk";
   page.append(jumpLabel, walkLabel);
 
-  // ── layout: integer art scale + the maintainer's marked anchor spot ──
-  // (his red circle: the well centre at ~70.5% across, ~42% down the page)
-  let k = 2;
-  let maxCss = TRAVEL * 4; // full-gate travel in css px (feel tier, not k)
+  // ── layout: sizes step with the FEEL tier; anchors keep the maintainer's
+  // marked spots (stick centre ~70.5% across, jump at 25%, both centred on
+  // one midline). ──
+  let maxCss = TRAVEL * 4; // full-gate travel in css px (feel tier)
+  let well = 128; // well diameter, css px
   // the cap's VISUAL state: the ANGLE snaps to the active octant (-1 =
-  // centred, resting on the socket) but the AMPLITUDE is analog — the cap
-  // follows the finger's distance up to the css travel clamp ("only snap
-  // the angle, not the amplitude"). Radius kept in ART units so a scale
-  // change re-derives.
+  // centred) but the AMPLITUDE is analog — the cap follows the finger's
+  // distance up to the css travel clamp ("only snap the angle, not the
+  // amplitude"). Radius kept in css px.
   let visSector = -1;
   let visRadius = 0;
-  const setCap = (sector: number, radiusArt: number) => {
+  const setCap = (sector: number, radiusCss: number) => {
     visSector = sector;
-    visRadius = sector < 0 ? 0 : radiusArt;
+    visRadius = sector < 0 ? 0 : radiusCss;
     const a = (sector * Math.PI) / 4;
-    const dx = sector < 0 ? 0 : Math.cos(a) * visRadius * k;
-    const dy = sector < 0 ? 0 : Math.sin(a) * visRadius * k;
-    top.style.transform = `translate(${dx}px, ${REST_ART * k + dy}px)`;
+    const dx = sector < 0 ? 0 : Math.cos(a) * visRadius;
+    const dy = sector < 0 ? 0 : Math.sin(a) * visRadius;
+    top.style.transform = `translate(${dx}px, ${dy}px)`;
   };
   const layout = () => {
     // FEEL tier: the original scale stepping — anchors the css travel
     const feelK = window.innerWidth >= 780 ? 4 : window.innerWidth >= 585 ? 3 : 2;
-    // LOOK (maintainer 2026-07-23: "the pixelart is now twice as big, the
-    // graphics can be too — scale it up by 2x"): the 2x-density art renders
-    // at 2x on phones/desktop — double the on-screen stick, pixel grain in
-    // step with the HUD art — and 1x on small viewports.
-    k = window.innerWidth >= 585 ? 2 : 1;
     maxCss = TRAVEL * feelK;
-    const size = CANVAS * k;
-    pad.style.width = pad.style.height = `${size}px`;
-    pad.style.left = `${Math.round(page.clientWidth * 0.705 - CX * k)}px`;
-    // vertically CENTRE the resting assembly: equal margin above the cap and
-    // below the base (maintainer's red-line round, 2026-07-22). The page
-    // element runs on under the bottom frame rail with asymmetric padding
-    // (--ml-page-padtop/-padbot are the frame's inner window), so centre in
-    // the VISIBLE content box, not the raw clientHeight.
+    well = window.innerWidth >= 585 ? 132 : 104;
+    const cap = Math.round(well * 0.5);
+    const jumpD = Math.round(well * 0.66);
+    pad.style.width = pad.style.height = `${well}px`;
+    top.style.width = top.style.height = `${cap}px`;
+    top.style.left = top.style.top = `${Math.round((well - cap) / 2)}px`;
     const cs = getComputedStyle(page);
     const padTop = parseFloat(cs.paddingTop) || 0;
     const padBot = parseFloat(cs.paddingBottom) || 0;
-    const visH = page.clientHeight - padTop - padBot;
-    const centreArt = (CAP_TOP_ART + REST_ART + BASE_BOT_ART) / 2;
-    const padTopPx = Math.round(padTop + visH * 0.5 - (centreArt + RAISE_ART) * k);
-    pad.style.top = `${padTopPx}px`;
-    // jump button: cap-face centre at 25% across, centred on the stick
-    // ASSEMBLY's midline (his red line through both controls; the tile's
-    // cap centre is at art y 39)
-    jump.style.width = jump.style.height = `${CANVAS * k}px`;
-    jump.style.left = `${Math.round(page.clientWidth * 0.25 - CX * k)}px`;
-    // JUMP_DROP: nudged below the midline ("move the jump button a bit down")
-    jump.style.top = `${padTopPx + Math.round((centreArt - 39 + JUMP_DROP_ART) * k)}px`;
-    // labels share one row, floating over the taller control's cap top
-    // a bit above the taller control's cap top ("put the JUMP and WALK text
-    // a bit higher up", 2026-07-23) — the -10 css gap widened to -10 - LABEL_LIFT
-    const labelY = padTopPx + (CAP_TOP_ART + REST_ART) * k - 10 - LABEL_LIFT_ART * k;
+    const midY = padTop + (page.clientHeight - padTop - padBot) * 0.5;
+    pad.style.left = `${Math.round(page.clientWidth * 0.705 - well / 2)}px`;
+    pad.style.top = `${Math.round(midY - well / 2)}px`;
+    jump.style.width = jump.style.height = `${jumpD}px`;
+    jump.style.left = `${Math.round(page.clientWidth * 0.25 - jumpD / 2)}px`;
+    jump.style.top = `${Math.round(midY - jumpD / 2)}px`;
+    // labels share one row, floating a fixed gap above the taller control
+    const labelY = Math.round(midY - well / 2 - 10);
     for (const [el, fx] of [
       [jumpLabel, 0.25],
       [walkLabel, 0.705],
@@ -207,7 +143,7 @@ export function mountGamepadStick(page: HTMLElement) {
       el.style.left = `${Math.round(page.clientWidth * fx)}px`;
       el.style.top = `${labelY}px`;
     }
-    setCap(visSector, visRadius); // re-derive the k-scaled transform
+    setCap(visSector, visRadius);
   };
   layout();
   window.addEventListener("resize", layout);
@@ -234,12 +170,12 @@ export function mountGamepadStick(page: HTMLElement) {
   let dragging = false;
   const apply = (ev: PointerEvent) => {
     const r = pad.getBoundingClientRect();
-    const dx = ev.clientX - (r.left + CX * k);
-    const dy = ev.clientY - (r.top + CY * k);
+    const dx = ev.clientX - (r.left + r.width / 2);
+    const dy = ev.clientY - (r.top + r.height / 2);
     const len = Math.hypot(dx, dy);
     // the ANGLE keeps working at any finger distance — only the cap's drawn
     // deflection is clamped. All thresholds are CSS px (the feel tier), so
-    // halving the art did not change what the finger does.
+    // the art-to-CSS remake did not change what the finger does.
     const max = maxCss;
     const sector = len < max * DEAD_FRAC ? -1 : (Math.round(Math.atan2(dy, dx) / (Math.PI / 4)) + 8) % 8;
     // amplitude → gait: a light tilt WALKS, past RUN_FRAC it RUNS
@@ -247,13 +183,13 @@ export function mountGamepadStick(page: HTMLElement) {
     // angle snapped, amplitude analog (clamped to the travel radius, drawn
     // damped by CAP_VISUAL_FRAC); the SNAP_MS transition smooths both the
     // octant glide and the radius
-    setCap(sector, (Math.min(len, max) * CAP_VISUAL_FRAC) / k);
+    setCap(sector, Math.min(len, max) * CAP_VISUAL_FRAC);
   };
   const release = () => {
     if (!dragging) return;
     dragging = false;
     setKeys(-1, false);
-    setCap(-1, 0); // glide back onto the socket
+    setCap(-1, 0); // glide back to centre
     gameAudio.event("ui.release");
   };
   pad.addEventListener("pointerdown", (ev) => {
@@ -273,14 +209,14 @@ export function mountGamepadStick(page: HTMLElement) {
     jump.setPointerCapture(ev.pointerId);
     if (jumpHeld) return;
     jumpHeld = true;
-    jumpImg.style.transform = `translate(0px, ${2 * k}px)`; // pressed-in look
+    jump.classList.add("press");
     gameAudio.event("ui.press");
     synthKey("keydown", "SPACE");
   };
   const jumpUp = () => {
     if (!jumpHeld) return;
     jumpHeld = false;
-    jumpImg.style.transform = "";
+    jump.classList.remove("press");
     synthKey("keyup", "SPACE");
   };
   jump.addEventListener("pointerdown", jumpDown);
@@ -311,23 +247,26 @@ function injectStyles() {
   injected = true;
   const s = document.createElement("style");
   s.textContent = `
-  .ml-pad-stick{position:absolute;touch-action:none;cursor:pointer;
+  /* the WELL: a round surface-2 basin with an inset shade */
+  .ml-pad-stick{position:absolute;border-radius:50%;touch-action:none;cursor:pointer;
+    background:var(--surface-2);border:1px solid var(--border-strong);
+    box-shadow:inset 0 2px 6px rgba(0,0,0,.12);box-sizing:border-box;
     -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
-  .ml-pad-img{position:absolute;inset:0;width:100%;height:100%;
-    image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
-  .ml-pad-jump{position:absolute;touch-action:none;cursor:pointer;
+  /* the CAP: a raised round knob; the cap glides between its snap positions —
+     fast, not instant */
+  .ml-pad-top{position:absolute;border-radius:50%;pointer-events:none;box-sizing:border-box;
+    background:var(--surface);border:1px solid var(--border-strong);box-shadow:var(--shadow);
+    transition:transform ${SNAP_MS}ms ease-out}
+  /* JUMP: a round wiki button */
+  .ml-pad-jump{position:absolute;border-radius:50%;touch-action:none;cursor:pointer;
+    background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);
+    box-sizing:border-box;padding:0;
     -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
-  .ml-pad-jump .ml-pad-img{transition:transform 60ms ease}
-  /* the settings-menu label look — MATCHES .ml-amb-title (Settings "Ambient
-     effects" header) family/colour AND its font-size clamp: min(18px, 1.837vw).
-     The clamp is what makes it shrink on a narrow (device-width / mobile) view
-     instead of staying a fixed 18px — a plain 18px read "really big" on the
-     phone in mobile view while the ambient header stayed small (maintainer
-     2026-07-24). Keep the vw factor identical to .ml-amb-title so the two match. */
+  .ml-pad-jump.press{background:var(--surface-2);border-color:var(--border-strong);
+    transform:translateY(1px);box-shadow:none}
+  /* the wiki section-label look — matches the Settings "Ambient effects" header */
   .ml-pad-label{position:absolute;transform:translate(-50%,-100%);
-    color:#f0e2c6;font:700 18px system-ui,sans-serif;font-size:min(18px,1.837vw);
-    letter-spacing:1px;text-transform:uppercase;pointer-events:none;user-select:none}
-  /* the cap glides between its snap positions — fast, not instant */
-  .ml-pad-top{transition:transform ${SNAP_MS}ms ease-out}`;
+    color:var(--muted);font:600 12px/1.2 var(--sans);letter-spacing:.08em;
+    text-transform:uppercase;pointer-events:none;user-select:none}`;
   document.head.appendChild(s);
 }

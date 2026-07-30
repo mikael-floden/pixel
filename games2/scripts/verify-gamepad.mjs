@@ -1,6 +1,10 @@
 // QA: gamepad-tab analog stick — synthetic keys, 8-way snap, visual clamp,
 // beyond-max steering, release. Mechanics at the small fast viewport
 // (headless-GL rule), looks at the phone geometry.
+// WIKI-STYLE UI (2026-07-30): the pad-stick2 art is gone — the stick is a
+// plain CSS round WELL (104px under 585w, 132px above) with a translating
+// CAP div; centre = bounding rect centre (no 128-art k), cap rest =
+// translate(0,0). FEEL (travel/dead/run) is byte-identical to the art era.
 import { chromium } from "playwright-core";
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const OUT = process.env.OUT || "/tmp";
@@ -9,15 +13,20 @@ let bad = false;
 const fail = (m) => { console.log("FAIL:", m); bad = true; };
 const ok = (m) => console.log("ok:", m);
 
-async function joinWorld(geo) {
+// slow=true for the LOOKS-ONLY blocks at big/mobile viewports: headless
+// software-GL starves the frame loop there (measured ~25s to __ml, ~70s to
+// loading-clear at 980×2123) — nothing in those blocks asserts timing.
+async function joinWorld(geo, slow = false) {
   const page = await (await browser.newContext(geo)).newPage();
   await page.goto("http://localhost:5173/", { waitUntil: "load" });
-  await page.waitForFunction(() => window.__mlSelect, { timeout: 25000 });
+  // NB: waitForFunction options ride in the THIRD slot (fn, arg, options) —
+  // an options object in the arg slot is silently ignored (default 30s).
+  await page.waitForFunction(() => window.__mlSelect, null, { timeout: 25000 });
   const idx = await page.evaluate(() => window.__mlSelect.worlds().findIndex((w) => /prop/i.test(w)));
   if (idx >= 0) await page.evaluate((i) => window.__mlSelect.pickWorld(i), idx);
   await page.evaluate(() => window.__mlSelect.commit());
-  await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, { timeout: 30000 });
-  await page.waitForFunction(() => !document.querySelector("#ml-loading"), { timeout: 12000 });
+  await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, null, { timeout: slow ? 150000 : 30000 });
+  await page.waitForFunction(() => !document.querySelector("#ml-loading"), null, { timeout: slow ? 150000 : 12000 });
   return page;
 }
 const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return { x: m.x, y: m.y }; });
@@ -51,17 +60,18 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     const pad = document.querySelector(".ml-pad-stick");
     if (!pad) return null;
     const r = pad.getBoundingClientRect();
-    const k = Math.round(r.width / 128); // 2nd-gen art: 128 canvas
-    return { cx: r.left + 64 * k, cy: r.top + 53 * k, k, w: r.width };
+    // wiki-style: a plain round CSS well — centre = bounding rect centre
+    return { cx: r.left + r.width / 2, cy: r.top + r.height / 2, w: r.width };
   });
   if (!geom) { fail("stick not mounted"); }
   else {
     // FEEL tier at 480 wide = 2 -> travel 18 css px (TRAVEL 9 after two
-    // "smaller circle" rounds), dead 6.3, run 13.5; ART renders k=1.
+    // "smaller circle" rounds), dead 6.3, run 13.5; the WELL div is the
+    // <585w tier's 104px (the 128-art k concept is gone).
     const travel = 18;
-    geom.k === 1
-      ? ok(`stick mounted k=${geom.k} (true 1x art) centre=(${geom.cx.toFixed(0)},${geom.cy.toFixed(0)})`)
-      : fail(`stick art k=${geom.k}, want 1`);
+    Math.abs(geom.w - 104) < 0.5
+      ? ok(`stick well mounted ${geom.w}px (104 tier) centre=(${geom.cx.toFixed(0)},${geom.cy.toFixed(0)})`)
+      : fail(`stick well ${geom.w}px, want 104`);
     const topTf = () => page.evaluate(() => document.querySelector(".ml-pad-top").style.transform);
 
     // 2) drag EAST → moves; direction ≈ screen-east (world +x,+y)
@@ -76,7 +86,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     const eDir = Math.atan2(dy, dx);
 
     // 3) beyond max: fling the finger FAR — input keeps working; the cap
-    // sits SNAPPED at full deflection (+ the rest baseline on y)
+    // sits SNAPPED at full deflection (rest = translate(0,0), no art seat)
     await page.mouse.move(geom.cx + 300, geom.cy, { steps: 3 });
     await page.waitForTimeout(250);
     const tf = await topTf();
@@ -84,11 +94,11 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     if (!m) fail(`no snap transform (${tf})`);
     else {
       const [dx, dy] = [+m[1], +m[2]];
-      // full gate DRAWS damped by CAP_VISUAL_FRAC (0.65); the cap
-      // carries its REST seat (14 art px) on y
-      const wantX = travel * 0.65, wantY = 14 * geom.k;
+      // full gate DRAWS damped by CAP_VISUAL_FRAC (0.65); rest baseline
+      // is translate(0,0), so full E = (travel*0.65, 0)
+      const wantX = travel * 0.65, wantY = 0;
       Math.abs(dx - wantX) < 1 && Math.abs(dy - wantY) < 1
-        ? ok(`cap snapped at full E deflection (${dx},${dy}) = (travel, REST)`)
+        ? ok(`cap snapped at full E deflection (${dx},${dy}) = (travel*0.65, 0)`)
         : fail(`cap at (${dx},${dy}), want (${wantX},${wantY})`);
     }
     a = await pos(page);
@@ -112,7 +122,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     await page.waitForTimeout(250);
     const tMid = await topTf();
     const mm = /translate\(([-\d.]+)px, ([-\d.]+)px\)/.exec(tMid);
-    mm && Math.abs(+mm[1] - 10.4) < 2 && Math.abs(+mm[2] - 14 * geom.k) < 2
+    mm && Math.abs(+mm[1] - 10.4) < 2 && Math.abs(+mm[2]) < 2
       ? ok(`amplitude analog: half-tilt cap at ${mm[1]}px (finger 16px, 0.65 damp)`)
       : fail(`amplitude snapped? cap at ${tMid}, finger at 16px`);
 
@@ -156,9 +166,9 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     const drift = Math.hypot(b.x - a.x, b.y - a.y);
     drift < 1.5 ? ok(`release stops movement (drift ${drift.toFixed(2)}wu)`) : fail(`still moving after release (${drift.toFixed(1)}wu)`);
     const tfAfter = await topTf();
-    const mr = /translate\(0px, ([-\d.]+)px\)/.exec(tfAfter);
-    mr && Math.abs(+mr[1] - 14 * geom.k) < 1
-      ? ok(`cap re-seated (rest ${mr[1]}px)`)
+    const mr = /translate\(([-\d.e]+)px, ([-\d.e]+)px\)/.exec(tfAfter);
+    mr && Math.abs(+mr[1]) < 0.5 && Math.abs(+mr[2]) < 0.5
+      ? ok(`cap re-seated (rest ${tfAfter})`)
       : fail(`cap not re-seated (${tfAfter})`);
 
     // 6) JUMP button: press -> SPACE -> the player actually jumps
@@ -191,53 +201,60 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
 
 // ── looks at the phone geometry ──
 {
-  const page = await joinWorld({ viewport: { width: 980, height: 2123 }, screen: { width: 393, height: 851 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
+  const page = await joinWorld({ viewport: { width: 980, height: 2123 }, screen: { width: 393, height: 851 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 }, true);
   await page.evaluate(() => document.querySelector('[data-tab="gamepad"]').click());
   await page.waitForTimeout(500);
-  await page.screenshot({ path: `${OUT}/stick-idle.png` });
+  await page.screenshot({ path: `${OUT}/stick-idle.png`, timeout: 120000 });
   const g = await page.evaluate(() => {
     const r = document.querySelector(".ml-pad-stick").getBoundingClientRect();
-    const k = Math.round(r.width / 128);
-    return { cx: r.left + 64 * k, cy: r.top + 53 * k, k };
+    return { cx: r.left + r.width / 2, cy: r.top + r.height / 2, w: r.width };
   });
   console.log("phone stick:", JSON.stringify(g));
-  g.k === 2 ? ok("phone art at 2x (scaled-up round)") : fail(`phone art k=${g.k}, want 2`);
+  // >=585 css px wide -> the big 132px well (was "art k=2"; k concept gone)
+  Math.abs(g.w - 132) < 0.5 ? ok(`phone well at 132px (>=585w tier)`) : fail(`phone well ${g.w}px, want 132`);
   await page.mouse.move(g.cx, g.cy);
   await page.mouse.down();
   await page.mouse.move(g.cx + 200, g.cy + 140, { steps: 4 });
   await page.waitForTimeout(300);
-  await page.screenshot({ path: `${OUT}/stick-dragged.png` });
+  await page.screenshot({ path: `${OUT}/stick-dragged.png`, timeout: 120000 });
   await page.mouse.up();
   await page.context().close();
 }
-// ── JUMP/WALK label SIZE matches the Settings "Ambient effects" header and
-//    SHRINKS on a narrow (device-width / mobile) viewport instead of staying a
-//    fixed 18px (maintainer 2026-07-24: a plain 18px read "really big" on the
-//    phone in mobile view while the ambient header stayed small). Both use
-//    min(18px, 1.837vw), so at 393 wide both clamp to ~7px and must be equal. ──
+// ── JUMP/WALK labels wear the wiki section-label look — the SAME look as the
+//    Settings "Ambient effects" header: fixed 12px, var(--muted), uppercase.
+//    (The old min(18px, 1.837vw) mobile clamp is GONE — 12px reads right at
+//    every width, so the "shrinks on narrow" assertion is replaced by
+//    fixed-12px + size/colour equality with .ml-amb-title.) ──
 {
-  const page = await joinWorld({ viewport: { width: 393, height: 851 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2.75 });
+  const page = await joinWorld({ viewport: { width: 393, height: 851 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2.75 }, true);
   // Settings tab builds the ambient header (needs window.__mlAmbient up)
   await page.evaluate(() => document.querySelector('[data-tab="settings"]')?.click());
-  const ambFs = await page.waitForFunction(() => {
+  const amb = await page.waitForFunction(() => {
     const t = document.querySelector(".ml-amb-title");
-    return t ? getComputedStyle(t).fontSize : null;
-  }, { timeout: 8000 }).then((h) => h.jsonValue()).catch(() => null);
+    if (!t) return null;
+    const cs = getComputedStyle(t);
+    return { fs: cs.fontSize, color: cs.color };
+  }, null, { timeout: 20000 }).then((h) => h.jsonValue()).catch(() => null);
   await page.evaluate(() => document.querySelector('[data-tab="gamepad"]')?.click());
   await page.waitForTimeout(300);
-  const padFs = await page.evaluate(() => {
+  const padL = await page.evaluate(() => {
     const l = document.querySelector(".ml-pad-label");
-    return l ? getComputedStyle(l).fontSize : null;
+    if (!l) return null;
+    const cs = getComputedStyle(l);
+    return { fs: cs.fontSize, color: cs.color };
   });
-  padFs && parseFloat(padFs) < 17
-    ? ok(`JUMP/WALK label clamps on mobile (${padFs}, not a fixed 18px)`)
-    : fail(`JUMP/WALK label not clamped on mobile (${padFs}) — it would read "really big"`);
-  if (ambFs) {
-    Math.abs(parseFloat(padFs) - parseFloat(ambFs)) < 0.5
-      ? ok(`JUMP/WALK label size == Ambient header (${padFs} ≈ ${ambFs})`)
-      : fail(`JUMP/WALK ${padFs} != Ambient header ${ambFs}`);
+  padL && parseFloat(padL.fs) === 12
+    ? ok(`JUMP/WALK label fixed 12px on mobile (${padL.fs})`)
+    : fail(`JUMP/WALK label ${padL && padL.fs}, want 12px`);
+  if (amb && padL) {
+    padL.fs === amb.fs
+      ? ok(`JUMP/WALK label size == Ambient header (${padL.fs})`)
+      : fail(`JUMP/WALK ${padL.fs} != Ambient header ${amb.fs}`);
+    padL.color === amb.color
+      ? ok(`JUMP/WALK label colour == Ambient header muted (${padL.color})`)
+      : fail(`JUMP/WALK colour ${padL.color} != Ambient header ${amb.color}`);
   } else {
-    ok("ambient header not built (ambient layer down) — size-match check skipped");
+    ok("ambient header not built (ambient layer down) — look-match check skipped");
   }
   await page.context().close();
 }

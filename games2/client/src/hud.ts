@@ -1,34 +1,23 @@
 /**
- * Bottom HUD + the page frame — built EXACTLY like the maintainer's mock:
- * ONE continuous frame around the whole page, with two horizontal DIVIDER
- * assemblies splitting it into game viewport / tab row / content page.
+ * Bottom HUD — WIKI-STYLE (maintainer 2026-07-30: "a complete UI/HUD remake
+ * ... no UI Kit, no graphical game view frame. The entire UI should be
+ * rebuilt in wiki style"). The vine/crystal page frame (frame2), the UI-kit
+ * plates (plate.ts) and every sprite-based control are gone; the HUD is now
+ * plain HTML/CSS on the shared wiki theme (theme.ts — the same tokens, fonts
+ * and dark mode as wiki/site/wiki.css, one localStorage["wiki-theme"] flips
+ * both).
  *
- * Frame rules learned from round 1 (maintainer feedback):
- * - NOTHING is mirrored. The art's lighting differs per side — every corner,
- *   rail direction and gem is its own tile (scripts/build-ui-tiles.mjs).
- * - The dividers are real ╠/╣ T-intersections joining the outer rails, each
- *   with its own rail lighting (divider A ≠ divider B ≠ outer rails); no
- *   stacked "double borders" between sections.
- * - Corners include the transition stretch into the clean repeating rail.
- * - Tiles render at CONCEPT scale 1:1 CSS px ("2× bigger"), nearest-neighbour
- *   (image-rendering: pixelated) to keep the chunky pixel-art look.
- *
- * Piece alignment: every crop starts 20px before its rail band, so the gold
- * band sits 6..30px from the crop edge — anchoring all pieces flush to the
- * page edges lines the bands up seam-free. Divider tiles carry their own
- * vertical offsets (see the *-y constants baked into the CSS).
- *
- * The overlay ignores the pointer entirely; the interactive tab row/pages
- * live in .ml-hud underneath it. Nothing here is uiZoom'd (the dvh geometry
- * must match the #game split; CSS zoom rescales viewport units).
+ * Layout: the golden-ratio split survives (game view = top 61.8%, HUD =
+ * bottom 38.2%) but is plain CSS now; applyLayout() publishes --hud-h /
+ * --hud-h-inv in REAL px on :root so the keyboard lift and the chat overlay
+ * keep their px math. Pointer events in the HUD still never reach Phaser.
+ * Nothing is zoom-compensated any more — like the wiki, the UI is plain
+ * responsive CSS at any viewport width.
  */
 
-import { mountFrame2, FrameLayout, HUD_SCALE } from "./frame2";
-import { setClockMount } from "./clock";
-import { dressPlate, dressSlot, hudKitPx, nineSlice, readyPlates, repaintPlates } from "./plate";
-import { holdLoading } from "./loading";
 import { mountGamepadStick } from "./gamepad";
 import { mountBars } from "./bars";
+import { mountTheme, toggleTheme, currentTheme } from "./theme";
 import { gameAudio } from "../../composer/index";
 import { MAX_CHAT_LEN } from "@nangijala/shared";
 
@@ -38,15 +27,8 @@ import { MAX_CHAT_LEN } from "@nangijala/shared";
 // can't switch on while an incompatible one is active (each declares its
 // `conflicts`). We render a checkbox list from it — data-driven, so a conflict
 // the ambient agent adds/drops updates the UI with no code change here. See
-// ambient/README.md "Toggling effects independently".
-const CHECK_ON = "/ui2/kit-check-on.png";
-const CHECK_OFF = "/ui2/kit-check-off.png";
-// Bird-density slider art: the SAME UI-kit bar the HP/EP/XP gauges use (bars.ts)
-// — its frame is the track, a fill shows the filled portion, and a kit plate is
-// the draggable knob (maintainer 2026-07-25: "This slider should use UI-kit to
-// extract its graphics").
-const BAR_FRAME = "/ui2/bar-frame.png";
-const BAR_FILL = "/ui2/bar-fill-yellow.png";
+// ambient/README.md "Toggling effects independently". Checkboxes are pure CSS
+// now (.ml-amb-check + .on — the wiki look), no kit art.
 type AmbientEffect = {
   name: string;
   kind: "field" | "episode";
@@ -81,11 +63,10 @@ function ambSafe<T>(fn: () => T, fallback: T): T {
   }
 }
 const capWords = (s: string) => s.replace(/(^|[\s-])\w/g, (c) => c.toUpperCase());
-// Set a checkbox img to on/off, skipping the write when unchanged (the 700ms
-// poll re-runs constantly while Settings is open — don't re-touch src needlessly).
-function setCheck(img: HTMLImageElement, on: boolean) {
-  const src = on ? CHECK_ON : CHECK_OFF;
-  if (!img.src.endsWith(src)) img.src = src;
+// Flip a CSS checkbox on/off (classList.toggle is already a no-op write when
+// unchanged — the 700ms poll re-runs constantly while Settings is open).
+function setCheck(box: HTMLElement, on: boolean) {
+  box.classList.toggle("on", on);
 }
 // One shared refresh poll for the live ambient state (the director rolls
 // episodes + fields gate on time-of-day, so the switches must track a moving
@@ -129,88 +110,32 @@ const TABS = [
 ] as const;
 type TabId = (typeof TABS)[number]["id"];
 
-/** Mount the composed frame-v2 canvas (see frame2.ts) and keep the HUD
- * sections + the #game split glued to the frame's window rectangles. The
- * old tile-assembly overlay is gone — the frame is now one runtime-composed
- * canvas that stretches its plain sections to any viewport. */
+/** Mount the in-game chrome: theme tokens, layout vars, stat bars. The name
+ * survives from the frame era (WorldScene calls it once at join) but there is
+ * NO page frame any more — the game view/HUD boundary is a plain 1px
+ * var(--border) line drawn by the .ml-hud CSS. */
 export function mountPageFrame() {
   injectStyles();
-  mountBars(); // HP/MP gauges, top-left of the game view
-  document.getElementById("ml-pageframe")?.remove(); // old overlay, if any
-  // first-render gates for the loading fade: the black must not lift until
-  // the frame has actually composed (its art comes over the network on a
-  // fresh deploy) and the kit plate art is in (tabs/buttons/slots)
-  let composed: (() => void) | null = null;
-  holdLoading(new Promise<void>((r) => (composed = r)));
-  holdLoading(readyPlates());
-  mountFrame2((l) => {
-    lastLayout = l;
-    composed?.();
-    composed = null;
-    applyFrameLayout();
-  });
+  mountBars(); // HP/EP/XP + gold + level, over the top of the game view
+  document.getElementById("ml-pageframe")?.remove(); // ancient overlay, if any
+  applyLayout();
+  if (!layoutHooked) {
+    layoutHooked = true;
+    window.addEventListener("resize", applyLayout);
+  }
 }
 
-let lastLayout: FrameLayout | null = null;
+let layoutHooked = false;
 
-/** Position the HUD sections into the frame's windows (called after every
- * frame compose AND after HudBar [re]construction). The game/HUD boundary
- * vars keep chat + the Phaser canvas split in sync, exactly like before. */
-function applyFrameLayout() {
-  const l = lastLayout;
-  if (!l) return;
-  // the animated clock hand hangs its ring on the frame's strap stub
-  setClockMount(l.clockAnchor.x, l.clockAnchor.y, l.scale);
+/** Publish the golden-ratio split in REAL px on :root. index.html's dvh CSS
+ * draws the same split; these px twins exist for the px consumers — the
+ * keyboard lift's floor, the chat overlay's bottom anchor — which parseFloat
+ * a px value (a raw "38.2dvh" string would read as 38.2). */
+function applyLayout() {
   const root = document.documentElement;
-  // the game canvas runs to gameHeight (inside rail A's opaque band, so the
-  // frame art overlays the world), but chat keeps anchoring above the rail's
-  // VISIBLE top edge — anchored to gameHeight it would slide under the rail
-  root.style.setProperty("--hud-h-inv", `${Math.round(l.gameHeight)}px`);
-  root.style.setProperty("--hud-h", `${Math.round(window.innerHeight - l.railTop)}px`);
-  // the frame's render scale — frame-space art (backpack slots) rides it so
-  // 1 art px always equals 1 frame px on screen, whatever the viewport
-  root.style.setProperty("--ml-fs", String(l.scale));
-  const hud = document.querySelector<HTMLElement>(".ml-hud");
-  if (!hud) return;
-  hud.style.top = `${Math.round(l.gameHeight)}px`;
-  hud.style.height = "auto";
-  hud.style.bottom = "0";
-  const tr = hud.querySelector<HTMLElement>(".ml-tabrow");
-  const pg = hud.querySelector<HTMLElement>(".ml-pages");
-  const place = (el: HTMLElement | null, r: { left: number; top: number; width: number; height: number }) => {
-    if (!el) return;
-    el.style.left = `${Math.round(r.left)}px`;
-    el.style.top = `${Math.round(r.top - l.gameHeight)}px`;
-    el.style.width = `${Math.round(r.width)}px`;
-    el.style.height = `${Math.round(r.height)}px`;
-    el.style.right = "auto";
-    el.style.bottom = "auto";
-  };
-  place(tr, l.tabRect);
-  // pages span the FULL viewport width (maintainer: the stone backdrop
-  // "should span from the very left to the very right"); the frame canvas
-  // overlays the rails on top, and content insets to the inner window via
-  // --ml-page-pad. Height runs to the viewport bottom — the bottom rail art
-  // covers the tail.
-  if (pg) {
-    // the stone starts at rail B's TOP edge (under the opaque rail art) so
-    // no dark strip can open between the rail and the backdrop; content
-    // stays below the rail via --ml-page-padtop
-    pg.style.left = "0";
-    pg.style.top = `${Math.round(l.pageTuckTop - l.gameHeight)}px`;
-    pg.style.width = "100vw";
-    pg.style.height = `${Math.round(window.innerHeight - l.pageTuckTop)}px`;
-    pg.style.right = "auto";
-    pg.style.bottom = "auto";
-  }
-  // content box == the frame's true inner window on ALL FOUR sides — the
-  // grids distribute space-evenly inside it, so the margin against the frame
-  // equals the gap between items (maintainer: "the spacing should look even")
-  document.documentElement.style.setProperty("--ml-page-pad", `${Math.round(l.pageRect.left)}px`);
-  document.documentElement.style.setProperty(
-    "--ml-page-padtop", `${Math.round(l.pageRect.top - l.pageTuckTop)}px`);
-  document.documentElement.style.setProperty(
-    "--ml-page-padbot", `${Math.round(window.innerHeight - (l.pageRect.top + l.pageRect.height))}px`);
+  const hudH = Math.round(window.innerHeight * 0.382);
+  root.style.setProperty("--hud-h", `${hudH}px`);
+  root.style.setProperty("--hud-h-inv", `${window.innerHeight - hudH}px`);
 }
 
 /** The live feed the Map tab reads from window.__ml.minimap() (WorldScene). */
@@ -253,8 +178,8 @@ export class HudBar {
   // ambient-effect checklist (populated once window.__mlAmbient is up)
   private ambSection: HTMLElement | null = null;
   private ambList: HTMLElement | null = null;
-  private ambRows = new Map<string, { el: HTMLButtonElement; img: HTMLImageElement; label: HTMLElement }>();
-  private ambAuto: { el: HTMLButtonElement; img: HTMLImageElement } | null = null;
+  private ambRows = new Map<string, { el: HTMLButtonElement; img: HTMLElement; label: HTMLElement }>();
+  private ambAuto: { el: HTMLButtonElement; img: HTMLElement } | null = null;
   private ambBuilt = false;
   // Map tab: minimap <img> + a red "you are here" dot, driven by a rAF loop
   // that reads window.__ml.minimap() while the tab is visible.
@@ -293,7 +218,6 @@ export class HudBar {
       // audio comes from pressFx (down/up pair) — no extra click sound
       b.addEventListener("click", () => this.select(t.id));
       pressFx(b);
-      dressPlate(b, kindForState, true); // the kit trio, frame-scaled blocks
       tabRow.appendChild(b);
       this.tabs.set(t.id, b);
 
@@ -311,7 +235,7 @@ export class HudBar {
     hud.addEventListener("contextmenu", (e) => e.preventDefault());
     document.body.appendChild(hud);
     this.select("backpack");
-    applyFrameLayout(); // adopt the frame windows if the frame is already composed
+    applyLayout(); // publish the px layout vars for the keyboard lift + chat
 
     // Keep the ambient switches tracking live state while Settings is open
     // (director rolls, fields gate on time-of-day). Replaces any prior timer
@@ -322,15 +246,7 @@ export class HudBar {
 
   private select(id: TabId) {
     for (const [tid, b] of this.tabs) b.classList.toggle("sel", tid === id);
-    let shown: HTMLElement | undefined;
-    for (const [tid, p] of this.pages) {
-      const on = tid === id;
-      p.classList.toggle("show", on);
-      if (on) shown = p;
-    }
-    // Plates built while the page was display:none measured 0×0 — repaint
-    // them now that the page has a real size (next frame, after layout).
-    if (shown) requestAnimationFrame(() => repaintPlates(shown!));
+    for (const [tid, p] of this.pages) p.classList.toggle("show", tid === id);
     // Build/refresh the ambient switches the moment Settings is opened (don't
     // wait up to a poll interval).
     if (id === "settings") this.tickAmbient();
@@ -481,24 +397,20 @@ export class HudBar {
       this.ambSection.appendChild(birdSlider(() => bd(), (v) => bd(v)));
     }
     this.refreshAmbient();
-    requestAnimationFrame(() => repaintPlates(list));
   }
 
-  /** A checkbox row (kit plate bar + checkbox img + label). name=null → the
-   * AUTO row. Returns its element refs for state updates. */
+  /** A checkbox row (wiki-style row button + CSS checkbox + label).
+   * name=null → the AUTO row. Returns its element refs for state updates. */
   private ambRow(name: string | null, label: string) {
     const b = mk("button", "ml-plate-btn ml-amb-row") as HTMLButtonElement;
     if (name === null) b.classList.add("ml-amb-auto");
-    const img = mk("img", "ml-amb-check") as HTMLImageElement;
-    img.src = CHECK_OFF;
-    img.alt = "";
-    img.draggable = false;
+    const img = mk("span", "ml-amb-check");
+    img.setAttribute("aria-hidden", "true");
     const t = mk("span", "ml-amb-label");
     t.textContent = label;
     b.append(img, t);
     b.addEventListener("click", () => this.onAmbient(name));
     pressFx(b);
-    dressPlate(b, kindForState, true);
     this.ambList!.appendChild(b);
     const refs = { el: b, img, label: t };
     if (name !== null) this.ambRows.set(name, refs);
@@ -565,17 +477,12 @@ export class HudBar {
     // the keyboard, jump button TBD.
     mountGamepadStick(this.pages.get("gamepad")!);
 
-    // Backpack: 5×3 empty item slots — the REAL slot art from the round-2
-    // concept (twig frame + moss rim over a dark recess, extracted at native
-    // 128² in frame space; scripts/extract-slot2.py). Same count and layout
-    // as the concept page. Real inventory comes later.
+    // Backpack: 5×3 empty item slots — wiki-style empty cells (surface-2
+    // well, 1px border, rounded), same count and layout as before. Real
+    // inventory comes later.
     const bp = this.pages.get("backpack")!;
     const slots = mk("div", "ml-slots");
-    for (let i = 0; i < 15; i++) {
-      const sl = mk("i", "ml-slot");
-      dressSlot(sl); // the kit's empty-slot square, integer-scaled + centred
-      slots.appendChild(sl);
-    }
+    for (let i = 0; i < 15; i++) slots.appendChild(mk("i", "ml-slot"));
     bp.append(slots);
 
     // Equipment page: bare stone until its real content lands
@@ -608,24 +515,38 @@ export class HudBar {
       if (t.state) this.stateful.push([b, t]);
       row.appendChild(b);
     }
+    // THEME: the shared wiki/game dark-mode switch (maintainer 2026-07-30:
+    // "changing to dark theme will affect both the wiki and the in-game
+    // HUD"). Writes the same one localStorage key the wiki's ◐ toggle uses;
+    // the label prints its state like every other settings button.
+    const themeEntry: HudActions["settings"][number] = {
+      label: "theme",
+      act: () => toggleTheme(),
+      state: () => currentTheme(),
+    };
+    const themeBtn = plateButton("theme", () => {
+      themeEntry.act();
+      this.refreshSettings();
+    });
+    this.stateful.push([themeBtn, themeEntry]);
+    row.appendChild(themeBtn);
+    // …and follow toggles from the WIKI side (its write → storage event →
+    // theme.ts re-applies → "ml-theme") so the printed state never goes stale.
+    window.addEventListener("ml-theme", () => this.refreshSettings());
     this.refreshSettings();
     wrap.appendChild(row);
-    // Restore the .ml-plate-btn class CONTRACT for foreign buttons: the
-    // ambient agent injects its cycler into this row from outside
-    // (ambient/runtime/hudbutton.ts) relying on the class to bring the plate
-    // art — which stopped being CSS when plates went runtime-composed. Dress
-    // any undressed arrival so injected buttons look like every other row.
+    // The ambient agent injects its cycler button into this row from outside
+    // (ambient/runtime/hudbutton.ts) as a bare-text .ml-plate-btn — the class
+    // is pure CSS again (the wiki button recipe), so it dresses itself; only
+    // wrap bare text labels in a <span> so the shared label styling applies.
     new MutationObserver(() => {
-      row.querySelectorAll<HTMLElement>(".ml-plate-btn:not([data-plate])").forEach((el) => {
-        // foreign labels arrive as bare text — wrap so the press-dip applies
-        // (harmless if the owner later resets textContent: plate art stays)
+      row.querySelectorAll<HTMLElement>(".ml-plate-btn").forEach((el) => {
         if (!el.firstElementChild && el.textContent) {
           const t = mk("span", "");
           t.textContent = el.textContent;
           el.textContent = "";
           el.appendChild(t);
         }
-        dressPlate(el, kindForState, true);
       });
     }).observe(row, { childList: true });
 
@@ -753,25 +674,15 @@ function plateButton(label: string, onPress: () => void): HTMLButtonElement {
   // audio comes from pressFx (down/up pair) — no extra click sound
   b.addEventListener("click", onPress);
   pressFx(b);
-  // the kit's circled state trio (plate.ts): held = the dark DOWN bar,
-  // switch ON = the cream SELECTED bar, else the brown NORMAL bar
-  dressPlate(b, kindForState);
+  // pressed / switch-ON states are pure CSS now (.press / .on on .ml-plate-btn)
   return b;
 }
 
-function kindForState(el: HTMLElement): "normal" | "sel" | "down" {
-  if (el.classList.contains("press")) return "down";
-  if (el.classList.contains("on") || el.classList.contains("sel")) return "sel";
-  return "normal";
-}
-
-/** A Settings slider for the bird-density ratio, built from the UI-kit bar art:
- * the bar FRAME is the track, a clipped FILL shows the level, and a kit PLATE is
- * the draggable knob. LOG scale 0.1×–10× with 1× centred and a soft detent that
- * snaps to exactly 1×. `get` reads the current ratio; `set` writes it live (the
- * ambient layer persists it). Pointer-drag + resize aware. The frame/fill are
- * 9-sliced to the box like the HP/EP/XP gauges (bars.ts) so their pixels match
- * the buttons; the knob is dressed by plate.ts. */
+/** A Settings slider for the bird-density ratio — wiki style: a slim rounded
+ * track (surface-2 well), an accent fill, and a round draggable knob. LOG
+ * scale 0.1×–10× with 1× centred and a soft detent that snaps to exactly 1×.
+ * `get` reads the current ratio; `set` writes it live (the ambient layer
+ * persists it). Pointer-drag + resize aware. */
 function birdSlider(get: () => number, set: (v: number) => void): HTMLElement {
   const MINV = 0.1;
   const MAXV = 10;
@@ -789,50 +700,23 @@ function birdSlider(get: () => number, set: (v: number) => void): HTMLElement {
   const valEl = mk("span", "ml-amb-slider-val");
   head.append(label, valEl);
   const track = mk("div", "ml-slider");
-  const frame = mk("img", "ml-slider-frame") as HTMLImageElement;
-  const fill = mk("img", "ml-slider-fill") as HTMLImageElement;
-  frame.alt = fill.alt = "";
-  frame.draggable = fill.draggable = false;
+  const fill = mk("div", "ml-slider-fill");
   const knob = mk("div", "ml-slider-knob");
-  track.append(frame, fill, knob);
+  track.append(fill, knob);
   wrap.append(head, track);
-  // the cream "selected" plate normally; the pressed DOWN plate while grabbing
-  dressPlate(knob, () => (knob.classList.contains("grabbing") ? "down" : "sel"), true);
 
   let curP = toP(get());
   const render = (p: number) => {
     curP = p;
     // fill's right edge lands on the knob CENTRE (the value position)
-    fill.style.clipPath = `inset(0 ${((1 - p) * 100).toFixed(2)}% 0 0)`;
+    fill.style.width = `${(p * 100).toFixed(2)}%`;
     const trackW = track.clientWidth;
-    const kw = knob.offsetWidth || 44;
+    const kw = knob.offsetWidth || 22;
     knob.style.left = `${Math.round(Math.max(0, Math.min(trackW - kw, p * trackW - kw / 2)))}px`;
     valEl.textContent = fmt(toV(p));
   };
-
-  // 9-slice the frame/fill into the track box (device-resolution, crisp) and
-  // re-bake + reposition the knob on any size change.
-  const frameImg = new Image();
-  const fillImg = new Image();
-  const bakeInto = (el: HTMLImageElement, im: HTMLImageElement) => {
-    const w = track.clientWidth;
-    const h = track.clientHeight;
-    if (w < 2 || h < 2 || !im.complete || !im.naturalWidth) return;
-    // hudKitPx: the slider lives in the un-zoomed HUD — its track/fill blocks
-    // must track the frame like the plates (the bars get this via uiZoom)
-    const u = nineSlice(im, w, h, Math.max(1, window.devicePixelRatio || 1), hudKitPx());
-    if (u) el.src = u;
-  };
-  const rebake = () => {
-    bakeInto(frame, frameImg);
-    bakeInto(fill, fillImg);
-    render(curP);
-  };
-  frameImg.onload = rebake;
-  fillImg.onload = rebake;
-  frameImg.src = BAR_FRAME;
-  fillImg.src = BAR_FILL;
-  new ResizeObserver(rebake).observe(track);
+  // reposition the knob when the track's size changes (orientation, resize)
+  new ResizeObserver(() => render(curP)).observe(track);
 
   // ---- drag (pointer-capture; knob is pointer-events:none so the track owns
   // every event, and a tap anywhere on the track jumps there) ----
@@ -1112,69 +996,41 @@ let injected = false;
 function injectStyles() {
   if (injected) return;
   injected = true;
+  mountTheme(); // shared wiki tokens + dark-mode sync — everything below uses them
   mountChatKeyboardLift();
-  // --ml-hud-scale (the frame's HUD_SCALE, frame2) still scales the tab
-  // label font + legacy border width; button SIZES are fixed px now
-  // (maintainer: tabs and settings buttons both 120px).
-  document.documentElement.style.setProperty("--ml-hud-scale", String(HUD_SCALE));
-  // --ml-tab: PERFECT-SQUARE tab plate side (mock plates capped at 150).
-  // --ml-tabzone: boundary → divider B line centre; tracks the tab size.
-  // Frame pieces are mock-ABSOLUTE crops: corners 180px, borders as
-  // segment strips stretched between fixed junctions (see build-ui-tiles).
   const css = `
-  :root{--ml-hud-scale:1;
-    /* tab plate side == the backpack SLOT side (128px * --ml-fs, the frame
-       scale) so the menu buttons are the SAME SIZE as the slots at EVERY
-       viewport (maintainer 2026-07-25: they diverged in mobile view — the old
-       min(120px, vw-formula) tracked neither the frame nor the slots). Six
-       fit the tab-row window at any width: it and the 5-slot window are the
-       same width, and 6*128*fs stays ~83% of it (the rest is gaps). */
-    --ml-tab:calc(128px * var(--ml-fs, 0.75));
-    --ml-bw:calc(26px * var(--ml-hud-scale))}   /* plate border render width */
-  /* HUD sections: base props only — position/size come from applyFrameLayout
-     (the frame-v2 windows), set inline after every compose. */
-  /* the band behind the menu buttons: the KIT's pop-up panel brown
-     (80,60,51) — the tone its own buttons sit on. Brighter than the old
-     #23160d plate-sheet backdrop (maintainer, repeatedly). */
-  .ml-hud{position:fixed;left:0;right:0;bottom:0;z-index:4;background:#503c33;box-sizing:border-box}
-  .ml-tabrow{position:absolute;display:flex;justify-content:space-evenly;align-items:center}
-  /* tabs carry the SAME kit trio as the settings buttons (dressPlate in the
-     constructor): brown Normal, cream Selected, dark Down while held */
-  .ml-tab{width:var(--ml-tab);height:var(--ml-tab);flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
-    padding:2px 0;cursor:pointer;image-rendering:pixelated;box-sizing:border-box;
-    touch-action:manipulation;-webkit-touch-callout:none;border:none;
-    background:none;background-repeat:no-repeat;background-size:100% 100%}
-  /* icon-only tabs (maintainer: "icon is enough"). The icon SCALES WITH THE
-     PLATE — 78% of --ml-tab — so it tracks the frame like the slot art does and
-     keeps the SAME icon-to-plate ratio at every viewport (at the design width
-     that's the 96px 2x bake rendered ~1:1, the approved look). A FIXED 96px icon
-     (halved to 48px under 780px) read "too small and wrong" in mobile view
-     (maintainer 2026-07-25): it OVERFLOWED a small plate and shrank to a
-     thick-bordered dot on a wide-mobile one — it never tracked the plate. */
-  .ml-tab-icon{width:calc(var(--ml-tab) * 0.78);height:calc(var(--ml-tab) * 0.78);
-    image-rendering:pixelated;-webkit-user-drag:none;pointer-events:none}
-  .ml-pages{position:absolute;overflow:hidden;image-rendering:pixelated}
-  /* pages sit on the SAME plain kit-panel brown as the tab-row band
-     (maintainer 2026-07-18: no more stone backdrop — "the same plain
-     bg-color as we have under the menu buttons"); /ui2/stone.png stays
-     shipped if the cobble look is ever wanted back */
-  /* 'safe center' keeps a short page centred but FALLS BACK to top-anchored
-     the instant the content is taller than the page (settings: ~12 buttons +
-     the ambient checklist overflow a phone). A plain justify-content:center
-     clips the top row OUT of scroll range — the maintainer: "always see the
-     top UI on that page before we scroll." overflow-y:auto then scrolls it. */
+  /* ── shell: golden-ratio split, a plain 1px border where the frame was ── */
+  .ml-hud{position:fixed;left:0;right:0;top:var(--hud-h-inv,61.8dvh);bottom:0;z-index:4;
+    background:var(--bg);color:var(--ink);border-top:1px solid var(--border);
+    font:14px/1.45 var(--sans);display:flex;flex-direction:column;box-sizing:border-box}
+  .ml-hud *{box-sizing:border-box}
+  /* ── tab row: six icon buttons on the wiki button recipe ── */
+  .ml-tabrow{flex:none;display:flex;gap:6px;padding:8px 10px 6px}
+  .ml-tab{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;
+    height:44px;padding:0;cursor:pointer;
+    background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:10px;
+    touch-action:manipulation;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+  .ml-tab:hover{background:var(--surface-2)}
+  .ml-tab.press{transform:translateY(1px);background:var(--surface-2);border-color:var(--border-strong)}
+  .ml-tab.sel{background:var(--accent-soft);border-color:var(--accent)}
+  /* icons keep the pixel art (maintainer: "not the icons") — integer downscales
+     of the 96px bakes only (32 / 24), nearest-neighbour */
+  .ml-tab-icon{width:32px;height:32px;image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
+  /* ── pages ── */
+  .ml-pages{flex:1 1 auto;min-height:0;position:relative}
+  /* 'safe center' keeps a short page centred but falls back to top-anchored the
+     instant the content is taller than the page; overflow-y then scrolls it
+     (maintainer: "always see the top UI on that page before we scroll"). */
   .ml-page{display:none;height:100%;overflow-y:auto;overflow-x:hidden;
     -webkit-overflow-scrolling:touch;flex-direction:column;align-items:center;
-    justify-content:safe center;gap:14px;text-align:center;box-sizing:border-box;
-    padding:var(--ml-page-padtop,14px) var(--ml-page-pad,44px) var(--ml-page-padbot,14px);
-    background:#503c33;image-rendering:pixelated}
+    justify-content:safe center;gap:12px;text-align:center;
+    padding:10px 12px 14px;background:var(--bg)}
   .ml-page.show{display:flex}
-  /* gamepad page: the analog stick positions absolutely inside it */
+  /* gamepad page: the analog stick + jump button position absolutely inside it */
   .ml-page[data-page=gamepad]{position:relative;overflow:hidden}
-  /* map page: the world's iso minimap centred in the page with a red "you are here"
-     dot. .ml-map-frame is JS-sized to the fitted image (buildMap.fitMap) so it
-     equals the displayed image box — the dot's percent offsets then land on the
-     right pixel with no letterbox skew. Pixel-art: nearest-neighbour. */
+  /* map page: the world's iso minimap centred with a live "you are here" dot.
+     .ml-map-frame is JS-sized to the fitted image (fitMap) so the dot's percent
+     offsets land on the right pixel. Pixel-art: nearest-neighbour. */
   .ml-page[data-page=map]{overflow:hidden}
   .ml-map{flex:1 1 auto;min-height:0;width:100%;display:flex;
     align-items:center;justify-content:center;overflow:hidden}
@@ -1182,199 +1038,117 @@ function injectStyles() {
   .ml-map-frame[hidden]{display:none}
   .ml-map-img{display:block;width:100%;height:100%;image-rendering:pixelated;
     -webkit-user-drag:none;pointer-events:none}
-  .ml-map-dot{position:absolute;left:50%;top:50%;width:14px;height:14px;
-    transform:translate(-50%,-50%);border-radius:50%;background:#e8382c;
+  .ml-map-dot{position:absolute;left:50%;top:50%;width:12px;height:12px;
+    transform:translate(-50%,-50%);border-radius:50%;background:var(--accent);
     border:2px solid #fff;box-sizing:border-box;pointer-events:none;
-    box-shadow:0 0 5px rgba(0,0,0,.7);z-index:1}
-  .ml-map-empty{color:#f0e2c6;font:700 16px system-ui,sans-serif;
+    box-shadow:0 0 0 1px rgba(0,0,0,.3);z-index:1}
+  .ml-map-empty{color:var(--muted);font:600 14px var(--sans);
     text-align:center;padding:24px;line-height:1.5}
   .ml-map-empty[hidden]{display:none}
-  /* backpack slots: the kit's empty-slot square (maintainer circled it),
-     9-sliced by dressSlot to fill the box at the SAME KIT_PX block size as
-     the buttons ("this slot should look very much like an empty button").
-     The box still rides the frame's scale (--ml-fs). */
-  .ml-slots{display:grid;grid-template-columns:repeat(5,calc(128px * var(--ml-fs,0.75)));
-    grid-template-rows:repeat(3,calc(128px * var(--ml-fs,0.75)));
-    justify-content:space-evenly;align-content:space-evenly;width:100%;height:100%}
-  .ml-slot{width:calc(128px * var(--ml-fs,0.75));height:calc(128px * var(--ml-fs,0.75));
-    image-rendering:pixelated;border:none;box-sizing:border-box;
-    background-repeat:no-repeat;background-size:100% 100%}
-  /* settings "menu buttons": SAME page geometry as the backpack grid
-     (maintainer: the buttons must respect the backpack view's distances
-     from left/top/right, and its spacing). Like .ml-slots: the grid fills
-     the page window and space-evenly distributes — outer margin equals the
-     gap between items. The column width is DERIVED so the horizontal gap
-     equals the backpack's slot gap g=(100% - 5*128px*fs)/6: three columns
-     leave 4 gaps, so col=(100% - 4g)/3. Fixed columns (not 1fr) also keep
-     a state label changing on press from resizing/reflowing the row
-     (maintainer: the buttons no longer move around; 3 per row). */
-  .ml-btnrow{display:grid;width:100%;height:100%;
-    grid-template-columns:repeat(3,calc((100% - 4*(100% - 640px*var(--ml-fs,0.75))/6)/3));
-    justify-content:space-evenly;align-content:space-evenly}
-  /* the wide Log out button at the top of Settings (maintainer 2026-07-23):
-     a full ROW — width respects the SAME outer margin g as the backpack/settings
-     grids (full width minus a slot-gap each side), and flex-shrink:0 keeps its
-     full row height (min(120px,12.245vw)) instead of collapsing when the
-     scrolling settings column overflows */
-  .ml-page>.ml-plate-btn{width:calc(100% - (100% - 640px*var(--ml-fs,0.75))/3);
-    flex-shrink:0}
-  /* UI-KIT plates (maintainer's pack, plate.ts): flat pixel plates composed
-     at an INTEGER block scale (floor(h/native/2) — 5px blocks at h=120).
-     Height 120 is the maintainer's shared button height, same as the tabs.
-     Labels wrap to a second line when the 3-per-row column narrows. White
-     uppercase labels like the kit's pop-up rows. */
-  /* Design-width normalization (uiscale.ts): the HUD root is NOT uiZoom'd
-     (frame-glued geometry), so its fixed sizes scale themselves with
-     min(design-px, vw) — exactly the design value at the 980 reference
-     layout (the maintainer's desktop-site phone), proportionally smaller on
-     device-width viewports (2026-07-22: buttons/fonts read 2x too big
-     there). vw is safe here BECAUSE the HUD is never zoomed. */
-  .ml-plate-btn{width:100%;white-space:normal;overflow:hidden;
-    display:flex;align-items:center;justify-content:center;text-align:center;
-    padding:8px min(24px,2.449vw);height:min(120px,12.245vw);box-sizing:border-box;border:none;
-    cursor:pointer;image-rendering:pixelated;touch-action:manipulation;
-    background:none;background-repeat:no-repeat;background-size:100% 100%;
-    font:700 24px system-ui,sans-serif;font-size:min(24px,2.449vw);
-    letter-spacing:.6px;text-transform:uppercase;color:#fff;
-    text-shadow:0 1px 0 rgba(0,0,0,.35)}
-  /* state = the plate art (the kit's Normal/Selected/Down trio via
-     dressPlate); the cream SELECTED bar needs a dark label */
-  .ml-plate-btn.on{color:#4a2a1c;text-shadow:none}
-  .ml-plate-btn.press{color:#f4e3c2}
-  /* SETTINGS SCROLL COLUMN: the games button grid stacked over the ambient
-     checklist. When it fits, .ml-page 'safe center' centres this column; when
-     it overflows it top-anchors + scrolls (rows above stay reachable). */
-  .ml-set{display:flex;flex-direction:column;align-items:stretch;gap:20px;width:100%}
-  /* the games button grid keeps its 3-col horizontal spacing but now sizes to
-     its content (was height:100% to fill+space-evenly the whole page) so the
-     ambient list can sit below it and the PAGE — not the grid — scrolls */
-  .ml-set .ml-btnrow{height:auto;row-gap:14px}
-  /* ambient-effect checklist */
-  .ml-amb{display:flex;flex-direction:column;gap:12px;width:100%}
-  .ml-amb-title{border-top:2px solid rgba(0,0,0,.28);padding-top:14px;
-    color:#f0e2c6;font:700 18px system-ui,sans-serif;font-size:min(18px,1.837vw);
-    letter-spacing:1px;text-transform:uppercase;text-align:center}
-  .ml-amb-list{display:flex;flex-direction:column;gap:12px;width:100%}
-  /* a checkbox row: kit plate bar, checkbox on the LEFT, label left-aligned.
-     Overrides .ml-plate-btn's centred/tall defaults (declared after it so the
-     equal-specificity rules win by source order). */
-  .ml-amb-row{justify-content:flex-start;gap:18px;height:min(72px,7.347vw);text-align:left;
-    padding:8px 22px;white-space:nowrap;text-transform:uppercase}
-  /* the kit checkbox (8px native): INTEGER multiples only (5x/3x/2x — see the
-     narrow-viewport media queries) so every art pixel stays crisp */
-  .ml-amb-check{width:40px;height:40px;flex:none;image-rendering:pixelated;
-    -webkit-user-drag:none;pointer-events:none}
+  /* ── backpack slots: wiki empty cells ── */
+  .ml-slots{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;
+    width:100%;max-width:560px;margin:auto 0}
+  .ml-slot{display:block;aspect-ratio:1;background:var(--surface-2);
+    border:1px solid var(--border);border-radius:10px}
+  /* ── buttons: .ml-plate-btn survives as a CLASS (the ambient agent injects
+     one from outside) but is the wiki button recipe now ── */
+  .ml-plate-btn{display:flex;align-items:center;justify-content:center;gap:8px;
+    min-height:44px;padding:8px 12px;cursor:pointer;
+    background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:10px;
+    font:600 13px/1.25 var(--sans);
+    touch-action:manipulation;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;
+    user-select:none;-webkit-user-select:none}
+  .ml-plate-btn:hover{background:var(--surface-2)}
+  .ml-plate-btn.press{transform:translateY(1px);background:var(--surface-2);border-color:var(--border-strong)}
+  .ml-plate-btn.on,.ml-plate-btn.sel{background:var(--accent-soft);border-color:var(--accent);font-weight:700}
+  /* ── settings ── */
+  .ml-set{display:flex;flex-direction:column;align-items:stretch;gap:14px;
+    width:100%;max-width:560px}
+  .ml-btnrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  /* the wide Log out button at the top of Settings: a full row of the column */
+  .ml-page>.ml-plate-btn{width:100%;max-width:560px;flex:none}
+  /* ── ambient-effect checklist ── */
+  .ml-amb{display:flex;flex-direction:column;gap:8px;width:100%}
+  .ml-amb-title{border-top:1px solid var(--border);padding-top:12px;
+    color:var(--muted);font:600 12px/1.2 var(--sans);letter-spacing:.08em;
+    text-transform:uppercase;text-align:center}
+  .ml-amb-list{display:flex;flex-direction:column;gap:8px;width:100%}
+  .ml-amb-row{justify-content:flex-start;gap:12px;text-align:left;white-space:nowrap}
+  .ml-amb-row.blocked{opacity:.5}
   .ml-amb-label{overflow:hidden;text-overflow:ellipsis}
-  /* blocked = an incompatible effect is on: greyed + not-tappable-looking (the
-     tap is a harmless no-op; the label already says which effect blocks it) */
-  .ml-amb-row.blocked{opacity:.5;cursor:not-allowed}
-  .ml-amb-auto{margin-bottom:2px}
-  /* Bird-density slider (kit bar art track + plate knob). Sits under the
-     checklist; scales both bird flocks 0.1×–10×. */
-  .ml-amb-slider{display:flex;flex-direction:column;gap:10px;width:100%}
+  /* pure-CSS checkbox: accent fill + white tick when .on */
+  .ml-amb-check{width:18px;height:18px;flex:none;position:relative;
+    background:var(--surface);border:1px solid var(--border-strong);border-radius:5px}
+  .ml-amb-check.on{background:var(--accent);border-color:var(--accent)}
+  .ml-amb-check.on::after{content:"";position:absolute;left:5px;top:1px;width:5px;height:10px;
+    border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+  /* ── bird-density slider ── */
+  .ml-amb-slider{display:flex;flex-direction:column;gap:6px;width:100%;padding:0 2px 6px}
   .ml-amb-slider-head{display:flex;justify-content:space-between;align-items:baseline;
-    color:#f0e2c6;font:700 16px system-ui,sans-serif;font-size:min(16px,1.633vw);
-    letter-spacing:1px;text-transform:uppercase}
-  .ml-amb-slider-val{color:#ffd678;font-variant-numeric:tabular-nums}
-  /* touch-action:none so a horizontal drag never scrolls the settings page */
-  .ml-slider{position:relative;width:100%;height:30px;touch-action:none;cursor:pointer}
-  .ml-slider-frame,.ml-slider-fill{position:absolute;inset:0;width:100%;height:100%;
-    image-rendering:pixelated;-webkit-user-drag:none;pointer-events:none}
-  .ml-slider-fill{will-change:clip-path}
-  /* the knob is purely visual (the track owns all pointer events); JS sets left */
-  .ml-slider-knob{position:absolute;top:50%;left:0;width:44px;height:44px;translate:0 -50%;
-    background-size:100% 100%;background-repeat:no-repeat;image-rendering:pixelated;
-    pointer-events:none}
-  /* CHAT page: a scrolling message history over a full-width input pinned to
-     the bottom. The PAGE itself doesn't scroll (like the map page) — the log
-     inside it does, so the input bar stays put. px/vw sizes only (the HUD root
-     is never uiZoom'd; vw is safe here, same as the plate buttons). */
-  .ml-page[data-page=chat]{overflow:hidden;justify-content:flex-start}
-  .ml-chat{flex:1 1 auto;min-height:0;width:100%;display:flex;flex-direction:column;gap:12px}
+    font:600 13px/1.2 var(--sans);color:var(--ink)}
+  .ml-amb-slider-val{color:var(--muted);font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:12px}
+  .ml-slider{position:relative;height:26px;touch-action:none;cursor:pointer}
+  .ml-slider::before{content:"";position:absolute;left:0;right:0;top:50%;height:8px;
+    transform:translateY(-50%);background:var(--surface-2);
+    border:1px solid var(--border);border-radius:999px}
+  .ml-slider-fill{position:absolute;left:0;top:50%;height:8px;transform:translateY(-50%);
+    background:var(--accent);border-radius:999px;pointer-events:none}
+  .ml-slider-knob{position:absolute;top:50%;width:22px;height:22px;margin-top:-11px;
+    border-radius:50%;background:var(--surface);border:1px solid var(--border-strong);
+    box-shadow:var(--shadow);pointer-events:none}
+  .ml-slider-knob.grabbing{background:var(--accent-soft);border-color:var(--accent)}
+  /* ── chat page: log panel + input ── */
+  .ml-chat{flex:1 1 auto;min-height:0;width:100%;max-width:640px;
+    display:flex;flex-direction:column;gap:10px}
   .ml-chat-log{flex:1 1 auto;min-height:0;width:100%;overflow-y:auto;overflow-x:hidden;
-    -webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:5px;
-    text-align:left;font:400 22px system-ui,sans-serif;font-size:min(22px,2.245vw);
-    color:#e8e8f0;line-height:1.4;text-shadow:0 1px 2px #000}
-  /* day divider — the SAME look as the Settings section header (.ml-amb-title):
-     a top rule with a centred label, here the real-clock date (YYYY-MM-DD). */
-  .ml-chat-day{border-top:2px solid rgba(0,0,0,.28);padding-top:14px;margin-top:6px;
-    color:#f0e2c6;font:700 18px system-ui,sans-serif;font-size:min(18px,1.837vw);
-    letter-spacing:1px;text-transform:uppercase;text-align:center;text-shadow:none}
+    display:flex;flex-direction:column;gap:4px;text-align:left;
+    font:13.5px/1.45 var(--sans);color:var(--ink);
+    background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 12px}
+  .ml-chat-day{border-top:1px solid var(--border);padding-top:10px;margin-top:4px;
+    color:var(--muted);font:600 11px/1.2 var(--sans);letter-spacing:.08em;
+    text-transform:uppercase;text-align:center;text-shadow:none}
+  .ml-chat-day:first-child{border-top:none;margin-top:0;padding-top:0}
   .ml-chat-line{overflow-wrap:anywhere}
-  /* fixed-width time so names line up; muted so it doesn't fight the message */
-  .ml-chat-time{color:#9a9aa8;margin-right:8px;font-variant-numeric:tabular-nums}
-  .ml-chat-who{color:#ffd678;font-weight:600}
-  /* inset the input from the content edges so its box clears the vine rails and
-     bottom-corner art (maintainer: "needs more space to the left and right").
-     box-sizing:border-box keeps the padding inside the 100% width. */
-  .ml-chat-inputbar{flex:none;width:100%;box-sizing:border-box;padding:0 min(40px,5vw)}
-  .ml-chat-input{width:100%;box-sizing:border-box;padding:min(14px,1.5vw) min(18px,1.9vw);
-    border-radius:8px;border:1px solid #2c2c31;background:#0a0a0cee;color:#fff;
-    font:400 22px system-ui,sans-serif;font-size:min(22px,2.245vw)}
-  .ml-chat-input::placeholder{color:#8a8a96}
+  .ml-chat-time{color:var(--muted);margin-right:7px;font-variant-numeric:tabular-nums;
+    font-family:var(--mono);font-size:.85em}
+  .ml-chat-who{color:var(--accent-ink);font-weight:600}
+  .ml-chat-inputbar{flex:none;width:100%}
+  .ml-chat-input{width:100%;background:var(--surface);color:var(--ink);
+    border:1px solid var(--border);border-radius:10px;padding:10px 12px;
+    font:14px/1.3 var(--sans);outline:none}
+  .ml-chat-input:focus{border-color:var(--accent)}
+  .ml-chat-input::placeholder{color:var(--muted)}
   /* Phone keyboard: the world + HUD stay put (virtualKeyboard.overlaysContent —
      the keyboard is drawn on top, the browser doesn't scroll/reflow the game).
      While a chat input is focused and the keyboard is up (.ml-kb-up, driven by
-     mountChatKeyboardLift), float ONLY that input up so you can SEE what you type
-     (maintainer). Its left/right match the in-HUD input inset, so it rises straight
-     up without changing width, and the transition GLIDES it up, not a snap.
-
-     WHERE it lands: --ml-inputlift = --ml-kb + 10 (just above the keyboard).
-     --ml-kb itself is floored (kbHeight, JS) so the box always clears the frame's
-     bottom rail — at --ml-kb+10 alone it sat DOWN IN the rail art (maintainer:
-     "too low, renders under the frame"). The on-screen chat log is pushed up above
-     it (.ml-kb-up .ml-chatlog below) to make room. Never fires on desktop (no
-     keyboard → --ml-kb stays 0, the class never sets). */
+     mountChatKeyboardLift), float ONLY that input up so you can SEE what you
+     type (maintainer). --ml-kb is floored in kbHeight() so the box always
+     clears the HUD's top edge; the on-screen chat log is pushed up above it.
+     Never fires on desktop (no keyboard → --ml-kb stays 0, the class never
+     sets). */
   :root{--ml-inputlift:calc(var(--ml-kb,0px) + 10px)}
   .ml-kb-up .ml-chat-input:focus{position:fixed;z-index:50;width:auto;
-    left:calc(var(--ml-page-pad,44px) + min(40px,5vw));
-    right:calc(var(--ml-page-pad,44px) + min(40px,5vw));
-    bottom:var(--ml-inputlift);box-shadow:0 -2px 16px rgba(0,0,0,.55);
-    transition:bottom .15s ease-out}
-  /* The on-screen "game-view" chat log (chat.ts .ml-chatlog) is pushed up above
-     the floated input box so the box doesn't cover it (maintainer: "translate the
-     game-view chat higher up to make room for the text-input"). Two-class
-     specificity beats chat.ts's .ml-chatlog rule; only active while lifted.
-     --ml-inputlift + the box height + a gap = the box's top edge in LAYOUT px;
-     .ml-chatlog carries the compensating uiZoom (uiscale.ts) so its bottom is in
-     PRE-zoom space — divide by --ml-uizoom, matching chat.ts's own bottom calc. */
-  .ml-kb-up .ml-chatlog{bottom:calc((var(--ml-inputlift) + 64px) / var(--ml-uizoom, 1))}
-  /* Narrower-than-design viewports: the tab plate + icon now BOTH scale with
-     --ml-fs (the frame scale), so they shrink smoothly with the slots — no
-     icon-halving / tab-cap breakpoints are needed any more (those made the
-     icon stop tracking the plate). The ambient checkboxes (8px native) still
-     step on their own proportional breaks: 5x → 3x → 2x, never fractional. */
-  @media (max-width:650px){
-    .ml-amb-check{width:24px;height:24px}
+    left:14px;right:14px;bottom:var(--ml-inputlift);
+    box-shadow:var(--shadow);transition:bottom .15s ease-out}
+  /* the on-screen game-view chat log (chat.ts) rises above the floated box */
+  .ml-kb-up .ml-chatlog{bottom:calc(var(--ml-inputlift) + 56px)}
+  /* ── compact fits ── */
+  @media (max-width:480px){
+    .ml-tab{height:40px}
+    .ml-tab-icon{width:24px;height:24px}
+    .ml-btnrow{gap:6px}
+    .ml-plate-btn{padding:6px 8px;font-size:12px}
   }
-  @media (max-width:460px){
-    .ml-amb-check{width:16px;height:16px}
-  }
-  /* Short viewports (small desktop windows): compact everything. Height 48
-     keeps the kit rows on an exact integer scale (48 = 4 blocks of 12). */
   @media (max-height:640px){
-    /* tab plate/icon scale with --ml-fs (height-constrained here → small frame
-       → small plate), so no --ml-tab cap or icon-halving is needed. */
-    .ml-page{gap:8px}
-    .ml-plate-btn{padding:4px 12px;height:48px;font-size:13px}
-    .ml-set{gap:12px}
-    .ml-set .ml-btnrow{row-gap:8px}
-    .ml-amb{gap:8px}
-    .ml-amb-list{gap:8px}
-    .ml-amb-title{padding-top:8px;font-size:14px}
-    .ml-amb-row{height:44px;gap:12px;padding:4px 12px}
-    /* 24 = 3x the 8px art — integer; the earlier 28 was a fractional 3.5x */
-    .ml-amb-check{width:24px;height:24px}
-    .ml-amb-slider{gap:6px}
-    .ml-amb-slider-head{font-size:14px}
-    .ml-slider{height:24px}
-    .ml-slider-knob{width:36px;height:36px}
-    .ml-chat{gap:8px}
-    .ml-chat-log{font-size:15px;gap:3px}
-    /* match .ml-amb-title's compact size (padding-top:8px;font-size:14px) so the
-       day divider still looks like the Settings header on short viewports */
-    .ml-chat-day{padding-top:8px;font-size:14px}
-    .ml-chat-input{font-size:15px;padding:8px 12px}
+    .ml-tabrow{padding:6px 8px 4px}
+    .ml-tab{height:36px}
+    .ml-tab-icon{width:24px;height:24px}
+    .ml-page{gap:8px;padding:8px 10px 10px}
+    .ml-plate-btn{min-height:36px}
+    .ml-set{gap:10px}
+    .ml-amb-list{gap:6px}
+    .ml-slots{gap:8px}
+    .ml-chat-log{font-size:12.5px}
   }`;
   const s = document.createElement("style");
   s.textContent = css;

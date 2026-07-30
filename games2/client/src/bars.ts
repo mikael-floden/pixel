@@ -1,57 +1,34 @@
 /**
- * HP / Energy / XP bars + a Gold counter — HP + Energy top-LEFT, Experience
- * top-RIGHT, Gold UNDER Experience (maintainer 2026-07-23: "add a blue experience
- * bar to the right ... to the right of the clock"; "rename mana to energy"; "half
- * the current height"; "EP not MP"; 2026-07-24: "put the gold UI under the XP bar
- * so it aligns nicely with the energy bar").
+ * HP / Energy / XP bars + LEVEL + Gold — HP + Energy top-LEFT, Experience
+ * (with "LEVEL n" on its number line) + Gold top-RIGHT, floating over the
+ * game view.
  *
- * Art from his UI kit (scripts/bake-bars.py): bar-frame.png is the empty track;
- * bar-fill-{red,yellow,blue}.png are the same gold fill recoloured to a
- * health-red / energy-gold / experience-blue ramp, all in the kit palette. The
- * frame and fill are 9-SLICED into the box at the shared kit block scale
- * (plate.ts nineSlice / KIT_PX) so the bar keeps its size while its pixels match
- * the buttons; the fill stacks over the track and is CLIPPED left-to-right to
- * the percent (the dark interior shows through the cut). The layer is uiZoom'd
- * on <body> like the version badge, so it tracks the frame under "Desktop site".
+ * WIKI-STYLE (maintainer 2026-07-30): the UI-kit bar art (bar-frame/fill
+ * 9-slices) is gone. Each group sits in a translucent rounded CHIP (the
+ * page theme's --bg at ~75%, blurred) so the text and tracks stay readable
+ * over any world art, in light and dark theme alike; the gauges are slim
+ * rounded tracks (surface-2 well + coloured fill). The gold nugget icon
+ * (the maintainer's PixelLab art) STAYS — "not the icons".
  *
- * The GOLD counter is the NORTH-facing rotation of his "Gold" PixelLab object
- * (/ui2/gold-icon.png) with the amount to its left — both RIGHT-aligned to the XP
- * bar's right edge, so the row sits opposite the Energy bar (maintainer).
+ * Gauge colours keep their meanings: HP red (--bad), Energy gold (--star),
+ * XP blue (fixed #5f87c0 — the tokens carry no blue; it reads on both
+ * themes). data-color hp=red / ep=yellow / xp=blue survives for the QA gate.
  *
- * The XP row also carries "LEVEL n" LEFT-aligned on its number line, opposite the
- * right-aligned XP count (maintainer 2026-07-25).
- *
- * The bars show STATIC placeholder values for now (maintainer 2026-07-23: HP
- * 10/10 full, Energy 0/0 empty, XP 0/10 empty — "don't want to see the animation
- * anymore"); gold shows 0 and level shows 1. setBar(kind, cur, max) / setGold(n) /
- * setLevel(n) are the seams the real player state plugs into later.
+ * The bars show STATIC placeholder values for now (HP 10/10 full, Energy 0/0
+ * empty, XP 0/10 empty, gold 0, level 1); setBar(kind, cur, max) / setGold(n)
+ * / setLevel(n) are the seams the real player state plugs into later.
  */
-
-import { applyUiZoom } from "./uiscale";
-import { nineSlice } from "./plate";
-
-const GAUGE_W = 258;
-const GAUGE_H = 30; // HALF the old 60 (maintainer 2026-07-23: "half the height")
-const NUM_PX = 22; // number font size, DESIGN px (decoupled from block scale)
-const TOP = 108;
-const GAP = 14; // between the HP and Energy rows on the left
-// DESIGN-px anchors, tuned on the maintainer's phone view. LEFT clears the left
-// vine rail; RIGHT (from the viewport's right edge) puts the Experience bar in
-// the gap between the clock disc (ends ~x616) and the right vine rail (inner
-// ~x900) — measured, ~13px clear on each side.
-const LEFT = 90;
-const RIGHT = 93;
 
 type Kind = "hp" | "ep" | "xp";
 interface Bar {
-  fill: HTMLImageElement;
+  fill: HTMLElement;
   num: HTMLElement;
   max: number;
   suffix: string;
 }
 
-let root: HTMLDivElement | null = null; // left group: HP + Energy
-let rootR: HTMLDivElement | null = null; // right group: Experience + Gold
+let root: HTMLDivElement | null = null; // left chip: HP + Energy
+let rootR: HTMLDivElement | null = null; // right chip: Experience + Gold
 const bars: Record<Kind, Bar> = {} as any;
 let goldNumEl: HTMLElement | null = null; // the gold amount label
 let gold = 0; // how much gold the player has (0 until real state is wired)
@@ -63,43 +40,35 @@ export function mountBars() {
   injectStyles();
   root = document.createElement("div");
   root.className = "ml-bars";
-  root.style.top = `${TOP}px`;
-  root.style.left = `${LEFT}px`;
+  root.style.top = "10px";
+  root.style.left = "10px";
   rootR = document.createElement("div");
   rootR.className = "ml-bars";
-  rootR.style.top = `${TOP}px`;
-  rootR.style.right = `${RIGHT}px`;
+  rootR.style.top = "10px";
+  rootR.style.right = "10px";
 
-  const make = (
-    container: HTMLElement,
-    kind: Kind,
-    colour: string,
-    max: number,
-    suffix: string,
-  ): Bar => {
+  const make = (container: HTMLElement, colour: string, max: number, suffix: string): Bar => {
     const row = document.createElement("div");
     row.className = "ml-bar-row";
     const gauge = document.createElement("div");
     gauge.className = "ml-bar-gauge";
-    const frame = img("/ui2/bar-frame.png");
-    const fill = img(`/ui2/bar-fill-${colour}.png`);
-    fill.classList.add("ml-bar-fill");
+    const fill = document.createElement("div");
+    fill.className = "ml-bar-fill";
     fill.dataset.color = colour; // HP=red / EP=yellow / XP=blue (gate checks this)
-    gauge.append(frame, fill);
+    gauge.append(fill);
     const num = document.createElement("span");
     num.className = "ml-bar-num";
     row.append(gauge, num);
     container.appendChild(row);
     return { fill, num, max, suffix };
   };
-  bars.hp = make(root, "hp", "red", 10, "HP");
-  bars.ep = make(root, "ep", "yellow", 0, "EP");
-  bars.xp = make(rootR, "xp", "blue", 10, "XP");
+  bars.hp = make(root, "red", 10, "HP");
+  bars.ep = make(root, "yellow", 0, "EP");
+  bars.xp = make(rootR, "blue", 10, "XP");
 
   // "LEVEL n" on the XP row's number line, LEFT-aligned opposite the
-  // right-aligned XP count (maintainer 2026-07-25: red-marked at the XP bar's
-  // lower-left). Swap the lone XP number for a [level ⟷ count] row that spans
-  // the bar width. Binds to the real player level via setLevel().
+  // right-aligned XP count (maintainer 2026-07-25). Binds to the real player
+  // level via setLevel().
   const xpRow = bars.xp.num.parentElement!;
   const numRow = document.createElement("div");
   numRow.className = "ml-bar-numrow";
@@ -108,11 +77,8 @@ export function mountBars() {
   xpRow.replaceChild(numRow, bars.xp.num);
   numRow.append(levelEl, bars.xp.num);
 
-  // Gold counter UNDER the Experience bar (maintainer 2026-07-24). Not a gauge:
-  // the north-facing "Gold" nugget icon at the RIGHT, its amount RIGHT-aligned
-  // just to its left, the row the same width as the bar so its right edge lines
-  // up with XP — and, as the 2nd row on the right, it sits opposite the Energy
-  // bar (2nd row on the left).
+  // Gold under the Experience row (maintainer 2026-07-24): the nugget icon at
+  // the RIGHT, the amount right-aligned just to its left.
   const goldRow = document.createElement("div");
   goldRow.className = "ml-gold-row";
   goldNumEl = document.createElement("span");
@@ -126,14 +92,12 @@ export function mountBars() {
   rootR.appendChild(goldRow);
 
   document.body.append(root, rootR);
-  applyUiZoom(root);
-  applyUiZoom(rootR);
   renderGold();
   renderLevel();
 
-  // Static placeholder values — no animation (maintainer 2026-07-23: "set hp to
-  // stable 10/10, energy to 0/0 empty, xp to 0/10 also empty; don't want to see
-  // the animation anymore"). setBar() replaces these once real state is wired.
+  // Static placeholder values (maintainer 2026-07-23: HP 10/10 full, Energy
+  // 0/0 empty, XP 0/10 empty; no animation). setBar() replaces these once
+  // real state is wired.
   apply("hp", 1); // 10 / 10 — full
   apply("ep", 0); // 0 / 0  — empty
   apply("xp", 0); // 0 / 10 — empty
@@ -141,7 +105,7 @@ export function mountBars() {
 
 function apply(kind: Kind, pct: number) {
   const b = bars[kind];
-  b.fill.style.clipPath = `inset(0 ${((1 - pct) * 100).toFixed(2)}% 0 0)`;
+  b.fill.style.width = `${(pct * 100).toFixed(2)}%`;
   const cur = Math.round(pct * b.max);
   b.num.textContent = `${cur} / ${b.max} ${b.suffix}`;
 }
@@ -173,69 +137,41 @@ export function setLevel(n: number) {
   renderLevel();
 }
 
-function img(src: string): HTMLImageElement {
-  const e = document.createElement("img");
-  e.alt = "";
-  e.draggable = false;
-  // 9-slice the low-res kit bar art into the SAME box at the kit block scale
-  // (plate.ts nineSlice / KIT_PX) so the bar keeps its size while its pixels
-  // shrink to match the buttons — scaling the whole <img> coupled size to grain
-  // and read ~2x the icons (maintainer 2026-07-23: "do what we did with the UI
-  // KIT buttons"). scale=1: an <img> upscales itself crisply with
-  // image-rendering:pixelated (kept in the CSS).
-  const s = new Image();
-  s.onload = () => {
-    const u = nineSlice(s, GAUGE_W, GAUGE_H, 1);
-    if (u) e.src = u;
-  };
-  s.src = src;
-  return e;
-}
-
 let injected = false;
 function injectStyles() {
   if (injected) return;
   injected = true;
-  const w = GAUGE_W;
-  const h = GAUGE_H;
   const s = document.createElement("style");
   s.textContent = `
+  /* a translucent theme chip so the group reads over any world art */
   .ml-bars{position:fixed;z-index:8;pointer-events:none;display:flex;
-    flex-direction:column;gap:${GAP}px}
-  /* each row stacks the gauge over its number; row width = gauge width so the
-     number RIGHT-aligns to the bar's right edge (maintainer 2026-07-23:
-     "placed under and right aligned") */
-  .ml-bar-row{display:flex;flex-direction:column;width:${w}px}
-  .ml-bar-gauge{position:relative;width:${w}px;height:${h}px;flex:none}
-  .ml-bar-gauge img{position:absolute;inset:0;width:100%;height:100%;
-    image-rendering:pixelated;-webkit-user-drag:none}
-  .ml-bar-fill{will-change:clip-path}
-  .ml-bar-num{margin-top:4px;text-align:right;
-    font:700 ${NUM_PX}px system-ui,sans-serif;letter-spacing:.5px;
-    color:#f0e2c6;text-shadow:0 1px 2px #000,0 0 3px #000;white-space:nowrap}
-  /* XP row only: "LEVEL n" LEFT + the XP count RIGHT share one line under the
-     gauge (maintainer 2026-07-25). The numrow carries the num's usual 4px top
-     gap; the num inside it drops its own margin so both labels sit on one line. */
-  .ml-bar-numrow{margin-top:4px;display:flex;justify-content:space-between;
-    align-items:baseline;width:100%;gap:12px}
+    flex-direction:column;gap:7px;padding:8px 10px;border-radius:12px;
+    background:color-mix(in srgb, var(--bg) 76%, transparent);
+    border:1px solid color-mix(in srgb, var(--border) 65%, transparent);
+    backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+  .ml-bar-row{display:flex;flex-direction:column;width:126px}
+  .ml-bar-gauge{position:relative;width:100%;height:10px;border-radius:999px;
+    background:var(--surface-2);border:1px solid var(--border);
+    overflow:hidden;box-sizing:border-box}
+  .ml-bar-fill{position:absolute;left:0;top:0;bottom:0;border-radius:999px}
+  .ml-bar-fill[data-color=red]{background:var(--bad)}
+  .ml-bar-fill[data-color=yellow]{background:var(--star)}
+  .ml-bar-fill[data-color=blue]{background:#5f87c0}
+  .ml-bar-num{margin-top:2px;text-align:right;
+    font:600 11px/1.3 var(--sans);letter-spacing:.02em;
+    color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+  /* XP row only: "LEVEL n" LEFT + the XP count RIGHT share one line */
+  .ml-bar-numrow{margin-top:2px;display:flex;justify-content:space-between;
+    align-items:baseline;width:100%;gap:10px}
   .ml-bar-numrow .ml-bar-num{margin-top:0}
-  .ml-bar-level{font:700 ${NUM_PX}px system-ui,sans-serif;letter-spacing:.5px;
-    color:#f0e2c6;text-shadow:0 1px 2px #000,0 0 3px #000;white-space:nowrap;text-align:left}
-  /* Gold row: amount then icon, BOTH flush to the right edge (= the bar's right
-     edge, so it lines up with XP above and the Energy bar opposite). row width =
-     bar width; justify-content:flex-end pins the [amount][icon] pair right.
-     margin-top drops the row toward the Energy bar's NUMBER line: the Energy bar
-     has its value UNDER the gauge, so the gold — a single line — must sink past
-     the gauge to read as "on the same line" as that text (maintainer 2026-07-24:
-     "account for that height as well"). Tuned on his phone view to sit ABOVE
-     that number line, around the Energy bar's vertical centre — on the line, and
-     even a hair above it, both read too low ("a tiny bit up again", then "a
-     little bit higher up still"). Still well below the original gauge-top spot. */
-  .ml-gold-row{display:flex;justify-content:flex-end;align-items:center;gap:10px;
-    width:${w}px;margin-top:16px}
-  .ml-gold-num{font:700 ${NUM_PX}px system-ui,sans-serif;letter-spacing:.5px;
-    color:#f0e2c6;text-shadow:0 1px 2px #000,0 0 3px #000;white-space:nowrap}
-  .ml-gold-icon{height:36px;width:auto;image-rendering:pixelated;
-    -webkit-user-drag:none;display:block}`;
+  .ml-bar-level{font:600 11px/1.3 var(--sans);letter-spacing:.04em;
+    color:var(--muted);white-space:nowrap;text-align:left}
+  /* Gold: amount then the nugget icon, both flush right */
+  .ml-gold-row{display:flex;justify-content:flex-end;align-items:center;gap:6px;width:100%}
+  .ml-gold-num{font:600 12px/1.2 var(--sans);color:var(--ink);
+    font-variant-numeric:tabular-nums;white-space:nowrap}
+  .ml-gold-icon{height:16px;width:auto;image-rendering:pixelated;
+    -webkit-user-drag:none;display:block}
+  @media (min-width:700px){ .ml-bar-row{width:170px} }`;
   document.head.appendChild(s);
 }

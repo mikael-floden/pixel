@@ -2,7 +2,7 @@
 // live red "you are here" dot placed by the iso projection. ring_test: the image
 // loads, the dot sits at the iso-projected player cell, and it tracks a teleport.
 // The dot % is recomputed here from the same transform and compared to the DOM.
-// A forced 404 shows the graceful fallback. Maintainer's phone geometry.
+// A forced 404 shows the graceful fallback. Device-width mobile geometry.
 import { chromium } from "playwright-core";
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const BASE = process.env.BASE || "http://localhost:5173";
@@ -33,7 +33,14 @@ async function enter(page, world) {
   await page.waitForTimeout(150);
   await page.evaluate(() => window.__mlSelect.commit());
   await page.waitForSelector(".ml-tabrow .ml-tab", { timeout: 30000 });
-  await page.click('.ml-tab[data-tab="map"]');
+  // the __ml debug object appears once the local player has joined
+  await page.waitForFunction(() => window.__ml && typeof window.__ml.minimap === "function", { timeout: 30000 });
+  // The full-screen #ml-loading cinema fade covers the HUD until the world has
+  // real frames on screen — its teardown counts rAF frames, so under headless
+  // software-GL it lingers well past the join. Real taps can't reach the tabs
+  // through it; wait it out instead of clicking blind (same as verify-chatpage).
+  await page.waitForSelector("#ml-loading", { state: "detached", timeout: 120000 });
+  await page.click('.ml-tab[data-tab="map"]', { timeout: 60000 });
   await page.waitForTimeout(1000);
 }
 const readDot = (page) => page.evaluate(() => {
@@ -51,7 +58,12 @@ const readDot = (page) => page.evaluate(() => {
 
 try {
   const ctx = await browser.newContext({
-    viewport: { width: 980, height: 2123 }, screen: { width: 393, height: 851 },
+    // DEVICE-WIDTH mobile geometry (393×851) — the wiki-style remake's QA
+    // standard: the new UI is plain responsive CSS with no zoom compensation,
+    // so the layout viewport IS the device width. (The old 980×2123 scaled-
+    // layout viewport predates the remake, and its huge software-GL canvas
+    // starved rAF so badly tab clicks hung on the scroll/stability checks.)
+    viewport: { width: 393, height: 851 }, screen: { width: 393, height: 851 },
     isMobile: true, hasTouch: true, deviceScaleFactor: 2,
   });
   const page = await ctx.newPage();

@@ -5,9 +5,14 @@
 //   2. keeps the last 1000 lines (oldest dropped past that)
 //   3. each line prints its receive time as HH:MM
 //   4. a day divider (YYYY-MM-DD) appears when the real-clock day changes
-//   5. the divider LOOKS LIKE the Settings section header (.ml-amb-title)
+//   5. the divider LOOKS LIKE the Settings section header (.ml-amb-title) —
+//      wiki style now: muted uppercase over a 1px var(--border) top border
+//      (the log's FIRST divider drops the border by design, so the compare
+//      uses a non-first divider)
 //   6. the FIRST message starts with a date divider
 //   7. a full-width input at the bottom you click to write a message
+//      (wiki remake: the input SPANS the .ml-chat wrap — no side padding —
+//      inside the page's 12px padding; no vine rails to clear any more)
 //   8. that input actually sends (server round-trip back into the log)
 import { chromium } from "playwright-core";
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
@@ -29,8 +34,13 @@ async function enter(page, world) {
   await page.waitForSelector(".ml-tabrow .ml-tab", { timeout: 30000 });
   // the __ml debug object appears once the local player has joined
   await page.waitForFunction(() => window.__ml && typeof window.__ml.chatPush === "function", { timeout: 30000 });
+  // The full-screen #ml-loading cinema fade covers the HUD until the world has
+  // real frames on screen — its teardown counts rAF frames, so under headless
+  // software-GL it lingers well past the join. Real taps can't reach the tabs
+  // through it; wait it out instead of clicking blind.
+  await page.waitForSelector("#ml-loading", { state: "detached", timeout: 120000 });
 }
-const openChat = (page) => page.click('.ml-tab[data-tab="chat"]');
+const openChat = (page) => page.click('.ml-tab[data-tab="chat"]', { timeout: 60000 });
 // read the rendered chat log: ordered rows of {kind:"day"|"line", ...}
 const readLog = (page) => page.evaluate(() => {
   const log = document.querySelector(".ml-chat-log");
@@ -49,7 +59,13 @@ const readLog = (page) => page.evaluate(() => {
 
 try {
   const ctx = await browser.newContext({
-    viewport: { width: 980, height: 2123 }, screen: { width: 393, height: 851 },
+    // DEVICE-WIDTH mobile geometry (393×851 = the maintainer's phone in normal
+    // mobile view) — the wiki-style remake's QA standard: the new UI is plain
+    // responsive CSS with no zoom compensation, so the layout viewport IS the
+    // device width. (The old 980×2123 scaled-layout viewport predates the
+    // remake, and its huge software-GL canvas starved rAF so badly the loading
+    // cinema fade covered the HUD for minutes.)
+    viewport: { width: 393, height: 851 }, screen: { width: 393, height: 851 },
     isMobile: true, hasTouch: true, deviceScaleFactor: 2,
     timezoneId: "Europe/Stockholm", // deterministic day boundaries for the divider test
   });
@@ -62,23 +78,29 @@ try {
   // the gate is deterministic regardless of Playwright's default.
   await ctx.addInitScript(() => Object.defineProperty(navigator, "maxTouchPoints", { get: () => 5, configurable: true }));
   const page = await ctx.newPage();
+  page.setDefaultTimeout(60000); // headless software-GL frames run ~1s — give clicks room
   await enter(page, "ring_test");
   await openChat(page);
   await page.waitForSelector(".ml-chat-log", { timeout: 10000 });
 
-  // ── the input: inset from the rails, wide, centered, at the bottom ──
+  // ── the input: spans the wrap, breathing room to the viewport edges,
+  //    centered, at the bottom. (Wiki remake: the vine rails are GONE — the
+  //    old "inset from the rails" gaps were frame art; the inputbar now has NO
+  //    side padding, so the input spans .ml-chat, which sits centered inside
+  //    the page's 12px padding.) ──
   const inp = await page.evaluate(() => {
     const wrap = document.querySelector(".ml-chat");
     const log = document.querySelector(".ml-chat-log");
     const el = document.querySelector(".ml-chat-input");
     if (!wrap || !log || !el) return null;
     const wr = wrap.getBoundingClientRect(), er = el.getBoundingClientRect(), lr = log.getBoundingClientRect();
-    const leftGap = er.left - wr.left, rightGap = wr.right - er.right;
+    const leftGap = er.left, rightGap = window.innerWidth - er.right; // vs the VIEWPORT now
     return {
       exists: true, maxLength: el.maxLength, placeholder: el.placeholder,
       leftGap, rightGap,
-      inset: leftGap > 12 && rightGap > 12,          // clears the vine rails both sides
+      inViewport: leftGap > 8 && rightGap > 8,       // side margins inside the viewport
       centered: Math.abs(leftGap - rightGap) <= 2,   // equal L/R space
+      spansWrap: Math.abs(er.width - wr.width) <= 2, // input spans the wrap (no side padding)
       wide: er.width > wr.width * 0.6,               // still a wide box
       belowLog: er.top >= lr.bottom - 2,             // pinned under the scrolling log
     };
@@ -86,7 +108,8 @@ try {
   inp && inp.exists ? ok("chat input present") : fail(`no chat input (${JSON.stringify(inp)})`);
   inp && inp.maxLength === 140 ? ok("input maxLength = MAX_CHAT_LEN (140)") : fail(`maxLength ${inp?.maxLength}`);
   inp && inp.placeholder === "say something…" ? ok("input placeholder matches") : fail(`placeholder "${inp?.placeholder}"`);
-  inp && inp.inset && inp.centered ? ok(`input inset from the rails (L=${inp.leftGap.toFixed(0)} R=${inp.rightGap.toFixed(0)})`) : fail(`input not inset/centered (${JSON.stringify(inp)})`);
+  inp && inp.inViewport && inp.centered ? ok(`input centered with side margins (L=${inp.leftGap.toFixed(0)} R=${inp.rightGap.toFixed(0)})`) : fail(`input not inside/centered (${JSON.stringify(inp)})`);
+  inp && inp.spansWrap ? ok("input spans the chat wrap (no inputbar side padding)") : fail(`input doesn't span the wrap (${JSON.stringify(inp)})`);
   inp && inp.wide ? ok("input still spans most of the width") : fail(`input too narrow (${JSON.stringify(inp)})`);
   inp && inp.belowLog ? ok("input sits below the log (bottom)") : fail("input not at the bottom");
 
@@ -144,7 +167,18 @@ try {
   const armed = await page.waitForFunction(() => document.documentElement.classList.contains("ml-kb-up"), { timeout: 5000 })
     .then(() => true).catch(() => false);
   armed ? ok("lift arms on focus (no keyboard geometry needed)") : fail(`lift never armed: ${JSON.stringify(await page.evaluate(() => window.__mlKb?.()))}`);
-  await page.waitForTimeout(500); // let the glide transition settle before measuring
+  // Let the glide settle before measuring — but by GEOMETRY, not a fixed budget:
+  // the box arms pinned at its resting spot, then a rAF raises --ml-kb to the
+  // estimate and the 150ms bottom-transition rides up. Headless software-GL
+  // frames run ~1s, so wait until the rect has actually reached the CSS target
+  // (bottom = --ml-kb + 10) with the estimate (≥ KB_MIN 80) in place.
+  await page.waitForFunction(() => {
+    const el = document.querySelector(".ml-chat-input");
+    if (!el) return false;
+    const kb = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--ml-kb")) || 0;
+    if (kb < 80) return false; // still at the initial pin — the raise hasn't landed
+    return Math.abs(window.innerHeight - (kb + 10) - el.getBoundingClientRect().bottom) < 2;
+  }, { timeout: 20000 }).catch(() => {}); // a genuine miss fails the geometry checks below
   const lifted = await page.evaluate(() => {
     const el = document.querySelector(".ml-chat-input");
     const cs = getComputedStyle(el), r = el.getBoundingClientRect();
@@ -154,8 +188,9 @@ try {
     return {
       position: cs.position, tprop: cs.transitionProperty, tdur: cs.transitionDuration,
       rectBottom: Math.round(r.bottom), rectTop: Math.round(r.top), width: Math.round(r.width),
+      rectLeft: Math.round(r.left), rightGap: Math.round(window.innerWidth - r.right),
       kb: rootCss.getPropertyValue("--ml-kb").trim(),
-      hudH, railTop: window.innerHeight - hudH, // the frame's VISIBLE bottom-rail top
+      hudH, railTop: window.innerHeight - hudH, // the HUD's top edge (was the frame's bottom rail)
       up: document.documentElement.classList.contains("ml-kb-up"),
       vh: window.innerHeight,
       game: g("#game"), hud: g(".ml-hud"), tabs: g(".ml-tabrow"), sy: window.scrollY,
@@ -178,12 +213,17 @@ try {
   lifted.rectTop >= 0 && lifted.rectBottom <= lifted.vh
     ? ok(`input is fully ON SCREEN (top=${lifted.rectTop} bottom=${lifted.rectBottom} of ${lifted.vh})`)
     : fail(`input off screen: top=${lifted.rectTop} bottom=${lifted.rectBottom} vh=${lifted.vh}`);
-  // (3) the box CLEARS the frame's bottom rail — it must not sit down IN the rail
-  //     art (maintainer: "too low, renders under the frame"). Its bottom edge is
-  //     at least a hair above the visible rail top.
+  // wiki remake: the floated box pins at left:14px / right:14px of the viewport
+  Math.abs(lifted.rectLeft - 14) <= 2 && Math.abs(lifted.rightGap - 14) <= 2
+    ? ok(`floated box pinned at the wiki insets (left=${lifted.rectLeft} right=${lifted.rightGap})`)
+    : fail(`floated box not at left/right 14: left=${lifted.rectLeft} rightGap=${lifted.rightGap}`);
+  // (3) the box CLEARS the HUD's top edge (the frame's bottom-rail art is gone;
+  //     --hud-h is the equivalent line now — kbHeight() floors --ml-kb at
+  //     hud-h + 2 so the box never sinks into the HUD). Its bottom edge is at
+  //     least a hair above that edge.
   lifted.railTop != null && lifted.rectBottom <= lifted.railTop + 2
-    ? ok(`input clears the frame's bottom rail (box bottom=${lifted.rectBottom} ≤ railTop=${lifted.railTop})`)
-    : fail(`input sits in the frame rail: box bottom=${lifted.rectBottom} vs railTop=${lifted.railTop} (hudH=${lifted.hudH})`);
+    ? ok(`input clears the HUD's top edge (box bottom=${lifted.rectBottom} ≤ hudTop=${lifted.railTop})`)
+    : fail(`input sits in the HUD: box bottom=${lifted.rectBottom} vs hudTop=${lifted.railTop} (hudH=${lifted.hudH})`);
   // (4) the on-screen "game-view" chat log is pushed UP above the floated box so
   //     the box doesn't cover it (maintainer: "translate the game-view chat higher
   //     up"). Its CSS bottom rises when .ml-kb-up is active.
@@ -273,25 +313,6 @@ try {
   s && s.rows[0]?.kind === "day" && /^\d{4}-\d{2}-\d{2}$/.test(s.rows[0].text)
     ? ok(`first row is a date divider (${s.rows[0].text})`) : fail(`first row not a divider: ${JSON.stringify(s?.rows[0])}`);
 
-  // ── req 5: the divider LOOKS LIKE the Settings header (.ml-amb-title) ──
-  const look = await page.evaluate(() => {
-    const key = (el) => {
-      const c = getComputedStyle(el);
-      // include text-shadow: .ml-chat-log sets one that inherits, so the divider
-      // must reset it to truly match the (shadowless) Settings header.
-      return { bt: c.borderTopWidth, bs: c.borderTopStyle, ta: c.textAlign, tt: c.textTransform, ls: c.letterSpacing, sh: c.textShadow };
-    };
-    const day = document.querySelector(".ml-chat-day");
-    const title = document.querySelector(".ml-amb-title");
-    return day && title ? { day: key(day), title: key(title) } : null;
-  });
-  if (!look) fail("could not compare divider styles");
-  else {
-    const same = ["bt", "bs", "ta", "tt", "ls", "sh"].filter((k) => look.day[k] !== look.title[k]);
-    same.length === 0 ? ok(`divider matches Settings header style (${JSON.stringify(look.day)})`)
-      : fail(`divider style differs on ${same.join(",")}: ${JSON.stringify(look)}`);
-  }
-
   // ── req 4: a NEW-DAY divider between two lines on different real days. Push
   //    at controlled times (local noon, two adjacent days — no midnight edge). ──
   const dd = await page.evaluate(() => {
@@ -309,6 +330,34 @@ try {
   const divBetween = i1 >= 0 && i2 > i1 && s.rows.slice(i1 + 1, i2).some((r) => r.kind === "day" && r.text === dd.d2);
   divBetween ? ok(`new-day divider (${dd.d2}) sits between the two days`) : fail(`no day divider between lines: ${JSON.stringify(s.rows.slice(Math.max(0,i1), i2 + 1))}`);
   s.rows.some((r) => r.kind === "day" && r.text === dd.d1) ? ok(`day-one divider present (${dd.d1})`) : fail(`missing ${dd.d1} divider`);
+
+  // ── req 5: the divider LOOKS LIKE the Settings header (.ml-amb-title) —
+  //    wiki style: muted uppercase centered text over a 1px var(--border) top
+  //    border, no text-shadow. Compare REAL computed styles on a NON-FIRST
+  //    divider (.ml-chat-day:first-child drops its top border by design — the
+  //    log panel already draws the top edge; the dd push above guarantees one
+  //    exists). letter-spacing is authored in em (.08em on both) but computes
+  //    to px of each element's own font size (11px vs 12px), so compare the
+  //    em-normalized value. (Runs after req 4 so a non-first divider exists.) ──
+  const look = await page.evaluate(() => {
+    const key = (el) => {
+      const c = getComputedStyle(el);
+      const fs = parseFloat(c.fontSize) || 1;
+      return { bt: c.borderTopWidth, bs: c.borderTopStyle, bc: c.borderTopColor,
+               ta: c.textAlign, tt: c.textTransform, fw: c.fontWeight, col: c.color,
+               lsEm: ((parseFloat(c.letterSpacing) || 0) / fs).toFixed(3), sh: c.textShadow };
+    };
+    const days = [...document.querySelectorAll(".ml-chat-day")];
+    const day = days.length > 1 ? days[1] : days[0];
+    const title = document.querySelector(".ml-amb-title");
+    return day && title ? { day: key(day), title: key(title) } : null;
+  });
+  if (!look) fail("could not compare divider styles");
+  else {
+    const same = ["bt", "bs", "bc", "ta", "tt", "fw", "col", "lsEm", "sh"].filter((k) => look.day[k] !== look.title[k]);
+    same.length === 0 ? ok(`divider matches Settings header style (${JSON.stringify(look.day)})`)
+      : fail(`divider style differs on ${same.join(",")}: ${JSON.stringify(look)}`);
+  }
 
   // ── req 2: cap at 1000, oldest dropped. Bulk-push while the tab is hidden
   //    (no per-push render), then reopen for one render. ──

@@ -26,6 +26,7 @@ let root: HTMLDivElement | null = null;
 let onResize: (() => void) | null = null;
 let onKey: ((e: KeyboardEvent) => void) | null = null;
 let onMsg: ((e: MessageEvent) => void) | null = null;
+let onTheme: (() => void) | null = null;
 let menuOpen = false; // the wiki's OWN nav drawer inside the iframe
 
 const PANEL_FRAC = 0.88;      // leave ≥~45 physical px of game visible
@@ -45,11 +46,11 @@ function ensureCss(): void {
      "layer back". Tapping it then closes the MENU, not the wiki. */
   .ml-wikiback.on.deep{background:rgba(8,6,3,.85)}
   .ml-wikipanel{position:absolute;top:0;left:0;height:100%;
-    background:#faf9f5;box-shadow:6px 0 28px rgba(0,0,0,.45);
+    background:var(--bg, #faf9f5);box-shadow:6px 0 28px rgba(0,0,0,.45);
     transform:translateX(-102%);transition:transform ${ANIM_MS}ms cubic-bezier(.22,.61,.36,1);
     overflow:hidden}
   .ml-wikipanel.on{transform:translateX(0)}
-  .ml-wikipanel iframe{border:0;display:block;background:#faf9f5;transform-origin:top left}
+  .ml-wikipanel iframe{border:0;display:block;background:var(--bg, #faf9f5);transform-origin:top left}
   @media (prefers-reduced-motion: reduce){
     .ml-wikiback,.ml-wikipanel{transition:none}
   }`;
@@ -115,6 +116,24 @@ export function openWikiPanel(): void {
   window.addEventListener("keydown", onKey);
   back.addEventListener("click", backOut);
 
+  // THEME LIVE-SYNC (maintainer 2026-07-30: one dark-theme choice flips both
+  // the wiki and the game). The wiki reads localStorage["wiki-theme"] only at
+  // boot, so when the GAME toggles while the drawer is open, mirror the new
+  // data-theme straight onto the live iframe's root (same-origin — allowed).
+  // theme.ts already wrote the localStorage key, so a reload stays consistent;
+  // the reverse direction (wiki toggle → game) rides the storage event in
+  // theme.ts. Applied once at load too, in case the iframe booted before a
+  // toggle landed.
+  onTheme = () => {
+    const doc = frame.contentDocument;
+    if (!doc) return;
+    const t = document.documentElement.dataset.theme;
+    if (t) doc.documentElement.dataset.theme = t;
+    else delete doc.documentElement.dataset.theme;
+  };
+  window.addEventListener("ml-theme", onTheme);
+  frame.addEventListener("load", () => onTheme?.());
+
   // Two frames so the initial transform/opacity commit before animating in.
   requestAnimationFrame(() => requestAnimationFrame(() => {
     back.classList.add("on");
@@ -129,6 +148,7 @@ export function closeWikiPanel(): void {
   if (onResize) { window.removeEventListener("resize", onResize); onResize = null; }
   if (onKey) { window.removeEventListener("keydown", onKey); onKey = null; }
   if (onMsg) { window.removeEventListener("message", onMsg); onMsg = null; }
+  if (onTheme) { window.removeEventListener("ml-theme", onTheme); onTheme = null; }
   menuOpen = false;
   r.querySelector(".ml-wikiback")?.classList.remove("on");
   r.querySelector(".ml-wikipanel")?.classList.remove("on");
