@@ -736,7 +736,10 @@ function isoScene(cells, images, scale = 2) {
   const draws = [];
   for (const cell of cells) {
     const lvl = cell.lvl ?? 0;
-    for (let i = 0; i < lvl; i++) draws.push({ ...cell, z: i, img: cell.img });
+    // `stack[i]` overrides the tile drawn at face level i (the game stacks
+    // ONE tile per level) — that's how a tile can sit mid-wall with a
+    // different tile above AND below it.
+    for (let i = 0; i < lvl; i++) draws.push({ ...cell, z: i, img: cell.stack?.[i] ?? cell.img });
     draws.push({ ...cell, z: lvl, img: cell.top ?? cell.img });
   }
   draws.sort((a, b) => (a.c + a.r) - (b.c + b.r) || a.r - b.r || a.z - b.z);
@@ -789,12 +792,19 @@ function viewTileInstance(typeId, rel) {
   const grid3 = (centre, ring) => [
     ...[0, 1, 2].flatMap((r) => [0, 1, 2].map((c) => ({ c, r, img: c === 1 && r === 1 ? centre : ring }))),
   ];
+  // Cliff corner: the front stack plus one arm up-left (c−1) and one
+  // up-right (r−1) on screen — three 3-high stacks meeting in a V.
+  const vCliff = [{ c: 1, r: 1 }, { c: 0, r: 1 }, { c: 1, r: 0 }]
+    .map((p) => ({ ...p, lvl: 2, img: T, top: T }));
+  // Mid-wall: 3 cells along the run × 3 face levels, the tile dead centre so
+  // clean base sits above, below, both sides and on every diagonal.
+  const wallStack = (mid) => (mid ? [B, T, B] : [B, B, B]);
   const scenes = [
     ["On clean ground", "The tile surrounded by the type's clean base — how it sits in open terrain.", grid3(T, B)],
     ["Tiled with itself", "A 3×3 field of only this tile — repetition and seams.", grid3(T, T)],
-    ["Stacked — cliff of itself", "The tile stacked on itself (elevation 2 + top) — the wall it builds.", [{ c: 0, r: 0, lvl: 2, img: T, top: T }]],
-    ["In a wall — face ↘", "A clean-base wall running down-right with this tile mid-run.", [0, 1, 2].map((c) => ({ c, r: 0, lvl: 2, img: c === 1 ? T : B, top: c === 1 ? T : B }))],
-    ["In a wall — face ↙", "A clean-base wall running down-left with this tile mid-run.", [0, 1, 2].map((r) => ({ c: 0, r, lvl: 2, img: r === 1 ? T : B, top: r === 1 ? T : B }))],
+    ["Stacked — cliff of itself", "Three 3-high stacks of only this tile meeting at a corner — the cliff and the corner it builds.", vCliff],
+    ["In a wall — face ↘", "A clean-base wall running down-right, the tile dead centre — base tile above, below and to both sides.", [0, 1, 2].map((c) => ({ c, r: 0, lvl: 3, img: B, stack: wallStack(c === 1), top: B }))],
+    ["In a wall — face ↙", "The same wall running down-left — the other cliff face.", [0, 1, 2].map((r) => ({ c: 0, r, lvl: 3, img: B, stack: wallStack(r === 1), top: B }))],
   ];
   const sceneBox = h("div", { class: "iso-scenes" },
     ...scenes.map(([title, hint]) => h("div", { class: "iso-scene" },
