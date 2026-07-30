@@ -243,11 +243,17 @@ function makePlayer(entity, kind) {
   // rare oversized pose can overflow into the stage's own scroll rather than
   // inflating every page. `max-width:100%` keeps it inside narrow screens.
   const stageKind = kind === "monster" ? "monsters" : kind === "character" ? "characters" : "objects";
-  function sizeStage(s) {
+  function sizeStage() {
     const box = state.data.artBox?.[stageKind];
     if (!box) return;
-    stage.style.width = `${box[0] * s + 18}px`;   // +18 = padding + border (border-box)
-    stage.style.height = `${box[1] * s + 18}px`;
+    // The stage keeps its DEFAULT size whatever zoom is picked, and only
+    // grows when a zoomed sprite genuinely will not fit (maintainer
+    // 2026-07-30) — so 1x/2x/4x change the creature, not the layout.
+    const base = state.data.artScale || 2;
+    const sw = Math.max(box[0] * base, canvas.width);
+    const sh = Math.max(box[1] * base, canvas.height);
+    stage.style.width = `${sw + 18}px`;   // +18 = padding + border (border-box)
+    stage.style.height = `${sh + 18}px`;
   }
   const ctx = canvas.getContext("2d");
   const frameNo = h("span", { class: "frame-no" });
@@ -288,7 +294,6 @@ function makePlayer(entity, kind) {
     const fw = clip?.fw ?? entity.frameW ?? 64, fh = clip?.fh ?? entity.frameH ?? 64;
     const bb = clip?.bb ?? [0, 0, fw, fh];   // content box in frame px
     const s = cur.zoom || state.data.artScale || 2;
-    sizeStage(s);
     const cw = Math.max(1, bb[2] - bb[0]), ch = Math.max(1, bb[3] - bb[1]);
     // A hovering creature (butterfly_dragon) floats hoverPx above the ground,
     // so its shadow sits that much BELOW its foot line.
@@ -301,6 +306,7 @@ function makePlayer(entity, kind) {
     if (canvas.width !== wantW || canvas.height !== wantH) {
       canvas.width = wantW; canvas.height = wantH;
     }
+    sizeStage();   // after the canvas is sized — the stage only grows for it
     ctx.imageSmoothingEnabled = false;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (!clip) { frameNo.textContent = "—"; return; }

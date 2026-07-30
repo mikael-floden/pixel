@@ -125,6 +125,11 @@ canvas — carries that size, so a rare oversized pose can use the stage's own
 scroll instead of inflating every page, and `max-width:100%` keeps it inside
 a phone (measured 331×396 there, identical on all 24 monster pages).
 
+Picking a zoom (1× 2× 4×) changes the **creature, not the layout**: the stage
+keeps its default size and only grows when the zoomed sprite genuinely will
+not fit (measured: the frog holds 331×396 at every zoom; the mammoth grows
+only at 4×, where its pose is 410×542).
+
 ## Usage stats — measured on the DEFAULT world
 
 "Is this actually in the game?" is answered against the world players really
