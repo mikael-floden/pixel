@@ -82,9 +82,15 @@ function showVersion() {
     "position:fixed;left:50%;transform:translateX(-50%);" +
     "bottom:6px;z-index:50;" +
     "font:600 11px var(--mono, ui-monospace, monospace);letter-spacing:.06em;" +
-    // Plain text, no effects (maintainer 2026-07-30). Visibility comes from
-    // the COLOUR alone: the theme's full ink instead of the old muted grey.
-    "color:var(--ink, #1f1e1a);" +
+    // Plain text, no effects — visibility comes from the COLOUR alone.
+    // A FIXED mid grey, NOT a theme token: three of the four screens the badge
+    // appears on are dark whatever the theme is (title veil and loading screen
+    // are black, the select screen is dark forest art), while in-game it sits
+    // on the HUD. A theme ink flips with the theme, not with what's actually
+    // behind the text, which is how it ended up near-black on black
+    // (maintainer 2026-07-30). This grey is measured to stay legible on every
+    // one of those backdrops.
+    "color:#8f8c83;" +
     "pointer-events:none;user-select:none";
   document.body.appendChild(el);
 }
