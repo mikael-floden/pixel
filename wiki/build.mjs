@@ -121,6 +121,10 @@ function gitSha() {
 
 // ---------------------------------------------------------------- monsters
 function buildMonsters() {
+  // NO GIF PATHS. The viewer draws every animation onto a canvas from the
+  // strips and frames; it has never loaded a .gif, and neither has the game.
+  // Emitting the paths anyway cost 59 KB of the data.json every reader
+  // downloads, for a field with no consumer (checked 2026-07-31).
   const base = join(ROOT, "monsters");
   if (!isDir(base)) return null;
   const roster = readJson(join(base, "config", "roster.json"))?.monsters ?? [];
@@ -165,7 +169,6 @@ function buildMonsters() {
           fh: dims ? dims.h : frameH,
           framesDir: `monsters/${id}/animations/${folder}/${dir}`,
           ...frameNaming(frameDir),
-          gif: isFile(join(ROOT, `monsters/${id}/animations/${folder}__${dir}.gif`)) ? `monsters/${id}/animations/${folder}__${dir}.gif` : null,
         };
       }
       if (Object.keys(dirs).length) anims[state] = { folder, fallback: overrides[state] && overrides[state] !== state ? overrides[state] : null, dirs };
@@ -236,7 +239,7 @@ function buildCharacters() {
         const frames = listFiles(frameDir, artRe("\\d+")).length;
         if (frames) dirs[dir] = { frames, framesDir: `characters2/humans/${id}/animations/${folder}/${dir}`, ...frameNaming(frameDir) };
       }
-      if (Object.keys(dirs).length) anims[state] = { folder, dirs, gif: isFile(join(base, id, "animations", folder, "preview.gif")) ? `characters2/humans/${id}/animations/${folder}/preview.gif` : null };
+      if (Object.keys(dirs).length) anims[state] = { folder, dirs };
     }
     chars.push({
       id,
