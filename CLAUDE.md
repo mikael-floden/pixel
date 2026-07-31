@@ -22,8 +22,9 @@ do not add domain-specific files to the repo root.
 - `items/` — game items via PixelLab (its own agent; the item TYPE tags on
   PixelLab's objects store — `MISC`, `SOUL`, `CONSUMABLE`, `SWORD`, `BOW`,
   `WAND`, `ARMOR` — are the ground truth; one folder per item holding
-  `item.json` + `sprite.png`, rolled up into `items/viewer_data.json`; sync
-  only, no generation loop). See `items/README.md`.
+  `item.json` + `sprite.webp` (lossless WebP, 67% under PNG and pixel-identical),
+  rolled up into `items/viewer_data.json`; sync only, no generation loop). See
+  `items/README.md`.
 - `lore/` — the game's story (its own agent; no generation, no API). Owns the
   **red line** (`lore/RED_LINE.md`, the GM-facing backbone everything hangs
   off), player-facing **chapters**, and per-entity lore for every other
