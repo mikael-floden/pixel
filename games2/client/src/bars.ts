@@ -19,6 +19,8 @@
  * / setLevel(n) are the seams the real player state plugs into later.
  */
 
+import { withV } from "./assetver";
+
 type Kind = "hp" | "ep" | "xp";
 interface Bar {
   fill: HTMLElement;
@@ -85,7 +87,7 @@ export function mountBars() {
   goldNumEl.className = "ml-gold-num";
   const goldIcon = document.createElement("img");
   goldIcon.className = "ml-gold-icon";
-  goldIcon.src = "/ui2/gold-icon.png";
+  goldIcon.src = withV("/ui2/gold-icon.webp");
   goldIcon.alt = "";
   goldIcon.draggable = false;
   goldRow.append(goldNumEl, goldIcon); // amount left, icon right (both flush right)

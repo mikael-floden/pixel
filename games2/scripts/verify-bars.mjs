@@ -134,7 +134,8 @@ try {
   g.exists ? ok("gold row present under the right group") : fail("no gold row");
   if (g.exists) {
     g.numText === "0" ? ok(`gold amount defaults to "0"`) : fail(`gold amount "${g.numText}" (want "0")`);
-    /gold-icon\.png/.test(g.iconSrc) && g.iconLoaded ? ok(`gold icon loaded (${g.iconSrc})`) : fail(`gold icon missing/broken (src="${g.iconSrc}" loaded=${g.iconLoaded})`);
+    // WebP since 2026-07-31 (lossless — same pixels, ~40% of the bytes).
+    /gold-icon\.webp/.test(g.iconSrc) && g.iconLoaded ? ok(`gold icon loaded (${g.iconSrc})`) : fail(`gold icon missing/broken (src="${g.iconSrc}" loaded=${g.iconLoaded})`);
     // right edge lines up with the XP bar (both right-aligned to the same edge)
     Math.abs(g.goldRow.r - g.xpRow.r) <= 2 ? ok(`gold row right-aligned to XP (${g.goldRow.r} ≈ ${g.xpRow.r})`) : fail(`gold row right edge ${g.goldRow.r} vs XP ${g.xpRow.r}`);
     // icon at the far right, amount just to its left (both flush right)

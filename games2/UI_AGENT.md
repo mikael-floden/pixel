@@ -50,13 +50,23 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
 - `client/src/uiscale.ts` — LEGACY compensating zoom; only `loading.ts` and
   WorldScene's reconnect toast still consume it. The wiki-style UI proper is
   plain responsive CSS with NO zoom compensation.
-- `client/public/ui/`, `client/public/ui2/`, `client/public/logo*.png`,
-  `client/public/icons/`, `client/public/manifest.webmanifest` — UI art +
-  PWA shell.
-- UI build scripts: `scripts/build-ui-tiles.mjs`, `scripts/build-pwa-icons.py`
-  (the `/ui2/*` kit PNGs are no longer consumed at runtime — the 2026-07-30
-  wiki-style remake replaced them with CSS; only the baked tab icons and the
-  gold icon remain in use as pixel art).
+- `client/public/ui2/`, `client/public/logo*.webp`, `client/public/icons/`,
+  `client/public/manifest.webmanifest` — UI art + PWA shell.
+  **UI art is lossless WebP** (project default, 2026-07-31). `public/ui2/`
+  now holds ONLY what the runtime loads: `select-bg`, `gold-icon` and the
+  seven tab icons. The 4.7 MB of retired UI-kit bakes (frame/stone/plate/
+  kit-*/select-frame/select2/select3 and all of `public/ui/`) was DELETED —
+  the wiki-style remake stopped loading it in 2026-07-30 and it was pure
+  deploy weight; the maintainer's SOURCE art is untouched in
+  `client/ui-src/`, and git has the bakes.
+  EXCEPTION, do not "fix": `public/icons/*.png` stay PNG. iOS ignores a WebP
+  `apple-touch-icon` and manifest-icon WebP support isn't universal — a
+  ~236 KB saving that would cost the install icon on iPhones, and nobody
+  downloads them during play.
+- UI build scripts: `scripts/build-ui-tiles.mjs`, `scripts/build-pwa-icons.py`,
+  `scripts/bake-tab-icons.py` (emits `.webp` — convert at the SOURCE, never
+  as a build step: a Dockerfile conversion would add minutes to every deploy
+  and bust the layer cache).
 - UI verify scripts: `scripts/verify-select.mjs`, `scripts/verify-chat.mjs`,
   `scripts/verify-mobile.mjs`.
 - This file.

@@ -18,6 +18,7 @@
 import { mountGamepadStick } from "./gamepad";
 import { mountBars } from "./bars";
 import { mountTheme, toggleTheme, currentTheme } from "./theme";
+import { withV } from "./assetver";
 import { gameAudio } from "../../composer/index";
 import { MAX_CHAT_LEN } from "@nangijala/shared";
 
@@ -209,7 +210,7 @@ export class HudBar {
       // icon only — no text label (maintainer 2026-07-18: "icon is enough");
       // the label lives on as the accessible name
       const icon = mk("img", "ml-tab-icon") as HTMLImageElement;
-      icon.src = `/ui2/icon-${t.id}.png`;
+      icon.src = withV(`/ui2/icon-${t.id}.webp`);
       icon.alt = "";
       icon.draggable = false;
       // TRUE pixel scale (maintainer 2026-07-30: "icons isn't rendered in

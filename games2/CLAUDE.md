@@ -1404,21 +1404,23 @@ visible head/shoulders are ABOVE the surface).
   cache with ~zero art requests; a new deploy = new sha = new URLs = fresh
   downloads — stale-cache-proof by construction, sw.js still caches nothing.
   Unversioned requests (dev, old clients) behave exactly as before.
-  (3) THE TWO LOGOS (`public/logo-load.png`, `public/logo.png`) are the
-  heaviest bytes on the critical path and were the last unstamped ones — they
-  now go through `withV()` too (select.ts / loading.ts), so a repeat visit
-  inside a deploy costs ZERO requests instead of two blocking revalidation
-  round-trips before the loading screen can paint. They were also RECOMPRESSED
-  LOSSLESSLY, 1.26 MB → 1.08 MB (−12.4%): the art has strictly BINARY alpha
-  (measured: not one partially-transparent pixel) and every transparent pixel
-  is (0,0,0), a colour no opaque pixel uses — so the entire alpha plane is
-  replaced by a `tRNS` chunk on an RGB PNG. Verified pixel-identical by
-  decoding both and comparing, and verified in Chrome (the forest shows
-  through). What did NOT work, so nobody re-tries it: the art LOOKS like ~6x
-  pixel art but was upscaled SMOOTHLY, so re-baking it at its native 181x105
-  grid (29 KB!) costs a mean error of 22/255 — it is a soft render, not a
-  clean pixel grid, and 151k distinct colours confirm it. Lossless WebP would
-  save a further 15% (922 KB) if the maintainer ever wants the format change.
+  (3) **UI ART IS LOSSLESS WebP** (maintainer 2026-07-31, project default)
+  and every piece of it is `withV()`-stamped. VP8L is bit-exact, so this is
+  the same art — each conversion was verified by decoding back to RGBA and
+  comparing arrays (`exact=True`, which also preserves the RGB under
+  transparent pixels that libwebp is otherwise free to rewrite). The two
+  logos went 1.26 MB → 922 KB; `select-bg` 1373 → 1009 KB; the tab icons and
+  gold nugget to ~38% each. Stamping matters as much as the bytes: unstamped,
+  every one of them cost a blocking revalidation round-trip on EVERY visit
+  before the loading screen could paint. `scripts/bake-tab-icons.py` emits
+  WebP — the rule for every domain is CONVERT AT THE SOURCE, never in the
+  Dockerfile (that would add minutes per deploy and bust the layer cache).
+  Two findings worth not re-deriving: PNG-8 palette is useless here (only 1
+  of 240 sampled sprites has ≤256 colours), and the logo LOOKS like 6x pixel
+  art but was upscaled SMOOTHLY — re-baking it at its native 181x105 grid
+  would be 29 KB but costs a mean error of 22/255, so it is a soft render,
+  not a clean pixel grid. `public/icons/*.png` deliberately STAY PNG (iOS
+  ignores a WebP apple-touch-icon).
 - **PWA**: `public/manifest.webmanifest` (display: fullscreen — installed app
   has no address bar; orientation: portrait-primary), `public/sw.js`
   (passthrough only, caches NOTHING — this repo fought stale-deploy bugs; the

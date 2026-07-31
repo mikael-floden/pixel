@@ -104,7 +104,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     const logoImg = overlay.querySelector<HTMLImageElement>(".ml-logo")!;
     logoImg.style.opacity = "0";
     const bgImg = new Image();
-    bgImg.src = "/ui2/select-bg.png";
+    bgImg.src = withV("/ui2/select-bg.webp");
     const decode = (im?: HTMLImageElement) => (im ? im.decode().catch(() => {}) : Promise.resolve());
     const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
     const twoFrames = (fn: () => void) => requestAnimationFrame(() => requestAnimationFrame(fn));
@@ -432,7 +432,7 @@ function injectStyles() {
   .ml-overlay{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;
     overflow:auto;background:#0d101c;font:14px/1.45 var(--sans);color:var(--ink);
     --selw:min(400px, 100vw - 56px)}
-  .ml-overlay{background-image:linear-gradient(rgba(13,16,28,.28),rgba(13,16,28,.28)),url(/ui2/select-bg.png);
+  .ml-overlay{background-image:linear-gradient(rgba(13,16,28,.28),rgba(13,16,28,.28)),url(${withV("/ui2/select-bg.webp")});
     background-size:auto,cover;background-position:center;background-repeat:repeat,no-repeat;image-rendering:pixelated}
   .ml-panel{width:var(--selw);margin:auto;padding:12px 0 132px;text-align:center;
     display:flex;flex-direction:column;align-items:center;gap:14px}
