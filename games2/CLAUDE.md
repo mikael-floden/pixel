@@ -68,9 +68,20 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
     every deploy and bust the layer cache. Convert once, at the source, commit
     the WebP.
   - Gate: `server/test/imagelib.test.ts` (in `npm test`) with committed
-    PNG+WebP fixture pairs. The one asset still named directly in game code is
-    the campfire (`objects/` ships no manifest) — `WorldScene` queues the png
-    stem and falls back to `.webp` on 404.
+    PNG+WebP fixture pairs. TWO assets are still named directly in game code,
+    and both queue the png stem and re-queue `.webp` on 404: the campfire strip
+    (`objects/` ships no manifest, `WorldScene`) and the world minimap
+    (`MapPreviewScene`). Everything else resolves through data.
+  - **Serving**: prod's `express.static` knows webp from its own mime db, but
+    the DEV middleware in `client/vite.config.ts` has a HAND-WRITTEN extension
+    table — a format missing from it is served `application/octet-stream` and
+    the browser refuses the image. `.webp` is in it now; add any future format
+    there too. That middleware also honours `ASSETS_ROOT` (as prod and the
+    builders always did), so a staged conversion can be driven in a browser
+    before the art domain commits it.
+  - The world PICKER's thumbnail (`build-worlds.mjs`) probes `webp` before
+    `png` per stem, so a `maps2` world keeps its picture whether it has
+    converted, hasn't, or is mid-conversion with both on disk.
 
 ## Isometric world
 

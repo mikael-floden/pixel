@@ -4,13 +4,22 @@ import { extname, join, normalize, resolve } from "node:path";
 
 // The game lives at pixel/games/nangijala/client; the art domains are siblings
 // at the repo root (two levels up): characters/, tiles/, maps/, objects/.
-const REPO_ROOT = resolve(__dirname, "../..");
+// ASSETS_ROOT overrides it — the same env var prod (server/src/index.ts) and
+// the manifest builders already honour. Dev had no override, so an alternate
+// art tree (e.g. a PNG->WebP conversion staged before a domain commits it)
+// could not be tried in the browser.
+const REPO_ROOT = process.env.ASSETS_ROOT || resolve(__dirname, "../..");
 const ASSET_DOMAINS = new Set([
   "characters", "tiles", "maps", "objects", "characters2", "tiles2", "maps2",
   "sounds", "music", "monsters", "items", "lore", "wiki", "live",
 ]);
 const TYPES: Record<string, string> = {
   ".png": "image/png",
+  // The art domains are migrating PNG -> lossless WebP. Prod serves /assets
+  // through express.static (its mime db already knows webp); THIS dev
+  // middleware has its own table, so without the entry every converted sprite
+  // is served as application/octet-stream.
+  ".webp": "image/webp",
   ".json": "application/json",
   ".gif": "image/gif",
   ".wav": "audio/wav",

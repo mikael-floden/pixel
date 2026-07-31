@@ -6,12 +6,20 @@
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+// Thumbnails may ship as PNG or lossless WebP (the art domains are migrating).
+import { IMG_EXTS } from "./imagelib.mjs";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const GAME_ROOT = join(SCRIPT_DIR, "..");
 const ASSETS_ROOT = process.env.ASSETS_ROOT || join(SCRIPT_DIR, "..", "..");
 const WORLDS_DIR = join(ASSETS_ROOT, "maps2", "worlds");
 const OUT = join(GAME_ROOT, "client", "public", "worlds.json");
+
+// Thumbnail stems the maps agent may render, and the extensions to try for
+// each. WebP wins when a world ships both (a conversion in flight); a PNG-only
+// world is unaffected, so the picker keeps its thumbnail either way.
+const THUMB_STEMS = ["minimap", "overview", "preview", "demo"];
+const THUMB_EXTS = ["webp", ...IMG_EXTS.filter((e) => e !== "webp")];
 
 // A pretty label from a dir name: ring_test → "Ring Test".
 function label(name) {
@@ -43,7 +51,10 @@ function scan() {
       continue; // unparseable → skip
     }
     // A thumbnail if the maps agent rendered one (served under /assets).
-    const img = firstExisting(dir, ["minimap.png", "overview.png", "preview.png", "demo.png"]);
+    const img = firstExisting(
+      dir,
+      THUMB_STEMS.flatMap((stem) => THUMB_EXTS.map((e) => `${stem}.${e}`)),
+    );
     out.push({
       name,
       label: label(name),

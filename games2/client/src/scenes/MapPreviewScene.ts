@@ -7,6 +7,8 @@ import { World } from "../maps";
  * agent's pre-rendered minimap (maps2 world minimap.png). Drag to pan, wheel to
  * zoom.
  */
+const MINIMAP_KEY = "world-minimap";
+
 export class MapPreviewScene extends Phaser.Scene {
   private world!: World;
 
@@ -19,19 +21,28 @@ export class MapPreviewScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("world-minimap", "/assets/maps2/worlds/ring_test/minimap.png");
+    // maps2 may ship the minimap as PNG or lossless WebP (the art domains are
+    // migrating). Queue the png stem and, only if it 404s, the webp one — the
+    // same pattern the campfire strip uses in WorldScene. `create` already
+    // guards on textures.exists, so a total miss just shows the hint text.
+    const stem = "/assets/maps2/worlds/ring_test/minimap";
+    this.load.image(MINIMAP_KEY, `${stem}.png`);
+    this.load.once("loaderror", (f: Phaser.Loader.File) => {
+      if (f.key !== MINIMAP_KEY) return;
+      this.load.image(MINIMAP_KEY, `${stem}.webp`);
+    });
   }
 
   create() {
-    if (!this.textures.exists("world-minimap")) {
-      this.add.text(20, 20, "No minimap available (maps2/worlds/<name>/minimap.png).", {
+    if (!this.textures.exists(MINIMAP_KEY)) {
+      this.add.text(20, 20, "No minimap available (maps2/worlds/<name>/minimap.{png,webp}).", {
         fontFamily: "monospace",
         fontSize: "14px",
         color: "#eef",
       });
       return;
     }
-    const img = this.add.image(0, 0, "world-minimap").setOrigin(0, 0);
+    const img = this.add.image(0, 0, MINIMAP_KEY).setOrigin(0, 0);
     const w = img.width;
     const h = img.height;
 
