@@ -123,17 +123,53 @@ class PixelLabClient:
 
     # -- discovery: the type tag is the ground truth --------------------------
 
+    PAGE = 100  # the API's hard cap (limit > 100 is a 422)
+
+    def _page(self, store, offset, limit=None):
+        r = self._request("GET", f"{store}?limit={limit or self.PAGE}&offset={offset}")
+        if isinstance(r, list):
+            return r, None
+        return (r.get(store) or r.get("items") or []), r.get("total")
+
     def _list_all(self, store="objects"):
-        """Every record in a store, following limit/offset pagination."""
-        items, offset = [], 0
-        while True:
-            r = self._request("GET", f"{store}?limit=100&offset={offset}")
-            batch = r if isinstance(r, list) else r.get(store) or r.get("items") or []
-            items += batch
-            offset += len(batch)
-            total = r.get("total") if isinstance(r, dict) else None
-            if not batch or len(batch) < 100 or (total is not None and offset >= total):
-                return items
+        """Every record in a store, deduped by id.
+
+        PixelLab's limit/offset pagination is NOT stable: consecutive pages can
+        repeat one record and skip another (measured, reproducibly — a
+        218-object store yields only 216 unique ids over three back-to-back
+        pages). Records are ordered by a non-unique key, so a page boundary
+        drops whatever shifted across it.
+
+        That is dangerous here, because sync PRUNES what a listing omits: a
+        silently short listing looks exactly like "the maintainer untagged
+        those items" and deletes their folders. So pages OVERLAP (the offset
+        advances by half a page, then by a third on the retry sweep), ids are
+        deduped, and the result is checked against the server's own `total` —
+        an incomplete listing RAISES instead of being returned.
+        """
+        seen, total = {}, None
+        for stride in (self.PAGE // 2, self.PAGE // 3):
+            offset = 0
+            while True:
+                batch, t = self._page(store, offset)
+                if t is not None:
+                    total = t
+                for it in batch:
+                    if it.get("id"):
+                        seen[it["id"]] = it
+                if not batch:
+                    break
+                offset += stride
+                if total is not None and offset >= total:
+                    break
+            if total is None or len(seen) >= total:
+                break
+        if total is not None and len(seen) < total:
+            raise PixelLabError(
+                f"{store}: listed only {len(seen)} of {total} records — the API's "
+                f"pagination is dropping rows. Refusing to return a short list: "
+                f"sync prunes what a listing omits.")
+        return list(seen.values())
 
     def tagged_items(self, type_tags):
         """Every object carrying one of `type_tags` ->

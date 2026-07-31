@@ -39,8 +39,8 @@ import shutil
 
 import feedback
 import mirror
-from mirror import (CONFIG_DIR, ROOT, item_dir, iter_manifests, load_types,
-                    now_iso, read_manifest)
+from mirror import (CONFIG_DIR, ROOT, SPRITE_FILE, item_dir, iter_manifests,
+                    load_types, now_iso, read_manifest)
 from pixellab_client import PixelLabClient
 
 ROSTER = os.path.join(CONFIG_DIR, "roster.json")
@@ -229,8 +229,8 @@ def verify(metas, types):
                 problems.append(f"{iid}: {m['type']} items are all named {shared!r}, not {name!r}")
         elif name:
             by_name.setdefault(name.lower(), []).append(iid)
-        if not os.path.exists(os.path.join(item_dir(iid), "sprite.png")):
-            problems.append(f"{iid}: sprite.png missing")
+        if not os.path.exists(os.path.join(item_dir(iid), SPRITE_FILE)):
+            problems.append(f"{iid}: {SPRITE_FILE} missing")
         if m.get("rarity") not in types["rarities"]:
             problems.append(f"{iid}: unknown rarity {m.get('rarity')!r}")
         v = m.get("value")
@@ -254,7 +254,14 @@ def verify(metas, types):
 
 # --- orchestration ------------------------------------------------------------
 
-def sync(client, fresh=False, dry_run=False, only=None, use_feedback=True):
+# Pruning deletes committed art, so a discovery that suddenly reports many
+# items untagged is treated as a fault (a partial listing, a half-applied tag
+# edit) and stops the run — unless the caller says the loss is real.
+MASS_PRUNE_LIMIT = 5
+
+
+def sync(client, fresh=False, dry_run=False, only=None, use_feedback=True,
+         allow_mass_prune=False):
     types = load_types()
     # The maintainer's verdicts come first: a rejected item must not be
     # re-mirrored by the very run that is supposed to remove it.
@@ -264,6 +271,14 @@ def sync(client, fresh=False, dry_run=False, only=None, use_feedback=True):
     if not roster:
         raise SystemExit("discovery returned NO tagged items — refusing to prune "
                          "everything (is the API reachable / are the tags right?)")
+    lost = len(report["dropped"])
+    if lost > MASS_PRUNE_LIMIT and not allow_mass_prune:
+        raise SystemExit(
+            f"discovery says {lost} items lost their tag at once "
+            f"({', '.join(report['dropped'][:8])}{'...' if lost > 8 else ''}).\n"
+            f"That is more than {MASS_PRUNE_LIMIT}, and pruning deletes committed art, "
+            f"so this run stops instead. Re-run with --allow-mass-prune if the "
+            f"untagging was deliberate.")
     if not dry_run:
         write_roster(roster)
     # Rejected on the wiki: the entry stays in the roster (so a resync cannot
@@ -329,9 +344,11 @@ def main():
     ap.add_argument("--only", help="mirror just this item id (others keep current files)")
     ap.add_argument("--no-feedback", action="store_true",
                     help="skip reading live/feedback/items.json (the wiki's verdicts)")
+    ap.add_argument("--allow-mass-prune", action="store_true",
+                    help=f"permit deleting more than {MASS_PRUNE_LIMIT} items in one run")
     args = ap.parse_args()
     sync(PixelLabClient(), fresh=args.fresh, dry_run=args.dry_run, only=args.only,
-         use_feedback=not args.no_feedback)
+         use_feedback=not args.no_feedback, allow_mass_prune=args.allow_mass_prune)
 
 
 if __name__ == "__main__":
