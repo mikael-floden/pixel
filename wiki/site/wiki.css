@@ -241,7 +241,8 @@ button { font: inherit; cursor: pointer; }
   border-radius: 8px; padding: 4px 8px; line-height: 1.4;
 }
 .thumb-chip b { color: var(--ink); font-variant-numeric: tabular-nums; }
-.card .thumb-chip { margin: 8px 0 2px; }
+/* Tight against the artwork above it (maintainer 2026-07-31). */
+.card .thumb-chip { margin: 2px 0 4px; }
 .rarity-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
 
 /* ---- loot: what drops what ----
@@ -275,8 +276,17 @@ button { font: inherit; cursor: pointer; }
   min-width: 52px; text-align: right; white-space: nowrap;
 }
 .pill.soul { background: var(--accent-soft); color: var(--accent-ink); }
-.pill.gold { background: var(--star); color: #2a2205; }
-:root[data-theme="dark"] .pill.gold, html:not([data-theme]) .pill.gold { color: #241d04; }
+/* What it sells for: the coin and the number, nothing else. The coin is
+   authored 32x32 at 1x, so it is drawn at 32 and never resampled. */
+.gold-tag { display: inline-flex; align-items: center; gap: 2px; }
+.gold-coin { flex: none; image-rendering: pixelated; }
+.card .thumb img.gold-coin, .gold-tag .gold-coin { max-width: none; max-height: none; }
+.gold-tag b { font-size: 14px; font-variant-numeric: tabular-nums; }
+/* Browser controls: filter by type, sort by price or name, flip direction. */
+.item-tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 12px 0 4px; }
+.item-tools .seg button { display: inline-flex; align-items: center; justify-content: center; min-height: 34px; }
+.item-tools .dir-btn { min-width: 38px; font-size: 15px; line-height: 1; }
+.item-tools .count-note { font-size: 12.5px; margin-left: auto; font-variant-numeric: tabular-nums; }
 /* Not dropped by anything yet — the normal resting state, dimmed not warned. */
 .card.dim { opacity: 0.62; }
 .card.dim:hover { opacity: 1; }

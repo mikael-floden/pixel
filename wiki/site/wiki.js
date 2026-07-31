@@ -649,31 +649,34 @@ const rarityOf = (it) => state.data.itemRarities?.[it?.rarity] ?? null;
  *  COUNT, never off soulOf alone: that is null for "unbound" AND for the
  *  "bound twice" the data must never contain but might. */
 function itemChip(it) {
-  const src = itemSources(it);
-  if (oneToOne(it)) {
-    if (src.length === 1) {
-      const m = monsterById(src[0].monster);
-      return h("div", { class: "thumb-chip", title: `The soul of ${m?.name ?? src[0].monster}` },
-        "Soul of ", h("b", {}, m?.name ?? src[0].monster));
-    }
-    if (src.length === 0) {
-      return h("div", { class: "thumb-chip", title: "No creature in Nangijala carries this soul yet — it waits for one" }, "Unbound");
-    }
-    return h("div", { class: "thumb-chip", title: src.map((s) => monsterById(s.monster)?.name ?? s.monster).join(", ") },
-      "Soul of ", h("b", {}, String(src.length)), " creatures");
-  }
+  if (oneToOne(it)) return h("div", { class: "thumb-chip" }, soulChip(it, true));
   const r = rarityOf(it);
   return h("div", { class: "thumb-chip", title: r ? `Sells in the ${it.rarity} band` : "" },
     r ? h("span", { class: "rarity-dot", style: `background:${r.color}` }) : null,
     it.rarity ? titleCaseWord(it.rarity) : (state.data.itemTypes?.[it.type]?.label ?? "Item"));
 }
+/** The creature a 1-to-1 stone belongs to. ALWAYS its name — a Soulstone
+ *  carries no other identity. Bare = inline pill; `plain` = chip contents. */
+function soulChip(it, plain = false) {
+  const src = itemSources(it);
+  const names = src.map((s) => monsterById(s.monster)?.name ?? s.monster);
+  const wrap = (title, ...kids) => plain
+    ? h("span", { title }, ...kids)
+    : h("span", { class: "pill soul", title }, ...kids);
+  if (names.length === 1) return wrap(`The soul of ${names[0]}`, names[0]);
+  if (names.length === 0) return wrap("No creature carries this soul", "Unbound");
+  return wrap(names.join(", "), names.join(" · "));
+}
 const titleCaseWord = (s) => String(s).charAt(0).toUpperCase() + String(s).slice(1);
-/** What an item sells for. Always rendered, always one line. */
-function goldPill(it) {
+/** What an item sells for: the maintainer's gold coin and the number, no
+ *  sentence around it (2026-07-31 — "this is more clean and says it all").
+ *  The coin is authored 32×32 at 1×, so it is drawn at 32 and never resampled. */
+function goldTag(it) {
   const v = Number(it?.value);
-  return Number.isFinite(v) && v > 0
-    ? h("span", { class: "pill gold" }, `Sells for ${v} gold`)
-    : h("span", { class: "pill" }, "No shop value");
+  if (!Number.isFinite(v) || v <= 0) return null;
+  return h("span", { class: "gold-tag", title: `Sells for ${v} gold` },
+    h("img", { class: "gold-coin", src: "icons/gold.png", alt: "gold", width: "32", height: "32" }),
+    h("b", {}, String(v)));
 }
 /** An item's sprite at a WHOLE multiple of its authored 48px (never resampled). */
 function itemSprite(it, size = 48) {
@@ -700,14 +703,17 @@ function dropsPanel(monsterId) {
   return h("div", { class: "panel" },
     h("div", { class: "panel-title" }, "Drops", h("span", { class: "pill" }, String(rows.length))),
     h("div", { class: "drop-list" }, ...rows.map(({ l, it }) => {
-      const soul = it && oneToOne(it);
+      // A soul stone is named "Soulstone" everywhere, so its creature rides
+      // beside it even here, on that very creature's own page (maintainer
+      // 2026-07-31) — the row must stay readable wherever it is quoted.
+      const bound = it && oneToOne(it) ? soulChip(it) : null;
       return h("a", { class: "drop-row", href: it ? `#/items/${it.id}` : "#/items" },
         itemSprite(it),
         h("span", { class: "drop-name" },
           it?.name ?? l.item,
-          soul ? h("span", { class: "pill soul" }, "its soul") : null,
+          bound,
           !it ? h("span", { class: "pill warn" }, "unknown item") : null),
-        h("span", { class: "drop-worth muted" }, it && it.value ? `${it.value} g` : ""),
+        h("span", { class: "drop-worth" }, goldTag(it) ?? ""),
         h("span", { class: "drop-pct" }, pct(l.chance) ?? "—"));
     })));
 }
@@ -718,10 +724,10 @@ function droppedByPanel(it) {
   const soul = oneToOne(it);
   if (!src.length) {
     return h("div", { class: "panel" },
-      h("div", { class: "panel-title" }, "Dropped by", h("span", { class: "pill" }, "none yet")),
+      h("div", { class: "panel-title" }, "Dropped by", h("span", { class: "pill" }, "none")),
       h("p", { class: "muted" }, soul
-        ? "This stone has not found its creature yet. Unused is the normal resting state here — content is made ahead of the world that uses it."
-        : "No creature drops this yet. Unused is the normal resting state here — content is made ahead of the world that uses it."));
+        ? "No creature in Nangijala carries this soul."
+        : "Nothing in Nangijala is known to carry this."));
   }
   return h("div", { class: "panel" },
     h("div", { class: "panel-title" }, "Dropped by",
@@ -1320,36 +1326,74 @@ const itemLabel = (it) => {
   return src.length === 1 ? `${it.name} — ${monsterById(src[0].monster)?.name ?? src[0].monster}` : `${it.name} — unbound`;
 };
 const itemBlurb = (it) => it.description ?? "";
+// The Items browser's own view state: which type, and how it is sorted.
+// Kept across renders so coming back from an item keeps your place.
+const itemView = { type: "", sort: "value", dir: -1 };
 function viewItems() {
   const all = itemOrder();
-  const list = all.filter((it) => matches(state.query, it.id, it.name, it.description, it.category, it.rarity, itemLabel(it)));
-  const unused = all.filter((it) => !itemSources(it).length).length;
   if (!all.length) {
     return h("div", {}, sectionHead("items"),
       h("div", { class: "panel" },
         h("div", { class: "panel-title" }, "No items yet"),
         h("p", { class: "muted" }, "Nothing has been forged yet — loot appears here as it is made.")));
   }
+  // Only offer types that actually HAVE items — five of the seven are
+  // contracted with no art yet, and an empty filter is a dead end.
+  const present = Object.keys(state.data.itemTypes ?? {}).filter((t) => all.some((it) => it.type === t));
+  if (itemView.type && !present.includes(itemView.type)) itemView.type = "";
+  const list = all
+    .filter((it) => !itemView.type || it.type === itemView.type)
+    .filter((it) => matches(state.query, it.id, it.name, it.description, it.category, it.rarity, itemLabel(it)))
+    .sort((a, b) => itemView.dir * (itemView.sort === "name"
+      ? String(a.name).localeCompare(String(b.name)) || String(a.id).localeCompare(String(b.id))
+      : (Number(a.value) || 0) - (Number(b.value) || 0) || String(a.name).localeCompare(String(b.name))));
+
+  const typeSeg = h("span", { class: "seg" });
+  for (const [t, text] of [["", "All"], ...present.map((t) => [t, state.data.itemTypes[t].label ?? t])]) {
+    const b = h("button", { title: t ? state.data.itemTypes[t].label : "Everything" }, text);
+    if (t === itemView.type) b.classList.add("on");
+    b.addEventListener("click", () => { itemView.type = t; route(); });
+    typeSeg.append(b);
+  }
+  // Sort control: icons, not words — a coin for price, letters for name,
+  // and one arrow that flips the direction (maintainer 2026-07-31).
+  const sortSeg = h("span", { class: "seg" });
+  for (const [s, glyph, title] of [
+    ["value", null, "Sort by what it sells for"],
+    ["name", "A–Z", "Sort by name"],
+  ]) {
+    const b = h("button", { title }, s === "value"
+      ? h("img", { class: "gold-coin", src: "icons/gold.png", alt: "price", width: "32", height: "32" })
+      : glyph);
+    if (s === itemView.sort) b.classList.add("on");
+    b.addEventListener("click", () => { itemView.sort = s; route(); });
+    sortSeg.append(b);
+  }
+  const dirBtn = h("button", { class: "ghost-btn dir-btn", title: itemView.dir < 0
+    ? (itemView.sort === "name" ? "Z to A" : "Most valuable first")
+    : (itemView.sort === "name" ? "A to Z" : "Least valuable first") },
+    itemView.dir < 0 ? "↓" : "↑");
+  dirBtn.addEventListener("click", () => { itemView.dir = -itemView.dir; route(); });
+
   return h("div", {},
     sectionHead("items"),
     h("p", { class: "muted" }, state.admin
       ? `${all.length} items from the items agent. Click one to see what drops it, what it sells for, and to rate or remove it.`
       : "Everything you can pick up, sell or merge — and the creatures that carry it."),
-    // Unused is the NORMAL resting state in this repo: content is made ahead
-    // of the world that uses it (maintainer 2026-07-31). Say so plainly
-    // instead of dressing it as a warning.
-    unused ? h("p", { class: "muted" },
-      h("span", { class: "pill" }, `${unused} of ${all.length} not dropped by anything yet`)) : null,
+    h("div", { class: "item-tools" }, typeSeg, sortSeg, dirBtn,
+      h("span", { class: "muted count-note" }, String(list.length))),
     h("div", { class: "grid" }, ...list.map((it) => {
       const src = itemSources(it);
       return h("a", { class: `card${src.length ? "" : " dim"}`, href: `#/items/${it.id}` },
         h("div", { class: "thumb checker" }, itemSprite(it, 96)),
         itemChip(it),
         h("div", { class: "card-name" }, it.name),
-        h("div", { class: "card-sub" }, goldPill(it)),
-        h("div", { class: "card-sub" }, src.length
-          ? `${src.length === 1 ? "1 creature" : `${src.length} creatures`} drop${src.length === 1 ? "s" : ""} it`
-          : "not dropped yet"),
+        goldTag(it) ? h("div", { class: "card-sub" }, goldTag(it)) : null,
+        // Nothing at all when nothing drops it — silence reads better
+        // than "not dropped yet" (maintainer 2026-07-31).
+        src.length
+          ? h("div", { class: "card-sub" }, `Dropped by ${src.length} ${src.length === 1 ? "creature" : "creatures"}`)
+          : null,
         h("div", { class: "card-badges" }, ...entityBadge("items", it.path)));
     })));
 }
@@ -1366,23 +1410,16 @@ function viewItem(id) {
         itemChip(it)),
       h("div", { class: "meta" },
         h("h1", {}, it.name),
-        h("div", { class: "spawn-line" }, goldPill(it)),
+        goldTag(it) ? h("div", { class: "spawn-line" }, goldTag(it)) : null,
         // Pipeline facts stay behind the admin flag, as everywhere else.
         state.admin ? h("p", { class: "muted" },
           `${it.id} · ${it.type}${type?.label ? ` (${type.label})` : ""}${it.category ? ` · ${it.category}` : ""}${it.rarity ? ` · ${it.rarity}` : ""}${it.stackable ? ` · stacks to ${it.max_stack}` : ""}`) : null,
         // LAST variable-height element in this column — see loreSlot.
         loreSlot(itemBlurb(it), all.map(itemBlurb)),
         feedbackRow("items", it.path))),
-    // What a stone grants when merged — the items agent's own words.
-    it.soul?.power
-      ? h("div", { class: "panel" },
-          h("div", { class: "panel-title" }, "What it grants",
-            it.soul.element ? h("span", { class: "pill" }, it.soul.element) : null),
-          h("p", {}, it.soul.power),
-          it.soul.merge_into?.length
-            ? h("p", { class: "muted" }, `Merged into ${it.soul.merge_into.join(" or ")} — the stone is used up.`)
-            : null)
-      : null,
+    // NO "what it grants" panel: merging is not in the game yet, and the
+    // wiki does not promise mechanics that do not exist (maintainer
+    // 2026-07-31). It returns when the effects are real.
     droppedByPanel(it));
 }
 
