@@ -377,10 +377,8 @@ function spritePreview(
   directions: string[],
 ): { img: HTMLElement; setSpin: (on: boolean) => void } {
   // The 112×112 portrait canvas is mostly empty — the figure occupies only
-  // ~29×87 px in its centre (measured: x42-71, y10-97). The art shows at its
-  // NATIVE 1x through a viewport cropped to the figure (maintainer 2026-07-30:
-  // at 2x the character was twice the size it should be; the box itself is
-  // right). Offsets in .ml-portrait centre that measured figure in the box.
+  // ~29×87 px in its centre (measured: x42-71, y10-97). Show the art at an
+  // integer 2x through a viewport cropped to the figure.
   const box = el("div", "ml-portrait-box");
   const img = el("img", "ml-portrait") as HTMLImageElement;
   box.appendChild(img);
@@ -483,10 +481,12 @@ function injectStyles() {
   /* the figure crop: 112² art at an integer 2x, viewport tight on the body
      (figure x42-71, y10-97 native → x84-142, y20-194 at 2x) */
   .ml-portrait-box{width:120px;height:190px;overflow:hidden;position:relative;flex:none}
-  /* native 1x (112px source shown at 112px). Integer offsets keep the pixel
-     grid aligned: figure x42-71 centres on the 120px box at left 4, figure
-     y10-97 centres on the 190px box at top 42. */
-  .ml-portrait{position:absolute;left:4px;top:42px;width:112px;height:112px;image-rendering:pixelated}
+  /* SETTLED AT 2x (maintainer 2026-07-31: "I take that back and want them 2x
+     again. Looked better before"). A 1x round shipped in between and was
+     withdrawn — don't re-propose shrinking it. The 2x is INTEGER, so the
+     pixel grid stays exact; the box crops the empty margins of the source,
+     which is what makes the figure fill it. */
+  .ml-portrait{position:absolute;left:-53px;top:-12px;width:224px;height:224px;image-rendering:pixelated}
   /* ── name input ── */
   .ml-name{width:100%;min-height:44px;padding:8px 12px;text-align:center;
     background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:10px;
