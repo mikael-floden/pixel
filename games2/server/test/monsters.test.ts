@@ -197,8 +197,6 @@ test("soft separation: same-pad monsters relax to a comfortable distance", async
       monsterCount: 2,
     });
     await waitFor(() => r1.state.players.size === 1 && r1.state.monsters.size > 0, 8000);
-    // Let the sim run: seeded pairs start close (possibly overlapping).
-    await new Promise((res) => setTimeout(res, 3500));
     // Comfort distances are RADIUS-derived (v2): read the same art-measured
     // radii the server loads, and require each same-pad pair to keep at least
     // HALF its own comfort target (rA+rB+margin) — mid-roam crossings dip
@@ -211,20 +209,30 @@ test("soft separation: same-pad monsters relax to a comfortable distance", async
       ),
     ) as { monsters: Array<{ id: string; radius?: number }> };
     const radius = new Map(manifest.monsters.map((m) => [m.id, m.radius ?? 13]));
-    const byZone = new Map<string, Array<{ x: number; y: number; r: number }>>();
-    r1.state.monsters.forEach((m: any, id: string) => {
-      const z = id.split("#")[0];
-      if (!byZone.has(z)) byZone.set(z, []);
-      byZone.get(z)!.push({ x: m.x, y: m.y, r: radius.get(m.kind) ?? 13 });
-    });
-    let worst = Infinity; // min of (distance / pair target) across all pads
-    for (const list of byZone.values())
-      for (let i = 0; i < list.length; i++)
-        for (let j = i + 1; j < list.length; j++) {
-          const d = Math.hypot(list[i].x - list[j].x, list[i].y - list[j].y);
-          const target = list[i].r + list[j].r + 4;
-          worst = Math.min(worst, d / target);
-        }
+    /** Min of (distance / pair comfort target) across every same-pad pair. */
+    const worstPair = () => {
+      const byZone = new Map<string, Array<{ x: number; y: number; r: number }>>();
+      r1.state.monsters.forEach((m: any, id: string) => {
+        const z = id.split("#")[0];
+        if (!byZone.has(z)) byZone.set(z, []);
+        byZone.get(z)!.push({ x: m.x, y: m.y, r: radius.get(m.kind) ?? 13 });
+      });
+      let worst = Infinity;
+      for (const list of byZone.values())
+        for (let i = 0; i < list.length; i++)
+          for (let j = i + 1; j < list.length; j++) {
+            const d = Math.hypot(list[i].x - list[j].x, list[i].y - list[j].y);
+            worst = Math.min(worst, d / (list[i].r + list[j].r + 4));
+          }
+      return worst;
+    };
+    // Seeded pairs start close (possibly overlapping) and the separation nudge
+    // walks them apart at MONSTER_SEP_RELAX_SPEED. POLL for convergence rather
+    // than sleeping a fixed 3.5s: the assertion is identical, it passes the
+    // moment the sim has actually separated them, and a sim that never
+    // separates still fails — at the timeout instead of after a blind wait.
+    await waitFor(() => worstPair() >= 0.5, 5000);
+    const worst = worstPair();
     assert.ok(
       worst >= 0.5,
       `same-pad monsters keep radius-scaled distance (worst pair at ${(worst * 100).toFixed(0)}% of its comfort target)`,

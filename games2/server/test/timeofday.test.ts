@@ -80,11 +80,11 @@ test("the world clock advances time on its own", async () => {
     const r1 = await c1.joinOrCreate(ROOM_NAME, {
       name: "A",
       character: "char_a",
-      phaseSeconds: [0.15, 0.15, 0.15, 0.15],
+      phaseSeconds: [0.05, 0.05, 0.05, 0.05],
     });
     await waitFor(() => r1.state.players?.size === 1);
     // NB: no assertion on the STARTING phase here — this room's phases are
-    // 0.15s and the clock runs by default, so it may legitimately have moved
+    // 0.05s and the clock runs by default, so it may legitimately have moved
     // on already. `heldAt` below reads whatever phase we actually froze at.
 
     // Time RUNS BY DEFAULT at x1 (maintainer 2026-07-31). Freezing must still
@@ -95,7 +95,7 @@ test("the world clock advances time on its own", async () => {
     r1.send("timespeed", { v: 0 });
     await waitFor(() => r1.state.frozen === true);
     const heldAt = r1.state.timeIdx;
-    await new Promise((r) => setTimeout(r, 400)); // >2 phases at 0.15s each
+    await new Promise((r) => setTimeout(r, 150)); // 3 phases at 0.05s each
     assert.equal(r1.state.timeIdx, heldAt, "a frozen clock must not advance");
 
     // Let it run again: NOBODY sends "timeofday" — the server's own clock
@@ -138,7 +138,7 @@ test("unfreezing sticks: the clock survives room recycling", async () => {
     await waitFor(() => r1.state.timeIdx === next);
     const firstRoomId = r1.roomId;
     await r1.leave();
-    await new Promise((r) => setTimeout(r, 400));
+    await new Promise((r) => setTimeout(r, 250)); // let the empty room dispose
 
     // The next join gets a FRESH room — which must RESUME the world's clock
     // (phase and speed) rather than re-applying the boot default.
@@ -163,7 +163,7 @@ test("time is continuous: phaseT sweeps while unfrozen, skips land mid-phase", a
 
   try {
     const c1 = new Client(`ws://localhost:${port}`);
-    const r1 = await c1.joinOrCreate(ROOM_NAME, { name: "A", character: "c", phaseSeconds: [2, 2, 2, 2] });
+    const r1 = await c1.joinOrCreate(ROOM_NAME, { name: "A", character: "c", phaseSeconds: [1, 1, 1, 1] });
     await waitFor(() => r1.state.players?.size === 1);
     // The clock runs at x1 by default now, so the "a skip lands mid-phase"
     // half of this test needs it held still; the sweep half unfreezes below.
@@ -176,13 +176,19 @@ test("time is continuous: phaseT sweeps while unfrozen, skips land mid-phase", a
     assert.equal(r1.state.phaseT, 0.5); // skips land MID-phase, the approved look
     r1.send("timespeed", { v: 1 }); // let time flow
     await waitFor(() => r1.state.frozen === false);
-    await new Promise((r) => setTimeout(r, 600));
+    // POLL for the sweep instead of sleeping a fixed 600ms — same assertion,
+    // but it returns as soon as phaseT has actually moved (1s phases put it
+    // past 0.6 in ~100ms) and still fails if the clock never sweeps.
+    await waitFor(() => r1.state.phaseT > 0.6);
     const t1 = r1.state.phaseT;
     assert.ok(t1 > 0.6, `phaseT must sweep continuously while unfrozen (got ${t1})`);
     r1.send("timespeed", { v: 0 }); // freeze mid-sweep: progress must hold
     await waitFor(() => r1.state.frozen === true);
     const held = r1.state.phaseT;
-    await new Promise((r) => setTimeout(r, 300));
+    // A NEGATIVE assertion ("it did not move") genuinely needs elapsed time —
+    // but only enough to cover several sim ticks (50ms each) and a chunk of a
+    // phase. 150ms is 3 ticks and 15% of a phase here.
+    await new Promise((r) => setTimeout(r, 150));
     assert.equal(r1.state.phaseT, held);
     await r1.leave();
   } finally {
@@ -200,7 +206,7 @@ test("time speed: the switch cycles x0->x0.5->x1->x2->x5->x10 and scales the clo
 
   try {
     const c1 = new Client(`ws://localhost:${port}`);
-    const r1 = await c1.joinOrCreate(ROOM_NAME, { name: "A", character: "c", phaseSeconds: [2, 2, 2, 2] });
+    const r1 = await c1.joinOrCreate(ROOM_NAME, { name: "A", character: "c", phaseSeconds: [1, 1, 1, 1] });
     await waitFor(() => r1.state.players?.size === 1);
     assert.equal(r1.state.timeSpeed, 1); // x1 is the boot default (2026-07-31)
     // Start the ring from x0 so the whole cycle is asserted in one known order.
@@ -246,7 +252,7 @@ test("no hand-off hold: the clock flows straight through sunset and sunrise", as
     const r1 = await c1.joinOrCreate(ROOM_NAME, {
       name: "A",
       character: "c",
-      phaseSeconds: [2, 1.6, 0.3, 0.3],
+      phaseSeconds: [0.7, 0.55, 0.2, 0.2],
     });
     await waitFor(() => r1.state.players?.size === 1);
     r1.send("timespeed", { v: 1 });
