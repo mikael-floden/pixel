@@ -125,6 +125,48 @@ if (serveClient) {
       express.static(join(ASSETS_ROOT, domain), { maxAge: "1h", setHeaders: setCacheHeaders }),
     );
   }
+  // PNG<->WebP EXTENSION FALLBACK (tiles2 agent, 2026-07-31). The art domains
+  // are migrating to lossless WebP, and the sprite domains had it easy: their
+  // manifests carry the real extension. GROUND TILES do not — a world's 4,693
+  // tile/prop paths are baked into maps2's world.json and reach the loader
+  // verbatim, so tiles2 renaming a tile to .webp while world.json still says
+  // .png is a 404 and the tile silently does not render (WorldScene skips a
+  // missing texture as a void cell). That deadlocked tiles2 against maps2:
+  // neither can move first.
+  //
+  // Mounted AFTER the static handlers ON PURPOSE, so it costs exactly nothing
+  // on the happy path — express.static calls next() only when the file really
+  // is missing. It REWRITES req.url rather than streaming the file itself, so
+  // express.static below still owns Content-Type, ETag, ranges and
+  // setCacheHeaders; there is no second copy of that logic to drift.
+  //
+  // WHY HERE AND NOT IN THE CLIENT: WorldScene also has a loaderror retry (it
+  // covers `npm run dev`, where Vite serves /assets and this code never runs).
+  // But a client-side retry pays a 404 round-trip PER MISSING TILE on EVERY
+  // cold load — measured 218 wasted requests on ring_test, and ring_test is one
+  // of the small worlds. Resolving it here costs one stat on a miss, once.
+  const SIBLING: Record<string, string> = { ".png": ".webp", ".webp": ".png" };
+  app.use("/assets", (req, res, next) => {
+    const path0 = req.url.split("?")[0];
+    const dot = path0.lastIndexOf(".");
+    const alt = dot < 0 ? undefined : SIBLING[path0.slice(dot).toLowerCase()];
+    if (!alt) return next();
+    let rel: string;
+    try {
+      rel = decodeURIComponent(path0.slice(0, dot)) + alt;
+    } catch {
+      return next(); // malformed %-escape — not ours to rescue
+    }
+    // Contain it: reject anything that escapes ASSETS_ROOT, and require the
+    // first segment to be a real art domain (the static mounts above are
+    // per-domain, so this handler must not become a wider file server).
+    const domain = rel.split("/")[1];
+    if (!ASSET_DOMAINS.includes(domain)) return next();
+    const abs = join(ASSETS_ROOT, rel);
+    if (!abs.startsWith(join(ASSETS_ROOT, domain)) || !existsSync(abs)) return next();
+    setCacheHeaders(res, abs); // same policy as the static mounts, incl. ?v immutable
+    res.sendFile(abs); // Content-Type comes from the REAL extension
+  });
   if (existsSync(clientDist)) {
     app.use(express.static(clientDist, { setHeaders: setCacheHeaders }));
     // SPA fallback for any non-API, non-asset route.

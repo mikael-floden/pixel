@@ -31,6 +31,18 @@ const GAME_ROOT = join(SCRIPT_DIR, "..");
 const ASSETS_ROOT = process.env.ASSETS_ROOT || join(GAME_ROOT, "..");
 
 const BUILDERS = ["build-manifest.mjs", "build-worlds.mjs", "build-monsters-manifest.mjs"];
+// Modules the builders IMPORT. A builder's own mtime is not enough: when the
+// PNG/WebP decode moved out of build-manifest.mjs into imagelib.mjs
+// (f4912fa89), editing the decode stopped invalidating this cache — proven by
+// injecting a 3px alpha-sampling bug, building, restoring the correct file, and
+// watching `npm run manifest` report "up to date" over a characters.json that
+// still carried the wrong foot anchors. That is the WRONG-VALUES failure, not a
+// crash: a throwing builder writes no cache and self-heals, but a silently
+// wrong one is committable — and monsters.json IS committed.
+// Listed explicitly rather than globbed: scripts/ holds ~58 files, almost all
+// unrelated verify/debug tools, and the gitignored scripts/_tmp-*.mjs probes
+// would thrash the cache on every session.
+const BUILDER_DEPS = ["imagelib.mjs"];
 const OUTPUTS = ["characters.json", "worlds.json", "monsters.json"].map((f) =>
   join(GAME_ROOT, "client", "public", f),
 );
@@ -40,6 +52,10 @@ const INPUTS = [
   join(ASSETS_ROOT, "maps2", "worlds"),
   join(ASSETS_ROOT, "monsters"),
   ...BUILDERS.map((b) => join(SCRIPT_DIR, b)),
+  ...BUILDER_DEPS.map((b) => join(SCRIPT_DIR, b)),
+  // build-manifest merges the maintainer's hand-drawn swim waterlines from
+  // here, so editing one must rebuild too (same hole, different file).
+  join(GAME_ROOT, "data"),
 ];
 
 const CACHE = join(GAME_ROOT, "node_modules", ".cache", "manifest-fingerprint.json");

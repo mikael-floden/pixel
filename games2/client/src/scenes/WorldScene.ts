@@ -792,10 +792,10 @@ export class WorldScene extends Phaser.Scene {
         // maps2 world bakes an explicit tile PNG per cell + per-material face
         // tiles + placed props — load that unique set.
         for (const path of distinctTilePaths(this.world)) {
-          this.load.image(pathTileKey(path), withV(assetUrl(path)));
+          this.loadImageEitherExt(pathTileKey(path), assetUrl(path));
         }
         for (const path of distinctPropPaths(this.world)) {
-          this.load.image(pathTileKey(path), withV(assetUrl(path)));
+          this.loadImageEitherExt(pathTileKey(path), assetUrl(path));
         }
       } else {
         for (const { t, v } of distinctTiles(this.world)) {
@@ -805,21 +805,72 @@ export class WorldScene extends Phaser.Scene {
       // maps2 worlds get their glow from tiles2/emission.json
       // (per-MATERIAL params + per-TILE-PATH sources — see loadTiles2Emission).
       if (this.maps2) this.load.json("tiles2-emission", withV("/assets/tiles2/emission.json"));
-      // Queue the png stem and, only if it 404s, the webp one (see CAMPFIRE_STEM).
+      // The campfire is a spritesheet, so its retry has to carry the frame size.
       // placeCampfire already guards on textures.exists, so a total miss just
       // means no bonfire rather than a broken scene.
-      this.load.spritesheet(CAMPFIRE_KEY, withV(CAMPFIRE_URL), {
-        frameWidth: CAMPFIRE_FRAME,
-        frameHeight: CAMPFIRE_FRAME,
-      });
-      this.load.once(`loaderror`, (f: Phaser.Loader.File) => {
-        if (f.key !== CAMPFIRE_KEY) return;
-        this.load.spritesheet(CAMPFIRE_KEY, withV(`${CAMPFIRE_STEM}.webp`), {
-          frameWidth: CAMPFIRE_FRAME,
-          frameHeight: CAMPFIRE_FRAME,
-        });
-      });
+      const fire = { frameWidth: CAMPFIRE_FRAME, frameHeight: CAMPFIRE_FRAME };
+      this.load.spritesheet(CAMPFIRE_KEY, withV(CAMPFIRE_URL), fire);
+      this.onLoadMiss(CAMPFIRE_KEY, () =>
+        this.load.spritesheet(CAMPFIRE_KEY, withV(`${CAMPFIRE_STEM}.webp`), fire),
+      );
     }
+  }
+
+  /**
+   * PNG<->WebP RETRY for art the game addresses by a LITERAL PATH rather than
+   * through a manifest (tiles2 agent, 2026-07-31).
+   *
+   * Sprite domains were easy: their manifests carry the real extension, and the
+   * BUILD-time `resolveImg` follows a stale one, so characters2 and monsters
+   * converted with no ordering at all. Ground tiles are the opposite case and my
+   * "convert whenever you like" advice did not cover them: a world's tile paths
+   * are baked into maps2's `world.json` (4,693 of them across 10 worlds) and
+   * reach the loader verbatim via `assetUrl`. tiles2 renaming a tile to .webp
+   * while world.json still says .png is a plain 404 — the tile silently does not
+   * render, and there is no build step in between to fix it up.
+   *
+   * So the fallback has to be at RUNTIME, here. This unblocks tiles2 permanently
+   * AND survives every future maps2 re-export: a stale .png path in an old
+   * world.json keeps working forever.
+   *
+   * WHY A MAP AND A PERSISTENT LISTENER, not `load.once`: the campfire and the
+   * minimap both used `this.load.once("loaderror", f => { if (f.key !== MINE)
+   * return; ... })`. With one file in flight that is fine — MapPreviewScene gets
+   * away with it. Here ~1,400 files load at once, and `once` fires on the FIRST
+   * error of ANY key, checks, returns, and is GONE — so an unrelated 404 would
+   * eat the campfire's only retry. Keyed lookups on a persistent listener cannot
+   * be starved that way, and deleting the entry as it fires bounds every asset
+   * to exactly one retry (a .webp that is also missing must not re-queue .png
+   * forever).
+   *
+   * This CANNOT mask a real problem: the retry only succeeds if the sibling file
+   * genuinely exists, which means the art is there and only the extension was
+   * stale. A truly missing asset still ends up missing, one wasted request later.
+   */
+  private extRetry = new Map<string, () => void>();
+  private extRetryArmed = false;
+
+  private onLoadMiss(key: string, retry: () => void) {
+    this.extRetry.set(key, retry);
+    if (this.extRetryArmed) return;
+    this.extRetryArmed = true;
+    this.load.on(Phaser.Loader.Events.FILE_LOAD_ERROR, (f: Phaser.Loader.File) => {
+      const again = this.extRetry.get(f.key);
+      if (!again) return;
+      this.extRetry.delete(f.key); // once per key — never a retry loop
+      again();
+    });
+  }
+
+  /** Queue an image and, if it 404s, retry ONCE with the sibling extension. */
+  private loadImageEitherExt(key: string, url: string) {
+    this.load.image(key, withV(url));
+    const alt = url.endsWith(".png")
+      ? `${url.slice(0, -4)}.webp`
+      : url.endsWith(".webp")
+        ? `${url.slice(0, -5)}.png`
+        : null;
+    if (alt) this.onLoadMiss(key, () => this.load.image(key, withV(alt)));
   }
 
   async create() {
