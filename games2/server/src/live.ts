@@ -35,7 +35,7 @@ const RAW_BASE = process.env.LIVE_RAW_BASE || `https://raw.githubusercontent.com
 const GH_API = process.env.LIVE_GH_API || "https://api.github.com";
 const ghToken = () => process.env.WIKI_GITHUB_TOKEN || "";
 
-const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items"] as const;
+const FEEDBACK_DOMAINS = ["monsters", "characters", "tiles", "objects", "sounds", "music", "items", "lore"] as const;
 // repo path (under live/) -> state key
 const LIVE_FILES: Record<string, string> = {
   "tuning/monsters.json": "tuning/monsters",
