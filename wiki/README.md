@@ -318,6 +318,32 @@ is a wider label) — not the header.
   the maintainer's overrides. The games agent decides when/how to consume
   them (they are advisory until wired in).
 
+## "Read next" is a promise
+
+A link under *Read next* says there is more to read at the other end. If the
+target page has no story, the reader lands on a stat sheet and learns the links
+lie — so `hasStory(ref)` drops those refs (maintainer 2026-07-31). The rules:
+
+- **Answer with the target's own renderer.** `hasStory()` runs the same
+  `paginate()` the destination page will run, and chapters go through the same
+  `chapterParas()` the chapter page uses. A predicate that reasons about the
+  data independently *will* drift from what the page draws.
+- **A domain with no story card can never pass.** `storyEntity()` knows only
+  monsters, characters, objects and items. Tiles, sounds and music render no
+  card, so loreStory in one of their records is unreachable text — if you add a
+  card to a domain, add it to `storyEntity()` in the same commit or its links
+  stay hidden.
+- **Hidden for players, flagged for the admin.** Same path as an unresolvable
+  ref: the admin sees the row with a `no story yet` pill and the entity's name,
+  because the admin is who can get it written. Don't "fix" this by showing
+  players a disabled row.
+- **Tell the lore agent.** The refs are theirs; the wiki just declines to
+  promise. 24 refs are hidden today — every creature story links to its
+  soulstone, and no soulstone has a story yet (board request sent 2026-07-31).
+
+`check-deadend.mjs` walks every page that offers *Read next*, follows every link
+and asserts the destination has prose. Run it after any lore-shaped change.
+
 ## Don't
 
 - Don't edit other domains' files from here. The wiki READS every domain but
