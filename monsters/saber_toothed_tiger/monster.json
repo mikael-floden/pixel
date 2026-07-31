@@ -24,7 +24,7 @@
     "x": 0,
     "y": 0
   },
-  "sprite": "saber_toothed_tiger/sprite.png",
+  "sprite": "saber_toothed_tiger/sprite.webp",
   "directions": [
     "east",
     "north",
@@ -36,14 +36,14 @@
     "west"
   ],
   "rotations": {
-    "south": "saber_toothed_tiger/rotations/south.png",
-    "west": "saber_toothed_tiger/rotations/west.png",
-    "east": "saber_toothed_tiger/rotations/east.png",
-    "north": "saber_toothed_tiger/rotations/north.png",
-    "south-east": "saber_toothed_tiger/rotations/south-east.png",
-    "north-east": "saber_toothed_tiger/rotations/north-east.png",
-    "north-west": "saber_toothed_tiger/rotations/north-west.png",
-    "south-west": "saber_toothed_tiger/rotations/south-west.png"
+    "south": "saber_toothed_tiger/rotations/south.webp",
+    "west": "saber_toothed_tiger/rotations/west.webp",
+    "east": "saber_toothed_tiger/rotations/east.webp",
+    "north": "saber_toothed_tiger/rotations/north.webp",
+    "south-east": "saber_toothed_tiger/rotations/south-east.webp",
+    "north-east": "saber_toothed_tiger/rotations/north-east.webp",
+    "north-west": "saber_toothed_tiger/rotations/north-west.webp",
+    "south-west": "saber_toothed_tiger/rotations/south-west.webp"
   },
   "animations": {
     "angry": {
@@ -52,13 +52,13 @@
       "directions": {
         "east": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/angry__east.png",
+          "strip": "saber_toothed_tiger/animations/angry__east.webp",
           "gif": "saber_toothed_tiger/animations/angry__east.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/angry/east/00.png",
-            "saber_toothed_tiger/animations/angry/east/01.png",
-            "saber_toothed_tiger/animations/angry/east/02.png",
-            "saber_toothed_tiger/animations/angry/east/03.png"
+            "saber_toothed_tiger/animations/angry/east/00.webp",
+            "saber_toothed_tiger/animations/angry/east/01.webp",
+            "saber_toothed_tiger/animations/angry/east/02.webp",
+            "saber_toothed_tiger/animations/angry/east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:53:51 GMT",
           "src_frames": 4,
@@ -66,13 +66,13 @@
         },
         "north": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/angry__north.png",
+          "strip": "saber_toothed_tiger/animations/angry__north.webp",
           "gif": "saber_toothed_tiger/animations/angry__north.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/angry/north/00.png",
-            "saber_toothed_tiger/animations/angry/north/01.png",
-            "saber_toothed_tiger/animations/angry/north/02.png",
-            "saber_toothed_tiger/animations/angry/north/03.png"
+            "saber_toothed_tiger/animations/angry/north/00.webp",
+            "saber_toothed_tiger/animations/angry/north/01.webp",
+            "saber_toothed_tiger/animations/angry/north/02.webp",
+            "saber_toothed_tiger/animations/angry/north/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:53:51 GMT",
           "src_frames": 4,
@@ -80,13 +80,13 @@
         },
         "north-east": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/angry__north-east.png",
+          "strip": "saber_toothed_tiger/animations/angry__north-east.webp",
           "gif": "saber_toothed_tiger/animations/angry__north-east.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/angry/north-east/00.png",
-            "saber_toothed_tiger/animations/angry/north-east/01.png",
-            "saber_toothed_tiger/animations/angry/north-east/02.png",
-            "saber_toothed_tiger/animations/angry/north-east/03.png"
+            "saber_toothed_tiger/animations/angry/north-east/00.webp",
+            "saber_toothed_tiger/animations/angry/north-east/01.webp",
+            "saber_toothed_tiger/animations/angry/north-east/02.webp",
+            "saber_toothed_tiger/animations/angry/north-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:53:53 GMT",
           "src_frames": 4,
@@ -94,13 +94,13 @@
         },
         "north-west": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/angry__north-west.png",
+          "strip": "saber_toothed_tiger/animations/angry__north-west.webp",
           "gif": "saber_toothed_tiger/animations/angry__north-west.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/angry/north-west/00.png",
-            "saber_toothed_tiger/animations/angry/north-west/01.png",
-            "saber_toothed_tiger/animations/angry/north-west/02.png",
-            "saber_toothed_tiger/animations/angry/north-west/03.png"
+            "saber_toothed_tiger/animations/angry/north-west/00.webp",
+            "saber_toothed_tiger/animations/angry/north-west/01.webp",
+            "saber_toothed_tiger/animations/angry/north-west/02.webp",
+            "saber_toothed_tiger/animations/angry/north-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:53:54 GMT",
           "src_frames": 4,
@@ -108,13 +108,13 @@
         },
         "south": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/angry__south.png",
+          "strip": "saber_toothed_tiger/animations/angry__south.webp",
           "gif": "saber_toothed_tiger/animations/angry__south.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/angry/south/00.png",
-            "saber_toothed_tiger/animations/angry/south/01.png",
-            "saber_toothed_tiger/animations/angry/south/02.png",
-            "saber_toothed_tiger/animations/angry/south/03.png"
+            "saber_toothed_tiger/animations/angry/south/00.webp",
+            "saber_toothed_tiger/animations/angry/south/01.webp",
+            "saber_toothed_tiger/animations/angry/south/02.webp",
+            "saber_toothed_tiger/animations/angry/south/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:53:55 GMT",
           "src_frames": 4,
@@ -122,13 +122,13 @@
         },
         "south-east": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/angry__south-east.png",
+          "strip": "saber_toothed_tiger/animations/angry__south-east.webp",
           "gif": "saber_toothed_tiger/animations/angry__south-east.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/angry/south-east/00.png",
-            "saber_toothed_tiger/animations/angry/south-east/01.png",
-            "saber_toothed_tiger/animations/angry/south-east/02.png",
-            "saber_toothed_tiger/animations/angry/south-east/03.png"
+            "saber_toothed_tiger/animations/angry/south-east/00.webp",
+            "saber_toothed_tiger/animations/angry/south-east/01.webp",
+            "saber_toothed_tiger/animations/angry/south-east/02.webp",
+            "saber_toothed_tiger/animations/angry/south-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:53:56 GMT",
           "src_frames": 4,
@@ -136,13 +136,13 @@
         },
         "south-west": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/angry__south-west.png",
+          "strip": "saber_toothed_tiger/animations/angry__south-west.webp",
           "gif": "saber_toothed_tiger/animations/angry__south-west.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/angry/south-west/00.png",
-            "saber_toothed_tiger/animations/angry/south-west/01.png",
-            "saber_toothed_tiger/animations/angry/south-west/02.png",
-            "saber_toothed_tiger/animations/angry/south-west/03.png"
+            "saber_toothed_tiger/animations/angry/south-west/00.webp",
+            "saber_toothed_tiger/animations/angry/south-west/01.webp",
+            "saber_toothed_tiger/animations/angry/south-west/02.webp",
+            "saber_toothed_tiger/animations/angry/south-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:53:58 GMT",
           "src_frames": 4,
@@ -150,13 +150,13 @@
         },
         "west": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/angry__west.png",
+          "strip": "saber_toothed_tiger/animations/angry__west.webp",
           "gif": "saber_toothed_tiger/animations/angry__west.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/angry/west/00.png",
-            "saber_toothed_tiger/animations/angry/west/01.png",
-            "saber_toothed_tiger/animations/angry/west/02.png",
-            "saber_toothed_tiger/animations/angry/west/03.png"
+            "saber_toothed_tiger/animations/angry/west/00.webp",
+            "saber_toothed_tiger/animations/angry/west/01.webp",
+            "saber_toothed_tiger/animations/angry/west/02.webp",
+            "saber_toothed_tiger/animations/angry/west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:53:59 GMT",
           "src_frames": 4,
@@ -170,13 +170,13 @@
       "directions": {
         "east": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/attack__east.png",
+          "strip": "saber_toothed_tiger/animations/attack__east.webp",
           "gif": "saber_toothed_tiger/animations/attack__east.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/attack/east/00.png",
-            "saber_toothed_tiger/animations/attack/east/01.png",
-            "saber_toothed_tiger/animations/attack/east/02.png",
-            "saber_toothed_tiger/animations/attack/east/03.png"
+            "saber_toothed_tiger/animations/attack/east/00.webp",
+            "saber_toothed_tiger/animations/attack/east/01.webp",
+            "saber_toothed_tiger/animations/attack/east/02.webp",
+            "saber_toothed_tiger/animations/attack/east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:00 GMT",
           "src_frames": 4,
@@ -184,13 +184,13 @@
         },
         "north": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/attack__north.png",
+          "strip": "saber_toothed_tiger/animations/attack__north.webp",
           "gif": "saber_toothed_tiger/animations/attack__north.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/attack/north/00.png",
-            "saber_toothed_tiger/animations/attack/north/01.png",
-            "saber_toothed_tiger/animations/attack/north/02.png",
-            "saber_toothed_tiger/animations/attack/north/03.png"
+            "saber_toothed_tiger/animations/attack/north/00.webp",
+            "saber_toothed_tiger/animations/attack/north/01.webp",
+            "saber_toothed_tiger/animations/attack/north/02.webp",
+            "saber_toothed_tiger/animations/attack/north/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:02 GMT",
           "src_frames": 4,
@@ -198,13 +198,13 @@
         },
         "north-east": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/attack__north-east.png",
+          "strip": "saber_toothed_tiger/animations/attack__north-east.webp",
           "gif": "saber_toothed_tiger/animations/attack__north-east.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/attack/north-east/00.png",
-            "saber_toothed_tiger/animations/attack/north-east/01.png",
-            "saber_toothed_tiger/animations/attack/north-east/02.png",
-            "saber_toothed_tiger/animations/attack/north-east/03.png"
+            "saber_toothed_tiger/animations/attack/north-east/00.webp",
+            "saber_toothed_tiger/animations/attack/north-east/01.webp",
+            "saber_toothed_tiger/animations/attack/north-east/02.webp",
+            "saber_toothed_tiger/animations/attack/north-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:04 GMT",
           "src_frames": 4,
@@ -212,13 +212,13 @@
         },
         "north-west": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/attack__north-west.png",
+          "strip": "saber_toothed_tiger/animations/attack__north-west.webp",
           "gif": "saber_toothed_tiger/animations/attack__north-west.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/attack/north-west/00.png",
-            "saber_toothed_tiger/animations/attack/north-west/01.png",
-            "saber_toothed_tiger/animations/attack/north-west/02.png",
-            "saber_toothed_tiger/animations/attack/north-west/03.png"
+            "saber_toothed_tiger/animations/attack/north-west/00.webp",
+            "saber_toothed_tiger/animations/attack/north-west/01.webp",
+            "saber_toothed_tiger/animations/attack/north-west/02.webp",
+            "saber_toothed_tiger/animations/attack/north-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:05 GMT",
           "src_frames": 4,
@@ -226,13 +226,13 @@
         },
         "south": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/attack__south.png",
+          "strip": "saber_toothed_tiger/animations/attack__south.webp",
           "gif": "saber_toothed_tiger/animations/attack__south.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/attack/south/00.png",
-            "saber_toothed_tiger/animations/attack/south/01.png",
-            "saber_toothed_tiger/animations/attack/south/02.png",
-            "saber_toothed_tiger/animations/attack/south/03.png"
+            "saber_toothed_tiger/animations/attack/south/00.webp",
+            "saber_toothed_tiger/animations/attack/south/01.webp",
+            "saber_toothed_tiger/animations/attack/south/02.webp",
+            "saber_toothed_tiger/animations/attack/south/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 12:21:12 GMT",
           "src_frames": 4,
@@ -240,13 +240,13 @@
         },
         "south-east": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/attack__south-east.png",
+          "strip": "saber_toothed_tiger/animations/attack__south-east.webp",
           "gif": "saber_toothed_tiger/animations/attack__south-east.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/attack/south-east/00.png",
-            "saber_toothed_tiger/animations/attack/south-east/01.png",
-            "saber_toothed_tiger/animations/attack/south-east/02.png",
-            "saber_toothed_tiger/animations/attack/south-east/03.png"
+            "saber_toothed_tiger/animations/attack/south-east/00.webp",
+            "saber_toothed_tiger/animations/attack/south-east/01.webp",
+            "saber_toothed_tiger/animations/attack/south-east/02.webp",
+            "saber_toothed_tiger/animations/attack/south-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:07 GMT",
           "src_frames": 4,
@@ -254,13 +254,13 @@
         },
         "south-west": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/attack__south-west.png",
+          "strip": "saber_toothed_tiger/animations/attack__south-west.webp",
           "gif": "saber_toothed_tiger/animations/attack__south-west.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/attack/south-west/00.png",
-            "saber_toothed_tiger/animations/attack/south-west/01.png",
-            "saber_toothed_tiger/animations/attack/south-west/02.png",
-            "saber_toothed_tiger/animations/attack/south-west/03.png"
+            "saber_toothed_tiger/animations/attack/south-west/00.webp",
+            "saber_toothed_tiger/animations/attack/south-west/01.webp",
+            "saber_toothed_tiger/animations/attack/south-west/02.webp",
+            "saber_toothed_tiger/animations/attack/south-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:09 GMT",
           "src_frames": 4,
@@ -268,13 +268,13 @@
         },
         "west": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/attack__west.png",
+          "strip": "saber_toothed_tiger/animations/attack__west.webp",
           "gif": "saber_toothed_tiger/animations/attack__west.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/attack/west/00.png",
-            "saber_toothed_tiger/animations/attack/west/01.png",
-            "saber_toothed_tiger/animations/attack/west/02.png",
-            "saber_toothed_tiger/animations/attack/west/03.png"
+            "saber_toothed_tiger/animations/attack/west/00.webp",
+            "saber_toothed_tiger/animations/attack/west/01.webp",
+            "saber_toothed_tiger/animations/attack/west/02.webp",
+            "saber_toothed_tiger/animations/attack/west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:53:47 GMT",
           "src_frames": 4,
@@ -288,18 +288,18 @@
       "directions": {
         "east": {
           "frames": 9,
-          "strip": "saber_toothed_tiger/animations/idle__east.png",
+          "strip": "saber_toothed_tiger/animations/idle__east.webp",
           "gif": "saber_toothed_tiger/animations/idle__east.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/idle/east/00.png",
-            "saber_toothed_tiger/animations/idle/east/01.png",
-            "saber_toothed_tiger/animations/idle/east/02.png",
-            "saber_toothed_tiger/animations/idle/east/03.png",
-            "saber_toothed_tiger/animations/idle/east/04.png",
-            "saber_toothed_tiger/animations/idle/east/05.png",
-            "saber_toothed_tiger/animations/idle/east/06.png",
-            "saber_toothed_tiger/animations/idle/east/07.png",
-            "saber_toothed_tiger/animations/idle/east/08.png"
+            "saber_toothed_tiger/animations/idle/east/00.webp",
+            "saber_toothed_tiger/animations/idle/east/01.webp",
+            "saber_toothed_tiger/animations/idle/east/02.webp",
+            "saber_toothed_tiger/animations/idle/east/03.webp",
+            "saber_toothed_tiger/animations/idle/east/04.webp",
+            "saber_toothed_tiger/animations/idle/east/05.webp",
+            "saber_toothed_tiger/animations/idle/east/06.webp",
+            "saber_toothed_tiger/animations/idle/east/07.webp",
+            "saber_toothed_tiger/animations/idle/east/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:53:49 GMT",
           "src_frames": 9,
@@ -307,18 +307,18 @@
         },
         "north": {
           "frames": 9,
-          "strip": "saber_toothed_tiger/animations/idle__north.png",
+          "strip": "saber_toothed_tiger/animations/idle__north.webp",
           "gif": "saber_toothed_tiger/animations/idle__north.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/idle/north/00.png",
-            "saber_toothed_tiger/animations/idle/north/01.png",
-            "saber_toothed_tiger/animations/idle/north/02.png",
-            "saber_toothed_tiger/animations/idle/north/03.png",
-            "saber_toothed_tiger/animations/idle/north/04.png",
-            "saber_toothed_tiger/animations/idle/north/05.png",
-            "saber_toothed_tiger/animations/idle/north/06.png",
-            "saber_toothed_tiger/animations/idle/north/07.png",
-            "saber_toothed_tiger/animations/idle/north/08.png"
+            "saber_toothed_tiger/animations/idle/north/00.webp",
+            "saber_toothed_tiger/animations/idle/north/01.webp",
+            "saber_toothed_tiger/animations/idle/north/02.webp",
+            "saber_toothed_tiger/animations/idle/north/03.webp",
+            "saber_toothed_tiger/animations/idle/north/04.webp",
+            "saber_toothed_tiger/animations/idle/north/05.webp",
+            "saber_toothed_tiger/animations/idle/north/06.webp",
+            "saber_toothed_tiger/animations/idle/north/07.webp",
+            "saber_toothed_tiger/animations/idle/north/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:53:50 GMT",
           "src_frames": 9,
@@ -326,18 +326,18 @@
         },
         "north-east": {
           "frames": 9,
-          "strip": "saber_toothed_tiger/animations/idle__north-east.png",
+          "strip": "saber_toothed_tiger/animations/idle__north-east.webp",
           "gif": "saber_toothed_tiger/animations/idle__north-east.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/idle/north-east/00.png",
-            "saber_toothed_tiger/animations/idle/north-east/01.png",
-            "saber_toothed_tiger/animations/idle/north-east/02.png",
-            "saber_toothed_tiger/animations/idle/north-east/03.png",
-            "saber_toothed_tiger/animations/idle/north-east/04.png",
-            "saber_toothed_tiger/animations/idle/north-east/05.png",
-            "saber_toothed_tiger/animations/idle/north-east/06.png",
-            "saber_toothed_tiger/animations/idle/north-east/07.png",
-            "saber_toothed_tiger/animations/idle/north-east/08.png"
+            "saber_toothed_tiger/animations/idle/north-east/00.webp",
+            "saber_toothed_tiger/animations/idle/north-east/01.webp",
+            "saber_toothed_tiger/animations/idle/north-east/02.webp",
+            "saber_toothed_tiger/animations/idle/north-east/03.webp",
+            "saber_toothed_tiger/animations/idle/north-east/04.webp",
+            "saber_toothed_tiger/animations/idle/north-east/05.webp",
+            "saber_toothed_tiger/animations/idle/north-east/06.webp",
+            "saber_toothed_tiger/animations/idle/north-east/07.webp",
+            "saber_toothed_tiger/animations/idle/north-east/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:13 GMT",
           "src_frames": 9,
@@ -345,18 +345,18 @@
         },
         "north-west": {
           "frames": 9,
-          "strip": "saber_toothed_tiger/animations/idle__north-west.png",
+          "strip": "saber_toothed_tiger/animations/idle__north-west.webp",
           "gif": "saber_toothed_tiger/animations/idle__north-west.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/idle/north-west/00.png",
-            "saber_toothed_tiger/animations/idle/north-west/01.png",
-            "saber_toothed_tiger/animations/idle/north-west/02.png",
-            "saber_toothed_tiger/animations/idle/north-west/03.png",
-            "saber_toothed_tiger/animations/idle/north-west/04.png",
-            "saber_toothed_tiger/animations/idle/north-west/05.png",
-            "saber_toothed_tiger/animations/idle/north-west/06.png",
-            "saber_toothed_tiger/animations/idle/north-west/07.png",
-            "saber_toothed_tiger/animations/idle/north-west/08.png"
+            "saber_toothed_tiger/animations/idle/north-west/00.webp",
+            "saber_toothed_tiger/animations/idle/north-west/01.webp",
+            "saber_toothed_tiger/animations/idle/north-west/02.webp",
+            "saber_toothed_tiger/animations/idle/north-west/03.webp",
+            "saber_toothed_tiger/animations/idle/north-west/04.webp",
+            "saber_toothed_tiger/animations/idle/north-west/05.webp",
+            "saber_toothed_tiger/animations/idle/north-west/06.webp",
+            "saber_toothed_tiger/animations/idle/north-west/07.webp",
+            "saber_toothed_tiger/animations/idle/north-west/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:53:48 GMT",
           "src_frames": 9,
@@ -364,18 +364,18 @@
         },
         "south": {
           "frames": 9,
-          "strip": "saber_toothed_tiger/animations/idle__south.png",
+          "strip": "saber_toothed_tiger/animations/idle__south.webp",
           "gif": "saber_toothed_tiger/animations/idle__south.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/idle/south/00.png",
-            "saber_toothed_tiger/animations/idle/south/01.png",
-            "saber_toothed_tiger/animations/idle/south/02.png",
-            "saber_toothed_tiger/animations/idle/south/03.png",
-            "saber_toothed_tiger/animations/idle/south/04.png",
-            "saber_toothed_tiger/animations/idle/south/05.png",
-            "saber_toothed_tiger/animations/idle/south/06.png",
-            "saber_toothed_tiger/animations/idle/south/07.png",
-            "saber_toothed_tiger/animations/idle/south/08.png"
+            "saber_toothed_tiger/animations/idle/south/00.webp",
+            "saber_toothed_tiger/animations/idle/south/01.webp",
+            "saber_toothed_tiger/animations/idle/south/02.webp",
+            "saber_toothed_tiger/animations/idle/south/03.webp",
+            "saber_toothed_tiger/animations/idle/south/04.webp",
+            "saber_toothed_tiger/animations/idle/south/05.webp",
+            "saber_toothed_tiger/animations/idle/south/06.webp",
+            "saber_toothed_tiger/animations/idle/south/07.webp",
+            "saber_toothed_tiger/animations/idle/south/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:16 GMT",
           "src_frames": 9,
@@ -383,18 +383,18 @@
         },
         "south-east": {
           "frames": 9,
-          "strip": "saber_toothed_tiger/animations/idle__south-east.png",
+          "strip": "saber_toothed_tiger/animations/idle__south-east.webp",
           "gif": "saber_toothed_tiger/animations/idle__south-east.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/idle/south-east/00.png",
-            "saber_toothed_tiger/animations/idle/south-east/01.png",
-            "saber_toothed_tiger/animations/idle/south-east/02.png",
-            "saber_toothed_tiger/animations/idle/south-east/03.png",
-            "saber_toothed_tiger/animations/idle/south-east/04.png",
-            "saber_toothed_tiger/animations/idle/south-east/05.png",
-            "saber_toothed_tiger/animations/idle/south-east/06.png",
-            "saber_toothed_tiger/animations/idle/south-east/07.png",
-            "saber_toothed_tiger/animations/idle/south-east/08.png"
+            "saber_toothed_tiger/animations/idle/south-east/00.webp",
+            "saber_toothed_tiger/animations/idle/south-east/01.webp",
+            "saber_toothed_tiger/animations/idle/south-east/02.webp",
+            "saber_toothed_tiger/animations/idle/south-east/03.webp",
+            "saber_toothed_tiger/animations/idle/south-east/04.webp",
+            "saber_toothed_tiger/animations/idle/south-east/05.webp",
+            "saber_toothed_tiger/animations/idle/south-east/06.webp",
+            "saber_toothed_tiger/animations/idle/south-east/07.webp",
+            "saber_toothed_tiger/animations/idle/south-east/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:17 GMT",
           "src_frames": 9,
@@ -402,18 +402,18 @@
         },
         "south-west": {
           "frames": 9,
-          "strip": "saber_toothed_tiger/animations/idle__south-west.png",
+          "strip": "saber_toothed_tiger/animations/idle__south-west.webp",
           "gif": "saber_toothed_tiger/animations/idle__south-west.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/idle/south-west/00.png",
-            "saber_toothed_tiger/animations/idle/south-west/01.png",
-            "saber_toothed_tiger/animations/idle/south-west/02.png",
-            "saber_toothed_tiger/animations/idle/south-west/03.png",
-            "saber_toothed_tiger/animations/idle/south-west/04.png",
-            "saber_toothed_tiger/animations/idle/south-west/05.png",
-            "saber_toothed_tiger/animations/idle/south-west/06.png",
-            "saber_toothed_tiger/animations/idle/south-west/07.png",
-            "saber_toothed_tiger/animations/idle/south-west/08.png"
+            "saber_toothed_tiger/animations/idle/south-west/00.webp",
+            "saber_toothed_tiger/animations/idle/south-west/01.webp",
+            "saber_toothed_tiger/animations/idle/south-west/02.webp",
+            "saber_toothed_tiger/animations/idle/south-west/03.webp",
+            "saber_toothed_tiger/animations/idle/south-west/04.webp",
+            "saber_toothed_tiger/animations/idle/south-west/05.webp",
+            "saber_toothed_tiger/animations/idle/south-west/06.webp",
+            "saber_toothed_tiger/animations/idle/south-west/07.webp",
+            "saber_toothed_tiger/animations/idle/south-west/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:18 GMT",
           "src_frames": 9,
@@ -421,18 +421,18 @@
         },
         "west": {
           "frames": 9,
-          "strip": "saber_toothed_tiger/animations/idle__west.png",
+          "strip": "saber_toothed_tiger/animations/idle__west.webp",
           "gif": "saber_toothed_tiger/animations/idle__west.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/idle/west/00.png",
-            "saber_toothed_tiger/animations/idle/west/01.png",
-            "saber_toothed_tiger/animations/idle/west/02.png",
-            "saber_toothed_tiger/animations/idle/west/03.png",
-            "saber_toothed_tiger/animations/idle/west/04.png",
-            "saber_toothed_tiger/animations/idle/west/05.png",
-            "saber_toothed_tiger/animations/idle/west/06.png",
-            "saber_toothed_tiger/animations/idle/west/07.png",
-            "saber_toothed_tiger/animations/idle/west/08.png"
+            "saber_toothed_tiger/animations/idle/west/00.webp",
+            "saber_toothed_tiger/animations/idle/west/01.webp",
+            "saber_toothed_tiger/animations/idle/west/02.webp",
+            "saber_toothed_tiger/animations/idle/west/03.webp",
+            "saber_toothed_tiger/animations/idle/west/04.webp",
+            "saber_toothed_tiger/animations/idle/west/05.webp",
+            "saber_toothed_tiger/animations/idle/west/06.webp",
+            "saber_toothed_tiger/animations/idle/west/07.webp",
+            "saber_toothed_tiger/animations/idle/west/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:20 GMT",
           "src_frames": 9,
@@ -446,13 +446,13 @@
       "directions": {
         "east": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/walk__east.png",
+          "strip": "saber_toothed_tiger/animations/walk__east.webp",
           "gif": "saber_toothed_tiger/animations/walk__east.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/walk/east/00.png",
-            "saber_toothed_tiger/animations/walk/east/01.png",
-            "saber_toothed_tiger/animations/walk/east/02.png",
-            "saber_toothed_tiger/animations/walk/east/03.png"
+            "saber_toothed_tiger/animations/walk/east/00.webp",
+            "saber_toothed_tiger/animations/walk/east/01.webp",
+            "saber_toothed_tiger/animations/walk/east/02.webp",
+            "saber_toothed_tiger/animations/walk/east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:21 GMT",
           "src_frames": 4,
@@ -460,13 +460,13 @@
         },
         "north": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/walk__north.png",
+          "strip": "saber_toothed_tiger/animations/walk__north.webp",
           "gif": "saber_toothed_tiger/animations/walk__north.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/walk/north/00.png",
-            "saber_toothed_tiger/animations/walk/north/01.png",
-            "saber_toothed_tiger/animations/walk/north/02.png",
-            "saber_toothed_tiger/animations/walk/north/03.png"
+            "saber_toothed_tiger/animations/walk/north/00.webp",
+            "saber_toothed_tiger/animations/walk/north/01.webp",
+            "saber_toothed_tiger/animations/walk/north/02.webp",
+            "saber_toothed_tiger/animations/walk/north/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:23 GMT",
           "src_frames": 4,
@@ -474,13 +474,13 @@
         },
         "north-east": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/walk__north-east.png",
+          "strip": "saber_toothed_tiger/animations/walk__north-east.webp",
           "gif": "saber_toothed_tiger/animations/walk__north-east.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/walk/north-east/00.png",
-            "saber_toothed_tiger/animations/walk/north-east/01.png",
-            "saber_toothed_tiger/animations/walk/north-east/02.png",
-            "saber_toothed_tiger/animations/walk/north-east/03.png"
+            "saber_toothed_tiger/animations/walk/north-east/00.webp",
+            "saber_toothed_tiger/animations/walk/north-east/01.webp",
+            "saber_toothed_tiger/animations/walk/north-east/02.webp",
+            "saber_toothed_tiger/animations/walk/north-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:24 GMT",
           "src_frames": 4,
@@ -488,13 +488,13 @@
         },
         "north-west": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/walk__north-west.png",
+          "strip": "saber_toothed_tiger/animations/walk__north-west.webp",
           "gif": "saber_toothed_tiger/animations/walk__north-west.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/walk/north-west/00.png",
-            "saber_toothed_tiger/animations/walk/north-west/01.png",
-            "saber_toothed_tiger/animations/walk/north-west/02.png",
-            "saber_toothed_tiger/animations/walk/north-west/03.png"
+            "saber_toothed_tiger/animations/walk/north-west/00.webp",
+            "saber_toothed_tiger/animations/walk/north-west/01.webp",
+            "saber_toothed_tiger/animations/walk/north-west/02.webp",
+            "saber_toothed_tiger/animations/walk/north-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:25 GMT",
           "src_frames": 4,
@@ -502,13 +502,13 @@
         },
         "south": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/walk__south.png",
+          "strip": "saber_toothed_tiger/animations/walk__south.webp",
           "gif": "saber_toothed_tiger/animations/walk__south.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/walk/south/00.png",
-            "saber_toothed_tiger/animations/walk/south/01.png",
-            "saber_toothed_tiger/animations/walk/south/02.png",
-            "saber_toothed_tiger/animations/walk/south/03.png"
+            "saber_toothed_tiger/animations/walk/south/00.webp",
+            "saber_toothed_tiger/animations/walk/south/01.webp",
+            "saber_toothed_tiger/animations/walk/south/02.webp",
+            "saber_toothed_tiger/animations/walk/south/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:26 GMT",
           "src_frames": 4,
@@ -516,13 +516,13 @@
         },
         "south-east": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/walk__south-east.png",
+          "strip": "saber_toothed_tiger/animations/walk__south-east.webp",
           "gif": "saber_toothed_tiger/animations/walk__south-east.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/walk/south-east/00.png",
-            "saber_toothed_tiger/animations/walk/south-east/01.png",
-            "saber_toothed_tiger/animations/walk/south-east/02.png",
-            "saber_toothed_tiger/animations/walk/south-east/03.png"
+            "saber_toothed_tiger/animations/walk/south-east/00.webp",
+            "saber_toothed_tiger/animations/walk/south-east/01.webp",
+            "saber_toothed_tiger/animations/walk/south-east/02.webp",
+            "saber_toothed_tiger/animations/walk/south-east/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:27 GMT",
           "src_frames": 4,
@@ -530,13 +530,13 @@
         },
         "south-west": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/walk__south-west.png",
+          "strip": "saber_toothed_tiger/animations/walk__south-west.webp",
           "gif": "saber_toothed_tiger/animations/walk__south-west.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/walk/south-west/00.png",
-            "saber_toothed_tiger/animations/walk/south-west/01.png",
-            "saber_toothed_tiger/animations/walk/south-west/02.png",
-            "saber_toothed_tiger/animations/walk/south-west/03.png"
+            "saber_toothed_tiger/animations/walk/south-west/00.webp",
+            "saber_toothed_tiger/animations/walk/south-west/01.webp",
+            "saber_toothed_tiger/animations/walk/south-west/02.webp",
+            "saber_toothed_tiger/animations/walk/south-west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:28 GMT",
           "src_frames": 4,
@@ -544,13 +544,13 @@
         },
         "west": {
           "frames": 4,
-          "strip": "saber_toothed_tiger/animations/walk__west.png",
+          "strip": "saber_toothed_tiger/animations/walk__west.webp",
           "gif": "saber_toothed_tiger/animations/walk__west.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/walk/west/00.png",
-            "saber_toothed_tiger/animations/walk/west/01.png",
-            "saber_toothed_tiger/animations/walk/west/02.png",
-            "saber_toothed_tiger/animations/walk/west/03.png"
+            "saber_toothed_tiger/animations/walk/west/00.webp",
+            "saber_toothed_tiger/animations/walk/west/01.webp",
+            "saber_toothed_tiger/animations/walk/west/02.webp",
+            "saber_toothed_tiger/animations/walk/west/03.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:54:30 GMT",
           "src_frames": 4,
@@ -564,18 +564,18 @@
       "directions": {
         "east": {
           "frames": 9,
-          "strip": "saber_toothed_tiger/animations/die__east.png",
+          "strip": "saber_toothed_tiger/animations/die__east.webp",
           "gif": "saber_toothed_tiger/animations/die__east.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/die/east/00.png",
-            "saber_toothed_tiger/animations/die/east/01.png",
-            "saber_toothed_tiger/animations/die/east/02.png",
-            "saber_toothed_tiger/animations/die/east/03.png",
-            "saber_toothed_tiger/animations/die/east/04.png",
-            "saber_toothed_tiger/animations/die/east/05.png",
-            "saber_toothed_tiger/animations/die/east/06.png",
-            "saber_toothed_tiger/animations/die/east/07.png",
-            "saber_toothed_tiger/animations/die/east/08.png"
+            "saber_toothed_tiger/animations/die/east/00.webp",
+            "saber_toothed_tiger/animations/die/east/01.webp",
+            "saber_toothed_tiger/animations/die/east/02.webp",
+            "saber_toothed_tiger/animations/die/east/03.webp",
+            "saber_toothed_tiger/animations/die/east/04.webp",
+            "saber_toothed_tiger/animations/die/east/05.webp",
+            "saber_toothed_tiger/animations/die/east/06.webp",
+            "saber_toothed_tiger/animations/die/east/07.webp",
+            "saber_toothed_tiger/animations/die/east/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:53:31 GMT",
           "src_frames": 9,
@@ -583,18 +583,18 @@
         },
         "north": {
           "frames": 9,
-          "strip": "saber_toothed_tiger/animations/die__north.png",
+          "strip": "saber_toothed_tiger/animations/die__north.webp",
           "gif": "saber_toothed_tiger/animations/die__north.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/die/north/00.png",
-            "saber_toothed_tiger/animations/die/north/01.png",
-            "saber_toothed_tiger/animations/die/north/02.png",
-            "saber_toothed_tiger/animations/die/north/03.png",
-            "saber_toothed_tiger/animations/die/north/04.png",
-            "saber_toothed_tiger/animations/die/north/05.png",
-            "saber_toothed_tiger/animations/die/north/06.png",
-            "saber_toothed_tiger/animations/die/north/07.png",
-            "saber_toothed_tiger/animations/die/north/08.png"
+            "saber_toothed_tiger/animations/die/north/00.webp",
+            "saber_toothed_tiger/animations/die/north/01.webp",
+            "saber_toothed_tiger/animations/die/north/02.webp",
+            "saber_toothed_tiger/animations/die/north/03.webp",
+            "saber_toothed_tiger/animations/die/north/04.webp",
+            "saber_toothed_tiger/animations/die/north/05.webp",
+            "saber_toothed_tiger/animations/die/north/06.webp",
+            "saber_toothed_tiger/animations/die/north/07.webp",
+            "saber_toothed_tiger/animations/die/north/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:53:32 GMT",
           "src_frames": 9,
@@ -602,18 +602,18 @@
         },
         "north-east": {
           "frames": 9,
-          "strip": "saber_toothed_tiger/animations/die__north-east.png",
+          "strip": "saber_toothed_tiger/animations/die__north-east.webp",
           "gif": "saber_toothed_tiger/animations/die__north-east.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/die/north-east/00.png",
-            "saber_toothed_tiger/animations/die/north-east/01.png",
-            "saber_toothed_tiger/animations/die/north-east/02.png",
-            "saber_toothed_tiger/animations/die/north-east/03.png",
-            "saber_toothed_tiger/animations/die/north-east/04.png",
-            "saber_toothed_tiger/animations/die/north-east/05.png",
-            "saber_toothed_tiger/animations/die/north-east/06.png",
-            "saber_toothed_tiger/animations/die/north-east/07.png",
-            "saber_toothed_tiger/animations/die/north-east/08.png"
+            "saber_toothed_tiger/animations/die/north-east/00.webp",
+            "saber_toothed_tiger/animations/die/north-east/01.webp",
+            "saber_toothed_tiger/animations/die/north-east/02.webp",
+            "saber_toothed_tiger/animations/die/north-east/03.webp",
+            "saber_toothed_tiger/animations/die/north-east/04.webp",
+            "saber_toothed_tiger/animations/die/north-east/05.webp",
+            "saber_toothed_tiger/animations/die/north-east/06.webp",
+            "saber_toothed_tiger/animations/die/north-east/07.webp",
+            "saber_toothed_tiger/animations/die/north-east/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:53:34 GMT",
           "src_frames": 9,
@@ -621,18 +621,18 @@
         },
         "north-west": {
           "frames": 9,
-          "strip": "saber_toothed_tiger/animations/die__north-west.png",
+          "strip": "saber_toothed_tiger/animations/die__north-west.webp",
           "gif": "saber_toothed_tiger/animations/die__north-west.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/die/north-west/00.png",
-            "saber_toothed_tiger/animations/die/north-west/01.png",
-            "saber_toothed_tiger/animations/die/north-west/02.png",
-            "saber_toothed_tiger/animations/die/north-west/03.png",
-            "saber_toothed_tiger/animations/die/north-west/04.png",
-            "saber_toothed_tiger/animations/die/north-west/05.png",
-            "saber_toothed_tiger/animations/die/north-west/06.png",
-            "saber_toothed_tiger/animations/die/north-west/07.png",
-            "saber_toothed_tiger/animations/die/north-west/08.png"
+            "saber_toothed_tiger/animations/die/north-west/00.webp",
+            "saber_toothed_tiger/animations/die/north-west/01.webp",
+            "saber_toothed_tiger/animations/die/north-west/02.webp",
+            "saber_toothed_tiger/animations/die/north-west/03.webp",
+            "saber_toothed_tiger/animations/die/north-west/04.webp",
+            "saber_toothed_tiger/animations/die/north-west/05.webp",
+            "saber_toothed_tiger/animations/die/north-west/06.webp",
+            "saber_toothed_tiger/animations/die/north-west/07.webp",
+            "saber_toothed_tiger/animations/die/north-west/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:53:35 GMT",
           "src_frames": 9,
@@ -640,18 +640,18 @@
         },
         "south": {
           "frames": 9,
-          "strip": "saber_toothed_tiger/animations/die__south.png",
+          "strip": "saber_toothed_tiger/animations/die__south.webp",
           "gif": "saber_toothed_tiger/animations/die__south.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/die/south/00.png",
-            "saber_toothed_tiger/animations/die/south/01.png",
-            "saber_toothed_tiger/animations/die/south/02.png",
-            "saber_toothed_tiger/animations/die/south/03.png",
-            "saber_toothed_tiger/animations/die/south/04.png",
-            "saber_toothed_tiger/animations/die/south/05.png",
-            "saber_toothed_tiger/animations/die/south/06.png",
-            "saber_toothed_tiger/animations/die/south/07.png",
-            "saber_toothed_tiger/animations/die/south/08.png"
+            "saber_toothed_tiger/animations/die/south/00.webp",
+            "saber_toothed_tiger/animations/die/south/01.webp",
+            "saber_toothed_tiger/animations/die/south/02.webp",
+            "saber_toothed_tiger/animations/die/south/03.webp",
+            "saber_toothed_tiger/animations/die/south/04.webp",
+            "saber_toothed_tiger/animations/die/south/05.webp",
+            "saber_toothed_tiger/animations/die/south/06.webp",
+            "saber_toothed_tiger/animations/die/south/07.webp",
+            "saber_toothed_tiger/animations/die/south/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:53:38 GMT",
           "src_frames": 9,
@@ -659,18 +659,18 @@
         },
         "south-east": {
           "frames": 9,
-          "strip": "saber_toothed_tiger/animations/die__south-east.png",
+          "strip": "saber_toothed_tiger/animations/die__south-east.webp",
           "gif": "saber_toothed_tiger/animations/die__south-east.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/die/south-east/00.png",
-            "saber_toothed_tiger/animations/die/south-east/01.png",
-            "saber_toothed_tiger/animations/die/south-east/02.png",
-            "saber_toothed_tiger/animations/die/south-east/03.png",
-            "saber_toothed_tiger/animations/die/south-east/04.png",
-            "saber_toothed_tiger/animations/die/south-east/05.png",
-            "saber_toothed_tiger/animations/die/south-east/06.png",
-            "saber_toothed_tiger/animations/die/south-east/07.png",
-            "saber_toothed_tiger/animations/die/south-east/08.png"
+            "saber_toothed_tiger/animations/die/south-east/00.webp",
+            "saber_toothed_tiger/animations/die/south-east/01.webp",
+            "saber_toothed_tiger/animations/die/south-east/02.webp",
+            "saber_toothed_tiger/animations/die/south-east/03.webp",
+            "saber_toothed_tiger/animations/die/south-east/04.webp",
+            "saber_toothed_tiger/animations/die/south-east/05.webp",
+            "saber_toothed_tiger/animations/die/south-east/06.webp",
+            "saber_toothed_tiger/animations/die/south-east/07.webp",
+            "saber_toothed_tiger/animations/die/south-east/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:53:38 GMT",
           "src_frames": 9,
@@ -678,18 +678,18 @@
         },
         "south-west": {
           "frames": 9,
-          "strip": "saber_toothed_tiger/animations/die__south-west.png",
+          "strip": "saber_toothed_tiger/animations/die__south-west.webp",
           "gif": "saber_toothed_tiger/animations/die__south-west.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/die/south-west/00.png",
-            "saber_toothed_tiger/animations/die/south-west/01.png",
-            "saber_toothed_tiger/animations/die/south-west/02.png",
-            "saber_toothed_tiger/animations/die/south-west/03.png",
-            "saber_toothed_tiger/animations/die/south-west/04.png",
-            "saber_toothed_tiger/animations/die/south-west/05.png",
-            "saber_toothed_tiger/animations/die/south-west/06.png",
-            "saber_toothed_tiger/animations/die/south-west/07.png",
-            "saber_toothed_tiger/animations/die/south-west/08.png"
+            "saber_toothed_tiger/animations/die/south-west/00.webp",
+            "saber_toothed_tiger/animations/die/south-west/01.webp",
+            "saber_toothed_tiger/animations/die/south-west/02.webp",
+            "saber_toothed_tiger/animations/die/south-west/03.webp",
+            "saber_toothed_tiger/animations/die/south-west/04.webp",
+            "saber_toothed_tiger/animations/die/south-west/05.webp",
+            "saber_toothed_tiger/animations/die/south-west/06.webp",
+            "saber_toothed_tiger/animations/die/south-west/07.webp",
+            "saber_toothed_tiger/animations/die/south-west/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:53:40 GMT",
           "src_frames": 9,
@@ -697,18 +697,18 @@
         },
         "west": {
           "frames": 9,
-          "strip": "saber_toothed_tiger/animations/die__west.png",
+          "strip": "saber_toothed_tiger/animations/die__west.webp",
           "gif": "saber_toothed_tiger/animations/die__west.gif",
           "frame_paths": [
-            "saber_toothed_tiger/animations/die/west/00.png",
-            "saber_toothed_tiger/animations/die/west/01.png",
-            "saber_toothed_tiger/animations/die/west/02.png",
-            "saber_toothed_tiger/animations/die/west/03.png",
-            "saber_toothed_tiger/animations/die/west/04.png",
-            "saber_toothed_tiger/animations/die/west/05.png",
-            "saber_toothed_tiger/animations/die/west/06.png",
-            "saber_toothed_tiger/animations/die/west/07.png",
-            "saber_toothed_tiger/animations/die/west/08.png"
+            "saber_toothed_tiger/animations/die/west/00.webp",
+            "saber_toothed_tiger/animations/die/west/01.webp",
+            "saber_toothed_tiger/animations/die/west/02.webp",
+            "saber_toothed_tiger/animations/die/west/03.webp",
+            "saber_toothed_tiger/animations/die/west/04.webp",
+            "saber_toothed_tiger/animations/die/west/05.webp",
+            "saber_toothed_tiger/animations/die/west/06.webp",
+            "saber_toothed_tiger/animations/die/west/07.webp",
+            "saber_toothed_tiger/animations/die/west/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:53:41 GMT",
           "src_frames": 9,

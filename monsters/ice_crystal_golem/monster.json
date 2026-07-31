@@ -24,7 +24,7 @@
     "x": 0,
     "y": 0
   },
-  "sprite": "ice_crystal_golem/sprite.png",
+  "sprite": "ice_crystal_golem/sprite.webp",
   "directions": [
     "east",
     "north",
@@ -36,14 +36,14 @@
     "west"
   ],
   "rotations": {
-    "south": "ice_crystal_golem/rotations/south.png",
-    "west": "ice_crystal_golem/rotations/west.png",
-    "east": "ice_crystal_golem/rotations/east.png",
-    "north": "ice_crystal_golem/rotations/north.png",
-    "south-east": "ice_crystal_golem/rotations/south-east.png",
-    "south-west": "ice_crystal_golem/rotations/south-west.png",
-    "north-east": "ice_crystal_golem/rotations/north-east.png",
-    "north-west": "ice_crystal_golem/rotations/north-west.png"
+    "south": "ice_crystal_golem/rotations/south.webp",
+    "west": "ice_crystal_golem/rotations/west.webp",
+    "east": "ice_crystal_golem/rotations/east.webp",
+    "north": "ice_crystal_golem/rotations/north.webp",
+    "south-east": "ice_crystal_golem/rotations/south-east.webp",
+    "south-west": "ice_crystal_golem/rotations/south-west.webp",
+    "north-east": "ice_crystal_golem/rotations/north-east.webp",
+    "north-west": "ice_crystal_golem/rotations/north-west.webp"
   },
   "animations": {
     "attack": {
@@ -52,18 +52,18 @@
       "directions": {
         "east": {
           "frames": 9,
-          "strip": "ice_crystal_golem/animations/attack__east.png",
+          "strip": "ice_crystal_golem/animations/attack__east.webp",
           "gif": "ice_crystal_golem/animations/attack__east.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/attack/east/00.png",
-            "ice_crystal_golem/animations/attack/east/01.png",
-            "ice_crystal_golem/animations/attack/east/02.png",
-            "ice_crystal_golem/animations/attack/east/03.png",
-            "ice_crystal_golem/animations/attack/east/04.png",
-            "ice_crystal_golem/animations/attack/east/05.png",
-            "ice_crystal_golem/animations/attack/east/06.png",
-            "ice_crystal_golem/animations/attack/east/07.png",
-            "ice_crystal_golem/animations/attack/east/08.png"
+            "ice_crystal_golem/animations/attack/east/00.webp",
+            "ice_crystal_golem/animations/attack/east/01.webp",
+            "ice_crystal_golem/animations/attack/east/02.webp",
+            "ice_crystal_golem/animations/attack/east/03.webp",
+            "ice_crystal_golem/animations/attack/east/04.webp",
+            "ice_crystal_golem/animations/attack/east/05.webp",
+            "ice_crystal_golem/animations/attack/east/06.webp",
+            "ice_crystal_golem/animations/attack/east/07.webp",
+            "ice_crystal_golem/animations/attack/east/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:00 GMT",
           "src_frames": 9,
@@ -71,18 +71,18 @@
         },
         "north": {
           "frames": 9,
-          "strip": "ice_crystal_golem/animations/attack__north.png",
+          "strip": "ice_crystal_golem/animations/attack__north.webp",
           "gif": "ice_crystal_golem/animations/attack__north.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/attack/north/00.png",
-            "ice_crystal_golem/animations/attack/north/01.png",
-            "ice_crystal_golem/animations/attack/north/02.png",
-            "ice_crystal_golem/animations/attack/north/03.png",
-            "ice_crystal_golem/animations/attack/north/04.png",
-            "ice_crystal_golem/animations/attack/north/05.png",
-            "ice_crystal_golem/animations/attack/north/06.png",
-            "ice_crystal_golem/animations/attack/north/07.png",
-            "ice_crystal_golem/animations/attack/north/08.png"
+            "ice_crystal_golem/animations/attack/north/00.webp",
+            "ice_crystal_golem/animations/attack/north/01.webp",
+            "ice_crystal_golem/animations/attack/north/02.webp",
+            "ice_crystal_golem/animations/attack/north/03.webp",
+            "ice_crystal_golem/animations/attack/north/04.webp",
+            "ice_crystal_golem/animations/attack/north/05.webp",
+            "ice_crystal_golem/animations/attack/north/06.webp",
+            "ice_crystal_golem/animations/attack/north/07.webp",
+            "ice_crystal_golem/animations/attack/north/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:03 GMT",
           "src_frames": 9,
@@ -90,18 +90,18 @@
         },
         "north-east": {
           "frames": 9,
-          "strip": "ice_crystal_golem/animations/attack__north-east.png",
+          "strip": "ice_crystal_golem/animations/attack__north-east.webp",
           "gif": "ice_crystal_golem/animations/attack__north-east.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/attack/north-east/00.png",
-            "ice_crystal_golem/animations/attack/north-east/01.png",
-            "ice_crystal_golem/animations/attack/north-east/02.png",
-            "ice_crystal_golem/animations/attack/north-east/03.png",
-            "ice_crystal_golem/animations/attack/north-east/04.png",
-            "ice_crystal_golem/animations/attack/north-east/05.png",
-            "ice_crystal_golem/animations/attack/north-east/06.png",
-            "ice_crystal_golem/animations/attack/north-east/07.png",
-            "ice_crystal_golem/animations/attack/north-east/08.png"
+            "ice_crystal_golem/animations/attack/north-east/00.webp",
+            "ice_crystal_golem/animations/attack/north-east/01.webp",
+            "ice_crystal_golem/animations/attack/north-east/02.webp",
+            "ice_crystal_golem/animations/attack/north-east/03.webp",
+            "ice_crystal_golem/animations/attack/north-east/04.webp",
+            "ice_crystal_golem/animations/attack/north-east/05.webp",
+            "ice_crystal_golem/animations/attack/north-east/06.webp",
+            "ice_crystal_golem/animations/attack/north-east/07.webp",
+            "ice_crystal_golem/animations/attack/north-east/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:04 GMT",
           "src_frames": 9,
@@ -109,18 +109,18 @@
         },
         "north-west": {
           "frames": 9,
-          "strip": "ice_crystal_golem/animations/attack__north-west.png",
+          "strip": "ice_crystal_golem/animations/attack__north-west.webp",
           "gif": "ice_crystal_golem/animations/attack__north-west.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/attack/north-west/00.png",
-            "ice_crystal_golem/animations/attack/north-west/01.png",
-            "ice_crystal_golem/animations/attack/north-west/02.png",
-            "ice_crystal_golem/animations/attack/north-west/03.png",
-            "ice_crystal_golem/animations/attack/north-west/04.png",
-            "ice_crystal_golem/animations/attack/north-west/05.png",
-            "ice_crystal_golem/animations/attack/north-west/06.png",
-            "ice_crystal_golem/animations/attack/north-west/07.png",
-            "ice_crystal_golem/animations/attack/north-west/08.png"
+            "ice_crystal_golem/animations/attack/north-west/00.webp",
+            "ice_crystal_golem/animations/attack/north-west/01.webp",
+            "ice_crystal_golem/animations/attack/north-west/02.webp",
+            "ice_crystal_golem/animations/attack/north-west/03.webp",
+            "ice_crystal_golem/animations/attack/north-west/04.webp",
+            "ice_crystal_golem/animations/attack/north-west/05.webp",
+            "ice_crystal_golem/animations/attack/north-west/06.webp",
+            "ice_crystal_golem/animations/attack/north-west/07.webp",
+            "ice_crystal_golem/animations/attack/north-west/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:06 GMT",
           "src_frames": 9,
@@ -128,18 +128,18 @@
         },
         "south": {
           "frames": 9,
-          "strip": "ice_crystal_golem/animations/attack__south.png",
+          "strip": "ice_crystal_golem/animations/attack__south.webp",
           "gif": "ice_crystal_golem/animations/attack__south.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/attack/south/00.png",
-            "ice_crystal_golem/animations/attack/south/01.png",
-            "ice_crystal_golem/animations/attack/south/02.png",
-            "ice_crystal_golem/animations/attack/south/03.png",
-            "ice_crystal_golem/animations/attack/south/04.png",
-            "ice_crystal_golem/animations/attack/south/05.png",
-            "ice_crystal_golem/animations/attack/south/06.png",
-            "ice_crystal_golem/animations/attack/south/07.png",
-            "ice_crystal_golem/animations/attack/south/08.png"
+            "ice_crystal_golem/animations/attack/south/00.webp",
+            "ice_crystal_golem/animations/attack/south/01.webp",
+            "ice_crystal_golem/animations/attack/south/02.webp",
+            "ice_crystal_golem/animations/attack/south/03.webp",
+            "ice_crystal_golem/animations/attack/south/04.webp",
+            "ice_crystal_golem/animations/attack/south/05.webp",
+            "ice_crystal_golem/animations/attack/south/06.webp",
+            "ice_crystal_golem/animations/attack/south/07.webp",
+            "ice_crystal_golem/animations/attack/south/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:07 GMT",
           "src_frames": 9,
@@ -147,18 +147,18 @@
         },
         "south-east": {
           "frames": 9,
-          "strip": "ice_crystal_golem/animations/attack__south-east.png",
+          "strip": "ice_crystal_golem/animations/attack__south-east.webp",
           "gif": "ice_crystal_golem/animations/attack__south-east.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/attack/south-east/00.png",
-            "ice_crystal_golem/animations/attack/south-east/01.png",
-            "ice_crystal_golem/animations/attack/south-east/02.png",
-            "ice_crystal_golem/animations/attack/south-east/03.png",
-            "ice_crystal_golem/animations/attack/south-east/04.png",
-            "ice_crystal_golem/animations/attack/south-east/05.png",
-            "ice_crystal_golem/animations/attack/south-east/06.png",
-            "ice_crystal_golem/animations/attack/south-east/07.png",
-            "ice_crystal_golem/animations/attack/south-east/08.png"
+            "ice_crystal_golem/animations/attack/south-east/00.webp",
+            "ice_crystal_golem/animations/attack/south-east/01.webp",
+            "ice_crystal_golem/animations/attack/south-east/02.webp",
+            "ice_crystal_golem/animations/attack/south-east/03.webp",
+            "ice_crystal_golem/animations/attack/south-east/04.webp",
+            "ice_crystal_golem/animations/attack/south-east/05.webp",
+            "ice_crystal_golem/animations/attack/south-east/06.webp",
+            "ice_crystal_golem/animations/attack/south-east/07.webp",
+            "ice_crystal_golem/animations/attack/south-east/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:08 GMT",
           "src_frames": 9,
@@ -166,18 +166,18 @@
         },
         "south-west": {
           "frames": 9,
-          "strip": "ice_crystal_golem/animations/attack__south-west.png",
+          "strip": "ice_crystal_golem/animations/attack__south-west.webp",
           "gif": "ice_crystal_golem/animations/attack__south-west.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/attack/south-west/00.png",
-            "ice_crystal_golem/animations/attack/south-west/01.png",
-            "ice_crystal_golem/animations/attack/south-west/02.png",
-            "ice_crystal_golem/animations/attack/south-west/03.png",
-            "ice_crystal_golem/animations/attack/south-west/04.png",
-            "ice_crystal_golem/animations/attack/south-west/05.png",
-            "ice_crystal_golem/animations/attack/south-west/06.png",
-            "ice_crystal_golem/animations/attack/south-west/07.png",
-            "ice_crystal_golem/animations/attack/south-west/08.png"
+            "ice_crystal_golem/animations/attack/south-west/00.webp",
+            "ice_crystal_golem/animations/attack/south-west/01.webp",
+            "ice_crystal_golem/animations/attack/south-west/02.webp",
+            "ice_crystal_golem/animations/attack/south-west/03.webp",
+            "ice_crystal_golem/animations/attack/south-west/04.webp",
+            "ice_crystal_golem/animations/attack/south-west/05.webp",
+            "ice_crystal_golem/animations/attack/south-west/06.webp",
+            "ice_crystal_golem/animations/attack/south-west/07.webp",
+            "ice_crystal_golem/animations/attack/south-west/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:10 GMT",
           "src_frames": 9,
@@ -185,18 +185,18 @@
         },
         "west": {
           "frames": 9,
-          "strip": "ice_crystal_golem/animations/attack__west.png",
+          "strip": "ice_crystal_golem/animations/attack__west.webp",
           "gif": "ice_crystal_golem/animations/attack__west.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/attack/west/00.png",
-            "ice_crystal_golem/animations/attack/west/01.png",
-            "ice_crystal_golem/animations/attack/west/02.png",
-            "ice_crystal_golem/animations/attack/west/03.png",
-            "ice_crystal_golem/animations/attack/west/04.png",
-            "ice_crystal_golem/animations/attack/west/05.png",
-            "ice_crystal_golem/animations/attack/west/06.png",
-            "ice_crystal_golem/animations/attack/west/07.png",
-            "ice_crystal_golem/animations/attack/west/08.png"
+            "ice_crystal_golem/animations/attack/west/00.webp",
+            "ice_crystal_golem/animations/attack/west/01.webp",
+            "ice_crystal_golem/animations/attack/west/02.webp",
+            "ice_crystal_golem/animations/attack/west/03.webp",
+            "ice_crystal_golem/animations/attack/west/04.webp",
+            "ice_crystal_golem/animations/attack/west/05.webp",
+            "ice_crystal_golem/animations/attack/west/06.webp",
+            "ice_crystal_golem/animations/attack/west/07.webp",
+            "ice_crystal_golem/animations/attack/west/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:12 GMT",
           "src_frames": 9,
@@ -210,14 +210,14 @@
       "directions": {
         "east": {
           "frames": 5,
-          "strip": "ice_crystal_golem/animations/walk__east.png",
+          "strip": "ice_crystal_golem/animations/walk__east.webp",
           "gif": "ice_crystal_golem/animations/walk__east.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/walk/east/00.png",
-            "ice_crystal_golem/animations/walk/east/01.png",
-            "ice_crystal_golem/animations/walk/east/02.png",
-            "ice_crystal_golem/animations/walk/east/03.png",
-            "ice_crystal_golem/animations/walk/east/04.png"
+            "ice_crystal_golem/animations/walk/east/00.webp",
+            "ice_crystal_golem/animations/walk/east/01.webp",
+            "ice_crystal_golem/animations/walk/east/02.webp",
+            "ice_crystal_golem/animations/walk/east/03.webp",
+            "ice_crystal_golem/animations/walk/east/04.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:14 GMT",
           "src_frames": 5,
@@ -225,14 +225,14 @@
         },
         "north": {
           "frames": 5,
-          "strip": "ice_crystal_golem/animations/walk__north.png",
+          "strip": "ice_crystal_golem/animations/walk__north.webp",
           "gif": "ice_crystal_golem/animations/walk__north.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/walk/north/00.png",
-            "ice_crystal_golem/animations/walk/north/01.png",
-            "ice_crystal_golem/animations/walk/north/02.png",
-            "ice_crystal_golem/animations/walk/north/03.png",
-            "ice_crystal_golem/animations/walk/north/04.png"
+            "ice_crystal_golem/animations/walk/north/00.webp",
+            "ice_crystal_golem/animations/walk/north/01.webp",
+            "ice_crystal_golem/animations/walk/north/02.webp",
+            "ice_crystal_golem/animations/walk/north/03.webp",
+            "ice_crystal_golem/animations/walk/north/04.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:15 GMT",
           "src_frames": 5,
@@ -240,14 +240,14 @@
         },
         "north-east": {
           "frames": 5,
-          "strip": "ice_crystal_golem/animations/walk__north-east.png",
+          "strip": "ice_crystal_golem/animations/walk__north-east.webp",
           "gif": "ice_crystal_golem/animations/walk__north-east.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/walk/north-east/00.png",
-            "ice_crystal_golem/animations/walk/north-east/01.png",
-            "ice_crystal_golem/animations/walk/north-east/02.png",
-            "ice_crystal_golem/animations/walk/north-east/03.png",
-            "ice_crystal_golem/animations/walk/north-east/04.png"
+            "ice_crystal_golem/animations/walk/north-east/00.webp",
+            "ice_crystal_golem/animations/walk/north-east/01.webp",
+            "ice_crystal_golem/animations/walk/north-east/02.webp",
+            "ice_crystal_golem/animations/walk/north-east/03.webp",
+            "ice_crystal_golem/animations/walk/north-east/04.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:17 GMT",
           "src_frames": 5,
@@ -255,14 +255,14 @@
         },
         "north-west": {
           "frames": 5,
-          "strip": "ice_crystal_golem/animations/walk__north-west.png",
+          "strip": "ice_crystal_golem/animations/walk__north-west.webp",
           "gif": "ice_crystal_golem/animations/walk__north-west.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/walk/north-west/00.png",
-            "ice_crystal_golem/animations/walk/north-west/01.png",
-            "ice_crystal_golem/animations/walk/north-west/02.png",
-            "ice_crystal_golem/animations/walk/north-west/03.png",
-            "ice_crystal_golem/animations/walk/north-west/04.png"
+            "ice_crystal_golem/animations/walk/north-west/00.webp",
+            "ice_crystal_golem/animations/walk/north-west/01.webp",
+            "ice_crystal_golem/animations/walk/north-west/02.webp",
+            "ice_crystal_golem/animations/walk/north-west/03.webp",
+            "ice_crystal_golem/animations/walk/north-west/04.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:18 GMT",
           "src_frames": 5,
@@ -270,14 +270,14 @@
         },
         "south": {
           "frames": 5,
-          "strip": "ice_crystal_golem/animations/walk__south.png",
+          "strip": "ice_crystal_golem/animations/walk__south.webp",
           "gif": "ice_crystal_golem/animations/walk__south.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/walk/south/00.png",
-            "ice_crystal_golem/animations/walk/south/01.png",
-            "ice_crystal_golem/animations/walk/south/02.png",
-            "ice_crystal_golem/animations/walk/south/03.png",
-            "ice_crystal_golem/animations/walk/south/04.png"
+            "ice_crystal_golem/animations/walk/south/00.webp",
+            "ice_crystal_golem/animations/walk/south/01.webp",
+            "ice_crystal_golem/animations/walk/south/02.webp",
+            "ice_crystal_golem/animations/walk/south/03.webp",
+            "ice_crystal_golem/animations/walk/south/04.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:20 GMT",
           "src_frames": 5,
@@ -285,14 +285,14 @@
         },
         "south-east": {
           "frames": 5,
-          "strip": "ice_crystal_golem/animations/walk__south-east.png",
+          "strip": "ice_crystal_golem/animations/walk__south-east.webp",
           "gif": "ice_crystal_golem/animations/walk__south-east.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/walk/south-east/00.png",
-            "ice_crystal_golem/animations/walk/south-east/01.png",
-            "ice_crystal_golem/animations/walk/south-east/02.png",
-            "ice_crystal_golem/animations/walk/south-east/03.png",
-            "ice_crystal_golem/animations/walk/south-east/04.png"
+            "ice_crystal_golem/animations/walk/south-east/00.webp",
+            "ice_crystal_golem/animations/walk/south-east/01.webp",
+            "ice_crystal_golem/animations/walk/south-east/02.webp",
+            "ice_crystal_golem/animations/walk/south-east/03.webp",
+            "ice_crystal_golem/animations/walk/south-east/04.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:21 GMT",
           "src_frames": 5,
@@ -300,14 +300,14 @@
         },
         "south-west": {
           "frames": 5,
-          "strip": "ice_crystal_golem/animations/walk__south-west.png",
+          "strip": "ice_crystal_golem/animations/walk__south-west.webp",
           "gif": "ice_crystal_golem/animations/walk__south-west.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/walk/south-west/00.png",
-            "ice_crystal_golem/animations/walk/south-west/01.png",
-            "ice_crystal_golem/animations/walk/south-west/02.png",
-            "ice_crystal_golem/animations/walk/south-west/03.png",
-            "ice_crystal_golem/animations/walk/south-west/04.png"
+            "ice_crystal_golem/animations/walk/south-west/00.webp",
+            "ice_crystal_golem/animations/walk/south-west/01.webp",
+            "ice_crystal_golem/animations/walk/south-west/02.webp",
+            "ice_crystal_golem/animations/walk/south-west/03.webp",
+            "ice_crystal_golem/animations/walk/south-west/04.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:22 GMT",
           "src_frames": 5,
@@ -315,14 +315,14 @@
         },
         "west": {
           "frames": 5,
-          "strip": "ice_crystal_golem/animations/walk__west.png",
+          "strip": "ice_crystal_golem/animations/walk__west.webp",
           "gif": "ice_crystal_golem/animations/walk__west.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/walk/west/00.png",
-            "ice_crystal_golem/animations/walk/west/01.png",
-            "ice_crystal_golem/animations/walk/west/02.png",
-            "ice_crystal_golem/animations/walk/west/03.png",
-            "ice_crystal_golem/animations/walk/west/04.png"
+            "ice_crystal_golem/animations/walk/west/00.webp",
+            "ice_crystal_golem/animations/walk/west/01.webp",
+            "ice_crystal_golem/animations/walk/west/02.webp",
+            "ice_crystal_golem/animations/walk/west/03.webp",
+            "ice_crystal_golem/animations/walk/west/04.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:23 GMT",
           "src_frames": 5,
@@ -336,18 +336,18 @@
       "directions": {
         "east": {
           "frames": 9,
-          "strip": "ice_crystal_golem/animations/idle__east.png",
+          "strip": "ice_crystal_golem/animations/idle__east.webp",
           "gif": "ice_crystal_golem/animations/idle__east.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/idle/east/00.png",
-            "ice_crystal_golem/animations/idle/east/01.png",
-            "ice_crystal_golem/animations/idle/east/02.png",
-            "ice_crystal_golem/animations/idle/east/03.png",
-            "ice_crystal_golem/animations/idle/east/04.png",
-            "ice_crystal_golem/animations/idle/east/05.png",
-            "ice_crystal_golem/animations/idle/east/06.png",
-            "ice_crystal_golem/animations/idle/east/07.png",
-            "ice_crystal_golem/animations/idle/east/08.png"
+            "ice_crystal_golem/animations/idle/east/00.webp",
+            "ice_crystal_golem/animations/idle/east/01.webp",
+            "ice_crystal_golem/animations/idle/east/02.webp",
+            "ice_crystal_golem/animations/idle/east/03.webp",
+            "ice_crystal_golem/animations/idle/east/04.webp",
+            "ice_crystal_golem/animations/idle/east/05.webp",
+            "ice_crystal_golem/animations/idle/east/06.webp",
+            "ice_crystal_golem/animations/idle/east/07.webp",
+            "ice_crystal_golem/animations/idle/east/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:25 GMT",
           "src_frames": 9,
@@ -355,18 +355,18 @@
         },
         "north": {
           "frames": 9,
-          "strip": "ice_crystal_golem/animations/idle__north.png",
+          "strip": "ice_crystal_golem/animations/idle__north.webp",
           "gif": "ice_crystal_golem/animations/idle__north.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/idle/north/00.png",
-            "ice_crystal_golem/animations/idle/north/01.png",
-            "ice_crystal_golem/animations/idle/north/02.png",
-            "ice_crystal_golem/animations/idle/north/03.png",
-            "ice_crystal_golem/animations/idle/north/04.png",
-            "ice_crystal_golem/animations/idle/north/05.png",
-            "ice_crystal_golem/animations/idle/north/06.png",
-            "ice_crystal_golem/animations/idle/north/07.png",
-            "ice_crystal_golem/animations/idle/north/08.png"
+            "ice_crystal_golem/animations/idle/north/00.webp",
+            "ice_crystal_golem/animations/idle/north/01.webp",
+            "ice_crystal_golem/animations/idle/north/02.webp",
+            "ice_crystal_golem/animations/idle/north/03.webp",
+            "ice_crystal_golem/animations/idle/north/04.webp",
+            "ice_crystal_golem/animations/idle/north/05.webp",
+            "ice_crystal_golem/animations/idle/north/06.webp",
+            "ice_crystal_golem/animations/idle/north/07.webp",
+            "ice_crystal_golem/animations/idle/north/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:26 GMT",
           "src_frames": 9,
@@ -374,18 +374,18 @@
         },
         "north-east": {
           "frames": 9,
-          "strip": "ice_crystal_golem/animations/idle__north-east.png",
+          "strip": "ice_crystal_golem/animations/idle__north-east.webp",
           "gif": "ice_crystal_golem/animations/idle__north-east.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/idle/north-east/00.png",
-            "ice_crystal_golem/animations/idle/north-east/01.png",
-            "ice_crystal_golem/animations/idle/north-east/02.png",
-            "ice_crystal_golem/animations/idle/north-east/03.png",
-            "ice_crystal_golem/animations/idle/north-east/04.png",
-            "ice_crystal_golem/animations/idle/north-east/05.png",
-            "ice_crystal_golem/animations/idle/north-east/06.png",
-            "ice_crystal_golem/animations/idle/north-east/07.png",
-            "ice_crystal_golem/animations/idle/north-east/08.png"
+            "ice_crystal_golem/animations/idle/north-east/00.webp",
+            "ice_crystal_golem/animations/idle/north-east/01.webp",
+            "ice_crystal_golem/animations/idle/north-east/02.webp",
+            "ice_crystal_golem/animations/idle/north-east/03.webp",
+            "ice_crystal_golem/animations/idle/north-east/04.webp",
+            "ice_crystal_golem/animations/idle/north-east/05.webp",
+            "ice_crystal_golem/animations/idle/north-east/06.webp",
+            "ice_crystal_golem/animations/idle/north-east/07.webp",
+            "ice_crystal_golem/animations/idle/north-east/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:29 GMT",
           "src_frames": 9,
@@ -393,18 +393,18 @@
         },
         "north-west": {
           "frames": 9,
-          "strip": "ice_crystal_golem/animations/idle__north-west.png",
+          "strip": "ice_crystal_golem/animations/idle__north-west.webp",
           "gif": "ice_crystal_golem/animations/idle__north-west.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/idle/north-west/00.png",
-            "ice_crystal_golem/animations/idle/north-west/01.png",
-            "ice_crystal_golem/animations/idle/north-west/02.png",
-            "ice_crystal_golem/animations/idle/north-west/03.png",
-            "ice_crystal_golem/animations/idle/north-west/04.png",
-            "ice_crystal_golem/animations/idle/north-west/05.png",
-            "ice_crystal_golem/animations/idle/north-west/06.png",
-            "ice_crystal_golem/animations/idle/north-west/07.png",
-            "ice_crystal_golem/animations/idle/north-west/08.png"
+            "ice_crystal_golem/animations/idle/north-west/00.webp",
+            "ice_crystal_golem/animations/idle/north-west/01.webp",
+            "ice_crystal_golem/animations/idle/north-west/02.webp",
+            "ice_crystal_golem/animations/idle/north-west/03.webp",
+            "ice_crystal_golem/animations/idle/north-west/04.webp",
+            "ice_crystal_golem/animations/idle/north-west/05.webp",
+            "ice_crystal_golem/animations/idle/north-west/06.webp",
+            "ice_crystal_golem/animations/idle/north-west/07.webp",
+            "ice_crystal_golem/animations/idle/north-west/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 15:51:49 GMT",
           "src_frames": 9,
@@ -412,18 +412,18 @@
         },
         "south": {
           "frames": 9,
-          "strip": "ice_crystal_golem/animations/idle__south.png",
+          "strip": "ice_crystal_golem/animations/idle__south.webp",
           "gif": "ice_crystal_golem/animations/idle__south.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/idle/south/00.png",
-            "ice_crystal_golem/animations/idle/south/01.png",
-            "ice_crystal_golem/animations/idle/south/02.png",
-            "ice_crystal_golem/animations/idle/south/03.png",
-            "ice_crystal_golem/animations/idle/south/04.png",
-            "ice_crystal_golem/animations/idle/south/05.png",
-            "ice_crystal_golem/animations/idle/south/06.png",
-            "ice_crystal_golem/animations/idle/south/07.png",
-            "ice_crystal_golem/animations/idle/south/08.png"
+            "ice_crystal_golem/animations/idle/south/00.webp",
+            "ice_crystal_golem/animations/idle/south/01.webp",
+            "ice_crystal_golem/animations/idle/south/02.webp",
+            "ice_crystal_golem/animations/idle/south/03.webp",
+            "ice_crystal_golem/animations/idle/south/04.webp",
+            "ice_crystal_golem/animations/idle/south/05.webp",
+            "ice_crystal_golem/animations/idle/south/06.webp",
+            "ice_crystal_golem/animations/idle/south/07.webp",
+            "ice_crystal_golem/animations/idle/south/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:32 GMT",
           "src_frames": 9,
@@ -431,18 +431,18 @@
         },
         "south-east": {
           "frames": 9,
-          "strip": "ice_crystal_golem/animations/idle__south-east.png",
+          "strip": "ice_crystal_golem/animations/idle__south-east.webp",
           "gif": "ice_crystal_golem/animations/idle__south-east.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/idle/south-east/00.png",
-            "ice_crystal_golem/animations/idle/south-east/01.png",
-            "ice_crystal_golem/animations/idle/south-east/02.png",
-            "ice_crystal_golem/animations/idle/south-east/03.png",
-            "ice_crystal_golem/animations/idle/south-east/04.png",
-            "ice_crystal_golem/animations/idle/south-east/05.png",
-            "ice_crystal_golem/animations/idle/south-east/06.png",
-            "ice_crystal_golem/animations/idle/south-east/07.png",
-            "ice_crystal_golem/animations/idle/south-east/08.png"
+            "ice_crystal_golem/animations/idle/south-east/00.webp",
+            "ice_crystal_golem/animations/idle/south-east/01.webp",
+            "ice_crystal_golem/animations/idle/south-east/02.webp",
+            "ice_crystal_golem/animations/idle/south-east/03.webp",
+            "ice_crystal_golem/animations/idle/south-east/04.webp",
+            "ice_crystal_golem/animations/idle/south-east/05.webp",
+            "ice_crystal_golem/animations/idle/south-east/06.webp",
+            "ice_crystal_golem/animations/idle/south-east/07.webp",
+            "ice_crystal_golem/animations/idle/south-east/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:33 GMT",
           "src_frames": 9,
@@ -450,18 +450,18 @@
         },
         "south-west": {
           "frames": 9,
-          "strip": "ice_crystal_golem/animations/idle__south-west.png",
+          "strip": "ice_crystal_golem/animations/idle__south-west.webp",
           "gif": "ice_crystal_golem/animations/idle__south-west.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/idle/south-west/00.png",
-            "ice_crystal_golem/animations/idle/south-west/01.png",
-            "ice_crystal_golem/animations/idle/south-west/02.png",
-            "ice_crystal_golem/animations/idle/south-west/03.png",
-            "ice_crystal_golem/animations/idle/south-west/04.png",
-            "ice_crystal_golem/animations/idle/south-west/05.png",
-            "ice_crystal_golem/animations/idle/south-west/06.png",
-            "ice_crystal_golem/animations/idle/south-west/07.png",
-            "ice_crystal_golem/animations/idle/south-west/08.png"
+            "ice_crystal_golem/animations/idle/south-west/00.webp",
+            "ice_crystal_golem/animations/idle/south-west/01.webp",
+            "ice_crystal_golem/animations/idle/south-west/02.webp",
+            "ice_crystal_golem/animations/idle/south-west/03.webp",
+            "ice_crystal_golem/animations/idle/south-west/04.webp",
+            "ice_crystal_golem/animations/idle/south-west/05.webp",
+            "ice_crystal_golem/animations/idle/south-west/06.webp",
+            "ice_crystal_golem/animations/idle/south-west/07.webp",
+            "ice_crystal_golem/animations/idle/south-west/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:34 GMT",
           "src_frames": 9,
@@ -469,18 +469,18 @@
         },
         "west": {
           "frames": 9,
-          "strip": "ice_crystal_golem/animations/idle__west.png",
+          "strip": "ice_crystal_golem/animations/idle__west.webp",
           "gif": "ice_crystal_golem/animations/idle__west.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/idle/west/00.png",
-            "ice_crystal_golem/animations/idle/west/01.png",
-            "ice_crystal_golem/animations/idle/west/02.png",
-            "ice_crystal_golem/animations/idle/west/03.png",
-            "ice_crystal_golem/animations/idle/west/04.png",
-            "ice_crystal_golem/animations/idle/west/05.png",
-            "ice_crystal_golem/animations/idle/west/06.png",
-            "ice_crystal_golem/animations/idle/west/07.png",
-            "ice_crystal_golem/animations/idle/west/08.png"
+            "ice_crystal_golem/animations/idle/west/00.webp",
+            "ice_crystal_golem/animations/idle/west/01.webp",
+            "ice_crystal_golem/animations/idle/west/02.webp",
+            "ice_crystal_golem/animations/idle/west/03.webp",
+            "ice_crystal_golem/animations/idle/west/04.webp",
+            "ice_crystal_golem/animations/idle/west/05.webp",
+            "ice_crystal_golem/animations/idle/west/06.webp",
+            "ice_crystal_golem/animations/idle/west/07.webp",
+            "ice_crystal_golem/animations/idle/west/08.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:36 GMT",
           "src_frames": 9,
@@ -494,17 +494,17 @@
       "directions": {
         "east": {
           "frames": 8,
-          "strip": "ice_crystal_golem/animations/die__east.png",
+          "strip": "ice_crystal_golem/animations/die__east.webp",
           "gif": "ice_crystal_golem/animations/die__east.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/die/east/00.png",
-            "ice_crystal_golem/animations/die/east/01.png",
-            "ice_crystal_golem/animations/die/east/02.png",
-            "ice_crystal_golem/animations/die/east/03.png",
-            "ice_crystal_golem/animations/die/east/04.png",
-            "ice_crystal_golem/animations/die/east/05.png",
-            "ice_crystal_golem/animations/die/east/06.png",
-            "ice_crystal_golem/animations/die/east/07.png"
+            "ice_crystal_golem/animations/die/east/00.webp",
+            "ice_crystal_golem/animations/die/east/01.webp",
+            "ice_crystal_golem/animations/die/east/02.webp",
+            "ice_crystal_golem/animations/die/east/03.webp",
+            "ice_crystal_golem/animations/die/east/04.webp",
+            "ice_crystal_golem/animations/die/east/05.webp",
+            "ice_crystal_golem/animations/die/east/06.webp",
+            "ice_crystal_golem/animations/die/east/07.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:38 GMT",
           "src_frames": 9,
@@ -512,16 +512,16 @@
         },
         "north": {
           "frames": 7,
-          "strip": "ice_crystal_golem/animations/die__north.png",
+          "strip": "ice_crystal_golem/animations/die__north.webp",
           "gif": "ice_crystal_golem/animations/die__north.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/die/north/00.png",
-            "ice_crystal_golem/animations/die/north/01.png",
-            "ice_crystal_golem/animations/die/north/02.png",
-            "ice_crystal_golem/animations/die/north/03.png",
-            "ice_crystal_golem/animations/die/north/04.png",
-            "ice_crystal_golem/animations/die/north/05.png",
-            "ice_crystal_golem/animations/die/north/06.png"
+            "ice_crystal_golem/animations/die/north/00.webp",
+            "ice_crystal_golem/animations/die/north/01.webp",
+            "ice_crystal_golem/animations/die/north/02.webp",
+            "ice_crystal_golem/animations/die/north/03.webp",
+            "ice_crystal_golem/animations/die/north/04.webp",
+            "ice_crystal_golem/animations/die/north/05.webp",
+            "ice_crystal_golem/animations/die/north/06.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:39 GMT",
           "src_frames": 9,
@@ -529,17 +529,17 @@
         },
         "north-east": {
           "frames": 8,
-          "strip": "ice_crystal_golem/animations/die__north-east.png",
+          "strip": "ice_crystal_golem/animations/die__north-east.webp",
           "gif": "ice_crystal_golem/animations/die__north-east.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/die/north-east/00.png",
-            "ice_crystal_golem/animations/die/north-east/01.png",
-            "ice_crystal_golem/animations/die/north-east/02.png",
-            "ice_crystal_golem/animations/die/north-east/03.png",
-            "ice_crystal_golem/animations/die/north-east/04.png",
-            "ice_crystal_golem/animations/die/north-east/05.png",
-            "ice_crystal_golem/animations/die/north-east/06.png",
-            "ice_crystal_golem/animations/die/north-east/07.png"
+            "ice_crystal_golem/animations/die/north-east/00.webp",
+            "ice_crystal_golem/animations/die/north-east/01.webp",
+            "ice_crystal_golem/animations/die/north-east/02.webp",
+            "ice_crystal_golem/animations/die/north-east/03.webp",
+            "ice_crystal_golem/animations/die/north-east/04.webp",
+            "ice_crystal_golem/animations/die/north-east/05.webp",
+            "ice_crystal_golem/animations/die/north-east/06.webp",
+            "ice_crystal_golem/animations/die/north-east/07.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:42 GMT",
           "src_frames": 9,
@@ -547,17 +547,17 @@
         },
         "north-west": {
           "frames": 8,
-          "strip": "ice_crystal_golem/animations/die__north-west.png",
+          "strip": "ice_crystal_golem/animations/die__north-west.webp",
           "gif": "ice_crystal_golem/animations/die__north-west.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/die/north-west/00.png",
-            "ice_crystal_golem/animations/die/north-west/01.png",
-            "ice_crystal_golem/animations/die/north-west/02.png",
-            "ice_crystal_golem/animations/die/north-west/03.png",
-            "ice_crystal_golem/animations/die/north-west/04.png",
-            "ice_crystal_golem/animations/die/north-west/05.png",
-            "ice_crystal_golem/animations/die/north-west/06.png",
-            "ice_crystal_golem/animations/die/north-west/07.png"
+            "ice_crystal_golem/animations/die/north-west/00.webp",
+            "ice_crystal_golem/animations/die/north-west/01.webp",
+            "ice_crystal_golem/animations/die/north-west/02.webp",
+            "ice_crystal_golem/animations/die/north-west/03.webp",
+            "ice_crystal_golem/animations/die/north-west/04.webp",
+            "ice_crystal_golem/animations/die/north-west/05.webp",
+            "ice_crystal_golem/animations/die/north-west/06.webp",
+            "ice_crystal_golem/animations/die/north-west/07.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:44 GMT",
           "src_frames": 9,
@@ -565,14 +565,14 @@
         },
         "south": {
           "frames": 5,
-          "strip": "ice_crystal_golem/animations/die__south.png",
+          "strip": "ice_crystal_golem/animations/die__south.webp",
           "gif": "ice_crystal_golem/animations/die__south.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/die/south/00.png",
-            "ice_crystal_golem/animations/die/south/01.png",
-            "ice_crystal_golem/animations/die/south/02.png",
-            "ice_crystal_golem/animations/die/south/03.png",
-            "ice_crystal_golem/animations/die/south/04.png"
+            "ice_crystal_golem/animations/die/south/00.webp",
+            "ice_crystal_golem/animations/die/south/01.webp",
+            "ice_crystal_golem/animations/die/south/02.webp",
+            "ice_crystal_golem/animations/die/south/03.webp",
+            "ice_crystal_golem/animations/die/south/04.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:45 GMT",
           "src_frames": 9,
@@ -580,16 +580,16 @@
         },
         "south-east": {
           "frames": 7,
-          "strip": "ice_crystal_golem/animations/die__south-east.png",
+          "strip": "ice_crystal_golem/animations/die__south-east.webp",
           "gif": "ice_crystal_golem/animations/die__south-east.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/die/south-east/00.png",
-            "ice_crystal_golem/animations/die/south-east/01.png",
-            "ice_crystal_golem/animations/die/south-east/02.png",
-            "ice_crystal_golem/animations/die/south-east/03.png",
-            "ice_crystal_golem/animations/die/south-east/04.png",
-            "ice_crystal_golem/animations/die/south-east/05.png",
-            "ice_crystal_golem/animations/die/south-east/06.png"
+            "ice_crystal_golem/animations/die/south-east/00.webp",
+            "ice_crystal_golem/animations/die/south-east/01.webp",
+            "ice_crystal_golem/animations/die/south-east/02.webp",
+            "ice_crystal_golem/animations/die/south-east/03.webp",
+            "ice_crystal_golem/animations/die/south-east/04.webp",
+            "ice_crystal_golem/animations/die/south-east/05.webp",
+            "ice_crystal_golem/animations/die/south-east/06.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:48 GMT",
           "src_frames": 9,
@@ -597,16 +597,16 @@
         },
         "south-west": {
           "frames": 7,
-          "strip": "ice_crystal_golem/animations/die__south-west.png",
+          "strip": "ice_crystal_golem/animations/die__south-west.webp",
           "gif": "ice_crystal_golem/animations/die__south-west.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/die/south-west/00.png",
-            "ice_crystal_golem/animations/die/south-west/01.png",
-            "ice_crystal_golem/animations/die/south-west/02.png",
-            "ice_crystal_golem/animations/die/south-west/03.png",
-            "ice_crystal_golem/animations/die/south-west/04.png",
-            "ice_crystal_golem/animations/die/south-west/05.png",
-            "ice_crystal_golem/animations/die/south-west/06.png"
+            "ice_crystal_golem/animations/die/south-west/00.webp",
+            "ice_crystal_golem/animations/die/south-west/01.webp",
+            "ice_crystal_golem/animations/die/south-west/02.webp",
+            "ice_crystal_golem/animations/die/south-west/03.webp",
+            "ice_crystal_golem/animations/die/south-west/04.webp",
+            "ice_crystal_golem/animations/die/south-west/05.webp",
+            "ice_crystal_golem/animations/die/south-west/06.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:49 GMT",
           "src_frames": 9,
@@ -614,16 +614,16 @@
         },
         "west": {
           "frames": 7,
-          "strip": "ice_crystal_golem/animations/die__west.png",
+          "strip": "ice_crystal_golem/animations/die__west.webp",
           "gif": "ice_crystal_golem/animations/die__west.gif",
           "frame_paths": [
-            "ice_crystal_golem/animations/die/west/00.png",
-            "ice_crystal_golem/animations/die/west/01.png",
-            "ice_crystal_golem/animations/die/west/02.png",
-            "ice_crystal_golem/animations/die/west/03.png",
-            "ice_crystal_golem/animations/die/west/04.png",
-            "ice_crystal_golem/animations/die/west/05.png",
-            "ice_crystal_golem/animations/die/west/06.png"
+            "ice_crystal_golem/animations/die/west/00.webp",
+            "ice_crystal_golem/animations/die/west/01.webp",
+            "ice_crystal_golem/animations/die/west/02.webp",
+            "ice_crystal_golem/animations/die/west/03.webp",
+            "ice_crystal_golem/animations/die/west/04.webp",
+            "ice_crystal_golem/animations/die/west/05.webp",
+            "ice_crystal_golem/animations/die/west/06.webp"
           ],
           "lm": "Wed, 29 Jul 2026 11:39:52 GMT",
           "src_frames": 9,
