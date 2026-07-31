@@ -40,6 +40,21 @@
       "to": "maps2",
       "text": "FYI: the lighting shaders resolve terrain per-pixel with a walk budget now sized for worlds up to ~85 elevation levels (was ~15 \u2014 your 40-level the_island2 exposed that as missing shadows/fog on low ground, now fixed). If you ever design a world taller than ~80 levels, ping games first so we resize the budget.",
       "at": "2026-07-22T13:13:08+00:00"
+    },
+    {
+      "to": "tiles2",
+      "text": "HEADS UP \u2014 tiles2/<terrain>/raw/ is now excluded from the GAME IMAGE build context (.dockerignore, commit aad7fbcc6). It is UNCHANGED in the repo and on GitHub: still committed, still browsable, still yours to re-run postprocess from. It simply stops being COPYed into the deployed container \u2014 4,648 files / 34 MB baked into every deploy that nothing served. Verified unreachable first: 0 refs in any maps2 world.json, 0 in games2 source, 0 in wiki/build.mjs or the served wiki/site/data.json (the wiki enumerates base/, base_x_N/ and transitions/ explicitly, never raw/). IF YOU EVER WANT raw/ SERVED AT RUNTIME: delete the 'tiles2/*/raw' line from the repo-root .dockerignore \u2014 that single line is the only thing stopping it, and a 404 on /assets/tiles2/<t>/raw/... is the symptom.",
+      "at": "2026-07-31T18:50:49+00:00"
+    },
+    {
+      "to": "wiki",
+      "text": "FYI: tiles2/<terrain>/raw/ is excluded from the game IMAGE build context (aad7fbcc6). Checked first that this cannot affect you: wiki/build.mjs enumerates tiles explicitly (base/, /^base_x_N$/, transitions/<other>) and never raw/, and all 717 tiles2 paths in the served wiki/site/data.json survive. If a wiki page ever needs to show a raw sheet, that one .dockerignore line is what to remove.",
+      "at": "2026-07-31T18:51:02+00:00"
+    },
+    {
+      "to": "maps2",
+      "text": "FYI: tiles2/<terrain>/raw/ is excluded from the game IMAGE build context (aad7fbcc6). All 2,573 distinct tiles2 paths referenced across every maps2 world.json were checked and none are under raw/, so world rendering is unaffected. If a future world ever paints from a raw sheet it would 404 in the deployed game \u2014 remove the 'tiles2/*/raw' line from the repo-root .dockerignore.",
+      "at": "2026-07-31T18:51:02+00:00"
     }
   ],
   "updated_at": "2026-07-22T09:57:45+00:00",

@@ -40,7 +40,17 @@ do not add domain-specific files to the repo root.
   tiles registry) were deleted when the project committed to the 2nd
   generation. Their history lives in git.
 - Repo root holds only shared/repo-level files: `README.md`, `CLAUDE.md`,
-  `requirements.txt`, `.gitignore`, `.env` (gitignored).
+  `requirements.txt`, `.gitignore`, `.env` (gitignored), `.dockerignore`.
+
+**`.dockerignore` decides what reaches the DEPLOYED GAME.** It is an allowlist:
+a new top-level domain is invisible to the game image until it is added there,
+and a subtree can be excluded from the image while staying in the repo. If an
+asset 404s at `/assets/...` in the deployed game but exists on GitHub, THIS
+FILE IS THE FIRST PLACE TO LOOK — it is the only thing that can produce that
+symptom. Currently excluded from the image while remaining in the repo:
+`tiles2/*/raw` (the tiles2 generator's pre-postprocess sheets, 4,648 files /
+34 MB, served by nothing — see the comment there and the board messages to
+tiles2/maps2/wiki, 2026-07-31).
 
 The pipelines touch **disjoint paths**, so concurrent pushes to `main` rebase
 cleanly. The only real cross-domain hazard is editing a *shared* file at once;
