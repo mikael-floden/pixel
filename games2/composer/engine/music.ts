@@ -15,7 +15,7 @@ import {
   MusicTrackRef,
   dbToGain,
   loadMusicMetadata,
-  musicUrl,
+  musicStreamUrl,
 } from "./catalog";
 import { AudioGraph, BufferCache } from "./context";
 import { MusicalContext } from "./oneshot";
@@ -65,7 +65,8 @@ export class MusicDirector implements MusicalContext {
     if (!track || this.track) return;
     this.track = track;
     this.meta = await loadMusicMetadata(track);
-    this.buffer = await this.buffers.get(musicUrl(track.file));
+    // Stream the compact ogg/m4a, NOT the 21 MB WAV master (musicStreamUrl).
+    this.buffer = await this.buffers.get(musicStreamUrl(track));
     if (!this.buffer) return;
     this.playing = true;
     this.schedulePass(this.graph.now + 0.05, true);

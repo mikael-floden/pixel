@@ -56,9 +56,14 @@ export interface Bindings {
 
 // ---- music/viewer_data.json + per-track metadata.json ----
 
+export interface MusicStream {
+  ogg?: { file: string; mime: string };
+  m4a?: { file: string; mime: string };
+}
 export interface MusicTrackRef {
   id: string;
-  file: string; // repo-relative under music/
+  file: string; // repo-relative under music/ — the WAV MASTER (analysis truth)
+  stream?: MusicStream; // compact streaming copies (ogg/opus + m4a/AAC)
   duration_s: number;
   bpm?: number;
   key?: { root: string; mode: string };
@@ -134,6 +139,21 @@ export function soundUrl(repoRelative: string): string {
 
 export function musicUrl(repoRelative: string): string {
   return MUSIC_BASE + repoRelative;
+}
+
+/** The URL to actually STREAM a track: the compact ogg/opus everywhere it
+ * plays, m4a/AAC on Safari/iOS (no ogg), and only the WAV master as a last
+ * resort. The master is the music domain's analysis source-of-truth and ~12×
+ * larger — never worth downloading to a player (a 21 MB WAV vs a 1.7 MB ogg on
+ * every world join). Mirrors how the music domain's own /#music viewer picks. */
+export function musicStreamUrl(track: MusicTrackRef): string {
+  const s = track.stream;
+  if (s && typeof document !== "undefined") {
+    const probe = document.createElement("audio");
+    if (s.ogg && probe.canPlayType(s.ogg.mime)) return MUSIC_BASE + s.ogg.file;
+    if (s.m4a && probe.canPlayType(s.m4a.mime)) return MUSIC_BASE + s.m4a.file;
+  }
+  return MUSIC_BASE + track.file; // no stream info / unknown support → master
 }
 
 export async function loadMusicMetadata(track: MusicTrackRef): Promise<MusicMetadata | null> {

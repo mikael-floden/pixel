@@ -19,6 +19,12 @@ tiles2/*/raw
 !maps2
 !sounds
 !music
+# The music WAV masters (~61 MB) are the music domain's analysis source-of-truth,
+# never fetched by the game: the engine streams ogg/m4a (musicStreamUrl) and the
+# /#music viewer streams too. Keep them OUT of the deploy image so every roll is
+# ~61 MB lighter. Sounds stay wav (SFX are wav-only in the catalog). Revert this
+# line if a music consumer ever needs the master at runtime. — games-audio 2026-07-25
+music/**/*.wav
 !monsters
 !items
 !lore
