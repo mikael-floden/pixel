@@ -1127,7 +1127,14 @@ function viewTileType(id) {
 // projection (x=(c−r)·dx, y=(c+r)·dy − lvl·levelPx; a cell of elevation L
 // stacks its tile L times, 16px apart, then draws the top). Painter order:
 // back-to-front by (c+r), then by level.
-function isoScene(cells, images, scale = 2) {
+/** Compose cells with the GAME's own iso geometry, at the GAME's own scale.
+ *  scale is 1 on purpose: `data.iso` carries the real numbers (tile 64,
+ *  dx 32 = ISO_DX, dy 15 = ISO_DY), so one art pixel is one CSS pixel and a
+ *  3×3 field here measures what a 3×3 patch measures in the world. Drawing
+ *  at 2 made every scene twice the size the game shows (maintainer
+ *  2026-07-31) — and pushed the wider scenes past the column, where
+ *  `max-width:100%` then RESAMPLED the pixel art by a fraction. */
+function isoScene(cells, images, scale = 1) {
   const iso = state.data.iso ?? { tilePx: 64, dx: 32, dy: 15, levelPx: 16 };
   const draws = [];
   for (const cell of cells) {
