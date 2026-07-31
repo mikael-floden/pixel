@@ -1671,7 +1671,10 @@ function viewLore() {
     sectionHead("lore"),
     h("p", { class: "muted" }, state.admin
       ? `${list.length} tales from the lore agent — the one author who now writes every description in this wiki. Rate a chapter, approve it or send it back, and leave a note; the lore agent reads the verdicts on its next run.`
-      : "The chronicles of Nangijala — what the world still remembers of itself. Read them in order, or read the one you want. Nothing here is required."),
+      // The second half must EARN the first (maintainer 2026-07-31): the old
+      // "Nothing here is required" excused the reader from the page it was
+      // trying to open. Promise them something instead.
+      : "The chronicles of Nangijala — what the world still remembers of itself. Read them in order and it assembles itself; read one alone and it will still name something you have already walked past."),
     // The desk sits FIRST because it is the editor-in-chief's home screen and
     // the admin must not scroll the whole contents to reach the red line. It
     // costs players nothing — they never render it.
