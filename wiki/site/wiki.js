@@ -695,6 +695,11 @@ function pagedPanel({ title, pages, aside = null, klass = "" }) {
     count.textContent = `${i + 1} / ${pages.length}`;   // mutated in place — the
     prev.disabled = i === 0;                             // buttons are never rebuilt
     next.disabled = i === pages.length - 1;              // under the reader's finger
+    // A page turn NEVER scrolls. Turning from a long page to a short one
+    // shrinks the document, so a reader parked at the very bottom is carried
+    // up by the browser's own scroll clamp — unavoidable without reserving
+    // the tallest page, which would cost ~600px of dead space on the short
+    // ones. The pager is at the card's TOP, so it stays under the finger.
   };
   draw();
   const panel = h("div", { class: `panel${klass ? ` ${klass}` : ""}` },
@@ -2094,7 +2099,11 @@ function initChrome() {
       btn.disabled = false;
     }
   });
-  window.addEventListener("hashchange", route);
+  // A NEW PAGE STARTS AT ITS BEGINNING (maintainer 2026-07-31): reaching the
+  // end of a chapter and tapping the next one must not drop you at that one's
+  // end. Bound to the NAVIGATION event, not to route() itself, so in-place
+  // re-renders — the item filter and sort — leave the reader where they are.
+  window.addEventListener("hashchange", () => { route(); window.scrollTo(0, 0); });
   window.addEventListener("beforeunload", (e) => { if (state.dirty.size) e.preventDefault(); });
 }
 
