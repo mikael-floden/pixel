@@ -115,7 +115,10 @@ const CAMPFIRE_KEY = "campfire-burn";
 // loser's 404 costs one cheap request during the migration window only. If
 // objects/ ever gains a manifest, delete this and read the url from it.
 const CAMPFIRE_STEM = "/assets/objects/campfire/animations/burn__south";
-const CAMPFIRE_URL = `${CAMPFIRE_STEM}.png`;
+// objects/ is lossless WebP as of 2026-07-31 (the whole domain is this one
+// asset). The retry below still covers the other extension, but name the real
+// one so the common path never spends a request discovering it.
+const CAMPFIRE_URL = `${CAMPFIRE_STEM}.webp`;
 const CAMPFIRE_FRAME = 96;
 const CAMPFIRE_FRAMES = 17;
 const CAMPFIRE_SCALE = 42 / 68;
@@ -811,7 +814,7 @@ export class WorldScene extends Phaser.Scene {
       const fire = { frameWidth: CAMPFIRE_FRAME, frameHeight: CAMPFIRE_FRAME };
       this.load.spritesheet(CAMPFIRE_KEY, withV(CAMPFIRE_URL), fire);
       this.onLoadMiss(CAMPFIRE_KEY, () =>
-        this.load.spritesheet(CAMPFIRE_KEY, withV(`${CAMPFIRE_STEM}.webp`), fire),
+        this.load.spritesheet(CAMPFIRE_KEY, withV(`${CAMPFIRE_STEM}.png`), fire),
       );
     }
   }

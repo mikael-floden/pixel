@@ -1,5 +1,39 @@
 # Pixel Object Factory
 
+> ## STATUS 2026-07-31: DORMANT — one asset, no agent
+>
+> **There is no objects agent, and there has not been one for a long time.** The
+> maintainer will recreate it when there is time. Until then this domain is
+> caretaken by the games agent and it holds exactly **one** asset: the
+> **campfire**, which the game draws as the spawn bonfire.
+>
+> The other 16 objects (axe, barrel, clay_pot, fishing_rod, gem_ruby,
+> gold_coin, gold_ingot, hammer, iron_key, oak_tree, pickaxe, pine_tree,
+> shovel, sword, wooden_chest, wooden_crate) were **deleted**. Nothing
+> referenced them: no `maps2` world has ever pointed at `objects/` — verified
+> across all 10 `world.json` files, zero references — and the game loads
+> exactly one file from this domain (`campfire/animations/burn__south`). They
+> were 34 MB of art with no consumer. Their history is in git if the agent
+> returns and wants them back.
+>
+> `config/objects.json` was pinned to match reality: `targets.num_objects`
+> 75 → **1**, the catalog trimmed from 67 entries to the campfire, and
+> `procedural.kinds` emptied. **That pin is deliberate** — the loop's whole
+> job was to build *toward* 75, and the procedural generator invents new kinds
+> once the catalog runs out, so leaving either in place would have quietly
+> refilled the domain with props nothing asked for the moment anyone ran it.
+> If you are the recreated agent: raise those numbers on purpose, with the
+> maintainer, rather than treating the current values as a bug.
+>
+> **Art here is lossless WebP** (project default since 2026-07-31; 0.82 MB →
+> 0.28 MB, 34%, pixel-verified). ⚠️ **`pipeline/sync.py` still writes `.png`.**
+> It was not changed because it cannot be exercised without the PixelLab API,
+> and untested pipeline edits are worse than a documented gap. If you re-sync
+> this domain, run `python3 games2/scripts/to-webp.py --write --replace
+> objects/` afterwards and re-run `pipeline/viewer_build.py`, or teach `sync.py`
+> to save WebP directly — see `games2/CLAUDE.md` for the conversion rules
+> (lossless only; `exact=True`).
+
 An automated loop that generates **game-ready pixel-art objects** — props, tools
 and items (chest, gold coin, rock, bird, sword, shovel, tree, torch, potion…) —
 in the style of *Grave Seasons* / Stardew Valley, using
