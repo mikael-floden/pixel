@@ -172,13 +172,6 @@ function injectStyles() {
     font-variant-numeric:tabular-nums;white-space:nowrap}
   .ml-gold-icon{height:16px;width:auto;image-rendering:pixelated;
     -webkit-user-drag:none;display:block}
-  @media (min-width:700px){ .ml-bar-row{width:170px} }
-  /* NARROWER THAN 393 (the reference phone): the two chips + the time-of-day
-     pill between them need 388px, so below that the rows give the pill its
-     lane back instead of being covered by it. Floor 95px = the widest line in
-     the group ("LEVEL n" + the XP count, 11px), so nothing wraps. At 393 and
-     up this rule is inert — the reference layout is untouched. */
-  @media (max-width:392px){
-    .ml-bar-row{width:max(95px, calc((100vw - 174px)/2))} }`;
+  @media (min-width:700px){ .ml-bar-row{width:170px} }`;
   document.head.appendChild(s);
 }

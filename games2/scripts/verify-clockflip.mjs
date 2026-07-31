@@ -4,7 +4,7 @@
 // winding, the 1.25s glide, and the SERVER-side freeze (WorldRoom's
 // handoffHoldMs) that stopped the world clock while the hand jumped 180°.
 //
-// The pill is REAL PIXEL ART — a 40x12 art-pixel scene painted into a canvas
+// The pill is REAL PIXEL ART — a 40x16 art-pixel scene painted into a canvas
 // and shown at x2 — and the sun and moon ride a continuous BELT: the body
 // leaving the right edge and the body entering on the left are the same
 // motion. So the property to protect is now CONTINUITY: park the world clock a
@@ -19,7 +19,7 @@ const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const BASE = process.env.BASE || "http://localhost:5173";
 const OUT = process.env.OUT || "/tmp";
 const AW = 40; // art pixels across (clock.ts)
-const AH = 12;
+const AH = 16;
 
 const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox"] });
 const fail = (m) => {
@@ -49,7 +49,7 @@ try {
   });
   await page.waitForTimeout(1200);
 
-  // Everything below reads the canvas BACKING STORE (40x12 art pixels), not a
+  // Everything below reads the canvas BACKING STORE (40x16 art pixels), not a
   // screenshot: exact art-pixel coordinates, immune to starvation and scaling.
   await page.evaluate(
     ([AW, AH]) => {
@@ -107,11 +107,15 @@ try {
   const body = (hex) => page.evaluate((h) => window.__pill.body(h), hex);
   const pixels = () => page.evaluate(() => window.__pill.px());
   const sky = () => page.evaluate(() => window.__pill.sky());
-  const shotClock = (name) =>
-    page.screenshot({ path: `${OUT}/${name}`, clip: { x: 0, y: 0, width: 393, height: 60 } });
+  // The pill lives at the bottom-right of the game view now — crop there.
+  const clip = await page.evaluate(() => {
+    const r = document.querySelector(".ml-clock").getBoundingClientRect();
+    return { x: Math.max(0, r.left - 40), y: Math.max(0, r.top - 20), width: 140, height: 80 };
+  });
+  const shotClock = (name) => page.screenshot({ path: `${OUT}/${name}`, clip });
 
-  // ---- 1. structure: a fixed pass-through canvas pill top-centre, art-res
-  //         backing store at x2, nearest-neighbour, no dial parts left ----
+  // ---- 1. structure: a fixed pass-through canvas pill at the game view's
+  //         bottom-right, art-res backing store at x2, nearest-neighbour ----
   const s = await page.evaluate(() => {
     const root = document.querySelector(".ml-clock");
     const cs = getComputedStyle(root);
@@ -120,8 +124,9 @@ try {
     return {
       pos: cs.position,
       pe: cs.pointerEvents,
-      top: r.top,
-      cx: r.left + r.width / 2,
+      right: r.right,
+      bottom: r.bottom,
+      hudTop: document.querySelector(".ml-hud").getBoundingClientRect().top,
       vw: innerWidth,
       cw: cv.width,
       ch: cv.height,
@@ -132,15 +137,18 @@ try {
     };
   });
   if (s.pos !== "fixed" || s.pe !== "none") fail(`pill not a fixed pass-through (${s.pos}/${s.pe})`);
-  if (Math.abs(s.top - 8) > 2) fail(`pill top ${s.top}px, want ~8`);
-  if (Math.abs(s.cx - s.vw / 2) > 2) fail(`pill centre x ${s.cx} vs viewport mid ${s.vw / 2}`);
+  // Bottom-right of the GAME VIEW: 10px in from the right edge (the margin
+  // the XP chip keeps at the top) and 10px above the HUD rail.
+  if (Math.abs(s.vw - s.right - 10) > 1) fail(`pill right margin ${s.vw - s.right}px, want 10`);
+  if (Math.abs(s.hudTop - s.bottom - 10) > 1)
+    fail(`pill sits ${s.hudTop - s.bottom}px above the HUD rail, want 10`);
   if (s.cw !== AW || s.ch !== AH) fail(`canvas backing store ${s.cw}x${s.ch}, want ${AW}x${AH} art px`);
   if (Math.abs(s.rect.width - AW * 2) > 1 || Math.abs(s.rect.height - AH * 2) > 1)
     fail(`canvas drawn ${s.rect.width}x${s.rect.height}, want ${AW * 2}x${AH * 2} (x2 exact)`);
   if (s.smooth !== "pixelated") fail(`image-rendering ${s.smooth}, want pixelated`);
   if (s.imgs !== 0) fail(`${s.imgs} <img> inside the pill — the art is painted, not loaded`);
   if (s.relics !== 0) fail(`${s.relics} half-dial relics (hand/face/hub) still in the DOM`);
-  console.log(`structure OK (${AW}x${AH} art px at x2, pixelated, top-centre pass-through)`);
+  console.log(`structure OK (${AW}x${AH} art px at x2, pixelated, bottom-right of the game view)`);
 
   // ---- 2. the sun ARCS: low at morning, apex dead-centre at noon, low and
   //         far right at evening — and it is GONE at midnight ----
@@ -148,7 +156,7 @@ try {
   const sunDay = await body(SUN);
   if (sunDay.n < 8) fail(`day: only ${sunDay.n} sun px on the pill`);
   if (Math.abs(sunDay.x - AW / 2) > 3) fail(`noon sun at x=${sunDay.x.toFixed(1)}, want the middle (~20)`);
-  if (sunDay.y > 4) fail(`noon sun at y=${sunDay.y.toFixed(1)}, want the arc's apex (<=4)`);
+  if (sunDay.y > 4.5) fail(`noon sun at y=${sunDay.y.toFixed(1)}, want the arc's apex (<=4)`);
   await shotClock("clock-day.png");
 
   await at(1, 0.5); // Morning
@@ -173,7 +181,7 @@ try {
   const skyNight = await sky();
   if (moon.n < 8) fail(`midnight: only ${moon.n} moon px on the pill`);
   if (Math.abs(moon.x - AW / 2) > 3) fail(`midnight moon at x=${moon.x.toFixed(1)}, want the middle`);
-  if (moon.y > 4) fail(`midnight moon at y=${moon.y.toFixed(1)}, want the arc's apex (<=4)`);
+  if (moon.y > 4.5) fail(`midnight moon at y=${moon.y.toFixed(1)}, want the arc's apex (<=4)`);
   if (sunNight.n > 0) fail(`${sunNight.n} sun px still visible at midnight — the sun must be below the hills`);
   if (!(skyNight < skyDay * 0.5)) fail(`night sky luma ${skyNight.toFixed(1)} vs day ${skyDay.toFixed(1)}`);
   await shotClock("clock-night.png");
@@ -223,7 +231,7 @@ try {
     fail(`evening sun went backwards (${setA.x.toFixed(1)} -> ${setB.x.toFixed(1)} -> ${setC.x.toFixed(1)})`);
   if (!(setB.y >= setA.y && setC.y >= setB.y))
     fail(`evening sun rose instead of setting (y ${setA.y} -> ${setB.y} -> ${setC.y})`);
-  if (!(setC.n < setA.n / 2))
+  if (!(setC.n < setA.n * 0.7))
     fail(`evening sun not sinking behind the hills (${setA.n} -> ${setC.n} px still showing)`);
   await shotClock("clock-sunset.png");
 

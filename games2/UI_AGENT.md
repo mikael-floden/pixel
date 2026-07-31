@@ -36,7 +36,8 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   `wiki/site/wiki.css`, the light/dark choice (localStorage `wiki-theme`,
   shared with the wiki), and the `.ui-*` component recipes.
 - `client/src/clock.ts` — the day/night clock: the "Fern starfall" PILL, a
-  40x12 art-pixel landscape painted into a canvas and shown at x2. The sun
+  40x16 art-pixel landscape painted into a canvas and shown at x2, parked at
+  the game view's bottom-right corner (chat.ts reserves its lane). The sun
   and moon ride a continuous belt (exit right == enter left), so it needs no
   hand-off animation and the server needs no time freeze. Driven only by
   `setClockTime(f, night)` + `clockStar()`. See the CLOCK PILL section of

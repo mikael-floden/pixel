@@ -781,12 +781,26 @@ visible head/shoulders are ABOVE the surface).
   2026-07-31, chosen from a long design round: 5 -> 10 -> 20 -> 21
   candidates; the winner is the papercut family with Fern's greens, Sea
   glass's plain disc sun and Storm's starfield + falling star). A tiny
-  landscape sits top-centre, pass-through, between the two stat chips:
-  REAL PIXEL ART, a 40x12 art-pixel scene painted into an ImageData
-  buffer and shown at x2 (80x24 css) with `image-rendering:pixelated`,
-  so the grid is exact. Flat cut-paper layers, hard edges, NO dithering
-  and NO gradients (the earlier rounds were rejected for exactly those:
-  "you still use dithering and horizontal stripes a lot").
+  landscape sits at the GAME VIEW's bottom-right corner, pass-through,
+  10px from the right edge (the margin the XP chip keeps at the top) and
+  10px above the HUD rail via `--hud-h` — mirroring the chat log on the
+  left (maintainer 2026-07-31; it started top-centre between the stat
+  chips, which it was too wide for). REAL PIXEL ART: a 40x16 art-pixel
+  scene painted into an ImageData buffer and shown at x2 (80x32 css)
+  with `image-rendering:pixelated`, so the grid is exact. Flat cut-paper
+  layers, hard edges, NO dithering and NO gradients (the earlier rounds
+  were rejected for exactly those: "you still use dithering and
+  horizontal stripes a lot").
+  THE GEOMETRY IS THE APPROVED MOCK'S, VERBATIM — AH 16, HOR 10, AMP 7,
+  orb radius 3.4, the sun's radius-8 glow scaled by daylight, layer
+  bases 10/12/14. The first cut squeezed it into 12 rows with r=2.8 orbs
+  and no glow to save screen space, and the maintainer caught it on
+  sight: "your sun and moon look more squary". A 2.8 disc is 5x5 with
+  barely-nicked corners; 3.4 is 7x7 with real round shoulders, and the
+  glow dissolves the remaining corner pixels into the sky. If the pill
+  ever has to get smaller, drop SCALE — never re-tune the art.
+  Its corner is RESERVED: chat.ts caps the log and the input with
+  `--ml-chatw` (100vw - 112px) so they stop short of it.
   THE MOTION, and why the hand-off machinery is GONE: the sun crosses
   left->right and sets behind the hills on the right; the moon rises from
   the left at that same instant and makes the same trip. Each body is

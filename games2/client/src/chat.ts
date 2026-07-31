@@ -93,8 +93,12 @@ function injectStyles() {
   /* Bottom-left, floating just above the HUD (--hud-h is real px, set by
      hud.ts applyLayout). Lines are translucent theme chips so they stay
      readable over any world art in either theme. */
+  /* --ml-chatw: the width left over once the time-of-day pill has taken the
+     bottom-right corner (clock.ts: 82px wide, 10px from the edge) — the log
+     and the input both stop short of it instead of being drawn over. */
+  .ml-chatlog,.ml-chatinput{--ml-chatw:calc(100vw - 112px)}
   .ml-chatlog{position:fixed;left:10px;bottom:calc(var(--hud-h, 38.2dvh) + 40px);z-index:5;
-    max-width:min(78vw,460px);display:flex;flex-direction:column;align-items:flex-start;gap:3px;
+    max-width:min(78vw,460px,var(--ml-chatw));display:flex;flex-direction:column;align-items:flex-start;gap:3px;
     font:13px/1.4 var(--sans);color:var(--ink);pointer-events:none}
   .ml-chatline{padding:3px 9px;border-radius:9px;max-width:100%;overflow-wrap:anywhere;
     background:color-mix(in srgb, var(--bg) 78%, transparent);
@@ -104,7 +108,8 @@ function injectStyles() {
   .ml-chatline.ml-chatfade{opacity:0}
   .ml-chatwho{color:var(--accent-ink);font-weight:600}
   .ml-chatinput{position:fixed;left:10px;bottom:calc(var(--hud-h, 38.2dvh) + 10px);z-index:6;
-    width:min(78vw,380px);background:var(--surface);color:var(--ink);
+    width:min(78vw,380px,var(--ml-chatw));box-sizing:border-box;
+    background:var(--surface);color:var(--ink);
     border:1px solid var(--border);border-radius:10px;padding:8px 11px;
     font:14px/1.3 var(--sans);outline:none;box-shadow:var(--shadow)}
   .ml-chatinput:focus{border-color:var(--accent)}
