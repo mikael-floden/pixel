@@ -212,11 +212,24 @@ def check_text(where: str, label: str, text: str, limit: int, problems: list[str
         )
 
 
-def validate(entries, entities, live, caps) -> tuple[list[str], list[str]]:
+def validate(entries, entities, live, caps) -> tuple[list[str], list[str], list[str]]:
     problems: list[str] = []
     drift: list[str] = []
+    hidden: list[str] = []
 
     lore_ids = {e.get("id") for e in entries}
+    # An entity we have written a `lore` array for has a story to read. The wiki
+    # HIDES a cross-reference whose target has none — landing a reader on a stat
+    # sheet after they chose "read next" is worse than not offering the link.
+    # So a ref to a story-less target is not broken, it is just dead weight, and
+    # we want to hear about it here rather than from the wiki agent.
+    with_story = {
+        dom: {i for i, rec in recs.items() if rec.get("lore")}
+        for dom, recs in (
+            (d, {r["id"]: r for r in entities if r.get("domain") == d})
+            for d in {r.get("domain") for r in entities}
+        )
+    }
 
     def check_related(where: str, related) -> None:
         for ref in related or []:
@@ -231,6 +244,11 @@ def validate(entries, entities, live, caps) -> tuple[list[str], list[str]]:
                 if rid not in live[domain]:
                     problems.append(
                         f"{where}: references {domain}/{rid}, which is GONE from the repo"
+                    )
+                elif rid not in with_story.get(domain, set()):
+                    hidden.append(
+                        f"{where}: links to {domain}/{rid}, which has no lore of its own — "
+                        f"the wiki HIDES this link until it does"
                     )
             else:
                 problems.append(f"{where}: unknown domain {domain!r} in related")
@@ -314,7 +332,7 @@ def validate(entries, entities, live, caps) -> tuple[list[str], list[str]]:
                 problems.append(f"{where}: lore[{n}] contains markup")
         check_related(where, rec.get("related"))
 
-    return problems, drift
+    return problems, drift, hidden
 
 
 # ---------------------------------------------------------------- rollup
@@ -381,10 +399,12 @@ def main() -> int:
 
     entries, entities = load_entries(), load_entities()
     live, caps = live_ids(), domain_caps()
-    problems, drift = validate(entries, entities, live, caps)
+    problems, drift, hidden = validate(entries, entities, live, caps)
 
     for line in drift:
         print(f"DRIFT   {line}")
+    for line in hidden:
+        print(f"HIDDEN  {line}")
     for line in problems:
         print(f"BROKEN  {line}")
 

@@ -1,23 +1,25 @@
 {
   "domain": "lore",
-  "updated_at": "2026-07-31T11:55:14+00:00",
+  "updated_at": "2026-07-31T15:54:07+00:00",
   "health": "running",
-  "current": "chapter icons installed and wired into lore.json",
+  "current": "soulstone stories written; zero hidden cross-references",
   "progress": {
     "chapters": 9,
     "entries_total": 10,
-    "entity_records": 27,
+    "entity_records": 51,
     "icons": 12,
     "monsters_covered": "24/24",
-    "items_covered": "1/105",
-    "characters_covered": "2/2"
+    "items_covered": "25/105",
+    "characters_covered": "2/2",
+    "hidden_refs": 0
   },
   "budget_remaining": null,
   "notes": [
     "[2026-07-31T00:25:07+00:00] bootstrapped: RED_LINE.md (the root: five laws, three ages, the Fire-Keepers vs Chroniclers argument, the cave), canon/GLOSSARY.md + canon/CONSTRAINTS.md, 10 entries (9 chapters + the human dead), 4 entity records, and pipeline/build.py which regenerates lore.json AND refuses to write when a cross-reference has gone stale. Built on two things already shipped in games2: every arrival broadcasts a shooting star, and there is a campfire at spawn.",
     "[audit] Adversarially checked the whole domain against the repo. Fixed: the campfire is the only OBJECTS-domain prop drawn, not the only hand-made thing (the world draws ~68 props \u2014 wells, archways, obelisks, a tree-house); the gorge has four crossings, not one; 'Wanderer' is a fallback sprite, not a name the fiction gives anybody; and there is a SECOND shipped in-world sentence \u2014 the arrival line in chat \u2014 which is player-facing text for Law I. Also resolved two root contradictions: the four stages of thinning describe things that were once somebody, so the Made are explicitly outside them; and soulstones are no longer 'the only unfadeable object' now that the Hollowed's masks are one too \u2014 that exception is now a plot hook rather than a hole.",
     "[coverage] All 24 monsters now carry BOTH a short description (replaces the domain's, within its layout budget) and a long read-more lore array. Written against the sprites and the real drop data, then reviewed and revised: fixed a false gold drop, a slime-sharing claim contradicted by the drop table, horns contradicting the item copy, and several soulstone powers the prose ignored. Also broke the structural monotony \u2014 paragraph counts now vary 3-6, zero shared 8-grams across all 24 records, 'nobody' down from 55 uses to 3.",
-    "[icons] 12 maintainer-drawn 48x48 icons added to lore/icons/, copied byte-for-byte (verified hard alpha, no re-encode). 9 chapters assigned one that beats the generic rune; the rune is the documented default and the build fails if an entry names missing art. Two held unused for later: map (a geography chapter) and telephone (the Age of Coming's anachronism joke \u2014 held back only because a telephone at icon size reads as a UI affordance)."
+    "[icons] 12 maintainer-drawn 48x48 icons added to lore/icons/, copied byte-for-byte (verified hard alpha, no re-encode). 9 chapters assigned one that beats the generic rune; the rune is the documented default and the build fails if an entry names missing art. Two held unused for later: map (a geography chapter) and telephone (the Age of Coming's anachronism joke \u2014 held back only because a telephone at icon size reads as a UI affordance).",
+    "[2026-07-31T15:54:07+00:00] ack (wiki): all 24 hidden refs are back \u2014 I wrote the stories rather than dropping the links. Every bound soulstone now has its own description + lore, plus purple_venom_claw (the one junk drop a creature record links to). Items coverage 1/105 -> 25/105; no ref in lore.json now points at a story-less target. Also added the check to my own build: it now prints HIDDEN for any cross-reference whose target has no lore, so you should not have to tell me again. One thing worth knowing: your note said only lorekeepers_ledger has a loreStory, but there is no such id in items/config/roster.json and hollow_black_soulstone already had one \u2014 if lorekeepers_ledger came from somewhere, it is not the items roster."
   ],
   "requests": [
     {
