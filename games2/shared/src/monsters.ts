@@ -167,7 +167,18 @@ export const MONSTER_DODGE_LOOKAHEAD = 26; // wu — MINIMUM dodge lookahead (sc
  * CLAMPED to MONSTER_SEP_RELAX_SPEED·dt (a firm shove that never teleports),
  * and an EXACTLY stacked pair (d≈0 — the maintainer's two-mammoths-one-spot
  * screenshot) splits along the caller-seeded `tieBreak` direction. Pure — the
- * caller validates the move against terrain/zone before applying it. */
+ * caller validates the move against terrain/zone before applying it.
+ *
+ * HOT PATH (perf 2026-07-31): the server calls this once per monster per tick
+ * against every body, so the_island2's 160 monsters run ~26k pair tests 20×a
+ * second. It profiled at 12.9% of the server's busy CPU — the biggest
+ * game-logic cost after the roam loop itself. The comparison is therefore done
+ * on the SQUARED distance and the square root is taken ONLY for a pair that
+ * actually overlaps (a handful per tick): `Math.hypot` is a variadic with
+ * overflow/underflow guards and is far slower than a plain multiply-add, and
+ * these coordinates are ordinary world units with no overflow risk. Exactly
+ * the same decisions come out — `d >= target` ⟺ `d² >= target²` for
+ * non-negative values — so behaviour is unchanged. */
 export function separationPush(
   bodies: Array<{ x: number; y: number; r: number }>,
   self: number,
@@ -175,27 +186,32 @@ export function separationPush(
   tieBreak = 0, // radians — direction to split an exactly stacked pair along
 ): { dx: number; dy: number } | null {
   const me = bodies[self];
+  const mx = me.x;
+  const my = me.y;
+  const mr = me.r + MONSTER_SEP_MARGIN;
   let px = 0;
   let py = 0;
   for (let i = 0; i < bodies.length; i++) {
     if (i === self) continue;
     const b = bodies[i];
-    const dx = me.x - b.x;
-    const dy = me.y - b.y;
-    const d = Math.hypot(dx, dy);
-    const target = me.r + b.r + MONSTER_SEP_MARGIN;
-    if (d >= target) continue;
-    if (d < 1e-6) {
+    const dx = mx - b.x;
+    const dy = my - b.y;
+    const target = mr + b.r;
+    const d2 = dx * dx + dy * dy;
+    if (d2 >= target * target) continue; // comfortable — no sqrt needed
+    if (d2 < 1e-12) {
+      // d < 1e-6, i.e. exactly stacked.
       px += Math.cos(tieBreak) * target;
       py += Math.sin(tieBreak) * target;
       continue;
     }
+    const d = Math.sqrt(d2);
     const o = target - d; // penetration depth
     px += (dx / d) * o;
     py += (dy / d) * o;
   }
   if (px === 0 && py === 0) return null;
-  const l = Math.hypot(px, py);
+  const l = Math.sqrt(px * px + py * py);
   const step = Math.min(l, MONSTER_SEP_RELAX_SPEED * dt);
   return { dx: (px / l) * step, dy: (py / l) * step };
 }

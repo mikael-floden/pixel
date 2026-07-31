@@ -394,6 +394,22 @@ visible head/shoulders are ABOVE the surface).
   27.3wu vs its 28wu target. Tests: radius-scaled dodge + separationPush
   suites (monsters.sim.test.ts), radius-fraction pad relax
   (monsters.test.ts reads the real manifest radii).
+- **`separationPush` is the server's hot loop** (perf 2026-07-31): it runs once
+  per monster against every body, so the_island2's 160 monsters do ~26k pair
+  tests 20× a second. Profiled at **12.9% of the server's busy CPU** — the
+  biggest game-logic cost after the roam loop itself. It now rejects on the
+  SQUARED distance and takes `Math.sqrt` only for a pair that actually overlaps
+  (a handful per tick): `Math.hypot` is a variadic with overflow/underflow
+  guards and is ~16× more expensive here, and world-unit coordinates have no
+  overflow risk. `d >= target` ⟺ `d² >= target²` for non-negative values, so
+  the decisions are identical — verified against the previous implementation on
+  the real 161-body the_island2 layout: **0 disagreements, worst push component
+  delta 8.9e-16** (last-ulp float noise). Isolated: **1.483 → 0.0915 ms per
+  tick (16.2×)**. End to end, alternating server runs with one client on
+  the_island2: **~19.9% → ~16.8% of a core (−15%)**. If a future change needs a
+  distance here, keep it squared — this loop is O(N²) in the monster count and
+  is the first thing that will hurt when worlds get busier. (The real next step
+  if it ever matters again is a broad-phase, not more micro-tuning.)
 - **ART-MEASURED shadows + anchors, PER DIRECTION** (maintainer 2026-07-30,
   two rounds: RED=too big, GREEN=too small, BLUE="flying"; round 2 after the
   first fix STILL floated monsters: "a constant theme ... Why does it still
