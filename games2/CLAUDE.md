@@ -38,6 +38,39 @@ per-file ownership split lives in `UI_AGENT.md`. (The first-generation `games/`+
   `/assets/...` urls); `build-worlds.mjs` discovers `maps2/worlds/*/world.json`
   → `client/public/worlds.json` (the picker). Regenerate after graphics change
   (`npm run manifest`).
+- **LOSSLESS WEBP IS THE PRODUCTION IMAGE FORMAT.** Every art domain the game
+  loads has migrated (verified 2026-07-31 by loading the real built client:
+  characters2 1419, monsters 9733, maps2 35, objects 153, items 105, wiki 12,
+  tiles2 8744 — **zero PNGs** in any of them, and zero PNGs left in the Vite
+  bundle). New art ships WebP; convert with `games2/scripts/to-webp.py`
+  (lossless + `exact=True` — see the rules further down, they are not optional).
+  The FOUR deliberate PNG exceptions, none of them misses:
+  1. `client/public/icons/*.png` — PWA icons. `manifest.webmanifest` declares
+     them `"type": "image/png"` and iOS `apple-touch-icon` requires PNG.
+  2. `client/ui-src/**` and `scripts/assets/**` — the maintainer's hand-drawn
+     SOURCE art. Build inputs, never served; the baked output in
+     `client/public/ui2/` is already WebP.
+  3. `server/test/fixtures/*.png` — the WebP gate's comparison pair. The whole
+     point is decoding a PNG and its WebP twin and asserting they match.
+  4. `tiles2/docs/`, `lore/icons/` — documentation art, not game art.
+- ⚠️ **THE MIGRATION IS NOT FINISHED, AND THE FALLBACKS ARE LOAD-BEARING UNTIL
+  IT IS.** `maps2` has converted its tile ART but has NOT re-exported its
+  `world.json` files: all **4,693** tile/prop paths across the 10 worlds still
+  name `.png`, and 0 name `.webp`. Measured on a real load, the server's
+  extension fallback fires **554 times on the_island2** and **218 on
+  ring_test** — every single ground tile. So do NOT "clean up" any of the
+  following as dead transitional code; deleting them today blanks the ground in
+  every world:
+  - the `.png`↔`.webp` sibling fallback in `server/src/index.ts` (the primary
+    path — it costs one stat on a miss and no extra round-trip);
+  - `WorldScene.loadImageEitherExt` / `onLoadMiss` (the secondary path — it
+    covers `npm run dev`, where Vite serves `/assets` and the server code never
+    runs, so dev needs it for exactly the same reason);
+  - `imagelib.mjs`'s PNG branches and `resolveImg`.
+  ONCE maps2 re-exports (`world.json` naming `.webp`), re-measure the fallback
+  hit count; when it is 0 across every world, the two runtime fallbacks become
+  genuinely dead and can go. `imagelib`'s PNG support should stay regardless —
+  it is what the gate tests, and it costs nothing.
 - **PNG *and* lossless WebP — art domains may convert freely** (games agent
   2026-07-31, unblocking the ui-agent's WebP migration: ~128 MB of art → ~69 MB,
   a cold load's art 12.8 MB → ~6.3 MB). The builders used to hand-parse the PNG

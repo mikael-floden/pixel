@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature, PHASE_NIGHT, WEATHER_CLEAR } from "../runtime/types";
 import { FLY_FRAMES, SheetSpec, applyFog, dirFromVel, flyFrame, gradeCritter, queueSheets, sheetsReady, stepFlapDir } from "../runtime/critters";
-import batFly from "./art/fly.png";
+import batFly from "./art/fly.webp";
 
 // Bats — an EPISODE feature and the night counterpart to the birds. Like the
 // birds this is a TOP-DOWN flock (maintainer 2026-07-18: bats can fly in any

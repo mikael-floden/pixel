@@ -4,22 +4,22 @@ import { FLY_FRAMES, SheetSpec, applyFog, applyShadow, dirFromVel, flyFrame, gra
 import { birdDensity } from "../runtime/density";
 // 8 hand-made PixelLab bird TYPES, each an 8-direction object with a flapping
 // fly animation and a still base (for perching). Packed one folder per type.
-import bird1Fly from "./art/bird1/fly.png";
-import bird1Still from "./art/bird1/still.png";
-import bird2Fly from "./art/bird2/fly.png";
-import bird2Still from "./art/bird2/still.png";
-import bird3Fly from "./art/bird3/fly.png";
-import bird3Still from "./art/bird3/still.png";
-import bird4Fly from "./art/bird4/fly.png";
-import bird4Still from "./art/bird4/still.png";
-import bird5Fly from "./art/bird5/fly.png";
-import bird5Still from "./art/bird5/still.png";
-import bird6Fly from "./art/bird6/fly.png";
-import bird6Still from "./art/bird6/still.png";
-import bird7Fly from "./art/bird7/fly.png";
-import bird7Still from "./art/bird7/still.png";
-import bird8Fly from "./art/bird8/fly.png";
-import bird8Still from "./art/bird8/still.png";
+import bird1Fly from "./art/bird1/fly.webp";
+import bird1Still from "./art/bird1/still.webp";
+import bird2Fly from "./art/bird2/fly.webp";
+import bird2Still from "./art/bird2/still.webp";
+import bird3Fly from "./art/bird3/fly.webp";
+import bird3Still from "./art/bird3/still.webp";
+import bird4Fly from "./art/bird4/fly.webp";
+import bird4Still from "./art/bird4/still.webp";
+import bird5Fly from "./art/bird5/fly.webp";
+import bird5Still from "./art/bird5/still.webp";
+import bird6Fly from "./art/bird6/fly.webp";
+import bird6Still from "./art/bird6/still.webp";
+import bird7Fly from "./art/bird7/fly.webp";
+import bird7Still from "./art/bird7/still.webp";
+import bird8Fly from "./art/bird8/fly.webp";
+import bird8Still from "./art/bird8/still.webp";
 
 // Birds — an EPISODE feature and the DAYTIME counterpart to bats. This is a
 // TOP-DOWN world (maintainer 2026-07-18: "stop thinking as if this is a

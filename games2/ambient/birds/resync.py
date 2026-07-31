@@ -6,8 +6,8 @@ each with a 16-frame "fly" animation and 8 still rotations. When a bird is
 upgraded in the PixelLab UI, this mirrors it back into the packed sheet layout
 the runtime loads (runtime/critters.ts):
 
-  fly.png   = 16 flap frames (columns) x 8 facings (rows)   -> 544x272 @ 34px
-  still.png = 8 facings (columns)                           -> 272x34  @ 34px
+  fly.webp  = 16 flap frames (columns) x 8 facings (rows)   -> 544x272 @ 34px
+  still.webp= 8 facings (columns)                           -> 272x34  @ 34px
 
 Rows/columns follow critters.ts DIR_INDEX order (S, SE, E, NE, N, NW, W, SW),
 and the objects are authored at the runtime's native 34x34 so frames pack
@@ -92,8 +92,18 @@ def resync(name, oid, key):
 
     dst = os.path.join(ART, name)
     os.makedirs(dst, exist_ok=True)
-    still.save(os.path.join(dst, "still.png"))
-    fly.save(os.path.join(dst, "fly.png"))
+    # LOSSLESS WebP — the project's art format since 2026-07-31, and birds.ts
+    # now imports .webp directly. `lossless=True` and `exact=True` are BOTH
+    # non-default in Pillow: without the first you silently get lossy VP8 and
+    # ringing around every hard pixel-art edge; without the second libwebp
+    # rewrites the RGB under fully-transparent pixels. Same flags the shared
+    # converter uses (games2/scripts/to-webp.py). If this ever goes back to
+    # .png, update the imports in birds.ts in the same commit — a mismatch
+    # leaves the old .webp on disk and the birds silently keep flying with
+    # stale art.
+    wp = dict(lossless=True, quality=100, method=4, exact=True)
+    still.save(os.path.join(dst, "still.webp"), "WEBP", **wp)
+    fly.save(os.path.join(dst, "fly.webp"), "WEBP", **wp)
     print(f"{name}: resynced from {oid}  (still {still.size}, fly {fly.size})")
 
 

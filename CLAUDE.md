@@ -43,6 +43,30 @@ do not add domain-specific files to the repo root.
 - Repo root holds only shared/repo-level files: `README.md`, `CLAUDE.md`,
   `requirements.txt`, `.gitignore`, `.env` (gitignored), `.dockerignore`.
 
+**LOSSLESS WEBP IS THE IMAGE FORMAT FOR ALL GAME ART.** Project default since
+2026-07-31; every domain the game loads has migrated (characters2, monsters,
+tiles2, maps2, objects, items, wiki — zero PNGs between them). **Ship new art as
+WebP.** VP8L is mathematically lossless, so this is not a quality trade: it is
+the same pixels at ~33% of the bytes.
+
+- Convert with the shared, verified script: `python3 games2/scripts/to-webp.py
+  --write --replace <path>`. It re-decodes every file and refuses to replace one
+  that does not round-trip exactly.
+- **`lossless=True` and `exact=True` are BOTH non-default in Pillow.** Without
+  the first you silently get lossy VP8 and ringing on every hard pixel-art edge
+  — and lossy WILL move the foot anchors, shoulder waterlines and monster
+  contact points the game renders with. Without the second, libwebp rewrites
+  the RGB underneath fully-transparent pixels. If you write your own encoder
+  call, pass both.
+- A FULLY TRANSPARENT frame is a valid **28-byte** file (common at the end of
+  die/fade animations). Never write a "smaller than N bytes means corrupt"
+  guard — it is simply false for WebP.
+- If your domain ships a manifest, put the REAL extension in it; the game reads
+  it and never guesses. `games2/scripts/imagelib.mjs` reads both formats, so a
+  stale `.png` path in your JSON keeps working while you convert.
+- The deliberate PNG exceptions are PWA icons, hand-drawn build-source art,
+  the WebP gate's test fixtures, and docs images — see `games2/CLAUDE.md`.
+
 **`.dockerignore` decides what reaches the DEPLOYED GAME.** It is an allowlist:
 a new top-level domain is invisible to the game image until it is added there,
 and a subtree can be excluded from the image while staying in the repo. If an
