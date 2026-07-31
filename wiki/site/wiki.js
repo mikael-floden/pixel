@@ -282,7 +282,9 @@ function makePlayer(entity, kind) {
       frameImgs = Array.from({ length: clip.frames }, (_, i) => {
         const im = new Image();
         im.onload = () => { if (i === 0) draw(); };
-        im.src = assetUrl(`${clip.framesDir}/${i}.${clip.frameExt ?? "png"}`);
+        // The builder measured how this domain names its frames — "0.png" or
+        // "00.webp". Never assume: the two domains differ.
+        im.src = assetUrl(`${clip.framesDir}/${String(i).padStart(clip.framePad ?? 1, "0")}.${clip.frameExt ?? "png"}`);
         return im;
       });
     }

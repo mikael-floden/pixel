@@ -59,10 +59,19 @@ function art(relNoExt) {
 }
 /** Matches one image of a set: art_re("\\d+") → /^\d+\.(webp|png)$/ */
 const artRe = (stem) => new RegExp(`^${stem}\\.(${ART_EXTS.join("|")})$`, "i");
-/** The extension actually used inside a directory of numbered frames, so the
- *  viewer can build frame URLs without probing. Defaults to png for an empty
- *  directory — nothing will be requested anyway. */
-const frameExt = (absDir) => (listFiles(absDir, artRe("\\d+"))[0]?.split(".").pop() ?? "png").toLowerCase();
+/** How a directory of numbered frames names its files, so the viewer can build
+ *  frame URLs without probing: the extension, and the zero-padding width.
+ *  monsters ship "00.png", characters2 ship "0.png" — a viewer that assumes
+ *  either one 404s on the other. Today only characters2 reaches this path (every
+ *  monster clip has a strip), which is exactly why the mismatch has gone
+ *  unnoticed; naming it here means a monster that loses its strip degrades to
+ *  frames instead of to nothing. */
+function frameNaming(absDir) {
+  const first = listFiles(absDir, artRe("\\d+"))[0];
+  if (!first) return { frameExt: "png", framePad: 1 };
+  const [stem, ext] = [first.slice(0, first.lastIndexOf(".")), first.slice(first.lastIndexOf(".") + 1)];
+  return { frameExt: ext.toLowerCase(), framePad: stem.length };
+}
 
 /** Pixel dimensions of a PNG or a WebP, read from the header. Zero
  *  dependencies, and it must stay that way: this runs inside the Docker build.
@@ -155,7 +164,7 @@ function buildMonsters() {
           fw: dims ? Math.round(dims.w / frames) : frameW,
           fh: dims ? dims.h : frameH,
           framesDir: `monsters/${id}/animations/${folder}/${dir}`,
-          frameExt: frameExt(frameDir),
+          ...frameNaming(frameDir),
           gif: isFile(join(ROOT, `monsters/${id}/animations/${folder}__${dir}.gif`)) ? `monsters/${id}/animations/${folder}__${dir}.gif` : null,
         };
       }
@@ -225,7 +234,7 @@ function buildCharacters() {
       for (const dir of DIRS) {
         const frameDir = join(base, id, "animations", folder, dir);
         const frames = listFiles(frameDir, artRe("\\d+")).length;
-        if (frames) dirs[dir] = { frames, framesDir: `characters2/humans/${id}/animations/${folder}/${dir}`, frameExt: frameExt(frameDir) };
+        if (frames) dirs[dir] = { frames, framesDir: `characters2/humans/${id}/animations/${folder}/${dir}`, ...frameNaming(frameDir) };
       }
       if (Object.keys(dirs).length) anims[state] = { folder, dirs, gif: isFile(join(base, id, "animations", folder, "preview.gif")) ? `characters2/humans/${id}/animations/${folder}/preview.gif` : null };
     }

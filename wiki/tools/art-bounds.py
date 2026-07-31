@@ -75,7 +75,8 @@ def clip_bounds(entity: dict, clip: dict) -> list[int] | None:
     elif clip.get("framesDir"):
         for i in range(clip.get("frames") or 0):
             ext = clip.get("frameExt") or "png"
-            one = frames_mask(os.path.join(ROOT, clip["framesDir"], f"{i}.{ext}"), cw, 1)
+            name = f"{i:0{clip.get('framePad') or 1}d}.{ext}"
+            one = frames_mask(os.path.join(ROOT, clip["framesDir"], name), cw, 1)
             if one is None:
                 continue
             m = one if m is None else (m | one if m.shape == one.shape else m)
