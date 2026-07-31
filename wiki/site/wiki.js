@@ -1246,16 +1246,21 @@ function viewTileInstance(typeId, rel) {
       h("div", { class: "portrait checker tile-portrait" }, h("img", { src: assetUrl(rel), alt: cur.name })),
       h("div", { class: "meta" },
         h("h1", {}, cur.name.replace(/\.png$/, "")),
-        h("p", { class: "muted" },
-          `${t.name} · ${cur.group.label} · ${cur.group.sheet}`,
-          rank ? h("span", { class: "pill ok", style: "margin-left:8px", title: rank === "plain" ? "THE canonical clean tile of this type" : "In the maps agent's clean-base palette" }, rank === "plain" ? "canonical clean base" : "clean base") : null),
-        (() => {
-          const uses = tileUses(rel);
-          return h("p", { class: "muted" }, uses
-            ? h("span", { class: "pill ok" }, `used ${uses.toLocaleString()}× in the world`)
-            : h("span", { class: "pill warn", title: "No cell or prop in the world uses this tile" }, "unused"));
-        })(),
-        state.admin ? h("p", { class: "muted" }, h("code", {}, id)) : null,
+        // ONE row of pills, not two stacked lines: a clean-base tile carries
+        // an extra pill, and stacking made its header taller than an
+        // ordinary tile's — so paging shifted the page (maintainer
+        // 2026-07-31). The type name is already in the back-link above and
+        // on the thumbnail; the group label is what the first pill says.
+        h("div", { class: "pill-row" },
+          rank ? h("span", { class: "pill ok", title: rank === "plain" ? `THE canonical clean tile of ${t.name}` : "In the maps agent's clean-base palette" }, cur.group.label) : null,
+          (() => {
+            const uses = tileUses(rel);
+            return uses
+              ? h("span", { class: "pill ok" }, `used ${uses.toLocaleString()}× ${uses === 1 ? "time" : "times"}`)
+              : h("span", { class: "pill warn", title: "No cell or prop in the world uses this tile" }, "unused");
+          })()),
+        // Sheet id and file path are pipeline facts — admin only.
+        state.admin ? h("p", { class: "muted" }, `${cur.group.label} · ${cur.group.sheet}`, " ", h("code", {}, id)) : null,
         feedbackRow("tiles", id))),
     sceneBox);
 }

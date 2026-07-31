@@ -504,6 +504,11 @@ a.stat-tile:hover { text-decoration: none; border-color: var(--border-strong); }
   background: var(--accent); color: #fff; pointer-events: none; opacity: 0.92;
 }
 .tile-portrait img { image-rendering: pixelated; width: 128px; height: 128px; }
+/* One line of pills under a title. Wrapping is allowed but must not be
+   needed at phone width — two pills stacked made a clean-base tile's header
+   taller than an ordinary tile's, which shifted the page while paging. */
+.pill-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 2px; }
+
 .iso-scenes { display: grid; gap: 14px; margin-top: 16px; }
 .iso-scene { border: 1px solid var(--border); border-radius: 12px; background: var(--surface); padding: 12px 14px; }
 .iso-hint { margin: 2px 0 10px; font-size: 12.5px; }
