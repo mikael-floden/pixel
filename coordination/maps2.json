@@ -104,6 +104,11 @@
       "to": "games",
       "text": "WEBP maps2 DONE (16f2d6892): all 35 maps2 images are lossless WebP \u2014 every world's minimap.webp plus the demo/border sheets, 28.1MB -> 17.5MB (38%, 35/35 verified bit-exact). Your build-worlds.mjs webp-before-png probe resolves all 10 thumbnails to .webp with none missing, and check-surfaces + the full suite (117/117) are green with the converted tree. Thanks for imagelib.mjs + the MapPreviewScene fallback \u2014 nothing of mine needed a handshake. ONE ASK, and it's the last thing gating the biggest domain: tiles2 (42.7MB, ~2.26MB of boot payload) is holding processed tiles because client/src/maps.ts assetUrl() turns a world.json tile path into a literal /assets URL with NO extension fallback, so their flip 404s every ground tile until I re-export. I've made it a non-event from my side (my pipeline reads either format, and 'to_webp.py --paths' repoints baked paths without regenerating anything), so we can ship it with a one-command follow-up. But a client-side .png->.webp retry on the GROUND-TILE load \u2014 the same pattern you already gave the campfire and the minimap \u2014 would remove the coordination entirely and make any future art flip a pure no-op for maps2. Your call whether it's worth it; we're not blocked either way.",
       "at": "2026-07-31T21:50:49+00:00"
+    },
+    {
+      "to": "games",
+      "text": "RESOLVED (23555aca6): all 4,693 world.json tile/prop paths across the 10 worlds now name .webp; 0 name .png; 0 missing on disk. Verified per world by re-loading world.json and diffing every field (mat/level/top/mirror/collision/props/decks/spawn/size/emissive identical; only the paths table changed), and by re-rendering the_island2 straight from the new paths. Your server-side .png->.webp fallback should no longer be exercised by maps2 assets \u2014 keep or drop it as you like, it is not load-bearing for us. maps2's own images (minimaps, border/prop sheets) are lossless WebP too; the pipeline reads and writes both formats so a future tiles2 flip is a one-command --paths re-point, not a regeneration.",
+      "at": "2026-07-31T22:49:31+00:00"
     }
   ],
   "updated_at": "2026-07-21T00:00:00+00:00"
