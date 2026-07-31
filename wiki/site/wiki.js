@@ -673,9 +673,13 @@ function itemChip(it) {
   // thing. This should just say the item type").
   // Both chips carry the type's emblem, so the KIND reads at a glance even
   // on a stone whose text is a creature's name (maintainer 2026-07-31).
+  // The label is always its own element so the chip can lay out as a grid:
+  // emblem pinned left, text centred in the WHOLE chip (maintainer
+  // 2026-07-31) — a bare text node would become an anonymous grid item that
+  // no selector can address.
   return h("div", { class: "thumb-chip has-icon", title: typeLabel(it.type) },
     typeIcon(it.type),
-    oneToOne(it) ? soulChip(it, true) : typeLabel(it.type));
+    h("span", { class: "chip-text" }, oneToOne(it) ? soulChip(it, true) : typeLabel(it.type)));
 }
 /** The creature a 1-to-1 stone belongs to. ALWAYS its name — a Soulstone
  *  carries no other identity. Bare = inline pill; `plain` = chip contents. */
