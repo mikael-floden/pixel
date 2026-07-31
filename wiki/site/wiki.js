@@ -706,7 +706,7 @@ function pagedPanel({ title, pages, aside = null, klass = "" }) {
   };
   draw();
   // READING ORDER (maintainer 2026-07-31): title, then the prose, then the
-  // page control at the BOTTOM LEFT where the text ends, then "Read next"
+  // page control at the BOTTOM RIGHT where the text ends, then "Read next"
   // last of all. The pager and the links used to sit above the prose, between
   // the reader and the thing they opened the card for.
   const panel = h("div", { class: `panel${klass ? ` ${klass}` : ""}` },

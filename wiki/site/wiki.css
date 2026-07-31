@@ -620,7 +620,7 @@ button.drop-row {
   border-left: 3px solid var(--accent); color: var(--muted);
 }
 .story-body hr { border: 0; border-top: 1px solid var(--border); margin: 16px 0; }
-/* The page control sits where the text ENDS, bottom-left, with the counter
-   left of the buttons so ‹ › keep their spot as "9 / 16" widens. */
-.page-rail { display: flex; align-items: center; gap: 8px; margin: 12px 0 4px; }
+/* The page control sits where the text ENDS, bottom-RIGHT, with the counter
+   still left of the buttons so ‹ › keep their spot as "9 / 16" widens. */
+.page-rail { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin: 12px 0 4px; }
 .page-rail .detail-count { margin: 0; }
