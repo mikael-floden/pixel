@@ -281,6 +281,12 @@ button { font: inherit; cursor: pointer; }
 .gold-coin { flex: none; image-rendering: pixelated; }
 .card .thumb img.gold-coin, .gold-tag .gold-coin { max-width: none; max-height: none; }
 .gold-tag b { font-size: 14px; font-variant-numeric: tabular-nums; }
+/* The type emblem on a chip. Same rule as every other bit of pixel art:
+   the markup sets the size to a whole multiple of the authored 32, and CSS
+   must not squeeze it. */
+.thumb-chip.has-icon { display: flex; align-items: center; justify-content: center; gap: 4px; padding: 2px 8px; }
+.type-icon { flex: none; image-rendering: pixelated; }
+.card .thumb img.type-icon { max-width: none; max-height: none; }
 /* Browser controls: filter by type, sort by price or name, flip direction. */
 .item-tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 12px 0 4px; }
 .item-tools .seg button { display: inline-flex; align-items: center; justify-content: center; min-height: 34px; }

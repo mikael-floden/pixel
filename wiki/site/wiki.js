@@ -649,6 +649,18 @@ const itemSources = (it) => it?.droppedBy ?? [];
  *  silently change what players read. */
 const TYPE_NAMES = { MISC: "Miscellaneous" };
 const typeLabel = (t) => TYPE_NAMES[t] ?? state.data.itemTypes?.[t]?.label ?? t ?? "Item";
+/** The maintainer's generic emblem for a whole item TYPE (a pearl for the
+ *  junk, a stone for the souls) — the at-a-glance "what kind of thing is
+ *  this" that rides on the chip. Authored 32×32 at 1×, drawn at 32 and never
+ *  resampled. Keyed by tag: a type with no emblem simply gets none, so a new
+ *  type is a file drop, not a code change. */
+const TYPE_ICONS = { MISC: "type-misc", SOUL: "type-soul" };
+function typeIcon(t, size = 32) {
+  const icon = TYPE_ICONS[t];
+  return icon
+    ? h("img", { class: "type-icon", src: `icons/${icon}.png`, alt: "", width: String(size), height: String(size), loading: "lazy" })
+    : null;
+}
 /** The chip under an item's picture. For a 1-to-1 type it names the creature —
  *  every Soulstone is literally called "Soulstone", so the creature is the
  *  only thing that tells two of them apart. Decisions key off the SOURCE
@@ -659,8 +671,11 @@ function itemChip(it) {
   // creature. Everything else just says WHAT IT IS — not how rare it is
   // (maintainer 2026-07-31: "I don't like the Common/Uncommon/Rare/Epic
   // thing. This should just say the item type").
-  if (oneToOne(it)) return h("div", { class: "thumb-chip" }, soulChip(it, true));
-  return h("div", { class: "thumb-chip" }, typeLabel(it.type));
+  // Both chips carry the type's emblem, so the KIND reads at a glance even
+  // on a stone whose text is a creature's name (maintainer 2026-07-31).
+  return h("div", { class: "thumb-chip has-icon", title: typeLabel(it.type) },
+    typeIcon(it.type),
+    oneToOne(it) ? soulChip(it, true) : typeLabel(it.type));
 }
 /** The creature a 1-to-1 stone belongs to. ALWAYS its name — a Soulstone
  *  carries no other identity. Bare = inline pill; `plain` = chip contents. */
