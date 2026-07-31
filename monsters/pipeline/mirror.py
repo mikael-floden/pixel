@@ -48,6 +48,22 @@ from pixellab_client import DIRECTIONS_8, PixelLabClient
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RESERVED_DIRS = {"pipeline", "config", "spec"}
+
+
+def _fmt():
+    """On-disk art format (config/format.json). The pipeline writes this and
+    reads whichever of .png/.webp exists, so flipping the repo to WebP is a
+    one-line config change plus pipeline/to_webp.py."""
+    p = os.path.join(ROOT, "config", "format.json")
+    try:
+        with open(p) as f:
+            c = json.load(f)
+        return c.get("art_ext", ".png"), c.get("webp") or {}
+    except (OSError, ValueError):
+        return ".png", {}
+
+
+ART_EXT, WEBP_OPTS = _fmt()
 STATES = ("idle", "walk", "angry", "attack", "die")
 PREVIEW_MS = 120
 
@@ -96,9 +112,20 @@ def iter_manifests():
     return out
 
 
+def _art_path(path):
+    """Force an art path to the configured extension."""
+    return os.path.splitext(path)[0] + ART_EXT
+
+
 def _save_png(img, path):
+    """Save one art file in the configured format (name kept for callers)."""
+    path = _art_path(path)
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    img.save(path)
+    if ART_EXT == ".webp":
+        img.save(path, "WEBP", lossless=WEBP_OPTS.get("lossless", True),
+                 method=WEBP_OPTS.get("method", 6), exact=WEBP_OPTS.get("exact", True))
+    else:
+        img.save(path)
 
 
 def _normalize(img, w, h):
@@ -122,7 +149,7 @@ def _save_frames(frames, dir_path):
         shutil.rmtree(dir_path)
     os.makedirs(dir_path, exist_ok=True)
     for i, f in enumerate(frames):
-        f.save(os.path.join(dir_path, f"{i:02d}.png"))
+        _save_png(f, os.path.join(dir_path, f"{i:02d}{ART_EXT}"))
 
 
 def _save_strip(frames, path):
@@ -225,10 +252,10 @@ def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None,
         if img is None:
             continue
         img = _normalize(img, w, h)
-        _save_png(img, os.path.join(mdir, "rotations", f"{d}.png"))
+        _save_png(img, os.path.join(mdir, "rotations", f"{d}{ART_EXT}"))
         if d == "south":
-            _save_png(img, os.path.join(mdir, "sprite.png"))
-        rots[d] = _rel(os.path.join(mdir, "rotations", f"{d}.png"))
+            _save_png(img, os.path.join(mdir, "sprite" + ART_EXT))
+        rots[d] = _rel(os.path.join(mdir, "rotations", f"{d}{ART_EXT}"))
 
     # animations
     prev_anims = prev.get("animations") or {}
@@ -272,14 +299,14 @@ def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None,
             frames_by_dir[direction] = frames
             fdir = os.path.join(mdir, "animations", key, direction)
             _save_frames(frames, fdir)
-            strip = os.path.join(mdir, "animations", f"{key}__{direction}.png")
+            strip = os.path.join(mdir, "animations", f"{key}__{direction}{ART_EXT}")
             gif = os.path.join(mdir, "animations", f"{key}__{direction}.gif")
             _save_strip(frames, strip)
             _save_gif(frames, gif)
             saved[direction] = {
                 "frames": len(frames),
                 "strip": _rel(strip), "gif": _rel(gif),
-                "frame_paths": [_rel(os.path.join(fdir, f"{i:02d}.png"))
+                "frame_paths": [_rel(os.path.join(fdir, f"{i:02d}{ART_EXT}"))
                                 for i in range(len(frames))],
                 "lm": lm, "src_frames": len(urls), "sub": sub,
             }
@@ -290,13 +317,10 @@ def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None,
                 print(f"  !! {key}: downloads failed entirely — keeping previous mirror")
                 anims[key] = prev_anims[key]
             continue
-        rot_gif = os.path.join(mdir, "animations", f"{key}__rotating.gif")
-        save_rotating_gif(frames_by_dir, rot_gif)
         anims[key] = {
             "group_id": g.get("group_id"),
             "source_name": g["name"],
             "directions": saved,
-            "rotating_gif": _rel(rot_gif),
         }
         dirs_n = len(saved)
         print(f"  {key}: {dirs_n} dir(s) "
@@ -326,7 +350,7 @@ def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None,
         # by "size" and scale/anchor by "native_size"
         "native_size": {"width": w, "height": h},
         "pad": {"x": 0, "y": 0},
-        "sprite": _rel(os.path.join(mdir, "sprite.png")),
+        "sprite": _rel(os.path.join(mdir, "sprite" + ART_EXT)),
         "directions": sorted(rots),
         "rotations": rots,
         "animations": anims,
@@ -359,7 +383,7 @@ def _load_frames(fdir, w, h):
     """Frames already on disk (for rebuilding the rotating gif on 304-skips)."""
     if not os.path.isdir(fdir):
         return []
-    names = sorted(f for f in os.listdir(fdir) if f.endswith(".png"))
+    names = sorted(f for f in os.listdir(fdir) if f.endswith((".png", ".webp")))
     return [_normalize(Image.open(os.path.join(fdir, f)), w, h) for f in names]
 
 
