@@ -51,10 +51,6 @@ monsters/<id>/
   rotations/<dir>.png             8 directions
   animations/<state>/<dir>/NN.png per-frame PNGs
   animations/<state>__<dir>.png   sprite-sheet strip
-  animations/<state>__<dir>.gif   looping preview of one direction
-  animations/<state>__rotating.gif  plays the animation facing one direction,
-                                    then rotates one 45° step and plays again,
-                                    all the way around (8 plays per loop)
 ```
 
 ## Review gallery (chat artifact, NOT in git)
@@ -72,10 +68,12 @@ python monsters/pipeline/review_artifact.py -o /tmp/monster_review.html
 
 (A future wiki is a separate task and not this gallery.)
 
-## Art format (PNG today, WebP next)
+## Art format: lossless WebP
 
-`config/format.json:art_ext` decides what the pipeline WRITES; it READS either
-`.png` or `.webp`, so the migration is a two-line change plus one script:
+
+
+The domain is **lossless WebP** (converted 2026-07-31). `config/format.json:art_ext`
+decides what the pipeline WRITES; it READS either `.png` or `.webp`:
 
 ```bash
 python monsters/pipeline/to_webp.py --dry-run        # measure per class
@@ -83,15 +81,19 @@ python monsters/pipeline/to_webp.py --class all      # convert + verify + retarg
 python monsters/pipeline/to_webp.py --revert --class all
 ```
 
-Lossless WebP is **66% smaller** than this domain's PNGs (measured over 816
-sampled files: 36.9 MB -> 12.4 MB; no file got bigger, worst case 64% of PNG).
+Result: **9044 files, 35.87 MB -> 11.92 MB (66.8% smaller)**, no file bigger.
 Every conversion re-decodes and compares RGBA against the source and aborts on
 any mismatch, and `exact=true` keeps RGB under transparent pixels intact.
 
-**Gated on consumers**, per file class (see `pipeline/to_webp.py`): the game's
-`build-monsters-manifest.mjs` reads the strips (hand-parsed PNG IHDR + `pngjs`
-pixel decode for contact anchors) and the wiki reads frames, strips, GIFs and
-`sprite`. A class flips only once its readers handle WebP.
+Both consumers read either format: the game via `games2/scripts/imagelib.mjs`
+(and its `resolveImg` follows a stale `.png`/`.webp` in a manifest), the wiki
+via its own `ART_EXTS`. Verified after converting: the game's `monsters.json`
+is identical modulo extension for 24/24 monsters, wiki build clean.
+
+**No GIFs.** The per-direction and rotating preview GIFs were deleted
+(1023 files, 17.5 MB) once neither consumer read them — the wiki's viewer
+draws frames onto a canvas from the strips, and the review gallery is a chat
+artifact built from the frames.
 
 ## Tooling
 
@@ -115,7 +117,7 @@ python monsters/pipeline/sync.py --only <id> # limit mirroring to one monster
 - `pipeline/sync.py` — the reconciler (discover → prune → mirror → contract
   files → verify). Does not commit; the caller commits one atomic change.
 - `pipeline/mirror.py` — mirrors ONE monster (either store) into the layout
-  above; builds strips and per-direction GIFs.
+  above; builds the per-direction sprite-sheet strips.
 - `pipeline/postprocess.py` — repairs PixelLab's wrap-around overflow bug
   (graphics drawn outside the canvas re-appear wrapped to the opposite edge,
   usually on the NEXT frame). Detects wrapped strips via seam continuity,

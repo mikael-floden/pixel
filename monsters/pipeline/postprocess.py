@@ -365,7 +365,6 @@ def process_monster(mid, dry_run=False):
             frs = [Image.open(os.path.join(fdir, f)).convert("RGBA") for f in files]
             frames_by_dir[d] = frs
             mirror._save_strip(frs, os.path.join(mdir, "animations", f"{key}__{d}.png"))
-            mirror._save_gif(frs, os.path.join(mdir, "animations", f"{key}__{d}.gif"))
         # (no rotating GIF: it had no consumer — see save_rotating_gif's note)
 
     applied = pp.get("fixes") or []
@@ -484,8 +483,6 @@ def trim_die_tails(mid, dry_run=False):
                         for i in range(len(frames))]
                     mirror._save_strip(frames, os.path.join(
                         mdir, "animations", f"die__{d}.png"))
-                    mirror._save_gif(frames, os.path.join(
-                        mdir, "animations", f"die__{d}.gif"))
                     applied[d] = {"dropped": pin["drop"], "sub": pin.get("sub")}
                     touched = True
             elif d not in applied:

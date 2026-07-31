@@ -277,7 +277,7 @@ def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None,
             # served from the previous mirror's frames. A record with no `sub`
             # predates take-tracking and cannot be verified — re-download it.
             if pv.get("sub") == sub and pv.get("lm") \
-                    and pv.get("src_frames") == len(urls) and _exists(pv.get("gif")):
+                    and pv.get("src_frames") == len(urls) and _exists(pv.get("strip")):
                 status, _, _ = client.conditional_download(urls[0], pv["lm"])
                 unchanged = status == 304
             if unchanged:
@@ -300,12 +300,10 @@ def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None,
             fdir = os.path.join(mdir, "animations", key, direction)
             _save_frames(frames, fdir)
             strip = os.path.join(mdir, "animations", f"{key}__{direction}{ART_EXT}")
-            gif = os.path.join(mdir, "animations", f"{key}__{direction}.gif")
             _save_strip(frames, strip)
-            _save_gif(frames, gif)
             saved[direction] = {
                 "frames": len(frames),
-                "strip": _rel(strip), "gif": _rel(gif),
+                "strip": _rel(strip),
                 "frame_paths": [_rel(os.path.join(fdir, f"{i:02d}{ART_EXT}"))
                                 for i in range(len(frames))],
                 "lm": lm, "src_frames": len(urls), "sub": sub,
