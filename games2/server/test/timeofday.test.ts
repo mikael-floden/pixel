@@ -85,18 +85,23 @@ test("the world clock advances time on its own", async () => {
     await waitFor(() => r1.state.players?.size === 1);
     assert.equal(r1.state.timeIdx, DEFAULT_TIME_IDX);
 
-    // Time starts FROZEN (maintainer: default ON for phase testing) — the
-    // clock must NOT move until someone unfreezes it.
-    assert.equal(!!r1.state.frozen, true);
-    await new Promise((r) => setTimeout(r, 400));
-    assert.equal(r1.state.timeIdx, DEFAULT_TIME_IDX);
+    // Time RUNS BY DEFAULT at x1 (maintainer 2026-07-31). Freezing must still
+    // hold the clock still — that is the half of the contract a default flip
+    // could silently break.
+    assert.equal(!!r1.state.frozen, false);
+    assert.equal(r1.state.timeSpeed, 1);
+    r1.send("timespeed", { v: 0 });
+    await waitFor(() => r1.state.frozen === true);
+    const heldAt = r1.state.timeIdx;
+    await new Promise((r) => setTimeout(r, 400)); // >2 phases at 0.15s each
+    assert.equal(r1.state.timeIdx, heldAt, "a frozen clock must not advance");
 
-    // Unfreeze: NOBODY sends "timeofday" — the server's own clock moves the
-    // world through the phase ring, the same for every player.
+    // Let it run again: NOBODY sends "timeofday" — the server's own clock
+    // moves the world through the phase ring, the same for every player.
     r1.send("timespeed", { v: 1 });
-    const next = (DEFAULT_TIME_IDX + 1) % TIME_PHASE_COUNT;
+    const next = (heldAt + 1) % TIME_PHASE_COUNT;
     await waitFor(() => r1.state.timeIdx === next);
-    const after = (DEFAULT_TIME_IDX + 2) % TIME_PHASE_COUNT;
+    const after = (heldAt + 2) % TIME_PHASE_COUNT;
     await waitFor(() => r1.state.timeIdx === after);
 
     // A manual skip still works on top of the running clock.
@@ -125,9 +130,7 @@ test("unfreezing sticks: the clock survives room recycling", async () => {
     const slow = { phaseSeconds: [600, 600, 600, 600] }; // no natural tick mid-test
     const r1 = await c1.joinOrCreate(ROOM_NAME, { name: "A", character: "c", ...slow });
     await waitFor(() => r1.state.players?.size === 1);
-    assert.equal(r1.state.frozen, true); // fresh process: the default applies
-    r1.send("timespeed", { v: 1 });
-    await waitFor(() => r1.state.frozen === false);
+    assert.equal(r1.state.frozen, false); // fresh process: x1 is the default
     r1.send("timeofday");
     const next = (DEFAULT_TIME_IDX + 1) % TIME_PHASE_COUNT;
     await waitFor(() => r1.state.timeIdx === next);
@@ -135,8 +138,8 @@ test("unfreezing sticks: the clock survives room recycling", async () => {
     await r1.leave();
     await new Promise((r) => setTimeout(r, 400));
 
-    // The next join gets a FRESH room — which must resume the world's clock,
-    // not reset it to the frozen default.
+    // The next join gets a FRESH room — which must RESUME the world's clock
+    // (phase and speed) rather than re-applying the boot default.
     const r2 = await c1.joinOrCreate(ROOM_NAME, { name: "B", character: "c", ...slow });
     await waitFor(() => r2.state.players?.size === 1);
     assert.notEqual(r2.roomId, firstRoomId); // really a new room
@@ -160,8 +163,12 @@ test("time is continuous: phaseT sweeps while unfrozen, skips land mid-phase", a
     const c1 = new Client(`ws://localhost:${port}`);
     const r1 = await c1.joinOrCreate(ROOM_NAME, { name: "A", character: "c", phaseSeconds: [2, 2, 2, 2] });
     await waitFor(() => r1.state.players?.size === 1);
+    // The clock runs at x1 by default now, so the "a skip lands mid-phase"
+    // half of this test needs it held still; the sweep half unfreezes below.
+    r1.send("timespeed", { v: 0 });
+    await waitFor(() => r1.state.frozen === true);
     assert.equal(r1.state.phaseT, 0.5); // boots on the phase's characteristic look
-    r1.send("timeofday"); // manual skip (frozen by default)
+    r1.send("timeofday"); // manual skip while frozen
     const next = (DEFAULT_TIME_IDX + 1) % TIME_PHASE_COUNT;
     await waitFor(() => r1.state.timeIdx === next);
     assert.equal(r1.state.phaseT, 0.5); // skips land MID-phase, the approved look
@@ -193,7 +200,10 @@ test("time speed: the switch cycles x0->x0.5->x1->x2->x5->x10 and scales the clo
     const c1 = new Client(`ws://localhost:${port}`);
     const r1 = await c1.joinOrCreate(ROOM_NAME, { name: "A", character: "c", phaseSeconds: [2, 2, 2, 2] });
     await waitFor(() => r1.state.players?.size === 1);
-    assert.equal(r1.state.timeSpeed, 0); // frozen default
+    assert.equal(r1.state.timeSpeed, 1); // x1 is the boot default (2026-07-31)
+    // Start the ring from x0 so the whole cycle is asserted in one known order.
+    r1.send("timespeed", { v: 0 });
+    await waitFor(() => r1.state.timeSpeed === 0);
     const seen: number[] = [];
     let prev = r1.state.timeSpeed;
     for (let i = 0; i < 6; i++) {

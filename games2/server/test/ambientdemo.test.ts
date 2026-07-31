@@ -48,6 +48,12 @@ test("timeofday/weather {v} jump the shared world state directly", async () => {
     const r2 = await c2.joinOrCreate(ROOM_NAME, { name: "B", character: "char_b" });
     await waitFor(() => r1.state.players.size === 2 && r2.state.players.size === 2);
 
+    // The world clock RUNS at x1 by default (2026-07-31), so phaseT sweeps
+    // every tick. This test asserts the exact mid-phase look a {v} jump lands
+    // on, which only holds while the clock is still — freeze it first.
+    r1.send("timespeed", { v: 0 });
+    await waitFor(() => r1.state.frozen === true);
+
     // Jump straight to Night (0) — both clients see it, mid-phase look.
     r1.send("timeofday", { v: 0 });
     await waitFor(() => r1.state.timeIdx === 0 && r2.state.timeIdx === 0);

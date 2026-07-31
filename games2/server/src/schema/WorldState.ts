@@ -169,8 +169,15 @@ export class WorldState extends Schema {
     this.phaseT = 0.5; // mid-phase: the exact "characteristic" look of the phase
     this.weather = 0;
     this.aurora = false;
-    this.frozen = true; // frozen by default for now (maintainer: testing phases)
-    this.timeSpeed = 0;
+    // The day/night cycle RUNS BY ITSELF at x1 (maintainer 2026-07-31: "make
+    // the time tick at normal x1 speed by default — I have to press the button
+    // to start the time"). It used to boot FROZEN so phases could be inspected
+    // one at a time while the look was being tuned; that era is over, and the
+    // cycle is a core rhythm of the game. Settings can still freeze it (x0).
+    // NOTE for tests/QA: anything that needs a stable clock must now ASK for
+    // it — send `timespeed {v: 0}` — instead of relying on the boot default.
+    this.frozen = false;
+    this.timeSpeed = 1;
   }
 }
 
