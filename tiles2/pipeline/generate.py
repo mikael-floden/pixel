@@ -74,8 +74,8 @@ def _generate(client, cfg, gt, kind, prompt_fn, other=None, attempt=0):
     os.makedirs(sdir, exist_ok=True)
     tile_meta = []
     for i, im in enumerate(tiles):
-        fn = f"tile_{i:02d}.png"
-        im.save(os.path.join(sdir, fn))
+        fn = f"tile_{i:02d}{common.TILE_FORMAT}"
+        common.save_tile(im, os.path.join(sdir, fn))
         tile_meta.append({"index": i, "file": fn, "width": im.width, "height": im.height})
     req = {
         "schema": common.RAW_SCHEMA,

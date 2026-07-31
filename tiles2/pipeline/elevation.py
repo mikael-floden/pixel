@@ -198,8 +198,8 @@ def generate_sheet(client, cfg, terrain, height_id, slot):
     os.makedirs(sdir, exist_ok=True)
     tile_meta = []
     for i, im in enumerate(tiles):
-        fn = f"tile_{i:02d}.png"
-        im.save(os.path.join(sdir, fn))
+        fn = f"tile_{i:02d}{common.TILE_FORMAT}"
+        common.save_tile(im, os.path.join(sdir, fn))
         tile_meta.append({"index": i, "file": fn, "width": im.width, "height": im.height})
     req = {
         "schema": common.RAW_SCHEMA, "sheet": slug, "ground_type": gid,
@@ -262,7 +262,7 @@ def process_sheet(gid, terrain, sheet, sdir, req, cfg, cache):
         # gap_close is intentionally NOT run here — props are placed in isolation, and its
         # outward bleed would fatten a lone sprite's silhouette.
         out_fn = common.processed_name(fn)   # raw may be .webp; output stays .png
-        im.save(os.path.join(dest, out_fn))
+        common.save_tile(im, os.path.join(dest, out_fn))
         entry = dict(raw_by_file.get(common.stem(fn), {}))
         entry["file"] = out_fn
         # Per-tile emission so the glowing PROPS (crystals, lava, mushrooms, lamps,

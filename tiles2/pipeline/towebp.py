@@ -42,7 +42,7 @@ from PIL import Image
 
 import common
 
-SAVE = {"lossless": True, "method": 6, "quality": 100}
+SAVE = {"lossless": True, "method": 4, "quality": 100}   # 4: ~19x faster, 1.7pp larger
 
 
 def _verify(src_im, dst_path):
@@ -74,7 +74,8 @@ def convert(path, dry=False):
 
 def targets(processed=False):
     if processed:
-        return [f for f in glob.glob(os.path.join(common.ROOT, "*", "**", "*.png"), recursive=True)
+        # tile sheets only — never docs/ screenshots or other loose PNGs
+        return [f for f in glob.glob(os.path.join(common.ROOT, "*", "**", "tile_*.png"), recursive=True)
                 if os.sep + "raw" + os.sep not in f]
     return sorted(glob.glob(os.path.join(common.ROOT, "*", "raw", "*", "tile_*.png")))
 

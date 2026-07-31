@@ -218,7 +218,7 @@ def process_sheet(gid, sheet, sdir, req, cfg, cache):
             im = normalize.close_iso_gaps(              # the background-through-gaps grid seam
                 im, alpha_thresh=gc["alpha_thresh"], grow=gc["grow"])
         out_fn = common.processed_name(fn)   # raw may be .webp; output stays .png
-        im.save(os.path.join(dest, out_fn))
+        common.save_tile(im, os.path.join(dest, out_fn))
         # Per-tile map-builder metadata computed on the FINAL (harmonised) image.
         entry = dict(raw_by_file.get(common.stem(fn), {}))
         entry["file"] = out_fn

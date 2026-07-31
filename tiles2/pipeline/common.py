@@ -147,10 +147,30 @@ def tile_files(d):
                   key=lambda f: os.path.splitext(f)[0]) if os.path.isdir(d) else []
 
 
+TILE_FORMAT = ".webp"          # game-facing tile container; see docs/WEBP.md
+
+# Pillow writes LOSSY WebP by default — on pixel art that shifts ~99% of visible
+# pixels and would undo the palette harmonisation. Never call im.save() on a .webp
+# path directly; go through save_tile().
+_WEBP = {"lossless": True, "method": 4, "quality": 100}
+
+
 def processed_name(fn):
-    """Output filename for a processed tile: ALWAYS .png regardless of the raw source
-    format, so converting raw/ to WebP can never change a game-facing path."""
-    return os.path.splitext(fn)[0] + ".png"
+    """Output filename for a processed tile, in the game-facing container format.
+
+    The extension is decided HERE and nowhere else, so the whole library can change
+    container without touching the pipeline. Safe to flip because the game resolves
+    .png<->.webp at runtime (games2 WorldScene.loadImageEitherExt + the server-side
+    resolve, 2026-07-31), so a maps2 world.json still naming .png keeps rendering."""
+    return os.path.splitext(fn)[0] + TILE_FORMAT
+
+
+def save_tile(im, path):
+    """Write a tile, forcing LOSSLESS for WebP. Use this for every tile write."""
+    if path.lower().endswith(".webp"):
+        im.save(path, "WEBP", **_WEBP)
+    else:
+        im.save(path)
 
 
 def stem(fn):

@@ -236,7 +236,7 @@ def tile_paths(gid):
     doesn't say 'glow' (watchtower braziers, lighthouses)."""
     out = []
     for sub in ("base", "base_x_2", "base_x_3", "base_x_4", "base_x_5"):
-        out += sorted(glob.glob(os.path.join(common.type_dir(gid), sub, "*", "tile_*.png")))
+        out += sorted(glob.glob(os.path.join(common.type_dir(gid), sub, "*", "tile_*.*")))
     return out
 
 
@@ -253,7 +253,15 @@ def build(dry_run=False):
             if srcs:
                 rel = os.path.relpath(p, common.ROOT)
                 rel = os.path.join("tiles2", rel) if not rel.startswith("tiles2") else rel
-                sources[rel] = srcs
+                # Key under BOTH container extensions. The game looks this up as a
+                # VERBATIM dict hit on the path baked into maps2's world.json
+                # (WorldScene tiles2Src[p.path]) — unlike the image loader, it has no
+                # .png<->.webp fallback. A world exported before the WebP switch names
+                # .png, one exported after names .webp; emitting both means prop glow
+                # survives either, with no re-export ordering to coordinate.
+                stem = os.path.splitext(rel)[0]
+                for ext in (".png", ".webp"):
+                    sources[stem + ext] = srcs
                 n_tiles += 1
                 n_src += len(srcs)
         per_mat[gid] = (n_tiles, n_src)
