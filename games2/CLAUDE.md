@@ -709,9 +709,10 @@ visible head/shoulders are ABOVE the surface).
 - The phase index lives in WorldState.timeIdx (shared DEFAULT_TIME_IDX /
   TIME_PHASE_COUNT) and the cycle RUNS BY ITSELF (maintainer: the
   day/night cycle is a core rhythm of the game): the server's world
-  clock advances the phase per TIME_PHASE_SECONDS ([50, 25, 50, 25] —
-  the maintainer's ratios, 2026-07-31: night 1/3, morning 1/6, day 1/3,
-  evening 1/6, a 150s cycle. DAY == NIGHT is load-bearing, not taste:
+  clock advances the phase per TIME_PHASE_SECONDS ([40, 20, 40, 20] —
+  order is [Night, Morning, Day, Evening]; the maintainer's ratios AND
+  durations, 2026-07-31: night 40 / morning 20 / day 40 / evening 20, a
+  2-MINUTE cycle. DAY == NIGHT is load-bearing, not taste:
   the clock pill runs the sun over morning+day+evening and the moon over
   evening+night+morning, and those spans are equal ONLY while day and
   night are — which is what makes the two bodies move at the same speed.

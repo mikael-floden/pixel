@@ -66,8 +66,15 @@ export const DEFAULT_TIME_IDX = 2; // Day
 // point of the design: one shared pace, and the moon simply hangs in the sky
 // at dawn and dusk the way it does in the real one. (Before this, night ran
 // 3x as fast as the sunlit span to keep darkness short, and the moon visibly
-// raced.) Full cycle 150s.
-export const TIME_PHASE_SECONDS = [50, 25, 50, 25];
+// raced.)
+//
+// DURATIONS ARE THE MAINTAINER'S TOO (2026-07-31, second pass): night 40,
+// morning 20, day 40, evening 20 — a 2-minute cycle. Order is
+// [Night, Morning, Day, Evening] (DEFAULT_TIME_IDX = 2 = Day). The ratios
+// above are unchanged; this only sets the absolute pace. Keep night == day
+// and morning == evening whatever the scale, or the two bodies stop sharing
+// one speed and the pill design breaks.
+export const TIME_PHASE_SECONDS = [40, 20, 40, 20];
 
 // Time-speed steps the settings button cycles through (maintainer):
 // x0 freeze, x0.5 twice as slow, x1 normal, x2/x5/x10 faster.
