@@ -623,6 +623,9 @@ function loreSlot(text, all) {
   return h("div", { class: "lore-slot" }, h("p", { class: "muted lore" }, text), ...ghosts);
 }
 /* ------------------------------------------------------------------- lore */
+// Set by a "Read next" link, consumed by the next navigation. Null for every
+// other kind of link, which simply starts at the top.
+let pendingScroll = null;
 const loreList = () => state.data.domains.lore ?? [];   // build.mjs sorted it; never re-sort
 // One table for every category decision — the group heading AND the chip under
 // the picture. An unknown category never throws and never prints a raw slug.
@@ -695,19 +698,24 @@ function pagedPanel({ title, pages, aside = null, klass = "" }) {
     count.textContent = `${i + 1} / ${pages.length}`;   // mutated in place — the
     prev.disabled = i === 0;                             // buttons are never rebuilt
     next.disabled = i === pages.length - 1;              // under the reader's finger
-    // A page turn NEVER scrolls. Turning from a long page to a short one
-    // shrinks the document, so a reader parked at the very bottom is carried
-    // up by the browser's own scroll clamp — unavoidable without reserving
-    // the tallest page, which would cost ~600px of dead space on the short
-    // ones. The pager is at the card's TOP, so it stays under the finger.
+    // A page turn NEVER scrolls: you are mid-card, not navigating. Turning
+    // from a long page to a short one shrinks the document, so a reader parked
+    // at the very bottom is carried up by the browser's own scroll clamp —
+    // unavoidable without reserving the tallest page, which would cost ~600px
+    // of dead space on the short ones.
   };
   draw();
+  // READING ORDER (maintainer 2026-07-31): title, then the prose, then the
+  // page control at the BOTTOM LEFT where the text ends, then "Read next"
+  // last of all. The pager and the links used to sit above the prose, between
+  // the reader and the thing they opened the card for.
   const panel = h("div", { class: `panel${klass ? ` ${klass}` : ""}` },
+    h("div", { class: "panel-title" }, title),
+    body,
     // Counter LEFT of the buttons (crumbRow's rule) so ‹ › keep their spot as
     // "9 / 16" widens.
-    h("div", { class: "panel-title" }, title,
-      pages.length > 1 ? h("span", { class: "detail-nav" }, count, prev, next) : null),
-    aside, body);
+    pages.length > 1 ? h("div", { class: "page-rail" }, count, prev, next) : null,
+    aside);
   panel.goToPage = (n) => { if (n >= 0 && n < pages.length) { i = n; draw(); } };
   return panel;
 }
@@ -743,8 +751,16 @@ function loreLinks(related, { title = "Read next" } = {}) {
     if (seen.has(key)) continue;
     seen.add(key);
     const r = resolveRef(ref);
-    if (r) rows.push(h("a", { class: "drop-row", href: r.href }, r.art,
-      h("span", { class: "drop-name" }, r.name), h("span", { class: "drop-worth muted" }, r.where)));
+    if (r) {
+      const a = h("a", { class: "drop-row", href: r.href }, r.art,
+        h("span", { class: "drop-name" }, r.name), h("span", { class: "drop-worth muted" }, r.where));
+      // Where the reader should LAND. A chapter is a thing you read from the
+      // top; another entity's story is the middle of its page, so go to that
+      // card rather than making the reader hunt for it (maintainer
+      // 2026-07-31).
+      a.addEventListener("click", () => { pendingScroll = ref.domain === "lore" ? "top" : "story"; });
+      rows.push(a);
+    }
     else if (state.admin) rows.push(h("div", { class: "drop-row" },
       h("span", { class: "item-icon item-noart" }),
       h("span", { class: "drop-name" }, key, h("span", { class: "pill warn" }, "no such entry"))));
@@ -2103,7 +2119,23 @@ function initChrome() {
   // end of a chapter and tapping the next one must not drop you at that one's
   // end. Bound to the NAVIGATION event, not to route() itself, so in-place
   // re-renders — the item filter and sort — leave the reader where they are.
-  window.addEventListener("hashchange", () => { route(); window.scrollTo(0, 0); });
+  window.addEventListener("hashchange", () => {
+    const want = pendingScroll; pendingScroll = null;
+    route();
+    // A "Read next" link that points at another ENTITY lands on that entity's
+    // story card — the reader asked for a story, not for a stat block. Clear
+    // of the sticky topbar. Anything else, including every chapter, starts at
+    // the top.
+    if (want === "story") {
+      const card = $(".story-card");
+      if (card) {
+        const bar = $("#topbar")?.getBoundingClientRect().height ?? 0;
+        window.scrollTo(0, Math.max(0, card.getBoundingClientRect().top + window.scrollY - bar - 8));
+        return;
+      }
+    }
+    window.scrollTo(0, 0);
+  });
   window.addEventListener("beforeunload", (e) => { if (state.dirty.size) e.preventDefault(); });
 }
 
