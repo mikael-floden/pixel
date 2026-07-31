@@ -41,7 +41,7 @@ def build_sheet(mid, key):
         if not os.path.isdir(dd):
             continue
         frames = [Image.open(os.path.join(dd, f)).convert("RGBA")
-                  for f in sorted(os.listdir(dd)) if f.endswith(".png")]
+                  for f in sorted(os.listdir(dd)) if f.endswith((".png", ".webp"))]
         if frames:
             per_dir.append((d, frames))
     if not per_dir:
@@ -83,7 +83,7 @@ def collect():
                 "source": (anims.get(key) or {}).get("source_name") if key else None,
             })
         buf = io.BytesIO()
-        Image.open(os.path.join(ROOT, mid, "sprite.png")).save(buf, "PNG")
+        Image.open(os.path.join(ROOT, mid, meta["sprite"].split("/")[-1])).save(buf, "PNG")
         monsters.append({
             "id": mid,
             "name": meta.get("name") or mid,

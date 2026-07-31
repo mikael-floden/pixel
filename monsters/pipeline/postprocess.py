@@ -72,7 +72,7 @@ def _load(fp):
 
 
 def _save(arr, fp):
-    Image.fromarray(arr, "RGBA").save(fp)
+    mirror._save_png(Image.fromarray(arr, "RGBA"), fp)
 
 
 def _components(alpha):
@@ -210,7 +210,7 @@ def _has_offsize(mdir, canvas):
     """True if any frame/rotation/sprite of this monster is not on `canvas`."""
     for root, _dirs, files in os.walk(mdir):
         for fn in files:
-            if not fn.endswith(".png") or "__" in fn:
+            if not fn.endswith((".png", ".webp")) or "__" in fn:
                 continue
             with Image.open(os.path.join(root, fn)) as im:
                 if im.size != canvas:
@@ -271,7 +271,7 @@ def process_monster(mid, dry_run=False):
             fdir = os.path.join(mdir, "animations", key, d)
             if not os.path.isdir(fdir):
                 continue
-            files = sorted(f for f in os.listdir(fdir) if f.endswith(".png"))
+            files = sorted(f for f in os.listdir(fdir) if f.endswith((".png", ".webp")))
             frames = [_load(os.path.join(fdir, f)) for f in files]
             fixes = []
             for fx in detect(frames, native):
@@ -334,7 +334,7 @@ def process_monster(mid, dry_run=False):
             fdir = os.path.join(mdir, "animations", key, d)
             if not os.path.isdir(fdir):
                 continue
-            files = sorted(f for f in os.listdir(fdir) if f.endswith(".png"))
+            files = sorted(f for f in os.listdir(fdir) if f.endswith((".png", ".webp")))
             frames = [_load(os.path.join(fdir, f)) for f in files]
             fixes = plan.get((key, d), (None, None, []))[2]
             strips = [(fx, _strip_mask(frames[fx["frame"]], fx["side"], native))
@@ -361,13 +361,12 @@ def process_monster(mid, dry_run=False):
         frames_by_dir = {}
         for d in list(a.get("directions") or {}):
             fdir = os.path.join(mdir, "animations", key, d)
-            files = sorted(f for f in os.listdir(fdir) if f.endswith(".png"))
+            files = sorted(f for f in os.listdir(fdir) if f.endswith((".png", ".webp")))
             frs = [Image.open(os.path.join(fdir, f)).convert("RGBA") for f in files]
             frames_by_dir[d] = frs
             mirror._save_strip(frs, os.path.join(mdir, "animations", f"{key}__{d}.png"))
             mirror._save_gif(frs, os.path.join(mdir, "animations", f"{key}__{d}.gif"))
-        mirror.save_rotating_gif(
-            frames_by_dir, os.path.join(mdir, "animations", f"{key}__rotating.gif"))
+        # (no rotating GIF: it had no consumer — see save_rotating_gif's note)
 
     applied = pp.get("fixes") or []
     seen = {(f["key"], f["dir"], f["frame"], f["side"]) for f in applied}
@@ -460,7 +459,7 @@ def trim_die_tails(mid, dry_run=False):
     touched = False
     for d, rec in sorted((a.get("directions") or {}).items()):
         fdir = os.path.join(mdir, "animations", "die", d)
-        files = sorted(f for f in os.listdir(fdir) if f.endswith(".png"))
+        files = sorted(f for f in os.listdir(fdir) if f.endswith((".png", ".webp")))
         pin = cuts.get(f"{mid}/{d}")
         if pin:
             if rec.get("sub") != pin.get("sub"):
@@ -492,7 +491,7 @@ def trim_die_tails(mid, dry_run=False):
             elif d not in applied:
                 print(f"  !! {mid}: die/{d} has {len(files)} frames, pin expects "
                       f"{pin['of']} — skipped")
-            files = sorted(f for f in os.listdir(fdir) if f.endswith(".png"))
+            files = sorted(f for f in os.listdir(fdir) if f.endswith((".png", ".webp")))
         # fade-away monotonicity (runs on the current frames, after any pin):
         # once faded below LOWBAR, frames that ADD pixels are the re-appear
         # bug and are cut automatically
@@ -531,9 +530,9 @@ def trim_die_tails(mid, dry_run=False):
         for d in a["directions"]:
             fdir = os.path.join(mdir, "animations", "die", d)
             frames_by_dir[d] = [Image.open(os.path.join(fdir, f)).convert("RGBA")
-                                for f in sorted(os.listdir(fdir)) if f.endswith(".png")]
-        mirror.save_rotating_gif(frames_by_dir,
-                                 os.path.join(mdir, "animations", "die__rotating.gif"))
+                                for f in sorted(os.listdir(fdir))
+                                if f.endswith((".png", ".webp"))]
+        # (no rotating GIF: it had no consumer)
         pp["die_trim"] = applied
         meta["postprocess"] = pp
         write_manifest(mid, meta)
