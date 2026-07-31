@@ -3,9 +3,9 @@
  * of the world. On phones the world JSON + character strips take several
  * seconds; without this the select screen just vanishes into a black page.
  *
- * The artwork (public/logo-load.png) is the maintainer's logo with a built-in
+ * The artwork (public/logo-load.webp) is the maintainer's logo with a built-in
  * "LOADING" banner: the banner's navy interior is punched to transparency in
- * the PNG, and a gradient styled like the NANGIJALA lettering slides in
+ * the art, and a gradient styled like the NANGIJALA lettering slides in
  * BEHIND it as the real progress bar (FILL_RECT below is the banner interior
  * measured as percentages of the image — re-measure if the logo art changes).
  *
@@ -41,7 +41,7 @@ export function holdLoading(p: Promise<unknown>) {
   holds.push(p);
 }
 
-// The LOADING banner's interior within logo-load.png (percent of image box).
+// The LOADING banner's interior within logo-load.webp (percent of image box).
 const FILL_RECT = { left: 33.82, top: 87.26, width: 28.87, height: 3.62 };
 
 const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
@@ -73,7 +73,7 @@ export function showLoading(text = "Entering Nangijala…") {
     <div class="ml-load-box">
       <div class="ml-load-logoWrap">
         <div class="ml-load-track"><div class="ml-load-bar" id="ml-load-bar"></div></div>
-        <img class="ml-load-logo" src="${withV("/logo-load.png")}" alt="Nangijala Online — loading" />
+        <img class="ml-load-logo" src="${withV("/logo-load.webp")}" alt="Nangijala Online — loading" />
       </div>
     </div>`;
   document.body.appendChild(overlay);
@@ -94,7 +94,7 @@ export function showLoading(text = "Entering Nangijala…") {
     }),
   );
   // The logo only emerges once it's actually DECODED. On a FRESH DEPLOY the
-  // logo PNG is re-fetched over the network, and the old fixed 430ms timer
+  // logo is re-fetched over the network, and the old fixed 430ms timer
   // fired the fade-in whether or not the bitmap had arrived — so the logo
   // painted IN during the fade, the exact "page is 50% loaded" flash the
   // black fade exists to hide (maintainer). Still gated behind the ~430ms

@@ -52,7 +52,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     const overlay = el("div", "ml-overlay");
     overlay.innerHTML = `
       <div class="ml-panel">
-        <img class="ml-logo" src="${withV("/logo.png")}" alt="Nangijala Online — a browser MMORPG" />
+        <img class="ml-logo" src="${withV("/logo.webp")}" alt="Nangijala Online — a browser MMORPG" />
         <div class="ml-card">
           ${showWorlds ? `
           <div class="ml-dd" id="ml-worlds">
