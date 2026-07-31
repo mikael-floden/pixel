@@ -59,6 +59,27 @@ matches the source composited over the page background exactly (delta 0).
 Re-run that check if the icon sizes ever change — resampled pixel art is the
 one thing this project never ships.
 
+## Shipping a NEW domain to prod — the five-place checklist
+
+The wiki discovers a new sibling domain automatically, but **prod only shows
+what the image contains**, and the image rebuilds `data.json` at build time.
+A domain missing from the deploy plumbing therefore renders an honest,
+confusing zero. This has bitten twice — `wiki/` itself (2026-07-29) and
+`items/` (2026-07-31, prod said "0 items" while the committed data.json had
+105). When a top-level domain appears, add it to **all five**:
+
+| where | what |
+| --- | --- |
+| `.dockerignore` | `!<domain>` — the context is an allowlist |
+| `games2/Dockerfile` | `COPY <domain>/ /assets/<domain>/` |
+| `games2/server/src/index.ts` | `ASSET_DOMAINS` — serves `/assets/<domain>` |
+| `games2/client/vite.config.ts` | `ASSET_DOMAINS` — the same in dev |
+| `.github/workflows/nangijala-deploy.yml` | trigger `paths:` **and** the build job's `sparse-checkout` |
+
+Verify it without a deploy: copy exactly the Dockerfile's `COPY` list into a
+scratch root and run `node wiki/build.mjs` there. The counts it prints are
+the counts prod will show.
+
 ## Two audiences, one page
 
 Players get a read-only encyclopedia (browse, watch animations, listen).

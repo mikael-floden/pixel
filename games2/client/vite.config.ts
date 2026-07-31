@@ -7,7 +7,7 @@ import { extname, join, normalize, resolve } from "node:path";
 const REPO_ROOT = resolve(__dirname, "../..");
 const ASSET_DOMAINS = new Set([
   "characters", "tiles", "maps", "objects", "characters2", "tiles2", "maps2",
-  "sounds", "music", "monsters", "wiki", "live",
+  "sounds", "music", "monsters", "items", "wiki", "live",
 ]);
 const TYPES: Record<string, string> = {
   ".png": "image/png",

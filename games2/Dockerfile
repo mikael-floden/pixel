@@ -27,6 +27,7 @@ COPY maps2/ /assets/maps2/
 COPY sounds/ /assets/sounds/
 COPY music/ /assets/music/
 COPY monsters/ /assets/monsters/
+COPY items/ /assets/items/
 COPY wiki/ /assets/wiki/
 # live/ = runtime tuning/feedback state. The baked copy is only the BOOT
 # FALLBACK — the server fetches the current live/** from GitHub main at boot
