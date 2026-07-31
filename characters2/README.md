@@ -30,6 +30,50 @@ PixelLab animation names can contain spaces, commas, even newlines (especially
 The exact PixelLab `animation_type` is preserved in `character.json` for matching,
 so the slug is only ever the folder name.
 
+## WebP migration (staged — art is still PNG)
+
+Measured on **all 1419** files in this domain, lossless:
+
+| | size | |
+|---|---|---|
+| PNG | 4.43 MiB | |
+| WebP (lossless) | 1.44 MiB | **67.6% smaller**, 1419/1419 verified pixel-identical |
+
+Two findings worth reusing in other domains:
+
+- **`method=4` (Pillow's default), not `method=6`.** Over 120 sprites method 6
+  matched method 4's size to within 0.1% while being **~76× slower**
+  (99.5 ms vs 1.3 ms/file). Whole-domain conversion takes **2.5 s**, not minutes.
+- **WebP must be saved explicitly lossless.** Pillow's default WebP encode is
+  *lossy* — a bare `img.save("x.webp")` silently resamples every sprite. All
+  writes go through `sync.py:save_image()`, which forces `lossless=True`.
+
+```bash
+python characters2/pipeline/to_webp.py            # dry run: measure + verify, writes nothing
+python characters2/pipeline/to_webp.py --apply    # convert + git rm the PNGs
+python characters2/pipeline/to_webp.py --revert   # back to PNG
+```
+
+`--apply` refuses to delete a single PNG unless **every** file round-tripped
+pixel-identical, so a bad encode can't lose art.
+
+### Why the art hasn't flipped yet — the consumer contract
+
+The pipeline is format-agnostic already (`config.json: "frame_format"` switches
+it; `sync.py`/`verify_sync.py` follow it), so the flip is **one config change +
+one command**. It is deliberately NOT done, because these frames are *decoded*
+outside this domain:
+
+| Consumer | What breaks |
+|---|---|
+| `games2/scripts/build-manifest.mjs` | hand-parses the PNG IHDR (`pngDims`) and decodes pixels (`pngAlpha`) to measure **foot anchors, shoulder waterlines, gait fps, foot plants** — silently wrong ⇒ detached shadows, floating characters |
+| `games2` client (Phaser) | frame URLs end in `.png` |
+| `wiki/build.mjs` | counts frames with `/^\d+\.png$/`, links `base/south.png` |
+
+Order of operations: **games2 gains a WebP-capable decoder → this domain flips
+`frame_format` and runs `to_webp.py --apply` → wiki widens its regex.** Flipping
+first would ship a broken game.
+
 ## Authored metadata (`metadata.json`) — `characters2-metadata@1`
 
 Everything true about a character that **can't be derived from the art** lives in

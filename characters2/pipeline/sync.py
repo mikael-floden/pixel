@@ -61,6 +61,33 @@ def load_config():
         return json.load(f)
 
 
+def frame_ext():
+    """Extension for frame/rotation images — the ONE switch for the PNG->WebP
+    migration (`config.json: "frame_format": "png" | "webp"`).
+
+    Still "png" until the game's build-manifest.mjs can decode WebP: it
+    hand-parses the PNG IHDR and decodes pixels to measure foot anchors,
+    shoulder waterlines and gait rates. Flipping this before that lands would
+    detach shadows and float characters. See README (WebP migration)."""
+    fmt = (load_config().get("frame_format") or "png").lower().lstrip(".")
+    return "." + ("png" if fmt not in ("png", "webp") else fmt)
+
+
+def save_image(img, path):
+    """Save pixel art to `path`, LOSSLESSLY whatever the format.
+
+    Pillow's default WebP encode is LOSSY — saving art with a bare
+    `img.save(x.webp)` would quietly resample every sprite and there is no
+    louder failure than pixel art that has been through a lossy codec. So WebP
+    is always written with lossless=True (method=4: same size as 6, ~76x
+    faster — measured over 120 sprites)."""
+    img = img.convert("RGBA")
+    if path.lower().endswith(".webp"):
+        img.save(path, "WEBP", lossless=True, quality=100, method=4)
+    else:
+        img.save(path)
+
+
 def hero_metadata(name):
     """Hand-authored metadata record for a character (characters2/metadata.json).
 
@@ -142,8 +169,9 @@ def sync_character(client, name, cid, force=False):
     base_dir = os.path.join(root, "base")
     os.makedirs(base_dir, exist_ok=True)
     saved_rot = {}
+    ext = frame_ext()
     for d, url in rotation_urls.items():
-        dst = os.path.join(base_dir, f"{d}.png")
+        dst = os.path.join(base_dir, f"{d}{ext}")
         if prev_rot.get(d) == url and os.path.exists(dst) and not force:
             saved_rot[d] = url
             stats["rot_skip"] += 1
@@ -152,13 +180,13 @@ def sync_character(client, name, cid, force=False):
         if img is None:
             saved_rot[d] = prev_rot.get(d)          # keep old record if download failed
             continue
-        img.convert("RGBA").save(dst)
+        save_image(img, dst)
         saved_rot[d] = url
         stats["rot_new"] += 1
-    # drop base pngs for directions no longer present
+    # drop base images for directions no longer present (any art format)
     for fn in os.listdir(base_dir):
-        d = fn[:-4]
-        if fn.endswith(".png") and fn != "preview.png" and d not in rotation_urls:
+        stem, fext = os.path.splitext(fn)
+        if fext in (".png", ".webp") and not stem.startswith("preview") and stem not in rotation_urls:
             os.remove(os.path.join(base_dir, fn))
     _write_base_preview(base_dir, rotation_urls.keys())
 
@@ -220,18 +248,17 @@ def sync_character(client, name, cid, force=False):
             ddir = os.path.join(adir, dd)
             os.makedirs(ddir, exist_ok=True)
             for i, url in enumerate(frames):
-                dst = os.path.join(ddir, f"{i}.png")
+                dst = os.path.join(ddir, f"{i}{ext}")
                 img = client.download_image(url)
                 if img is None:
                     continue
-                img.convert("RGBA").save(dst)
+                save_image(img, dst)
                 stats["frames"] += 1
-            # trim stray frames beyond current frame_count
+            # trim stray frames beyond current frame_count (any art format)
             for fn in os.listdir(ddir):
-                if fn.endswith(".png") and fn != "preview.gif":
-                    idx = fn[:-4]
-                    if idx.isdigit() and int(idx) >= len(frames):
-                        os.remove(os.path.join(ddir, fn))
+                idx, fext = os.path.splitext(fn)
+                if fext in (".png", ".webp") and idx.isdigit() and int(idx) >= len(frames):
+                    os.remove(os.path.join(ddir, fn))
             rec_dirs[dd] = {"frame_count": len(frames), "frames": frames}
         # drop direction folders no longer present
         for fn in os.listdir(adir):
@@ -263,7 +290,12 @@ def sync_character(client, name, cid, force=False):
         # metadata.json so regenerating this file never loses them. Merged
         # WHOLESALE: a new field there needs no change here.
         **hero_metadata(name),
-        "prompt": detail.get("prompt"),
+        # PixelLab's raw generation prompt. NOT authoritative and NOT a
+        # description: both heroes carry the same copy-pasted text there (it says
+        # "female" for both, because the boy was created by duplicating the girl),
+        # so it was renamed off `prompt` to stop consumers reading it as truth —
+        # the authored facts live in metadata.json. Mirrored for traceability only.
+        "pixellab_prompt": detail.get("prompt"),
         "size": [detail.get("size", {}).get("width"), detail.get("size", {}).get("height")],
         "view": detail.get("view"),
         "template_id": detail.get("template_id"),
@@ -282,7 +314,7 @@ def _anim_on_disk(adir, want):
     for dd, frames in want.items():
         ddir = os.path.join(adir, dd)
         for i in range(len(frames)):
-            if not os.path.exists(os.path.join(ddir, f"{i}.png")):
+            if not os.path.exists(os.path.join(ddir, f"{i}{frame_ext()}")):
                 return False
     return True
 
@@ -291,7 +323,7 @@ def _write_base_preview(base_dir, dirs):
     order = [d for d in DIRECTIONS_8 if d in dirs]
     imgs = []
     for d in order:
-        p = os.path.join(base_dir, f"{d}.png")
+        p = os.path.join(base_dir, f"{d}{frame_ext()}")
         if os.path.exists(p):
             imgs.append(Image.open(p).convert("RGBA"))
     if not imgs:
@@ -300,7 +332,7 @@ def _write_base_preview(base_dir, dirs):
     strip = Image.new("RGBA", (w * len(imgs), h), (0, 0, 0, 0))
     for i, im in enumerate(imgs):
         strip.alpha_composite(im, (i * w, 0))
-    strip.save(os.path.join(base_dir, "preview.png"))
+    save_image(strip, os.path.join(base_dir, "preview" + frame_ext()))
 
 
 def _write_anim_preview(adir, dirs):
@@ -312,9 +344,10 @@ def _write_anim_preview(adir, dirs):
     ddir = os.path.join(adir, d)
     if not os.path.isdir(ddir):
         return
-    idxs = sorted(int(f[:-4]) for f in os.listdir(ddir)
-                  if f.endswith(".png") and f[:-4].isdigit())
-    frames = [Image.open(os.path.join(ddir, f"{i}.png")).convert("RGBA") for i in idxs]
+    ext = frame_ext()
+    idxs = sorted(int(os.path.splitext(f)[0]) for f in os.listdir(ddir)
+                  if os.path.splitext(f)[1] == ext and os.path.splitext(f)[0].isdigit())
+    frames = [Image.open(os.path.join(ddir, f"{i}{ext}")).convert("RGBA") for i in idxs]
     if len(frames) < 2:
         return
     bg = [Image.new("RGBA", f.size, (0, 0, 0, 0)) for f in frames]

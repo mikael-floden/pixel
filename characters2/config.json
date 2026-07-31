@@ -1,4 +1,6 @@
 {
+  "_frame_format_note": "Art file format for rotations/frames: 'png' or 'webp'. WebP lossless is 67.6% smaller on this art (1419/1419 frames verified pixel-identical) \u2014 but flipping this REQUIRES games2/scripts/build-manifest.mjs to decode WebP first: it hand-parses the PNG IHDR and decodes pixels for foot anchors/waterlines/gait rates. Convert with pipeline/to_webp.py --apply. See README (WebP migration).",
+  "frame_format": "png",
   "_comment": "The REAL game's main characters. Not exploring skeletons anymore \u2014 the human skeleton is fixed. Exactly two characters: default_boy and default_girl, each generated as a persistent 8-direction static PixelLab character (create-character-with-8-directions). No animations, no outfits \u2014 just the awesome 8-direction base model. If a character folder is deleted, the loop regenerates it as a fresh, slightly different variation (a new seed), so you can reroll until happy.",
   "skeleton": "humans",
   "params": {

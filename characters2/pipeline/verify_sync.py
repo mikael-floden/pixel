@@ -25,7 +25,10 @@ import sys
 from PIL import Image
 
 from pixellab_client import DIRECTIONS_8, PixelLabClient
-from sync import HUMANS, load_config, _assign_slugs, _slug
+from sync import HUMANS, load_config, frame_ext, _assign_slugs, _slug
+
+
+EXT = frame_ext()   # ".png" today, ".webp" after the migration (config.json)
 
 
 def _expected_from_api(detail):
@@ -76,17 +79,18 @@ def verify_character(client, name, cid):
     # -- base rotations ------------------------------------------------------
     base = os.path.join(root, "base")
     for d in exp_rot:
-        p = os.path.join(base, f"{d}.png")
+        p = os.path.join(base, f"{d}{EXT}")
         if not os.path.exists(p):
-            problems.append(f"{name}/base: missing {d}.png")
+            problems.append(f"{name}/base: missing {d}{EXT}")
         else:
             bad = _valid_png(p, require_opaque_pixels=(d == "south"))
             if bad:
-                problems.append(f"{name}/base/{d}.png: {bad}")
+                problems.append(f"{name}/base/{d}{EXT}: {bad}")
     # stray base pngs
     if os.path.isdir(base):
         for fn in os.listdir(base):
-            if fn.endswith(".png") and fn != "preview.png" and fn[:-4] not in exp_rot:
+            stem, fext = os.path.splitext(fn)
+            if fext == EXT and not stem.startswith("preview") and stem not in exp_rot:
                 problems.append(f"{name}/base: STALE {fn} (not on PixelLab)")
 
     # -- animations ----------------------------------------------------------
@@ -109,17 +113,17 @@ def verify_character(client, name, cid):
                 problems.append(f"{name}/{slug}: missing direction '{dd}'")
                 continue
             have = sorted(f for f in os.listdir(ddir)
-                          if f.endswith(".png") and f[:-4].isdigit())
+                          if os.path.splitext(f)[1] == EXT and os.path.splitext(f)[0].isdigit())
             if len(have) != n:
                 problems.append(f"{name}/{slug}/{dd}: {len(have)} frames, expected {n}")
             for i in range(n):
-                p = os.path.join(ddir, f"{i}.png")
+                p = os.path.join(ddir, f"{i}{EXT}")
                 if not os.path.exists(p):
-                    problems.append(f"{name}/{slug}/{dd}: missing frame {i}.png")
+                    problems.append(f"{name}/{slug}/{dd}: missing frame {i}{EXT}")
                 else:
                     bad = _valid_png(p)
                     if bad:
-                        problems.append(f"{name}/{slug}/{dd}/{i}.png: {bad}")
+                        problems.append(f"{name}/{slug}/{dd}/{i}{EXT}: {bad}")
             # stray extra directions inside the animation
         for dd in os.listdir(adir):
             p = os.path.join(adir, dd)
@@ -165,7 +169,7 @@ def verify_animation_map(name):
     for state, folder in resolved.items():
         south = os.path.join(adir_root, folder, "south")
         if not (os.path.isdir(os.path.join(adir_root, folder)) and os.path.isdir(south)
-                and any(f.endswith(".png") for f in os.listdir(south))):
+                and any(os.path.splitext(f)[1] == EXT for f in os.listdir(south))):
             problems.append(f"{name}: state '{state}' -> folder '{folder}' MISSING "
                             f"(update animation_map.json)")
     return problems
