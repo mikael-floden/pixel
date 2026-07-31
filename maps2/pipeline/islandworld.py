@@ -904,10 +904,10 @@ def build(out=None, n=140, seed=11):
                        mat=d.mat, top=d.top, mirror=d.mirror, level=d.level,
                        spawn=d.spawn, props=d.props, decks=decks_out)
     img = d.render()
-    img.convert("RGB").save(os.path.join(out, "demo.png"))
+    img.save(os.path.join(out, "demo.webp"), lossless=True, method=4, exact=True)
     w = 2200
     img.resize((w, round(img.height * w / img.width)), Image.LANCZOS).convert("RGB").save(
-        os.path.join(out, "preview.png"))
+        os.path.join(out, "preview.webp"), lossless=True, method=4, exact=True)
     from collections import Counter
     terr = Counter(m for m in d.mat.ravel() if m)
     viol = occlusion_violations(d.mat, d.level)

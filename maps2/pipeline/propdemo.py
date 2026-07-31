@@ -161,11 +161,11 @@ def build(out: str | None = None):
     x0, y0 = d.plots[TERRAINS[0]][:2]
     worldio.save_world(os.path.join(out, "world.json"), name="prop_demo",
                        mat=mat, top=top, spawn=(x0, y0 + 1), props=props)
-    _cap(d.render(), 2400).convert("RGB").save(os.path.join(out, "overview.png"))
+    _cap(d.render(), 2400).save(os.path.join(out, "overview.webp"), lossless=True, method=4, exact=True)
     print("overview ok")
     for gid in TERRAINS:
-        _cap(d.render_terrain(gid)).convert("RGB").save(
-            os.path.join(out, f"props_{gid}.png"))
+        _cap(d.render_terrain(gid)).save(
+            os.path.join(out, f"props_{gid}.webp"), lossless=True, method=4, exact=True)
     print("per-terrain ok")
 
 

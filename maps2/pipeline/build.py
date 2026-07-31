@@ -136,7 +136,7 @@ def main():
             x0, y0 = max(0, x0), max(0, y0)
             x1, y1 = min(world.n, x1), min(world.n, y1)
             img = render_window(world, x0, y0, x1, y1, ctx)
-            img.save(os.path.join(out, f"border_{name}.png"))
+            img.save(os.path.join(out, f"border_{name}.webp"), lossless=True, method=4, exact=True)
         print("borders ok")
 
 

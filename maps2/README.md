@@ -239,6 +239,30 @@ stone courtyard (`pipeline/monsterdemo.py`), each pad one zone. The game
 consumes spawns.json to place real monsters (until wired, its fake near-spawn
 rectangles remain).
 
+## Image format — lossless WebP (project default, 2026-07-31)
+
+Every image maps2 ships is **lossless WebP**: the per-world `minimap.webp` the
+game's Map tab and world picker read, plus the demo/border sheets. Measured on
+this domain: 28.1 MB -> 17.5 MB (**38% off**, 35/35 files, none rejected).
+`pipeline/to_webp.py` is the tool — it PROVES each file bit-exact (decodes the
+WebP back and compares RGBA including alpha) and refuses to delete a PNG whose
+WebP didn't round-trip or would be bigger. `lossless=True, method=4, exact=True`
+is not optional: Pillow's default WebP encode is LOSSY and would silently
+resample the pixel art. Convert at the SOURCE and commit it — never in the
+Dockerfile (that re-runs every deploy and busts the layer cache).
+
+The pipeline writes WebP everywhere (`render2.save_minimap` and every demo
+builder), and **reads tiles2 art in either format**: `tiles2lib._tiles()` globs
+`tile_*.png` AND `tile_*.webp`, sorted by STEM so a half-converted sheet can't
+reorder. tiles2 converts on its own schedule and world builds keep working
+throughout.
+
+`world.json` bakes LITERAL tiles2 paths and the game resolves them to a URL, so
+when tiles2 flips, run **`python maps2/pipeline/to_webp.py --paths --apply`**:
+it repoints every baked path whose `.webp` exists on disk. Only the `paths`
+table changes — grids, decks and props are untouched, so terrain is bit-identical
+and no world needs regenerating.
+
 ## Geometry (tiles2)
 
 - top diamond **30px** tall × 64px wide (grid steps DX=32, DY=15)

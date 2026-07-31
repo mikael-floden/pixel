@@ -237,12 +237,12 @@ def build(out=None, seed=4):
     spawn = (int(PLOT / 2), int(PLOT / 2))       # centre of the first circle
     worldio.save_world(os.path.join(out, "world.json"), name="trans_demo",
                        mat=d.mat, top=top, mirror=mir, spawn=spawn)
-    _cap(d.render(0, 0, d.W, d.H), 2800).convert("RGB").save(
-        os.path.join(out, "overview.png"))
+    _cap(d.render(0, 0, d.W, d.H), 2800).save(
+        os.path.join(out, "overview.webp"), lossless=True, method=4, exact=True)
     print("overview ok")
     for ai, A in enumerate(TYPES):
-        _cap(d.render_row(ai), 2600).convert("RGB").save(
-            os.path.join(out, f"row_{LABEL[A]}.png"))
+        _cap(d.render_row(ai), 2600).save(
+            os.path.join(out, f"row_{LABEL[A]}.webp"), lossless=True, method=4, exact=True)
     total = sum(1 for c in d.top.ravel() if c is not None)
     print(f"trans_demo {d.W}x{d.H}: {len(d.circles)} circles; "
           f"{d.fallbacks}/{total} cells used a fallback (no exact corner code)")

@@ -124,7 +124,7 @@ def build(out=None):
     props = [(x, y, p) for (x, y), p in d.props.items()]
     worldio.save_world(os.path.join(out, "world.json"), name="glow_test",
                        mat=d.mat, top=d.top, spawn=d.spawn, props=props)
-    d.render().save(os.path.join(out, "overview.png"))
+    d.render().save(os.path.join(out, "overview.webp"), lossless=True, method=4, exact=True)
     print(f"glow_test {d.n_x}x{d.n_y}: {len(d.props)} emissive props "
           f"({d.missing} in emission.json missing on disk, skipped); "
           + ", ".join(f"{m.split('_')[0]}:{len(v)}" for m, v in d.by_mat.items()))

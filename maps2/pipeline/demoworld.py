@@ -269,7 +269,7 @@ def build(out=None, n=104, seed=6):
     # normalized transparent map-tab image (maintainer 2026-07-23)
     import render2
     render2.save_minimap(out, d.render(transparent=True), width=2200)
-    print(f"demo_isle {n}x{n}: {len(d.props)} props; wrote minimap.png")
+    print(f"demo_isle {n}x{n}: {len(d.props)} props; wrote minimap.webp")
     return d
 
 

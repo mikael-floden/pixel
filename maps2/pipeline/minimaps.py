@@ -27,7 +27,8 @@ from render2 import render_overview, save_minimap  # noqa: E402
 
 MAPS2 = os.path.dirname(_HERE)
 WORLDS = os.path.join(MAPS2, "worlds")
-STALE = ("demo.png", "preview.png", "overview.png")
+STALE = ("demo.png", "preview.png", "overview.png",
+         "demo.webp", "preview.webp", "overview.webp")
 # worlds whose own builder writes a richer minimap (props/decks) — don't clobber
 BUILDER_OWNS = {"the_island2"}
 
@@ -37,12 +38,12 @@ def refresh(name: str, force: bool = False):
     wpath = os.path.join(d, "world.json")
     if not os.path.isfile(wpath):
         return
-    if name in BUILDER_OWNS and not force and os.path.isfile(os.path.join(d, "minimap.png")):
+    if name in BUILDER_OWNS and not force and os.path.isfile(os.path.join(d, "minimap.webp")):
         print(f"{name}: keep builder minimap")
     else:
         world = worldio.load_world(wpath)
         save_minimap(d, render_overview(world, scale=0.5, transparent=True))
-        print(f"{name}: minimap.png ({world.W}x{world.H})")
+        print(f"{name}: minimap.webp ({world.W}x{world.H})")
     for s in STALE:                               # drop the old inconsistent names
         p = os.path.join(d, s)
         if os.path.isfile(p):

@@ -136,13 +136,21 @@ def render_overview(world, scale: float = 0.32, band_px: int = 1400,
 
 def save_minimap(out_dir, img, width: int = 2000):
     """Normalized map-tab image (maintainer 2026-07-23: "normalize how you save/store the
-    map"): every world writes exactly one `minimap.png` — the world's isometric view with
+    map"): every world writes exactly one `minimap.webp` — the world's isometric view with
     all NON-MAP pixels transparent, capped to `width` px. Keeps alpha (RGBA); NEVER
-    convert('RGB') (that would flatten the transparency back onto a solid rectangle)."""
+    convert('RGB') (that would flatten the transparency back onto a solid rectangle).
+
+    LOSSLESS WebP since 2026-07-31 (project default): bit-exact pixels at ~38% fewer
+    bytes. `lossless=True` is not optional — Pillow's default WebP encode is LOSSY and
+    would silently resample the pixel art. Any stale `minimap.png` beside it is removed
+    so a world never ships both."""
     import os
     if img.width > width:
         img = img.resize((width, max(1, round(img.height * width / img.width))), Image.LANCZOS)
-    img.save(os.path.join(out_dir, "minimap.png"))
+    img.save(os.path.join(out_dir, "minimap.webp"), lossless=True, method=4, exact=True)
+    old = os.path.join(out_dir, "minimap.png")
+    if os.path.isfile(old):
+        os.remove(old)
 
 
 def render_minimap(world, px: int = 4) -> Image.Image:

@@ -111,6 +111,19 @@ EDGE_MASK = {e: [_edge_mask(CORNERS[c0], CORNERS[c1], (i + 1) / (EDGE_K + 1))
 EDGE_ORDER = ("NE", "SE", "SW", "NW")
 
 
+
+def _tiles(*parts):
+    """Tile files under <parts>/tile_*.<ext> in EITHER format. tiles2 converts to
+    lossless WebP on its own schedule (project default 2026-07-31) and a
+    half-converted tree is expected — glob both so the maps pipeline never goes
+    blind mid-migration. Sorted by STEM so tile_07.webp and tile_07.png can't
+    reorder a sheet."""
+    out = []
+    for ext in ("png", "webp"):
+        out += glob.glob(os.path.join(*parts, f"tile_*.{ext}"))
+    return sorted(out, key=lambda p: os.path.splitext(p)[0])
+
+
 class Tiles2:
     def __init__(self, tiles_root: str = TILES2):
         self.root = tiles_root
@@ -130,18 +143,17 @@ class Tiles2:
             base = os.path.join(self.root, gid, "base")
             if not os.path.isdir(base):
                 continue
-            bt = sorted(glob.glob(os.path.join(base, "*", "tile_*.png")))
+            bt = sorted(_tiles(base, "*"))
             trans = {}
             tdir = os.path.join(self.root, gid, "transitions")
             if os.path.isdir(tdir):
                 for other in sorted(os.listdir(tdir)):
-                    tt = sorted(glob.glob(os.path.join(tdir, other, "*", "tile_*.png")))
+                    tt = sorted(_tiles(tdir, other, "*"))
                     if tt:
                         trans[other] = tt
             elev = {}
             for n in (2, 3, 4, 5):
-                ed = sorted(glob.glob(os.path.join(self.root, gid, f"base_x_{n}",
-                                                   "*", "tile_*.png")))
+                ed = sorted(_tiles(self.root, gid, f"base_x_{n}", "*"))
                 if ed:
                     elev[n] = ed
             out[gid] = {"base": bt, "transitions": trans, "elev": elev}
